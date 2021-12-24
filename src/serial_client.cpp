@@ -265,7 +265,7 @@ void TSerialClient::ClosedPortCycle()
     }
     now = std::chrono::steady_clock::now();
     TClosedPortRegisterReader reader;
-    Scheduler.GetNext(std::chrono::steady_clock::now(), reader);
+    Scheduler.AccumulateNext(std::chrono::steady_clock::now(), reader);
     for (auto& reg: reader.GetRegisters()) {
         SetReadError(reg);
         ScheduleNextPoll(reg, now);
@@ -332,7 +332,7 @@ void TSerialClient::OpenPortCycle()
 
     auto now = std::chrono::steady_clock::now();
     TRegisterReader reader(now, LastAccessedDevice, Metrics);
-    Scheduler.GetNext(now, reader);
+    Scheduler.AccumulateNext(now, reader);
     if (reader.GetRegisters().empty()) {
         return;
     }

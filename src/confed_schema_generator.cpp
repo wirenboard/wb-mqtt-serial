@@ -173,7 +173,7 @@ namespace
     //      "default": {
     //        "name": CHANNEL_NAME,
     //        "enabled": CHANNEL_ENABLED,
-    //        "read_rate_limit": CHANNEL_READ_RATE_LIMIT
+    //        "read_rate_limit_ms": CHANNEL_READ_RATE_LIMIT
     //      }
     //  }
     Json::Value MakeTabSimpleChannelSchema(const Json::Value& channelTemplate, TContext& context)
@@ -188,8 +188,8 @@ namespace
         r["default"]["enabled"] = true;
         SetIfExists(r["default"], "enabled", channelTemplate, "enabled");
         // poll_interval is deprecated, but still read it
-        SetIfExists(r["default"], "read_rate_limit", channelTemplate, "poll_interval");
-        SetIfExists(r["default"], "read_rate_limit", channelTemplate, "read_rate_limit");
+        SetIfExists(r["default"], "read_rate_limit_ms", channelTemplate, "poll_interval");
+        SetIfExists(r["default"], "read_rate_limit_ms", channelTemplate, "read_rate_limit_ms");
         return r;
     }
 
@@ -324,8 +324,8 @@ namespace
     //          {
     //              "name": CHANNEL1_NAME,
     //              "enabled": CHANNEL_ENABLED,
-    //              "read_rate_limit": CHANNEL_READ_RATE_LIMIT,
-    //              "read_period": CHANNEL_READ_PERIOD
+    //              "read_rate_limit_ms": CHANNEL_READ_RATE_LIMIT,
+    //              "read_period_ms": CHANNEL_READ_PERIOD
     //          },
     //          ...
     //      ],
@@ -388,9 +388,9 @@ namespace
                 v["enabled"] = true;
                 SetIfExists(v, "enabled", channel, "enabled");
                 // poll_interval is deprecated, but still read it
-                SetIfExists(v, "read_rate_limit", channel, "poll_interval");
-                SetIfExists(v, "read_rate_limit", channel, "read_rate_limit");
-                SetIfExists(v, "read_period", channel, "read_period");
+                SetIfExists(v, "read_rate_limit_ms", channel, "poll_interval");
+                SetIfExists(v, "read_rate_limit_ms", channel, "read_rate_limit_ms");
+                SetIfExists(v, "read_period_ms", channel, "read_period_ms");
             }
             r["minItems"] = defaults.size();
             r["maxItems"] = defaults.size();

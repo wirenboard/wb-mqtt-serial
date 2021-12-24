@@ -173,7 +173,7 @@ namespace
             Get(data, "poll_interval", res);
         } catch (...) { // poll_interval is deprecated, so ignore it, if it has wrong format
         }
-        Get(data, "read_rate_limit", res);
+        Get(data, "read_rate_limit_ms", res);
         if (res < 0ms) {
             return std::experimental::nullopt;
         }
@@ -183,7 +183,7 @@ namespace
     std::experimental::optional<std::chrono::milliseconds> GetReadPeriod(const Json::Value& data)
     {
         std::chrono::milliseconds res(-1);
-        Get(data, "read_period", res);
+        Get(data, "read_period_ms", res);
         if (res < 0ms) {
             return std::experimental::nullopt;
         }
@@ -365,13 +365,13 @@ namespace
         std::vector<PRegisterConfig> registers;
         if (channel_data.isMember("consists_of")) {
 
-            auto read_rate_limit = GetReadRateLimit(channel_data);
+            auto read_rate_limit_ms = GetReadRateLimit(channel_data);
             auto read_period = GetReadPeriod(channel_data);
 
             const Json::Value& reg_data = channel_data["consists_of"];
             for (Json::ArrayIndex i = 0; i < reg_data.size(); ++i) {
                 auto reg = LoadRegisterConfig(reg_data[i], *device_config, errorMsgPrefix, context);
-                reg.RegisterConfig->ReadRateLimit = read_rate_limit;
+                reg.RegisterConfig->ReadRateLimit = read_rate_limit_ms;
                 reg.RegisterConfig->ReadPeriod = read_period;
                 registers.push_back(reg.RegisterConfig);
                 if (!i)
@@ -1279,14 +1279,14 @@ PDeviceConfig LoadBaseDeviceConfig(const Json::Value& dev,
         res->ResponseTimeout = DefaultResponseTimeout;
     }
 
-    auto read_rate_limit = GetReadRateLimit(dev);
-    if (!read_rate_limit) {
-        read_rate_limit = parameters.DefaultReadRateLimit;
+    auto read_rate_limit_ms = GetReadRateLimit(dev);
+    if (!read_rate_limit_ms) {
+        read_rate_limit_ms = parameters.DefaultReadRateLimit;
     }
     for (auto channel: res->DeviceChannelConfigs) {
         for (auto reg: channel->RegisterConfigs) {
             if (!reg->ReadRateLimit) {
-                reg->ReadRateLimit = read_rate_limit;
+                reg->ReadRateLimit = read_rate_limit_ms;
             }
         }
     }

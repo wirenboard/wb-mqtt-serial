@@ -1,4 +1,4 @@
-// poll_interval and read_rate_limit parsing test
+// poll_interval and read_rate_limit_ms parsing test
 {
     "ports": [
         {
@@ -32,7 +32,7 @@
             "parity": "N",
             "data_bits": 8,
             "stop_bits": 1,
-            "read_rate_limit": 101,
+            "read_rate_limit_ms": 101,
             "devices" : [
                 {
                     "device_type" : "MSU34",
@@ -57,12 +57,12 @@
             "parity": "N",
             "data_bits": 8,
             "stop_bits": 1,
-            "read_rate_limit": 102,
+            "read_rate_limit_ms": 102,
             "devices" : [
                 {
                     "device_type" : "MSU34",
                     "slave_id": 2,
-                    "read_rate_limit": 202,
+                    "read_rate_limit_ms": 202,
                     "channels": [
                         {
                             "name" : "Illuminance",
@@ -78,16 +78,16 @@
             "parity": "N",
             "data_bits": 8,
             "stop_bits": 1,
-            "read_rate_limit": 103,
+            "read_rate_limit_ms": 103,
             "devices" : [
                 {
                     "device_type" : "MSU34",
                     "slave_id": 2,
-                    "read_rate_limit": 203,
+                    "read_rate_limit_ms": 203,
                     "channels": [
                         {
                             "name" : "Illuminance",
-                            "read_rate_limit": 303
+                            "read_rate_limit_ms": 303
                         }
                     ]
                 }

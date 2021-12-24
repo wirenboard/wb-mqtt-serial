@@ -17,11 +17,11 @@
                     "channels": [
                         {
                             "name" : "Illuminance",
-                            "read_period": 300
+                            "read_period_ms": 300
                         },
                         {
                             "name": "Pressure",
-                            "read_rate_limit": 10000
+                            "read_rate_limit_ms": 10000
                         }
                     ]
                 },
@@ -59,7 +59,7 @@
                         {
                             "name" : "RGB",
                             "type" : "rgb",
-                            "read_period" : 102,
+                            "read_period_ms" : 102,
                             "consists_of" : [
                                 {
                                     "reg_type" : "holding",

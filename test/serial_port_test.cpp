@@ -188,7 +188,7 @@ TEST_F(TSerialPortTest, TestSkipNoise)
 }
 
 /* on imx6, a glitch with precise timing can trigger a bug in UART IP. This will result
-in continuosly reception of FF bytes until either UART is reset or a couple of valid UART frames
+in continuously reception of FF bytes until either UART is reset or a couple of valid UART frames
 are received */
 // !!!! The test is not stable on build server
 // TEST_F(TSerialPortTest, TestImxBug)

@@ -53,27 +53,27 @@ bool TryToTransformSubDeviceChannel(Json::Value& channel,
 }
 
 /**
- * @brief  Compare "read_rate_limit" property with template.
+ * @brief  Compare "read_rate_limit_ms" property with template.
  *         Remove it from ch if it is equal to specified in template.
  *
- * @return true channel has "read_rate_limit" property different from template's value
- * @return false channel has "read_rate_limit" property same as in template
+ * @return true channel has "read_rate_limit_ms" property different from template's value
+ * @return false channel has "read_rate_limit_ms" property same as in template
  */
 bool TryToTransformReadRateLimit(Json::Value& ch, const Json::Value& channelTemplate)
 {
-    if (!ch.isMember("read_rate_limit")) {
+    if (!ch.isMember("read_rate_limit_ms")) {
         return false;
     }
     if (channelTemplate.isMember("poll_interval") &&
-        ch["read_rate_limit"].asInt() == channelTemplate["poll_interval"].asInt())
+        ch["read_rate_limit_ms"].asInt() == channelTemplate["poll_interval"].asInt())
     {
-        ch.removeMember("read_rate_limit");
+        ch.removeMember("read_rate_limit_ms");
         return false;
     }
-    if (channelTemplate.isMember("read_rate_limit") &&
-        (ch["read_rate_limit"].asInt() == channelTemplate["read_rate_limit"].asInt()))
+    if (channelTemplate.isMember("read_rate_limit_ms") &&
+        (ch["read_rate_limit_ms"].asInt() == channelTemplate["read_rate_limit_ms"].asInt()))
     {
-        ch.removeMember("read_rate_limit");
+        ch.removeMember("read_rate_limit_ms");
         return false;
     }
     return true;
@@ -82,9 +82,9 @@ bool TryToTransformReadRateLimit(Json::Value& ch, const Json::Value& channelTemp
 /**
  * @brief  Compare parameters with template.
  *         Add channel to resulting config file if:
- *         - it has "read_rate_limit", deprecated "poll_interval" or "enabled" property
+ *         - it has "read_rate_limit_ms", deprecated "poll_interval" or "enabled" property
  *           different from that specified in template
- *         - it has "read_period" property
+ *         - it has "read_period_ms" property
  *         Remove properies equal to specified in template
  */
 bool TryToTransformSimpleChannel(Json::Value& ch, const Json::Value& channelTemplate)
@@ -99,7 +99,7 @@ bool TryToTransformSimpleChannel(Json::Value& ch, const Json::Value& channelTemp
             ok = true;
         }
     }
-    return ok || ch.isMember("read_period");
+    return ok || ch.isMember("read_period_ms");
 }
 
 Json::Value FilterStandardChannels(const Json::Value& device,

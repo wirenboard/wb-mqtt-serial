@@ -10,11 +10,11 @@ using namespace WBMQTT::JSON;
 
 namespace
 {
-    // poll_interval is deprecated, we convert it to read_rate_limit
+    // poll_interval is deprecated, we convert it to read_rate_limit_ms
     void ConvertPollIntervalToReadRateLimit(Json::Value& node)
     {
         if (node.isMember("poll_interval")) {
-            node["read_rate_limit"] = node["poll_interval"];
+            node["read_rate_limit_ms"] = node["poll_interval"];
             node.removeMember("poll_interval");
         }
     }
@@ -36,8 +36,8 @@ namespace
             }
             return res;
         }
-        SetIfExists(res, "read_rate_limit", channelTemplate, "poll_interval");
-        SetIfExists(res, "read_rate_limit", channelTemplate, "read_rate_limit");
+        SetIfExists(res, "read_rate_limit_ms", channelTemplate, "poll_interval");
+        SetIfExists(res, "read_rate_limit_ms", channelTemplate, "read_rate_limit_ms");
         res["enabled"] = true;
         SetIfExists(res, "enabled", channelTemplate, "enabled");
         return res;
@@ -51,9 +51,9 @@ namespace
 
         Json::Value res;
         res["name"] = channelConfig["name"];
-        SetIfExists(res, "read_rate_limit", channelConfig, "poll_interval");
-        SetIfExists(res, "read_rate_limit", channelConfig, "read_rate_limit");
-        SetIfExists(res, "read_period", channelConfig, "read_period");
+        SetIfExists(res, "read_rate_limit_ms", channelConfig, "poll_interval");
+        SetIfExists(res, "read_rate_limit_ms", channelConfig, "read_rate_limit_ms");
+        SetIfExists(res, "read_period_ms", channelConfig, "read_period_ms");
         res["enabled"] = true;
         SetIfExists(res, "enabled", channelConfig, "enabled");
         return res;

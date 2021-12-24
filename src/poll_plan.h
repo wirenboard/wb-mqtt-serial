@@ -96,7 +96,8 @@ public:
         return std::min(HighPriorityQueue.GetNextPollTime(), LowPriorityQueue.GetNextPollTime());
     }
 
-    template<class TAccumulator> void GetNext(std::chrono::steady_clock::time_point time, TAccumulator& accumulator)
+    template<class TAccumulator>
+    void AccumulateNext(std::chrono::steady_clock::time_point time, TAccumulator& accumulator)
     {
         auto pollLimit = std::chrono::milliseconds::max();
         if (HighPriorityQueue.HasReadyItems(time) &&
