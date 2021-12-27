@@ -6079,7 +6079,7 @@
                         },
                         {
                             "group": "rgb_w_ch",
-                            "name": "Hue of RGB Strip",
+                            "name": "RGB Strip Hue",
                             "address": 2014,
                             "type": "range",
                             "reg_type": "holding",
@@ -6089,7 +6089,7 @@
                         },
                         {
                             "group": "rgb_w_ch",
-                            "name": "Saturation of RGB Strip",
+                            "name": "RGB Strip Saturation",
                             "address": 2015,
                             "type": "range",
                             "reg_type": "holding",
@@ -6099,7 +6099,7 @@
                         },
                         {
                             "group": "rgb_w_ch",
-                            "name": "Brightness of RGB Strip",
+                            "name": "RGB Strip Brightness",
                             "address": 2016,
                             "type": "range",
                             "reg_type": "holding",
@@ -6116,7 +6116,7 @@
                         },
                         {
                             "group": "rgb_w_ch",
-                            "name": "HUE Changing Rate (ms)",
+                            "name": "HUE Changing Rate",
                             "address": 2017,
                             "reg_type": "holding",
                             "min": 3,
@@ -6731,7 +6731,7 @@
 
                         "fade_rgb_h": {
                             "group": "rgb_w_fader_hue",
-                            "title": "Hue of RGB Strip",
+                            "title": "RGB Strip Hue",
                             "description": "hue_fader_description",
                             "order": 1,
                             "address": 3011,
@@ -6743,7 +6743,7 @@
 
                         "fader_inc_rgb_s": {
                             "group": "rgb_w_fader_inc",
-                            "title": "Saturation of RGB Strip",
+                            "title": "RGB Strip Saturation",
                             "order": 1,
                             "address": 3012,
                             "reg_type": "holding",
@@ -6753,7 +6753,7 @@
                         },
                         "fader_inc_rgb_v": {
                             "group": "rgb_w_fader_inc",
-                            "title": "Brightness of RGB Strip",
+                            "title": "RGB Strip Brightness",
                             "order": 2,
                             "address": 3013,
                             "reg_type": "holding",
@@ -6774,7 +6774,7 @@
 
                         "fader_dec_rgb_s": {
                             "group": "rgb_w_fader_dec",
-                            "title": "Saturation of RGB Strip",
+                            "title": "RGB Strip Saturation",
                             "order": 1,
                             "address": 3112,
                             "reg_type": "holding",
@@ -6784,7 +6784,7 @@
                         },
                         "fader_dec_rgb_v": {
                             "group": "rgb_w_fader_dec",
-                            "title": "Brightness of RGB Strip",
+                            "title": "RGB Strip Brightness",
                             "order": 2,
                             "address": 3113,
                             "reg_type": "holding",
@@ -7474,10 +7474,10 @@
                 "CCT2 Temperature": "Цветовая температура ленты CCT2",
                 "CCT2 Brightness": "Яркость ленты CCT2",
                 "RGB Palette": "Палитра RGB",
-                "Hue of RGB Strip": "Цвет RGB ленты (H)",
-                "Saturation of RGB Strip": "Насыщенность цвета RGB ленты (S)",
-                "Brightness of RGB Strip": "Яркость RGB ленты (V)",
-                "HUE Changing Rate (ms)": "Время изменения HUE на 1°",
+                "RGB Strip Hue": "Цвет RGB ленты (H)",
+                "RGB Strip Saturation": "Насыщенность цвета RGB ленты (S)",
+                "RGB Strip Brightness": "Яркость RGB ленты (V)",
+                "HUE Changing Rate": "Время изменения HUE на 1°",
                 "Channels 1_2_3_4 Brightness": "Яркость каналов 1_2_3_4",
 
                 "Channel 1 (B) Raw PWM": "Прямое управление ШИМ канала 1 (B)",
