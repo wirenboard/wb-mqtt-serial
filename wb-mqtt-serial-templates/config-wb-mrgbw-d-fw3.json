@@ -7211,7 +7211,7 @@
 
         "translations": {
             "en": {
-                "WB-MRGBW-D_template_title": "WB-MRGBW-D fw3 (4-channel CV LED Dimmer fw 3.0)",
+                "WB-MRGBW-D_template_title": "WB-MRGBW-D fw3 (4-channel CV LED Dimmer)",
 
                 "sp_title": "Short Press",
                 "lp_title": "Long Press",
@@ -7333,7 +7333,7 @@
                 "Uptime": "Uptime (s)"
             },
             "ru": {
-                "WB-MRGBW-D_template_title": "WB-MRGBW-D fw3 (4-канальный диммер светодиодных лент с прошивкой 3.0)",
+                "WB-MRGBW-D_template_title": "WB-MRGBW-D fw3 (4-канальный диммер светодиодных лент)",
 
                 "sp_title": "Короткое нажатие",
                 "lp_title": "Длинное нажатие",
