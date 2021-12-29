@@ -13,6 +13,7 @@ namespace
     const auto PORT_OPEN_ERROR_NOTIFICATION_INTERVAL = 5min;
     const auto MAX_CLOSED_PORT_CYCLE_TIME = 500ms;
     const auto MAX_POLL_TIME = 100ms;
+    const auto MAX_LOW_PRIORITY_LAG = 1s;
     const auto MAX_FLUSHES_WHEN_POLL_IS_DUE = 20;
 
     bool PrepareToAccessDevice(PSerialDevice lastAccessedDevice, PSerialDevice dev, Metrics::TMetrics& metrics)
@@ -51,19 +52,17 @@ namespace
 TSerialClient::TSerialClient(const std::vector<PSerialDevice>& devices,
                              PPort port,
                              const TPortOpenCloseLogic::TSettings& openCloseSettings,
-                             Metrics::TMetrics& metrics,
-                             std::chrono::milliseconds lowPriorityPollInterval)
+                             Metrics::TMetrics& metrics)
     : Port(port),
       Devices(devices),
       Active(false),
       ReadCallback([](PRegister, bool) {}),
       ErrorCallback([](PRegister, bool) {}),
       FlushNeeded(new TBinarySemaphore),
-      Scheduler(lowPriorityPollInterval),
+      Scheduler(MAX_POLL_TIME, TPreemptivePolicy(MAX_LOW_PRIORITY_LAG)),
       OpenCloseLogic(openCloseSettings),
       ConnectLogger(PORT_OPEN_ERROR_NOTIFICATION_INTERVAL, "[serial client] "),
-      Metrics(metrics),
-      LowPriorityPollInterval(lowPriorityPollInterval)
+      Metrics(metrics)
 {}
 
 TSerialClient::~TSerialClient()
@@ -401,8 +400,6 @@ bool TRegisterReader::operator()(const PRegister& reg, std::chrono::milliseconds
     if (Regs.back()->Device() != reg->Device()) {
         return false;
     }
-
-    pollLimit = min(pollLimit, MAX_POLL_TIME);
 
     if (RegisterRange) {
         if (RegisterRange->Add(reg, pollLimit)) {

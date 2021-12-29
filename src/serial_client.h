@@ -56,8 +56,7 @@ public:
     TSerialClient(const std::vector<PSerialDevice>& devices,
                   PPort port,
                   const TPortOpenCloseLogic::TSettings& openCloseSettings,
-                  Metrics::TMetrics& metrics,
-                  std::chrono::milliseconds lowPriorityPollInterval);
+                  Metrics::TMetrics& metrics);
     TSerialClient(const TSerialClient& client) = delete;
     TSerialClient& operator=(const TSerialClient&) = delete;
     ~TSerialClient();
@@ -99,12 +98,11 @@ private:
     TErrorCallback ErrorCallback;
     PSerialDevice LastAccessedDevice;
     PBinarySemaphore FlushNeeded;
-    TScheduler<PRegister, TRegisterComparePredicate> Scheduler;
+    TScheduler<PRegister, TRegisterComparePredicate, TPreemptivePolicy> Scheduler;
 
     TPortOpenCloseLogic OpenCloseLogic;
     TLoggerWithTimeout ConnectLogger;
     Metrics::TMetrics& Metrics;
-    std::chrono::milliseconds LowPriorityPollInterval;
 };
 
 typedef std::shared_ptr<TSerialClient> PSerialClient;

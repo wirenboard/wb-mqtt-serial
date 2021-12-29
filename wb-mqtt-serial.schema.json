@@ -46,7 +46,7 @@
         },
         "read_rate_limit_ms": {
           "type": "integer",
-          "title": "Low priority read rate limit (ms)",
+          "title": "Read rate limit (ms)",
           "minimum": 0,
           "default": 1000,
           "propertyOrder": 10
@@ -354,7 +354,7 @@
         },
         "read_rate_limit_ms": {
           "type": "integer",
-          "title": "Low priority read rate limit (ms)",
+          "title": "Read rate limit (ms)",
           "minimum": 0,
           "default": 1000,
           "propertyOrder": 5
@@ -573,12 +573,19 @@
           "title": "High priority read period (ms)",
           "description" : "read_period_description",
           "minimum": 0,
-          "default": 100,
+          "options": {
+            "enum_titles": [ "high priority (100ms)" ],
+            "enum_values": [ 100 ],
+            "inputAttributes": {
+              "placeholder": "the channel has low priority"
+            }
+          },
+          "_format": "edWb",
           "propertyOrder": 15
         },
         "read_rate_limit_ms": {
           "type": "integer",
-          "title": "Low priority read rate limit (ms)",
+          "title": "Read rate limit (ms)",
           "minimum": 0,
           "default": 1000,
           "propertyOrder": 16
@@ -708,12 +715,19 @@
           "title": "High priority read period (ms)",
           "description" : "read_period_description",
           "minimum": 0,
-          "default": 100,
+          "options": {
+            "enum_titles": [ "high priority (100ms)" ],
+            "enum_values": [ 100 ],
+            "inputAttributes": {
+              "placeholder": "the channel has low priority"
+            }
+          },
+          "_format": "edWb",
           "propertyOrder": 10
         },
         "read_rate_limit_ms": {
           "type": "integer",
-          "title": "Low priority read rate limit (ms)",
+          "title": "Read rate limit (ms)",
           "minimum": 0,
           "default": 1000,
           "propertyOrder": 11
@@ -756,8 +770,9 @@
           "type": "integer",
           "title": "High priority read period (ms)",
           "minimum": 0,
-          "default": -1,
           "options": {
+            "enum_titles": [ "high priority (100ms)" ],
+            "enum_values": [ 100 ],
             "inputAttributes": {
               "placeholder": "the channel has low priority"
             },
@@ -765,7 +780,7 @@
               "enabled": true
             }
           },
-          "_format": "siWb",
+          "_format": "edWb",
           "propertyOrder": 3
         },
         "read_rate_limit_ms": {
@@ -817,8 +832,9 @@
           "type": "integer",
           "title": "High priority read period (ms)",
           "minimum": 0,
-          "default": -1,
           "options": {
+            "enum_titles": [ "high priority (100 ms)" ],
+            "enum_values": [ 100 ],
             "inputAttributes": {
               "placeholder": "the channel has low priority"
             },
@@ -826,7 +842,7 @@
               "enabled": true
             }
           },
-          "_format": "siWb",
+          "_format": "edWb",
           "propertyOrder": 3
         },
         "read_rate_limit_ms": {
@@ -1782,7 +1798,8 @@
       "High priority read period (ms)": "Период чтения с высоким приоритетом (мс)",
       "the channel has low priority": "канал имеет низкий приоритет",
       "read as soon as possible": "читать как появится возможность",
-      "Read rate limit (ms)": "Читать не чаще (мс)"
+      "Read rate limit (ms)": "Читать не чаще (мс)",
+      "high priority (100 ms)": "высокий приоритет (100 мс)"
     }
   }
 }
