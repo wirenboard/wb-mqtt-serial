@@ -1,8 +1,20 @@
-wb-mqtt-serial (2.43.4) stable; urgency=medium
+wb-mqtt-serial (2.43.5) stable; urgency=medium
 
   * Device template backward compatibility test is added.
 
- -- Petr Krasnoshchekov <petr.krasnoshchekov@wirenboard.ru>  Thu, 09 Dec 2021 13:50:45 +0500
+ -- Petr Krasnoshchekov <petr.krasnoshchekov@wirenboard.ru>  Wed, 29 Dec 2021 10:11:21 +0500
+
+wb-mqtt-serial (2.43.4) stable; urgency=medium
+
+  * Random hangs on boot are fixed
+
+ -- Nikita Maslov <nikita.maslov@wirenboard.ru>  Tue, 21 Dec 2021 18:02:07 +0300
+
+wb-mqtt-serial (2.43.3) stable; urgency=medium
+
+  * Cityron ПУ-3 template was added
+
+ -- Dmitry Vorobjev <d.vorobjev@wirenboard.ru>  Thu, 16 Dec 2021 10:03:59 +0300
 
 wb-mqtt-serial (2.43.2) stable; urgency=medium
 

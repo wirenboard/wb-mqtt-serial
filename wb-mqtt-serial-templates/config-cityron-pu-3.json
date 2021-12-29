@@ -1,0 +1,421 @@
+{
+    "title": "Cityron ПУ-3",
+    "device_type": "cityron_pu-3",
+    "device": {
+        "name": "Cityron ПУ-3",
+        "id": "cityron-pu-3",
+        "response_timeout_ms": 100,
+        "guard_interval_us": 5000,
+        "groups": [
+            {
+                "title": "Parameters",
+                "id": "parameters",
+                "order": 1
+            },
+            {
+                "title": "General",
+                "id": "general",
+                "order": 2
+            },
+            {
+                "title": "Data Storage",
+                "id": "data_storage",
+                "order": 3
+            }
+        ],
+        "parameters": {
+            "temperature_setpoint_min": {
+                "title": "Minimum Temperature Setpoint",
+                "address": 5,
+                "reg_type": "holding",
+                "format": "s16",
+                "scale": 0.1,
+                "min": 0,
+                "max": 50,
+                "default": 5,
+                "group": "parameters",
+                "order": 1
+            },
+            "temperature_setpoint_max": {
+                "title": "Maximum Temperature Setpoint",
+                "address": 6,
+                "reg_type": "holding",
+                "format": "s16",
+                "scale": 0.1,
+                "min": 10,
+                "max": 100,
+                "default": 30,
+                "group": "parameters",
+                "order": 2
+            }
+        },
+        "channels": [
+            {
+                "name": "Panel Status",
+                "address": 2,
+                "reg_type": "holding",
+                "type": "switch",
+                "format": "u16",
+                "group": "parameters"
+            },
+            {
+                "name": "Temperature Setpoint",
+                "address": 1,
+                "reg_type": "holding",
+                "type": "temperature",
+                "format": "s16",
+                "scale": 0.1,
+                "round_to": 0.1,
+                "group": "parameters"
+            },
+            {
+                "name": "Main Temperature",
+                "address": 0,
+                "reg_type": "holding",
+                "type": "temperature",
+                "format": "s16",
+                "scale": 0.1,
+                "round_to": 0.1,
+                "group": "parameters"
+            },
+            {
+                "name": "Additional Temperature",
+                "address": 9,
+                "reg_type": "holding",
+                "type": "temperature",
+                "format": "s16",
+                "scale": 0.1,
+                "round_to": 0.1,
+                "group": "parameters"
+            },
+            {
+                "name": "Humidity",
+                "address": 23,
+                "reg_type": "holding",
+                "type": "rel_humidity",
+                "format": "u16",
+                "group": "parameters",
+                "enabled": false
+            },
+            {
+                "name": "Fan Speed",
+                "address": 4,
+                "reg_type": "holding",
+                "type": "range",
+                "format": "u16",
+                "group": "parameters",
+                "min": 0,
+                "max": 5
+            },
+            {
+                "name": "Mode",
+                "address": 3,
+                "reg_type": "holding",
+                "type": "range",
+                "format": "u16",
+                "group": "parameters",
+                "min": 0,
+                "max": 3
+            },
+            {
+                "name": "Auto Mode Allowed",
+                "address": "17:0:1",
+                "reg_type": "holding",
+                "type": "switch",
+                "format": "u16",
+                "group": "parameters"
+            },
+            {
+                "name": "Cooling Allowed",
+                "address": "17:1:1",
+                "reg_type": "holding",
+                "type": "switch",
+                "format": "u16",
+                "group": "parameters"
+            },
+            {
+                "name": "Heating Allowed",
+                "address": "17:2:1",
+                "reg_type": "holding",
+                "type": "switch",
+                "format": "u16",
+                "group": "parameters"
+            },
+            {
+                "name": "Ventilation Allowed",
+                "address": "17:3:1",
+                "reg_type": "holding",
+                "type": "switch",
+                "format": "u16",
+                "group": "parameters"
+            },
+            {
+                "name": "Replace Filter",
+                "address": 7,
+                "reg_type": "holding",
+                "type": "switch",
+                "format": "u16",
+                "group": "parameters"
+            },
+            {
+                "name": "Alarm Code",
+                "address": 8,
+                "reg_type": "holding",
+                "type": "value",
+                "format": "u16",
+                "group": "parameters",
+                "min": 0,
+                "max": 99
+            },
+            {
+                "name": "Hour",
+                "address": 20,
+                "reg_type": "holding",
+                "type": "value",
+                "format": "u16",
+                "group": "general"
+            },
+            {
+                "name": "Minute",
+                "address": 21,
+                "reg_type": "holding",
+                "type": "value",
+                "format": "u16",
+                "group": "general"
+            },
+            {
+                "name": "Day Of Week",
+                "address": 22,
+                "reg_type": "holding",
+                "type": "value",
+                "format": "u16",
+                "group": "general"
+            },
+            {
+                "name": "Register 300",
+                "address": 300,
+                "reg_type": "holding",
+                "type": "value",
+                "format": "s16",
+                "group": "data_storage",
+                "enabled": false
+            },
+            {
+                "name": "Register 301",
+                "address": 301,
+                "reg_type": "holding",
+                "type": "value",
+                "format": "s16",
+                "group": "data_storage",
+                "enabled": false
+            },
+            {
+                "name": "Register 302",
+                "address": 302,
+                "reg_type": "holding",
+                "type": "value",
+                "format": "s16",
+                "group": "data_storage",
+                "enabled": false
+            },
+            {
+                "name": "Register 303",
+                "address": 303,
+                "reg_type": "holding",
+                "type": "value",
+                "format": "s16",
+                "group": "data_storage",
+                "enabled": false
+            },
+            {
+                "name": "Register 304",
+                "address": 304,
+                "reg_type": "holding",
+                "type": "value",
+                "format": "s16",
+                "group": "data_storage",
+                "enabled": false
+            },
+            {
+                "name": "Register 305",
+                "address": 305,
+                "reg_type": "holding",
+                "type": "value",
+                "format": "s16",
+                "group": "data_storage",
+                "enabled": false
+            },
+            {
+                "name": "Register 306",
+                "address": 306,
+                "reg_type": "holding",
+                "type": "value",
+                "format": "s16",
+                "group": "data_storage",
+                "enabled": false
+            },
+            {
+                "name": "Register 307",
+                "address": 307,
+                "reg_type": "holding",
+                "type": "value",
+                "format": "s16",
+                "group": "data_storage",
+                "enabled": false
+            },
+            {
+                "name": "Register 308",
+                "address": 308,
+                "reg_type": "holding",
+                "type": "value",
+                "format": "s16",
+                "group": "data_storage",
+                "enabled": false
+            },
+            {
+                "name": "Register 309",
+                "address": 309,
+                "reg_type": "holding",
+                "type": "value",
+                "format": "s16",
+                "group": "data_storage",
+                "enabled": false
+            },
+            {
+                "name": "Register 400",
+                "address": 400,
+                "reg_type": "holding",
+                "type": "value",
+                "format": "u16",
+                "group": "data_storage",
+                "enabled": false
+            },
+            {
+                "name": "Register 401",
+                "address": 401,
+                "reg_type": "holding",
+                "type": "value",
+                "format": "u16",
+                "group": "data_storage",
+                "enabled": false
+            },
+            {
+                "name": "Register 402",
+                "address": 402,
+                "reg_type": "holding",
+                "type": "value",
+                "format": "u16",
+                "group": "data_storage",
+                "enabled": false
+            },
+            {
+                "name": "Register 403",
+                "address": 403,
+                "reg_type": "holding",
+                "type": "value",
+                "format": "u16",
+                "group": "data_storage",
+                "enabled": false
+            },
+            {
+                "name": "Register 404",
+                "address": 404,
+                "reg_type": "holding",
+                "type": "value",
+                "format": "u16",
+                "group": "data_storage",
+                "enabled": false
+            },
+            {
+                "name": "Register 405",
+                "address": 405,
+                "reg_type": "holding",
+                "type": "value",
+                "format": "u16",
+                "group": "data_storage",
+                "enabled": false
+            },
+            {
+                "name": "Register 406",
+                "address": 406,
+                "reg_type": "holding",
+                "type": "value",
+                "format": "u16",
+                "group": "data_storage",
+                "enabled": false
+            },
+            {
+                "name": "Register 407",
+                "address": 407,
+                "reg_type": "holding",
+                "type": "value",
+                "format": "u16",
+                "group": "data_storage",
+                "enabled": false
+            },
+            {
+                "name": "Register 408",
+                "address": 408,
+                "reg_type": "holding",
+                "type": "value",
+                "format": "u16",
+                "group": "data_storage",
+                "enabled": false
+            },
+            {
+                "name": "Register 409",
+                "address": 409,
+                "reg_type": "holding",
+                "type": "value",
+                "format": "u16",
+                "group": "data_storage",
+                "enabled": false
+            }
+        ],
+        "translations": {
+            "ru": {
+                "Parameters": "Параметры",
+                "General": "Общее",
+                "Data Storage": "Хранилище данных",
+                "Minimum Temperature Setpoint": "Минимальная уставка температуры",
+                "Maximum Temperature Setpoint": "Максимальная уставка температуры",
+                "Panel Status": "Статус панели",
+                "Temperature Setpoint": "Уставка температуры",
+                "Main Temperature": "Основная температура",
+                "Additional Temperature": "Дополнительная температура",
+                "Humidity": "Влажность",
+                "Fan Speed": "Скорость вентилятора",
+                "Mode": "Режим",
+                "Auto Mode Allowed": "Режим авто разрешен",
+                "Cooling Allowed": "Охлаждение разрешено",
+                "Heating Allowed": "Нагрев разрешен",
+                "Ventilation Allowed": "Вентиляция разрешена",
+                "Replace Filter": "Заменить фильтр",
+                "Alarm Code": "Код ошибки",
+                "Hour": "Час",
+                "Minute": "Минута",
+                "Day Of Week": "День недели",
+                "Register 300": "Регистр 300",
+                "Register 301": "Регистр 301",
+                "Register 302": "Регистр 302",
+                "Register 303": "Регистр 303",
+                "Register 304": "Регистр 304",
+                "Register 305": "Регистр 305",
+                "Register 306": "Регистр 306",
+                "Register 307": "Регистр 307",
+                "Register 308": "Регистр 308",
+                "Register 309": "Регистр 309",
+                "Register 400": "Регистр 400",
+                "Register 401": "Регистр 401",
+                "Register 402": "Регистр 402",
+                "Register 403": "Регистр 403",
+                "Register 404": "Регистр 404",
+                "Register 405": "Регистр 405",
+                "Register 406": "Регистр 406",
+                "Register 407": "Регистр 407",
+                "Register 408": "Регистр 408",
+                "Register 409": "Регистр 409"
+            }
+        }
+    }
+}
