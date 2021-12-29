@@ -267,6 +267,11 @@ namespace
             }
             res[GetSubdeviceKey(dt)] = newDev;
         } else {
+            // Old configs could have slave_id defined as number not as string.
+            // To not confuse users convert numbers to strings and show only string editor for slave_id.
+            if (newDev.isMember("slave_id") && newDev["slave_id"].isNumeric()) {
+                newDev["slave_id"] = newDev["slave_id"].asString();
+            }
             if (!newDev.isMember("slave_id") ||
                 (newDev["slave_id"].isString() && newDev["slave_id"].asString().empty())) {
                 newDev["slave_id"] = false;

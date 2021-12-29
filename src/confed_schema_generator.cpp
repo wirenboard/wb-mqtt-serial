@@ -731,6 +731,15 @@ Json::Value MakeSchemaForConfed(const Json::Value& configSchema,
                                 TSerialDeviceFactory& deviceFactory)
 {
     Json::Value res(configSchema);
+
+    // Old configs could have slave_id defined as number not as string.
+    // To not confuse users convert numbers to strings and show only string editor for slave_id.
+    // Original slave_id definitions with numbers are used during config validation.
+    res["definitions"]["slave_id"] = res["definitions"]["slave_id_ui"];
+    res["definitions"].removeMember("slave_id_ui");
+    res["definitions"]["slave_id_broadcast"] = res["definitions"]["slave_id_broadcast_ui"];
+    res["definitions"].removeMember("slave_id_broadcast_ui");
+
     // Let's add to #/definitions/device/oneOf a list of devices generated from templates
     if (res["definitions"]["device"].isMember("oneOf")) {
         Json::Value newArray(Json::arrayValue);
