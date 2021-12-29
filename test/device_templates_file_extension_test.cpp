@@ -31,15 +31,80 @@ TEST_F(TDeviceTemplateFileExtensionTest, WrongExtension)
     VerifyTemplates(TLoggedFixture::GetDataFilePath("device-templates"), "MSU34_BAD");
 }
 
-TEST(TDeviceTemplatesTest, Validate)
+class TDeviceTemplatesTest: public WBMQTT::Testing::TLoggedFixture
 {
+protected:
+    void PrintDevice(const Json::Value& deviceTemplate,
+                     const std::string& mqttPrefix,
+                     ITemplateMap& templates,
+                     size_t level)
+    {
+        std::map<std::string, Json::Value> channels; // Sort channels for stable test results
+        for (const auto& subChannel: deviceTemplate["channels"]) {
+            channels.emplace(subChannel["name"].asString(), subChannel);
+        }
+        for (const auto& subChannel: channels) {
+            PrintChannel(subChannel.second, mqttPrefix, templates, level);
+        }
+    }
+
+    void PrintChannel(const Json::Value& channel, const std::string& mqttPrefix, ITemplateMap& templates, size_t level)
+    {
+        auto name = GetName(channel, level);
+        auto newMqttPrefix = GetNewMqttPrefix(channel, mqttPrefix);
+        if (channel.isMember("oneOf")) {
+            for (const auto& oneOfChannel: channel["oneOf"]) {
+                auto subdeviceType = oneOfChannel.asString();
+                Emit() << name << ": " << subdeviceType;
+                PrintDevice(templates.GetTemplate(subdeviceType).Schema, newMqttPrefix, templates, level + 1);
+            }
+            return;
+        }
+        if (channel.isMember("device_type")) {
+            auto subdeviceType = channel["device_type"].asString();
+            Emit() << name << ": " << subdeviceType;
+            PrintDevice(templates.GetTemplate(subdeviceType).Schema, newMqttPrefix, templates, level + 1);
+            return;
+        }
+        Emit() << name << "  =>  " << newMqttPrefix;
+    }
+
+    std::string GetName(const Json::Value& channel, size_t level) const
+    {
+        std::string res;
+        for (size_t i = 0; i < level; ++i) {
+            res += '\t';
+        }
+        return res + channel["name"].asString();
+    }
+
+    std::string GetNewMqttPrefix(const Json::Value& channel, const std::string& prefix) const
+    {
+        auto id = channel.get("id", channel["name"]).asString();
+        if (id.empty()) {
+            return prefix;
+        }
+        if (prefix.empty()) {
+            return id;
+        }
+        return prefix + " " + id;
+    }
+};
+
+TEST_F(TDeviceTemplatesTest, Validate)
+{
+    SetMode(E_Normal);
     Json::Value configSchema(LoadConfigSchema(TLoggedFixture::GetDataFilePath("../wb-mqtt-serial.schema.json")));
     Json::Value templatesSchema(
         LoadConfigTemplatesSchema(TLoggedFixture::GetDataFilePath("../wb-mqtt-serial-device-template.schema.json"),
                                   configSchema));
-    std::string templatesDir(TLoggedFixture::GetDataFilePath("../wb-mqtt-serial-templates"));
-    TTemplateMap templates(templatesDir, templatesSchema, false);
-    for (const auto& dt: templates.GetDeviceTypes()) {
-        templates.GetTemplate(dt);
+    TTemplateMap templates(TLoggedFixture::GetDataFilePath("../wb-mqtt-serial-templates"), templatesSchema, false);
+    auto deviceTypes = templates.GetDeviceTypes();
+    std::sort(deviceTypes.begin(), deviceTypes.end()); // For stable test results
+    for (const auto& deviceType: deviceTypes) {
+        auto& dt = templates.GetTemplate(deviceType);
+        TSubDevicesTemplateMap subdeviceTemplates(dt.Type, dt.Schema);
+        Emit() << dt.Type;
+        PrintDevice(dt.Schema, "", subdeviceTemplates, 1);
     }
 }
