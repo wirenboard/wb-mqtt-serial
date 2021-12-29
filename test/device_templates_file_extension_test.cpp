@@ -101,7 +101,7 @@ TEST_F(TDeviceTemplatesTest, Validate)
     TTemplateMap templates(TLoggedFixture::GetDataFilePath("../wb-mqtt-serial-templates"), templatesSchema, false);
     auto deviceTypes = templates.GetDeviceTypes();
     std::sort(deviceTypes.begin(), deviceTypes.end()); // For stable test results
-    for (const auto& deviceType: templates.GetDeviceTypes()) {
+    for (const auto& deviceType: deviceTypes) {
         auto& dt = templates.GetTemplate(deviceType);
         TSubDevicesTemplateMap subdeviceTemplates(dt.Type, dt.Schema);
         Emit() << dt.Type;
