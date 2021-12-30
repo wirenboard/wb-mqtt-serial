@@ -290,14 +290,28 @@ namespace
         }
 
         Json::Value res;
-        if (!newDev.isMember("slave_id") || (newDev["slave_id"].isString() && newDev["slave_id"].asString().empty())) {
-            newDev["slave_id"] = false;
-        }
-        if ((schema.isMember("parameters"))) {
-            for (auto it = schema["parameters"].begin(); it != schema["parameters"].end(); ++it) {
-                if (newDev.isMember(it.name())) {
-                    newDev["parameters"][it.name()] = newDev[it.name()];
-                    newDev.removeMember(it.name());
+        if (isSubdevice) {
+            if (newDev.isMember("name")) {
+                res["name"] = newDev["name"];
+                newDev.removeMember("name");
+            }
+            res[GetSubdeviceKey(dt)] = newDev;
+        } else {
+            // Old configs could have slave_id defined as number not as string.
+            // To not confuse users convert numbers to strings and show only string editor for slave_id.
+            if (newDev.isMember("slave_id") && newDev["slave_id"].isNumeric()) {
+                newDev["slave_id"] = newDev["slave_id"].asString();
+            }
+            if (!newDev.isMember("slave_id") ||
+                (newDev["slave_id"].isString() && newDev["slave_id"].asString().empty())) {
+                newDev["slave_id"] = false;
+            }
+            if ((schema.isMember("parameters"))) {
+                for (auto it = schema["parameters"].begin(); it != schema["parameters"].end(); ++it) {
+                    if (newDev.isMember(it.name())) {
+                        newDev["parameters"][it.name()] = newDev[it.name()];
+                        newDev.removeMember(it.name());
+                    }
                 }
             }
         }

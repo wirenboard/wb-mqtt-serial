@@ -252,35 +252,58 @@
         "disable_edit_json": true
       }
     },
-    "slave_id": {
+    "slave_id_ui": {
       "properties": {
         "slave_id": {
           "title": "Slave id of the device",
           "propertyOrder": 2,
-          "oneOf": [
-            {
-              "title": "decimal or hex",
-              "type": "string",
-              "pattern": "^(0x[A-Fa-f\\d]+|\\d+|(0x[A-Fa-f\\d]+|\\d+):(0x[A-Fa-f\\d]+|\\d+))$",
-              "options": {
-                "inputAttributes": {
-                  "placeholder":  "decimal (e.g. 123) or hex (e.g. 0xAF)"
-                },
-                "patternmessage": "Should be decimal or hex"
-              }
-            },
-            {
-              "title": "decimal",
-              "type": "integer"
-            }
-          ],
+          "type": "string",
+          "pattern": "^(0x[A-Fa-f\\d]+|\\d+|(0x[A-Fa-f\\d]+|\\d+):(0x[A-Fa-f\\d]+|\\d+))$",
           "options": {
-            "keep_oneof_values": false
+            "inputAttributes": {
+              "placeholder":  "decimal (e.g. 123) or hex (e.g. 0xAF)"
+            },
+            "patternmessage": "Should be decimal or hex"
           }
         }
       }
     },
+    "slave_id": {
+      "properties": {
+        "slave_id": {
+          "oneOf": [
+            {
+              "type": "string",
+              "pattern": "^(0x[A-Fa-f\\d]+|\\d+|(0x[A-Fa-f\\d]+|\\d+):(0x[A-Fa-f\\d]+|\\d+))$"
+            },
+            {
+              "type": "integer"
+            }
+          ]
+        }
+      }
+    },
     "slave_id_broadcast": {
+      "properties": {
+        "slave_id": {
+          "oneOf": [
+            {
+              "type": "string",
+              "pattern": "^(0x[A-Fa-f\\d]+|\\d+)$"
+            },
+            {
+              "type": "integer"
+            },
+            {
+              "type": "boolean",
+              "enum": [ false ],
+              "default": false
+            }
+          ]
+        }
+      }
+    },
+    "slave_id_broadcast_ui": {
       "properties": {
         "slave_id": {
           "title": "Slave id of the device or broadcast mode",
@@ -296,10 +319,6 @@
                 },
                 "patternmessage": "Should be decimal or hex"
               }
-            },
-            {
-              "title": "decimal slave id",
-              "type": "integer"
             },
             {
               "title": "broadcast",
