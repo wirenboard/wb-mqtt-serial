@@ -65,7 +65,7 @@ std::string TSerialDevice::ToString() const
 
 PRegisterRange TSerialDevice::CreateRegisterRange(PRegister reg) const
 {
-    return nullptr;
+    return PRegisterRange(new TSingleRegisterRange(reg));
 }
 
 void TSerialDevice::Prepare()
@@ -93,35 +93,6 @@ void TSerialDevice::EndSession()
 void TSerialDevice::EndPollCycle()
 {}
 
-void TSerialDevice::ReadRegister(PRegister reg)
-{
-    if (reg->GetAvailable() == TRegisterAvailability::UNAVAILABLE) {
-        return;
-    }
-    try {
-        Port()->SleepSinceLastInteraction(DeviceConfig()->RequestDelay);
-        reg->SetValue(ReadRegisterImpl(reg));
-        SetTransferResult(true);
-    } catch (const TSerialDeviceInternalErrorException& e) {
-        reg->SetError(ST_DEVICE_ERROR);
-        LOG(Warn) << "TSerialDevice::ReadRegister(): " << e.what() << " [slave_id is "
-                  << reg->Device()->ToString() + "]";
-        SetTransferResult(true);
-    } catch (const TSerialDevicePermanentRegisterException& e) {
-        reg->SetAvailable(TRegisterAvailability::UNAVAILABLE);
-        reg->SetError(ST_DEVICE_ERROR);
-        LOG(Warn) << "TSerialDevice::ReadRegister(): " << e.what() << " [slave_id is "
-                  << reg->Device()->ToString() + "] Register " << reg->ToString() << " is now marked as unsupported";
-        SetTransferResult(true);
-    } catch (const TSerialDeviceException& e) {
-        reg->SetError(ST_UNKNOWN_ERROR);
-        auto& logger = GetIsDisconnected() ? Debug : Warn;
-        LOG(logger) << "TSerialDevice::ReadRegister(): " << e.what() << " [slave_id is "
-                    << reg->Device()->ToString() + "]";
-        SetTransferResult(false);
-    }
-}
-
 void TSerialDevice::WriteRegister(PRegister reg, uint64_t value)
 {
     try {
@@ -148,7 +119,36 @@ void TSerialDevice::WriteRegisterImpl(PRegister reg, uint64_t value)
 
 void TSerialDevice::ReadRegisterRange(PRegisterRange range)
 {
-    throw std::runtime_error(ToString() + " range reading is not supported");
+    // We expect only TSingleRegisterRange here
+    if (range->RegisterList().empty()) {
+        return;
+    }
+    PRegister reg = range->RegisterList().front();
+    if (reg->GetAvailable() == TRegisterAvailability::UNAVAILABLE) {
+        return;
+    }
+    try {
+        Port()->SleepSinceLastInteraction(DeviceConfig()->RequestDelay);
+        reg->SetValue(ReadRegisterImpl(reg));
+        SetTransferResult(true);
+    } catch (const TSerialDeviceInternalErrorException& e) {
+        reg->SetError(TRegister::TError::ReadError);
+        LOG(Warn) << "TSerialDevice::ReadRegister(): " << e.what() << " [slave_id is "
+                  << reg->Device()->ToString() + "]";
+        SetTransferResult(true);
+    } catch (const TSerialDevicePermanentRegisterException& e) {
+        reg->SetAvailable(TRegisterAvailability::UNAVAILABLE);
+        reg->SetError(TRegister::TError::ReadError);
+        LOG(Warn) << "TSerialDevice::ReadRegister(): " << e.what() << " [slave_id is "
+                  << reg->Device()->ToString() + "] Register " << reg->ToString() << " is now marked as unsupported";
+        SetTransferResult(true);
+    } catch (const TSerialDeviceException& e) {
+        reg->SetError(TRegister::TError::ReadError);
+        auto& logger = GetIsDisconnected() ? Debug : Warn;
+        LOG(logger) << "TSerialDevice::ReadRegister(): " << e.what() << " [slave_id is "
+                    << reg->Device()->ToString() + "]";
+        SetTransferResult(false);
+    }
 }
 
 void TSerialDevice::SetTransferResult(bool ok)

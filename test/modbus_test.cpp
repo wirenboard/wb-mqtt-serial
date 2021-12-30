@@ -90,7 +90,7 @@ set<int> TModbusTest::VerifyQuery(PRegister reg)
         for (auto& reg: range->RegisterList()) {
             auto addr = GetUint32RegisterAddress(reg->GetAddress());
             readAddresses.insert(addr);
-            if (reg->GetError()) {
+            if (reg->GetErrorState().test(TRegister::TError::ReadError)) {
                 errorRegisters.insert(addr);
             } else {
                 registerValues[addr] = reg->GetValue();
@@ -265,7 +265,8 @@ protected:
     {
         TEST_DEFAULT,
         TEST_HOLES,
-        TEST_MAX_READ_REGISTERS
+        TEST_MAX_READ_REGISTERS,
+        TEST_MAX_READ_REGISTERS_FIRST_CYCLE,
     };
 
     void SetUp();
@@ -298,6 +299,9 @@ void TModbusIntegrationTest::ExpectPollQueries(TestMode mode)
             EnqueueHoldingPackHoles10ReadResponse();
             break;
         case TEST_MAX_READ_REGISTERS:
+            EnqueueHoldingPackMax3ReadResponse();
+            break;
+        case TEST_MAX_READ_REGISTERS_FIRST_CYCLE:
         case TEST_DEFAULT:
         default:
             EnqueueHoldingSeparateReadResponse();
@@ -310,7 +314,7 @@ void TModbusIntegrationTest::ExpectPollQueries(TestMode mode)
     EnqueueInputReadU16Response();
     EnqueueCoilReadResponse();
 
-    if (mode == TEST_MAX_READ_REGISTERS) {
+    if (mode == TEST_MAX_READ_REGISTERS || mode == TEST_MAX_READ_REGISTERS_FIRST_CYCLE) {
         Enqueue10CoilsMax3ReadResponse();
     } else {
         Enqueue10CoilsReadResponse();
@@ -318,7 +322,7 @@ void TModbusIntegrationTest::ExpectPollQueries(TestMode mode)
 
     EnqueueDiscreteReadResponse();
 
-    if (mode == TEST_MAX_READ_REGISTERS) {
+    if (mode == TEST_MAX_READ_REGISTERS || mode == TEST_MAX_READ_REGISTERS_FIRST_CYCLE) {
         EnqueueHoldingSingleMax3ReadResponse();
         EnqueueHoldingMultiMax3ReadResponse();
     } else {
@@ -334,19 +338,14 @@ void TModbusIntegrationTest::InvalidateConfigPoll(TestMode mode)
 
     ExpectPollQueries(mode);
     Note() << "LoopOnce()";
-    for (auto i = 0; i < 18; ++i) {
-        SerialDriver->LoopOnce();
-        std::this_thread::sleep_for(10ms);
-    }
+    SerialDriver->LoopOnce();
 }
 
 TEST_F(TModbusIntegrationTest, Poll)
 {
     ExpectPollQueries();
     Note() << "LoopOnce()";
-    for (size_t i = 0; i < 18; ++i) {
-        SerialDriver->LoopOnce();
-    }
+    SerialDriver->LoopOnce();
 }
 
 TEST_F(TModbusIntegrationTest, Write)
@@ -377,9 +376,7 @@ TEST_F(TModbusIntegrationTest, Write)
 
     Note() << "LoopOnce()";
 
-    for (auto i = 0; i < 17; ++i) {
-        SerialDriver->LoopOnce();
-    }
+    SerialDriver->LoopOnce();
 }
 
 TEST_F(TModbusIntegrationTest, Errors)
@@ -404,9 +401,7 @@ TEST_F(TModbusIntegrationTest, Errors)
     EnqueueHoldingMultiOneByOneReadResponse(0x3);
 
     Note() << "LoopOnce()";
-    for (auto i = 0; i < 18; ++i) {
-        SerialDriver->LoopOnce();
-    }
+    SerialDriver->LoopOnce();
 }
 
 // TODO: fix after holes implementation
@@ -462,11 +457,10 @@ TEST_F(TModbusIntegrationTest, MaxReadRegisters)
     //    for this register range instead of one
 
     Config->PortConfigs[0]->Devices[0]->DeviceConfig()->MaxReadRegisters = 3;
-    InvalidateConfigPoll(TEST_MAX_READ_REGISTERS);
-    EnqueueHoldingPackMax3ReadResponse();
-    for (auto i = 0; i < 6; ++i) {
-        SerialDriver->LoopOnce();
-    }
+    InvalidateConfigPoll(TEST_MAX_READ_REGISTERS_FIRST_CYCLE);
+    ExpectPollQueries(TEST_MAX_READ_REGISTERS);
+    Note() << "LoopOnce()";
+    SerialDriver->LoopOnce();
 }
 
 TEST_F(TModbusIntegrationTest, GuardInterval)
@@ -516,38 +510,32 @@ protected:
 
 void TModbusBitmasksIntegrationTest::ExpectPollQueries(bool afterWriteSingle, bool afterWriteMultiple)
 {
-    EnqueueU16Shift8HoldingReadResponse(afterWriteMultiple);
     EnqueueU8Shift0Bits8HoldingReadResponse();
-    EnqueueU8Shift2SingleBitHoldingReadResponse(afterWriteSingle);
-    EnqueueU8Shift1SingleBitHoldingReadResponse(afterWriteSingle);
+    EnqueueU16Shift8HoldingReadResponse(afterWriteMultiple);
     EnqueueU8Shift0SingleBitHoldingReadResponse(afterWriteSingle);
+    EnqueueU8Shift1SingleBitHoldingReadResponse(afterWriteSingle);
+    EnqueueU8Shift2SingleBitHoldingReadResponse(afterWriteSingle);
 }
 
 TEST_F(TModbusBitmasksIntegrationTest, Poll)
 {
     ExpectPollQueries();
     Note() << "LoopOnce()";
-    for (auto i = 0; i < 5; ++i) {
-        SerialDriver->LoopOnce();
-    }
+    SerialDriver->LoopOnce();
 }
 
 TEST_F(TModbusBitmasksIntegrationTest, SingleWrite)
 {
     ExpectPollQueries();
     Note() << "LoopOnce()";
-    for (auto i = 0; i < 5; ++i) {
-        SerialDriver->LoopOnce();
-    }
+    SerialDriver->LoopOnce();
 
     PublishWaitOnValue("/devices/modbus-sample/controls/U8:1/on", "1");
 
     EnqueueU8Shift1SingleBitHoldingWriteResponse();
     ExpectPollQueries(true);
     Note() << "LoopOnce()";
-    for (auto i = 0; i < 5; ++i) {
-        SerialDriver->LoopOnce();
-    }
+    SerialDriver->LoopOnce();
 }
 
 class TModbusUnavailableRegistersIntegrationTest: public TSerialDeviceIntegrationTest, public TModbusExpectations
@@ -580,10 +568,7 @@ TEST_F(TModbusUnavailableRegistersIntegrationTest, UnavailableRegisterOnBorder)
 
     EnqueueHoldingPackUnavailableOnBorderReadResponse();
     Note() << "LoopOnce() [one by one]";
-    for (auto i = 0; i < 6; ++i) {
-        SerialDriver->LoopOnce();
-    }
-    std::this_thread::sleep_for(10ms);
+    SerialDriver->LoopOnce();
     Note() << "LoopOnce() [new range]";
     SerialDriver->LoopOnce();
 }
@@ -597,12 +582,8 @@ TEST_F(TModbusUnavailableRegistersIntegrationTest, UnavailableRegisterInTheMiddl
 
     EnqueueHoldingPackUnavailableInTheMiddleReadResponse();
     Note() << "LoopOnce() [one by one]";
-    for (auto i = 0; i < 6; ++i) {
-        SerialDriver->LoopOnce();
-    }
-    std::this_thread::sleep_for(10ms);
-    Note() << "LoopOnce() [new range]";
     SerialDriver->LoopOnce();
+    Note() << "LoopOnce() [new range]";
     SerialDriver->LoopOnce();
 }
 

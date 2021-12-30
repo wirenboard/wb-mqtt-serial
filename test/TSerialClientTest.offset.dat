@@ -8,4 +8,4 @@ fake_serial_device '1': reconnected
 Read Callback: <fake:1:fake: 24> becomes -87
 Error Callback: <fake:1:fake: 24>: no error
 fake_serial_device '1': read address '24' value '65512'
-Read Callback: <fake:1:fake: 24> becomes -87
+Read Callback: <fake:1:fake: 24> becomes -87 [unchanged]

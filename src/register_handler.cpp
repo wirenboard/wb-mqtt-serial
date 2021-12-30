@@ -18,81 +18,14 @@ TRegisterHandler::TRegisterHandler(PSerialDevice dev, PRegister reg, PBinarySema
       WriteFail(false)
 {}
 
-TRegisterHandler::TErrorState TRegisterHandler::UpdateReadError(bool error)
-{
-    TErrorState newState;
-    if (error) {
-        newState = ErrorState == WriteError || ErrorState == ReadWriteError ? ReadWriteError : ReadError;
-    } else {
-        newState = ErrorState == ReadWriteError || ErrorState == WriteError ? WriteError : NoError;
-    }
-
-    if (ErrorState == newState)
-        return ErrorStateUnchanged;
-    ErrorState = newState;
-    return ErrorState;
-}
-
-TRegisterHandler::TErrorState TRegisterHandler::UpdateWriteError(bool error)
-{
-    TErrorState newState;
-    if (error) {
-        newState = ErrorState == ReadError || ErrorState == ReadWriteError ? ReadWriteError : WriteError;
-    } else {
-        newState = ErrorState == ReadWriteError || ErrorState == ReadError ? ReadError : NoError;
-    }
-
-    if (ErrorState == newState)
-        return ErrorStateUnchanged;
-    ErrorState = newState;
-    return ErrorState;
-}
-
-TRegisterHandler::TErrorState TRegisterHandler::AcceptDeviceValue(uint64_t new_value, bool ok, bool* changed)
-{
-    *changed = false;
-
-    if (!ok)
-        return UpdateReadError(true);
-
-    bool first_poll = !DidReadReg;
-    DidReadReg = true;
-
-    if (Reg->ErrorValue && InvertWordOrderIfNeeded(*Reg, *Reg->ErrorValue) == new_value) {
-        LOG(Debug) << "register " << Reg->ToString() << " contains error value";
-        return UpdateReadError(true);
-    }
-
-    SetValueMutex.lock();
-
-    if (OldValue != new_value) {
-        OldValue = new_value;
-        SetValueMutex.unlock();
-
-        LOG(Debug) << "new val for " << Reg->ToString() << ": " << std::hex << new_value;
-        *changed = true;
-        return UpdateReadError(false);
-    }
-
-    SetValueMutex.unlock();
-
-    *changed = first_poll;
-    return UpdateReadError(false);
-}
-
 bool TRegisterHandler::NeedToFlush()
 {
     std::lock_guard<std::mutex> lock(SetValueMutex);
     return Dirty;
 }
 
-TRegisterHandler::TFlushResult TRegisterHandler::Flush(TErrorState forcedError)
+void TRegisterHandler::Flush()
 {
-    if (forcedError == WriteError) {
-        return {UpdateWriteError(true), false};
-    }
-
-    bool changed = false;
     volatile uint64_t tempValue;
     try {
         {
@@ -105,9 +38,8 @@ TRegisterHandler::TFlushResult TRegisterHandler::Flush(TErrorState forcedError)
             Dirty = (tempValue != ValueToSet);
             WriteFail = false;
         }
-        changed = (OldValue != tempValue);
-        OldValue = tempValue;
-        Reg->SetValue(OldValue);
+        Reg->SetValue(tempValue, false);
+        Reg->ClearError(TRegister::TError::WriteError);
     } catch (const TSerialDevicePermanentRegisterException& e) {
         LOG(Warn) << "failed to write: " << Reg->ToString() << ": " << e.what();
         {
@@ -115,7 +47,8 @@ TRegisterHandler::TFlushResult TRegisterHandler::Flush(TErrorState forcedError)
             Dirty = (tempValue != ValueToSet);
             WriteFail = false;
         }
-        return {UpdateWriteError(true), false};
+        Reg->SetError(TRegister::TError::WriteError);
+        return;
     } catch (const TSerialDeviceException& e) {
         LOG(Warn) << "failed to write: " << Reg->ToString() << ": " << e.what();
         {
@@ -129,14 +62,8 @@ TRegisterHandler::TFlushResult TRegisterHandler::Flush(TErrorState forcedError)
                 WriteFail = false;
             }
         }
-        return {UpdateWriteError(true), false};
+        Reg->SetError(TRegister::TError::WriteError);
     }
-    return {UpdateWriteError(false), changed};
-}
-
-std::string TRegisterHandler::TextValue() const
-{
-    return ConvertFromRawValue(*Reg, Reg->GetValue());
 }
 
 void TRegisterHandler::SetTextValue(const std::string& v)
@@ -153,16 +80,6 @@ void TRegisterHandler::SetTextValue(const std::string& v)
 PRegister TRegisterHandler::Register() const
 {
     return Reg;
-}
-
-bool TRegisterHandler::DidRead() const
-{
-    return DidReadReg;
-}
-
-TRegisterHandler::TErrorState TRegisterHandler::CurrentErrorState() const
-{
-    return ErrorState;
 }
 
 PSerialDevice TRegisterHandler::Device() const

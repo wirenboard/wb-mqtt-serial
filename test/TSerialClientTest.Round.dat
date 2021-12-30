@@ -20,12 +20,12 @@ fake_serial_device '1': write to address '32' value '1095069860'
 Read Callback: <fake:1:fake: 32> becomes 12.34
 Error Callback: <fake:1:fake: 32>: no error
 fake_serial_device '1': read address '24' value '1095080346'
+Read Callback: <fake:1:fake: 24> becomes 12.35 [unchanged]
 fake_serial_device '1': read address '26' value '1094713344'
+Read Callback: <fake:1:fake: 26> becomes 12 [unchanged]
 fake_serial_device '1': read address '28' value '1092616192'
+Read Callback: <fake:1:fake: 28> becomes 10 [unchanged]
 fake_serial_device '1': read address '30' value '1095132774'
+Read Callback: <fake:1:fake: 30> becomes 12.4 [unchanged]
 fake_serial_device '1': read address '32' value '1095069860'
-Read Callback: <fake:1:fake: 24> becomes 12.35
-Read Callback: <fake:1:fake: 26> becomes 12
-Read Callback: <fake:1:fake: 28> becomes 10
-Read Callback: <fake:1:fake: 30> becomes 12.4
-Read Callback: <fake:1:fake: 32> becomes 12.34
+Read Callback: <fake:1:fake: 32> becomes 12.34 [unchanged]

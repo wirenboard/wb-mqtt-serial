@@ -1,4 +1,5 @@
 #pragma once
+#include <bitset>
 #include <chrono>
 #include <cmath>
 #include <experimental/optional>
@@ -42,13 +43,6 @@ enum class EWordOrder
 {
     BigEndian,
     LittleEndian
-};
-
-enum EStatus
-{
-    ST_OK,
-    ST_UNKNOWN_ERROR, // response from device either not parsed or not received at all (crc error, timeout)
-    ST_DEVICE_ERROR   // valid response from device, which reports error
 };
 
 inline ::std::ostream& operator<<(::std::ostream& os, EWordOrder val)
@@ -268,14 +262,20 @@ enum class TRegisterAvailability
 
 struct TRegister: public TRegisterConfig
 {
+    enum TError
+    {
+        ReadError = 0,
+        WriteError,
+        PollIntervalMissError,
+        MAX_ERRORS
+    };
+
+    typedef std::bitset<TError::MAX_ERRORS> TErrorState;
 
     TRegister(PSerialDevice device, PRegisterConfig config, const std::string& channelName = std::string())
         : TRegisterConfig(*config),
           _Device(device),
           ChannelName(channelName)
-    {}
-
-    ~TRegister()
     {}
 
     std::string ToString() const;
@@ -291,11 +291,14 @@ struct TRegister: public TRegisterConfig
     //! Set register's availability
     void SetAvailable(TRegisterAvailability available);
 
-    EStatus GetError() const;
-    void SetError(EStatus error);
-
     uint64_t GetValue() const;
-    void SetValue(uint64_t value);
+    void SetValue(uint64_t value, bool clearReadError = true);
+
+    void SetError(TError error);
+    void ClearError(TError error);
+    const TErrorState& GetErrorState() const;
+
+    void SetLastPollTime(std::chrono::steady_clock::time_point pollTime);
 
     //! Used for metrics
     const std::string& GetChannelName() const;
@@ -303,9 +306,10 @@ struct TRegister: public TRegisterConfig
 private:
     std::weak_ptr<TSerialDevice> _Device;
     TRegisterAvailability Available = TRegisterAvailability::UNKNOWN;
-    EStatus Error = ST_UNKNOWN_ERROR;
     uint64_t Value;
     std::string ChannelName;
+    TErrorState ErrorState;
+    std::chrono::steady_clock::time_point LastPollTime;
 
     // Intern() implementation for TRegister
 private:
@@ -456,12 +460,7 @@ public:
     std::list<PRegister>& RegisterList();
     PSerialDevice Device() const;
 
-    virtual bool Add(PRegister reg, std::chrono::milliseconds pollLimit);
-
-    /**
-     * @brief Set error to all registers in range
-     */
-    void SetError(EStatus error);
+    virtual bool Add(PRegister reg, std::chrono::milliseconds pollLimit) = 0;
 
 protected:
     TRegisterRange(PRegister reg);
@@ -472,6 +471,13 @@ private:
 };
 
 typedef std::shared_ptr<TRegisterRange> PRegisterRange;
+
+class TSingleRegisterRange: public TRegisterRange
+{
+public:
+    TSingleRegisterRange(PRegister reg);
+    bool Add(PRegister reg, std::chrono::milliseconds pollLimit) override;
+};
 
 uint64_t InvertWordOrderIfNeeded(const TRegisterConfig& reg, uint64_t value);
 

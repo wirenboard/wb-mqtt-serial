@@ -193,7 +193,7 @@ namespace
                     int err_num;
                     ret = sscanf(presp, "(E%d)%n", &err_num, &nread);
                     if (ret >= 1) {
-                        reg->SetError(ST_DEVICE_ERROR);
+                        reg->SetError(TRegister::TError::ReadError);
                         presp += nread;
 
                         // just ignore error message if reg is unavailable
@@ -212,7 +212,6 @@ namespace
                             }
                         }
                     } else {
-                        reg->SetError(ST_UNKNOWN_ERROR);
                         throw TSerialDeviceTransientErrorException("Can't parse response");
                     }
                 }
@@ -243,8 +242,10 @@ void TEnergomeraIecWithFastReadDevice::ReadRegisterRange(PRegisterRange abstract
         char* presp = ReadResponse(*Port(), resp, RESPONSE_BUF_LEN, *DeviceConfig());
 
         ProcessResponse(*range, presp);
-    } catch (TSerialDeviceTransientErrorException& e) {
-        range->SetError(ST_UNKNOWN_ERROR);
+    } catch (TSerialDeviceException& e) {
+        for (auto& r: range->RegisterList()) {
+            r->SetError(TRegister::TError::ReadError);
+        }
         auto& logger = GetIsDisconnected() ? Debug : Warn;
         LOG(logger) << "TEnergomeraIecWithFastReadDevice::ReadRegisterRange(): " << e.what() << " [slave_id is "
                     << ToString() + "]";

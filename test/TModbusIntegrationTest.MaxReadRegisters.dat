@@ -887,6 +887,7 @@ EnqueueHoldingMultiMax3ReadResponse()
 >> 01 03 00 63 00 01 74 14
 << 01 03 02 00 15 79 8B
 Publish: /devices/modbus-sample/controls/Holding U16 Multi: '21' (QoS 1, retained)
+>>> LoopOnce()
 EnqueueHoldingPackMax3ReadResponse()
 >> 01 03 00 04 00 03 44 0A
 << 01 03 06 00 0A 00 14 00 1E 79 78
@@ -896,6 +897,48 @@ EnqueueHoldingPackMax3ReadResponse()
 EnqueueHoldingPackMax3ReadResponse()
 >> 01 03 00 12 00 01 24 0F
 << 01 03 02 00 04 B9 87
+EnqueueHoldingReadS64Response()
+>> 01 03 00 1E 00 04 24 0F
+<< 01 03 08 01 02 03 04 05 06 07 08 65 13
+EnqueueHoldingReadF32Response()
+>> 01 03 00 32 00 02 65 C4
+<< 01 03 04 00 00 00 15 3B FC
+EnqueueHoldingReadU16Response()
+>> 01 03 00 46 00 01 65 DF
+<< 01 03 02 00 15 79 8B
+EnqueueInputReadU16Response()
+>> 01 04 00 28 00 01 B1 C2
+<< 01 04 02 00 66 39 1A
+EnqueueCoilReadResponse()
+>> 01 01 00 00 00 02 BD CB
+<< 01 01 01 02 D0 49
+Enqueue10CoilsMax3ReadResponse()
+>> 01 01 00 48 00 03 FC 1D
+<< 01 01 01 01 90 48
+Enqueue10CoilsMax3ReadResponse()
+>> 01 01 00 4B 00 03 0C 1D
+<< 01 01 01 01 90 48
+Enqueue10CoilsMax3ReadResponse()
+>> 01 01 00 4E 00 03 1C 1C
+<< 01 01 01 01 90 48
+Enqueue10CoilsMax3ReadResponse()
+>> 01 01 00 51 00 01 AC 1B
+<< 01 01 01 01 90 48
+EnqueueDiscreteReadResponse()
+>> 01 02 00 14 00 01 F9 CE
+<< 01 02 01 01 60 48
+EnqueueHoldingSingleMax3ReadResponse()
+>> 01 03 00 5A 00 04 64 1A
+<< 01 03 08 01 01 01 01 01 01 01 01 E8 A6
+EnqueueHoldingSingleMax3ReadResponse()
+>> 01 03 00 5E 00 01 E5 D8
+<< 01 03 02 00 15 79 8B
+EnqueueHoldingMultiMax3ReadResponse()
+>> 01 03 00 5F 00 04 74 1B
+<< 01 03 08 01 01 01 01 01 01 01 01 E8 A6
+EnqueueHoldingMultiMax3ReadResponse()
+>> 01 03 00 63 00 01 74 14
+<< 01 03 02 00 15 79 8B
 Close()
 Unsubscribe -- em-test: /devices/modbus-sample/controls/Holding U16 Single/on
 Publish: /devices/modbus-sample/controls/Holding U16 Single: '' (QoS 1, retained)

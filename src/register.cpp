@@ -5,6 +5,10 @@
 #include <string>
 #include <wblib/utils.h>
 
+#include "log.h"
+
+#define LOG(logger) ::logger.Log() << "[register] "
+
 size_t RegisterFormatByteWidth(RegisterFormat format)
 {
     switch (format) {
@@ -48,15 +52,15 @@ PSerialDevice TRegisterRange::Device() const
     return RegDevice.lock();
 }
 
-void TRegisterRange::SetError(EStatus error)
-{
-    for (auto& r: RegList) {
-        r->SetError(error);
-    }
-}
+TSingleRegisterRange::TSingleRegisterRange(PRegister reg): TRegisterRange(reg)
+{}
 
-bool TRegisterRange::Add(PRegister reg, std::chrono::milliseconds pollLimit)
+bool TSingleRegisterRange::Add(PRegister reg, std::chrono::milliseconds pollLimit)
 {
+    if (RegisterList().empty()) {
+        RegisterList().push_back(reg);
+        return true;
+    }
     return false;
 }
 
@@ -93,31 +97,66 @@ void TRegister::SetAvailable(TRegisterAvailability available)
     Available = available;
 }
 
-EStatus TRegister::GetError() const
-{
-    return Error;
-}
-
-void TRegister::SetError(EStatus error)
-{
-    Error = error;
-}
-
 uint64_t TRegister::GetValue() const
 {
     return Value;
 }
 
-void TRegister::SetValue(uint64_t value)
+void TRegister::SetValue(uint64_t value, bool clearReadError)
 {
+    if (Value != value) {
+        LOG(Debug) << "new val for " << ToString() << ": " << std::hex << value;
+    }
     Value = value;
-    Error = ST_OK;
-    Available = TRegisterAvailability::AVAILABLE;
+    if (UnsupportedValue && (*UnsupportedValue == value)) {
+        SetError(TRegister::TError::ReadError);
+        Available = TRegisterAvailability::UNAVAILABLE;
+    } else {
+        Available = TRegisterAvailability::AVAILABLE;
+    }
+    if (ErrorValue && InvertWordOrderIfNeeded(*this, ErrorValue.value()) == value) {
+        LOG(Debug) << "register " << ToString() << " contains error value";
+        SetError(TError::ReadError);
+    } else {
+        if (clearReadError) {
+            ClearError(TError::ReadError);
+        }
+    }
 }
 
 const std::string& TRegister::GetChannelName() const
 {
     return ChannelName;
+}
+
+void TRegister::SetError(TRegister::TError error)
+{
+    ErrorState.set(error);
+}
+
+void TRegister::ClearError(TRegister::TError error)
+{
+    ErrorState.reset(error);
+}
+
+const TRegister::TErrorState& TRegister::GetErrorState() const
+{
+    return ErrorState;
+}
+
+void TRegister::SetLastPollTime(std::chrono::steady_clock::time_point pollTime)
+{
+    if (!ReadPeriod) {
+        return;
+    }
+    if (LastPollTime.time_since_epoch().count()) {
+        if (std::chrono::duration_cast<std::chrono::milliseconds>(pollTime - LastPollTime) > *ReadPeriod) {
+            SetError(TError::PollIntervalMissError);
+        } else {
+            ClearError(TError::PollIntervalMissError);
+        }
+    }
+    LastPollTime = pollTime;
 }
 
 std::map<std::tuple<PSerialDevice, PRegisterConfig>, PRegister> TRegister::RegStorage;

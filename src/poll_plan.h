@@ -73,9 +73,7 @@ public:
     using TQueue = TPriorityQueueSchedule<TEntry, TComparePredicate>;
     using TItem = typename TQueue::TItem;
 
-    TScheduler(std::chrono::milliseconds maxPollTime, const TQueueSelectionPolicy& queueSelectionPolicy)
-        : QueueSelectionPolicy(queueSelectionPolicy),
-          MaxPollTime(maxPollTime)
+    TScheduler(const TQueueSelectionPolicy& queueSelectionPolicy): QueueSelectionPolicy(queueSelectionPolicy)
     {}
 
     void AddEntry(TEntry entry, std::chrono::steady_clock::time_point nextPollTime, TPriority priority)
@@ -98,7 +96,9 @@ public:
         if (HighPriorityQueue.HasReadyItems(time) &&
             (!QueueSelectionPolicy.ShouldSelectLowPriority(time) || !LowPriorityQueue.HasReadyItems(time)))
         {
-            while (HighPriorityQueue.HasReadyItems(time) && accumulator(HighPriorityQueue.GetTop().Data, MaxPollTime)) {
+            while (HighPriorityQueue.HasReadyItems(time) &&
+                   accumulator(HighPriorityQueue.GetTop().Data, std::chrono::milliseconds::max()))
+            {
                 HighPriorityQueue.Pop();
                 QueueSelectionPolicy.SelectQueue(time, TPriority::High);
             }
@@ -117,18 +117,17 @@ private:
     TQueue LowPriorityQueue;
     TQueue HighPriorityQueue;
     TQueueSelectionPolicy QueueSelectionPolicy;
-    std::chrono::milliseconds MaxPollTime;
 
     std::chrono::milliseconds GetLowPriorityPollLimit(std::chrono::steady_clock::time_point time) const
     {
         if (HighPriorityQueue.IsEmpty()) {
-            return MaxPollTime;
+            return std::chrono::milliseconds::max();
         }
         auto delta = std::chrono::duration_cast<std::chrono::milliseconds>(HighPriorityQueue.GetNextPollTime() - time);
         if (delta > std::chrono::milliseconds(0)) {
-            return std::min(MaxPollTime, delta);
+            return delta;
         }
-        return std::min(MaxPollTime, QueueSelectionPolicy.GetLowPriorityLag());
+        return QueueSelectionPolicy.GetLowPriorityLag();
     }
 };
 

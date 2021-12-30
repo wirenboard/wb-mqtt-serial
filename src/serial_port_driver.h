@@ -27,17 +27,19 @@ struct TDeviceChannel: public TDeviceChannelConfig
         return "channel '" + name + "' of device '" + DeviceId + "'";
     }
 
-    void UpdateError(WBMQTT::TDeviceDriver& deviceDriver, const std::string& error);
-    void UpdateValue(WBMQTT::TDeviceDriver& deviceDriver,
-                     const WBMQTT::TPublishParameters& publishPolicy,
-                     const std::string& error);
+    void UpdateValueAndError(WBMQTT::TDeviceDriver& deviceDriver, const WBMQTT::TPublishParameters& publishPolicy);
+    void UpdateError(WBMQTT::TDeviceDriver& deviceDriver);
+
+    bool HasValuesOfAllRegisters() const;
 
     PSerialDevice Device;
     std::vector<PRegister> Registers;
     WBMQTT::PControl Control;
 
 private:
-    void PublishValue(WBMQTT::TDeviceDriver& deviceDriver, const std::string& value);
+    std::string GetTextValue() const;
+    std::string GetErrorText() const;
+    void PublishValueAndError(WBMQTT::TDeviceDriver& deviceDriver, const std::string& value, const std::string& error);
     /* Current value of a channel, error flag and last update time.
        They are used to prevent unnecessary calls to libwbmqtt1.
        Although libwbmqtt1 implements publishing control with TPublishParams,
@@ -45,22 +47,11 @@ private:
        So we implement publish control logic in wb-mqtt-serial until libwbmqtt1 is fixed.
     */
     std::string CachedCurrentValue;
-    std::string CachedErrorFlg;
+    std::string CachedErrorText;
     std::chrono::steady_clock::time_point LastControlUpdate;
 };
 
 typedef std::shared_ptr<TDeviceChannel> PDeviceChannel;
-
-struct TDeviceChannelState
-{
-    TDeviceChannelState(const PDeviceChannel& channel, TRegisterHandler::TErrorState error)
-        : Channel(channel),
-          ErrorState(error)
-    {}
-
-    PDeviceChannel Channel;
-    TRegisterHandler::TErrorState ErrorState;
-};
 
 class TSerialPortDriver: public std::enable_shared_from_this<TSerialPortDriver>
 {
@@ -83,9 +74,8 @@ private:
     WBMQTT::TControlArgs From(const PDeviceChannel& channel);
 
     void SetValueToChannel(const PDeviceChannel& channel, const std::string& value);
-    void OnValueRead(PRegister reg, bool changed);
-    TRegisterHandler::TErrorState RegErrorState(PRegister reg);
-    void UpdateError(PRegister reg, TRegisterHandler::TErrorState errorState);
+    void OnValueRead(PRegister reg);
+    void UpdateError(PRegister reg);
 
     WBMQTT::PDeviceDriver MqttDriver;
     PPortConfig Config;
@@ -94,7 +84,7 @@ private:
     std::string Description;
     WBMQTT::TPublishParameters PublishPolicy;
 
-    std::unordered_map<PRegister, TDeviceChannelState> RegisterToChannelStateMap;
+    std::unordered_map<PRegister, PDeviceChannel> RegisterToChannelMap;
 };
 
 typedef std::shared_ptr<TSerialPortDriver> PSerialPortDriver;

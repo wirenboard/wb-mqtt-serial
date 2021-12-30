@@ -183,9 +183,6 @@ public:
     // Ends communication session with the device. Called before communicating with another device
     virtual void EndSession();
 
-    // Read register value
-    void ReadRegister(PRegister reg);
-
     // Write register value
     void WriteRegister(PRegister reg, uint64_t value);
 

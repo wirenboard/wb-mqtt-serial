@@ -675,12 +675,7 @@ namespace Modbus // modbus protocol common utilities
                 bitWidth -= bitCount;
                 bitsWritten += bitCount;
             }
-            if ((reg->UnsupportedValue) && (*reg->UnsupportedValue == r)) {
-                reg->SetError(ST_DEVICE_ERROR);
-                reg->SetAvailable(TRegisterAvailability::UNAVAILABLE);
-            } else {
-                reg->SetValue(r);
-            }
+            reg->SetValue(r);
         }
     }
 
@@ -803,10 +798,10 @@ namespace Modbus // modbus protocol common utilities
         }
     }
 
-    void ProcessRangeException(TModbusRegisterRange& range, const char* msg, EStatus error)
+    void ProcessRangeException(TModbusRegisterRange& range, const char* msg)
     {
         for (auto& reg: range.RegisterList()) {
-            reg->SetError(error);
+            reg->SetError(TRegister::TError::ReadError);
         }
 
         auto& logger = range.Device()->GetIsDisconnected() ? Debug : Warn;
@@ -832,9 +827,9 @@ namespace Modbus // modbus protocol common utilities
             for (auto& reg: modbus_range->RegisterList()) {
                 reg->SetAvailable(TRegisterAvailability::UNAVAILABLE);
             }
-            ProcessRangeException(*modbus_range, e.what(), ST_DEVICE_ERROR);
+            ProcessRangeException(*modbus_range, e.what());
         } catch (const TSerialDeviceException& e) {
-            ProcessRangeException(*modbus_range, e.what(), ST_UNKNOWN_ERROR);
+            ProcessRangeException(*modbus_range, e.what());
         }
     }
 
