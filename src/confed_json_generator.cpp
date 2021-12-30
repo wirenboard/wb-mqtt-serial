@@ -88,13 +88,13 @@ namespace
         return std::make_pair(channels, customChannels);
     }
 
-    Json::Value MakeDeviceForConfed(const Json::Value& config, ITemplateMap& deviceTemplates, bool isSubdevice);
+    Json::Value MakeSubDeviceForConfed(const Json::Value& config, TSubDevicesTemplateMap& subDeviceTemplates);
 
-    void MakeDevicesForConfed(Json::Value& devices, ITemplateMap& templates, bool isSubdevice)
+    void MakeSubDevicesForConfed(Json::Value& devices, TSubDevicesTemplateMap& subDeviceTemplates)
     {
         for (Json::Value& device: devices) {
             if (device.isMember("device_type")) {
-                device = MakeDeviceForConfed(device, templates, isSubdevice);
+                device = MakeSubDeviceForConfed(device, subDeviceTemplates);
             }
         }
     }
@@ -159,7 +159,7 @@ namespace
         for (const auto& group: schema["groups"]) {
             Json::Value item;
             item["name"] = group["title"];
-            item["device_type"] = group["title"];
+            item["device_type"] = group["id"];
             channelsFromGroups.emplace(group["id"].asString(), item);
         }
 
@@ -177,6 +177,62 @@ namespace
         } else {
             config["channels"].swap(channelsNotInGroups);
         }
+    }
+
+    //  Subdevice
+    //  {
+    //      "name": ...
+    //      "device_type": CT,
+    //      "parameter1": PARAMETER1_VALUE,
+    //      ...,
+    //      "setup": [ ... ],
+    //      "channels": [ ... ]
+    //  }
+    //           ||
+    //           \/
+    //  {
+    //      "name": ...,
+    //      "s_CT_HASH": {
+    //          "parameter1": PARAMETER1_VALUE,
+    //          ...,
+    //          "setup": [ ... ],
+    //          "channels": [ ... ],
+    //          "standard_channels": [ ... ]
+    //      }
+    //  }
+
+    Json::Value MakeSubDeviceForConfed(const Json::Value& config, TSubDevicesTemplateMap& subDeviceTemplates)
+    {
+        auto dt = config["device_type"].asString();
+        auto deviceTemplate = subDeviceTemplates.GetTemplate(dt);
+        Json::Value schema(deviceTemplate.Schema);
+        Json::Value newDev(config);
+        JoinChannelsToGroups(newDev, schema);
+        newDev.removeMember("device_type");
+
+        auto newSubdevices = Json::Value(Json::arrayValue);
+        TransformGroupsToSubdevices(schema, newSubdevices);
+        subDeviceTemplates.AddSubdevices(newSubdevices);
+
+        Json::Value customChannels;
+        Json::Value standardChannels;
+        std::tie(standardChannels, customChannels) = SplitChannels(newDev, schema);
+        newDev.removeMember("channels");
+        if (!customChannels.empty()) {
+            newDev["channels"] = customChannels;
+        }
+        if (!standardChannels.empty()) {
+            MakeSubDevicesForConfed(standardChannels, subDeviceTemplates);
+            newDev["standard_channels"] = standardChannels;
+        }
+
+        Json::Value res;
+        if (newDev.isMember("name")) {
+            res["name"] = newDev["name"];
+            newDev.removeMember("name");
+        }
+        res[GetSubdeviceKey(dt)] = newDev;
+        return res;
     }
 
     //  Top level device
@@ -205,29 +261,7 @@ namespace
     //      }
     //  }
 
-    //  Subdevice
-    //  {
-    //      "name": ...
-    //      "device_type": CT,
-    //      "parameter1": PARAMETER1_VALUE,
-    //      ...,
-    //      "setup": [ ... ],
-    //      "channels": [ ... ]
-    //  }
-    //           ||
-    //           \/
-    //  {
-    //      "name": ...,
-    //      "s_CT_HASH": {
-    //          "parameter1": PARAMETER1_VALUE,
-    //          ...,
-    //          "setup": [ ... ],
-    //          "channels": [ ... ],
-    //          "standard_channels": [ ... ]
-    //      }
-    //  }
-
-    Json::Value MakeDeviceForConfed(const Json::Value& config, ITemplateMap& deviceTemplates, bool isSubdevice)
+    Json::Value MakeDeviceForConfed(const Json::Value& config, ITemplateMap& deviceTemplates)
     {
         auto dt = config["device_type"].asString();
         auto deviceTemplate = deviceTemplates.GetTemplate(dt);
@@ -250,42 +284,29 @@ namespace
             newDev["channels"] = customChannels;
         }
         if (!standardChannels.empty()) {
-            if (isSubdevice) {
-                MakeDevicesForConfed(standardChannels, deviceTemplates, true);
-            } else {
-                TSubDevicesTemplateMap subDeviceTemplates(deviceTemplate.Type, schema);
-                MakeDevicesForConfed(standardChannels, subDeviceTemplates, true);
-            }
+            TSubDevicesTemplateMap subDeviceTemplates(deviceTemplate.Type, schema);
+            MakeSubDevicesForConfed(standardChannels, subDeviceTemplates);
             newDev["standard_channels"] = standardChannels;
         }
 
         Json::Value res;
-        if (isSubdevice) {
-            if (newDev.isMember("name")) {
-                res["name"] = newDev["name"];
-                newDev.removeMember("name");
-            }
-            res[GetSubdeviceKey(dt)] = newDev;
-        } else {
-            // Old configs could have slave_id defined as number not as string.
-            // To not confuse users convert numbers to strings and show only string editor for slave_id.
-            if (newDev.isMember("slave_id") && newDev["slave_id"].isNumeric()) {
-                newDev["slave_id"] = newDev["slave_id"].asString();
-            }
-            if (!newDev.isMember("slave_id") ||
-                (newDev["slave_id"].isString() && newDev["slave_id"].asString().empty())) {
-                newDev["slave_id"] = false;
-            }
-            if ((schema.isMember("parameters"))) {
-                for (auto it = schema["parameters"].begin(); it != schema["parameters"].end(); ++it) {
-                    if (newDev.isMember(it.name())) {
-                        newDev["parameters"][it.name()] = newDev[it.name()];
-                        newDev.removeMember(it.name());
-                    }
+        // Old configs could have slave_id defined as number not as string.
+        // To not confuse users convert numbers to strings and show only string editor for slave_id.
+        if (newDev.isMember("slave_id") && newDev["slave_id"].isNumeric()) {
+            newDev["slave_id"] = newDev["slave_id"].asString();
+        }
+        if (!newDev.isMember("slave_id") || (newDev["slave_id"].isString() && newDev["slave_id"].asString().empty())) {
+            newDev["slave_id"] = false;
+        }
+        if ((schema.isMember("parameters"))) {
+            for (auto it = schema["parameters"].begin(); it != schema["parameters"].end(); ++it) {
+                if (newDev.isMember(it.name())) {
+                    newDev["parameters"][it.name()] = newDev[it.name()];
+                    newDev.removeMember(it.name());
                 }
             }
-            res[GetDeviceKey(dt)] = newDev;
         }
+        res[GetDeviceKey(dt)] = newDev;
         return res;
     }
 }
@@ -302,7 +323,7 @@ Json::Value MakeJsonForConfed(const std::string& configFileName,
     for (Json::Value& port: root["ports"]) {
         for (Json::Value& device: port["devices"]) {
             if (device.isMember("device_type")) {
-                device = MakeDeviceForConfed(device, templates, false);
+                device = MakeDeviceForConfed(device, templates);
             }
         }
     }

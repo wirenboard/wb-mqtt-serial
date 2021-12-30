@@ -9,6 +9,7 @@ Json::Value FilterStandardChannels(const Json::Value& device,
                                    const Json::Value& deviceTemplate,
                                    ITemplateMap& templates,
                                    const std::unordered_map<std::string, std::string>& subdeviceTypeHashes);
+void ExpandGroupChannels(Json::Value& device, const Json::Value& deviceTemplate);
 
 bool RemoveDeviceHash(Json::Value& device, const std::unordered_map<std::string, std::string>& deviceTypeHashes)
 {
@@ -42,12 +43,12 @@ bool TryToTransformSubDeviceChannel(Json::Value& channel,
     } else {
         channel["channels"].swap(filteredChannels);
     }
+
+    ExpandGroupChannels(channel, deviceTemplate);
+
     if (channel["channels"].empty()) {
         channel.removeMember("channels");
     }
-
-    AppendParams(channel, channel["parameters"]);
-    channel.removeMember("parameters");
 
     return true;
 }
@@ -154,6 +155,13 @@ Json::Value MakeConfigFromConfed(std::istream& stream, TTemplateMap& templates)
                 auto dt = device["device_type"].asString();
 
                 Json::Value deviceTemplate(templates.GetTemplate(dt).Schema);
+                Json::Value subdevicesFromGroups(Json::arrayValue);
+                for (auto& subdeviceSchema: deviceTemplate["subdevices"]) {
+                    TransformGroupsToSubdevices(subdeviceSchema["device"], subdevicesFromGroups);
+                }
+                for (auto& subdeviceSchema: subdevicesFromGroups) {
+                    deviceTemplate["subdevices"].append(subdeviceSchema);
+                }
                 TransformGroupsToSubdevices(deviceTemplate, deviceTemplate["subdevices"]);
                 TSubDevicesTemplateMap subdevices(dt, deviceTemplate);
                 std::unordered_map<std::string, std::string> subdeviceTypeHashes;
