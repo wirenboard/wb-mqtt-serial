@@ -143,15 +143,9 @@ Json::Value MakeConfigFromConfed(std::istream& stream, TTemplateMap& templates)
         throw std::runtime_error("Failed to parse JSON:" + errs);
     }
 
-    std::unordered_map<std::string, std::string> deviceTypeHashes;
-    for (const auto& dt: templates.GetDeviceTypes()) {
-        deviceTypeHashes[GetDeviceKey(dt)] = dt;
-    }
-
     for (Json::Value& port: root["ports"]) {
         for (Json::Value& device: port["devices"]) {
-
-            if (RemoveDeviceHash(device, deviceTypeHashes)) {
+            if (device.isMember("device_type")) {
                 auto dt = device["device_type"].asString();
 
                 Json::Value deviceTemplate(templates.GetTemplate(dt).Schema);

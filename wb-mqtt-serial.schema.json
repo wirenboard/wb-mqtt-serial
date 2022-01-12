@@ -57,10 +57,13 @@
           "options": {
             "array_controls_top": true,
             "disable_array_delete_last_row": true,
+            "disable_array_reorder": true,
+            "disable_collapse": true,
             "wb": {
               "disable_panel": true
             }
-          }
+          },
+          "_format": "collapsible-list"
         }
       }
     },
@@ -250,7 +253,8 @@
         "keep_oneof_values": false,
         "disable_collapse" : true,
         "disable_edit_json": true
-      }
+      },
+      "_format": "wb-multiple"
     },
     "slave_id_ui": {
       "properties": {
@@ -481,9 +485,9 @@
         }
       },
       "options": {
-        "disable_collapse": true,
-        "disable_edit_json": true,
-        "disable_properties": true
+        "wb": {
+          "disable_title": true
+        }
       },
       "_format": "grid",
       "required": ["address", "value"]
@@ -700,7 +704,15 @@
           "items": { "$ref": "#/definitions/subreg" },
           "minItems": 1,
           "_format": "table",
-          "propertyOrder": 6
+          "propertyOrder": 6,
+          "options": {
+            "disable_collapse": true,
+            "wb": {
+              "disable_panel": true
+            },
+            "disable_array_delete_last_row": true,
+            "array_controls_top": true
+          }
         },
         "poll_interval": {
           "type": "integer",
@@ -726,8 +738,13 @@
         { "$ref": "#/definitions/compoundRegisterChannel" }
       ],
       "options": {
-        "keep_oneof_values": false
-      }
+        "keep_oneof_values": false,
+        "wb": {
+          "disable_panel": true
+        },
+        "disable_collapse": true
+      },
+      "_format": "wb-multiple"
     },
     "channelSettings": {
       "type": "object",
@@ -976,7 +993,13 @@
       "allOf": [
         { "$ref": "#/definitions/register_channel_common"},
         { "$ref": "#/definitions/dlms_address" }
-      ]
+      ],
+      "_format": "wb-object",
+      "options" : {
+        "wb": {
+          "disable_panel": true
+        }
+      }
     },
     "dlms_channels": {
       "properties": {
@@ -1107,7 +1130,13 @@
       "allOf": [
         { "$ref": "#/definitions/register_channel_common"},
         { "$ref": "#/definitions/string_address" }
-      ]
+      ],
+      "_format": "wb-object",
+      "options" : {
+        "wb": {
+          "disable_panel": true
+        }
+      }
     },
     "channels_with_string_addresses": {
       "properties": {
@@ -1219,7 +1248,7 @@
 
     "device": {
       "title": "Device",
-      "headerTemplate": "",
+      "headerTemplate": "{{self.name}} {{self.slave_id}}",
       "oneOf": [
         {
           "title": "Custom DLMS device",
@@ -1510,12 +1539,12 @@
       ],
       "options": {
         "disable_edit_json": true,
-        "disable_collapse": true,
         "keep_oneof_values": false,
         "wb": {
           "disable_panel": true
         }
-      }
+      },
+      "_format": "wb-multiple"
     }
 
   },
@@ -1537,7 +1566,8 @@
       "propertyOrder": 2,
       "options" : {
           "disable_collapse" : true,
-          "disable_array_delete_last_row": true
+          "disable_array_delete_last_row": true,
+          "disable_array_reorder": true
       }
     },
     "max_unchanged_interval" : {

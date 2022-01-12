@@ -535,34 +535,25 @@ namespace
     //  {
     //      "type": "object",
     //      "title": DEVICE_TITLE_HASH,
-    //      "required": ["DEVICE_HASH"],
     //      "options": {
+    //          "disable_edit_json": true,
+    //          "compact": true,
     //          "wb": {
-    //              "disable_title": true
+    //              "disable_panel": true
     //          }
     //      },
+    //      "allOf": [
+    //          { "$ref": PROTOCOL_PARAMETERS },
+    //          { HIDDEN_PROTOCOL }
+    //      ],
     //      "properties": {
-    //          "DEVICE_HASH": {
-    //              "type": "object",
-    //              "options": {
-    //                  "disable_edit_json": true,
-    //                  "compact": true,
-    //                  "wb": {
-    //                      "disable_panel": true
-    //                  }
-    //              },
-    //              "allOf": [
-    //                  { "$ref": PROTOCOL_PARAMETERS },
-    //                  { HIDDEN_PROTOCOL }
-    //              ],
-    //              "properties": {
-    //                  "standard_channels": STANDARD_CHANNELS_SCHEMA,
-    //                  "parameters": PARAMETERS_SCHEMA
-    //              },
-    //              "defaultProperties": ["slave_id", "standard_channels", "parameters"],
-    //              "required": ["slave_id"]
-    //          }
-    //      }
+    //          "device_type": DEVICE_TYPE,
+    //          "standard_channels": STANDARD_CHANNELS_SCHEMA,
+    //          "parameters": PARAMETERS_SCHEMA
+    //      },
+    //      "defaultProperties": ["device_type", "slave_id", "standard_channels", "parameters"],
+    //      "required": ["device_type", "slave_id"]
+    //  }
     void AddDeviceUISchema(const TDeviceTemplate& deviceTemplate,
                            TSerialDeviceFactory& deviceFactory,
                            Json::Value& devicesArray,
@@ -582,41 +573,34 @@ namespace
         }
         TransformGroupsToSubdevices(schema, schema["subdevices"]);
 
-        auto set = GetDeviceKey(deviceTemplate.Type);
         TContext context{deviceTemplate.Type, translations};
         auto& res = Append(devicesArray);
+
         res["type"] = "object";
         res["title"] = context.AddHashedTranslation(deviceTemplate.Title);
-        MakeArray("required", res).append(set);
+        res["properties"]["device_type"] = MakeHiddenProperty(deviceTemplate.Type);
+        MakeArray("required", res).append("device_type");
 
-        res["options"]["wb"]["disable_title"] = true;
-
-        Json::Value& pr = res["properties"][set];
-
-        pr["type"] = "object";
-        pr["options"]["disable_edit_json"] = true;
-        pr["options"]["compact"] = true;
-        pr["options"]["wb"]["disable_panel"] = true;
-
-        auto& allOf = MakeArray("allOf", pr);
+        auto& allOf = MakeArray("allOf", res);
         auto protocol = GetProtocolName(schema);
         Append(allOf)["$ref"] = deviceFactory.GetCommonDeviceSchemaRef(protocol);
         allOf.append(MakeProtocolProperty());
 
         if (!deviceFactory.GetProtocol(protocol)->SupportsBroadcast()) {
-            MakeArray("required", pr).append("slave_id");
+            res["required"].append("slave_id");
         }
 
-        auto& defaultProperties = MakeArray("defaultProperties", pr);
+        auto& defaultProperties = MakeArray("defaultProperties", res);
         defaultProperties.append("slave_id");
+        defaultProperties.append("device_type");
 
         if (schema.isMember("channels")) {
-            pr["properties"]["standard_channels"] =
+            res["properties"]["standard_channels"] =
                 MakeChannelsSchema(schema, DEVICE_PARAMETERS_PROPERTY_ORDER + 1, "Channels", context, true);
             defaultProperties.append("standard_channels");
         }
         if (schema.isMember("parameters") && !schema["parameters"].empty()) {
-            pr["properties"]["parameters"] = MakeDeviceSettingsUI(schema, DEVICE_PARAMETERS_PROPERTY_ORDER, context);
+            res["properties"]["parameters"] = MakeDeviceSettingsUI(schema, DEVICE_PARAMETERS_PROPERTY_ORDER, context);
             defaultProperties.append("parameters");
         }
 

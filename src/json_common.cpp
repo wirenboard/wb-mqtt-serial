@@ -17,7 +17,7 @@ Json::Value MakeObject(const std::string& key, const std::string& value)
     return res;
 }
 
-Json::Value MakeSingleValuePropery(const std::string& value)
+Json::Value MakeSingleValueProperty(const std::string& value)
 {
     Json::Value res;
     res["type"] = "string";

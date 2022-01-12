@@ -1,3 +1,10 @@
+wb-mqtt-serial (2.46.0) stable; urgency=medium
+
+  * "Collapse all items" button in config editor is added
+  * Buttons in array item editors are placed on top
+
+ -- Petr Krasnoshchekov <petr.krasnoshchekov@wirenboard.ru>  Mon, 17 Jan 2022 10:03:14 +0500
+
 wb-mqtt-serial (2.45.0) stable; urgency=medium
 
   * Wiren Board 7 support (default config file is added)
