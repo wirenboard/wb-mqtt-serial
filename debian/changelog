@@ -1,8 +1,58 @@
-wb-mqtt-serial (2.43.3) stable; urgency=medium
+wb-mqtt-serial (2.46.1) stable; urgency=medium
 
   * WB-MRWM2 template was added
 
- -- Dmitry Vorobjev <d.vorobjev@wirenboard.ru>  Wed, 01 Dec 2021 16:59:43 +0300
+ -- Dmitry Vorobjev <d.vorobjev@wirenboard.ru>  Tue, 18 Jan 2022 10:40:00 +0300
+
+wb-mqtt-serial (2.46.0) stable; urgency=medium
+
+  * "Collapse all items" button in config editor is added
+  * Buttons in array item editors are placed on top
+
+ -- Petr Krasnoshchekov <petr.krasnoshchekov@wirenboard.ru>  Mon, 17 Jan 2022 10:03:14 +0500
+
+wb-mqtt-serial (2.45.0) stable; urgency=medium
+
+  * Wiren Board 7 support (default config file is added)
+
+ -- Nikita Maslov <nikita.maslov@wirenboard.ru>  Mon, 10 Jan 2022 13:11:42 +0300
+
+wb-mqtt-serial (2.44.1) stable; urgency=medium
+
+  * WB-MRGBW-D fw3 template is added
+
+ -- Pavel Gasheev <pavel.gasheev@wirenboard.ru>  Thu, 30 Dec 2021 13:26:48 +0300
+
+wb-mqtt-serial (2.44.0) stable; urgency=medium
+
+  * Support for groups in subdevices is added
+
+ -- Petr Krasnoshchekov <petr.krasnoshchekov@wirenboard.ru>  Thu, 30 Dec 2021 14:56:21 +0500
+
+wb-mqtt-serial (2.43.6) stable; urgency=medium
+
+  * Number editor in web-interface for slave_id is removed.
+    Number values in config are converted into string.
+
+ -- Petr Krasnoshchekov <petr.krasnoshchekov@wirenboard.ru>  Wed, 29 Dec 2021 10:29:38 +0500
+
+wb-mqtt-serial (2.43.5) stable; urgency=medium
+
+  * Device template backward compatibility test is added.
+
+ -- Petr Krasnoshchekov <petr.krasnoshchekov@wirenboard.ru>  Wed, 29 Dec 2021 10:11:21 +0500
+
+wb-mqtt-serial (2.43.4) stable; urgency=medium
+
+  * Random hangs on boot are fixed
+
+ -- Nikita Maslov <nikita.maslov@wirenboard.ru>  Tue, 21 Dec 2021 18:02:07 +0300
+
+wb-mqtt-serial (2.43.3) stable; urgency=medium
+
+  * Cityron ПУ-3 template was added
+
+ -- Dmitry Vorobjev <d.vorobjev@wirenboard.ru>  Thu, 16 Dec 2021 10:03:59 +0300
 
 wb-mqtt-serial (2.43.2) stable; urgency=medium
 

@@ -15,4 +15,4 @@ Json::Value& Append(Json::Value& array);
 //      "type": "string",
 //      "enum": [ value ]
 //  }
-Json::Value MakeSingleValuePropery(const std::string& value);
+Json::Value MakeSingleValueProperty(const std::string& value);

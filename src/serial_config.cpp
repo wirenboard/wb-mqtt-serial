@@ -694,27 +694,30 @@ std::string TTemplateMap::GetDeviceType(const std::string& templatePath) const
 
 void TTemplateMap::AddTemplatesDir(const std::string& templatesDir, bool passInvalidTemplates)
 {
-    IterateDir(templatesDir, [&](const std::string& fname) {
-        if (!EndsWith(fname, ".json")) {
-            return false;
-        }
-        std::string filepath = templatesDir + "/" + fname;
-        struct stat filestat;
-        if (stat(filepath.c_str(), &filestat) || S_ISDIR(filestat.st_mode)) {
-            return false;
-        }
-        try {
-            Json::Value root = WBMQTT::JSON::Parse(filepath);
-            TemplateFiles[root["device_type"].asString()] = filepath;
-        } catch (const std::exception& e) {
-            if (passInvalidTemplates) {
-                LOG(Error) << "Failed to parse " << filepath << "\n" << e.what();
+    IterateDirByPattern(
+        templatesDir,
+        ".json",
+        [&](const std::string& filepath) {
+            if (!EndsWith(filepath, ".json")) {
                 return false;
             }
-            throw;
-        }
-        return false;
-    });
+            struct stat filestat;
+            if (stat(filepath.c_str(), &filestat) || S_ISDIR(filestat.st_mode)) {
+                return false;
+            }
+            try {
+                Json::Value root = WBMQTT::JSON::Parse(filepath);
+                TemplateFiles[root["device_type"].asString()] = filepath;
+            } catch (const std::exception& e) {
+                if (passInvalidTemplates) {
+                    LOG(Error) << "Failed to parse " << filepath << "\n" << e.what();
+                    return false;
+                }
+                throw;
+            }
+            return false;
+        },
+        true);
 }
 
 Json::Value TTemplateMap::Validate(const std::string& deviceType, const std::string& filePath)
@@ -789,16 +792,7 @@ TSubDevicesTemplateMap::TSubDevicesTemplateMap(const std::string& deviceType, co
     : DeviceType(deviceType)
 {
     if (device.isMember("subdevices")) {
-        for (auto& dev: device["subdevices"]) {
-            auto deviceType = dev["device_type"].asString();
-            if (Templates.count(deviceType)) {
-                LOG(Warn) << "Device type '" << DeviceType << "'. Duplicate subdevice type '" << deviceType << "'";
-            } else {
-                auto deviceTypeTitle = deviceType;
-                Get(dev, "title", deviceTypeTitle);
-                Templates.insert({deviceType, {deviceType, deviceTypeTitle, dev["device"]}});
-            }
-        }
+        AddSubdevices(device["subdevices"]);
 
         // Check that channels refer to valid subdevices
         for (const auto& subdeviceTemplate: Templates) {
@@ -812,6 +806,20 @@ TSubDevicesTemplateMap::TSubDevicesTemplateMap(const std::string& deviceType, co
                     }
                 }
             }
+        }
+    }
+}
+
+void TSubDevicesTemplateMap::AddSubdevices(const Json::Value& subdevicesArray)
+{
+    for (auto& dev: subdevicesArray) {
+        auto deviceType = dev["device_type"].asString();
+        if (Templates.count(deviceType)) {
+            LOG(Warn) << "Device type '" << DeviceType << "'. Duplicate subdevice type '" << deviceType << "'";
+        } else {
+            auto deviceTypeTitle = deviceType;
+            Get(dev, "title", deviceTypeTitle);
+            Templates.insert({deviceType, {deviceType, deviceTypeTitle, dev["device"]}});
         }
     }
 }

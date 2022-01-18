@@ -149,6 +149,10 @@
         "subdevices": {
           "type": "array",
           "items": { "$ref": "#/definitions/subdevice" }
+        },
+        "groups":{
+          "type": "array",
+          "items": { "$ref": "#/definitions/group" }
         }
       }
     },
@@ -162,32 +166,6 @@
       },
       "additionalProperties": false,
       "required": ["device_type", "device"]
-    },
-
-    "modbus_device_template": {
-      "allOf": [
-        { "$ref": "#/definitions/deviceProperties" },
-        { "$ref": "#/definitions/subdevice_device" },
-        { "$ref": "#/definitions/groups" },
-        {
-          "anyOf": [
-            {
-              "not": {
-                "required": ["protocol"]
-              }
-            },
-            {
-              "properties": {
-                "protocol": {
-                  "type": "string",
-                  "enum": ["modbus",  "modbus_io"]
-                }
-              },
-              "required": ["protocol"]
-            }
-          ]
-        }
-      ]
     }
   },
 
@@ -225,10 +203,10 @@
             "protocol": {
               "type": "string",
               "enum": ["uniel", "s2k"]
-            }
+            },
+            "parameters": { "not" : {} },
+            "subdevices": { "not" : {} }
           },
-          "parameters": { "not" : {} },
-          "subdevices": { "not" : {} },
           "required": ["protocol"]
         },
 
@@ -274,7 +252,8 @@
             { "$ref": "#/definitions/deviceProperties" },
             { "$ref": "#/definitions/no_setup" },
             { "$ref": "#/definitions/common_channels" },
-            { "$ref": "#/definitions/somfy_device_properties" }
+            { "$ref": "#/definitions/somfy_device_properties" },
+            { "$ref": "#/definitions/groups" }
           ],
           "properties": {
             "protocol": {
@@ -308,8 +287,7 @@
               ]
             },
             { "$ref": "#/definitions/deviceProperties" },
-            { "$ref": "#/definitions/subdevice_device" },
-            { "$ref": "#/definitions/groups" }
+            { "$ref": "#/definitions/subdevice_device" }
           ]
         }
       ]

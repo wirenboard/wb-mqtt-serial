@@ -88,6 +88,9 @@ void Metrics::TPollIntervalMetric::Poll(steady_clock::time_point time)
                 IntervalStartTime += ((time - IntervalStartTime) / IntervalDuration) * IntervalDuration;
             }
         }
+        if (Intervals.empty()) {
+            Intervals.emplace_front();
+        }
         AddIntervals(Intervals.front(), duration_cast<milliseconds>(time - LastPoll), 1);
         LastPoll = time;
     }
