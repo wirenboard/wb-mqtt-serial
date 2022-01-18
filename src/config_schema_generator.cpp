@@ -39,7 +39,7 @@ namespace
     {
         Json::Value r;
         MakeArray("allOf", r).append(MakeObject("$ref", "#/definitions/channelSettings"));
-        r["properties"]["name"] = MakeSingleValuePropery(channelTemplate["name"].asString());
+        r["properties"]["name"] = MakeSingleValueProperty(channelTemplate["name"].asString());
         MakeArray("required", r).append("name");
         return r;
     }
@@ -69,14 +69,14 @@ namespace
     Json::Value MakeTabOneOfChannelSchema(const Json::Value& channelTemplate, const std::string& deviceType)
     {
         Json::Value r;
-        r["properties"]["name"] = MakeSingleValuePropery(channelTemplate["name"].asString());
+        r["properties"]["name"] = MakeSingleValueProperty(channelTemplate["name"].asString());
         MakeArray("required", r).append("name");
 
         auto& items = MakeArray("oneOf", r);
         for (const auto& subDeviceName: channelTemplate["oneOf"]) {
             auto name(subDeviceName.asString());
             Json::Value i;
-            i["properties"]["device_type"] = MakeSingleValuePropery(name);
+            i["properties"]["device_type"] = MakeSingleValueProperty(name);
             MakeArray("required", i).append("device_type");
             MakeArray("allOf", i)
                 .append(MakeObject("$ref", "#/definitions/" + GetSubdeviceSchemaKey(deviceType, name)));
@@ -103,7 +103,7 @@ namespace
             .append(MakeObject("$ref",
                                "#/definitions/" +
                                    GetSubdeviceSchemaKey(deviceType, channelTemplate["device_type"].asString())));
-        r["properties"]["name"] = MakeSingleValuePropery(channelTemplate["name"].asString());
+        r["properties"]["name"] = MakeSingleValueProperty(channelTemplate["name"].asString());
         MakeArray("required", r).append("name");
         return r;
     }
@@ -237,7 +237,7 @@ namespace
     {
         Json::Value res;
         res["type"] = "object";
-        res["properties"]["device_type"] = MakeSingleValuePropery(subDeviceType);
+        res["properties"]["device_type"] = MakeSingleValueProperty(subDeviceType);
 
         if (subdeviceTemplate.Schema.isMember("parameters")) {
             Json::Value req(Json::arrayValue);
@@ -290,7 +290,7 @@ namespace
             req.append("slave_id");
         }
 
-        res["properties"]["device_type"] = MakeSingleValuePropery(deviceTemplate.Type);
+        res["properties"]["device_type"] = MakeSingleValueProperty(deviceTemplate.Type);
 
         if (deviceTemplate.Schema.isMember("parameters")) {
             MakeDeviceParametersSchema(res["properties"], req, deviceTemplate.Schema);

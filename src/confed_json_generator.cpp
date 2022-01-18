@@ -272,7 +272,6 @@ namespace
 
         Json::Value newDev(config);
         JoinChannelsToGroups(newDev, schema);
-        newDev.removeMember("device_type");
 
         TransformGroupsToSubdevices(schema, schema["subdevices"]);
 
@@ -289,7 +288,6 @@ namespace
             newDev["standard_channels"] = standardChannels;
         }
 
-        Json::Value res;
         // Old configs could have slave_id defined as number not as string.
         // To not confuse users convert numbers to strings and show only string editor for slave_id.
         if (newDev.isMember("slave_id") && newDev["slave_id"].isNumeric()) {
@@ -306,8 +304,7 @@ namespace
                 }
             }
         }
-        res[GetDeviceKey(dt)] = newDev;
-        return res;
+        return newDev;
     }
 }
 
