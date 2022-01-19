@@ -1,0 +1,329 @@
+{
+    "title": "WB-MRWM2-template-title",
+    "device_type": "WB-MRWM2",
+    "device": {
+        "name": "WB-MRWM2",
+        "id": "wb-mrwm2",
+        "max_read_registers": 0,
+        "response_timeout_ms": 1,
+        "frame_timeout_ms": 8,
+
+        "groups": [
+            {
+                "title": "Input 1",
+                "id": "input_1",
+                "order": 1
+            },
+            {
+                "title": "Input 2",
+                "id": "input_2",
+                "order": 2
+            },
+            {
+                "title": "Outputs",
+                "id": "outputs",
+                "order": 3
+            },
+            {
+                "title": "L1",
+                "id": "l1",
+                "order": 4
+            },
+            {
+                "title": "L2",
+                "id": "l2",
+                "order": 5
+            },
+            {
+                "title": "HW Info",
+                "id": "hw_info",
+                "order": 6
+            }
+        ],
+
+        "setup": [
+            {
+                "title": "disable legacy input mode control",
+                "address": 5,
+                "reg_type": "holding",
+                "value": 0
+            }
+        ],
+
+        "parameters": {
+            "in1_mode": {
+                "title": "Input 1 Mode",
+                "address": 9,
+                "reg_type": "holding",
+                "enum": [0, 1, 2, 3, 4],
+                "default": 0,
+                "enum_titles": [
+                    "push button",
+                    "latching switch",
+                    "turn off all outputs",
+                    "control disabled",
+                    "operate according to mapping-matrix"
+                ],
+                "group": "input_1",
+                "order": 1
+            },
+            "in1_debounce_ms": {
+                "title": "Input 1 Debounce (ms)",
+                "address": 20,
+                "reg_type": "holding",
+                "min": 0,
+                "max": 100,
+                "default": 50,
+                "group": "input_1",
+                "order": 2
+            },
+            "in2_mode": {
+                "title": "Input 2 Mode",
+                "address": 10,
+                "reg_type": "holding",
+                "enum": [0, 1, 2, 3, 4],
+                "default": 0,
+                "enum_titles": [
+                    "push button",
+                    "latching switch",
+                    "turn off all outputs",
+                    "control disabled",
+                    "operate according to mapping-matrix"
+                ],
+                "group": "input_2",
+                "order": 1
+            },
+            "in2_debounce_ms": {
+                "title": "Input 2 Debounce (ms)",
+                "address": 21,
+                "reg_type": "holding",
+                "min": 0,
+                "max": 100,
+                "default": 50,
+                "group": "input_2",
+                "order": 2
+            },
+            "outputs_restore_state": {
+                "title": "Restore Last Outputs State After Power On",
+                "address": 6,
+                "reg_type": "holding",
+                "enum": [0, 1],
+                "default": 0,
+                "enum_titles": ["no", "yes"],
+                "group": "outputs",
+                "order": 1
+            },
+            "safety_timer_s": {
+                "title": "Safety Timer (s)",
+                "address": 8,
+                "reg_type": "holding",
+                "default": 3600,
+                "group": "outputs",
+                "order": 2
+            }
+        },
+
+        "channels": [
+            {
+                "name": "Input 1",
+                "reg_type": "discrete",
+                "address": 0,
+                "type": "switch",
+                "group": "input_1"
+            },
+            {
+                "name": "Input 1 counter",
+                "reg_type": "input",
+                "address": 32,
+                "type": "value",
+                "group": "input_1"
+            },
+            {
+                "name": "Input 1 freq",
+                "reg_type": "input",
+                "address": 40,
+                "type": "value",
+                "format": "u32",
+                "scale": 1.52588e-5,
+                "round_to": 0.001,
+                "enabled": false,
+                "group": "input_1"
+            },
+            {
+                "name": "Input 2",
+                "reg_type": "discrete",
+                "address": 1,
+                "type": "switch",
+                "group": "input_2"
+            },
+            {
+                "name": "Input 2 counter",
+                "reg_type": "input",
+                "address": 33,
+                "type": "value",
+                "group": "input_2"
+            },
+            {
+                "name": "Input 2 freq",
+                "reg_type": "input",
+                "address": 42,
+                "type": "value",
+                "format": "u32",
+                "scale": 1.52588e-5,
+                "round_to": 0.001,
+                "enabled": false,
+                "group": "input_2"
+            },
+            {
+                "name": "K1",
+                "reg_type": "coil",
+                "address": 0,
+                "type": "switch",
+                "group": "outputs"
+            },
+            {
+                "name": "K2",
+                "reg_type": "coil",
+                "address": 1,
+                "type": "switch",
+                "group": "outputs"
+            },
+            {
+                "name": "Urms L1",
+                "reg_type": "input",
+                "address": 56,
+                "type": "voltage",
+                "format": "u16",
+                "scale": 0.01,
+                "group": "l1"
+            },
+            {
+                "name": "P L1",
+                "reg_type": "input",
+                "address": 64,
+                "type": "power",
+                "format": "u16",
+                "scale": 0.1,
+                "group": "l1"
+            },
+            {
+                "name": "AP energy L1",
+                "reg_type": "input",
+                "address": 72,
+                "type": "power_consumption",
+                "format": "u32",
+                "scale": 0.001,
+                "group": "l1"
+            },
+            {
+                "name": "Urms L2",
+                "reg_type": "input",
+                "address": 57,
+                "type": "voltage",
+                "format": "u16",
+                "scale": 0.01,
+                "group": "l2"
+            },
+            {
+                "name": "P L2",
+                "reg_type": "input",
+                "address": 65,
+                "type": "power",
+                "format": "u16",
+                "scale": 0.1,
+                "group": "l2"
+            },
+            {
+                "name": "AP energy L2",
+                "reg_type": "input",
+                "address": 74,
+                "type": "power_consumption",
+                "format": "u32",
+                "scale": 0.001,
+                "group": "l2"
+            },
+            {
+                "name": "Serial",
+                "reg_type": "input",
+                "address": 270,
+                "type": "text",
+                "format": "u32",
+                "group": "hw_info"
+            },
+            {
+                "name": "Supply Voltage",
+                "reg_type": "input",
+                "address": 121,
+                "type": "voltage",
+                "scale": 0.001,
+                "enabled": false,
+                "group": "hw_info"
+            },
+            {
+                "name": "Uptime",
+                "reg_type": "input",
+                "address": 104,
+                "type": "text",
+                "format": "u32",
+                "enabled": false,
+                "group": "hw_info"
+            },
+            {
+                "name": "MCU Temperature",
+                "reg_type": "input",
+                "address": 124,
+                "type": "temperature",
+                "format": "s16",
+                "scale": 0.1,
+                "enabled": false,
+                "group": "hw_info"
+            },
+            {
+                "name": "MCU Voltage",
+                "reg_type": "input",
+                "address": 123,
+                "scale": 0.001,
+                "type": "voltage",
+                "enabled": false,
+                "group": "hw_info"
+            }
+        ],
+        "translations": {
+            "en": {
+                "WB-MRWM2-template-title": "WB-MRWM2 (2-channel power metering relay)",
+                "Uptime": "Uptime (s)"
+            },
+            "ru": {
+                "WB-MRWM2-template-title": "WB-MRWM2 (2-канальный модуль реле с измерением мощности)",
+                "Input 1": "Вход 1",
+                "Input 2": "Вход 2",
+                "Outputs": "Выходы",
+                "HW Info": "Данные модуля",
+                "Input 1 Mode": "Режим работы входа 1",
+                "Input 2 Mode": "Режим работы входа 2",
+                "push button": "кнопка без фиксации",
+                "latching switch": "переключатель с фиксацией",
+                "turn off all outputs": "отключить все выходы",
+                "control disabled": "управление отключено",
+                "operate according to mapping-matrix": "управлять по mapping-матрице",
+                "Input 1 Debounce (ms)": "Время защиты от дребезга входа 1 (мс)",
+                "Input 2 Debounce (ms)": "Время защиты от дребезга входа 2 (мс)",
+                "Restore Last Outputs State After Power On": "Восстанавливать состояния выходов при включении",
+                "no": "нет",
+                "yes": "да",
+                "Safety Timer (s)": "Таймаут безопасного режима (с)",
+                "Input 1 counter": "Счетчик 1",
+                "Input 2 counter": "Счетчик 2",
+                "Input 1 freq": "Частота 1",
+                "Input 2 freq": "Частота 2",
+                "Serial": "Серийный номер",
+                "Supply Voltage": "Напряжение питания",
+                "Uptime": "Время работы с момента включения (с)",
+                "MCU Temperature": "Температура МК",
+                "MCU Voltage": "Напряжение питания МК",
+                "AP energy L1": "Энергия AP L1",
+                "AP energy L2": "Энергия AP L2"
+            }
+        }
+    }
+}

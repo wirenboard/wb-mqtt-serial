@@ -1,3 +1,9 @@
+wb-mqtt-serial (2.45.0-wb1) stable; urgency=medium
+
+  * WB-MRWM2 template was added
+
+ -- Dmitry Vorobjev <d.vorobjev@wirenboard.ru>  Tue, 18 Jan 2022 10:40:00 +0300
+
 wb-mqtt-serial (2.45.0) stable; urgency=medium
 
   * Wiren Board 7 support (default config file is added)
