@@ -275,10 +275,22 @@
                 "group": "ir_commands"
             },
             {
+                "name": "ROM1 size",
+                "reg_type": "input",
+                "address": 5400,
+                "group": "ir_commands"
+            },
+            {
                 "name": "Learn to ROM2",
                 "reg_type": "coil",
                 "address": 5301,
                 "type": "switch",
+                "group": "ir_commands"
+            },
+            {
+                "name": "ROM2 size",
+                "reg_type": "input",
+                "address": 5401,
                 "group": "ir_commands"
             },
             {
@@ -289,10 +301,22 @@
                 "group": "ir_commands"
             },
             {
+                "name": "ROM3 size",
+                "reg_type": "input",
+                "address": 5402,
+                "group": "ir_commands"
+            },
+            {
                 "name": "Learn to ROM4",
                 "reg_type": "coil",
                 "address": 5303,
                 "type": "switch",
+                "group": "ir_commands"
+            },
+            {
+                "name": "ROM4 size",
+                "reg_type": "input",
+                "address": 5403,
                 "group": "ir_commands"
             },
             {
@@ -303,6 +327,12 @@
                 "group": "ir_commands"
             },
             {
+                "name": "ROM5 size",
+                "reg_type": "input",
+                "address": 5404,
+                "group": "ir_commands"
+            },
+            {
                 "name": "Learn to ROM6",
                 "reg_type": "coil",
                 "address": 5305,
@@ -310,10 +340,22 @@
                 "group": "ir_commands"
             },
             {
+                "name": "ROM6 size",
+                "reg_type": "input",
+                "address": 5405,
+                "group": "ir_commands"
+            },
+            {
                 "name": "Learn to ROM7",
                 "reg_type": "coil",
                 "address": 5306,
                 "type": "switch",
+                "group": "ir_commands"
+            },
+            {
+                "name": "ROM7 size",
+                "reg_type": "input",
+                "address": 5406,
                 "group": "ir_commands"
             },
             {
@@ -325,12 +367,26 @@
                 "group": "ir_commands"
             },
             {
+                "name": "ROM8 size",
+                "reg_type": "input",
+                "address": 5407,
+                "group": "ir_commands",
+                "enabled": false
+            },
+            {
                 "name": "Learn to ROM9",
                 "reg_type": "coil",
                 "address": 5308,
                 "type": "switch",
                 "enabled": false,
                 "group": "ir_commands"
+            },
+            {
+                "name": "ROM9 size",
+                "reg_type": "input",
+                "address": 5408,
+                "group": "ir_commands",
+                "enabled": false
             },
             {
                 "name": "Learn to ROM10",
@@ -341,12 +397,26 @@
                 "group": "ir_commands"
             },
             {
+                "name": "ROM10 size",
+                "reg_type": "input",
+                "address": 5409,
+                "group": "ir_commands",
+                "enabled": false
+            },
+            {
                 "name": "Learn to ROM11",
                 "reg_type": "coil",
                 "address": 5310,
                 "type": "switch",
                 "enabled": false,
                 "group": "ir_commands"
+            },
+            {
+                "name": "ROM11 size",
+                "reg_type": "input",
+                "address": 5410,
+                "group": "ir_commands",
+                "enabled": false
             },
             {
                 "name": "Learn to ROM12",
@@ -357,12 +427,26 @@
                 "group": "ir_commands"
             },
             {
+                "name": "ROM12 size",
+                "reg_type": "input",
+                "address": 5411,
+                "group": "ir_commands",
+                "enabled": false
+            },
+            {
                 "name": "Learn to ROM13",
                 "reg_type": "coil",
                 "address": 5312,
                 "type": "switch",
                 "enabled": false,
                 "group": "ir_commands"
+            },
+            {
+                "name": "ROM13 size",
+                "reg_type": "input",
+                "address": 5412,
+                "group": "ir_commands",
+                "enabled": false
             },
             {
                 "name": "Learn to ROM14",
@@ -373,12 +457,26 @@
                 "group": "ir_commands"
             },
             {
+                "name": "ROM14 size",
+                "reg_type": "input",
+                "address": 5413,
+                "group": "ir_commands",
+                "enabled": false
+            },
+            {
                 "name": "Learn to ROM15",
                 "reg_type": "coil",
                 "address": 5314,
                 "type": "switch",
                 "enabled": false,
                 "group": "ir_commands"
+            },
+            {
+                "name": "ROM15 size",
+                "reg_type": "input",
+                "address": 5414,
+                "group": "ir_commands",
+                "enabled": false
             },
             {
                 "name": "Learn to ROM16",
@@ -389,12 +487,26 @@
                 "group": "ir_commands"
             },
             {
+                "name": "ROM16 size",
+                "reg_type": "input",
+                "address": 5415,
+                "group": "ir_commands",
+                "enabled": false
+            },
+            {
                 "name": "Learn to ROM17",
                 "reg_type": "coil",
                 "address": 5316,
                 "type": "switch",
                 "enabled": false,
                 "group": "ir_commands"
+            },
+            {
+                "name": "ROM17 size",
+                "reg_type": "input",
+                "address": 5416,
+                "group": "ir_commands",
+                "enabled": false
             },
             {
                 "name": "Learn to ROM18",
@@ -405,12 +517,26 @@
                 "group": "ir_commands"
             },
             {
+                "name": "ROM18 size",
+                "reg_type": "input",
+                "address": 5417,
+                "group": "ir_commands",
+                "enabled": false
+            },
+            {
                 "name": "Learn to ROM19",
                 "reg_type": "coil",
                 "address": 5318,
                 "type": "switch",
                 "enabled": false,
                 "group": "ir_commands"
+            },
+            {
+                "name": "ROM19 size",
+                "reg_type": "input",
+                "address": 5418,
+                "group": "ir_commands",
+                "enabled": false
             },
             {
                 "name": "Learn to ROM20",
@@ -421,12 +547,26 @@
                 "group": "ir_commands"
             },
             {
+                "name": "ROM20 size",
+                "reg_type": "input",
+                "address": 5419,
+                "group": "ir_commands",
+                "enabled": false
+            },
+            {
                 "name": "Learn to ROM21",
                 "reg_type": "coil",
                 "address": 5320,
                 "type": "switch",
                 "enabled": false,
                 "group": "ir_commands"
+            },
+            {
+                "name": "ROM21 size",
+                "reg_type": "input",
+                "address": 5420,
+                "group": "ir_commands",
+                "enabled": false
             },
             {
                 "name": "Learn to ROM22",
@@ -437,12 +577,26 @@
                 "group": "ir_commands"
             },
             {
+                "name": "ROM22 size",
+                "reg_type": "input",
+                "address": 5421,
+                "group": "ir_commands",
+                "enabled": false
+            },
+            {
                 "name": "Learn to ROM23",
                 "reg_type": "coil",
                 "address": 5322,
                 "type": "switch",
                 "enabled": false,
                 "group": "ir_commands"
+            },
+            {
+                "name": "ROM23 size",
+                "reg_type": "input",
+                "address": 5422,
+                "group": "ir_commands",
+                "enabled": false
             },
             {
                 "name": "Learn to ROM24",
@@ -453,12 +607,26 @@
                 "group": "ir_commands"
             },
             {
+                "name": "ROM24 size",
+                "reg_type": "input",
+                "address": 5423,
+                "group": "ir_commands",
+                "enabled": false
+            },
+            {
                 "name": "Learn to ROM25",
                 "reg_type": "coil",
                 "address": 5324,
                 "type": "switch",
                 "enabled": false,
                 "group": "ir_commands"
+            },
+            {
+                "name": "ROM25 size",
+                "reg_type": "input",
+                "address": 5424,
+                "group": "ir_commands",
+                "enabled": false
             },
             {
                 "name": "Learn to ROM26",
@@ -469,12 +637,26 @@
                 "group": "ir_commands"
             },
             {
+                "name": "ROM26 size",
+                "reg_type": "input",
+                "address": 5425,
+                "group": "ir_commands",
+                "enabled": false
+            },
+            {
                 "name": "Learn to ROM27",
                 "reg_type": "coil",
                 "address": 5326,
                 "type": "switch",
                 "enabled": false,
                 "group": "ir_commands"
+            },
+            {
+                "name": "ROM27 size",
+                "reg_type": "input",
+                "address": 5426,
+                "group": "ir_commands",
+                "enabled": false
             },
             {
                 "name": "Learn to ROM28",
@@ -485,12 +667,26 @@
                 "group": "ir_commands"
             },
             {
+                "name": "ROM28 size",
+                "reg_type": "input",
+                "address": 5427,
+                "group": "ir_commands",
+                "enabled": false
+            },
+            {
                 "name": "Learn to ROM29",
                 "reg_type": "coil",
                 "address": 5328,
                 "type": "switch",
                 "enabled": false,
                 "group": "ir_commands"
+            },
+            {
+                "name": "ROM29 size",
+                "reg_type": "input",
+                "address": 5428,
+                "group": "ir_commands",
+                "enabled": false
             },
             {
                 "name": "Learn to ROM30",
@@ -501,6 +697,13 @@
                 "group": "ir_commands"
             },
             {
+                "name": "ROM30 size",
+                "reg_type": "input",
+                "address": 5429,
+                "group": "ir_commands",
+                "enabled": false
+            },
+            {
                 "name": "Learn to ROM31",
                 "reg_type": "coil",
                 "address": 5330,
@@ -509,10 +712,24 @@
                 "group": "ir_commands"
             },
             {
+                "name": "ROM31 size",
+                "reg_type": "input",
+                "address": 5430,
+                "group": "ir_commands",
+                "enabled": false
+            },
+            {
                 "name": "Learn to ROM32",
                 "reg_type": "coil",
                 "address": 5331,
                 "type": "switch",
+                "enabled": false,
+                "group": "ir_commands"
+            },
+            {
+                "name": "ROM32 size",
+                "reg_type": "input",
+                "address": 5431,
                 "enabled": false,
                 "group": "ir_commands"
             },
@@ -762,8 +979,257 @@
                 "reg_type": "coil",
                 "address": 5131,
                 "type": "pushbutton",
-                "enabled": false,
+                "group": "ir_commands",
+                "enabled": false
+            },
+            {
+                "name": "ROM1 -> RAM",
+                "reg_type": "coil",
+                "address": 5200,
+                "type": "switch",
                 "group": "ir_commands"
+            },
+            {
+                "name": "ROM2 -> RAM",
+                "reg_type": "coil",
+                "address": 5201,
+                "type": "switch",
+                "group": "ir_commands"
+            },
+            {
+                "name": "ROM3 -> RAM",
+                "reg_type": "coil",
+                "address": 5202,
+                "type": "switch",
+                "group": "ir_commands"
+            },
+            {
+                "name": "ROM4 -> RAM",
+                "reg_type": "coil",
+                "address": 5203,
+                "type": "switch",
+                "group": "ir_commands"
+            },
+            {
+                "name": "ROM5 -> RAM",
+                "reg_type": "coil",
+                "address": 5204,
+                "type": "switch",
+                "group": "ir_commands"
+            },
+            {
+                "name": "ROM6 -> RAM",
+                "reg_type": "coil",
+                "address": 5205,
+                "type": "switch",
+                "group": "ir_commands"
+            },
+            {
+                "name": "ROM7 -> RAM",
+                "reg_type": "coil",
+                "address": 5206,
+                "type": "switch",
+                "group": "ir_commands"
+            },
+            {
+                "name": "ROM8 -> RAM",
+                "reg_type": "coil",
+                "address": 5207,
+                "type": "switch",
+                "group": "ir_commands",
+                "enabled": false
+            },
+            {
+                "name": "ROM9 -> RAM",
+                "reg_type": "coil",
+                "address": 5208,
+                "type": "switch",
+                "group": "ir_commands",
+                "enabled": false
+            },
+            {
+                "name": "ROM10 -> RAM",
+                "reg_type": "coil",
+                "address": 5209,
+                "type": "switch",
+                "group": "ir_commands",
+                "enabled": false
+            },
+            {
+                "name": "ROM11 -> RAM",
+                "reg_type": "coil",
+                "address": 5210,
+                "type": "switch",
+                "group": "ir_commands",
+                "enabled": false
+            },
+            {
+                "name": "ROM12 -> RAM",
+                "reg_type": "coil",
+                "address": 5211,
+                "type": "switch",
+                "group": "ir_commands",
+                "enabled": false
+            },
+            {
+                "name": "ROM13 -> RAM",
+                "reg_type": "coil",
+                "address": 5212,
+                "type": "switch",
+                "group": "ir_commands",
+                "enabled": false
+            },
+            {
+                "name": "ROM14 -> RAM",
+                "reg_type": "coil",
+                "address": 5213,
+                "type": "switch",
+                "group": "ir_commands",
+                "enabled": false
+            },
+            {
+                "name": "ROM15 -> RAM",
+                "reg_type": "coil",
+                "address": 5214,
+                "type": "switch",
+                "group": "ir_commands",
+                "enabled": false
+            },
+            {
+                "name": "ROM16 -> RAM",
+                "reg_type": "coil",
+                "address": 5215,
+                "type": "switch",
+                "group": "ir_commands",
+                "enabled": false
+            },
+            {
+                "name": "ROM17 -> RAM",
+                "reg_type": "coil",
+                "address": 5216,
+                "type": "switch",
+                "group": "ir_commands",
+                "enabled": false
+            },
+            {
+                "name": "ROM18 -> RAM",
+                "reg_type": "coil",
+                "address": 5217,
+                "type": "switch",
+                "group": "ir_commands",
+                "enabled": false
+            },
+            {
+                "name": "ROM19 -> RAM",
+                "reg_type": "coil",
+                "address": 5218,
+                "type": "switch",
+                "group": "ir_commands",
+                "enabled": false
+            },
+            {
+                "name": "ROM20 -> RAM",
+                "reg_type": "coil",
+                "address": 5219,
+                "type": "switch",
+                "group": "ir_commands",
+                "enabled": false
+            },
+            {
+                "name": "ROM21 -> RAM",
+                "reg_type": "coil",
+                "address": 5220,
+                "type": "switch",
+                "group": "ir_commands",
+                "enabled": false
+            },
+            {
+                "name": "ROM22 -> RAM",
+                "reg_type": "coil",
+                "address": 5221,
+                "type": "switch",
+                "group": "ir_commands",
+                "enabled": false
+            },
+            {
+                "name": "ROM23 -> RAM",
+                "reg_type": "coil",
+                "address": 5222,
+                "type": "switch",
+                "group": "ir_commands",
+                "enabled": false
+            },
+            {
+                "name": "ROM24 -> RAM",
+                "reg_type": "coil",
+                "address": 5223,
+                "type": "switch",
+                "group": "ir_commands",
+                "enabled": false
+            },
+            {
+                "name": "ROM25 -> RAM",
+                "reg_type": "coil",
+                "address": 5224,
+                "type": "switch",
+                "group": "ir_commands",
+                "enabled": false
+            },
+            {
+                "name": "ROM26 -> RAM",
+                "reg_type": "coil",
+                "address": 5225,
+                "type": "switch",
+                "group": "ir_commands",
+                "enabled": false
+            },
+            {
+                "name": "ROM27 -> RAM",
+                "reg_type": "coil",
+                "address": 5226,
+                "type": "switch",
+                "group": "ir_commands",
+                "enabled": false
+            },
+            {
+                "name": "ROM28 -> RAM",
+                "reg_type": "coil",
+                "address": 5227,
+                "type": "switch",
+                "group": "ir_commands",
+                "enabled": false
+            },
+            {
+                "name": "ROM29 -> RAM",
+                "reg_type": "coil",
+                "address": 5228,
+                "type": "switch",
+                "group": "ir_commands",
+                "enabled": false
+            },
+            {
+                "name": "ROM30 -> RAM",
+                "reg_type": "coil",
+                "address": 5229,
+                "type": "switch",
+                "group": "ir_commands",
+                "enabled": false
+            },
+            {
+                "name": "ROM31 -> RAM",
+                "reg_type": "coil",
+                "address": 5230,
+                "type": "switch",
+                "group": "ir_commands",
+                "enabled": false
+            },
+            {
+                "name": "ROM32 -> RAM",
+                "reg_type": "coil",
+                "address": 5231,
+                "type": "switch",
+                "group": "ir_commands",
+                "enabled": false
             },
             {
                 "name": "Reset all ROM",
@@ -982,37 +1448,69 @@
                 "Learn to RAM": "Записать команду в RAM",
                 "Play from RAM": "Воспроизвести команду из RAM",
                 "Learn to ROM1": "Записать команду в ROM1",
+                "ROM1 size": "Размер команды в ROM1",
                 "Learn to ROM2": "Записать команду в ROM2",
+                "ROM2 size": "Размер команды в ROM2",
                 "Learn to ROM3": "Записать команду в ROM3",
+                "ROM3 size": "Размер команды в ROM3",
                 "Learn to ROM4": "Записать команду в ROM4",
+                "ROM4 size": "Размер команды в ROM4",
                 "Learn to ROM5": "Записать команду в ROM5",
+                "ROM5 size": "Размер команды в ROM5",
                 "Learn to ROM6": "Записать команду в ROM6",
+                "ROM6 size": "Размер команды в ROM6",
                 "Learn to ROM7": "Записать команду в ROM7",
+                "ROM7 size": "Размер команды в ROM7",
                 "Learn to ROM8": "Записать команду в ROM8",
+                "ROM8 size": "Размер команды в ROM8",
                 "Learn to ROM9": "Записать команду в ROM9",
+                "ROM9 size": "Размер команды в ROM9",
                 "Learn to ROM10": "Записать команду в ROM10",
+                "ROM10 size": "Размер команды в ROM10",
                 "Learn to ROM11": "Записать команду в ROM11",
+                "ROM11 size": "Размер команды в ROM11",
                 "Learn to ROM12": "Записать команду в ROM12",
+                "ROM12 size": "Размер команды в ROM12",
                 "Learn to ROM13": "Записать команду в ROM13",
+                "ROM13 size": "Размер команды в ROM13",
                 "Learn to ROM14": "Записать команду в ROM14",
+                "ROM14 size": "Размер команды в ROM14",
                 "Learn to ROM15": "Записать команду в ROM15",
+                "ROM15 size": "Размер команды в ROM15",
                 "Learn to ROM16": "Записать команду в ROM16",
+                "ROM16 size": "Размер команды в ROM16",
                 "Learn to ROM17": "Записать команду в ROM17",
+                "ROM17 size": "Размер команды в ROM17",
                 "Learn to ROM18": "Записать команду в ROM18",
+                "ROM18 size": "Размер команды в ROM18",
                 "Learn to ROM19": "Записать команду в ROM19",
+                "ROM19 size": "Размер команды в ROM19",
                 "Learn to ROM20": "Записать команду в ROM20",
+                "ROM20 size": "Размер команды в ROM20",
                 "Learn to ROM21": "Записать команду в ROM21",
+                "ROM21 size": "Размер команды в ROM21",
                 "Learn to ROM22": "Записать команду в ROM22",
+                "ROM22 size": "Размер команды в ROM22",
                 "Learn to ROM23": "Записать команду в ROM23",
+                "ROM23 size": "Размер команды в ROM23",
                 "Learn to ROM24": "Записать команду в ROM24",
+                "ROM24 size": "Размер команды в ROM24",
                 "Learn to ROM25": "Записать команду в ROM25",
+                "ROM25 size": "Размер команды в ROM25",
                 "Learn to ROM26": "Записать команду в ROM26",
+                "ROM26 size": "Размер команды в ROM26",
                 "Learn to ROM27": "Записать команду в ROM27",
+                "ROM27 size": "Размер команды в ROM27",
                 "Learn to ROM28": "Записать команду в ROM28",
+                "ROM28 size": "Размер команды в ROM28",
                 "Learn to ROM29": "Записать команду в ROM29",
+                "ROM29 size": "Размер команды в ROM29",
                 "Learn to ROM30": "Записать команду в ROM30",
+                "ROM30 size": "Размер команды в ROM30",
                 "Learn to ROM31": "Записать команду в ROM31",
+                "ROM31 size": "Размер команды в ROM31",
                 "Learn to ROM32": "Записать команду в ROM32",
+                "ROM32 size": "Размер команды в ROM32",
                 "Play from ROM1": "Воспроизвести команду из ROM1",
                 "Play from ROM2": "Воспроизвести команду из ROM2",
                 "Play from ROM3": "Воспроизвести команду из ROM3",
