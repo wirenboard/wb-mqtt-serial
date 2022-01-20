@@ -1,3 +1,10 @@
+wb-mqtt-serial (2.46.2) stable; urgency=medium
+
+  * WB-MIR v2 template: ROMs count increased to 40
+  * WB-MSW v3 template: added "ROMn size" and "ROMn -> RAM" channels
+
+ -- Pavel Gasheev <pavel.gasheev@wirenboard.ru>  Thu, 20 Jan 2022 21:59:32 +0300
+
 wb-mqtt-serial (2.46.1) stable; urgency=medium
 
   * WB-MRWM2 template was added
