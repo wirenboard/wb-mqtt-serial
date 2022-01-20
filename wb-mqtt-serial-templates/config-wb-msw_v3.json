@@ -278,6 +278,7 @@
                 "name": "ROM1 size",
                 "reg_type": "input",
                 "address": 5400,
+                "enabled": false,
                 "group": "ir_commands"
             },
             {
@@ -291,6 +292,7 @@
                 "name": "ROM2 size",
                 "reg_type": "input",
                 "address": 5401,
+                "enabled": false,
                 "group": "ir_commands"
             },
             {
@@ -304,6 +306,7 @@
                 "name": "ROM3 size",
                 "reg_type": "input",
                 "address": 5402,
+                "enabled": false,
                 "group": "ir_commands"
             },
             {
@@ -317,6 +320,7 @@
                 "name": "ROM4 size",
                 "reg_type": "input",
                 "address": 5403,
+                "enabled": false,
                 "group": "ir_commands"
             },
             {
@@ -330,6 +334,7 @@
                 "name": "ROM5 size",
                 "reg_type": "input",
                 "address": 5404,
+                "enabled": false,
                 "group": "ir_commands"
             },
             {
@@ -343,6 +348,7 @@
                 "name": "ROM6 size",
                 "reg_type": "input",
                 "address": 5405,
+                "enabled": false,
                 "group": "ir_commands"
             },
             {
@@ -356,6 +362,7 @@
                 "name": "ROM7 size",
                 "reg_type": "input",
                 "address": 5406,
+                "enabled": false,
                 "group": "ir_commands"
             },
             {
@@ -987,49 +994,56 @@
                 "reg_type": "coil",
                 "address": 5200,
                 "type": "switch",
-                "group": "ir_commands"
+                "group": "ir_commands",
+                "enabled": false
             },
             {
                 "name": "ROM2 -> RAM",
                 "reg_type": "coil",
                 "address": 5201,
                 "type": "switch",
-                "group": "ir_commands"
+                "group": "ir_commands",
+                "enabled": false
             },
             {
                 "name": "ROM3 -> RAM",
                 "reg_type": "coil",
                 "address": 5202,
                 "type": "switch",
-                "group": "ir_commands"
+                "group": "ir_commands",
+                "enabled": false
             },
             {
                 "name": "ROM4 -> RAM",
                 "reg_type": "coil",
                 "address": 5203,
                 "type": "switch",
-                "group": "ir_commands"
+                "group": "ir_commands",
+                "enabled": false
             },
             {
                 "name": "ROM5 -> RAM",
                 "reg_type": "coil",
                 "address": 5204,
                 "type": "switch",
-                "group": "ir_commands"
+                "group": "ir_commands",
+                "enabled": false
             },
             {
                 "name": "ROM6 -> RAM",
                 "reg_type": "coil",
                 "address": 5205,
                 "type": "switch",
-                "group": "ir_commands"
+                "group": "ir_commands",
+                "enabled": false
             },
             {
                 "name": "ROM7 -> RAM",
                 "reg_type": "coil",
                 "address": 5206,
                 "type": "switch",
-                "group": "ir_commands"
+                "group": "ir_commands",
+                "enabled": false
             },
             {
                 "name": "ROM8 -> RAM",
