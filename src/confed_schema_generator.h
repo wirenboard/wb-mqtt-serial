@@ -17,4 +17,6 @@ Json::Value MakeSchemaForConfed(const Json::Value& configSchema,
  * @param schema device template, it will be modified by the function
  * @param subdevices new subdevices will be added to the list
  */
-void TransformGroupsToSubdevices(Json::Value& schema, Json::Value& subdevices);
+void TransformGroupsToSubdevices(Json::Value& schema,
+                                 Json::Value& subdevices,
+                                 Json::Value* mainSchemaTranslations = nullptr);
