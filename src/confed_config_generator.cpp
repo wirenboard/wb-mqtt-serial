@@ -111,7 +111,7 @@ void ExpandGroupChannels(Json::Value& device, const Json::Value& deviceTemplate)
     }
     std::unordered_set<std::string> groups;
     for (const auto& group: deviceTemplate["groups"]) {
-        groups.emplace(group["title"].asString());
+        groups.emplace(group["id"].asString());
     }
 
     Json::Value newChannels(Json::arrayValue);
