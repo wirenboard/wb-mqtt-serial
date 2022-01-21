@@ -583,10 +583,6 @@ namespace
         }
         TransformGroupsToSubdevices(schema, schema["subdevices"], &schema["translations"]);
 
-        if (deviceTemplate.Type == "WB-MR6C") {
-            WBMQTT::JSON::MakeWriter("  ")->write(schema, &std::cout);
-        }
-
         TContext context{deviceTemplate.Type, translations};
         auto& res = Append(devicesArray);
 
@@ -675,14 +671,10 @@ namespace
     struct TGroup
     {
         uint32_t Order;
-        // std::string Name;
         std::string Id;
         Json::Value Options;
 
-        TGroup(const Json::Value& group)
-            : Order(group.get("order", 1).asUInt()),
-              //   Name(group["title"].asString()),
-              Id(group["id"].asString())
+        TGroup(const Json::Value& group): Order(group.get("order", 1).asUInt()), Id(group["id"].asString())
         {
             if (group.isMember("ui_options")) {
                 Options = group["ui_options"];
