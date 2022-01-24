@@ -794,6 +794,9 @@
           "_format": "siWb",
           "propertyOrder": 3
         }
+      },
+      "options": {
+        "remove_empty_properties": true
       }
     },
     "subreg": {
