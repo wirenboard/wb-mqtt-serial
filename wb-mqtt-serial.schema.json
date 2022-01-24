@@ -662,6 +662,14 @@
               "options": {
                 "keep_oneof_values": false
               }
+            },
+            "write_address": {
+              "$ref": "#/definitions/address",
+              "title": "Write Address",
+              "propertyOrder": 7,
+              "options": {
+                "keep_oneof_values": false
+              }
             }
           },
           "required": ["address"]
