@@ -249,7 +249,7 @@
                         {
                             "name": "State",
                             "reg_type": "discrete",
-                            "address": 0,
+                            "address": 7,
                             "type": "switch",
                             "group": "input_toao_0"
                         },
@@ -316,7 +316,7 @@
                         {
                             "name": "State",
                             "reg_type": "discrete",
-                            "address": 0,
+                            "address": 7,
                             "type": "switch",
                             "group": "input_cd_0"
                         },
@@ -388,7 +388,7 @@
                         {
                             "name": "State",
                             "reg_type": "discrete",
-                            "address": 0,
+                            "address": 7,
                             "type": "switch",
                             "group": "input_oatm_0"
                         },
@@ -693,7 +693,7 @@
                         {
                             "name": "State",
                             "reg_type": "discrete",
-                            "address": 0,
+                            "address": 7,
                             "type": "switch",
                             "group": "input_bmm_0"
                         },
