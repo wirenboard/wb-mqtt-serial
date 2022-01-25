@@ -1123,7 +1123,7 @@
                                 "mapping edge mode toggle"
                             ]
                         },
-            
+
                         "in1_lp_hold_time": {
                             "group": "input_bpc_0",
                             "title": "lp_hold_time_title",
@@ -1133,16 +1133,6 @@
                             "default": 2000,
                             "min": 500,
                             "max": 5000
-                        },
-                        "in1_lp_repeat_time": {
-                            "group": "input_bpc_0",
-                            "title": "lp_repeat_time_title",
-                            "order": 2,
-                            "address": 1127,
-                            "reg_type": "holding",
-                            "default": 20,
-                            "min": 5,
-                            "max": 500
                         },
                         "in1_dp_time": {
                             "group": "input_bpc_0",
@@ -1154,7 +1144,6 @@
                             "min": 100,
                             "max": 2000
                         }
-            
                     },
                     "ui_options": {
                         "channels_format": "list"
@@ -2210,16 +2199,6 @@
                             "min": 500,
                             "max": 5000
                         },
-                        "in1_lp_repeat_time": {
-                            "group": "input_bpc",
-                            "title": "lp_repeat_time_title",
-                            "order": 2,
-                            "address": 1120,
-                            "reg_type": "holding",
-                            "default": 20,
-                            "min": 5,
-                            "max": 500
-                        },
                         "in1_dp_time": {
                             "group": "input_bpc",
                             "title": "dp_time_title",
@@ -2230,7 +2209,6 @@
                             "min": 100,
                             "max": 2000
                         }
-
                     },
                     "ui_options": {
                         "channels_format": "list"
@@ -3002,7 +2980,7 @@
                                 "mapping edge mode toggle"
                             ]
                         },
-            
+
                         "in1_lp": {
                             "group": "push_bt_in1_2",
                             "title": "lp_title",
@@ -3184,7 +3162,7 @@
                                 "mapping edge mode toggle"
                             ]
                         },
-            
+
                         "in1_slp": {
                             "group": "push_bt_in1_2",
                             "title": "slp_title",
@@ -3275,7 +3253,7 @@
                                 "mapping edge mode toggle"
                             ]
                         },
-            
+
                         "in1_lp_hold_time": {
                             "group": "input_bpc_2",
                             "title": "lp_hold_time_title",
@@ -3285,16 +3263,6 @@
                             "default": 2000,
                             "min": 500,
                             "max": 5000
-                        },
-                        "in1_lp_repeat_time": {
-                            "group": "input_bpc_2",
-                            "title": "lp_repeat_time_title",
-                            "order": 2,
-                            "address": 1121,
-                            "reg_type": "holding",
-                            "default": 20,
-                            "min": 5,
-                            "max": 500
                         },
                         "in1_dp_time": {
                             "group": "input_bpc_2",
@@ -3306,7 +3274,6 @@
                             "min": 100,
                             "max": 2000
                         }
-            
                     },
                     "ui_options": {
                         "channels_format": "list"
@@ -4078,7 +4045,7 @@
                                 "mapping edge mode toggle"
                             ]
                         },
-            
+
                         "in1_lp": {
                             "group": "push_bt_in1_3",
                             "title": "lp_title",
@@ -4260,7 +4227,7 @@
                                 "mapping edge mode toggle"
                             ]
                         },
-            
+
                         "in1_slp": {
                             "group": "push_bt_in1_3",
                             "title": "slp_title",
@@ -4351,7 +4318,7 @@
                                 "mapping edge mode toggle"
                             ]
                         },
-            
+
                         "in1_lp_hold_time": {
                             "group": "input_bpc_3",
                             "title": "lp_hold_time_title",
@@ -4361,16 +4328,6 @@
                             "default": 2000,
                             "min": 500,
                             "max": 5000
-                        },
-                        "in1_lp_repeat_time": {
-                            "group": "input_bpc_3",
-                            "title": "lp_repeat_time_title",
-                            "order": 2,
-                            "address": 1122,
-                            "reg_type": "holding",
-                            "default": 20,
-                            "min": 5,
-                            "max": 500
                         },
                         "in1_dp_time": {
                             "group": "input_bpc_3",
@@ -4382,7 +4339,6 @@
                             "min": 100,
                             "max": 2000
                         }
-            
                     },
                     "ui_options": {
                         "channels_format": "list"
@@ -5154,7 +5110,7 @@
                                 "mapping edge mode toggle"
                             ]
                         },
-            
+
                         "in1_lp": {
                             "group": "push_bt_in1_4",
                             "title": "lp_title",
@@ -5245,7 +5201,7 @@
                                 "mapping edge mode toggle"
                             ]
                         },
-            
+
                         "in1_dp": {
                             "group": "push_bt_in1_4",
                             "title": "dp_title",
@@ -5336,7 +5292,7 @@
                                 "mapping edge mode toggle"
                             ]
                         },
-            
+
                         "in1_slp": {
                             "group": "push_bt_in1_4",
                             "title": "slp_title",
@@ -5427,7 +5383,7 @@
                                 "mapping edge mode toggle"
                             ]
                         },
-            
+
                         "in1_lp_hold_time": {
                             "group": "input_bpc_4",
                             "title": "lp_hold_time_title",
@@ -5437,16 +5393,6 @@
                             "default": 2000,
                             "min": 500,
                             "max": 5000
-                        },
-                        "in1_lp_repeat_time": {
-                            "group": "input_bpc_4",
-                            "title": "lp_repeat_time_title",
-                            "order": 2,
-                            "address": 1123,
-                            "reg_type": "holding",
-                            "default": 20,
-                            "min": 5,
-                            "max": 500
                         },
                         "in1_dp_time": {
                             "group": "input_bpc_4",
@@ -5458,7 +5404,6 @@
                             "min": 100,
                             "max": 2000
                         }
-            
                     },
                     "ui_options": {
                         "channels_format": "list"
@@ -6230,7 +6175,7 @@
                                 "mapping edge mode toggle"
                             ]
                         },
-            
+
                         "in1_lp": {
                             "group": "push_bt_in1_5",
                             "title": "lp_title",
@@ -6321,7 +6266,7 @@
                                 "mapping edge mode toggle"
                             ]
                         },
-            
+
                         "in1_dp": {
                             "group": "push_bt_in1_5",
                             "title": "dp_title",
@@ -6412,7 +6357,7 @@
                                 "mapping edge mode toggle"
                             ]
                         },
-            
+
                         "in1_slp": {
                             "group": "push_bt_in1_5",
                             "title": "slp_title",
@@ -6503,7 +6448,7 @@
                                 "mapping edge mode toggle"
                             ]
                         },
-            
+
                         "in1_lp_hold_time": {
                             "group": "input_bpc_5",
                             "title": "lp_hold_time_title",
@@ -6513,16 +6458,6 @@
                             "default": 2000,
                             "min": 500,
                             "max": 5000
-                        },
-                        "in1_lp_repeat_time": {
-                            "group": "input_bpc_5",
-                            "title": "lp_repeat_time_title",
-                            "order": 2,
-                            "address": 1124,
-                            "reg_type": "holding",
-                            "default": 20,
-                            "min": 5,
-                            "max": 500
                         },
                         "in1_dp_time": {
                             "group": "input_bpc_5",
@@ -6534,7 +6469,6 @@
                             "min": 100,
                             "max": 2000
                         }
-            
                     },
                     "ui_options": {
                         "channels_format": "list"
@@ -7306,7 +7240,7 @@
                                 "mapping edge mode toggle"
                             ]
                         },
-            
+
                         "in1_lp": {
                             "group": "push_bt_in1_6",
                             "title": "lp_title",
@@ -7397,7 +7331,7 @@
                                 "mapping edge mode toggle"
                             ]
                         },
-            
+
                         "in1_dp": {
                             "group": "push_bt_in1_6",
                             "title": "dp_title",
@@ -7488,7 +7422,7 @@
                                 "mapping edge mode toggle"
                             ]
                         },
-            
+
                         "in1_slp": {
                             "group": "push_bt_in1_6",
                             "title": "slp_title",
@@ -7579,7 +7513,7 @@
                                 "mapping edge mode toggle"
                             ]
                         },
-            
+
                         "in1_lp_hold_time": {
                             "group": "input_bpc_6",
                             "title": "lp_hold_time_title",
@@ -7589,16 +7523,6 @@
                             "default": 2000,
                             "min": 500,
                             "max": 5000
-                        },
-                        "in1_lp_repeat_time": {
-                            "group": "input_bpc_6",
-                            "title": "lp_repeat_time_title",
-                            "order": 2,
-                            "address": 1125,
-                            "reg_type": "holding",
-                            "default": 20,
-                            "min": 5,
-                            "max": 500
                         },
                         "in1_dp_time": {
                             "group": "input_bpc_6",
@@ -7610,14 +7534,12 @@
                             "min": 100,
                             "max": 2000
                         }
-            
                     },
                     "ui_options": {
                         "channels_format": "list"
                     }
                 }
             }
-
         ],
 
         "translations": {
@@ -7633,7 +7555,6 @@
                 "edge_title": "Edge Mode",
 
                 "lp_hold_time_title": "Long Press Time (ms)",
-                "lp_repeat_time_title": "Parameter Change Rate While Holding Input (ms/unit)",
                 "dp_time_title": "Double Press Time (ms)",
                 "debounce_time_title": "Debounce Time (ms)"
 
@@ -7691,7 +7612,6 @@
                 "Shortlong Press Counter": "Счетчик коротких, а затем длинных нажатий",
 
                 "lp_hold_time_title": "Время длинного нажатия (мс)",
-                "lp_repeat_time_title": "Скорость изменения параметра при удержании кнопки, мс/ед",
                 "dp_time_title": "Время двойного нажатия, мс",
                 "debounce_time_title": "Время подавления дребезга, мс",
 
