@@ -532,6 +532,16 @@ namespace
         return res;
     }
 
+    void AddTranslations(const std::string& deviceType, Json::Value& translations, const Json::Value& deviceSchema)
+    {
+        const auto& tr = deviceSchema["translations"];
+        for (auto it = tr.begin(); it != tr.end(); ++it) {
+            for (auto msgIt = it->begin(); msgIt != it->end(); ++msgIt) {
+                translations[it.name()][GetTranslationHash(deviceType, msgIt.name())] = *msgIt;
+            }
+        }
+    }
+
     //  {
     //      "type": "object",
     //      "title": DEVICE_TITLE_HASH,
@@ -575,12 +585,12 @@ namespace
         }
         Json::Value subdevicesFromGroups(Json::arrayValue);
         for (auto& subdeviceSchema: schema["subdevices"]) {
-            TransformGroupsToSubdevices(subdeviceSchema["device"], subdevicesFromGroups);
+            TransformGroupsToSubdevices(subdeviceSchema["device"], subdevicesFromGroups, &schema["translations"]);
         }
         for (auto& subdeviceSchema: subdevicesFromGroups) {
             schema["subdevices"].append(subdeviceSchema);
         }
-        TransformGroupsToSubdevices(schema, schema["subdevices"]);
+        TransformGroupsToSubdevices(schema, schema["subdevices"], &schema["translations"]);
 
         auto set = GetDeviceKey(deviceTemplate.Type);
         TContext context{deviceTemplate.Type, translations};
@@ -627,16 +637,7 @@ namespace
                 MakeSubDeviceUISchema(name, subdeviceTemplates.GetTemplate(name), definitions, context);
             }
         }
-    }
-
-    void AddTranslations(const std::string& deviceType, Json::Value& translations, const Json::Value& deviceSchema)
-    {
-        const auto& tr = deviceSchema["translations"];
-        for (auto it = tr.begin(); it != tr.end(); ++it) {
-            for (auto msgIt = it->begin(); msgIt != it->end(); ++msgIt) {
-                translations[it.name()][GetTranslationHash(deviceType, msgIt.name())] = *msgIt;
-            }
-        }
+        AddTranslations(deviceTemplate.Type, translations, schema);
     }
 
     void AppendDeviceSchemas(Json::Value& devicesArray,
@@ -648,7 +649,6 @@ namespace
         for (const auto& t: templates.GetTemplatesOrderedByName()) {
             try {
                 AddDeviceUISchema(*t, deviceFactory, devicesArray, definitions, translations);
-                AddTranslations(t->Type, translations, t->Schema);
             } catch (const std::exception& e) {
                 LOG(Error) << "Can't load template for '" << t->Title << "': " << e.what();
             }
@@ -687,14 +687,10 @@ namespace
     struct TGroup
     {
         uint32_t Order;
-        std::string Name;
         std::string Id;
         Json::Value Options;
 
-        TGroup(const Json::Value& group)
-            : Order(group.get("order", 1).asUInt()),
-              Name(group["title"].asString()),
-              Id(group["id"].asString())
+        TGroup(const Json::Value& group): Order(group.get("order", 1).asUInt()), Id(group["id"].asString())
         {
             if (group.isMember("ui_options")) {
                 Options = group["ui_options"];
@@ -719,7 +715,7 @@ namespace
         while (grIt != groups.end() && notGrIt != channelsNotInGroups.end()) {
             if (grIt->Order <= i) {
                 auto& item = Append(res);
-                item["name"] = grIt->Name;
+                item["name"] = grIt->Id;
                 item["device_type"] = grIt->Id;
                 if (!grIt->Options.empty()) {
                     item["ui_options"] = grIt->Options;
@@ -733,7 +729,7 @@ namespace
         }
         for (; grIt != groups.end(); ++grIt) {
             auto& item = Append(res);
-            item["name"] = grIt->Name;
+            item["name"] = grIt->Id;
             item["device_type"] = grIt->Id;
             if (!grIt->Options.empty()) {
                 item["ui_options"] = grIt->Options;
@@ -774,7 +770,20 @@ Json::Value MakeSchemaForConfed(const Json::Value& configSchema,
     return res;
 }
 
-void TransformGroupsToSubdevices(Json::Value& schema, Json::Value& subdevices)
+void AddGroupTitleTranslations(const std::string& id, const std::string& title, Json::Value& mainSchemaTranslations)
+{
+    for (auto langIt = mainSchemaTranslations.begin(); langIt != mainSchemaTranslations.end(); ++langIt) {
+        if (langIt->isMember(title)) {
+            (*langIt)[id] = (*langIt)[title];
+        } else {
+            if (langIt.name() == "en") {
+                (*langIt)[id] = title;
+            }
+        }
+    }
+}
+
+void TransformGroupsToSubdevices(Json::Value& schema, Json::Value& subdevices, Json::Value* mainSchemaTranslations)
 {
     if (!schema.isMember("groups")) {
         return;
@@ -783,11 +792,16 @@ void TransformGroupsToSubdevices(Json::Value& schema, Json::Value& subdevices)
     std::unordered_map<std::string, Json::Value> subdevicesForGroups; // key - group id
     std::vector<TGroup> groups;
     for (const auto& group: schema["groups"]) {
+        auto id = group["id"].asString();
         Json::Value subdevice;
-        subdevice["title"] = group["title"];
-        subdevice["device_type"] = group["id"];
-        subdevicesForGroups.emplace(group["id"].asString(), subdevice);
+        subdevice["title"] = id;
+        subdevice["device_type"] = id;
+        subdevicesForGroups.emplace(id, subdevice);
         groups.emplace_back(group);
+        if (mainSchemaTranslations) {
+            auto title = group["title"].asString();
+            AddGroupTitleTranslations(id, title, *mainSchemaTranslations);
+        }
     }
 
     std::stable_sort(groups.begin(), groups.end(), [](const auto& v1, const auto& v2) { return v1.Order < v2.Order; });

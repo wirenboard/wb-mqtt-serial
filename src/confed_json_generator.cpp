@@ -158,7 +158,7 @@ namespace
         std::unordered_map<std::string, Json::Value> channelsFromGroups;
         for (const auto& group: schema["groups"]) {
             Json::Value item;
-            item["name"] = group["title"];
+            item["name"] = group["id"];
             item["device_type"] = group["id"];
             channelsFromGroups.emplace(group["id"].asString(), item);
         }

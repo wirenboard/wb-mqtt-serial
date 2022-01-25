@@ -1,3 +1,9 @@
+wb-mqtt-serial (2.45.0-wb2) stable; urgency=medium
+
+  * Support for groups with similar titles is added
+
+ -- Petr Krasnoshchekov <petr.krasnoshchekov@wirenboard.ru>  Mon, 24 Jan 2022 17:23:56 +0500
+
 wb-mqtt-serial (2.45.0-wb1) stable; urgency=medium
 
   * WB-MRWM2 template was added
