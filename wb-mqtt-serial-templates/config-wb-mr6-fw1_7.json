@@ -769,10 +769,10 @@
                             "default": 0,
                             "enum": [0, 1, 2, 3],
                             "enum_titles": [
-                                "mapping edge mode no action",
-                                "mapping edge mode reset",
-                                "mapping edge mode set",
-                                "mapping edge mode toggle"
+                                "no action",
+                                "reset",
+                                "set",
+                                "toggle"
                             ]
                         },
                         "in2_sp": {
@@ -784,10 +784,10 @@
                             "default": 0,
                             "enum": [0, 1, 2, 3],
                             "enum_titles": [
-                                "mapping edge mode no action",
-                                "mapping edge mode reset",
-                                "mapping edge mode set",
-                                "mapping edge mode toggle"
+                                "no action",
+                                "reset",
+                                "set",
+                                "toggle"
                             ]
                         },
                         "in3_sp": {
@@ -799,10 +799,10 @@
                             "default": 0,
                             "enum": [0, 1, 2, 3],
                             "enum_titles": [
-                                "mapping edge mode no action",
-                                "mapping edge mode reset",
-                                "mapping edge mode set",
-                                "mapping edge mode toggle"
+                                "no action",
+                                "reset",
+                                "set",
+                                "toggle"
                             ]
                         },
                         "in4_sp": {
@@ -814,10 +814,10 @@
                             "default": 0,
                             "enum": [0, 1, 2, 3],
                             "enum_titles": [
-                                "mapping edge mode no action",
-                                "mapping edge mode reset",
-                                "mapping edge mode set",
-                                "mapping edge mode toggle"
+                                "no action",
+                                "reset",
+                                "set",
+                                "toggle"
                             ]
                         },
                         "in5_sp": {
@@ -829,10 +829,10 @@
                             "default": 0,
                             "enum": [0, 1, 2, 3],
                             "enum_titles": [
-                                "mapping edge mode no action",
-                                "mapping edge mode reset",
-                                "mapping edge mode set",
-                                "mapping edge mode toggle"
+                                "no action",
+                                "reset",
+                                "set",
+                                "toggle"
                             ]
                         },
                         "in6_sp": {
@@ -844,10 +844,10 @@
                             "default": 0,
                             "enum": [0, 1, 2, 3],
                             "enum_titles": [
-                                "mapping edge mode no action",
-                                "mapping edge mode reset",
-                                "mapping edge mode set",
-                                "mapping edge mode toggle"
+                                "no action",
+                                "reset",
+                                "set",
+                                "toggle"
                             ]
                         },
             
@@ -860,10 +860,10 @@
                             "default": 0,
                             "enum": [0, 1, 2, 3],
                             "enum_titles": [
-                                "mapping edge mode no action",
-                                "mapping edge mode reset",
-                                "mapping edge mode set",
-                                "mapping edge mode toggle"
+                                "no action",
+                                "reset",
+                                "set",
+                                "toggle"
                             ]
                         },
                         "in2_lp": {
@@ -875,10 +875,10 @@
                             "default": 0,
                             "enum": [0, 1, 2, 3],
                             "enum_titles": [
-                                "mapping edge mode no action",
-                                "mapping edge mode reset",
-                                "mapping edge mode set",
-                                "mapping edge mode toggle"
+                                "no action",
+                                "reset",
+                                "set",
+                                "toggle"
                             ]
                         },
                         "in3_lp": {
@@ -890,10 +890,10 @@
                             "default": 0,
                             "enum": [0, 1, 2, 3],
                             "enum_titles": [
-                                "mapping edge mode no action",
-                                "mapping edge mode reset",
-                                "mapping edge mode set",
-                                "mapping edge mode toggle"
+                                "no action",
+                                "reset",
+                                "set",
+                                "toggle"
                             ]
                         },
                         "in4_lp": {
@@ -905,10 +905,10 @@
                             "default": 0,
                             "enum": [0, 1, 2, 3],
                             "enum_titles": [
-                                "mapping edge mode no action",
-                                "mapping edge mode reset",
-                                "mapping edge mode set",
-                                "mapping edge mode toggle"
+                                "no action",
+                                "reset",
+                                "set",
+                                "toggle"
                             ]
                         },
                         "in5_lp": {
@@ -920,10 +920,10 @@
                             "default": 0,
                             "enum": [0, 1, 2, 3],
                             "enum_titles": [
-                                "mapping edge mode no action",
-                                "mapping edge mode reset",
-                                "mapping edge mode set",
-                                "mapping edge mode toggle"
+                                "no action",
+                                "reset",
+                                "set",
+                                "toggle"
                             ]
                         },
                         "in6_lp": {
@@ -935,10 +935,10 @@
                             "default": 0,
                             "enum": [0, 1, 2, 3],
                             "enum_titles": [
-                                "mapping edge mode no action",
-                                "mapping edge mode reset",
-                                "mapping edge mode set",
-                                "mapping edge mode toggle"
+                                "no action",
+                                "reset",
+                                "set",
+                                "toggle"
                             ]
                         },
             
@@ -951,10 +951,10 @@
                             "default": 0,
                             "enum": [0, 1, 2, 3],
                             "enum_titles": [
-                                "mapping edge mode no action",
-                                "mapping edge mode reset",
-                                "mapping edge mode set",
-                                "mapping edge mode toggle"
+                                "no action",
+                                "reset",
+                                "set",
+                                "toggle"
                             ]
                         },
                         "in2_dp": {
@@ -966,10 +966,10 @@
                             "default": 0,
                             "enum": [0, 1, 2, 3],
                             "enum_titles": [
-                                "mapping edge mode no action",
-                                "mapping edge mode reset",
-                                "mapping edge mode set",
-                                "mapping edge mode toggle"
+                                "no action",
+                                "reset",
+                                "set",
+                                "toggle"
                             ]
                         },
                         "in3_dp": {
@@ -981,10 +981,10 @@
                             "default": 0,
                             "enum": [0, 1, 2, 3],
                             "enum_titles": [
-                                "mapping edge mode no action",
-                                "mapping edge mode reset",
-                                "mapping edge mode set",
-                                "mapping edge mode toggle"
+                                "no action",
+                                "reset",
+                                "set",
+                                "toggle"
                             ]
                         },
                         "in4_dp": {
@@ -996,10 +996,10 @@
                             "default": 0,
                             "enum": [0, 1, 2, 3],
                             "enum_titles": [
-                                "mapping edge mode no action",
-                                "mapping edge mode reset",
-                                "mapping edge mode set",
-                                "mapping edge mode toggle"
+                                "no action",
+                                "reset",
+                                "set",
+                                "toggle"
                             ]
                         },
                         "in5_dp": {
@@ -1011,10 +1011,10 @@
                             "default": 0,
                             "enum": [0, 1, 2, 3],
                             "enum_titles": [
-                                "mapping edge mode no action",
-                                "mapping edge mode reset",
-                                "mapping edge mode set",
-                                "mapping edge mode toggle"
+                                "no action",
+                                "reset",
+                                "set",
+                                "toggle"
                             ]
                         },
                         "in6_dp": {
@@ -1026,10 +1026,10 @@
                             "default": 0,
                             "enum": [0, 1, 2, 3],
                             "enum_titles": [
-                                "mapping edge mode no action",
-                                "mapping edge mode reset",
-                                "mapping edge mode set",
-                                "mapping edge mode toggle"
+                                "no action",
+                                "reset",
+                                "set",
+                                "toggle"
                             ]
                         },
             
@@ -1042,10 +1042,10 @@
                             "default": 0,
                             "enum": [0, 1, 2, 3],
                             "enum_titles": [
-                                "mapping edge mode no action",
-                                "mapping edge mode reset",
-                                "mapping edge mode set",
-                                "mapping edge mode toggle"
+                                "no action",
+                                "reset",
+                                "set",
+                                "toggle"
                             ]
                         },
                         "in2_slp": {
@@ -1057,10 +1057,10 @@
                             "default": 0,
                             "enum": [0, 1, 2, 3],
                             "enum_titles": [
-                                "mapping edge mode no action",
-                                "mapping edge mode reset",
-                                "mapping edge mode set",
-                                "mapping edge mode toggle"
+                                "no action",
+                                "reset",
+                                "set",
+                                "toggle"
                             ]
                         },
                         "in3_slp": {
@@ -1072,10 +1072,10 @@
                             "default": 0,
                             "enum": [0, 1, 2, 3],
                             "enum_titles": [
-                                "mapping edge mode no action",
-                                "mapping edge mode reset",
-                                "mapping edge mode set",
-                                "mapping edge mode toggle"
+                                "no action",
+                                "reset",
+                                "set",
+                                "toggle"
                             ]
                         },
                         "in4_slp": {
@@ -1087,10 +1087,10 @@
                             "default": 0,
                             "enum": [0, 1, 2, 3],
                             "enum_titles": [
-                                "mapping edge mode no action",
-                                "mapping edge mode reset",
-                                "mapping edge mode set",
-                                "mapping edge mode toggle"
+                                "no action",
+                                "reset",
+                                "set",
+                                "toggle"
                             ]
                         },
                         "in5_slp": {
@@ -1102,10 +1102,10 @@
                             "default": 0,
                             "enum": [0, 1, 2, 3],
                             "enum_titles": [
-                                "mapping edge mode no action",
-                                "mapping edge mode reset",
-                                "mapping edge mode set",
-                                "mapping edge mode toggle"
+                                "no action",
+                                "reset",
+                                "set",
+                                "toggle"
                             ]
                         },
                         "in6_slp": {
@@ -1117,10 +1117,10 @@
                             "default": 0,
                             "enum": [0, 1, 2, 3],
                             "enum_titles": [
-                                "mapping edge mode no action",
-                                "mapping edge mode reset",
-                                "mapping edge mode set",
-                                "mapping edge mode toggle"
+                                "no action",
+                                "reset",
+                                "set",
+                                "toggle"
                             ]
                         },
 
@@ -1834,10 +1834,10 @@
                             "default": 0,
                             "enum": [0, 1, 2, 3],
                             "enum_titles": [
-                                "mapping edge mode no action",
-                                "mapping edge mode reset",
-                                "mapping edge mode set",
-                                "mapping edge mode toggle"
+                                "no action",
+                                "reset",
+                                "set",
+                                "toggle"
                             ]
                         },
                         "in2_sp": {
@@ -1849,10 +1849,10 @@
                             "default": 0,
                             "enum": [0, 1, 2, 3],
                             "enum_titles": [
-                                "mapping edge mode no action",
-                                "mapping edge mode reset",
-                                "mapping edge mode set",
-                                "mapping edge mode toggle"
+                                "no action",
+                                "reset",
+                                "set",
+                                "toggle"
                             ]
                         },
                         "in3_sp": {
@@ -1864,10 +1864,10 @@
                             "default": 0,
                             "enum": [0, 1, 2, 3],
                             "enum_titles": [
-                                "mapping edge mode no action",
-                                "mapping edge mode reset",
-                                "mapping edge mode set",
-                                "mapping edge mode toggle"
+                                "no action",
+                                "reset",
+                                "set",
+                                "toggle"
                             ]
                         },
                         "in4_sp": {
@@ -1879,10 +1879,10 @@
                             "default": 0,
                             "enum": [0, 1, 2, 3],
                             "enum_titles": [
-                                "mapping edge mode no action",
-                                "mapping edge mode reset",
-                                "mapping edge mode set",
-                                "mapping edge mode toggle"
+                                "no action",
+                                "reset",
+                                "set",
+                                "toggle"
                             ]
                         },
                         "in5_sp": {
@@ -1894,10 +1894,10 @@
                             "default": 0,
                             "enum": [0, 1, 2, 3],
                             "enum_titles": [
-                                "mapping edge mode no action",
-                                "mapping edge mode reset",
-                                "mapping edge mode set",
-                                "mapping edge mode toggle"
+                                "no action",
+                                "reset",
+                                "set",
+                                "toggle"
                             ]
                         },
                         "in6_sp": {
@@ -1909,10 +1909,10 @@
                             "default": 0,
                             "enum": [0, 1, 2, 3],
                             "enum_titles": [
-                                "mapping edge mode no action",
-                                "mapping edge mode reset",
-                                "mapping edge mode set",
-                                "mapping edge mode toggle"
+                                "no action",
+                                "reset",
+                                "set",
+                                "toggle"
                             ]
                         },
 
@@ -1925,10 +1925,10 @@
                             "default": 0,
                             "enum": [0, 1, 2, 3],
                             "enum_titles": [
-                                "mapping edge mode no action",
-                                "mapping edge mode reset",
-                                "mapping edge mode set",
-                                "mapping edge mode toggle"
+                                "no action",
+                                "reset",
+                                "set",
+                                "toggle"
                             ]
                         },
                         "in2_lp": {
@@ -1940,10 +1940,10 @@
                             "default": 0,
                             "enum": [0, 1, 2, 3],
                             "enum_titles": [
-                                "mapping edge mode no action",
-                                "mapping edge mode reset",
-                                "mapping edge mode set",
-                                "mapping edge mode toggle"
+                                "no action",
+                                "reset",
+                                "set",
+                                "toggle"
                             ]
                         },
                         "in3_lp": {
@@ -1955,10 +1955,10 @@
                             "default": 0,
                             "enum": [0, 1, 2, 3],
                             "enum_titles": [
-                                "mapping edge mode no action",
-                                "mapping edge mode reset",
-                                "mapping edge mode set",
-                                "mapping edge mode toggle"
+                                "no action",
+                                "reset",
+                                "set",
+                                "toggle"
                             ]
                         },
                         "in4_lp": {
@@ -1970,10 +1970,10 @@
                             "default": 0,
                             "enum": [0, 1, 2, 3],
                             "enum_titles": [
-                                "mapping edge mode no action",
-                                "mapping edge mode reset",
-                                "mapping edge mode set",
-                                "mapping edge mode toggle"
+                                "no action",
+                                "reset",
+                                "set",
+                                "toggle"
                             ]
                         },
                         "in5_lp": {
@@ -1985,10 +1985,10 @@
                             "default": 0,
                             "enum": [0, 1, 2, 3],
                             "enum_titles": [
-                                "mapping edge mode no action",
-                                "mapping edge mode reset",
-                                "mapping edge mode set",
-                                "mapping edge mode toggle"
+                                "no action",
+                                "reset",
+                                "set",
+                                "toggle"
                             ]
                         },
                         "in6_lp": {
@@ -2000,10 +2000,10 @@
                             "default": 0,
                             "enum": [0, 1, 2, 3],
                             "enum_titles": [
-                                "mapping edge mode no action",
-                                "mapping edge mode reset",
-                                "mapping edge mode set",
-                                "mapping edge mode toggle"
+                                "no action",
+                                "reset",
+                                "set",
+                                "toggle"
                             ]
                         },
 
@@ -2016,10 +2016,10 @@
                             "default": 0,
                             "enum": [0, 1, 2, 3],
                             "enum_titles": [
-                                "mapping edge mode no action",
-                                "mapping edge mode reset",
-                                "mapping edge mode set",
-                                "mapping edge mode toggle"
+                                "no action",
+                                "reset",
+                                "set",
+                                "toggle"
                             ]
                         },
                         "in2_dp": {
@@ -2031,10 +2031,10 @@
                             "default": 0,
                             "enum": [0, 1, 2, 3],
                             "enum_titles": [
-                                "mapping edge mode no action",
-                                "mapping edge mode reset",
-                                "mapping edge mode set",
-                                "mapping edge mode toggle"
+                                "no action",
+                                "reset",
+                                "set",
+                                "toggle"
                             ]
                         },
                         "in3_dp": {
@@ -2046,10 +2046,10 @@
                             "default": 0,
                             "enum": [0, 1, 2, 3],
                             "enum_titles": [
-                                "mapping edge mode no action",
-                                "mapping edge mode reset",
-                                "mapping edge mode set",
-                                "mapping edge mode toggle"
+                                "no action",
+                                "reset",
+                                "set",
+                                "toggle"
                             ]
                         },
                         "in4_dp": {
@@ -2061,10 +2061,10 @@
                             "default": 0,
                             "enum": [0, 1, 2, 3],
                             "enum_titles": [
-                                "mapping edge mode no action",
-                                "mapping edge mode reset",
-                                "mapping edge mode set",
-                                "mapping edge mode toggle"
+                                "no action",
+                                "reset",
+                                "set",
+                                "toggle"
                             ]
                         },
                         "in5_dp": {
@@ -2076,10 +2076,10 @@
                             "default": 0,
                             "enum": [0, 1, 2, 3],
                             "enum_titles": [
-                                "mapping edge mode no action",
-                                "mapping edge mode reset",
-                                "mapping edge mode set",
-                                "mapping edge mode toggle"
+                                "no action",
+                                "reset",
+                                "set",
+                                "toggle"
                             ]
                         },
                         "in6_dp": {
@@ -2091,10 +2091,10 @@
                             "default": 0,
                             "enum": [0, 1, 2, 3],
                             "enum_titles": [
-                                "mapping edge mode no action",
-                                "mapping edge mode reset",
-                                "mapping edge mode set",
-                                "mapping edge mode toggle"
+                                "no action",
+                                "reset",
+                                "set",
+                                "toggle"
                             ]
                         },
 
@@ -2107,10 +2107,10 @@
                             "default": 0,
                             "enum": [0, 1, 2, 3],
                             "enum_titles": [
-                                "mapping edge mode no action",
-                                "mapping edge mode reset",
-                                "mapping edge mode set",
-                                "mapping edge mode toggle"
+                                "no action",
+                                "reset",
+                                "set",
+                                "toggle"
                             ]
                         },
                         "in2_slp": {
@@ -2122,10 +2122,10 @@
                             "default": 0,
                             "enum": [0, 1, 2, 3],
                             "enum_titles": [
-                                "mapping edge mode no action",
-                                "mapping edge mode reset",
-                                "mapping edge mode set",
-                                "mapping edge mode toggle"
+                                "no action",
+                                "reset",
+                                "set",
+                                "toggle"
                             ]
                         },
                         "in3_slp": {
@@ -2137,10 +2137,10 @@
                             "default": 0,
                             "enum": [0, 1, 2, 3],
                             "enum_titles": [
-                                "mapping edge mode no action",
-                                "mapping edge mode reset",
-                                "mapping edge mode set",
-                                "mapping edge mode toggle"
+                                "no action",
+                                "reset",
+                                "set",
+                                "toggle"
                             ]
                         },
                         "in4_slp": {
@@ -2152,10 +2152,10 @@
                             "default": 0,
                             "enum": [0, 1, 2, 3],
                             "enum_titles": [
-                                "mapping edge mode no action",
-                                "mapping edge mode reset",
-                                "mapping edge mode set",
-                                "mapping edge mode toggle"
+                                "no action",
+                                "reset",
+                                "set",
+                                "toggle"
                             ]
                         },
                         "in5_slp": {
@@ -2167,10 +2167,10 @@
                             "default": 0,
                             "enum": [0, 1, 2, 3],
                             "enum_titles": [
-                                "mapping edge mode no action",
-                                "mapping edge mode reset",
-                                "mapping edge mode set",
-                                "mapping edge mode toggle"
+                                "no action",
+                                "reset",
+                                "set",
+                                "toggle"
                             ]
                         },
                         "in6_slp": {
@@ -2182,10 +2182,10 @@
                             "default": 0,
                             "enum": [0, 1, 2, 3],
                             "enum_titles": [
-                                "mapping edge mode no action",
-                                "mapping edge mode reset",
-                                "mapping edge mode set",
-                                "mapping edge mode toggle"
+                                "no action",
+                                "reset",
+                                "set",
+                                "toggle"
                             ]
                         },
 
@@ -2899,10 +2899,10 @@
                             "default": 0,
                             "enum": [0, 1, 2, 3],
                             "enum_titles": [
-                                "mapping edge mode no action",
-                                "mapping edge mode reset",
-                                "mapping edge mode set",
-                                "mapping edge mode toggle"
+                                "no action",
+                                "reset",
+                                "set",
+                                "toggle"
                             ]
                         },
                         "in2_sp": {
@@ -2914,10 +2914,10 @@
                             "default": 0,
                             "enum": [0, 1, 2, 3],
                             "enum_titles": [
-                                "mapping edge mode no action",
-                                "mapping edge mode reset",
-                                "mapping edge mode set",
-                                "mapping edge mode toggle"
+                                "no action",
+                                "reset",
+                                "set",
+                                "toggle"
                             ]
                         },
                         "in3_sp": {
@@ -2929,10 +2929,10 @@
                             "default": 0,
                             "enum": [0, 1, 2, 3],
                             "enum_titles": [
-                                "mapping edge mode no action",
-                                "mapping edge mode reset",
-                                "mapping edge mode set",
-                                "mapping edge mode toggle"
+                                "no action",
+                                "reset",
+                                "set",
+                                "toggle"
                             ]
                         },
                         "in4_sp": {
@@ -2944,10 +2944,10 @@
                             "default": 0,
                             "enum": [0, 1, 2, 3],
                             "enum_titles": [
-                                "mapping edge mode no action",
-                                "mapping edge mode reset",
-                                "mapping edge mode set",
-                                "mapping edge mode toggle"
+                                "no action",
+                                "reset",
+                                "set",
+                                "toggle"
                             ]
                         },
                         "in5_sp": {
@@ -2959,10 +2959,10 @@
                             "default": 0,
                             "enum": [0, 1, 2, 3],
                             "enum_titles": [
-                                "mapping edge mode no action",
-                                "mapping edge mode reset",
-                                "mapping edge mode set",
-                                "mapping edge mode toggle"
+                                "no action",
+                                "reset",
+                                "set",
+                                "toggle"
                             ]
                         },
                         "in6_sp": {
@@ -2974,10 +2974,10 @@
                             "default": 0,
                             "enum": [0, 1, 2, 3],
                             "enum_titles": [
-                                "mapping edge mode no action",
-                                "mapping edge mode reset",
-                                "mapping edge mode set",
-                                "mapping edge mode toggle"
+                                "no action",
+                                "reset",
+                                "set",
+                                "toggle"
                             ]
                         },
 
@@ -2990,10 +2990,10 @@
                             "default": 0,
                             "enum": [0, 1, 2, 3],
                             "enum_titles": [
-                                "mapping edge mode no action",
-                                "mapping edge mode reset",
-                                "mapping edge mode set",
-                                "mapping edge mode toggle"
+                                "no action",
+                                "reset",
+                                "set",
+                                "toggle"
                             ]
                         },
                         "in2_lp": {
@@ -3005,10 +3005,10 @@
                             "default": 0,
                             "enum": [0, 1, 2, 3],
                             "enum_titles": [
-                                "mapping edge mode no action",
-                                "mapping edge mode reset",
-                                "mapping edge mode set",
-                                "mapping edge mode toggle"
+                                "no action",
+                                "reset",
+                                "set",
+                                "toggle"
                             ]
                         },
                         "in3_lp": {
@@ -3020,10 +3020,10 @@
                             "default": 0,
                             "enum": [0, 1, 2, 3],
                             "enum_titles": [
-                                "mapping edge mode no action",
-                                "mapping edge mode reset",
-                                "mapping edge mode set",
-                                "mapping edge mode toggle"
+                                "no action",
+                                "reset",
+                                "set",
+                                "toggle"
                             ]
                         },
                         "in4_lp": {
@@ -3035,10 +3035,10 @@
                             "default": 0,
                             "enum": [0, 1, 2, 3],
                             "enum_titles": [
-                                "mapping edge mode no action",
-                                "mapping edge mode reset",
-                                "mapping edge mode set",
-                                "mapping edge mode toggle"
+                                "no action",
+                                "reset",
+                                "set",
+                                "toggle"
                             ]
                         },
                         "in5_lp": {
@@ -3050,10 +3050,10 @@
                             "default": 0,
                             "enum": [0, 1, 2, 3],
                             "enum_titles": [
-                                "mapping edge mode no action",
-                                "mapping edge mode reset",
-                                "mapping edge mode set",
-                                "mapping edge mode toggle"
+                                "no action",
+                                "reset",
+                                "set",
+                                "toggle"
                             ]
                         },
                         "in6_lp": {
@@ -3065,10 +3065,10 @@
                             "default": 0,
                             "enum": [0, 1, 2, 3],
                             "enum_titles": [
-                                "mapping edge mode no action",
-                                "mapping edge mode reset",
-                                "mapping edge mode set",
-                                "mapping edge mode toggle"
+                                "no action",
+                                "reset",
+                                "set",
+                                "toggle"
                             ]
                         },
             
@@ -3081,10 +3081,10 @@
                             "default": 0,
                             "enum": [0, 1, 2, 3],
                             "enum_titles": [
-                                "mapping edge mode no action",
-                                "mapping edge mode reset",
-                                "mapping edge mode set",
-                                "mapping edge mode toggle"
+                                "no action",
+                                "reset",
+                                "set",
+                                "toggle"
                             ]
                         },
                         "in2_dp": {
@@ -3096,10 +3096,10 @@
                             "default": 0,
                             "enum": [0, 1, 2, 3],
                             "enum_titles": [
-                                "mapping edge mode no action",
-                                "mapping edge mode reset",
-                                "mapping edge mode set",
-                                "mapping edge mode toggle"
+                                "no action",
+                                "reset",
+                                "set",
+                                "toggle"
                             ]
                         },
                         "in3_dp": {
@@ -3111,10 +3111,10 @@
                             "default": 0,
                             "enum": [0, 1, 2, 3],
                             "enum_titles": [
-                                "mapping edge mode no action",
-                                "mapping edge mode reset",
-                                "mapping edge mode set",
-                                "mapping edge mode toggle"
+                                "no action",
+                                "reset",
+                                "set",
+                                "toggle"
                             ]
                         },
                         "in4_dp": {
@@ -3126,10 +3126,10 @@
                             "default": 0,
                             "enum": [0, 1, 2, 3],
                             "enum_titles": [
-                                "mapping edge mode no action",
-                                "mapping edge mode reset",
-                                "mapping edge mode set",
-                                "mapping edge mode toggle"
+                                "no action",
+                                "reset",
+                                "set",
+                                "toggle"
                             ]
                         },
                         "in5_dp": {
@@ -3141,10 +3141,10 @@
                             "default": 0,
                             "enum": [0, 1, 2, 3],
                             "enum_titles": [
-                                "mapping edge mode no action",
-                                "mapping edge mode reset",
-                                "mapping edge mode set",
-                                "mapping edge mode toggle"
+                                "no action",
+                                "reset",
+                                "set",
+                                "toggle"
                             ]
                         },
                         "in6_dp": {
@@ -3156,10 +3156,10 @@
                             "default": 0,
                             "enum": [0, 1, 2, 3],
                             "enum_titles": [
-                                "mapping edge mode no action",
-                                "mapping edge mode reset",
-                                "mapping edge mode set",
-                                "mapping edge mode toggle"
+                                "no action",
+                                "reset",
+                                "set",
+                                "toggle"
                             ]
                         },
 
@@ -3172,10 +3172,10 @@
                             "default": 0,
                             "enum": [0, 1, 2, 3],
                             "enum_titles": [
-                                "mapping edge mode no action",
-                                "mapping edge mode reset",
-                                "mapping edge mode set",
-                                "mapping edge mode toggle"
+                                "no action",
+                                "reset",
+                                "set",
+                                "toggle"
                             ]
                         },
                         "in2_slp": {
@@ -3187,10 +3187,10 @@
                             "default": 0,
                             "enum": [0, 1, 2, 3],
                             "enum_titles": [
-                                "mapping edge mode no action",
-                                "mapping edge mode reset",
-                                "mapping edge mode set",
-                                "mapping edge mode toggle"
+                                "no action",
+                                "reset",
+                                "set",
+                                "toggle"
                             ]
                         },
                         "in3_slp": {
@@ -3202,10 +3202,10 @@
                             "default": 0,
                             "enum": [0, 1, 2, 3],
                             "enum_titles": [
-                                "mapping edge mode no action",
-                                "mapping edge mode reset",
-                                "mapping edge mode set",
-                                "mapping edge mode toggle"
+                                "no action",
+                                "reset",
+                                "set",
+                                "toggle"
                             ]
                         },
                         "in4_slp": {
@@ -3217,10 +3217,10 @@
                             "default": 0,
                             "enum": [0, 1, 2, 3],
                             "enum_titles": [
-                                "mapping edge mode no action",
-                                "mapping edge mode reset",
-                                "mapping edge mode set",
-                                "mapping edge mode toggle"
+                                "no action",
+                                "reset",
+                                "set",
+                                "toggle"
                             ]
                         },
                         "in5_slp": {
@@ -3232,10 +3232,10 @@
                             "default": 0,
                             "enum": [0, 1, 2, 3],
                             "enum_titles": [
-                                "mapping edge mode no action",
-                                "mapping edge mode reset",
-                                "mapping edge mode set",
-                                "mapping edge mode toggle"
+                                "no action",
+                                "reset",
+                                "set",
+                                "toggle"
                             ]
                         },
                         "in6_slp": {
@@ -3247,10 +3247,10 @@
                             "default": 0,
                             "enum": [0, 1, 2, 3],
                             "enum_titles": [
-                                "mapping edge mode no action",
-                                "mapping edge mode reset",
-                                "mapping edge mode set",
-                                "mapping edge mode toggle"
+                                "no action",
+                                "reset",
+                                "set",
+                                "toggle"
                             ]
                         },
 
@@ -3964,10 +3964,10 @@
                             "default": 0,
                             "enum": [0, 1, 2, 3],
                             "enum_titles": [
-                                "mapping edge mode no action",
-                                "mapping edge mode reset",
-                                "mapping edge mode set",
-                                "mapping edge mode toggle"
+                                "no action",
+                                "reset",
+                                "set",
+                                "toggle"
                             ]
                         },
                         "in2_sp": {
@@ -3979,10 +3979,10 @@
                             "default": 0,
                             "enum": [0, 1, 2, 3],
                             "enum_titles": [
-                                "mapping edge mode no action",
-                                "mapping edge mode reset",
-                                "mapping edge mode set",
-                                "mapping edge mode toggle"
+                                "no action",
+                                "reset",
+                                "set",
+                                "toggle"
                             ]
                         },
                         "in3_sp": {
@@ -3994,10 +3994,10 @@
                             "default": 0,
                             "enum": [0, 1, 2, 3],
                             "enum_titles": [
-                                "mapping edge mode no action",
-                                "mapping edge mode reset",
-                                "mapping edge mode set",
-                                "mapping edge mode toggle"
+                                "no action",
+                                "reset",
+                                "set",
+                                "toggle"
                             ]
                         },
                         "in4_sp": {
@@ -4009,10 +4009,10 @@
                             "default": 0,
                             "enum": [0, 1, 2, 3],
                             "enum_titles": [
-                                "mapping edge mode no action",
-                                "mapping edge mode reset",
-                                "mapping edge mode set",
-                                "mapping edge mode toggle"
+                                "no action",
+                                "reset",
+                                "set",
+                                "toggle"
                             ]
                         },
                         "in5_sp": {
@@ -4024,10 +4024,10 @@
                             "default": 0,
                             "enum": [0, 1, 2, 3],
                             "enum_titles": [
-                                "mapping edge mode no action",
-                                "mapping edge mode reset",
-                                "mapping edge mode set",
-                                "mapping edge mode toggle"
+                                "no action",
+                                "reset",
+                                "set",
+                                "toggle"
                             ]
                         },
                         "in6_sp": {
@@ -4039,10 +4039,10 @@
                             "default": 0,
                             "enum": [0, 1, 2, 3],
                             "enum_titles": [
-                                "mapping edge mode no action",
-                                "mapping edge mode reset",
-                                "mapping edge mode set",
-                                "mapping edge mode toggle"
+                                "no action",
+                                "reset",
+                                "set",
+                                "toggle"
                             ]
                         },
 
@@ -4055,10 +4055,10 @@
                             "default": 0,
                             "enum": [0, 1, 2, 3],
                             "enum_titles": [
-                                "mapping edge mode no action",
-                                "mapping edge mode reset",
-                                "mapping edge mode set",
-                                "mapping edge mode toggle"
+                                "no action",
+                                "reset",
+                                "set",
+                                "toggle"
                             ]
                         },
                         "in2_lp": {
@@ -4070,10 +4070,10 @@
                             "default": 0,
                             "enum": [0, 1, 2, 3],
                             "enum_titles": [
-                                "mapping edge mode no action",
-                                "mapping edge mode reset",
-                                "mapping edge mode set",
-                                "mapping edge mode toggle"
+                                "no action",
+                                "reset",
+                                "set",
+                                "toggle"
                             ]
                         },
                         "in3_lp": {
@@ -4085,10 +4085,10 @@
                             "default": 0,
                             "enum": [0, 1, 2, 3],
                             "enum_titles": [
-                                "mapping edge mode no action",
-                                "mapping edge mode reset",
-                                "mapping edge mode set",
-                                "mapping edge mode toggle"
+                                "no action",
+                                "reset",
+                                "set",
+                                "toggle"
                             ]
                         },
                         "in4_lp": {
@@ -4100,10 +4100,10 @@
                             "default": 0,
                             "enum": [0, 1, 2, 3],
                             "enum_titles": [
-                                "mapping edge mode no action",
-                                "mapping edge mode reset",
-                                "mapping edge mode set",
-                                "mapping edge mode toggle"
+                                "no action",
+                                "reset",
+                                "set",
+                                "toggle"
                             ]
                         },
                         "in5_lp": {
@@ -4115,10 +4115,10 @@
                             "default": 0,
                             "enum": [0, 1, 2, 3],
                             "enum_titles": [
-                                "mapping edge mode no action",
-                                "mapping edge mode reset",
-                                "mapping edge mode set",
-                                "mapping edge mode toggle"
+                                "no action",
+                                "reset",
+                                "set",
+                                "toggle"
                             ]
                         },
                         "in6_lp": {
@@ -4130,10 +4130,10 @@
                             "default": 0,
                             "enum": [0, 1, 2, 3],
                             "enum_titles": [
-                                "mapping edge mode no action",
-                                "mapping edge mode reset",
-                                "mapping edge mode set",
-                                "mapping edge mode toggle"
+                                "no action",
+                                "reset",
+                                "set",
+                                "toggle"
                             ]
                         },
             
@@ -4146,10 +4146,10 @@
                             "default": 0,
                             "enum": [0, 1, 2, 3],
                             "enum_titles": [
-                                "mapping edge mode no action",
-                                "mapping edge mode reset",
-                                "mapping edge mode set",
-                                "mapping edge mode toggle"
+                                "no action",
+                                "reset",
+                                "set",
+                                "toggle"
                             ]
                         },
                         "in2_dp": {
@@ -4161,10 +4161,10 @@
                             "default": 0,
                             "enum": [0, 1, 2, 3],
                             "enum_titles": [
-                                "mapping edge mode no action",
-                                "mapping edge mode reset",
-                                "mapping edge mode set",
-                                "mapping edge mode toggle"
+                                "no action",
+                                "reset",
+                                "set",
+                                "toggle"
                             ]
                         },
                         "in3_dp": {
@@ -4176,10 +4176,10 @@
                             "default": 0,
                             "enum": [0, 1, 2, 3],
                             "enum_titles": [
-                                "mapping edge mode no action",
-                                "mapping edge mode reset",
-                                "mapping edge mode set",
-                                "mapping edge mode toggle"
+                                "no action",
+                                "reset",
+                                "set",
+                                "toggle"
                             ]
                         },
                         "in4_dp": {
@@ -4191,10 +4191,10 @@
                             "default": 0,
                             "enum": [0, 1, 2, 3],
                             "enum_titles": [
-                                "mapping edge mode no action",
-                                "mapping edge mode reset",
-                                "mapping edge mode set",
-                                "mapping edge mode toggle"
+                                "no action",
+                                "reset",
+                                "set",
+                                "toggle"
                             ]
                         },
                         "in5_dp": {
@@ -4206,10 +4206,10 @@
                             "default": 0,
                             "enum": [0, 1, 2, 3],
                             "enum_titles": [
-                                "mapping edge mode no action",
-                                "mapping edge mode reset",
-                                "mapping edge mode set",
-                                "mapping edge mode toggle"
+                                "no action",
+                                "reset",
+                                "set",
+                                "toggle"
                             ]
                         },
                         "in6_dp": {
@@ -4221,10 +4221,10 @@
                             "default": 0,
                             "enum": [0, 1, 2, 3],
                             "enum_titles": [
-                                "mapping edge mode no action",
-                                "mapping edge mode reset",
-                                "mapping edge mode set",
-                                "mapping edge mode toggle"
+                                "no action",
+                                "reset",
+                                "set",
+                                "toggle"
                             ]
                         },
 
@@ -4237,10 +4237,10 @@
                             "default": 0,
                             "enum": [0, 1, 2, 3],
                             "enum_titles": [
-                                "mapping edge mode no action",
-                                "mapping edge mode reset",
-                                "mapping edge mode set",
-                                "mapping edge mode toggle"
+                                "no action",
+                                "reset",
+                                "set",
+                                "toggle"
                             ]
                         },
                         "in2_slp": {
@@ -4252,10 +4252,10 @@
                             "default": 0,
                             "enum": [0, 1, 2, 3],
                             "enum_titles": [
-                                "mapping edge mode no action",
-                                "mapping edge mode reset",
-                                "mapping edge mode set",
-                                "mapping edge mode toggle"
+                                "no action",
+                                "reset",
+                                "set",
+                                "toggle"
                             ]
                         },
                         "in3_slp": {
@@ -4267,10 +4267,10 @@
                             "default": 0,
                             "enum": [0, 1, 2, 3],
                             "enum_titles": [
-                                "mapping edge mode no action",
-                                "mapping edge mode reset",
-                                "mapping edge mode set",
-                                "mapping edge mode toggle"
+                                "no action",
+                                "reset",
+                                "set",
+                                "toggle"
                             ]
                         },
                         "in4_slp": {
@@ -4282,10 +4282,10 @@
                             "default": 0,
                             "enum": [0, 1, 2, 3],
                             "enum_titles": [
-                                "mapping edge mode no action",
-                                "mapping edge mode reset",
-                                "mapping edge mode set",
-                                "mapping edge mode toggle"
+                                "no action",
+                                "reset",
+                                "set",
+                                "toggle"
                             ]
                         },
                         "in5_slp": {
@@ -4297,10 +4297,10 @@
                             "default": 0,
                             "enum": [0, 1, 2, 3],
                             "enum_titles": [
-                                "mapping edge mode no action",
-                                "mapping edge mode reset",
-                                "mapping edge mode set",
-                                "mapping edge mode toggle"
+                                "no action",
+                                "reset",
+                                "set",
+                                "toggle"
                             ]
                         },
                         "in6_slp": {
@@ -4312,10 +4312,10 @@
                             "default": 0,
                             "enum": [0, 1, 2, 3],
                             "enum_titles": [
-                                "mapping edge mode no action",
-                                "mapping edge mode reset",
-                                "mapping edge mode set",
-                                "mapping edge mode toggle"
+                                "no action",
+                                "reset",
+                                "set",
+                                "toggle"
                             ]
                         },
 
@@ -5029,10 +5029,10 @@
                             "default": 0,
                             "enum": [0, 1, 2, 3],
                             "enum_titles": [
-                                "mapping edge mode no action",
-                                "mapping edge mode reset",
-                                "mapping edge mode set",
-                                "mapping edge mode toggle"
+                                "no action",
+                                "reset",
+                                "set",
+                                "toggle"
                             ]
                         },
                         "in2_sp": {
@@ -5044,10 +5044,10 @@
                             "default": 0,
                             "enum": [0, 1, 2, 3],
                             "enum_titles": [
-                                "mapping edge mode no action",
-                                "mapping edge mode reset",
-                                "mapping edge mode set",
-                                "mapping edge mode toggle"
+                                "no action",
+                                "reset",
+                                "set",
+                                "toggle"
                             ]
                         },
                         "in3_sp": {
@@ -5059,10 +5059,10 @@
                             "default": 0,
                             "enum": [0, 1, 2, 3],
                             "enum_titles": [
-                                "mapping edge mode no action",
-                                "mapping edge mode reset",
-                                "mapping edge mode set",
-                                "mapping edge mode toggle"
+                                "no action",
+                                "reset",
+                                "set",
+                                "toggle"
                             ]
                         },
                         "in4_sp": {
@@ -5074,10 +5074,10 @@
                             "default": 0,
                             "enum": [0, 1, 2, 3],
                             "enum_titles": [
-                                "mapping edge mode no action",
-                                "mapping edge mode reset",
-                                "mapping edge mode set",
-                                "mapping edge mode toggle"
+                                "no action",
+                                "reset",
+                                "set",
+                                "toggle"
                             ]
                         },
                         "in5_sp": {
@@ -5089,10 +5089,10 @@
                             "default": 0,
                             "enum": [0, 1, 2, 3],
                             "enum_titles": [
-                                "mapping edge mode no action",
-                                "mapping edge mode reset",
-                                "mapping edge mode set",
-                                "mapping edge mode toggle"
+                                "no action",
+                                "reset",
+                                "set",
+                                "toggle"
                             ]
                         },
                         "in6_sp": {
@@ -5104,10 +5104,10 @@
                             "default": 0,
                             "enum": [0, 1, 2, 3],
                             "enum_titles": [
-                                "mapping edge mode no action",
-                                "mapping edge mode reset",
-                                "mapping edge mode set",
-                                "mapping edge mode toggle"
+                                "no action",
+                                "reset",
+                                "set",
+                                "toggle"
                             ]
                         },
 
@@ -5120,10 +5120,10 @@
                             "default": 0,
                             "enum": [0, 1, 2, 3],
                             "enum_titles": [
-                                "mapping edge mode no action",
-                                "mapping edge mode reset",
-                                "mapping edge mode set",
-                                "mapping edge mode toggle"
+                                "no action",
+                                "reset",
+                                "set",
+                                "toggle"
                             ]
                         },
                         "in2_lp": {
@@ -5135,10 +5135,10 @@
                             "default": 0,
                             "enum": [0, 1, 2, 3],
                             "enum_titles": [
-                                "mapping edge mode no action",
-                                "mapping edge mode reset",
-                                "mapping edge mode set",
-                                "mapping edge mode toggle"
+                                "no action",
+                                "reset",
+                                "set",
+                                "toggle"
                             ]
                         },
                         "in3_lp": {
@@ -5150,10 +5150,10 @@
                             "default": 0,
                             "enum": [0, 1, 2, 3],
                             "enum_titles": [
-                                "mapping edge mode no action",
-                                "mapping edge mode reset",
-                                "mapping edge mode set",
-                                "mapping edge mode toggle"
+                                "no action",
+                                "reset",
+                                "set",
+                                "toggle"
                             ]
                         },
                         "in4_lp": {
@@ -5165,10 +5165,10 @@
                             "default": 0,
                             "enum": [0, 1, 2, 3],
                             "enum_titles": [
-                                "mapping edge mode no action",
-                                "mapping edge mode reset",
-                                "mapping edge mode set",
-                                "mapping edge mode toggle"
+                                "no action",
+                                "reset",
+                                "set",
+                                "toggle"
                             ]
                         },
                         "in5_lp": {
@@ -5180,10 +5180,10 @@
                             "default": 0,
                             "enum": [0, 1, 2, 3],
                             "enum_titles": [
-                                "mapping edge mode no action",
-                                "mapping edge mode reset",
-                                "mapping edge mode set",
-                                "mapping edge mode toggle"
+                                "no action",
+                                "reset",
+                                "set",
+                                "toggle"
                             ]
                         },
                         "in6_lp": {
@@ -5195,10 +5195,10 @@
                             "default": 0,
                             "enum": [0, 1, 2, 3],
                             "enum_titles": [
-                                "mapping edge mode no action",
-                                "mapping edge mode reset",
-                                "mapping edge mode set",
-                                "mapping edge mode toggle"
+                                "no action",
+                                "reset",
+                                "set",
+                                "toggle"
                             ]
                         },
 
@@ -5211,10 +5211,10 @@
                             "default": 0,
                             "enum": [0, 1, 2, 3],
                             "enum_titles": [
-                                "mapping edge mode no action",
-                                "mapping edge mode reset",
-                                "mapping edge mode set",
-                                "mapping edge mode toggle"
+                                "no action",
+                                "reset",
+                                "set",
+                                "toggle"
                             ]
                         },
                         "in2_dp": {
@@ -5226,10 +5226,10 @@
                             "default": 0,
                             "enum": [0, 1, 2, 3],
                             "enum_titles": [
-                                "mapping edge mode no action",
-                                "mapping edge mode reset",
-                                "mapping edge mode set",
-                                "mapping edge mode toggle"
+                                "no action",
+                                "reset",
+                                "set",
+                                "toggle"
                             ]
                         },
                         "in3_dp": {
@@ -5241,10 +5241,10 @@
                             "default": 0,
                             "enum": [0, 1, 2, 3],
                             "enum_titles": [
-                                "mapping edge mode no action",
-                                "mapping edge mode reset",
-                                "mapping edge mode set",
-                                "mapping edge mode toggle"
+                                "no action",
+                                "reset",
+                                "set",
+                                "toggle"
                             ]
                         },
                         "in4_dp": {
@@ -5256,10 +5256,10 @@
                             "default": 0,
                             "enum": [0, 1, 2, 3],
                             "enum_titles": [
-                                "mapping edge mode no action",
-                                "mapping edge mode reset",
-                                "mapping edge mode set",
-                                "mapping edge mode toggle"
+                                "no action",
+                                "reset",
+                                "set",
+                                "toggle"
                             ]
                         },
                         "in5_dp": {
@@ -5271,10 +5271,10 @@
                             "default": 0,
                             "enum": [0, 1, 2, 3],
                             "enum_titles": [
-                                "mapping edge mode no action",
-                                "mapping edge mode reset",
-                                "mapping edge mode set",
-                                "mapping edge mode toggle"
+                                "no action",
+                                "reset",
+                                "set",
+                                "toggle"
                             ]
                         },
                         "in6_dp": {
@@ -5286,10 +5286,10 @@
                             "default": 0,
                             "enum": [0, 1, 2, 3],
                             "enum_titles": [
-                                "mapping edge mode no action",
-                                "mapping edge mode reset",
-                                "mapping edge mode set",
-                                "mapping edge mode toggle"
+                                "no action",
+                                "reset",
+                                "set",
+                                "toggle"
                             ]
                         },
 
@@ -5302,10 +5302,10 @@
                             "default": 0,
                             "enum": [0, 1, 2, 3],
                             "enum_titles": [
-                                "mapping edge mode no action",
-                                "mapping edge mode reset",
-                                "mapping edge mode set",
-                                "mapping edge mode toggle"
+                                "no action",
+                                "reset",
+                                "set",
+                                "toggle"
                             ]
                         },
                         "in2_slp": {
@@ -5317,10 +5317,10 @@
                             "default": 0,
                             "enum": [0, 1, 2, 3],
                             "enum_titles": [
-                                "mapping edge mode no action",
-                                "mapping edge mode reset",
-                                "mapping edge mode set",
-                                "mapping edge mode toggle"
+                                "no action",
+                                "reset",
+                                "set",
+                                "toggle"
                             ]
                         },
                         "in3_slp": {
@@ -5332,10 +5332,10 @@
                             "default": 0,
                             "enum": [0, 1, 2, 3],
                             "enum_titles": [
-                                "mapping edge mode no action",
-                                "mapping edge mode reset",
-                                "mapping edge mode set",
-                                "mapping edge mode toggle"
+                                "no action",
+                                "reset",
+                                "set",
+                                "toggle"
                             ]
                         },
                         "in4_slp": {
@@ -5347,10 +5347,10 @@
                             "default": 0,
                             "enum": [0, 1, 2, 3],
                             "enum_titles": [
-                                "mapping edge mode no action",
-                                "mapping edge mode reset",
-                                "mapping edge mode set",
-                                "mapping edge mode toggle"
+                                "no action",
+                                "reset",
+                                "set",
+                                "toggle"
                             ]
                         },
                         "in5_slp": {
@@ -5362,10 +5362,10 @@
                             "default": 0,
                             "enum": [0, 1, 2, 3],
                             "enum_titles": [
-                                "mapping edge mode no action",
-                                "mapping edge mode reset",
-                                "mapping edge mode set",
-                                "mapping edge mode toggle"
+                                "no action",
+                                "reset",
+                                "set",
+                                "toggle"
                             ]
                         },
                         "in6_slp": {
@@ -5377,10 +5377,10 @@
                             "default": 0,
                             "enum": [0, 1, 2, 3],
                             "enum_titles": [
-                                "mapping edge mode no action",
-                                "mapping edge mode reset",
-                                "mapping edge mode set",
-                                "mapping edge mode toggle"
+                                "no action",
+                                "reset",
+                                "set",
+                                "toggle"
                             ]
                         },
 
@@ -6094,10 +6094,10 @@
                             "default": 0,
                             "enum": [0, 1, 2, 3],
                             "enum_titles": [
-                                "mapping edge mode no action",
-                                "mapping edge mode reset",
-                                "mapping edge mode set",
-                                "mapping edge mode toggle"
+                                "no action",
+                                "reset",
+                                "set",
+                                "toggle"
                             ]
                         },
                         "in2_sp": {
@@ -6109,10 +6109,10 @@
                             "default": 0,
                             "enum": [0, 1, 2, 3],
                             "enum_titles": [
-                                "mapping edge mode no action",
-                                "mapping edge mode reset",
-                                "mapping edge mode set",
-                                "mapping edge mode toggle"
+                                "no action",
+                                "reset",
+                                "set",
+                                "toggle"
                             ]
                         },
                         "in3_sp": {
@@ -6124,10 +6124,10 @@
                             "default": 0,
                             "enum": [0, 1, 2, 3],
                             "enum_titles": [
-                                "mapping edge mode no action",
-                                "mapping edge mode reset",
-                                "mapping edge mode set",
-                                "mapping edge mode toggle"
+                                "no action",
+                                "reset",
+                                "set",
+                                "toggle"
                             ]
                         },
                         "in4_sp": {
@@ -6139,10 +6139,10 @@
                             "default": 0,
                             "enum": [0, 1, 2, 3],
                             "enum_titles": [
-                                "mapping edge mode no action",
-                                "mapping edge mode reset",
-                                "mapping edge mode set",
-                                "mapping edge mode toggle"
+                                "no action",
+                                "reset",
+                                "set",
+                                "toggle"
                             ]
                         },
                         "in5_sp": {
@@ -6154,10 +6154,10 @@
                             "default": 0,
                             "enum": [0, 1, 2, 3],
                             "enum_titles": [
-                                "mapping edge mode no action",
-                                "mapping edge mode reset",
-                                "mapping edge mode set",
-                                "mapping edge mode toggle"
+                                "no action",
+                                "reset",
+                                "set",
+                                "toggle"
                             ]
                         },
                         "in6_sp": {
@@ -6169,10 +6169,10 @@
                             "default": 0,
                             "enum": [0, 1, 2, 3],
                             "enum_titles": [
-                                "mapping edge mode no action",
-                                "mapping edge mode reset",
-                                "mapping edge mode set",
-                                "mapping edge mode toggle"
+                                "no action",
+                                "reset",
+                                "set",
+                                "toggle"
                             ]
                         },
 
@@ -6185,10 +6185,10 @@
                             "default": 0,
                             "enum": [0, 1, 2, 3],
                             "enum_titles": [
-                                "mapping edge mode no action",
-                                "mapping edge mode reset",
-                                "mapping edge mode set",
-                                "mapping edge mode toggle"
+                                "no action",
+                                "reset",
+                                "set",
+                                "toggle"
                             ]
                         },
                         "in2_lp": {
@@ -6200,10 +6200,10 @@
                             "default": 0,
                             "enum": [0, 1, 2, 3],
                             "enum_titles": [
-                                "mapping edge mode no action",
-                                "mapping edge mode reset",
-                                "mapping edge mode set",
-                                "mapping edge mode toggle"
+                                "no action",
+                                "reset",
+                                "set",
+                                "toggle"
                             ]
                         },
                         "in3_lp": {
@@ -6215,10 +6215,10 @@
                             "default": 0,
                             "enum": [0, 1, 2, 3],
                             "enum_titles": [
-                                "mapping edge mode no action",
-                                "mapping edge mode reset",
-                                "mapping edge mode set",
-                                "mapping edge mode toggle"
+                                "no action",
+                                "reset",
+                                "set",
+                                "toggle"
                             ]
                         },
                         "in4_lp": {
@@ -6230,10 +6230,10 @@
                             "default": 0,
                             "enum": [0, 1, 2, 3],
                             "enum_titles": [
-                                "mapping edge mode no action",
-                                "mapping edge mode reset",
-                                "mapping edge mode set",
-                                "mapping edge mode toggle"
+                                "no action",
+                                "reset",
+                                "set",
+                                "toggle"
                             ]
                         },
                         "in5_lp": {
@@ -6245,10 +6245,10 @@
                             "default": 0,
                             "enum": [0, 1, 2, 3],
                             "enum_titles": [
-                                "mapping edge mode no action",
-                                "mapping edge mode reset",
-                                "mapping edge mode set",
-                                "mapping edge mode toggle"
+                                "no action",
+                                "reset",
+                                "set",
+                                "toggle"
                             ]
                         },
                         "in6_lp": {
@@ -6260,10 +6260,10 @@
                             "default": 0,
                             "enum": [0, 1, 2, 3],
                             "enum_titles": [
-                                "mapping edge mode no action",
-                                "mapping edge mode reset",
-                                "mapping edge mode set",
-                                "mapping edge mode toggle"
+                                "no action",
+                                "reset",
+                                "set",
+                                "toggle"
                             ]
                         },
 
@@ -6276,10 +6276,10 @@
                             "default": 0,
                             "enum": [0, 1, 2, 3],
                             "enum_titles": [
-                                "mapping edge mode no action",
-                                "mapping edge mode reset",
-                                "mapping edge mode set",
-                                "mapping edge mode toggle"
+                                "no action",
+                                "reset",
+                                "set",
+                                "toggle"
                             ]
                         },
                         "in2_dp": {
@@ -6291,10 +6291,10 @@
                             "default": 0,
                             "enum": [0, 1, 2, 3],
                             "enum_titles": [
-                                "mapping edge mode no action",
-                                "mapping edge mode reset",
-                                "mapping edge mode set",
-                                "mapping edge mode toggle"
+                                "no action",
+                                "reset",
+                                "set",
+                                "toggle"
                             ]
                         },
                         "in3_dp": {
@@ -6306,10 +6306,10 @@
                             "default": 0,
                             "enum": [0, 1, 2, 3],
                             "enum_titles": [
-                                "mapping edge mode no action",
-                                "mapping edge mode reset",
-                                "mapping edge mode set",
-                                "mapping edge mode toggle"
+                                "no action",
+                                "reset",
+                                "set",
+                                "toggle"
                             ]
                         },
                         "in4_dp": {
@@ -6321,10 +6321,10 @@
                             "default": 0,
                             "enum": [0, 1, 2, 3],
                             "enum_titles": [
-                                "mapping edge mode no action",
-                                "mapping edge mode reset",
-                                "mapping edge mode set",
-                                "mapping edge mode toggle"
+                                "no action",
+                                "reset",
+                                "set",
+                                "toggle"
                             ]
                         },
                         "in5_dp": {
@@ -6336,10 +6336,10 @@
                             "default": 0,
                             "enum": [0, 1, 2, 3],
                             "enum_titles": [
-                                "mapping edge mode no action",
-                                "mapping edge mode reset",
-                                "mapping edge mode set",
-                                "mapping edge mode toggle"
+                                "no action",
+                                "reset",
+                                "set",
+                                "toggle"
                             ]
                         },
                         "in6_dp": {
@@ -6351,10 +6351,10 @@
                             "default": 0,
                             "enum": [0, 1, 2, 3],
                             "enum_titles": [
-                                "mapping edge mode no action",
-                                "mapping edge mode reset",
-                                "mapping edge mode set",
-                                "mapping edge mode toggle"
+                                "no action",
+                                "reset",
+                                "set",
+                                "toggle"
                             ]
                         },
 
@@ -6367,10 +6367,10 @@
                             "default": 0,
                             "enum": [0, 1, 2, 3],
                             "enum_titles": [
-                                "mapping edge mode no action",
-                                "mapping edge mode reset",
-                                "mapping edge mode set",
-                                "mapping edge mode toggle"
+                                "no action",
+                                "reset",
+                                "set",
+                                "toggle"
                             ]
                         },
                         "in2_slp": {
@@ -6382,10 +6382,10 @@
                             "default": 0,
                             "enum": [0, 1, 2, 3],
                             "enum_titles": [
-                                "mapping edge mode no action",
-                                "mapping edge mode reset",
-                                "mapping edge mode set",
-                                "mapping edge mode toggle"
+                                "no action",
+                                "reset",
+                                "set",
+                                "toggle"
                             ]
                         },
                         "in3_slp": {
@@ -6397,10 +6397,10 @@
                             "default": 0,
                             "enum": [0, 1, 2, 3],
                             "enum_titles": [
-                                "mapping edge mode no action",
-                                "mapping edge mode reset",
-                                "mapping edge mode set",
-                                "mapping edge mode toggle"
+                                "no action",
+                                "reset",
+                                "set",
+                                "toggle"
                             ]
                         },
                         "in4_slp": {
@@ -6412,10 +6412,10 @@
                             "default": 0,
                             "enum": [0, 1, 2, 3],
                             "enum_titles": [
-                                "mapping edge mode no action",
-                                "mapping edge mode reset",
-                                "mapping edge mode set",
-                                "mapping edge mode toggle"
+                                "no action",
+                                "reset",
+                                "set",
+                                "toggle"
                             ]
                         },
                         "in5_slp": {
@@ -6427,10 +6427,10 @@
                             "default": 0,
                             "enum": [0, 1, 2, 3],
                             "enum_titles": [
-                                "mapping edge mode no action",
-                                "mapping edge mode reset",
-                                "mapping edge mode set",
-                                "mapping edge mode toggle"
+                                "no action",
+                                "reset",
+                                "set",
+                                "toggle"
                             ]
                         },
                         "in6_slp": {
@@ -6442,10 +6442,10 @@
                             "default": 0,
                             "enum": [0, 1, 2, 3],
                             "enum_titles": [
-                                "mapping edge mode no action",
-                                "mapping edge mode reset",
-                                "mapping edge mode set",
-                                "mapping edge mode toggle"
+                                "no action",
+                                "reset",
+                                "set",
+                                "toggle"
                             ]
                         },
 
@@ -7159,10 +7159,10 @@
                             "default": 0,
                             "enum": [0, 1, 2, 3],
                             "enum_titles": [
-                                "mapping edge mode no action",
-                                "mapping edge mode reset",
-                                "mapping edge mode set",
-                                "mapping edge mode toggle"
+                                "no action",
+                                "reset",
+                                "set",
+                                "toggle"
                             ]
                         },
                         "in2_sp": {
@@ -7174,10 +7174,10 @@
                             "default": 0,
                             "enum": [0, 1, 2, 3],
                             "enum_titles": [
-                                "mapping edge mode no action",
-                                "mapping edge mode reset",
-                                "mapping edge mode set",
-                                "mapping edge mode toggle"
+                                "no action",
+                                "reset",
+                                "set",
+                                "toggle"
                             ]
                         },
                         "in3_sp": {
@@ -7189,10 +7189,10 @@
                             "default": 0,
                             "enum": [0, 1, 2, 3],
                             "enum_titles": [
-                                "mapping edge mode no action",
-                                "mapping edge mode reset",
-                                "mapping edge mode set",
-                                "mapping edge mode toggle"
+                                "no action",
+                                "reset",
+                                "set",
+                                "toggle"
                             ]
                         },
                         "in4_sp": {
@@ -7204,10 +7204,10 @@
                             "default": 0,
                             "enum": [0, 1, 2, 3],
                             "enum_titles": [
-                                "mapping edge mode no action",
-                                "mapping edge mode reset",
-                                "mapping edge mode set",
-                                "mapping edge mode toggle"
+                                "no action",
+                                "reset",
+                                "set",
+                                "toggle"
                             ]
                         },
                         "in5_sp": {
@@ -7219,10 +7219,10 @@
                             "default": 0,
                             "enum": [0, 1, 2, 3],
                             "enum_titles": [
-                                "mapping edge mode no action",
-                                "mapping edge mode reset",
-                                "mapping edge mode set",
-                                "mapping edge mode toggle"
+                                "no action",
+                                "reset",
+                                "set",
+                                "toggle"
                             ]
                         },
                         "in6_sp": {
@@ -7234,10 +7234,10 @@
                             "default": 0,
                             "enum": [0, 1, 2, 3],
                             "enum_titles": [
-                                "mapping edge mode no action",
-                                "mapping edge mode reset",
-                                "mapping edge mode set",
-                                "mapping edge mode toggle"
+                                "no action",
+                                "reset",
+                                "set",
+                                "toggle"
                             ]
                         },
 
@@ -7250,10 +7250,10 @@
                             "default": 0,
                             "enum": [0, 1, 2, 3],
                             "enum_titles": [
-                                "mapping edge mode no action",
-                                "mapping edge mode reset",
-                                "mapping edge mode set",
-                                "mapping edge mode toggle"
+                                "no action",
+                                "reset",
+                                "set",
+                                "toggle"
                             ]
                         },
                         "in2_lp": {
@@ -7265,10 +7265,10 @@
                             "default": 0,
                             "enum": [0, 1, 2, 3],
                             "enum_titles": [
-                                "mapping edge mode no action",
-                                "mapping edge mode reset",
-                                "mapping edge mode set",
-                                "mapping edge mode toggle"
+                                "no action",
+                                "reset",
+                                "set",
+                                "toggle"
                             ]
                         },
                         "in3_lp": {
@@ -7280,10 +7280,10 @@
                             "default": 0,
                             "enum": [0, 1, 2, 3],
                             "enum_titles": [
-                                "mapping edge mode no action",
-                                "mapping edge mode reset",
-                                "mapping edge mode set",
-                                "mapping edge mode toggle"
+                                "no action",
+                                "reset",
+                                "set",
+                                "toggle"
                             ]
                         },
                         "in4_lp": {
@@ -7295,10 +7295,10 @@
                             "default": 0,
                             "enum": [0, 1, 2, 3],
                             "enum_titles": [
-                                "mapping edge mode no action",
-                                "mapping edge mode reset",
-                                "mapping edge mode set",
-                                "mapping edge mode toggle"
+                                "no action",
+                                "reset",
+                                "set",
+                                "toggle"
                             ]
                         },
                         "in5_lp": {
@@ -7310,10 +7310,10 @@
                             "default": 0,
                             "enum": [0, 1, 2, 3],
                             "enum_titles": [
-                                "mapping edge mode no action",
-                                "mapping edge mode reset",
-                                "mapping edge mode set",
-                                "mapping edge mode toggle"
+                                "no action",
+                                "reset",
+                                "set",
+                                "toggle"
                             ]
                         },
                         "in6_lp": {
@@ -7325,10 +7325,10 @@
                             "default": 0,
                             "enum": [0, 1, 2, 3],
                             "enum_titles": [
-                                "mapping edge mode no action",
-                                "mapping edge mode reset",
-                                "mapping edge mode set",
-                                "mapping edge mode toggle"
+                                "no action",
+                                "reset",
+                                "set",
+                                "toggle"
                             ]
                         },
 
@@ -7341,10 +7341,10 @@
                             "default": 0,
                             "enum": [0, 1, 2, 3],
                             "enum_titles": [
-                                "mapping edge mode no action",
-                                "mapping edge mode reset",
-                                "mapping edge mode set",
-                                "mapping edge mode toggle"
+                                "no action",
+                                "reset",
+                                "set",
+                                "toggle"
                             ]
                         },
                         "in2_dp": {
@@ -7356,10 +7356,10 @@
                             "default": 0,
                             "enum": [0, 1, 2, 3],
                             "enum_titles": [
-                                "mapping edge mode no action",
-                                "mapping edge mode reset",
-                                "mapping edge mode set",
-                                "mapping edge mode toggle"
+                                "no action",
+                                "reset",
+                                "set",
+                                "toggle"
                             ]
                         },
                         "in3_dp": {
@@ -7371,10 +7371,10 @@
                             "default": 0,
                             "enum": [0, 1, 2, 3],
                             "enum_titles": [
-                                "mapping edge mode no action",
-                                "mapping edge mode reset",
-                                "mapping edge mode set",
-                                "mapping edge mode toggle"
+                                "no action",
+                                "reset",
+                                "set",
+                                "toggle"
                             ]
                         },
                         "in4_dp": {
@@ -7386,10 +7386,10 @@
                             "default": 0,
                             "enum": [0, 1, 2, 3],
                             "enum_titles": [
-                                "mapping edge mode no action",
-                                "mapping edge mode reset",
-                                "mapping edge mode set",
-                                "mapping edge mode toggle"
+                                "no action",
+                                "reset",
+                                "set",
+                                "toggle"
                             ]
                         },
                         "in5_dp": {
@@ -7401,10 +7401,10 @@
                             "default": 0,
                             "enum": [0, 1, 2, 3],
                             "enum_titles": [
-                                "mapping edge mode no action",
-                                "mapping edge mode reset",
-                                "mapping edge mode set",
-                                "mapping edge mode toggle"
+                                "no action",
+                                "reset",
+                                "set",
+                                "toggle"
                             ]
                         },
                         "in6_dp": {
@@ -7416,10 +7416,10 @@
                             "default": 0,
                             "enum": [0, 1, 2, 3],
                             "enum_titles": [
-                                "mapping edge mode no action",
-                                "mapping edge mode reset",
-                                "mapping edge mode set",
-                                "mapping edge mode toggle"
+                                "no action",
+                                "reset",
+                                "set",
+                                "toggle"
                             ]
                         },
 
@@ -7432,10 +7432,10 @@
                             "default": 0,
                             "enum": [0, 1, 2, 3],
                             "enum_titles": [
-                                "mapping edge mode no action",
-                                "mapping edge mode reset",
-                                "mapping edge mode set",
-                                "mapping edge mode toggle"
+                                "no action",
+                                "reset",
+                                "set",
+                                "toggle"
                             ]
                         },
                         "in2_slp": {
@@ -7447,10 +7447,10 @@
                             "default": 0,
                             "enum": [0, 1, 2, 3],
                             "enum_titles": [
-                                "mapping edge mode no action",
-                                "mapping edge mode reset",
-                                "mapping edge mode set",
-                                "mapping edge mode toggle"
+                                "no action",
+                                "reset",
+                                "set",
+                                "toggle"
                             ]
                         },
                         "in3_slp": {
@@ -7462,10 +7462,10 @@
                             "default": 0,
                             "enum": [0, 1, 2, 3],
                             "enum_titles": [
-                                "mapping edge mode no action",
-                                "mapping edge mode reset",
-                                "mapping edge mode set",
-                                "mapping edge mode toggle"
+                                "no action",
+                                "reset",
+                                "set",
+                                "toggle"
                             ]
                         },
                         "in4_slp": {
@@ -7477,10 +7477,10 @@
                             "default": 0,
                             "enum": [0, 1, 2, 3],
                             "enum_titles": [
-                                "mapping edge mode no action",
-                                "mapping edge mode reset",
-                                "mapping edge mode set",
-                                "mapping edge mode toggle"
+                                "no action",
+                                "reset",
+                                "set",
+                                "toggle"
                             ]
                         },
                         "in5_slp": {
@@ -7492,10 +7492,10 @@
                             "default": 0,
                             "enum": [0, 1, 2, 3],
                             "enum_titles": [
-                                "mapping edge mode no action",
-                                "mapping edge mode reset",
-                                "mapping edge mode set",
-                                "mapping edge mode toggle"
+                                "no action",
+                                "reset",
+                                "set",
+                                "toggle"
                             ]
                         },
                         "in6_slp": {
@@ -7507,10 +7507,10 @@
                             "default": 0,
                             "enum": [0, 1, 2, 3],
                             "enum_titles": [
-                                "mapping edge mode no action",
-                                "mapping edge mode reset",
-                                "mapping edge mode set",
-                                "mapping edge mode toggle"
+                                "no action",
+                                "reset",
+                                "set",
+                                "toggle"
                             ]
                         },
 
@@ -7583,6 +7583,31 @@
                 "Output 5 Actions": "Действия для выхода 5",
                 "Output 6 Actions": "Действия для выхода 6",
                 "Output Actions": "Действия для выходов",
+
+                "no action": "нет действия",
+                "reset": "выключить",
+                "set": "включить",
+                "toggle": "переключить",
+
+                "positive edge no action / negative edge no action": "положительный фронт - нет действия / отрицательный фронт - нет действия",
+                "positive edge no action / negative edge reset": "положительный фронт - нет действия / отрицательный фронт - выключить",
+                "positive edge no action / negative edge set": "положительный фронт - нет действия / отрицательный фронт - включить",
+                "positive edge no action / negative edge toggle": "положительный фронт - нет действия / отрицательный фронт - переключить",
+
+                "positive edge reset / negative edge no action": "положительный фронт - выключить / отрицательный фронт - нет действия",
+                "positive edge reset / negative edge reset": "положительный фронт - выключить / отрицательный фронт - выключить",
+                "positive edge reset / negative edge set": "положительный фронт - выключить / отрицательный фронт - включить",
+                "positive edge reset / negative edge toggle": "положительный фронт - выключить / отрицательный фронт - переключить",
+
+                "positive edge set / negative edge no action": "положительный фронт - включить / отрицательный фронт - нет действия",
+                "positive edge set / negative edge reset": "положительный фронт - включить / отрицательный фронт - выключить",
+                "positive edge set / negative edge set": "положительный фронт - включить / отрицательный фронт - включить",
+                "positive edge set / negative edge toggle": "положительный фронт - включить / отрицательный фронт - переключить",
+
+                "positive edge toggle / negative edge no action": "положительный фронт - переключить / отрицательный фронт - нет действия",
+                "positive edge toggle / negative edge reset": "положительный фронт - переключить / отрицательный фронт - выключить",
+                "positive edge toggle / negative edge set": "положительный фронт - переключить / отрицательный фронт - включить",
+                "positive edge toggle / negative edge toggle": "положительный фронт - переключить / отрицательный фронт - переключить",
 
                 "Push button": "Кнопка без фиксации",
                 "Latching switch": "Переключатель с фиксацией",
