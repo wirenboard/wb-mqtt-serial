@@ -679,7 +679,7 @@
                             "order": 7
                         },
                         {
-                            "title": "Channels",
+                            "title": "Parameters Button",
                             "id": "input_bpc_0",
                             "order": 8,
                             "ui_options": {
@@ -722,7 +722,7 @@
                             "reg_type": "input",
                             "address": 471,
                             "type": "value",
-                            "group": "input_bpc_0"
+                            "group": "input_bmm_0"
                         },
                         {
                             "name": "Long Press Counter",
@@ -730,7 +730,7 @@
                             "reg_type": "input",
                             "address": 487,
                             "type": "value",
-                            "group": "input_bpc_0"
+                            "group": "input_bmm_0"
                         },
                         {
                             "name": "Double Press Counter",
@@ -738,7 +738,7 @@
                             "reg_type": "input",
                             "address": 503,
                             "type": "value",
-                            "group": "input_bpc_0"
+                            "group": "input_bmm_0"
                         },
                         {
                             "name": "Shortlong Press Counter",
@@ -746,7 +746,7 @@
                             "reg_type": "input",
                             "address": 519,
                             "type": "value",
-                            "group": "input_bpc_0"
+                            "group": "input_bmm_0"
                         }
                     ],
                     "parameters": {
@@ -1137,7 +1137,7 @@
                         "in1_dp_time": {
                             "group": "input_bpc_0",
                             "title": "dp_time_title",
-                            "order": 3,
+                            "order": 2,
                             "address": 1147,
                             "reg_type": "holding",
                             "default": 500,
@@ -1744,7 +1744,7 @@
                             "order": 7
                         },
                         {
-                            "title": "Channels",
+                            "title": "Parameters Button",
                             "id": "input_bpc",
                             "order": 8,
                             "ui_options": {
@@ -1787,7 +1787,7 @@
                             "reg_type": "input",
                             "address": 464,
                             "type": "value",
-                            "group": "input_bpc"
+                            "group": "input_bmm"
                         },
                         {
                             "name": "Long Press Counter",
@@ -1795,7 +1795,7 @@
                             "reg_type": "input",
                             "address": 480,
                             "type": "value",
-                            "group": "input_bpc"
+                            "group": "input_bmm"
                         },
                         {
                             "name": "Double Press Counter",
@@ -1803,7 +1803,7 @@
                             "reg_type": "input",
                             "address": 496,
                             "type": "value",
-                            "group": "input_bpc"
+                            "group": "input_bmm"
                         },
                         {
                             "name": "Shortlong Press Counter",
@@ -1811,7 +1811,7 @@
                             "reg_type": "input",
                             "address": 512,
                             "type": "value",
-                            "group": "input_bpc"
+                            "group": "input_bmm"
                         }
                     ],
                     "parameters": {
@@ -2202,7 +2202,7 @@
                         "in1_dp_time": {
                             "group": "input_bpc",
                             "title": "dp_time_title",
-                            "order": 3,
+                            "order": 2,
                             "address": 1140,
                             "reg_type": "holding",
                             "default": 500,
@@ -2809,7 +2809,7 @@
                             "order": 7
                         },
                         {
-                            "title": "Channels",
+                            "title": "Parameters Button",
                             "id": "input_bpc_2",
                             "order": 8,
                             "ui_options": {
@@ -2852,7 +2852,7 @@
                             "reg_type": "input",
                             "address": 465,
                             "type": "value",
-                            "group": "input_bpc_2"
+                            "group": "input_bmm_2"
                         },
                         {
                             "name": "Long Press Counter",
@@ -2860,7 +2860,7 @@
                             "reg_type": "input",
                             "address": 481,
                             "type": "value",
-                            "group": "input_bpc_2"
+                            "group": "input_bmm_2"
                         },
                         {
                             "name": "Double Press Counter",
@@ -2868,7 +2868,7 @@
                             "reg_type": "input",
                             "address": 497,
                             "type": "value",
-                            "group": "input_bpc_2"
+                            "group": "input_bmm_2"
                         },
                         {
                             "name": "Shortlong Press Counter",
@@ -2876,7 +2876,7 @@
                             "reg_type": "input",
                             "address": 513,
                             "type": "value",
-                            "group": "input_bpc_2"
+                            "group": "input_bmm_2"
                         }
                     ],
                     "parameters": {
@@ -3267,7 +3267,7 @@
                         "in1_dp_time": {
                             "group": "input_bpc_2",
                             "title": "dp_time_title",
-                            "order": 3,
+                            "order": 2,
                             "address": 1141,
                             "reg_type": "holding",
                             "default": 500,
@@ -3874,7 +3874,7 @@
                             "order": 7
                         },
                         {
-                            "title": "Channels",
+                            "title": "Parameters Button",
                             "id": "input_bpc_3",
                             "order": 8,
                             "ui_options": {
@@ -3917,7 +3917,7 @@
                             "reg_type": "input",
                             "address": 466,
                             "type": "value",
-                            "group": "input_bpc_3"
+                            "group": "input_bmm_3"
                         },
                         {
                             "name": "Long Press Counter",
@@ -3925,7 +3925,7 @@
                             "reg_type": "input",
                             "address": 482,
                             "type": "value",
-                            "group": "input_bpc_3"
+                            "group": "input_bmm_3"
                         },
                         {
                             "name": "Double Press Counter",
@@ -3933,7 +3933,7 @@
                             "reg_type": "input",
                             "address": 498,
                             "type": "value",
-                            "group": "input_bpc_3"
+                            "group": "input_bmm_3"
                         },
                         {
                             "name": "Shortlong Press Counter",
@@ -3941,7 +3941,7 @@
                             "reg_type": "input",
                             "address": 514,
                             "type": "value",
-                            "group": "input_bpc_3"
+                            "group": "input_bmm_3"
                         }
                     ],
                     "parameters": {
@@ -4332,7 +4332,7 @@
                         "in1_dp_time": {
                             "group": "input_bpc_3",
                             "title": "dp_time_title",
-                            "order": 3,
+                            "order": 2,
                             "address": 1142,
                             "reg_type": "holding",
                             "default": 500,
@@ -4939,7 +4939,7 @@
                             "order": 7
                         },
                         {
-                            "title": "Channels",
+                            "title": "Parameters Button",
                             "id": "input_bpc_4",
                             "order": 8,
                             "ui_options": {
@@ -4982,7 +4982,7 @@
                             "reg_type": "input",
                             "address": 467,
                             "type": "value",
-                            "group": "input_bpc_4"
+                            "group": "input_bmm_4"
                         },
                         {
                             "name": "Long Press Counter",
@@ -4990,7 +4990,7 @@
                             "reg_type": "input",
                             "address": 483,
                             "type": "value",
-                            "group": "input_bpc_4"
+                            "group": "input_bmm_4"
                         },
                         {
                             "name": "Double Press Counter",
@@ -4998,7 +4998,7 @@
                             "reg_type": "input",
                             "address": 499,
                             "type": "value",
-                            "group": "input_bpc_4"
+                            "group": "input_bmm_4"
                         },
                         {
                             "name": "Shortlong Press Counter",
@@ -5006,7 +5006,7 @@
                             "reg_type": "input",
                             "address": 515,
                             "type": "value",
-                            "group": "input_bpc_4"
+                            "group": "input_bmm_4"
                         }
                     ],
                     "parameters": {
@@ -5397,7 +5397,7 @@
                         "in1_dp_time": {
                             "group": "input_bpc_4",
                             "title": "dp_time_title",
-                            "order": 3,
+                            "order": 2,
                             "address": 1143,
                             "reg_type": "holding",
                             "default": 500,
@@ -6004,7 +6004,7 @@
                             "order": 7
                         },
                         {
-                            "title": "Channels",
+                            "title": "Parameters Button",
                             "id": "input_bpc_5",
                             "order": 8,
                             "ui_options": {
@@ -6047,7 +6047,7 @@
                             "reg_type": "input",
                             "address": 468,
                             "type": "value",
-                            "group": "input_bpc_5"
+                            "group": "input_bmm_5"
                         },
                         {
                             "name": "Long Press Counter",
@@ -6055,7 +6055,7 @@
                             "reg_type": "input",
                             "address": 484,
                             "type": "value",
-                            "group": "input_bpc_5"
+                            "group": "input_bmm_5"
                         },
                         {
                             "name": "Double Press Counter",
@@ -6063,7 +6063,7 @@
                             "reg_type": "input",
                             "address": 500,
                             "type": "value",
-                            "group": "input_bpc_5"
+                            "group": "input_bmm_5"
                         },
                         {
                             "name": "Shortlong Press Counter",
@@ -6071,7 +6071,7 @@
                             "reg_type": "input",
                             "address": 516,
                             "type": "value",
-                            "group": "input_bpc_5"
+                            "group": "input_bmm_5"
                         }
                     ],
                     "parameters": {
@@ -6462,7 +6462,7 @@
                         "in1_dp_time": {
                             "group": "input_bpc_5",
                             "title": "dp_time_title",
-                            "order": 3,
+                            "order": 2,
                             "address": 1144,
                             "reg_type": "holding",
                             "default": 500,
@@ -7069,7 +7069,7 @@
                             "order": 7
                         },
                         {
-                            "title": "Channels",
+                            "title": "Parameters Button",
                             "id": "input_bpc_6",
                             "order": 8,
                             "ui_options": {
@@ -7112,7 +7112,7 @@
                             "reg_type": "input",
                             "address": 469,
                             "type": "value",
-                            "group": "input_bpc_6"
+                            "group": "input_bmm_6"
                         },
                         {
                             "name": "Long Press Counter",
@@ -7120,7 +7120,7 @@
                             "reg_type": "input",
                             "address": 485,
                             "type": "value",
-                            "group": "input_bpc_6"
+                            "group": "input_bmm_6"
                         },
                         {
                             "name": "Double Press Counter",
@@ -7128,7 +7128,7 @@
                             "reg_type": "input",
                             "address": 501,
                             "type": "value",
-                            "group": "input_bpc_6"
+                            "group": "input_bmm_6"
                         },
                         {
                             "name": "Shortlong Press Counter",
@@ -7136,7 +7136,7 @@
                             "reg_type": "input",
                             "address": 517,
                             "type": "value",
-                            "group": "input_bpc_6"
+                            "group": "input_bmm_6"
                         }
                     ],
                     "parameters": {
@@ -7527,7 +7527,7 @@
                         "in1_dp_time": {
                             "group": "input_bpc_6",
                             "title": "dp_time_title",
-                            "order": 3,
+                            "order": 2,
                             "address": 1145,
                             "reg_type": "holding",
                             "default": 500,
