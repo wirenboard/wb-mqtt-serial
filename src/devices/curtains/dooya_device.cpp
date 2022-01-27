@@ -14,9 +14,9 @@ namespace
     };
 
     const TRegisterTypes RegTypes{
-        {POSITION, "position", "value", U8},
-        {PARAM, "param", "value", U8},
-        {COMMAND, "command", "value", U8},
+        {POSITION, "position", "value", RegisterFormat::U8},
+        {PARAM, "param", "value", RegisterFormat::U8},
+        {COMMAND, "command", "value", RegisterFormat::U8},
     };
 
     enum TCommands

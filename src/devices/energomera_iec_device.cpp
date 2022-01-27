@@ -15,7 +15,7 @@ namespace
 void TEnergomeraIecWithFastReadDevice::Register(TSerialDeviceFactory& factory)
 {
     factory.RegisterProtocol(
-        new TIEC61107Protocol("energomera_iec", {{0, "group_single", "value", Double, true}}),
+        new TIEC61107Protocol("energomera_iec", {{0, "group_single", "value", RegisterFormat::Double, true}}),
         new TBasicDeviceFactory<TEnergomeraIecWithFastReadDevice>("#/definitions/simple_device_with_broadcast",
                                                                   "#/definitions/common_channel"));
 }

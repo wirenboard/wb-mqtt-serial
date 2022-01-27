@@ -14,10 +14,11 @@
 
 namespace
 {
-    const TRegisterTypes RegisterTypes{{TS2KDevice::REG_RELAY, "relay", "switch", U8},
-                                       {TS2KDevice::REG_RELAY_MODE, "relay_mode", "value", U8, true},
-                                       {TS2KDevice::REG_RELAY_DEFAULT, "relay_default", "value", U8, true},
-                                       {TS2KDevice::REG_RELAY_DELAY, "relay_delay", "value", U8, true}};
+    const TRegisterTypes RegisterTypes{
+        {TS2KDevice::REG_RELAY, "relay", "switch", RegisterFormat::U8},
+        {TS2KDevice::REG_RELAY_MODE, "relay_mode", "value", RegisterFormat::U8, true},
+        {TS2KDevice::REG_RELAY_DEFAULT, "relay_default", "value", RegisterFormat::U8, true},
+        {TS2KDevice::REG_RELAY_DELAY, "relay_delay", "value", RegisterFormat::U8, true}};
 }
 
 void TS2KDevice::Register(TSerialDeviceFactory& factory)

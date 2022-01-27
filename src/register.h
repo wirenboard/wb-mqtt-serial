@@ -15,7 +15,7 @@
 
 #include "serial_exc.h"
 
-enum RegisterFormat
+enum class RegisterFormat
 {
     AUTO,
     U8,
@@ -68,13 +68,13 @@ struct TRegisterType
     TRegisterType(int index,
                   const std::string& name,
                   const std::string& defaultControlType,
-                  RegisterFormat defaultFormat = U16,
+                  RegisterFormat defaultFormat = RegisterFormat::U16,
                   bool readOnly = false,
                   EWordOrder defaultWordOrder = EWordOrder::BigEndian);
 
     int Index = 0;
     std::string Name, DefaultControlType;
-    RegisterFormat DefaultFormat = U16;
+    RegisterFormat DefaultFormat = RegisterFormat::U16;
     EWordOrder DefaultWordOrder = EWordOrder::BigEndian;
     bool ReadOnly = false;
 };
@@ -185,6 +185,7 @@ public:
 class TRegisterConfig: public std::enable_shared_from_this<TRegisterConfig>
 {
     std::shared_ptr<IRegisterAddress> Address;
+    std::shared_ptr<IRegisterAddress> WriteAddress;
 
 public:
     int Type;
@@ -204,6 +205,7 @@ public:
 
     TRegisterConfig(int type,
                     std::shared_ptr<IRegisterAddress> address,
+                    std::shared_ptr<IRegisterAddress> writeAddress,
                     RegisterFormat format,
                     double scale,
                     double offset,
@@ -229,7 +231,8 @@ public:
 
     static PRegisterConfig Create(int type = 0,
                                   std::shared_ptr<IRegisterAddress> address = std::shared_ptr<IRegisterAddress>(),
-                                  RegisterFormat format = U16,
+                                  std::shared_ptr<IRegisterAddress> writeAddress = std::shared_ptr<IRegisterAddress>(),
+                                  RegisterFormat format = RegisterFormat::U16,
                                   double scale = 1,
                                   double offset = 0,
                                   double round_to = 0,
@@ -245,7 +248,7 @@ public:
     //! Create register with TUint32RegisterAddress
     static PRegisterConfig Create(int type = 0,
                                   uint32_t address = 0,
-                                  RegisterFormat format = U16,
+                                  RegisterFormat format = RegisterFormat::U16,
                                   double scale = 1,
                                   double offset = 0,
                                   double round_to = 0,
@@ -259,6 +262,7 @@ public:
                                   std::unique_ptr<uint64_t> unsupported_value = std::unique_ptr<uint64_t>());
 
     const IRegisterAddress& GetAddress() const;
+    const IRegisterAddress& GetWriteAddress() const;
 };
 
 struct TRegister;
@@ -353,41 +357,41 @@ inline ::std::ostream& operator<<(::std::ostream& os, PRegister reg)
 inline const char* RegisterFormatName(RegisterFormat fmt)
 {
     switch (fmt) {
-        case AUTO:
+        case RegisterFormat::AUTO:
             return "AUTO";
-        case U8:
+        case RegisterFormat::U8:
             return "U8";
-        case S8:
+        case RegisterFormat::S8:
             return "S8";
-        case U16:
+        case RegisterFormat::U16:
             return "U16";
-        case S16:
+        case RegisterFormat::S16:
             return "S16";
-        case S24:
+        case RegisterFormat::S24:
             return "S24";
-        case U24:
+        case RegisterFormat::U24:
             return "U24";
-        case U32:
+        case RegisterFormat::U32:
             return "U32";
-        case S32:
+        case RegisterFormat::S32:
             return "S32";
-        case S64:
+        case RegisterFormat::S64:
             return "S64";
-        case U64:
+        case RegisterFormat::U64:
             return "U64";
-        case BCD8:
+        case RegisterFormat::BCD8:
             return "BCD8";
-        case BCD16:
+        case RegisterFormat::BCD16:
             return "BCD16";
-        case BCD24:
+        case RegisterFormat::BCD24:
             return "BCD24";
-        case BCD32:
+        case RegisterFormat::BCD32:
             return "BCD32";
-        case Float:
+        case RegisterFormat::Float:
             return "Float";
-        case Double:
+        case RegisterFormat::Double:
             return "Double";
-        case Char8:
+        case RegisterFormat::Char8:
             return "Char8";
         default:
             return "<unknown register type>";
@@ -397,39 +401,39 @@ inline const char* RegisterFormatName(RegisterFormat fmt)
 inline RegisterFormat RegisterFormatFromName(const std::string& name)
 {
     if (name == "s16")
-        return S16;
+        return RegisterFormat::S16;
     else if (name == "u8")
-        return U8;
+        return RegisterFormat::U8;
     else if (name == "s8")
-        return S8;
+        return RegisterFormat::S8;
     else if (name == "u24")
-        return U24;
+        return RegisterFormat::U24;
     else if (name == "s24")
-        return S24;
+        return RegisterFormat::S24;
     else if (name == "u32")
-        return U32;
+        return RegisterFormat::U32;
     else if (name == "s32")
-        return S32;
+        return RegisterFormat::S32;
     else if (name == "s64")
-        return S64;
+        return RegisterFormat::S64;
     else if (name == "u64")
-        return U64;
+        return RegisterFormat::U64;
     else if (name == "bcd8")
-        return BCD8;
+        return RegisterFormat::BCD8;
     else if (name == "bcd16")
-        return BCD16;
+        return RegisterFormat::BCD16;
     else if (name == "bcd24")
-        return BCD24;
+        return RegisterFormat::BCD24;
     else if (name == "bcd32")
-        return BCD32;
+        return RegisterFormat::BCD32;
     else if (name == "float")
-        return Float;
+        return RegisterFormat::Float;
     else if (name == "double")
-        return Double;
+        return RegisterFormat::Double;
     else if (name == "char8")
-        return Char8;
+        return RegisterFormat::Char8;
     else
-        return U16; // FIXME!
+        return RegisterFormat::U16; // FIXME!
 }
 
 size_t RegisterFormatByteWidth(RegisterFormat format);

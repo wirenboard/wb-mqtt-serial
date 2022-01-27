@@ -3,12 +3,13 @@
 
 namespace
 {
-    const TRegisterTypes ModbusRegisterTypes({{Modbus::REG_HOLDING, "holding", "value", U16},
-                                              {Modbus::REG_HOLDING_SINGLE, "holding_single", "value", U16},
-                                              {Modbus::REG_HOLDING_MULTI, "holding_multi", "value", U16},
-                                              {Modbus::REG_COIL, "coil", "switch", U8},
-                                              {Modbus::REG_DISCRETE, "discrete", "switch", U8, true},
-                                              {Modbus::REG_INPUT, "input", "value", U16, true}});
+    const TRegisterTypes ModbusRegisterTypes(
+        {{Modbus::REG_HOLDING, "holding", "value", RegisterFormat::U16},
+         {Modbus::REG_HOLDING_SINGLE, "holding_single", "value", RegisterFormat::U16},
+         {Modbus::REG_HOLDING_MULTI, "holding_multi", "value", RegisterFormat::U16},
+         {Modbus::REG_COIL, "coil", "switch", RegisterFormat::U8},
+         {Modbus::REG_DISCRETE, "discrete", "switch", RegisterFormat::U8, true},
+         {Modbus::REG_INPUT, "input", "value", RegisterFormat::U16, true}});
 
     class TModbusProtocol: public IProtocol
     {

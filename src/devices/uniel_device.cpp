@@ -24,11 +24,11 @@ namespace
         SET_BRIGHTNESS_CMD = 0x0a
     };
 
-    const TRegisterTypes RegisterTypes{{TUnielDevice::REG_RELAY, "relay", "switch", U8},
-                                       {TUnielDevice::REG_INPUT, "input", "value", U8, true},
-                                       {TUnielDevice::REG_PARAM, "param", "value", U8},
+    const TRegisterTypes RegisterTypes{{TUnielDevice::REG_RELAY, "relay", "switch", RegisterFormat::U8},
+                                       {TUnielDevice::REG_INPUT, "input", "value", RegisterFormat::U8, true},
+                                       {TUnielDevice::REG_PARAM, "param", "value", RegisterFormat::U8},
                                        // "value", not "range" because 'max' cannot be specified here.
-                                       {TUnielDevice::REG_BRIGHTNESS, "brightness", "value", U8}};
+                                       {TUnielDevice::REG_BRIGHTNESS, "brightness", "value", RegisterFormat::U8}};
 }
 
 void TUnielDevice::Register(TSerialDeviceFactory& factory)

@@ -29,7 +29,7 @@ std::list<TFakeSerialDevice*> TFakeSerialDevice::Devices;
 void TFakeSerialDevice::Register(TSerialDeviceFactory& factory)
 {
     factory.RegisterProtocol(
-        new TUint32SlaveIdProtocol("fake", TRegisterTypes({{TFakeSerialDevice::REG_FAKE, "fake", "text", U16}})),
+        new TUint32SlaveIdProtocol("fake", TRegisterTypes({{TFakeSerialDevice::REG_FAKE, "fake", "text", RegisterFormat::U16}})),
         new TBasicDeviceFactory<TFakeSerialDevice>("#/definitions/simple_device_with_setup",
                                                    "#/definitions/common_channel"));
 }

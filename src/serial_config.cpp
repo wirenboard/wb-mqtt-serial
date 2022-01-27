@@ -247,6 +247,7 @@ namespace
 
         res.RegisterConfig = TRegisterConfig::Create(regType.Index,
                                                      address.Address,
+                                                     address.WriteAddress,
                                                      regType.DefaultFormat,
                                                      scale,
                                                      offset,
@@ -1302,19 +1303,19 @@ void RegisterProtocols(TSerialDeviceFactory& deviceFactory)
     Somfy::TDevice::Register(deviceFactory);
 }
 
-TRegisterBitsAddress LoadRegisterBitsAddress(const Json::Value& register_data)
+TRegisterBitsAddress LoadRegisterBitsAddress(const Json::Value &register_data, const std::string& jsonPropertyName)
 {
     TRegisterBitsAddress res;
-    const auto& addressValue = register_data["address"];
+    const auto& addressValue = register_data[jsonPropertyName];
     if (addressValue.isString()) {
         const auto& addressStr = addressValue.asString();
         auto pos1 = addressStr.find(':');
         if (pos1 == string::npos) {
-            res.Address = GetInt(register_data, "address");
+            res.Address = GetInt(register_data, jsonPropertyName);
         } else {
             auto pos2 = addressStr.find(':', pos1 + 1);
 
-            res.Address = GetIntFromString(addressStr.substr(0, pos1), "address");
+            res.Address = GetIntFromString(addressStr.substr(0, pos1), jsonPropertyName);
             auto bitOffset = stoul(addressStr.substr(pos1 + 1, pos2));
 
             if (bitOffset > 255) {
@@ -1333,7 +1334,7 @@ TRegisterBitsAddress LoadRegisterBitsAddress(const Json::Value& register_data)
             }
         }
     } else {
-        res.Address = GetInt(register_data, "address");
+        res.Address = GetInt(register_data, jsonPropertyName);
     }
     return res;
 }
@@ -1343,13 +1344,27 @@ TUint32RegisterAddressFactory::TUint32RegisterAddressFactory(size_t bytesPerRegi
       BytesPerRegister(bytesPerRegister)
 {}
 
+namespace {
+    constexpr auto WRITE_ADDRESS_PROPERTY_NAME = "write_address";
+
+    inline bool HasWriteAddressProperty(const Json::Value &regCfg) {
+        return regCfg.isMember(WRITE_ADDRESS_PROPERTY_NAME) && !(regCfg[WRITE_ADDRESS_PROPERTY_NAME].isString() &&
+                                                                 regCfg[WRITE_ADDRESS_PROPERTY_NAME].asString().empty());
+    }
+}
+
 TRegisterDesc TUint32RegisterAddressFactory::LoadRegisterAddress(const Json::Value& regCfg,
                                                                  const IRegisterAddress& deviceBaseAddress,
                                                                  uint32_t stride,
                                                                  uint32_t registerByteWidth) const
 {
-    auto addr = LoadRegisterBitsAddress(regCfg);
     TRegisterDesc res;
+    auto addr = LoadRegisterBitsAddress(regCfg);
+    if (HasWriteAddressProperty(regCfg)) {
+        auto writeAddress = LoadRegisterBitsAddress(regCfg, WRITE_ADDRESS_PROPERTY_NAME);
+        res.WriteAddress = std::shared_ptr<IRegisterAddress>(
+                deviceBaseAddress.CalcNewAddress(writeAddress.Address, stride, registerByteWidth, BytesPerRegister));
+    }
     res.BitOffset = addr.BitOffset;
     res.BitWidth = addr.BitWidth;
     res.Address = std::shared_ptr<IRegisterAddress>(
@@ -1369,6 +1384,9 @@ TRegisterDesc TStringRegisterAddressFactory::LoadRegisterAddress(const Json::Val
 {
     TRegisterDesc res;
     res.Address = std::make_shared<TStringRegisterAddress>(regCfg["address"].asString());
+    if (HasWriteAddressProperty(regCfg)) {
+        res.WriteAddress = std::make_shared<TStringRegisterAddress>(regCfg[WRITE_ADDRESS_PROPERTY_NAME].asString());
+    }
     return res;
 }
 

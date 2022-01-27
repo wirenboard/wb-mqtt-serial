@@ -15,11 +15,12 @@ namespace
         };
     }
 
-    const TRegisterTypes RegisterTypes{{TMilurDevice::REG_PARAM, "param", "value", U24, true},
-                                       {TMilurDevice::REG_POWER, "power", "power", S32, true},
-                                       {TMilurDevice::REG_ENERGY, "energy", "power_consumption", BCD32, true},
-                                       {TMilurDevice::REG_FREQ, "freq", "value", U16, true},
-                                       {TMilurDevice::REG_POWERFACTOR, "power_factor", "value", S16, true}};
+    const TRegisterTypes RegisterTypes{
+        {TMilurDevice::REG_PARAM, "param", "value", RegisterFormat::U24, true},
+        {TMilurDevice::REG_POWER, "power", "power", RegisterFormat::S32, true},
+        {TMilurDevice::REG_ENERGY, "energy", "power_consumption", RegisterFormat::BCD32, true},
+        {TMilurDevice::REG_FREQ, "freq", "value", RegisterFormat::U16, true},
+        {TMilurDevice::REG_POWERFACTOR, "power_factor", "value", RegisterFormat::S16, true}};
 }
 
 void TMilurDevice::Register(TSerialDeviceFactory& factory)

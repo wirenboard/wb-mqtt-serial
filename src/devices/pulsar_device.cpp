@@ -7,8 +7,8 @@
 
 namespace
 {
-    const TRegisterTypes RegisterTypes{{TPulsarDevice::REG_DEFAULT, "default", "value", Double, true},
-                                       {TPulsarDevice::REG_SYSTIME, "systime", "value", U64, true}};
+    const TRegisterTypes RegisterTypes{{TPulsarDevice::REG_DEFAULT, "default", "value", RegisterFormat::Double, true},
+                                       {TPulsarDevice::REG_SYSTIME, "systime", "value", RegisterFormat::U64, true}};
 }
 
 void TPulsarDevice::Register(TSerialDeviceFactory& factory)
