@@ -36,7 +36,6 @@ namespace
             }
             return true;
         } catch (const TSerialDeviceException& e) {
-            // TODO: Show error if it is a first poll
             auto& logger = dev->GetIsDisconnected() ? Debug : Warn;
             LOG(logger) << "Failed to open session: " << e.what() << " [slave_id is " << dev->ToString() + "]";
             return false;

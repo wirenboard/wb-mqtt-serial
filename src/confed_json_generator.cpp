@@ -14,7 +14,9 @@ namespace
     void ConvertPollIntervalToReadRateLimit(Json::Value& node)
     {
         if (node.isMember("poll_interval")) {
-            node["read_rate_limit_ms"] = node["poll_interval"];
+            if (!node.isMember("read_rate_limit_ms")) {
+                node["read_rate_limit_ms"] = node["poll_interval"];
+            }
             node.removeMember("poll_interval");
         }
     }
