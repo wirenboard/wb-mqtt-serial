@@ -381,7 +381,7 @@
                             }
                         },
                         {
-                            "title": "Output Actions",
+                            "title": "Actions for outputs when the input is closed / opened",
                             "id": "out_actions_0",
                             "order": 2
                         }
@@ -426,7 +426,7 @@
                         },
                         "out1_actions": {
                             "group": "out_actions_0",
-                            "title": "Output 1 Actions",
+                            "title": "Output 1",
                             "order": 2,
                             "address": 440,
                             "reg_type": "holding",
@@ -436,30 +436,30 @@
                                 7, 8, 9, 10, 11, 12, 13, 14, 15
                             ],
                             "enum_titles": [
-                                "positive edge no action / negative edge no action",
-                                "positive edge no action / negative edge reset",
-                                "positive edge no action / negative edge set",
-                                "positive edge no action / negative edge toggle",
+                                "no action / no action",
+                                "no action / reset",
+                                "no action / set",
+                                "no action / toggle",
             
-                                "positive edge reset / negative edge no action",
-                                "positive edge reset / negative edge reset",
-                                "positive edge reset / negative edge set",
-                                "positive edge reset / negative edge toggle",
+                                "reset / no action",
+                                "reset / reset",
+                                "reset / set",
+                                "reset / toggle",
             
-                                "positive edge set / negative edge no action",
-                                "positive edge set / negative edge reset",
-                                "positive edge set / negative edge set",
-                                "positive edge set / negative edge toggle",
+                                "set / no action",
+                                "set / reset",
+                                "set / set",
+                                "set / toggle",
             
-                                "positive edge toggle / negative edge no action",
-                                "positive edge toggle / negative edge reset",
-                                "positive edge toggle / negative edge set",
-                                "positive edge toggle / negative edge toggle"
+                                "toggle / no action",
+                                "toggle / reset",
+                                "toggle / set",
+                                "toggle / toggle"
                             ]
                         },
                         "out2_actions": {
                             "group": "out_actions_0",
-                            "title": "Output 2 Actions",
+                            "title": "Output 2",
                             "order": 3,
                             "address": 441,
                             "reg_type": "holding",
@@ -469,30 +469,30 @@
                                 7, 8, 9, 10, 11, 12, 13, 14, 15
                             ],
                             "enum_titles": [
-                                "positive edge no action / negative edge no action",
-                                "positive edge no action / negative edge reset",
-                                "positive edge no action / negative edge set",
-                                "positive edge no action / negative edge toggle",
+                                "no action / no action",
+                                "no action / reset",
+                                "no action / set",
+                                "no action / toggle",
             
-                                "positive edge reset / negative edge no action",
-                                "positive edge reset / negative edge reset",
-                                "positive edge reset / negative edge set",
-                                "positive edge reset / negative edge toggle",
+                                "reset / no action",
+                                "reset / reset",
+                                "reset / set",
+                                "reset / toggle",
             
-                                "positive edge set / negative edge no action",
-                                "positive edge set / negative edge reset",
-                                "positive edge set / negative edge set",
-                                "positive edge set / negative edge toggle",
+                                "set / no action",
+                                "set / reset",
+                                "set / set",
+                                "set / toggle",
             
-                                "positive edge toggle / negative edge no action",
-                                "positive edge toggle / negative edge reset",
-                                "positive edge toggle / negative edge set",
-                                "positive edge toggle / negative edge toggle"
+                                "toggle / no action",
+                                "toggle / reset",
+                                "toggle / set",
+                                "toggle / toggle"
                             ]
                         },
                         "out3_actions": {
                             "group": "out_actions_0",
-                            "title": "Output 3 Actions",
+                            "title": "Output 3",
                             "order": 4,
                             "address": 442,
                             "reg_type": "holding",
@@ -502,30 +502,30 @@
                                 7, 8, 9, 10, 11, 12, 13, 14, 15
                             ],
                             "enum_titles": [
-                                "positive edge no action / negative edge no action",
-                                "positive edge no action / negative edge reset",
-                                "positive edge no action / negative edge set",
-                                "positive edge no action / negative edge toggle",
+                                "no action / no action",
+                                "no action / reset",
+                                "no action / set",
+                                "no action / toggle",
             
-                                "positive edge reset / negative edge no action",
-                                "positive edge reset / negative edge reset",
-                                "positive edge reset / negative edge set",
-                                "positive edge reset / negative edge toggle",
+                                "reset / no action",
+                                "reset / reset",
+                                "reset / set",
+                                "reset / toggle",
             
-                                "positive edge set / negative edge no action",
-                                "positive edge set / negative edge reset",
-                                "positive edge set / negative edge set",
-                                "positive edge set / negative edge toggle",
+                                "set / no action",
+                                "set / reset",
+                                "set / set",
+                                "set / toggle",
             
-                                "positive edge toggle / negative edge no action",
-                                "positive edge toggle / negative edge reset",
-                                "positive edge toggle / negative edge set",
-                                "positive edge toggle / negative edge toggle"
+                                "toggle / no action",
+                                "toggle / reset",
+                                "toggle / set",
+                                "toggle / toggle"
                             ]
                         },
                         "out4_actions": {
                             "group": "out_actions_0",
-                            "title": "Output 4 Actions",
+                            "title": "Output 4",
                             "order": 5,
                             "address": 443,
                             "reg_type": "holding",
@@ -535,30 +535,30 @@
                                 7, 8, 9, 10, 11, 12, 13, 14, 15
                             ],
                             "enum_titles": [
-                                "positive edge no action / negative edge no action",
-                                "positive edge no action / negative edge reset",
-                                "positive edge no action / negative edge set",
-                                "positive edge no action / negative edge toggle",
+                                "no action / no action",
+                                "no action / reset",
+                                "no action / set",
+                                "no action / toggle",
             
-                                "positive edge reset / negative edge no action",
-                                "positive edge reset / negative edge reset",
-                                "positive edge reset / negative edge set",
-                                "positive edge reset / negative edge toggle",
+                                "reset / no action",
+                                "reset / reset",
+                                "reset / set",
+                                "reset / toggle",
             
-                                "positive edge set / negative edge no action",
-                                "positive edge set / negative edge reset",
-                                "positive edge set / negative edge set",
-                                "positive edge set / negative edge toggle",
+                                "set / no action",
+                                "set / reset",
+                                "set / set",
+                                "set / toggle",
             
-                                "positive edge toggle / negative edge no action",
-                                "positive edge toggle / negative edge reset",
-                                "positive edge toggle / negative edge set",
-                                "positive edge toggle / negative edge toggle"
+                                "toggle / no action",
+                                "toggle / reset",
+                                "toggle / set",
+                                "toggle / toggle"
                             ]
                         },
                         "out5_actions": {
                             "group": "out_actions_0",
-                            "title": "Output 5 Actions",
+                            "title": "Output 5",
                             "order": 6,
                             "address": 444,
                             "reg_type": "holding",
@@ -568,30 +568,30 @@
                                 7, 8, 9, 10, 11, 12, 13, 14, 15
                             ],
                             "enum_titles": [
-                                "positive edge no action / negative edge no action",
-                                "positive edge no action / negative edge reset",
-                                "positive edge no action / negative edge set",
-                                "positive edge no action / negative edge toggle",
+                                "no action / no action",
+                                "no action / reset",
+                                "no action / set",
+                                "no action / toggle",
             
-                                "positive edge reset / negative edge no action",
-                                "positive edge reset / negative edge reset",
-                                "positive edge reset / negative edge set",
-                                "positive edge reset / negative edge toggle",
+                                "reset / no action",
+                                "reset / reset",
+                                "reset / set",
+                                "reset / toggle",
             
-                                "positive edge set / negative edge no action",
-                                "positive edge set / negative edge reset",
-                                "positive edge set / negative edge set",
-                                "positive edge set / negative edge toggle",
+                                "set / no action",
+                                "set / reset",
+                                "set / set",
+                                "set / toggle",
             
-                                "positive edge toggle / negative edge no action",
-                                "positive edge toggle / negative edge reset",
-                                "positive edge toggle / negative edge set",
-                                "positive edge toggle / negative edge toggle"
+                                "toggle / no action",
+                                "toggle / reset",
+                                "toggle / set",
+                                "toggle / toggle"
                             ]
                         },
                         "out6_actions": {
                             "group": "out_actions_0",
-                            "title": "Output 6 Actions",
+                            "title": "Output 6",
                             "order": 7,
                             "address": 445,
                             "reg_type": "holding",
@@ -601,25 +601,25 @@
                                 7, 8, 9, 10, 11, 12, 13, 14, 15
                             ],
                             "enum_titles": [
-                                "positive edge no action / negative edge no action",
-                                "positive edge no action / negative edge reset",
-                                "positive edge no action / negative edge set",
-                                "positive edge no action / negative edge toggle",
+                                "no action / no action",
+                                "no action / reset",
+                                "no action / set",
+                                "no action / toggle",
             
-                                "positive edge reset / negative edge no action",
-                                "positive edge reset / negative edge reset",
-                                "positive edge reset / negative edge set",
-                                "positive edge reset / negative edge toggle",
+                                "reset / no action",
+                                "reset / reset",
+                                "reset / set",
+                                "reset / toggle",
             
-                                "positive edge set / negative edge no action",
-                                "positive edge set / negative edge reset",
-                                "positive edge set / negative edge set",
-                                "positive edge set / negative edge toggle",
+                                "set / no action",
+                                "set / reset",
+                                "set / set",
+                                "set / toggle",
             
-                                "positive edge toggle / negative edge no action",
-                                "positive edge toggle / negative edge reset",
-                                "positive edge toggle / negative edge set",
-                                "positive edge toggle / negative edge toggle"
+                                "toggle / no action",
+                                "toggle / reset",
+                                "toggle / set",
+                                "toggle / toggle"
                             ]
                         }
                     },
@@ -651,32 +651,32 @@
                             }
                         },
                         {
-                            "title": "Output 1 Actions",
+                            "title": "Output 1",
                             "id": "push_bt_in1_0",
                             "order": 2
                         },
                         {
-                            "title": "Output 2 Actions",
+                            "title": "Output 2",
                             "id": "push_bt_in2_0",
                             "order": 3
                         },
                         {
-                            "title": "Output 3 Actions",
+                            "title": "Output 3",
                             "id": "push_bt_in3_0",
                             "order": 4
                         },
                         {
-                            "title": "Output 4 Actions",
+                            "title": "Output 4",
                             "id": "push_bt_in4_0",
                             "order": 5
                         },
                         {
-                            "title": "Output 5 Actions",
+                            "title": "Output 5",
                             "id": "push_bt_in5_0",
                             "order": 6
                         },
                         {
-                            "title": "Output 6 Actions",
+                            "title": "Output 6",
                             "id": "push_bt_in6_0",
                             "order": 7
                         },
@@ -1446,7 +1446,7 @@
                             }
                         },
                         {
-                            "title": "Output Actions",
+                            "title": "Actions for outputs when the input is closed / opened",
                             "id": "out_actions",
                             "order": 2
                         }
@@ -1491,7 +1491,7 @@
                         },
                         "out_1_actions": {
                             "group": "out_actions",
-                            "title": "Output 1 Actions",
+                            "title": "Output 1",
                             "order": 2,
                             "address": 384,
                             "reg_type": "holding",
@@ -1501,30 +1501,30 @@
                                 7, 8, 9, 10, 11, 12, 13, 14, 15
                             ],
                             "enum_titles": [
-                                "positive edge no action / negative edge no action",
-                                "positive edge no action / negative edge reset",
-                                "positive edge no action / negative edge set",
-                                "positive edge no action / negative edge toggle",
+                                "no action / no action",
+                                "no action / reset",
+                                "no action / set",
+                                "no action / toggle",
 
-                                "positive edge reset / negative edge no action",
-                                "positive edge reset / negative edge reset",
-                                "positive edge reset / negative edge set",
-                                "positive edge reset / negative edge toggle",
+                                "reset / no action",
+                                "reset / reset",
+                                "reset / set",
+                                "reset / toggle",
 
-                                "positive edge set / negative edge no action",
-                                "positive edge set / negative edge reset",
-                                "positive edge set / negative edge set",
-                                "positive edge set / negative edge toggle",
+                                "set / no action",
+                                "set / reset",
+                                "set / set",
+                                "set / toggle",
 
-                                "positive edge toggle / negative edge no action",
-                                "positive edge toggle / negative edge reset",
-                                "positive edge toggle / negative edge set",
-                                "positive edge toggle / negative edge toggle"
+                                "toggle / no action",
+                                "toggle / reset",
+                                "toggle / set",
+                                "toggle / toggle"
                             ]
                         },
                         "out_2_actions": {
                             "group": "out_actions",
-                            "title": "Output 2 Actions",
+                            "title": "Output 2",
                             "order": 3,
                             "address": 385,
                             "reg_type": "holding",
@@ -1534,30 +1534,30 @@
                                 7, 8, 9, 10, 11, 12, 13, 14, 15
                             ],
                             "enum_titles": [
-                                "positive edge no action / negative edge no action",
-                                "positive edge no action / negative edge reset",
-                                "positive edge no action / negative edge set",
-                                "positive edge no action / negative edge toggle",
+                                "no action / no action",
+                                "no action / reset",
+                                "no action / set",
+                                "no action / toggle",
 
-                                "positive edge reset / negative edge no action",
-                                "positive edge reset / negative edge reset",
-                                "positive edge reset / negative edge set",
-                                "positive edge reset / negative edge toggle",
+                                "reset / no action",
+                                "reset / reset",
+                                "reset / set",
+                                "reset / toggle",
 
-                                "positive edge set / negative edge no action",
-                                "positive edge set / negative edge reset",
-                                "positive edge set / negative edge set",
-                                "positive edge set / negative edge toggle",
+                                "set / no action",
+                                "set / reset",
+                                "set / set",
+                                "set / toggle",
 
-                                "positive edge toggle / negative edge no action",
-                                "positive edge toggle / negative edge reset",
-                                "positive edge toggle / negative edge set",
-                                "positive edge toggle / negative edge toggle"
+                                "toggle / no action",
+                                "toggle / reset",
+                                "toggle / set",
+                                "toggle / toggle"
                             ]
                         },
                         "out_3_actions": {
                             "group": "out_actions",
-                            "title": "Output 3 Actions",
+                            "title": "Output 3",
                             "order": 4,
                             "address": 386,
                             "reg_type": "holding",
@@ -1567,30 +1567,30 @@
                                 7, 8, 9, 10, 11, 12, 13, 14, 15
                             ],
                             "enum_titles": [
-                                "positive edge no action / negative edge no action",
-                                "positive edge no action / negative edge reset",
-                                "positive edge no action / negative edge set",
-                                "positive edge no action / negative edge toggle",
+                                "no action / no action",
+                                "no action / reset",
+                                "no action / set",
+                                "no action / toggle",
 
-                                "positive edge reset / negative edge no action",
-                                "positive edge reset / negative edge reset",
-                                "positive edge reset / negative edge set",
-                                "positive edge reset / negative edge toggle",
+                                "reset / no action",
+                                "reset / reset",
+                                "reset / set",
+                                "reset / toggle",
 
-                                "positive edge set / negative edge no action",
-                                "positive edge set / negative edge reset",
-                                "positive edge set / negative edge set",
-                                "positive edge set / negative edge toggle",
+                                "set / no action",
+                                "set / reset",
+                                "set / set",
+                                "set / toggle",
 
-                                "positive edge toggle / negative edge no action",
-                                "positive edge toggle / negative edge reset",
-                                "positive edge toggle / negative edge set",
-                                "positive edge toggle / negative edge toggle"
+                                "toggle / no action",
+                                "toggle / reset",
+                                "toggle / set",
+                                "toggle / toggle"
                             ]
                         },
                         "out_4_actions": {
                             "group": "out_actions",
-                            "title": "Output 4 Actions",
+                            "title": "Output 4",
                             "order": 5,
                             "address": 387,
                             "reg_type": "holding",
@@ -1600,30 +1600,30 @@
                                 7, 8, 9, 10, 11, 12, 13, 14, 15
                             ],
                             "enum_titles": [
-                                "positive edge no action / negative edge no action",
-                                "positive edge no action / negative edge reset",
-                                "positive edge no action / negative edge set",
-                                "positive edge no action / negative edge toggle",
+                                "no action / no action",
+                                "no action / reset",
+                                "no action / set",
+                                "no action / toggle",
 
-                                "positive edge reset / negative edge no action",
-                                "positive edge reset / negative edge reset",
-                                "positive edge reset / negative edge set",
-                                "positive edge reset / negative edge toggle",
+                                "reset / no action",
+                                "reset / reset",
+                                "reset / set",
+                                "reset / toggle",
 
-                                "positive edge set / negative edge no action",
-                                "positive edge set / negative edge reset",
-                                "positive edge set / negative edge set",
-                                "positive edge set / negative edge toggle",
+                                "set / no action",
+                                "set / reset",
+                                "set / set",
+                                "set / toggle",
 
-                                "positive edge toggle / negative edge no action",
-                                "positive edge toggle / negative edge reset",
-                                "positive edge toggle / negative edge set",
-                                "positive edge toggle / negative edge toggle"
+                                "toggle / no action",
+                                "toggle / reset",
+                                "toggle / set",
+                                "toggle / toggle"
                             ]
                         },
                         "out_5_actions": {
                             "group": "out_actions",
-                            "title": "Output 5 Actions",
+                            "title": "Output 5",
                             "order": 6,
                             "address": 388,
                             "reg_type": "holding",
@@ -1633,30 +1633,30 @@
                                 7, 8, 9, 10, 11, 12, 13, 14, 15
                             ],
                             "enum_titles": [
-                                "positive edge no action / negative edge no action",
-                                "positive edge no action / negative edge reset",
-                                "positive edge no action / negative edge set",
-                                "positive edge no action / negative edge toggle",
+                                "no action / no action",
+                                "no action / reset",
+                                "no action / set",
+                                "no action / toggle",
 
-                                "positive edge reset / negative edge no action",
-                                "positive edge reset / negative edge reset",
-                                "positive edge reset / negative edge set",
-                                "positive edge reset / negative edge toggle",
+                                "reset / no action",
+                                "reset / reset",
+                                "reset / set",
+                                "reset / toggle",
 
-                                "positive edge set / negative edge no action",
-                                "positive edge set / negative edge reset",
-                                "positive edge set / negative edge set",
-                                "positive edge set / negative edge toggle",
+                                "set / no action",
+                                "set / reset",
+                                "set / set",
+                                "set / toggle",
 
-                                "positive edge toggle / negative edge no action",
-                                "positive edge toggle / negative edge reset",
-                                "positive edge toggle / negative edge set",
-                                "positive edge toggle / negative edge toggle"
+                                "toggle / no action",
+                                "toggle / reset",
+                                "toggle / set",
+                                "toggle / toggle"
                             ]
                         },
                         "out_6_actions": {
                             "group": "out_actions",
-                            "title": "Output 6 Actions",
+                            "title": "Output 6",
                             "order": 7,
                             "address": 389,
                             "reg_type": "holding",
@@ -1666,25 +1666,25 @@
                                 7, 8, 9, 10, 11, 12, 13, 14, 15
                             ],
                             "enum_titles": [
-                                "positive edge no action / negative edge no action",
-                                "positive edge no action / negative edge reset",
-                                "positive edge no action / negative edge set",
-                                "positive edge no action / negative edge toggle",
+                                "no action / no action",
+                                "no action / reset",
+                                "no action / set",
+                                "no action / toggle",
 
-                                "positive edge reset / negative edge no action",
-                                "positive edge reset / negative edge reset",
-                                "positive edge reset / negative edge set",
-                                "positive edge reset / negative edge toggle",
+                                "reset / no action",
+                                "reset / reset",
+                                "reset / set",
+                                "reset / toggle",
 
-                                "positive edge set / negative edge no action",
-                                "positive edge set / negative edge reset",
-                                "positive edge set / negative edge set",
-                                "positive edge set / negative edge toggle",
+                                "set / no action",
+                                "set / reset",
+                                "set / set",
+                                "set / toggle",
 
-                                "positive edge toggle / negative edge no action",
-                                "positive edge toggle / negative edge reset",
-                                "positive edge toggle / negative edge set",
-                                "positive edge toggle / negative edge toggle"
+                                "toggle / no action",
+                                "toggle / reset",
+                                "toggle / set",
+                                "toggle / toggle"
                             ]
                         }
                     },
@@ -1716,32 +1716,32 @@
                             }
                         },
                         {
-                            "title": "Output 1 Actions",
+                            "title": "Output 1",
                             "id": "push_bt_in_1",
                             "order": 2
                         },
                         {
-                            "title": "Output 2 Actions",
+                            "title": "Output 2",
                             "id": "push_bt_in_2",
                             "order": 3
                         },
                         {
-                            "title": "Output 3 Actions",
+                            "title": "Output 3",
                             "id": "push_bt_in_3",
                             "order": 4
                         },
                         {
-                            "title": "Output 4 Actions",
+                            "title": "Output 4",
                             "id": "push_bt_in_4",
                             "order": 5
                         },
                         {
-                            "title": "Output 5 Actions",
+                            "title": "Output 5",
                             "id": "push_bt_in_5",
                             "order": 6
                         },
                         {
-                            "title": "Output 6 Actions",
+                            "title": "Output 6",
                             "id": "push_bt_in_6",
                             "order": 7
                         },
@@ -2511,7 +2511,7 @@
                             }
                         },
                         {
-                            "title": "Output Actions",
+                            "title": "Actions for outputs when the input is closed / opened",
                             "id": "out_actions_2",
                             "order": 2
                         }
@@ -2556,7 +2556,7 @@
                         },
                         "out1_actions": {
                             "group": "out_actions_2",
-                            "title": "Output 1 Actions",
+                            "title": "Output 1",
                             "order": 2,
                             "address": 392,
                             "reg_type": "holding",
@@ -2566,30 +2566,30 @@
                                 7, 8, 9, 10, 11, 12, 13, 14, 15
                             ],
                             "enum_titles": [
-                                "positive edge no action / negative edge no action",
-                                "positive edge no action / negative edge reset",
-                                "positive edge no action / negative edge set",
-                                "positive edge no action / negative edge toggle",
+                                "no action / no action",
+                                "no action / reset",
+                                "no action / set",
+                                "no action / toggle",
             
-                                "positive edge reset / negative edge no action",
-                                "positive edge reset / negative edge reset",
-                                "positive edge reset / negative edge set",
-                                "positive edge reset / negative edge toggle",
+                                "reset / no action",
+                                "reset / reset",
+                                "reset / set",
+                                "reset / toggle",
             
-                                "positive edge set / negative edge no action",
-                                "positive edge set / negative edge reset",
-                                "positive edge set / negative edge set",
-                                "positive edge set / negative edge toggle",
+                                "set / no action",
+                                "set / reset",
+                                "set / set",
+                                "set / toggle",
             
-                                "positive edge toggle / negative edge no action",
-                                "positive edge toggle / negative edge reset",
-                                "positive edge toggle / negative edge set",
-                                "positive edge toggle / negative edge toggle"
+                                "toggle / no action",
+                                "toggle / reset",
+                                "toggle / set",
+                                "toggle / toggle"
                             ]
                         },
                         "out2_actions": {
                             "group": "out_actions_2",
-                            "title": "Output 2 Actions",
+                            "title": "Output 2",
                             "order": 3,
                             "address": 393,
                             "reg_type": "holding",
@@ -2599,30 +2599,30 @@
                                 7, 8, 9, 10, 11, 12, 13, 14, 15
                             ],
                             "enum_titles": [
-                                "positive edge no action / negative edge no action",
-                                "positive edge no action / negative edge reset",
-                                "positive edge no action / negative edge set",
-                                "positive edge no action / negative edge toggle",
+                                "no action / no action",
+                                "no action / reset",
+                                "no action / set",
+                                "no action / toggle",
             
-                                "positive edge reset / negative edge no action",
-                                "positive edge reset / negative edge reset",
-                                "positive edge reset / negative edge set",
-                                "positive edge reset / negative edge toggle",
+                                "reset / no action",
+                                "reset / reset",
+                                "reset / set",
+                                "reset / toggle",
             
-                                "positive edge set / negative edge no action",
-                                "positive edge set / negative edge reset",
-                                "positive edge set / negative edge set",
-                                "positive edge set / negative edge toggle",
+                                "set / no action",
+                                "set / reset",
+                                "set / set",
+                                "set / toggle",
             
-                                "positive edge toggle / negative edge no action",
-                                "positive edge toggle / negative edge reset",
-                                "positive edge toggle / negative edge set",
-                                "positive edge toggle / negative edge toggle"
+                                "toggle / no action",
+                                "toggle / reset",
+                                "toggle / set",
+                                "toggle / toggle"
                             ]
                         },
                         "out3_actions": {
                             "group": "out_actions_2",
-                            "title": "Output 3 Actions",
+                            "title": "Output 3",
                             "order": 4,
                             "address": 394,
                             "reg_type": "holding",
@@ -2632,30 +2632,30 @@
                                 7, 8, 9, 10, 11, 12, 13, 14, 15
                             ],
                             "enum_titles": [
-                                "positive edge no action / negative edge no action",
-                                "positive edge no action / negative edge reset",
-                                "positive edge no action / negative edge set",
-                                "positive edge no action / negative edge toggle",
+                                "no action / no action",
+                                "no action / reset",
+                                "no action / set",
+                                "no action / toggle",
             
-                                "positive edge reset / negative edge no action",
-                                "positive edge reset / negative edge reset",
-                                "positive edge reset / negative edge set",
-                                "positive edge reset / negative edge toggle",
+                                "reset / no action",
+                                "reset / reset",
+                                "reset / set",
+                                "reset / toggle",
             
-                                "positive edge set / negative edge no action",
-                                "positive edge set / negative edge reset",
-                                "positive edge set / negative edge set",
-                                "positive edge set / negative edge toggle",
+                                "set / no action",
+                                "set / reset",
+                                "set / set",
+                                "set / toggle",
             
-                                "positive edge toggle / negative edge no action",
-                                "positive edge toggle / negative edge reset",
-                                "positive edge toggle / negative edge set",
-                                "positive edge toggle / negative edge toggle"
+                                "toggle / no action",
+                                "toggle / reset",
+                                "toggle / set",
+                                "toggle / toggle"
                             ]
                         },
                         "out4_actions": {
                             "group": "out_actions_2",
-                            "title": "Output 4 Actions",
+                            "title": "Output 4",
                             "order": 5,
                             "address": 395,
                             "reg_type": "holding",
@@ -2665,30 +2665,30 @@
                                 7, 8, 9, 10, 11, 12, 13, 14, 15
                             ],
                             "enum_titles": [
-                                "positive edge no action / negative edge no action",
-                                "positive edge no action / negative edge reset",
-                                "positive edge no action / negative edge set",
-                                "positive edge no action / negative edge toggle",
+                                "no action / no action",
+                                "no action / reset",
+                                "no action / set",
+                                "no action / toggle",
             
-                                "positive edge reset / negative edge no action",
-                                "positive edge reset / negative edge reset",
-                                "positive edge reset / negative edge set",
-                                "positive edge reset / negative edge toggle",
+                                "reset / no action",
+                                "reset / reset",
+                                "reset / set",
+                                "reset / toggle",
             
-                                "positive edge set / negative edge no action",
-                                "positive edge set / negative edge reset",
-                                "positive edge set / negative edge set",
-                                "positive edge set / negative edge toggle",
+                                "set / no action",
+                                "set / reset",
+                                "set / set",
+                                "set / toggle",
             
-                                "positive edge toggle / negative edge no action",
-                                "positive edge toggle / negative edge reset",
-                                "positive edge toggle / negative edge set",
-                                "positive edge toggle / negative edge toggle"
+                                "toggle / no action",
+                                "toggle / reset",
+                                "toggle / set",
+                                "toggle / toggle"
                             ]
                         },
                         "out5_actions": {
                             "group": "out_actions_2",
-                            "title": "Output 5 Actions",
+                            "title": "Output 5",
                             "order": 6,
                             "address": 396,
                             "reg_type": "holding",
@@ -2698,30 +2698,30 @@
                                 7, 8, 9, 10, 11, 12, 13, 14, 15
                             ],
                             "enum_titles": [
-                                "positive edge no action / negative edge no action",
-                                "positive edge no action / negative edge reset",
-                                "positive edge no action / negative edge set",
-                                "positive edge no action / negative edge toggle",
+                                "no action / no action",
+                                "no action / reset",
+                                "no action / set",
+                                "no action / toggle",
             
-                                "positive edge reset / negative edge no action",
-                                "positive edge reset / negative edge reset",
-                                "positive edge reset / negative edge set",
-                                "positive edge reset / negative edge toggle",
+                                "reset / no action",
+                                "reset / reset",
+                                "reset / set",
+                                "reset / toggle",
             
-                                "positive edge set / negative edge no action",
-                                "positive edge set / negative edge reset",
-                                "positive edge set / negative edge set",
-                                "positive edge set / negative edge toggle",
+                                "set / no action",
+                                "set / reset",
+                                "set / set",
+                                "set / toggle",
             
-                                "positive edge toggle / negative edge no action",
-                                "positive edge toggle / negative edge reset",
-                                "positive edge toggle / negative edge set",
-                                "positive edge toggle / negative edge toggle"
+                                "toggle / no action",
+                                "toggle / reset",
+                                "toggle / set",
+                                "toggle / toggle"
                             ]
                         },
                         "out6_actions": {
                             "group": "out_actions_2",
-                            "title": "Output 6 Actions",
+                            "title": "Output 6",
                             "order": 7,
                             "address": 397,
                             "reg_type": "holding",
@@ -2731,25 +2731,25 @@
                                 7, 8, 9, 10, 11, 12, 13, 14, 15
                             ],
                             "enum_titles": [
-                                "positive edge no action / negative edge no action",
-                                "positive edge no action / negative edge reset",
-                                "positive edge no action / negative edge set",
-                                "positive edge no action / negative edge toggle",
+                                "no action / no action",
+                                "no action / reset",
+                                "no action / set",
+                                "no action / toggle",
             
-                                "positive edge reset / negative edge no action",
-                                "positive edge reset / negative edge reset",
-                                "positive edge reset / negative edge set",
-                                "positive edge reset / negative edge toggle",
+                                "reset / no action",
+                                "reset / reset",
+                                "reset / set",
+                                "reset / toggle",
             
-                                "positive edge set / negative edge no action",
-                                "positive edge set / negative edge reset",
-                                "positive edge set / negative edge set",
-                                "positive edge set / negative edge toggle",
+                                "set / no action",
+                                "set / reset",
+                                "set / set",
+                                "set / toggle",
             
-                                "positive edge toggle / negative edge no action",
-                                "positive edge toggle / negative edge reset",
-                                "positive edge toggle / negative edge set",
-                                "positive edge toggle / negative edge toggle"
+                                "toggle / no action",
+                                "toggle / reset",
+                                "toggle / set",
+                                "toggle / toggle"
                             ]
                         }
                     },
@@ -2781,32 +2781,32 @@
                             }
                         },
                         {
-                            "title": "Output 1 Actions",
+                            "title": "Output 1",
                             "id": "push_bt_in1_2",
                             "order": 2
                         },
                         {
-                            "title": "Output 2 Actions",
+                            "title": "Output 2",
                             "id": "push_bt_in2_2",
                             "order": 3
                         },
                         {
-                            "title": "Output 3 Actions",
+                            "title": "Output 3",
                             "id": "push_bt_in3_2",
                             "order": 4
                         },
                         {
-                            "title": "Output 4 Actions",
+                            "title": "Output 4",
                             "id": "push_bt_in4_2",
                             "order": 5
                         },
                         {
-                            "title": "Output 5 Actions",
+                            "title": "Output 5",
                             "id": "push_bt_in5_2",
                             "order": 6
                         },
                         {
-                            "title": "Output 6 Actions",
+                            "title": "Output 6",
                             "id": "push_bt_in6_2",
                             "order": 7
                         },
@@ -3576,7 +3576,7 @@
                             }
                         },
                         {
-                            "title": "Output Actions",
+                            "title": "Actions for outputs when the input is closed / opened",
                             "id": "out_actions_3",
                             "order": 2
                         }
@@ -3621,7 +3621,7 @@
                         },
                         "out1_actions": {
                             "group": "out_actions_3",
-                            "title": "Output 1 Actions",
+                            "title": "Output 1",
                             "order": 2,
                             "address": 400,
                             "reg_type": "holding",
@@ -3631,30 +3631,30 @@
                                 7, 8, 9, 10, 11, 12, 13, 14, 15
                             ],
                             "enum_titles": [
-                                "positive edge no action / negative edge no action",
-                                "positive edge no action / negative edge reset",
-                                "positive edge no action / negative edge set",
-                                "positive edge no action / negative edge toggle",
+                                "no action / no action",
+                                "no action / reset",
+                                "no action / set",
+                                "no action / toggle",
             
-                                "positive edge reset / negative edge no action",
-                                "positive edge reset / negative edge reset",
-                                "positive edge reset / negative edge set",
-                                "positive edge reset / negative edge toggle",
+                                "reset / no action",
+                                "reset / reset",
+                                "reset / set",
+                                "reset / toggle",
             
-                                "positive edge set / negative edge no action",
-                                "positive edge set / negative edge reset",
-                                "positive edge set / negative edge set",
-                                "positive edge set / negative edge toggle",
+                                "set / no action",
+                                "set / reset",
+                                "set / set",
+                                "set / toggle",
             
-                                "positive edge toggle / negative edge no action",
-                                "positive edge toggle / negative edge reset",
-                                "positive edge toggle / negative edge set",
-                                "positive edge toggle / negative edge toggle"
+                                "toggle / no action",
+                                "toggle / reset",
+                                "toggle / set",
+                                "toggle / toggle"
                             ]
                         },
                         "out2_actions": {
                             "group": "out_actions_3",
-                            "title": "Output 2 Actions",
+                            "title": "Output 2",
                             "order": 3,
                             "address": 401,
                             "reg_type": "holding",
@@ -3664,30 +3664,30 @@
                                 7, 8, 9, 10, 11, 12, 13, 14, 15
                             ],
                             "enum_titles": [
-                                "positive edge no action / negative edge no action",
-                                "positive edge no action / negative edge reset",
-                                "positive edge no action / negative edge set",
-                                "positive edge no action / negative edge toggle",
+                                "no action / no action",
+                                "no action / reset",
+                                "no action / set",
+                                "no action / toggle",
             
-                                "positive edge reset / negative edge no action",
-                                "positive edge reset / negative edge reset",
-                                "positive edge reset / negative edge set",
-                                "positive edge reset / negative edge toggle",
+                                "reset / no action",
+                                "reset / reset",
+                                "reset / set",
+                                "reset / toggle",
             
-                                "positive edge set / negative edge no action",
-                                "positive edge set / negative edge reset",
-                                "positive edge set / negative edge set",
-                                "positive edge set / negative edge toggle",
+                                "set / no action",
+                                "set / reset",
+                                "set / set",
+                                "set / toggle",
             
-                                "positive edge toggle / negative edge no action",
-                                "positive edge toggle / negative edge reset",
-                                "positive edge toggle / negative edge set",
-                                "positive edge toggle / negative edge toggle"
+                                "toggle / no action",
+                                "toggle / reset",
+                                "toggle / set",
+                                "toggle / toggle"
                             ]
                         },
                         "out3_actions": {
                             "group": "out_actions_3",
-                            "title": "Output 3 Actions",
+                            "title": "Output 3",
                             "order": 4,
                             "address": 402,
                             "reg_type": "holding",
@@ -3697,30 +3697,30 @@
                                 7, 8, 9, 10, 11, 12, 13, 14, 15
                             ],
                             "enum_titles": [
-                                "positive edge no action / negative edge no action",
-                                "positive edge no action / negative edge reset",
-                                "positive edge no action / negative edge set",
-                                "positive edge no action / negative edge toggle",
+                                "no action / no action",
+                                "no action / reset",
+                                "no action / set",
+                                "no action / toggle",
             
-                                "positive edge reset / negative edge no action",
-                                "positive edge reset / negative edge reset",
-                                "positive edge reset / negative edge set",
-                                "positive edge reset / negative edge toggle",
+                                "reset / no action",
+                                "reset / reset",
+                                "reset / set",
+                                "reset / toggle",
             
-                                "positive edge set / negative edge no action",
-                                "positive edge set / negative edge reset",
-                                "positive edge set / negative edge set",
-                                "positive edge set / negative edge toggle",
+                                "set / no action",
+                                "set / reset",
+                                "set / set",
+                                "set / toggle",
             
-                                "positive edge toggle / negative edge no action",
-                                "positive edge toggle / negative edge reset",
-                                "positive edge toggle / negative edge set",
-                                "positive edge toggle / negative edge toggle"
+                                "toggle / no action",
+                                "toggle / reset",
+                                "toggle / set",
+                                "toggle / toggle"
                             ]
                         },
                         "out4_actions": {
                             "group": "out_actions_3",
-                            "title": "Output 4 Actions",
+                            "title": "Output 4",
                             "order": 5,
                             "address": 403,
                             "reg_type": "holding",
@@ -3730,30 +3730,30 @@
                                 7, 8, 9, 10, 11, 12, 13, 14, 15
                             ],
                             "enum_titles": [
-                                "positive edge no action / negative edge no action",
-                                "positive edge no action / negative edge reset",
-                                "positive edge no action / negative edge set",
-                                "positive edge no action / negative edge toggle",
+                                "no action / no action",
+                                "no action / reset",
+                                "no action / set",
+                                "no action / toggle",
             
-                                "positive edge reset / negative edge no action",
-                                "positive edge reset / negative edge reset",
-                                "positive edge reset / negative edge set",
-                                "positive edge reset / negative edge toggle",
+                                "reset / no action",
+                                "reset / reset",
+                                "reset / set",
+                                "reset / toggle",
             
-                                "positive edge set / negative edge no action",
-                                "positive edge set / negative edge reset",
-                                "positive edge set / negative edge set",
-                                "positive edge set / negative edge toggle",
+                                "set / no action",
+                                "set / reset",
+                                "set / set",
+                                "set / toggle",
             
-                                "positive edge toggle / negative edge no action",
-                                "positive edge toggle / negative edge reset",
-                                "positive edge toggle / negative edge set",
-                                "positive edge toggle / negative edge toggle"
+                                "toggle / no action",
+                                "toggle / reset",
+                                "toggle / set",
+                                "toggle / toggle"
                             ]
                         },
                         "out5_actions": {
                             "group": "out_actions_3",
-                            "title": "Output 5 Actions",
+                            "title": "Output 5",
                             "order": 6,
                             "address": 404,
                             "reg_type": "holding",
@@ -3763,30 +3763,30 @@
                                 7, 8, 9, 10, 11, 12, 13, 14, 15
                             ],
                             "enum_titles": [
-                                "positive edge no action / negative edge no action",
-                                "positive edge no action / negative edge reset",
-                                "positive edge no action / negative edge set",
-                                "positive edge no action / negative edge toggle",
+                                "no action / no action",
+                                "no action / reset",
+                                "no action / set",
+                                "no action / toggle",
             
-                                "positive edge reset / negative edge no action",
-                                "positive edge reset / negative edge reset",
-                                "positive edge reset / negative edge set",
-                                "positive edge reset / negative edge toggle",
+                                "reset / no action",
+                                "reset / reset",
+                                "reset / set",
+                                "reset / toggle",
             
-                                "positive edge set / negative edge no action",
-                                "positive edge set / negative edge reset",
-                                "positive edge set / negative edge set",
-                                "positive edge set / negative edge toggle",
+                                "set / no action",
+                                "set / reset",
+                                "set / set",
+                                "set / toggle",
             
-                                "positive edge toggle / negative edge no action",
-                                "positive edge toggle / negative edge reset",
-                                "positive edge toggle / negative edge set",
-                                "positive edge toggle / negative edge toggle"
+                                "toggle / no action",
+                                "toggle / reset",
+                                "toggle / set",
+                                "toggle / toggle"
                             ]
                         },
                         "out6_actions": {
                             "group": "out_actions_3",
-                            "title": "Output 6 Actions",
+                            "title": "Output 6",
                             "order": 7,
                             "address": 405,
                             "reg_type": "holding",
@@ -3796,25 +3796,25 @@
                                 7, 8, 9, 10, 11, 12, 13, 14, 15
                             ],
                             "enum_titles": [
-                                "positive edge no action / negative edge no action",
-                                "positive edge no action / negative edge reset",
-                                "positive edge no action / negative edge set",
-                                "positive edge no action / negative edge toggle",
+                                "no action / no action",
+                                "no action / reset",
+                                "no action / set",
+                                "no action / toggle",
             
-                                "positive edge reset / negative edge no action",
-                                "positive edge reset / negative edge reset",
-                                "positive edge reset / negative edge set",
-                                "positive edge reset / negative edge toggle",
+                                "reset / no action",
+                                "reset / reset",
+                                "reset / set",
+                                "reset / toggle",
             
-                                "positive edge set / negative edge no action",
-                                "positive edge set / negative edge reset",
-                                "positive edge set / negative edge set",
-                                "positive edge set / negative edge toggle",
+                                "set / no action",
+                                "set / reset",
+                                "set / set",
+                                "set / toggle",
             
-                                "positive edge toggle / negative edge no action",
-                                "positive edge toggle / negative edge reset",
-                                "positive edge toggle / negative edge set",
-                                "positive edge toggle / negative edge toggle"
+                                "toggle / no action",
+                                "toggle / reset",
+                                "toggle / set",
+                                "toggle / toggle"
                             ]
                         }
                     },
@@ -3846,32 +3846,32 @@
                             }
                         },
                         {
-                            "title": "Output 1 Actions",
+                            "title": "Output 1",
                             "id": "push_bt_in1_3",
                             "order": 2
                         },
                         {
-                            "title": "Output 2 Actions",
+                            "title": "Output 2",
                             "id": "push_bt_in2_3",
                             "order": 3
                         },
                         {
-                            "title": "Output 3 Actions",
+                            "title": "Output 3",
                             "id": "push_bt_in3_3",
                             "order": 4
                         },
                         {
-                            "title": "Output 4 Actions",
+                            "title": "Output 4",
                             "id": "push_bt_in4_3",
                             "order": 5
                         },
                         {
-                            "title": "Output 5 Actions",
+                            "title": "Output 5",
                             "id": "push_bt_in5_3",
                             "order": 6
                         },
                         {
-                            "title": "Output 6 Actions",
+                            "title": "Output 6",
                             "id": "push_bt_in6_3",
                             "order": 7
                         },
@@ -4641,7 +4641,7 @@
                             }
                         },
                         {
-                            "title": "Output Actions",
+                            "title": "Actions for outputs when the input is closed / opened",
                             "id": "out_actions_4",
                             "order": 2
                         }
@@ -4686,7 +4686,7 @@
                         },
                         "out1_actions": {
                             "group": "out_actions_4",
-                            "title": "Output 1 Actions",
+                            "title": "Output 1",
                             "order": 2,
                             "address": 408,
                             "reg_type": "holding",
@@ -4696,30 +4696,30 @@
                                 7, 8, 9, 10, 11, 12, 13, 14, 15
                             ],
                             "enum_titles": [
-                                "positive edge no action / negative edge no action",
-                                "positive edge no action / negative edge reset",
-                                "positive edge no action / negative edge set",
-                                "positive edge no action / negative edge toggle",
+                                "no action / no action",
+                                "no action / reset",
+                                "no action / set",
+                                "no action / toggle",
             
-                                "positive edge reset / negative edge no action",
-                                "positive edge reset / negative edge reset",
-                                "positive edge reset / negative edge set",
-                                "positive edge reset / negative edge toggle",
+                                "reset / no action",
+                                "reset / reset",
+                                "reset / set",
+                                "reset / toggle",
             
-                                "positive edge set / negative edge no action",
-                                "positive edge set / negative edge reset",
-                                "positive edge set / negative edge set",
-                                "positive edge set / negative edge toggle",
+                                "set / no action",
+                                "set / reset",
+                                "set / set",
+                                "set / toggle",
             
-                                "positive edge toggle / negative edge no action",
-                                "positive edge toggle / negative edge reset",
-                                "positive edge toggle / negative edge set",
-                                "positive edge toggle / negative edge toggle"
+                                "toggle / no action",
+                                "toggle / reset",
+                                "toggle / set",
+                                "toggle / toggle"
                             ]
                         },
                         "out2_actions": {
                             "group": "out_actions_4",
-                            "title": "Output 2 Actions",
+                            "title": "Output 2",
                             "order": 3,
                             "address": 409,
                             "reg_type": "holding",
@@ -4729,30 +4729,30 @@
                                 7, 8, 9, 10, 11, 12, 13, 14, 15
                             ],
                             "enum_titles": [
-                                "positive edge no action / negative edge no action",
-                                "positive edge no action / negative edge reset",
-                                "positive edge no action / negative edge set",
-                                "positive edge no action / negative edge toggle",
+                                "no action / no action",
+                                "no action / reset",
+                                "no action / set",
+                                "no action / toggle",
             
-                                "positive edge reset / negative edge no action",
-                                "positive edge reset / negative edge reset",
-                                "positive edge reset / negative edge set",
-                                "positive edge reset / negative edge toggle",
+                                "reset / no action",
+                                "reset / reset",
+                                "reset / set",
+                                "reset / toggle",
             
-                                "positive edge set / negative edge no action",
-                                "positive edge set / negative edge reset",
-                                "positive edge set / negative edge set",
-                                "positive edge set / negative edge toggle",
+                                "set / no action",
+                                "set / reset",
+                                "set / set",
+                                "set / toggle",
             
-                                "positive edge toggle / negative edge no action",
-                                "positive edge toggle / negative edge reset",
-                                "positive edge toggle / negative edge set",
-                                "positive edge toggle / negative edge toggle"
+                                "toggle / no action",
+                                "toggle / reset",
+                                "toggle / set",
+                                "toggle / toggle"
                             ]
                         },
                         "out3_actions": {
                             "group": "out_actions_4",
-                            "title": "Output 3 Actions",
+                            "title": "Output 3",
                             "order": 4,
                             "address": 410,
                             "reg_type": "holding",
@@ -4762,30 +4762,30 @@
                                 7, 8, 9, 10, 11, 12, 13, 14, 15
                             ],
                             "enum_titles": [
-                                "positive edge no action / negative edge no action",
-                                "positive edge no action / negative edge reset",
-                                "positive edge no action / negative edge set",
-                                "positive edge no action / negative edge toggle",
+                                "no action / no action",
+                                "no action / reset",
+                                "no action / set",
+                                "no action / toggle",
             
-                                "positive edge reset / negative edge no action",
-                                "positive edge reset / negative edge reset",
-                                "positive edge reset / negative edge set",
-                                "positive edge reset / negative edge toggle",
+                                "reset / no action",
+                                "reset / reset",
+                                "reset / set",
+                                "reset / toggle",
             
-                                "positive edge set / negative edge no action",
-                                "positive edge set / negative edge reset",
-                                "positive edge set / negative edge set",
-                                "positive edge set / negative edge toggle",
+                                "set / no action",
+                                "set / reset",
+                                "set / set",
+                                "set / toggle",
             
-                                "positive edge toggle / negative edge no action",
-                                "positive edge toggle / negative edge reset",
-                                "positive edge toggle / negative edge set",
-                                "positive edge toggle / negative edge toggle"
+                                "toggle / no action",
+                                "toggle / reset",
+                                "toggle / set",
+                                "toggle / toggle"
                             ]
                         },
                         "out4_actions": {
                             "group": "out_actions_4",
-                            "title": "Output 4 Actions",
+                            "title": "Output 4",
                             "order": 5,
                             "address": 411,
                             "reg_type": "holding",
@@ -4795,30 +4795,30 @@
                                 7, 8, 9, 10, 11, 12, 13, 14, 15
                             ],
                             "enum_titles": [
-                                "positive edge no action / negative edge no action",
-                                "positive edge no action / negative edge reset",
-                                "positive edge no action / negative edge set",
-                                "positive edge no action / negative edge toggle",
+                                "no action / no action",
+                                "no action / reset",
+                                "no action / set",
+                                "no action / toggle",
             
-                                "positive edge reset / negative edge no action",
-                                "positive edge reset / negative edge reset",
-                                "positive edge reset / negative edge set",
-                                "positive edge reset / negative edge toggle",
+                                "reset / no action",
+                                "reset / reset",
+                                "reset / set",
+                                "reset / toggle",
             
-                                "positive edge set / negative edge no action",
-                                "positive edge set / negative edge reset",
-                                "positive edge set / negative edge set",
-                                "positive edge set / negative edge toggle",
+                                "set / no action",
+                                "set / reset",
+                                "set / set",
+                                "set / toggle",
             
-                                "positive edge toggle / negative edge no action",
-                                "positive edge toggle / negative edge reset",
-                                "positive edge toggle / negative edge set",
-                                "positive edge toggle / negative edge toggle"
+                                "toggle / no action",
+                                "toggle / reset",
+                                "toggle / set",
+                                "toggle / toggle"
                             ]
                         },
                         "out5_actions": {
                             "group": "out_actions_4",
-                            "title": "Output 5 Actions",
+                            "title": "Output 5",
                             "order": 6,
                             "address": 412,
                             "reg_type": "holding",
@@ -4828,30 +4828,30 @@
                                 7, 8, 9, 10, 11, 12, 13, 14, 15
                             ],
                             "enum_titles": [
-                                "positive edge no action / negative edge no action",
-                                "positive edge no action / negative edge reset",
-                                "positive edge no action / negative edge set",
-                                "positive edge no action / negative edge toggle",
+                                "no action / no action",
+                                "no action / reset",
+                                "no action / set",
+                                "no action / toggle",
             
-                                "positive edge reset / negative edge no action",
-                                "positive edge reset / negative edge reset",
-                                "positive edge reset / negative edge set",
-                                "positive edge reset / negative edge toggle",
+                                "reset / no action",
+                                "reset / reset",
+                                "reset / set",
+                                "reset / toggle",
             
-                                "positive edge set / negative edge no action",
-                                "positive edge set / negative edge reset",
-                                "positive edge set / negative edge set",
-                                "positive edge set / negative edge toggle",
+                                "set / no action",
+                                "set / reset",
+                                "set / set",
+                                "set / toggle",
             
-                                "positive edge toggle / negative edge no action",
-                                "positive edge toggle / negative edge reset",
-                                "positive edge toggle / negative edge set",
-                                "positive edge toggle / negative edge toggle"
+                                "toggle / no action",
+                                "toggle / reset",
+                                "toggle / set",
+                                "toggle / toggle"
                             ]
                         },
                         "out6_actions": {
                             "group": "out_actions_4",
-                            "title": "Output 6 Actions",
+                            "title": "Output 6",
                             "order": 7,
                             "address": 413,
                             "reg_type": "holding",
@@ -4861,25 +4861,25 @@
                                 7, 8, 9, 10, 11, 12, 13, 14, 15
                             ],
                             "enum_titles": [
-                                "positive edge no action / negative edge no action",
-                                "positive edge no action / negative edge reset",
-                                "positive edge no action / negative edge set",
-                                "positive edge no action / negative edge toggle",
+                                "no action / no action",
+                                "no action / reset",
+                                "no action / set",
+                                "no action / toggle",
             
-                                "positive edge reset / negative edge no action",
-                                "positive edge reset / negative edge reset",
-                                "positive edge reset / negative edge set",
-                                "positive edge reset / negative edge toggle",
+                                "reset / no action",
+                                "reset / reset",
+                                "reset / set",
+                                "reset / toggle",
             
-                                "positive edge set / negative edge no action",
-                                "positive edge set / negative edge reset",
-                                "positive edge set / negative edge set",
-                                "positive edge set / negative edge toggle",
+                                "set / no action",
+                                "set / reset",
+                                "set / set",
+                                "set / toggle",
             
-                                "positive edge toggle / negative edge no action",
-                                "positive edge toggle / negative edge reset",
-                                "positive edge toggle / negative edge set",
-                                "positive edge toggle / negative edge toggle"
+                                "toggle / no action",
+                                "toggle / reset",
+                                "toggle / set",
+                                "toggle / toggle"
                             ]
                         }
                     },
@@ -4911,32 +4911,32 @@
                             }
                         },
                         {
-                            "title": "Output 1 Actions",
+                            "title": "Output 1",
                             "id": "push_bt_in1_4",
                             "order": 2
                         },
                         {
-                            "title": "Output 2 Actions",
+                            "title": "Output 2",
                             "id": "push_bt_in2_4",
                             "order": 3
                         },
                         {
-                            "title": "Output 3 Actions",
+                            "title": "Output 3",
                             "id": "push_bt_in3_4",
                             "order": 4
                         },
                         {
-                            "title": "Output 4 Actions",
+                            "title": "Output 4",
                             "id": "push_bt_in4_4",
                             "order": 5
                         },
                         {
-                            "title": "Output 5 Actions",
+                            "title": "Output 5",
                             "id": "push_bt_in5_4",
                             "order": 6
                         },
                         {
-                            "title": "Output 6 Actions",
+                            "title": "Output 6",
                             "id": "push_bt_in6_4",
                             "order": 7
                         },
@@ -5706,7 +5706,7 @@
                             }
                         },
                         {
-                            "title": "Output Actions",
+                            "title": "Actions for outputs when the input is closed / opened",
                             "id": "out_actions_5",
                             "order": 2
                         }
@@ -5751,7 +5751,7 @@
                         },
                         "out1_actions": {
                             "group": "out_actions_5",
-                            "title": "Output 1 Actions",
+                            "title": "Output 1",
                             "order": 2,
                             "address": 416,
                             "reg_type": "holding",
@@ -5761,30 +5761,30 @@
                                 7, 8, 9, 10, 11, 12, 13, 14, 15
                             ],
                             "enum_titles": [
-                                "positive edge no action / negative edge no action",
-                                "positive edge no action / negative edge reset",
-                                "positive edge no action / negative edge set",
-                                "positive edge no action / negative edge toggle",
+                                "no action / no action",
+                                "no action / reset",
+                                "no action / set",
+                                "no action / toggle",
             
-                                "positive edge reset / negative edge no action",
-                                "positive edge reset / negative edge reset",
-                                "positive edge reset / negative edge set",
-                                "positive edge reset / negative edge toggle",
+                                "reset / no action",
+                                "reset / reset",
+                                "reset / set",
+                                "reset / toggle",
             
-                                "positive edge set / negative edge no action",
-                                "positive edge set / negative edge reset",
-                                "positive edge set / negative edge set",
-                                "positive edge set / negative edge toggle",
+                                "set / no action",
+                                "set / reset",
+                                "set / set",
+                                "set / toggle",
             
-                                "positive edge toggle / negative edge no action",
-                                "positive edge toggle / negative edge reset",
-                                "positive edge toggle / negative edge set",
-                                "positive edge toggle / negative edge toggle"
+                                "toggle / no action",
+                                "toggle / reset",
+                                "toggle / set",
+                                "toggle / toggle"
                             ]
                         },
                         "out2_actions": {
                             "group": "out_actions_5",
-                            "title": "Output 2 Actions",
+                            "title": "Output 2",
                             "order": 3,
                             "address": 417,
                             "reg_type": "holding",
@@ -5794,30 +5794,30 @@
                                 7, 8, 9, 10, 11, 12, 13, 14, 15
                             ],
                             "enum_titles": [
-                                "positive edge no action / negative edge no action",
-                                "positive edge no action / negative edge reset",
-                                "positive edge no action / negative edge set",
-                                "positive edge no action / negative edge toggle",
+                                "no action / no action",
+                                "no action / reset",
+                                "no action / set",
+                                "no action / toggle",
             
-                                "positive edge reset / negative edge no action",
-                                "positive edge reset / negative edge reset",
-                                "positive edge reset / negative edge set",
-                                "positive edge reset / negative edge toggle",
+                                "reset / no action",
+                                "reset / reset",
+                                "reset / set",
+                                "reset / toggle",
             
-                                "positive edge set / negative edge no action",
-                                "positive edge set / negative edge reset",
-                                "positive edge set / negative edge set",
-                                "positive edge set / negative edge toggle",
+                                "set / no action",
+                                "set / reset",
+                                "set / set",
+                                "set / toggle",
             
-                                "positive edge toggle / negative edge no action",
-                                "positive edge toggle / negative edge reset",
-                                "positive edge toggle / negative edge set",
-                                "positive edge toggle / negative edge toggle"
+                                "toggle / no action",
+                                "toggle / reset",
+                                "toggle / set",
+                                "toggle / toggle"
                             ]
                         },
                         "out3_actions": {
                             "group": "out_actions_5",
-                            "title": "Output 3 Actions",
+                            "title": "Output 3",
                             "order": 4,
                             "address": 418,
                             "reg_type": "holding",
@@ -5827,30 +5827,30 @@
                                 7, 8, 9, 10, 11, 12, 13, 14, 15
                             ],
                             "enum_titles": [
-                                "positive edge no action / negative edge no action",
-                                "positive edge no action / negative edge reset",
-                                "positive edge no action / negative edge set",
-                                "positive edge no action / negative edge toggle",
+                                "no action / no action",
+                                "no action / reset",
+                                "no action / set",
+                                "no action / toggle",
             
-                                "positive edge reset / negative edge no action",
-                                "positive edge reset / negative edge reset",
-                                "positive edge reset / negative edge set",
-                                "positive edge reset / negative edge toggle",
+                                "reset / no action",
+                                "reset / reset",
+                                "reset / set",
+                                "reset / toggle",
             
-                                "positive edge set / negative edge no action",
-                                "positive edge set / negative edge reset",
-                                "positive edge set / negative edge set",
-                                "positive edge set / negative edge toggle",
+                                "set / no action",
+                                "set / reset",
+                                "set / set",
+                                "set / toggle",
             
-                                "positive edge toggle / negative edge no action",
-                                "positive edge toggle / negative edge reset",
-                                "positive edge toggle / negative edge set",
-                                "positive edge toggle / negative edge toggle"
+                                "toggle / no action",
+                                "toggle / reset",
+                                "toggle / set",
+                                "toggle / toggle"
                             ]
                         },
                         "out4_actions": {
                             "group": "out_actions_5",
-                            "title": "Output 4 Actions",
+                            "title": "Output 4",
                             "order": 5,
                             "address": 419,
                             "reg_type": "holding",
@@ -5860,30 +5860,30 @@
                                 7, 8, 9, 10, 11, 12, 13, 14, 15
                             ],
                             "enum_titles": [
-                                "positive edge no action / negative edge no action",
-                                "positive edge no action / negative edge reset",
-                                "positive edge no action / negative edge set",
-                                "positive edge no action / negative edge toggle",
+                                "no action / no action",
+                                "no action / reset",
+                                "no action / set",
+                                "no action / toggle",
             
-                                "positive edge reset / negative edge no action",
-                                "positive edge reset / negative edge reset",
-                                "positive edge reset / negative edge set",
-                                "positive edge reset / negative edge toggle",
+                                "reset / no action",
+                                "reset / reset",
+                                "reset / set",
+                                "reset / toggle",
             
-                                "positive edge set / negative edge no action",
-                                "positive edge set / negative edge reset",
-                                "positive edge set / negative edge set",
-                                "positive edge set / negative edge toggle",
+                                "set / no action",
+                                "set / reset",
+                                "set / set",
+                                "set / toggle",
             
-                                "positive edge toggle / negative edge no action",
-                                "positive edge toggle / negative edge reset",
-                                "positive edge toggle / negative edge set",
-                                "positive edge toggle / negative edge toggle"
+                                "toggle / no action",
+                                "toggle / reset",
+                                "toggle / set",
+                                "toggle / toggle"
                             ]
                         },
                         "out5_actions": {
                             "group": "out_actions_5",
-                            "title": "Output 5 Actions",
+                            "title": "Output 5",
                             "order": 6,
                             "address": 420,
                             "reg_type": "holding",
@@ -5893,30 +5893,30 @@
                                 7, 8, 9, 10, 11, 12, 13, 14, 15
                             ],
                             "enum_titles": [
-                                "positive edge no action / negative edge no action",
-                                "positive edge no action / negative edge reset",
-                                "positive edge no action / negative edge set",
-                                "positive edge no action / negative edge toggle",
+                                "no action / no action",
+                                "no action / reset",
+                                "no action / set",
+                                "no action / toggle",
             
-                                "positive edge reset / negative edge no action",
-                                "positive edge reset / negative edge reset",
-                                "positive edge reset / negative edge set",
-                                "positive edge reset / negative edge toggle",
+                                "reset / no action",
+                                "reset / reset",
+                                "reset / set",
+                                "reset / toggle",
             
-                                "positive edge set / negative edge no action",
-                                "positive edge set / negative edge reset",
-                                "positive edge set / negative edge set",
-                                "positive edge set / negative edge toggle",
+                                "set / no action",
+                                "set / reset",
+                                "set / set",
+                                "set / toggle",
             
-                                "positive edge toggle / negative edge no action",
-                                "positive edge toggle / negative edge reset",
-                                "positive edge toggle / negative edge set",
-                                "positive edge toggle / negative edge toggle"
+                                "toggle / no action",
+                                "toggle / reset",
+                                "toggle / set",
+                                "toggle / toggle"
                             ]
                         },
                         "out6_actions": {
                             "group": "out_actions_5",
-                            "title": "Output 6 Actions",
+                            "title": "Output 6",
                             "order": 7,
                             "address": 421,
                             "reg_type": "holding",
@@ -5926,25 +5926,25 @@
                                 7, 8, 9, 10, 11, 12, 13, 14, 15
                             ],
                             "enum_titles": [
-                                "positive edge no action / negative edge no action",
-                                "positive edge no action / negative edge reset",
-                                "positive edge no action / negative edge set",
-                                "positive edge no action / negative edge toggle",
+                                "no action / no action",
+                                "no action / reset",
+                                "no action / set",
+                                "no action / toggle",
             
-                                "positive edge reset / negative edge no action",
-                                "positive edge reset / negative edge reset",
-                                "positive edge reset / negative edge set",
-                                "positive edge reset / negative edge toggle",
+                                "reset / no action",
+                                "reset / reset",
+                                "reset / set",
+                                "reset / toggle",
             
-                                "positive edge set / negative edge no action",
-                                "positive edge set / negative edge reset",
-                                "positive edge set / negative edge set",
-                                "positive edge set / negative edge toggle",
+                                "set / no action",
+                                "set / reset",
+                                "set / set",
+                                "set / toggle",
             
-                                "positive edge toggle / negative edge no action",
-                                "positive edge toggle / negative edge reset",
-                                "positive edge toggle / negative edge set",
-                                "positive edge toggle / negative edge toggle"
+                                "toggle / no action",
+                                "toggle / reset",
+                                "toggle / set",
+                                "toggle / toggle"
                             ]
                         }
                     },
@@ -5976,32 +5976,32 @@
                             }
                         },
                         {
-                            "title": "Output 1 Actions",
+                            "title": "Output 1",
                             "id": "push_bt_in1_5",
                             "order": 2
                         },
                         {
-                            "title": "Output 2 Actions",
+                            "title": "Output 2",
                             "id": "push_bt_in2_5",
                             "order": 3
                         },
                         {
-                            "title": "Output 3 Actions",
+                            "title": "Output 3",
                             "id": "push_bt_in3_5",
                             "order": 4
                         },
                         {
-                            "title": "Output 4 Actions",
+                            "title": "Output 4",
                             "id": "push_bt_in4_5",
                             "order": 5
                         },
                         {
-                            "title": "Output 5 Actions",
+                            "title": "Output 5",
                             "id": "push_bt_in5_5",
                             "order": 6
                         },
                         {
-                            "title": "Output 6 Actions",
+                            "title": "Output 6",
                             "id": "push_bt_in6_5",
                             "order": 7
                         },
@@ -6771,7 +6771,7 @@
                             }
                         },
                         {
-                            "title": "Output Actions",
+                            "title": "Actions for outputs when the input is closed / opened",
                             "id": "out_actions_6",
                             "order": 2
                         }
@@ -6816,7 +6816,7 @@
                         },
                         "out1_actions": {
                             "group": "out_actions_6",
-                            "title": "Output 1 Actions",
+                            "title": "Output 1",
                             "order": 2,
                             "address": 424,
                             "reg_type": "holding",
@@ -6826,30 +6826,30 @@
                                 7, 8, 9, 10, 11, 12, 13, 14, 15
                             ],
                             "enum_titles": [
-                                "positive edge no action / negative edge no action",
-                                "positive edge no action / negative edge reset",
-                                "positive edge no action / negative edge set",
-                                "positive edge no action / negative edge toggle",
+                                "no action / no action",
+                                "no action / reset",
+                                "no action / set",
+                                "no action / toggle",
             
-                                "positive edge reset / negative edge no action",
-                                "positive edge reset / negative edge reset",
-                                "positive edge reset / negative edge set",
-                                "positive edge reset / negative edge toggle",
+                                "reset / no action",
+                                "reset / reset",
+                                "reset / set",
+                                "reset / toggle",
             
-                                "positive edge set / negative edge no action",
-                                "positive edge set / negative edge reset",
-                                "positive edge set / negative edge set",
-                                "positive edge set / negative edge toggle",
+                                "set / no action",
+                                "set / reset",
+                                "set / set",
+                                "set / toggle",
             
-                                "positive edge toggle / negative edge no action",
-                                "positive edge toggle / negative edge reset",
-                                "positive edge toggle / negative edge set",
-                                "positive edge toggle / negative edge toggle"
+                                "toggle / no action",
+                                "toggle / reset",
+                                "toggle / set",
+                                "toggle / toggle"
                             ]
                         },
                         "out2_actions": {
                             "group": "out_actions_6",
-                            "title": "Output 2 Actions",
+                            "title": "Output 2",
                             "order": 3,
                             "address": 425,
                             "reg_type": "holding",
@@ -6859,30 +6859,30 @@
                                 7, 8, 9, 10, 11, 12, 13, 14, 15
                             ],
                             "enum_titles": [
-                                "positive edge no action / negative edge no action",
-                                "positive edge no action / negative edge reset",
-                                "positive edge no action / negative edge set",
-                                "positive edge no action / negative edge toggle",
+                                "no action / no action",
+                                "no action / reset",
+                                "no action / set",
+                                "no action / toggle",
             
-                                "positive edge reset / negative edge no action",
-                                "positive edge reset / negative edge reset",
-                                "positive edge reset / negative edge set",
-                                "positive edge reset / negative edge toggle",
+                                "reset / no action",
+                                "reset / reset",
+                                "reset / set",
+                                "reset / toggle",
             
-                                "positive edge set / negative edge no action",
-                                "positive edge set / negative edge reset",
-                                "positive edge set / negative edge set",
-                                "positive edge set / negative edge toggle",
+                                "set / no action",
+                                "set / reset",
+                                "set / set",
+                                "set / toggle",
             
-                                "positive edge toggle / negative edge no action",
-                                "positive edge toggle / negative edge reset",
-                                "positive edge toggle / negative edge set",
-                                "positive edge toggle / negative edge toggle"
+                                "toggle / no action",
+                                "toggle / reset",
+                                "toggle / set",
+                                "toggle / toggle"
                             ]
                         },
                         "out3_actions": {
                             "group": "out_actions_6",
-                            "title": "Output 3 Actions",
+                            "title": "Output 3",
                             "order": 4,
                             "address": 426,
                             "reg_type": "holding",
@@ -6892,30 +6892,30 @@
                                 7, 8, 9, 10, 11, 12, 13, 14, 15
                             ],
                             "enum_titles": [
-                                "positive edge no action / negative edge no action",
-                                "positive edge no action / negative edge reset",
-                                "positive edge no action / negative edge set",
-                                "positive edge no action / negative edge toggle",
+                                "no action / no action",
+                                "no action / reset",
+                                "no action / set",
+                                "no action / toggle",
             
-                                "positive edge reset / negative edge no action",
-                                "positive edge reset / negative edge reset",
-                                "positive edge reset / negative edge set",
-                                "positive edge reset / negative edge toggle",
+                                "reset / no action",
+                                "reset / reset",
+                                "reset / set",
+                                "reset / toggle",
             
-                                "positive edge set / negative edge no action",
-                                "positive edge set / negative edge reset",
-                                "positive edge set / negative edge set",
-                                "positive edge set / negative edge toggle",
+                                "set / no action",
+                                "set / reset",
+                                "set / set",
+                                "set / toggle",
             
-                                "positive edge toggle / negative edge no action",
-                                "positive edge toggle / negative edge reset",
-                                "positive edge toggle / negative edge set",
-                                "positive edge toggle / negative edge toggle"
+                                "toggle / no action",
+                                "toggle / reset",
+                                "toggle / set",
+                                "toggle / toggle"
                             ]
                         },
                         "out4_actions": {
                             "group": "out_actions_6",
-                            "title": "Output 4 Actions",
+                            "title": "Output 4",
                             "order": 5,
                             "address": 427,
                             "reg_type": "holding",
@@ -6925,30 +6925,30 @@
                                 7, 8, 9, 10, 11, 12, 13, 14, 15
                             ],
                             "enum_titles": [
-                                "positive edge no action / negative edge no action",
-                                "positive edge no action / negative edge reset",
-                                "positive edge no action / negative edge set",
-                                "positive edge no action / negative edge toggle",
+                                "no action / no action",
+                                "no action / reset",
+                                "no action / set",
+                                "no action / toggle",
             
-                                "positive edge reset / negative edge no action",
-                                "positive edge reset / negative edge reset",
-                                "positive edge reset / negative edge set",
-                                "positive edge reset / negative edge toggle",
+                                "reset / no action",
+                                "reset / reset",
+                                "reset / set",
+                                "reset / toggle",
             
-                                "positive edge set / negative edge no action",
-                                "positive edge set / negative edge reset",
-                                "positive edge set / negative edge set",
-                                "positive edge set / negative edge toggle",
+                                "set / no action",
+                                "set / reset",
+                                "set / set",
+                                "set / toggle",
             
-                                "positive edge toggle / negative edge no action",
-                                "positive edge toggle / negative edge reset",
-                                "positive edge toggle / negative edge set",
-                                "positive edge toggle / negative edge toggle"
+                                "toggle / no action",
+                                "toggle / reset",
+                                "toggle / set",
+                                "toggle / toggle"
                             ]
                         },
                         "out5_actions": {
                             "group": "out_actions_6",
-                            "title": "Output 5 Actions",
+                            "title": "Output 5",
                             "order": 6,
                             "address": 428,
                             "reg_type": "holding",
@@ -6958,30 +6958,30 @@
                                 7, 8, 9, 10, 11, 12, 13, 14, 15
                             ],
                             "enum_titles": [
-                                "positive edge no action / negative edge no action",
-                                "positive edge no action / negative edge reset",
-                                "positive edge no action / negative edge set",
-                                "positive edge no action / negative edge toggle",
+                                "no action / no action",
+                                "no action / reset",
+                                "no action / set",
+                                "no action / toggle",
             
-                                "positive edge reset / negative edge no action",
-                                "positive edge reset / negative edge reset",
-                                "positive edge reset / negative edge set",
-                                "positive edge reset / negative edge toggle",
+                                "reset / no action",
+                                "reset / reset",
+                                "reset / set",
+                                "reset / toggle",
             
-                                "positive edge set / negative edge no action",
-                                "positive edge set / negative edge reset",
-                                "positive edge set / negative edge set",
-                                "positive edge set / negative edge toggle",
+                                "set / no action",
+                                "set / reset",
+                                "set / set",
+                                "set / toggle",
             
-                                "positive edge toggle / negative edge no action",
-                                "positive edge toggle / negative edge reset",
-                                "positive edge toggle / negative edge set",
-                                "positive edge toggle / negative edge toggle"
+                                "toggle / no action",
+                                "toggle / reset",
+                                "toggle / set",
+                                "toggle / toggle"
                             ]
                         },
                         "out6_actions": {
                             "group": "out_actions_6",
-                            "title": "Output 6 Actions",
+                            "title": "Output 6",
                             "order": 7,
                             "address": 429,
                             "reg_type": "holding",
@@ -6991,25 +6991,25 @@
                                 7, 8, 9, 10, 11, 12, 13, 14, 15
                             ],
                             "enum_titles": [
-                                "positive edge no action / negative edge no action",
-                                "positive edge no action / negative edge reset",
-                                "positive edge no action / negative edge set",
-                                "positive edge no action / negative edge toggle",
+                                "no action / no action",
+                                "no action / reset",
+                                "no action / set",
+                                "no action / toggle",
             
-                                "positive edge reset / negative edge no action",
-                                "positive edge reset / negative edge reset",
-                                "positive edge reset / negative edge set",
-                                "positive edge reset / negative edge toggle",
+                                "reset / no action",
+                                "reset / reset",
+                                "reset / set",
+                                "reset / toggle",
             
-                                "positive edge set / negative edge no action",
-                                "positive edge set / negative edge reset",
-                                "positive edge set / negative edge set",
-                                "positive edge set / negative edge toggle",
+                                "set / no action",
+                                "set / reset",
+                                "set / set",
+                                "set / toggle",
             
-                                "positive edge toggle / negative edge no action",
-                                "positive edge toggle / negative edge reset",
-                                "positive edge toggle / negative edge set",
-                                "positive edge toggle / negative edge toggle"
+                                "toggle / no action",
+                                "toggle / reset",
+                                "toggle / set",
+                                "toggle / toggle"
                             ]
                         }
                     },
@@ -7041,32 +7041,32 @@
                             }
                         },
                         {
-                            "title": "Output 1 Actions",
+                            "title": "Output 1",
                             "id": "push_bt_in1_6",
                             "order": 2
                         },
                         {
-                            "title": "Output 2 Actions",
+                            "title": "Output 2",
                             "id": "push_bt_in2_6",
                             "order": 3
                         },
                         {
-                            "title": "Output 3 Actions",
+                            "title": "Output 3",
                             "id": "push_bt_in3_6",
                             "order": 4
                         },
                         {
-                            "title": "Output 4 Actions",
+                            "title": "Output 4",
                             "id": "push_bt_in4_6",
                             "order": 5
                         },
                         {
-                            "title": "Output 5 Actions",
+                            "title": "Output 5",
                             "id": "push_bt_in5_6",
                             "order": 6
                         },
                         {
-                            "title": "Output 6 Actions",
+                            "title": "Output 6",
                             "id": "push_bt_in6_6",
                             "order": 7
                         },
@@ -7578,38 +7578,38 @@
                 "HW Info": "Данные модуля",
                 "Debug": "Диагностика",
 
-                "Output 1 Actions": "Действия для выхода 1",
-                "Output 2 Actions": "Действия для выхода 2",
-                "Output 3 Actions": "Действия для выхода 3",
-                "Output 4 Actions": "Действия для выхода 4",
-                "Output 5 Actions": "Действия для выхода 5",
-                "Output 6 Actions": "Действия для выхода 6",
-                "Output Actions": "Действия для выходов",
+                "Output 1": "Выход 1",
+                "Output 2": "Выход 2",
+                "Output 3": "Выход 3",
+                "Output 4": "Выход 4",
+                "Output 5": "Выход 5",
+                "Output 6": "Выход 6",
+                "Actions for outputs when the input is closed / opened": "Действия для выходов при замыкании / размыкании входа",
 
                 "no action": "нет действия",
                 "reset": "выключить",
                 "set": "включить",
                 "toggle": "переключить",
 
-                "positive edge no action / negative edge no action": "положительный фронт - нет действия / отрицательный фронт - нет действия",
-                "positive edge no action / negative edge reset": "положительный фронт - нет действия / отрицательный фронт - выключить",
-                "positive edge no action / negative edge set": "положительный фронт - нет действия / отрицательный фронт - включить",
-                "positive edge no action / negative edge toggle": "положительный фронт - нет действия / отрицательный фронт - переключить",
+                "no action / no action": "нет действия / нет действия",
+                "no action / reset": "нет действия / выключить",
+                "no action / set": "нет действия / включить",
+                "no action / toggle": "нет действия / переключить",
 
-                "positive edge reset / negative edge no action": "положительный фронт - выключить / отрицательный фронт - нет действия",
-                "positive edge reset / negative edge reset": "положительный фронт - выключить / отрицательный фронт - выключить",
-                "positive edge reset / negative edge set": "положительный фронт - выключить / отрицательный фронт - включить",
-                "positive edge reset / negative edge toggle": "положительный фронт - выключить / отрицательный фронт - переключить",
+                "reset / no action": "выключить / нет действия",
+                "reset / reset": "выключить / выключить",
+                "reset / set": "выключить / включить",
+                "reset / toggle": "выключить / переключить",
 
-                "positive edge set / negative edge no action": "положительный фронт - включить / отрицательный фронт - нет действия",
-                "positive edge set / negative edge reset": "положительный фронт - включить / отрицательный фронт - выключить",
-                "positive edge set / negative edge set": "положительный фронт - включить / отрицательный фронт - включить",
-                "positive edge set / negative edge toggle": "положительный фронт - включить / отрицательный фронт - переключить",
+                "set / no action": "включить / нет действия",
+                "set / reset": "включить / выключить",
+                "set / set": "включить / включить",
+                "set / toggle": "включить / переключить",
 
-                "positive edge toggle / negative edge no action": "положительный фронт - переключить / отрицательный фронт - нет действия",
-                "positive edge toggle / negative edge reset": "положительный фронт - переключить / отрицательный фронт - выключить",
-                "positive edge toggle / negative edge set": "положительный фронт - переключить / отрицательный фронт - включить",
-                "positive edge toggle / negative edge toggle": "положительный фронт - переключить / отрицательный фронт - переключить",
+                "toggle / no action": "переключить / нет действия",
+                "toggle / reset": "переключить / выключить",
+                "toggle / set": "переключить / включить",
+                "toggle / toggle": "переключить / переключить",
 
                 "Push button": "Кнопка без фиксации",
                 "Latching switch": "Переключатель с фиксацией",
