@@ -1,3 +1,9 @@
+wb-mqtt-serial (2.47.0) stable; urgency=medium
+
+  * Configs with devices with invalid templates can be edited in homeui
+
+ -- Petr Krasnoshchekov <petr.krasnoshchekov@wirenboard.ru>  Thu, 27 Jan 2022 16:22:04 +0500
+
 wb-mqtt-serial (2.46.3) stable; urgency=medium
 
   * WB-MIR v2 template: ROMs count increased to 40

@@ -148,32 +148,39 @@ Json::Value MakeConfigFromConfed(std::istream& stream, TTemplateMap& templates)
             if (device.isMember("device_type")) {
                 auto dt = device["device_type"].asString();
 
-                Json::Value deviceTemplate(templates.GetTemplate(dt).Schema);
-                Json::Value subdevicesFromGroups(Json::arrayValue);
-                for (auto& subdeviceSchema: deviceTemplate["subdevices"]) {
-                    TransformGroupsToSubdevices(subdeviceSchema["device"], subdevicesFromGroups);
-                }
-                for (auto& subdeviceSchema: subdevicesFromGroups) {
-                    deviceTemplate["subdevices"].append(subdeviceSchema);
-                }
-                TransformGroupsToSubdevices(deviceTemplate, deviceTemplate["subdevices"]);
-                TSubDevicesTemplateMap subdevices(dt, deviceTemplate);
-                std::unordered_map<std::string, std::string> subdeviceTypeHashes;
-                for (const auto& dt: subdevices.GetDeviceTypes()) {
-                    subdeviceTypeHashes[GetSubdeviceKey(dt)] = dt;
-                }
+                if (dt == "unknown") {
+                    auto v = device["value"];
+                    device.removeMember("device_type");
+                    device.removeMember("value");
+                    device = v;
+                } else {
+                    Json::Value deviceTemplate(templates.GetTemplate(dt).Schema);
+                    Json::Value subdevicesFromGroups(Json::arrayValue);
+                    for (auto& subdeviceSchema: deviceTemplate["subdevices"]) {
+                        TransformGroupsToSubdevices(subdeviceSchema["device"], subdevicesFromGroups);
+                    }
+                    for (auto& subdeviceSchema: subdevicesFromGroups) {
+                        deviceTemplate["subdevices"].append(subdeviceSchema);
+                    }
+                    TransformGroupsToSubdevices(deviceTemplate, deviceTemplate["subdevices"]);
+                    TSubDevicesTemplateMap subdevices(dt, deviceTemplate);
+                    std::unordered_map<std::string, std::string> subdeviceTypeHashes;
+                    for (const auto& dt: subdevices.GetDeviceTypes()) {
+                        subdeviceTypeHashes[GetSubdeviceKey(dt)] = dt;
+                    }
 
-                Json::Value filteredChannels(
-                    FilterStandardChannels(device, deviceTemplate, subdevices, subdeviceTypeHashes));
-                device.removeMember("standard_channels");
-                for (Json::Value& ch: device["channels"]) {
-                    filteredChannels.append(ch);
-                }
-                device["channels"].swap(filteredChannels);
+                    Json::Value filteredChannels(
+                        FilterStandardChannels(device, deviceTemplate, subdevices, subdeviceTypeHashes));
+                    device.removeMember("standard_channels");
+                    for (Json::Value& ch: device["channels"]) {
+                        filteredChannels.append(ch);
+                    }
+                    device["channels"].swap(filteredChannels);
 
-                ExpandGroupChannels(device, deviceTemplate);
-                if (device["channels"].empty()) {
-                    device.removeMember("channels");
+                    ExpandGroupChannels(device, deviceTemplate);
+                    if (device["channels"].empty()) {
+                        device.removeMember("channels");
+                    }
                 }
             }
 

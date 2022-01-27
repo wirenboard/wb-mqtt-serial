@@ -1254,6 +1254,26 @@
       "headerTemplate": "{{self.name}} {{self.slave_id}}",
       "oneOf": [
         {
+          "title" : "Unknown device",
+          "type" : "object",
+          "_format": "unknown-device",
+          "options": {
+            "wb": {
+                "hide_from_selection": true
+            }
+          },
+          "properties": {
+            "device_type": {
+              "type": "string",
+              "enum": [ "unknown" ]
+            },
+            "value": {
+              "type": "object"
+            }
+          },
+          "required": [ "device_type", "value" ]
+        },
+        {
           "title": "Custom DLMS device",
           "allOf": [
             { "$ref": "#/definitions/deviceProperties" },
@@ -1761,7 +1781,8 @@
       "Word order": "Порядок слов",
       "Name": "Имя",
       "Type": "Тип",
-      "Maximum value": "Максимальное значение"
+      "Maximum value": "Максимальное значение",
+      "Unknown device": "Неизвестное устройство"
     }
   }
 }
