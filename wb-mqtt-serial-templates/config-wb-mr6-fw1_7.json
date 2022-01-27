@@ -382,7 +382,7 @@
                         {
                             "title": "Channels",
                             "id": "input_oatm_0",
-                            "order": 1,
+                            "order": 2,
                             "ui_options": {
                                 "wb": {
                                     "disable_title": true
@@ -392,7 +392,7 @@
                         {
                             "title": "Actions for outputs when the input is closed / opened",
                             "id": "out_actions_0",
-                            "order": 2
+                            "order": 1
                         }
                     ],
                     "channels": [
@@ -652,7 +652,7 @@
                         {
                             "title": "Channels",
                             "id": "input_bmm_0",
-                            "order": 1,
+                            "order": 9,
                             "ui_options": {
                                 "wb": {
                                     "disable_title": true
@@ -768,7 +768,6 @@
                             "min": 0,
                             "max": 100,
                             "default": 50,
-                            "group": "input_bmm_0",
                             "order": 1
                         },
                         "in1_sp": {
@@ -1447,7 +1446,7 @@
                         {
                             "title": "Channels",
                             "id": "input_oatm",
-                            "order": 1,
+                            "order": 2,
                             "ui_options": {
                                 "wb": {
                                     "disable_title": true
@@ -1457,7 +1456,7 @@
                         {
                             "title": "Actions for outputs when the input is closed / opened",
                             "id": "out_actions",
-                            "order": 2
+                            "order": 1
                         }
                     ],
                     "channels": [
@@ -1717,7 +1716,7 @@
                         {
                             "title": "Channels",
                             "id": "input_bmm",
-                            "order": 1,
+                            "order": 9,
                             "ui_options": {
                                 "wb": {
                                     "disable_title": true
@@ -1833,7 +1832,6 @@
                             "min": 0,
                             "max": 100,
                             "default": 50,
-                            "group": "input_bmm",
                             "order": 1
                         },
                         "in1_sp": {
@@ -2512,7 +2510,7 @@
                         {
                             "title": "Channels",
                             "id": "input_oatm_2",
-                            "order": 1,
+                            "order": 2,
                             "ui_options": {
                                 "wb": {
                                     "disable_title": true
@@ -2522,7 +2520,7 @@
                         {
                             "title": "Actions for outputs when the input is closed / opened",
                             "id": "out_actions_2",
-                            "order": 2
+                            "order": 1
                         }
                     ],
                     "channels": [
@@ -2782,7 +2780,7 @@
                         {
                             "title": "Channels",
                             "id": "input_bmm_2",
-                            "order": 1,
+                            "order": 9,
                             "ui_options": {
                                 "wb": {
                                     "disable_title": true
@@ -2898,7 +2896,6 @@
                             "min": 0,
                             "max": 100,
                             "default": 50,
-                            "group": "input_bmm_2",
                             "order": 1
                         },
                         "in1_sp": {
@@ -3577,7 +3574,7 @@
                         {
                             "title": "Channels",
                             "id": "input_oatm_3",
-                            "order": 1,
+                            "order": 2,
                             "ui_options": {
                                 "wb": {
                                     "disable_title": true
@@ -3587,7 +3584,7 @@
                         {
                             "title": "Actions for outputs when the input is closed / opened",
                             "id": "out_actions_3",
-                            "order": 2
+                            "order": 1
                         }
                     ],
                     "channels": [
@@ -3847,7 +3844,7 @@
                         {
                             "title": "Channels",
                             "id": "input_bmm_3",
-                            "order": 1,
+                            "order": 9,
                             "ui_options": {
                                 "wb": {
                                     "disable_title": true
@@ -3963,7 +3960,6 @@
                             "min": 0,
                             "max": 100,
                             "default": 50,
-                            "group": "input_bmm_3",
                             "order": 1
                         },
                         "in1_sp": {
@@ -4642,7 +4638,7 @@
                         {
                             "title": "Channels",
                             "id": "input_oatm_4",
-                            "order": 1,
+                            "order": 2,
                             "ui_options": {
                                 "wb": {
                                     "disable_title": true
@@ -4652,7 +4648,7 @@
                         {
                             "title": "Actions for outputs when the input is closed / opened",
                             "id": "out_actions_4",
-                            "order": 2
+                            "order": 1
                         }
                     ],
                     "channels": [
@@ -4912,7 +4908,7 @@
                         {
                             "title": "Channels",
                             "id": "input_bmm_4",
-                            "order": 1,
+                            "order": 9,
                             "ui_options": {
                                 "wb": {
                                     "disable_title": true
@@ -5028,7 +5024,6 @@
                             "min": 0,
                             "max": 100,
                             "default": 50,
-                            "group": "input_bmm_4",
                             "order": 1
                         },
                         "in1_sp": {
@@ -5707,7 +5702,7 @@
                         {
                             "title": "Channels",
                             "id": "input_oatm_5",
-                            "order": 1,
+                            "order": 2,
                             "ui_options": {
                                 "wb": {
                                     "disable_title": true
@@ -5717,7 +5712,7 @@
                         {
                             "title": "Actions for outputs when the input is closed / opened",
                             "id": "out_actions_5",
-                            "order": 2
+                            "order": 1
                         }
                     ],
                     "channels": [
@@ -5977,7 +5972,7 @@
                         {
                             "title": "Channels",
                             "id": "input_bmm_5",
-                            "order": 1,
+                            "order": 9,
                             "ui_options": {
                                 "wb": {
                                     "disable_title": true
@@ -6093,7 +6088,6 @@
                             "min": 0,
                             "max": 100,
                             "default": 50,
-                            "group": "input_bmm_5",
                             "order": 1
                         },
                         "in1_sp": {
@@ -6772,7 +6766,7 @@
                         {
                             "title": "Channels",
                             "id": "input_oatm_6",
-                            "order": 1,
+                            "order": 2,
                             "ui_options": {
                                 "wb": {
                                     "disable_title": true
@@ -6782,7 +6776,7 @@
                         {
                             "title": "Actions for outputs when the input is closed / opened",
                             "id": "out_actions_6",
-                            "order": 2
+                            "order": 1
                         }
                     ],
                     "channels": [
@@ -7042,7 +7036,7 @@
                         {
                             "title": "Channels",
                             "id": "input_bmm_6",
-                            "order": 1,
+                            "order": 9,
                             "ui_options": {
                                 "wb": {
                                     "disable_title": true
@@ -7158,7 +7152,6 @@
                             "min": 0,
                             "max": 100,
                             "default": 50,
-                            "group": "input_bmm_6",
                             "order": 1
                         },
                         "in1_sp": {
