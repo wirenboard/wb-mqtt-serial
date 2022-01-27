@@ -21,6 +21,15 @@
             }
         ],
 
+        "setup": [
+            {
+                "title": "disable legacy input mode control",
+                "address": 5,
+                "reg_type": "holding",
+                "value": 0
+            }
+        ],
+
         "channels": [
             {
                 "name": "Input 0",
