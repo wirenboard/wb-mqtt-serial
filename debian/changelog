@@ -1,3 +1,9 @@
+wb-mqtt-serial (2.47.0) stable; urgency=medium
+
+  * "deprecated" parameter is added to mark deprecated device templates
+
+ -- Petr Krasnoshchekov <petr.krasnoshchekov@wirenboard.ru>  Fri, 28 Jan 2022 11:34:00 +0500
+
 wb-mqtt-serial (2.46.3) stable; urgency=medium
 
   * WB-MIR v2 template: ROMs count increased to 40

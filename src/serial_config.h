@@ -19,6 +19,7 @@ struct TDeviceTemplate
     std::string Type;
     std::string Title;
     Json::Value Schema;
+    bool IsDeprecated = false;
 
     TDeviceTemplate(const std::string& type, const std::string title, const Json::Value& schema);
 };
