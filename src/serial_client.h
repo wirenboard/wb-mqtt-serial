@@ -59,7 +59,6 @@ private:
     std::unordered_map<PRegister, PRegisterHandler> Handlers;
 
     bool Active;
-    int PollInterval;
     TReadCallback ReadCallback;
     TErrorCallback ErrorCallback;
     PSerialDevice LastAccessedDevice = 0;

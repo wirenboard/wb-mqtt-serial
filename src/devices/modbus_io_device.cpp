@@ -73,15 +73,15 @@ std::list<PRegisterRange> TModbusIODevice::SplitRegisterList(const std::list<PRe
 
 void TModbusIODevice::WriteRegister(PRegister reg, uint64_t value)
 {
-    Modbus::WriteRegister(*ModbusTraits, *Port(), SlaveId, *reg, value, Shift);
+    Modbus::WriteRegister(*ModbusTraits, *Port(), SlaveId, *reg, value, ModbusCache, Shift);
 }
 
 std::list<PRegisterRange> TModbusIODevice::ReadRegisterRange(PRegisterRange range)
 {
-    return Modbus::ReadRegisterRange(*ModbusTraits, *Port(), SlaveId, range, Shift);
+    return Modbus::ReadRegisterRange(*ModbusTraits, *Port(), SlaveId, range, ModbusCache, Shift);
 }
 
 bool TModbusIODevice::WriteSetupRegisters()
 {
-    return Modbus::WriteSetupRegisters(*ModbusTraits, *Port(), SlaveId, SetupItems, Shift);
+    return Modbus::WriteSetupRegisters(*ModbusTraits, *Port(), SlaveId, SetupItems, ModbusCache, Shift);
 }

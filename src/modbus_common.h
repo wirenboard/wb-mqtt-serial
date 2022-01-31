@@ -125,18 +125,21 @@ namespace Modbus // modbus protocol common utilities
                        uint8_t slaveId,
                        TRegister& reg,
                        uint64_t value,
+                       std::map<int64_t, uint16_t>& cache,
                        int shift = 0);
 
     std::list<PRegisterRange> ReadRegisterRange(IModbusTraits& traits,
                                                 TPort& port,
                                                 uint8_t slaveId,
                                                 PRegisterRange range,
+                                                std::map<int64_t, uint16_t>& cache,
                                                 int shift = 0);
 
     bool WriteSetupRegisters(IModbusTraits& traits,
                              TPort& port,
                              uint8_t slaveId,
                              const std::vector<PDeviceSetupItem>& setupItems,
+                             std::map<int64_t, uint16_t>& cache,
                              int shift = 0);
 
     class TMalformedResponseError: public TSerialDeviceTransientErrorException
