@@ -1303,7 +1303,7 @@ void RegisterProtocols(TSerialDeviceFactory& deviceFactory)
     Somfy::TDevice::Register(deviceFactory);
 }
 
-TRegisterBitsAddress LoadRegisterBitsAddress(const Json::Value &register_data, const std::string& jsonPropertyName)
+TRegisterBitsAddress LoadRegisterBitsAddress(const Json::Value& register_data, const std::string& jsonPropertyName)
 {
     TRegisterBitsAddress res;
     const auto& addressValue = register_data[jsonPropertyName];
@@ -1344,12 +1344,15 @@ TUint32RegisterAddressFactory::TUint32RegisterAddressFactory(size_t bytesPerRegi
       BytesPerRegister(bytesPerRegister)
 {}
 
-namespace {
+namespace
+{
     constexpr auto WRITE_ADDRESS_PROPERTY_NAME = "write_address";
 
-    inline bool HasWriteAddressProperty(const Json::Value &regCfg) {
-        return regCfg.isMember(WRITE_ADDRESS_PROPERTY_NAME) && !(regCfg[WRITE_ADDRESS_PROPERTY_NAME].isString() &&
-                                                                 regCfg[WRITE_ADDRESS_PROPERTY_NAME].asString().empty());
+    inline bool HasWriteAddressProperty(const Json::Value& regCfg)
+    {
+        return regCfg.isMember(WRITE_ADDRESS_PROPERTY_NAME) &&
+               !(regCfg[WRITE_ADDRESS_PROPERTY_NAME].isString() &&
+                 regCfg[WRITE_ADDRESS_PROPERTY_NAME].asString().empty());
     }
 }
 
@@ -1363,7 +1366,7 @@ TRegisterDesc TUint32RegisterAddressFactory::LoadRegisterAddress(const Json::Val
     if (HasWriteAddressProperty(regCfg)) {
         auto writeAddress = LoadRegisterBitsAddress(regCfg, WRITE_ADDRESS_PROPERTY_NAME);
         res.WriteAddress = std::shared_ptr<IRegisterAddress>(
-                deviceBaseAddress.CalcNewAddress(writeAddress.Address, stride, registerByteWidth, BytesPerRegister));
+            deviceBaseAddress.CalcNewAddress(writeAddress.Address, stride, registerByteWidth, BytesPerRegister));
     }
     res.BitOffset = addr.BitOffset;
     res.BitWidth = addr.BitWidth;

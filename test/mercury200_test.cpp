@@ -36,21 +36,29 @@ void TMercury200Test::SetUp()
         std::make_shared<TMercury200Device>(GetDeviceConfig(), SerialPort, DeviceFactory.GetProtocol("mercury200"));
 
     Mercury200RET1Reg =
-        TRegister::Intern(Mercury200Dev, TRegisterConfig::Create(TMercury200Device::REG_PARAM_VALUE32, 0x2700, RegisterFormat::BCD32));
+        TRegister::Intern(Mercury200Dev,
+                          TRegisterConfig::Create(TMercury200Device::REG_PARAM_VALUE32, 0x2700, RegisterFormat::BCD32));
     Mercury200RET2Reg =
-        TRegister::Intern(Mercury200Dev, TRegisterConfig::Create(TMercury200Device::REG_PARAM_VALUE32, 0x2704, RegisterFormat::BCD32));
+        TRegister::Intern(Mercury200Dev,
+                          TRegisterConfig::Create(TMercury200Device::REG_PARAM_VALUE32, 0x2704, RegisterFormat::BCD32));
     Mercury200RET3Reg =
-        TRegister::Intern(Mercury200Dev, TRegisterConfig::Create(TMercury200Device::REG_PARAM_VALUE32, 0x2708, RegisterFormat::BCD32));
+        TRegister::Intern(Mercury200Dev,
+                          TRegisterConfig::Create(TMercury200Device::REG_PARAM_VALUE32, 0x2708, RegisterFormat::BCD32));
     Mercury200RET4Reg =
-        TRegister::Intern(Mercury200Dev, TRegisterConfig::Create(TMercury200Device::REG_PARAM_VALUE32, 0x270C, RegisterFormat::BCD32));
+        TRegister::Intern(Mercury200Dev,
+                          TRegisterConfig::Create(TMercury200Device::REG_PARAM_VALUE32, 0x270C, RegisterFormat::BCD32));
     Mercury200UReg =
-        TRegister::Intern(Mercury200Dev, TRegisterConfig::Create(TMercury200Device::REG_PARAM_VALUE16, 0x6300, RegisterFormat::BCD16));
+        TRegister::Intern(Mercury200Dev,
+                          TRegisterConfig::Create(TMercury200Device::REG_PARAM_VALUE16, 0x6300, RegisterFormat::BCD16));
     Mercury200IReg =
-        TRegister::Intern(Mercury200Dev, TRegisterConfig::Create(TMercury200Device::REG_PARAM_VALUE16, 0x6302, RegisterFormat::BCD16));
+        TRegister::Intern(Mercury200Dev,
+                          TRegisterConfig::Create(TMercury200Device::REG_PARAM_VALUE16, 0x6302, RegisterFormat::BCD16));
     Mercury200PReg =
-        TRegister::Intern(Mercury200Dev, TRegisterConfig::Create(TMercury200Device::REG_PARAM_VALUE24, 0x6304, RegisterFormat::BCD24));
+        TRegister::Intern(Mercury200Dev,
+                          TRegisterConfig::Create(TMercury200Device::REG_PARAM_VALUE24, 0x6304, RegisterFormat::BCD24));
     Mercury200BatReg =
-        TRegister::Intern(Mercury200Dev, TRegisterConfig::Create(TMercury200Device::REG_PARAM_VALUE16, 0x2900, RegisterFormat::BCD16));
+        TRegister::Intern(Mercury200Dev,
+                          TRegisterConfig::Create(TMercury200Device::REG_PARAM_VALUE16, 0x2900, RegisterFormat::BCD16));
 
     SerialPort->Open();
 }
