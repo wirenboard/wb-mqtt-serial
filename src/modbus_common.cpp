@@ -468,7 +468,7 @@ namespace Modbus // modbus protocol common utilities
 
         pdu[0] = GetFunction(reg, OperationType::OP_WRITE);
 
-        auto addr = GetUint32RegisterAddress(reg.GetAddress());
+        auto addr = GetUint32RegisterAddress(reg.GetWriteAddress());
         auto baseAddress = addr + shift;
         const auto bitWidth = reg.GetBitWidth();
 
@@ -529,7 +529,8 @@ namespace Modbus // modbus protocol common utilities
         TAddress address;
 
         address.Type = reg.Type;
-        auto addr = GetUint32RegisterAddress(reg.GetAddress());
+
+        auto addr = GetUint32RegisterAddress(reg.GetWriteAddress());
         address.Address = addr + shift + wordIndex;
 
         uint16_t cachedValue;
