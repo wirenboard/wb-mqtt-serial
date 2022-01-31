@@ -192,7 +192,7 @@ uint64_t TPulsarDevice::ReadDataRegister(PRegister reg)
     uint8_t payload[sizeof(uint64_t)];
 
     // form register mask from address
-    uint32_t mask = 1 << addr; // TODO: register range or something like this
+    uint32_t mask = 1 << addr;
 
     // send data request and receive response
     WriteDataRequest(SlaveId, mask, RequestID);
@@ -219,21 +219,16 @@ uint64_t TPulsarDevice::ReadSysTimeRegister(PRegister reg)
     return ReadHex(payload, sizeof(payload), false);
 }
 
-uint64_t TPulsarDevice::ReadRegister(PRegister reg)
+uint64_t TPulsarDevice::ReadRegisterImpl(PRegister reg)
 {
     Port()->SkipNoise();
 
     switch (reg->Type) {
         case REG_DEFAULT:
             return ReadDataRegister(reg);
-        case REG_SYSTIME: // TODO: think about return value
+        case REG_SYSTIME:
             return ReadSysTimeRegister(reg);
         default:
             throw TSerialDeviceException("Pulsar protocol: wrong register type");
     }
-}
-
-void TPulsarDevice::WriteRegister(PRegister reg, uint64_t value)
-{
-    throw TSerialDeviceException("Pulsar protocol: writing to registers is not supported");
 }

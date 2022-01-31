@@ -41,14 +41,11 @@ public:
     void SkipNoise();
 
     void SleepSinceLastInteraction(const std::chrono::microseconds& us) override;
-    bool Wait(const PBinarySemaphore& semaphore, const TTimePoint& until) override;
-    TTimePoint CurrentTime() const override;
 
-    std::chrono::milliseconds GetSendTime(double bytesNumber) override;
+    std::chrono::milliseconds GetSendTime(double bytesNumber) const override;
 
     void Expect(const std::vector<int>& request, const std::vector<int>& response, const char* func = 0);
     void DumpWhatWasRead();
-    void Elapse(const std::chrono::milliseconds& ms);
     void SimulateDisconnect(TDisconnectType simulate);
     WBMQTT::Testing::TLoggedFixture& GetFixture();
 
@@ -69,7 +66,6 @@ private:
     std::vector<int> Resp;
     size_t ReqPos, RespPos, DumpPos;
     std::chrono::microseconds ExpectedFrameTimeout = std::chrono::microseconds(-1);
-    TPollPlan::TTimePoint Time = TPollPlan::TTimePoint(std::chrono::milliseconds(0));
 };
 
 typedef std::shared_ptr<TFakeSerialPort> PFakeSerialPort;

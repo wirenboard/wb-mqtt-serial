@@ -114,7 +114,7 @@ std::vector<uint8_t> Dooya::TDevice::ExecCommand(const TRequest& request)
     return respBytes;
 }
 
-void Dooya::TDevice::WriteRegister(PRegister reg, uint64_t value)
+void Dooya::TDevice::WriteRegisterImpl(PRegister reg, uint64_t value)
 {
     switch (reg->Type) {
         case POSITION: {
@@ -157,7 +157,7 @@ void Dooya::TDevice::WriteRegister(PRegister reg, uint64_t value)
     }
 }
 
-uint64_t Dooya::TDevice::ReadRegister(PRegister reg)
+uint64_t Dooya::TDevice::ReadRegisterImpl(PRegister reg)
 {
     switch (reg->Type) {
         case POSITION: {

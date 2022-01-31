@@ -32,14 +32,6 @@ void TEMIntegrationTest::TearDown()
 
 void TEMIntegrationTest::ExpectQueries(bool firstPoll)
 {
-    EnqueueMilurIgnoredPacketWorkaround();
-
-    if (firstPoll)
-        EnqueueMilurSessionSetupResponse();
-    EnqueueMilurPhaseCVoltageResponse();
-    EnqueueMilurPhaseCCurrentResponse();
-    EnqueueMilurTotalConsumptionResponse();
-
     if (firstPoll)
         EnqueueMercury230SessionSetupResponse();
     EnqueueMercury230EnergyResponse1();
@@ -52,6 +44,13 @@ void TEMIntegrationTest::ExpectQueries(bool firstPoll)
     EnqueueMercury230Q2Response();
     EnqueueMercury230TempResponse();
     EnqueueMercury230PerPhaseEnergyResponse();
+
+    EnqueueMilurIgnoredPacketWorkaround();
+    if (firstPoll)
+        EnqueueMilurSessionSetupResponse();
+    EnqueueMilurPhaseCVoltageResponse();
+    EnqueueMilurPhaseCCurrentResponse();
+    EnqueueMilurTotalConsumptionResponse();
 }
 
 TEST_F(TEMIntegrationTest, Poll)
@@ -59,6 +58,7 @@ TEST_F(TEMIntegrationTest, Poll)
     ExpectQueries(true);
 
     Note() << "LoopOnce()";
+    SerialDriver->LoopOnce();
     SerialDriver->LoopOnce();
 }
 

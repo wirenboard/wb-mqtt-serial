@@ -56,9 +56,11 @@ TEST_F(TModbusIOIntegrationTest, Poll)
     ExpectPollQueries();
     Note() << "LoopOnce()";
     SerialDriver->LoopOnce();
+    SerialDriver->LoopOnce();
 
     ExpectPollQueries();
     Note() << "LoopOnce()";
+    SerialDriver->LoopOnce();
     SerialDriver->LoopOnce();
 }
 
@@ -66,6 +68,7 @@ TEST_F(TModbusIOIntegrationTest, Write)
 {
     ExpectPollQueries();
     Note() << "LoopOnce()";
+    SerialDriver->LoopOnce();
     SerialDriver->LoopOnce();
 
     PublishWaitOnValue("/devices/modbus-io-1-1/controls/Coil 0/on", "1");
@@ -77,6 +80,7 @@ TEST_F(TModbusIOIntegrationTest, Write)
     ExpectPollQueries();
     Note() << "LoopOnce()";
     SerialDriver->LoopOnce();
+    SerialDriver->LoopOnce();
 }
 
 TEST_F(TModbusIOIntegrationTest, SetupErrors)
@@ -87,11 +91,13 @@ TEST_F(TModbusIOIntegrationTest, SetupErrors)
 
     Note() << "LoopOnce() [first start, one is disconnected]";
     SerialDriver->LoopOnce();
+    SerialDriver->LoopOnce();
 
     EnqueueSetupSectionWriteResponse(true);
     EnqueueCoilReadResponse(true);
     EnqueueCoilReadResponse(false);
 
     Note() << "LoopOnce() [all are ok]";
+    SerialDriver->LoopOnce();
     SerialDriver->LoopOnce();
 }

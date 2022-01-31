@@ -19,7 +19,7 @@ void TPort::WriteBytes(const std::string& buf)
     WriteBytes(reinterpret_cast<const uint8_t*>(buf.c_str()), buf.size());
 }
 
-std::chrono::milliseconds TPort::GetSendTime(double bytesNumber)
+std::chrono::milliseconds TPort::GetSendTime(double bytesNumber) const
 {
     return std::chrono::milliseconds::zero();
 }

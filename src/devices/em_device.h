@@ -17,8 +17,6 @@ class TEMDevice: public TSerialDevice, public TUInt32SlaveId
 public:
     TEMDevice(PDeviceConfig config, PPort port, PProtocol protocol);
 
-    void WriteRegister(PRegister reg, uint64_t value) override;
-
 protected:
     enum ErrorType
     {

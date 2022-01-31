@@ -5,6 +5,10 @@
 #include <string>
 #include <wblib/utils.h>
 
+#include "log.h"
+
+#define LOG(logger) ::logger.Log() << "[register] "
+
 size_t RegisterFormatByteWidth(RegisterFormat format)
 {
     switch (format) {
@@ -28,23 +32,9 @@ size_t RegisterFormatByteWidth(RegisterFormat format)
     }
 }
 
-TRegisterRange::TRegisterRange(const std::list<PRegister>& regs): RegList(regs)
-{
-    if (RegList.empty())
-        throw std::runtime_error("cannot construct empty register range");
-    PRegister first = regs.front();
-    RegDevice = first->Device();
-    RegType = first->Type;
-    RegTypeName = first->TypeName;
-    RegPollInterval = first->PollInterval;
-}
-
 TRegisterRange::TRegisterRange(PRegister reg): RegList(1, reg)
 {
     RegDevice = reg->Device();
-    RegType = reg->Type;
-    RegTypeName = reg->TypeName;
-    RegPollInterval = reg->PollInterval;
 }
 
 const std::list<PRegister>& TRegisterRange::RegisterList() const
@@ -62,58 +52,16 @@ PSerialDevice TRegisterRange::Device() const
     return RegDevice.lock();
 }
 
-int TRegisterRange::Type() const
-{
-    return RegType;
-}
-
-std::string TRegisterRange::TypeName() const
-{
-    return RegTypeName;
-}
-
-std::chrono::milliseconds TRegisterRange::PollInterval() const
-{
-    return RegPollInterval;
-}
-
-void TRegisterRange::SetError(EStatus error)
-{
-    for (auto& r: RegList) {
-        r->SetError(error);
-    }
-}
-
-TSimpleRegisterRange::TSimpleRegisterRange(const std::list<PRegister>& regs): TRegisterRange(regs)
+TSingleRegisterRange::TSingleRegisterRange(PRegister reg): TRegisterRange(reg)
 {}
 
-TSimpleRegisterRange::TSimpleRegisterRange(PRegister reg): TRegisterRange(reg)
-{}
-
-EStatus TSimpleRegisterRange::GetStatus() const
+bool TSingleRegisterRange::Add(PRegister reg, std::chrono::milliseconds pollLimit)
 {
-    bool hasOk = false;
-    bool hasError = false;
-    for (const auto& r: RegisterList()) {
-        switch (r->GetError()) {
-            case ST_DEVICE_ERROR:
-                return ST_DEVICE_ERROR;
-            case ST_OK: {
-                hasOk = true;
-                break;
-            }
-            case ST_UNKNOWN_ERROR:
-                hasError = true;
-                break;
-        }
+    if (RegisterList().empty()) {
+        RegisterList().push_back(reg);
+        return true;
     }
-    if (!hasError) {
-        return ST_OK;
-    }
-    if (!hasOk) {
-        return ST_UNKNOWN_ERROR;
-    }
-    return ST_DEVICE_ERROR;
+    return false;
 }
 
 std::string TRegisterConfig::ToString() const
@@ -139,24 +87,14 @@ std::string TRegister::ToString() const
     return "<unknown device:" + TRegisterConfig::ToString() + ">";
 }
 
-bool TRegister::IsAvailable() const
+TRegisterAvailability TRegister::GetAvailable() const
 {
     return Available;
 }
 
-void TRegister::SetAvailable(bool available)
+void TRegister::SetAvailable(TRegisterAvailability available)
 {
     Available = available;
-}
-
-EStatus TRegister::GetError() const
-{
-    return Error;
-}
-
-void TRegister::SetError(EStatus error)
-{
-    Error = error;
 }
 
 uint64_t TRegister::GetValue() const
@@ -164,16 +102,61 @@ uint64_t TRegister::GetValue() const
     return Value;
 }
 
-void TRegister::SetValue(uint64_t value)
+void TRegister::SetValue(uint64_t value, bool clearReadError)
 {
+    if (Value != value) {
+        LOG(Debug) << "new val for " << ToString() << ": " << std::hex << value;
+    }
     Value = value;
-    Error = ST_OK;
-    Available = true;
+    if (UnsupportedValue && (*UnsupportedValue == value)) {
+        SetError(TRegister::TError::ReadError);
+        Available = TRegisterAvailability::UNAVAILABLE;
+    } else {
+        Available = TRegisterAvailability::AVAILABLE;
+    }
+    if (ErrorValue && InvertWordOrderIfNeeded(*this, ErrorValue.value()) == value) {
+        LOG(Debug) << "register " << ToString() << " contains error value";
+        SetError(TError::ReadError);
+    } else {
+        if (clearReadError) {
+            ClearError(TError::ReadError);
+        }
+    }
 }
 
 const std::string& TRegister::GetChannelName() const
 {
     return ChannelName;
+}
+
+void TRegister::SetError(TRegister::TError error)
+{
+    ErrorState.set(error);
+}
+
+void TRegister::ClearError(TRegister::TError error)
+{
+    ErrorState.reset(error);
+}
+
+const TRegister::TErrorState& TRegister::GetErrorState() const
+{
+    return ErrorState;
+}
+
+void TRegister::SetLastPollTime(std::chrono::steady_clock::time_point pollTime)
+{
+    if (!ReadPeriod) {
+        return;
+    }
+    if (LastPollTime.time_since_epoch().count()) {
+        if (std::chrono::duration_cast<std::chrono::milliseconds>(pollTime - LastPollTime) > *ReadPeriod) {
+            SetError(TError::PollIntervalMissError);
+        } else {
+            ClearError(TError::PollIntervalMissError);
+        }
+    }
+    LastPollTime = pollTime;
 }
 
 std::map<std::tuple<PSerialDevice, PRegisterConfig>, PRegister> TRegister::RegStorage;
@@ -185,28 +168,22 @@ TRegisterConfig::TRegisterConfig(int type,
                                  double scale,
                                  double offset,
                                  double round_to,
-                                 bool poll,
                                  bool readonly,
                                  const std::string& type_name,
-                                 std::unique_ptr<uint64_t> error_value,
                                  const EWordOrder word_order,
                                  uint8_t bit_offset,
-                                 uint8_t bit_width,
-                                 std::unique_ptr<uint64_t> unsupported_value)
+                                 uint8_t bit_width)
     : Address(address),
       Type(type),
       Format(format),
       Scale(scale),
       Offset(offset),
       RoundTo(round_to),
-      Poll(poll),
       ReadOnly(readonly),
       TypeName(type_name),
-      ErrorValue(std::move(error_value)),
       WordOrder(word_order),
       BitOffset(bit_offset),
-      BitWidth(bit_width),
-      UnsupportedValue(std::move(unsupported_value))
+      BitWidth(bit_width)
 {
     if (TypeName.empty())
         TypeName = "(type " + std::to_string(Type) + ")";
@@ -219,29 +196,6 @@ TRegisterConfig::TRegisterConfig(int type,
 
     if (!Address) {
         throw TSerialDeviceException("register address is not defined");
-    }
-}
-
-TRegisterConfig::TRegisterConfig(const TRegisterConfig& config)
-{
-    Type = config.Type;
-    Address = config.Address;
-    Format = config.Format;
-    Scale = config.Scale;
-    Offset = config.Offset;
-    RoundTo = config.RoundTo;
-    Poll = config.Poll;
-    ReadOnly = config.ReadOnly;
-    TypeName = config.TypeName;
-    PollInterval = config.PollInterval;
-    if (config.ErrorValue) {
-        ErrorValue = std::make_unique<uint64_t>(*config.ErrorValue);
-    }
-    WordOrder = config.WordOrder;
-    BitOffset = config.BitOffset;
-    BitWidth = config.BitWidth;
-    if (config.UnsupportedValue) {
-        UnsupportedValue = std::make_unique<uint64_t>(*config.UnsupportedValue);
     }
 }
 
@@ -272,14 +226,11 @@ PRegisterConfig TRegisterConfig::Create(int type,
                                         double scale,
                                         double offset,
                                         double round_to,
-                                        bool poll,
                                         bool readonly,
                                         const std::string& type_name,
-                                        std::unique_ptr<uint64_t> error_value,
                                         const EWordOrder word_order,
                                         uint8_t bit_offset,
-                                        uint8_t bit_width,
-                                        std::unique_ptr<uint64_t> unsupported_value)
+                                        uint8_t bit_width)
 {
     return std::make_shared<TRegisterConfig>(type,
                                              address,
@@ -287,14 +238,11 @@ PRegisterConfig TRegisterConfig::Create(int type,
                                              scale,
                                              offset,
                                              round_to,
-                                             poll,
                                              readonly,
                                              type_name,
-                                             std::move(error_value),
                                              word_order,
                                              bit_offset,
-                                             bit_width,
-                                             std::move(unsupported_value));
+                                             bit_width);
 }
 
 PRegisterConfig TRegisterConfig::Create(int type,
@@ -303,14 +251,11 @@ PRegisterConfig TRegisterConfig::Create(int type,
                                         double scale,
                                         double offset,
                                         double round_to,
-                                        bool poll,
                                         bool readonly,
                                         const std::string& type_name,
-                                        std::unique_ptr<uint64_t> error_value,
                                         const EWordOrder word_order,
                                         uint8_t bit_offset,
-                                        uint8_t bit_width,
-                                        std::unique_ptr<uint64_t> unsupported_value)
+                                        uint8_t bit_width)
 {
     return Create(type,
                   std::make_shared<TUint32RegisterAddress>(address),
@@ -318,14 +263,11 @@ PRegisterConfig TRegisterConfig::Create(int type,
                   scale,
                   offset,
                   round_to,
-                  poll,
                   readonly,
                   type_name,
-                  std::move(error_value),
                   word_order,
                   bit_offset,
-                  bit_width,
-                  std::move(unsupported_value));
+                  bit_width);
 }
 
 TUint32RegisterAddress::TUint32RegisterAddress(uint32_t address): Address(address)

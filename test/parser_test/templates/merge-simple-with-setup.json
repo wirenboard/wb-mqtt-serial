@@ -3,7 +3,6 @@
     "device": {
         "name": "merge simple with setup",
         "id": "merge-simple-with-setup",
-        "poll_interval": 200,
         "setup": [
             {
                 "title": "IODIR",

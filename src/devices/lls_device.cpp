@@ -87,7 +87,7 @@ std::vector<uint8_t> TLLSDevice::ExecCommand(uint8_t cmd)
     return CmdResultCache.insert({cmd, result}).first->second;
 }
 
-uint64_t TLLSDevice::ReadRegister(PRegister reg)
+uint64_t TLLSDevice::ReadRegisterImpl(PRegister reg)
 {
     auto addr = GetUint32RegisterAddress(reg->GetAddress());
     uint8_t cmd = (addr & 0xFF00) >> 8;
@@ -101,9 +101,4 @@ uint64_t TLLSDevice::ReadRegister(PRegister reg)
     }
 
     return (result_buf[3] << 24) | (result_buf[2] << 16) | (result_buf[1] << 8) | result_buf[0];
-}
-
-void TLLSDevice::WriteRegister(PRegister, uint64_t)
-{
-    throw TSerialDeviceException("LLS protocol: writing register is not supported");
 }
