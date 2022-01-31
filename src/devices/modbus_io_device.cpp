@@ -67,7 +67,7 @@ TModbusIODevice::TModbusIODevice(std::unique_ptr<Modbus::IModbusTraits> modbusTr
 
 PRegisterRange TModbusIODevice::CreateRegisterRange(PRegister reg) const
 {
-    return Modbus::CreateRegisterRange(reg, true);
+    return Modbus::CreateRegisterRange(reg);
 }
 
 void TModbusIODevice::WriteRegisterImpl(PRegister reg, uint64_t value)

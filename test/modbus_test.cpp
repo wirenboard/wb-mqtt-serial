@@ -312,22 +312,40 @@ void TModbusIntegrationTest::ExpectPollQueries(TestMode mode)
     EnqueueHoldingReadF32Response();
     EnqueueHoldingReadU16Response();
     EnqueueInputReadU16Response();
-    EnqueueCoilReadResponse();
 
-    if (mode == TEST_MAX_READ_REGISTERS || mode == TEST_MAX_READ_REGISTERS_FIRST_CYCLE) {
-        Enqueue10CoilsMax3ReadResponse();
-    } else {
-        Enqueue10CoilsReadResponse();
+    switch (mode) {
+        case TEST_HOLES:
+            EnqueueCoilsPackReadResponse();
+            break;
+        case TEST_MAX_READ_REGISTERS:
+        case TEST_MAX_READ_REGISTERS_FIRST_CYCLE:
+            EnqueueCoilReadResponse();
+            Enqueue10CoilsMax3ReadResponse();
+            break;
+        case TEST_DEFAULT:
+        default:
+            EnqueueCoilReadResponse();
+            Enqueue10CoilsReadResponse();
+            break;
     }
 
     EnqueueDiscreteReadResponse();
 
-    if (mode == TEST_MAX_READ_REGISTERS || mode == TEST_MAX_READ_REGISTERS_FIRST_CYCLE) {
-        EnqueueHoldingSingleMax3ReadResponse();
-        EnqueueHoldingMultiMax3ReadResponse();
-    } else {
-        EnqueueHoldingSingleOneByOneReadResponse();
-        EnqueueHoldingMultiOneByOneReadResponse();
+    switch (mode) {
+        case TEST_HOLES:
+            EnqueueHoldingSingleReadResponse();
+            EnqueueHoldingMultiReadResponse();
+            break;
+        case TEST_MAX_READ_REGISTERS:
+        case TEST_MAX_READ_REGISTERS_FIRST_CYCLE:
+            EnqueueHoldingSingleMax3ReadResponse();
+            EnqueueHoldingMultiMax3ReadResponse();
+            break;
+        case TEST_DEFAULT:
+        default:
+            EnqueueHoldingSingleOneByOneReadResponse();
+            EnqueueHoldingMultiOneByOneReadResponse();
+            break;
     }
 }
 
@@ -404,51 +422,52 @@ TEST_F(TModbusIntegrationTest, Errors)
     SerialDriver->LoopOnce();
 }
 
-// TODO: fix after holes implementation
-// TEST_F(TModbusIntegrationTest, Holes)
-// {
-//     // we check that driver issue long read request, reading registers 4-18 at once
-//     Config->PortConfigs[0]->Devices[0]->DeviceConfig()->MaxRegHole = 10;
-//     Config->PortConfigs[0]->Devices[0]->DeviceConfig()->MaxBitHole = 80;
-//     InvalidateConfigPoll(TEST_HOLES);
-// }
+TEST_F(TModbusIntegrationTest, Holes)
+{
+    // we check that driver issue long read requests for holding registers 4-18 and all coils
+    Config->PortConfigs[0]->Devices[0]->DeviceConfig()->MaxRegHole = 10;
+    Config->PortConfigs[0]->Devices[0]->DeviceConfig()->MaxBitHole = 80;
+    // First cycle, read registers one by one to find unavailable registers
+    InvalidateConfigPoll();
+    // Second cycle with holes enabled
+    ExpectPollQueries(TEST_HOLES);
+    Note() << "LoopOnce() [holes enabled]";
+    SerialDriver->LoopOnce();
+}
 
-// TODO: fix after holes implementation
-// TEST_F(TModbusIntegrationTest, HolesAutoDisable)
-// {
-//     // we check that driver issue long read request, reading registers 4-18 at once
-//     Config->PortConfigs[0]->Devices[0]->DeviceConfig()->MaxRegHole = 10;
-//     Config->PortConfigs[0]->Devices[0]->DeviceConfig()->MaxBitHole = 80;
-//     InvalidateConfigPoll(TEST_HOLES);
+TEST_F(TModbusIntegrationTest, HolesAutoDisable)
+{
+    Config->PortConfigs[0]->Devices[0]->DeviceConfig()->MaxRegHole = 10;
+    InvalidateConfigPoll();
 
-//     EnqueueHoldingPackHoles10ReadResponse(0x3); // this must result in auto-disabling holes feature
-//     EnqueueHoldingReadS64Response();
-//     EnqueueHoldingReadF32Response();
-//     EnqueueHoldingReadU16Response();
-//     EnqueueInputReadU16Response();
-//     EnqueueCoilReadResponse();
-//     Enqueue10CoilsReadResponse();
-//     EnqueueDiscreteReadResponse();
-//     EnqueueHoldingSingleReadResponse();
-//     EnqueueHoldingMultiReadResponse();
+    EnqueueHoldingPackHoles10ReadResponse(0x3); // this must result in auto-disabling holes feature
+    EnqueueHoldingReadS64Response();
+    EnqueueHoldingReadF32Response();
+    EnqueueHoldingReadU16Response();
+    EnqueueInputReadU16Response();
+    EnqueueCoilReadResponse();
+    Enqueue10CoilsReadResponse();
+    EnqueueDiscreteReadResponse();
+    EnqueueHoldingSingleReadResponse();
+    EnqueueHoldingMultiReadResponse();
 
-//     Note() << "LoopOnce()";
-//     SerialDriver->LoopOnce();
+    Note() << "LoopOnce() [read with holes, error]";
+    SerialDriver->LoopOnce();
 
-//     EnqueueHoldingPackReadResponse();
-//     EnqueueHoldingReadS64Response();
-//     EnqueueHoldingReadF32Response();
-//     EnqueueHoldingReadU16Response();
-//     EnqueueInputReadU16Response();
-//     EnqueueCoilReadResponse();
-//     Enqueue10CoilsReadResponse();
-//     EnqueueDiscreteReadResponse();
-//     EnqueueHoldingSingleReadResponse();
-//     EnqueueHoldingMultiReadResponse();
+    EnqueueHoldingPackReadResponse();
+    EnqueueHoldingReadS64Response();
+    EnqueueHoldingReadF32Response();
+    EnqueueHoldingReadU16Response();
+    EnqueueInputReadU16Response();
+    EnqueueCoilReadResponse();
+    Enqueue10CoilsReadResponse();
+    EnqueueDiscreteReadResponse();
+    EnqueueHoldingSingleReadResponse();
+    EnqueueHoldingMultiReadResponse();
 
-//     Note() << "LoopOnce()";
-//     SerialDriver->LoopOnce();
-// }
+    Note() << "LoopOnce() [read without holes]";
+    SerialDriver->LoopOnce();
+}
 
 TEST_F(TModbusIntegrationTest, MaxReadRegisters)
 {
@@ -587,21 +606,20 @@ TEST_F(TModbusUnavailableRegistersIntegrationTest, UnavailableRegisterInTheMiddl
     SerialDriver->LoopOnce();
 }
 
-// TODO: fix after holes implementation
-// TEST_F(TModbusUnavailableRegistersIntegrationTest, UnsupportedRegisterOnBorder)
-// {
-//     // Check that driver detects unsupported registers
-//     // It must remove unavailable registers from request if they are on borders of a range
-//     // Unsupported registers in the middle of a range must be polled with the whole range
-//     SerialDriver->ClearDevices();
-//     SerialDriver = make_shared<TMQTTSerialDriver>(Driver, Config);
+TEST_F(TModbusUnavailableRegistersIntegrationTest, UnsupportedRegisterOnBorder)
+{
+    // Check that driver detects unsupported registers
+    // It must remove unsupported registers from request if they are on borders of a range
+    // Unsupported registers in the middle of a range must be polled with the whole range
+    SerialDriver->ClearDevices();
+    SerialDriver = make_shared<TMQTTSerialDriver>(Driver, Config);
 
-//     EnqueueHoldingUnsupportedOnBorderReadResponse();
-//     Note() << "LoopOnce() [first read]";
-//     SerialDriver->LoopOnce();
-//     Note() << "LoopOnce() [new range]";
-//     SerialDriver->LoopOnce();
-// }
+    EnqueueHoldingUnsupportedOnBorderReadResponse();
+    Note() << "LoopOnce() [first read]";
+    SerialDriver->LoopOnce();
+    Note() << "LoopOnce() [new range]";
+    SerialDriver->LoopOnce();
+}
 
 class TModbusUnavailableRegistersAndHolesIntegrationTest: public TSerialDeviceIntegrationTest,
                                                           public TModbusExpectations
@@ -626,23 +644,19 @@ protected:
     }
 };
 
-// TODO: fix after hole implementation
-// TEST_F(TModbusUnavailableRegistersAndHolesIntegrationTest, HolesAndUnavailable)
-// {
-//     // we check that driver disables holes feature and after that detects and excludes unavailable register
-//     Config->PortConfigs[0]->Devices[0]->DeviceConfig()->MaxRegHole = 10;
-//     Config->PortConfigs[0]->Devices[0]->DeviceConfig()->MaxBitHole = 80;
+TEST_F(TModbusUnavailableRegistersAndHolesIntegrationTest, HolesAndUnavailable)
+{
+    // we check that driver disables holes feature and after that detects and excludes unavailable register
+    Config->PortConfigs[0]->Devices[0]->DeviceConfig()->MaxRegHole = 10;
 
-//     SerialDriver->ClearDevices();
-//     SerialDriver = make_shared<TMQTTSerialDriver>(Driver, Config);
+    SerialDriver->ClearDevices();
+    SerialDriver = make_shared<TMQTTSerialDriver>(Driver, Config);
 
-//     EnqueueHoldingPackUnavailableAndHolesReadResponse();
-//     Note() << "LoopOnce() [first read]";
-//     SerialDriver->LoopOnce();
-//     Note() << "LoopOnce() [disable holes]";
-//     SerialDriver->LoopOnce();
-//     Note() << "LoopOnce() [one by one]";
-//     SerialDriver->LoopOnce();
-//     Note() << "LoopOnce() [new ranges]";
-//     SerialDriver->LoopOnce();
-// }
+    EnqueueHoldingPackUnavailableAndHolesReadResponse();
+    Note() << "LoopOnce() [one by one]";
+    SerialDriver->LoopOnce();
+    Note() << "LoopOnce() [with holes]";
+    SerialDriver->LoopOnce();
+    Note() << "LoopOnce() [new ranges]";
+    SerialDriver->LoopOnce();
+}

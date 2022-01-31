@@ -1,10 +1,22 @@
+wb-mqtt-serial (2.47.1) stable; urgency=medium
+
+  * Holes feature is reimplemented
+
+ -- Petr Krasnoshchekov <petr.krasnoshchekov@wirenboard.ru>  Mon, 31 Jan 2022 21:22:53 +0500
+
 wb-mqtt-serial (2.47.0) stable; urgency=medium
 
-  * New poll scheduler.
-    Channels with defined poll_interval are marked as high priority.
-    The service will try to poll them in desired time.
-    Channels without poll_interval will be polled in remaining time.
-    poll_interval for ports and devices is deprecated.
+  * New poll scheduler
+  * read_period_ms defines desired period of reading a channel.
+    Channels with read_period has high priority. The service will
+    try to poll them in desired time. Other channels will be polled 
+    in remaining time. The scheduler divides bus capacity equally
+    between high and low priority channels
+  * poll_interval is removed
+  * read_rate_limit_ms replaces poll_interval. It is a minimal time
+    between low priority channel reads. Like poll_interval it could
+    be set to port or device
+  * 'p' is published in /meta/error on read period miss
 
  -- Petr Krasnoshchekov <petr.krasnoshchekov@wirenboard.ru>  Mon, 31 Jan 2022 18:23:12 +0500
 

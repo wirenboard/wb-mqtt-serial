@@ -111,9 +111,9 @@ void TRegister::SetValue(uint64_t value, bool clearReadError)
     if (UnsupportedValue && (*UnsupportedValue == value)) {
         SetError(TRegister::TError::ReadError);
         Available = TRegisterAvailability::UNAVAILABLE;
-    } else {
-        Available = TRegisterAvailability::AVAILABLE;
+        return;
     }
+    Available = TRegisterAvailability::AVAILABLE;
     if (ErrorValue && InvertWordOrderIfNeeded(*this, ErrorValue.value()) == value) {
         LOG(Debug) << "register " << ToString() << " contains error value";
         SetError(TError::ReadError);

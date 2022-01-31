@@ -203,6 +203,8 @@ public:
 
     virtual void SetTransferResult(bool ok);
     bool GetIsDisconnected() const;
+    bool GetSupportsHoles() const;
+    void SetSupportsHoles(bool supportsHoles);
 
 protected:
     std::vector<PDeviceSetupItem> SetupItems;
@@ -220,6 +222,7 @@ private:
     std::chrono::steady_clock::time_point LastSuccessfulCycle;
     bool IsDisconnected;
     int RemainingFailCycles;
+    bool SupportsHoles;
 };
 
 typedef std::shared_ptr<TSerialDevice> PSerialDevice;

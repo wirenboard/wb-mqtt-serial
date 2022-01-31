@@ -55,7 +55,8 @@ TSerialDevice::TSerialDevice(PDeviceConfig config, PPort port, PProtocol protoco
       _Protocol(protocol),
       LastSuccessfulCycle(),
       IsDisconnected(true),
-      RemainingFailCycles(config->DeviceMaxFailCycles)
+      RemainingFailCycles(config->DeviceMaxFailCycles),
+      SupportsHoles(true)
 {}
 
 std::string TSerialDevice::ToString() const
@@ -176,6 +177,7 @@ void TSerialDevice::SetTransferResult(bool ok)
             (!IsDisconnected || LastSuccessfulCycle == std::chrono::steady_clock::time_point()))
         {
             IsDisconnected = true;
+            SetSupportsHoles(true);
             LastSuccessfulCycle = std::chrono::steady_clock::now();
             LOG(Info) << "device " << ToString() << " is disconnected";
         }
@@ -223,6 +225,16 @@ PDeviceConfig TSerialDevice::DeviceConfig() const
 PProtocol TSerialDevice::Protocol() const
 {
     return _Protocol;
+}
+
+bool TSerialDevice::GetSupportsHoles() const
+{
+    return SupportsHoles;
+}
+
+void TSerialDevice::SetSupportsHoles(bool supportsHoles)
+{
+    SupportsHoles = supportsHoles;
 }
 
 TUInt32SlaveId::TUInt32SlaveId(const std::string& slaveId, bool allowBroadcast): HasBroadcastSlaveId(false)

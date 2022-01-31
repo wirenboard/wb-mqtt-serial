@@ -1256,54 +1256,53 @@ TEST_F(TSerialClientIntegrationTest, Round)
     ASSERT_EQ(12.4f, data.value);
 }
 
-// TODO: Fix consists_of channels, they publish garbage on write and read errors
-// TEST_F(TSerialClientIntegrationTest, Errors)
-// {
+TEST_F(TSerialClientIntegrationTest, Errors)
+{
 
-// FilterConfig("DDL24");
+    FilterConfig("DDL24");
 
-// SerialDriver = make_shared<TMQTTSerialDriver>(Driver, Config);
+    SerialDriver = make_shared<TMQTTSerialDriver>(Driver, Config);
 
-// auto device = TFakeSerialDevice::GetDevice("23");
+    auto device = TFakeSerialDevice::GetDevice("23");
 
-// if (!device) {
-//     throw std::runtime_error("device not found or wrong type");
-// }
+    if (!device) {
+        throw std::runtime_error("device not found or wrong type");
+    }
 
-// Note() << "LoopOnce() [first start]";
-// SerialDriver->LoopOnce();
+    Note() << "LoopOnce() [first start]";
+    SerialDriver->LoopOnce();
 
-// device->BlockReadFor(4, true);
-// device->BlockWriteFor(4, true);
-// device->BlockReadFor(7, true);
-// device->BlockWriteFor(7, true);
+    device->BlockReadFor(4, true);
+    device->BlockWriteFor(4, true);
+    device->BlockReadFor(7, true);
+    device->BlockWriteFor(7, true);
 
-// Note() << "LoopOnce() [read, rw blacklisted]";
-// SerialDriver->LoopOnce();
+    Note() << "LoopOnce() [read, rw blacklisted]";
+    SerialDriver->LoopOnce();
 
-// PublishWaitOnValue("/devices/ddl24/controls/RGB/on", "10;20;30", 0, true);
-// PublishWaitOnValue("/devices/ddl24/controls/White/on", "42", 0, true);
+    PublishWaitOnValue("/devices/ddl24/controls/RGB/on", "10;20;30", 0, true);
+    PublishWaitOnValue("/devices/ddl24/controls/White/on", "42", 0, true);
 
-// Note() << "LoopOnce() [write, rw blacklisted]";
-// SerialDriver->LoopOnce();
+    Note() << "LoopOnce() [write, rw blacklisted]";
+    SerialDriver->LoopOnce();
 
-// device->BlockReadFor(4, false);
-// device->BlockWriteFor(4, false);
-// device->BlockReadFor(7, false);
-// device->BlockWriteFor(7, false);
+    device->BlockReadFor(4, false);
+    device->BlockWriteFor(4, false);
+    device->BlockReadFor(7, false);
+    device->BlockWriteFor(7, false);
 
-// Note() << "LoopOnce() [read, nothing blacklisted]";
-// SerialDriver->LoopOnce();
+    Note() << "LoopOnce() [read, nothing blacklisted]";
+    SerialDriver->LoopOnce();
 
-// PublishWaitOnValue("/devices/ddl24/controls/RGB/on", "10;20;30", 0, true);
-// PublishWaitOnValue("/devices/ddl24/controls/White/on", "42", 0, true);
+    PublishWaitOnValue("/devices/ddl24/controls/RGB/on", "10;20;30", 0, true);
+    PublishWaitOnValue("/devices/ddl24/controls/White/on", "42", 0, true);
 
-// Note() << "LoopOnce() [write, nothing blacklisted]";
-// SerialDriver->LoopOnce();
+    Note() << "LoopOnce() [write, nothing blacklisted]";
+    SerialDriver->LoopOnce();
 
-// Note() << "LoopOnce() [read, nothing blacklisted] (2)";
-// SerialDriver->LoopOnce();
-// }
+    Note() << "LoopOnce() [read, nothing blacklisted] (2)";
+    SerialDriver->LoopOnce();
+}
 
 TEST_F(TSerialClientIntegrationTest, SetupErrors)
 {
