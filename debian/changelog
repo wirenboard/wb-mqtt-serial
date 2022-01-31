@@ -1,3 +1,9 @@
+wb-mqtt-serial (2.47.0) stable; urgency=medium
+
+  * Added separate read and write register addresses for the Modbus device.
+
+ -- Roman Kochkin <roman.kochkin@wirenboard.ru>  Mon, 31 Jan 2022 12:49:00 +0300
+
 wb-mqtt-serial (2.46.3) stable; urgency=medium
 
   * WB-MIR v2 template: ROMs count increased to 40
