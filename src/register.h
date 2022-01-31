@@ -15,6 +15,8 @@
 
 #include "serial_exc.h"
 
+const std::chrono::milliseconds UndefinedPollInterval(-1);
+
 enum RegisterFormat
 {
     AUTO,
@@ -195,7 +197,7 @@ public:
     bool Poll;
     bool ReadOnly;
     std::string TypeName;
-    std::chrono::milliseconds PollInterval = std::chrono::milliseconds(-1);
+    std::chrono::milliseconds PollInterval = UndefinedPollInterval;
     std::unique_ptr<uint64_t> ErrorValue;
     EWordOrder WordOrder;
     uint8_t BitOffset;

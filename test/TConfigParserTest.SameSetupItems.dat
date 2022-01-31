@@ -5,7 +5,6 @@ Ports:
     ConnSettings: </dev/ttyNSC0 9600 8 N 1>
     ConnectionMaxFailCycles: 2
     MaxFailTime: 5000
-    PollInterval: 20
     GuardInterval: 0
     Response timeout: -1
     DeviceConfigs:
@@ -42,7 +41,7 @@ Ports:
                 Poll: 1
                 ReadOnly: 1
                 TypeName: input
-                PollInterval: 20
+                PollInterval: -1
                 ErrorValue: not set
                 UnsupportedValue: not set
                 WordOrder: BigEndian

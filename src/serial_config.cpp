@@ -346,15 +346,12 @@ namespace
         std::vector<PRegisterConfig> registers;
         if (channel_data.isMember("consists_of")) {
 
-            std::chrono::milliseconds poll_interval(Read(channel_data, "poll_interval", std::chrono::milliseconds(-1)));
+            std::chrono::milliseconds poll_interval(Read(channel_data, "poll_interval", UndefinedPollInterval));
 
             const Json::Value& reg_data = channel_data["consists_of"];
             for (Json::ArrayIndex i = 0; i < reg_data.size(); ++i) {
                 auto reg = LoadRegisterConfig(reg_data[i], *device_config, errorMsgPrefix, context);
-                /* the poll_interval specified for the specific register has a precedence over the one specified for the
-                 * compound channel */
-                if ((reg.RegisterConfig->PollInterval.count() < 0) && (poll_interval.count() >= 0))
-                    reg.RegisterConfig->PollInterval = poll_interval;
+                reg.RegisterConfig->PollInterval = poll_interval;
                 registers.push_back(reg.RegisterConfig);
                 if (!i)
                     default_type_str = reg.DefaultControlType;
@@ -593,7 +590,6 @@ namespace
         auto port_config = make_shared<TPortConfig>();
 
         Get(port_data, "response_timeout_ms", port_config->ResponseTimeout);
-        Get(port_data, "poll_interval", port_config->PollInterval);
         Get(port_data, "guard_interval_us", port_config->RequestDelay);
 
         auto port_type = port_data.get("port_type", "serial").asString();
@@ -1190,7 +1186,6 @@ PSerialDevice TSerialDeviceFactory::CreateDevice(const Json::Value& deviceConfig
     const auto& deviceFactory = *it->second.second;
 
     params.DefaultId = defaultId;
-    params.DefaultPollInterval = portConfig->PollInterval;
     params.DefaultRequestDelay = portConfig->RequestDelay;
     params.PortResponseTimeout = portConfig->ResponseTimeout;
     auto baseDeviceConfig = LoadBaseDeviceConfig(*cfg, protocol, deviceFactory, params);
@@ -1269,15 +1264,6 @@ PDeviceConfig LoadBaseDeviceConfig(const Json::Value& dev,
         res->ResponseTimeout = DefaultResponseTimeout;
     }
 
-    auto device_poll_interval = parameters.DefaultPollInterval;
-    Get(dev, "poll_interval", device_poll_interval);
-    for (auto channel: res->DeviceChannelConfigs) {
-        for (auto reg: channel->RegisterConfigs) {
-            if (reg->PollInterval.count() < 0) {
-                reg->PollInterval = device_poll_interval;
-            }
-        }
-    }
     return res;
 }
 

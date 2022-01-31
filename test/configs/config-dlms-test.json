@@ -4,7 +4,6 @@
     {
       "port_type" : "serial",
       "path" : "/dev/ttyNSC1",
-      "poll_interval": 10,
       "devices" : [
         {
           "name": "DLMS",
