@@ -20,10 +20,13 @@ public:
     };
 
     TS2KDevice(PDeviceConfig config, PPort port, PProtocol protocol);
-    virtual uint64_t ReadRegister(PRegister reg);
-    virtual void WriteRegister(PRegister reg, uint64_t value);
 
     static void Register(TSerialDeviceFactory& factory);
+
+    uint64_t ReadRegisterImpl(PRegister reg) override;
+
+protected:
+    void WriteRegisterImpl(PRegister reg, uint64_t value) override;
 
 private:
     uint8_t CrcS2K(const uint8_t* array, int size);

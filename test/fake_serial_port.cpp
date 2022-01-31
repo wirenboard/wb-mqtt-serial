@@ -10,9 +10,11 @@
 
 #include "config_schema_generator.h"
 #include "fake_serial_device.h"
+#include "log.h"
 
 using namespace WBMQTT;
 using namespace WBMQTT::Testing;
+using namespace std::literals;
 
 TFakeSerialPort::TFakeSerialPort(TLoggedFixture& fixture)
     : Fixture(fixture),
@@ -88,6 +90,7 @@ void TFakeSerialPort::WriteBytes(const uint8_t* buf, int count)
         Fixture.Emit() << PendingFuncs.front() << "()";
         PendingFuncs.pop_front();
     }
+    ::Debug.Log() << "Port write " << Testing::HexDump(std::vector<uint8_t>(buf, buf + count));
     Fixture.Emit() << ">> " << std::vector<uint8_t>(buf, buf + count);
 
     if (Req.size() - ReqPos < size_t(count) + 1) {
@@ -199,28 +202,6 @@ void TFakeSerialPort::SleepSinceLastInteraction(const std::chrono::microseconds&
     }
 }
 
-bool TFakeSerialPort::Wait(const PBinarySemaphore& semaphore, const TTimePoint& until)
-{
-    if (semaphore->TryWait())
-        return true;
-    if (until < Time)
-        throw std::runtime_error("TFakeSerialPort::Wait(): going back in time");
-
-    auto delta =
-        std::chrono::duration_cast<std::chrono::milliseconds>(until - std::chrono::steady_clock::now()).count();
-    if (delta > 1000) {
-        throw std::runtime_error("Too long waiting for test: " + std::to_string(delta) + " ms");
-    }
-
-    Time = until;
-    return false;
-}
-
-TTimePoint TFakeSerialPort::CurrentTime() const
-{
-    return Time;
-}
-
 void TFakeSerialPort::DumpWhatWasRead()
 {
     assert(DumpPos <= RespPos);
@@ -241,11 +222,6 @@ void TFakeSerialPort::DumpWhatWasRead()
         Fixture.Emit() << "<< " << slice;
 
     DumpPos = RespPos;
-}
-
-void TFakeSerialPort::Elapse(const std::chrono::milliseconds& ms)
-{
-    Time += ms;
 }
 
 void TFakeSerialPort::SimulateDisconnect(TFakeSerialPort::TDisconnectType simulate)

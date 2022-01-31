@@ -35,7 +35,7 @@ public:
 class TModbusDevice: public TSerialDevice, public TUInt32SlaveId
 {
     std::unique_ptr<Modbus::IModbusTraits> ModbusTraits;
-    std::map<int64_t, uint16_t> ModbusCache;
+    Modbus::TRegisterCache ModbusCache;
 
 public:
     TModbusDevice(std::unique_ptr<Modbus::IModbusTraits> modbusTraits,
@@ -43,11 +43,12 @@ public:
                   PPort port,
                   PProtocol protocol);
 
-    std::list<PRegisterRange> SplitRegisterList(const std::list<PRegister>& reg_list,
-                                                bool enableHoles = true) const override;
-    void WriteRegister(PRegister reg, uint64_t value) override;
-    std::list<PRegisterRange> ReadRegisterRange(PRegisterRange range) override;
-    bool WriteSetupRegisters() override;
+    PRegisterRange CreateRegisterRange(PRegister reg) const override;
+    void ReadRegisterRange(PRegisterRange range) override;
+    void WriteSetupRegisters() override;
 
     static void Register(TSerialDeviceFactory& factory);
+
+protected:
+    void WriteRegisterImpl(PRegister reg, uint64_t value) override;
 };

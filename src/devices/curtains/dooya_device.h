@@ -21,10 +21,11 @@ namespace Dooya
     public:
         TDevice(PDeviceConfig config, PPort port, PProtocol protocol);
 
-        void WriteRegister(PRegister reg, uint64_t value);
-        uint64_t ReadRegister(PRegister reg);
-
         static void Register(TSerialDeviceFactory& factory);
+
+    protected:
+        uint64_t ReadRegisterImpl(PRegister reg) override;
+        void WriteRegisterImpl(PRegister reg, uint64_t value) override;
     };
 
     std::vector<uint8_t> MakeRequest(uint16_t address, const std::vector<uint8_t>& data);

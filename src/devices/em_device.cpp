@@ -9,11 +9,6 @@ TEMDevice::TEMDevice(PDeviceConfig config, PPort port, PProtocol protocol)
     }
 }
 
-void TEMDevice::WriteRegister(PRegister reg, uint64_t value)
-{
-    throw TSerialDeviceException("EM protocol: writing to registers not supported");
-}
-
 void TEMDevice::WriteCommand(uint8_t cmd, uint8_t* payload, int len)
 {
     uint8_t buf[MAX_LEN], *p = buf;

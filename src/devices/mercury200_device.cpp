@@ -32,9 +32,6 @@ TMercury200Device::TMercury200Device(PDeviceConfig config, PPort port, PProtocol
     config->FrameTimeout = std::max(config->FrameTimeout, port->GetSendTime(6));
 }
 
-TMercury200Device::~TMercury200Device()
-{}
-
 std::vector<uint8_t> TMercury200Device::ExecCommand(uint8_t cmd)
 {
     auto it = CmdResultCache.find(cmd);
@@ -59,7 +56,7 @@ std::vector<uint8_t> TMercury200Device::ExecCommand(uint8_t cmd)
     return CmdResultCache.insert({cmd, result}).first->second;
 }
 
-uint64_t TMercury200Device::ReadRegister(PRegister reg)
+uint64_t TMercury200Device::ReadRegisterImpl(PRegister reg)
 {
     auto addr = GetUint32RegisterAddress(reg->GetAddress());
     uint8_t cmd = (addr & 0xFF00) >> 8;
@@ -88,11 +85,6 @@ uint64_t TMercury200Device::ReadRegister(PRegister reg)
         throw TSerialDeviceException("mercury200: register address is out of range");
 
     return PackBytes(result.data() + offset, size);
-}
-
-void TMercury200Device::WriteRegister(PRegister, uint64_t)
-{
-    throw TSerialDeviceException("mercury200: register writing is not supported");
 }
 
 void TMercury200Device::EndPollCycle()

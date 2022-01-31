@@ -6,16 +6,18 @@ class TModbusExpectations: public TModbusExpectationsBase
 {
 public:
     void EnqueueCoilReadResponse(uint8_t exception = 0);
+    void EnqueueCoilOneByOneReadResponse(uint8_t exception = 0);
 
     void EnqueueHoldingPackReadResponse(uint8_t exception = 0);
     void EnqueueHoldingPackHoles10ReadResponse(uint8_t exception = 0);
     void EnqueueHoldingPackMax3ReadResponse(uint8_t exception = 0);
+    void EnqueueHoldingPartialPackReadResponse(uint8_t exception = 0);
 
     void EnqueueHoldingPackUnavailableOnBorderReadResponse();
     void EnqueueHoldingPackUnavailableInTheMiddleReadResponse();
     void EnqueueHoldingPackUnavailableAndHolesReadResponse();
 
-    void EnqueueHoldingPackUnsupportedOnBorderReadResponse();
+    void EnqueueHoldingUnsupportedOnBorderReadResponse();
 
     void EnqueueDiscreteReadResponse(uint8_t exception = 0);
     void EnqueueHoldingReadS64Response(uint8_t exception = 0);
@@ -63,4 +65,8 @@ public:
 
     void EnqueueU8Shift1SingleBitHoldingWriteResponse();
     void EnqueueU16Shift8HoldingWriteResponse();
+
+    void EnqueueHoldingSeparateReadResponse(uint8_t exception = 0);
+    void EnqueueHoldingSingleOneByOneReadResponse(uint8_t exception = 0);
+    void EnqueueHoldingMultiOneByOneReadResponse(uint8_t exception = 0);
 };

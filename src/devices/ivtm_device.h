@@ -11,10 +11,10 @@ class TIVTMDevice: public TSerialDevice, public TUInt32SlaveId
 {
 public:
     TIVTMDevice(PDeviceConfig config, PPort port, PProtocol protocol);
-    uint64_t ReadRegister(PRegister reg);
-    void WriteRegister(PRegister reg, uint64_t value);
 
     static void Register(TSerialDeviceFactory& factory);
+
+    uint64_t ReadRegisterImpl(PRegister reg) override;
 
 private:
     void WriteCommand(uint16_t addr, uint16_t data_addr, uint8_t data_len);

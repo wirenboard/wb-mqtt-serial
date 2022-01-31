@@ -44,6 +44,13 @@
             "hidden": true
           }
         },
+        "read_rate_limit_ms": {
+          "type": "integer",
+          "title": "Read rate limit (ms)",
+          "minimum": 0,
+          "default": 1000,
+          "propertyOrder": 10
+        },
         "devices": {
           "type": "array",
           "title": "Devices attached to the port",
@@ -368,6 +375,13 @@
             "hidden": true
           }
         },
+        "read_rate_limit_ms": {
+          "type": "integer",
+          "title": "Read rate limit (ms)",
+          "minimum": 0,
+          "default": 1000,
+          "propertyOrder": 5
+        },
         "password": {
           "type": "array",
           "title": "Password as a list of bytes",
@@ -577,16 +591,36 @@
         },
         "poll_interval": {
           "type": "integer",
-          "title": "Poll interval (ms)",
-          "description" : "poll_interval_description",
+          "options": {
+            "hidden": true
+          }
+        },
+        "read_period_ms": {
+          "type": "integer",
+          "title": "High priority read period (ms)",
+          "description" : "read_period_description",
           "minimum": 0,
-          "default": 20,
+          "options": {
+            "enum_titles": [ "high priority (100ms)" ],
+            "enum_values": [ 100 ],
+            "inputAttributes": {
+              "placeholder": "the channel has low priority"
+            }
+          },
+          "_format": "edWb",
           "propertyOrder": 15
+        },
+        "read_rate_limit_ms": {
+          "type": "integer",
+          "title": "Read rate limit (ms)",
+          "minimum": 0,
+          "default": 1000,
+          "propertyOrder": 16
         },
         "error_value": {
           "title": "Error value",
           "description": "Value which should be treated as read error",
-          "propertyOrder": 16,
+          "propertyOrder": 17,
           "oneOf": [
             {
               "title": "decimal or hex",
@@ -610,7 +644,7 @@
         "unsupported_value": {
           "title": "Unsupported register value",
           "description": "Value which should be treated as 'register is unsupported by device'",
-          "propertyOrder": 17,
+          "propertyOrder": 18,
           "type": "string",
           "pattern": "^(0x[A-Fa-f\\d]+)$",
           "options": {
@@ -623,7 +657,7 @@
         "word_order": {
           "$ref": "#/definitions/word_order",
           "title": "Word order",
-          "propertyOrder": 18
+          "propertyOrder": 19
         },
         "consists_of": {
           "not": {},
@@ -709,11 +743,31 @@
         },
         "poll_interval": {
           "type": "integer",
-          "title": "Poll interval (ms)",
-          "description" : "poll_interval_description",
+          "options": {
+            "hidden": true
+          }
+        },
+        "read_period_ms": {
+          "type": "integer",
+          "title": "High priority read period (ms)",
+          "description" : "read_period_description",
           "minimum": 0,
-          "default": 20,
-          "propertyOrder": 7
+          "options": {
+            "enum_titles": [ "high priority (100ms)" ],
+            "enum_values": [ 100 ],
+            "inputAttributes": {
+              "placeholder": "the channel has low priority"
+            }
+          },
+          "_format": "edWb",
+          "propertyOrder": 10
+        },
+        "read_rate_limit_ms": {
+          "type": "integer",
+          "title": "Read rate limit (ms)",
+          "minimum": 0,
+          "default": 1000,
+          "propertyOrder": 11
         }
       },
       "required": ["name", "consists_of"],
@@ -750,14 +804,42 @@
         },
         "poll_interval": {
           "type": "integer",
-          "title": "Poll interval (ms)",
-          "minimum": 0,
-          "default": 20,
           "options": {
+            "hidden": true
+          }
+        },
+        "read_period_ms": {
+          "type": "integer",
+          "title": "High priority read period (ms)",
+          "minimum": 0,
+          "options": {
+            "enum_titles": [ "high priority (100ms)" ],
+            "enum_values": [ 100 ],
+            "inputAttributes": {
+              "placeholder": "the channel has low priority"
+            },
             "dependencies": {
               "enabled": true
             }
-          }
+          },
+          "_format": "edWb",
+          "propertyOrder": 3
+        },
+        "read_rate_limit_ms": {
+          "type": "integer",
+          "title": "Read rate limit (ms)",
+          "minimum": 0,
+          "default": -1,
+          "options": {
+            "inputAttributes": {
+              "placeholder": "read as soon as possible"
+            },
+            "dependencies": {
+              "enabled": true
+            }
+          },
+          "_format": "siWb",
+          "propertyOrder": 4
         }
       },
       "options": {
@@ -788,21 +870,38 @@
           "_format": "checkbox",
           "propertyOrder": 1
         },
-        "poll_interval": {
+        "read_period_ms": {
           "type": "integer",
-          "title": "Poll interval (ms)",
+          "title": "High priority read period (ms)",
+          "minimum": 0,
+          "options": {
+            "enum_titles": [ "high priority (100 ms)" ],
+            "enum_values": [ 100 ],
+            "inputAttributes": {
+              "placeholder": "the channel has low priority"
+            },
+            "dependencies": {
+              "enabled": true
+            }
+          },
+          "_format": "edWb",
+          "propertyOrder": 3
+        },
+        "read_rate_limit_ms": {
+          "type": "integer",
+          "title": "Read rate limit (ms)",
           "minimum": 0,
           "default": -1,
           "options": {
             "inputAttributes": {
-              "placeholder": "inherited from device and port"
+              "placeholder": "read as soon as possible"
             },
             "dependencies": {
               "enabled": true
             }
           },
           "_format": "siWb",
-          "propertyOrder": 3
+          "propertyOrder": 4
         }
       },
       "options": {
@@ -1591,7 +1690,7 @@
 
   "translations": {
     "en": {
-      "poll_interval_description": "This option specifies the desired interval between two consecutive polls of each channel (or total duration of the poll cycle). Writes are not affected by this setting and are performed as soon as possible.",
+      "read_period_description": "This option specifies the desired period between two consecutive reads of the channel. Writes are not affected by this setting and are performed as soon as possible.",
       "guard_interval_description": "Specifies the delay in microseconds before writing to the port",
       "connection_timeout_description": "Used for disconnect detection. If not set, the default timeout (5000ms) is used. Value -1 disables TCP reconnect. Zero means instant timeout.",
       "connection_max_fail_description": "Defines number of driver cycles with all devices being disconnected before resetting connection. Default value is 2. Value -1 disables TCP reconnect. Zero means instant timeout.",
@@ -1611,8 +1710,8 @@
       "Zero means no timeout. If not set, the default timeout (500ms) is used.": "Ноль - без таймаута. Таймаут по умолчанию 500мс",
       "Guard interval (us)": "Задержка перед записью в порт (мкс)",
       "guard_interval_description": "",
-      "Poll interval (ms)": "Период опроса (мс)",
-      "poll_interval_description": "Задаёт задержку в миллисекундах между последовательными опросами канала. Не влияет на запись в порт. Запись производится сразу как только возможно",
+      "Read period (ms)": "Период чтения (мс)",
+      "read_period_description": "Задаёт период чтения канала в миллисекундах. Не влияет на запись в порт. Запись производится сразу как только возможно",
       "Devices attached to the port": "Устройства, подключенные к порту",
       "Serial port": "Последовательный порт",
       "Port type": "Тип порта",
@@ -1754,7 +1853,12 @@
       "Word order": "Порядок слов",
       "Name": "Имя",
       "Type": "Тип",
-      "Maximum value": "Максимальное значение"
+      "Maximum value": "Максимальное значение",
+      "High priority read period (ms)": "Период чтения с высоким приоритетом (мс)",
+      "the channel has low priority": "канал имеет низкий приоритет",
+      "read as soon as possible": "читать как появится возможность",
+      "Read rate limit (ms)": "Читать не чаще (мс)",
+      "high priority (100 ms)": "высокий приоритет (100 мс)"
     }
   }
 }

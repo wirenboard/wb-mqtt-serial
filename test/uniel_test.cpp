@@ -43,28 +43,28 @@ void TUnielDeviceTest::TearDown()
 TEST_F(TUnielDeviceTest, TestQuery)
 {
     EnqueueVoltageQueryResponse();
-    ASSERT_EQ(154, Dev->ReadRegister(InputReg));
+    ASSERT_EQ(154, Dev->ReadRegisterImpl(InputReg));
 
     // TBD: rm (dupe)
     SerialPort->DumpWhatWasRead();
     EnqueueVoltageQueryResponse();
-    ASSERT_EQ(154, Dev->ReadRegister(InputReg));
+    ASSERT_EQ(154, Dev->ReadRegisterImpl(InputReg));
 
     SerialPort->DumpWhatWasRead();
     EnqueueRelayOffQueryResponse();
-    ASSERT_EQ(0, Dev->ReadRegister(RelayReg));
+    ASSERT_EQ(0, Dev->ReadRegisterImpl(RelayReg));
 
     SerialPort->DumpWhatWasRead();
     EnqueueRelayOnQueryResponse();
-    ASSERT_EQ(1, Dev->ReadRegister(RelayReg));
+    ASSERT_EQ(1, Dev->ReadRegisterImpl(RelayReg));
 
     SerialPort->DumpWhatWasRead();
     EnqueueThreshold0QueryResponse();
-    ASSERT_EQ(0x70, Dev->ReadRegister(ThresholdReg));
+    ASSERT_EQ(0x70, Dev->ReadRegisterImpl(ThresholdReg));
 
     SerialPort->DumpWhatWasRead();
     EnqueueBrightnessQueryResponse();
-    ASSERT_EQ(66, Dev->ReadRegister(BrightnessReg));
+    ASSERT_EQ(66, Dev->ReadRegisterImpl(BrightnessReg));
 }
 
 TEST_F(TUnielDeviceTest, TestSetRelayState)

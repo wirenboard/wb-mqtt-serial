@@ -8,11 +8,12 @@ class TLLSDevice: public TSerialDevice, public TUInt32SlaveId
 public:
     TLLSDevice(PDeviceConfig config, PPort port, PProtocol protocol);
 
-    uint64_t ReadRegister(PRegister reg) override;
-    void WriteRegister(PRegister reg, uint64_t value) override;
     void EndPollCycle() override;
 
     static void Register(TSerialDeviceFactory& factory);
+
+protected:
+    uint64_t ReadRegisterImpl(PRegister reg) override;
 
 private:
     std::unordered_map<uint8_t, std::vector<uint8_t>> CmdResultCache;

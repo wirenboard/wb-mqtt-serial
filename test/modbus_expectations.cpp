@@ -21,6 +21,43 @@ void TModbusExpectations::EnqueueCoilReadResponse(uint8_t exception)
         __func__);
 }
 
+void TModbusExpectations::EnqueueCoilOneByOneReadResponse(uint8_t exception)
+{
+    Expector()->Expect(
+        WrapPDU({
+            0x01, // function code
+            0x00, // starting address Hi
+            0,    // starting address Lo
+            0x00, // quantity Hi
+            0x01, // quantity Lo
+        }),
+        WrapPDU(exception == 0 ? std::vector<int>{
+                                     0x01,   // function code
+                                     0x01,   // byte count
+                                     0,      // coils status
+                                 }
+                               : std::vector<int>{0x81, // function code + 80
+                                                  exception}),
+        __func__);
+
+    Expector()->Expect(
+        WrapPDU({
+            0x01, // function code
+            0x00, // starting address Hi
+            1,    // starting address Lo
+            0x00, // quantity Hi
+            0x01, // quantity Lo
+        }),
+        WrapPDU(exception == 0 ? std::vector<int>{
+                                     0x01,   // function code
+                                     0x01,   // byte count
+                                     1 << 1, // coils status
+                                 }
+                               : std::vector<int>{0x81, // function code + 80
+                                                  exception}),
+        __func__);
+}
+
 // read holding registers [4 - 9], 18
 void TModbusExpectations::EnqueueHoldingPackReadResponse(uint8_t exception)
 {
@@ -45,6 +82,105 @@ void TModbusExpectations::EnqueueHoldingPackReadResponse(uint8_t exception)
                                      0x01, // data Lo 7
                                      0x00, // data Hi 8
                                      0x02, // data Lo 8
+                                     0x00, // data Hi 9
+                                     0x03, // data Lo 9
+                                 }
+                               : std::vector<int>{0x83, // function code + 80
+                                                  exception}),
+        __func__);
+
+    // Voltage register
+    Expector()->Expect(
+        WrapPDU({
+            0x03, // function code
+            0x00, // starting address Hi
+            18,   // starting address Lo
+            0x00, // quantity Hi
+            0x01, // quantity Lo
+        }),
+        WrapPDU(exception == 0 ? std::vector<int>{
+                                     0x03, // function code
+                                     0x02, // byte count
+                                     0x00, // data Hi 18
+                                     0x04, // data Lo 18
+                                 }
+                               : std::vector<int>{0x83, // function code + 80
+                                                  exception}),
+        __func__);
+}
+
+// read holding registers [4 - 6], 7, 8, 9, 18
+void TModbusExpectations::EnqueueHoldingPartialPackReadResponse(uint8_t exception)
+{
+    Expector()->Expect(
+        WrapPDU({
+            0x03, // function code
+            0x00, // starting address Hi
+            4,    // starting address Lo
+            0x00, // quantity Hi
+            0x03, // quantity Lo
+        }),
+        WrapPDU(exception == 0 ? std::vector<int>{
+                                     0x03, // function code
+                                     0x06, // byte count
+                                     0x00, // data Hi 4
+                                     0x0a, // data Lo 4
+                                     0x00, // data Hi 5
+                                     0x14, // data Lo 5
+                                     0x00, // data Hi 6
+                                     0x1E, // data Lo 6
+                                 }
+                               : std::vector<int>{0x83, // function code + 80
+                                                  exception}),
+        __func__);
+
+    Expector()->Expect(
+        WrapPDU({
+            0x03, // function code
+            0x00, // starting address Hi
+            7,    // starting address Lo
+            0x00, // quantity Hi
+            0x01, // quantity Lo
+        }),
+        WrapPDU(exception == 0 ? std::vector<int>{
+                                     0x03, // function code
+                                     0x02, // byte count
+                                     0x00, // data Hi 7
+                                     0x01, // data Lo 7
+                                 }
+                               : std::vector<int>{0x83, // function code + 80
+                                                  exception}),
+        __func__);
+
+    Expector()->Expect(
+        WrapPDU({
+            0x03, // function code
+            0x00, // starting address Hi
+            8,    // starting address Lo
+            0x00, // quantity Hi
+            0x01, // quantity Lo
+        }),
+        WrapPDU(exception == 0 ? std::vector<int>{
+                                     0x03, // function code
+                                     0x02, // byte count
+                                     0x00, // data Hi 8
+                                     0x02, // data Lo 8
+                                 }
+                               : std::vector<int>{0x83, // function code + 80
+                                                  exception}),
+        __func__);
+
+    Expector()->Expect(
+        WrapPDU({
+            0x03, // function code
+            0x00, // starting address Hi
+            9,    // starting address Lo
+            0x00, // quantity Hi
+            0x01, // quantity Lo
+        }),
+        WrapPDU(exception == 0 ? std::vector<int>{
+                                     0x03, // function code
+                                     0x02, // byte count
                                      0x00, // data Hi 9
                                      0x03, // data Lo 9
                                  }
@@ -125,19 +261,6 @@ void TModbusExpectations::EnqueueHoldingPackHoles10ReadResponse(uint8_t exceptio
 // read holding registers [7 - 12)
 void TModbusExpectations::EnqueueHoldingPackUnavailableOnBorderReadResponse()
 {
-    Expector()->Expect(WrapPDU({
-                           0x03, // function code
-                           0x00, // starting address Hi
-                           0x07, // starting address Lo
-                           0x00, // quantity Hi
-                           0x06, // quantity Lo
-                       }),
-                       WrapPDU({
-                           0x83, // function code + 80
-                           0x03  // ILLEGAL DATA VALUE
-                       }),
-                       __func__);
-
     for (uint8_t i = 7; i < 12; ++i) {
         Expector()->Expect(WrapPDU({
                                0x03, // function code
@@ -195,19 +318,6 @@ void TModbusExpectations::EnqueueHoldingPackUnavailableOnBorderReadResponse()
 // read holding registers [7 - 8], [9 - 12]
 void TModbusExpectations::EnqueueHoldingPackUnavailableInTheMiddleReadResponse()
 {
-    Expector()->Expect(WrapPDU({
-                           0x03, // function code
-                           0x00, // starting address Hi
-                           0x07, // starting address Lo
-                           0x00, // quantity Hi
-                           0x06, // quantity Lo
-                       }),
-                       WrapPDU({
-                           0x83, // function code + 80
-                           0x03  // ILLEGAL DATA VALUE
-                       }),
-                       __func__);
-
     for (uint8_t i = 7; i < 9; ++i) {
         Expector()->Expect(WrapPDU({
                                0x03, // function code
@@ -420,28 +530,88 @@ void TModbusExpectations::EnqueueHoldingPackUnavailableAndHolesReadResponse()
                        __func__);
 }
 
-void TModbusExpectations::EnqueueHoldingPackUnsupportedOnBorderReadResponse()
+void TModbusExpectations::EnqueueHoldingUnsupportedOnBorderReadResponse()
 {
     Expector()->Expect(WrapPDU({
                            0x03, // function code
                            0x00, // starting address Hi
                            0x07, // starting address Lo
                            0x00, // quantity Hi
-                           0x06, // quantity Lo
+                           0x01, // quantity Lo
                        }),
                        WrapPDU({
                            0x03, // function code
-                           0x0C, // byte count
+                           0x02, // byte count
                            0xFF, // data Hi 7
                            0xFE, // data Lo 7
+                       }));
+
+    Expector()->Expect(WrapPDU({
+                           0x03, // function code
+                           0x00, // starting address Hi
+                           0x08, // starting address Lo
+                           0x00, // quantity Hi
+                           0x01, // quantity Lo
+                       }),
+                       WrapPDU({
+                           0x03, // function code
+                           0x02, // byte count
                            0x00, // data Hi 8
                            0x14, // data Lo 8
+                       }));
+
+    Expector()->Expect(WrapPDU({
+                           0x03, // function code
+                           0x00, // starting address Hi
+                           0x09, // starting address Lo
+                           0x00, // quantity Hi
+                           0x01, // quantity Lo
+                       }),
+                       WrapPDU({
+                           0x03, // function code
+                           0x02, // byte count
                            0xFF, // data Hi 9
                            0xFE, // data Lo 9
+                       }));
+
+    Expector()->Expect(WrapPDU({
+                           0x03, // function code
+                           0x00, // starting address Hi
+                           0x0A, // starting address Lo
+                           0x00, // quantity Hi
+                           0x01, // quantity Lo
+                       }),
+                       WrapPDU({
+                           0x03, // function code
+                           0x02, // byte count
                            0x00, // data Hi 10
                            0x01, // data Lo 10
+                       }));
+
+    Expector()->Expect(WrapPDU({
+                           0x03, // function code
+                           0x00, // starting address Hi
+                           0x0B, // starting address Lo
+                           0x00, // quantity Hi
+                           0x01, // quantity Lo
+                       }),
+                       WrapPDU({
+                           0x03, // function code
+                           0x02, // byte count
                            0x00, // data Hi 11
                            0x02, // data Lo 11
+                       }));
+
+    Expector()->Expect(WrapPDU({
+                           0x03, // function code
+                           0x00, // starting address Hi
+                           0x0C, // starting address Lo
+                           0x00, // quantity Hi
+                           0x01, // quantity Lo
+                       }),
+                       WrapPDU({
+                           0x03, // function code
+                           0x02, // byte count
                            0xFF, // data Hi 12
                            0xFE  // data Lo 12
                        }));
@@ -773,6 +943,51 @@ void TModbusExpectations::EnqueueHoldingSingleReadResponse(uint8_t exception)
         __func__);
 }
 
+void TModbusExpectations::EnqueueHoldingSingleOneByOneReadResponse(uint8_t exception)
+{
+    Expector()->Expect(
+        WrapPDU({
+            0x03, // function code
+            0x00, // starting address Hi
+            90,   // starting address Lo
+            0x00, // quantity Hi
+            0x04, // quantity Lo
+        }),
+        WrapPDU(exception == 0 ? std::vector<int>{
+                                     0x03, // function code
+                                     0x08, // byte count
+                                     0x01, // data Hi
+                                     0x01, // data Lo
+                                     0x01, // data Hi
+                                     0x01, // data Lo
+                                     0x01, // data Hi
+                                     0x01, // data Lo
+                                     0x01, // data Hi
+                                     0x01, // data Lo
+                                 }
+                               : std::vector<int>{0x83, // function code + 80
+                                                  exception}),
+        __func__);
+
+    Expector()->Expect(
+        WrapPDU({
+            0x03, // function code
+            0x00, // starting address Hi
+            94,   // starting address Lo
+            0x00, // quantity Hi
+            0x01, // quantity Lo
+        }),
+        WrapPDU(exception == 0 ? std::vector<int>{
+                                     0x03, // function code
+                                     0x02, // byte count
+                                     0x01, // data Hi
+                                     0x01, // data Lo
+                                 }
+                               : std::vector<int>{0x83, // function code + 80
+                                                  exception}),
+        __func__);
+}
+
 void TModbusExpectations::EnqueueHoldingMultiReadResponse(uint8_t exception)
 {
     Expector()->Expect(
@@ -794,6 +1009,51 @@ void TModbusExpectations::EnqueueHoldingMultiReadResponse(uint8_t exception)
                                      0x02, // data Lo
                                      0x02, // data Hi
                                      0x02, // data Lo
+                                     0x02, // data Hi
+                                     0x02, // data Lo
+                                 }
+                               : std::vector<int>{0x83, // function code + 80
+                                                  exception}),
+        __func__);
+}
+
+void TModbusExpectations::EnqueueHoldingMultiOneByOneReadResponse(uint8_t exception)
+{
+    Expector()->Expect(
+        WrapPDU({
+            0x03, // function code
+            0x00, // starting address Hi
+            95,   // starting address Lo
+            0x00, // quantity Hi
+            0x04, // quantity Lo
+        }),
+        WrapPDU(exception == 0 ? std::vector<int>{
+                                     0x03, // function code
+                                     0x08, // byte count
+                                     0x02, // data Hi
+                                     0x02, // data Lo
+                                     0x02, // data Hi
+                                     0x02, // data Lo
+                                     0x02, // data Hi
+                                     0x02, // data Lo
+                                     0x02, // data Hi
+                                     0x02, // data Lo
+                                 }
+                               : std::vector<int>{0x83, // function code + 80
+                                                  exception}),
+        __func__);
+
+    Expector()->Expect(
+        WrapPDU({
+            0x03, // function code
+            0x00, // starting address Hi
+            99,   // starting address Lo
+            0x00, // quantity Hi
+            0x01, // quantity Lo
+        }),
+        WrapPDU(exception == 0 ? std::vector<int>{
+                                     0x03, // function code
+                                     0x02, // byte count
                                      0x02, // data Hi
                                      0x02, // data Lo
                                  }
@@ -1483,4 +1743,135 @@ void TModbusExpectations::EnqueueU16Shift8HoldingWriteResponse()
                            0x02, // quantity Lo
                        }),
                        __func__);
+}
+
+// read holding registers one by one [4 - 9], 18
+void TModbusExpectations::EnqueueHoldingSeparateReadResponse(uint8_t exception)
+{
+    Expector()->Expect(
+        WrapPDU({
+            0x03, // function code
+            0x00, // starting address Hi
+            4,    // starting address Lo
+            0x00, // quantity Hi
+            0x01, // quantity Lo
+        }),
+        WrapPDU(exception == 0 ? std::vector<int>{
+                                     0x03, // function code
+                                     0x02, // byte count
+                                     0x00, // data Hi 4
+                                     0x0a, // data Lo 4
+                                 }
+                               : std::vector<int>{0x83, // function code + 80
+                                                  exception}),
+        __func__);
+
+    Expector()->Expect(
+        WrapPDU({
+            0x03, // function code
+            0x00, // starting address Hi
+            5,    // starting address Lo
+            0x00, // quantity Hi
+            0x01, // quantity Lo
+        }),
+        WrapPDU(exception == 0 ? std::vector<int>{
+                                     0x03, // function code
+                                     0x02, // byte count
+                                     0x00, // data Hi 5
+                                     0x14, // data Lo 5
+                                 }
+                               : std::vector<int>{0x83, // function code + 80
+                                                  exception}),
+        __func__);
+
+    Expector()->Expect(
+        WrapPDU({
+            0x03, // function code
+            0x00, // starting address Hi
+            6,    // starting address Lo
+            0x00, // quantity Hi
+            0x01, // quantity Lo
+        }),
+        WrapPDU(exception == 0 ? std::vector<int>{
+                                     0x03, // function code
+                                     0x02, // byte count
+                                     0x00, // data Hi 6
+                                     0x1E, // data Lo 6
+                                 }
+                               : std::vector<int>{0x83, // function code + 80
+                                                  exception}),
+        __func__);
+
+    Expector()->Expect(
+        WrapPDU({
+            0x03, // function code
+            0x00, // starting address Hi
+            7,    // starting address Lo
+            0x00, // quantity Hi
+            0x01, // quantity Lo
+        }),
+        WrapPDU(exception == 0 ? std::vector<int>{
+                                     0x03, // function code
+                                     0x02, // byte count
+                                     0x00, // data Hi 7
+                                     0x01, // data Lo 7
+                                 }
+                               : std::vector<int>{0x83, // function code + 80
+                                                  exception}),
+        __func__);
+
+    Expector()->Expect(
+        WrapPDU({
+            0x03, // function code
+            0x00, // starting address Hi
+            8,    // starting address Lo
+            0x00, // quantity Hi
+            0x01, // quantity Lo
+        }),
+        WrapPDU(exception == 0 ? std::vector<int>{
+                                     0x03, // function code
+                                     0x02, // byte count
+                                     0x00, // data Hi 8
+                                     0x02, // data Lo 8
+                                 }
+                               : std::vector<int>{0x83, // function code + 80
+                                                  exception}),
+        __func__);
+
+    Expector()->Expect(
+        WrapPDU({
+            0x03, // function code
+            0x00, // starting address Hi
+            9,    // starting address Lo
+            0x00, // quantity Hi
+            0x01, // quantity Lo
+        }),
+        WrapPDU(exception == 0 ? std::vector<int>{
+                                     0x03, // function code
+                                     0x02, // byte count
+                                     0x00, // data Hi 9
+                                     0x03, // data Lo 9
+                                 }
+                               : std::vector<int>{0x83, // function code + 80
+                                                  exception}),
+        __func__);
+
+    // Voltage register
+    Expector()->Expect(
+        WrapPDU({
+            0x03, // function code
+            0x00, // starting address Hi
+            18,   // starting address Lo
+            0x00, // quantity Hi
+            0x01, // quantity Lo
+        }),
+        WrapPDU(exception == 0 ? std::vector<int>{
+                                     0x03, // function code
+                                     0x02, // byte count
+                                     0x00, // data Hi 18
+                                     0x04, // data Lo 18
+                                 }
+                               : std::vector<int>{0x83, // function code + 80
+                                                  exception}),
+        __func__);
 }

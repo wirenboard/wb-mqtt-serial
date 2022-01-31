@@ -72,24 +72,26 @@ fake_serial_device: block address '1' for writing
 Open()
 Sleep(100000)
 fake_serial_device '23': write address '1' failed: 'Serial protocol error: write blocked'
+fake_serial_device '23': transfer FAIL
 Publish: /devices/ddl24/controls/RGB/meta/error: 'r' (QoS 1, retained)
 Publish: /devices/ddl24/controls/White/meta/error: 'r' (QoS 1, retained)
 Publish: /devices/ddl24/controls/RGB_All/meta/error: 'r' (QoS 1, retained)
 Publish: /devices/ddl24/controls/White1/meta/error: 'r' (QoS 1, retained)
 Publish: /devices/ddl24/controls/Voltage/meta/error: 'r' (QoS 1, retained)
-fake_serial_device '23': Device cycle FAIL
 fake_serial_device: unblock address '1' for writing
 fake_serial_device: block address '2' for writing
 >>> LoopOnce() [write blacklisted]
 Sleep(100000)
 fake_serial_device '23': write to address '1' value '42'
 fake_serial_device '23': write address '2' failed: 'Serial protocol error: write blocked'
-fake_serial_device '23': Device cycle FAIL
+fake_serial_device '23': transfer FAIL
 fake_serial_device: unblock address '2' for writing
 >>> LoopOnce()
 Sleep(100000)
 fake_serial_device '23': write to address '1' value '42'
 fake_serial_device '23': write to address '2' value '24'
+fake_serial_device '23': transfer OK
+fake_serial_device '23': reconnected
 fake_serial_device '23': read address '4' value '0'
 fake_serial_device '23': read address '5' value '0'
 fake_serial_device '23': read address '6' value '0'
@@ -107,8 +109,6 @@ Publish: /devices/ddl24/controls/White1: '0' (QoS 1, retained)
 fake_serial_device '23': read address '18' value '0'
 Publish: /devices/ddl24/controls/Voltage/meta/error: '' (QoS 1, retained)
 Publish: /devices/ddl24/controls/Voltage: '0' (QoS 1, retained)
-fake_serial_device '23': Device cycle OK
-fake_serial_device '23': reconnected
 Unsubscribe -- serial-client-integration-test: /devices/ddl24/controls/Voltage/on
 Publish: /devices/ddl24/controls/Voltage: '' (QoS 1, retained)
 Publish: /devices/ddl24/controls/Voltage/meta: '' (QoS 1, retained)

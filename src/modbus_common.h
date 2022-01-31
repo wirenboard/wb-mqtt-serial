@@ -22,11 +22,12 @@ namespace Modbus // modbus protocol common utilities
 
     typedef std::vector<uint8_t> TRequest;
     typedef std::vector<uint8_t> TResponse;
+    typedef std::map<int64_t, uint16_t> TRegisterCache;
 
     class IModbusTraits
     {
     public:
-        virtual ~IModbusTraits();
+        virtual ~IModbusTraits() = default;
 
         virtual size_t GetPacketSize(size_t pduSize) const = 0;
 
@@ -116,30 +117,28 @@ namespace Modbus // modbus protocol common utilities
         std::unique_ptr<Modbus::IModbusTraits> GetModbusTraits(PPort port) override;
     };
 
-    std::list<PRegisterRange> SplitRegisterList(const std::list<PRegister>& reg_list,
-                                                const TDeviceConfig& deviceConfig,
-                                                bool enableHoles);
+    PRegisterRange CreateRegisterRange(PRegister reg, bool enableHoles);
 
     void WriteRegister(IModbusTraits& traits,
                        TPort& port,
                        uint8_t slaveId,
                        TRegister& reg,
                        uint64_t value,
-                       std::map<int64_t, uint16_t>& cache,
+                       TRegisterCache& cache,
                        int shift = 0);
 
-    std::list<PRegisterRange> ReadRegisterRange(IModbusTraits& traits,
-                                                TPort& port,
-                                                uint8_t slaveId,
-                                                PRegisterRange range,
-                                                std::map<int64_t, uint16_t>& cache,
-                                                int shift = 0);
+    void ReadRegisterRange(IModbusTraits& traits,
+                           TPort& port,
+                           uint8_t slaveId,
+                           PRegisterRange range,
+                           TRegisterCache& cache,
+                           int shift = 0);
 
-    bool WriteSetupRegisters(IModbusTraits& traits,
+    void WriteSetupRegisters(IModbusTraits& traits,
                              TPort& port,
                              uint8_t slaveId,
                              const std::vector<PDeviceSetupItem>& setupItems,
-                             std::map<int64_t, uint16_t>& cache,
+                             TRegisterCache& cache,
                              int shift = 0);
 
     class TMalformedResponseError: public TSerialDeviceTransientErrorException

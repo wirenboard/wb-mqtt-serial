@@ -12,11 +12,37 @@
 #include "register_handler.h"
 #include "serial_device.h"
 
+struct TRegisterComparePredicate
+{
+    bool operator()(const PRegister& r1, const PRegister& r2) const;
+};
+
+class TRegisterReader
+{
+    PRegisterRange RegisterRange;
+    std::chrono::milliseconds MaxPollTime;
+    PSerialDevice Device;
+
+public:
+    TRegisterReader(std::chrono::milliseconds maxPollTime);
+    bool operator()(const PRegister& reg, std::chrono::milliseconds pollLimit);
+    PRegisterRange GetRegisterRange() const;
+    void Reset(std::chrono::milliseconds maxPollTime);
+};
+
+class TClosedPortRegisterReader
+{
+    std::list<PRegister> Regs;
+
+public:
+    bool operator()(const PRegister& reg, std::chrono::milliseconds pollLimit);
+    std::list<PRegister>& GetRegisters();
+};
+
 class TSerialClient: public std::enable_shared_from_this<TSerialClient>
 {
 public:
-    typedef std::function<void(PRegister reg, bool changed)> TReadCallback;
-    typedef std::function<void(PRegister reg, TRegisterHandler::TErrorState errorState)> TErrorCallback;
+    typedef std::function<void(PRegister reg)> TCallback;
 
     TSerialClient(const std::vector<PSerialDevice>& devices,
                   PPort port,
@@ -29,10 +55,8 @@ public:
     void AddRegister(PRegister reg);
     void Cycle();
     void SetTextValue(PRegister reg, const std::string& value);
-    std::string GetTextValue(PRegister reg) const;
-    bool DidRead(PRegister reg) const;
-    void SetReadCallback(const TReadCallback& callback);
-    void SetErrorCallback(const TErrorCallback& callback);
+    void SetReadCallback(const TCallback& callback);
+    void SetErrorCallback(const TCallback& callback);
     void NotifyFlushNeeded();
     void ClearDevices();
 
@@ -43,30 +67,30 @@ private:
     void DoFlush();
     void WaitForPollAndFlush();
     void MaybeFlushAvoidingPollStarvationButDontWait();
-    std::list<PRegisterRange> PollRange(PRegisterRange range);
-    void SetReadError(PRegisterRange range);
+    void SetReadError(PRegister reg);
     PRegisterHandler GetHandler(PRegister) const;
-    void MaybeUpdateErrorState(PRegister reg, TRegisterHandler::TErrorState state);
-    void PrepareToAccessDevice(PSerialDevice dev);
-    void OnDeviceReconnect(PSerialDevice dev);
+    void SetRegistersAvailability(PSerialDevice dev, TRegisterAvailability availability);
     void ClosedPortCycle();
     void OpenPortCycle();
     void UpdateFlushNeeded();
+    void ProcessPolledRegister(PRegister reg);
+    void ScheduleNextPoll(PRegister reg, std::chrono::steady_clock::time_point pollStartTime);
+    std::vector<PRegisterRange> ReadRanges(TRegisterReader& reader,
+                                           PRegisterRange range,
+                                           std::chrono::steady_clock::time_point pollStartTime,
+                                           bool forceError);
 
     PPort Port;
     std::list<PRegister> RegList;
-    std::vector<PSerialDevice> Devices; /* for EndPollCycle */
+    std::vector<PSerialDevice> Devices;
     std::unordered_map<PRegister, PRegisterHandler> Handlers;
 
     bool Active;
-    TReadCallback ReadCallback;
-    TErrorCallback ErrorCallback;
-    PSerialDevice LastAccessedDevice = 0;
+    TCallback ReadCallback;
+    TCallback ErrorCallback;
+    PSerialDevice LastAccessedDevice;
     PBinarySemaphore FlushNeeded;
-    PPollPlan Plan;
-
-    const int MAX_REGS = 65536;
-    const int MAX_FLUSHES_WHEN_POLL_IS_DUE = 20;
+    TScheduler<PRegister, TRegisterComparePredicate, TPreemptivePolicy> Scheduler;
 
     TPortOpenCloseLogic OpenCloseLogic;
     TLoggerWithTimeout ConnectLogger;

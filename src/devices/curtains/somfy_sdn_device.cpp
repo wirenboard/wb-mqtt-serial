@@ -192,7 +192,7 @@ std::vector<uint8_t> Somfy::TDevice::ExecCommand(const std::vector<uint8_t>& req
     return respBytes;
 }
 
-void Somfy::TDevice::WriteRegister(PRegister reg, uint64_t value)
+void Somfy::TDevice::WriteRegisterImpl(PRegister reg, uint64_t value)
 {
     if (reg->Type == POSITION) {
         if (value == 0) {
@@ -240,7 +240,7 @@ uint64_t Somfy::TDevice::GetCachedResponse(uint8_t requestHeader,
     return val;
 }
 
-uint64_t Somfy::TDevice::ReadRegister(PRegister reg)
+uint64_t Somfy::TDevice::ReadRegisterImpl(PRegister reg)
 {
     switch (reg->Type) {
         case POSITION: {

@@ -36,6 +36,9 @@ protected:
             Emit() << "ConnSettings: " << port_config->Port->GetDescription();
             Emit() << "ConnectionMaxFailCycles: " << port_config->OpenCloseSettings.ConnectionMaxFailCycles;
             Emit() << "MaxFailTime: " << port_config->OpenCloseSettings.MaxFailTime.count();
+            if (port_config->ReadRateLimit) {
+                Emit() << "ReadRateLimit: " << port_config->ReadRateLimit->count();
+            }
             Emit() << "GuardInterval: " << port_config->RequestDelay.count();
             Emit() << "Response timeout: " << port_config->ResponseTimeout.count();
 
@@ -100,10 +103,15 @@ protected:
                             Emit() << "Scale: " << reg->Scale;
                             Emit() << "Offset: " << reg->Offset;
                             Emit() << "RoundTo: " << reg->RoundTo;
-                            Emit() << "Poll: " << reg->Poll;
+                            Emit() << "Poll: " << !reg->WriteOnly;
                             Emit() << "ReadOnly: " << reg->ReadOnly;
                             Emit() << "TypeName: " << reg->TypeName;
-                            Emit() << "PollInterval: " << reg->PollInterval.count();
+                            if (reg->ReadPeriod) {
+                                Emit() << "ReadPeriod: " << reg->ReadPeriod->count();
+                            }
+                            if (reg->ReadRateLimit) {
+                                Emit() << "ReadRateLimit: " << reg->ReadRateLimit->count();
+                            }
                             if (reg->ErrorValue) {
                                 Emit() << "ErrorValue: " << *reg->ErrorValue;
                             } else {
@@ -153,6 +161,11 @@ protected:
 TEST_F(TConfigParserTest, Parse)
 {
     PrintConfig(GetConfig("configs/parse_test.json"));
+}
+
+TEST_F(TConfigParserTest, ParseRateLimit)
+{
+    PrintConfig(GetConfig("configs/parse_test_rate_limit.json"));
 }
 
 TEST_F(TConfigParserTest, SameSetupItems)

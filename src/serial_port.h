@@ -65,8 +65,6 @@ public:
     void SkipNoise() override;
 
     void SleepSinceLastInteraction(const std::chrono::microseconds& us) override;
-    bool Wait(const PBinarySemaphore& semaphore, const TTimePoint& until) override;
-    TTimePoint CurrentTime() const override;
 
     std::chrono::milliseconds GetSendTime(double bytesNumber) const override;
 

@@ -15,14 +15,6 @@
                     "enabled": true,
                     "channels": [
                         {
-                            "name" : "Illuminance",
-                            "poll_interval": 300
-                        },
-                        {
-                            "name": "Pressure",
-                            "poll_interval": 10000
-                        },
-                        {
                             "name": "Temp 1",
                             "enabled": false
                         }
@@ -40,7 +32,8 @@
                             "reg_type" : "holding",
                             "address" : "0x00",
                             "type": "switch",
-                            "on_value" : 500
+                            "on_value" : 500,
+                            "read_period_ms": 1
                         }
                     ]
                 },
@@ -148,7 +141,6 @@
                         {
                             "name" : "RGB",
                             "type" : "rgb",
-                            "poll_interval" : 102,
                             "consists_of" : [
                                 {
                                     "reg_type" : "holding",
@@ -193,17 +185,14 @@
                     "channels": [
                         {
                             "name" : "Input",
-                            "poll_interval": 300,
                             "readonly": false
                         },
                         {
                             "name": "Holding",
-                            "poll_interval": 10000,
                             "readonly": true
                         },
                         {
                             "name": "Holding readonly",
-                            "poll_interval": 1000,
                             "readonly": false
                         }
                     ]
