@@ -116,7 +116,8 @@
                 "address": "0x1463",
                 "reg_type": "holding",
                 "format": "s16",
-                "min": 0,
+                "min": -32768,
+                "max": 32767,
                 "group": "channel1_l1",
                 "order": 2
             },
@@ -146,7 +147,8 @@
                 "address": "0x1464",
                 "reg_type": "holding",
                 "format": "s16",
-                "min": 0,
+                "min": -32768,
+                "max": 32767,
                 "group": "channel1_l2",
                 "order": 2
             },
@@ -176,7 +178,8 @@
                 "address": "0x1465",
                 "reg_type": "holding",
                 "format": "s16",
-                "min": 0,
+                "min": -32768,
+                "max": 32767,
                 "group": "channel1_l3",
                 "order": 2
             },
@@ -206,7 +209,8 @@
                 "address": "0x2463",
                 "reg_type": "holding",
                 "format": "s16",
-                "min": 0,
+                "min": -32768,
+                "max": 32767,
                 "group": "channel2_l1",
                 "order": 2
             },
@@ -236,7 +240,8 @@
                 "address": "0x2464",
                 "reg_type": "holding",
                 "format": "s16",
-                "min": 0,
+                "min": -32768,
+                "max": 32767,
                 "group": "channel2_l2",
                 "order": 2
             },
@@ -266,7 +271,8 @@
                 "address": "0x2465",
                 "reg_type": "holding",
                 "format": "s16",
-                "min": 0,
+                "min": -32768,
+                "max": 32767,
                 "group": "channel2_l3",
                 "order": 2
             },
@@ -296,7 +302,8 @@
                 "address": "0x3463",
                 "reg_type": "holding",
                 "format": "s16",
-                "min": 0,
+                "min": -32768,
+                "max": 32767,
                 "group": "channel3_l1",
                 "order": 2
             },
@@ -326,7 +333,8 @@
                 "address": "0x3464",
                 "reg_type": "holding",
                 "format": "s16",
-                "min": 0,
+                "min": -32768,
+                "max": 32767,
                 "group": "channel3_l2",
                 "order": 2
             },
@@ -356,7 +364,8 @@
                 "address": "0x3465",
                 "reg_type": "holding",
                 "format": "s16",
-                "min": 0,
+                "min": -32768,
+                "max": 32767,
                 "group": "channel3_l3",
                 "order": 2
             },
@@ -386,7 +395,8 @@
                 "address": "0x4463",
                 "reg_type": "holding",
                 "format": "s16",
-                "min": 0,
+                "min": -32768,
+                "max": 32767,
                 "group": "channel4_l1",
                 "order": 2
             },
@@ -416,7 +426,8 @@
                 "address": "0x4464",
                 "reg_type": "holding",
                 "format": "s16",
-                "min": 0,
+                "min": -32768,
+                "max": 32767,
                 "group": "channel4_l2",
                 "order": 2
             },
@@ -446,7 +457,8 @@
                 "address": "0x4465",
                 "reg_type": "holding",
                 "format": "s16",
-                "min": 0,
+                "min": -32768,
+                "max": 32767,
                 "group": "channel4_l3",
                 "order": 2
             },

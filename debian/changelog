@@ -1,3 +1,9 @@
+wb-mqtt-serial (2.49.1) stable; urgency=medium
+
+  * Fixed a Phi parameter range for WB-MAP templates
+
+ -- Roman Kochkin <roman.kochkin@wirenboard.ru>  Tue, 1 Feb 2022 23:46:00 +0300
+
 wb-mqtt-serial (2.49.0) stable; urgency=medium
 
   * "deprecated" parameter is added to mark deprecated device templates
