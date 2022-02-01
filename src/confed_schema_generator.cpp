@@ -555,7 +555,8 @@ namespace
     //          "disable_edit_json": true,
     //          "compact": true,
     //          "wb": {
-    //              "disable_panel": true
+    //              "disable_title": true,
+    //              "hide_from_selection": true // if deprecated
     //          }
     //      },
     //      "allOf": [
@@ -596,6 +597,11 @@ namespace
         res["title"] = context.AddHashedTranslation(deviceTemplate.Title);
         res["properties"]["device_type"] = MakeHiddenProperty(deviceTemplate.Type);
         MakeArray("required", res).append("device_type");
+
+        res["options"]["wb"]["disable_title"] = true;
+        if (deviceTemplate.IsDeprecated) {
+            res["options"]["wb"]["hide_from_selection"] = true;
+        }
 
         auto& allOf = MakeArray("allOf", res);
         auto protocol = GetProtocolName(schema);

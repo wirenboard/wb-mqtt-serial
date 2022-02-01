@@ -1,3 +1,9 @@
+wb-mqtt-serial (2.49.0) stable; urgency=medium
+
+  * "deprecated" parameter is added to mark deprecated device templates
+
+ -- Petr Krasnoshchekov <petr.krasnoshchekov@wirenboard.ru>  Tue, 01 Feb 2022 10:49:06 +0500
+
 wb-mqtt-serial (2.48.0) stable; urgency=medium
 
   * Configs with devices with invalid templates can be edited in homeui

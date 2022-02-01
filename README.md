@@ -479,6 +479,9 @@ It's designed to be used on [Wiren Board](http://contactless.ru/en/) family of p
     // Необязательный параметр. Если не указан, используется device_type.
     "title": "Device",
 
+    // Признак того, что шаблон устарел, он не будет доступен для выбора при добавлении устройства в web-конфигураторе
+    "deprecated": true,
+
     "device": {
         // отображаемое имя устройства. Публикуется как
         // .../meta/name в MQTT
