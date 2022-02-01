@@ -1,0 +1,1595 @@
+{
+    "title": "WB-MRM2-mini-NC_template_title",
+    "device_type": "WB-MRM2-mini-NC",
+    "device": {
+        "name": "WB-MRM2-mini/NC support buttons",
+        "id": "wb-mrm2-mini-nc",
+        "max_read_registers": 0,
+        "response_timeout_ms": 1,
+        "frame_timeout_ms": 8,
+
+        "groups": [
+            {
+                "title": "Outputs",
+                "id": "outputs",
+                "order": 3
+            },
+            {
+                "title": "HW Info",
+                "id": "hw_info",
+                "order": 4
+            }
+        ],
+
+        "setup": [
+            {
+                "title": "disable legacy input mode control",
+                "address": 5,
+                "reg_type": "holding",
+                "value": 0
+            }
+        ],
+
+        "channels": [
+            {
+                "name": "Input 1",
+                "id": "input_1",
+                "oneOf": [
+                    "push_button",
+                    "latching_switch",
+                    "turn_on_all_outputs",
+                    "control_disabled",
+                    "mapping_matrix",
+                    "button_mapping_matrix"
+                ],
+                "device_type": "push_button"
+            },
+            {
+                "name": "Input 2",
+                "id": "input_2",
+                "oneOf": [
+                    "push_button_2",
+                    "latching_switch_2",
+                    "turn_on_all_outputs_2",
+                    "control_disabled_2",
+                    "mapping_matrix_2",
+                    "button_mapping_matrix_2"
+                ],
+                "device_type": "push_button_2"
+            },
+            {
+                "name": "K1",
+                "reg_type": "coil",
+                "address": 0,
+                "type": "switch",
+                "scale": -1,
+                "offset": 1,
+                "group": "outputs"
+            },
+            {
+                "name": "K2",
+                "reg_type": "coil",
+                "address": 1,
+                "type": "switch",
+                "scale": -1,
+                "offset": 1,
+                "group": "outputs"
+            },
+            {
+                "name": "Serial",
+                "type": "text",
+                "reg_type": "input",
+                "address": 270,
+                "format": "u32",
+                "group": "hw_info"
+            },
+            {
+                "name": "Supply Voltage",
+                "reg_type": "input",
+                "address": 121,
+                "type": "voltage",
+                "scale": 0.001,
+                "enabled": false,
+                "group": "hw_info"
+            },
+            {
+                "name": "Uptime",
+                "reg_type": "input",
+                "address": 104,
+                "type": "text",
+                "format": "u32",
+                "enabled": false,
+                "group": "hw_info"
+            },
+            {
+                "name": "MCU Temperature",
+                "reg_type": "input",
+                "address": 124,
+                "type": "temperature",
+                "format": "s16",
+                "scale": 0.1,
+                "enabled": false,
+                "group": "hw_info"
+            },
+            {
+                "name": "MCU Voltage",
+                "reg_type": "input",
+                "address": 123,
+                "scale": 0.001,
+                "type": "voltage",
+                "enabled": false,
+                "group": "hw_info"
+            }
+        ],
+
+        "parameters": {
+            "outputs_restore_state": {
+                "title": "Restore Last Outputs State After Power On",
+                "address": 6,
+                "reg_type": "holding",
+                "enum": [0, 1],
+                "default": 0,
+                "enum_titles": ["no", "yes"],
+                "group": "outputs",
+                "order": 1
+            },
+            "safety_timer_s": {
+                "title": "Safety Timer (s)",
+                "address": 8,
+                "reg_type": "holding",
+                "min": 0,
+                "max": 65535,
+                "default": 3600,
+                "group": "outputs",
+                "order": 2
+            }
+        },
+
+        "subdevices": [
+            {
+                "title": "Push button",
+                "device_type": "push_button",
+                "device": {
+                    "setup": [
+                        {
+                            "title": "Input mode",
+                            "address": 9,
+                            "value": "0"
+                        }
+                    ],
+                    "groups": [
+                        {
+                            "title": "Channels",
+                            "id": "input_pb",
+                            "order": 2,
+                            "ui_options": {
+                                "wb": {
+                                    "disable_title": true
+                                }
+                            }
+                        }
+                    ],
+                    "channels": [
+                        {
+                            "name": "State",
+                            "reg_type": "discrete",
+                            "address": 0,
+                            "type": "switch",
+                            "group": "input_pb"
+                        },
+                        {
+                            "name": "Counter",
+                            "reg_type": "input",
+                            "address": 32,
+                            "type": "value",
+                            "group": "input_pb"
+                        },
+                        {
+                            "name": "Freq",
+                            "reg_type": "input",
+                            "address": 40,
+                            "type": "value",
+                            "format": "u32",
+                            "scale": 1.52588e-5,
+                            "round_to": 0.001,
+                            "enabled": false,
+                            "group": "input_pb"
+                        }
+                    ],
+                    "parameters": {
+                        "in1_debounce_ms": {
+                            "title": "Input Debounce (ms)",
+                            "address": 20,
+                            "reg_type": "holding",
+                            "min": 0,
+                            "max": 100,
+                            "default": 50,
+                            "group": "input_pb",
+                            "order": 1
+                        }
+                    },
+
+
+                    "ui_options": {
+                        "channels_format": "list"
+                    }
+                }
+            },
+            {
+                "title": "Latching switch",
+                "device_type": "latching_switch",
+                "device": {
+                    "setup": [
+                        {
+                            "title": "Input mode",
+                            "address": 9,
+                            "value": "1"
+                        }
+                    ],
+                    "groups": [
+                        {
+                            "title": "Channels",
+                            "id": "input_ls",
+                            "order": 2,
+                            "ui_options": {
+                                "wb": {
+                                    "disable_title": true
+                                }
+                            }
+                        }
+                    ],
+                    "channels": [
+                        {
+                            "name": "State",
+                            "reg_type": "discrete",
+                            "address": 0,
+                            "type": "switch",
+                            "group": "input_ls"
+                        },
+                        {
+                            "name": "Counter",
+                            "reg_type": "input",
+                            "address": 32,
+                            "type": "value",
+                            "group": "input_ls"
+                        },
+                        {
+                            "name": "Freq",
+                            "reg_type": "input",
+                            "address": 40,
+                            "type": "value",
+                            "format": "u32",
+                            "scale": 1.52588e-5,
+                            "round_to": 0.001,
+                            "enabled": false,
+                            "group": "input_ls"
+                        }
+                    ],
+                    "parameters": {
+                        "in1_debounce_ms": {
+                            "title": "Input Debounce (ms)",
+                            "address": 20,
+                            "reg_type": "holding",
+                            "min": 0,
+                            "max": 100,
+                            "default": 50,
+                            "group": "input_ls",
+                            "order": 1
+                        }
+                    },
+                    "ui_options": {
+                        "channels_format": "list"
+                    }
+                }
+            },
+            {
+                "title": "Turn on all outputs",
+                "device_type": "turn_on_all_outputs",
+                "device": {
+                    "setup": [
+                        {
+                            "title": "Input mode",
+                            "address": 9,
+                            "value": "2"
+                        }
+                    ],
+                    "groups": [
+                        {
+                            "title": "Channels",
+                            "id": "input_toao",
+                            "order": 2,
+                            "ui_options": {
+                                "wb": {
+                                    "disable_title": true
+                                }
+                            }
+                        }
+                    ],
+                    "channels": [
+                        {
+                            "name": "State",
+                            "reg_type": "discrete",
+                            "address": 0,
+                            "type": "switch",
+                            "group": "input_toao"
+                        },
+                        {
+                            "name": "Counter",
+                            "reg_type": "input",
+                            "address": 32,
+                            "type": "value",
+                            "group": "input_toao"
+                        },
+                        {
+                            "name": "Freq",
+                            "reg_type": "input",
+                            "address": 40,
+                            "type": "value",
+                            "format": "u32",
+                            "scale": 1.52588e-5,
+                            "round_to": 0.001,
+                            "enabled": false,
+                            "group": "input_toao"
+                        }
+                    ],
+                    "parameters": {
+                        "in1_debounce_ms": {
+                            "title": "Input Debounce (ms)",
+                            "address": 20,
+                            "reg_type": "holding",
+                            "min": 0,
+                            "max": 100,
+                            "default": 50,
+                            "group": "input_toao",
+                            "order": 1
+                        }
+                    },
+                    "ui_options": {
+                        "channels_format": "list"
+                    }
+                }
+            },
+            {
+                "title": "Сontrol disabled",
+                "device_type": "control_disabled",
+                "device": {
+                    "setup": [
+                        {
+                            "title": "Input mode",
+                            "address": 9,
+                            "value": "3"
+                        }
+                    ],
+                    "groups": [
+                        {
+                            "title": "Channels",
+                            "id": "input_cd",
+                            "order": 2,
+                            "ui_options": {
+                                "wb": {
+                                    "disable_title": true
+                                }
+                            }
+                        }
+                    ],
+                    "channels": [
+                        {
+                            "name": "State",
+                            "reg_type": "discrete",
+                            "address": 0,
+                            "type": "switch",
+                            "group": "input_cd"
+                        },
+                        {
+                            "name": "Counter",
+                            "reg_type": "input",
+                            "address": 32,
+                            "type": "value",
+                            "group": "input_cd"
+                        },
+                        {
+                            "name": "Freq",
+                            "reg_type": "input",
+                            "address": 40,
+                            "type": "value",
+                            "format": "u32",
+                            "scale": 1.52588e-5,
+                            "round_to": 0.001,
+                            "enabled": false,
+                            "group": "input_cd"
+                        }
+                    ],
+                    "parameters": {
+                        "in1_debounce_ms": {
+                            "title": "Input Debounce (ms)",
+                            "address": 20,
+                            "reg_type": "holding",
+                            "min": 0,
+                            "max": 100,
+                            "default": 50,
+                            "group": "input_pb",
+                            "order": 1
+                        }
+                    },
+                    "ui_options": {
+                        "channels_format": "list"
+                    }
+                }
+            },
+            {
+                "title": "Operate according to mapping-matrix",
+                "device_type": "mapping_matrix",
+                "device": {
+                    "setup": [
+                        {
+                            "title": "Input mode",
+                            "address": 9,
+                            "value": "4"
+                        }
+                    ],
+                    "groups": [
+                        {
+                            "title": "Channels",
+                            "id": "input_oatm",
+                            "order": 2,
+                            "ui_options": {
+                                "wb": {
+                                    "disable_title": true
+                                }
+                            }
+                        },
+                        {
+                            "title": "Actions for outputs when the input is closed / opened",
+                            "id": "out_actions",
+                            "order": 1
+                        }
+                    ],
+                    "channels": [
+                        {
+                            "name": "State",
+                            "reg_type": "discrete",
+                            "address": 0,
+                            "type": "switch",
+                            "group": "input_oatm"
+                        },
+                        {
+                            "name": "Counter",
+                            "reg_type": "input",
+                            "address": 32,
+                            "type": "value",
+                            "enabled": false,
+                            "group": "input_oatm"
+                        },
+                        {
+                            "name": "Freq",
+                            "reg_type": "input",
+                            "address": 40,
+                            "type": "value",
+                            "format": "u32",
+                            "scale": 1.52588e-5,
+                            "round_to": 0.001,
+                            "enabled": false,
+                            "group": "input_oatm"
+                        }
+                    ],
+                    "parameters": {
+                        "in1_debounce_ms": {
+                            "title": "Input Debounce (ms)",
+                            "address": 20,
+                            "reg_type": "holding",
+                            "min": 0,
+                            "max": 100,
+                            "default": 50,
+                            "order": 1
+                        },
+                        "out_1_actions": {
+                            "group": "out_actions",
+                            "title": "Output 1",
+                            "order": 2,
+                            "address": 384,
+                            "reg_type": "holding",
+                            "default": 0,
+                            "enum": [
+                                0, 1, 2, 3, 4, 5, 6,
+                                7, 8, 9, 10, 11, 12, 13, 14, 15
+                            ],
+                            "enum_titles": [
+                                "no action / no action",
+                                "no action / reset",
+                                "no action / set",
+                                "no action / toggle",
+
+                                "reset / no action",
+                                "reset / reset",
+                                "reset / set",
+                                "reset / toggle",
+
+                                "set / no action",
+                                "set / reset",
+                                "set / set",
+                                "set / toggle",
+
+                                "toggle / no action",
+                                "toggle / reset",
+                                "toggle / set",
+                                "toggle / toggle"
+                            ]
+                        },
+                        "out_2_actions": {
+                            "group": "out_actions",
+                            "title": "Output 2",
+                            "order": 3,
+                            "address": 385,
+                            "reg_type": "holding",
+                            "default": 0,
+                            "enum": [
+                                0, 1, 2, 3, 4, 5, 6,
+                                7, 8, 9, 10, 11, 12, 13, 14, 15
+                            ],
+                            "enum_titles": [
+                                "no action / no action",
+                                "no action / reset",
+                                "no action / set",
+                                "no action / toggle",
+
+                                "reset / no action",
+                                "reset / reset",
+                                "reset / set",
+                                "reset / toggle",
+
+                                "set / no action",
+                                "set / reset",
+                                "set / set",
+                                "set / toggle",
+
+                                "toggle / no action",
+                                "toggle / reset",
+                                "toggle / set",
+                                "toggle / toggle"
+                            ]
+                        }
+                    },
+                    "ui_options": {
+                        "channels_format": "list"
+                    }
+                }
+            },
+            {
+                "title": "Operate according to button mapping-matrix",
+                "device_type": "button_mapping_matrix",
+                "device": {
+                    "setup": [
+                        {
+                            "title": "Input mode",
+                            "address": 9,
+                            "value": "6"
+                        }
+                    ],
+                    "groups": [
+                        {
+                            "title": "Channels",
+                            "id": "input_bmm",
+                            "order": 9,
+                            "ui_options": {
+                                "wb": {
+                                    "disable_title": true
+                                }
+                            }
+                        },
+                        {
+                            "title": "Output 1 Actions",
+                            "id": "push_bt_in_1",
+                            "order": 2
+                        },
+                        {
+                            "title": "Output 2 Actions",
+                            "id": "push_bt_in_2",
+                            "order": 3
+                        },
+                        {
+                            "title": "Parameters Button",
+                            "id": "input_bpc",
+                            "order": 8,
+                            "ui_options": {
+                                "wb": {
+                                    "disable_title": true
+                                }
+                            }
+                        }
+                    ],
+                    "channels": [
+                        {
+                            "name": "State",
+                            "reg_type": "discrete",
+                            "address": 0,
+                            "type": "switch",
+                            "group": "input_bmm"
+                        },
+                        {
+                            "name": "Counter",
+                            "reg_type": "input",
+                            "address": 32,
+                            "type": "value",
+                            "enabled": false,
+                            "group": "input_bmm"
+                        },
+                        {
+                            "name": "Freq",
+                            "reg_type": "input",
+                            "address": 40,
+                            "type": "value",
+                            "format": "u32",
+                            "scale": 1.52588e-5,
+                            "round_to": 0.001,
+                            "enabled": false,
+                            "group": "input_bmm"
+                        },
+                        {
+                            "name": "Single Press Counter",
+                            "enabled": false,
+                            "reg_type": "input",
+                            "address": 464,
+                            "type": "value",
+                            "group": "input_bmm"
+                        },
+                        {
+                            "name": "Long Press Counter",
+                            "enabled": false,
+                            "reg_type": "input",
+                            "address": 480,
+                            "type": "value",
+                            "group": "input_bmm"
+                        },
+                        {
+                            "name": "Double Press Counter",
+                            "enabled": false,
+                            "reg_type": "input",
+                            "address": 496,
+                            "type": "value",
+                            "group": "input_bmm"
+                        },
+                        {
+                            "name": "Shortlong Press Counter",
+                            "enabled": false,
+                            "reg_type": "input",
+                            "address": 512,
+                            "type": "value",
+                            "group": "input_bmm"
+                        }
+                    ],
+                    "parameters": {
+                        "in1_debounce_ms": {
+                            "title": "Input Debounce (ms)",
+                            "address": 20,
+                            "reg_type": "holding",
+                            "min": 0,
+                            "max": 100,
+                            "default": 50,
+                            "order": 1
+                        },
+                        "in1_sp": {
+                            "group": "push_bt_in_1",
+                            "title": "sp_title",
+                            "order": 1,
+                            "address": 544,
+                            "reg_type": "holding",
+                            "default": 0,
+                            "enum": [0, 1, 2, 3],
+                            "enum_titles": [
+                                "no action",
+                                "reset",
+                                "set",
+                                "toggle"
+                            ]
+                        },
+                        "in2_sp": {
+                            "group": "push_bt_in_2",
+                            "title": "sp_title",
+                            "order": 1,
+                            "address": 545,
+                            "reg_type": "holding",
+                            "default": 0,
+                            "enum": [0, 1, 2, 3],
+                            "enum_titles": [
+                                "no action",
+                                "reset",
+                                "set",
+                                "toggle"
+                            ]
+                        },
+
+                        "in1_lp": {
+                            "group": "push_bt_in_1",
+                            "title": "lp_title",
+                            "order": 2,
+                            "address": 608,
+                            "reg_type": "holding",
+                            "default": 0,
+                            "enum": [0, 1, 2, 3],
+                            "enum_titles": [
+                                "no action",
+                                "reset",
+                                "set",
+                                "toggle"
+                            ]
+                        },
+                        "in2_lp": {
+                            "group": "push_bt_in_2",
+                            "title": "lp_title",
+                            "order": 2,
+                            "address": 609,
+                            "reg_type": "holding",
+                            "default": 0,
+                            "enum": [0, 1, 2, 3],
+                            "enum_titles": [
+                                "no action",
+                                "reset",
+                                "set",
+                                "toggle"
+                            ]
+                        },
+
+                        "in1_dp": {
+                            "group": "push_bt_in_1",
+                            "title": "dp_title",
+                            "order": 3,
+                            "address": 672,
+                            "reg_type": "holding",
+                            "default": 0,
+                            "enum": [0, 1, 2, 3],
+                            "enum_titles": [
+                                "no action",
+                                "reset",
+                                "set",
+                                "toggle"
+                            ]
+                        },
+                        "in2_dp": {
+                            "group": "push_bt_in_2",
+                            "title": "dp_title",
+                            "order": 3,
+                            "address": 673,
+                            "reg_type": "holding",
+                            "default": 0,
+                            "enum": [0, 1, 2, 3],
+                            "enum_titles": [
+                                "no action",
+                                "reset",
+                                "set",
+                                "toggle"
+                            ]
+                        },
+
+                        "in1_slp": {
+                            "group": "push_bt_in_1",
+                            "title": "slp_title",
+                            "order": 4,
+                            "address": 736,
+                            "reg_type": "holding",
+                            "default": 0,
+                            "enum": [0, 1, 2, 3],
+                            "enum_titles": [
+                                "no action",
+                                "reset",
+                                "set",
+                                "toggle"
+                            ]
+                        },
+                        "in2_slp": {
+                            "group": "push_bt_in_2",
+                            "title": "slp_title",
+                            "order": 4,
+                            "address": 737,
+                            "reg_type": "holding",
+                            "default": 0,
+                            "enum": [0, 1, 2, 3],
+                            "enum_titles": [
+                                "no action",
+                                "reset",
+                                "set",
+                                "toggle"
+                            ]
+                        },
+
+                        "in1_lp_hold_time": {
+                            "group": "input_bpc",
+                            "title": "lp_hold_time_title",
+                            "order": 1,
+                            "address": 1100,
+                            "reg_type": "holding",
+                            "default": 2000,
+                            "min": 500,
+                            "max": 5000
+                        },
+                        "in1_dp_time": {
+                            "group": "input_bpc",
+                            "title": "dp_time_title",
+                            "order": 2,
+                            "address": 1140,
+                            "reg_type": "holding",
+                            "default": 500,
+                            "min": 100,
+                            "max": 2000
+                        }
+                    },
+                    "ui_options": {
+                        "channels_format": "list"
+                    }
+                }
+            },
+
+            {
+                "title": "Push button",
+                "device_type": "push_button_2",
+                "device": {
+                    "setup": [
+                        {
+                            "title": "Input mode",
+                            "address": 10,
+                            "value": "0"
+                        }
+                    ],
+                    "groups": [
+                        {
+                            "title": "Channels",
+                            "id": "input_pb_2",
+                            "order": 2,
+                            "ui_options": {
+                                "wb": {
+                                    "disable_title": true
+                                }
+                            }
+                        }
+                    ],
+                    "channels": [
+                        {
+                            "name": "State",
+                            "reg_type": "discrete",
+                            "address": 1,
+                            "type": "switch",
+                            "group": "input_pb_2"
+                        },
+                        {
+                            "name": "Counter",
+                            "reg_type": "input",
+                            "address": 33,
+                            "type": "value",
+                            "group": "input_pb_2"
+                        },
+                        {
+                            "name": "Freq",
+                            "reg_type": "input",
+                            "address": 42,
+                            "type": "value",
+                            "format": "u32",
+                            "scale": 1.52588e-5,
+                            "round_to": 0.001,
+                            "enabled": false,
+                            "group": "input_pb_2"
+                        }
+                    ],
+                    "parameters": {
+                        "in1_debounce_ms": {
+                            "title": "Input Debounce (ms)",
+                            "address": 21,
+                            "reg_type": "holding",
+                            "min": 0,
+                            "max": 100,
+                            "default": 50,
+                            "group": "input_pb_2",
+                            "order": 1
+                        }
+                    },
+            
+            
+                    "ui_options": {
+                        "channels_format": "list"
+                    }
+                }
+            },
+            {
+                "title": "Latching switch",
+                "device_type": "latching_switch_2",
+                "device": {
+                    "setup": [
+                        {
+                            "title": "Input mode",
+                            "address": 10,
+                            "value": "1"
+                        }
+                    ],
+                    "groups": [
+                        {
+                            "title": "Channels",
+                            "id": "input_ls_2",
+                            "order": 2,
+                            "ui_options": {
+                                "wb": {
+                                    "disable_title": true
+                                }
+                            }
+                        }
+                    ],
+                    "channels": [
+                        {
+                            "name": "State",
+                            "reg_type": "discrete",
+                            "address": 1,
+                            "type": "switch",
+                            "group": "input_ls_2"
+                        },
+                        {
+                            "name": "Counter",
+                            "reg_type": "input",
+                            "address": 33,
+                            "type": "value",
+                            "group": "input_ls_2"
+                        },
+                        {
+                            "name": "Freq",
+                            "reg_type": "input",
+                            "address": 42,
+                            "type": "value",
+                            "format": "u32",
+                            "scale": 1.52588e-5,
+                            "round_to": 0.001,
+                            "enabled": false,
+                            "group": "input_ls_2"
+                        }
+                    ],
+                    "parameters": {
+                        "in1_debounce_ms": {
+                            "title": "Input Debounce (ms)",
+                            "address": 21,
+                            "reg_type": "holding",
+                            "min": 0,
+                            "max": 100,
+                            "default": 50,
+                            "group": "input_ls_2",
+                            "order": 1
+                        }
+                    },
+                    "ui_options": {
+                        "channels_format": "list"
+                    }
+                }
+            },
+            {
+                "title": "Turn on all outputs",
+                "device_type": "turn_on_all_outputs_2",
+                "device": {
+                    "setup": [
+                        {
+                            "title": "Input mode",
+                            "address": 10,
+                            "value": "2"
+                        }
+                    ],
+                    "groups": [
+                        {
+                            "title": "Channels",
+                            "id": "input_toao_2",
+                            "order": 2,
+                            "ui_options": {
+                                "wb": {
+                                    "disable_title": true
+                                }
+                            }
+                        }
+                    ],
+                    "channels": [
+                        {
+                            "name": "State",
+                            "reg_type": "discrete",
+                            "address": 1,
+                            "type": "switch",
+                            "group": "input_toao_2"
+                        },
+                        {
+                            "name": "Counter",
+                            "reg_type": "input",
+                            "address": 33,
+                            "type": "value",
+                            "group": "input_toao_2"
+                        },
+                        {
+                            "name": "Freq",
+                            "reg_type": "input",
+                            "address": 42,
+                            "type": "value",
+                            "format": "u32",
+                            "scale": 1.52588e-5,
+                            "round_to": 0.001,
+                            "enabled": false,
+                            "group": "input_toao_2"
+                        }
+                    ],
+                    "parameters": {
+                        "in1_debounce_ms": {
+                            "title": "Input Debounce (ms)",
+                            "address": 21,
+                            "reg_type": "holding",
+                            "min": 0,
+                            "max": 100,
+                            "default": 50,
+                            "group": "input_toao_2",
+                            "order": 1
+                        }
+                    },
+                    "ui_options": {
+                        "channels_format": "list"
+                    }
+                }
+            },
+            {
+                "title": "Сontrol disabled",
+                "device_type": "control_disabled_2",
+                "device": {
+                    "setup": [
+                        {
+                            "title": "Input mode",
+                            "address": 10,
+                            "value": "3"
+                        }
+                    ],
+                    "groups": [
+                        {
+                            "title": "Channels",
+                            "id": "input_cd_2",
+                            "order": 2,
+                            "ui_options": {
+                                "wb": {
+                                    "disable_title": true
+                                }
+                            }
+                        }
+                    ],
+                    "channels": [
+                        {
+                            "name": "State",
+                            "reg_type": "discrete",
+                            "address": 1,
+                            "type": "switch",
+                            "group": "input_cd_2"
+                        },
+                        {
+                            "name": "Counter",
+                            "reg_type": "input",
+                            "address": 33,
+                            "type": "value",
+                            "group": "input_cd_2"
+                        },
+                        {
+                            "name": "Freq",
+                            "reg_type": "input",
+                            "address": 42,
+                            "type": "value",
+                            "format": "u32",
+                            "scale": 1.52588e-5,
+                            "round_to": 0.001,
+                            "enabled": false,
+                            "group": "input_cd_2"
+                        }
+                    ],
+                    "parameters": {
+                        "in1_debounce_ms": {
+                            "title": "Input Debounce (ms)",
+                            "address": 21,
+                            "reg_type": "holding",
+                            "min": 0,
+                            "max": 100,
+                            "default": 50,
+                            "group": "input_cd_2",
+                            "order": 1
+                        }
+                    },
+                    "ui_options": {
+                        "channels_format": "list"
+                    }
+                }
+            },
+            {
+                "title": "Operate according to mapping-matrix",
+                "device_type": "mapping_matrix_2",
+                "device": {
+                    "setup": [
+                        {
+                            "title": "Input mode",
+                            "address": 10,
+                            "value": "4"
+                        }
+                    ],
+                    "groups": [
+                        {
+                            "title": "Channels",
+                            "id": "input_oatm_2",
+                            "order": 2,
+                            "ui_options": {
+                                "wb": {
+                                    "disable_title": true
+                                }
+                            }
+                        },
+                        {
+                            "title": "Actions for outputs when the input is closed / opened",
+                            "id": "out_actions_2",
+                            "order": 1
+                        }
+                    ],
+                    "channels": [
+                        {
+                            "name": "State",
+                            "reg_type": "discrete",
+                            "address": 1,
+                            "type": "switch",
+                            "group": "input_oatm_2"
+                        },
+                        {
+                            "name": "Counter",
+                            "reg_type": "input",
+                            "address": 33,
+                            "type": "value",
+                            "enabled": false,
+                            "group": "input_oatm_2"
+                        },
+                        {
+                            "name": "Freq",
+                            "reg_type": "input",
+                            "address": 42,
+                            "type": "value",
+                            "format": "u32",
+                            "scale": 1.52588e-5,
+                            "round_to": 0.001,
+                            "enabled": false,
+                            "group": "input_oatm_2"
+                        }
+                    ],
+                    "parameters": {
+                        "in1_debounce_ms": {
+                            "title": "Input Debounce (ms)",
+                            "address": 21,
+                            "reg_type": "holding",
+                            "min": 0,
+                            "max": 100,
+                            "default": 50,
+                            "order": 1
+                        },
+                        "out1_actions": {
+                            "group": "out_actions_2",
+                            "title": "Output 1",
+                            "order": 2,
+                            "address": 392,
+                            "reg_type": "holding",
+                            "default": 0,
+                            "enum": [
+                                0, 1, 2, 3, 4, 5, 6,
+                                7, 8, 9, 10, 11, 12, 13, 14, 15
+                            ],
+                            "enum_titles": [
+                                "no action / no action",
+                                "no action / reset",
+                                "no action / set",
+                                "no action / toggle",
+            
+                                "reset / no action",
+                                "reset / reset",
+                                "reset / set",
+                                "reset / toggle",
+            
+                                "set / no action",
+                                "set / reset",
+                                "set / set",
+                                "set / toggle",
+            
+                                "toggle / no action",
+                                "toggle / reset",
+                                "toggle / set",
+                                "toggle / toggle"
+                            ]
+                        },
+                        "out2_actions": {
+                            "group": "out_actions_2",
+                            "title": "Output 2",
+                            "order": 3,
+                            "address": 393,
+                            "reg_type": "holding",
+                            "default": 0,
+                            "enum": [
+                                0, 1, 2, 3, 4, 5, 6,
+                                7, 8, 9, 10, 11, 12, 13, 14, 15
+                            ],
+                            "enum_titles": [
+                                "no action / no action",
+                                "no action / reset",
+                                "no action / set",
+                                "no action / toggle",
+            
+                                "reset / no action",
+                                "reset / reset",
+                                "reset / set",
+                                "reset / toggle",
+            
+                                "set / no action",
+                                "set / reset",
+                                "set / set",
+                                "set / toggle",
+            
+                                "toggle / no action",
+                                "toggle / reset",
+                                "toggle / set",
+                                "toggle / toggle"
+                            ]
+                        }
+                    },
+                    "ui_options": {
+                        "channels_format": "list"
+                    }
+                }
+            },
+            {
+                "title": "Operate according to button mapping-matrix",
+                "device_type": "button_mapping_matrix_2",
+                "device": {
+                    "setup": [
+                        {
+                            "title": "Input mode",
+                            "address": 10,
+                            "value": "6"
+                        }
+                    ],
+                    "groups": [
+                        {
+                            "title": "Channels",
+                            "id": "input_bmm_2",
+                            "order": 9,
+                            "ui_options": {
+                                "wb": {
+                                    "disable_title": true
+                                }
+                            }
+                        },
+                        {
+                            "title": "Output 1 Actions",
+                            "id": "push_bt_in1_2",
+                            "order": 2
+                        },
+                        {
+                            "title": "Output 2 Actions",
+                            "id": "push_bt_in2_2",
+                            "order": 3
+                        },
+                        {
+                            "title": "Parameters Button",
+                            "id": "input_bpc_2",
+                            "order": 8,
+                            "ui_options": {
+                                "wb": {
+                                    "disable_title": true
+                                }
+                            }
+                        }
+                    ],
+                    "channels": [
+                        {
+                            "name": "State",
+                            "reg_type": "discrete",
+                            "address": 1,
+                            "type": "switch",
+                            "group": "input_bmm_2"
+                        },
+                        {
+                            "name": "Counter",
+                            "reg_type": "input",
+                            "address": 33,
+                            "type": "value",
+                            "enabled": false,
+                            "group": "input_bmm_2"
+                        },
+                        {
+                            "name": "Freq",
+                            "reg_type": "input",
+                            "address": 42,
+                            "type": "value",
+                            "format": "u32",
+                            "scale": 1.52588e-5,
+                            "round_to": 0.001,
+                            "enabled": false,
+                            "group": "input_bmm_2"
+                        },
+                        {
+                            "name": "Single Press Counter",
+                            "enabled": false,
+                            "reg_type": "input",
+                            "address": 465,
+                            "type": "value",
+                            "group": "input_bmm_2"
+                        },
+                        {
+                            "name": "Long Press Counter",
+                            "enabled": false,
+                            "reg_type": "input",
+                            "address": 481,
+                            "type": "value",
+                            "group": "input_bmm_2"
+                        },
+                        {
+                            "name": "Double Press Counter",
+                            "enabled": false,
+                            "reg_type": "input",
+                            "address": 497,
+                            "type": "value",
+                            "group": "input_bmm_2"
+                        },
+                        {
+                            "name": "Shortlong Press Counter",
+                            "enabled": false,
+                            "reg_type": "input",
+                            "address": 513,
+                            "type": "value",
+                            "group": "input_bmm_2"
+                        }
+                    ],
+                    "parameters": {
+                        "in1_debounce_ms": {
+                            "title": "Input Debounce (ms)",
+                            "address": 21,
+                            "reg_type": "holding",
+                            "min": 0,
+                            "max": 100,
+                            "default": 50,
+                            "order": 1
+                        },
+                        "in1_sp": {
+                            "group": "push_bt_in1_2",
+                            "title": "sp_title",
+                            "order": 1,
+                            "address": 552,
+                            "reg_type": "holding",
+                            "default": 0,
+                            "enum": [0, 1, 2, 3],
+                            "enum_titles": [
+                                "no action",
+                                "reset",
+                                "set",
+                                "toggle"
+                            ]
+                        },
+                        "in2_sp": {
+                            "group": "push_bt_in2_2",
+                            "title": "sp_title",
+                            "order": 1,
+                            "address": 553,
+                            "reg_type": "holding",
+                            "default": 0,
+                            "enum": [0, 1, 2, 3],
+                            "enum_titles": [
+                                "no action",
+                                "reset",
+                                "set",
+                                "toggle"
+                            ]
+                        },
+
+                        "in1_lp": {
+                            "group": "push_bt_in1_2",
+                            "title": "lp_title",
+                            "order": 2,
+                            "address": 616,
+                            "reg_type": "holding",
+                            "default": 0,
+                            "enum": [0, 1, 2, 3],
+                            "enum_titles": [
+                                "no action",
+                                "reset",
+                                "set",
+                                "toggle"
+                            ]
+                        },
+                        "in2_lp": {
+                            "group": "push_bt_in2_2",
+                            "title": "lp_title",
+                            "order": 2,
+                            "address": 617,
+                            "reg_type": "holding",
+                            "default": 0,
+                            "enum": [0, 1, 2, 3],
+                            "enum_titles": [
+                                "no action",
+                                "reset",
+                                "set",
+                                "toggle"
+                            ]
+                        },
+            
+                        "in1_dp": {
+                            "group": "push_bt_in1_2",
+                            "title": "dp_title",
+                            "order": 3,
+                            "address": 680,
+                            "reg_type": "holding",
+                            "default": 0,
+                            "enum": [0, 1, 2, 3],
+                            "enum_titles": [
+                                "no action",
+                                "reset",
+                                "set",
+                                "toggle"
+                            ]
+                        },
+                        "in2_dp": {
+                            "group": "push_bt_in2_2",
+                            "title": "dp_title",
+                            "order": 3,
+                            "address": 681,
+                            "reg_type": "holding",
+                            "default": 0,
+                            "enum": [0, 1, 2, 3],
+                            "enum_titles": [
+                                "no action",
+                                "reset",
+                                "set",
+                                "toggle"
+                            ]
+                        },
+
+                        "in1_slp": {
+                            "group": "push_bt_in1_2",
+                            "title": "slp_title",
+                            "order": 4,
+                            "address": 744,
+                            "reg_type": "holding",
+                            "default": 0,
+                            "enum": [0, 1, 2, 3],
+                            "enum_titles": [
+                                "no action",
+                                "reset",
+                                "set",
+                                "toggle"
+                            ]
+                        },
+                        "in2_slp": {
+                            "group": "push_bt_in2_2",
+                            "title": "slp_title",
+                            "order": 4,
+                            "address": 745,
+                            "reg_type": "holding",
+                            "default": 0,
+                            "enum": [0, 1, 2, 3],
+                            "enum_titles": [
+                                "no action",
+                                "reset",
+                                "set",
+                                "toggle"
+                            ]
+                        },
+
+                        "in1_lp_hold_time": {
+                            "group": "input_bpc_2",
+                            "title": "lp_hold_time_title",
+                            "order": 1,
+                            "address": 1101,
+                            "reg_type": "holding",
+                            "default": 2000,
+                            "min": 500,
+                            "max": 5000
+                        },
+                        "in1_dp_time": {
+                            "group": "input_bpc_2",
+                            "title": "dp_time_title",
+                            "order": 2,
+                            "address": 1141,
+                            "reg_type": "holding",
+                            "default": 500,
+                            "min": 100,
+                            "max": 2000
+                        }
+                    },
+                    "ui_options": {
+                        "channels_format": "list"
+                    }
+                }
+            }
+        ],
+
+        "translations": {
+            "en": {
+                "WB-MRM2-mini-NC_template_title": "WB-MRM2-mini/NC (2-channel relay) fw1.17 buttons support",
+                "Uptime": "Uptime (s)",
+
+                "sp_title": "Short Press",
+                "lp_title": "Long Press",
+                "dp_title": "Double Press",
+                "slp_title": "Shortlong Press",
+
+                "edge_title": "Edge Mode",
+
+                "lp_hold_time_title": "Long Press Time (ms)",
+                "dp_time_title": "Double Press Time (ms)",
+                "debounce_time_title": "Debounce Time (ms)"
+
+            },
+            "ru": {
+                "WB-MRM2-mini-NC_template_title": "WB-MRM2-mini/NC (2-канальный модуль реле) fw1.17 с поддержкой кнопок",
+
+                "Input 1": "Вход 1",
+                "Input 2": "Вход 2",
+
+                "Input Debounce (ms)": "Время защиты от дребезга входа (мс)",
+
+                "Outputs": "Выходы",
+                "HW Info": "Данные модуля",
+                "Debug": "Диагностика",
+
+                "Output 1": "Выход 1",
+                "Output 2": "Выход 2",
+
+                "Actions for outputs when the input is closed / opened": "Действия для выходов при замыкании / размыкании входа",
+
+                "Output 1 Actions": "Действия для выхода 1",
+                "Output 2 Actions": "Действия для выхода 2",
+
+                "no action": "нет действия",
+                "reset": "выключить",
+                "set": "включить",
+                "toggle": "переключить",
+
+                "no action / no action": "нет действия / нет действия",
+                "no action / reset": "нет действия / выключить",
+                "no action / set": "нет действия / включить",
+                "no action / toggle": "нет действия / переключить",
+
+                "reset / no action": "выключить / нет действия",
+                "reset / reset": "выключить / выключить",
+                "reset / set": "выключить / включить",
+                "reset / toggle": "выключить / переключить",
+
+                "set / no action": "включить / нет действия",
+                "set / reset": "включить / выключить",
+                "set / set": "включить / включить",
+                "set / toggle": "включить / переключить",
+
+                "toggle / no action": "переключить / нет действия",
+                "toggle / reset": "переключить / выключить",
+                "toggle / set": "переключить / включить",
+                "toggle / toggle": "переключить / переключить",
+
+                "Push button": "Кнопка без фиксации",
+                "Latching switch": "Переключатель с фиксацией",
+                "Turn on all outputs": "Включить все выходы",
+                "Сontrol disabled": "Управление отключено",
+                "Operate according to mapping-matrix": "Управлять по mapping-матрице",
+                "Operate according to button mapping-matrix": "Управлять по mapping-матрице для кнопок",
+                "edge_title": "Режим фронта",
+
+                "Restore Last Outputs State After Power On": "Восстанавливать состояния выходов при включении",
+                "Safety Timer (s)": "Таймаут безопасного режима (с)",
+                "no": "нет",
+                "yes": "да",
+
+                "State": "Состояние",
+                "Counter": "Счетчик замыканий",
+                "Freq": "Частота",
+
+                "sp_title": "Короткое нажатие",
+                "lp_title": "Длинное нажатие",
+                "dp_title": "Двойное нажатие",
+                "slp_title": "Короткое, затем длинное нажатие",
+
+                "Single Press Counter": "Счетчик коротких нажатий",
+                "Long Press Counter": "Счетчик длинных нажатий",
+                "Double Press Counter": "Счетчик двойных нажатий",
+                "Shortlong Press Counter": "Счетчик коротких, а затем длинных нажатий",
+
+                "lp_hold_time_title": "Время длинного нажатия (мс)",
+                "dp_time_title": "Время двойного нажатия, мс",
+                "debounce_time_title": "Время подавления дребезга, мс",
+
+                "Serial": "Серийный номер",
+                "Supply Voltage": "Напряжение питания",
+                "Uptime": "Время работы с момента включения (с)",
+                "MCU Temperature": "Температура МК",
+                "MCU Voltage": "Напряжение питания МК"
+            }
+        }
+    }
+}
