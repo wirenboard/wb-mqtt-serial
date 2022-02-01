@@ -842,9 +842,7 @@ namespace Modbus // modbus protocol common utilities
         } catch (const TSerialDevicePermanentRegisterException& e) {
             if (modbus_range->HasHoles()) {
                 modbus_range->Device()->SetSupportsHoles(false);
-                std::cout << "hh" << std::endl;
             } else {
-                std::cout << "una" << std::endl;
                 for (auto& reg: modbus_range->RegisterList()) {
                     reg->SetAvailable(TRegisterAvailability::UNAVAILABLE);
                 }
