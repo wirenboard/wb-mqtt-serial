@@ -124,7 +124,7 @@ TEMDevice::ErrorType TMilurDevice::CheckForException(uint8_t* frame, int len, co
     return TEMDevice::OTHER_ERROR;
 }
 
-uint64_t TMilurDevice::ReadRegister(PRegister reg)
+uint64_t TMilurDevice::ReadRegisterImpl(PRegister reg)
 {
     uint8_t addr = GetUint32RegisterAddress(reg->GetAddress());
     int size = GetExpectedSize(reg->Type);
@@ -150,7 +150,7 @@ uint64_t TMilurDevice::ReadRegister(PRegister reg)
     }
 }
 
-void TMilurDevice::Prepare()
+void TMilurDevice::PrepareImpl()
 {
     /* Milur 104 ignores the request after receiving any packet
     with length of 8 bytes. The last answer of the previously polled device
@@ -159,8 +159,9 @@ void TMilurDevice::Prepare()
 
     uint8_t buf[] = {0xFF};
     Port()->WriteBytes(buf, sizeof(buf) / sizeof(buf[0]));
-    TSerialDevice::Prepare();
+    TSerialDevice::PrepareImpl();
     Port()->SkipNoise();
+    SetTransferResult(true);
 }
 
 uint64_t TMilurDevice::BuildIntVal(uint8_t* p, int sz) const

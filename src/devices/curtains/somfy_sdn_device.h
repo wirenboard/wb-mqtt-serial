@@ -44,11 +44,13 @@ namespace Somfy
     public:
         TDevice(PDeviceConfig config, uint8_t nodeType, PPort port, PProtocol protocol);
 
-        void WriteRegister(PRegister reg, uint64_t value);
-        uint64_t ReadRegister(PRegister reg);
-        void EndPollCycle();
+        void EndPollCycle() override;
 
         static void Register(TSerialDeviceFactory& factory);
+
+    protected:
+        uint64_t ReadRegisterImpl(PRegister reg) override;
+        void WriteRegisterImpl(PRegister reg, uint64_t value) override;
     };
 
     std::vector<uint8_t> MakeRequest(uint8_t msg,

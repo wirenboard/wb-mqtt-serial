@@ -52,14 +52,6 @@ namespace
 
         void SleepSinceLastInteraction(const std::chrono::microseconds& us)
         {}
-        bool Wait(const PBinarySemaphore& semaphore, const TTimePoint& until)
-        {
-            return true;
-        }
-        TTimePoint CurrentTime() const
-        {
-            return std::chrono::steady_clock::now();
-        }
 
         std::string GetDescription(bool verbose) const
         {

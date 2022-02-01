@@ -20,15 +20,14 @@ Unsubscribe -- serial-client-integration-test: /devices/WordsLETest/controls/#
 Open()
 Sleep(100000)
 fake_serial_device '145': read address '0' value '0'
-Publish: /devices/WordsLETest/controls/Voltage: '0' (QoS 1, retained)
-fake_serial_device '145': Device cycle OK
+fake_serial_device '145': transfer OK
 fake_serial_device '145': reconnected
+Publish: /devices/WordsLETest/controls/Voltage: '0' (QoS 1, retained)
 Publish: /devices/WordsLETest/controls/Voltage/on: '123' (QoS 0, retained)
-Publish: /devices/WordsLETest/controls/Voltage: '123' (QoS 1, retained)
 >>> LoopOnce()
 fake_serial_device '145': write to address '0' value '34621422135410688'
+Publish: /devices/WordsLETest/controls/Voltage: '123' (QoS 1, retained)
 fake_serial_device '145': read address '0' value '34621422135410688'
-fake_serial_device '145': Device cycle OK
 Unsubscribe -- serial-client-integration-test: /devices/WordsLETest/controls/Voltage/on
 Publish: /devices/WordsLETest/controls/Voltage: '' (QoS 1, retained)
 Publish: /devices/WordsLETest/controls/Voltage/meta: '' (QoS 1, retained)

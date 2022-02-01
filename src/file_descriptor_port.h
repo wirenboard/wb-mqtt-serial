@@ -24,8 +24,6 @@ public:
     bool IsOpen() const override;
 
     void SleepSinceLastInteraction(const std::chrono::microseconds& us) override;
-    bool Wait(const PBinarySemaphore& semaphore, const TTimePoint& until) override;
-    TTimePoint CurrentTime() const override;
 
 protected:
     bool Select(const std::chrono::microseconds& us);

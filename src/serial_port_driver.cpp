@@ -35,9 +35,8 @@ const std::string& TSerialPortDriver::GetShortDescription() const
 
 void TSerialPortDriver::SetUpDevices()
 {
-    SerialClient->SetReadCallback([this](PRegister reg, bool changed) { OnValueRead(reg, changed); });
-    SerialClient->SetErrorCallback(
-        [this](PRegister reg, TRegisterHandler::TErrorState state) { UpdateError(reg, state); });
+    SerialClient->SetReadCallback([this](PRegister reg) { OnValueRead(reg); });
+    SerialClient->SetErrorCallback([this](PRegister reg) { UpdateError(reg); });
 
     LOG(Debug) << "setting up devices at " << Config->Port->GetDescription();
 
@@ -54,9 +53,7 @@ void TSerialPortDriver::SetUpDevices()
                     auto channel = std::make_shared<TDeviceChannel>(device, channelConfig);
                     channel->Control = mqttDevice->CreateControl(tx, From(channel)).GetValue();
                     for (auto& reg: channel->Registers) {
-                        RegisterToChannelStateMap.emplace(
-                            reg,
-                            TDeviceChannelState{channel, TRegisterHandler::UnknownErrorState});
+                        RegisterToChannelMap.emplace(reg, channel);
                         SerialClient->AddRegister(reg);
                     }
                 } catch (const exception& e) {
@@ -132,71 +129,27 @@ void TSerialPortDriver::SetValueToChannel(const PDeviceChannel& channel, const s
     }
 }
 
-void TSerialPortDriver::OnValueRead(PRegister reg, bool changed)
+void TSerialPortDriver::OnValueRead(PRegister reg)
 {
-    auto it = RegisterToChannelStateMap.find(reg);
-    if (it == RegisterToChannelStateMap.end()) {
+    auto it = RegisterToChannelMap.find(reg);
+    if (it == RegisterToChannelMap.end()) {
         LOG(Warn) << "got unexpected register from serial client";
         return;
     }
-    const auto& channel = it->second.Channel;
-    const auto& registers = channel->Registers;
-
-    if (changed && ::Debug.IsEnabled()) {
-        LOG(Debug) << "register value change: " << reg->ToString() << " <- " << SerialClient->GetTextValue(reg);
+    if (it->second->HasValuesOfAllRegisters()) {
+        it->second->UpdateValueAndError(*MqttDriver, PublishPolicy);
     }
-
-    std::string value;
-    if (!channel->OnValue.empty() && SerialClient->GetTextValue(reg) == channel->OnValue) {
-        value = "1";
-        LOG(Debug) << "OnValue: " << channel->OnValue << "; value: " << value;
-    } else if (!channel->OffValue.empty() && SerialClient->GetTextValue(reg) == channel->OffValue) {
-        value = "0";
-        LOG(Debug) << "OffValue: " << channel->OffValue << "; value: " << value;
-    } else {
-        for (size_t i = 0; i < registers.size(); ++i) {
-            PRegister reg = registers[i];
-            // avoid publishing incomplete value
-            if (!SerialClient->DidRead(reg))
-                return;
-            if (i)
-                value += ";";
-            value += SerialClient->GetTextValue(reg);
-        }
-    }
-
-    channel->UpdateValue(*MqttDriver, PublishPolicy, value);
 }
 
-TRegisterHandler::TErrorState TSerialPortDriver::RegErrorState(PRegister reg)
+void TSerialPortDriver::UpdateError(PRegister reg)
 {
-    auto it = RegisterToChannelStateMap.find(reg);
-    if (it == RegisterToChannelStateMap.end())
-        return TRegisterHandler::UnknownErrorState;
-    return it->second.ErrorState;
-}
-
-void TSerialPortDriver::UpdateError(PRegister reg, TRegisterHandler::TErrorState errorState)
-{
-    auto it = RegisterToChannelStateMap.find(reg);
-    if (it == RegisterToChannelStateMap.end()) {
+    auto it = RegisterToChannelMap.find(reg);
+    if (it == RegisterToChannelMap.end()) {
         LOG(Warn) << "got unexpected register from serial client";
         return;
     }
-    const auto& channel = it->second.Channel;
-    const auto& registers = channel->Registers;
 
-    it->second.ErrorState = errorState;
-    size_t errorMask = 0;
-    for (auto r: registers) {
-        auto error = RegErrorState(r);
-        if (error <= TRegisterHandler::ReadWriteError) {
-            errorMask |= error;
-        }
-    }
-
-    const std::array<const char*, 4> errorFlags = {"", "w", "r", "rw"};
-    channel->UpdateError(*MqttDriver, errorFlags[errorMask]);
+    it->second->UpdateError(*MqttDriver);
 }
 
 void TSerialPortDriver::Cycle()
@@ -276,56 +229,118 @@ TControlArgs TSerialPortDriver::From(const PDeviceChannel& channel)
     return args;
 }
 
-void TDeviceChannel::UpdateError(WBMQTT::TDeviceDriver& deviceDriver, const std::string& error)
+void TDeviceChannel::UpdateValueAndError(WBMQTT::TDeviceDriver& deviceDriver,
+                                         const WBMQTT::TPublishParameters& publishPolicy)
 {
-    if (CachedErrorFlg.empty() || (CachedErrorFlg != error)) {
-        CachedErrorFlg = error;
-        {
-            auto tx = deviceDriver.BeginTx();
-            Control->SetError(tx, error).Sync();
-        }
-    }
-}
-
-void TDeviceChannel::UpdateValue(WBMQTT::TDeviceDriver& deviceDriver,
-                                 const WBMQTT::TPublishParameters& publishPolicy,
-                                 const std::string& value)
-{
-    if (!CachedErrorFlg.empty()) {
-        PublishValue(deviceDriver, value);
-        return;
-    }
+    auto value = GetTextValue();
+    auto error = GetErrorText();
+    bool errorIsChanged = (CachedErrorText != error);
     switch (publishPolicy.Policy) {
         case TPublishParameters::PublishOnlyOnChange: {
-            if (CachedCurrentValue != value) {
-                PublishValue(deviceDriver, value);
+            if (errorIsChanged || CachedCurrentValue != value) {
+                PublishValueAndError(deviceDriver, value, error);
             }
             break;
         }
         case TPublishParameters::PublishAll: {
-            PublishValue(deviceDriver, value);
+            PublishValueAndError(deviceDriver, value, error);
             break;
         }
         case TPublishParameters::PublishSomeUnchanged: {
             auto now = std::chrono::steady_clock::now();
-            if ((CachedCurrentValue != value) || (now - LastControlUpdate >= publishPolicy.PublishUnchangedInterval)) {
-                PublishValue(deviceDriver, value);
+            if (errorIsChanged || (CachedCurrentValue != value) ||
+                (now - LastControlUpdate >= publishPolicy.PublishUnchangedInterval))
+            {
+                PublishValueAndError(deviceDriver, value, error);
             }
             break;
         }
     }
 }
 
-void TDeviceChannel::PublishValue(WBMQTT::TDeviceDriver& deviceDriver, const std::string& value)
+void TDeviceChannel::UpdateError(WBMQTT::TDeviceDriver& deviceDriver)
+{
+    auto error = GetErrorText();
+    if (CachedErrorText.empty() || (CachedErrorText != error)) {
+        CachedErrorText = error;
+        auto tx = deviceDriver.BeginTx();
+        Control->SetError(tx, error).Sync();
+    }
+}
+
+std::string TDeviceChannel::GetErrorText() const
+{
+    TRegister::TErrorState errorState;
+    for (auto r: Registers) {
+        errorState |= r->GetErrorState();
+    }
+
+    const std::unordered_map<TRegister::TError, std::string> errorNames = {
+        {TRegister::TError::ReadError, "r"},
+        {TRegister::TError::WriteError, "w"},
+        {TRegister::TError::PollIntervalMissError, "p"}};
+    std::string errorText;
+    for (size_t i = 0; i < TRegister::TError::MAX_ERRORS; ++i) {
+        if (errorState.test(i)) {
+            auto itName = errorNames.find(static_cast<TRegister::TError>(i));
+            if (itName != errorNames.end()) {
+                errorText += itName->second;
+            }
+        }
+    }
+    return errorText;
+}
+
+void TDeviceChannel::PublishValueAndError(WBMQTT::TDeviceDriver& deviceDriver,
+                                          const std::string& value,
+                                          const std::string& error)
 {
     if (::Debug.IsEnabled()) {
-        LOG(Debug) << Describe() << " <-- " << value;
+        LOG(Debug) << Describe() << " <-- " << value << ", error: \"" << error << "\"";
     }
     CachedCurrentValue = value;
-    CachedErrorFlg.clear();
+    CachedErrorText = error;
     LastControlUpdate = std::chrono::steady_clock::now();
     {
         auto tx = deviceDriver.BeginTx();
-        Control->SetRawValue(tx, value).Sync();
+        Control->UpdateRawValueAndError(tx, value, error).Sync();
     }
+}
+
+std::string TDeviceChannel::GetTextValue() const
+{
+    if (Registers.size() == 1) {
+        if (!OnValue.empty()) {
+            if (ConvertFromRawValue(*Registers.front(), Registers.front()->GetValue()) == OnValue) {
+                LOG(Debug) << "OnValue: " << OnValue << "; value: 1";
+                return "1";
+            }
+        }
+        if (!OffValue.empty()) {
+            if (ConvertFromRawValue(*Registers.front(), Registers.front()->GetValue()) == OffValue) {
+                LOG(Debug) << "OnValue: " << OffValue << "; value: 0";
+                return "0";
+            }
+        }
+    }
+    std::string value;
+    bool first = true;
+    for (const auto& r: Registers) {
+        if (!first) {
+            value += ";";
+        }
+        first = false;
+        value += ConvertFromRawValue(*r, r->GetValue());
+    }
+    return value;
+}
+
+bool TDeviceChannel::HasValuesOfAllRegisters() const
+{
+    for (const auto& r: Registers) {
+        if (r->GetAvailable() == TRegisterAvailability::UNKNOWN) {
+            return false;
+        }
+    }
+    return true;
 }

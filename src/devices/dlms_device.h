@@ -43,15 +43,16 @@ class TDlmsDevice: public TSerialDevice, public TUInt32SlaveId
 public:
     TDlmsDevice(const TDlmsDeviceConfig& config, PPort port, PProtocol protocol);
 
-    uint64_t ReadRegister(PRegister reg) override;
-    void WriteRegister(PRegister reg, uint64_t value) override;
-    void Prepare() override;
     void EndSession() override;
 
     static void Register(TSerialDeviceFactory& factory);
 
     const CGXDLMSObjectCollection& ReadAllObjects(bool readAttributes);
     std::map<int, std::string> GetLogicalDevices();
+
+protected:
+    void PrepareImpl() override;
+    uint64_t ReadRegisterImpl(PRegister reg) override;
 };
 
 namespace DLMS

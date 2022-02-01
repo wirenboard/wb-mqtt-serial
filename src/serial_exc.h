@@ -5,6 +5,13 @@
 
 std::string FormatErrno(int errnoValue);
 
+/** The exception class should be used for indicating any error during interaction with device.
+ *  Future polling result and polling of other registers depends on type of exception.
+ *  Polling of other registers of the device should be stopped until next poll session.
+ *  Derived classes could define more precise polling policy.
+ *  Current register read should be marked as read error.
+ *  Example: read() error.
+ */
 class TSerialDeviceException: public std::runtime_error
 {
 public:
@@ -21,6 +28,12 @@ public:
     int GetErrnoValue() const;
 };
 
+/** The exception class should be used for indicating reception of a invalid answer from device.
+ *  Future polling can be successful.
+ *  Polling of other registers of the device is allowed.
+ *  Current register read should be marked as read error.
+ *  Example: crc error, answer timeout.
+ */
 class TSerialDeviceTransientErrorException: public TSerialDeviceException
 {
 public:
@@ -29,8 +42,9 @@ public:
 
 /** The exception class should be used for indicating reception of a valid answer from device,
  *  but with information about internal device's error.
- *  Polling of other registers of the device during current cycle is allowed,
- *  but current register read should be marked as read error.
+ *  Future polling can be successful.
+ *  Polling of other registers of the device is allowed.
+ *  Current register read should be marked as read error.
  *  Example: reading curtain motor position returns invalid position due to motor misconfiguration.
  */
 class TSerialDeviceInternalErrorException: public TSerialDeviceTransientErrorException
@@ -39,6 +53,15 @@ public:
     TSerialDeviceInternalErrorException(const std::string& message);
 };
 
+/** The exception class should be used for indicating reception of a valid answer from device,
+ *  but with information about error.
+ *  The error indicates that the register is unsupported by the device
+ *  Future polling will lead to the same error.
+ *  Polling of other registers of the device is allowed,
+ *  Current register read should be marked as read error.
+ *  Register should be marked as unavailable
+ *  and excluded from poll until next connection to device.
+ */
 class TSerialDevicePermanentRegisterException: public TSerialDeviceException
 {
 public:
