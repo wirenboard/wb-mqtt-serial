@@ -49,9 +49,9 @@ public:
     TIEC61107Device(PDeviceConfig device_config, PPort port, PProtocol protocol);
 
     void EndSession() override;
-    void Prepare() override;
 
 protected:
+    void PrepareImpl() override;
     std::string SlaveId;
 };
 
@@ -79,11 +79,8 @@ public:
                          const std::string& logPrefix,
                          IEC::TCrcFn crcFn);
 
-    uint64_t ReadRegister(PRegister reg) override;
-    void WriteRegister(PRegister reg, uint64_t value) override;
     void EndPollCycle() override;
     void EndSession() override;
-    void Prepare() override;
 
 protected:
     /**
@@ -94,6 +91,8 @@ protected:
      */
     virtual std::string GetParameterRequest(const TRegister& reg) const = 0;
     virtual uint64_t GetRegisterValue(const TRegister& reg, const std::string& value) = 0;
+    void PrepareImpl() override;
+    uint64_t ReadRegisterImpl(PRegister reg) override;
 
 private:
     IEC::TCrcFn CrcFn;

@@ -272,106 +272,104 @@ Unsubscribe -- serial-client-integration-test: /devices/ErrorValueTest/controls/
 Open()
 Sleep(20000)
 fake_serial_device '150': read address '0' value '0'
-fake_serial_device '150': read address '1' value '0'
-fake_serial_device '150': read address '2' value '0'
-Publish: /devices/ErrorValueTest/controls/s16: '0' (QoS 1, retained)
-fake_serial_device '150': read address '3' value '0'
-fake_serial_device '150': read address '4' value '0'
-fake_serial_device '150': read address '6' value '0'
-fake_serial_device '150': read address '8' value '0'
-fake_serial_device '150': read address '10' value '0'
-fake_serial_device '150': read address '12' value '0'
-Publish: /devices/ErrorValueTest/controls/u16: '0' (QoS 1, retained)
-fake_serial_device '150': read address '16' value '0'
-fake_serial_device '150': read address '20' value '0'
-fake_serial_device '150': read address '24' value '0'
-fake_serial_device '150': read address '30' value '0'
-Publish: /devices/ErrorValueTest/controls/s8: '0' (QoS 1, retained)
-fake_serial_device '150': read address '31' value '0'
-fake_serial_device '150': read address '32' value '0'
-fake_serial_device '150': read address '33' value '0'
-fake_serial_device '150': read address '34' value '0'
-fake_serial_device '150': read address '36' value '0'
-fake_serial_device '150': read address '38' value '0'
-fake_serial_device '150': read address '40' value '0'
-Publish: /devices/ErrorValueTest/controls/u8: '0' (QoS 1, retained)
-fake_serial_device '150': read address '42' value '0'
-fake_serial_device '150': read address '46' value '0'
-fake_serial_device '150': read address '50' value '0'
-Publish: /devices/ErrorValueTest/controls/s24: '0' (QoS 1, retained)
-fake_serial_device '150': read address '54' value '0'
-fake_serial_device '150': Device cycle OK
+fake_serial_device '150': transfer OK
 fake_serial_device '150': reconnected
+Publish: /devices/ErrorValueTest/controls/s16: '0' (QoS 1, retained)
+fake_serial_device '150': read address '1' value '0'
+Publish: /devices/ErrorValueTest/controls/u16: '0' (QoS 1, retained)
+fake_serial_device '150': read address '2' value '0'
+Publish: /devices/ErrorValueTest/controls/s8: '0' (QoS 1, retained)
+fake_serial_device '150': read address '3' value '0'
+Publish: /devices/ErrorValueTest/controls/u8: '0' (QoS 1, retained)
+fake_serial_device '150': read address '4' value '0'
+Publish: /devices/ErrorValueTest/controls/s24: '0' (QoS 1, retained)
+fake_serial_device '150': read address '6' value '0'
+Publish: /devices/ErrorValueTest/controls/u24: '0' (QoS 1, retained)
+fake_serial_device '150': read address '8' value '0'
+Publish: /devices/ErrorValueTest/controls/s32: '0' (QoS 1, retained)
+fake_serial_device '150': read address '10' value '0'
+Publish: /devices/ErrorValueTest/controls/u32: '0' (QoS 1, retained)
+fake_serial_device '150': read address '12' value '0'
+Publish: /devices/ErrorValueTest/controls/s64: '0' (QoS 1, retained)
+fake_serial_device '150': read address '16' value '0'
+Publish: /devices/ErrorValueTest/controls/u64: '0' (QoS 1, retained)
+fake_serial_device '150': read address '20' value '0'
+Publish: /devices/ErrorValueTest/controls/double: '0' (QoS 1, retained)
+fake_serial_device '150': read address '24' value '0'
+Publish: /devices/ErrorValueTest/controls/float: '0' (QoS 1, retained)
+fake_serial_device '150': read address '30' value '0'
+Publish: /devices/ErrorValueTest/controls/s16_le: '0' (QoS 1, retained)
+fake_serial_device '150': read address '31' value '0'
+Publish: /devices/ErrorValueTest/controls/u16_le: '0' (QoS 1, retained)
+fake_serial_device '150': read address '32' value '0'
+Publish: /devices/ErrorValueTest/controls/s8_le: '0' (QoS 1, retained)
+fake_serial_device '150': read address '33' value '0'
+Publish: /devices/ErrorValueTest/controls/u8_le: '0' (QoS 1, retained)
+fake_serial_device '150': read address '34' value '0'
+Publish: /devices/ErrorValueTest/controls/s24_le: '0' (QoS 1, retained)
+fake_serial_device '150': read address '36' value '0'
+Publish: /devices/ErrorValueTest/controls/u24_le: '0' (QoS 1, retained)
+fake_serial_device '150': read address '38' value '0'
+Publish: /devices/ErrorValueTest/controls/s32_le: '0' (QoS 1, retained)
+fake_serial_device '150': read address '40' value '0'
+Publish: /devices/ErrorValueTest/controls/u32_le: '0' (QoS 1, retained)
+fake_serial_device '150': read address '42' value '0'
+Publish: /devices/ErrorValueTest/controls/s64_le: '0' (QoS 1, retained)
+fake_serial_device '150': read address '46' value '0'
+Publish: /devices/ErrorValueTest/controls/u64_le: '0' (QoS 1, retained)
+fake_serial_device '150': read address '50' value '0'
+Publish: /devices/ErrorValueTest/controls/double_le: '0' (QoS 1, retained)
+fake_serial_device '150': read address '54' value '0'
+Publish: /devices/ErrorValueTest/controls/float_le: '0' (QoS 1, retained)
 >>> LoopOnce() [all errors]
 fake_serial_device '150': read address '0' value '32767'
-fake_serial_device '150': read address '1' value '32767'
-fake_serial_device '150': read address '2' value '127'
-fake_serial_device '150': read address '3' value '127'
-Publish: /devices/ErrorValueTest/controls/u24: '0' (QoS 1, retained)
-fake_serial_device '150': read address '4' value '8388607'
-fake_serial_device '150': read address '6' value '8388607'
-fake_serial_device '150': read address '8' value '2147483647'
-fake_serial_device '150': read address '10' value '2147483647'
-fake_serial_device '150': read address '12' value '9223372036854775807'
-fake_serial_device '150': read address '16' value '9223372036854775807'
-Publish: /devices/ErrorValueTest/controls/s32: '0' (QoS 1, retained)
-fake_serial_device '150': read address '20' value '9223372036854775807'
-fake_serial_device '150': read address '24' value '2147483647'
-fake_serial_device '150': read address '30' value '32767'
-fake_serial_device '150': read address '31' value '32767'
-fake_serial_device '150': read address '32' value '127'
-fake_serial_device '150': read address '33' value '127'
-Publish: /devices/ErrorValueTest/controls/u32: '0' (QoS 1, retained)
-fake_serial_device '150': read address '34' value '4294901887'
-fake_serial_device '150': read address '36' value '4294901887'
-fake_serial_device '150': read address '38' value '4294934527'
-fake_serial_device '150': read address '40' value '4294934527'
-fake_serial_device '150': read address '42' value '18446744073709518847'
-Publish: /devices/ErrorValueTest/controls/s64: '0' (QoS 1, retained)
-fake_serial_device '150': read address '46' value '18446744073709518847'
-fake_serial_device '150': read address '50' value '18446744073709518847'
-fake_serial_device '150': read address '54' value '4294934527'
-fake_serial_device '150': Device cycle OK
-Publish: /devices/ErrorValueTest/controls/u64: '0' (QoS 1, retained)
-Publish: /devices/ErrorValueTest/controls/double: '0' (QoS 1, retained)
-Publish: /devices/ErrorValueTest/controls/float: '0' (QoS 1, retained)
-Publish: /devices/ErrorValueTest/controls/s16_le: '0' (QoS 1, retained)
-Publish: /devices/ErrorValueTest/controls/u16_le: '0' (QoS 1, retained)
-Publish: /devices/ErrorValueTest/controls/s8_le: '0' (QoS 1, retained)
-Publish: /devices/ErrorValueTest/controls/u8_le: '0' (QoS 1, retained)
-Publish: /devices/ErrorValueTest/controls/s24_le: '0' (QoS 1, retained)
-Publish: /devices/ErrorValueTest/controls/u24_le: '0' (QoS 1, retained)
-Publish: /devices/ErrorValueTest/controls/s32_le: '0' (QoS 1, retained)
-Publish: /devices/ErrorValueTest/controls/u32_le: '0' (QoS 1, retained)
-Publish: /devices/ErrorValueTest/controls/s64_le: '0' (QoS 1, retained)
-Publish: /devices/ErrorValueTest/controls/u64_le: '0' (QoS 1, retained)
-Publish: /devices/ErrorValueTest/controls/double_le: '0' (QoS 1, retained)
-Publish: /devices/ErrorValueTest/controls/float_le: '0' (QoS 1, retained)
 Publish: /devices/ErrorValueTest/controls/s16/meta/error: 'r' (QoS 1, retained)
+fake_serial_device '150': read address '1' value '32767'
 Publish: /devices/ErrorValueTest/controls/u16/meta/error: 'r' (QoS 1, retained)
+fake_serial_device '150': read address '2' value '127'
 Publish: /devices/ErrorValueTest/controls/s8/meta/error: 'r' (QoS 1, retained)
+fake_serial_device '150': read address '3' value '127'
 Publish: /devices/ErrorValueTest/controls/u8/meta/error: 'r' (QoS 1, retained)
+fake_serial_device '150': read address '4' value '8388607'
 Publish: /devices/ErrorValueTest/controls/s24/meta/error: 'r' (QoS 1, retained)
+fake_serial_device '150': read address '6' value '8388607'
 Publish: /devices/ErrorValueTest/controls/u24/meta/error: 'r' (QoS 1, retained)
+fake_serial_device '150': read address '8' value '2147483647'
 Publish: /devices/ErrorValueTest/controls/s32/meta/error: 'r' (QoS 1, retained)
+fake_serial_device '150': read address '10' value '2147483647'
 Publish: /devices/ErrorValueTest/controls/u32/meta/error: 'r' (QoS 1, retained)
+fake_serial_device '150': read address '12' value '9223372036854775807'
 Publish: /devices/ErrorValueTest/controls/s64/meta/error: 'r' (QoS 1, retained)
+fake_serial_device '150': read address '16' value '9223372036854775807'
 Publish: /devices/ErrorValueTest/controls/u64/meta/error: 'r' (QoS 1, retained)
+fake_serial_device '150': read address '20' value '9223372036854775807'
 Publish: /devices/ErrorValueTest/controls/double/meta/error: 'r' (QoS 1, retained)
+fake_serial_device '150': read address '24' value '2147483647'
 Publish: /devices/ErrorValueTest/controls/float/meta/error: 'r' (QoS 1, retained)
+fake_serial_device '150': read address '30' value '32767'
 Publish: /devices/ErrorValueTest/controls/s16_le/meta/error: 'r' (QoS 1, retained)
+fake_serial_device '150': read address '31' value '32767'
 Publish: /devices/ErrorValueTest/controls/u16_le/meta/error: 'r' (QoS 1, retained)
+fake_serial_device '150': read address '32' value '127'
 Publish: /devices/ErrorValueTest/controls/s8_le/meta/error: 'r' (QoS 1, retained)
+fake_serial_device '150': read address '33' value '127'
 Publish: /devices/ErrorValueTest/controls/u8_le/meta/error: 'r' (QoS 1, retained)
+fake_serial_device '150': read address '34' value '4294901887'
 Publish: /devices/ErrorValueTest/controls/s24_le/meta/error: 'r' (QoS 1, retained)
+fake_serial_device '150': read address '36' value '4294901887'
 Publish: /devices/ErrorValueTest/controls/u24_le/meta/error: 'r' (QoS 1, retained)
+fake_serial_device '150': read address '38' value '4294934527'
 Publish: /devices/ErrorValueTest/controls/s32_le/meta/error: 'r' (QoS 1, retained)
+fake_serial_device '150': read address '40' value '4294934527'
 Publish: /devices/ErrorValueTest/controls/u32_le/meta/error: 'r' (QoS 1, retained)
+fake_serial_device '150': read address '42' value '18446744073709518847'
 Publish: /devices/ErrorValueTest/controls/s64_le/meta/error: 'r' (QoS 1, retained)
+fake_serial_device '150': read address '46' value '18446744073709518847'
 Publish: /devices/ErrorValueTest/controls/u64_le/meta/error: 'r' (QoS 1, retained)
+fake_serial_device '150': read address '50' value '18446744073709518847'
 Publish: /devices/ErrorValueTest/controls/double_le/meta/error: 'r' (QoS 1, retained)
+fake_serial_device '150': read address '54' value '4294934527'
 Publish: /devices/ErrorValueTest/controls/float_le/meta/error: 'r' (QoS 1, retained)
-fake_serial_device '150': Device cycle OK
 Unsubscribe -- serial-client-integration-test: /devices/ErrorValueTest/controls/u64/on
 Publish: /devices/ErrorValueTest/controls/u64: '' (QoS 1, retained)
 Publish: /devices/ErrorValueTest/controls/u64/meta: '' (QoS 1, retained)

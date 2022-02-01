@@ -1,0 +1,110 @@
+// poll_interval and read_rate_limit_ms parsing test
+{
+    "ports": [
+        {
+            "path" : "/dev/ttyNSC0",
+            "baud_rate": 9600,
+            "parity": "N",
+            "data_bits": 8,
+            "stop_bits": 2,
+            "poll_interval": 10,
+            "devices" : [
+                {
+                    "device_type" : "MSU34",
+                    "slave_id": 2,
+                    "poll_interval": 200,
+                    "channels": [
+                        {
+                            "name" : "Illuminance",
+                            "poll_interval": 300
+                        }
+                    ]
+                },
+                {
+                    "device_type" : "MSU34",
+                    "slave_id": 1
+                }
+            ]
+        },
+        {
+            "path" : "/dev/ttyNSC1",
+            "baud_rate": 9600,
+            "parity": "N",
+            "data_bits": 8,
+            "stop_bits": 1,
+            "read_rate_limit_ms": 101,
+            "devices" : [
+                {
+                    "device_type" : "MSU34",
+                    "slave_id": 2,
+                    "poll_interval": 201,
+                    "channels": [
+                        {
+                            "name" : "Illuminance",
+                            "poll_interval": 301
+                        }
+                    ]
+                },
+                {
+                    "device_type" : "MSU34",
+                    "slave_id": 1
+                }
+            ]
+        },
+        {
+            "path" : "/dev/ttyNSC2",
+            "baud_rate": 9600,
+            "parity": "N",
+            "data_bits": 8,
+            "stop_bits": 1,
+            "read_rate_limit_ms": 102,
+            "devices" : [
+                {
+                    "device_type" : "MSU34",
+                    "slave_id": 2,
+                    "read_rate_limit_ms": 202,
+                    "channels": [
+                        {
+                            "name" : "Illuminance",
+                            "poll_interval": 302
+                        }
+                    ]
+                }
+            ]
+        },
+        {
+            "path" : "/dev/ttyNSC2",
+            "baud_rate": 9600,
+            "parity": "N",
+            "data_bits": 8,
+            "stop_bits": 1,
+            "read_rate_limit_ms": 103,
+            "devices" : [
+                {
+                    "device_type" : "MSU34",
+                    "slave_id": 2,
+                    "read_rate_limit_ms": 203,
+                    "channels": [
+                        {
+                            "name" : "Illuminance",
+                            "read_rate_limit_ms": 303
+                        }
+                    ]
+                }
+            ]
+        },
+        {
+            "path" : "/dev/ttyNSC4",
+            "baud_rate": 9600,
+            "parity": "N",
+            "data_bits": 8,
+            "stop_bits": 1,
+            "devices" : [
+                {
+                    "device_type" : "MSU34",
+                    "slave_id": 2
+                }
+            ]
+        }
+    ]
+}

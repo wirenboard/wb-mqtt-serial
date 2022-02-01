@@ -75,14 +75,12 @@ EnqueueBrightnessQueryResponse()
 Publish: /devices/pseudo_uniel/controls/LED 1: '66' (QoS 1, retained)
 << FF FF 05 00 42 41 00 88
 Publish: /devices/pseudo_uniel/controls/Relay 1/on: '1' (QoS 0, retained)
-Publish: /devices/pseudo_uniel/controls/Relay 1: '1' (QoS 1, retained)
 Publish: /devices/pseudo_uniel/controls/LowThr/on: '112' (QoS 0, retained)
-Publish: /devices/pseudo_uniel/controls/LowThr: '112' (QoS 1, retained)
 Publish: /devices/pseudo_uniel/controls/LED 1/on: '66' (QoS 0, retained)
-Publish: /devices/pseudo_uniel/controls/LED 1: '66' (QoS 1, retained)
 >>> LoopOnce()
 EnqueueSetRelayOnResponse()
 >> FF FF 06 01 FF 1B 00 21
+Publish: /devices/pseudo_uniel/controls/Relay 1: '1' (QoS 1, retained)
 << FF FF 06 00 FF 1B 00 20
 EnqueueSetLowThreshold0Response()
 >> FF FF 06 01 70 02 00 79

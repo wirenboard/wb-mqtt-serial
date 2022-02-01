@@ -250,16 +250,3 @@ void TFileDescriptorPort::SleepSinceLastInteraction(const chrono::microseconds& 
     std::this_thread::sleep_for(us - delta);
     LOG(Debug) << "Sleep " << us.count() << " us";
 }
-
-bool TFileDescriptorPort::Wait(const PBinarySemaphore& semaphore, const TTimePoint& until)
-{
-    LOG(Debug) << chrono::duration_cast<chrono::milliseconds>(chrono::steady_clock::now().time_since_epoch()).count()
-               << ": Wait until " << chrono::duration_cast<chrono::milliseconds>(until.time_since_epoch()).count();
-
-    return semaphore->Wait(until);
-}
-
-TTimePoint TFileDescriptorPort::CurrentTime() const
-{
-    return chrono::steady_clock::now();
-}

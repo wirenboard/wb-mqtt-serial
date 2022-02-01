@@ -17,7 +17,6 @@
     "device_type" : "merge simple with setup",
     "id" : "merge-simple-with-setup_2",
     "name" : "merge simple with setup 2",
-    "poll_interval": 200,
     "setup" : 
     [
         {

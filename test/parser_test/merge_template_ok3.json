@@ -13,7 +13,6 @@
     ],
     "id" : "1",
     "name" : "2",
-    "poll_interval": 300,
     "setup" : 
     [
         {

@@ -46,7 +46,7 @@ TFakeSerialDevice::TFakeSerialDevice(PDeviceConfig config, PPort port, PProtocol
     Devices.push_back(this);
 }
 
-uint64_t TFakeSerialDevice::ReadRegister(PRegister reg)
+uint64_t TFakeSerialDevice::ReadRegisterImpl(PRegister reg)
 {
     try {
         if (!FakePort->IsOpen()) {
@@ -85,7 +85,7 @@ uint64_t TFakeSerialDevice::ReadRegister(PRegister reg)
     }
 }
 
-void TFakeSerialDevice::WriteRegister(PRegister reg, uint64_t value)
+void TFakeSerialDevice::WriteRegisterImpl(PRegister reg, uint64_t value)
 {
     try {
         if (!FakePort->IsOpen()) {
@@ -122,14 +122,17 @@ void TFakeSerialDevice::WriteRegister(PRegister reg, uint64_t value)
     }
 }
 
-void TFakeSerialDevice::OnCycleEnd(bool ok)
+void TFakeSerialDevice::SetTransferResult(bool ok)
 {
-    FakePort->GetFixture().Emit() << "fake_serial_device '" << SlaveId
-                                  << "': " << (ok ? "Device cycle OK" : "Device cycle FAIL");
-
     bool wasDisconnected = GetIsDisconnected();
+    if (wasDisconnected && ok) {
+        FakePort->GetFixture().Emit() << "fake_serial_device '" << SlaveId << "': transfer OK";
+    }
+    if (!ok) {
+        FakePort->GetFixture().Emit() << "fake_serial_device '" << SlaveId << "': transfer FAIL";
+    }
 
-    TSerialDevice::OnCycleEnd(ok);
+    TSerialDevice::SetTransferResult(ok);
 
     if (wasDisconnected && !GetIsDisconnected()) {
         FakePort->GetFixture().Emit() << "fake_serial_device '" << SlaveId << "': reconnected";

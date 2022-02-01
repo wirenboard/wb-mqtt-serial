@@ -103,7 +103,7 @@ struct TPortConfig
 {
     PPort Port;
     std::vector<PSerialDevice> Devices;
-    std::chrono::milliseconds PollInterval = DefaultPollInterval;
+    std::experimental::optional<std::chrono::milliseconds> ReadRateLimit;
     std::chrono::microseconds RequestDelay = std::chrono::microseconds::zero();
     TPortOpenCloseLogic::TSettings OpenCloseSettings;
 
@@ -164,7 +164,7 @@ public:
      * @brief Load register address from config
      *
      * @param regCfg JSON object representing register configuration
-     * @param device_base_address base address of device in glodal address space
+     * @param device_base_address base address of device in global address space
      * @param stride stride of device
      * @param registerByteWidth width of register in bytes
      */
@@ -246,7 +246,7 @@ struct TDeviceConfigLoadParams
     std::string DefaultId;
     std::chrono::microseconds DefaultRequestDelay;
     std::chrono::milliseconds PortResponseTimeout;
-    std::chrono::milliseconds DefaultPollInterval;
+    std::experimental::optional<std::chrono::milliseconds> DefaultReadRateLimit;
     std::string DeviceTemplateTitle;
     const Json::Value* Translations = nullptr;
 };

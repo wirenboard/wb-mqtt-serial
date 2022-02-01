@@ -68,8 +68,7 @@
                 "address": "0x2900",
                 "format": "bcd16",
                 "type": "voltage",
-                "scale": 0.01,
-                "poll_interval": 600000
+                "scale": 0.01
             }
         ]
     }

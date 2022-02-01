@@ -9,7 +9,6 @@
       "parity": "N",
       "data_bits": 8,
       "stop_bits": 1,
-      "poll_interval": 100,
       "enabled": true,
       "devices" : [
         {

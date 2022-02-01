@@ -37,13 +37,29 @@ namespace
         return GetUint32RegisterAddress(reg->GetAddress()) & 0xFF;
     }
 
-    class TEnergomeraRegisterRange: public TSimpleRegisterRange
+    class TEnergomeraRegisterRange: public TRegisterRange
     {
     public:
-        TEnergomeraRegisterRange(const std::list<PRegister>& regs): TSimpleRegisterRange(regs)
+        TEnergomeraRegisterRange(PRegister reg): TRegisterRange(reg)
+        {}
+
+        bool Add(PRegister reg, std::chrono::milliseconds pollLimit) override
         {
-            std::list<PRegister> sorted_reg_list = regs;
-            sorted_reg_list.sort([](const PRegister& a, const PRegister& b) -> bool {
+            // TODO: respect pollLimit
+            if (RegisterList().size() > 10) {
+                return false;
+            }
+
+            if (reg->GetAvailable() != TRegisterAvailability::UNAVAILABLE) {
+                RegisterList().push_back(reg);
+            }
+            return true;
+        }
+
+        void UpdateMasks()
+        {
+            std::list<PRegister> sortedRegList = RegisterList();
+            sortedRegList.sort([](const PRegister& a, const PRegister& b) -> bool {
                 if (GetParamId(a) < GetParamId(b))
                     return true;
                 if (GetParamId(a) > GetParamId(b))
@@ -56,14 +72,14 @@ namespace
 
                 return false;
             });
-
-            for (auto reg: sorted_reg_list) {
+            RegisterList().swap(sortedRegList);
+            for (auto reg: RegisterList()) {
                 auto param_id = GetParamId(reg);
                 auto value_num = GetValueNum(reg);
                 ParamMasks[param_id] |= (1 << (value_num - 1));
                 RegsByParam[param_id].push_back(reg);
             };
-        };
+        }
 
     public:
         std::map<uint16_t, uint16_t> ParamMasks;
@@ -103,7 +119,6 @@ namespace
 
     void SendFastGroupReadRequest(TPort& port, TEnergomeraRegisterRange& range, const std::string& slaveId)
     {
-        // TODO: Exclude unavailable registers
         // request looks like this:
         //  Write [Energomera]:/?00000211!<SOH>R1<STX>GROUP(1001(1)1004(1)1008(1)4001(7))<ETX>
 
@@ -178,17 +193,17 @@ namespace
                     int err_num;
                     ret = sscanf(presp, "(E%d)%n", &err_num, &nread);
                     if (ret >= 1) {
-                        reg->SetError(ST_DEVICE_ERROR);
+                        reg->SetError(TRegister::TError::ReadError);
                         presp += nread;
 
                         // just ignore error message if reg is unavailable
-                        if (reg->IsAvailable()) {
+                        if (reg->GetAvailable() == TRegisterAvailability::UNKNOWN) {
                             if (err_num == CodeUnsupportedParameter) {
-                                reg->SetAvailable(false);
+                                reg->SetAvailable(TRegisterAvailability::UNAVAILABLE);
                                 LOG(Warn) << " [slave_id is " << reg->Device()->ToString() + "] Register "
                                           << reg->ToString() << " unsupported parameter";
                             } else if (err_num == CodeUnsupportedParameterValue) {
-                                reg->SetAvailable(false);
+                                reg->SetAvailable(TRegisterAvailability::UNAVAILABLE);
                                 LOG(Warn) << " [slave_id is " << reg->Device()->ToString() + "] Register "
                                           << reg->ToString() << " unsupported parameter value";
                             } else {
@@ -197,7 +212,6 @@ namespace
                             }
                         }
                     } else {
-                        reg->SetError(ST_UNKNOWN_ERROR);
                         throw TSerialDeviceTransientErrorException("Can't parse response");
                     }
                 }
@@ -210,7 +224,7 @@ TEnergomeraIecWithFastReadDevice::TEnergomeraIecWithFastReadDevice(PDeviceConfig
     : TIEC61107Device(config, port, protocol)
 {}
 
-std::list<PRegisterRange> TEnergomeraIecWithFastReadDevice::ReadRegisterRange(PRegisterRange abstract_range)
+void TEnergomeraIecWithFastReadDevice::ReadRegisterRange(PRegisterRange abstract_range)
 {
     auto range = std::dynamic_pointer_cast<TEnergomeraRegisterRange>(abstract_range);
     if (!range) {
@@ -221,70 +235,24 @@ std::list<PRegisterRange> TEnergomeraIecWithFastReadDevice::ReadRegisterRange(PR
     Port()->CheckPortOpen();
 
     try {
+        range->UpdateMasks();
         SendFastGroupReadRequest(*Port(), *range, SlaveId);
 
         uint8_t resp[RESPONSE_BUF_LEN] = {};
         char* presp = ReadResponse(*Port(), resp, RESPONSE_BUF_LEN, *DeviceConfig());
 
         ProcessResponse(*range, presp);
-    } catch (TSerialDeviceTransientErrorException& e) {
-        range->SetError(ST_UNKNOWN_ERROR);
+    } catch (TSerialDeviceException& e) {
+        for (auto& r: range->RegisterList()) {
+            r->SetError(TRegister::TError::ReadError);
+        }
         auto& logger = GetIsDisconnected() ? Debug : Warn;
         LOG(logger) << "TEnergomeraIecWithFastReadDevice::ReadRegisterRange(): " << e.what() << " [slave_id is "
                     << ToString() + "]";
     }
-    return {abstract_range};
 }
 
-void TEnergomeraIecWithFastReadDevice::WriteRegister(PRegister, uint64_t)
+PRegisterRange TEnergomeraIecWithFastReadDevice::CreateRegisterRange(PRegister reg) const
 {
-    throw TSerialDeviceException("Energomera protocol: writing register is not supported");
-}
-
-std::list<PRegisterRange> TEnergomeraIecWithFastReadDevice::SplitRegisterList(const std::list<PRegister>& reg_list,
-                                                                              bool enableHoles) const
-{
-    std::list<PRegisterRange> r;
-    if (reg_list.empty())
-        return r;
-
-    std::list<PRegister> sorted_reg_list = reg_list;
-
-    sorted_reg_list.sort([](const PRegister& a, const PRegister& b) -> bool {
-        if (a->PollInterval < b->PollInterval)
-            return true;
-        if (a->PollInterval > b->PollInterval)
-            return false;
-
-        if (GetParamId(a) < GetParamId(b))
-            return true;
-        if (GetParamId(a) > GetParamId(b))
-            return false;
-
-        return false;
-    });
-
-    std::chrono::milliseconds prev_interval(-1);
-
-    std::list<PRegister> cur_range;
-    for (auto reg: sorted_reg_list) {
-        if ((reg->PollInterval != prev_interval) || (cur_range.size() > 10)) {
-            prev_interval = reg->PollInterval;
-
-            if (!cur_range.empty()) {
-                auto range = std::make_shared<TEnergomeraRegisterRange>(cur_range);
-                r.push_back(range);
-                cur_range.clear();
-            }
-        }
-        cur_range.push_back(reg);
-    }
-
-    if (!cur_range.empty()) {
-        auto range = std::make_shared<TEnergomeraRegisterRange>(cur_range);
-        r.push_back(range);
-        cur_range.clear();
-    }
-
-    return r;
+    return std::make_shared<TEnergomeraRegisterRange>(reg);
 }

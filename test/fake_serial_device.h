@@ -17,9 +17,7 @@ public:
     };
 
     TFakeSerialDevice(PDeviceConfig config, PPort port, PProtocol protocol);
-    uint64_t ReadRegister(PRegister reg) override;
-    void WriteRegister(PRegister reg, uint64_t value) override;
-    void OnCycleEnd(bool ok) override;
+    void SetTransferResult(bool ok) override;
 
     void BlockReadFor(int addr, bool block);
     void BlockWriteFor(int addr, bool block);
@@ -32,6 +30,10 @@ public:
     static TFakeSerialDevice* GetDevice(const std::string& slaveId);
     static void ClearDevices();
     static void Register(TSerialDeviceFactory& factory);
+
+protected:
+    uint64_t ReadRegisterImpl(PRegister reg) override;
+    void WriteRegisterImpl(PRegister reg, uint64_t value) override;
 
 private:
     PFakeSerialPort FakePort;

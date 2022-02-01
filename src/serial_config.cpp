@@ -166,6 +166,30 @@ namespace
         return deviceConfig.TypeMap->GetDefaultType();
     }
 
+    std::experimental::optional<std::chrono::milliseconds> GetReadRateLimit(const Json::Value& data)
+    {
+        std::chrono::milliseconds res(-1);
+        try {
+            Get(data, "poll_interval", res);
+        } catch (...) { // poll_interval is deprecated, so ignore it, if it has wrong format
+        }
+        Get(data, "read_rate_limit_ms", res);
+        if (res < 0ms) {
+            return std::experimental::nullopt;
+        }
+        return std::experimental::make_optional(res);
+    }
+
+    std::experimental::optional<std::chrono::milliseconds> GetReadPeriod(const Json::Value& data)
+    {
+        std::chrono::milliseconds res(-1);
+        Get(data, "read_period_ms", res);
+        if (res < 0ms) {
+            return std::experimental::nullopt;
+        }
+        return std::experimental::make_optional(res);
+    }
+
     struct TLoadingContext
     {
         // Full path to loaded item composed from device and channels names
@@ -228,17 +252,6 @@ namespace
                                                 readonly_override_error_message_prefix,
                                                 regType.Name);
 
-        std::unique_ptr<uint64_t> error_value;
-        if (register_data.isMember("error_value")) {
-            error_value = std::make_unique<uint64_t>(ToUint64(register_data["error_value"], "error_value"));
-        }
-
-        std::unique_ptr<uint64_t> unsupported_value;
-        if (register_data.isMember("unsupported_value")) {
-            unsupported_value =
-                std::make_unique<uint64_t>(ToUint64(register_data["unsupported_value"], "unsupported_value"));
-        }
-
         auto address = context.factory.GetRegisterAddressFactory().LoadRegisterAddress(
             register_data,
             context.device_base_address,
@@ -251,16 +264,22 @@ namespace
                                                      scale,
                                                      offset,
                                                      round_to,
-                                                     true,
                                                      readonly,
                                                      regType.Name,
-                                                     std::move(error_value),
                                                      regType.DefaultWordOrder,
                                                      address.BitOffset,
-                                                     address.BitWidth,
-                                                     std::move(unsupported_value));
+                                                     address.BitWidth);
 
-        Get(register_data, "poll_interval", res.RegisterConfig->PollInterval);
+        if (register_data.isMember("error_value")) {
+            res.RegisterConfig->ErrorValue = ToUint64(register_data["error_value"], "error_value");
+        }
+
+        if (register_data.isMember("unsupported_value")) {
+            res.RegisterConfig->UnsupportedValue = ToUint64(register_data["unsupported_value"], "unsupported_value");
+        }
+
+        res.RegisterConfig->ReadRateLimit = GetReadRateLimit(register_data);
+        res.RegisterConfig->ReadPeriod = GetReadPeriod(register_data);
         return res;
     }
 
@@ -346,15 +365,14 @@ namespace
         std::vector<PRegisterConfig> registers;
         if (channel_data.isMember("consists_of")) {
 
-            std::chrono::milliseconds poll_interval(Read(channel_data, "poll_interval", std::chrono::milliseconds(-1)));
+            auto read_rate_limit_ms = GetReadRateLimit(channel_data);
+            auto read_period = GetReadPeriod(channel_data);
 
             const Json::Value& reg_data = channel_data["consists_of"];
             for (Json::ArrayIndex i = 0; i < reg_data.size(); ++i) {
                 auto reg = LoadRegisterConfig(reg_data[i], *device_config, errorMsgPrefix, context);
-                /* the poll_interval specified for the specific register has a precedence over the one specified for the
-                 * compound channel */
-                if ((reg.RegisterConfig->PollInterval.count() < 0) && (poll_interval.count() >= 0))
-                    reg.RegisterConfig->PollInterval = poll_interval;
+                reg.RegisterConfig->ReadRateLimit = read_rate_limit_ms;
+                reg.RegisterConfig->ReadPeriod = read_period;
                 registers.push_back(reg.RegisterConfig);
                 if (!i)
                     default_type_str = reg.DefaultControlType;
@@ -379,7 +397,7 @@ namespace
         if (type_str == "wo-switch") {
             type_str = "switch";
             for (auto& reg: registers)
-                reg->Poll = false;
+                reg->WriteOnly = true;
         }
 
         int order = device_config->NextOrderValue();
@@ -593,8 +611,8 @@ namespace
         auto port_config = make_shared<TPortConfig>();
 
         Get(port_data, "response_timeout_ms", port_config->ResponseTimeout);
-        Get(port_data, "poll_interval", port_config->PollInterval);
         Get(port_data, "guard_interval_us", port_config->RequestDelay);
+        port_config->ReadRateLimit = GetReadRateLimit(port_data);
 
         auto port_type = port_data.get("port_type", "serial").asString();
 
@@ -1191,9 +1209,9 @@ PSerialDevice TSerialDeviceFactory::CreateDevice(const Json::Value& deviceConfig
     const auto& deviceFactory = *it->second.second;
 
     params.DefaultId = defaultId;
-    params.DefaultPollInterval = portConfig->PollInterval;
     params.DefaultRequestDelay = portConfig->RequestDelay;
     params.PortResponseTimeout = portConfig->ResponseTimeout;
+    params.DefaultReadRateLimit = portConfig->ReadRateLimit;
     auto baseDeviceConfig = LoadBaseDeviceConfig(*cfg, protocol, deviceFactory, params);
 
     return deviceFactory.CreateDevice(*cfg, baseDeviceConfig, portConfig->Port, protocol);
@@ -1270,15 +1288,18 @@ PDeviceConfig LoadBaseDeviceConfig(const Json::Value& dev,
         res->ResponseTimeout = DefaultResponseTimeout;
     }
 
-    auto device_poll_interval = parameters.DefaultPollInterval;
-    Get(dev, "poll_interval", device_poll_interval);
+    auto read_rate_limit_ms = GetReadRateLimit(dev);
+    if (!read_rate_limit_ms) {
+        read_rate_limit_ms = parameters.DefaultReadRateLimit;
+    }
     for (auto channel: res->DeviceChannelConfigs) {
         for (auto reg: channel->RegisterConfigs) {
-            if (reg->PollInterval.count() < 0) {
-                reg->PollInterval = device_poll_interval;
+            if (!reg->ReadRateLimit) {
+                reg->ReadRateLimit = read_rate_limit_ms;
             }
         }
     }
+
     return res;
 }
 

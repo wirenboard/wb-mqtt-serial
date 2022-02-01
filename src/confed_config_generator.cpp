@@ -53,16 +53,44 @@ bool TryToTransformSubDeviceChannel(Json::Value& channel,
     return true;
 }
 
+/**
+ * @brief  Compare "read_rate_limit_ms" property with template.
+ *         Remove it from ch if it is equal to specified in template.
+ *
+ * @return true channel has "read_rate_limit_ms" property different from template's value
+ * @return false channel has "read_rate_limit_ms" property same as in template
+ */
+bool TryToTransformReadRateLimit(Json::Value& ch, const Json::Value& channelTemplate)
+{
+    if (!ch.isMember("read_rate_limit_ms")) {
+        return false;
+    }
+    if (channelTemplate.isMember("poll_interval") &&
+        ch["read_rate_limit_ms"].asInt() == channelTemplate["poll_interval"].asInt())
+    {
+        ch.removeMember("read_rate_limit_ms");
+        return false;
+    }
+    if (channelTemplate.isMember("read_rate_limit_ms") &&
+        (ch["read_rate_limit_ms"].asInt() == channelTemplate["read_rate_limit_ms"].asInt()))
+    {
+        ch.removeMember("read_rate_limit_ms");
+        return false;
+    }
+    return true;
+}
+
+/**
+ * @brief  Compare parameters with template.
+ *         Add channel to resulting config file if:
+ *         - it has "read_rate_limit_ms", deprecated "poll_interval" or "enabled" property
+ *           different from that specified in template
+ *         - it has "read_period_ms" property
+ *         Remove properies equal to specified in template
+ */
 bool TryToTransformSimpleChannel(Json::Value& ch, const Json::Value& channelTemplate)
 {
-    bool ok = false;
-    if (ch.isMember("poll_interval")) {
-        if (!channelTemplate.isMember("poll_interval") ||
-            (ch["poll_interval"].asInt() != channelTemplate["poll_interval"].asInt()))
-        {
-            ok = true;
-        }
-    }
+    bool ok = TryToTransformReadRateLimit(ch, channelTemplate);
     if (ch.isMember("enabled")) {
         bool enabledInTemplate = true;
         Get(channelTemplate, "enabled", enabledInTemplate);
@@ -72,7 +100,7 @@ bool TryToTransformSimpleChannel(Json::Value& ch, const Json::Value& channelTemp
             ok = true;
         }
     }
-    return ok;
+    return ok || ch.isMember("read_period_ms");
 }
 
 Json::Value FilterStandardChannels(const Json::Value& device,
@@ -148,32 +176,39 @@ Json::Value MakeConfigFromConfed(std::istream& stream, TTemplateMap& templates)
             if (device.isMember("device_type")) {
                 auto dt = device["device_type"].asString();
 
-                Json::Value deviceTemplate(templates.GetTemplate(dt).Schema);
-                Json::Value subdevicesFromGroups(Json::arrayValue);
-                for (auto& subdeviceSchema: deviceTemplate["subdevices"]) {
-                    TransformGroupsToSubdevices(subdeviceSchema["device"], subdevicesFromGroups);
-                }
-                for (auto& subdeviceSchema: subdevicesFromGroups) {
-                    deviceTemplate["subdevices"].append(subdeviceSchema);
-                }
-                TransformGroupsToSubdevices(deviceTemplate, deviceTemplate["subdevices"]);
-                TSubDevicesTemplateMap subdevices(dt, deviceTemplate);
-                std::unordered_map<std::string, std::string> subdeviceTypeHashes;
-                for (const auto& dt: subdevices.GetDeviceTypes()) {
-                    subdeviceTypeHashes[GetSubdeviceKey(dt)] = dt;
-                }
+                if (dt == "unknown") {
+                    auto v = device["value"];
+                    device.removeMember("device_type");
+                    device.removeMember("value");
+                    device = v;
+                } else {
+                    Json::Value deviceTemplate(templates.GetTemplate(dt).Schema);
+                    Json::Value subdevicesFromGroups(Json::arrayValue);
+                    for (auto& subdeviceSchema: deviceTemplate["subdevices"]) {
+                        TransformGroupsToSubdevices(subdeviceSchema["device"], subdevicesFromGroups);
+                    }
+                    for (auto& subdeviceSchema: subdevicesFromGroups) {
+                        deviceTemplate["subdevices"].append(subdeviceSchema);
+                    }
+                    TransformGroupsToSubdevices(deviceTemplate, deviceTemplate["subdevices"]);
+                    TSubDevicesTemplateMap subdevices(dt, deviceTemplate);
+                    std::unordered_map<std::string, std::string> subdeviceTypeHashes;
+                    for (const auto& dt: subdevices.GetDeviceTypes()) {
+                        subdeviceTypeHashes[GetSubdeviceKey(dt)] = dt;
+                    }
 
-                Json::Value filteredChannels(
-                    FilterStandardChannels(device, deviceTemplate, subdevices, subdeviceTypeHashes));
-                device.removeMember("standard_channels");
-                for (Json::Value& ch: device["channels"]) {
-                    filteredChannels.append(ch);
-                }
-                device["channels"].swap(filteredChannels);
+                    Json::Value filteredChannels(
+                        FilterStandardChannels(device, deviceTemplate, subdevices, subdeviceTypeHashes));
+                    device.removeMember("standard_channels");
+                    for (Json::Value& ch: device["channels"]) {
+                        filteredChannels.append(ch);
+                    }
+                    device["channels"].swap(filteredChannels);
 
-                ExpandGroupChannels(device, deviceTemplate);
-                if (device["channels"].empty()) {
-                    device.removeMember("channels");
+                    ExpandGroupChannels(device, deviceTemplate);
+                    if (device["channels"].empty()) {
+                        device.removeMember("channels");
+                    }
                 }
             }
 

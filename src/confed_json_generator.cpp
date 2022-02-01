@@ -10,6 +10,17 @@ using namespace WBMQTT::JSON;
 
 namespace
 {
+    // poll_interval is deprecated, we convert it to read_rate_limit_ms
+    void ConvertPollIntervalToReadRateLimit(Json::Value& node)
+    {
+        if (node.isMember("poll_interval")) {
+            if (!node.isMember("read_rate_limit_ms")) {
+                node["read_rate_limit_ms"] = node["poll_interval"];
+            }
+            node.removeMember("poll_interval");
+        }
+    }
+
     Json::Value MakeJsonFromChannelTemplate(const Json::Value& channelTemplate)
     {
         Json::Value res;
@@ -27,7 +38,8 @@ namespace
             }
             return res;
         }
-        SetIfExists(res, "poll_interval", channelTemplate, "poll_interval");
+        SetIfExists(res, "read_rate_limit_ms", channelTemplate, "poll_interval");
+        SetIfExists(res, "read_rate_limit_ms", channelTemplate, "read_rate_limit_ms");
         res["enabled"] = true;
         SetIfExists(res, "enabled", channelTemplate, "enabled");
         return res;
@@ -41,7 +53,9 @@ namespace
 
         Json::Value res;
         res["name"] = channelConfig["name"];
-        SetIfExists(res, "poll_interval", channelConfig, "poll_interval");
+        SetIfExists(res, "read_rate_limit_ms", channelConfig, "poll_interval");
+        SetIfExists(res, "read_rate_limit_ms", channelConfig, "read_rate_limit_ms");
+        SetIfExists(res, "read_period_ms", channelConfig, "read_period_ms");
         res["enabled"] = true;
         SetIfExists(res, "enabled", channelConfig, "enabled");
         return res;
@@ -264,13 +278,24 @@ namespace
     Json::Value MakeDeviceForConfed(const Json::Value& config, ITemplateMap& deviceTemplates)
     {
         auto dt = config["device_type"].asString();
-        auto deviceTemplate = deviceTemplates.GetTemplate(dt);
-        Json::Value schema(deviceTemplate.Schema);
+
+        const TDeviceTemplate* deviceTemplate;
+        try {
+            deviceTemplate = &deviceTemplates.GetTemplate(dt);
+        } catch (...) {
+            Json::Value res;
+            res["device_type"] = "unknown";
+            res["value"] = config;
+            return res;
+        }
+
+        Json::Value schema(deviceTemplate->Schema);
         if (!schema.isMember("subdevices")) {
             schema["subdevices"] = Json::Value(Json::arrayValue);
         }
 
         Json::Value newDev(config);
+        ConvertPollIntervalToReadRateLimit(newDev);
         JoinChannelsToGroups(newDev, schema);
 
         TransformGroupsToSubdevices(schema, schema["subdevices"]);
@@ -283,7 +308,7 @@ namespace
             newDev["channels"] = customChannels;
         }
         if (!standardChannels.empty()) {
-            TSubDevicesTemplateMap subDeviceTemplates(deviceTemplate.Type, schema);
+            TSubDevicesTemplateMap subDeviceTemplates(deviceTemplate->Type, schema);
             MakeSubDevicesForConfed(standardChannels, subDeviceTemplates);
             newDev["standard_channels"] = standardChannels;
         }
@@ -314,10 +339,8 @@ Json::Value MakeJsonForConfed(const std::string& configFileName,
                               TSerialDeviceFactory& deviceFactory)
 {
     Json::Value root(Parse(configFileName));
-    auto configSchema =
-        MakeSchemaForConfigValidation(baseConfigSchema, GetValidationDeviceTypes(root), templates, deviceFactory);
-    Validate(root, configSchema);
     for (Json::Value& port: root["ports"]) {
+        ConvertPollIntervalToReadRateLimit(port);
         for (Json::Value& device: port["devices"]) {
             if (device.isMember("device_type")) {
                 device = MakeDeviceForConfed(device, templates);

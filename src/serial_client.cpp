@@ -1,37 +1,50 @@
 #include "serial_client.h"
 
+#include <chrono>
 #include <iostream>
 #include <unistd.h>
-#include <unordered_map>
+
+using namespace std::chrono_literals;
 
 #define LOG(logger) logger.Log() << "[serial client] "
 
 namespace
 {
-    const std::chrono::minutes PORT_OPEN_ERROR_NOTIFICATION_INTERVAL(5);
+    const auto PORT_OPEN_ERROR_NOTIFICATION_INTERVAL = 5min;
+    const auto MAX_CLOSED_PORT_CYCLE_TIME = 500ms;
+    const auto MAX_POLL_TIME = 100ms;
+    const auto MAX_LOW_PRIORITY_LAG = 1s;
+    const auto MAX_FLUSHES_WHEN_POLL_IS_DUE = 20;
 
-    struct TSerialPollEntry: public TPollEntry
+    bool PrepareToAccessDevice(PSerialDevice lastAccessedDevice, PSerialDevice dev, Metrics::TMetrics& metrics)
     {
-        TSerialPollEntry(PRegisterRange range)
-        {
-            Ranges.push_back(range);
+        if (lastAccessedDevice && dev != lastAccessedDevice) {
+            try {
+                metrics.StartPoll({lastAccessedDevice->DeviceConfig()->Id, "End session"});
+                lastAccessedDevice->EndSession();
+            } catch (const TSerialDeviceException& e) {
+                auto& logger = lastAccessedDevice->GetIsDisconnected() ? Debug : Warn;
+                LOG(logger) << "TSerialDevice::EndSession(): " << e.what() << " [slave_id is "
+                            << lastAccessedDevice->ToString() + "]";
+            }
         }
-        std::chrono::milliseconds PollInterval() const
-        {
-            return Ranges.front()->PollInterval();
+        try {
+            metrics.StartPoll({dev->DeviceConfig()->Id, "Start session"});
+            bool deviceWasDisconnected = dev->GetIsDisconnected();
+            if (deviceWasDisconnected || dev != lastAccessedDevice) {
+                dev->Prepare();
+            }
+            return true;
+        } catch (const TSerialDeviceException& e) {
+            auto& logger = dev->GetIsDisconnected() ? Debug : Warn;
+            LOG(logger) << "Failed to open session: " << e.what() << " [slave_id is " << dev->ToString() + "]";
+            return false;
         }
-        std::list<PRegisterRange> Ranges;
-    };
-    typedef std::shared_ptr<TSerialPollEntry> PSerialPollEntry;
+    }
 
-    Metrics::TPollItem ToMetricsPollItem(const std::string& device, const std::list<PRegister>& regs)
+    bool IsHighPriority(const TRegister& reg)
     {
-        Metrics::TPollItem res;
-        res.Device = device;
-        for (const auto& reg: regs) {
-            res.Controls.push_back(reg->GetChannelName());
-        }
-        return res;
+        return bool(reg.ReadPeriod);
     }
 };
 
@@ -42,12 +55,10 @@ TSerialClient::TSerialClient(const std::vector<PSerialDevice>& devices,
     : Port(port),
       Devices(devices),
       Active(false),
-      ReadCallback([](PRegister, bool) {}),
-      ErrorCallback([](PRegister, bool) {}),
       FlushNeeded(new TBinarySemaphore),
-      Plan(std::make_shared<TPollPlan>([this]() { return Port->CurrentTime(); })),
+      Scheduler(TPreemptivePolicy(MAX_LOW_PRIORITY_LAG)),
       OpenCloseLogic(openCloseSettings),
-      ConnectLogger(std::chrono::minutes(5), "[serial client] "),
+      ConnectLogger(PORT_OPEN_ERROR_NOTIFICATION_INTERVAL, "[serial client] "),
       Metrics(metrics)
 {}
 
@@ -90,50 +101,15 @@ void TSerialClient::Connect()
 
 void TSerialClient::PrepareRegisterRanges()
 {
-    // all of this is seemingly slow but it's actually only done once
-    Plan->Reset();
-    PSerialDevice last_device(0);
-    std::list<PRegister> cur_regs;
-    auto it = RegList.begin();
-    std::list<PSerialPollEntry> entries;
-    std::unordered_map<long long, PSerialPollEntry> interval_map;
-    for (;;) {
-        bool at_end = it == RegList.end();
-        if ((at_end || (*it)->Device() != last_device) && !cur_regs.empty()) {
-            cur_regs.sort([](const PRegister& a, const PRegister& b) {
-                return a->Type < b->Type || (a->Type == b->Type && a->GetAddress() < b->GetAddress());
-            });
-            interval_map.clear();
-
-            // Join multiple ranges with same poll period into a
-            // single scheduling entry. This is necessary because
-            // switching between devices may require extra
-            // delays. This is far from being an ideal solution
-            // though.
-            for (auto range: last_device->SplitRegisterList(cur_regs)) {
-                PSerialPollEntry entry;
-                long long interval = range->PollInterval().count();
-                auto it = interval_map.find(interval);
-                if (it == interval_map.end()) {
-                    entry = std::make_shared<TSerialPollEntry>(range);
-                    interval_map[interval] = entry;
-                    Plan->AddEntry(entry);
-                } else
-                    it->second->Ranges.push_back(range);
-            }
-            cur_regs.clear();
+    auto now = std::chrono::steady_clock::now();
+    for (auto& reg: RegList) {
+        if (!reg->WriteOnly) {
+            // All registers are marked as high priority with poll time set to now.
+            // So they will be polled as soon as possible after service start.
+            // During next polls registers will be divided to low or high priority according to poll interval
+            Scheduler.AddEntry(reg, now, TPriority::High);
         }
-        if (at_end)
-            break;
-        last_device = (*it)->Device();
-        cur_regs.push_back(*it++);
     }
-}
-
-void TSerialClient::MaybeUpdateErrorState(PRegister reg, TRegisterHandler::TErrorState state)
-{
-    if (state != TRegisterHandler::UnknownErrorState && state != TRegisterHandler::ErrorStateUnchanged)
-        ErrorCallback(reg, state);
 }
 
 void TSerialClient::DoFlush()
@@ -142,35 +118,44 @@ void TSerialClient::DoFlush()
         auto handler = Handlers[reg];
         if (!handler->NeedToFlush())
             continue;
-        PrepareToAccessDevice(handler->Device());
-        Metrics.StartPoll({handler->Device()->DeviceConfig()->Id, "Command"});
-        auto flushRes = handler->Flush();
-        Metrics.StartPoll(Metrics::NON_BUS_POLLING_TASKS);
-        if (handler->CurrentErrorState() != TRegisterHandler::WriteError &&
-            handler->CurrentErrorState() != TRegisterHandler::ReadWriteError)
-        {
-            ReadCallback(reg, flushRes.ValueIsChanged);
+        if (PrepareToAccessDevice(LastAccessedDevice, handler->Device(), Metrics)) {
+            LastAccessedDevice = handler->Device();
+            Metrics.StartPoll({handler->Device()->DeviceConfig()->Id, "Command"});
+            handler->Flush();
+        } else {
+            reg->SetError(TRegister::TError::WriteError);
         }
-        MaybeUpdateErrorState(reg, flushRes.Error);
+        Metrics.StartPoll(Metrics::NON_BUS_POLLING_TASKS);
+        if (reg->GetErrorState().test(TRegister::TError::WriteError)) {
+            if (ErrorCallback) {
+                ErrorCallback(reg);
+            }
+        } else {
+            if (ReadCallback) {
+                ReadCallback(reg);
+            }
+        }
     }
 }
 
 void TSerialClient::WaitForPollAndFlush()
 {
-    // When it's time for a next poll, take measures
-    // to avoid poll starvation
-    if (Plan->PollIsDue()) {
+    auto now = std::chrono::steady_clock::now();
+    std::chrono::steady_clock::time_point wait_until = Scheduler.GetNextPollTime();
+    if (now >= wait_until) {
         MaybeFlushAvoidingPollStarvationButDontWait();
         return;
     }
-    auto wait_until = Plan->GetNextPollTimePoint();
-    while (Port->Wait(FlushNeeded, wait_until)) {
-        // Don't hold the lock while flushing
+
+    if (Debug.IsEnabled()) {
+        LOG(Debug) << Port->GetDescription()
+                   << std::chrono::duration_cast<std::chrono::milliseconds>(now.time_since_epoch()).count()
+                   << ": Wait until "
+                   << std::chrono::duration_cast<std::chrono::milliseconds>(wait_until.time_since_epoch()).count();
+    }
+
+    while (FlushNeeded->Wait(wait_until)) {
         DoFlush();
-        if (Plan->PollIsDue()) {
-            MaybeFlushAvoidingPollStarvationButDontWait();
-            return;
-        }
     }
 }
 
@@ -193,176 +178,24 @@ void TSerialClient::MaybeFlushAvoidingPollStarvationButDontWait()
         DoFlush();
 }
 
-void TSerialClient::SetReadError(PRegisterRange range)
+void TSerialClient::SetReadError(PRegister reg)
 {
-    for (auto reg: range->RegisterList()) {
-        reg->SetError(ST_UNKNOWN_ERROR);
-        bool changed;
-        auto handler = Handlers[reg];
-
-        if (handler->NeedToPoll())
-            // TBD: separate AcceptDeviceReadError method (changed is unused here)
-            MaybeUpdateErrorState(reg, handler->AcceptDeviceValue(0, false, &changed));
+    reg->SetError(TRegister::TError::ReadError);
+    if (ErrorCallback) {
+        ErrorCallback(reg);
     }
 }
 
-std::list<PRegisterRange> TSerialClient::PollRange(PRegisterRange range)
+void TSerialClient::ProcessPolledRegister(PRegister reg)
 {
-    PSerialDevice dev = range->Device();
-    PrepareToAccessDevice(dev);
-    Metrics.StartPoll(ToMetricsPollItem(dev->DeviceConfig()->Id, range->RegisterList()));
-    std::list<PRegisterRange> newRanges = dev->ReadRegisterRange(range);
-    Metrics.StartPoll(Metrics::NON_BUS_POLLING_TASKS);
-    for (auto& reg: range->RegisterList()) {
-        bool changed;
-        auto handler = Handlers[reg];
-        if (reg->GetError()) {
-            if (handler->NeedToPoll())
-                // TBD: separate AcceptDeviceReadError method (changed is unused here)
-                MaybeUpdateErrorState(reg, handler->AcceptDeviceValue(0, false, &changed));
-        } else {
-            if (handler->NeedToPoll()) {
-                MaybeUpdateErrorState(reg, handler->AcceptDeviceValue(reg->GetValue(), true, &changed));
-                // Note that handler->CurrentErrorState() is not the
-                // same as the value returned by handler->AcceptDeviceValue(...),
-                // because the latter may be ErrorStateUnchanged.
-                if (handler->CurrentErrorState() != TRegisterHandler::ReadError &&
-                    handler->CurrentErrorState() != TRegisterHandler::ReadWriteError)
-                    ReadCallback(reg, changed);
-            }
+    if (reg->GetErrorState().count()) {
+        if (ErrorCallback) {
+            ErrorCallback(reg);
         }
-    }
-    return newRanges;
-}
-
-void TSerialClient::OpenPortCycle()
-{
-    WaitForPollAndFlush();
-
-    // devices whose registers were polled during this cycle and statues
-    std::map<PSerialDevice, std::set<EStatus>> devicesRangesStatuses;
-
-    Plan->ProcessPending([&](const PPollEntry& entry) {
-        auto pollEntry = dynamic_cast<TSerialPollEntry*>(entry.get());
-        std::list<PRegisterRange> newRanges;
-        for (auto range: pollEntry->Ranges) {
-            auto device = range->Device();
-            auto& statuses = devicesRangesStatuses[device];
-
-            if (device->GetIsDisconnected()) {
-                // limited polling mode
-                if (statuses.empty()) {
-                    // First interaction with disconnected device within this cycle: Try to reconnect
-
-                    // TODO: Not a good solution as LastAccessedDevice can be disconnected too.
-                    //       But we can't rely on GetIsDisconnected here because it updates only after full cycle.
-                    //       The whole EndSession/GetIsDisconnected logic should be revised
-                    try {
-                        if (LastAccessedDevice && LastAccessedDevice != device) {
-                            Metrics.StartPoll({LastAccessedDevice->DeviceConfig()->Id, "End session"});
-                            LastAccessedDevice->EndSession();
-                        }
-                    } catch (const TSerialDeviceException& e) {
-                        auto& logger = LastAccessedDevice->GetIsDisconnected() ? Debug : Warn;
-                        LOG(logger) << "TSerialDevice::EndSession(): " << e.what() << " [slave_id is "
-                                    << LastAccessedDevice->ToString() + "]";
-                    }
-
-                    // Force Prepare() (i.e. start session)
-                    try {
-                        LastAccessedDevice = device;
-                        Metrics.StartPoll({LastAccessedDevice->DeviceConfig()->Id, "Start session"});
-                        device->Prepare();
-                    } catch (const TSerialDeviceException& e) {
-                        LOG(Debug) << "TSerialDevice::Prepare(): " << e.what() << " [slave_id is "
-                                   << device->ToString() + "]";
-                        statuses.insert(ST_UNKNOWN_ERROR);
-                    }
-
-                    if (device->HasSetupItems()) {
-                        Metrics.StartPoll({device->DeviceConfig()->Id, "Setup items"});
-                        auto wrote = device->WriteSetupRegisters();
-                        statuses.insert(wrote ? ST_OK : ST_UNKNOWN_ERROR);
-                    }
-                }
-                // Interaction with disconnected device that has only errors - still disconnected
-                if (!statuses.empty() && statuses.count(ST_UNKNOWN_ERROR) == statuses.size()) {
-                    SetReadError(range);
-                    newRanges.push_back(range);
-                    continue;
-                }
-            }
-            try {
-                newRanges.splice(newRanges.end(), PollRange(range));
-                statuses.insert(range->GetStatus());
-            } catch (const TSerialDeviceException& e) {
-                LOG(Error) << e.what();
-                statuses.insert(ST_UNKNOWN_ERROR);
-                SetReadError(range);
-                newRanges.push_back(range);
-            }
+    } else {
+        if (ReadCallback) {
+            ReadCallback(reg);
         }
-        MaybeFlushAvoidingPollStarvationButDontWait();
-        pollEntry->Ranges.swap(newRanges);
-    });
-
-    Metrics.StartPoll(Metrics::NON_BUS_POLLING_TASKS);
-
-    UpdateFlushNeeded();
-
-    for (const auto& deviceRangesStatuses: devicesRangesStatuses) {
-        const auto& device = deviceRangesStatuses.first;
-        const auto& statuses = deviceRangesStatuses.second;
-
-        if (statuses.empty()) {
-            LOG(Debug) << "invariant violation: statuses empty @ " << __func__;
-            continue; // this should not happen
-        }
-
-        bool deviceWasDisconnected = device->GetIsDisconnected(); // don't move after device->OnCycleEnd(...);
-        {
-            bool cycleFailed = statuses.count(ST_UNKNOWN_ERROR) == statuses.size();
-            device->OnCycleEnd(!cycleFailed);
-        }
-
-        if (deviceWasDisconnected && !device->GetIsDisconnected()) {
-            OnDeviceReconnect(device);
-        }
-    }
-
-    for (const auto& p: Devices) {
-        p->EndPollCycle();
-    }
-
-    bool cycleFailed = std::all_of(Devices.begin(), Devices.end(), [](const PSerialDevice& device) {
-        return device->GetIsDisconnected();
-    });
-
-    OpenCloseLogic.CloseIfNeeded(Port, cycleFailed);
-    Metrics.StartPoll(Metrics::BUS_IDLE);
-}
-
-void TSerialClient::ClosedPortCycle()
-{
-    std::unordered_set<PSerialDevice> polledDevices;
-    Plan->ProcessPending([&](const PPollEntry& entry) {
-        auto pollEntry = std::dynamic_pointer_cast<TSerialPollEntry>(entry);
-        for (auto range: pollEntry->Ranges) {
-            polledDevices.insert(range->Device());
-            SetReadError(range);
-        }
-    });
-
-    for (const auto& p: polledDevices) {
-        p->OnCycleEnd(false);
-        p->EndPollCycle();
-    }
-
-    for (const auto& reg: RegList) {
-        auto handler = Handlers[reg];
-        if (!handler->NeedToFlush())
-            continue;
-        MaybeUpdateErrorState(reg, handler->Flush(TRegisterHandler::WriteError).Error);
     }
 }
 
@@ -381,7 +214,52 @@ void TSerialClient::Cycle()
         OpenPortCycle();
     } else {
         ClosedPortCycle();
-        std::this_thread::sleep_for(std::chrono::milliseconds(500));
+    }
+}
+
+void TSerialClient::ScheduleNextPoll(PRegister reg, std::chrono::steady_clock::time_point pollStartTime)
+{
+    if (reg->GetAvailable() == TRegisterAvailability::UNAVAILABLE) {
+        return;
+    }
+    if (IsHighPriority(*reg)) {
+        Scheduler.AddEntry(reg, pollStartTime + *(reg->ReadPeriod), TPriority::High);
+        return;
+    }
+    if (reg->ReadRateLimit) {
+        Scheduler.AddEntry(reg, pollStartTime + *(reg->ReadRateLimit), TPriority::Low);
+        return;
+    }
+    // Low priority tasks should be scheduled to read as soon as possible,
+    // but with a small delay after current read.
+    Scheduler.AddEntry(reg, pollStartTime + 1ms, TPriority::Low);
+}
+
+void TSerialClient::ClosedPortCycle()
+{
+    auto now = std::chrono::steady_clock::now();
+    auto wait_until = Scheduler.GetNextPollTime();
+    if (wait_until - now > MAX_CLOSED_PORT_CYCLE_TIME) {
+        wait_until = now + MAX_CLOSED_PORT_CYCLE_TIME;
+    }
+    while (FlushNeeded->Wait(wait_until)) {
+        for (const auto& reg: RegList) {
+            auto handler = Handlers[reg];
+            if (!handler->NeedToFlush())
+                continue;
+            reg->SetError(TRegister::TError::WriteError);
+            if (ErrorCallback) {
+                ErrorCallback(reg);
+            }
+        }
+    }
+    now = std::chrono::steady_clock::now();
+    TClosedPortRegisterReader reader;
+    Scheduler.AccumulateNext(now, reader);
+    for (auto& reg: reader.GetRegisters()) {
+        SetReadError(reg);
+        ScheduleNextPoll(reg, now);
+        reg->Device()->SetTransferResult(false);
     }
 }
 
@@ -395,22 +273,12 @@ void TSerialClient::SetTextValue(PRegister reg, const std::string& value)
     GetHandler(reg)->SetTextValue(value);
 }
 
-std::string TSerialClient::GetTextValue(PRegister reg) const
-{
-    return GetHandler(reg)->TextValue();
-}
-
-bool TSerialClient::DidRead(PRegister reg) const
-{
-    return GetHandler(reg)->DidRead();
-}
-
-void TSerialClient::SetReadCallback(const TSerialClient::TReadCallback& callback)
+void TSerialClient::SetReadCallback(const TSerialClient::TCallback& callback)
 {
     ReadCallback = callback;
 }
 
-void TSerialClient::SetErrorCallback(const TSerialClient::TErrorCallback& callback)
+void TSerialClient::SetErrorCallback(const TSerialClient::TCallback& callback)
 {
     ErrorCallback = callback;
 }
@@ -428,36 +296,143 @@ PRegisterHandler TSerialClient::GetHandler(PRegister reg) const
     return it->second;
 }
 
-void TSerialClient::PrepareToAccessDevice(PSerialDevice dev)
+void TSerialClient::SetRegistersAvailability(PSerialDevice dev, TRegisterAvailability availability)
 {
-    if (dev != LastAccessedDevice) {
-        if (LastAccessedDevice) {
-            try {
-                Metrics.StartPoll({LastAccessedDevice->DeviceConfig()->Id, "End session"});
-                LastAccessedDevice->EndSession();
-            } catch (const TSerialDeviceException& e) {
-                auto& logger = dev->GetIsDisconnected() ? Debug : Warn;
-                LOG(logger) << "TSerialDevice::EndSession(): " << e.what() << " [slave_id is "
-                            << LastAccessedDevice->ToString() + "]";
-            }
-        }
-        LastAccessedDevice = dev;
-        try {
-            Metrics.StartPoll({dev->DeviceConfig()->Id, "Start session"});
-            dev->Prepare();
-        } catch (const TSerialDeviceException& e) {
-            auto& logger = dev->GetIsDisconnected() ? Debug : Warn;
-            LOG(logger) << "TSerialDevice::Prepare(): " << e.what() << " [slave_id is " << dev->ToString() + "]";
+    for (auto& reg: RegList) {
+        if (reg->Device() == dev) {
+            reg->SetAvailable(availability);
         }
     }
 }
 
-void TSerialClient::OnDeviceReconnect(PSerialDevice dev)
+std::vector<PRegisterRange> TSerialClient::ReadRanges(TRegisterReader& reader,
+                                                      PRegisterRange range,
+                                                      std::chrono::steady_clock::time_point pollStartTime,
+                                                      bool forceError)
 {
-    LOG(Info) << "device " << dev->ToString() << " is connected";
-    for (auto& reg: RegList) {
-        if (reg->Device() == dev) {
-            reg->SetAvailable(true);
+    std::vector<PRegisterRange> ranges;
+    bool firstIteration = true;
+    auto device = range->Device();
+    while (true) {
+        ranges.push_back(range);
+        // Must read first range to update device connection state
+        if (!forceError && (firstIteration || !device->GetIsDisconnected())) {
+            firstIteration = false;
+            device->ReadRegisterRange(range);
+            Metrics.StartPoll(Metrics::NON_BUS_POLLING_TASKS);
+            for (auto& reg: range->RegisterList()) {
+                ProcessPolledRegister(reg);
+            }
+        } else {
+            for (auto& reg: range->RegisterList()) {
+                SetReadError(reg);
+            }
+        }
+        auto now = std::chrono::steady_clock::now();
+        auto delta = MAX_POLL_TIME - std::chrono::duration_cast<std::chrono::milliseconds>(now - pollStartTime);
+        if (delta <= std::chrono::milliseconds::zero()) {
+            break;
+        }
+        reader.Reset(delta);
+        Scheduler.AccumulateNext(now, reader);
+        range = reader.GetRegisterRange();
+        if (!range) {
+            break;
         }
     }
+    return ranges;
+}
+
+void TSerialClient::OpenPortCycle()
+{
+    Metrics.StartPoll(Metrics::NON_BUS_POLLING_TASKS);
+    WaitForPollAndFlush();
+
+    auto pollStartTime = std::chrono::steady_clock::now();
+    TRegisterReader reader(MAX_POLL_TIME);
+
+    Scheduler.AccumulateNext(pollStartTime, reader);
+    auto range = reader.GetRegisterRange();
+    if (!range) {
+        return;
+    }
+    auto device = range->Device();
+    bool deviceWasConnected = !device->GetIsDisconnected();
+    bool forceError = true;
+    if (PrepareToAccessDevice(LastAccessedDevice, device, Metrics)) {
+        LastAccessedDevice = device;
+        forceError = false;
+    }
+    auto ranges = ReadRanges(reader, range, pollStartTime, forceError);
+    device->EndPollCycle();
+    for (const auto& range: ranges) {
+        for (const auto& r: range->RegisterList()) {
+            ScheduleNextPoll(r, pollStartTime);
+        }
+    }
+    if (deviceWasConnected && device->GetIsDisconnected()) {
+        SetRegistersAvailability(device, TRegisterAvailability::UNKNOWN);
+    }
+    OpenCloseLogic.CloseIfNeeded(Port, device->GetIsDisconnected());
+    UpdateFlushNeeded();
+    Metrics.StartPoll(Metrics::BUS_IDLE);
+}
+
+bool TRegisterComparePredicate::operator()(const PRegister& r1, const PRegister& r2) const
+{
+    if (r1->Device() != r2->Device()) {
+        return r1->Device()->DeviceConfig()->SlaveId > r2->Device()->DeviceConfig()->SlaveId;
+    }
+    if (r1->Type != r2->Type) {
+        return r1->Type > r2->Type;
+    }
+    if (r1->GetAddress() < r2->GetAddress()) {
+        return false;
+    }
+    if (r2->GetAddress() < r1->GetAddress()) {
+        return true;
+    }
+    // addresses are equal, compare offsets
+    return r1->BitOffset > r2->BitOffset;
+}
+
+TRegisterReader::TRegisterReader(std::chrono::milliseconds maxPollTime): MaxPollTime(maxPollTime)
+{}
+
+bool TRegisterReader::operator()(const PRegister& reg, std::chrono::milliseconds pollLimit)
+{
+    if (!RegisterRange) {
+        if (Device) {
+            if (Device != reg->Device()) {
+                return false;
+            }
+        } else {
+            Device = reg->Device();
+        }
+        RegisterRange = Device->CreateRegisterRange(reg);
+        return true;
+    }
+    return RegisterRange->Add(reg, std::min(MaxPollTime, pollLimit));
+}
+
+PRegisterRange TRegisterReader::GetRegisterRange() const
+{
+    return RegisterRange;
+}
+
+bool TClosedPortRegisterReader::operator()(const PRegister& reg, std::chrono::milliseconds pollLimit)
+{
+    Regs.emplace_back(reg);
+    return true;
+}
+
+std::list<PRegister>& TClosedPortRegisterReader::GetRegisters()
+{
+    return Regs;
+}
+
+void TRegisterReader::Reset(std::chrono::milliseconds maxPollTime)
+{
+    MaxPollTime = maxPollTime;
+    RegisterRange.reset();
 }

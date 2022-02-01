@@ -26,10 +26,11 @@ public:
     };
 
     TMercury230Device(PDeviceConfig, PPort port, PProtocol protocol);
-    uint64_t ReadRegister(PRegister reg);
-    void EndPollCycle();
+    void EndPollCycle() override;
 
     static void Register(TSerialDeviceFactory& factory);
+
+    uint64_t ReadRegisterImpl(PRegister reg) override;
 
 protected:
     bool ConnectionSetup();
