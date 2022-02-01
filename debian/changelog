@@ -1,3 +1,9 @@
+wb-mqtt-serial (2.48.0) stable; urgency=medium
+
+  * Configs with devices with invalid templates can be edited in homeui
+
+ -- Petr Krasnoshchekov <petr.krasnoshchekov@wirenboard.ru>  Tue, 01 Feb 2022 10:31:49 +0500
+
 wb-mqtt-serial (2.47.0) stable; urgency=medium
 
   * New poll scheduler.

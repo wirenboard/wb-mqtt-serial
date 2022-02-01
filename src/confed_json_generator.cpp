@@ -278,8 +278,18 @@ namespace
     Json::Value MakeDeviceForConfed(const Json::Value& config, ITemplateMap& deviceTemplates)
     {
         auto dt = config["device_type"].asString();
-        auto deviceTemplate = deviceTemplates.GetTemplate(dt);
-        Json::Value schema(deviceTemplate.Schema);
+
+        const TDeviceTemplate* deviceTemplate;
+        try {
+            deviceTemplate = &deviceTemplates.GetTemplate(dt);
+        } catch (...) {
+            Json::Value res;
+            res["device_type"] = "unknown";
+            res["value"] = config;
+            return res;
+        }
+
+        Json::Value schema(deviceTemplate->Schema);
         if (!schema.isMember("subdevices")) {
             schema["subdevices"] = Json::Value(Json::arrayValue);
         }
@@ -298,7 +308,7 @@ namespace
             newDev["channels"] = customChannels;
         }
         if (!standardChannels.empty()) {
-            TSubDevicesTemplateMap subDeviceTemplates(deviceTemplate.Type, schema);
+            TSubDevicesTemplateMap subDeviceTemplates(deviceTemplate->Type, schema);
             MakeSubDevicesForConfed(standardChannels, subDeviceTemplates);
             newDev["standard_channels"] = standardChannels;
         }
@@ -329,9 +339,6 @@ Json::Value MakeJsonForConfed(const std::string& configFileName,
                               TSerialDeviceFactory& deviceFactory)
 {
     Json::Value root(Parse(configFileName));
-    auto configSchema =
-        MakeSchemaForConfigValidation(baseConfigSchema, GetValidationDeviceTypes(root), templates, deviceFactory);
-    Validate(root, configSchema);
     for (Json::Value& port: root["ports"]) {
         ConvertPollIntervalToReadRateLimit(port);
         for (Json::Value& device: port["devices"]) {
