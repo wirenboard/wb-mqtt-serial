@@ -538,6 +538,8 @@ std::string ConvertFromRawValue(const TRegisterConfig& reg, uint64_t value)
 {
     value = InvertWordOrderIfNeeded(reg, value);
     switch (reg.Format) {
+        case U8:
+            return ToScaledTextValue(reg, uint8_t(value & 0xff));
         case S8:
             return ToScaledTextValue(reg, int8_t(value & 0xff));
         case S16:
