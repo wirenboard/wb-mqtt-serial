@@ -1,6 +1,6 @@
 wb-mqtt-serial (2.49.1) stable; urgency=medium
 
-  * Fixed a Phi parameter range for WB-MAP templates
+  * Extended range of phi parameter for WB-MAP templates from -32768 to 32767
 
  -- Roman Kochkin <roman.kochkin@wirenboard.ru>  Tue, 1 Feb 2022 23:46:00 +0300
 
