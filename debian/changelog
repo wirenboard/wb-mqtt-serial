@@ -1,3 +1,9 @@
+wb-mqtt-serial (2.49.2) stable; urgency=medium
+
+  * Fixed a incorrect value of the modbus register in U8 format
+
+ -- Roman Kochkin <roman.kochkin@wirenboard.ru>  Tue, 2 Feb 2022 15:59:00 +0300
+
 wb-mqtt-serial (2.49.1) stable; urgency=medium
 
   * Extended range of phi parameter for WB-MAP templates from -32768 to 32767
