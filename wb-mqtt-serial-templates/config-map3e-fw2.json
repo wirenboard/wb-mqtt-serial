@@ -56,7 +56,8 @@
                 "address": "0x1463",
                 "reg_type": "holding",
                 "format": "s16",
-                "min": 0,
+                "min": -32768,
+                "max": 32767,
                 "group": "l1",
                 "order": 2
             },
@@ -86,7 +87,8 @@
                 "address": "0x1464",
                 "reg_type": "holding",
                 "format": "s16",
-                "min": 0,
+                "min": -32768,
+                "max": 32767,
                 "group": "l2",
                 "order": 2
             },
@@ -116,7 +118,8 @@
                 "address": "0x1465",
                 "reg_type": "holding",
                 "format": "s16",
-                "min": 0,
+                "min": -32768,
+                "max": 32767,
                 "group": "l3",
                 "order": 2
             },
