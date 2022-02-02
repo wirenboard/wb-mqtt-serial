@@ -1,3 +1,9 @@
+wb-mqtt-serial (2.50.1) stable; urgency=medium
+
+  * Fixed a incorrect value of the modbus register in U8 format
+
+ -- Roman Kochkin <roman.kochkin@wirenboard.ru>  Mon, 7 Feb 2022 17:21:00 +0300
+
 wb-mqtt-serial (2.50.0) stable; urgency=medium
 
   * Holes feature is reimplemented
