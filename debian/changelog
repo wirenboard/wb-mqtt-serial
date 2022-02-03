@@ -1,3 +1,9 @@
+wb-mqtt-serial (2.50.0) stable; urgency=medium
+
+  * Added separate read and write register addresses for the Modbus device.
+
+ -- Roman Kochkin <roman.kochkin@wirenboard.ru>  Mon, 31 Jan 2022 12:49:00 +0300
+
 wb-mqtt-serial (2.49.1) stable; urgency=medium
 
   * Extended range of phi parameter for WB-MAP templates from -32768 to 32767

@@ -180,6 +180,7 @@ public:
 class TRegisterConfig: public std::enable_shared_from_this<TRegisterConfig>
 {
     std::shared_ptr<IRegisterAddress> Address;
+    std::shared_ptr<IRegisterAddress> WriteAddress;
 
 public:
     int Type;
@@ -204,6 +205,7 @@ public:
 
     TRegisterConfig(int type,
                     std::shared_ptr<IRegisterAddress> address,
+                    std::shared_ptr<IRegisterAddress> writeAddress,
                     RegisterFormat format,
                     double scale,
                     double offset,
@@ -224,6 +226,7 @@ public:
 
     static PRegisterConfig Create(int type = 0,
                                   std::shared_ptr<IRegisterAddress> address = std::shared_ptr<IRegisterAddress>(),
+                                  std::shared_ptr<IRegisterAddress> writeAddress = std::shared_ptr<IRegisterAddress>(),
                                   RegisterFormat format = U16,
                                   double scale = 1,
                                   double offset = 0,
@@ -248,6 +251,7 @@ public:
                                   uint8_t bit_width = 0);
 
     const IRegisterAddress& GetAddress() const;
+    const IRegisterAddress& GetWriteAddress() const;
 };
 
 struct TRegister;

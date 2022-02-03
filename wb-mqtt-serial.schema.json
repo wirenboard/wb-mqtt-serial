@@ -689,6 +689,14 @@
               "options": {
                 "keep_oneof_values": false
               }
+            },
+            "write_address": {
+              "$ref": "#/definitions/address",
+              "title": "Write Address",
+              "propertyOrder": 7,
+              "options": {
+                "keep_oneof_values": false
+              }
             }
           },
           "required": ["address"]
@@ -1782,6 +1790,7 @@
       "Command name": "Название команды",
       "Used for logging/debugging purposes only": "Используется только для диагностических сообщений",
       "Address": "Адрес",
+      "Write Address" : "Адрес записи",
       "Register index (0-65535 in case of Modbus)": "Номер регистра (0-65535 для Modbus)",
       "Value": "Значение",
       "Enabled": "Включено",
