@@ -1,3 +1,9 @@
+wb-mqtt-serial (2.52.0) stable; urgency=medium
+
+  * Added separate read and write register addresses for the Modbus device.
+
+ -- Roman Kochkin <roman.kochkin@wirenboard.ru>  Tue, 15 Feb 2022 12:24:00 +0300
+
 wb-mqtt-serial (2.51.0) stable; urgency=medium
 
   * MDM3 template: added Overcurrent channel

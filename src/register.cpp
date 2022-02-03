@@ -79,6 +79,14 @@ const IRegisterAddress& TRegisterConfig::GetAddress() const
     return *Address;
 }
 
+const IRegisterAddress& TRegisterConfig::GetWriteAddress() const
+{
+    if (WriteAddress == nullptr) {
+        return *Address;
+    }
+    return *WriteAddress;
+}
+
 std::string TRegister::ToString() const
 {
     if (Device()) {
@@ -164,6 +172,7 @@ std::mutex TRegister::Mutex;
 
 TRegisterConfig::TRegisterConfig(int type,
                                  std::shared_ptr<IRegisterAddress> address,
+                                 std::shared_ptr<IRegisterAddress> writeAddress,
                                  RegisterFormat format,
                                  double scale,
                                  double offset,
@@ -174,6 +183,7 @@ TRegisterConfig::TRegisterConfig(int type,
                                  uint8_t bit_offset,
                                  uint8_t bit_width)
     : Address(address),
+      WriteAddress(writeAddress),
       Type(type),
       Format(format),
       Scale(scale),
@@ -222,6 +232,7 @@ uint8_t TRegisterConfig::GetBitWidth() const
 
 PRegisterConfig TRegisterConfig::Create(int type,
                                         std::shared_ptr<IRegisterAddress> address,
+                                        std::shared_ptr<IRegisterAddress> writeAddress,
                                         RegisterFormat format,
                                         double scale,
                                         double offset,
@@ -234,6 +245,7 @@ PRegisterConfig TRegisterConfig::Create(int type,
 {
     return std::make_shared<TRegisterConfig>(type,
                                              address,
+                                             writeAddress,
                                              format,
                                              scale,
                                              offset,
@@ -259,6 +271,7 @@ PRegisterConfig TRegisterConfig::Create(int type,
 {
     return Create(type,
                   std::make_shared<TUint32RegisterAddress>(address),
+                  nullptr,
                   format,
                   scale,
                   offset,

@@ -151,9 +151,10 @@ Json::Value LoadConfigSchema(const std::string& schemaFileName);
 //! Register address
 struct TRegisterDesc
 {
-    std::shared_ptr<IRegisterAddress> Address; //! Register address
-    uint8_t BitOffset = 0;                     //! Offset of data in register in bits
-    uint8_t BitWidth = 0;                      //! Width of data in register in bits
+    std::shared_ptr<IRegisterAddress> Address;      //! Register address
+    std::shared_ptr<IRegisterAddress> WriteAddress; //! Register address
+    uint8_t BitOffset = 0;                          //! Offset of data in register in bits
+    uint8_t BitWidth = 0;                           //! Width of data in register in bits
 };
 
 class IRegisterAddressFactory
@@ -282,7 +283,9 @@ struct TRegisterBitsAddress
     uint8_t BitOffset = 0;
 };
 
-TRegisterBitsAddress LoadRegisterBitsAddress(const Json::Value& regCfg);
+TRegisterBitsAddress LoadRegisterBitsAddress(const Json::Value& register_data, const std::string& jsonPropertyName);
+
+TRegisterBitsAddress LoadRegisterBitsAddress(const Json::Value& register_data);
 
 /*!
  * Basic device factory implementation with uint32 register addresses
