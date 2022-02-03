@@ -283,7 +283,9 @@ struct TRegisterBitsAddress
 };
 
 TRegisterBitsAddress LoadRegisterBitsAddress(const Json::Value& register_data,
-                                             const std::string& jsonPropertyName = "address");
+                                             const std::string& jsonPropertyName);
+
+TRegisterBitsAddress LoadRegisterBitsAddress(const Json::Value& register_data);
 
 /*!
  * Basic device factory implementation with uint32 register addresses

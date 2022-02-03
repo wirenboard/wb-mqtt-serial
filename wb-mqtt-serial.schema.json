@@ -1678,6 +1678,7 @@
       "Command name": "Название команды",
       "Used for logging/debugging purposes only": "Используется только для диагностических сообщений",
       "Address": "Адрес",
+      "Write Address" : "Адрес записи",
       "Register index (0-65535 in case of Modbus)": "Номер регистра (0-65535 для Modbus)",
       "Value": "Значение",
       "Enabled": "Включено",

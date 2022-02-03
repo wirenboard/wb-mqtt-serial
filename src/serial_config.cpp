@@ -1303,6 +1303,19 @@ void RegisterProtocols(TSerialDeviceFactory& deviceFactory)
     Somfy::TDevice::Register(deviceFactory);
 }
 
+namespace
+{
+    constexpr auto WRITE_ADDRESS_PROPERTY_NAME = "write_address";
+    constexpr auto ADDRESS_PROPERTY_NAME = "address";
+
+    inline bool HasWriteAddressProperty(const Json::Value& regCfg)
+    {
+        return regCfg.isMember(WRITE_ADDRESS_PROPERTY_NAME) &&
+               !(regCfg[WRITE_ADDRESS_PROPERTY_NAME].isString() &&
+                 regCfg[WRITE_ADDRESS_PROPERTY_NAME].asString().empty());
+    }
+}
+
 TRegisterBitsAddress LoadRegisterBitsAddress(const Json::Value& register_data, const std::string& jsonPropertyName)
 {
     TRegisterBitsAddress res;
@@ -1339,22 +1352,14 @@ TRegisterBitsAddress LoadRegisterBitsAddress(const Json::Value& register_data, c
     return res;
 }
 
+TRegisterBitsAddress LoadRegisterBitsAddress(const Json::Value& register_data){
+    return LoadRegisterBitsAddress( register_data, ADDRESS_PROPERTY_NAME);
+}
+
 TUint32RegisterAddressFactory::TUint32RegisterAddressFactory(size_t bytesPerRegister)
     : BaseRegisterAddress(0),
       BytesPerRegister(bytesPerRegister)
 {}
-
-namespace
-{
-    constexpr auto WRITE_ADDRESS_PROPERTY_NAME = "write_address";
-
-    inline bool HasWriteAddressProperty(const Json::Value& regCfg)
-    {
-        return regCfg.isMember(WRITE_ADDRESS_PROPERTY_NAME) &&
-               !(regCfg[WRITE_ADDRESS_PROPERTY_NAME].isString() &&
-                 regCfg[WRITE_ADDRESS_PROPERTY_NAME].asString().empty());
-    }
-}
 
 TRegisterDesc TUint32RegisterAddressFactory::LoadRegisterAddress(const Json::Value& regCfg,
                                                                  const IRegisterAddress& deviceBaseAddress,
