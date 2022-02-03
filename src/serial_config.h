@@ -282,8 +282,7 @@ struct TRegisterBitsAddress
     uint8_t BitOffset = 0;
 };
 
-TRegisterBitsAddress LoadRegisterBitsAddress(const Json::Value& register_data,
-                                             const std::string& jsonPropertyName);
+TRegisterBitsAddress LoadRegisterBitsAddress(const Json::Value& register_data, const std::string& jsonPropertyName);
 
 TRegisterBitsAddress LoadRegisterBitsAddress(const Json::Value& register_data);
 

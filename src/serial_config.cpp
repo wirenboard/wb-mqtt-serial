@@ -1352,8 +1352,9 @@ TRegisterBitsAddress LoadRegisterBitsAddress(const Json::Value& register_data, c
     return res;
 }
 
-TRegisterBitsAddress LoadRegisterBitsAddress(const Json::Value& register_data){
-    return LoadRegisterBitsAddress( register_data, ADDRESS_PROPERTY_NAME);
+TRegisterBitsAddress LoadRegisterBitsAddress(const Json::Value& register_data)
+{
+    return LoadRegisterBitsAddress(register_data, ADDRESS_PROPERTY_NAME);
 }
 
 TUint32RegisterAddressFactory::TUint32RegisterAddressFactory(size_t bytesPerRegister)
