@@ -1,0 +1,439 @@
+@startuml
+
+class THandlerConfig {
+   +bool Debug
+   +PPublishParameters PublishParameters
+   +std::vector<PPortConfig> PortConfigs
+   +AddPortConfig(PPortConfig)
+}
+
+class TPortConfig{
+    +PPort Port
+    +std::vector<PSerialDevice> Devices
+    +std::optional<std::chrono::milliseconds> ReadRateLimit
+    +std::chrono::microseconds RequestDelay
+    +TPortOpenCloseLogic::TSettings OpenCloseSettings
+
+    +std::chrono::milliseconds ResponseTimeout
+    +bool IsModbusTcp
+
+    +void AddDevice(PSerialDevice device)
+}
+
+TPort <|.. TFileDescriptorPort
+TPort <|.. TSerialPort
+TPort <|.. TSerialPortWithIECHack
+TPort <|.. TTcpPort
+
+class TPortOpenCloseLogic
+{
+    +TPortOpenCloseLogic(TPortOpenCloseLogic::TSettings)
+
+    +void OpenIfAllowed(PPort)
+    +void CloseIfNeeded(PPort, bool allPreviousDataExchangeWasFailed)
+
+    -TPortOpenCloseLogic::TSettings Settings
+    -std::chrono::steady_clock::time_point LastSuccessfulCycle
+    -size_t RemainingFailCycles
+    -std::chrono::steady_clock::time_point NextOpenTryTime
+}
+
+class TPortOpenCloseLogic::TSettings
+{
+   +std::chrono::milliseconds MaxFailTime
+   +int ConnectionMaxFailCycles
+   +std::chrono::milliseconds ReopenTimeout
+}
+
+TPortOpenCloseLogic *-- TPortOpenCloseLogic::TSettings
+
+abstract class TPort
+{
+    +{abstract} void Open()
+    +{abstract} void Close()
+
+    +{abstract} bool IsOpen() const
+    +{abstract} void CheckPortOpen() const
+
+    +{abstract} void WriteBytes(const uint8_t* buf, int count)
+    +{abstract} uint8_t ReadByte(const std::chrono::microseconds& timeout)
+    +{abstract} size_t ReadFrame(...)
+    +{abstract} void SkipNoise()
+    +{abstract} void SleepSinceLastInteraction(const std::chrono::microseconds& us)
+    +{abstract} std::chrono::milliseconds GetSendTime(double bytesNumber)
+    +{abstract} std::string GetDescription(bool verbose)
+
+    +using TFrameCompletePred = std::function<bool(uint8_t* buf, int size)>;
+    +void Reopen()
+    +void WriteBytes(const std::vector<uint8_t>& buf)
+    +void WriteBytes(const std::string& buf)
+    +void SetSerialPortByteFormat(const TSerialPortByteFormat* params)
+}
+
+abstract class IProtocol
+{
+    +const std::string& GetName()
+    +PRegisterTypeMap GetRegTypes()
+    +{abstract} bool IsSameSlaveId(const std::string& id1, const std::string& id2)
+    +virtual bool IsModbus()
+    +virtual bool SupportsBroadcast()
+
+    -std::string Name
+    -PRegisterTypeMap RegTypes
+}
+
+class TSerialDevice
+{
+    +PRegisterRange CreateRegisterRange(PRegister reg)
+    +void Prepare()
+    +void EndSession()
+    +void WriteRegister(PRegister reg, uint64_t value)
+    +void EndPollCycle()
+    +void ReadRegisterRange(PRegisterRange range)
+    +std::string ToString()
+    +void InitSetupItems()
+
+    +PPort Port()
+    +PDeviceConfig DeviceConfig()
+    +PProtocol Protocol()
+
+    +void SetTransferResult(bool ok)
+    +bool GetIsDisconnected()
+
+    #std::vector<PDeviceSetupItem> SetupItems
+    #void PrepareImpl()
+    #uint64_t ReadRegisterImpl(PRegister reg)
+    #void WriteRegisterImpl(PRegister reg, uint64_t value)
+    #bool HasSetupItems()
+    #void WriteSetupRegisters()
+
+    -PPort SerialPort
+    -PDeviceConfig _DeviceConfig
+    -PProtocol _Protocol
+    -std::chrono::steady_clock::time_point LastSuccessfulCycle
+    -bool IsDisconnected
+    -int RemainingFailCycles
+}
+
+class TDeviceConfig
+{
+    +std::string Id
+    +std::string Name
+    +std::string SlaveId
+    +std::string DeviceType
+    +std::string Protocol
+    +std::vector<PDeviceChannelConfig> DeviceChannelConfigs
+    +std::vector<PDeviceSetupItemConfig> SetupItemConfigs
+    +std::vector<uint8_t> Password
+
+    +std::chrono::milliseconds ResponseTimeout
+    +std::chrono::milliseconds FrameTimeout
+    +std::chrono::milliseconds DeviceTimeout
+    +std::chrono::microseconds RequestDelay
+
+    +int AccessLevel
+    +int MaxRegHole
+    +int MaxBitHole
+    +int MaxReadRegisters
+    +int Stride
+    +int Shift
+    +PRegisterTypeMap TypeMap
+    +int DeviceMaxFailCycles
+
+    +int NextOrderValue()
+    +void AddChannel(PDeviceChannelConfig channel)
+    +void AddSetupItem(PDeviceSetupItemConfig item, std::string deviceTemplateTitle)
+    +std::string GetDescription()
+
+    -std::unordered_map<std::string, PDeviceSetupItemConfig> SetupItemsByAddress;
+}
+
+class TDeviceChannelConfig
+{
+    +std::string MqttId
+    +std::string Type
+    +std::string DeviceId
+    +int Order
+    +std::string OnValue
+    +std::string OffValue
+    +double Max
+    +double Min
+    +double Precision
+    +bool ReadOnly
+    +std::vector<PRegisterConfig> RegisterConfigs
+
+    +std::string GetName()
+    +TTitleTranslations GetTitles()
+    +void SetTitle(std::string name, std::string lang)
+
+    -TTitleTranslations Titles
+}
+
+class TRegisterConfig
+{
+    -std::shared_ptr<IRegisterAddress> Address
+
+    +int Type
+    +RegisterFormat Format
+    +double Scale
+    +double Offset
+    +double RoundTo
+    +bool WriteOnly
+    +bool ReadOnly
+    +std::string TypeName
+
+    +std::optional<std::chrono::milliseconds> ReadRateLimit
+    +std::optional<std::chrono::milliseconds> ReadPeriod
+    +std::optional<uint64_t> ErrorValue
+    +EWordOrder WordOrder
+    +uint8_t BitOffset
+    +uint8_t BitWidth
+    +std::optional<uint64_t> UnsupportedValue
+
+    +uint8_t GetBitWidth() const
+    +uint8_t GetByteWidth() const
+    +uint8_t Get16BitWidth() const
+
+    +std::string ToString() const
+
+    +IRegisterAddress GetAddress()
+
+    +{static} PRegisterConfig Create(...)
+}
+
+interface IRegisterAddress
+{
+    +{abstract} std::string ToString()
+    +{abstract} bool operator<(IRegisterAddress addr)
+    +{abstract} IRegisterAddress CalcNewAddress(...)
+}
+
+TPortConfig o-- TPort
+TPortConfig o-- TSerialDevice
+TSerialDevice o-- TPort
+TSerialDevice o-- IProtocol
+TSerialDevice o-- TDeviceConfig
+TDeviceConfig o-- TDeviceChannelConfig
+TDeviceChannelConfig o-- TRegisterConfig
+TSerialDevice o-- TPortOpenCloseLogic::TSettings
+
+TRegisterConfig o-- IRegisterAddress
+IRegisterAddress <|.. TUint32RegisterAddress
+IRegisterAddress <|.. TStringRegisterAddress
+IRegisterAddress <|.. TObisRegisterAddress
+IRegisterAddress <|.. TSomfyAddress
+
+IProtocol <|.. TModbusProtocol
+IProtocol <|.. TModbusIOProtocol
+IProtocol <|.. TUint32SlaveIdProtocol
+IProtocol <|.. TIEC61107Protocol
+
+class TPublishParameters {
+    +TPublishPolicy Policy
+    +std::chrono::milliseconds PublishUnchangedInterval
+
+    +void Set(int32_t)
+}
+
+enum TPublishParameters::TPublishPolicy{
+        PublishOnlyOnChange
+        PublishAll
+        PublishSomeUnchanged
+}
+
+TPublishParameters *-- TPublishParameters::TPublishPolicy
+
+THandlerConfig o-- TPortConfig
+THandlerConfig o-- TPublishParameters
+
+class TSerialPortDriver
+{
+    +TSerialPortDriver(WBMQTT::PDeviceDriver, PPortConfig, const WBMQTT::TPublishParameters, Metrics::TMetrics)
+
+    +void SetUpDevices()
+    +void Cycle()
+    +void ClearDevices()
+
+    +std::string GetShortDescription()
+
+    +{static} void HandleControlOnValueEvent(WBMQTT::TControlOnValueEvent)
+
+    -WBMQTT::TLocalDeviceArgs From(PSerialDevice)
+    -WBMQTT::TControlArgs From(PDeviceChannel)
+
+    -void SetValueToChannel(PDeviceChannel, std::string value)
+    -void OnValueRead(PRegister)
+    -void UpdateError(PRegister)
+
+    -WBMQTT::PDeviceDriver MqttDriver
+    -PPortConfig Config
+    -PSerialClient SerialClient
+    -std::vector<PSerialDevice> Devices
+    -std::string Description
+    -WBMQTT::TPublishParameters PublishPolicy
+
+    -std::unordered_map<PRegister, PDeviceChannel> RegisterToChannelMap
+}
+
+class TSerialClient
+{
+    +typedef std::function<void(PRegister reg)> TCallback;
+
+    +TSerialClient(std::vector<PSerialDevice>, PPort, TPortOpenCloseLogic::TSettings, Metrics::TMetrics)
+
+    +void AddRegister(PRegister)
+    +void Cycle()
+    +void SetTextValue(PRegister, std::string value)
+    +void SetReadCallback(TCallback)
+    +void SetErrorCallback(TCallback)
+    +void NotifyFlushNeeded()
+    +void ClearDevices()
+
+    -void Activate()
+    -void Connect()
+    -void PrepareRegisterRanges()
+    -void DoFlush()
+    -void WaitForPollAndFlush()
+    -void MaybeFlushAvoidingPollStarvationButDontWait()
+    -void SetReadError(PRegister)
+    -PRegisterHandler GetHandler(PRegister)
+    -void SetRegistersAvailability(PSerialDevice dev, TRegisterAvailability availability)
+    -void ClosedPortCycle()
+    -void OpenPortCycle()
+    -void UpdateFlushNeeded()
+    -void ProcessPolledRegister(PRegister)
+    -void ScheduleNextPoll(PRegister reg, std::chrono::steady_clock::time_point pollStartTime)
+    -std::vector<PRegisterRange> ReadRanges(TRegisterReader, PRegisterRange, ...)
+
+    -PPort Port
+    -std::list<PRegister> RegList
+    -std::vector<PSerialDevice> Devices
+    -std::unordered_map<PRegister, PRegisterHandler> Handlers
+
+    -bool Active
+    -TCallback ReadCallback
+    -TCallback ErrorCallback
+    -PSerialDevice LastAccessedDevice
+    -PBinarySemaphore FlushNeeded
+    -TScheduler<PRegister, TRegisterComparePredicate, TPreemptivePolicy> Scheduler
+
+    -TPortOpenCloseLogic OpenCloseLogic
+    -TLoggerWithTimeout ConnectLogger
+    -Metrics::TMetrics& Metrics
+}
+
+TSerialPortDriver o-- TSerialClient
+TSerialPortDriver o-- TPortConfig
+TSerialPortDriver o-- TSerialDevice
+TSerialClient o-- TPort
+TSerialClient o-- TSerialDevice
+TSerialPortDriver o-- TPublishParameters
+TSerialClient o-- TRegister
+TSerialClient o-- TRegisterHandler
+
+class TMQTTSerialDriver
+{
+    +TMQTTSerialDriver(WBMQTT::PDeviceDriver, PHandlerConfig, WBMQTT::PMqttRpcServer)
+    +void LoopOnce()
+    +void ClearDevices()
+
+    +void Start()
+    +void Stop()
+
+    -std::vector<PSerialPortDriver> PortDrivers
+    -std::vector<std::thread> PortLoops
+    -std::mutex ActiveMutex
+    -bool Active
+    -std::map<std::string, Metrics::TMetrics> Metrics
+
+    -Json::Value LoadMetrics(Json::Value request)
+}
+
+TMQTTSerialDriver ..> THandlerConfig
+TMQTTSerialDriver ..> WBMQTT::TDeviceDriver
+TMQTTSerialDriver ..> WBMQTT::TMqttRpcServer
+TMQTTSerialDriver o-- TSerialPortDriver
+
+class TRegister
+{
+    +TRegister(PSerialDevice, PRegisterConfig, std::string channelName)
+
+    +std::string ToString()
+    +PSerialDevice Device()
+    +TRegisterAvailability GetAvailable()
+    +void SetAvailable(TRegisterAvailability available)
+    +uint64_t GetValue()
+    +void SetValue(uint64_t value, bool clearReadError = true)
+
+    +void SetError(TError error)
+    +void ClearError(TError error)
+    +TErrorState GetErrorState()
+
+    +void SetLastPollTime(std::chrono::steady_clock::time_point pollTime)
+
+    +std::string GetChannelName()
+
+    -std::weak_ptr<TSerialDevice> _Device
+    -TRegisterAvailability Available = TRegisterAvailability::UNKNOWN
+    -uint64_t Value
+    -std::string ChannelName
+    -TErrorState ErrorState
+    -std::chrono::steady_clock::time_point LastPollTime
+
+    -{static} std::map<std::tuple<PSerialDevice, PRegisterConfig>, PRegister> RegStorage
+    -{static} std::mutex Mutex
+
+    +{static} PRegister Intern(PSerialDevice, PRegisterConfig, std::string channelName)
+    +{static} void DeleteIntern()
+}
+
+enum TError
+{
+        ReadError
+        WriteError
+        PollIntervalMissError
+        MAX_ERRORS
+}
+
+class TErrorState{
+    +std::bitset<TError::MAX_ERRORS>
+}
+
+enum TRegisterAvailability
+{
+    UNKNOWN
+    AVAILABLE
+    UNAVAILABLE
+}
+
+TRegisterConfig <|.. TRegister
+TRegister *-- TError
+TRegister <.. TErrorState
+TRegister o-- TSerialDevice
+TRegister o-- TRegisterConfig
+TRegister o-- TRegister
+TRegister *-- TRegisterAvailability
+
+class TRegisterHandler
+{
+    +TRegisterHandler(PSerialDevice, PRegister, PBinarySemaphore flush_needed)
+    +PRegister Register()
+    +bool NeedToFlush()
+    +void Flush()
+    +void SetTextValue(std::string v)
+    +PSerialDevice Device()
+
+    -std::weak_ptr<TSerialDevice> Dev
+    -uint64_t ValueToSet
+    -PRegister Reg
+    -volatile bool Dirty
+    -std::mutex SetValueMutex
+    -PBinarySemaphore FlushNeeded
+    -bool WriteFail
+    -std::chrono::steady_clock::time_point WriteFirstTryTime
+}
+
+TRegisterHandler o-- TSerialDevice
+TRegisterHandler o-- TRegister
+
+@enduml
