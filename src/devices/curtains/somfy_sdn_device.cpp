@@ -13,9 +13,9 @@ namespace
         COMMAND
     };
 
-    const TRegisterTypes RegTypes{{POSITION, "position", "value", U8},
-                                  {PARAM, "param", "value", U64, true},
-                                  {COMMAND, "command", "value", U64}};
+    const TRegisterTypes RegTypes{{POSITION, "position", "value", RegisterFormat::U8},
+                                  {PARAM, "param", "value", RegisterFormat::U64, true},
+                                  {COMMAND, "command", "value", RegisterFormat::U64}};
 
     const size_t CRC_SIZE = 2;
     const uint32_t HOST_ADDRESS = 0x0000FFFF;

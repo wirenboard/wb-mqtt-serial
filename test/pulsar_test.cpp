@@ -23,8 +23,8 @@ void TPulsarDeviceTest::SetUp()
         SerialPort,
         DeviceFactory.GetProtocol("pulsar"));
 
-    Heat_TempIn = TRegister::Intern(Dev, TRegisterConfig::Create(0, 2, Float));
-    Heat_TempOut = TRegister::Intern(Dev, TRegisterConfig::Create(0, 3, Float));
+    Heat_TempIn = TRegister::Intern(Dev, TRegisterConfig::Create(0, 2, RegisterFormat::Float));
+    Heat_TempOut = TRegister::Intern(Dev, TRegisterConfig::Create(0, 3, RegisterFormat::Float));
 
     SerialPort->Open();
 }

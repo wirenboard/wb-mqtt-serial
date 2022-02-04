@@ -12,20 +12,20 @@
 size_t RegisterFormatByteWidth(RegisterFormat format)
 {
     switch (format) {
-        case S64:
-        case U64:
-        case Double:
+        case RegisterFormat::S64:
+        case RegisterFormat::U64:
+        case RegisterFormat::Double:
             return 8;
-        case U32:
-        case S32:
-        case BCD32:
-        case Float:
+        case RegisterFormat::U32:
+        case RegisterFormat::S32:
+        case RegisterFormat::BCD32:
+        case RegisterFormat::Float:
             return 4;
-        case U24:
-        case S24:
-        case BCD24:
+        case RegisterFormat::U24:
+        case RegisterFormat::S24:
+        case RegisterFormat::BCD24:
             return 3;
-        case Char8:
+        case RegisterFormat::Char8:
             return 1;
         default:
             return 2;
@@ -463,47 +463,47 @@ template<> double FromScaledTextValue(const TRegisterConfig& reg, const std::str
 uint64_t GetRawValue(const TRegisterConfig& reg, const std::string& str)
 {
     switch (reg.Format) {
-        case S8:
+        case RegisterFormat::S8:
             return FromScaledTextValue<int64_t>(reg, str) & 0xff;
-        case S16:
+        case RegisterFormat::S16:
             return FromScaledTextValue<int64_t>(reg, str) & 0xffff;
-        case S24:
+        case RegisterFormat::S24:
             return FromScaledTextValue<int64_t>(reg, str) & 0xffffff;
-        case S32:
+        case RegisterFormat::S32:
             return FromScaledTextValue<int64_t>(reg, str) & 0xffffffff;
-        case S64:
+        case RegisterFormat::S64:
             return FromScaledTextValue<int64_t>(reg, str);
-        case U8:
+        case RegisterFormat::U8:
             return FromScaledTextValue<uint64_t>(reg, str) & 0xff;
-        case U16:
+        case RegisterFormat::U16:
             return FromScaledTextValue<uint64_t>(reg, str) & 0xffff;
-        case U24:
+        case RegisterFormat::U24:
             return FromScaledTextValue<uint64_t>(reg, str) & 0xffffff;
-        case U32:
+        case RegisterFormat::U32:
             return FromScaledTextValue<uint64_t>(reg, str) & 0xffffffff;
-        case U64:
+        case RegisterFormat::U64:
             return FromScaledTextValue<uint64_t>(reg, str);
-        case Float: {
+        case RegisterFormat::Float: {
             float v = FromScaledTextValue<double>(reg, str);
             uint64_t raw = 0;
             memcpy(&raw, &v, sizeof(v));
             return raw;
         }
-        case Double: {
+        case RegisterFormat::Double: {
             double v = FromScaledTextValue<double>(reg, str);
             uint64_t raw = 0;
             memcpy(&raw, &v, sizeof(v));
             return raw;
         }
-        case Char8:
+        case RegisterFormat::Char8:
             return str.empty() ? 0 : uint8_t(str[0]);
-        case BCD8:
+        case RegisterFormat::BCD8:
             return IntToPackedBCD(FromScaledTextValue<uint64_t>(reg, str) & 0xFF, WordSizes::W8_SZ);
-        case BCD16:
+        case RegisterFormat::BCD16:
             return IntToPackedBCD(FromScaledTextValue<uint64_t>(reg, str) & 0xFFFF, WordSizes::W16_SZ);
-        case BCD24:
+        case RegisterFormat::BCD24:
             return IntToPackedBCD(FromScaledTextValue<uint64_t>(reg, str) & 0xFFFFFF, WordSizes::W24_SZ);
-        case BCD32:
+        case RegisterFormat::BCD32:
             return IntToPackedBCD(FromScaledTextValue<uint64_t>(reg, str) & 0xFFFFFFFF, WordSizes::W32_SZ);
         default:
             return FromScaledTextValue<uint64_t>(reg, str);
@@ -538,41 +538,41 @@ std::string ConvertFromRawValue(const TRegisterConfig& reg, uint64_t value)
 {
     value = InvertWordOrderIfNeeded(reg, value);
     switch (reg.Format) {
-        case U8:
+        case RegisterFormat::U8:
             return ToScaledTextValue(reg, uint8_t(value & 0xff));
-        case S8:
+        case RegisterFormat::S8:
             return ToScaledTextValue(reg, int8_t(value & 0xff));
-        case S16:
+        case RegisterFormat::S16:
             return ToScaledTextValue(reg, int16_t(value & 0xffff));
-        case S24: {
+        case RegisterFormat::S24: {
             uint32_t v = value & 0xffffff;
             if (v & 0x800000)
                 v |= 0xff000000;
             return ToScaledTextValue(reg, int32_t(v));
         }
-        case S32:
+        case RegisterFormat::S32:
             return ToScaledTextValue(reg, int32_t(value & 0xffffffff));
-        case S64:
+        case RegisterFormat::S64:
             return ToScaledTextValue(reg, int64_t(value));
-        case BCD8:
+        case RegisterFormat::BCD8:
             return ToScaledTextValue(reg, PackedBCD2Int(value, WordSizes::W8_SZ));
-        case BCD16:
+        case RegisterFormat::BCD16:
             return ToScaledTextValue(reg, PackedBCD2Int(value, WordSizes::W16_SZ));
-        case BCD24:
+        case RegisterFormat::BCD24:
             return ToScaledTextValue(reg, PackedBCD2Int(value, WordSizes::W24_SZ));
-        case BCD32:
+        case RegisterFormat::BCD32:
             return ToScaledTextValue(reg, PackedBCD2Int(value, WordSizes::W32_SZ));
-        case Float: {
+        case RegisterFormat::Float: {
             float v;
             memcpy(&v, &value, sizeof(v));
             return ToScaledTextValue(reg, v);
         }
-        case Double: {
+        case RegisterFormat::Double: {
             double v;
             memcpy(&v, &value, sizeof(v));
             return ToScaledTextValue(reg, v);
         }
-        case Char8:
+        case RegisterFormat::Char8:
             return std::string(1, value & 0xff);
         default:
             return ToScaledTextValue(reg, value);

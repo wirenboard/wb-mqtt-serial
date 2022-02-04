@@ -9,9 +9,9 @@ namespace
         COMMAND
     };
 
-    const TRegisterTypes RegTypes{{POSITION, "position", "value", U8},
-                                  {PARAM, "param", "value", U8, true},
-                                  {COMMAND, "command", "value", U8}};
+    const TRegisterTypes RegTypes{{POSITION, "position", "value", RegisterFormat::U8},
+                                  {PARAM, "param", "value", RegisterFormat::U8, true},
+                                  {COMMAND, "command", "value", RegisterFormat::U8}};
 
     const size_t PACKET_SIZE = 7;
     const size_t DATA_BYTE = 5;

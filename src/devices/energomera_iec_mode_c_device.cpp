@@ -23,14 +23,14 @@ namespace
 
     // clang-format off
     const TRegisterTypes RegisterTypes {
-        { RegisterType::DEFAULT, "default", "value", Double, true },
-        { RegisterType::ITEM_1,  "item_1",  "value", Double, true },
-        { RegisterType::ITEM_2,  "item_2",  "value", Double, true },
-        { RegisterType::ITEM_3,  "item_3",  "value", Double, true },
-        { RegisterType::ITEM_4,  "item_4",  "value", Double, true },
-        { RegisterType::ITEM_5,  "item_5",  "value", Double, true },
-        { RegisterType::DATE,    "date",    "value", U32,    true },
-        { RegisterType::TIME,    "time",    "value", U32,    true }
+        { RegisterType::DEFAULT, "default", "value", RegisterFormat::Double, true },
+        { RegisterType::ITEM_1,  "item_1",  "value", RegisterFormat::Double, true },
+        { RegisterType::ITEM_2,  "item_2",  "value", RegisterFormat::Double, true },
+        { RegisterType::ITEM_3,  "item_3",  "value", RegisterFormat::Double, true },
+        { RegisterType::ITEM_4,  "item_4",  "value", RegisterFormat::Double, true },
+        { RegisterType::ITEM_5,  "item_5",  "value", RegisterFormat::Double, true },
+        { RegisterType::DATE,    "date",    "value", RegisterFormat::U32,    true },
+        { RegisterType::TIME,    "time",    "value", RegisterFormat::U32,    true }
     };
     // clang-format on
 
@@ -91,7 +91,7 @@ uint64_t TEnergomeraIecModeCDevice::GetRegisterValue(const TRegister& reg, const
             return strtoull(v.c_str(), nullptr, 10);
         }
         case RegisterType::DEFAULT: {
-            if (reg.Format == U64) {
+            if (reg.Format == RegisterFormat::U64) {
                 return strtoull(v.c_str(), nullptr, 10);
             }
             return CopyDoubleToUint64(strtod(v.c_str(), nullptr));

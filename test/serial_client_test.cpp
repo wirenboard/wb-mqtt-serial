@@ -71,7 +71,7 @@ protected:
     void SetUp();
     void TearDown();
     PRegister Reg(int addr,
-                  RegisterFormat fmt = U16,
+                  RegisterFormat fmt = RegisterFormat::U16,
                   double scale = 1,
                   double offset = 0,
                   double round_to = 0,
@@ -174,10 +174,10 @@ TEST_F(TSerialClientTest, PortOpenError)
     // The test checks recovery logic after port opening failure
     // TSerialClient must try to open port during every cycle and set /meta/error for controls
 
-    PRegister reg0 = Reg(0, U8);
+    PRegister reg0 = Reg(0, RegisterFormat::U8);
     reg0->ReadPeriod = 1ms;
 
-    PRegister reg1 = Reg(1, U8);
+    PRegister reg1 = Reg(1, RegisterFormat::U8);
     reg1->ReadPeriod = 1ms;
 
     SerialClient->AddRegister(reg0);
@@ -202,8 +202,8 @@ TEST_F(TSerialClientReopenTest, ReopenTimeout)
     // The test checks recovery logic after port opening failure
     // TSerialClient must try to open port during every cycle and set /meta/error for controls
 
-    PRegister reg0 = Reg(0, U8);
-    PRegister reg1 = Reg(1, U8);
+    PRegister reg0 = Reg(0, RegisterFormat::U8);
+    PRegister reg1 = Reg(1, RegisterFormat::U8);
 
     SerialClient->AddRegister(reg0);
     SerialClient->AddRegister(reg1);
@@ -228,8 +228,8 @@ TEST_F(TSerialClientReopenTest, ReopenTimeout)
 TEST_F(TSerialClientTest, Poll)
 {
 
-    PRegister reg0 = Reg(0, U8);
-    PRegister reg1 = Reg(1, U8);
+    PRegister reg0 = Reg(0, RegisterFormat::U8);
+    PRegister reg1 = Reg(1, RegisterFormat::U8);
     PRegister discrete10 = Reg(10);
     PRegister reg22 = Reg(22);
     PRegister reg33 = Reg(33);
@@ -284,8 +284,8 @@ TEST_F(TSerialClientTest, Write)
 
 TEST_F(TSerialClientTest, U8)
 {
-    PRegister reg20 = Reg(20, U8);
-    PRegister reg30 = Reg(30, U8);
+    PRegister reg20 = Reg(20, RegisterFormat::U8);
+    PRegister reg30 = Reg(30, RegisterFormat::U8);
     SerialClient->AddRegister(reg20);
     SerialClient->AddRegister(reg30);
 
@@ -322,8 +322,8 @@ TEST_F(TSerialClientTest, U8)
 
 TEST_F(TSerialClientTest, S8)
 {
-    PRegister reg20 = Reg(20, S8);
-    PRegister reg30 = Reg(30, S8);
+    PRegister reg20 = Reg(20, RegisterFormat::S8);
+    PRegister reg30 = Reg(30, RegisterFormat::S8);
     SerialClient->AddRegister(reg20);
     SerialClient->AddRegister(reg30);
 
@@ -360,8 +360,8 @@ TEST_F(TSerialClientTest, S8)
 
 TEST_F(TSerialClientTest, Char8)
 {
-    PRegister reg20 = Reg(20, Char8);
-    PRegister reg30 = Reg(30, Char8);
+    PRegister reg20 = Reg(20, RegisterFormat::Char8);
+    PRegister reg30 = Reg(30, RegisterFormat::Char8);
     SerialClient->AddRegister(reg20);
     SerialClient->AddRegister(reg30);
 
@@ -383,8 +383,8 @@ TEST_F(TSerialClientTest, Char8)
 
 TEST_F(TSerialClientTest, S64)
 {
-    PRegister reg20 = Reg(20, S64);
-    PRegister reg30 = Reg(30, S64);
+    PRegister reg20 = Reg(20, RegisterFormat::S64);
+    PRegister reg30 = Reg(30, RegisterFormat::S64);
     SerialClient->AddRegister(reg20);
     SerialClient->AddRegister(reg30);
 
@@ -425,8 +425,8 @@ TEST_F(TSerialClientTest, S64)
 
 TEST_F(TSerialClientTest, U64)
 {
-    PRegister reg20 = Reg(20, U64);
-    PRegister reg30 = Reg(30, U64);
+    PRegister reg20 = Reg(20, RegisterFormat::U64);
+    PRegister reg30 = Reg(30, RegisterFormat::U64);
     SerialClient->AddRegister(reg20);
     SerialClient->AddRegister(reg30);
 
@@ -467,13 +467,13 @@ TEST_F(TSerialClientTest, U64)
 
 TEST_F(TSerialClientTest, S32)
 {
-    PRegister reg20 = Reg(20, S32);
-    PRegister reg30 = Reg(30, S32);
+    PRegister reg20 = Reg(20, RegisterFormat::S32);
+    PRegister reg30 = Reg(30, RegisterFormat::S32);
     SerialClient->AddRegister(reg20);
     SerialClient->AddRegister(reg30);
 
     // create scaled register
-    PRegister reg24 = Reg(24, S32, 0.001);
+    PRegister reg24 = Reg(24, RegisterFormat::S32, 0.001);
     SerialClient->AddRegister(reg24);
 
     Note() << "server -> client: 10, 20";
@@ -520,13 +520,13 @@ TEST_F(TSerialClientTest, S32)
 
 TEST_F(TSerialClientTest, S24)
 {
-    PRegister reg20 = Reg(20, S24);
-    PRegister reg30 = Reg(30, S24);
+    PRegister reg20 = Reg(20, RegisterFormat::S24);
+    PRegister reg30 = Reg(30, RegisterFormat::S24);
     SerialClient->AddRegister(reg20);
     SerialClient->AddRegister(reg30);
 
     // create scaled register
-    PRegister reg24 = Reg(24, S24, 0.001);
+    PRegister reg24 = Reg(24, RegisterFormat::S24, 0.001);
     SerialClient->AddRegister(reg24);
 
     Note() << "server -> client: 10, 20";
@@ -573,8 +573,8 @@ TEST_F(TSerialClientTest, S24)
 
 TEST_F(TSerialClientTest, WordSwap)
 {
-    PRegister reg20 = Reg(20, S32, 1, 0, 0, EWordOrder::LittleEndian);
-    PRegister reg24 = Reg(24, U64, 1, 0, 0, EWordOrder::LittleEndian);
+    PRegister reg20 = Reg(20, RegisterFormat::S32, 1, 0, 0, EWordOrder::LittleEndian);
+    PRegister reg24 = Reg(24, RegisterFormat::U64, 1, 0, 0, EWordOrder::LittleEndian);
     SerialClient->AddRegister(reg24);
     SerialClient->AddRegister(reg20);
 
@@ -607,8 +607,8 @@ TEST_F(TSerialClientTest, WordSwap)
 
 TEST_F(TSerialClientTest, U32)
 {
-    PRegister reg20 = Reg(20, U32);
-    PRegister reg30 = Reg(30, U32);
+    PRegister reg20 = Reg(20, RegisterFormat::U32);
+    PRegister reg30 = Reg(30, RegisterFormat::U32);
     SerialClient->AddRegister(reg20);
     SerialClient->AddRegister(reg30);
 
@@ -655,7 +655,7 @@ TEST_F(TSerialClientTest, U32)
 
 TEST_F(TSerialClientTest, BCD32)
 {
-    PRegister reg20 = Reg(20, BCD32);
+    PRegister reg20 = Reg(20, RegisterFormat::BCD32);
     SerialClient->AddRegister(reg20);
     Device->Registers[22] = 123;
     Device->Registers[23] = 123;
@@ -690,7 +690,7 @@ TEST_F(TSerialClientTest, BCD32)
 
 TEST_F(TSerialClientTest, BCD24)
 {
-    PRegister reg20 = Reg(20, BCD24);
+    PRegister reg20 = Reg(20, RegisterFormat::BCD24);
     SerialClient->AddRegister(reg20);
     Device->Registers[22] = 123;
     Device->Registers[23] = 123;
@@ -717,7 +717,7 @@ TEST_F(TSerialClientTest, BCD24)
 
 TEST_F(TSerialClientTest, BCD16)
 {
-    PRegister reg20 = Reg(20, BCD16);
+    PRegister reg20 = Reg(20, RegisterFormat::BCD16);
     SerialClient->AddRegister(reg20);
     Device->Registers[21] = 123;
 
@@ -740,7 +740,7 @@ TEST_F(TSerialClientTest, BCD16)
 
 TEST_F(TSerialClientTest, BCD8)
 {
-    PRegister reg20 = Reg(20, BCD8);
+    PRegister reg20 = Reg(20, RegisterFormat::BCD8);
     SerialClient->AddRegister(reg20);
     Device->Registers[21] = 123;
 
@@ -764,11 +764,11 @@ TEST_F(TSerialClientTest, BCD8)
 TEST_F(TSerialClientTest, Float32)
 {
     // create scaled register
-    PRegister reg24 = Reg(24, Float, 100);
+    PRegister reg24 = Reg(24, RegisterFormat::Float, 100);
     SerialClient->AddRegister(reg24);
 
-    PRegister reg20 = Reg(20, Float);
-    PRegister reg30 = Reg(30, Float);
+    PRegister reg20 = Reg(20, RegisterFormat::Float);
+    PRegister reg30 = Reg(30, RegisterFormat::Float);
     SerialClient->AddRegister(reg20);
     SerialClient->AddRegister(reg30);
 
@@ -817,11 +817,11 @@ TEST_F(TSerialClientTest, Float32)
 TEST_F(TSerialClientTest, Double64)
 {
     // create scaled register
-    PRegister reg24 = Reg(24, Double, 100);
+    PRegister reg24 = Reg(24, RegisterFormat::Double, 100);
     SerialClient->AddRegister(reg24);
 
-    PRegister reg20 = Reg(20, Double);
-    PRegister reg30 = Reg(30, Double);
+    PRegister reg20 = Reg(20, RegisterFormat::Double);
+    PRegister reg30 = Reg(30, RegisterFormat::Double);
     SerialClient->AddRegister(reg20);
     SerialClient->AddRegister(reg30);
 
@@ -885,7 +885,7 @@ TEST_F(TSerialClientTest, Double64)
 TEST_F(TSerialClientTest, offset)
 {
     // create scaled register with offset
-    PRegister reg24 = Reg(24, S16, 3, -15);
+    PRegister reg24 = Reg(24, RegisterFormat::S16, 3, -15);
     SerialClient->AddRegister(reg24);
 
     Note() << "client -> server: -87 (scaled)";
@@ -898,11 +898,11 @@ TEST_F(TSerialClientTest, offset)
 
 TEST_F(TSerialClientTest, Round)
 {
-    PRegister reg24_0_01 = Reg(24, Float, 1, 0, 0.01);
-    PRegister reg26_1 = Reg(26, Float, 1, 0, 1);
-    PRegister reg28_10 = Reg(28, Float, 1, 0, 10);
-    PRegister reg30_0_2 = Reg(30, Float, 1, 0, 0.2);
-    PRegister reg32_0_01 = Reg(32, Float, 1, 0, 0.01);
+    PRegister reg24_0_01 = Reg(24, RegisterFormat::Float, 1, 0, 0.01);
+    PRegister reg26_1 = Reg(26, RegisterFormat::Float, 1, 0, 1);
+    PRegister reg28_10 = Reg(28, RegisterFormat::Float, 1, 0, 10);
+    PRegister reg30_0_2 = Reg(30, RegisterFormat::Float, 1, 0, 0.2);
+    PRegister reg32_0_01 = Reg(32, RegisterFormat::Float, 1, 0, 0.01);
 
     SerialClient->AddRegister(reg24_0_01);
     SerialClient->AddRegister(reg26_1);

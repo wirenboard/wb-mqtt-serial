@@ -12,10 +12,11 @@ namespace
     const size_t REQUEST_LEN = 7;
     const ptrdiff_t HEADER_SZ = 5;
 
-    const TRegisterTypes RegisterTypes{{TMercury200Device::REG_PARAM_VALUE16, "param8", "value", U8, true},
-                                       {TMercury200Device::REG_PARAM_VALUE16, "param16", "value", BCD16, true},
-                                       {TMercury200Device::REG_PARAM_VALUE24, "param24", "value", BCD24, true},
-                                       {TMercury200Device::REG_PARAM_VALUE32, "param32", "value", BCD32, true}};
+    const TRegisterTypes RegisterTypes{
+        {TMercury200Device::REG_PARAM_VALUE16, "param8", "value", RegisterFormat::U8, true},
+        {TMercury200Device::REG_PARAM_VALUE16, "param16", "value", RegisterFormat::BCD16, true},
+        {TMercury200Device::REG_PARAM_VALUE24, "param24", "value", RegisterFormat::BCD24, true},
+        {TMercury200Device::REG_PARAM_VALUE32, "param32", "value", RegisterFormat::BCD32, true}};
 }
 
 void TMercury200Device::Register(TSerialDeviceFactory& factory)

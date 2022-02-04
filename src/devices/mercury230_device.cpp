@@ -8,13 +8,13 @@ namespace
 {
     // clang-format off
     const TRegisterTypes RegisterTypes{
-        { TMercury230Device::REG_VALUE_ARRAY,       "array",               "power_consumption", U32, true },
-        { TMercury230Device::REG_VALUE_ARRAY12,     "array12",             "power_consumption", U32, true },
-        { TMercury230Device::REG_PARAM,             "param",               "value",             U24, true },
-        { TMercury230Device::REG_PARAM_SIGN_ACT,    "param_sign_active",   "value",             S24, true },
-        { TMercury230Device::REG_PARAM_SIGN_REACT,  "param_sign_reactive", "value",             S24, true },
-        { TMercury230Device::REG_PARAM_SIGN_IGNORE, "param_sign_ignore",   "value",             U24, true },
-        { TMercury230Device::REG_PARAM_BE,          "param_be",            "value",             S24, true }
+        { TMercury230Device::REG_VALUE_ARRAY,       "array",               "power_consumption", RegisterFormat::U32, true },
+        { TMercury230Device::REG_VALUE_ARRAY12,     "array12",             "power_consumption", RegisterFormat::U32, true },
+        { TMercury230Device::REG_PARAM,             "param",               "value",             RegisterFormat::U24, true },
+        { TMercury230Device::REG_PARAM_SIGN_ACT,    "param_sign_active",   "value",             RegisterFormat::S24, true },
+        { TMercury230Device::REG_PARAM_SIGN_REACT,  "param_sign_reactive", "value",             RegisterFormat::S24, true },
+        { TMercury230Device::REG_PARAM_SIGN_IGNORE, "param_sign_ignore",   "value",             RegisterFormat::U24, true },
+        { TMercury230Device::REG_PARAM_BE,          "param_be",            "value",             RegisterFormat::S24, true }
     };
     // clang-format on
 }

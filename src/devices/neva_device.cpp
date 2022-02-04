@@ -11,23 +11,23 @@ namespace
     const char* LOG_PREFIX = "[NEVA] ";
 
     const TRegisterTypes RegisterTypes{// Deprecated. For backward compatibility
-                                       {0, "obis_cdef", "value", Double, true},
-                                       {1, "obis_cdef_pf", "value", Double, true},
-                                       {2, "obis_cdef_temp", "value", Double, true},
-                                       {3, "obis_cdef_1", "value", Double, true},
-                                       {4, "obis_cdef_2", "value", Double, true},
-                                       {5, "obis_cdef_3", "value", Double, true},
-                                       {6, "obis_cdef_4", "value", Double, true},
-                                       {7, "obis_cdef_5", "value", Double, true},
+                                       {0, "obis_cdef", "value", RegisterFormat::Double, true},
+                                       {1, "obis_cdef_pf", "value", RegisterFormat::Double, true},
+                                       {2, "obis_cdef_temp", "value", RegisterFormat::Double, true},
+                                       {3, "obis_cdef_1", "value", RegisterFormat::Double, true},
+                                       {4, "obis_cdef_2", "value", RegisterFormat::Double, true},
+                                       {5, "obis_cdef_3", "value", RegisterFormat::Double, true},
+                                       {6, "obis_cdef_4", "value", RegisterFormat::Double, true},
+                                       {7, "obis_cdef_5", "value", RegisterFormat::Double, true},
                                        // Actual register types
-                                       {8, "default", "value", Double, true},
-                                       {9, "power_factor", "value", Double, true},
-                                       {10, "temperature", "value", Double, true},
-                                       {11, "item_1", "value", Double, true},
-                                       {12, "item_2", "value", Double, true},
-                                       {13, "item_3", "value", Double, true},
-                                       {14, "item_4", "value", Double, true},
-                                       {15, "item_5", "value", Double, true}};
+                                       {8, "default", "value", RegisterFormat::Double, true},
+                                       {9, "power_factor", "value", RegisterFormat::Double, true},
+                                       {10, "temperature", "value", RegisterFormat::Double, true},
+                                       {11, "item_1", "value", RegisterFormat::Double, true},
+                                       {12, "item_2", "value", RegisterFormat::Double, true},
+                                       {13, "item_3", "value", RegisterFormat::Double, true},
+                                       {14, "item_4", "value", RegisterFormat::Double, true},
+                                       {15, "item_5", "value", RegisterFormat::Double, true}};
 
     std::unordered_map<std::string, size_t> RegisterTypeValueIndices = {
         // Deprecated. For backward compatibility

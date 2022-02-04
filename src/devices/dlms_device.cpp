@@ -341,7 +341,7 @@ namespace
 void TDlmsDevice::Register(TSerialDeviceFactory& factory)
 {
     factory.RegisterProtocol(
-        new TUint32SlaveIdProtocol("dlms", TRegisterTypes({{0, "default", "value", Double, true}})),
+        new TUint32SlaveIdProtocol("dlms", TRegisterTypes({{0, "default", "value", RegisterFormat::Double, true}})),
         new TDlmsDeviceFactory());
 }
 
