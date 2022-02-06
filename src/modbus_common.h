@@ -117,7 +117,7 @@ namespace Modbus // modbus protocol common utilities
         std::unique_ptr<Modbus::IModbusTraits> GetModbusTraits(PPort port) override;
     };
 
-    PRegisterRange CreateRegisterRange(PRegister reg, bool enableHoles);
+    PRegisterRange CreateRegisterRange(PRegister reg);
 
     void WriteRegister(IModbusTraits& traits,
                        TPort& port,

@@ -175,53 +175,49 @@ Subscribe: /devices/modbus-sample/controls/# (QoS 0)
 (retain) -> /devices/modbus-sample/controls/White1/meta/readonly: '0' (QoS 1, retained)
 (retain) -> /devices/modbus-sample/controls/White1/meta/type: 'range' (QoS 1, retained)
 Unsubscribe -- em-test: /devices/modbus-sample/controls/#
->>> LoopOnce() [first read]
+>>> LoopOnce() [one by one]
 Open()
 Sleep(5000)
 EnqueueHoldingPackUnavailableAndHolesReadResponse()
->> 01 03 00 07 00 06 74 09
-Publish: /devices/modbus-sample/controls/White/meta/error: 'r' (QoS 1, retained)
-Publish: /devices/modbus-sample/controls/RGB_All/meta/error: 'r' (QoS 1, retained)
-Publish: /devices/modbus-sample/controls/White1/meta/error: 'r' (QoS 1, retained)
-Publish: /devices/modbus-sample/controls/Holding2/meta/error: 'r' (QoS 1, retained)
-Publish: /devices/modbus-sample/controls/Holding1/meta/error: 'r' (QoS 1, retained)
->>> LoopOnce() [disable holes]
-<< 01 83 03 01 31
-EnqueueHoldingPackUnavailableAndHolesReadResponse()
->> 01 03 00 07 00 03 B4 0A
-<< 01 83 03 01 31
-EnqueueHoldingPackUnavailableAndHolesReadResponse()
->> 01 03 00 0B 00 02 B5 C9
-Publish: /devices/modbus-sample/controls/Holding2/meta/error: '' (QoS 1, retained)
-Publish: /devices/modbus-sample/controls/Holding2: '20' (QoS 1, retained)
-Publish: /devices/modbus-sample/controls/Holding1/meta/error: '' (QoS 1, retained)
-Publish: /devices/modbus-sample/controls/Holding1: '30' (QoS 1, retained)
->>> LoopOnce() [one by one]
-<< 01 03 04 00 14 00 1E 3A 3F
-EnqueueHoldingPackUnavailableAndHolesReadResponse()
 >> 01 03 00 07 00 01 35 CB
-<< 01 03 02 00 0A 38 43
+<< 01 03 02 00 07 F9 86
+Publish: /devices/modbus-sample/controls/White: '7' (QoS 1, retained)
 EnqueueHoldingPackUnavailableAndHolesReadResponse()
 >> 01 03 00 08 00 01 05 C8
-<< 01 03 02 00 0A 38 43
+<< 01 03 02 00 08 B9 82
+Publish: /devices/modbus-sample/controls/RGB_All: '8' (QoS 1, retained)
 EnqueueHoldingPackUnavailableAndHolesReadResponse()
 >> 01 03 00 09 00 01 54 08
-Publish: /devices/modbus-sample/controls/White/meta/error: '' (QoS 1, retained)
-Publish: /devices/modbus-sample/controls/White: '10' (QoS 1, retained)
-Publish: /devices/modbus-sample/controls/RGB_All/meta/error: '' (QoS 1, retained)
-Publish: /devices/modbus-sample/controls/RGB_All: '10' (QoS 1, retained)
 << 01 83 03 01 31
+Publish: /devices/modbus-sample/controls/White1/meta/error: 'r' (QoS 1, retained)
 EnqueueHoldingPackUnavailableAndHolesReadResponse()
->> 01 03 00 0B 00 02 B5 C9
+>> 01 03 00 0B 00 01 F5 C8
+<< 01 83 03 01 31
+Publish: /devices/modbus-sample/controls/Holding2/meta/error: 'r' (QoS 1, retained)
+EnqueueHoldingPackUnavailableAndHolesReadResponse()
+>> 01 03 00 0C 00 01 44 09
+<< 01 03 02 00 0C B8 41
+Publish: /devices/modbus-sample/controls/Holding1: '12' (QoS 1, retained)
+>>> LoopOnce() [with holes]
+EnqueueHoldingPackUnavailableAndHolesReadResponse()
+>> 01 03 00 07 00 06 74 09
+<< 01 83 03 01 31
+Publish: /devices/modbus-sample/controls/White/meta/error: 'r' (QoS 1, retained)
+Publish: /devices/modbus-sample/controls/RGB_All/meta/error: 'r' (QoS 1, retained)
+Publish: /devices/modbus-sample/controls/Holding1/meta/error: 'r' (QoS 1, retained)
 >>> LoopOnce() [new ranges]
-<< 01 03 04 00 14 00 1E 3A 3F
 EnqueueHoldingPackUnavailableAndHolesReadResponse()
 >> 01 03 00 07 00 02 75 CA
-Publish: /devices/modbus-sample/controls/RGB_All: '20' (QoS 1, retained)
 << 01 03 04 00 0A 00 14 DA 3E
+Publish: /devices/modbus-sample/controls/White: '10' (QoS 1, retained)
+Publish: /devices/modbus-sample/controls/White/meta/error: '' (QoS 1, retained)
+Publish: /devices/modbus-sample/controls/RGB_All: '20' (QoS 1, retained)
+Publish: /devices/modbus-sample/controls/RGB_All/meta/error: '' (QoS 1, retained)
 EnqueueHoldingPackUnavailableAndHolesReadResponse()
->> 01 03 00 0B 00 02 B5 C9
-<< 01 03 04 00 14 00 1E 3A 3F
+>> 01 03 00 0C 00 01 44 09
+<< 01 03 02 00 14 B8 4B
+Publish: /devices/modbus-sample/controls/Holding1: '20' (QoS 1, retained)
+Publish: /devices/modbus-sample/controls/Holding1/meta/error: '' (QoS 1, retained)
 Close()
 Unsubscribe -- em-test: /devices/modbus-sample/controls/Holding1/on
 Publish: /devices/modbus-sample/controls/Holding1: '' (QoS 1, retained)
