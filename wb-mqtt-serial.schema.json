@@ -1346,6 +1346,26 @@
       "headerTemplate": "{{self.name}} {{self.slave_id}}",
       "oneOf": [
         {
+          "title" : "Unknown device",
+          "type" : "object",
+          "_format": "unknown-device",
+          "options": {
+            "wb": {
+                "hide_from_selection": true
+            }
+          },
+          "properties": {
+            "device_type": {
+              "type": "string",
+              "enum": [ "unknown" ]
+            },
+            "value": {
+              "type": "object"
+            }
+          },
+          "required": [ "device_type", "value" ]
+        },
+        {
           "title": "Custom DLMS device",
           "allOf": [
             { "$ref": "#/definitions/deviceProperties" },
@@ -1854,6 +1874,7 @@
       "Name": "Имя",
       "Type": "Тип",
       "Maximum value": "Максимальное значение",
+      "Unknown device": "Неизвестное устройство",
       "High priority read period (ms)": "Период чтения с высоким приоритетом (мс)",
       "the channel has low priority": "канал имеет низкий приоритет",
       "read as soon as possible": "читать как появится возможность",

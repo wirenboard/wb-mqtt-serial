@@ -1,8 +1,26 @@
-wb-mqtt-serial (2.47.1) stable; urgency=medium
+wb-mqtt-serial (2.50.0) stable; urgency=medium
 
   * Holes feature is reimplemented
 
- -- Petr Krasnoshchekov <petr.krasnoshchekov@wirenboard.ru>  Mon, 31 Jan 2022 21:22:53 +0500
+ -- Petr Krasnoshchekov <petr.krasnoshchekov@wirenboard.ru>  Sun, 06 Feb 2022 13:04:35 +0500
+
+wb-mqtt-serial (2.49.1) stable; urgency=medium
+
+  * Extended range of phi parameter for WB-MAP templates from -32768 to 32767
+
+ -- Roman Kochkin <roman.kochkin@wirenboard.ru>  Tue, 1 Feb 2022 23:46:00 +0300
+
+wb-mqtt-serial (2.49.0) stable; urgency=medium
+
+  * "deprecated" parameter is added to mark deprecated device templates
+
+ -- Petr Krasnoshchekov <petr.krasnoshchekov@wirenboard.ru>  Tue, 01 Feb 2022 10:49:06 +0500
+
+wb-mqtt-serial (2.48.0) stable; urgency=medium
+
+  * Configs with devices with invalid templates can be edited in homeui
+
+ -- Petr Krasnoshchekov <petr.krasnoshchekov@wirenboard.ru>  Tue, 01 Feb 2022 10:31:49 +0500
 
 wb-mqtt-serial (2.47.0) stable; urgency=medium
 
