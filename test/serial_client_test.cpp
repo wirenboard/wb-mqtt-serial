@@ -282,6 +282,44 @@ TEST_F(TSerialClientTest, Write)
     }
 }
 
+TEST_F(TSerialClientTest, U8)
+{
+    PRegister reg20 = Reg(20, U8);
+    PRegister reg30 = Reg(30, U8);
+    SerialClient->AddRegister(reg20);
+    SerialClient->AddRegister(reg30);
+
+    Note() << "server -> client: 10, 20";
+    Device->Registers[20] = 10;
+    Device->Registers[30] = 20;
+    Note() << "Cycle()";
+    SerialClient->Cycle();
+    EXPECT_EQ(to_string(10), GetTextValue(reg20));
+    EXPECT_EQ(to_string(20), GetTextValue(reg30));
+
+    Note() << "server -> client: 0x2010, 0x2011";
+    Device->Registers[20] = 0x2010;
+    Device->Registers[30] = 0x2011;
+    Note() << "Cycle()";
+    SerialClient->Cycle();
+    EXPECT_EQ(to_string(0x10), GetTextValue(reg20));
+    EXPECT_EQ(to_string(0x11), GetTextValue(reg30));
+
+    Note() << "client -> server: 10";
+    SerialClient->SetTextValue(reg20, "10");
+    Note() << "Cycle()";
+    SerialClient->Cycle();
+    EXPECT_EQ(to_string(10), GetTextValue(reg20));
+    EXPECT_EQ(10, Device->Registers[20]);
+
+    Note() << "client -> server: 257";
+    SerialClient->SetTextValue(reg20, "257");
+    Note() << "Cycle()";
+    SerialClient->Cycle();
+    EXPECT_EQ(to_string(1), GetTextValue(reg20));
+    EXPECT_EQ(1, Device->Registers[20]);
+}
+
 TEST_F(TSerialClientTest, S8)
 {
     PRegister reg20 = Reg(20, S8);
