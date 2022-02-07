@@ -285,8 +285,6 @@ struct TRegisterBitsAddress
 
 TRegisterBitsAddress LoadRegisterBitsAddress(const Json::Value& register_data, const std::string& jsonPropertyName);
 
-TRegisterBitsAddress LoadRegisterBitsAddress(const Json::Value& register_data);
-
 /*!
  * Basic device factory implementation with uint32 register addresses
  */
@@ -328,3 +326,9 @@ std::string DecorateIfNotEmpty(const std::string& prefix,
                                const std::string& str,
                                const std::string& postfix = std::string());
 std::string GetProtocolName(const Json::Value& deviceDescription);
+
+namespace SerialConfig
+{
+    constexpr auto WRITE_ADDRESS_PROPERTY_NAME = "write_address";
+    constexpr auto ADDRESS_PROPERTY_NAME = "address";
+}

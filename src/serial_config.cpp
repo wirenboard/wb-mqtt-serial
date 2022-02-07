@@ -1327,14 +1327,11 @@ void RegisterProtocols(TSerialDeviceFactory& deviceFactory)
 
 namespace
 {
-    constexpr auto WRITE_ADDRESS_PROPERTY_NAME = "write_address";
-    constexpr auto ADDRESS_PROPERTY_NAME = "address";
-
     inline bool HasWriteAddressProperty(const Json::Value& regCfg)
     {
-        return regCfg.isMember(WRITE_ADDRESS_PROPERTY_NAME) &&
-               !(regCfg[WRITE_ADDRESS_PROPERTY_NAME].isString() &&
-                 regCfg[WRITE_ADDRESS_PROPERTY_NAME].asString().empty());
+        return regCfg.isMember(SerialConfig::WRITE_ADDRESS_PROPERTY_NAME) &&
+               !(regCfg[SerialConfig::WRITE_ADDRESS_PROPERTY_NAME].isString() &&
+                 regCfg[SerialConfig::WRITE_ADDRESS_PROPERTY_NAME].asString().empty());
     }
 }
 
@@ -1374,11 +1371,6 @@ TRegisterBitsAddress LoadRegisterBitsAddress(const Json::Value& register_data, c
     return res;
 }
 
-TRegisterBitsAddress LoadRegisterBitsAddress(const Json::Value& register_data)
-{
-    return LoadRegisterBitsAddress(register_data, ADDRESS_PROPERTY_NAME);
-}
-
 TUint32RegisterAddressFactory::TUint32RegisterAddressFactory(size_t bytesPerRegister)
     : BaseRegisterAddress(0),
       BytesPerRegister(bytesPerRegister)
@@ -1390,9 +1382,9 @@ TRegisterDesc TUint32RegisterAddressFactory::LoadRegisterAddress(const Json::Val
                                                                  uint32_t registerByteWidth) const
 {
     TRegisterDesc res;
-    auto addr = LoadRegisterBitsAddress(regCfg);
+    auto addr = LoadRegisterBitsAddress(regCfg, SerialConfig::ADDRESS_PROPERTY_NAME);
     if (HasWriteAddressProperty(regCfg)) {
-        auto writeAddress = LoadRegisterBitsAddress(regCfg, WRITE_ADDRESS_PROPERTY_NAME);
+        auto writeAddress = LoadRegisterBitsAddress(regCfg, SerialConfig::WRITE_ADDRESS_PROPERTY_NAME);
         res.WriteAddress = std::shared_ptr<IRegisterAddress>(
             deviceBaseAddress.CalcNewAddress(writeAddress.Address, stride, registerByteWidth, BytesPerRegister));
     }
@@ -1414,9 +1406,10 @@ TRegisterDesc TStringRegisterAddressFactory::LoadRegisterAddress(const Json::Val
                                                                  uint32_t registerByteWidth) const
 {
     TRegisterDesc res;
-    res.Address = std::make_shared<TStringRegisterAddress>(regCfg["address"].asString());
+    res.Address = std::make_shared<TStringRegisterAddress>(regCfg[SerialConfig::ADDRESS_PROPERTY_NAME].asString());
     if (HasWriteAddressProperty(regCfg)) {
-        res.WriteAddress = std::make_shared<TStringRegisterAddress>(regCfg[WRITE_ADDRESS_PROPERTY_NAME].asString());
+        res.WriteAddress =
+            std::make_shared<TStringRegisterAddress>(regCfg[SerialConfig::WRITE_ADDRESS_PROPERTY_NAME].asString());
     }
     return res;
 }
