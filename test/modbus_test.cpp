@@ -137,6 +137,29 @@ set<int> TModbusTest::VerifyQuery(PRegister reg)
     return errorRegisters;
 }
 
+TEST_F(TModbusTest, ReadHoldingRegiterWithWriteAddress)
+{
+    EnqueueHoldingReadU16ResponseWithWriteAddress();
+
+    auto range = ModbusDev->CreateRegisterRange(ModbusHoldingU16WithAddressWrite);
+    ModbusDev->ReadRegisterRange(range);
+    auto registerList = range->RegisterList();
+    EXPECT_EQ(registerList.size(), 1);
+    auto reg = registerList.front();
+    EXPECT_EQ(GetUint32RegisterAddress(reg->GetAddress()), 110);
+    EXPECT_FALSE(reg->GetErrorState().test(TRegister::TError::ReadError));
+    EXPECT_EQ(reg->GetValue(), 0x15);
+}
+
+TEST_F(TModbusTest, WriteHoldingRegiterWithWriteAddress)
+{
+    EnqueueHoldingWriteU16ResponseWithWriteAddress();
+
+    EXPECT_NO_THROW(ModbusDev->WriteRegister(ModbusHoldingU16WithAddressWrite, 0x119C));
+
+    SerialPort->Close();
+}
+
 TEST_F(TModbusTest, Query)
 {
     EnqueueCoilReadResponse();
