@@ -1269,6 +1269,49 @@ void TModbusExpectations::EnqueueHoldingWriteU16Response(uint8_t exception)
         __func__);
 }
 
+void TModbusExpectations::EnqueueHoldingWriteU16ResponseWithWriteAddress(uint8_t exception)
+{
+    Expector()->Expect(
+        WrapPDU({
+            0x06, // function code
+            0x00, // starting address Hi
+            115,   // starting address Lo
+            0x11, // value Hi
+            0x9C, // value Lo
+        }),
+        WrapPDU(exception == 0 ? std::vector<int>{
+                                     0x06, // function code
+                                     0x00, // starting address Hi
+                                     115,   // starting address Lo
+                                     0x11, // value Hi
+                                     0x9C, // value Lo
+                                 }
+                               : std::vector<int>{0x86, // function code + 80
+                                                  exception}),
+        __func__);
+}
+
+void TModbusExpectations::EnqueueHoldingReadU16ResponseWithWriteAddress(uint8_t exception)
+{
+    Expector()->Expect(
+        WrapPDU({
+            0x03, // function code
+            0x00, // starting address Hi
+            110,   // starting address Lo
+            0x00, // quantity Hi
+            0x01, // quantity Lo
+        }),
+        WrapPDU(exception == 0 ? std::vector<int>{
+                                               0x03, // function code
+                                               0x02, // byte count
+                                               0x00, // data Hi
+                                               0x15  // data Lo
+                                           }
+                                         : std::vector<int>{0x83, // function code + 80
+                                                            exception}),
+        __func__);
+}
+
 // write 2 coils
 void TModbusExpectations::EnqueueCoilWriteMultipleResponse(uint8_t exception)
 {

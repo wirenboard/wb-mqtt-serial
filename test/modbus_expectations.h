@@ -39,6 +39,9 @@ public:
     void EnqueueCoilWriteResponse(uint8_t exception = 0);
     void EnqueueHoldingWriteU16Response(uint8_t exception = 0);
 
+    void EnqueueHoldingWriteU16ResponseWithWriteAddress(uint8_t exception = 0);
+    void EnqueueHoldingReadU16ResponseWithWriteAddress(uint8_t exception = 0);
+
     void EnqueueCoilWriteMultipleResponse(uint8_t exception = 0);
     void EnqueueHoldingWriteS64Response(uint8_t exception = 0);
 
