@@ -31,6 +31,8 @@ protected:
     PRegister ModbusHoldingU16Single;
     PRegister ModbusHoldingU64Multi;
     PRegister ModbusHoldingU16Multi;
+
+    PRegister ModbusHoldingU16WithAddressWrite;
 };
 
 PDeviceConfig TModbusTest::GetDeviceConfig()
@@ -62,6 +64,12 @@ void TModbusTest::SetUp()
     ModbusHoldingU16Single = TRegister::Intern(ModbusDev, TRegisterConfig::Create(Modbus::REG_HOLDING_SINGLE, 94, U16));
     ModbusHoldingU64Multi = TRegister::Intern(ModbusDev, TRegisterConfig::Create(Modbus::REG_HOLDING_MULTI, 95, U64));
     ModbusHoldingU16Multi = TRegister::Intern(ModbusDev, TRegisterConfig::Create(Modbus::REG_HOLDING_MULTI, 99, U16));
+
+    auto readAddr = std::make_shared<TUint32RegisterAddress>(110);
+    auto writeAddr = std::make_shared<TUint32RegisterAddress>(115);
+    ModbusHoldingU16WithAddressWrite =
+        TRegister::Intern(ModbusDev,
+                          TRegisterConfig::Create(Modbus::REG_HOLDING, readAddr, writeAddr, RegisterFormat::U16));
 
     SerialPort->Open();
 }
@@ -311,6 +319,7 @@ void TModbusIntegrationTest::ExpectPollQueries(TestMode mode)
     EnqueueHoldingReadS64Response();
     EnqueueHoldingReadF32Response();
     EnqueueHoldingReadU16Response();
+    EnqueueHoldingReadU16ResponseWithWriteAddress();
     EnqueueInputReadU16Response();
 
     switch (mode) {
@@ -374,6 +383,7 @@ TEST_F(TModbusIntegrationTest, Write)
     PublishWaitOnValue("/devices/modbus-sample/controls/Holding U16/on", "3905");
     PublishWaitOnValue("/devices/modbus-sample/controls/Holding U64 Single/on", "283686952306183");
     PublishWaitOnValue("/devices/modbus-sample/controls/Holding U64 Multi/on", "81985529216486895");
+    PublishWaitOnValue("/devices/modbus-sample/controls/Holding U16 with write_address/on", "4508");
 
     EnqueueCoilWriteResponse();
     EnqueueRGBWriteResponse();
@@ -381,10 +391,13 @@ TEST_F(TModbusIntegrationTest, Write)
     EnqueueHoldingWriteU16Response();
     EnqueueHoldingSingleWriteU64Response();
     EnqueueHoldingMultiWriteU64Response();
+    EnqueueHoldingWriteU16ResponseWithWriteAddress();
+
     EnqueueHoldingPartialPackReadResponse();
     EnqueueHoldingReadS64Response();
     EnqueueHoldingReadF32Response();
     EnqueueHoldingReadU16Response();
+    EnqueueHoldingReadU16ResponseWithWriteAddress();
     EnqueueInputReadU16Response();
     EnqueueCoilOneByOneReadResponse();
     Enqueue10CoilsReadResponse();
@@ -411,6 +424,7 @@ TEST_F(TModbusIntegrationTest, Errors)
     EnqueueHoldingReadS64Response(0x4);
     EnqueueHoldingReadF32Response(0x5);
     EnqueueHoldingReadU16Response(0x6);
+    EnqueueHoldingReadU16ResponseWithWriteAddress(0x6);
     EnqueueInputReadU16Response(0x8);
     EnqueueCoilReadResponse(0xa);
     Enqueue10CoilsReadResponse(0x54); // invalid exception code
