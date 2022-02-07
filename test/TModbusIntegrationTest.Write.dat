@@ -335,6 +335,7 @@ Publish: /devices/modbus-sample/controls/Holding S64/on: '81985529216486895' (Qo
 Publish: /devices/modbus-sample/controls/Holding U16/on: '3905' (QoS 0, retained)
 Publish: /devices/modbus-sample/controls/Holding U64 Single/on: '283686952306183' (QoS 0, retained)
 Publish: /devices/modbus-sample/controls/Holding U64 Multi/on: '81985529216486895' (QoS 0, retained)
+Publish: /devices/modbus-sample/controls/Holding U16 with write_address/on: '4508' (QoS 0, retained)
 >>> LoopOnce()
 Open()
 Sleep(5000)
@@ -377,6 +378,10 @@ EnqueueHoldingMultiWriteU64Response()
 >> 01 10 00 5F 00 04 08 01 23 45 67 89 AB CD EF C4 5D
 << 01 10 00 5F 00 04 F1 D8
 Publish: /devices/modbus-sample/controls/Holding U64 Multi: '81985529216486895' (QoS 1, retained)
+EnqueueHoldingWriteU16ResponseWithWriteAddress()
+>> 01 06 00 73 11 9C 74 28
+<< 01 06 00 73 11 9C 74 28
+Publish: /devices/modbus-sample/controls/Holding U16 with write_address: '4508' (QoS 1, retained)
 EnqueueHoldingPartialPackReadResponse()
 >> 01 03 00 04 00 03 44 0A
 << 01 03 06 00 0A 00 14 00 1E 79 78
