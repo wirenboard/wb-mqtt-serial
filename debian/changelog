@@ -1,3 +1,9 @@
+wb-mqtt-serial (2.50.2) stable; urgency=medium
+
+  * Cityron PU-3 template was corrected
+
+ -- Dmitry Vorobjev <d.vorobjev@wirenboard.ru>  Tue, 08 Feb 2022 17:33:10 +0300
+
 wb-mqtt-serial (2.50.1) stable; urgency=medium
 
   * Fixed a incorrect value of the modbus register in U8 format

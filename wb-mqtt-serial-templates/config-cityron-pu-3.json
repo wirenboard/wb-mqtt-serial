@@ -95,6 +95,7 @@
                 "type": "rel_humidity",
                 "format": "u16",
                 "group": "parameters",
+                "readonly": true,
                 "enabled": false
             },
             {
