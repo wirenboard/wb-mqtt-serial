@@ -40,6 +40,7 @@ private:
     std::string GetTextValue() const;
     std::string GetErrorText() const;
     void PublishValueAndError(WBMQTT::TDeviceDriver& deviceDriver, const std::string& value, const std::string& error);
+    void PublishError(WBMQTT::TDeviceDriver& deviceDriver, const std::string& error);
     /* Current value of a channel, error flag and last update time.
        They are used to prevent unnecessary calls to libwbmqtt1.
        Although libwbmqtt1 implements publishing control with TPublishParams,

@@ -136,6 +136,7 @@ class TPreemptivePolicy
     std::chrono::milliseconds HighPriorityTime = std::chrono::milliseconds(0);
     std::chrono::milliseconds MaxLowPriorityLag;
     std::chrono::steady_clock::time_point LastTime;
+    TPriority Priority;
     bool FirstTime = true;
 
 public:

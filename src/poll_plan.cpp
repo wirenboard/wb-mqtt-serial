@@ -13,10 +13,11 @@ void TPreemptivePolicy::SelectQueue(std::chrono::steady_clock::time_point time, 
     auto delta = std::chrono::duration_cast<std::chrono::milliseconds>(time - LastTime);
     LastTime = time;
     if (FirstTime) {
+        Priority = priority;
         FirstTime = false;
         return;
     }
-    if (priority == TPriority::High) {
+    if (Priority == TPriority::High) {
         HighPriorityTime += delta;
         if (HighPriorityTime > 2 * MaxLowPriorityLag) { // Prevent overflow
             HighPriorityTime = MaxLowPriorityLag;
@@ -27,6 +28,7 @@ void TPreemptivePolicy::SelectQueue(std::chrono::steady_clock::time_point time, 
             HighPriorityTime = std::chrono::milliseconds::zero();
         }
     }
+    Priority = priority;
 }
 
 std::chrono::milliseconds TPreemptivePolicy::GetLowPriorityLag() const

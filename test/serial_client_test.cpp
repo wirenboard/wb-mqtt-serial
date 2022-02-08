@@ -1342,6 +1342,32 @@ TEST_F(TSerialClientIntegrationTest, Errors)
     SerialDriver->LoopOnce();
 }
 
+TEST_F(TSerialClientIntegrationTest, PollIntervalMissErrors)
+{
+    FilterConfig("PollIntervalMissError");
+
+    SerialDriver = make_shared<TMQTTSerialDriver>(Driver, Config);
+
+    auto device = TFakeSerialDevice::GetDevice("0x97");
+
+    if (!device) {
+        throw std::runtime_error("device not found or wrong type");
+    }
+
+    Note() << "LoopOnce() [first start]";
+    SerialDriver->LoopOnce();
+
+    device->Registers[0] = 0xFF;
+
+    this_thread::sleep_for(200ms);
+
+    Note() << "LoopOnce() [interval miss]";
+    SerialDriver->LoopOnce();
+
+    Note() << "LoopOnce() [interval ok]";
+    SerialDriver->LoopOnce();
+}
+
 TEST_F(TSerialClientIntegrationTest, SetupErrors)
 {
     FilterConfig("DDL24");
