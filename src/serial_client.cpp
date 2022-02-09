@@ -46,6 +46,16 @@ namespace
     {
         return bool(reg.ReadPeriod);
     }
+
+    Metrics::TPollItem ToMetricsPollItem(const std::string& device, const std::list<PRegister>& regs)
+    {
+        Metrics::TPollItem res;
+        res.Device = device;
+        for (const auto& reg: regs) {
+            res.Controls.push_back(reg->GetChannelName());
+        }
+        return res;
+    }
 };
 
 TSerialClient::TSerialClient(const std::vector<PSerialDevice>& devices,
@@ -56,7 +66,7 @@ TSerialClient::TSerialClient(const std::vector<PSerialDevice>& devices,
       Devices(devices),
       Active(false),
       FlushNeeded(new TBinarySemaphore),
-      Scheduler(TPreemptivePolicy(MAX_LOW_PRIORITY_LAG)),
+      Scheduler(MAX_LOW_PRIORITY_LAG),
       OpenCloseLogic(openCloseSettings),
       ConnectLogger(PORT_OPEN_ERROR_NOTIFICATION_INTERVAL, "[serial client] "),
       Metrics(metrics)
@@ -156,6 +166,7 @@ void TSerialClient::WaitForPollAndFlush()
 
     while (FlushNeeded->Wait(wait_until)) {
         DoFlush();
+        Metrics.StartPoll(Metrics::BUS_IDLE);
     }
 }
 
@@ -188,7 +199,7 @@ void TSerialClient::SetReadError(PRegister reg)
 
 void TSerialClient::ProcessPolledRegister(PRegister reg)
 {
-    if (reg->GetErrorState().count()) {
+    if (reg->GetErrorState().test(TRegister::ReadError) || reg->GetErrorState().test(TRegister::WriteError)) {
         if (ErrorCallback) {
             ErrorCallback(reg);
         }
@@ -201,6 +212,7 @@ void TSerialClient::ProcessPolledRegister(PRegister reg)
 
 void TSerialClient::Cycle()
 {
+    Metrics.StartPoll(Metrics::NON_BUS_POLLING_TASKS);
     Activate();
 
     try {
@@ -313,22 +325,26 @@ std::vector<PRegisterRange> TSerialClient::ReadRanges(TRegisterReader& reader,
     std::vector<PRegisterRange> ranges;
     bool firstIteration = true;
     auto device = range->Device();
+    auto now = pollStartTime;
     while (true) {
         ranges.push_back(range);
         // Must read first range to update device connection state
         if (!forceError && (firstIteration || !device->GetIsDisconnected())) {
             firstIteration = false;
+            Metrics.StartPoll(ToMetricsPollItem(device->DeviceConfig()->Id, range->RegisterList()));
             device->ReadRegisterRange(range);
             Metrics.StartPoll(Metrics::NON_BUS_POLLING_TASKS);
             for (auto& reg: range->RegisterList()) {
+                reg->SetLastPollTime(now);
                 ProcessPolledRegister(reg);
             }
         } else {
             for (auto& reg: range->RegisterList()) {
+                reg->SetLastPollTime(now);
                 SetReadError(reg);
             }
         }
-        auto now = std::chrono::steady_clock::now();
+        now = std::chrono::steady_clock::now();
         auto delta = MAX_POLL_TIME - std::chrono::duration_cast<std::chrono::milliseconds>(now - pollStartTime);
         if (delta <= std::chrono::milliseconds::zero()) {
             break;
@@ -345,8 +361,8 @@ std::vector<PRegisterRange> TSerialClient::ReadRanges(TRegisterReader& reader,
 
 void TSerialClient::OpenPortCycle()
 {
-    Metrics.StartPoll(Metrics::NON_BUS_POLLING_TASKS);
     WaitForPollAndFlush();
+    Metrics.StartPoll(Metrics::NON_BUS_POLLING_TASKS);
 
     auto pollStartTime = std::chrono::steady_clock::now();
     TRegisterReader reader(MAX_POLL_TIME);
@@ -354,6 +370,7 @@ void TSerialClient::OpenPortCycle()
     Scheduler.AccumulateNext(pollStartTime, reader);
     auto range = reader.GetRegisterRange();
     if (!range) {
+        Metrics.StartPoll(Metrics::BUS_IDLE);
         return;
     }
     auto device = range->Device();

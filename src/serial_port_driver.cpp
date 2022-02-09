@@ -237,8 +237,12 @@ void TDeviceChannel::UpdateValueAndError(WBMQTT::TDeviceDriver& deviceDriver,
     bool errorIsChanged = (CachedErrorText != error);
     switch (publishPolicy.Policy) {
         case TPublishParameters::PublishOnlyOnChange: {
-            if (errorIsChanged || CachedCurrentValue != value) {
+            if (CachedCurrentValue != value) {
                 PublishValueAndError(deviceDriver, value, error);
+            } else {
+                if (errorIsChanged) {
+                    PublishError(deviceDriver, error);
+                }
             }
             break;
         }
@@ -260,12 +264,7 @@ void TDeviceChannel::UpdateValueAndError(WBMQTT::TDeviceDriver& deviceDriver,
 
 void TDeviceChannel::UpdateError(WBMQTT::TDeviceDriver& deviceDriver)
 {
-    auto error = GetErrorText();
-    if (CachedErrorText.empty() || (CachedErrorText != error)) {
-        CachedErrorText = error;
-        auto tx = deviceDriver.BeginTx();
-        Control->SetError(tx, error).Sync();
-    }
+    PublishError(deviceDriver, GetErrorText());
 }
 
 std::string TDeviceChannel::GetErrorText() const
@@ -304,6 +303,15 @@ void TDeviceChannel::PublishValueAndError(WBMQTT::TDeviceDriver& deviceDriver,
     {
         auto tx = deviceDriver.BeginTx();
         Control->UpdateRawValueAndError(tx, value, error).Sync();
+    }
+}
+
+void TDeviceChannel::PublishError(WBMQTT::TDeviceDriver& deviceDriver, const std::string& error)
+{
+    if (CachedErrorText.empty() || (CachedErrorText != error)) {
+        CachedErrorText = error;
+        auto tx = deviceDriver.BeginTx();
+        Control->SetError(tx, error).Sync();
     }
 }
 

@@ -90,7 +90,7 @@ private:
     TCallback ErrorCallback;
     PSerialDevice LastAccessedDevice;
     PBinarySemaphore FlushNeeded;
-    TScheduler<PRegister, TRegisterComparePredicate, TPreemptivePolicy> Scheduler;
+    TScheduler<PRegister, TRegisterComparePredicate> Scheduler;
 
     TPortOpenCloseLogic OpenCloseLogic;
     TLoggerWithTimeout ConnectLogger;
