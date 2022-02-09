@@ -1,6 +1,6 @@
 wb-mqtt-serial (2.50.2) stable; urgency=medium
 
-  * Cityron PU-3 template was corrected
+  * Channel Humidity was made readonly in Cityron PU-3 template
 
  -- Dmitry Vorobjev <d.vorobjev@wirenboard.ru>  Tue, 08 Feb 2022 17:33:10 +0300
 
