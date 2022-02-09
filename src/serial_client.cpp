@@ -66,7 +66,7 @@ TSerialClient::TSerialClient(const std::vector<PSerialDevice>& devices,
       Devices(devices),
       Active(false),
       FlushNeeded(new TBinarySemaphore),
-      Scheduler(TPreemptivePolicy(MAX_LOW_PRIORITY_LAG)),
+      Scheduler(MAX_LOW_PRIORITY_LAG),
       OpenCloseLogic(openCloseSettings),
       ConnectLogger(PORT_OPEN_ERROR_NOTIFICATION_INTERVAL, "[serial client] "),
       Metrics(metrics)
