@@ -689,6 +689,24 @@
               "options": {
                 "keep_oneof_values": false
               }
+            }
+          },
+          "required": ["address"]
+        }
+      ]
+    },
+    "registerChannel_modbus": {
+      "allOf": [
+        { "$ref": "#/definitions/register_channel_common"},
+        {
+          "properties": {
+            "address": {
+              "$ref": "#/definitions/address",
+              "title": "Address",
+              "propertyOrder": 6,
+              "options": {
+                "keep_oneof_values": false
+              }
             },
             "write_address": {
               "$ref": "#/definitions/address",
@@ -790,6 +808,22 @@
       "title": "Channel",
       "oneOf": [
         { "$ref": "#/definitions/registerChannel" },
+        { "$ref": "#/definitions/compoundRegisterChannel" }
+      ],
+      "options": {
+        "keep_oneof_values": false,
+        "wb": {
+          "disable_panel": true
+        },
+        "disable_collapse": true
+      },
+      "_format": "wb-multiple"
+    },
+    "common_channel_modbus": {
+      "headerTemplate": "{{self.name}}",
+      "title": "Channel",
+      "oneOf": [
+        { "$ref": "#/definitions/registerChannel_modbus" },
         { "$ref": "#/definitions/compoundRegisterChannel" }
       ],
       "options": {
@@ -1270,6 +1304,20 @@
         }
       }
     },
+    "common_channels_modbus": {
+      "properties": {
+        "channels": {
+          "type": "array",
+          "title": "Custom channels",
+          "items": { "$ref": "#/definitions/common_channel_modbus" },
+          "propertyOrder": 99,
+          "_format": "tabs",
+          "options": {
+            "disable_array_delete_last_row": true
+          }
+        }
+      }
+    },
     "common_setup": {
       "properties": {
         "setup": {
@@ -1618,7 +1666,7 @@
           "title": "Custom Modbus device",
           "allOf": [
             { "$ref": "#/definitions/deviceProperties" },
-            { "$ref": "#/definitions/common_channels" },
+            { "$ref": "#/definitions/common_channels_modbus" },
             { "$ref": "#/definitions/common_setup" },
             { "$ref": "#/definitions/slave_id" }
           ],

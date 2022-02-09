@@ -140,7 +140,7 @@
           "type": "array",
           "items": {
             "oneOf": [
-              { "$ref": "#/definitions/registerChannel" },
+              { "$ref": "#/definitions/registerChannel_modbus" },
               { "$ref": "#/definitions/compoundRegisterChannel" },
               { "$ref": "#/definitions/subdevice_channel" }
             ]

@@ -156,8 +156,6 @@ TEST_F(TModbusTest, WriteHoldingRegiterWithWriteAddress)
     EnqueueHoldingWriteU16ResponseWithWriteAddress();
 
     EXPECT_NO_THROW(ModbusDev->WriteRegister(ModbusHoldingU16WithAddressWrite, 0x119C));
-
-    SerialPort->Close();
 }
 
 TEST_F(TModbusTest, Query)
