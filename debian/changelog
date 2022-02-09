@@ -1,8 +1,14 @@
-wb-mqtt-serial (2.50.2) stable; urgency=medium
+wb-mqtt-serial (2.50.3) stable; urgency=medium
 
   * A bug during publishing of read period miss error is fixed
 
- -- Petr Krasnoshchekov <petr.krasnoshchekov@wirenboard.ru>  Tue, 08 Feb 2022 15:12:34 +0500
+ -- Petr Krasnoshchekov <petr.krasnoshchekov@wirenboard.ru>  Wed, 09 Feb 2022 10:57:33 +0500
+
+wb-mqtt-serial (2.50.2) stable; urgency=medium
+
+  * Channel Humidity was made readonly in Cityron PU-3 template
+
+ -- Dmitry Vorobjev <d.vorobjev@wirenboard.ru>  Tue, 08 Feb 2022 17:33:10 +0300
 
 wb-mqtt-serial (2.50.1) stable; urgency=medium
 
