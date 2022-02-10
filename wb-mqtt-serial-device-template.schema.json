@@ -141,7 +141,7 @@
           "items": {
             "oneOf": [
               { "$ref": "#/definitions/registerChannel_modbus" },
-              { "$ref": "#/definitions/compoundRegisterChannel" },
+              { "$ref": "#/definitions/compoundRegisterChannel_modbus" },
               { "$ref": "#/definitions/subdevice_channel" }
             ]
           }
