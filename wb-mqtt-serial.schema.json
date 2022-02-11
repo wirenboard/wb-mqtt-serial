@@ -709,7 +709,7 @@
               }
             },
             "write_address": {
-              "$ref": "#/definitions/address",
+              "$ref": "#/definitions/write_address",
               "title": "Write Address",
               "propertyOrder": 7,
               "options": {
@@ -836,7 +836,7 @@
         "consists_of": {
           "type": "array",
           "title": "A list of subregisters",
-          "items": { "$ref": "#/definitions/subreg" },
+          "items": { "$ref": "#/definitions/subreg_modbus" },
           "minItems": 1,
           "_format": "table",
           "propertyOrder": 6,
@@ -1071,6 +1071,52 @@
       "required": ["reg_type", "address"],
       "defaultProperties":  ["reg_type", "address"]
     },
+    "subreg_modbus": {
+      "type": "object",
+      "title": "Subregister",
+      "properties": {
+        "reg_type": {
+          "$ref": "#/definitions/reg_type",
+          "propertyOrder": 1
+        },
+        "address": {
+          "$ref": "#/definitions/address",
+          "propertyOrder": 2,
+          "options": {
+            "keep_oneof_values": false
+          }
+        },
+        "write_address": {
+          "$ref": "#/definitions/write_address",
+          "propertyOrder": 3,
+          "options": {
+            "keep_oneof_values": false
+          }
+        },
+        "format": {
+          "$ref": "#/definitions/format",
+          "propertyOrder": 4
+        },
+        "scale": {
+          "type": "number",
+          "title": "Scale (value multiplier)",
+          "default" : 1,
+          "propertyOrder": 5
+        },
+        "offset": {
+          "type": "number",
+          "title": "Value offset",
+          "default" : 0,
+          "propertyOrder": 6
+        },
+        "word_order": {
+          "$ref": "#/definitions/word_order",
+          "propertyOrder": 7
+        }
+      },
+      "required": ["reg_type", "address"],
+      "defaultProperties":  ["reg_type", "address"]
+    },
     "channel_name": {
       "type": "string",
       "title": "Control name",
@@ -1136,6 +1182,41 @@
           "title": "decimal or hex",
           "type": "string",
           "pattern": "^(0x[A-Fa-f\\d]+|\\d+)$",
+          "options": {
+            "inputAttributes": {
+              "placeholder":  "decimal (e.g. 123) or hex (e.g. 0xAF)"
+            },
+            "patternmessage": "Should be decimal or hex"
+          }
+        },
+        {
+          "title": "bits",
+          "type": "string",
+          "pattern": "^((0x[A-Fa-f\\d]+|\\d+):(\\d+):(\\d+))$",
+          "options": {
+            "inputAttributes": {
+              "placeholder":  "address:offset:bitwidth"
+            },
+            "patternmessage": "Address should be decimal or hex, offset and bitwidth separated by ':'"
+          }
+        },
+        {
+          "title": "decimal",
+          "type": "integer"
+        }
+      ],
+      "options": {
+        "keep_oneof_values": false
+      }
+    },
+    "write_address": {
+      "title": "Write Address",
+      "description": "Register index (0-65535 in case of Modbus)",
+      "oneOf": [
+        {
+          "title": "decimal or hex",
+          "type": "string",
+          "pattern": "^(0x[A-Fa-f\\d]+|\\d+|)$",
           "options": {
             "inputAttributes": {
               "placeholder":  "decimal (e.g. 123) or hex (e.g. 0xAF)"
