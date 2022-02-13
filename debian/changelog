@@ -1,4 +1,4 @@
-wb-mqtt-serial (2.50.4) stable; urgency=medium
+wb-mqtt-serial (2.51.0) stable; urgency=medium
 
   * MDM3 template: added Overcurrent Protection channel
   * MDM3 template: minimum increase/decrease rate is set to 1 ms/%
