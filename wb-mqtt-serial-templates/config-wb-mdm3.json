@@ -456,7 +456,7 @@
                 "group": "debug"
             },
             {
-                "name": "Overcurrent Protection triggered",
+                "name": "Overcurrent Protection Triggered",
                 "reg_type": "input",
                 "address": 100,
                 "type": "switch",
@@ -567,7 +567,7 @@
                 "Supply voltage": "Напряжение питания",
                 "Uptime": "Время работы с момента включения (с)",
                 "AC on L-N": "Напряжение на клеммах L-N",
-                "Overcurrent Protection triggered": "Сработка аппаратной защиты по току",
+                "Overcurrent Protection Triggered": "Сработка аппаратной защиты по току",
                 "Channel 1 Raw Duty (us)": "Сырое задание для канала 1 (мкс)",
                 "Channel 2 Raw Duty (us)": "Сырое задание для канала 2 (мкс)",
                 "Channel 3 Raw Duty (us)": "Сырое задание для канала 3 (мкс)",
