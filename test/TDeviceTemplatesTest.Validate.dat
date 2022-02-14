@@ -485,6 +485,8 @@ WB-M1W2
 	Input Voltage  =>  Input Voltage
 	Serial NO  =>  Serial NO
 	Uptime  =>  Uptime
+	MCU Temperature  =>  MCU Temperature
+	MCU Voltage  =>  MCU Voltage
 WB-M1W2 DI
 	Counter 1  =>  Counter 1
 	Counter 2  =>  Counter 2
@@ -12614,6 +12616,8 @@ WB-MAO4
 	Serial  =>  Serial
 	Supply voltage  =>  Supply voltage
 	Uptime  =>  Uptime
+	MCU Temperature  =>  MCU Temperature
+	MCU Voltage  =>  MCU Voltage
 WB-MAP12E fw2
 	Ch 1 AP energy L1  =>  Ch 1 AP energy L1
 	Ch 1 AP energy L2  =>  Ch 1 AP energy L2
@@ -12760,6 +12764,8 @@ WB-MAP12E fw2
 	Voltage angle L1  =>  Voltage angle L1
 	Voltage angle L2  =>  Voltage angle L2
 	Voltage angle L3  =>  Voltage angle L3
+	MCU Temperature  =>  MCU Temperature
+	MCU Voltage  =>  MCU Voltage
 WB-MAP12H
 	Ch 1 AN energy L1  =>  Ch 1 AN energy L1
 	Ch 1 AN energy L2  =>  Ch 1 AN energy L2
@@ -16645,6 +16651,8 @@ WB-MAP3E fw2
 	Voltage angle L1  =>  Voltage angle L1
 	Voltage angle L2  =>  Voltage angle L2
 	Voltage angle L3  =>  Voltage angle L3
+	MCU Temperature  =>  MCU Temperature
+	MCU Voltage  =>  MCU Voltage
 WB-MAP3ET
 	AP energy L1  =>  AP energy L1
 	AP energy L2  =>  AP energy L2
@@ -16692,6 +16700,8 @@ WB-MAP3ET
 	Voltage angle L1  =>  Voltage angle L1
 	Voltage angle L2  =>  Voltage angle L2
 	Voltage angle L3  =>  Voltage angle L3
+	MCU Temperature  =>  MCU Temperature
+	MCU Voltage  =>  MCU Voltage
 WB-MAP3EV
 	Frequency  =>  Frequency
 	Serial  =>  Serial
@@ -16706,6 +16716,8 @@ WB-MAP3EV
 	Voltage angle L1  =>  Voltage angle L1
 	Voltage angle L2  =>  Voltage angle L2
 	Voltage angle L3  =>  Voltage angle L3
+	MCU Temperature  =>  MCU Temperature
+	MCU Voltage  =>  MCU Voltage
 WB-MAP3H
 	AN energy L1  =>  AN energy L1
 	AN energy L2  =>  AN energy L2
@@ -17318,6 +17330,8 @@ WB-MAP6S
 	Supply voltage  =>  Supply voltage
 	Uptime  =>  Uptime
 	Urms  =>  Urms
+	MCU Temperature  =>  MCU Temperature
+	MCU Voltage  =>  MCU Voltage
 WB-MAP6S fw2
 	AP energy 1  =>  AP energy 1
 	AP energy 2  =>  AP energy 2
@@ -17438,6 +17452,8 @@ WB-MCM8
 	Serial  =>  Serial
 	Supply voltage  =>  Supply voltage
 	Uptime  =>  Uptime
+	MCU Temperature  =>  MCU Temperature
+	MCU Voltage  =>  MCU Voltage
 WB-MDM2
 	Button 1  =>  Button 1
 	Button 1 counter  =>  Button 1 counter
@@ -17480,6 +17496,8 @@ WB-MDM3
 	Supply voltage  =>  Supply voltage
 	Uptime  =>  Uptime
 	Zero-Сross Offset (us)  =>  Zero-Сross Offset (us)
+	MCU Temperature  =>  MCU Temperature
+	MCU Voltage  =>  MCU Voltage
 WB-MIR
 	External Temperature Sensor  =>  External Temperature Sensor
 	Input Voltage  =>  Input Voltage
@@ -17697,6 +17715,8 @@ WB-MIR v2
 	Reset all ROM  =>  Reset all ROM
 	Serial NO  =>  Serial NO
 	Uptime  =>  Uptime
+	MCU Temperature  =>  MCU Temperature
+	MCU Voltage  =>  MCU Voltage
 WB-MR11
 	Input 1  =>  Input 1
 	Input 1 counter  =>  Input 1 counter
@@ -17954,6 +17974,8 @@ WB-MRGBW-D
 	Serial NO  =>  Serial NO
 	Supply Voltage  =>  Supply Voltage
 	Uptime  =>  Uptime
+	MCU Temperature  =>  MCU Temperature
+	MCU Voltage  =>  MCU Voltage
 WB-MRGBW-D fw3
 	Channel 1 (B) Raw PWM  =>  Channel 1 (B) Raw PWM
 	Channel 2 (R) Raw PWM  =>  Channel 2 (R) Raw PWM
@@ -18056,6 +18078,8 @@ WB-MRGBW-D fw3
 	Serial  =>  Serial
 	Supply Voltage  =>  Supply Voltage
 	Uptime  =>  Uptime
+	MCU Temperature  =>  MCU Temperature
+	MCU Voltage  =>  MCU Voltage
 WB-MRM2
 	Button 1  =>  Button 1
 	Button 1 counter  =>  Button 1 counter
@@ -18396,6 +18420,8 @@ WB-MWAC
 	S3 Freq  =>  S3 Freq
 	Serial  =>  Serial
 	Uptime  =>  Uptime
+	MCU Temperature  =>  MCU Temperature
+	MCU Voltage  =>  MCU Voltage
 WBE2-I-EBUS
 	Boiler Outdoor Temperature Sensor  =>  Boiler Outdoor Temperature Sensor
 	Error Code  =>  Error Code

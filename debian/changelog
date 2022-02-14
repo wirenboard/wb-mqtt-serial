@@ -1,3 +1,14 @@
+wb-mqtt-serial (2.51.1) stable; urgency=medium
+
+  * MCU Temperature and MCU Voltage channels were added to
+    WB-M1W2, WB-MAO4, WB-MAP12E fw2, WB-MAP3E fw2, WB-MAP3ET, WB-MAP3EV,
+    WB-MAP6S, WB-MCM8, WB-MDM3, WB-MIR v2, WB-MRGBW-D, WB-MRGBW-D fw3,
+    WB-MWAC templates
+  * Channel MCU Voltage was moved to group HW Info in WB-MS v2 and WB-
+    MSW v3 templates
+
+ -- Dmitry Vorobjev <d.vorobjev@wirenboard.ru>  Mon, 14 Feb 2022 17:41:50 +0300
+
 wb-mqtt-serial (2.51.0) stable; urgency=medium
 
   * MDM3 template: added Overcurrent channel
