@@ -1,3 +1,10 @@
+wb-mqtt-serial (2.51.0) stable; urgency=medium
+
+  * MDM3 template: added Overcurrent channel
+  * MDM3 template: minimum increase/decrease rate is set to 1 ms/%
+
+ -- Pavel Gasheev <pavel.gasheev@wirenboard.ru>  Fri, 11 Feb 2022 16:13:24 +0300
+
 wb-mqtt-serial (2.50.3) stable; urgency=medium
 
   * A bug during publishing of read period miss error is fixed
