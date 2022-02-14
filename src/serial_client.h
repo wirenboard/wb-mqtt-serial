@@ -39,6 +39,14 @@ public:
     std::list<PRegister>& GetRegisters();
 };
 
+enum ERPCState
+{
+    RPC_IDLE,
+    RPC_WRITE,
+    RPC_READ,
+    RPC_ERROR
+};
+
 class TSerialClient: public std::enable_shared_from_this<TSerialClient>
 {
 public:
@@ -60,6 +68,12 @@ public:
     void NotifyFlushNeeded();
     void ClearDevices();
 
+    void RPCWrite(const std::vector<uint8_t>& buf,
+                  size_t responseSize,
+                  std::chrono::milliseconds respTimeout,
+                  std::chrono::milliseconds frameTimeout);
+    bool RPCRead(std::vector<uint8_t>& buf, size_t& actualSize, bool& error);
+
 private:
     void Activate();
     void Connect();
@@ -79,6 +93,7 @@ private:
                                            PRegisterRange range,
                                            std::chrono::steady_clock::time_point pollStartTime,
                                            bool forceError);
+    void RPCRequestHandling();
 
     PPort Port;
     std::list<PRegister> RegList;
@@ -95,6 +110,13 @@ private:
     TPortOpenCloseLogic OpenCloseLogic;
     TLoggerWithTimeout ConnectLogger;
     Metrics::TMetrics& Metrics;
+
+    std::mutex RPCMutex;
+    std::vector<uint8_t> RPCWriteData, RPCReadData;
+    size_t RPCRequestedSize, RPCActualSize;
+    std::chrono::milliseconds RPCRespTimeout;
+    std::chrono::milliseconds RPCFrameTimeout;
+    enum ERPCState RPCState = RPC_IDLE;
 };
 
 typedef std::shared_ptr<TSerialClient> PSerialClient;
