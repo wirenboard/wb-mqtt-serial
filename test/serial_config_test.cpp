@@ -273,3 +273,17 @@ TEST_F(TConfedSchemaTest, MergeTranslations)
         ASSERT_TRUE(JsonsMatch(schema["translations"], tr)) << i;
     }
 }
+
+TEST_F(TConfigParserTest, ParseModbusDevideWithWriteAddress)
+{
+    auto portConfigs = GetConfig("configs/parse_test_modbus_write_address.json")->PortConfigs;
+    EXPECT_FALSE(portConfigs.empty());
+    auto devices = portConfigs[0]->Devices;
+    EXPECT_FALSE(devices.empty());
+    auto deviceChannels = devices[0]->DeviceConfig()->DeviceChannelConfigs;
+    EXPECT_FALSE(deviceChannels.empty());
+    auto regs = deviceChannels[0]->RegisterConfigs;
+    EXPECT_FALSE(regs.empty());
+    EXPECT_EQ(GetUint32RegisterAddress(regs[0]->GetAddress()), 110);
+    EXPECT_EQ(GetUint32RegisterAddress(regs[0]->GetWriteAddress()), 115);
+}
