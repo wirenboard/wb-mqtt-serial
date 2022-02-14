@@ -26,6 +26,7 @@ private:
     std::map<std::string, Metrics::TMetrics> Metrics;
 
     Json::Value LoadMetrics(const Json::Value& request);
+    Json::Value LoadPortData(const Json::Value& request);
 };
 
 typedef std::shared_ptr<TMQTTSerialDriver> PMQTTSerialDriver;

@@ -70,6 +70,13 @@ public:
 
     static void HandleControlOnValueEvent(const WBMQTT::TControlOnValueEvent& event);
 
+    void RPCWrite(const std::vector<uint8_t>& buf,
+                  size_t responseSize,
+                  std::chrono::milliseconds respTimeout,
+                  std::chrono::milliseconds frameTimeout);
+
+    bool RPCRead(std::vector<uint8_t>& buf, size_t& responseSize, bool& error);
+
 private:
     WBMQTT::TLocalDeviceArgs From(const PSerialDevice& device);
     WBMQTT::TControlArgs From(const PDeviceChannel& channel);
