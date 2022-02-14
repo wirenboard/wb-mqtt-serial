@@ -370,6 +370,7 @@ void TSerialClient::OpenPortCycle()
     WaitForPollAndFlush(Scheduler.GetDeadline());
     auto pollStartTime = std::chrono::steady_clock::now();
     Metrics.StartPoll(Metrics::NON_BUS_POLLING_TASKS);
+    RPCRequestHandling();
 
     TRegisterReader reader(MAX_POLL_TIME);
 
@@ -411,6 +412,61 @@ void TSerialClient::OpenPortCycle()
     OpenCloseLogic.CloseIfNeeded(Port, device->GetIsDisconnected());
     UpdateFlushNeeded();
     Metrics.StartPoll(Metrics::BUS_IDLE);
+}
+
+void TSerialClient::RPCWrite(const std::vector<uint8_t>& buf,
+                             size_t responseSize,
+                             std::chrono::milliseconds respTimeout,
+                             std::chrono::milliseconds frameTimeout)
+{
+    const std::lock_guard<std::mutex> lock(RPCMutex);
+    RPCWriteData = buf;
+    RPCRequestedSize = responseSize;
+    RPCRespTimeout = respTimeout;
+    RPCFrameTimeout = frameTimeout;
+    RPCState = RPC_WRITE;
+    return;
+}
+
+void TSerialClient::RPCRequestHandling()
+{
+    if ((RPCState == RPC_WRITE) && (RPCMutex.try_lock())) {
+
+        try {
+            Port->WriteBytes(RPCWriteData);
+
+            uint8_t readData[RPCRequestedSize];
+            RPCActualSize = Port->ReadFrame(readData, RPCRequestedSize, RPCRespTimeout, RPCFrameTimeout);
+
+            RPCReadData.clear();
+            for (size_t i = 0; i < RPCRequestedSize; i++) {
+                RPCReadData.push_back(readData[i]);
+            }
+            RPCState = RPC_READ;
+        } catch (TSerialDeviceException error) {
+            RPCState = RPC_ERROR;
+        }
+
+        RPCMutex.unlock();
+    }
+}
+
+bool TSerialClient::RPCRead(std::vector<uint8_t>& buf, size_t& actualSize, bool& error)
+{
+    bool res = false;
+    if (((RPCState == RPC_READ) | (RPCState == RPC_ERROR)) && (RPCMutex.try_lock())) {
+        if (RPCState == RPC_READ) {
+            buf = RPCReadData;
+            actualSize = RPCActualSize;
+            error = false;
+        } else {
+            error = true;
+        }
+        res = true;
+        RPCState = RPC_IDLE;
+        RPCMutex.unlock();
+    }
+    return res;
 }
 
 bool TRegisterComparePredicate::operator()(const PRegister& r1, const PRegister& r2) const
