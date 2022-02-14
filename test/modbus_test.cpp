@@ -340,7 +340,6 @@ void TModbusIntegrationTest::ExpectPollQueries(TestMode mode)
     EnqueueHoldingReadS64Response();
     EnqueueHoldingReadF32Response();
     EnqueueHoldingReadU16Response();
-    EnqueueHoldingReadU16ResponseWithWriteAddress();
     EnqueueInputReadU16Response();
 
     switch (mode) {
@@ -404,7 +403,6 @@ TEST_F(TModbusIntegrationTest, Write)
     PublishWaitOnValue("/devices/modbus-sample/controls/Holding U16/on", "3905");
     PublishWaitOnValue("/devices/modbus-sample/controls/Holding U64 Single/on", "283686952306183");
     PublishWaitOnValue("/devices/modbus-sample/controls/Holding U64 Multi/on", "81985529216486895");
-    PublishWaitOnValue("/devices/modbus-sample/controls/Holding U16 with write_address/on", "4508");
 
     EnqueueCoilWriteResponse();
     EnqueueRGBWriteResponse();
@@ -412,13 +410,11 @@ TEST_F(TModbusIntegrationTest, Write)
     EnqueueHoldingWriteU16Response();
     EnqueueHoldingSingleWriteU64Response();
     EnqueueHoldingMultiWriteU64Response();
-    EnqueueHoldingWriteU16ResponseWithWriteAddress();
 
     EnqueueHoldingPartialPackReadResponse();
     EnqueueHoldingReadS64Response();
     EnqueueHoldingReadF32Response();
     EnqueueHoldingReadU16Response();
-    EnqueueHoldingReadU16ResponseWithWriteAddress();
     EnqueueInputReadU16Response();
     EnqueueCoilOneByOneReadResponse();
     Enqueue10CoilsReadResponse();
@@ -445,7 +441,6 @@ TEST_F(TModbusIntegrationTest, Errors)
     EnqueueHoldingReadS64Response(0x4);
     EnqueueHoldingReadF32Response(0x5);
     EnqueueHoldingReadU16Response(0x6);
-    EnqueueHoldingReadU16ResponseWithWriteAddress(0x6);
     EnqueueInputReadU16Response(0x8);
     EnqueueCoilReadResponse(0xa);
     Enqueue10CoilsReadResponse(0x54); // invalid exception code
