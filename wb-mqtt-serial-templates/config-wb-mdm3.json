@@ -29,14 +29,19 @@
                 "order": 4
             },
             {
+                "title": "General",
+                "id": "general",
+                "order": 5
+            },
+            {
                 "title": "HW Info",
                 "id": "hw_info",
-                "order": 5
+                "order": 6
             },
             {
                 "title": "Debug",
                 "id": "debug",
-                "order": 6
+                "order": 7
             }
         ],
 
@@ -453,14 +458,14 @@
                 "reg_type": "input",
                 "address": 97,
                 "type": "switch",
-                "group": "debug"
+                "group": "general"
             },
             {
-                "name": "Overcurrent Protection Triggered",
+                "name": "Overcurrent",
                 "reg_type": "input",
                 "address": 100,
                 "type": "switch",
-                "group": "debug"
+                "group": "general"  
             },
             {
                 "name": "Channel 1 Raw Duty (us)",
@@ -514,6 +519,7 @@
                 "Channel 1": "Канал 1",
                 "Channel 2": "Канал 2",
                 "Channel 3": "Канал 3",
+                "General": "Общее",
                 "HW Info": "Данные модуля",
                 "Debug": "Диагностика",
                 "Inputs 1-2 Mode": "Режим работы входов 1-2",
@@ -567,7 +573,7 @@
                 "Supply voltage": "Напряжение питания",
                 "Uptime": "Время работы с момента включения (с)",
                 "AC on L-N": "Напряжение на клеммах L-N",
-                "Overcurrent Protection Triggered": "Сработка аппаратной защиты по току",
+                "Overcurrent": "Перегрузка по току",
                 "Channel 1 Raw Duty (us)": "Сырое задание для канала 1 (мкс)",
                 "Channel 2 Raw Duty (us)": "Сырое задание для канала 2 (мкс)",
                 "Channel 3 Raw Duty (us)": "Сырое задание для канала 3 (мкс)",
