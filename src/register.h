@@ -177,10 +177,21 @@ public:
                                      uint32_t /*addressByteStep*/) const override;
 };
 
+//! Register addresses description
+struct TRegisterDesc
+{
+    std::shared_ptr<IRegisterAddress> Address; //! Register address
+    uint8_t BitOffset{0};                      //! Offset of data in register in bits
+    uint8_t BitWidth{0};                       //! Width of data in register in bits
+
+    std::shared_ptr<IRegisterAddress> WriteAddress; //! Register write address
+    uint8_t WriteBitOffset{0};                      //! the write offset of data in register in bits
+    uint8_t WriteBitWidth{0};                       //! the write width of data in register in bits
+};
+
 class TRegisterConfig: public std::enable_shared_from_this<TRegisterConfig>
 {
-    std::shared_ptr<IRegisterAddress> Address;
-    std::shared_ptr<IRegisterAddress> WriteAddress;
+    TRegisterDesc AddressingDescription;
 
 public:
     int Type;
@@ -199,23 +210,19 @@ public:
     std::experimental::optional<std::chrono::milliseconds> ReadPeriod;
     std::experimental::optional<uint64_t> ErrorValue;
     EWordOrder WordOrder;
-    uint8_t BitOffset;
-    uint8_t BitWidth;
     std::experimental::optional<uint64_t> UnsupportedValue;
 
     TRegisterConfig(int type,
-                    std::shared_ptr<IRegisterAddress> address,
-                    std::shared_ptr<IRegisterAddress> writeAddress,
+                    const TRegisterDesc& registerAddressesDescription,
                     RegisterFormat format,
                     double scale,
                     double offset,
                     double round_to,
                     bool readonly,
                     const std::string& type_name,
-                    const EWordOrder word_order,
-                    uint8_t bit_offset,
-                    uint8_t bit_width);
+                    const EWordOrder word_order);
 
+    uint8_t CalculateBitWidth() const;
     uint8_t GetBitWidth() const;
     uint8_t GetBitOffset() const;
     uint8_t GetByteWidth() const;
@@ -226,17 +233,14 @@ public:
     std::string ToString() const;
 
     static PRegisterConfig Create(int type = 0,
-                                  std::shared_ptr<IRegisterAddress> address = std::shared_ptr<IRegisterAddress>(),
-                                  std::shared_ptr<IRegisterAddress> writeAddress = std::shared_ptr<IRegisterAddress>(),
+                                  const TRegisterDesc& registerAddressesDescription = {},
                                   RegisterFormat format = U16,
                                   double scale = 1,
                                   double offset = 0,
                                   double round_to = 0,
                                   bool readonly = false,
                                   const std::string& type_name = "",
-                                  const EWordOrder word_order = EWordOrder::BigEndian,
-                                  uint8_t bit_offset = 0,
-                                  uint8_t bit_width = 0);
+                                  const EWordOrder word_order = EWordOrder::BigEndian);
 
     //! Create register with TUint32RegisterAddress
     static PRegisterConfig Create(int type = 0,

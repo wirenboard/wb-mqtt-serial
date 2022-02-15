@@ -252,24 +252,21 @@ namespace
                                                 readonly_override_error_message_prefix,
                                                 regType.Name);
 
-        auto address = context.factory.GetRegisterAddressFactory().LoadRegisterAddress(
+        auto registerDesc = context.factory.GetRegisterAddressFactory().LoadRegisterAddress(
             register_data,
             context.device_base_address,
             context.stride,
             RegisterFormatByteWidth(regType.DefaultFormat));
 
         res.RegisterConfig = TRegisterConfig::Create(regType.Index,
-                                                     address.Address,
-                                                     address.WriteAddress,
+                                                     registerDesc,
                                                      regType.DefaultFormat,
                                                      scale,
                                                      offset,
                                                      round_to,
                                                      readonly,
                                                      regType.Name,
-                                                     regType.DefaultWordOrder,
-                                                     address.BitOffset,
-                                                     address.BitWidth);
+                                                     regType.DefaultWordOrder);
 
         if (register_data.isMember("error_value")) {
             res.RegisterConfig->ErrorValue = ToUint64(register_data["error_value"], "error_value");
@@ -1383,15 +1380,22 @@ TRegisterDesc TUint32RegisterAddressFactory::LoadRegisterAddress(const Json::Val
 {
     TRegisterDesc res;
     auto addr = LoadRegisterBitsAddress(regCfg, SerialConfig::ADDRESS_PROPERTY_NAME);
-    if (HasWriteAddressProperty(regCfg)) {
-        auto writeAddress = LoadRegisterBitsAddress(regCfg, SerialConfig::WRITE_ADDRESS_PROPERTY_NAME);
-        res.WriteAddress = std::shared_ptr<IRegisterAddress>(
-            deviceBaseAddress.CalcNewAddress(writeAddress.Address, stride, registerByteWidth, BytesPerRegister));
-    }
     res.BitOffset = addr.BitOffset;
     res.BitWidth = addr.BitWidth;
     res.Address = std::shared_ptr<IRegisterAddress>(
         deviceBaseAddress.CalcNewAddress(addr.Address, stride, registerByteWidth, BytesPerRegister));
+    if (HasWriteAddressProperty(regCfg)) {
+        auto writeAddress = LoadRegisterBitsAddress(regCfg, SerialConfig::WRITE_ADDRESS_PROPERTY_NAME);
+        res.WriteAddress = std::shared_ptr<IRegisterAddress>(
+            deviceBaseAddress.CalcNewAddress(writeAddress.Address, stride, registerByteWidth, BytesPerRegister));
+        res.WriteBitOffset = writeAddress.BitOffset;
+        res.WriteBitWidth = writeAddress.BitWidth;
+    }
+    else {
+        res.WriteAddress = res.Address;
+        res.WriteBitOffset = res.BitOffset;
+        res.WriteBitWidth = res.BitWidth;
+    }
     return res;
 }
 

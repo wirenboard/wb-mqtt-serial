@@ -439,7 +439,7 @@ namespace Modbus // modbus protocol common utilities
             }
             return 1;
         } else {
-            if (w > 4 && reg.BitOffset == 0) {
+            if (w > 4 && reg.GetBitOffset() == 0) {
                 throw TSerialDeviceException("can't pack more than 4 " + reg.TypeName + "s into a single value");
             }
             return w;
@@ -522,7 +522,7 @@ namespace Modbus // modbus protocol common utilities
 
         auto addr = GetUint32RegisterAddress(reg.GetWriteAddress());
         auto baseAddress = addr + shift;
-        const auto bitWidth = reg.GetBitWidth();
+        const auto bitWidth = reg.CalculateBitWidth();
         const auto widthInModbusWords = reg.Get16BitWidth();
 
         auto bitsToAllocate = bitWidth;
@@ -580,7 +580,7 @@ namespace Modbus // modbus protocol common utilities
             value = value ? uint16_t(0xFF) << 8 : 0x00;
         }
 
-        auto bitWidth = reg.GetBitWidth();
+        auto bitWidth = reg.CalculateBitWidth();
 
         TAddress address;
 
@@ -667,7 +667,7 @@ namespace Modbus // modbus protocol common utilities
 
         for (auto reg: range.RegisterList()) {
             int w = reg->Get16BitWidth();
-            auto bitWidth = reg->GetBitWidth();
+            auto bitWidth = reg->CalculateBitWidth();
 
             uint64_t r = 0;
 
@@ -680,7 +680,7 @@ namespace Modbus // modbus protocol common utilities
             while (w--) {
                 uint16_t data = destination[addr - range.GetStart() + w];
 
-                auto localBitOffset = std::max(reg->BitOffset - wordIndex * 16, 0);
+                auto localBitOffset = std::max(reg->GetBitOffset() - wordIndex * 16, 0);
 
                 auto bitCount = std::min(uint8_t(16 - localBitOffset), bitWidth);
 

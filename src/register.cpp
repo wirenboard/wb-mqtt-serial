@@ -68,23 +68,24 @@ std::string TRegisterConfig::ToString() const
 {
     std::stringstream s;
     s << TypeName << ": " << GetAddress();
-    if (BitOffset != 0 || BitWidth != 0) {
-        s << ":" << (int)BitOffset << ":" << (int)BitWidth;
+    if (AddressingDescription.BitOffset != 0 || AddressingDescription.BitWidth != 0) {
+        s << ":" << static_cast<int>(AddressingDescription.BitOffset) << ":"
+          << static_cast<int>(AddressingDescription.BitWidth);
     }
     return s.str();
 }
 
 const IRegisterAddress& TRegisterConfig::GetAddress() const
 {
-    return *Address;
+    return *AddressingDescription.Address;
 }
 
 const IRegisterAddress& TRegisterConfig::GetWriteAddress() const
 {
-    if (WriteAddress == nullptr) {
-        return *Address;
+    if (AddressingDescription.WriteAddress == nullptr) {
+        return *AddressingDescription.Address;
     }
-    return *WriteAddress;
+    return *AddressingDescription.WriteAddress;
 }
 
 std::string TRegister::ToString() const
@@ -171,19 +172,15 @@ std::map<std::tuple<PSerialDevice, PRegisterConfig>, PRegister> TRegister::RegSt
 std::mutex TRegister::Mutex;
 
 TRegisterConfig::TRegisterConfig(int type,
-                                 std::shared_ptr<IRegisterAddress> address,
-                                 std::shared_ptr<IRegisterAddress> writeAddress,
+                                 const TRegisterDesc& registerAddressesDescription,
                                  RegisterFormat format,
                                  double scale,
                                  double offset,
                                  double round_to,
                                  bool readonly,
                                  const std::string& type_name,
-                                 const EWordOrder word_order,
-                                 uint8_t bit_offset,
-                                 uint8_t bit_width)
-    : Address(address),
-      WriteAddress(writeAddress),
+                                 const EWordOrder word_order)
+    : AddressingDescription(registerAddressesDescription),
       Type(type),
       Format(format),
       Scale(scale),
@@ -191,20 +188,18 @@ TRegisterConfig::TRegisterConfig(int type,
       RoundTo(round_to),
       ReadOnly(readonly),
       TypeName(type_name),
-      WordOrder(word_order),
-      BitOffset(bit_offset),
-      BitWidth(bit_width)
+      WordOrder(word_order)
 {
     if (TypeName.empty())
         TypeName = "(type " + std::to_string(Type) + ")";
 
     auto maxOffset = RegisterFormatByteWidth(Format) * 8;
 
-    if (BitOffset >= maxOffset) {
+    if (AddressingDescription.BitOffset >= maxOffset) {
         throw TSerialDeviceException("bit offset must not exceed " + std::to_string(maxOffset) + " bits");
     }
 
-    if (!Address) {
+    if (!AddressingDescription.Address) {
         throw TSerialDeviceException("register address is not defined");
     }
 }
@@ -216,15 +211,22 @@ uint8_t TRegisterConfig::GetByteWidth() const
 
 uint8_t TRegisterConfig::Get16BitWidth() const
 {
-    auto w = uint8_t(ceil(((float)BitOffset + GetBitWidth()) / 8) + 1) / 2;
+    auto w =
+        static_cast<uint8_t>(ceil((static_cast<float>(AddressingDescription.BitOffset) + CalculateBitWidth()) / 8) + 1) /
+        2;
 
     return w;
 }
 
 uint8_t TRegisterConfig::GetBitWidth() const
 {
-    if (BitWidth) {
-        return BitWidth;
+    return AddressingDescription.BitWidth;
+}
+
+uint8_t TRegisterConfig::CalculateBitWidth() const
+{
+    if (AddressingDescription.BitWidth) {
+        return AddressingDescription.BitWidth;
     }
 
     return GetByteWidth() * 8;
@@ -232,34 +234,28 @@ uint8_t TRegisterConfig::GetBitWidth() const
 
 uint8_t TRegisterConfig::GetBitOffset() const
 {
-    return BitOffset;
+    return AddressingDescription.BitOffset;
 }
 
 PRegisterConfig TRegisterConfig::Create(int type,
-                                        std::shared_ptr<IRegisterAddress> address,
-                                        std::shared_ptr<IRegisterAddress> writeAddress,
+                                        const TRegisterDesc& registerAddressesDescription,
                                         RegisterFormat format,
                                         double scale,
                                         double offset,
                                         double round_to,
                                         bool readonly,
                                         const std::string& type_name,
-                                        const EWordOrder word_order,
-                                        uint8_t bit_offset,
-                                        uint8_t bit_width)
+                                        const EWordOrder word_order)
 {
     return std::make_shared<TRegisterConfig>(type,
-                                             address,
-                                             writeAddress,
+                                             registerAddressesDescription,
                                              format,
                                              scale,
                                              offset,
                                              round_to,
                                              readonly,
                                              type_name,
-                                             word_order,
-                                             bit_offset,
-                                             bit_width);
+                                             word_order);
 }
 
 PRegisterConfig TRegisterConfig::Create(int type,
@@ -274,18 +270,11 @@ PRegisterConfig TRegisterConfig::Create(int type,
                                         uint8_t bit_offset,
                                         uint8_t bit_width)
 {
-    return Create(type,
-                  std::make_shared<TUint32RegisterAddress>(address),
-                  nullptr,
-                  format,
-                  scale,
-                  offset,
-                  round_to,
-                  readonly,
-                  type_name,
-                  word_order,
-                  bit_offset,
-                  bit_width);
+    TRegisterDesc regAddressesDescription;
+    regAddressesDescription.Address = std::make_shared<TUint32RegisterAddress>(address);
+    regAddressesDescription.WriteBitWidth = regAddressesDescription.BitWidth = bit_width;
+    regAddressesDescription.WriteBitOffset = regAddressesDescription.BitOffset = bit_offset;
+    return Create(type, regAddressesDescription, format, scale, offset, round_to, readonly, type_name, word_order);
 }
 
 TUint32RegisterAddress::TUint32RegisterAddress(uint32_t address): Address(address)

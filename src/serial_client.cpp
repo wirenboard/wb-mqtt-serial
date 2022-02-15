@@ -410,7 +410,7 @@ bool TRegisterComparePredicate::operator()(const PRegister& r1, const PRegister&
         return true;
     }
     // addresses are equal, compare offsets
-    return r1->BitOffset > r2->BitOffset;
+    return r1->GetBitOffset() > r2->GetBitOffset();
 }
 
 TRegisterReader::TRegisterReader(std::chrono::milliseconds maxPollTime): MaxPollTime(maxPollTime)
