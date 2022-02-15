@@ -211,9 +211,9 @@ uint8_t TRegisterConfig::GetByteWidth() const
 
 uint8_t TRegisterConfig::Get16BitWidth() const
 {
-    auto w =
-        static_cast<uint8_t>(ceil((static_cast<float>(AddressingDescription.BitOffset) + CalculateBitWidth()) / 8) + 1) /
-        2;
+    auto w = static_cast<uint8_t>(
+                 ceil((static_cast<float>(AddressingDescription.BitOffset) + CalculateBitWidth()) / 8) + 1) /
+             2;
 
     return w;
 }

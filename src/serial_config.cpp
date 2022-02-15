@@ -1390,8 +1390,7 @@ TRegisterDesc TUint32RegisterAddressFactory::LoadRegisterAddress(const Json::Val
             deviceBaseAddress.CalcNewAddress(writeAddress.Address, stride, registerByteWidth, BytesPerRegister));
         res.WriteBitOffset = writeAddress.BitOffset;
         res.WriteBitWidth = writeAddress.BitWidth;
-    }
-    else {
+    } else {
         res.WriteAddress = res.Address;
         res.WriteBitOffset = res.BitOffset;
         res.WriteBitWidth = res.BitWidth;
