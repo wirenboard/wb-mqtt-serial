@@ -230,6 +230,11 @@ uint8_t TRegisterConfig::GetBitWidth() const
     return GetByteWidth() * 8;
 }
 
+uint8_t TRegisterConfig::GetBitOffset() const
+{
+    return BitOffset;
+}
+
 PRegisterConfig TRegisterConfig::Create(int type,
                                         std::shared_ptr<IRegisterAddress> address,
                                         std::shared_ptr<IRegisterAddress> writeAddress,

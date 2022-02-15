@@ -217,6 +217,7 @@ public:
                     uint8_t bit_width);
 
     uint8_t GetBitWidth() const;
+    uint8_t GetBitOffset() const;
     uint8_t GetByteWidth() const;
 
     //! Get occupied space in 16-bit words
