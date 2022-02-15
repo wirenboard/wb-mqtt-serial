@@ -18,6 +18,11 @@
                 "title": "HW Info",
                 "id": "hw_info",
                 "order": 13
+            },
+            {
+                "title": "Debug",
+                "id": "debug",
+                "order": 14
             }
         ],
 
@@ -724,6 +729,213 @@
                 "address": 104,
                 "format": "u32",
                 "group": "hw_info"
+            },
+            {
+                "name": "Loop Period (s)",
+                "reg_type": "input",
+                "address": 1552,
+                "format": "u16",
+                "scale": 0.001,
+                "enabled": false,
+                "group": "debug"
+            },
+            {
+                "name": "IN 1 P Period (s)",
+                "reg_type": "input",
+                "address": 1553,
+                "format": "u16",
+                "scale": 0.001,
+                "enabled": false,
+                "group": "debug"
+            },
+            {
+                "name": "IN 1 N Period (s)",
+                "reg_type": "input",
+                "address": 1554,
+                "format": "u16",
+                "scale": 0.001,
+                "enabled": false,
+                "group": "debug"
+            },
+            {
+                "name": "IN 2 P Period (s)",
+                "reg_type": "input",
+                "address": 1555,
+                "format": "u16",
+                "scale": 0.001,
+                "enabled": false,
+                "group": "debug"
+            },
+            {
+                "name": "IN 2 N Period (s)",
+                "reg_type": "input",
+                "address": 1556,
+                "format": "u16",
+                "scale": 0.001,
+                "enabled": false,
+                "group": "debug"
+            },
+            {
+                "name": "IN 3 P Period (s)",
+                "reg_type": "input",
+                "address": 1557,
+                "format": "u16",
+                "scale": 0.001,
+                "enabled": false,
+                "group": "debug"
+            },
+            {
+                "name": "IN 3 N Period (s)",
+                "reg_type": "input",
+                "address": 1558,
+                "format": "u16",
+                "scale": 0.001,
+                "enabled": false,
+                "group": "debug"
+            },
+            {
+                "name": "IN 4 P Period (s)",
+                "reg_type": "input",
+                "address": 1559,
+                "format": "u16",
+                "scale": 0.001,
+                "enabled": false,
+                "group": "debug"
+            },
+            {
+                "name": "IN 4 N Period (s)",
+                "reg_type": "input",
+                "address": 1560,
+                "format": "u16",
+                "scale": 0.001,
+                "enabled": false,
+                "group": "debug"
+            },
+            {
+                "name": "IN 5 P Period (s)",
+                "reg_type": "input",
+                "address": 1561,
+                "format": "u16",
+                "scale": 0.001,
+                "enabled": false,
+                "group": "debug"
+            },
+            {
+                "name": "IN 5 N Period (s)",
+                "reg_type": "input",
+                "address": 1562,
+                "format": "u16",
+                "scale": 0.001,
+                "enabled": false,
+                "group": "debug"
+            },
+            {
+                "name": "IN 6 P Period (s)",
+                "reg_type": "input",
+                "address": 1563,
+                "format": "u16",
+                "scale": 0.001,
+                "enabled": false,
+                "group": "debug"
+            },
+            {
+                "name": "IN 6 N Period (s)",
+                "reg_type": "input",
+                "address": 1564,
+                "format": "u16",
+                "scale": 0.001,
+                "enabled": false,
+                "group": "debug"
+            },
+            {
+                "name": "IN 7 P Period (s)",
+                "reg_type": "input",
+                "address": 1565,
+                "format": "u16",
+                "scale": 0.001,
+                "enabled": false,
+                "group": "debug"
+            },
+            {
+                "name": "IN 7 N Period (s)",
+                "reg_type": "input",
+                "address": 1566,
+                "format": "u16",
+                "scale": 0.001,
+                "enabled": false,
+                "group": "debug"
+            },
+            {
+                "name": "IN 8 P Period (s)",
+                "reg_type": "input",
+                "address": 1567,
+                "format": "u16",
+                "scale": 0.001,
+                "enabled": false,
+                "group": "debug"
+            },
+            {
+                "name": "IN 8 N Period (s)",
+                "reg_type": "input",
+                "address": 1568,
+                "format": "u16",
+                "scale": 0.001,
+                "enabled": false,
+                "group": "debug"
+            },
+            {
+                "name": "IN 9 P Period (s)",
+                "reg_type": "input",
+                "address": 1569,
+                "format": "u16",
+                "scale": 0.001,
+                "enabled": false,
+                "group": "debug"
+            },
+            {
+                "name": "IN 9 N Period (s)",
+                "reg_type": "input",
+                "address": 1570,
+                "format": "u16",
+                "scale": 0.001,
+                "enabled": false,
+                "group": "debug"
+            },
+            {
+                "name": "IN 10 P Period (s)",
+                "reg_type": "input",
+                "address": 1571,
+                "format": "u16",
+                "scale": 0.001,
+                "enabled": false,
+                "group": "debug"
+            },
+            {
+                "name": "IN 10 N Period (s)",
+                "reg_type": "input",
+                "address": 1572,
+                "format": "u16",
+                "scale": 0.001,
+                "enabled": false,
+                "group": "debug"
+            },
+            {
+                "name": "IN 11 P Period (s)",
+                "reg_type": "input",
+                "address": 1573,
+                "format": "u16",
+                "scale": 0.001,
+                "enabled": false,
+                "group": "debug"
+            },
+            {
+                "name": "IN 11 N Period (s)",
+                "reg_type": "input",
+                "address": 1573,
+                "format": "u16",
+                "scale": 0.001,
+                "enabled": false,
+                "group": "debug"
             }
         ],
         "subdevices": [
@@ -4635,6 +4847,7 @@
                 "WB-MAI11_template_title": "WB-MAI11 (11-канальный модуль аналоговых входов)",
                 "General": "Общее",
                 "HW Info": "Данные модуля",
+                "Debug": "Диагностика",
                 "Input 1": "IN 1",
                 "Input 2": "IN 2",
                 "Input 3": "IN 3",
@@ -4737,7 +4950,30 @@
                 "5V Output": "Напряжение на клеммах 5V",
                 "Internal Temperature": "Температура внутри модуля",
                 "Serial": "Серийный номер",
-                "Uptime": "Время работы с момента включения (с)"
+                "Uptime": "Время работы с момента включения (с)",
+                "Loop Period (s)": "Период цикла опроса АЦП (с)",
+                "IN 1 P Period (s)": "IN 1 P: период опроса (с)",
+                "IN 1 N Period (s)": "IN 1 N: период опроса (с)",
+                "IN 2 P Period (s)": "IN 2 P: период опроса (с)",
+                "IN 2 N Period (s)": "IN 2 N: период опроса (с)",
+                "IN 3 P Period (s)": "IN 3 P: период опроса (с)",
+                "IN 3 N Period (s)": "IN 3 N: период опроса (с)",
+                "IN 4 P Period (s)": "IN 4 P: период опроса (с)",
+                "IN 4 N Period (s)": "IN 4 N: период опроса (с)",
+                "IN 5 P Period (s)": "IN 5 P: период опроса (с)",
+                "IN 5 N Period (s)": "IN 5 N: период опроса (с)",
+                "IN 6 P Period (s)": "IN 6 P: период опроса (с)",
+                "IN 6 N Period (s)": "IN 6 N: период опроса (с)",
+                "IN 7 P Period (s)": "IN 7 P: период опроса (с)",
+                "IN 7 N Period (s)": "IN 7 N: период опроса (с)",
+                "IN 8 P Period (s)": "IN 8 P: период опроса (с)",
+                "IN 8 N Period (s)": "IN 8 N: период опроса (с)",
+                "IN 9 P Period (s)": "IN 9 P: период опроса (с)",
+                "IN 9 N Period (s)": "IN 9 N: период опроса (с)",
+                "IN 10 P Period (s)": "IN 10 P: период опроса (с)",
+                "IN 10 N Period (s)": "IN 10 N: период опроса (с)",
+                "IN 11 P Period (s)": "IN 11 P: период опроса (с)",
+                "IN 11 N Period (s)": "IN 11 N: период опроса (с)",
             }
         }
     }
