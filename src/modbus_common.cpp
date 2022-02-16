@@ -522,8 +522,8 @@ namespace Modbus // modbus protocol common utilities
 
         auto addr = GetUint32RegisterAddress(reg.GetAddress(TRegisterConfig::TAddressOptionsType::Write));
         auto baseAddress = addr + shift;
-        const auto bitWidth = reg.CalculateBitWidth();
-        const auto widthInModbusWords = reg.Get16BitWidth();
+        const auto bitWidth = reg.CalculateBitWidth(TRegisterConfig::TAddressOptionsType::Write);
+        const auto widthInModbusWords = reg.Get16BitWidth(TRegisterConfig::TAddressOptionsType::Write);
 
         auto bitsToAllocate = bitWidth;
 
@@ -548,7 +548,7 @@ namespace Modbus // modbus protocol common utilities
                 cachedValue = value & 0xffff;
             }
 
-            auto localBitOffset = std::max(reg.GetBitOffset() - bitPos, 0);
+            auto localBitOffset = std::max(reg.GetBitOffset(TRegisterConfig::TAddressOptionsType::Write) - bitPos, 0);
 
             auto bitCount = std::min(uint8_t(16 - localBitOffset), bitsToAllocate);
 
@@ -580,7 +580,7 @@ namespace Modbus // modbus protocol common utilities
             value = value ? uint16_t(0xFF) << 8 : 0x00;
         }
 
-        auto bitWidth = reg.CalculateBitWidth();
+        auto bitWidth = reg.CalculateBitWidth(TRegisterConfig::TAddressOptionsType::Write);
 
         TAddress address;
 
@@ -596,7 +596,8 @@ namespace Modbus // modbus protocol common utilities
             cachedValue = value & 0xffff;
         }
 
-        auto localBitOffset = std::max(reg.GetBitOffset() - wordIndex * 16, 0);
+        auto localBitOffset =
+            std::max(reg.GetBitOffset(TRegisterConfig::TAddressOptionsType::Write) - wordIndex * 16, 0);
 
         auto bitCount = std::min(uint8_t(16 - localBitOffset), bitWidth);
 
