@@ -74,17 +74,12 @@ std::string TRegisterConfig::ToString() const
     return s.str();
 }
 
-const IRegisterAddress& TRegisterConfig::GetAddress() const
+const IRegisterAddress& TRegisterConfig::GetAddress(TAddressOptionsType type) const
 {
-    return *AddressOptions.Address;
-}
-
-const IRegisterAddress& TRegisterConfig::GetWriteAddress() const
-{
-    if (WriteAddressOptions.Address == nullptr) {
-        return *AddressOptions.Address;
+    if ((type == TAddressOptionsType::Write) && (WriteAddressOptions.Address != nullptr)) {
+        return *WriteAddressOptions.Address;
     }
-    return *WriteAddressOptions.Address;
+    return *AddressOptions.Address;
 }
 
 std::string TRegister::ToString() const
@@ -210,31 +205,33 @@ uint8_t TRegisterConfig::GetByteWidth() const
     return RegisterFormatByteWidth(Format);
 }
 
-uint8_t TRegisterConfig::Get16BitWidth() const
+uint8_t TRegisterConfig::Get16BitWidth(TAddressOptionsType type) const
 {
-    auto w =
-        static_cast<uint8_t>(ceil((static_cast<float>(AddressOptions.BitOffset) + CalculateBitWidth()) / 8) + 1) / 2;
+    auto bitOffset = (type == TAddressOptionsType::Write) ? WriteAddressOptions.BitOffset : AddressOptions.BitOffset;
+    auto w = static_cast<uint8_t>(ceil((static_cast<float>(bitOffset) + CalculateBitWidth(type)) / 8) + 1) / 2;
 
     return w;
 }
 
-uint8_t TRegisterConfig::GetBitWidth() const
+uint8_t TRegisterConfig::GetBitWidth(TAddressOptionsType type) const
 {
-    return AddressOptions.BitWidth;
+    return (type == TAddressOptionsType::Write) ? WriteAddressOptions.BitWidth : AddressOptions.BitWidth;
 }
 
-uint8_t TRegisterConfig::CalculateBitWidth() const
+uint8_t TRegisterConfig::CalculateBitWidth(TAddressOptionsType type) const
 {
-    if (AddressOptions.BitWidth) {
-        return AddressOptions.BitWidth;
+    auto bitWidth = (type == TAddressOptionsType::Write) ? WriteAddressOptions.BitWidth : AddressOptions.BitWidth;
+
+    if (bitWidth) {
+        return bitWidth;
     }
 
     return GetByteWidth() * 8;
 }
 
-uint8_t TRegisterConfig::GetBitOffset() const
+uint8_t TRegisterConfig::GetBitOffset(TAddressOptionsType type) const
 {
-    return AddressOptions.BitOffset;
+    return (type == TAddressOptionsType::Write) ? WriteAddressOptions.BitOffset : AddressOptions.BitOffset;
 }
 
 PRegisterConfig TRegisterConfig::Create(int type,

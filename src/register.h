@@ -228,13 +228,19 @@ public:
                     const std::string& type_name,
                     const EWordOrder word_order);
 
-    uint8_t CalculateBitWidth() const;
-    uint8_t GetBitWidth() const;
-    uint8_t GetBitOffset() const;
+    enum class TAddressOptionsType
+    {
+        Common,
+        Write
+    };
+
+    uint8_t CalculateBitWidth(TAddressOptionsType type = TAddressOptionsType::Common) const;
+    uint8_t GetBitWidth(TAddressOptionsType type = TAddressOptionsType::Common) const;
+    uint8_t GetBitOffset(TAddressOptionsType type = TAddressOptionsType::Common) const;
     uint8_t GetByteWidth() const;
 
     //! Get occupied space in 16-bit words
-    uint8_t Get16BitWidth() const;
+    uint8_t Get16BitWidth(TAddressOptionsType type = TAddressOptionsType::Common) const;
 
     std::string ToString() const;
 
@@ -261,8 +267,7 @@ public:
                                   uint8_t bit_offset = 0,
                                   uint8_t bit_width = 0);
 
-    const IRegisterAddress& GetAddress() const;
-    const IRegisterAddress& GetWriteAddress() const;
+    const IRegisterAddress& GetAddress(TAddressOptionsType type = TAddressOptionsType::Common) const;
 };
 
 struct TRegister;
