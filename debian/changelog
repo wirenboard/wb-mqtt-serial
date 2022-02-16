@@ -1,3 +1,9 @@
+wb-mqtt-serial (2.47.0) stable; urgency=medium
+
+  * "units" parameter is added to control's settings. It defines value's unit. Supported units are defined in conventions.
+
+ -- Petr Krasnoshchekov <petr.krasnoshchekov@wirenboard.ru>  Wed, 16 Feb 2022 18:10:47 +0500
+
 wb-mqtt-serial (2.51.0) stable; urgency=medium
 
   * MDM3 template: added Overcurrent channel

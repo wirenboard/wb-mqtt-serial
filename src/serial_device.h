@@ -29,6 +29,7 @@ struct TDeviceChannelConfig
     double Min = std::numeric_limits<double>::signaling_NaN();
     double Precision = 0;
     bool ReadOnly = false;
+    std::string Units;
     std::vector<PRegisterConfig> RegisterConfigs;
 
     TDeviceChannelConfig(const std::string& type = "text",
