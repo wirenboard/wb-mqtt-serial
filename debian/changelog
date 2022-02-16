@@ -1,3 +1,10 @@
+wb-mqtt-serial (2.52.0) stable; urgency=medium
+
+  * MAI11 template: added sampling period channels
+  * MAI11 template: fixed value scale for resistance in NTC or "resistance measurement using current measurement" modes
+
+ -- Pavel Gasheev <pavel.gasheev@wirenboard.ru>  Fri, 16 Feb 2022 12:13:19 +0300
+
 wb-mqtt-serial (2.51.0) stable; urgency=medium
 
   * MDM3 template: added Overcurrent channel
