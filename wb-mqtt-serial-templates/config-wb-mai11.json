@@ -953,9 +953,18 @@
                     "parameters": {
                         "data_rate": {
                             "required": true,
-                            "title": "Data rate",
+                            "title": "Sampling time",
                             "order": 1,
                             "address": "0x0402",
+                            "enum_titles": [
+                                "20 SPS (50 ms)",
+                                "45 SPS (22 ms)",
+                                "90 SPS (11 ms)",
+                                "175 SPS (5.7 ms)",
+                                "330 SPS (3.0 ms)",
+                                "600 SPS (1.7 ms)",
+                                "1000 SPS (1.0 ms)"
+                            ],
                             "enum": [
                                 20, 45, 90, 175, 330, 600,
                                 1000
@@ -1012,9 +1021,18 @@
                     "parameters": {
                         "data_rate": {
                             "required": true,
-                            "title": "Data rate",
+                            "title": "Sampling time",
                             "order": 1,
                             "address": "0x0402",
+                            "enum_titles": [
+                                "20 SPS (50 ms)",
+                                "45 SPS (22 ms)",
+                                "90 SPS (11 ms)",
+                                "175 SPS (5.7 ms)",
+                                "330 SPS (3.0 ms)",
+                                "600 SPS (1.7 ms)",
+                                "1000 SPS (1.0 ms)"
+                            ],
                             "enum": [
                                 20, 45, 90, 175, 330, 600,
                                 1000
@@ -1070,7 +1088,7 @@
                 "device": {
                     "setup": [
                         {
-                            "title": "Data rate",
+                            "title": "Sampling time",
                             "address": "0x0402",
                             "value": 0
                         }
@@ -1091,9 +1109,18 @@
                     "parameters": {
                         "data_rate": {
                             "required": true,
-                            "title": "Data rate",
+                            "title": "Sampling time",
                             "order": 1,
                             "address": "0x0402",
+                            "enum_titles": [
+                                "20 SPS (50 ms)",
+                                "45 SPS (22 ms)",
+                                "90 SPS (11 ms)",
+                                "175 SPS (5.7 ms)",
+                                "330 SPS (3.0 ms)",
+                                "600 SPS (1.7 ms)",
+                                "1000 SPS (1.0 ms)"
+                            ],
                             "enum": [
                                 20, 45, 90, 175, 330, 600,
                                 1000
@@ -1149,9 +1176,18 @@
                     "parameters": {
                         "data_rate": {
                             "required": true,
-                            "title": "Data rate",
+                            "title": "Sampling time",
                             "order": 1,
                             "address": "0x0402",
+                            "enum_titles": [
+                                "20 SPS (50 ms)",
+                                "45 SPS (22 ms)",
+                                "90 SPS (11 ms)",
+                                "175 SPS (5.7 ms)",
+                                "330 SPS (3.0 ms)",
+                                "600 SPS (1.7 ms)",
+                                "1000 SPS (1.0 ms)"
+                            ],
                             "enum": [
                                 20, 45, 90, 175, 330, 600,
                                 1000
@@ -1219,9 +1255,18 @@
                     "parameters": {
                         "data_rate": {
                             "required": true,
-                            "title": "Data rate",
+                            "title": "Sampling time",
                             "order": 1,
                             "address": "0x0402",
+                            "enum_titles": [
+                                "20 SPS (50 ms)",
+                                "45 SPS (22 ms)",
+                                "90 SPS (11 ms)",
+                                "175 SPS (5.7 ms)",
+                                "330 SPS (3.0 ms)",
+                                "600 SPS (1.7 ms)",
+                                "1000 SPS (1.0 ms)"
+                            ],
                             "enum": [
                                 20, 45, 90, 175, 330, 600,
                                 1000
@@ -1289,9 +1334,18 @@
                     "parameters": {
                         "data_rate": {
                             "required": true,
-                            "title": "Data rate",
+                            "title": "Sampling time",
                             "order": 1,
                             "address": "0x0402",
+                            "enum_titles": [
+                                "20 SPS (50 ms)",
+                                "45 SPS (22 ms)",
+                                "90 SPS (11 ms)",
+                                "175 SPS (5.7 ms)",
+                                "330 SPS (3.0 ms)",
+                                "600 SPS (1.7 ms)",
+                                "1000 SPS (1.0 ms)"
+                            ],
                             "enum": [
                                 20, 45, 90, 175, 330, 600,
                                 1000
@@ -1461,9 +1515,18 @@
                     "parameters": {
                         "data_rate": {
                             "required": true,
-                            "title": "Data rate",
+                            "title": "Sampling time",
                             "order": 1,
                             "address": "0x0402",
+                            "enum_titles": [
+                                "20 SPS (50 ms)",
+                                "45 SPS (22 ms)",
+                                "90 SPS (11 ms)",
+                                "175 SPS (5.7 ms)",
+                                "330 SPS (3.0 ms)",
+                                "600 SPS (1.7 ms)",
+                                "1000 SPS (1.0 ms)"
+                            ],
                             "enum": [
                                 20, 45, 90, 175, 330, 600,
                                 1000
@@ -1520,9 +1583,18 @@
                     "parameters": {
                         "data_rate": {
                             "required": true,
-                            "title": "Data rate",
+                            "title": "Sampling time",
                             "order": 1,
                             "address": "0x0402",
+                            "enum_titles": [
+                                "20 SPS (50 ms)",
+                                "45 SPS (22 ms)",
+                                "90 SPS (11 ms)",
+                                "175 SPS (5.7 ms)",
+                                "330 SPS (3.0 ms)",
+                                "600 SPS (1.7 ms)",
+                                "1000 SPS (1.0 ms)"
+                            ],
                             "enum": [
                                 20, 45, 90, 175, 330, 600,
                                 1000
@@ -1579,9 +1651,18 @@
                     "parameters": {
                         "data_rate": {
                             "required": true,
-                            "title": "Data rate",
+                            "title": "Sampling time",
                             "order": 1,
                             "address": "0x0402",
+                            "enum_titles": [
+                                "20 SPS (50 ms)",
+                                "45 SPS (22 ms)",
+                                "90 SPS (11 ms)",
+                                "175 SPS (5.7 ms)",
+                                "330 SPS (3.0 ms)",
+                                "600 SPS (1.7 ms)",
+                                "1000 SPS (1.0 ms)"
+                            ],
                             "enum": [
                                 20, 45, 90, 175, 330, 600,
                                 1000
@@ -1638,9 +1719,18 @@
                     "parameters": {
                         "data_rate": {
                             "required": true,
-                            "title": "Data rate",
+                            "title": "Sampling time",
                             "order": 1,
                             "address": "0x0402",
+                            "enum_titles": [
+                                "20 SPS (50 ms)",
+                                "45 SPS (22 ms)",
+                                "90 SPS (11 ms)",
+                                "175 SPS (5.7 ms)",
+                                "330 SPS (3.0 ms)",
+                                "600 SPS (1.7 ms)",
+                                "1000 SPS (1.0 ms)"
+                            ],
                             "enum": [
                                 20, 45, 90, 175, 330, 600,
                                 1000
@@ -1697,9 +1787,18 @@
                     "parameters": {
                         "data_rate": {
                             "required": true,
-                            "title": "Data rate",
+                            "title": "Sampling time",
                             "order": 1,
                             "address": "0x0402",
+                            "enum_titles": [
+                                "20 SPS (50 ms)",
+                                "45 SPS (22 ms)",
+                                "90 SPS (11 ms)",
+                                "175 SPS (5.7 ms)",
+                                "330 SPS (3.0 ms)",
+                                "600 SPS (1.7 ms)",
+                                "1000 SPS (1.0 ms)"
+                            ],
                             "enum": [
                                 20, 45, 90, 175, 330, 600,
                                 1000
@@ -1756,9 +1855,18 @@
                     "parameters": {
                         "data_rate": {
                             "required": true,
-                            "title": "Data rate",
+                            "title": "Sampling time",
                             "order": 1,
                             "address": "0x0402",
+                            "enum_titles": [
+                                "20 SPS (50 ms)",
+                                "45 SPS (22 ms)",
+                                "90 SPS (11 ms)",
+                                "175 SPS (5.7 ms)",
+                                "330 SPS (3.0 ms)",
+                                "600 SPS (1.7 ms)",
+                                "1000 SPS (1.0 ms)"
+                            ],
                             "enum": [
                                 20, 45, 90, 175, 330, 600,
                                 1000
@@ -1815,9 +1923,18 @@
                     "parameters": {
                         "data_rate": {
                             "required": true,
-                            "title": "Data rate",
+                            "title": "Sampling time",
                             "order": 1,
                             "address": "0x0402",
+                            "enum_titles": [
+                                "20 SPS (50 ms)",
+                                "45 SPS (22 ms)",
+                                "90 SPS (11 ms)",
+                                "175 SPS (5.7 ms)",
+                                "330 SPS (3.0 ms)",
+                                "600 SPS (1.7 ms)",
+                                "1000 SPS (1.0 ms)"
+                            ],
                             "enum": [
                                 20, 45, 90, 175, 330, 600,
                                 1000
@@ -1874,9 +1991,18 @@
                     "parameters": {
                         "data_rate": {
                             "required": true,
-                            "title": "Data rate",
+                            "title": "Sampling time",
                             "order": 1,
                             "address": "0x0402",
+                            "enum_titles": [
+                                "20 SPS (50 ms)",
+                                "45 SPS (22 ms)",
+                                "90 SPS (11 ms)",
+                                "175 SPS (5.7 ms)",
+                                "330 SPS (3.0 ms)",
+                                "600 SPS (1.7 ms)",
+                                "1000 SPS (1.0 ms)"
+                            ],
                             "enum": [
                                 20, 45, 90, 175, 330, 600,
                                 1000
@@ -1933,9 +2059,18 @@
                     "parameters": {
                         "data_rate": {
                             "required": true,
-                            "title": "Data rate",
+                            "title": "Sampling time",
                             "order": 1,
                             "address": "0x0402",
+                            "enum_titles": [
+                                "20 SPS (50 ms)",
+                                "45 SPS (22 ms)",
+                                "90 SPS (11 ms)",
+                                "175 SPS (5.7 ms)",
+                                "330 SPS (3.0 ms)",
+                                "600 SPS (1.7 ms)",
+                                "1000 SPS (1.0 ms)"
+                            ],
                             "enum": [
                                 20, 45, 90, 175, 330, 600,
                                 1000
@@ -1992,9 +2127,18 @@
                     "parameters": {
                         "data_rate": {
                             "required": true,
-                            "title": "Data rate",
+                            "title": "Sampling time",
                             "order": 1,
                             "address": "0x0402",
+                            "enum_titles": [
+                                "20 SPS (50 ms)",
+                                "45 SPS (22 ms)",
+                                "90 SPS (11 ms)",
+                                "175 SPS (5.7 ms)",
+                                "330 SPS (3.0 ms)",
+                                "600 SPS (1.7 ms)",
+                                "1000 SPS (1.0 ms)"
+                            ],
                             "enum": [
                                 20, 45, 90, 175, 330, 600,
                                 1000
@@ -2051,9 +2195,18 @@
                     "parameters": {
                         "data_rate": {
                             "required": true,
-                            "title": "Data rate",
+                            "title": "Sampling time",
                             "order": 1,
                             "address": "0x0402",
+                            "enum_titles": [
+                                "20 SPS (50 ms)",
+                                "45 SPS (22 ms)",
+                                "90 SPS (11 ms)",
+                                "175 SPS (5.7 ms)",
+                                "330 SPS (3.0 ms)",
+                                "600 SPS (1.7 ms)",
+                                "1000 SPS (1.0 ms)"
+                            ],
                             "enum": [
                                 20, 45, 90, 175, 330, 600,
                                 1000
@@ -2110,9 +2263,18 @@
                     "parameters": {
                         "data_rate": {
                             "required": true,
-                            "title": "Data rate",
+                            "title": "Sampling time",
                             "order": 1,
                             "address": "0x0402",
+                            "enum_titles": [
+                                "20 SPS (50 ms)",
+                                "45 SPS (22 ms)",
+                                "90 SPS (11 ms)",
+                                "175 SPS (5.7 ms)",
+                                "330 SPS (3.0 ms)",
+                                "600 SPS (1.7 ms)",
+                                "1000 SPS (1.0 ms)"
+                            ],
                             "enum": [
                                 20, 45, 90, 175, 330, 600,
                                 1000
@@ -2169,9 +2331,18 @@
                     "parameters": {
                         "data_rate": {
                             "required": true,
-                            "title": "Data rate",
+                            "title": "Sampling time",
                             "order": 1,
                             "address": "0x0402",
+                            "enum_titles": [
+                                "20 SPS (50 ms)",
+                                "45 SPS (22 ms)",
+                                "90 SPS (11 ms)",
+                                "175 SPS (5.7 ms)",
+                                "330 SPS (3.0 ms)",
+                                "600 SPS (1.7 ms)",
+                                "1000 SPS (1.0 ms)"
+                            ],
                             "enum": [
                                 20, 45, 90, 175, 330, 600,
                                 1000
@@ -2228,9 +2399,18 @@
                     "parameters": {
                         "data_rate": {
                             "required": true,
-                            "title": "Data rate",
+                            "title": "Sampling time",
                             "order": 1,
                             "address": "0x0402",
+                            "enum_titles": [
+                                "20 SPS (50 ms)",
+                                "45 SPS (22 ms)",
+                                "90 SPS (11 ms)",
+                                "175 SPS (5.7 ms)",
+                                "330 SPS (3.0 ms)",
+                                "600 SPS (1.7 ms)",
+                                "1000 SPS (1.0 ms)"
+                            ],
                             "enum": [
                                 20, 45, 90, 175, 330, 600,
                                 1000
@@ -2287,9 +2467,18 @@
                     "parameters": {
                         "data_rate": {
                             "required": true,
-                            "title": "Data rate",
+                            "title": "Sampling time",
                             "order": 1,
                             "address": "0x0402",
+                            "enum_titles": [
+                                "20 SPS (50 ms)",
+                                "45 SPS (22 ms)",
+                                "90 SPS (11 ms)",
+                                "175 SPS (5.7 ms)",
+                                "330 SPS (3.0 ms)",
+                                "600 SPS (1.7 ms)",
+                                "1000 SPS (1.0 ms)"
+                            ],
                             "enum": [
                                 20, 45, 90, 175, 330, 600,
                                 1000
@@ -2346,9 +2535,18 @@
                     "parameters": {
                         "data_rate": {
                             "required": true,
-                            "title": "Data rate",
+                            "title": "Sampling time",
                             "order": 1,
                             "address": "0x0402",
+                            "enum_titles": [
+                                "20 SPS (50 ms)",
+                                "45 SPS (22 ms)",
+                                "90 SPS (11 ms)",
+                                "175 SPS (5.7 ms)",
+                                "330 SPS (3.0 ms)",
+                                "600 SPS (1.7 ms)",
+                                "1000 SPS (1.0 ms)"
+                            ],
                             "enum": [
                                 20, 45, 90, 175, 330, 600,
                                 1000
@@ -2402,9 +2600,18 @@
                     "parameters": {
                         "data_rate": {
                             "required": true,
-                            "title": "Data rate",
+                            "title": "Sampling time",
                             "order": 1,
                             "address": "0x0402",
+                            "enum_titles": [
+                                "20 SPS (50 ms)",
+                                "45 SPS (22 ms)",
+                                "90 SPS (11 ms)",
+                                "175 SPS (5.7 ms)",
+                                "330 SPS (3.0 ms)",
+                                "600 SPS (1.7 ms)",
+                                "1000 SPS (1.0 ms)"
+                            ],
                             "enum": [
                                 20, 45, 90, 175, 330, 600,
                                 1000
@@ -3259,9 +3466,18 @@
                     "parameters": {
                         "data_rate": {
                             "required": true,
-                            "title": "Data rate",
+                            "title": "Sampling time",
                             "order": 1,
                             "address": "0x0402",
+                            "enum_titles": [
+                                "20 SPS (50 ms)",
+                                "45 SPS (22 ms)",
+                                "90 SPS (11 ms)",
+                                "175 SPS (5.7 ms)",
+                                "330 SPS (3.0 ms)",
+                                "600 SPS (1.7 ms)",
+                                "1000 SPS (1.0 ms)"
+                            ],
                             "enum": [
                                 20, 45, 90, 175, 330, 600,
                                 1000
@@ -3318,9 +3534,18 @@
                     "parameters": {
                         "data_rate": {
                             "required": true,
-                            "title": "Data rate",
+                            "title": "Sampling time",
                             "order": 1,
                             "address": "0x0402",
+                            "enum_titles": [
+                                "20 SPS (50 ms)",
+                                "45 SPS (22 ms)",
+                                "90 SPS (11 ms)",
+                                "175 SPS (5.7 ms)",
+                                "330 SPS (3.0 ms)",
+                                "600 SPS (1.7 ms)",
+                                "1000 SPS (1.0 ms)"
+                            ],
                             "enum": [
                                 20, 45, 90, 175, 330, 600,
                                 1000
@@ -3377,9 +3602,18 @@
                     "parameters": {
                         "data_rate": {
                             "required": true,
-                            "title": "Data rate",
+                            "title": "Sampling time",
                             "order": 1,
                             "address": "0x0402",
+                            "enum_titles": [
+                                "20 SPS (50 ms)",
+                                "45 SPS (22 ms)",
+                                "90 SPS (11 ms)",
+                                "175 SPS (5.7 ms)",
+                                "330 SPS (3.0 ms)",
+                                "600 SPS (1.7 ms)",
+                                "1000 SPS (1.0 ms)"
+                            ],
                             "enum": [
                                 20, 45, 90, 175, 330, 600,
                                 1000
@@ -3436,9 +3670,18 @@
                     "parameters": {
                         "data_rate": {
                             "required": true,
-                            "title": "Data rate",
+                            "title": "Sampling time",
                             "order": 1,
                             "address": "0x0402",
+                            "enum_titles": [
+                                "20 SPS (50 ms)",
+                                "45 SPS (22 ms)",
+                                "90 SPS (11 ms)",
+                                "175 SPS (5.7 ms)",
+                                "330 SPS (3.0 ms)",
+                                "600 SPS (1.7 ms)",
+                                "1000 SPS (1.0 ms)"
+                            ],
                             "enum": [
                                 20, 45, 90, 175, 330, 600,
                                 1000
@@ -3495,9 +3738,18 @@
                     "parameters": {
                         "data_rate": {
                             "required": true,
-                            "title": "Data rate",
+                            "title": "Sampling time",
                             "order": 1,
                             "address": "0x0402",
+                            "enum_titles": [
+                                "20 SPS (50 ms)",
+                                "45 SPS (22 ms)",
+                                "90 SPS (11 ms)",
+                                "175 SPS (5.7 ms)",
+                                "330 SPS (3.0 ms)",
+                                "600 SPS (1.7 ms)",
+                                "1000 SPS (1.0 ms)"
+                            ],
                             "enum": [
                                 20, 45, 90, 175, 330, 600,
                                 1000
@@ -3554,9 +3806,18 @@
                     "parameters": {
                         "data_rate": {
                             "required": true,
-                            "title": "Data rate",
+                            "title": "Sampling time",
                             "order": 1,
                             "address": "0x0402",
+                            "enum_titles": [
+                                "20 SPS (50 ms)",
+                                "45 SPS (22 ms)",
+                                "90 SPS (11 ms)",
+                                "175 SPS (5.7 ms)",
+                                "330 SPS (3.0 ms)",
+                                "600 SPS (1.7 ms)",
+                                "1000 SPS (1.0 ms)"
+                            ],
                             "enum": [
                                 20, 45, 90, 175, 330, 600,
                                 1000
@@ -3613,9 +3874,18 @@
                     "parameters": {
                         "data_rate": {
                             "required": true,
-                            "title": "Data rate",
+                            "title": "Sampling time",
                             "order": 1,
                             "address": "0x0402",
+                            "enum_titles": [
+                                "20 SPS (50 ms)",
+                                "45 SPS (22 ms)",
+                                "90 SPS (11 ms)",
+                                "175 SPS (5.7 ms)",
+                                "330 SPS (3.0 ms)",
+                                "600 SPS (1.7 ms)",
+                                "1000 SPS (1.0 ms)"
+                            ],
                             "enum": [
                                 20, 45, 90, 175, 330, 600,
                                 1000
@@ -3672,9 +3942,18 @@
                     "parameters": {
                         "data_rate": {
                             "required": true,
-                            "title": "Data rate",
+                            "title": "Sampling time",
                             "order": 1,
                             "address": "0x0402",
+                            "enum_titles": [
+                                "20 SPS (50 ms)",
+                                "45 SPS (22 ms)",
+                                "90 SPS (11 ms)",
+                                "175 SPS (5.7 ms)",
+                                "330 SPS (3.0 ms)",
+                                "600 SPS (1.7 ms)",
+                                "1000 SPS (1.0 ms)"
+                            ],
                             "enum": [
                                 20, 45, 90, 175, 330, 600,
                                 1000
@@ -3731,9 +4010,18 @@
                     "parameters": {
                         "data_rate": {
                             "required": true,
-                            "title": "Data rate",
+                            "title": "Sampling time",
                             "order": 1,
                             "address": "0x0402",
+                            "enum_titles": [
+                                "20 SPS (50 ms)",
+                                "45 SPS (22 ms)",
+                                "90 SPS (11 ms)",
+                                "175 SPS (5.7 ms)",
+                                "330 SPS (3.0 ms)",
+                                "600 SPS (1.7 ms)",
+                                "1000 SPS (1.0 ms)"
+                            ],
                             "enum": [
                                 20, 45, 90, 175, 330, 600,
                                 1000
@@ -3790,9 +4078,18 @@
                     "parameters": {
                         "data_rate": {
                             "required": true,
-                            "title": "Data rate",
+                            "title": "Sampling time",
                             "order": 1,
                             "address": "0x0402",
+                            "enum_titles": [
+                                "20 SPS (50 ms)",
+                                "45 SPS (22 ms)",
+                                "90 SPS (11 ms)",
+                                "175 SPS (5.7 ms)",
+                                "330 SPS (3.0 ms)",
+                                "600 SPS (1.7 ms)",
+                                "1000 SPS (1.0 ms)"
+                            ],
                             "enum": [
                                 20, 45, 90, 175, 330, 600,
                                 1000
@@ -3849,9 +4146,18 @@
                     "parameters": {
                         "data_rate": {
                             "required": true,
-                            "title": "Data rate",
+                            "title": "Sampling time",
                             "order": 1,
                             "address": "0x0402",
+                            "enum_titles": [
+                                "20 SPS (50 ms)",
+                                "45 SPS (22 ms)",
+                                "90 SPS (11 ms)",
+                                "175 SPS (5.7 ms)",
+                                "330 SPS (3.0 ms)",
+                                "600 SPS (1.7 ms)",
+                                "1000 SPS (1.0 ms)"
+                            ],
                             "enum": [
                                 20, 45, 90, 175, 330, 600,
                                 1000
@@ -3908,9 +4214,18 @@
                     "parameters": {
                         "data_rate": {
                             "required": true,
-                            "title": "Data rate",
+                            "title": "Sampling time",
                             "order": 1,
                             "address": "0x0402",
+                            "enum_titles": [
+                                "20 SPS (50 ms)",
+                                "45 SPS (22 ms)",
+                                "90 SPS (11 ms)",
+                                "175 SPS (5.7 ms)",
+                                "330 SPS (3.0 ms)",
+                                "600 SPS (1.7 ms)",
+                                "1000 SPS (1.0 ms)"
+                            ],
                             "enum": [
                                 20, 45, 90, 175, 330, 600,
                                 1000
@@ -3967,9 +4282,18 @@
                     "parameters": {
                         "data_rate": {
                             "required": true,
-                            "title": "Data rate",
+                            "title": "Sampling time",
                             "order": 1,
                             "address": "0x0402",
+                            "enum_titles": [
+                                "20 SPS (50 ms)",
+                                "45 SPS (22 ms)",
+                                "90 SPS (11 ms)",
+                                "175 SPS (5.7 ms)",
+                                "330 SPS (3.0 ms)",
+                                "600 SPS (1.7 ms)",
+                                "1000 SPS (1.0 ms)"
+                            ],
                             "enum": [
                                 20, 45, 90, 175, 330, 600,
                                 1000
@@ -4026,9 +4350,18 @@
                     "parameters": {
                         "data_rate": {
                             "required": true,
-                            "title": "Data rate",
+                            "title": "Sampling time",
                             "order": 1,
                             "address": "0x0402",
+                            "enum_titles": [
+                                "20 SPS (50 ms)",
+                                "45 SPS (22 ms)",
+                                "90 SPS (11 ms)",
+                                "175 SPS (5.7 ms)",
+                                "330 SPS (3.0 ms)",
+                                "600 SPS (1.7 ms)",
+                                "1000 SPS (1.0 ms)"
+                            ],
                             "enum": [
                                 20, 45, 90, 175, 330, 600,
                                 1000
@@ -4085,9 +4418,18 @@
                     "parameters": {
                         "data_rate": {
                             "required": true,
-                            "title": "Data rate",
+                            "title": "Sampling time",
                             "order": 1,
                             "address": "0x0402",
+                            "enum_titles": [
+                                "20 SPS (50 ms)",
+                                "45 SPS (22 ms)",
+                                "90 SPS (11 ms)",
+                                "175 SPS (5.7 ms)",
+                                "330 SPS (3.0 ms)",
+                                "600 SPS (1.7 ms)",
+                                "1000 SPS (1.0 ms)"
+                            ],
                             "enum": [
                                 20, 45, 90, 175, 330, 600,
                                 1000
@@ -4144,9 +4486,18 @@
                     "parameters": {
                         "data_rate": {
                             "required": true,
-                            "title": "Data rate",
+                            "title": "Sampling time",
                             "order": 1,
                             "address": "0x0402",
+                            "enum_titles": [
+                                "20 SPS (50 ms)",
+                                "45 SPS (22 ms)",
+                                "90 SPS (11 ms)",
+                                "175 SPS (5.7 ms)",
+                                "330 SPS (3.0 ms)",
+                                "600 SPS (1.7 ms)",
+                                "1000 SPS (1.0 ms)"
+                            ],
                             "enum": [
                                 20, 45, 90, 175, 330, 600,
                                 1000
@@ -4243,9 +4594,18 @@
                     "parameters": {
                         "data_rate": {
                             "required": true,
-                            "title": "Data rate",
+                            "title": "Sampling time",
                             "order": 1,
                             "address": "0x0402",
+                            "enum_titles": [
+                                "20 SPS (50 ms)",
+                                "45 SPS (22 ms)",
+                                "90 SPS (11 ms)",
+                                "175 SPS (5.7 ms)",
+                                "330 SPS (3.0 ms)",
+                                "600 SPS (1.7 ms)",
+                                "1000 SPS (1.0 ms)"
+                            ],
                             "enum": [
                                 20, 45, 90, 175, 330, 600,
                                 1000
@@ -4311,9 +4671,18 @@
                     "parameters": {
                         "data_rate": {
                             "required": true,
-                            "title": "Data rate",
+                            "title": "Sampling time",
                             "order": 1,
                             "address": "0x0402",
+                            "enum_titles": [
+                                "20 SPS (50 ms)",
+                                "45 SPS (22 ms)",
+                                "90 SPS (11 ms)",
+                                "175 SPS (5.7 ms)",
+                                "330 SPS (3.0 ms)",
+                                "600 SPS (1.7 ms)",
+                                "1000 SPS (1.0 ms)"
+                            ],
                             "enum": [
                                 20, 45, 90, 175, 330, 600,
                                 1000
@@ -4369,9 +4738,18 @@
                     "parameters": {
                         "data_rate": {
                             "required": true,
-                            "title": "Data rate",
+                            "title": "Sampling time",
                             "order": 1,
                             "address": "0x0402",
+                            "enum_titles": [
+                                "20 SPS (50 ms)",
+                                "45 SPS (22 ms)",
+                                "90 SPS (11 ms)",
+                                "175 SPS (5.7 ms)",
+                                "330 SPS (3.0 ms)",
+                                "600 SPS (1.7 ms)",
+                                "1000 SPS (1.0 ms)"
+                            ],
                             "enum": [
                                 20, 45, 90, 175, 330, 600,
                                 1000
@@ -4503,9 +4881,18 @@
                     "parameters": {
                         "data_rate": {
                             "required": true,
-                            "title": "Data rate",
+                            "title": "Sampling time",
                             "order": 1,
                             "address": "0x0402",
+                            "enum_titles": [
+                                "20 SPS (50 ms)",
+                                "45 SPS (22 ms)",
+                                "90 SPS (11 ms)",
+                                "175 SPS (5.7 ms)",
+                                "330 SPS (3.0 ms)",
+                                "600 SPS (1.7 ms)",
+                                "1000 SPS (1.0 ms)"
+                            ],
                             "enum": [
                                 20, 45, 90, 175, 330, 600,
                                 1000
@@ -4573,9 +4960,18 @@
                     "parameters": {
                         "data_rate": {
                             "required": true,
-                            "title": "Data rate",
+                            "title": "Sampling time",
                             "order": 1,
                             "address": "0x0402",
+                            "enum_titles": [
+                                "20 SPS (50 ms)",
+                                "45 SPS (22 ms)",
+                                "90 SPS (11 ms)",
+                                "175 SPS (5.7 ms)",
+                                "330 SPS (3.0 ms)",
+                                "600 SPS (1.7 ms)",
+                                "1000 SPS (1.0 ms)"
+                            ],
                             "enum": [
                                 20, 45, 90, 175, 330, 600,
                                 1000
@@ -4634,9 +5030,18 @@
                     "parameters": {
                         "data_rate": {
                             "required": true,
-                            "title": "Data rate",
+                            "title": "Sampling time",
                             "order": 1,
                             "address": "0x0402",
+                            "enum_titles": [
+                                "20 SPS (50 ms)",
+                                "45 SPS (22 ms)",
+                                "90 SPS (11 ms)",
+                                "175 SPS (5.7 ms)",
+                                "330 SPS (3.0 ms)",
+                                "600 SPS (1.7 ms)",
+                                "1000 SPS (1.0 ms)"
+                            ],
                             "enum": [
                                 20, 45, 90, 175, 330, 600,
                                 1000
@@ -4684,9 +5089,18 @@
                     "parameters": {
                         "data_rate": {
                             "required": true,
-                            "title": "Data rate",
+                            "title": "Sampling time",
                             "order": 1,
                             "address": "0x0402",
+                            "enum_titles": [
+                                "20 SPS (50 ms)",
+                                "45 SPS (22 ms)",
+                                "90 SPS (11 ms)",
+                                "175 SPS (5.7 ms)",
+                                "330 SPS (3.0 ms)",
+                                "600 SPS (1.7 ms)",
+                                "1000 SPS (1.0 ms)"
+                            ],
                             "enum": [
                                 20, 45, 90, 175, 330, 600,
                                 1000
@@ -4933,7 +5347,14 @@
                 "P: current measurement": "P: измерение тока от 0 до 20 мА",
                 "IN_P": "P",
                 "IN_N": "N",
-                "Data rate": "Количество измерений в секунду",
+                "Sampling time": "Время одного измерения",
+                "20 SPS (50 ms)": "20 SPS (50 мс)",
+                "45 SPS (22 ms)": "45 SPS (22 мс)",
+                "90 SPS (11 ms)": "90 SPS (11 мс)",
+                "175 SPS (5.7 ms)": "175 SPS (5.7 мс)",
+                "330 SPS (3.0 ms)": "330 SPS (3.0 мс)",
+                "600 SPS (1.7 ms)": "600 SPS (1.7 мс)",
+                "1000 SPS (1.0 ms)": "1000 SPS (1.0 мс)",
                 "Number of measurements": "Количество измерений подряд",
                 "Lowpass filter time, ms": "Время усреднения сигнала (мс)",
                 "Gain": "Коэффициент усиления",
