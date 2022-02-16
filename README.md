@@ -1,5 +1,7 @@
 # wb-mqtt-serial
 
+
+
 Serial device <==> MQTT bridge which follows [Wiren Board MQTT Conventions](https://github.com/contactless/homeui/blob/master/conventions.md).
 It's designed to be used on [Wiren Board](http://contactless.ru/en/) family of programmable automation controllers.
 
@@ -170,7 +172,7 @@ It's designed to be used on [Wiren Board](http://contactless.ru/en/) family of p
                     // имеют общий префикс /devices/<идентификатор топика>/...
                     "id": "msu34tlp",
 
-                    // идентификатор устройства. 
+                    // идентификатор устройства.
                     // Если не указан, то используются широковещательные запросы
                     "slave_id": 2,
 
@@ -203,7 +205,7 @@ It's designed to be used on [Wiren Board](http://contactless.ru/en/) family of p
                     "max_read_registers": 10,
 
                     // Максимальное время ответа устройства в миллисекундах.
-                    // Если не установлено, то принимается равным 500 мс. 
+                    // Если не установлено, то принимается равным 500 мс.
                     // Если значение этого параметра, установленное для порта, больше указанного здесь, используется значение порта.
                     // Этот параметр задан в шаблонах описания устройств, переопределять его можно только в случае некорректной работы с устройством.
                     "response_timeout_ms": 100,
@@ -240,7 +242,7 @@ It's designed to be used on [Wiren Board](http://contactless.ru/en/) family of p
                     // список каналов устройства
                     "channels": [
                         {
-                            // имя канала, используется в диагностических сообщениях и, 
+                            // имя канала, используется в диагностических сообщениях и,
                             // если не задан параметр id, для формирования названия MQTT topic'ов канала
                             "name" : "Temp 1",
 
@@ -377,10 +379,10 @@ It's designed to be used on [Wiren Board](http://contactless.ru/en/) family of p
                             // название регистра
                             // Выводится в случае включённой отладочной печати.
                             "title": "Input 0 type",
-                            
+
                             // адрес регистра
                             "address": 1,
-                            
+
                             // значение для записи
                             "value": 1,
 
@@ -486,7 +488,7 @@ It's designed to be used on [Wiren Board](http://contactless.ru/en/) family of p
         // отображаемое имя устройства. Публикуется как
         // .../meta/name в MQTT
         "name": "New device",
-        
+
         // Остальные параметры устройства описанные ранее, кроме slave_id
         ...
 
@@ -510,7 +512,7 @@ It's designed to be used on [Wiren Board](http://contactless.ru/en/) family of p
             // В интерфейсе web-конфигуратора будет предложен выбор конкретного типа
             {
                 "name": "Sub2",
-                
+
                 // Список типов вложенных устройств, которые можно выбрать для канала
                 "oneOf": [ "subdevice1", "subdevice2" ],
 
@@ -812,10 +814,10 @@ It's designed to be used on [Wiren Board](http://contactless.ru/en/) family of p
 
 Протокол работает только со следующими настройками порта: 9600 8N1 или 9600 7E1. При выборе 9600 8N1 физически обмен с счётчиками происходит в режиме 9600 7E1, в соответствии с МЭК 61107, но бит чётности эмулируется программно за счёт восьмого бита посылки. Это сделано для возможности использования счётчиков на одной шине с другими устройствами, которые работают только с восьмибитными словами.
 
-Реализован режим чтения параметров по OBIS-кодам ([IEC 62056-6-1:2017](https://en.wikipedia.org/wiki/IEC_62056)) 
+Реализован режим чтения параметров по OBIS-кодам ([IEC 62056-6-1:2017](https://en.wikipedia.org/wiki/IEC_62056))
 
 OBIS-коды кодируются в адресе регистра следующим образом:
-    
+
     0xCCDDEEFF
 
 где `CC` - группа С, `DD` - группа D, `EE` - группа E, `FF` - группа F OBIS-кода.
@@ -881,7 +883,7 @@ OBIS-коды кодируются в адресе регистра следую
 |  Wiren Board модуль дискретных/счётных входов WB-MCM16  |   WB-MCM16  |  WB-MCM16  |   wb-mcm16    |
 |  Wiren Board Датчик WB-MS-THLS / WB-MSW-THLS            |  WB-MS-THLS | wb-ms-thls | WB-MS-THLS    |
 |  Wiren Board Датчик WB-MS-THLS / WB-MSW-THLS  (fw. v.2) |  WB-MS-THLS v.2 | wb-ms-thls | WB-MS-THLS    |
-|  Peacefair PZEM-016                                     |  PZEM-016   | pzem       | PZEM          |   
+|  Peacefair PZEM-016                                     |  PZEM-016   | pzem       | PZEM          |
 
 **Милур**
 
