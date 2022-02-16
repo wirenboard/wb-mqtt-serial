@@ -68,24 +68,23 @@ std::string TRegisterConfig::ToString() const
 {
     std::stringstream s;
     s << TypeName << ": " << GetAddress();
-    if (AddressingDescription.BitOffset != 0 || AddressingDescription.BitWidth != 0) {
-        s << ":" << static_cast<int>(AddressingDescription.BitOffset) << ":"
-          << static_cast<int>(AddressingDescription.BitWidth);
+    if (AddressOptions.BitOffset != 0 || AddressOptions.BitWidth != 0) {
+        s << ":" << static_cast<int>(AddressOptions.BitOffset) << ":" << static_cast<int>(AddressOptions.BitWidth);
     }
     return s.str();
 }
 
 const IRegisterAddress& TRegisterConfig::GetAddress() const
 {
-    return *AddressingDescription.Address;
+    return *AddressOptions.Address;
 }
 
 const IRegisterAddress& TRegisterConfig::GetWriteAddress() const
 {
-    if (AddressingDescription.WriteAddress == nullptr) {
-        return *AddressingDescription.Address;
+    if (WriteAddressOptions.Address == nullptr) {
+        return *AddressOptions.Address;
     }
-    return *AddressingDescription.WriteAddress;
+    return *WriteAddressOptions.Address;
 }
 
 std::string TRegister::ToString() const
@@ -180,8 +179,7 @@ TRegisterConfig::TRegisterConfig(int type,
                                  bool readonly,
                                  const std::string& type_name,
                                  const EWordOrder word_order)
-    : AddressingDescription(registerAddressesDescription),
-      Type(type),
+    : Type(type),
       Format(format),
       Scale(scale),
       Offset(offset),
@@ -190,16 +188,19 @@ TRegisterConfig::TRegisterConfig(int type,
       TypeName(type_name),
       WordOrder(word_order)
 {
+    AddressOptions = registerAddressesDescription.AddressOptions;
+    WriteAddressOptions = registerAddressesDescription.WriteAddressOptions;
+
     if (TypeName.empty())
         TypeName = "(type " + std::to_string(Type) + ")";
 
     auto maxOffset = RegisterFormatByteWidth(Format) * 8;
 
-    if (AddressingDescription.BitOffset >= maxOffset) {
+    if (AddressOptions.BitOffset >= maxOffset) {
         throw TSerialDeviceException("bit offset must not exceed " + std::to_string(maxOffset) + " bits");
     }
 
-    if (!AddressingDescription.Address) {
+    if (!AddressOptions.Address) {
         throw TSerialDeviceException("register address is not defined");
     }
 }
@@ -211,22 +212,21 @@ uint8_t TRegisterConfig::GetByteWidth() const
 
 uint8_t TRegisterConfig::Get16BitWidth() const
 {
-    auto w = static_cast<uint8_t>(
-                 ceil((static_cast<float>(AddressingDescription.BitOffset) + CalculateBitWidth()) / 8) + 1) /
-             2;
+    auto w =
+        static_cast<uint8_t>(ceil((static_cast<float>(AddressOptions.BitOffset) + CalculateBitWidth()) / 8) + 1) / 2;
 
     return w;
 }
 
 uint8_t TRegisterConfig::GetBitWidth() const
 {
-    return AddressingDescription.BitWidth;
+    return AddressOptions.BitWidth;
 }
 
 uint8_t TRegisterConfig::CalculateBitWidth() const
 {
-    if (AddressingDescription.BitWidth) {
-        return AddressingDescription.BitWidth;
+    if (AddressOptions.BitWidth) {
+        return AddressOptions.BitWidth;
     }
 
     return GetByteWidth() * 8;
@@ -234,7 +234,7 @@ uint8_t TRegisterConfig::CalculateBitWidth() const
 
 uint8_t TRegisterConfig::GetBitOffset() const
 {
-    return AddressingDescription.BitOffset;
+    return AddressOptions.BitOffset;
 }
 
 PRegisterConfig TRegisterConfig::Create(int type,
@@ -270,10 +270,15 @@ PRegisterConfig TRegisterConfig::Create(int type,
                                         uint8_t bit_offset,
                                         uint8_t bit_width)
 {
+    Register::TAddressOptions addressOptions;
+    addressOptions.Address = std::make_shared<TUint32RegisterAddress>(address);
+    addressOptions.BitOffset = bit_offset;
+    addressOptions.BitWidth = bit_width;
+
     TRegisterDesc regAddressesDescription;
-    regAddressesDescription.Address = std::make_shared<TUint32RegisterAddress>(address);
-    regAddressesDescription.WriteBitWidth = regAddressesDescription.BitWidth = bit_width;
-    regAddressesDescription.WriteBitOffset = regAddressesDescription.BitOffset = bit_offset;
+    regAddressesDescription.AddressOptions = addressOptions;
+    regAddressesDescription.WriteAddressOptions = addressOptions;
+
     return Create(type, regAddressesDescription, format, scale, offset, round_to, readonly, type_name, word_order);
 }
 

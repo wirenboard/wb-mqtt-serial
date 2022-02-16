@@ -66,8 +66,8 @@ void TModbusTest::SetUp()
     ModbusHoldingU16Multi = TRegister::Intern(ModbusDev, TRegisterConfig::Create(Modbus::REG_HOLDING_MULTI, 99, U16));
 
     TRegisterDesc regAddrDesc;
-    regAddrDesc.Address = std::make_shared<TUint32RegisterAddress>(110);
-    regAddrDesc.WriteAddress = std::make_shared<TUint32RegisterAddress>(115);
+    regAddrDesc.AddressOptions.Address = std::make_shared<TUint32RegisterAddress>(110);
+    regAddrDesc.WriteAddressOptions.Address = std::make_shared<TUint32RegisterAddress>(115);
 
     ModbusHoldingU16WithAddressWrite =
         TRegister::Intern(ModbusDev, TRegisterConfig::Create(Modbus::REG_HOLDING, regAddrDesc, RegisterFormat::U16));

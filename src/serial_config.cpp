@@ -1380,20 +1380,18 @@ TRegisterDesc TUint32RegisterAddressFactory::LoadRegisterAddress(const Json::Val
 {
     TRegisterDesc res;
     auto addr = LoadRegisterBitsAddress(regCfg, SerialConfig::ADDRESS_PROPERTY_NAME);
-    res.BitOffset = addr.BitOffset;
-    res.BitWidth = addr.BitWidth;
-    res.Address = std::shared_ptr<IRegisterAddress>(
+    res.AddressOptions.BitOffset = addr.BitOffset;
+    res.AddressOptions.BitWidth = addr.BitWidth;
+    res.AddressOptions.Address = std::shared_ptr<IRegisterAddress>(
         deviceBaseAddress.CalcNewAddress(addr.Address, stride, registerByteWidth, BytesPerRegister));
     if (HasWriteAddressProperty(regCfg)) {
         auto writeAddress = LoadRegisterBitsAddress(regCfg, SerialConfig::WRITE_ADDRESS_PROPERTY_NAME);
-        res.WriteAddress = std::shared_ptr<IRegisterAddress>(
+        res.WriteAddressOptions.Address = std::shared_ptr<IRegisterAddress>(
             deviceBaseAddress.CalcNewAddress(writeAddress.Address, stride, registerByteWidth, BytesPerRegister));
-        res.WriteBitOffset = writeAddress.BitOffset;
-        res.WriteBitWidth = writeAddress.BitWidth;
+        res.WriteAddressOptions.BitOffset = writeAddress.BitOffset;
+        res.WriteAddressOptions.BitWidth = writeAddress.BitWidth;
     } else {
-        res.WriteAddress = res.Address;
-        res.WriteBitOffset = res.BitOffset;
-        res.WriteBitWidth = res.BitWidth;
+        res.WriteAddressOptions = res.AddressOptions;
     }
     return res;
 }
@@ -1409,9 +1407,10 @@ TRegisterDesc TStringRegisterAddressFactory::LoadRegisterAddress(const Json::Val
                                                                  uint32_t registerByteWidth) const
 {
     TRegisterDesc res;
-    res.Address = std::make_shared<TStringRegisterAddress>(regCfg[SerialConfig::ADDRESS_PROPERTY_NAME].asString());
+    res.AddressOptions.Address =
+        std::make_shared<TStringRegisterAddress>(regCfg[SerialConfig::ADDRESS_PROPERTY_NAME].asString());
     if (HasWriteAddressProperty(regCfg)) {
-        res.WriteAddress =
+        res.WriteAddressOptions.Address =
             std::make_shared<TStringRegisterAddress>(regCfg[SerialConfig::WRITE_ADDRESS_PROPERTY_NAME].asString());
     }
     return res;

@@ -127,9 +127,9 @@ namespace
         {
             auto addr = LoadRegisterBitsAddress(regCfg, SerialConfig::ADDRESS_PROPERTY_NAME);
             TRegisterDesc res;
-            res.BitOffset = addr.BitOffset;
-            res.BitWidth = addr.BitWidth;
-            res.Address = std::make_shared<TSomfyAddress>(addr.Address, GetResponseAddress(regCfg));
+            res.AddressOptions.BitOffset = addr.BitOffset;
+            res.AddressOptions.BitWidth = addr.BitWidth;
+            res.AddressOptions.Address = std::make_shared<TSomfyAddress>(addr.Address, GetResponseAddress(regCfg));
             return res;
         }
     };

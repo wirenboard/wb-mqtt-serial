@@ -177,21 +177,27 @@ public:
                                      uint32_t /*addressByteStep*/) const override;
 };
 
+namespace Register
+{
+    struct TAddressOptions
+    {
+        std::shared_ptr<IRegisterAddress> Address; //! Register address
+        uint8_t BitOffset{0};                      //! Offset of data in register in bits
+        uint8_t BitWidth{0};                       //! Width of data in register in bits
+    };
+}
+
 //! Register addresses description
 struct TRegisterDesc
 {
-    std::shared_ptr<IRegisterAddress> Address; //! Register address
-    uint8_t BitOffset{0};                      //! Offset of data in register in bits
-    uint8_t BitWidth{0};                       //! Width of data in register in bits
-
-    std::shared_ptr<IRegisterAddress> WriteAddress; //! Register write address
-    uint8_t WriteBitOffset{0};                      //! the write offset of data in register in bits
-    uint8_t WriteBitWidth{0};                       //! the write width of data in register in bits
+    Register::TAddressOptions AddressOptions;
+    Register::TAddressOptions WriteAddressOptions;
 };
 
 class TRegisterConfig: public std::enable_shared_from_this<TRegisterConfig>
 {
-    TRegisterDesc AddressingDescription;
+    Register::TAddressOptions AddressOptions;
+    Register::TAddressOptions WriteAddressOptions;
 
 public:
     int Type;
