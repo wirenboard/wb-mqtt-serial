@@ -208,9 +208,8 @@ uint8_t TRegisterConfig::GetByteWidth() const
 uint8_t TRegisterConfig::Get16BitWidth(TAddressOptionsType type) const
 {
     auto bitOffset = (type == TAddressOptionsType::Write) ? WriteAddressOptions.BitOffset : AddressOptions.BitOffset;
-    auto w = static_cast<uint8_t>(ceil((static_cast<float>(bitOffset) + CalculateBitWidth(type)) / 8) + 1) / 2;
-
-    return w;
+    auto totalBit = bitOffset + CalculateBitWidth(type);
+    return totalBit / 16 + (totalBit % 16 ? 1 : 0);
 }
 
 uint8_t TRegisterConfig::GetBitWidth(TAddressOptionsType type) const
