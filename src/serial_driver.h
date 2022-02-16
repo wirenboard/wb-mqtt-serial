@@ -18,6 +18,9 @@ public:
     void Start();
     void Stop();
 
+    bool GetPortDriverByName(const std::string& path, PSerialPortDriver& portDriver);
+    bool GetPortDriverByName(const std::string& ip, int port, PSerialPortDriver& portDriver);
+
 private:
     std::vector<PSerialPortDriver> PortDrivers;
     std::vector<std::thread> PortLoops;
@@ -26,7 +29,6 @@ private:
     std::map<std::string, Metrics::TMetrics> Metrics;
 
     Json::Value LoadMetrics(const Json::Value& request);
-    Json::Value LoadPortData(const Json::Value& request);
 };
 
 typedef std::shared_ptr<TMQTTSerialDriver> PMQTTSerialDriver;

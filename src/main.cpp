@@ -17,6 +17,7 @@
 #include "config_schema_generator.h"
 
 #include "device_template_generator.h"
+#include "rpc_handler.h"
 #include "serial_port.h"
 
 #define STR(x) #x
@@ -306,6 +307,7 @@ int main(int argc, char* argv[])
         driver->WaitForReady();
 
         auto serialDriver = make_shared<TMQTTSerialDriver>(driver, handlerConfig, rpcServer);
+        TRPCHandler rpcHandler(serialDriver, rpcServer);
 
         serialDriver->Start();
         rpcServer->Start();
