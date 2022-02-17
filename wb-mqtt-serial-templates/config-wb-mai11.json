@@ -21,6 +21,26 @@
             }
         ],
 
+        "parameters": {
+            "baudrate": {
+                "title": "Baudrate (bit/s)",
+                "description": "baudrate_description",
+                "address": 110,
+                "reg_type": "holding",
+                "enum": [96, 192, 384, 576, 1152],
+                "default": 96,
+                "enum_titles": [
+                    "9600",
+                    "19200",
+                    "38400",
+                    "57600",
+                    "115200"
+                ],
+                "group": "general",
+                "order": 1
+            }
+        },
+
         "channels": [
             {
                 "name": "Input 1",
@@ -4616,6 +4636,7 @@
         "translations": {
             "en": {
                 "WB-MAI11_template_title": "WB-MAI11 (11-channel analog input module)",
+                "baudrate_description": "Before changing make sure that communication with device is established. After saving configuration change port baudrate to the same value.",
                 "Input 1": "IN 1",
                 "Input 2": "IN 2",
                 "Input 3": "IN 3",
@@ -4723,6 +4744,8 @@
                 "Data rate": "Количество измерений в секунду",
                 "Number of measurements": "Количество измерений подряд",
                 "Lowpass filter time, ms": "Время усреднения сигнала (мс)",
+                "Baudrate (bit/s)": "Скорость обмена (бит/с)",
+                "baudrate_description": "Перед изменением убедитесь, что связь с устройством установлена. После сохранения конфигурации измените скорость обмена для порта на то же значение.",
                 "Gain": "Коэффициент усиления",
                 "Voltage": "Напряжение",
                 "Temperature": "Температура",

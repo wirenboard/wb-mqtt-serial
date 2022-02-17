@@ -1,3 +1,9 @@
+wb-mqtt-serial (2.51.2) stable; urgency=medium
+
+  * Parameter Baudrate was added in Modbus modules templates
+
+ -- Dmitry Vorobjev <d.vorobjev@wirenboard.ru>  Thu, 17 Feb 2022 17:41:06 +0300
+
 wb-mqtt-serial (2.51.1) stable; urgency=medium
 
   * MCU Temperature and MCU Voltage channels were added to
