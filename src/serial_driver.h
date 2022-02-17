@@ -18,8 +18,7 @@ public:
     void Start();
     void Stop();
 
-    bool GetPortDriverByName(const std::string& path, PSerialPortDriver& portDriver);
-    bool GetPortDriverByName(const std::string& ip, int port, PSerialPortDriver& portDriver);
+    bool GetPortDriverByName(const std::string& path, const std::string& ip, int port, PSerialPortDriver& portDriver);
 
 private:
     std::vector<PSerialPortDriver> PortDrivers;

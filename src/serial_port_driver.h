@@ -77,6 +77,8 @@ public:
 
     bool RPCRead(std::vector<uint8_t>& buf, size_t& responseSize, bool& error);
 
+    void GetPortInfo(Json::Value& info);
+
 private:
     WBMQTT::TLocalDeviceArgs From(const PSerialDevice& device);
     WBMQTT::TControlArgs From(const PDeviceChannel& channel);

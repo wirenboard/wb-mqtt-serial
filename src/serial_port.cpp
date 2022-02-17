@@ -13,6 +13,8 @@
 #include <unistd.h>
 #include <utility>
 
+#include <wblib/json_utils.h>
+
 #include <linux/serial.h>
 #include <sys/ioctl.h>
 
@@ -238,6 +240,11 @@ const TSerialPortSettings& TSerialPort::GetSettings() const
     return Settings;
 }
 
+void TSerialPort::GetInfo(Json::Value& info) const
+{
+    info["path"] = Settings.Device;
+}
+
 TSerialPortWithIECHack::TSerialPortWithIECHack(PSerialPort port): Port(port), UseIECHack(false)
 {}
 
@@ -346,4 +353,9 @@ void TSerialPortWithIECHack::SetSerialPortByteFormat(const TSerialPortByteFormat
     }
     throw std::runtime_error("Can't change " + Port->GetSettings().ToString() +
                              " byte format. Set port settings to 8N1, please");
+}
+
+void TSerialPortWithIECHack::GetInfo(Json::Value& info) const
+{
+    Port->GetInfo(info);
 }

@@ -1,5 +1,7 @@
 #include <rpc_handler.h>
 
+#define LOG(logger) ::logger.Log() << "[RPC] "
+
 enum RPCPortLoadParamSet
 {
     RPC_TCP_SET,
@@ -22,9 +24,6 @@ namespace
         bool ipEnt = request.isMember("ip");
         bool portEnt = request.isMember("port");
         bool msgEnt = request.isMember("msg");
-        // bool respTimeoutEnt = request.isMember("response_timeout");
-        // bool frameTimeoutEnt = request.isMember("frame_timeout");
-        // bool formatEnt = request.isMember("format");
         bool respSizeEnt = request.isMember("response_size");
 
         bool serialConf = (pathEnt && !ipEnt && !portEnt);
@@ -86,8 +85,12 @@ namespace
             }
 
             if (format == "HEX") {
+                if (msgStr.size() % 2 != 0) {
+                    throw std::exception();
+                }
+
                 uint8_t byte;
-                for (unsigned int i = 0; i < msgStr.size(); i += 2) { //протестировать нечетное количество
+                for (unsigned int i = 0; i < msgStr.size(); i += 2) {
                     byte = strtol(msgStr.substr(i, 2).c_str(), NULL, 16);
                     msg.push_back(byte);
                 }
@@ -153,8 +156,7 @@ Json::Value TRPCHandler::PortLoad(const Json::Value& request)
         }
 
         PSerialPortDriver portDriver;
-        bool find = (set == RPC_SERIAL_SET) ? serialDriver->GetPortDriverByName(path, portDriver)
-                                            : serialDriver->GetPortDriverByName(ip, port, portDriver);
+        bool find = serialDriver->GetPortDriverByName(path, ip, port, portDriver);
         if (!find) {
             throw TRPCException("Requested port doesn't exist", RPC_WRONG_PORT);
         }
@@ -176,6 +178,7 @@ Json::Value TRPCHandler::PortLoad(const Json::Value& request)
         errorMsg = "Success";
         resultCode = RPC_OK;
     } catch (TRPCException& e) {
+        LOG(Error) << e.GetResultMessage();
         resultCode = e.GetResultCode();
         errorMsg = e.GetResultMessage();
         responseStr = "";
