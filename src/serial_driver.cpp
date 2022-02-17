@@ -136,36 +136,40 @@ Json::Value TMQTTSerialDriver::LoadMetrics(const Json::Value& request)
     return res;
 }
 
-bool TMQTTSerialDriver::GetPortDriverByName(const std::string& path, PSerialPortDriver& portDriver)
+bool TMQTTSerialDriver::GetPortDriverByName(const std::string& path,
+                                            const std::string& ip,
+                                            int port,
+                                            PSerialPortDriver& portDriver)
 {
     bool cmp_result = false;
     uint i = 0;
+    Json::Value info;
+    bool pathEnt, ipEnt, portEnt;
+    std::string pathI, ipI;
+    int portI;
 
     while (!cmp_result & (i < PortDrivers.size())) {
-        std::string desc = PortDrivers[i]->GetShortDescription();
+        auto curentDriver = PortDrivers[i];
+        curentDriver->GetPortInfo(info);
 
-        cmp_result = desc.find(path); //сомнительный момент
-        if (cmp_result) {
-            portDriver = PortDrivers[i];
-        }
+        try {
+            pathEnt = WBMQTT::JSON::Get(info, "path", pathI);
+            ipEnt = WBMQTT::JSON::Get(info, "ip", ipI);
+            portEnt = WBMQTT::JSON::Get(info, "port", portI);
 
-        i++;
-    }
+            if (pathEnt) {
+                cmp_result = (path == pathI);
+            } else if (ipEnt & portEnt) {
+                cmp_result = (ip == ipI) && (port == portI);
+            } else {
+                throw runtime_error("RPC meets unknown port type when try find need one");
+            }
 
-    return cmp_result;
-}
-
-bool TMQTTSerialDriver::GetPortDriverByName(const std::string& ip, int port, PSerialPortDriver& portDriver)
-{
-    bool cmp_result = false;
-    uint i = 0;
-
-    while (!cmp_result & (i < PortDrivers.size())) {
-        std::string desc = PortDrivers[i]->GetShortDescription();
-
-        cmp_result = desc.find(ip); //сомнительный момент
-        if (cmp_result) {
-            portDriver = PortDrivers[i];
+            if (cmp_result) {
+                portDriver = PortDrivers[i];
+            }
+        } catch (exception e) {
+            LOG(Error) << e.what();
         }
 
         i++;

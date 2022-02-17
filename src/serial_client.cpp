@@ -4,6 +4,8 @@
 #include <iostream>
 #include <unistd.h>
 
+#include <wblib/json_utils.h>
+
 using namespace std::chrono_literals;
 
 #define LOG(logger) logger.Log() << "[serial client] "
@@ -432,6 +434,11 @@ bool TSerialClient::RPCRead(std::vector<uint8_t>& buf, size_t& actualSize, bool&
         RPCMutex.unlock();
     }
     return res;
+}
+
+void TSerialClient::GetPortInfo(Json::Value& info)
+{
+    Port->GetInfo(info);
 }
 
 bool TRegisterComparePredicate::operator()(const PRegister& r1, const PRegister& r2) const

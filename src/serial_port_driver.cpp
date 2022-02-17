@@ -24,7 +24,7 @@ TSerialPortDriver::TSerialPortDriver(WBMQTT::PDeviceDriver mqttDriver,
       Config(portConfig),
       PublishPolicy(publishPolicy)
 {
-    Description = Config->Port->GetDescription();
+    Description = Config->Port->GetDescription(false);
     SerialClient = PSerialClient(new TSerialClient(Config->Devices, Config->Port, Config->OpenCloseSettings, metrics));
 }
 
@@ -241,6 +241,11 @@ void TSerialPortDriver::RPCWrite(const std::vector<uint8_t>& buf,
 bool TSerialPortDriver::RPCRead(std::vector<uint8_t>& buf, size_t& actualSize, bool& error)
 {
     return SerialClient->RPCRead(buf, actualSize, error);
+}
+
+void TSerialPortDriver::GetPortInfo(Json::Value& info)
+{
+    SerialClient->GetPortInfo(info);
 }
 
 void TDeviceChannel::UpdateValueAndError(WBMQTT::TDeviceDriver& deviceDriver,

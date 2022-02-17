@@ -31,6 +31,8 @@ public:
 
     const TSerialPortSettings& GetSettings() const;
 
+    void GetInfo(Json::Value& info) const override;
+
 private:
     TSerialPortSettings Settings;
     termios OldTermios;
@@ -71,6 +73,8 @@ public:
     std::string GetDescription(bool verbose = true) const override;
 
     void SetSerialPortByteFormat(const TSerialPortByteFormat* params) override;
+
+    void GetInfo(Json::Value& info) const override;
 
 private:
     //! Use 7E to 8N conversion. The workaround allows using IEC devices and other devices on the same bus.
