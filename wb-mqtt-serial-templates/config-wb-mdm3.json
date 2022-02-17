@@ -454,6 +454,25 @@
                 "group": "hw_info"
             },
             {
+                "name": "MCU Temperature",
+                "reg_type": "input",
+                "address": 124,
+                "type": "temperature",
+                "format": "s16",
+                "scale": 0.1,
+                "enabled": false,
+                "group": "hw_info"
+            },
+            {
+                "name": "MCU Voltage",
+                "reg_type": "input",
+                "address": 123,
+                "scale": 0.001,
+                "type": "voltage",
+                "enabled": false,
+                "group": "hw_info"
+            },
+            {
                 "name": "AC on L-N",
                 "reg_type": "input",
                 "address": 97,
@@ -465,7 +484,7 @@
                 "reg_type": "input",
                 "address": 100,
                 "type": "switch",
-                "group": "general"  
+                "group": "general"
             },
             {
                 "name": "Channel 1 Raw Duty (us)",
@@ -572,6 +591,8 @@
                 "Serial": "Серийный номер",
                 "Supply voltage": "Напряжение питания",
                 "Uptime": "Время работы с момента включения (с)",
+                "MCU Temperature": "Температура МК",
+                "MCU Voltage": "Напряжение питания МК",
                 "AC on L-N": "Напряжение на клеммах L-N",
                 "Overcurrent": "Перегрузка по току",
                 "Channel 1 Raw Duty (us)": "Сырое задание для канала 1 (мкс)",

@@ -483,6 +483,8 @@ WB-M1W2
 		Discrete Input 2  =>  Discrete Input 2
 	Input 2: input_disabled
 	Input Voltage  =>  Input Voltage
+	MCU Temperature  =>  MCU Temperature
+	MCU Voltage  =>  MCU Voltage
 	Serial NO  =>  Serial NO
 	Uptime  =>  Uptime
 WB-M1W2 DI
@@ -12611,6 +12613,8 @@ WB-MAO4
 	Input 2 counter  =>  Input 2 counter
 	Input 3  =>  Input 3
 	Input 3 counter  =>  Input 3 counter
+	MCU Temperature  =>  MCU Temperature
+	MCU Voltage  =>  MCU Voltage
 	Serial  =>  Serial
 	Supply voltage  =>  Supply voltage
 	Uptime  =>  Uptime
@@ -12748,6 +12752,8 @@ WB-MAP12E fw2
 	Ch 4 Total RP energy  =>  Ch 4 Total RP energy
 	Ch 4 Total S  =>  Ch 4 Total S
 	Frequency  =>  Frequency
+	MCU Temperature  =>  MCU Temperature
+	MCU Voltage  =>  MCU Voltage
 	Serial  =>  Serial
 	Supply voltage  =>  Supply voltage
 	Upeak L1  =>  Upeak L1
@@ -16609,6 +16615,8 @@ WB-MAP3E fw2
 	Irms L1  =>  Irms L1
 	Irms L2  =>  Irms L2
 	Irms L3  =>  Irms L3
+	MCU Temperature  =>  MCU Temperature
+	MCU Voltage  =>  MCU Voltage
 	P L1  =>  P L1
 	P L2  =>  P L2
 	P L3  =>  P L3
@@ -16656,6 +16664,8 @@ WB-MAP3ET
 	Irms L1  =>  Irms L1
 	Irms L2  =>  Irms L2
 	Irms L3  =>  Irms L3
+	MCU Temperature  =>  MCU Temperature
+	MCU Voltage  =>  MCU Voltage
 	P L1  =>  P L1
 	P L2  =>  P L2
 	P L3  =>  P L3
@@ -16694,6 +16704,8 @@ WB-MAP3ET
 	Voltage angle L3  =>  Voltage angle L3
 WB-MAP3EV
 	Frequency  =>  Frequency
+	MCU Temperature  =>  MCU Temperature
+	MCU Voltage  =>  MCU Voltage
 	Serial  =>  Serial
 	Supply Voltage  =>  Supply Voltage
 	Upeak L1  =>  Upeak L1
@@ -17332,6 +17344,8 @@ WB-MAP6S fw2
 	Irms 4  =>  Irms 4
 	Irms 5  =>  Irms 5
 	Irms 6  =>  Irms 6
+	MCU Temperature  =>  MCU Temperature
+	MCU Voltage  =>  MCU Voltage
 	P 1  =>  P 1
 	P 2  =>  P 2
 	P 3  =>  P 3
@@ -17434,6 +17448,8 @@ WB-MCM8
 	Input 8  =>  Input 8
 	Input 8 counter  =>  Input 8 counter
 	Input 8 freq  =>  Input 8 freq
+	MCU Temperature  =>  MCU Temperature
+	MCU Voltage  =>  MCU Voltage
 	Reset all counters  =>  Reset all counters
 	Serial  =>  Serial
 	Supply voltage  =>  Supply voltage
@@ -17475,6 +17491,8 @@ WB-MDM3
 	K2  =>  K2
 	K3  =>  K3
 	Last AC Voltage Period (us)  =>  Last AC Voltage Period (us)
+	MCU Temperature  =>  MCU Temperature
+	MCU Voltage  =>  MCU Voltage
 	Overcurrent  =>  Overcurrent
 	Serial  =>  Serial
 	Supply voltage  =>  Supply voltage
@@ -17573,6 +17591,8 @@ WB-MIR v2
 	Learn to ROM7  =>  Learn to ROM7
 	Learn to ROM8  =>  Learn to ROM8
 	Learn to ROM9  =>  Learn to ROM9
+	MCU Temperature  =>  MCU Temperature
+	MCU Voltage  =>  MCU Voltage
 	Play from RAM  =>  Play from RAM
 	Play from ROM1  =>  Play from ROM1
 	Play from ROM10  =>  Play from ROM10
@@ -17951,6 +17971,8 @@ WB-MRGBW-D
 		Channel G  =>  Channel G
 		Channel R  =>  Channel R
 		Channel W  =>  Channel W
+	MCU Temperature  =>  MCU Temperature
+	MCU Voltage  =>  MCU Voltage
 	Serial NO  =>  Serial NO
 	Supply Voltage  =>  Supply Voltage
 	Uptime  =>  Uptime
@@ -17977,6 +17999,8 @@ WB-MRGBW-D fw3
 	Input 3 Long Press Counter  =>  Input 3 Long Press Counter
 	Input 3 Shortlong Press Counter  =>  Input 3 Shortlong Press Counter
 	Input 3 Single Press Counter  =>  Input 3 Single Press Counter
+	MCU Temperature  =>  MCU Temperature
+	MCU Voltage  =>  MCU Voltage
 	Mode: rgb_w
 		Channel 4 (W)  =>  Channel 4 (W)
 		Channel 4 (W) Brightness  =>  Channel 4 (W) Brightness
@@ -18381,6 +18405,8 @@ WB-MWAC
 	Input Voltage  =>  Input Voltage
 	K1  =>  K1
 	K2  =>  K2
+	MCU Temperature  =>  MCU Temperature
+	MCU Voltage  =>  MCU Voltage
 	P1 Counter  =>  P1 Counter
 	P1 Counter Offset  =>  P1 Counter Offset
 	P2 Counter  =>  P2 Counter

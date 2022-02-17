@@ -1304,7 +1304,7 @@
                 "scale": 0.001,
                 "type": "voltage",
                 "enabled": false,
-                "group": "debug"
+                "group": "hw_info"
             },
             {
                 "name": "Sound ADC Channel",
