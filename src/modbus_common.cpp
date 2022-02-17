@@ -541,11 +541,9 @@ namespace Modbus // modbus protocol common utilities
         for (int i = 0; i < widthInModbusWords; ++i) {
             address.Address = baseAddress + i;
 
-            uint16_t cachedValue;
+            uint16_t cachedValue = 0;
             if (cache.count(address.AbsAddress)) {
                 cachedValue = cache.at(address.AbsAddress);
-            } else {
-                cachedValue = value & 0xffff;
             }
 
             auto localBitOffset = std::max(reg.GetBitOffset(TRegisterConfig::TAddressOptionsType::Write) - bitPos, 0);
@@ -589,11 +587,9 @@ namespace Modbus // modbus protocol common utilities
         auto addr = GetUint32RegisterAddress(reg.GetAddress(TRegisterConfig::TAddressOptionsType::Write));
         address.Address = addr + shift + wordIndex;
 
-        uint16_t cachedValue;
+        uint16_t cachedValue = 0;
         if (cache.count(address.AbsAddress)) {
             cachedValue = cache.at(address.AbsAddress);
-        } else {
-            cachedValue = value & 0xffff;
         }
 
         auto localBitOffset =
