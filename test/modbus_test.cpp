@@ -33,6 +33,7 @@ protected:
     PRegister ModbusHoldingU16Multi;
 
     PRegister ModbusHoldingU16WithAddressWrite;
+    PRegister ModbusHoldingU16WithWriteBitOffset;
 };
 
 PDeviceConfig TModbusTest::GetDeviceConfig()
@@ -70,6 +71,15 @@ void TModbusTest::SetUp()
     regAddrDesc.WriteAddressOptions.Address = std::make_shared<TUint32RegisterAddress>(115);
 
     ModbusHoldingU16WithAddressWrite =
+        TRegister::Intern(ModbusDev, TRegisterConfig::Create(Modbus::REG_HOLDING, regAddrDesc, RegisterFormat::U16));
+
+    regAddrDesc.AddressOptions.Address = std::make_shared<TUint32RegisterAddress>(111);
+    regAddrDesc.WriteAddressOptions.Address = std::make_shared<TUint32RegisterAddress>(116);
+    regAddrDesc.AddressOptions.BitWidth = 3;
+    regAddrDesc.AddressOptions.BitOffset = 2;
+    regAddrDesc.WriteAddressOptions.BitWidth = 3;
+    regAddrDesc.WriteAddressOptions.BitOffset = 9;
+    ModbusHoldingU16WithWriteBitOffset =
         TRegister::Intern(ModbusDev, TRegisterConfig::Create(Modbus::REG_HOLDING, regAddrDesc, RegisterFormat::U16));
 
     SerialPort->Open();
@@ -157,6 +167,27 @@ TEST_F(TModbusTest, WriteHoldingRegiterWithWriteAddress)
     EnqueueHoldingWriteU16ResponseWithWriteAddress();
 
     EXPECT_NO_THROW(ModbusDev->WriteRegister(ModbusHoldingU16WithAddressWrite, 0x119C));
+}
+
+TEST_F(TModbusTest, ReadHoldingRegiterWithOffsetWriteOptions)
+{
+    EnqueueHoldingReadU16ResponseWithOffsetWriteOptions();
+
+    auto range = ModbusDev->CreateRegisterRange(ModbusHoldingU16WithWriteBitOffset);
+    ModbusDev->ReadRegisterRange(range);
+    auto registerList = range->RegisterList();
+    EXPECT_EQ(registerList.size(), 1);
+    auto reg = registerList.front();
+    EXPECT_EQ(GetUint32RegisterAddress(reg->GetAddress()), 111);
+    EXPECT_FALSE(reg->GetErrorState().test(TRegister::TError::ReadError));
+    EXPECT_EQ(reg->GetValue(), 5);
+}
+
+TEST_F(TModbusTest, WriteHoldingRegiterWithOffsetWriteOptions)
+{
+    EnqueueHoldingWriteU16ResponseWithOffsetWriteOptions();
+
+    EXPECT_NO_THROW(ModbusDev->WriteRegister(ModbusHoldingU16WithWriteBitOffset, 0x119D));
 }
 
 TEST_F(TModbusTest, Query)

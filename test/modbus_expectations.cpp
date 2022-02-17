@@ -1283,6 +1283,28 @@ void TModbusExpectations::EnqueueHoldingWriteU16ResponseWithWriteAddress(uint8_t
         __func__);
 }
 
+void TModbusExpectations::EnqueueHoldingWriteU16ResponseWithOffsetWriteOptions(uint8_t exception)
+{
+    Expector()->Expect(
+        WrapPDU({
+            0x06, // function code
+            0x00, // starting address Hi
+            116,   // starting address Lo
+            0x0A, // value Hi
+            0x00, // value Lo
+        }),
+        WrapPDU(exception == 0 ? std::vector<int>{
+                                     0x06, // function code
+                                     0x00, // starting address Hi
+                                     116,   // starting address Lo
+                                     0x0A, // value Hi
+                                     0x00, // value Lo
+                                 }
+                               : std::vector<int>{0x86, // function code + 80
+                                                  exception}),
+        __func__);
+}
+
 void TModbusExpectations::EnqueueHoldingReadU16ResponseWithWriteAddress(uint8_t exception)
 {
     Expector()->Expect(
@@ -1301,6 +1323,27 @@ void TModbusExpectations::EnqueueHoldingReadU16ResponseWithWriteAddress(uint8_t 
                                            }
                                          : std::vector<int>{0x83, // function code + 80
                                                             exception}),
+        __func__);
+}
+
+void TModbusExpectations::EnqueueHoldingReadU16ResponseWithOffsetWriteOptions(uint8_t exception)
+{
+    Expector()->Expect(
+        WrapPDU({
+            0x03, // function code
+            0x00, // starting address Hi
+            111,   // starting address Lo
+            0x00, // quantity Hi
+            0x01, // quantity Lo
+        }),
+        WrapPDU(exception == 0 ? std::vector<int>{
+                                     0x03, // function code
+                                     0x02, // byte count
+                                     0x00, // data Hi
+                                     0x15  // data Lo
+                                 }
+                               : std::vector<int>{0x83, // function code + 80
+                                                  exception}),
         __func__);
 }
 
