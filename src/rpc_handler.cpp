@@ -13,6 +13,7 @@ TRPCHandler::TRPCHandler(PMQTTSerialDriver serialDriver, WBMQTT::PMqttRpcServer 
       rpcServer(rpcServer)
 {
     rpcServer->RegisterMethod("port", "Load", std::bind(&TRPCHandler::PortLoad, this, std::placeholders::_1));
+    rpcServer->RegisterMethod("metrics", "Load", std::bind(&TRPCHandler::LoadMetrics, this, std::placeholders::_1));
 }
 
 namespace
@@ -156,7 +157,7 @@ Json::Value TRPCHandler::PortLoad(const Json::Value& request)
         }
 
         PSerialPortDriver portDriver;
-        bool find = serialDriver->GetPortDriverByName(path, ip, port, portDriver);
+        bool find = serialDriver->RPCGetPortDriverByName(path, ip, port, portDriver);
         if (!find) {
             throw TRPCException("Requested port doesn't exist", RPC_WRONG_PORT);
         }
@@ -189,4 +190,11 @@ Json::Value TRPCHandler::PortLoad(const Json::Value& request)
     replyJSON["response"] = responseStr;
 
     return replyJSON;
+}
+
+Json::Value TRPCHandler::LoadMetrics(const Json::Value& request)
+{
+    Json::Value metrics;
+    serialDriver->RPCGetMetrics(metrics);
+    return metrics;
 }

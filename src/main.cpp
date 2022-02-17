@@ -309,7 +309,7 @@ int main(int argc, char* argv[])
 
         driver->WaitForReady();
 
-        auto serialDriver = make_shared<TMQTTSerialDriver>(driver, handlerConfig, rpcServer);
+        auto serialDriver = make_shared<TMQTTSerialDriver>(driver, handlerConfig);
         TRPCHandler rpcHandler(serialDriver, rpcServer);
 
         serialDriver->Start();

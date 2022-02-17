@@ -22,6 +22,7 @@ private:
     WBMQTT::PMqttRpcServer rpcServer;
 
     Json::Value PortLoad(const Json::Value& request);
+    Json::Value LoadMetrics(const Json::Value& request);
 };
 
 class TRPCException: public std::runtime_error
