@@ -51,6 +51,7 @@ public:
                   std::chrono::milliseconds respTimeout,
                   std::chrono::milliseconds frameTimeout);
     bool RPCRead(std::vector<uint8_t>& buf, size_t& actualSize, bool& error);
+    void GetPortInfo(Json::Value& info);
 
 private:
     void Activate();
