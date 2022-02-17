@@ -1,6 +1,7 @@
 wb-mqtt-serial (2.52.0) stable; urgency=medium
 
   * Added separate read and write register addresses for the Modbus device.
+  * Fixed data corruption bug when writing to the modbus register if the address is given with an offset.
 
  -- Roman Kochkin <roman.kochkin@wirenboard.ru>  Tue, 15 Feb 2022 12:24:00 +0300
 
