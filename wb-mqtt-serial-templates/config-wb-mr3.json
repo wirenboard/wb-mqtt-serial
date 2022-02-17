@@ -35,9 +35,14 @@
                 "order": 5
             },
             {
+                "title": "General",
+                "id": "general",
+                "order": 6
+            },
+            {
                 "title": "HW Info",
                 "id": "hw_info",
-                "order": 6
+                "order": 7
             }
         ],
 
@@ -170,6 +175,23 @@
                 "default": 3600,
                 "group": "outputs",
                 "order": 2
+            },
+            "baudrate": {
+                "title": "Baudrate (bit/s)",
+                "description": "baudrate_description",
+                "address": 110,
+                "reg_type": "holding",
+                "enum": [96, 192, 384, 576, 1152],
+                "default": 96,
+                "enum_titles": [
+                    "9600",
+                    "19200",
+                    "38400",
+                    "57600",
+                    "115200"
+                ],
+                "group": "general",
+                "order": 1
             }
         },
 
@@ -344,6 +366,7 @@
         "translations": {
             "en": {
                 "WB-MR3_template_title": "WB-MR3LV/x, WB-MR3HV/x, WB-MRWL3  (3-channel relay)",
+                "baudrate_description": "Before changing make sure that communication with device is established. After saving configuration change port baudrate to the same value.",
                 "Uptime": "Uptime (s)"
             },
             "ru": {
@@ -353,6 +376,7 @@
                 "Input 2": "Вход 2",
                 "Input 3": "Вход 3",
                 "Outputs": "Выходы",
+                "General": "Общее",
                 "HW Info": "Данные модуля",
                 "Input 0 Mode": "Режим работы входа 0",
                 "Input 1 Mode": "Режим работы входа 1",
@@ -371,6 +395,8 @@
                 "no": "нет",
                 "yes": "да",
                 "Safety Timer (s)": "Таймаут безопасного режима (с)",
+                "Baudrate (bit/s)": "Скорость обмена (бит/с)",
+                "baudrate_description": "Перед изменением убедитесь, что связь с устройством установлена. После сохранения конфигурации измените скорость обмена для порта на то же значение.",
                 "Input 0 counter": "Счетчик 0",
                 "Input 1 counter": "Счетчик 1",
                 "Input 2 counter": "Счетчик 2",

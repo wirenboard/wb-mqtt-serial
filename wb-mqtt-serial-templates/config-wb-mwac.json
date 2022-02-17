@@ -50,9 +50,14 @@
                 "order": 8
             },
             {
+                "title": "General",
+                "id": "general",
+                "order": 9
+            },
+            {
                 "title": "HW Info",
                 "id": "hw_info",
-                "order": 9
+                "order": 10
             }
         ],
 
@@ -245,6 +250,23 @@
                 "default": 3600,
                 "group": "outputs",
                 "order": 2
+            },
+            "baudrate": {
+                "title": "Baudrate (bit/s)",
+                "description": "baudrate_description",
+                "address": 110,
+                "reg_type": "holding",
+                "enum": [96, 192, 384, 576, 1152],
+                "default": 96,
+                "enum_titles": [
+                    "9600",
+                    "19200",
+                    "38400",
+                    "57600",
+                    "115200"
+                ],
+                "group": "general",
+                "order": 1
             }
         },
 
@@ -505,6 +527,7 @@
         "translations": {
             "en": {
                 "WB-MWAC_template_title": "WB-MWAC (water leak and meters controller)",
+                "baudrate_description": "Before changing make sure that communication with device is established. After saving configuration change port baudrate to the same value.",
                 "Uptime": "Uptime (s)"
             },
             "ru": {
@@ -517,6 +540,7 @@
                 "Input F2": "Вход F2",
                 "Input F3": "Вход F3",
                 "Outputs": "Выходы",
+                "General": "Общее",
                 "HW Info": "Данные модуля",
                 "Input S1 Mode": "Режим работы входа S1",
                 "Input S2 Mode": "Режим работы входа S2",
@@ -540,6 +564,8 @@
                 "no": "нет",
                 "yes": "да",
                 "Safety Timer (s)": "Таймаут безопасного режима (с)",
+                "Baudrate (bit/s)": "Скорость обмена (бит/с)",
+                "baudrate_description": "Перед изменением убедитесь, что связь с устройством установлена. После сохранения конфигурации измените скорость обмена для порта на то же значение.",
                 "P1 Counter": "Счетчик P1",
                 "P1 Counter Offset": "Начальное значение счетчика P1",
                 "P2 Counter": "Счетчик P2",

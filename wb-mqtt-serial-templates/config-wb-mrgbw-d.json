@@ -15,6 +15,11 @@
                 "order": 1
             },
             {
+                "title": "General",
+                "id": "general",
+                "order": 2
+            },
+            {
                 "title": "HW Info",
                 "id": "hw_info",
                 "order": 3
@@ -33,6 +38,23 @@
                     "control disabled"
                 ],
                 "group": "inputs",
+                "order": 1
+            },
+            "baudrate": {
+                "title": "Baudrate (bit/s)",
+                "description": "baudrate_description",
+                "address": 110,
+                "reg_type": "holding",
+                "enum": [96, 192, 384, 576, 1152],
+                "default": 96,
+                "enum_titles": [
+                    "9600",
+                    "19200",
+                    "38400",
+                    "57600",
+                    "115200"
+                ],
+                "group": "general",
                 "order": 1
             }
         },
@@ -256,6 +278,7 @@
         "translations": {
             "en": {
                 "WB-MRGBW-D_template_title": "WB-MRGBW-D (4-channel CV LED dimmer)",
+                "baudrate_description": "Before changing make sure that communication with device is established. After saving configuration change port baudrate to the same value.",
                 "Uptime": "Uptime (s)",
                 "pwm_frequency_factor_title": "PWM Frequency Factor",
                 "pwm_frequency_factor_description": "PWM frequency is calculated by formula: 24 kHz / (Factor + 1)"
@@ -263,6 +286,7 @@
             "ru": {
                 "WB-MRGBW-D_template_title": "WB-MRGBW-D (4-канальный диммер светодиодных лент)",
                 "Inputs": "Входы",
+                "General": "Общее",
                 "HW Info": "Данные модуля",
                 "Inputs Mode": "Режим работы входов",
                 "control enabled": "управление отключено",
@@ -278,6 +302,8 @@
                 "pwm_frequency_factor_title": "Делитель частоты ШИМ",
                 "pwm_frequency_factor_description": "Частота ШИМ рассчитывается по формуле: 24 кГц / (Делитель + 1)",
                 "Soft On/Off Time (ms)": "Время плавного включения/выключения (мс)",
+                "Baudrate (bit/s)": "Скорость обмена (бит/с)",
+                "baudrate_description": "Перед изменением убедитесь, что связь с устройством установлена. После сохранения конфигурации измените скорость обмена для порта на то же значение.",
                 "Serial NO": "Серийный номер",
                 "Supply Voltage": "Напряжение питания",
                 "Uptime": "Время работы с момента включения (с)",

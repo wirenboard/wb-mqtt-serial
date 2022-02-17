@@ -27,13 +27,30 @@
         ],
 
         "parameters": {
+            "baudrate": {
+                "title": "Baudrate (bit/s)",
+                "description": "baudrate_description",
+                "address": 110,
+                "reg_type": "holding",
+                "enum": [96, 192, 384, 576, 1152],
+                "default": 96,
+                "enum_titles": [
+                    "9600",
+                    "19200",
+                    "38400",
+                    "57600",
+                    "115200"
+                ],
+                "group": "general",
+                "order": 1
+            },
             "rs485_response_delay_ms": {
                 "title": "RS-485 Response Delay (ms)",
                 "address": 113,
                 "reg_type": "holding",
                 "default": 8,
                 "group": "general",
-                "order": 1
+                "order": 2
             }
         },
 
@@ -1388,6 +1405,7 @@
         "translations": {
             "en": {
                 "WB-MIR-v2_template_title": "WB-MIR v.2 (Modbus IR remote control)",
+                "baudrate_description": "Before changing make sure that communication with device is established. After saving configuration change port baudrate to the same value.",
                 "Uptime": "Uptime (s)"
             },
             "ru": {
@@ -1396,6 +1414,8 @@
                 "General": "Общее",
                 "HW Info": "Данные модуля",
                 "RS-485 Response Delay (ms)": "Задержка перед ответом по RS-485 (мс)",
+                "Baudrate (bit/s)": "Скорость обмена (бит/с)",
+                "baudrate_description": "Перед изменением убедитесь, что связь с устройством установлена. После сохранения конфигурации измените скорость обмена для порта на то же значение.",
                 "Learn to RAM": "Записать команду в RAM",
                 "Play from RAM": "Воспроизвести команду из RAM",
                 "Learn to ROM1": "Записать команду в ROM1",
