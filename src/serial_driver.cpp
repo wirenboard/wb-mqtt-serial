@@ -32,7 +32,7 @@ namespace
     }
 }
 
-TMQTTSerialDriver::TMQTTSerialDriver(PDeviceDriver mqttDriver, PHandlerConfig config, WBMQTT::PMqttRpcServer rpc)
+TMQTTSerialDriver::TMQTTSerialDriver(PDeviceDriver mqttDriver, PHandlerConfig config)
     : Active(false)
 {
     try {
@@ -58,9 +58,6 @@ TMQTTSerialDriver::TMQTTSerialDriver(PDeviceDriver mqttDriver, PHandlerConfig co
     }
 
     mqttDriver->On<TControlOnValueEvent>(&TSerialPortDriver::HandleControlOnValueEvent);
-    if (rpc) {
-        rpc->RegisterMethod("metrics", "Load", std::bind(&TMQTTSerialDriver::LoadMetrics, this, std::placeholders::_1));
-    }
 }
 
 void TMQTTSerialDriver::LoopOnce()
@@ -117,7 +114,7 @@ void TMQTTSerialDriver::Stop()
     ClearDevices();
 }
 
-Json::Value TMQTTSerialDriver::LoadMetrics(const Json::Value& request)
+void TMQTTSerialDriver::RPCGetMetrics(Json::Value& metrics)
 {
     auto time = std::chrono::steady_clock::now();
     Json::Value res(Json::arrayValue);
@@ -133,13 +130,14 @@ Json::Value TMQTTSerialDriver::LoadMetrics(const Json::Value& request)
         }
         res.append(std::move(item));
     }
-    return res;
+    metrics = res;
+    return;
 }
 
-bool TMQTTSerialDriver::GetPortDriverByName(const std::string& path,
-                                            const std::string& ip,
-                                            int port,
-                                            PSerialPortDriver& portDriver)
+bool TMQTTSerialDriver::RPCGetPortDriverByName(const std::string& path,
+                                               const std::string& ip,
+                                               int port,
+                                               PSerialPortDriver& portDriver)
 {
     bool cmp_result = false;
     uint i = 0;
