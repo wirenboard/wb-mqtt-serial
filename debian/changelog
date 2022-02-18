@@ -1,8 +1,26 @@
-wb-mqtt-serial (2.50.4) stable; urgency=medium
+wb-mqtt-serial (2.51.1) stable; urgency=medium
 
   * Read period minimum allowed value is set to 10ms
 
- -- Petr Krasnoshchekov <petr.krasnoshchekov@wirenboard.ru>  Wed, 09 Feb 2022 17:14:35 +0500
+ -- Petr Krasnoshchekov <petr.krasnoshchekov@wirenboard.ru>  Fri, 18 Feb 2022 10:16:41 +0500
+
+wb-mqtt-serial (2.51.1) stable; urgency=medium
+
+  * MCU Temperature and MCU Voltage channels were added to
+    WB-M1W2, WB-MAO4, WB-MAP12E fw2, WB-MAP3E fw2, WB-MAP3ET, WB-MAP3EV,
+    WB-MAP6S, WB-MCM8, WB-MDM3, WB-MIR v2, WB-MRGBW-D, WB-MRGBW-D fw3,
+    WB-MWAC templates
+  * Channel MCU Voltage was moved to group HW Info in WB-MS v2 and WB-
+    MSW v3 templates
+
+ -- Dmitry Vorobjev <d.vorobjev@wirenboard.ru>  Mon, 14 Feb 2022 17:41:50 +0300
+
+wb-mqtt-serial (2.51.0) stable; urgency=medium
+
+  * MDM3 template: added Overcurrent channel
+  * MDM3 template: minimum increase/decrease rate is set to 1 ms/%
+
+ -- Pavel Gasheev <pavel.gasheev@wirenboard.ru>  Fri, 11 Feb 2022 16:13:24 +0300
 
 wb-mqtt-serial (2.50.3) stable; urgency=medium
 

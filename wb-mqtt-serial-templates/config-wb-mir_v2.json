@@ -1293,6 +1293,25 @@
                 "format": "u32",
                 "enabled": false,
                 "group": "hw_info"
+            },
+            {
+                "name": "MCU Temperature",
+                "reg_type": "input",
+                "address": 124,
+                "type": "temperature",
+                "format": "s16",
+                "scale": 0.1,
+                "enabled": false,
+                "group": "hw_info"
+            },
+            {
+                "name": "MCU Voltage",
+                "reg_type": "input",
+                "address": 123,
+                "scale": 0.001,
+                "type": "voltage",
+                "enabled": false,
+                "group": "hw_info"
             }
         ],
 
@@ -1504,6 +1523,8 @@
                 "Serial NO": "Серийный номер",
                 "Input Voltage": "Напряжение питания",
                 "Uptime": "Время работы с момента включения (с)",
+                "MCU Temperature": "Температура МК",
+                "MCU Voltage": "Напряжение питания МК",
                 "1-Wire": "Датчик 1-Wire",
                 "External Temperature Sensor": "Датчик температуры",
                 "External Temperature Sensor OK": "Датчик температуры исправен",
