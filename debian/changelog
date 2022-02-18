@@ -1,4 +1,4 @@
-wb-mqtt-serial (2.51.1) stable; urgency=medium
+wb-mqtt-serial (2.51.2) stable; urgency=medium
 
   * Read period minimum allowed value is set to 10ms
 
