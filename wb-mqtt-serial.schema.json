@@ -599,7 +599,7 @@
           "type": "integer",
           "title": "High priority read period (ms)",
           "description" : "read_period_description",
-          "minimum": 0,
+          "minimum": 10,
           "options": {
             "enum_titles": [ "high priority (100ms)" ],
             "enum_values": [ 100 ],
@@ -751,7 +751,7 @@
           "type": "integer",
           "title": "High priority read period (ms)",
           "description" : "read_period_description",
-          "minimum": 0,
+          "minimum": 10,
           "options": {
             "enum_titles": [ "high priority (100ms)" ],
             "enum_values": [ 100 ],
@@ -811,7 +811,8 @@
         "read_period_ms": {
           "type": "integer",
           "title": "High priority read period (ms)",
-          "minimum": 0,
+          "description" : "read_period_description",
+          "minimum": 10,
           "options": {
             "enum_titles": [ "high priority (100ms)" ],
             "enum_values": [ 100 ],
@@ -873,7 +874,8 @@
         "read_period_ms": {
           "type": "integer",
           "title": "High priority read period (ms)",
-          "minimum": 0,
+          "description" : "read_period_description",
+          "minimum": 10,
           "options": {
             "enum_titles": [ "high priority (100 ms)" ],
             "enum_values": [ 100 ],
@@ -1710,7 +1712,7 @@
 
   "translations": {
     "en": {
-      "read_period_description": "This option specifies the desired period between two consecutive reads of the channel. Writes are not affected by this setting and are performed as soon as possible.",
+      "read_period_description": "This option specifies the desired period between two consecutive reads of the channel. Short periods may not be maintained due to port bandwidth limitations",
       "guard_interval_description": "Specifies the delay in microseconds before writing to the port",
       "connection_timeout_description": "Used for disconnect detection. If not set, the default timeout (5000ms) is used. Value -1 disables TCP reconnect. Zero means instant timeout.",
       "connection_max_fail_description": "Defines number of driver cycles with all devices being disconnected before resetting connection. Default value is 2. Value -1 disables TCP reconnect. Zero means instant timeout.",
@@ -1731,7 +1733,7 @@
       "Guard interval (us)": "Задержка перед записью в порт (мкс)",
       "guard_interval_description": "",
       "Read period (ms)": "Период чтения (мс)",
-      "read_period_description": "Задаёт период чтения канала в миллисекундах. Не влияет на запись в порт. Запись производится сразу как только возможно",
+      "read_period_description": "Задаёт период чтения канала в миллисекундах. Короткие периоды опроса могут не выдерживаться из-за ограничений пропускной способности порта.",
       "Devices attached to the port": "Устройства, подключенные к порту",
       "Serial port": "Последовательный порт",
       "Port type": "Тип порта",
