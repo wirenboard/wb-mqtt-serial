@@ -498,28 +498,28 @@ WB-M1W2 DI
 	Uptime  =>  Uptime
 WB-MAI11
 	5V Output  =>  5V Output
-	IN 1 N Period (s)  =>  IN 1 N Period (s)
-	IN 1 P Period (s)  =>  IN 1 P Period (s)
-	IN 10 N Period (s)  =>  IN 10 N Period (s)
-	IN 10 P Period (s)  =>  IN 10 P Period (s)
-	IN 11 N Period (s)  =>  IN 11 N Period (s)
-	IN 11 P Period (s)  =>  IN 11 P Period (s)
-	IN 2 N Period (s)  =>  IN 2 N Period (s)
-	IN 2 P Period (s)  =>  IN 2 P Period (s)
-	IN 3 N Period (s)  =>  IN 3 N Period (s)
-	IN 3 P Period (s)  =>  IN 3 P Period (s)
-	IN 4 N Period (s)  =>  IN 4 N Period (s)
-	IN 4 P Period (s)  =>  IN 4 P Period (s)
-	IN 5 N Period (s)  =>  IN 5 N Period (s)
-	IN 5 P Period (s)  =>  IN 5 P Period (s)
-	IN 6 N Period (s)  =>  IN 6 N Period (s)
-	IN 6 P Period (s)  =>  IN 6 P Period (s)
-	IN 7 N Period (s)  =>  IN 7 N Period (s)
-	IN 7 P Period (s)  =>  IN 7 P Period (s)
-	IN 8 N Period (s)  =>  IN 8 N Period (s)
-	IN 8 P Period (s)  =>  IN 8 P Period (s)
-	IN 9 N Period (s)  =>  IN 9 N Period (s)
-	IN 9 P Period (s)  =>  IN 9 P Period (s)
+	IN 1 N Period  =>  IN 1 N Period
+	IN 1 P Period  =>  IN 1 P Period
+	IN 10 N Period  =>  IN 10 N Period
+	IN 10 P Period  =>  IN 10 P Period
+	IN 11 N Period  =>  IN 11 N Period
+	IN 11 P Period  =>  IN 11 P Period
+	IN 2 N Period  =>  IN 2 N Period
+	IN 2 P Period  =>  IN 2 P Period
+	IN 3 N Period  =>  IN 3 N Period
+	IN 3 P Period  =>  IN 3 P Period
+	IN 4 N Period  =>  IN 4 N Period
+	IN 4 P Period  =>  IN 4 P Period
+	IN 5 N Period  =>  IN 5 N Period
+	IN 5 P Period  =>  IN 5 P Period
+	IN 6 N Period  =>  IN 6 N Period
+	IN 6 P Period  =>  IN 6 P Period
+	IN 7 N Period  =>  IN 7 N Period
+	IN 7 P Period  =>  IN 7 P Period
+	IN 8 N Period  =>  IN 8 N Period
+	IN 8 P Period  =>  IN 8 P Period
+	IN 9 N Period  =>  IN 9 N Period
+	IN 9 P Period  =>  IN 9 P Period
 	Input 1: disabled
 	Input 1: thermocouple_k
 		Temperature  =>  IN 1 Temperature
@@ -12610,7 +12610,7 @@ WB-MAI11
 		IN_P: generic_current_resistance
 			Resistance  =>  IN 9 P Resistance
 	Internal Temperature  =>  Internal Temperature
-	Loop Period (s)  =>  Loop Period (s)
+	Loop Period  =>  Loop Period
 	Serial  =>  Serial
 	Uptime  =>  Uptime
 WB-MAI2-mini/CC
