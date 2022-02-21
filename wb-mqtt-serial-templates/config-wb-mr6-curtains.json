@@ -15,9 +15,24 @@
                 "order": 8
             },
             {
+                "title": "Curtains 1",
+                "id": "сurtains_1",
+                "order": 9
+            },
+            {
+                "title": "Curtains 2",
+                "id": "сurtains_2",
+                "order": 10
+            },
+            {
+                "title": "Curtains 3",
+                "id": "сurtains_3",
+                "order": 11
+            },
+            {
                 "title": "HW Info",
                 "id": "hw_info",
-                "order": 9
+                "order": 12
             }
         ],
 
@@ -206,6 +221,239 @@
                 "type": "voltage",
                 "enabled": false,
                 "group": "hw_info"
+            },
+            {
+                "name": "Curtains 1 Position",
+                "reg_type": "holding",
+                "address": 1210,
+                "max": 100,
+                "type": "range",
+                "enabled": false,
+                "group": "сurtains_1"
+            },
+            {
+                "name": "Curtains 1 Stop",
+                "type": "pushbutton",
+                "reg_type": "holding",
+                "address": 1220,
+                "on_value": 0,
+                "enabled": false,
+                "group": "сurtains_1"
+            },
+            {
+                "name": "Curtains 1 Move down",
+                "type": "pushbutton",
+                "reg_type": "holding",
+                "address": 1220,
+                "on_value": 1,
+                "enabled": false,
+                "group": "сurtains_1"
+            },
+            {
+                "name": "Curtains 1 Move up",
+                "type": "pushbutton",
+                "reg_type": "holding",
+                "address": 1220,
+                "on_value": 2,
+                "enabled": false,
+                "group": "сurtains_1"
+            },
+            {
+                "name": "Curtains 1 Delete limits",
+                "type": "pushbutton",
+                "reg_type": "holding",
+                "address": 1230,
+                "on_value": 1,
+                "enabled": false,
+                "group": "сurtains_1"
+            },
+            {
+                "name": "Curtains 1 Set up limit",
+                "type": "pushbutton",
+                "reg_type": "holding",
+                "address": 1230,
+                "on_value": 2,
+                "enabled": false,
+                "group": "сurtains_1"
+            },
+            {
+                "name": "Curtains 1 Set down limit",
+                "type": "pushbutton",
+                "reg_type": "holding",
+                "address": 1230,
+                "on_value": 3,
+                "enabled": false,
+                "group": "сurtains_1"
+            },
+            {
+                "name": "Curtains 1 Time Up (ms x10)",
+                "reg_type": "holding",
+                "address": 1190,
+                "enabled": false,
+                "group": "сurtains_1"
+            },
+            {
+                "name": "Curtains 1 Time Down (ms x10)",
+                "reg_type": "holding",
+                "address": 1200,
+                "enabled": false,
+                "group": "сurtains_1"
+            },
+
+            {
+                "name": "Curtains 2 Position",
+                "reg_type": "holding",
+                "address": 1211,
+                "max": 100,
+                "type": "range",
+                "enabled": false,
+                "group": "сurtains_2"
+            },
+            {
+                "name": "Curtains 2 Stop",
+                "type": "pushbutton",
+                "reg_type": "holding",
+                "address": 1221,
+                "on_value": 0,
+                "enabled": false,
+                "group": "сurtains_2"
+            },
+            {
+                "name": "Curtains 2 Move down",
+                "type": "pushbutton",
+                "reg_type": "holding",
+                "address": 1221,
+                "on_value": 1,
+                "enabled": false,
+                "group": "сurtains_2"
+            },
+            {
+                "name": "Curtains 2 Move up",
+                "type": "pushbutton",
+                "reg_type": "holding",
+                "address": 1221,
+                "on_value": 2,
+                "enabled": false,
+                "group": "сurtains_2"
+            },
+            {
+                "name": "Curtains 2 Delete limits",
+                "type": "pushbutton",
+                "reg_type": "holding",
+                "address": 1231,
+                "on_value": 1,
+                "enabled": false,
+                "group": "сurtains_2"
+            },
+            {
+                "name": "Curtains 2 Set up limit",
+                "type": "pushbutton",
+                "reg_type": "holding",
+                "address": 1231,
+                "on_value": 2,
+                "enabled": false,
+                "group": "сurtains_2"
+            },
+            {
+                "name": "Curtains 2 Set down limit",
+                "type": "pushbutton",
+                "reg_type": "holding",
+                "address": 1231,
+                "on_value": 3,
+                "enabled": false,
+                "group": "сurtains_2"
+            },
+            {
+                "name": "Curtains 2 Time Up (ms x10)",
+                "reg_type": "holding",
+                "address": 1191,
+                "enabled": false,
+                "group": "сurtains_2"
+            },
+            {
+                "name": "Curtains 2 Time Down (ms x10)",
+                "reg_type": "holding",
+                "address": 1201,
+                "enabled": false,
+                "group": "сurtains_2"
+            },
+
+            {
+                "name": "Curtains 3 Position",
+                "reg_type": "holding",
+                "address": 1212,
+                "max": 100,
+                "type": "range",
+                "enabled": false,
+                "group": "сurtains_3"
+            },
+            {
+                "name": "Curtains 3 Stop",
+                "type": "pushbutton",
+                "reg_type": "holding",
+                "address": 1222,
+                "on_value": 0,
+                "enabled": false,
+                "group": "сurtains_3"
+            },
+            {
+                "name": "Curtains 3 Move down",
+                "type": "pushbutton",
+                "reg_type": "holding",
+                "address": 1222,
+                "on_value": 1,
+                "enabled": false,
+                "group": "сurtains_3"
+            },
+            {
+                "name": "Curtains 3 Move up",
+                "type": "pushbutton",
+                "reg_type": "holding",
+                "address": 1222,
+                "on_value": 2,
+                "enabled": false,
+                "group": "сurtains_3"
+            },
+            {
+                "name": "Curtains 3 Delete limits",
+                "type": "pushbutton",
+                "reg_type": "holding",
+                "address": 1232,
+                "on_value": 1,
+                "enabled": false,
+                "group": "сurtains_3"
+            },
+            {
+                "name": "Curtains 3 Set up limit",
+                "type": "pushbutton",
+                "reg_type": "holding",
+                "address": 1232,
+                "on_value": 2,
+                "enabled": false,
+                "group": "сurtains_3"
+            },
+            {
+                "name": "Curtains 3 Set down limit",
+                "type": "pushbutton",
+                "reg_type": "holding",
+                "address": 1232,
+                "on_value": 3,
+                "enabled": false,
+                "group": "сurtains_3"
+            },
+            {
+                "name": "Curtains 3 Time Up (ms x10)",
+                "reg_type": "holding",
+                "address": 1192,
+                "enabled": false,
+                "group": "сurtains_3"
+            },
+            {
+                "name": "Curtains 3 Time Down (ms x10)",
+                "reg_type": "holding",
+                "address": 1202,
+                "enabled": false,
+                "group": "сurtains_3"
             }
         ],
 
@@ -229,6 +477,36 @@
                 "default": 3600,
                 "group": "outputs",
                 "order": 2
+            },
+            "curtains1_outputs_state": {
+                "title": "Use relay outputs 1,2 for curtains",
+                "address": 1180,
+                "reg_type": "holding",
+                "enum": [0, 1],
+                "default": 0,
+                "enum_titles": ["no", "yes"],
+                "group": "сurtains_1",
+                "order": 1
+            },
+            "curtains2_outputs_state": {
+                "title": "Use relay outputs 3,4 for curtains",
+                "address": 1181,
+                "reg_type": "holding",
+                "enum": [0, 1],
+                "default": 0,
+                "enum_titles": ["no", "yes"],
+                "group": "сurtains_2",
+                "order": 1
+            },
+            "curtains3_outputs_state": {
+                "title": "Use relay outputs 5,6 for curtains",
+                "address": 1182,
+                "reg_type": "holding",
+                "enum": [0, 1],
+                "default": 0,
+                "enum_titles": ["no", "yes"],
+                "group": "сurtains_3",
+                "order": 1
             }
         },
 
