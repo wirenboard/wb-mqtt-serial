@@ -740,7 +740,7 @@
                 "group": "debug"
             },
             {
-                "name": "IN 1 P Period",
+                "name": "IN 1 P Read Interval",
                 "reg_type": "input",
                 "address": 1553,
                 "format": "u16",
@@ -749,7 +749,7 @@
                 "group": "debug"
             },
             {
-                "name": "IN 1 N Period",
+                "name": "IN 1 N Read Interval",
                 "reg_type": "input",
                 "address": 1554,
                 "format": "u16",
@@ -758,7 +758,7 @@
                 "group": "debug"
             },
             {
-                "name": "IN 2 P Period",
+                "name": "IN 2 P Read Interval",
                 "reg_type": "input",
                 "address": 1555,
                 "format": "u16",
@@ -767,7 +767,7 @@
                 "group": "debug"
             },
             {
-                "name": "IN 2 N Period",
+                "name": "IN 2 N Read Interval",
                 "reg_type": "input",
                 "address": 1556,
                 "format": "u16",
@@ -776,7 +776,7 @@
                 "group": "debug"
             },
             {
-                "name": "IN 3 P Period",
+                "name": "IN 3 P Read Interval",
                 "reg_type": "input",
                 "address": 1557,
                 "format": "u16",
@@ -785,7 +785,7 @@
                 "group": "debug"
             },
             {
-                "name": "IN 3 N Period",
+                "name": "IN 3 N Read Interval",
                 "reg_type": "input",
                 "address": 1558,
                 "format": "u16",
@@ -794,7 +794,7 @@
                 "group": "debug"
             },
             {
-                "name": "IN 4 P Period",
+                "name": "IN 4 P Read Interval",
                 "reg_type": "input",
                 "address": 1559,
                 "format": "u16",
@@ -803,7 +803,7 @@
                 "group": "debug"
             },
             {
-                "name": "IN 4 N Period",
+                "name": "IN 4 N Read Interval",
                 "reg_type": "input",
                 "address": 1560,
                 "format": "u16",
@@ -812,7 +812,7 @@
                 "group": "debug"
             },
             {
-                "name": "IN 5 P Period",
+                "name": "IN 5 P Read Interval",
                 "reg_type": "input",
                 "address": 1561,
                 "format": "u16",
@@ -821,7 +821,7 @@
                 "group": "debug"
             },
             {
-                "name": "IN 5 N Period",
+                "name": "IN 5 N Read Interval",
                 "reg_type": "input",
                 "address": 1562,
                 "format": "u16",
@@ -830,7 +830,7 @@
                 "group": "debug"
             },
             {
-                "name": "IN 6 P Period",
+                "name": "IN 6 P Read Interval",
                 "reg_type": "input",
                 "address": 1563,
                 "format": "u16",
@@ -839,7 +839,7 @@
                 "group": "debug"
             },
             {
-                "name": "IN 6 N Period",
+                "name": "IN 6 N Read Interval",
                 "reg_type": "input",
                 "address": 1564,
                 "format": "u16",
@@ -848,7 +848,7 @@
                 "group": "debug"
             },
             {
-                "name": "IN 7 P Period",
+                "name": "IN 7 P Read Interval",
                 "reg_type": "input",
                 "address": 1565,
                 "format": "u16",
@@ -857,7 +857,7 @@
                 "group": "debug"
             },
             {
-                "name": "IN 7 N Period",
+                "name": "IN 7 N Read Interval",
                 "reg_type": "input",
                 "address": 1566,
                 "format": "u16",
@@ -866,7 +866,7 @@
                 "group": "debug"
             },
             {
-                "name": "IN 8 P Period",
+                "name": "IN 8 P Read Interval",
                 "reg_type": "input",
                 "address": 1567,
                 "format": "u16",
@@ -875,7 +875,7 @@
                 "group": "debug"
             },
             {
-                "name": "IN 8 N Period",
+                "name": "IN 8 N Read Interval",
                 "reg_type": "input",
                 "address": 1568,
                 "format": "u16",
@@ -884,7 +884,7 @@
                 "group": "debug"
             },
             {
-                "name": "IN 9 P Period",
+                "name": "IN 9 P Read Interval",
                 "reg_type": "input",
                 "address": 1569,
                 "format": "u16",
@@ -893,7 +893,7 @@
                 "group": "debug"
             },
             {
-                "name": "IN 9 N Period",
+                "name": "IN 9 N Read Interval",
                 "reg_type": "input",
                 "address": 1570,
                 "format": "u16",
@@ -902,7 +902,7 @@
                 "group": "debug"
             },
             {
-                "name": "IN 10 P Period",
+                "name": "IN 10 P Read Interval",
                 "reg_type": "input",
                 "address": 1571,
                 "format": "u16",
@@ -911,7 +911,7 @@
                 "group": "debug"
             },
             {
-                "name": "IN 10 N Period",
+                "name": "IN 10 N Read Interval",
                 "reg_type": "input",
                 "address": 1572,
                 "format": "u16",
@@ -920,7 +920,7 @@
                 "group": "debug"
             },
             {
-                "name": "IN 11 P Period",
+                "name": "IN 11 P Read Interval",
                 "reg_type": "input",
                 "address": 1573,
                 "format": "u16",
@@ -929,7 +929,7 @@
                 "group": "debug"
             },
             {
-                "name": "IN 11 N Period",
+                "name": "IN 11 N Read Interval",
                 "reg_type": "input",
                 "address": 1573,
                 "format": "u16",
@@ -5420,28 +5420,28 @@
                 "Serial": "Серийный номер",
                 "Uptime": "Время работы с момента включения (с)",
                 "ADC Loop Duration": "Время цикла опроса АЦП",
-                "IN 1 P Period": "IN 1 P: период опроса",
-                "IN 1 N Period": "IN 1 N: период опроса",
-                "IN 2 P Period": "IN 2 P: период опроса",
-                "IN 2 N Period": "IN 2 N: период опроса",
-                "IN 3 P Period": "IN 3 P: период опроса",
-                "IN 3 N Period": "IN 3 N: период опроса",
-                "IN 4 P Period": "IN 4 P: период опроса",
-                "IN 4 N Period": "IN 4 N: период опроса",
-                "IN 5 P Period": "IN 5 P: период опроса",
-                "IN 5 N Period": "IN 5 N: период опроса",
-                "IN 6 P Period": "IN 6 P: период опроса",
-                "IN 6 N Period": "IN 6 N: период опроса",
-                "IN 7 P Period": "IN 7 P: период опроса",
-                "IN 7 N Period": "IN 7 N: период опроса",
-                "IN 8 P Period": "IN 8 P: период опроса",
-                "IN 8 N Period": "IN 8 N: период опроса",
-                "IN 9 P Period": "IN 9 P: период опроса",
-                "IN 9 N Period": "IN 9 N: период опроса",
-                "IN 10 P Period": "IN 10 P: период опроса",
-                "IN 10 N Period": "IN 10 N: период опроса",
-                "IN 11 P Period": "IN 11 P: период опроса",
-                "IN 11 N Period": "IN 11 N: период опроса"
+                "IN 1 P Read Interval": "IN 1 P: период опроса",
+                "IN 1 N Read Interval": "IN 1 N: период опроса",
+                "IN 2 P Read Interval": "IN 2 P: период опроса",
+                "IN 2 N Read Interval": "IN 2 N: период опроса",
+                "IN 3 P Read Interval": "IN 3 P: период опроса",
+                "IN 3 N Read Interval": "IN 3 N: период опроса",
+                "IN 4 P Read Interval": "IN 4 P: период опроса",
+                "IN 4 N Read Interval": "IN 4 N: период опроса",
+                "IN 5 P Read Interval": "IN 5 P: период опроса",
+                "IN 5 N Read Interval": "IN 5 N: период опроса",
+                "IN 6 P Read Interval": "IN 6 P: период опроса",
+                "IN 6 N Read Interval": "IN 6 N: период опроса",
+                "IN 7 P Read Interval": "IN 7 P: период опроса",
+                "IN 7 N Read Interval": "IN 7 N: период опроса",
+                "IN 8 P Read Interval": "IN 8 P: период опроса",
+                "IN 8 N Read Interval": "IN 8 N: период опроса",
+                "IN 9 P Read Interval": "IN 9 P: период опроса",
+                "IN 9 N Read Interval": "IN 9 N: период опроса",
+                "IN 10 P Read Interval": "IN 10 P: период опроса",
+                "IN 10 N Read Interval": "IN 10 N: период опроса",
+                "IN 11 P Read Interval": "IN 11 P: период опроса",
+                "IN 11 N Read Interval": "IN 11 N: период опроса"
             }
         }
     }
