@@ -266,7 +266,7 @@ PRegisterConfig TRegisterConfig::Create(int type,
                                         uint8_t bit_offset,
                                         uint8_t bit_width)
 {
-    Register::TAddressOptions addressOptions;
+    TRegisterDataPosition addressOptions;
     addressOptions.Address = std::make_shared<TUint32RegisterAddress>(address);
     addressOptions.BitOffset = bit_offset;
     addressOptions.BitWidth = bit_width;
