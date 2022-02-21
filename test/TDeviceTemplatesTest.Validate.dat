@@ -500,6 +500,29 @@ WB-M1W2 DI
 	Uptime  =>  Uptime
 WB-MAI11
 	5V Output  =>  5V Output
+	ADC Loop Duration  =>  ADC Loop Duration
+	IN 1 N Read Interval  =>  IN 1 N Read Interval
+	IN 1 P Read Interval  =>  IN 1 P Read Interval
+	IN 10 N Read Interval  =>  IN 10 N Read Interval
+	IN 10 P Read Interval  =>  IN 10 P Read Interval
+	IN 11 N Read Interval  =>  IN 11 N Read Interval
+	IN 11 P Read Interval  =>  IN 11 P Read Interval
+	IN 2 N Read Interval  =>  IN 2 N Read Interval
+	IN 2 P Read Interval  =>  IN 2 P Read Interval
+	IN 3 N Read Interval  =>  IN 3 N Read Interval
+	IN 3 P Read Interval  =>  IN 3 P Read Interval
+	IN 4 N Read Interval  =>  IN 4 N Read Interval
+	IN 4 P Read Interval  =>  IN 4 P Read Interval
+	IN 5 N Read Interval  =>  IN 5 N Read Interval
+	IN 5 P Read Interval  =>  IN 5 P Read Interval
+	IN 6 N Read Interval  =>  IN 6 N Read Interval
+	IN 6 P Read Interval  =>  IN 6 P Read Interval
+	IN 7 N Read Interval  =>  IN 7 N Read Interval
+	IN 7 P Read Interval  =>  IN 7 P Read Interval
+	IN 8 N Read Interval  =>  IN 8 N Read Interval
+	IN 8 P Read Interval  =>  IN 8 P Read Interval
+	IN 9 N Read Interval  =>  IN 9 N Read Interval
+	IN 9 P Read Interval  =>  IN 9 P Read Interval
 	Input 1: disabled
 	Input 1: thermocouple_k
 		Temperature  =>  IN 1 Temperature

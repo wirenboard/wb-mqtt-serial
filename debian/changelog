@@ -1,3 +1,10 @@
+wb-mqtt-serial (2.52.0) stable; urgency=medium
+
+  * MAI11 template: added read interval channels
+  * MAI11 template: fixed value scale for resistance in NTC or "resistance measurement using current measurement" modes
+
+ -- Pavel Gasheev <pavel.gasheev@wirenboard.ru>  Fri, 21 Feb 2022 12:21:14 +0300
+
 wb-mqtt-serial (2.51.2) stable; urgency=medium
 
   * Read period minimum allowed value is set to 10ms
