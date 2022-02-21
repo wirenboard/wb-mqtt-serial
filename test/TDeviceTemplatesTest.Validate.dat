@@ -498,6 +498,7 @@ WB-M1W2 DI
 	Uptime  =>  Uptime
 WB-MAI11
 	5V Output  =>  5V Output
+	ADC Loop Duration  =>  ADC Loop Duration
 	IN 1 N Period  =>  IN 1 N Period
 	IN 1 P Period  =>  IN 1 P Period
 	IN 10 N Period  =>  IN 10 N Period
@@ -12610,7 +12611,6 @@ WB-MAI11
 		IN_P: generic_current_resistance
 			Resistance  =>  IN 9 P Resistance
 	Internal Temperature  =>  Internal Temperature
-	ADC Loop Duration  =>  ADC Loop Duration
 	Serial  =>  Serial
 	Uptime  =>  Uptime
 WB-MAI2-mini/CC
