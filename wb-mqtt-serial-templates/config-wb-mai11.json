@@ -731,7 +731,7 @@
                 "group": "hw_info"
             },
             {
-                "name": "Loop Period",
+                "name": "ADC Loop Duration",
                 "reg_type": "input",
                 "address": 1552,
                 "format": "u16",
@@ -5419,7 +5419,7 @@
                 "Internal Temperature": "Температура внутри модуля",
                 "Serial": "Серийный номер",
                 "Uptime": "Время работы с момента включения (с)",
-                "Loop Period": "Период цикла опроса АЦП",
+                "ADC Loop Duration": "Время цикла опроса АЦП",
                 "IN 1 P Period": "IN 1 P: период опроса",
                 "IN 1 N Period": "IN 1 N: период опроса",
                 "IN 2 P Period": "IN 2 P: период опроса",

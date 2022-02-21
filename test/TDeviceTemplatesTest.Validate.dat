@@ -12610,7 +12610,7 @@ WB-MAI11
 		IN_P: generic_current_resistance
 			Resistance  =>  IN 9 P Resistance
 	Internal Temperature  =>  Internal Temperature
-	Loop Period  =>  Loop Period
+	ADC Loop Duration  =>  ADC Loop Duration
 	Serial  =>  Serial
 	Uptime  =>  Uptime
 WB-MAI2-mini/CC
