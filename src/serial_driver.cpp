@@ -32,8 +32,7 @@ namespace
     }
 }
 
-TMQTTSerialDriver::TMQTTSerialDriver(PDeviceDriver mqttDriver, PHandlerConfig config)
-    : Active(false)
+TMQTTSerialDriver::TMQTTSerialDriver(PDeviceDriver mqttDriver, PHandlerConfig config): Active(false)
 {
     try {
         for (const auto& portConfig: config->PortConfigs) {
@@ -139,39 +138,39 @@ bool TMQTTSerialDriver::RPCGetPortDriverByName(const std::string& path,
                                                int port,
                                                PSerialPortDriver& portDriver)
 {
-    bool cmp_result = false;
-    uint i = 0;
-    Json::Value info;
-    bool pathEnt, ipEnt, portEnt;
-    std::string pathI, ipI;
-    int portI;
+    try {
+        auto findPort =
+            std::find_if(PortDrivers.begin(), PortDrivers.end(), [&path, &ip, &port](PSerialPortDriver item) {
+                Json::Value name = item->GetPortName();
 
-    while (!cmp_result & (i < PortDrivers.size())) {
-        auto curentDriver = PortDrivers[i];
-        curentDriver->GetPortInfo(info);
+                std::string pathI, ipI;
+                int portI;
+                bool pathEnt = WBMQTT::JSON::Get(name, "path", pathI);
+                bool ipEnt = WBMQTT::JSON::Get(name, "ip", ipI);
+                bool portEnt = WBMQTT::JSON::Get(name, "port", portI);
 
-        try {
-            pathEnt = WBMQTT::JSON::Get(info, "path", pathI);
-            ipEnt = WBMQTT::JSON::Get(info, "ip", ipI);
-            portEnt = WBMQTT::JSON::Get(info, "port", portI);
+                if (!pathEnt && !(ipEnt && portEnt)) {
+                    throw runtime_error("RPC meets unknown port type when try find need one");
+                }
 
-            if (pathEnt) {
-                cmp_result = (path == pathI);
-            } else if (ipEnt & portEnt) {
-                cmp_result = (ip == ipI) && (port == portI);
-            } else {
-                throw runtime_error("RPC meets unknown port type when try find need one");
-            }
+                if (pathEnt && (path == pathI)) {
+                    return true;
+                }
+                if (ipEnt && portEnt && (ip == ipI) && (port == portI)) {
+                    return true;
+                }
 
-            if (cmp_result) {
-                portDriver = PortDrivers[i];
-            }
-        } catch (exception e) {
-            LOG(Error) << e.what();
+                return false;
+            });
+
+        if (findPort != PortDrivers.end()) {
+            portDriver = *findPort;
+            return true;
         }
 
-        i++;
+    } catch (exception& e) {
+        LOG(Error) << e.what();
     }
 
-    return cmp_result;
+    return false;
 }

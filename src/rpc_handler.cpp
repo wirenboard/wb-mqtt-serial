@@ -2,12 +2,6 @@
 
 #define LOG(logger) ::logger.Log() << "[RPC] "
 
-enum RPCPortLoadParamSet
-{
-    RPC_TCP_SET,
-    RPC_SERIAL_SET
-};
-
 TRPCHandler::TRPCHandler(PMQTTSerialDriver serialDriver, WBMQTT::PMqttRpcServer rpcServer)
     : serialDriver(serialDriver),
       rpcServer(rpcServer)
@@ -16,96 +10,86 @@ TRPCHandler::TRPCHandler(PMQTTSerialDriver serialDriver, WBMQTT::PMqttRpcServer 
     rpcServer->RegisterMethod("metrics", "Load", std::bind(&TRPCHandler::LoadMetrics, this, std::placeholders::_1));
 }
 
+bool TRPCPortConfig::CheckParamSet(const Json::Value& request)
+{
+    bool pathEnt = request.isMember("path");
+    bool ipEnt = request.isMember("ip");
+    bool portEnt = request.isMember("port");
+    bool msgEnt = request.isMember("msg");
+    bool respSizeEnt = request.isMember("response_size");
+
+    bool serialConf = (pathEnt && !ipEnt && !portEnt);
+    bool tcpConf = (!pathEnt && ipEnt && portEnt);
+    bool paramConf = msgEnt && respSizeEnt;
+
+    bool correct = ((tcpConf || serialConf) && paramConf);
+    if (correct) {
+        set = serialConf ? RPCPortConfigSet::RPC_SERIAL_SET : RPCPortConfigSet::RPC_TCP_SET;
+    }
+
+    return correct;
+}
+
+bool TRPCPortConfig::LoadValues(const Json::Value& request)
+{
+    bool res = true;
+
+    try {
+
+        if (set == RPCPortConfigSet::RPC_SERIAL_SET) {
+            if (!WBMQTT::JSON::Get(request, "path", path)) {
+                throw std::exception();
+            }
+        } else {
+            if (!WBMQTT::JSON::Get(request, "ip", ip) || !WBMQTT::JSON::Get(request, "port", port) ||
+                (port < 0) | (port > 65536)) {
+                throw std::exception();
+            }
+        }
+
+        if (!WBMQTT::JSON::Get(request, "response_size", responseSize) || (responseSize < 0)) {
+            throw std::exception();
+        }
+
+        if (!WBMQTT::JSON::Get(request, "response_timeout", responseTimeout)) {
+            responseTimeout = DefaultResponseTimeout;
+        }
+
+        if (!WBMQTT::JSON::Get(request, "frame_timeout", frameTimeout)) {
+            frameTimeout = DefaultFrameTimeout;
+        }
+
+        if (!WBMQTT::JSON::Get(request, "format", format)) {
+            format = "";
+        }
+
+        std::string msgStr;
+        if (!WBMQTT::JSON::Get(request, "msg", msgStr) || (msgStr == "")) {
+            throw std::exception();
+        }
+
+        if (format == "HEX") {
+            if (msgStr.size() % 2 != 0) {
+                throw std::exception();
+            }
+
+            for (unsigned int i = 0; i < msgStr.size(); i += 2) {
+                auto byte = strtol(msgStr.substr(i, 2).c_str(), NULL, 16);
+                msg.push_back(byte);
+            }
+        } else {
+            msg.assign(msgStr.begin(), msgStr.end());
+        }
+
+    } catch (std::exception e) {
+        res = false;
+    }
+
+    return res;
+}
+
 namespace
 {
-
-    bool PortLoadCheckParamSet(const Json::Value& request, enum RPCPortLoadParamSet& set)
-    {
-        bool pathEnt = request.isMember("path");
-        bool ipEnt = request.isMember("ip");
-        bool portEnt = request.isMember("port");
-        bool msgEnt = request.isMember("msg");
-        bool respSizeEnt = request.isMember("response_size");
-
-        bool serialConf = (pathEnt && !ipEnt && !portEnt);
-        bool tcpConf = (!pathEnt && ipEnt && portEnt);
-        bool paramConf = msgEnt && respSizeEnt;
-
-        bool correct = ((tcpConf | serialConf) & paramConf);
-        if (correct) {
-            set = serialConf ? RPC_SERIAL_SET : RPC_TCP_SET;
-        }
-        return correct;
-    }
-
-    bool PortLoadGetValues(const Json::Value& request,
-                           const enum RPCPortLoadParamSet& set,
-                           std::string& path,
-                           std::string& ip,
-                           int& port,
-                           std::vector<uint8_t>& msg,
-                           std::chrono::milliseconds& responseTimeout,
-                           std::chrono::milliseconds& frameTimeout,
-                           std::string& format,
-                           size_t& responseSize)
-    {
-        bool res = true;
-
-        try {
-
-            if (set == RPC_SERIAL_SET) {
-                if (!WBMQTT::JSON::Get(request, "path", path)) {
-                    throw std::exception();
-                }
-            } else {
-                if (!WBMQTT::JSON::Get(request, "ip", ip) | !WBMQTT::JSON::Get(request, "port", port) | (port < 0) |
-                    (port > 65536)) {
-                    throw std::exception();
-                }
-            }
-
-            if (!WBMQTT::JSON::Get(request, "response_size", responseSize) | (responseSize < 0)) {
-                throw std::exception();
-            }
-
-            if (!WBMQTT::JSON::Get(request, "response_timeout", responseTimeout)) {
-                responseTimeout = DefaultResponseTimeout;
-            }
-
-            if (!WBMQTT::JSON::Get(request, "frame_timeout", frameTimeout)) {
-                frameTimeout = DefaultFrameTimeout;
-            }
-
-            if (!WBMQTT::JSON::Get(request, "format", format)) {
-                format = "";
-            }
-
-            std::string msgStr;
-            if (!WBMQTT::JSON::Get(request, "msg", msgStr) | (msgStr == "")) {
-                throw std::exception();
-            }
-
-            if (format == "HEX") {
-                if (msgStr.size() % 2 != 0) {
-                    throw std::exception();
-                }
-
-                uint8_t byte;
-                for (unsigned int i = 0; i < msgStr.size(); i += 2) {
-                    byte = strtol(msgStr.substr(i, 2).c_str(), NULL, 16);
-                    msg.push_back(byte);
-                }
-            } else {
-                msg.assign(msgStr.begin(), msgStr.end());
-            }
-
-        } catch (std::exception e) {
-            res = false;
-        }
-
-        return res;
-    }
-
     std::string PortLoadResponseFormat(const std::vector<uint8_t>& response,
                                        size_t actualResponseSize,
                                        std::string format)
@@ -133,51 +117,45 @@ Json::Value TRPCHandler::PortLoad(const Json::Value& request)
 {
     Json::Value replyJSON;
     std::string errorMsg;
-    RPCPortLoadResult resultCode;
+    RPCPortHandlerResult resultCode;
 
-    size_t responseSize, actualResponseSize;
+    size_t actualResponseSize;
     std::vector<uint8_t> response;
     std::string responseStr;
 
-    enum RPCPortLoadParamSet set;
-    std::string path, ip, format;
-    int port;
-    std::vector<uint8_t> msg;
-    std::chrono::milliseconds responseTimeout, frameTimeout;
-
     try {
 
-        if (!PortLoadCheckParamSet(request, set)) {
-            throw TRPCException("Wrong mandatory parameters set", RPC_WRONG_PARAM_SET);
+        if (!config.CheckParamSet(request)) {
+            throw TRPCException("Wrong mandatory parameters set", RPCPortHandlerResult::RPC_WRONG_PARAM_SET);
         }
 
-        if (!PortLoadGetValues(request, set, path, ip, port, msg, responseTimeout, frameTimeout, format, responseSize))
-        {
-            throw TRPCException("Wrong parameters types or values", RPC_WRONG_PARAM_VALUE);
+        if (!config.LoadValues(request)) {
+            throw TRPCException("Wrong parameters types or values", RPCPortHandlerResult::RPC_WRONG_PARAM_VALUE);
         }
 
         PSerialPortDriver portDriver;
-        bool find = serialDriver->RPCGetPortDriverByName(path, ip, port, portDriver);
+        bool find = serialDriver->RPCGetPortDriverByName(config.path, config.ip, config.port, portDriver);
         if (!find) {
-            throw TRPCException("Requested port doesn't exist", RPC_WRONG_PORT);
+            throw TRPCException("Requested port doesn't exist", RPCPortHandlerResult::RPC_WRONG_PORT);
         }
 
         bool error = false;
-        portDriver->RPCWrite(msg, responseSize, responseTimeout, frameTimeout);
+        portDriver->RPCWrite(config.msg, config.responseSize, config.responseTimeout, config.frameTimeout);
         while (!portDriver->RPCRead(response, actualResponseSize, error)) {
         };
 
         if (error) {
-            throw TRPCException("Port IO error", RPC_WRONG_IO);
+            throw TRPCException("Port IO error", RPCPortHandlerResult::RPC_WRONG_IO);
         }
 
-        if (actualResponseSize < responseSize) {
-            throw TRPCException("Actual response length shorter than requested", RPC_WRONG_RESP_LNGTH);
+        if (actualResponseSize < config.responseSize) {
+            throw TRPCException("Actual response length shorter than requested",
+                                RPCPortHandlerResult::RPC_WRONG_RESP_LNGTH);
         }
 
-        responseStr = PortLoadResponseFormat(response, actualResponseSize, format);
+        responseStr = PortLoadResponseFormat(response, actualResponseSize, config.format);
         errorMsg = "Success";
-        resultCode = RPC_OK;
+        resultCode = RPCPortHandlerResult::RPC_OK;
     } catch (TRPCException& e) {
         LOG(Error) << e.GetResultMessage();
         resultCode = e.GetResultCode();
@@ -185,7 +163,7 @@ Json::Value TRPCHandler::PortLoad(const Json::Value& request)
         responseStr = "";
     }
 
-    replyJSON["result_code"] = std::to_string((int)resultCode);
+    replyJSON["result_code"] = std::to_string(static_cast<int>(resultCode));
     replyJSON["error_msg"] = errorMsg;
     replyJSON["response"] = responseStr;
 
