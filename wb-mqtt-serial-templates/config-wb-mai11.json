@@ -975,7 +975,7 @@
                             "description": "Total sampling time of channel is (Sampling time * Number of measurements). Channels are polled sequentially.",
                             "order": 2,
                             "address": "0x0404",
-                            "min": 0,
+                            "min": 1,
                             "max": 50
                         },
                         "lowpass": {
@@ -1044,7 +1044,7 @@
                             "description": "Total sampling time of channel is (Sampling time * Number of measurements). Channels are polled sequentially.",
                             "order": 2,
                             "address": "0x0404",
-                            "min": 0,
+                            "min": 1,
                             "max": 50
                         },
                         "lowpass": {
@@ -1133,7 +1133,7 @@
                             "description": "Total sampling time of channel is (Sampling time * Number of measurements). Channels are polled sequentially.",
                             "order": 2,
                             "address": "0x0404",
-                            "min": 0,
+                            "min": 1,
                             "max": 50
                         },
                         "lowpass": {
@@ -1201,7 +1201,7 @@
                             "description": "Total sampling time of channel is (Sampling time * Number of measurements). Channels are polled sequentially.",
                             "order": 2,
                             "address": "0x0404",
-                            "min": 0,
+                            "min": 1,
                             "max": 50
                         },
                         "lowpass": {
@@ -1281,7 +1281,7 @@
                             "description": "Total sampling time of channel is (Sampling time * Number of measurements). Channels are polled sequentially.",
                             "order": 2,
                             "address": "0x0404",
-                            "min": 0,
+                            "min": 1,
                             "max": 50
                         },
                         "lowpass": {
@@ -1361,7 +1361,7 @@
                             "description": "Total sampling time of channel is (Sampling time * Number of measurements). Channels are polled sequentially.",
                             "order": 2,
                             "address": "0x0404",
-                            "min": 0,
+                            "min": 1,
                             "max": 50
                         },
                         "lowpass": {
@@ -1543,7 +1543,7 @@
                             "description": "Total sampling time of channel is (Sampling time * Number of measurements). Channels are polled sequentially.",
                             "order": 2,
                             "address": "0x0404",
-                            "min": 0,
+                            "min": 1,
                             "max": 50
                         },
                         "lowpass": {
@@ -1612,7 +1612,7 @@
                             "description": "Total sampling time of channel is (Sampling time * Number of measurements). Channels are polled sequentially.",
                             "order": 2,
                             "address": "0x0404",
-                            "min": 0,
+                            "min": 1,
                             "max": 50
                         },
                         "lowpass": {
@@ -1681,7 +1681,7 @@
                             "description": "Total sampling time of channel is (Sampling time * Number of measurements). Channels are polled sequentially.",
                             "order": 2,
                             "address": "0x0404",
-                            "min": 0,
+                            "min": 1,
                             "max": 50
                         },
                         "lowpass": {
@@ -1750,7 +1750,7 @@
                             "description": "Total sampling time of channel is (Sampling time * Number of measurements). Channels are polled sequentially.",
                             "order": 2,
                             "address": "0x0404",
-                            "min": 0,
+                            "min": 1,
                             "max": 50
                         },
                         "lowpass": {
@@ -1819,7 +1819,7 @@
                             "description": "Total sampling time of channel is (Sampling time * Number of measurements). Channels are polled sequentially.",
                             "order": 2,
                             "address": "0x0404",
-                            "min": 0,
+                            "min": 1,
                             "max": 50
                         },
                         "lowpass": {
@@ -1888,7 +1888,7 @@
                             "description": "Total sampling time of channel is (Sampling time * Number of measurements). Channels are polled sequentially.",
                             "order": 2,
                             "address": "0x0404",
-                            "min": 0,
+                            "min": 1,
                             "max": 50
                         },
                         "lowpass": {
@@ -1957,7 +1957,7 @@
                             "description": "Total sampling time of channel is (Sampling time * Number of measurements). Channels are polled sequentially.",
                             "order": 2,
                             "address": "0x0404",
-                            "min": 0,
+                            "min": 1,
                             "max": 50
                         },
                         "lowpass": {
@@ -2026,7 +2026,7 @@
                             "description": "Total sampling time of channel is (Sampling time * Number of measurements). Channels are polled sequentially.",
                             "order": 2,
                             "address": "0x0404",
-                            "min": 0,
+                            "min": 1,
                             "max": 50
                         },
                         "lowpass": {
@@ -2095,7 +2095,7 @@
                             "description": "Total sampling time of channel is (Sampling time * Number of measurements). Channels are polled sequentially.",
                             "order": 2,
                             "address": "0x0404",
-                            "min": 0,
+                            "min": 1,
                             "max": 50
                         },
                         "lowpass": {
@@ -2164,7 +2164,7 @@
                             "description": "Total sampling time of channel is (Sampling time * Number of measurements). Channels are polled sequentially.",
                             "order": 2,
                             "address": "0x0404",
-                            "min": 0,
+                            "min": 1,
                             "max": 50
                         },
                         "lowpass": {
@@ -2233,7 +2233,7 @@
                             "description": "Total sampling time of channel is (Sampling time * Number of measurements). Channels are polled sequentially.",
                             "order": 2,
                             "address": "0x0404",
-                            "min": 0,
+                            "min": 1,
                             "max": 50
                         },
                         "lowpass": {
@@ -2302,7 +2302,7 @@
                             "description": "Total sampling time of channel is (Sampling time * Number of measurements). Channels are polled sequentially.",
                             "order": 2,
                             "address": "0x0404",
-                            "min": 0,
+                            "min": 1,
                             "max": 50
                         },
                         "lowpass": {
@@ -2371,7 +2371,7 @@
                             "description": "Total sampling time of channel is (Sampling time * Number of measurements). Channels are polled sequentially.",
                             "order": 2,
                             "address": "0x0404",
-                            "min": 0,
+                            "min": 1,
                             "max": 50
                         },
                         "lowpass": {
@@ -2440,7 +2440,7 @@
                             "description": "Total sampling time of channel is (Sampling time * Number of measurements). Channels are polled sequentially.",
                             "order": 2,
                             "address": "0x0404",
-                            "min": 0,
+                            "min": 1,
                             "max": 50
                         },
                         "lowpass": {
@@ -2509,7 +2509,7 @@
                             "description": "Total sampling time of channel is (Sampling time * Number of measurements). Channels are polled sequentially.",
                             "order": 2,
                             "address": "0x0404",
-                            "min": 0,
+                            "min": 1,
                             "max": 50
                         },
                         "lowpass": {
@@ -2578,7 +2578,7 @@
                             "description": "Total sampling time of channel is (Sampling time * Number of measurements). Channels are polled sequentially.",
                             "order": 2,
                             "address": "0x0404",
-                            "min": 0,
+                            "min": 1,
                             "max": 50
                         },
                         "lowpass": {
@@ -2644,7 +2644,7 @@
                             "description": "Total sampling time of channel is (Sampling time * Number of measurements). Channels are polled sequentially.",
                             "order": 2,
                             "address": "0x0404",
-                            "min": 0,
+                            "min": 1,
                             "max": 50
                         },
                         "lowpass": {
@@ -3511,7 +3511,7 @@
                             "description": "Total sampling time of channel is (Sampling time * Number of measurements). Channels are polled sequentially.",
                             "order": 2,
                             "address": "0x0404",
-                            "min": 0,
+                            "min": 1,
                             "max": 50
                         },
                         "lowpass": {
@@ -3580,7 +3580,7 @@
                             "description": "Total sampling time of channel is (Sampling time * Number of measurements). Channels are polled sequentially.",
                             "order": 2,
                             "address": "0x0404",
-                            "min": 0,
+                            "min": 1,
                             "max": 50
                         },
                         "lowpass": {
@@ -3649,7 +3649,7 @@
                             "description": "Total sampling time of channel is (Sampling time * Number of measurements). Channels are polled sequentially.",
                             "order": 2,
                             "address": "0x0404",
-                            "min": 0,
+                            "min": 1,
                             "max": 50
                         },
                         "lowpass": {
@@ -3718,7 +3718,7 @@
                             "description": "Total sampling time of channel is (Sampling time * Number of measurements). Channels are polled sequentially.",
                             "order": 2,
                             "address": "0x0404",
-                            "min": 0,
+                            "min": 1,
                             "max": 50
                         },
                         "lowpass": {
@@ -3787,7 +3787,7 @@
                             "description": "Total sampling time of channel is (Sampling time * Number of measurements). Channels are polled sequentially.",
                             "order": 2,
                             "address": "0x0404",
-                            "min": 0,
+                            "min": 1,
                             "max": 50
                         },
                         "lowpass": {
@@ -3856,7 +3856,7 @@
                             "description": "Total sampling time of channel is (Sampling time * Number of measurements). Channels are polled sequentially.",
                             "order": 2,
                             "address": "0x0404",
-                            "min": 0,
+                            "min": 1,
                             "max": 50
                         },
                         "lowpass": {
@@ -3925,7 +3925,7 @@
                             "description": "Total sampling time of channel is (Sampling time * Number of measurements). Channels are polled sequentially.",
                             "order": 2,
                             "address": "0x0404",
-                            "min": 0,
+                            "min": 1,
                             "max": 50
                         },
                         "lowpass": {
@@ -3994,7 +3994,7 @@
                             "description": "Total sampling time of channel is (Sampling time * Number of measurements). Channels are polled sequentially.",
                             "order": 2,
                             "address": "0x0404",
-                            "min": 0,
+                            "min": 1,
                             "max": 50
                         },
                         "lowpass": {
@@ -4063,7 +4063,7 @@
                             "description": "Total sampling time of channel is (Sampling time * Number of measurements). Channels are polled sequentially.",
                             "order": 2,
                             "address": "0x0404",
-                            "min": 0,
+                            "min": 1,
                             "max": 50
                         },
                         "lowpass": {
@@ -4132,7 +4132,7 @@
                             "description": "Total sampling time of channel is (Sampling time * Number of measurements). Channels are polled sequentially.",
                             "order": 2,
                             "address": "0x0404",
-                            "min": 0,
+                            "min": 1,
                             "max": 50
                         },
                         "lowpass": {
@@ -4201,7 +4201,7 @@
                             "description": "Total sampling time of channel is (Sampling time * Number of measurements). Channels are polled sequentially.",
                             "order": 2,
                             "address": "0x0404",
-                            "min": 0,
+                            "min": 1,
                             "max": 50
                         },
                         "lowpass": {
@@ -4270,7 +4270,7 @@
                             "description": "Total sampling time of channel is (Sampling time * Number of measurements). Channels are polled sequentially.",
                             "order": 2,
                             "address": "0x0404",
-                            "min": 0,
+                            "min": 1,
                             "max": 50
                         },
                         "lowpass": {
@@ -4339,7 +4339,7 @@
                             "description": "Total sampling time of channel is (Sampling time * Number of measurements). Channels are polled sequentially.",
                             "order": 2,
                             "address": "0x0404",
-                            "min": 0,
+                            "min": 1,
                             "max": 50
                         },
                         "lowpass": {
@@ -4408,7 +4408,7 @@
                             "description": "Total sampling time of channel is (Sampling time * Number of measurements). Channels are polled sequentially.",
                             "order": 2,
                             "address": "0x0404",
-                            "min": 0,
+                            "min": 1,
                             "max": 50
                         },
                         "lowpass": {
@@ -4477,7 +4477,7 @@
                             "description": "Total sampling time of channel is (Sampling time * Number of measurements). Channels are polled sequentially.",
                             "order": 2,
                             "address": "0x0404",
-                            "min": 0,
+                            "min": 1,
                             "max": 50
                         },
                         "lowpass": {
@@ -4546,7 +4546,7 @@
                             "description": "Total sampling time of channel is (Sampling time * Number of measurements). Channels are polled sequentially.",
                             "order": 2,
                             "address": "0x0404",
-                            "min": 0,
+                            "min": 1,
                             "max": 50
                         },
                         "lowpass": {
@@ -4655,7 +4655,7 @@
                             "description": "Total sampling time of channel is (Sampling time * Number of measurements). Channels are polled sequentially.",
                             "order": 2,
                             "address": "0x0404",
-                            "min": 0,
+                            "min": 1,
                             "max": 50
                         },
                         "lowpass": {
@@ -4733,7 +4733,7 @@
                             "description": "Total sampling time of channel is (Sampling time * Number of measurements). Channels are polled sequentially.",
                             "order": 2,
                             "address": "0x0404",
-                            "min": 0,
+                            "min": 1,
                             "max": 50
                         },
                         "lowpass": {
@@ -4801,7 +4801,7 @@
                             "description": "Total sampling time of channel is (Sampling time * Number of measurements). Channels are polled sequentially.",
                             "order": 2,
                             "address": "0x0404",
-                            "min": 0,
+                            "min": 1,
                             "max": 50
                         },
                         "lowpass": {
@@ -4945,7 +4945,7 @@
                             "description": "Total sampling time of channel is (Sampling time * Number of measurements). Channels are polled sequentially.",
                             "order": 2,
                             "address": "0x0404",
-                            "min": 0,
+                            "min": 1,
                             "max": 50
                         },
                         "lowpass": {
@@ -5025,7 +5025,7 @@
                             "description": "Total sampling time of channel is (Sampling time * Number of measurements). Channels are polled sequentially.",
                             "order": 2,
                             "address": "0x0404",
-                            "min": 0,
+                            "min": 1,
                             "max": 50
                         },
                         "lowpass": {
@@ -5096,7 +5096,7 @@
                             "description": "Total sampling time of channel is (Sampling time * Number of measurements). Channels are polled sequentially.",
                             "order": 2,
                             "address": "0x0404",
-                            "min": 0,
+                            "min": 1,
                             "max": 50
                         },
                         "lowpass": {
@@ -5156,7 +5156,7 @@
                             "description": "Total sampling time of channel is (Sampling time * Number of measurements). Channels are polled sequentially.",
                             "order": 2,
                             "address": "0x0404",
-                            "min": 0,
+                            "min": 1,
                             "max": 50
                         },
                         "lowpass": {
