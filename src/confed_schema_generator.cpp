@@ -2,6 +2,8 @@
 #include "json_common.h"
 #include "log.h"
 
+#include <wblib/wbmqtt.h>
+
 #define LOG(logger) ::logger.Log() << "[serial config] "
 
 using namespace WBMQTT::JSON;
@@ -738,6 +740,14 @@ namespace
     }
 }
 
+void AddUnitTypes(Json::Value& schema)
+{
+    auto& values = MakeArray("enum_values", schema["definitions"]["units"]["options"]);
+    for (const auto& unit: WBMQTT::TControl::GetUnitTypes()) {
+        values.append(unit);
+    }
+}
+
 Json::Value MakeSchemaForConfed(const Json::Value& configSchema,
                                 TTemplateMap& templates,
                                 TSerialDeviceFactory& deviceFactory)
@@ -751,6 +761,8 @@ Json::Value MakeSchemaForConfed(const Json::Value& configSchema,
     res["definitions"].removeMember("slave_id_ui");
     res["definitions"]["slave_id_broadcast"] = res["definitions"]["slave_id_broadcast_ui"];
     res["definitions"].removeMember("slave_id_broadcast_ui");
+
+    AddUnitTypes(res);
 
     // Let's add to #/definitions/device/oneOf a list of devices generated from templates
     if (res["definitions"]["device"].isMember("oneOf")) {
