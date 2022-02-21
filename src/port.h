@@ -64,7 +64,7 @@ public:
 
     virtual std::string GetDescription(bool verbose = true) const = 0;
 
-    virtual void GetInfo(Json::Value& info) const = 0;
+    virtual Json::Value GetName() const = 0;
 
     /**
      * @brief Set new byte parameters if it is a serial port.
