@@ -285,5 +285,5 @@ TEST_F(TConfigParserTest, ParseModbusDevideWithWriteAddress)
     auto regs = deviceChannels[0]->RegisterConfigs;
     EXPECT_FALSE(regs.empty());
     EXPECT_EQ(GetUint32RegisterAddress(regs[0]->GetAddress()), 110);
-    EXPECT_EQ(GetUint32RegisterAddress(regs[0]->GetAddress(TRegisterConfig::TAddressOptionsType::Write)), 115);
+    EXPECT_EQ(GetUint32RegisterAddress(regs[0]->GetWriteAddress()), 115);
 }

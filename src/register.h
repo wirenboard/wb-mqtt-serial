@@ -177,24 +177,19 @@ public:
                                      uint32_t /*addressByteStep*/) const override;
 };
 
-struct TRegisterDataPosition
+//! Register addresses description
+struct TRegisterDesc
 {
     std::shared_ptr<IRegisterAddress> Address; //! Register address
     uint8_t BitOffset{0};                      //! Offset of data in register in bits
     uint8_t BitWidth{0};                       //! Width of data in register in bits
-};
 
-//! Register addresses description
-struct TRegisterDesc
-{
-    TRegisterDataPosition AddressOptions;
-    TRegisterDataPosition WriteAddressOptions;
+    std::shared_ptr<IRegisterAddress> WriteAddress; //! Write Register address
 };
 
 class TRegisterConfig: public std::enable_shared_from_this<TRegisterConfig>
 {
-    TRegisterDataPosition AddressOptions;
-    TRegisterDataPosition WriteAddressOptions;
+    TRegisterDesc Address;
 
 public:
     int Type;
@@ -225,19 +220,13 @@ public:
                     const std::string& type_name,
                     const EWordOrder word_order);
 
-    enum class TAddressOptionsType
-    {
-        Common,
-        Write
-    };
-
-    uint8_t CalculateBitWidth(TAddressOptionsType type = TAddressOptionsType::Common) const;
-    uint8_t GetBitWidth(TAddressOptionsType type = TAddressOptionsType::Common) const;
-    uint8_t GetBitOffset(TAddressOptionsType type = TAddressOptionsType::Common) const;
+    uint8_t CalculateBitWidth() const;
+    uint8_t GetBitWidth() const;
+    uint8_t GetBitOffset() const;
     uint8_t GetByteWidth() const;
 
     //! Get occupied space in 16-bit words
-    uint8_t Get16BitWidth(TAddressOptionsType type = TAddressOptionsType::Common) const;
+    uint8_t Get16BitWidth() const;
 
     std::string ToString() const;
 
@@ -264,7 +253,8 @@ public:
                                   uint8_t bit_offset = 0,
                                   uint8_t bit_width = 0);
 
-    const IRegisterAddress& GetAddress(TAddressOptionsType type = TAddressOptionsType::Common) const;
+    const IRegisterAddress& GetAddress() const;
+    const IRegisterAddress& GetWriteAddress() const;
 };
 
 struct TRegister;

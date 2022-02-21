@@ -1290,15 +1290,15 @@ void TModbusExpectations::EnqueueHoldingWriteU16ResponseWithOffsetWriteOptions(u
             0x06, // function code
             0x00, // starting address Hi
             116,   // starting address Lo
-            0x0A, // value Hi
-            0x00, // value Lo
+            0x00, // value Hi
+            0x14, // value Lo
         }),
         WrapPDU(exception == 0 ? std::vector<int>{
                                      0x06, // function code
                                      0x00, // starting address Hi
                                      116,   // starting address Lo
-                                     0x0A, // value Hi
-                                     0x00, // value Lo
+                                     0x00, // value Hi
+                                     0x14, // value Lo
                                  }
                                : std::vector<int>{0x86, // function code + 80
                                                   exception}),

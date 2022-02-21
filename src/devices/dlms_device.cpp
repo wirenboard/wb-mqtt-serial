@@ -91,7 +91,7 @@ namespace
                                           uint32_t registerByteWidth) const override
         {
             TRegisterDesc res;
-            res.AddressOptions.Address = std::make_shared<TObisRegisterAddress>(regCfg["address"].asString());
+            res.Address = std::make_shared<TObisRegisterAddress>(regCfg["address"].asString());
             return res;
         }
 

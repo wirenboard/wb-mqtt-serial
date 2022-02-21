@@ -67,18 +67,17 @@ void TModbusTest::SetUp()
     ModbusHoldingU16Multi = TRegister::Intern(ModbusDev, TRegisterConfig::Create(Modbus::REG_HOLDING_MULTI, 99, U16));
 
     TRegisterDesc regAddrDesc;
-    regAddrDesc.AddressOptions.Address = std::make_shared<TUint32RegisterAddress>(110);
-    regAddrDesc.WriteAddressOptions.Address = std::make_shared<TUint32RegisterAddress>(115);
+    regAddrDesc.Address = std::make_shared<TUint32RegisterAddress>(110);
+    regAddrDesc.WriteAddress = std::make_shared<TUint32RegisterAddress>(115);
 
     ModbusHoldingU16WithAddressWrite =
         TRegister::Intern(ModbusDev, TRegisterConfig::Create(Modbus::REG_HOLDING, regAddrDesc, RegisterFormat::U16));
 
-    regAddrDesc.AddressOptions.Address = std::make_shared<TUint32RegisterAddress>(111);
-    regAddrDesc.WriteAddressOptions.Address = std::make_shared<TUint32RegisterAddress>(116);
-    regAddrDesc.AddressOptions.BitWidth = 3;
-    regAddrDesc.AddressOptions.BitOffset = 2;
-    regAddrDesc.WriteAddressOptions.BitWidth = 3;
-    regAddrDesc.WriteAddressOptions.BitOffset = 9;
+    regAddrDesc.Address = std::make_shared<TUint32RegisterAddress>(111);
+    regAddrDesc.WriteAddress = std::make_shared<TUint32RegisterAddress>(116);
+    regAddrDesc.BitWidth = 3;
+    regAddrDesc.BitOffset = 2;
+
     ModbusHoldingU16WithWriteBitOffset =
         TRegister::Intern(ModbusDev, TRegisterConfig::Create(Modbus::REG_HOLDING, regAddrDesc, RegisterFormat::U16));
 
@@ -165,6 +164,8 @@ TEST_F(TModbusTest, ReadHoldingRegiterWithWriteAddress)
 TEST_F(TModbusTest, WriteHoldingRegiterWithWriteAddress)
 {
     EnqueueHoldingWriteU16ResponseWithWriteAddress();
+    EXPECT_EQ(GetUint32RegisterAddress(ModbusHoldingU16WithAddressWrite->GetAddress()), 110);
+    EXPECT_EQ(GetUint32RegisterAddress(ModbusHoldingU16WithAddressWrite->GetWriteAddress()), 115);
 
     EXPECT_NO_THROW(ModbusDev->WriteRegister(ModbusHoldingU16WithAddressWrite, 0x119C));
 }

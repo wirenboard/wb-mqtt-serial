@@ -1225,17 +1225,6 @@
           }
         },
         {
-          "title": "bits",
-          "type": "string",
-          "pattern": "^((0x[A-Fa-f\\d]+|\\d+):(\\d+):(\\d+))$",
-          "options": {
-            "inputAttributes": {
-              "placeholder":  "address:offset:bitwidth"
-            },
-            "patternmessage": "Address should be decimal or hex, offset and bitwidth separated by ':'"
-          }
-        },
-        {
           "title": "decimal",
           "type": "integer"
         }
