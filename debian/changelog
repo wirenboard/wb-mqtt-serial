@@ -1,3 +1,9 @@
+wb-mqtt-serial (2.53.0) stable; urgency=medium
+
+  * "units" parameter is added to control's settings. Supported units are defined in conventions.
+
+ -- Petr Krasnoshchekov <petr.krasnoshchekov@wirenboard.ru>  Mon, 21 Feb 2022 17:22:44 +0500
+
 wb-mqtt-serial (2.52.0) stable; urgency=medium
 
   * MAI11 template: added read interval channels

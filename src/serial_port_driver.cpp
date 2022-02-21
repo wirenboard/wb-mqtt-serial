@@ -204,7 +204,8 @@ TControlArgs TSerialPortDriver::From(const PDeviceChannel& channel)
                     .SetOrder(channel->Order)
                     .SetType(channel->Type)
                     .SetReadonly(channel->ReadOnly)
-                    .SetUserData(TControlLinkData{shared_from_this(), channel});
+                    .SetUserData(TControlLinkData{shared_from_this(), channel})
+                    .SetUnits(channel->Units);
 
     if (isnan(channel->Max)) {
         if (channel->Type == "range" || channel->Type == "dimmer") {

@@ -530,15 +530,20 @@
           "title": "Register type", 
           "propertyOrder": 5
         },
+        "units": {
+          "$ref": "#/definitions/units",
+          "title": "Units",
+          "propertyOrder": 7
+        },
         "format": {
           "$ref": "#/definitions/format",
           "title": "Format", 
-          "propertyOrder": 7
+          "propertyOrder": 8
         },
         "max": {
           "title": "Maximum value",
           "$ref": "#/definitions/serial_int",
-          "propertyOrder": 8,
+          "propertyOrder": 9,
           "options": {
             "keep_oneof_values": false
           }
@@ -548,34 +553,34 @@
           "title": "Scale (value multiplier)",
           "description": "Value displayed = round((value read * scale) + offset) / round_to) * round_to",
           "default" : 1,
-          "propertyOrder": 9
+          "propertyOrder": 10
         },
         "offset": {
           "type": "number",
           "title": "Value offset",
           "description": "Value displayed = round((value read * scale) + offset) / round_to) * round_to",
           "default" : 0,
-          "propertyOrder": 10
+          "propertyOrder": 11
         },
         "round_to": {
           "type": "number",
           "title": "Round to",
           "description": "Value displayed = round((value read * scale) + offset) / round_to) * round_to",
           "default" : 1,
-          "propertyOrder": 11,
+          "propertyOrder": 12,
           "minimum": 0
         },
         "readonly": {
           "title": "Read-only",
           "type": "boolean",
-          "propertyOrder": 12
+          "propertyOrder": 13
         },
         "on_value": {
           // TBD: only use on_value for 'switch' and 'wo-switch' types
           "title": "'On' value",
           "description": "Value corresponding to the 'On' state of the switch",
           "$ref": "#/definitions/serial_int",
-          "propertyOrder": 13,
+          "propertyOrder": 14,
           "options": {
             "keep_oneof_values": false
           }
@@ -584,7 +589,7 @@
           "title": "'Off' value",
           "description": "Value corresponding to the 'Off' state of the switch",
           "$ref": "#/definitions/serial_int",
-          "propertyOrder": 14,
+          "propertyOrder": 15,
           "options": {
             "keep_oneof_values": false
           }
@@ -608,19 +613,19 @@
             }
           },
           "_format": "edWb",
-          "propertyOrder": 15
+          "propertyOrder": 16
         },
         "read_rate_limit_ms": {
           "type": "integer",
           "title": "Read rate limit (ms)",
           "minimum": 0,
           "default": 1000,
-          "propertyOrder": 16
+          "propertyOrder": 17
         },
         "error_value": {
           "title": "Error value",
           "description": "Value which should be treated as read error",
-          "propertyOrder": 17,
+          "propertyOrder": 18,
           "oneOf": [
             {
               "title": "decimal or hex",
@@ -644,7 +649,7 @@
         "unsupported_value": {
           "title": "Unsupported register value",
           "description": "Value which should be treated as 'register is unsupported by device'",
-          "propertyOrder": 18,
+          "propertyOrder": 19,
           "type": "string",
           "pattern": "^(0x[A-Fa-f\\d]+)$",
           "options": {
@@ -657,7 +662,7 @@
         "word_order": {
           "$ref": "#/definitions/word_order",
           "title": "Word order",
-          "propertyOrder": 19
+          "propertyOrder": 20
         },
         "consists_of": {
           "not": {},
@@ -720,10 +725,15 @@
           "$ref": "#/definitions/control_type",
           "propertyOrder": 4
         },
+        "units": {
+          "$ref": "#/definitions/units",
+          "title": "Units",
+          "propertyOrder": 7
+        },
         "readonly": {
           "title": "Read-only",
           "type": "boolean",
-          "propertyOrder": 5
+          "propertyOrder": 8
         },
         "consists_of": {
           "type": "array",
@@ -731,7 +741,7 @@
           "items": { "$ref": "#/definitions/subreg" },
           "minItems": 1,
           "_format": "table",
-          "propertyOrder": 6,
+          "propertyOrder": 9,
           "options": {
             "disable_collapse": true,
             "wb": {
@@ -966,11 +976,42 @@
         "power_consumption", "voltage", "water_flow",
         "water_consumption", "resistance", "concentration",
         "heat_energy", "heat_power",
-        // FIXME: "dimmer", "lux" and "pressure" aren't present in
-        // conventions but is present in config-test.json in
-        // wb-mqtt-serial
         "dimmer", "lux", "pressure", "current", "sound_level"
-      ]
+      ],
+      "options" : {
+        "enum_titles": [
+          "switch",
+          "wo-switch",
+          "pushbutton",
+          "range",
+          "rgb",
+          "text",
+          "value",
+          "temperature (deprecated, use value with units)",
+          "rel_humidity (deprecated, use value with units)",
+          "atmospheric_pressure (deprecated, use value with units)",
+          "rainfall (deprecated, use value with units)",
+          "wind_speed (deprecated, use value with units)",
+          "power (deprecated, use value with units)",
+          "power_consumption (deprecated, use value with units)",
+          "voltage (deprecated, use value with units)",
+          "water_flow (deprecated, use value with units)",
+          "water_consumption (deprecated, use value with units)",
+          "resistance (deprecated, use value with units)",
+          "concentration (deprecated, use value with units)",
+          "heat_energy (deprecated, use value with units)",
+          "heat_power (deprecated, use value with units)",
+          "dimmer (deprecated, use value with units)",
+          "lux (deprecated, use value with units)",
+          "pressure (deprecated, use value with units)",
+          "current (deprecated, use value with units)",
+          "sound_level (deprecated, use value with units)"
+        ]
+      }
+    },
+    "units": {
+      "type": "string",
+      "_format": "edWb"
     },
     "reg_type": {
       "type": "string",
@@ -1719,7 +1760,7 @@
       "port_header_template": "{{if self.port_type==\"serial\"}}Serial port{{endif}}{{if self.port_type==undefined}}Serial port{{endif}}{{if self.port_type==\"tcp\"}}Port TCP{{endif}}{{if self.port_type==\"modbus tcp\"}}Port MODBUS TCP{{endif}} {{self.path}}{{self.address}} {{self.port}}",
       "broadcast_description": "Requests are sent without specifying exact id of the device. Use the mode if only one device is connected",
       "frame_timeout_description": "Specifies minimum inter-frame delay. For some protocols this value is used to split incoming data into frames.",
-      "response_timeout_description": "Specifies maximum device's response time. Zero means no timeout. If not set, the default timeout (500ms) is used. If port's appropriate parameter is bigger, this one is overvitten.",
+      "response_timeout_description": "Specifies maximum device's response time. Zero means no timeout. If not set, the default timeout (500ms) is used. If port's appropriate parameter is bigger, this one is overwritten.",
       "device_timeout_description": "Specifies timeout for device connection. If not set, default value 3000ms is used. Value -1 disables device reconnect. Zero means instant timeout.",
       "device_max_fail_cycles_desc": "Defines number of device polling cycles with all failed registers before marking device as disconnected. Default value is 2. Value -1 disables device reconnect. Zero means instant timeout.",
       "max_unchanged_interval_desc": "Specifies the maximum interval in seconds between posting the same values to message queue. Zero means the values are posted to the queue every time they read from the device. By default, the values are only reported on change. Negative value means default behavior."
