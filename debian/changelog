@@ -1,8 +1,32 @@
-wb-mqtt-serial (2.47.0) stable; urgency=medium
+wb-mqtt-serial (2.53.0) stable; urgency=medium
 
   * "units" parameter is added to control's settings. Supported units are defined in conventions.
 
- -- Petr Krasnoshchekov <petr.krasnoshchekov@wirenboard.ru>  Wed, 16 Feb 2022 18:10:47 +0500
+ -- Petr Krasnoshchekov <petr.krasnoshchekov@wirenboard.ru>  Mon, 21 Feb 2022 17:22:44 +0500
+
+wb-mqtt-serial (2.52.0) stable; urgency=medium
+
+  * MAI11 template: added read interval channels
+  * MAI11 template: fixed value scale for resistance in NTC or "resistance measurement using current measurement" modes
+
+ -- Pavel Gasheev <pavel.gasheev@wirenboard.ru>  Fri, 21 Feb 2022 12:21:14 +0300
+
+wb-mqtt-serial (2.51.2) stable; urgency=medium
+
+  * Read period minimum allowed value is set to 10ms
+
+ -- Petr Krasnoshchekov <petr.krasnoshchekov@wirenboard.ru>  Fri, 18 Feb 2022 10:16:41 +0500
+
+wb-mqtt-serial (2.51.1) stable; urgency=medium
+
+  * MCU Temperature and MCU Voltage channels were added to
+    WB-M1W2, WB-MAO4, WB-MAP12E fw2, WB-MAP3E fw2, WB-MAP3ET, WB-MAP3EV,
+    WB-MAP6S, WB-MCM8, WB-MDM3, WB-MIR v2, WB-MRGBW-D, WB-MRGBW-D fw3,
+    WB-MWAC templates
+  * Channel MCU Voltage was moved to group HW Info in WB-MS v2 and WB-
+    MSW v3 templates
+
+ -- Dmitry Vorobjev <d.vorobjev@wirenboard.ru>  Mon, 14 Feb 2022 17:41:50 +0300
 
 wb-mqtt-serial (2.51.0) stable; urgency=medium
 
