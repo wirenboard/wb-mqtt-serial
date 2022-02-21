@@ -10,19 +10,12 @@
 #include "metrics.h"
 #include "poll_plan.h"
 #include "register_handler.h"
+#include "rpc_port_handler.h"
 #include "serial_device.h"
 
 struct TRegisterComparePredicate
 {
     bool operator()(const PRegister& r1, const PRegister& r2) const;
-};
-
-enum ERPCState
-{
-    RPC_IDLE,
-    RPC_WRITE,
-    RPC_READ,
-    RPC_ERROR
 };
 
 class TSerialClient: public std::enable_shared_from_this<TSerialClient>
@@ -51,7 +44,7 @@ public:
                   std::chrono::milliseconds respTimeout,
                   std::chrono::milliseconds frameTimeout);
     bool RPCRead(std::vector<uint8_t>& buf, size_t& actualSize, bool& error);
-    void GetPortInfo(Json::Value& info);
+    Json::Value GetPortName();
 
 private:
     void Activate();
@@ -68,7 +61,6 @@ private:
     void UpdateFlushNeeded();
     void ProcessPolledRegister(PRegister reg);
     void ScheduleNextPoll(PRegister reg, std::chrono::steady_clock::time_point pollStartTime);
-    void RPCRequestHandling();
 
     PPort Port;
     std::list<PRegister> RegList;
@@ -86,12 +78,7 @@ private:
     TLoggerWithTimeout ConnectLogger;
     Metrics::TMetrics& Metrics;
 
-    std::mutex RPCMutex;
-    std::vector<uint8_t> RPCWriteData, RPCReadData;
-    size_t RPCRequestedSize, RPCActualSize;
-    std::chrono::milliseconds RPCRespTimeout;
-    std::chrono::milliseconds RPCFrameTimeout;
-    enum ERPCState RPCState = RPC_IDLE;
+    TRPCPortHandler RPCPortHandler;
 };
 
 typedef std::shared_ptr<TSerialClient> PSerialClient;

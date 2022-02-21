@@ -244,9 +244,9 @@ bool TSerialPortDriver::RPCRead(std::vector<uint8_t>& buf, size_t& actualSize, b
     return SerialClient->RPCRead(buf, actualSize, error);
 }
 
-void TSerialPortDriver::GetPortInfo(Json::Value& info)
+Json::Value TSerialPortDriver::GetPortName()
 {
-    SerialClient->GetPortInfo(info);
+    return SerialClient->GetPortName();
 }
 
 void TDeviceChannel::UpdateValueAndError(WBMQTT::TDeviceDriver& deviceDriver,
