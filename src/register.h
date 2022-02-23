@@ -187,6 +187,12 @@ struct TRegisterDesc
     std::shared_ptr<IRegisterAddress> WriteAddress; //! Write Register address
 };
 
+enum class EDeviceType
+{
+    SOMFY,
+    MODBUS
+};
+
 class TRegisterConfig: public std::enable_shared_from_this<TRegisterConfig>
 {
     TRegisterDesc Address;
@@ -220,8 +226,7 @@ public:
                     const std::string& type_name,
                     const EWordOrder word_order);
 
-    uint8_t CalculateBitWidth() const;
-    uint8_t GetBitWidth() const;
+    uint8_t GetBitWidth(EDeviceType deviceType) const;
     uint8_t GetBitOffset() const;
     uint8_t GetByteWidth() const;
 

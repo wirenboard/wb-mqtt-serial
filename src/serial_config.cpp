@@ -643,6 +643,13 @@ namespace
             }
         }
     }
+
+    inline bool HasWriteAddressProperty(const Json::Value& regCfg)
+    {
+        return regCfg.isMember(SerialConfig::WRITE_ADDRESS_PROPERTY_NAME) &&
+               !(regCfg[SerialConfig::WRITE_ADDRESS_PROPERTY_NAME].isString() &&
+                 regCfg[SerialConfig::WRITE_ADDRESS_PROPERTY_NAME].asString().empty());
+    }
 }
 
 std::string DecorateIfNotEmpty(const std::string& prefix, const std::string& str, const std::string& postfix)
@@ -1320,16 +1327,6 @@ void RegisterProtocols(TSerialDeviceFactory& deviceFactory)
     Dooya::TDevice::Register(deviceFactory);
     WinDeco::TDevice::Register(deviceFactory);
     Somfy::TDevice::Register(deviceFactory);
-}
-
-namespace
-{
-    inline bool HasWriteAddressProperty(const Json::Value& regCfg)
-    {
-        return regCfg.isMember(SerialConfig::WRITE_ADDRESS_PROPERTY_NAME) &&
-               !(regCfg[SerialConfig::WRITE_ADDRESS_PROPERTY_NAME].isString() &&
-                 regCfg[SerialConfig::WRITE_ADDRESS_PROPERTY_NAME].asString().empty());
-    }
 }
 
 TRegisterBitsAddress LoadRegisterBitsAddress(const Json::Value& register_data, const std::string& jsonPropertyName)

@@ -252,7 +252,10 @@ uint64_t Somfy::TDevice::ReadRegisterImpl(PRegister reg)
         }
         case PARAM: {
             const auto& addr = dynamic_cast<const TSomfyAddress&>(reg->GetAddress());
-            return GetCachedResponse(addr.Get(), addr.GetResponseHeader(), reg->GetBitOffset(), reg->GetBitWidth());
+            return GetCachedResponse(addr.Get(),
+                                     addr.GetResponseHeader(),
+                                     reg->GetBitOffset(),
+                                     reg->GetBitWidth(EDeviceType::SOMFY));
         }
         case COMMAND: {
             return 1;

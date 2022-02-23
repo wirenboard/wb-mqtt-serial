@@ -210,22 +210,21 @@ uint8_t TRegisterConfig::GetByteWidth() const
 
 uint8_t TRegisterConfig::Get16BitWidth() const
 {
-    auto totalBit = Address.BitOffset + CalculateBitWidth();
+    auto totalBit = Address.BitOffset + GetBitWidth(EDeviceType::MODBUS);
     return totalBit / 16 + (totalBit % 16 ? 1 : 0);
 }
 
-uint8_t TRegisterConfig::GetBitWidth() const
+uint8_t TRegisterConfig::GetBitWidth(EDeviceType deviceType) const
 {
-    return Address.BitWidth;
-}
-
-uint8_t TRegisterConfig::CalculateBitWidth() const
-{
-    if (Address.BitWidth) {
+    if (deviceType == EDeviceType::SOMFY) {
         return Address.BitWidth;
+    } else if (deviceType == EDeviceType::MODBUS) {
+        if (Address.BitWidth) {
+            return Address.BitWidth;
+        }
+        return GetByteWidth() * 8;
     }
-
-    return GetByteWidth() * 8;
+    throw std::runtime_error("Device type are not defined");
 }
 
 uint8_t TRegisterConfig::GetBitOffset() const
