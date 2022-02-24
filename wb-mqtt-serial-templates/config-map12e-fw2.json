@@ -474,9 +474,9 @@
                 "group": "channel4_l3",
                 "order": 3
             },
-            "baudrate": {
-                "title": "Baudrate (bit/s)",
-                "description": "baudrate_description",
+            "baud_rate": {
+                "title": "Baud rate",
+                "description": "baud_rate_description",
                 "address": 110,
                 "reg_type": "holding",
                 "enum": [96, 192, 384, 576, 1152],
@@ -2031,7 +2031,7 @@
         "translations": {
             "en": {
                 "WB-MAP12E-fw2_template_title": "WB-MAP12E fw2 (multi-channel enegry meter)",
-                "baudrate_description": "Before changing make sure that communication with device is established. After saving configuration change port baudrate to the same value.",
+                "baud_rate_description": "Before changing make sure that communication with device is established. After saving configuration change port baud rate to the same value.",
                 "Supply voltage": "5V Supply",
                 "Uptime": "Uptime (s)"
             },
@@ -2092,8 +2092,8 @@
                 "Channel 4 Phi L3": "Фазовая задержка L3",
                 "Channel 4 Actual Phase L3": "Фаза транформатора L3",
                 "Peaks Measurement Period (s)": "Период сброса пиковых значений (с)",
-                "Baudrate (bit/s)": "Скорость обмена (бит/с)",
-                "baudrate_description": "Перед изменением убедитесь, что связь с устройством установлена. После сохранения конфигурации измените скорость обмена для порта на то же значение.",
+                "Baud rate": "Скорость обмена",
+                "baud_rate_description": "Перед изменением убедитесь, что связь с устройством установлена. После сохранения конфигурации измените скорость обмена для порта на то же значение.",
                 "Voltage angle L1": "Фазовый угол L1",
                 "Voltage angle L2": "Фазовый угол L2",
                 "Voltage angle L3": "Фазовый угол L3",

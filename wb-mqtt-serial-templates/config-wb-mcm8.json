@@ -142,9 +142,9 @@
                 "group": "input_8",
                 "order": 1
             },
-            "baudrate": {
-                "title": "Baudrate (bit/s)",
-                "description": "baudrate_description",
+            "baud_rate": {
+                "title": "Baud rate",
+                "description": "baud_rate_description",
                 "address": 110,
                 "reg_type": "holding",
                 "enum": [96, 192, 384, 576, 1152],
@@ -425,7 +425,7 @@
         "translations": {
             "en": {
                 "WB-MCM8_template_title": "WB-MCM8 (8-channel pulse counter)",
-                "baudrate_description": "Before changing make sure that communication with device is established. After saving configuration change port baudrate to the same value.",
+                "baud_rate_description": "Before changing make sure that communication with device is established. After saving configuration change port baud rate to the same value.",
                 "Uptime": "Uptime (s)"
             },
             "ru": {
@@ -448,8 +448,8 @@
                 "Input 6 Debounce (ms)": "Время защиты от дребезга входа 6 (мс)",
                 "Input 7 Debounce (ms)": "Время защиты от дребезга входа 7 (мс)",
                 "Input 8 Debounce (ms)": "Время защиты от дребезга входа 8 (мс)",
-                "Baudrate (bit/s)": "Скорость обмена (бит/с)",
-                "baudrate_description": "Перед изменением убедитесь, что связь с устройством установлена. После сохранения конфигурации измените скорость обмена для порта на то же значение.",
+                "Baud rate": "Скорость обмена",
+                "baud_rate_description": "Перед изменением убедитесь, что связь с устройством установлена. После сохранения конфигурации измените скорость обмена для порта на то же значение.",
                 "Input 1 counter": "Счетчик 1",
                 "Input 2 counter": "Счетчик 2",
                 "Input 3 counter": "Счетчик 3",

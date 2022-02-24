@@ -251,9 +251,9 @@
                 "group": "outputs",
                 "order": 2
             },
-            "baudrate": {
-                "title": "Baudrate (bit/s)",
-                "description": "baudrate_description",
+            "baud_rate": {
+                "title": "Baud rate",
+                "description": "baud_rate_description",
                 "address": 110,
                 "reg_type": "holding",
                 "enum": [96, 192, 384, 576, 1152],
@@ -527,7 +527,7 @@
         "translations": {
             "en": {
                 "WB-MWAC_template_title": "WB-MWAC (water leak and meters controller)",
-                "baudrate_description": "Before changing make sure that communication with device is established. After saving configuration change port baudrate to the same value.",
+                "baud_rate_description": "Before changing make sure that communication with device is established. After saving configuration change port baud rate to the same value.",
                 "Uptime": "Uptime (s)"
             },
             "ru": {
@@ -564,8 +564,8 @@
                 "no": "нет",
                 "yes": "да",
                 "Safety Timer (s)": "Таймаут безопасного режима (с)",
-                "Baudrate (bit/s)": "Скорость обмена (бит/с)",
-                "baudrate_description": "Перед изменением убедитесь, что связь с устройством установлена. После сохранения конфигурации измените скорость обмена для порта на то же значение.",
+                "Baud rate": "Скорость обмена",
+                "baud_rate_description": "Перед изменением убедитесь, что связь с устройством установлена. После сохранения конфигурации измените скорость обмена для порта на то же значение.",
                 "P1 Counter": "Счетчик P1",
                 "P1 Counter Offset": "Начальное значение счетчика P1",
                 "P2 Counter": "Счетчик P2",
