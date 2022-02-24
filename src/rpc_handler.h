@@ -32,6 +32,7 @@ public:
     std::vector<uint8_t> msg;
     std::chrono::microseconds responseTimeout;
     std::chrono::microseconds frameTimeout;
+    std::chrono::seconds totalTimeout;
     std::string format;
     size_t responseSize;
 };

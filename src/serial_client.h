@@ -65,6 +65,7 @@ public:
                       size_t responseSize,
                       std::chrono::microseconds respTimeout,
                       std::chrono::microseconds frameTimeout,
+                      std::chrono::seconds totalTimeout,
                       std::vector<uint8_t>& response,
                       size_t& actualResponseSize);
     Json::Value GetPortName();

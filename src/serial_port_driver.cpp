@@ -233,10 +233,12 @@ bool TSerialPortDriver::RPCTransieve(std::vector<uint8_t>& buf,
                                      size_t responseSize,
                                      std::chrono::microseconds respTimeout,
                                      std::chrono::microseconds frameTimeout,
+                                     std::chrono::seconds totalTimeout,
                                      std::vector<uint8_t>& response,
                                      size_t& actualResponseSize)
 {
-    return SerialClient->RPCTransieve(buf, responseSize, respTimeout, frameTimeout, response, actualResponseSize);
+    return SerialClient
+        ->RPCTransieve(buf, responseSize, respTimeout, frameTimeout, totalTimeout, response, actualResponseSize);
 }
 
 Json::Value TSerialPortDriver::GetPortName()
