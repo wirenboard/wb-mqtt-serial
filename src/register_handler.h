@@ -14,7 +14,7 @@ using WBMQTT::StringFormat;
 class TRegisterHandler
 {
 public:
-    TRegisterHandler(PSerialDevice dev, PRegister reg, PBinarySemaphore flush_needed);
+    TRegisterHandler(PSerialDevice dev, PRegister reg);
 
     PRegister Register() const;
 
@@ -34,7 +34,6 @@ private:
     PRegister Reg;
     volatile bool Dirty = false;
     std::mutex SetValueMutex;
-    PBinarySemaphore FlushNeeded;
     bool WriteFail;
     std::chrono::steady_clock::time_point WriteFirstTryTime;
 };

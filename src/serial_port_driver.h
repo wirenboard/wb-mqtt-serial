@@ -69,12 +69,12 @@ public:
 
     static void HandleControlOnValueEvent(const WBMQTT::TControlOnValueEvent& event);
 
-    void RPCWrite(const std::vector<uint8_t>& buf,
-                  size_t responseSize,
-                  std::chrono::milliseconds respTimeout,
-                  std::chrono::milliseconds frameTimeout);
-
-    bool RPCRead(std::vector<uint8_t>& buf, size_t& responseSize, bool& error);
+    bool RPCTransieve(std::vector<uint8_t>& buf,
+                      size_t responseSize,
+                      std::chrono::microseconds respTimeout,
+                      std::chrono::microseconds frameTimeout,
+                      std::vector<uint8_t>& response,
+                      size_t& actualResponseSize);
 
     Json::Value GetPortName();
 

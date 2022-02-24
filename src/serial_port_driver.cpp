@@ -229,18 +229,14 @@ TControlArgs TSerialPortDriver::From(const PDeviceChannel& channel)
     return args;
 }
 
-void TSerialPortDriver::RPCWrite(const std::vector<uint8_t>& buf,
-                                 size_t responseSize,
-                                 std::chrono::milliseconds respTimeout,
-                                 std::chrono::milliseconds frameTimeout)
+bool TSerialPortDriver::RPCTransieve(std::vector<uint8_t>& buf,
+                                     size_t responseSize,
+                                     std::chrono::microseconds respTimeout,
+                                     std::chrono::microseconds frameTimeout,
+                                     std::vector<uint8_t>& response,
+                                     size_t& actualResponseSize)
 {
-    SerialClient->RPCWrite(buf, responseSize, respTimeout, frameTimeout);
-    return;
-}
-
-bool TSerialPortDriver::RPCRead(std::vector<uint8_t>& buf, size_t& actualSize, bool& error)
-{
-    return SerialClient->RPCRead(buf, actualSize, error);
+    return SerialClient->RPCTransieve(buf, responseSize, respTimeout, frameTimeout, response, actualResponseSize);
 }
 
 Json::Value TSerialPortDriver::GetPortName()

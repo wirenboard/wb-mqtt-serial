@@ -11,11 +11,7 @@ namespace
     const seconds MAX_WRITE_FAIL_TIME(600); // 10 minutes
 }
 
-TRegisterHandler::TRegisterHandler(PSerialDevice dev, PRegister reg, PBinarySemaphore flush_needed)
-    : Dev(dev),
-      Reg(reg),
-      FlushNeeded(flush_needed),
-      WriteFail(false)
+TRegisterHandler::TRegisterHandler(PSerialDevice dev, PRegister reg): Dev(dev), Reg(reg), WriteFail(false)
 {}
 
 bool TRegisterHandler::NeedToFlush()
@@ -68,13 +64,10 @@ void TRegisterHandler::Flush()
 
 void TRegisterHandler::SetTextValue(const std::string& v)
 {
-    {
-        // don't hold the lock while notifying the client below
-        std::lock_guard<std::mutex> lock(SetValueMutex);
-        Dirty = true;
-        ValueToSet = ConvertToRawValue(*Reg, v);
-    }
-    FlushNeeded->Signal();
+    // don't hold the lock while notifying the client below
+    std::lock_guard<std::mutex> lock(SetValueMutex);
+    Dirty = true;
+    ValueToSet = ConvertToRawValue(*Reg, v);
 }
 
 PRegister TRegisterHandler::Register() const
