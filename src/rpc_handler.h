@@ -30,8 +30,8 @@ public:
     std::string ip;
     int port;
     std::vector<uint8_t> msg;
-    std::chrono::milliseconds responseTimeout;
-    std::chrono::milliseconds frameTimeout;
+    std::chrono::microseconds responseTimeout;
+    std::chrono::microseconds frameTimeout;
     std::string format;
     size_t responseSize;
 };

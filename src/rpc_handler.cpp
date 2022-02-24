@@ -68,6 +68,7 @@ bool TRPCPortConfig::LoadValues(const Json::Value& request)
             throw std::exception();
         }
 
+        msg.clear();
         if (format == "HEX") {
             if (msgStr.size() % 2 != 0) {
                 throw std::exception();
@@ -139,12 +140,13 @@ Json::Value TRPCHandler::PortLoad(const Json::Value& request)
             throw TRPCException("Requested port doesn't exist", RPCPortHandlerResult::RPC_WRONG_PORT);
         }
 
-        bool error = false;
-        portDriver->RPCWrite(config.msg, config.responseSize, config.responseTimeout, config.frameTimeout);
-        while (!portDriver->RPCRead(response, actualResponseSize, error)) {
-        };
-
-        if (error) {
+        if (!portDriver->RPCTransieve(config.msg,
+                                      config.responseSize,
+                                      config.responseTimeout,
+                                      config.frameTimeout,
+                                      response,
+                                      actualResponseSize))
+        {
             throw TRPCException("Port IO error", RPCPortHandlerResult::RPC_WRONG_IO);
         }
 
