@@ -116,9 +116,9 @@
                 "group": "outputs",
                 "order": 2
             },
-            "baudrate": {
-                "title": "Baudrate (bit/s)",
-                "description": "baudrate_description",
+            "baud_rate": {
+                "title": "Baud rate",
+                "description": "baud_rate_description",
                 "address": 110,
                 "reg_type": "holding",
                 "enum": [96, 192, 384, 576, 1152],
@@ -253,7 +253,7 @@
         "translations": {
             "en": {
                 "WB-MRM2-mini-NC_template_title": "WB-MRM2-mini/NC (2-channel relay)",
-                "baudrate_description": "Before changing make sure that communication with device is established. After saving configuration change port baudrate to the same value.",
+                "baud_rate_description": "Before changing make sure that communication with device is established. After saving configuration change port baud rate to the same value.",
                 "Uptime": "Uptime (s)"
             },
             "ru": {
@@ -276,8 +276,8 @@
                 "no": "нет",
                 "yes": "да",
                 "Safety Timer (s)": "Таймаут безопасного режима (с)",
-                "Baudrate (bit/s)": "Скорость обмена (бит/с)",
-                "baudrate_description": "Перед изменением убедитесь, что связь с устройством установлена. После сохранения конфигурации измените скорость обмена для порта на то же значение.",
+                "Baud rate": "Скорость обмена",
+                "baud_rate_description": "Перед изменением убедитесь, что связь с устройством установлена. После сохранения конфигурации измените скорость обмена для порта на то же значение.",
                 "Button 1 counter": "Счетчик 1",
                 "Button 2 counter": "Счетчик 2",
                 "Button 1 freq": "Частота 1",
