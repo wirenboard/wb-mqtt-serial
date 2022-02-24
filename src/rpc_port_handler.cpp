@@ -12,6 +12,7 @@ bool TRPCPortHandler::RPCTransieve(std::vector<uint8_t>& buf,
                                    size_t responseSize,
                                    std::chrono::microseconds respTimeout,
                                    std::chrono::microseconds frameTimeout,
+                                   std::chrono::seconds totalTimeout,
                                    std::vector<uint8_t>& response,
                                    size_t& actualResponseSize,
                                    PBinarySemaphore rpcSemaphore,
@@ -25,7 +26,7 @@ bool TRPCPortHandler::RPCTransieve(std::vector<uint8_t>& buf,
     RPCFrameTimeout = frameTimeout;
     RPCState = RPCPortState::RPC_WRITE;
     auto now = std::chrono::steady_clock::now();
-    auto until = now + std::chrono::seconds(10);
+    auto until = now + totalTimeout;
     rpcSemaphore->Signal(rpcSignal);
 
     RPCMutex.unlock();
