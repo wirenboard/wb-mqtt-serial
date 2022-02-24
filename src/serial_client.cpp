@@ -121,7 +121,10 @@ TSerialClient::TSerialClient(const std::vector<PSerialDevice>& devices,
       OpenCloseLogic(openCloseSettings),
       ConnectLogger(PORT_OPEN_ERROR_NOTIFICATION_INTERVAL, "[serial client] "),
       Metrics(metrics)
-{}
+{
+    RegisterSignal = FlushNeeded->SignalRegistration();
+    RPCSignal = FlushNeeded->SignalRegistration();
+}
 
 TSerialClient::~TSerialClient()
 {
@@ -217,8 +220,15 @@ void TSerialClient::WaitForPollAndFlush(std::chrono::steady_clock::time_point wa
     // Limit waiting time ro be responsive
     waitUntil = std::min(waitUntil, now + MAX_POLL_TIME);
     while (FlushNeeded->Wait(waitUntil)) {
-        DoFlush();
-        Metrics.StartPoll(Metrics::BUS_IDLE);
+        if (FlushNeeded->GetSignalValue(RegisterSignal)) {
+            DoFlush();
+            Metrics.StartPoll(Metrics::BUS_IDLE);
+        }
+        if (FlushNeeded->GetSignalValue(RPCSignal)) {
+            RPCPortHandler.RPCRequestHandling(Port);
+        }
+
+        FlushNeeded->ResetAllSignals();
     }
 }
 
@@ -227,7 +237,7 @@ void TSerialClient::UpdateFlushNeeded()
     for (const auto& reg: RegList) {
         auto handler = Handlers[reg];
         if (handler->NeedToFlush()) {
-            FlushNeeded->Signal();
+            FlushNeeded->Signal(RegisterSignal);
             break;
         }
     }
@@ -237,8 +247,14 @@ void TSerialClient::MaybeFlushAvoidingPollStarvationButDontWait()
 {
     // avoid poll starvation
     int flush_count_remaining = MAX_FLUSHES_WHEN_POLL_IS_DUE;
-    while (flush_count_remaining-- && FlushNeeded->TryWait())
-        DoFlush();
+    while (flush_count_remaining--) {
+        if (FlushNeeded->GetSignalValue(RegisterSignal)) {
+            DoFlush();
+        }
+        if (FlushNeeded->GetSignalValue(RPCSignal)) {
+            RPCPortHandler.RPCRequestHandling(Port);
+        }
+    }
 }
 
 void TSerialClient::SetReadError(PRegister reg)
@@ -307,16 +323,21 @@ void TSerialClient::ClosedPortCycle()
         wait_until = now + MAX_CLOSED_PORT_CYCLE_TIME;
     }
     while (FlushNeeded->Wait(wait_until)) {
-        for (const auto& reg: RegList) {
-            auto handler = Handlers[reg];
-            if (!handler->NeedToFlush())
-                continue;
-            reg->SetError(TRegister::TError::WriteError);
-            if (ErrorCallback) {
-                ErrorCallback(reg);
+        if (FlushNeeded->GetSignalValue(RegisterSignal)) {
+
+            for (const auto& reg: RegList) {
+                auto handler = Handlers[reg];
+                if (!handler->NeedToFlush())
+                    continue;
+                reg->SetError(TRegister::TError::WriteError);
+                if (ErrorCallback) {
+                    ErrorCallback(reg);
+                }
             }
         }
+        FlushNeeded->ResetAllSignals();
     }
+
     TClosedPortRegisterReader reader;
     Scheduler.AccumulateNext(wait_until, reader);
     for (auto& reg: reader.GetRegisters()) {
@@ -334,6 +355,7 @@ void TSerialClient::ClearDevices()
 void TSerialClient::SetTextValue(PRegister reg, const std::string& value)
 {
     GetHandler(reg)->SetTextValue(value);
+    FlushNeeded->Signal(RegisterSignal);
 }
 
 void TSerialClient::SetReadCallback(const TSerialClient::TCallback& callback)
@@ -348,7 +370,7 @@ void TSerialClient::SetErrorCallback(const TSerialClient::TCallback& callback)
 
 void TSerialClient::NotifyFlushNeeded()
 {
-    FlushNeeded->Signal();
+    FlushNeeded->Signal(RegisterSignal);
 }
 
 PRegisterHandler TSerialClient::GetHandler(PRegister reg) const
@@ -373,7 +395,6 @@ void TSerialClient::OpenPortCycle()
     WaitForPollAndFlush(Scheduler.GetDeadline());
     auto pollStartTime = std::chrono::steady_clock::now();
     Metrics.StartPoll(Metrics::NON_BUS_POLLING_TASKS);
-    RPCPortHandler.RPCRequestHandling(Port);
 
     TRegisterReader reader(MAX_POLL_TIME);
 
@@ -417,17 +438,21 @@ void TSerialClient::OpenPortCycle()
     Metrics.StartPoll(Metrics::BUS_IDLE);
 }
 
-void TSerialClient::RPCWrite(const std::vector<uint8_t>& buf,
-                             size_t responseSize,
-                             std::chrono::milliseconds respTimeout,
-                             std::chrono::milliseconds frameTimeout)
+bool TSerialClient::RPCTransieve(std::vector<uint8_t>& buf,
+                                 size_t responseSize,
+                                 std::chrono::microseconds respTimeout,
+                                 std::chrono::microseconds frameTimeout,
+                                 std::vector<uint8_t>& response,
+                                 size_t& actualResponseSize)
 {
-    RPCPortHandler.RPCWrite(buf, responseSize, respTimeout, frameTimeout);
-}
-
-bool TSerialClient::RPCRead(std::vector<uint8_t>& buf, size_t& actualSize, bool& error)
-{
-    return RPCPortHandler.RPCRead(buf, actualSize, error);
+    return RPCPortHandler.RPCTransieve(buf,
+                                       responseSize,
+                                       respTimeout,
+                                       frameTimeout,
+                                       response,
+                                       actualResponseSize,
+                                       FlushNeeded,
+                                       RPCSignal);
 }
 
 Json::Value TSerialClient::GetPortName()
