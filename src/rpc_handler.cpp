@@ -59,6 +59,8 @@ bool TRPCPortConfig::LoadValues(const Json::Value& request)
             frameTimeout = DefaultFrameTimeout;
         }
 
+        totalTimeout = std::chrono::seconds(10);
+
         if (!WBMQTT::JSON::Get(request, "format", format)) {
             format = "";
         }
@@ -144,6 +146,7 @@ Json::Value TRPCHandler::PortLoad(const Json::Value& request)
                                       config.responseSize,
                                       config.responseTimeout,
                                       config.frameTimeout,
+                                      config.totalTimeout,
                                       response,
                                       actualResponseSize))
         {
