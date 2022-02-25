@@ -4,8 +4,8 @@
 
 TRPCPortHandler::TRPCPortHandler()
 {
-    semaphore = std::make_shared<TBinarySemaphore>();
-    signal = semaphore->SignalRegistration();
+    Semaphore = std::make_shared<TBinarySemaphore>();
+    Signal = Semaphore->SignalRegistration();
 }
 
 bool TRPCPortHandler::RPCTransieve(std::vector<uint8_t>& buf,
@@ -31,12 +31,12 @@ bool TRPCPortHandler::RPCTransieve(std::vector<uint8_t>& buf,
 
     RPCMutex.unlock();
 
-    if (!semaphore->Wait(until)) {
+    if (!Semaphore->Wait(until)) {
         RPCState = RPCPortState::RPC_IDLE;
         return false;
     }
 
-    semaphore->ResetAllSignals();
+    Semaphore->ResetAllSignals();
 
     bool result;
     if (RPCState == RPCPortState::RPC_READ) {
@@ -51,16 +51,16 @@ bool TRPCPortHandler::RPCTransieve(std::vector<uint8_t>& buf,
     return result;
 }
 
-void TRPCPortHandler::RPCRequestHandling(PPort Port)
+void TRPCPortHandler::RPCRequestHandling(PPort port)
 {
     if (RPCState == RPCPortState::RPC_WRITE) {
         RPCMutex.lock();
         try {
-            Port->SleepSinceLastInteraction(RPCFrameTimeout);
-            Port->WriteBytes(RPCWriteData);
+            port->SleepSinceLastInteraction(RPCFrameTimeout);
+            port->WriteBytes(RPCWriteData);
 
             uint8_t readData[RPCRequestedSize];
-            RPCActualSize = Port->ReadFrame(readData, RPCRequestedSize, RPCRespTimeout, RPCFrameTimeout);
+            RPCActualSize = port->ReadFrame(readData, RPCRequestedSize, RPCRespTimeout, RPCFrameTimeout);
 
             RPCReadData.clear();
             for (size_t i = 0; i < RPCRequestedSize; i++) {
@@ -71,7 +71,7 @@ void TRPCPortHandler::RPCRequestHandling(PPort Port)
             RPCState = RPCPortState::RPC_ERROR;
         }
 
-        semaphore->Signal(signal);
+        Semaphore->Signal(Signal);
         RPCMutex.unlock();
     }
 }
