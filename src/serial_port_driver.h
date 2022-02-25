@@ -63,7 +63,7 @@ public:
                       Metrics::TMetrics& metrics);
 
     void SetUpDevices();
-    void Cycle();
+    void Cycle(std::chrono::steady_clock::time_point now = std::chrono::steady_clock::now());
     void ClearDevices() noexcept;
 
     const std::string& GetShortDescription() const;

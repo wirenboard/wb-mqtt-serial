@@ -60,7 +60,6 @@ namespace Modbus // modbus protocol declarations
     class TModbusRegisterRange: public TRegisterRange
     {
     public:
-        TModbusRegisterRange(PRegister reg);
         ~TModbusRegisterRange();
 
         bool Add(PRegister reg, std::chrono::milliseconds pollLimit) override;
@@ -72,6 +71,7 @@ namespace Modbus // modbus protocol declarations
         bool HasHoles() const;
         const std::string& TypeName() const;
         int Type() const;
+        PSerialDevice Device() const;
 
         TRequest GetRequest(IModbusTraits& traits, uint8_t slaveId, int shift);
         size_t GetResponseSize(IModbusTraits& traits);
@@ -79,9 +79,21 @@ namespace Modbus // modbus protocol declarations
     private:
         bool HasHolesFlg = false;
         uint32_t Start;
-        size_t Count;
+        size_t Count = 0;
         uint8_t* Bits = 0;
         uint16_t* Words = 0;
+
+        bool AddingRegisterIncreasesSize(bool isSingleBit, size_t extend)
+        {
+            if (!isSingleBit) {
+                return true;
+            }
+            if (Count % 16 == 0) {
+                return true;
+            }
+            auto maxRegsCount = ((Count / 16) + 1) * 16;
+            return (Count + extend) > maxRegsCount;
+        }
     };
 }
 
@@ -126,19 +138,6 @@ namespace Modbus // modbus protocol common utilities
         {}
     };
 
-    TModbusRegisterRange::TModbusRegisterRange(PRegister reg): TRegisterRange(reg)
-    {
-        if (IsSingleBitType(Type())) {
-            for (auto reg: RegisterList()) {
-                if (reg->Get16BitWidth() != 1)
-                    throw TSerialDeviceException("width other than 1 is not currently supported for reg type" +
-                                                 reg->TypeName);
-            }
-        }
-        Start = GetUint32RegisterAddress(reg->GetAddress());
-        Count = reg->Get16BitWidth();
-    }
-
     TModbusRegisterRange::~TModbusRegisterRange()
     {
         if (Bits)
@@ -153,77 +152,86 @@ namespace Modbus // modbus protocol common utilities
             return true;
         }
 
-        if (reg->Device() != RegisterList().front()->Device() || (RegisterList().front()->Type != reg->Type)) {
-            return false;
-        }
-
+        auto& deviceConfig = *(reg->Device()->DeviceConfig());
+        bool isSingleBit = IsSingleBitType(reg->Type);
         auto addr = GetUint32RegisterAddress(reg->GetAddress());
 
-        // Can't add register before first register in the range
-        if (Start > addr) {
-            return false;
-        }
-
-        bool isSingleBit = IsSingleBitType(reg->Type);
-
-        // Can't add register separated from last in the range by more than maxHole registers
-        int maxHole = 0;
-        if (Device()->GetSupportsHoles()) {
-            maxHole = isSingleBit ? Device()->DeviceConfig()->MaxBitHole : Device()->DeviceConfig()->MaxRegHole;
-        }
-        if (Start + Count + maxHole < addr) {
-            return false;
-        }
-
-        auto& deviceConfig = *(Device()->DeviceConfig());
-        if (RegisterList().back()->GetAvailable() == TRegisterAvailability::UNKNOWN) {
-            // Read UNKNOWN 2 byte registers one by one to find availability
-            if (!isSingleBit) {
+        size_t extend;
+        if (RegisterList().empty()) {
+            extend = reg->Get16BitWidth();
+        } else {
+            if (reg->Device() != RegisterList().front()->Device() || (RegisterList().front()->Type != reg->Type)) {
                 return false;
             }
-            // Disable holes for reading UNKNOWN registers
-            if (Start + Count < addr) {
+
+            // Can't add register before first register in the range
+            if (Start > addr) {
                 return false;
             }
-            // Can read up to 16 UNKNOWN single bit registers at once
-            size_t maxRegs = 16;
-            if ((deviceConfig.MaxReadRegisters > 0) && (deviceConfig.MaxReadRegisters <= MAX_READ_REGISTERS)) {
+
+            // Can't add register separated from last in the range by more than maxHole registers
+            int maxHole = 0;
+            if (reg->Device()->GetSupportsHoles()) {
+                maxHole = isSingleBit ? deviceConfig.MaxBitHole : deviceConfig.MaxRegHole;
+            }
+            if (Start + Count + maxHole < addr) {
+                return false;
+            }
+
+            if (RegisterList().back()->GetAvailable() == TRegisterAvailability::UNKNOWN) {
+                // Read UNKNOWN 2 byte registers one by one to find availability
+                if (!isSingleBit) {
+                    return false;
+                }
+                // Disable holes for reading UNKNOWN registers
+                if (Start + Count < addr) {
+                    return false;
+                }
+                // Can read up to 16 UNKNOWN single bit registers at once
+                size_t maxRegs = 16;
+                if ((deviceConfig.MaxReadRegisters > 0) && (deviceConfig.MaxReadRegisters <= MAX_READ_REGISTERS)) {
+                    maxRegs = deviceConfig.MaxReadRegisters;
+                }
+                if (reg->GetAvailable() == TRegisterAvailability::UNKNOWN && (RegisterList().size() >= maxRegs)) {
+                    return false;
+                }
+            } else {
+                // Don't mix available and unknown registers
+                if (reg->GetAvailable() == TRegisterAvailability::UNKNOWN) {
+                    return false;
+                }
+                HasHolesFlg = HasHolesFlg || (Start + Count < addr);
+            }
+
+            extend = std::max(0, static_cast<int>(addr + reg->Get16BitWidth()) - static_cast<int>(Start + Count));
+
+            auto maxRegs = isSingleBit ? MAX_READ_BITS : MAX_READ_REGISTERS;
+            if ((deviceConfig.MaxReadRegisters > 0) && (deviceConfig.MaxReadRegisters <= maxRegs)) {
                 maxRegs = deviceConfig.MaxReadRegisters;
             }
-            if (reg->GetAvailable() == TRegisterAvailability::UNKNOWN && (RegisterList().size() >= maxRegs)) {
+            if (Count + extend > static_cast<size_t>(maxRegs)) {
                 return false;
             }
-        } else {
-            // Don't mix available and unknown registers
-            if (reg->GetAvailable() == TRegisterAvailability::UNKNOWN) {
-                return false;
-            }
-            HasHolesFlg = HasHolesFlg || (Start + Count < addr);
         }
 
-        auto extend = std::max(0, static_cast<int>(addr + reg->Get16BitWidth()) - static_cast<int>(Start + Count));
-
-        auto maxRegs = isSingleBit ? MAX_READ_BITS : MAX_READ_REGISTERS;
-        if ((deviceConfig.MaxReadRegisters > 0) && (deviceConfig.MaxReadRegisters <= maxRegs)) {
-            maxRegs = deviceConfig.MaxReadRegisters;
-        }
-        if (static_cast<int>(Count) + extend > maxRegs) {
-            return false;
-        }
-
-        auto newPduSize = InferReadResponsePDUSize(Type(), Count + extend);
+        auto newPduSize = InferReadResponsePDUSize(reg->Type, Count + extend);
         // Request 8 bytes: SlaveID, Operation, Addr, Count, CRC
         // Response 5 bytes except data: SlaveID, Operation, Size, CRC
         auto newPollTime = std::chrono::duration_cast<std::chrono::milliseconds>(
-            Device()->Port()->GetSendTime(newPduSize + 8 + 5) + deviceConfig.ResponseTimeout +
+            reg->Device()->Port()->GetSendTime(newPduSize + 8 + 5) + deviceConfig.ResponseTimeout +
             deviceConfig.RequestDelay + 2 * deviceConfig.FrameTimeout);
-        if (newPollTime > pollLimit) {
-            return false;
-        }
 
-        RegisterList().push_back(reg);
-        Count += extend;
-        return true;
+        if (((Count != 0) && !AddingRegisterIncreasesSize(isSingleBit, extend)) || (newPollTime <= pollLimit)) {
+
+            if (Count == 0) {
+                Start = addr;
+            }
+
+            RegisterList().push_back(reg);
+            Count += extend;
+            return true;
+        }
+        return false;
     }
 
     uint8_t* TModbusRegisterRange::GetBits()
@@ -284,6 +292,11 @@ namespace Modbus // modbus protocol common utilities
     int TModbusRegisterRange::Type() const
     {
         return RegisterList().front()->Type;
+    }
+
+    PSerialDevice TModbusRegisterRange::Device() const
+    {
+        return RegisterList().front()->Device();
     }
 
     ostream& operator<<(ostream& s, const TModbusRegisterRange& range)
@@ -439,7 +452,7 @@ namespace Modbus // modbus protocol common utilities
             }
             return 1;
         } else {
-            if (w > 4 && reg.BitOffset == 0) {
+            if (w > 4 && reg.DataOffset == 0) {
                 throw TSerialDeviceException("can't pack more than 4 " + reg.TypeName + "s into a single value");
             }
             return w;
@@ -547,7 +560,7 @@ namespace Modbus // modbus protocol common utilities
                 cachedValue = value & 0xffff;
             }
 
-            auto localBitOffset = std::max(reg.BitOffset - bitPos, 0);
+            auto localBitOffset = std::max(reg.DataOffset - bitPos, 0);
 
             auto bitCount = std::min(uint8_t(16 - localBitOffset), bitsToAllocate);
 
@@ -594,7 +607,7 @@ namespace Modbus // modbus protocol common utilities
             cachedValue = value & 0xffff;
         }
 
-        auto localBitOffset = std::max(reg.BitOffset - wordIndex * 16, 0);
+        auto localBitOffset = std::max(reg.DataOffset - wordIndex * 16, 0);
 
         auto bitCount = std::min(uint8_t(16 - localBitOffset), bitWidth);
 
@@ -678,7 +691,7 @@ namespace Modbus // modbus protocol common utilities
             while (w--) {
                 uint16_t data = destination[addr - range.GetStart() + w];
 
-                auto localBitOffset = std::max(reg->BitOffset - wordIndex * 16, 0);
+                auto localBitOffset = std::max(reg->DataOffset - wordIndex * 16, 0);
 
                 auto bitCount = std::min(uint8_t(16 - localBitOffset), bitWidth);
 
@@ -707,9 +720,9 @@ namespace Modbus // modbus protocol common utilities
         }
     }
 
-    PRegisterRange CreateRegisterRange(PRegister reg)
+    PRegisterRange CreateRegisterRange()
     {
-        return std::make_shared<TModbusRegisterRange>(reg);
+        return std::make_shared<TModbusRegisterRange>();
     }
 
     size_t ProcessRequest(IModbusTraits& traits,
@@ -832,6 +845,9 @@ namespace Modbus // modbus protocol common utilities
                            Modbus::TRegisterCache& cache,
                            int shift)
     {
+        if (range->RegisterList().empty()) {
+            return;
+        }
         auto modbus_range = std::dynamic_pointer_cast<Modbus::TModbusRegisterRange>(range);
         if (!modbus_range) {
             throw std::runtime_error("modbus range expected");

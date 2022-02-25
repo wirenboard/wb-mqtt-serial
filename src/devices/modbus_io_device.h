@@ -21,7 +21,7 @@ public:
                     PPort port,
                     PProtocol protocol);
 
-    PRegisterRange CreateRegisterRange(PRegister reg) const override;
+    PRegisterRange CreateRegisterRange() const override;
     void ReadRegisterRange(PRegisterRange range) override;
     void WriteSetupRegisters() override;
 

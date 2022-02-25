@@ -114,18 +114,18 @@ TEST_F(TEMDeviceTest, Combined)
 {
     EnqueueMilurSessionSetupResponse();
     VerifyMilurQuery();
-    MilurDev->EndPollCycle();
+    MilurDev->InvalidateReadCache();
 
     EnqueueMercury230SessionSetupResponse();
     VerifyMercuryParamQuery();
-    Mercury230Dev->EndPollCycle();
+    Mercury230Dev->InvalidateReadCache();
 
     for (int i = 0; i < 3; i++) {
         VerifyMilurQuery();
-        MilurDev->EndPollCycle();
+        MilurDev->InvalidateReadCache();
 
         VerifyMercuryParamQuery();
-        Mercury230Dev->EndPollCycle();
+        Mercury230Dev->InvalidateReadCache();
     }
 
     SerialPort->Close();
@@ -159,11 +159,11 @@ TEST_F(TEMCustomPasswordTest, Combined)
 {
     EnqueueMilurAccessLevel2SessionSetupResponse();
     VerifyMilurQuery();
-    MilurDev->EndPollCycle();
+    MilurDev->InvalidateReadCache();
 
     EnqueueMercury230AccessLevel2SessionSetupResponse();
     VerifyMercuryParamQuery();
-    Mercury230Dev->EndPollCycle();
+    Mercury230Dev->InvalidateReadCache();
 
     SerialPort->Close();
 }

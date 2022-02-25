@@ -49,9 +49,9 @@ TModbusDevice::TModbusDevice(std::unique_ptr<Modbus::IModbusTraits> modbusTraits
     config->FrameTimeout = std::max(config->FrameTimeout, port->GetSendTime(3.5));
 }
 
-PRegisterRange TModbusDevice::CreateRegisterRange(PRegister reg) const
+PRegisterRange TModbusDevice::CreateRegisterRange() const
 {
-    return Modbus::CreateRegisterRange(reg);
+    return Modbus::CreateRegisterRange();
 }
 
 void TModbusDevice::WriteRegisterImpl(PRegister reg, uint64_t value)
