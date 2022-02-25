@@ -79,7 +79,7 @@ public:
                          const std::string& logPrefix,
                          IEC::TCrcFn crcFn);
 
-    void EndPollCycle() override;
+    void InvalidateReadCache() override;
     void EndSession() override;
 
 protected:

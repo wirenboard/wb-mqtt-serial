@@ -12,17 +12,34 @@ namespace
     const size_t REQUEST_LEN = 7;
     const ptrdiff_t HEADER_SZ = 5;
 
-    const TRegisterTypes RegisterTypes{{TMercury200Device::REG_PARAM_VALUE16, "param8", "value", U8, true},
-                                       {TMercury200Device::REG_PARAM_VALUE16, "param16", "value", BCD16, true},
-                                       {TMercury200Device::REG_PARAM_VALUE24, "param24", "value", BCD24, true},
-                                       {TMercury200Device::REG_PARAM_VALUE32, "param32", "value", BCD32, true}};
+    const TRegisterTypes RegisterTypes{{0, "param8", "value", U8, true},
+                                       {0, "param16", "value", BCD16, true},
+                                       {0, "param24", "value", BCD24, true},
+                                       {0, "param32", "value", BCD32, true}};
+
+    class TMercury200DeviceRegisterAddressFactory: public TUint32RegisterAddressFactory
+    {
+    public:
+        TRegisterDesc LoadRegisterAddress(const Json::Value& regCfg,
+                                          const IRegisterAddress& deviceBaseAddress,
+                                          uint32_t stride,
+                                          uint32_t registerByteWidth) const override
+        {
+            auto addr = LoadRegisterBitsAddress(regCfg);
+            TRegisterDesc res;
+            res.DataOffset = (addr.Address & 0xFF);
+            res.Address = std::make_shared<TUint32RegisterAddress>(addr.Address >> 8);
+            return res;
+        }
+    };
 }
 
 void TMercury200Device::Register(TSerialDeviceFactory& factory)
 {
-    factory.RegisterProtocol(
-        new TUint32SlaveIdProtocol("mercury200", RegisterTypes),
-        new TBasicDeviceFactory<TMercury200Device>("#/definitions/simple_device", "#/definitions/common_channel"));
+    factory.RegisterProtocol(new TUint32SlaveIdProtocol("mercury200", RegisterTypes),
+                             new TBasicDeviceFactory<TMercury200Device, TMercury200DeviceRegisterAddressFactory>(
+                                 "#/definitions/simple_device",
+                                 "#/definitions/common_channel"));
 }
 
 TMercury200Device::TMercury200Device(PDeviceConfig config, PPort port, PProtocol protocol)
@@ -58,40 +75,20 @@ std::vector<uint8_t> TMercury200Device::ExecCommand(uint8_t cmd)
 
 uint64_t TMercury200Device::ReadRegisterImpl(PRegister reg)
 {
-    auto addr = GetUint32RegisterAddress(reg->GetAddress());
-    uint8_t cmd = (addr & 0xFF00) >> 8;
-    uint8_t offset = (addr & 0xFF);
-
-    WordSizes size;
-    switch (reg->Type) {
-        case REG_PARAM_VALUE32:
-            size = WordSizes::W32_SZ;
-            break;
-        case REG_PARAM_VALUE24:
-            size = WordSizes::W24_SZ;
-            break;
-        case REG_PARAM_VALUE16:
-            size = WordSizes::W16_SZ;
-            break;
-        case REG_PARAM_VALUE8:
-            size = WordSizes::W8_SZ;
-            break;
-        default:
-            throw TSerialDeviceException("mercury200: invalid register type");
-    }
-
+    uint8_t cmd = (GetUint32RegisterAddress(reg->GetAddress()) & 0xFF);
     auto result = ExecCommand(cmd);
-    if (result.size() < offset + static_cast<unsigned>(size))
+    auto size = RegisterFormatByteWidth(reg->Format);
+    if (result.size() < reg->DataOffset + size)
         throw TSerialDeviceException("mercury200: register address is out of range");
 
-    return PackBytes(result.data() + offset, size);
+    return PackBytes(result.data() + reg->DataOffset, static_cast<WordSizes>(size));
 }
 
-void TMercury200Device::EndPollCycle()
+void TMercury200Device::InvalidateReadCache()
 {
     CmdResultCache.clear();
 
-    TSerialDevice::EndPollCycle();
+    TSerialDevice::InvalidateReadCache();
 }
 
 bool TMercury200Device::IsCrcValid(uint8_t* buf, int sz) const

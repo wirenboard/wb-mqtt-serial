@@ -16,21 +16,12 @@
 class TMercury200Device: public TSerialDevice, public TUInt32SlaveId
 {
 public:
-    enum RegisterType
-    {
-        REG_PARAM_VALUE8 = 0,
-        REG_PARAM_VALUE16 = 1,
-        REG_PARAM_VALUE24 = 2,
-        REG_PARAM_VALUE32 = 3,
-    };
-
     TMercury200Device(PDeviceConfig config, PPort port, PProtocol protocol);
-
-    void EndPollCycle() override;
 
     static void Register(TSerialDeviceFactory& factory);
 
     uint64_t ReadRegisterImpl(PRegister reg) override;
+    void InvalidateReadCache() override;
 
 private:
     std::vector<uint8_t> ExecCommand(uint8_t cmd);

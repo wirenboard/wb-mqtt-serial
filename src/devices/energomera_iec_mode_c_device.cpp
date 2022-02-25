@@ -12,11 +12,7 @@ namespace
     enum RegisterType
     {
         DEFAULT = 0,
-        ITEM_1,
-        ITEM_2,
-        ITEM_3,
-        ITEM_4,
-        ITEM_5,
+        ITEM,
         DATE,
         TIME
     };
@@ -24,21 +20,42 @@ namespace
     // clang-format off
     const TRegisterTypes RegisterTypes {
         { RegisterType::DEFAULT, "default", "value", Double, true },
-        { RegisterType::ITEM_1,  "item_1",  "value", Double, true },
-        { RegisterType::ITEM_2,  "item_2",  "value", Double, true },
-        { RegisterType::ITEM_3,  "item_3",  "value", Double, true },
-        { RegisterType::ITEM_4,  "item_4",  "value", Double, true },
-        { RegisterType::ITEM_5,  "item_5",  "value", Double, true },
+        { RegisterType::ITEM,    "item_1",  "value", Double, true },
+        { RegisterType::ITEM,    "item_2",  "value", Double, true },
+        { RegisterType::ITEM,    "item_3",  "value", Double, true },
+        { RegisterType::ITEM,    "item_4",  "value", Double, true },
+        { RegisterType::ITEM,    "item_5",  "value", Double, true },
         { RegisterType::DATE,    "date",    "value", U32,    true },
         { RegisterType::TIME,    "time",    "value", U32,    true }
     };
     // clang-format on
 
+    class TEnergomeraIecModeCDeviceRegisterAddressFactory: public TStringRegisterAddressFactory
+    {
+    public:
+        TRegisterDesc LoadRegisterAddress(const Json::Value& regCfg,
+                                          const IRegisterAddress& deviceBaseAddress,
+                                          uint32_t stride,
+                                          uint32_t registerByteWidth) const override
+        {
+            TRegisterDesc res;
+            res.Address = std::make_shared<TStringRegisterAddress>(regCfg["address"].asString());
+            auto type = regCfg["reg_type"].asString();
+            if (WBMQTT::StringStartsWith(type, "item_")) {
+                int index = type[5] - '0';
+                if (index > 0 && index < 6) {
+                    res.DataOffset = index - 1;
+                }
+            }
+            return res;
+        }
+    };
+
     class TEnergomeraIecModeCDeviceFactory: public IDeviceFactory
     {
     public:
         TEnergomeraIecModeCDeviceFactory()
-            : IDeviceFactory(std::make_unique<TStringRegisterAddressFactory>(),
+            : IDeviceFactory(std::make_unique<TEnergomeraIecModeCDeviceRegisterAddressFactory>(),
                              "#/definitions/enrgomera_iec_mode_c_device",
                              "#/definitions/channel_with_string_address")
         {}
@@ -96,19 +113,14 @@ uint64_t TEnergomeraIecModeCDevice::GetRegisterValue(const TRegister& reg, const
             }
             return CopyDoubleToUint64(strtod(v.c_str(), nullptr));
         }
-        case RegisterType::ITEM_1:
-        case RegisterType::ITEM_2:
-        case RegisterType::ITEM_3:
-        case RegisterType::ITEM_4:
-        case RegisterType::ITEM_5: {
+        case RegisterType::ITEM: {
             // An example of a response with a list of values
             // <STX>ET0PE(68.02)<CR><LF>(45.29)<CR><LF>(22.73)<CR><LF>(0.00)<CR><LF>(0.00)<CR><LF>(0.00)<CR><LF><ETX>0x07
             // so we have here
             // 68.02)<CR><LF>(45.29)<CR><LF>(22.73)<CR><LF>(0.00)<CR><LF>(0.00)<CR><LF>(0.00
             auto items = WBMQTT::StringSplit(v, ")\r\n(");
-            auto itemIndex = reg.Type - RegisterType::ITEM_1;
-            if (items.size() > static_cast<unsigned int>(itemIndex)) {
-                return CopyDoubleToUint64(strtod(items[itemIndex].c_str(), nullptr));
+            if (items.size() > static_cast<unsigned int>(reg.DataOffset)) {
+                return CopyDoubleToUint64(strtod(items[reg.DataOffset].c_str(), nullptr));
             }
             throw TSerialDeviceTransientErrorException("malformed response");
         }
