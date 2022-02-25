@@ -1922,7 +1922,8 @@
       "the channel has low priority": "канал имеет низкий приоритет",
       "read as soon as possible": "читать как появится возможность",
       "Read rate limit (ms)": "Читать не чаще (мс)",
-      "high priority (100 ms)": "высокий приоритет (100 мс)"
+      "high priority (100 ms)": "высокий приоритет (100 мс)",
+      "Units": "Единицы измерения"
     }
   }
 }

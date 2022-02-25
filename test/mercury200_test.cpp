@@ -35,22 +35,19 @@ void TMercury200Test::SetUp()
     Mercury200Dev =
         std::make_shared<TMercury200Device>(GetDeviceConfig(), SerialPort, DeviceFactory.GetProtocol("mercury200"));
 
-    Mercury200RET1Reg =
-        TRegister::Intern(Mercury200Dev, TRegisterConfig::Create(TMercury200Device::REG_PARAM_VALUE32, 0x2700, BCD32));
-    Mercury200RET2Reg =
-        TRegister::Intern(Mercury200Dev, TRegisterConfig::Create(TMercury200Device::REG_PARAM_VALUE32, 0x2704, BCD32));
-    Mercury200RET3Reg =
-        TRegister::Intern(Mercury200Dev, TRegisterConfig::Create(TMercury200Device::REG_PARAM_VALUE32, 0x2708, BCD32));
-    Mercury200RET4Reg =
-        TRegister::Intern(Mercury200Dev, TRegisterConfig::Create(TMercury200Device::REG_PARAM_VALUE32, 0x270C, BCD32));
-    Mercury200UReg =
-        TRegister::Intern(Mercury200Dev, TRegisterConfig::Create(TMercury200Device::REG_PARAM_VALUE16, 0x6300, BCD16));
-    Mercury200IReg =
-        TRegister::Intern(Mercury200Dev, TRegisterConfig::Create(TMercury200Device::REG_PARAM_VALUE16, 0x6302, BCD16));
-    Mercury200PReg =
-        TRegister::Intern(Mercury200Dev, TRegisterConfig::Create(TMercury200Device::REG_PARAM_VALUE24, 0x6304, BCD24));
-    Mercury200BatReg =
-        TRegister::Intern(Mercury200Dev, TRegisterConfig::Create(TMercury200Device::REG_PARAM_VALUE16, 0x2900, BCD16));
+    Mercury200RET1Reg = TRegister::Intern(Mercury200Dev, TRegisterConfig::Create(0, 0x27, BCD32));
+    Mercury200RET2Reg = TRegister::Intern(Mercury200Dev, TRegisterConfig::Create(0, 0x27, BCD32));
+    Mercury200RET2Reg->DataOffset = 4;
+    Mercury200RET3Reg = TRegister::Intern(Mercury200Dev, TRegisterConfig::Create(0, 0x27, BCD32));
+    Mercury200RET3Reg->DataOffset = 8;
+    Mercury200RET4Reg = TRegister::Intern(Mercury200Dev, TRegisterConfig::Create(0, 0x27, BCD32));
+    Mercury200RET4Reg->DataOffset = 12;
+    Mercury200UReg = TRegister::Intern(Mercury200Dev, TRegisterConfig::Create(0, 0x63, BCD16));
+    Mercury200IReg = TRegister::Intern(Mercury200Dev, TRegisterConfig::Create(0, 0x63, BCD16));
+    Mercury200IReg->DataOffset = 2;
+    Mercury200PReg = TRegister::Intern(Mercury200Dev, TRegisterConfig::Create(0, 0x63, BCD24));
+    Mercury200PReg->DataOffset = 4;
+    Mercury200BatReg = TRegister::Intern(Mercury200Dev, TRegisterConfig::Create(0, 0x29, BCD16));
 
     SerialPort->Open();
 }
@@ -62,7 +59,7 @@ void TMercury200Test::VerifyEnergyQuery()
     ASSERT_EQ(0x20834, Mercury200Dev->ReadRegisterImpl(Mercury200RET2Reg));
     ASSERT_EQ(0x11111, Mercury200Dev->ReadRegisterImpl(Mercury200RET3Reg));
     ASSERT_EQ(0x22222, Mercury200Dev->ReadRegisterImpl(Mercury200RET4Reg));
-    Mercury200Dev->EndPollCycle();
+    Mercury200Dev->InvalidateReadCache();
 }
 
 void TMercury200Test::VerifyParamQuery()
@@ -71,7 +68,7 @@ void TMercury200Test::VerifyParamQuery()
     ASSERT_EQ(0x1234, Mercury200Dev->ReadRegisterImpl(Mercury200UReg));
     ASSERT_EQ(0x5678, Mercury200Dev->ReadRegisterImpl(Mercury200IReg));
     ASSERT_EQ(0x765432, Mercury200Dev->ReadRegisterImpl(Mercury200PReg));
-    Mercury200Dev->EndPollCycle();
+    Mercury200Dev->InvalidateReadCache();
 }
 
 TEST_F(TMercury200Test, EnergyQuery)
@@ -100,7 +97,6 @@ TEST_F(TMercury200Test, BatteryVoltageQuery)
 {
     EnqueueMercury200BatteryVoltageResponse();
     ASSERT_EQ(0x0391, Mercury200Dev->ReadRegisterImpl(Mercury200BatReg));
-    Mercury200Dev->EndPollCycle();
     SerialPort->Close();
 }
 
@@ -134,9 +130,11 @@ void TMercury200IntegrationTest::TearDown()
 
 TEST_F(TMercury200IntegrationTest, Poll)
 {
+    EnqueueMercury200EnergyResponse();
     EnqueueMercury200BatteryVoltageResponse();
     EnqueueMercury200ParamResponse();
-    EnqueueMercury200EnergyResponse();
     Note() << "LoopOnce()";
-    SerialDriver->LoopOnce();
+    for (auto i = 0; i < 3; ++i) {
+        SerialDriver->LoopOnce();
+    }
 }

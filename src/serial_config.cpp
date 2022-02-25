@@ -267,8 +267,8 @@ namespace
                                                      readonly,
                                                      regType.Name,
                                                      regType.DefaultWordOrder,
-                                                     address.BitOffset,
-                                                     address.BitWidth);
+                                                     address.DataOffset,
+                                                     address.DataWidth);
 
         if (register_data.isMember("error_value")) {
             res.RegisterConfig->ErrorValue = ToUint64(register_data["error_value"], "error_value");
@@ -1374,8 +1374,8 @@ TRegisterDesc TUint32RegisterAddressFactory::LoadRegisterAddress(const Json::Val
 {
     auto addr = LoadRegisterBitsAddress(regCfg);
     TRegisterDesc res;
-    res.BitOffset = addr.BitOffset;
-    res.BitWidth = addr.BitWidth;
+    res.DataOffset = addr.BitOffset;
+    res.DataWidth = addr.BitWidth;
     res.Address = std::shared_ptr<IRegisterAddress>(
         deviceBaseAddress.CalcNewAddress(addr.Address, stride, registerByteWidth, BytesPerRegister));
     return res;

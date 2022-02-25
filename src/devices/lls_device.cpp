@@ -2,11 +2,31 @@
 
 #include <stddef.h>
 
+namespace
+{
+    class TLLSDeviceRegisterAddressFactory: public TStringRegisterAddressFactory
+    {
+    public:
+        TRegisterDesc LoadRegisterAddress(const Json::Value& regCfg,
+                                          const IRegisterAddress& deviceBaseAddress,
+                                          uint32_t stride,
+                                          uint32_t registerByteWidth) const override
+        {
+            auto addr = LoadRegisterBitsAddress(regCfg);
+            TRegisterDesc res;
+            res.DataOffset = (addr.Address & 0xFF);
+            res.Address = std::make_shared<TUint32RegisterAddress>(addr.Address >> 8);
+            return res;
+        }
+    };
+}
+
 void TLLSDevice::Register(TSerialDeviceFactory& factory)
 {
     factory.RegisterProtocol(
         new TUint32SlaveIdProtocol("lls", TRegisterTypes({{0, "default", "value", Float, true}})),
-        new TBasicDeviceFactory<TLLSDevice>("#/definitions/simple_device", "#/definitions/common_channel"));
+        new TBasicDeviceFactory<TLLSDevice, TLLSDeviceRegisterAddressFactory>("#/definitions/simple_device",
+                                                                              "#/definitions/common_channel"));
 }
 
 TLLSDevice::TLLSDevice(PDeviceConfig config, PPort port, PProtocol protocol)
@@ -33,11 +53,11 @@ static unsigned char dallas_crc8(const unsigned char* data, const unsigned int s
     return crc;
 }
 
-void TLLSDevice::EndPollCycle()
+void TLLSDevice::InvalidateReadCache()
 {
     CmdResultCache.clear();
 
-    TSerialDevice::EndPollCycle();
+    TSerialDevice::InvalidateReadCache();
 }
 
 namespace
@@ -89,15 +109,13 @@ std::vector<uint8_t> TLLSDevice::ExecCommand(uint8_t cmd)
 
 uint64_t TLLSDevice::ReadRegisterImpl(PRegister reg)
 {
-    auto addr = GetUint32RegisterAddress(reg->GetAddress());
-    uint8_t cmd = (addr & 0xFF00) >> 8;
+    uint8_t cmd = GetUint32RegisterAddress(reg->GetAddress());
     auto result = ExecCommand(cmd);
 
     int result_buf[8] = {};
-    uint8_t offset = (addr & 0x00FF);
 
     for (int i = 0; i < reg->GetByteWidth(); ++i) {
-        result_buf[i] = result[offset + i];
+        result_buf[i] = result[reg->DataOffset + i];
     }
 
     return (result_buf[3] << 24) | (result_buf[2] << 16) | (result_buf[1] << 8) | result_buf[0];

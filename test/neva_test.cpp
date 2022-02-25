@@ -163,6 +163,8 @@ TEST_F(TNevaIntegrationTest, Poll)
     EnqueueGoToProgMode();
     EnqueueSendPassword();
     EnqueuePollRequests();
-    Note() << "LoopOnce()";
-    SerialDriver->LoopOnce();
+    for (auto i = 0; i < 5; ++i) {
+        Note() << "LoopOnce()";
+        SerialDriver->LoopOnce();
+    }
 }

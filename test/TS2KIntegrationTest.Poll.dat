@@ -205,36 +205,36 @@ Publish: /devices/pseudo_s2k/controls/Relay multi 3: '2' (QoS 1, retained)
 Publish: /devices/pseudo_s2k/controls/Relay multi 4: '2' (QoS 1, retained)
 EnqueueReadConfig1()
 >> 01 06 00 05 01 00 5A
-Publish: /devices/pseudo_s2k/controls/Relay default 1: '2' (QoS 1, retained)
 << 01 05 06 01 02 E5
+Publish: /devices/pseudo_s2k/controls/Relay default 1: '2' (QoS 1, retained)
 EnqueueReadConfig2()
 >> 01 06 00 05 02 00 0F
-Publish: /devices/pseudo_s2k/controls/Relay default 2: '2' (QoS 1, retained)
 << 01 05 06 02 02 B0
+Publish: /devices/pseudo_s2k/controls/Relay default 2: '2' (QoS 1, retained)
 EnqueueReadConfig3()
 >> 01 06 00 05 03 00 CB
-Publish: /devices/pseudo_s2k/controls/Relay default 3: '2' (QoS 1, retained)
 << 01 05 06 03 02 74
+Publish: /devices/pseudo_s2k/controls/Relay default 3: '2' (QoS 1, retained)
 EnqueueReadConfig4()
 >> 01 06 00 05 04 00 A5
-Publish: /devices/pseudo_s2k/controls/Relay default 4: '2' (QoS 1, retained)
 << 01 05 06 04 02 1A
+Publish: /devices/pseudo_s2k/controls/Relay default 4: '2' (QoS 1, retained)
 EnqueueReadConfig5()
 >> 01 06 00 05 05 00 61
-Publish: /devices/pseudo_s2k/controls/Relay delay 1: '60' (QoS 1, retained)
 << 01 05 06 05 3C 7F
+Publish: /devices/pseudo_s2k/controls/Relay delay 1: '60' (QoS 1, retained)
 EnqueueReadConfig6()
 >> 01 06 00 05 06 00 34
-Publish: /devices/pseudo_s2k/controls/Relay delay 2: '5' (QoS 1, retained)
 << 01 05 06 06 05 08
+Publish: /devices/pseudo_s2k/controls/Relay delay 2: '5' (QoS 1, retained)
 EnqueueReadConfig7()
 >> 01 06 00 05 07 00 F0
-Publish: /devices/pseudo_s2k/controls/Relay delay 3: '60' (QoS 1, retained)
 << 01 05 06 07 3C EE
+Publish: /devices/pseudo_s2k/controls/Relay delay 3: '60' (QoS 1, retained)
 EnqueueReadConfig8()
 >> 01 06 00 05 08 00 FC
-Publish: /devices/pseudo_s2k/controls/Relay delay 4: '60' (QoS 1, retained)
 << 01 05 06 08 3C F6
+Publish: /devices/pseudo_s2k/controls/Relay delay 4: '60' (QoS 1, retained)
 Publish: /devices/pseudo_s2k/controls/Relay 1/on: '1' (QoS 0, retained)
 Publish: /devices/pseudo_s2k/controls/Relay 2/on: '1' (QoS 0, retained)
 Publish: /devices/pseudo_s2k/controls/Relay 3/on: '2' (QoS 0, retained)
