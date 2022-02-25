@@ -26,7 +26,7 @@ public:
                       size_t& actualResponseSize,
                       PBinarySemaphore rpcSemaphore,
                       PBinarySemaphoreSignal rpcSignal);
-    void RPCRequestHandling(PPort Port);
+    void RPCRequestHandling(PPort port);
 
 private:
     std::mutex RPCMutex;
@@ -35,6 +35,6 @@ private:
     std::chrono::microseconds RPCRespTimeout;
     std::chrono::microseconds RPCFrameTimeout;
     RPCPortState RPCState = RPCPortState::RPC_IDLE;
-    PBinarySemaphore semaphore;
-    PBinarySemaphoreSignal signal;
+    PBinarySemaphore Semaphore;
+    PBinarySemaphoreSignal Signal;
 };
