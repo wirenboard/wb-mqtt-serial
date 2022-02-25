@@ -286,16 +286,22 @@
                 "group": "сurtain_1"
             },
             {
-                "name": "Curtain 1 Time Open (ms x10)",
+                "name": "Curtain 1 Time Open (s)",
                 "reg_type": "holding",
                 "address": 1190,
+                "scale": 0.01,
+                "min": 0,
+                "max": 65535,
                 "enabled": false,
                 "group": "сurtain_1"
             },
             {
-                "name": "Curtain 1 Time Close (ms x10)",
+                "name": "Curtain 1 Time Close (s)",
                 "reg_type": "holding",
                 "address": 1200,
+                "scale": 0.01,
+                "min": 0,
+                "max": 65535,
                 "enabled": false,
                 "group": "сurtain_1"
             },
@@ -364,16 +370,22 @@
                 "group": "сurtain_2"
             },
             {
-                "name": "Curtain 2 Time Open (ms x10)",
+                "name": "Curtain 2 Time Open (s)",
                 "reg_type": "holding",
                 "address": 1191,
+                "scale": 0.01,
+                "min": 0,
+                "max": 65535,
                 "enabled": false,
                 "group": "сurtain_2"
             },
             {
-                "name": "Curtain 2 Time Close (ms x10)",
+                "name": "Curtain 2 Time Close (s)",
                 "reg_type": "holding",
                 "address": 1201,
+                "scale": 0.01,
+                "min": 0,
+                "max": 65535,
                 "enabled": false,
                 "group": "сurtain_2"
             },
@@ -442,16 +454,22 @@
                 "group": "сurtain_3"
             },
             {
-                "name": "Curtain 3 Time Open (ms x10)",
+                "name": "Curtain 3 Time Open (s)",
                 "reg_type": "holding",
                 "address": 1192,
+                "scale": 0.01,
+                "min": 0,
+                "max": 65535,
                 "enabled": false,
                 "group": "сurtain_3"
             },
             {
-                "name": "Curtain 3 Time Close (ms x10)",
+                "name": "Curtain 3 Time Close (s)",
                 "reg_type": "holding",
                 "address": 1202,
+                "scale": 0.01,
+                "min": 0,
+                "max": 65535,
                 "enabled": false,
                 "group": "сurtain_3"
             }
