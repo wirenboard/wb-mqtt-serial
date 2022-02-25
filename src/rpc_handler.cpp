@@ -3,8 +3,8 @@
 #define LOG(logger) ::logger.Log() << "[RPC] "
 
 TRPCHandler::TRPCHandler(PMQTTSerialDriver serialDriver, WBMQTT::PMqttRpcServer rpcServer)
-    : serialDriver(serialDriver),
-      rpcServer(rpcServer)
+    : SerialDriver(serialDriver),
+      RpcServer(rpcServer)
 {
     rpcServer->RegisterMethod("port", "Load", std::bind(&TRPCHandler::PortLoad, this, std::placeholders::_1));
     rpcServer->RegisterMethod("metrics", "Load", std::bind(&TRPCHandler::LoadMetrics, this, std::placeholders::_1));
@@ -24,7 +24,7 @@ bool TRPCPortConfig::CheckParamSet(const Json::Value& request)
 
     bool correct = ((tcpConf || serialConf) && paramConf);
     if (correct) {
-        set = serialConf ? RPCPortConfigSet::RPC_SERIAL_SET : RPCPortConfigSet::RPC_TCP_SET;
+        ParametersSet = serialConf ? RPCPortConfigSet::RPC_SERIAL_SET : RPCPortConfigSet::RPC_TCP_SET;
     }
 
     return correct;
@@ -36,33 +36,33 @@ bool TRPCPortConfig::LoadValues(const Json::Value& request)
 
     try {
 
-        if (set == RPCPortConfigSet::RPC_SERIAL_SET) {
-            if (!WBMQTT::JSON::Get(request, "path", path)) {
+        if (ParametersSet == RPCPortConfigSet::RPC_SERIAL_SET) {
+            if (!WBMQTT::JSON::Get(request, "path", Path)) {
                 throw std::exception();
             }
         } else {
-            if (!WBMQTT::JSON::Get(request, "ip", ip) || !WBMQTT::JSON::Get(request, "port", port) ||
-                (port < 0) | (port > 65536)) {
+            if (!WBMQTT::JSON::Get(request, "ip", Ip) || !WBMQTT::JSON::Get(request, "port", Port) ||
+                (Port < 0) | (Port > 65536)) {
                 throw std::exception();
             }
         }
 
-        if (!WBMQTT::JSON::Get(request, "response_size", responseSize) || (responseSize < 0)) {
+        if (!WBMQTT::JSON::Get(request, "response_size", ResponseSize) || (ResponseSize < 0)) {
             throw std::exception();
         }
 
-        if (!WBMQTT::JSON::Get(request, "response_timeout", responseTimeout)) {
-            responseTimeout = DefaultResponseTimeout;
+        if (!WBMQTT::JSON::Get(request, "response_timeout", ResponseTimeout)) {
+            ResponseTimeout = DefaultResponseTimeout;
         }
 
-        if (!WBMQTT::JSON::Get(request, "frame_timeout", frameTimeout)) {
-            frameTimeout = DefaultFrameTimeout;
+        if (!WBMQTT::JSON::Get(request, "frame_timeout", FrameTimeout)) {
+            FrameTimeout = DefaultFrameTimeout;
         }
 
-        totalTimeout = std::chrono::seconds(10);
+        TotalTimeout = std::chrono::seconds(10);
 
-        if (!WBMQTT::JSON::Get(request, "format", format)) {
-            format = "";
+        if (!WBMQTT::JSON::Get(request, "format", Format)) {
+            Format = "";
         }
 
         std::string msgStr;
@@ -70,18 +70,18 @@ bool TRPCPortConfig::LoadValues(const Json::Value& request)
             throw std::exception();
         }
 
-        msg.clear();
-        if (format == "HEX") {
+        Msg.clear();
+        if (Format == "HEX") {
             if (msgStr.size() % 2 != 0) {
                 throw std::exception();
             }
 
             for (unsigned int i = 0; i < msgStr.size(); i += 2) {
                 auto byte = strtol(msgStr.substr(i, 2).c_str(), NULL, 16);
-                msg.push_back(byte);
+                Msg.push_back(byte);
             }
         } else {
-            msg.assign(msgStr.begin(), msgStr.end());
+            Msg.assign(msgStr.begin(), msgStr.end());
         }
 
     } catch (std::exception e) {
@@ -128,37 +128,37 @@ Json::Value TRPCHandler::PortLoad(const Json::Value& request)
 
     try {
 
-        if (!config.CheckParamSet(request)) {
+        if (!Config.CheckParamSet(request)) {
             throw TRPCException("Wrong mandatory parameters set", RPCPortHandlerResult::RPC_WRONG_PARAM_SET);
         }
 
-        if (!config.LoadValues(request)) {
+        if (!Config.LoadValues(request)) {
             throw TRPCException("Wrong parameters types or values", RPCPortHandlerResult::RPC_WRONG_PARAM_VALUE);
         }
 
         PSerialPortDriver portDriver;
-        bool find = serialDriver->RPCGetPortDriverByName(config.path, config.ip, config.port, portDriver);
+        bool find = SerialDriver->RPCGetPortDriverByName(Config.Path, Config.Ip, Config.Port, portDriver);
         if (!find) {
             throw TRPCException("Requested port doesn't exist", RPCPortHandlerResult::RPC_WRONG_PORT);
         }
 
-        if (!portDriver->RPCTransieve(config.msg,
-                                      config.responseSize,
-                                      config.responseTimeout,
-                                      config.frameTimeout,
-                                      config.totalTimeout,
+        if (!portDriver->RPCTransieve(Config.Msg,
+                                      Config.ResponseSize,
+                                      Config.ResponseTimeout,
+                                      Config.FrameTimeout,
+                                      Config.TotalTimeout,
                                       response,
                                       actualResponseSize))
         {
             throw TRPCException("Port IO error", RPCPortHandlerResult::RPC_WRONG_IO);
         }
 
-        if (actualResponseSize < config.responseSize) {
+        if (actualResponseSize < Config.ResponseSize) {
             throw TRPCException("Actual response length shorter than requested",
                                 RPCPortHandlerResult::RPC_WRONG_RESP_LNGTH);
         }
 
-        responseStr = PortLoadResponseFormat(response, actualResponseSize, config.format);
+        responseStr = PortLoadResponseFormat(response, actualResponseSize, Config.Format);
         errorMsg = "Success";
         resultCode = RPCPortHandlerResult::RPC_OK;
     } catch (TRPCException& e) {
@@ -178,6 +178,6 @@ Json::Value TRPCHandler::PortLoad(const Json::Value& request)
 Json::Value TRPCHandler::LoadMetrics(const Json::Value& request)
 {
     Json::Value metrics;
-    serialDriver->RPCGetMetrics(metrics);
+    SerialDriver->RPCGetMetrics(metrics);
     return metrics;
 }

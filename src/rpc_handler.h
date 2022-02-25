@@ -25,16 +25,16 @@ public:
     bool CheckParamSet(const Json::Value& request);
     bool LoadValues(const Json::Value& request);
 
-    RPCPortConfigSet set;
-    std::string path;
-    std::string ip;
-    int port;
-    std::vector<uint8_t> msg;
-    std::chrono::microseconds responseTimeout;
-    std::chrono::microseconds frameTimeout;
-    std::chrono::seconds totalTimeout;
-    std::string format;
-    size_t responseSize;
+    RPCPortConfigSet ParametersSet;
+    std::string Path;
+    std::string Ip;
+    int Port;
+    std::vector<uint8_t> Msg;
+    std::chrono::microseconds ResponseTimeout;
+    std::chrono::microseconds FrameTimeout;
+    std::chrono::seconds TotalTimeout;
+    std::string Format;
+    size_t ResponseSize;
 };
 
 class TRPCHandler
@@ -43,9 +43,9 @@ public:
     TRPCHandler(PMQTTSerialDriver serialDriver, WBMQTT::PMqttRpcServer rpcServer);
 
 private:
-    PMQTTSerialDriver serialDriver;
-    WBMQTT::PMqttRpcServer rpcServer;
-    TRPCPortConfig config;
+    PMQTTSerialDriver SerialDriver;
+    WBMQTT::PMqttRpcServer RpcServer;
+    TRPCPortConfig Config;
 
     Json::Value PortLoad(const Json::Value& request);
     Json::Value LoadMetrics(const Json::Value& request);
@@ -56,21 +56,21 @@ class TRPCException: public std::runtime_error
 public:
     TRPCException(const std::string& message, RPCPortHandlerResult resultCode)
         : std::runtime_error(message),
-          message(message),
-          resultCode(resultCode)
+          Message(message),
+          ResultCode(resultCode)
     {}
 
     RPCPortHandlerResult GetResultCode()
     {
-        return resultCode;
+        return ResultCode;
     }
 
     std::string GetResultMessage()
     {
-        return message;
+        return Message;
     }
 
 private:
-    std::string message;
-    RPCPortHandlerResult resultCode;
+    std::string Message;
+    RPCPortHandlerResult ResultCode;
 };
