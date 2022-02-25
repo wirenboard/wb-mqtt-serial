@@ -71,15 +71,36 @@ set<int> TModbusTest::VerifyQuery(PRegister reg)
     std::list<PRegisterRange> ranges;
 
     if (!reg) {
-        auto r = ModbusDev->CreateRegisterRange(ModbusCoil0);
-        r->Add(ModbusCoil1, std::chrono::milliseconds::max());
-        ranges.push_back(r);
-        ranges.push_back(ModbusDev->CreateRegisterRange(ModbusDiscrete));
-        ranges.push_back(ModbusDev->CreateRegisterRange(ModbusHolding));
-        ranges.push_back(ModbusDev->CreateRegisterRange(ModbusInput));
-        ranges.push_back(ModbusDev->CreateRegisterRange(ModbusHoldingS64));
+        {
+            auto r = ModbusDev->CreateRegisterRange();
+            r->Add(ModbusCoil0, std::chrono::milliseconds::max());
+            r->Add(ModbusCoil1, std::chrono::milliseconds::max());
+            ranges.push_back(r);
+        }
+        {
+            auto r = ModbusDev->CreateRegisterRange();
+            r->Add(ModbusDiscrete, std::chrono::milliseconds::max());
+            ranges.push_back(r);
+        }
+        {
+            auto r = ModbusDev->CreateRegisterRange();
+            r->Add(ModbusHolding, std::chrono::milliseconds::max());
+            ranges.push_back(r);
+        }
+        {
+            auto r = ModbusDev->CreateRegisterRange();
+            r->Add(ModbusInput, std::chrono::milliseconds::max());
+            ranges.push_back(r);
+        }
+        {
+            auto r = ModbusDev->CreateRegisterRange();
+            r->Add(ModbusHoldingS64, std::chrono::milliseconds::max());
+            ranges.push_back(r);
+        }
     } else {
-        ranges.push_back(ModbusDev->CreateRegisterRange(reg));
+        auto r = ModbusDev->CreateRegisterRange();
+        r->Add(reg, std::chrono::milliseconds::max());
+        ranges.push_back(r);
     }
     set<int> readAddresses;
     set<int> errorRegisters;
@@ -175,7 +196,9 @@ TEST_F(TModbusTest, CRCError)
 {
     EnqueueInvalidCRCCoilReadResponse();
 
-    ModbusDev->ReadRegisterRange(ModbusDev->CreateRegisterRange(ModbusCoil0));
+    auto r = ModbusDev->CreateRegisterRange();
+    r->Add(ModbusCoil0, std::chrono::milliseconds::max());
+    ModbusDev->ReadRegisterRange(r);
 
     SerialPort->Close();
 }
@@ -184,7 +207,9 @@ TEST_F(TModbusTest, WrongResponseDataSize)
 {
     EnqueueWrongDataSizeReadResponse();
 
-    ModbusDev->ReadRegisterRange(ModbusDev->CreateRegisterRange(ModbusCoil0));
+    auto r = ModbusDev->CreateRegisterRange();
+    r->Add(ModbusCoil0, std::chrono::milliseconds::max());
+    ModbusDev->ReadRegisterRange(r);
 
     SerialPort->Close();
 }
@@ -356,14 +381,19 @@ void TModbusIntegrationTest::InvalidateConfigPoll(TestMode mode)
 
     ExpectPollQueries(mode);
     Note() << "LoopOnce()";
-    SerialDriver->LoopOnce();
+    size_t n = (TEST_MAX_READ_REGISTERS_FIRST_CYCLE == mode) ? 21 : 18;
+    for (size_t i = 0; i < n; ++i) {
+        SerialDriver->LoopOnce();
+    }
 }
 
 TEST_F(TModbusIntegrationTest, Poll)
 {
     ExpectPollQueries();
     Note() << "LoopOnce()";
-    SerialDriver->LoopOnce();
+    for (auto i = 0; i < 18; ++i) {
+        SerialDriver->LoopOnce();
+    }
 }
 
 TEST_F(TModbusIntegrationTest, Write)
@@ -393,8 +423,9 @@ TEST_F(TModbusIntegrationTest, Write)
     EnqueueHoldingMultiOneByOneReadResponse();
 
     Note() << "LoopOnce()";
-
-    SerialDriver->LoopOnce();
+    for (auto i = 0; i < 17; ++i) {
+        SerialDriver->LoopOnce();
+    }
 }
 
 TEST_F(TModbusIntegrationTest, Errors)
@@ -419,7 +450,9 @@ TEST_F(TModbusIntegrationTest, Errors)
     EnqueueHoldingMultiOneByOneReadResponse(0x3);
 
     Note() << "LoopOnce()";
-    SerialDriver->LoopOnce();
+    for (auto i = 0; i < 18; ++i) {
+        SerialDriver->LoopOnce();
+    }
 }
 
 TEST_F(TModbusIntegrationTest, Holes)
@@ -432,7 +465,9 @@ TEST_F(TModbusIntegrationTest, Holes)
     // Second cycle with holes enabled
     ExpectPollQueries(TEST_HOLES);
     Note() << "LoopOnce() [holes enabled]";
-    SerialDriver->LoopOnce();
+    for (auto i = 0; i < 9; ++i) {
+        SerialDriver->LoopOnce();
+    }
 }
 
 TEST_F(TModbusIntegrationTest, HolesAutoDisable)
@@ -452,7 +487,9 @@ TEST_F(TModbusIntegrationTest, HolesAutoDisable)
     EnqueueHoldingMultiReadResponse();
 
     Note() << "LoopOnce() [read with holes, error]";
-    SerialDriver->LoopOnce();
+    for (auto i = 0; i < 10; ++i) {
+        SerialDriver->LoopOnce();
+    }
 
     EnqueueHoldingPackReadResponse();
     EnqueueHoldingReadS64Response();
@@ -466,7 +503,9 @@ TEST_F(TModbusIntegrationTest, HolesAutoDisable)
     EnqueueHoldingMultiReadResponse();
 
     Note() << "LoopOnce() [read without holes]";
-    SerialDriver->LoopOnce();
+    for (auto i = 0; i < 11; ++i) {
+        SerialDriver->LoopOnce();
+    }
 }
 
 TEST_F(TModbusIntegrationTest, MaxReadRegisters)
@@ -479,7 +518,9 @@ TEST_F(TModbusIntegrationTest, MaxReadRegisters)
     InvalidateConfigPoll(TEST_MAX_READ_REGISTERS_FIRST_CYCLE);
     ExpectPollQueries(TEST_MAX_READ_REGISTERS);
     Note() << "LoopOnce()";
-    SerialDriver->LoopOnce();
+    for (auto i = 0; i < 17; ++i) {
+        SerialDriver->LoopOnce();
+    }
 }
 
 TEST_F(TModbusIntegrationTest, GuardInterval)
@@ -540,21 +581,27 @@ TEST_F(TModbusBitmasksIntegrationTest, Poll)
 {
     ExpectPollQueries();
     Note() << "LoopOnce()";
-    SerialDriver->LoopOnce();
+    for (auto i = 0; i < 5; ++i) {
+        SerialDriver->LoopOnce();
+    }
 }
 
 TEST_F(TModbusBitmasksIntegrationTest, SingleWrite)
 {
     ExpectPollQueries();
     Note() << "LoopOnce()";
-    SerialDriver->LoopOnce();
+    for (auto i = 0; i < 5; ++i) {
+        SerialDriver->LoopOnce();
+    }
 
     PublishWaitOnValue("/devices/modbus-sample/controls/U8:1/on", "1");
 
     EnqueueU8Shift1SingleBitHoldingWriteResponse();
     ExpectPollQueries(true);
     Note() << "LoopOnce()";
-    SerialDriver->LoopOnce();
+    for (auto i = 0; i < 5; ++i) {
+        SerialDriver->LoopOnce();
+    }
 }
 
 class TModbusUnavailableRegistersIntegrationTest: public TSerialDeviceIntegrationTest, public TModbusExpectations
@@ -587,7 +634,9 @@ TEST_F(TModbusUnavailableRegistersIntegrationTest, UnavailableRegisterOnBorder)
 
     EnqueueHoldingPackUnavailableOnBorderReadResponse();
     Note() << "LoopOnce() [one by one]";
-    SerialDriver->LoopOnce();
+    for (auto i = 0; i < 6; ++i) {
+        SerialDriver->LoopOnce();
+    }
     Note() << "LoopOnce() [new range]";
     SerialDriver->LoopOnce();
 }
@@ -601,9 +650,13 @@ TEST_F(TModbusUnavailableRegistersIntegrationTest, UnavailableRegisterInTheMiddl
 
     EnqueueHoldingPackUnavailableInTheMiddleReadResponse();
     Note() << "LoopOnce() [one by one]";
-    SerialDriver->LoopOnce();
+    for (auto i = 0; i < 6; ++i) {
+        SerialDriver->LoopOnce();
+    }
     Note() << "LoopOnce() [new range]";
-    SerialDriver->LoopOnce();
+    for (auto i = 0; i < 2; ++i) {
+        SerialDriver->LoopOnce();
+    }
 }
 
 TEST_F(TModbusUnavailableRegistersIntegrationTest, UnsupportedRegisterOnBorder)
@@ -616,9 +669,13 @@ TEST_F(TModbusUnavailableRegistersIntegrationTest, UnsupportedRegisterOnBorder)
 
     EnqueueHoldingUnsupportedOnBorderReadResponse();
     Note() << "LoopOnce() [first read]";
-    SerialDriver->LoopOnce();
+    for (auto i = 0; i < 6; ++i) {
+        SerialDriver->LoopOnce();
+    }
     Note() << "LoopOnce() [new range]";
-    SerialDriver->LoopOnce();
+    for (auto i = 0; i < 2; ++i) {
+        SerialDriver->LoopOnce();
+    }
 }
 
 class TModbusUnavailableRegistersAndHolesIntegrationTest: public TSerialDeviceIntegrationTest,
@@ -654,9 +711,13 @@ TEST_F(TModbusUnavailableRegistersAndHolesIntegrationTest, HolesAndUnavailable)
 
     EnqueueHoldingPackUnavailableAndHolesReadResponse();
     Note() << "LoopOnce() [one by one]";
-    SerialDriver->LoopOnce();
+    for (auto i = 0; i < 5; ++i) {
+        SerialDriver->LoopOnce();
+    }
     Note() << "LoopOnce() [with holes]";
     SerialDriver->LoopOnce();
     Note() << "LoopOnce() [new ranges]";
-    SerialDriver->LoopOnce();
+    for (auto i = 0; i < 2; ++i) {
+        SerialDriver->LoopOnce();
+    }
 }

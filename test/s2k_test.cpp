@@ -85,9 +85,10 @@ TEST_F(TS2KIntegrationTest, Poll)
     EnqueueReadConfig8();
 
     Note() << "LoopOnce()";
-    SerialDriver->LoopOnce();
-    SerialPort->DumpWhatWasRead();
-
+    for (auto i = 0; i < 16; ++i) {
+        SerialDriver->LoopOnce();
+        SerialPort->DumpWhatWasRead();
+    }
     EnqueueSetRelayOnResponse();
     EnqueueSetRelay2On();
     EnqueueSetRelay3On2();
@@ -107,8 +108,10 @@ TEST_F(TS2KIntegrationTest, Poll)
     EnqueueReadConfig8();
 
     Note() << "LoopOnce()";
-    SerialDriver->LoopOnce();
-    SerialPort->DumpWhatWasRead();
+    for (auto i = 0; i < 16; ++i) {
+        SerialDriver->LoopOnce();
+        SerialPort->DumpWhatWasRead();
+    }
 
     SerialPort->Close();
 }

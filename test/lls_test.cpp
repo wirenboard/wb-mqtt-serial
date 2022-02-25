@@ -71,4 +71,5 @@ TEST_F(TLLSIntegrationTest, Poll)
     EnqueeCmdFCResponse();
     Note() << "LoopOnce()";
     SerialDriver->LoopOnce();
+    SerialDriver->LoopOnce();
 }

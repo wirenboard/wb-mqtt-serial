@@ -25,6 +25,8 @@ public:
     void SetIsConnected(bool);
     ~TFakeSerialDevice();
 
+    PRegisterRange CreateRegisterRange() const override;
+
     uint16_t Registers[256]{};
 
     static TFakeSerialDevice* GetDevice(const std::string& slaveId);

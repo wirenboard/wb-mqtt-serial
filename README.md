@@ -10,6 +10,7 @@ It's designed to be used on [Wiren Board](http://contactless.ru/en/) family of p
 - [Uniel](http://smart.uniel.ru),
 - [ИВТМ](http://www.eksis.ru/catalog/measures-of-relative-humidity-and-temperature/),
 - [Меркурий 230](http://www.incotexcom.ru/m230art.htm),
+- [Меркурий 200](http://www.incotexcom.ru/m200.htm),
 - [Милур](http://www.milur.ru),
 - [Энергомера ГОСТ МЭК 61107](http://www.energomera.ru),
 - [НЕВА МТ 32х ГОСТ МЭК 61107](https://www.meters.taipit.ru),
@@ -851,6 +852,16 @@ OBIS-коды кодируются в адресе регистра следую
 Для организации отправки команд управления можно использовать канал с типом регистра `command`.
 Для организации доступа к настройкам можно использовать канал с типом регистра `param`.
 Во всех случаях адрес данных задаётся в адресе регистра.
+
+### Протокол Меркурий 200
+
+Типы регистров:
+- param8 - восьмибитное число
+- param16 - 16-тибитное число
+- param24 - 24-тибитное число
+- param32 - 32-тибитное число
+
+Код команды задаётся в адресе регистра, при этом младший байт задаёт смещение данных в ответе.
 
 # Таблица шаблонов device_type
 

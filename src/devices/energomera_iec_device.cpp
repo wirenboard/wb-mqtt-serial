@@ -40,9 +40,6 @@ namespace
     class TEnergomeraRegisterRange: public TRegisterRange
     {
     public:
-        TEnergomeraRegisterRange(PRegister reg): TRegisterRange(reg)
-        {}
-
         bool Add(PRegister reg, std::chrono::milliseconds pollLimit) override
         {
             // TODO: respect pollLimit
@@ -51,6 +48,9 @@ namespace
             }
 
             if (reg->GetAvailable() != TRegisterAvailability::UNAVAILABLE) {
+                if (HasOtherDeviceAndType(reg)) {
+                    return false;
+                }
                 RegisterList().push_back(reg);
             }
             return true;
@@ -252,7 +252,7 @@ void TEnergomeraIecWithFastReadDevice::ReadRegisterRange(PRegisterRange abstract
     }
 }
 
-PRegisterRange TEnergomeraIecWithFastReadDevice::CreateRegisterRange(PRegister reg) const
+PRegisterRange TEnergomeraIecWithFastReadDevice::CreateRegisterRange() const
 {
-    return std::make_shared<TEnergomeraRegisterRange>(reg);
+    return std::make_shared<TEnergomeraRegisterRange>();
 }
