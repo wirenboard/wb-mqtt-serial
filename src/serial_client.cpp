@@ -404,7 +404,6 @@ void TSerialClient::OpenPortCycle(std::chrono::steady_clock::time_point now)
             ScheduleNextPoll(reg, pollStartTime);
             SetReadError(reg);
         }
-        // TODO: mark all ranges as read error
     }
     if (deviceWasConnected && device->GetIsDisconnected()) {
         SetRegistersAvailability(device, TRegisterAvailability::UNKNOWN);
