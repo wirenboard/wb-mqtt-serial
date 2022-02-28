@@ -4636,7 +4636,7 @@
         "translations": {
             "en": {
                 "WB-MAI11_template_title": "WB-MAI11 (11-channel analog input module)",
-                "baud_rate_description": "Before changing make sure that communication with device is established. After saving configuration change port baud rate to the same value.",
+                "baud_rate_description": "Before changing make sure that communication with device is established. Select required baud rate, save configuration and change port baud rate to the same value.",
                 "Input 1": "IN 1",
                 "Input 2": "IN 2",
                 "Input 3": "IN 3",
@@ -4745,7 +4745,7 @@
                 "Number of measurements": "Количество измерений подряд",
                 "Lowpass filter time, ms": "Время усреднения сигнала (мс)",
                 "Baud rate": "Скорость обмена",
-                "baud_rate_description": "Перед изменением убедитесь, что связь с устройством установлена. После сохранения конфигурации измените скорость обмена для порта на то же значение.",
+                "baud_rate_description": "Перед изменением убедитесь, что связь с устройством установлена. Выберите нужную скорость обмена, сохраните конфигурацию и укажите в настройках порта эту же скорость.",
                 "Gain": "Коэффициент усиления",
                 "Voltage": "Напряжение",
                 "Temperature": "Температура",
