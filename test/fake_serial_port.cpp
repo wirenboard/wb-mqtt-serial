@@ -262,6 +262,13 @@ std::string TFakeSerialPort::GetDescription(bool verbose) const
     return "<TFakeSerialPort>";
 }
 
+Json::Value TFakeSerialPort::GetName() const
+{
+    Json::Value res;
+    res["path"] = "TFakeSerialPort";
+    return res;
+}
+
 void TSerialDeviceTest::SetUp()
 {
     RegisterProtocols(DeviceFactory);
