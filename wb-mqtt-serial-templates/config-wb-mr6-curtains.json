@@ -224,7 +224,7 @@
             },
             {
                 "name": "Curtain 1 Position",
-                "reg_type": "holding",
+                "reg_type": "input",
                 "address": 1210,
                 "max": 100,
                 "type": "range",
@@ -310,7 +310,7 @@
 
             {
                 "name": "Curtain 2 Position",
-                "reg_type": "holding",
+                "reg_type": "input",
                 "address": 1211,
                 "max": 100,
                 "type": "range",
@@ -396,7 +396,7 @@
 
             {
                 "name": "Curtain 3 Position",
-                "reg_type": "holding",
+                "reg_type": "input",
                 "address": 1212,
                 "max": 100,
                 "type": "range",
