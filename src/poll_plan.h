@@ -67,6 +67,12 @@ enum class TPriority
     Low
 };
 
+enum class TItemAccumulationPolicy
+{
+    Force,
+    AccordingToPollLimitTime
+};
+
 template<class TEntry, class TComparePredicate> class TScheduler
 {
 public:
@@ -95,29 +101,45 @@ public:
         return HighPriorityQueue.GetNextPollTime();
     }
 
+    /**
+     * @brief
+     *
+     * @tparam TAccumulator
+     * @param currentTime
+     * @param accumulator
+     */
     template<class TAccumulator>
-    void AccumulateNext(std::chrono::steady_clock::time_point time, TAccumulator& accumulator)
+    void AccumulateNext(std::chrono::steady_clock::time_point currentTime, TAccumulator& accumulator)
     {
-        UpdateSelectionTime(time);
-        if (HighPriorityQueue.HasReadyItems(time) &&
-            (!ShouldSelectLowPriority(time) || !LowPriorityQueue.HasReadyItems(time))) {
+        UpdateSelectionTime(currentTime);
+        if (HighPriorityQueue.HasReadyItems(currentTime) &&
+            (!ShouldSelectLowPriority() || !LowPriorityQueue.HasReadyItems(currentTime)))
+        {
             SelectedPriority = TPriority::High;
-            while (HighPriorityQueue.HasReadyItems(time) &&
-                   accumulator(HighPriorityQueue.GetTop().Data, true, std::chrono::milliseconds::max()))
+            bool firstItem = true;
+            while (HighPriorityQueue.HasReadyItems(currentTime) &&
+                   accumulator(HighPriorityQueue.GetTop().Data,
+                               firstItem ? TItemAccumulationPolicy::Force
+                                         : TItemAccumulationPolicy::AccordingToPollLimitTime,
+                               std::chrono::milliseconds::max()))
             {
                 HighPriorityQueue.Pop();
+                firstItem = false;
             }
         } else {
-            if (LowPriorityQueue.HasReadyItems(time)) {
-                const auto pollLimit = GetLowPriorityPollLimit(time);
-                bool force = ShouldSelectLowPriority(time) || HighPriorityQueue.IsEmpty();
+            if (LowPriorityQueue.HasReadyItems(currentTime)) {
+                const auto pollLimit = GetLowPriorityPollLimit(currentTime);
+                bool force = ShouldSelectLowPriority() || HighPriorityQueue.IsEmpty();
                 bool firstItem = true;
                 // Set maximum allowed poll limit to first low priority item,
                 // if it is selected to balance load.
                 // Following low priority items should be selected only
                 // if they poll time is not more than low priority items lag.
-                while (LowPriorityQueue.HasReadyItems(time) &&
-                       accumulator(LowPriorityQueue.GetTop().Data, force && firstItem, pollLimit))
+                while (LowPriorityQueue.HasReadyItems(currentTime) &&
+                       accumulator(LowPriorityQueue.GetTop().Data,
+                                   (force && firstItem) ? TItemAccumulationPolicy::Force
+                                                        : TItemAccumulationPolicy::AccordingToPollLimitTime,
+                                   pollLimit))
                 {
                     LowPriorityQueue.Pop();
                     firstItem = false;
@@ -137,40 +159,42 @@ private:
     std::chrono::steady_clock::time_point LastQueueSelectionTime;
     TPriority SelectedPriority;
 
-    std::chrono::milliseconds GetLowPriorityPollLimit(std::chrono::steady_clock::time_point time) const
+    std::chrono::milliseconds GetLowPriorityPollLimit(std::chrono::steady_clock::time_point currentTime) const
     {
         if (HighPriorityQueue.IsEmpty()) {
             return std::chrono::milliseconds::max();
         }
-        auto delta = std::chrono::duration_cast<std::chrono::milliseconds>(HighPriorityQueue.GetNextPollTime() - time);
+        auto delta =
+            std::chrono::duration_cast<std::chrono::milliseconds>(HighPriorityQueue.GetNextPollTime() - currentTime);
         if (delta > std::chrono::milliseconds(0)) {
             return delta;
         }
         return GetLowPriorityLag();
     }
 
-    bool ShouldSelectLowPriority(std::chrono::steady_clock::time_point time) const
+    bool ShouldSelectLowPriority() const
     {
         return (HighPriorityTime >= MaxLowPriorityLag);
     }
 
-    void UpdateSelectionTime(std::chrono::steady_clock::time_point time)
+    void UpdateSelectionTime(std::chrono::steady_clock::time_point currentTime)
     {
         if (LastQueueSelectionTime != std::chrono::steady_clock::time_point()) {
-            auto delta = std::chrono::duration_cast<std::chrono::milliseconds>(time - LastQueueSelectionTime);
+            auto delta = std::chrono::duration_cast<std::chrono::milliseconds>(currentTime - LastQueueSelectionTime);
+            auto OldHighPriorityTime = HighPriorityTime;
             if (SelectedPriority == TPriority::High) {
                 HighPriorityTime += delta;
-                if (HighPriorityTime > 10 * MaxLowPriorityLag) { // Prevent overflow
+                if (HighPriorityTime < OldHighPriorityTime) { // Prevent overflow
                     HighPriorityTime = MaxLowPriorityLag;
                 }
             } else {
                 HighPriorityTime -= delta;
-                if (HighPriorityTime < (-10 * MaxLowPriorityLag)) { // Prevent underflow
+                if (HighPriorityTime > OldHighPriorityTime) { // Prevent underflow
                     HighPriorityTime = std::chrono::milliseconds::zero();
                 }
             }
         }
-        LastQueueSelectionTime = time;
+        LastQueueSelectionTime = currentTime;
     }
 
     std::chrono::milliseconds GetLowPriorityLag() const
