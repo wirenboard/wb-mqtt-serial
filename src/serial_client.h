@@ -31,7 +31,7 @@ public:
     ~TSerialClient();
 
     void AddRegister(PRegister reg);
-    void Cycle(std::chrono::steady_clock::time_point now = std::chrono::steady_clock::now());
+    void Cycle();
     void SetTextValue(PRegister reg, const std::string& value);
     void SetReadCallback(const TCallback& callback);
     void SetErrorCallback(const TCallback& callback);
@@ -43,14 +43,13 @@ private:
     void Connect();
     void PrepareRegisterRanges();
     void DoFlush();
-    std::chrono::steady_clock::time_point WaitForPollAndFlush(std::chrono::steady_clock::time_point now,
-                                                              std::chrono::steady_clock::time_point waitUntil);
+    void WaitForPollAndFlush(std::chrono::steady_clock::time_point waitUntil);
     void MaybeFlushAvoidingPollStarvationButDontWait();
     void SetReadError(PRegister reg);
     PRegisterHandler GetHandler(PRegister) const;
     void SetRegistersAvailability(PSerialDevice dev, TRegisterAvailability availability);
-    void ClosedPortCycle(std::chrono::steady_clock::time_point now);
-    void OpenPortCycle(std::chrono::steady_clock::time_point now);
+    void ClosedPortCycle();
+    void OpenPortCycle();
     void UpdateFlushNeeded();
     void ProcessPolledRegister(PRegister reg);
     void ScheduleNextPoll(PRegister reg, std::chrono::steady_clock::time_point pollStartTime);

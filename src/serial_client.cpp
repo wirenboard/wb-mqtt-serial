@@ -67,7 +67,7 @@ namespace
         TRegisterReader(std::chrono::milliseconds maxPollTime): MaxPollTime(maxPollTime)
         {}
 
-        bool operator()(const PRegister& reg, bool forceAdding, std::chrono::milliseconds pollLimit)
+        bool operator()(const PRegister& reg, TItemAccumulationPolicy policy, std::chrono::milliseconds pollLimit)
         {
             if (!Device) {
                 RegisterRange = reg->Device()->CreateRegisterRange();
@@ -76,7 +76,7 @@ namespace
             if (Device != reg->Device()) {
                 return false;
             }
-            if (forceAdding) {
+            if (policy == TItemAccumulationPolicy::Force) {
                 return RegisterRange->Add(reg, std::chrono::milliseconds::max());
             }
             return RegisterRange->Add(reg, std::min(MaxPollTime, pollLimit));
@@ -93,7 +93,7 @@ namespace
         std::list<PRegister> Regs;
 
     public:
-        bool operator()(const PRegister& reg, bool forceAdding, std::chrono::milliseconds pollLimit)
+        bool operator()(const PRegister& reg, TItemAccumulationPolicy policy, std::chrono::milliseconds pollLimit)
         {
             Regs.emplace_back(reg);
             return true;
@@ -196,13 +196,12 @@ void TSerialClient::DoFlush()
     }
 }
 
-std::chrono::steady_clock::time_point TSerialClient::WaitForPollAndFlush(
-    std::chrono::steady_clock::time_point now,
-    std::chrono::steady_clock::time_point waitUntil)
+void TSerialClient::WaitForPollAndFlush(std::chrono::steady_clock::time_point waitUntil)
 {
+    auto now = std::chrono::steady_clock::now();
     if (now >= waitUntil) {
         MaybeFlushAvoidingPollStarvationButDontWait();
-        return now;
+        return;
     }
 
     if (Debug.IsEnabled()) {
@@ -218,7 +217,6 @@ std::chrono::steady_clock::time_point TSerialClient::WaitForPollAndFlush(
         DoFlush();
         Metrics.StartPoll(Metrics::BUS_IDLE);
     }
-    return waitUntil;
 }
 
 void TSerialClient::UpdateFlushNeeded()
@@ -261,7 +259,7 @@ void TSerialClient::ProcessPolledRegister(PRegister reg)
     }
 }
 
-void TSerialClient::Cycle(std::chrono::steady_clock::time_point now)
+void TSerialClient::Cycle()
 {
     Metrics.StartPoll(Metrics::NON_BUS_POLLING_TASKS);
     Activate();
@@ -274,9 +272,9 @@ void TSerialClient::Cycle(std::chrono::steady_clock::time_point now)
 
     if (Port->IsOpen()) {
         ConnectLogger.DropTimeout();
-        OpenPortCycle(now);
+        OpenPortCycle();
     } else {
-        ClosedPortCycle(now);
+        ClosedPortCycle();
     }
 }
 
@@ -298,8 +296,9 @@ void TSerialClient::ScheduleNextPoll(PRegister reg, std::chrono::steady_clock::t
     Scheduler.AddEntry(reg, pollStartTime + 1us, TPriority::Low);
 }
 
-void TSerialClient::ClosedPortCycle(std::chrono::steady_clock::time_point now)
+void TSerialClient::ClosedPortCycle()
 {
+    auto now = std::chrono::steady_clock::now();
     auto wait_until = Scheduler.GetNextPollTime();
     if (wait_until - now > MAX_CLOSED_PORT_CYCLE_TIME) {
         wait_until = now + MAX_CLOSED_PORT_CYCLE_TIME;
@@ -366,9 +365,10 @@ void TSerialClient::SetRegistersAvailability(PSerialDevice dev, TRegisterAvailab
     }
 }
 
-void TSerialClient::OpenPortCycle(std::chrono::steady_clock::time_point now)
+void TSerialClient::OpenPortCycle()
 {
-    auto pollStartTime = WaitForPollAndFlush(now, Scheduler.GetNextPollTime());
+    WaitForPollAndFlush(Scheduler.GetNextPollTime());
+    auto pollStartTime = std::chrono::steady_clock::now();
     Metrics.StartPoll(Metrics::NON_BUS_POLLING_TASKS);
 
     TRegisterReader reader(MAX_POLL_TIME);
@@ -382,7 +382,7 @@ void TSerialClient::OpenPortCycle(std::chrono::steady_clock::time_point now)
     if (range->RegisterList().empty()) {
         // There are registers waiting read but they don't fit in allowed poll limit
         // Wait for high priority registers
-        WaitForPollAndFlush(now, Scheduler.GetNextHighPriorityPollTime());
+        WaitForPollAndFlush(Scheduler.GetNextHighPriorityPollTime());
         return;
     }
 

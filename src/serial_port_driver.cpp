@@ -152,10 +152,10 @@ void TSerialPortDriver::UpdateError(PRegister reg)
     it->second->UpdateError(*MqttDriver);
 }
 
-void TSerialPortDriver::Cycle(std::chrono::steady_clock::time_point now)
+void TSerialPortDriver::Cycle()
 {
     try {
-        SerialClient->Cycle(now);
+        SerialClient->Cycle();
     } catch (TSerialDeviceException& e) {
         LOG(Error) << "FATAL: " << e.what() << ". Stopping event loops.";
         exit(1);
