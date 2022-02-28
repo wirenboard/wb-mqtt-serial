@@ -286,9 +286,10 @@
                 "group": "сurtain_1"
             },
             {
-                "name": "Curtain 1 Opening Time (s)",
+                "name": "Curtain 1 Opening Time",
                 "reg_type": "holding",
                 "address": 1190,
+                "units": "s",
                 "scale": 0.01,
                 "min": 0,
                 "max": 65535,
@@ -296,9 +297,10 @@
                 "group": "сurtain_1"
             },
             {
-                "name": "Curtain 1 Closing Time (s)",
+                "name": "Curtain 1 Closing Time",
                 "reg_type": "holding",
                 "address": 1200,
+                "units": "s",
                 "scale": 0.01,
                 "min": 0,
                 "max": 65535,
@@ -370,9 +372,10 @@
                 "group": "сurtain_2"
             },
             {
-                "name": "Curtain 2 Opening Time (s)",
+                "name": "Curtain 2 Opening Time",
                 "reg_type": "holding",
                 "address": 1191,
+                "units": "s",
                 "scale": 0.01,
                 "min": 0,
                 "max": 65535,
@@ -380,9 +383,10 @@
                 "group": "сurtain_2"
             },
             {
-                "name": "Curtain 2 Closing Time (s)",
+                "name": "Curtain 2 Closing Time",
                 "reg_type": "holding",
                 "address": 1201,
+                "units": "s",
                 "scale": 0.01,
                 "min": 0,
                 "max": 65535,
@@ -454,9 +458,10 @@
                 "group": "сurtain_3"
             },
             {
-                "name": "Curtain 3 Opening Time (s)",
+                "name": "Curtain 3 Opening Time",
                 "reg_type": "holding",
                 "address": 1192,
+                "units": "s",
                 "scale": 0.01,
                 "min": 0,
                 "max": 65535,
@@ -464,9 +469,10 @@
                 "group": "сurtain_3"
             },
             {
-                "name": "Curtain 3 Closing Time (s)",
+                "name": "Curtain 3 Closing Time",
                 "reg_type": "holding",
                 "address": 1202,
+                "units": "s",
                 "scale": 0.01,
                 "min": 0,
                 "max": 65535,
