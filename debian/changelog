@@ -1,6 +1,6 @@
 wb-mqtt-serial (2.53.1) stable; urgency=medium
 
-  * Poll period is more accurate maintained according to read_peiod_ms setting
+  * Poll period is more accurately maintained according to read_period_ms setting
 
  -- Petr Krasnoshchekov <petr.krasnoshchekov@wirenboard.ru>  Fri, 25 Feb 2022 18:27:31 +0500
 
