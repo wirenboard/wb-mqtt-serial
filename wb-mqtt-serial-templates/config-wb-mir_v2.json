@@ -1405,7 +1405,7 @@
         "translations": {
             "en": {
                 "WB-MIR-v2_template_title": "WB-MIR v.2 (Modbus IR remote control)",
-                "baud_rate_description": "Before changing make sure that communication with device is established. After saving configuration change port baud rate to the same value.",
+                "baud_rate_description": "Before changing make sure that communication with device is established. Select required baud rate, save configuration and change port baud rate to the same value.",
                 "Uptime": "Uptime (s)"
             },
             "ru": {
@@ -1415,7 +1415,7 @@
                 "HW Info": "Данные модуля",
                 "RS-485 Response Delay (ms)": "Задержка перед ответом по RS-485 (мс)",
                 "Baud rate": "Скорость обмена",
-                "baud_rate_description": "Перед изменением убедитесь, что связь с устройством установлена. После сохранения конфигурации измените скорость обмена для порта на то же значение.",
+                "baud_rate_description": "Перед изменением убедитесь, что связь с устройством установлена. Выберите нужную скорость обмена, сохраните конфигурацию и укажите в настройках порта эту же скорость.",
                 "Learn to RAM": "Записать команду в RAM",
                 "Play from RAM": "Воспроизвести команду из RAM",
                 "Learn to ROM1": "Записать команду в ROM1",

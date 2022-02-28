@@ -7370,7 +7370,7 @@
                 "channel_max_value_description": "Raw PWM Value Corresponding to Maximum Brightness (100%)",
 
                 "hue_fader_description": "Time for changing hue by 360°. Please note that the hue is changing by the shortest path (f.e. 10° -> 0° -> 350°).",
-                "baud_rate_description": "Before changing make sure that communication with device is established. After saving configuration change port baud rate to the same value.",
+                "baud_rate_description": "Before changing make sure that communication with device is established. Select required baud rate, save configuration and change port baud rate to the same value.",
 
                 "Uptime": "Uptime (s)"
             },
@@ -7570,7 +7570,7 @@
                 "hue_fader_description": "Время изменения оттенка (Hue) на 360°. Учтите, что оттенок изменяется по кратчайшему пути (например, 10° -> 0° -> 350°).",
 
                 "Baud rate": "Скорость обмена",
-                "baud_rate_description": "Перед изменением убедитесь, что связь с устройством установлена. После сохранения конфигурации измените скорость обмена для порта на то же значение.",
+                "baud_rate_description": "Перед изменением убедитесь, что связь с устройством установлена. Выберите нужную скорость обмена, сохраните конфигурацию и укажите в настройках порта эту же скорость.",
 
                 "Serial": "Серийный номер",
                 "Supply Voltage": "Напряжение питания",

@@ -278,7 +278,7 @@
         "translations": {
             "en": {
                 "WB-MRGBW-D_template_title": "WB-MRGBW-D (4-channel CV LED dimmer)",
-                "baud_rate_description": "Before changing make sure that communication with device is established. After saving configuration change port baud rate to the same value.",
+                "baud_rate_description": "Before changing make sure that communication with device is established. Select required baud rate, save configuration and change port baud rate to the same value.",
                 "Uptime": "Uptime (s)",
                 "pwm_frequency_factor_title": "PWM Frequency Factor",
                 "pwm_frequency_factor_description": "PWM frequency is calculated by formula: 24 kHz / (Factor + 1)"
@@ -303,7 +303,7 @@
                 "pwm_frequency_factor_description": "Частота ШИМ рассчитывается по формуле: 24 кГц / (Делитель + 1)",
                 "Soft On/Off Time (ms)": "Время плавного включения/выключения (мс)",
                 "Baud rate": "Скорость обмена",
-                "baud_rate_description": "Перед изменением убедитесь, что связь с устройством установлена. После сохранения конфигурации измените скорость обмена для порта на то же значение.",
+                "baud_rate_description": "Перед изменением убедитесь, что связь с устройством установлена. Выберите нужную скорость обмена, сохраните конфигурацию и укажите в настройках порта эту же скорость.",
                 "Serial NO": "Серийный номер",
                 "Supply Voltage": "Напряжение питания",
                 "Uptime": "Время работы с момента включения (с)",
