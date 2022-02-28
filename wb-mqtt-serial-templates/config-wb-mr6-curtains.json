@@ -268,7 +268,7 @@
                 "group": "сurtain_1"
             },
             {
-                "name": "Curtain 1 Set Open Limit",
+                "name": "Curtain 1 Set Opening Limit",
                 "type": "pushbutton",
                 "reg_type": "holding",
                 "address": 1230,
@@ -277,7 +277,7 @@
                 "group": "сurtain_1"
             },
             {
-                "name": "Curtain 1 Set Close Limit",
+                "name": "Curtain 1 Set Closing Limit",
                 "type": "pushbutton",
                 "reg_type": "holding",
                 "address": 1230,
@@ -286,7 +286,7 @@
                 "group": "сurtain_1"
             },
             {
-                "name": "Curtain 1 Time Open (s)",
+                "name": "Curtain 1 Opening Time (s)",
                 "reg_type": "holding",
                 "address": 1190,
                 "scale": 0.01,
@@ -296,7 +296,7 @@
                 "group": "сurtain_1"
             },
             {
-                "name": "Curtain 1 Time Close (s)",
+                "name": "Curtain 1 Closing Time (s)",
                 "reg_type": "holding",
                 "address": 1200,
                 "scale": 0.01,
@@ -352,7 +352,7 @@
                 "group": "сurtain_2"
             },
             {
-                "name": "Curtain 2 Set Open Limit",
+                "name": "Curtain 2 Set Opening Limit",
                 "type": "pushbutton",
                 "reg_type": "holding",
                 "address": 1231,
@@ -361,7 +361,7 @@
                 "group": "сurtain_2"
             },
             {
-                "name": "Curtain 2 Set Close Limit",
+                "name": "Curtain 2 Set Closing Limit",
                 "type": "pushbutton",
                 "reg_type": "holding",
                 "address": 1231,
@@ -370,7 +370,7 @@
                 "group": "сurtain_2"
             },
             {
-                "name": "Curtain 2 Time Open (s)",
+                "name": "Curtain 2 Opening Time (s)",
                 "reg_type": "holding",
                 "address": 1191,
                 "scale": 0.01,
@@ -380,7 +380,7 @@
                 "group": "сurtain_2"
             },
             {
-                "name": "Curtain 2 Time Close (s)",
+                "name": "Curtain 2 Closing Time (s)",
                 "reg_type": "holding",
                 "address": 1201,
                 "scale": 0.01,
@@ -436,7 +436,7 @@
                 "group": "сurtain_3"
             },
             {
-                "name": "Curtain 3 Set Open Limit",
+                "name": "Curtain 3 Set Opening Limit",
                 "type": "pushbutton",
                 "reg_type": "holding",
                 "address": 1232,
@@ -445,7 +445,7 @@
                 "group": "сurtain_3"
             },
             {
-                "name": "Curtain 3 Set Close Limit",
+                "name": "Curtain 3 Set Closing Limit",
                 "type": "pushbutton",
                 "reg_type": "holding",
                 "address": 1232,
@@ -454,7 +454,7 @@
                 "group": "сurtain_3"
             },
             {
-                "name": "Curtain 3 Time Open (s)",
+                "name": "Curtain 3 Opening Time (s)",
                 "reg_type": "holding",
                 "address": 1192,
                 "scale": 0.01,
@@ -464,7 +464,7 @@
                 "group": "сurtain_3"
             },
             {
-                "name": "Curtain 3 Time Close (s)",
+                "name": "Curtain 3 Closing Time (s)",
                 "reg_type": "holding",
                 "address": 1202,
                 "scale": 0.01,
