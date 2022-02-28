@@ -48,19 +48,21 @@ std::list<PRegister>& TRegisterRange::RegisterList()
     return RegList;
 }
 
-bool TSameAddressRegisterRange::Add(PRegister reg, std::chrono::milliseconds pollLimit)
+bool TRegisterRange::HasOtherDeviceAndType(PRegister reg) const
 {
     if (RegisterList().empty()) {
-        RegisterList().push_back(reg);
-        return true;
-    }
-    if (reg->Device() != RegisterList().front()->Device()) {
         return false;
     }
-    if (reg->Type != RegisterList().front()->Type) {
+    auto& frontReg = RegisterList().front();
+    return ((reg->Device() != frontReg->Device()) || (reg->Type != frontReg->Type));
+}
+
+bool TSameAddressRegisterRange::Add(PRegister reg, std::chrono::milliseconds pollLimit)
+{
+    if (HasOtherDeviceAndType(reg)) {
         return false;
     }
-    if (reg->GetAddress().Compare(RegisterList().front()->GetAddress()) == 0) {
+    if (RegisterList().empty() || reg->GetAddress().Compare(RegisterList().front()->GetAddress()) == 0) {
         RegisterList().push_back(reg);
         return true;
     }

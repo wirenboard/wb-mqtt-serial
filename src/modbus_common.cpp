@@ -160,7 +160,7 @@ namespace Modbus // modbus protocol common utilities
         if (RegisterList().empty()) {
             extend = reg->Get16BitWidth();
         } else {
-            if (reg->Device() != RegisterList().front()->Device() || (RegisterList().front()->Type != reg->Type)) {
+            if (HasOtherDeviceAndType(reg)) {
                 return false;
             }
 

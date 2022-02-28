@@ -48,7 +48,7 @@ namespace
             }
 
             if (reg->GetAvailable() != TRegisterAvailability::UNAVAILABLE) {
-                if (!RegisterList().empty() && RegisterList().front()->Device() != reg->Device()) {
+                if (HasOtherDeviceAndType(reg)) {
                     return false;
                 }
                 RegisterList().push_back(reg);

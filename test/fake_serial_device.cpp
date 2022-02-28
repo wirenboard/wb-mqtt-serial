@@ -31,7 +31,7 @@ namespace // utility
 
         bool Add(PRegister reg, std::chrono::milliseconds pollLimit) override
         {
-            if (!RegisterList().empty() && RegisterList().front()->Device() != reg->Device()) {
+            if (HasOtherDeviceAndType(reg)) {
                 return false;
             }
             RegisterList().push_back(reg);

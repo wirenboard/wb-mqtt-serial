@@ -464,6 +464,9 @@ public:
 
     virtual bool Add(PRegister reg, std::chrono::milliseconds pollLimit) = 0;
 
+protected:
+    bool HasOtherDeviceAndType(PRegister reg) const;
+
 private:
     std::list<PRegister> RegList;
 };
