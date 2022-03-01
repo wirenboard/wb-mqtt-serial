@@ -1,3 +1,9 @@
+wb-mqtt-serial (2.53.1) stable; urgency=medium
+
+  * Parameter Baud rate was added in Modbus modules templates
+
+ -- Dmitry Vorobjev <d.vorobjev@wirenboard.ru>  Tue, 01 Mar 2022 10:13:34 +0300
+
 wb-mqtt-serial (2.53.0) stable; urgency=medium
 
   * "units" parameter is added to control's settings. Supported units are defined in conventions.
