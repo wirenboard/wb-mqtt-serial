@@ -210,7 +210,7 @@
         "translations": {
             "en": {
                 "WB-MAP3EV_template_title": "WB-MAP3EV (3-phase voltmeter)",
-                "baud_rate_description": "Before changing make sure that communication with device is established. Select required baud rate, save configuration and change port baud rate to the same value.",
+                "baud_rate_description": "Make sure that communication with device is established before changing this parameter. Select required baud rate, save configuration and then change port baud rate to the same value.",
                 "Supply Voltage": "5V Supply",
                 "Uptime": "Uptime (s)"
             },
@@ -221,7 +221,7 @@
                 "HW Info": "Данные модуля",
                 "Peaks Measurement Period (s)": "Период сброса пиковых значений (с)",
                 "Baud rate": "Скорость обмена",
-                "baud_rate_description": "Перед изменением убедитесь, что связь с устройством установлена. Выберите нужную скорость обмена, сохраните конфигурацию и укажите в настройках порта эту же скорость.",
+                "baud_rate_description": "Перед изменением параметра убедитесь, что связь с устройством установлена. Выберите нужную скорость обмена, сохраните конфигурацию, а затем укажите в настройках порта эту же скорость.",
                 "Voltage angle L1": "Фазовый угол L1",
                 "Voltage angle L2": "Фазовый угол L2",
                 "Voltage angle L3": "Фазовый угол L3",

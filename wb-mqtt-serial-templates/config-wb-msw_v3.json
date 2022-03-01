@@ -1436,7 +1436,7 @@
                 "WB-MSW-v3_template_title": "WB-MSW v.3 (wall-mounted Modbus sensor)",
                 "group_sound_level_title": "Sound Level",
                 "selfheating_compensation_deg_description": "Compensation value is subtracted from measured temperature",
-                "baud_rate_description": "Before changing make sure that communication with device is established. Select required baud rate, save configuration and change port baud rate to the same value.",
+                "baud_rate_description": "Make sure that communication with device is established before changing this parameter. Select required baud rate, save configuration and then change port baud rate to the same value.",
                 "Uptime": "Uptime (s)"
             },
             "ru": {
@@ -1464,7 +1464,7 @@
                 "Low-pass Filter Time Constant (s)": "Время усреднения движения (с)",
                 "RS-485 Response Delay (ms)": "Задержка перед ответом по RS-485 (мс)",
                 "Baud rate": "Скорость обмена",
-                "baud_rate_description": "Перед изменением убедитесь, что связь с устройством установлена. Выберите нужную скорость обмена, сохраните конфигурацию и укажите в настройках порта эту же скорость.",
+                "baud_rate_description": "Перед изменением параметра убедитесь, что связь с устройством установлена. Выберите нужную скорость обмена, сохраните конфигурацию, а затем укажите в настройках порта эту же скорость.",
                 "Temperature": "Температура",
                 "Humidity": "Влажность",
                 "CO2": "Уровень CO2",

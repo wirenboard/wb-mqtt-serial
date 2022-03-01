@@ -95,7 +95,7 @@
         "translations": {
             "en": {
                 "WB-MAI2-mini_template_title": "WB-MAI2-mini/CC (2-channel analog input module)",
-                "baud_rate_description": "Before changing make sure that communication with device is established. Select required baud rate, save configuration and change port baud rate to the same value.",
+                "baud_rate_description": "Make sure that communication with device is established before changing this parameter. Select required baud rate, save configuration and then change port baud rate to the same value.",
                 "Uptime": "Uptime (s)"
             },
             "ru": {
@@ -104,7 +104,7 @@
                 "General": "Общее",
                 "HW Info": "Данные модуля",
                 "Baud rate": "Скорость обмена",
-                "baud_rate_description": "Перед изменением убедитесь, что связь с устройством установлена. Выберите нужную скорость обмена, сохраните конфигурацию и укажите в настройках порта эту же скорость.",
+                "baud_rate_description": "Перед изменением параметра убедитесь, что связь с устройством установлена. Выберите нужную скорость обмена, сохраните конфигурацию, а затем укажите в настройках порта эту же скорость.",
                 "Current input 1 (mA)": "Токовый вход 1 (мА)",
                 "Current input 2 (mA)": "Токовый вход 2 (мА)",
                 "Serial NO": "Серийный номер",
