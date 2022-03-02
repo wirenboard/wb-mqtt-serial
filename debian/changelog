@@ -1,6 +1,6 @@
 wb-mqtt-serial (2.53.1) stable; urgency=medium
 
-  * Parameter Baud rate was added in Modbus modules templates
+  * Parameter Baud rate was added in Wirenboard Modbus devices templates
 
  -- Dmitry Vorobjev <d.vorobjev@wirenboard.ru>  Tue, 01 Mar 2022 10:13:34 +0300
 
