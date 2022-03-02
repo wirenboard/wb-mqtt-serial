@@ -1406,6 +1406,8 @@ TRegisterDesc TStringRegisterAddressFactory::LoadRegisterAddress(const Json::Val
     if (HasWriteAddressProperty(regCfg)) {
         res.WriteAddress =
             std::make_shared<TStringRegisterAddress>(regCfg[SerialConfig::WRITE_ADDRESS_PROPERTY_NAME].asString());
+    } else {
+        res.WriteAddress = res.Address;
     }
     return res;
 }
