@@ -165,6 +165,23 @@
                 "max": 32767,
                 "group": "channel_6",
                 "order": 2
+            },
+            "baud_rate": {
+                "title": "Baud rate",
+                "description": "baud_rate_description",
+                "address": 110,
+                "reg_type": "holding",
+                "enum": [96, 192, 384, 576, 1152],
+                "default": 96,
+                "enum_titles": [
+                    "9600",
+                    "19200",
+                    "38400",
+                    "57600",
+                    "115200"
+                ],
+                "group": "general",
+                "order": 1
             }
         },
 
@@ -731,6 +748,7 @@
         "translations": {
             "en": {
                 "WB-MAP6S-fw2_template_title": "WB-MAP6S fw2 (multi-channel enegry meter)",
+                "baud_rate_description": "Make sure that communication with device is established before changing this parameter. Select required baud rate, save configuration and then change port baud rate to the same value.",
                 "Supply voltage": "5V Supply",
                 "Uptime": "Uptime (s)"
             },
@@ -756,6 +774,8 @@
                 "Phi 5": "Фазовая задержка 5",
                 "Turns 6": "Коэффициент трансформации 6",
                 "Phi 6": "Фазовая задержка 6",
+                "Baud rate": "Скорость обмена",
+                "baud_rate_description": "Перед изменением параметра убедитесь, что связь с устройством установлена. Выберите нужную скорость обмена, сохраните конфигурацию, а затем укажите в настройках порта эту же скорость.",
                 "AP energy 1": "Энергия AP 1",
                 "RP energy 1": "Энергия RP 1",
                 "Phase angle 1": "Угол фазового сдвига 1",

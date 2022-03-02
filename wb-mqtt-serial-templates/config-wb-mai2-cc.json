@@ -15,11 +15,36 @@
                 "order": 1
             },
             {
+                "title": "General",
+                "id": "general",
+                "order": 2
+            },
+            {
                 "title": "HW Info",
                 "id": "hw_info",
-                "order": 2
+                "order": 3
             }
         ],
+
+        "parameters": {
+            "baud_rate": {
+                "title": "Baud rate",
+                "description": "baud_rate_description",
+                "address": 110,
+                "reg_type": "holding",
+                "enum": [96, 192, 384, 576, 1152],
+                "default": 96,
+                "enum_titles": [
+                    "9600",
+                    "19200",
+                    "38400",
+                    "57600",
+                    "115200"
+                ],
+                "group": "general",
+                "order": 1
+            }
+        },
 
         "channels": [
             {
@@ -70,12 +95,16 @@
         "translations": {
             "en": {
                 "WB-MAI2-mini_template_title": "WB-MAI2-mini/CC (2-channel analog input module)",
+                "baud_rate_description": "Make sure that communication with device is established before changing this parameter. Select required baud rate, save configuration and then change port baud rate to the same value.",
                 "Uptime": "Uptime (s)"
             },
             "ru": {
                 "WB-MAI2-mini_template_title": "WB-MAI2-mini/CC (2-канальный модуль измерения токового сигнала)",
                 "Inputs": "Входы",
+                "General": "Общее",
                 "HW Info": "Данные модуля",
+                "Baud rate": "Скорость обмена",
+                "baud_rate_description": "Перед изменением параметра убедитесь, что связь с устройством установлена. Выберите нужную скорость обмена, сохраните конфигурацию, а затем укажите в настройках порта эту же скорость.",
                 "Current input 1 (mA)": "Токовый вход 1 (мА)",
                 "Current input 2 (mA)": "Токовый вход 2 (мА)",
                 "Serial NO": "Серийный номер",

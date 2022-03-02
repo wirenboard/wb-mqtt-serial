@@ -15,9 +15,14 @@
                 "order": 1
             },
             {
+                "title": "General",
+                "id": "general",
+                "order": 2
+            },
+            {
                 "title": "HW Info",
                 "id": "hw_info",
-                "order": 2
+                "order": 3
             }
         ],
 
@@ -30,6 +35,23 @@
                 "min": 1,
                 "default": 60,
                 "group": "measured_values",
+                "order": 1
+            },
+            "baud_rate": {
+                "title": "Baud rate",
+                "description": "baud_rate_description",
+                "address": 110,
+                "reg_type": "holding",
+                "enum": [96, 192, 384, 576, 1152],
+                "default": 96,
+                "enum_titles": [
+                    "9600",
+                    "19200",
+                    "38400",
+                    "57600",
+                    "115200"
+                ],
+                "group": "general",
                 "order": 1
             }
         },
@@ -188,14 +210,18 @@
         "translations": {
             "en": {
                 "WB-MAP3EV_template_title": "WB-MAP3EV (3-phase voltmeter)",
+                "baud_rate_description": "Make sure that communication with device is established before changing this parameter. Select required baud rate, save configuration and then change port baud rate to the same value.",
                 "Supply Voltage": "5V Supply",
                 "Uptime": "Uptime (s)"
             },
             "ru": {
                 "WB-MAP3EV_template_title": "WB-MAP3EV (3-фазный вольтметр)",
                 "Measured Values": "Измеряемые параметры",
+                "General": "Общее",
                 "HW Info": "Данные модуля",
                 "Peaks Measurement Period (s)": "Период сброса пиковых значений (с)",
+                "Baud rate": "Скорость обмена",
+                "baud_rate_description": "Перед изменением параметра убедитесь, что связь с устройством установлена. Выберите нужную скорость обмена, сохраните конфигурацию, а затем укажите в настройках порта эту же скорость.",
                 "Voltage angle L1": "Фазовый угол L1",
                 "Voltage angle L2": "Фазовый угол L2",
                 "Voltage angle L3": "Фазовый угол L3",

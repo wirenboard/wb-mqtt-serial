@@ -126,13 +126,30 @@
                 "group": "motion",
                 "order": 1
             },
+            "baud_rate": {
+                "title": "Baud rate",
+                "description": "baud_rate_description",
+                "address": 110,
+                "reg_type": "holding",
+                "enum": [96, 192, 384, 576, 1152],
+                "default": 96,
+                "enum_titles": [
+                    "9600",
+                    "19200",
+                    "38400",
+                    "57600",
+                    "115200"
+                ],
+                "group": "general",
+                "order": 1
+            },
             "rs485_response_delay_ms": {
                 "title": "RS-485 Response Delay (ms)",
                 "address": 113,
                 "reg_type": "holding",
                 "default": 8,
                 "group": "general",
-                "order": 1
+                "order": 2
             }
         },
 
@@ -1419,6 +1436,7 @@
                 "WB-MSW-v3_template_title": "WB-MSW v.3 (wall-mounted Modbus sensor)",
                 "group_sound_level_title": "Sound Level",
                 "selfheating_compensation_deg_description": "Compensation value is subtracted from measured temperature",
+                "baud_rate_description": "Make sure that communication with device is established before changing this parameter. Select required baud rate, save configuration and then change port baud rate to the same value.",
                 "Uptime": "Uptime (s)"
             },
             "ru": {
@@ -1445,6 +1463,8 @@
                 "Low-pass Filter Time Constant (ms)": "Время усреднения шума (мс)",
                 "Low-pass Filter Time Constant (s)": "Время усреднения движения (с)",
                 "RS-485 Response Delay (ms)": "Задержка перед ответом по RS-485 (мс)",
+                "Baud rate": "Скорость обмена",
+                "baud_rate_description": "Перед изменением параметра убедитесь, что связь с устройством установлена. Выберите нужную скорость обмена, сохраните конфигурацию, а затем укажите в настройках порта эту же скорость.",
                 "Temperature": "Температура",
                 "Humidity": "Влажность",
                 "CO2": "Уровень CO2",

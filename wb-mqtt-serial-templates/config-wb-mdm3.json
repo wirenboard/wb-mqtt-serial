@@ -294,6 +294,23 @@
                 "default": 10,
                 "group": "channel_3",
                 "order": 6
+            },
+            "baud_rate": {
+                "title": "Baud rate",
+                "description": "baud_rate_description",
+                "address": 110,
+                "reg_type": "holding",
+                "enum": [96, 192, 384, 576, 1152],
+                "default": 96,
+                "enum_titles": [
+                    "9600",
+                    "19200",
+                    "38400",
+                    "57600",
+                    "115200"
+                ],
+                "group": "general",
+                "order": 1
             }
         },
 
@@ -530,6 +547,7 @@
                 "WB-MDM3_template_title": "WB-MDM3 (3-channel MOSFET dimmer)",
                 "channel_min_value_description": "Raw dimmer value corresponding to minimum brightness (1%)",
                 "channel_max_value_description": "Raw dimmer value corresponding to maximum brightness (100%)",
+                "baud_rate_description": "Make sure that communication with device is established before changing this parameter. Select required baud rate, save configuration and then change port baud rate to the same value.",
                 "Uptime": "Uptime (s)"
             },
             "ru": {
@@ -576,6 +594,8 @@
                 "Channel 1 Decrease Rate (ms/%)": "Скорость уменьшения яркости канала 1 (мс/%)",
                 "Channel 2 Decrease Rate (ms/%)": "Скорость уменьшения яркости канала 2 (мс/%)",
                 "Channel 3 Decrease Rate (ms/%)": "Скорость уменьшения яркости канала 3 (мс/%)",
+                "Baud rate": "Скорость обмена",
+                "baud_rate_description": "Перед изменением параметра убедитесь, что связь с устройством установлена. Выберите нужную скорость обмена, сохраните конфигурацию, а затем укажите в настройках порта эту же скорость.",
                 "Input 1": "Вход 1",
                 "Input 2": "Вход 2",
                 "Input 3": "Вход 3",

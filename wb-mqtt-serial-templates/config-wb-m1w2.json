@@ -22,6 +22,23 @@
         ],
 
         "parameters": {
+            "baud_rate": {
+                "title": "Baud rate",
+                "description": "baud_rate_description",
+                "address": 110,
+                "reg_type": "holding",
+                "enum": [96, 192, 384, 576, 1152],
+                "default": 96,
+                "enum_titles": [
+                    "9600",
+                    "19200",
+                    "38400",
+                    "57600",
+                    "115200"
+                ],
+                "group": "general",
+                "order": 1
+            },
             "temperature_readings_filter_deg": {
                 "title": "temperature_readings_filter_deg_title",
                 "description": "temperature_readings_filter_deg_description",
@@ -30,7 +47,7 @@
                 "scale": 0.0625,
                 "default": 1,
                 "group": "general",
-                "order": 1
+                "order": 2
             },
             "rs485_response_delay_ms": {
                 "title": "RS-485 Response Delay (ms)",
@@ -38,7 +55,7 @@
                 "reg_type": "holding",
                 "default": 8,
                 "group": "general",
-                "order": 2
+                "order": 3
             }
         },
 
@@ -242,6 +259,7 @@
                 "WB-M1W2_template_title": "WB-M1W2 (2-channel temperature measurement module)",
                 "temperature_readings_filter_deg_title": "Erroneous 1-Wire Temperature Readings Filter (°C)",
                 "temperature_readings_filter_deg_description": "New value is discarded if it differs from previous one by more than filter value. Write 0 to disable filter",
+                "baud_rate_description": "Make sure that communication with device is established before changing this parameter. Select required baud rate, save configuration and then change port baud rate to the same value.",
                 "Uptime": "Uptime (s)"
             },
             "ru": {
@@ -251,6 +269,8 @@
                 "temperature_readings_filter_deg_title": "Фильтр ошибочных значений датчиков 1-Wire (°C)",
                 "temperature_readings_filter_deg_description": "Новое значение отбрасывается, если оно отличается от предыдущего больше, чем на значение фильтра. Запишите 0, чтобы отключить фильтр",
                 "RS-485 Response Delay (ms)": "Задержка перед ответом по RS-485 (мс)",
+                "Baud rate": "Скорость обмена",
+                "baud_rate_description": "Перед изменением параметра убедитесь, что связь с устройством установлена. Выберите нужную скорость обмена, сохраните конфигурацию, а затем укажите в настройках порта эту же скорость.",
                 "Input 1": "Вход 1",
                 "Input 2": "Вход 2",
                 "1-Wire": "Датчик 1-Wire",

@@ -30,14 +30,19 @@
                 "order": 5
             },
             {
+                "title": "General",
+                "id": "general",
+                "order": 6
+            },
+            {
                 "title": "HW Info",
                 "id": "hw_info",
-                "order": 6
+                "order": 7
             },
             {
                 "title": "Debug",
                 "id": "debug",
-                "order": 7
+                "order": 8
             }
         ],
 
@@ -505,6 +510,23 @@
                 "default": 50,
                 "min": 5,
                 "max": 200
+            },
+            "baud_rate": {
+                "title": "Baud rate",
+                "description": "baud_rate_description",
+                "address": 110,
+                "reg_type": "holding",
+                "enum": [96, 192, 384, 576, 1152],
+                "default": 96,
+                "enum_titles": [
+                    "9600",
+                    "19200",
+                    "38400",
+                    "57600",
+                    "115200"
+                ],
+                "group": "general",
+                "order": 1
             }
         },
 
@@ -7348,6 +7370,7 @@
                 "channel_max_value_description": "Raw PWM Value Corresponding to Maximum Brightness (100%)",
 
                 "hue_fader_description": "Time for changing hue by 360°. Please note that the hue is changing by the shortest path (f.e. 10° -> 0° -> 350°).",
+                "baud_rate_description": "Make sure that communication with device is established before changing this parameter. Select required baud rate, save configuration and then change port baud rate to the same value.",
 
                 "Uptime": "Uptime (s)"
             },
@@ -7372,6 +7395,7 @@
                 "Input 3 Actions": "Действия для входа 3",
 
                 "Outputs": "Выходы",
+                "General": "Общее",
                 "HW Info": "Данные модуля",
                 "Debug": "Диагностика",
 
@@ -7544,6 +7568,9 @@
                 "channel_max_value_description": "Значение ШИМ для канала, соответствующее максимальной яркости (100%)",
 
                 "hue_fader_description": "Время изменения оттенка (Hue) на 360°. Учтите, что оттенок изменяется по кратчайшему пути (например, 10° -> 0° -> 350°).",
+
+                "Baud rate": "Скорость обмена",
+                "baud_rate_description": "Перед изменением параметра убедитесь, что связь с устройством установлена. Выберите нужную скорость обмена, сохраните конфигурацию, а затем укажите в настройках порта эту же скорость.",
 
                 "Serial": "Серийный номер",
                 "Supply Voltage": "Напряжение питания",
