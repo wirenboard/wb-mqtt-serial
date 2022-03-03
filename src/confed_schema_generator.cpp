@@ -1,4 +1,5 @@
 #include "confed_schema_generator.h"
+#include "confed_channel_modes.h"
 #include "json_common.h"
 #include "log.h"
 
@@ -290,6 +291,13 @@ namespace
         return MakeTabSimpleChannelSchema(channel, context);
     }
 
+    Json::Value MakeSimpleChannelData(const Json::Value& channel, TContext& context)
+    {
+        Json::Value v = ConfigToHomeuiChannel(channel);
+        v["title"] = context.AddHashedTranslation(channel["name"].asString());
+        return v;
+    }
+
     //  Schema for tabs
     //  {
     //      "type": "array",
@@ -381,15 +389,7 @@ namespace
             r["items"]["$ref"] = "#/definitions/tableChannelSettings";
             auto& defaults = MakeArray("default", r);
             for (const auto& channel: channels) {
-                Json::Value& v = Append(defaults);
-                v["name"] = channel["name"];
-                v["title"] = context.AddHashedTranslation(channel["name"].asString());
-                v["enabled"] = true;
-                SetIfExists(v, "enabled", channel, "enabled");
-                // poll_interval is deprecated, but still read it
-                SetIfExists(v, "read_rate_limit_ms", channel, "poll_interval");
-                SetIfExists(v, "read_rate_limit_ms", channel, "read_rate_limit_ms");
-                SetIfExists(v, "read_period_ms", channel, "read_period_ms");
+                defaults.append(MakeSimpleChannelData(channel, context));
             }
             r["minItems"] = defaults.size();
             r["maxItems"] = defaults.size();
@@ -763,6 +763,7 @@ Json::Value MakeSchemaForConfed(const Json::Value& configSchema,
     res["definitions"].removeMember("slave_id_broadcast_ui");
 
     AddUnitTypes(res);
+    AddChannelModes(res["definitions"]["tableChannelSettings"]);
 
     // Let's add to #/definitions/device/oneOf a list of devices generated from templates
     if (res["definitions"]["device"].isMember("oneOf")) {
