@@ -191,9 +191,6 @@ public:
     bool ReadOnly;
     std::string TypeName;
 
-    // Minimal interval between register reads, if ReadPeriod is not set
-    std::experimental::optional<std::chrono::milliseconds> ReadRateLimit;
-
     // Desired interval between register reads
     std::experimental::optional<std::chrono::milliseconds> ReadPeriod;
     std::experimental::optional<uint64_t> ErrorValue;

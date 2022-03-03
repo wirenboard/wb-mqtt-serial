@@ -166,20 +166,6 @@ namespace
         return deviceConfig.TypeMap->GetDefaultType();
     }
 
-    std::experimental::optional<std::chrono::milliseconds> GetReadRateLimit(const Json::Value& data)
-    {
-        std::chrono::milliseconds res(-1);
-        try {
-            Get(data, "poll_interval", res);
-        } catch (...) { // poll_interval is deprecated, so ignore it, if it has wrong format
-        }
-        Get(data, "read_rate_limit_ms", res);
-        if (res < 0ms) {
-            return std::experimental::nullopt;
-        }
-        return std::experimental::make_optional(res);
-    }
-
     std::experimental::optional<std::chrono::milliseconds> GetReadPeriod(const Json::Value& data)
     {
         std::chrono::milliseconds res(-1);
@@ -278,7 +264,6 @@ namespace
             res.RegisterConfig->UnsupportedValue = ToUint64(register_data["unsupported_value"], "unsupported_value");
         }
 
-        res.RegisterConfig->ReadRateLimit = GetReadRateLimit(register_data);
         res.RegisterConfig->ReadPeriod = GetReadPeriod(register_data);
         return res;
     }
@@ -364,14 +349,10 @@ namespace
         std::string default_type_str;
         std::vector<PRegisterConfig> registers;
         if (channel_data.isMember("consists_of")) {
-
-            auto read_rate_limit_ms = GetReadRateLimit(channel_data);
             auto read_period = GetReadPeriod(channel_data);
-
             const Json::Value& reg_data = channel_data["consists_of"];
             for (Json::ArrayIndex i = 0; i < reg_data.size(); ++i) {
                 auto reg = LoadRegisterConfig(reg_data[i], *device_config, errorMsgPrefix, context);
-                reg.RegisterConfig->ReadRateLimit = read_rate_limit_ms;
                 reg.RegisterConfig->ReadPeriod = read_period;
                 registers.push_back(reg.RegisterConfig);
                 if (!i)
@@ -614,7 +595,6 @@ namespace
 
         Get(port_data, "response_timeout_ms", port_config->ResponseTimeout);
         Get(port_data, "guard_interval_us", port_config->RequestDelay);
-        port_config->ReadRateLimit = GetReadRateLimit(port_data);
 
         auto port_type = port_data.get("port_type", "serial").asString();
 
@@ -1213,7 +1193,6 @@ PSerialDevice TSerialDeviceFactory::CreateDevice(const Json::Value& deviceConfig
     params.DefaultId = defaultId;
     params.DefaultRequestDelay = portConfig->RequestDelay;
     params.PortResponseTimeout = portConfig->ResponseTimeout;
-    params.DefaultReadRateLimit = portConfig->ReadRateLimit;
     auto baseDeviceConfig = LoadBaseDeviceConfig(*cfg, protocol, deviceFactory, params);
 
     return deviceFactory.CreateDevice(*cfg, baseDeviceConfig, portConfig->Port, protocol);
@@ -1288,18 +1267,6 @@ PDeviceConfig LoadBaseDeviceConfig(const Json::Value& dev,
     }
     if (res->ResponseTimeout.count() == -1) {
         res->ResponseTimeout = DefaultResponseTimeout;
-    }
-
-    auto read_rate_limit_ms = GetReadRateLimit(dev);
-    if (!read_rate_limit_ms) {
-        read_rate_limit_ms = parameters.DefaultReadRateLimit;
-    }
-    for (auto channel: res->DeviceChannelConfigs) {
-        for (auto reg: channel->RegisterConfigs) {
-            if (!reg->ReadRateLimit) {
-                reg->ReadRateLimit = read_rate_limit_ms;
-            }
-        }
     }
 
     return res;

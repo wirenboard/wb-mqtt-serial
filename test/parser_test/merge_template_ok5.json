@@ -10,8 +10,7 @@
             "channels" : 
             [
                 {
-                    "name" : "c1",
-                    "poll_interval" : 100
+                    "name" : "c1"
                 },
                 {
                     "enabled" : false,

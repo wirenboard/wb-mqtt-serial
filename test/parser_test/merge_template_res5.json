@@ -20,7 +20,6 @@
                     "address" : "0x0500",
                     "format" : "s32",
                     "name" : "c1",
-                    "poll_interval" : 100,
                     "reg_type" : "input"
                 },
                 {

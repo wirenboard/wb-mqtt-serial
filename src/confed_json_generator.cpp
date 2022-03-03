@@ -10,17 +10,6 @@ using namespace WBMQTT::JSON;
 
 namespace
 {
-    // poll_interval is deprecated, we convert it to read_rate_limit_ms
-    void ConvertPollIntervalToReadRateLimit(Json::Value& node)
-    {
-        if (node.isMember("poll_interval")) {
-            if (!node.isMember("read_rate_limit_ms")) {
-                node["read_rate_limit_ms"] = node["poll_interval"];
-            }
-            node.removeMember("poll_interval");
-        }
-    }
-
     Json::Value MakeJsonFromChannelTemplate(const Json::Value& channelTemplate)
     {
         Json::Value res;
@@ -38,8 +27,6 @@ namespace
             }
             return res;
         }
-        SetIfExists(res, "read_rate_limit_ms", channelTemplate, "poll_interval");
-        SetIfExists(res, "read_rate_limit_ms", channelTemplate, "read_rate_limit_ms");
         res["enabled"] = true;
         SetIfExists(res, "enabled", channelTemplate, "enabled");
         return res;
@@ -53,8 +40,6 @@ namespace
 
         Json::Value res;
         res["name"] = channelConfig["name"];
-        SetIfExists(res, "read_rate_limit_ms", channelConfig, "poll_interval");
-        SetIfExists(res, "read_rate_limit_ms", channelConfig, "read_rate_limit_ms");
         SetIfExists(res, "read_period_ms", channelConfig, "read_period_ms");
         res["enabled"] = true;
         SetIfExists(res, "enabled", channelConfig, "enabled");
@@ -94,6 +79,8 @@ namespace
                 // Just drop such channels
                 // TODO: It is not a good solution and should be deleted after template versions implementation
                 if (it->second.isMember("address") || it->second.isMember("consists_of")) {
+                    it->second.removeMember("poll_interval"); // poll_interval is deprecated so don't send it to homeui
+                    it->second.removeMember("read_rate_limit_ms"); // read_rate_limit_ms is deprecated too
                     customChannels.append(it->second);
                 }
             }
@@ -295,7 +282,8 @@ namespace
         }
 
         Json::Value newDev(config);
-        ConvertPollIntervalToReadRateLimit(newDev);
+        newDev.removeMember("poll_interval");      // poll_interval is deprecated so don't send it to homeui
+        newDev.removeMember("read_rate_limit_ms"); // read_rate_limit_ms is deprecated so don't send it to homeui
         JoinChannelsToGroups(newDev, schema);
 
         TransformGroupsToSubdevices(schema, schema["subdevices"]);
@@ -340,7 +328,8 @@ Json::Value MakeJsonForConfed(const std::string& configFileName,
 {
     Json::Value root(Parse(configFileName));
     for (Json::Value& port: root["ports"]) {
-        ConvertPollIntervalToReadRateLimit(port);
+        port.removeMember("poll_interval");      // poll_interval is deprecated so don't send it to homeui
+        port.removeMember("read_rate_limit_ms"); // read_rate_limit_ms is deprecated so don't send it to homeui
         for (Json::Value& device: port["devices"]) {
             if (device.isMember("device_type")) {
                 device = MakeDeviceForConfed(device, templates);
