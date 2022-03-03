@@ -238,10 +238,6 @@ void TSerialClient::ScheduleNextPoll(PRegister reg, std::chrono::steady_clock::t
         Scheduler.AddEntry(reg, pollStartTime + *(reg->ReadPeriod), TPriority::High);
         return;
     }
-    if (reg->ReadRateLimit) {
-        Scheduler.AddEntry(reg, pollStartTime + *(reg->ReadRateLimit), TPriority::Low);
-        return;
-    }
     // Low priority tasks should be scheduled to read as soon as possible,
     // but with a small delay after current read.
     Scheduler.AddEntry(reg, pollStartTime + 1ms, TPriority::Low);

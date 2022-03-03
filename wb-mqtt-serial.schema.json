@@ -38,19 +38,6 @@
             "grid_columns": 4
           }
         },
-        "poll_interval": {
-          "type": "integer",
-          "options": {
-            "hidden": true
-          }
-        },
-        "read_rate_limit_ms": {
-          "type": "integer",
-          "title": "Read rate limit (ms)",
-          "minimum": 0,
-          "default": 1000,
-          "propertyOrder": 10
-        },
         "devices": {
           "type": "array",
           "title": "Devices attached to the port",
@@ -369,19 +356,6 @@
           "minLength": 1,
           "propertyOrder": 4
         },
-        "poll_interval": {
-          "type": "integer",
-          "options": {
-            "hidden": true
-          }
-        },
-        "read_rate_limit_ms": {
-          "type": "integer",
-          "title": "Read rate limit (ms)",
-          "minimum": 0,
-          "default": 1000,
-          "propertyOrder": 5
-        },
         "password": {
           "type": "array",
           "title": "Password as a list of bytes",
@@ -594,12 +568,6 @@
             "keep_oneof_values": false
           }
         },
-        "poll_interval": {
-          "type": "integer",
-          "options": {
-            "hidden": true
-          }
-        },
         "read_period_ms": {
           "type": "integer",
           "title": "High priority read period (ms)",
@@ -614,13 +582,6 @@
           },
           "_format": "edWb",
           "propertyOrder": 16
-        },
-        "read_rate_limit_ms": {
-          "type": "integer",
-          "title": "Read rate limit (ms)",
-          "minimum": 0,
-          "default": 1000,
-          "propertyOrder": 17
         },
         "error_value": {
           "title": "Error value",
@@ -751,12 +712,6 @@
             "array_controls_top": true
           }
         },
-        "poll_interval": {
-          "type": "integer",
-          "options": {
-            "hidden": true
-          }
-        },
         "read_period_ms": {
           "type": "integer",
           "title": "High priority read period (ms)",
@@ -771,13 +726,6 @@
           },
           "_format": "edWb",
           "propertyOrder": 10
-        },
-        "read_rate_limit_ms": {
-          "type": "integer",
-          "title": "Read rate limit (ms)",
-          "minimum": 0,
-          "default": 1000,
-          "propertyOrder": 11
         }
       },
       "required": ["name", "consists_of"],
@@ -812,12 +760,6 @@
           "default": true,
           "_format": "checkbox"
         },
-        "poll_interval": {
-          "type": "integer",
-          "options": {
-            "hidden": true
-          }
-        },
         "read_period_ms": {
           "type": "integer",
           "title": "High priority read period (ms)",
@@ -835,22 +777,6 @@
           },
           "_format": "edWb",
           "propertyOrder": 3
-        },
-        "read_rate_limit_ms": {
-          "type": "integer",
-          "title": "Read rate limit (ms)",
-          "minimum": 0,
-          "default": -1,
-          "options": {
-            "inputAttributes": {
-              "placeholder": "read as soon as possible"
-            },
-            "dependencies": {
-              "enabled": true
-            }
-          },
-          "_format": "siWb",
-          "propertyOrder": 4
         }
       },
       "options": {
@@ -898,22 +824,6 @@
           },
           "_format": "edWb",
           "propertyOrder": 3
-        },
-        "read_rate_limit_ms": {
-          "type": "integer",
-          "title": "Read rate limit (ms)",
-          "minimum": 0,
-          "default": -1,
-          "options": {
-            "inputAttributes": {
-              "placeholder": "read as soon as possible"
-            },
-            "dependencies": {
-              "enabled": true
-            }
-          },
-          "_format": "siWb",
-          "propertyOrder": 4
         }
       },
       "options": {
@@ -1920,8 +1830,6 @@
       "Unknown device": "Неизвестное устройство",
       "High priority read period (ms)": "Период чтения с высоким приоритетом (мс)",
       "the channel has low priority": "канал имеет низкий приоритет",
-      "read as soon as possible": "читать как появится возможность",
-      "Read rate limit (ms)": "Читать не чаще (мс)",
       "high priority (100 ms)": "высокий приоритет (100 мс)"
     }
   }

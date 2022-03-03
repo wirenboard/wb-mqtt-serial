@@ -18,10 +18,6 @@
                         {
                             "name" : "Illuminance",
                             "read_period_ms": 300
-                        },
-                        {
-                            "name": "Pressure",
-                            "read_rate_limit_ms": 10000
                         }
                     ]
                 },
