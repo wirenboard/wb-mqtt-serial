@@ -1,4 +1,5 @@
 #include "confed_config_generator.h"
+#include "confed_channel_modes.h"
 #include "confed_json_generator.h"
 #include "confed_schema_generator.h"
 
@@ -62,6 +63,7 @@ bool TryToTransformSubDeviceChannel(Json::Value& channel,
  */
 bool TryToTransformSimpleChannel(Json::Value& ch, const Json::Value& channelTemplate)
 {
+    ch = HomeuiToConfigChannel(ch);
     bool ok = false;
     if (ch.isMember("enabled")) {
         bool enabledInTemplate = true;

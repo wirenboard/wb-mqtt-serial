@@ -570,14 +570,13 @@
         },
         "read_period_ms": {
           "type": "integer",
-          "title": "High priority read period (ms)",
+          "title": "Read period (ms)",
           "description" : "read_period_description",
           "minimum": 10,
           "options": {
-            "enum_titles": [ "high priority (100ms)" ],
-            "enum_values": [ 100 ],
+            "enum_values": [ 100, 200 ],
             "inputAttributes": {
-              "placeholder": "the channel has low priority"
+              "placeholder": "in queue order"
             }
           },
           "_format": "edWb",
@@ -714,14 +713,13 @@
         },
         "read_period_ms": {
           "type": "integer",
-          "title": "High priority read period (ms)",
+          "title": "Read period (ms)",
           "description" : "read_period_description",
           "minimum": 10,
           "options": {
-            "enum_titles": [ "high priority (100ms)" ],
-            "enum_values": [ 100 ],
+            "enum_values": [ 100, 200 ],
             "inputAttributes": {
-              "placeholder": "the channel has low priority"
+              "placeholder": "in queue order"
             }
           },
           "_format": "edWb",
@@ -762,14 +760,13 @@
         },
         "read_period_ms": {
           "type": "integer",
-          "title": "High priority read period (ms)",
+          "title": "Read period (ms)",
           "description" : "read_period_description",
           "minimum": 10,
           "options": {
-            "enum_titles": [ "high priority (100ms)" ],
-            "enum_values": [ 100 ],
+            "enum_values": [ 100, 200 ],
             "inputAttributes": {
-              "placeholder": "the channel has low priority"
+              "placeholder": "in queue order"
             },
             "dependencies": {
               "enabled": true
@@ -795,40 +792,24 @@
           }
         },
         "title": {
-          "title": "Parameter",
           "type": "string",
+          "title": "Parameter",
           "_format": "info",
-          "propertyOrder": 2
-        },
-        "enabled": {
-          "type": "boolean",
-          "title": "Enable poll",
-          "default": true,
-          "_format": "checkbox",
           "propertyOrder": 1
+        },
+        "mode": {
+          "type": "integer",
+          "title": "Poll",
+          "propertyOrder": 2
         },
         "read_period_ms": {
           "type": "integer",
-          "title": "High priority read period (ms)",
-          "description" : "read_period_description",
+          "title": "Period (ms)",
           "minimum": 10,
-          "options": {
-            "enum_titles": [ "high priority (100 ms)" ],
-            "enum_values": [ 100 ],
-            "inputAttributes": {
-              "placeholder": "the channel has low priority"
-            },
-            "dependencies": {
-              "enabled": true
-            }
-          },
-          "_format": "edWb",
           "propertyOrder": 3
         }
       },
-      "options": {
-        "remove_empty_properties": true
-      }
+      "required": ["mode", "name"]
     },
     "subreg": {
       "type": "object",
@@ -1828,10 +1809,15 @@
       "Type": "Тип",
       "Maximum value": "Максимальное значение",
       "Unknown device": "Неизвестное устройство",
-      "High priority read period (ms)": "Период чтения с высоким приоритетом (мс)",
-      "the channel has low priority": "канал имеет низкий приоритет",
       "Units": "Единицы измерения",
-      "high priority (100 ms)": "высокий приоритет (100 мс)"
+      "high priority (100 ms)": "высокий приоритет (100 мс)",
+      "Poll": "Опрос",
+      "Period (ms)": "Период (мс)",
+      "in queue order": "в порядке очереди",
+      "fast (200ms)": "быстрый (200мс)",
+      "fast (100ms)": "быстрый (100мс)",
+      "fast": "быстрый",
+      "do not read": "не опрашивать"
     }
   }
 }
