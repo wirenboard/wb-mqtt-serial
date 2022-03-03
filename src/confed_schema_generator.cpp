@@ -397,7 +397,7 @@ namespace
                 } else {
                     r["options"]["compact"] = true;
                 }
-                r["_format"] = "table";
+                r["_format"] = "channels";
             }
         }
         return r;

@@ -574,8 +574,7 @@
           "description" : "read_period_description",
           "minimum": 10,
           "options": {
-            "enum_titles": [ "high priority (100ms)" ],
-            "enum_values": [ 100 ],
+            "enum_values": [ 100, 200 ],
             "inputAttributes": {
               "placeholder": "the channel has low priority"
             }
@@ -718,8 +717,7 @@
           "description" : "read_period_description",
           "minimum": 10,
           "options": {
-            "enum_titles": [ "high priority (100ms)" ],
-            "enum_values": [ 100 ],
+            "enum_values": [ 100, 200 ],
             "inputAttributes": {
               "placeholder": "the channel has low priority"
             }
@@ -766,8 +764,7 @@
           "description" : "read_period_description",
           "minimum": 10,
           "options": {
-            "enum_titles": [ "high priority (100ms)" ],
-            "enum_values": [ 100 ],
+            "enum_values": [ 100, 200 ],
             "inputAttributes": {
               "placeholder": "the channel has low priority"
             },
@@ -789,46 +786,21 @@
       "type": "object",
       "properties": {
         "name": {
-          "type": "string",
-          "options": {
-            "hidden": true
-          }
+          "type": "string"
         },
         "title": {
-          "title": "Parameter",
-          "type": "string",
-          "_format": "info",
-          "propertyOrder": 2
+          "type": "string"
         },
         "enabled": {
           "type": "boolean",
-          "title": "Enable poll",
-          "default": true,
-          "_format": "checkbox",
-          "propertyOrder": 1
+          "default": true
         },
         "read_period_ms": {
           "type": "integer",
-          "title": "High priority read period (ms)",
-          "description" : "read_period_description",
-          "minimum": 10,
-          "options": {
-            "enum_titles": [ "high priority (100 ms)" ],
-            "enum_values": [ 100 ],
-            "inputAttributes": {
-              "placeholder": "the channel has low priority"
-            },
-            "dependencies": {
-              "enabled": true
-            }
-          },
-          "_format": "edWb",
-          "propertyOrder": 3
+          "minimum": 10
         }
       },
-      "options": {
-        "remove_empty_properties": true
-      }
+      "_format": "channel"
     },
     "subreg": {
       "type": "object",
