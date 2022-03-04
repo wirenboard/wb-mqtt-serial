@@ -299,7 +299,7 @@ void TSerialClient::ScheduleNextPoll(PRegister reg, std::chrono::steady_clock::t
 void TSerialClient::ClosedPortCycle()
 {
     auto now = std::chrono::steady_clock::now();
-    auto wait_until = Scheduler.GetNextPollTime();
+    auto wait_until = Scheduler.GetDeadline();
     if (wait_until - now > MAX_CLOSED_PORT_CYCLE_TIME) {
         wait_until = now + MAX_CLOSED_PORT_CYCLE_TIME;
     }
@@ -367,7 +367,7 @@ void TSerialClient::SetRegistersAvailability(PSerialDevice dev, TRegisterAvailab
 
 void TSerialClient::OpenPortCycle()
 {
-    WaitForPollAndFlush(Scheduler.GetNextPollTime());
+    WaitForPollAndFlush(Scheduler.GetDeadline());
     auto pollStartTime = std::chrono::steady_clock::now();
     Metrics.StartPoll(Metrics::NON_BUS_POLLING_TASKS);
 
@@ -382,7 +382,7 @@ void TSerialClient::OpenPortCycle()
     if (range->RegisterList().empty()) {
         // There are registers waiting read but they don't fit in allowed poll limit
         // Wait for high priority registers
-        WaitForPollAndFlush(Scheduler.GetNextHighPriorityPollTime());
+        WaitForPollAndFlush(Scheduler.GetHighPriorityDeadline());
         return;
     }
 

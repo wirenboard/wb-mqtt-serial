@@ -10,14 +10,14 @@ public:
     struct TItem
     {
         TEntry Data;
-        std::chrono::steady_clock::time_point NextPollTime;
+        std::chrono::steady_clock::time_point Deadline;
 
         bool operator<(const TItem& item) const
         {
-            if (NextPollTime > item.NextPollTime) {
+            if (Deadline > item.Deadline) {
                 return true;
             }
-            if (NextPollTime == item.NextPollTime) {
+            if (Deadline == item.Deadline) {
                 return ComparePredicate()(Data, item.Data);
             }
             return false;
@@ -29,17 +29,17 @@ public:
         return Entries.empty();
     }
 
-    void AddEntry(TEntry entry, std::chrono::steady_clock::time_point nextPollTime)
+    void AddEntry(TEntry entry, std::chrono::steady_clock::time_point deadline)
     {
-        Entries.emplace(TItem{entry, nextPollTime});
+        Entries.emplace(TItem{entry, deadline});
     }
 
-    std::chrono::steady_clock::time_point GetNextPollTime() const
+    std::chrono::steady_clock::time_point GetDeadline() const
     {
         if (Entries.empty()) {
             return std::chrono::steady_clock::time_point::max();
         }
-        return Entries.top().NextPollTime;
+        return Entries.top().Deadline;
     }
 
     const TItem& GetTop() const
@@ -54,7 +54,7 @@ public:
 
     bool HasReadyItems(std::chrono::steady_clock::time_point time) const
     {
-        return !Entries.empty() && (GetNextPollTime() <= time);
+        return !Entries.empty() && (GetDeadline() <= time);
     }
 
 private:
@@ -82,31 +82,36 @@ public:
     TScheduler(std::chrono::milliseconds maxLowPriorityLag): MaxLowPriorityLag(maxLowPriorityLag)
     {}
 
-    void AddEntry(TEntry entry, std::chrono::steady_clock::time_point nextPollTime, TPriority priority)
+    void AddEntry(TEntry entry, std::chrono::steady_clock::time_point deadline, TPriority priority)
     {
         if (priority == TPriority::Low) {
-            LowPriorityQueue.AddEntry(entry, nextPollTime);
+            LowPriorityQueue.AddEntry(entry, deadline);
         } else {
-            HighPriorityQueue.AddEntry(entry, nextPollTime);
+            HighPriorityQueue.AddEntry(entry, deadline);
         }
     }
 
-    std::chrono::steady_clock::time_point GetNextPollTime() const
+    std::chrono::steady_clock::time_point GetDeadline() const
     {
-        return std::min(HighPriorityQueue.GetNextPollTime(), LowPriorityQueue.GetNextPollTime());
+        return std::min(HighPriorityQueue.GetDeadline(), LowPriorityQueue.GetDeadline());
     }
 
-    std::chrono::steady_clock::time_point GetNextHighPriorityPollTime() const
+    std::chrono::steady_clock::time_point GetHighPriorityDeadline() const
     {
-        return HighPriorityQueue.GetNextPollTime();
+        return HighPriorityQueue.GetDeadline();
     }
 
     /**
-     * @brief
+     * @brief Selects entries from queue with deadline less or equal to currentTime
      *
-     * @tparam TAccumulator
-     * @param currentTime
-     * @param accumulator
+     * @tparam TAccumulator - function or class with method
+     *                        bool operator()(TEntry& e,
+     *                                        TItemAccumulationPolicy policy,
+     *                                        std::chrono::milliseconds limit)
+     *                        It is called for each item with expired deadline
+     *                        If it returns false next items processing stops.
+     * @param currentTime - time against which items deadline is compared
+     * @param accumulator - object of TAccumulator
      */
     template<class TAccumulator>
     void AccumulateNext(std::chrono::steady_clock::time_point currentTime, TAccumulator& accumulator)
@@ -165,7 +170,7 @@ private:
             return std::chrono::milliseconds::max();
         }
         auto delta =
-            std::chrono::duration_cast<std::chrono::milliseconds>(HighPriorityQueue.GetNextPollTime() - currentTime);
+            std::chrono::duration_cast<std::chrono::milliseconds>(HighPriorityQueue.GetDeadline() - currentTime);
         if (delta > std::chrono::milliseconds(0)) {
             return delta;
         }
