@@ -177,51 +177,7 @@
                 "type": "switch",
                 "group": "outputs"
             },
-            {
-                "name": "Serial",
-                "type": "text",
-                "reg_type": "input",
-                "address": 270,
-                "format": "u32",
-                "group": "hw_info"
-            },
-            {
-                "name": "Supply Voltage",
-                "reg_type": "input",
-                "address": 121,
-                "type": "voltage",
-                "scale": 0.001,
-                "enabled": false,
-                "group": "hw_info"
-            },
-            {
-                "name": "Uptime",
-                "reg_type": "input",
-                "address": 104,
-                "type": "text",
-                "format": "u32",
-                "enabled": false,
-                "group": "hw_info"
-            },
-            {
-                "name": "MCU Temperature",
-                "reg_type": "input",
-                "address": 124,
-                "type": "temperature",
-                "format": "s16",
-                "scale": 0.1,
-                "enabled": false,
-                "group": "hw_info"
-            },
-            {
-                "name": "MCU Voltage",
-                "reg_type": "input",
-                "address": 123,
-                "scale": 0.001,
-                "type": "voltage",
-                "enabled": false,
-                "group": "hw_info"
-            },
+
             {
                 "name": "Curtain 1 Position",
                 "reg_type": "input",
@@ -478,6 +434,52 @@
                 "max": 65535,
                 "enabled": false,
                 "group": "сurtain_3"
+            },
+
+            {
+                "name": "Serial",
+                "type": "text",
+                "reg_type": "input",
+                "address": 270,
+                "format": "u32",
+                "group": "hw_info"
+            },
+            {
+                "name": "Supply Voltage",
+                "reg_type": "input",
+                "address": 121,
+                "type": "voltage",
+                "scale": 0.001,
+                "enabled": false,
+                "group": "hw_info"
+            },
+            {
+                "name": "Uptime",
+                "reg_type": "input",
+                "address": 104,
+                "type": "text",
+                "format": "u32",
+                "enabled": false,
+                "group": "hw_info"
+            },
+            {
+                "name": "MCU Temperature",
+                "reg_type": "input",
+                "address": 124,
+                "type": "temperature",
+                "format": "s16",
+                "scale": 0.1,
+                "enabled": false,
+                "group": "hw_info"
+            },
+            {
+                "name": "MCU Voltage",
+                "reg_type": "input",
+                "address": 123,
+                "scale": 0.001,
+                "type": "voltage",
+                "enabled": false,
+                "group": "hw_info"
             }
         ],
 
