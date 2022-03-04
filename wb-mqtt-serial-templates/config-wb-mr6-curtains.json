@@ -505,7 +505,7 @@
                 "order": 2
             },
             "curtain1_outputs_state": {
-                "title": "Use relay outputs 1,2 for Curtain",
+                "title": "Use Outputs K1, K2 In Curtain Mode",
                 "address": 1180,
                 "reg_type": "holding",
                 "enum": [0, 1],
@@ -515,7 +515,7 @@
                 "order": 1
             },
             "curtain2_outputs_state": {
-                "title": "Use relay outputs 3,4 for Curtain",
+                "title": "Use Outputs K3, K4 In Curtain Mode",
                 "address": 1181,
                 "reg_type": "holding",
                 "enum": [0, 1],
@@ -525,7 +525,7 @@
                 "order": 1
             },
             "curtain3_outputs_state": {
-                "title": "Use relay outputs 5,6 for Curtain",
+                "title": "Use Outputs K5, K6 In Curtain Mode",
                 "address": 1182,
                 "reg_type": "holding",
                 "enum": [0, 1],
