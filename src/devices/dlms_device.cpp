@@ -62,10 +62,10 @@ namespace
             return LogicalName;
         }
 
-        bool operator<(const IRegisterAddress& addr) const override
+        int Compare(const IRegisterAddress& addr) const override
         {
             const auto& a = dynamic_cast<const TObisRegisterAddress&>(addr);
-            return LogicalName < a.LogicalName;
+            return LogicalName.compare(a.LogicalName);
         }
 
         IRegisterAddress* CalcNewAddress(uint32_t /*offset*/,

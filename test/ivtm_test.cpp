@@ -89,8 +89,6 @@ TEST_F(TIVTMDeviceTest, IVTM7MQuery)
 
     ASSERT_EQ(0x41EB9A30, Dev->ReadRegisterImpl(Dev1Humidity)); // big-endian
 
-    Dev->EndPollCycle();
-
     // Test upper-case hex letters
 
     // >> 24 30 30 30 31 52 52 30 30 30 30 30 34 41 44 0d

@@ -8,7 +8,7 @@ class TEnergomeraIecWithFastReadDevice: public TIEC61107Device
 public:
     TEnergomeraIecWithFastReadDevice(PDeviceConfig device_config, PPort port, PProtocol protocol);
 
-    PRegisterRange CreateRegisterRange(PRegister reg) const override;
+    PRegisterRange CreateRegisterRange() const override;
     void ReadRegisterRange(PRegisterRange range) override;
 
     static void Register(TSerialDeviceFactory& factory);

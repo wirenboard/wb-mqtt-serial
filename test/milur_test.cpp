@@ -143,8 +143,6 @@ TEST_F(TMilurCustomPasswordTest, Test)
 {
     EnqueueMilurAccessLevel2SessionSetupResponse();
     VerifyParamQuery();
-    MilurDev->EndPollCycle();
-
     SerialPort->Close();
 }
 
@@ -211,7 +209,9 @@ TEST_F(TMilurIntegrationTest, Poll)
 {
     ExpectQueries(true);
     Note() << "LoopOnce()";
-    SerialDriver->LoopOnce();
+    for (auto i = 0; i < 17; ++i) {
+        SerialDriver->LoopOnce();
+    }
 }
 
 class TMilur32Test: public TSerialDeviceTest, public TMilurExpectations
