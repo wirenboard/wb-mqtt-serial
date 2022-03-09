@@ -8,25 +8,21 @@ TRPCPortHandler::TRPCPortHandler()
     Signal = Semaphore->SignalRegistration();
 }
 
-bool TRPCPortHandler::RPCTransieve(std::vector<uint8_t>& buf,
-                                   size_t responseSize,
-                                   std::chrono::microseconds respTimeout,
-                                   std::chrono::microseconds frameTimeout,
-                                   std::chrono::seconds totalTimeout,
-                                   std::vector<uint8_t>& response,
-                                   size_t& actualResponseSize,
-                                   PBinarySemaphore rpcSemaphore,
-                                   PBinarySemaphoreSignal rpcSignal)
+bool TRPCPortHandler::RPCTransceive(const TRPCPortConfig& config,
+                                    std::vector<uint8_t>& response,
+                                    size_t& actualResponseSize,
+                                    PBinarySemaphore rpcSemaphore,
+                                    PBinarySemaphoreSignal rpcSignal)
 {
     RPCMutex.lock();
 
-    RPCWriteData = buf;
-    RPCRequestedSize = responseSize;
-    RPCRespTimeout = respTimeout;
-    RPCFrameTimeout = frameTimeout;
+    RPCWriteData = config.Msg;
+    RPCRequestedSize = config.ResponseSize;
+    RPCRespTimeout = config.ResponseTimeout;
+    RPCFrameTimeout = config.FrameTimeout;
     RPCState = RPCPortState::RPC_WRITE;
     auto now = std::chrono::steady_clock::now();
-    auto until = now + totalTimeout;
+    auto until = now + config.TotalTimeout;
     rpcSemaphore->Signal(rpcSignal);
 
     RPCMutex.unlock();
@@ -59,8 +55,10 @@ void TRPCPortHandler::RPCRequestHandling(PPort port)
             port->SleepSinceLastInteraction(RPCFrameTimeout);
             port->WriteBytes(RPCWriteData);
 
-            uint8_t readData[RPCRequestedSize];
-            RPCActualSize = port->ReadFrame(readData, RPCRequestedSize, RPCRespTimeout, RPCFrameTimeout);
+            // uint8_t readData[RPCRequestedSize];
+            std::vector<uint8_t> readData;
+            readData.reserve(RPCRequestedSize);
+            RPCActualSize = port->ReadFrame(readData.data(), RPCRequestedSize, RPCRespTimeout, RPCFrameTimeout);
 
             RPCReadData.clear();
             for (size_t i = 0; i < RPCRequestedSize; i++) {

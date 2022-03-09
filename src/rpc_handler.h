@@ -1,13 +1,8 @@
 
 #pragma once
+#include "rpc_config.h"
 #include <serial_driver.h>
 #include <wblib/rpc.h>
-
-enum class RPCPortConfigSet
-{
-    RPC_TCP_SET,
-    RPC_SERIAL_SET
-};
 
 enum class RPCPortHandlerResult
 {
@@ -17,24 +12,6 @@ enum class RPCPortHandlerResult
     RPC_WRONG_PORT = -3,
     RPC_WRONG_IO = -4,
     RPC_WRONG_RESP_LNGTH = -5
-};
-
-class TRPCPortConfig
-{
-public:
-    bool CheckParamSet(const Json::Value& request);
-    bool LoadValues(const Json::Value& request);
-
-    RPCPortConfigSet ParametersSet;
-    std::string Path;
-    std::string Ip;
-    int Port;
-    std::vector<uint8_t> Msg;
-    std::chrono::microseconds ResponseTimeout;
-    std::chrono::microseconds FrameTimeout;
-    std::chrono::seconds TotalTimeout;
-    std::string Format;
-    size_t ResponseSize;
 };
 
 class TRPCHandler
