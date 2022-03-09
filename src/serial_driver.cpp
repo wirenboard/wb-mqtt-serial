@@ -133,7 +133,7 @@ void TMQTTSerialDriver::RPCGetMetrics(Json::Value& metrics)
     return;
 }
 
-bool TMQTTSerialDriver::RPCGetPortDriverByName(const std::string& path,
+bool TMQTTSerialDriver::RPCGetPortDriverByPath(const std::string& path,
                                                const std::string& ip,
                                                int port,
                                                PSerialPortDriver& portDriver)
@@ -141,7 +141,7 @@ bool TMQTTSerialDriver::RPCGetPortDriverByName(const std::string& path,
     try {
         auto findPort =
             std::find_if(PortDrivers.begin(), PortDrivers.end(), [&path, &ip, &port](PSerialPortDriver item) {
-                Json::Value name = item->GetPortName();
+                Json::Value name = item->GetPortPath();
 
                 std::string pathItem, ipItem;
                 int portItem;

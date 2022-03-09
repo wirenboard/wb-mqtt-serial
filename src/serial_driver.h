@@ -16,7 +16,7 @@ public:
     void Start();
     void Stop();
 
-    bool RPCGetPortDriverByName(const std::string& path,
+    bool RPCGetPortDriverByPath(const std::string& path,
                                 const std::string& ip,
                                 int port,
                                 PSerialPortDriver& portDriver);

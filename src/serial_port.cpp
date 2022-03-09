@@ -213,7 +213,7 @@ const TSerialPortSettings& TSerialPort::GetSettings() const
     return Settings;
 }
 
-Json::Value TSerialPort::GetName() const
+Json::Value TSerialPort::GetPath() const
 {
     Json::Value res;
     res["path"] = Settings.Device;
@@ -330,7 +330,7 @@ void TSerialPortWithIECHack::SetSerialPortByteFormat(const TSerialPortByteFormat
                              " byte format. Set port settings to 8N1, please");
 }
 
-Json::Value TSerialPortWithIECHack::GetName() const
+Json::Value TSerialPortWithIECHack::GetPath() const
 {
-    return Port->GetName();
+    return Port->GetPath();
 }

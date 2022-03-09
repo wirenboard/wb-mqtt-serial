@@ -137,7 +137,7 @@ Json::Value TRPCHandler::PortLoad(const Json::Value& request)
         }
 
         PSerialPortDriver portDriver;
-        bool find = SerialDriver->RPCGetPortDriverByName(Config.Path, Config.Ip, Config.Port, portDriver);
+        bool find = SerialDriver->RPCGetPortDriverByPath(Config.Path, Config.Ip, Config.Port, portDriver);
         if (!find) {
             throw TRPCException("Requested port doesn't exist", RPCPortHandlerResult::RPC_WRONG_PORT);
         }

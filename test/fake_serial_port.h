@@ -51,7 +51,7 @@ public:
 
     std::string GetDescription(bool verbose = true) const override;
 
-    Json::Value GetName() const override;
+    Json::Value GetPath() const override;
 
     void SetAllowOpen(bool allowOpen);
 
