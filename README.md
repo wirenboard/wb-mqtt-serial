@@ -57,7 +57,7 @@ It's designed to be used on [Wiren Board](https://wirenboard.com/en/) family of 
 Настройка пользователем производится через веб-интерфейс контроллера, но вы можете управлять им вручную:
 - `systemctl start wb-mqtt-serial` — запустить
 - `systemctl stop wb-mqtt-serial` — остановить
-- `systemctl status wb-mqtt-serial` - узнать состояние
+- `systemctl status wb-mqtt-serial` — узнать состояние
 
 
 Возможен запуск демона вручную, что может быть полезно
