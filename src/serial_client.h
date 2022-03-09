@@ -40,7 +40,7 @@ public:
     void ClearDevices();
 
     bool RPCTransceive(const TRPCPortConfig& config, std::vector<uint8_t>& response, size_t& actualResponseSize);
-    Json::Value GetPortName();
+    Json::Value GetPortPath();
 
 private:
     void Activate();
