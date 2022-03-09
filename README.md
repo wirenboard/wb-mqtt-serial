@@ -1,10 +1,10 @@
 # wb-mqtt-serial
 
 Serial device <==> MQTT bridge which follows [Wiren Board MQTT Conventions](https://github.com/wirenboard/conventions/blob/main/README.md).
-It's designed to be used on [Wiren Board](http://contactless.ru/en/) family of programmable automation controllers.
+It's designed to be used on [Wiren Board](https://wirenboard.com/en/) family of programmable automation controllers.
 
 Драйвер master-slave протоколов для устройств, работающих через
-последовательный порт. 
+последовательный порт. Драйвер предназначен для устройств [Wiren Board](https://wirenboard.com/ru) и соответствует [Конвенции Wiren Board MQTT](https://github.com/wirenboard/conventions/blob/main/README.md).
 
 **Содержание**
 - [Описание](#Описание)
