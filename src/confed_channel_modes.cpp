@@ -45,7 +45,7 @@ void AddChannelModes(Json::Value& channelSchema)
 {
     size_t i = 0;
     for (const auto& mode: ChannelModes) {
-        channelSchema["properties"]["mode"]["enum"] = i;
+        channelSchema["properties"]["mode"]["enum"].append(i);
         ++i;
         channelSchema["properties"]["mode"]["options"]["enum_titles"].append(mode);
     }
