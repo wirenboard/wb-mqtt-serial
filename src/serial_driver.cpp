@@ -143,24 +143,21 @@ bool TMQTTSerialDriver::RPCGetPortDriverByName(const std::string& path,
             std::find_if(PortDrivers.begin(), PortDrivers.end(), [&path, &ip, &port](PSerialPortDriver item) {
                 Json::Value name = item->GetPortName();
 
-                std::string pathI, ipI;
-                int portI;
-                bool pathEnt = WBMQTT::JSON::Get(name, "path", pathI);
-                bool ipEnt = WBMQTT::JSON::Get(name, "ip", ipI);
-                bool portEnt = WBMQTT::JSON::Get(name, "port", portI);
+                std::string pathItem, ipItem;
+                int portItem;
+                bool pathEntry = WBMQTT::JSON::Get(name, "path", pathItem);
+                bool ipEntry = WBMQTT::JSON::Get(name, "ip", ipItem);
+                bool portEntry = WBMQTT::JSON::Get(name, "port", portItem);
 
-                if (!pathEnt && !(ipEnt && portEnt)) {
+                if (!pathEntry && !(ipEntry && portEntry)) {
                     throw runtime_error("RPC meets unknown port type when try find need one");
-                }
-
-                if (pathEnt && (path == pathI)) {
+                } else if (pathEntry && (path == pathItem)) {
                     return true;
-                }
-                if (ipEnt && portEnt && (ip == ipI) && (port == portI)) {
+                } else if (ipEntry && portEntry && (ip == ipItem) && (port == portItem)) {
                     return true;
+                } else {
+                    return false;
                 }
-
-                return false;
             });
 
         if (findPort != PortDrivers.end()) {

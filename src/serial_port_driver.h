@@ -69,13 +69,7 @@ public:
 
     static void HandleControlOnValueEvent(const WBMQTT::TControlOnValueEvent& event);
 
-    bool RPCTransieve(std::vector<uint8_t>& buf,
-                      size_t responseSize,
-                      std::chrono::microseconds respTimeout,
-                      std::chrono::microseconds frameTimeout,
-                      std::chrono::seconds totalTimeout,
-                      std::vector<uint8_t>& response,
-                      size_t& actualResponseSize);
+    bool RPCTransceive(const TRPCPortConfig& config, std::vector<uint8_t>& response, size_t& actualResponseSize);
 
     Json::Value GetPortName();
 

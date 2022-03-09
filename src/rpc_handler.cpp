@@ -41,8 +41,8 @@ bool TRPCPortConfig::LoadValues(const Json::Value& request)
                 throw std::exception();
             }
         } else {
-            if (!WBMQTT::JSON::Get(request, "ip", Ip) || !WBMQTT::JSON::Get(request, "port", Port) ||
-                (Port < 0) | (Port > 65536)) {
+            if (!WBMQTT::JSON::Get(request, "ip", Ip) || !WBMQTT::JSON::Get(request, "port", Port) || (Port < 0) ||
+                (Port > 65536)) {
                 throw std::exception();
             }
         }
@@ -142,18 +142,11 @@ Json::Value TRPCHandler::PortLoad(const Json::Value& request)
             throw TRPCException("Requested port doesn't exist", RPCPortHandlerResult::RPC_WRONG_PORT);
         }
 
-        if (!portDriver->RPCTransieve(Config.Msg,
-                                      Config.ResponseSize,
-                                      Config.ResponseTimeout,
-                                      Config.FrameTimeout,
-                                      Config.TotalTimeout,
-                                      response,
-                                      actualResponseSize))
-        {
+        if (!portDriver->RPCTransceive(Config, response, actualResponseSize)) {
             throw TRPCException("Port IO error", RPCPortHandlerResult::RPC_WRONG_IO);
         }
 
-        if (actualResponseSize < Config.ResponseSize) {
+        if (actualResponseSize != Config.ResponseSize) {
             throw TRPCException("Actual response length shorter than requested",
                                 RPCPortHandlerResult::RPC_WRONG_RESP_LNGTH);
         }
