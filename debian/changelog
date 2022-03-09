@@ -1,3 +1,9 @@
+wb-mqtt-serial (2.54.1) stable; urgency=medium
+
+  * Updated documentation
+
+ -- Alexander Degtyarev <a.degtyarev@wirenboard.com>  Wed, 9 Mar 2022 20:50:00 +0400
+
 wb-mqtt-serial (2.54.0) stable; urgency=medium
 
   * Poll period is more accurately maintained according to read_period_ms setting
