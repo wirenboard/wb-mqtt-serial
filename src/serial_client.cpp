@@ -437,23 +437,11 @@ void TSerialClient::OpenPortCycle()
     Metrics.StartPoll(Metrics::BUS_IDLE);
 }
 
-bool TSerialClient::RPCTransieve(std::vector<uint8_t>& buf,
-                                 size_t responseSize,
-                                 std::chrono::microseconds respTimeout,
-                                 std::chrono::microseconds frameTimeout,
-                                 std::chrono::seconds totalTimeout,
-                                 std::vector<uint8_t>& response,
-                                 size_t& actualResponseSize)
+bool TSerialClient::RPCTransceive(const TRPCPortConfig& config,
+                                  std::vector<uint8_t>& response,
+                                  size_t& actualResponseSize)
 {
-    return RPCPortHandler.RPCTransieve(buf,
-                                       responseSize,
-                                       respTimeout,
-                                       frameTimeout,
-                                       totalTimeout,
-                                       response,
-                                       actualResponseSize,
-                                       FlushNeeded,
-                                       RPCSignal);
+    return RPCPortHandler.RPCTransceive(config, response, actualResponseSize, FlushNeeded, RPCSignal);
 }
 
 Json::Value TSerialClient::GetPortName()
