@@ -142,7 +142,7 @@ std::string TTcpPort::GetDescription(bool verbose) const
     return Settings.Address;
 }
 
-Json::Value TTcpPort::GetName() const
+Json::Value TTcpPort::GetPath() const
 {
     Json::Value res;
     res["ip"] = Settings.Address;

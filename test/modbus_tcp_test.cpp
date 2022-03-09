@@ -58,7 +58,7 @@ namespace
             return std::string();
         }
 
-        Json::Value GetName() const override
+        Json::Value GetPath() const override
         {
             Json::Value res;
             return res;

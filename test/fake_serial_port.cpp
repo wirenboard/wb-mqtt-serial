@@ -262,7 +262,7 @@ std::string TFakeSerialPort::GetDescription(bool verbose) const
     return "<TFakeSerialPort>";
 }
 
-Json::Value TFakeSerialPort::GetName() const
+Json::Value TFakeSerialPort::GetPath() const
 {
     Json::Value res;
     res["path"] = "TFakeSerialPort";

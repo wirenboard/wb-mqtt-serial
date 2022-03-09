@@ -444,9 +444,9 @@ bool TSerialClient::RPCTransceive(const TRPCPortConfig& config,
     return RPCPortHandler.RPCTransceive(config, response, actualResponseSize, FlushNeeded, RPCSignal);
 }
 
-Json::Value TSerialClient::GetPortName()
+Json::Value TSerialClient::GetPortPath()
 {
-    return Port->GetName();
+    return Port->GetPath();
 }
 
 bool TRegisterComparePredicate::operator()(const PRegister& r1, const PRegister& r2) const
