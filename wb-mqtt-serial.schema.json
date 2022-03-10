@@ -809,7 +809,10 @@
           "propertyOrder": 3
         }
       },
-      "required": ["mode", "name"]
+      "required": ["mode", "name"],
+      "options": {
+        "remove_empty_properties": true
+      }
     },
     "subreg": {
       "type": "object",
