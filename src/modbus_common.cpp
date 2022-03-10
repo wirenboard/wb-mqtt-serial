@@ -588,11 +588,11 @@ namespace Modbus // modbus protocol common utilities
                                       Modbus::TRegisterCache& tmpCache,
                                       const Modbus::TRegisterCache& cache)
     {
+        auto bitWidth = reg.GetBitWidth();
         if (reg.Type == REG_COIL) {
             value = value ? uint16_t(0xFF) << 8 : 0x00;
+            bitWidth = 16;
         }
-
-        auto bitWidth = reg.GetBitWidth();
 
         TAddress address;
 
