@@ -882,7 +882,8 @@
           "type": "integer",
           "title": "Period (ms)",
           "minimum": 0,
-          "propertyOrder": 3
+          "propertyOrder": 3,
+          "default": 1000
         }
       },
       "required": ["mode", "name"],
