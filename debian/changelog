@@ -1,3 +1,9 @@
+wb-mqtt-serial (2.55.0) stable; urgency=medium
+
+  * Somfy RS485 RTS transmitter support
+
+ -- Petr Krasnoshchekov <petr.krasnoshchekov@wirenboard.ru>  Fri, 11 Mar 2022 11:59:32 +0500
+
 wb-mqtt-serial (2.54.1) stable; urgency=medium
 
   * Wrong coil values writing is fixed
