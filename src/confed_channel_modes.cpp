@@ -4,15 +4,15 @@
 namespace
 {
     const std::string ChannelModes[] =
-        {"in queue order", "fast (200ms)", "fast (100ms)", "fast", "do not read", "not faster than (deprecated)"};
+        {"do not read", "in queue order", "200 ms", "100 ms", "custom period", "not faster than (deprecated)"};
 
     enum TModes
     {
-        IN_QUEUE_ORDER = 0,
+        DO_NOT_READ = 0,
+        IN_QUEUE_ORDER,
         FAST_200,
         FAST_100,
         FAST,
-        DO_NOT_READ,
         READ_LIMIT
     };
 }
