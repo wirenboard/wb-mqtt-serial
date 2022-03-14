@@ -14,7 +14,7 @@
                 "type": "pushbutton",
                 "reg_type": "command",
                 "address": "0x80",
-                "on_value": "0x010001",
+                "on_value": "0x010002",
                 "group": "ch1"
             },
             {
@@ -22,7 +22,7 @@
                 "type": "pushbutton",
                 "reg_type": "command",
                 "address": "0x80",
-                "on_value": "0x020001",
+                "on_value": "0x020002",
                 "group": "ch1"
             },
             {
@@ -47,7 +47,7 @@
                 "type": "pushbutton",
                 "reg_type": "command",
                 "address": "0x80",
-                "on_value": "0x010101",
+                "on_value": "0x010102",
                 "group": "ch2"
             },
             {
@@ -55,7 +55,7 @@
                 "type": "pushbutton",
                 "reg_type": "command",
                 "address": "0x80",
-                "on_value": "0x020101",
+                "on_value": "0x020102",
                 "group": "ch2"
             },
             {
@@ -80,7 +80,7 @@
                 "type": "pushbutton",
                 "reg_type": "command",
                 "address": "0x80",
-                "on_value": "0x010201",
+                "on_value": "0x010202",
                 "group": "ch3"
             },
             {
@@ -88,7 +88,7 @@
                 "type": "pushbutton",
                 "reg_type": "command",
                 "address": "0x80",
-                "on_value": "0x020201",
+                "on_value": "0x020202",
                 "group": "ch3"
             },
             {
@@ -113,7 +113,7 @@
                 "type": "pushbutton",
                 "reg_type": "command",
                 "address": "0x80",
-                "on_value": "0x010301",
+                "on_value": "0x010302",
                 "group": "ch4"
             },
             {
@@ -121,7 +121,7 @@
                 "type": "pushbutton",
                 "reg_type": "command",
                 "address": "0x80",
-                "on_value": "0x020301",
+                "on_value": "0x020302",
                 "group": "ch4"
             },
             {
@@ -146,7 +146,7 @@
                 "type": "pushbutton",
                 "reg_type": "command",
                 "address": "0x80",
-                "on_value": "0x010401",
+                "on_value": "0x010402",
                 "group": "ch5"
             },
             {
@@ -154,7 +154,7 @@
                 "type": "pushbutton",
                 "reg_type": "command",
                 "address": "0x80",
-                "on_value": "0x020401",
+                "on_value": "0x020402",
                 "group": "ch5"
             },
             {
@@ -179,7 +179,7 @@
                 "type": "pushbutton",
                 "reg_type": "command",
                 "address": "0x80",
-                "on_value": "0x010501",
+                "on_value": "0x010502",
                 "group": "ch6"
             },
             {
@@ -187,7 +187,7 @@
                 "type": "pushbutton",
                 "reg_type": "command",
                 "address": "0x80",
-                "on_value": "0x020501",
+                "on_value": "0x020502",
                 "group": "ch6"
             },
             {
@@ -212,7 +212,7 @@
                 "type": "pushbutton",
                 "reg_type": "command",
                 "address": "0x80",
-                "on_value": "0x010601",
+                "on_value": "0x010602",
                 "group": "ch7"
             },
             {
@@ -220,7 +220,7 @@
                 "type": "pushbutton",
                 "reg_type": "command",
                 "address": "0x80",
-                "on_value": "0x020601",
+                "on_value": "0x020602",
                 "group": "ch7"
             },
             {
@@ -245,7 +245,7 @@
                 "type": "pushbutton",
                 "reg_type": "command",
                 "address": "0x80",
-                "on_value": "0x010701",
+                "on_value": "0x010702",
                 "group": "ch8"
             },
             {
@@ -253,7 +253,7 @@
                 "type": "pushbutton",
                 "reg_type": "command",
                 "address": "0x80",
-                "on_value": "0x020701",
+                "on_value": "0x020702",
                 "group": "ch8"
             },
             {
@@ -278,7 +278,7 @@
                 "type": "pushbutton",
                 "reg_type": "command",
                 "address": "0x80",
-                "on_value": "0x010801",
+                "on_value": "0x010802",
                 "group": "ch9"
             },
             {
@@ -286,7 +286,7 @@
                 "type": "pushbutton",
                 "reg_type": "command",
                 "address": "0x80",
-                "on_value": "0x020801",
+                "on_value": "0x020802",
                 "group": "ch9"
             },
             {
@@ -311,7 +311,7 @@
                 "type": "pushbutton",
                 "reg_type": "command",
                 "address": "0x80",
-                "on_value": "0x010901",
+                "on_value": "0x010902",
                 "group": "ch10"
             },
             {
@@ -319,7 +319,7 @@
                 "type": "pushbutton",
                 "reg_type": "command",
                 "address": "0x80",
-                "on_value": "0x020901",
+                "on_value": "0x020902",
                 "group": "ch10"
             },
             {
@@ -344,7 +344,7 @@
                 "type": "pushbutton",
                 "reg_type": "command",
                 "address": "0x80",
-                "on_value": "0x010A01",
+                "on_value": "0x010A02",
                 "group": "ch11"
             },
             {
@@ -352,7 +352,7 @@
                 "type": "pushbutton",
                 "reg_type": "command",
                 "address": "0x80",
-                "on_value": "0x020A01",
+                "on_value": "0x020A02",
                 "group": "ch11"
             },
             {
@@ -377,7 +377,7 @@
                 "type": "pushbutton",
                 "reg_type": "command",
                 "address": "0x80",
-                "on_value": "0x010B01",
+                "on_value": "0x010B02",
                 "group": "ch12"
             },
             {
@@ -385,7 +385,7 @@
                 "type": "pushbutton",
                 "reg_type": "command",
                 "address": "0x80",
-                "on_value": "0x020B01",
+                "on_value": "0x020B02",
                 "group": "ch12"
             },
             {
@@ -410,7 +410,7 @@
                 "type": "pushbutton",
                 "reg_type": "command",
                 "address": "0x80",
-                "on_value": "0x010C01",
+                "on_value": "0x010C02",
                 "group": "ch13"
             },
             {
@@ -418,7 +418,7 @@
                 "type": "pushbutton",
                 "reg_type": "command",
                 "address": "0x80",
-                "on_value": "0x020C01",
+                "on_value": "0x020C02",
                 "group": "ch13"
             },
             {
@@ -443,7 +443,7 @@
                 "type": "pushbutton",
                 "reg_type": "command",
                 "address": "0x80",
-                "on_value": "0x010D01",
+                "on_value": "0x010D02",
                 "group": "ch14"
             },
             {
@@ -451,7 +451,7 @@
                 "type": "pushbutton",
                 "reg_type": "command",
                 "address": "0x80",
-                "on_value": "0x020D01",
+                "on_value": "0x020D02",
                 "group": "ch14"
             },
             {
@@ -476,7 +476,7 @@
                 "type": "pushbutton",
                 "reg_type": "command",
                 "address": "0x80",
-                "on_value": "0x010E01",
+                "on_value": "0x010E02",
                 "group": "ch15"
             },
             {
@@ -484,7 +484,7 @@
                 "type": "pushbutton",
                 "reg_type": "command",
                 "address": "0x80",
-                "on_value": "0x020E01",
+                "on_value": "0x020E02",
                 "group": "ch15"
             },
             {
@@ -509,7 +509,7 @@
                 "type": "pushbutton",
                 "reg_type": "command",
                 "address": "0x80",
-                "on_value": "0x010F01",
+                "on_value": "0x010F02",
                 "group": "ch16"
             },
             {
@@ -517,7 +517,7 @@
                 "type": "pushbutton",
                 "reg_type": "command",
                 "address": "0x80",
-                "on_value": "0x020F01",
+                "on_value": "0x020F02",
                 "group": "ch16"
             },
             {
