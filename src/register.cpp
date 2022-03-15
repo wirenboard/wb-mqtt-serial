@@ -9,11 +9,6 @@
 
 #define LOG(logger) ::logger.Log() << "[register] "
 
-namespace
-{
-    std::chrono::milliseconds MIN_POLL_MISS_CHECK_INTERVAL(10000);
-}
-
 size_t RegisterFormatByteWidth(RegisterFormat format)
 {
     switch (format) {
@@ -93,13 +88,8 @@ TRegister::TRegister(PSerialDevice device, PRegisterConfig config, const std::st
     : TRegisterConfig(*config),
       _Device(device),
       ChannelName(channelName),
-      TotalPollTime(std::chrono::milliseconds::zero()),
-      ReadCount(0)
-{
-    if (ReadPeriod) {
-        PollMissCheckInterval = std::max(MIN_POLL_MISS_CHECK_INTERVAL, (*ReadPeriod) * 10);
-    }
-}
+      ReadPeriodMissChecker(config->ReadPeriod)
+{}
 
 std::string TRegister::ToString() const
 {
@@ -171,20 +161,39 @@ void TRegister::SetLastPollTime(std::chrono::steady_clock::time_point pollTime)
     if (!ReadPeriod) {
         return;
     }
-    if (LastPollTime.time_since_epoch().count()) {
+    if (ReadPeriodMissChecker.IsMissed(pollTime)) {
+        SetError(TError::PollIntervalMissError);
+    } else {
+        ClearError(TError::PollIntervalMissError);
+    }
+}
+
+TReadPeriodMissChecker::TReadPeriodMissChecker(const std::experimental::optional<std::chrono::milliseconds>& readPeriod)
+    : TotalReadTime(std::chrono::milliseconds::zero()),
+      ReadCount(0)
+{
+    if (readPeriod) {
+        ReadMissCheckInterval = std::max(std::chrono::milliseconds(10000), (*readPeriod) * 10);
+        MaxReadPeriod = std::chrono::duration_cast<std::chrono::milliseconds>((*readPeriod) * 1.1);
+    }
+}
+
+bool TReadPeriodMissChecker::IsMissed(std::chrono::steady_clock::time_point readTime)
+{
+    bool res = false;
+    if (LastReadTime.time_since_epoch().count()) {
         ++ReadCount;
-        TotalPollTime += std::chrono::duration_cast<std::chrono::milliseconds>(pollTime - LastPollTime);
-        if (TotalPollTime >= PollMissCheckInterval) {
-            if (TotalPollTime / ReadCount < (*ReadPeriod) * 1.1) {
-                ClearError(TError::PollIntervalMissError);
-            } else {
-                SetError(TError::PollIntervalMissError);
+        TotalReadTime += std::chrono::duration_cast<std::chrono::milliseconds>(readTime - LastReadTime);
+        if (TotalReadTime >= ReadMissCheckInterval) {
+            if (TotalReadTime / ReadCount >= MaxReadPeriod) {
+                res = true;
             }
             ReadCount = 0;
-            TotalPollTime = std::chrono::milliseconds::zero();
+            TotalReadTime = std::chrono::milliseconds::zero();
         }
     }
-    LastPollTime = pollTime;
+    LastReadTime = readTime;
+    return res;
 }
 
 std::map<std::tuple<PSerialDevice, PRegisterConfig>, PRegister> TRegister::RegStorage;

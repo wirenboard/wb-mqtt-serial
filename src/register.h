@@ -265,6 +265,20 @@ enum class TRegisterAvailability
     UNAVAILABLE
 };
 
+class TReadPeriodMissChecker
+{
+    std::chrono::steady_clock::time_point LastReadTime;
+    std::chrono::milliseconds TotalReadTime;
+    std::chrono::milliseconds ReadMissCheckInterval;
+    std::chrono::milliseconds MaxReadPeriod;
+    size_t ReadCount;
+
+public:
+    TReadPeriodMissChecker(const std::experimental::optional<std::chrono::milliseconds>& readPeriod);
+
+    bool IsMissed(std::chrono::steady_clock::time_point readTime);
+};
+
 struct TRegister: public TRegisterConfig
 {
     enum TError
@@ -310,10 +324,7 @@ private:
     uint64_t Value;
     std::string ChannelName;
     TErrorState ErrorState;
-    std::chrono::steady_clock::time_point LastPollTime;
-    std::chrono::milliseconds TotalPollTime;
-    std::chrono::milliseconds PollMissCheckInterval;
-    size_t ReadCount;
+    TReadPeriodMissChecker ReadPeriodMissChecker;
 
     // Intern() implementation for TRegister
 private:
