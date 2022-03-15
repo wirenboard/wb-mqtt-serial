@@ -1,7 +1,7 @@
 wb-mqtt-serial (2.55.1) stable; urgency=medium
 
   * read_period_ms max value is limited by 2 days
-  * read period miss error is calculated for at least 10 seconds intervals to make it less noisily 
+  * read period miss error is calculated for at least 10 seconds intervals to make it less noisy 
 
  -- Petr Krasnoshchekov <petr.krasnoshchekov@wirenboard.ru>  Tue, 15 Mar 2022 12:01:50 +0500
 
