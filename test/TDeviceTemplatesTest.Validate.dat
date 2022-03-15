@@ -115,6 +115,15 @@ Energomera CE303
 	Voltage angle L1-L2  =>  Voltage angle L1-L2
 	Voltage angle L2-L3  =>  Voltage angle L2-L3
 	Voltage angle L3-L1  =>  Voltage angle L3-L1
+Haier YCJ-A002
+    Indoor Unit Status  =>  Indoor Unit Status
+    Air Conditioner Mode  =>  Air Conditioner Mode
+    Indoor Temperature  =>  Indoor Temperature
+    Temperature Setpoint  =>  Temperature Setpoint
+    Fan Speed  =>  Fan Speed
+    Indoor Unit Blocking Mode  =>  Indoor Unit Blocking Mode
+    Alarm Code  =>  Alarm Code
+    Device Number  =>  Device Number
 IVTM-7M-3
 	Humidity  =>  Humidity
 	Temperature  =>  Temperature
