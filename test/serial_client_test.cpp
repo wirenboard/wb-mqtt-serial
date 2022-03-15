@@ -1359,13 +1359,19 @@ TEST_F(TSerialClientIntegrationTest, PollIntervalMissErrors)
 
     device->Registers[0] = 0xFF;
 
-    this_thread::sleep_for(200ms);
+    for (size_t i = 0; i < 5; ++i) {
+        this_thread::sleep_for(2s);
 
-    Note() << "LoopOnce() [interval miss]";
-    SerialDriver->LoopOnce();
+        Note() << "LoopOnce() [interval miss]";
+        SerialDriver->LoopOnce();
+    }
 
-    Note() << "LoopOnce() [interval ok]";
-    SerialDriver->LoopOnce();
+    for (size_t i = 0; i < 10; ++i) {
+        this_thread::sleep_for(1s);
+
+        Note() << "LoopOnce() [interval ok]";
+        SerialDriver->LoopOnce();
+    }
 }
 
 TEST_F(TSerialClientIntegrationTest, SetupErrors)

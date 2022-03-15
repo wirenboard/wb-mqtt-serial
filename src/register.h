@@ -277,11 +277,7 @@ struct TRegister: public TRegisterConfig
 
     typedef std::bitset<TError::MAX_ERRORS> TErrorState;
 
-    TRegister(PSerialDevice device, PRegisterConfig config, const std::string& channelName = std::string())
-        : TRegisterConfig(*config),
-          _Device(device),
-          ChannelName(channelName)
-    {}
+    TRegister(PSerialDevice device, PRegisterConfig config, const std::string& channelName = std::string());
 
     std::string ToString() const;
 
@@ -315,6 +311,9 @@ private:
     std::string ChannelName;
     TErrorState ErrorState;
     std::chrono::steady_clock::time_point LastPollTime;
+    std::chrono::milliseconds TotalPollTime;
+    std::chrono::milliseconds PollMissCheckInterval;
+    size_t ReadCount;
 
     // Intern() implementation for TRegister
 private:

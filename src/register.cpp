@@ -9,6 +9,11 @@
 
 #define LOG(logger) ::logger.Log() << "[register] "
 
+namespace
+{
+    std::chrono::milliseconds MIN_POLL_MISS_CHECK_INTERVAL(10000);
+}
+
 size_t RegisterFormatByteWidth(RegisterFormat format)
 {
     switch (format) {
@@ -84,6 +89,18 @@ const IRegisterAddress& TRegisterConfig::GetAddress() const
     return *Address;
 }
 
+TRegister::TRegister(PSerialDevice device, PRegisterConfig config, const std::string& channelName)
+    : TRegisterConfig(*config),
+      _Device(device),
+      ChannelName(channelName),
+      TotalPollTime(std::chrono::milliseconds::zero()),
+      ReadCount(0)
+{
+    if (ReadPeriod) {
+        PollMissCheckInterval = std::max(MIN_POLL_MISS_CHECK_INTERVAL, (*ReadPeriod) * 10);
+    }
+}
+
 std::string TRegister::ToString() const
 {
     if (Device()) {
@@ -155,11 +172,16 @@ void TRegister::SetLastPollTime(std::chrono::steady_clock::time_point pollTime)
         return;
     }
     if (LastPollTime.time_since_epoch().count()) {
-        auto delta = std::chrono::duration_cast<std::chrono::milliseconds>(pollTime - LastPollTime);
-        if (delta > *ReadPeriod) {
-            SetError(TError::PollIntervalMissError);
-        } else {
-            ClearError(TError::PollIntervalMissError);
+        ++ReadCount;
+        TotalPollTime += std::chrono::duration_cast<std::chrono::milliseconds>(pollTime - LastPollTime);
+        if (TotalPollTime >= PollMissCheckInterval) {
+            if (TotalPollTime / ReadCount < (*ReadPeriod) * 1.1) {
+                ClearError(TError::PollIntervalMissError);
+            } else {
+                SetError(TError::PollIntervalMissError);
+            }
+            ReadCount = 0;
+            TotalPollTime = std::chrono::milliseconds::zero();
         }
     }
     LastPollTime = pollTime;
