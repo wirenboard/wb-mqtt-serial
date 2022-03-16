@@ -19416,7 +19416,7 @@ energomera_ce308_dlms
 	Voltage angle L1-L2  =>  Voltage angle L1-L2
 	Voltage angle L2-L3  =>  Voltage angle L2-L3
 	Voltage angle L3-L1  =>  Voltage angle L3-L1
-Haier YCJ-A002
+haier_ycj-a002
     Air Conditioner Mode  =>  Air Conditioner Mode
     Alarm Code  =>  Alarm Code
     Device Number  =>  Device Number
