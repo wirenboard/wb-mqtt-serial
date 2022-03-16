@@ -201,7 +201,7 @@
                 "type": "pushbutton",
                 "reg_type": "holding",
                 "address": 1220,
-                "on_value": 1,
+                "on_value": 2,
                 "enabled": false,
                 "group": "сurtain_1"
             },
@@ -210,7 +210,7 @@
                 "type": "pushbutton",
                 "reg_type": "holding",
                 "address": 1220,
-                "on_value": 2,
+                "on_value": 1,
                 "enabled": false,
                 "group": "сurtain_1"
             },
@@ -287,7 +287,7 @@
                 "type": "pushbutton",
                 "reg_type": "holding",
                 "address": 1221,
-                "on_value": 1,
+                "on_value": 2,
                 "enabled": false,
                 "group": "сurtain_2"
             },
@@ -296,7 +296,7 @@
                 "type": "pushbutton",
                 "reg_type": "holding",
                 "address": 1221,
-                "on_value": 2,
+                "on_value": 1,
                 "enabled": false,
                 "group": "сurtain_2"
             },
@@ -373,7 +373,7 @@
                 "type": "pushbutton",
                 "reg_type": "holding",
                 "address": 1222,
-                "on_value": 1,
+                "on_value": 2,
                 "enabled": false,
                 "group": "сurtain_3"
             },
@@ -382,7 +382,7 @@
                 "type": "pushbutton",
                 "reg_type": "holding",
                 "address": 1222,
-                "on_value": 2,
+                "on_value": 1,
                 "enabled": false,
                 "group": "сurtain_3"
             },
