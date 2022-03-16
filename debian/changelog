@@ -1,3 +1,9 @@
+wb-mqtt-serial (2.56.0) stable; urgency=medium
+
+  * Somfy RS485 RTS transmitter support
+
+ -- Petr Krasnoshchekov <petr.krasnoshchekov@wirenboard.ru>  Wed, 16 Mar 2022 09:43:42 +0500
+
 wb-mqtt-serial (2.55.0) stable; urgency=medium
 
   * read_rate_limit_ms is deprecated
