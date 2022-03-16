@@ -1,4 +1,5 @@
 #include "confed_config_generator.h"
+#include "confed_channel_modes.h"
 #include "confed_json_generator.h"
 #include "confed_schema_generator.h"
 
@@ -65,12 +66,6 @@ bool TryToTransformReadRateLimit(Json::Value& ch, const Json::Value& channelTemp
     if (!ch.isMember("read_rate_limit_ms")) {
         return false;
     }
-    if (channelTemplate.isMember("poll_interval") &&
-        ch["read_rate_limit_ms"].asInt() == channelTemplate["poll_interval"].asInt())
-    {
-        ch.removeMember("read_rate_limit_ms");
-        return false;
-    }
     if (channelTemplate.isMember("read_rate_limit_ms") &&
         (ch["read_rate_limit_ms"].asInt() == channelTemplate["read_rate_limit_ms"].asInt()))
     {
@@ -83,13 +78,14 @@ bool TryToTransformReadRateLimit(Json::Value& ch, const Json::Value& channelTemp
 /**
  * @brief  Compare parameters with template.
  *         Add channel to resulting config file if:
- *         - it has "read_rate_limit_ms", deprecated "poll_interval" or "enabled" property
+ *         - it has "read_rate_limit_ms" or "enabled" property
  *           different from that specified in template
  *         - it has "read_period_ms" property
  *         Remove properies equal to specified in template
  */
 bool TryToTransformSimpleChannel(Json::Value& ch, const Json::Value& channelTemplate)
 {
+    ch = HomeuiToConfigChannel(ch);
     bool ok = TryToTransformReadRateLimit(ch, channelTemplate);
     if (ch.isMember("enabled")) {
         bool enabledInTemplate = true;
