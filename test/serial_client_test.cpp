@@ -1359,6 +1359,7 @@ TEST_F(TSerialClientIntegrationTest, PollIntervalMissErrors)
 
     device->Registers[0] = 0xFF;
 
+    // TODO: https://wirenboard.bitrix24.ru/company/personal/user/134/tasks/task/view/46912/
     for (size_t i = 0; i < 5; ++i) {
         this_thread::sleep_for(2s);
 
