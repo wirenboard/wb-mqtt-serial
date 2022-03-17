@@ -25,16 +25,17 @@ size_t RegisterFormatByteWidth(RegisterFormat format)
         case S24:
         case BCD24:
             return 3;
+        case U16:
+        case S16:
+        case BCD16:
+            return 2;
+        case U8:
+        case S8:
+        case BCD8:
         case Char8:
             return 1;
-        default:
-            return 2;
     }
-}
-
-TRegisterRange::TRegisterRange(PRegister reg): RegList(1, reg)
-{
-    RegDevice = reg->Device();
+    return 2;
 }
 
 const std::list<PRegister>& TRegisterRange::RegisterList() const
@@ -47,17 +48,21 @@ std::list<PRegister>& TRegisterRange::RegisterList()
     return RegList;
 }
 
-PSerialDevice TRegisterRange::Device() const
-{
-    return RegDevice.lock();
-}
-
-TSingleRegisterRange::TSingleRegisterRange(PRegister reg): TRegisterRange(reg)
-{}
-
-bool TSingleRegisterRange::Add(PRegister reg, std::chrono::milliseconds pollLimit)
+bool TRegisterRange::HasOtherDeviceAndType(PRegister reg) const
 {
     if (RegisterList().empty()) {
+        return false;
+    }
+    auto& frontReg = RegisterList().front();
+    return ((reg->Device() != frontReg->Device()) || (reg->Type != frontReg->Type));
+}
+
+bool TSameAddressRegisterRange::Add(PRegister reg, std::chrono::milliseconds pollLimit)
+{
+    if (HasOtherDeviceAndType(reg)) {
+        return false;
+    }
+    if (RegisterList().empty() || reg->GetAddress().Compare(RegisterList().front()->GetAddress()) == 0) {
         RegisterList().push_back(reg);
         return true;
     }
@@ -68,8 +73,8 @@ std::string TRegisterConfig::ToString() const
 {
     std::stringstream s;
     s << TypeName << ": " << GetAddress();
-    if (BitOffset != 0 || BitWidth != 0) {
-        s << ":" << (int)BitOffset << ":" << (int)BitWidth;
+    if (DataOffset != 0 || DataWidth != 0) {
+        s << ":" << (int)DataOffset << ":" << (int)DataWidth;
     }
     return s.str();
 }
@@ -78,6 +83,13 @@ const IRegisterAddress& TRegisterConfig::GetAddress() const
 {
     return *Address;
 }
+
+TRegister::TRegister(PSerialDevice device, PRegisterConfig config, const std::string& channelName)
+    : TRegisterConfig(*config),
+      _Device(device),
+      ChannelName(channelName),
+      ReadPeriodMissChecker(config->ReadPeriod)
+{}
 
 std::string TRegister::ToString() const
 {
@@ -111,9 +123,9 @@ void TRegister::SetValue(uint64_t value, bool clearReadError)
     if (UnsupportedValue && (*UnsupportedValue == value)) {
         SetError(TRegister::TError::ReadError);
         Available = TRegisterAvailability::UNAVAILABLE;
-    } else {
-        Available = TRegisterAvailability::AVAILABLE;
+        return;
     }
+    Available = TRegisterAvailability::AVAILABLE;
     if (ErrorValue && InvertWordOrderIfNeeded(*this, ErrorValue.value()) == value) {
         LOG(Debug) << "register " << ToString() << " contains error value";
         SetError(TError::ReadError);
@@ -149,14 +161,39 @@ void TRegister::SetLastPollTime(std::chrono::steady_clock::time_point pollTime)
     if (!ReadPeriod) {
         return;
     }
-    if (LastPollTime.time_since_epoch().count()) {
-        if (std::chrono::duration_cast<std::chrono::milliseconds>(pollTime - LastPollTime) > *ReadPeriod) {
-            SetError(TError::PollIntervalMissError);
-        } else {
-            ClearError(TError::PollIntervalMissError);
+    if (ReadPeriodMissChecker.IsMissed(pollTime)) {
+        SetError(TError::PollIntervalMissError);
+    } else {
+        ClearError(TError::PollIntervalMissError);
+    }
+}
+
+TReadPeriodMissChecker::TReadPeriodMissChecker(const std::experimental::optional<std::chrono::milliseconds>& readPeriod)
+    : TotalReadTime(std::chrono::milliseconds::zero()),
+      ReadCount(0)
+{
+    if (readPeriod) {
+        ReadMissCheckInterval = std::max(std::chrono::milliseconds(10000), (*readPeriod) * 10);
+        MaxReadPeriod = std::chrono::duration_cast<std::chrono::milliseconds>((*readPeriod) * 1.1);
+    }
+}
+
+bool TReadPeriodMissChecker::IsMissed(std::chrono::steady_clock::time_point readTime)
+{
+    bool res = false;
+    if (LastReadTime.time_since_epoch().count()) {
+        ++ReadCount;
+        TotalReadTime += std::chrono::duration_cast<std::chrono::milliseconds>(readTime - LastReadTime);
+        if (TotalReadTime >= ReadMissCheckInterval) {
+            if (TotalReadTime / ReadCount >= MaxReadPeriod) {
+                res = true;
+            }
+            ReadCount = 0;
+            TotalReadTime = std::chrono::milliseconds::zero();
         }
     }
-    LastPollTime = pollTime;
+    LastReadTime = readTime;
+    return res;
 }
 
 std::map<std::tuple<PSerialDevice, PRegisterConfig>, PRegister> TRegister::RegStorage;
@@ -182,15 +219,15 @@ TRegisterConfig::TRegisterConfig(int type,
       ReadOnly(readonly),
       TypeName(type_name),
       WordOrder(word_order),
-      BitOffset(bit_offset),
-      BitWidth(bit_width)
+      DataOffset(bit_offset),
+      DataWidth(bit_width)
 {
     if (TypeName.empty())
         TypeName = "(type " + std::to_string(Type) + ")";
 
     auto maxOffset = RegisterFormatByteWidth(Format) * 8;
 
-    if (BitOffset >= maxOffset) {
+    if (DataOffset >= maxOffset) {
         throw TSerialDeviceException("bit offset must not exceed " + std::to_string(maxOffset) + " bits");
     }
 
@@ -206,15 +243,15 @@ uint8_t TRegisterConfig::GetByteWidth() const
 
 uint8_t TRegisterConfig::Get16BitWidth() const
 {
-    auto w = uint8_t(ceil(((float)BitOffset + GetBitWidth()) / 8) + 1) / 2;
+    auto w = uint8_t(ceil(((float)DataOffset + GetBitWidth()) / 8) + 1) / 2;
 
     return w;
 }
 
 uint8_t TRegisterConfig::GetBitWidth() const
 {
-    if (BitWidth) {
-        return BitWidth;
+    if (DataWidth) {
+        return DataWidth;
     }
 
     return GetByteWidth() * 8;
@@ -283,10 +320,13 @@ std::string TUint32RegisterAddress::ToString() const
     return std::to_string(Address);
 }
 
-bool TUint32RegisterAddress::operator<(const IRegisterAddress& addr) const
+int TUint32RegisterAddress::Compare(const IRegisterAddress& addr) const
 {
     auto a = dynamic_cast<const TUint32RegisterAddress&>(addr);
-    return Address < a.Address;
+    if (Address < a.Address) {
+        return -1;
+    }
+    return (Address == a.Address) ? 0 : 1;
 }
 
 IRegisterAddress* TUint32RegisterAddress::CalcNewAddress(uint32_t offset,
@@ -315,10 +355,10 @@ std::string TStringRegisterAddress::ToString() const
     return Addr;
 }
 
-bool TStringRegisterAddress::operator<(const IRegisterAddress& addr) const
+int TStringRegisterAddress::Compare(const IRegisterAddress& addr) const
 {
     const auto& a = dynamic_cast<const TStringRegisterAddress&>(addr);
-    return Addr < a.Addr;
+    return Addr.compare(a.Addr);
 }
 
 IRegisterAddress* TStringRegisterAddress::CalcNewAddress(uint32_t /*offset*/,
@@ -538,6 +578,8 @@ std::string ConvertFromRawValue(const TRegisterConfig& reg, uint64_t value)
 {
     value = InvertWordOrderIfNeeded(reg, value);
     switch (reg.Format) {
+        case U8:
+            return ToScaledTextValue(reg, uint8_t(value & 0xff));
         case S8:
             return ToScaledTextValue(reg, int8_t(value & 0xff));
         case S16:

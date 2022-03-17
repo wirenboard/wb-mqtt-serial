@@ -282,6 +282,44 @@ TEST_F(TSerialClientTest, Write)
     }
 }
 
+TEST_F(TSerialClientTest, U8)
+{
+    PRegister reg20 = Reg(20, U8);
+    PRegister reg30 = Reg(30, U8);
+    SerialClient->AddRegister(reg20);
+    SerialClient->AddRegister(reg30);
+
+    Note() << "server -> client: 10, 20";
+    Device->Registers[20] = 10;
+    Device->Registers[30] = 20;
+    Note() << "Cycle()";
+    SerialClient->Cycle();
+    EXPECT_EQ(to_string(10), GetTextValue(reg20));
+    EXPECT_EQ(to_string(20), GetTextValue(reg30));
+
+    Note() << "server -> client: 0x2010, 0x2011";
+    Device->Registers[20] = 0x2010;
+    Device->Registers[30] = 0x2011;
+    Note() << "Cycle()";
+    SerialClient->Cycle();
+    EXPECT_EQ(to_string(0x10), GetTextValue(reg20));
+    EXPECT_EQ(to_string(0x11), GetTextValue(reg30));
+
+    Note() << "client -> server: 10";
+    SerialClient->SetTextValue(reg20, "10");
+    Note() << "Cycle()";
+    SerialClient->Cycle();
+    EXPECT_EQ(to_string(10), GetTextValue(reg20));
+    EXPECT_EQ(10, Device->Registers[20]);
+
+    Note() << "client -> server: 257";
+    SerialClient->SetTextValue(reg20, "257");
+    Note() << "Cycle()";
+    SerialClient->Cycle();
+    EXPECT_EQ(to_string(1), GetTextValue(reg20));
+    EXPECT_EQ(1, Device->Registers[20]);
+}
+
 TEST_F(TSerialClientTest, S8)
 {
     PRegister reg20 = Reg(20, S8);
@@ -1256,54 +1294,86 @@ TEST_F(TSerialClientIntegrationTest, Round)
     ASSERT_EQ(12.4f, data.value);
 }
 
-// TODO: Fix consists_of channels, they publish garbage on write and read errors
-// TEST_F(TSerialClientIntegrationTest, Errors)
-// {
+TEST_F(TSerialClientIntegrationTest, Errors)
+{
 
-// FilterConfig("DDL24");
+    FilterConfig("DDL24");
 
-// SerialDriver = make_shared<TMQTTSerialDriver>(Driver, Config);
+    SerialDriver = make_shared<TMQTTSerialDriver>(Driver, Config);
 
-// auto device = TFakeSerialDevice::GetDevice("23");
+    auto device = TFakeSerialDevice::GetDevice("23");
 
-// if (!device) {
-//     throw std::runtime_error("device not found or wrong type");
-// }
+    if (!device) {
+        throw std::runtime_error("device not found or wrong type");
+    }
 
-// Note() << "LoopOnce() [first start]";
-// SerialDriver->LoopOnce();
+    Note() << "LoopOnce() [first start]";
+    SerialDriver->LoopOnce();
 
-// device->BlockReadFor(4, true);
-// device->BlockWriteFor(4, true);
-// device->BlockReadFor(7, true);
-// device->BlockWriteFor(7, true);
+    device->BlockReadFor(4, true);
+    device->BlockWriteFor(4, true);
+    device->BlockReadFor(7, true);
+    device->BlockWriteFor(7, true);
 
-// Note() << "LoopOnce() [read, rw blacklisted]";
-// SerialDriver->LoopOnce();
+    Note() << "LoopOnce() [read, rw blacklisted]";
+    SerialDriver->LoopOnce();
 
-// PublishWaitOnValue("/devices/ddl24/controls/RGB/on", "10;20;30", 0, true);
-// PublishWaitOnValue("/devices/ddl24/controls/White/on", "42", 0, true);
+    PublishWaitOnValue("/devices/ddl24/controls/RGB/on", "10;20;30", 0, true);
+    PublishWaitOnValue("/devices/ddl24/controls/White/on", "42", 0, true);
 
-// Note() << "LoopOnce() [write, rw blacklisted]";
-// SerialDriver->LoopOnce();
+    Note() << "LoopOnce() [write, rw blacklisted]";
+    SerialDriver->LoopOnce();
 
-// device->BlockReadFor(4, false);
-// device->BlockWriteFor(4, false);
-// device->BlockReadFor(7, false);
-// device->BlockWriteFor(7, false);
+    device->BlockReadFor(4, false);
+    device->BlockWriteFor(4, false);
+    device->BlockReadFor(7, false);
+    device->BlockWriteFor(7, false);
 
-// Note() << "LoopOnce() [read, nothing blacklisted]";
-// SerialDriver->LoopOnce();
+    Note() << "LoopOnce() [read, nothing blacklisted]";
+    SerialDriver->LoopOnce();
 
-// PublishWaitOnValue("/devices/ddl24/controls/RGB/on", "10;20;30", 0, true);
-// PublishWaitOnValue("/devices/ddl24/controls/White/on", "42", 0, true);
+    PublishWaitOnValue("/devices/ddl24/controls/RGB/on", "10;20;30", 0, true);
+    PublishWaitOnValue("/devices/ddl24/controls/White/on", "42", 0, true);
 
-// Note() << "LoopOnce() [write, nothing blacklisted]";
-// SerialDriver->LoopOnce();
+    Note() << "LoopOnce() [write, nothing blacklisted]";
+    SerialDriver->LoopOnce();
 
-// Note() << "LoopOnce() [read, nothing blacklisted] (2)";
-// SerialDriver->LoopOnce();
-// }
+    Note() << "LoopOnce() [read, nothing blacklisted] (2)";
+    SerialDriver->LoopOnce();
+}
+
+TEST_F(TSerialClientIntegrationTest, PollIntervalMissErrors)
+{
+    FilterConfig("PollIntervalMissError");
+
+    SerialDriver = make_shared<TMQTTSerialDriver>(Driver, Config);
+
+    auto device = TFakeSerialDevice::GetDevice("0x97");
+
+    if (!device) {
+        throw std::runtime_error("device not found or wrong type");
+    }
+
+    Note() << "LoopOnce() [first start]";
+    SerialDriver->LoopOnce();
+
+    device->Registers[0] = 0xFF;
+
+    // TODO: https://wirenboard.bitrix24.ru/company/personal/user/134/tasks/task/view/46912/
+    for (size_t i = 0; i < 5; ++i) {
+        this_thread::sleep_for(2s);
+
+        Note() << "LoopOnce() [interval miss]";
+        SerialDriver->LoopOnce();
+    }
+
+    for (size_t i = 0; i < 10; ++i) {
+        this_thread::sleep_for(1s);
+
+        Note() << "LoopOnce() [interval ok]";
+        SerialDriver->LoopOnce();
+    }
+}
 
 TEST_F(TSerialClientIntegrationTest, SetupErrors)
 {

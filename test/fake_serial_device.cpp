@@ -22,6 +22,23 @@ namespace // utility
             value >>= 16;
         }
     }
+
+    class TFakeRegisterRange: public TRegisterRange
+    {
+    public:
+        TFakeRegisterRange()
+        {}
+
+        bool Add(PRegister reg, std::chrono::milliseconds pollLimit) override
+        {
+            if (HasOtherDeviceAndType(reg)) {
+                return false;
+            }
+            RegisterList().push_back(reg);
+            return true;
+        }
+    };
+
 }; // utility
 
 std::list<TFakeSerialDevice*> TFakeSerialDevice::Devices;
@@ -183,4 +200,9 @@ TFakeSerialDevice* TFakeSerialDevice::GetDevice(const std::string& slaveId)
 void TFakeSerialDevice::ClearDevices()
 {
     Devices.clear();
+}
+
+PRegisterRange TFakeSerialDevice::CreateRegisterRange() const
+{
+    return std::make_shared<TFakeRegisterRange>();
 }

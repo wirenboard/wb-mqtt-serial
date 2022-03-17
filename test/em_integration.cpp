@@ -58,8 +58,9 @@ TEST_F(TEMIntegrationTest, Poll)
     ExpectQueries(true);
 
     Note() << "LoopOnce()";
-    SerialDriver->LoopOnce();
-    SerialDriver->LoopOnce();
+    for (auto i = 0; i < 13; ++i) {
+        SerialDriver->LoopOnce();
+    }
 }
 
 // TBD: test errors

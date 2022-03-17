@@ -206,20 +206,32 @@ Unsubscribe -- em-test: /devices/modbus-sample/controls/#
 >>> LoopOnce() [first read]
 Open()
 Sleep(5000)
->> 01 03 00 07 00 06 74 09
+>> 01 03 00 07 00 01 35 CB
+<< 01 03 02 FF FE 78 34
 Publish: /devices/modbus-sample/controls/White/meta/error: 'r' (QoS 1, retained)
+>> 01 03 00 08 00 01 05 C8
+<< 01 03 02 00 14 B8 4B
 Publish: /devices/modbus-sample/controls/RGB_All: '20' (QoS 1, retained)
+>> 01 03 00 09 00 01 54 08
+<< 01 03 02 FF FE 78 34
 Publish: /devices/modbus-sample/controls/White1/meta/error: 'r' (QoS 1, retained)
+>> 01 03 00 0A 00 01 A4 08
+<< 01 03 02 00 01 79 84
 Publish: /devices/modbus-sample/controls/Voltage: '1' (QoS 1, retained)
+>> 01 03 00 0B 00 01 F5 C8
+<< 01 03 02 00 02 39 85
 Publish: /devices/modbus-sample/controls/Holding2: '2' (QoS 1, retained)
+>> 01 03 00 0C 00 01 44 09
+<< 01 03 02 FF FE 78 34
 Publish: /devices/modbus-sample/controls/Holding1/meta/error: 'r' (QoS 1, retained)
 >>> LoopOnce() [new range]
-<< 01 03 0C FF FE 00 14 FF FE 00 01 00 02 FF FE 00 35
->> 01 03 00 08 00 04 C5 CB
+>> 01 03 00 08 00 01 05 C8
+<< 01 03 02 00 15 79 8B
 Publish: /devices/modbus-sample/controls/RGB_All: '21' (QoS 1, retained)
+>> 01 03 00 0A 00 02 E4 09
+<< 01 03 04 00 02 00 03 1B F2
 Publish: /devices/modbus-sample/controls/Voltage: '2' (QoS 1, retained)
 Publish: /devices/modbus-sample/controls/Holding2: '3' (QoS 1, retained)
-<< 01 03 08 00 15 FF FE 00 02 00 03 0D 0C
 Close()
 Unsubscribe -- em-test: /devices/modbus-sample/controls/Holding1/on
 Publish: /devices/modbus-sample/controls/Holding1: '' (QoS 1, retained)

@@ -152,8 +152,8 @@ Json::Value LoadConfigSchema(const std::string& schemaFileName);
 struct TRegisterDesc
 {
     std::shared_ptr<IRegisterAddress> Address; //! Register address
-    uint8_t BitOffset = 0;                     //! Offset of data in register in bits
-    uint8_t BitWidth = 0;                      //! Width of data in register in bits
+    uint8_t DataOffset = 0;                    //! Offset of data in register
+    uint8_t DataWidth = 0;                     //! Width of data in register
 };
 
 class IRegisterAddressFactory
@@ -287,14 +287,13 @@ TRegisterBitsAddress LoadRegisterBitsAddress(const Json::Value& regCfg);
 /*!
  * Basic device factory implementation with uint32 register addresses
  */
-template<class Dev> class TBasicDeviceFactory: public IDeviceFactory
+template<class Dev, class AddressFactory = TUint32RegisterAddressFactory> class TBasicDeviceFactory
+    : public IDeviceFactory
 {
 public:
     TBasicDeviceFactory(const std::string& commonDeviceSchemaRef,
                         const std::string& customChannelSchemaRef = std::string())
-        : IDeviceFactory(std::make_unique<TUint32RegisterAddressFactory>(),
-                         commonDeviceSchemaRef,
-                         customChannelSchemaRef)
+        : IDeviceFactory(std::make_unique<AddressFactory>(), commonDeviceSchemaRef, customChannelSchemaRef)
     {}
 
     PSerialDevice CreateDevice(const Json::Value& data,

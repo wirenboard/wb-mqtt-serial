@@ -29,14 +29,19 @@
                 "order": 4
             },
             {
+                "title": "General",
+                "id": "general",
+                "order": 5
+            },
+            {
                 "title": "HW Info",
                 "id": "hw_info",
-                "order": 5
+                "order": 6
             },
             {
                 "title": "Debug",
                 "id": "debug",
-                "order": 6
+                "order": 7
             }
         ],
 
@@ -136,7 +141,7 @@
                 "title": "Channel 1 Increase Rate (ms/%)",
                 "address": 140,
                 "reg_type": "holding",
-                "min": 0,
+                "min": 1,
                 "max": 100,
                 "default": 10,
                 "group": "channel_1",
@@ -146,7 +151,7 @@
                 "title": "Channel 1 Decrease Rate (ms/%)",
                 "address": 150,
                 "reg_type": "holding",
-                "min": 0,
+                "min": 1,
                 "max": 100,
                 "default": 10,
                 "group": "channel_1",
@@ -205,7 +210,7 @@
                 "title": "Channel 2 Increase Rate (ms/%)",
                 "address": 141,
                 "reg_type": "holding",
-                "min": 0,
+                "min": 1,
                 "max": 100,
                 "default": 10,
                 "group": "channel_2",
@@ -215,7 +220,7 @@
                 "title": "Channel 2 Decrease Rate (ms/%)",
                 "address": 151,
                 "reg_type": "holding",
-                "min": 0,
+                "min": 1,
                 "max": 100,
                 "default": 10,
                 "group": "channel_2",
@@ -274,7 +279,7 @@
                 "title": "Channel 3 Increase Rate (ms/%)",
                 "address": 142,
                 "reg_type": "holding",
-                "min": 0,
+                "min": 1,
                 "max": 100,
                 "default": 10,
                 "group": "channel_3",
@@ -284,11 +289,28 @@
                 "title": "Channel 3 Decrease Rate (ms/%)",
                 "address": 152,
                 "reg_type": "holding",
-                "min": 0,
+                "min": 1,
                 "max": 100,
                 "default": 10,
                 "group": "channel_3",
                 "order": 6
+            },
+            "baud_rate": {
+                "title": "Baud rate",
+                "description": "baud_rate_description",
+                "address": 110,
+                "reg_type": "holding",
+                "enum": [96, 192, 384, 576, 1152],
+                "default": 96,
+                "enum_titles": [
+                    "9600",
+                    "19200",
+                    "38400",
+                    "57600",
+                    "115200"
+                ],
+                "group": "general",
+                "order": 1
             }
         },
 
@@ -449,11 +471,37 @@
                 "group": "hw_info"
             },
             {
+                "name": "MCU Temperature",
+                "reg_type": "input",
+                "address": 124,
+                "type": "temperature",
+                "format": "s16",
+                "scale": 0.1,
+                "enabled": false,
+                "group": "hw_info"
+            },
+            {
+                "name": "MCU Voltage",
+                "reg_type": "input",
+                "address": 123,
+                "scale": 0.001,
+                "type": "voltage",
+                "enabled": false,
+                "group": "hw_info"
+            },
+            {
                 "name": "AC on L-N",
                 "reg_type": "input",
                 "address": 97,
                 "type": "switch",
-                "group": "debug"
+                "group": "general"
+            },
+            {
+                "name": "Overcurrent",
+                "reg_type": "input",
+                "address": 100,
+                "type": "switch",
+                "group": "general"
             },
             {
                 "name": "Channel 1 Raw Duty (us)",
@@ -499,6 +547,7 @@
                 "WB-MDM3_template_title": "WB-MDM3 (3-channel MOSFET dimmer)",
                 "channel_min_value_description": "Raw dimmer value corresponding to minimum brightness (1%)",
                 "channel_max_value_description": "Raw dimmer value corresponding to maximum brightness (100%)",
+                "baud_rate_description": "Make sure that communication with device is established before changing this parameter. Select required baud rate, save configuration and then change port baud rate to the same value.",
                 "Uptime": "Uptime (s)"
             },
             "ru": {
@@ -507,6 +556,7 @@
                 "Channel 1": "Канал 1",
                 "Channel 2": "Канал 2",
                 "Channel 3": "Канал 3",
+                "General": "Общее",
                 "HW Info": "Данные модуля",
                 "Debug": "Диагностика",
                 "Inputs 1-2 Mode": "Режим работы входов 1-2",
@@ -544,6 +594,8 @@
                 "Channel 1 Decrease Rate (ms/%)": "Скорость уменьшения яркости канала 1 (мс/%)",
                 "Channel 2 Decrease Rate (ms/%)": "Скорость уменьшения яркости канала 2 (мс/%)",
                 "Channel 3 Decrease Rate (ms/%)": "Скорость уменьшения яркости канала 3 (мс/%)",
+                "Baud rate": "Скорость обмена",
+                "baud_rate_description": "Перед изменением параметра убедитесь, что связь с устройством установлена. Выберите нужную скорость обмена, сохраните конфигурацию, а затем укажите в настройках порта эту же скорость.",
                 "Input 1": "Вход 1",
                 "Input 2": "Вход 2",
                 "Input 3": "Вход 3",
@@ -559,7 +611,10 @@
                 "Serial": "Серийный номер",
                 "Supply voltage": "Напряжение питания",
                 "Uptime": "Время работы с момента включения (с)",
+                "MCU Temperature": "Температура МК",
+                "MCU Voltage": "Напряжение питания МК",
                 "AC on L-N": "Напряжение на клеммах L-N",
+                "Overcurrent": "Перегрузка по току",
                 "Channel 1 Raw Duty (us)": "Сырое задание для канала 1 (мкс)",
                 "Channel 2 Raw Duty (us)": "Сырое задание для канала 2 (мкс)",
                 "Channel 3 Raw Duty (us)": "Сырое задание для канала 3 (мкс)",

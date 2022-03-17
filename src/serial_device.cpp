@@ -55,7 +55,8 @@ TSerialDevice::TSerialDevice(PDeviceConfig config, PPort port, PProtocol protoco
       _Protocol(protocol),
       LastSuccessfulCycle(),
       IsDisconnected(true),
-      RemainingFailCycles(config->DeviceMaxFailCycles)
+      RemainingFailCycles(config->DeviceMaxFailCycles),
+      SupportsHoles(true)
 {}
 
 std::string TSerialDevice::ToString() const
@@ -63,9 +64,9 @@ std::string TSerialDevice::ToString() const
     return Protocol()->GetName() + ":" + DeviceConfig()->SlaveId;
 }
 
-PRegisterRange TSerialDevice::CreateRegisterRange(PRegister reg) const
+PRegisterRange TSerialDevice::CreateRegisterRange() const
 {
-    return PRegisterRange(new TSingleRegisterRange(reg));
+    return PRegisterRange(new TSameAddressRegisterRange());
 }
 
 void TSerialDevice::Prepare()
@@ -90,7 +91,7 @@ void TSerialDevice::PrepareImpl()
 void TSerialDevice::EndSession()
 {}
 
-void TSerialDevice::EndPollCycle()
+void TSerialDevice::InvalidateReadCache()
 {}
 
 void TSerialDevice::WriteRegister(PRegister reg, uint64_t value)
@@ -119,36 +120,34 @@ void TSerialDevice::WriteRegisterImpl(PRegister reg, uint64_t value)
 
 void TSerialDevice::ReadRegisterRange(PRegisterRange range)
 {
-    // We expect only TSingleRegisterRange here
-    if (range->RegisterList().empty()) {
-        return;
+    for (auto& reg: range->RegisterList()) {
+        try {
+            if (reg->GetAvailable() != TRegisterAvailability::UNAVAILABLE) {
+                Port()->SleepSinceLastInteraction(DeviceConfig()->RequestDelay);
+                reg->SetValue(ReadRegisterImpl(reg));
+                SetTransferResult(true);
+            }
+        } catch (const TSerialDeviceInternalErrorException& e) {
+            reg->SetError(TRegister::TError::ReadError);
+            LOG(Warn) << "TSerialDevice::ReadRegister(): " << e.what() << " [slave_id is "
+                      << reg->Device()->ToString() + "]";
+            SetTransferResult(true);
+        } catch (const TSerialDevicePermanentRegisterException& e) {
+            reg->SetAvailable(TRegisterAvailability::UNAVAILABLE);
+            reg->SetError(TRegister::TError::ReadError);
+            LOG(Warn) << "TSerialDevice::ReadRegister(): " << e.what() << " [slave_id is "
+                      << reg->Device()->ToString() + "] Register " << reg->ToString()
+                      << " is now marked as unsupported";
+            SetTransferResult(true);
+        } catch (const TSerialDeviceException& e) {
+            reg->SetError(TRegister::TError::ReadError);
+            auto& logger = GetIsDisconnected() ? Debug : Warn;
+            LOG(logger) << "TSerialDevice::ReadRegister(): " << e.what() << " [slave_id is "
+                        << reg->Device()->ToString() + "]";
+            SetTransferResult(false);
+        }
     }
-    PRegister reg = range->RegisterList().front();
-    if (reg->GetAvailable() == TRegisterAvailability::UNAVAILABLE) {
-        return;
-    }
-    try {
-        Port()->SleepSinceLastInteraction(DeviceConfig()->RequestDelay);
-        reg->SetValue(ReadRegisterImpl(reg));
-        SetTransferResult(true);
-    } catch (const TSerialDeviceInternalErrorException& e) {
-        reg->SetError(TRegister::TError::ReadError);
-        LOG(Warn) << "TSerialDevice::ReadRegister(): " << e.what() << " [slave_id is "
-                  << reg->Device()->ToString() + "]";
-        SetTransferResult(true);
-    } catch (const TSerialDevicePermanentRegisterException& e) {
-        reg->SetAvailable(TRegisterAvailability::UNAVAILABLE);
-        reg->SetError(TRegister::TError::ReadError);
-        LOG(Warn) << "TSerialDevice::ReadRegister(): " << e.what() << " [slave_id is "
-                  << reg->Device()->ToString() + "] Register " << reg->ToString() << " is now marked as unsupported";
-        SetTransferResult(true);
-    } catch (const TSerialDeviceException& e) {
-        reg->SetError(TRegister::TError::ReadError);
-        auto& logger = GetIsDisconnected() ? Debug : Warn;
-        LOG(logger) << "TSerialDevice::ReadRegister(): " << e.what() << " [slave_id is "
-                    << reg->Device()->ToString() + "]";
-        SetTransferResult(false);
-    }
+    InvalidateReadCache();
 }
 
 void TSerialDevice::SetTransferResult(bool ok)
@@ -176,6 +175,7 @@ void TSerialDevice::SetTransferResult(bool ok)
             (!IsDisconnected || LastSuccessfulCycle == std::chrono::steady_clock::time_point()))
         {
             IsDisconnected = true;
+            SetSupportsHoles(true);
             LastSuccessfulCycle = std::chrono::steady_clock::now();
             LOG(Info) << "device " << ToString() << " is disconnected";
         }
@@ -223,6 +223,16 @@ PDeviceConfig TSerialDevice::DeviceConfig() const
 PProtocol TSerialDevice::Protocol() const
 {
     return _Protocol;
+}
+
+bool TSerialDevice::GetSupportsHoles() const
+{
+    return SupportsHoles;
+}
+
+void TSerialDevice::SetSupportsHoles(bool supportsHoles)
+{
+    SupportsHoles = supportsHoles;
 }
 
 TUInt32SlaveId::TUInt32SlaveId(const std::string& slaveId, bool allowBroadcast): HasBroadcastSlaveId(false)

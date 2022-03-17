@@ -1,6 +1,6 @@
 # wb-mqtt-serial
 
-Serial device <==> MQTT bridge which follows [Wiren Board MQTT Conventions](https://github.com/contactless/homeui/blob/master/conventions.md).
+Serial device <==> MQTT bridge which follows [Wiren Board MQTT Conventions](https://github.com/wirenboard/conventions/blob/main/README.md).
 It's designed to be used on [Wiren Board](http://contactless.ru/en/) family of programmable automation controllers.
 
 Драйвер master-slave протоколов для устройств, работающих через
@@ -10,6 +10,7 @@ It's designed to be used on [Wiren Board](http://contactless.ru/en/) family of p
 - [Uniel](http://smart.uniel.ru),
 - [ИВТМ](http://www.eksis.ru/catalog/measures-of-relative-humidity-and-temperature/),
 - [Меркурий 230](http://www.incotexcom.ru/m230art.htm),
+- [Меркурий 200](http://www.incotexcom.ru/m200.htm),
 - [Милур](http://www.milur.ru),
 - [Энергомера ГОСТ МЭК 61107](http://www.energomera.ru),
 - [НЕВА МТ 32х ГОСТ МЭК 61107](https://www.meters.taipit.ru),
@@ -187,7 +188,7 @@ It's designed to be used on [Wiren Board](http://contactless.ru/en/) family of p
                     // "пачкой". При этом, если какие-либо регистры не
                     // были включены в конфигурацию, но в целях ускорения
                     // опроса (чтобы не разрывать "пачку") их всё-таки
-                    // можно считывать, можно указать значение max_hole_size
+                    // можно считывать, можно указать значение max_reg_hole
                     // больше 0. В данный момент поддерживается только
                     // устройствами Modbus.
                     "max_reg_hole": 10,
@@ -310,7 +311,8 @@ It's designed to be used on [Wiren Board](http://contactless.ru/en/) family of p
 
                             // Интервал в миллисекундах, который должен пройти между двумя последовательными чтениями канала.
                             // Учитывается, если не задан параметр "read_period_ms".
-                            // Рекомендуется использовать для ограничения частоты чтения канала.
+                            // Не рекомендуется к использованию, поддерживается для обратной совместимости с ранее созданными конфигурационными файлами.
+                            // Вместо него рекомендуется использовать read_period_ms.
                             "read_rate_limit_ms": 10000,
 
                             // значение, получаемое при последовательном чтении диапазона регистров, если устройство не поддерживает запрашиваемый регистр.
@@ -851,6 +853,16 @@ OBIS-коды кодируются в адресе регистра следую
 Для организации отправки команд управления можно использовать канал с типом регистра `command`.
 Для организации доступа к настройкам можно использовать канал с типом регистра `param`.
 Во всех случаях адрес данных задаётся в адресе регистра.
+
+### Протокол Меркурий 200
+
+Типы регистров:
+- param8 - восьмибитное число
+- param16 - 16-тибитное число
+- param24 - 24-тибитное число
+- param32 - 32-тибитное число
+
+Код команды задаётся в адресе регистра, при этом младший байт задаёт смещение данных в ответе.
 
 # Таблица шаблонов device_type
 

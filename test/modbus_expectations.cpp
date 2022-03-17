@@ -402,52 +402,10 @@ void TModbusExpectations::EnqueueHoldingPackUnavailableInTheMiddleReadResponse()
                        __func__);
 }
 
-// read holding registers [7 - 8], [9 - 12]
+// read holding registers [7 - 9], [11 - 12]. 7, 8, unavailable, 12
 void TModbusExpectations::EnqueueHoldingPackUnavailableAndHolesReadResponse()
 {
-    Expector()->Expect(WrapPDU({
-                           0x03, // function code
-                           0x00, // starting address Hi
-                           0x07, // starting address Lo
-                           0x00, // quantity Hi
-                           0x06, // quantity Lo
-                       }),
-                       WrapPDU({
-                           0x83, // function code + 80
-                           0x03  // ILLEGAL DATA VALUE
-                       }),
-                       __func__);
-
-    Expector()->Expect(WrapPDU({
-                           0x03, // function code
-                           0x00, // starting address Hi
-                           0x07, // starting address Lo
-                           0x00, // quantity Hi
-                           0x03, // quantity Lo
-                       }),
-                       WrapPDU({
-                           0x83, // function code + 80
-                           0x03  // ILLEGAL DATA VALUE
-                       }),
-                       __func__);
-
-    Expector()->Expect(WrapPDU({
-                           0x03, // function code
-                           0x00, // starting address Hi
-                           0x0B, // starting address Lo
-                           0x00, // quantity Hi
-                           0x02, // quantity Lo
-                       }),
-                       WrapPDU({
-                           0x03, // function code
-                           0x04, // byte count
-                           0x00, // data Hi 11
-                           0x14, // data Lo 11
-                           0x00, // data Hi 12
-                           0x1E, // data Lo 12
-                       }),
-                       __func__);
-
+    // First read, one by one
     for (uint8_t i = 7; i < 9; ++i) {
         Expector()->Expect(WrapPDU({
                                0x03, // function code
@@ -460,7 +418,7 @@ void TModbusExpectations::EnqueueHoldingPackUnavailableAndHolesReadResponse()
                                0x03, // function code
                                0x02, // byte count
                                0x00, // data Hi
-                               0x0a  // data Lo
+                               i     // data Lo
                            }),
                            __func__);
     }
@@ -481,20 +439,46 @@ void TModbusExpectations::EnqueueHoldingPackUnavailableAndHolesReadResponse()
     Expector()->Expect(WrapPDU({
                            0x03, // function code
                            0x00, // starting address Hi
-                           0x0B, // starting address Lo
+                           11,   // starting address Lo
                            0x00, // quantity Hi
-                           0x02, // quantity Lo
+                           0x01, // quantity Lo
                        }),
                        WrapPDU({
-                           0x03, // function code
-                           0x04, // byte count
-                           0x00, // data Hi 11
-                           0x14, // data Lo 11
-                           0x00, // data Hi 12
-                           0x1E, // data Lo 12
+                           0x83, // function code + 80
+                           0x03  // ILLEGAL DATA VALUE
                        }),
                        __func__);
 
+    Expector()->Expect(WrapPDU({
+                           0x03, // function code
+                           0x00, // starting address Hi
+                           12,   // starting address Lo
+                           0x00, // quantity Hi
+                           0x01, // quantity Lo
+                       }),
+                       WrapPDU({
+                           0x03, // function code
+                           0x02, // byte count
+                           0x00, // data Hi
+                           12    // data Lo
+                       }),
+                       __func__);
+
+    // Try to read all registers with a hole
+    Expector()->Expect(WrapPDU({
+                           0x03, // function code
+                           0x00, // starting address Hi
+                           0x07, // starting address Lo
+                           0x00, // quantity Hi
+                           0x06, // quantity Lo
+                       }),
+                       WrapPDU({
+                           0x83, // function code + 80
+                           0x03  // ILLEGAL DATA VALUE
+                       }),
+                       __func__);
+
+    // Read only available registers
     Expector()->Expect(WrapPDU({
                            0x03, // function code
                            0x00, // starting address Hi
@@ -515,17 +499,15 @@ void TModbusExpectations::EnqueueHoldingPackUnavailableAndHolesReadResponse()
     Expector()->Expect(WrapPDU({
                            0x03, // function code
                            0x00, // starting address Hi
-                           0x0B, // starting address Lo
+                           0x0C, // starting address Lo
                            0x00, // quantity Hi
-                           0x02, // quantity Lo
+                           0x01, // quantity Lo
                        }),
                        WrapPDU({
                            0x03, // function code
-                           0x04, // byte count
+                           0x02, // byte count
                            0x00, // data Hi 11
                            0x14, // data Lo 11
-                           0x00, // data Hi 12
-                           0x1E, // data Lo 12
                        }),
                        __func__);
 }
@@ -621,15 +603,25 @@ void TModbusExpectations::EnqueueHoldingUnsupportedOnBorderReadResponse()
                            0x00, // starting address Hi
                            0x08, // starting address Lo
                            0x00, // quantity Hi
-                           0x04, // quantity Lo
+                           0x01, // quantity Lo
                        }),
                        WrapPDU({
                            0x03, // function code
-                           0x08, // byte count
+                           0x02, // byte count
                            0x00, // data Hi 8
                            0x15, // data Lo 8
-                           0xFF, // data Hi 9
-                           0xFE, // data Lo 9
+                       }));
+
+    Expector()->Expect(WrapPDU({
+                           0x03, // function code
+                           0x00, // starting address Hi
+                           0x0A, // starting address Lo
+                           0x00, // quantity Hi
+                           0x02, // quantity Lo
+                       }),
+                       WrapPDU({
+                           0x03, // function code
+                           0x04, // byte count
                            0x00, // data Hi 10
                            0x02, // data Lo 10
                            0x00, // data Hi 11
@@ -1404,6 +1396,37 @@ void TModbusExpectations::Enqueue10CoilsReadResponse(uint8_t exception)
         WrapPDU(exception == 0 ? std::vector<int>{
                                      0x01, // function code
                                      0x02, // byte count
+                                     0x49, // coils status
+                                     0x02, // coils status
+                                 }
+                               : std::vector<int>{0x81, // function code + 80
+                                                  exception}),
+        __func__);
+}
+
+// read 10 coils (more than can fit into 1 byte)
+void TModbusExpectations::EnqueueCoilsPackReadResponse(uint8_t exception)
+{
+    Expector()->Expect(
+        WrapPDU({
+            0x01, // function code
+            0x00, // starting address Hi
+            0x00,   // starting address Lo
+            0x00, // quantity Hi
+            0x52, // quantity Lo
+        }),
+        WrapPDU(exception == 0 ? std::vector<int>{
+                                     0x01, // function code
+                                     0x0B, // byte count
+                                     0x01, // coils status
+                                     0x00, // hole
+                                     0x00, // hole
+                                     0x00, // hole
+                                     0x00, // hole
+                                     0x00, // hole
+                                     0x00, // hole
+                                     0x00, // hole
+                                     0x00, // hole
                                      0x49, // coils status
                                      0x02, // coils status
                                  }

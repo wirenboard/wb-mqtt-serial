@@ -1,0 +1,69 @@
+Subscribe: /devices/+/meta/driver (QoS 0)
+Publish: /devices/PollIntervalMissError/meta: '{"driver":"serial-client-integration-test","title":{"en":"PollIntervalMissError"}}' (QoS 1, retained)
+Publish: /devices/PollIntervalMissError/meta/driver: 'serial-client-integration-test' (QoS 1, retained)
+Publish: /devices/PollIntervalMissError/meta/name: 'PollIntervalMissError' (QoS 1, retained)
+Publish: /devices/PollIntervalMissError/controls/Test/meta: '{"order":1,"readonly":false,"type":"value"}' (QoS 1, retained)
+Publish: /devices/PollIntervalMissError/controls/Test/meta/error: '' (QoS 1, retained)
+Publish: /devices/PollIntervalMissError/controls/Test/meta/order: '1' (QoS 1, retained)
+Publish: /devices/PollIntervalMissError/controls/Test/meta/readonly: '0' (QoS 1, retained)
+Publish: /devices/PollIntervalMissError/controls/Test/meta/type: 'value' (QoS 1, retained)
+Publish: /devices/PollIntervalMissError/controls/Test: '0' (QoS 1, retained)
+Subscribe: /devices/PollIntervalMissError/controls/Test/on (QoS 0)
+Subscribe: /devices/PollIntervalMissError/controls/# (QoS 0)
+(retain) -> /devices/PollIntervalMissError/controls/Test: '0' (QoS 1, retained)
+(retain) -> /devices/PollIntervalMissError/controls/Test/meta: '{"order":1,"readonly":false,"type":"value"}' (QoS 1, retained)
+(retain) -> /devices/PollIntervalMissError/controls/Test/meta/order: '1' (QoS 1, retained)
+(retain) -> /devices/PollIntervalMissError/controls/Test/meta/readonly: '0' (QoS 1, retained)
+(retain) -> /devices/PollIntervalMissError/controls/Test/meta/type: 'value' (QoS 1, retained)
+Unsubscribe -- serial-client-integration-test: /devices/PollIntervalMissError/controls/#
+>>> LoopOnce() [first start]
+Open()
+Sleep(20000)
+fake_serial_device '151': read address '0' value '0'
+fake_serial_device '151': transfer OK
+fake_serial_device '151': reconnected
+Publish: /devices/PollIntervalMissError/controls/Test: '0' (QoS 1, retained)
+>>> LoopOnce() [interval miss]
+fake_serial_device '151': read address '0' value '255'
+Publish: /devices/PollIntervalMissError/controls/Test: '255' (QoS 1, retained)
+>>> LoopOnce() [interval miss]
+fake_serial_device '151': read address '0' value '255'
+>>> LoopOnce() [interval miss]
+fake_serial_device '151': read address '0' value '255'
+>>> LoopOnce() [interval miss]
+fake_serial_device '151': read address '0' value '255'
+>>> LoopOnce() [interval miss]
+fake_serial_device '151': read address '0' value '255'
+Publish: /devices/PollIntervalMissError/controls/Test/meta/error: 'p' (QoS 1, retained)
+>>> LoopOnce() [interval ok]
+fake_serial_device '151': read address '0' value '255'
+>>> LoopOnce() [interval ok]
+fake_serial_device '151': read address '0' value '255'
+>>> LoopOnce() [interval ok]
+fake_serial_device '151': read address '0' value '255'
+>>> LoopOnce() [interval ok]
+fake_serial_device '151': read address '0' value '255'
+>>> LoopOnce() [interval ok]
+fake_serial_device '151': read address '0' value '255'
+>>> LoopOnce() [interval ok]
+fake_serial_device '151': read address '0' value '255'
+>>> LoopOnce() [interval ok]
+fake_serial_device '151': read address '0' value '255'
+>>> LoopOnce() [interval ok]
+fake_serial_device '151': read address '0' value '255'
+>>> LoopOnce() [interval ok]
+fake_serial_device '151': read address '0' value '255'
+>>> LoopOnce() [interval ok]
+fake_serial_device '151': read address '0' value '255'
+Publish: /devices/PollIntervalMissError/controls/Test/meta/error: '' (QoS 1, retained)
+Unsubscribe -- serial-client-integration-test: /devices/PollIntervalMissError/controls/Test/on
+Publish: /devices/PollIntervalMissError/controls/Test: '' (QoS 1, retained)
+Publish: /devices/PollIntervalMissError/controls/Test/meta: '' (QoS 1, retained)
+Publish: /devices/PollIntervalMissError/controls/Test/meta/order: '' (QoS 1, retained)
+Publish: /devices/PollIntervalMissError/controls/Test/meta/readonly: '' (QoS 1, retained)
+Publish: /devices/PollIntervalMissError/controls/Test/meta/type: '' (QoS 1, retained)
+Publish: /devices/PollIntervalMissError/controls/Test/meta/error: '' (QoS 1, retained)
+Publish: /devices/PollIntervalMissError/meta: '' (QoS 1, retained)
+Publish: /devices/PollIntervalMissError/meta/driver: '' (QoS 1, retained)
+Publish: /devices/PollIntervalMissError/meta/name: '' (QoS 1, retained)
+stop: serial-client-integration-test

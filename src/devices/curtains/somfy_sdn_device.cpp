@@ -127,8 +127,8 @@ namespace
         {
             auto addr = LoadRegisterBitsAddress(regCfg);
             TRegisterDesc res;
-            res.BitOffset = addr.BitOffset;
-            res.BitWidth = addr.BitWidth;
+            res.DataOffset = addr.BitOffset;
+            res.DataWidth = addr.BitWidth;
             res.Address = std::make_shared<TSomfyAddress>(addr.Address, GetResponseAddress(regCfg));
             return res;
         }
@@ -252,7 +252,7 @@ uint64_t Somfy::TDevice::ReadRegisterImpl(PRegister reg)
         }
         case PARAM: {
             const auto& addr = dynamic_cast<const TSomfyAddress&>(reg->GetAddress());
-            return GetCachedResponse(addr.Get(), addr.GetResponseHeader(), reg->BitOffset, reg->BitWidth);
+            return GetCachedResponse(addr.Get(), addr.GetResponseHeader(), reg->DataOffset, reg->DataWidth);
         }
         case COMMAND: {
             return 1;
@@ -261,7 +261,7 @@ uint64_t Somfy::TDevice::ReadRegisterImpl(PRegister reg)
     throw TSerialDevicePermanentRegisterException("Unsupported register type");
 }
 
-void Somfy::TDevice::EndPollCycle()
+void Somfy::TDevice::InvalidateReadCache()
 {
     DataCache.clear();
 }

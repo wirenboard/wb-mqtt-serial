@@ -275,10 +275,10 @@ void TIEC61107ModeCDevice::EndSession()
     TIEC61107Device::EndSession();
 }
 
-void TIEC61107ModeCDevice::EndPollCycle()
+void TIEC61107ModeCDevice::InvalidateReadCache()
 {
     CmdResultCache.clear();
-    TSerialDevice::EndPollCycle();
+    TSerialDevice::InvalidateReadCache();
 }
 
 uint64_t TIEC61107ModeCDevice::ReadRegisterImpl(PRegister reg)

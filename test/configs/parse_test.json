@@ -33,7 +33,7 @@
                             "address" : "0x00",
                             "type": "switch",
                             "on_value" : 500,
-                            "read_period_ms": 1
+                            "read_period_ms": 11
                         }
                     ]
                 },

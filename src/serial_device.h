@@ -29,6 +29,7 @@ struct TDeviceChannelConfig
     double Min = std::numeric_limits<double>::signaling_NaN();
     double Precision = 0;
     bool ReadOnly = false;
+    std::string Units;
     std::vector<PRegisterConfig> RegisterConfigs;
 
     TDeviceChannelConfig(const std::string& type = "text",
@@ -170,11 +171,8 @@ public:
 
     /**
      * @brief Create a Register Range object
-     *
-     * @param reg
-     * @return PRegisterRange nullptr - if device doesn't support reading ranges
      */
-    virtual PRegisterRange CreateRegisterRange(PRegister reg) const;
+    virtual PRegisterRange CreateRegisterRange() const;
 
     // Prepare to access device (pauses for configured delay by default)
     // i.e. "StartSession". Called before any read/write/etc after communicating with another device
@@ -185,9 +183,6 @@ public:
 
     // Write register value
     void WriteRegister(PRegister reg, uint64_t value);
-
-    // Handle end of poll cycle e.g. by resetting values caches
-    virtual void EndPollCycle();
 
     // Read multiple registers
     virtual void ReadRegisterRange(PRegisterRange range);
@@ -203,6 +198,11 @@ public:
 
     virtual void SetTransferResult(bool ok);
     bool GetIsDisconnected() const;
+    bool GetSupportsHoles() const;
+    void SetSupportsHoles(bool supportsHoles);
+
+    // Reset values caches
+    virtual void InvalidateReadCache();
 
 protected:
     std::vector<PDeviceSetupItem> SetupItems;
@@ -220,6 +220,7 @@ private:
     std::chrono::steady_clock::time_point LastSuccessfulCycle;
     bool IsDisconnected;
     int RemainingFailCycles;
+    bool SupportsHoles;
 };
 
 typedef std::shared_ptr<TSerialDevice> PSerialDevice;

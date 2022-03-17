@@ -17,13 +17,35 @@ namespace
         { TMercury230Device::REG_PARAM_BE,          "param_be",            "value",             S24, true }
     };
     // clang-format on
+
+    class TMercury230DeviceRegisterAddressFactory: public TStringRegisterAddressFactory
+    {
+    public:
+        TRegisterDesc LoadRegisterAddress(const Json::Value& regCfg,
+                                          const IRegisterAddress& deviceBaseAddress,
+                                          uint32_t stride,
+                                          uint32_t registerByteWidth) const override
+        {
+            auto addr = LoadRegisterBitsAddress(regCfg);
+            TRegisterDesc res;
+            auto type = regCfg["reg_type"];
+            if (type == "array" || type == "array12") {
+                res.DataOffset = (addr.Address & 0x03);
+                res.Address = std::make_shared<TUint32RegisterAddress>(addr.Address >> 4);
+            } else {
+                res.Address = std::make_shared<TUint32RegisterAddress>(addr.Address);
+            }
+            return res;
+        }
+    };
 }
 
 void TMercury230Device::Register(TSerialDeviceFactory& factory)
 {
     factory.RegisterProtocol(new TUint32SlaveIdProtocol("mercury230", RegisterTypes, true),
-                             new TBasicDeviceFactory<TMercury230Device>("#/definitions/simple_device_with_broadcast",
-                                                                        "#/definitions/common_channel"));
+                             new TBasicDeviceFactory<TMercury230Device, TMercury230DeviceRegisterAddressFactory>(
+                                 "#/definitions/simple_device_with_broadcast",
+                                 "#/definitions/common_channel"));
 }
 
 TMercury230Device::TMercury230Device(PDeviceConfig device_config, PPort port, PProtocol protocol)
@@ -108,14 +130,14 @@ TEMDevice::ErrorType TMercury230Device::CheckForException(uint8_t* frame, int le
 
 const TMercury230Device::TValueArray& TMercury230Device::ReadValueArray(uint32_t address, int resp_len)
 {
-    int key = (address >> 4) | (SlaveId << 24);
+    int key = address;
     auto it = CachedValues.find(key);
     if (it != CachedValues.end())
         return it->second;
 
     uint8_t cmdBuf[2];
-    cmdBuf[0] = (uint8_t)((address >> 4) & 0xff);  // high nibble = array number, lower nibble = month
-    cmdBuf[1] = (uint8_t)((address >> 12) & 0x0f); // tariff
+    cmdBuf[0] = (uint8_t)(address & 0xff);        // high nibble = array number, lower nibble = month
+    cmdBuf[1] = (uint8_t)((address >> 8) & 0x0f); // tariff
     uint8_t buf[MAX_LEN], *p = buf;
     TValueArray a;
     Talk(0x05, cmdBuf, 2, -1, buf, resp_len * 4);
@@ -170,9 +192,9 @@ uint64_t TMercury230Device::ReadRegisterImpl(PRegister reg)
     auto addr = GetUint32RegisterAddress(reg->GetAddress());
     switch (reg->Type) {
         case REG_VALUE_ARRAY:
-            return ReadValueArray(addr, 4).values[addr & 0x03];
+            return ReadValueArray(addr, 4).values[reg->DataOffset & 0x03];
         case REG_VALUE_ARRAY12:
-            return ReadValueArray(addr, 3).values[addr & 0x03];
+            return ReadValueArray(addr, 3).values[reg->DataOffset & 0x03];
         case REG_PARAM:
         case REG_PARAM_SIGN_ACT:
         case REG_PARAM_SIGN_REACT:
@@ -184,11 +206,8 @@ uint64_t TMercury230Device::ReadRegisterImpl(PRegister reg)
     }
 }
 
-void TMercury230Device::EndPollCycle()
+void TMercury230Device::InvalidateReadCache()
 {
     CachedValues.clear();
-    TSerialDevice::EndPollCycle();
+    TSerialDevice::InvalidateReadCache();
 }
-
-// TBD: custom password?
-// TBD: settings in uniel template: 9600 8N1, timeout ms = 1000
