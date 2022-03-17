@@ -25,8 +25,34 @@ fake_serial_device '151': reconnected
 Publish: /devices/PollIntervalMissError/controls/Test: '0' (QoS 1, retained)
 >>> LoopOnce() [interval miss]
 fake_serial_device '151': read address '0' value '255'
-Publish: /devices/PollIntervalMissError/controls/Test/meta/error: 'p' (QoS 1, retained)
 Publish: /devices/PollIntervalMissError/controls/Test: '255' (QoS 1, retained)
+>>> LoopOnce() [interval miss]
+fake_serial_device '151': read address '0' value '255'
+>>> LoopOnce() [interval miss]
+fake_serial_device '151': read address '0' value '255'
+>>> LoopOnce() [interval miss]
+fake_serial_device '151': read address '0' value '255'
+>>> LoopOnce() [interval miss]
+fake_serial_device '151': read address '0' value '255'
+Publish: /devices/PollIntervalMissError/controls/Test/meta/error: 'p' (QoS 1, retained)
+>>> LoopOnce() [interval ok]
+fake_serial_device '151': read address '0' value '255'
+>>> LoopOnce() [interval ok]
+fake_serial_device '151': read address '0' value '255'
+>>> LoopOnce() [interval ok]
+fake_serial_device '151': read address '0' value '255'
+>>> LoopOnce() [interval ok]
+fake_serial_device '151': read address '0' value '255'
+>>> LoopOnce() [interval ok]
+fake_serial_device '151': read address '0' value '255'
+>>> LoopOnce() [interval ok]
+fake_serial_device '151': read address '0' value '255'
+>>> LoopOnce() [interval ok]
+fake_serial_device '151': read address '0' value '255'
+>>> LoopOnce() [interval ok]
+fake_serial_device '151': read address '0' value '255'
+>>> LoopOnce() [interval ok]
+fake_serial_device '151': read address '0' value '255'
 >>> LoopOnce() [interval ok]
 fake_serial_device '151': read address '0' value '255'
 Publish: /devices/PollIntervalMissError/controls/Test/meta/error: '' (QoS 1, retained)

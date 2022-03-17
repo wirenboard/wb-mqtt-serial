@@ -1,0 +1,710 @@
+{
+    "device_type": "Somfy RTS transmitter",
+    "title": "Somfy RS485 RTS transmitter",
+    "device": {
+        "name": "Somfy RTS transmitter",
+        "id": "somfy",
+        "protocol": "somfy",
+        "node_type": 5,
+        "response_timeout_ms": 255,
+        "frame_timeout_ms": 10,
+        "channels": [
+            {
+                "name": "Up 1",
+                "type": "pushbutton",
+                "reg_type": "command",
+                "address": "0x80",
+                "on_value": "0x010002",
+                "group": "ch1"
+            },
+            {
+                "name": "Down 1",
+                "type": "pushbutton",
+                "reg_type": "command",
+                "address": "0x80",
+                "on_value": "0x020002",
+                "group": "ch1"
+            },
+            {
+                "name": "Stop 1",
+                "type": "pushbutton",
+                "reg_type": "command",
+                "address": "0x80",
+                "on_value": "0x030002",
+                "group": "ch1"
+            },
+            {
+                "name": "Open programming mode 1",
+                "type": "pushbutton",
+                "reg_type": "command",
+                "address": "0x98",
+                "on_value": "0x01",
+                "group": "ch1"
+            },
+
+            {
+                "name": "Up 2",
+                "type": "pushbutton",
+                "reg_type": "command",
+                "address": "0x80",
+                "on_value": "0x010102",
+                "group": "ch2"
+            },
+            {
+                "name": "Down 2",
+                "type": "pushbutton",
+                "reg_type": "command",
+                "address": "0x80",
+                "on_value": "0x020102",
+                "group": "ch2"
+            },
+            {
+                "name": "Stop 2",
+                "type": "pushbutton",
+                "reg_type": "command",
+                "address": "0x80",
+                "on_value": "0x030102",
+                "group": "ch2"
+            },
+            {
+                "name": "Open programming mode 2",
+                "type": "pushbutton",
+                "reg_type": "command",
+                "address": "0x98",
+                "on_value": "0x0101",
+                "group": "ch2"
+            },
+
+            {
+                "name": "Up 3",
+                "type": "pushbutton",
+                "reg_type": "command",
+                "address": "0x80",
+                "on_value": "0x010202",
+                "group": "ch3"
+            },
+            {
+                "name": "Down 3",
+                "type": "pushbutton",
+                "reg_type": "command",
+                "address": "0x80",
+                "on_value": "0x020202",
+                "group": "ch3"
+            },
+            {
+                "name": "Stop 3",
+                "type": "pushbutton",
+                "reg_type": "command",
+                "address": "0x80",
+                "on_value": "0x030202",
+                "group": "ch2"
+            },
+            {
+                "name": "Open programming mode 3",
+                "type": "pushbutton",
+                "reg_type": "command",
+                "address": "0x98",
+                "on_value": "0x0201",
+                "group": "ch3"
+            },
+
+            {
+                "name": "Up 4",
+                "type": "pushbutton",
+                "reg_type": "command",
+                "address": "0x80",
+                "on_value": "0x010302",
+                "group": "ch4"
+            },
+            {
+                "name": "Down 4",
+                "type": "pushbutton",
+                "reg_type": "command",
+                "address": "0x80",
+                "on_value": "0x020302",
+                "group": "ch4"
+            },
+            {
+                "name": "Stop 4",
+                "type": "pushbutton",
+                "reg_type": "command",
+                "address": "0x80",
+                "on_value": "0x030302",
+                "group": "ch4"
+            },
+            {
+                "name": "Open programming mode 4",
+                "type": "pushbutton",
+                "reg_type": "command",
+                "address": "0x98",
+                "on_value": "0x0301",
+                "group": "ch4"
+            },
+
+            {
+                "name": "Up 5",
+                "type": "pushbutton",
+                "reg_type": "command",
+                "address": "0x80",
+                "on_value": "0x010402",
+                "group": "ch5"
+            },
+            {
+                "name": "Down 5",
+                "type": "pushbutton",
+                "reg_type": "command",
+                "address": "0x80",
+                "on_value": "0x020402",
+                "group": "ch5"
+            },
+            {
+                "name": "Stop 5",
+                "type": "pushbutton",
+                "reg_type": "command",
+                "address": "0x80",
+                "on_value": "0x030402",
+                "group": "ch5"
+            },
+            {
+                "name": "Open programming mode 5",
+                "type": "pushbutton",
+                "reg_type": "command",
+                "address": "0x98",
+                "on_value": "0x0401",
+                "group": "ch5"
+            },
+
+            {
+                "name": "Up 6",
+                "type": "pushbutton",
+                "reg_type": "command",
+                "address": "0x80",
+                "on_value": "0x010502",
+                "group": "ch6"
+            },
+            {
+                "name": "Down 6",
+                "type": "pushbutton",
+                "reg_type": "command",
+                "address": "0x80",
+                "on_value": "0x020502",
+                "group": "ch6"
+            },
+            {
+                "name": "Stop 6",
+                "type": "pushbutton",
+                "reg_type": "command",
+                "address": "0x80",
+                "on_value": "0x030502",
+                "group": "ch6"
+            },
+            {
+                "name": "Open programming mode 6",
+                "type": "pushbutton",
+                "reg_type": "command",
+                "address": "0x98",
+                "on_value": "0x0501",
+                "group": "ch6"
+            },
+
+            {
+                "name": "Up 7",
+                "type": "pushbutton",
+                "reg_type": "command",
+                "address": "0x80",
+                "on_value": "0x010602",
+                "group": "ch7"
+            },
+            {
+                "name": "Down 7",
+                "type": "pushbutton",
+                "reg_type": "command",
+                "address": "0x80",
+                "on_value": "0x020602",
+                "group": "ch7"
+            },
+            {
+                "name": "Stop 7",
+                "type": "pushbutton",
+                "reg_type": "command",
+                "address": "0x80",
+                "on_value": "0x030602",
+                "group": "ch7"
+            },
+            {
+                "name": "Open programming mode 7",
+                "type": "pushbutton",
+                "reg_type": "command",
+                "address": "0x98",
+                "on_value": "0x0601",
+                "group": "ch7"
+            },
+
+            {
+                "name": "Up 8",
+                "type": "pushbutton",
+                "reg_type": "command",
+                "address": "0x80",
+                "on_value": "0x010702",
+                "group": "ch8"
+            },
+            {
+                "name": "Down 8",
+                "type": "pushbutton",
+                "reg_type": "command",
+                "address": "0x80",
+                "on_value": "0x020702",
+                "group": "ch8"
+            },
+            {
+                "name": "Stop 8",
+                "type": "pushbutton",
+                "reg_type": "command",
+                "address": "0x80",
+                "on_value": "0x030702",
+                "group": "ch8"
+            },
+            {
+                "name": "Open programming mode 8",
+                "type": "pushbutton",
+                "reg_type": "command",
+                "address": "0x98",
+                "on_value": "0x0701",
+                "group": "ch8"
+            },
+
+            {
+                "name": "Up 9",
+                "type": "pushbutton",
+                "reg_type": "command",
+                "address": "0x80",
+                "on_value": "0x010802",
+                "group": "ch9"
+            },
+            {
+                "name": "Down 9",
+                "type": "pushbutton",
+                "reg_type": "command",
+                "address": "0x80",
+                "on_value": "0x020802",
+                "group": "ch9"
+            },
+            {
+                "name": "Stop 9",
+                "type": "pushbutton",
+                "reg_type": "command",
+                "address": "0x80",
+                "on_value": "0x030802",
+                "group": "ch9"
+            },
+            {
+                "name": "Open programming mode 9",
+                "type": "pushbutton",
+                "reg_type": "command",
+                "address": "0x98",
+                "on_value": "0x0801",
+                "group": "ch9"
+            },
+
+            {
+                "name": "Up 10",
+                "type": "pushbutton",
+                "reg_type": "command",
+                "address": "0x80",
+                "on_value": "0x010902",
+                "group": "ch10"
+            },
+            {
+                "name": "Down 10",
+                "type": "pushbutton",
+                "reg_type": "command",
+                "address": "0x80",
+                "on_value": "0x020902",
+                "group": "ch10"
+            },
+            {
+                "name": "Stop 10",
+                "type": "pushbutton",
+                "reg_type": "command",
+                "address": "0x80",
+                "on_value": "0x030902",
+                "group": "ch10"
+            },
+            {
+                "name": "Open programming mode 10",
+                "type": "pushbutton",
+                "reg_type": "command",
+                "address": "0x98",
+                "on_value": "0x0901",
+                "group": "ch10"
+            },
+
+            {
+                "name": "Up 11",
+                "type": "pushbutton",
+                "reg_type": "command",
+                "address": "0x80",
+                "on_value": "0x010A02",
+                "group": "ch11"
+            },
+            {
+                "name": "Down 11",
+                "type": "pushbutton",
+                "reg_type": "command",
+                "address": "0x80",
+                "on_value": "0x020A02",
+                "group": "ch11"
+            },
+            {
+                "name": "Stop 11",
+                "type": "pushbutton",
+                "reg_type": "command",
+                "address": "0x80",
+                "on_value": "0x030A02",
+                "group": "ch11"
+            },
+            {
+                "name": "Open programming mode 11",
+                "type": "pushbutton",
+                "reg_type": "command",
+                "address": "0x98",
+                "on_value": "0x0A01",
+                "group": "ch11"
+            },
+
+            {
+                "name": "Up 12",
+                "type": "pushbutton",
+                "reg_type": "command",
+                "address": "0x80",
+                "on_value": "0x010B02",
+                "group": "ch12"
+            },
+            {
+                "name": "Down 12",
+                "type": "pushbutton",
+                "reg_type": "command",
+                "address": "0x80",
+                "on_value": "0x020B02",
+                "group": "ch12"
+            },
+            {
+                "name": "Stop 12",
+                "type": "pushbutton",
+                "reg_type": "command",
+                "address": "0x80",
+                "on_value": "0x030B02",
+                "group": "ch12"
+            },
+            {
+                "name": "Open programming mode 12",
+                "type": "pushbutton",
+                "reg_type": "command",
+                "address": "0x98",
+                "on_value": "0x0B01",
+                "group": "ch12"
+            },
+
+            {
+                "name": "Up 13",
+                "type": "pushbutton",
+                "reg_type": "command",
+                "address": "0x80",
+                "on_value": "0x010C02",
+                "group": "ch13"
+            },
+            {
+                "name": "Down 13",
+                "type": "pushbutton",
+                "reg_type": "command",
+                "address": "0x80",
+                "on_value": "0x020C02",
+                "group": "ch13"
+            },
+            {
+                "name": "Stop 13",
+                "type": "pushbutton",
+                "reg_type": "command",
+                "address": "0x80",
+                "on_value": "0x030C02",
+                "group": "ch13"
+            },
+            {
+                "name": "Open programming mode 13",
+                "type": "pushbutton",
+                "reg_type": "command",
+                "address": "0x98",
+                "on_value": "0x0C01",
+                "group": "ch13"
+            },
+
+            {
+                "name": "Up 14",
+                "type": "pushbutton",
+                "reg_type": "command",
+                "address": "0x80",
+                "on_value": "0x010D02",
+                "group": "ch14"
+            },
+            {
+                "name": "Down 14",
+                "type": "pushbutton",
+                "reg_type": "command",
+                "address": "0x80",
+                "on_value": "0x020D02",
+                "group": "ch14"
+            },
+            {
+                "name": "Stop 14",
+                "type": "pushbutton",
+                "reg_type": "command",
+                "address": "0x80",
+                "on_value": "0x030D02",
+                "group": "ch14"
+            },
+            {
+                "name": "Open programming mode 14",
+                "type": "pushbutton",
+                "reg_type": "command",
+                "address": "0x98",
+                "on_value": "0x0D01",
+                "group": "ch14"
+            },
+
+            {
+                "name": "Up 15",
+                "type": "pushbutton",
+                "reg_type": "command",
+                "address": "0x80",
+                "on_value": "0x010E02",
+                "group": "ch15"
+            },
+            {
+                "name": "Down 15",
+                "type": "pushbutton",
+                "reg_type": "command",
+                "address": "0x80",
+                "on_value": "0x020E02",
+                "group": "ch15"
+            },
+            {
+                "name": "Stop 15",
+                "type": "pushbutton",
+                "reg_type": "command",
+                "address": "0x80",
+                "on_value": "0x030E02",
+                "group": "ch15"
+            },
+            {
+                "name": "Open programming mode 15",
+                "type": "pushbutton",
+                "reg_type": "command",
+                "address": "0x98",
+                "on_value": "0x0E01",
+                "group": "ch15"
+            },
+
+            {
+                "name": "Up 16",
+                "type": "pushbutton",
+                "reg_type": "command",
+                "address": "0x80",
+                "on_value": "0x010F02",
+                "group": "ch16"
+            },
+            {
+                "name": "Down 16",
+                "type": "pushbutton",
+                "reg_type": "command",
+                "address": "0x80",
+                "on_value": "0x020F02",
+                "group": "ch16"
+            },
+            {
+                "name": "Stop 16",
+                "type": "pushbutton",
+                "reg_type": "command",
+                "address": "0x80",
+                "on_value": "0x030F02",
+                "group": "ch16"
+            },
+            {
+                "name": "Open programming mode 16",
+                "type": "pushbutton",
+                "reg_type": "command",
+                "address": "0x98",
+                "on_value": "0x0F01",
+                "group": "ch16"
+            }
+        ],
+
+        "groups": [
+            {
+                "title": "Channel 1",
+                "id": "ch1",
+                "order": 1
+            },
+            {
+                "title": "Channel 2",
+                "id": "ch2",
+                "order": 2
+            },
+            {
+                "title": "Channel 3",
+                "id": "ch3",
+                "order": 3
+            },
+            {
+                "title": "Channel 4",
+                "id": "ch4",
+                "order": 4
+            },
+            {
+                "title": "Channel 5",
+                "id": "ch5",
+                "order": 5
+            },
+            {
+                "title": "Channel 6",
+                "id": "ch6",
+                "order": 6
+            },
+            {
+                "title": "Channel 7",
+                "id": "ch7",
+                "order": 7
+            },
+            {
+                "title": "Channel 8",
+                "id": "ch8",
+                "order": 8
+            },
+            {
+                "title": "Channel 9",
+                "id": "ch9",
+                "order": 9
+            },
+            {
+                "title": "Channel 10",
+                "id": "ch10",
+                "order": 10
+            },
+            {
+                "title": "Channel 11",
+                "id": "ch11",
+                "order": 11
+            },
+            {
+                "title": "Channel 12",
+                "id": "ch12",
+                "order": 12
+            },
+            {
+                "title": "Channel 13",
+                "id": "ch13",
+                "order": 13
+            },
+            {
+                "title": "Channel 14",
+                "id": "ch14",
+                "order": 14
+            },
+            {
+                "title": "Channel 15",
+                "id": "ch15",
+                "order": 15
+            },
+            {
+                "title": "Channel 16",
+                "id": "ch16",
+                "order": 16
+            }
+        ],
+
+        "translations": {
+            "ru": {
+                "Somfy RS485 RTS transmitter": "Передатчик Somfy RS485 RTS",
+                "Channel 1": "Канал 1",
+                "Channel 2": "Канал 2",
+                "Channel 3": "Канал 3",
+                "Channel 4": "Канал 4",
+                "Channel 5": "Канал 5",
+                "Channel 6": "Канал 6",
+                "Channel 7": "Канал 7",
+                "Channel 8": "Канал 8",
+                "Channel 9": "Канал 9",
+                "Channel 10": "Канал 10",
+                "Channel 11": "Канал 11",
+                "Channel 12": "Канал 12",
+                "Channel 13": "Канал 13",
+                "Channel 14": "Канал 14",
+                "Channel 15": "Канал 15",
+                "Channel 16": "Канал 16",
+                "Up 1": "Поднять 1",
+                "Up 2": "Поднять 2",
+                "Up 3": "Поднять 3",
+                "Up 4": "Поднять 4",
+                "Up 5": "Поднять 5",
+                "Up 6": "Поднять 6",
+                "Up 7": "Поднять 7",
+                "Up 8": "Поднять 8",
+                "Up 9": "Поднять 9",
+                "Up 10": "Поднять 10",
+                "Up 11": "Поднять 11",
+                "Up 12": "Поднять 12",
+                "Up 13": "Поднять 13",
+                "Up 14": "Поднять 14",
+                "Up 15": "Поднять 15",
+                "Up 16": "Поднять 16",
+                "Down 1": "Опустить 1",
+                "Down 2": "Опустить 2",
+                "Down 3": "Опустить 3",
+                "Down 4": "Опустить 4",
+                "Down 5": "Опустить 5",
+                "Down 6": "Опустить 6",
+                "Down 7": "Опустить 7",
+                "Down 8": "Опустить 8",
+                "Down 9": "Опустить 9",
+                "Down 10": "Опустить 10",
+                "Down 11": "Опустить 11",
+                "Down 12": "Опустить 12",
+                "Down 13": "Опустить 13",
+                "Down 14": "Опустить 14",
+                "Down 15": "Опустить 15",
+                "Down 16": "Опустить 16",
+                "Stop 1": "Остановить 1",
+                "Stop 2": "Остановить 2",
+                "Stop 3": "Остановить 3",
+                "Stop 4": "Остановить 4",
+                "Stop 5": "Остановить 5",
+                "Stop 6": "Остановить 6",
+                "Stop 7": "Остановить 7",
+                "Stop 8": "Остановить 8",
+                "Stop 9": "Остановить 9",
+                "Stop 10": "Остановить 10",
+                "Stop 11": "Остановить 11",
+                "Stop 12": "Остановить 12",
+                "Stop 13": "Остановить 13",
+                "Stop 14": "Остановить 14",
+                "Stop 15": "Остановить 15",
+                "Stop 16": "Остановить 16",
+                "Open programming mode 1": "Настроить 1",
+                "Open programming mode 2": "Настроить 2",
+                "Open programming mode 3": "Настроить 3",
+                "Open programming mode 4": "Настроить 4",
+                "Open programming mode 5": "Настроить 5",
+                "Open programming mode 6": "Настроить 6",
+                "Open programming mode 7": "Настроить 7",
+                "Open programming mode 8": "Настроить 8",
+                "Open programming mode 9": "Настроить 9",
+                "Open programming mode 10": "Настроить 10",
+                "Open programming mode 11": "Настроить 11",
+                "Open programming mode 12": "Настроить 12",
+                "Open programming mode 13": "Настроить 13",
+                "Open programming mode 14": "Настроить 14",
+                "Open programming mode 15": "Настроить 15",
+                "Open programming mode 16": "Настроить 16"
+            }
+        }
+    }
+}
