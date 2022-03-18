@@ -71,7 +71,6 @@ private:
     PBinarySemaphoreSignal RegisterSignal, RPCSignal;
 
     TScheduler<PRegister, TRegisterComparePredicate> Scheduler;
-
     TPortOpenCloseLogic OpenCloseLogic;
     TLoggerWithTimeout ConnectLogger;
     Metrics::TMetrics& Metrics;
