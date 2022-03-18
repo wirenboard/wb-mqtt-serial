@@ -3,7 +3,7 @@
     "device_type": "haier_ycj-a002",
     "device": {
         "name": "Haier YCJ-A002",
-        "id": "haier-ycj-a002",
+        "id": "haier_ycj-a002",
         "response_timeout_ms": 100,
         "guard_interval_us": 10000,
         "channels": [
