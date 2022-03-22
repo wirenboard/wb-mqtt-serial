@@ -205,7 +205,11 @@ TRegisterConfig::TRegisterConfig(int type,
     }
 
     if (!Address.Address) {
-        throw TSerialDeviceException("register address is not defined");
+        if (Address.WriteAddress) {
+            WriteOnly = true;
+        } else {
+            throw TSerialDeviceException("write and read register address is not defined");
+        }
     }
 }
 

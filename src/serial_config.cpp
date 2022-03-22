@@ -646,11 +646,10 @@ namespace
         }
     }
 
-    inline bool HasWriteAddressProperty(const Json::Value& regCfg)
+    inline bool HasNoEmptyProperty(const Json::Value& regCfg, const std::string& propertyName)
     {
-        return regCfg.isMember(SerialConfig::WRITE_ADDRESS_PROPERTY_NAME) &&
-               !(regCfg[SerialConfig::WRITE_ADDRESS_PROPERTY_NAME].isString() &&
-                 regCfg[SerialConfig::WRITE_ADDRESS_PROPERTY_NAME].asString().empty());
+        return regCfg.isMember(propertyName) &&
+               !(regCfg[propertyName].isString() && regCfg[propertyName].asString().empty());
     }
 }
 
@@ -1381,9 +1380,12 @@ TRegisterDesc TUint32RegisterAddressFactory::LoadRegisterAddress(const Json::Val
     auto addr = LoadRegisterBitsAddress(regCfg, SerialConfig::ADDRESS_PROPERTY_NAME);
     res.DataOffset = addr.BitOffset;
     res.DataWidth = addr.BitWidth;
-    res.Address = std::shared_ptr<IRegisterAddress>(
-        deviceBaseAddress.CalcNewAddress(addr.Address, stride, registerByteWidth, BytesPerRegister));
-    if (HasWriteAddressProperty(regCfg)) {
+
+    if (HasNoEmptyProperty(regCfg, SerialConfig::ADDRESS_PROPERTY_NAME)) {
+        res.Address = std::shared_ptr<IRegisterAddress>(
+            deviceBaseAddress.CalcNewAddress(addr.Address, stride, registerByteWidth, BytesPerRegister));
+    }
+    if (HasNoEmptyProperty(regCfg, SerialConfig::WRITE_ADDRESS_PROPERTY_NAME)) {
         auto writeAddress = LoadRegisterBitsAddress(regCfg, SerialConfig::WRITE_ADDRESS_PROPERTY_NAME);
         res.WriteAddress = std::shared_ptr<IRegisterAddress>(
             deviceBaseAddress.CalcNewAddress(writeAddress.Address, stride, registerByteWidth, BytesPerRegister));
@@ -1404,8 +1406,10 @@ TRegisterDesc TStringRegisterAddressFactory::LoadRegisterAddress(const Json::Val
                                                                  uint32_t registerByteWidth) const
 {
     TRegisterDesc res;
-    res.Address = std::make_shared<TStringRegisterAddress>(regCfg[SerialConfig::ADDRESS_PROPERTY_NAME].asString());
-    if (HasWriteAddressProperty(regCfg)) {
+    if (HasNoEmptyProperty(regCfg, SerialConfig::ADDRESS_PROPERTY_NAME)) {
+        res.Address = std::make_shared<TStringRegisterAddress>(regCfg[SerialConfig::ADDRESS_PROPERTY_NAME].asString());
+    }
+    if (HasNoEmptyProperty(regCfg, SerialConfig::WRITE_ADDRESS_PROPERTY_NAME)) {
         res.WriteAddress =
             std::make_shared<TStringRegisterAddress>(regCfg[SerialConfig::WRITE_ADDRESS_PROPERTY_NAME].asString());
     } else {
