@@ -121,8 +121,10 @@ TEST_F(TUnielIntegrationTest, Poll)
     EnqueueBrightnessQueryResponse();
 
     Note() << "LoopOnce()";
-    SerialDriver->LoopOnce();
-    SerialPort->DumpWhatWasRead();
+    for (auto i = 0; i < 4; ++i) {
+        SerialDriver->LoopOnce();
+        SerialPort->DumpWhatWasRead();
+    }
 
     PublishWaitOnValue("/devices/pseudo_uniel/controls/Relay 1/on", "1");
     PublishWaitOnValue("/devices/pseudo_uniel/controls/LowThr/on", "112");
@@ -138,8 +140,9 @@ TEST_F(TUnielIntegrationTest, Poll)
     EnqueueBrightnessQueryResponse();
 
     Note() << "LoopOnce()";
-    SerialDriver->LoopOnce();
-    SerialPort->DumpWhatWasRead();
-
+    for (auto i = 0; i < 4; ++i) {
+        SerialDriver->LoopOnce();
+        SerialPort->DumpWhatWasRead();
+    }
     SerialPort->Close();
 }

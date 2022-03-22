@@ -53,9 +53,10 @@ void TMercury230Test::SetUp()
     Mercury230Dev =
         std::make_shared<TMercury230Device>(GetDeviceConfig(), SerialPort, DeviceFactory.GetProtocol("mercury230"));
     Mercury230TotalConsumptionReg =
-        TRegister::Intern(Mercury230Dev, TRegisterConfig::Create(TMercury230Device::REG_VALUE_ARRAY, 0x0000, U32));
+        TRegister::Intern(Mercury230Dev, TRegisterConfig::Create(TMercury230Device::REG_VALUE_ARRAY, 0x00, U32));
     Mercury230TotalReactiveEnergyReg =
-        TRegister::Intern(Mercury230Dev, TRegisterConfig::Create(TMercury230Device::REG_VALUE_ARRAY, 0x0002, U32));
+        TRegister::Intern(Mercury230Dev, TRegisterConfig::Create(TMercury230Device::REG_VALUE_ARRAY, 0x00, U32));
+    Mercury230TotalReactiveEnergyReg->SetBitOffset(2);
 
     Mercury230PReg =
         TRegister::Intern(Mercury230Dev, TRegisterConfig::Create(TMercury230Device::REG_PARAM_SIGN_ACT, 0x1100, S24));
@@ -134,13 +135,13 @@ TEST_F(TMercury230Test, ReadEnergy)
     ASSERT_EQ(3196200, Mercury230Dev->ReadRegisterImpl(Mercury230TotalConsumptionReg));
     ASSERT_EQ(300444, Mercury230Dev->ReadRegisterImpl(Mercury230TotalReactiveEnergyReg));
     ASSERT_EQ(3196200, Mercury230Dev->ReadRegisterImpl(Mercury230TotalConsumptionReg));
-    Mercury230Dev->EndPollCycle();
+    Mercury230Dev->InvalidateReadCache();
 
     EnqueueMercury230EnergyResponse2();
     ASSERT_EQ(3196201, Mercury230Dev->ReadRegisterImpl(Mercury230TotalConsumptionReg));
     ASSERT_EQ(300445, Mercury230Dev->ReadRegisterImpl(Mercury230TotalReactiveEnergyReg));
     ASSERT_EQ(3196201, Mercury230Dev->ReadRegisterImpl(Mercury230TotalConsumptionReg));
-    Mercury230Dev->EndPollCycle();
+    Mercury230Dev->InvalidateReadCache();
     SerialPort->Close();
 }
 
@@ -182,9 +183,9 @@ TEST_F(TMercury230Test, ReadParams)
 {
     EnqueueMercury230SessionSetupResponse();
     VerifyParamQuery();
-    Mercury230Dev->EndPollCycle();
+    Mercury230Dev->InvalidateReadCache();
     VerifyParamQuery();
-    Mercury230Dev->EndPollCycle();
+    Mercury230Dev->InvalidateReadCache();
     SerialPort->Close();
 }
 
@@ -198,8 +199,6 @@ TEST_F(TMercury230Test, Reconnect)
 
     // subparam 0x12 = voltage (phase 2)
     ASSERT_EQ(24043, Mercury230Dev->ReadRegisterImpl(Mercury230U2Reg));
-
-    Mercury230Dev->EndPollCycle();
     SerialPort->Close();
 }
 
@@ -234,8 +233,6 @@ TEST_F(TMercury230CustomPasswordTest, Test)
 {
     EnqueueMercury230AccessLevel2SessionSetupResponse();
     VerifyParamQuery();
-    Mercury230Dev->EndPollCycle();
-
     SerialPort->Close();
 }
 
@@ -313,5 +310,7 @@ TEST_F(TMercury230IntegrationTest, Poll)
 {
     ExpectQueries(true);
     Note() << "LoopOnce()";
-    SerialDriver->LoopOnce();
+    for (auto i = 0; i < 25; ++i) {
+        SerialDriver->LoopOnce();
+    }
 }

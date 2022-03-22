@@ -26,8 +26,8 @@ public:
     };
 
     TMercury230Device(PDeviceConfig, PPort port, PProtocol protocol);
-    void EndPollCycle() override;
 
+    void InvalidateReadCache() override;
     static void Register(TSerialDeviceFactory& factory);
 
     uint64_t ReadRegisterImpl(PRegister reg) override;

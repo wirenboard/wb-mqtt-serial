@@ -229,5 +229,3 @@ int main(int, char**)
     return 0;
 }
 #endif
-
-// TBD: settings in uniel template: 9600 8N1, timeout ms = 1000

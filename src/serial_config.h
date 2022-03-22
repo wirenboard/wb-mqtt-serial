@@ -279,14 +279,13 @@ TRegisterBitsAddress LoadRegisterBitsAddress(const Json::Value& register_data, c
 /*!
  * Basic device factory implementation with uint32 register addresses
  */
-template<class Dev> class TBasicDeviceFactory: public IDeviceFactory
+template<class Dev, class AddressFactory = TUint32RegisterAddressFactory> class TBasicDeviceFactory
+    : public IDeviceFactory
 {
 public:
     TBasicDeviceFactory(const std::string& commonDeviceSchemaRef,
                         const std::string& customChannelSchemaRef = std::string())
-        : IDeviceFactory(std::make_unique<TUint32RegisterAddressFactory>(),
-                         commonDeviceSchemaRef,
-                         customChannelSchemaRef)
+        : IDeviceFactory(std::make_unique<AddressFactory>(), commonDeviceSchemaRef, customChannelSchemaRef)
     {}
 
     PSerialDevice CreateDevice(const Json::Value& data,

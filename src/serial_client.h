@@ -17,28 +17,6 @@ struct TRegisterComparePredicate
     bool operator()(const PRegister& r1, const PRegister& r2) const;
 };
 
-class TRegisterReader
-{
-    PRegisterRange RegisterRange;
-    std::chrono::milliseconds MaxPollTime;
-    PSerialDevice Device;
-
-public:
-    TRegisterReader(std::chrono::milliseconds maxPollTime);
-    bool operator()(const PRegister& reg, std::chrono::milliseconds pollLimit);
-    PRegisterRange GetRegisterRange() const;
-    void Reset(std::chrono::milliseconds maxPollTime);
-};
-
-class TClosedPortRegisterReader
-{
-    std::list<PRegister> Regs;
-
-public:
-    bool operator()(const PRegister& reg, std::chrono::milliseconds pollLimit);
-    std::list<PRegister>& GetRegisters();
-};
-
 class TSerialClient: public std::enable_shared_from_this<TSerialClient>
 {
 public:
@@ -65,7 +43,7 @@ private:
     void Connect();
     void PrepareRegisterRanges();
     void DoFlush();
-    void WaitForPollAndFlush();
+    void WaitForPollAndFlush(std::chrono::steady_clock::time_point waitUntil);
     void MaybeFlushAvoidingPollStarvationButDontWait();
     void SetReadError(PRegister reg);
     PRegisterHandler GetHandler(PRegister) const;
@@ -75,10 +53,6 @@ private:
     void UpdateFlushNeeded();
     void ProcessPolledRegister(PRegister reg);
     void ScheduleNextPoll(PRegister reg, std::chrono::steady_clock::time_point pollStartTime);
-    std::vector<PRegisterRange> ReadRanges(TRegisterReader& reader,
-                                           PRegisterRange range,
-                                           std::chrono::steady_clock::time_point pollStartTime,
-                                           bool forceError);
 
     PPort Port;
     std::list<PRegister> RegList;

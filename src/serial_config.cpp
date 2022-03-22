@@ -433,6 +433,8 @@ namespace
             channel->Precision = registers[0]->RoundTo;
         }
 
+        Get(channel_data, "units", channel->Units);
+
         device_config->AddChannel(channel);
     }
 

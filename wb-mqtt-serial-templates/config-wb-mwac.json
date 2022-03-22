@@ -50,9 +50,14 @@
                 "order": 8
             },
             {
+                "title": "General",
+                "id": "general",
+                "order": 9
+            },
+            {
                 "title": "HW Info",
                 "id": "hw_info",
-                "order": 9
+                "order": 10
             }
         ],
 
@@ -245,6 +250,23 @@
                 "default": 3600,
                 "group": "outputs",
                 "order": 2
+            },
+            "baud_rate": {
+                "title": "Baud rate",
+                "description": "baud_rate_description",
+                "address": 110,
+                "reg_type": "holding",
+                "enum": [96, 192, 384, 576, 1152],
+                "default": 96,
+                "enum_titles": [
+                    "9600",
+                    "19200",
+                    "38400",
+                    "57600",
+                    "115200"
+                ],
+                "group": "general",
+                "order": 1
             }
         },
 
@@ -481,11 +503,31 @@
                 "format": "u32",
                 "enabled": false,
                 "group": "hw_info"
+            },
+            {
+                "name": "MCU Temperature",
+                "reg_type": "input",
+                "address": 124,
+                "type": "temperature",
+                "format": "s16",
+                "scale": 0.1,
+                "enabled": false,
+                "group": "hw_info"
+            },
+            {
+                "name": "MCU Voltage",
+                "reg_type": "input",
+                "address": 123,
+                "scale": 0.001,
+                "type": "voltage",
+                "enabled": false,
+                "group": "hw_info"
             }
         ],
         "translations": {
             "en": {
                 "WB-MWAC_template_title": "WB-MWAC (water leak and meters controller)",
+                "baud_rate_description": "Make sure that communication with device is established before changing this parameter. Select required baud rate, save configuration and then change port baud rate to the same value.",
                 "Uptime": "Uptime (s)"
             },
             "ru": {
@@ -498,6 +540,7 @@
                 "Input F2": "Вход F2",
                 "Input F3": "Вход F3",
                 "Outputs": "Выходы",
+                "General": "Общее",
                 "HW Info": "Данные модуля",
                 "Input S1 Mode": "Режим работы входа S1",
                 "Input S2 Mode": "Режим работы входа S2",
@@ -521,6 +564,8 @@
                 "no": "нет",
                 "yes": "да",
                 "Safety Timer (s)": "Таймаут безопасного режима (с)",
+                "Baud rate": "Скорость обмена",
+                "baud_rate_description": "Перед изменением параметра убедитесь, что связь с устройством установлена. Выберите нужную скорость обмена, сохраните конфигурацию, а затем укажите в настройках порта эту же скорость.",
                 "P1 Counter": "Счетчик P1",
                 "P1 Counter Offset": "Начальное значение счетчика P1",
                 "P2 Counter": "Счетчик P2",
@@ -540,7 +585,9 @@
                 "Alarm": "Авария",
                 "Serial": "Серийный номер",
                 "Input Voltage": "Напряжение питания",
-                "Uptime": "Время работы с момента включения (с)"
+                "Uptime": "Время работы с момента включения (с)",
+                "MCU Temperature": "Температура МК",
+                "MCU Voltage": "Напряжение питания МК"
             }
         }
     }

@@ -35,9 +35,14 @@
                 "order": 5
             },
             {
+                "title": "General",
+                "id": "general",
+                "order": 6
+            },
+            {
                 "title": "HW Info",
                 "id": "hw_info",
-                "order": 6
+                "order": 7
             }
         ],
 
@@ -120,6 +125,23 @@
                 "default": 3600,
                 "group": "outputs",
                 "order": 2
+            },
+            "baud_rate": {
+                "title": "Baud rate",
+                "description": "baud_rate_description",
+                "address": 110,
+                "reg_type": "holding",
+                "enum": [96, 192, 384, 576, 1152],
+                "default": 96,
+                "enum_titles": [
+                    "9600",
+                    "19200",
+                    "38400",
+                    "57600",
+                    "115200"
+                ],
+                "group": "general",
+                "order": 1
             }
         },
 
@@ -291,6 +313,7 @@
         "translations": {
             "en": {
                 "WB-MRWM2-template-title": "WB-MRWM2 (2-channel power metering relay)",
+                "baud_rate_description": "Make sure that communication with device is established before changing this parameter. Select required baud rate, save configuration and then change port baud rate to the same value.",
                 "Uptime": "Uptime (s)"
             },
             "ru": {
@@ -298,6 +321,7 @@
                 "Input 1": "Вход 1",
                 "Input 2": "Вход 2",
                 "Outputs": "Выходы",
+                "General": "Общее",
                 "HW Info": "Данные модуля",
                 "Input 1 Mode": "Режим работы входа 1",
                 "Input 2 Mode": "Режим работы входа 2",
@@ -312,6 +336,8 @@
                 "no": "нет",
                 "yes": "да",
                 "Safety Timer (s)": "Таймаут безопасного режима (с)",
+                "Baud rate": "Скорость обмена",
+                "baud_rate_description": "Перед изменением параметра убедитесь, что связь с устройством установлена. Выберите нужную скорость обмена, сохраните конфигурацию, а затем укажите в настройках порта эту же скорость.",
                 "Input 1 counter": "Счетчик 1",
                 "Input 2 counter": "Счетчик 2",
                 "Input 1 freq": "Частота 1",

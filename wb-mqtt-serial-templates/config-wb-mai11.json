@@ -18,8 +18,33 @@
                 "title": "HW Info",
                 "id": "hw_info",
                 "order": 13
+            },
+            {
+                "title": "Debug",
+                "id": "debug",
+                "order": 14
             }
         ],
+
+        "parameters": {
+            "baud_rate": {
+                "title": "Baud rate",
+                "description": "baud_rate_description",
+                "address": 110,
+                "reg_type": "holding",
+                "enum": [96, 192, 384, 576, 1152],
+                "default": 96,
+                "enum_titles": [
+                    "9600",
+                    "19200",
+                    "38400",
+                    "57600",
+                    "115200"
+                ],
+                "group": "general",
+                "order": 1
+            }
+        },
 
         "channels": [
             {
@@ -724,6 +749,213 @@
                 "address": 104,
                 "format": "u32",
                 "group": "hw_info"
+            },
+            {
+                "name": "ADC Loop Duration",
+                "reg_type": "input",
+                "address": 1552,
+                "format": "u16",
+                "scale": 0.001,
+                "enabled": false,
+                "group": "debug"
+            },
+            {
+                "name": "IN 1 P Read Interval",
+                "reg_type": "input",
+                "address": 1553,
+                "format": "u16",
+                "scale": 0.001,
+                "enabled": false,
+                "group": "debug"
+            },
+            {
+                "name": "IN 1 N Read Interval",
+                "reg_type": "input",
+                "address": 1554,
+                "format": "u16",
+                "scale": 0.001,
+                "enabled": false,
+                "group": "debug"
+            },
+            {
+                "name": "IN 2 P Read Interval",
+                "reg_type": "input",
+                "address": 1555,
+                "format": "u16",
+                "scale": 0.001,
+                "enabled": false,
+                "group": "debug"
+            },
+            {
+                "name": "IN 2 N Read Interval",
+                "reg_type": "input",
+                "address": 1556,
+                "format": "u16",
+                "scale": 0.001,
+                "enabled": false,
+                "group": "debug"
+            },
+            {
+                "name": "IN 3 P Read Interval",
+                "reg_type": "input",
+                "address": 1557,
+                "format": "u16",
+                "scale": 0.001,
+                "enabled": false,
+                "group": "debug"
+            },
+            {
+                "name": "IN 3 N Read Interval",
+                "reg_type": "input",
+                "address": 1558,
+                "format": "u16",
+                "scale": 0.001,
+                "enabled": false,
+                "group": "debug"
+            },
+            {
+                "name": "IN 4 P Read Interval",
+                "reg_type": "input",
+                "address": 1559,
+                "format": "u16",
+                "scale": 0.001,
+                "enabled": false,
+                "group": "debug"
+            },
+            {
+                "name": "IN 4 N Read Interval",
+                "reg_type": "input",
+                "address": 1560,
+                "format": "u16",
+                "scale": 0.001,
+                "enabled": false,
+                "group": "debug"
+            },
+            {
+                "name": "IN 5 P Read Interval",
+                "reg_type": "input",
+                "address": 1561,
+                "format": "u16",
+                "scale": 0.001,
+                "enabled": false,
+                "group": "debug"
+            },
+            {
+                "name": "IN 5 N Read Interval",
+                "reg_type": "input",
+                "address": 1562,
+                "format": "u16",
+                "scale": 0.001,
+                "enabled": false,
+                "group": "debug"
+            },
+            {
+                "name": "IN 6 P Read Interval",
+                "reg_type": "input",
+                "address": 1563,
+                "format": "u16",
+                "scale": 0.001,
+                "enabled": false,
+                "group": "debug"
+            },
+            {
+                "name": "IN 6 N Read Interval",
+                "reg_type": "input",
+                "address": 1564,
+                "format": "u16",
+                "scale": 0.001,
+                "enabled": false,
+                "group": "debug"
+            },
+            {
+                "name": "IN 7 P Read Interval",
+                "reg_type": "input",
+                "address": 1565,
+                "format": "u16",
+                "scale": 0.001,
+                "enabled": false,
+                "group": "debug"
+            },
+            {
+                "name": "IN 7 N Read Interval",
+                "reg_type": "input",
+                "address": 1566,
+                "format": "u16",
+                "scale": 0.001,
+                "enabled": false,
+                "group": "debug"
+            },
+            {
+                "name": "IN 8 P Read Interval",
+                "reg_type": "input",
+                "address": 1567,
+                "format": "u16",
+                "scale": 0.001,
+                "enabled": false,
+                "group": "debug"
+            },
+            {
+                "name": "IN 8 N Read Interval",
+                "reg_type": "input",
+                "address": 1568,
+                "format": "u16",
+                "scale": 0.001,
+                "enabled": false,
+                "group": "debug"
+            },
+            {
+                "name": "IN 9 P Read Interval",
+                "reg_type": "input",
+                "address": 1569,
+                "format": "u16",
+                "scale": 0.001,
+                "enabled": false,
+                "group": "debug"
+            },
+            {
+                "name": "IN 9 N Read Interval",
+                "reg_type": "input",
+                "address": 1570,
+                "format": "u16",
+                "scale": 0.001,
+                "enabled": false,
+                "group": "debug"
+            },
+            {
+                "name": "IN 10 P Read Interval",
+                "reg_type": "input",
+                "address": 1571,
+                "format": "u16",
+                "scale": 0.001,
+                "enabled": false,
+                "group": "debug"
+            },
+            {
+                "name": "IN 10 N Read Interval",
+                "reg_type": "input",
+                "address": 1572,
+                "format": "u16",
+                "scale": 0.001,
+                "enabled": false,
+                "group": "debug"
+            },
+            {
+                "name": "IN 11 P Read Interval",
+                "reg_type": "input",
+                "address": 1573,
+                "format": "u16",
+                "scale": 0.001,
+                "enabled": false,
+                "group": "debug"
+            },
+            {
+                "name": "IN 11 N Read Interval",
+                "reg_type": "input",
+                "address": 1573,
+                "format": "u16",
+                "scale": 0.001,
+                "enabled": false,
+                "group": "debug"
             }
         ],
         "subdevices": [
@@ -741,9 +973,18 @@
                     "parameters": {
                         "data_rate": {
                             "required": true,
-                            "title": "Data rate",
+                            "title": "Sampling time",
                             "order": 1,
                             "address": "0x0402",
+                            "enum_titles": [
+                                "50 ms (20 SPS)",
+                                "22 ms (45 SPS)",
+                                "11 ms (90 SPS)",
+                                "5.7 ms (175 SPS)",
+                                "3.0 ms (330 SPS)",
+                                "1.7 ms (600 SPS)",
+                                "1.0 ms (1000 SPS)"
+                            ],
                             "enum": [
                                 20, 45, 90, 175, 330, 600,
                                 1000
@@ -751,9 +992,10 @@
                         },
                         "measurements": {
                             "title": "Number of measurements",
+                            "description": "Total sampling time of channel is (Sampling time * Number of measurements). Channels are polled sequentially.",
                             "order": 2,
                             "address": "0x0404",
-                            "min": 0,
+                            "min": 1,
                             "max": 50
                         },
                         "lowpass": {
@@ -800,9 +1042,18 @@
                     "parameters": {
                         "data_rate": {
                             "required": true,
-                            "title": "Data rate",
+                            "title": "Sampling time",
                             "order": 1,
                             "address": "0x0402",
+                            "enum_titles": [
+                                "50 ms (20 SPS)",
+                                "22 ms (45 SPS)",
+                                "11 ms (90 SPS)",
+                                "5.7 ms (175 SPS)",
+                                "3.0 ms (330 SPS)",
+                                "1.7 ms (600 SPS)",
+                                "1.0 ms (1000 SPS)"
+                            ],
                             "enum": [
                                 20, 45, 90, 175, 330, 600,
                                 1000
@@ -810,9 +1061,10 @@
                         },
                         "measurements": {
                             "title": "Number of measurements",
+                            "description": "Total sampling time of channel is (Sampling time * Number of measurements). Channels are polled sequentially.",
                             "order": 2,
                             "address": "0x0404",
-                            "min": 0,
+                            "min": 1,
                             "max": 50
                         },
                         "lowpass": {
@@ -839,7 +1091,7 @@
                             "reg_type": "input",
                             "format": "s32",
                             "address": "0x0500",
-                            "scale": 0.01
+                            "scale": 1
                         },
                         {
                             "name": "Temperature",
@@ -858,7 +1110,7 @@
                 "device": {
                     "setup": [
                         {
-                            "title": "Data rate",
+                            "title": "Sampling time",
                             "address": "0x0402",
                             "value": 0
                         }
@@ -879,9 +1131,18 @@
                     "parameters": {
                         "data_rate": {
                             "required": true,
-                            "title": "Data rate",
+                            "title": "Sampling time",
                             "order": 1,
                             "address": "0x0402",
+                            "enum_titles": [
+                                "50 ms (20 SPS)",
+                                "22 ms (45 SPS)",
+                                "11 ms (90 SPS)",
+                                "5.7 ms (175 SPS)",
+                                "3.0 ms (330 SPS)",
+                                "1.7 ms (600 SPS)",
+                                "1.0 ms (1000 SPS)"
+                            ],
                             "enum": [
                                 20, 45, 90, 175, 330, 600,
                                 1000
@@ -889,9 +1150,10 @@
                         },
                         "measurements": {
                             "title": "Number of measurements",
+                            "description": "Total sampling time of channel is (Sampling time * Number of measurements). Channels are polled sequentially.",
                             "order": 2,
                             "address": "0x0404",
-                            "min": 0,
+                            "min": 1,
                             "max": 50
                         },
                         "lowpass": {
@@ -937,9 +1199,18 @@
                     "parameters": {
                         "data_rate": {
                             "required": true,
-                            "title": "Data rate",
+                            "title": "Sampling time",
                             "order": 1,
                             "address": "0x0402",
+                            "enum_titles": [
+                                "50 ms (20 SPS)",
+                                "22 ms (45 SPS)",
+                                "11 ms (90 SPS)",
+                                "5.7 ms (175 SPS)",
+                                "3.0 ms (330 SPS)",
+                                "1.7 ms (600 SPS)",
+                                "1.0 ms (1000 SPS)"
+                            ],
                             "enum": [
                                 20, 45, 90, 175, 330, 600,
                                 1000
@@ -947,9 +1218,10 @@
                         },
                         "measurements": {
                             "title": "Number of measurements",
+                            "description": "Total sampling time of channel is (Sampling time * Number of measurements). Channels are polled sequentially.",
                             "order": 2,
                             "address": "0x0404",
-                            "min": 0,
+                            "min": 1,
                             "max": 50
                         },
                         "lowpass": {
@@ -1007,9 +1279,18 @@
                     "parameters": {
                         "data_rate": {
                             "required": true,
-                            "title": "Data rate",
+                            "title": "Sampling time",
                             "order": 1,
                             "address": "0x0402",
+                            "enum_titles": [
+                                "50 ms (20 SPS)",
+                                "22 ms (45 SPS)",
+                                "11 ms (90 SPS)",
+                                "5.7 ms (175 SPS)",
+                                "3.0 ms (330 SPS)",
+                                "1.7 ms (600 SPS)",
+                                "1.0 ms (1000 SPS)"
+                            ],
                             "enum": [
                                 20, 45, 90, 175, 330, 600,
                                 1000
@@ -1017,9 +1298,10 @@
                         },
                         "measurements": {
                             "title": "Number of measurements",
+                            "description": "Total sampling time of channel is (Sampling time * Number of measurements). Channels are polled sequentially.",
                             "order": 2,
                             "address": "0x0404",
-                            "min": 0,
+                            "min": 1,
                             "max": 50
                         },
                         "lowpass": {
@@ -1077,9 +1359,18 @@
                     "parameters": {
                         "data_rate": {
                             "required": true,
-                            "title": "Data rate",
+                            "title": "Sampling time",
                             "order": 1,
                             "address": "0x0402",
+                            "enum_titles": [
+                                "50 ms (20 SPS)",
+                                "22 ms (45 SPS)",
+                                "11 ms (90 SPS)",
+                                "5.7 ms (175 SPS)",
+                                "3.0 ms (330 SPS)",
+                                "1.7 ms (600 SPS)",
+                                "1.0 ms (1000 SPS)"
+                            ],
                             "enum": [
                                 20, 45, 90, 175, 330, 600,
                                 1000
@@ -1087,9 +1378,10 @@
                         },
                         "measurements": {
                             "title": "Number of measurements",
+                            "description": "Total sampling time of channel is (Sampling time * Number of measurements). Channels are polled sequentially.",
                             "order": 2,
                             "address": "0x0404",
-                            "min": 0,
+                            "min": 1,
                             "max": 50
                         },
                         "lowpass": {
@@ -1249,9 +1541,18 @@
                     "parameters": {
                         "data_rate": {
                             "required": true,
-                            "title": "Data rate",
+                            "title": "Sampling time",
                             "order": 1,
                             "address": "0x0402",
+                            "enum_titles": [
+                                "50 ms (20 SPS)",
+                                "22 ms (45 SPS)",
+                                "11 ms (90 SPS)",
+                                "5.7 ms (175 SPS)",
+                                "3.0 ms (330 SPS)",
+                                "1.7 ms (600 SPS)",
+                                "1.0 ms (1000 SPS)"
+                            ],
                             "enum": [
                                 20, 45, 90, 175, 330, 600,
                                 1000
@@ -1259,9 +1560,10 @@
                         },
                         "measurements": {
                             "title": "Number of measurements",
+                            "description": "Total sampling time of channel is (Sampling time * Number of measurements). Channels are polled sequentially.",
                             "order": 2,
                             "address": "0x0404",
-                            "min": 0,
+                            "min": 1,
                             "max": 50
                         },
                         "lowpass": {
@@ -1308,9 +1610,18 @@
                     "parameters": {
                         "data_rate": {
                             "required": true,
-                            "title": "Data rate",
+                            "title": "Sampling time",
                             "order": 1,
                             "address": "0x0402",
+                            "enum_titles": [
+                                "50 ms (20 SPS)",
+                                "22 ms (45 SPS)",
+                                "11 ms (90 SPS)",
+                                "5.7 ms (175 SPS)",
+                                "3.0 ms (330 SPS)",
+                                "1.7 ms (600 SPS)",
+                                "1.0 ms (1000 SPS)"
+                            ],
                             "enum": [
                                 20, 45, 90, 175, 330, 600,
                                 1000
@@ -1318,9 +1629,10 @@
                         },
                         "measurements": {
                             "title": "Number of measurements",
+                            "description": "Total sampling time of channel is (Sampling time * Number of measurements). Channels are polled sequentially.",
                             "order": 2,
                             "address": "0x0404",
-                            "min": 0,
+                            "min": 1,
                             "max": 50
                         },
                         "lowpass": {
@@ -1367,9 +1679,18 @@
                     "parameters": {
                         "data_rate": {
                             "required": true,
-                            "title": "Data rate",
+                            "title": "Sampling time",
                             "order": 1,
                             "address": "0x0402",
+                            "enum_titles": [
+                                "50 ms (20 SPS)",
+                                "22 ms (45 SPS)",
+                                "11 ms (90 SPS)",
+                                "5.7 ms (175 SPS)",
+                                "3.0 ms (330 SPS)",
+                                "1.7 ms (600 SPS)",
+                                "1.0 ms (1000 SPS)"
+                            ],
                             "enum": [
                                 20, 45, 90, 175, 330, 600,
                                 1000
@@ -1377,9 +1698,10 @@
                         },
                         "measurements": {
                             "title": "Number of measurements",
+                            "description": "Total sampling time of channel is (Sampling time * Number of measurements). Channels are polled sequentially.",
                             "order": 2,
                             "address": "0x0404",
-                            "min": 0,
+                            "min": 1,
                             "max": 50
                         },
                         "lowpass": {
@@ -1426,9 +1748,18 @@
                     "parameters": {
                         "data_rate": {
                             "required": true,
-                            "title": "Data rate",
+                            "title": "Sampling time",
                             "order": 1,
                             "address": "0x0402",
+                            "enum_titles": [
+                                "50 ms (20 SPS)",
+                                "22 ms (45 SPS)",
+                                "11 ms (90 SPS)",
+                                "5.7 ms (175 SPS)",
+                                "3.0 ms (330 SPS)",
+                                "1.7 ms (600 SPS)",
+                                "1.0 ms (1000 SPS)"
+                            ],
                             "enum": [
                                 20, 45, 90, 175, 330, 600,
                                 1000
@@ -1436,9 +1767,10 @@
                         },
                         "measurements": {
                             "title": "Number of measurements",
+                            "description": "Total sampling time of channel is (Sampling time * Number of measurements). Channels are polled sequentially.",
                             "order": 2,
                             "address": "0x0404",
-                            "min": 0,
+                            "min": 1,
                             "max": 50
                         },
                         "lowpass": {
@@ -1485,9 +1817,18 @@
                     "parameters": {
                         "data_rate": {
                             "required": true,
-                            "title": "Data rate",
+                            "title": "Sampling time",
                             "order": 1,
                             "address": "0x0402",
+                            "enum_titles": [
+                                "50 ms (20 SPS)",
+                                "22 ms (45 SPS)",
+                                "11 ms (90 SPS)",
+                                "5.7 ms (175 SPS)",
+                                "3.0 ms (330 SPS)",
+                                "1.7 ms (600 SPS)",
+                                "1.0 ms (1000 SPS)"
+                            ],
                             "enum": [
                                 20, 45, 90, 175, 330, 600,
                                 1000
@@ -1495,9 +1836,10 @@
                         },
                         "measurements": {
                             "title": "Number of measurements",
+                            "description": "Total sampling time of channel is (Sampling time * Number of measurements). Channels are polled sequentially.",
                             "order": 2,
                             "address": "0x0404",
-                            "min": 0,
+                            "min": 1,
                             "max": 50
                         },
                         "lowpass": {
@@ -1544,9 +1886,18 @@
                     "parameters": {
                         "data_rate": {
                             "required": true,
-                            "title": "Data rate",
+                            "title": "Sampling time",
                             "order": 1,
                             "address": "0x0402",
+                            "enum_titles": [
+                                "50 ms (20 SPS)",
+                                "22 ms (45 SPS)",
+                                "11 ms (90 SPS)",
+                                "5.7 ms (175 SPS)",
+                                "3.0 ms (330 SPS)",
+                                "1.7 ms (600 SPS)",
+                                "1.0 ms (1000 SPS)"
+                            ],
                             "enum": [
                                 20, 45, 90, 175, 330, 600,
                                 1000
@@ -1554,9 +1905,10 @@
                         },
                         "measurements": {
                             "title": "Number of measurements",
+                            "description": "Total sampling time of channel is (Sampling time * Number of measurements). Channels are polled sequentially.",
                             "order": 2,
                             "address": "0x0404",
-                            "min": 0,
+                            "min": 1,
                             "max": 50
                         },
                         "lowpass": {
@@ -1603,9 +1955,18 @@
                     "parameters": {
                         "data_rate": {
                             "required": true,
-                            "title": "Data rate",
+                            "title": "Sampling time",
                             "order": 1,
                             "address": "0x0402",
+                            "enum_titles": [
+                                "50 ms (20 SPS)",
+                                "22 ms (45 SPS)",
+                                "11 ms (90 SPS)",
+                                "5.7 ms (175 SPS)",
+                                "3.0 ms (330 SPS)",
+                                "1.7 ms (600 SPS)",
+                                "1.0 ms (1000 SPS)"
+                            ],
                             "enum": [
                                 20, 45, 90, 175, 330, 600,
                                 1000
@@ -1613,9 +1974,10 @@
                         },
                         "measurements": {
                             "title": "Number of measurements",
+                            "description": "Total sampling time of channel is (Sampling time * Number of measurements). Channels are polled sequentially.",
                             "order": 2,
                             "address": "0x0404",
-                            "min": 0,
+                            "min": 1,
                             "max": 50
                         },
                         "lowpass": {
@@ -1662,9 +2024,18 @@
                     "parameters": {
                         "data_rate": {
                             "required": true,
-                            "title": "Data rate",
+                            "title": "Sampling time",
                             "order": 1,
                             "address": "0x0402",
+                            "enum_titles": [
+                                "50 ms (20 SPS)",
+                                "22 ms (45 SPS)",
+                                "11 ms (90 SPS)",
+                                "5.7 ms (175 SPS)",
+                                "3.0 ms (330 SPS)",
+                                "1.7 ms (600 SPS)",
+                                "1.0 ms (1000 SPS)"
+                            ],
                             "enum": [
                                 20, 45, 90, 175, 330, 600,
                                 1000
@@ -1672,9 +2043,10 @@
                         },
                         "measurements": {
                             "title": "Number of measurements",
+                            "description": "Total sampling time of channel is (Sampling time * Number of measurements). Channels are polled sequentially.",
                             "order": 2,
                             "address": "0x0404",
-                            "min": 0,
+                            "min": 1,
                             "max": 50
                         },
                         "lowpass": {
@@ -1721,9 +2093,18 @@
                     "parameters": {
                         "data_rate": {
                             "required": true,
-                            "title": "Data rate",
+                            "title": "Sampling time",
                             "order": 1,
                             "address": "0x0402",
+                            "enum_titles": [
+                                "50 ms (20 SPS)",
+                                "22 ms (45 SPS)",
+                                "11 ms (90 SPS)",
+                                "5.7 ms (175 SPS)",
+                                "3.0 ms (330 SPS)",
+                                "1.7 ms (600 SPS)",
+                                "1.0 ms (1000 SPS)"
+                            ],
                             "enum": [
                                 20, 45, 90, 175, 330, 600,
                                 1000
@@ -1731,9 +2112,10 @@
                         },
                         "measurements": {
                             "title": "Number of measurements",
+                            "description": "Total sampling time of channel is (Sampling time * Number of measurements). Channels are polled sequentially.",
                             "order": 2,
                             "address": "0x0404",
-                            "min": 0,
+                            "min": 1,
                             "max": 50
                         },
                         "lowpass": {
@@ -1780,9 +2162,18 @@
                     "parameters": {
                         "data_rate": {
                             "required": true,
-                            "title": "Data rate",
+                            "title": "Sampling time",
                             "order": 1,
                             "address": "0x0402",
+                            "enum_titles": [
+                                "50 ms (20 SPS)",
+                                "22 ms (45 SPS)",
+                                "11 ms (90 SPS)",
+                                "5.7 ms (175 SPS)",
+                                "3.0 ms (330 SPS)",
+                                "1.7 ms (600 SPS)",
+                                "1.0 ms (1000 SPS)"
+                            ],
                             "enum": [
                                 20, 45, 90, 175, 330, 600,
                                 1000
@@ -1790,9 +2181,10 @@
                         },
                         "measurements": {
                             "title": "Number of measurements",
+                            "description": "Total sampling time of channel is (Sampling time * Number of measurements). Channels are polled sequentially.",
                             "order": 2,
                             "address": "0x0404",
-                            "min": 0,
+                            "min": 1,
                             "max": 50
                         },
                         "lowpass": {
@@ -1839,9 +2231,18 @@
                     "parameters": {
                         "data_rate": {
                             "required": true,
-                            "title": "Data rate",
+                            "title": "Sampling time",
                             "order": 1,
                             "address": "0x0402",
+                            "enum_titles": [
+                                "50 ms (20 SPS)",
+                                "22 ms (45 SPS)",
+                                "11 ms (90 SPS)",
+                                "5.7 ms (175 SPS)",
+                                "3.0 ms (330 SPS)",
+                                "1.7 ms (600 SPS)",
+                                "1.0 ms (1000 SPS)"
+                            ],
                             "enum": [
                                 20, 45, 90, 175, 330, 600,
                                 1000
@@ -1849,9 +2250,10 @@
                         },
                         "measurements": {
                             "title": "Number of measurements",
+                            "description": "Total sampling time of channel is (Sampling time * Number of measurements). Channels are polled sequentially.",
                             "order": 2,
                             "address": "0x0404",
-                            "min": 0,
+                            "min": 1,
                             "max": 50
                         },
                         "lowpass": {
@@ -1898,9 +2300,18 @@
                     "parameters": {
                         "data_rate": {
                             "required": true,
-                            "title": "Data rate",
+                            "title": "Sampling time",
                             "order": 1,
                             "address": "0x0402",
+                            "enum_titles": [
+                                "50 ms (20 SPS)",
+                                "22 ms (45 SPS)",
+                                "11 ms (90 SPS)",
+                                "5.7 ms (175 SPS)",
+                                "3.0 ms (330 SPS)",
+                                "1.7 ms (600 SPS)",
+                                "1.0 ms (1000 SPS)"
+                            ],
                             "enum": [
                                 20, 45, 90, 175, 330, 600,
                                 1000
@@ -1908,9 +2319,10 @@
                         },
                         "measurements": {
                             "title": "Number of measurements",
+                            "description": "Total sampling time of channel is (Sampling time * Number of measurements). Channels are polled sequentially.",
                             "order": 2,
                             "address": "0x0404",
-                            "min": 0,
+                            "min": 1,
                             "max": 50
                         },
                         "lowpass": {
@@ -1957,9 +2369,18 @@
                     "parameters": {
                         "data_rate": {
                             "required": true,
-                            "title": "Data rate",
+                            "title": "Sampling time",
                             "order": 1,
                             "address": "0x0402",
+                            "enum_titles": [
+                                "50 ms (20 SPS)",
+                                "22 ms (45 SPS)",
+                                "11 ms (90 SPS)",
+                                "5.7 ms (175 SPS)",
+                                "3.0 ms (330 SPS)",
+                                "1.7 ms (600 SPS)",
+                                "1.0 ms (1000 SPS)"
+                            ],
                             "enum": [
                                 20, 45, 90, 175, 330, 600,
                                 1000
@@ -1967,9 +2388,10 @@
                         },
                         "measurements": {
                             "title": "Number of measurements",
+                            "description": "Total sampling time of channel is (Sampling time * Number of measurements). Channels are polled sequentially.",
                             "order": 2,
                             "address": "0x0404",
-                            "min": 0,
+                            "min": 1,
                             "max": 50
                         },
                         "lowpass": {
@@ -2016,9 +2438,18 @@
                     "parameters": {
                         "data_rate": {
                             "required": true,
-                            "title": "Data rate",
+                            "title": "Sampling time",
                             "order": 1,
                             "address": "0x0402",
+                            "enum_titles": [
+                                "50 ms (20 SPS)",
+                                "22 ms (45 SPS)",
+                                "11 ms (90 SPS)",
+                                "5.7 ms (175 SPS)",
+                                "3.0 ms (330 SPS)",
+                                "1.7 ms (600 SPS)",
+                                "1.0 ms (1000 SPS)"
+                            ],
                             "enum": [
                                 20, 45, 90, 175, 330, 600,
                                 1000
@@ -2026,9 +2457,10 @@
                         },
                         "measurements": {
                             "title": "Number of measurements",
+                            "description": "Total sampling time of channel is (Sampling time * Number of measurements). Channels are polled sequentially.",
                             "order": 2,
                             "address": "0x0404",
-                            "min": 0,
+                            "min": 1,
                             "max": 50
                         },
                         "lowpass": {
@@ -2075,9 +2507,18 @@
                     "parameters": {
                         "data_rate": {
                             "required": true,
-                            "title": "Data rate",
+                            "title": "Sampling time",
                             "order": 1,
                             "address": "0x0402",
+                            "enum_titles": [
+                                "50 ms (20 SPS)",
+                                "22 ms (45 SPS)",
+                                "11 ms (90 SPS)",
+                                "5.7 ms (175 SPS)",
+                                "3.0 ms (330 SPS)",
+                                "1.7 ms (600 SPS)",
+                                "1.0 ms (1000 SPS)"
+                            ],
                             "enum": [
                                 20, 45, 90, 175, 330, 600,
                                 1000
@@ -2085,9 +2526,10 @@
                         },
                         "measurements": {
                             "title": "Number of measurements",
+                            "description": "Total sampling time of channel is (Sampling time * Number of measurements). Channels are polled sequentially.",
                             "order": 2,
                             "address": "0x0404",
-                            "min": 0,
+                            "min": 1,
                             "max": 50
                         },
                         "lowpass": {
@@ -2134,9 +2576,18 @@
                     "parameters": {
                         "data_rate": {
                             "required": true,
-                            "title": "Data rate",
+                            "title": "Sampling time",
                             "order": 1,
                             "address": "0x0402",
+                            "enum_titles": [
+                                "50 ms (20 SPS)",
+                                "22 ms (45 SPS)",
+                                "11 ms (90 SPS)",
+                                "5.7 ms (175 SPS)",
+                                "3.0 ms (330 SPS)",
+                                "1.7 ms (600 SPS)",
+                                "1.0 ms (1000 SPS)"
+                            ],
                             "enum": [
                                 20, 45, 90, 175, 330, 600,
                                 1000
@@ -2144,9 +2595,10 @@
                         },
                         "measurements": {
                             "title": "Number of measurements",
+                            "description": "Total sampling time of channel is (Sampling time * Number of measurements). Channels are polled sequentially.",
                             "order": 2,
                             "address": "0x0404",
-                            "min": 0,
+                            "min": 1,
                             "max": 50
                         },
                         "lowpass": {
@@ -2190,9 +2642,18 @@
                     "parameters": {
                         "data_rate": {
                             "required": true,
-                            "title": "Data rate",
+                            "title": "Sampling time",
                             "order": 1,
                             "address": "0x0402",
+                            "enum_titles": [
+                                "50 ms (20 SPS)",
+                                "22 ms (45 SPS)",
+                                "11 ms (90 SPS)",
+                                "5.7 ms (175 SPS)",
+                                "3.0 ms (330 SPS)",
+                                "1.7 ms (600 SPS)",
+                                "1.0 ms (1000 SPS)"
+                            ],
                             "enum": [
                                 20, 45, 90, 175, 330, 600,
                                 1000
@@ -2200,9 +2661,10 @@
                         },
                         "measurements": {
                             "title": "Number of measurements",
+                            "description": "Total sampling time of channel is (Sampling time * Number of measurements). Channels are polled sequentially.",
                             "order": 2,
                             "address": "0x0404",
-                            "min": 0,
+                            "min": 1,
                             "max": 50
                         },
                         "lowpass": {
@@ -3047,9 +3509,18 @@
                     "parameters": {
                         "data_rate": {
                             "required": true,
-                            "title": "Data rate",
+                            "title": "Sampling time",
                             "order": 1,
                             "address": "0x0402",
+                            "enum_titles": [
+                                "50 ms (20 SPS)",
+                                "22 ms (45 SPS)",
+                                "11 ms (90 SPS)",
+                                "5.7 ms (175 SPS)",
+                                "3.0 ms (330 SPS)",
+                                "1.7 ms (600 SPS)",
+                                "1.0 ms (1000 SPS)"
+                            ],
                             "enum": [
                                 20, 45, 90, 175, 330, 600,
                                 1000
@@ -3057,9 +3528,10 @@
                         },
                         "measurements": {
                             "title": "Number of measurements",
+                            "description": "Total sampling time of channel is (Sampling time * Number of measurements). Channels are polled sequentially.",
                             "order": 2,
                             "address": "0x0404",
-                            "min": 0,
+                            "min": 1,
                             "max": 50
                         },
                         "lowpass": {
@@ -3106,9 +3578,18 @@
                     "parameters": {
                         "data_rate": {
                             "required": true,
-                            "title": "Data rate",
+                            "title": "Sampling time",
                             "order": 1,
                             "address": "0x0402",
+                            "enum_titles": [
+                                "50 ms (20 SPS)",
+                                "22 ms (45 SPS)",
+                                "11 ms (90 SPS)",
+                                "5.7 ms (175 SPS)",
+                                "3.0 ms (330 SPS)",
+                                "1.7 ms (600 SPS)",
+                                "1.0 ms (1000 SPS)"
+                            ],
                             "enum": [
                                 20, 45, 90, 175, 330, 600,
                                 1000
@@ -3116,9 +3597,10 @@
                         },
                         "measurements": {
                             "title": "Number of measurements",
+                            "description": "Total sampling time of channel is (Sampling time * Number of measurements). Channels are polled sequentially.",
                             "order": 2,
                             "address": "0x0404",
-                            "min": 0,
+                            "min": 1,
                             "max": 50
                         },
                         "lowpass": {
@@ -3165,9 +3647,18 @@
                     "parameters": {
                         "data_rate": {
                             "required": true,
-                            "title": "Data rate",
+                            "title": "Sampling time",
                             "order": 1,
                             "address": "0x0402",
+                            "enum_titles": [
+                                "50 ms (20 SPS)",
+                                "22 ms (45 SPS)",
+                                "11 ms (90 SPS)",
+                                "5.7 ms (175 SPS)",
+                                "3.0 ms (330 SPS)",
+                                "1.7 ms (600 SPS)",
+                                "1.0 ms (1000 SPS)"
+                            ],
                             "enum": [
                                 20, 45, 90, 175, 330, 600,
                                 1000
@@ -3175,9 +3666,10 @@
                         },
                         "measurements": {
                             "title": "Number of measurements",
+                            "description": "Total sampling time of channel is (Sampling time * Number of measurements). Channels are polled sequentially.",
                             "order": 2,
                             "address": "0x0404",
-                            "min": 0,
+                            "min": 1,
                             "max": 50
                         },
                         "lowpass": {
@@ -3224,9 +3716,18 @@
                     "parameters": {
                         "data_rate": {
                             "required": true,
-                            "title": "Data rate",
+                            "title": "Sampling time",
                             "order": 1,
                             "address": "0x0402",
+                            "enum_titles": [
+                                "50 ms (20 SPS)",
+                                "22 ms (45 SPS)",
+                                "11 ms (90 SPS)",
+                                "5.7 ms (175 SPS)",
+                                "3.0 ms (330 SPS)",
+                                "1.7 ms (600 SPS)",
+                                "1.0 ms (1000 SPS)"
+                            ],
                             "enum": [
                                 20, 45, 90, 175, 330, 600,
                                 1000
@@ -3234,9 +3735,10 @@
                         },
                         "measurements": {
                             "title": "Number of measurements",
+                            "description": "Total sampling time of channel is (Sampling time * Number of measurements). Channels are polled sequentially.",
                             "order": 2,
                             "address": "0x0404",
-                            "min": 0,
+                            "min": 1,
                             "max": 50
                         },
                         "lowpass": {
@@ -3283,9 +3785,18 @@
                     "parameters": {
                         "data_rate": {
                             "required": true,
-                            "title": "Data rate",
+                            "title": "Sampling time",
                             "order": 1,
                             "address": "0x0402",
+                            "enum_titles": [
+                                "50 ms (20 SPS)",
+                                "22 ms (45 SPS)",
+                                "11 ms (90 SPS)",
+                                "5.7 ms (175 SPS)",
+                                "3.0 ms (330 SPS)",
+                                "1.7 ms (600 SPS)",
+                                "1.0 ms (1000 SPS)"
+                            ],
                             "enum": [
                                 20, 45, 90, 175, 330, 600,
                                 1000
@@ -3293,9 +3804,10 @@
                         },
                         "measurements": {
                             "title": "Number of measurements",
+                            "description": "Total sampling time of channel is (Sampling time * Number of measurements). Channels are polled sequentially.",
                             "order": 2,
                             "address": "0x0404",
-                            "min": 0,
+                            "min": 1,
                             "max": 50
                         },
                         "lowpass": {
@@ -3342,9 +3854,18 @@
                     "parameters": {
                         "data_rate": {
                             "required": true,
-                            "title": "Data rate",
+                            "title": "Sampling time",
                             "order": 1,
                             "address": "0x0402",
+                            "enum_titles": [
+                                "50 ms (20 SPS)",
+                                "22 ms (45 SPS)",
+                                "11 ms (90 SPS)",
+                                "5.7 ms (175 SPS)",
+                                "3.0 ms (330 SPS)",
+                                "1.7 ms (600 SPS)",
+                                "1.0 ms (1000 SPS)"
+                            ],
                             "enum": [
                                 20, 45, 90, 175, 330, 600,
                                 1000
@@ -3352,9 +3873,10 @@
                         },
                         "measurements": {
                             "title": "Number of measurements",
+                            "description": "Total sampling time of channel is (Sampling time * Number of measurements). Channels are polled sequentially.",
                             "order": 2,
                             "address": "0x0404",
-                            "min": 0,
+                            "min": 1,
                             "max": 50
                         },
                         "lowpass": {
@@ -3401,9 +3923,18 @@
                     "parameters": {
                         "data_rate": {
                             "required": true,
-                            "title": "Data rate",
+                            "title": "Sampling time",
                             "order": 1,
                             "address": "0x0402",
+                            "enum_titles": [
+                                "50 ms (20 SPS)",
+                                "22 ms (45 SPS)",
+                                "11 ms (90 SPS)",
+                                "5.7 ms (175 SPS)",
+                                "3.0 ms (330 SPS)",
+                                "1.7 ms (600 SPS)",
+                                "1.0 ms (1000 SPS)"
+                            ],
                             "enum": [
                                 20, 45, 90, 175, 330, 600,
                                 1000
@@ -3411,9 +3942,10 @@
                         },
                         "measurements": {
                             "title": "Number of measurements",
+                            "description": "Total sampling time of channel is (Sampling time * Number of measurements). Channels are polled sequentially.",
                             "order": 2,
                             "address": "0x0404",
-                            "min": 0,
+                            "min": 1,
                             "max": 50
                         },
                         "lowpass": {
@@ -3460,9 +3992,18 @@
                     "parameters": {
                         "data_rate": {
                             "required": true,
-                            "title": "Data rate",
+                            "title": "Sampling time",
                             "order": 1,
                             "address": "0x0402",
+                            "enum_titles": [
+                                "50 ms (20 SPS)",
+                                "22 ms (45 SPS)",
+                                "11 ms (90 SPS)",
+                                "5.7 ms (175 SPS)",
+                                "3.0 ms (330 SPS)",
+                                "1.7 ms (600 SPS)",
+                                "1.0 ms (1000 SPS)"
+                            ],
                             "enum": [
                                 20, 45, 90, 175, 330, 600,
                                 1000
@@ -3470,9 +4011,10 @@
                         },
                         "measurements": {
                             "title": "Number of measurements",
+                            "description": "Total sampling time of channel is (Sampling time * Number of measurements). Channels are polled sequentially.",
                             "order": 2,
                             "address": "0x0404",
-                            "min": 0,
+                            "min": 1,
                             "max": 50
                         },
                         "lowpass": {
@@ -3519,9 +4061,18 @@
                     "parameters": {
                         "data_rate": {
                             "required": true,
-                            "title": "Data rate",
+                            "title": "Sampling time",
                             "order": 1,
                             "address": "0x0402",
+                            "enum_titles": [
+                                "50 ms (20 SPS)",
+                                "22 ms (45 SPS)",
+                                "11 ms (90 SPS)",
+                                "5.7 ms (175 SPS)",
+                                "3.0 ms (330 SPS)",
+                                "1.7 ms (600 SPS)",
+                                "1.0 ms (1000 SPS)"
+                            ],
                             "enum": [
                                 20, 45, 90, 175, 330, 600,
                                 1000
@@ -3529,9 +4080,10 @@
                         },
                         "measurements": {
                             "title": "Number of measurements",
+                            "description": "Total sampling time of channel is (Sampling time * Number of measurements). Channels are polled sequentially.",
                             "order": 2,
                             "address": "0x0404",
-                            "min": 0,
+                            "min": 1,
                             "max": 50
                         },
                         "lowpass": {
@@ -3578,9 +4130,18 @@
                     "parameters": {
                         "data_rate": {
                             "required": true,
-                            "title": "Data rate",
+                            "title": "Sampling time",
                             "order": 1,
                             "address": "0x0402",
+                            "enum_titles": [
+                                "50 ms (20 SPS)",
+                                "22 ms (45 SPS)",
+                                "11 ms (90 SPS)",
+                                "5.7 ms (175 SPS)",
+                                "3.0 ms (330 SPS)",
+                                "1.7 ms (600 SPS)",
+                                "1.0 ms (1000 SPS)"
+                            ],
                             "enum": [
                                 20, 45, 90, 175, 330, 600,
                                 1000
@@ -3588,9 +4149,10 @@
                         },
                         "measurements": {
                             "title": "Number of measurements",
+                            "description": "Total sampling time of channel is (Sampling time * Number of measurements). Channels are polled sequentially.",
                             "order": 2,
                             "address": "0x0404",
-                            "min": 0,
+                            "min": 1,
                             "max": 50
                         },
                         "lowpass": {
@@ -3637,9 +4199,18 @@
                     "parameters": {
                         "data_rate": {
                             "required": true,
-                            "title": "Data rate",
+                            "title": "Sampling time",
                             "order": 1,
                             "address": "0x0402",
+                            "enum_titles": [
+                                "50 ms (20 SPS)",
+                                "22 ms (45 SPS)",
+                                "11 ms (90 SPS)",
+                                "5.7 ms (175 SPS)",
+                                "3.0 ms (330 SPS)",
+                                "1.7 ms (600 SPS)",
+                                "1.0 ms (1000 SPS)"
+                            ],
                             "enum": [
                                 20, 45, 90, 175, 330, 600,
                                 1000
@@ -3647,9 +4218,10 @@
                         },
                         "measurements": {
                             "title": "Number of measurements",
+                            "description": "Total sampling time of channel is (Sampling time * Number of measurements). Channels are polled sequentially.",
                             "order": 2,
                             "address": "0x0404",
-                            "min": 0,
+                            "min": 1,
                             "max": 50
                         },
                         "lowpass": {
@@ -3696,9 +4268,18 @@
                     "parameters": {
                         "data_rate": {
                             "required": true,
-                            "title": "Data rate",
+                            "title": "Sampling time",
                             "order": 1,
                             "address": "0x0402",
+                            "enum_titles": [
+                                "50 ms (20 SPS)",
+                                "22 ms (45 SPS)",
+                                "11 ms (90 SPS)",
+                                "5.7 ms (175 SPS)",
+                                "3.0 ms (330 SPS)",
+                                "1.7 ms (600 SPS)",
+                                "1.0 ms (1000 SPS)"
+                            ],
                             "enum": [
                                 20, 45, 90, 175, 330, 600,
                                 1000
@@ -3706,9 +4287,10 @@
                         },
                         "measurements": {
                             "title": "Number of measurements",
+                            "description": "Total sampling time of channel is (Sampling time * Number of measurements). Channels are polled sequentially.",
                             "order": 2,
                             "address": "0x0404",
-                            "min": 0,
+                            "min": 1,
                             "max": 50
                         },
                         "lowpass": {
@@ -3755,9 +4337,18 @@
                     "parameters": {
                         "data_rate": {
                             "required": true,
-                            "title": "Data rate",
+                            "title": "Sampling time",
                             "order": 1,
                             "address": "0x0402",
+                            "enum_titles": [
+                                "50 ms (20 SPS)",
+                                "22 ms (45 SPS)",
+                                "11 ms (90 SPS)",
+                                "5.7 ms (175 SPS)",
+                                "3.0 ms (330 SPS)",
+                                "1.7 ms (600 SPS)",
+                                "1.0 ms (1000 SPS)"
+                            ],
                             "enum": [
                                 20, 45, 90, 175, 330, 600,
                                 1000
@@ -3765,9 +4356,10 @@
                         },
                         "measurements": {
                             "title": "Number of measurements",
+                            "description": "Total sampling time of channel is (Sampling time * Number of measurements). Channels are polled sequentially.",
                             "order": 2,
                             "address": "0x0404",
-                            "min": 0,
+                            "min": 1,
                             "max": 50
                         },
                         "lowpass": {
@@ -3814,9 +4406,18 @@
                     "parameters": {
                         "data_rate": {
                             "required": true,
-                            "title": "Data rate",
+                            "title": "Sampling time",
                             "order": 1,
                             "address": "0x0402",
+                            "enum_titles": [
+                                "50 ms (20 SPS)",
+                                "22 ms (45 SPS)",
+                                "11 ms (90 SPS)",
+                                "5.7 ms (175 SPS)",
+                                "3.0 ms (330 SPS)",
+                                "1.7 ms (600 SPS)",
+                                "1.0 ms (1000 SPS)"
+                            ],
                             "enum": [
                                 20, 45, 90, 175, 330, 600,
                                 1000
@@ -3824,9 +4425,10 @@
                         },
                         "measurements": {
                             "title": "Number of measurements",
+                            "description": "Total sampling time of channel is (Sampling time * Number of measurements). Channels are polled sequentially.",
                             "order": 2,
                             "address": "0x0404",
-                            "min": 0,
+                            "min": 1,
                             "max": 50
                         },
                         "lowpass": {
@@ -3873,9 +4475,18 @@
                     "parameters": {
                         "data_rate": {
                             "required": true,
-                            "title": "Data rate",
+                            "title": "Sampling time",
                             "order": 1,
                             "address": "0x0402",
+                            "enum_titles": [
+                                "50 ms (20 SPS)",
+                                "22 ms (45 SPS)",
+                                "11 ms (90 SPS)",
+                                "5.7 ms (175 SPS)",
+                                "3.0 ms (330 SPS)",
+                                "1.7 ms (600 SPS)",
+                                "1.0 ms (1000 SPS)"
+                            ],
                             "enum": [
                                 20, 45, 90, 175, 330, 600,
                                 1000
@@ -3883,9 +4494,10 @@
                         },
                         "measurements": {
                             "title": "Number of measurements",
+                            "description": "Total sampling time of channel is (Sampling time * Number of measurements). Channels are polled sequentially.",
                             "order": 2,
                             "address": "0x0404",
-                            "min": 0,
+                            "min": 1,
                             "max": 50
                         },
                         "lowpass": {
@@ -3932,9 +4544,18 @@
                     "parameters": {
                         "data_rate": {
                             "required": true,
-                            "title": "Data rate",
+                            "title": "Sampling time",
                             "order": 1,
                             "address": "0x0402",
+                            "enum_titles": [
+                                "50 ms (20 SPS)",
+                                "22 ms (45 SPS)",
+                                "11 ms (90 SPS)",
+                                "5.7 ms (175 SPS)",
+                                "3.0 ms (330 SPS)",
+                                "1.7 ms (600 SPS)",
+                                "1.0 ms (1000 SPS)"
+                            ],
                             "enum": [
                                 20, 45, 90, 175, 330, 600,
                                 1000
@@ -3942,9 +4563,10 @@
                         },
                         "measurements": {
                             "title": "Number of measurements",
+                            "description": "Total sampling time of channel is (Sampling time * Number of measurements). Channels are polled sequentially.",
                             "order": 2,
                             "address": "0x0404",
-                            "min": 0,
+                            "min": 1,
                             "max": 50
                         },
                         "lowpass": {
@@ -4031,9 +4653,18 @@
                     "parameters": {
                         "data_rate": {
                             "required": true,
-                            "title": "Data rate",
+                            "title": "Sampling time",
                             "order": 1,
                             "address": "0x0402",
+                            "enum_titles": [
+                                "50 ms (20 SPS)",
+                                "22 ms (45 SPS)",
+                                "11 ms (90 SPS)",
+                                "5.7 ms (175 SPS)",
+                                "3.0 ms (330 SPS)",
+                                "1.7 ms (600 SPS)",
+                                "1.0 ms (1000 SPS)"
+                            ],
                             "enum": [
                                 20, 45, 90, 175, 330, 600,
                                 1000
@@ -4041,9 +4672,10 @@
                         },
                         "measurements": {
                             "title": "Number of measurements",
+                            "description": "Total sampling time of channel is (Sampling time * Number of measurements). Channels are polled sequentially.",
                             "order": 2,
                             "address": "0x0404",
-                            "min": 0,
+                            "min": 1,
                             "max": 50
                         },
                         "lowpass": {
@@ -4099,9 +4731,18 @@
                     "parameters": {
                         "data_rate": {
                             "required": true,
-                            "title": "Data rate",
+                            "title": "Sampling time",
                             "order": 1,
                             "address": "0x0402",
+                            "enum_titles": [
+                                "50 ms (20 SPS)",
+                                "22 ms (45 SPS)",
+                                "11 ms (90 SPS)",
+                                "5.7 ms (175 SPS)",
+                                "3.0 ms (330 SPS)",
+                                "1.7 ms (600 SPS)",
+                                "1.0 ms (1000 SPS)"
+                            ],
                             "enum": [
                                 20, 45, 90, 175, 330, 600,
                                 1000
@@ -4109,9 +4750,10 @@
                         },
                         "measurements": {
                             "title": "Number of measurements",
+                            "description": "Total sampling time of channel is (Sampling time * Number of measurements). Channels are polled sequentially.",
                             "order": 2,
                             "address": "0x0404",
-                            "min": 0,
+                            "min": 1,
                             "max": 50
                         },
                         "lowpass": {
@@ -4157,9 +4799,18 @@
                     "parameters": {
                         "data_rate": {
                             "required": true,
-                            "title": "Data rate",
+                            "title": "Sampling time",
                             "order": 1,
                             "address": "0x0402",
+                            "enum_titles": [
+                                "50 ms (20 SPS)",
+                                "22 ms (45 SPS)",
+                                "11 ms (90 SPS)",
+                                "5.7 ms (175 SPS)",
+                                "3.0 ms (330 SPS)",
+                                "1.7 ms (600 SPS)",
+                                "1.0 ms (1000 SPS)"
+                            ],
                             "enum": [
                                 20, 45, 90, 175, 330, 600,
                                 1000
@@ -4167,9 +4818,10 @@
                         },
                         "measurements": {
                             "title": "Number of measurements",
+                            "description": "Total sampling time of channel is (Sampling time * Number of measurements). Channels are polled sequentially.",
                             "order": 2,
                             "address": "0x0404",
-                            "min": 0,
+                            "min": 1,
                             "max": 50
                         },
                         "lowpass": {
@@ -4291,9 +4943,18 @@
                     "parameters": {
                         "data_rate": {
                             "required": true,
-                            "title": "Data rate",
+                            "title": "Sampling time",
                             "order": 1,
                             "address": "0x0402",
+                            "enum_titles": [
+                                "50 ms (20 SPS)",
+                                "22 ms (45 SPS)",
+                                "11 ms (90 SPS)",
+                                "5.7 ms (175 SPS)",
+                                "3.0 ms (330 SPS)",
+                                "1.7 ms (600 SPS)",
+                                "1.0 ms (1000 SPS)"
+                            ],
                             "enum": [
                                 20, 45, 90, 175, 330, 600,
                                 1000
@@ -4301,9 +4962,10 @@
                         },
                         "measurements": {
                             "title": "Number of measurements",
+                            "description": "Total sampling time of channel is (Sampling time * Number of measurements). Channels are polled sequentially.",
                             "order": 2,
                             "address": "0x0404",
-                            "min": 0,
+                            "min": 1,
                             "max": 50
                         },
                         "lowpass": {
@@ -4361,9 +5023,18 @@
                     "parameters": {
                         "data_rate": {
                             "required": true,
-                            "title": "Data rate",
+                            "title": "Sampling time",
                             "order": 1,
                             "address": "0x0402",
+                            "enum_titles": [
+                                "50 ms (20 SPS)",
+                                "22 ms (45 SPS)",
+                                "11 ms (90 SPS)",
+                                "5.7 ms (175 SPS)",
+                                "3.0 ms (330 SPS)",
+                                "1.7 ms (600 SPS)",
+                                "1.0 ms (1000 SPS)"
+                            ],
                             "enum": [
                                 20, 45, 90, 175, 330, 600,
                                 1000
@@ -4371,9 +5042,10 @@
                         },
                         "measurements": {
                             "title": "Number of measurements",
+                            "description": "Total sampling time of channel is (Sampling time * Number of measurements). Channels are polled sequentially.",
                             "order": 2,
                             "address": "0x0404",
-                            "min": 0,
+                            "min": 1,
                             "max": 50
                         },
                         "lowpass": {
@@ -4422,9 +5094,18 @@
                     "parameters": {
                         "data_rate": {
                             "required": true,
-                            "title": "Data rate",
+                            "title": "Sampling time",
                             "order": 1,
                             "address": "0x0402",
+                            "enum_titles": [
+                                "50 ms (20 SPS)",
+                                "22 ms (45 SPS)",
+                                "11 ms (90 SPS)",
+                                "5.7 ms (175 SPS)",
+                                "3.0 ms (330 SPS)",
+                                "1.7 ms (600 SPS)",
+                                "1.0 ms (1000 SPS)"
+                            ],
                             "enum": [
                                 20, 45, 90, 175, 330, 600,
                                 1000
@@ -4432,9 +5113,10 @@
                         },
                         "measurements": {
                             "title": "Number of measurements",
+                            "description": "Total sampling time of channel is (Sampling time * Number of measurements). Channels are polled sequentially.",
                             "order": 2,
                             "address": "0x0404",
-                            "min": 0,
+                            "min": 1,
                             "max": 50
                         },
                         "lowpass": {
@@ -4472,9 +5154,18 @@
                     "parameters": {
                         "data_rate": {
                             "required": true,
-                            "title": "Data rate",
+                            "title": "Sampling time",
                             "order": 1,
                             "address": "0x0402",
+                            "enum_titles": [
+                                "50 ms (20 SPS)",
+                                "22 ms (45 SPS)",
+                                "11 ms (90 SPS)",
+                                "5.7 ms (175 SPS)",
+                                "3.0 ms (330 SPS)",
+                                "1.7 ms (600 SPS)",
+                                "1.0 ms (1000 SPS)"
+                            ],
                             "enum": [
                                 20, 45, 90, 175, 330, 600,
                                 1000
@@ -4482,9 +5173,10 @@
                         },
                         "measurements": {
                             "title": "Number of measurements",
+                            "description": "Total sampling time of channel is (Sampling time * Number of measurements). Channels are polled sequentially.",
                             "order": 2,
                             "address": "0x0404",
-                            "min": 0,
+                            "min": 1,
                             "max": 50
                         },
                         "lowpass": {
@@ -4509,7 +5201,7 @@
                             "reg_type": "input",
                             "format": "s32",
                             "address": "0x0500",
-                            "scale": 0.01
+                            "scale": 1
                         }
                     ]
                 }
@@ -4616,6 +5308,7 @@
         "translations": {
             "en": {
                 "WB-MAI11_template_title": "WB-MAI11 (11-channel analog input module)",
+                "baud_rate_description": "Make sure that communication with device is established before changing this parameter. Select required baud rate, save configuration and then change port baud rate to the same value.",
                 "Input 1": "IN 1",
                 "Input 2": "IN 2",
                 "Input 3": "IN 3",
@@ -4635,6 +5328,7 @@
                 "WB-MAI11_template_title": "WB-MAI11 (11-канальный модуль аналоговых входов)",
                 "General": "Общее",
                 "HW Info": "Данные модуля",
+                "Debug": "Диагностика",
                 "Input 1": "IN 1",
                 "Input 2": "IN 2",
                 "Input 3": "IN 3",
@@ -4720,9 +5414,19 @@
                 "P: current measurement": "P: измерение тока от 0 до 20 мА",
                 "IN_P": "P",
                 "IN_N": "N",
-                "Data rate": "Количество измерений в секунду",
+                "Sampling time": "Время одного измерения",
+                "50 ms (20 SPS)": "50 мс (20 SPS)",
+                "22 ms (45 SPS)": "22 мс (45 SPS)",
+                "11 ms (90 SPS)": "11 мс (90 SPS)",
+                "5.7 ms (175 SPS)": "5.7 мс (175 SPS)",
+                "3.0 ms (330 SPS)": "3.0 мс (330 SPS)",
+                "1.7 ms (600 SPS)": "1.7 мс (600 SPS)",
+                "1.0 ms (1000 SPS)": "1.0 мс (1000 SPS)",
                 "Number of measurements": "Количество измерений подряд",
+                "Total sampling time of channel is (Sampling time * Number of measurements). Channels are polled sequentially.": "Итоговое время измерения канала равно (Время одного измерения * Количество измерений подряд). Каналы опрашиваются последовательно.",
                 "Lowpass filter time, ms": "Время усреднения сигнала (мс)",
+                "Baud rate": "Скорость обмена",
+                "baud_rate_description": "Перед изменением параметра убедитесь, что связь с устройством установлена. Выберите нужную скорость обмена, сохраните конфигурацию, а затем укажите в настройках порта эту же скорость.",
                 "Gain": "Коэффициент усиления",
                 "Voltage": "Напряжение",
                 "Temperature": "Температура",
@@ -4737,7 +5441,30 @@
                 "5V Output": "Напряжение на клеммах 5V",
                 "Internal Temperature": "Температура внутри модуля",
                 "Serial": "Серийный номер",
-                "Uptime": "Время работы с момента включения (с)"
+                "Uptime": "Время работы с момента включения (с)",
+                "ADC Loop Duration": "Время цикла опроса АЦП",
+                "IN 1 P Read Interval": "IN 1 P: период опроса",
+                "IN 1 N Read Interval": "IN 1 N: период опроса",
+                "IN 2 P Read Interval": "IN 2 P: период опроса",
+                "IN 2 N Read Interval": "IN 2 N: период опроса",
+                "IN 3 P Read Interval": "IN 3 P: период опроса",
+                "IN 3 N Read Interval": "IN 3 N: период опроса",
+                "IN 4 P Read Interval": "IN 4 P: период опроса",
+                "IN 4 N Read Interval": "IN 4 N: период опроса",
+                "IN 5 P Read Interval": "IN 5 P: период опроса",
+                "IN 5 N Read Interval": "IN 5 N: период опроса",
+                "IN 6 P Read Interval": "IN 6 P: период опроса",
+                "IN 6 N Read Interval": "IN 6 N: период опроса",
+                "IN 7 P Read Interval": "IN 7 P: период опроса",
+                "IN 7 N Read Interval": "IN 7 N: период опроса",
+                "IN 8 P Read Interval": "IN 8 P: период опроса",
+                "IN 8 N Read Interval": "IN 8 N: период опроса",
+                "IN 9 P Read Interval": "IN 9 P: период опроса",
+                "IN 9 N Read Interval": "IN 9 N: период опроса",
+                "IN 10 P Read Interval": "IN 10 P: период опроса",
+                "IN 10 N Read Interval": "IN 10 N: период опроса",
+                "IN 11 P Read Interval": "IN 11 P: период опроса",
+                "IN 11 N Read Interval": "IN 11 N: период опроса"
             }
         }
     }

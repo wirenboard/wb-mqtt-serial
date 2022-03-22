@@ -19,7 +19,6 @@
 
 enum RegisterFormat
 {
-    AUTO,
     U8,
     S8,
     U16,
@@ -109,10 +108,11 @@ public:
      * @brief Compare two addresses. Throws if addresses are not comparable
      *
      * @param addr address to compare
-     * @return true - this address is less than addr
-     * @return false - this address is not less than addr
+     * @return <0 - this address is less than addr
+     * @return 0 - the addresses are equal
+     * @return >0 - this address is bigger than addr
      */
-    virtual bool operator<(const IRegisterAddress& addr) const = 0;
+    virtual int Compare(const IRegisterAddress& addr) const = 0;
 
     /**
      * @brief Calculate new address based on this
@@ -146,7 +146,7 @@ public:
 
     std::string ToString() const override;
 
-    bool operator<(const IRegisterAddress& addr) const override;
+    int Compare(const IRegisterAddress& addr) const override;
 
     IRegisterAddress* CalcNewAddress(uint32_t offset,
                                      uint32_t stride,
@@ -169,7 +169,7 @@ public:
 
     std::string ToString() const override;
 
-    bool operator<(const IRegisterAddress& addr) const override;
+    int Compare(const IRegisterAddress& addr) const override;
 
     IRegisterAddress* CalcNewAddress(uint32_t /*offset*/,
                                      uint32_t /*stride*/,
@@ -226,6 +226,9 @@ public:
     uint8_t GetBitWidth() const;
     uint8_t GetBitOffset() const;
     uint8_t GetByteWidth() const;
+
+    void SetBitWidth(uint8_t width);
+    void SetBitOffset(uint8_t offset);
 
     //! Get occupied space in 16-bit words
     uint8_t Get16BitWidth() const;
@@ -369,8 +372,6 @@ inline ::std::ostream& operator<<(::std::ostream& os, PRegister reg)
 inline const char* RegisterFormatName(RegisterFormat fmt)
 {
     switch (fmt) {
-        case AUTO:
-            return "AUTO";
         case U8:
             return "U8";
         case S8:
@@ -467,24 +468,21 @@ public:
 
     const std::list<PRegister>& RegisterList() const;
     std::list<PRegister>& RegisterList();
-    PSerialDevice Device() const;
 
     virtual bool Add(PRegister reg, std::chrono::milliseconds pollLimit) = 0;
 
 protected:
-    TRegisterRange(PRegister reg);
+    bool HasOtherDeviceAndType(PRegister reg) const;
 
 private:
-    std::weak_ptr<TSerialDevice> RegDevice;
     std::list<PRegister> RegList;
 };
 
 typedef std::shared_ptr<TRegisterRange> PRegisterRange;
 
-class TSingleRegisterRange: public TRegisterRange
+class TSameAddressRegisterRange: public TRegisterRange
 {
 public:
-    TSingleRegisterRange(PRegister reg);
     bool Add(PRegister reg, std::chrono::milliseconds pollLimit) override;
 };
 

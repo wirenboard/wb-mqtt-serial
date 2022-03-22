@@ -125,7 +125,7 @@ Ports:
                 Poll: 1
                 ReadOnly: 0
                 TypeName: holding
-                ReadPeriod: 1
+                ReadPeriod: 11
                 ErrorValue: not set
                 UnsupportedValue: not set
                 WordOrder: BigEndian

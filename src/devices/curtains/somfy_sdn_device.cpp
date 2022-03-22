@@ -261,7 +261,7 @@ uint64_t Somfy::TDevice::ReadRegisterImpl(PRegister reg)
     throw TSerialDevicePermanentRegisterException("Unsupported register type");
 }
 
-void Somfy::TDevice::EndPollCycle()
+void Somfy::TDevice::InvalidateReadCache()
 {
     DataCache.clear();
 }

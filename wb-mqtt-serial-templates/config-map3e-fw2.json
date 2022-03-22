@@ -135,6 +135,23 @@
                 "group": "l3",
                 "order": 3
             },
+            "baud_rate": {
+                "title": "Baud rate",
+                "description": "baud_rate_description",
+                "address": 110,
+                "reg_type": "holding",
+                "enum": [96, 192, 384, 576, 1152],
+                "default": 96,
+                "enum_titles": [
+                    "9600",
+                    "19200",
+                    "38400",
+                    "57600",
+                    "115200"
+                ],
+                "group": "general",
+                "order": 1
+            },
             "peaks_measurement_period_s": {
                 "title": "Peaks Measurement Period (s)",
                 "address": "0x10F0",
@@ -143,7 +160,7 @@
                 "min": 1,
                 "default": 60,
                 "group": "general",
-                "order": 1
+                "order": 2
             }
         },
 
@@ -627,11 +644,31 @@
                 "format": "u32",
                 "enabled": false,
                 "group": "hw_info"
+            },
+            {
+                "name": "MCU Temperature",
+                "reg_type": "input",
+                "address": 124,
+                "type": "temperature",
+                "format": "s16",
+                "scale": 0.1,
+                "enabled": false,
+                "group": "hw_info"
+            },
+            {
+                "name": "MCU Voltage",
+                "reg_type": "input",
+                "address": 123,
+                "scale": 0.001,
+                "type": "voltage",
+                "enabled": false,
+                "group": "hw_info"
             }
         ],
         "translations": {
             "en": {
                 "WB-MAP3E-fw2_template_title": "WB-MAP3E fw2 (3-phase enegry meter)",
+                "baud_rate_description": "Make sure that communication with device is established before changing this parameter. Select required baud rate, save configuration and then change port baud rate to the same value.",
                 "Supply Voltage": "5V Supply",
                 "Uptime": "Uptime (s)"
             },
@@ -650,6 +687,8 @@
                 "Phi L3": "Фазовая задержка L3",
                 "Actual Phase L3": "Фаза транформатора L3",
                 "Peaks Measurement Period (s)": "Период сброса пиковых значений (с)",
+                "Baud rate": "Скорость обмена",
+                "baud_rate_description": "Перед изменением параметра убедитесь, что связь с устройством установлена. Выберите нужную скорость обмена, сохраните конфигурацию, а затем укажите в настройках порта эту же скорость.",
                 "Voltage angle L1": "Фазовый угол L1",
                 "AP energy L1": "Энергия AP L1",
                 "RP energy L1": "Энергия RP L1",
@@ -672,6 +711,8 @@
                 "Serial": "Серийный номер",
                 "Supply Voltage": "Напряжение 5 В",
                 "Uptime": "Время работы с момента включения (с)",
+                "MCU Temperature": "Температура МК",
+                "MCU Voltage": "Напряжение питания МК",
                 "Firmware v2.3.0 or newer is required": "Для прошивок v2.3.0 и новее"
             }
         }

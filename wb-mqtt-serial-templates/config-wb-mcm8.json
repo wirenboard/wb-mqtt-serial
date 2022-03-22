@@ -141,6 +141,23 @@
                 "default": 50,
                 "group": "input_8",
                 "order": 1
+            },
+            "baud_rate": {
+                "title": "Baud rate",
+                "description": "baud_rate_description",
+                "address": 110,
+                "reg_type": "holding",
+                "enum": [96, 192, 384, 576, 1152],
+                "default": 96,
+                "enum_titles": [
+                    "9600",
+                    "19200",
+                    "38400",
+                    "57600",
+                    "115200"
+                ],
+                "group": "general",
+                "order": 1
             }
         },
 
@@ -384,11 +401,31 @@
                 "format": "u32",
                 "enabled": false,
                 "group": "hw_info"
+            },
+            {
+                "name": "MCU Temperature",
+                "reg_type": "input",
+                "address": 124,
+                "type": "temperature",
+                "format": "s16",
+                "scale": 0.1,
+                "enabled": false,
+                "group": "hw_info"
+            },
+            {
+                "name": "MCU Voltage",
+                "reg_type": "input",
+                "address": 123,
+                "scale": 0.001,
+                "type": "voltage",
+                "enabled": false,
+                "group": "hw_info"
             }
         ],
         "translations": {
             "en": {
                 "WB-MCM8_template_title": "WB-MCM8 (8-channel pulse counter)",
+                "baud_rate_description": "Make sure that communication with device is established before changing this parameter. Select required baud rate, save configuration and then change port baud rate to the same value.",
                 "Uptime": "Uptime (s)"
             },
             "ru": {
@@ -411,6 +448,8 @@
                 "Input 6 Debounce (ms)": "Время защиты от дребезга входа 6 (мс)",
                 "Input 7 Debounce (ms)": "Время защиты от дребезга входа 7 (мс)",
                 "Input 8 Debounce (ms)": "Время защиты от дребезга входа 8 (мс)",
+                "Baud rate": "Скорость обмена",
+                "baud_rate_description": "Перед изменением параметра убедитесь, что связь с устройством установлена. Выберите нужную скорость обмена, сохраните конфигурацию, а затем укажите в настройках порта эту же скорость.",
                 "Input 1 counter": "Счетчик 1",
                 "Input 2 counter": "Счетчик 2",
                 "Input 3 counter": "Счетчик 3",
@@ -430,7 +469,9 @@
                 "Reset all counters": "Сбросить все счетчики",
                 "Serial": "Серийный номер",
                 "Supply voltage": "Напряжение питания",
-                "Uptime": "Время работы с момента включения (с)"
+                "Uptime": "Время работы с момента включения (с)",
+                "MCU Temperature": "Температура МК",
+                "MCU Voltage": "Напряжение питания МК"
             }
         }
     }

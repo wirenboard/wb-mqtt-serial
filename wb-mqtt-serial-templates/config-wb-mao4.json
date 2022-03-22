@@ -19,14 +19,19 @@
                 "order": 2
             },
             {
+                "title": "General",
+                "id": "general",
+                "order": 3
+            },
+            {
                 "title": "HW Info",
                 "id": "hw_info",
-                "order": 3
+                "order": 4
             },
             {
                 "title": "Debug",
                 "id": "debug",
-                "order": 4
+                "order": 5
             }
         ],
 
@@ -54,6 +59,23 @@
                 "max": 240,
                 "group": "outputs",
                 "order": 2
+            },
+            "baud_rate": {
+                "title": "Baud rate",
+                "description": "baud_rate_description",
+                "address": 110,
+                "reg_type": "holding",
+                "enum": [96, 192, 384, 576, 1152],
+                "default": 96,
+                "enum_titles": [
+                    "9600",
+                    "19200",
+                    "38400",
+                    "57600",
+                    "115200"
+                ],
+                "group": "general",
+                "order": 1
             }
         },
 
@@ -159,6 +181,25 @@
                 "group": "hw_info"
             },
             {
+                "name": "MCU Temperature",
+                "reg_type": "input",
+                "address": 124,
+                "type": "temperature",
+                "format": "s16",
+                "scale": 0.1,
+                "enabled": false,
+                "group": "hw_info"
+            },
+            {
+                "name": "MCU Voltage",
+                "reg_type": "input",
+                "address": 123,
+                "scale": 0.001,
+                "type": "voltage",
+                "enabled": false,
+                "group": "hw_info"
+            },
+            {
                 "name": "Channel 1 Duty Cycle Raw",
                 "reg_type": "holding",
                 "address": 90,
@@ -199,6 +240,7 @@
             "en": {
                 "WB-MAO4_template_title": "WB-MAO4 (4-channel analog output module)",
                 "pwm_frequency_factor_description": "PWM frequency is calculated by formula: 24 kHz / Factor ",
+                "baud_rate_description": "Make sure that communication with device is established before changing this parameter. Select required baud rate, save configuration and then change port baud rate to the same value.",
                 "Uptime": "Uptime (s)"
             },
             "ru": {
@@ -211,6 +253,7 @@
                 "Input 4": "Вход 4",
                 "Input 5": "Вход 5",
                 "Input 6": "Вход 6",
+                "General": "Общее",
                 "HW Info": "Данные модуля",
                 "Debug": "Диагностика",
                 "Outputs Mode": "Режим работы выходов",
@@ -218,6 +261,8 @@
                 "Analog 0-10 V": "аналоговый режим 0-10 В",
                 "PWM Frequency Factor": "Делитель частоты ШИМ",
                 "pwm_frequency_factor_description": "Частота ШИМ рассчитывается по формуле: 24 кГц / Делитель",
+                "Baud rate": "Скорость обмена",
+                "baud_rate_description": "Перед изменением параметра убедитесь, что связь с устройством установлена. Выберите нужную скорость обмена, сохраните конфигурацию, а затем укажите в настройках порта эту же скорость.",
                 "Input 1 counter": "Счетчик 1",
                 "Input 2 counter": "Счетчик 2",
                 "Input 3 counter": "Счетчик 3",
@@ -226,8 +271,10 @@
                 "Channel 3": "Канал 3",
                 "Channel 4": "Канал 4",
                 "Serial": "Серийный номер",
-                "Supply Voltage": "Напряжение питания",
+                "Supply voltage": "Напряжение питания",
                 "Uptime": "Время работы с момента включения (с)",
+                "MCU Temperature": "Температура МК",
+                "MCU Voltage": "Напряжение питания МК",
                 "Channel 1 Duty Cycle Raw": "Сырое задание для канала 1",
                 "Channel 2 Duty Cycle Raw": "Сырое задание для канала 2",
                 "Channel 3 Duty Cycle Raw": "Сырое задание для канала 3",
