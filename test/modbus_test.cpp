@@ -75,8 +75,8 @@ void TModbusTest::SetUp()
 
     regAddrDesc.Address = std::make_shared<TUint32RegisterAddress>(111);
     regAddrDesc.WriteAddress = std::make_shared<TUint32RegisterAddress>(116);
-    regAddrDesc.BitWidth = 3;
-    regAddrDesc.BitOffset = 2;
+    regAddrDesc.DataWidth = 3;
+    regAddrDesc.DataOffset = 2;
 
     ModbusHoldingU16WithWriteBitOffset =
         TRegister::Intern(ModbusDev, TRegisterConfig::Create(Modbus::REG_HOLDING, regAddrDesc, RegisterFormat::U16));

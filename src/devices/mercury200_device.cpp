@@ -27,7 +27,7 @@ namespace
         {
             auto addr = LoadRegisterBitsAddress(regCfg, SerialConfig::ADDRESS_PROPERTY_NAME);
             TRegisterDesc res;
-            res.BitOffset = (addr.Address & 0xFF);
+            res.DataOffset = (addr.Address & 0xFF);
             res.Address = std::make_shared<TUint32RegisterAddress>(addr.Address >> 8);
             return res;
         }
@@ -78,10 +78,10 @@ uint64_t TMercury200Device::ReadRegisterImpl(PRegister reg)
     uint8_t cmd = (GetUint32RegisterAddress(reg->GetAddress()) & 0xFF);
     auto result = ExecCommand(cmd);
     auto size = RegisterFormatByteWidth(reg->Format);
-    if (result.size() < reg->GetBitOffset() + size)
+    if (result.size() < reg->GetDataOffset() + size)
         throw TSerialDeviceException("mercury200: register address is out of range");
 
-    return PackBytes(result.data() + reg->GetBitOffset(), static_cast<WordSizes>(size));
+    return PackBytes(result.data() + reg->GetDataOffset(), static_cast<WordSizes>(size));
 }
 
 void TMercury200Device::InvalidateReadCache()

@@ -127,8 +127,8 @@ namespace
         {
             auto addr = LoadRegisterBitsAddress(regCfg, SerialConfig::ADDRESS_PROPERTY_NAME);
             TRegisterDesc res;
-            res.BitOffset = addr.BitOffset;
-            res.BitWidth = addr.BitWidth;
+            res.DataOffset = addr.BitOffset;
+            res.DataWidth = addr.BitWidth;
             res.Address = std::make_shared<TSomfyAddress>(addr.Address, GetResponseAddress(regCfg));
             return res;
         }
@@ -252,7 +252,7 @@ uint64_t Somfy::TDevice::ReadRegisterImpl(PRegister reg)
         }
         case PARAM: {
             const auto& addr = dynamic_cast<const TSomfyAddress&>(reg->GetAddress());
-            return GetCachedResponse(addr.Get(), addr.GetResponseHeader(), reg->GetBitOffset(), reg->GetBitWidth());
+            return GetCachedResponse(addr.Get(), addr.GetResponseHeader(), reg->GetDataOffset(), reg->GetDataWidth());
         }
         case COMMAND: {
             return 1;

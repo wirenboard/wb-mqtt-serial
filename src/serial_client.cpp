@@ -429,6 +429,5 @@ bool TRegisterComparePredicate::operator()(const PRegister& r1, const PRegister&
         return true;
     }
     // addresses are equal, compare offsets
-    return r1->GetBitOffset() > r2->GetBitOffset();
+    return r1->GetDataOffset() > r2->GetDataOffset();
 }
-

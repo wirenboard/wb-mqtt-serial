@@ -37,16 +37,16 @@ void TMercury200Test::SetUp()
 
     Mercury200RET1Reg = TRegister::Intern(Mercury200Dev, TRegisterConfig::Create(0, 0x27, BCD32));
     Mercury200RET2Reg = TRegister::Intern(Mercury200Dev, TRegisterConfig::Create(0, 0x27, BCD32));
-    Mercury200RET2Reg->SetBitOffset(4);
+    Mercury200RET2Reg->SetDataOffset(4);
     Mercury200RET3Reg = TRegister::Intern(Mercury200Dev, TRegisterConfig::Create(0, 0x27, BCD32));
-    Mercury200RET3Reg->SetBitOffset(8);
+    Mercury200RET3Reg->SetDataOffset(8);
     Mercury200RET4Reg = TRegister::Intern(Mercury200Dev, TRegisterConfig::Create(0, 0x27, BCD32));
-    Mercury200RET4Reg->SetBitOffset(12);
+    Mercury200RET4Reg->SetDataOffset(12);
     Mercury200UReg = TRegister::Intern(Mercury200Dev, TRegisterConfig::Create(0, 0x63, BCD16));
     Mercury200IReg = TRegister::Intern(Mercury200Dev, TRegisterConfig::Create(0, 0x63, BCD16));
-    Mercury200IReg->SetBitOffset(2);
+    Mercury200IReg->SetDataOffset(2);
     Mercury200PReg = TRegister::Intern(Mercury200Dev, TRegisterConfig::Create(0, 0x63, BCD24));
-    Mercury200PReg->SetBitOffset(4);
+    Mercury200PReg->SetDataOffset(4);
     Mercury200BatReg = TRegister::Intern(Mercury200Dev, TRegisterConfig::Create(0, 0x29, BCD16));
 
     SerialPort->Open();

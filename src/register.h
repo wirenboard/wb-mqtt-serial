@@ -181,8 +181,8 @@ public:
 struct TRegisterDesc
 {
     std::shared_ptr<IRegisterAddress> Address; //! Register address
-    uint8_t BitOffset{0};                      //! Offset of data in register in bits
-    uint8_t BitWidth{0};                       //! Width of data in register in bits
+    uint8_t DataOffset{0};                     //! Offset of data in register in bits
+    uint8_t DataWidth{0};                      //! Width of data in register in bits
 
     std::shared_ptr<IRegisterAddress> WriteAddress; //! Write Register address
 };
@@ -223,12 +223,12 @@ public:
     /// Get the width in bits. If the width parameter in the config is zero,
     /// the value is calculated from the register width in bits according to the format.
     /// \return the width in bits
-    uint8_t GetBitWidth() const;
-    uint8_t GetBitOffset() const;
+    uint8_t GetDataWidth() const;
+    uint8_t GetDataOffset() const;
     uint8_t GetByteWidth() const;
 
-    void SetBitWidth(uint8_t width);
-    void SetBitOffset(uint8_t offset);
+    void SetDataWidth(uint8_t width);
+    void SetDataOffset(uint8_t offset);
 
     //! Get occupied space in 16-bit words
     uint8_t Get16BitWidth() const;
@@ -255,8 +255,8 @@ public:
                                   bool readonly = false,
                                   const std::string& type_name = "",
                                   const EWordOrder word_order = EWordOrder::BigEndian,
-                                  uint8_t bit_offset = 0,
-                                  uint8_t bit_width = 0);
+                                  uint8_t data_offset = 0,
+                                  uint8_t data_bit_width = 0);
 
     const IRegisterAddress& GetAddress() const;
     const IRegisterAddress& GetWriteAddress() const;

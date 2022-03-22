@@ -30,7 +30,7 @@ namespace
             TRegisterDesc res;
             auto type = regCfg["reg_type"];
             if (type == "array" || type == "array12") {
-                res.BitOffset = (addr.Address & 0x03);
+                res.DataOffset = (addr.Address & 0x03);
                 res.Address = std::make_shared<TUint32RegisterAddress>(addr.Address >> 4);
             } else {
                 res.Address = std::make_shared<TUint32RegisterAddress>(addr.Address);
@@ -192,9 +192,9 @@ uint64_t TMercury230Device::ReadRegisterImpl(PRegister reg)
     auto addr = GetUint32RegisterAddress(reg->GetAddress());
     switch (reg->Type) {
         case REG_VALUE_ARRAY:
-            return ReadValueArray(addr, 4).values[reg->GetBitOffset() & 0x03];
+            return ReadValueArray(addr, 4).values[reg->GetDataOffset() & 0x03];
         case REG_VALUE_ARRAY12:
-            return ReadValueArray(addr, 3).values[reg->GetBitOffset() & 0x03];
+            return ReadValueArray(addr, 3).values[reg->GetDataOffset() & 0x03];
         case REG_PARAM:
         case REG_PARAM_SIGN_ACT:
         case REG_PARAM_SIGN_REACT:

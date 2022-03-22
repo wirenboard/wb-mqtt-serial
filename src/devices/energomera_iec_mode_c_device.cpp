@@ -44,7 +44,7 @@ namespace
             if (WBMQTT::StringStartsWith(type, "item_")) {
                 int index = type[5] - '0';
                 if (index > 0 && index < 6) {
-                    res.BitOffset = index - 1;
+                    res.DataOffset = index - 1;
                 }
             }
             return res;
@@ -119,8 +119,8 @@ uint64_t TEnergomeraIecModeCDevice::GetRegisterValue(const TRegister& reg, const
             // so we have here
             // 68.02)<CR><LF>(45.29)<CR><LF>(22.73)<CR><LF>(0.00)<CR><LF>(0.00)<CR><LF>(0.00
             auto items = WBMQTT::StringSplit(v, ")\r\n(");
-            if (items.size() > static_cast<unsigned int>(reg.GetBitOffset())) {
-                return CopyDoubleToUint64(strtod(items[reg.GetBitOffset()].c_str(), nullptr));
+            if (items.size() > static_cast<unsigned int>(reg.GetDataOffset())) {
+                return CopyDoubleToUint64(strtod(items[reg.GetDataOffset()].c_str(), nullptr));
             }
             throw TSerialDeviceTransientErrorException("malformed response");
         }
