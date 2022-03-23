@@ -214,6 +214,25 @@ TEST_F(TModbusTest, WriteHoldingRegiterWithOffsetWriteOptions)
     EXPECT_NO_THROW(ModbusDev->WriteRegister(ModbusHoldingU16WithWriteBitOffset, 0x119D));
 }
 
+TEST_F(TModbusTest, WriteOnlyHoldingRegiter)
+{
+    PRegister ModbusHoldingU16WriteOnly;
+
+    TRegisterDesc regAddrDesc;
+    regAddrDesc.WriteAddress = std::make_shared<TUint32RegisterAddress>(115);
+
+    ModbusHoldingU16WriteOnly =
+        TRegister::Intern(ModbusDev, TRegisterConfig::Create(Modbus::REG_HOLDING, regAddrDesc, RegisterFormat::U16));
+    EXPECT_TRUE(ModbusHoldingU16WriteOnly->WriteOnly);
+}
+
+TEST_F(TModbusTest, WriteOnlyHoldingRegiterNeg)
+{
+    TRegisterDesc regAddrDesc;
+
+    EXPECT_THROW(TRegisterConfig::Create(Modbus::REG_HOLDING, regAddrDesc, RegisterFormat::U16), TSerialDeviceException);
+}
+
 TEST_F(TModbusTest, Query)
 {
     EnqueueCoilReadResponse();
