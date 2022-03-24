@@ -230,7 +230,8 @@ TEST_F(TModbusTest, WriteOnlyHoldingRegiterNeg)
 {
     TRegisterDesc regAddrDesc;
 
-    EXPECT_THROW(TRegisterConfig::Create(Modbus::REG_HOLDING, regAddrDesc, RegisterFormat::U16), TSerialDeviceException);
+    EXPECT_THROW(TRegisterConfig::Create(Modbus::REG_HOLDING, regAddrDesc, RegisterFormat::U16),
+                 TSerialDeviceException);
 }
 
 TEST_F(TModbusTest, Query)
