@@ -1195,7 +1195,7 @@
         {
           "title": "decimal or hex",
           "type": "string",
-          "pattern": "^(0x[A-Fa-f\\d]+|\\d+)$",
+          "pattern": "^(0x[A-Fa-f\\d]+|\\d+|)$",
           "options": {
             "inputAttributes": {
               "placeholder":  "decimal (e.g. 123) or hex (e.g. 0xAF)"

@@ -1377,11 +1377,11 @@ TRegisterDesc TUint32RegisterAddressFactory::LoadRegisterAddress(const Json::Val
                                                                  uint32_t registerByteWidth) const
 {
     TRegisterDesc res;
-    auto addr = LoadRegisterBitsAddress(regCfg, SerialConfig::ADDRESS_PROPERTY_NAME);
-    res.DataOffset = addr.BitOffset;
-    res.DataWidth = addr.BitWidth;
 
     if (HasNoEmptyProperty(regCfg, SerialConfig::ADDRESS_PROPERTY_NAME)) {
+        auto addr = LoadRegisterBitsAddress(regCfg, SerialConfig::ADDRESS_PROPERTY_NAME);
+        res.DataOffset = addr.BitOffset;
+        res.DataWidth = addr.BitWidth;
         res.Address = std::shared_ptr<IRegisterAddress>(
             deviceBaseAddress.CalcNewAddress(addr.Address, stride, registerByteWidth, BytesPerRegister));
     }

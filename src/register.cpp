@@ -81,6 +81,9 @@ std::string TRegisterConfig::ToString() const
 
 const IRegisterAddress& TRegisterConfig::GetAddress() const
 {
+    if (WriteOnly) {
+        return *Address.WriteAddress;
+    }
     return *Address.Address;
 }
 
