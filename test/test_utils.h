@@ -10,5 +10,8 @@ template<class FnType> void CheckExceptionMsg(FnType fn, const std::string& msg)
     } catch (const TSerialDeviceTransientErrorException& e) {
         ASSERT_EQ(e.what(), "Serial protocol error: " + msg);
         throw;
+    } catch (const std::exception& e) {
+        ASSERT_EQ(e.what(), msg);
+        throw;
     }
 }

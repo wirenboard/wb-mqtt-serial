@@ -20,34 +20,38 @@ namespace
 Json::Value HomeuiToConfigChannel(const Json::Value& ch)
 {
     Json::Value res;
-    res["name"] = ch["name"];
-    switch (ch["mode"].asInt()) {
-        case IN_QUEUE_ORDER: {
-            res["enabled"] = true;
-            break;
-        }
-        case FAST_200: {
-            res["enabled"] = true;
-            res["read_period_ms"] = 200;
-            break;
-        }
-        case FAST_100: {
-            res["enabled"] = true;
-            res["read_period_ms"] = 100;
-            break;
-        }
-        case FAST: {
-            res["enabled"] = true;
-            res["read_period_ms"] = ch["period"];
-            break;
-        }
-        case DO_NOT_READ: {
-            res["enabled"] = false;
-            break;
-        }
-        case READ_LIMIT: {
-            res["enabled"] = true;
-            res["read_rate_limit_ms"] = ch["period"];
+    if (ch.isMember("name")) {
+        res["name"] = ch["name"];
+    }
+    if (ch.isMember("mode")) {
+        switch (ch["mode"].asInt()) {
+            case IN_QUEUE_ORDER: {
+                res["enabled"] = true;
+                break;
+            }
+            case FAST_200: {
+                res["enabled"] = true;
+                res["read_period_ms"] = 200;
+                break;
+            }
+            case FAST_100: {
+                res["enabled"] = true;
+                res["read_period_ms"] = 100;
+                break;
+            }
+            case FAST: {
+                res["enabled"] = true;
+                res["read_period_ms"] = ch["period"];
+                break;
+            }
+            case DO_NOT_READ: {
+                res["enabled"] = false;
+                break;
+            }
+            case READ_LIMIT: {
+                res["enabled"] = true;
+                res["read_rate_limit_ms"] = ch["period"];
+            }
         }
     }
     return res;
@@ -61,6 +65,7 @@ void AddChannelModes(Json::Value& channelSchema)
         ++i;
         channelSchema["properties"]["mode"]["options"]["enum_titles"].append(mode);
     }
+    channelSchema["properties"]["mode"]["default"] = IN_QUEUE_ORDER;
     // Do not allow to select "read limit" option. It could be shown only if read_rate_limit_ms is defined
     channelSchema["properties"]["mode"]["options"]["enum_hidden"].append(READ_LIMIT);
     auto& deps = MakeArray("mode", channelSchema["properties"]["period"]["options"]["dependencies"]);
@@ -73,7 +78,6 @@ void AddChannelModes(Json::Value& channelSchema)
 Json::Value ConfigToHomeuiChannel(const Json::Value& channel)
 {
     Json::Value v;
-    v["name"] = channel["name"];
     if (channel.isMember("enabled") && !channel["enabled"].asBool()) {
         v["mode"] = DO_NOT_READ;
         return v;
@@ -105,4 +109,18 @@ Json::Value ConfigToHomeuiChannel(const Json::Value& channel)
     }
     v["mode"] = IN_QUEUE_ORDER;
     return v;
+}
+
+Json::Value ConfigToHomeuiSubdeviceChannel(const Json::Value& channel)
+{
+    Json::Value res(ConfigToHomeuiChannel(channel));
+    res["name"] = channel["name"];
+    return res;
+}
+
+Json::Value ConfigToHomeuiGroupChannel(const Json::Value& channel, size_t index)
+{
+    Json::Value res(ConfigToHomeuiChannel(channel));
+    res["channelIndex"] = index;
+    return res;
 }

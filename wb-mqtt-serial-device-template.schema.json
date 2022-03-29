@@ -8,6 +8,17 @@
       "minLength": 1
     },
 
+    "group_condition": {
+      "properties": {
+        "group": {
+          "type": "string"
+        },
+        "condition": {
+          "type": "string"
+        }
+      }
+    },
+
     "setup_item": {
       "type": "object",
       "properties": {
@@ -27,19 +38,24 @@
     },
 
     "group": {
-      "type": "object",
-      "properties": {
-        "title": {
-          "type": "string"
+      "allOf": [
+        {
+          "type": "object",
+          "properties": {
+            "title": {
+              "type": "string"
+            },
+            "id": {
+              "type": "string"
+            },
+            "order": {
+              "type": "integer"
+            }
+          },
+          "required": ["title", "id"]
         },
-        "id": {
-          "type": "string"
-        },
-        "order": {
-          "type": "integer"
-        }
-      },
-      "required": ["title", "id"]
+        { "$ref": "#/definitions/group_condition" }
+      ]
     },
 
     "groups": {
@@ -52,40 +68,45 @@
     },
 
     "parameter": {
-      "type": "object",
-      "properties": {
-        "title": {
-          "type": "string"
+      "allOf": [
+        {
+          "type": "object",
+          "properties": {
+            "title": {
+              "type": "string"
+            },
+            "address": {
+              "title": "Address",
+              "$ref": "#/definitions/address"
+            },
+            "enum": {
+              "type": "array",
+              "items": { "type": "integer" }
+            },
+            "enum_titles": {
+              "type": "array",
+              "items": { "type": "string" }
+            },
+            "default": {
+              "type": "number"
+            },
+            "min": {
+              "type": "number"
+            },
+            "max": {
+              "type": "number"
+            },
+            "order": {
+              "type": "integer"
+            },
+            "required": {
+              "type": "boolean"
+            }
+          },
+          "required": ["title", "address"]
         },
-        "address": {
-          "title": "Address",
-          "$ref": "#/definitions/address"
-        },
-        "enum": {
-          "type": "array",
-          "items": { "type": "integer" }
-        },
-        "enum_titles": {
-          "type": "array",
-          "items": { "type": "string" }
-        },
-        "default": {
-          "type": "number"
-        },
-        "min": {
-          "type": "number"
-        },
-        "max": {
-          "type": "number"
-        },
-        "order": {
-          "type": "integer"
-        },
-        "required": {
-          "type": "boolean"
-        }
-      },
-      "required": ["title", "address"]
+        { "$ref": "#/definitions/group_condition" }
+      ]
     },
 
     "subdevice_channel": {
@@ -140,8 +161,7 @@
           "type": "array",
           "items": {
             "oneOf": [
-              { "$ref": "#/definitions/registerChannel" },
-              { "$ref": "#/definitions/compoundRegisterChannel" },
+              { "$ref": "#/definitions/template_channel_with_int_address" },
               { "$ref": "#/definitions/subdevice_channel" }
             ]
           }
@@ -166,6 +186,57 @@
       },
       "additionalProperties": false,
       "required": ["device_type", "device"]
+    },
+
+    "template_channel_with_int_address": {
+      "allOf": [
+        {
+          "oneOf": [
+            { "$ref": "#/definitions/registerChannel" },
+            { "$ref": "#/definitions/compoundRegisterChannel" }
+          ]
+        },
+        { "$ref": "#/definitions/group_condition" }
+      ]
+    },
+
+    "template_channels_with_int_address": {
+      "properties": {
+        "channels": {
+          "type": "array",
+          "items": { "$ref": "#/definitions/template_channel_with_int_address" }
+        }
+      }
+    },
+
+    "template_channels_with_string_address": {
+      "properties": {
+        "channels": {
+          "type": "array",
+          "items": {
+            "allOf": [
+              { "$ref": "#/definitions/register_channel_common"},
+              { "$ref": "#/definitions/string_address" },
+              { "$ref": "#/definitions/group_condition" }
+            ]
+          } 
+        }
+      }
+    },
+
+    "template_dlms_channels": {
+      "properties": {
+        "channels": {
+          "type": "array",
+          "items": {
+            "allOf": [
+              { "$ref": "#/definitions/register_channel_common"},
+              { "$ref": "#/definitions/dlms_address" },
+              { "$ref": "#/definitions/group_condition" }
+            ]
+          }
+        }
+      }
     }
   },
 
@@ -181,7 +252,7 @@
           "allOf": [
             { "$ref": "#/definitions/deviceProperties" },
             { "$ref": "#/definitions/no_setup" },
-            { "$ref": "#/definitions/common_channels" },
+            { "$ref": "#/definitions/template_channels_with_int_address" },
             { "$ref": "#/definitions/groups" }
           ],
           "properties": {
@@ -198,7 +269,7 @@
         {
           "allOf": [
             { "$ref": "#/definitions/deviceProperties" },
-            { "$ref": "#/definitions/common_channels" },
+            { "$ref": "#/definitions/template_channels_with_int_address" },
             { "$ref": "#/definitions/common_setup" },
             { "$ref": "#/definitions/groups" }
           ],
@@ -217,7 +288,7 @@
           "allOf": [
             { "$ref": "#/definitions/deviceProperties" },
             { "$ref": "#/definitions/no_setup" },
-            { "$ref": "#/definitions/channels_with_string_addresses" },
+            { "$ref": "#/definitions/template_channels_with_string_address" },
             { "$ref": "#/definitions/groups" }
           ],
           "properties": {
@@ -235,7 +306,7 @@
           "allOf": [
             { "$ref": "#/definitions/deviceProperties" },
             { "$ref": "#/definitions/dlms_device_properties" },
-            { "$ref": "#/definitions/dlms_channels" },
+            { "$ref": "#/definitions/template_dlms_channels" },
             { "$ref": "#/definitions/no_setup" },
             { "$ref": "#/definitions/groups" }
           ],
@@ -254,7 +325,7 @@
           "allOf": [
             { "$ref": "#/definitions/deviceProperties" },
             { "$ref": "#/definitions/no_setup" },
-            { "$ref": "#/definitions/common_channels" },
+            { "$ref": "#/definitions/template_channels_with_int_address" },
             { "$ref": "#/definitions/somfy_device_properties" },
             { "$ref": "#/definitions/groups" }
           ],

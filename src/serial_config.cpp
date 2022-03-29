@@ -647,6 +647,45 @@ namespace
             }
         }
     }
+
+    void ValidateRequiredParams(const Json::Value& deviceConfig,
+                                const Json::Value& deviceTemplateSchema,
+                                size_t portIndex,
+                                size_t deviceIndex,
+                                TExpressionsCache& exprCache)
+    {
+        TJsonParams exprParams(deviceConfig);
+        const auto& params = deviceTemplateSchema["parameters"];
+        for (Json::ValueConstIterator paramIt = params.begin(); paramIt != params.end(); ++paramIt) {
+            if (paramIt->isMember("required") && paramIt->isMember("condition") &&
+                CheckCondition(*paramIt, exprParams, &exprCache) && !deviceConfig.isMember(paramIt.name()))
+            {
+                std::stringstream ss;
+                ss << "ports[" << portIndex << "].devices[" << deviceIndex << "] "
+                   << "required parameter '" << paramIt.name() << "' is missing";
+                throw std::runtime_error(ss.str());
+            }
+        }
+    }
+
+    void ValidateRequiredParametersAccordingToConditions(const Json::Value& config, TTemplateMap& templates)
+    {
+        TExpressionsCache exprCache;
+        size_t portIndex = 0;
+        for (const auto& port: config["ports"]) {
+            size_t deviceIndex = 0;
+            for (const auto& device: port["devices"]) {
+                if (device.isMember("device_type")) {
+                    const auto& deviceTemplate = templates.GetTemplate(device["device_type"].asString());
+                    if (!deviceTemplate.Schema.isMember("subdevices")) {
+                        ValidateRequiredParams(device, deviceTemplate.Schema, portIndex, deviceIndex, exprCache);
+                    }
+                }
+                ++deviceIndex;
+            }
+            ++portIndex;
+        }
+    }
 }
 
 std::string DecorateIfNotEmpty(const std::string& prefix, const std::string& str, const std::string& postfix)
@@ -939,6 +978,7 @@ PHandlerConfig LoadConfig(const std::string& configFileName,
 
     try {
         Validate(Root, configSchema);
+        ValidateRequiredParametersAccordingToConditions(Root, templates);
     } catch (const std::runtime_error& e) {
         throw std::runtime_error("File: " + configFileName + " error: " + e.what());
     }

@@ -203,7 +203,7 @@ TEST_F(TConfigParserTest, MergeDeviceConfigWithTemplate)
         GetDataFilePath("parser_test/templates/"),
         LoadConfigTemplatesSchema(GetDataFilePath("../wb-mqtt-serial-device-template.schema.json"), configSchema));
 
-    for (auto i = 1; i <= 7; ++i) {
+    for (auto i = 1; i <= 12; ++i) {
         auto deviceConfig(JSON::Parse(GetDataFilePath("parser_test/merge_template_ok" + to_string(i) + ".json")));
         std::string deviceType = deviceConfig.get("device_type", "").asString();
         auto mergedConfig(
@@ -272,4 +272,12 @@ TEST_F(TConfedSchemaTest, MergeTranslations)
         auto tr(JSON::Parse(GetDataFilePath("translation-templates/tr" + to_string(i) + ".json")));
         ASSERT_TRUE(JsonsMatch(schema["translations"], tr)) << i;
     }
+}
+
+TEST_F(TConfigParserTest, MissingRequiredParametersWithConditions)
+{
+    ASSERT_THROW(CheckExceptionMsg([this]() { GetConfig("configs/config-with-conditions.json"); },
+                                   "File: test/configs/config-with-conditions.json error: ports[0].devices[1] required "
+                                   "parameter 'param2' is missing"),
+                 std::runtime_error);
 }
