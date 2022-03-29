@@ -1,3 +1,9 @@
+wb-mqtt-serial (2.56.2) stable; urgency=medium
+
+  * Haier YCJ-A002 template was added
+
+ -- Dmitry Vorobjev <d.vorobjev@wirenboard.ru>  Tue, 15 Mar 2022 16:44:43 +0300
+
 wb-mqtt-serial (2.56.1) stable; urgency=medium
 
   * read_period_ms max value is limited by 2 days
