@@ -1,4 +1,5 @@
 #include "config_merge_template.h"
+#include "expression_evaluator.h"
 #include "log.h"
 #include "serial_config.h"
 
@@ -7,12 +8,53 @@
 using namespace std;
 using namespace WBMQTT::JSON;
 
+namespace
+{
+    typedef std::unordered_map<std::string, std::unique_ptr<Expressions::TToken>> TExpressionsCache;
+
+    bool CheckCondition(const Json::Value& item, const Json::Value& params, TExpressionsCache* exprs)
+    {
+        if (!exprs) {
+            return true;
+        }
+        auto cond = item["condition"].asString();
+        if (cond.empty()) {
+            return true;
+        }
+        try {
+            auto itExpr = exprs->find(cond);
+            if (itExpr == exprs->end()) {
+                Expressions::TParser parser;
+                itExpr = exprs->emplace(cond, parser.Parse(cond)).first;
+            }
+            return Expressions::Eval(itExpr->second.get(), params);
+        } catch (const std::exception& e) {
+            LOG(Error) << "Error during expression \"" << cond << "\" evaluation: " << e.what();
+        }
+        return false;
+    }
+
+    void RemoveDisabledChannels(Json::Value& config, const Json::Value& params, TExpressionsCache& exprs)
+    {
+        std::vector<Json::ArrayIndex> channelsToRemove;
+        auto& channels = config["channels"];
+        for (Json::ArrayIndex i = 0; i < channels.size(); ++i) {
+            if (!CheckCondition(channels[i], params, &exprs)) {
+                channelsToRemove.emplace_back(i);
+            }
+        }
+        for (auto it = channelsToRemove.rbegin(); it != channelsToRemove.rend(); ++it) {
+            channels.removeIndex(*it, nullptr);
+        }
+    }
+}
+
 void UpdateChannels(Json::Value& dst,
                     const Json::Value& userConfig,
                     ITemplateMap& channelTemplates,
                     const std::string& logPrefix);
 
-void AppendSetupItems(Json::Value& deviceTemplate, const Json::Value& config)
+void AppendSetupItems(Json::Value& deviceTemplate, const Json::Value& config, TExpressionsCache* exprs = nullptr)
 {
     Json::Value newSetup(Json::arrayValue);
 
@@ -30,14 +72,18 @@ void AppendSetupItems(Json::Value& deviceTemplate, const Json::Value& config)
             if (config.isMember(it.name())) {
                 auto& cfgItem = config[it.name()];
                 if (cfgItem.isNumeric()) {
-                    Json::Value item(*it);
-                    item["value"] = cfgItem;
-                    newSetup.append(item);
+                    if (CheckCondition(*it, config, exprs)) {
+                        Json::Value item(*it);
+                        item["value"] = cfgItem;
+                        newSetup.append(item);
+                    }
                 } else {
                     LOG(Warn) << it.name() << " is not an integer";
                 }
+                deviceTemplate.removeMember(it.name());
             }
         }
+        deviceTemplate.removeMember("parameters");
     }
 
     if (deviceTemplate.isMember("setup")) {
@@ -245,8 +291,10 @@ Json::Value MergeDeviceConfigWithTemplate(const Json::Value& deviceData,
         }
     }
 
-    AppendSetupItems(res, deviceData);
+    TExpressionsCache expressionsCache;
+    AppendSetupItems(res, deviceData, &expressionsCache);
     UpdateChannels(res["channels"], deviceData["channels"], subDevicesTemplates, "\"" + deviceName + "\"");
+    RemoveDisabledChannels(res, deviceData, expressionsCache);
 
     return res;
 }

@@ -20,7 +20,9 @@ namespace
 Json::Value HomeuiToConfigChannel(const Json::Value& ch)
 {
     Json::Value res;
-    res["name"] = ch["name"];
+    if (ch.isMember("name")) {
+        res["name"] = ch["name"];
+    }
     switch (ch["mode"].asInt()) {
         case IN_QUEUE_ORDER: {
             res["enabled"] = true;
@@ -61,6 +63,7 @@ void AddChannelModes(Json::Value& channelSchema)
         ++i;
         channelSchema["properties"]["mode"]["options"]["enum_titles"].append(mode);
     }
+    channelSchema["properties"]["mode"]["default"] = IN_QUEUE_ORDER;
     // Do not allow to select "read limit" option. It could be shown only if read_rate_limit_ms is defined
     channelSchema["properties"]["mode"]["options"]["enum_hidden"].append(READ_LIMIT);
     auto& deps = MakeArray("mode", channelSchema["properties"]["period"]["options"]["dependencies"]);
@@ -70,10 +73,9 @@ void AddChannelModes(Json::Value& channelSchema)
     deps.append(READ_LIMIT);
 }
 
-Json::Value ConfigToHomeuiChannel(const Json::Value& channel)
+Json::Value ConfigToHomeuiChannel(const Json::Value& channel, bool addDefaultMode)
 {
     Json::Value v;
-    v["name"] = channel["name"];
     if (channel.isMember("enabled") && !channel["enabled"].asBool()) {
         v["mode"] = DO_NOT_READ;
         return v;
@@ -103,6 +105,8 @@ Json::Value ConfigToHomeuiChannel(const Json::Value& channel)
         v["period"] = channel["poll_interval"];
         return v;
     }
-    v["mode"] = IN_QUEUE_ORDER;
+    if (addDefaultMode) {
+        v["mode"] = IN_QUEUE_ORDER;
+    }
     return v;
 }

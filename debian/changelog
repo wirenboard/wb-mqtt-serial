@@ -1,3 +1,14 @@
+wb-mqtt-serial (2.57.0) stable; urgency=medium
+
+  * "condition" is added to parameters and channels in device templates.
+    It defines dependencies on other parameters and replaces "subdevices".
+    This results to a "flat" configuration file structure,
+    which is more maintainable in terms of backward compatibility.
+  * group nesting is added to device templates
+  * subdevices in device templates are deprecated
+
+ -- Petr Krasnoshchekov <petr.krasnoshchekov@wirenboard.ru>  Tue, 29 Mar 2022 12:02:47 +0500
+
 wb-mqtt-serial (2.56.1) stable; urgency=medium
 
   * read_period_ms max value is limited by 2 days

@@ -1,5 +1,6 @@
 #include "confed_schema_generator.h"
 #include "confed_channel_modes.h"
+#include "confed_schema_generator2.h"
 #include "json_common.h"
 #include "log.h"
 
@@ -19,11 +20,6 @@ namespace
     std::string GetHashedParam(const std::string& deviceType, const std::string& prefix)
     {
         return prefix + "_" + std::to_string(std::hash<std::string>()(deviceType));
-    }
-
-    std::string GetTranslationHash(const std::string& deviceType, const std::string& msg)
-    {
-        return "t" + std::to_string(std::hash<std::string>()(deviceType + msg));
     }
 
     struct TContext
@@ -46,39 +42,6 @@ namespace
         }
     };
 
-    Json::Value GetDefaultSetupRegisterValue(const Json::Value& setupRegisterSchema)
-    {
-        if (setupRegisterSchema.isMember("default")) {
-            return setupRegisterSchema["default"];
-        }
-        if (setupRegisterSchema.isMember("enum")) {
-            return setupRegisterSchema["enum"][0];
-        }
-        if (setupRegisterSchema.isMember("min")) {
-            return setupRegisterSchema["min"];
-        }
-        if (setupRegisterSchema.isMember("max")) {
-            return setupRegisterSchema["max"];
-        }
-        return 0;
-    }
-
-    //  {
-    //      "type": "string",
-    //      "enum": [ VALUE ],
-    //      "default": VALUE,
-    //      "options": { "hidden": true }
-    //  }
-    Json::Value MakeHiddenProperty(const std::string& value)
-    {
-        Json::Value res;
-        res["type"] = "string";
-        res["default"] = value;
-        MakeArray("enum", res).append(value);
-        res["options"]["hidden"] = true;
-        return res;
-    }
-
     //  {
     //      "properties": {
     //          "name": {
@@ -95,24 +58,6 @@ namespace
         Json::Value r;
         r["properties"]["name"] = MakeHiddenProperty(name);
         MakeArray("required", r).append("name");
-        return r;
-    }
-
-    //  {
-    //      "properties": {
-    //          "protocol": {
-    //              "type": "string",
-    //              "options": {
-    //                  "hidden": true
-    //              }
-    //          }
-    //      }
-    //  }
-    Json::Value MakeProtocolProperty()
-    {
-        Json::Value r;
-        r["properties"]["protocol"]["type"] = "string";
-        r["properties"]["protocol"]["options"]["hidden"] = true;
         return r;
     }
 
@@ -294,6 +239,7 @@ namespace
     Json::Value MakeSimpleChannelData(const Json::Value& channel, TContext& context)
     {
         Json::Value v = ConfigToHomeuiChannel(channel);
+        v["name"] = channel["name"];
         v["title"] = context.AddHashedTranslation(channel["name"].asString());
         return v;
     }
@@ -540,16 +486,6 @@ namespace
         return res;
     }
 
-    void AddTranslations(const std::string& deviceType, Json::Value& translations, const Json::Value& deviceSchema)
-    {
-        const auto& tr = deviceSchema["translations"];
-        for (auto it = tr.begin(); it != tr.end(); ++it) {
-            for (auto msgIt = it->begin(); msgIt != it->end(); ++msgIt) {
-                translations[it.name()][GetTranslationHash(deviceType, msgIt.name())] = *msgIt;
-            }
-        }
-    }
-
     //  {
     //      "type": "object",
     //      "title": DEVICE_TITLE_HASH,
@@ -646,7 +582,11 @@ namespace
     {
         for (const auto& t: templates.GetTemplatesOrderedByName()) {
             try {
-                AddDeviceUISchema(*t, deviceFactory, devicesArray, definitions, translations);
+                if (t->Schema.isMember("subdevices")) {
+                    AddDeviceUISchema(*t, deviceFactory, devicesArray, definitions, translations);
+                } else {
+                    AddDeviceUISchema2(*t, deviceFactory, devicesArray, definitions, translations);
+                }
             } catch (const std::exception& e) {
                 LOG(Error) << "Can't load template for '" << t->Title << "': " << e.what();
             }
@@ -857,4 +797,54 @@ std::string GetSubdeviceKey(const std::string& subDeviceType)
 bool IsRequiredSetupRegister(const Json::Value& setupRegister)
 {
     return setupRegister.get("required", false).asBool();
+}
+
+Json::Value GetDefaultSetupRegisterValue(const Json::Value& setupRegisterSchema)
+{
+    if (setupRegisterSchema.isMember("default")) {
+        return setupRegisterSchema["default"];
+    }
+    if (setupRegisterSchema.isMember("enum")) {
+        return setupRegisterSchema["enum"][0];
+    }
+    if (setupRegisterSchema.isMember("min")) {
+        return setupRegisterSchema["min"];
+    }
+    if (setupRegisterSchema.isMember("max")) {
+        return setupRegisterSchema["max"];
+    }
+    return 0;
+}
+
+std::string GetTranslationHash(const std::string& deviceType, const std::string& msg)
+{
+    return "t" + std::to_string(std::hash<std::string>()(deviceType + msg));
+}
+
+Json::Value MakeHiddenProperty(const std::string& value)
+{
+    Json::Value res;
+    res["type"] = "string";
+    res["default"] = value;
+    MakeArray("enum", res).append(value);
+    res["options"]["hidden"] = true;
+    return res;
+}
+
+Json::Value MakeProtocolProperty()
+{
+    Json::Value r;
+    r["properties"]["protocol"]["type"] = "string";
+    r["properties"]["protocol"]["options"]["hidden"] = true;
+    return r;
+}
+
+void AddTranslations(const std::string& deviceType, Json::Value& translations, const Json::Value& deviceSchema)
+{
+    const auto& tr = deviceSchema["translations"];
+    for (auto it = tr.begin(); it != tr.end(); ++it) {
+        for (auto msgIt = it->begin(); msgIt != it->end(); ++msgIt) {
+            translations[it.name()][GetTranslationHash(deviceType, msgIt.name())] = *msgIt;
+        }
+    }
 }

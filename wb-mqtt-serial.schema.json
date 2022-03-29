@@ -861,36 +861,19 @@
     "tableChannelSettings": {
       "type": "object",
       "properties": {
-        "name": {
-          "type": "string",
-          "options": {
-            "hidden": true
-          }
-        },
-        "title": {
-          "title": "Parameter",
-          "type": "string",
-          "_format": "info",
-          "propertyOrder": 1
-        },
         "mode": {
           "type": "integer",
-          "title": "Poll",
-          "propertyOrder": 2
+          "title": "Poll"
         },
         "period": {
           "type": "integer",
           "title": "Period (ms)",
           "minimum": 0,
           "maximum": 172800000,
-          "propertyOrder": 3,
           "default": 1000
         }
       },
-      "required": ["mode", "name"],
-      "options": {
-        "remove_empty_properties": true
-      }
+      "required": ["mode"]
     },
     "subreg": {
       "type": "object",
