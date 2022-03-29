@@ -391,6 +391,7 @@
             "in1_lp_hold_time": {
                 "group": "input_1",
                 "title": "lp_hold_time_title",
+                "description": "lp_hold_time_description",
                 "order": 1,
                 "address": 1100,
                 "reg_type": "holding",
@@ -401,6 +402,7 @@
             "in2_lp_hold_time": {
                 "group": "input_2",
                 "title": "lp_hold_time_title",
+                "description": "lp_hold_time_description",
                 "order": 1,
                 "address": 1101,
                 "reg_type": "holding",
@@ -411,6 +413,7 @@
             "in3_lp_hold_time": {
                 "group": "input_3",
                 "title": "lp_hold_time_title",
+                "description": "lp_hold_time_description",
                 "order": 1,
                 "address": 1102,
                 "reg_type": "holding",
@@ -422,6 +425,7 @@
             "in1_lp_repeat_time": {
                 "group": "input_1",
                 "title": "lp_repeat_time_title",
+                "description": "lp_repeat_time_description",
                 "order": 2,
                 "address": 1120,
                 "reg_type": "holding",
@@ -432,6 +436,7 @@
             "in2_lp_repeat_time": {
                 "group": "input_2",
                 "title": "lp_repeat_time_title",
+                "description": "lp_repeat_time_description",
                 "order": 2,
                 "address": 1121,
                 "reg_type": "holding",
@@ -442,6 +447,7 @@
             "in3_lp_repeat_time": {
                 "group": "input_3",
                 "title": "lp_repeat_time_title",
+                "description": "lp_repeat_time_description",
                 "order": 2,
                 "address": 1122,
                 "reg_type": "holding",
@@ -453,6 +459,7 @@
             "in1_dp_time": {
                 "group": "input_1",
                 "title": "dp_time_title",
+                "description": "dp_time_description",
                 "order": 3,
                 "address": 1140,
                 "reg_type": "holding",
@@ -463,6 +470,7 @@
             "in2_dp_time": {
                 "group": "input_2",
                 "title": "dp_time_title",
+                "description": "dp_time_description",
                 "order": 3,
                 "address": 1141,
                 "reg_type": "holding",
@@ -473,6 +481,7 @@
             "in3_dp_time": {
                 "group": "input_3",
                 "title": "dp_time_title",
+                "description": "dp_time_description",
                 "order": 3,
                 "address": 1142,
                 "reg_type": "holding",
@@ -484,6 +493,7 @@
             "in1_debounce_time": {
                 "group": "input_1",
                 "title": "debounce_time_title",
+                "description": "debounce_time_description",
                 "order": 4,
                 "address": 1160,
                 "reg_type": "holding",
@@ -494,6 +504,7 @@
             "in2_debounce_time": {
                 "group": "input_2",
                 "title": "debounce_time_title",
+                "description": "debounce_time_description",
                 "order": 4,
                 "address": 1161,
                 "reg_type": "holding",
@@ -504,6 +515,7 @@
             "in3_debounce_time": {
                 "group": "input_3",
                 "title": "debounce_time_title",
+                "description": "debounce_time_description",
                 "order": 4,
                 "address": 1162,
                 "reg_type": "holding",
@@ -7363,6 +7375,11 @@
                 "dp_time_title": "Double Press Time (ms)",
                 "debounce_time_title": "Debounce Time (ms)",
 
+                "lp_hold_time_description": "Separates long and short press types",
+                "lp_repeat_time_description": "The smaller, the faster the parameter changes",
+                "dp_time_description": "Second press must begin during this time after first press ended. Set to 0 for disable double and shortlong events",
+                "debounce_time_description": "Must be 5-10 times less than double press time",
+
                 "pwm_frequency_factor_title": "PWM Frequency Factor",
                 "pwm_frequency_factor_description": "PWM frequency is calculated by formula: 24 kHz / factor",
 
@@ -7551,6 +7568,11 @@
                 "lp_repeat_time_title": "Скорость изменения параметра при удержании кнопки, мс/ед",
                 "dp_time_title": "Время двойного нажатия, мс",
                 "debounce_time_title": "Время подавления дребезга, мс",
+
+                "lp_hold_time_description": "Разделяет короткие и длинные нажатия",
+                "lp_repeat_time_description": "Чем меньше, тем быстрее изменяется параметр",
+                "dp_time_description": "Второе нажатие должно начаться через это время после окончания первого. Установите 0 для отключения событий двойного и котороткого, а затем длинного нажатия",
+                "debounce_time_description": "Должно быть в 5-10 раз меньше, чем время двойного нажатия",
 
                 "Channel 1 (B) Minimum Value": "Нижний порог диммирования канала 1 (B)",
                 "Channel 2 (R) Minimum Value": "Нижний порог диммирования канала 2 (R)",
