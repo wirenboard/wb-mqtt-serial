@@ -463,8 +463,7 @@
                 "order": 3,
                 "address": 1140,
                 "reg_type": "holding",
-                "default": 500,
-                "min": 100,
+                "min": 0,
                 "max": 2000
             },
             "in2_dp_time": {
@@ -474,8 +473,7 @@
                 "order": 3,
                 "address": 1141,
                 "reg_type": "holding",
-                "default": 500,
-                "min": 100,
+                "min": 0,
                 "max": 2000
             },
             "in3_dp_time": {
@@ -485,8 +483,7 @@
                 "order": 3,
                 "address": 1142,
                 "reg_type": "holding",
-                "default": 500,
-                "min": 100,
+                "min": 0,
                 "max": 2000
             },
 
