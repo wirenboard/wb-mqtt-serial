@@ -3,6 +3,38 @@ wb-mqtt-serial (2.54.1) stable; urgency=medium
   * Updated documentation
 
  -- Alexander Degtyarev <a.degtyarev@wirenboard.com>  Wed, 9 Mar 2022 20:50:00 +0400
+=======
+wb-mqtt-serial (2.56.2) stable; urgency=medium
+
+  * Haier YCJ-A002 template was added
+
+ -- Dmitry Vorobjev <d.vorobjev@wirenboard.ru>  Tue, 15 Mar 2022 16:44:43 +0300
+
+wb-mqtt-serial (2.56.1) stable; urgency=medium
+
+  * read_period_ms max value is limited by 2 days
+  * read period miss error is calculated for at least 10 seconds intervals to make it less noisy 
+
+ -- Petr Krasnoshchekov <petr.krasnoshchekov@wirenboard.ru>  Wed, 16 Mar 2022 13:09:46 +0500
+
+wb-mqtt-serial (2.56.0) stable; urgency=medium
+
+  * Somfy RS485 RTS transmitter support
+
+ -- Petr Krasnoshchekov <petr.krasnoshchekov@wirenboard.ru>  Wed, 16 Mar 2022 09:43:42 +0500
+
+wb-mqtt-serial (2.55.0) stable; urgency=medium
+
+  * read_rate_limit_ms is deprecated
+  * New UI for editing read_period_ms
+
+ -- Petr Krasnoshchekov <petr.krasnoshchekov@wirenboard.ru>  Fri, 11 Mar 2022 09:56:31 +0500
+
+wb-mqtt-serial (2.54.1) stable; urgency=medium
+
+  * Wrong coil values writing is fixed
+
+ -- Petr Krasnoshchekov <petr.krasnoshchekov@wirenboard.ru>  Thu, 10 Mar 2022 18:12:40 +0500
 
 wb-mqtt-serial (2.54.0) stable; urgency=medium
 

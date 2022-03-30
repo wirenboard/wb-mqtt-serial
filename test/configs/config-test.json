@@ -356,7 +356,7 @@
                             "reg_type" : "fake",
                             "address" : 0,
                             "type": "value",
-                            "read_period_ms": 10
+                            "read_period_ms": 1000
                         }
                     ]
                 }

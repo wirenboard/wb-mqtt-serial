@@ -47,6 +47,7 @@
         "read_rate_limit_ms": {
           "type": "integer",
           "title": "Read rate limit (ms)",
+          "description" : "read_rate_limit_description",
           "minimum": 0,
           "default": 1000,
           "propertyOrder": 10
@@ -378,6 +379,7 @@
         "read_rate_limit_ms": {
           "type": "integer",
           "title": "Read rate limit (ms)",
+          "description" : "read_rate_limit_description",
           "minimum": 0,
           "default": 1000,
           "propertyOrder": 5
@@ -602,14 +604,13 @@
         },
         "read_period_ms": {
           "type": "integer",
-          "title": "High priority read period (ms)",
+          "title": "Read period (ms)",
           "description" : "read_period_description",
           "minimum": 10,
           "options": {
-            "enum_titles": [ "high priority (100ms)" ],
-            "enum_values": [ 100 ],
+            "enum_values": [ 100, 200 ],
             "inputAttributes": {
-              "placeholder": "the channel has low priority"
+              "placeholder": "in queue order"
             }
           },
           "_format": "edWb",
@@ -618,6 +619,7 @@
         "read_rate_limit_ms": {
           "type": "integer",
           "title": "Read rate limit (ms)",
+          "description" : "read_rate_limit_description",
           "minimum": 0,
           "default": 1000,
           "propertyOrder": 17
@@ -759,14 +761,13 @@
         },
         "read_period_ms": {
           "type": "integer",
-          "title": "High priority read period (ms)",
+          "title": "Read period (ms)",
           "description" : "read_period_description",
           "minimum": 10,
           "options": {
-            "enum_titles": [ "high priority (100ms)" ],
-            "enum_values": [ 100 ],
+            "enum_values": [ 100, 200 ],
             "inputAttributes": {
-              "placeholder": "the channel has low priority"
+              "placeholder": "in queue order"
             }
           },
           "_format": "edWb",
@@ -775,6 +776,7 @@
         "read_rate_limit_ms": {
           "type": "integer",
           "title": "Read rate limit (ms)",
+          "description" : "read_rate_limit_description",
           "minimum": 0,
           "default": 1000,
           "propertyOrder": 11
@@ -820,14 +822,13 @@
         },
         "read_period_ms": {
           "type": "integer",
-          "title": "High priority read period (ms)",
+          "title": "Read period (ms)",
           "description" : "read_period_description",
           "minimum": 10,
           "options": {
-            "enum_titles": [ "high priority (100ms)" ],
-            "enum_values": [ 100 ],
+            "enum_values": [ 100, 200 ],
             "inputAttributes": {
-              "placeholder": "the channel has low priority"
+              "placeholder": "in queue order"
             },
             "dependencies": {
               "enabled": true
@@ -839,12 +840,10 @@
         "read_rate_limit_ms": {
           "type": "integer",
           "title": "Read rate limit (ms)",
+          "description" : "read_rate_limit_description",
           "minimum": 0,
           "default": -1,
           "options": {
-            "inputAttributes": {
-              "placeholder": "read as soon as possible"
-            },
             "dependencies": {
               "enabled": true
             }
@@ -872,50 +871,23 @@
           "title": "Parameter",
           "type": "string",
           "_format": "info",
-          "propertyOrder": 2
-        },
-        "enabled": {
-          "type": "boolean",
-          "title": "Enable poll",
-          "default": true,
-          "_format": "checkbox",
           "propertyOrder": 1
         },
-        "read_period_ms": {
+        "mode": {
           "type": "integer",
-          "title": "High priority read period (ms)",
-          "description" : "read_period_description",
-          "minimum": 10,
-          "options": {
-            "enum_titles": [ "high priority (100 ms)" ],
-            "enum_values": [ 100 ],
-            "inputAttributes": {
-              "placeholder": "the channel has low priority"
-            },
-            "dependencies": {
-              "enabled": true
-            }
-          },
-          "_format": "edWb",
-          "propertyOrder": 3
+          "title": "Poll",
+          "propertyOrder": 2
         },
-        "read_rate_limit_ms": {
+        "period": {
           "type": "integer",
-          "title": "Read rate limit (ms)",
+          "title": "Period (ms)",
           "minimum": 0,
-          "default": -1,
-          "options": {
-            "inputAttributes": {
-              "placeholder": "read as soon as possible"
-            },
-            "dependencies": {
-              "enabled": true
-            }
-          },
-          "_format": "siWb",
-          "propertyOrder": 4
+          "maximum": 172800000,
+          "propertyOrder": 3,
+          "default": 1000
         }
       },
+      "required": ["mode", "name"],
       "options": {
         "remove_empty_properties": true
       }
@@ -1753,6 +1725,7 @@
 
   "translations": {
     "en": {
+      "read_rate_limit_description": "This option is deprecated, use read period of channels instead",
       "read_period_description": "This option specifies the desired period between two consecutive reads of the channel. Short periods may not be maintained due to port bandwidth limitations",
       "guard_interval_description": "Specifies the delay in microseconds before writing to the port",
       "connection_timeout_description": "Used for disconnect detection. If not set, the default timeout (5000ms) is used. Value -1 disables TCP reconnect. Zero means instant timeout.",
@@ -1918,12 +1891,17 @@
       "Type": "Тип",
       "Maximum value": "Максимальное значение",
       "Unknown device": "Неизвестное устройство",
-      "High priority read period (ms)": "Период чтения с высоким приоритетом (мс)",
-      "the channel has low priority": "канал имеет низкий приоритет",
-      "read as soon as possible": "читать как появится возможность",
       "Read rate limit (ms)": "Читать не чаще (мс)",
-      "high priority (100 ms)": "высокий приоритет (100 мс)",
-      "Units": "Единицы измерения"
+      "Units": "Единицы измерения",
+      "Poll": "Опрос",
+      "Period (ms)": "Период (мс)",
+      "in queue order": "в порядке очереди",
+      "200 ms": "200 мс",
+      "100 ms": "100 мс",
+      "custom period": "задать период",
+      "do not read": "не опрашивать",
+      "read_rate_limit_description": "Этот параметр устарел и не рекомендуется к использованию, вместо него пользуйтесь периодом опроса канала",
+      "not faster than (deprecated)": "не чаще чем раз в (устаревший параметр)"
     }
   }
 }

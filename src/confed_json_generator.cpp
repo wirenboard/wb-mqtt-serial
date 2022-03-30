@@ -1,4 +1,5 @@
 #include "confed_json_generator.h"
+#include "confed_channel_modes.h"
 #include "confed_schema_generator.h"
 #include "config_schema_generator.h"
 #include "log.h"
@@ -23,14 +24,15 @@ namespace
 
     Json::Value MakeJsonFromChannelTemplate(const Json::Value& channelTemplate)
     {
-        Json::Value res;
-        res["name"] = channelTemplate["name"];
-
         if (channelTemplate.isMember("device_type")) {
+            Json::Value res;
+            res["name"] = channelTemplate["name"];
             res["device_type"] = channelTemplate["device_type"];
             return res;
         }
         if (channelTemplate.isMember("oneOf")) {
+            Json::Value res;
+            res["name"] = channelTemplate["name"];
             if (channelTemplate.isMember("default")) {
                 res["device_type"] = channelTemplate["default"];
             } else {
@@ -38,11 +40,7 @@ namespace
             }
             return res;
         }
-        SetIfExists(res, "read_rate_limit_ms", channelTemplate, "poll_interval");
-        SetIfExists(res, "read_rate_limit_ms", channelTemplate, "read_rate_limit_ms");
-        res["enabled"] = true;
-        SetIfExists(res, "enabled", channelTemplate, "enabled");
-        return res;
+        return ConfigToHomeuiChannel(channelTemplate);
     }
 
     Json::Value MakeJsonFromChannelConfig(const Json::Value& channelConfig)
@@ -51,14 +49,7 @@ namespace
             return channelConfig;
         }
 
-        Json::Value res;
-        res["name"] = channelConfig["name"];
-        SetIfExists(res, "read_rate_limit_ms", channelConfig, "poll_interval");
-        SetIfExists(res, "read_rate_limit_ms", channelConfig, "read_rate_limit_ms");
-        SetIfExists(res, "read_period_ms", channelConfig, "read_period_ms");
-        res["enabled"] = true;
-        SetIfExists(res, "enabled", channelConfig, "enabled");
-        return res;
+        return ConfigToHomeuiChannel(channelConfig);
     }
 
     std::pair<Json::Value, Json::Value> SplitChannels(const Json::Value& device, const Json::Value& deviceTemplate)
