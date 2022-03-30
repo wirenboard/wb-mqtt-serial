@@ -286,6 +286,7 @@
                     "parameters": {
                         "in1_debounce_ms": {
                             "title": "debounce_time_title",
+                            "description": "debounce_time_description",
                             "address": 27,
                             "reg_type": "holding",
                             "min": 0,
@@ -353,6 +354,7 @@
                     "parameters": {
                         "in1_debounce_ms": {
                             "title": "debounce_time_title",
+                            "description": "debounce_time_description",
                             "address": 27,
                             "reg_type": "holding",
                             "min": 0,
@@ -426,6 +428,7 @@
                     "parameters": {
                         "in1_debounce_ms": {
                             "title": "debounce_time_title",
+                            "description": "debounce_time_description",
                             "address": 27,
                             "reg_type": "holding",
                             "min": 0,
@@ -763,6 +766,7 @@
                     "parameters": {
                         "in1_debounce_ms": {
                             "title": "debounce_time_title",
+                            "description": "debounce_time_description",
                             "address": 27,
                             "reg_type": "holding",
                             "min": 0,
@@ -1216,6 +1220,7 @@
                     "parameters": {
                         "in1_debounce_ms": {
                             "title": "debounce_time_title",
+                            "description": "debounce_time_description",
                             "address": 20,
                             "reg_type": "holding",
                             "min": 0,
@@ -1285,6 +1290,7 @@
                     "parameters": {
                         "in1_debounce_ms": {
                             "title": "debounce_time_title",
+                            "description": "debounce_time_description",
                             "address": 20,
                             "reg_type": "holding",
                             "min": 0,
@@ -1352,6 +1358,7 @@
                     "parameters": {
                         "in1_debounce_ms": {
                             "title": "debounce_time_title",
+                            "description": "debounce_time_description",
                             "address": 20,
                             "reg_type": "holding",
                             "min": 0,
@@ -1419,6 +1426,7 @@
                     "parameters": {
                         "in1_debounce_ms": {
                             "title": "debounce_time_title",
+                            "description": "debounce_time_description",
                             "address": 20,
                             "reg_type": "holding",
                             "min": 0,
@@ -1492,6 +1500,7 @@
                     "parameters": {
                         "in1_debounce_ms": {
                             "title": "debounce_time_title",
+                            "description": "debounce_time_description",
                             "address": 20,
                             "reg_type": "holding",
                             "min": 0,
@@ -1829,6 +1838,7 @@
                     "parameters": {
                         "in1_debounce_ms": {
                             "title": "debounce_time_title",
+                            "description": "debounce_time_description",
                             "address": 20,
                             "reg_type": "holding",
                             "min": 0,
@@ -2282,6 +2292,7 @@
                     "parameters": {
                         "in1_debounce_ms": {
                             "title": "debounce_time_title",
+                            "description": "debounce_time_description",
                             "address": 21,
                             "reg_type": "holding",
                             "min": 0,
@@ -2351,6 +2362,7 @@
                     "parameters": {
                         "in1_debounce_ms": {
                             "title": "debounce_time_title",
+                            "description": "debounce_time_description",
                             "address": 21,
                             "reg_type": "holding",
                             "min": 0,
@@ -2418,6 +2430,7 @@
                     "parameters": {
                         "in1_debounce_ms": {
                             "title": "debounce_time_title",
+                            "description": "debounce_time_description",
                             "address": 21,
                             "reg_type": "holding",
                             "min": 0,
@@ -2485,6 +2498,7 @@
                     "parameters": {
                         "in1_debounce_ms": {
                             "title": "debounce_time_title",
+                            "description": "debounce_time_description",
                             "address": 21,
                             "reg_type": "holding",
                             "min": 0,
@@ -2558,6 +2572,7 @@
                     "parameters": {
                         "in1_debounce_ms": {
                             "title": "debounce_time_title",
+                            "description": "debounce_time_description",
                             "address": 21,
                             "reg_type": "holding",
                             "min": 0,
@@ -2895,6 +2910,7 @@
                     "parameters": {
                         "in1_debounce_ms": {
                             "title": "debounce_time_title",
+                            "description": "debounce_time_description",
                             "address": 21,
                             "reg_type": "holding",
                             "min": 0,
@@ -3348,6 +3364,7 @@
                     "parameters": {
                         "in1_debounce_ms": {
                             "title": "debounce_time_title",
+                            "description": "debounce_time_description",
                             "address": 22,
                             "reg_type": "holding",
                             "min": 0,
@@ -3417,6 +3434,7 @@
                     "parameters": {
                         "in1_debounce_ms": {
                             "title": "debounce_time_title",
+                            "description": "debounce_time_description",
                             "address": 22,
                             "reg_type": "holding",
                             "min": 0,
@@ -3484,6 +3502,7 @@
                     "parameters": {
                         "in1_debounce_ms": {
                             "title": "debounce_time_title",
+                            "description": "debounce_time_description",
                             "address": 22,
                             "reg_type": "holding",
                             "min": 0,
@@ -3551,6 +3570,7 @@
                     "parameters": {
                         "in1_debounce_ms": {
                             "title": "debounce_time_title",
+                            "description": "debounce_time_description",
                             "address": 22,
                             "reg_type": "holding",
                             "min": 0,
@@ -3624,6 +3644,7 @@
                     "parameters": {
                         "in1_debounce_ms": {
                             "title": "debounce_time_title",
+                            "description": "debounce_time_description",
                             "address": 22,
                             "reg_type": "holding",
                             "min": 0,
@@ -3961,6 +3982,7 @@
                     "parameters": {
                         "in1_debounce_ms": {
                             "title": "debounce_time_title",
+                            "description": "debounce_time_description",
                             "address": 22,
                             "reg_type": "holding",
                             "min": 0,
@@ -4414,6 +4436,7 @@
                     "parameters": {
                         "in1_debounce_ms": {
                             "title": "debounce_time_title",
+                            "description": "debounce_time_description",
                             "address": 23,
                             "reg_type": "holding",
                             "min": 0,
@@ -4483,6 +4506,7 @@
                     "parameters": {
                         "in1_debounce_ms": {
                             "title": "debounce_time_title",
+                            "description": "debounce_time_description",
                             "address": 23,
                             "reg_type": "holding",
                             "min": 0,
@@ -4550,6 +4574,7 @@
                     "parameters": {
                         "in1_debounce_ms": {
                             "title": "debounce_time_title",
+                            "description": "debounce_time_description",
                             "address": 23,
                             "reg_type": "holding",
                             "min": 0,
@@ -4617,6 +4642,7 @@
                     "parameters": {
                         "in1_debounce_ms": {
                             "title": "debounce_time_title",
+                            "description": "debounce_time_description",
                             "address": 23,
                             "reg_type": "holding",
                             "min": 0,
@@ -4690,6 +4716,7 @@
                     "parameters": {
                         "in1_debounce_ms": {
                             "title": "debounce_time_title",
+                            "description": "debounce_time_description",
                             "address": 23,
                             "reg_type": "holding",
                             "min": 0,
@@ -5027,6 +5054,7 @@
                     "parameters": {
                         "in1_debounce_ms": {
                             "title": "debounce_time_title",
+                            "description": "debounce_time_description",
                             "address": 23,
                             "reg_type": "holding",
                             "min": 0,
@@ -5480,6 +5508,7 @@
                     "parameters": {
                         "in1_debounce_ms": {
                             "title": "debounce_time_title",
+                            "description": "debounce_time_description",
                             "address": 24,
                             "reg_type": "holding",
                             "min": 0,
@@ -5549,6 +5578,7 @@
                     "parameters": {
                         "in1_debounce_ms": {
                             "title": "debounce_time_title",
+                            "description": "debounce_time_description",
                             "address": 24,
                             "reg_type": "holding",
                             "min": 0,
@@ -5616,6 +5646,7 @@
                     "parameters": {
                         "in1_debounce_ms": {
                             "title": "debounce_time_title",
+                            "description": "debounce_time_description",
                             "address": 24,
                             "reg_type": "holding",
                             "min": 0,
@@ -5683,6 +5714,7 @@
                     "parameters": {
                         "in1_debounce_ms": {
                             "title": "debounce_time_title",
+                            "description": "debounce_time_description",
                             "address": 24,
                             "reg_type": "holding",
                             "min": 0,
@@ -5756,6 +5788,7 @@
                     "parameters": {
                         "in1_debounce_ms": {
                             "title": "debounce_time_title",
+                            "description": "debounce_time_description",
                             "address": 24,
                             "reg_type": "holding",
                             "min": 0,
@@ -6093,6 +6126,7 @@
                     "parameters": {
                         "in1_debounce_ms": {
                             "title": "debounce_time_title",
+                            "description": "debounce_time_description",
                             "address": 24,
                             "reg_type": "holding",
                             "min": 0,
@@ -6546,6 +6580,7 @@
                     "parameters": {
                         "in1_debounce_ms": {
                             "title": "debounce_time_title",
+                            "description": "debounce_time_description",
                             "address": 25,
                             "reg_type": "holding",
                             "min": 0,
@@ -6615,6 +6650,7 @@
                     "parameters": {
                         "in1_debounce_ms": {
                             "title": "debounce_time_title",
+                            "description": "debounce_time_description",
                             "address": 25,
                             "reg_type": "holding",
                             "min": 0,
@@ -6682,6 +6718,7 @@
                     "parameters": {
                         "in1_debounce_ms": {
                             "title": "debounce_time_title",
+                            "description": "debounce_time_description",
                             "address": 25,
                             "reg_type": "holding",
                             "min": 0,
@@ -6749,6 +6786,7 @@
                     "parameters": {
                         "in1_debounce_ms": {
                             "title": "debounce_time_title",
+                            "description": "debounce_time_description",
                             "address": 25,
                             "reg_type": "holding",
                             "min": 0,
@@ -6822,6 +6860,7 @@
                     "parameters": {
                         "in1_debounce_ms": {
                             "title": "debounce_time_title",
+                            "description": "debounce_time_description",
                             "address": 25,
                             "reg_type": "holding",
                             "min": 0,
@@ -7159,6 +7198,7 @@
                     "parameters": {
                         "in1_debounce_ms": {
                             "title": "debounce_time_title",
+                            "description": "debounce_time_description",
                             "address": 25,
                             "reg_type": "holding",
                             "min": 0,
@@ -7577,7 +7617,8 @@
                 "debounce_time_title": "Debounce Time (ms)",
 
                 "lp_hold_time_description": "Separates long and short press types",
-                "dp_time_description": "Second press must begin during this time after first press ended. Set to 0 for disable double and shortlong events"
+                "dp_time_description": "Second press must begin during this time after first press ended. Set to 0 for disable double and shortlong events",
+                "debounce_time_description": "Must be 5-10 times less than double press time"
             },
             "ru": {
                 "WB-MR6C_template_title": "WB-MR6C v.2, WB-MR6LV/x, WB-MR6HV/x fw1.17 с поддержкой кнопок",
@@ -7669,6 +7710,7 @@
 
                 "lp_hold_time_description": "Разделяет короткие и длинные нажатия",
                 "dp_time_description": "Второе нажатие должно начаться через это время после окончания первого. Установите 0 для отключения событий двойного и котороткого, а затем длинного нажатия",
+                "debounce_time_description": "Должно быть в 5-10 раз меньше, чем время двойного нажатия",
 
                 "Serial": "Серийный номер",
                 "Supply Voltage": "Напряжение питания",
