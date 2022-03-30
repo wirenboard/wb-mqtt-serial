@@ -1151,7 +1151,7 @@
                             "address": 1147,
                             "reg_type": "holding",
                             "default": 500,
-                            "min": 100,
+                            "min": 0,
                             "max": 2000
                         }
                     },
@@ -2215,7 +2215,7 @@
                             "address": 1140,
                             "reg_type": "holding",
                             "default": 500,
-                            "min": 100,
+                            "min": 0,
                             "max": 2000
                         }
                     },
@@ -3279,7 +3279,7 @@
                             "address": 1141,
                             "reg_type": "holding",
                             "default": 500,
-                            "min": 100,
+                            "min": 0,
                             "max": 2000
                         }
                     },
@@ -4343,7 +4343,7 @@
                             "address": 1142,
                             "reg_type": "holding",
                             "default": 500,
-                            "min": 100,
+                            "min": 0,
                             "max": 2000
                         }
                     },
@@ -5407,7 +5407,7 @@
                             "address": 1143,
                             "reg_type": "holding",
                             "default": 500,
-                            "min": 100,
+                            "min": 0,
                             "max": 2000
                         }
                     },
@@ -6471,7 +6471,7 @@
                             "address": 1144,
                             "reg_type": "holding",
                             "default": 500,
-                            "min": 100,
+                            "min": 0,
                             "max": 2000
                         }
                     },
@@ -7535,7 +7535,7 @@
                             "address": 1145,
                             "reg_type": "holding",
                             "default": 500,
-                            "min": 100,
+                            "min": 0,
                             "max": 2000
                         }
                     },
