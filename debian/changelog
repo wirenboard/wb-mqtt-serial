@@ -1,8 +1,8 @@
-wb-mqtt-serial (2.54.1) stable; urgency=medium
+wb-mqtt-serial (2.56.3) stable; urgency=medium
 
   * Updated documentation
 
- -- Alexander Degtyarev <a.degtyarev@wirenboard.com>  Wed, 9 Mar 2022 20:50:00 +0400
+ -- Alexander Degtyarev <a.degtyarev@wirenboard.com>  Tue, 15 Mar 2022 16:44:43 +0400
 =======
 wb-mqtt-serial (2.56.2) stable; urgency=medium
 
