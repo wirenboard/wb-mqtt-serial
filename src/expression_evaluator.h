@@ -1,5 +1,7 @@
 #pragma once
-#include <wblib/json/json.h>
+
+#include <experimental/optional>
+#include <memory>
 
 // EBNF:
 //
@@ -107,13 +109,21 @@ namespace Expressions
         std::unique_ptr<TToken> Parse(const std::string& str);
     };
 
+    class IParams
+    {
+    public:
+        virtual ~IParams() = default;
+
+        virtual std::experimental::optional<int32_t> Get(const std::string& name) const = 0;
+    };
+
     /**
      * @brief Evaluate expression.
      *        Throw std::runtime_error on evaluation error.
      *
      * @param expression AST of an expression to evaluate
-     * @param params JSON with parameters. Values must be integers.
+     * @param params Parameters propvider
      * @return result of espression evaluation
      */
-    bool Eval(const TToken* expression, const Json::Value& params);
+    bool Eval(const TToken* expression, const IParams& params);
 }

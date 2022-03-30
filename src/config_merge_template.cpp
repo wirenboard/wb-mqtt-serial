@@ -12,7 +12,25 @@ namespace
 {
     typedef std::unordered_map<std::string, std::unique_ptr<Expressions::TToken>> TExpressionsCache;
 
-    bool CheckCondition(const Json::Value& item, const Json::Value& params, TExpressionsCache* exprs)
+    class TJsonParams: public Expressions::IParams
+    {
+        const Json::Value& Params;
+
+    public:
+        explicit TJsonParams(const Json::Value& params): Params(params)
+        {}
+
+        std::experimental::optional<int32_t> Get(const std::string& name) const override
+        {
+            const auto& param = Params[name];
+            if (param.isInt()) {
+                return std::experimental::optional<int32_t>(param.asInt());
+            }
+            return std::experimental::nullopt;
+        }
+    };
+
+    bool CheckCondition(const Json::Value& item, const TJsonParams& params, TExpressionsCache* exprs)
     {
         if (!exprs) {
             return true;
@@ -34,8 +52,9 @@ namespace
         return false;
     }
 
-    void RemoveDisabledChannels(Json::Value& config, const Json::Value& params, TExpressionsCache& exprs)
+    void RemoveDisabledChannels(Json::Value& config, const Json::Value& deviceData, TExpressionsCache& exprs)
     {
+        TJsonParams params(deviceData);
         std::vector<Json::ArrayIndex> channelsToRemove;
         auto& channels = config["channels"];
         for (Json::ArrayIndex i = 0; i < channels.size(); ++i) {
@@ -68,11 +87,12 @@ void AppendSetupItems(Json::Value& deviceTemplate, const Json::Value& config, TE
     }
 
     if (deviceTemplate.isMember("parameters")) {
+        TJsonParams params(config);
         for (auto it = deviceTemplate["parameters"].begin(); it != deviceTemplate["parameters"].end(); ++it) {
             if (config.isMember(it.name())) {
                 auto& cfgItem = config[it.name()];
                 if (cfgItem.isNumeric()) {
-                    if (CheckCondition(*it, config, exprs)) {
+                    if (CheckCondition(*it, params, exprs)) {
                         Json::Value item(*it);
                         item["value"] = cfgItem;
                         newSetup.append(item);

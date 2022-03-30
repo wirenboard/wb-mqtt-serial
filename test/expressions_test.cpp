@@ -9,6 +9,24 @@ using namespace WBMQTT;
 using namespace WBMQTT::Testing;
 using namespace Expressions;
 
+namespace
+{
+
+    class TParams: public Expressions::IParams
+    {
+    public:
+        std::experimental::optional<int32_t> Get(const std::string& name) const override
+        {
+            if (name == "a") {
+                return 1;
+            }
+            if (name == "b") {
+                return 2;
+            }
+            return std::experimental::nullopt;
+        }
+    };
+}
 class TExpressionsTest: public TLoggedFixture
 {
 protected:
@@ -114,14 +132,12 @@ TEST_F(TExpressionsTest, ParsingError)
 
 TEST_F(TExpressionsTest, Eval)
 {
-    Json::Value params;
-    params["a"] = 1;
-    params["b"] = 2;
     std::vector<std::string> trueExpressions =
         {"a==1", "a!=3", "a<2", "a>-1", "a>=1", "a<=1", "a==1||b==10", "a==1&&b==2", "a==1||c==2"};
     std::vector<std::string> falseExpressions =
         {"a!=1", "a==3", "a>1", "a<-1", "a>=2", "a<=0", "a==2||b==10", "a==2&&b==2", "a==1&&c==2"};
 
+    TParams params;
     TParser parser;
     for (const auto& expr: trueExpressions) {
         ASSERT_TRUE(Eval(parser.Parse(expr).get(), params)) << expr;

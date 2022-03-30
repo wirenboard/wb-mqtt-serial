@@ -1,5 +1,6 @@
 #include "expression_evaluator.h"
-#include <experimental/optional>
+
+#include <vector>
 
 using namespace std::experimental;
 using namespace Expressions;
@@ -80,7 +81,7 @@ namespace
         ThrowParserError("identifier, number or left bracket are expected at position ", lexer);
     }
 
-    optional<int32_t> EvalImpl(const TToken* expr, const Json::Value& params)
+    optional<int32_t> EvalImpl(const TToken* expr, const IParams& params)
     {
         if (!expr) {
             throw std::runtime_error("undefined token");
@@ -146,11 +147,7 @@ namespace
                 return v2 ? v1.value() && v2.value() : false;
             }
             case TTokenType::Ident: {
-                const auto& param = params[expr->GetValue()];
-                if (param.isInt()) {
-                    return optional<int32_t>(param.asInt());
-                }
-                return nullopt;
+                return params.Get(expr->GetValue());
             }
             case TTokenType::LeftBr:
             case TTokenType::RightBr:
@@ -439,7 +436,7 @@ std::unique_ptr<TToken> TParser::Parse(const std::string& str)
     return root;
 }
 
-bool Expressions::Eval(const Expressions::TToken* expr, const Json::Value& params)
+bool Expressions::Eval(const Expressions::TToken* expr, const IParams& params)
 {
     auto res = EvalImpl(expr, params);
     return res && res.value();
