@@ -47,7 +47,7 @@ namespace
             }
             return Expressions::Eval(itExpr->second.get(), params);
         } catch (const std::exception& e) {
-            LOG(Error) << "Error during expression \"" << cond << "\" evaluation: " << e.what();
+            throw TConfigParserException("Error during expression \"" + cond + "\" evaluation: " + e.what());
         }
         return false;
     }
