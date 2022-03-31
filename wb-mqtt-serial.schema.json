@@ -677,7 +677,7 @@
       },
       // FIXME: require "reg_type" and "address" for non-templated devices
       "required": ["name"],
-      "defaultProperties": ["name", "type", "reg_type", "address", "format", "scale", "offset"],
+      "defaultProperties": ["name", "type", "reg_type", "format", "scale", "offset"],
       "_format": "grid",
       "options": {
         "disable_collapse": true,
@@ -698,18 +698,20 @@
               }
             }
           },
-          "required": ["address"]
+          "required": ["address"],
+          "defaultProperties" : ["address"]
         }
       ]
     },
-    "registerChannel_modbus": {
+    "registerChannelSeparateAddress": {
+      "title": "Channel with separate r/w addresses",
       "allOf": [
         { "$ref": "#/definitions/register_channel_common"},
         {
           "properties": {
-            "address": {
+            "read_address": {
+              "title": "Read Address",
               "$ref": "#/definitions/address",
-              "title": "Address",
               "propertyOrder": 6,
               "options": {
                 "keep_oneof_values": false
@@ -717,14 +719,34 @@
             },
             "write_address": {
               "$ref": "#/definitions/write_address",
-              "title": "Write Address",
               "propertyOrder": 7,
               "options": {
                 "keep_oneof_values": false
               }
             }
           },
-          "required": ["address"]
+          "required": ["read_address", "write_address"],
+          "defaultProperties": ["read_address", "write_address"]
+        }
+      ]
+    },
+    "registerChannelWriteOnly": {
+      "title": "Write Only Channel",
+      "allOf": [
+        { "$ref": "#/definitions/register_channel_common"},
+        {
+          "properties": {
+            "write_address": {
+              "$ref": "#/definitions/write_address",
+              "propertyOrder": 7,
+              "options": {
+                "keep_oneof_values": false
+              }
+            }
+          },
+          "required": ["write_address"],
+          "defaultProperties": ["write_address"],
+          "not" : {"required": ["read_address"]}
         }
       ]
     },
@@ -815,9 +837,73 @@
         "disable_edit_json": true
       }
     },
-    "compoundRegisterChannel_modbus": {
-      "title": "Compound register",
+    "compoundRegisterChannelSeparateAddress": {
+      "title": "Compound register with separate r/w address",
       "type": "object",
+      "allOf" : [
+        {"$ref": "#/definitions/compoundRegisterChannelBase"},
+        {
+          "properties": {
+          "consists_of": {
+            "type": "array",
+            "title": "A list of subregisters",
+            "items": { "$ref": "#/definitions/subregSeparateAddress" },
+            "minItems": 1,
+            "_format": "table",
+            "propertyOrder": 6,
+            "options": {
+              "disable_collapse": true,
+              "wb": {
+                "disable_panel": true
+              },
+              "disable_array_delete_last_row": true,
+              "array_controls_top": true
+            }
+          }
+        }
+        }
+      ],
+      "required": ["name", "consists_of"],
+      "defaultProperties": ["name", "consists_of"],
+      "options": {
+        "disable_collapse": true,
+        "disable_edit_json": true
+      }
+    },
+    "compoundRegisterChannelWriteOnly": {
+      "title": "Write only compound register",
+      "type": "object",
+      "allOf" : [
+        {"$ref": "#/definitions/compoundRegisterChannelBase"},
+        {
+          "properties": {
+            "consists_of": {
+              "type": "array",
+              "title": "A list of subregisters",
+              "items": { "$ref": "#/definitions/subregWriteOnly" },
+              "minItems": 1,
+              "_format": "table",
+              "propertyOrder": 6,
+              "options": {
+                "disable_collapse": true,
+                "wb": {
+                  "disable_panel": true
+                },
+                "disable_array_delete_last_row": true,
+                "array_controls_top": true
+              }
+            }
+          }
+        }
+      ],
+      "required": ["name", "consists_of"],
+      "defaultProperties": ["name", "consists_of"],
+      "options": {
+        "disable_collapse": true,
+        "disable_edit_json": true
+      }
+    },
+    "compoundRegisterChannelBase": {
       "properties": {
         "enabled": {
           "type": "boolean",
@@ -844,22 +930,6 @@
           "title": "Read-only",
           "type": "boolean",
           "propertyOrder": 5
-        },
-        "consists_of": {
-          "type": "array",
-          "title": "A list of subregisters",
-          "items": { "$ref": "#/definitions/subreg_modbus" },
-          "minItems": 1,
-          "_format": "table",
-          "propertyOrder": 6,
-          "options": {
-            "disable_collapse": true,
-            "wb": {
-              "disable_panel": true
-            },
-            "disable_array_delete_last_row": true,
-            "array_controls_top": true
-          }
         },
         "poll_interval": {
           "type": "integer",
@@ -889,12 +959,6 @@
           "default": 1000,
           "propertyOrder": 11
         }
-      },
-      "required": ["name", "consists_of"],
-      "defaultProperties": ["name", "consists_of"],
-      "options": {
-        "disable_collapse": true,
-        "disable_edit_json": true
       }
     },
     "common_channel": {
@@ -917,8 +981,12 @@
       "headerTemplate": "{{self.name}}",
       "title": "Channel",
       "oneOf": [
-        { "$ref": "#/definitions/registerChannel_modbus" },
-        { "$ref": "#/definitions/compoundRegisterChannel_modbus" }
+        { "$ref": "#/definitions/registerChannel" },
+        { "$ref": "#/definitions/compoundRegisterChannel" },
+        { "$ref": "#/definitions/registerChannelSeparateAddress" },
+        { "$ref": "#/definitions/registerChannelWriteOnly" },
+        { "$ref": "#/definitions/compoundRegisterChannelSeparateAddress"},
+        { "$ref": "#/definitions/compoundRegisterChannelWriteOnly"}
       ],
       "options": {
         "keep_oneof_values": false,
@@ -1100,6 +1168,93 @@
       "required": ["reg_type", "address"],
       "defaultProperties":  ["reg_type", "address"]
     },
+    "subregSeparateAddress": {
+      "type": "object",
+      "title": "Subregister",
+      "properties": {
+        "reg_type": {
+          "$ref": "#/definitions/reg_type",
+          "propertyOrder": 1
+        },
+        "read_address": {
+          "title": "Read Address",
+          "$ref": "#/definitions/address",
+          "propertyOrder": 2,
+          "options": {
+            "keep_oneof_values": false
+          }
+        },
+        "write_address": {
+          "$ref": "#/definitions/write_address",
+          "propertyOrder": 3,
+          "options": {
+            "keep_oneof_values": false
+          }
+        },
+        "format": {
+          "$ref": "#/definitions/format",
+          "propertyOrder": 4
+        },
+        "scale": {
+          "type": "number",
+          "title": "Scale (value multiplier)",
+          "default" : 1,
+          "propertyOrder": 5
+        },
+        "offset": {
+          "type": "number",
+          "title": "Value offset",
+          "default" : 0,
+          "propertyOrder": 6
+        },
+        "word_order": {
+          "$ref": "#/definitions/word_order",
+          "propertyOrder": 7
+        }
+      },
+      "required": ["reg_type", "read_address", "write_address"],
+      "defaultProperties":  ["reg_type", "read_address", "write_address"]
+    },
+    "subregWriteOnly": {
+      "type": "object",
+      "title": "Subregister",
+      "properties": {
+        "reg_type": {
+          "$ref": "#/definitions/reg_type",
+          "propertyOrder": 1
+        },
+        "write_address": {
+          "$ref": "#/definitions/write_address",
+          "propertyOrder": 3,
+          "options": {
+            "keep_oneof_values": false
+          }
+        },
+        "format": {
+          "$ref": "#/definitions/format",
+          "propertyOrder": 4
+        },
+        "scale": {
+          "type": "number",
+          "title": "Scale (value multiplier)",
+          "default" : 1,
+          "propertyOrder": 5
+        },
+        "offset": {
+          "type": "number",
+          "title": "Value offset",
+          "default" : 0,
+          "propertyOrder": 6
+        },
+        "word_order": {
+          "$ref": "#/definitions/word_order",
+          "propertyOrder": 7
+        }
+      },
+      "required": ["reg_type", "write_address"],
+      "not": {"required": ["read_address"]},
+      "defaultProperties":  ["reg_type", "write_address"]
+    },
     "channel_name": {
       "type": "string",
       "title": "Control name",
@@ -1195,7 +1350,7 @@
         {
           "title": "decimal or hex",
           "type": "string",
-          "pattern": "^(0x[A-Fa-f\\d]+|\\d+|)$",
+          "pattern": "^(0x[A-Fa-f\\d]+|\\d+)$",
           "options": {
             "inputAttributes": {
               "placeholder":  "decimal (e.g. 123) or hex (e.g. 0xAF)"
@@ -1230,7 +1385,7 @@
         {
           "title": "decimal or hex",
           "type": "string",
-          "pattern": "^(0x[A-Fa-f\\d]+|\\d+|)$",
+          "pattern": "^(0x[A-Fa-f\\d]+|\\d+)$",
           "options": {
             "inputAttributes": {
               "placeholder":  "decimal (e.g. 123) or hex (e.g. 0xAF)"
@@ -2005,6 +2160,7 @@
       "Command name": "Название команды",
       "Used for logging/debugging purposes only": "Используется только для диагностических сообщений",
       "Address": "Адрес",
+      "Read Address" : "Адрес для чтения",
       "Write Address" : "Адрес для записи",
       "Register index (0-65535 in case of Modbus)": "Номер регистра (0-65535 для Modbus)",
       "Value": "Значение",
@@ -2027,6 +2183,8 @@
       "A list of subregisters": "Список вложенных регистров",
       "Channel": "Канал",
       "Channels": "Каналы",
+      "Channel with separate r/w addresses": "Канал с раздельными адресами для чтения записи",
+      "Write Only Channel": "Канал только для записи",
       "Enable poll": "Опрос",
       "Parameter": "Параметр",
       "Subregister": "Вложенный регистр",
