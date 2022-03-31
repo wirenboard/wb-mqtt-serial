@@ -38,8 +38,6 @@ namespace
                 if (it != regs.end()) { // template overriding
                     channels[GetChannelPropertyName(i)] = ConfigToHomeuiGroupChannel(it->second, i);
                     processedChannels.insert(it->first);
-                } else { // use template channel definition
-                    channels[GetChannelPropertyName(i)] = ConfigToHomeuiGroupChannel(ch, i);
                 }
                 ++i;
             }
