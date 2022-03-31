@@ -861,6 +861,40 @@
     "tableChannelSettings": {
       "type": "object",
       "properties": {
+        "name": {
+          "type": "string",
+          "options": {
+            "hidden": true
+          }
+        },
+        "title": {
+          "title": "Parameter",
+          "type": "string",
+          "_format": "info",
+          "propertyOrder": 1
+        },
+        "mode": {
+          "type": "integer",
+          "title": "Poll",
+          "propertyOrder": 2
+        },
+        "period": {
+          "type": "integer",
+          "title": "Period (ms)",
+          "minimum": 0,
+          "maximum": 172800000,
+          "propertyOrder": 3,
+          "default": 1000
+        }
+      },
+      "required": ["mode", "name"],
+      "options": {
+        "remove_empty_properties": true
+      }
+    },
+    "groupsChannel": {
+      "type": "object",
+      "properties": {
         "mode": {
           "type": "integer",
           "title": "Poll"
@@ -871,9 +905,15 @@
           "minimum": 0,
           "maximum": 172800000,
           "default": 1000
+        },
+        "channelIndex": {
+          "type": "integer",
+          "options": {
+            "hidden": true
+          }
         }
       },
-      "required": ["mode"]
+      "required": ["mode", "channelIndex"]
     },
     "subreg": {
       "type": "object",

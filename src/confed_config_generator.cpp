@@ -1,6 +1,6 @@
 #include "confed_config_generator.h"
 #include "confed_channel_modes.h"
-#include "confed_config_generator2.h"
+#include "confed_config_generator_with_groups.h"
 #include "confed_json_generator.h"
 #include "confed_schema_generator.h"
 
@@ -217,7 +217,7 @@ Json::Value MakeConfigFromConfed(std::istream& stream, TTemplateMap& templates)
                     if (deviceTemplate.isMember("subdevices")) {
                         MakeDeviceConfigFromConfed(device, dt, deviceTemplate);
                     } else {
-                        MakeDeviceConfigFromConfed2(device, deviceTemplate);
+                        MakeDeviceWithGroupsConfigFromConfed(device, deviceTemplate);
                     }
                 }
             }

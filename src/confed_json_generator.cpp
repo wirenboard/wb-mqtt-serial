@@ -1,6 +1,6 @@
 #include "confed_json_generator.h"
 #include "confed_channel_modes.h"
-#include "confed_json_generator2.h"
+#include "confed_json_generator_with_groups.h"
 #include "confed_schema_generator.h"
 #include "config_schema_generator.h"
 #include "log.h"
@@ -41,9 +41,7 @@ namespace
             }
             return res;
         }
-        auto res = ConfigToHomeuiChannel(channelTemplate);
-        res["name"] = channelTemplate["name"];
-        return res;
+        return ConfigToHomeuiSubdeviceChannel(channelTemplate);
     }
 
     Json::Value MakeJsonFromChannelConfig(const Json::Value& channelConfig)
@@ -52,9 +50,7 @@ namespace
             return channelConfig;
         }
 
-        auto res = ConfigToHomeuiChannel(channelConfig);
-        res["name"] = channelConfig["name"];
-        return res;
+        return ConfigToHomeuiSubdeviceChannel(channelConfig);
     }
 
     std::pair<Json::Value, Json::Value> SplitChannels(const Json::Value& device, const Json::Value& deviceTemplate)
@@ -286,7 +282,7 @@ namespace
         }
 
         if (!deviceTemplate->Schema.isMember("subdevices")) {
-            return MakeDeviceForConfed2(config, deviceTemplate->Schema);
+            return MakeDeviceWithGroupsForConfed(config, deviceTemplate->Schema);
         }
 
         Json::Value schema(deviceTemplate->Schema);

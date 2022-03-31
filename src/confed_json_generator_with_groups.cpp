@@ -1,5 +1,6 @@
-#include "confed_json_generator2.h"
+#include "confed_json_generator_with_groups.h"
 #include "confed_channel_modes.h"
+#include "confed_schema_generator_with_groups.h"
 #include "serial_config.h"
 
 using namespace std;
@@ -29,15 +30,16 @@ namespace
             }
         }
 
+        std::unordered_set<std::string> processedChannels;
         if (deviceTemplate.isMember("channels")) {
             size_t i = 0;
             for (const Json::Value& ch: deviceTemplate["channels"]) {
                 auto it = regs.find(ch["name"].asString());
                 if (it != regs.end()) { // template overriding
-                    channels["ch" + std::to_string(i)] = ConfigToHomeuiChannel(it->second);
-                    regs.erase(it);
+                    channels[GetChannelPropertyName(i)] = ConfigToHomeuiGroupChannel(it->second, i);
+                    processedChannels.insert(it->first);
                 } else { // use template channel definition
-                    channels["ch" + std::to_string(i)] = ConfigToHomeuiChannel(ch);
+                    channels[GetChannelPropertyName(i)] = ConfigToHomeuiGroupChannel(ch, i);
                 }
                 ++i;
             }
@@ -45,15 +47,14 @@ namespace
 
         // Preserve custom channels order
         for (const Json::Value& ch: device["channels"]) {
-            auto it = regs.find(ch["name"].asString());
-            if (it != regs.end()) {
+            if (!processedChannels.count(ch["name"].asString())) {
                 // Some configs have settings for channels from old templates.
                 // They don't have appropriate definitions and will be treated as custom channels without addresses.
                 // It could lead to json-editor confusing and wrong web UI generation
                 // Just drop such channels
                 // TODO: It is not a good solution and should be deleted after template versions implementation
-                if (it->second.isMember("address") || it->second.isMember("consists_of")) {
-                    customChannels.append(it->second);
+                if (ch.isMember("address") || ch.isMember("consists_of")) {
+                    customChannels.append(ch);
                 }
             }
         }
@@ -84,7 +85,7 @@ namespace
 //      ...
 //      "channels": [ ... ] // custom channels
 //  }
-Json::Value MakeDeviceForConfed2(const Json::Value& config, const Json::Value& deviceTemplateSchema)
+Json::Value MakeDeviceWithGroupsForConfed(const Json::Value& config, const Json::Value& deviceTemplateSchema)
 {
     auto dt = config["device_type"].asString();
 

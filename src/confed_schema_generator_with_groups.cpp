@@ -1,4 +1,4 @@
-#include "confed_schema_generator2.h"
+#include "confed_schema_generator_with_groups.h"
 #include "confed_channel_modes.h"
 #include "confed_schema_generator.h"
 #include "json_common.h"
@@ -93,28 +93,21 @@ namespace
 
     // {
     //      "allOf" : [
-    //         {"$ref" : "#/definitions/tableChannelSettings"},
+    //         {"$ref" : "#/definitions/groupsChannel"},
     //      ],
     //      "default" : DEFAULT_CHANNEL_VALUE,
     //      "title": CHANNEL_NAME_HASH,
     //      "group" : GROUP,
-    //      "condition": CONDITION,
-    //      "channel": true,
-    //      "propertyOrder": ORDER
+    //      "condition": CONDITION
     // }
     Json::Value MakeChannelSchema(const Json::Value& channelTemplate, int order, TContext& context)
     {
         Json::Value r;
-        MakeArray("allOf", r).append(MakeObject("$ref", "#/definitions/tableChannelSettings"));
-        auto def = ConfigToHomeuiChannel(channelTemplate, false);
-        if (!def.empty()) {
-            r["default"] = def;
-        }
+        MakeArray("allOf", r).append(MakeObject("$ref", "#/definitions/groupsChannel"));
+        r["default"] = ConfigToHomeuiGroupChannel(channelTemplate, order);
         r["title"] = context.AddHashedTranslation(channelTemplate["name"].asString());
         SetIfExists(r, "group", channelTemplate, "group");
         SetIfExists(r, "condition", channelTemplate, "condition");
-        r["channel"] = true;
-        r["propertyOrder"] = order;
         return r;
     }
 
@@ -126,7 +119,7 @@ namespace
         const auto& channels = deviceTemplate["channels"];
         size_t n = 0;
         for (Json::ValueConstIterator it = channels.begin(); it != channels.end(); ++it) {
-            properties[std::string("ch") + std::to_string(n)] = MakeChannelSchema(*it, n, context);
+            properties[GetChannelPropertyName(n)] = MakeChannelSchema(*it, n, context);
             ++n;
         }
     }
@@ -168,11 +161,11 @@ namespace
 //      "defaultProperties": ["device_type", "slave_id"],
 //      "required": ["device_type", "slave_id"]
 //  }
-void AddDeviceUISchema2(const TDeviceTemplate& deviceTemplate,
-                        TSerialDeviceFactory& deviceFactory,
-                        Json::Value& devicesArray,
-                        Json::Value& definitions,
-                        Json::Value& translations)
+void AddDeviceWithGroupsUISchema(const TDeviceTemplate& deviceTemplate,
+                                 TSerialDeviceFactory& deviceFactory,
+                                 Json::Value& devicesArray,
+                                 Json::Value& definitions,
+                                 Json::Value& translations)
 {
     if (deviceTemplate.Schema.isMember("subdevices")) {
         return;
@@ -209,4 +202,9 @@ void AddDeviceUISchema2(const TDeviceTemplate& deviceTemplate,
     AddDeviceParametersUI(res["properties"], deviceTemplate.Schema, 0, context);
     AddChannelsUI(res["properties"], deviceTemplate.Schema, context);
     AddTranslations(deviceTemplate.Type, translations, deviceTemplate.Schema);
+}
+
+std::string GetChannelPropertyName(size_t index)
+{
+    return std::string("ch") + std::to_string(index);
 }

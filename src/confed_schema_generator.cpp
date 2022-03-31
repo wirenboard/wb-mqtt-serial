@@ -1,6 +1,6 @@
 #include "confed_schema_generator.h"
 #include "confed_channel_modes.h"
-#include "confed_schema_generator2.h"
+#include "confed_schema_generator_with_groups.h"
 #include "json_common.h"
 #include "log.h"
 
@@ -238,8 +238,7 @@ namespace
 
     Json::Value MakeSimpleChannelData(const Json::Value& channel, TContext& context)
     {
-        Json::Value v = ConfigToHomeuiChannel(channel);
-        v["name"] = channel["name"];
+        Json::Value v = ConfigToHomeuiSubdeviceChannel(channel);
         v["title"] = context.AddHashedTranslation(channel["name"].asString());
         return v;
     }
@@ -585,7 +584,7 @@ namespace
                 if (t->Schema.isMember("subdevices")) {
                     AddDeviceUISchema(*t, deviceFactory, devicesArray, definitions, translations);
                 } else {
-                    AddDeviceUISchema2(*t, deviceFactory, devicesArray, definitions, translations);
+                    AddDeviceWithGroupsUISchema(*t, deviceFactory, devicesArray, definitions, translations);
                 }
             } catch (const std::exception& e) {
                 LOG(Error) << "Can't load template for '" << t->Title << "': " << e.what();
@@ -703,6 +702,7 @@ Json::Value MakeSchemaForConfed(const Json::Value& configSchema,
     res["definitions"].removeMember("slave_id_broadcast_ui");
 
     AddUnitTypes(res);
+    AddChannelModes(res["definitions"]["groupsChannel"]);
     AddChannelModes(res["definitions"]["tableChannelSettings"]);
 
     // Let's add to #/definitions/device/oneOf a list of devices generated from templates
