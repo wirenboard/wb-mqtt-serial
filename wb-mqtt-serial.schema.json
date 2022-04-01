@@ -2185,6 +2185,8 @@
       "Channels": "Каналы",
       "Channel with separate r/w addresses": "Канал с раздельными адресами для чтения записи",
       "Write Only Channel": "Канал только для записи",
+      "Compound register with separate r/w address": "Составной регистр с раздельными адресами",
+      "Write only compound register": "Составной регистр только для записи",
       "Enable poll": "Опрос",
       "Parameter": "Параметр",
       "Subregister": "Вложенный регистр",
