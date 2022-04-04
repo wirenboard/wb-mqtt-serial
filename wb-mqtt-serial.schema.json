@@ -837,130 +837,6 @@
         "disable_edit_json": true
       }
     },
-    "compoundRegisterChannelSeparateAddress": {
-      "title": "Compound register with separate r/w address",
-      "type": "object",
-      "allOf" : [
-        {"$ref": "#/definitions/compoundRegisterChannelBase"},
-        {
-          "properties": {
-          "consists_of": {
-            "type": "array",
-            "title": "A list of subregisters",
-            "items": { "$ref": "#/definitions/subregSeparateAddress" },
-            "minItems": 1,
-            "_format": "table",
-            "propertyOrder": 6,
-            "options": {
-              "disable_collapse": true,
-              "wb": {
-                "disable_panel": true
-              },
-              "disable_array_delete_last_row": true,
-              "array_controls_top": true
-            }
-          }
-        }
-        }
-      ],
-      "required": ["name", "consists_of"],
-      "defaultProperties": ["name", "consists_of"],
-      "options": {
-        "disable_collapse": true,
-        "disable_edit_json": true
-      }
-    },
-    "compoundRegisterChannelWriteOnly": {
-      "title": "Write only compound register",
-      "type": "object",
-      "allOf" : [
-        {"$ref": "#/definitions/compoundRegisterChannelBase"},
-        {
-          "properties": {
-            "consists_of": {
-              "type": "array",
-              "title": "A list of subregisters",
-              "items": { "$ref": "#/definitions/subregWriteOnly" },
-              "minItems": 1,
-              "_format": "table",
-              "propertyOrder": 6,
-              "options": {
-                "disable_collapse": true,
-                "wb": {
-                  "disable_panel": true
-                },
-                "disable_array_delete_last_row": true,
-                "array_controls_top": true
-              }
-            }
-          }
-        }
-      ],
-      "required": ["name", "consists_of"],
-      "defaultProperties": ["name", "consists_of"],
-      "options": {
-        "disable_collapse": true,
-        "disable_edit_json": true
-      }
-    },
-    "compoundRegisterChannelBase": {
-      "properties": {
-        "enabled": {
-          "type": "boolean",
-          "title": "Enabled",
-          "default" : true,
-          "propertyOrder": 1,
-          "_format": "checkbox"
-        },
-        "name": {
-          "$ref": "#/definitions/channel_name",
-          "propertyOrder": 2
-        },
-        "id": {
-          "type": "string",
-          "title": "MQTT id of the channel",
-          "description": "Used as part of the topic",
-          "propertyOrder": 3
-        },
-        "type": {
-          "$ref": "#/definitions/control_type",
-          "propertyOrder": 4
-        },
-        "readonly": {
-          "title": "Read-only",
-          "type": "boolean",
-          "propertyOrder": 5
-        },
-        "poll_interval": {
-          "type": "integer",
-          "options": {
-            "hidden": true
-          }
-        },
-        "read_period_ms": {
-          "type": "integer",
-          "title": "High priority read period (ms)",
-          "description" : "read_period_description",
-          "minimum": 0,
-          "options": {
-            "enum_titles": [ "high priority (100ms)" ],
-            "enum_values": [ 100 ],
-            "inputAttributes": {
-              "placeholder": "the channel has low priority"
-            }
-          },
-          "_format": "edWb",
-          "propertyOrder": 10
-        },
-        "read_rate_limit_ms": {
-          "type": "integer",
-          "title": "Read rate limit (ms)",
-          "minimum": 0,
-          "default": 1000,
-          "propertyOrder": 11
-        }
-      }
-    },
     "common_channel": {
       "headerTemplate": "{{self.name}}",
       "title": "Channel",
@@ -984,9 +860,7 @@
         { "$ref": "#/definitions/registerChannel" },
         { "$ref": "#/definitions/compoundRegisterChannel" },
         { "$ref": "#/definitions/registerChannelSeparateAddress" },
-        { "$ref": "#/definitions/registerChannelWriteOnly" },
-        { "$ref": "#/definitions/compoundRegisterChannelSeparateAddress"},
-        { "$ref": "#/definitions/compoundRegisterChannelWriteOnly"}
+        { "$ref": "#/definitions/registerChannelWriteOnly" }
       ],
       "options": {
         "keep_oneof_values": false,

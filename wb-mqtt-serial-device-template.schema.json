@@ -144,8 +144,6 @@
               { "$ref": "#/definitions/compoundRegisterChannel" },
               { "$ref": "#/definitions/registerChannelSeparateAddress" },
               { "$ref": "#/definitions/registerChannelWriteOnly" },
-              { "$ref": "#/definitions/compoundRegisterChannelSeparateAddress"},
-              { "$ref": "#/definitions/compoundRegisterChannelWriteOnly"},
               { "$ref": "#/definitions/subdevice_channel" }
             ]
           }
