@@ -197,8 +197,14 @@ public:
     double Scale;
     double Offset;
     double RoundTo;
-    bool WriteOnly = false;
-    bool ReadOnly;
+
+    enum class EAccessType{
+        READ_WRITE,
+        READ_ONLY,
+        WRITE_ONLY
+    };
+    EAccessType AccessType{EAccessType::READ_WRITE};
+
     std::string TypeName;
 
     // Minimal interval between register reads, if ReadPeriod is not set

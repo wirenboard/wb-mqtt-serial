@@ -223,7 +223,7 @@ TEST_F(TModbusTest, WriteOnlyHoldingRegiter)
 
     ModbusHoldingU16WriteOnly =
         TRegister::Intern(ModbusDev, TRegisterConfig::Create(Modbus::REG_HOLDING, regAddrDesc, RegisterFormat::U16));
-    EXPECT_TRUE(ModbusHoldingU16WriteOnly->WriteOnly);
+    EXPECT_TRUE(ModbusHoldingU16WriteOnly->AccessType == TRegisterConfig::EAccessType::WRITE_ONLY);
 }
 
 TEST_F(TModbusTest, WriteOnlyHoldingRegiterNeg)

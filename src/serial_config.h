@@ -319,6 +319,7 @@ std::string GetProtocolName(const Json::Value& deviceDescription);
 
 namespace SerialConfig
 {
+    constexpr auto READ_ADDRESS_PROPERTY_NAME = "read_address";
     constexpr auto WRITE_ADDRESS_PROPERTY_NAME = "write_address";
     constexpr auto ADDRESS_PROPERTY_NAME = "address";
 }
