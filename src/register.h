@@ -198,7 +198,8 @@ public:
     double Offset;
     double RoundTo;
 
-    enum class EAccessType{
+    enum class EAccessType
+    {
         READ_WRITE,
         READ_ONLY,
         WRITE_ONLY
