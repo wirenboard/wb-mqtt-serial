@@ -7372,7 +7372,7 @@
 
                 "lp_hold_time_title": "Long Press Time (ms)",
                 "lp_repeat_time_title": "Parameter Change Rate While Holding Input (ms/unit)",
-                "dp_time_title": "Second press timeout (ms)",
+                "dp_time_title": "Second press waiting time (ms)",
                 "debounce_time_title": "Debounce Time (ms)",
 
                 "lp_hold_time_description": "If press is longer than the specified time then it is long",
