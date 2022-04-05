@@ -7372,13 +7372,13 @@
 
                 "lp_hold_time_title": "Long Press Time (ms)",
                 "lp_repeat_time_title": "Parameter Change Rate While Holding Input (ms/unit)",
-                "dp_time_title": "Double Press Time (ms)",
+                "dp_time_title": "Second press timeout (ms)",
                 "debounce_time_title": "Debounce Time (ms)",
 
-                "lp_hold_time_description": "If the click is longer than the specified time, we consider it long",
-                "lp_repeat_time_description": "The smaller, the faster the parameter changes",
-                "dp_time_description": "If there was no second click during the specified time, we consider the click a single one. 0 - disables all events except short and long",
-                "debounce_time_description": "Must be 5-10 times less than double press time. If double clicks are disabled - any value",
+                "lp_hold_time_description": "If press is longer than the specified time then it is long",
+                "lp_repeat_time_description": "The smaller value, the faster parameter changes",
+                "dp_time_description": "If there is no second press during the specified time then press is single. 0 - disables all presses except short and long",
+                "debounce_time_description": "Must be 5-10 times less than double press time. If double presses are disabled - any value",
 
                 "pwm_frequency_factor_title": "PWM Frequency Factor",
                 "pwm_frequency_factor_description": "PWM frequency is calculated by formula: 24 kHz / factor",
