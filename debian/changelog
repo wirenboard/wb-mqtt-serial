@@ -1,3 +1,9 @@
+wb-mqtt-serial (2.56.5) stable; urgency=medium
+
+  * Fixed incorrect display of channel name when generating scheme
+
+ -- Roman Kochkin <roman.kochkin@wirenboard.ru>  Tue, 5 Apr 2022 20:01:00 +0300
+
 wb-mqtt-serial (2.56.4) stable; urgency=medium
 
   * WB-MRGBW-D fw3 template: added description for press settings,
