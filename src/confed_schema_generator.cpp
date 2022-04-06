@@ -781,7 +781,7 @@ Json::Value MakeSchemaForConfed(const Json::Value& configSchema,
 
 void AddGroupTitleTranslations(const std::string& id, const std::string& title, Json::Value& mainSchemaTranslations)
 {
-    if (mainSchemaTranslations.empty()) {
+    if (!mainSchemaTranslations.isMember("en")) {
         mainSchemaTranslations["en"] = Json::Value(Json::objectValue);
     }
 
