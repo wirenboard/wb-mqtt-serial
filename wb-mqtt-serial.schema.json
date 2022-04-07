@@ -535,17 +535,17 @@
         "units": {
           "$ref": "#/definitions/units",
           "title": "Units",
-          "propertyOrder": 7
+          "propertyOrder": 8
         },
         "format": {
           "$ref": "#/definitions/format",
           "title": "Format", 
-          "propertyOrder": 8
+          "propertyOrder": 9
         },
         "max": {
           "title": "Maximum value",
           "$ref": "#/definitions/serial_int",
-          "propertyOrder": 9,
+          "propertyOrder": 10,
           "options": {
             "keep_oneof_values": false
           }
@@ -555,34 +555,40 @@
           "title": "Scale (value multiplier)",
           "description": "Value displayed = round((value read * scale) + offset) / round_to) * round_to",
           "default" : 1,
-          "propertyOrder": 10
+          "propertyOrder": 11,
+          "options": {
+            "grid_columns": 4
+          }
         },
         "offset": {
           "type": "number",
           "title": "Value offset",
           "description": "Value displayed = round((value read * scale) + offset) / round_to) * round_to",
           "default" : 0,
-          "propertyOrder": 11
+          "propertyOrder": 12,
+          "options": {
+            "grid_columns": 4
+          }
         },
         "round_to": {
           "type": "number",
           "title": "Round to",
           "description": "Value displayed = round((value read * scale) + offset) / round_to) * round_to",
           "default" : 1,
-          "propertyOrder": 12,
+          "propertyOrder": 13,
           "minimum": 0
         },
         "readonly": {
           "title": "Read-only",
           "type": "boolean",
-          "propertyOrder": 13
+          "propertyOrder": 14
         },
         "on_value": {
           // TBD: only use on_value for 'switch' and 'wo-switch' types
           "title": "'On' value",
           "description": "Value corresponding to the 'On' state of the switch",
           "$ref": "#/definitions/serial_int",
-          "propertyOrder": 14,
+          "propertyOrder": 15,
           "options": {
             "keep_oneof_values": false
           }
@@ -591,7 +597,7 @@
           "title": "'Off' value",
           "description": "Value corresponding to the 'Off' state of the switch",
           "$ref": "#/definitions/serial_int",
-          "propertyOrder": 15,
+          "propertyOrder": 16,
           "options": {
             "keep_oneof_values": false
           }
@@ -738,7 +744,7 @@
           "properties": {
             "write_address": {
               "$ref": "#/definitions/write_address",
-              "propertyOrder": 7,
+              "propertyOrder": 6,
               "options": {
                 "keep_oneof_values": false
               }
@@ -751,7 +757,7 @@
       ]
     },
     "compoundRegisterChannel": {
-      "title": "Compound register",
+      "title": "Compound channel",
       "type": "object",
       "properties": {
         "enabled": {
@@ -995,139 +1001,6 @@
       },
       "required": ["reg_type", "address"],
       "defaultProperties":  ["reg_type", "address"]
-    },
-    "subreg_modbus": {
-      "type": "object",
-      "title": "Subregister",
-      "properties": {
-        "reg_type": {
-          "$ref": "#/definitions/reg_type",
-          "propertyOrder": 1
-        },
-        "address": {
-          "$ref": "#/definitions/address",
-          "propertyOrder": 2,
-          "options": {
-            "keep_oneof_values": false
-          }
-        },
-        "write_address": {
-          "$ref": "#/definitions/write_address",
-          "propertyOrder": 3,
-          "options": {
-            "keep_oneof_values": false
-          }
-        },
-        "format": {
-          "$ref": "#/definitions/format",
-          "propertyOrder": 4
-        },
-        "scale": {
-          "type": "number",
-          "title": "Scale (value multiplier)",
-          "default" : 1,
-          "propertyOrder": 5
-        },
-        "offset": {
-          "type": "number",
-          "title": "Value offset",
-          "default" : 0,
-          "propertyOrder": 6
-        },
-        "word_order": {
-          "$ref": "#/definitions/word_order",
-          "propertyOrder": 7
-        }
-      },
-      "required": ["reg_type", "address"],
-      "defaultProperties":  ["reg_type", "address"]
-    },
-    "subregSeparateAddress": {
-      "type": "object",
-      "title": "Subregister",
-      "properties": {
-        "reg_type": {
-          "$ref": "#/definitions/reg_type",
-          "propertyOrder": 1
-        },
-        "read_address": {
-          "title": "Read Address",
-          "$ref": "#/definitions/address",
-          "propertyOrder": 2,
-          "options": {
-            "keep_oneof_values": false
-          }
-        },
-        "write_address": {
-          "$ref": "#/definitions/write_address",
-          "propertyOrder": 3,
-          "options": {
-            "keep_oneof_values": false
-          }
-        },
-        "format": {
-          "$ref": "#/definitions/format",
-          "propertyOrder": 4
-        },
-        "scale": {
-          "type": "number",
-          "title": "Scale (value multiplier)",
-          "default" : 1,
-          "propertyOrder": 5
-        },
-        "offset": {
-          "type": "number",
-          "title": "Value offset",
-          "default" : 0,
-          "propertyOrder": 6
-        },
-        "word_order": {
-          "$ref": "#/definitions/word_order",
-          "propertyOrder": 7
-        }
-      },
-      "required": ["reg_type", "read_address", "write_address"],
-      "defaultProperties":  ["reg_type", "read_address", "write_address"]
-    },
-    "subregWriteOnly": {
-      "type": "object",
-      "title": "Subregister",
-      "properties": {
-        "reg_type": {
-          "$ref": "#/definitions/reg_type",
-          "propertyOrder": 1
-        },
-        "write_address": {
-          "$ref": "#/definitions/write_address",
-          "propertyOrder": 3,
-          "options": {
-            "keep_oneof_values": false
-          }
-        },
-        "format": {
-          "$ref": "#/definitions/format",
-          "propertyOrder": 4
-        },
-        "scale": {
-          "type": "number",
-          "title": "Scale (value multiplier)",
-          "default" : 1,
-          "propertyOrder": 5
-        },
-        "offset": {
-          "type": "number",
-          "title": "Value offset",
-          "default" : 0,
-          "propertyOrder": 6
-        },
-        "word_order": {
-          "$ref": "#/definitions/word_order",
-          "propertyOrder": 7
-        }
-      },
-      "required": ["reg_type", "write_address"],
-      "not": {"required": ["read_address"]},
-      "defaultProperties":  ["reg_type", "write_address"]
     },
     "channel_name": {
       "type": "string",
@@ -2053,14 +1926,12 @@
       "Value which should be treated as read error": "Значение, которое сигнализирует об ошибке в устройстве",
       "Unsupported register value": "Признак неподдерживаемого регистра",
       "Value which should be treated as 'register is unsupported by device'": "Значение сигнализирующее о том, что устройство не поддерживает данный регистр",
-      "Compound register": "Составной регистр",
+      "Compound channel": "Составной канал",
       "A list of subregisters": "Список вложенных регистров",
       "Channel": "Канал",
       "Channels": "Каналы",
       "Channel with separate r/w addresses": "Канал с раздельными адресами для чтения записи",
       "Write Only Channel": "Канал только для записи",
-      "Compound register with separate r/w address": "Составной регистр с раздельными адресами",
-      "Write only compound register": "Составной регистр только для записи",
       "Enable poll": "Опрос",
       "Parameter": "Параметр",
       "Subregister": "Вложенный регистр",
