@@ -1,3 +1,9 @@
+wb-mqtt-serial (2.56.6) stable; urgency=medium
+
+  * Fixed error code on unsuccessful conversion from confed to config
+
+ -- Roman Kochkin <roman.kochkin@wirenboard.ru>  Fri, 8 Apr 2022 09:49:00 +0300
+
 wb-mqtt-serial (2.56.5) stable; urgency=medium
 
   * Fixed incorrect display of channel name when generating scheme

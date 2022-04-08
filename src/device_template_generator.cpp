@@ -88,5 +88,6 @@ void GenerateDeviceTemplate(const std::string& appName, const std::string& desti
         PrintDeviceTemplateGenerationOptionsUsage(appName);
     } catch (const exception& e) {
         Error.Log() << e.what();
+        exit(EXIT_FAILURE);
     }
 }
