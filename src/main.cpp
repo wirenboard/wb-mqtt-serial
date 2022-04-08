@@ -115,6 +115,7 @@ namespace
                 ->write(MakeJsonForConfed(CONFIG_FULL_FILE_PATH, *configSchema, *templates, deviceFactory), &cout);
         } catch (const exception& e) {
             LOG(Error) << e.what();
+            exit(EXIT_FAILURE);
         }
     }
 
@@ -150,6 +151,7 @@ namespace
             dst << src.rdbuf();
         } catch (const exception& e) {
             LOG(Error) << e.what();
+            exit(EXIT_FAILURE);
         }
     }
 
