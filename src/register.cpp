@@ -208,8 +208,6 @@ TRegisterConfig::TRegisterConfig(int type,
 
     if (!Address.Address && Address.WriteAddress) {
         AccessType = EAccessType::WRITE_ONLY;
-    } else if (Address.Address && !Address.WriteAddress) {
-        AccessType = EAccessType::READ_ONLY;
     } else if (!Address.Address && !Address.WriteAddress) {
         throw TSerialDeviceException("write and read register address are not defined");
     }

@@ -18,7 +18,7 @@
                         {
                             "name" : "Holding U16 with write_address",
                             "reg_type" : "holding",
-                            "read_address" : 110,
+                            "address" : 110,
                             "write_address" : 115,
                             "type": "value",
                             "format": "u16"

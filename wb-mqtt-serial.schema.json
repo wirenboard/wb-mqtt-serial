@@ -705,7 +705,8 @@
             }
           },
           "required": ["address"],
-          "defaultProperties" : ["address"]
+          "defaultProperties" : ["address"],
+          "not" : {"required": ["write_address"]}
         }
       ]
     },
@@ -715,7 +716,7 @@
         { "$ref": "#/definitions/register_channel_common"},
         {
           "properties": {
-            "read_address": {
+            "address": {
               "title": "Read Address",
               "$ref": "#/definitions/address",
               "propertyOrder": 6,
@@ -731,8 +732,8 @@
               }
             }
           },
-          "required": ["read_address", "write_address"],
-          "defaultProperties": ["read_address", "write_address"]
+          "required": ["address", "write_address"],
+          "defaultProperties": ["address", "write_address"]
         }
       ]
     },
@@ -752,7 +753,7 @@
           },
           "required": ["write_address"],
           "defaultProperties": ["write_address"],
-          "not" : {"required": ["read_address"]}
+          "not" : {"required": ["address"]}
         }
       ]
     },
