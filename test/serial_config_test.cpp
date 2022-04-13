@@ -103,8 +103,8 @@ protected:
                             Emit() << "Scale: " << reg->Scale;
                             Emit() << "Offset: " << reg->Offset;
                             Emit() << "RoundTo: " << reg->RoundTo;
-                            Emit() << "Poll: " << !reg->WriteOnly;
-                            Emit() << "ReadOnly: " << reg->ReadOnly;
+                            Emit() << "Poll: " << (reg->AccessType != TRegisterConfig::EAccessType::WRITE_ONLY);
+                            Emit() << "ReadOnly: " << (reg->AccessType == TRegisterConfig::EAccessType::READ_ONLY);
                             Emit() << "TypeName: " << reg->TypeName;
                             if (reg->ReadPeriod) {
                                 Emit() << "ReadPeriod: " << reg->ReadPeriod->count();

@@ -72,7 +72,7 @@ bool TSameAddressRegisterRange::Add(PRegister reg, std::chrono::milliseconds pol
 std::string TRegisterConfig::ToString() const
 {
     std::stringstream s;
-    s << TypeName << ": " << GetAddress();
+    s << TypeName << ": " << (AccessType != EAccessType::WRITE_ONLY ? GetAddress() : GetWriteAddress());
     if (Address.DataOffset != 0 || Address.DataWidth != 0) {
         s << ":" << static_cast<int>(Address.DataOffset) << ":" << static_cast<int>(Address.DataWidth);
     }
@@ -81,6 +81,9 @@ std::string TRegisterConfig::ToString() const
 
 const IRegisterAddress& TRegisterConfig::GetAddress() const
 {
+    if (AccessType == EAccessType::WRITE_ONLY) {
+        throw TSerialDeviceException("Missing read address. Write-only register");
+    }
     return *Address.Address;
 }
 
@@ -191,7 +194,6 @@ TRegisterConfig::TRegisterConfig(int type,
       Scale(scale),
       Offset(offset),
       RoundTo(round_to),
-      ReadOnly(readonly),
       TypeName(type_name),
       WordOrder(word_order)
 {
@@ -204,8 +206,17 @@ TRegisterConfig::TRegisterConfig(int type,
         throw TSerialDeviceException("bit offset must not exceed " + std::to_string(maxOffset) + " bits");
     }
 
-    if (!Address.Address) {
-        throw TSerialDeviceException("register address is not defined");
+    if (!Address.Address && Address.WriteAddress) {
+        AccessType = EAccessType::WRITE_ONLY;
+    } else if (!Address.Address && !Address.WriteAddress) {
+        throw TSerialDeviceException("write and read register address are not defined");
+    }
+    if (readonly) {
+        if (AccessType == EAccessType::WRITE_ONLY) {
+            throw TSerialDeviceException("Invalid attribute: readonly. Write-only register");
+        } else {
+            AccessType = EAccessType::READ_ONLY;
+        }
     }
 }
 

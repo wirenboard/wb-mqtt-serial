@@ -31,54 +31,102 @@ Error 10
   context: <root>[ports][0][devices][0][channels][0]
   desc: Failed to validate against child schema #1.
 Error 11
-  context: <root>[ports][0][devices][0][channels][0]
-  desc: Failed to validate against any child schemas allowed by oneOf constraint.
+  context: <root>[ports][0][devices][0][channels][0][error_value]
+  desc: Value type not permitted by 'type' constraint.
 Error 12
-  context: <root>[ports][0][devices][0][channels]
-  desc: Failed to validate item #0 in array.
+  context: <root>[ports][0][devices][0][channels][0][error_value]
+  desc: Failed to validate against child schema #0.
 Error 13
-  context: <root>[ports][0][devices][0]
-  desc: Failed to validate against schema associated with property name 'channels'.
+  context: <root>[ports][0][devices][0][channels][0][error_value]
+  desc: Expected number greater than or equal to 0.000000
 Error 14
-  context: <root>[ports][0][devices][0]
+  context: <root>[ports][0][devices][0][channels][0][error_value]
   desc: Failed to validate against child schema #1.
 Error 15
-  context: <root>[ports][0][devices][0]
-  desc: Failed to validate against child schema #0.
-Error 16
-  context: <root>[ports][0][devices][0]
+  context: <root>[ports][0][devices][0][channels][0][error_value]
   desc: Failed to validate against any child schemas allowed by oneOf constraint.
+Error 16
+  context: <root>[ports][0][devices][0][channels][0]
+  desc: Failed to validate against schema associated with property name 'error_value'.
 Error 17
-  context: <root>[ports][0][devices]
-  desc: Failed to validate item #0 in array.
+  context: <root>[ports][0][devices][0][channels][0]
+  desc: Failed to validate against child schema #0.
 Error 18
-  context: <root>[ports][0]
-  desc: Failed to validate against schema associated with property name 'devices'.
+  context: <root>[ports][0][devices][0][channels][0]
+  desc: Failed to validate against child schema #2.
 Error 19
-  context: <root>[ports][0]
-  desc: Failed to validate against child schema #1.
+  context: <root>[ports][0][devices][0][channels][0][error_value]
+  desc: Value type not permitted by 'type' constraint.
 Error 20
-  context: <root>[ports][0]
+  context: <root>[ports][0][devices][0][channels][0][error_value]
   desc: Failed to validate against child schema #0.
 Error 21
-  context: <root>[ports][0]
-  desc: Missing required property 'port_type'.
+  context: <root>[ports][0][devices][0][channels][0][error_value]
+  desc: Expected number greater than or equal to 0.000000
 Error 22
-  context: <root>[ports][0]
+  context: <root>[ports][0][devices][0][channels][0][error_value]
   desc: Failed to validate against child schema #1.
 Error 23
+  context: <root>[ports][0][devices][0][channels][0][error_value]
+  desc: Failed to validate against any child schemas allowed by oneOf constraint.
+Error 24
+  context: <root>[ports][0][devices][0][channels][0]
+  desc: Failed to validate against schema associated with property name 'error_value'.
+Error 25
+  context: <root>[ports][0][devices][0][channels][0]
+  desc: Failed to validate against child schema #0.
+Error 26
+  context: <root>[ports][0][devices][0][channels][0]
+  desc: Failed to validate against child schema #3.
+Error 27
+  context: <root>[ports][0][devices][0][channels][0]
+  desc: Failed to validate against any child schemas allowed by oneOf constraint.
+Error 28
+  context: <root>[ports][0][devices][0][channels]
+  desc: Failed to validate item #0 in array.
+Error 29
+  context: <root>[ports][0][devices][0]
+  desc: Failed to validate against schema associated with property name 'channels'.
+Error 30
+  context: <root>[ports][0][devices][0]
+  desc: Failed to validate against child schema #1.
+Error 31
+  context: <root>[ports][0][devices][0]
+  desc: Failed to validate against child schema #0.
+Error 32
+  context: <root>[ports][0][devices][0]
+  desc: Failed to validate against any child schemas allowed by oneOf constraint.
+Error 33
+  context: <root>[ports][0][devices]
+  desc: Failed to validate item #0 in array.
+Error 34
+  context: <root>[ports][0]
+  desc: Failed to validate against schema associated with property name 'devices'.
+Error 35
+  context: <root>[ports][0]
+  desc: Failed to validate against child schema #1.
+Error 36
+  context: <root>[ports][0]
+  desc: Failed to validate against child schema #0.
+Error 37
   context: <root>[ports][0]
   desc: Missing required property 'port_type'.
-Error 24
+Error 38
+  context: <root>[ports][0]
+  desc: Failed to validate against child schema #1.
+Error 39
+  context: <root>[ports][0]
+  desc: Missing required property 'port_type'.
+Error 40
   context: <root>[ports][0]
   desc: Failed to validate against child schema #2.
-Error 25
+Error 41
   context: <root>[ports][0]
   desc: Failed to validate against any child schemas allowed by oneOf constraint.
-Error 26
+Error 42
   context: <root>[ports]
   desc: Failed to validate item #0 in array.
-Error 27
+Error 43
   context: <root>
   desc: Failed to validate against schema associated with property name 'ports'.
 
@@ -115,54 +163,102 @@ Error 10
   context: <root>[ports][0][devices][0][channels][0]
   desc: Failed to validate against child schema #1.
 Error 11
-  context: <root>[ports][0][devices][0][channels][0]
-  desc: Failed to validate against any child schemas allowed by oneOf constraint.
+  context: <root>[ports][0][devices][0][channels][0][error_value]
+  desc: Failed to match regex specified by 'pattern' constraint.
 Error 12
-  context: <root>[ports][0][devices][0][channels]
-  desc: Failed to validate item #0 in array.
+  context: <root>[ports][0][devices][0][channels][0][error_value]
+  desc: Failed to validate against child schema #0.
 Error 13
-  context: <root>[ports][0][devices][0]
-  desc: Failed to validate against schema associated with property name 'channels'.
+  context: <root>[ports][0][devices][0][channels][0][error_value]
+  desc: Value type not permitted by 'type' constraint.
 Error 14
-  context: <root>[ports][0][devices][0]
+  context: <root>[ports][0][devices][0][channels][0][error_value]
   desc: Failed to validate against child schema #1.
 Error 15
-  context: <root>[ports][0][devices][0]
-  desc: Failed to validate against child schema #0.
-Error 16
-  context: <root>[ports][0][devices][0]
+  context: <root>[ports][0][devices][0][channels][0][error_value]
   desc: Failed to validate against any child schemas allowed by oneOf constraint.
+Error 16
+  context: <root>[ports][0][devices][0][channels][0]
+  desc: Failed to validate against schema associated with property name 'error_value'.
 Error 17
-  context: <root>[ports][0][devices]
-  desc: Failed to validate item #0 in array.
+  context: <root>[ports][0][devices][0][channels][0]
+  desc: Failed to validate against child schema #0.
 Error 18
-  context: <root>[ports][0]
-  desc: Failed to validate against schema associated with property name 'devices'.
+  context: <root>[ports][0][devices][0][channels][0]
+  desc: Failed to validate against child schema #2.
 Error 19
-  context: <root>[ports][0]
-  desc: Failed to validate against child schema #1.
+  context: <root>[ports][0][devices][0][channels][0][error_value]
+  desc: Failed to match regex specified by 'pattern' constraint.
 Error 20
-  context: <root>[ports][0]
+  context: <root>[ports][0][devices][0][channels][0][error_value]
   desc: Failed to validate against child schema #0.
 Error 21
-  context: <root>[ports][0]
-  desc: Missing required property 'port_type'.
+  context: <root>[ports][0][devices][0][channels][0][error_value]
+  desc: Value type not permitted by 'type' constraint.
 Error 22
-  context: <root>[ports][0]
+  context: <root>[ports][0][devices][0][channels][0][error_value]
   desc: Failed to validate against child schema #1.
 Error 23
+  context: <root>[ports][0][devices][0][channels][0][error_value]
+  desc: Failed to validate against any child schemas allowed by oneOf constraint.
+Error 24
+  context: <root>[ports][0][devices][0][channels][0]
+  desc: Failed to validate against schema associated with property name 'error_value'.
+Error 25
+  context: <root>[ports][0][devices][0][channels][0]
+  desc: Failed to validate against child schema #0.
+Error 26
+  context: <root>[ports][0][devices][0][channels][0]
+  desc: Failed to validate against child schema #3.
+Error 27
+  context: <root>[ports][0][devices][0][channels][0]
+  desc: Failed to validate against any child schemas allowed by oneOf constraint.
+Error 28
+  context: <root>[ports][0][devices][0][channels]
+  desc: Failed to validate item #0 in array.
+Error 29
+  context: <root>[ports][0][devices][0]
+  desc: Failed to validate against schema associated with property name 'channels'.
+Error 30
+  context: <root>[ports][0][devices][0]
+  desc: Failed to validate against child schema #1.
+Error 31
+  context: <root>[ports][0][devices][0]
+  desc: Failed to validate against child schema #0.
+Error 32
+  context: <root>[ports][0][devices][0]
+  desc: Failed to validate against any child schemas allowed by oneOf constraint.
+Error 33
+  context: <root>[ports][0][devices]
+  desc: Failed to validate item #0 in array.
+Error 34
+  context: <root>[ports][0]
+  desc: Failed to validate against schema associated with property name 'devices'.
+Error 35
+  context: <root>[ports][0]
+  desc: Failed to validate against child schema #1.
+Error 36
+  context: <root>[ports][0]
+  desc: Failed to validate against child schema #0.
+Error 37
   context: <root>[ports][0]
   desc: Missing required property 'port_type'.
-Error 24
+Error 38
+  context: <root>[ports][0]
+  desc: Failed to validate against child schema #1.
+Error 39
+  context: <root>[ports][0]
+  desc: Missing required property 'port_type'.
+Error 40
   context: <root>[ports][0]
   desc: Failed to validate against child schema #2.
-Error 25
+Error 41
   context: <root>[ports][0]
   desc: Failed to validate against any child schemas allowed by oneOf constraint.
-Error 26
+Error 42
   context: <root>[ports]
   desc: Failed to validate item #0 in array.
-Error 27
+Error 43
   context: <root>
   desc: Failed to validate against schema associated with property name 'ports'.
 
@@ -274,54 +370,102 @@ Error 10
   context: <root>[ports][0][devices][0][channels][0]
   desc: Failed to validate against child schema #1.
 Error 11
-  context: <root>[ports][0][devices][0][channels][0]
-  desc: Failed to validate against any child schemas allowed by oneOf constraint.
+  context: <root>[ports][0][devices][0][channels][0][error_value]
+  desc: Failed to match regex specified by 'pattern' constraint.
 Error 12
-  context: <root>[ports][0][devices][0][channels]
-  desc: Failed to validate item #0 in array.
+  context: <root>[ports][0][devices][0][channels][0][error_value]
+  desc: Failed to validate against child schema #0.
 Error 13
-  context: <root>[ports][0][devices][0]
-  desc: Failed to validate against schema associated with property name 'channels'.
+  context: <root>[ports][0][devices][0][channels][0][error_value]
+  desc: Value type not permitted by 'type' constraint.
 Error 14
-  context: <root>[ports][0][devices][0]
+  context: <root>[ports][0][devices][0][channels][0][error_value]
   desc: Failed to validate against child schema #1.
 Error 15
-  context: <root>[ports][0][devices][0]
-  desc: Failed to validate against child schema #0.
-Error 16
-  context: <root>[ports][0][devices][0]
+  context: <root>[ports][0][devices][0][channels][0][error_value]
   desc: Failed to validate against any child schemas allowed by oneOf constraint.
+Error 16
+  context: <root>[ports][0][devices][0][channels][0]
+  desc: Failed to validate against schema associated with property name 'error_value'.
 Error 17
-  context: <root>[ports][0][devices]
-  desc: Failed to validate item #0 in array.
+  context: <root>[ports][0][devices][0][channels][0]
+  desc: Failed to validate against child schema #0.
 Error 18
-  context: <root>[ports][0]
-  desc: Failed to validate against schema associated with property name 'devices'.
+  context: <root>[ports][0][devices][0][channels][0]
+  desc: Failed to validate against child schema #2.
 Error 19
-  context: <root>[ports][0]
-  desc: Failed to validate against child schema #1.
+  context: <root>[ports][0][devices][0][channels][0][error_value]
+  desc: Failed to match regex specified by 'pattern' constraint.
 Error 20
-  context: <root>[ports][0]
+  context: <root>[ports][0][devices][0][channels][0][error_value]
   desc: Failed to validate against child schema #0.
 Error 21
-  context: <root>[ports][0]
-  desc: Missing required property 'port_type'.
+  context: <root>[ports][0][devices][0][channels][0][error_value]
+  desc: Value type not permitted by 'type' constraint.
 Error 22
-  context: <root>[ports][0]
+  context: <root>[ports][0][devices][0][channels][0][error_value]
   desc: Failed to validate against child schema #1.
 Error 23
+  context: <root>[ports][0][devices][0][channels][0][error_value]
+  desc: Failed to validate against any child schemas allowed by oneOf constraint.
+Error 24
+  context: <root>[ports][0][devices][0][channels][0]
+  desc: Failed to validate against schema associated with property name 'error_value'.
+Error 25
+  context: <root>[ports][0][devices][0][channels][0]
+  desc: Failed to validate against child schema #0.
+Error 26
+  context: <root>[ports][0][devices][0][channels][0]
+  desc: Failed to validate against child schema #3.
+Error 27
+  context: <root>[ports][0][devices][0][channels][0]
+  desc: Failed to validate against any child schemas allowed by oneOf constraint.
+Error 28
+  context: <root>[ports][0][devices][0][channels]
+  desc: Failed to validate item #0 in array.
+Error 29
+  context: <root>[ports][0][devices][0]
+  desc: Failed to validate against schema associated with property name 'channels'.
+Error 30
+  context: <root>[ports][0][devices][0]
+  desc: Failed to validate against child schema #1.
+Error 31
+  context: <root>[ports][0][devices][0]
+  desc: Failed to validate against child schema #0.
+Error 32
+  context: <root>[ports][0][devices][0]
+  desc: Failed to validate against any child schemas allowed by oneOf constraint.
+Error 33
+  context: <root>[ports][0][devices]
+  desc: Failed to validate item #0 in array.
+Error 34
+  context: <root>[ports][0]
+  desc: Failed to validate against schema associated with property name 'devices'.
+Error 35
+  context: <root>[ports][0]
+  desc: Failed to validate against child schema #1.
+Error 36
+  context: <root>[ports][0]
+  desc: Failed to validate against child schema #0.
+Error 37
   context: <root>[ports][0]
   desc: Missing required property 'port_type'.
-Error 24
+Error 38
+  context: <root>[ports][0]
+  desc: Failed to validate against child schema #1.
+Error 39
+  context: <root>[ports][0]
+  desc: Missing required property 'port_type'.
+Error 40
   context: <root>[ports][0]
   desc: Failed to validate against child schema #2.
-Error 25
+Error 41
   context: <root>[ports][0]
   desc: Failed to validate against any child schemas allowed by oneOf constraint.
-Error 26
+Error 42
   context: <root>[ports]
   desc: Failed to validate item #0 in array.
-Error 27
+Error 43
   context: <root>
   desc: Failed to validate against schema associated with property name 'ports'.
 
@@ -358,54 +502,102 @@ Error 10
   context: <root>[ports][0][devices][0][channels][0]
   desc: Failed to validate against child schema #1.
 Error 11
-  context: <root>[ports][0][devices][0][channels][0]
-  desc: Failed to validate against any child schemas allowed by oneOf constraint.
+  context: <root>[ports][0][devices][0][channels][0][error_value]
+  desc: Value type not permitted by 'type' constraint.
 Error 12
-  context: <root>[ports][0][devices][0][channels]
-  desc: Failed to validate item #0 in array.
+  context: <root>[ports][0][devices][0][channels][0][error_value]
+  desc: Failed to validate against child schema #0.
 Error 13
-  context: <root>[ports][0][devices][0]
-  desc: Failed to validate against schema associated with property name 'channels'.
+  context: <root>[ports][0][devices][0][channels][0][error_value]
+  desc: Expected number less than or equal to 4294967295.000000
 Error 14
-  context: <root>[ports][0][devices][0]
+  context: <root>[ports][0][devices][0][channels][0][error_value]
   desc: Failed to validate against child schema #1.
 Error 15
-  context: <root>[ports][0][devices][0]
-  desc: Failed to validate against child schema #0.
-Error 16
-  context: <root>[ports][0][devices][0]
+  context: <root>[ports][0][devices][0][channels][0][error_value]
   desc: Failed to validate against any child schemas allowed by oneOf constraint.
+Error 16
+  context: <root>[ports][0][devices][0][channels][0]
+  desc: Failed to validate against schema associated with property name 'error_value'.
 Error 17
-  context: <root>[ports][0][devices]
-  desc: Failed to validate item #0 in array.
+  context: <root>[ports][0][devices][0][channels][0]
+  desc: Failed to validate against child schema #0.
 Error 18
-  context: <root>[ports][0]
-  desc: Failed to validate against schema associated with property name 'devices'.
+  context: <root>[ports][0][devices][0][channels][0]
+  desc: Failed to validate against child schema #2.
 Error 19
-  context: <root>[ports][0]
-  desc: Failed to validate against child schema #1.
+  context: <root>[ports][0][devices][0][channels][0][error_value]
+  desc: Value type not permitted by 'type' constraint.
 Error 20
-  context: <root>[ports][0]
+  context: <root>[ports][0][devices][0][channels][0][error_value]
   desc: Failed to validate against child schema #0.
 Error 21
-  context: <root>[ports][0]
-  desc: Missing required property 'port_type'.
+  context: <root>[ports][0][devices][0][channels][0][error_value]
+  desc: Expected number less than or equal to 4294967295.000000
 Error 22
-  context: <root>[ports][0]
+  context: <root>[ports][0][devices][0][channels][0][error_value]
   desc: Failed to validate against child schema #1.
 Error 23
+  context: <root>[ports][0][devices][0][channels][0][error_value]
+  desc: Failed to validate against any child schemas allowed by oneOf constraint.
+Error 24
+  context: <root>[ports][0][devices][0][channels][0]
+  desc: Failed to validate against schema associated with property name 'error_value'.
+Error 25
+  context: <root>[ports][0][devices][0][channels][0]
+  desc: Failed to validate against child schema #0.
+Error 26
+  context: <root>[ports][0][devices][0][channels][0]
+  desc: Failed to validate against child schema #3.
+Error 27
+  context: <root>[ports][0][devices][0][channels][0]
+  desc: Failed to validate against any child schemas allowed by oneOf constraint.
+Error 28
+  context: <root>[ports][0][devices][0][channels]
+  desc: Failed to validate item #0 in array.
+Error 29
+  context: <root>[ports][0][devices][0]
+  desc: Failed to validate against schema associated with property name 'channels'.
+Error 30
+  context: <root>[ports][0][devices][0]
+  desc: Failed to validate against child schema #1.
+Error 31
+  context: <root>[ports][0][devices][0]
+  desc: Failed to validate against child schema #0.
+Error 32
+  context: <root>[ports][0][devices][0]
+  desc: Failed to validate against any child schemas allowed by oneOf constraint.
+Error 33
+  context: <root>[ports][0][devices]
+  desc: Failed to validate item #0 in array.
+Error 34
+  context: <root>[ports][0]
+  desc: Failed to validate against schema associated with property name 'devices'.
+Error 35
+  context: <root>[ports][0]
+  desc: Failed to validate against child schema #1.
+Error 36
+  context: <root>[ports][0]
+  desc: Failed to validate against child schema #0.
+Error 37
   context: <root>[ports][0]
   desc: Missing required property 'port_type'.
-Error 24
+Error 38
+  context: <root>[ports][0]
+  desc: Failed to validate against child schema #1.
+Error 39
+  context: <root>[ports][0]
+  desc: Missing required property 'port_type'.
+Error 40
   context: <root>[ports][0]
   desc: Failed to validate against child schema #2.
-Error 25
+Error 41
   context: <root>[ports][0]
   desc: Failed to validate against any child schemas allowed by oneOf constraint.
-Error 26
+Error 42
   context: <root>[ports]
   desc: Failed to validate item #0 in array.
-Error 27
+Error 43
   context: <root>
   desc: Failed to validate against schema associated with property name 'ports'.
 

@@ -140,8 +140,10 @@
           "type": "array",
           "items": {
             "oneOf": [
-              { "$ref": "#/definitions/registerChannel_modbus" },
-              { "$ref": "#/definitions/compoundRegisterChannel_modbus" },
+              { "$ref": "#/definitions/registerChannel" },
+              { "$ref": "#/definitions/compoundRegisterChannel" },
+              { "$ref": "#/definitions/registerChannelSeparateAddress" },
+              { "$ref": "#/definitions/registerChannelWriteOnly" },
               { "$ref": "#/definitions/subdevice_channel" }
             ]
           }

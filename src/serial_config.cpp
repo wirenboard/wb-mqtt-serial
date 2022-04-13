@@ -374,8 +374,8 @@ namespace
                 registers.push_back(reg.RegisterConfig);
                 if (!i)
                     default_type_str = reg.DefaultControlType;
-                else if (registers[i]->ReadOnly != registers[0]->ReadOnly)
-                    throw TConfigParserException(("can't mix read-only and writable registers "
+                else if (registers[i]->AccessType != registers[0]->AccessType)
+                    throw TConfigParserException(("can't mix read-only, write-only and writable registers "
                                                   "in one channel -- ") +
                                                  device_config->DeviceType);
             }
@@ -394,17 +394,19 @@ namespace
         std::string type_str(Read(channel_data, "type", default_type_str));
         if (type_str == "wo-switch") {
             type_str = "switch";
-            for (auto& reg: registers)
-                reg->WriteOnly = true;
+            for (auto& reg: registers) {
+                reg->AccessType = TRegisterConfig::EAccessType::WRITE_ONLY;
+            }
         }
 
         int order = device_config->NextOrderValue();
-        PDeviceChannelConfig channel(new TDeviceChannelConfig(type_str,
-                                                              device_config->Id,
-                                                              order,
-                                                              registers[0]->ReadOnly,
-                                                              mqtt_channel_name,
-                                                              registers));
+        PDeviceChannelConfig channel(
+            new TDeviceChannelConfig(type_str,
+                                     device_config->Id,
+                                     order,
+                                     (registers[0]->AccessType == TRegisterConfig::EAccessType::READ_ONLY),
+                                     mqtt_channel_name,
+                                     registers));
 
         for (const auto& it: Translate(channel_data["name"].asString(), idIsDefined, context)) {
             channel->SetTitle(it.second, it.first);
@@ -646,11 +648,10 @@ namespace
         }
     }
 
-    inline bool HasWriteAddressProperty(const Json::Value& regCfg)
+    inline bool HasNoEmptyProperty(const Json::Value& regCfg, const std::string& propertyName)
     {
-        return regCfg.isMember(SerialConfig::WRITE_ADDRESS_PROPERTY_NAME) &&
-               !(regCfg[SerialConfig::WRITE_ADDRESS_PROPERTY_NAME].isString() &&
-                 regCfg[SerialConfig::WRITE_ADDRESS_PROPERTY_NAME].asString().empty());
+        return regCfg.isMember(propertyName) &&
+               !(regCfg[propertyName].isString() && regCfg[propertyName].asString().empty());
     }
 }
 
@@ -1378,17 +1379,19 @@ TRegisterDesc TUint32RegisterAddressFactory::LoadRegisterAddress(const Json::Val
                                                                  uint32_t registerByteWidth) const
 {
     TRegisterDesc res;
-    auto addr = LoadRegisterBitsAddress(regCfg, SerialConfig::ADDRESS_PROPERTY_NAME);
-    res.DataOffset = addr.BitOffset;
-    res.DataWidth = addr.BitWidth;
-    res.Address = std::shared_ptr<IRegisterAddress>(
-        deviceBaseAddress.CalcNewAddress(addr.Address, stride, registerByteWidth, BytesPerRegister));
-    if (HasWriteAddressProperty(regCfg)) {
+
+    if (HasNoEmptyProperty(regCfg, SerialConfig::ADDRESS_PROPERTY_NAME)) {
+        auto addr = LoadRegisterBitsAddress(regCfg, SerialConfig::ADDRESS_PROPERTY_NAME);
+        res.DataOffset = addr.BitOffset;
+        res.DataWidth = addr.BitWidth;
+        res.Address = std::shared_ptr<IRegisterAddress>(
+            deviceBaseAddress.CalcNewAddress(addr.Address, stride, registerByteWidth, BytesPerRegister));
+        res.WriteAddress = res.Address;
+    }
+    if (HasNoEmptyProperty(regCfg, SerialConfig::WRITE_ADDRESS_PROPERTY_NAME)) {
         auto writeAddress = LoadRegisterBitsAddress(regCfg, SerialConfig::WRITE_ADDRESS_PROPERTY_NAME);
         res.WriteAddress = std::shared_ptr<IRegisterAddress>(
             deviceBaseAddress.CalcNewAddress(writeAddress.Address, stride, registerByteWidth, BytesPerRegister));
-    } else {
-        res.WriteAddress = res.Address;
     }
     return res;
 }
@@ -1404,12 +1407,13 @@ TRegisterDesc TStringRegisterAddressFactory::LoadRegisterAddress(const Json::Val
                                                                  uint32_t registerByteWidth) const
 {
     TRegisterDesc res;
-    res.Address = std::make_shared<TStringRegisterAddress>(regCfg[SerialConfig::ADDRESS_PROPERTY_NAME].asString());
-    if (HasWriteAddressProperty(regCfg)) {
+    if (HasNoEmptyProperty(regCfg, SerialConfig::ADDRESS_PROPERTY_NAME)) {
+        res.Address = std::make_shared<TStringRegisterAddress>(regCfg[SerialConfig::ADDRESS_PROPERTY_NAME].asString());
+        res.WriteAddress = res.Address;
+    }
+    if (HasNoEmptyProperty(regCfg, SerialConfig::WRITE_ADDRESS_PROPERTY_NAME)) {
         res.WriteAddress =
             std::make_shared<TStringRegisterAddress>(regCfg[SerialConfig::WRITE_ADDRESS_PROPERTY_NAME].asString());
-    } else {
-        res.WriteAddress = res.Address;
     }
     return res;
 }

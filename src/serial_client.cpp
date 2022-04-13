@@ -161,7 +161,7 @@ void TSerialClient::PrepareRegisterRanges()
 {
     auto now = std::chrono::steady_clock::now();
     for (auto& reg: RegList) {
-        if (!reg->WriteOnly) {
+        if (reg->AccessType != TRegisterConfig::EAccessType::WRITE_ONLY) {
             // All registers are marked as high priority with poll time set to now.
             // So they will be polled as soon as possible after service start.
             // During next polls registers will be divided to low or high priority according to poll interval
