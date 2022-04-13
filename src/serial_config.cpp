@@ -374,9 +374,8 @@ namespace
                 registers.push_back(reg.RegisterConfig);
                 if (!i)
                     default_type_str = reg.DefaultControlType;
-                else if ((registers[i]->AccessType == TRegisterConfig::EAccessType::READ_ONLY) !=
-                         (registers[0]->AccessType == TRegisterConfig::EAccessType::READ_ONLY))
-                    throw TConfigParserException(("can't mix read-only and writable registers "
+                else if (registers[i]->AccessType != registers[0]->AccessType)
+                    throw TConfigParserException(("can't mix read-only, write-only and writable registers "
                                                   "in one channel -- ") +
                                                  device_config->DeviceType);
             }
