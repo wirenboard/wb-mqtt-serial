@@ -955,6 +955,7 @@
           "type": "integer",
           "title": "Period (ms)",
           "minimum": 0,
+          "maximum": 172800000,
           "propertyOrder": 3,
           "default": 1000
         }

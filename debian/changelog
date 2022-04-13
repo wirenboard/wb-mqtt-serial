@@ -3,7 +3,51 @@ wb-mqtt-serial (2.56.0) stable; urgency=medium
   * Added separate read and write register addresses for the Modbus device.
   * Fixed data corruption bug when writing to the modbus register if the address is given with an offset.
 
- -- Roman Kochkin <roman.kochkin@wirenboard.ru>  Tue, 22 Mar 2022 15:53:00 +0300
+ -- Roman Kochkin <roman.kochkin@wirenboard.ru>  Wed, 13 Apr 2022 17:21:00 +0300
+
+wb-mqtt-serial (2.56.6) stable; urgency=medium
+
+  * Fixed error code on unsuccessful conversion from confed to config
+
+ -- Roman Kochkin <roman.kochkin@wirenboard.ru>  Fri, 8 Apr 2022 09:49:00 +0300
+
+wb-mqtt-serial (2.56.5) stable; urgency=medium
+
+  * Fixed incorrect display of channel name when generating scheme
+
+ -- Roman Kochkin <roman.kochkin@wirenboard.ru>  Tue, 5 Apr 2022 20:01:00 +0300
+
+wb-mqtt-serial (2.56.4) stable; urgency=medium
+
+  * WB-MRGBW-D fw3 template: added description for press settings,
+    ability to disable double and shortlong press events
+
+ -- Pavel Gasheev <pavel.gasheev@wirenboard.ru>  Wed, 30 Mar 2022 14:13:21 +0300
+
+wb-mqtt-serial (2.56.3) stable; urgency=medium
+
+  * Updated documentation
+
+ -- Alexander Degtyarev <a.degtyarev@wirenboard.com>  Tue, 15 Mar 2022 16:44:43 +0400
+
+wb-mqtt-serial (2.56.2) stable; urgency=medium
+
+  * Haier YCJ-A002 template was added
+
+ -- Dmitry Vorobjev <d.vorobjev@wirenboard.ru>  Tue, 15 Mar 2022 16:44:43 +0300
+
+wb-mqtt-serial (2.56.1) stable; urgency=medium
+
+  * read_period_ms max value is limited by 2 days
+  * read period miss error is calculated for at least 10 seconds intervals to make it less noisy 
+
+ -- Petr Krasnoshchekov <petr.krasnoshchekov@wirenboard.ru>  Wed, 16 Mar 2022 13:09:46 +0500
+
+wb-mqtt-serial (2.56.0) stable; urgency=medium
+
+  * Somfy RS485 RTS transmitter support
+
+ -- Petr Krasnoshchekov <petr.krasnoshchekov@wirenboard.ru>  Wed, 16 Mar 2022 09:43:42 +0500
 
 wb-mqtt-serial (2.55.0) stable; urgency=medium
 

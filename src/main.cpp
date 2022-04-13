@@ -115,6 +115,7 @@ namespace
                 ->write(MakeJsonForConfed(CONFIG_FULL_FILE_PATH, *configSchema, *templates, deviceFactory), &cout);
         } catch (const exception& e) {
             LOG(Error) << e.what();
+            exit(EXIT_FAILURE);
         }
     }
 
@@ -126,6 +127,7 @@ namespace
             MakeJsonWriter("  ", "None")->write(MakeConfigFromConfed(std::cin, *templates), &cout);
         } catch (const exception& e) {
             LOG(Error) << e.what();
+            exit(EXIT_FAILURE);
         }
     }
 
@@ -149,6 +151,7 @@ namespace
             dst << src.rdbuf();
         } catch (const exception& e) {
             LOG(Error) << e.what();
+            exit(EXIT_FAILURE);
         }
     }
 
@@ -222,16 +225,16 @@ namespace
                     break;
                 case 'j': // make JSON for confed from config's JSON
                     ConfigToConfed();
-                    exit(0);
+                    exit(EXIT_SUCCESS);
                 case 'J': // make config JSON from confed's JSON
                     ConfedToConfig();
-                    exit(0);
+                    exit(EXIT_SUCCESS);
                 case 'g':
                     SchemaForConfed();
-                    exit(0);
+                    exit(EXIT_SUCCESS);
                 case 'G':
                     GenerateDeviceTemplate(APP_NAME, USER_TEMPLATES_DIR, optarg);
-                    exit(0);
+                    exit(EXIT_SUCCESS);
                 case '?':
                 default:
                     PrintStartupInfo();
@@ -316,7 +319,7 @@ int main(int argc, char* argv[])
         });
         WBMQTT::SignalHandling::SetOnTimeout(SERIAL_DRIVER_STOP_TIMEOUT_S, [&] {
             LOG(Error) << "Driver takes too long to stop. Exiting.";
-            exit(1);
+            exit(EXIT_FAILURE);
         });
         WBMQTT::SignalHandling::Start();
         WBMQTT::SignalHandling::Wait();
