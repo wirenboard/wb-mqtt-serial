@@ -1,4 +1,4 @@
-wb-mqtt-serial (2.56.0) stable; urgency=medium
+wb-mqtt-serial (2.56.7) stable; urgency=medium
 
   * Added separate read and write register addresses for the Modbus device.
   * Fixed data corruption bug when writing to the modbus register if the address is given with an offset.
