@@ -10,48 +10,6 @@ using namespace WBMQTT::JSON;
 
 namespace
 {
-    typedef std::unordered_map<std::string, std::unique_ptr<Expressions::TToken>> TExpressionsCache;
-
-    class TJsonParams: public Expressions::IParams
-    {
-        const Json::Value& Params;
-
-    public:
-        explicit TJsonParams(const Json::Value& params): Params(params)
-        {}
-
-        std::experimental::optional<int32_t> Get(const std::string& name) const override
-        {
-            const auto& param = Params[name];
-            if (param.isInt()) {
-                return std::experimental::optional<int32_t>(param.asInt());
-            }
-            return std::experimental::nullopt;
-        }
-    };
-
-    bool CheckCondition(const Json::Value& item, const TJsonParams& params, TExpressionsCache* exprs)
-    {
-        if (!exprs) {
-            return true;
-        }
-        auto cond = item["condition"].asString();
-        if (cond.empty()) {
-            return true;
-        }
-        try {
-            auto itExpr = exprs->find(cond);
-            if (itExpr == exprs->end()) {
-                Expressions::TParser parser;
-                itExpr = exprs->emplace(cond, parser.Parse(cond)).first;
-            }
-            return Expressions::Eval(itExpr->second.get(), params);
-        } catch (const std::exception& e) {
-            throw TConfigParserException("Error during expression \"" + cond + "\" evaluation: " + e.what());
-        }
-        return false;
-    }
-
     void RemoveDisabledChannels(Json::Value& config, const Json::Value& deviceData, TExpressionsCache& exprs)
     {
         TJsonParams params(deviceData);
@@ -317,4 +275,38 @@ Json::Value MergeDeviceConfigWithTemplate(const Json::Value& deviceData,
     RemoveDisabledChannels(res, deviceData, expressionsCache);
 
     return res;
+}
+
+TJsonParams::TJsonParams(const Json::Value& params): Params(params)
+{}
+
+std::experimental::optional<int32_t> TJsonParams::Get(const std::string& name) const
+{
+    const auto& param = Params[name];
+    if (param.isInt()) {
+        return std::experimental::optional<int32_t>(param.asInt());
+    }
+    return std::experimental::nullopt;
+}
+
+bool CheckCondition(const Json::Value& item, const TJsonParams& params, TExpressionsCache* exprs)
+{
+    if (!exprs) {
+        return true;
+    }
+    auto cond = item["condition"].asString();
+    if (cond.empty()) {
+        return true;
+    }
+    try {
+        auto itExpr = exprs->find(cond);
+        if (itExpr == exprs->end()) {
+            Expressions::TParser parser;
+            itExpr = exprs->emplace(cond, parser.Parse(cond)).first;
+        }
+        return Expressions::Eval(itExpr->second.get(), params);
+    } catch (const std::exception& e) {
+        throw TConfigParserException("Error during expression \"" + cond + "\" evaluation: " + e.what());
+    }
+    return false;
 }

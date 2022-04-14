@@ -40,8 +40,10 @@ namespace
     //      "propertyOrder": INDEX
     //      "group": GROUP_NAME,
     //      "condition": CONDITION,
+    //      "requiredProp": REQUIRED      // if required
     //      "options": {
     //          "enumTitles" : [ ... ]
+    //          "show_opt_in": true       // if not required
     //      }
     //  }
     Json::Value MakeParameterSchema(const Json::Value& setupRegister, int index, TContext& context)
@@ -65,6 +67,12 @@ namespace
         }
         SetIfExists(r, "group", setupRegister, "group");
         SetIfExists(r, "condition", setupRegister, "condition");
+        if (!IsRequiredSetupRegister(setupRegister)) {
+            r["options"]["show_opt_in"] = true;
+        } else {
+            // Use custom requiredProp to not confuse json-editor's validator as it can't handle conditions
+            r["requiredProp"] = true;
+        }
         return r;
     }
 
@@ -78,13 +86,9 @@ namespace
             const auto& params = deviceTemplate["parameters"];
             int n = 0;
             for (Json::ValueConstIterator it = params.begin(); it != params.end(); ++it) {
-                auto& node = properties[it.name()];
                 int order = it->get("order", n).asInt();
                 maxOrder = std::max(order, maxOrder);
-                node = MakeParameterSchema(*it, firstParameterOrder + order, context);
-                if (!IsRequiredSetupRegister(*it)) {
-                    node["options"]["show_opt_in"] = true;
-                }
+                properties[it.name()] = MakeParameterSchema(*it, firstParameterOrder + order, context);
                 ++n;
             }
         }
