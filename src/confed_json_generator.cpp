@@ -1,5 +1,6 @@
 #include "confed_json_generator.h"
 #include "confed_channel_modes.h"
+#include "confed_json_generator_with_groups.h"
 #include "confed_schema_generator.h"
 #include "config_schema_generator.h"
 #include "log.h"
@@ -40,7 +41,7 @@ namespace
             }
             return res;
         }
-        return ConfigToHomeuiChannel(channelTemplate);
+        return ConfigToHomeuiSubdeviceChannel(channelTemplate);
     }
 
     Json::Value MakeJsonFromChannelConfig(const Json::Value& channelConfig)
@@ -49,7 +50,7 @@ namespace
             return channelConfig;
         }
 
-        return ConfigToHomeuiChannel(channelConfig);
+        return ConfigToHomeuiSubdeviceChannel(channelConfig);
     }
 
     std::pair<Json::Value, Json::Value> SplitChannels(const Json::Value& device, const Json::Value& deviceTemplate)
@@ -280,11 +281,11 @@ namespace
             return res;
         }
 
-        Json::Value schema(deviceTemplate->Schema);
-        if (!schema.isMember("subdevices")) {
-            schema["subdevices"] = Json::Value(Json::arrayValue);
+        if (!deviceTemplate->Schema.isMember("subdevices")) {
+            return MakeDeviceWithGroupsForConfed(config, deviceTemplate->Schema);
         }
 
+        Json::Value schema(deviceTemplate->Schema);
         Json::Value newDev(config);
         ConvertPollIntervalToReadRateLimit(newDev);
         JoinChannelsToGroups(newDev, schema);

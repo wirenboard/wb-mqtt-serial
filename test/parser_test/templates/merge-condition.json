@@ -1,0 +1,49 @@
+{
+    "device_type": "merge condition",
+    "device": {
+        "name": "merge condition",
+        "id": "merge-condition",
+
+        "parameters": {
+            "param1": {
+                "title": "p1",
+                "address": "0x0401"
+            },
+            "param2": {
+                "title": "p2",
+                "address": "0x0402"
+            },
+            "param3": {
+                "title": "p3",
+                "address": "0x0403",
+                "condition": "param1==1"
+            }
+        },
+        "channels": [
+            {
+                "name": "c1",
+                "address": "0x0501"
+            },
+            {
+                "name": "c2",
+                "address": "0x0502",
+                "condition": "param1==1"
+            },
+            {
+                "name": "c3",
+                "address": "0x0503",
+                "condition": "param1==1"
+            },
+            {
+                "name": "c4",
+                "address": "0x0504",
+                "condition": "param2==3"
+            },
+            {
+                "name": "c5",
+                "address": "0x0505",
+                "condition": "param1==2&&param2==3"
+            }
+        ]
+    }
+}

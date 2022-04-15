@@ -1,0 +1,68 @@
+""
+identifier, number or left bracket are expected at position 1
+
+
+" "
+unexpected symbol ' ' at position 1
+
+
+"a"
+operator expected at position 2
+
+
+"1"
+operator expected at position 2
+
+
+"a=="
+identifier, number or left bracket are expected at position 4
+
+
+"||1"
+identifier, number or left bracket are expected at position 1
+
+
+"a~=1"
+unexpected symbol '~' at position 2
+
+
+"1a==3"
+operator expected at position 2
+
+
+"(a==1"
+right bracket expected at position 6
+
+
+"a==3)"
+operator expected at position 5
+
+
+"a&&(b<7"
+right bracket expected at position 8
+
+
+"a&&b<7)"
+operator expected at position 7
+
+
+"(a==1)1"
+operator expected at position 7
+
+
+"(a==1)b"
+operator expected at position 7
+
+
+"(a==1)(1==c)"
+operator expected at position 7
+
+
+"b(a==1)"
+operator expected at position 2
+
+
+"1(a==1)"
+operator expected at position 2
+
+

@@ -892,6 +892,29 @@
         "remove_empty_properties": true
       }
     },
+    "groupsChannel": {
+      "type": "object",
+      "properties": {
+        "mode": {
+          "type": "integer",
+          "title": "Poll"
+        },
+        "period": {
+          "type": "integer",
+          "title": "Period (ms)",
+          "minimum": 0,
+          "maximum": 172800000,
+          "default": 1000
+        },
+        "channelIndex": {
+          "type": "integer",
+          "options": {
+            "hidden": true
+          }
+        }
+      },
+      "required": ["mode", "channelIndex"]
+    },
     "subreg": {
       "type": "object",
       "title": "Subregister",
