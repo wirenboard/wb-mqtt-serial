@@ -408,7 +408,7 @@ void TDlmsDevice::ReadAttribute(const std::string& addr, int attribute, CGXDLMSO
                "Getting " + addr + ":" + std::to_string(attribute) + " failed");
 }
 
-uint64_t TDlmsDevice::ReadRegisterImpl(PRegister reg)
+Register::TValue TDlmsDevice::ReadRegisterImpl(PRegister reg)
 {
     auto addr = ToTObisRegisterAddress(reg).GetLogicalName();
     auto obj = Client->GetObjects().FindByLN(DLMS_OBJECT_TYPE_REGISTER, addr);

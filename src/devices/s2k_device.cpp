@@ -70,7 +70,7 @@ uint8_t TS2KDevice::CrcS2K(const uint8_t* array, int size)
     return crc;
 }
 
-void TS2KDevice::WriteRegisterImpl(PRegister reg, uint64_t value)
+void TS2KDevice::WriteRegisterImpl(PRegister reg, Register::TValue value)
 {
     auto addr = GetUint32RegisterAddress(reg->GetAddress());
     if (reg->Type != REG_RELAY) {
@@ -102,7 +102,7 @@ void TS2KDevice::WriteRegisterImpl(PRegister reg, uint64_t value)
     RelayState[response[3]] = response[4];
 }
 
-uint64_t TS2KDevice::ReadRegisterImpl(PRegister reg)
+Register::TValue TS2KDevice::ReadRegisterImpl(PRegister reg)
 {
     auto addr = GetUint32RegisterAddress(reg->GetAddress());
     /* We have no way to get current relay state from device. Thats why we save last

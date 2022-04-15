@@ -78,7 +78,7 @@ std::string TNevaDevice::GetParameterRequest(const TRegister& reg) const
     return ss.str();
 }
 
-uint64_t TNevaDevice::GetRegisterValue(const TRegister& reg, const std::string& v)
+Register::TValue TNevaDevice::GetRegisterValue(const TRegister& reg, const std::string& v)
 {
     if (v.size() < 3 || v.front() != '(' || v.back() != ')') {
         throw TSerialDeviceTransientErrorException("malformed response");

@@ -87,7 +87,7 @@ std::string TEnergomeraIecModeCDevice::GetParameterRequest(const TRegister& reg)
     return reg.GetAddress().ToString();
 }
 
-uint64_t TEnergomeraIecModeCDevice::GetRegisterValue(const TRegister& reg, const std::string& value)
+Register::TValue TEnergomeraIecModeCDevice::GetRegisterValue(const TRegister& reg, const std::string& value)
 {
     // Data in response starts from '(' and ends with ")\r\n"
     if (value.size() < 5 || value.front() != '(' || !WBMQTT::StringHasSuffix(value, ")\r\n")) {

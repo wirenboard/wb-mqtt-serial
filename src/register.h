@@ -15,6 +15,7 @@
 #include <utility>
 #include <vector>
 
+#include "register_value.h"
 #include "serial_exc.h"
 
 enum RegisterFormat
@@ -205,7 +206,7 @@ public:
     // Width of data in response. Could be bit width or anything else depending on protocol
     uint8_t DataWidth;
 
-    std::experimental::optional<uint64_t> UnsupportedValue;
+    std::experimental::optional<Register::TValue> UnsupportedValue;
 
     TRegisterConfig(int type,
                     std::shared_ptr<IRegisterAddress> address,
@@ -306,8 +307,8 @@ struct TRegister: public TRegisterConfig
     //! Set register's availability
     void SetAvailable(TRegisterAvailability available);
 
-    uint64_t GetValue() const;
-    void SetValue(uint64_t value, bool clearReadError = true);
+    Register::TValue GetValue() const;
+    void SetValue(Register::TValue value, bool clearReadError = true);
 
     void SetError(TError error);
     void ClearError(TError error);
@@ -321,7 +322,7 @@ struct TRegister: public TRegisterConfig
 private:
     std::weak_ptr<TSerialDevice> _Device;
     TRegisterAvailability Available = TRegisterAvailability::UNKNOWN;
-    uint64_t Value;
+    Register::TValue Value;
     std::string ChannelName;
     TErrorState ErrorState;
     TReadPeriodMissChecker ReadPeriodMissChecker;
@@ -489,7 +490,7 @@ public:
     bool Add(PRegister reg, std::chrono::milliseconds pollLimit) override;
 };
 
-uint64_t InvertWordOrderIfNeeded(const TRegisterConfig& reg, uint64_t value);
+Register::TValue InvertWordOrderIfNeeded(const TRegisterConfig& reg, Register::TValue value);
 
 /**
  * @brief Tries to get a value from string and
@@ -504,7 +505,7 @@ uint64_t InvertWordOrderIfNeeded(const TRegisterConfig& reg, uint64_t value);
  * @param reg register config
  * @param str string to convert
  */
-uint64_t ConvertToRawValue(const TRegisterConfig& reg, const std::string& str);
+Register::TValue ConvertToRawValue(const TRegisterConfig& reg, const std::string& str);
 
 /**
  * @brief Converts raw bytes to string according to register config
@@ -513,4 +514,4 @@ uint64_t ConvertToRawValue(const TRegisterConfig& reg, const std::string& str);
  * @param reg register config
  * @param val raw bytes
  */
-std::string ConvertFromRawValue(const TRegisterConfig& reg, uint64_t val);
+std::string ConvertFromRawValue(const TRegisterConfig& reg, Register::TValue val);

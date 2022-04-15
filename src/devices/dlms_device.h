@@ -52,7 +52,7 @@ public:
 
 protected:
     void PrepareImpl() override;
-    uint64_t ReadRegisterImpl(PRegister reg) override;
+    Register::TValue ReadRegisterImpl(PRegister reg) override;
 };
 
 namespace DLMS

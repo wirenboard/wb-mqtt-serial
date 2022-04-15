@@ -1049,7 +1049,7 @@ const std::string& TDeviceSetupItemConfig::GetValue() const
     return Value;
 }
 
-uint64_t TDeviceSetupItemConfig::GetRawValue() const
+Register::TValue TDeviceSetupItemConfig::GetRawValue() const
 {
     return RawValue;
 }

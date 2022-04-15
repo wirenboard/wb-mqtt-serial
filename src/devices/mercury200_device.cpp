@@ -73,7 +73,7 @@ std::vector<uint8_t> TMercury200Device::ExecCommand(uint8_t cmd)
     return CmdResultCache.insert({cmd, result}).first->second;
 }
 
-uint64_t TMercury200Device::ReadRegisterImpl(PRegister reg)
+Register::TValue TMercury200Device::ReadRegisterImpl(PRegister reg)
 {
     uint8_t cmd = (GetUint32RegisterAddress(reg->GetAddress()) & 0xFF);
     auto result = ExecCommand(cmd);

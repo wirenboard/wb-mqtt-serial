@@ -24,7 +24,7 @@ public:
 
     static void Register(TSerialDeviceFactory& factory);
 
-    uint64_t ReadRegisterImpl(PRegister reg) override;
+    Register::TValue ReadRegisterImpl(PRegister reg) override;
 
 protected:
     void PrepareImpl() override;

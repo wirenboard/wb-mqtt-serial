@@ -123,7 +123,7 @@ namespace Modbus // modbus protocol common utilities
                        TPort& port,
                        uint8_t slaveId,
                        TRegister& reg,
-                       uint64_t value,
+                       Register::TValue value,
                        TRegisterCache& cache,
                        int shift = 0);
 

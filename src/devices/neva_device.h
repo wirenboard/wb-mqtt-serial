@@ -12,5 +12,5 @@ public:
 
 private:
     std::string GetParameterRequest(const TRegister& reg) const override;
-    uint64_t GetRegisterValue(const TRegister& reg, const std::string& value) override;
+    Register::TValue GetRegisterValue(const TRegister& reg, const std::string& value) override;
 };

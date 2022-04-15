@@ -526,7 +526,7 @@ namespace Modbus // modbus protocol common utilities
     // fills pdu with write request data according to Modbus specification
     void ComposeMultipleWriteRequestPDU(uint8_t* pdu,
                                         const TRegister& reg,
-                                        uint64_t value,
+                                        Register::TValue value,
                                         int shift,
                                         Modbus::TRegisterCache& tmpCache,
                                         const Modbus::TRegisterCache& cache)
@@ -752,7 +752,7 @@ namespace Modbus // modbus protocol common utilities
                        TPort& port,
                        uint8_t slaveId,
                        TRegister& reg,
-                       uint64_t value,
+                       Register::TValue value,
                        Modbus::TRegisterCache& cache,
                        int shift)
     {

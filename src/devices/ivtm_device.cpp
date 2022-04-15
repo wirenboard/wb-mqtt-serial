@@ -122,7 +122,7 @@ void TIVTMDevice::ReadResponse(uint16_t addr, uint8_t* payload, uint16_t len)
     DecodeASCIIBytes(buf + 7, payload, len);
 }
 
-uint64_t TIVTMDevice::ReadRegisterImpl(PRegister reg)
+Register::TValue TIVTMDevice::ReadRegisterImpl(PRegister reg)
 {
     Port()->SkipNoise();
 

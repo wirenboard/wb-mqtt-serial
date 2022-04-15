@@ -5,17 +5,17 @@ using namespace std;
 
 namespace // utility
 {
-    uint64_t GetValue(uint16_t* src, int width)
+    Register::TValue GetValue(uint16_t* src, int width)
     {
-        uint64_t res = 0;
+        Register::TValue res = 0;
         for (int i = 0; i < width; ++i) {
             auto bitCount = ((width - i) - 1) * 16;
-            res |= uint64_t(src[i]) << bitCount;
+            res |= static_cast<Register::TValue>(src[i]) << bitCount;
         }
         return res;
     }
 
-    void SetValue(uint16_t* dst, int width, uint64_t value)
+    void SetValue(uint16_t* dst, int width, Register::TValue value)
     {
         for (int p = width - 1; p >= 0; --p) {
             dst[p] = value & 0xffff;
@@ -63,7 +63,7 @@ TFakeSerialDevice::TFakeSerialDevice(PDeviceConfig config, PPort port, PProtocol
     Devices.push_back(this);
 }
 
-uint64_t TFakeSerialDevice::ReadRegisterImpl(PRegister reg)
+Register::TValue TFakeSerialDevice::ReadRegisterImpl(PRegister reg)
 {
     try {
         if (!FakePort->IsOpen()) {
@@ -102,7 +102,7 @@ uint64_t TFakeSerialDevice::ReadRegisterImpl(PRegister reg)
     }
 }
 
-void TFakeSerialDevice::WriteRegisterImpl(PRegister reg, uint64_t value)
+void TFakeSerialDevice::WriteRegisterImpl(PRegister reg, Register::TValue value)
 {
     try {
         if (!FakePort->IsOpen()) {

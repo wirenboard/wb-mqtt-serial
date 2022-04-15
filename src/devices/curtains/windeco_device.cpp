@@ -89,7 +89,7 @@ std::vector<uint8_t> WinDeco::TDevice::ExecCommand(const std::vector<uint8_t>& r
     return respBytes;
 }
 
-void WinDeco::TDevice::WriteRegisterImpl(PRegister reg, uint64_t value)
+void WinDeco::TDevice::WriteRegisterImpl(PRegister reg, Register::TValue value)
 {
     if (reg->Type == POSITION) {
         if (value == 0) {
@@ -109,7 +109,7 @@ void WinDeco::TDevice::WriteRegisterImpl(PRegister reg, uint64_t value)
     throw TSerialDevicePermanentRegisterException("Unsupported register type");
 }
 
-uint64_t WinDeco::TDevice::ReadRegisterImpl(PRegister reg)
+Register::TValue WinDeco::TDevice::ReadRegisterImpl(PRegister reg)
 {
     switch (reg->Type) {
         case POSITION:

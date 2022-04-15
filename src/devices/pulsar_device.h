@@ -20,14 +20,14 @@ public:
 
     static void Register(TSerialDeviceFactory& factory);
 
-    uint64_t ReadRegisterImpl(PRegister reg) override;
+    Register::TValue ReadRegisterImpl(PRegister reg) override;
 
 private:
     void WriteBCD(uint64_t data, uint8_t* buffer, size_t size, bool big_endian = true);
     void WriteHex(uint64_t data, uint8_t* buffer, size_t size, bool big_endian = true);
 
-    uint64_t ReadBCD(const uint8_t* data, size_t size, bool big_endian = true);
-    uint64_t ReadHex(const uint8_t* data, size_t size, bool big_endian = true);
+    Register::TValue ReadBCD(const uint8_t* data, size_t size, bool big_endian = true);
+    Register::TValue ReadHex(const uint8_t* data, size_t size, bool big_endian = true);
 
     uint16_t CalculateCRC16(const uint8_t* buffer, size_t size);
 
@@ -36,8 +36,8 @@ private:
 
     void ReadResponse(uint32_t addr, uint8_t* payload, size_t size, uint16_t id);
 
-    uint64_t ReadDataRegister(PRegister reg);
-    uint64_t ReadSysTimeRegister(PRegister reg);
+    Register::TValue ReadDataRegister(PRegister reg);
+    Register::TValue ReadSysTimeRegister(PRegister reg);
 
     uint16_t RequestID;
 };

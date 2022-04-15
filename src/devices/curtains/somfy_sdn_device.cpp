@@ -220,12 +220,12 @@ void Somfy::TDevice::WriteRegisterImpl(PRegister reg, uint64_t value)
     throw TSerialDevicePermanentRegisterException("Unsupported register type");
 }
 
-uint64_t Somfy::TDevice::GetCachedResponse(uint8_t requestHeader,
-                                           uint8_t responseHeader,
-                                           size_t bitOffset,
-                                           size_t bitWidth)
+Register::TValue Somfy::TDevice::GetCachedResponse(uint8_t requestHeader,
+                                                   uint8_t responseHeader,
+                                                   size_t bitOffset,
+                                                   size_t bitWidth)
 {
-    uint64_t val;
+    Register::TValue val;
     auto it = DataCache.find(requestHeader);
     if (it != DataCache.end()) {
         val = it->second;
@@ -240,7 +240,7 @@ uint64_t Somfy::TDevice::GetCachedResponse(uint8_t requestHeader,
     return val;
 }
 
-uint64_t Somfy::TDevice::ReadRegisterImpl(PRegister reg)
+Register::TValue Somfy::TDevice::ReadRegisterImpl(PRegister reg)
 {
     switch (reg->Type) {
         case POSITION: {

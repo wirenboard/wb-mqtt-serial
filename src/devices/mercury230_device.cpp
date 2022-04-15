@@ -187,7 +187,7 @@ uint32_t TMercury230Device::ReadParam(uint32_t address, unsigned resp_payload_le
     }
 }
 
-uint64_t TMercury230Device::ReadRegisterImpl(PRegister reg)
+Register::TValue TMercury230Device::ReadRegisterImpl(PRegister reg)
 {
     auto addr = GetUint32RegisterAddress(reg->GetAddress());
     switch (reg->Type) {

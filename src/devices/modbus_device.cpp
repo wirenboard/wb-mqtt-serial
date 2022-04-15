@@ -54,7 +54,7 @@ PRegisterRange TModbusDevice::CreateRegisterRange() const
     return Modbus::CreateRegisterRange();
 }
 
-void TModbusDevice::WriteRegisterImpl(PRegister reg, uint64_t value)
+void TModbusDevice::WriteRegisterImpl(PRegister reg, Register::TValue value)
 {
     Modbus::WriteRegister(*ModbusTraits, *Port(), SlaveId, *reg, value, ModbusCache);
 }

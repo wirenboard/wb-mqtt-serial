@@ -107,7 +107,7 @@ std::vector<uint8_t> TLLSDevice::ExecCommand(uint8_t cmd)
     return CmdResultCache.insert({cmd, result}).first->second;
 }
 
-uint64_t TLLSDevice::ReadRegisterImpl(PRegister reg)
+Register::TValue TLLSDevice::ReadRegisterImpl(PRegister reg)
 {
     uint8_t cmd = GetUint32RegisterAddress(reg->GetAddress());
     auto result = ExecCommand(cmd);
