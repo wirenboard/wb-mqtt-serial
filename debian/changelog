@@ -1,3 +1,9 @@
+wb-mqtt-serial (2.56.7) stable; urgency=medium
+
+  * Added the array data type for modbus register
+
+ -- Roman Kochkin <roman.kochkin@wirenboard.ru>  Fri, 15 Apr 2022 13:49:00 +0300
+
 wb-mqtt-serial (2.56.6) stable; urgency=medium
 
   * Fixed error code on unsuccessful conversion from confed to config
