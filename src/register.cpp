@@ -114,7 +114,7 @@ Register::TValue TRegister::GetValue() const
     return Value;
 }
 
-void TRegister::SetValue(Register::TValue value, bool clearReadError)
+void TRegister::SetValue(const Register::TValue& value, bool clearReadError)
 {
     if (Value != value) {
         LOG(Debug) << "new val for " << ToString() << ": " << std::hex << value;
@@ -417,7 +417,7 @@ Register::TValue InvertWordOrderIfNeeded(const TRegisterConfig& reg, Register::T
     }
 
     uint64_t result = 0;
-    uint64_t cur_value = value;
+    Register::TValue cur_value = value;
 
     for (int i = 0; i < reg.Get16BitWidth(); ++i) {
         uint16_t last_word = (((uint64_t)cur_value) & 0xFFFF);

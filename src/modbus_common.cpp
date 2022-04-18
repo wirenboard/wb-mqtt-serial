@@ -777,7 +777,7 @@ namespace Modbus // modbus protocol common utilities
             } else {
                 ComposeSingleWriteRequestPDU(traits.GetPDU(req),
                                              reg,
-                                             static_cast<uint16_t>(value & 0xffff),
+                                             value.Get<uint16_t>(),
                                              shift,
                                              requests.size() - i - 1,
                                              tmpCache,

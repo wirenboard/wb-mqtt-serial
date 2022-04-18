@@ -197,7 +197,7 @@ public:
 
     // Desired interval between register reads
     std::experimental::optional<std::chrono::milliseconds> ReadPeriod;
-    std::experimental::optional<uint64_t> ErrorValue;
+    std::experimental::optional<Register::TValue> ErrorValue;
     EWordOrder WordOrder;
 
     // Offset of data in response. Could be bit offset or index in array depending on protocol
@@ -308,7 +308,7 @@ struct TRegister: public TRegisterConfig
     void SetAvailable(TRegisterAvailability available);
 
     Register::TValue GetValue() const;
-    void SetValue(Register::TValue value, bool clearReadError = true);
+    void SetValue(const Register::TValue& value, bool clearReadError = true);
 
     void SetError(TError error);
     void ClearError(TError error);
