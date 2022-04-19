@@ -203,7 +203,7 @@ void AddDeviceWithGroupsUISchema(const TDeviceTemplate& deviceTemplate,
     defaultProperties.append("slave_id");
     defaultProperties.append("device_type");
 
-    AddDeviceParametersUI(res["properties"], deviceTemplate.Schema, 0, context);
+    AddDeviceParametersUI(res["properties"], deviceTemplate.Schema, 20, context);
     AddChannelsUI(res["properties"], deviceTemplate.Schema, context);
     AddTranslations(deviceTemplate.Type, translations, deviceTemplate.Schema);
 }
