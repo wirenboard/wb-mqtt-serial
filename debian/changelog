@@ -1,3 +1,9 @@
+wb-mqtt-serial (2.57.1) stable; urgency=medium
+
+  * Specific device properties display order is fixed. They are shown after common properties in homeui.
+
+ -- Petr Krasnoshchekov <petr.krasnoshchekov@wirenboard.ru>  Wed, 20 Apr 2022 10:18:34 +0500
+
 wb-mqtt-serial (2.57.0) stable; urgency=medium
 
   * "condition" is added to parameters and channels in device templates.
