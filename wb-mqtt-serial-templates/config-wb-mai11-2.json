@@ -1,0 +1,4978 @@
+{
+    "title": "WB-MAI11_template_title",
+    "device_type": "WB-MAI11-2",
+    "device": {
+        "name": "WB-MAI11",
+        "id": "wb-mai11",
+        "max_read_registers": 4,
+        "frame_timeout_ms": 0,
+        "response_timeout_ms": 1,
+
+        "groups": [
+            {
+                "title": "Input 1",
+                "id": "in1",
+                "order": 1
+            },
+            {
+                "title": "IN_N",
+                "id": "in1_n",
+                "order": 1,
+                "group": "in1"
+            },
+            {
+                "title": "Input 2",
+                "id": "in2",
+                "order": 2
+            },
+            {
+                "title": "IN_N",
+                "id": "in2_n",
+                "order": 2,
+                "group": "in2"
+            },
+            {
+                "title": "Input 3",
+                "id": "in3",
+                "order": 3
+            },
+            {
+                "title": "IN_N",
+                "id": "in3_n",
+                "order": 3,
+                "group": "in3"
+            },
+            {
+                "title": "Input 4",
+                "id": "in4",
+                "order": 4
+            },
+            {
+                "title": "IN_N",
+                "id": "in4_n",
+                "order": 4,
+                "group": "in4"
+            },
+            {
+                "title": "Input 5",
+                "id": "in5",
+                "order": 5
+            },
+            {
+                "title": "IN_N",
+                "id": "in5_n",
+                "order": 5,
+                "group": "in5"
+            },
+            {
+                "title": "Input 6",
+                "id": "in6",
+                "order": 6
+            },
+            {
+                "title": "IN_N",
+                "id": "in6_n",
+                "order": 6,
+                "group": "in6"
+            },
+            {
+                "title": "Input 7",
+                "id": "in7",
+                "order": 7
+            },
+            {
+                "title": "IN_N",
+                "id": "in7_n",
+                "order": 7,
+                "group": "in7"
+            },
+            {
+                "title": "Input 8",
+                "id": "in8",
+                "order": 8
+            },
+            {
+                "title": "IN_N",
+                "id": "in8_n",
+                "order": 8,
+                "group": "in8"
+            },
+            {
+                "title": "Input 9",
+                "id": "in9",
+                "order": 9
+            },
+            {
+                "title": "IN_N",
+                "id": "in9_n",
+                "order": 9,
+                "group": "in9"
+            },
+            {
+                "title": "Input 10",
+                "id": "in10",
+                "order": 10
+            },
+            {
+                "title": "IN_N",
+                "id": "in10_n",
+                "order": 10,
+                "group": "in10"
+            },
+            {
+                "title": "Input 11",
+                "id": "in11",
+                "order": 11
+            },
+            {
+                "title": "IN_N",
+                "id": "in11_n",
+                "order": 11,
+                "group": "in11"
+            },
+            {
+                "title": "General",
+                "id": "general",
+                "order": 12
+            },
+            {
+                "title": "HW Info",
+                "id": "hw_info",
+                "order": 13
+            },
+            {
+                "title": "Debug",
+                "id": "debug",
+                "order": 14
+            }
+        ],
+
+        "parameters": {
+            "in1_type": {
+                "title": "Type",
+                "address": "0x0400",
+                "order": 1,
+                "enum": [
+                    4096,
+
+                    4352,
+                    4353,
+                    4354,
+                    4355,
+                    4368,
+                    4369,
+                    4370,
+                    4371,
+                    4384,
+                    4385,
+                    4386,
+                    4387,
+                    4400,
+                    4401,
+                    4402,
+
+                    4608,
+                    4609,
+                    4610,
+                    4611,
+                    4624,
+                    4625,
+                    4626,
+                    4627,
+                    4640,
+                    4641,
+                    4642,
+                    4643,
+                    4656,
+                    4657,
+                    4658,
+
+                    4864,
+                    4865,
+                    4866,
+
+                    5120,
+                    5376,
+
+                    5632,
+                    5888
+
+                ],
+                "enum_titles": [
+                    "2-wire RTD Pt 50 (α = 0.00385 °C⁻¹)",
+                    "2-wire RTD Pt 100 (α = 0.00385 °C⁻¹)",
+                    "2-wire RTD Pt 500 (α = 0.00385 °C⁻¹)",
+                    "2-wire RTD Pt 1000 (α = 0.00385 °C⁻¹)",
+                    "2-wire RTD 50P (α = 0.00391 °C⁻¹)",
+                    "2-wire RTD 100P (α = 0.00391 °C⁻¹)",
+                    "2-wire RTD 500P (α = 0.00391 °C⁻¹)",
+                    "2-wire RTD 1000P (α = 0.00391 °C⁻¹)",
+                    "2-wire RTD 50M (α = 0.00428 °C⁻¹)",
+                    "2-wire RTD 100M (α = 0.00428 °C⁻¹)",
+                    "2-wire RTD 500M (α = 0.00428 °C⁻¹)",
+                    "2-wire RTD 1000M (α = 0.00428 °C⁻¹)",
+                    "2-wire RTD Ni 100 (α = 0.00617 °C⁻¹)",
+                    "2-wire RTD Ni 500 (α = 0.00617 °C⁻¹)",
+                    "2-wire RTD Ni 1000 (α = 0.00617 °C⁻¹)",
+
+                    "3-wire RTD Pt 50 (α = 0.00385 °C⁻¹)",
+                    "3-wire RTD Pt 50 (α = 0.00385 °C⁻¹)",
+                    "3-wire RTD Pt 100 (α = 0.00385 °C⁻¹)",
+                    "3-wire RTD Pt 500 (α = 0.00385 °C⁻¹)",
+                    "3-wire RTD Pt 1000 (α = 0.00385 °C⁻¹)",
+                    "3-wire RTD 50P (α = 0.00391 °C⁻¹)",
+                    "3-wire RTD 100P (α = 0.00391 °C⁻¹)",
+                    "3-wire RTD 500P (α = 0.00391 °C⁻¹)",
+                    "3-wire RTD 1000P (α = 0.00391 °C⁻¹)",
+                    "3-wire RTD 50M (α = 0.00428 °C⁻¹)",
+                    "3-wire RTD 100M (α = 0.00428 °C⁻¹)",
+                    "3-wire RTD 500M (α = 0.00428 °C⁻¹)",
+                    "3-wire RTD 1000M (α = 0.00428 °C⁻¹)",
+                    "3-wire RTD Ni 100 (α = 0.00617 °C⁻¹)",
+                    "3-wire RTD Ni 500 (α = 0.00617 °C⁻¹)",
+                    "3-wire RTD Ni 1000 (α = 0.00617 °C⁻¹)",
+
+                    "0-5 mA sensor",
+                    "0-20 mA sensor",
+                    "4-20 mA sensor",
+
+                    "0-1V sensor",
+                    "-50 to 50 mV sensor",
+
+                    "dry contact sensor",
+                    "NTC thermistor 10k (B = 3988 K)"
+                ]
+            },
+            "in1_data_rate": {
+                "required": true,
+                "title": "Sampling time",
+                "order": 2,
+                "address": "0x0402",
+                "enum_titles": [
+                    "50 ms (20 SPS)",
+                    "22 ms (45 SPS)",
+                    "11 ms (90 SPS)",
+                    "5.7 ms (175 SPS)",
+                    "3.0 ms (330 SPS)",
+                    "1.7 ms (600 SPS)",
+                    "1.0 ms (1000 SPS)"
+                ],
+                "enum": [ 20, 45, 90, 175, 330, 600, 1000 ]
+            },
+            "in1_measurements": {
+                "title": "Number of measurements",
+                "description": "Total sampling time of channel is (Sampling time * Number of measurements). Channels are polled sequentially.",
+                "order": 3,
+                "address": "0x0404",
+                "min": 1,
+                "max": 50
+            },
+            "in1_lowpass": {
+                "title": "Lowpass filter time, ms",
+                "order": 4,
+                "address": "0x0406",
+                "min": 0,
+                "max": 65000
+            },
+            "in1_gain": {
+                "title": "Gain",
+                "order": 4,
+                "address": "0x040C",
+                "enum": [0, 1, 2, 4],
+                "enum_titles": ["auto"],
+                "default": 0,
+                "condition": "
+            in_1_type==5888||in_1_type==3||in_1_type==2||in_1_type==0||in_1_type==256||in_1_type==257||in_1_type==4||in_1_type==1"
+            },
+            "in1_min": {
+                "title": "Minimum value",
+                "order": 5,
+                "address": "0x0408",
+                "default": 0,
+                "condition": "
+            in_1_type==5376||in_1_type==4864||in_1_type==4865||in_1_type==4866||in_1_type==0||in_1_type==256||in_1_type==5120"
+            },
+            "in1_max": {
+                "title": "Maximum value",
+                "order": 6,
+                "address": "0x040A",
+                "default": 10000,
+                "condition": "
+            in_1_type==5376||in_1_type==4864||in_1_type==4865||in_1_type==4866||in_1_type==0||in_1_type==256||in_1_type==5120"
+            },
+            "in1_n_type": {
+                "title": "Type",
+                "address": "0x0401",
+                "order": 1,
+                "enum": [
+                    4352,
+                    4353,
+                    4354,
+                    4355,
+                    4368,
+                    4369,
+                    4370,
+                    4371,
+                    4384,
+                    4385,
+                    4386,
+                    4387,
+                    4400,
+                    4401,
+                    4402,
+
+                    4608,
+                    4609,
+                    4610,
+                    4611,
+                    4624,
+                    4625,
+                    4626,
+                    4627,
+                    4640,
+                    4641,
+                    4642,
+                    4643,
+                    4656,
+                    4657,
+                    4658,
+
+                    4864,
+                    4865,
+                    4866,
+
+                    5120,
+                    5376,
+
+                    5632,
+                    5888
+
+                ],
+                "enum_titles": [
+                    "Thermocouple type K (ТХА)",
+
+                    "2-wire RTD Pt 50 (α = 0.00385 °C⁻¹)",
+                    "2-wire RTD Pt 100 (α = 0.00385 °C⁻¹)",
+                    "2-wire RTD Pt 500 (α = 0.00385 °C⁻¹)",
+                    "2-wire RTD Pt 1000 (α = 0.00385 °C⁻¹)",
+                    "2-wire RTD 50P (α = 0.00391 °C⁻¹)",
+                    "2-wire RTD 100P (α = 0.00391 °C⁻¹)",
+                    "2-wire RTD 500P (α = 0.00391 °C⁻¹)",
+                    "2-wire RTD 1000P (α = 0.00391 °C⁻¹)",
+                    "2-wire RTD 50M (α = 0.00428 °C⁻¹)",
+                    "2-wire RTD 100M (α = 0.00428 °C⁻¹)",
+                    "2-wire RTD 500M (α = 0.00428 °C⁻¹)",
+                    "2-wire RTD 1000M (α = 0.00428 °C⁻¹)",
+                    "2-wire RTD Ni 100 (α = 0.00617 °C⁻¹)",
+                    "2-wire RTD Ni 500 (α = 0.00617 °C⁻¹)",
+                    "2-wire RTD Ni 1000 (α = 0.00617 °C⁻¹)",
+
+                    "3-wire RTD Pt 50 (α = 0.00385 °C⁻¹)",
+                    "3-wire RTD Pt 50 (α = 0.00385 °C⁻¹)",
+                    "3-wire RTD Pt 100 (α = 0.00385 °C⁻¹)",
+                    "3-wire RTD Pt 500 (α = 0.00385 °C⁻¹)",
+                    "3-wire RTD Pt 1000 (α = 0.00385 °C⁻¹)",
+                    "3-wire RTD 50P (α = 0.00391 °C⁻¹)",
+                    "3-wire RTD 100P (α = 0.00391 °C⁻¹)",
+                    "3-wire RTD 500P (α = 0.00391 °C⁻¹)",
+                    "3-wire RTD 1000P (α = 0.00391 °C⁻¹)",
+                    "3-wire RTD 50M (α = 0.00428 °C⁻¹)",
+                    "3-wire RTD 100M (α = 0.00428 °C⁻¹)",
+                    "3-wire RTD 500M (α = 0.00428 °C⁻¹)",
+                    "3-wire RTD 1000M (α = 0.00428 °C⁻¹)",
+                    "3-wire RTD Ni 100 (α = 0.00617 °C⁻¹)",
+                    "3-wire RTD Ni 500 (α = 0.00617 °C⁻¹)",
+                    "3-wire RTD Ni 1000 (α = 0.00617 °C⁻¹)",
+
+                    "0-5 mA sensor",
+                    "0-20 mA sensor",
+                    "4-20 mA sensor",
+
+                    "0-1V sensor",
+                    "-50 to 50 mV sensor",
+
+                    "dry contact sensor",
+                    "NTC thermistor 10k (B = 3988 K)"
+                ]
+            },
+            "in1_n_data_rate": {
+                "required": true,
+                "title": "Sampling time",
+                "order": 2,
+                "address": "0x0403",
+                "enum_titles": [
+                    "50 ms (20 SPS)",
+                    "22 ms (45 SPS)",
+                    "11 ms (90 SPS)",
+                    "5.7 ms (175 SPS)",
+                    "3.0 ms (330 SPS)",
+                    "1.7 ms (600 SPS)",
+                    "1.0 ms (1000 SPS)"
+                ],
+                "enum": [ 20, 45, 90, 175, 330, 600, 1000 ]
+            },
+            "in1_n_measurements": {
+                "title": "Number of measurements",
+                "description": "Total sampling time of channel is (Sampling time * Number of measurements). Channels are polled sequentially.",
+                "order": 3,
+                "address": "0x0405",
+                "min": 1,
+                "max": 50
+            },
+            "in1_n_lowpass": {
+                "title": "Lowpass filter time, ms",
+                "order": 4,
+                "address": "0x0407",
+                "min": 0,
+                "max": 65000
+            },
+            "in1_n_gain": {
+                "title": "Gain",
+                "order": 4,
+                "address": "0x040D",
+                "enum": [0, 1, 2, 4],
+                "enum_titles": ["auto"],
+                "default": 0,
+                "condition": "
+            in_1_n_type==5888||in_1_n_type==3||in_1_n_type==2||in_1_n_type==0||in_1_n_type==256||in_1_n_type==257||in_1_n_type==4||in_1_n_type==1"
+            },
+            "in1_n_min": {
+                "title": "Minimum value",
+                "order": 5,
+                "address": "0x0409",
+                "default": 0,
+                "condition": "
+            in_1_n_type==5376||in_1_n_type==4864||in_1_n_type==4865||in_1_n_type==4866||in_1_n_type==0||in_1_n_type==256||in_1_n_type==5120"
+            },
+            "in1_n_max": {
+                "title": "Maximum value",
+                "order": 6,
+                "address": "0x040B",
+                "default": 10000,
+                "condition": "
+            in_1_n_type==5376||in_1_n_type==4864||in_1_n_type==4865||in_1_n_type==4866||in_1_n_type==0||in_1_n_type==256||in_1_n_type==5120"
+            },
+            "in2_type": {
+                "title": "Type",
+                "address": "0x1400",
+                "order": 1,
+                "enum": [
+                    4096,
+
+                    4352,
+                    4353,
+                    4354,
+                    4355,
+                    4368,
+                    4369,
+                    4370,
+                    4371,
+                    4384,
+                    4385,
+                    4386,
+                    4387,
+                    4400,
+                    4401,
+                    4402,
+
+                    4608,
+                    4609,
+                    4610,
+                    4611,
+                    4624,
+                    4625,
+                    4626,
+                    4627,
+                    4640,
+                    4641,
+                    4642,
+                    4643,
+                    4656,
+                    4657,
+                    4658,
+
+                    4864,
+                    4865,
+                    4866,
+
+                    5120,
+                    5376,
+
+                    5632,
+                    5888
+
+                ],
+                "enum_titles": [
+                    "2-wire RTD Pt 50 (α = 0.00385 °C⁻¹)",
+                    "2-wire RTD Pt 100 (α = 0.00385 °C⁻¹)",
+                    "2-wire RTD Pt 500 (α = 0.00385 °C⁻¹)",
+                    "2-wire RTD Pt 1000 (α = 0.00385 °C⁻¹)",
+                    "2-wire RTD 50P (α = 0.00391 °C⁻¹)",
+                    "2-wire RTD 100P (α = 0.00391 °C⁻¹)",
+                    "2-wire RTD 500P (α = 0.00391 °C⁻¹)",
+                    "2-wire RTD 1000P (α = 0.00391 °C⁻¹)",
+                    "2-wire RTD 50M (α = 0.00428 °C⁻¹)",
+                    "2-wire RTD 100M (α = 0.00428 °C⁻¹)",
+                    "2-wire RTD 500M (α = 0.00428 °C⁻¹)",
+                    "2-wire RTD 1000M (α = 0.00428 °C⁻¹)",
+                    "2-wire RTD Ni 100 (α = 0.00617 °C⁻¹)",
+                    "2-wire RTD Ni 500 (α = 0.00617 °C⁻¹)",
+                    "2-wire RTD Ni 1000 (α = 0.00617 °C⁻¹)",
+
+                    "3-wire RTD Pt 50 (α = 0.00385 °C⁻¹)",
+                    "3-wire RTD Pt 50 (α = 0.00385 °C⁻¹)",
+                    "3-wire RTD Pt 100 (α = 0.00385 °C⁻¹)",
+                    "3-wire RTD Pt 500 (α = 0.00385 °C⁻¹)",
+                    "3-wire RTD Pt 1000 (α = 0.00385 °C⁻¹)",
+                    "3-wire RTD 50P (α = 0.00391 °C⁻¹)",
+                    "3-wire RTD 100P (α = 0.00391 °C⁻¹)",
+                    "3-wire RTD 500P (α = 0.00391 °C⁻¹)",
+                    "3-wire RTD 1000P (α = 0.00391 °C⁻¹)",
+                    "3-wire RTD 50M (α = 0.00428 °C⁻¹)",
+                    "3-wire RTD 100M (α = 0.00428 °C⁻¹)",
+                    "3-wire RTD 500M (α = 0.00428 °C⁻¹)",
+                    "3-wire RTD 1000M (α = 0.00428 °C⁻¹)",
+                    "3-wire RTD Ni 100 (α = 0.00617 °C⁻¹)",
+                    "3-wire RTD Ni 500 (α = 0.00617 °C⁻¹)",
+                    "3-wire RTD Ni 1000 (α = 0.00617 °C⁻¹)",
+
+                    "0-5 mA sensor",
+                    "0-20 mA sensor",
+                    "4-20 mA sensor",
+
+                    "0-1V sensor",
+                    "-50 to 50 mV sensor",
+
+                    "dry contact sensor",
+                    "NTC thermistor 10k (B = 3988 K)"
+                ]
+            },
+            "in2_data_rate": {
+                "required": true,
+                "title": "Sampling time",
+                "order": 2,
+                "address": "0x1402",
+                "enum_titles": [
+                    "50 ms (20 SPS)",
+                    "22 ms (45 SPS)",
+                    "11 ms (90 SPS)",
+                    "5.7 ms (175 SPS)",
+                    "3.0 ms (330 SPS)",
+                    "1.7 ms (600 SPS)",
+                    "1.0 ms (1000 SPS)"
+                ],
+                "enum": [ 20, 45, 90, 175, 330, 600, 1000 ]
+            },
+            "in2_measurements": {
+                "title": "Number of measurements",
+                "description": "Total sampling time of channel is (Sampling time * Number of measurements). Channels are polled sequentially.",
+                "order": 3,
+                "address": "0x1404",
+                "min": 1,
+                "max": 50
+            },
+            "in2_lowpass": {
+                "title": "Lowpass filter time, ms",
+                "order": 4,
+                "address": "0x1406",
+                "min": 0,
+                "max": 65000
+            },
+            "in2_gain": {
+                "title": "Gain",
+                "order": 4,
+                "address": "0x140C",
+                "enum": [0, 1, 2, 4],
+                "enum_titles": ["auto"],
+                "default": 0,
+                "condition": "
+            in_2_type==5888||in_2_type==3||in_2_type==2||in_2_type==0||in_2_type==256||in_2_type==257||in_2_type==4||in_2_type==1"
+            },
+            "in2_min": {
+                "title": "Minimum value",
+                "order": 5,
+                "address": "0x1408",
+                "default": 0,
+                "condition": "
+            in_2_type==5376||in_2_type==4864||in_2_type==4865||in_2_type==4866||in_2_type==0||in_2_type==256||in_2_type==5120"
+            },
+            "in2_max": {
+                "title": "Maximum value",
+                "order": 6,
+                "address": "0x140A",
+                "default": 10000,
+                "condition": "
+            in_2_type==5376||in_2_type==4864||in_2_type==4865||in_2_type==4866||in_2_type==0||in_2_type==256||in_2_type==5120"
+            },
+            "in2_n_type": {
+                "title": "Type",
+                "address": "0x1401",
+                "order": 1,
+                "enum": [
+                    4352,
+                    4353,
+                    4354,
+                    4355,
+                    4368,
+                    4369,
+                    4370,
+                    4371,
+                    4384,
+                    4385,
+                    4386,
+                    4387,
+                    4400,
+                    4401,
+                    4402,
+
+                    4608,
+                    4609,
+                    4610,
+                    4611,
+                    4624,
+                    4625,
+                    4626,
+                    4627,
+                    4640,
+                    4641,
+                    4642,
+                    4643,
+                    4656,
+                    4657,
+                    4658,
+
+                    4864,
+                    4865,
+                    4866,
+
+                    5120,
+                    5376,
+
+                    5632,
+                    5888
+
+                ],
+                "enum_titles": [
+                    "Thermocouple type K (ТХА)",
+
+                    "2-wire RTD Pt 50 (α = 0.00385 °C⁻¹)",
+                    "2-wire RTD Pt 100 (α = 0.00385 °C⁻¹)",
+                    "2-wire RTD Pt 500 (α = 0.00385 °C⁻¹)",
+                    "2-wire RTD Pt 1000 (α = 0.00385 °C⁻¹)",
+                    "2-wire RTD 50P (α = 0.00391 °C⁻¹)",
+                    "2-wire RTD 100P (α = 0.00391 °C⁻¹)",
+                    "2-wire RTD 500P (α = 0.00391 °C⁻¹)",
+                    "2-wire RTD 1000P (α = 0.00391 °C⁻¹)",
+                    "2-wire RTD 50M (α = 0.00428 °C⁻¹)",
+                    "2-wire RTD 100M (α = 0.00428 °C⁻¹)",
+                    "2-wire RTD 500M (α = 0.00428 °C⁻¹)",
+                    "2-wire RTD 1000M (α = 0.00428 °C⁻¹)",
+                    "2-wire RTD Ni 100 (α = 0.00617 °C⁻¹)",
+                    "2-wire RTD Ni 500 (α = 0.00617 °C⁻¹)",
+                    "2-wire RTD Ni 1000 (α = 0.00617 °C⁻¹)",
+
+                    "3-wire RTD Pt 50 (α = 0.00385 °C⁻¹)",
+                    "3-wire RTD Pt 50 (α = 0.00385 °C⁻¹)",
+                    "3-wire RTD Pt 100 (α = 0.00385 °C⁻¹)",
+                    "3-wire RTD Pt 500 (α = 0.00385 °C⁻¹)",
+                    "3-wire RTD Pt 1000 (α = 0.00385 °C⁻¹)",
+                    "3-wire RTD 50P (α = 0.00391 °C⁻¹)",
+                    "3-wire RTD 100P (α = 0.00391 °C⁻¹)",
+                    "3-wire RTD 500P (α = 0.00391 °C⁻¹)",
+                    "3-wire RTD 1000P (α = 0.00391 °C⁻¹)",
+                    "3-wire RTD 50M (α = 0.00428 °C⁻¹)",
+                    "3-wire RTD 100M (α = 0.00428 °C⁻¹)",
+                    "3-wire RTD 500M (α = 0.00428 °C⁻¹)",
+                    "3-wire RTD 1000M (α = 0.00428 °C⁻¹)",
+                    "3-wire RTD Ni 100 (α = 0.00617 °C⁻¹)",
+                    "3-wire RTD Ni 500 (α = 0.00617 °C⁻¹)",
+                    "3-wire RTD Ni 1000 (α = 0.00617 °C⁻¹)",
+
+                    "0-5 mA sensor",
+                    "0-20 mA sensor",
+                    "4-20 mA sensor",
+
+                    "0-1V sensor",
+                    "-50 to 50 mV sensor",
+
+                    "dry contact sensor",
+                    "NTC thermistor 10k (B = 3988 K)"
+                ]
+            },
+            "in2_n_data_rate": {
+                "required": true,
+                "title": "Sampling time",
+                "order": 2,
+                "address": "0x1403",
+                "enum_titles": [
+                    "50 ms (20 SPS)",
+                    "22 ms (45 SPS)",
+                    "11 ms (90 SPS)",
+                    "5.7 ms (175 SPS)",
+                    "3.0 ms (330 SPS)",
+                    "1.7 ms (600 SPS)",
+                    "1.0 ms (1000 SPS)"
+                ],
+                "enum": [ 20, 45, 90, 175, 330, 600, 1000 ]
+            },
+            "in2_n_measurements": {
+                "title": "Number of measurements",
+                "description": "Total sampling time of channel is (Sampling time * Number of measurements). Channels are polled sequentially.",
+                "order": 3,
+                "address": "0x1405",
+                "min": 1,
+                "max": 50
+            },
+            "in2_n_lowpass": {
+                "title": "Lowpass filter time, ms",
+                "order": 4,
+                "address": "0x1407",
+                "min": 0,
+                "max": 65000
+            },
+            "in2_n_gain": {
+                "title": "Gain",
+                "order": 4,
+                "address": "0x140D",
+                "enum": [0, 1, 2, 4],
+                "enum_titles": ["auto"],
+                "default": 0,
+                "condition": "
+            in_2_n_type==5888||in_2_n_type==3||in_2_n_type==2||in_2_n_type==0||in_2_n_type==256||in_2_n_type==257||in_2_n_type==4||in_2_n_type==1"
+            },
+            "in2_n_min": {
+                "title": "Minimum value",
+                "order": 5,
+                "address": "0x1409",
+                "default": 0,
+                "condition": "
+            in_2_n_type==5376||in_2_n_type==4864||in_2_n_type==4865||in_2_n_type==4866||in_2_n_type==0||in_2_n_type==256||in_2_n_type==5120"
+            },
+            "in2_n_max": {
+                "title": "Maximum value",
+                "order": 6,
+                "address": "0x140B",
+                "default": 10000,
+                "condition": "
+            in_2_n_type==5376||in_2_n_type==4864||in_2_n_type==4865||in_2_n_type==4866||in_2_n_type==0||in_2_n_type==256||in_2_n_type==5120"
+            },
+            "in3_type": {
+                "title": "Type",
+                "address": "0x2400",
+                "order": 1,
+                "enum": [
+                    4096,
+
+                    4352,
+                    4353,
+                    4354,
+                    4355,
+                    4368,
+                    4369,
+                    4370,
+                    4371,
+                    4384,
+                    4385,
+                    4386,
+                    4387,
+                    4400,
+                    4401,
+                    4402,
+
+                    4608,
+                    4609,
+                    4610,
+                    4611,
+                    4624,
+                    4625,
+                    4626,
+                    4627,
+                    4640,
+                    4641,
+                    4642,
+                    4643,
+                    4656,
+                    4657,
+                    4658,
+
+                    4864,
+                    4865,
+                    4866,
+
+                    5120,
+                    5376,
+
+                    5632,
+                    5888
+
+                ],
+                "enum_titles": [
+                    "2-wire RTD Pt 50 (α = 0.00385 °C⁻¹)",
+                    "2-wire RTD Pt 100 (α = 0.00385 °C⁻¹)",
+                    "2-wire RTD Pt 500 (α = 0.00385 °C⁻¹)",
+                    "2-wire RTD Pt 1000 (α = 0.00385 °C⁻¹)",
+                    "2-wire RTD 50P (α = 0.00391 °C⁻¹)",
+                    "2-wire RTD 100P (α = 0.00391 °C⁻¹)",
+                    "2-wire RTD 500P (α = 0.00391 °C⁻¹)",
+                    "2-wire RTD 1000P (α = 0.00391 °C⁻¹)",
+                    "2-wire RTD 50M (α = 0.00428 °C⁻¹)",
+                    "2-wire RTD 100M (α = 0.00428 °C⁻¹)",
+                    "2-wire RTD 500M (α = 0.00428 °C⁻¹)",
+                    "2-wire RTD 1000M (α = 0.00428 °C⁻¹)",
+                    "2-wire RTD Ni 100 (α = 0.00617 °C⁻¹)",
+                    "2-wire RTD Ni 500 (α = 0.00617 °C⁻¹)",
+                    "2-wire RTD Ni 1000 (α = 0.00617 °C⁻¹)",
+
+                    "3-wire RTD Pt 50 (α = 0.00385 °C⁻¹)",
+                    "3-wire RTD Pt 50 (α = 0.00385 °C⁻¹)",
+                    "3-wire RTD Pt 100 (α = 0.00385 °C⁻¹)",
+                    "3-wire RTD Pt 500 (α = 0.00385 °C⁻¹)",
+                    "3-wire RTD Pt 1000 (α = 0.00385 °C⁻¹)",
+                    "3-wire RTD 50P (α = 0.00391 °C⁻¹)",
+                    "3-wire RTD 100P (α = 0.00391 °C⁻¹)",
+                    "3-wire RTD 500P (α = 0.00391 °C⁻¹)",
+                    "3-wire RTD 1000P (α = 0.00391 °C⁻¹)",
+                    "3-wire RTD 50M (α = 0.00428 °C⁻¹)",
+                    "3-wire RTD 100M (α = 0.00428 °C⁻¹)",
+                    "3-wire RTD 500M (α = 0.00428 °C⁻¹)",
+                    "3-wire RTD 1000M (α = 0.00428 °C⁻¹)",
+                    "3-wire RTD Ni 100 (α = 0.00617 °C⁻¹)",
+                    "3-wire RTD Ni 500 (α = 0.00617 °C⁻¹)",
+                    "3-wire RTD Ni 1000 (α = 0.00617 °C⁻¹)",
+
+                    "0-5 mA sensor",
+                    "0-20 mA sensor",
+                    "4-20 mA sensor",
+
+                    "0-1V sensor",
+                    "-50 to 50 mV sensor",
+
+                    "dry contact sensor",
+                    "NTC thermistor 10k (B = 3988 K)"
+                ]
+            },
+            "in3_data_rate": {
+                "required": true,
+                "title": "Sampling time",
+                "order": 2,
+                "address": "0x2402",
+                "enum_titles": [
+                    "50 ms (20 SPS)",
+                    "22 ms (45 SPS)",
+                    "11 ms (90 SPS)",
+                    "5.7 ms (175 SPS)",
+                    "3.0 ms (330 SPS)",
+                    "1.7 ms (600 SPS)",
+                    "1.0 ms (1000 SPS)"
+                ],
+                "enum": [ 20, 45, 90, 175, 330, 600, 1000 ]
+            },
+            "in3_measurements": {
+                "title": "Number of measurements",
+                "description": "Total sampling time of channel is (Sampling time * Number of measurements). Channels are polled sequentially.",
+                "order": 3,
+                "address": "0x2404",
+                "min": 1,
+                "max": 50
+            },
+            "in3_lowpass": {
+                "title": "Lowpass filter time, ms",
+                "order": 4,
+                "address": "0x2406",
+                "min": 0,
+                "max": 65000
+            },
+            "in3_gain": {
+                "title": "Gain",
+                "order": 4,
+                "address": "0x240C",
+                "enum": [0, 1, 2, 4],
+                "enum_titles": ["auto"],
+                "default": 0,
+                "condition": "
+            in_3_type==5888||in_3_type==3||in_3_type==2||in_3_type==0||in_3_type==256||in_3_type==257||in_3_type==4||in_3_type==1"
+            },
+            "in3_min": {
+                "title": "Minimum value",
+                "order": 5,
+                "address": "0x2408",
+                "default": 0,
+                "condition": "
+            in_3_type==5376||in_3_type==4864||in_3_type==4865||in_3_type==4866||in_3_type==0||in_3_type==256||in_3_type==5120"
+            },
+            "in3_max": {
+                "title": "Maximum value",
+                "order": 6,
+                "address": "0x240A",
+                "default": 10000,
+                "condition": "
+            in_3_type==5376||in_3_type==4864||in_3_type==4865||in_3_type==4866||in_3_type==0||in_3_type==256||in_3_type==5120"
+            },
+            "in3_n_type": {
+                "title": "Type",
+                "address": "0x2401",
+                "order": 1,
+                "enum": [
+                    4352,
+                    4353,
+                    4354,
+                    4355,
+                    4368,
+                    4369,
+                    4370,
+                    4371,
+                    4384,
+                    4385,
+                    4386,
+                    4387,
+                    4400,
+                    4401,
+                    4402,
+
+                    4608,
+                    4609,
+                    4610,
+                    4611,
+                    4624,
+                    4625,
+                    4626,
+                    4627,
+                    4640,
+                    4641,
+                    4642,
+                    4643,
+                    4656,
+                    4657,
+                    4658,
+
+                    4864,
+                    4865,
+                    4866,
+
+                    5120,
+                    5376,
+
+                    5632,
+                    5888
+
+                ],
+                "enum_titles": [
+                    "Thermocouple type K (ТХА)",
+
+                    "2-wire RTD Pt 50 (α = 0.00385 °C⁻¹)",
+                    "2-wire RTD Pt 100 (α = 0.00385 °C⁻¹)",
+                    "2-wire RTD Pt 500 (α = 0.00385 °C⁻¹)",
+                    "2-wire RTD Pt 1000 (α = 0.00385 °C⁻¹)",
+                    "2-wire RTD 50P (α = 0.00391 °C⁻¹)",
+                    "2-wire RTD 100P (α = 0.00391 °C⁻¹)",
+                    "2-wire RTD 500P (α = 0.00391 °C⁻¹)",
+                    "2-wire RTD 1000P (α = 0.00391 °C⁻¹)",
+                    "2-wire RTD 50M (α = 0.00428 °C⁻¹)",
+                    "2-wire RTD 100M (α = 0.00428 °C⁻¹)",
+                    "2-wire RTD 500M (α = 0.00428 °C⁻¹)",
+                    "2-wire RTD 1000M (α = 0.00428 °C⁻¹)",
+                    "2-wire RTD Ni 100 (α = 0.00617 °C⁻¹)",
+                    "2-wire RTD Ni 500 (α = 0.00617 °C⁻¹)",
+                    "2-wire RTD Ni 1000 (α = 0.00617 °C⁻¹)",
+
+                    "3-wire RTD Pt 50 (α = 0.00385 °C⁻¹)",
+                    "3-wire RTD Pt 50 (α = 0.00385 °C⁻¹)",
+                    "3-wire RTD Pt 100 (α = 0.00385 °C⁻¹)",
+                    "3-wire RTD Pt 500 (α = 0.00385 °C⁻¹)",
+                    "3-wire RTD Pt 1000 (α = 0.00385 °C⁻¹)",
+                    "3-wire RTD 50P (α = 0.00391 °C⁻¹)",
+                    "3-wire RTD 100P (α = 0.00391 °C⁻¹)",
+                    "3-wire RTD 500P (α = 0.00391 °C⁻¹)",
+                    "3-wire RTD 1000P (α = 0.00391 °C⁻¹)",
+                    "3-wire RTD 50M (α = 0.00428 °C⁻¹)",
+                    "3-wire RTD 100M (α = 0.00428 °C⁻¹)",
+                    "3-wire RTD 500M (α = 0.00428 °C⁻¹)",
+                    "3-wire RTD 1000M (α = 0.00428 °C⁻¹)",
+                    "3-wire RTD Ni 100 (α = 0.00617 °C⁻¹)",
+                    "3-wire RTD Ni 500 (α = 0.00617 °C⁻¹)",
+                    "3-wire RTD Ni 1000 (α = 0.00617 °C⁻¹)",
+
+                    "0-5 mA sensor",
+                    "0-20 mA sensor",
+                    "4-20 mA sensor",
+
+                    "0-1V sensor",
+                    "-50 to 50 mV sensor",
+
+                    "dry contact sensor",
+                    "NTC thermistor 10k (B = 3988 K)"
+                ]
+            },
+            "in3_n_data_rate": {
+                "required": true,
+                "title": "Sampling time",
+                "order": 2,
+                "address": "0x2403",
+                "enum_titles": [
+                    "50 ms (20 SPS)",
+                    "22 ms (45 SPS)",
+                    "11 ms (90 SPS)",
+                    "5.7 ms (175 SPS)",
+                    "3.0 ms (330 SPS)",
+                    "1.7 ms (600 SPS)",
+                    "1.0 ms (1000 SPS)"
+                ],
+                "enum": [ 20, 45, 90, 175, 330, 600, 1000 ]
+            },
+            "in3_n_measurements": {
+                "title": "Number of measurements",
+                "description": "Total sampling time of channel is (Sampling time * Number of measurements). Channels are polled sequentially.",
+                "order": 3,
+                "address": "0x2405",
+                "min": 1,
+                "max": 50
+            },
+            "in3_n_lowpass": {
+                "title": "Lowpass filter time, ms",
+                "order": 4,
+                "address": "0x2407",
+                "min": 0,
+                "max": 65000
+            },
+            "in3_n_gain": {
+                "title": "Gain",
+                "order": 4,
+                "address": "0x240D",
+                "enum": [0, 1, 2, 4],
+                "enum_titles": ["auto"],
+                "default": 0,
+                "condition": "
+            in_3_n_type==5888||in_3_n_type==3||in_3_n_type==2||in_3_n_type==0||in_3_n_type==256||in_3_n_type==257||in_3_n_type==4||in_3_n_type==1"
+            },
+            "in3_n_min": {
+                "title": "Minimum value",
+                "order": 5,
+                "address": "0x2409",
+                "default": 0,
+                "condition": "
+            in_3_n_type==5376||in_3_n_type==4864||in_3_n_type==4865||in_3_n_type==4866||in_3_n_type==0||in_3_n_type==256||in_3_n_type==5120"
+            },
+            "in3_n_max": {
+                "title": "Maximum value",
+                "order": 6,
+                "address": "0x240B",
+                "default": 10000,
+                "condition": "
+            in_3_n_type==5376||in_3_n_type==4864||in_3_n_type==4865||in_3_n_type==4866||in_3_n_type==0||in_3_n_type==256||in_3_n_type==5120"
+            },
+            "in4_type": {
+                "title": "Type",
+                "address": "0x3400",
+                "order": 1,
+                "enum": [
+                    4096,
+
+                    4352,
+                    4353,
+                    4354,
+                    4355,
+                    4368,
+                    4369,
+                    4370,
+                    4371,
+                    4384,
+                    4385,
+                    4386,
+                    4387,
+                    4400,
+                    4401,
+                    4402,
+
+                    4608,
+                    4609,
+                    4610,
+                    4611,
+                    4624,
+                    4625,
+                    4626,
+                    4627,
+                    4640,
+                    4641,
+                    4642,
+                    4643,
+                    4656,
+                    4657,
+                    4658,
+
+                    4864,
+                    4865,
+                    4866,
+
+                    5120,
+                    5376,
+
+                    5632,
+                    5888
+
+                ],
+                "enum_titles": [
+                    "2-wire RTD Pt 50 (α = 0.00385 °C⁻¹)",
+                    "2-wire RTD Pt 100 (α = 0.00385 °C⁻¹)",
+                    "2-wire RTD Pt 500 (α = 0.00385 °C⁻¹)",
+                    "2-wire RTD Pt 1000 (α = 0.00385 °C⁻¹)",
+                    "2-wire RTD 50P (α = 0.00391 °C⁻¹)",
+                    "2-wire RTD 100P (α = 0.00391 °C⁻¹)",
+                    "2-wire RTD 500P (α = 0.00391 °C⁻¹)",
+                    "2-wire RTD 1000P (α = 0.00391 °C⁻¹)",
+                    "2-wire RTD 50M (α = 0.00428 °C⁻¹)",
+                    "2-wire RTD 100M (α = 0.00428 °C⁻¹)",
+                    "2-wire RTD 500M (α = 0.00428 °C⁻¹)",
+                    "2-wire RTD 1000M (α = 0.00428 °C⁻¹)",
+                    "2-wire RTD Ni 100 (α = 0.00617 °C⁻¹)",
+                    "2-wire RTD Ni 500 (α = 0.00617 °C⁻¹)",
+                    "2-wire RTD Ni 1000 (α = 0.00617 °C⁻¹)",
+
+                    "3-wire RTD Pt 50 (α = 0.00385 °C⁻¹)",
+                    "3-wire RTD Pt 50 (α = 0.00385 °C⁻¹)",
+                    "3-wire RTD Pt 100 (α = 0.00385 °C⁻¹)",
+                    "3-wire RTD Pt 500 (α = 0.00385 °C⁻¹)",
+                    "3-wire RTD Pt 1000 (α = 0.00385 °C⁻¹)",
+                    "3-wire RTD 50P (α = 0.00391 °C⁻¹)",
+                    "3-wire RTD 100P (α = 0.00391 °C⁻¹)",
+                    "3-wire RTD 500P (α = 0.00391 °C⁻¹)",
+                    "3-wire RTD 1000P (α = 0.00391 °C⁻¹)",
+                    "3-wire RTD 50M (α = 0.00428 °C⁻¹)",
+                    "3-wire RTD 100M (α = 0.00428 °C⁻¹)",
+                    "3-wire RTD 500M (α = 0.00428 °C⁻¹)",
+                    "3-wire RTD 1000M (α = 0.00428 °C⁻¹)",
+                    "3-wire RTD Ni 100 (α = 0.00617 °C⁻¹)",
+                    "3-wire RTD Ni 500 (α = 0.00617 °C⁻¹)",
+                    "3-wire RTD Ni 1000 (α = 0.00617 °C⁻¹)",
+
+                    "0-5 mA sensor",
+                    "0-20 mA sensor",
+                    "4-20 mA sensor",
+
+                    "0-1V sensor",
+                    "-50 to 50 mV sensor",
+
+                    "dry contact sensor",
+                    "NTC thermistor 10k (B = 3988 K)"
+                ]
+            },
+            "in4_data_rate": {
+                "required": true,
+                "title": "Sampling time",
+                "order": 2,
+                "address": "0x3402",
+                "enum_titles": [
+                    "50 ms (20 SPS)",
+                    "22 ms (45 SPS)",
+                    "11 ms (90 SPS)",
+                    "5.7 ms (175 SPS)",
+                    "3.0 ms (330 SPS)",
+                    "1.7 ms (600 SPS)",
+                    "1.0 ms (1000 SPS)"
+                ],
+                "enum": [ 20, 45, 90, 175, 330, 600, 1000 ]
+            },
+            "in4_measurements": {
+                "title": "Number of measurements",
+                "description": "Total sampling time of channel is (Sampling time * Number of measurements). Channels are polled sequentially.",
+                "order": 3,
+                "address": "0x3404",
+                "min": 1,
+                "max": 50
+            },
+            "in4_lowpass": {
+                "title": "Lowpass filter time, ms",
+                "order": 4,
+                "address": "0x3406",
+                "min": 0,
+                "max": 65000
+            },
+            "in4_gain": {
+                "title": "Gain",
+                "order": 4,
+                "address": "0x340C",
+                "enum": [0, 1, 2, 4],
+                "enum_titles": ["auto"],
+                "default": 0,
+                "condition": "
+            in_4_type==5888||in_4_type==3||in_4_type==2||in_4_type==0||in_4_type==256||in_4_type==257||in_4_type==4||in_4_type==1"
+            },
+            "in4_min": {
+                "title": "Minimum value",
+                "order": 5,
+                "address": "0x3408",
+                "default": 0,
+                "condition": "
+            in_4_type==5376||in_4_type==4864||in_4_type==4865||in_4_type==4866||in_4_type==0||in_4_type==256||in_4_type==5120"
+            },
+            "in4_max": {
+                "title": "Maximum value",
+                "order": 6,
+                "address": "0x340A",
+                "default": 10000,
+                "condition": "
+            in_4_type==5376||in_4_type==4864||in_4_type==4865||in_4_type==4866||in_4_type==0||in_4_type==256||in_4_type==5120"
+            },
+            "in4_n_type": {
+                "title": "Type",
+                "address": "0x3401",
+                "order": 1,
+                "enum": [
+                    4352,
+                    4353,
+                    4354,
+                    4355,
+                    4368,
+                    4369,
+                    4370,
+                    4371,
+                    4384,
+                    4385,
+                    4386,
+                    4387,
+                    4400,
+                    4401,
+                    4402,
+
+                    4608,
+                    4609,
+                    4610,
+                    4611,
+                    4624,
+                    4625,
+                    4626,
+                    4627,
+                    4640,
+                    4641,
+                    4642,
+                    4643,
+                    4656,
+                    4657,
+                    4658,
+
+                    4864,
+                    4865,
+                    4866,
+
+                    5120,
+                    5376,
+
+                    5632,
+                    5888
+
+                ],
+                "enum_titles": [
+                    "Thermocouple type K (ТХА)",
+
+                    "2-wire RTD Pt 50 (α = 0.00385 °C⁻¹)",
+                    "2-wire RTD Pt 100 (α = 0.00385 °C⁻¹)",
+                    "2-wire RTD Pt 500 (α = 0.00385 °C⁻¹)",
+                    "2-wire RTD Pt 1000 (α = 0.00385 °C⁻¹)",
+                    "2-wire RTD 50P (α = 0.00391 °C⁻¹)",
+                    "2-wire RTD 100P (α = 0.00391 °C⁻¹)",
+                    "2-wire RTD 500P (α = 0.00391 °C⁻¹)",
+                    "2-wire RTD 1000P (α = 0.00391 °C⁻¹)",
+                    "2-wire RTD 50M (α = 0.00428 °C⁻¹)",
+                    "2-wire RTD 100M (α = 0.00428 °C⁻¹)",
+                    "2-wire RTD 500M (α = 0.00428 °C⁻¹)",
+                    "2-wire RTD 1000M (α = 0.00428 °C⁻¹)",
+                    "2-wire RTD Ni 100 (α = 0.00617 °C⁻¹)",
+                    "2-wire RTD Ni 500 (α = 0.00617 °C⁻¹)",
+                    "2-wire RTD Ni 1000 (α = 0.00617 °C⁻¹)",
+
+                    "3-wire RTD Pt 50 (α = 0.00385 °C⁻¹)",
+                    "3-wire RTD Pt 50 (α = 0.00385 °C⁻¹)",
+                    "3-wire RTD Pt 100 (α = 0.00385 °C⁻¹)",
+                    "3-wire RTD Pt 500 (α = 0.00385 °C⁻¹)",
+                    "3-wire RTD Pt 1000 (α = 0.00385 °C⁻¹)",
+                    "3-wire RTD 50P (α = 0.00391 °C⁻¹)",
+                    "3-wire RTD 100P (α = 0.00391 °C⁻¹)",
+                    "3-wire RTD 500P (α = 0.00391 °C⁻¹)",
+                    "3-wire RTD 1000P (α = 0.00391 °C⁻¹)",
+                    "3-wire RTD 50M (α = 0.00428 °C⁻¹)",
+                    "3-wire RTD 100M (α = 0.00428 °C⁻¹)",
+                    "3-wire RTD 500M (α = 0.00428 °C⁻¹)",
+                    "3-wire RTD 1000M (α = 0.00428 °C⁻¹)",
+                    "3-wire RTD Ni 100 (α = 0.00617 °C⁻¹)",
+                    "3-wire RTD Ni 500 (α = 0.00617 °C⁻¹)",
+                    "3-wire RTD Ni 1000 (α = 0.00617 °C⁻¹)",
+
+                    "0-5 mA sensor",
+                    "0-20 mA sensor",
+                    "4-20 mA sensor",
+
+                    "0-1V sensor",
+                    "-50 to 50 mV sensor",
+
+                    "dry contact sensor",
+                    "NTC thermistor 10k (B = 3988 K)"
+                ]
+            },
+            "in4_n_data_rate": {
+                "required": true,
+                "title": "Sampling time",
+                "order": 2,
+                "address": "0x3403",
+                "enum_titles": [
+                    "50 ms (20 SPS)",
+                    "22 ms (45 SPS)",
+                    "11 ms (90 SPS)",
+                    "5.7 ms (175 SPS)",
+                    "3.0 ms (330 SPS)",
+                    "1.7 ms (600 SPS)",
+                    "1.0 ms (1000 SPS)"
+                ],
+                "enum": [ 20, 45, 90, 175, 330, 600, 1000 ]
+            },
+            "in4_n_measurements": {
+                "title": "Number of measurements",
+                "description": "Total sampling time of channel is (Sampling time * Number of measurements). Channels are polled sequentially.",
+                "order": 3,
+                "address": "0x3405",
+                "min": 1,
+                "max": 50
+            },
+            "in4_n_lowpass": {
+                "title": "Lowpass filter time, ms",
+                "order": 4,
+                "address": "0x3407",
+                "min": 0,
+                "max": 65000
+            },
+            "in4_n_gain": {
+                "title": "Gain",
+                "order": 4,
+                "address": "0x340D",
+                "enum": [0, 1, 2, 4],
+                "enum_titles": ["auto"],
+                "default": 0,
+                "condition": "
+            in_4_n_type==5888||in_4_n_type==3||in_4_n_type==2||in_4_n_type==0||in_4_n_type==256||in_4_n_type==257||in_4_n_type==4||in_4_n_type==1"
+            },
+            "in4_n_min": {
+                "title": "Minimum value",
+                "order": 5,
+                "address": "0x3409",
+                "default": 0,
+                "condition": "
+            in_4_n_type==5376||in_4_n_type==4864||in_4_n_type==4865||in_4_n_type==4866||in_4_n_type==0||in_4_n_type==256||in_4_n_type==5120"
+            },
+            "in4_n_max": {
+                "title": "Maximum value",
+                "order": 6,
+                "address": "0x340B",
+                "default": 10000,
+                "condition": "
+            in_4_n_type==5376||in_4_n_type==4864||in_4_n_type==4865||in_4_n_type==4866||in_4_n_type==0||in_4_n_type==256||in_4_n_type==5120"
+            },
+            "in5_type": {
+                "title": "Type",
+                "address": "0x4400",
+                "order": 1,
+                "enum": [
+                    4096,
+
+                    4352,
+                    4353,
+                    4354,
+                    4355,
+                    4368,
+                    4369,
+                    4370,
+                    4371,
+                    4384,
+                    4385,
+                    4386,
+                    4387,
+                    4400,
+                    4401,
+                    4402,
+
+                    4608,
+                    4609,
+                    4610,
+                    4611,
+                    4624,
+                    4625,
+                    4626,
+                    4627,
+                    4640,
+                    4641,
+                    4642,
+                    4643,
+                    4656,
+                    4657,
+                    4658,
+
+                    4864,
+                    4865,
+                    4866,
+
+                    5120,
+                    5376,
+
+                    5632,
+                    5888
+
+                ],
+                "enum_titles": [
+                    "2-wire RTD Pt 50 (α = 0.00385 °C⁻¹)",
+                    "2-wire RTD Pt 100 (α = 0.00385 °C⁻¹)",
+                    "2-wire RTD Pt 500 (α = 0.00385 °C⁻¹)",
+                    "2-wire RTD Pt 1000 (α = 0.00385 °C⁻¹)",
+                    "2-wire RTD 50P (α = 0.00391 °C⁻¹)",
+                    "2-wire RTD 100P (α = 0.00391 °C⁻¹)",
+                    "2-wire RTD 500P (α = 0.00391 °C⁻¹)",
+                    "2-wire RTD 1000P (α = 0.00391 °C⁻¹)",
+                    "2-wire RTD 50M (α = 0.00428 °C⁻¹)",
+                    "2-wire RTD 100M (α = 0.00428 °C⁻¹)",
+                    "2-wire RTD 500M (α = 0.00428 °C⁻¹)",
+                    "2-wire RTD 1000M (α = 0.00428 °C⁻¹)",
+                    "2-wire RTD Ni 100 (α = 0.00617 °C⁻¹)",
+                    "2-wire RTD Ni 500 (α = 0.00617 °C⁻¹)",
+                    "2-wire RTD Ni 1000 (α = 0.00617 °C⁻¹)",
+
+                    "3-wire RTD Pt 50 (α = 0.00385 °C⁻¹)",
+                    "3-wire RTD Pt 50 (α = 0.00385 °C⁻¹)",
+                    "3-wire RTD Pt 100 (α = 0.00385 °C⁻¹)",
+                    "3-wire RTD Pt 500 (α = 0.00385 °C⁻¹)",
+                    "3-wire RTD Pt 1000 (α = 0.00385 °C⁻¹)",
+                    "3-wire RTD 50P (α = 0.00391 °C⁻¹)",
+                    "3-wire RTD 100P (α = 0.00391 °C⁻¹)",
+                    "3-wire RTD 500P (α = 0.00391 °C⁻¹)",
+                    "3-wire RTD 1000P (α = 0.00391 °C⁻¹)",
+                    "3-wire RTD 50M (α = 0.00428 °C⁻¹)",
+                    "3-wire RTD 100M (α = 0.00428 °C⁻¹)",
+                    "3-wire RTD 500M (α = 0.00428 °C⁻¹)",
+                    "3-wire RTD 1000M (α = 0.00428 °C⁻¹)",
+                    "3-wire RTD Ni 100 (α = 0.00617 °C⁻¹)",
+                    "3-wire RTD Ni 500 (α = 0.00617 °C⁻¹)",
+                    "3-wire RTD Ni 1000 (α = 0.00617 °C⁻¹)",
+
+                    "0-5 mA sensor",
+                    "0-20 mA sensor",
+                    "4-20 mA sensor",
+
+                    "0-1V sensor",
+                    "-50 to 50 mV sensor",
+
+                    "dry contact sensor",
+                    "NTC thermistor 10k (B = 3988 K)"
+                ]
+            },
+            "in5_data_rate": {
+                "required": true,
+                "title": "Sampling time",
+                "order": 2,
+                "address": "0x4402",
+                "enum_titles": [
+                    "50 ms (20 SPS)",
+                    "22 ms (45 SPS)",
+                    "11 ms (90 SPS)",
+                    "5.7 ms (175 SPS)",
+                    "3.0 ms (330 SPS)",
+                    "1.7 ms (600 SPS)",
+                    "1.0 ms (1000 SPS)"
+                ],
+                "enum": [ 20, 45, 90, 175, 330, 600, 1000 ]
+            },
+            "in5_measurements": {
+                "title": "Number of measurements",
+                "description": "Total sampling time of channel is (Sampling time * Number of measurements). Channels are polled sequentially.",
+                "order": 3,
+                "address": "0x4404",
+                "min": 1,
+                "max": 50
+            },
+            "in5_lowpass": {
+                "title": "Lowpass filter time, ms",
+                "order": 4,
+                "address": "0x4406",
+                "min": 0,
+                "max": 65000
+            },
+            "in5_gain": {
+                "title": "Gain",
+                "order": 4,
+                "address": "0x440C",
+                "enum": [0, 1, 2, 4],
+                "enum_titles": ["auto"],
+                "default": 0,
+                "condition": "
+            in_5_type==5888||in_5_type==3||in_5_type==2||in_5_type==0||in_5_type==256||in_5_type==257||in_5_type==4||in_5_type==1"
+            },
+            "in5_min": {
+                "title": "Minimum value",
+                "order": 5,
+                "address": "0x4408",
+                "default": 0,
+                "condition": "
+            in_5_type==5376||in_5_type==4864||in_5_type==4865||in_5_type==4866||in_5_type==0||in_5_type==256||in_5_type==5120"
+            },
+            "in5_max": {
+                "title": "Maximum value",
+                "order": 6,
+                "address": "0x440A",
+                "default": 10000,
+                "condition": "
+            in_5_type==5376||in_5_type==4864||in_5_type==4865||in_5_type==4866||in_5_type==0||in_5_type==256||in_5_type==5120"
+            },
+            "in5_n_type": {
+                "title": "Type",
+                "address": "0x4401",
+                "order": 1,
+                "enum": [
+                    4352,
+                    4353,
+                    4354,
+                    4355,
+                    4368,
+                    4369,
+                    4370,
+                    4371,
+                    4384,
+                    4385,
+                    4386,
+                    4387,
+                    4400,
+                    4401,
+                    4402,
+
+                    4608,
+                    4609,
+                    4610,
+                    4611,
+                    4624,
+                    4625,
+                    4626,
+                    4627,
+                    4640,
+                    4641,
+                    4642,
+                    4643,
+                    4656,
+                    4657,
+                    4658,
+
+                    4864,
+                    4865,
+                    4866,
+
+                    5120,
+                    5376,
+
+                    5632,
+                    5888
+
+                ],
+                "enum_titles": [
+                    "Thermocouple type K (ТХА)",
+
+                    "2-wire RTD Pt 50 (α = 0.00385 °C⁻¹)",
+                    "2-wire RTD Pt 100 (α = 0.00385 °C⁻¹)",
+                    "2-wire RTD Pt 500 (α = 0.00385 °C⁻¹)",
+                    "2-wire RTD Pt 1000 (α = 0.00385 °C⁻¹)",
+                    "2-wire RTD 50P (α = 0.00391 °C⁻¹)",
+                    "2-wire RTD 100P (α = 0.00391 °C⁻¹)",
+                    "2-wire RTD 500P (α = 0.00391 °C⁻¹)",
+                    "2-wire RTD 1000P (α = 0.00391 °C⁻¹)",
+                    "2-wire RTD 50M (α = 0.00428 °C⁻¹)",
+                    "2-wire RTD 100M (α = 0.00428 °C⁻¹)",
+                    "2-wire RTD 500M (α = 0.00428 °C⁻¹)",
+                    "2-wire RTD 1000M (α = 0.00428 °C⁻¹)",
+                    "2-wire RTD Ni 100 (α = 0.00617 °C⁻¹)",
+                    "2-wire RTD Ni 500 (α = 0.00617 °C⁻¹)",
+                    "2-wire RTD Ni 1000 (α = 0.00617 °C⁻¹)",
+
+                    "3-wire RTD Pt 50 (α = 0.00385 °C⁻¹)",
+                    "3-wire RTD Pt 50 (α = 0.00385 °C⁻¹)",
+                    "3-wire RTD Pt 100 (α = 0.00385 °C⁻¹)",
+                    "3-wire RTD Pt 500 (α = 0.00385 °C⁻¹)",
+                    "3-wire RTD Pt 1000 (α = 0.00385 °C⁻¹)",
+                    "3-wire RTD 50P (α = 0.00391 °C⁻¹)",
+                    "3-wire RTD 100P (α = 0.00391 °C⁻¹)",
+                    "3-wire RTD 500P (α = 0.00391 °C⁻¹)",
+                    "3-wire RTD 1000P (α = 0.00391 °C⁻¹)",
+                    "3-wire RTD 50M (α = 0.00428 °C⁻¹)",
+                    "3-wire RTD 100M (α = 0.00428 °C⁻¹)",
+                    "3-wire RTD 500M (α = 0.00428 °C⁻¹)",
+                    "3-wire RTD 1000M (α = 0.00428 °C⁻¹)",
+                    "3-wire RTD Ni 100 (α = 0.00617 °C⁻¹)",
+                    "3-wire RTD Ni 500 (α = 0.00617 °C⁻¹)",
+                    "3-wire RTD Ni 1000 (α = 0.00617 °C⁻¹)",
+
+                    "0-5 mA sensor",
+                    "0-20 mA sensor",
+                    "4-20 mA sensor",
+
+                    "0-1V sensor",
+                    "-50 to 50 mV sensor",
+
+                    "dry contact sensor",
+                    "NTC thermistor 10k (B = 3988 K)"
+                ]
+            },
+            "in5_n_data_rate": {
+                "required": true,
+                "title": "Sampling time",
+                "order": 2,
+                "address": "0x4403",
+                "enum_titles": [
+                    "50 ms (20 SPS)",
+                    "22 ms (45 SPS)",
+                    "11 ms (90 SPS)",
+                    "5.7 ms (175 SPS)",
+                    "3.0 ms (330 SPS)",
+                    "1.7 ms (600 SPS)",
+                    "1.0 ms (1000 SPS)"
+                ],
+                "enum": [ 20, 45, 90, 175, 330, 600, 1000 ]
+            },
+            "in5_n_measurements": {
+                "title": "Number of measurements",
+                "description": "Total sampling time of channel is (Sampling time * Number of measurements). Channels are polled sequentially.",
+                "order": 3,
+                "address": "0x4405",
+                "min": 1,
+                "max": 50
+            },
+            "in5_n_lowpass": {
+                "title": "Lowpass filter time, ms",
+                "order": 4,
+                "address": "0x4407",
+                "min": 0,
+                "max": 65000
+            },
+            "in5_n_gain": {
+                "title": "Gain",
+                "order": 4,
+                "address": "0x440D",
+                "enum": [0, 1, 2, 4],
+                "enum_titles": ["auto"],
+                "default": 0,
+                "condition": "
+            in_5_n_type==5888||in_5_n_type==3||in_5_n_type==2||in_5_n_type==0||in_5_n_type==256||in_5_n_type==257||in_5_n_type==4||in_5_n_type==1"
+            },
+            "in5_n_min": {
+                "title": "Minimum value",
+                "order": 5,
+                "address": "0x4409",
+                "default": 0,
+                "condition": "
+            in_5_n_type==5376||in_5_n_type==4864||in_5_n_type==4865||in_5_n_type==4866||in_5_n_type==0||in_5_n_type==256||in_5_n_type==5120"
+            },
+            "in5_n_max": {
+                "title": "Maximum value",
+                "order": 6,
+                "address": "0x440B",
+                "default": 10000,
+                "condition": "
+            in_5_n_type==5376||in_5_n_type==4864||in_5_n_type==4865||in_5_n_type==4866||in_5_n_type==0||in_5_n_type==256||in_5_n_type==5120"
+            },
+            "in6_type": {
+                "title": "Type",
+                "address": "0x5400",
+                "order": 1,
+                "enum": [
+                    4096,
+
+                    4352,
+                    4353,
+                    4354,
+                    4355,
+                    4368,
+                    4369,
+                    4370,
+                    4371,
+                    4384,
+                    4385,
+                    4386,
+                    4387,
+                    4400,
+                    4401,
+                    4402,
+
+                    4608,
+                    4609,
+                    4610,
+                    4611,
+                    4624,
+                    4625,
+                    4626,
+                    4627,
+                    4640,
+                    4641,
+                    4642,
+                    4643,
+                    4656,
+                    4657,
+                    4658,
+
+                    4864,
+                    4865,
+                    4866,
+
+                    5120,
+                    5376,
+
+                    5632,
+                    5888
+
+                ],
+                "enum_titles": [
+                    "2-wire RTD Pt 50 (α = 0.00385 °C⁻¹)",
+                    "2-wire RTD Pt 100 (α = 0.00385 °C⁻¹)",
+                    "2-wire RTD Pt 500 (α = 0.00385 °C⁻¹)",
+                    "2-wire RTD Pt 1000 (α = 0.00385 °C⁻¹)",
+                    "2-wire RTD 50P (α = 0.00391 °C⁻¹)",
+                    "2-wire RTD 100P (α = 0.00391 °C⁻¹)",
+                    "2-wire RTD 500P (α = 0.00391 °C⁻¹)",
+                    "2-wire RTD 1000P (α = 0.00391 °C⁻¹)",
+                    "2-wire RTD 50M (α = 0.00428 °C⁻¹)",
+                    "2-wire RTD 100M (α = 0.00428 °C⁻¹)",
+                    "2-wire RTD 500M (α = 0.00428 °C⁻¹)",
+                    "2-wire RTD 1000M (α = 0.00428 °C⁻¹)",
+                    "2-wire RTD Ni 100 (α = 0.00617 °C⁻¹)",
+                    "2-wire RTD Ni 500 (α = 0.00617 °C⁻¹)",
+                    "2-wire RTD Ni 1000 (α = 0.00617 °C⁻¹)",
+
+                    "3-wire RTD Pt 50 (α = 0.00385 °C⁻¹)",
+                    "3-wire RTD Pt 50 (α = 0.00385 °C⁻¹)",
+                    "3-wire RTD Pt 100 (α = 0.00385 °C⁻¹)",
+                    "3-wire RTD Pt 500 (α = 0.00385 °C⁻¹)",
+                    "3-wire RTD Pt 1000 (α = 0.00385 °C⁻¹)",
+                    "3-wire RTD 50P (α = 0.00391 °C⁻¹)",
+                    "3-wire RTD 100P (α = 0.00391 °C⁻¹)",
+                    "3-wire RTD 500P (α = 0.00391 °C⁻¹)",
+                    "3-wire RTD 1000P (α = 0.00391 °C⁻¹)",
+                    "3-wire RTD 50M (α = 0.00428 °C⁻¹)",
+                    "3-wire RTD 100M (α = 0.00428 °C⁻¹)",
+                    "3-wire RTD 500M (α = 0.00428 °C⁻¹)",
+                    "3-wire RTD 1000M (α = 0.00428 °C⁻¹)",
+                    "3-wire RTD Ni 100 (α = 0.00617 °C⁻¹)",
+                    "3-wire RTD Ni 500 (α = 0.00617 °C⁻¹)",
+                    "3-wire RTD Ni 1000 (α = 0.00617 °C⁻¹)",
+
+                    "0-5 mA sensor",
+                    "0-20 mA sensor",
+                    "4-20 mA sensor",
+
+                    "0-1V sensor",
+                    "-50 to 50 mV sensor",
+
+                    "dry contact sensor",
+                    "NTC thermistor 10k (B = 3988 K)"
+                ]
+            },
+            "in6_data_rate": {
+                "required": true,
+                "title": "Sampling time",
+                "order": 2,
+                "address": "0x5402",
+                "enum_titles": [
+                    "50 ms (20 SPS)",
+                    "22 ms (45 SPS)",
+                    "11 ms (90 SPS)",
+                    "5.7 ms (175 SPS)",
+                    "3.0 ms (330 SPS)",
+                    "1.7 ms (600 SPS)",
+                    "1.0 ms (1000 SPS)"
+                ],
+                "enum": [ 20, 45, 90, 175, 330, 600, 1000 ]
+            },
+            "in6_measurements": {
+                "title": "Number of measurements",
+                "description": "Total sampling time of channel is (Sampling time * Number of measurements). Channels are polled sequentially.",
+                "order": 3,
+                "address": "0x5404",
+                "min": 1,
+                "max": 50
+            },
+            "in6_lowpass": {
+                "title": "Lowpass filter time, ms",
+                "order": 4,
+                "address": "0x5406",
+                "min": 0,
+                "max": 65000
+            },
+            "in6_gain": {
+                "title": "Gain",
+                "order": 4,
+                "address": "0x540C",
+                "enum": [0, 1, 2, 4],
+                "enum_titles": ["auto"],
+                "default": 0,
+                "condition": "
+            in_6_type==5888||in_6_type==3||in_6_type==2||in_6_type==0||in_6_type==256||in_6_type==257||in_6_type==4||in_6_type==1"
+            },
+            "in6_min": {
+                "title": "Minimum value",
+                "order": 5,
+                "address": "0x5408",
+                "default": 0,
+                "condition": "
+            in_6_type==5376||in_6_type==4864||in_6_type==4865||in_6_type==4866||in_6_type==0||in_6_type==256||in_6_type==5120"
+            },
+            "in6_max": {
+                "title": "Maximum value",
+                "order": 6,
+                "address": "0x540A",
+                "default": 10000,
+                "condition": "
+            in_6_type==5376||in_6_type==4864||in_6_type==4865||in_6_type==4866||in_6_type==0||in_6_type==256||in_6_type==5120"
+            },
+            "in6_n_type": {
+                "title": "Type",
+                "address": "0x5401",
+                "order": 1,
+                "enum": [
+                    4352,
+                    4353,
+                    4354,
+                    4355,
+                    4368,
+                    4369,
+                    4370,
+                    4371,
+                    4384,
+                    4385,
+                    4386,
+                    4387,
+                    4400,
+                    4401,
+                    4402,
+
+                    4608,
+                    4609,
+                    4610,
+                    4611,
+                    4624,
+                    4625,
+                    4626,
+                    4627,
+                    4640,
+                    4641,
+                    4642,
+                    4643,
+                    4656,
+                    4657,
+                    4658,
+
+                    4864,
+                    4865,
+                    4866,
+
+                    5120,
+                    5376,
+
+                    5632,
+                    5888
+
+                ],
+                "enum_titles": [
+                    "Thermocouple type K (ТХА)",
+
+                    "2-wire RTD Pt 50 (α = 0.00385 °C⁻¹)",
+                    "2-wire RTD Pt 100 (α = 0.00385 °C⁻¹)",
+                    "2-wire RTD Pt 500 (α = 0.00385 °C⁻¹)",
+                    "2-wire RTD Pt 1000 (α = 0.00385 °C⁻¹)",
+                    "2-wire RTD 50P (α = 0.00391 °C⁻¹)",
+                    "2-wire RTD 100P (α = 0.00391 °C⁻¹)",
+                    "2-wire RTD 500P (α = 0.00391 °C⁻¹)",
+                    "2-wire RTD 1000P (α = 0.00391 °C⁻¹)",
+                    "2-wire RTD 50M (α = 0.00428 °C⁻¹)",
+                    "2-wire RTD 100M (α = 0.00428 °C⁻¹)",
+                    "2-wire RTD 500M (α = 0.00428 °C⁻¹)",
+                    "2-wire RTD 1000M (α = 0.00428 °C⁻¹)",
+                    "2-wire RTD Ni 100 (α = 0.00617 °C⁻¹)",
+                    "2-wire RTD Ni 500 (α = 0.00617 °C⁻¹)",
+                    "2-wire RTD Ni 1000 (α = 0.00617 °C⁻¹)",
+
+                    "3-wire RTD Pt 50 (α = 0.00385 °C⁻¹)",
+                    "3-wire RTD Pt 50 (α = 0.00385 °C⁻¹)",
+                    "3-wire RTD Pt 100 (α = 0.00385 °C⁻¹)",
+                    "3-wire RTD Pt 500 (α = 0.00385 °C⁻¹)",
+                    "3-wire RTD Pt 1000 (α = 0.00385 °C⁻¹)",
+                    "3-wire RTD 50P (α = 0.00391 °C⁻¹)",
+                    "3-wire RTD 100P (α = 0.00391 °C⁻¹)",
+                    "3-wire RTD 500P (α = 0.00391 °C⁻¹)",
+                    "3-wire RTD 1000P (α = 0.00391 °C⁻¹)",
+                    "3-wire RTD 50M (α = 0.00428 °C⁻¹)",
+                    "3-wire RTD 100M (α = 0.00428 °C⁻¹)",
+                    "3-wire RTD 500M (α = 0.00428 °C⁻¹)",
+                    "3-wire RTD 1000M (α = 0.00428 °C⁻¹)",
+                    "3-wire RTD Ni 100 (α = 0.00617 °C⁻¹)",
+                    "3-wire RTD Ni 500 (α = 0.00617 °C⁻¹)",
+                    "3-wire RTD Ni 1000 (α = 0.00617 °C⁻¹)",
+
+                    "0-5 mA sensor",
+                    "0-20 mA sensor",
+                    "4-20 mA sensor",
+
+                    "0-1V sensor",
+                    "-50 to 50 mV sensor",
+
+                    "dry contact sensor",
+                    "NTC thermistor 10k (B = 3988 K)"
+                ]
+            },
+            "in6_n_data_rate": {
+                "required": true,
+                "title": "Sampling time",
+                "order": 2,
+                "address": "0x5403",
+                "enum_titles": [
+                    "50 ms (20 SPS)",
+                    "22 ms (45 SPS)",
+                    "11 ms (90 SPS)",
+                    "5.7 ms (175 SPS)",
+                    "3.0 ms (330 SPS)",
+                    "1.7 ms (600 SPS)",
+                    "1.0 ms (1000 SPS)"
+                ],
+                "enum": [ 20, 45, 90, 175, 330, 600, 1000 ]
+            },
+            "in6_n_measurements": {
+                "title": "Number of measurements",
+                "description": "Total sampling time of channel is (Sampling time * Number of measurements). Channels are polled sequentially.",
+                "order": 3,
+                "address": "0x5405",
+                "min": 1,
+                "max": 50
+            },
+            "in6_n_lowpass": {
+                "title": "Lowpass filter time, ms",
+                "order": 4,
+                "address": "0x5407",
+                "min": 0,
+                "max": 65000
+            },
+            "in6_n_gain": {
+                "title": "Gain",
+                "order": 4,
+                "address": "0x540D",
+                "enum": [0, 1, 2, 4],
+                "enum_titles": ["auto"],
+                "default": 0,
+                "condition": "
+            in_6_n_type==5888||in_6_n_type==3||in_6_n_type==2||in_6_n_type==0||in_6_n_type==256||in_6_n_type==257||in_6_n_type==4||in_6_n_type==1"
+            },
+            "in6_n_min": {
+                "title": "Minimum value",
+                "order": 5,
+                "address": "0x5409",
+                "default": 0,
+                "condition": "
+            in_6_n_type==5376||in_6_n_type==4864||in_6_n_type==4865||in_6_n_type==4866||in_6_n_type==0||in_6_n_type==256||in_6_n_type==5120"
+            },
+            "in6_n_max": {
+                "title": "Maximum value",
+                "order": 6,
+                "address": "0x540B",
+                "default": 10000,
+                "condition": "
+            in_6_n_type==5376||in_6_n_type==4864||in_6_n_type==4865||in_6_n_type==4866||in_6_n_type==0||in_6_n_type==256||in_6_n_type==5120"
+            },
+            "in7_type": {
+                "title": "Type",
+                "address": "0x6400",
+                "order": 1,
+                "enum": [
+                    4096,
+
+                    4352,
+                    4353,
+                    4354,
+                    4355,
+                    4368,
+                    4369,
+                    4370,
+                    4371,
+                    4384,
+                    4385,
+                    4386,
+                    4387,
+                    4400,
+                    4401,
+                    4402,
+
+                    4608,
+                    4609,
+                    4610,
+                    4611,
+                    4624,
+                    4625,
+                    4626,
+                    4627,
+                    4640,
+                    4641,
+                    4642,
+                    4643,
+                    4656,
+                    4657,
+                    4658,
+
+                    4864,
+                    4865,
+                    4866,
+
+                    5120,
+                    5376,
+
+                    5632,
+                    5888
+
+                ],
+                "enum_titles": [
+                    "2-wire RTD Pt 50 (α = 0.00385 °C⁻¹)",
+                    "2-wire RTD Pt 100 (α = 0.00385 °C⁻¹)",
+                    "2-wire RTD Pt 500 (α = 0.00385 °C⁻¹)",
+                    "2-wire RTD Pt 1000 (α = 0.00385 °C⁻¹)",
+                    "2-wire RTD 50P (α = 0.00391 °C⁻¹)",
+                    "2-wire RTD 100P (α = 0.00391 °C⁻¹)",
+                    "2-wire RTD 500P (α = 0.00391 °C⁻¹)",
+                    "2-wire RTD 1000P (α = 0.00391 °C⁻¹)",
+                    "2-wire RTD 50M (α = 0.00428 °C⁻¹)",
+                    "2-wire RTD 100M (α = 0.00428 °C⁻¹)",
+                    "2-wire RTD 500M (α = 0.00428 °C⁻¹)",
+                    "2-wire RTD 1000M (α = 0.00428 °C⁻¹)",
+                    "2-wire RTD Ni 100 (α = 0.00617 °C⁻¹)",
+                    "2-wire RTD Ni 500 (α = 0.00617 °C⁻¹)",
+                    "2-wire RTD Ni 1000 (α = 0.00617 °C⁻¹)",
+
+                    "3-wire RTD Pt 50 (α = 0.00385 °C⁻¹)",
+                    "3-wire RTD Pt 50 (α = 0.00385 °C⁻¹)",
+                    "3-wire RTD Pt 100 (α = 0.00385 °C⁻¹)",
+                    "3-wire RTD Pt 500 (α = 0.00385 °C⁻¹)",
+                    "3-wire RTD Pt 1000 (α = 0.00385 °C⁻¹)",
+                    "3-wire RTD 50P (α = 0.00391 °C⁻¹)",
+                    "3-wire RTD 100P (α = 0.00391 °C⁻¹)",
+                    "3-wire RTD 500P (α = 0.00391 °C⁻¹)",
+                    "3-wire RTD 1000P (α = 0.00391 °C⁻¹)",
+                    "3-wire RTD 50M (α = 0.00428 °C⁻¹)",
+                    "3-wire RTD 100M (α = 0.00428 °C⁻¹)",
+                    "3-wire RTD 500M (α = 0.00428 °C⁻¹)",
+                    "3-wire RTD 1000M (α = 0.00428 °C⁻¹)",
+                    "3-wire RTD Ni 100 (α = 0.00617 °C⁻¹)",
+                    "3-wire RTD Ni 500 (α = 0.00617 °C⁻¹)",
+                    "3-wire RTD Ni 1000 (α = 0.00617 °C⁻¹)",
+
+                    "0-5 mA sensor",
+                    "0-20 mA sensor",
+                    "4-20 mA sensor",
+
+                    "0-1V sensor",
+                    "-50 to 50 mV sensor",
+
+                    "dry contact sensor",
+                    "NTC thermistor 10k (B = 3988 K)"
+                ]
+            },
+            "in7_data_rate": {
+                "required": true,
+                "title": "Sampling time",
+                "order": 2,
+                "address": "0x6402",
+                "enum_titles": [
+                    "50 ms (20 SPS)",
+                    "22 ms (45 SPS)",
+                    "11 ms (90 SPS)",
+                    "5.7 ms (175 SPS)",
+                    "3.0 ms (330 SPS)",
+                    "1.7 ms (600 SPS)",
+                    "1.0 ms (1000 SPS)"
+                ],
+                "enum": [ 20, 45, 90, 175, 330, 600, 1000 ]
+            },
+            "in7_measurements": {
+                "title": "Number of measurements",
+                "description": "Total sampling time of channel is (Sampling time * Number of measurements). Channels are polled sequentially.",
+                "order": 3,
+                "address": "0x6404",
+                "min": 1,
+                "max": 50
+            },
+            "in7_lowpass": {
+                "title": "Lowpass filter time, ms",
+                "order": 4,
+                "address": "0x6406",
+                "min": 0,
+                "max": 65000
+            },
+            "in7_gain": {
+                "title": "Gain",
+                "order": 4,
+                "address": "0x640C",
+                "enum": [0, 1, 2, 4],
+                "enum_titles": ["auto"],
+                "default": 0,
+                "condition": "
+            in_7_type==5888||in_7_type==3||in_7_type==2||in_7_type==0||in_7_type==256||in_7_type==257||in_7_type==4||in_7_type==1"
+            },
+            "in7_min": {
+                "title": "Minimum value",
+                "order": 5,
+                "address": "0x6408",
+                "default": 0,
+                "condition": "
+            in_7_type==5376||in_7_type==4864||in_7_type==4865||in_7_type==4866||in_7_type==0||in_7_type==256||in_7_type==5120"
+            },
+            "in7_max": {
+                "title": "Maximum value",
+                "order": 6,
+                "address": "0x640A",
+                "default": 10000,
+                "condition": "
+            in_7_type==5376||in_7_type==4864||in_7_type==4865||in_7_type==4866||in_7_type==0||in_7_type==256||in_7_type==5120"
+            },
+            "in7_n_type": {
+                "title": "Type",
+                "address": "0x6401",
+                "order": 1,
+                "enum": [
+                    4352,
+                    4353,
+                    4354,
+                    4355,
+                    4368,
+                    4369,
+                    4370,
+                    4371,
+                    4384,
+                    4385,
+                    4386,
+                    4387,
+                    4400,
+                    4401,
+                    4402,
+
+                    4608,
+                    4609,
+                    4610,
+                    4611,
+                    4624,
+                    4625,
+                    4626,
+                    4627,
+                    4640,
+                    4641,
+                    4642,
+                    4643,
+                    4656,
+                    4657,
+                    4658,
+
+                    4864,
+                    4865,
+                    4866,
+
+                    5120,
+                    5376,
+
+                    5632,
+                    5888
+
+                ],
+                "enum_titles": [
+                    "Thermocouple type K (ТХА)",
+
+                    "2-wire RTD Pt 50 (α = 0.00385 °C⁻¹)",
+                    "2-wire RTD Pt 100 (α = 0.00385 °C⁻¹)",
+                    "2-wire RTD Pt 500 (α = 0.00385 °C⁻¹)",
+                    "2-wire RTD Pt 1000 (α = 0.00385 °C⁻¹)",
+                    "2-wire RTD 50P (α = 0.00391 °C⁻¹)",
+                    "2-wire RTD 100P (α = 0.00391 °C⁻¹)",
+                    "2-wire RTD 500P (α = 0.00391 °C⁻¹)",
+                    "2-wire RTD 1000P (α = 0.00391 °C⁻¹)",
+                    "2-wire RTD 50M (α = 0.00428 °C⁻¹)",
+                    "2-wire RTD 100M (α = 0.00428 °C⁻¹)",
+                    "2-wire RTD 500M (α = 0.00428 °C⁻¹)",
+                    "2-wire RTD 1000M (α = 0.00428 °C⁻¹)",
+                    "2-wire RTD Ni 100 (α = 0.00617 °C⁻¹)",
+                    "2-wire RTD Ni 500 (α = 0.00617 °C⁻¹)",
+                    "2-wire RTD Ni 1000 (α = 0.00617 °C⁻¹)",
+
+                    "3-wire RTD Pt 50 (α = 0.00385 °C⁻¹)",
+                    "3-wire RTD Pt 50 (α = 0.00385 °C⁻¹)",
+                    "3-wire RTD Pt 100 (α = 0.00385 °C⁻¹)",
+                    "3-wire RTD Pt 500 (α = 0.00385 °C⁻¹)",
+                    "3-wire RTD Pt 1000 (α = 0.00385 °C⁻¹)",
+                    "3-wire RTD 50P (α = 0.00391 °C⁻¹)",
+                    "3-wire RTD 100P (α = 0.00391 °C⁻¹)",
+                    "3-wire RTD 500P (α = 0.00391 °C⁻¹)",
+                    "3-wire RTD 1000P (α = 0.00391 °C⁻¹)",
+                    "3-wire RTD 50M (α = 0.00428 °C⁻¹)",
+                    "3-wire RTD 100M (α = 0.00428 °C⁻¹)",
+                    "3-wire RTD 500M (α = 0.00428 °C⁻¹)",
+                    "3-wire RTD 1000M (α = 0.00428 °C⁻¹)",
+                    "3-wire RTD Ni 100 (α = 0.00617 °C⁻¹)",
+                    "3-wire RTD Ni 500 (α = 0.00617 °C⁻¹)",
+                    "3-wire RTD Ni 1000 (α = 0.00617 °C⁻¹)",
+
+                    "0-5 mA sensor",
+                    "0-20 mA sensor",
+                    "4-20 mA sensor",
+
+                    "0-1V sensor",
+                    "-50 to 50 mV sensor",
+
+                    "dry contact sensor",
+                    "NTC thermistor 10k (B = 3988 K)"
+                ]
+            },
+            "in7_n_data_rate": {
+                "required": true,
+                "title": "Sampling time",
+                "order": 2,
+                "address": "0x6403",
+                "enum_titles": [
+                    "50 ms (20 SPS)",
+                    "22 ms (45 SPS)",
+                    "11 ms (90 SPS)",
+                    "5.7 ms (175 SPS)",
+                    "3.0 ms (330 SPS)",
+                    "1.7 ms (600 SPS)",
+                    "1.0 ms (1000 SPS)"
+                ],
+                "enum": [ 20, 45, 90, 175, 330, 600, 1000 ]
+            },
+            "in7_n_measurements": {
+                "title": "Number of measurements",
+                "description": "Total sampling time of channel is (Sampling time * Number of measurements). Channels are polled sequentially.",
+                "order": 3,
+                "address": "0x6405",
+                "min": 1,
+                "max": 50
+            },
+            "in7_n_lowpass": {
+                "title": "Lowpass filter time, ms",
+                "order": 4,
+                "address": "0x6407",
+                "min": 0,
+                "max": 65000
+            },
+            "in7_n_gain": {
+                "title": "Gain",
+                "order": 4,
+                "address": "0x640D",
+                "enum": [0, 1, 2, 4],
+                "enum_titles": ["auto"],
+                "default": 0,
+                "condition": "
+            in_7_n_type==5888||in_7_n_type==3||in_7_n_type==2||in_7_n_type==0||in_7_n_type==256||in_7_n_type==257||in_7_n_type==4||in_7_n_type==1"
+            },
+            "in7_n_min": {
+                "title": "Minimum value",
+                "order": 5,
+                "address": "0x6409",
+                "default": 0,
+                "condition": "
+            in_7_n_type==5376||in_7_n_type==4864||in_7_n_type==4865||in_7_n_type==4866||in_7_n_type==0||in_7_n_type==256||in_7_n_type==5120"
+            },
+            "in7_n_max": {
+                "title": "Maximum value",
+                "order": 6,
+                "address": "0x640B",
+                "default": 10000,
+                "condition": "
+            in_7_n_type==5376||in_7_n_type==4864||in_7_n_type==4865||in_7_n_type==4866||in_7_n_type==0||in_7_n_type==256||in_7_n_type==5120"
+            },
+            "in8_type": {
+                "title": "Type",
+                "address": "0x7400",
+                "order": 1,
+                "enum": [
+                    4096,
+
+                    4352,
+                    4353,
+                    4354,
+                    4355,
+                    4368,
+                    4369,
+                    4370,
+                    4371,
+                    4384,
+                    4385,
+                    4386,
+                    4387,
+                    4400,
+                    4401,
+                    4402,
+
+                    4608,
+                    4609,
+                    4610,
+                    4611,
+                    4624,
+                    4625,
+                    4626,
+                    4627,
+                    4640,
+                    4641,
+                    4642,
+                    4643,
+                    4656,
+                    4657,
+                    4658,
+
+                    4864,
+                    4865,
+                    4866,
+
+                    5120,
+                    5376,
+
+                    5632,
+                    5888
+
+                ],
+                "enum_titles": [
+                    "2-wire RTD Pt 50 (α = 0.00385 °C⁻¹)",
+                    "2-wire RTD Pt 100 (α = 0.00385 °C⁻¹)",
+                    "2-wire RTD Pt 500 (α = 0.00385 °C⁻¹)",
+                    "2-wire RTD Pt 1000 (α = 0.00385 °C⁻¹)",
+                    "2-wire RTD 50P (α = 0.00391 °C⁻¹)",
+                    "2-wire RTD 100P (α = 0.00391 °C⁻¹)",
+                    "2-wire RTD 500P (α = 0.00391 °C⁻¹)",
+                    "2-wire RTD 1000P (α = 0.00391 °C⁻¹)",
+                    "2-wire RTD 50M (α = 0.00428 °C⁻¹)",
+                    "2-wire RTD 100M (α = 0.00428 °C⁻¹)",
+                    "2-wire RTD 500M (α = 0.00428 °C⁻¹)",
+                    "2-wire RTD 1000M (α = 0.00428 °C⁻¹)",
+                    "2-wire RTD Ni 100 (α = 0.00617 °C⁻¹)",
+                    "2-wire RTD Ni 500 (α = 0.00617 °C⁻¹)",
+                    "2-wire RTD Ni 1000 (α = 0.00617 °C⁻¹)",
+
+                    "3-wire RTD Pt 50 (α = 0.00385 °C⁻¹)",
+                    "3-wire RTD Pt 50 (α = 0.00385 °C⁻¹)",
+                    "3-wire RTD Pt 100 (α = 0.00385 °C⁻¹)",
+                    "3-wire RTD Pt 500 (α = 0.00385 °C⁻¹)",
+                    "3-wire RTD Pt 1000 (α = 0.00385 °C⁻¹)",
+                    "3-wire RTD 50P (α = 0.00391 °C⁻¹)",
+                    "3-wire RTD 100P (α = 0.00391 °C⁻¹)",
+                    "3-wire RTD 500P (α = 0.00391 °C⁻¹)",
+                    "3-wire RTD 1000P (α = 0.00391 °C⁻¹)",
+                    "3-wire RTD 50M (α = 0.00428 °C⁻¹)",
+                    "3-wire RTD 100M (α = 0.00428 °C⁻¹)",
+                    "3-wire RTD 500M (α = 0.00428 °C⁻¹)",
+                    "3-wire RTD 1000M (α = 0.00428 °C⁻¹)",
+                    "3-wire RTD Ni 100 (α = 0.00617 °C⁻¹)",
+                    "3-wire RTD Ni 500 (α = 0.00617 °C⁻¹)",
+                    "3-wire RTD Ni 1000 (α = 0.00617 °C⁻¹)",
+
+                    "0-5 mA sensor",
+                    "0-20 mA sensor",
+                    "4-20 mA sensor",
+
+                    "0-1V sensor",
+                    "-50 to 50 mV sensor",
+
+                    "dry contact sensor",
+                    "NTC thermistor 10k (B = 3988 K)"
+                ]
+            },
+            "in8_data_rate": {
+                "required": true,
+                "title": "Sampling time",
+                "order": 2,
+                "address": "0x7402",
+                "enum_titles": [
+                    "50 ms (20 SPS)",
+                    "22 ms (45 SPS)",
+                    "11 ms (90 SPS)",
+                    "5.7 ms (175 SPS)",
+                    "3.0 ms (330 SPS)",
+                    "1.7 ms (600 SPS)",
+                    "1.0 ms (1000 SPS)"
+                ],
+                "enum": [ 20, 45, 90, 175, 330, 600, 1000 ]
+            },
+            "in8_measurements": {
+                "title": "Number of measurements",
+                "description": "Total sampling time of channel is (Sampling time * Number of measurements). Channels are polled sequentially.",
+                "order": 3,
+                "address": "0x7404",
+                "min": 1,
+                "max": 50
+            },
+            "in8_lowpass": {
+                "title": "Lowpass filter time, ms",
+                "order": 4,
+                "address": "0x7406",
+                "min": 0,
+                "max": 65000
+            },
+            "in8_gain": {
+                "title": "Gain",
+                "order": 4,
+                "address": "0x740C",
+                "enum": [0, 1, 2, 4],
+                "enum_titles": ["auto"],
+                "default": 0,
+                "condition": "
+            in_8_type==5888||in_8_type==3||in_8_type==2||in_8_type==0||in_8_type==256||in_8_type==257||in_8_type==4||in_8_type==1"
+            },
+            "in8_min": {
+                "title": "Minimum value",
+                "order": 5,
+                "address": "0x7408",
+                "default": 0,
+                "condition": "
+            in_8_type==5376||in_8_type==4864||in_8_type==4865||in_8_type==4866||in_8_type==0||in_8_type==256||in_8_type==5120"
+            },
+            "in8_max": {
+                "title": "Maximum value",
+                "order": 6,
+                "address": "0x740A",
+                "default": 10000,
+                "condition": "
+            in_8_type==5376||in_8_type==4864||in_8_type==4865||in_8_type==4866||in_8_type==0||in_8_type==256||in_8_type==5120"
+            },
+            "in8_n_type": {
+                "title": "Type",
+                "address": "0x7401",
+                "order": 1,
+                "enum": [
+                    4352,
+                    4353,
+                    4354,
+                    4355,
+                    4368,
+                    4369,
+                    4370,
+                    4371,
+                    4384,
+                    4385,
+                    4386,
+                    4387,
+                    4400,
+                    4401,
+                    4402,
+
+                    4608,
+                    4609,
+                    4610,
+                    4611,
+                    4624,
+                    4625,
+                    4626,
+                    4627,
+                    4640,
+                    4641,
+                    4642,
+                    4643,
+                    4656,
+                    4657,
+                    4658,
+
+                    4864,
+                    4865,
+                    4866,
+
+                    5120,
+                    5376,
+
+                    5632,
+                    5888
+
+                ],
+                "enum_titles": [
+                    "Thermocouple type K (ТХА)",
+
+                    "2-wire RTD Pt 50 (α = 0.00385 °C⁻¹)",
+                    "2-wire RTD Pt 100 (α = 0.00385 °C⁻¹)",
+                    "2-wire RTD Pt 500 (α = 0.00385 °C⁻¹)",
+                    "2-wire RTD Pt 1000 (α = 0.00385 °C⁻¹)",
+                    "2-wire RTD 50P (α = 0.00391 °C⁻¹)",
+                    "2-wire RTD 100P (α = 0.00391 °C⁻¹)",
+                    "2-wire RTD 500P (α = 0.00391 °C⁻¹)",
+                    "2-wire RTD 1000P (α = 0.00391 °C⁻¹)",
+                    "2-wire RTD 50M (α = 0.00428 °C⁻¹)",
+                    "2-wire RTD 100M (α = 0.00428 °C⁻¹)",
+                    "2-wire RTD 500M (α = 0.00428 °C⁻¹)",
+                    "2-wire RTD 1000M (α = 0.00428 °C⁻¹)",
+                    "2-wire RTD Ni 100 (α = 0.00617 °C⁻¹)",
+                    "2-wire RTD Ni 500 (α = 0.00617 °C⁻¹)",
+                    "2-wire RTD Ni 1000 (α = 0.00617 °C⁻¹)",
+
+                    "3-wire RTD Pt 50 (α = 0.00385 °C⁻¹)",
+                    "3-wire RTD Pt 50 (α = 0.00385 °C⁻¹)",
+                    "3-wire RTD Pt 100 (α = 0.00385 °C⁻¹)",
+                    "3-wire RTD Pt 500 (α = 0.00385 °C⁻¹)",
+                    "3-wire RTD Pt 1000 (α = 0.00385 °C⁻¹)",
+                    "3-wire RTD 50P (α = 0.00391 °C⁻¹)",
+                    "3-wire RTD 100P (α = 0.00391 °C⁻¹)",
+                    "3-wire RTD 500P (α = 0.00391 °C⁻¹)",
+                    "3-wire RTD 1000P (α = 0.00391 °C⁻¹)",
+                    "3-wire RTD 50M (α = 0.00428 °C⁻¹)",
+                    "3-wire RTD 100M (α = 0.00428 °C⁻¹)",
+                    "3-wire RTD 500M (α = 0.00428 °C⁻¹)",
+                    "3-wire RTD 1000M (α = 0.00428 °C⁻¹)",
+                    "3-wire RTD Ni 100 (α = 0.00617 °C⁻¹)",
+                    "3-wire RTD Ni 500 (α = 0.00617 °C⁻¹)",
+                    "3-wire RTD Ni 1000 (α = 0.00617 °C⁻¹)",
+
+                    "0-5 mA sensor",
+                    "0-20 mA sensor",
+                    "4-20 mA sensor",
+
+                    "0-1V sensor",
+                    "-50 to 50 mV sensor",
+
+                    "dry contact sensor",
+                    "NTC thermistor 10k (B = 3988 K)"
+                ]
+            },
+            "in8_n_data_rate": {
+                "required": true,
+                "title": "Sampling time",
+                "order": 2,
+                "address": "0x7403",
+                "enum_titles": [
+                    "50 ms (20 SPS)",
+                    "22 ms (45 SPS)",
+                    "11 ms (90 SPS)",
+                    "5.7 ms (175 SPS)",
+                    "3.0 ms (330 SPS)",
+                    "1.7 ms (600 SPS)",
+                    "1.0 ms (1000 SPS)"
+                ],
+                "enum": [ 20, 45, 90, 175, 330, 600, 1000 ]
+            },
+            "in8_n_measurements": {
+                "title": "Number of measurements",
+                "description": "Total sampling time of channel is (Sampling time * Number of measurements). Channels are polled sequentially.",
+                "order": 3,
+                "address": "0x7405",
+                "min": 1,
+                "max": 50
+            },
+            "in8_n_lowpass": {
+                "title": "Lowpass filter time, ms",
+                "order": 4,
+                "address": "0x7407",
+                "min": 0,
+                "max": 65000
+            },
+            "in8_n_gain": {
+                "title": "Gain",
+                "order": 4,
+                "address": "0x740D",
+                "enum": [0, 1, 2, 4],
+                "enum_titles": ["auto"],
+                "default": 0,
+                "condition": "
+            in_8_n_type==5888||in_8_n_type==3||in_8_n_type==2||in_8_n_type==0||in_8_n_type==256||in_8_n_type==257||in_8_n_type==4||in_8_n_type==1"
+            },
+            "in8_n_min": {
+                "title": "Minimum value",
+                "order": 5,
+                "address": "0x7409",
+                "default": 0,
+                "condition": "
+            in_8_n_type==5376||in_8_n_type==4864||in_8_n_type==4865||in_8_n_type==4866||in_8_n_type==0||in_8_n_type==256||in_8_n_type==5120"
+            },
+            "in8_n_max": {
+                "title": "Maximum value",
+                "order": 6,
+                "address": "0x740B",
+                "default": 10000,
+                "condition": "
+            in_8_n_type==5376||in_8_n_type==4864||in_8_n_type==4865||in_8_n_type==4866||in_8_n_type==0||in_8_n_type==256||in_8_n_type==5120"
+            },
+            "in9_type": {
+                "title": "Type",
+                "address": "0x8400",
+                "order": 1,
+                "enum": [
+                    4096,
+
+                    4352,
+                    4353,
+                    4354,
+                    4355,
+                    4368,
+                    4369,
+                    4370,
+                    4371,
+                    4384,
+                    4385,
+                    4386,
+                    4387,
+                    4400,
+                    4401,
+                    4402,
+
+                    4608,
+                    4609,
+                    4610,
+                    4611,
+                    4624,
+                    4625,
+                    4626,
+                    4627,
+                    4640,
+                    4641,
+                    4642,
+                    4643,
+                    4656,
+                    4657,
+                    4658,
+
+                    4864,
+                    4865,
+                    4866,
+
+                    5120,
+                    5376,
+
+                    5632,
+                    5888
+
+                ],
+                "enum_titles": [
+                    "2-wire RTD Pt 50 (α = 0.00385 °C⁻¹)",
+                    "2-wire RTD Pt 100 (α = 0.00385 °C⁻¹)",
+                    "2-wire RTD Pt 500 (α = 0.00385 °C⁻¹)",
+                    "2-wire RTD Pt 1000 (α = 0.00385 °C⁻¹)",
+                    "2-wire RTD 50P (α = 0.00391 °C⁻¹)",
+                    "2-wire RTD 100P (α = 0.00391 °C⁻¹)",
+                    "2-wire RTD 500P (α = 0.00391 °C⁻¹)",
+                    "2-wire RTD 1000P (α = 0.00391 °C⁻¹)",
+                    "2-wire RTD 50M (α = 0.00428 °C⁻¹)",
+                    "2-wire RTD 100M (α = 0.00428 °C⁻¹)",
+                    "2-wire RTD 500M (α = 0.00428 °C⁻¹)",
+                    "2-wire RTD 1000M (α = 0.00428 °C⁻¹)",
+                    "2-wire RTD Ni 100 (α = 0.00617 °C⁻¹)",
+                    "2-wire RTD Ni 500 (α = 0.00617 °C⁻¹)",
+                    "2-wire RTD Ni 1000 (α = 0.00617 °C⁻¹)",
+
+                    "3-wire RTD Pt 50 (α = 0.00385 °C⁻¹)",
+                    "3-wire RTD Pt 50 (α = 0.00385 °C⁻¹)",
+                    "3-wire RTD Pt 100 (α = 0.00385 °C⁻¹)",
+                    "3-wire RTD Pt 500 (α = 0.00385 °C⁻¹)",
+                    "3-wire RTD Pt 1000 (α = 0.00385 °C⁻¹)",
+                    "3-wire RTD 50P (α = 0.00391 °C⁻¹)",
+                    "3-wire RTD 100P (α = 0.00391 °C⁻¹)",
+                    "3-wire RTD 500P (α = 0.00391 °C⁻¹)",
+                    "3-wire RTD 1000P (α = 0.00391 °C⁻¹)",
+                    "3-wire RTD 50M (α = 0.00428 °C⁻¹)",
+                    "3-wire RTD 100M (α = 0.00428 °C⁻¹)",
+                    "3-wire RTD 500M (α = 0.00428 °C⁻¹)",
+                    "3-wire RTD 1000M (α = 0.00428 °C⁻¹)",
+                    "3-wire RTD Ni 100 (α = 0.00617 °C⁻¹)",
+                    "3-wire RTD Ni 500 (α = 0.00617 °C⁻¹)",
+                    "3-wire RTD Ni 1000 (α = 0.00617 °C⁻¹)",
+
+                    "0-5 mA sensor",
+                    "0-20 mA sensor",
+                    "4-20 mA sensor",
+
+                    "0-1V sensor",
+                    "-50 to 50 mV sensor",
+
+                    "dry contact sensor",
+                    "NTC thermistor 10k (B = 3988 K)"
+                ]
+            },
+            "in9_data_rate": {
+                "required": true,
+                "title": "Sampling time",
+                "order": 2,
+                "address": "0x8402",
+                "enum_titles": [
+                    "50 ms (20 SPS)",
+                    "22 ms (45 SPS)",
+                    "11 ms (90 SPS)",
+                    "5.7 ms (175 SPS)",
+                    "3.0 ms (330 SPS)",
+                    "1.7 ms (600 SPS)",
+                    "1.0 ms (1000 SPS)"
+                ],
+                "enum": [ 20, 45, 90, 175, 330, 600, 1000 ]
+            },
+            "in9_measurements": {
+                "title": "Number of measurements",
+                "description": "Total sampling time of channel is (Sampling time * Number of measurements). Channels are polled sequentially.",
+                "order": 3,
+                "address": "0x8404",
+                "min": 1,
+                "max": 50
+            },
+            "in9_lowpass": {
+                "title": "Lowpass filter time, ms",
+                "order": 4,
+                "address": "0x8406",
+                "min": 0,
+                "max": 65000
+            },
+            "in9_gain": {
+                "title": "Gain",
+                "order": 4,
+                "address": "0x840C",
+                "enum": [0, 1, 2, 4],
+                "enum_titles": ["auto"],
+                "default": 0,
+                "condition": "
+            in_9_type==5888||in_9_type==3||in_9_type==2||in_9_type==0||in_9_type==256||in_9_type==257||in_9_type==4||in_9_type==1"
+            },
+            "in9_min": {
+                "title": "Minimum value",
+                "order": 5,
+                "address": "0x8408",
+                "default": 0,
+                "condition": "
+            in_9_type==5376||in_9_type==4864||in_9_type==4865||in_9_type==4866||in_9_type==0||in_9_type==256||in_9_type==5120"
+            },
+            "in9_max": {
+                "title": "Maximum value",
+                "order": 6,
+                "address": "0x840A",
+                "default": 10000,
+                "condition": "
+            in_9_type==5376||in_9_type==4864||in_9_type==4865||in_9_type==4866||in_9_type==0||in_9_type==256||in_9_type==5120"
+            },
+            "in9_n_type": {
+                "title": "Type",
+                "address": "0x8401",
+                "order": 1,
+                "enum": [
+                    4352,
+                    4353,
+                    4354,
+                    4355,
+                    4368,
+                    4369,
+                    4370,
+                    4371,
+                    4384,
+                    4385,
+                    4386,
+                    4387,
+                    4400,
+                    4401,
+                    4402,
+
+                    4608,
+                    4609,
+                    4610,
+                    4611,
+                    4624,
+                    4625,
+                    4626,
+                    4627,
+                    4640,
+                    4641,
+                    4642,
+                    4643,
+                    4656,
+                    4657,
+                    4658,
+
+                    4864,
+                    4865,
+                    4866,
+
+                    5120,
+                    5376,
+
+                    5632,
+                    5888
+
+                ],
+                "enum_titles": [
+                    "Thermocouple type K (ТХА)",
+
+                    "2-wire RTD Pt 50 (α = 0.00385 °C⁻¹)",
+                    "2-wire RTD Pt 100 (α = 0.00385 °C⁻¹)",
+                    "2-wire RTD Pt 500 (α = 0.00385 °C⁻¹)",
+                    "2-wire RTD Pt 1000 (α = 0.00385 °C⁻¹)",
+                    "2-wire RTD 50P (α = 0.00391 °C⁻¹)",
+                    "2-wire RTD 100P (α = 0.00391 °C⁻¹)",
+                    "2-wire RTD 500P (α = 0.00391 °C⁻¹)",
+                    "2-wire RTD 1000P (α = 0.00391 °C⁻¹)",
+                    "2-wire RTD 50M (α = 0.00428 °C⁻¹)",
+                    "2-wire RTD 100M (α = 0.00428 °C⁻¹)",
+                    "2-wire RTD 500M (α = 0.00428 °C⁻¹)",
+                    "2-wire RTD 1000M (α = 0.00428 °C⁻¹)",
+                    "2-wire RTD Ni 100 (α = 0.00617 °C⁻¹)",
+                    "2-wire RTD Ni 500 (α = 0.00617 °C⁻¹)",
+                    "2-wire RTD Ni 1000 (α = 0.00617 °C⁻¹)",
+
+                    "3-wire RTD Pt 50 (α = 0.00385 °C⁻¹)",
+                    "3-wire RTD Pt 50 (α = 0.00385 °C⁻¹)",
+                    "3-wire RTD Pt 100 (α = 0.00385 °C⁻¹)",
+                    "3-wire RTD Pt 500 (α = 0.00385 °C⁻¹)",
+                    "3-wire RTD Pt 1000 (α = 0.00385 °C⁻¹)",
+                    "3-wire RTD 50P (α = 0.00391 °C⁻¹)",
+                    "3-wire RTD 100P (α = 0.00391 °C⁻¹)",
+                    "3-wire RTD 500P (α = 0.00391 °C⁻¹)",
+                    "3-wire RTD 1000P (α = 0.00391 °C⁻¹)",
+                    "3-wire RTD 50M (α = 0.00428 °C⁻¹)",
+                    "3-wire RTD 100M (α = 0.00428 °C⁻¹)",
+                    "3-wire RTD 500M (α = 0.00428 °C⁻¹)",
+                    "3-wire RTD 1000M (α = 0.00428 °C⁻¹)",
+                    "3-wire RTD Ni 100 (α = 0.00617 °C⁻¹)",
+                    "3-wire RTD Ni 500 (α = 0.00617 °C⁻¹)",
+                    "3-wire RTD Ni 1000 (α = 0.00617 °C⁻¹)",
+
+                    "0-5 mA sensor",
+                    "0-20 mA sensor",
+                    "4-20 mA sensor",
+
+                    "0-1V sensor",
+                    "-50 to 50 mV sensor",
+
+                    "dry contact sensor",
+                    "NTC thermistor 10k (B = 3988 K)"
+                ]
+            },
+            "in9_n_data_rate": {
+                "required": true,
+                "title": "Sampling time",
+                "order": 2,
+                "address": "0x8403",
+                "enum_titles": [
+                    "50 ms (20 SPS)",
+                    "22 ms (45 SPS)",
+                    "11 ms (90 SPS)",
+                    "5.7 ms (175 SPS)",
+                    "3.0 ms (330 SPS)",
+                    "1.7 ms (600 SPS)",
+                    "1.0 ms (1000 SPS)"
+                ],
+                "enum": [ 20, 45, 90, 175, 330, 600, 1000 ]
+            },
+            "in9_n_measurements": {
+                "title": "Number of measurements",
+                "description": "Total sampling time of channel is (Sampling time * Number of measurements). Channels are polled sequentially.",
+                "order": 3,
+                "address": "0x8405",
+                "min": 1,
+                "max": 50
+            },
+            "in9_n_lowpass": {
+                "title": "Lowpass filter time, ms",
+                "order": 4,
+                "address": "0x8407",
+                "min": 0,
+                "max": 65000
+            },
+            "in9_n_gain": {
+                "title": "Gain",
+                "order": 4,
+                "address": "0x840D",
+                "enum": [0, 1, 2, 4],
+                "enum_titles": ["auto"],
+                "default": 0,
+                "condition": "
+            in_9_n_type==5888||in_9_n_type==3||in_9_n_type==2||in_9_n_type==0||in_9_n_type==256||in_9_n_type==257||in_9_n_type==4||in_9_n_type==1"
+            },
+            "in9_n_min": {
+                "title": "Minimum value",
+                "order": 5,
+                "address": "0x8409",
+                "default": 0,
+                "condition": "
+            in_9_n_type==5376||in_9_n_type==4864||in_9_n_type==4865||in_9_n_type==4866||in_9_n_type==0||in_9_n_type==256||in_9_n_type==5120"
+            },
+            "in9_n_max": {
+                "title": "Maximum value",
+                "order": 6,
+                "address": "0x840B",
+                "default": 10000,
+                "condition": "
+            in_9_n_type==5376||in_9_n_type==4864||in_9_n_type==4865||in_9_n_type==4866||in_9_n_type==0||in_9_n_type==256||in_9_n_type==5120"
+            },
+            "in10_type": {
+                "title": "Type",
+                "address": "0x9400",
+                "order": 1,
+                "enum": [
+                    4096,
+
+                    4352,
+                    4353,
+                    4354,
+                    4355,
+                    4368,
+                    4369,
+                    4370,
+                    4371,
+                    4384,
+                    4385,
+                    4386,
+                    4387,
+                    4400,
+                    4401,
+                    4402,
+
+                    4608,
+                    4609,
+                    4610,
+                    4611,
+                    4624,
+                    4625,
+                    4626,
+                    4627,
+                    4640,
+                    4641,
+                    4642,
+                    4643,
+                    4656,
+                    4657,
+                    4658,
+
+                    4864,
+                    4865,
+                    4866,
+
+                    5120,
+                    5376,
+
+                    5632,
+                    5888
+
+                ],
+                "enum_titles": [
+                    "2-wire RTD Pt 50 (α = 0.00385 °C⁻¹)",
+                    "2-wire RTD Pt 100 (α = 0.00385 °C⁻¹)",
+                    "2-wire RTD Pt 500 (α = 0.00385 °C⁻¹)",
+                    "2-wire RTD Pt 1000 (α = 0.00385 °C⁻¹)",
+                    "2-wire RTD 50P (α = 0.00391 °C⁻¹)",
+                    "2-wire RTD 100P (α = 0.00391 °C⁻¹)",
+                    "2-wire RTD 500P (α = 0.00391 °C⁻¹)",
+                    "2-wire RTD 1000P (α = 0.00391 °C⁻¹)",
+                    "2-wire RTD 50M (α = 0.00428 °C⁻¹)",
+                    "2-wire RTD 100M (α = 0.00428 °C⁻¹)",
+                    "2-wire RTD 500M (α = 0.00428 °C⁻¹)",
+                    "2-wire RTD 1000M (α = 0.00428 °C⁻¹)",
+                    "2-wire RTD Ni 100 (α = 0.00617 °C⁻¹)",
+                    "2-wire RTD Ni 500 (α = 0.00617 °C⁻¹)",
+                    "2-wire RTD Ni 1000 (α = 0.00617 °C⁻¹)",
+
+                    "3-wire RTD Pt 50 (α = 0.00385 °C⁻¹)",
+                    "3-wire RTD Pt 50 (α = 0.00385 °C⁻¹)",
+                    "3-wire RTD Pt 100 (α = 0.00385 °C⁻¹)",
+                    "3-wire RTD Pt 500 (α = 0.00385 °C⁻¹)",
+                    "3-wire RTD Pt 1000 (α = 0.00385 °C⁻¹)",
+                    "3-wire RTD 50P (α = 0.00391 °C⁻¹)",
+                    "3-wire RTD 100P (α = 0.00391 °C⁻¹)",
+                    "3-wire RTD 500P (α = 0.00391 °C⁻¹)",
+                    "3-wire RTD 1000P (α = 0.00391 °C⁻¹)",
+                    "3-wire RTD 50M (α = 0.00428 °C⁻¹)",
+                    "3-wire RTD 100M (α = 0.00428 °C⁻¹)",
+                    "3-wire RTD 500M (α = 0.00428 °C⁻¹)",
+                    "3-wire RTD 1000M (α = 0.00428 °C⁻¹)",
+                    "3-wire RTD Ni 100 (α = 0.00617 °C⁻¹)",
+                    "3-wire RTD Ni 500 (α = 0.00617 °C⁻¹)",
+                    "3-wire RTD Ni 1000 (α = 0.00617 °C⁻¹)",
+
+                    "0-5 mA sensor",
+                    "0-20 mA sensor",
+                    "4-20 mA sensor",
+
+                    "0-1V sensor",
+                    "-50 to 50 mV sensor",
+
+                    "dry contact sensor",
+                    "NTC thermistor 10k (B = 3988 K)"
+                ]
+            },
+            "in10_data_rate": {
+                "required": true,
+                "title": "Sampling time",
+                "order": 2,
+                "address": "0x9402",
+                "enum_titles": [
+                    "50 ms (20 SPS)",
+                    "22 ms (45 SPS)",
+                    "11 ms (90 SPS)",
+                    "5.7 ms (175 SPS)",
+                    "3.0 ms (330 SPS)",
+                    "1.7 ms (600 SPS)",
+                    "1.0 ms (1000 SPS)"
+                ],
+                "enum": [ 20, 45, 90, 175, 330, 600, 1000 ]
+            },
+            "in10_measurements": {
+                "title": "Number of measurements",
+                "description": "Total sampling time of channel is (Sampling time * Number of measurements). Channels are polled sequentially.",
+                "order": 3,
+                "address": "0x9404",
+                "min": 1,
+                "max": 50
+            },
+            "in10_lowpass": {
+                "title": "Lowpass filter time, ms",
+                "order": 4,
+                "address": "0x9406",
+                "min": 0,
+                "max": 65000
+            },
+            "in10_gain": {
+                "title": "Gain",
+                "order": 4,
+                "address": "0x940C",
+                "enum": [0, 1, 2, 4],
+                "enum_titles": ["auto"],
+                "default": 0,
+                "condition": "
+            in_10_type==5888||in_10_type==3||in_10_type==2||in_10_type==0||in_10_type==256||in_10_type==257||in_10_type==4||in_10_type==1"
+            },
+            "in10_min": {
+                "title": "Minimum value",
+                "order": 5,
+                "address": "0x9408",
+                "default": 0,
+                "condition": "
+            in_10_type==5376||in_10_type==4864||in_10_type==4865||in_10_type==4866||in_10_type==0||in_10_type==256||in_10_type==5120"
+            },
+            "in10_max": {
+                "title": "Maximum value",
+                "order": 6,
+                "address": "0x940A",
+                "default": 10000,
+                "condition": "
+            in_10_type==5376||in_10_type==4864||in_10_type==4865||in_10_type==4866||in_10_type==0||in_10_type==256||in_10_type==5120"
+            },
+            "in10_n_type": {
+                "title": "Type",
+                "address": "0x9401",
+                "order": 1,
+                "enum": [
+                    4352,
+                    4353,
+                    4354,
+                    4355,
+                    4368,
+                    4369,
+                    4370,
+                    4371,
+                    4384,
+                    4385,
+                    4386,
+                    4387,
+                    4400,
+                    4401,
+                    4402,
+
+                    4608,
+                    4609,
+                    4610,
+                    4611,
+                    4624,
+                    4625,
+                    4626,
+                    4627,
+                    4640,
+                    4641,
+                    4642,
+                    4643,
+                    4656,
+                    4657,
+                    4658,
+
+                    4864,
+                    4865,
+                    4866,
+
+                    5120,
+                    5376,
+
+                    5632,
+                    5888
+
+                ],
+                "enum_titles": [
+                    "Thermocouple type K (ТХА)",
+
+                    "2-wire RTD Pt 50 (α = 0.00385 °C⁻¹)",
+                    "2-wire RTD Pt 100 (α = 0.00385 °C⁻¹)",
+                    "2-wire RTD Pt 500 (α = 0.00385 °C⁻¹)",
+                    "2-wire RTD Pt 1000 (α = 0.00385 °C⁻¹)",
+                    "2-wire RTD 50P (α = 0.00391 °C⁻¹)",
+                    "2-wire RTD 100P (α = 0.00391 °C⁻¹)",
+                    "2-wire RTD 500P (α = 0.00391 °C⁻¹)",
+                    "2-wire RTD 1000P (α = 0.00391 °C⁻¹)",
+                    "2-wire RTD 50M (α = 0.00428 °C⁻¹)",
+                    "2-wire RTD 100M (α = 0.00428 °C⁻¹)",
+                    "2-wire RTD 500M (α = 0.00428 °C⁻¹)",
+                    "2-wire RTD 1000M (α = 0.00428 °C⁻¹)",
+                    "2-wire RTD Ni 100 (α = 0.00617 °C⁻¹)",
+                    "2-wire RTD Ni 500 (α = 0.00617 °C⁻¹)",
+                    "2-wire RTD Ni 1000 (α = 0.00617 °C⁻¹)",
+
+                    "3-wire RTD Pt 50 (α = 0.00385 °C⁻¹)",
+                    "3-wire RTD Pt 50 (α = 0.00385 °C⁻¹)",
+                    "3-wire RTD Pt 100 (α = 0.00385 °C⁻¹)",
+                    "3-wire RTD Pt 500 (α = 0.00385 °C⁻¹)",
+                    "3-wire RTD Pt 1000 (α = 0.00385 °C⁻¹)",
+                    "3-wire RTD 50P (α = 0.00391 °C⁻¹)",
+                    "3-wire RTD 100P (α = 0.00391 °C⁻¹)",
+                    "3-wire RTD 500P (α = 0.00391 °C⁻¹)",
+                    "3-wire RTD 1000P (α = 0.00391 °C⁻¹)",
+                    "3-wire RTD 50M (α = 0.00428 °C⁻¹)",
+                    "3-wire RTD 100M (α = 0.00428 °C⁻¹)",
+                    "3-wire RTD 500M (α = 0.00428 °C⁻¹)",
+                    "3-wire RTD 1000M (α = 0.00428 °C⁻¹)",
+                    "3-wire RTD Ni 100 (α = 0.00617 °C⁻¹)",
+                    "3-wire RTD Ni 500 (α = 0.00617 °C⁻¹)",
+                    "3-wire RTD Ni 1000 (α = 0.00617 °C⁻¹)",
+
+                    "0-5 mA sensor",
+                    "0-20 mA sensor",
+                    "4-20 mA sensor",
+
+                    "0-1V sensor",
+                    "-50 to 50 mV sensor",
+
+                    "dry contact sensor",
+                    "NTC thermistor 10k (B = 3988 K)"
+                ]
+            },
+            "in10_n_data_rate": {
+                "required": true,
+                "title": "Sampling time",
+                "order": 2,
+                "address": "0x9403",
+                "enum_titles": [
+                    "50 ms (20 SPS)",
+                    "22 ms (45 SPS)",
+                    "11 ms (90 SPS)",
+                    "5.7 ms (175 SPS)",
+                    "3.0 ms (330 SPS)",
+                    "1.7 ms (600 SPS)",
+                    "1.0 ms (1000 SPS)"
+                ],
+                "enum": [ 20, 45, 90, 175, 330, 600, 1000 ]
+            },
+            "in10_n_measurements": {
+                "title": "Number of measurements",
+                "description": "Total sampling time of channel is (Sampling time * Number of measurements). Channels are polled sequentially.",
+                "order": 3,
+                "address": "0x9405",
+                "min": 1,
+                "max": 50
+            },
+            "in10_n_lowpass": {
+                "title": "Lowpass filter time, ms",
+                "order": 4,
+                "address": "0x9407",
+                "min": 0,
+                "max": 65000
+            },
+            "in10_n_gain": {
+                "title": "Gain",
+                "order": 4,
+                "address": "0x940D",
+                "enum": [0, 1, 2, 4],
+                "enum_titles": ["auto"],
+                "default": 0,
+                "condition": "
+            in_10_n_type==5888||in_10_n_type==3||in_10_n_type==2||in_10_n_type==0||in_10_n_type==256||in_10_n_type==257||in_10_n_type==4||in_10_n_type==1"
+            },
+            "in10_n_min": {
+                "title": "Minimum value",
+                "order": 5,
+                "address": "0x9409",
+                "default": 0,
+                "condition": "
+            in_10_n_type==5376||in_10_n_type==4864||in_10_n_type==4865||in_10_n_type==4866||in_10_n_type==0||in_10_n_type==256||in_10_n_type==5120"
+            },
+            "in10_n_max": {
+                "title": "Maximum value",
+                "order": 6,
+                "address": "0x940B",
+                "default": 10000,
+                "condition": "
+            in_10_n_type==5376||in_10_n_type==4864||in_10_n_type==4865||in_10_n_type==4866||in_10_n_type==0||in_10_n_type==256||in_10_n_type==5120"
+            },
+            "in11_type": {
+                "title": "Type",
+                "address": "0xa400",
+                "order": 1,
+                "enum": [
+                    4096,
+
+                    4352,
+                    4353,
+                    4354,
+                    4355,
+                    4368,
+                    4369,
+                    4370,
+                    4371,
+                    4384,
+                    4385,
+                    4386,
+                    4387,
+                    4400,
+                    4401,
+                    4402,
+
+                    4608,
+                    4609,
+                    4610,
+                    4611,
+                    4624,
+                    4625,
+                    4626,
+                    4627,
+                    4640,
+                    4641,
+                    4642,
+                    4643,
+                    4656,
+                    4657,
+                    4658,
+
+                    4864,
+                    4865,
+                    4866,
+
+                    5120,
+                    5376,
+
+                    5632,
+                    5888
+
+                ],
+                "enum_titles": [
+                    "2-wire RTD Pt 50 (α = 0.00385 °C⁻¹)",
+                    "2-wire RTD Pt 100 (α = 0.00385 °C⁻¹)",
+                    "2-wire RTD Pt 500 (α = 0.00385 °C⁻¹)",
+                    "2-wire RTD Pt 1000 (α = 0.00385 °C⁻¹)",
+                    "2-wire RTD 50P (α = 0.00391 °C⁻¹)",
+                    "2-wire RTD 100P (α = 0.00391 °C⁻¹)",
+                    "2-wire RTD 500P (α = 0.00391 °C⁻¹)",
+                    "2-wire RTD 1000P (α = 0.00391 °C⁻¹)",
+                    "2-wire RTD 50M (α = 0.00428 °C⁻¹)",
+                    "2-wire RTD 100M (α = 0.00428 °C⁻¹)",
+                    "2-wire RTD 500M (α = 0.00428 °C⁻¹)",
+                    "2-wire RTD 1000M (α = 0.00428 °C⁻¹)",
+                    "2-wire RTD Ni 100 (α = 0.00617 °C⁻¹)",
+                    "2-wire RTD Ni 500 (α = 0.00617 °C⁻¹)",
+                    "2-wire RTD Ni 1000 (α = 0.00617 °C⁻¹)",
+
+                    "3-wire RTD Pt 50 (α = 0.00385 °C⁻¹)",
+                    "3-wire RTD Pt 50 (α = 0.00385 °C⁻¹)",
+                    "3-wire RTD Pt 100 (α = 0.00385 °C⁻¹)",
+                    "3-wire RTD Pt 500 (α = 0.00385 °C⁻¹)",
+                    "3-wire RTD Pt 1000 (α = 0.00385 °C⁻¹)",
+                    "3-wire RTD 50P (α = 0.00391 °C⁻¹)",
+                    "3-wire RTD 100P (α = 0.00391 °C⁻¹)",
+                    "3-wire RTD 500P (α = 0.00391 °C⁻¹)",
+                    "3-wire RTD 1000P (α = 0.00391 °C⁻¹)",
+                    "3-wire RTD 50M (α = 0.00428 °C⁻¹)",
+                    "3-wire RTD 100M (α = 0.00428 °C⁻¹)",
+                    "3-wire RTD 500M (α = 0.00428 °C⁻¹)",
+                    "3-wire RTD 1000M (α = 0.00428 °C⁻¹)",
+                    "3-wire RTD Ni 100 (α = 0.00617 °C⁻¹)",
+                    "3-wire RTD Ni 500 (α = 0.00617 °C⁻¹)",
+                    "3-wire RTD Ni 1000 (α = 0.00617 °C⁻¹)",
+
+                    "0-5 mA sensor",
+                    "0-20 mA sensor",
+                    "4-20 mA sensor",
+
+                    "0-1V sensor",
+                    "-50 to 50 mV sensor",
+
+                    "dry contact sensor",
+                    "NTC thermistor 10k (B = 3988 K)"
+                ]
+            },
+            "in11_data_rate": {
+                "required": true,
+                "title": "Sampling time",
+                "order": 2,
+                "address": "0xa402",
+                "enum_titles": [
+                    "50 ms (20 SPS)",
+                    "22 ms (45 SPS)",
+                    "11 ms (90 SPS)",
+                    "5.7 ms (175 SPS)",
+                    "3.0 ms (330 SPS)",
+                    "1.7 ms (600 SPS)",
+                    "1.0 ms (1000 SPS)"
+                ],
+                "enum": [ 20, 45, 90, 175, 330, 600, 1000 ]
+            },
+            "in11_measurements": {
+                "title": "Number of measurements",
+                "description": "Total sampling time of channel is (Sampling time * Number of measurements). Channels are polled sequentially.",
+                "order": 3,
+                "address": "0xa404",
+                "min": 1,
+                "max": 50
+            },
+            "in11_lowpass": {
+                "title": "Lowpass filter time, ms",
+                "order": 4,
+                "address": "0xa406",
+                "min": 0,
+                "max": 65000
+            },
+            "in11_gain": {
+                "title": "Gain",
+                "order": 4,
+                "address": "0xa40C",
+                "enum": [0, 1, 2, 4],
+                "enum_titles": ["auto"],
+                "default": 0,
+                "condition": "
+            in_11_type==5888||in_11_type==3||in_11_type==2||in_11_type==0||in_11_type==256||in_11_type==257||in_11_type==4||in_11_type==1"
+            },
+            "in11_min": {
+                "title": "Minimum value",
+                "order": 5,
+                "address": "0xa408",
+                "default": 0,
+                "condition": "
+            in_11_type==5376||in_11_type==4864||in_11_type==4865||in_11_type==4866||in_11_type==0||in_11_type==256||in_11_type==5120"
+            },
+            "in11_max": {
+                "title": "Maximum value",
+                "order": 6,
+                "address": "0xa40A",
+                "default": 10000,
+                "condition": "
+            in_11_type==5376||in_11_type==4864||in_11_type==4865||in_11_type==4866||in_11_type==0||in_11_type==256||in_11_type==5120"
+            },
+            "in11_n_type": {
+                "title": "Type",
+                "address": "0xa401",
+                "order": 1,
+                "enum": [
+                    4352,
+                    4353,
+                    4354,
+                    4355,
+                    4368,
+                    4369,
+                    4370,
+                    4371,
+                    4384,
+                    4385,
+                    4386,
+                    4387,
+                    4400,
+                    4401,
+                    4402,
+
+                    4608,
+                    4609,
+                    4610,
+                    4611,
+                    4624,
+                    4625,
+                    4626,
+                    4627,
+                    4640,
+                    4641,
+                    4642,
+                    4643,
+                    4656,
+                    4657,
+                    4658,
+
+                    4864,
+                    4865,
+                    4866,
+
+                    5120,
+                    5376,
+
+                    5632,
+                    5888
+
+                ],
+                "enum_titles": [
+                    "Thermocouple type K (ТХА)",
+
+                    "2-wire RTD Pt 50 (α = 0.00385 °C⁻¹)",
+                    "2-wire RTD Pt 100 (α = 0.00385 °C⁻¹)",
+                    "2-wire RTD Pt 500 (α = 0.00385 °C⁻¹)",
+                    "2-wire RTD Pt 1000 (α = 0.00385 °C⁻¹)",
+                    "2-wire RTD 50P (α = 0.00391 °C⁻¹)",
+                    "2-wire RTD 100P (α = 0.00391 °C⁻¹)",
+                    "2-wire RTD 500P (α = 0.00391 °C⁻¹)",
+                    "2-wire RTD 1000P (α = 0.00391 °C⁻¹)",
+                    "2-wire RTD 50M (α = 0.00428 °C⁻¹)",
+                    "2-wire RTD 100M (α = 0.00428 °C⁻¹)",
+                    "2-wire RTD 500M (α = 0.00428 °C⁻¹)",
+                    "2-wire RTD 1000M (α = 0.00428 °C⁻¹)",
+                    "2-wire RTD Ni 100 (α = 0.00617 °C⁻¹)",
+                    "2-wire RTD Ni 500 (α = 0.00617 °C⁻¹)",
+                    "2-wire RTD Ni 1000 (α = 0.00617 °C⁻¹)",
+
+                    "3-wire RTD Pt 50 (α = 0.00385 °C⁻¹)",
+                    "3-wire RTD Pt 50 (α = 0.00385 °C⁻¹)",
+                    "3-wire RTD Pt 100 (α = 0.00385 °C⁻¹)",
+                    "3-wire RTD Pt 500 (α = 0.00385 °C⁻¹)",
+                    "3-wire RTD Pt 1000 (α = 0.00385 °C⁻¹)",
+                    "3-wire RTD 50P (α = 0.00391 °C⁻¹)",
+                    "3-wire RTD 100P (α = 0.00391 °C⁻¹)",
+                    "3-wire RTD 500P (α = 0.00391 °C⁻¹)",
+                    "3-wire RTD 1000P (α = 0.00391 °C⁻¹)",
+                    "3-wire RTD 50M (α = 0.00428 °C⁻¹)",
+                    "3-wire RTD 100M (α = 0.00428 °C⁻¹)",
+                    "3-wire RTD 500M (α = 0.00428 °C⁻¹)",
+                    "3-wire RTD 1000M (α = 0.00428 °C⁻¹)",
+                    "3-wire RTD Ni 100 (α = 0.00617 °C⁻¹)",
+                    "3-wire RTD Ni 500 (α = 0.00617 °C⁻¹)",
+                    "3-wire RTD Ni 1000 (α = 0.00617 °C⁻¹)",
+
+                    "0-5 mA sensor",
+                    "0-20 mA sensor",
+                    "4-20 mA sensor",
+
+                    "0-1V sensor",
+                    "-50 to 50 mV sensor",
+
+                    "dry contact sensor",
+                    "NTC thermistor 10k (B = 3988 K)"
+                ]
+            },
+            "in11_n_data_rate": {
+                "required": true,
+                "title": "Sampling time",
+                "order": 2,
+                "address": "0xa403",
+                "enum_titles": [
+                    "50 ms (20 SPS)",
+                    "22 ms (45 SPS)",
+                    "11 ms (90 SPS)",
+                    "5.7 ms (175 SPS)",
+                    "3.0 ms (330 SPS)",
+                    "1.7 ms (600 SPS)",
+                    "1.0 ms (1000 SPS)"
+                ],
+                "enum": [ 20, 45, 90, 175, 330, 600, 1000 ]
+            },
+            "in11_n_measurements": {
+                "title": "Number of measurements",
+                "description": "Total sampling time of channel is (Sampling time * Number of measurements). Channels are polled sequentially.",
+                "order": 3,
+                "address": "0xa405",
+                "min": 1,
+                "max": 50
+            },
+            "in11_n_lowpass": {
+                "title": "Lowpass filter time, ms",
+                "order": 4,
+                "address": "0xa407",
+                "min": 0,
+                "max": 65000
+            },
+            "in11_n_gain": {
+                "title": "Gain",
+                "order": 4,
+                "address": "0xa40D",
+                "enum": [0, 1, 2, 4],
+                "enum_titles": ["auto"],
+                "default": 0,
+                "condition": "
+            in_11_n_type==5888||in_11_n_type==3||in_11_n_type==2||in_11_n_type==0||in_11_n_type==256||in_11_n_type==257||in_11_n_type==4||in_11_n_type==1"
+            },
+            "in11_n_min": {
+                "title": "Minimum value",
+                "order": 5,
+                "address": "0xa409",
+                "default": 0,
+                "condition": "
+            in_11_n_type==5376||in_11_n_type==4864||in_11_n_type==4865||in_11_n_type==4866||in_11_n_type==0||in_11_n_type==256||in_11_n_type==5120"
+            },
+            "in11_n_max": {
+                "title": "Maximum value",
+                "order": 6,
+                "address": "0xa40B",
+                "default": 10000,
+                "condition": "
+            in_11_n_type==5376||in_11_n_type==4864||in_11_n_type==4865||in_11_n_type==4866||in_11_n_type==0||in_11_n_type==256||in_11_n_type==5120"
+            },
+            "baud_rate": {
+                "title": "Baud rate",
+                "description": "baud_rate_description",
+                "address": 110,
+                "reg_type": "holding",
+                "enum": [96, 192, 384, 576, 1152],
+                "default": 96,
+                "enum_titles": [
+                    "9600",
+                    "19200",
+                    "38400",
+                    "57600",
+                    "115200"
+                ],
+                "group": "general",
+                "order": 1
+            }
+        },
+
+        "channels": [
+            {
+                "name": "In 1 P Resistance",
+                "type": "resistance",
+                "error_value": "0x7FFFFFFF",
+                "reg_type": "input",
+                "format": "s32",
+                "address": "0x0500",
+                "scale": 0.01,
+                "condition": "in1_type==258||in1_type==4||in1_type==5888||(in1_type>=4352&&in1_type<=4658)"
+            },
+            {
+                "name": "In 1 P Voltage",
+                "type": "voltage",
+                "scale": 0.000001,
+                "reg_type": "input",
+                "format": "s32",
+                "error_value": "0x7FFFFFFF",
+                "address": "0x0500",
+                "condition": "in1_type==4096"
+            },
+            {
+                "name": "In 1 P Temperature",
+                "type": "temperature",
+                "scale": 0.1,
+                "reg_type": "input",
+                "error_value": "0x7fff",
+                "format": "s16",
+                "address": "0x0504",
+                "condition": "in1_type==4096||in1_type==4352"
+            },
+            {
+                "name": "In 1 P Current",
+                "type": "current",
+                "scale": 1e-9,
+                "error_value": "0x7FFFFFFF",
+                "reg_type": "input",
+                "format": "s32",
+                "address": "0x0500",
+                "condition": "in1_type==4096||in1_type==4352"
+            },
+            {
+                "name": "In 1 P Value",
+                "reg_type": "input",
+                "type": "value",
+                "format": "s16",
+                "error_value": "0x7fff",
+                "address": "0x0504",
+                "condition": "in1_type==4096||in1_type==4352"
+            },
+            {
+                "name": "In 1 P State",
+                "reg_type": "input",
+                "format": "s16",
+                "address": "0x0504",
+                "condition": "in1_type==5632"
+            },
+            {
+                "name": "In 1 N Resistance",
+                "type": "resistance",
+                "error_value": "0x7FFFFFFF",
+                "reg_type": "input",
+                "format": "s32",
+                "address": "0x0500",
+                "scale": 0.01,
+                "condition": "in1_n_type==258||in1_n_type==4||in1_n_type==5888||(in1_n_type>=4352&&in1_n_type<=4658)",
+                "group": "in1_n"
+            },
+            {
+                "name": "In 1 N Voltage",
+                "type": "voltage",
+                "scale": 0.000001,
+                "reg_type": "input",
+                "format": "s32",
+                "error_value": "0x7FFFFFFF",
+                "address": "0x0500",
+                "condition": "in1_n_type==4096",
+                "group": "in1_n"
+            },
+            {
+                "name": "In 1 N Temperature",
+                "type": "temperature",
+                "scale": 0.1,
+                "reg_type": "input",
+                "error_value": "0x7fff",
+                "format": "s16",
+                "address": "0x0504",
+                "condition": "in1_n_type==4096||in1_n_type==4352",
+                "group": "in1_n"
+            },
+            {
+                "name": "In 1 N Current",
+                "type": "current",
+                "scale": 1e-9,
+                "error_value": "0x7FFFFFFF",
+                "reg_type": "input",
+                "format": "s32",
+                "address": "0x0500",
+                "condition": "in1_n_type==4096||in1_n_type==4352",
+                "group": "in1_n"
+            },
+            {
+                "name": "In 1 N Value",
+                "reg_type": "input",
+                "type": "value",
+                "format": "s16",
+                "error_value": "0x7fff",
+                "address": "0x0504",
+                "condition": "in1_n_type==4096||in1_n_type==4352",
+                "group": "in1_n"
+            },
+            {
+                "name": "In 1 N State",
+                "reg_type": "input",
+                "format": "s16",
+                "address": "0x0504",
+                "condition": "in1_n_type==5632",
+                "group": "in1_n"
+            }
+            {
+                "name": "In 2 P Resistance",
+                "type": "resistance",
+                "error_value": "0x7FFFFFFF",
+                "reg_type": "input",
+                "format": "s32",
+                "address": "0x1500",
+                "scale": 0.01,
+                "condition": "in2_type==258||in2_type==4||in2_type==5888||(in2_type>=4352&&in2_type<=4658)"
+            },
+            {
+                "name": "In 2 P Voltage",
+                "type": "voltage",
+                "scale": 0.000001,
+                "reg_type": "input",
+                "format": "s32",
+                "error_value": "0x7FFFFFFF",
+                "address": "0x1500",
+                "condition": "in2_type==4096"
+            },
+            {
+                "name": "In 2 P Temperature",
+                "type": "temperature",
+                "scale": 0.1,
+                "reg_type": "input",
+                "error_value": "0x7fff",
+                "format": "s16",
+                "address": "0x1504",
+                "condition": "in2_type==4096||in2_type==4352"
+            },
+            {
+                "name": "In 2 P Current",
+                "type": "current",
+                "scale": 1e-9,
+                "error_value": "0x7FFFFFFF",
+                "reg_type": "input",
+                "format": "s32",
+                "address": "0x1500",
+                "condition": "in2_type==4096||in2_type==4352"
+            },
+            {
+                "name": "In 2 P Value",
+                "reg_type": "input",
+                "type": "value",
+                "format": "s16",
+                "error_value": "0x7fff",
+                "address": "0x1504",
+                "condition": "in2_type==4096||in2_type==4352"
+            },
+            {
+                "name": "In 2 P State",
+                "reg_type": "input",
+                "format": "s16",
+                "address": "0x1504",
+                "condition": "in2_type==5632"
+            },
+            {
+                "name": "In 2 N Resistance",
+                "type": "resistance",
+                "error_value": "0x7FFFFFFF",
+                "reg_type": "input",
+                "format": "s32",
+                "address": "0x1500",
+                "scale": 0.01,
+                "condition": "in2_n_type==258||in2_n_type==4||in2_n_type==5888||(in2_n_type>=4352&&in2_n_type<=4658)",
+                "group": "in2_n"
+            },
+            {
+                "name": "In 2 N Voltage",
+                "type": "voltage",
+                "scale": 0.000001,
+                "reg_type": "input",
+                "format": "s32",
+                "error_value": "0x7FFFFFFF",
+                "address": "0x1500",
+                "condition": "in2_n_type==4096",
+                "group": "in2_n"
+            },
+            {
+                "name": "In 2 N Temperature",
+                "type": "temperature",
+                "scale": 0.1,
+                "reg_type": "input",
+                "error_value": "0x7fff",
+                "format": "s16",
+                "address": "0x1504",
+                "condition": "in2_n_type==4096||in2_n_type==4352",
+                "group": "in2_n"
+            },
+            {
+                "name": "In 2 N Current",
+                "type": "current",
+                "scale": 1e-9,
+                "error_value": "0x7FFFFFFF",
+                "reg_type": "input",
+                "format": "s32",
+                "address": "0x1500",
+                "condition": "in2_n_type==4096||in2_n_type==4352",
+                "group": "in2_n"
+            },
+            {
+                "name": "In 2 N Value",
+                "reg_type": "input",
+                "type": "value",
+                "format": "s16",
+                "error_value": "0x7fff",
+                "address": "0x1504",
+                "condition": "in2_n_type==4096||in2_n_type==4352",
+                "group": "in2_n"
+            },
+            {
+                "name": "In 2 N State",
+                "reg_type": "input",
+                "format": "s16",
+                "address": "0x1504",
+                "condition": "in2_n_type==5632",
+                "group": "in2_n"
+            }
+            {
+                "name": "In 3 P Resistance",
+                "type": "resistance",
+                "error_value": "0x7FFFFFFF",
+                "reg_type": "input",
+                "format": "s32",
+                "address": "0x2500",
+                "scale": 0.01,
+                "condition": "in3_type==258||in3_type==4||in3_type==5888||(in3_type>=4352&&in3_type<=4658)"
+            },
+            {
+                "name": "In 3 P Voltage",
+                "type": "voltage",
+                "scale": 0.000001,
+                "reg_type": "input",
+                "format": "s32",
+                "error_value": "0x7FFFFFFF",
+                "address": "0x2500",
+                "condition": "in3_type==4096"
+            },
+            {
+                "name": "In 3 P Temperature",
+                "type": "temperature",
+                "scale": 0.1,
+                "reg_type": "input",
+                "error_value": "0x7fff",
+                "format": "s16",
+                "address": "0x2504",
+                "condition": "in3_type==4096||in3_type==4352"
+            },
+            {
+                "name": "In 3 P Current",
+                "type": "current",
+                "scale": 1e-9,
+                "error_value": "0x7FFFFFFF",
+                "reg_type": "input",
+                "format": "s32",
+                "address": "0x2500",
+                "condition": "in3_type==4096||in3_type==4352"
+            },
+            {
+                "name": "In 3 P Value",
+                "reg_type": "input",
+                "type": "value",
+                "format": "s16",
+                "error_value": "0x7fff",
+                "address": "0x2504",
+                "condition": "in3_type==4096||in3_type==4352"
+            },
+            {
+                "name": "In 3 P State",
+                "reg_type": "input",
+                "format": "s16",
+                "address": "0x2504",
+                "condition": "in3_type==5632"
+            },
+            {
+                "name": "In 3 N Resistance",
+                "type": "resistance",
+                "error_value": "0x7FFFFFFF",
+                "reg_type": "input",
+                "format": "s32",
+                "address": "0x2500",
+                "scale": 0.01,
+                "condition": "in3_n_type==258||in3_n_type==4||in3_n_type==5888||(in3_n_type>=4352&&in3_n_type<=4658)",
+                "group": "in3_n"
+            },
+            {
+                "name": "In 3 N Voltage",
+                "type": "voltage",
+                "scale": 0.000001,
+                "reg_type": "input",
+                "format": "s32",
+                "error_value": "0x7FFFFFFF",
+                "address": "0x2500",
+                "condition": "in3_n_type==4096",
+                "group": "in3_n"
+            },
+            {
+                "name": "In 3 N Temperature",
+                "type": "temperature",
+                "scale": 0.1,
+                "reg_type": "input",
+                "error_value": "0x7fff",
+                "format": "s16",
+                "address": "0x2504",
+                "condition": "in3_n_type==4096||in3_n_type==4352",
+                "group": "in3_n"
+            },
+            {
+                "name": "In 3 N Current",
+                "type": "current",
+                "scale": 1e-9,
+                "error_value": "0x7FFFFFFF",
+                "reg_type": "input",
+                "format": "s32",
+                "address": "0x2500",
+                "condition": "in3_n_type==4096||in3_n_type==4352",
+                "group": "in3_n"
+            },
+            {
+                "name": "In 3 N Value",
+                "reg_type": "input",
+                "type": "value",
+                "format": "s16",
+                "error_value": "0x7fff",
+                "address": "0x2504",
+                "condition": "in3_n_type==4096||in3_n_type==4352",
+                "group": "in3_n"
+            },
+            {
+                "name": "In 3 N State",
+                "reg_type": "input",
+                "format": "s16",
+                "address": "0x2504",
+                "condition": "in3_n_type==5632",
+                "group": "in3_n"
+            }
+            {
+                "name": "In 4 P Resistance",
+                "type": "resistance",
+                "error_value": "0x7FFFFFFF",
+                "reg_type": "input",
+                "format": "s32",
+                "address": "0x3500",
+                "scale": 0.01,
+                "condition": "in4_type==258||in4_type==4||in4_type==5888||(in4_type>=4352&&in4_type<=4658)"
+            },
+            {
+                "name": "In 4 P Voltage",
+                "type": "voltage",
+                "scale": 0.000001,
+                "reg_type": "input",
+                "format": "s32",
+                "error_value": "0x7FFFFFFF",
+                "address": "0x3500",
+                "condition": "in4_type==4096"
+            },
+            {
+                "name": "In 4 P Temperature",
+                "type": "temperature",
+                "scale": 0.1,
+                "reg_type": "input",
+                "error_value": "0x7fff",
+                "format": "s16",
+                "address": "0x3504",
+                "condition": "in4_type==4096||in4_type==4352"
+            },
+            {
+                "name": "In 4 P Current",
+                "type": "current",
+                "scale": 1e-9,
+                "error_value": "0x7FFFFFFF",
+                "reg_type": "input",
+                "format": "s32",
+                "address": "0x3500",
+                "condition": "in4_type==4096||in4_type==4352"
+            },
+            {
+                "name": "In 4 P Value",
+                "reg_type": "input",
+                "type": "value",
+                "format": "s16",
+                "error_value": "0x7fff",
+                "address": "0x3504",
+                "condition": "in4_type==4096||in4_type==4352"
+            },
+            {
+                "name": "In 4 P State",
+                "reg_type": "input",
+                "format": "s16",
+                "address": "0x3504",
+                "condition": "in4_type==5632"
+            },
+            {
+                "name": "In 4 N Resistance",
+                "type": "resistance",
+                "error_value": "0x7FFFFFFF",
+                "reg_type": "input",
+                "format": "s32",
+                "address": "0x3500",
+                "scale": 0.01,
+                "condition": "in4_n_type==258||in4_n_type==4||in4_n_type==5888||(in4_n_type>=4352&&in4_n_type<=4658)",
+                "group": "in4_n"
+            },
+            {
+                "name": "In 4 N Voltage",
+                "type": "voltage",
+                "scale": 0.000001,
+                "reg_type": "input",
+                "format": "s32",
+                "error_value": "0x7FFFFFFF",
+                "address": "0x3500",
+                "condition": "in4_n_type==4096",
+                "group": "in4_n"
+            },
+            {
+                "name": "In 4 N Temperature",
+                "type": "temperature",
+                "scale": 0.1,
+                "reg_type": "input",
+                "error_value": "0x7fff",
+                "format": "s16",
+                "address": "0x3504",
+                "condition": "in4_n_type==4096||in4_n_type==4352",
+                "group": "in4_n"
+            },
+            {
+                "name": "In 4 N Current",
+                "type": "current",
+                "scale": 1e-9,
+                "error_value": "0x7FFFFFFF",
+                "reg_type": "input",
+                "format": "s32",
+                "address": "0x3500",
+                "condition": "in4_n_type==4096||in4_n_type==4352",
+                "group": "in4_n"
+            },
+            {
+                "name": "In 4 N Value",
+                "reg_type": "input",
+                "type": "value",
+                "format": "s16",
+                "error_value": "0x7fff",
+                "address": "0x3504",
+                "condition": "in4_n_type==4096||in4_n_type==4352",
+                "group": "in4_n"
+            },
+            {
+                "name": "In 4 N State",
+                "reg_type": "input",
+                "format": "s16",
+                "address": "0x3504",
+                "condition": "in4_n_type==5632",
+                "group": "in4_n"
+            }
+            {
+                "name": "In 5 P Resistance",
+                "type": "resistance",
+                "error_value": "0x7FFFFFFF",
+                "reg_type": "input",
+                "format": "s32",
+                "address": "0x4500",
+                "scale": 0.01,
+                "condition": "in5_type==258||in5_type==4||in5_type==5888||(in5_type>=4352&&in5_type<=4658)"
+            },
+            {
+                "name": "In 5 P Voltage",
+                "type": "voltage",
+                "scale": 0.000001,
+                "reg_type": "input",
+                "format": "s32",
+                "error_value": "0x7FFFFFFF",
+                "address": "0x4500",
+                "condition": "in5_type==4096"
+            },
+            {
+                "name": "In 5 P Temperature",
+                "type": "temperature",
+                "scale": 0.1,
+                "reg_type": "input",
+                "error_value": "0x7fff",
+                "format": "s16",
+                "address": "0x4504",
+                "condition": "in5_type==4096||in5_type==4352"
+            },
+            {
+                "name": "In 5 P Current",
+                "type": "current",
+                "scale": 1e-9,
+                "error_value": "0x7FFFFFFF",
+                "reg_type": "input",
+                "format": "s32",
+                "address": "0x4500",
+                "condition": "in5_type==4096||in5_type==4352"
+            },
+            {
+                "name": "In 5 P Value",
+                "reg_type": "input",
+                "type": "value",
+                "format": "s16",
+                "error_value": "0x7fff",
+                "address": "0x4504",
+                "condition": "in5_type==4096||in5_type==4352"
+            },
+            {
+                "name": "In 5 P State",
+                "reg_type": "input",
+                "format": "s16",
+                "address": "0x4504",
+                "condition": "in5_type==5632"
+            },
+            {
+                "name": "In 5 N Resistance",
+                "type": "resistance",
+                "error_value": "0x7FFFFFFF",
+                "reg_type": "input",
+                "format": "s32",
+                "address": "0x4500",
+                "scale": 0.01,
+                "condition": "in5_n_type==258||in5_n_type==4||in5_n_type==5888||(in5_n_type>=4352&&in5_n_type<=4658)",
+                "group": "in5_n"
+            },
+            {
+                "name": "In 5 N Voltage",
+                "type": "voltage",
+                "scale": 0.000001,
+                "reg_type": "input",
+                "format": "s32",
+                "error_value": "0x7FFFFFFF",
+                "address": "0x4500",
+                "condition": "in5_n_type==4096",
+                "group": "in5_n"
+            },
+            {
+                "name": "In 5 N Temperature",
+                "type": "temperature",
+                "scale": 0.1,
+                "reg_type": "input",
+                "error_value": "0x7fff",
+                "format": "s16",
+                "address": "0x4504",
+                "condition": "in5_n_type==4096||in5_n_type==4352",
+                "group": "in5_n"
+            },
+            {
+                "name": "In 5 N Current",
+                "type": "current",
+                "scale": 1e-9,
+                "error_value": "0x7FFFFFFF",
+                "reg_type": "input",
+                "format": "s32",
+                "address": "0x4500",
+                "condition": "in5_n_type==4096||in5_n_type==4352",
+                "group": "in5_n"
+            },
+            {
+                "name": "In 5 N Value",
+                "reg_type": "input",
+                "type": "value",
+                "format": "s16",
+                "error_value": "0x7fff",
+                "address": "0x4504",
+                "condition": "in5_n_type==4096||in5_n_type==4352",
+                "group": "in5_n"
+            },
+            {
+                "name": "In 5 N State",
+                "reg_type": "input",
+                "format": "s16",
+                "address": "0x4504",
+                "condition": "in5_n_type==5632",
+                "group": "in5_n"
+            }
+            {
+                "name": "In 6 P Resistance",
+                "type": "resistance",
+                "error_value": "0x7FFFFFFF",
+                "reg_type": "input",
+                "format": "s32",
+                "address": "0x5500",
+                "scale": 0.01,
+                "condition": "in6_type==258||in6_type==4||in6_type==5888||(in6_type>=4352&&in6_type<=4658)"
+            },
+            {
+                "name": "In 6 P Voltage",
+                "type": "voltage",
+                "scale": 0.000001,
+                "reg_type": "input",
+                "format": "s32",
+                "error_value": "0x7FFFFFFF",
+                "address": "0x5500",
+                "condition": "in6_type==4096"
+            },
+            {
+                "name": "In 6 P Temperature",
+                "type": "temperature",
+                "scale": 0.1,
+                "reg_type": "input",
+                "error_value": "0x7fff",
+                "format": "s16",
+                "address": "0x5504",
+                "condition": "in6_type==4096||in6_type==4352"
+            },
+            {
+                "name": "In 6 P Current",
+                "type": "current",
+                "scale": 1e-9,
+                "error_value": "0x7FFFFFFF",
+                "reg_type": "input",
+                "format": "s32",
+                "address": "0x5500",
+                "condition": "in6_type==4096||in6_type==4352"
+            },
+            {
+                "name": "In 6 P Value",
+                "reg_type": "input",
+                "type": "value",
+                "format": "s16",
+                "error_value": "0x7fff",
+                "address": "0x5504",
+                "condition": "in6_type==4096||in6_type==4352"
+            },
+            {
+                "name": "In 6 P State",
+                "reg_type": "input",
+                "format": "s16",
+                "address": "0x5504",
+                "condition": "in6_type==5632"
+            },
+            {
+                "name": "In 6 N Resistance",
+                "type": "resistance",
+                "error_value": "0x7FFFFFFF",
+                "reg_type": "input",
+                "format": "s32",
+                "address": "0x5500",
+                "scale": 0.01,
+                "condition": "in6_n_type==258||in6_n_type==4||in6_n_type==5888||(in6_n_type>=4352&&in6_n_type<=4658)",
+                "group": "in6_n"
+            },
+            {
+                "name": "In 6 N Voltage",
+                "type": "voltage",
+                "scale": 0.000001,
+                "reg_type": "input",
+                "format": "s32",
+                "error_value": "0x7FFFFFFF",
+                "address": "0x5500",
+                "condition": "in6_n_type==4096",
+                "group": "in6_n"
+            },
+            {
+                "name": "In 6 N Temperature",
+                "type": "temperature",
+                "scale": 0.1,
+                "reg_type": "input",
+                "error_value": "0x7fff",
+                "format": "s16",
+                "address": "0x5504",
+                "condition": "in6_n_type==4096||in6_n_type==4352",
+                "group": "in6_n"
+            },
+            {
+                "name": "In 6 N Current",
+                "type": "current",
+                "scale": 1e-9,
+                "error_value": "0x7FFFFFFF",
+                "reg_type": "input",
+                "format": "s32",
+                "address": "0x5500",
+                "condition": "in6_n_type==4096||in6_n_type==4352",
+                "group": "in6_n"
+            },
+            {
+                "name": "In 6 N Value",
+                "reg_type": "input",
+                "type": "value",
+                "format": "s16",
+                "error_value": "0x7fff",
+                "address": "0x5504",
+                "condition": "in6_n_type==4096||in6_n_type==4352",
+                "group": "in6_n"
+            },
+            {
+                "name": "In 6 N State",
+                "reg_type": "input",
+                "format": "s16",
+                "address": "0x5504",
+                "condition": "in6_n_type==5632",
+                "group": "in6_n"
+            }
+            {
+                "name": "In 7 P Resistance",
+                "type": "resistance",
+                "error_value": "0x7FFFFFFF",
+                "reg_type": "input",
+                "format": "s32",
+                "address": "0x6500",
+                "scale": 0.01,
+                "condition": "in7_type==258||in7_type==4||in7_type==5888||(in7_type>=4352&&in7_type<=4658)"
+            },
+            {
+                "name": "In 7 P Voltage",
+                "type": "voltage",
+                "scale": 0.000001,
+                "reg_type": "input",
+                "format": "s32",
+                "error_value": "0x7FFFFFFF",
+                "address": "0x6500",
+                "condition": "in7_type==4096"
+            },
+            {
+                "name": "In 7 P Temperature",
+                "type": "temperature",
+                "scale": 0.1,
+                "reg_type": "input",
+                "error_value": "0x7fff",
+                "format": "s16",
+                "address": "0x6504",
+                "condition": "in7_type==4096||in7_type==4352"
+            },
+            {
+                "name": "In 7 P Current",
+                "type": "current",
+                "scale": 1e-9,
+                "error_value": "0x7FFFFFFF",
+                "reg_type": "input",
+                "format": "s32",
+                "address": "0x6500",
+                "condition": "in7_type==4096||in7_type==4352"
+            },
+            {
+                "name": "In 7 P Value",
+                "reg_type": "input",
+                "type": "value",
+                "format": "s16",
+                "error_value": "0x7fff",
+                "address": "0x6504",
+                "condition": "in7_type==4096||in7_type==4352"
+            },
+            {
+                "name": "In 7 P State",
+                "reg_type": "input",
+                "format": "s16",
+                "address": "0x6504",
+                "condition": "in7_type==5632"
+            },
+            {
+                "name": "In 7 N Resistance",
+                "type": "resistance",
+                "error_value": "0x7FFFFFFF",
+                "reg_type": "input",
+                "format": "s32",
+                "address": "0x6500",
+                "scale": 0.01,
+                "condition": "in7_n_type==258||in7_n_type==4||in7_n_type==5888||(in7_n_type>=4352&&in7_n_type<=4658)",
+                "group": "in7_n"
+            },
+            {
+                "name": "In 7 N Voltage",
+                "type": "voltage",
+                "scale": 0.000001,
+                "reg_type": "input",
+                "format": "s32",
+                "error_value": "0x7FFFFFFF",
+                "address": "0x6500",
+                "condition": "in7_n_type==4096",
+                "group": "in7_n"
+            },
+            {
+                "name": "In 7 N Temperature",
+                "type": "temperature",
+                "scale": 0.1,
+                "reg_type": "input",
+                "error_value": "0x7fff",
+                "format": "s16",
+                "address": "0x6504",
+                "condition": "in7_n_type==4096||in7_n_type==4352",
+                "group": "in7_n"
+            },
+            {
+                "name": "In 7 N Current",
+                "type": "current",
+                "scale": 1e-9,
+                "error_value": "0x7FFFFFFF",
+                "reg_type": "input",
+                "format": "s32",
+                "address": "0x6500",
+                "condition": "in7_n_type==4096||in7_n_type==4352",
+                "group": "in7_n"
+            },
+            {
+                "name": "In 7 N Value",
+                "reg_type": "input",
+                "type": "value",
+                "format": "s16",
+                "error_value": "0x7fff",
+                "address": "0x6504",
+                "condition": "in7_n_type==4096||in7_n_type==4352",
+                "group": "in7_n"
+            },
+            {
+                "name": "In 7 N State",
+                "reg_type": "input",
+                "format": "s16",
+                "address": "0x6504",
+                "condition": "in7_n_type==5632",
+                "group": "in7_n"
+            }
+            {
+                "name": "In 8 P Resistance",
+                "type": "resistance",
+                "error_value": "0x7FFFFFFF",
+                "reg_type": "input",
+                "format": "s32",
+                "address": "0x7500",
+                "scale": 0.01,
+                "condition": "in8_type==258||in8_type==4||in8_type==5888||(in8_type>=4352&&in8_type<=4658)"
+            },
+            {
+                "name": "In 8 P Voltage",
+                "type": "voltage",
+                "scale": 0.000001,
+                "reg_type": "input",
+                "format": "s32",
+                "error_value": "0x7FFFFFFF",
+                "address": "0x7500",
+                "condition": "in8_type==4096"
+            },
+            {
+                "name": "In 8 P Temperature",
+                "type": "temperature",
+                "scale": 0.1,
+                "reg_type": "input",
+                "error_value": "0x7fff",
+                "format": "s16",
+                "address": "0x7504",
+                "condition": "in8_type==4096||in8_type==4352"
+            },
+            {
+                "name": "In 8 P Current",
+                "type": "current",
+                "scale": 1e-9,
+                "error_value": "0x7FFFFFFF",
+                "reg_type": "input",
+                "format": "s32",
+                "address": "0x7500",
+                "condition": "in8_type==4096||in8_type==4352"
+            },
+            {
+                "name": "In 8 P Value",
+                "reg_type": "input",
+                "type": "value",
+                "format": "s16",
+                "error_value": "0x7fff",
+                "address": "0x7504",
+                "condition": "in8_type==4096||in8_type==4352"
+            },
+            {
+                "name": "In 8 P State",
+                "reg_type": "input",
+                "format": "s16",
+                "address": "0x7504",
+                "condition": "in8_type==5632"
+            },
+            {
+                "name": "In 8 N Resistance",
+                "type": "resistance",
+                "error_value": "0x7FFFFFFF",
+                "reg_type": "input",
+                "format": "s32",
+                "address": "0x7500",
+                "scale": 0.01,
+                "condition": "in8_n_type==258||in8_n_type==4||in8_n_type==5888||(in8_n_type>=4352&&in8_n_type<=4658)",
+                "group": "in8_n"
+            },
+            {
+                "name": "In 8 N Voltage",
+                "type": "voltage",
+                "scale": 0.000001,
+                "reg_type": "input",
+                "format": "s32",
+                "error_value": "0x7FFFFFFF",
+                "address": "0x7500",
+                "condition": "in8_n_type==4096",
+                "group": "in8_n"
+            },
+            {
+                "name": "In 8 N Temperature",
+                "type": "temperature",
+                "scale": 0.1,
+                "reg_type": "input",
+                "error_value": "0x7fff",
+                "format": "s16",
+                "address": "0x7504",
+                "condition": "in8_n_type==4096||in8_n_type==4352",
+                "group": "in8_n"
+            },
+            {
+                "name": "In 8 N Current",
+                "type": "current",
+                "scale": 1e-9,
+                "error_value": "0x7FFFFFFF",
+                "reg_type": "input",
+                "format": "s32",
+                "address": "0x7500",
+                "condition": "in8_n_type==4096||in8_n_type==4352",
+                "group": "in8_n"
+            },
+            {
+                "name": "In 8 N Value",
+                "reg_type": "input",
+                "type": "value",
+                "format": "s16",
+                "error_value": "0x7fff",
+                "address": "0x7504",
+                "condition": "in8_n_type==4096||in8_n_type==4352",
+                "group": "in8_n"
+            },
+            {
+                "name": "In 8 N State",
+                "reg_type": "input",
+                "format": "s16",
+                "address": "0x7504",
+                "condition": "in8_n_type==5632",
+                "group": "in8_n"
+            }
+            {
+                "name": "In 9 P Resistance",
+                "type": "resistance",
+                "error_value": "0x7FFFFFFF",
+                "reg_type": "input",
+                "format": "s32",
+                "address": "0x8500",
+                "scale": 0.01,
+                "condition": "in9_type==258||in9_type==4||in9_type==5888||(in9_type>=4352&&in9_type<=4658)"
+            },
+            {
+                "name": "In 9 P Voltage",
+                "type": "voltage",
+                "scale": 0.000001,
+                "reg_type": "input",
+                "format": "s32",
+                "error_value": "0x7FFFFFFF",
+                "address": "0x8500",
+                "condition": "in9_type==4096"
+            },
+            {
+                "name": "In 9 P Temperature",
+                "type": "temperature",
+                "scale": 0.1,
+                "reg_type": "input",
+                "error_value": "0x7fff",
+                "format": "s16",
+                "address": "0x8504",
+                "condition": "in9_type==4096||in9_type==4352"
+            },
+            {
+                "name": "In 9 P Current",
+                "type": "current",
+                "scale": 1e-9,
+                "error_value": "0x7FFFFFFF",
+                "reg_type": "input",
+                "format": "s32",
+                "address": "0x8500",
+                "condition": "in9_type==4096||in9_type==4352"
+            },
+            {
+                "name": "In 9 P Value",
+                "reg_type": "input",
+                "type": "value",
+                "format": "s16",
+                "error_value": "0x7fff",
+                "address": "0x8504",
+                "condition": "in9_type==4096||in9_type==4352"
+            },
+            {
+                "name": "In 9 P State",
+                "reg_type": "input",
+                "format": "s16",
+                "address": "0x8504",
+                "condition": "in9_type==5632"
+            },
+            {
+                "name": "In 9 N Resistance",
+                "type": "resistance",
+                "error_value": "0x7FFFFFFF",
+                "reg_type": "input",
+                "format": "s32",
+                "address": "0x8500",
+                "scale": 0.01,
+                "condition": "in9_n_type==258||in9_n_type==4||in9_n_type==5888||(in9_n_type>=4352&&in9_n_type<=4658)",
+                "group": "in9_n"
+            },
+            {
+                "name": "In 9 N Voltage",
+                "type": "voltage",
+                "scale": 0.000001,
+                "reg_type": "input",
+                "format": "s32",
+                "error_value": "0x7FFFFFFF",
+                "address": "0x8500",
+                "condition": "in9_n_type==4096",
+                "group": "in9_n"
+            },
+            {
+                "name": "In 9 N Temperature",
+                "type": "temperature",
+                "scale": 0.1,
+                "reg_type": "input",
+                "error_value": "0x7fff",
+                "format": "s16",
+                "address": "0x8504",
+                "condition": "in9_n_type==4096||in9_n_type==4352",
+                "group": "in9_n"
+            },
+            {
+                "name": "In 9 N Current",
+                "type": "current",
+                "scale": 1e-9,
+                "error_value": "0x7FFFFFFF",
+                "reg_type": "input",
+                "format": "s32",
+                "address": "0x8500",
+                "condition": "in9_n_type==4096||in9_n_type==4352",
+                "group": "in9_n"
+            },
+            {
+                "name": "In 9 N Value",
+                "reg_type": "input",
+                "type": "value",
+                "format": "s16",
+                "error_value": "0x7fff",
+                "address": "0x8504",
+                "condition": "in9_n_type==4096||in9_n_type==4352",
+                "group": "in9_n"
+            },
+            {
+                "name": "In 9 N State",
+                "reg_type": "input",
+                "format": "s16",
+                "address": "0x8504",
+                "condition": "in9_n_type==5632",
+                "group": "in9_n"
+            }
+            {
+                "name": "In 10 P Resistance",
+                "type": "resistance",
+                "error_value": "0x7FFFFFFF",
+                "reg_type": "input",
+                "format": "s32",
+                "address": "0x9500",
+                "scale": 0.01,
+                "condition": "in10_type==258||in10_type==4||in10_type==5888||(in10_type>=4352&&in10_type<=4658)"
+            },
+            {
+                "name": "In 10 P Voltage",
+                "type": "voltage",
+                "scale": 0.000001,
+                "reg_type": "input",
+                "format": "s32",
+                "error_value": "0x7FFFFFFF",
+                "address": "0x9500",
+                "condition": "in10_type==4096"
+            },
+            {
+                "name": "In 10 P Temperature",
+                "type": "temperature",
+                "scale": 0.1,
+                "reg_type": "input",
+                "error_value": "0x7fff",
+                "format": "s16",
+                "address": "0x9504",
+                "condition": "in10_type==4096||in10_type==4352"
+            },
+            {
+                "name": "In 10 P Current",
+                "type": "current",
+                "scale": 1e-9,
+                "error_value": "0x7FFFFFFF",
+                "reg_type": "input",
+                "format": "s32",
+                "address": "0x9500",
+                "condition": "in10_type==4096||in10_type==4352"
+            },
+            {
+                "name": "In 10 P Value",
+                "reg_type": "input",
+                "type": "value",
+                "format": "s16",
+                "error_value": "0x7fff",
+                "address": "0x9504",
+                "condition": "in10_type==4096||in10_type==4352"
+            },
+            {
+                "name": "In 10 P State",
+                "reg_type": "input",
+                "format": "s16",
+                "address": "0x9504",
+                "condition": "in10_type==5632"
+            },
+            {
+                "name": "In 10 N Resistance",
+                "type": "resistance",
+                "error_value": "0x7FFFFFFF",
+                "reg_type": "input",
+                "format": "s32",
+                "address": "0x9500",
+                "scale": 0.01,
+                "condition": "in10_n_type==258||in10_n_type==4||in10_n_type==5888||(in10_n_type>=4352&&in10_n_type<=4658)",
+                "group": "in10_n"
+            },
+            {
+                "name": "In 10 N Voltage",
+                "type": "voltage",
+                "scale": 0.000001,
+                "reg_type": "input",
+                "format": "s32",
+                "error_value": "0x7FFFFFFF",
+                "address": "0x9500",
+                "condition": "in10_n_type==4096",
+                "group": "in10_n"
+            },
+            {
+                "name": "In 10 N Temperature",
+                "type": "temperature",
+                "scale": 0.1,
+                "reg_type": "input",
+                "error_value": "0x7fff",
+                "format": "s16",
+                "address": "0x9504",
+                "condition": "in10_n_type==4096||in10_n_type==4352",
+                "group": "in10_n"
+            },
+            {
+                "name": "In 10 N Current",
+                "type": "current",
+                "scale": 1e-9,
+                "error_value": "0x7FFFFFFF",
+                "reg_type": "input",
+                "format": "s32",
+                "address": "0x9500",
+                "condition": "in10_n_type==4096||in10_n_type==4352",
+                "group": "in10_n"
+            },
+            {
+                "name": "In 10 N Value",
+                "reg_type": "input",
+                "type": "value",
+                "format": "s16",
+                "error_value": "0x7fff",
+                "address": "0x9504",
+                "condition": "in10_n_type==4096||in10_n_type==4352",
+                "group": "in10_n"
+            },
+            {
+                "name": "In 10 N State",
+                "reg_type": "input",
+                "format": "s16",
+                "address": "0x9504",
+                "condition": "in10_n_type==5632",
+                "group": "in10_n"
+            }
+            {
+                "name": "In 11 P Resistance",
+                "type": "resistance",
+                "error_value": "0x7FFFFFFF",
+                "reg_type": "input",
+                "format": "s32",
+                "address": "0xa500",
+                "scale": 0.01,
+                "condition": "in11_type==258||in11_type==4||in11_type==5888||(in11_type>=4352&&in11_type<=4658)"
+            },
+            {
+                "name": "In 11 P Voltage",
+                "type": "voltage",
+                "scale": 0.000001,
+                "reg_type": "input",
+                "format": "s32",
+                "error_value": "0x7FFFFFFF",
+                "address": "0xa500",
+                "condition": "in11_type==4096"
+            },
+            {
+                "name": "In 11 P Temperature",
+                "type": "temperature",
+                "scale": 0.1,
+                "reg_type": "input",
+                "error_value": "0x7fff",
+                "format": "s16",
+                "address": "0xa504",
+                "condition": "in11_type==4096||in11_type==4352"
+            },
+            {
+                "name": "In 11 P Current",
+                "type": "current",
+                "scale": 1e-9,
+                "error_value": "0x7FFFFFFF",
+                "reg_type": "input",
+                "format": "s32",
+                "address": "0xa500",
+                "condition": "in11_type==4096||in11_type==4352"
+            },
+            {
+                "name": "In 11 P Value",
+                "reg_type": "input",
+                "type": "value",
+                "format": "s16",
+                "error_value": "0x7fff",
+                "address": "0xa504",
+                "condition": "in11_type==4096||in11_type==4352"
+            },
+            {
+                "name": "In 11 P State",
+                "reg_type": "input",
+                "format": "s16",
+                "address": "0xa504",
+                "condition": "in11_type==5632"
+            },
+            {
+                "name": "In 11 N Resistance",
+                "type": "resistance",
+                "error_value": "0x7FFFFFFF",
+                "reg_type": "input",
+                "format": "s32",
+                "address": "0xa500",
+                "scale": 0.01,
+                "condition": "in11_n_type==258||in11_n_type==4||in11_n_type==5888||(in11_n_type>=4352&&in11_n_type<=4658)",
+                "group": "in11_n"
+            },
+            {
+                "name": "In 11 N Voltage",
+                "type": "voltage",
+                "scale": 0.000001,
+                "reg_type": "input",
+                "format": "s32",
+                "error_value": "0x7FFFFFFF",
+                "address": "0xa500",
+                "condition": "in11_n_type==4096",
+                "group": "in11_n"
+            },
+            {
+                "name": "In 11 N Temperature",
+                "type": "temperature",
+                "scale": 0.1,
+                "reg_type": "input",
+                "error_value": "0x7fff",
+                "format": "s16",
+                "address": "0xa504",
+                "condition": "in11_n_type==4096||in11_n_type==4352",
+                "group": "in11_n"
+            },
+            {
+                "name": "In 11 N Current",
+                "type": "current",
+                "scale": 1e-9,
+                "error_value": "0x7FFFFFFF",
+                "reg_type": "input",
+                "format": "s32",
+                "address": "0xa500",
+                "condition": "in11_n_type==4096||in11_n_type==4352",
+                "group": "in11_n"
+            },
+            {
+                "name": "In 11 N Value",
+                "reg_type": "input",
+                "type": "value",
+                "format": "s16",
+                "error_value": "0x7fff",
+                "address": "0xa504",
+                "condition": "in11_n_type==4096||in11_n_type==4352",
+                "group": "in11_n"
+            },
+            {
+                "name": "In 11 N State",
+                "reg_type": "input",
+                "format": "s16",
+                "address": "0xa504",
+                "condition": "in11_n_type==5632",
+                "group": "in11_n"
+            }
+            ],
+
+        "translations": {
+            "en": {
+                "WB-MAI11_template_title": "WB-MAI11 (11-channel analog input module)",
+                "baud_rate_description": "Make sure that communication with device is established before changing this parameter. Select required baud rate, save configuration and then change port baud rate to the same value.",
+                "Input 1": "IN 1",
+                "Input 2": "IN 2",
+                "Input 3": "IN 3",
+                "Input 4": "IN 4",
+                "Input 5": "IN 5",
+                "Input 6": "IN 6",
+                "Input 7": "IN 7",
+                "Input 8": "IN 8",
+                "Input 9": "IN 9",
+                "Input 10": "IN 10",
+                "Input 11": "IN 11",
+                "IN_P": "P",
+                "IN_N": "N",
+                "Uptime": "Uptime (s)"
+            },
+            "ru": {
+                "WB-MAI11_template_title": "WB-MAI11 (11-канальный модуль аналоговых входов)",
+                "General": "Общее",
+                "HW Info": "Данные модуля",
+                "Debug": "Диагностика",
+                "Input 1": "IN 1",
+                "Input 2": "IN 2",
+                "Input 3": "IN 3",
+                "Input 4": "IN 4",
+                "Input 5": "IN 5",
+                "Input 6": "IN 6",
+                "Input 7": "IN 7",
+                "Input 8": "IN 8",
+                "Input 9": "IN 9",
+                "Input 10": "IN 10",
+                "Input 11": "IN 11",
+                "disabled": "отключен",
+                "Thermocouple type K (ТХА)": "термопара типа K (ТХА)",
+                "NTC thermistor 10k (B = 3988 K)": "термистор NTC 10 кОм (B = 3988 K)",
+                "0-5 mA sensor": "измерение тока 0-5 мА",
+                "0-20 mA sensor": "измерение тока 0-20 мА",
+                "4-20 mA sensor": "измерение тока 4-20 мА",
+                "P: 4-20 mA sensor": "P: измерение тока 4-20 мА",
+                "P: 0-5 mA sensor": "P: измерение тока 0-5 мА",
+                "P: 0-20 mA sensor": "P: измерение тока 0-20 мА",
+                "2-wire RTD Pt 50 (α = 0.00385 °C⁻¹)": "двухпроводной термометр сопротивления Pt 50 (α = 0.00385 °C⁻¹)",
+                "2-wire RTD Pt 100 (α = 0.00385 °C⁻¹)": "двухпроводной термометр сопротивления Pt 100 (α = 0.00385 °C⁻¹)",
+                "2-wire RTD Pt 500 (α = 0.00385 °C⁻¹)": "двухпроводной термометр сопротивления Pt 500 (α = 0.00385 °C⁻¹)",
+                "2-wire RTD Pt 1000 (α = 0.00385 °C⁻¹)": "двухпроводной термометр сопротивления Pt 1000 (α = 0.00385 °C⁻¹)",
+                "2-wire RTD 50P (α = 0.00391 °C⁻¹)": "двухпроводной термометр сопротивления 50P (α = 0.00391 °C⁻¹)",
+                "2-wire RTD 100P (α = 0.00391 °C⁻¹)": "двухпроводной термометр сопротивления 100P (α = 0.00391 °C⁻¹)",
+                "2-wire RTD 500P (α = 0.00391 °C⁻¹)": "двухпроводной термометр сопротивления 500P (α = 0.00391 °C⁻¹)",
+                "2-wire RTD 1000P (α = 0.00391 °C⁻¹)": "двухпроводной термометр сопротивления 1000P (α = 0.00391 °C⁻¹)",
+                "2-wire RTD 50M (α = 0.00428 °C⁻¹)": "двухпроводной термометр сопротивления 50M (α = 0.00428 °C⁻¹)",
+                "2-wire RTD 100M (α = 0.00428 °C⁻¹)": "двухпроводной термометр сопротивления 100M (α = 0.00428 °C⁻¹)",
+                "2-wire RTD 500M (α = 0.00428 °C⁻¹)": "двухпроводной термометр сопротивления 500M (α = 0.00428 °C⁻¹)",
+                "2-wire RTD 1000M (α = 0.00428 °C⁻¹)": "двухпроводной термометр сопротивления 1000M (α = 0.00428 °C⁻¹)",
+                "2-wire RTD Ni 100 (α = 0.00617 °C⁻¹)": "двухпроводной термометр сопротивления Ni 100 (α = 0.00617 °C⁻¹)",
+                "2-wire RTD Ni 500 (α = 0.00617 °C⁻¹)": "двухпроводной термометр сопротивления Ni 500 (α = 0.00617 °C⁻¹)",
+                "2-wire RTD Ni 1000 (α = 0.00617 °C⁻¹)": "двухпроводной термометр сопротивления Ni 1000 (α = 0.00617 °C⁻¹)",
+                "dry contact sensor": "датчик с выходом «сухой контакт»",
+                "two-wire resistance measurement": "двухпроводная схема измерения сопротивления",
+                "P: dry contact sensor": "P: датчик с выходом «сухой контакт»",
+                "P: 2-wire RTD Pt 50 (α = 0.00385 °C⁻¹)": "P: двухпроводной термометр сопротивления Pt 50 (α = 0.00385 °C⁻¹)",
+                "P: 2-wire RTD Pt 100 (α = 0.00385 °C⁻¹)": "P: двухпроводной термометр сопротивления Pt 100 (α = 0.00385 °C⁻¹)",
+                "P: 2-wire RTD Pt 500 (α = 0.00385 °C⁻¹)": "P: двухпроводной термометр сопротивления Pt 500 (α = 0.00385 °C⁻¹)",
+                "P: 2-wire RTD Pt 1000 (α = 0.00385 °C⁻¹)": "P: двухпроводной термометр сопротивления Pt 1000 (α = 0.00385 °C⁻¹)",
+                "P: 2-wire RTD 50P (α = 0.00391 °C⁻¹)": "P: двухпроводной термометр сопротивления 50P (α = 0.00391 °C⁻¹)",
+                "P: 2-wire RTD 100P (α = 0.00391 °C⁻¹)": "P: двухпроводной термометр сопротивления 100P (α = 0.00391 °C⁻¹)",
+                "P: 2-wire RTD 500P (α = 0.00391 °C⁻¹)": "P: двухпроводной термометр сопротивления 500P (α = 0.00391 °C⁻¹)",
+                "P: 2-wire RTD 1000P (α = 0.00391 °C⁻¹)": "P: двухпроводной термометр сопротивления 1000P (α = 0.00391 °C⁻¹)",
+                "P: 2-wire RTD 50M (α = 0.00428 °C⁻¹)": "P: двухпроводной термометр сопротивления 50M (α = 0.00428 °C⁻¹)",
+                "P: 2-wire RTD 100M (α = 0.00428 °C⁻¹)": "P: двухпроводной термометр сопротивления 100M (α = 0.00428 °C⁻¹)",
+                "P: 2-wire RTD 500M (α = 0.00428 °C⁻¹)": "P: двухпроводной термометр сопротивления 500M (α = 0.00428 °C⁻¹)",
+                "P: 2-wire RTD 1000M (α = 0.00428 °C⁻¹)": "P: двухпроводной термометр сопротивления 1000M (α = 0.00428 °C⁻¹)",
+                "P: 2-wire RTD Ni 100 (α = 0.00617 °C⁻¹)": "P: двухпроводной термометр сопротивления Ni 100 (α = 0.00617 °C⁻¹)",
+                "P: 2-wire RTD Ni 500 (α = 0.00617 °C⁻¹)": "P: двухпроводной термометр сопротивления Ni 500 (α = 0.00617 °C⁻¹)",
+                "P: 2-wire RTD Ni 1000 (α = 0.00617 °C⁻¹)": "P: двухпроводной термометр сопротивления Ni 1000 (α = 0.00617 °C⁻¹)",
+                "P: two-wire resistance measurement": "P: двухпроводная схема измерения сопротивления",
+                "3-wire RTD Pt 50 (α = 0.00385 °C⁻¹)": "трехпроводной термометр сопротивления Pt 50 (α = 0.00385 °C⁻¹)",
+                "3-wire RTD Pt 100 (α = 0.00385 °C⁻¹)": "трехпроводной термометр сопротивления Pt 100 (α = 0.00385 °C⁻¹)",
+                "3-wire RTD Pt 500 (α = 0.00385 °C⁻¹)": "трехпроводной термометр сопротивления Pt 500 (α = 0.00385 °C⁻¹)",
+                "3-wire RTD Pt 1000 (α = 0.00385 °C⁻¹)": "трехпроводной термометр сопротивления Pt 1000 (α = 0.00385 °C⁻¹)",
+                "3-wire RTD 50P (α = 0.00391 °C⁻¹)": "трехпроводной термометр сопротивления 50P (α = 0.00391 °C⁻¹)",
+                "3-wire RTD 100P (α = 0.00391 °C⁻¹)": "трехпроводной термометр сопротивления 100P (α = 0.00391 °C⁻¹)",
+                "3-wire RTD 500P (α = 0.00391 °C⁻¹)": "трехпроводной термометр сопротивления 500P (α = 0.00391 °C⁻¹)",
+                "3-wire RTD 1000P (α = 0.00391 °C⁻¹)": "трехпроводной термометр сопротивления 1000P (α = 0.00391 °C⁻¹)",
+                "3-wire RTD 50M (α = 0.00428 °C⁻¹)": "трехпроводной термометр сопротивления 50M (α = 0.00428 °C⁻¹)",
+                "3-wire RTD 100M (α = 0.00428 °C⁻¹)": "трехпроводной термометр сопротивления 100M (α = 0.00428 °C⁻¹)",
+                "3-wire RTD 500M (α = 0.00428 °C⁻¹)": "трехпроводной термометр сопротивления 500M (α = 0.00428 °C⁻¹)",
+                "3-wire RTD 1000M (α = 0.00428 °C⁻¹)": "трехпроводной термометр сопротивления 1000M (α = 0.00428 °C⁻¹)",
+                "3-wire RTD Ni 100 (α = 0.00617 °C⁻¹)": "трехпроводной термометр сопротивления Ni 100 (α = 0.00617 °C⁻¹)",
+                "3-wire RTD Ni 500 (α = 0.00617 °C⁻¹)": "трехпроводной термометр сопротивления Ni 500 (α = 0.00617 °C⁻¹)",
+                "3-wire RTD Ni 1000 (α = 0.00617 °C⁻¹)": "трехпроводной термометр сопротивления Ni 1000 (α = 0.00617 °C⁻¹)",
+                "voltage measurement from ratiometric sensor": "измерение напряжения с ратиометрического датчика",
+                "P: voltage measurement from ratiometric sensor": "P: измерение напряжения с ратиометрического датчика",
+                "differential voltage measurement from ratiometric sensor": "дифф. режим измерения напряжения с ратиометрического датчика",
+                "single-ended voltage measurement from 0 to 2 V": "измерение положительного напряжения 0-2 В",
+                "0-1V sensor": "измерение напряжения 0-1 В",
+                "P: single-ended voltage measurement from 0 to 2 V": "P: измерение положительного напряжения 0-2 В",
+                "P: 0-1V sensor": "P: измерение напряжения 0-1 В",
+                "-50 to 50 mV sensor": "измерение напряжения от -50 до 50 мВ",
+                "voltage measurement in differential mode from -2 to 2 V": "дифф. режим измерения напряжения от -2 до 2 В",
+                "three-wire resistance measurement": "трехпроводная схема измерения сопротивления",
+                "resistance measurement using current measurement": "измерение сопротивления через измерение тока",
+                "P: resistance measurement using current measurement": "P: измерение сопротивления через измерение тока",
+                "P: NTC thermistor 10k (B = 3988 K)": "P: термистор NTC 10 кОм (B = 3988 K)",
+                "P: current measurement": "P: измерение тока от 0 до 20 мА",
+                "IN_P": "P",
+                "IN_N": "N",
+                "Sampling time": "Время одного измерения",
+                "50 ms (20 SPS)": "50 мс (20 SPS)",
+                "22 ms (45 SPS)": "22 мс (45 SPS)",
+                "11 ms (90 SPS)": "11 мс (90 SPS)",
+                "5.7 ms (175 SPS)": "5.7 мс (175 SPS)",
+                "3.0 ms (330 SPS)": "3.0 мс (330 SPS)",
+                "1.7 ms (600 SPS)": "1.7 мс (600 SPS)",
+                "1.0 ms (1000 SPS)": "1.0 мс (1000 SPS)",
+                "Number of measurements": "Количество измерений подряд",
+                "Total sampling time of channel is (Sampling time * Number of measurements). Channels are polled sequentially.": "Итоговое время измерения канала равно (Время одного измерения * Количество измерений подряд). Каналы опрашиваются последовательно.",
+                "Lowpass filter time, ms": "Время усреднения сигнала (мс)",
+                "Baud rate": "Скорость обмена",
+                "baud_rate_description": "Перед изменением параметра убедитесь, что связь с устройством установлена. Выберите нужную скорость обмена, сохраните конфигурацию, а затем укажите в настройках порта эту же скорость.",
+                "Gain": "Коэффициент усиления",
+                "Voltage": "Напряжение",
+                "Temperature": "Температура",
+                "Resistance": "Сопротивление",
+                "current measurement": "измерение тока",
+                "Current": "Ток",
+                "Percent": "Процент",
+                "State": "Состояние",
+                "Minimum value": "Минимальное пересчитанное значение",
+                "Maximum value": "Максимальное пересчитанное значение",
+                "Value": "Пересчитанное значение",
+                "5V Output": "Напряжение на клеммах 5V",
+                "Internal Temperature": "Температура внутри модуля",
+                "Serial": "Серийный номер",
+                "Uptime": "Время работы с момента включения (с)",
+                "ADC Loop Duration": "Время цикла опроса АЦП",
+                "IN 1 P Read Interval": "IN 1 P: период опроса",
+                "IN 1 N Read Interval": "IN 1 N: период опроса",
+                "IN 2 P Read Interval": "IN 2 P: период опроса",
+                "IN 2 N Read Interval": "IN 2 N: период опроса",
+                "IN 3 P Read Interval": "IN 3 P: период опроса",
+                "IN 3 N Read Interval": "IN 3 N: период опроса",
+                "IN 4 P Read Interval": "IN 4 P: период опроса",
+                "IN 4 N Read Interval": "IN 4 N: период опроса",
+                "IN 5 P Read Interval": "IN 5 P: период опроса",
+                "IN 5 N Read Interval": "IN 5 N: период опроса",
+                "IN 6 P Read Interval": "IN 6 P: период опроса",
+                "IN 6 N Read Interval": "IN 6 N: период опроса",
+                "IN 7 P Read Interval": "IN 7 P: период опроса",
+                "IN 7 N Read Interval": "IN 7 N: период опроса",
+                "IN 8 P Read Interval": "IN 8 P: период опроса",
+                "IN 8 N Read Interval": "IN 8 N: период опроса",
+                "IN 9 P Read Interval": "IN 9 P: период опроса",
+                "IN 9 N Read Interval": "IN 9 N: период опроса",
+                "IN 10 P Read Interval": "IN 10 P: период опроса",
+                "IN 10 N Read Interval": "IN 10 N: период опроса",
+                "IN 11 P Read Interval": "IN 11 P: период опроса",
+                "IN 11 N Read Interval": "IN 11 N: период опроса"
+            }
+        }
+    }
+}
