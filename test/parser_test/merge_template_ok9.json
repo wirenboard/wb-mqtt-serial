@@ -1,0 +1,6 @@
+// device template with conditions and defined parameter
+{
+    "device_type" : "merge condition",
+    "slave_id": 2,
+    "param1": 1
+}

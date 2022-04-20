@@ -88,22 +88,6 @@
                     "device_type" : "WB-M1W2 DI",
                     "slave_id" : 3,
                     "in1_mode": 1
-                },
-                {
-                    "device_type": "WB-MAP3E fw2",
-                    "slave_id" : 4,
-                    "channels": [
-                        {
-                            "name": "L1",
-                            "device_type": "phase",
-                            "channels": [
-                                {
-                                  "name": "Urms",
-                                  "enabled": false
-                                }
-                            ]
-                        }
-                    ]
                 }
             ]
         }

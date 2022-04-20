@@ -205,13 +205,14 @@ namespace
 
     void MakeDeviceParametersSchema(Json::Value& properties,
                                     Json::Value& requiredArray,
-                                    const Json::Value& deviceTemplate)
+                                    const Json::Value& deviceTemplate,
+                                    bool templateWithSubdevices)
     {
         if (deviceTemplate.isMember("parameters")) {
             const auto& params = deviceTemplate["parameters"];
             for (Json::ValueConstIterator it = params.begin(); it != params.end(); ++it) {
                 properties[it.name()] = MakeParameterSchema(*it);
-                if (IsRequiredSetupRegister(*it)) {
+                if (templateWithSubdevices && IsRequiredSetupRegister(*it)) {
                     requiredArray.append(it.name());
                 }
             }
@@ -241,7 +242,7 @@ namespace
 
         if (subdeviceTemplate.Schema.isMember("parameters")) {
             Json::Value req(Json::arrayValue);
-            MakeDeviceParametersSchema(res["properties"], req, subdeviceTemplate.Schema);
+            MakeDeviceParametersSchema(res["properties"], req, subdeviceTemplate.Schema, true);
             if (!req.empty()) {
                 res["required"] = req;
             }
@@ -292,8 +293,10 @@ namespace
 
         res["properties"]["device_type"] = MakeSingleValueProperty(deviceTemplate.Type);
 
+        bool templateWithSubdevices = deviceTemplate.Schema.isMember("subdevices");
+
         if (deviceTemplate.Schema.isMember("parameters")) {
-            MakeDeviceParametersSchema(res["properties"], req, deviceTemplate.Schema);
+            MakeDeviceParametersSchema(res["properties"], req, deviceTemplate.Schema, templateWithSubdevices);
         }
 
         if (deviceTemplate.Schema.isMember("channels")) {
@@ -311,7 +314,7 @@ namespace
         MakeArray("allOf", res).append(MakeObject("$ref", deviceSchemaRef));
 
         TSubDevicesTemplateMap subdeviceTemplates(deviceTemplate.Type, deviceTemplate.Schema);
-        if (deviceTemplate.Schema.isMember("subdevices")) {
+        if (templateWithSubdevices) {
             for (const auto& subDevice: deviceTemplate.Schema["subdevices"]) {
                 auto name = subDevice["device_type"].asString();
                 definitions[GetSubdeviceSchemaKey(deviceTemplate.Type, name)] =

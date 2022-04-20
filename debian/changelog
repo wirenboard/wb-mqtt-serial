@@ -1,9 +1,20 @@
-wb-mqtt-serial (2.56.7) stable; urgency=medium
+wb-mqtt-serial (2.58.0) stable; urgency=medium
 
   * Added separate read and write register addresses for the Modbus device.
   * Fixed data corruption bug when writing to the modbus register if the address is given with an offset.
 
- -- Roman Kochkin <roman.kochkin@wirenboard.ru>  Wed, 13 Apr 2022 17:21:00 +0300
+ -- Roman Kochkin <roman.kochkin@wirenboard.ru>  Wed, 20 Apr 2022 12:04:00 +0300
+
+wb-mqtt-serial (2.57.0) stable; urgency=medium
+
+  * "condition" is added to parameters and channels in device templates.
+    It defines dependencies on other parameters and replaces "subdevices".
+    This results to a "flat" configuration file structure,
+    which is more maintainable in terms of backward compatibility.
+  * group nesting is added to device templates
+  * subdevices in device templates are deprecated
+
+ -- Petr Krasnoshchekov <petr.krasnoshchekov@wirenboard.ru>  Fri, 15 Apr 2022 17:36:37 +0500
 
 wb-mqtt-serial (2.56.6) stable; urgency=medium
 
