@@ -161,10 +161,6 @@
           "type": "array",
           "items": {
             "oneOf": [
-              { "$ref": "#/definitions/registerChannel" },
-              { "$ref": "#/definitions/compoundRegisterChannel" },
-              { "$ref": "#/definitions/registerChannelSeparateAddress" },
-              { "$ref": "#/definitions/registerChannelWriteOnly" },
               { "$ref": "#/definitions/template_channel_with_int_address" },
               { "$ref": "#/definitions/subdevice_channel" }
             ]
@@ -197,7 +193,9 @@
         {
           "oneOf": [
             { "$ref": "#/definitions/registerChannel" },
-            { "$ref": "#/definitions/compoundRegisterChannel" }
+            { "$ref": "#/definitions/compoundRegisterChannel" },
+            { "$ref": "#/definitions/registerChannelSeparateAddress" },
+            { "$ref": "#/definitions/registerChannelWriteOnly" }
           ]
         },
         { "$ref": "#/definitions/group_condition" }
