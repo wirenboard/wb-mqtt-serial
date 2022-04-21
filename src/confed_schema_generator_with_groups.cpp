@@ -9,6 +9,8 @@ using namespace WBMQTT::JSON;
 
 namespace
 {
+    const auto DEVICE_PARAMETERS_PROPERTY_ORDER = 20;
+
     struct TContext
     {
         const std::string& DeviceType;
@@ -203,7 +205,7 @@ void AddDeviceWithGroupsUISchema(const TDeviceTemplate& deviceTemplate,
     defaultProperties.append("slave_id");
     defaultProperties.append("device_type");
 
-    AddDeviceParametersUI(res["properties"], deviceTemplate.Schema, 0, context);
+    AddDeviceParametersUI(res["properties"], deviceTemplate.Schema, DEVICE_PARAMETERS_PROPERTY_ORDER, context);
     AddChannelsUI(res["properties"], deviceTemplate.Schema, context);
     AddTranslations(deviceTemplate.Type, translations, deviceTemplate.Schema);
 }
