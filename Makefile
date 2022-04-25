@@ -74,7 +74,7 @@ $(TEST_DIR)/$(TEST_BIN): $(COMMON_OBJS) $(TEST_OBJS)
 	${CXX} $^ ${LDFLAGS} $(TEST_LDFLAGS) -o $@ -fno-lto
 
 $(TEMPLATES_DIR)/%.json: $(TEMPLATE_TEMPLATES_DIR)/%.json.jinja
-	./template-generator.py $^ $@
+	tools/template-generator.py $^ $@
 
 test: $(TEST_DIR)/$(TEST_BIN)
 	rm -f $(TEST_DIR)/*.dat.out
