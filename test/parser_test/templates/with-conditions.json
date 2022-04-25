@@ -11,18 +11,27 @@
                 "address": "0x0504"
             }
         ],
-        "parameters" : {
-            "param1": {
+        "parameters" : [
+            {
+                "id": "param1",
                 "title": "p1",
                 "address": 10,
                 "required": true
             },
-            "param2": {
+            {
+                "id": "param2",
                 "title": "p2",
                 "address": 10,
                 "required": true,
                 "condition": "param1==1"
+            },
+            {
+                "id": "param3",
+                "title": "p3",
+                "address": 11,
+                "enum": [11, 12],
+                "condition": "param1==2"
             }
-        }
+        ]
     }
 }
