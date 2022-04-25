@@ -273,11 +273,3 @@ TEST_F(TConfedSchemaTest, MergeTranslations)
         ASSERT_TRUE(JsonsMatch(schema["translations"], tr)) << i;
     }
 }
-
-TEST_F(TConfigParserTest, MissingRequiredParametersWithConditions)
-{
-    ASSERT_THROW(CheckExceptionMsg([this]() { GetConfig("configs/config-with-conditions.json"); },
-                                   "File: test/configs/config-with-conditions.json error: ports[0].devices[1] required "
-                                   "parameter 'param2' is missing"),
-                 std::runtime_error);
-}
