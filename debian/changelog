@@ -1,3 +1,9 @@
+wb-mqtt-serial (2.57.2) stable; urgency=medium
+
+  * Template for Ecodim DALI GW2 was added
+
+ -- Dmitry Vorobjev <d.vorobjev@wirenboard.ru>  Tue, 26 Apr 2022 16:23:21 +0300
+
 wb-mqtt-serial (2.57.1) stable; urgency=medium
 
   * Specific device properties display order is fixed. They are shown after common properties in homeui.
