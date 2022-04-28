@@ -33,22 +33,17 @@ namespace
 
     //  {
     //      "type": "number", // or "type": "integer"
-    //      "title": TITLE_HASH,
     //      "default": DEFAULT,
     //      "minimum": MIN,
     //      "maximum": MAX,
     //      "enum": [ ... ],
     //      "description": DESCRIPTION_HASH,
-    //      "propertyOrder": INDEX
-    //      "group": GROUP_NAME,
     //      "condition": CONDITION,
-    //      "requiredProp": REQUIRED      // if required
     //      "options": {
     //          "enumTitles" : [ ... ]
-    //          "show_opt_in": true       // if not required
     //      }
     //  }
-    Json::Value MakeParameterSchema(const Json::Value& setupRegister, int index, TContext& context, bool full = true)
+    Json::Value MakeParameterSchemaForAnyOf(const Json::Value& setupRegister, int index, TContext& context, bool full = true)
     {
         Json::Value r;
         r["type"] = setupRegister.isMember("scale") ? "number" : "integer";
@@ -66,16 +61,37 @@ namespace
             }
         }
         SetIfExists(r, "condition", setupRegister, "condition");
-        if (full) {
-            r["title"] = context.AddHashedTranslation(setupRegister["title"].asString());
-            r["propertyOrder"] = index;
-            SetIfExists(r, "group", setupRegister, "group");
-            if (!IsRequiredSetupRegister(setupRegister)) {
-                r["options"]["show_opt_in"] = true;
-            } else {
-                // Use custom requiredProp to not confuse json-editor's validator as it can't handle conditions
-                r["requiredProp"] = true;
-            }
+        return r;
+    }
+
+    //  {
+    //      "type": "number", // or "type": "integer"
+    //      "title": TITLE_HASH,
+    //      "default": DEFAULT,
+    //      "minimum": MIN,
+    //      "maximum": MAX,
+    //      "enum": [ ... ],
+    //      "description": DESCRIPTION_HASH,
+    //      "propertyOrder": INDEX
+    //      "group": GROUP_NAME,
+    //      "condition": CONDITION,
+    //      "requiredProp": REQUIRED      // if required
+    //      "options": {
+    //          "enumTitles" : [ ... ]
+    //          "show_opt_in": true       // if not required
+    //      }
+    //  }
+    Json::Value MakeParameterSchema(const Json::Value& setupRegister, int index, TContext& context)
+    {
+        Json::Value r(MakeParameterSchemaForAnyOf(setupRegister, index, context));
+        r["title"] = context.AddHashedTranslation(setupRegister["title"].asString());
+        r["propertyOrder"] = index;
+        SetIfExists(r, "group", setupRegister, "group");
+        if (!IsRequiredSetupRegister(setupRegister)) {
+            r["options"]["show_opt_in"] = true;
+        } else {
+            // Use custom requiredProp to not confuse json-editor's validator as it can't handle conditions
+            r["requiredProp"] = true;
         }
         return r;
     }
@@ -123,7 +139,7 @@ namespace
                     if (!prop.isMember("anyOf")) {
                         ConvertToAnyOfParameter(prop);
                     }
-                    prop["anyOf"].append(MakeParameterSchema(*it, firstParameterOrder + order, context, false));
+                    prop["anyOf"].append(MakeParameterSchemaForAnyOf(*it, firstParameterOrder + order, context));
                 }
                 ++n;
             }
