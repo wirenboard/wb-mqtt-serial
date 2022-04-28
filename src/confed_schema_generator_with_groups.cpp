@@ -43,10 +43,7 @@ namespace
     //          "enumTitles" : [ ... ]
     //      }
     //  }
-    Json::Value MakeParameterSchemaForAnyOf(const Json::Value& setupRegister,
-                                            int index,
-                                            TContext& context,
-                                            bool full = true)
+    Json::Value MakeParameterSchemaForAnyOf(const Json::Value& setupRegister, int index, TContext& context)
     {
         Json::Value r;
         r["type"] = setupRegister.isMember("scale") ? "number" : "integer";
