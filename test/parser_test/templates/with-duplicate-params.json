@@ -1,8 +1,8 @@
 {
-    "device_type": "with conditions",
+    "device_type": "with duplicate params",
     "device": {
-        "name": "with conditions",
-        "id": "with conditions",
+        "name": "with duplicate params",
+        "id": "with duplicate params",
         "channels": [
             {
                 "name": "Temperature",
@@ -17,20 +17,6 @@
                 "title": "p1",
                 "address": 10,
                 "required": true
-            },
-            {
-                "id": "param2",
-                "title": "p2",
-                "address": 10,
-                "required": true,
-                "condition": "param1==1"
-            },
-            {
-                "id": "param3",
-                "title": "p3",
-                "address": 11,
-                "enum": [11, 12],
-                "condition": "param1==2"
             },
             {
                 "id": "param4",

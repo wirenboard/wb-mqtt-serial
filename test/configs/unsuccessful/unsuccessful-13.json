@@ -10,7 +10,7 @@
             "devices" : [
                 {
                     "slave_id": 22,
-                    "device_type": "with conditions",
+                    "device_type": "with duplicate params",
                     "param1": 4
                 }
             ]
