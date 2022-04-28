@@ -1,3 +1,9 @@
+wb-mqtt-serial (2.58.1) stable; urgency=medium
+
+  * Flat templates with buttons support for relay modules
+
+ -- Dmitry Vorobjev <d.vorobjev@wirenboard.ru>  Thu, 28 Apr 2022 15:13:01 +0300
+
 wb-mqtt-serial (2.58.0) stable; urgency=medium
 
   * Support for jinja2 templates on package build stage is added.
