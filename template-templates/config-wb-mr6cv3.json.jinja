@@ -1,10 +1,10 @@
 {% set OUTPUTS_NUMBER = 6 -%}
 {
-    "title": "WB-MR6C_template_title",
-    "device_type": "WB-MR6C",
+    "title": "WB-MR6Cv3_template_title",
+    "device_type": "WB-MR6C v3",
     "device": {
-        "name": "WB-MR6C",
-        "id": "wb-mr6c",
+        "name": "WB-MR6C v3",
+        "id": "wb-mr6cv3",
         "max_read_registers": 0,
         "response_timeout_ms": 1,
         "frame_timeout_ms": 8,
@@ -52,6 +52,18 @@
                 "title": "Outputs",
                 "id": "g_outputs",
                 "order": 8
+            },
+            {
+                "title": "Setting the emergency mode when communication with the controller is lost",
+                "id": "gg_safety_setting_poll",
+                "group": "g_outputs",
+                "order": 2
+            },
+            {
+                "title": "Setting the emergency mode when the external power supply is turned off",
+                "id": "gg_safety_setting_bus_pwr",
+                "group": "g_outputs",
+                "order": 3
             },
             {
                 "title": "General",
@@ -199,7 +211,7 @@
                 "condition": "in{{in_num}}_mode==4"
             },
             {% endfor -%}
-            
+
             {% for out_num in range(1, OUTPUTS_NUMBER + 1) -%}
             "in{{in_num}}_out{{out_num}}_sp": {
                 "group": "gg_in{{in_num}}_out{{out_num}}_button_actions",
@@ -263,6 +275,40 @@
             },
             {% endfor -%}
             {% endfor -%}
+
+            {% for out_num in range(1, OUTPUTS_NUMBER + 1) -%}
+            "out{{out_num}}_safety_poll_setting": {
+                "group": "gg_safety_setting_poll",
+                "title": "Output {{out_num}}",
+                "order": 1,
+                "address": {{930 + out_num - 1}},
+                "reg_type": "holding",
+                "default": 2,
+                "enum": [0, 1, 2, 3],
+                "enum_titles": [
+                    "always control the channel from the input",
+                    "control the channel from the input only in case of an emergency",
+                    "turn off the channel in case of an emergency",
+                    "turn on the channel in case of an emergency"
+                ]
+            },
+            "out{{out_num}}_safety_bus_pwr_setting": {
+                "group": "gg_safety_setting_bus_pwr",
+                "title": "Output {{out_num}}",
+                "order": 1,
+                "address": {{938 + out_num - 1}},
+                "reg_type": "holding",
+                "default": 2,
+                "enum": [0, 1, 2, 3],
+                "enum_titles": [
+                    "always control the channel from the input",
+                    "control the channel from the input only in case of an emergency",
+                    "turn off the channel in case of an emergency",
+                    "turn on the channel in case of an emergency"
+                ]
+            },
+            {% endfor -%}
+
             "outputs_restore_state": {
                 "title": "Restore Last Outputs State After Power On",
                 "address": 6,
@@ -444,12 +490,19 @@
                 "type": "voltage",
                 "enabled": false,
                 "group": "g_hw_info"
+            },
+            {
+                "name": "No external power supply",
+                "reg_type": "input",
+                "address": 4,
+                "type": "switch",
+                "group": "g_general"
             }
         ],
 
         "translations": {
             "en": {
-                "WB-MR6C_template_title": "WB-MR6C v.2, WB-MR6LV/x, WB-MR6HV/x (6-channel relay)",
+                "WB-MR6Cv3_template_title": "WB-MR6C v.3 (6-channel relay with internal power supply)",
                 "mode_description": "For using button mapping-matrix firmware v1.17.0 or newer is required",
                 "baud_rate_description": "Make sure that communication with device is established before changing this parameter. Select required baud rate, save configuration and then change port baud rate to the same value.",
                 "Uptime": "Uptime (s)",
@@ -469,7 +522,7 @@
                 "debounce_time_description": "Must be 5-10 times less than double press time. If double presses are disabled - any value"
             },
             "ru": {
-                "WB-MR6C_template_title": "WB-MR6C v.2, WB-MR6LV/x, WB-MR6HV/x (6-канальный модуль реле)",
+                "WB-MR6Cv3_template_title": "WB-MR6C v.3 (6-канальный модуль реле с внутренним блоком питания)",
 
                 {% for in_num in range(0, OUTPUTS_NUMBER + 1) -%}
                 "Input {{in_num}}": "Вход {{in_num}}",
@@ -554,7 +607,15 @@
                 "Supply Voltage": "Напряжение питания",
                 "Uptime": "Время работы с момента включения (с)",
                 "MCU Temperature": "Температура МК",
-                "MCU Voltage": "Напряжение питания МК"
+                "MCU Voltage": "Напряжение питания МК",
+
+                "No external power supply": "Нет внешнего источника питания",
+                "Setting the emergency mode when communication with the controller is lost": "Настройка аварийного режима при пропадании связи c контроллером",
+                "Setting the emergency mode when the external power supply is turned off": "Настройка аварийного режима при отключении внешнего источника питания",
+                "always control the channel from the input" : "управлять каналом со входа всегда",
+                "control the channel from the input only in case of an emergency" : "управлять каналом со входа только при аварии",
+                "turn off the channel in case of an emergency" : "отключить канал при аварии",
+                "turn on the channel in case of an emergency" : "включить канал при аварии"
             }
         }
     }
