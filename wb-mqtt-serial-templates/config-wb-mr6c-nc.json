@@ -11,54 +11,467 @@
         "groups": [
             {
                 "title": "Input 0",
-                "id": "input_0",
+                "id": "g_in0",
                 "order": 1
             },
             {
-                "title": "Input 1",
-                "id": "input_1",
+                "title": "Press Parameters",
+                "id": "gg_in0_press_params",
+                "order": 1,
+                "group": "g_in0"
+            },
+            {
+                "title": "Actions for outputs when the input is closed / opened",
+                "id": "gg_in0_mapping_matrix_actions",
+                "group": "g_in0",
+                "order": 1
+            },
+            {
+                "title": "Output 1 Actions",
+                "id": "gg_in0_out1_button_actions",
+                "group": "g_in0",
+                "order": 1
+            },
+            {
+                "title": "Output 2 Actions",
+                "id": "gg_in0_out2_button_actions",
+                "group": "g_in0",
                 "order": 2
             },
             {
-                "title": "Input 2",
-                "id": "input_2",
+                "title": "Output 3 Actions",
+                "id": "gg_in0_out3_button_actions",
+                "group": "g_in0",
                 "order": 3
             },
             {
-                "title": "Input 3",
-                "id": "input_3",
+                "title": "Output 4 Actions",
+                "id": "gg_in0_out4_button_actions",
+                "group": "g_in0",
                 "order": 4
             },
             {
-                "title": "Input 4",
-                "id": "input_4",
+                "title": "Output 5 Actions",
+                "id": "gg_in0_out5_button_actions",
+                "group": "g_in0",
                 "order": 5
             },
             {
-                "title": "Input 5",
-                "id": "input_5",
+                "title": "Output 6 Actions",
+                "id": "gg_in0_out6_button_actions",
+                "group": "g_in0",
                 "order": 6
             },
             {
+                "title": "input0_channels",
+                "id": "gg_in0_channels",
+                "order": 2,
+                "group": "g_in0",
+                "ui_options": {
+                    "wb": {
+                        "disable_title": true
+                    }
+                }
+            },
+            {
+                "title": "Input 1",
+                "id": "g_in1",
+                "order": 2
+            },
+            {
+                "title": "Press Parameters",
+                "id": "gg_in1_press_params",
+                "order": 1,
+                "group": "g_in1"
+            },
+            {
+                "title": "Actions for outputs when the input is closed / opened",
+                "id": "gg_in1_mapping_matrix_actions",
+                "group": "g_in1",
+                "order": 1
+            },
+            {
+                "title": "Output 1 Actions",
+                "id": "gg_in1_out1_button_actions",
+                "group": "g_in1",
+                "order": 1
+            },
+            {
+                "title": "Output 2 Actions",
+                "id": "gg_in1_out2_button_actions",
+                "group": "g_in1",
+                "order": 2
+            },
+            {
+                "title": "Output 3 Actions",
+                "id": "gg_in1_out3_button_actions",
+                "group": "g_in1",
+                "order": 3
+            },
+            {
+                "title": "Output 4 Actions",
+                "id": "gg_in1_out4_button_actions",
+                "group": "g_in1",
+                "order": 4
+            },
+            {
+                "title": "Output 5 Actions",
+                "id": "gg_in1_out5_button_actions",
+                "group": "g_in1",
+                "order": 5
+            },
+            {
+                "title": "Output 6 Actions",
+                "id": "gg_in1_out6_button_actions",
+                "group": "g_in1",
+                "order": 6
+            },
+            {
+                "title": "input1_channels",
+                "id": "gg_in1_channels",
+                "order": 2,
+                "group": "g_in1",
+                "ui_options": {
+                    "wb": {
+                        "disable_title": true
+                    }
+                }
+            },
+            {
+                "title": "Input 2",
+                "id": "g_in2",
+                "order": 3
+            },
+            {
+                "title": "Press Parameters",
+                "id": "gg_in2_press_params",
+                "order": 1,
+                "group": "g_in2"
+            },
+            {
+                "title": "Actions for outputs when the input is closed / opened",
+                "id": "gg_in2_mapping_matrix_actions",
+                "group": "g_in2",
+                "order": 1
+            },
+            {
+                "title": "Output 1 Actions",
+                "id": "gg_in2_out1_button_actions",
+                "group": "g_in2",
+                "order": 1
+            },
+            {
+                "title": "Output 2 Actions",
+                "id": "gg_in2_out2_button_actions",
+                "group": "g_in2",
+                "order": 2
+            },
+            {
+                "title": "Output 3 Actions",
+                "id": "gg_in2_out3_button_actions",
+                "group": "g_in2",
+                "order": 3
+            },
+            {
+                "title": "Output 4 Actions",
+                "id": "gg_in2_out4_button_actions",
+                "group": "g_in2",
+                "order": 4
+            },
+            {
+                "title": "Output 5 Actions",
+                "id": "gg_in2_out5_button_actions",
+                "group": "g_in2",
+                "order": 5
+            },
+            {
+                "title": "Output 6 Actions",
+                "id": "gg_in2_out6_button_actions",
+                "group": "g_in2",
+                "order": 6
+            },
+            {
+                "title": "input2_channels",
+                "id": "gg_in2_channels",
+                "order": 2,
+                "group": "g_in2",
+                "ui_options": {
+                    "wb": {
+                        "disable_title": true
+                    }
+                }
+            },
+            {
+                "title": "Input 3",
+                "id": "g_in3",
+                "order": 4
+            },
+            {
+                "title": "Press Parameters",
+                "id": "gg_in3_press_params",
+                "order": 1,
+                "group": "g_in3"
+            },
+            {
+                "title": "Actions for outputs when the input is closed / opened",
+                "id": "gg_in3_mapping_matrix_actions",
+                "group": "g_in3",
+                "order": 1
+            },
+            {
+                "title": "Output 1 Actions",
+                "id": "gg_in3_out1_button_actions",
+                "group": "g_in3",
+                "order": 1
+            },
+            {
+                "title": "Output 2 Actions",
+                "id": "gg_in3_out2_button_actions",
+                "group": "g_in3",
+                "order": 2
+            },
+            {
+                "title": "Output 3 Actions",
+                "id": "gg_in3_out3_button_actions",
+                "group": "g_in3",
+                "order": 3
+            },
+            {
+                "title": "Output 4 Actions",
+                "id": "gg_in3_out4_button_actions",
+                "group": "g_in3",
+                "order": 4
+            },
+            {
+                "title": "Output 5 Actions",
+                "id": "gg_in3_out5_button_actions",
+                "group": "g_in3",
+                "order": 5
+            },
+            {
+                "title": "Output 6 Actions",
+                "id": "gg_in3_out6_button_actions",
+                "group": "g_in3",
+                "order": 6
+            },
+            {
+                "title": "input3_channels",
+                "id": "gg_in3_channels",
+                "order": 2,
+                "group": "g_in3",
+                "ui_options": {
+                    "wb": {
+                        "disable_title": true
+                    }
+                }
+            },
+            {
+                "title": "Input 4",
+                "id": "g_in4",
+                "order": 5
+            },
+            {
+                "title": "Press Parameters",
+                "id": "gg_in4_press_params",
+                "order": 1,
+                "group": "g_in4"
+            },
+            {
+                "title": "Actions for outputs when the input is closed / opened",
+                "id": "gg_in4_mapping_matrix_actions",
+                "group": "g_in4",
+                "order": 1
+            },
+            {
+                "title": "Output 1 Actions",
+                "id": "gg_in4_out1_button_actions",
+                "group": "g_in4",
+                "order": 1
+            },
+            {
+                "title": "Output 2 Actions",
+                "id": "gg_in4_out2_button_actions",
+                "group": "g_in4",
+                "order": 2
+            },
+            {
+                "title": "Output 3 Actions",
+                "id": "gg_in4_out3_button_actions",
+                "group": "g_in4",
+                "order": 3
+            },
+            {
+                "title": "Output 4 Actions",
+                "id": "gg_in4_out4_button_actions",
+                "group": "g_in4",
+                "order": 4
+            },
+            {
+                "title": "Output 5 Actions",
+                "id": "gg_in4_out5_button_actions",
+                "group": "g_in4",
+                "order": 5
+            },
+            {
+                "title": "Output 6 Actions",
+                "id": "gg_in4_out6_button_actions",
+                "group": "g_in4",
+                "order": 6
+            },
+            {
+                "title": "input4_channels",
+                "id": "gg_in4_channels",
+                "order": 2,
+                "group": "g_in4",
+                "ui_options": {
+                    "wb": {
+                        "disable_title": true
+                    }
+                }
+            },
+            {
+                "title": "Input 5",
+                "id": "g_in5",
+                "order": 6
+            },
+            {
+                "title": "Press Parameters",
+                "id": "gg_in5_press_params",
+                "order": 1,
+                "group": "g_in5"
+            },
+            {
+                "title": "Actions for outputs when the input is closed / opened",
+                "id": "gg_in5_mapping_matrix_actions",
+                "group": "g_in5",
+                "order": 1
+            },
+            {
+                "title": "Output 1 Actions",
+                "id": "gg_in5_out1_button_actions",
+                "group": "g_in5",
+                "order": 1
+            },
+            {
+                "title": "Output 2 Actions",
+                "id": "gg_in5_out2_button_actions",
+                "group": "g_in5",
+                "order": 2
+            },
+            {
+                "title": "Output 3 Actions",
+                "id": "gg_in5_out3_button_actions",
+                "group": "g_in5",
+                "order": 3
+            },
+            {
+                "title": "Output 4 Actions",
+                "id": "gg_in5_out4_button_actions",
+                "group": "g_in5",
+                "order": 4
+            },
+            {
+                "title": "Output 5 Actions",
+                "id": "gg_in5_out5_button_actions",
+                "group": "g_in5",
+                "order": 5
+            },
+            {
+                "title": "Output 6 Actions",
+                "id": "gg_in5_out6_button_actions",
+                "group": "g_in5",
+                "order": 6
+            },
+            {
+                "title": "input5_channels",
+                "id": "gg_in5_channels",
+                "order": 2,
+                "group": "g_in5",
+                "ui_options": {
+                    "wb": {
+                        "disable_title": true
+                    }
+                }
+            },
+            {
                 "title": "Input 6",
-                "id": "input_6",
+                "id": "g_in6",
                 "order": 7
             },
             {
+                "title": "Press Parameters",
+                "id": "gg_in6_press_params",
+                "order": 1,
+                "group": "g_in6"
+            },
+            {
+                "title": "Actions for outputs when the input is closed / opened",
+                "id": "gg_in6_mapping_matrix_actions",
+                "group": "g_in6",
+                "order": 1
+            },
+            {
+                "title": "Output 1 Actions",
+                "id": "gg_in6_out1_button_actions",
+                "group": "g_in6",
+                "order": 1
+            },
+            {
+                "title": "Output 2 Actions",
+                "id": "gg_in6_out2_button_actions",
+                "group": "g_in6",
+                "order": 2
+            },
+            {
+                "title": "Output 3 Actions",
+                "id": "gg_in6_out3_button_actions",
+                "group": "g_in6",
+                "order": 3
+            },
+            {
+                "title": "Output 4 Actions",
+                "id": "gg_in6_out4_button_actions",
+                "group": "g_in6",
+                "order": 4
+            },
+            {
+                "title": "Output 5 Actions",
+                "id": "gg_in6_out5_button_actions",
+                "group": "g_in6",
+                "order": 5
+            },
+            {
+                "title": "Output 6 Actions",
+                "id": "gg_in6_out6_button_actions",
+                "group": "g_in6",
+                "order": 6
+            },
+            {
+                "title": "input6_channels",
+                "id": "gg_in6_channels",
+                "order": 2,
+                "group": "g_in6",
+                "ui_options": {
+                    "wb": {
+                        "disable_title": true
+                    }
+                }
+            },
+            {
                 "title": "Outputs",
-                "id": "outputs",
+                "id": "g_outputs",
                 "order": 8
             },
             {
                 "title": "General",
-                "id": "general",
+                "id": "g_general",
                 "order": 9
             },
             {
                 "title": "HW Info",
-                "id": "hw_info",
+                "id": "g_hw_info",
                 "order": 10
-            }
+            }            
         ],
 
         "setup": [
@@ -72,184 +485,3543 @@
 
         "parameters": {
             "in0_mode": {
-                "title": "Input 0 Mode",
+                "title": "Mode",
+                "description": "mode_description",
                 "address": 16,
                 "reg_type": "holding",
-                "enum": [2, 3, 4],
+                "enum": [2, 3, 4, 6],
                 "default": 2,
                 "enum_titles": [
-                    "turn on all outputs",
-                    "control disabled",
-                    "operate according to mapping-matrix"
+                    "Turn on all outputs",
+                    "Control disabled",
+                    "Operate according to mapping-matrix",
+                    "Operate according to button mapping-matrix"
                 ],
-                "group": "input_0",
+                "group": "g_in0",
                 "order": 1
             },
             "in0_debounce_ms": {
-                "title": "Input 0 Debounce (ms)",
+                "title": "debounce_time_title",
+                "description": "debounce_time_description",
                 "address": 27,
                 "reg_type": "holding",
                 "min": 0,
                 "max": 100,
                 "default": 50,
-                "group": "input_0",
+                "group": "g_in0",
                 "order": 2
             },
+            
+            "in0_lp_hold_time": {
+                "group": "gg_in0_press_params",
+                "title": "lp_hold_time_title",
+                "description": "lp_hold_time_description",
+                "order": 1,
+                "address": 1107,
+                "reg_type": "holding",
+                "default": 2000,
+                "min": 500,
+                "max": 5000,
+                "condition": "in0_mode==6"
+            },
+            "in0_dp_time": {
+                "group": "gg_in0_press_params",
+                "title": "dp_time_title",
+                "description": "dp_time_description",
+                "order": 2,
+                "address": 1147,
+                "reg_type": "holding",
+                "default": 300,
+                "min": 0,
+                "max": 2000,
+                "condition": "in0_mode==6"
+            },
+            
+            "in0_out1_actions": {
+                "group": "gg_in0_mapping_matrix_actions",
+                "title": "Output 1",
+                "order": 1,
+                "address": 440,
+                "reg_type": "holding",
+                "default": 0,
+                "enum": [0, 1, 2, 3, 4, 5, 6, 7, 8, 9, 10, 11, 12, 13, 14, 15],
+                "enum_titles": [
+                    "no action / no action",
+                    "no action / set",
+                    "no action / reset",
+                    "no action / toggle",
+
+                    "set / no action",
+                    "set / set",
+                    "set / reset",
+                    "set / toggle",
+
+                    "reset / no action",
+                    "reset / set",
+                    "reset / reset",
+                    "reset / toggle",
+
+                    "toggle / no action",
+                    "toggle / set",
+                    "toggle / reset",
+                    "toggle / toggle"
+                ],
+                "condition": "in0_mode==4"
+            },
+            "in0_out2_actions": {
+                "group": "gg_in0_mapping_matrix_actions",
+                "title": "Output 2",
+                "order": 2,
+                "address": 441,
+                "reg_type": "holding",
+                "default": 0,
+                "enum": [0, 1, 2, 3, 4, 5, 6, 7, 8, 9, 10, 11, 12, 13, 14, 15],
+                "enum_titles": [
+                    "no action / no action",
+                    "no action / set",
+                    "no action / reset",
+                    "no action / toggle",
+
+                    "set / no action",
+                    "set / set",
+                    "set / reset",
+                    "set / toggle",
+
+                    "reset / no action",
+                    "reset / set",
+                    "reset / reset",
+                    "reset / toggle",
+
+                    "toggle / no action",
+                    "toggle / set",
+                    "toggle / reset",
+                    "toggle / toggle"
+                ],
+                "condition": "in0_mode==4"
+            },
+            "in0_out3_actions": {
+                "group": "gg_in0_mapping_matrix_actions",
+                "title": "Output 3",
+                "order": 3,
+                "address": 442,
+                "reg_type": "holding",
+                "default": 0,
+                "enum": [0, 1, 2, 3, 4, 5, 6, 7, 8, 9, 10, 11, 12, 13, 14, 15],
+                "enum_titles": [
+                    "no action / no action",
+                    "no action / set",
+                    "no action / reset",
+                    "no action / toggle",
+
+                    "set / no action",
+                    "set / set",
+                    "set / reset",
+                    "set / toggle",
+
+                    "reset / no action",
+                    "reset / set",
+                    "reset / reset",
+                    "reset / toggle",
+
+                    "toggle / no action",
+                    "toggle / set",
+                    "toggle / reset",
+                    "toggle / toggle"
+                ],
+                "condition": "in0_mode==4"
+            },
+            "in0_out4_actions": {
+                "group": "gg_in0_mapping_matrix_actions",
+                "title": "Output 4",
+                "order": 4,
+                "address": 443,
+                "reg_type": "holding",
+                "default": 0,
+                "enum": [0, 1, 2, 3, 4, 5, 6, 7, 8, 9, 10, 11, 12, 13, 14, 15],
+                "enum_titles": [
+                    "no action / no action",
+                    "no action / set",
+                    "no action / reset",
+                    "no action / toggle",
+
+                    "set / no action",
+                    "set / set",
+                    "set / reset",
+                    "set / toggle",
+
+                    "reset / no action",
+                    "reset / set",
+                    "reset / reset",
+                    "reset / toggle",
+
+                    "toggle / no action",
+                    "toggle / set",
+                    "toggle / reset",
+                    "toggle / toggle"
+                ],
+                "condition": "in0_mode==4"
+            },
+            "in0_out5_actions": {
+                "group": "gg_in0_mapping_matrix_actions",
+                "title": "Output 5",
+                "order": 5,
+                "address": 444,
+                "reg_type": "holding",
+                "default": 0,
+                "enum": [0, 1, 2, 3, 4, 5, 6, 7, 8, 9, 10, 11, 12, 13, 14, 15],
+                "enum_titles": [
+                    "no action / no action",
+                    "no action / set",
+                    "no action / reset",
+                    "no action / toggle",
+
+                    "set / no action",
+                    "set / set",
+                    "set / reset",
+                    "set / toggle",
+
+                    "reset / no action",
+                    "reset / set",
+                    "reset / reset",
+                    "reset / toggle",
+
+                    "toggle / no action",
+                    "toggle / set",
+                    "toggle / reset",
+                    "toggle / toggle"
+                ],
+                "condition": "in0_mode==4"
+            },
+            "in0_out6_actions": {
+                "group": "gg_in0_mapping_matrix_actions",
+                "title": "Output 6",
+                "order": 6,
+                "address": 445,
+                "reg_type": "holding",
+                "default": 0,
+                "enum": [0, 1, 2, 3, 4, 5, 6, 7, 8, 9, 10, 11, 12, 13, 14, 15],
+                "enum_titles": [
+                    "no action / no action",
+                    "no action / set",
+                    "no action / reset",
+                    "no action / toggle",
+
+                    "set / no action",
+                    "set / set",
+                    "set / reset",
+                    "set / toggle",
+
+                    "reset / no action",
+                    "reset / set",
+                    "reset / reset",
+                    "reset / toggle",
+
+                    "toggle / no action",
+                    "toggle / set",
+                    "toggle / reset",
+                    "toggle / toggle"
+                ],
+                "condition": "in0_mode==4"
+            },
+            "in0_out1_sp": {
+                "group": "gg_in0_out1_button_actions",
+                "title": "sp_title",
+                "order": 1,
+                "address": 600,
+                "reg_type": "holding",
+                "default": 0,
+                "enum": [0, 1, 2, 3],
+                "enum_titles": ["no action", "set", "reset", "toggle"],
+                "condition": "in0_mode==6"
+            },
+            "in0_out1_lp": {
+                "group": "gg_in0_out1_button_actions",
+                "title": "lp_title",
+                "order": 2,
+                "address": 664,
+                "reg_type": "holding",
+                "default": 0,
+                "enum": [0, 1, 2, 3],
+                "enum_titles": ["no action", "set", "reset", "toggle"],
+                "condition": "in0_mode==6"
+            },
+            "in0_out1_dp": {
+                "group": "gg_in0_out1_button_actions",
+                "title": "dp_title",
+                "order": 3,
+                "address": 728,
+                "reg_type": "holding",
+                "default": 0,
+                "enum": [0, 1, 2, 3],
+                "enum_titles": ["no action", "set", "reset", "toggle"],
+                "condition": "in0_mode==6"
+            },
+            "in0_out1_slp": {
+                "group": "gg_in0_out1_button_actions",
+                "title": "slp_title",
+                "order": 4,
+                "address": 792,
+                "reg_type": "holding",
+                "default": 0,
+                "enum": [0, 1, 2, 3],
+                "enum_titles": ["no action", "set", "reset", "toggle"],
+                "condition": "in0_mode==6"
+            },
+            "in0_out2_sp": {
+                "group": "gg_in0_out2_button_actions",
+                "title": "sp_title",
+                "order": 1,
+                "address": 601,
+                "reg_type": "holding",
+                "default": 0,
+                "enum": [0, 1, 2, 3],
+                "enum_titles": ["no action", "set", "reset", "toggle"],
+                "condition": "in0_mode==6"
+            },
+            "in0_out2_lp": {
+                "group": "gg_in0_out2_button_actions",
+                "title": "lp_title",
+                "order": 2,
+                "address": 665,
+                "reg_type": "holding",
+                "default": 0,
+                "enum": [0, 1, 2, 3],
+                "enum_titles": ["no action", "set", "reset", "toggle"],
+                "condition": "in0_mode==6"
+            },
+            "in0_out2_dp": {
+                "group": "gg_in0_out2_button_actions",
+                "title": "dp_title",
+                "order": 3,
+                "address": 729,
+                "reg_type": "holding",
+                "default": 0,
+                "enum": [0, 1, 2, 3],
+                "enum_titles": ["no action", "set", "reset", "toggle"],
+                "condition": "in0_mode==6"
+            },
+            "in0_out2_slp": {
+                "group": "gg_in0_out2_button_actions",
+                "title": "slp_title",
+                "order": 4,
+                "address": 793,
+                "reg_type": "holding",
+                "default": 0,
+                "enum": [0, 1, 2, 3],
+                "enum_titles": ["no action", "set", "reset", "toggle"],
+                "condition": "in0_mode==6"
+            },
+            "in0_out3_sp": {
+                "group": "gg_in0_out3_button_actions",
+                "title": "sp_title",
+                "order": 1,
+                "address": 602,
+                "reg_type": "holding",
+                "default": 0,
+                "enum": [0, 1, 2, 3],
+                "enum_titles": ["no action", "set", "reset", "toggle"],
+                "condition": "in0_mode==6"
+            },
+            "in0_out3_lp": {
+                "group": "gg_in0_out3_button_actions",
+                "title": "lp_title",
+                "order": 2,
+                "address": 666,
+                "reg_type": "holding",
+                "default": 0,
+                "enum": [0, 1, 2, 3],
+                "enum_titles": ["no action", "set", "reset", "toggle"],
+                "condition": "in0_mode==6"
+            },
+            "in0_out3_dp": {
+                "group": "gg_in0_out3_button_actions",
+                "title": "dp_title",
+                "order": 3,
+                "address": 730,
+                "reg_type": "holding",
+                "default": 0,
+                "enum": [0, 1, 2, 3],
+                "enum_titles": ["no action", "set", "reset", "toggle"],
+                "condition": "in0_mode==6"
+            },
+            "in0_out3_slp": {
+                "group": "gg_in0_out3_button_actions",
+                "title": "slp_title",
+                "order": 4,
+                "address": 794,
+                "reg_type": "holding",
+                "default": 0,
+                "enum": [0, 1, 2, 3],
+                "enum_titles": ["no action", "set", "reset", "toggle"],
+                "condition": "in0_mode==6"
+            },
+            "in0_out4_sp": {
+                "group": "gg_in0_out4_button_actions",
+                "title": "sp_title",
+                "order": 1,
+                "address": 603,
+                "reg_type": "holding",
+                "default": 0,
+                "enum": [0, 1, 2, 3],
+                "enum_titles": ["no action", "set", "reset", "toggle"],
+                "condition": "in0_mode==6"
+            },
+            "in0_out4_lp": {
+                "group": "gg_in0_out4_button_actions",
+                "title": "lp_title",
+                "order": 2,
+                "address": 667,
+                "reg_type": "holding",
+                "default": 0,
+                "enum": [0, 1, 2, 3],
+                "enum_titles": ["no action", "set", "reset", "toggle"],
+                "condition": "in0_mode==6"
+            },
+            "in0_out4_dp": {
+                "group": "gg_in0_out4_button_actions",
+                "title": "dp_title",
+                "order": 3,
+                "address": 731,
+                "reg_type": "holding",
+                "default": 0,
+                "enum": [0, 1, 2, 3],
+                "enum_titles": ["no action", "set", "reset", "toggle"],
+                "condition": "in0_mode==6"
+            },
+            "in0_out4_slp": {
+                "group": "gg_in0_out4_button_actions",
+                "title": "slp_title",
+                "order": 4,
+                "address": 795,
+                "reg_type": "holding",
+                "default": 0,
+                "enum": [0, 1, 2, 3],
+                "enum_titles": ["no action", "set", "reset", "toggle"],
+                "condition": "in0_mode==6"
+            },
+            "in0_out5_sp": {
+                "group": "gg_in0_out5_button_actions",
+                "title": "sp_title",
+                "order": 1,
+                "address": 604,
+                "reg_type": "holding",
+                "default": 0,
+                "enum": [0, 1, 2, 3],
+                "enum_titles": ["no action", "set", "reset", "toggle"],
+                "condition": "in0_mode==6"
+            },
+            "in0_out5_lp": {
+                "group": "gg_in0_out5_button_actions",
+                "title": "lp_title",
+                "order": 2,
+                "address": 668,
+                "reg_type": "holding",
+                "default": 0,
+                "enum": [0, 1, 2, 3],
+                "enum_titles": ["no action", "set", "reset", "toggle"],
+                "condition": "in0_mode==6"
+            },
+            "in0_out5_dp": {
+                "group": "gg_in0_out5_button_actions",
+                "title": "dp_title",
+                "order": 3,
+                "address": 732,
+                "reg_type": "holding",
+                "default": 0,
+                "enum": [0, 1, 2, 3],
+                "enum_titles": ["no action", "set", "reset", "toggle"],
+                "condition": "in0_mode==6"
+            },
+            "in0_out5_slp": {
+                "group": "gg_in0_out5_button_actions",
+                "title": "slp_title",
+                "order": 4,
+                "address": 796,
+                "reg_type": "holding",
+                "default": 0,
+                "enum": [0, 1, 2, 3],
+                "enum_titles": ["no action", "set", "reset", "toggle"],
+                "condition": "in0_mode==6"
+            },
+            "in0_out6_sp": {
+                "group": "gg_in0_out6_button_actions",
+                "title": "sp_title",
+                "order": 1,
+                "address": 605,
+                "reg_type": "holding",
+                "default": 0,
+                "enum": [0, 1, 2, 3],
+                "enum_titles": ["no action", "set", "reset", "toggle"],
+                "condition": "in0_mode==6"
+            },
+            "in0_out6_lp": {
+                "group": "gg_in0_out6_button_actions",
+                "title": "lp_title",
+                "order": 2,
+                "address": 669,
+                "reg_type": "holding",
+                "default": 0,
+                "enum": [0, 1, 2, 3],
+                "enum_titles": ["no action", "set", "reset", "toggle"],
+                "condition": "in0_mode==6"
+            },
+            "in0_out6_dp": {
+                "group": "gg_in0_out6_button_actions",
+                "title": "dp_title",
+                "order": 3,
+                "address": 733,
+                "reg_type": "holding",
+                "default": 0,
+                "enum": [0, 1, 2, 3],
+                "enum_titles": ["no action", "set", "reset", "toggle"],
+                "condition": "in0_mode==6"
+            },
+            "in0_out6_slp": {
+                "group": "gg_in0_out6_button_actions",
+                "title": "slp_title",
+                "order": 4,
+                "address": 797,
+                "reg_type": "holding",
+                "default": 0,
+                "enum": [0, 1, 2, 3],
+                "enum_titles": ["no action", "set", "reset", "toggle"],
+                "condition": "in0_mode==6"
+            },
             "in1_mode": {
-                "title": "Input 1 Mode",
+                "title": "Mode",
+                "description": "mode_description",
                 "address": 9,
                 "reg_type": "holding",
-                "enum": [0, 1, 2, 3, 4],
+                "enum": [0, 1, 2, 3, 4, 6],
                 "default": 0,
                 "enum_titles": [
-                    "push button",
-                    "latching switch",
-                    "turn on all outputs",
-                    "control disabled",
-                    "operate according to mapping-matrix"
+                    "Push button",
+                    "Latching switch",
+                    "Turn on all outputs",
+                    "Control disabled",
+                    "Operate according to mapping-matrix",
+                    "Operate according to button mapping-matrix"
                 ],
-                "group": "input_1",
+                "group": "g_in1",
                 "order": 1
             },
             "in1_debounce_ms": {
-                "title": "Input 1 Debounce (ms)",
+                "title": "debounce_time_title",
+                "description": "debounce_time_description",
                 "address": 20,
                 "reg_type": "holding",
                 "min": 0,
                 "max": 100,
                 "default": 50,
-                "group": "input_1",
+                "group": "g_in1",
                 "order": 2
             },
+            
+            "in1_lp_hold_time": {
+                "group": "gg_in1_press_params",
+                "title": "lp_hold_time_title",
+                "description": "lp_hold_time_description",
+                "order": 1,
+                
+                "address": 1100,
+                "reg_type": "holding",
+                "default": 2000,
+                "min": 500,
+                "max": 5000,
+                "condition": "in1_mode==6"
+            },
+            "in1_dp_time": {
+                "group": "gg_in1_press_params",
+                "title": "dp_time_title",
+                "description": "dp_time_description",
+                "order": 2,
+                "address": 1140,
+                "reg_type": "holding",
+                "default": 300,
+                "min": 0,
+                "max": 2000,
+                "condition": "in1_mode==6"
+            },
+            
+            "in1_out1_actions": {
+                "group": "gg_in1_mapping_matrix_actions",
+                "title": "Output 1",
+                "order": 1,
+                "address": 384,
+                "reg_type": "holding",
+                "default": 0,
+                "enum": [0, 1, 2, 3, 4, 5, 6, 7, 8, 9, 10, 11, 12, 13, 14, 15],
+                "enum_titles": [
+                    "no action / no action",
+                    "no action / set",
+                    "no action / reset",
+                    "no action / toggle",
+
+                    "set / no action",
+                    "set / set",
+                    "set / reset",
+                    "set / toggle",
+
+                    "reset / no action",
+                    "reset / set",
+                    "reset / reset",
+                    "reset / toggle",
+
+                    "toggle / no action",
+                    "toggle / set",
+                    "toggle / reset",
+                    "toggle / toggle"
+                ],
+                "condition": "in1_mode==4"
+            },
+            "in1_out2_actions": {
+                "group": "gg_in1_mapping_matrix_actions",
+                "title": "Output 2",
+                "order": 2,
+                "address": 385,
+                "reg_type": "holding",
+                "default": 0,
+                "enum": [0, 1, 2, 3, 4, 5, 6, 7, 8, 9, 10, 11, 12, 13, 14, 15],
+                "enum_titles": [
+                    "no action / no action",
+                    "no action / set",
+                    "no action / reset",
+                    "no action / toggle",
+
+                    "set / no action",
+                    "set / set",
+                    "set / reset",
+                    "set / toggle",
+
+                    "reset / no action",
+                    "reset / set",
+                    "reset / reset",
+                    "reset / toggle",
+
+                    "toggle / no action",
+                    "toggle / set",
+                    "toggle / reset",
+                    "toggle / toggle"
+                ],
+                "condition": "in1_mode==4"
+            },
+            "in1_out3_actions": {
+                "group": "gg_in1_mapping_matrix_actions",
+                "title": "Output 3",
+                "order": 3,
+                "address": 386,
+                "reg_type": "holding",
+                "default": 0,
+                "enum": [0, 1, 2, 3, 4, 5, 6, 7, 8, 9, 10, 11, 12, 13, 14, 15],
+                "enum_titles": [
+                    "no action / no action",
+                    "no action / set",
+                    "no action / reset",
+                    "no action / toggle",
+
+                    "set / no action",
+                    "set / set",
+                    "set / reset",
+                    "set / toggle",
+
+                    "reset / no action",
+                    "reset / set",
+                    "reset / reset",
+                    "reset / toggle",
+
+                    "toggle / no action",
+                    "toggle / set",
+                    "toggle / reset",
+                    "toggle / toggle"
+                ],
+                "condition": "in1_mode==4"
+            },
+            "in1_out4_actions": {
+                "group": "gg_in1_mapping_matrix_actions",
+                "title": "Output 4",
+                "order": 4,
+                "address": 387,
+                "reg_type": "holding",
+                "default": 0,
+                "enum": [0, 1, 2, 3, 4, 5, 6, 7, 8, 9, 10, 11, 12, 13, 14, 15],
+                "enum_titles": [
+                    "no action / no action",
+                    "no action / set",
+                    "no action / reset",
+                    "no action / toggle",
+
+                    "set / no action",
+                    "set / set",
+                    "set / reset",
+                    "set / toggle",
+
+                    "reset / no action",
+                    "reset / set",
+                    "reset / reset",
+                    "reset / toggle",
+
+                    "toggle / no action",
+                    "toggle / set",
+                    "toggle / reset",
+                    "toggle / toggle"
+                ],
+                "condition": "in1_mode==4"
+            },
+            "in1_out5_actions": {
+                "group": "gg_in1_mapping_matrix_actions",
+                "title": "Output 5",
+                "order": 5,
+                "address": 388,
+                "reg_type": "holding",
+                "default": 0,
+                "enum": [0, 1, 2, 3, 4, 5, 6, 7, 8, 9, 10, 11, 12, 13, 14, 15],
+                "enum_titles": [
+                    "no action / no action",
+                    "no action / set",
+                    "no action / reset",
+                    "no action / toggle",
+
+                    "set / no action",
+                    "set / set",
+                    "set / reset",
+                    "set / toggle",
+
+                    "reset / no action",
+                    "reset / set",
+                    "reset / reset",
+                    "reset / toggle",
+
+                    "toggle / no action",
+                    "toggle / set",
+                    "toggle / reset",
+                    "toggle / toggle"
+                ],
+                "condition": "in1_mode==4"
+            },
+            "in1_out6_actions": {
+                "group": "gg_in1_mapping_matrix_actions",
+                "title": "Output 6",
+                "order": 6,
+                "address": 389,
+                "reg_type": "holding",
+                "default": 0,
+                "enum": [0, 1, 2, 3, 4, 5, 6, 7, 8, 9, 10, 11, 12, 13, 14, 15],
+                "enum_titles": [
+                    "no action / no action",
+                    "no action / set",
+                    "no action / reset",
+                    "no action / toggle",
+
+                    "set / no action",
+                    "set / set",
+                    "set / reset",
+                    "set / toggle",
+
+                    "reset / no action",
+                    "reset / set",
+                    "reset / reset",
+                    "reset / toggle",
+
+                    "toggle / no action",
+                    "toggle / set",
+                    "toggle / reset",
+                    "toggle / toggle"
+                ],
+                "condition": "in1_mode==4"
+            },
+            "in1_out1_sp": {
+                "group": "gg_in1_out1_button_actions",
+                "title": "sp_title",
+                "order": 1,
+                "address": 544,
+                "reg_type": "holding",
+                "default": 0,
+                "enum": [0, 1, 2, 3],
+                "enum_titles": ["no action", "set", "reset", "toggle"],
+                "condition": "in1_mode==6"
+            },
+            "in1_out1_lp": {
+                "group": "gg_in1_out1_button_actions",
+                "title": "lp_title",
+                "order": 2,
+                "address": 608,
+                "reg_type": "holding",
+                "default": 0,
+                "enum": [0, 1, 2, 3],
+                "enum_titles": ["no action", "set", "reset", "toggle"],
+                "condition": "in1_mode==6"
+            },
+            "in1_out1_dp": {
+                "group": "gg_in1_out1_button_actions",
+                "title": "dp_title",
+                "order": 3,
+                "address": 672,
+                "reg_type": "holding",
+                "default": 0,
+                "enum": [0, 1, 2, 3],
+                "enum_titles": ["no action", "set", "reset", "toggle"],
+                "condition": "in1_mode==6"
+            },
+            "in1_out1_slp": {
+                "group": "gg_in1_out1_button_actions",
+                "title": "slp_title",
+                "order": 4,
+                "address": 736,
+                "reg_type": "holding",
+                "default": 0,
+                "enum": [0, 1, 2, 3],
+                "enum_titles": ["no action", "set", "reset", "toggle"],
+                "condition": "in1_mode==6"
+            },
+            "in1_out2_sp": {
+                "group": "gg_in1_out2_button_actions",
+                "title": "sp_title",
+                "order": 1,
+                "address": 545,
+                "reg_type": "holding",
+                "default": 0,
+                "enum": [0, 1, 2, 3],
+                "enum_titles": ["no action", "set", "reset", "toggle"],
+                "condition": "in1_mode==6"
+            },
+            "in1_out2_lp": {
+                "group": "gg_in1_out2_button_actions",
+                "title": "lp_title",
+                "order": 2,
+                "address": 609,
+                "reg_type": "holding",
+                "default": 0,
+                "enum": [0, 1, 2, 3],
+                "enum_titles": ["no action", "set", "reset", "toggle"],
+                "condition": "in1_mode==6"
+            },
+            "in1_out2_dp": {
+                "group": "gg_in1_out2_button_actions",
+                "title": "dp_title",
+                "order": 3,
+                "address": 673,
+                "reg_type": "holding",
+                "default": 0,
+                "enum": [0, 1, 2, 3],
+                "enum_titles": ["no action", "set", "reset", "toggle"],
+                "condition": "in1_mode==6"
+            },
+            "in1_out2_slp": {
+                "group": "gg_in1_out2_button_actions",
+                "title": "slp_title",
+                "order": 4,
+                "address": 737,
+                "reg_type": "holding",
+                "default": 0,
+                "enum": [0, 1, 2, 3],
+                "enum_titles": ["no action", "set", "reset", "toggle"],
+                "condition": "in1_mode==6"
+            },
+            "in1_out3_sp": {
+                "group": "gg_in1_out3_button_actions",
+                "title": "sp_title",
+                "order": 1,
+                "address": 546,
+                "reg_type": "holding",
+                "default": 0,
+                "enum": [0, 1, 2, 3],
+                "enum_titles": ["no action", "set", "reset", "toggle"],
+                "condition": "in1_mode==6"
+            },
+            "in1_out3_lp": {
+                "group": "gg_in1_out3_button_actions",
+                "title": "lp_title",
+                "order": 2,
+                "address": 610,
+                "reg_type": "holding",
+                "default": 0,
+                "enum": [0, 1, 2, 3],
+                "enum_titles": ["no action", "set", "reset", "toggle"],
+                "condition": "in1_mode==6"
+            },
+            "in1_out3_dp": {
+                "group": "gg_in1_out3_button_actions",
+                "title": "dp_title",
+                "order": 3,
+                "address": 674,
+                "reg_type": "holding",
+                "default": 0,
+                "enum": [0, 1, 2, 3],
+                "enum_titles": ["no action", "set", "reset", "toggle"],
+                "condition": "in1_mode==6"
+            },
+            "in1_out3_slp": {
+                "group": "gg_in1_out3_button_actions",
+                "title": "slp_title",
+                "order": 4,
+                "address": 738,
+                "reg_type": "holding",
+                "default": 0,
+                "enum": [0, 1, 2, 3],
+                "enum_titles": ["no action", "set", "reset", "toggle"],
+                "condition": "in1_mode==6"
+            },
+            "in1_out4_sp": {
+                "group": "gg_in1_out4_button_actions",
+                "title": "sp_title",
+                "order": 1,
+                "address": 547,
+                "reg_type": "holding",
+                "default": 0,
+                "enum": [0, 1, 2, 3],
+                "enum_titles": ["no action", "set", "reset", "toggle"],
+                "condition": "in1_mode==6"
+            },
+            "in1_out4_lp": {
+                "group": "gg_in1_out4_button_actions",
+                "title": "lp_title",
+                "order": 2,
+                "address": 611,
+                "reg_type": "holding",
+                "default": 0,
+                "enum": [0, 1, 2, 3],
+                "enum_titles": ["no action", "set", "reset", "toggle"],
+                "condition": "in1_mode==6"
+            },
+            "in1_out4_dp": {
+                "group": "gg_in1_out4_button_actions",
+                "title": "dp_title",
+                "order": 3,
+                "address": 675,
+                "reg_type": "holding",
+                "default": 0,
+                "enum": [0, 1, 2, 3],
+                "enum_titles": ["no action", "set", "reset", "toggle"],
+                "condition": "in1_mode==6"
+            },
+            "in1_out4_slp": {
+                "group": "gg_in1_out4_button_actions",
+                "title": "slp_title",
+                "order": 4,
+                "address": 739,
+                "reg_type": "holding",
+                "default": 0,
+                "enum": [0, 1, 2, 3],
+                "enum_titles": ["no action", "set", "reset", "toggle"],
+                "condition": "in1_mode==6"
+            },
+            "in1_out5_sp": {
+                "group": "gg_in1_out5_button_actions",
+                "title": "sp_title",
+                "order": 1,
+                "address": 548,
+                "reg_type": "holding",
+                "default": 0,
+                "enum": [0, 1, 2, 3],
+                "enum_titles": ["no action", "set", "reset", "toggle"],
+                "condition": "in1_mode==6"
+            },
+            "in1_out5_lp": {
+                "group": "gg_in1_out5_button_actions",
+                "title": "lp_title",
+                "order": 2,
+                "address": 612,
+                "reg_type": "holding",
+                "default": 0,
+                "enum": [0, 1, 2, 3],
+                "enum_titles": ["no action", "set", "reset", "toggle"],
+                "condition": "in1_mode==6"
+            },
+            "in1_out5_dp": {
+                "group": "gg_in1_out5_button_actions",
+                "title": "dp_title",
+                "order": 3,
+                "address": 676,
+                "reg_type": "holding",
+                "default": 0,
+                "enum": [0, 1, 2, 3],
+                "enum_titles": ["no action", "set", "reset", "toggle"],
+                "condition": "in1_mode==6"
+            },
+            "in1_out5_slp": {
+                "group": "gg_in1_out5_button_actions",
+                "title": "slp_title",
+                "order": 4,
+                "address": 740,
+                "reg_type": "holding",
+                "default": 0,
+                "enum": [0, 1, 2, 3],
+                "enum_titles": ["no action", "set", "reset", "toggle"],
+                "condition": "in1_mode==6"
+            },
+            "in1_out6_sp": {
+                "group": "gg_in1_out6_button_actions",
+                "title": "sp_title",
+                "order": 1,
+                "address": 549,
+                "reg_type": "holding",
+                "default": 0,
+                "enum": [0, 1, 2, 3],
+                "enum_titles": ["no action", "set", "reset", "toggle"],
+                "condition": "in1_mode==6"
+            },
+            "in1_out6_lp": {
+                "group": "gg_in1_out6_button_actions",
+                "title": "lp_title",
+                "order": 2,
+                "address": 613,
+                "reg_type": "holding",
+                "default": 0,
+                "enum": [0, 1, 2, 3],
+                "enum_titles": ["no action", "set", "reset", "toggle"],
+                "condition": "in1_mode==6"
+            },
+            "in1_out6_dp": {
+                "group": "gg_in1_out6_button_actions",
+                "title": "dp_title",
+                "order": 3,
+                "address": 677,
+                "reg_type": "holding",
+                "default": 0,
+                "enum": [0, 1, 2, 3],
+                "enum_titles": ["no action", "set", "reset", "toggle"],
+                "condition": "in1_mode==6"
+            },
+            "in1_out6_slp": {
+                "group": "gg_in1_out6_button_actions",
+                "title": "slp_title",
+                "order": 4,
+                "address": 741,
+                "reg_type": "holding",
+                "default": 0,
+                "enum": [0, 1, 2, 3],
+                "enum_titles": ["no action", "set", "reset", "toggle"],
+                "condition": "in1_mode==6"
+            },
             "in2_mode": {
-                "title": "Input 2 Mode",
+                "title": "Mode",
+                "description": "mode_description",
                 "address": 10,
                 "reg_type": "holding",
-                "enum": [0, 1, 2, 3, 4],
+                "enum": [0, 1, 2, 3, 4, 6],
                 "default": 0,
                 "enum_titles": [
-                    "push button",
-                    "latching switch",
-                    "turn on all outputs",
-                    "control disabled",
-                    "operate according to mapping-matrix"
+                    "Push button",
+                    "Latching switch",
+                    "Turn on all outputs",
+                    "Control disabled",
+                    "Operate according to mapping-matrix",
+                    "Operate according to button mapping-matrix"
                 ],
-                "group": "input_2",
+                "group": "g_in2",
                 "order": 1
             },
             "in2_debounce_ms": {
-                "title": "Input 2 Debounce (ms)",
+                "title": "debounce_time_title",
+                "description": "debounce_time_description",
                 "address": 21,
                 "reg_type": "holding",
                 "min": 0,
                 "max": 100,
                 "default": 50,
-                "group": "input_2",
+                "group": "g_in2",
                 "order": 2
             },
+            
+            "in2_lp_hold_time": {
+                "group": "gg_in2_press_params",
+                "title": "lp_hold_time_title",
+                "description": "lp_hold_time_description",
+                "order": 1,
+                
+                "address": 1101,
+                "reg_type": "holding",
+                "default": 2000,
+                "min": 500,
+                "max": 5000,
+                "condition": "in2_mode==6"
+            },
+            "in2_dp_time": {
+                "group": "gg_in2_press_params",
+                "title": "dp_time_title",
+                "description": "dp_time_description",
+                "order": 2,
+                "address": 1141,
+                "reg_type": "holding",
+                "default": 300,
+                "min": 0,
+                "max": 2000,
+                "condition": "in2_mode==6"
+            },
+            
+            "in2_out1_actions": {
+                "group": "gg_in2_mapping_matrix_actions",
+                "title": "Output 1",
+                "order": 1,
+                "address": 392,
+                "reg_type": "holding",
+                "default": 0,
+                "enum": [0, 1, 2, 3, 4, 5, 6, 7, 8, 9, 10, 11, 12, 13, 14, 15],
+                "enum_titles": [
+                    "no action / no action",
+                    "no action / set",
+                    "no action / reset",
+                    "no action / toggle",
+
+                    "set / no action",
+                    "set / set",
+                    "set / reset",
+                    "set / toggle",
+
+                    "reset / no action",
+                    "reset / set",
+                    "reset / reset",
+                    "reset / toggle",
+
+                    "toggle / no action",
+                    "toggle / set",
+                    "toggle / reset",
+                    "toggle / toggle"
+                ],
+                "condition": "in2_mode==4"
+            },
+            "in2_out2_actions": {
+                "group": "gg_in2_mapping_matrix_actions",
+                "title": "Output 2",
+                "order": 2,
+                "address": 393,
+                "reg_type": "holding",
+                "default": 0,
+                "enum": [0, 1, 2, 3, 4, 5, 6, 7, 8, 9, 10, 11, 12, 13, 14, 15],
+                "enum_titles": [
+                    "no action / no action",
+                    "no action / set",
+                    "no action / reset",
+                    "no action / toggle",
+
+                    "set / no action",
+                    "set / set",
+                    "set / reset",
+                    "set / toggle",
+
+                    "reset / no action",
+                    "reset / set",
+                    "reset / reset",
+                    "reset / toggle",
+
+                    "toggle / no action",
+                    "toggle / set",
+                    "toggle / reset",
+                    "toggle / toggle"
+                ],
+                "condition": "in2_mode==4"
+            },
+            "in2_out3_actions": {
+                "group": "gg_in2_mapping_matrix_actions",
+                "title": "Output 3",
+                "order": 3,
+                "address": 394,
+                "reg_type": "holding",
+                "default": 0,
+                "enum": [0, 1, 2, 3, 4, 5, 6, 7, 8, 9, 10, 11, 12, 13, 14, 15],
+                "enum_titles": [
+                    "no action / no action",
+                    "no action / set",
+                    "no action / reset",
+                    "no action / toggle",
+
+                    "set / no action",
+                    "set / set",
+                    "set / reset",
+                    "set / toggle",
+
+                    "reset / no action",
+                    "reset / set",
+                    "reset / reset",
+                    "reset / toggle",
+
+                    "toggle / no action",
+                    "toggle / set",
+                    "toggle / reset",
+                    "toggle / toggle"
+                ],
+                "condition": "in2_mode==4"
+            },
+            "in2_out4_actions": {
+                "group": "gg_in2_mapping_matrix_actions",
+                "title": "Output 4",
+                "order": 4,
+                "address": 395,
+                "reg_type": "holding",
+                "default": 0,
+                "enum": [0, 1, 2, 3, 4, 5, 6, 7, 8, 9, 10, 11, 12, 13, 14, 15],
+                "enum_titles": [
+                    "no action / no action",
+                    "no action / set",
+                    "no action / reset",
+                    "no action / toggle",
+
+                    "set / no action",
+                    "set / set",
+                    "set / reset",
+                    "set / toggle",
+
+                    "reset / no action",
+                    "reset / set",
+                    "reset / reset",
+                    "reset / toggle",
+
+                    "toggle / no action",
+                    "toggle / set",
+                    "toggle / reset",
+                    "toggle / toggle"
+                ],
+                "condition": "in2_mode==4"
+            },
+            "in2_out5_actions": {
+                "group": "gg_in2_mapping_matrix_actions",
+                "title": "Output 5",
+                "order": 5,
+                "address": 396,
+                "reg_type": "holding",
+                "default": 0,
+                "enum": [0, 1, 2, 3, 4, 5, 6, 7, 8, 9, 10, 11, 12, 13, 14, 15],
+                "enum_titles": [
+                    "no action / no action",
+                    "no action / set",
+                    "no action / reset",
+                    "no action / toggle",
+
+                    "set / no action",
+                    "set / set",
+                    "set / reset",
+                    "set / toggle",
+
+                    "reset / no action",
+                    "reset / set",
+                    "reset / reset",
+                    "reset / toggle",
+
+                    "toggle / no action",
+                    "toggle / set",
+                    "toggle / reset",
+                    "toggle / toggle"
+                ],
+                "condition": "in2_mode==4"
+            },
+            "in2_out6_actions": {
+                "group": "gg_in2_mapping_matrix_actions",
+                "title": "Output 6",
+                "order": 6,
+                "address": 397,
+                "reg_type": "holding",
+                "default": 0,
+                "enum": [0, 1, 2, 3, 4, 5, 6, 7, 8, 9, 10, 11, 12, 13, 14, 15],
+                "enum_titles": [
+                    "no action / no action",
+                    "no action / set",
+                    "no action / reset",
+                    "no action / toggle",
+
+                    "set / no action",
+                    "set / set",
+                    "set / reset",
+                    "set / toggle",
+
+                    "reset / no action",
+                    "reset / set",
+                    "reset / reset",
+                    "reset / toggle",
+
+                    "toggle / no action",
+                    "toggle / set",
+                    "toggle / reset",
+                    "toggle / toggle"
+                ],
+                "condition": "in2_mode==4"
+            },
+            "in2_out1_sp": {
+                "group": "gg_in2_out1_button_actions",
+                "title": "sp_title",
+                "order": 1,
+                "address": 552,
+                "reg_type": "holding",
+                "default": 0,
+                "enum": [0, 1, 2, 3],
+                "enum_titles": ["no action", "set", "reset", "toggle"],
+                "condition": "in2_mode==6"
+            },
+            "in2_out1_lp": {
+                "group": "gg_in2_out1_button_actions",
+                "title": "lp_title",
+                "order": 2,
+                "address": 616,
+                "reg_type": "holding",
+                "default": 0,
+                "enum": [0, 1, 2, 3],
+                "enum_titles": ["no action", "set", "reset", "toggle"],
+                "condition": "in2_mode==6"
+            },
+            "in2_out1_dp": {
+                "group": "gg_in2_out1_button_actions",
+                "title": "dp_title",
+                "order": 3,
+                "address": 680,
+                "reg_type": "holding",
+                "default": 0,
+                "enum": [0, 1, 2, 3],
+                "enum_titles": ["no action", "set", "reset", "toggle"],
+                "condition": "in2_mode==6"
+            },
+            "in2_out1_slp": {
+                "group": "gg_in2_out1_button_actions",
+                "title": "slp_title",
+                "order": 4,
+                "address": 744,
+                "reg_type": "holding",
+                "default": 0,
+                "enum": [0, 1, 2, 3],
+                "enum_titles": ["no action", "set", "reset", "toggle"],
+                "condition": "in2_mode==6"
+            },
+            "in2_out2_sp": {
+                "group": "gg_in2_out2_button_actions",
+                "title": "sp_title",
+                "order": 1,
+                "address": 553,
+                "reg_type": "holding",
+                "default": 0,
+                "enum": [0, 1, 2, 3],
+                "enum_titles": ["no action", "set", "reset", "toggle"],
+                "condition": "in2_mode==6"
+            },
+            "in2_out2_lp": {
+                "group": "gg_in2_out2_button_actions",
+                "title": "lp_title",
+                "order": 2,
+                "address": 617,
+                "reg_type": "holding",
+                "default": 0,
+                "enum": [0, 1, 2, 3],
+                "enum_titles": ["no action", "set", "reset", "toggle"],
+                "condition": "in2_mode==6"
+            },
+            "in2_out2_dp": {
+                "group": "gg_in2_out2_button_actions",
+                "title": "dp_title",
+                "order": 3,
+                "address": 681,
+                "reg_type": "holding",
+                "default": 0,
+                "enum": [0, 1, 2, 3],
+                "enum_titles": ["no action", "set", "reset", "toggle"],
+                "condition": "in2_mode==6"
+            },
+            "in2_out2_slp": {
+                "group": "gg_in2_out2_button_actions",
+                "title": "slp_title",
+                "order": 4,
+                "address": 745,
+                "reg_type": "holding",
+                "default": 0,
+                "enum": [0, 1, 2, 3],
+                "enum_titles": ["no action", "set", "reset", "toggle"],
+                "condition": "in2_mode==6"
+            },
+            "in2_out3_sp": {
+                "group": "gg_in2_out3_button_actions",
+                "title": "sp_title",
+                "order": 1,
+                "address": 554,
+                "reg_type": "holding",
+                "default": 0,
+                "enum": [0, 1, 2, 3],
+                "enum_titles": ["no action", "set", "reset", "toggle"],
+                "condition": "in2_mode==6"
+            },
+            "in2_out3_lp": {
+                "group": "gg_in2_out3_button_actions",
+                "title": "lp_title",
+                "order": 2,
+                "address": 618,
+                "reg_type": "holding",
+                "default": 0,
+                "enum": [0, 1, 2, 3],
+                "enum_titles": ["no action", "set", "reset", "toggle"],
+                "condition": "in2_mode==6"
+            },
+            "in2_out3_dp": {
+                "group": "gg_in2_out3_button_actions",
+                "title": "dp_title",
+                "order": 3,
+                "address": 682,
+                "reg_type": "holding",
+                "default": 0,
+                "enum": [0, 1, 2, 3],
+                "enum_titles": ["no action", "set", "reset", "toggle"],
+                "condition": "in2_mode==6"
+            },
+            "in2_out3_slp": {
+                "group": "gg_in2_out3_button_actions",
+                "title": "slp_title",
+                "order": 4,
+                "address": 746,
+                "reg_type": "holding",
+                "default": 0,
+                "enum": [0, 1, 2, 3],
+                "enum_titles": ["no action", "set", "reset", "toggle"],
+                "condition": "in2_mode==6"
+            },
+            "in2_out4_sp": {
+                "group": "gg_in2_out4_button_actions",
+                "title": "sp_title",
+                "order": 1,
+                "address": 555,
+                "reg_type": "holding",
+                "default": 0,
+                "enum": [0, 1, 2, 3],
+                "enum_titles": ["no action", "set", "reset", "toggle"],
+                "condition": "in2_mode==6"
+            },
+            "in2_out4_lp": {
+                "group": "gg_in2_out4_button_actions",
+                "title": "lp_title",
+                "order": 2,
+                "address": 619,
+                "reg_type": "holding",
+                "default": 0,
+                "enum": [0, 1, 2, 3],
+                "enum_titles": ["no action", "set", "reset", "toggle"],
+                "condition": "in2_mode==6"
+            },
+            "in2_out4_dp": {
+                "group": "gg_in2_out4_button_actions",
+                "title": "dp_title",
+                "order": 3,
+                "address": 683,
+                "reg_type": "holding",
+                "default": 0,
+                "enum": [0, 1, 2, 3],
+                "enum_titles": ["no action", "set", "reset", "toggle"],
+                "condition": "in2_mode==6"
+            },
+            "in2_out4_slp": {
+                "group": "gg_in2_out4_button_actions",
+                "title": "slp_title",
+                "order": 4,
+                "address": 747,
+                "reg_type": "holding",
+                "default": 0,
+                "enum": [0, 1, 2, 3],
+                "enum_titles": ["no action", "set", "reset", "toggle"],
+                "condition": "in2_mode==6"
+            },
+            "in2_out5_sp": {
+                "group": "gg_in2_out5_button_actions",
+                "title": "sp_title",
+                "order": 1,
+                "address": 556,
+                "reg_type": "holding",
+                "default": 0,
+                "enum": [0, 1, 2, 3],
+                "enum_titles": ["no action", "set", "reset", "toggle"],
+                "condition": "in2_mode==6"
+            },
+            "in2_out5_lp": {
+                "group": "gg_in2_out5_button_actions",
+                "title": "lp_title",
+                "order": 2,
+                "address": 620,
+                "reg_type": "holding",
+                "default": 0,
+                "enum": [0, 1, 2, 3],
+                "enum_titles": ["no action", "set", "reset", "toggle"],
+                "condition": "in2_mode==6"
+            },
+            "in2_out5_dp": {
+                "group": "gg_in2_out5_button_actions",
+                "title": "dp_title",
+                "order": 3,
+                "address": 684,
+                "reg_type": "holding",
+                "default": 0,
+                "enum": [0, 1, 2, 3],
+                "enum_titles": ["no action", "set", "reset", "toggle"],
+                "condition": "in2_mode==6"
+            },
+            "in2_out5_slp": {
+                "group": "gg_in2_out5_button_actions",
+                "title": "slp_title",
+                "order": 4,
+                "address": 748,
+                "reg_type": "holding",
+                "default": 0,
+                "enum": [0, 1, 2, 3],
+                "enum_titles": ["no action", "set", "reset", "toggle"],
+                "condition": "in2_mode==6"
+            },
+            "in2_out6_sp": {
+                "group": "gg_in2_out6_button_actions",
+                "title": "sp_title",
+                "order": 1,
+                "address": 557,
+                "reg_type": "holding",
+                "default": 0,
+                "enum": [0, 1, 2, 3],
+                "enum_titles": ["no action", "set", "reset", "toggle"],
+                "condition": "in2_mode==6"
+            },
+            "in2_out6_lp": {
+                "group": "gg_in2_out6_button_actions",
+                "title": "lp_title",
+                "order": 2,
+                "address": 621,
+                "reg_type": "holding",
+                "default": 0,
+                "enum": [0, 1, 2, 3],
+                "enum_titles": ["no action", "set", "reset", "toggle"],
+                "condition": "in2_mode==6"
+            },
+            "in2_out6_dp": {
+                "group": "gg_in2_out6_button_actions",
+                "title": "dp_title",
+                "order": 3,
+                "address": 685,
+                "reg_type": "holding",
+                "default": 0,
+                "enum": [0, 1, 2, 3],
+                "enum_titles": ["no action", "set", "reset", "toggle"],
+                "condition": "in2_mode==6"
+            },
+            "in2_out6_slp": {
+                "group": "gg_in2_out6_button_actions",
+                "title": "slp_title",
+                "order": 4,
+                "address": 749,
+                "reg_type": "holding",
+                "default": 0,
+                "enum": [0, 1, 2, 3],
+                "enum_titles": ["no action", "set", "reset", "toggle"],
+                "condition": "in2_mode==6"
+            },
             "in3_mode": {
-                "title": "Input 3 Mode",
+                "title": "Mode",
+                "description": "mode_description",
                 "address": 11,
                 "reg_type": "holding",
-                "enum": [0, 1, 2, 3, 4],
+                "enum": [0, 1, 2, 3, 4, 6],
                 "default": 0,
                 "enum_titles": [
-                    "push button",
-                    "latching switch",
-                    "turn on all outputs",
-                    "control disabled",
-                    "operate according to mapping-matrix"
+                    "Push button",
+                    "Latching switch",
+                    "Turn on all outputs",
+                    "Control disabled",
+                    "Operate according to mapping-matrix",
+                    "Operate according to button mapping-matrix"
                 ],
-                "group": "input_3",
+                "group": "g_in3",
                 "order": 1
             },
             "in3_debounce_ms": {
-                "title": "Input 3 Debounce (ms)",
+                "title": "debounce_time_title",
+                "description": "debounce_time_description",
                 "address": 22,
                 "reg_type": "holding",
                 "min": 0,
                 "max": 100,
                 "default": 50,
-                "group": "input_3",
+                "group": "g_in3",
                 "order": 2
             },
+            
+            "in3_lp_hold_time": {
+                "group": "gg_in3_press_params",
+                "title": "lp_hold_time_title",
+                "description": "lp_hold_time_description",
+                "order": 1,
+                
+                "address": 1102,
+                "reg_type": "holding",
+                "default": 2000,
+                "min": 500,
+                "max": 5000,
+                "condition": "in3_mode==6"
+            },
+            "in3_dp_time": {
+                "group": "gg_in3_press_params",
+                "title": "dp_time_title",
+                "description": "dp_time_description",
+                "order": 2,
+                "address": 1142,
+                "reg_type": "holding",
+                "default": 300,
+                "min": 0,
+                "max": 2000,
+                "condition": "in3_mode==6"
+            },
+            
+            "in3_out1_actions": {
+                "group": "gg_in3_mapping_matrix_actions",
+                "title": "Output 1",
+                "order": 1,
+                "address": 400,
+                "reg_type": "holding",
+                "default": 0,
+                "enum": [0, 1, 2, 3, 4, 5, 6, 7, 8, 9, 10, 11, 12, 13, 14, 15],
+                "enum_titles": [
+                    "no action / no action",
+                    "no action / set",
+                    "no action / reset",
+                    "no action / toggle",
+
+                    "set / no action",
+                    "set / set",
+                    "set / reset",
+                    "set / toggle",
+
+                    "reset / no action",
+                    "reset / set",
+                    "reset / reset",
+                    "reset / toggle",
+
+                    "toggle / no action",
+                    "toggle / set",
+                    "toggle / reset",
+                    "toggle / toggle"
+                ],
+                "condition": "in3_mode==4"
+            },
+            "in3_out2_actions": {
+                "group": "gg_in3_mapping_matrix_actions",
+                "title": "Output 2",
+                "order": 2,
+                "address": 401,
+                "reg_type": "holding",
+                "default": 0,
+                "enum": [0, 1, 2, 3, 4, 5, 6, 7, 8, 9, 10, 11, 12, 13, 14, 15],
+                "enum_titles": [
+                    "no action / no action",
+                    "no action / set",
+                    "no action / reset",
+                    "no action / toggle",
+
+                    "set / no action",
+                    "set / set",
+                    "set / reset",
+                    "set / toggle",
+
+                    "reset / no action",
+                    "reset / set",
+                    "reset / reset",
+                    "reset / toggle",
+
+                    "toggle / no action",
+                    "toggle / set",
+                    "toggle / reset",
+                    "toggle / toggle"
+                ],
+                "condition": "in3_mode==4"
+            },
+            "in3_out3_actions": {
+                "group": "gg_in3_mapping_matrix_actions",
+                "title": "Output 3",
+                "order": 3,
+                "address": 402,
+                "reg_type": "holding",
+                "default": 0,
+                "enum": [0, 1, 2, 3, 4, 5, 6, 7, 8, 9, 10, 11, 12, 13, 14, 15],
+                "enum_titles": [
+                    "no action / no action",
+                    "no action / set",
+                    "no action / reset",
+                    "no action / toggle",
+
+                    "set / no action",
+                    "set / set",
+                    "set / reset",
+                    "set / toggle",
+
+                    "reset / no action",
+                    "reset / set",
+                    "reset / reset",
+                    "reset / toggle",
+
+                    "toggle / no action",
+                    "toggle / set",
+                    "toggle / reset",
+                    "toggle / toggle"
+                ],
+                "condition": "in3_mode==4"
+            },
+            "in3_out4_actions": {
+                "group": "gg_in3_mapping_matrix_actions",
+                "title": "Output 4",
+                "order": 4,
+                "address": 403,
+                "reg_type": "holding",
+                "default": 0,
+                "enum": [0, 1, 2, 3, 4, 5, 6, 7, 8, 9, 10, 11, 12, 13, 14, 15],
+                "enum_titles": [
+                    "no action / no action",
+                    "no action / set",
+                    "no action / reset",
+                    "no action / toggle",
+
+                    "set / no action",
+                    "set / set",
+                    "set / reset",
+                    "set / toggle",
+
+                    "reset / no action",
+                    "reset / set",
+                    "reset / reset",
+                    "reset / toggle",
+
+                    "toggle / no action",
+                    "toggle / set",
+                    "toggle / reset",
+                    "toggle / toggle"
+                ],
+                "condition": "in3_mode==4"
+            },
+            "in3_out5_actions": {
+                "group": "gg_in3_mapping_matrix_actions",
+                "title": "Output 5",
+                "order": 5,
+                "address": 404,
+                "reg_type": "holding",
+                "default": 0,
+                "enum": [0, 1, 2, 3, 4, 5, 6, 7, 8, 9, 10, 11, 12, 13, 14, 15],
+                "enum_titles": [
+                    "no action / no action",
+                    "no action / set",
+                    "no action / reset",
+                    "no action / toggle",
+
+                    "set / no action",
+                    "set / set",
+                    "set / reset",
+                    "set / toggle",
+
+                    "reset / no action",
+                    "reset / set",
+                    "reset / reset",
+                    "reset / toggle",
+
+                    "toggle / no action",
+                    "toggle / set",
+                    "toggle / reset",
+                    "toggle / toggle"
+                ],
+                "condition": "in3_mode==4"
+            },
+            "in3_out6_actions": {
+                "group": "gg_in3_mapping_matrix_actions",
+                "title": "Output 6",
+                "order": 6,
+                "address": 405,
+                "reg_type": "holding",
+                "default": 0,
+                "enum": [0, 1, 2, 3, 4, 5, 6, 7, 8, 9, 10, 11, 12, 13, 14, 15],
+                "enum_titles": [
+                    "no action / no action",
+                    "no action / set",
+                    "no action / reset",
+                    "no action / toggle",
+
+                    "set / no action",
+                    "set / set",
+                    "set / reset",
+                    "set / toggle",
+
+                    "reset / no action",
+                    "reset / set",
+                    "reset / reset",
+                    "reset / toggle",
+
+                    "toggle / no action",
+                    "toggle / set",
+                    "toggle / reset",
+                    "toggle / toggle"
+                ],
+                "condition": "in3_mode==4"
+            },
+            "in3_out1_sp": {
+                "group": "gg_in3_out1_button_actions",
+                "title": "sp_title",
+                "order": 1,
+                "address": 560,
+                "reg_type": "holding",
+                "default": 0,
+                "enum": [0, 1, 2, 3],
+                "enum_titles": ["no action", "set", "reset", "toggle"],
+                "condition": "in3_mode==6"
+            },
+            "in3_out1_lp": {
+                "group": "gg_in3_out1_button_actions",
+                "title": "lp_title",
+                "order": 2,
+                "address": 624,
+                "reg_type": "holding",
+                "default": 0,
+                "enum": [0, 1, 2, 3],
+                "enum_titles": ["no action", "set", "reset", "toggle"],
+                "condition": "in3_mode==6"
+            },
+            "in3_out1_dp": {
+                "group": "gg_in3_out1_button_actions",
+                "title": "dp_title",
+                "order": 3,
+                "address": 688,
+                "reg_type": "holding",
+                "default": 0,
+                "enum": [0, 1, 2, 3],
+                "enum_titles": ["no action", "set", "reset", "toggle"],
+                "condition": "in3_mode==6"
+            },
+            "in3_out1_slp": {
+                "group": "gg_in3_out1_button_actions",
+                "title": "slp_title",
+                "order": 4,
+                "address": 752,
+                "reg_type": "holding",
+                "default": 0,
+                "enum": [0, 1, 2, 3],
+                "enum_titles": ["no action", "set", "reset", "toggle"],
+                "condition": "in3_mode==6"
+            },
+            "in3_out2_sp": {
+                "group": "gg_in3_out2_button_actions",
+                "title": "sp_title",
+                "order": 1,
+                "address": 561,
+                "reg_type": "holding",
+                "default": 0,
+                "enum": [0, 1, 2, 3],
+                "enum_titles": ["no action", "set", "reset", "toggle"],
+                "condition": "in3_mode==6"
+            },
+            "in3_out2_lp": {
+                "group": "gg_in3_out2_button_actions",
+                "title": "lp_title",
+                "order": 2,
+                "address": 625,
+                "reg_type": "holding",
+                "default": 0,
+                "enum": [0, 1, 2, 3],
+                "enum_titles": ["no action", "set", "reset", "toggle"],
+                "condition": "in3_mode==6"
+            },
+            "in3_out2_dp": {
+                "group": "gg_in3_out2_button_actions",
+                "title": "dp_title",
+                "order": 3,
+                "address": 689,
+                "reg_type": "holding",
+                "default": 0,
+                "enum": [0, 1, 2, 3],
+                "enum_titles": ["no action", "set", "reset", "toggle"],
+                "condition": "in3_mode==6"
+            },
+            "in3_out2_slp": {
+                "group": "gg_in3_out2_button_actions",
+                "title": "slp_title",
+                "order": 4,
+                "address": 753,
+                "reg_type": "holding",
+                "default": 0,
+                "enum": [0, 1, 2, 3],
+                "enum_titles": ["no action", "set", "reset", "toggle"],
+                "condition": "in3_mode==6"
+            },
+            "in3_out3_sp": {
+                "group": "gg_in3_out3_button_actions",
+                "title": "sp_title",
+                "order": 1,
+                "address": 562,
+                "reg_type": "holding",
+                "default": 0,
+                "enum": [0, 1, 2, 3],
+                "enum_titles": ["no action", "set", "reset", "toggle"],
+                "condition": "in3_mode==6"
+            },
+            "in3_out3_lp": {
+                "group": "gg_in3_out3_button_actions",
+                "title": "lp_title",
+                "order": 2,
+                "address": 626,
+                "reg_type": "holding",
+                "default": 0,
+                "enum": [0, 1, 2, 3],
+                "enum_titles": ["no action", "set", "reset", "toggle"],
+                "condition": "in3_mode==6"
+            },
+            "in3_out3_dp": {
+                "group": "gg_in3_out3_button_actions",
+                "title": "dp_title",
+                "order": 3,
+                "address": 690,
+                "reg_type": "holding",
+                "default": 0,
+                "enum": [0, 1, 2, 3],
+                "enum_titles": ["no action", "set", "reset", "toggle"],
+                "condition": "in3_mode==6"
+            },
+            "in3_out3_slp": {
+                "group": "gg_in3_out3_button_actions",
+                "title": "slp_title",
+                "order": 4,
+                "address": 754,
+                "reg_type": "holding",
+                "default": 0,
+                "enum": [0, 1, 2, 3],
+                "enum_titles": ["no action", "set", "reset", "toggle"],
+                "condition": "in3_mode==6"
+            },
+            "in3_out4_sp": {
+                "group": "gg_in3_out4_button_actions",
+                "title": "sp_title",
+                "order": 1,
+                "address": 563,
+                "reg_type": "holding",
+                "default": 0,
+                "enum": [0, 1, 2, 3],
+                "enum_titles": ["no action", "set", "reset", "toggle"],
+                "condition": "in3_mode==6"
+            },
+            "in3_out4_lp": {
+                "group": "gg_in3_out4_button_actions",
+                "title": "lp_title",
+                "order": 2,
+                "address": 627,
+                "reg_type": "holding",
+                "default": 0,
+                "enum": [0, 1, 2, 3],
+                "enum_titles": ["no action", "set", "reset", "toggle"],
+                "condition": "in3_mode==6"
+            },
+            "in3_out4_dp": {
+                "group": "gg_in3_out4_button_actions",
+                "title": "dp_title",
+                "order": 3,
+                "address": 691,
+                "reg_type": "holding",
+                "default": 0,
+                "enum": [0, 1, 2, 3],
+                "enum_titles": ["no action", "set", "reset", "toggle"],
+                "condition": "in3_mode==6"
+            },
+            "in3_out4_slp": {
+                "group": "gg_in3_out4_button_actions",
+                "title": "slp_title",
+                "order": 4,
+                "address": 755,
+                "reg_type": "holding",
+                "default": 0,
+                "enum": [0, 1, 2, 3],
+                "enum_titles": ["no action", "set", "reset", "toggle"],
+                "condition": "in3_mode==6"
+            },
+            "in3_out5_sp": {
+                "group": "gg_in3_out5_button_actions",
+                "title": "sp_title",
+                "order": 1,
+                "address": 564,
+                "reg_type": "holding",
+                "default": 0,
+                "enum": [0, 1, 2, 3],
+                "enum_titles": ["no action", "set", "reset", "toggle"],
+                "condition": "in3_mode==6"
+            },
+            "in3_out5_lp": {
+                "group": "gg_in3_out5_button_actions",
+                "title": "lp_title",
+                "order": 2,
+                "address": 628,
+                "reg_type": "holding",
+                "default": 0,
+                "enum": [0, 1, 2, 3],
+                "enum_titles": ["no action", "set", "reset", "toggle"],
+                "condition": "in3_mode==6"
+            },
+            "in3_out5_dp": {
+                "group": "gg_in3_out5_button_actions",
+                "title": "dp_title",
+                "order": 3,
+                "address": 692,
+                "reg_type": "holding",
+                "default": 0,
+                "enum": [0, 1, 2, 3],
+                "enum_titles": ["no action", "set", "reset", "toggle"],
+                "condition": "in3_mode==6"
+            },
+            "in3_out5_slp": {
+                "group": "gg_in3_out5_button_actions",
+                "title": "slp_title",
+                "order": 4,
+                "address": 756,
+                "reg_type": "holding",
+                "default": 0,
+                "enum": [0, 1, 2, 3],
+                "enum_titles": ["no action", "set", "reset", "toggle"],
+                "condition": "in3_mode==6"
+            },
+            "in3_out6_sp": {
+                "group": "gg_in3_out6_button_actions",
+                "title": "sp_title",
+                "order": 1,
+                "address": 565,
+                "reg_type": "holding",
+                "default": 0,
+                "enum": [0, 1, 2, 3],
+                "enum_titles": ["no action", "set", "reset", "toggle"],
+                "condition": "in3_mode==6"
+            },
+            "in3_out6_lp": {
+                "group": "gg_in3_out6_button_actions",
+                "title": "lp_title",
+                "order": 2,
+                "address": 629,
+                "reg_type": "holding",
+                "default": 0,
+                "enum": [0, 1, 2, 3],
+                "enum_titles": ["no action", "set", "reset", "toggle"],
+                "condition": "in3_mode==6"
+            },
+            "in3_out6_dp": {
+                "group": "gg_in3_out6_button_actions",
+                "title": "dp_title",
+                "order": 3,
+                "address": 693,
+                "reg_type": "holding",
+                "default": 0,
+                "enum": [0, 1, 2, 3],
+                "enum_titles": ["no action", "set", "reset", "toggle"],
+                "condition": "in3_mode==6"
+            },
+            "in3_out6_slp": {
+                "group": "gg_in3_out6_button_actions",
+                "title": "slp_title",
+                "order": 4,
+                "address": 757,
+                "reg_type": "holding",
+                "default": 0,
+                "enum": [0, 1, 2, 3],
+                "enum_titles": ["no action", "set", "reset", "toggle"],
+                "condition": "in3_mode==6"
+            },
             "in4_mode": {
-                "title": "Input 4 Mode",
+                "title": "Mode",
+                "description": "mode_description",
                 "address": 12,
                 "reg_type": "holding",
-                "enum": [0, 1, 2, 3, 4],
+                "enum": [0, 1, 2, 3, 4, 6],
                 "default": 0,
                 "enum_titles": [
-                    "push button",
-                    "latching switch",
-                    "turn on all outputs",
-                    "control disabled",
-                    "operate according to mapping-matrix"
+                    "Push button",
+                    "Latching switch",
+                    "Turn on all outputs",
+                    "Control disabled",
+                    "Operate according to mapping-matrix",
+                    "Operate according to button mapping-matrix"
                 ],
-                "group": "input_4",
+                "group": "g_in4",
                 "order": 1
             },
             "in4_debounce_ms": {
-                "title": "Input 4 Debounce (ms)",
+                "title": "debounce_time_title",
+                "description": "debounce_time_description",
                 "address": 23,
                 "reg_type": "holding",
                 "min": 0,
                 "max": 100,
                 "default": 50,
-                "group": "input_4",
+                "group": "g_in4",
                 "order": 2
             },
+            
+            "in4_lp_hold_time": {
+                "group": "gg_in4_press_params",
+                "title": "lp_hold_time_title",
+                "description": "lp_hold_time_description",
+                "order": 1,
+                
+                "address": 1103,
+                "reg_type": "holding",
+                "default": 2000,
+                "min": 500,
+                "max": 5000,
+                "condition": "in4_mode==6"
+            },
+            "in4_dp_time": {
+                "group": "gg_in4_press_params",
+                "title": "dp_time_title",
+                "description": "dp_time_description",
+                "order": 2,
+                "address": 1143,
+                "reg_type": "holding",
+                "default": 300,
+                "min": 0,
+                "max": 2000,
+                "condition": "in4_mode==6"
+            },
+            
+            "in4_out1_actions": {
+                "group": "gg_in4_mapping_matrix_actions",
+                "title": "Output 1",
+                "order": 1,
+                "address": 408,
+                "reg_type": "holding",
+                "default": 0,
+                "enum": [0, 1, 2, 3, 4, 5, 6, 7, 8, 9, 10, 11, 12, 13, 14, 15],
+                "enum_titles": [
+                    "no action / no action",
+                    "no action / set",
+                    "no action / reset",
+                    "no action / toggle",
+
+                    "set / no action",
+                    "set / set",
+                    "set / reset",
+                    "set / toggle",
+
+                    "reset / no action",
+                    "reset / set",
+                    "reset / reset",
+                    "reset / toggle",
+
+                    "toggle / no action",
+                    "toggle / set",
+                    "toggle / reset",
+                    "toggle / toggle"
+                ],
+                "condition": "in4_mode==4"
+            },
+            "in4_out2_actions": {
+                "group": "gg_in4_mapping_matrix_actions",
+                "title": "Output 2",
+                "order": 2,
+                "address": 409,
+                "reg_type": "holding",
+                "default": 0,
+                "enum": [0, 1, 2, 3, 4, 5, 6, 7, 8, 9, 10, 11, 12, 13, 14, 15],
+                "enum_titles": [
+                    "no action / no action",
+                    "no action / set",
+                    "no action / reset",
+                    "no action / toggle",
+
+                    "set / no action",
+                    "set / set",
+                    "set / reset",
+                    "set / toggle",
+
+                    "reset / no action",
+                    "reset / set",
+                    "reset / reset",
+                    "reset / toggle",
+
+                    "toggle / no action",
+                    "toggle / set",
+                    "toggle / reset",
+                    "toggle / toggle"
+                ],
+                "condition": "in4_mode==4"
+            },
+            "in4_out3_actions": {
+                "group": "gg_in4_mapping_matrix_actions",
+                "title": "Output 3",
+                "order": 3,
+                "address": 410,
+                "reg_type": "holding",
+                "default": 0,
+                "enum": [0, 1, 2, 3, 4, 5, 6, 7, 8, 9, 10, 11, 12, 13, 14, 15],
+                "enum_titles": [
+                    "no action / no action",
+                    "no action / set",
+                    "no action / reset",
+                    "no action / toggle",
+
+                    "set / no action",
+                    "set / set",
+                    "set / reset",
+                    "set / toggle",
+
+                    "reset / no action",
+                    "reset / set",
+                    "reset / reset",
+                    "reset / toggle",
+
+                    "toggle / no action",
+                    "toggle / set",
+                    "toggle / reset",
+                    "toggle / toggle"
+                ],
+                "condition": "in4_mode==4"
+            },
+            "in4_out4_actions": {
+                "group": "gg_in4_mapping_matrix_actions",
+                "title": "Output 4",
+                "order": 4,
+                "address": 411,
+                "reg_type": "holding",
+                "default": 0,
+                "enum": [0, 1, 2, 3, 4, 5, 6, 7, 8, 9, 10, 11, 12, 13, 14, 15],
+                "enum_titles": [
+                    "no action / no action",
+                    "no action / set",
+                    "no action / reset",
+                    "no action / toggle",
+
+                    "set / no action",
+                    "set / set",
+                    "set / reset",
+                    "set / toggle",
+
+                    "reset / no action",
+                    "reset / set",
+                    "reset / reset",
+                    "reset / toggle",
+
+                    "toggle / no action",
+                    "toggle / set",
+                    "toggle / reset",
+                    "toggle / toggle"
+                ],
+                "condition": "in4_mode==4"
+            },
+            "in4_out5_actions": {
+                "group": "gg_in4_mapping_matrix_actions",
+                "title": "Output 5",
+                "order": 5,
+                "address": 412,
+                "reg_type": "holding",
+                "default": 0,
+                "enum": [0, 1, 2, 3, 4, 5, 6, 7, 8, 9, 10, 11, 12, 13, 14, 15],
+                "enum_titles": [
+                    "no action / no action",
+                    "no action / set",
+                    "no action / reset",
+                    "no action / toggle",
+
+                    "set / no action",
+                    "set / set",
+                    "set / reset",
+                    "set / toggle",
+
+                    "reset / no action",
+                    "reset / set",
+                    "reset / reset",
+                    "reset / toggle",
+
+                    "toggle / no action",
+                    "toggle / set",
+                    "toggle / reset",
+                    "toggle / toggle"
+                ],
+                "condition": "in4_mode==4"
+            },
+            "in4_out6_actions": {
+                "group": "gg_in4_mapping_matrix_actions",
+                "title": "Output 6",
+                "order": 6,
+                "address": 413,
+                "reg_type": "holding",
+                "default": 0,
+                "enum": [0, 1, 2, 3, 4, 5, 6, 7, 8, 9, 10, 11, 12, 13, 14, 15],
+                "enum_titles": [
+                    "no action / no action",
+                    "no action / set",
+                    "no action / reset",
+                    "no action / toggle",
+
+                    "set / no action",
+                    "set / set",
+                    "set / reset",
+                    "set / toggle",
+
+                    "reset / no action",
+                    "reset / set",
+                    "reset / reset",
+                    "reset / toggle",
+
+                    "toggle / no action",
+                    "toggle / set",
+                    "toggle / reset",
+                    "toggle / toggle"
+                ],
+                "condition": "in4_mode==4"
+            },
+            "in4_out1_sp": {
+                "group": "gg_in4_out1_button_actions",
+                "title": "sp_title",
+                "order": 1,
+                "address": 568,
+                "reg_type": "holding",
+                "default": 0,
+                "enum": [0, 1, 2, 3],
+                "enum_titles": ["no action", "set", "reset", "toggle"],
+                "condition": "in4_mode==6"
+            },
+            "in4_out1_lp": {
+                "group": "gg_in4_out1_button_actions",
+                "title": "lp_title",
+                "order": 2,
+                "address": 632,
+                "reg_type": "holding",
+                "default": 0,
+                "enum": [0, 1, 2, 3],
+                "enum_titles": ["no action", "set", "reset", "toggle"],
+                "condition": "in4_mode==6"
+            },
+            "in4_out1_dp": {
+                "group": "gg_in4_out1_button_actions",
+                "title": "dp_title",
+                "order": 3,
+                "address": 696,
+                "reg_type": "holding",
+                "default": 0,
+                "enum": [0, 1, 2, 3],
+                "enum_titles": ["no action", "set", "reset", "toggle"],
+                "condition": "in4_mode==6"
+            },
+            "in4_out1_slp": {
+                "group": "gg_in4_out1_button_actions",
+                "title": "slp_title",
+                "order": 4,
+                "address": 760,
+                "reg_type": "holding",
+                "default": 0,
+                "enum": [0, 1, 2, 3],
+                "enum_titles": ["no action", "set", "reset", "toggle"],
+                "condition": "in4_mode==6"
+            },
+            "in4_out2_sp": {
+                "group": "gg_in4_out2_button_actions",
+                "title": "sp_title",
+                "order": 1,
+                "address": 569,
+                "reg_type": "holding",
+                "default": 0,
+                "enum": [0, 1, 2, 3],
+                "enum_titles": ["no action", "set", "reset", "toggle"],
+                "condition": "in4_mode==6"
+            },
+            "in4_out2_lp": {
+                "group": "gg_in4_out2_button_actions",
+                "title": "lp_title",
+                "order": 2,
+                "address": 633,
+                "reg_type": "holding",
+                "default": 0,
+                "enum": [0, 1, 2, 3],
+                "enum_titles": ["no action", "set", "reset", "toggle"],
+                "condition": "in4_mode==6"
+            },
+            "in4_out2_dp": {
+                "group": "gg_in4_out2_button_actions",
+                "title": "dp_title",
+                "order": 3,
+                "address": 697,
+                "reg_type": "holding",
+                "default": 0,
+                "enum": [0, 1, 2, 3],
+                "enum_titles": ["no action", "set", "reset", "toggle"],
+                "condition": "in4_mode==6"
+            },
+            "in4_out2_slp": {
+                "group": "gg_in4_out2_button_actions",
+                "title": "slp_title",
+                "order": 4,
+                "address": 761,
+                "reg_type": "holding",
+                "default": 0,
+                "enum": [0, 1, 2, 3],
+                "enum_titles": ["no action", "set", "reset", "toggle"],
+                "condition": "in4_mode==6"
+            },
+            "in4_out3_sp": {
+                "group": "gg_in4_out3_button_actions",
+                "title": "sp_title",
+                "order": 1,
+                "address": 570,
+                "reg_type": "holding",
+                "default": 0,
+                "enum": [0, 1, 2, 3],
+                "enum_titles": ["no action", "set", "reset", "toggle"],
+                "condition": "in4_mode==6"
+            },
+            "in4_out3_lp": {
+                "group": "gg_in4_out3_button_actions",
+                "title": "lp_title",
+                "order": 2,
+                "address": 634,
+                "reg_type": "holding",
+                "default": 0,
+                "enum": [0, 1, 2, 3],
+                "enum_titles": ["no action", "set", "reset", "toggle"],
+                "condition": "in4_mode==6"
+            },
+            "in4_out3_dp": {
+                "group": "gg_in4_out3_button_actions",
+                "title": "dp_title",
+                "order": 3,
+                "address": 698,
+                "reg_type": "holding",
+                "default": 0,
+                "enum": [0, 1, 2, 3],
+                "enum_titles": ["no action", "set", "reset", "toggle"],
+                "condition": "in4_mode==6"
+            },
+            "in4_out3_slp": {
+                "group": "gg_in4_out3_button_actions",
+                "title": "slp_title",
+                "order": 4,
+                "address": 762,
+                "reg_type": "holding",
+                "default": 0,
+                "enum": [0, 1, 2, 3],
+                "enum_titles": ["no action", "set", "reset", "toggle"],
+                "condition": "in4_mode==6"
+            },
+            "in4_out4_sp": {
+                "group": "gg_in4_out4_button_actions",
+                "title": "sp_title",
+                "order": 1,
+                "address": 571,
+                "reg_type": "holding",
+                "default": 0,
+                "enum": [0, 1, 2, 3],
+                "enum_titles": ["no action", "set", "reset", "toggle"],
+                "condition": "in4_mode==6"
+            },
+            "in4_out4_lp": {
+                "group": "gg_in4_out4_button_actions",
+                "title": "lp_title",
+                "order": 2,
+                "address": 635,
+                "reg_type": "holding",
+                "default": 0,
+                "enum": [0, 1, 2, 3],
+                "enum_titles": ["no action", "set", "reset", "toggle"],
+                "condition": "in4_mode==6"
+            },
+            "in4_out4_dp": {
+                "group": "gg_in4_out4_button_actions",
+                "title": "dp_title",
+                "order": 3,
+                "address": 699,
+                "reg_type": "holding",
+                "default": 0,
+                "enum": [0, 1, 2, 3],
+                "enum_titles": ["no action", "set", "reset", "toggle"],
+                "condition": "in4_mode==6"
+            },
+            "in4_out4_slp": {
+                "group": "gg_in4_out4_button_actions",
+                "title": "slp_title",
+                "order": 4,
+                "address": 763,
+                "reg_type": "holding",
+                "default": 0,
+                "enum": [0, 1, 2, 3],
+                "enum_titles": ["no action", "set", "reset", "toggle"],
+                "condition": "in4_mode==6"
+            },
+            "in4_out5_sp": {
+                "group": "gg_in4_out5_button_actions",
+                "title": "sp_title",
+                "order": 1,
+                "address": 572,
+                "reg_type": "holding",
+                "default": 0,
+                "enum": [0, 1, 2, 3],
+                "enum_titles": ["no action", "set", "reset", "toggle"],
+                "condition": "in4_mode==6"
+            },
+            "in4_out5_lp": {
+                "group": "gg_in4_out5_button_actions",
+                "title": "lp_title",
+                "order": 2,
+                "address": 636,
+                "reg_type": "holding",
+                "default": 0,
+                "enum": [0, 1, 2, 3],
+                "enum_titles": ["no action", "set", "reset", "toggle"],
+                "condition": "in4_mode==6"
+            },
+            "in4_out5_dp": {
+                "group": "gg_in4_out5_button_actions",
+                "title": "dp_title",
+                "order": 3,
+                "address": 700,
+                "reg_type": "holding",
+                "default": 0,
+                "enum": [0, 1, 2, 3],
+                "enum_titles": ["no action", "set", "reset", "toggle"],
+                "condition": "in4_mode==6"
+            },
+            "in4_out5_slp": {
+                "group": "gg_in4_out5_button_actions",
+                "title": "slp_title",
+                "order": 4,
+                "address": 764,
+                "reg_type": "holding",
+                "default": 0,
+                "enum": [0, 1, 2, 3],
+                "enum_titles": ["no action", "set", "reset", "toggle"],
+                "condition": "in4_mode==6"
+            },
+            "in4_out6_sp": {
+                "group": "gg_in4_out6_button_actions",
+                "title": "sp_title",
+                "order": 1,
+                "address": 573,
+                "reg_type": "holding",
+                "default": 0,
+                "enum": [0, 1, 2, 3],
+                "enum_titles": ["no action", "set", "reset", "toggle"],
+                "condition": "in4_mode==6"
+            },
+            "in4_out6_lp": {
+                "group": "gg_in4_out6_button_actions",
+                "title": "lp_title",
+                "order": 2,
+                "address": 637,
+                "reg_type": "holding",
+                "default": 0,
+                "enum": [0, 1, 2, 3],
+                "enum_titles": ["no action", "set", "reset", "toggle"],
+                "condition": "in4_mode==6"
+            },
+            "in4_out6_dp": {
+                "group": "gg_in4_out6_button_actions",
+                "title": "dp_title",
+                "order": 3,
+                "address": 701,
+                "reg_type": "holding",
+                "default": 0,
+                "enum": [0, 1, 2, 3],
+                "enum_titles": ["no action", "set", "reset", "toggle"],
+                "condition": "in4_mode==6"
+            },
+            "in4_out6_slp": {
+                "group": "gg_in4_out6_button_actions",
+                "title": "slp_title",
+                "order": 4,
+                "address": 765,
+                "reg_type": "holding",
+                "default": 0,
+                "enum": [0, 1, 2, 3],
+                "enum_titles": ["no action", "set", "reset", "toggle"],
+                "condition": "in4_mode==6"
+            },
             "in5_mode": {
-                "title": "Input 5 Mode",
+                "title": "Mode",
+                "description": "mode_description",
                 "address": 13,
                 "reg_type": "holding",
-                "enum": [0, 1, 2, 3, 4],
+                "enum": [0, 1, 2, 3, 4, 6],
                 "default": 0,
                 "enum_titles": [
-                    "push button",
-                    "latching switch",
-                    "turn on all outputs",
-                    "control disabled",
-                    "operate according to mapping-matrix"
+                    "Push button",
+                    "Latching switch",
+                    "Turn on all outputs",
+                    "Control disabled",
+                    "Operate according to mapping-matrix",
+                    "Operate according to button mapping-matrix"
                 ],
-                "group": "input_5",
+                "group": "g_in5",
                 "order": 1
             },
             "in5_debounce_ms": {
-                "title": "Input 5 Debounce (ms)",
+                "title": "debounce_time_title",
+                "description": "debounce_time_description",
                 "address": 24,
                 "reg_type": "holding",
                 "min": 0,
                 "max": 100,
                 "default": 50,
-                "group": "input_5",
+                "group": "g_in5",
                 "order": 2
             },
+            
+            "in5_lp_hold_time": {
+                "group": "gg_in5_press_params",
+                "title": "lp_hold_time_title",
+                "description": "lp_hold_time_description",
+                "order": 1,
+                
+                "address": 1104,
+                "reg_type": "holding",
+                "default": 2000,
+                "min": 500,
+                "max": 5000,
+                "condition": "in5_mode==6"
+            },
+            "in5_dp_time": {
+                "group": "gg_in5_press_params",
+                "title": "dp_time_title",
+                "description": "dp_time_description",
+                "order": 2,
+                "address": 1144,
+                "reg_type": "holding",
+                "default": 300,
+                "min": 0,
+                "max": 2000,
+                "condition": "in5_mode==6"
+            },
+            
+            "in5_out1_actions": {
+                "group": "gg_in5_mapping_matrix_actions",
+                "title": "Output 1",
+                "order": 1,
+                "address": 416,
+                "reg_type": "holding",
+                "default": 0,
+                "enum": [0, 1, 2, 3, 4, 5, 6, 7, 8, 9, 10, 11, 12, 13, 14, 15],
+                "enum_titles": [
+                    "no action / no action",
+                    "no action / set",
+                    "no action / reset",
+                    "no action / toggle",
+
+                    "set / no action",
+                    "set / set",
+                    "set / reset",
+                    "set / toggle",
+
+                    "reset / no action",
+                    "reset / set",
+                    "reset / reset",
+                    "reset / toggle",
+
+                    "toggle / no action",
+                    "toggle / set",
+                    "toggle / reset",
+                    "toggle / toggle"
+                ],
+                "condition": "in5_mode==4"
+            },
+            "in5_out2_actions": {
+                "group": "gg_in5_mapping_matrix_actions",
+                "title": "Output 2",
+                "order": 2,
+                "address": 417,
+                "reg_type": "holding",
+                "default": 0,
+                "enum": [0, 1, 2, 3, 4, 5, 6, 7, 8, 9, 10, 11, 12, 13, 14, 15],
+                "enum_titles": [
+                    "no action / no action",
+                    "no action / set",
+                    "no action / reset",
+                    "no action / toggle",
+
+                    "set / no action",
+                    "set / set",
+                    "set / reset",
+                    "set / toggle",
+
+                    "reset / no action",
+                    "reset / set",
+                    "reset / reset",
+                    "reset / toggle",
+
+                    "toggle / no action",
+                    "toggle / set",
+                    "toggle / reset",
+                    "toggle / toggle"
+                ],
+                "condition": "in5_mode==4"
+            },
+            "in5_out3_actions": {
+                "group": "gg_in5_mapping_matrix_actions",
+                "title": "Output 3",
+                "order": 3,
+                "address": 418,
+                "reg_type": "holding",
+                "default": 0,
+                "enum": [0, 1, 2, 3, 4, 5, 6, 7, 8, 9, 10, 11, 12, 13, 14, 15],
+                "enum_titles": [
+                    "no action / no action",
+                    "no action / set",
+                    "no action / reset",
+                    "no action / toggle",
+
+                    "set / no action",
+                    "set / set",
+                    "set / reset",
+                    "set / toggle",
+
+                    "reset / no action",
+                    "reset / set",
+                    "reset / reset",
+                    "reset / toggle",
+
+                    "toggle / no action",
+                    "toggle / set",
+                    "toggle / reset",
+                    "toggle / toggle"
+                ],
+                "condition": "in5_mode==4"
+            },
+            "in5_out4_actions": {
+                "group": "gg_in5_mapping_matrix_actions",
+                "title": "Output 4",
+                "order": 4,
+                "address": 419,
+                "reg_type": "holding",
+                "default": 0,
+                "enum": [0, 1, 2, 3, 4, 5, 6, 7, 8, 9, 10, 11, 12, 13, 14, 15],
+                "enum_titles": [
+                    "no action / no action",
+                    "no action / set",
+                    "no action / reset",
+                    "no action / toggle",
+
+                    "set / no action",
+                    "set / set",
+                    "set / reset",
+                    "set / toggle",
+
+                    "reset / no action",
+                    "reset / set",
+                    "reset / reset",
+                    "reset / toggle",
+
+                    "toggle / no action",
+                    "toggle / set",
+                    "toggle / reset",
+                    "toggle / toggle"
+                ],
+                "condition": "in5_mode==4"
+            },
+            "in5_out5_actions": {
+                "group": "gg_in5_mapping_matrix_actions",
+                "title": "Output 5",
+                "order": 5,
+                "address": 420,
+                "reg_type": "holding",
+                "default": 0,
+                "enum": [0, 1, 2, 3, 4, 5, 6, 7, 8, 9, 10, 11, 12, 13, 14, 15],
+                "enum_titles": [
+                    "no action / no action",
+                    "no action / set",
+                    "no action / reset",
+                    "no action / toggle",
+
+                    "set / no action",
+                    "set / set",
+                    "set / reset",
+                    "set / toggle",
+
+                    "reset / no action",
+                    "reset / set",
+                    "reset / reset",
+                    "reset / toggle",
+
+                    "toggle / no action",
+                    "toggle / set",
+                    "toggle / reset",
+                    "toggle / toggle"
+                ],
+                "condition": "in5_mode==4"
+            },
+            "in5_out6_actions": {
+                "group": "gg_in5_mapping_matrix_actions",
+                "title": "Output 6",
+                "order": 6,
+                "address": 421,
+                "reg_type": "holding",
+                "default": 0,
+                "enum": [0, 1, 2, 3, 4, 5, 6, 7, 8, 9, 10, 11, 12, 13, 14, 15],
+                "enum_titles": [
+                    "no action / no action",
+                    "no action / set",
+                    "no action / reset",
+                    "no action / toggle",
+
+                    "set / no action",
+                    "set / set",
+                    "set / reset",
+                    "set / toggle",
+
+                    "reset / no action",
+                    "reset / set",
+                    "reset / reset",
+                    "reset / toggle",
+
+                    "toggle / no action",
+                    "toggle / set",
+                    "toggle / reset",
+                    "toggle / toggle"
+                ],
+                "condition": "in5_mode==4"
+            },
+            "in5_out1_sp": {
+                "group": "gg_in5_out1_button_actions",
+                "title": "sp_title",
+                "order": 1,
+                "address": 576,
+                "reg_type": "holding",
+                "default": 0,
+                "enum": [0, 1, 2, 3],
+                "enum_titles": ["no action", "set", "reset", "toggle"],
+                "condition": "in5_mode==6"
+            },
+            "in5_out1_lp": {
+                "group": "gg_in5_out1_button_actions",
+                "title": "lp_title",
+                "order": 2,
+                "address": 640,
+                "reg_type": "holding",
+                "default": 0,
+                "enum": [0, 1, 2, 3],
+                "enum_titles": ["no action", "set", "reset", "toggle"],
+                "condition": "in5_mode==6"
+            },
+            "in5_out1_dp": {
+                "group": "gg_in5_out1_button_actions",
+                "title": "dp_title",
+                "order": 3,
+                "address": 704,
+                "reg_type": "holding",
+                "default": 0,
+                "enum": [0, 1, 2, 3],
+                "enum_titles": ["no action", "set", "reset", "toggle"],
+                "condition": "in5_mode==6"
+            },
+            "in5_out1_slp": {
+                "group": "gg_in5_out1_button_actions",
+                "title": "slp_title",
+                "order": 4,
+                "address": 768,
+                "reg_type": "holding",
+                "default": 0,
+                "enum": [0, 1, 2, 3],
+                "enum_titles": ["no action", "set", "reset", "toggle"],
+                "condition": "in5_mode==6"
+            },
+            "in5_out2_sp": {
+                "group": "gg_in5_out2_button_actions",
+                "title": "sp_title",
+                "order": 1,
+                "address": 577,
+                "reg_type": "holding",
+                "default": 0,
+                "enum": [0, 1, 2, 3],
+                "enum_titles": ["no action", "set", "reset", "toggle"],
+                "condition": "in5_mode==6"
+            },
+            "in5_out2_lp": {
+                "group": "gg_in5_out2_button_actions",
+                "title": "lp_title",
+                "order": 2,
+                "address": 641,
+                "reg_type": "holding",
+                "default": 0,
+                "enum": [0, 1, 2, 3],
+                "enum_titles": ["no action", "set", "reset", "toggle"],
+                "condition": "in5_mode==6"
+            },
+            "in5_out2_dp": {
+                "group": "gg_in5_out2_button_actions",
+                "title": "dp_title",
+                "order": 3,
+                "address": 705,
+                "reg_type": "holding",
+                "default": 0,
+                "enum": [0, 1, 2, 3],
+                "enum_titles": ["no action", "set", "reset", "toggle"],
+                "condition": "in5_mode==6"
+            },
+            "in5_out2_slp": {
+                "group": "gg_in5_out2_button_actions",
+                "title": "slp_title",
+                "order": 4,
+                "address": 769,
+                "reg_type": "holding",
+                "default": 0,
+                "enum": [0, 1, 2, 3],
+                "enum_titles": ["no action", "set", "reset", "toggle"],
+                "condition": "in5_mode==6"
+            },
+            "in5_out3_sp": {
+                "group": "gg_in5_out3_button_actions",
+                "title": "sp_title",
+                "order": 1,
+                "address": 578,
+                "reg_type": "holding",
+                "default": 0,
+                "enum": [0, 1, 2, 3],
+                "enum_titles": ["no action", "set", "reset", "toggle"],
+                "condition": "in5_mode==6"
+            },
+            "in5_out3_lp": {
+                "group": "gg_in5_out3_button_actions",
+                "title": "lp_title",
+                "order": 2,
+                "address": 642,
+                "reg_type": "holding",
+                "default": 0,
+                "enum": [0, 1, 2, 3],
+                "enum_titles": ["no action", "set", "reset", "toggle"],
+                "condition": "in5_mode==6"
+            },
+            "in5_out3_dp": {
+                "group": "gg_in5_out3_button_actions",
+                "title": "dp_title",
+                "order": 3,
+                "address": 706,
+                "reg_type": "holding",
+                "default": 0,
+                "enum": [0, 1, 2, 3],
+                "enum_titles": ["no action", "set", "reset", "toggle"],
+                "condition": "in5_mode==6"
+            },
+            "in5_out3_slp": {
+                "group": "gg_in5_out3_button_actions",
+                "title": "slp_title",
+                "order": 4,
+                "address": 770,
+                "reg_type": "holding",
+                "default": 0,
+                "enum": [0, 1, 2, 3],
+                "enum_titles": ["no action", "set", "reset", "toggle"],
+                "condition": "in5_mode==6"
+            },
+            "in5_out4_sp": {
+                "group": "gg_in5_out4_button_actions",
+                "title": "sp_title",
+                "order": 1,
+                "address": 579,
+                "reg_type": "holding",
+                "default": 0,
+                "enum": [0, 1, 2, 3],
+                "enum_titles": ["no action", "set", "reset", "toggle"],
+                "condition": "in5_mode==6"
+            },
+            "in5_out4_lp": {
+                "group": "gg_in5_out4_button_actions",
+                "title": "lp_title",
+                "order": 2,
+                "address": 643,
+                "reg_type": "holding",
+                "default": 0,
+                "enum": [0, 1, 2, 3],
+                "enum_titles": ["no action", "set", "reset", "toggle"],
+                "condition": "in5_mode==6"
+            },
+            "in5_out4_dp": {
+                "group": "gg_in5_out4_button_actions",
+                "title": "dp_title",
+                "order": 3,
+                "address": 707,
+                "reg_type": "holding",
+                "default": 0,
+                "enum": [0, 1, 2, 3],
+                "enum_titles": ["no action", "set", "reset", "toggle"],
+                "condition": "in5_mode==6"
+            },
+            "in5_out4_slp": {
+                "group": "gg_in5_out4_button_actions",
+                "title": "slp_title",
+                "order": 4,
+                "address": 771,
+                "reg_type": "holding",
+                "default": 0,
+                "enum": [0, 1, 2, 3],
+                "enum_titles": ["no action", "set", "reset", "toggle"],
+                "condition": "in5_mode==6"
+            },
+            "in5_out5_sp": {
+                "group": "gg_in5_out5_button_actions",
+                "title": "sp_title",
+                "order": 1,
+                "address": 580,
+                "reg_type": "holding",
+                "default": 0,
+                "enum": [0, 1, 2, 3],
+                "enum_titles": ["no action", "set", "reset", "toggle"],
+                "condition": "in5_mode==6"
+            },
+            "in5_out5_lp": {
+                "group": "gg_in5_out5_button_actions",
+                "title": "lp_title",
+                "order": 2,
+                "address": 644,
+                "reg_type": "holding",
+                "default": 0,
+                "enum": [0, 1, 2, 3],
+                "enum_titles": ["no action", "set", "reset", "toggle"],
+                "condition": "in5_mode==6"
+            },
+            "in5_out5_dp": {
+                "group": "gg_in5_out5_button_actions",
+                "title": "dp_title",
+                "order": 3,
+                "address": 708,
+                "reg_type": "holding",
+                "default": 0,
+                "enum": [0, 1, 2, 3],
+                "enum_titles": ["no action", "set", "reset", "toggle"],
+                "condition": "in5_mode==6"
+            },
+            "in5_out5_slp": {
+                "group": "gg_in5_out5_button_actions",
+                "title": "slp_title",
+                "order": 4,
+                "address": 772,
+                "reg_type": "holding",
+                "default": 0,
+                "enum": [0, 1, 2, 3],
+                "enum_titles": ["no action", "set", "reset", "toggle"],
+                "condition": "in5_mode==6"
+            },
+            "in5_out6_sp": {
+                "group": "gg_in5_out6_button_actions",
+                "title": "sp_title",
+                "order": 1,
+                "address": 581,
+                "reg_type": "holding",
+                "default": 0,
+                "enum": [0, 1, 2, 3],
+                "enum_titles": ["no action", "set", "reset", "toggle"],
+                "condition": "in5_mode==6"
+            },
+            "in5_out6_lp": {
+                "group": "gg_in5_out6_button_actions",
+                "title": "lp_title",
+                "order": 2,
+                "address": 645,
+                "reg_type": "holding",
+                "default": 0,
+                "enum": [0, 1, 2, 3],
+                "enum_titles": ["no action", "set", "reset", "toggle"],
+                "condition": "in5_mode==6"
+            },
+            "in5_out6_dp": {
+                "group": "gg_in5_out6_button_actions",
+                "title": "dp_title",
+                "order": 3,
+                "address": 709,
+                "reg_type": "holding",
+                "default": 0,
+                "enum": [0, 1, 2, 3],
+                "enum_titles": ["no action", "set", "reset", "toggle"],
+                "condition": "in5_mode==6"
+            },
+            "in5_out6_slp": {
+                "group": "gg_in5_out6_button_actions",
+                "title": "slp_title",
+                "order": 4,
+                "address": 773,
+                "reg_type": "holding",
+                "default": 0,
+                "enum": [0, 1, 2, 3],
+                "enum_titles": ["no action", "set", "reset", "toggle"],
+                "condition": "in5_mode==6"
+            },
             "in6_mode": {
-                "title": "Input 6 Mode",
+                "title": "Mode",
+                "description": "mode_description",
                 "address": 14,
                 "reg_type": "holding",
-                "enum": [0, 1, 2, 3, 4],
+                "enum": [0, 1, 2, 3, 4, 6],
                 "default": 0,
                 "enum_titles": [
-                    "push button",
-                    "latching switch",
-                    "turn on all outputs",
-                    "control disabled",
-                    "operate according to mapping-matrix"
+                    "Push button",
+                    "Latching switch",
+                    "Turn on all outputs",
+                    "Control disabled",
+                    "Operate according to mapping-matrix",
+                    "Operate according to button mapping-matrix"
                 ],
-                "group": "input_6",
+                "group": "g_in6",
                 "order": 1
             },
             "in6_debounce_ms": {
-                "title": "Input 6 Debounce (ms)",
+                "title": "debounce_time_title",
+                "description": "debounce_time_description",
                 "address": 25,
                 "reg_type": "holding",
                 "min": 0,
                 "max": 100,
                 "default": 50,
-                "group": "input_6",
+                "group": "g_in6",
                 "order": 2
+            },
+            
+            "in6_lp_hold_time": {
+                "group": "gg_in6_press_params",
+                "title": "lp_hold_time_title",
+                "description": "lp_hold_time_description",
+                "order": 1,
+                
+                "address": 1105,
+                "reg_type": "holding",
+                "default": 2000,
+                "min": 500,
+                "max": 5000,
+                "condition": "in6_mode==6"
+            },
+            "in6_dp_time": {
+                "group": "gg_in6_press_params",
+                "title": "dp_time_title",
+                "description": "dp_time_description",
+                "order": 2,
+                "address": 1145,
+                "reg_type": "holding",
+                "default": 300,
+                "min": 0,
+                "max": 2000,
+                "condition": "in6_mode==6"
+            },
+            
+            "in6_out1_actions": {
+                "group": "gg_in6_mapping_matrix_actions",
+                "title": "Output 1",
+                "order": 1,
+                "address": 424,
+                "reg_type": "holding",
+                "default": 0,
+                "enum": [0, 1, 2, 3, 4, 5, 6, 7, 8, 9, 10, 11, 12, 13, 14, 15],
+                "enum_titles": [
+                    "no action / no action",
+                    "no action / set",
+                    "no action / reset",
+                    "no action / toggle",
+
+                    "set / no action",
+                    "set / set",
+                    "set / reset",
+                    "set / toggle",
+
+                    "reset / no action",
+                    "reset / set",
+                    "reset / reset",
+                    "reset / toggle",
+
+                    "toggle / no action",
+                    "toggle / set",
+                    "toggle / reset",
+                    "toggle / toggle"
+                ],
+                "condition": "in6_mode==4"
+            },
+            "in6_out2_actions": {
+                "group": "gg_in6_mapping_matrix_actions",
+                "title": "Output 2",
+                "order": 2,
+                "address": 425,
+                "reg_type": "holding",
+                "default": 0,
+                "enum": [0, 1, 2, 3, 4, 5, 6, 7, 8, 9, 10, 11, 12, 13, 14, 15],
+                "enum_titles": [
+                    "no action / no action",
+                    "no action / set",
+                    "no action / reset",
+                    "no action / toggle",
+
+                    "set / no action",
+                    "set / set",
+                    "set / reset",
+                    "set / toggle",
+
+                    "reset / no action",
+                    "reset / set",
+                    "reset / reset",
+                    "reset / toggle",
+
+                    "toggle / no action",
+                    "toggle / set",
+                    "toggle / reset",
+                    "toggle / toggle"
+                ],
+                "condition": "in6_mode==4"
+            },
+            "in6_out3_actions": {
+                "group": "gg_in6_mapping_matrix_actions",
+                "title": "Output 3",
+                "order": 3,
+                "address": 426,
+                "reg_type": "holding",
+                "default": 0,
+                "enum": [0, 1, 2, 3, 4, 5, 6, 7, 8, 9, 10, 11, 12, 13, 14, 15],
+                "enum_titles": [
+                    "no action / no action",
+                    "no action / set",
+                    "no action / reset",
+                    "no action / toggle",
+
+                    "set / no action",
+                    "set / set",
+                    "set / reset",
+                    "set / toggle",
+
+                    "reset / no action",
+                    "reset / set",
+                    "reset / reset",
+                    "reset / toggle",
+
+                    "toggle / no action",
+                    "toggle / set",
+                    "toggle / reset",
+                    "toggle / toggle"
+                ],
+                "condition": "in6_mode==4"
+            },
+            "in6_out4_actions": {
+                "group": "gg_in6_mapping_matrix_actions",
+                "title": "Output 4",
+                "order": 4,
+                "address": 427,
+                "reg_type": "holding",
+                "default": 0,
+                "enum": [0, 1, 2, 3, 4, 5, 6, 7, 8, 9, 10, 11, 12, 13, 14, 15],
+                "enum_titles": [
+                    "no action / no action",
+                    "no action / set",
+                    "no action / reset",
+                    "no action / toggle",
+
+                    "set / no action",
+                    "set / set",
+                    "set / reset",
+                    "set / toggle",
+
+                    "reset / no action",
+                    "reset / set",
+                    "reset / reset",
+                    "reset / toggle",
+
+                    "toggle / no action",
+                    "toggle / set",
+                    "toggle / reset",
+                    "toggle / toggle"
+                ],
+                "condition": "in6_mode==4"
+            },
+            "in6_out5_actions": {
+                "group": "gg_in6_mapping_matrix_actions",
+                "title": "Output 5",
+                "order": 5,
+                "address": 428,
+                "reg_type": "holding",
+                "default": 0,
+                "enum": [0, 1, 2, 3, 4, 5, 6, 7, 8, 9, 10, 11, 12, 13, 14, 15],
+                "enum_titles": [
+                    "no action / no action",
+                    "no action / set",
+                    "no action / reset",
+                    "no action / toggle",
+
+                    "set / no action",
+                    "set / set",
+                    "set / reset",
+                    "set / toggle",
+
+                    "reset / no action",
+                    "reset / set",
+                    "reset / reset",
+                    "reset / toggle",
+
+                    "toggle / no action",
+                    "toggle / set",
+                    "toggle / reset",
+                    "toggle / toggle"
+                ],
+                "condition": "in6_mode==4"
+            },
+            "in6_out6_actions": {
+                "group": "gg_in6_mapping_matrix_actions",
+                "title": "Output 6",
+                "order": 6,
+                "address": 429,
+                "reg_type": "holding",
+                "default": 0,
+                "enum": [0, 1, 2, 3, 4, 5, 6, 7, 8, 9, 10, 11, 12, 13, 14, 15],
+                "enum_titles": [
+                    "no action / no action",
+                    "no action / set",
+                    "no action / reset",
+                    "no action / toggle",
+
+                    "set / no action",
+                    "set / set",
+                    "set / reset",
+                    "set / toggle",
+
+                    "reset / no action",
+                    "reset / set",
+                    "reset / reset",
+                    "reset / toggle",
+
+                    "toggle / no action",
+                    "toggle / set",
+                    "toggle / reset",
+                    "toggle / toggle"
+                ],
+                "condition": "in6_mode==4"
+            },
+            "in6_out1_sp": {
+                "group": "gg_in6_out1_button_actions",
+                "title": "sp_title",
+                "order": 1,
+                "address": 584,
+                "reg_type": "holding",
+                "default": 0,
+                "enum": [0, 1, 2, 3],
+                "enum_titles": ["no action", "set", "reset", "toggle"],
+                "condition": "in6_mode==6"
+            },
+            "in6_out1_lp": {
+                "group": "gg_in6_out1_button_actions",
+                "title": "lp_title",
+                "order": 2,
+                "address": 648,
+                "reg_type": "holding",
+                "default": 0,
+                "enum": [0, 1, 2, 3],
+                "enum_titles": ["no action", "set", "reset", "toggle"],
+                "condition": "in6_mode==6"
+            },
+            "in6_out1_dp": {
+                "group": "gg_in6_out1_button_actions",
+                "title": "dp_title",
+                "order": 3,
+                "address": 712,
+                "reg_type": "holding",
+                "default": 0,
+                "enum": [0, 1, 2, 3],
+                "enum_titles": ["no action", "set", "reset", "toggle"],
+                "condition": "in6_mode==6"
+            },
+            "in6_out1_slp": {
+                "group": "gg_in6_out1_button_actions",
+                "title": "slp_title",
+                "order": 4,
+                "address": 776,
+                "reg_type": "holding",
+                "default": 0,
+                "enum": [0, 1, 2, 3],
+                "enum_titles": ["no action", "set", "reset", "toggle"],
+                "condition": "in6_mode==6"
+            },
+            "in6_out2_sp": {
+                "group": "gg_in6_out2_button_actions",
+                "title": "sp_title",
+                "order": 1,
+                "address": 585,
+                "reg_type": "holding",
+                "default": 0,
+                "enum": [0, 1, 2, 3],
+                "enum_titles": ["no action", "set", "reset", "toggle"],
+                "condition": "in6_mode==6"
+            },
+            "in6_out2_lp": {
+                "group": "gg_in6_out2_button_actions",
+                "title": "lp_title",
+                "order": 2,
+                "address": 649,
+                "reg_type": "holding",
+                "default": 0,
+                "enum": [0, 1, 2, 3],
+                "enum_titles": ["no action", "set", "reset", "toggle"],
+                "condition": "in6_mode==6"
+            },
+            "in6_out2_dp": {
+                "group": "gg_in6_out2_button_actions",
+                "title": "dp_title",
+                "order": 3,
+                "address": 713,
+                "reg_type": "holding",
+                "default": 0,
+                "enum": [0, 1, 2, 3],
+                "enum_titles": ["no action", "set", "reset", "toggle"],
+                "condition": "in6_mode==6"
+            },
+            "in6_out2_slp": {
+                "group": "gg_in6_out2_button_actions",
+                "title": "slp_title",
+                "order": 4,
+                "address": 777,
+                "reg_type": "holding",
+                "default": 0,
+                "enum": [0, 1, 2, 3],
+                "enum_titles": ["no action", "set", "reset", "toggle"],
+                "condition": "in6_mode==6"
+            },
+            "in6_out3_sp": {
+                "group": "gg_in6_out3_button_actions",
+                "title": "sp_title",
+                "order": 1,
+                "address": 586,
+                "reg_type": "holding",
+                "default": 0,
+                "enum": [0, 1, 2, 3],
+                "enum_titles": ["no action", "set", "reset", "toggle"],
+                "condition": "in6_mode==6"
+            },
+            "in6_out3_lp": {
+                "group": "gg_in6_out3_button_actions",
+                "title": "lp_title",
+                "order": 2,
+                "address": 650,
+                "reg_type": "holding",
+                "default": 0,
+                "enum": [0, 1, 2, 3],
+                "enum_titles": ["no action", "set", "reset", "toggle"],
+                "condition": "in6_mode==6"
+            },
+            "in6_out3_dp": {
+                "group": "gg_in6_out3_button_actions",
+                "title": "dp_title",
+                "order": 3,
+                "address": 714,
+                "reg_type": "holding",
+                "default": 0,
+                "enum": [0, 1, 2, 3],
+                "enum_titles": ["no action", "set", "reset", "toggle"],
+                "condition": "in6_mode==6"
+            },
+            "in6_out3_slp": {
+                "group": "gg_in6_out3_button_actions",
+                "title": "slp_title",
+                "order": 4,
+                "address": 778,
+                "reg_type": "holding",
+                "default": 0,
+                "enum": [0, 1, 2, 3],
+                "enum_titles": ["no action", "set", "reset", "toggle"],
+                "condition": "in6_mode==6"
+            },
+            "in6_out4_sp": {
+                "group": "gg_in6_out4_button_actions",
+                "title": "sp_title",
+                "order": 1,
+                "address": 587,
+                "reg_type": "holding",
+                "default": 0,
+                "enum": [0, 1, 2, 3],
+                "enum_titles": ["no action", "set", "reset", "toggle"],
+                "condition": "in6_mode==6"
+            },
+            "in6_out4_lp": {
+                "group": "gg_in6_out4_button_actions",
+                "title": "lp_title",
+                "order": 2,
+                "address": 651,
+                "reg_type": "holding",
+                "default": 0,
+                "enum": [0, 1, 2, 3],
+                "enum_titles": ["no action", "set", "reset", "toggle"],
+                "condition": "in6_mode==6"
+            },
+            "in6_out4_dp": {
+                "group": "gg_in6_out4_button_actions",
+                "title": "dp_title",
+                "order": 3,
+                "address": 715,
+                "reg_type": "holding",
+                "default": 0,
+                "enum": [0, 1, 2, 3],
+                "enum_titles": ["no action", "set", "reset", "toggle"],
+                "condition": "in6_mode==6"
+            },
+            "in6_out4_slp": {
+                "group": "gg_in6_out4_button_actions",
+                "title": "slp_title",
+                "order": 4,
+                "address": 779,
+                "reg_type": "holding",
+                "default": 0,
+                "enum": [0, 1, 2, 3],
+                "enum_titles": ["no action", "set", "reset", "toggle"],
+                "condition": "in6_mode==6"
+            },
+            "in6_out5_sp": {
+                "group": "gg_in6_out5_button_actions",
+                "title": "sp_title",
+                "order": 1,
+                "address": 588,
+                "reg_type": "holding",
+                "default": 0,
+                "enum": [0, 1, 2, 3],
+                "enum_titles": ["no action", "set", "reset", "toggle"],
+                "condition": "in6_mode==6"
+            },
+            "in6_out5_lp": {
+                "group": "gg_in6_out5_button_actions",
+                "title": "lp_title",
+                "order": 2,
+                "address": 652,
+                "reg_type": "holding",
+                "default": 0,
+                "enum": [0, 1, 2, 3],
+                "enum_titles": ["no action", "set", "reset", "toggle"],
+                "condition": "in6_mode==6"
+            },
+            "in6_out5_dp": {
+                "group": "gg_in6_out5_button_actions",
+                "title": "dp_title",
+                "order": 3,
+                "address": 716,
+                "reg_type": "holding",
+                "default": 0,
+                "enum": [0, 1, 2, 3],
+                "enum_titles": ["no action", "set", "reset", "toggle"],
+                "condition": "in6_mode==6"
+            },
+            "in6_out5_slp": {
+                "group": "gg_in6_out5_button_actions",
+                "title": "slp_title",
+                "order": 4,
+                "address": 780,
+                "reg_type": "holding",
+                "default": 0,
+                "enum": [0, 1, 2, 3],
+                "enum_titles": ["no action", "set", "reset", "toggle"],
+                "condition": "in6_mode==6"
+            },
+            "in6_out6_sp": {
+                "group": "gg_in6_out6_button_actions",
+                "title": "sp_title",
+                "order": 1,
+                "address": 589,
+                "reg_type": "holding",
+                "default": 0,
+                "enum": [0, 1, 2, 3],
+                "enum_titles": ["no action", "set", "reset", "toggle"],
+                "condition": "in6_mode==6"
+            },
+            "in6_out6_lp": {
+                "group": "gg_in6_out6_button_actions",
+                "title": "lp_title",
+                "order": 2,
+                "address": 653,
+                "reg_type": "holding",
+                "default": 0,
+                "enum": [0, 1, 2, 3],
+                "enum_titles": ["no action", "set", "reset", "toggle"],
+                "condition": "in6_mode==6"
+            },
+            "in6_out6_dp": {
+                "group": "gg_in6_out6_button_actions",
+                "title": "dp_title",
+                "order": 3,
+                "address": 717,
+                "reg_type": "holding",
+                "default": 0,
+                "enum": [0, 1, 2, 3],
+                "enum_titles": ["no action", "set", "reset", "toggle"],
+                "condition": "in6_mode==6"
+            },
+            "in6_out6_slp": {
+                "group": "gg_in6_out6_button_actions",
+                "title": "slp_title",
+                "order": 4,
+                "address": 781,
+                "reg_type": "holding",
+                "default": 0,
+                "enum": [0, 1, 2, 3],
+                "enum_titles": ["no action", "set", "reset", "toggle"],
+                "condition": "in6_mode==6"
             },
             "outputs_restore_state": {
                 "title": "Restore Last Outputs State After Power On",
@@ -258,33 +4030,35 @@
                 "enum": [0, 1],
                 "default": 0,
                 "enum_titles": ["no", "yes"],
-                "group": "outputs",
+                "group": "g_outputs",
                 "order": 1
             },
             "safety_timer_s": {
                 "title": "Safety Timer (s)",
                 "address": 8,
                 "reg_type": "holding",
+                "min": 0,
+                "max": 65535,
                 "default": 3600,
-                "group": "outputs",
+                "group": "g_outputs",
                 "order": 2
             },
             "baud_rate": {
-                "title": "Baud rate",
-                "description": "baud_rate_description",
-                "address": 110,
-                "reg_type": "holding",
-                "enum": [96, 192, 384, 576, 1152],
-                "default": 96,
-                "enum_titles": [
-                    "9600",
-                    "19200",
-                    "38400",
-                    "57600",
-                    "115200"
-                ],
-                "group": "general",
-                "order": 1
+                    "title": "Baud rate",
+                    "description": "baud_rate_description",
+                    "address": 110,
+                    "reg_type": "holding",
+                    "enum": [96, 192, 384, 576, 1152],
+                    "default": 96,
+                    "enum_titles": [
+                        "9600",
+                        "19200",
+                        "38400",
+                        "57600",
+                        "115200"
+                    ],
+                    "group": "g_general",
+                    "order": 1
             }
         },
 
@@ -294,14 +4068,14 @@
                 "reg_type": "discrete",
                 "address": 7,
                 "type": "switch",
-                "group": "input_0"
+                "group": "gg_in0_channels"
             },
             {
                 "name": "Input 0 counter",
                 "reg_type": "input",
                 "address": 39,
                 "type": "value",
-                "group": "input_0"
+                "group": "gg_in0_channels"
             },
             {
                 "name": "Input 0 freq",
@@ -312,21 +4086,58 @@
                 "scale": 1.52588e-5,
                 "round_to": 0.001,
                 "enabled": false,
-                "group": "input_0"
+                "group": "gg_in0_channels"
+            },
+
+            {
+                "name": "Input 0 Single Press Counter",
+                "enabled": false,
+                "reg_type": "input",
+                "address": 471,
+                "type": "value",
+                "group": "gg_in0_channels",
+                "condition": "in0_mode==6"
+            },
+            {
+                "name": "Input 0 Long Press Counter",
+                "enabled": false,
+                "reg_type": "input",
+                "address": 479,
+                "type": "value",
+                "group": "gg_in0_channels",
+                "condition": "in0_mode==6"
+            },
+            {
+                "name": "Input 0 Double Press Counter",
+                "enabled": false,
+                "reg_type": "input",
+                "address": 503,
+                "type": "value",
+                "group": "gg_in0_channels",
+                "condition": "in0_mode==6"
+            },
+            {
+                "name": "Input 0 Shortlong Press Counter",
+                "enabled": false,
+                "reg_type": "input",
+                "address": 519,
+                "type": "value",
+                "group": "gg_in0_channels",
+                "condition": "in0_mode==6"
             },
             {
                 "name": "Input 1",
                 "reg_type": "discrete",
                 "address": 0,
                 "type": "switch",
-                "group": "input_1"
+                "group": "gg_in1_channels"
             },
             {
                 "name": "Input 1 counter",
                 "reg_type": "input",
                 "address": 32,
                 "type": "value",
-                "group": "input_1"
+                "group": "gg_in1_channels"
             },
             {
                 "name": "Input 1 freq",
@@ -337,21 +4148,58 @@
                 "scale": 1.52588e-5,
                 "round_to": 0.001,
                 "enabled": false,
-                "group": "input_1"
+                "group": "gg_in1_channels"
+            },
+
+            {
+                "name": "Input 1 Single Press Counter",
+                "enabled": false,
+                "reg_type": "input",
+                "address": 464,
+                "type": "value",
+                "group": "gg_in1_channels",
+                "condition": "in1_mode==6"
+            },
+            {
+                "name": "Input 1 Long Press Counter",
+                "enabled": false,
+                "reg_type": "input",
+                "address": 480,
+                "type": "value",
+                "group": "gg_in1_channels",
+                "condition": "in1_mode==6"
+            },
+            {
+                "name": "Input 1 Double Press Counter",
+                "enabled": false,
+                "reg_type": "input",
+                "address": 496,
+                "type": "value",
+                "group": "gg_in1_channels",
+                "condition": "in1_mode==6"
+            },
+            {
+                "name": "Input 1 Shortlong Press Counter",
+                "enabled": false,
+                "reg_type": "input",
+                "address": 512,
+                "type": "value",
+                "group": "gg_in1_channels",
+                "condition": "in1_mode==6"
             },
             {
                 "name": "Input 2",
                 "reg_type": "discrete",
                 "address": 1,
                 "type": "switch",
-                "group": "input_2"
+                "group": "gg_in2_channels"
             },
             {
                 "name": "Input 2 counter",
                 "reg_type": "input",
                 "address": 33,
                 "type": "value",
-                "group": "input_2"
+                "group": "gg_in2_channels"
             },
             {
                 "name": "Input 2 freq",
@@ -362,21 +4210,58 @@
                 "scale": 1.52588e-5,
                 "round_to": 0.001,
                 "enabled": false,
-                "group": "input_2"
+                "group": "gg_in2_channels"
+            },
+
+            {
+                "name": "Input 2 Single Press Counter",
+                "enabled": false,
+                "reg_type": "input",
+                "address": 465,
+                "type": "value",
+                "group": "gg_in2_channels",
+                "condition": "in2_mode==6"
+            },
+            {
+                "name": "Input 2 Long Press Counter",
+                "enabled": false,
+                "reg_type": "input",
+                "address": 481,
+                "type": "value",
+                "group": "gg_in2_channels",
+                "condition": "in2_mode==6"
+            },
+            {
+                "name": "Input 2 Double Press Counter",
+                "enabled": false,
+                "reg_type": "input",
+                "address": 497,
+                "type": "value",
+                "group": "gg_in2_channels",
+                "condition": "in2_mode==6"
+            },
+            {
+                "name": "Input 2 Shortlong Press Counter",
+                "enabled": false,
+                "reg_type": "input",
+                "address": 513,
+                "type": "value",
+                "group": "gg_in2_channels",
+                "condition": "in2_mode==6"
             },
             {
                 "name": "Input 3",
                 "reg_type": "discrete",
                 "address": 2,
                 "type": "switch",
-                "group": "input_3"
+                "group": "gg_in3_channels"
             },
             {
                 "name": "Input 3 counter",
                 "reg_type": "input",
                 "address": 34,
                 "type": "value",
-                "group": "input_3"
+                "group": "gg_in3_channels"
             },
             {
                 "name": "Input 3 freq",
@@ -387,21 +4272,58 @@
                 "scale": 1.52588e-5,
                 "round_to": 0.001,
                 "enabled": false,
-                "group": "input_3"
+                "group": "gg_in3_channels"
+            },
+
+            {
+                "name": "Input 3 Single Press Counter",
+                "enabled": false,
+                "reg_type": "input",
+                "address": 466,
+                "type": "value",
+                "group": "gg_in3_channels",
+                "condition": "in3_mode==6"
+            },
+            {
+                "name": "Input 3 Long Press Counter",
+                "enabled": false,
+                "reg_type": "input",
+                "address": 482,
+                "type": "value",
+                "group": "gg_in3_channels",
+                "condition": "in3_mode==6"
+            },
+            {
+                "name": "Input 3 Double Press Counter",
+                "enabled": false,
+                "reg_type": "input",
+                "address": 498,
+                "type": "value",
+                "group": "gg_in3_channels",
+                "condition": "in3_mode==6"
+            },
+            {
+                "name": "Input 3 Shortlong Press Counter",
+                "enabled": false,
+                "reg_type": "input",
+                "address": 514,
+                "type": "value",
+                "group": "gg_in3_channels",
+                "condition": "in3_mode==6"
             },
             {
                 "name": "Input 4",
                 "reg_type": "discrete",
                 "address": 3,
                 "type": "switch",
-                "group": "input_4"
+                "group": "gg_in4_channels"
             },
             {
                 "name": "Input 4 counter",
                 "reg_type": "input",
                 "address": 35,
                 "type": "value",
-                "group": "input_4"
+                "group": "gg_in4_channels"
             },
             {
                 "name": "Input 4 freq",
@@ -412,21 +4334,58 @@
                 "scale": 1.52588e-5,
                 "round_to": 0.001,
                 "enabled": false,
-                "group": "input_4"
+                "group": "gg_in4_channels"
+            },
+
+            {
+                "name": "Input 4 Single Press Counter",
+                "enabled": false,
+                "reg_type": "input",
+                "address": 467,
+                "type": "value",
+                "group": "gg_in4_channels",
+                "condition": "in4_mode==6"
+            },
+            {
+                "name": "Input 4 Long Press Counter",
+                "enabled": false,
+                "reg_type": "input",
+                "address": 483,
+                "type": "value",
+                "group": "gg_in4_channels",
+                "condition": "in4_mode==6"
+            },
+            {
+                "name": "Input 4 Double Press Counter",
+                "enabled": false,
+                "reg_type": "input",
+                "address": 499,
+                "type": "value",
+                "group": "gg_in4_channels",
+                "condition": "in4_mode==6"
+            },
+            {
+                "name": "Input 4 Shortlong Press Counter",
+                "enabled": false,
+                "reg_type": "input",
+                "address": 515,
+                "type": "value",
+                "group": "gg_in4_channels",
+                "condition": "in4_mode==6"
             },
             {
                 "name": "Input 5",
                 "reg_type": "discrete",
                 "address": 4,
                 "type": "switch",
-                "group": "input_5"
+                "group": "gg_in5_channels"
             },
             {
                 "name": "Input 5 counter",
                 "reg_type": "input",
                 "address": 36,
                 "type": "value",
-                "group": "input_5"
+                "group": "gg_in5_channels"
             },
             {
                 "name": "Input 5 freq",
@@ -437,21 +4396,58 @@
                 "scale": 1.52588e-5,
                 "round_to": 0.001,
                 "enabled": false,
-                "group": "input_5"
+                "group": "gg_in5_channels"
+            },
+
+            {
+                "name": "Input 5 Single Press Counter",
+                "enabled": false,
+                "reg_type": "input",
+                "address": 468,
+                "type": "value",
+                "group": "gg_in5_channels",
+                "condition": "in5_mode==6"
+            },
+            {
+                "name": "Input 5 Long Press Counter",
+                "enabled": false,
+                "reg_type": "input",
+                "address": 484,
+                "type": "value",
+                "group": "gg_in5_channels",
+                "condition": "in5_mode==6"
+            },
+            {
+                "name": "Input 5 Double Press Counter",
+                "enabled": false,
+                "reg_type": "input",
+                "address": 500,
+                "type": "value",
+                "group": "gg_in5_channels",
+                "condition": "in5_mode==6"
+            },
+            {
+                "name": "Input 5 Shortlong Press Counter",
+                "enabled": false,
+                "reg_type": "input",
+                "address": 516,
+                "type": "value",
+                "group": "gg_in5_channels",
+                "condition": "in5_mode==6"
             },
             {
                 "name": "Input 6",
                 "reg_type": "discrete",
                 "address": 5,
                 "type": "switch",
-                "group": "input_6"
+                "group": "gg_in6_channels"
             },
             {
                 "name": "Input 6 counter",
                 "reg_type": "input",
                 "address": 37,
                 "type": "value",
-                "group": "input_6"
+                "group": "gg_in6_channels"
             },
             {
                 "name": "Input 6 freq",
@@ -462,7 +4458,44 @@
                 "scale": 1.52588e-5,
                 "round_to": 0.001,
                 "enabled": false,
-                "group": "input_6"
+                "group": "gg_in6_channels"
+            },
+
+            {
+                "name": "Input 6 Single Press Counter",
+                "enabled": false,
+                "reg_type": "input",
+                "address": 469,
+                "type": "value",
+                "group": "gg_in6_channels",
+                "condition": "in6_mode==6"
+            },
+            {
+                "name": "Input 6 Long Press Counter",
+                "enabled": false,
+                "reg_type": "input",
+                "address": 485,
+                "type": "value",
+                "group": "gg_in6_channels",
+                "condition": "in6_mode==6"
+            },
+            {
+                "name": "Input 6 Double Press Counter",
+                "enabled": false,
+                "reg_type": "input",
+                "address": 501,
+                "type": "value",
+                "group": "gg_in6_channels",
+                "condition": "in6_mode==6"
+            },
+            {
+                "name": "Input 6 Shortlong Press Counter",
+                "enabled": false,
+                "reg_type": "input",
+                "address": 517,
+                "type": "value",
+                "group": "gg_in6_channels",
+                "condition": "in6_mode==6"
             },
             {
                 "name": "K1",
@@ -471,7 +4504,7 @@
                 "type": "switch",
                 "scale": -1,
                 "offset": 1,
-                "group": "outputs"
+                "group": "g_outputs"
             },
             {
                 "name": "K2",
@@ -480,7 +4513,7 @@
                 "type": "switch",
                 "scale": -1,
                 "offset": 1,
-                "group": "outputs"
+                "group": "g_outputs"
             },
             {
                 "name": "K3",
@@ -489,7 +4522,7 @@
                 "type": "switch",
                 "scale": -1,
                 "offset": 1,
-                "group": "outputs"
+                "group": "g_outputs"
             },
             {
                 "name": "K4",
@@ -498,7 +4531,7 @@
                 "type": "switch",
                 "scale": -1,
                 "offset": 1,
-                "group": "outputs"
+                "group": "g_outputs"
             },
             {
                 "name": "K5",
@@ -507,7 +4540,7 @@
                 "type": "switch",
                 "scale": -1,
                 "offset": 1,
-                "group": "outputs"
+                "group": "g_outputs"
             },
             {
                 "name": "K6",
@@ -516,15 +4549,15 @@
                 "type": "switch",
                 "scale": -1,
                 "offset": 1,
-                "group": "outputs"
+                "group": "g_outputs"
             },
             {
                 "name": "Serial",
+                "type": "text",
                 "reg_type": "input",
                 "address": 270,
-                "type": "text",
                 "format": "u32",
-                "group": "hw_info"
+                "group": "g_hw_info"
             },
             {
                 "name": "Supply Voltage",
@@ -533,7 +4566,7 @@
                 "type": "voltage",
                 "scale": 0.001,
                 "enabled": false,
-                "group": "hw_info"
+                "group": "g_hw_info"
             },
             {
                 "name": "Uptime",
@@ -542,7 +4575,7 @@
                 "type": "text",
                 "format": "u32",
                 "enabled": false,
-                "group": "hw_info"
+                "group": "g_hw_info"
             },
             {
                 "name": "MCU Temperature",
@@ -552,7 +4585,7 @@
                 "format": "s16",
                 "scale": 0.1,
                 "enabled": false,
-                "group": "hw_info"
+                "group": "g_hw_info"
             },
             {
                 "name": "MCU Voltage",
@@ -561,66 +4594,164 @@
                 "scale": 0.001,
                 "type": "voltage",
                 "enabled": false,
-                "group": "hw_info"
+                "group": "g_hw_info"
             }
         ],
+
         "translations": {
             "en": {
                 "WB-MR6C-NC_template_title": "WB-MR6C/NC (6-channel relay)",
+                "mode_description": "For using button mapping-matrix firmware v1.17.0 or newer is required",
                 "baud_rate_description": "Make sure that communication with device is established before changing this parameter. Select required baud rate, save configuration and then change port baud rate to the same value.",
-                "Uptime": "Uptime (s)"
+                "Uptime": "Uptime (s)",
+
+                "sp_title": "Short Press",
+                "lp_title": "Long Press",
+                "dp_title": "Double Press",
+                "slp_title": "Shortlong Press",
+
+
+                "lp_hold_time_title": "Long Press Time (ms)",
+                "dp_time_title": "Second press waiting time (ms)",
+                "debounce_time_title": "Debounce Time (ms)",
+
+                "lp_hold_time_description": "If press is longer than the specified time then it is long",
+                "dp_time_description": "If there is no second press during the specified time then press is single. 0 - disables all presses except short and long",
+                "debounce_time_description": "Must be 5-10 times less than double press time. If double presses are disabled - any value"
             },
             "ru": {
                 "WB-MR6C-NC_template_title": "WB-MR6C/NC (6-канальный модуль реле)",
+
                 "Input 0": "Вход 0",
+                "Input 0 counter": "Счетчик 0",
+                "Input 0 freq": "Частота 0",
+                "Input 0 Single Press Counter": "Счетчик коротких нажатий входа 0",
+                "Input 0 Long Press Counter": "Счетчик длинных нажатий входа 0",
+                "Input 0 Double Press Counter": "Счетчик двойных нажатий входа 0",
+                "Input 0 Shortlong Press Counter": "Счетчик коротких, а затем длинных нажатий входа 0",
                 "Input 1": "Вход 1",
+                "Input 1 counter": "Счетчик 1",
+                "Input 1 freq": "Частота 1",
+                "Input 1 Single Press Counter": "Счетчик коротких нажатий входа 1",
+                "Input 1 Long Press Counter": "Счетчик длинных нажатий входа 1",
+                "Input 1 Double Press Counter": "Счетчик двойных нажатий входа 1",
+                "Input 1 Shortlong Press Counter": "Счетчик коротких, а затем длинных нажатий входа 1",
                 "Input 2": "Вход 2",
+                "Input 2 counter": "Счетчик 2",
+                "Input 2 freq": "Частота 2",
+                "Input 2 Single Press Counter": "Счетчик коротких нажатий входа 2",
+                "Input 2 Long Press Counter": "Счетчик длинных нажатий входа 2",
+                "Input 2 Double Press Counter": "Счетчик двойных нажатий входа 2",
+                "Input 2 Shortlong Press Counter": "Счетчик коротких, а затем длинных нажатий входа 2",
                 "Input 3": "Вход 3",
+                "Input 3 counter": "Счетчик 3",
+                "Input 3 freq": "Частота 3",
+                "Input 3 Single Press Counter": "Счетчик коротких нажатий входа 3",
+                "Input 3 Long Press Counter": "Счетчик длинных нажатий входа 3",
+                "Input 3 Double Press Counter": "Счетчик двойных нажатий входа 3",
+                "Input 3 Shortlong Press Counter": "Счетчик коротких, а затем длинных нажатий входа 3",
                 "Input 4": "Вход 4",
+                "Input 4 counter": "Счетчик 4",
+                "Input 4 freq": "Частота 4",
+                "Input 4 Single Press Counter": "Счетчик коротких нажатий входа 4",
+                "Input 4 Long Press Counter": "Счетчик длинных нажатий входа 4",
+                "Input 4 Double Press Counter": "Счетчик двойных нажатий входа 4",
+                "Input 4 Shortlong Press Counter": "Счетчик коротких, а затем длинных нажатий входа 4",
                 "Input 5": "Вход 5",
+                "Input 5 counter": "Счетчик 5",
+                "Input 5 freq": "Частота 5",
+                "Input 5 Single Press Counter": "Счетчик коротких нажатий входа 5",
+                "Input 5 Long Press Counter": "Счетчик длинных нажатий входа 5",
+                "Input 5 Double Press Counter": "Счетчик двойных нажатий входа 5",
+                "Input 5 Shortlong Press Counter": "Счетчик коротких, а затем длинных нажатий входа 5",
                 "Input 6": "Вход 6",
+                "Input 6 counter": "Счетчик 6",
+                "Input 6 freq": "Частота 6",
+                "Input 6 Single Press Counter": "Счетчик коротких нажатий входа 6",
+                "Input 6 Long Press Counter": "Счетчик длинных нажатий входа 6",
+                "Input 6 Double Press Counter": "Счетчик двойных нажатий входа 6",
+                "Input 6 Shortlong Press Counter": "Счетчик коротких, а затем длинных нажатий входа 6",
                 "Outputs": "Выходы",
                 "General": "Общее",
                 "HW Info": "Данные модуля",
-                "Input 0 Mode": "Режим работы входа 0",
-                "Input 1 Mode": "Режим работы входа 1",
-                "Input 2 Mode": "Режим работы входа 2",
-                "Input 3 Mode": "Режим работы входа 3",
-                "Input 4 Mode": "Режим работы входа 4",
-                "Input 5 Mode": "Режим работы входа 5",
-                "Input 6 Mode": "Режим работы входа 6",
-                "push button": "кнопка без фиксации",
-                "latching switch": "переключатель с фиксацией",
-                "turn on all outputs": "включить все выходы",
-                "control disabled": "управление отключено",
-                "operate according to mapping-matrix": "управлять по mapping-матрице",
-                "Input 0 Debounce (ms)": "Время защиты от дребезга входа 0 (мс)",
-                "Input 1 Debounce (ms)": "Время защиты от дребезга входа 1 (мс)",
-                "Input 2 Debounce (ms)": "Время защиты от дребезга входа 2 (мс)",
-                "Input 3 Debounce (ms)": "Время защиты от дребезга входа 3 (мс)",
-                "Input 4 Debounce (ms)": "Время защиты от дребезга входа 4 (мс)",
-                "Input 5 Debounce (ms)": "Время защиты от дребезга входа 5 (мс)",
-                "Input 6 Debounce (ms)": "Время защиты от дребезга входа 6 (мс)",
+                "Debug": "Диагностика",
+                "Mode": "Режим работы",
+                "Press Parameters": "Параметры нажатий",
+
+                "Actions for outputs when the input is closed / opened": "Действия для выходов при замыкании / размыкании входа",
+
+                "Output 1": "Выход 1",
+                "Output 1 Actions": "Действия для выхода 1",
+
+                "Output 2": "Выход 2",
+                "Output 2 Actions": "Действия для выхода 2",
+
+                "Output 3": "Выход 3",
+                "Output 3 Actions": "Действия для выхода 3",
+
+                "Output 4": "Выход 4",
+                "Output 4 Actions": "Действия для выхода 4",
+
+                "Output 5": "Выход 5",
+                "Output 5 Actions": "Действия для выхода 5",
+
+                "Output 6": "Выход 6",
+                "Output 6 Actions": "Действия для выхода 6",
+
+                "no action": "нет действия",
+                "reset": "выключить",
+                "set": "включить",
+                "toggle": "переключить",
+
+                "no action / no action": "нет действия / нет действия",
+                "no action / reset": "нет действия / выключить",
+                "no action / set": "нет действия / включить",
+                "no action / toggle": "нет действия / переключить",
+
+                "reset / no action": "выключить / нет действия",
+                "reset / reset": "выключить / выключить",
+                "reset / set": "выключить / включить",
+                "reset / toggle": "выключить / переключить",
+
+                "set / no action": "включить / нет действия",
+                "set / reset": "включить / выключить",
+                "set / set": "включить / включить",
+                "set / toggle": "включить / переключить",
+
+                "toggle / no action": "переключить / нет действия",
+                "toggle / reset": "переключить / выключить",
+                "toggle / set": "переключить / включить",
+                "toggle / toggle": "переключить / переключить",
+
+                "Push button": "Кнопка без фиксации",
+                "Latching switch": "Переключатель с фиксацией",
+                "Turn on all outputs": "Включить все выходы",
+                "Control disabled": "Управление отключено",
+                "Operate according to mapping-matrix": "Управлять по mapping-матрице",
+                "Operate according to button mapping-matrix": "Управлять по mapping-матрице для кнопок",
+
                 "Restore Last Outputs State After Power On": "Восстанавливать состояния выходов при включении",
+                "Safety Timer (s)": "Таймаут безопасного режима (с)",
                 "no": "нет",
                 "yes": "да",
-                "Safety Timer (s)": "Таймаут безопасного режима (с)",
+
+                "sp_title": "Короткое нажатие",
+                "lp_title": "Длинное нажатие",
+                "dp_title": "Двойное нажатие",
+                "slp_title": "Короткое, затем длинное нажатие",
+
+                "lp_hold_time_title": "Время длинного нажатия (мс)",
+                "dp_time_title": "Время ожидания второго нажатия (мс)",
+                "debounce_time_title": "Время подавления дребезга (мс)",
+
+                "lp_hold_time_description": "Если нажатие длится больше указанного времени - считаем его длинным",
+                "dp_time_description": "Если за указанное время второго нажатия не было - считаем нажатие одиночным. 0 - отключит все нажатия кроме короткого и длинного",
+                "debounce_time_description": "Должно быть в 5-10 раз меньше, чем время ожидания двойного нажатия. Если двойные нажатия отключены - любое значение",
+
                 "Baud rate": "Скорость обмена",
                 "baud_rate_description": "Перед изменением параметра убедитесь, что связь с устройством установлена. Выберите нужную скорость обмена, сохраните конфигурацию, а затем укажите в настройках порта эту же скорость.",
-                "Input 0 counter": "Счетчик 0",
-                "Input 1 counter": "Счетчик 1",
-                "Input 2 counter": "Счетчик 2",
-                "Input 3 counter": "Счетчик 3",
-                "Input 4 counter": "Счетчик 4",
-                "Input 5 counter": "Счетчик 5",
-                "Input 6 counter": "Счетчик 6",
-                "Input 0 freq": "Частота 0",
-                "Input 1 freq": "Частота 1",
-                "Input 2 freq": "Частота 2",
-                "Input 3 freq": "Частота 3",
-                "Input 4 freq": "Частота 4",
-                "Input 5 freq": "Частота 5",
-                "Input 6 freq": "Частота 6",
+                "mode_description": "Для использования mapping-матрицы для кнопок требуется прошивка v1.17.0 или новее",
+
                 "Serial": "Серийный номер",
                 "Supply Voltage": "Напряжение питания",
                 "Uptime": "Время работы с момента включения (с)",
