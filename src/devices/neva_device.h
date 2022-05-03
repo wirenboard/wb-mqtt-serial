@@ -12,5 +12,5 @@ public:
 
 private:
     std::string GetParameterRequest(const TRegister& reg) const override;
-    Register::TValue GetRegisterValue(const TRegister& reg, const std::string& value) override;
+    TChannelValue GetRegisterValue(const TRegister& reg, const std::string& value) override;
 };

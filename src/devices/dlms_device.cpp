@@ -408,7 +408,7 @@ void TDlmsDevice::ReadAttribute(const std::string& addr, int attribute, CGXDLMSO
                "Getting " + addr + ":" + std::to_string(attribute) + " failed");
 }
 
-Register::TValue TDlmsDevice::ReadRegisterImpl(PRegister reg)
+TChannelValue TDlmsDevice::ReadRegisterImpl(PRegister reg)
 {
     auto addr = ToTObisRegisterAddress(reg).GetLogicalName();
     auto obj = Client->GetObjects().FindByLN(DLMS_OBJECT_TYPE_REGISTER, addr);
@@ -443,7 +443,7 @@ Register::TValue TDlmsDevice::ReadRegisterImpl(PRegister reg)
         throw TSerialDevicePermanentRegisterException(addr + " value is not a number");
     }
 
-    return CopyDoubleToUint64(r->GetValue().ToDouble());
+    return TChannelValue{CopyDoubleToUint64(r->GetValue().ToDouble())};
 }
 
 void TDlmsDevice::PrepareImpl()

@@ -526,7 +526,7 @@ namespace Modbus // modbus protocol common utilities
     // fills pdu with write request data according to Modbus specification
     void ComposeMultipleWriteRequestPDU(uint8_t* pdu,
                                         const TRegister& reg,
-                                        Register::TValue value,
+                                        TChannelValue value,
                                         int shift,
                                         Modbus::TRegisterCache& tmpCache,
                                         const Modbus::TRegisterCache& cache)
@@ -557,18 +557,18 @@ namespace Modbus // modbus protocol common utilities
             if (cache.count(address.AbsAddress)) {
                 cachedValue = cache.at(address.AbsAddress);
             } else {
-                cachedValue = value & 0xffff;
+                cachedValue = value.Get<uint16_t>();
             }
 
             auto localBitOffset = std::max(reg.DataOffset - bitPos, 0);
 
-            auto bitCount = std::min(uint8_t(16 - localBitOffset), bitsToAllocate);
+            auto bitCount = std::min(static_cast<uint8_t>(16 - localBitOffset), bitsToAllocate);
 
             auto rBitPos = bitPosEnd - bitPos - bitCount;
 
             auto mask = GetLSBMask(bitCount);
 
-            auto valuePart = mask & (value >> rBitPos);
+            auto valuePart = mask & (value >> rBitPos).Get<uint64_t>();
 
             auto wordValue = (~mask & cachedValue) | (valuePart << localBitOffset);
 
@@ -582,12 +582,13 @@ namespace Modbus // modbus protocol common utilities
 
     void ComposeSingleWriteRequestPDU(uint8_t* pdu,
                                       const TRegister& reg,
-                                      uint16_t value,
+                                      TChannelValue regValue,
                                       int shift,
                                       uint8_t wordIndex,
                                       Modbus::TRegisterCache& tmpCache,
                                       const Modbus::TRegisterCache& cache)
     {
+        auto value = regValue.Get<uint16_t>();
         auto bitWidth = reg.GetBitWidth();
         if (reg.Type == REG_COIL) {
             value = value ? uint16_t(0xFF) << 8 : 0x00;
@@ -662,7 +663,7 @@ namespace Modbus // modbus protocol common utilities
 
             for (auto reg: range.RegisterList()) {
                 auto addr = GetUint32RegisterAddress(reg->GetAddress());
-                reg->SetValue(range.GetBits()[addr - range.GetStart()]);
+                reg->SetValue(TChannelValue{range.GetBits()[addr - range.GetStart()]});
             }
             return;
         }
@@ -704,7 +705,7 @@ namespace Modbus // modbus protocol common utilities
                 bitWidth -= bitCount;
                 bitsWritten += bitCount;
             }
-            reg->SetValue(r);
+            reg->SetValue(TChannelValue{r});
         }
     }
 
@@ -752,7 +753,7 @@ namespace Modbus // modbus protocol common utilities
                        TPort& port,
                        uint8_t slaveId,
                        TRegister& reg,
-                       Register::TValue value,
+                       TChannelValue value,
                        Modbus::TRegisterCache& cache,
                        int shift)
     {
@@ -777,12 +778,12 @@ namespace Modbus // modbus protocol common utilities
             } else {
                 ComposeSingleWriteRequestPDU(traits.GetPDU(req),
                                              reg,
-                                             value.Get<uint16_t>(),
+                                             value,
                                              shift,
                                              requests.size() - i - 1,
                                              tmpCache,
                                              cache);
-                value >>= 16;
+                value.PopWord();
             }
 
             traits.FinalizeRequest(req, slaveId);
@@ -883,9 +884,9 @@ namespace Modbus // modbus protocol common utilities
     {
         for (const auto& item: setupItems) {
             try {
-                WriteRegister(traits, port, slaveId, *item->Register, item->RawValue, cache, shift);
+                WriteRegister(traits, port, slaveId, *item->Register, TChannelValue{item->RawValue}, cache, shift);
                 LOG(Info) << "Init: " << item->Name << ": setup register " << item->Register->ToString() << " <-- "
-                          << item->HumanReadableValue << " (0x" << std::hex << item->RawValue << ")";
+                          << item->HumanReadableValue << " (0x" << std::hex << item->RawValue.Get<uint64_t>() << ")";
             } catch (const TSerialDevicePermanentRegisterException& e) {
                 WarnFailedRegisterSetup(item, e.what());
             }

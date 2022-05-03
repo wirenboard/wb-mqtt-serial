@@ -281,7 +281,7 @@ void TIEC61107ModeCDevice::InvalidateReadCache()
     TSerialDevice::InvalidateReadCache();
 }
 
-Register::TValue TIEC61107ModeCDevice::ReadRegisterImpl(PRegister reg)
+TChannelValue TIEC61107ModeCDevice::ReadRegisterImpl(PRegister reg)
 {
     Port()->SkipNoise();
     Port()->CheckPortOpen();

@@ -113,12 +113,12 @@ protected:
                                 Emit() << "ReadRateLimit: " << reg->ReadRateLimit->count();
                             }
                             if (reg->ErrorValue) {
-                                Emit() << "ErrorValue: " << *reg->ErrorValue;
+                                Emit() << "ErrorValue: " << reg->ErrorValue->Get<uint64_t>();
                             } else {
                                 Emit() << "ErrorValue: not set";
                             }
                             if (reg->UnsupportedValue) {
-                                Emit() << "UnsupportedValue: " << *reg->UnsupportedValue;
+                                Emit() << "UnsupportedValue: " << reg->UnsupportedValue->Get<uint64_t>();
                             } else {
                                 Emit() << "UnsupportedValue: not set";
                             }
@@ -137,7 +137,7 @@ protected:
                         Emit() << "Address: " << setup_item->GetRegisterConfig()->GetAddress();
                         Emit() << "Value: " << setup_item->GetValue();
                         Emit() << "RawValue: 0x" << std::setfill('0') << std::setw(2) << std::hex
-                               << setup_item->GetRawValue();
+                               << setup_item->GetRawValue().Get<uint64_t>();
                         Emit() << "Reg type: " << setup_item->GetRegisterConfig()->TypeName << " ("
                                << setup_item->GetRegisterConfig()->Type << ")";
                         Emit() << "Reg format: " << RegisterFormatName(setup_item->GetRegisterConfig()->Format);

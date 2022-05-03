@@ -90,9 +90,9 @@ protected:
      *    0011223344()
      */
     virtual std::string GetParameterRequest(const TRegister& reg) const = 0;
-    virtual Register::TValue GetRegisterValue(const TRegister& reg, const std::string& value) = 0;
+    virtual TChannelValue GetRegisterValue(const TRegister& reg, const std::string& value) = 0;
     void PrepareImpl() override;
-    Register::TValue ReadRegisterImpl(PRegister reg) override;
+    TChannelValue ReadRegisterImpl(PRegister reg) override;
 
 private:
     IEC::TCrcFn CrcFn;

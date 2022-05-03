@@ -23,10 +23,10 @@ public:
 
     static void Register(TSerialDeviceFactory& factory);
 
-    Register::TValue ReadRegisterImpl(PRegister reg) override;
+    TChannelValue ReadRegisterImpl(PRegister reg) override;
 
 protected:
-    void WriteRegisterImpl(PRegister reg, Register::TValue value) override;
+    void WriteRegisterImpl(PRegister reg, const TChannelValue& value) override;
 
 private:
     uint8_t CrcS2K(const uint8_t* array, int size);

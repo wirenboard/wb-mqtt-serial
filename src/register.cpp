@@ -109,15 +109,15 @@ void TRegister::SetAvailable(TRegisterAvailability available)
     Available = available;
 }
 
-Register::TValue TRegister::GetValue() const
+TChannelValue TRegister::GetValue() const
 {
     return Value;
 }
 
-void TRegister::SetValue(const Register::TValue& value, bool clearReadError)
+void TRegister::SetValue(const TChannelValue& value, bool clearReadError)
 {
     if (Value != value) {
-        LOG(Debug) << "new val for " << ToString() << ": " << std::hex << value;
+        LOG(Debug) << "new val for " << ToString() << ": " << std::hex << value.Get<uint64_t>();
     }
     Value = value;
     if (UnsupportedValue && (*UnsupportedValue == value)) {
@@ -410,14 +410,14 @@ template<typename T> T RoundValue(T val, double round_to)
     return round_to > 0 ? std::round(val / round_to) * round_to : val;
 }
 
-Register::TValue InvertWordOrderIfNeeded(const TRegisterConfig& reg, Register::TValue value)
+TChannelValue InvertWordOrderIfNeeded(const TRegisterConfig& reg, TChannelValue value)
 {
     if (reg.WordOrder == EWordOrder::BigEndian) {
         return value;
     }
 
     uint64_t result = 0;
-    Register::TValue cur_value = value;
+    uint64_t cur_value = value.Get<uint64_t>();
 
     for (int i = 0; i < reg.Get16BitWidth(); ++i) {
         uint16_t last_word = (((uint64_t)cur_value) & 0xFFFF);
@@ -425,7 +425,7 @@ Register::TValue InvertWordOrderIfNeeded(const TRegisterConfig& reg, Register::T
         result |= last_word;
         cur_value >>= 16;
     }
-    return result;
+    return TChannelValue{result};
 }
 
 template<class T> struct TConvertTraits
@@ -500,57 +500,76 @@ template<> double FromScaledTextValue(const TRegisterConfig& reg, const std::str
     throw std::invalid_argument("");
 }
 
-Register::TValue GetRawValue(const TRegisterConfig& reg, const std::string& str)
+TChannelValue GetRawValue(const TRegisterConfig& reg, const std::string& str)
 {
+    TChannelValue value;
     switch (reg.Format) {
         case S8:
-            return FromScaledTextValue<int64_t>(reg, str) & 0xff;
+            value.Set(static_cast<uint64_t>(FromScaledTextValue<int64_t>(reg, str) & 0xff));
+            break;
         case S16:
-            return FromScaledTextValue<int64_t>(reg, str) & 0xffff;
+            value.Set(static_cast<uint64_t>(FromScaledTextValue<int64_t>(reg, str) & 0xffff));
+            break;
         case S24:
-            return FromScaledTextValue<int64_t>(reg, str) & 0xffffff;
+            value.Set(static_cast<uint64_t>(FromScaledTextValue<int64_t>(reg, str) & 0xffffff));
+            break;
         case S32:
-            return FromScaledTextValue<int64_t>(reg, str) & 0xffffffff;
+            value.Set(static_cast<uint64_t>(FromScaledTextValue<int64_t>(reg, str) & 0xffffffff));
+            break;
         case S64:
-            return FromScaledTextValue<int64_t>(reg, str);
+            value.Set(static_cast<uint64_t>(FromScaledTextValue<int64_t>(reg, str)));
+            break;
         case U8:
-            return FromScaledTextValue<uint64_t>(reg, str) & 0xff;
+            value.Set(FromScaledTextValue<uint64_t>(reg, str) & 0xff);
+            break;
         case U16:
-            return FromScaledTextValue<uint64_t>(reg, str) & 0xffff;
+            value.Set(FromScaledTextValue<uint64_t>(reg, str) & 0xffff);
+            break;
         case U24:
-            return FromScaledTextValue<uint64_t>(reg, str) & 0xffffff;
+            value.Set(FromScaledTextValue<uint64_t>(reg, str) & 0xffffff);
+            break;
         case U32:
-            return FromScaledTextValue<uint64_t>(reg, str) & 0xffffffff;
+            value.Set(FromScaledTextValue<uint64_t>(reg, str) & 0xffffffff);
+            break;
         case U64:
-            return FromScaledTextValue<uint64_t>(reg, str);
+            value.Set(FromScaledTextValue<uint64_t>(reg, str));
+            break;
         case Float: {
             float v = FromScaledTextValue<double>(reg, str);
             uint64_t raw = 0;
             memcpy(&raw, &v, sizeof(v));
-            return raw;
+            value.Set(raw);
+            break;
         }
         case Double: {
             double v = FromScaledTextValue<double>(reg, str);
             uint64_t raw = 0;
             memcpy(&raw, &v, sizeof(v));
-            return raw;
+            value.Set(raw);
+            break;
         }
         case Char8:
-            return str.empty() ? 0 : uint8_t(str[0]);
+            str.empty() ? value.Set(0) : value.Set(uint8_t(str[0]));
+            break;
         case BCD8:
-            return IntToPackedBCD(FromScaledTextValue<uint64_t>(reg, str) & 0xFF, WordSizes::W8_SZ);
+            value.Set(IntToPackedBCD(FromScaledTextValue<uint64_t>(reg, str) & 0xFF, WordSizes::W8_SZ));
+            break;
         case BCD16:
-            return IntToPackedBCD(FromScaledTextValue<uint64_t>(reg, str) & 0xFFFF, WordSizes::W16_SZ);
+            value.Set(IntToPackedBCD(FromScaledTextValue<uint64_t>(reg, str) & 0xFFFF, WordSizes::W16_SZ));
+            break;
         case BCD24:
-            return IntToPackedBCD(FromScaledTextValue<uint64_t>(reg, str) & 0xFFFFFF, WordSizes::W24_SZ);
+            value.Set(IntToPackedBCD(FromScaledTextValue<uint64_t>(reg, str) & 0xFFFFFF, WordSizes::W24_SZ));
+            break;
         case BCD32:
-            return IntToPackedBCD(FromScaledTextValue<uint64_t>(reg, str) & 0xFFFFFFFF, WordSizes::W32_SZ);
+            value.Set(IntToPackedBCD(FromScaledTextValue<uint64_t>(reg, str) & 0xFFFFFFFF, WordSizes::W32_SZ));
+            break;
         default:
-            return FromScaledTextValue<uint64_t>(reg, str);
+            value.Set(FromScaledTextValue<uint64_t>(reg, str));
     }
+    return value;
 }
 
-uint64_t ConvertToRawValue(const TRegisterConfig& reg, const std::string& str)
+TChannelValue ConvertToRawValue(const TRegisterConfig& reg, const std::string& str)
 {
     return InvertWordOrderIfNeeded(reg, GetRawValue(reg, str));
 }
@@ -574,47 +593,49 @@ template<> std::string ToScaledTextValue(const TRegisterConfig& reg, double val)
     return WBMQTT::StringFormat("%.15g", RoundValue(reg.Scale * val + reg.Offset, reg.RoundTo));
 }
 
-std::string ConvertFromRawValue(const TRegisterConfig& reg, Register::TValue val)
+std::string ConvertFromRawValue(const TRegisterConfig& reg, TChannelValue val)
 {
     val = InvertWordOrderIfNeeded(reg, val);
     switch (reg.Format) {
         case U8:
-            return ToScaledTextValue(reg, uint8_t(val & 0xff));
+            return ToScaledTextValue(reg, val.Get<uint8_t>());
         case S8:
-            return ToScaledTextValue(reg, int8_t(val & 0xff));
+            return ToScaledTextValue(reg, val.Get<int8_t>());
         case S16:
-            return ToScaledTextValue(reg, int16_t(val & 0xffff));
+            return ToScaledTextValue(reg, val.Get<int16_t>());
         case S24: {
-            uint32_t v = val & 0xffffff;
+            uint32_t v = val.Get<uint64_t>() & 0xffffff;
             if (v & 0x800000)
                 v |= 0xff000000;
-            return ToScaledTextValue(reg, int32_t(v));
+            return ToScaledTextValue(reg, static_cast<int32_t>(v));
         }
         case S32:
-            return ToScaledTextValue(reg, int32_t(val & 0xffffffff));
+            return ToScaledTextValue(reg, val.Get<int32_t>());
         case S64:
-            return ToScaledTextValue(reg, int64_t(val));
+            return ToScaledTextValue(reg, val.Get<int64_t>());
         case BCD8:
-            return ToScaledTextValue(reg, PackedBCD2Int(val, WordSizes::W8_SZ));
+            return ToScaledTextValue(reg, PackedBCD2Int(val.Get<uint64_t>(), WordSizes::W8_SZ));
         case BCD16:
-            return ToScaledTextValue(reg, PackedBCD2Int(val, WordSizes::W16_SZ));
+            return ToScaledTextValue(reg, PackedBCD2Int(val.Get<uint64_t>(), WordSizes::W16_SZ));
         case BCD24:
-            return ToScaledTextValue(reg, PackedBCD2Int(val, WordSizes::W24_SZ));
+            return ToScaledTextValue(reg, PackedBCD2Int(val.Get<uint64_t>(), WordSizes::W24_SZ));
         case BCD32:
-            return ToScaledTextValue(reg, PackedBCD2Int(val, WordSizes::W32_SZ));
+            return ToScaledTextValue(reg, PackedBCD2Int(val.Get<uint64_t>(), WordSizes::W32_SZ));
         case Float: {
             float v;
-            memcpy(&v, &val, sizeof(v));
+            auto rawValue = val.Get<uint64_t>();
+            memcpy(&v, &rawValue, sizeof(v));
             return ToScaledTextValue(reg, v);
         }
         case Double: {
             double v;
-            memcpy(&v, &val, sizeof(v));
+            auto rawValue = val.Get<uint64_t>();
+            memcpy(&v, &rawValue, sizeof(v));
             return ToScaledTextValue(reg, v);
         }
         case Char8:
-            return std::string(1, val & 0xff);
+            return std::string(1, val.Get<uint8_t>());
         default:
-            return ToScaledTextValue(reg, val);
+            return ToScaledTextValue(reg, val.Get<uint64_t>());
     }
 }

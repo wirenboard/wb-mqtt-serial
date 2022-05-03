@@ -30,7 +30,7 @@ public:
     void InvalidateReadCache() override;
     static void Register(TSerialDeviceFactory& factory);
 
-    Register::TValue ReadRegisterImpl(PRegister reg) override;
+    TChannelValue ReadRegisterImpl(PRegister reg) override;
 
 protected:
     bool ConnectionSetup();

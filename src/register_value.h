@@ -1,89 +1,42 @@
 #pragma once
 #include <cstdint>
+#include <deque>
+#include <stddef.h>
 
-namespace Register
+typedef uint16_t TWord;
+
+class TChannelValue
 {
-    //    typedef uint64_t TValue;
-    class TValue
-    {
-    public:
-        TValue()
-        {
-            Value.resize(8);
-        }
+public:
+    TChannelValue();
 
-        TValue(const TValue& other) = default;
-        TValue(TValue&& other) = default;
+    TChannelValue(const TChannelValue& other) = default;
+    TChannelValue(TChannelValue&& other) = default;
 
-        void Set(uint64_t value)
-        {
-            Value[0] = value & 0xFFU;
-            Value[1] = (value >> (8 * 1)) & 0xFFU;
-            Value[2] = (value >> (8 * 2)) & 0xFFU;
-            Value[3] = (value >> (8 * 3)) & 0xFFU;
-            Value[4] = (value >> (8 * 4)) & 0xFFU;
-            Value[5] = (value >> (8 * 5)) & 0xFFU;
-            Value[6] = (value >> (8 * 6)) & 0xFFU;
-            Value[7] = (value >> (8 * 7)) & 0xFFU;
-        }
+    explicit TChannelValue(uint64_t value);
 
-        template<class T> T Get() const;
+    void Set(uint64_t value);
 
-        template<> uint64_t Get() const
-        {
-            uint64_t retVal = 0;
-            for (uint32_t i = 0; i < sizeof(uint64_t); ++i) {
-                retVal |= Value[i] << (i * 8);
-            }
-            return retVal;
-        }
+    template<class T> T Get() const;
 
-        template<> std::vector<uint8_t> Get() const
-        {
-            return Value;
-        }
+    TChannelValue& operator=(const TChannelValue& other);
 
-        template<> uint16_t Get() const
-        {
-            uint16_t retVal = 0;
-            for (uint32_t i = 0; i < sizeof(uint16_t); ++i) {
-                retVal |= Value[i] << (i * 8);
-            }
-            return retVal;
-        }
+    TChannelValue& operator=(TChannelValue&& other) noexcept;
 
-        TValue& operator=(const TValue& other)
-        {
-            // Guard self assignment
-            if (this == &other)
-                return *this;
+    bool operator==(const TChannelValue& other) const;
 
-            Value = other.Value;
-            return *this;
-        }
+    bool operator==(uint64_t other) const;
 
-        TValue& operator=(TValue&& other) noexcept
-        {
-            // Guard self assignment
-            if (this == &other)
-                return *this;
+    bool operator!=(const TChannelValue& other) const;
 
-            Value.swap(other.Value);
-            return *this;
-        }
+    TChannelValue operator>>(uint32_t offset) const;
 
-        bool operator==(const TValue& other) const
-        {
-            return Value == other.Value;
-        }
+    void PushWord(TWord data);
 
-        bool operator!=(const TValue& other) const
-        {
-            return Value != other.Value;
-        }
+    TWord PopWord();
 
-    private:
-        std::vector<uint8_t> Value;
-    };
-
-}
+private:
+    std::deque<TWord> Value;
+    uint32_t SizeInWords;
+    uint32_t OffsetInBits;
+};

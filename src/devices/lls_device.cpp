@@ -107,7 +107,7 @@ std::vector<uint8_t> TLLSDevice::ExecCommand(uint8_t cmd)
     return CmdResultCache.insert({cmd, result}).first->second;
 }
 
-Register::TValue TLLSDevice::ReadRegisterImpl(PRegister reg)
+TChannelValue TLLSDevice::ReadRegisterImpl(PRegister reg)
 {
     uint8_t cmd = GetUint32RegisterAddress(reg->GetAddress());
     auto result = ExecCommand(cmd);
@@ -118,5 +118,6 @@ Register::TValue TLLSDevice::ReadRegisterImpl(PRegister reg)
         result_buf[i] = result[reg->DataOffset + i];
     }
 
-    return (result_buf[3] << 24) | (result_buf[2] << 16) | (result_buf[1] << 8) | result_buf[0];
+    return TChannelValue{
+        static_cast<uint64_t>((result_buf[3] << 24) | (result_buf[2] << 16) | (result_buf[1] << 8) | result_buf[0])};
 }

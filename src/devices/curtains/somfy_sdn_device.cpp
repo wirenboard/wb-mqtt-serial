@@ -192,8 +192,9 @@ std::vector<uint8_t> Somfy::TDevice::ExecCommand(const std::vector<uint8_t>& req
     return respBytes;
 }
 
-void Somfy::TDevice::WriteRegisterImpl(PRegister reg, uint64_t value)
+void Somfy::TDevice::WriteRegisterImpl(PRegister reg, const TChannelValue& regValue)
 {
+    auto value = regValue.Get<uint64_t>();
     if (reg->Type == POSITION) {
         if (value == 0) {
             Check(SlaveId, ACK, ExecCommand(CloseCommand));
@@ -220,32 +221,32 @@ void Somfy::TDevice::WriteRegisterImpl(PRegister reg, uint64_t value)
     throw TSerialDevicePermanentRegisterException("Unsupported register type");
 }
 
-Register::TValue Somfy::TDevice::GetCachedResponse(uint8_t requestHeader,
-                                                   uint8_t responseHeader,
-                                                   size_t bitOffset,
-                                                   size_t bitWidth)
+TChannelValue Somfy::TDevice::GetCachedResponse(uint8_t requestHeader,
+                                                uint8_t responseHeader,
+                                                size_t bitOffset,
+                                                size_t bitWidth)
 {
-    Register::TValue val;
+    TChannelValue val;
     auto it = DataCache.find(requestHeader);
     if (it != DataCache.end()) {
         val = it->second;
     } else {
         auto req = MakeRequest(requestHeader, SlaveId, NodeType);
-        val = ParseStatusReport(SlaveId, responseHeader, ExecCommand(req));
+        val.Set(ParseStatusReport(SlaveId, responseHeader, ExecCommand(req)));
         DataCache[requestHeader] = val;
     }
     if (bitOffset || bitWidth) {
-        return (val >> bitOffset) & GetLSBMask(bitWidth);
+        return TChannelValue{(val.Get<uint64_t>() >> bitOffset) & GetLSBMask(bitWidth)};
     }
     return val;
 }
 
-Register::TValue Somfy::TDevice::ReadRegisterImpl(PRegister reg)
+TChannelValue Somfy::TDevice::ReadRegisterImpl(PRegister reg)
 {
     switch (reg->Type) {
         case POSITION: {
             auto res = GetCachedResponse(GET_MOTOR_POSITION, POST_MOTOR_POSITION, 2 * 8, 8);
-            if (res > 100) {
+            if (res.Get<uint64_t>() > 100) {
                 throw TSerialDeviceInternalErrorException("Unknown position");
             }
             return res;
@@ -255,7 +256,7 @@ Register::TValue Somfy::TDevice::ReadRegisterImpl(PRegister reg)
             return GetCachedResponse(addr.Get(), addr.GetResponseHeader(), reg->DataOffset, reg->DataWidth);
         }
         case COMMAND: {
-            return 1;
+            return TChannelValue{1};
         }
     }
     throw TSerialDevicePermanentRegisterException("Unsupported register type");

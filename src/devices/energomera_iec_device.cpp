@@ -187,7 +187,7 @@ namespace
                 ret = sscanf(presp, "(%lf)%n", &resp_val, &nread);
                 if (ret >= 1) {
                     presp += nread;
-                    reg->SetValue(CopyDoubleToUint64(resp_val));
+                    reg->SetValue(TChannelValue{CopyDoubleToUint64(resp_val)});
                 } else {
                     // consume error message instead
                     int err_num;

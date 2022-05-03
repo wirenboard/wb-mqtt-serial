@@ -11,7 +11,7 @@ public:
     static void Register(TSerialDeviceFactory& factory);
 
 protected:
-    Register::TValue ReadRegisterImpl(PRegister reg) override;
+    TChannelValue ReadRegisterImpl(PRegister reg) override;
     void InvalidateReadCache() override;
 
 private:

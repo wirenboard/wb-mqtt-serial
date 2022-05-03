@@ -5,21 +5,21 @@ using namespace std;
 
 namespace // utility
 {
-    Register::TValue GetValue(uint16_t* src, int width)
+    TChannelValue GetValue(uint16_t* src, int width)
     {
-        Register::TValue res = 0;
+        TChannelValue value;
         for (int i = 0; i < width; ++i) {
-            auto bitCount = ((width - i) - 1) * 16;
-            res |= static_cast<Register::TValue>(src[i]) << bitCount;
-        }
-        return res;
+            value.PushWord(src[i]);
+        };
+
+        return value;
     }
 
-    void SetValue(uint16_t* dst, int width, Register::TValue value)
+    void SetValue(uint16_t* dst, int width, const TChannelValue& value)
     {
+        auto bufValue = value;
         for (int p = width - 1; p >= 0; --p) {
-            dst[p] = value & 0xffff;
-            value >>= 16;
+            dst[p] = bufValue.PopWord();
         }
     }
 
@@ -63,7 +63,7 @@ TFakeSerialDevice::TFakeSerialDevice(PDeviceConfig config, PPort port, PProtocol
     Devices.push_back(this);
 }
 
-Register::TValue TFakeSerialDevice::ReadRegisterImpl(PRegister reg)
+TChannelValue TFakeSerialDevice::ReadRegisterImpl(PRegister reg)
 {
     try {
         if (!FakePort->IsOpen()) {
@@ -91,7 +91,7 @@ Register::TValue TFakeSerialDevice::ReadRegisterImpl(PRegister reg)
         auto value = GetValue(&Registers[addr], reg->Get16BitWidth());
 
         FakePort->GetFixture().Emit() << "fake_serial_device '" << SlaveId << "': read address '" << reg->GetAddress()
-                                      << "' value '" << value << "'";
+                                      << "' value '" << value.Get<uint64_t>() << "'";
 
         return value;
     } catch (const exception& e) {
@@ -102,7 +102,7 @@ Register::TValue TFakeSerialDevice::ReadRegisterImpl(PRegister reg)
     }
 }
 
-void TFakeSerialDevice::WriteRegisterImpl(PRegister reg, Register::TValue value)
+void TFakeSerialDevice::WriteRegisterImpl(PRegister reg, const TChannelValue& value)
 {
     try {
         if (!FakePort->IsOpen()) {
@@ -130,7 +130,7 @@ void TFakeSerialDevice::WriteRegisterImpl(PRegister reg, Register::TValue value)
         SetValue(&Registers[addr], reg->Get16BitWidth(), value);
 
         FakePort->GetFixture().Emit() << "fake_serial_device '" << SlaveId << "': write to address '"
-                                      << reg->GetAddress() << "' value '" << value << "'";
+                                      << reg->GetAddress() << "' value '" << value.Get<uint64_t>() << "'";
     } catch (const exception& e) {
         FakePort->GetFixture().Emit() << "fake_serial_device '" << SlaveId << "': write address '" << reg->GetAddress()
                                       << "' failed: '" << e.what() << "'";

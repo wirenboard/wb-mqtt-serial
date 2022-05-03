@@ -24,8 +24,8 @@ namespace Dooya
         static void Register(TSerialDeviceFactory& factory);
 
     protected:
-        Register::TValue ReadRegisterImpl(PRegister reg) override;
-        void WriteRegisterImpl(PRegister reg, Register::TValue value) override;
+        TChannelValue ReadRegisterImpl(PRegister reg) override;
+        void WriteRegisterImpl(PRegister reg, const TChannelValue& regValue) override;
     };
 
     std::vector<uint8_t> MakeRequest(uint16_t address, const std::vector<uint8_t>& data);

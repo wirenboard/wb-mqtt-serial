@@ -94,7 +94,7 @@ void TSerialDevice::EndSession()
 void TSerialDevice::InvalidateReadCache()
 {}
 
-void TSerialDevice::WriteRegister(PRegister reg, Register::TValue value)
+void TSerialDevice::WriteRegister(PRegister reg, const TChannelValue& value)
 {
     try {
         WriteRegisterImpl(reg, value);
@@ -108,12 +108,17 @@ void TSerialDevice::WriteRegister(PRegister reg, Register::TValue value)
     }
 }
 
-Register::TValue TSerialDevice::ReadRegisterImpl(PRegister reg)
+void TSerialDevice::WriteRegister(PRegister reg, uint64_t value)
+{
+    WriteRegister(reg, TChannelValue{value});
+}
+
+TChannelValue TSerialDevice::ReadRegisterImpl(PRegister reg)
 {
     throw TSerialDeviceException("single register reading is not supported");
 }
 
-void TSerialDevice::WriteRegisterImpl(PRegister reg, Register::TValue value)
+void TSerialDevice::WriteRegisterImpl(PRegister reg, const TChannelValue& value)
 {
     throw TSerialDeviceException(ToString() + ": register writing is not supported");
 }
@@ -204,7 +209,8 @@ void TSerialDevice::WriteSetupRegisters()
     for (const auto& setup_item: SetupItems) {
         WriteRegisterImpl(setup_item->Register, setup_item->RawValue);
         LOG(Info) << "Init: " << setup_item->Name << ": setup register " << setup_item->Register->ToString() << " <-- "
-                  << setup_item->HumanReadableValue << " (0x" << std::hex << setup_item->RawValue << ")";
+                  << setup_item->HumanReadableValue << " (0x" << std::hex << setup_item->RawValue.Get<uint64_t>()
+                  << ")";
         // TODO: More verbose exception
     }
     SetTransferResult(true);

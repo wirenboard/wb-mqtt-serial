@@ -984,8 +984,7 @@ TEST_F(TSerialClientTest, Errors)
     SerialClient->SetTextValue(reg20, "42");
     Note() << "Cycle() [write, nothing blacklisted]";
     SerialClient->Cycle();
-
-    reg20->ErrorValue = 42;
+    reg20->ErrorValue = TChannelValue{42};
     Note() << "Cycle() [read, set error value for register]";
     SerialClient->Cycle();
 

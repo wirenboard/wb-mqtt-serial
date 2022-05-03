@@ -30,7 +30,7 @@ public:
 
 private:
     std::weak_ptr<TSerialDevice> Dev;
-    uint64_t ValueToSet = 0;
+    TChannelValue ValueToSet{0};
     PRegister Reg;
     volatile bool Dirty = false;
     std::mutex SetValueMutex;

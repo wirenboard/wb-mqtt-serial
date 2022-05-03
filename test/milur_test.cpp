@@ -81,17 +81,17 @@ void TMilurTest::SetUp()
 void TMilurTest::VerifyParamQuery()
 {
     EnqueueMilurPhaseCVoltageResponse();
-    ASSERT_EQ(0x03946f, MilurDev->ReadRegisterImpl(MilurPhaseCVoltageReg));
+    ASSERT_EQ(TChannelValue{0x03946f}, MilurDev->ReadRegisterImpl(MilurPhaseCVoltageReg));
 
     EnqueueMilurPhaseCCurrentResponse();
-    ASSERT_EQ(0xffd8f0, MilurDev->ReadRegisterImpl(MilurPhaseCCurrentReg));
+    ASSERT_EQ(TChannelValue{0xffd8f0}, MilurDev->ReadRegisterImpl(MilurPhaseCCurrentReg));
 
     EnqueueMilurTotalConsumptionResponse();
     // "milur BCD32" value 11144 packed as uint64_t
-    ASSERT_EQ(0x11144, MilurDev->ReadRegisterImpl(MilurTotalConsumptionReg));
+    ASSERT_EQ(TChannelValue{0x11144}, MilurDev->ReadRegisterImpl(MilurTotalConsumptionReg));
 
     EnqueueMilurFrequencyResponse();
-    ASSERT_EQ(50080, MilurDev->ReadRegisterImpl(MilurFrequencyReg));
+    ASSERT_EQ(TChannelValue{50080}, MilurDev->ReadRegisterImpl(MilurFrequencyReg));
 }
 
 TEST_F(TMilurTest, Query)
@@ -109,7 +109,7 @@ TEST_F(TMilurTest, Reconnect)
     // reconnection
     EnqueueMilurSessionSetupResponse();
     EnqueueMilurPhaseCVoltageResponse();
-    ASSERT_EQ(0x03946f, MilurDev->ReadRegisterImpl(MilurPhaseCVoltageReg));
+    ASSERT_EQ(TChannelValue{0x03946f}, MilurDev->ReadRegisterImpl(MilurPhaseCVoltageReg));
 }
 
 TEST_F(TMilurTest, Exception)
@@ -243,7 +243,7 @@ void TMilur32Test::SetUp()
 void TMilur32Test::VerifyMilurQuery()
 {
     EnqueueMilur32TotalConsumptionResponse();
-    ASSERT_EQ(0x11144, MilurDev->ReadRegisterImpl(MilurTotalConsumptionReg));
+    ASSERT_EQ(TChannelValue{0x11144}, MilurDev->ReadRegisterImpl(MilurTotalConsumptionReg));
 }
 
 TEST_F(TMilur32Test, MilurQuery)
