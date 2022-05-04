@@ -1,4 +1,6 @@
 {% set OUTPUTS_NUMBER = 6 -%}
+{% set MMATRIX_OUTPUTS_NUMBER = 8 -%}
+{% set FIRST_INPUT = 0 -%}
 {
     "title": "WB-MR6C_template_title",
     "device_type": "WB-MR6C",
@@ -10,7 +12,7 @@
         "frame_timeout_ms": 8,
 
         "groups": [
-            {% for in_num in range(0, OUTPUTS_NUMBER + 1) -%}
+            {% for in_num in range(FIRST_INPUT, OUTPUTS_NUMBER + 1) -%}
             {
                 "title": "Input {{in_num}}",
                 "id": "g_in{{in_num}}",
@@ -75,7 +77,7 @@
         ],
 
         "parameters": {
-            {% for in_num in range(0, OUTPUTS_NUMBER + 1) -%}
+            {% for in_num in range(FIRST_INPUT, OUTPUTS_NUMBER + 1) -%}
             {% if in_num == 0 -%}
             "in{{in_num}}_mode": {
                 "title": "Mode",
@@ -170,7 +172,7 @@
                 {% if in_num == 0 -%}
                 "address": {{440 + out_num - 1}},
                 {% else -%}
-                "address": {{384 + out_num - 1 + (in_num-1)*8}},
+                "address": {{384 + out_num - 1 + (in_num-1) * MMATRIX_OUTPUTS_NUMBER}},
                 {% endif -%}
                 "reg_type": "holding",
                 "default": 0,
@@ -208,7 +210,7 @@
                 {% if in_num == 0 -%}
                 "address": {{600 + out_num - 1}},
                 {% else -%}
-                "address": {{544 + out_num - 1 + (in_num-1)*8}},
+                "address": {{544 + out_num - 1 + (in_num-1) * MMATRIX_OUTPUTS_NUMBER}},
                 {% endif -%}
                 "reg_type": "holding",
                 "default": 0,
@@ -223,7 +225,7 @@
                 {% if in_num == 0 -%}
                 "address": {{664 + out_num - 1}},
                 {% else -%}
-                "address": {{608 + out_num - 1 + (in_num-1)*8}},
+                "address": {{608 + out_num - 1 + (in_num-1) * MMATRIX_OUTPUTS_NUMBER}},
                 {% endif -%}
                 "reg_type": "holding",
                 "default": 0,
@@ -238,7 +240,7 @@
                 {% if in_num == 0 -%}
                 "address": {{728 + out_num - 1}},
                 {% else -%}
-                "address": {{672 + out_num - 1 + (in_num-1)*8}},
+                "address": {{672 + out_num - 1 + (in_num-1) * MMATRIX_OUTPUTS_NUMBER}},
                 {% endif -%}
                 "reg_type": "holding",
                 "default": 0,
@@ -253,7 +255,7 @@
                 {% if in_num == 0 -%}
                 "address": {{792 + out_num - 1}},
                 {% else -%}
-                "address": {{736 + out_num - 1 + (in_num-1)*8}},
+                "address": {{736 + out_num - 1 + (in_num-1) * MMATRIX_OUTPUTS_NUMBER}},
                 {% endif -%}
                 "reg_type": "holding",
                 "default": 0,
@@ -303,7 +305,7 @@
         },
 
         "channels": [
-            {% for in_num in range(0, OUTPUTS_NUMBER + 1) -%}
+            {% for in_num in range(FIRST_INPUT, OUTPUTS_NUMBER + 1) -%}
             {
                 "name": "Input {{in_num}}",
                 "reg_type": "discrete",
@@ -471,7 +473,7 @@
             "ru": {
                 "WB-MR6C_template_title": "WB-MR6C v.2, WB-MR6LV/x, WB-MR6HV/x (6-канальный модуль реле)",
 
-                {% for in_num in range(0, OUTPUTS_NUMBER + 1) -%}
+                {% for in_num in range(FIRST_INPUT, OUTPUTS_NUMBER + 1) -%}
                 "Input {{in_num}}": "Вход {{in_num}}",
                 "Input {{in_num}} counter": "Счетчик {{in_num}}",
                 "Input {{in_num}} freq": "Частота {{in_num}}",
