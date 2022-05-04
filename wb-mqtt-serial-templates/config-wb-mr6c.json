@@ -463,6 +463,23 @@
                 "order": 8
             },
             {
+                "title": "Safety mode when communication is lost",
+                "id": "gg_safety_setting_poll",
+                "group": "g_outputs",
+                "order": 1
+            },
+            {
+                "title": "out_channels",
+                "id": "gg_out_channels",
+                "order": 2,
+                "group": "g_outputs",
+                "ui_options": {
+                    "wb": {
+                        "disable_title": true
+                    }
+                }
+            },
+            {
                 "title": "General",
                 "id": "g_general",
                 "order": 9
@@ -4024,12 +4041,13 @@
                 "condition": "in6_mode==6"
             },
             "outputs_restore_state": {
-                "title": "Restore Last Outputs State After Power On",
+                "title": "Outputs State After Power On",
+                "description": "outputs_restore_state_description",
                 "address": 6,
                 "reg_type": "holding",
-                "enum": [0, 1],
+                "enum": [0, 1, 2],
                 "default": 0,
-                "enum_titles": ["no", "yes"],
+                "enum_titles": ["Don't restore", "Restore", "Set according to input"],
                 "group": "g_outputs",
                 "order": 1
             },
@@ -4042,6 +4060,96 @@
                 "default": 3600,
                 "group": "g_outputs",
                 "order": 2
+            },
+            "out1_safety_poll_setting": {
+                "group": "gg_safety_setting_poll",
+                "title": "Output 1",
+                "order": 1,
+                "address": 930,
+                "reg_type": "holding",
+                "default": 2,
+                "enum": [0, 1, 2, 3],
+                "enum_titles": [
+                    "Always control output by inputs",
+                    "Control output by inputs only when communication is lost",
+                    "Turn off output",
+                    "Turn on output"
+                ]
+            },
+            "out2_safety_poll_setting": {
+                "group": "gg_safety_setting_poll",
+                "title": "Output 2",
+                "order": 1,
+                "address": 931,
+                "reg_type": "holding",
+                "default": 2,
+                "enum": [0, 1, 2, 3],
+                "enum_titles": [
+                    "Always control output by inputs",
+                    "Control output by inputs only when communication is lost",
+                    "Turn off output",
+                    "Turn on output"
+                ]
+            },
+            "out3_safety_poll_setting": {
+                "group": "gg_safety_setting_poll",
+                "title": "Output 3",
+                "order": 1,
+                "address": 932,
+                "reg_type": "holding",
+                "default": 2,
+                "enum": [0, 1, 2, 3],
+                "enum_titles": [
+                    "Always control output by inputs",
+                    "Control output by inputs only when communication is lost",
+                    "Turn off output",
+                    "Turn on output"
+                ]
+            },
+            "out4_safety_poll_setting": {
+                "group": "gg_safety_setting_poll",
+                "title": "Output 4",
+                "order": 1,
+                "address": 933,
+                "reg_type": "holding",
+                "default": 2,
+                "enum": [0, 1, 2, 3],
+                "enum_titles": [
+                    "Always control output by inputs",
+                    "Control output by inputs only when communication is lost",
+                    "Turn off output",
+                    "Turn on output"
+                ]
+            },
+            "out5_safety_poll_setting": {
+                "group": "gg_safety_setting_poll",
+                "title": "Output 5",
+                "order": 1,
+                "address": 934,
+                "reg_type": "holding",
+                "default": 2,
+                "enum": [0, 1, 2, 3],
+                "enum_titles": [
+                    "Always control output by inputs",
+                    "Control output by inputs only when communication is lost",
+                    "Turn off output",
+                    "Turn on output"
+                ]
+            },
+            "out6_safety_poll_setting": {
+                "group": "gg_safety_setting_poll",
+                "title": "Output 6",
+                "order": 1,
+                "address": 935,
+                "reg_type": "holding",
+                "default": 2,
+                "enum": [0, 1, 2, 3],
+                "enum_titles": [
+                    "Always control output by inputs",
+                    "Control output by inputs only when communication is lost",
+                    "Turn off output",
+                    "Turn on output"
+                ]
             },
             "baud_rate": {
                     "title": "Baud rate",
@@ -4502,42 +4610,42 @@
                 "reg_type": "coil",
                 "address": 0,
                 "type": "switch",
-                "group": "g_outputs"
+                "group": "gg_out_channels"
             },
             {
                 "name": "K2",
                 "reg_type": "coil",
                 "address": 1,
                 "type": "switch",
-                "group": "g_outputs"
+                "group": "gg_out_channels"
             },
             {
                 "name": "K3",
                 "reg_type": "coil",
                 "address": 2,
                 "type": "switch",
-                "group": "g_outputs"
+                "group": "gg_out_channels"
             },
             {
                 "name": "K4",
                 "reg_type": "coil",
                 "address": 3,
                 "type": "switch",
-                "group": "g_outputs"
+                "group": "gg_out_channels"
             },
             {
                 "name": "K5",
                 "reg_type": "coil",
                 "address": 4,
                 "type": "switch",
-                "group": "g_outputs"
+                "group": "gg_out_channels"
             },
             {
                 "name": "K6",
                 "reg_type": "coil",
                 "address": 5,
                 "type": "switch",
-                "group": "g_outputs"
+                "group": "gg_out_channels"
             },
             {
                 "name": "Serial",
@@ -4590,6 +4698,7 @@
             "en": {
                 "WB-MR6C_template_title": "WB-MR6C v.2, WB-MR6LV/x, WB-MR6HV/x (6-channel relay)",
                 "mode_description": "For using button mapping-matrix firmware v1.17.0 or newer is required",
+                "outputs_restore_state_description": "Option \"Set according to input\" works for latching switch input mode only, firmware v1.18.0 or newer is required",
                 "baud_rate_description": "Make sure that communication with device is established before changing this parameter. Select required baud rate, save configuration and then change port baud rate to the same value.",
                 "Uptime": "Uptime (s)",
 
@@ -4718,7 +4827,11 @@
                 "Operate according to mapping-matrix": "Управлять по mapping-матрице",
                 "Operate according to button mapping-matrix": "Управлять по mapping-матрице для кнопок",
 
-                "Restore Last Outputs State After Power On": "Восстанавливать состояния выходов при включении",
+                "Outputs State After Power On": "Cостояния выходов при включении питания",
+                "Don't restore": "Не восстанавливать",
+                "Restore": "Восстанавливать",
+                "Set according to input": "Установить согласно входу",
+                "outputs_restore_state_description":  "Вариант \"Установить согласно входу\" работает только для режима входа \"Переключатель с фиксацией\", требуется прошивка v1.18.0 или новее",
                 "Safety Timer (s)": "Таймаут безопасного режима (с)",
                 "no": "нет",
                 "yes": "да",
@@ -4735,6 +4848,12 @@
                 "lp_hold_time_description": "Если нажатие длится больше указанного времени - считаем его длинным",
                 "dp_time_description": "Если за указанное время второго нажатия не было - считаем нажатие одиночным. 0 - отключит все нажатия кроме короткого и длинного",
                 "debounce_time_description": "Должно быть в 5-10 раз меньше, чем время ожидания двойного нажатия. Если двойные нажатия отключены - любое значение",
+
+                "Safety mode when communication is lost": "Безопасный режим при потере связи",
+                "Always control output by inputs": "Всегда управлять выходом от входов",
+                "Control output by inputs only when communication is lost": "Управлять выходом от входов только при потере связи",
+                "Turn off output": "Отключить выход",
+                "Turn on output": "Включить выход",
 
                 "Baud rate": "Скорость обмена",
                 "baud_rate_description": "Перед изменением параметра убедитесь, что связь с устройством установлена. Выберите нужную скорость обмена, сохраните конфигурацию, а затем укажите в настройках порта эту же скорость.",
