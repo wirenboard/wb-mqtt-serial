@@ -638,7 +638,9 @@ std::string ConvertFromRawValue(const TRegisterConfig& reg, TChannelValue val)
             return ToScaledTextValue(reg, v);
         }
         case Char8:
-            return std::string(1, val.Get<uint8_t>());
+            return {1, val.Get<uint8_t>()};
+        case String32:
+            return val.Get<std::string>();
         default:
             return ToScaledTextValue(reg, val.Get<uint64_t>());
     }
