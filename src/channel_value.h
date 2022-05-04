@@ -1,10 +1,10 @@
 #pragma once
 #include <cstdint>
 #include <deque>
-#include <stddef.h>
+#include <cstddef>
 #include <string>
 
-typedef uint16_t TWord;
+typedef uint16_t TRegisterWord;
 
 class TChannelValue
 {
@@ -34,12 +34,12 @@ public:
 
     TChannelValue operator>>(uint32_t offset) const;
 
-    void PushWord(TWord data);
+    void PushWord(TRegisterWord data);
 
-    TWord PopWord();
+    TRegisterWord PopWord();
+
+    std::string ToString();
 
 private:
-    std::deque<TWord> Value;
-    uint32_t SizeInWords;
-    uint32_t OffsetInBits;
+    std::deque<TRegisterWord> Value;
 };

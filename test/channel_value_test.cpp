@@ -60,3 +60,19 @@ TEST_F(RegisterValueTest, rightShift)
         EXPECT_EQ(val >> i, result.Get<uint64_t>());
     }
 }
+
+TEST_F(RegisterValueTest, String)
+{
+    TChannelValue value;
+    std::string str = "abcdefgh1423";
+    value.Set(str);
+    EXPECT_EQ(str, value.Get<std::string>());
+}
+
+TEST_F(RegisterValueTest, ToString){
+    TChannelValue value;
+    uint64_t rawValue = 0xAABBCCDDEEFF1122;
+    std::string str = "1122 eeff ccdd aabb ";
+    value.Set(rawValue);
+    EXPECT_EQ(str, value.ToString());
+}
