@@ -2,6 +2,7 @@
 #include <cstdint>
 #include <deque>
 #include <stddef.h>
+#include <string>
 
 typedef uint16_t TWord;
 
@@ -16,6 +17,8 @@ public:
     explicit TChannelValue(uint64_t value);
 
     void Set(uint64_t value);
+
+    void Set(const std::string& value);
 
     template<class T> T Get() const;
 

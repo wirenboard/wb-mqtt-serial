@@ -1,4 +1,4 @@
-#include "register_value.h"
+#include "channel_value.h"
 #include <vector>
 
 TChannelValue::TChannelValue()
@@ -64,6 +64,13 @@ template<> int8_t TChannelValue::Get() const
     return static_cast<int8_t>(Get<uint8_t>());
 }
 
+template<> std::string TChannelValue::Get() const
+{
+    std::string str;
+    std::copy(Value.begin(),Value.end(), std::back_inserter(str));
+    return str;
+}
+
 TChannelValue::TChannelValue(uint64_t value)
 {
     Set(value);
@@ -78,6 +85,11 @@ void TChannelValue::Set(uint64_t value)
     while (!Value.empty() && Value.back() == 0) {
         Value.pop_back();
     }
+}
+
+void TChannelValue::Set(const std::string& value)
+{
+    std::copy(value.begin(), value.end(), std::back_inserter(Value));
 }
 
 TChannelValue& TChannelValue::operator=(const TChannelValue& other)

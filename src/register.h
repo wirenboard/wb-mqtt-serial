@@ -15,7 +15,7 @@
 #include <utility>
 #include <vector>
 
-#include "register_value.h"
+#include "channel_value.h"
 #include "serial_exc.h"
 
 enum RegisterFormat
@@ -36,7 +36,8 @@ enum RegisterFormat
     BCD32,
     Float,
     Double,
-    Char8
+    Char8,
+    String32
 };
 
 enum class EWordOrder
@@ -410,6 +411,8 @@ inline const char* RegisterFormatName(RegisterFormat fmt)
             return "Double";
         case Char8:
             return "Char8";
+        case String32:
+            return "String32";
         default:
             return "<unknown register type>";
     }
@@ -449,6 +452,8 @@ inline RegisterFormat RegisterFormatFromName(const std::string& name)
         return Double;
     else if (name == "char8")
         return Char8;
+    else if (name == "string32")
+        return String32;
     else
         return U16;
 }
