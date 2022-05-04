@@ -96,7 +96,7 @@ clean :
 	rm -rf $(TEST_DIR)/*.o $(TEST_DIR)/$(TEST_BIN)
 	find $(SRC_DIR) -name '*.o' -delete
 	rm -f $(SERIAL_BIN)
-	rm $(TEMPLATE_TEMPLATES)
+	rm -rf $(TEMPLATE_TEMPLATES)
 
 install:
 	install -d $(DESTDIR)/var/lib/wb-mqtt-serial
