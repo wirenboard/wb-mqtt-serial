@@ -33,6 +33,39 @@ namespace
 
     //  {
     //      "type": "number", // or "type": "integer"
+    //      "default": DEFAULT,
+    //      "minimum": MIN,
+    //      "maximum": MAX,
+    //      "enum": [ ... ],
+    //      "description": DESCRIPTION_HASH,
+    //      "condition": CONDITION,
+    //      "options": {
+    //          "enumTitles" : [ ... ]
+    //      }
+    //  }
+    Json::Value MakeParameterSchemaForAnyOf(const Json::Value& setupRegister, int index, TContext& context)
+    {
+        Json::Value r;
+        r["type"] = setupRegister.isMember("scale") ? "number" : "integer";
+        r["default"] = GetDefaultSetupRegisterValue(setupRegister);
+        SetIfExists(r, "enum", setupRegister, "enum");
+        SetIfExists(r, "minimum", setupRegister, "min");
+        SetIfExists(r, "maximum", setupRegister, "max");
+        if (setupRegister.isMember("description")) {
+            r["description"] = context.AddHashedTranslation(setupRegister["description"].asString());
+        }
+        if (setupRegister.isMember("enum_titles")) {
+            auto& titles = MakeArray("enum_titles", r["options"]);
+            for (const auto& title: setupRegister["enum_titles"]) {
+                titles.append(context.AddHashedTranslation(title.asString()));
+            }
+        }
+        SetIfExists(r, "condition", setupRegister, "condition");
+        return r;
+    }
+
+    //  {
+    //      "type": "number", // or "type": "integer"
     //      "title": TITLE_HASH,
     //      "default": DEFAULT,
     //      "minimum": MIN,
@@ -50,25 +83,10 @@ namespace
     //  }
     Json::Value MakeParameterSchema(const Json::Value& setupRegister, int index, TContext& context)
     {
-        Json::Value r;
-        r["type"] = setupRegister.isMember("scale") ? "number" : "integer";
+        Json::Value r(MakeParameterSchemaForAnyOf(setupRegister, index, context));
         r["title"] = context.AddHashedTranslation(setupRegister["title"].asString());
-        r["default"] = GetDefaultSetupRegisterValue(setupRegister);
-        SetIfExists(r, "enum", setupRegister, "enum");
-        SetIfExists(r, "minimum", setupRegister, "min");
-        SetIfExists(r, "maximum", setupRegister, "max");
-        if (setupRegister.isMember("description")) {
-            r["description"] = context.AddHashedTranslation(setupRegister["description"].asString());
-        }
         r["propertyOrder"] = index;
-        if (setupRegister.isMember("enum_titles")) {
-            auto& titles = MakeArray("enum_titles", r["options"]);
-            for (const auto& title: setupRegister["enum_titles"]) {
-                titles.append(context.AddHashedTranslation(title.asString()));
-            }
-        }
         SetIfExists(r, "group", setupRegister, "group");
-        SetIfExists(r, "condition", setupRegister, "condition");
         if (!IsRequiredSetupRegister(setupRegister)) {
             r["options"]["show_opt_in"] = true;
         } else {
@@ -76,6 +94,30 @@ namespace
             r["requiredProp"] = true;
         }
         return r;
+    }
+
+    void SetAndRemoveIfExists(Json::Value& dst, Json::Value& src, const std::string& key)
+    {
+        SetIfExists(dst, key, src, key);
+        src.removeMember(key);
+    }
+
+    void ConvertToAnyOfParameter(Json::Value& prop)
+    {
+        Json::Value newProp;
+        SetAndRemoveIfExists(newProp, prop, "group");
+        SetAndRemoveIfExists(newProp, prop, "propertyOrder");
+        SetAndRemoveIfExists(newProp, prop, "title");
+        SetAndRemoveIfExists(newProp, prop, "requiredProp");
+        if (prop.isMember("options")) {
+            SetAndRemoveIfExists(newProp["options"], prop["options"], "show_opt_in");
+            if (prop["options"].empty()) {
+                prop.removeMember("options");
+            }
+        }
+        newProp["anyOf"] = Json::Value(Json::arrayValue);
+        newProp["anyOf"].append(prop);
+        prop = newProp;
     }
 
     int AddDeviceParametersUI(Json::Value& properties,
@@ -90,7 +132,15 @@ namespace
             for (Json::ValueConstIterator it = params.begin(); it != params.end(); ++it) {
                 int order = it->get("order", n).asInt();
                 maxOrder = std::max(order, maxOrder);
-                properties[it.name()] = MakeParameterSchema(*it, firstParameterOrder + order, context);
+                auto& prop = properties[params.isArray() ? (*it)["id"].asString() : it.name()];
+                if (prop.empty()) {
+                    prop = MakeParameterSchema(*it, firstParameterOrder + order, context);
+                } else {
+                    if (!prop.isMember("anyOf")) {
+                        ConvertToAnyOfParameter(prop);
+                    }
+                    prop["anyOf"].append(MakeParameterSchemaForAnyOf(*it, firstParameterOrder + order, context));
+                }
                 ++n;
             }
         }
