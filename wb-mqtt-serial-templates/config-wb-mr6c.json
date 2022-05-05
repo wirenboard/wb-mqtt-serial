@@ -463,7 +463,7 @@
                 "order": 8
             },
             {
-                "title": "Safety mode when communication is lost",
+                "title": "Safety mode on communication loss",
                 "id": "gg_safety_setting_poll",
                 "group": "g_outputs",
                 "order": 1
@@ -528,7 +528,6 @@
                 "group": "g_in0",
                 "order": 2
             },
-            
             "in0_lp_hold_time": {
                 "group": "gg_in0_press_params",
                 "title": "lp_hold_time_title",
@@ -553,7 +552,6 @@
                 "max": 2000,
                 "condition": "in0_mode==6"
             },
-            
             "in0_out1_actions": {
                 "group": "gg_in0_mapping_matrix_actions",
                 "title": "Output 1",
@@ -1033,7 +1031,6 @@
                 "group": "g_in1",
                 "order": 2
             },
-            
             "in1_lp_hold_time": {
                 "group": "gg_in1_press_params",
                 "title": "lp_hold_time_title",
@@ -1059,7 +1056,6 @@
                 "max": 2000,
                 "condition": "in1_mode==6"
             },
-            
             "in1_out1_actions": {
                 "group": "gg_in1_mapping_matrix_actions",
                 "title": "Output 1",
@@ -1539,7 +1535,6 @@
                 "group": "g_in2",
                 "order": 2
             },
-            
             "in2_lp_hold_time": {
                 "group": "gg_in2_press_params",
                 "title": "lp_hold_time_title",
@@ -1565,7 +1560,6 @@
                 "max": 2000,
                 "condition": "in2_mode==6"
             },
-            
             "in2_out1_actions": {
                 "group": "gg_in2_mapping_matrix_actions",
                 "title": "Output 1",
@@ -2045,7 +2039,6 @@
                 "group": "g_in3",
                 "order": 2
             },
-            
             "in3_lp_hold_time": {
                 "group": "gg_in3_press_params",
                 "title": "lp_hold_time_title",
@@ -2071,7 +2064,6 @@
                 "max": 2000,
                 "condition": "in3_mode==6"
             },
-            
             "in3_out1_actions": {
                 "group": "gg_in3_mapping_matrix_actions",
                 "title": "Output 1",
@@ -2551,7 +2543,6 @@
                 "group": "g_in4",
                 "order": 2
             },
-            
             "in4_lp_hold_time": {
                 "group": "gg_in4_press_params",
                 "title": "lp_hold_time_title",
@@ -2577,7 +2568,6 @@
                 "max": 2000,
                 "condition": "in4_mode==6"
             },
-            
             "in4_out1_actions": {
                 "group": "gg_in4_mapping_matrix_actions",
                 "title": "Output 1",
@@ -3057,7 +3047,6 @@
                 "group": "g_in5",
                 "order": 2
             },
-            
             "in5_lp_hold_time": {
                 "group": "gg_in5_press_params",
                 "title": "lp_hold_time_title",
@@ -3083,7 +3072,6 @@
                 "max": 2000,
                 "condition": "in5_mode==6"
             },
-            
             "in5_out1_actions": {
                 "group": "gg_in5_mapping_matrix_actions",
                 "title": "Output 1",
@@ -3563,7 +3551,6 @@
                 "group": "g_in6",
                 "order": 2
             },
-            
             "in6_lp_hold_time": {
                 "group": "gg_in6_press_params",
                 "title": "lp_hold_time_title",
@@ -3589,7 +3576,6 @@
                 "max": 2000,
                 "condition": "in6_mode==6"
             },
-            
             "in6_out1_actions": {
                 "group": "gg_in6_mapping_matrix_actions",
                 "title": "Output 1",
@@ -4047,12 +4033,13 @@
                 "reg_type": "holding",
                 "enum": [0, 1, 2],
                 "default": 0,
-                "enum_titles": ["Don't restore", "Restore", "Set according to input"],
+                "enum_titles": ["Don't restore", "Restore", "Set according to input (for latching switch mode only)"],
                 "group": "g_outputs",
                 "order": 1
             },
             "safety_timer_s": {
                 "title": "Safety Timer (s)",
+                "description": "safety_timer_description",
                 "address": 8,
                 "reg_type": "holding",
                 "min": 0,
@@ -4070,8 +4057,8 @@
                 "default": 2,
                 "enum": [0, 1, 2, 3],
                 "enum_titles": [
-                    "Always control output by inputs",
-                    "Control output by inputs only when communication is lost",
+                    "Don't change control mode",
+                    "Control by inputs only when communication is lost",
                     "Turn off output",
                     "Turn on output"
                 ]
@@ -4085,8 +4072,8 @@
                 "default": 2,
                 "enum": [0, 1, 2, 3],
                 "enum_titles": [
-                    "Always control output by inputs",
-                    "Control output by inputs only when communication is lost",
+                    "Don't change control mode",
+                    "Control by inputs only when communication is lost",
                     "Turn off output",
                     "Turn on output"
                 ]
@@ -4100,8 +4087,8 @@
                 "default": 2,
                 "enum": [0, 1, 2, 3],
                 "enum_titles": [
-                    "Always control output by inputs",
-                    "Control output by inputs only when communication is lost",
+                    "Don't change control mode",
+                    "Control by inputs only when communication is lost",
                     "Turn off output",
                     "Turn on output"
                 ]
@@ -4115,8 +4102,8 @@
                 "default": 2,
                 "enum": [0, 1, 2, 3],
                 "enum_titles": [
-                    "Always control output by inputs",
-                    "Control output by inputs only when communication is lost",
+                    "Don't change control mode",
+                    "Control by inputs only when communication is lost",
                     "Turn off output",
                     "Turn on output"
                 ]
@@ -4130,8 +4117,8 @@
                 "default": 2,
                 "enum": [0, 1, 2, 3],
                 "enum_titles": [
-                    "Always control output by inputs",
-                    "Control output by inputs only when communication is lost",
+                    "Don't change control mode",
+                    "Control by inputs only when communication is lost",
                     "Turn off output",
                     "Turn on output"
                 ]
@@ -4145,8 +4132,8 @@
                 "default": 2,
                 "enum": [0, 1, 2, 3],
                 "enum_titles": [
-                    "Always control output by inputs",
-                    "Control output by inputs only when communication is lost",
+                    "Don't change control mode",
+                    "Control by inputs only when communication is lost",
                     "Turn off output",
                     "Turn on output"
                 ]
@@ -4196,7 +4183,6 @@
                 "enabled": false,
                 "group": "gg_in0_channels"
             },
-
             {
                 "name": "Input 0 Single Press Counter",
                 "enabled": false,
@@ -4210,7 +4196,7 @@
                 "name": "Input 0 Long Press Counter",
                 "enabled": false,
                 "reg_type": "input",
-                "address": 479,
+                "address": 487,
                 "type": "value",
                 "group": "gg_in0_channels",
                 "condition": "in0_mode==6"
@@ -4258,7 +4244,6 @@
                 "enabled": false,
                 "group": "gg_in1_channels"
             },
-
             {
                 "name": "Input 1 Single Press Counter",
                 "enabled": false,
@@ -4320,7 +4305,6 @@
                 "enabled": false,
                 "group": "gg_in2_channels"
             },
-
             {
                 "name": "Input 2 Single Press Counter",
                 "enabled": false,
@@ -4382,7 +4366,6 @@
                 "enabled": false,
                 "group": "gg_in3_channels"
             },
-
             {
                 "name": "Input 3 Single Press Counter",
                 "enabled": false,
@@ -4444,7 +4427,6 @@
                 "enabled": false,
                 "group": "gg_in4_channels"
             },
-
             {
                 "name": "Input 4 Single Press Counter",
                 "enabled": false,
@@ -4506,7 +4488,6 @@
                 "enabled": false,
                 "group": "gg_in5_channels"
             },
-
             {
                 "name": "Input 5 Single Press Counter",
                 "enabled": false,
@@ -4568,7 +4549,6 @@
                 "enabled": false,
                 "group": "gg_in6_channels"
             },
-
             {
                 "name": "Input 6 Single Press Counter",
                 "enabled": false,
@@ -4698,7 +4678,8 @@
             "en": {
                 "WB-MR6C_template_title": "WB-MR6C v.2, WB-MR6LV/x, WB-MR6HV/x (6-channel relay)",
                 "mode_description": "For using button mapping-matrix firmware v1.17.0 or newer is required",
-                "outputs_restore_state_description": "Option \"Set according to input\" works for latching switch input mode only, firmware v1.18.0 or newer is required",
+                "outputs_restore_state_description": "Option \"Set according to input\" works on devices manufactured after 07.2021, firmware v1.18.0 or newer is required",
+                "safety_timer_description": "For safety mode on communication loss value must be greater than 0",
                 "baud_rate_description": "Make sure that communication with device is established before changing this parameter. Select required baud rate, save configuration and then change port baud rate to the same value.",
                 "Uptime": "Uptime (s)",
 
@@ -4706,7 +4687,6 @@
                 "lp_title": "Long Press",
                 "dp_title": "Double Press",
                 "slp_title": "Shortlong Press",
-
 
                 "lp_hold_time_title": "Long Press Time (ms)",
                 "dp_time_title": "Second Press Waiting Time (ms)",
@@ -4830,9 +4810,10 @@
                 "Outputs State After Power On": "Cостояния выходов при включении питания",
                 "Don't restore": "Не восстанавливать",
                 "Restore": "Восстанавливать",
-                "Set according to input": "Установить согласно входу",
-                "outputs_restore_state_description":  "Вариант \"Установить согласно входу\" работает только для режима входа \"Переключатель с фиксацией\", требуется прошивка v1.18.0 или новее",
+                "Set according to input (for latching switch mode only)": "Установить согласно входу (только для режима \"Переключатель с фиксацией\")",
+                "outputs_restore_state_description":  "Вариант \"Установить согласно входу\" работает на устройствах, выпущенных после 07.2021, требуется прошивка v1.18.0 или новее",
                 "Safety Timer (s)": "Таймаут безопасного режима (с)",
+                "safety_timer_description": "Для безопасного режима при потере связи значение должно быть больше 0",
                 "no": "нет",
                 "yes": "да",
 
@@ -4849,9 +4830,9 @@
                 "dp_time_description": "Если за указанное время второго нажатия не было - считаем нажатие одиночным. 0 - отключит все нажатия кроме короткого и длинного",
                 "debounce_time_description": "Должно быть в 5-10 раз меньше, чем время ожидания двойного нажатия. Если двойные нажатия отключены - любое значение",
 
-                "Safety mode when communication is lost": "Безопасный режим при потере связи",
-                "Always control output by inputs": "Всегда управлять выходом от входов",
-                "Control output by inputs only when communication is lost": "Управлять выходом от входов только при потере связи",
+                "Safety mode on communication loss": "Безопасный режим при потере связи",
+                "Don't change control mode": "Не изменять режим управления",
+                "Control by inputs only when communication is lost": "Управлять от входов только при потере связи",
                 "Turn off output": "Отключить выход",
                 "Turn on output": "Включить выход",
 
