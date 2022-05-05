@@ -4694,7 +4694,7 @@
 
                 "lp_hold_time_description": "If press is longer than the specified time then it is long",
                 "dp_time_description": "If there is no second press during the specified time then press is single. 0 - disables all presses except short and long",
-                "debounce_time_description": "Must be 5-10 times less than double press time. If double presses are disabled - any value"
+                "debounce_time_description": "For press detection must be 5-10 times less than second press waiting time"
             },
             "ru": {
                 "WB-MR6C_template_title": "WB-MR6C v.2, WB-MR6LV/x, WB-MR6HV/x (6-канальный модуль реле)",
@@ -4828,7 +4828,7 @@
 
                 "lp_hold_time_description": "Если нажатие длится больше указанного времени - считаем его длинным",
                 "dp_time_description": "Если за указанное время второго нажатия не было - считаем нажатие одиночным. 0 - отключит все нажатия кроме короткого и длинного",
-                "debounce_time_description": "Должно быть в 5-10 раз меньше, чем время ожидания двойного нажатия. Если двойные нажатия отключены - любое значение",
+                "debounce_time_description": "Для детектирования нажатий значение должно быть в 5-10 раз меньше, чем время ожидания двойного нажатия",
 
                 "Safety mode on communication loss": "Безопасный режим при потере связи",
                 "Don't change control mode": "Не изменять режим управления",
