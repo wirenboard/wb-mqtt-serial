@@ -1,0 +1,34 @@
+{
+    "device_type": "with duplicate params",
+    "device": {
+        "name": "with duplicate params",
+        "id": "with duplicate params",
+        "channels": [
+            {
+                "name": "Temperature",
+                "reg_type": "input",
+                "format": "s32",
+                "address": "0x0504"
+            }
+        ],
+        "parameters" : [
+            {
+                "id": "param1",
+                "title": "p1",
+                "address": 10,
+                "required": true
+            },
+            {
+                "id": "param4",
+                "title": "p4",
+                "address": 4
+            },
+            {
+                "id": "param4",
+                "title": "p4",
+                "address": 4,
+                "condition": "param1==4"
+            }
+        ]
+    }
+}

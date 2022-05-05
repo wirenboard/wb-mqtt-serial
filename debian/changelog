@@ -5,6 +5,13 @@ wb-mqtt-serial (2.59.1) stable; urgency=medium
 
  -- Dmitry Vorobjev <d.vorobjev@wirenboard.ru>  Thu, 05 May 2022 18:23:12 +0300
 
+wb-mqtt-serial (2.59.0) stable; urgency=medium
+
+  * Support for parameters specified as an array in device templates is added.
+    "id" property, which defines a name of parameter, is added. In combination with conditions it allows to define parameters with different structure but the same name depending on the values of other parameters.
+
+ -- Petr Krasnoshchekov <petr.krasnoshchekov@wirenboard.ru>  Thu, 05 May 2022 09:06:29 +0500
+
 wb-mqtt-serial (2.58.1) stable; urgency=medium
 
   * Template replacement by jinja2 is fixed
