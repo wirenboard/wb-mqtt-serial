@@ -1,0 +1,200 @@
+{% set INPUTS_NUMBER = 8 -%}
+{% set FIRST_INPUT = 1 -%}
+{
+    "title": "WB-MCM8_template_title",
+    "device_type": "WB-MCM8",
+    "device": {
+        "name": "WB-MCM8",
+        "id": "wb-mcm8",
+        "max_read_registers": 0,
+        "response_timeout_ms": 1,
+        "frame_timeout_ms": 8,
+
+        "groups": [
+            {% for in_num in range(FIRST_INPUT, INPUTS_NUMBER + 1) -%}
+            {
+                "title": "Input {{in_num}}",
+                "id": "g_in{{in_num}}",
+                "order": {{in_num}}
+            },
+            {% endfor -%}
+            {
+                "title": "General",
+                "id": "general",
+                "order": 9
+            },
+            {
+                "title": "HW Info",
+                "id": "hw_info",
+                "order": 10
+            }
+        ],
+
+        "parameters": {
+            {% for in_num in range(FIRST_INPUT, INPUTS_NUMBER + 1) -%}
+            "in{{in_num}}_debounce_ms": {
+                "title": "Input {{in_num}} Debounce (ms)",
+                "address": {{20 + in_num - 1}},
+                "reg_type": "holding",
+                "min": 0,
+                "max": 100,
+                "default": 50,
+                "group": "input_{{in_num}}",
+                "order": 1
+            },
+            {% endfor -%}
+            "baud_rate": {
+                "title": "Baud rate",
+                "description": "baud_rate_description",
+                "address": 110,
+                "reg_type": "holding",
+                "enum": [96, 192, 384, 576, 1152],
+                "default": 96,
+                "enum_titles": [
+                    "9600",
+                    "19200",
+                    "38400",
+                    "57600",
+                    "115200"
+                ],
+                "group": "general",
+                "order": 1
+            }
+        },
+
+        "channels": [
+            {% for in_num in range(FIRST_INPUT, INPUTS_NUMBER + 1) -%}
+            {
+                "name": "Input {{in_num}}",
+                "reg_type": "discrete",
+                "address": {{in_num - 1}},
+                "type": "switch",
+                "group": "g_in{{in_num}}"
+            },
+            {
+                "name": "Input {{in_num}} counter",
+                "reg_type": "input",
+                "format": "u32",
+                "address": {{60 + (in_num - 1) * 2}},
+                "type": "value",
+                "group": "g_in{{in_num}}"
+            },
+            {
+                "name": "Input {{in_num}} freq",
+                "reg_type": "input",
+                "address": {{40 + (in_num - 1) * 2}},
+                "type": "value",
+                "format": "u32",
+                "scale": 1.52588e-5,
+                "round_to": 0.001,
+                "enabled": false,
+                "group": "g_in{{in_num}}"
+            },
+            {% endfor -%}
+            {
+                "name": "Reset all counters",
+                "reg_type": "holding",
+                "address": 100,
+                "type": "pushbutton",
+                "group": "general"
+            },
+            {
+                "name": "Serial",
+                "reg_type": "input",
+                "address": 270,
+                "type": "text",
+                "format": "u32",
+                "group": "hw_info"
+            },
+            {
+                "name": "Supply voltage",
+                "reg_type": "input",
+                "address": 121,
+                "type": "voltage",
+                "scale": 0.001,
+                "enabled": false,
+                "group": "hw_info"
+            },
+            {
+                "name": "Uptime",
+                "reg_type": "input",
+                "address": 104,
+                "format": "u32",
+                "enabled": false,
+                "group": "hw_info"
+            },
+            {
+                "name": "MCU Temperature",
+                "reg_type": "input",
+                "address": 124,
+                "type": "temperature",
+                "format": "s16",
+                "scale": 0.1,
+                "enabled": false,
+                "group": "hw_info"
+            },
+            {
+                "name": "MCU Voltage",
+                "reg_type": "input",
+                "address": 123,
+                "scale": 0.001,
+                "type": "voltage",
+                "enabled": false,
+                "group": "hw_info"
+            }
+        ],
+        "translations": {
+            "en": {
+                "WB-MCM8_template_title": "WB-MCM8 (8-channel pulse counter)",
+                "baud_rate_description": "Make sure that communication with device is established before changing this parameter. Select required baud rate, save configuration and then change port baud rate to the same value.",
+                "Uptime": "Uptime (s)"
+            },
+            "ru": {
+                "WB-MCM8_template_title": "WB-MCM8 (8-канальный модуль счетных входов)",
+                "Input 1": "Вход 1",
+                "Input 2": "Вход 2",
+                "Input 3": "Вход 3",
+                "Input 4": "Вход 4",
+                "Input 5": "Вход 5",
+                "Input 6": "Вход 6",
+                "Input 7": "Вход 7",
+                "Input 8": "Вход 8",
+                "General": "Общее",
+                "HW Info": "Данные модуля",
+                "Input 1 Debounce (ms)": "Время защиты от дребезга входа 1 (мс)",
+                "Input 2 Debounce (ms)": "Время защиты от дребезга входа 2 (мс)",
+                "Input 3 Debounce (ms)": "Время защиты от дребезга входа 3 (мс)",
+                "Input 4 Debounce (ms)": "Время защиты от дребезга входа 4 (мс)",
+                "Input 5 Debounce (ms)": "Время защиты от дребезга входа 5 (мс)",
+                "Input 6 Debounce (ms)": "Время защиты от дребезга входа 6 (мс)",
+                "Input 7 Debounce (ms)": "Время защиты от дребезга входа 7 (мс)",
+                "Input 8 Debounce (ms)": "Время защиты от дребезга входа 8 (мс)",
+                "Baud rate": "Скорость обмена",
+                "baud_rate_description": "Перед изменением параметра убедитесь, что связь с устройством установлена. Выберите нужную скорость обмена, сохраните конфигурацию, а затем укажите в настройках порта эту же скорость.",
+                "Input 1 counter": "Счетчик 1",
+                "Input 2 counter": "Счетчик 2",
+                "Input 3 counter": "Счетчик 3",
+                "Input 4 counter": "Счетчик 4",
+                "Input 5 counter": "Счетчик 5",
+                "Input 6 counter": "Счетчик 6",
+                "Input 7 counter": "Счетчик 7",
+                "Input 8 counter": "Счетчик 8",
+                "Input 1 freq": "Частота 1",
+                "Input 2 freq": "Частота 2",
+                "Input 3 freq": "Частота 3",
+                "Input 4 freq": "Частота 4",
+                "Input 5 freq": "Частота 5",
+                "Input 6 freq": "Частота 6",
+                "Input 7 freq": "Частота 7",
+                "Input 8 freq": "Частота 8",
+                "Reset all counters": "Сбросить все счетчики",
+                "Serial": "Серийный номер",
+                "Supply voltage": "Напряжение питания",
+                "Uptime": "Время работы с момента включения (с)",
+                "MCU Temperature": "Температура МК",
+                "MCU Voltage": "Напряжение питания МК"
+            }
+        }
+    }
+}
+
