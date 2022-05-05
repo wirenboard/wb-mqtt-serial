@@ -1,5 +1,6 @@
 #include "channel_value.h"
 #include <iomanip>
+#include <iostream>
 #include <sstream>
 #include <vector>
 
@@ -170,6 +171,32 @@ TChannelValue TChannelValue::operator>>(uint32_t offset) const
     return result;
 }
 
+TChannelValue TChannelValue::operator<<(uint32_t offset) const
+{
+    auto offsetInWord = offset / (sizeof(TRegisterWord) * 8);
+    auto offsetInBit = offset % (sizeof(TRegisterWord) * 8);
+
+    TChannelValue result;
+    auto q = Value;
+
+    if (offsetInBit != 0) {
+        q.push_back(0);
+        for (int32_t i = (q.size() - 1); i >= 0; --i) {
+            q[i] <<= offsetInBit;
+            if (i > 0) {
+                q[i] |= q[i - 1] >> (sizeof(TRegisterWord) * 8 - offsetInBit);
+            }
+        }
+    }
+
+    for (uint32_t i = 0; i < offsetInWord; ++i) {
+        q.push_front(0);
+    }
+
+    result.Value = q;
+    return result;
+}
+
 std::string TChannelValue::ToString()
 {
     std::stringstream ss;
@@ -177,4 +204,23 @@ std::string TChannelValue::ToString()
         ss << std::hex << std::setw(4) << std::setfill('0') << element << " ";
     }
     return ss.str();
+}
+
+TChannelValue& TChannelValue::operator|=(const TChannelValue& other)
+{
+    // Guard self assignment
+    if (this == &other)
+        return *this;
+
+    auto size = Value.size();
+    for (uint32_t i = 0; i < other.Value.size(); ++i) {
+        std::cout << i << " ";
+        if (i >= size) {
+            Value.push_back(other.Value[i]);
+        } else {
+            Value[i] |= other.Value[i];
+        }
+    }
+
+    return *this;
 }

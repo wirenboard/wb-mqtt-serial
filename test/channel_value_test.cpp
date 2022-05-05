@@ -61,6 +61,27 @@ TEST_F(RegisterValueTest, rightShift)
     }
 }
 
+TEST_F(RegisterValueTest, leftShift)
+{
+    uint64_t val = 0xAABBCCDD;
+    TChannelValue registerValue{val};
+
+    for (uint32_t i = 0; i < 32; ++i) {
+        auto result = registerValue << i;
+        EXPECT_EQ(val << i, result.Get<uint64_t>());
+    }
+}
+
+TEST_F(RegisterValueTest, orOperator)
+{
+    uint64_t val = 0xAABBCCDD;
+    uint64_t valOther = 0x1122334400000055;
+    TChannelValue channelValue{val};
+    TChannelValue otherChannelValue{valOther};
+    channelValue |= otherChannelValue;
+    EXPECT_EQ(val | valOther, channelValue.Get<uint64_t>());
+}
+
 TEST_F(RegisterValueTest, String)
 {
     TChannelValue value;
@@ -69,7 +90,8 @@ TEST_F(RegisterValueTest, String)
     EXPECT_EQ(str, value.Get<std::string>());
 }
 
-TEST_F(RegisterValueTest, ToString){
+TEST_F(RegisterValueTest, ToString)
+{
     TChannelValue value;
     uint64_t rawValue = 0xAABBCCDDEEFF1122;
     std::string str = "1122 eeff ccdd aabb ";

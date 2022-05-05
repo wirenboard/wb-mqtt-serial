@@ -681,7 +681,7 @@ namespace Modbus // modbus protocol common utilities
             int w = reg->Get16BitWidth();
             auto bitWidth = reg->GetBitWidth();
 
-            uint64_t r = 0;
+            TChannelValue r;
 
             auto addr = GetUint32RegisterAddress(reg->GetAddress());
             int wordIndex = (addr - range.GetStart());
@@ -698,14 +698,14 @@ namespace Modbus // modbus protocol common utilities
 
                 auto mask = GetLSBMask(bitCount);
 
-                r |= (mask & (data >> localBitOffset)) << bitsWritten;
+                r |= TChannelValue{mask & (data >> localBitOffset)} << bitsWritten;
 
                 --reverseWordIndex;
                 ++wordIndex;
                 bitWidth -= bitCount;
                 bitsWritten += bitCount;
             }
-            reg->SetValue(TChannelValue{r});
+            reg->SetValue(r);
         }
     }
 

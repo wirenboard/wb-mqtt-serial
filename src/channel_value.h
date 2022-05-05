@@ -1,7 +1,7 @@
 #pragma once
+#include <cstddef>
 #include <cstdint>
 #include <deque>
-#include <cstddef>
 #include <string>
 
 typedef uint16_t TRegisterWord;
@@ -33,6 +33,10 @@ public:
     bool operator!=(const TChannelValue& other) const;
 
     TChannelValue operator>>(uint32_t offset) const;
+
+    TChannelValue operator<<(uint32_t offset) const;
+
+    TChannelValue& operator|=(const TChannelValue& other);
 
     void PushWord(TRegisterWord data);
 
