@@ -1,3 +1,10 @@
+wb-mqtt-serial (2.59.1) stable; urgency=medium
+
+  * New channels and parameters for press detection were added in WB-
+    MCM8 template
+
+ -- Dmitry Vorobjev <d.vorobjev@wirenboard.ru>  Thu, 05 May 2022 18:23:12 +0300
+
 wb-mqtt-serial (2.58.1) stable; urgency=medium
 
   * Template replacement by jinja2 is fixed
