@@ -529,12 +529,13 @@
                 "condition": "in2_mode==6"
             },
             "outputs_restore_state": {
-                "title": "Restore Last Outputs State After Power On",
+                "title": "Outputs State After Power On",
+                "description": "outputs_restore_state_description",
                 "address": 6,
                 "reg_type": "holding",
-                "enum": [0, 1],
+                "enum": [0, 1, 2],
                 "default": 0,
-                "enum_titles": ["no", "yes"],
+                "enum_titles": ["Don't restore", "Restore", "Set according to input (for latching switch mode only)"],
                 "group": "g_outputs",
                 "order": 1
             },
@@ -761,6 +762,7 @@
             "en": {
                 "WB-MRM2-mini-NC_template_title": "WB-MRM2-mini/NC (2-channel relay)",
                 "mode_description": "For using button mapping-matrix firmware v1.17.1 or newer is required",
+                "outputs_restore_state_description": "Option \"Set according to input\" works on devices manufactured after 07.2021, firmware v1.18.0 or newer is required",
                 "baud_rate_description": "Make sure that communication with device is established before changing this parameter. Select required baud rate, save configuration and then change port baud rate to the same value.",
                 "Uptime": "Uptime (s)",
 
@@ -842,7 +844,11 @@
                 "Operate according to mapping-matrix": "Управлять по mapping-матрице",
                 "Operate according to button mapping-matrix": "Управлять по mapping-матрице для кнопок",
 
-                "Restore Last Outputs State After Power On": "Восстанавливать состояния выходов при включении",
+                "Outputs State After Power On": "Cостояния выходов при включении питания",
+                "Don't restore": "Не восстанавливать",
+                "Restore": "Восстанавливать",
+                "Set according to input (for latching switch mode only)": "Установить согласно входу (только для режима \"Переключатель с фиксацией\")",
+                "outputs_restore_state_description":  "Вариант \"Установить согласно входу\" работает на устройствах, выпущенных после 07.2021, требуется прошивка v1.18.0 или новее",
                 "Safety Timer (s)": "Таймаут безопасного режима (с)",
                 "no": "нет",
                 "yes": "да",
