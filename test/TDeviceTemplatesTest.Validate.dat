@@ -17922,6 +17922,7 @@ WB-MR3
 	K3  =>  K3
 	MCU Temperature  =>  MCU Temperature
 	MCU Voltage  =>  MCU Voltage
+	Minimum Voltage Since Startup  =>  Minimum Voltage Since Startup
 	Serial  =>  Serial
 	Supply Voltage  =>  Supply Voltage
 	Uptime  =>  Uptime
