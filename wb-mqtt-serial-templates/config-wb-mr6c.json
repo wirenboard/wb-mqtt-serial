@@ -506,7 +506,7 @@
                 "address": 27,
                 "reg_type": "holding",
                 "min": 0,
-                "max": 100,
+                "max": 250,
                 "default": 50,
                 "group": "g_in0",
                 "order": 2
@@ -1009,7 +1009,7 @@
                 "address": 20,
                 "reg_type": "holding",
                 "min": 0,
-                "max": 100,
+                "max": 250,
                 "default": 50,
                 "group": "g_in1",
                 "order": 2
@@ -1513,7 +1513,7 @@
                 "address": 21,
                 "reg_type": "holding",
                 "min": 0,
-                "max": 100,
+                "max": 250,
                 "default": 50,
                 "group": "g_in2",
                 "order": 2
@@ -2017,7 +2017,7 @@
                 "address": 22,
                 "reg_type": "holding",
                 "min": 0,
-                "max": 100,
+                "max": 250,
                 "default": 50,
                 "group": "g_in3",
                 "order": 2
@@ -2521,7 +2521,7 @@
                 "address": 23,
                 "reg_type": "holding",
                 "min": 0,
-                "max": 100,
+                "max": 250,
                 "default": 50,
                 "group": "g_in4",
                 "order": 2
@@ -3025,7 +3025,7 @@
                 "address": 24,
                 "reg_type": "holding",
                 "min": 0,
-                "max": 100,
+                "max": 250,
                 "default": 50,
                 "group": "g_in5",
                 "order": 2
@@ -3529,7 +3529,7 @@
                 "address": 25,
                 "reg_type": "holding",
                 "min": 0,
-                "max": 100,
+                "max": 250,
                 "default": 50,
                 "group": "g_in6",
                 "order": 2
@@ -4546,6 +4546,15 @@
                 "group": "g_hw_info"
             },
             {
+                "name": "Minimum Voltage Since Startup",
+                "reg_type": "input",
+                "address": 122,
+                "scale": 0.001,
+                "type": "voltage",
+                "enabled": false,
+                "group": "g_hw_info"
+            },
+            {
                 "name": "MCU Temperature",
                 "reg_type": "input",
                 "address": 124,
@@ -4723,6 +4732,7 @@
                 "Serial": "Серийный номер",
                 "Supply Voltage": "Напряжение питания",
                 "Uptime": "Время работы с момента включения (с)",
+                "Minimum Voltage Since Startup": "Минимальное напряжение с момента включения",
                 "MCU Temperature": "Температура МК",
                 "MCU Voltage": "Напряжение питания МК"
             }
