@@ -206,8 +206,8 @@
                 "enum": [0, 1],
                 "default": 0,
                 "enum_titles": [
-                    "Frequency measurement",
-                    "Press detection"
+                    "Counting and frequency measurement",
+                    "Counting and press detection"
                 ],
                 "group": "g_in1",
                 "order": 1
@@ -255,8 +255,8 @@
                 "enum": [0, 1],
                 "default": 0,
                 "enum_titles": [
-                    "Frequency measurement",
-                    "Press detection"
+                    "Counting and frequency measurement",
+                    "Counting and press detection"
                 ],
                 "group": "g_in2",
                 "order": 1
@@ -304,8 +304,8 @@
                 "enum": [0, 1],
                 "default": 0,
                 "enum_titles": [
-                    "Frequency measurement",
-                    "Press detection"
+                    "Counting and frequency measurement",
+                    "Counting and press detection"
                 ],
                 "group": "g_in3",
                 "order": 1
@@ -353,8 +353,8 @@
                 "enum": [0, 1],
                 "default": 0,
                 "enum_titles": [
-                    "Frequency measurement",
-                    "Press detection"
+                    "Counting and frequency measurement",
+                    "Counting and press detection"
                 ],
                 "group": "g_in4",
                 "order": 1
@@ -402,8 +402,8 @@
                 "enum": [0, 1],
                 "default": 0,
                 "enum_titles": [
-                    "Frequency measurement",
-                    "Press detection"
+                    "Counting and frequency measurement",
+                    "Counting and press detection"
                 ],
                 "group": "g_in5",
                 "order": 1
@@ -451,8 +451,8 @@
                 "enum": [0, 1],
                 "default": 0,
                 "enum_titles": [
-                    "Frequency measurement",
-                    "Press detection"
+                    "Counting and frequency measurement",
+                    "Counting and press detection"
                 ],
                 "group": "g_in6",
                 "order": 1
@@ -500,8 +500,8 @@
                 "enum": [0, 1],
                 "default": 0,
                 "enum_titles": [
-                    "Frequency measurement",
-                    "Press detection"
+                    "Counting and frequency measurement",
+                    "Counting and press detection"
                 ],
                 "group": "g_in7",
                 "order": 1
@@ -549,8 +549,8 @@
                 "enum": [0, 1],
                 "default": 0,
                 "enum_titles": [
-                    "Frequency measurement",
-                    "Press detection"
+                    "Counting and frequency measurement",
+                    "Counting and press detection"
                 ],
                 "group": "g_in8",
                 "order": 1
@@ -634,7 +634,8 @@
                 "scale": 1.52588e-5,
                 "round_to": 0.001,
                 "enabled": false,
-                "group": "gg_in1_channels"
+                "group": "gg_in1_channels",
+                "condition": "in1_mode==0"
             },
             {
                 "name": "Input 1 Single Press Counter",
@@ -692,7 +693,8 @@
                 "scale": 1.52588e-5,
                 "round_to": 0.001,
                 "enabled": false,
-                "group": "gg_in2_channels"
+                "group": "gg_in2_channels",
+                "condition": "in2_mode==0"
             },
             {
                 "name": "Input 2 Single Press Counter",
@@ -750,7 +752,8 @@
                 "scale": 1.52588e-5,
                 "round_to": 0.001,
                 "enabled": false,
-                "group": "gg_in3_channels"
+                "group": "gg_in3_channels",
+                "condition": "in3_mode==0"
             },
             {
                 "name": "Input 3 Single Press Counter",
@@ -808,7 +811,8 @@
                 "scale": 1.52588e-5,
                 "round_to": 0.001,
                 "enabled": false,
-                "group": "gg_in4_channels"
+                "group": "gg_in4_channels",
+                "condition": "in4_mode==0"
             },
             {
                 "name": "Input 4 Single Press Counter",
@@ -866,7 +870,8 @@
                 "scale": 1.52588e-5,
                 "round_to": 0.001,
                 "enabled": false,
-                "group": "gg_in5_channels"
+                "group": "gg_in5_channels",
+                "condition": "in5_mode==0"
             },
             {
                 "name": "Input 5 Single Press Counter",
@@ -924,7 +929,8 @@
                 "scale": 1.52588e-5,
                 "round_to": 0.001,
                 "enabled": false,
-                "group": "gg_in6_channels"
+                "group": "gg_in6_channels",
+                "condition": "in6_mode==0"
             },
             {
                 "name": "Input 6 Single Press Counter",
@@ -982,7 +988,8 @@
                 "scale": 1.52588e-5,
                 "round_to": 0.001,
                 "enabled": false,
-                "group": "gg_in7_channels"
+                "group": "gg_in7_channels",
+                "condition": "in7_mode==0"
             },
             {
                 "name": "Input 7 Single Press Counter",
@@ -1040,7 +1047,8 @@
                 "scale": 1.52588e-5,
                 "round_to": 0.001,
                 "enabled": false,
-                "group": "gg_in8_channels"
+                "group": "gg_in8_channels",
+                "condition": "in8_mode==0"
             },
             {
                 "name": "Input 8 Single Press Counter",
@@ -1203,8 +1211,8 @@
                 "HW Info": "Данные модуля",
                 "Mode": "Режим работы",
                 "Press Parameters": "Параметры нажатий",
-                "Frequency measurement": "Измерение частоты",
-                "Press detection": "Детектирование нажатий",
+                "Counting and frequency measurement": "Счет и измерение частоты",
+                "Counting and press detection": "Счет и детектирование нажатий",
                 "mode_description": "Для детектирования нажатий требуется прошивка v1.3.2 или новее",
                 "Baud rate": "Скорость обмена",
                 "baud_rate_description": "Перед изменением параметра убедитесь, что связь с устройством установлена. Выберите нужную скорость обмена, сохраните конфигурацию, а затем укажите в настройках порта эту же скорость.",
@@ -1215,7 +1223,7 @@
 
                 "lp_hold_time_description": "Если нажатие длится больше указанного времени - считаем его длинным",
                 "dp_time_description": "Если за указанное время второго нажатия не было - считаем нажатие одиночным. 0 - отключит все нажатия кроме короткого и длинного",
-                "debounce_time_description": "Для детектирования нажатий значение должно быть в 5-10 раз меньше, чем время ожидания двойного нажатия",
+                "debounce_time_description": "Для детектирования нажатий значение должно быть в 5-10 раз меньше, чем время ожидания второго нажатия",
                 
                 "Reset all counters": "Сбросить все счетчики",
                 "Serial": "Серийный номер",
