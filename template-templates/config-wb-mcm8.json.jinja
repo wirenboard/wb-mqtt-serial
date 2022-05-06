@@ -37,12 +37,12 @@
             {% endfor -%}
             {
                 "title": "General",
-                "id": "general",
+                "id": "g_general",
                 "order": 9
             },
             {
                 "title": "HW Info",
-                "id": "hw_info",
+                "id": "g_hw_info",
                 "order": 10
             }
         ],
@@ -113,7 +113,7 @@
                     "57600",
                     "115200"
                 ],
-                "group": "general",
+                "group": "g_general",
                 "order": 1
             }
         },
@@ -185,7 +185,7 @@
                 "reg_type": "holding",
                 "address": 100,
                 "type": "pushbutton",
-                "group": "general"
+                "group": "g_general"
             },
             {
                 "name": "Serial",
@@ -193,7 +193,7 @@
                 "address": 270,
                 "type": "text",
                 "format": "u32",
-                "group": "hw_info"
+                "group": "g_hw_info"
             },
             {
                 "name": "Supply voltage",
@@ -202,7 +202,7 @@
                 "type": "voltage",
                 "scale": 0.001,
                 "enabled": false,
-                "group": "hw_info"
+                "group": "g_hw_info"
             },
             {
                 "name": "Uptime",
@@ -210,7 +210,7 @@
                 "address": 104,
                 "format": "u32",
                 "enabled": false,
-                "group": "hw_info"
+                "group": "g_hw_info"
             },
             {
                 "name": "Minimum Voltage Since Startup",
@@ -219,7 +219,7 @@
                 "scale": 0.001,
                 "type": "voltage",
                 "enabled": false,
-                "group": "hw_info"
+                "group": "g_hw_info"
             },
             {
                 "name": "MCU Temperature",
@@ -229,7 +229,7 @@
                 "format": "s16",
                 "scale": 0.1,
                 "enabled": false,
-                "group": "hw_info"
+                "group": "g_hw_info"
             },
             {
                 "name": "MCU Voltage",
@@ -238,7 +238,7 @@
                 "scale": 0.001,
                 "type": "voltage",
                 "enabled": false,
-                "group": "hw_info"
+                "group": "g_hw_info"
             }
         ],
         "translations": {
