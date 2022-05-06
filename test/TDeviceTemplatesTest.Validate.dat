@@ -17570,6 +17570,7 @@ WB-MCM8
 	Input 8 freq  =>  Input 8 freq
 	MCU Temperature  =>  MCU Temperature
 	MCU Voltage  =>  MCU Voltage
+	Minimum Voltage Since Startup  =>  Minimum Voltage Since Startup
 	Reset all counters  =>  Reset all counters
 	Serial  =>  Serial
 	Supply voltage  =>  Supply voltage
