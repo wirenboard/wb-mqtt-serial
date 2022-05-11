@@ -76,7 +76,7 @@ $(TEST_DIR)/$(TEST_BIN): $(COMMON_OBJS) $(TEST_OBJS)
 $(TEMPLATES_DIR)/%.json: $(TEMPLATE_TEMPLATES_DIR)/%.json.jinja
 	tools/template-generator.py $^ $@
 
-test: $(TEST_DIR)/$(TEST_BIN)
+test: templates $(TEST_DIR)/$(TEST_BIN)
 	rm -f $(TEST_DIR)/*.dat.out
 	if [ "$(shell arch)" != "armv7l" ] && [ "$(CROSS_COMPILE)" = "" ] || [ "$(CROSS_COMPILE)" = "x86_64-linux-gnu-" ]; then \
 		valgrind --error-exitcode=180 -q $(TEST_DIR)/$(TEST_BIN) $(TEST_ARGS) || \
@@ -96,6 +96,7 @@ clean :
 	rm -rf $(TEST_DIR)/*.o $(TEST_DIR)/$(TEST_BIN)
 	find $(SRC_DIR) -name '*.o' -delete
 	rm -f $(SERIAL_BIN)
+	rm -rf $(TEMPLATE_TEMPLATES)
 
 install:
 	install -d $(DESTDIR)/var/lib/wb-mqtt-serial

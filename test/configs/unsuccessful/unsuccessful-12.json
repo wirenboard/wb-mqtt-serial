@@ -1,0 +1,26 @@
+// param3 in second device has not allowed value
+{
+    "ports": [
+        {
+            "path" : "/dev/ttyNSC0",
+            "baud_rate": 9600,
+            "parity": "N",
+            "data_bits": 8,
+            "stop_bits": 2,
+            "devices" : [
+                {
+                    "slave_id": 22,
+                    "device_type": "with conditions",
+                    "param1": 2,
+                    "param3": 11
+                },
+                {
+                    "slave_id": 23,
+                    "device_type": "with conditions",
+                    "param1": 2,
+                    "param3": 1
+                }
+            ]
+        }
+    ]
+}

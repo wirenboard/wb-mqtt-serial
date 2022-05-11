@@ -11,4 +11,4 @@ if len(sys.argv) < 2:
 loader = FileSystemLoader(os.path.dirname(sys.argv[1]))
 env = Environment(loader=loader)
 template = env.get_template(os.path.basename(sys.argv[1]))
-open(sys.argv[2], 'w').write(template.render())
+open(sys.argv[2], 'w', encoding='utf-8').write(template.render())
