@@ -218,11 +218,11 @@ public:
                     bool readonly,
                     const std::string& type_name,
                     const EWordOrder word_order,
-                    uint8_t bit_offset,
-                    uint8_t bit_width);
+                    uint32_t bit_offset,
+                    uint32_t bit_width);
 
-    uint8_t GetBitWidth() const;
-    uint8_t GetByteWidth() const;
+    uint32_t GetBitWidth() const;
+    uint32_t GetByteWidth() const;
 
     //! Get occupied space in 16-bit words
     uint8_t Get16BitWidth() const;
@@ -238,8 +238,8 @@ public:
                                   bool readonly = false,
                                   const std::string& type_name = "",
                                   const EWordOrder word_order = EWordOrder::BigEndian,
-                                  uint8_t bit_offset = 0,
-                                  uint8_t bit_width = 0);
+                                  uint32_t bit_offset = 0,
+                                  uint32_t bit_width = 0);
 
     //! Create register with TUint32RegisterAddress
     static PRegisterConfig Create(int type = 0,
@@ -251,8 +251,8 @@ public:
                                   bool readonly = false,
                                   const std::string& type_name = "",
                                   const EWordOrder word_order = EWordOrder::BigEndian,
-                                  uint8_t bit_offset = 0,
-                                  uint8_t bit_width = 0);
+                                  uint32_t bit_offset = 0,
+                                  uint32_t bit_width = 0);
 
     const IRegisterAddress& GetAddress() const;
 };

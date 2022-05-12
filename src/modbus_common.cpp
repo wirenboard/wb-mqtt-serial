@@ -562,7 +562,7 @@ namespace Modbus // modbus protocol common utilities
 
             auto localBitOffset = std::max(reg.DataOffset - bitPos, 0);
 
-            auto bitCount = std::min(static_cast<uint8_t>(16 - localBitOffset), bitsToAllocate);
+            auto bitCount = std::min(static_cast<uint32_t>(16 - localBitOffset), bitsToAllocate);
 
             auto rBitPos = bitPosEnd - bitPos - bitCount;
 
@@ -610,7 +610,7 @@ namespace Modbus // modbus protocol common utilities
 
         auto localBitOffset = std::max(reg.DataOffset - wordIndex * 16, 0);
 
-        auto bitCount = std::min(uint8_t(16 - localBitOffset), bitWidth);
+        auto bitCount = std::min(static_cast<uint32_t>(16 - localBitOffset), bitWidth);
 
         auto mask = GetLSBMask(bitCount) << localBitOffset;
 
@@ -694,7 +694,7 @@ namespace Modbus // modbus protocol common utilities
 
                 auto localBitOffset = std::max(reg->DataOffset - wordIndex * 16, 0);
 
-                auto bitCount = std::min(uint8_t(16 - localBitOffset), bitWidth);
+                auto bitCount = std::min(static_cast<uint32_t>(16 - localBitOffset), bitWidth);
 
                 auto mask = GetLSBMask(bitCount);
 

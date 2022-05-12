@@ -1,4 +1,5 @@
 #include "channel_value.h"
+#include <algorithm>
 #include <iomanip>
 #include <iostream>
 #include <sstream>
@@ -11,7 +12,7 @@ template<> uint64_t TChannelValue::Get<>() const
 {
     uint64_t retVal = 0;
     for (uint32_t i = 0; (i < sizeof(uint64_t) / sizeof(TRegisterWord)) && (i < Value.size()); ++i) {
-        retVal |= static_cast<uint64_t>(Value[i]) << (i * 16);
+        retVal |= static_cast<uint64_t>(Value.at(i)) << (i * 16);
     }
     return retVal;
 }
@@ -44,10 +45,10 @@ template<> uint32_t TChannelValue::Get() const
     if (Value.empty()) {
         return 0;
     } else if (Value.size() == 1) {
-        return Value[0];
+        return Value.at(0);
     }
 
-    return (static_cast<uint32_t>(Value[1]) << 16 | Value[0]);
+    return (static_cast<uint32_t>(Value.at(1)) << 16 | Value.at(0));
 }
 
 template<> int32_t TChannelValue::Get() const
@@ -59,7 +60,7 @@ template<> uint8_t TChannelValue::Get() const
 {
     if (Value.empty())
         return 0;
-    return Value[0] & 0xff;
+    return Value.at(0) & 0xff;
 }
 
 template<> int8_t TChannelValue::Get() const
@@ -70,7 +71,11 @@ template<> int8_t TChannelValue::Get() const
 template<> std::string TChannelValue::Get() const
 {
     std::string str;
-    std::copy(Value.begin(), Value.end(), std::back_inserter(str));
+    std::copy(std::make_reverse_iterator(Value.end()),
+              std::make_reverse_iterator(Value.begin()),
+              std::back_inserter(str));
+
+    str.erase(std::find(str.begin(), str.end(), '\0'), str.end());
     return str;
 }
 
@@ -92,7 +97,7 @@ void TChannelValue::Set(uint64_t value)
 
 void TChannelValue::Set(const std::string& value)
 {
-    std::copy(value.begin(), value.end(), std::back_inserter(Value));
+    std::copy(value.begin(), value.end(), std::front_inserter(Value));
 }
 
 TChannelValue& TChannelValue::operator=(const TChannelValue& other)
@@ -159,10 +164,10 @@ TChannelValue TChannelValue::operator>>(uint32_t offset) const
 
     if (offsetInBit != 0) {
         for (uint32_t i = 0; i < q.size(); ++i) {
-            q[i] >>= offsetInBit;
+            q.at(i) >>= offsetInBit;
 
             if (i + 1 < q.size()) {
-                q[i] |= q[i + 1] << (sizeof(TRegisterWord) * 8 - offsetInBit);
+                q.at(i) |= q.at(i + 1) << (sizeof(TRegisterWord) * 8 - offsetInBit);
             }
         }
     }
@@ -182,9 +187,9 @@ TChannelValue TChannelValue::operator<<(uint32_t offset) const
     if (offsetInBit != 0) {
         q.push_back(0);
         for (int32_t i = (q.size() - 1); i >= 0; --i) {
-            q[i] <<= offsetInBit;
+            q.at(i) <<= offsetInBit;
             if (i > 0) {
-                q[i] |= q[i - 1] >> (sizeof(TRegisterWord) * 8 - offsetInBit);
+                q.at(i) |= q.at(i - 1) >> (sizeof(TRegisterWord) * 8 - offsetInBit);
             }
         }
     }
@@ -214,11 +219,10 @@ TChannelValue& TChannelValue::operator|=(const TChannelValue& other)
 
     auto size = Value.size();
     for (uint32_t i = 0; i < other.Value.size(); ++i) {
-        std::cout << i << " ";
         if (i >= size) {
-            Value.push_back(other.Value[i]);
+            Value.push_back(other.Value.at(i));
         } else {
-            Value[i] |= other.Value[i];
+            Value.at(i) |= other.Value.at(i);
         }
     }
 

@@ -114,7 +114,7 @@ TChannelValue TLLSDevice::ReadRegisterImpl(PRegister reg)
 
     int result_buf[8] = {};
 
-    for (int i = 0; i < reg->GetByteWidth(); ++i) {
+    for (uint32_t i = 0; i < reg->GetByteWidth(); ++i) {
         result_buf[i] = result[reg->DataOffset + i];
     }
 

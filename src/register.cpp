@@ -210,8 +210,8 @@ TRegisterConfig::TRegisterConfig(int type,
                                  bool readonly,
                                  const std::string& type_name,
                                  const EWordOrder word_order,
-                                 uint8_t bit_offset,
-                                 uint8_t bit_width)
+                                 uint32_t bit_offset,
+                                 uint32_t bit_width)
     : Address(address),
       Type(type),
       Format(format),
@@ -238,7 +238,7 @@ TRegisterConfig::TRegisterConfig(int type,
     }
 }
 
-uint8_t TRegisterConfig::GetByteWidth() const
+uint32_t TRegisterConfig::GetByteWidth() const
 {
     return RegisterFormatByteWidth(Format);
 }
@@ -250,7 +250,7 @@ uint8_t TRegisterConfig::Get16BitWidth() const
     return w;
 }
 
-uint8_t TRegisterConfig::GetBitWidth() const
+uint32_t TRegisterConfig::GetBitWidth() const
 {
     if (DataWidth) {
         return DataWidth;
@@ -268,8 +268,8 @@ PRegisterConfig TRegisterConfig::Create(int type,
                                         bool readonly,
                                         const std::string& type_name,
                                         const EWordOrder word_order,
-                                        uint8_t bit_offset,
-                                        uint8_t bit_width)
+                                        uint32_t bit_offset,
+                                        uint32_t bit_width)
 {
     return std::make_shared<TRegisterConfig>(type,
                                              address,
@@ -293,8 +293,8 @@ PRegisterConfig TRegisterConfig::Create(int type,
                                         bool readonly,
                                         const std::string& type_name,
                                         const EWordOrder word_order,
-                                        uint8_t bit_offset,
-                                        uint8_t bit_width)
+                                        uint32_t bit_offset,
+                                        uint32_t bit_width)
 {
     return Create(type,
                   std::make_shared<TUint32RegisterAddress>(address),
@@ -417,7 +417,7 @@ TChannelValue InvertWordOrderIfNeeded(const TRegisterConfig& reg, TChannelValue 
     if (reg.WordOrder == EWordOrder::BigEndian) {
         return value;
     }
-
+    // TODO Modify
     uint64_t result = 0;
     uint64_t cur_value = value.Get<uint64_t>();
 
@@ -567,6 +567,7 @@ TChannelValue GetRawValue(const TRegisterConfig& reg, const std::string& str)
             break;
         case String32:
             value.Set(str);
+            break;
         default:
             value.Set(FromScaledTextValue<uint64_t>(reg, str));
     }

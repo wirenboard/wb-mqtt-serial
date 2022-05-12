@@ -152,8 +152,8 @@ Json::Value LoadConfigSchema(const std::string& schemaFileName);
 struct TRegisterDesc
 {
     std::shared_ptr<IRegisterAddress> Address; //! Register address
-    uint8_t DataOffset = 0;                    //! Offset of data in register
-    uint8_t DataWidth = 0;                     //! Width of data in register
+    uint32_t DataOffset = 0;                   //! Offset of data in register
+    uint32_t DataWidth = 0;                    //! Width of data in register
 };
 
 class IRegisterAddressFactory
@@ -278,8 +278,8 @@ void RegisterProtocols(TSerialDeviceFactory& deviceFactory);
 struct TRegisterBitsAddress
 {
     uint32_t Address = 0;
-    uint8_t BitWidth = 0;
-    uint8_t BitOffset = 0;
+    uint32_t BitWidth = 0;
+    uint32_t BitOffset = 0;
 };
 
 TRegisterBitsAddress LoadRegisterBitsAddress(const Json::Value& regCfg);
