@@ -1,3 +1,10 @@
+wb-mqtt-serial (2.59.2) stable; urgency=medium
+
+  * Flat templates with buttons support for relay Modbus modules with inputs
+  * Channel "Minimum Voltage Since Startup" was added in templates of relay Modbus modules with inputs
+
+ -- Dmitry Vorobjev <d.vorobjev@wirenboard.ru>  Thu, 12 May 2022 16:28:15 +0300
+
 wb-mqtt-serial (2.59.1) stable; urgency=medium
 
   * New channels and parameters for press detection were added in WB-
