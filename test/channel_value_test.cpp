@@ -55,7 +55,7 @@ TEST_F(RegisterValueTest, rightShift)
     uint64_t val = 0xAABBCCDD;
     TChannelValue registerValue{val};
 
-    for (uint32_t i = 0; i < 32; ++i) {
+    for (uint32_t i = 0; i < 64; ++i) {
         auto result = registerValue >> i;
         EXPECT_EQ(val >> i, result.Get<uint64_t>());
     }
@@ -66,7 +66,7 @@ TEST_F(RegisterValueTest, leftShift)
     uint64_t val = 0xAABBCCDD;
     TChannelValue registerValue{val};
 
-    for (uint32_t i = 0; i < 32; ++i) {
+    for (uint32_t i = 0; i < 64; ++i) {
         auto result = registerValue << i;
         EXPECT_EQ(val << i, result.Get<uint64_t>());
     }
@@ -86,7 +86,7 @@ TEST_F(RegisterValueTest, String)
 {
     TChannelValue value;
     std::string str = "abcdefgh1423";
-    value.Set(str);
+    value.Set(str, 32);
     EXPECT_EQ(str, value.Get<std::string>());
 }
 

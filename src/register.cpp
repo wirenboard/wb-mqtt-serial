@@ -566,7 +566,7 @@ TChannelValue GetRawValue(const TRegisterConfig& reg, const std::string& str)
             value.Set(IntToPackedBCD(FromScaledTextValue<uint64_t>(reg, str) & 0xFFFFFFFF, WordSizes::W32_SZ));
             break;
         case String32:
-            value.Set(str);
+            value.Set(str, 32);
             break;
         default:
             value.Set(FromScaledTextValue<uint64_t>(reg, str));

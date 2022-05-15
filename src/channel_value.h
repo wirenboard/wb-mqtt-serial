@@ -9,7 +9,7 @@ typedef uint16_t TRegisterWord;
 class TChannelValue
 {
 public:
-    TChannelValue();
+    TChannelValue() = default;
 
     TChannelValue(const TChannelValue& other) = default;
     TChannelValue(TChannelValue&& other) = default;
@@ -18,7 +18,7 @@ public:
 
     void Set(uint64_t value);
 
-    void Set(const std::string& value);
+    void Set(const std::string& value, size_t width);
 
     template<class T> T Get() const;
 

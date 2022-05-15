@@ -5,8 +5,6 @@
 #include <sstream>
 #include <vector>
 
-TChannelValue::TChannelValue()
-{}
 
 template<> uint64_t TChannelValue::Get<>() const
 {
@@ -95,9 +93,11 @@ void TChannelValue::Set(uint64_t value)
     }
 }
 
-void TChannelValue::Set(const std::string& value)
+void TChannelValue::Set(const std::string& value, size_t width)
 {
+    Value.clear();
     std::copy(value.begin(), value.end(), std::front_inserter(Value));
+    std::fill_n(std::front_inserter(Value), width/2-value.size(), '\0');
 }
 
 TChannelValue& TChannelValue::operator=(const TChannelValue& other)
@@ -159,10 +159,12 @@ TChannelValue TChannelValue::operator>>(uint32_t offset) const
     TChannelValue result;
     auto q = Value;
     for (uint32_t i = 0; i < offsetInWord; ++i) {
-        q.pop_front();
+        if (!q.empty()) {
+            q.pop_front();
+        }
     }
 
-    if (offsetInBit != 0) {
+    if (!q.empty() && (offsetInBit != 0)) {
         for (uint32_t i = 0; i < q.size(); ++i) {
             q.at(i) >>= offsetInBit;
 
