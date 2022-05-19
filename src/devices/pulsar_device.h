@@ -20,7 +20,7 @@ public:
 
     static void Register(TSerialDeviceFactory& factory);
 
-    TChannelValue ReadRegisterImpl(PRegister reg) override;
+    TRegisterValue ReadRegisterImpl(PRegister reg) override;
 
 private:
     void WriteBCD(uint64_t data, uint8_t* buffer, size_t size, bool big_endian = true);
@@ -36,8 +36,8 @@ private:
 
     void ReadResponse(uint32_t addr, uint8_t* payload, size_t size, uint16_t id);
 
-    TChannelValue ReadDataRegister(PRegister reg);
-    TChannelValue ReadSysTimeRegister(PRegister reg);
+    TRegisterValue ReadDataRegister(PRegister reg);
+    TRegisterValue ReadSysTimeRegister(PRegister reg);
 
     uint16_t RequestID;
 };

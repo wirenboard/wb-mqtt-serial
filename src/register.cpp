@@ -111,12 +111,12 @@ void TRegister::SetAvailable(TRegisterAvailability available)
     Available = available;
 }
 
-TChannelValue TRegister::GetValue() const
+TRegisterValue TRegister::GetValue() const
 {
     return Value;
 }
 
-void TRegister::SetValue(const TChannelValue& value, bool clearReadError)
+void TRegister::SetValue(const TRegisterValue& value, bool clearReadError)
 {
     if (Value != value) {
         LOG(Debug) << "new val for " << ToString() << ": " << std::hex << value.Get<uint64_t>();
@@ -412,7 +412,7 @@ template<typename T> T RoundValue(T val, double round_to)
     return round_to > 0 ? std::round(val / round_to) * round_to : val;
 }
 
-TChannelValue InvertWordOrderIfNeeded(const TRegisterConfig& reg, TChannelValue value)
+TRegisterValue InvertWordOrderIfNeeded(const TRegisterConfig& reg, TRegisterValue value)
 {
     if (reg.WordOrder == EWordOrder::BigEndian) {
         return value;
@@ -427,7 +427,7 @@ TChannelValue InvertWordOrderIfNeeded(const TRegisterConfig& reg, TChannelValue 
         result |= last_word;
         cur_value >>= 16;
     }
-    return TChannelValue{result};
+    return TRegisterValue{result};
 }
 
 template<class T> struct TConvertTraits
@@ -502,9 +502,9 @@ template<> double FromScaledTextValue(const TRegisterConfig& reg, const std::str
     throw std::invalid_argument("");
 }
 
-TChannelValue GetRawValue(const TRegisterConfig& reg, const std::string& str)
+TRegisterValue GetRawValue(const TRegisterConfig& reg, const std::string& str)
 {
-    TChannelValue value;
+    TRegisterValue value;
     switch (reg.Format) {
         case S8:
             value.Set(static_cast<uint64_t>(FromScaledTextValue<int64_t>(reg, str) & 0xff));
@@ -574,7 +574,7 @@ TChannelValue GetRawValue(const TRegisterConfig& reg, const std::string& str)
     return value;
 }
 
-TChannelValue ConvertToRawValue(const TRegisterConfig& reg, const std::string& str)
+TRegisterValue ConvertToRawValue(const TRegisterConfig& reg, const std::string& str)
 {
     return InvertWordOrderIfNeeded(reg, GetRawValue(reg, str));
 }
@@ -598,7 +598,7 @@ template<> std::string ToScaledTextValue(const TRegisterConfig& reg, double val)
     return WBMQTT::StringFormat("%.15g", RoundValue(reg.Scale * val + reg.Offset, reg.RoundTo));
 }
 
-std::string ConvertFromRawValue(const TRegisterConfig& reg, TChannelValue val)
+std::string ConvertFromRawValue(const TRegisterConfig& reg, TRegisterValue val)
 {
     val = InvertWordOrderIfNeeded(reg, val);
     switch (reg.Format) {

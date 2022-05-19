@@ -20,7 +20,7 @@ public:
 
     static void Register(TSerialDeviceFactory& factory);
 
-    TChannelValue ReadRegisterImpl(PRegister reg) override;
+    TRegisterValue ReadRegisterImpl(PRegister reg) override;
     void InvalidateReadCache() override;
 
 private:

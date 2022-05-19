@@ -15,7 +15,7 @@
 #include <utility>
 #include <vector>
 
-#include "channel_value.h"
+#include "register_value.h"
 #include "serial_exc.h"
 
 enum RegisterFormat
@@ -198,7 +198,7 @@ public:
 
     // Desired interval between register reads
     std::experimental::optional<std::chrono::milliseconds> ReadPeriod;
-    std::experimental::optional<TChannelValue> ErrorValue;
+    std::experimental::optional<TRegisterValue> ErrorValue;
     EWordOrder WordOrder;
 
     // Offset of data in response. Could be bit offset or index in array depending on protocol
@@ -207,7 +207,7 @@ public:
     // Width of data in response. Could be bit width or anything else depending on protocol
     uint8_t DataWidth;
 
-    std::experimental::optional<TChannelValue> UnsupportedValue;
+    std::experimental::optional<TRegisterValue> UnsupportedValue;
 
     TRegisterConfig(int type,
                     std::shared_ptr<IRegisterAddress> address,
@@ -308,8 +308,8 @@ struct TRegister: public TRegisterConfig
     //! Set register's availability
     void SetAvailable(TRegisterAvailability available);
 
-    TChannelValue GetValue() const;
-    void SetValue(const TChannelValue& value, bool clearReadError = true);
+    TRegisterValue GetValue() const;
+    void SetValue(const TRegisterValue& value, bool clearReadError = true);
 
     void SetError(TError error);
     void ClearError(TError error);
@@ -323,7 +323,7 @@ struct TRegister: public TRegisterConfig
 private:
     std::weak_ptr<TSerialDevice> _Device;
     TRegisterAvailability Available = TRegisterAvailability::UNKNOWN;
-    TChannelValue Value;
+    TRegisterValue Value;
     std::string ChannelName;
     TErrorState ErrorState;
     TReadPeriodMissChecker ReadPeriodMissChecker;
@@ -495,7 +495,7 @@ public:
     bool Add(PRegister reg, std::chrono::milliseconds pollLimit) override;
 };
 
-TChannelValue InvertWordOrderIfNeeded(const TRegisterConfig& reg, TChannelValue value);
+TRegisterValue InvertWordOrderIfNeeded(const TRegisterConfig& reg, TRegisterValue value);
 
 /**
  * @brief Tries to get a value from string and
@@ -510,7 +510,7 @@ TChannelValue InvertWordOrderIfNeeded(const TRegisterConfig& reg, TChannelValue 
  * @param reg register config
  * @param str string to convert
  */
-TChannelValue ConvertToRawValue(const TRegisterConfig& reg, const std::string& str);
+TRegisterValue ConvertToRawValue(const TRegisterConfig& reg, const std::string& str);
 
 /**
  * @brief Converts raw bytes to string according to register config
@@ -519,4 +519,4 @@ TChannelValue ConvertToRawValue(const TRegisterConfig& reg, const std::string& s
  * @param reg register config
  * @param val raw bytes
  */
-std::string ConvertFromRawValue(const TRegisterConfig& reg, TChannelValue val);
+std::string ConvertFromRawValue(const TRegisterConfig& reg, TRegisterValue val);

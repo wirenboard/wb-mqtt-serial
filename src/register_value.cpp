@@ -1,4 +1,4 @@
-#include "channel_value.h"
+#include "register_value.h"
 #include <algorithm>
 #include <iomanip>
 #include <iostream>
@@ -6,7 +6,7 @@
 #include <vector>
 
 
-template<> uint64_t TChannelValue::Get<>() const
+template<> uint64_t TRegisterValue::Get<>() const
 {
     uint64_t retVal = 0;
     for (uint32_t i = 0; (i < sizeof(uint64_t) / sizeof(TRegisterWord)) && (i < Value.size()); ++i) {
@@ -15,17 +15,17 @@ template<> uint64_t TChannelValue::Get<>() const
     return retVal;
 }
 
-template<> int64_t TChannelValue::Get<>() const
+template<> int64_t TRegisterValue::Get<>() const
 {
     return static_cast<int64_t>(Get<uint64_t>());
 }
 
-template<> std::vector<TRegisterWord> TChannelValue::Get() const
+template<> std::vector<TRegisterWord> TRegisterValue::Get() const
 {
     return {Value.begin(), Value.end()};
 }
 
-template<> TRegisterWord TChannelValue::Get() const
+template<> TRegisterWord TRegisterValue::Get() const
 {
     if (Value.empty())
         return 0;
@@ -33,12 +33,12 @@ template<> TRegisterWord TChannelValue::Get() const
     return Value.front();
 }
 
-template<> int16_t TChannelValue::Get() const
+template<> int16_t TRegisterValue::Get() const
 {
     return static_cast<int16_t>(Get<TRegisterWord>());
 }
 
-template<> uint32_t TChannelValue::Get() const
+template<> uint32_t TRegisterValue::Get() const
 {
     if (Value.empty()) {
         return 0;
@@ -49,24 +49,24 @@ template<> uint32_t TChannelValue::Get() const
     return (static_cast<uint32_t>(Value.at(1)) << 16 | Value.at(0));
 }
 
-template<> int32_t TChannelValue::Get() const
+template<> int32_t TRegisterValue::Get() const
 {
     return static_cast<int32_t>(Get<uint32_t>());
 }
 
-template<> uint8_t TChannelValue::Get() const
+template<> uint8_t TRegisterValue::Get() const
 {
     if (Value.empty())
         return 0;
     return Value.at(0) & 0xff;
 }
 
-template<> int8_t TChannelValue::Get() const
+template<> int8_t TRegisterValue::Get() const
 {
     return static_cast<int8_t>(Get<uint8_t>());
 }
 
-template<> std::string TChannelValue::Get() const
+template<> std::string TRegisterValue::Get() const
 {
     std::string str;
     std::copy(std::make_reverse_iterator(Value.end()),
@@ -77,12 +77,12 @@ template<> std::string TChannelValue::Get() const
     return str;
 }
 
-TChannelValue::TChannelValue(uint64_t value)
+TRegisterValue::TRegisterValue(uint64_t value)
 {
     Set(value);
 }
 
-void TChannelValue::Set(uint64_t value)
+void TRegisterValue::Set(uint64_t value)
 {
     Value.clear();
     for (uint32_t i = 0; i < sizeof(uint64_t) / sizeof(TRegisterWord); ++i) {
@@ -93,14 +93,14 @@ void TChannelValue::Set(uint64_t value)
     }
 }
 
-void TChannelValue::Set(const std::string& value, size_t width)
+void TRegisterValue::Set(const std::string& value, size_t width)
 {
     Value.clear();
     std::copy(value.begin(), value.end(), std::front_inserter(Value));
     std::fill_n(std::front_inserter(Value), width/2-value.size(), '\0');
 }
 
-TChannelValue& TChannelValue::operator=(const TChannelValue& other)
+TRegisterValue& TRegisterValue::operator=(const TRegisterValue& other)
 {
     // Guard self assignment
     if (this == &other)
@@ -110,7 +110,7 @@ TChannelValue& TChannelValue::operator=(const TChannelValue& other)
     return *this;
 }
 
-TChannelValue& TChannelValue::operator=(TChannelValue&& other) noexcept
+TRegisterValue& TRegisterValue::operator=(TRegisterValue&& other) noexcept
 {
     // Guard self assignment
     if (this == &other)
@@ -120,22 +120,22 @@ TChannelValue& TChannelValue::operator=(TChannelValue&& other) noexcept
     return *this;
 }
 
-bool TChannelValue::operator==(const TChannelValue& other) const
+bool TRegisterValue::operator==(const TRegisterValue& other) const
 {
     return Value == other.Value;
 }
 
-bool TChannelValue::operator==(uint64_t other) const
+bool TRegisterValue::operator==(uint64_t other) const
 {
-    return *this == TChannelValue{other};
+    return *this == TRegisterValue{other};
 }
 
-bool TChannelValue::operator!=(const TChannelValue& other) const
+bool TRegisterValue::operator!=(const TRegisterValue& other) const
 {
     return Value != other.Value;
 }
 
-TRegisterWord TChannelValue::PopWord()
+TRegisterWord TRegisterValue::PopWord()
 {
     if (Value.empty())
         return 0;
@@ -146,17 +146,17 @@ TRegisterWord TChannelValue::PopWord()
     return retVal;
 }
 
-void TChannelValue::PushWord(TRegisterWord data)
+void TRegisterValue::PushWord(TRegisterWord data)
 {
     Value.push_front(data);
 }
 
-TChannelValue TChannelValue::operator>>(uint32_t offset) const
+TRegisterValue TRegisterValue::operator>>(uint32_t offset) const
 {
     auto offsetInWord = offset / (sizeof(TRegisterWord) * 8);
     auto offsetInBit = offset % (sizeof(TRegisterWord) * 8);
 
-    TChannelValue result;
+    TRegisterValue result;
     auto q = Value;
     for (uint32_t i = 0; i < offsetInWord; ++i) {
         if (!q.empty()) {
@@ -178,12 +178,12 @@ TChannelValue TChannelValue::operator>>(uint32_t offset) const
     return result;
 }
 
-TChannelValue TChannelValue::operator<<(uint32_t offset) const
+TRegisterValue TRegisterValue::operator<<(uint32_t offset) const
 {
     auto offsetInWord = offset / (sizeof(TRegisterWord) * 8);
     auto offsetInBit = offset % (sizeof(TRegisterWord) * 8);
 
-    TChannelValue result;
+    TRegisterValue result;
     auto q = Value;
 
     if (offsetInBit != 0) {
@@ -204,7 +204,7 @@ TChannelValue TChannelValue::operator<<(uint32_t offset) const
     return result;
 }
 
-std::string TChannelValue::ToString()
+std::string TRegisterValue::ToString()
 {
     std::stringstream ss;
     for (const auto& element: Value) {
@@ -213,7 +213,7 @@ std::string TChannelValue::ToString()
     return ss.str();
 }
 
-TChannelValue& TChannelValue::operator|=(const TChannelValue& other)
+TRegisterValue& TRegisterValue::operator|=(const TRegisterValue& other)
 {
     // Guard self assignment
     if (this == &other)

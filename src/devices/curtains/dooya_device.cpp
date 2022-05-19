@@ -114,7 +114,7 @@ std::vector<uint8_t> Dooya::TDevice::ExecCommand(const TRequest& request)
     return respBytes;
 }
 
-void Dooya::TDevice::WriteRegisterImpl(PRegister reg, const TChannelValue& regValue)
+void Dooya::TDevice::WriteRegisterImpl(PRegister reg, const TRegisterValue& regValue)
 {
     auto value = regValue.Get<uint64_t>();
     switch (reg->Type) {
@@ -158,11 +158,11 @@ void Dooya::TDevice::WriteRegisterImpl(PRegister reg, const TChannelValue& regVa
     }
 }
 
-TChannelValue Dooya::TDevice::ReadRegisterImpl(PRegister reg)
+TRegisterValue Dooya::TDevice::ReadRegisterImpl(PRegister reg)
 {
     switch (reg->Type) {
         case POSITION: {
-            return TChannelValue{
+            return TRegisterValue{
                 ParsePositionResponse(SlaveId, READ, GET_POSITION_DATA_LENGTH, ExecCommand(GetPositionCommand))};
         }
         case PARAM: {
@@ -170,10 +170,10 @@ TChannelValue Dooya::TDevice::ReadRegisterImpl(PRegister reg)
             TRequest req;
             req.Data = MakeRequest(SlaveId, {READ, static_cast<uint8_t>(addr & 0xFF), 1});
             req.ResponseSize = RESPONSE_SIZE;
-            return TChannelValue{ParseReadResponse(SlaveId, READ, 1, ExecCommand(req))};
+            return TRegisterValue{ParseReadResponse(SlaveId, READ, 1, ExecCommand(req))};
         }
         case COMMAND: {
-            return TChannelValue{1};
+            return TRegisterValue{1};
         }
     }
     throw TSerialDevicePermanentRegisterException("Unsupported register type");

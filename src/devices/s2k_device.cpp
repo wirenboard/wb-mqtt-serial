@@ -70,7 +70,7 @@ uint8_t TS2KDevice::CrcS2K(const uint8_t* array, int size)
     return crc;
 }
 
-void TS2KDevice::WriteRegisterImpl(PRegister reg, const TChannelValue& value)
+void TS2KDevice::WriteRegisterImpl(PRegister reg, const TRegisterValue& value)
 {
     auto addr = GetUint32RegisterAddress(reg->GetAddress());
     if (reg->Type != REG_RELAY) {
@@ -102,16 +102,16 @@ void TS2KDevice::WriteRegisterImpl(PRegister reg, const TChannelValue& value)
     RelayState[response[3]] = response[4];
 }
 
-TChannelValue TS2KDevice::ReadRegisterImpl(PRegister reg)
+TRegisterValue TS2KDevice::ReadRegisterImpl(PRegister reg)
 {
     auto addr = GetUint32RegisterAddress(reg->GetAddress());
     /* We have no way to get current relay state from device. Thats why we save last
        successful write to relay register and return it when regiter is read */
     switch (reg->Type) {
         case REG_RELAY:
-            return TChannelValue{RelayState[addr] != 0 && RelayState[addr] != 2};
+            return TRegisterValue{RelayState[addr] != 0 && RelayState[addr] != 2};
         case REG_RELAY_MODE:
-            return TChannelValue{RelayState[addr]};
+            return TRegisterValue{RelayState[addr]};
         case REG_RELAY_DEFAULT:
         case REG_RELAY_DELAY: {
             Port()->CheckPortOpen();
@@ -134,7 +134,7 @@ TChannelValue TS2KDevice::ReadRegisterImpl(PRegister reg)
             if (response[5] != CrcS2K(response, 5)) {
                 throw TSerialDeviceTransientErrorException("bad CRC for 0x5 command");
             }
-            return TChannelValue{response[4]};
+            return TRegisterValue{response[4]};
         }
         default:
             throw TSerialDeviceException("S2K protocol: invalid register for reading");

@@ -185,7 +185,7 @@ void TPulsarDevice::ReadResponse(uint32_t addr, uint8_t* payload, size_t size, u
     memcpy(payload, response + 6, size);
 }
 
-TChannelValue TPulsarDevice::ReadDataRegister(PRegister reg)
+TRegisterValue TPulsarDevice::ReadDataRegister(PRegister reg)
 {
     auto addr = GetUint32RegisterAddress(reg->GetAddress());
     // raw payload data
@@ -201,10 +201,10 @@ TChannelValue TPulsarDevice::ReadDataRegister(PRegister reg)
     ++RequestID;
 
     // decode little-endian double64_t value
-    return TChannelValue{ReadHex(payload, reg->GetByteWidth(), false)};
+    return TRegisterValue{ReadHex(payload, reg->GetByteWidth(), false)};
 }
 
-TChannelValue TPulsarDevice::ReadSysTimeRegister(PRegister reg)
+TRegisterValue TPulsarDevice::ReadSysTimeRegister(PRegister reg)
 {
     // raw payload data
     uint8_t payload[6];
@@ -216,10 +216,10 @@ TChannelValue TPulsarDevice::ReadSysTimeRegister(PRegister reg)
     ++RequestID;
 
     // decode little-endian double64_t value
-    return TChannelValue{ReadHex(payload, sizeof(payload), false)};
+    return TRegisterValue{ReadHex(payload, sizeof(payload), false)};
 }
 
-TChannelValue TPulsarDevice::ReadRegisterImpl(PRegister reg)
+TRegisterValue TPulsarDevice::ReadRegisterImpl(PRegister reg)
 {
     Port()->SkipNoise();
 

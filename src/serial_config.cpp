@@ -271,12 +271,12 @@ namespace
                                                      address.DataWidth);
 
         if (register_data.isMember("error_value")) {
-            res.RegisterConfig->ErrorValue = TChannelValue{ToUint64(register_data["error_value"], "error_value")};
+            res.RegisterConfig->ErrorValue = TRegisterValue{ToUint64(register_data["error_value"], "error_value")};
         }
 
         if (register_data.isMember("unsupported_value")) {
             res.RegisterConfig->UnsupportedValue =
-                TChannelValue{ToUint64(register_data["unsupported_value"], "unsupported_value")};
+                TRegisterValue{ToUint64(register_data["unsupported_value"], "unsupported_value")};
         }
 
         res.RegisterConfig->ReadRateLimit = GetReadRateLimit(register_data);
@@ -1050,7 +1050,7 @@ const std::string& TDeviceSetupItemConfig::GetValue() const
     return Value;
 }
 
-TChannelValue TDeviceSetupItemConfig::GetRawValue() const
+TRegisterValue TDeviceSetupItemConfig::GetRawValue() const
 {
     return RawValue;
 }

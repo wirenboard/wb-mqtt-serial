@@ -124,9 +124,9 @@ TEMDevice::ErrorType TMilurDevice::CheckForException(uint8_t* frame, int len, co
     return TEMDevice::OTHER_ERROR;
 }
 
-TChannelValue TMilurDevice::ReadRegisterImpl(PRegister reg)
+TRegisterValue TMilurDevice::ReadRegisterImpl(PRegister reg)
 {
-    TChannelValue retVal;
+    TRegisterValue retVal;
     uint8_t addr = GetUint32RegisterAddress(reg->GetAddress());
     int size = GetExpectedSize(reg->Type);
     uint8_t buf[MAX_LEN], *p = buf;

@@ -104,7 +104,7 @@ set<int> TModbusTest::VerifyQuery(PRegister reg)
     }
     set<int> readAddresses;
     set<int> errorRegisters;
-    map<int, TChannelValue> registerValues;
+    map<int, TRegisterValue> registerValues;
 
     for (auto range: ranges) {
         ModbusDev->ReadRegisterRange(range);

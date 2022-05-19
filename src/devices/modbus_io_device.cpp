@@ -70,7 +70,7 @@ PRegisterRange TModbusIODevice::CreateRegisterRange() const
     return Modbus::CreateRegisterRange();
 }
 
-void TModbusIODevice::WriteRegisterImpl(PRegister reg, const TChannelValue& value)
+void TModbusIODevice::WriteRegisterImpl(PRegister reg, const TRegisterValue& value)
 {
     Modbus::WriteRegister(*ModbusTraits, *Port(), SlaveId, *reg, value, ModbusCache, Shift);
 }

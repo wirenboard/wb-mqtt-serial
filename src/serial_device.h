@@ -56,14 +56,14 @@ class TDeviceSetupItemConfig
     std::string Name;
     PRegisterConfig RegisterConfig;
     std::string Value;
-    TChannelValue RawValue;
+    TRegisterValue RawValue;
 
 public:
     TDeviceSetupItemConfig(const std::string& name, PRegisterConfig reg, const std::string& value);
 
     const std::string& GetName() const;
     const std::string& GetValue() const;
-    TChannelValue GetRawValue() const;
+    TRegisterValue GetRawValue() const;
     PRegisterConfig GetRegisterConfig() const;
 };
 
@@ -144,7 +144,7 @@ struct TDeviceSetupItem
     }
 
     std::string Name;
-    TChannelValue RawValue;
+    TRegisterValue RawValue;
     std::string HumanReadableValue;
     PRegister Register;
 };
@@ -182,7 +182,7 @@ public:
     virtual void EndSession();
 
     // Write register value
-    void WriteRegister(PRegister reg, const TChannelValue& value);
+    void WriteRegister(PRegister reg, const TRegisterValue& value);
 
     void WriteRegister(PRegister reg, uint64_t value);
 
@@ -210,8 +210,8 @@ protected:
     std::vector<PDeviceSetupItem> SetupItems;
 
     virtual void PrepareImpl();
-    virtual TChannelValue ReadRegisterImpl(PRegister reg);
-    virtual void WriteRegisterImpl(PRegister reg, const TChannelValue& value);
+    virtual TRegisterValue ReadRegisterImpl(PRegister reg);
+    virtual void WriteRegisterImpl(PRegister reg, const TRegisterValue& value);
     bool HasSetupItems() const;
     virtual void WriteSetupRegisters();
 

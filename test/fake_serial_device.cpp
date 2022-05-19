@@ -5,9 +5,9 @@ using namespace std;
 
 namespace // utility
 {
-    TChannelValue GetValue(uint16_t* src, int width)
+    TRegisterValue GetValue(uint16_t* src, int width)
     {
-        TChannelValue value;
+        TRegisterValue value;
         for (int i = 0; i < width; ++i) {
             value.PushWord(src[i]);
         };
@@ -15,7 +15,7 @@ namespace // utility
         return value;
     }
 
-    void SetValue(uint16_t* dst, int width, const TChannelValue& value)
+    void SetValue(uint16_t* dst, int width, const TRegisterValue& value)
     {
         auto bufValue = value;
         for (int p = width - 1; p >= 0; --p) {
@@ -63,7 +63,7 @@ TFakeSerialDevice::TFakeSerialDevice(PDeviceConfig config, PPort port, PProtocol
     Devices.push_back(this);
 }
 
-TChannelValue TFakeSerialDevice::ReadRegisterImpl(PRegister reg)
+TRegisterValue TFakeSerialDevice::ReadRegisterImpl(PRegister reg)
 {
     try {
         if (!FakePort->IsOpen()) {
@@ -102,7 +102,7 @@ TChannelValue TFakeSerialDevice::ReadRegisterImpl(PRegister reg)
     }
 }
 
-void TFakeSerialDevice::WriteRegisterImpl(PRegister reg, const TChannelValue& value)
+void TFakeSerialDevice::WriteRegisterImpl(PRegister reg, const TRegisterValue& value)
 {
     try {
         if (!FakePort->IsOpen()) {

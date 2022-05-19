@@ -94,7 +94,7 @@ void TSerialDevice::EndSession()
 void TSerialDevice::InvalidateReadCache()
 {}
 
-void TSerialDevice::WriteRegister(PRegister reg, const TChannelValue& value)
+void TSerialDevice::WriteRegister(PRegister reg, const TRegisterValue& value)
 {
     try {
         WriteRegisterImpl(reg, value);
@@ -110,15 +110,15 @@ void TSerialDevice::WriteRegister(PRegister reg, const TChannelValue& value)
 
 void TSerialDevice::WriteRegister(PRegister reg, uint64_t value)
 {
-    WriteRegister(reg, TChannelValue{value});
+    WriteRegister(reg, TRegisterValue{value});
 }
 
-TChannelValue TSerialDevice::ReadRegisterImpl(PRegister reg)
+TRegisterValue TSerialDevice::ReadRegisterImpl(PRegister reg)
 {
     throw TSerialDeviceException("single register reading is not supported");
 }
 
-void TSerialDevice::WriteRegisterImpl(PRegister reg, const TChannelValue& value)
+void TSerialDevice::WriteRegisterImpl(PRegister reg, const TRegisterValue& value)
 {
     throw TSerialDeviceException(ToString() + ": register writing is not supported");
 }

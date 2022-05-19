@@ -78,7 +78,7 @@ std::string TNevaDevice::GetParameterRequest(const TRegister& reg) const
     return ss.str();
 }
 
-TChannelValue TNevaDevice::GetRegisterValue(const TRegister& reg, const std::string& v)
+TRegisterValue TNevaDevice::GetRegisterValue(const TRegister& reg, const std::string& v)
 {
     if (v.size() < 3 || v.front() != '(' || v.back() != ')') {
         throw TSerialDeviceTransientErrorException("malformed response");
@@ -108,5 +108,5 @@ TChannelValue TNevaDevice::GetRegisterValue(const TRegister& reg, const std::str
             val = -(val - 100.0);
         }
     }
-    return TChannelValue{CopyDoubleToUint64(val)};
+    return TRegisterValue{CopyDoubleToUint64(val)};
 }

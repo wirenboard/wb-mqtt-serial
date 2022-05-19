@@ -73,7 +73,7 @@ std::vector<uint8_t> TMercury200Device::ExecCommand(uint8_t cmd)
     return CmdResultCache.insert({cmd, result}).first->second;
 }
 
-TChannelValue TMercury200Device::ReadRegisterImpl(PRegister reg)
+TRegisterValue TMercury200Device::ReadRegisterImpl(PRegister reg)
 {
     uint8_t cmd = (GetUint32RegisterAddress(reg->GetAddress()) & 0xFF);
     auto result = ExecCommand(cmd);
@@ -81,7 +81,7 @@ TChannelValue TMercury200Device::ReadRegisterImpl(PRegister reg)
     if (result.size() < reg->DataOffset + size)
         throw TSerialDeviceException("mercury200: register address is out of range");
 
-    return TChannelValue{PackBytes(result.data() + reg->DataOffset, static_cast<WordSizes>(size))};
+    return TRegisterValue{PackBytes(result.data() + reg->DataOffset, static_cast<WordSizes>(size))};
 }
 
 void TMercury200Device::InvalidateReadCache()

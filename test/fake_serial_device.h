@@ -34,8 +34,8 @@ public:
     static void Register(TSerialDeviceFactory& factory);
 
 protected:
-    TChannelValue ReadRegisterImpl(PRegister reg) override;
-    void WriteRegisterImpl(PRegister reg, const TChannelValue& value) override;
+    TRegisterValue ReadRegisterImpl(PRegister reg) override;
+    void WriteRegisterImpl(PRegister reg, const TRegisterValue& value) override;
 
 private:
     PFakeSerialPort FakePort;

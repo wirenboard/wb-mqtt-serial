@@ -50,5 +50,5 @@ public:
     static void Register(TSerialDeviceFactory& factory);
 
 protected:
-    void WriteRegisterImpl(PRegister reg, const TChannelValue& value) override;
+    void WriteRegisterImpl(PRegister reg, const TRegisterValue& value) override;
 };

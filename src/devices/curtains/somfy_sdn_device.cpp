@@ -192,7 +192,7 @@ std::vector<uint8_t> Somfy::TDevice::ExecCommand(const std::vector<uint8_t>& req
     return respBytes;
 }
 
-void Somfy::TDevice::WriteRegisterImpl(PRegister reg, const TChannelValue& regValue)
+void Somfy::TDevice::WriteRegisterImpl(PRegister reg, const TRegisterValue& regValue)
 {
     auto value = regValue.Get<uint64_t>();
     if (reg->Type == POSITION) {
@@ -221,12 +221,12 @@ void Somfy::TDevice::WriteRegisterImpl(PRegister reg, const TChannelValue& regVa
     throw TSerialDevicePermanentRegisterException("Unsupported register type");
 }
 
-TChannelValue Somfy::TDevice::GetCachedResponse(uint8_t requestHeader,
+TRegisterValue Somfy::TDevice::GetCachedResponse(uint8_t requestHeader,
                                                 uint8_t responseHeader,
                                                 size_t bitOffset,
                                                 size_t bitWidth)
 {
-    TChannelValue val;
+    TRegisterValue val;
     auto it = DataCache.find(requestHeader);
     if (it != DataCache.end()) {
         val = it->second;
@@ -236,12 +236,12 @@ TChannelValue Somfy::TDevice::GetCachedResponse(uint8_t requestHeader,
         DataCache[requestHeader] = val;
     }
     if (bitOffset || bitWidth) {
-        return TChannelValue{(val.Get<uint64_t>() >> bitOffset) & GetLSBMask(bitWidth)};
+        return TRegisterValue{(val.Get<uint64_t>() >> bitOffset) & GetLSBMask(bitWidth)};
     }
     return val;
 }
 
-TChannelValue Somfy::TDevice::ReadRegisterImpl(PRegister reg)
+TRegisterValue Somfy::TDevice::ReadRegisterImpl(PRegister reg)
 {
     switch (reg->Type) {
         case POSITION: {
@@ -256,7 +256,7 @@ TChannelValue Somfy::TDevice::ReadRegisterImpl(PRegister reg)
             return GetCachedResponse(addr.Get(), addr.GetResponseHeader(), reg->DataOffset, reg->DataWidth);
         }
         case COMMAND: {
-            return TChannelValue{1};
+            return TRegisterValue{1};
         }
     }
     throw TSerialDevicePermanentRegisterException("Unsupported register type");

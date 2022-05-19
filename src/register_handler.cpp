@@ -26,7 +26,7 @@ bool TRegisterHandler::NeedToFlush()
 
 void TRegisterHandler::Flush()
 {
-    TChannelValue tempValue; // must be volatile
+    TRegisterValue tempValue; // must be volatile
     try {
         {
             std::lock_guard<std::mutex> lock(SetValueMutex);
