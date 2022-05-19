@@ -1,0 +1,714 @@
+{
+    "title": "ECOdim DALI GW2 (Modbus-DALI gateway)",
+    "device_type": "ecodim_dali_gw2",
+    "device": {
+        "name": "ECOdim DALI GW2",
+        "id": "ecodim_dali_gw2",
+        "response_timeout_ms": 100,
+        "guard_interval_us": 5000,
+        "groups": [
+            {
+                "title": "System Commands",
+                "id": "system_commands",
+                "order": 1
+            },
+            {
+                "title": "Transparent Mode",
+                "id": "transparent_mode",
+                "order": 2
+            },
+            {
+                "title": "Broadcast Commands",
+                "id": "broadcast_commands",
+                "order": 3
+            },
+            {
+                "title": "Group Commands",
+                "id": "group_commands",
+                "order": 4
+            },
+            {
+                "title": "Individual Commands",
+                "id": "individual_commands",
+                "order": 5
+            },
+            {
+                "title": "Relay Control",
+                "id": "relay_control",
+                "order": 6
+            },
+            {
+                "title": "General",
+                "id": "general",
+                "order": 7
+            },
+            {
+                "title": "HW Info",
+                "id": "hw_info",
+                "order": 8
+            }
+        ],
+
+        "parameters": {
+            "data_buffering_time_s": {
+                "title": "Data Buffering Period (s)",
+                "description": "data_buffering_period_description",
+                "address": 38,
+                "reg_type": "holding",
+                "format": "u16",
+                "min": 0,
+                "max": 65535,
+                "default": 5,
+                "group": "general",
+                "order": 1
+            }
+        },
+
+        "channels": [
+            {
+                "name": "DALI Bus Status",
+                "address": 29,
+                "reg_type": "holding",
+                "type": "switch",
+                "format": "u16",
+                "offset": 1,
+                "scale": -1,
+                "readonly": true,
+                "group": "system_commands"
+            },
+            {
+                "name": "DALI Bus Load",
+                "address": 55,
+                "reg_type": "holding",
+                "type": "value",
+                "format": "u16",
+                "readonly": true,
+                "group": "system_commands",
+                "units": "percent"
+            },
+            {
+                "name": "DALI Devices Quantity",
+                "address": 31,
+                "reg_type": "holding",
+                "type": "value",
+                "format": "u16",
+                "readonly": true,
+                "group": "system_commands"
+            },
+            {
+                "name": "DALI Bus Scan",
+                "address": 30,
+                "reg_type": "holding",
+                "type": "value",
+                "format": "u16",
+                "group": "system_commands",
+                "min": 0,
+                "max": 18
+            },
+            {
+                "name": "Reset Gateway",
+                "address": 32,
+                "reg_type": "holding",
+                "type": "pushbutton",
+                "format": "u16",
+                "group": "system_commands",
+                "on_value": "0x55"
+            },
+            {
+                "name": "DALI Command",
+                "write_address": 25,
+                "reg_type": "holding",
+                "type": "value",
+                "format": "u16",
+                "group": "transparent_mode"
+            },
+            {
+                "name": "Last DALI Command Status",
+                "address": 24,
+                "reg_type": "holding",
+                "type": "value",
+                "format": "u16",
+                "readonly": true,
+                "group": "transparent_mode"
+            },
+            {
+                "name": "Device Answer",
+                "address": 26,
+                "reg_type": "holding",
+                "type": "value",
+                "format": "u16",
+                "readonly": true,
+                "group": "transparent_mode"
+            },
+            {
+                "name": "Devices Available",
+                "address": 1002,
+                "reg_type": "holding",
+                "type": "switch",
+                "format": "u16",
+                "scale": 0.5,
+                "readonly": true,
+                "group": "broadcast_commands"
+            },
+            {
+                "name": "Devices Status",
+                "address": 1004,
+                "reg_type": "holding",
+                "type": "switch",
+                "format": "u16",
+                "scale": 0.5,
+                "readonly": true,
+                "group": "broadcast_commands"
+            },
+            {
+                "name": "Adjustable Color Temperature Devices",
+                "address": 1007,
+                "reg_type": "holding",
+                "type": "switch",
+                "format": "u16",
+                "scale": 0.5,
+                "readonly": true,
+                "group": "broadcast_commands"
+            },
+            {
+                "name": "Device Fault",
+                "address": 1003,
+                "reg_type": "holding",
+                "type": "switch",
+                "format": "u16",
+                "scale": 0.5,
+                "readonly": true,
+                "group": "broadcast_commands"
+            },
+            {
+                "name": "Broadcast Command",
+                "write_address": 1001,
+                "reg_type": "holding",
+                "type": "value",
+                "format": "u16",
+                "group": "broadcast_commands",
+                "min": 0,
+                "max": 31
+            },
+            {
+                "name": "Set Brightness",
+                "write_address": 1000,
+                "reg_type": "holding",
+                "type": "range",
+                "format": "u16",
+                "group": "broadcast_commands",
+                "min": 0,
+                "max": 255
+            },
+            {
+                "name": "Set Color Temperature",
+                "write_address": 1005,
+                "reg_type": "holding",
+                "type": "range",
+                "format": "u16",
+                "group": "broadcast_commands",
+                "min": 1000,
+                "max": 10000
+            },
+            {
+                "name": "Increase Color Temperature",
+                "write_address": 1006,
+                "reg_type": "holding",
+                "type": "pushbutton",
+                "format": "u16",
+                "group": "broadcast_commands",
+                "on_value": 0
+            },
+            {
+                "name": "Decrease Color Temperature",
+                "write_address": 1006,
+                "reg_type": "holding",
+                "type": "pushbutton",
+                "format": "u16",
+                "group": "broadcast_commands",
+                "on_value": 1
+            },
+            {
+                "name": "Group 0 Devices Available",
+                "address": 2002,
+                "reg_type": "holding",
+                "type": "switch",
+                "format": "u16",
+                "scale": 0.5,
+                "readonly": true,
+                "group": "group_commands"
+            },
+            {
+                "name": "Group 0 Fault",
+                "address": 2003,
+                "reg_type": "holding",
+                "type": "switch",
+                "format": "u16",
+                "scale": 0.5,
+                "readonly": true,
+                "group": "group_commands"
+            },
+            {
+                "name": "Group 0 Status",
+                "address": 2004,
+                "reg_type": "holding",
+                "type": "switch",
+                "format": "u16",
+                "scale": 0.5,
+                "readonly": true,
+                "group": "group_commands"
+            },
+            {
+                "name": "Group 0 Adjustable Color Temperature Devices",
+                "address": 2622,
+                "reg_type": "holding",
+                "type": "switch",
+                "format": "u16",
+                "scale": 0.5,
+                "readonly": true,
+                "group": "group_commands"
+            },
+            {
+                "name": "Group 0 Command",
+                "write_address": 2001,
+                "reg_type": "holding",
+                "type": "value",
+                "format": "u16",
+                "group": "group_commands",
+                "min": 0,
+                "max": 31
+            },
+            {
+                "name": "Group 0 Set Brightness",
+                "write_address": 2000,
+                "reg_type": "holding",
+                "type": "range",
+                "format": "u16",
+                "group": "group_commands",
+                "min": 0,
+                "max": 255
+            },
+            {
+                "name": "Group 0 Set Color Temperature",
+                "write_address": 2620,
+                "reg_type": "holding",
+                "type": "range",
+                "format": "u16",
+                "group": "group_commands",
+                "min": 1000,
+                "max": 10000
+            },
+            {
+                "name": "Group 0 Increase Color Temperature",
+                "write_address": 2621,
+                "reg_type": "holding",
+                "type": "pushbutton",
+                "format": "u16",
+                "group": "group_commands",
+                "on_value": 0
+            },
+            {
+                "name": "Group 0 Decrease Color Temperature",
+                "write_address": 2621,
+                "reg_type": "holding",
+                "type": "pushbutton",
+                "format": "u16",
+                "group": "group_commands",
+                "on_value": 1
+            },
+            {% for G in range(1, 16) -%}
+            {
+                "name": "Group {{G}} Devices Available",
+                "address": "{{2002  + G * 5}}",
+                "reg_type": "holding",
+                "type": "switch",
+                "format": "u16",
+                "scale": 0.5,
+                "readonly": true,
+                "group": "group_commands",
+                "enabled": false
+            },
+            {
+                "name": "Group {{G}} Fault",
+                "address": "{{2003  + G * 5}}",
+                "reg_type": "holding",
+                "type": "switch",
+                "format": "u16",
+                "scale": 0.5,
+                "readonly": true,
+                "group": "group_commands",
+                "enabled": false
+            },
+            {
+                "name": "Group {{G}} Status",
+                "address": "{{2004  + G * 5}}",
+                "reg_type": "holding",
+                "type": "switch",
+                "format": "u16",
+                "scale": 0.5,
+                "readonly": true,
+                "group": "group_commands",
+                "enabled": false
+            },
+            {
+                "name": "Group {{G}} Adjustable Color Temperature Devices",
+                "address": "{{2622  + G * 5}}",
+                "reg_type": "holding",
+                "type": "switch",
+                "format": "u16",
+                "scale": 0.5,
+                "readonly": true,
+                "group": "group_commands",
+                "enabled": false
+            },
+            {
+                "name": "Group {{G}} Command",
+                "write_address": "{{2001  + G * 5}}",
+                "reg_type": "holding",
+                "type": "value",
+                "format": "u16",
+                "group": "group_commands",
+                "enabled": false,
+                "min": 0,
+                "max": 31
+            },
+            {
+                "name": "Group {{G}} Set Brightness",
+                "write_address": "{{2000 + G * 5}}",
+                "reg_type": "holding",
+                "type": "range",
+                "format": "u16",
+                "group": "group_commands",
+                "enabled": false,
+                "min": 0,
+                "max": 255
+            },
+            {
+                "name": "Group {{G}} Set Color Temperature",
+                "write_address": "{{2620  + G * 5}}",
+                "reg_type": "holding",
+                "type": "range",
+                "format": "u16",
+                "group": "group_commands",
+                "enabled": false,
+                "min": 1000,
+                "max": 10000
+            },
+            {
+                "name": "Group {{G}} Increase Color Temperature",
+                "write_address": "{{2621  + G * 5}}",
+                "reg_type": "holding",
+                "type": "pushbutton",
+                "format": "u16",
+                "group": "group_commands",
+                "enabled": false,
+                "on_value": 0
+            },
+            {
+                "name": "Group {{G}} Decrease Color Temperature",
+                "write_address": "{{2621  + G * 5}}",
+                "reg_type": "holding",
+                "type": "pushbutton",
+                "format": "u16",
+                "group": "group_commands",
+                "enabled": false,
+                "on_value": 1
+            },
+            {% endfor -%}
+            {
+                "name": "Device 0 Available",
+                "address": 3002,
+                "reg_type": "holding",
+                "type": "value",
+                "format": "u16",
+                "readonly": true,
+                "group": "individual_commands"
+            },
+            {
+                "name": "Device 0 Status",
+                "address": 3003,
+                "reg_type": "holding",
+                "type": "value",
+                "format": "u16",
+                "readonly": true,
+                "group": "individual_commands"
+            },
+            {
+                "name": "Device 0 Color Control Mode",
+                "address": 3322,
+                "reg_type": "holding",
+                "type": "value",
+                "format": "u16",
+                "readonly": true,
+                "group": "individual_commands",
+                "enabled": false,
+            },
+            {
+                "name": "Device 0 Color Change Status",
+                "address": 3323 ,
+                "reg_type": "holding",
+                "type": "value",
+                "format": "u16",
+                "readonly": true,
+                "group": "individual_commands",
+                "enabled": false,
+            },
+            {
+                "name": "Device 0 Command",
+                "write_address": 3001,
+                "reg_type": "holding",
+                "type": "value",
+                "format": "u16",
+                "group": "individual_commands",
+                "min": 0,
+                "max": 31
+            },
+            {
+                "name": "Device 0 Brightness",
+                "address": 3004,
+                "write_address": 3000,
+                "reg_type": "holding",
+                "type": "range",
+                "format": "u16",
+                "group": "individual_commands",
+                "min": 0,
+                "max": 255
+            },
+            {
+                "name": "Device 0 Color Temperature",
+                "address": 3324 ,
+                "write_address": 3320,
+                "reg_type": "holding",
+                "type": "range",
+                "format": "u16",
+                "group": "individual_commands",
+                "enabled": false,
+                "min": 1000,
+                "max": 10000
+            },
+            {
+                "name": "Device 0 Increase Color Temperature",
+                "write_address": 3321,
+                "reg_type": "holding",
+                "type": "pushbutton",
+                "format": "u16",
+                "group": "individual_commands",
+                "enabled": false,
+                "on_value": 0
+            },
+            {
+                "name": "Device 0 Decrease Color Temperature",
+                "write_address": 3321,
+                "reg_type": "holding",
+                "type": "pushbutton",
+                "format": "u16",
+                "group": "individual_commands",
+                "enabled": false,
+                "on_value": 1
+            },
+            {% for A in range(1, 64) -%}
+            {
+                "name": "Device {{A}} Available",
+                "address": "{{3002 + A * 5}}",
+                "reg_type": "holding",
+                "type": "value",
+                "format": "u16",
+                "readonly": true,
+                "group": "individual_commands",
+                "enabled": false
+            },
+            {
+                "name": "Device {{A}} Status",
+                "address": "{{3003 + A * 5}}",
+                "reg_type": "holding",
+                "type": "value",
+                "format": "u16",
+                "readonly": true,
+                "group": "individual_commands",
+                "enabled": false
+            },
+            {
+                "name": "Device {{A}} Color Control Mode",
+                "address": "{{3322 + A * 5}}",
+                "reg_type": "holding",
+                "type": "value",
+                "format": "u16",
+                "readonly": true,
+                "group": "individual_commands",
+                "enabled": false
+            },
+            {
+                "name": "Device {{A}} Color Change Status",
+                "address": "{{3323 + A * 5}}",
+                "reg_type": "holding",
+                "type": "value",
+                "format": "u16",
+                "readonly": true,
+                "group": "individual_commands",
+                "enabled": false
+            },
+            {
+                "name": "Device {{A}} Command",
+                "write_address": "{{3001 + A * 5}}",
+                "reg_type": "holding",
+                "type": "value",
+                "format": "u16",
+                "group": "individual_commands",
+                "enabled": false,
+                "min": 0,
+                "max": 31
+            },
+            {
+                "name": "Device {{A}} Brightness",
+                "address": "{{3004 + A * 5}}",
+                "write_address": "{{3000 + A * 5}}",
+                "reg_type": "holding",
+                "type": "range",
+                "format": "u16",
+                "group": "individual_commands",
+                "enabled": false,
+                "min": 0,
+                "max": 255
+            },
+            {
+                "name": "Device {{A}} Color Temperature",
+                "address": "{{3324 + A * 5}}",
+                "write_address": "{{3320 + A * 5}}",
+                "reg_type": "holding",
+                "type": "range",
+                "format": "u16",
+                "group": "individual_commands",
+                "enabled": false,
+                "min": 1000,
+                "max": 10000
+            },
+            {
+                "name": "Device {{A}} Increase Color Temperature",
+                "write_address": "{{3321 + A * 5}}",
+                "reg_type": "holding",
+                "type": "pushbutton",
+                "format": "u16",
+                "group": "individual_commands",
+                "enabled": false,
+                "on_value": 0
+            },
+            {
+                "name": "Device {{A}} Decrease Color Temperature",
+                "write_address": "{{3321 + A * 5}}",
+                "reg_type": "holding",
+                "type": "pushbutton",
+                "format": "u16",
+                "group": "individual_commands",
+                "enabled": false,
+                "on_value": 1
+            },
+            {% endfor -%}
+            {
+                "name": "Relay 1",
+                "address": 27,
+                "reg_type": "holding",
+                "type": "switch",
+                "format": "u16",
+                "group": "relay_control"
+            },
+            {
+                "name": "Relay 2",
+                "address": 28,
+                "reg_type": "holding",
+                "type": "switch",
+                "format": "u16",
+                "group": "relay_control"
+            },
+            {
+                "name": "Gateway Type",
+                "address": 0,
+                "reg_type": "holding",
+                "type": "value",
+                "format": "u16",
+                "readonly": true,
+                "group": "hw_info"
+            },
+            {
+                "name": "Gateway HW Version",
+                "address": 1,
+                "reg_type": "holding",
+                "type": "value",
+                "format": "u16",
+                "readonly": true,
+                "group": "hw_info"
+            },
+            {
+                "name": "Gateway SW Version",
+                "address": 2,
+                "reg_type": "holding",
+                "type": "value",
+                "format": "u16",
+                "readonly": true,
+                "group": "hw_info"
+            }
+        ],
+        
+        "translations": {
+            "en": {
+                "data_buffering_period_description": "During this period data is read from gateway buffer, not from device. 0 - buffering disabled"
+            },
+            "ru": {
+                "ECOdim DALI GW2 (Modbus-DALI gateway)": "ECOdim DALI GW2 (шлюз Modbus-DALI)",
+                "System Commands": "Системные команды",
+                "Transparent Mode": "Прозрачный режим",
+                "Broadcast Commands": "Широковещательные команды",
+                "Group Commands": "Групповые команды",
+                "Individual Commands": "Индивидуальные команды",
+                "Relay Control": "Управление реле",
+                "General": "Общее",
+                "HW Info": "Данные модуля",
+                "data_buffering_period_description": "В течение заданного периода данные считываются из буфера шлюза, а не из устройства. 0 - буферизация отключена",
+                "DALI Bus Status": "Статус шины DALI",
+                "DALI Bus Load": "Загрузка шины DALI",
+                "DALI Devices Quantity": "Количество устройств на шине",
+                "DALI Bus Scan": "Сканирование шины DALI",
+                "Data Buffering Period (s)": "Период буферизации данных (с)",
+                "Reset Gateway": "Сброс шлюза",
+                "DALI Command": "Команда DALI",
+                "Last DALI Command Status": "Статус последней команды DALI",
+                "Device Answer": "Ответ устройства",
+                "Devices Available": "Присутствие устройств",
+                "Devices Status": "Статус устройств",
+                "Adjustable Color Temperature Devices": "Устройства с изменяемой цветовой температурой",
+                "Device Fault": "Ошибка устройства",
+                "Broadcast Command": "Широковещательная команда",
+                "Set Brightness": "Установить яркость",
+                "Set Color Temperature": "Установить цветовую температуру",
+                "Increase Color Temperature": "Увеличить цветовую температуру",
+                "Decrease Color Temperature": "Уменьшить цветовую температуру",
+                {% for G in range(0, 16) -%}
+                "Group {{G}} Devices Available": "Группа {{G}} Присутствие устройств",
+                "Group {{G}} Fault": "Группа {{G}} Ошибка",
+                "Group {{G}} Status": "Группа {{G}} Статус",
+                "Group {{G}} Adjustable Color Temperature Devices": "Группа {{G}} Устройства с изменяемой цветовой температурой",
+                "Group {{G}} Command": "Группа {{G}} Команда",
+                "Group {{G}} Set Brightness": "Группа {{G}} Установить яркость",
+                "Group {{G}} Set Color Temperature": "Группа {{G}} Установить цветовую температуру",
+                "Group {{G}} Increase Color Temperature": "Группа {{G}} Увеличить цветовую температуру",
+                "Group {{G}} Decrease Color Temperature": "Группа {{G}} Уменьшить цветовую температуру",
+                {% endfor -%}
+                {% for A in range(0, 64) -%}
+                "Device {{A}} Available": "Устройство {{A}} Присутствие",
+                "Device {{A}} Status": "Устройство {{A}} Статус",
+                "Device {{A}} Color Control Mode": "Устройство {{A}} Режим управления цветом",
+                "Device {{A}} Color Change Status": "Устройство {{A}} Статус изменения цвета",
+                "Device {{A}} Command": "Устройство {{A}} Команда",
+                "Device {{A}} Brightness": "Устройство {{A}} Яркость",
+                "Device {{A}} Color Temperature": "Устройство {{A}} Цветовая температура",
+                "Device {{A}} Increase Color Temperature": "Устройство {{A}} Увеличить цветовую температуру",
+                "Device {{A}} Decrease Color Temperature": "Устройство {{A}} Уменьшить цветовую температуру",
+                {% endfor -%}
+                "Relay 1": "Реле 1",
+                "Relay 2": "Реле 2",
+                "Gateway Type": "Тип шлюза",
+                "Gateway HW Version": "Аппаратная версия",
+                "Gateway SW Version": "Версия пршивки"
+            }
+        }
+    }
+}
