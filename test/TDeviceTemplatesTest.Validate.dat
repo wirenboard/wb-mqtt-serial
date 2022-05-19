@@ -19894,7 +19894,7 @@ ecodim_dali_gw2
 	Device Answer  =>  Device Answer
 	Devices Available  =>  Devices Available
 	Devices Status  =>  Devices Status
-	Fault  =>  Fault
+	Device Fault  =>  Device Fault
 	Gateway HW Version  =>  Gateway HW Version
 	Gateway SW Version  =>  Gateway SW Version
 	Gateway Type  =>  Gateway Type
