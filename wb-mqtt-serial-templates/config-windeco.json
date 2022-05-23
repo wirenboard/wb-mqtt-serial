@@ -28,6 +28,18 @@
                 "address": "0x03"
             },
             {
+                "name": "Open",
+                "type": "pushbutton",
+                "reg_type": "command",
+                "address": "0x02"
+            },
+            {
+                "name": "Close",
+                "type": "pushbutton",
+                "reg_type": "command",
+                "address": "0x04"
+            },
+            {
                 "name": "Move up",
                 "type": "pushbutton",
                 "reg_type": "command",
@@ -39,6 +51,18 @@
                 "reg_type": "command",
                 "address": "0x09"
             }
-        ]
+        ],
+        "translations": {
+            "ru": {
+                "WinDeco curtain motor": "Windeco (Мотор штор)",
+                "Position": "Позиция",
+                "Status": "Статус",
+                "Stop": "Остановить",
+                "Open": "Открыть",
+                "Close": "Закрыть",
+                "Move up": "Поднять",
+                "Move down": "Опустить"
+            }
+        }
     }
 }
