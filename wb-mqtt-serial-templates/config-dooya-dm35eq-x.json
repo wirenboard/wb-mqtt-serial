@@ -1,9 +1,9 @@
 {
-    "device_type": "Dooya 82",
-    "title": "Dooya 82 (sliding curtain motor)",
+    "device_type": "Dooya DM35EQ-X",
+    "title": "Dooya DM35EQ-X (roller blind motor)",
     "device": {
-        "name": "Dooya 82",
-        "id": "dooya",
+        "name": "Dooya DM35EQ-X",
+        "id": "dooya_dm35eq_x",
         "protocol": "dooya",
         "response_timeout_ms": 100,
         "channels": [
@@ -33,6 +33,12 @@
                 "address": "0x03"
             },
             {
+                "name": "Delete end positions",
+                "type": "pushbutton",
+                "reg_type": "command",
+                "address": "0x07"
+            },
+            {
                 "name": "Factory Default",
                 "type": "pushbutton",
                 "reg_type": "command",
@@ -45,44 +51,18 @@
                 "max": 1,
                 "type": "switch",
                 "enabled": false
-            },
-            {
-                "name": "Hand pulling",
-                "reg_type": "param",
-                "address": 4,
-                "max": 1,
-                "type": "switch",
-                "enabled": false,
-                "on_value": 0,
-                "off_value": 1
-            },
-            {
-                "name": "Passive switch",
-                "reg_type": "param",
-                "address": "0x27",
-                "max": 4,
-                "enabled": false
-            },
-            {
-                "name": "Voltage switch",
-                "reg_type": "param",
-                "address": "0x27",
-                "max": 1,
-                "enabled": false
             }
         ],
         "translations": {
             "ru": {
-                "Dooya 82 (sliding curtain motor)": "Dooya 82 (Мотор раздвижных штор)",
+                "Dooya DM35EQ-X (roller blind motor)": "Dooya DM35EQ-X (Мотор рулонных штор)",
                 "Position": "Позиция",
                 "Stop": "Остановить",
                 "Open": "Открыть",
                 "Close": "Закрыть",
                 "Direction": "Инверсия",
-                "Factory Default": "Сбросить настройки",
-                "Passive switch": "Тип внешнего выключателя для сухого контакта",
-                "Voltage switch": "Тип внешнего выключателя для фазного управления",
-                "Hand pulling": "Легкое прикосновение"
+                "Delete end positions": "Удалить концевые положения",
+                "Factory Default": "Сбросить настройки"
             }
         }
     }
