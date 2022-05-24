@@ -125,7 +125,7 @@ namespace
                                           uint32_t stride,
                                           uint32_t registerByteWidth) const override
         {
-            auto addr = LoadRegisterBitsAddress(regCfg);
+            auto addr = LoadRegisterBitsAddress(regCfg, SerialConfig::ADDRESS_PROPERTY_NAME);
             TRegisterDesc res;
             res.DataOffset = addr.BitOffset;
             res.DataWidth = addr.BitWidth;
@@ -252,7 +252,7 @@ uint64_t Somfy::TDevice::ReadRegisterImpl(PRegister reg)
         }
         case PARAM: {
             const auto& addr = dynamic_cast<const TSomfyAddress&>(reg->GetAddress());
-            return GetCachedResponse(addr.Get(), addr.GetResponseHeader(), reg->DataOffset, reg->DataWidth);
+            return GetCachedResponse(addr.Get(), addr.GetResponseHeader(), reg->GetDataOffset(), reg->GetDataWidth());
         }
         case COMMAND: {
             return 1;

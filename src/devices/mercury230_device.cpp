@@ -26,7 +26,7 @@ namespace
                                           uint32_t stride,
                                           uint32_t registerByteWidth) const override
         {
-            auto addr = LoadRegisterBitsAddress(regCfg);
+            auto addr = LoadRegisterBitsAddress(regCfg, SerialConfig::ADDRESS_PROPERTY_NAME);
             TRegisterDesc res;
             auto type = regCfg["reg_type"];
             if (type == "array" || type == "array12") {
@@ -192,9 +192,9 @@ uint64_t TMercury230Device::ReadRegisterImpl(PRegister reg)
     auto addr = GetUint32RegisterAddress(reg->GetAddress());
     switch (reg->Type) {
         case REG_VALUE_ARRAY:
-            return ReadValueArray(addr, 4).values[reg->DataOffset & 0x03];
+            return ReadValueArray(addr, 4).values[reg->GetDataOffset() & 0x03];
         case REG_VALUE_ARRAY12:
-            return ReadValueArray(addr, 3).values[reg->DataOffset & 0x03];
+            return ReadValueArray(addr, 3).values[reg->GetDataOffset() & 0x03];
         case REG_PARAM:
         case REG_PARAM_SIGN_ACT:
         case REG_PARAM_SIGN_REACT:
