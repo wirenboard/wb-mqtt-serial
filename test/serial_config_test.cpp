@@ -287,11 +287,3 @@ TEST_F(TConfigParserTest, ParseModbusDevideWithWriteAddress)
     EXPECT_EQ(GetUint32RegisterAddress(regs[0]->GetAddress()), 110);
     EXPECT_EQ(GetUint32RegisterAddress(regs[0]->GetWriteAddress()), 115);
 }
-
-TEST_F(TConfigParserTest, MissingRequiredParametersWithConditions)
-{
-    ASSERT_THROW(CheckExceptionMsg([this]() { GetConfig("configs/config-with-conditions.json"); },
-                                   "File: test/configs/config-with-conditions.json error: ports[0].devices[1] required "
-                                   "parameter 'param2' is missing"),
-                 std::runtime_error);
-}
