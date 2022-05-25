@@ -123,7 +123,7 @@
                 "group": "transparent_mode"
             },
             {
-                "name": "Last DALI Command Status",
+                "name": "Last Command Status",
                 "address": 24,
                 "reg_type": "holding",
                 "type": "value",
@@ -191,7 +191,7 @@
                 "max": 31
             },
             {
-                "name": "Set Brightness",
+                "name": "Brightness",
                 "write_address": 1000,
                 "reg_type": "holding",
                 "type": "range",
@@ -201,7 +201,7 @@
                 "max": 255
             },
             {
-                "name": "Set Color Temperature",
+                "name": "Color Temperature",
                 "write_address": 1005,
                 "reg_type": "holding",
                 "type": "range",
@@ -279,7 +279,7 @@
                 "max": 31
             },
             {
-                "name": "Group 0 Set Brightness",
+                "name": "Group 0 Brightness",
                 "write_address": 2000,
                 "reg_type": "holding",
                 "type": "range",
@@ -289,7 +289,7 @@
                 "max": 255
             },
             {
-                "name": "Group 0 Set Color Temperature",
+                "name": "Group 0 Color Temperature",
                 "write_address": 2620,
                 "reg_type": "holding",
                 "type": "range",
@@ -373,7 +373,7 @@
                 "max": 31
             },
             {
-                "name": "Group {{G}} Set Brightness",
+                "name": "Group {{G}} Brightness",
                 "write_address": "{{2000 + G * 5}}",
                 "reg_type": "holding",
                 "type": "range",
@@ -384,7 +384,7 @@
                 "max": 255
             },
             {
-                "name": "Group {{G}} Set Color Temperature",
+                "name": "Group {{G}} Color Temperature",
                 "write_address": "{{2620  + G * 5}}",
                 "reg_type": "holding",
                 "type": "range",
@@ -665,43 +665,43 @@
                 "data_buffering_period_description": "В течение заданного периода данные считываются из буфера шлюза, а не из устройства. 0 - буферизация отключена",
                 "DALI Bus Status": "Статус шины DALI",
                 "DALI Bus Load": "Загрузка шины DALI",
-                "DALI Devices Quantity": "Количество устройств на шине",
+                "DALI Devices Quantity": "Количество устройств DALI",
                 "DALI Bus Scan": "Сканирование шины DALI",
                 "Data Buffering Period (s)": "Период буферизации данных (с)",
                 "Reset Gateway": "Сброс шлюза",
                 "DALI Command": "Команда DALI",
-                "Last DALI Command Status": "Статус последней команды DALI",
+                "Last Command Status": "Статус последней команды",
                 "Device Answer": "Ответ устройства",
                 "Devices Available": "Присутствие устройств",
                 "Devices Status": "Статус устройств",
                 "Adjustable Color Temperature Devices": "Устройства с изменяемой цветовой температурой",
                 "Device Fault": "Ошибка устройства",
                 "Broadcast Command": "Широковещательная команда",
-                "Set Brightness": "Установить яркость",
-                "Set Color Temperature": "Установить цветовую температуру",
+                "Brightness": "Яркость",
+                "Color Temperature": "Цветовая температура",
                 "Increase Color Temperature": "Увеличить цветовую температуру",
                 "Decrease Color Temperature": "Уменьшить цветовую температуру",
                 {% for G in range(0, 16) -%}
-                "Group {{G}} Devices Available": "Группа {{G}} Присутствие устройств",
-                "Group {{G}} Fault": "Группа {{G}} Ошибка",
-                "Group {{G}} Status": "Группа {{G}} Статус",
-                "Group {{G}} Adjustable Color Temperature Devices": "Группа {{G}} Устройства с изменяемой цветовой температурой",
-                "Group {{G}} Command": "Группа {{G}} Команда",
-                "Group {{G}} Set Brightness": "Группа {{G}} Установить яркость",
-                "Group {{G}} Set Color Temperature": "Группа {{G}} Установить цветовую температуру",
-                "Group {{G}} Increase Color Temperature": "Группа {{G}} Увеличить цветовую температуру",
-                "Group {{G}} Decrease Color Temperature": "Группа {{G}} Уменьшить цветовую температуру",
+                "Group {{G}} Devices Available": "Присутствие устройств группы {{G}}",
+                "Group {{G}} Fault": "Ошибка группы {{G}}",
+                "Group {{G}} Status": "Статус группы {{G}}",
+                "Group {{G}} Adjustable Color Temperature Devices": "Устройства с изменяемой цветовой температурой группы {{G}}",
+                "Group {{G}} Command": "Команда группе {{G}}",
+                "Group {{G}} Brightness": "Яркость группы {{G}}",
+                "Group {{G}} Color Temperature": "Цветовая температура группы {{G}}",
+                "Group {{G}} Increase Color Temperature": "Увеличить цветовую температуру группы {{G}}",
+                "Group {{G}} Decrease Color Temperature": "Уменьшить цветовую температуру группы {{G}}",
                 {% endfor -%}
                 {% for A in range(0, 64) -%}
-                "Device {{A}} Available": "Устройство {{A}} Присутствие",
-                "Device {{A}} Status": "Устройство {{A}} Статус",
-                "Device {{A}} Color Control Mode": "Устройство {{A}} Режим управления цветом",
-                "Device {{A}} Color Change Status": "Устройство {{A}} Статус изменения цвета",
-                "Device {{A}} Command": "Устройство {{A}} Команда",
-                "Device {{A}} Brightness": "Устройство {{A}} Яркость",
-                "Device {{A}} Color Temperature": "Устройство {{A}} Цветовая температура",
-                "Device {{A}} Increase Color Temperature": "Устройство {{A}} Увеличить цветовую температуру",
-                "Device {{A}} Decrease Color Temperature": "Устройство {{A}} Уменьшить цветовую температуру",
+                "Device {{A}} Available": "Присутствие устройства {{A}}",
+                "Device {{A}} Status": "Статус устройства {{A}}",
+                "Device {{A}} Color Control Mode": "Режим управления цветом устройства {{A}}",
+                "Device {{A}} Color Change Status": "Статус изменения цвета устройства {{A}}",
+                "Device {{A}} Command": "Команда устройству {{A}}",
+                "Device {{A}} Brightness": "Яркость устройства {{A}}",
+                "Device {{A}} Color Temperature": "Цветовая температура устройства {{A}}",
+                "Device {{A}} Increase Color Temperature": "Увеличить цветовую температуру устройства {{A}}",
+                "Device {{A}} Decrease Color Temperature": "Уменьшить цветовую температуру устройства {{A}}",
                 {% endfor -%}
                 "Relay 1": "Реле 1",
                 "Relay 2": "Реле 2",
