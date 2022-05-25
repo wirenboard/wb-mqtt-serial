@@ -56,7 +56,7 @@ void TMercury230Test::SetUp()
         TRegister::Intern(Mercury230Dev, TRegisterConfig::Create(TMercury230Device::REG_VALUE_ARRAY, 0x00, U32));
     Mercury230TotalReactiveEnergyReg =
         TRegister::Intern(Mercury230Dev, TRegisterConfig::Create(TMercury230Device::REG_VALUE_ARRAY, 0x00, U32));
-    Mercury230TotalReactiveEnergyReg->DataOffset = 2;
+    Mercury230TotalReactiveEnergyReg->SetDataOffset(2);
 
     Mercury230PReg =
         TRegister::Intern(Mercury230Dev, TRegisterConfig::Create(TMercury230Device::REG_PARAM_SIGN_ACT, 0x1100, S24));

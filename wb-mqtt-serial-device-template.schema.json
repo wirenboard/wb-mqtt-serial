@@ -216,7 +216,9 @@
         {
           "oneOf": [
             { "$ref": "#/definitions/registerChannel" },
-            { "$ref": "#/definitions/compoundRegisterChannel" }
+            { "$ref": "#/definitions/compoundRegisterChannel" },
+            { "$ref": "#/definitions/registerChannelSeparateAddress" },
+            { "$ref": "#/definitions/registerChannelWriteOnly" }
           ]
         },
         { "$ref": "#/definitions/group_condition" }
