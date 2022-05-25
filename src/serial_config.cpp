@@ -1279,8 +1279,9 @@ PDeviceConfig LoadBaseDeviceConfig(const Json::Value& dev,
     context.translations = parameters.Translations;
     LoadDeviceTemplatableConfigPart(res.get(), dev, protocol->GetRegTypes(), context);
 
-    if (res->DeviceChannelConfigs.empty())
-        throw TConfigParserException("the device has no channels: " + res->Name);
+    if (res->DeviceChannelConfigs.empty()) {
+        LOG(Warn) << "the device has no channels: " + res->Name;
+    }
 
     if (res->RequestDelay.count() == 0) {
         res->RequestDelay = parameters.DefaultRequestDelay;
