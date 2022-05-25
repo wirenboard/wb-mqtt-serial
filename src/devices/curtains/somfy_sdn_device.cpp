@@ -222,9 +222,9 @@ void Somfy::TDevice::WriteRegisterImpl(PRegister reg, const TRegisterValue& regV
 }
 
 TRegisterValue Somfy::TDevice::GetCachedResponse(uint8_t requestHeader,
-                                                uint8_t responseHeader,
-                                                size_t bitOffset,
-                                                size_t bitWidth)
+                                                 uint8_t responseHeader,
+                                                 size_t bitOffset,
+                                                 size_t bitWidth)
 {
     TRegisterValue val;
     auto it = DataCache.find(requestHeader);
