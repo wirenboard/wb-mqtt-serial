@@ -183,8 +183,8 @@ public:
 struct TRegisterDesc
 {
     std::shared_ptr<IRegisterAddress> Address; //! Register address
-    uint32_t DataOffset{0};                     //! Offset of data in register in bits
-    uint32_t DataWidth{0};                      //! Width of data in register in bits
+    uint32_t DataOffset{0};                    //! Offset of data in register in bits
+    uint32_t DataWidth{0};                     //! Width of data in register in bits
 
     std::shared_ptr<IRegisterAddress> WriteAddress; //! Write Register address
 };
