@@ -1,0 +1,36 @@
+{
+    "device_type": "merge condition",
+    "id": "merge-condition_2",
+    "name": "merge condition 2",
+    "slave_id": 2,
+    "channels":
+    [
+        {
+            "address": "0x0501",
+            "name": "c1"
+        },
+        {
+            "address": "0x0504",
+            "condition": "param2==3",
+            "name": "c4"
+        },
+        {
+            "address": "0x0505",
+            "condition": "param1==2&&param2==3",
+            "name": "c5"
+        }
+    ],
+    "setup": 
+    [
+        {
+            "address" : "0x0401",
+            "title" : "p1",
+            "value" : 2
+        },
+        {
+            "address" : "0x0402",
+            "title" : "p2",
+            "value" : 3
+        }
+    ]
+}

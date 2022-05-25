@@ -103,8 +103,8 @@ protected:
                             Emit() << "Scale: " << reg->Scale;
                             Emit() << "Offset: " << reg->Offset;
                             Emit() << "RoundTo: " << reg->RoundTo;
-                            Emit() << "Poll: " << !reg->WriteOnly;
-                            Emit() << "ReadOnly: " << reg->ReadOnly;
+                            Emit() << "Poll: " << (reg->AccessType != TRegisterConfig::EAccessType::WRITE_ONLY);
+                            Emit() << "ReadOnly: " << (reg->AccessType == TRegisterConfig::EAccessType::READ_ONLY);
                             Emit() << "TypeName: " << reg->TypeName;
                             if (reg->ReadPeriod) {
                                 Emit() << "ReadPeriod: " << reg->ReadPeriod->count();
@@ -203,7 +203,7 @@ TEST_F(TConfigParserTest, MergeDeviceConfigWithTemplate)
         GetDataFilePath("parser_test/templates/"),
         LoadConfigTemplatesSchema(GetDataFilePath("../wb-mqtt-serial-device-template.schema.json"), configSchema));
 
-    for (auto i = 1; i <= 7; ++i) {
+    for (auto i = 1; i <= 12; ++i) {
         auto deviceConfig(JSON::Parse(GetDataFilePath("parser_test/merge_template_ok" + to_string(i) + ".json")));
         std::string deviceType = deviceConfig.get("device_type", "").asString();
         auto mergedConfig(
@@ -272,4 +272,18 @@ TEST_F(TConfedSchemaTest, MergeTranslations)
         auto tr(JSON::Parse(GetDataFilePath("translation-templates/tr" + to_string(i) + ".json")));
         ASSERT_TRUE(JsonsMatch(schema["translations"], tr)) << i;
     }
+}
+
+TEST_F(TConfigParserTest, ParseModbusDevideWithWriteAddress)
+{
+    auto portConfigs = GetConfig("configs/parse_test_modbus_write_address.json")->PortConfigs;
+    EXPECT_FALSE(portConfigs.empty());
+    auto devices = portConfigs[0]->Devices;
+    EXPECT_FALSE(devices.empty());
+    auto deviceChannels = devices[0]->DeviceConfig()->DeviceChannelConfigs;
+    EXPECT_FALSE(deviceChannels.empty());
+    auto regs = deviceChannels[0]->RegisterConfigs;
+    EXPECT_FALSE(regs.empty());
+    EXPECT_EQ(GetUint32RegisterAddress(regs[0]->GetAddress()), 110);
+    EXPECT_EQ(GetUint32RegisterAddress(regs[0]->GetWriteAddress()), 115);
 }

@@ -329,62 +329,47 @@ EnqueueHoldingSeparateReadResponse()
 EnqueueHoldingSeparateReadResponse()
 >> 01 03 00 06 00 01 64 0B
 << 01 03 02 00 1E 38 4C
+Publish: /devices/modbus-sample/controls/RGB: '10;20;30' (QoS 1, retained)
 EnqueueHoldingSeparateReadResponse()
 >> 01 03 00 07 00 01 35 CB
 << 01 03 02 00 01 79 84
+Publish: /devices/modbus-sample/controls/White: '1' (QoS 1, retained)
 EnqueueHoldingSeparateReadResponse()
 >> 01 03 00 08 00 01 05 C8
 << 01 03 02 00 02 39 85
+Publish: /devices/modbus-sample/controls/RGB_All: '2' (QoS 1, retained)
 EnqueueHoldingSeparateReadResponse()
 >> 01 03 00 09 00 01 54 08
 << 01 03 02 00 03 F8 45
+Publish: /devices/modbus-sample/controls/White1: '3' (QoS 1, retained)
 EnqueueHoldingSeparateReadResponse()
 >> 01 03 00 12 00 01 24 0F
 << 01 03 02 00 04 B9 87
+Publish: /devices/modbus-sample/controls/Voltage: '4' (QoS 1, retained)
 EnqueueHoldingReadS64Response()
 >> 01 03 00 1E 00 04 24 0F
 << 01 03 08 01 02 03 04 05 06 07 08 65 13
+Publish: /devices/modbus-sample/controls/Holding S64: '72623859790382856' (QoS 1, retained)
 EnqueueHoldingReadF32Response()
 >> 01 03 00 32 00 02 65 C4
 << 01 03 04 00 00 00 15 3B FC
+Publish: /devices/modbus-sample/controls/Holding Float: '2.942727e-44' (QoS 1, retained)
 EnqueueHoldingReadU16Response()
 >> 01 03 00 46 00 01 65 DF
 << 01 03 02 00 15 79 8B
+Publish: /devices/modbus-sample/controls/Holding U16: '21' (QoS 1, retained)
 EnqueueInputReadU16Response()
 >> 01 04 00 28 00 01 B1 C2
 << 01 04 02 00 66 39 1A
+Publish: /devices/modbus-sample/controls/Input U16: '102' (QoS 1, retained)
 EnqueueCoilReadResponse()
 >> 01 01 00 00 00 02 BD CB
 << 01 01 01 02 D0 49
+Publish: /devices/modbus-sample/controls/Coil 0: '0' (QoS 1, retained)
+Publish: /devices/modbus-sample/controls/Coil 1: '1' (QoS 1, retained)
 Enqueue10CoilsReadResponse()
 >> 01 01 00 48 00 0A 3C 1B
 << 01 01 02 49 02 0F AD
-EnqueueDiscreteReadResponse()
->> 01 02 00 14 00 01 F9 CE
-<< 01 02 01 01 60 48
-EnqueueHoldingSingleOneByOneReadResponse()
->> 01 03 00 5A 00 04 64 1A
-<< 01 03 08 01 01 01 01 01 01 01 01 E8 A6
-EnqueueHoldingSingleOneByOneReadResponse()
->> 01 03 00 5E 00 01 E5 D8
-<< 01 03 02 01 01 78 14
-EnqueueHoldingMultiOneByOneReadResponse()
->> 01 03 00 5F 00 04 74 1B
-<< 01 03 08 02 02 02 02 02 02 02 02 6F 35
-EnqueueHoldingMultiOneByOneReadResponse()
->> 01 03 00 63 00 01 74 14
-<< 01 03 02 02 02 38 E5
-Publish: /devices/modbus-sample/controls/RGB: '10;20;30' (QoS 1, retained)
-Publish: /devices/modbus-sample/controls/White: '1' (QoS 1, retained)
-Publish: /devices/modbus-sample/controls/RGB_All: '2' (QoS 1, retained)
-Publish: /devices/modbus-sample/controls/White1: '3' (QoS 1, retained)
-Publish: /devices/modbus-sample/controls/Voltage: '4' (QoS 1, retained)
-Publish: /devices/modbus-sample/controls/Holding S64: '72623859790382856' (QoS 1, retained)
-Publish: /devices/modbus-sample/controls/Holding Float: '2.942727e-44' (QoS 1, retained)
-Publish: /devices/modbus-sample/controls/Holding U16: '21' (QoS 1, retained)
-Publish: /devices/modbus-sample/controls/Input U16: '102' (QoS 1, retained)
-Publish: /devices/modbus-sample/controls/Coil 0: '0' (QoS 1, retained)
-Publish: /devices/modbus-sample/controls/Coil 1: '1' (QoS 1, retained)
 Publish: /devices/modbus-sample/controls/Coil 2: '1' (QoS 1, retained)
 Publish: /devices/modbus-sample/controls/Coil 3: '0' (QoS 1, retained)
 Publish: /devices/modbus-sample/controls/Coil 4: '0' (QoS 1, retained)
@@ -395,10 +380,25 @@ Publish: /devices/modbus-sample/controls/Coil 8: '1' (QoS 1, retained)
 Publish: /devices/modbus-sample/controls/Coil 9: '0' (QoS 1, retained)
 Publish: /devices/modbus-sample/controls/Coil 10: '0' (QoS 1, retained)
 Publish: /devices/modbus-sample/controls/Coil 11: '1' (QoS 1, retained)
+EnqueueDiscreteReadResponse()
+>> 01 02 00 14 00 01 F9 CE
+<< 01 02 01 01 60 48
 Publish: /devices/modbus-sample/controls/Discrete 0: '1' (QoS 1, retained)
+EnqueueHoldingSingleOneByOneReadResponse()
+>> 01 03 00 5A 00 04 64 1A
+<< 01 03 08 01 01 01 01 01 01 01 01 E8 A6
 Publish: /devices/modbus-sample/controls/Holding U64 Single: '72340172838076673' (QoS 1, retained)
+EnqueueHoldingSingleOneByOneReadResponse()
+>> 01 03 00 5E 00 01 E5 D8
+<< 01 03 02 01 01 78 14
 Publish: /devices/modbus-sample/controls/Holding U16 Single: '257' (QoS 1, retained)
+EnqueueHoldingMultiOneByOneReadResponse()
+>> 01 03 00 5F 00 04 74 1B
+<< 01 03 08 02 02 02 02 02 02 02 02 6F 35
 Publish: /devices/modbus-sample/controls/Holding U64 Multi: '144680345676153346' (QoS 1, retained)
+EnqueueHoldingMultiOneByOneReadResponse()
+>> 01 03 00 63 00 01 74 14
+<< 01 03 02 02 02 38 E5
 Publish: /devices/modbus-sample/controls/Holding U16 Multi: '514' (QoS 1, retained)
 Close()
 Unsubscribe -- em-test: /devices/modbus-sample/controls/Holding U16 Single/on

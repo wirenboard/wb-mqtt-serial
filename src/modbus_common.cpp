@@ -452,7 +452,7 @@ namespace Modbus // modbus protocol common utilities
             }
             return 1;
         } else {
-            if (w > 4 && reg.DataOffset == 0) {
+            if (w > 4 && reg.GetDataOffset() == 0) {
                 throw TSerialDeviceException("can't pack more than 4 " + reg.TypeName + "s into a single value");
             }
             return w;
@@ -534,21 +534,23 @@ namespace Modbus // modbus protocol common utilities
         // TODO Add offset
         pdu[0] = GetFunction(reg, OperationType::OP_WRITE);
 
-        auto addr = GetUint32RegisterAddress(reg.GetAddress());
+        auto addr = GetUint32RegisterAddress(reg.GetWriteAddress());
+        const auto widthInModbusWords = reg.Get16BitWidth();
+
         auto baseAddress = addr + shift;
 
-        TAddress address;
+        TAddress address{0};
 
         address.Type = reg.Type;
 
         WriteAs2Bytes(pdu + 1, baseAddress);
-        WriteAs2Bytes(pdu + 3, reg.Get16BitWidth());
+        WriteAs2Bytes(pdu + 3, widthInModbusWords);
 
-        pdu[5] = reg.Get16BitWidth() * 2;
+        pdu[5] = widthInModbusWords * 2;
 
         auto words = value.Get<std::vector<TRegisterWord>>();
 
-        for (int i = 0; i < reg.Get16BitWidth(); ++i) {
+        for (int i = 0; i < widthInModbusWords; ++i) {
             address.Address = baseAddress + i;
 
             auto data = words.at(reg.Get16BitWidth() - 1 - i);
@@ -566,7 +568,7 @@ namespace Modbus // modbus protocol common utilities
                                       const Modbus::TRegisterCache& cache)
     {
         auto value = regValue.Get<uint16_t>();
-        auto bitWidth = reg.GetBitWidth();
+        auto bitWidth = reg.GetDataWidth();
         if (reg.Type == REG_COIL) {
             value = value ? uint16_t(0xFF) << 8 : 0x00;
             bitWidth = 16;
@@ -575,17 +577,16 @@ namespace Modbus // modbus protocol common utilities
         TAddress address;
 
         address.Type = reg.Type;
-        auto addr = GetUint32RegisterAddress(reg.GetAddress());
+
+        auto addr = GetUint32RegisterAddress(reg.GetWriteAddress());
         address.Address = addr + shift + wordIndex;
 
-        uint16_t cachedValue;
+        uint16_t cachedValue = 0;
         if (cache.count(address.AbsAddress)) {
             cachedValue = cache.at(address.AbsAddress);
-        } else {
-            cachedValue = value & 0xffff;
         }
 
-        auto localBitOffset = std::max(reg.DataOffset - wordIndex * 16, 0);
+        auto localBitOffset = std::max(static_cast<int32_t>(reg.GetDataOffset()) - wordIndex * 16, 0);
 
         auto bitCount = std::min(static_cast<uint32_t>(16 - localBitOffset), bitWidth);
 
@@ -656,7 +657,7 @@ namespace Modbus // modbus protocol common utilities
 
         for (auto reg: range.RegisterList()) {
             int w = reg->Get16BitWidth();
-            auto bitWidth = reg->GetBitWidth();
+            auto bitWidth = reg->GetDataWidth();
 
             TRegisterValue r;
 
@@ -669,7 +670,7 @@ namespace Modbus // modbus protocol common utilities
             while (w--) {
                 uint16_t data = destination[addr - range.GetStart() + w];
 
-                auto localBitOffset = std::max(reg->DataOffset - wordIndex * 16, 0);
+                auto localBitOffset = std::max(static_cast<uint8_t>(reg->GetDataOffset()) - wordIndex * 16, 0);
 
                 auto bitCount = std::min(static_cast<uint32_t>(16 - localBitOffset), bitWidth);
 
@@ -736,7 +737,7 @@ namespace Modbus // modbus protocol common utilities
     {
         Modbus::TRegisterCache tmpCache;
 
-        LOG(Debug) << "write " << reg.Get16BitWidth() << " " << reg.TypeName << "(s) @ " << reg.GetAddress()
+        LOG(Debug) << "write " << reg.Get16BitWidth() << " " << reg.TypeName << "(s) @ " << reg.GetWriteAddress()
                    << " of device " << reg.Device()->ToString();
 
         // 1 byte - function code, 2 bytes - register address, 2 bytes - value

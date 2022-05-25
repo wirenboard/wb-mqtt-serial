@@ -179,9 +179,19 @@ public:
                                      uint32_t /*addressByteStep*/) const override;
 };
 
+//! Register addresses description
+struct TRegisterDesc
+{
+    std::shared_ptr<IRegisterAddress> Address; //! Register address
+    uint32_t DataOffset{0};                     //! Offset of data in register in bits
+    uint32_t DataWidth{0};                      //! Width of data in register in bits
+
+    std::shared_ptr<IRegisterAddress> WriteAddress; //! Write Register address
+};
+
 class TRegisterConfig: public std::enable_shared_from_this<TRegisterConfig>
 {
-    std::shared_ptr<IRegisterAddress> Address;
+    TRegisterDesc Address;
 
 public:
     int Type;
@@ -189,8 +199,15 @@ public:
     double Scale;
     double Offset;
     double RoundTo;
-    bool WriteOnly = false;
-    bool ReadOnly;
+
+    enum class EAccessType
+    {
+        READ_WRITE,
+        READ_ONLY,
+        WRITE_ONLY
+    };
+    EAccessType AccessType{EAccessType::READ_WRITE};
+
     std::string TypeName;
 
     // Minimal interval between register reads, if ReadPeriod is not set
@@ -201,28 +218,27 @@ public:
     std::experimental::optional<TRegisterValue> ErrorValue;
     EWordOrder WordOrder;
 
-    // Offset of data in response. Could be bit offset or index in array depending on protocol
-    uint8_t DataOffset;
-
-    // Width of data in response. Could be bit width or anything else depending on protocol
-    uint8_t DataWidth;
-
     std::experimental::optional<TRegisterValue> UnsupportedValue;
 
     TRegisterConfig(int type,
-                    std::shared_ptr<IRegisterAddress> address,
+                    const TRegisterDesc& registerAddressesDescription,
                     RegisterFormat format,
                     double scale,
                     double offset,
                     double round_to,
                     bool readonly,
                     const std::string& type_name,
-                    const EWordOrder word_order,
-                    uint32_t bit_offset,
-                    uint32_t bit_width);
+                    const EWordOrder word_order);
 
-    uint32_t GetBitWidth() const;
+    /// Get the width in bits. If the width parameter in the config is zero,
+    /// the value is calculated from the register width in bits according to the format.
+    /// \return the width in bits
+    uint32_t GetDataWidth() const;
+    uint32_t GetDataOffset() const;
     uint32_t GetByteWidth() const;
+
+    void SetDataWidth(uint8_t width);
+    void SetDataOffset(uint8_t offset);
 
     //! Get occupied space in 16-bit words
     uint8_t Get16BitWidth() const;
@@ -230,16 +246,14 @@ public:
     std::string ToString() const;
 
     static PRegisterConfig Create(int type = 0,
-                                  std::shared_ptr<IRegisterAddress> address = std::shared_ptr<IRegisterAddress>(),
+                                  const TRegisterDesc& registerAddressesDescription = {},
                                   RegisterFormat format = U16,
                                   double scale = 1,
                                   double offset = 0,
                                   double round_to = 0,
                                   bool readonly = false,
                                   const std::string& type_name = "",
-                                  const EWordOrder word_order = EWordOrder::BigEndian,
-                                  uint32_t bit_offset = 0,
-                                  uint32_t bit_width = 0);
+                                  const EWordOrder word_order = EWordOrder::BigEndian);
 
     //! Create register with TUint32RegisterAddress
     static PRegisterConfig Create(int type = 0,
@@ -251,10 +265,11 @@ public:
                                   bool readonly = false,
                                   const std::string& type_name = "",
                                   const EWordOrder word_order = EWordOrder::BigEndian,
-                                  uint32_t bit_offset = 0,
-                                  uint32_t bit_width = 0);
+                                  uint32_t data_offset = 0,
+                                  uint32_t data_bit_width = 0);
 
     const IRegisterAddress& GetAddress() const;
+    const IRegisterAddress& GetWriteAddress() const;
 };
 
 struct TRegister;

@@ -3,8 +3,32 @@
 std::string GetDeviceKey(const std::string& deviceType);
 std::string GetSubdeviceSchemaKey(const std::string& deviceType, const std::string& subDeviceType);
 std::string GetSubdeviceKey(const std::string& subDeviceType);
+std::string GetTranslationHash(const std::string& deviceType, const std::string& msg);
+void AddTranslations(const std::string& deviceType, Json::Value& translations, const Json::Value& deviceSchema);
 
 bool IsRequiredSetupRegister(const Json::Value& setupRegister);
+void AddUnitTypes(Json::Value& schema);
+Json::Value GetDefaultSetupRegisterValue(const Json::Value& setupRegisterSchema);
+
+//  {
+//      "type": "string",
+//      "enum": [ VALUE ],
+//      "default": VALUE,
+//      "options": { "hidden": true }
+//  }
+Json::Value MakeHiddenProperty(const std::string& value);
+
+//  {
+//      "properties": {
+//          "protocol": {
+//              "type": "string",
+//              "options": {
+//                  "hidden": true
+//              }
+//          }
+//      }
+//  }
+Json::Value MakeProtocolProperty();
 
 Json::Value MakeSchemaForConfed(const Json::Value& configSchema,
                                 TTemplateMap& templates,

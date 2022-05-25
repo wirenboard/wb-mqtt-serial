@@ -142,7 +142,7 @@ namespace
             const char* resultingSchemaFile = "/tmp/wb-mqtt-serial.schema.json";
             {
                 ofstream f(resultingSchemaFile);
-                MakeJsonWriter("  ", "All")->write(MakeSchemaForConfed(*configSchema, *templates, deviceFactory), &f);
+                MakeJsonWriter(" ", "All")->write(MakeSchemaForConfed(*configSchema, *templates, deviceFactory), &f);
             }
             ifstream src(resultingSchemaFile, ios::binary);
             experimental::filesystem::path file(CONFED_JSON_SCHEMA_FULL_FILE_PATH);

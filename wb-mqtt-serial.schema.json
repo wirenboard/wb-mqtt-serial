@@ -535,17 +535,17 @@
         "units": {
           "$ref": "#/definitions/units",
           "title": "Units",
-          "propertyOrder": 7
+          "propertyOrder": 8
         },
         "format": {
           "$ref": "#/definitions/format",
           "title": "Format", 
-          "propertyOrder": 8
+          "propertyOrder": 9
         },
         "max": {
           "title": "Maximum value",
           "$ref": "#/definitions/serial_int",
-          "propertyOrder": 9,
+          "propertyOrder": 10,
           "options": {
             "keep_oneof_values": false
           }
@@ -555,34 +555,40 @@
           "title": "Scale (value multiplier)",
           "description": "Value displayed = round((value read * scale) + offset) / round_to) * round_to",
           "default" : 1,
-          "propertyOrder": 10
+          "propertyOrder": 11,
+          "options": {
+            "grid_columns": 4
+          }
         },
         "offset": {
           "type": "number",
           "title": "Value offset",
           "description": "Value displayed = round((value read * scale) + offset) / round_to) * round_to",
           "default" : 0,
-          "propertyOrder": 11
+          "propertyOrder": 12,
+          "options": {
+            "grid_columns": 4
+          }
         },
         "round_to": {
           "type": "number",
           "title": "Round to",
           "description": "Value displayed = round((value read * scale) + offset) / round_to) * round_to",
           "default" : 1,
-          "propertyOrder": 12,
+          "propertyOrder": 13,
           "minimum": 0
         },
         "readonly": {
           "title": "Read-only",
           "type": "boolean",
-          "propertyOrder": 13
+          "propertyOrder": 14
         },
         "on_value": {
           // TBD: only use on_value for 'switch' and 'wo-switch' types
           "title": "'On' value",
           "description": "Value corresponding to the 'On' state of the switch",
           "$ref": "#/definitions/serial_int",
-          "propertyOrder": 14,
+          "propertyOrder": 15,
           "options": {
             "keep_oneof_values": false
           }
@@ -591,7 +597,7 @@
           "title": "'Off' value",
           "description": "Value corresponding to the 'Off' state of the switch",
           "$ref": "#/definitions/serial_int",
-          "propertyOrder": 15,
+          "propertyOrder": 16,
           "options": {
             "keep_oneof_values": false
           }
@@ -684,7 +690,7 @@
       },
       // FIXME: require "reg_type" and "address" for non-templated devices
       "required": ["name"],
-      "defaultProperties": ["name", "type", "reg_type", "address", "format", "scale", "offset"],
+      "defaultProperties": ["name", "type", "reg_type", "format", "scale", "offset"],
       "_format": "grid",
       "options": {
         "disable_collapse": true,
@@ -705,12 +711,61 @@
               }
             }
           },
-          "required": ["address"]
+          "required": ["address"],
+          "defaultProperties" : ["address"],
+          "not" : {"required": ["write_address"]}
+        }
+      ]
+    },
+    "registerChannelSeparateAddress": {
+      "title": "Channel with separate r/w addresses",
+      "allOf": [
+        { "$ref": "#/definitions/register_channel_common"},
+        {
+          "properties": {
+            "address": {
+              "title": "Read Address",
+              "$ref": "#/definitions/address",
+              "propertyOrder": 6,
+              "options": {
+                "keep_oneof_values": false
+              }
+            },
+            "write_address": {
+              "$ref": "#/definitions/write_address",
+              "propertyOrder": 7,
+              "options": {
+                "keep_oneof_values": false
+              }
+            }
+          },
+          "required": ["address", "write_address"],
+          "defaultProperties": ["address", "write_address"]
+        }
+      ]
+    },
+    "registerChannelWriteOnly": {
+      "title": "Write Only Channel",
+      "allOf": [
+        { "$ref": "#/definitions/register_channel_common"},
+        {
+          "properties": {
+            "write_address": {
+              "$ref": "#/definitions/write_address",
+              "propertyOrder": 6,
+              "options": {
+                "keep_oneof_values": false
+              }
+            }
+          },
+          "required": ["write_address"],
+          "defaultProperties": ["write_address"],
+          "not" : {"required": ["address"]}
         }
       ]
     },
     "compoundRegisterChannel": {
-      "title": "Compound register",
+      "title": "Compound channel",
       "type": "object",
       "properties": {
         "enabled": {
@@ -812,6 +867,24 @@
       },
       "_format": "wb-multiple"
     },
+    "common_channel_modbus": {
+      "headerTemplate": "{{self.name}}",
+      "title": "Channel",
+      "oneOf": [
+        { "$ref": "#/definitions/registerChannel" },
+        { "$ref": "#/definitions/compoundRegisterChannel" },
+        { "$ref": "#/definitions/registerChannelSeparateAddress" },
+        { "$ref": "#/definitions/registerChannelWriteOnly" }
+      ],
+      "options": {
+        "keep_oneof_values": false,
+        "wb": {
+          "disable_panel": true
+        },
+        "disable_collapse": true
+      },
+      "_format": "wb-multiple"
+    },
     "channelSettings": {
       "type": "object",
       "properties": {
@@ -898,6 +971,29 @@
       "options": {
         "remove_empty_properties": true
       }
+    },
+    "groupsChannel": {
+      "type": "object",
+      "properties": {
+        "mode": {
+          "type": "integer",
+          "title": "Poll"
+        },
+        "period": {
+          "type": "integer",
+          "title": "Period (ms)",
+          "minimum": 0,
+          "maximum": 172800000,
+          "default": 1000
+        },
+        "channelIndex": {
+          "type": "integer",
+          "options": {
+            "hidden": true
+          }
+        }
+      },
+      "required": ["mode", "channelIndex"]
     },
     "subreg": {
       "type": "object",
@@ -1050,6 +1146,30 @@
               "placeholder":  "address:offset:bitwidth"
             },
             "patternmessage": "Address should be decimal or hex, offset and bitwidth separated by ':'"
+          }
+        },
+        {
+          "title": "decimal",
+          "type": "integer"
+        }
+      ],
+      "options": {
+        "keep_oneof_values": false
+      }
+    },
+    "write_address": {
+      "title": "Write Address",
+      "description": "Register index (0-65535 in case of Modbus)",
+      "oneOf": [
+        {
+          "title": "decimal or hex",
+          "type": "string",
+          "pattern": "^(0x[A-Fa-f\\d]+|\\d+)$",
+          "options": {
+            "inputAttributes": {
+              "placeholder":  "decimal (e.g. 123) or hex (e.g. 0xAF)"
+            },
+            "patternmessage": "Should be decimal or hex"
           }
         },
         {
@@ -1276,6 +1396,20 @@
           "type": "array",
           "title": "Custom channels",
           "items": { "$ref": "#/definitions/common_channel" },
+          "propertyOrder": 99,
+          "_format": "tabs",
+          "options": {
+            "disable_array_delete_last_row": true
+          }
+        }
+      }
+    },
+    "common_channels_modbus": {
+      "properties": {
+        "channels": {
+          "type": "array",
+          "title": "Custom channels",
+          "items": { "$ref": "#/definitions/common_channel_modbus" },
           "propertyOrder": 99,
           "_format": "tabs",
           "options": {
@@ -1632,7 +1766,7 @@
           "title": "Custom Modbus device",
           "allOf": [
             { "$ref": "#/definitions/deviceProperties" },
-            { "$ref": "#/definitions/common_channels" },
+            { "$ref": "#/definitions/common_channels_modbus" },
             { "$ref": "#/definitions/common_setup" },
             { "$ref": "#/definitions/slave_id" }
           ],
@@ -1805,6 +1939,8 @@
       "Command name": "Название команды",
       "Used for logging/debugging purposes only": "Используется только для диагностических сообщений",
       "Address": "Адрес",
+      "Read Address" : "Адрес для чтения",
+      "Write Address" : "Адрес для записи",
       "Register index (0-65535 in case of Modbus)": "Номер регистра (0-65535 для Modbus)",
       "Value": "Значение",
       "Enabled": "Включено",
@@ -1822,10 +1958,12 @@
       "Value which should be treated as read error": "Значение, которое сигнализирует об ошибке в устройстве",
       "Unsupported register value": "Признак неподдерживаемого регистра",
       "Value which should be treated as 'register is unsupported by device'": "Значение сигнализирующее о том, что устройство не поддерживает данный регистр",
-      "Compound register": "Составной регистр",
+      "Compound channel": "Составной канал",
       "A list of subregisters": "Список вложенных регистров",
       "Channel": "Канал",
       "Channels": "Каналы",
+      "Channel with separate r/w addresses": "Канал с раздельными адресами для чтения записи",
+      "Write Only Channel": "Канал только для записи",
       "Enable poll": "Опрос",
       "Parameter": "Параметр",
       "Subregister": "Вложенный регистр",

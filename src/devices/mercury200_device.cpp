@@ -25,7 +25,7 @@ namespace
                                           uint32_t stride,
                                           uint32_t registerByteWidth) const override
         {
-            auto addr = LoadRegisterBitsAddress(regCfg);
+            auto addr = LoadRegisterBitsAddress(regCfg, SerialConfig::ADDRESS_PROPERTY_NAME);
             TRegisterDesc res;
             res.DataOffset = (addr.Address & 0xFF);
             res.Address = std::make_shared<TUint32RegisterAddress>(addr.Address >> 8);
@@ -78,10 +78,10 @@ TRegisterValue TMercury200Device::ReadRegisterImpl(PRegister reg)
     uint8_t cmd = (GetUint32RegisterAddress(reg->GetAddress()) & 0xFF);
     auto result = ExecCommand(cmd);
     auto size = RegisterFormatByteWidth(reg->Format);
-    if (result.size() < reg->DataOffset + size)
+    if (result.size() < reg->GetDataOffset() + size)
         throw TSerialDeviceException("mercury200: register address is out of range");
 
-    return TRegisterValue{PackBytes(result.data() + reg->DataOffset, static_cast<WordSizes>(size))};
+    return TRegisterValue{PackBytes(result.data() + reg->GetDataOffset(), static_cast<WordSizes>(size))};
 }
 
 void TMercury200Device::InvalidateReadCache()
