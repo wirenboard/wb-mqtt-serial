@@ -531,13 +531,11 @@ namespace Modbus // modbus protocol common utilities
                                         Modbus::TRegisterCache& tmpCache,
                                         const Modbus::TRegisterCache& cache)
     {
+        // TODO Add offset
         pdu[0] = GetFunction(reg, OperationType::OP_WRITE);
 
         auto addr = GetUint32RegisterAddress(reg.GetAddress());
         auto baseAddress = addr + shift;
-        const auto bitWidth = reg.GetBitWidth();
-
-        auto bitsToAllocate = bitWidth;
 
         TAddress address;
 
@@ -548,35 +546,14 @@ namespace Modbus // modbus protocol common utilities
 
         pdu[5] = reg.Get16BitWidth() * 2;
 
-        uint8_t bitPos = 0, bitPosEnd = bitWidth;
+        auto words = value.Get<std::vector<TRegisterWord>>();
 
         for (int i = 0; i < reg.Get16BitWidth(); ++i) {
             address.Address = baseAddress + i;
 
-            uint16_t cachedValue;
-            if (cache.count(address.AbsAddress)) {
-                cachedValue = cache.at(address.AbsAddress);
-            } else {
-                cachedValue = value.Get<uint16_t>();
-            }
-
-            auto localBitOffset = std::max(reg.DataOffset - bitPos, 0);
-
-            auto bitCount = std::min(static_cast<uint32_t>(16 - localBitOffset), bitsToAllocate);
-
-            auto rBitPos = bitPosEnd - bitPos - bitCount;
-
-            auto mask = GetLSBMask(bitCount);
-
-            auto valuePart = mask & (value >> rBitPos).Get<uint64_t>();
-
-            auto wordValue = (~mask & cachedValue) | (valuePart << localBitOffset);
-
-            tmpCache[address.AbsAddress] = wordValue & 0xffff;
-
-            WriteAs2Bytes(pdu + 6 + i * 2, wordValue & 0xffff);
-            bitsToAllocate -= bitCount;
-            bitPos += bitCount;
+            auto data = words.at(reg.Get16BitWidth() - 1 - i);
+            tmpCache[address.AbsAddress] = data;
+            WriteAs2Bytes(pdu + 6 + i * 2, data);
         }
     }
 

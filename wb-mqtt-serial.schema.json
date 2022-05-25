@@ -666,6 +666,13 @@
           "title": "Word order",
           "propertyOrder": 20
         },
+        "string_data_size": {
+          "type": "integer",
+          "title": "String Size",
+          "minimum": 1,
+          "default": 1,
+          "propertyOrder": 21
+        },
         "consists_of": {
           "not": {},
           "options": { "hidden": true }
@@ -1901,7 +1908,8 @@
       "custom period": "задать период",
       "do not read": "не опрашивать",
       "read_rate_limit_description": "Этот параметр устарел и не рекомендуется к использованию, вместо него пользуйтесь периодом опроса канала",
-      "not faster than (deprecated)": "не чаще чем раз в (устаревший параметр)"
+      "not faster than (deprecated)": "не чаще чем раз в (устаревший параметр)",
+      "String Size": "Размер строки"
     }
   }
 }

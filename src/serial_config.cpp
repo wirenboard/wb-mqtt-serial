@@ -1350,17 +1350,14 @@ TRegisterBitsAddress LoadRegisterBitsAddress(const Json::Value& register_data)
             res.BitOffset = bitOffset;
             if (pos2 != string::npos) {
                 res.BitWidth = stoul(addressStr.substr(pos2 + 1));
-                // TODO
-                //                if (res.BitWidth > 64) {
-                //                    throw TConfigParserException(
-                //                        "address parsing failed: bit count must be in range [0, 64] (address string:
-                //                        '" + addressStr +
-                //                        "')");
-                //                }
             }
         }
     } else {
         res.Address = GetInt(register_data, "address");
+    }
+
+    if (register_data.isMember("string_data_size")) {
+        res.BitWidth = GetInt(register_data, "string_data_size") * 16;
     }
     return res;
 }
