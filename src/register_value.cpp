@@ -5,7 +5,6 @@
 #include <sstream>
 #include <vector>
 
-
 template<> uint64_t TRegisterValue::Get<>() const
 {
     uint64_t retVal = 0;
@@ -97,7 +96,7 @@ void TRegisterValue::Set(const std::string& value, size_t width)
 {
     Value.clear();
     std::copy(value.begin(), value.end(), std::front_inserter(Value));
-    std::fill_n(std::front_inserter(Value), width/2-value.size(), '\0');
+    std::fill_n(std::front_inserter(Value), width / 2 - value.size(), '\0');
 }
 
 TRegisterValue& TRegisterValue::operator=(const TRegisterValue& other)

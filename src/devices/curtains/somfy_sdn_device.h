@@ -38,9 +38,9 @@ namespace Somfy
         std::unordered_map<uint8_t, TRegisterValue> DataCache;
 
         TRegisterValue GetCachedResponse(uint8_t requestHeader,
-                                        uint8_t responseHeader,
-                                        size_t bitOffset,
-                                        size_t bitWidth);
+                                         uint8_t responseHeader,
+                                         size_t bitOffset,
+                                         size_t bitWidth);
 
         std::vector<uint8_t> ExecCommand(const std::vector<uint8_t>& request);
 
