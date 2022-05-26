@@ -40,8 +40,6 @@ public:
 
     void PushWord(TRegisterWord data);
 
-    TRegisterWord PopWord();
-
     std::string ToString();
 
 private:

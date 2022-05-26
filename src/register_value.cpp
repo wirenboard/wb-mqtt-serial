@@ -134,17 +134,6 @@ bool TRegisterValue::operator!=(const TRegisterValue& other) const
     return Value != other.Value;
 }
 
-TRegisterWord TRegisterValue::PopWord()
-{
-    if (Value.empty())
-        return 0;
-
-    auto retVal = Value.front();
-    Value.push_back(0);
-    Value.pop_front();
-    return retVal;
-}
-
 void TRegisterValue::PushWord(TRegisterWord data)
 {
     Value.push_front(data);

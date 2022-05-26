@@ -17,9 +17,11 @@ namespace // utility
 
     void SetValue(uint16_t* dst, int width, const TRegisterValue& value)
     {
-        auto bufValue = value;
-        for (int p = width - 1; p >= 0; --p) {
-            dst[p] = bufValue.PopWord();
+        auto bufValue = value.Get<std::vector<TRegisterWord>>();
+        int32_t p;
+        uint32_t i;
+        for (p = width - 1, i = 0; p >= 0; --p, ++i) {
+            dst[p] = bufValue.size() > i ? bufValue.at(i) : 0;
         }
     }
 
