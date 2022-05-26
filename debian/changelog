@@ -1,8 +1,58 @@
-wb-mqtt-serial (2.57.2) stable; urgency=medium
+wb-mqtt-serial (2.60.2) stable; urgency=medium
 
-  * Template for Ecodim DALI GW2 was added
+  * Template for ECOdim DALI GW2 was added
 
- -- Dmitry Vorobjev <d.vorobjev@wirenboard.ru>  Tue, 26 Apr 2022 16:23:21 +0300
+ -- Dmitry Vorobjev <d.vorobjev@wirenboard.ru>  Thu, 26 May 2022 10:44:59 +0300
+
+wb-mqtt-serial (2.60.1) stable; urgency=medium
+
+  * Devices with all disabled channels do not cause invalid config error.
+    It is reported as warning in startup log.
+
+ -- Petr Krasnoshchekov <petr.krasnoshchekov@wirenboard.ru>  Wed, 25 May 2022 10:26:24 +0500
+
+wb-mqtt-serial (2.60.0) stable; urgency=medium
+
+  * Added separate read and write register addresses for the Modbus device.
+  * Fixed data corruption bug when writing to the modbus register if the address is given with an offset.
+
+ -- Roman Kochkin <roman.kochkin@wirenboard.ru>  Tue, 24 May 2022 11:51:00 +0300
+
+wb-mqtt-serial (2.59.2) stable; urgency=medium
+
+  * Flat templates with buttons support for relay Modbus modules with inputs
+  * Channel "Minimum Voltage Since Startup" was added in templates of relay Modbus modules with inputs
+
+ -- Dmitry Vorobjev <d.vorobjev@wirenboard.ru>  Thu, 12 May 2022 16:28:15 +0300
+
+wb-mqtt-serial (2.59.1) stable; urgency=medium
+
+  * New channels and parameters for press detection were added in WB-
+    MCM8 template
+
+ -- Dmitry Vorobjev <d.vorobjev@wirenboard.ru>  Thu, 05 May 2022 18:23:12 +0300
+
+wb-mqtt-serial (2.59.0) stable; urgency=medium
+
+  * Support for parameters specified as an array in device templates is added.
+    "id" property, which defines a name of parameter, is added. In combination with conditions it allows to define parameters with different structure but the same name depending on the values of other parameters.
+
+ -- Petr Krasnoshchekov <petr.krasnoshchekov@wirenboard.ru>  Thu, 05 May 2022 09:06:29 +0500
+
+wb-mqtt-serial (2.58.1) stable; urgency=medium
+
+  * Template replacement by jinja2 is fixed
+
+ -- Petr Krasnoshchekov <petr.krasnoshchekov@wirenboard.ru>  Fri, 29 Apr 2022 12:36:32 +0500
+
+wb-mqtt-serial (2.58.0) stable; urgency=medium
+
+  * Support for jinja2 templates on package build stage is added.
+    template-templates folder can contain jinja2 files for device templates.
+    They will be processed on package build stage and resulting device templates
+    will be added to package.
+
+ -- Petr Krasnoshchekov <petr.krasnoshchekov@wirenboard.ru>  Thu, 28 Apr 2022 15:01:47 +0500
 
 wb-mqtt-serial (2.57.1) stable; urgency=medium
 

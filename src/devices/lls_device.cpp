@@ -12,7 +12,7 @@ namespace
                                           uint32_t stride,
                                           uint32_t registerByteWidth) const override
         {
-            auto addr = LoadRegisterBitsAddress(regCfg);
+            auto addr = LoadRegisterBitsAddress(regCfg, SerialConfig::ADDRESS_PROPERTY_NAME);
             TRegisterDesc res;
             res.DataOffset = (addr.Address & 0xFF);
             res.Address = std::make_shared<TUint32RegisterAddress>(addr.Address >> 8);
@@ -115,7 +115,7 @@ uint64_t TLLSDevice::ReadRegisterImpl(PRegister reg)
     int result_buf[8] = {};
 
     for (int i = 0; i < reg->GetByteWidth(); ++i) {
-        result_buf[i] = result[reg->DataOffset + i];
+        result_buf[i] = result[reg->GetDataOffset() + i];
     }
 
     return (result_buf[3] << 24) | (result_buf[2] << 16) | (result_buf[1] << 8) | result_buf[0];

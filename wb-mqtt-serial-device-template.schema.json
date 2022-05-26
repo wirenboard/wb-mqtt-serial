@@ -109,6 +109,21 @@
       ]
     },
 
+    "parameter_in_array": {
+      "allOf": [
+        { "$ref": "#/definitions/parameter" },
+        {
+          "type": "object",
+          "properties": {
+            "id": {
+              "type": "string"
+            }
+          },
+          "required": ["id"]
+        }
+      ]
+    },
+
     "subdevice_channel": {
       "type": "object",
       "properties": {
@@ -154,8 +169,16 @@
           "items": { "$ref": "#/definitions/setup_item" }
         },
         "parameters": {
-          "type": "object",
-          "additionalProperties": { "$ref": "#/definitions/parameter" }
+          "oneOf": [
+            {
+              "type": "object",
+              "additionalProperties": { "$ref": "#/definitions/parameter" }
+            },
+            {
+              "type": "array",
+              "items": { "$ref": "#/definitions/parameter_in_array" }
+            }
+          ]
         },
         "channels" : {
           "type": "array",
@@ -193,7 +216,9 @@
         {
           "oneOf": [
             { "$ref": "#/definitions/registerChannel" },
-            { "$ref": "#/definitions/compoundRegisterChannel" }
+            { "$ref": "#/definitions/compoundRegisterChannel" },
+            { "$ref": "#/definitions/registerChannelSeparateAddress" },
+            { "$ref": "#/definitions/registerChannelWriteOnly" }
           ]
         },
         { "$ref": "#/definitions/group_condition" }

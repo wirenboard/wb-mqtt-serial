@@ -1,5 +1,6 @@
 #include "config_schema_generator.h"
 #include "confed_schema_generator.h"
+#include "config_merge_template.h"
 #include "json_common.h"
 #include "log.h"
 
@@ -203,17 +204,27 @@ namespace
         return r;
     }
 
-    void MakeDeviceParametersSchema(Json::Value& properties,
+    void MakeDeviceParametersSchema(const Json::Value& config,
+                                    Json::Value& properties,
                                     Json::Value& requiredArray,
                                     const Json::Value& deviceTemplate,
-                                    bool templateWithSubdevices)
+                                    TExpressionsCache& exprCache)
     {
+        TJsonParams exprParams(config);
         if (deviceTemplate.isMember("parameters")) {
             const auto& params = deviceTemplate["parameters"];
             for (Json::ValueConstIterator it = params.begin(); it != params.end(); ++it) {
-                properties[it.name()] = MakeParameterSchema(*it);
-                if (templateWithSubdevices && IsRequiredSetupRegister(*it)) {
-                    requiredArray.append(it.name());
+                auto name = params.isArray() ? (*it)["id"].asString() : it.name();
+                if (CheckCondition(*it, exprParams, &exprCache)) {
+                    if (properties.isMember(name)) {
+                        throw std::runtime_error("Validation failed.\nError 1\n  context: <root>\n  desc: "
+                                                 "duplicate definition of parameter \"" +
+                                                 name + "\" in device template");
+                    }
+                    properties[name] = MakeParameterSchema(*it);
+                    if (IsRequiredSetupRegister(*it)) {
+                        requiredArray.append(name);
+                    }
                 }
             }
         }
@@ -232,9 +243,11 @@ namespace
     //      },
     //      "required": [ "parameter1", ... ]
     //  }
-    Json::Value MakeSubDeviceSchema(const std::string& subDeviceType,
+    Json::Value MakeSubDeviceSchema(const Json::Value& config,
+                                    const std::string& subDeviceType,
                                     const TDeviceTemplate& subdeviceTemplate,
-                                    const std::string& deviceType)
+                                    const std::string& deviceType,
+                                    TExpressionsCache& exprCache)
     {
         Json::Value res;
         res["type"] = "object";
@@ -242,7 +255,7 @@ namespace
 
         if (subdeviceTemplate.Schema.isMember("parameters")) {
             Json::Value req(Json::arrayValue);
-            MakeDeviceParametersSchema(res["properties"], req, subdeviceTemplate.Schema, true);
+            MakeDeviceParametersSchema(config, res["properties"], req, subdeviceTemplate.Schema, exprCache);
             if (!req.empty()) {
                 res["required"] = req;
             }
@@ -273,37 +286,34 @@ namespace
     //          ...
     //          "channels": CHANNELS_SCHEMA
     //      },
-    //      "required": ["device_type", "slave_id"]
+    //      "required": ["device_type", "slave_id", "parameter1", ...]
     //  }
-    void AddDeviceSchema(const TDeviceTemplate& deviceTemplate,
+    void AddDeviceSchema(const Json::Value& deviceConfig,
+                         const TDeviceTemplate& deviceTemplate,
                          TSerialDeviceFactory& deviceFactory,
-                         Json::Value& devicesArray,
-                         Json::Value& definitions)
+                         Json::Value& schema,
+                         TExpressionsCache& exprCache)
     {
         auto protocolName = GetProtocolName(deviceTemplate.Schema);
 
-        Json::Value res;
-        res["type"] = "object";
-
-        auto& req = MakeArray("required", res);
+        auto& req = MakeArray("required", schema);
         req.append("device_type");
         if (!deviceFactory.GetProtocol(protocolName)->SupportsBroadcast()) {
             req.append("slave_id");
         }
 
-        res["properties"]["device_type"] = MakeSingleValueProperty(deviceTemplate.Type);
-
-        bool templateWithSubdevices = deviceTemplate.Schema.isMember("subdevices");
+        schema["properties"] = Json::Value(Json::objectValue);
+        schema["properties"]["device_type"] = MakeSingleValueProperty(deviceTemplate.Type);
 
         if (deviceTemplate.Schema.isMember("parameters")) {
-            MakeDeviceParametersSchema(res["properties"], req, deviceTemplate.Schema, templateWithSubdevices);
+            MakeDeviceParametersSchema(deviceConfig, schema["properties"], req, deviceTemplate.Schema, exprCache);
         }
 
         if (deviceTemplate.Schema.isMember("channels")) {
             auto customChannelsSchemaRef = deviceFactory.GetCustomChannelSchemaRef(protocolName);
-            res["properties"]["channels"] = MakeDeviceChannelsSchema(deviceTemplate.Schema["channels"],
-                                                                     deviceTemplate.Type,
-                                                                     customChannelsSchemaRef);
+            schema["properties"]["channels"] = MakeDeviceChannelsSchema(deviceTemplate.Schema["channels"],
+                                                                        deviceTemplate.Type,
+                                                                        customChannelsSchemaRef);
         }
 
         auto deviceSchemaRef = deviceFactory.GetCommonDeviceSchemaRef(protocolName);
@@ -311,74 +321,80 @@ namespace
         if (!WBMQTT::StringHasSuffix(deviceSchemaRef, NO_CHANNELS_SUFFIX)) {
             deviceSchemaRef += NO_CHANNELS_SUFFIX;
         }
-        MakeArray("allOf", res).append(MakeObject("$ref", deviceSchemaRef));
+        MakeArray("allOf", schema).append(MakeObject("$ref", deviceSchemaRef));
 
         TSubDevicesTemplateMap subdeviceTemplates(deviceTemplate.Type, deviceTemplate.Schema);
-        if (templateWithSubdevices) {
+        if (deviceTemplate.Schema.isMember("subdevices")) {
             for (const auto& subDevice: deviceTemplate.Schema["subdevices"]) {
                 auto name = subDevice["device_type"].asString();
-                definitions[GetSubdeviceSchemaKey(deviceTemplate.Type, name)] =
-                    MakeSubDeviceSchema(name, subdeviceTemplates.GetTemplate(name), deviceTemplate.Type);
+                schema["definitions"][GetSubdeviceSchemaKey(deviceTemplate.Type, name)] =
+                    MakeSubDeviceSchema(deviceConfig,
+                                        name,
+                                        subdeviceTemplates.GetTemplate(name),
+                                        deviceTemplate.Type,
+                                        exprCache);
             }
         }
-        devicesArray.append(res);
     }
 
-    void AppendDeviceSchemas(const std::unordered_set<std::string>& deviceTypes,
-                             Json::Value& devicesArray,
-                             Json::Value& definitions,
-                             TTemplateMap& templates,
-                             TSerialDeviceFactory& deviceFactory)
+    std::string ReplaceSubstrings(std::string str, const std::string& pattern, const std::string& repl)
     {
-        for (const auto& deviceType: deviceTypes) {
-            AddDeviceSchema(templates.GetTemplate(deviceType), deviceFactory, devicesArray, definitions);
+        size_t index = 0;
+        while (pattern.length()) {
+            index = str.find(pattern, index);
+            if (index == std::string::npos)
+                break;
+            str.replace(index, pattern.length(), repl);
+            index += repl.length();
         }
+        return str;
     }
 }
 
-Json::Value MakeSchemaForConfigValidation(const Json::Value& baseConfigSchema,
-                                          const TConfigValidationOptions& options,
-                                          TTemplateMap& templates,
-                                          TSerialDeviceFactory& deviceFactory)
+void ValidateConfig(const Json::Value& config,
+                    TSerialDeviceFactory& deviceFactory,
+                    const Json::Value& baseConfigSchema,
+                    TTemplateMap& templates)
 {
-    Json::Value res(baseConfigSchema);
-    // Let's add to #/definitions/device/oneOf a list of devices generated from templates
-    if (res["definitions"]["device"].isMember("oneOf")) {
-        Json::Value newArray(Json::arrayValue);
-        AppendDeviceSchemas(options.DeviceTypes, newArray, res["definitions"], templates, deviceFactory);
-        // Let's remove protocols not used in config
-        for (const auto& item: res["definitions"]["device"]["oneOf"]) {
-            if (item["properties"].isMember("protocol")) {
-                if (options.Protocols.count(item["properties"]["protocol"]["enum"][0].asString())) {
-                    newArray.append(item);
-                }
-            }
-        }
-        res["definitions"]["device"]["oneOf"] = newArray;
-    }
-    return res;
-}
+    Json::Value schemaWithoutDevices(baseConfigSchema);
+    schemaWithoutDevices["definitions"]["device"] = Json::Value(Json::objectValue);
+    schemaWithoutDevices["definitions"]["device"]["type"] = "object";
+    Validate(config, schemaWithoutDevices);
 
-TConfigValidationOptions GetValidationDeviceTypes(const Json::Value& config)
-{
-    TConfigValidationOptions res;
-    if (config.isMember("ports")) {
-        for (const auto& port: config["ports"]) {
-            if (port.isMember("devices")) {
-                for (const auto& device: port["devices"]) {
-                    if (device.isMember("device_type")) {
-                        res.DeviceTypes.insert(device["device_type"].asString());
-                    } else if (device.isMember("protocol")) {
-                        res.Protocols.insert(device["protocol"].asString());
-                    } else {
-                        res.Protocols.insert("modbus");
+    std::unordered_map<std::string, Json::Value> protocols;
+    // Create unique schema for every device with conditions
+    TExpressionsCache exprCache;
+    size_t portIndex = 0;
+    for (const auto& port: config["ports"]) {
+        size_t deviceIndex = 0;
+        for (const auto& device: port["devices"]) {
+            try {
+                if (device.isMember("device_type")) {
+                    AddDeviceSchema(device,
+                                    templates.GetTemplate(device["device_type"].asString()),
+                                    deviceFactory,
+                                    schemaWithoutDevices,
+                                    exprCache);
+                } else {
+                    auto protocol = device.get("protocol", "modbus").asString();
+                    auto protocolIt = protocols.find(protocol);
+                    if (protocolIt == protocols.end()) {
+                        for (const auto& pr: baseConfigSchema["definitions"]["device"]["oneOf"]) {
+                            if (protocol == pr["properties"]["protocol"]["enum"][0].asString()) {
+                                protocolIt = protocols.emplace(protocol, pr).first;
+                            }
+                        }
                     }
+                    AppendParams(schemaWithoutDevices, protocolIt->second);
                 }
+                Validate(device, schemaWithoutDevices);
+            } catch (const std::runtime_error& e) {
+                std::stringstream newContext;
+                newContext << "<root>[ports][" << portIndex << "][devices][" << deviceIndex << "]";
+                throw std::runtime_error(ReplaceSubstrings(e.what(), "<root>", newContext.str()));
             }
+            ++deviceIndex;
         }
+        ++portIndex;
     }
-    if (res.Protocols.empty() && res.DeviceTypes.empty()) {
-        res.Protocols.insert("modbus");
-    }
-    return res;
 }

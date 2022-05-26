@@ -1,0 +1,55 @@
+{
+    "debug": true,
+    "ports": [
+        {
+            "path" : "/dev/ttyNSC0",
+            "baud_rate": 9600,
+            "parity": "N",
+            "data_bits": 8,
+            "stop_bits": 2,
+            "enabled": true,
+            "devices" : [
+                {
+                    "name": "WriteAddressTest",
+                    "id": "WriteAddressTest",
+                    "enabled": true,
+                    "slave_id": "0x92",
+                    "channels": [
+                        {
+                            "name" : "Holding U16 with write_address",
+                            "reg_type" : "holding",
+                            "address" : 110,
+                            "write_address" : 115,
+                            "type": "value",
+                            "format": "u16"
+                        }
+                    ]
+                }
+            ]
+        },
+        {
+            "path" : "/dev/ttyNSC1",
+            "baud_rate": 9600,
+            "parity": "N",
+            "data_bits": 8,
+            "stop_bits": 1,
+            "guard_interval_us": 105,
+            "response_timeout_ms": 222,
+            "enabled": true,
+            "devices" : []
+        },
+        {
+            "port_type": "tcp",
+            "address": "192.168.0.1",
+            "port": 3000,
+            "enabled": true
+        },
+        {
+            "port_type": "tcp",
+            "address": "192.168.0.1",
+            "port": 3000,
+            "connection_timeout_ms": 10000,
+            "enabled": true
+        }
+    ]
+}

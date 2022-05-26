@@ -543,9 +543,11 @@ It's designed to be used on [Wiren Board](https://wirenboard.com/en/) family of 
 
         // Секция с описанием параметров устройства.
         // Значение параметра можно задать в файле конфигурации или через веб-конфигуратор
-        "parameters": {
-            // Имя параметра, которе будет использовано в конфигурационном файле
-            "param1": {
+        "parameters": [
+            {
+                // Имя параметра, которе будет использовано в конфигурационном файле
+                "id": "param1",
+
                 // Название параметра в веб-конфигураторе
                 "title": "s22",
 
@@ -596,7 +598,7 @@ It's designed to be used on [Wiren Board](https://wirenboard.com/en/) family of 
                 // Условие также определяет доступность параметра для редактирования в интерфейсе веб-конфигуратора
                 "condition": "(param2==1)||(param3>5)"
             }
-        },
+        ],
                             // Cписок каналов
         "channels": [
             // Пример канала, описывающий данные одного регистра
@@ -654,13 +656,14 @@ It's designed to be used on [Wiren Board](https://wirenboard.com/en/) family of 
                 "group": "group 1"
             }
         ],
-        "parameters": {
-            "timeout": {
+        "parameters": [
+            {
+                "id": "timeout",
                 "title": "Timeout",
                 "address": 9992,
                 "group": "group 1"
             }
-        },
+        ],
         "groups": [
             {
                 "title": "Group 1",

@@ -1,0 +1,19 @@
+// duplicate definition of param4
+{
+    "ports": [
+        {
+            "path" : "/dev/ttyNSC0",
+            "baud_rate": 9600,
+            "parity": "N",
+            "data_bits": 8,
+            "stop_bits": 2,
+            "devices" : [
+                {
+                    "slave_id": 22,
+                    "device_type": "with duplicate params",
+                    "param1": 4
+                }
+            ]
+        }
+    ]
+}

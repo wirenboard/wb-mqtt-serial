@@ -103,8 +103,8 @@ protected:
                             Emit() << "Scale: " << reg->Scale;
                             Emit() << "Offset: " << reg->Offset;
                             Emit() << "RoundTo: " << reg->RoundTo;
-                            Emit() << "Poll: " << !reg->WriteOnly;
-                            Emit() << "ReadOnly: " << reg->ReadOnly;
+                            Emit() << "Poll: " << (reg->AccessType != TRegisterConfig::EAccessType::WRITE_ONLY);
+                            Emit() << "ReadOnly: " << (reg->AccessType == TRegisterConfig::EAccessType::READ_ONLY);
                             Emit() << "TypeName: " << reg->TypeName;
                             if (reg->ReadPeriod) {
                                 Emit() << "ReadPeriod: " << reg->ReadPeriod->count();
@@ -274,10 +274,16 @@ TEST_F(TConfedSchemaTest, MergeTranslations)
     }
 }
 
-TEST_F(TConfigParserTest, MissingRequiredParametersWithConditions)
+TEST_F(TConfigParserTest, ParseModbusDevideWithWriteAddress)
 {
-    ASSERT_THROW(CheckExceptionMsg([this]() { GetConfig("configs/config-with-conditions.json"); },
-                                   "File: test/configs/config-with-conditions.json error: ports[0].devices[1] required "
-                                   "parameter 'param2' is missing"),
-                 std::runtime_error);
+    auto portConfigs = GetConfig("configs/parse_test_modbus_write_address.json")->PortConfigs;
+    EXPECT_FALSE(portConfigs.empty());
+    auto devices = portConfigs[0]->Devices;
+    EXPECT_FALSE(devices.empty());
+    auto deviceChannels = devices[0]->DeviceConfig()->DeviceChannelConfigs;
+    EXPECT_FALSE(deviceChannels.empty());
+    auto regs = deviceChannels[0]->RegisterConfigs;
+    EXPECT_FALSE(regs.empty());
+    EXPECT_EQ(GetUint32RegisterAddress(regs[0]->GetAddress()), 110);
+    EXPECT_EQ(GetUint32RegisterAddress(regs[0]->GetWriteAddress()), 115);
 }
