@@ -526,7 +526,7 @@ namespace Modbus // modbus protocol common utilities
     // fills pdu with write request data according to Modbus specification
     void ComposeMultipleWriteRequestPDU(uint8_t* pdu,
                                         const TRegister& reg,
-                                        TRegisterValue value,
+                                        const std::vector<TRegisterWord>& value,
                                         int shift,
                                         Modbus::TRegisterCache& tmpCache,
                                         const Modbus::TRegisterCache& cache)
@@ -548,12 +548,10 @@ namespace Modbus // modbus protocol common utilities
 
         pdu[5] = widthInModbusWords * 2;
 
-        auto words = value.Get<std::vector<TRegisterWord>>();
-
         for (int i = 0; i < widthInModbusWords; ++i) {
             address.Address = baseAddress + i;
 
-            auto data = words.at(reg.Get16BitWidth() - 1 - i);
+            auto data = value.at(reg.Get16BitWidth() - 1 - i);
             tmpCache[address.AbsAddress] = data;
             WriteAs2Bytes(pdu + 6 + i * 2, data);
         }
@@ -561,13 +559,12 @@ namespace Modbus // modbus protocol common utilities
 
     void ComposeSingleWriteRequestPDU(uint8_t* pdu,
                                       const TRegister& reg,
-                                      TRegisterValue regValue,
+                                      TRegisterWord value,
                                       int shift,
                                       uint8_t wordIndex,
                                       Modbus::TRegisterCache& tmpCache,
                                       const Modbus::TRegisterCache& cache)
     {
-        auto value = regValue.Get<uint16_t>();
         auto bitWidth = reg.GetDataWidth();
         if (reg.Type == REG_COIL) {
             value = value ? uint16_t(0xFF) << 8 : 0x00;
@@ -731,7 +728,7 @@ namespace Modbus // modbus protocol common utilities
                        TPort& port,
                        uint8_t slaveId,
                        TRegister& reg,
-                       TRegisterValue value,
+                       const TRegisterValue& value,
                        Modbus::TRegisterCache& cache,
                        int shift)
     {
@@ -746,22 +743,23 @@ namespace Modbus // modbus protocol common utilities
 
         vector<TRequest> requests(InferWriteRequestsCount(reg));
 
+        auto valueArray = value.Get<std::vector<TRegisterWord>>();
+
         for (size_t i = 0; i < requests.size(); ++i) {
             auto& req = requests[i];
             req.resize(traits.GetPacketSize(InferWriteRequestPDUSize(reg)));
 
             if (IsPacking(reg)) {
                 assert(requests.size() == 1 && "only one request is expected when using multiple write");
-                ComposeMultipleWriteRequestPDU(traits.GetPDU(req), reg, value, shift, tmpCache, cache);
+                ComposeMultipleWriteRequestPDU(traits.GetPDU(req), reg, valueArray, shift, tmpCache, cache);
             } else {
                 ComposeSingleWriteRequestPDU(traits.GetPDU(req),
                                              reg,
-                                             value,
+                                             valueArray.size() > i ? valueArray.at(i) : 0,
                                              shift,
                                              requests.size() - i - 1,
                                              tmpCache,
                                              cache);
-                value.PopWord();
             }
 
             traits.FinalizeRequest(req, slaveId);
@@ -862,7 +860,7 @@ namespace Modbus // modbus protocol common utilities
     {
         for (const auto& item: setupItems) {
             try {
-                WriteRegister(traits, port, slaveId, *item->Register, TRegisterValue{item->RawValue}, cache, shift);
+                WriteRegister(traits, port, slaveId, *item->Register, item->RawValue, cache, shift);
                 LOG(Info) << "Init: " << item->Name << ": setup register " << item->Register->ToString() << " <-- "
                           << item->HumanReadableValue << " (0x" << std::hex << item->RawValue.Get<uint64_t>() << ")";
             } catch (const TSerialDevicePermanentRegisterException& e) {
