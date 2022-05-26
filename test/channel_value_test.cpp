@@ -30,18 +30,6 @@ TEST_F(RegisterValueTest, Set)
     EXPECT_EQ(val, registerValue.Get<uint64_t>());
 }
 
-TEST_F(RegisterValueTest, PushWord)
-{
-    uint64_t val = 0xAABBCCDD;
-    uint64_t valH = 0xAABB;
-    uint64_t valL = 0xCCDD;
-    TRegisterValue registerValueRef{val};
-    TRegisterValue registerValue;
-    registerValue.PushWord(valH);
-    registerValue.PushWord(valL);
-    EXPECT_EQ(registerValueRef, registerValue);
-}
-
 TEST_F(RegisterValueTest, rightShift)
 {
     uint64_t val = 0xAABBCCDD;

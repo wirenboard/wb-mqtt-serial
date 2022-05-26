@@ -134,11 +134,6 @@ bool TRegisterValue::operator!=(const TRegisterValue& other) const
     return Value != other.Value;
 }
 
-void TRegisterValue::PushWord(TRegisterWord data)
-{
-    Value.push_front(data);
-}
-
 TRegisterValue TRegisterValue::operator>>(uint32_t offset) const
 {
     auto offsetInWord = offset / (sizeof(TRegisterWord) * 8);
@@ -217,4 +212,10 @@ TRegisterValue& TRegisterValue::operator|=(const TRegisterValue& other)
     }
 
     return *this;
+}
+
+void TRegisterValue::Set(const std::vector<TRegisterWord>& vec)
+{
+    Value.clear();
+    std::copy(vec.begin(),vec.end(),std::back_inserter(Value));
 }

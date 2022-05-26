@@ -3,6 +3,7 @@
 #include <cstdint>
 #include <deque>
 #include <string>
+#include <vector>
 
 typedef uint16_t TRegisterWord;
 
@@ -19,6 +20,8 @@ public:
     void Set(uint64_t value);
 
     void Set(const std::string& value, size_t width);
+
+    void Set(const std::vector<TRegisterWord>& vec);
 
     template<class T> T Get() const;
 
@@ -37,8 +40,6 @@ public:
     TRegisterValue operator<<(uint32_t offset) const;
 
     TRegisterValue& operator|=(const TRegisterValue& other);
-
-    void PushWord(TRegisterWord data);
 
     std::string ToString();
 

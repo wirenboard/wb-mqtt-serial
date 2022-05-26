@@ -8,10 +8,12 @@ namespace // utility
     TRegisterValue GetValue(uint16_t* src, int width)
     {
         TRegisterValue value;
-        for (int i = 0; i < width; ++i) {
-            value.PushWord(src[i]);
-        };
 
+        std::vector<TRegisterWord> vec;
+        for (int i = width-1; i >=0; --i) {
+            vec.push_back(src[i]);
+        };
+        value.Set(vec);
         return value;
     }
 
