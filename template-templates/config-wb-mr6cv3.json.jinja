@@ -1,0 +1,590 @@
+{% set OUTPUTS_NUMBER = 6 -%}
+{% set MMATRIX_OUTPUTS_NUMBER = 8 -%}
+{% set FIRST_INPUT = 0 -%}
+{
+    "title": "WB-MR6Cv3_template_title",
+    "device_type": "WB-MR6C v3",
+    "device": {
+        "name": "WB-MR6C v3",
+        "id": "wb-mr6cv3",
+        "max_read_registers": 0,
+        "response_timeout_ms": 1,
+        "frame_timeout_ms": 8,
+
+        "groups": [
+            {% for in_num in range(FIRST_INPUT, OUTPUTS_NUMBER + 1) -%}
+            {
+                "title": "Input {{in_num}}",
+                "id": "g_in{{in_num}}",
+                "order": {{in_num + 1}}
+            },
+            {
+                "title": "Press Parameters",
+                "id": "gg_in{{in_num}}_press_params",
+                "order": 1,
+                "group": "g_in{{in_num}}"
+            },
+            {
+                "title": "Actions for outputs when the input is closed / opened",
+                "id": "gg_in{{in_num}}_mapping_matrix_actions",
+                "group": "g_in{{in_num}}",
+                "order": 1
+            },
+            {% for out_num in range(1, OUTPUTS_NUMBER + 1) -%}
+            {
+                "title": "Output {{out_num}} Actions",
+                "id": "gg_in{{in_num}}_out{{out_num}}_button_actions",
+                "group": "g_in{{in_num}}",
+                "order": {{out_num}}
+            },
+            {% endfor -%}
+            {
+                "title": "input{{in_num}}_channels",
+                "id": "gg_in{{in_num}}_channels",
+                "order": 2,
+                "group": "g_in{{in_num}}",
+                "ui_options": {
+                    "wb": {
+                        "disable_title": true
+                    }
+                }
+            },
+            {% endfor -%}
+            {% for out_num in range(1, OUTPUTS_NUMBER + 1) -%}
+            {
+                "title": "Output {{out_num}}",
+                "id": "g_output_{{out_num}}",
+                "order": {{7 + out_num}}
+            },
+            {% endfor -%}
+            {
+                "title": "General",
+                "id": "g_general",
+                "order": 14
+            },
+            {
+                "title": "HW Info",
+                "id": "g_hw_info",
+                "order": 15
+            }
+        ],
+
+        "setup": [
+            {
+                "title": "disable legacy input mode control",
+                "address": 5,
+                "reg_type": "holding",
+                "value": 0
+            }
+        ],
+
+        "parameters": {
+            {% for in_num in range(FIRST_INPUT, OUTPUTS_NUMBER + 1) -%}
+            {% if in_num == 0 -%}
+            "in{{in_num}}_mode": {
+                "title": "Mode",
+                "description": "mode_description",
+                "address": 16,
+                "reg_type": "holding",
+                "enum": [2, 3, 4, 6],
+                "default": 2,
+                "enum_titles": [
+                    "Turn off all outputs",
+                    "Control disabled",
+                    "Operate according to mapping-matrix",
+                    "Operate according to button mapping-matrix"
+                ],
+                "group": "g_in{{in_num}}",
+                "order": 1
+            },
+            {% else -%}
+            "in{{in_num}}_mode": {
+                "title": "Mode",
+                "description": "mode_description",
+                "address": {{9 + in_num - 1}},
+                "reg_type": "holding",
+                "enum": [0, 1, 2, 3, 4, 6],
+                "default": 0,
+                "enum_titles": [
+                    "Push button",
+                    "Latching switch",
+                    "Turn off all outputs",
+                    "Control disabled",
+                    "Operate according to mapping-matrix",
+                    "Operate according to button mapping-matrix"
+                ],
+                "group": "g_in{{in_num}}",
+                "order": 1
+            },
+            {% endif -%}
+            "in{{in_num}}_debounce_ms": {
+                "title": "debounce_time_title",
+                "description": "debounce_time_description",
+                {% if in_num == 0 -%}
+                "address": 27,
+                {% else -%}
+                "address": {{20 + in_num - 1}},
+                {% endif -%}
+                "reg_type": "holding",
+                "min": 0,
+                "max": 250,
+                "default": 50,
+                "group": "g_in{{in_num}}",
+                "order": 2
+            },
+            "in{{in_num}}_lp_hold_time": {
+                "group": "gg_in{{in_num}}_press_params",
+                "title": "lp_hold_time_title",
+                "description": "lp_hold_time_description",
+                "order": 1,
+                {% if in_num == 0 -%}
+                "address": 1107,
+                {% else %}
+                "address": {{1100 + in_num - 1}},
+                {% endif -%}
+                "reg_type": "holding",
+                "default": 1000,
+                "min": 500,
+                "max": 5000,
+                "condition": "in{{in_num}}_mode==6"
+            },
+            "in{{in_num}}_secp_waiting_time": {
+                "group": "gg_in{{in_num}}_press_params",
+                "title": "secp_waiting_time_title",
+                "description": "secp_waiting_time_description",
+                "order": 2,
+                {% if in_num == 0 -%}
+                "address": 1147,
+                {% else -%}
+                "address": {{1140 + in_num - 1}},
+                {% endif -%}
+                "reg_type": "holding",
+                "default": 300,
+                "min": 0,
+                "max": 2000,
+                "condition": "in{{in_num}}_mode==6"
+            },
+            {% for out_num in range(1, OUTPUTS_NUMBER + 1) -%}
+            "in{{in_num}}_out{{out_num}}_actions": {
+                "group": "gg_in{{in_num}}_mapping_matrix_actions",
+                "title": "Output {{out_num}}",
+                "order": {{out_num}},
+                {% if in_num == 0 -%}
+                "address": {{440 + out_num - 1}},
+                {% else -%}
+                "address": {{384 + out_num - 1 + (in_num-1) * MMATRIX_OUTPUTS_NUMBER}},
+                {% endif -%}
+                "reg_type": "holding",
+                "default": 0,
+                "enum": [0, 1, 2, 3, 4, 5, 6, 7, 8, 9, 10, 11, 12, 13, 14, 15],
+                "enum_titles": [
+                    "no action / no action",
+                    "no action / reset",
+                    "no action / set",
+                    "no action / toggle",
+
+                    "reset / no action",
+                    "reset / reset",
+                    "reset / set",
+                    "reset / toggle",
+
+                    "set / no action",
+                    "set / reset",
+                    "set / set",
+                    "set / toggle",
+
+                    "toggle / no action",
+                    "toggle / reset",
+                    "toggle / set",
+                    "toggle / toggle"
+                ],
+                "condition": "in{{in_num}}_mode==4"
+            },
+            {% endfor -%}
+
+            {% for out_num in range(1, OUTPUTS_NUMBER + 1) -%}
+            "in{{in_num}}_out{{out_num}}_sp": {
+                "group": "gg_in{{in_num}}_out{{out_num}}_button_actions",
+                "title": "sp_title",
+                "order": 1,
+                {% if in_num == 0 -%}
+                "address": {{600 + out_num - 1}},
+                {% else -%}
+                "address": {{544 + out_num - 1 + (in_num-1) * MMATRIX_OUTPUTS_NUMBER}},
+                {% endif -%}
+                "reg_type": "holding",
+                "default": 0,
+                "enum": [0, 1, 2, 3],
+                "enum_titles": ["no action", "reset", "set", "toggle"],
+                "condition": "in{{in_num}}_mode==6"
+            },
+            "in{{in_num}}_out{{out_num}}_lp": {
+                "group": "gg_in{{in_num}}_out{{out_num}}_button_actions",
+                "title": "lp_title",
+                "order": 2,
+                {% if in_num == 0 -%}
+                "address": {{664 + out_num - 1}},
+                {% else -%}
+                "address": {{608 + out_num - 1 + (in_num-1) * MMATRIX_OUTPUTS_NUMBER}},
+                {% endif -%}
+                "reg_type": "holding",
+                "default": 0,
+                "enum": [0, 1, 2, 3],
+                "enum_titles": ["no action", "reset", "set", "toggle"],
+                "condition": "in{{in_num}}_mode==6"
+            },
+            "in{{in_num}}_out{{out_num}}_dp": {
+                "group": "gg_in{{in_num}}_out{{out_num}}_button_actions",
+                "title": "dp_title",
+                "order": 3,
+                {% if in_num == 0 -%}
+                "address": {{728 + out_num - 1}},
+                {% else -%}
+                "address": {{672 + out_num - 1 + (in_num-1) * MMATRIX_OUTPUTS_NUMBER}},
+                {% endif -%}
+                "reg_type": "holding",
+                "default": 0,
+                "enum": [0, 1, 2, 3],
+                "enum_titles": ["no action", "reset", "set", "toggle"],
+                "condition": "in{{in_num}}_mode==6"
+            },
+            "in{{in_num}}_out{{out_num}}_slp": {
+                "group": "gg_in{{in_num}}_out{{out_num}}_button_actions",
+                "title": "slp_title",
+                "order": 4,
+                {% if in_num == 0 -%}
+                "address": {{792 + out_num - 1}},
+                {% else -%}
+                "address": {{736 + out_num - 1 + (in_num-1) * MMATRIX_OUTPUTS_NUMBER}},
+                {% endif -%}
+                "reg_type": "holding",
+                "default": 0,
+                "enum": [0, 1, 2, 3],
+                "enum_titles": ["no action", "reset", "set", "toggle"],
+                "condition": "in{{in_num}}_mode==6"
+            },
+            {% endfor -%}
+            {% endfor -%}
+            "baud_rate": {
+                    "title": "Baud rate",
+                    "description": "baud_rate_description",
+                    "address": 110,
+                    "reg_type": "holding",
+                    "enum": [96, 192, 384, 576, 1152],
+                    "default": 96,
+                    "enum_titles": [
+                        "9600",
+                        "19200",
+                        "38400",
+                        "57600",
+                        "115200"
+                    ],
+                    "group": "g_general",
+                    "order": 1
+            },
+            "outputs_power_on_state": {
+                "title": "Outputs State After Power On",
+                "address": 6,
+                "reg_type": "holding",
+                "enum": [0, 1, 2],
+                "default": 0,
+                "enum_titles": ["Safe State", "Restore Last State", "According To Inputs"],
+                "group": "g_general",
+                "order": 2
+            },
+            "poll_timeout_s": {
+                "title": "Poll Timeout (s)",
+                "description": "poll_timeout_description",
+                "address": 8,
+                "reg_type": "holding",
+                "min": 1,
+                "max": 65534,
+                "default": 10,
+                "group": "g_general",
+                "order": 3
+            }
+        },
+
+        "channels": [
+            {% for in_num in range(FIRST_INPUT, OUTPUTS_NUMBER + 1) -%}
+            {
+                "name": "Input {{in_num}}",
+                "reg_type": "discrete",
+                {% if in_num == 0 -%}
+                "address": 7,
+                {% else -%}
+                "address": {{in_num - 1}},
+                {% endif -%}
+                "type": "switch",
+                "group": "gg_in{{in_num}}_channels"
+            },
+            {
+                "name": "Input {{in_num}} counter",
+                "reg_type": "input",
+                {% if in_num == 0 -%}
+                "address": 39,
+                {% else -%}
+                "address": {{32 + in_num - 1}},
+                {% endif -%}
+                "type": "value",
+                "group": "gg_in{{in_num}}_channels"
+            },
+            {
+                "name": "Input {{in_num}} freq",
+                "reg_type": "input",
+                {% if in_num == 0 -%}
+                "address": 54,
+                {% else -%}
+                "address": {{40 + (in_num - 1) * 2}},
+                {% endif -%}
+                "type": "value",
+                "format": "u32",
+                "scale": 1.52588e-5,
+                "round_to": 0.001,
+                "enabled": false,
+                "group": "gg_in{{in_num}}_channels"
+            },
+            {
+                "name": "Input {{in_num}} Single Press Counter",
+                "enabled": false,
+                "reg_type": "input",
+                {% if in_num == 0 -%}
+                "address": 471,
+                {% else -%}
+                "address": {{464 + in_num - 1}},
+                {% endif -%}
+                "type": "value",
+                "group": "gg_in{{in_num}}_channels",
+                "condition": "in{{in_num}}_mode==6"
+            },
+            {
+                "name": "Input {{in_num}} Long Press Counter",
+                "enabled": false,
+                "reg_type": "input",
+                {% if in_num == 0 -%}
+                "address": 487,
+                {% else -%}
+                "address": {{480 + in_num - 1}},
+                {% endif -%}
+                "type": "value",
+                "group": "gg_in{{in_num}}_channels",
+                "condition": "in{{in_num}}_mode==6"
+            },
+            {
+                "name": "Input {{in_num}} Double Press Counter",
+                "enabled": false,
+                "reg_type": "input",
+                {% if in_num == 0 -%}
+                "address": 503,
+                {% else -%}
+                "address": {{496 + in_num - 1}},
+                {% endif -%}
+                "type": "value",
+                "group": "gg_in{{in_num}}_channels",
+                "condition": "in{{in_num}}_mode==6"
+            },
+            {
+                "name": "Input {{in_num}} Shortlong Press Counter",
+                "enabled": false,
+                "reg_type": "input",
+                {% if in_num == 0 -%}
+                "address": 519,
+                {% else -%}
+                "address": {{512 + in_num - 1}},
+                {% endif -%}
+                "type": "value",
+                "group": "gg_in{{in_num}}_channels",
+                "condition": "in{{in_num}}_mode==6"
+            },
+            {% endfor -%}
+            {% for out_num in range(1, OUTPUTS_NUMBER + 1) -%}
+            {
+                "name": "K{{out_num}}",
+                "reg_type": "coil",
+                "address": {{out_num - 1}},
+                "type": "switch",
+                "group": "g_output_{{out_num}}"
+            },
+            {% endfor -%}
+            {
+                "name": "Serial",
+                "type": "text",
+                "reg_type": "input",
+                "address": 270,
+                "format": "u32",
+                "group": "g_hw_info"
+            },
+            {
+                "name": "Supply Voltage",
+                "reg_type": "input",
+                "address": 121,
+                "type": "voltage",
+                "scale": 0.001,
+                "enabled": false,
+                "group": "g_hw_info"
+            },
+            {
+                "name": "Uptime",
+                "reg_type": "input",
+                "address": 104,
+                "type": "text",
+                "format": "u32",
+                "enabled": false,
+                "group": "g_hw_info"
+            },
+            {
+                "name": "Minimum Voltage Since Startup",
+                "reg_type": "input",
+                "address": 122,
+                "scale": 0.001,
+                "type": "voltage",
+                "enabled": false,
+                "group": "g_hw_info"
+            },
+            {
+                "name": "MCU Temperature",
+                "reg_type": "input",
+                "address": 124,
+                "type": "temperature",
+                "format": "s16",
+                "scale": 0.1,
+                "enabled": false,
+                "group": "g_hw_info"
+            },
+            {
+                "name": "MCU Voltage",
+                "reg_type": "input",
+                "address": 123,
+                "scale": 0.001,
+                "type": "voltage",
+                "enabled": false,
+                "group": "g_hw_info"
+            },
+            {
+                "name": "Bus power supply status",
+                "reg_type": "input",
+                "address": 4,
+                "type": "switch",
+                "group": "g_general"
+            }
+        ],
+
+        "translations": {
+            "en": {
+                "WB-MR6Cv3_template_title": "WB-MR6C v.3 (6-channel relay with internal power supply)",
+                "mode_description": "For using button mapping-matrix firmware v1.17.0 or newer is required",
+                "baud_rate_description": "Make sure that communication with device is established before changing this parameter. Select required baud rate, save configuration and then change port baud rate to the same value.",
+                "Uptime": "Uptime (s)",
+
+                "poll_timeout_description": "Time in seconds without modbus polling before safety mode",
+
+                "sp_title": "Short Press",
+                "lp_title": "Long Press",
+                "dp_title": "Double Press",
+                "slp_title": "Shortlong Press",
+
+                "lp_hold_time_title": "Long Press Time (ms)",
+                "secp_waiting_time_title": "Second Press Waiting Time (ms)",
+                "debounce_time_title": "Debounce Time (ms)",
+
+                "lp_hold_time_description": "If press is longer than the specified time then it is long",
+                "secp_waiting_time_description": "If there is no second press during the specified time then press is single. 0 - disables all presses except short and long",
+                "debounce_time_description": "For press detection must be 5-10 times less than second press waiting time"
+
+            },
+            "ru": {
+                "WB-MR6Cv3_template_title": "WB-MR6C v.3 (6-канальный модуль реле с внутренним блоком питания)",
+
+                {% for in_num in range(FIRST_INPUT, OUTPUTS_NUMBER + 1) -%}
+                "Input {{in_num}}": "Вход {{in_num}}",
+                "Input {{in_num}} counter": "Счетчик {{in_num}}",
+                "Input {{in_num}} freq": "Частота {{in_num}}",
+                "Input {{in_num}} Single Press Counter": "Счетчик коротких нажатий входа {{in_num}}",
+                "Input {{in_num}} Long Press Counter": "Счетчик длинных нажатий входа {{in_num}}",
+                "Input {{in_num}} Double Press Counter": "Счетчик двойных нажатий входа {{in_num}}",
+                "Input {{in_num}} Shortlong Press Counter": "Счетчик коротких, а затем длинных нажатий входа {{in_num}}",
+                {% endfor -%}
+
+                "Outputs": "Выходы",
+                "General": "Общее",
+                "HW Info": "Данные модуля",
+                "Debug": "Диагностика",
+                "Mode": "Режим работы",
+                "Press Parameters": "Параметры нажатий",
+
+                "Actions for outputs when the input is closed / opened": "Действия для выходов при замыкании / размыкании входа",
+
+                {% for out_num in range(1, OUTPUTS_NUMBER + 1) -%}
+                "Output {{out_num}}": "Выход {{out_num}}",
+                "Output {{out_num}} Actions": "Действия для выхода {{out_num}}",
+
+                {% endfor -%}
+
+                "no action": "нет действия",
+                "reset": "выключить",
+                "set": "включить",
+                "toggle": "переключить",
+
+                "no action / no action": "нет действия / нет действия",
+                "no action / reset": "нет действия / выключить",
+                "no action / set": "нет действия / включить",
+                "no action / toggle": "нет действия / переключить",
+
+                "reset / no action": "выключить / нет действия",
+                "reset / reset": "выключить / выключить",
+                "reset / set": "выключить / включить",
+                "reset / toggle": "выключить / переключить",
+
+                "set / no action": "включить / нет действия",
+                "set / reset": "включить / выключить",
+                "set / set": "включить / включить",
+                "set / toggle": "включить / переключить",
+
+                "toggle / no action": "переключить / нет действия",
+                "toggle / reset": "переключить / выключить",
+                "toggle / set": "переключить / включить",
+                "toggle / toggle": "переключить / переключить",
+
+                "Push button": "Кнопка без фиксации",
+                "Latching switch": "Переключатель с фиксацией",
+                "Turn off all outputs": "Отключить все выходы",
+                "Control disabled": "Управление отключено",
+                "Operate according to mapping-matrix": "Управлять по mapping-матрице",
+                "Operate according to button mapping-matrix": "Управлять по mapping-матрице для кнопок",
+
+                "Restore Last Outputs State After Power On": "Восстанавливать состояния выходов при включении",
+                "Poll Timeout (s)": "Таймаут опроса перехода в безопасный режим (с)",
+                "poll_timeout_description": "Таймаут опроса перехода в безопасный режим, если используется. Действия в безопасном режиме настраиваются отдельно.",
+                "Safe State": "Безопасное состояние",
+                "Restore Last State": "Восстановить последнее состояние",
+                "According To Inputs": "Состояние соответствующее состоянию входов",
+
+                "sp_title": "Короткое нажатие",
+                "lp_title": "Длинное нажатие",
+                "dp_title": "Двойное нажатие",
+                "slp_title": "Короткое, затем длинное нажатие",
+
+                "lp_hold_time_title": "Время длинного нажатия (мс)",
+                "secp_waiting_time_title": "Время ожидания второго нажатия (мс)",
+                "debounce_time_title": "Время подавления дребезга (мс)",
+
+                "lp_hold_time_description": "Если нажатие длится больше указанного времени - считаем его длинным",
+                "secp_waiting_time_description": "Если за указанное время второго нажатия не было - считаем нажатие одиночным. 0 - отключит все нажатия кроме короткого и длинного",
+                "debounce_time_description": "Для детектирования нажатий значение должно быть в 5-10 раз меньше, чем время ожидания второго нажатия",
+
+                "Baud rate": "Скорость обмена",
+                "baud_rate_description": "Перед изменением параметра убедитесь, что связь с устройством установлена. Выберите нужную скорость обмена, сохраните конфигурацию, а затем укажите в настройках порта эту же скорость.",
+                "mode_description": "Для использования mapping-матрицы для кнопок требуется прошивка v1.17.0 или новее",
+
+                "Serial": "Серийный номер",
+                "Supply Voltage": "Напряжение питания",
+                "Uptime": "Время работы с момента включения (с)",
+                "Minimum Voltage Since Startup": "Минимальное напряжение с момента включения",
+                "MCU Temperature": "Температура МК",
+                "MCU Voltage": "Напряжение питания МК",
+                "Bus power supply status": "Состояние низковольтного источника питания"
+            }
+        }
+    }
+}
+
