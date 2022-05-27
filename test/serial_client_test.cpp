@@ -919,14 +919,14 @@ TEST_F(TSerialClientTest, String32)
     Note() << "Cycle()";
     SerialClient->Cycle();
     EXPECT_EQ("computer", GetTextValue(reg20));
-    EXPECT_EQ('c', static_cast<char >(Device->Registers[20]));
-    EXPECT_EQ('o', static_cast<char >(Device->Registers[21]));
-    EXPECT_EQ('m', static_cast<char >(Device->Registers[22]));
-    EXPECT_EQ('p', static_cast<char >(Device->Registers[23]));
-    EXPECT_EQ('u', static_cast<char >(Device->Registers[24]));
-    EXPECT_EQ('t', static_cast<char >(Device->Registers[25]));
-    EXPECT_EQ('e', static_cast<char >(Device->Registers[26]));
-    EXPECT_EQ('r', static_cast<char >(Device->Registers[27]));
+    EXPECT_EQ('c', static_cast<char>(Device->Registers[20]));
+    EXPECT_EQ('o', static_cast<char>(Device->Registers[21]));
+    EXPECT_EQ('m', static_cast<char>(Device->Registers[22]));
+    EXPECT_EQ('p', static_cast<char>(Device->Registers[23]));
+    EXPECT_EQ('u', static_cast<char>(Device->Registers[24]));
+    EXPECT_EQ('t', static_cast<char>(Device->Registers[25]));
+    EXPECT_EQ('e', static_cast<char>(Device->Registers[26]));
+    EXPECT_EQ('r', static_cast<char>(Device->Registers[27]));
 }
 
 TEST_F(TSerialClientTest, offset)

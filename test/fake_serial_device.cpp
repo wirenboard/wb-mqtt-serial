@@ -10,9 +10,9 @@ namespace // utility
         TRegisterValue value;
 
         std::vector<uint8_t> vec;
-        for (int i = width-1; i >=0; --i) {
+        for (int i = width - 1; i >= 0; --i) {
             vec.push_back(src[i]);
-            vec.push_back(src[i]>>8);
+            vec.push_back(src[i] >> 8);
         };
         value.Set(vec);
         return value;
