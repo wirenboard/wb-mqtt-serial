@@ -5,13 +5,21 @@
 #include <sstream>
 #include <vector>
 
+namespace
+{
+    template<typename T> T GetScalar(const std::deque<uint8_t>& value)
+    {
+        uint64_t retVal = 0;
+        for (uint32_t i = 0; (i < sizeof(T)) && (i < value.size()); ++i) {
+            retVal |= static_cast<T>(value.at(i)) << (i * 8);
+        }
+        return retVal;
+    }
+}
+
 template<> uint64_t TRegisterValue::Get<>() const
 {
-    uint64_t retVal = 0;
-    for (uint32_t i = 0; (i < sizeof(uint64_t) / sizeof(TRegisterWord)) && (i < Value.size()); ++i) {
-        retVal |= static_cast<uint64_t>(Value.at(i)) << (i * 16);
-    }
-    return retVal;
+    return GetScalar<uint64_t>(Value);
 }
 
 template<> int64_t TRegisterValue::Get<>() const
@@ -21,15 +29,25 @@ template<> int64_t TRegisterValue::Get<>() const
 
 template<> std::vector<TRegisterWord> TRegisterValue::Get() const
 {
-    return {Value.begin(), Value.end()};
+    std::vector<TRegisterWord> vec;
+
+    auto valueIt = Value.begin();
+    while (valueIt != Value.end()) {
+        TRegisterWord word;
+        word = *valueIt;
+        ++valueIt;
+        if (valueIt != Value.end()) {
+            word |= static_cast<TRegisterWord>(*valueIt) << 8;
+            ++valueIt;
+        }
+        vec.push_back(word);
+    }
+    return vec;
 }
 
 template<> TRegisterWord TRegisterValue::Get() const
 {
-    if (Value.empty())
-        return 0;
-
-    return Value.front();
+    return GetScalar<TRegisterWord>(Value);
 }
 
 template<> int16_t TRegisterValue::Get() const
@@ -39,13 +57,7 @@ template<> int16_t TRegisterValue::Get() const
 
 template<> uint32_t TRegisterValue::Get() const
 {
-    if (Value.empty()) {
-        return 0;
-    } else if (Value.size() == 1) {
-        return Value.at(0);
-    }
-
-    return (static_cast<uint32_t>(Value.at(1)) << 16 | Value.at(0));
+    return GetScalar<uint32_t>(Value);
 }
 
 template<> int32_t TRegisterValue::Get() const
@@ -55,9 +67,7 @@ template<> int32_t TRegisterValue::Get() const
 
 template<> uint8_t TRegisterValue::Get() const
 {
-    if (Value.empty())
-        return 0;
-    return Value.at(0) & 0xff;
+    return GetScalar<uint8_t>(Value);
 }
 
 template<> int8_t TRegisterValue::Get() const
@@ -68,8 +78,9 @@ template<> int8_t TRegisterValue::Get() const
 template<> std::string TRegisterValue::Get() const
 {
     std::string str;
-    std::copy(std::make_reverse_iterator(Value.end()),
-              std::make_reverse_iterator(Value.begin()),
+    auto value = Get<std::vector<TRegisterWord>>();
+    std::copy(std::make_reverse_iterator(value.end()),
+              std::make_reverse_iterator(value.begin()),
               std::back_inserter(str));
 
     str.erase(std::find(str.begin(), str.end(), '\0'), str.end());
@@ -84,8 +95,8 @@ TRegisterValue::TRegisterValue(uint64_t value)
 void TRegisterValue::Set(uint64_t value)
 {
     Value.clear();
-    for (uint32_t i = 0; i < sizeof(uint64_t) / sizeof(TRegisterWord); ++i) {
-        Value.push_back(value >> (16 * i) & 0xFFFFU);
+    for (uint32_t i = 0; i < sizeof(uint64_t); ++i) {
+        Value.push_back(value >> (8 * i) & 0xFFU);
     }
     while (!Value.empty() && Value.back() == 0) {
         Value.pop_back();
@@ -95,8 +106,11 @@ void TRegisterValue::Set(uint64_t value)
 void TRegisterValue::Set(const std::string& value, size_t width)
 {
     Value.clear();
-    std::copy(value.begin(), value.end(), std::front_inserter(Value));
-    std::fill_n(std::front_inserter(Value), width / 2 - value.size(), '\0');
+    std::for_each(value.begin(), value.end(), [this](const auto& el) {
+        Value.push_front(0);
+        Value.push_front(el);
+    });
+    std::fill_n(std::front_inserter(Value), (width / 2 - value.size()) * 2, '\0');
 }
 
 TRegisterValue& TRegisterValue::operator=(const TRegisterValue& other)
@@ -121,7 +135,13 @@ TRegisterValue& TRegisterValue::operator=(TRegisterValue&& other) noexcept
 
 bool TRegisterValue::operator==(const TRegisterValue& other) const
 {
-    return Value == other.Value;
+    auto max = std::max(Value.size(), other.Value.size());
+    for (uint32_t i = 0; i < max; ++i) {
+        if ((Value.size() > i ? Value[i] : 0) != (other.Value.size() > i ? other.Value[i] : 0)) {
+            return false;
+        }
+    }
+    return true;
 }
 
 bool TRegisterValue::operator==(uint64_t other) const
@@ -131,17 +151,17 @@ bool TRegisterValue::operator==(uint64_t other) const
 
 bool TRegisterValue::operator!=(const TRegisterValue& other) const
 {
-    return Value != other.Value;
+    return !(*this == other);
 }
 
 TRegisterValue TRegisterValue::operator>>(uint32_t offset) const
 {
-    auto offsetInWord = offset / (sizeof(TRegisterWord) * 8);
-    auto offsetInBit = offset % (sizeof(TRegisterWord) * 8);
+    auto offsetInByte = offset / 8;
+    auto offsetInBit = offset % 8;
 
     TRegisterValue result;
     auto q = Value;
-    for (uint32_t i = 0; i < offsetInWord; ++i) {
+    for (uint32_t i = 0; i < offsetInByte; ++i) {
         if (!q.empty()) {
             q.pop_front();
         }
@@ -152,7 +172,7 @@ TRegisterValue TRegisterValue::operator>>(uint32_t offset) const
             q.at(i) >>= offsetInBit;
 
             if (i + 1 < q.size()) {
-                q.at(i) |= q.at(i + 1) << (sizeof(TRegisterWord) * 8 - offsetInBit);
+                q.at(i) |= q.at(i + 1) << (8 - offsetInBit);
             }
         }
     }
@@ -163,23 +183,23 @@ TRegisterValue TRegisterValue::operator>>(uint32_t offset) const
 
 TRegisterValue TRegisterValue::operator<<(uint32_t offset) const
 {
-    auto offsetInWord = offset / (sizeof(TRegisterWord) * 8);
-    auto offsetInBit = offset % (sizeof(TRegisterWord) * 8);
+    auto offsetInByte = offset / 8;
+    auto offsetInBit = offset % 8;
 
     TRegisterValue result;
     auto q = Value;
 
     if (offsetInBit != 0) {
         q.push_back(0);
-        for (int32_t i = (q.size() - 1); i >= 0; --i) {
+        for (auto i = static_cast<int32_t>(q.size() - 1); i >= 0; --i) {
             q.at(i) <<= offsetInBit;
             if (i > 0) {
-                q.at(i) |= q.at(i - 1) >> (sizeof(TRegisterWord) * 8 - offsetInBit);
+                q.at(i) |= q.at(i - 1) >> (8 - offsetInBit);
             }
         }
     }
 
-    for (uint32_t i = 0; i < offsetInWord; ++i) {
+    for (uint32_t i = 0; i < offsetInByte; ++i) {
         q.push_front(0);
     }
 
@@ -191,7 +211,7 @@ std::string TRegisterValue::ToString()
 {
     std::stringstream ss;
     for (const auto& element: Value) {
-        ss << std::hex << std::setw(4) << std::setfill('0') << element << " ";
+        ss << std::hex << std::setw(2) << std::setfill('0') << static_cast<uint16_t>(element) << " ";
     }
     return ss.str();
 }
@@ -214,8 +234,17 @@ TRegisterValue& TRegisterValue::operator|=(const TRegisterValue& other)
     return *this;
 }
 
+void TRegisterValue::Set(const std::vector<uint8_t>& vec)
+{
+    Value.clear();
+    std::copy(vec.begin(), vec.end(), std::back_inserter(Value));
+}
+
 void TRegisterValue::Set(const std::vector<TRegisterWord>& vec)
 {
     Value.clear();
-    std::copy(vec.begin(),vec.end(),std::back_inserter(Value));
+    std::for_each(vec.begin(), vec.end(), [this](const auto& el) {
+        Value.push_back(el);
+        Value.push_back(el >> 8);
+    });
 }

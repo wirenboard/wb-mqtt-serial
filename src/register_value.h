@@ -21,6 +21,8 @@ public:
 
     void Set(const std::string& value, size_t width);
 
+    void Set(const std::vector<uint8_t>& vec);
+
     void Set(const std::vector<TRegisterWord>& vec);
 
     template<class T> T Get() const;
@@ -44,5 +46,5 @@ public:
     std::string ToString();
 
 private:
-    std::deque<TRegisterWord> Value;
+    std::deque<uint8_t> Value;
 };

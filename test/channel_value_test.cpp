@@ -68,13 +68,17 @@ TEST_F(RegisterValueTest, String)
     std::string str = "abcdefgh1423";
     value.Set(str, 32);
     EXPECT_EQ(str, value.Get<std::string>());
+
+    std::vector<TRegisterWord> vec = {'o', 'l', 'l', 'e', 'h'};
+    value.Set(vec);
+    EXPECT_EQ("hello", value.Get<std::string>());
 }
 
 TEST_F(RegisterValueTest, ToString)
 {
     TRegisterValue value;
     uint64_t rawValue = 0xAABBCCDDEEFF1122;
-    std::string str = "1122 eeff ccdd aabb ";
+    std::string str = "22 11 ff ee dd cc bb aa ";
     value.Set(rawValue);
     EXPECT_EQ(str, value.ToString());
 }
