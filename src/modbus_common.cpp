@@ -557,6 +557,62 @@ namespace Modbus // modbus protocol common utilities
         }
     }
 
+    // fills pdu with write request data according to Modbus specification
+    void ComposeMultipleWriteRequestPDU(uint8_t* pdu,
+                                        const TRegister& reg,
+                                        uint64_t value,
+                                        int shift,
+                                        Modbus::TRegisterCache& tmpCache,
+                                        const Modbus::TRegisterCache& cache)
+    {
+        pdu[0] = GetFunction(reg, OperationType::OP_WRITE);
+
+        auto addr = GetUint32RegisterAddress(reg.GetWriteAddress());
+        const auto bitWidth = reg.GetDataWidth();
+        const auto widthInModbusWords = reg.Get16BitWidth();
+
+        auto baseAddress = addr + shift;
+
+        TAddress address{0};
+
+        address.Type = reg.Type;
+
+        WriteAs2Bytes(pdu + 1, baseAddress);
+        WriteAs2Bytes(pdu + 3, widthInModbusWords);
+
+        pdu[5] = widthInModbusWords * 2;
+
+        uint8_t bitPos = 0, bitPosEnd = bitWidth;
+
+        auto bitsToAllocate = bitWidth;
+        for (int i = 0; i < widthInModbusWords; ++i) {
+            address.Address = baseAddress + i;
+
+            uint16_t cachedValue = 0;
+            if (cache.count(address.AbsAddress)) {
+                cachedValue = cache.at(address.AbsAddress);
+            }
+
+            auto localBitOffset = std::max(static_cast<int32_t>(reg.GetDataOffset()) - bitPos, 0);
+
+            auto bitCount = std::min(static_cast<uint32_t>(16 - localBitOffset), bitsToAllocate);
+
+            auto rBitPos = bitPosEnd - bitPos - bitCount;
+
+            auto mask = GetLSBMask(bitCount);
+
+            auto valuePart = mask & (value >> rBitPos);
+
+            auto wordValue = (~mask & cachedValue) | (valuePart << localBitOffset);
+
+            tmpCache[address.AbsAddress] = wordValue & 0xffff;
+
+            WriteAs2Bytes(pdu + 6 + i * 2, wordValue & 0xffff);
+            bitsToAllocate -= bitCount;
+            bitPos += bitCount;
+        }
+    }
+
     void ComposeSingleWriteRequestPDU(uint8_t* pdu,
                                       const TRegister& reg,
                                       TRegisterWord value,
@@ -751,7 +807,18 @@ namespace Modbus // modbus protocol common utilities
 
             if (IsPacking(reg)) {
                 assert(requests.size() == 1 && "only one request is expected when using multiple write");
-                ComposeMultipleWriteRequestPDU(traits.GetPDU(req), reg, valueArray, shift, tmpCache, cache);
+                // TODO: Need to add data offset function to write array
+                // Added workaround for data offset on write
+                if (reg.Format == RegisterFormat::String32) {
+                    ComposeMultipleWriteRequestPDU(traits.GetPDU(req), reg, valueArray, shift, tmpCache, cache);
+                } else {
+                    ComposeMultipleWriteRequestPDU(traits.GetPDU(req),
+                                                   reg,
+                                                   value.Get<uint64_t>(),
+                                                   shift,
+                                                   tmpCache,
+                                                   cache);
+                }
             } else {
                 ComposeSingleWriteRequestPDU(traits.GetPDU(req),
                                              reg,
