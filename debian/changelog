@@ -1,3 +1,11 @@
+wb-mqtt-serial (2.61.0) stable; urgency=medium
+
+  * Russian translation and Open/Close commands are added to WinDeco template
+  * Template for Dooya DM35EQ-X roller blind motor is added
+  * Open/Close functions and Russian translation are added to Dooya 82 template
+
+ -- Petr Krasnoshchekov <petr.krasnoshchekov@wirenboard.ru>  Mon, 30 May 2022 10:13:46 +0500
+
 wb-mqtt-serial (2.60.1) stable; urgency=medium
 
   * Devices with all disabled channels do not cause invalid config error.
