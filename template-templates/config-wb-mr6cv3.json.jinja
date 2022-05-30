@@ -335,16 +335,30 @@
                 "group": "g_general",
                 "order": 2
             },
+            "safe_mode_source": {
+                "title": "Safe mode source",
+                "group": "g_general",
+                "order": 3,
+                "address": 19,
+                "reg_type": "holding",
+                "enum": [0, 1, 2],
+                "default": 0,
+                "enum_titles": [
+                    "Poll timeout or loss bus power supply",
+                    "Poll timeout",
+                    "Loss bus power supply"
+                ]
+            },
             "poll_timeout_s": {
                 "title": "Poll Timeout (s)",
+                "group": "g_general",
                 "description": "poll_timeout_description",
                 "address": 8,
                 "reg_type": "holding",
                 "min": 1,
                 "max": 65534,
                 "default": 10,
-                "group": "g_general",
-                "order": 3
+                "order": 4
             }
         },
 
