@@ -289,8 +289,8 @@
                 "default": 0,
                 "enum": [0, 1],
                 "enum_titles": [
-                    "Not change relay state in safety mode",
-                    "Switch to safety state in safety mode"
+                    "Not change relay state",
+                    "Switch to safety state"
                 ]
             },
             "out{{out_num}}_safety_input_control": {
@@ -303,8 +303,8 @@
                 "enum": [0, 1, 2],
                 "enum_titles": [
                     "Not affect",
-                    "Lock inputs control in safety mode",
-                    "Unlock inputs control only in safety mode"
+                    "Lock in safety mode",
+                    "Unlock only in safety mode"
                 ]
             },
             {% endfor -%}
@@ -598,6 +598,11 @@
                 "Restore Last State": "Восстановить последнее состояние",
                 "According To Inputs": "Состояние соответствующее состоянию входов",
 
+                "Safe mode source": "Переход в безопасный режим",
+                "Poll timeout or loss bus power supply": "Потеря связи или пропадание низковольтного питания",
+                "Poll timeout": "Потеря связи",
+                "Loss bus power supply": "Пропадание низковольтного питания",
+
                 "Short Press": "Короткое нажатие",
                 "Long Press": "Длинное нажатие",
                 "Double Press": "Двойное нажатие",
@@ -613,16 +618,16 @@
 
                 "Safe position": "Безопасное состояние реле",
                 "Relay switched off, NO opened, NC closed": "Реле отключено, NO контакты разьеденены, NC соеденены",
-                "Relay switched on, NO closed, NC opened": "Реле отключено, NO контакты разьеденены, NC соеденены",
+                "Relay switched on, NO closed, NC opened": "Реле включено, NO контакты соеденены, NC разьеденены",
 
-                "Safety behaviour": "Поведение выхода в безопасном режиме",
-                "Not change relay state in safety mode": "Не менять состояние реле в безопасном режиме",
-                "Switch to safety state in safety mode": "Переводить реле в безопасное состояние в безопасном режиме",
+                "Safety behaviour": "Действие в безопасном режиме",
+                "Not change relay state": "Ничего не делать",
+                "Switch to safety state": "Перевести выход в безопасное состояние",
 
-                "Safety input control": "Местное управление в безопасном режиме",
-                "Not affect": "Не влияет",
-                "Lock inputs control in safety mode": "Запрещать местное управление в безопасном режиме",
-                "Unlock inputs control only in safety mode": "Разрешать местное управление только в безопасном режиме",
+                "Safety input control": "Управление с входов в безопасном режиме",
+                "Not affect": "Не блокировать",
+                "Lock in safety mode": "Блокировать в безопасном режиме",
+                "Unlock only in safety mode": "Разрешить только в безопасном режиме",
 
                 "Baud rate": "Скорость обмена",
                 "baud_rate_description": "Перед изменением параметра убедитесь, что связь с устройством установлена. Выберите нужную скорость обмена, сохраните конфигурацию, а затем укажите в настройках порта эту же скорость.",
