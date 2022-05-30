@@ -205,7 +205,7 @@
             {% for out_num in range(1, OUTPUTS_NUMBER + 1) -%}
             "in{{in_num}}_out{{out_num}}_sp": {
                 "group": "gg_in{{in_num}}_out{{out_num}}_button_actions",
-                "title": "sp_title",
+                "title": "Short Press",
                 "order": 1,
                 {% if in_num == 0 -%}
                 "address": {{600 + out_num - 1}},
@@ -220,7 +220,7 @@
             },
             "in{{in_num}}_out{{out_num}}_lp": {
                 "group": "gg_in{{in_num}}_out{{out_num}}_button_actions",
-                "title": "lp_title",
+                "title": "Long Press",
                 "order": 2,
                 {% if in_num == 0 -%}
                 "address": {{664 + out_num - 1}},
@@ -235,7 +235,7 @@
             },
             "in{{in_num}}_out{{out_num}}_dp": {
                 "group": "gg_in{{in_num}}_out{{out_num}}_button_actions",
-                "title": "dp_title",
+                "title": "Double Press",
                 "order": 3,
                 {% if in_num == 0 -%}
                 "address": {{728 + out_num - 1}},
@@ -250,7 +250,7 @@
             },
             "in{{in_num}}_out{{out_num}}_slp": {
                 "group": "gg_in{{in_num}}_out{{out_num}}_button_actions",
-                "title": "slp_title",
+                "title": "Short then long Press",
                 "order": 4,
                 {% if in_num == 0 -%}
                 "address": {{792 + out_num - 1}},
@@ -521,11 +521,6 @@
 
                 "poll_timeout_description": "Time in seconds without modbus polling before safety mode",
 
-                "sp_title": "Short Press",
-                "lp_title": "Long Press",
-                "dp_title": "Double Press",
-                "slp_title": "Shortlong Press",
-
                 "lp_hold_time_title": "Long Press Time (ms)",
                 "secp_waiting_time_title": "Second Press Waiting Time (ms)",
                 "debounce_time_title": "Debounce Time (ms)",
@@ -598,14 +593,14 @@
                 "Restore Last Outputs State After Power On": "Восстанавливать состояния выходов при включении",
                 "Poll Timeout (s)": "Таймаут опроса перехода в безопасный режим (с)",
                 "poll_timeout_description": "Таймаут опроса перехода в безопасный режим, если используется. Действия в безопасном режиме настраиваются отдельно.",
-                "Safe State": "Безопасное состояние",
+                "Safe State": "Перевести выход в безопасное состояние",
                 "Restore Last State": "Восстановить последнее состояние",
                 "According To Inputs": "Состояние соответствующее состоянию входов",
 
-                "sp_title": "Короткое нажатие",
-                "lp_title": "Длинное нажатие",
-                "dp_title": "Двойное нажатие",
-                "slp_title": "Короткое, затем длинное нажатие",
+                "Short Press": "Короткое нажатие",
+                "Long Press": "Длинное нажатие",
+                "Double Press": "Двойное нажатие",
+                "Short then long Press": "Короткое, затем длинное нажатие",
 
                 "lp_hold_time_title": "Время длинного нажатия (мс)",
                 "secp_waiting_time_title": "Время ожидания второго нажатия (мс)",
