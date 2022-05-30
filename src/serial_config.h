@@ -148,14 +148,6 @@ std::pair<PPort, bool> DefaultPortFactory(const Json::Value& port_data);
 
 Json::Value LoadConfigSchema(const std::string& schemaFileName);
 
-//! Register address
-struct TRegisterDesc
-{
-    std::shared_ptr<IRegisterAddress> Address; //! Register address
-    uint8_t DataOffset = 0;                    //! Offset of data in register
-    uint8_t DataWidth = 0;                     //! Width of data in register
-};
-
 class IRegisterAddressFactory
 {
 public:
@@ -282,7 +274,7 @@ struct TRegisterBitsAddress
     uint8_t BitOffset = 0;
 };
 
-TRegisterBitsAddress LoadRegisterBitsAddress(const Json::Value& regCfg);
+TRegisterBitsAddress LoadRegisterBitsAddress(const Json::Value& register_data, const std::string& jsonPropertyName);
 
 /*!
  * Basic device factory implementation with uint32 register addresses
@@ -324,3 +316,9 @@ std::string DecorateIfNotEmpty(const std::string& prefix,
                                const std::string& str,
                                const std::string& postfix = std::string());
 std::string GetProtocolName(const Json::Value& deviceDescription);
+
+namespace SerialConfig
+{
+    constexpr auto WRITE_ADDRESS_PROPERTY_NAME = "write_address";
+    constexpr auto ADDRESS_PROPERTY_NAME = "address";
+}

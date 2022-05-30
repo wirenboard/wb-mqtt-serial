@@ -1,10 +1,24 @@
-wb-mqtt-serial (2.60.0) stable; urgency=medium
+wb-mqtt-serial (2.61.0) stable; urgency=medium
 
   * Russian translation and Open/Close commands are added to WinDeco template
   * Template for Dooya DM35EQ-X roller blind motor is added
   * Open/Close functions and Russian translation are added to Dooya 82 template
 
- -- Petr Krasnoshchekov <petr.krasnoshchekov@wirenboard.ru>  Mon, 23 May 2022 10:15:47 +0500
+ -- Petr Krasnoshchekov <petr.krasnoshchekov@wirenboard.ru>  Mon, 30 May 2022 10:13:46 +0500
+
+wb-mqtt-serial (2.60.1) stable; urgency=medium
+
+  * Devices with all disabled channels do not cause invalid config error.
+    It is reported as warning in startup log.
+
+ -- Petr Krasnoshchekov <petr.krasnoshchekov@wirenboard.ru>  Wed, 25 May 2022 10:26:24 +0500
+
+wb-mqtt-serial (2.60.0) stable; urgency=medium
+
+  * Added separate read and write register addresses for the Modbus device.
+  * Fixed data corruption bug when writing to the modbus register if the address is given with an offset.
+
+ -- Roman Kochkin <roman.kochkin@wirenboard.ru>  Tue, 24 May 2022 11:51:00 +0300
 
 wb-mqtt-serial (2.59.2) stable; urgency=medium
 
