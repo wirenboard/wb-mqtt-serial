@@ -81,7 +81,7 @@ TRegisterValue TMercury200Device::ReadRegisterImpl(PRegister reg)
     if (result.size() < reg->GetDataOffset() + size)
         throw TSerialDeviceException("mercury200: register address is out of range");
 
-    return TRegisterValue{PackBytes(result.data() + reg->GetDataOffset(), static_cast<WordSizes>(size))};
+    return PackBytes(result.data() + reg->GetDataOffset(), static_cast<WordSizes>(size));
 }
 
 void TMercury200Device::InvalidateReadCache()

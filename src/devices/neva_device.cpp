@@ -108,5 +108,5 @@ TRegisterValue TNevaDevice::GetRegisterValue(const TRegister& reg, const std::st
             val = -(val - 100.0);
         }
     }
-    return TRegisterValue{CopyDoubleToUint64(val)};
+    return CopyDoubleToUint64(val);
 }

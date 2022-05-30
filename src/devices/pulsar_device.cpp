@@ -201,7 +201,7 @@ TRegisterValue TPulsarDevice::ReadDataRegister(PRegister reg)
     ++RequestID;
 
     // decode little-endian double64_t value
-    return TRegisterValue{ReadHex(payload, reg->GetByteWidth(), false)};
+    return ReadHex(payload, reg->GetByteWidth(), false);
 }
 
 TRegisterValue TPulsarDevice::ReadSysTimeRegister(PRegister reg)
@@ -216,7 +216,7 @@ TRegisterValue TPulsarDevice::ReadSysTimeRegister(PRegister reg)
     ++RequestID;
 
     // decode little-endian double64_t value
-    return TRegisterValue{ReadHex(payload, sizeof(payload), false)};
+    return ReadHex(payload, sizeof(payload), false);
 }
 
 TRegisterValue TPulsarDevice::ReadRegisterImpl(PRegister reg)

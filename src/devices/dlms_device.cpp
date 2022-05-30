@@ -443,7 +443,7 @@ TRegisterValue TDlmsDevice::ReadRegisterImpl(PRegister reg)
         throw TSerialDevicePermanentRegisterException(addr + " value is not a number");
     }
 
-    return TRegisterValue{CopyDoubleToUint64(r->GetValue().ToDouble())};
+    return CopyDoubleToUint64(r->GetValue().ToDouble());
 }
 
 void TDlmsDevice::PrepareImpl()

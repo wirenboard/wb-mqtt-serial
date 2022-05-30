@@ -192,15 +192,15 @@ TRegisterValue TMercury230Device::ReadRegisterImpl(PRegister reg)
     auto addr = GetUint32RegisterAddress(reg->GetAddress());
     switch (reg->Type) {
         case REG_VALUE_ARRAY:
-            return TRegisterValue{ReadValueArray(addr, 4).values[reg->GetDataOffset() & 0x03]};
+            return ReadValueArray(addr, 4).values[reg->GetDataOffset() & 0x03];
         case REG_VALUE_ARRAY12:
-            return TRegisterValue{ReadValueArray(addr, 3).values[reg->GetDataOffset() & 0x03]};
+            return ReadValueArray(addr, 3).values[reg->GetDataOffset() & 0x03];
         case REG_PARAM:
         case REG_PARAM_SIGN_ACT:
         case REG_PARAM_SIGN_REACT:
         case REG_PARAM_SIGN_IGNORE:
         case REG_PARAM_BE:
-            return TRegisterValue{ReadParam(addr & 0xffff, reg->GetByteWidth(), (RegisterType)reg->Type)};
+            return ReadParam(addr & 0xffff, reg->GetByteWidth(), (RegisterType)reg->Type);
         default:
             throw TSerialDeviceException("mercury230: invalid register type");
     }

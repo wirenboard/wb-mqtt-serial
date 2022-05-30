@@ -100,18 +100,18 @@ TRegisterValue TEnergomeraIecModeCDevice::GetRegisterValue(const TRegister& reg,
             // ww.dd.mm.yy
             v.erase(0, 3); // remove day of a week
             v.erase(std::remove(v.begin(), v.end(), '.'), v.end());
-            return TRegisterValue{strtoull(v.c_str(), nullptr, 10)};
+            return strtoull(v.c_str(), nullptr, 10);
         }
         case RegisterType::TIME: {
             // HH:MM:SS
             v.erase(std::remove(v.begin(), v.end(), ':'), v.end());
-            return TRegisterValue{strtoull(v.c_str(), nullptr, 10)};
+            return strtoull(v.c_str(), nullptr, 10);
         }
         case RegisterType::DEFAULT: {
             if (reg.Format == U64) {
-                return TRegisterValue{strtoull(v.c_str(), nullptr, 10)};
+                return strtoull(v.c_str(), nullptr, 10);
             }
-            return TRegisterValue{CopyDoubleToUint64(strtod(v.c_str(), nullptr))};
+            return CopyDoubleToUint64(strtod(v.c_str(), nullptr));
         }
         case RegisterType::ITEM: {
             // An example of a response with a list of values
@@ -120,7 +120,7 @@ TRegisterValue TEnergomeraIecModeCDevice::GetRegisterValue(const TRegister& reg,
             // 68.02)<CR><LF>(45.29)<CR><LF>(22.73)<CR><LF>(0.00)<CR><LF>(0.00)<CR><LF>(0.00
             auto items = WBMQTT::StringSplit(v, ")\r\n(");
             if (items.size() > static_cast<unsigned int>(reg.GetDataOffset())) {
-                return TRegisterValue{CopyDoubleToUint64(strtod(items[reg.GetDataOffset()].c_str(), nullptr))};
+                return CopyDoubleToUint64(strtod(items[reg.GetDataOffset()].c_str(), nullptr));
             }
             throw TSerialDeviceTransientErrorException("malformed response");
         }

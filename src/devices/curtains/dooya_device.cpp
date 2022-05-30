@@ -162,18 +162,17 @@ TRegisterValue Dooya::TDevice::ReadRegisterImpl(PRegister reg)
 {
     switch (reg->Type) {
         case POSITION: {
-            return TRegisterValue{
-                ParsePositionResponse(SlaveId, READ, GET_POSITION_DATA_LENGTH, ExecCommand(GetPositionCommand))};
+            return ParsePositionResponse(SlaveId, READ, GET_POSITION_DATA_LENGTH, ExecCommand(GetPositionCommand));
         }
         case PARAM: {
             auto addr = GetUint32RegisterAddress(reg->GetAddress());
             TRequest req;
             req.Data = MakeRequest(SlaveId, {READ, static_cast<uint8_t>(addr & 0xFF), 1});
             req.ResponseSize = RESPONSE_SIZE;
-            return TRegisterValue{ParseReadResponse(SlaveId, READ, 1, ExecCommand(req))};
+            return ParseReadResponse(SlaveId, READ, 1, ExecCommand(req));
         }
         case COMMAND: {
-            return TRegisterValue{1};
+            return 1;
         }
     }
     throw TSerialDevicePermanentRegisterException("Unsupported register type");
