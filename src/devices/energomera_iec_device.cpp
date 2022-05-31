@@ -242,6 +242,7 @@ void TEnergomeraIecWithFastReadDevice::ReadRegisterRange(PRegisterRange abstract
         char* presp = ReadResponse(*Port(), resp, RESPONSE_BUF_LEN, *DeviceConfig());
 
         ProcessResponse(*range, presp);
+        SetTransferResult(true);
     } catch (TSerialDeviceException& e) {
         for (auto& r: range->RegisterList()) {
             r->SetError(TRegister::TError::ReadError);
@@ -249,6 +250,7 @@ void TEnergomeraIecWithFastReadDevice::ReadRegisterRange(PRegisterRange abstract
         auto& logger = GetIsDisconnected() ? Debug : Warn;
         LOG(logger) << "TEnergomeraIecWithFastReadDevice::ReadRegisterRange(): " << e.what() << " [slave_id is "
                     << ToString() + "]";
+        SetTransferResult(false);
     }
 }
 
