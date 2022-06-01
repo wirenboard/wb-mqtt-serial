@@ -58,14 +58,19 @@
             },
             {% endfor -%}
             {
+                "title": "Safety",
+                "id": "g_safety",
+                "order": 14
+            },
+            {
                 "title": "General",
                 "id": "g_general",
-                "order": 14
+                "order": 15
             },
             {
                 "title": "HW Info",
                 "id": "g_hw_info",
-                "order": 15
+                "order": 16
             }
         ],
 
@@ -332,13 +337,11 @@
                 "enum": [0, 1, 2],
                 "default": 0,
                 "enum_titles": ["Safe State", "Restore Last State", "According To Inputs"],
-                "group": "g_general",
-                "order": 2
+                "group": "g_safety"
             },
             "safe_mode_source": {
                 "title": "Safe mode source",
-                "group": "g_general",
-                "order": 3,
+                "group": "g_safety",
                 "address": 19,
                 "reg_type": "holding",
                 "enum": [0, 1, 2],
@@ -351,14 +354,13 @@
             },
             "poll_timeout_s": {
                 "title": "Poll Timeout (s)",
-                "group": "g_general",
+                "group": "g_safety",
                 "description": "poll_timeout_description",
                 "address": 8,
                 "reg_type": "holding",
                 "min": 1,
                 "max": 65534,
-                "default": 10,
-                "order": 4
+                "default": 10
             }
         },
 
@@ -522,7 +524,7 @@
                 "reg_type": "input",
                 "address": 4,
                 "type": "switch",
-                "group": "g_general"
+                "group": "g_hw_info"
             }
         ],
 
@@ -558,6 +560,7 @@
                 {% endfor -%}
 
                 "Outputs": "Выходы",
+                "Safety": "Безопасный режим",
                 "General": "Общее",
                 "HW Info": "Данные модуля",
                 "Debug": "Диагностика",
@@ -653,7 +656,7 @@
                 "Minimum Voltage Since Startup": "Минимальное напряжение с момента включения",
                 "MCU Temperature": "Температура МК",
                 "MCU Voltage": "Напряжение питания МК",
-                "Bus power supply status": "Состояние низковольтного источника питания"
+                "Bus power supply status": "Состояние питания на шине"
             }
         }
     }
