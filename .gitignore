@@ -66,3 +66,13 @@ debian/*.substvars
 debhelper-build-stamp
 .clang-format
 build
+
+# Generated templates
+
+wb-mqtt-serial-templates/config-wb-mcm8.json
+wb-mqtt-serial-templates/config-wb-mr3.json
+wb-mqtt-serial-templates/config-wb-mr6c-nc.json
+wb-mqtt-serial-templates/config-wb-mr6c.json
+wb-mqtt-serial-templates/config-wb-mrm2-mini-nc.json
+wb-mqtt-serial-templates/config-wb-mrm2-mini.json
+wb-mqtt-serial-templates/config-wb-mrwm2.json
