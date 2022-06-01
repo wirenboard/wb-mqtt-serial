@@ -57,19 +57,36 @@
                 "order": 8
             },
             {
+                "title": "Safe position",
+                "id": "g_outputs_safe_position",
+                "group": "g_outputs"
+            },
+            {
+                "title": "Out coil",
+                "id": "g_outputs_coils",
+                "group": "g_outputs",
+                "ui_options": {
+                    "wb": {
+                        "disable_title": true
+                    }
+                }
+            },
+            {
                 "title": "Safety",
                 "id": "g_safety",
                 "order": 9
             },
-
-            {% for out_num in range(1, OUTPUTS_NUMBER + 1) -%}
             {
-                "title": "Output {{out_num}}",
-                "id": "g_safety_output_{{out_num}}",
-                "group": "g_safety",
-                "order": {{out_num}}
+                "title": "Safety behaviour",
+                "id": "g_safety_behaviour",
+                "group": "g_safety"
             },
-            {% endfor -%}
+            {
+                "title": "Safety input control",
+                "id": "g_safety_input_control",
+                "description": "poll_timeout_description",
+                "group": "g_safety"
+            },
 
             {
                 "title": "General",
@@ -280,8 +297,8 @@
 
             {% for out_num in range(1, OUTPUTS_NUMBER + 1) -%}
             "out{{out_num}}_safe_position": {
-                "title": "Safe position output {{out_num}}",
-                "group": "g_outputs",
+                "title": "Output {{out_num}}",
+                "group": "g_outputs_safe_position",
                 "address": {{930 + out_num - 1}},
                 "reg_type": "holding",
                 "default": 0,
@@ -293,8 +310,8 @@
                 ]
             },
             "out{{out_num}}_safety_behaviour": {
-                "title": "Safety behaviour",
-                "group": "g_safety_output_{{out_num}}",
+                "title": "Output {{out_num}}",
+                "group": "g_safety_behaviour",
                 "address": {{938 + out_num - 1}},
                 "reg_type": "holding",
                 "default": 0,
@@ -305,8 +322,8 @@
                 ]
             },
             "out{{out_num}}_safety_input_control": {
-                "title": "Safety input control",
-                "group": "g_safety_output_{{out_num}}",
+                "title": "Output {{out_num}}",
+                "group": "g_safety_input_control",
                 "address": {{946 + out_num - 1}},
                 "reg_type": "holding",
                 "default": 0,
@@ -470,7 +487,7 @@
                 "reg_type": "coil",
                 "address": {{out_num - 1}},
                 "type": "switch",
-                "group": "g_outputs"
+                "group": "g_outputs_coils"
             },
             {% endfor -%}
             {
@@ -580,9 +597,10 @@
                 {% for out_num in range(1, OUTPUTS_NUMBER + 1) -%}
                 "Output {{out_num}}": "Выход {{out_num}}",
                 "Output {{out_num}} Actions": "Действия для выхода {{out_num}}",
-                "Safe position output {{out_num}}": "Безопасное состояние реле {{out_num}}",
 
                 {% endfor -%}
+
+                "Safe position": "Безопасное состояние реле",
 
                 "no action": "нет действия",
                 "reset": "выключить",
