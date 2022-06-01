@@ -56,6 +56,23 @@
                 "id": "g_output_{{out_num}}",
                 "order": {{7 + out_num}}
             },
+            {
+                "title": "Safety",
+                "id": "g_safety_{{out_num}}",
+                "group": "g_output_{{out_num}}",
+                "order": 2
+            },
+            {
+                "title": "Out coil",
+                "id": "g_coil_{{out_num}}",
+                "group": "g_output_{{out_num}}",
+                "order": 3,
+                "ui_options": {
+                    "wb": {
+                        "disable_title": true
+                    }
+                }
+            },
             {% endfor -%}
             {
                 "title": "Safety",
@@ -287,7 +304,7 @@
             },
             "out{{out_num}}_safety_behaviour": {
                 "title": "Safety behaviour",
-                "group": "g_output_{{out_num}}",
+                "group": "g_safety_{{out_num}}",
                 "order": 2,
                 "address": {{938 + out_num - 1}},
                 "reg_type": "holding",
@@ -300,7 +317,7 @@
             },
             "out{{out_num}}_safety_input_control": {
                 "title": "Safety input control",
-                "group": "g_output_{{out_num}}",
+                "group": "g_safety_{{out_num}}",
                 "order": 3,
                 "address": {{946 + out_num - 1}},
                 "reg_type": "holding",
@@ -462,7 +479,7 @@
                 "reg_type": "coil",
                 "address": {{out_num - 1}},
                 "type": "switch",
-                "group": "g_output_{{out_num}}"
+                "group": "g_coil_{{out_num}}"
             },
             {% endfor -%}
             {
