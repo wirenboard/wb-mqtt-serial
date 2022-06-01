@@ -50,44 +50,34 @@
                 }
             },
             {% endfor -%}
-            {% for out_num in range(1, OUTPUTS_NUMBER + 1) -%}
+
             {
-                "title": "Output {{out_num}}",
-                "id": "g_output_{{out_num}}",
-                "order": {{7 + out_num}}
+                "title": "Outputs",
+                "id": "g_outputs",
+                "order": 8
             },
-            {
-                "title": "Safety",
-                "id": "g_safety_{{out_num}}",
-                "group": "g_output_{{out_num}}",
-                "order": 2
-            },
-            {
-                "title": "Out coil",
-                "id": "g_coil_{{out_num}}",
-                "group": "g_output_{{out_num}}",
-                "order": 3,
-                "ui_options": {
-                    "wb": {
-                        "disable_title": true
-                    }
-                }
-            },
-            {% endfor -%}
             {
                 "title": "Safety",
                 "id": "g_safety",
-                "order": 14
+                "order": 9
             },
+
+            {% for out_num in range(1, OUTPUTS_NUMBER + 1) -%}
+            {
+                "title": "Output {{out_num}}",
+                "id": "g_safety_output_{{out_num}}",
+                "group": "g_safety",
+                "order": {{out_num}}
+            },
+            {% endfor -%}
+
             {
                 "title": "General",
-                "id": "g_general",
-                "order": 15
+                "id": "g_general"
             },
             {
                 "title": "HW Info",
-                "id": "g_hw_info",
-                "order": 16
+                "id": "g_hw_info"
             }
         ],
 
@@ -291,7 +281,7 @@
             {% for out_num in range(1, OUTPUTS_NUMBER + 1) -%}
             "out{{out_num}}_safe_position": {
                 "title": "Safe position",
-                "group": "g_output_{{out_num}}",
+                "group": "g_safety_output_{{out_num}}",
                 "order": 1,
                 "address": {{930 + out_num - 1}},
                 "reg_type": "holding",
@@ -304,7 +294,7 @@
             },
             "out{{out_num}}_safety_behaviour": {
                 "title": "Safety behaviour",
-                "group": "g_safety_{{out_num}}",
+                "group": "g_safety_output_{{out_num}}",
                 "order": 2,
                 "address": {{938 + out_num - 1}},
                 "reg_type": "holding",
@@ -317,7 +307,7 @@
             },
             "out{{out_num}}_safety_input_control": {
                 "title": "Safety input control",
-                "group": "g_safety_{{out_num}}",
+                "group": "g_safety_output_{{out_num}}",
                 "order": 3,
                 "address": {{946 + out_num - 1}},
                 "reg_type": "holding",
@@ -479,7 +469,7 @@
                 "reg_type": "coil",
                 "address": {{out_num - 1}},
                 "type": "switch",
-                "group": "g_coil_{{out_num}}"
+                "group": "g_outputs"
             },
             {% endfor -%}
             {
