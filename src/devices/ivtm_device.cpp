@@ -135,7 +135,7 @@ TRegisterValue TIVTMDevice::ReadRegisterImpl(PRegister reg)
 
     // the response is little-endian. We inverse the byte order here to make it big-endian.
 
-    return static_cast<uint64_t>((p[3] << 24) | (p[2] << 16) | (p[1] << 8) | p[0]);
+    return TRegisterValue{static_cast<uint64_t>((p[3] << 24) | (p[2] << 16) | (p[1] << 8) | p[0])};
 }
 
 #if 0

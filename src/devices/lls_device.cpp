@@ -118,5 +118,6 @@ TRegisterValue TLLSDevice::ReadRegisterImpl(PRegister reg)
         result_buf[i] = result[reg->GetDataOffset() + i];
     }
 
-    return static_cast<uint64_t>((result_buf[3] << 24) | (result_buf[2] << 16) | (result_buf[1] << 8) | result_buf[0]);
+    return TRegisterValue{
+        static_cast<uint64_t>((result_buf[3] << 24) | (result_buf[2] << 16) | (result_buf[1] << 8) | result_buf[0])};
 }

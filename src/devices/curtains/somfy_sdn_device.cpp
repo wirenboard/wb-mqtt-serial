@@ -236,7 +236,7 @@ TRegisterValue Somfy::TDevice::GetCachedResponse(uint8_t requestHeader,
         DataCache[requestHeader] = val;
     }
     if (bitOffset || bitWidth) {
-        return (val.Get<uint64_t>() >> bitOffset) & GetLSBMask(bitWidth);
+        return TRegisterValue{(val.Get<uint64_t>() >> bitOffset) & GetLSBMask(bitWidth)};
     }
     return val;
 }
@@ -256,7 +256,7 @@ TRegisterValue Somfy::TDevice::ReadRegisterImpl(PRegister reg)
             return GetCachedResponse(addr.Get(), addr.GetResponseHeader(), reg->GetDataOffset(), reg->GetDataWidth());
         }
         case COMMAND: {
-            return 1;
+            return TRegisterValue{1};
         }
     }
     throw TSerialDevicePermanentRegisterException("Unsupported register type");

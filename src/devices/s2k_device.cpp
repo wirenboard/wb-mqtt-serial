@@ -109,9 +109,9 @@ TRegisterValue TS2KDevice::ReadRegisterImpl(PRegister reg)
        successful write to relay register and return it when regiter is read */
     switch (reg->Type) {
         case REG_RELAY:
-            return RelayState[addr] != 0 && RelayState[addr] != 2;
+            return TRegisterValue{RelayState[addr] != 0 && RelayState[addr] != 2};
         case REG_RELAY_MODE:
-            return RelayState[addr];
+            return TRegisterValue{RelayState[addr]};
         case REG_RELAY_DEFAULT:
         case REG_RELAY_DELAY: {
             Port()->CheckPortOpen();
@@ -134,7 +134,7 @@ TRegisterValue TS2KDevice::ReadRegisterImpl(PRegister reg)
             if (response[5] != CrcS2K(response, 5)) {
                 throw TSerialDeviceTransientErrorException("bad CRC for 0x5 command");
             }
-            return response[4];
+            return TRegisterValue{response[4]};
         }
         default:
             throw TSerialDeviceException("S2K protocol: invalid register for reading");

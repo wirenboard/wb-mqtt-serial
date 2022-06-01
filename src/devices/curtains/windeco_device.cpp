@@ -114,11 +114,11 @@ TRegisterValue WinDeco::TDevice::ReadRegisterImpl(PRegister reg)
 {
     switch (reg->Type) {
         case POSITION:
-            return ParsePositionResponse(ZoneId, CurtainId, ExecCommand(GetPositionCommand));
+            return TRegisterValue{ParsePositionResponse(ZoneId, CurtainId, ExecCommand(GetPositionCommand))};
         case PARAM:
-            return ParseStateResponse(ZoneId, CurtainId, ExecCommand(GetStateCommand));
+            return TRegisterValue{ParseStateResponse(ZoneId, CurtainId, ExecCommand(GetStateCommand))};
         case COMMAND:
-            return 1;
+            return TRegisterValue{1};
     }
     throw TSerialDevicePermanentRegisterException("Unsupported register type");
 }

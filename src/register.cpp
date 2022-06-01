@@ -446,7 +446,7 @@ TRegisterValue InvertWordOrderIfNeeded(const TRegisterConfig& reg, TRegisterValu
         result |= last_word;
         cur_value >>= 16;
     }
-    return result;
+    return TRegisterValue{result};
 }
 
 template<class T> struct TConvertTraits

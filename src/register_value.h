@@ -15,7 +15,7 @@ public:
     TRegisterValue(const TRegisterValue& other) = default;
     TRegisterValue(TRegisterValue&& other) = default;
 
-    TRegisterValue(uint64_t value);
+    explicit TRegisterValue(uint64_t value);
 
     void Set(uint64_t value);
 
