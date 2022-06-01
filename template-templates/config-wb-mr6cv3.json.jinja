@@ -280,12 +280,12 @@
 
             {% for out_num in range(1, OUTPUTS_NUMBER + 1) -%}
             "out{{out_num}}_safe_position": {
-                "title": "Safe position",
-                "group": "g_safety_output_{{out_num}}",
-                "order": 1,
+                "title": "Safe position output {{out_num}}",
+                "group": "g_outputs",
                 "address": {{930 + out_num - 1}},
                 "reg_type": "holding",
                 "default": 0,
+                "order": {{2 + out_num - 1}},
                 "enum": [0, 1],
                 "enum_titles": [
                     "Relay switched off",
@@ -295,7 +295,6 @@
             "out{{out_num}}_safety_behaviour": {
                 "title": "Safety behaviour",
                 "group": "g_safety_output_{{out_num}}",
-                "order": 2,
                 "address": {{938 + out_num - 1}},
                 "reg_type": "holding",
                 "default": 0,
@@ -308,7 +307,6 @@
             "out{{out_num}}_safety_input_control": {
                 "title": "Safety input control",
                 "group": "g_safety_output_{{out_num}}",
-                "order": 3,
                 "address": {{946 + out_num - 1}},
                 "reg_type": "holding",
                 "default": 0,
@@ -337,6 +335,7 @@
                     "group": "g_general",
                     "order": 1
             },
+
             "outputs_power_on_state": {
                 "title": "Outputs State After Power On",
                 "address": 6,
@@ -344,8 +343,10 @@
                 "enum": [0, 1, 2],
                 "default": 0,
                 "enum_titles": ["Safe State", "Restore Last State", "According To Inputs"],
-                "group": "g_safety"
+                "order": 1,
+                "group": "g_outputs"
             },
+
             "safe_mode_source": {
                 "title": "Safe mode source",
                 "group": "g_safety",
@@ -579,6 +580,7 @@
                 {% for out_num in range(1, OUTPUTS_NUMBER + 1) -%}
                 "Output {{out_num}}": "Выход {{out_num}}",
                 "Output {{out_num}} Actions": "Действия для выхода {{out_num}}",
+                "Safe position output {{out_num}}": "Безопасное состояние реле {{out_num}}",
 
                 {% endfor -%}
 
@@ -640,7 +642,6 @@
                 "secp_waiting_time_description": "Если за указанное время второго нажатия не было - считаем нажатие одиночным. 0 - отключит все нажатия кроме короткого и длинного",
                 "debounce_time_description": "Для детектирования нажатий значение должно быть в 5-10 раз меньше, чем время ожидания второго нажатия",
 
-                "Safe position": "Безопасное состояние реле",
                 "Relay switched off": "Реле отключено",
                 "Relay switched on": "Реле включено",
 
