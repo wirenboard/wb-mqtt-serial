@@ -56,12 +56,23 @@ DRB88
 	Relay 7  =>  Relay 7
 	Relay 8  =>  Relay 8
 Dooya 82
+	Close  =>  Close
 	Direction  =>  Direction
+	Factory Default  =>  Factory Default
 	Hand pulling  =>  Hand pulling
+	Open  =>  Open
 	Passive switch  =>  Passive switch
 	Position  =>  Position
 	Stop  =>  Stop
 	Voltage switch  =>  Voltage switch
+Dooya DM35EQ-X
+	Close  =>  Close
+	Delete end positions  =>  Delete end positions
+	Direction  =>  Direction
+	Factory Default  =>  Factory Default
+	Open  =>  Open
+	Position  =>  Position
+	Stop  =>  Stop
 ESCORT DB-2
 	Conversion Factor  =>  Conversion Factor
 	Empty  =>  Empty
@@ -19033,8 +19044,10 @@ WP9038ADAM
 	Digital Output 3  =>  Digital Output 3
 	Digital Output 4  =>  Digital Output 4
 WinDeco
+	Close  =>  Close
 	Move down  =>  Move down
 	Move up  =>  Move up
+	Open  =>  Open
 	Position  =>  Position
 	Status  =>  Status
 	Stop  =>  Stop
