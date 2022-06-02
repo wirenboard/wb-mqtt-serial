@@ -371,6 +371,7 @@
                 "reg_type": "holding",
                 "enum": [0, 1, 2],
                 "default": 0,
+                "order": 1,
                 "enum_titles": [
                     "Poll timeout or loss bus power supply",
                     "Poll timeout",
@@ -378,12 +379,14 @@
                 ]
             },
             "poll_timeout_s": {
-                "title": "Poll Timeout (s)",
+                "title": "Safety Poll Timeout (s)",
                 "group": "g_safety",
                 "description": "poll_timeout_description",
                 "address": 8,
+                "order": 2,
                 "reg_type": "holding",
                 "min": 1,
+                "condition" : "safe_mode_source!=2",
                 "max": 65534,
                 "default": 10
             }
@@ -635,8 +638,8 @@
                 "Operate according to button mapping-matrix": "Управлять по mapping-матрице для кнопок",
 
                 "Restore Last Outputs State After Power On": "Восстанавливать состояния выходов при включении",
-                "Poll Timeout (s)": "Таймаут опроса (с)",
-                "poll_timeout_description": "Таймаут опроса перехода в безопасный режим, если используется. Действия в безопасном режиме настраиваются отдельно.",
+                "Safety Poll Timeout (s)": "Таймаут потери связи (с)",
+                "poll_timeout_description": "Параметр определяет время отсутствия опроса в секундах, после которого будет активирован безопасный режим. Действия в безопасном режиме настраиваются отдельно.",
                 "Outputs State After Power On": "Состояния реле при подаче питания",
                 "Safe State": "Перевести выход в безопасное состояние",
                 "Restore Last State": "Восстановить последнее состояние",
