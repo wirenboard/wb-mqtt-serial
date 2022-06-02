@@ -1,3 +1,4 @@
+#ifdef ENABLE_METRICS
 #include "metrics.h"
 #include <gtest/gtest.h>
 
@@ -165,3 +166,4 @@ TEST(TMetricsTest, PollInterval)
         ASSERT_EQ(h.P95, std::chrono::milliseconds(180000));
     }
 }
+#endif

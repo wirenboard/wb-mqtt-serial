@@ -59,8 +59,12 @@ class TSerialPortDriver: public std::enable_shared_from_this<TSerialPortDriver>
 public:
     TSerialPortDriver(WBMQTT::PDeviceDriver mqttDriver,
                       PPortConfig port_config,
-                      const WBMQTT::TPublishParameters& publishPolicy,
-                      Metrics::TMetrics& metrics);
+                      const WBMQTT::TPublishParameters& publishPolicy
+#ifdef ENABLE_METRICS
+                      ,
+                      Metrics::TMetrics& metrics
+#endif
+    );
 
     void SetUpDevices();
     void Cycle(std::chrono::steady_clock::time_point now = std::chrono::steady_clock::now());

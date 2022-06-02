@@ -23,9 +23,12 @@ private:
     std::vector<std::thread> PortLoops;
     std::mutex ActiveMutex;
     bool Active;
+
+#ifdef ENABLE_METRICS
     std::map<std::string, Metrics::TMetrics> Metrics;
 
     Json::Value LoadMetrics(const Json::Value& request);
+#endif
 };
 
 typedef std::shared_ptr<TMQTTSerialDriver> PMQTTSerialDriver;

@@ -1,3 +1,4 @@
+#ifdef ENABLE_METRICS
 #include "metrics.h"
 #include <iostream>
 
@@ -181,3 +182,4 @@ map<Metrics::TPollItem, Metrics::TMetrics::TResult> Metrics::TMetrics::GetBusLoa
     }
     return res;
 }
+#endif

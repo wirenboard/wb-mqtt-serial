@@ -13,6 +13,7 @@ using namespace WBMQTT;
 
 namespace
 {
+#ifdef ENABLE_METRICS
     Json::Value MakeLoadItem(const Metrics::TPollItem& pollItem, const Metrics::TMetrics::TResult& value)
     {
         Json::Value item;
@@ -30,6 +31,7 @@ namespace
         item["i95"] = value.Histogram.P95.count();
         return item;
     }
+#endif
 }
 
 TMQTTSerialDriver::TMQTTSerialDriver(PDeviceDriver mqttDriver, PHandlerConfig config, WBMQTT::PMqttRpcServer rpc)
@@ -42,9 +44,12 @@ TMQTTSerialDriver::TMQTTSerialDriver(PDeviceDriver mqttDriver, PHandlerConfig co
                 LOG(Warn) << "no devices defined for port " << portConfig->Port->GetDescription() << ". Skipping.";
                 continue;
             }
-
+#ifdef ENABLE_METRICS
             auto& m = Metrics[portConfig->Port->GetDescription()];
             PortDrivers.push_back(make_shared<TSerialPortDriver>(mqttDriver, portConfig, config->PublishParameters, m));
+#else
+            PortDrivers.push_back(make_shared<TSerialPortDriver>(mqttDriver, portConfig, config->PublishParameters));
+#endif
             PortDrivers.back()->SetUpDevices();
         }
     } catch (const exception& e) {
@@ -58,9 +63,12 @@ TMQTTSerialDriver::TMQTTSerialDriver(PDeviceDriver mqttDriver, PHandlerConfig co
     }
 
     mqttDriver->On<TControlOnValueEvent>(&TSerialPortDriver::HandleControlOnValueEvent);
+
+#ifdef ENABLE_METRICS
     if (rpc) {
         rpc->RegisterMethod("metrics", "Load", std::bind(&TMQTTSerialDriver::LoadMetrics, this, std::placeholders::_1));
     }
+#endif
 }
 
 void TMQTTSerialDriver::LoopOnce()
@@ -117,6 +125,7 @@ void TMQTTSerialDriver::Stop()
     ClearDevices();
 }
 
+#ifdef ENABLE_METRICS
 Json::Value TMQTTSerialDriver::LoadMetrics(const Json::Value& request)
 {
     auto time = std::chrono::steady_clock::now();
@@ -135,3 +144,4 @@ Json::Value TMQTTSerialDriver::LoadMetrics(const Json::Value& request)
     }
     return res;
 }
+#endif

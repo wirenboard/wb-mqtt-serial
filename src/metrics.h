@@ -1,5 +1,6 @@
 #pragma once
 
+#ifdef ENABLE_METRICS
 #include <chrono>
 #include <deque>
 #include <map>
@@ -97,3 +98,4 @@ namespace Metrics
         std::map<TPollItem, TResult> GetBusLoad(std::chrono::steady_clock::time_point time);
     };
 }
+#endif

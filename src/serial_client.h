@@ -24,8 +24,12 @@ public:
 
     TSerialClient(const std::vector<PSerialDevice>& devices,
                   PPort port,
-                  const TPortOpenCloseLogic::TSettings& openCloseSettings,
-                  Metrics::TMetrics& metrics);
+                  const TPortOpenCloseLogic::TSettings& openCloseSettings
+#ifdef ENABLE_METRICS
+                  ,
+                  Metrics::TMetrics& metrics
+#endif
+    );
     TSerialClient(const TSerialClient& client) = delete;
     TSerialClient& operator=(const TSerialClient&) = delete;
     ~TSerialClient();
@@ -53,6 +57,7 @@ private:
     void UpdateFlushNeeded();
     void ProcessPolledRegister(PRegister reg);
     void ScheduleNextPoll(PRegister reg, std::chrono::steady_clock::time_point pollStartTime);
+    bool PrepareToAccessDevice(PSerialDevice dev);
 
     PPort Port;
     std::list<PRegister> RegList;
@@ -68,7 +73,10 @@ private:
 
     TPortOpenCloseLogic OpenCloseLogic;
     TLoggerWithTimeout ConnectLogger;
+
+#ifdef ENABLE_METRICS
     Metrics::TMetrics& Metrics;
+#endif
 };
 
 typedef std::shared_ptr<TSerialClient> PSerialClient;
