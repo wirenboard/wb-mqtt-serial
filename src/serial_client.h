@@ -39,37 +39,36 @@ public:
     void SetTextValue(PRegister reg, const std::string& value);
     void SetReadCallback(const TCallback& callback);
     void SetErrorCallback(const TCallback& callback);
-    void NotifyFlushNeeded();
     void ClearDevices();
 
 private:
     void Activate();
     void Connect();
     void PrepareRegisterRanges();
-    void DoFlush();
+    void DoFlush(const std::vector<PRegisterHandler>& commands);
     void WaitForPollAndFlush(std::chrono::steady_clock::time_point waitUntil);
-    void MaybeFlushAvoidingPollStarvationButDontWait();
     void SetReadError(PRegister reg);
-    PRegisterHandler GetHandler(PRegister) const;
     void SetRegistersAvailability(PSerialDevice dev, TRegisterAvailability availability);
     void ClosedPortCycle();
     void OpenPortCycle();
-    void UpdateFlushNeeded();
     void ProcessPolledRegister(PRegister reg);
     void ScheduleNextPoll(PRegister reg, std::chrono::steady_clock::time_point pollStartTime);
     bool PrepareToAccessDevice(PSerialDevice dev);
+    void RetryCommand(PRegisterHandler command);
 
     PPort Port;
     std::list<PRegister> RegList;
     std::vector<PSerialDevice> Devices;
-    std::unordered_map<PRegister, PRegisterHandler> Handlers;
 
     bool Active;
     TCallback ReadCallback;
     TCallback ErrorCallback;
     PSerialDevice LastAccessedDevice;
-    PBinarySemaphore FlushNeeded;
     TScheduler<PRegister, TRegisterComparePredicate> Scheduler;
+
+    std::mutex CommandsQueueMutex;
+    std::condition_variable CommandsCV;
+    std::vector<PRegisterHandler> Commands;
 
     TPortOpenCloseLogic OpenCloseLogic;
     TLoggerWithTimeout ConnectLogger;

@@ -1,3 +1,10 @@
+wb-mqtt-serial (2.62.0) stable; urgency=medium
+
+  * High cpu load is reduced
+  * Unused Metrics RPC is removed
+
+ -- Petr Krasnoshchekov <petr.krasnoshchekov@wirenboard.ru>  Thu, 02 Jun 2022 14:30:49 +0500
+
 wb-mqtt-serial (2.61.1) stable; urgency=medium
 
   * Template for ECOdim DALI GW2 was added

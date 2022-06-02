@@ -1,40 +1,28 @@
 #pragma once
-#include "bcd_utils.h"
-#include "binary_semaphore.h"
-#include "register.h"
-#include "serial_device.h"
-#include <cmath>
-#include <memory>
-#include <mutex>
-#include <string>
-#include <wblib/utils.h>
 
-using WBMQTT::StringFormat;
+#include "register.h"
 
 class TRegisterHandler
 {
 public:
-    TRegisterHandler(PSerialDevice dev, PRegister reg, PBinarySemaphore flush_needed);
+    TRegisterHandler(PRegister reg, const std::string& value);
 
     PRegister Register() const;
 
-    bool NeedToFlush();
-
     /**
-     * @brief Write pending register value. NeedToFlush must be checked before call.
+     * @brief Write pending register value.
+     *
+     * @return true - Successful write
+     * @return false - Write error
      */
-    void Flush();
+    bool Flush();
 
-    void SetTextValue(const std::string& v);
+    void SetValue(const std::string& v);
     PSerialDevice Device() const;
 
 private:
-    std::weak_ptr<TSerialDevice> Dev;
     uint64_t ValueToSet = 0;
     PRegister Reg;
-    volatile bool Dirty = false;
-    std::mutex SetValueMutex;
-    PBinarySemaphore FlushNeeded;
     bool WriteFail;
     std::chrono::steady_clock::time_point WriteFirstTryTime;
 };

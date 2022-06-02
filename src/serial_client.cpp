@@ -86,6 +86,16 @@ namespace
             return Regs;
         }
     };
+
+    std::vector<PRegisterHandler> CopyCommands(std::vector<PRegisterHandler>& commands, size_t maxCount)
+    {
+        std::vector<PRegisterHandler> commandsToExecute;
+        auto begin = commands.begin();
+        auto end = maxCount < commands.size() ? begin + maxCount : commands.end();
+        std::copy(begin, end, std::back_inserter(commandsToExecute));
+        commands.erase(begin, end);
+        return commandsToExecute;
+    }
 };
 
 TSerialClient::TSerialClient(const std::vector<PSerialDevice>& devices,
@@ -99,7 +109,6 @@ TSerialClient::TSerialClient(const std::vector<PSerialDevice>& devices,
     : Port(port),
       Devices(devices),
       Active(false),
-      FlushNeeded(new TBinarySemaphore),
       Scheduler(MAX_LOW_PRIORITY_LAG),
       OpenCloseLogic(openCloseSettings),
       ConnectLogger(PORT_OPEN_ERROR_NOTIFICATION_INTERVAL, "[serial client] ")
@@ -124,9 +133,8 @@ void TSerialClient::AddRegister(PRegister reg)
 {
     if (Active)
         throw TSerialDeviceException("can't add registers to the active client");
-    if (Handlers.find(reg) != Handlers.end())
+    if (std::find(RegList.begin(), RegList.end(), reg) != RegList.end())
         throw TSerialDeviceException("duplicate register");
-    auto handler = Handlers[reg] = std::make_shared<TRegisterHandler>(reg->Device(), reg, FlushNeeded);
     RegList.push_back(reg);
     LOG(Debug) << "AddRegister: " << reg;
 }
@@ -134,7 +142,7 @@ void TSerialClient::AddRegister(PRegister reg)
 void TSerialClient::Activate()
 {
     if (!Active) {
-        if (Handlers.empty())
+        if (RegList.empty())
             throw TSerialDeviceException(Port->GetDescription() + " no registers defined");
         Active = true;
         PrepareRegisterRanges();
@@ -159,27 +167,39 @@ void TSerialClient::PrepareRegisterRanges()
     }
 }
 
-void TSerialClient::DoFlush()
+void TSerialClient::RetryCommand(PRegisterHandler command)
 {
-    for (const auto& reg: RegList) {
-        auto handler = Handlers[reg];
-        if (!handler->NeedToFlush())
-            continue;
-        if (PrepareToAccessDevice(handler->Device())) {
-            LastAccessedDevice = handler->Device();
-            METRICS(Metrics.StartPoll({handler->Device()->DeviceConfig()->Id, "Command"}));
-            handler->Flush();
+    std::unique_lock<std::mutex> lock(CommandsQueueMutex);
+    auto it = std::find_if(Commands.begin(), Commands.end(), [&](const auto& item) {
+        return item->Register() == command->Register();
+    });
+    if (it == Commands.end()) {
+        Commands.emplace_back(command);
+        lock.unlock();
+        CommandsCV.notify_all();
+    }
+}
+
+void TSerialClient::DoFlush(const std::vector<PRegisterHandler>& commandsToExecute)
+{
+    for (const auto& command: commandsToExecute) {
+        if (PrepareToAccessDevice(command->Device())) {
+            LastAccessedDevice = command->Device();
+            METRICS(Metrics.StartPoll({LastAccessedDevice->DeviceConfig()->Id, "Command"}));
+            if (!command->Flush()) {
+                RetryCommand(command);
+            }
         } else {
-            reg->SetError(TRegister::TError::WriteError);
+            command->Register()->SetError(TRegister::TError::WriteError);
         }
         METRICS(Metrics.StartPoll(Metrics::NON_BUS_POLLING_TASKS));
-        if (reg->GetErrorState().test(TRegister::TError::WriteError)) {
+        if (command->Register()->GetErrorState().test(TRegister::TError::WriteError)) {
             if (ErrorCallback) {
-                ErrorCallback(reg);
+                ErrorCallback(command->Register());
             }
         } else {
             if (ReadCallback) {
-                ReadCallback(reg);
+                ReadCallback(command->Register());
             }
         }
     }
@@ -189,7 +209,10 @@ void TSerialClient::WaitForPollAndFlush(std::chrono::steady_clock::time_point wa
 {
     auto now = std::chrono::steady_clock::now();
     if (now >= waitUntil) {
-        MaybeFlushAvoidingPollStarvationButDontWait();
+        std::unique_lock<std::mutex> lock(CommandsQueueMutex);
+        auto commandsToExecute = CopyCommands(Commands, MAX_FLUSHES_WHEN_POLL_IS_DUE);
+        lock.unlock();
+        DoFlush(commandsToExecute);
         return;
     }
 
@@ -200,31 +223,16 @@ void TSerialClient::WaitForPollAndFlush(std::chrono::steady_clock::time_point wa
                    << std::chrono::duration_cast<std::chrono::milliseconds>(waitUntil.time_since_epoch()).count();
     }
 
-    // Limit waiting time ro be responsive
+    // Limit waiting time to be responsive
     waitUntil = std::min(waitUntil, now + MAX_POLL_TIME);
-    while (FlushNeeded->Wait(waitUntil)) {
-        DoFlush();
+    std::unique_lock<std::mutex> lk(CommandsQueueMutex);
+    while (CommandsCV.wait_until(lk, waitUntil) == std::cv_status::no_timeout) {
+        auto commandsToExecute = CopyCommands(Commands, MAX_FLUSHES_WHEN_POLL_IS_DUE);
+        lk.unlock();
+        DoFlush(commandsToExecute);
         METRICS(Metrics.StartPoll(Metrics::BUS_IDLE));
+        lk.lock();
     }
-}
-
-void TSerialClient::UpdateFlushNeeded()
-{
-    for (const auto& reg: RegList) {
-        auto handler = Handlers[reg];
-        if (handler->NeedToFlush()) {
-            FlushNeeded->Signal();
-            break;
-        }
-    }
-}
-
-void TSerialClient::MaybeFlushAvoidingPollStarvationButDontWait()
-{
-    // avoid poll starvation
-    int flush_count_remaining = MAX_FLUSHES_WHEN_POLL_IS_DUE;
-    while (flush_count_remaining-- && FlushNeeded->TryWait())
-        DoFlush();
 }
 
 void TSerialClient::SetReadError(PRegister reg)
@@ -288,26 +296,29 @@ void TSerialClient::ScheduleNextPoll(PRegister reg, std::chrono::steady_clock::t
 void TSerialClient::ClosedPortCycle()
 {
     auto now = std::chrono::steady_clock::now();
-    auto wait_until = Scheduler.GetDeadline();
-    if (wait_until - now > MAX_CLOSED_PORT_CYCLE_TIME) {
-        wait_until = now + MAX_CLOSED_PORT_CYCLE_TIME;
+    auto waitUntil = Scheduler.GetDeadline();
+    if (waitUntil - now > MAX_CLOSED_PORT_CYCLE_TIME) {
+        waitUntil = now + MAX_CLOSED_PORT_CYCLE_TIME;
     }
-    while (FlushNeeded->Wait(wait_until)) {
-        for (const auto& reg: RegList) {
-            auto handler = Handlers[reg];
-            if (!handler->NeedToFlush())
-                continue;
-            reg->SetError(TRegister::TError::WriteError);
+
+    std::unique_lock<std::mutex> lk(CommandsQueueMutex);
+    while (CommandsCV.wait_until(lk, waitUntil) == std::cv_status::no_timeout) {
+        std::vector<PRegisterHandler> tmpQueue;
+        tmpQueue.swap(Commands);
+        lk.unlock();
+        for (const auto& command: tmpQueue) {
+            command->Register()->SetError(TRegister::TError::WriteError);
             if (ErrorCallback) {
-                ErrorCallback(reg);
+                ErrorCallback(command->Register());
             }
         }
+        lk.lock();
     }
     TClosedPortRegisterReader reader;
-    Scheduler.AccumulateNext(wait_until, reader);
+    Scheduler.AccumulateNext(waitUntil, reader);
     for (auto& reg: reader.GetRegisters()) {
         SetReadError(reg);
-        ScheduleNextPoll(reg, wait_until);
+        ScheduleNextPoll(reg, waitUntil);
         reg->Device()->SetTransferResult(false);
     }
 }
@@ -319,7 +330,17 @@ void TSerialClient::ClearDevices()
 
 void TSerialClient::SetTextValue(PRegister reg, const std::string& value)
 {
-    GetHandler(reg)->SetTextValue(value);
+    {
+        std::unique_lock<std::mutex> lock(CommandsQueueMutex);
+        auto it =
+            std::find_if(Commands.begin(), Commands.end(), [&](const auto& item) { return item->Register() == reg; });
+        if (it != Commands.end()) {
+            (*it)->SetValue(value);
+        } else {
+            Commands.emplace_back(std::make_shared<TRegisterHandler>(reg, value));
+        }
+    }
+    CommandsCV.notify_all();
 }
 
 void TSerialClient::SetReadCallback(const TSerialClient::TCallback& callback)
@@ -330,19 +351,6 @@ void TSerialClient::SetReadCallback(const TSerialClient::TCallback& callback)
 void TSerialClient::SetErrorCallback(const TSerialClient::TCallback& callback)
 {
     ErrorCallback = callback;
-}
-
-void TSerialClient::NotifyFlushNeeded()
-{
-    FlushNeeded->Signal();
-}
-
-PRegisterHandler TSerialClient::GetHandler(PRegister reg) const
-{
-    auto it = Handlers.find(reg);
-    if (it == Handlers.end())
-        throw TSerialDeviceException("register not found");
-    return it->second;
 }
 
 void TSerialClient::SetRegistersAvailability(PSerialDevice dev, TRegisterAvailability availability)
@@ -398,7 +406,6 @@ void TSerialClient::OpenPortCycle()
         SetRegistersAvailability(device, TRegisterAvailability::UNKNOWN);
     }
     OpenCloseLogic.CloseIfNeeded(Port, device->GetIsDisconnected());
-    UpdateFlushNeeded();
     METRICS(Metrics.StartPoll(Metrics::BUS_IDLE));
 }
 

@@ -1,5 +1,6 @@
 #include "register_handler.h"
 #include "log.h"
+#include "serial_device.h"
 
 #define LOG(logger) ::logger.Log() << "[register handler] "
 
@@ -7,74 +8,42 @@ using namespace std::chrono;
 
 namespace
 {
-    const size_t MAX_WRITE_FAILS = 10;
     const seconds MAX_WRITE_FAIL_TIME(600); // 10 minutes
 }
 
-TRegisterHandler::TRegisterHandler(PSerialDevice dev, PRegister reg, PBinarySemaphore flush_needed)
-    : Dev(dev),
-      Reg(reg),
-      FlushNeeded(flush_needed),
-      WriteFail(false)
-{}
-
-bool TRegisterHandler::NeedToFlush()
+TRegisterHandler::TRegisterHandler(PRegister reg, const std::string& value): Reg(reg), WriteFail(false)
 {
-    std::lock_guard<std::mutex> lock(SetValueMutex);
-    return Dirty;
+    SetValue(value);
 }
 
-void TRegisterHandler::Flush()
+bool TRegisterHandler::Flush()
 {
-    volatile uint64_t tempValue;
     try {
-        {
-            std::lock_guard<std::mutex> lock(SetValueMutex);
-            tempValue = ValueToSet;
-        }
-        Device()->WriteRegister(Reg, tempValue);
-        {
-            std::lock_guard<std::mutex> lock(SetValueMutex);
-            Dirty = (tempValue != ValueToSet);
-            WriteFail = false;
-        }
-        Reg->SetValue(tempValue, false);
+        Device()->WriteRegister(Reg, ValueToSet);
+        Reg->SetValue(ValueToSet, false);
         Reg->ClearError(TRegister::TError::WriteError);
     } catch (const TSerialDevicePermanentRegisterException& e) {
         LOG(Warn) << "failed to write: " << Reg->ToString() << ": " << e.what();
-        {
-            std::lock_guard<std::mutex> lock(SetValueMutex);
-            Dirty = (tempValue != ValueToSet);
-            WriteFail = false;
-        }
         Reg->SetError(TRegister::TError::WriteError);
-        return;
     } catch (const TSerialDeviceException& e) {
         LOG(Warn) << "failed to write: " << Reg->ToString() << ": " << e.what();
-        {
-            std::lock_guard<std::mutex> lock(SetValueMutex);
-            if (!WriteFail) {
-                WriteFirstTryTime = steady_clock::now();
-            }
-            WriteFail = true;
-            if (duration_cast<seconds>(steady_clock::now() - WriteFirstTryTime) > MAX_WRITE_FAIL_TIME) {
-                Dirty = (tempValue != ValueToSet);
-                WriteFail = false;
-            }
+        if (!WriteFail) {
+            WriteFirstTryTime = steady_clock::now();
         }
-        Reg->SetError(TRegister::TError::WriteError);
+        if (duration_cast<seconds>(steady_clock::now() - WriteFirstTryTime) <= MAX_WRITE_FAIL_TIME) {
+            Reg->SetError(TRegister::TError::WriteError);
+            WriteFail = true;
+            return false;
+        }
+        WriteFail = false;
     }
+    return true;
 }
 
-void TRegisterHandler::SetTextValue(const std::string& v)
+void TRegisterHandler::SetValue(const std::string& v)
 {
-    {
-        // don't hold the lock while notifying the client below
-        std::lock_guard<std::mutex> lock(SetValueMutex);
-        Dirty = true;
-        ValueToSet = ConvertToRawValue(*Reg, v);
-    }
-    FlushNeeded->Signal();
+    ValueToSet = ConvertToRawValue(*Reg, v);
+    WriteFail = false;
 }
 
 PRegister TRegisterHandler::Register() const
@@ -84,5 +53,5 @@ PRegister TRegisterHandler::Register() const
 
 PSerialDevice TRegisterHandler::Device() const
 {
-    return Dev.lock();
+    return Reg->Device();
 }
