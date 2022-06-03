@@ -531,7 +531,6 @@ namespace Modbus // modbus protocol common utilities
                                         Modbus::TRegisterCache& tmpCache,
                                         const Modbus::TRegisterCache& cache)
     {
-        // TODO Add offset
         pdu[0] = GetFunction(reg, OperationType::OP_WRITE);
 
         auto addr = GetUint32RegisterAddress(reg.GetWriteAddress());
@@ -807,7 +806,6 @@ namespace Modbus // modbus protocol common utilities
 
             if (IsPacking(reg)) {
                 assert(requests.size() == 1 && "only one request is expected when using multiple write");
-                // TODO: Need to add data offset function to write array
                 // Added workaround for data offset on write
                 if (reg.Format == RegisterFormat::String32) {
                     ComposeMultipleWriteRequestPDU(traits.GetPDU(req), reg, valueArray, shift, tmpCache, cache);

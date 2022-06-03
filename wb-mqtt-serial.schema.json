@@ -674,7 +674,7 @@
         },
         "string_data_size": {
           "type": "integer",
-          "title": "String Size",
+          "title": "String size",
           "minimum": 1,
           "default": 1,
           "propertyOrder": 21

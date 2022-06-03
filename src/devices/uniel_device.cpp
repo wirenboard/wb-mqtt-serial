@@ -106,8 +106,9 @@ TRegisterValue TUnielDevice::ReadRegisterImpl(PRegister reg)
 
     if (reg->Type == REG_RELAY) {
         response[0] ? retVal.Set(1) : retVal.Set(0);
-    } else
+    } else {
         retVal.Set(response[0]);
+    }
     return retVal;
 }
 
