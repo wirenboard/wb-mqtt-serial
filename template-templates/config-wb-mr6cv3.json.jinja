@@ -57,7 +57,7 @@
                 "order": 8
             },
             {
-                "title": "Safe position",
+                "title": "Output Safe State",
                 "id": "g_outputs_safe_position",
                 "group": "g_outputs"
             },
@@ -72,17 +72,17 @@
                 }
             },
             {
-                "title": "Safety",
+                "title": "Safety Mode",
                 "id": "g_safety",
                 "order": 9
             },
             {
-                "title": "Safety behaviour",
+                "title": "Safety Behaviour",
                 "id": "g_safety_behaviour",
                 "group": "g_safety"
             },
             {
-                "title": "Safety input control",
+                "title": "Inputs Control In Safety Mode",
                 "id": "g_safety_input_control",
                 "description": "poll_timeout_description",
                 "group": "g_safety"
@@ -305,8 +305,8 @@
                 "order": {{2 + out_num - 1}},
                 "enum": [0, 1],
                 "enum_titles": [
-                    "Relay switched off",
-                    "Relay switched on"
+                    "OFF",
+                    "ON"
                 ]
             },
             "out{{out_num}}_safety_behaviour": {
@@ -317,8 +317,8 @@
                 "default": 0,
                 "enum": [0, 1],
                 "enum_titles": [
-                    "Not change relay state",
-                    "Switch to safety state"
+                    "Don't сhange output state",
+                    "Switch output to safety state"
                 ]
             },
             "out{{out_num}}_safety_input_control": {
@@ -329,9 +329,9 @@
                 "default": 0,
                 "enum": [0, 1, 2],
                 "enum_titles": [
-                    "Not affect",
-                    "Lock in safety mode",
-                    "Unlock only in safety mode"
+                    "Don't change",
+                    "Disable in safety mode",
+                    "Enable only in safety mode"
                 ]
             },
             {% endfor -%}
@@ -365,7 +365,7 @@
             },
 
             "safety_mode_source": {
-                "title": "Safety mode source",
+                "title": "Safety Mode Trigger",
                 "group": "g_safety",
                 "address": 19,
                 "reg_type": "holding",
@@ -548,7 +548,7 @@
                 "group": "g_hw_info"
             },
             {
-                "name": "Bus power supply status",
+                "name": "Bus Power Supply",
                 "reg_type": "input",
                 "address": 4,
                 "type": "switch",
@@ -588,7 +588,7 @@
                 {% endfor -%}
 
                 "Outputs": "Выходы",
-                "Safety": "Безопасный режим",
+                "Safety Mode": "Безопасный режим",
                 "General": "Общее",
                 "HW Info": "Данные модуля",
                 "Debug": "Диагностика",
@@ -603,7 +603,7 @@
 
                 {% endfor -%}
 
-                "Safe position": "Безопасное состояние реле",
+                "Output Safe State": "Безопасное состояние реле",
 
                 "no action": "нет действия",
                 "reset": "выключить",
@@ -645,7 +645,7 @@
                 "Restore Last State": "Восстановить последнее состояние",
                 "According To Inputs": "Состояние соответствующее состоянию входов",
 
-                "Safety mode source": "Переход в безопасный режим",
+                "Safety Mode Trigger": "Переход в безопасный режим",
                 "Poll timeout or loss bus power supply": "Потеря связи или пропадание низковольтного питания",
                 "Poll timeout": "Потеря связи",
                 "Loss bus power supply": "Пропадание низковольтного питания",
@@ -663,17 +663,17 @@
                 "secp_waiting_time_description": "Если за указанное время второго нажатия не было - считаем нажатие одиночным. 0 - отключит все нажатия кроме короткого и длинного",
                 "debounce_time_description": "Для детектирования нажатий значение должно быть в 5-10 раз меньше, чем время ожидания второго нажатия",
 
-                "Relay switched off": "Реле отключено",
-                "Relay switched on": "Реле включено",
+                "OFF": "Реле отключено",
+                "ON": "Реле включено",
 
-                "Safety behaviour": "Действие в безопасном режиме",
-                "Not change relay state": "Ничего не делать",
-                "Switch to safety state": "Перевести выход в безопасное состояние",
+                "Safety Behaviour": "Действие в безопасном режиме",
+                "Don't сhange output state": "Ничего не делать",
+                "Switch output to safety state": "Перевести выход в безопасное состояние",
 
-                "Safety input control": "Управление с входов в безопасном режиме",
-                "Not affect": "Не блокировать",
-                "Lock in safety mode": "Блокировать в безопасном режиме",
-                "Unlock only in safety mode": "Разрешить только в безопасном режиме",
+                "Inputs Control In Safety Mode": "Управление с входов в безопасном режиме",
+                "Don't change": "Не блокировать",
+                "Disable in safety mode": "Блокировать в безопасном режиме",
+                "Enable only in safety mode": "Разрешить только в безопасном режиме",
 
                 "Baud rate": "Скорость обмена",
                 "baud_rate_description": "Перед изменением параметра убедитесь, что связь с устройством установлена. Выберите нужную скорость обмена, сохраните конфигурацию, а затем укажите в настройках порта эту же скорость.",
@@ -685,7 +685,7 @@
                 "Minimum Voltage Since Startup": "Минимальное напряжение с момента включения",
                 "MCU Temperature": "Температура МК",
                 "MCU Voltage": "Напряжение питания МК",
-                "Bus power supply status": "Состояние питания на шине"
+                "Bus Power Supply": "Состояние питания на шине"
             }
         }
     }
