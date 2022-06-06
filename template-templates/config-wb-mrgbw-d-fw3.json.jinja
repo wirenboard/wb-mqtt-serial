@@ -1,4 +1,5 @@
 {% set INPUTS_NUMBER = 3 -%}
+{% set OUTPUTS_NUMBER = 4 -%}
 {
     "title": "WB-MRGBW-D_template_title",
     "device_type": "WB-MRGBW-D fw3",
@@ -177,95 +178,30 @@
                 "order": 1,
                 "required": true
             },
-            "ch1_min": {
-                "title": "Channel 1 (B) Minimum Value",
+            {% for out_num in range(1, OUTPUTS_NUMBER + 1) -%}
+            "ch{{out_num}}_min": {
+                "title": "Channel {{out_num}} (B) Minimum Value",
                 "description": "channel_min_value_description",
                 "order": 1,
                 "group": "gg_out_params",
-                "address": 70,
+                "address": {{70 + out_num - 1}},
                 "reg_type": "holding",
                 "default": 1,
                 "min": 1,
                 "max": 2000
             },
-            "ch1_max": {
-                "title": "Channel 1 (B) Maximum Value",
+            "ch{{out_num}}_max": {
+                "title": "Channel {{out_num}} (B) Maximum Value",
                 "description": "channel_max_value_description",
                 "order": 2,
                 "group": "gg_out_params",
-                "address": 80,
+                "address": {{80 + out_num - 1}},
                 "reg_type": "holding",
                 "default": 2048,
                 "min": 10,
                 "max": 2048
             },
-            "ch2_min": {
-                "title": "Channel 2 (R) Minimum Value",
-                "description": "channel_min_value_description",
-                "order": 3,
-                "group": "gg_out_params",
-                "address": 71,
-                "reg_type": "holding",
-                "default": 1,
-                "min": 1,
-                "max": 2000
-            },
-            "ch2_max": {
-                "title": "Channel 2 (R) Maximum Value",
-                "description": "channel_max_value_description",
-                "order": 4,
-                "group": "gg_out_params",
-                "address": 81,
-                "reg_type": "holding",
-                "default": 2048,
-                "min": 10,
-                "max": 2048
-            },
-            "ch3_min": {
-                "title": "Channel 3 (G) Minimum Value",
-                "description": "channel_min_value_description",
-                "order": 5,
-                "group": "gg_out_params",
-                "address": 72,
-                "reg_type": "holding",
-                "default": 1,
-                "min": 1,
-                "max": 2000
-            },
-            "ch3_max": {
-                "title": "Channel 3 (G) Maximum Value",
-                "description": "channel_max_value_description",
-                "order": 6,
-                "group": "gg_out_params",
-                "address": 82,
-                "reg_type": "holding",
-                "default": 2048,
-                "min": 10,
-                "max": 2048
-            },
-            "ch4_min": {
-                "title": "Channel 4 (W) Minimum Value",
-                "description": "channel_min_value_description",
-                "order": 7,
-                "group": "gg_out_params",
-                "address": 73,
-                "reg_type": "holding",
-                "default": 1,
-                "min": 1,
-                "max": 2000
-            },
-            "ch4_max": {
-                "title": "Channel 4 (W) Maximum Value",
-                "description": "channel_max_value_description",
-                "order": 8,
-                "group": "gg_out_params",
-                "address": 83,
-                "reg_type": "holding",
-                "default": 2048,
-                "min": 10,
-                "max": 2048
-            },
-
+            {% endfor -%}
             "freq_div": {
                 "title": "pwm_frequency_factor_title",
                 "description": "pwm_frequency_factor_description",
@@ -277,143 +213,52 @@
                 "min": 1,
                 "max": 240
             },
-
-            "in1_lp_hold_time": {
+            {% for in_num in range(1, INPUTS_NUMBER + 1) -%}
+            "in{{in_num}}_lp_hold_time": {
                 "title": "lp_hold_time_title",
                 "description": "lp_hold_time_description",
                 "order": 1,
-                "group": "gg_in_1_params",
-                "address": 1100,
+                "group": "gg_in_{{in_num}}_params",
+                "address": {{1100 + in_num - 1}},
                 "reg_type": "holding",
                 "default": 2000,
                 "min": 500,
                 "max": 5000
             },
-            "in2_lp_hold_time": {
-                "title": "lp_hold_time_title",
-                "description": "lp_hold_time_description",
-                "order": 1,
-                "group": "gg_in_2_params",
-                "address": 1101,
-                "reg_type": "holding",
-                "default": 2000,
-                "min": 500,
-                "max": 5000
-            },
-            "in3_lp_hold_time": {
-                "title": "lp_hold_time_title",
-                "description": "lp_hold_time_description",
-                "order": 1,
-                "group": "gg_in_3_params",
-                "address": 1102,
-                "reg_type": "holding",
-                "default": 2000,
-                "min": 500,
-                "max": 5000
-            },
-
-            "in1_lp_repeat_time": {
+            "in{{in_num}}_lp_repeat_time": {
                 "title": "lp_repeat_time_title",
                 "description": "lp_repeat_time_description",
                 "order": 2,
-                "group": "gg_in_1_params",
-                "address": 1120,
+                "group": "gg_in_{{in_num}}_params",
+                "address": {{1120 + in_num - 1}},
                 "reg_type": "holding",
                 "default": 20,
                 "min": 5,
                 "max": 500
             },
-            "in2_lp_repeat_time": {
-                "title": "lp_repeat_time_title",
-                "description": "lp_repeat_time_description",
-                "order": 2,
-                "group": "gg_in_2_params",
-                "address": 1121,
-                "reg_type": "holding",
-                "default": 20,
-                "min": 5,
-                "max": 500
-            },
-            "in3_lp_repeat_time": {
-                "title": "lp_repeat_time_title",
-                "description": "lp_repeat_time_description",
-                "order": 2,
-                "group": "gg_in_3_params",
-                "address": 1122,
-                "reg_type": "holding",
-                "default": 20,
-                "min": 5,
-                "max": 500
-            },
-
-            "in1_dp_time": {
+            "in{{in_num}}_dp_time": {
                 "title": "dp_time_title",
                 "description": "dp_time_description",
                 "order": 3,
-                "group": "gg_in_1_params",
-                "address": 1140,
+                "group": "gg_in_{{in_num}}_params",
+                "address": {{1140 + in_num - 1}},
                 "reg_type": "holding",
                 "default": 300,
                 "min": 0,
                 "max": 2000
             },
-            "in2_dp_time": {
-                "title": "dp_time_title",
-                "description": "dp_time_description",
-                "order": 3,
-                "group": "gg_in_2_params",
-                "address": 1141,
-                "reg_type": "holding",
-                "default": 300,
-                "min": 0,
-                "max": 2000
-            },
-            "in3_dp_time": {
-                "title": "dp_time_title",
-                "description": "dp_time_description",
-                "order": 3,
-                "group": "gg_in_3_params",
-                "address": 1142,
-                "reg_type": "holding",
-                "default": 300,
-                "min": 0,
-                "max": 2000
-            },
-
-            "in1_debounce_time": {
+            "in{{in_num}}_debounce_time": {
                 "title": "debounce_time_title",
                 "description": "debounce_time_description",
                 "order": 4,
-                "group": "gg_in_1_params",
-                "address": 1160,
+                "group": "gg_in_{{in_num}}_params",
+                "address": {{1160 + in_num - 1}},
                 "reg_type": "holding",
                 "default": 50,
                 "min": 5,
                 "max": 200
             },
-            "in2_debounce_time": {
-                "title": "debounce_time_title",
-                "description": "debounce_time_description",
-                "order": 4,
-                "group": "gg_in_2_params",
-                "address": 1161,
-                "reg_type": "holding",
-                "default": 50,
-                "min": 5,
-                "max": 200
-            },
-            "in3_debounce_time": {
-                "title": "debounce_time_title",
-                "description": "debounce_time_description",
-                "order": 4,
-                "group": "gg_in_3_params",
-                "address": 1162,
-                "reg_type": "holding",
-                "default": 50,
-                "min": 5,
-                "max": 200
-            },
-
+            {% endfor -%}
             "baud_rate": {
                 "title": "Baud rate",
                 "description": "baud_rate_description",
@@ -425,7 +270,6 @@
                 "group": "g_general",
                 "order": 1
             },
-
             "fader_inc_w1": {
                 "group": "gg_fader_inc",
                 "title": "Channel 1 (B) Brightness",
