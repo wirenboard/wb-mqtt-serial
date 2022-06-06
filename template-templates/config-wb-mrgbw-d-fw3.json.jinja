@@ -13,28 +13,28 @@
             {% for in_num in range(1, INPUTS_NUMBER + 1) -%}
             {
                 "title": "Input {{in_num}}",
-                "id": "input_{{in_num}}",
+                "id": "g_input_{{in_num}}",
                 "order": {{in_num}}
             },
             {% endfor -%}
             {
                 "title": "Outputs",
-                "id": "outputs",
+                "id": "g_outputs",
                 "order": 4
             },
             {
                 "title": "General",
-                "id": "general",
+                "id": "g_general",
                 "order": 5
             },
             {
                 "title": "HW Info",
-                "id": "hw_info",
+                "id": "g_hw_info",
                 "order": 6
             },
             {
                 "title": "Debug",
-                "id": "debug",
+                "id": "g_debug",
                 "order": 7
             },
             {% for in_num in range(1, INPUTS_NUMBER + 1) -%}
@@ -42,32 +42,32 @@
                 "title": "Actions",
                 "id": "in_{{in_num}}_actions",
                 "order": 1,
-                "group": "input_{{in_num}}"
+                "group": "g_input_{{in_num}}"
             },
             {% endfor -%}
             {
                 "title": "fader_hue_title",
                 "id": "fader_hue",
                 "order": 2,
-                "group": "outputs"
+                "group": "g_outputs"
             },
             {
                 "title": "fader_inc_title",
                 "id": "fader_inc",
                 "order": 3,
-                "group": "outputs"
+                "group": "g_outputs"
             },
             {
                 "title": "fader_dec_title",
                 "id": "fader_dec",
                 "order": 4,
-                "group": "outputs"
+                "group": "g_outputs"
             },
             {
                 "title": "params",
                 "id": "in_1_params",
                 "order": 2,
-                "group": "input_1",
+                "group": "g_input_1",
                 "ui_options": {
                     "wb": {
                         "disable_title": true
@@ -78,7 +78,7 @@
                 "title": "params",
                 "id": "in_2_params",
                 "order": 2,
-                "group": "input_2",
+                "group": "g_input_2",
                 "ui_options": {
                     "wb": {
                         "disable_title": true
@@ -89,7 +89,7 @@
                 "title": "params",
                 "id": "in_3_params",
                 "order": 2,
-                "group": "input_3",
+                "group": "g_input_3",
                 "ui_options": {
                     "wb": {
                         "disable_title": true
@@ -100,7 +100,7 @@
                 "title": "params",
                 "id": "out_params",
                 "order": 50,
-                "group": "outputs",
+                "group": "g_outputs",
                 "ui_options": {
                     "wb": {
                         "disable_title": true
@@ -111,7 +111,7 @@
                 "title": "Input 1 Channels",
                 "id": "in_1_channels",
                 "order": 100,
-                "group": "input_1",
+                "group": "g_input_1",
                 "ui_options": {
                     "wb": {
                         "disable_title": true
@@ -122,7 +122,7 @@
                 "title": "Input 2 Channels",
                 "id": "in_2_channels",
                 "order": 100,
-                "group": "input_2",
+                "group": "g_input_2",
                 "ui_options": {
                     "wb": {
                         "disable_title": true
@@ -133,7 +133,7 @@
                 "title": "Input 3 Channels",
                 "id": "in_3_channels",
                 "order": 100,
-                "group": "input_3",
+                "group": "g_input_3",
                 "ui_options": {
                     "wb": {
                         "disable_title": true
@@ -144,7 +144,7 @@
                 "title": "Outputs Channels",
                 "id": "out_channels",
                 "order": 100,
-                "group": "outputs",
+                "group": "g_outputs",
                 "ui_options": {
                     "wb": {
                         "disable_title": true
@@ -422,7 +422,7 @@
                 "enum": [96, 192, 384, 576, 1152],
                 "default": 96,
                 "enum_titles": ["9600", "19200", "38400", "57600", "115200"],
-                "group": "general",
+                "group": "g_general",
                 "order": 1
             },
 
@@ -5282,7 +5282,7 @@
                 "min": 0,
                 "max": 2048,
                 "enabled": false,
-                "group": "debug"
+                "group": "g_debug"
             },
             {
                 "name": "Channel 2 (R) Raw PWM",
@@ -5292,7 +5292,7 @@
                 "min": 0,
                 "max": 2048,
                 "enabled": false,
-                "group": "debug"
+                "group": "g_debug"
             },
             {
                 "name": "Channel 3 (G) Raw PWM",
@@ -5302,7 +5302,7 @@
                 "min": 0,
                 "max": 2048,
                 "enabled": false,
-                "group": "debug"
+                "group": "g_debug"
             },
             {
                 "name": "Channel 4 (W) Raw PWM",
@@ -5312,7 +5312,7 @@
                 "min": 0,
                 "max": 2048,
                 "enabled": false,
-                "group": "debug"
+                "group": "g_debug"
             },
             {
                 "name": "Input 1",
@@ -5476,7 +5476,7 @@
                 "reg_type": "input",
                 "address": 270,
                 "format": "u32",
-                "group": "hw_info"
+                "group": "g_hw_info"
             },
             {
                 "name": "Supply Voltage",
@@ -5485,7 +5485,7 @@
                 "type": "voltage",
                 "scale": 0.001,
                 "enabled": false,
-                "group": "hw_info"
+                "group": "g_hw_info"
             },
             {
                 "name": "Uptime",
@@ -5494,7 +5494,7 @@
                 "type": "text",
                 "format": "u32",
                 "enabled": false,
-                "group": "hw_info"
+                "group": "g_hw_info"
             },
             {
                 "name": "MCU Temperature",
@@ -5504,7 +5504,7 @@
                 "format": "s16",
                 "scale": 0.1,
                 "enabled": false,
-                "group": "hw_info"
+                "group": "g_hw_info"
             },
             {
                 "name": "MCU Voltage",
@@ -5513,7 +5513,7 @@
                 "scale": 0.001,
                 "type": "voltage",
                 "enabled": false,
-                "group": "hw_info"
+                "group": "g_hw_info"
             }
         ],
         "translations": {
