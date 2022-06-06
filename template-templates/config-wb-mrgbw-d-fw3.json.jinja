@@ -154,8 +154,9 @@
             }
         ],
 
-        "parameters": {
-            "dimmer_mode": {
+        "parameters": [
+            {
+                "id": "dimmer_mode",
                 "title": "Dimmer Mode",
                 "description": "dimmer_mode_description",
                 "address": 4000,
@@ -179,7 +180,8 @@
                 "required": true
             },
             {% for out_num in range(1, OUTPUTS_NUMBER + 1) -%}
-            "ch{{out_num}}_min": {
+            {
+                "id": "ch{{out_num}}_min",
                 "title": "Channel {{out_num}} (B) Minimum Value",
                 "description": "channel_min_value_description",
                 "order": 1,
@@ -190,7 +192,8 @@
                 "min": 1,
                 "max": 2000
             },
-            "ch{{out_num}}_max": {
+            {
+                "id": "ch{{out_num}}_max",
                 "title": "Channel {{out_num}} (B) Maximum Value",
                 "description": "channel_max_value_description",
                 "order": 2,
@@ -202,7 +205,8 @@
                 "max": 2048
             },
             {% endfor -%}
-            "freq_div": {
+            {
+                "id": "freq_div",
                 "title": "pwm_frequency_factor_title",
                 "description": "pwm_frequency_factor_description",
                 "order": 9,
@@ -214,7 +218,8 @@
                 "max": 240
             },
             {% for in_num in range(1, INPUTS_NUMBER + 1) -%}
-            "in{{in_num}}_lp_hold_time": {
+            {
+                "id": "in{{in_num}}_lp_hold_time",
                 "title": "lp_hold_time_title",
                 "description": "lp_hold_time_description",
                 "order": 1,
@@ -225,7 +230,8 @@
                 "min": 500,
                 "max": 5000
             },
-            "in{{in_num}}_lp_repeat_time": {
+            {
+                "id": "in{{in_num}}_lp_repeat_time",
                 "title": "lp_repeat_time_title",
                 "description": "lp_repeat_time_description",
                 "order": 2,
@@ -236,7 +242,8 @@
                 "min": 5,
                 "max": 500
             },
-            "in{{in_num}}_dp_time": {
+            {
+				"id": "in{{in_num}}_dp_time",
                 "title": "dp_time_title",
                 "description": "dp_time_description",
                 "order": 3,
@@ -247,7 +254,8 @@
                 "min": 0,
                 "max": 2000
             },
-            "in{{in_num}}_debounce_time": {
+            {
+				"id": "in{{in_num}}_debounce_time",
                 "title": "debounce_time_title",
                 "description": "debounce_time_description",
                 "order": 4,
@@ -259,7 +267,8 @@
                 "max": 200
             },
             {% endfor -%}
-            "baud_rate": {
+            {
+				"id": "baud_rate",
                 "title": "Baud rate",
                 "description": "baud_rate_description",
                 "address": 110,
@@ -270,7 +279,8 @@
                 "group": "g_general",
                 "order": 1
             },
-            "fader_inc_w1": {
+            {
+				"id": "fader_inc_w1",
                 "group": "gg_fader_inc",
                 "title": "Channel 1 (B) Brightness",
                 "address": 3000,
@@ -280,7 +290,8 @@
                 "max": 30000,
                 "condition": "(dimmer_mode==0||dimmer_mode==16||dimmer_mode==32)"
             },
-            "fader_inc_w2": {
+            {
+				"id": "fader_inc_w2",
                 "group": "gg_fader_inc",
                 "title": "Channel 2 (R) Brightness",
                 "address": 3001,
@@ -290,7 +301,8 @@
                 "max": 30000,
                 "condition": "(dimmer_mode==0||dimmer_mode==16||dimmer_mode==32)"
             },
-            "fader_inc_w3": {
+            {
+				"id": "fader_inc_w3",
                 "group": "gg_fader_inc",
                 "title": "Channel 3 (G) Brightness",
                 "address": 3002,
@@ -300,7 +312,8 @@
                 "max": 30000,
                 "condition": "(dimmer_mode==0||dimmer_mode==1||dimmer_mode==2)"
             },
-            "fader_inc_w4": {
+            {
+				"id": "fader_inc_w4",
                 "group": "gg_fader_inc",
                 "title": "Channel 4 (W) Brightness",
                 "address": 3003,
@@ -310,7 +323,8 @@
                 "max": 30000,
                 "condition": "(dimmer_mode==0||dimmer_mode==1||dimmer_mode==2||dimmer_mode==256)"
             },
-            "fader_inc_w1_w2": {
+            {
+				"id": "fader_inc_w1_w2",
                 "group": "gg_fader_inc",
                 "title": "Channels 1_2 (B_R) Brightness",
                 "address": 3004,
@@ -320,7 +334,8 @@
                 "max": 30000,
                 "condition": "(dimmer_mode==1||dimmer_mode==17||dimmer_mode==33)"
             },
-            "fader_inc_w3_w4": {
+            {
+				"id": "fader_inc_w3_w4",
                 "group": "gg_fader_inc",
                 "title": "Channels 3_4 (G_W) Brightness",
                 "order": 3,
@@ -331,7 +346,8 @@
                 "max": 30000,
                 "condition": "(dimmer_mode==16||dimmer_mode==17||dimmer_mode==18)"
             },
-            "fader_inc_w1_w2_w3+w4": {
+            {
+				"id": "fader_inc_w1_w2_w3+w4",
                 "group": "gg_fader_inc",
                 "title": "Channels 1_2_3_4 Brightness",
                 "order": 1,
@@ -342,7 +358,8 @@
                 "max": 30000,
                 "condition": "(dimmer_mode==512)"
             },
-            "fader_inc_cct1_t": {
+            {
+				"id": "fader_inc_cct1_t",
                 "group": "gg_fader_inc",
                 "title": "CCT1 Temperature",
                 "address": 3007,
@@ -352,7 +369,8 @@
                 "max": 30000,
                 "condition": "(dimmer_mode==2||dimmer_mode==18||dimmer_mode==34)"
             },
-            "fader_inc_cct1_v": {
+            {
+				"id": "fader_inc_cct1_v",
                 "group": "gg_fader_inc",
                 "title": "CCT1 Brightness",
                 "address": 3008,
@@ -362,7 +380,8 @@
                 "max": 30000,
                 "condition": "(dimmer_mode==2||dimmer_mode==18||dimmer_mode==34)"
             },
-            "fader_inc_cct2_t": {
+            {
+				"id": "fader_inc_cct2_t",
                 "group": "gg_fader_inc",
                 "title": "CCT2 Temperature",
                 "order": 3,
@@ -373,7 +392,8 @@
                 "max": 30000,
                 "condition": "(dimmer_mode==32||dimmer_mode==33||dimmer_mode==34)"
             },
-            "fader_inc_cct2_v": {
+            {
+				"id": "fader_inc_cct2_v",
                 "group": "gg_fader_inc",
                 "title": "CCT2 Brightness",
                 "order": 4,
@@ -384,7 +404,8 @@
                 "max": 30000,
                 "condition": "(dimmer_mode==32||dimmer_mode==33)"
             },
-            "fade_rgb_h": {
+            {
+				"id": "fade_rgb_h",
                 "group": "gg_fader_hue",
                 "title": "RGB Strip Hue",
                 "description": "hue_fader_description",
@@ -396,7 +417,8 @@
                 "max": 30000,
                 "condition": "(dimmer_mode==256)"
             },
-            "fader_inc_rgb_s": {
+            {
+				"id": "fader_inc_rgb_s",
                 "group": "gg_fader_inc",
                 "title": "RGB Strip Saturation",
                 "order": 1,
@@ -407,7 +429,8 @@
                 "max": 30000,
                 "condition": "(dimmer_mode==256)"
             },
-            "fader_inc_rgb_v": {
+            {
+				"id": "fader_inc_rgb_v",
                 "group": "gg_fader_inc",
                 "title": "RGB Strip Brightness",
                 "order": 2,
@@ -418,7 +441,8 @@
                 "max": 30000,
                 "condition": "(dimmer_mode==256)"
             },
-            "fader_dec_w1": {
+            {
+				"id": "fader_dec_w1",
                 "group": "gg_fader_dec",
                 "title": "Channel 1 (B) Brightness",
                 "address": 3100,
@@ -428,7 +452,8 @@
                 "max": 30000,
                 "condition": "(dimmer_mode==0||dimmer_mode==16||dimmer_mode==32||dimmer_mode==34)"
             },
-            "fader_dec_w2": {
+            {
+				"id": "fader_dec_w2",
                 "group": "gg_fader_dec",
                 "title": "Channel 2 (R) Brightness",
                 "address": 3101,
@@ -438,7 +463,8 @@
                 "max": 30000,
                 "condition": "(dimmer_mode==0||dimmer_mode==16||dimmer_mode==32)"
             },
-            "fader_dec_w3": {
+            {
+				"id": "fader_dec_w3",
                 "group": "gg_fader_dec",
                 "title": "Channel 3 (G) Brightness",
                 "address": 3102,
@@ -448,7 +474,8 @@
                 "max": 30000,
                 "condition": "(dimmer_mode==0||dimmer_mode==1||dimmer_mode==2)"
             },
-            "fader_dec_w4": {
+            {
+				"id": "fader_dec_w4",
                 "group": "gg_fader_dec",
                 "title": "Channel 4 (W) Brightness",
                 "address": 3103,
@@ -458,7 +485,8 @@
                 "max": 30000,
                 "condition": "(dimmer_mode==0||dimmer_mode==1||dimmer_mode==2||dimmer_mode==256)"
             },
-            "fader_dec_w1_w2": {
+            {
+				"id": "fader_dec_w1_w2",
                 "group": "gg_fader_dec",
                 "title": "Channels 1_2 (B_R) Brightness",
                 "address": 3104,
@@ -468,7 +496,8 @@
                 "max": 30000,
                 "condition": "(dimmer_mode==1||dimmer_mode==17||dimmer_mode==18||dimmer_mode==33)"
             },
-            "fader_dec_w3_w4": {
+            {
+				"id": "fader_dec_w3_w4",
                 "group": "gg_fader_dec",
                 "title": "Channels 3_4 (G_W) Brightness",
                 "order": 3,
@@ -479,7 +508,8 @@
                 "max": 30000,
                 "condition": "(dimmer_mode==16||dimmer_mode==17)"
             },
-            "fader_dec_w1_w2_w3_w4": {
+            {
+				"id": "fader_dec_w1_w2_w3_w4",
                 "group": "gg_fader_dec",
                 "title": "Channels 1_2_3_4 Brightness",
                 "order": 1,
@@ -490,7 +520,8 @@
                 "max": 30000,
                 "condition": "(dimmer_mode==512)"
             },
-            "fader_dec_cct1_t": {
+            {
+				"id": "fader_dec_cct1_t",
                 "group": "gg_fader_dec",
                 "title": "CCT1 Temperature",
                 "address": 3107,
@@ -500,7 +531,8 @@
                 "max": 30000,
                 "condition": "(dimmer_mode==2||dimmer_mode==18||dimmer_mode==34)"
             },
-            "fader_dec_cct1_v": {
+            {
+				"id": "fader_dec_cct1_v",
                 "group": "gg_fader_dec",
                 "title": "CCT1 Brightness",
                 "address": 3108,
@@ -510,7 +542,8 @@
                 "max": 30000,
                 "condition": "(dimmer_mode==2||dimmer_mode==18||dimmer_mode==34)"
             },
-            "fader_dec_cct2_t": {
+            {
+				"id": "fader_dec_cct2_t",
                 "group": "gg_fader_dec",
                 "title": "CCT2 Temperature",
                 "order": 3,
@@ -521,7 +554,8 @@
                 "max": 30000,
                 "condition": "(dimmer_mode==32||dimmer_mode==33||dimmer_mode==34)"
             },
-            "fader_dec_cct2_v": {
+            {
+				"id": "fader_dec_cct2_v",
                 "group": "gg_fader_dec",
                 "title": "CCT2 Brightness",
                 "order": 4,
@@ -532,7 +566,8 @@
                 "max": 30000,
                 "condition": "(dimmer_mode==32||dimmer_mode==33||dimmer_mode==34)"
             },
-            "fader_dec_rgb_s": {
+            {
+				"id": "fader_dec_rgb_s",
                 "group": "gg_fader_dec",
                 "title": "RGB Strip Saturation",
                 "order": 1,
@@ -543,7 +578,8 @@
                 "max": 30000,
                 "condition": "(dimmer_mode==256)"
             },
-            "fader_dec_rgb_v": {
+            {
+				"id": "fader_dec_rgb_v",
                 "group": "gg_fader_dec",
                 "title": "RGB Strip Brightness",
                 "order": 2,
@@ -555,7 +591,8 @@
                 "condition": "(dimmer_mode==256)"
             },
 
-            "wwww_in1_sp": {
+            {
+				"id": "wwww_in1_sp",
                 "group": "gg_in_1_actions",
                 "title": "sp_title",
                 "order": 1,
@@ -591,7 +628,8 @@
                     "dec_ch4_act_title"
                 ]
             },
-            "wwww_in2_sp": {
+            {
+				"id": "wwww_in2_sp",
                 "group": "gg_in_2_actions",
                 "title": "sp_title",
                 "order": 1,
@@ -627,7 +665,8 @@
                     "dec_ch4_act_title"
                 ]
             },
-            "wwww_in3_sp": {
+            {
+				"id": "wwww_in3_sp",
                 "group": "gg_in_3_actions",
                 "title": "sp_title",
                 "order": 1,
@@ -663,7 +702,8 @@
                     "dec_ch4_act_title"
                 ]
             },
-            "wwww_in1_lp": {
+            {
+				"id": "wwww_in1_lp",
                 "group": "gg_in_1_actions",
                 "title": "lp_title",
                 "order": 2,
@@ -704,7 +744,8 @@
                     "inc_dec_ch4_act_title"
                 ]
             },
-            "wwww_in2_lp": {
+            {
+				"id": "wwww_in2_lp",
                 "group": "gg_in_2_actions",
                 "title": "lp_title",
                 "order": 2,
@@ -745,7 +786,8 @@
                     "inc_dec_ch4_act_title"
                 ]
             },
-            "wwww_in3_lp": {
+            {
+				"id": "wwww_in3_lp",
                 "group": "gg_in_3_actions",
                 "title": "lp_title",
                 "order": 2,
@@ -786,7 +828,8 @@
                     "inc_dec_ch4_act_title"
                 ]
             },
-            "wwww_in1_dp": {
+            {
+				"id": "wwww_in1_dp",
                 "group": "gg_in_1_actions",
                 "title": "dp_title",
                 "order": 3,
@@ -822,7 +865,8 @@
                     "dec_ch4_act_title"
                 ]
             },
-            "wwww_in2_dp": {
+            {
+				"id": "wwww_in2_dp",
                 "group": "gg_in_2_actions",
                 "title": "dp_title",
                 "order": 3,
@@ -858,7 +902,8 @@
                     "dec_ch4_act_title"
                 ]
             },
-            "wwww_in3_dp": {
+            {
+				"id": "wwww_in3_dp",
                 "group": "gg_in_3_actions",
                 "title": "dp_title",
                 "order": 3,
@@ -894,7 +939,8 @@
                     "dec_ch4_act_title"
                 ]
             },
-            "wwww_in1_slp": {
+            {
+				"id": "wwww_in1_slp",
                 "group": "gg_in_1_actions",
                 "title": "slp_title",
                 "order": 4,
@@ -935,7 +981,8 @@
                     "inc_dec_ch4_act_title"
                 ]
             },
-            "wwww_in2_slp": {
+            {
+				"id": "wwww_in2_slp",
                 "group": "gg_in_2_actions",
                 "title": "slp_title",
                 "order": 4,
@@ -976,7 +1023,8 @@
                     "inc_dec_ch4_act_title"
                 ]
             },
-            "wwww_in3_slp": {
+            {
+				"id": "wwww_in3_slp",
                 "group": "gg_in_3_actions",
                 "title": "slp_title",
                 "order": 4,
@@ -1017,7 +1065,8 @@
                     "inc_dec_ch4_act_title"
                 ]
             },
-            "w2ww_in1_sp": {
+            {
+				"id": "w2ww_in1_sp",
                 "group": "gg_in_1_actions",
                 "title": "sp_title",
                 "order": 1,
@@ -1048,7 +1097,8 @@
                     "dec_ch4_act_title"
                 ]
             },
-            "w2ww_in2_sp": {
+            {
+				"id": "w2ww_in2_sp",
                 "group": "gg_in_2_actions",
                 "title": "sp_title",
                 "order": 1,
@@ -1079,7 +1129,8 @@
                     "dec_ch4_act_title"
                 ]
             },
-            "w2ww_in3_sp": {
+            {
+				"id": "w2ww_in3_sp",
                 "group": "gg_in_3_actions",
                 "title": "sp_title",
                 "order": 1,
@@ -1111,7 +1162,8 @@
                 ]
             },
 
-            "w2ww_in1_lp": {
+            {
+				"id": "w2ww_in1_lp",
                 "group": "gg_in_1_actions",
                 "title": "lp_title",
                 "order": 2,
@@ -1145,7 +1197,8 @@
                     "inc_dec_ch4_act_title"
                 ]
             },
-            "w2ww_in2_lp": {
+            {
+				"id": "w2ww_in2_lp",
                 "group": "gg_in_2_actions",
                 "title": "lp_title",
                 "order": 2,
@@ -1179,7 +1232,8 @@
                     "inc_dec_ch4_act_title"
                 ]
             },
-            "w2ww_in3_lp": {
+            {
+				"id": "w2ww_in3_lp",
                 "group": "gg_in_3_actions",
                 "title": "lp_title",
                 "order": 2,
@@ -1214,7 +1268,8 @@
                 ]
             },
 
-            "w2ww_in1_dp": {
+            {
+				"id": "w2ww_in1_dp",
                 "group": "gg_in_1_actions",
                 "title": "dp_title",
                 "order": 3,
@@ -1245,7 +1300,8 @@
                     "dec_ch4_act_title"
                 ]
             },
-            "w2ww_in2_dp": {
+            {
+				"id": "w2ww_in2_dp",
                 "group": "gg_in_2_actions",
                 "title": "dp_title",
                 "order": 3,
@@ -1276,7 +1332,8 @@
                     "dec_ch4_act_title"
                 ]
             },
-            "w2ww_in3_dp": {
+            {
+				"id": "w2ww_in3_dp",
                 "group": "gg_in_3_actions",
                 "title": "dp_title",
                 "order": 3,
@@ -1308,7 +1365,8 @@
                 ]
             },
 
-            "w2ww_in1_slp": {
+            {
+				"id": "w2ww_in1_slp",
                 "group": "gg_in_1_actions",
                 "title": "slp_title",
                 "order": 4,
@@ -1342,7 +1400,8 @@
                     "inc_dec_ch4_act_title"
                 ]
             },
-            "w2ww_in2_slp": {
+            {
+				"id": "w2ww_in2_slp",
                 "group": "gg_in_2_actions",
                 "title": "slp_title",
                 "order": 4,
@@ -1376,7 +1435,8 @@
                     "inc_dec_ch4_act_title"
                 ]
             },
-            "w2ww_in3_slp": {
+            {
+				"id": "w2ww_in3_slp",
                 "group": "gg_in_3_actions",
                 "title": "slp_title",
                 "order": 4,
@@ -1410,7 +1470,8 @@
                     "inc_dec_ch4_act_title"
                 ]
             },
-            "cctww_in1_sp": {
+            {
+				"id": "cctww_in1_sp",
                 "group": "gg_in_1_actions",
                 "title": "sp_title",
                 "order": 1,
@@ -1443,7 +1504,8 @@
                     "dec_ch4_act_title"
                 ]
             },
-            "cctww_in2_sp": {
+            {
+				"id": "cctww_in2_sp",
                 "group": "gg_in_2_actions",
                 "title": "sp_title",
                 "order": 1,
@@ -1476,7 +1538,8 @@
                     "dec_ch4_act_title"
                 ]
             },
-            "cctww_in3_sp": {
+            {
+				"id": "cctww_in3_sp",
                 "group": "gg_in_3_actions",
                 "title": "sp_title",
                 "order": 1,
@@ -1510,7 +1573,8 @@
                 ]
             },
 
-            "cctww_in1_lp": {
+            {
+				"id": "cctww_in1_lp",
                 "group": "gg_in_1_actions",
                 "title": "lp_title",
                 "order": 2,
@@ -1547,7 +1611,8 @@
                     "inc_dec_ch4_act_title"
                 ]
             },
-            "cctww_in2_lp": {
+            {
+				"id": "cctww_in2_lp",
                 "group": "gg_in_2_actions",
                 "title": "lp_title",
                 "order": 2,
@@ -1584,7 +1649,8 @@
                     "inc_dec_ch4_act_title"
                 ]
             },
-            "cctww_in3_lp": {
+            {
+				"id": "cctww_in3_lp",
                 "group": "gg_in_3_actions",
                 "title": "lp_title",
                 "order": 2,
@@ -1622,7 +1688,8 @@
                 ]
             },
 
-            "cctww_in1_dp": {
+            {
+				"id": "cctww_in1_dp",
                 "group": "gg_in_1_actions",
                 "title": "dp_title",
                 "order": 3,
@@ -1655,7 +1722,8 @@
                     "dec_ch4_act_title"
                 ]
             },
-            "cctww_in2_dp": {
+            {
+				"id": "cctww_in2_dp",
                 "group": "gg_in_2_actions",
                 "title": "dp_title",
                 "order": 3,
@@ -1688,7 +1756,8 @@
                     "dec_ch4_act_title"
                 ]
             },
-            "cctww_in3_dp": {
+            {
+				"id": "cctww_in3_dp",
                 "group": "gg_in_3_actions",
                 "title": "dp_title",
                 "order": 3,
@@ -1722,7 +1791,8 @@
                 ]
             },
 
-            "cctww_in1_slp": {
+            {
+				"id": "cctww_in1_slp",
                 "group": "gg_in_1_actions",
                 "title": "slp_title",
                 "order": 4,
@@ -1759,7 +1829,8 @@
                     "inc_dec_ch4_act_title"
                 ]
             },
-            "cctww_in2_slp": {
+            {
+				"id": "cctww_in2_slp",
                 "group": "gg_in_2_actions",
                 "title": "slp_title",
                 "order": 4,
@@ -1796,7 +1867,8 @@
                     "inc_dec_ch4_act_title"
                 ]
             },
-            "cctww_in3_slp": {
+            {
+				"id": "cctww_in3_slp",
                 "group": "gg_in_3_actions",
                 "title": "slp_title",
                 "order": 4,
@@ -1833,7 +1905,8 @@
                     "inc_dec_ch4_act_title"
                 ]
             },
-            "ww2w_in1_sp": {
+            {
+				"id": "ww2w_in1_sp",
                 "group": "gg_in_1_actions",
                 "title": "sp_title",
                 "order": 1,
@@ -1864,7 +1937,8 @@
                     "dec_ch34_act_title"
                 ]
             },
-            "ww2w_in2_sp": {
+            {
+				"id": "ww2w_in2_sp",
                 "group": "gg_in_2_actions",
                 "title": "sp_title",
                 "order": 1,
@@ -1895,7 +1969,8 @@
                     "dec_ch34_act_title"
                 ]
             },
-            "ww2w_in3_sp": {
+            {
+				"id": "ww2w_in3_sp",
                 "group": "gg_in_3_actions",
                 "title": "sp_title",
                 "order": 1,
@@ -1927,7 +2002,8 @@
                 ]
             },
 
-            "ww2w_in1_lp": {
+            {
+				"id": "ww2w_in1_lp",
                 "group": "gg_in_1_actions",
                 "title": "lp_title",
                 "order": 2,
@@ -1961,7 +2037,8 @@
                     "inc_dec_ch34_act_title"
                 ]
             },
-            "ww2w_in2_lp": {
+            {
+				"id": "ww2w_in2_lp",
                 "group": "gg_in_2_actions",
                 "title": "lp_title",
                 "order": 2,
@@ -1995,7 +2072,8 @@
                     "inc_dec_ch34_act_title"
                 ]
             },
-            "ww2w_in3_lp": {
+            {
+				"id": "ww2w_in3_lp",
                 "group": "gg_in_3_actions",
                 "title": "lp_title",
                 "order": 2,
@@ -2030,7 +2108,8 @@
                 ]
             },
 
-            "ww2w_in1_dp": {
+            {
+				"id": "ww2w_in1_dp",
                 "group": "gg_in_1_actions",
                 "title": "dp_title",
                 "order": 3,
@@ -2061,7 +2140,8 @@
                     "dec_ch34_act_title"
                 ]
             },
-            "ww2w_in2_dp": {
+            {
+				"id": "ww2w_in2_dp",
                 "group": "gg_in_2_actions",
                 "title": "dp_title",
                 "order": 3,
@@ -2092,7 +2172,8 @@
                     "dec_ch34_act_title"
                 ]
             },
-            "ww2w_in3_dp": {
+            {
+				"id": "ww2w_in3_dp",
                 "group": "gg_in_3_actions",
                 "title": "dp_title",
                 "order": 3,
@@ -2124,7 +2205,8 @@
                 ]
             },
 
-            "ww2w_in1_slp": {
+            {
+				"id": "ww2w_in1_slp",
                 "group": "gg_in_1_actions",
                 "title": "slp_title",
                 "order": 4,
@@ -2158,7 +2240,8 @@
                     "inc_dec_ch34_act_title"
                 ]
             },
-            "ww2w_in2_slp": {
+            {
+				"id": "ww2w_in2_slp",
                 "group": "gg_in_2_actions",
                 "title": "slp_title",
                 "order": 4,
@@ -2192,7 +2275,8 @@
                     "inc_dec_ch34_act_title"
                 ]
             },
-            "ww2w_in3_slp": {
+            {
+				"id": "ww2w_in3_slp",
                 "group": "gg_in_3_actions",
                 "title": "slp_title",
                 "order": 4,
@@ -2227,7 +2311,8 @@
                 ]
             },
 
-            "2w2w_in1_sp": {
+            {
+				"id": "2w2w_in1_sp",
                 "group": "gg_in_1_actions",
                 "title": "sp_title",
                 "order": 1,
@@ -2250,7 +2335,8 @@
                     "dec_ch34_act_title"
                 ]
             },
-            "2w2w_in2_sp": {
+            {
+				"id": "2w2w_in2_sp",
                 "group": "gg_in_2_actions",
                 "title": "sp_title",
                 "order": 1,
@@ -2273,7 +2359,8 @@
                     "dec_ch34_act_title"
                 ]
             },
-            "2w2w_in3_sp": {
+            {
+				"id": "2w2w_in3_sp",
                 "group": "gg_in_3_actions",
                 "title": "sp_title",
                 "order": 1,
@@ -2297,7 +2384,8 @@
                 ]
             },
 
-            "2w2w_in1_lp": {
+            {
+				"id": "2w2w_in1_lp",
                 "group": "gg_in_1_actions",
                 "title": "lp_title",
                 "order": 2,
@@ -2325,7 +2413,8 @@
                     "inc_dec_ch34_act_title"
                 ]
             },
-            "2w2w_in2_lp": {
+            {
+				"id": "2w2w_in2_lp",
                 "group": "gg_in_2_actions",
                 "title": "lp_title",
                 "order": 2,
@@ -2353,7 +2442,8 @@
                     "inc_dec_ch34_act_title"
                 ]
             },
-            "2w2w_in3_lp": {
+            {
+				"id": "2w2w_in3_lp",
                 "group": "gg_in_3_actions",
                 "title": "lp_title",
                 "order": 2,
@@ -2382,7 +2472,8 @@
                 ]
             },
 
-            "2w2w_in1_dp": {
+            {
+				"id": "2w2w_in1_dp",
                 "group": "gg_in_1_actions",
                 "title": "dp_title",
                 "order": 3,
@@ -2405,7 +2496,8 @@
                     "dec_ch34_act_title"
                 ]
             },
-            "2w2w_in2_dp": {
+            {
+				"id": "2w2w_in2_dp",
                 "group": "gg_in_2_actions",
                 "title": "dp_title",
                 "order": 3,
@@ -2428,7 +2520,8 @@
                     "dec_ch34_act_title"
                 ]
             },
-            "2w2w_in3_dp": {
+            {
+				"id": "2w2w_in3_dp",
                 "group": "gg_in_3_actions",
                 "title": "dp_title",
                 "order": 3,
@@ -2452,7 +2545,8 @@
                 ]
             },
 
-            "2w2w_in1_slp": {
+            {
+				"id": "2w2w_in1_slp",
                 "group": "gg_in_1_actions",
                 "title": "slp_title",
                 "order": 4,
@@ -2480,7 +2574,8 @@
                     "inc_dec_ch34_act_title"
                 ]
             },
-            "2w2w_in2_slp": {
+            {
+				"id": "2w2w_in2_slp",
                 "group": "gg_in_2_actions",
                 "title": "slp_title",
                 "order": 4,
@@ -2508,7 +2603,8 @@
                     "inc_dec_ch34_act_title"
                 ]
             },
-            "2w2w_in3_slp": {
+            {
+				"id": "2w2w_in3_slp",
                 "group": "gg_in_3_actions",
                 "title": "slp_title",
                 "order": 4,
@@ -2536,7 +2632,8 @@
                     "inc_dec_ch34_act_title"
                 ]
             },
-            "cct2w_in1_sp": {
+            {
+				"id": "cct2w_in1_sp",
                 "group": "gg_in_1_actions",
                 "title": "sp_title",
                 "order": 1,
@@ -2564,7 +2661,8 @@
                     "dec_ch34_act_title"
                 ]
             },
-            "cct2w_in2_sp": {
+            {
+				"id": "cct2w_in2_sp",
                 "group": "gg_in_2_actions",
                 "title": "sp_title",
                 "order": 1,
@@ -2592,7 +2690,8 @@
                     "dec_ch34_act_title"
                 ]
             },
-            "cct2w_in3_sp": {
+            {
+				"id": "cct2w_in3_sp",
                 "group": "gg_in_3_actions",
                 "title": "sp_title",
                 "order": 1,
@@ -2621,7 +2720,8 @@
                 ]
             },
 
-            "cct2w_in1_lp": {
+            {
+				"id": "cct2w_in1_lp",
                 "group": "gg_in_1_actions",
                 "title": "lp_title",
                 "order": 2,
@@ -2652,7 +2752,8 @@
                     "inc_dec_ch34_act_title"
                 ]
             },
-            "cct2w_in2_lp": {
+            {
+				"id": "cct2w_in2_lp",
                 "group": "gg_in_2_actions",
                 "title": "lp_title",
                 "order": 2,
@@ -2683,7 +2784,8 @@
                     "inc_dec_ch34_act_title"
                 ]
             },
-            "cct2w_in3_lp": {
+            {
+				"id": "cct2w_in3_lp",
                 "group": "gg_in_3_actions",
                 "title": "lp_title",
                 "order": 2,
@@ -2715,7 +2817,8 @@
                 ]
             },
 
-            "cct2w_in1_dp": {
+            {
+				"id": "cct2w_in1_dp",
                 "group": "gg_in_1_actions",
                 "title": "dp_title",
                 "order": 3,
@@ -2743,7 +2846,8 @@
                     "dec_ch34_act_title"
                 ]
             },
-            "cct2w_in2_dp": {
+            {
+				"id": "cct2w_in2_dp",
                 "group": "gg_in_2_actions",
                 "title": "dp_title",
                 "order": 3,
@@ -2771,7 +2875,8 @@
                     "dec_ch34_act_title"
                 ]
             },
-            "cct2w_in3_dp": {
+            {
+				"id": "cct2w_in3_dp",
                 "group": "gg_in_3_actions",
                 "title": "dp_title",
                 "order": 3,
@@ -2800,7 +2905,8 @@
                 ]
             },
 
-            "cct2w_in1_slp": {
+            {
+				"id": "cct2w_in1_slp",
                 "group": "gg_in_1_actions",
                 "title": "slp_title",
                 "order": 4,
@@ -2831,7 +2937,8 @@
                     "inc_dec_ch34_act_title"
                 ]
             },
-            "cct2w_in2_slp": {
+            {
+				"id": "cct2w_in2_slp",
                 "group": "gg_in_2_actions",
                 "title": "slp_title",
                 "order": 4,
@@ -2862,7 +2969,8 @@
                     "inc_dec_ch34_act_title"
                 ]
             },
-            "cct2w_in3_slp": {
+            {
+				"id": "cct2w_in3_slp",
                 "group": "gg_in_3_actions",
                 "title": "slp_title",
                 "order": 4,
@@ -2893,7 +3001,8 @@
                     "inc_dec_ch34_act_title"
                 ]
             },
-            "wwcct_in1_sp": {
+            {
+				"id": "wwcct_in1_sp",
                 "group": "gg_in_1_actions",
                 "title": "sp_title",
                 "order": 1,
@@ -2926,7 +3035,8 @@
                     "dec_br_cct2_act_title"
                 ]
             },
-            "wwcct_in2_sp": {
+            {
+				"id": "wwcct_in2_sp",
                 "group": "gg_in_2_actions",
                 "title": "sp_title",
                 "order": 1,
@@ -2959,7 +3069,8 @@
                     "dec_br_cct2_act_title"
                 ]
             },
-            "wwcct_in3_sp": {
+            {
+				"id": "wwcct_in3_sp",
                 "group": "gg_in_3_actions",
                 "title": "sp_title",
                 "order": 1,
@@ -2993,7 +3104,8 @@
                 ]
             },
 
-            "wwcct_in1_lp": {
+            {
+				"id": "wwcct_in1_lp",
                 "group": "gg_in_1_actions",
                 "title": "lp_title",
                 "order": 2,
@@ -3030,7 +3142,8 @@
                     "inc_dec_br_cct2_act_title"
                 ]
             },
-            "wwcct_in2_lp": {
+            {
+				"id": "wwcct_in2_lp",
                 "group": "gg_in_2_actions",
                 "title": "lp_title",
                 "order": 2,
@@ -3067,7 +3180,8 @@
                     "inc_dec_br_cct2_act_title"
                 ]
             },
-            "wwcct_in3_lp": {
+            {
+				"id": "wwcct_in3_lp",
                 "group": "gg_in_3_actions",
                 "title": "lp_title",
                 "order": 2,
@@ -3105,7 +3219,8 @@
                 ]
             },
 
-            "wwcct_in1_dp": {
+            {
+				"id": "wwcct_in1_dp",
                 "group": "gg_in_1_actions",
                 "title": "dp_title",
                 "order": 3,
@@ -3138,7 +3253,8 @@
                     "dec_br_cct2_act_title"
                 ]
             },
-            "wwcct_in2_dp": {
+            {
+				"id": "wwcct_in2_dp",
                 "group": "gg_in_2_actions",
                 "title": "dp_title",
                 "order": 3,
@@ -3171,7 +3287,8 @@
                     "dec_br_cct2_act_title"
                 ]
             },
-            "wwcct_in3_dp": {
+            {
+				"id": "wwcct_in3_dp",
                 "group": "gg_in_3_actions",
                 "title": "dp_title",
                 "order": 3,
@@ -3205,7 +3322,8 @@
                 ]
             },
 
-            "wwcct_in1_slp": {
+            {
+				"id": "wwcct_in1_slp",
                 "group": "gg_in_1_actions",
                 "title": "slp_title",
                 "order": 4,
@@ -3242,7 +3360,8 @@
                     "inc_dec_br_cct2_act_title"
                 ]
             },
-            "wwcct_in2_slp": {
+            {
+				"id": "wwcct_in2_slp",
                 "group": "gg_in_2_actions",
                 "title": "slp_title",
                 "order": 4,
@@ -3279,7 +3398,8 @@
                     "inc_dec_br_cct2_act_title"
                 ]
             },
-            "wwcct_in3_slp": {
+            {
+				"id": "wwcct_in3_slp",
                 "group": "gg_in_3_actions",
                 "title": "slp_title",
                 "order": 4,
@@ -3317,7 +3437,8 @@
                 ]
             },
 
-            "2wcct_in1_sp": {
+            {
+				"id": "2wcct_in1_sp",
                 "group": "gg_in_1_actions",
                 "title": "sp_title",
                 "order": 1,
@@ -3345,7 +3466,8 @@
                     "dec_br_cct2_act_title"
                 ]
             },
-            "2wcct_in2_sp": {
+            {
+				"id": "2wcct_in2_sp",
                 "group": "gg_in_2_actions",
                 "title": "sp_title",
                 "order": 1,
@@ -3373,7 +3495,8 @@
                     "dec_br_cct2_act_title"
                 ]
             },
-            "2wcct_in3_sp": {
+            {
+				"id": "2wcct_in3_sp",
                 "group": "gg_in_3_actions",
                 "title": "sp_title",
                 "order": 1,
@@ -3402,7 +3525,8 @@
                 ]
             },
 
-            "2wcct_in1_lp": {
+            {
+				"id": "2wcct_in1_lp",
                 "group": "gg_in_1_actions",
                 "title": "lp_title",
                 "order": 2,
@@ -3433,7 +3557,8 @@
                     "inc_dec_br_cct2_act_title"
                 ]
             },
-            "2wcct_in2_lp": {
+            {
+				"id": "2wcct_in2_lp",
                 "group": "gg_in_2_actions",
                 "title": "lp_title",
                 "order": 2,
@@ -3464,7 +3589,8 @@
                     "inc_dec_br_cct2_act_title"
                 ]
             },
-            "2wcct_in3_lp": {
+            {
+				"id": "2wcct_in3_lp",
                 "group": "gg_in_3_actions",
                 "title": "lp_title",
                 "order": 2,
@@ -3496,7 +3622,8 @@
                 ]
             },
 
-            "2wcct_in1_dp": {
+            {
+				"id": "2wcct_in1_dp",
                 "group": "gg_in_1_actions",
                 "title": "dp_title",
                 "order": 3,
@@ -3524,7 +3651,8 @@
                     "dec_br_cct2_act_title"
                 ]
             },
-            "2wcct_in2_dp": {
+            {
+				"id": "2wcct_in2_dp",
                 "group": "gg_in_2_actions",
                 "title": "dp_title",
                 "order": 3,
@@ -3552,7 +3680,8 @@
                     "dec_br_cct2_act_title"
                 ]
             },
-            "2wcct_in3_dp": {
+            {
+				"id": "2wcct_in3_dp",
                 "group": "gg_in_3_actions",
                 "title": "dp_title",
                 "order": 3,
@@ -3581,7 +3710,8 @@
                 ]
             },
 
-            "2wcct_in1_slp": {
+            {
+				"id": "2wcct_in1_slp",
                 "group": "gg_in_1_actions",
                 "title": "slp_title",
                 "order": 4,
@@ -3612,7 +3742,8 @@
                     "inc_dec_br_cct2_act_title"
                 ]
             },
-            "2wcct_in2_slp": {
+            {
+				"id": "2wcct_in2_slp",
                 "group": "gg_in_2_actions",
                 "title": "slp_title",
                 "order": 4,
@@ -3643,7 +3774,8 @@
                     "inc_dec_br_cct2_act_title"
                 ]
             },
-            "2wcct_in3_slp": {
+            {
+				"id": "2wcct_in3_slp",
                 "group": "gg_in_3_actions",
                 "title": "slp_title",
                 "order": 4,
@@ -3675,7 +3807,8 @@
                 ]
             },
 
-            "cctcct_in1_sp": {
+            {
+				"id": "cctcct_in1_sp",
                 "group": "gg_in_1_actions",
                 "title": "sp_title",
                 "order": 1,
@@ -3705,7 +3838,8 @@
                     "dec_br_cct2_act_title"
                 ]
             },
-            "cctcct_in2_sp": {
+            {
+				"id": "cctcct_in2_sp",
                 "group": "gg_in_2_actions",
                 "title": "sp_title",
                 "order": 1,
@@ -3735,7 +3869,8 @@
                     "dec_br_cct2_act_title"
                 ]
             },
-            "cctcct_in3_sp": {
+            {
+				"id": "cctcct_in3_sp",
                 "group": "gg_in_3_actions",
                 "title": "sp_title",
                 "order": 1,
@@ -3766,7 +3901,8 @@
                 ]
             },
 
-            "cctcct_in1_lp": {
+            {
+				"id": "cctcct_in1_lp",
                 "group": "gg_in_1_actions",
                 "title": "lp_title",
                 "order": 2,
@@ -3800,7 +3936,8 @@
                     "inc_dec_br_cct2_act_title"
                 ]
             },
-            "cctcct_in2_lp": {
+            {
+				"id": "cctcct_in2_lp",
                 "group": "gg_in_2_actions",
                 "title": "lp_title",
                 "order": 2,
@@ -3834,7 +3971,8 @@
                     "inc_dec_br_cct2_act_title"
                 ]
             },
-            "cctcct_in3_lp": {
+            {
+				"id": "cctcct_in3_lp",
                 "group": "gg_in_3_actions",
                 "title": "lp_title",
                 "order": 2,
@@ -3869,7 +4007,8 @@
                 ]
             },
 
-            "cctcct_in1_dp": {
+            {
+				"id": "cctcct_in1_dp",
                 "group": "gg_in_1_actions",
                 "title": "dp_title",
                 "order": 3,
@@ -3899,7 +4038,8 @@
                     "dec_br_cct2_act_title"
                 ]
             },
-            "cctcct_in2_dp": {
+            {
+				"id": "cctcct_in2_dp",
                 "group": "gg_in_2_actions",
                 "title": "dp_title",
                 "order": 3,
@@ -3929,7 +4069,8 @@
                     "dec_br_cct2_act_title"
                 ]
             },
-            "cctcct_in3_dp": {
+            {
+				"id": "cctcct_in3_dp",
                 "group": "gg_in_3_actions",
                 "title": "dp_title",
                 "order": 3,
@@ -3960,7 +4101,8 @@
                 ]
             },
 
-            "cctcct_in1_slp": {
+            {
+				"id": "cctcct_in1_slp",
                 "group": "gg_in_1_actions",
                 "title": "slp_title",
                 "order": 4,
@@ -3994,7 +4136,8 @@
                     "inc_dec_br_cct2_act_title"
                 ]
             },
-            "cctcct_in2_slp": {
+            {
+				"id": "cctcct_in2_slp",
                 "group": "gg_in_2_actions",
                 "title": "slp_title",
                 "order": 4,
@@ -4028,7 +4171,8 @@
                     "inc_dec_br_cct2_act_title"
                 ]
             },
-            "cctcct_in3_slp": {
+            {
+				"id": "cctcct_in3_slp",
                 "group": "gg_in_3_actions",
                 "title": "slp_title",
                 "order": 4,
@@ -4063,7 +4207,8 @@
                 ]
             },
 
-            "rgbw_in1_sp": {
+            {
+				"id": "rgbw_in1_sp",
                 "group": "gg_in_1_actions",
                 "title": "sp_title",
                 "order": 1,
@@ -4105,7 +4250,8 @@
                     "dec_hue_ch_time_act_title"
                 ]
             },
-            "rgbw_in2_sp": {
+            {
+				"id": "rgbw_in2_sp",
                 "group": "gg_in_2_actions",
                 "title": "sp_title",
                 "order": 1,
@@ -4147,7 +4293,8 @@
                     "dec_hue_ch_time_act_title"
                 ]
             },
-            "rgbw_in3_sp": {
+            {
+				"id": "rgbw_in3_sp",
                 "group": "gg_in_3_actions",
                 "title": "sp_title",
                 "order": 1,
@@ -4190,7 +4337,8 @@
                 ]
             },
 
-            "rgbw_in1_lp": {
+            {
+				"id": "rgbw_in1_lp",
                 "group": "gg_in_1_actions",
                 "title": "lp_title",
                 "order": 2,
@@ -4240,7 +4388,8 @@
                     "inc_dec_hue_ch_time_act_title"
                 ]
             },
-            "rgbw_in2_lp": {
+            {
+				"id": "rgbw_in2_lp",
                 "group": "gg_in_2_actions",
                 "title": "lp_title",
                 "order": 2,
@@ -4290,7 +4439,8 @@
                     "inc_dec_hue_ch_time_act_title"
                 ]
             },
-            "rgbw_in3_lp": {
+            {
+				"id": "rgbw_in3_lp",
                 "group": "gg_in_3_actions",
                 "title": "lp_title",
                 "order": 2,
@@ -4341,7 +4491,8 @@
                 ]
             },
 
-            "rgbw_in1_dp": {
+            {
+				"id": "rgbw_in1_dp",
                 "group": "gg_in_1_actions",
                 "title": "dp_title",
                 "order": 3,
@@ -4383,7 +4534,8 @@
                     "dec_hue_ch_time_act_title"
                 ]
             },
-            "rgbw_in2_dp": {
+            {
+				"id": "rgbw_in2_dp",
                 "group": "gg_in_2_actions",
                 "title": "dp_title",
                 "order": 3,
@@ -4425,7 +4577,8 @@
                     "dec_hue_ch_time_act_title"
                 ]
             },
-            "rgbw_in3_dp": {
+            {
+				"id": "rgbw_in3_dp",
                 "group": "gg_in_3_actions",
                 "title": "dp_title",
                 "order": 3,
@@ -4468,7 +4621,8 @@
                 ]
             },
 
-            "rgbw_in1_slp": {
+            {
+				"id": "rgbw_in1_slp",
                 "group": "gg_in_1_actions",
                 "title": "slp_title",
                 "order": 4,
@@ -4518,7 +4672,8 @@
                     "inc_dec_hue_ch_time_act_title"
                 ]
             },
-            "rgbw_in2_slp": {
+            {
+				"id": "rgbw_in2_slp",
                 "group": "gg_in_2_actions",
                 "title": "slp_title",
                 "order": 4,
@@ -4568,7 +4723,8 @@
                     "inc_dec_hue_ch_time_act_title"
                 ]
             },
-            "rgbw_in3_slp": {
+            {
+				"id": "rgbw_in3_slp",
                 "group": "gg_in_3_actions",
                 "title": "slp_title",
                 "order": 4,
@@ -4618,7 +4774,8 @@
                     "inc_dec_hue_ch_time_act_title"
                 ]
             },
-            "4w_in1_sp": {
+            {
+				"id": "4w_in1_sp",
                 "group": "gg_in_1_actions",
                 "title": "sp_title",
                 "order": 1,
@@ -4636,7 +4793,8 @@
                     "dec_ch1234_act_title"
                 ]
             },
-            "4w_in2_sp": {
+            {
+				"id": "4w_in2_sp",
                 "group": "gg_in_2_actions",
                 "title": "sp_title",
                 "order": 1,
@@ -4654,7 +4812,8 @@
                     "dec_ch1234_act_title"
                 ]
             },
-            "4w_in3_sp": {
+            {
+				"id": "4w_in3_sp",
                 "group": "gg_in_3_actions",
                 "title": "sp_title",
                 "order": 1,
@@ -4673,7 +4832,8 @@
                 ]
             },
 
-            "4w_in1_lp": {
+            {
+				"id": "4w_in1_lp",
                 "group": "gg_in_1_actions",
                 "title": "lp_title",
                 "order": 2,
@@ -4692,7 +4852,8 @@
                     "inc_dec_ch1234_act_title"
                 ]
             },
-            "4w_in2_lp": {
+            {
+				"id": "4w_in2_lp",
                 "group": "gg_in_2_actions",
                 "title": "lp_title",
                 "order": 2,
@@ -4711,7 +4872,8 @@
                     "inc_dec_ch1234_act_title"
                 ]
             },
-            "4w_in3_lp": {
+            {
+				"id": "4w_in3_lp",
                 "group": "gg_in_3_actions",
                 "title": "lp_title",
                 "order": 2,
@@ -4731,7 +4893,8 @@
                 ]
             },
 
-            "4w_in1_dp": {
+            {
+				"id": "4w_in1_dp",
                 "group": "gg_in_1_actions",
                 "title": "dp_title",
                 "order": 3,
@@ -4749,7 +4912,8 @@
                     "dec_ch1234_act_title"
                 ]
             },
-            "4w_in2_dp": {
+            {
+				"id": "4w_in2_dp",
                 "group": "gg_in_2_actions",
                 "title": "dp_title",
                 "order": 3,
@@ -4767,7 +4931,8 @@
                     "dec_ch1234_act_title"
                 ]
             },
-            "4w_in3_dp": {
+            {
+				"id": "4w_in3_dp",
                 "group": "gg_in_3_actions",
                 "title": "dp_title",
                 "order": 3,
@@ -4786,7 +4951,8 @@
                 ]
             },
 
-            "4w_in1_slp": {
+            {
+				"id": "4w_in1_slp",
                 "group": "gg_in_1_actions",
                 "title": "slp_title",
                 "order": 4,
@@ -4805,7 +4971,8 @@
                     "inc_dec_ch1234_act_title"
                 ]
             },
-            "4w_in2_slp": {
+            {
+				"id": "4w_in2_slp",
                 "group": "gg_in_2_actions",
                 "title": "slp_title",
                 "order": 4,
@@ -4824,7 +4991,8 @@
                     "inc_dec_ch1234_act_title"
                 ]
             },
-            "4w_in3_slp": {
+            {
+				"id": "4w_in3_slp",
                 "group": "gg_in_3_actions",
                 "title": "slp_title",
                 "order": 5,
@@ -4843,7 +5011,7 @@
                     "inc_dec_ch1234_act_title"
                 ]
             }
-        },
+        ],
 
         "channels": [
             {
