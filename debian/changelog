@@ -1,3 +1,9 @@
+wb-mqtt-serial (2.61.3) stable; urgency=medium
+
+  * Unwanted regeneration of JSON schema for wb-mqtt-homeui after config saving is fixed
+
+ -- Petr Krasnoshchekov <petr.krasnoshchekov@wirenboard.ru>  Mon, 06 Jun 2022 17:53:57 +0500
+
 wb-mqtt-serial (2.61.2) stable; urgency=medium
 
   * WB-MR6C v.3 jinja template

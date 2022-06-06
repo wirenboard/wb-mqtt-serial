@@ -27,3 +27,7 @@ ucf --debconf-ok $BOARD_CONF $CONFFILE
 rm -f /usr/share/wb-mqtt-confed/schemas/wb-mqtt-serial.schema.json
 
 #DEBHELPER#
+
+# deb-systemd-invoke doesn't start it.
+# "is a disabled or a static unit not running, not starting it"
+systemctl start wb-mqtt-serial-templates.service || true
