@@ -40,32 +40,32 @@
             {% for in_num in range(1, INPUTS_NUMBER + 1) -%}
             {
                 "title": "Actions",
-                "id": "in_{{in_num}}_actions",
+                "id": "gg_in_{{in_num}}_actions",
                 "order": 1,
                 "group": "g_input_{{in_num}}"
             },
             {% endfor -%}
             {
                 "title": "fader_hue_title",
-                "id": "fader_hue",
+                "id": "gg_fader_hue",
                 "order": 2,
                 "group": "g_outputs"
             },
             {
                 "title": "fader_inc_title",
-                "id": "fader_inc",
+                "id": "gg_fader_inc",
                 "order": 3,
                 "group": "g_outputs"
             },
             {
                 "title": "fader_dec_title",
-                "id": "fader_dec",
+                "id": "gg_fader_dec",
                 "order": 4,
                 "group": "g_outputs"
             },
             {
                 "title": "params",
-                "id": "in_1_params",
+                "id": "gg_in_1_params",
                 "order": 2,
                 "group": "g_input_1",
                 "ui_options": {
@@ -76,7 +76,7 @@
             },
             {
                 "title": "params",
-                "id": "in_2_params",
+                "id": "gg_in_2_params",
                 "order": 2,
                 "group": "g_input_2",
                 "ui_options": {
@@ -87,7 +87,7 @@
             },
             {
                 "title": "params",
-                "id": "in_3_params",
+                "id": "gg_in_3_params",
                 "order": 2,
                 "group": "g_input_3",
                 "ui_options": {
@@ -98,7 +98,7 @@
             },
             {
                 "title": "params",
-                "id": "out_params",
+                "id": "gg_out_params",
                 "order": 50,
                 "group": "g_outputs",
                 "ui_options": {
@@ -109,7 +109,7 @@
             },
             {
                 "title": "Input 1 Channels",
-                "id": "in_1_channels",
+                "id": "gg_in_1_channels",
                 "order": 100,
                 "group": "g_input_1",
                 "ui_options": {
@@ -120,7 +120,7 @@
             },
             {
                 "title": "Input 2 Channels",
-                "id": "in_2_channels",
+                "id": "gg_in_2_channels",
                 "order": 100,
                 "group": "g_input_2",
                 "ui_options": {
@@ -131,7 +131,7 @@
             },
             {
                 "title": "Input 3 Channels",
-                "id": "in_3_channels",
+                "id": "gg_in_3_channels",
                 "order": 100,
                 "group": "g_input_3",
                 "ui_options": {
@@ -142,7 +142,7 @@
             },
             {
                 "title": "Outputs Channels",
-                "id": "out_channels",
+                "id": "gg_out_channels",
                 "order": 100,
                 "group": "g_outputs",
                 "ui_options": {
@@ -181,7 +181,7 @@
                 "title": "Channel 1 (B) Minimum Value",
                 "description": "channel_min_value_description",
                 "order": 1,
-                "group": "out_params",
+                "group": "gg_out_params",
                 "address": 70,
                 "reg_type": "holding",
                 "default": 1,
@@ -192,7 +192,7 @@
                 "title": "Channel 1 (B) Maximum Value",
                 "description": "channel_max_value_description",
                 "order": 2,
-                "group": "out_params",
+                "group": "gg_out_params",
                 "address": 80,
                 "reg_type": "holding",
                 "default": 2048,
@@ -203,7 +203,7 @@
                 "title": "Channel 2 (R) Minimum Value",
                 "description": "channel_min_value_description",
                 "order": 3,
-                "group": "out_params",
+                "group": "gg_out_params",
                 "address": 71,
                 "reg_type": "holding",
                 "default": 1,
@@ -214,7 +214,7 @@
                 "title": "Channel 2 (R) Maximum Value",
                 "description": "channel_max_value_description",
                 "order": 4,
-                "group": "out_params",
+                "group": "gg_out_params",
                 "address": 81,
                 "reg_type": "holding",
                 "default": 2048,
@@ -225,7 +225,7 @@
                 "title": "Channel 3 (G) Minimum Value",
                 "description": "channel_min_value_description",
                 "order": 5,
-                "group": "out_params",
+                "group": "gg_out_params",
                 "address": 72,
                 "reg_type": "holding",
                 "default": 1,
@@ -236,7 +236,7 @@
                 "title": "Channel 3 (G) Maximum Value",
                 "description": "channel_max_value_description",
                 "order": 6,
-                "group": "out_params",
+                "group": "gg_out_params",
                 "address": 82,
                 "reg_type": "holding",
                 "default": 2048,
@@ -247,7 +247,7 @@
                 "title": "Channel 4 (W) Minimum Value",
                 "description": "channel_min_value_description",
                 "order": 7,
-                "group": "out_params",
+                "group": "gg_out_params",
                 "address": 73,
                 "reg_type": "holding",
                 "default": 1,
@@ -258,7 +258,7 @@
                 "title": "Channel 4 (W) Maximum Value",
                 "description": "channel_max_value_description",
                 "order": 8,
-                "group": "out_params",
+                "group": "gg_out_params",
                 "address": 83,
                 "reg_type": "holding",
                 "default": 2048,
@@ -270,7 +270,7 @@
                 "title": "pwm_frequency_factor_title",
                 "description": "pwm_frequency_factor_description",
                 "order": 9,
-                "group": "out_params",
+                "group": "gg_out_params",
                 "address": 9,
                 "reg_type": "holding",
                 "default": 8,
@@ -282,7 +282,7 @@
                 "title": "lp_hold_time_title",
                 "description": "lp_hold_time_description",
                 "order": 1,
-                "group": "in_1_params",
+                "group": "gg_in_1_params",
                 "address": 1100,
                 "reg_type": "holding",
                 "default": 2000,
@@ -293,7 +293,7 @@
                 "title": "lp_hold_time_title",
                 "description": "lp_hold_time_description",
                 "order": 1,
-                "group": "in_2_params",
+                "group": "gg_in_2_params",
                 "address": 1101,
                 "reg_type": "holding",
                 "default": 2000,
@@ -304,7 +304,7 @@
                 "title": "lp_hold_time_title",
                 "description": "lp_hold_time_description",
                 "order": 1,
-                "group": "in_3_params",
+                "group": "gg_in_3_params",
                 "address": 1102,
                 "reg_type": "holding",
                 "default": 2000,
@@ -316,7 +316,7 @@
                 "title": "lp_repeat_time_title",
                 "description": "lp_repeat_time_description",
                 "order": 2,
-                "group": "in_1_params",
+                "group": "gg_in_1_params",
                 "address": 1120,
                 "reg_type": "holding",
                 "default": 20,
@@ -327,7 +327,7 @@
                 "title": "lp_repeat_time_title",
                 "description": "lp_repeat_time_description",
                 "order": 2,
-                "group": "in_2_params",
+                "group": "gg_in_2_params",
                 "address": 1121,
                 "reg_type": "holding",
                 "default": 20,
@@ -338,7 +338,7 @@
                 "title": "lp_repeat_time_title",
                 "description": "lp_repeat_time_description",
                 "order": 2,
-                "group": "in_3_params",
+                "group": "gg_in_3_params",
                 "address": 1122,
                 "reg_type": "holding",
                 "default": 20,
@@ -350,7 +350,7 @@
                 "title": "dp_time_title",
                 "description": "dp_time_description",
                 "order": 3,
-                "group": "in_1_params",
+                "group": "gg_in_1_params",
                 "address": 1140,
                 "reg_type": "holding",
                 "default": 300,
@@ -361,7 +361,7 @@
                 "title": "dp_time_title",
                 "description": "dp_time_description",
                 "order": 3,
-                "group": "in_2_params",
+                "group": "gg_in_2_params",
                 "address": 1141,
                 "reg_type": "holding",
                 "default": 300,
@@ -372,7 +372,7 @@
                 "title": "dp_time_title",
                 "description": "dp_time_description",
                 "order": 3,
-                "group": "in_3_params",
+                "group": "gg_in_3_params",
                 "address": 1142,
                 "reg_type": "holding",
                 "default": 300,
@@ -384,7 +384,7 @@
                 "title": "debounce_time_title",
                 "description": "debounce_time_description",
                 "order": 4,
-                "group": "in_1_params",
+                "group": "gg_in_1_params",
                 "address": 1160,
                 "reg_type": "holding",
                 "default": 50,
@@ -395,7 +395,7 @@
                 "title": "debounce_time_title",
                 "description": "debounce_time_description",
                 "order": 4,
-                "group": "in_2_params",
+                "group": "gg_in_2_params",
                 "address": 1161,
                 "reg_type": "holding",
                 "default": 50,
@@ -406,7 +406,7 @@
                 "title": "debounce_time_title",
                 "description": "debounce_time_description",
                 "order": 4,
-                "group": "in_3_params",
+                "group": "gg_in_3_params",
                 "address": 1162,
                 "reg_type": "holding",
                 "default": 50,
@@ -427,7 +427,7 @@
             },
 
             "fader_inc_w1": {
-                "group": "fader_inc",
+                "group": "gg_fader_inc",
                 "title": "Channel 1 (B) Brightness",
                 "address": 3000,
                 "reg_type": "holding",
@@ -437,7 +437,7 @@
                 "condition": "(dimmer_mode==0||dimmer_mode==16||dimmer_mode==32)"
             },
             "fader_inc_w2": {
-                "group": "fader_inc",
+                "group": "gg_fader_inc",
                 "title": "Channel 2 (R) Brightness",
                 "address": 3001,
                 "reg_type": "holding",
@@ -447,7 +447,7 @@
                 "condition": "(dimmer_mode==0||dimmer_mode==16||dimmer_mode==32)"
             },
             "fader_inc_w3": {
-                "group": "fader_inc",
+                "group": "gg_fader_inc",
                 "title": "Channel 3 (G) Brightness",
                 "address": 3002,
                 "reg_type": "holding",
@@ -457,7 +457,7 @@
                 "condition": "(dimmer_mode==0||dimmer_mode==1||dimmer_mode==2)"
             },
             "fader_inc_w4": {
-                "group": "fader_inc",
+                "group": "gg_fader_inc",
                 "title": "Channel 4 (W) Brightness",
                 "address": 3003,
                 "reg_type": "holding",
@@ -467,7 +467,7 @@
                 "condition": "(dimmer_mode==0||dimmer_mode==1||dimmer_mode==2||dimmer_mode==256)"
             },
             "fader_inc_w1_w2": {
-                "group": "fader_inc",
+                "group": "gg_fader_inc",
                 "title": "Channels 1_2 (B_R) Brightness",
                 "address": 3004,
                 "reg_type": "holding",
@@ -477,7 +477,7 @@
                 "condition": "(dimmer_mode==1||dimmer_mode==17||dimmer_mode==33)"
             },
             "fader_inc_w3_w4": {
-                "group": "fader_inc",
+                "group": "gg_fader_inc",
                 "title": "Channels 3_4 (G_W) Brightness",
                 "order": 3,
                 "address": 3005,
@@ -488,7 +488,7 @@
                 "condition": "(dimmer_mode==16||dimmer_mode==17||dimmer_mode==18)"
             },
             "fader_inc_w1_w2_w3+w4": {
-                "group": "fader_inc",
+                "group": "gg_fader_inc",
                 "title": "Channels 1_2_3_4 Brightness",
                 "order": 1,
                 "address": 3006,
@@ -499,7 +499,7 @@
                 "condition": "(dimmer_mode==512)"
             },
             "fader_inc_cct1_t": {
-                "group": "fader_inc",
+                "group": "gg_fader_inc",
                 "title": "CCT1 Temperature",
                 "address": 3007,
                 "reg_type": "holding",
@@ -509,7 +509,7 @@
                 "condition": "(dimmer_mode==2||dimmer_mode==18||dimmer_mode==34)"
             },
             "fader_inc_cct1_v": {
-                "group": "fader_inc",
+                "group": "gg_fader_inc",
                 "title": "CCT1 Brightness",
                 "address": 3008,
                 "reg_type": "holding",
@@ -519,7 +519,7 @@
                 "condition": "(dimmer_mode==2||dimmer_mode==18||dimmer_mode==34)"
             },
             "fader_inc_cct2_t": {
-                "group": "fader_inc",
+                "group": "gg_fader_inc",
                 "title": "CCT2 Temperature",
                 "order": 3,
                 "address": 3009,
@@ -530,7 +530,7 @@
                 "condition": "(dimmer_mode==32||dimmer_mode==33||dimmer_mode==34)"
             },
             "fader_inc_cct2_v": {
-                "group": "fader_inc",
+                "group": "gg_fader_inc",
                 "title": "CCT2 Brightness",
                 "order": 4,
                 "address": 3010,
@@ -541,7 +541,7 @@
                 "condition": "(dimmer_mode==32||dimmer_mode==33)"
             },
             "fade_rgb_h": {
-                "group": "fader_hue",
+                "group": "gg_fader_hue",
                 "title": "RGB Strip Hue",
                 "description": "hue_fader_description",
                 "order": 1,
@@ -553,7 +553,7 @@
                 "condition": "(dimmer_mode==256)"
             },
             "fader_inc_rgb_s": {
-                "group": "fader_inc",
+                "group": "gg_fader_inc",
                 "title": "RGB Strip Saturation",
                 "order": 1,
                 "address": 3012,
@@ -564,7 +564,7 @@
                 "condition": "(dimmer_mode==256)"
             },
             "fader_inc_rgb_v": {
-                "group": "fader_inc",
+                "group": "gg_fader_inc",
                 "title": "RGB Strip Brightness",
                 "order": 2,
                 "address": 3013,
@@ -575,7 +575,7 @@
                 "condition": "(dimmer_mode==256)"
             },
             "fader_dec_w1": {
-                "group": "fader_dec",
+                "group": "gg_fader_dec",
                 "title": "Channel 1 (B) Brightness",
                 "address": 3100,
                 "reg_type": "holding",
@@ -585,7 +585,7 @@
                 "condition": "(dimmer_mode==0||dimmer_mode==16||dimmer_mode==32||dimmer_mode==34)"
             },
             "fader_dec_w2": {
-                "group": "fader_dec",
+                "group": "gg_fader_dec",
                 "title": "Channel 2 (R) Brightness",
                 "address": 3101,
                 "reg_type": "holding",
@@ -595,7 +595,7 @@
                 "condition": "(dimmer_mode==0||dimmer_mode==16||dimmer_mode==32)"
             },
             "fader_dec_w3": {
-                "group": "fader_dec",
+                "group": "gg_fader_dec",
                 "title": "Channel 3 (G) Brightness",
                 "address": 3102,
                 "reg_type": "holding",
@@ -605,7 +605,7 @@
                 "condition": "(dimmer_mode==0||dimmer_mode==1||dimmer_mode==2)"
             },
             "fader_dec_w4": {
-                "group": "fader_dec",
+                "group": "gg_fader_dec",
                 "title": "Channel 4 (W) Brightness",
                 "address": 3103,
                 "reg_type": "holding",
@@ -615,7 +615,7 @@
                 "condition": "(dimmer_mode==0||dimmer_mode==1||dimmer_mode==2||dimmer_mode==256)"
             },
             "fader_dec_w1_w2": {
-                "group": "fader_dec",
+                "group": "gg_fader_dec",
                 "title": "Channels 1_2 (B_R) Brightness",
                 "address": 3104,
                 "reg_type": "holding",
@@ -625,7 +625,7 @@
                 "condition": "(dimmer_mode==1||dimmer_mode==17||dimmer_mode==18||dimmer_mode==33)"
             },
             "fader_dec_w3_w4": {
-                "group": "fader_dec",
+                "group": "gg_fader_dec",
                 "title": "Channels 3_4 (G_W) Brightness",
                 "order": 3,
                 "address": 3105,
@@ -636,7 +636,7 @@
                 "condition": "(dimmer_mode==16||dimmer_mode==17)"
             },
             "fader_dec_w1_w2_w3_w4": {
-                "group": "fader_dec",
+                "group": "gg_fader_dec",
                 "title": "Channels 1_2_3_4 Brightness",
                 "order": 1,
                 "address": 3106,
@@ -647,7 +647,7 @@
                 "condition": "(dimmer_mode==512)"
             },
             "fader_dec_cct1_t": {
-                "group": "fader_dec",
+                "group": "gg_fader_dec",
                 "title": "CCT1 Temperature",
                 "address": 3107,
                 "reg_type": "holding",
@@ -657,7 +657,7 @@
                 "condition": "(dimmer_mode==2||dimmer_mode==18||dimmer_mode==34)"
             },
             "fader_dec_cct1_v": {
-                "group": "fader_dec",
+                "group": "gg_fader_dec",
                 "title": "CCT1 Brightness",
                 "address": 3108,
                 "reg_type": "holding",
@@ -667,7 +667,7 @@
                 "condition": "(dimmer_mode==2||dimmer_mode==18||dimmer_mode==34)"
             },
             "fader_dec_cct2_t": {
-                "group": "fader_dec",
+                "group": "gg_fader_dec",
                 "title": "CCT2 Temperature",
                 "order": 3,
                 "address": 3109,
@@ -678,7 +678,7 @@
                 "condition": "(dimmer_mode==32||dimmer_mode==33||dimmer_mode==34)"
             },
             "fader_dec_cct2_v": {
-                "group": "fader_dec",
+                "group": "gg_fader_dec",
                 "title": "CCT2 Brightness",
                 "order": 4,
                 "address": 3110,
@@ -689,7 +689,7 @@
                 "condition": "(dimmer_mode==32||dimmer_mode==33||dimmer_mode==34)"
             },
             "fader_dec_rgb_s": {
-                "group": "fader_dec",
+                "group": "gg_fader_dec",
                 "title": "RGB Strip Saturation",
                 "order": 1,
                 "address": 3112,
@@ -700,7 +700,7 @@
                 "condition": "(dimmer_mode==256)"
             },
             "fader_dec_rgb_v": {
-                "group": "fader_dec",
+                "group": "gg_fader_dec",
                 "title": "RGB Strip Brightness",
                 "order": 2,
                 "address": 3113,
@@ -712,7 +712,7 @@
             },
 
             "wwww_in1_sp": {
-                "group": "in_1_actions",
+                "group": "gg_in_1_actions",
                 "title": "sp_title",
                 "order": 1,
                 "address": 1000,
@@ -748,7 +748,7 @@
                 ]
             },
             "wwww_in2_sp": {
-                "group": "in_2_actions",
+                "group": "gg_in_2_actions",
                 "title": "sp_title",
                 "order": 1,
                 "address": 1001,
@@ -784,7 +784,7 @@
                 ]
             },
             "wwww_in3_sp": {
-                "group": "in_3_actions",
+                "group": "gg_in_3_actions",
                 "title": "sp_title",
                 "order": 1,
                 "address": 1002,
@@ -820,7 +820,7 @@
                 ]
             },
             "wwww_in1_lp": {
-                "group": "in_1_actions",
+                "group": "gg_in_1_actions",
                 "title": "lp_title",
                 "order": 2,
                 "address": 1020,
@@ -861,7 +861,7 @@
                 ]
             },
             "wwww_in2_lp": {
-                "group": "in_2_actions",
+                "group": "gg_in_2_actions",
                 "title": "lp_title",
                 "order": 2,
                 "address": 1021,
@@ -902,7 +902,7 @@
                 ]
             },
             "wwww_in3_lp": {
-                "group": "in_3_actions",
+                "group": "gg_in_3_actions",
                 "title": "lp_title",
                 "order": 2,
                 "address": 1022,
@@ -943,7 +943,7 @@
                 ]
             },
             "wwww_in1_dp": {
-                "group": "in_1_actions",
+                "group": "gg_in_1_actions",
                 "title": "dp_title",
                 "order": 3,
                 "address": 1040,
@@ -979,7 +979,7 @@
                 ]
             },
             "wwww_in2_dp": {
-                "group": "in_2_actions",
+                "group": "gg_in_2_actions",
                 "title": "dp_title",
                 "order": 3,
                 "address": 1041,
@@ -1015,7 +1015,7 @@
                 ]
             },
             "wwww_in3_dp": {
-                "group": "in_3_actions",
+                "group": "gg_in_3_actions",
                 "title": "dp_title",
                 "order": 3,
                 "address": 1042,
@@ -1051,7 +1051,7 @@
                 ]
             },
             "wwww_in1_slp": {
-                "group": "in_1_actions",
+                "group": "gg_in_1_actions",
                 "title": "slp_title",
                 "order": 4,
                 "address": 1060,
@@ -1092,7 +1092,7 @@
                 ]
             },
             "wwww_in2_slp": {
-                "group": "in_2_actions",
+                "group": "gg_in_2_actions",
                 "title": "slp_title",
                 "order": 4,
                 "address": 1061,
@@ -1133,7 +1133,7 @@
                 ]
             },
             "wwww_in3_slp": {
-                "group": "in_3_actions",
+                "group": "gg_in_3_actions",
                 "title": "slp_title",
                 "order": 4,
                 "address": 1062,
@@ -1174,7 +1174,7 @@
                 ]
             },
             "w2ww_in1_sp": {
-                "group": "in_1_actions",
+                "group": "gg_in_1_actions",
                 "title": "sp_title",
                 "order": 1,
                 "address": 1000,
@@ -1205,7 +1205,7 @@
                 ]
             },
             "w2ww_in2_sp": {
-                "group": "in_2_actions",
+                "group": "gg_in_2_actions",
                 "title": "sp_title",
                 "order": 1,
                 "address": 1001,
@@ -1236,7 +1236,7 @@
                 ]
             },
             "w2ww_in3_sp": {
-                "group": "in_3_actions",
+                "group": "gg_in_3_actions",
                 "title": "sp_title",
                 "order": 1,
                 "address": 1002,
@@ -1268,7 +1268,7 @@
             },
 
             "w2ww_in1_lp": {
-                "group": "in_1_actions",
+                "group": "gg_in_1_actions",
                 "title": "lp_title",
                 "order": 2,
                 "address": 1020,
@@ -1302,7 +1302,7 @@
                 ]
             },
             "w2ww_in2_lp": {
-                "group": "in_2_actions",
+                "group": "gg_in_2_actions",
                 "title": "lp_title",
                 "order": 2,
                 "address": 1021,
@@ -1336,7 +1336,7 @@
                 ]
             },
             "w2ww_in3_lp": {
-                "group": "in_3_actions",
+                "group": "gg_in_3_actions",
                 "title": "lp_title",
                 "order": 2,
                 "address": 1022,
@@ -1371,7 +1371,7 @@
             },
 
             "w2ww_in1_dp": {
-                "group": "in_1_actions",
+                "group": "gg_in_1_actions",
                 "title": "dp_title",
                 "order": 3,
                 "address": 1040,
@@ -1402,7 +1402,7 @@
                 ]
             },
             "w2ww_in2_dp": {
-                "group": "in_2_actions",
+                "group": "gg_in_2_actions",
                 "title": "dp_title",
                 "order": 3,
                 "address": 1041,
@@ -1433,7 +1433,7 @@
                 ]
             },
             "w2ww_in3_dp": {
-                "group": "in_3_actions",
+                "group": "gg_in_3_actions",
                 "title": "dp_title",
                 "order": 3,
                 "address": 1042,
@@ -1465,7 +1465,7 @@
             },
 
             "w2ww_in1_slp": {
-                "group": "in_1_actions",
+                "group": "gg_in_1_actions",
                 "title": "slp_title",
                 "order": 4,
                 "address": 1060,
@@ -1499,7 +1499,7 @@
                 ]
             },
             "w2ww_in2_slp": {
-                "group": "in_2_actions",
+                "group": "gg_in_2_actions",
                 "title": "slp_title",
                 "order": 4,
                 "address": 1061,
@@ -1533,7 +1533,7 @@
                 ]
             },
             "w2ww_in3_slp": {
-                "group": "in_3_actions",
+                "group": "gg_in_3_actions",
                 "title": "slp_title",
                 "order": 4,
                 "address": 1062,
@@ -1567,7 +1567,7 @@
                 ]
             },
             "cctww_in1_sp": {
-                "group": "in_1_actions",
+                "group": "gg_in_1_actions",
                 "title": "sp_title",
                 "order": 1,
                 "address": 1000,
@@ -1600,7 +1600,7 @@
                 ]
             },
             "cctww_in2_sp": {
-                "group": "in_2_actions",
+                "group": "gg_in_2_actions",
                 "title": "sp_title",
                 "order": 1,
                 "address": 1001,
@@ -1633,7 +1633,7 @@
                 ]
             },
             "cctww_in3_sp": {
-                "group": "in_3_actions",
+                "group": "gg_in_3_actions",
                 "title": "sp_title",
                 "order": 1,
                 "address": 1002,
@@ -1667,7 +1667,7 @@
             },
 
             "cctww_in1_lp": {
-                "group": "in_1_actions",
+                "group": "gg_in_1_actions",
                 "title": "lp_title",
                 "order": 2,
                 "address": 1020,
@@ -1704,7 +1704,7 @@
                 ]
             },
             "cctww_in2_lp": {
-                "group": "in_2_actions",
+                "group": "gg_in_2_actions",
                 "title": "lp_title",
                 "order": 2,
                 "address": 1021,
@@ -1741,7 +1741,7 @@
                 ]
             },
             "cctww_in3_lp": {
-                "group": "in_3_actions",
+                "group": "gg_in_3_actions",
                 "title": "lp_title",
                 "order": 2,
                 "address": 1022,
@@ -1779,7 +1779,7 @@
             },
 
             "cctww_in1_dp": {
-                "group": "in_1_actions",
+                "group": "gg_in_1_actions",
                 "title": "dp_title",
                 "order": 3,
                 "address": 1040,
@@ -1812,7 +1812,7 @@
                 ]
             },
             "cctww_in2_dp": {
-                "group": "in_2_actions",
+                "group": "gg_in_2_actions",
                 "title": "dp_title",
                 "order": 3,
                 "address": 1041,
@@ -1845,7 +1845,7 @@
                 ]
             },
             "cctww_in3_dp": {
-                "group": "in_3_actions",
+                "group": "gg_in_3_actions",
                 "title": "dp_title",
                 "order": 3,
                 "address": 1042,
@@ -1879,7 +1879,7 @@
             },
 
             "cctww_in1_slp": {
-                "group": "in_1_actions",
+                "group": "gg_in_1_actions",
                 "title": "slp_title",
                 "order": 4,
                 "address": 1060,
@@ -1916,7 +1916,7 @@
                 ]
             },
             "cctww_in2_slp": {
-                "group": "in_2_actions",
+                "group": "gg_in_2_actions",
                 "title": "slp_title",
                 "order": 4,
                 "address": 1061,
@@ -1953,7 +1953,7 @@
                 ]
             },
             "cctww_in3_slp": {
-                "group": "in_3_actions",
+                "group": "gg_in_3_actions",
                 "title": "slp_title",
                 "order": 4,
                 "address": 1062,
@@ -1990,7 +1990,7 @@
                 ]
             },
             "ww2w_in1_sp": {
-                "group": "in_1_actions",
+                "group": "gg_in_1_actions",
                 "title": "sp_title",
                 "order": 1,
                 "address": 1000,
@@ -2021,7 +2021,7 @@
                 ]
             },
             "ww2w_in2_sp": {
-                "group": "in_2_actions",
+                "group": "gg_in_2_actions",
                 "title": "sp_title",
                 "order": 1,
                 "address": 1001,
@@ -2052,7 +2052,7 @@
                 ]
             },
             "ww2w_in3_sp": {
-                "group": "in_3_actions",
+                "group": "gg_in_3_actions",
                 "title": "sp_title",
                 "order": 1,
                 "address": 1002,
@@ -2084,7 +2084,7 @@
             },
 
             "ww2w_in1_lp": {
-                "group": "in_1_actions",
+                "group": "gg_in_1_actions",
                 "title": "lp_title",
                 "order": 2,
                 "address": 1020,
@@ -2118,7 +2118,7 @@
                 ]
             },
             "ww2w_in2_lp": {
-                "group": "in_2_actions",
+                "group": "gg_in_2_actions",
                 "title": "lp_title",
                 "order": 2,
                 "address": 1021,
@@ -2152,7 +2152,7 @@
                 ]
             },
             "ww2w_in3_lp": {
-                "group": "in_3_actions",
+                "group": "gg_in_3_actions",
                 "title": "lp_title",
                 "order": 2,
                 "address": 1022,
@@ -2187,7 +2187,7 @@
             },
 
             "ww2w_in1_dp": {
-                "group": "in_1_actions",
+                "group": "gg_in_1_actions",
                 "title": "dp_title",
                 "order": 3,
                 "address": 1040,
@@ -2218,7 +2218,7 @@
                 ]
             },
             "ww2w_in2_dp": {
-                "group": "in_2_actions",
+                "group": "gg_in_2_actions",
                 "title": "dp_title",
                 "order": 3,
                 "address": 1041,
@@ -2249,7 +2249,7 @@
                 ]
             },
             "ww2w_in3_dp": {
-                "group": "in_3_actions",
+                "group": "gg_in_3_actions",
                 "title": "dp_title",
                 "order": 3,
                 "address": 1042,
@@ -2281,7 +2281,7 @@
             },
 
             "ww2w_in1_slp": {
-                "group": "in_1_actions",
+                "group": "gg_in_1_actions",
                 "title": "slp_title",
                 "order": 4,
                 "address": 1060,
@@ -2315,7 +2315,7 @@
                 ]
             },
             "ww2w_in2_slp": {
-                "group": "in_2_actions",
+                "group": "gg_in_2_actions",
                 "title": "slp_title",
                 "order": 4,
                 "address": 1061,
@@ -2349,7 +2349,7 @@
                 ]
             },
             "ww2w_in3_slp": {
-                "group": "in_3_actions",
+                "group": "gg_in_3_actions",
                 "title": "slp_title",
                 "order": 4,
                 "address": 1062,
@@ -2384,7 +2384,7 @@
             },
 
             "2w2w_in1_sp": {
-                "group": "in_1_actions",
+                "group": "gg_in_1_actions",
                 "title": "sp_title",
                 "order": 1,
                 "address": 1000,
@@ -2407,7 +2407,7 @@
                 ]
             },
             "2w2w_in2_sp": {
-                "group": "in_2_actions",
+                "group": "gg_in_2_actions",
                 "title": "sp_title",
                 "order": 1,
                 "address": 1001,
@@ -2430,7 +2430,7 @@
                 ]
             },
             "2w2w_in3_sp": {
-                "group": "in_3_actions",
+                "group": "gg_in_3_actions",
                 "title": "sp_title",
                 "order": 1,
                 "address": 1002,
@@ -2454,7 +2454,7 @@
             },
 
             "2w2w_in1_lp": {
-                "group": "in_1_actions",
+                "group": "gg_in_1_actions",
                 "title": "lp_title",
                 "order": 2,
                 "address": 1020,
@@ -2482,7 +2482,7 @@
                 ]
             },
             "2w2w_in2_lp": {
-                "group": "in_2_actions",
+                "group": "gg_in_2_actions",
                 "title": "lp_title",
                 "order": 2,
                 "address": 1021,
@@ -2510,7 +2510,7 @@
                 ]
             },
             "2w2w_in3_lp": {
-                "group": "in_3_actions",
+                "group": "gg_in_3_actions",
                 "title": "lp_title",
                 "order": 2,
                 "address": 1022,
@@ -2539,7 +2539,7 @@
             },
 
             "2w2w_in1_dp": {
-                "group": "in_1_actions",
+                "group": "gg_in_1_actions",
                 "title": "dp_title",
                 "order": 3,
                 "address": 1040,
@@ -2562,7 +2562,7 @@
                 ]
             },
             "2w2w_in2_dp": {
-                "group": "in_2_actions",
+                "group": "gg_in_2_actions",
                 "title": "dp_title",
                 "order": 3,
                 "address": 1041,
@@ -2585,7 +2585,7 @@
                 ]
             },
             "2w2w_in3_dp": {
-                "group": "in_3_actions",
+                "group": "gg_in_3_actions",
                 "title": "dp_title",
                 "order": 3,
                 "address": 1042,
@@ -2609,7 +2609,7 @@
             },
 
             "2w2w_in1_slp": {
-                "group": "in_1_actions",
+                "group": "gg_in_1_actions",
                 "title": "slp_title",
                 "order": 4,
                 "address": 1060,
@@ -2637,7 +2637,7 @@
                 ]
             },
             "2w2w_in2_slp": {
-                "group": "in_2_actions",
+                "group": "gg_in_2_actions",
                 "title": "slp_title",
                 "order": 4,
                 "address": 1061,
@@ -2665,7 +2665,7 @@
                 ]
             },
             "2w2w_in3_slp": {
-                "group": "in_3_actions",
+                "group": "gg_in_3_actions",
                 "title": "slp_title",
                 "order": 4,
                 "address": 1062,
@@ -2693,7 +2693,7 @@
                 ]
             },
             "cct2w_in1_sp": {
-                "group": "in_1_actions",
+                "group": "gg_in_1_actions",
                 "title": "sp_title",
                 "order": 1,
                 "address": 1000,
@@ -2721,7 +2721,7 @@
                 ]
             },
             "cct2w_in2_sp": {
-                "group": "in_2_actions",
+                "group": "gg_in_2_actions",
                 "title": "sp_title",
                 "order": 1,
                 "address": 1001,
@@ -2749,7 +2749,7 @@
                 ]
             },
             "cct2w_in3_sp": {
-                "group": "in_3_actions",
+                "group": "gg_in_3_actions",
                 "title": "sp_title",
                 "order": 1,
                 "address": 1002,
@@ -2778,7 +2778,7 @@
             },
 
             "cct2w_in1_lp": {
-                "group": "in_1_actions",
+                "group": "gg_in_1_actions",
                 "title": "lp_title",
                 "order": 2,
                 "address": 1020,
@@ -2809,7 +2809,7 @@
                 ]
             },
             "cct2w_in2_lp": {
-                "group": "in_2_actions",
+                "group": "gg_in_2_actions",
                 "title": "lp_title",
                 "order": 2,
                 "address": 1021,
@@ -2840,7 +2840,7 @@
                 ]
             },
             "cct2w_in3_lp": {
-                "group": "in_3_actions",
+                "group": "gg_in_3_actions",
                 "title": "lp_title",
                 "order": 2,
                 "address": 1022,
@@ -2872,7 +2872,7 @@
             },
 
             "cct2w_in1_dp": {
-                "group": "in_1_actions",
+                "group": "gg_in_1_actions",
                 "title": "dp_title",
                 "order": 3,
                 "address": 1040,
@@ -2900,7 +2900,7 @@
                 ]
             },
             "cct2w_in2_dp": {
-                "group": "in_2_actions",
+                "group": "gg_in_2_actions",
                 "title": "dp_title",
                 "order": 3,
                 "address": 1041,
@@ -2928,7 +2928,7 @@
                 ]
             },
             "cct2w_in3_dp": {
-                "group": "in_3_actions",
+                "group": "gg_in_3_actions",
                 "title": "dp_title",
                 "order": 3,
                 "address": 1042,
@@ -2957,7 +2957,7 @@
             },
 
             "cct2w_in1_slp": {
-                "group": "in_1_actions",
+                "group": "gg_in_1_actions",
                 "title": "slp_title",
                 "order": 4,
                 "address": 1060,
@@ -2988,7 +2988,7 @@
                 ]
             },
             "cct2w_in2_slp": {
-                "group": "in_2_actions",
+                "group": "gg_in_2_actions",
                 "title": "slp_title",
                 "order": 4,
                 "address": 1061,
@@ -3019,7 +3019,7 @@
                 ]
             },
             "cct2w_in3_slp": {
-                "group": "in_3_actions",
+                "group": "gg_in_3_actions",
                 "title": "slp_title",
                 "order": 4,
                 "address": 1062,
@@ -3050,7 +3050,7 @@
                 ]
             },
             "wwcct_in1_sp": {
-                "group": "in_1_actions",
+                "group": "gg_in_1_actions",
                 "title": "sp_title",
                 "order": 1,
                 "address": 1000,
@@ -3083,7 +3083,7 @@
                 ]
             },
             "wwcct_in2_sp": {
-                "group": "in_2_actions",
+                "group": "gg_in_2_actions",
                 "title": "sp_title",
                 "order": 1,
                 "address": 1001,
@@ -3116,7 +3116,7 @@
                 ]
             },
             "wwcct_in3_sp": {
-                "group": "in_3_actions",
+                "group": "gg_in_3_actions",
                 "title": "sp_title",
                 "order": 1,
                 "address": 1002,
@@ -3150,7 +3150,7 @@
             },
 
             "wwcct_in1_lp": {
-                "group": "in_1_actions",
+                "group": "gg_in_1_actions",
                 "title": "lp_title",
                 "order": 2,
                 "address": 1020,
@@ -3187,7 +3187,7 @@
                 ]
             },
             "wwcct_in2_lp": {
-                "group": "in_2_actions",
+                "group": "gg_in_2_actions",
                 "title": "lp_title",
                 "order": 2,
                 "address": 1021,
@@ -3224,7 +3224,7 @@
                 ]
             },
             "wwcct_in3_lp": {
-                "group": "in_3_actions",
+                "group": "gg_in_3_actions",
                 "title": "lp_title",
                 "order": 2,
                 "address": 1022,
@@ -3262,7 +3262,7 @@
             },
 
             "wwcct_in1_dp": {
-                "group": "in_1_actions",
+                "group": "gg_in_1_actions",
                 "title": "dp_title",
                 "order": 3,
                 "address": 1040,
@@ -3295,7 +3295,7 @@
                 ]
             },
             "wwcct_in2_dp": {
-                "group": "in_2_actions",
+                "group": "gg_in_2_actions",
                 "title": "dp_title",
                 "order": 3,
                 "address": 1041,
@@ -3328,7 +3328,7 @@
                 ]
             },
             "wwcct_in3_dp": {
-                "group": "in_3_actions",
+                "group": "gg_in_3_actions",
                 "title": "dp_title",
                 "order": 3,
                 "address": 1042,
@@ -3362,7 +3362,7 @@
             },
 
             "wwcct_in1_slp": {
-                "group": "in_1_actions",
+                "group": "gg_in_1_actions",
                 "title": "slp_title",
                 "order": 4,
                 "address": 1060,
@@ -3399,7 +3399,7 @@
                 ]
             },
             "wwcct_in2_slp": {
-                "group": "in_2_actions",
+                "group": "gg_in_2_actions",
                 "title": "slp_title",
                 "order": 4,
                 "address": 1061,
@@ -3436,7 +3436,7 @@
                 ]
             },
             "wwcct_in3_slp": {
-                "group": "in_3_actions",
+                "group": "gg_in_3_actions",
                 "title": "slp_title",
                 "order": 4,
                 "address": 1062,
@@ -3474,7 +3474,7 @@
             },
 
             "2wcct_in1_sp": {
-                "group": "in_1_actions",
+                "group": "gg_in_1_actions",
                 "title": "sp_title",
                 "order": 1,
                 "address": 1000,
@@ -3502,7 +3502,7 @@
                 ]
             },
             "2wcct_in2_sp": {
-                "group": "in_2_actions",
+                "group": "gg_in_2_actions",
                 "title": "sp_title",
                 "order": 1,
                 "address": 1001,
@@ -3530,7 +3530,7 @@
                 ]
             },
             "2wcct_in3_sp": {
-                "group": "in_3_actions",
+                "group": "gg_in_3_actions",
                 "title": "sp_title",
                 "order": 1,
                 "address": 1002,
@@ -3559,7 +3559,7 @@
             },
 
             "2wcct_in1_lp": {
-                "group": "in_1_actions",
+                "group": "gg_in_1_actions",
                 "title": "lp_title",
                 "order": 2,
                 "address": 1020,
@@ -3590,7 +3590,7 @@
                 ]
             },
             "2wcct_in2_lp": {
-                "group": "in_2_actions",
+                "group": "gg_in_2_actions",
                 "title": "lp_title",
                 "order": 2,
                 "address": 1021,
@@ -3621,7 +3621,7 @@
                 ]
             },
             "2wcct_in3_lp": {
-                "group": "in_3_actions",
+                "group": "gg_in_3_actions",
                 "title": "lp_title",
                 "order": 2,
                 "address": 1022,
@@ -3653,7 +3653,7 @@
             },
 
             "2wcct_in1_dp": {
-                "group": "in_1_actions",
+                "group": "gg_in_1_actions",
                 "title": "dp_title",
                 "order": 3,
                 "address": 1040,
@@ -3681,7 +3681,7 @@
                 ]
             },
             "2wcct_in2_dp": {
-                "group": "in_2_actions",
+                "group": "gg_in_2_actions",
                 "title": "dp_title",
                 "order": 3,
                 "address": 1041,
@@ -3709,7 +3709,7 @@
                 ]
             },
             "2wcct_in3_dp": {
-                "group": "in_3_actions",
+                "group": "gg_in_3_actions",
                 "title": "dp_title",
                 "order": 3,
                 "address": 1042,
@@ -3738,7 +3738,7 @@
             },
 
             "2wcct_in1_slp": {
-                "group": "in_1_actions",
+                "group": "gg_in_1_actions",
                 "title": "slp_title",
                 "order": 4,
                 "address": 1060,
@@ -3769,7 +3769,7 @@
                 ]
             },
             "2wcct_in2_slp": {
-                "group": "in_2_actions",
+                "group": "gg_in_2_actions",
                 "title": "slp_title",
                 "order": 4,
                 "address": 1061,
@@ -3800,7 +3800,7 @@
                 ]
             },
             "2wcct_in3_slp": {
-                "group": "in_3_actions",
+                "group": "gg_in_3_actions",
                 "title": "slp_title",
                 "order": 4,
                 "address": 1062,
@@ -3832,7 +3832,7 @@
             },
 
             "cctcct_in1_sp": {
-                "group": "in_1_actions",
+                "group": "gg_in_1_actions",
                 "title": "sp_title",
                 "order": 1,
                 "address": 1000,
@@ -3862,7 +3862,7 @@
                 ]
             },
             "cctcct_in2_sp": {
-                "group": "in_2_actions",
+                "group": "gg_in_2_actions",
                 "title": "sp_title",
                 "order": 1,
                 "address": 1001,
@@ -3892,7 +3892,7 @@
                 ]
             },
             "cctcct_in3_sp": {
-                "group": "in_3_actions",
+                "group": "gg_in_3_actions",
                 "title": "sp_title",
                 "order": 1,
                 "address": 1002,
@@ -3923,7 +3923,7 @@
             },
 
             "cctcct_in1_lp": {
-                "group": "in_1_actions",
+                "group": "gg_in_1_actions",
                 "title": "lp_title",
                 "order": 2,
                 "address": 1020,
@@ -3957,7 +3957,7 @@
                 ]
             },
             "cctcct_in2_lp": {
-                "group": "in_2_actions",
+                "group": "gg_in_2_actions",
                 "title": "lp_title",
                 "order": 2,
                 "address": 1021,
@@ -3991,7 +3991,7 @@
                 ]
             },
             "cctcct_in3_lp": {
-                "group": "in_3_actions",
+                "group": "gg_in_3_actions",
                 "title": "lp_title",
                 "order": 2,
                 "address": 1022,
@@ -4026,7 +4026,7 @@
             },
 
             "cctcct_in1_dp": {
-                "group": "in_1_actions",
+                "group": "gg_in_1_actions",
                 "title": "dp_title",
                 "order": 3,
                 "address": 1040,
@@ -4056,7 +4056,7 @@
                 ]
             },
             "cctcct_in2_dp": {
-                "group": "in_2_actions",
+                "group": "gg_in_2_actions",
                 "title": "dp_title",
                 "order": 3,
                 "address": 1041,
@@ -4086,7 +4086,7 @@
                 ]
             },
             "cctcct_in3_dp": {
-                "group": "in_3_actions",
+                "group": "gg_in_3_actions",
                 "title": "dp_title",
                 "order": 3,
                 "address": 1042,
@@ -4117,7 +4117,7 @@
             },
 
             "cctcct_in1_slp": {
-                "group": "in_1_actions",
+                "group": "gg_in_1_actions",
                 "title": "slp_title",
                 "order": 4,
                 "address": 1060,
@@ -4151,7 +4151,7 @@
                 ]
             },
             "cctcct_in2_slp": {
-                "group": "in_2_actions",
+                "group": "gg_in_2_actions",
                 "title": "slp_title",
                 "order": 4,
                 "address": 1061,
@@ -4185,7 +4185,7 @@
                 ]
             },
             "cctcct_in3_slp": {
-                "group": "in_3_actions",
+                "group": "gg_in_3_actions",
                 "title": "slp_title",
                 "order": 4,
                 "address": 1062,
@@ -4220,7 +4220,7 @@
             },
 
             "rgbw_in1_sp": {
-                "group": "in_1_actions",
+                "group": "gg_in_1_actions",
                 "title": "sp_title",
                 "order": 1,
                 "address": 1000,
@@ -4262,7 +4262,7 @@
                 ]
             },
             "rgbw_in2_sp": {
-                "group": "in_2_actions",
+                "group": "gg_in_2_actions",
                 "title": "sp_title",
                 "order": 1,
                 "address": 1001,
@@ -4304,7 +4304,7 @@
                 ]
             },
             "rgbw_in3_sp": {
-                "group": "in_3_actions",
+                "group": "gg_in_3_actions",
                 "title": "sp_title",
                 "order": 1,
                 "address": 1002,
@@ -4347,7 +4347,7 @@
             },
 
             "rgbw_in1_lp": {
-                "group": "in_1_actions",
+                "group": "gg_in_1_actions",
                 "title": "lp_title",
                 "order": 2,
                 "address": 1020,
@@ -4397,7 +4397,7 @@
                 ]
             },
             "rgbw_in2_lp": {
-                "group": "in_2_actions",
+                "group": "gg_in_2_actions",
                 "title": "lp_title",
                 "order": 2,
                 "address": 1021,
@@ -4447,7 +4447,7 @@
                 ]
             },
             "rgbw_in3_lp": {
-                "group": "in_3_actions",
+                "group": "gg_in_3_actions",
                 "title": "lp_title",
                 "order": 2,
                 "address": 1022,
@@ -4498,7 +4498,7 @@
             },
 
             "rgbw_in1_dp": {
-                "group": "in_1_actions",
+                "group": "gg_in_1_actions",
                 "title": "dp_title",
                 "order": 3,
                 "address": 1040,
@@ -4540,7 +4540,7 @@
                 ]
             },
             "rgbw_in2_dp": {
-                "group": "in_2_actions",
+                "group": "gg_in_2_actions",
                 "title": "dp_title",
                 "order": 3,
                 "address": 1041,
@@ -4582,7 +4582,7 @@
                 ]
             },
             "rgbw_in3_dp": {
-                "group": "in_3_actions",
+                "group": "gg_in_3_actions",
                 "title": "dp_title",
                 "order": 3,
                 "address": 1042,
@@ -4625,7 +4625,7 @@
             },
 
             "rgbw_in1_slp": {
-                "group": "in_1_actions",
+                "group": "gg_in_1_actions",
                 "title": "slp_title",
                 "order": 4,
                 "address": 1060,
@@ -4675,7 +4675,7 @@
                 ]
             },
             "rgbw_in2_slp": {
-                "group": "in_2_actions",
+                "group": "gg_in_2_actions",
                 "title": "slp_title",
                 "order": 4,
                 "address": 1061,
@@ -4725,7 +4725,7 @@
                 ]
             },
             "rgbw_in3_slp": {
-                "group": "in_3_actions",
+                "group": "gg_in_3_actions",
                 "title": "slp_title",
                 "order": 4,
                 "address": 1062,
@@ -4775,7 +4775,7 @@
                 ]
             },
             "4w_in1_sp": {
-                "group": "in_1_actions",
+                "group": "gg_in_1_actions",
                 "title": "sp_title",
                 "order": 1,
                 "address": 1000,
@@ -4793,7 +4793,7 @@
                 ]
             },
             "4w_in2_sp": {
-                "group": "in_2_actions",
+                "group": "gg_in_2_actions",
                 "title": "sp_title",
                 "order": 1,
                 "address": 1001,
@@ -4811,7 +4811,7 @@
                 ]
             },
             "4w_in3_sp": {
-                "group": "in_3_actions",
+                "group": "gg_in_3_actions",
                 "title": "sp_title",
                 "order": 1,
                 "address": 1002,
@@ -4830,7 +4830,7 @@
             },
 
             "4w_in1_lp": {
-                "group": "in_1_actions",
+                "group": "gg_in_1_actions",
                 "title": "lp_title",
                 "order": 2,
                 "address": 1020,
@@ -4849,7 +4849,7 @@
                 ]
             },
             "4w_in2_lp": {
-                "group": "in_2_actions",
+                "group": "gg_in_2_actions",
                 "title": "lp_title",
                 "order": 2,
                 "address": 1021,
@@ -4868,7 +4868,7 @@
                 ]
             },
             "4w_in3_lp": {
-                "group": "in_3_actions",
+                "group": "gg_in_3_actions",
                 "title": "lp_title",
                 "order": 2,
                 "address": 1022,
@@ -4888,7 +4888,7 @@
             },
 
             "4w_in1_dp": {
-                "group": "in_1_actions",
+                "group": "gg_in_1_actions",
                 "title": "dp_title",
                 "order": 3,
                 "address": 1040,
@@ -4906,7 +4906,7 @@
                 ]
             },
             "4w_in2_dp": {
-                "group": "in_2_actions",
+                "group": "gg_in_2_actions",
                 "title": "dp_title",
                 "order": 3,
                 "address": 1041,
@@ -4924,7 +4924,7 @@
                 ]
             },
             "4w_in3_dp": {
-                "group": "in_3_actions",
+                "group": "gg_in_3_actions",
                 "title": "dp_title",
                 "order": 3,
                 "address": 1042,
@@ -4943,7 +4943,7 @@
             },
 
             "4w_in1_slp": {
-                "group": "in_1_actions",
+                "group": "gg_in_1_actions",
                 "title": "slp_title",
                 "order": 4,
                 "address": 1060,
@@ -4962,7 +4962,7 @@
                 ]
             },
             "4w_in2_slp": {
-                "group": "in_2_actions",
+                "group": "gg_in_2_actions",
                 "title": "slp_title",
                 "order": 4,
                 "address": 1061,
@@ -4981,7 +4981,7 @@
                 ]
             },
             "4w_in3_slp": {
-                "group": "in_3_actions",
+                "group": "gg_in_3_actions",
                 "title": "slp_title",
                 "order": 5,
                 "address": 1062,
@@ -5003,7 +5003,7 @@
 
         "channels": [
             {
-                "group": "out_channels",
+                "group": "gg_out_channels",
                 "name": "RGB Strip",
                 "address": 9,
                 "type": "switch",
@@ -5011,7 +5011,7 @@
                 "condition": "(dimmer_mode==256)"
             },
             {
-                "group": "out_channels",
+                "group": "gg_out_channels",
                 "name": "RGB Palette",
                 "type": "rgb",
                 "consists_of": [
@@ -5031,7 +5031,7 @@
                 "condition": "(dimmer_mode==256)"
             },
             {
-                "group": "out_channels",
+                "group": "gg_out_channels",
                 "name": "RGB Strip Hue",
                 "address": 2014,
                 "type": "range",
@@ -5042,7 +5042,7 @@
                 "condition": "(dimmer_mode==256)"
             },
             {
-                "group": "out_channels",
+                "group": "gg_out_channels",
                 "name": "RGB Strip Saturation",
                 "address": 2015,
                 "type": "range",
@@ -5053,7 +5053,7 @@
                 "condition": "(dimmer_mode==256)"
             },
             {
-                "group": "out_channels",
+                "group": "gg_out_channels",
                 "name": "RGB Strip Brightness",
                 "address": 2016,
                 "type": "range",
@@ -5064,7 +5064,7 @@
                 "condition": "(dimmer_mode==256)"
             },
             {
-                "group": "out_channels",
+                "group": "gg_out_channels",
                 "name": "Hue Changing",
                 "address": 10,
                 "type": "switch",
@@ -5072,7 +5072,7 @@
                 "condition": "(dimmer_mode==256)"
             },
             {
-                "group": "out_channels",
+                "group": "gg_out_channels",
                 "name": "Hue Changing Rate",
                 "address": 2017,
                 "reg_type": "holding",
@@ -5082,7 +5082,7 @@
                 "condition": "(dimmer_mode==256)"
             },
             {
-                "group": "out_channels",
+                "group": "gg_out_channels",
                 "name": "Channel 1 (B)",
                 "address": 0,
                 "type": "switch",
@@ -5090,7 +5090,7 @@
                 "condition": "(dimmer_mode==0||dimmer_mode==16||dimmer_mode==32)"
             },
             {
-                "group": "out_channels",
+                "group": "gg_out_channels",
                 "name": "Channel 1 (B) Brightness",
                 "address": 2000,
                 "type": "range",
@@ -5101,7 +5101,7 @@
                 "condition": "(dimmer_mode==0||dimmer_mode==16||dimmer_mode==32)"
             },
             {
-                "group": "out_channels",
+                "group": "gg_out_channels",
                 "name": "Channel 2 (R)",
                 "address": 1,
                 "type": "switch",
@@ -5109,7 +5109,7 @@
                 "condition": "(dimmer_mode==0||dimmer_mode==16||dimmer_mode==32)"
             },
             {
-                "group": "out_channels",
+                "group": "gg_out_channels",
                 "name": "Channel 2 (R) Brightness",
                 "address": 2001,
                 "type": "range",
@@ -5120,7 +5120,7 @@
                 "condition": "(dimmer_mode==0||dimmer_mode==16||dimmer_mode==32)"
             },
             {
-                "group": "out_channels",
+                "group": "gg_out_channels",
                 "name": "Channels 1_2 (B_R)",
                 "address": 4,
                 "type": "switch",
@@ -5128,7 +5128,7 @@
                 "condition": "(dimmer_mode==1||dimmer_mode==17||dimmer_mode==33)"
             },
             {
-                "group": "out_channels",
+                "group": "gg_out_channels",
                 "name": "Channels 1_2 (B_R) Brightness",
                 "address": 2004,
                 "type": "range",
@@ -5139,7 +5139,7 @@
                 "condition": "(dimmer_mode==1||dimmer_mode==17||dimmer_mode==33)"
             },
             {
-                "group": "out_channels",
+                "group": "gg_out_channels",
                 "name": "CCT1 (channels 1_2)",
                 "address": 7,
                 "type": "switch",
@@ -5147,7 +5147,7 @@
                 "condition": "(dimmer_mode==2||dimmer_mode==18||dimmer_mode==34)"
             },
             {
-                "group": "out_channels",
+                "group": "gg_out_channels",
                 "name": "CCT1 Temperature",
                 "address": 2007,
                 "type": "range",
@@ -5158,7 +5158,7 @@
                 "condition": "(dimmer_mode==2||dimmer_mode==18||dimmer_mode==34)"
             },
             {
-                "group": "out_channels",
+                "group": "gg_out_channels",
                 "name": "CCT1 Brightness",
                 "address": 2008,
                 "type": "range",
@@ -5169,7 +5169,7 @@
                 "condition": "(dimmer_mode==2||dimmer_mode==18||dimmer_mode==34)"
             },
             {
-                "group": "out_channels",
+                "group": "gg_out_channels",
                 "name": "Channel 3 (G)",
                 "address": 2,
                 "type": "switch",
@@ -5177,7 +5177,7 @@
                 "condition": "(dimmer_mode==0||dimmer_mode==1||dimmer_mode==2)"
             },
             {
-                "group": "out_channels",
+                "group": "gg_out_channels",
                 "name": "Channel 3 (G) Brightness",
                 "address": 2002,
                 "type": "range",
@@ -5188,7 +5188,7 @@
                 "condition": "(dimmer_mode==0||dimmer_mode==1||dimmer_mode==2)"
             },
             {
-                "group": "out_channels",
+                "group": "gg_out_channels",
                 "name": "Channels 1_2_3_4",
                 "address": 6,
                 "type": "switch",
@@ -5196,7 +5196,7 @@
                 "condition": "(dimmer_mode==512)"
             },
             {
-                "group": "out_channels",
+                "group": "gg_out_channels",
                 "name": "Channels 1_2_3_4 Brightness",
                 "address": 2006,
                 "type": "range",
@@ -5207,7 +5207,7 @@
                 "condition": "(dimmer_mode==512)"
             },
             {
-                "group": "out_channels",
+                "group": "gg_out_channels",
                 "name": "CCT2 (channels 3_4)",
                 "address": 8,
                 "type": "switch",
@@ -5215,7 +5215,7 @@
                 "condition": "(dimmer_mode==32||dimmer_mode==33||dimmer_mode==34)"
             },
             {
-                "group": "out_channels",
+                "group": "gg_out_channels",
                 "name": "CCT2 Temperature",
                 "address": 2009,
                 "type": "range",
@@ -5226,7 +5226,7 @@
                 "condition": "(dimmer_mode==32||dimmer_mode==33||dimmer_mode==34)"
             },
             {
-                "group": "out_channels",
+                "group": "gg_out_channels",
                 "name": "CCT2 Brightness",
                 "address": 2010,
                 "type": "range",
@@ -5237,7 +5237,7 @@
                 "condition": "(dimmer_mode==32||dimmer_mode==33||dimmer_mode==34)"
             },
             {
-                "group": "out_channels",
+                "group": "gg_out_channels",
                 "name": "Channels 3_4 (G_W)",
                 "address": 5,
                 "type": "switch",
@@ -5245,7 +5245,7 @@
                 "condition": "(dimmer_mode==16||dimmer_mode==17||dimmer_mode==18)"
             },
             {
-                "group": "out_channels",
+                "group": "gg_out_channels",
                 "name": "Channel 4 (W)",
                 "address": 3,
                 "type": "switch",
@@ -5253,7 +5253,7 @@
                 "condition": "(dimmer_mode==0||dimmer_mode==1||dimmer_mode==2||dimmer_mode==256)"
             },
             {
-                "group": "out_channels",
+                "group": "gg_out_channels",
                 "name": "Channels 3_4 (G_W) Brightness",
                 "address": 2005,
                 "type": "range",
@@ -5264,7 +5264,7 @@
                 "condition": "(dimmer_mode==16||dimmer_mode==17||dimmer_mode==18)"
             },
             {
-                "group": "out_channels",
+                "group": "gg_out_channels",
                 "name": "Channel 4 (W) Brightness",
                 "address": 2003,
                 "type": "range",
@@ -5320,7 +5320,7 @@
                 "order": 1,
                 "address": 0,
                 "type": "switch",
-                "group": "in_1_channels"
+                "group": "gg_in_1_channels"
             },
             {
                 "name": "Input 1 Counter",
@@ -5328,7 +5328,7 @@
                 "order": 1,
                 "address": 32,
                 "type": "value",
-                "group": "in_1_channels"
+                "group": "gg_in_1_channels"
             },
             {
                 "name": "Input 1 Single Press Counter",
@@ -5337,7 +5337,7 @@
                 "order": 1,
                 "address": 464,
                 "type": "value",
-                "group": "in_1_channels"
+                "group": "gg_in_1_channels"
             },
             {
                 "name": "Input 1 Long Press Counter",
@@ -5346,7 +5346,7 @@
                 "order": 1,
                 "address": 480,
                 "type": "value",
-                "group": "in_1_channels"
+                "group": "gg_in_1_channels"
             },
             {
                 "name": "Input 1 Double Press Counter",
@@ -5355,7 +5355,7 @@
                 "order": 1,
                 "address": 496,
                 "type": "value",
-                "group": "in_1_channels"
+                "group": "gg_in_1_channels"
             },
             {
                 "name": "Input 1 Shortlong Press Counter",
@@ -5364,7 +5364,7 @@
                 "order": 1,
                 "address": 512,
                 "type": "value",
-                "group": "in_1_channels"
+                "group": "gg_in_1_channels"
             },
             {
                 "name": "Input 2",
@@ -5372,7 +5372,7 @@
                 "order": 2,
                 "address": 1,
                 "type": "switch",
-                "group": "in_2_channels"
+                "group": "gg_in_2_channels"
             },
             {
                 "name": "Input 2 Counter",
@@ -5380,7 +5380,7 @@
                 "order": 2,
                 "address": 33,
                 "type": "value",
-                "group": "in_2_channels"
+                "group": "gg_in_2_channels"
             },
             {
                 "name": "Input 2 Single Press Counter",
@@ -5389,7 +5389,7 @@
                 "order": 2,
                 "address": 465,
                 "type": "value",
-                "group": "in_2_channels"
+                "group": "gg_in_2_channels"
             },
             {
                 "name": "Input 2 Long Press Counter",
@@ -5398,7 +5398,7 @@
                 "order": 2,
                 "address": 481,
                 "type": "value",
-                "group": "in_2_channels"
+                "group": "gg_in_2_channels"
             },
             {
                 "name": "Input 2 Double Press Counter",
@@ -5407,7 +5407,7 @@
                 "order": 2,
                 "address": 497,
                 "type": "value",
-                "group": "in_2_channels"
+                "group": "gg_in_2_channels"
             },
             {
                 "name": "Input 2 Shortlong Press Counter",
@@ -5416,7 +5416,7 @@
                 "order": 2,
                 "address": 513,
                 "type": "value",
-                "group": "in_2_channels"
+                "group": "gg_in_2_channels"
             },
             {
                 "name": "Input 3",
@@ -5424,7 +5424,7 @@
                 "order": 3,
                 "address": 2,
                 "type": "switch",
-                "group": "in_3_channels"
+                "group": "gg_in_3_channels"
             },
             {
                 "name": "Input 3 Counter",
@@ -5432,7 +5432,7 @@
                 "order": 3,
                 "address": 34,
                 "type": "value",
-                "group": "in_3_channels"
+                "group": "gg_in_3_channels"
             },
             {
                 "name": "Input 3 Single Press Counter",
@@ -5441,7 +5441,7 @@
                 "order": 3,
                 "address": 466,
                 "type": "value",
-                "group": "in_3_channels"
+                "group": "gg_in_3_channels"
             },
             {
                 "name": "Input 3 Long Press Counter",
@@ -5450,7 +5450,7 @@
                 "order": 3,
                 "address": 482,
                 "type": "value",
-                "group": "in_3_channels"
+                "group": "gg_in_3_channels"
             },
             {
                 "name": "Input 3 Double Press Counter",
@@ -5459,7 +5459,7 @@
                 "order": 3,
                 "address": 498,
                 "type": "value",
-                "group": "in_3_channels"
+                "group": "gg_in_3_channels"
             },
             {
                 "name": "Input 3 Shortlong Press Counter",
@@ -5468,7 +5468,7 @@
                 "order": 3,
                 "address": 514,
                 "type": "value",
-                "group": "in_3_channels"
+                "group": "gg_in_3_channels"
             },
             {
                 "name": "Serial",
