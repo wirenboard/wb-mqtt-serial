@@ -81,16 +81,18 @@ namespace
         while (std::experimental::filesystem::is_symlink(dev)) {
             dev = std::experimental::filesystem::read_symlink(dev);
         }
-        std::experimental::filesystem::path rxTrigBytesPath("/sys/class/tty");
-        std::ifstream f;
-        f.open(rxTrigBytesPath / dev.filename() / "rx_trig_bytes");
+        auto rxTrigBytesPath = "/sys/class/tty" / dev.filename() / "rx_trig_bytes";
+        std::ifstream f(rxTrigBytesPath);
         if (f.is_open()) {
             size_t val;
             try {
                 f >> val;
-                if (f.good())
+                if (f.good()) {
+                    LOG(Info) << rxTrigBytesPath << " = " << val;
                     return val;
-            } catch (...) {
+                }
+            } catch (const std::exception& e) {
+                LOG(Warn) << rxTrigBytesPath << " read failed: " << e.what();
             }
         }
         return 0;
