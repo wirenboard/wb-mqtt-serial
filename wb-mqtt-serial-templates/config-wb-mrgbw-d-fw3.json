@@ -1,6 +1,7 @@
 {
     "title": "WB-MRGBW-D_template_title",
     "device_type": "WB-MRGBW-D fw3",
+    "deprecated": true,
     "device": {
         "name": "WB-MRGBW-D-fw3",
         "id": "wb-mrgbw-d-fw3",
