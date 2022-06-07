@@ -2287,7 +2287,18 @@
             },
             {% for out_num in range(1, OUTPUTS_NUMBER + 1) -%}
             {
+                {% if out_num == 1 -%}
                 "name": "Channel {{out_num}} (B) Raw PWM",
+                {% endif -%}
+                {% if out_num == 2 -%}
+                "name": "Channel {{out_num}} (R) Raw PWM",
+                {% endif -%}     
+                {% if out_num == 3 -%}
+                "name": "Channel {{out_num}} (G) Raw PWM",
+                {% endif -%}
+                {% if out_num == 4 -%}
+                "name": "Channel {{out_num}} (W) Raw PWM",
+                {% endif -%}
                 "reg_type": "holding",
                 "order": {{out_num}},
                 "address": {{90 + out_num - 1}},
