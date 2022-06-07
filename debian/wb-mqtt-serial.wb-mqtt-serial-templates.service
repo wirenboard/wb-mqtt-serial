@@ -3,3 +3,6 @@ Description=Generates wb-mqtt-serial UI schema for wb-mqtt-confed
 
 [Service]
 ExecStart=/usr/bin/wb-mqtt-serial -g
+
+[Install]
+WantedBy=multi-user.target
