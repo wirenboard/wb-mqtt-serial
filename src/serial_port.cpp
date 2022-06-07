@@ -75,13 +75,15 @@ namespace
         return std::chrono::milliseconds(baudRate < 9600 ? 34 : 24);
     }
 
-    size_t GetRxTrigBytes(const std::string& path)
+    size_t GetRxBytesTrig(const std::string& path)
     {
         std::experimental::filesystem::path dev(path);
         while (std::experimental::filesystem::is_symlink(dev)) {
             dev = std::experimental::filesystem::read_symlink(dev);
         }
-        std::ifstream f("/sys/class/tty" / dev.filename() / "rx_trig_bytes");
+        std::experimental::filesystem::path rxBytesTrigPath("/sys/class/tty");
+        std::ifstream f;
+        f.open(rxBytesTrigPath / dev.filename() / "rx_trig_bytes");
         if (f.is_open()) {
             size_t val;
             try {
@@ -97,7 +99,7 @@ namespace
 
 TSerialPort::TSerialPort(const TSerialPortSettings& settings)
     : Settings(settings),
-      RxTrigBytes(GetRxTrigBytes(Settings.Device))
+      RxTrigBytes(GetRxBytesTrig(Settings.Device))
 {
     memset(&OldTermios, 0, sizeof(termios));
 }
