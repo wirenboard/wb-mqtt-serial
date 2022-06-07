@@ -5,8 +5,6 @@
 #include <string>
 #include <vector>
 
-typedef uint16_t TRegisterWord;
-
 class TRegisterValue
 {
 public:
@@ -23,7 +21,7 @@ public:
 
     void Set(const std::vector<uint8_t>& vec);
 
-    void Set(const std::vector<TRegisterWord>& vec);
+    void Set(const std::vector<uint16_t>& vec);
 
     template<class T> T Get() const;
 

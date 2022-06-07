@@ -69,7 +69,7 @@ TEST_F(RegisterValueTest, String)
     value.Set(str, 32);
     EXPECT_EQ(str, value.Get<std::string>());
 
-    std::vector<TRegisterWord> vec = {'o', 'l', 'l', 'e', 'h'};
+    std::vector<uint16_t> vec = {'o', 'l', 'l', 'e', 'h'};
     value.Set(vec);
     EXPECT_EQ("hello", value.Get<std::string>());
 }

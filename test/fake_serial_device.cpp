@@ -20,7 +20,7 @@ namespace // utility
 
     void SetValue(uint16_t* dst, int width, const TRegisterValue& value)
     {
-        auto bufValue = value.Get<std::vector<TRegisterWord>>();
+        auto bufValue = value.Get<std::vector<uint16_t>>();
         int32_t p;
         uint32_t i;
         for (p = width - 1, i = 0; p >= 0; --p, ++i) {

@@ -927,6 +927,7 @@ TEST_F(TSerialClientTest, String32)
     EXPECT_EQ('t', static_cast<char>(Device->Registers[25]));
     EXPECT_EQ('e', static_cast<char>(Device->Registers[26]));
     EXPECT_EQ('r', static_cast<char>(Device->Registers[27]));
+    EXPECT_EQ('\0', static_cast<char>(Device->Registers[28]));
 }
 
 TEST_F(TSerialClientTest, offset)

@@ -27,17 +27,17 @@ template<> int64_t TRegisterValue::Get<>() const
     return static_cast<int64_t>(Get<uint64_t>());
 }
 
-template<> std::vector<TRegisterWord> TRegisterValue::Get() const
+template<> std::vector<uint16_t> TRegisterValue::Get() const
 {
-    std::vector<TRegisterWord> vec;
+    std::vector<uint16_t> vec;
 
     auto valueIt = Value.begin();
     while (valueIt != Value.end()) {
-        TRegisterWord word;
+        uint16_t word;
         word = *valueIt;
         ++valueIt;
         if (valueIt != Value.end()) {
-            word |= static_cast<TRegisterWord>(*valueIt) << 8;
+            word |= static_cast<uint16_t>(*valueIt) << 8;
             ++valueIt;
         }
         vec.push_back(word);
@@ -45,14 +45,14 @@ template<> std::vector<TRegisterWord> TRegisterValue::Get() const
     return vec;
 }
 
-template<> TRegisterWord TRegisterValue::Get() const
+template<> uint16_t TRegisterValue::Get() const
 {
-    return GetScalar<TRegisterWord>(Value);
+    return GetScalar<uint16_t>(Value);
 }
 
 template<> int16_t TRegisterValue::Get() const
 {
-    return static_cast<int16_t>(Get<TRegisterWord>());
+    return static_cast<int16_t>(Get<uint16_t>());
 }
 
 template<> uint32_t TRegisterValue::Get() const
@@ -78,7 +78,7 @@ template<> int8_t TRegisterValue::Get() const
 template<> std::string TRegisterValue::Get() const
 {
     std::string str;
-    auto value = Get<std::vector<TRegisterWord>>();
+    auto value = Get<std::vector<uint16_t>>();
     std::copy(std::make_reverse_iterator(value.end()),
               std::make_reverse_iterator(value.begin()),
               std::back_inserter(str));
@@ -240,7 +240,7 @@ void TRegisterValue::Set(const std::vector<uint8_t>& vec)
     std::copy(vec.begin(), vec.end(), std::back_inserter(Value));
 }
 
-void TRegisterValue::Set(const std::vector<TRegisterWord>& vec)
+void TRegisterValue::Set(const std::vector<uint16_t>& vec)
 {
     Value.clear();
     std::for_each(vec.begin(), vec.end(), [this](const auto& el) {

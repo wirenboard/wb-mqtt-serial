@@ -17,6 +17,8 @@ using namespace BinUtils;
 
 #define LOG(logger) logger.Log() << "[modbus] "
 
+typedef uint16_t TRegisterWord;
+
 namespace Modbus // modbus protocol declarations
 {
     const int MAX_READ_BITS = 2000;
