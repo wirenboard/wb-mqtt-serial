@@ -1,3 +1,9 @@
+wb-mqtt-serial (2.59.2-wb1) stable; urgency=medium
+
+  * WB-MR6C v.3 jinja template
+
+ -- Nikita Kulikov <n.kulikov@wirenboard.ru>  Mon, 30 May 2022 19:53:34 +0300
+
 wb-mqtt-serial (2.59.2) stable; urgency=medium
 
   * Flat templates with buttons support for relay Modbus modules with inputs
