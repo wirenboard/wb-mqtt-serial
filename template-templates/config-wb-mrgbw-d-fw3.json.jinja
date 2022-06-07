@@ -45,6 +45,17 @@
                 "order": 1,
                 "group": "g_input_{{in_num}}"
             },
+            {
+                "title": "params",
+                "id": "gg_in_{{in_num}}_params",
+                "order": 2,
+                "group": "g_input_{{in_num}}",
+                "ui_options": {
+                    "wb": {
+                        "disable_title": true
+                    }
+                }
+            },
             {% endfor -%}
             {
                 "title": "fader_hue_title",
@@ -63,39 +74,6 @@
                 "id": "gg_fader_dec",
                 "order": 4,
                 "group": "g_outputs"
-            },
-            {
-                "title": "params",
-                "id": "gg_in_1_params",
-                "order": 2,
-                "group": "g_input_1",
-                "ui_options": {
-                    "wb": {
-                        "disable_title": true
-                    }
-                }
-            },
-            {
-                "title": "params",
-                "id": "gg_in_2_params",
-                "order": 2,
-                "group": "g_input_2",
-                "ui_options": {
-                    "wb": {
-                        "disable_title": true
-                    }
-                }
-            },
-            {
-                "title": "params",
-                "id": "gg_in_3_params",
-                "order": 2,
-                "group": "g_input_3",
-                "ui_options": {
-                    "wb": {
-                        "disable_title": true
-                    }
-                }
             },
             {
                 "title": "params",
