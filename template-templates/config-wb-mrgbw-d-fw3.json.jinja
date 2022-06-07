@@ -546,12 +546,13 @@
                 "max": 30000,
                 "condition": "(dimmer_mode==256)"
             },
+            {% for in_num in range(1, INPUTS_NUMBER + 1) -%}
             {
-                "id": "in1_sp",
-                "group": "gg_in_1_actions",
+                "id": "in{{in_num}}_sp",
+                "group": "gg_in_{{in_num}}_actions",
                 "title": "sp_title",
                 "order": 1,
-                "address": 1000,
+                "address": {{1000 + in_num - 1}},
                 "reg_type": "holding",
                 "default": 0,
                 "condition": "(dimmer_mode==0)",
@@ -583,80 +584,7 @@
                     "dec_ch4_act_title"
                 ]
             },
-            {
-                "id": "in2_sp",
-                "group": "gg_in_2_actions",
-                "title": "sp_title",
-                "order": 1,
-                "address": 1001,
-                "reg_type": "holding",
-                "default": 0,
-                "condition": "(dimmer_mode==0)",
-                "enum": [
-                    0, 4096, 4097, 4098, 4099, 8192, 8193, 8194, 8195, 12288, 12289, 12290, 12291,
-                    36864, 36865, 36866, 36867, 40960, 40961, 40962, 40963
-                ],
-                "enum_titles": [
-                    "no_act_title",
-                    "off_ch1_act_title",
-                    "off_ch2_act_title",
-                    "off_ch3_act_title",
-                    "off_ch4_act_title",
-                    "on_ch1_act_title",
-                    "on_ch2_act_title",
-                    "on_ch3_act_title",
-                    "on_ch4_act_title",
-                    "tg_ch1_act_title",
-                    "tg_ch2_act_title",
-                    "tg_ch3_act_title",
-                    "tg_ch4_act_title",
-                    "inc_ch1_act_title",
-                    "inc_ch2_act_title",
-                    "inc_ch3_act_title",
-                    "inc_ch4_act_title",
-                    "dec_ch1_act_title",
-                    "dec_ch2_act_title",
-                    "dec_ch3_act_title",
-                    "dec_ch4_act_title"
-                ]
-            },
-            {
-                "id": "in3_sp",
-                "group": "gg_in_3_actions",
-                "title": "sp_title",
-                "order": 1,
-                "address": 1002,
-                "reg_type": "holding",
-                "default": 0,
-                "condition": "(dimmer_mode==0)",
-                "enum": [
-                    0, 4096, 4097, 4098, 4099, 8192, 8193, 8194, 8195, 12288, 12289, 12290, 12291,
-                    36864, 36865, 36866, 36867, 40960, 40961, 40962, 40963
-                ],
-                "enum_titles": [
-                    "no_act_title",
-                    "off_ch1_act_title",
-                    "off_ch2_act_title",
-                    "off_ch3_act_title",
-                    "off_ch4_act_title",
-                    "on_ch1_act_title",
-                    "on_ch2_act_title",
-                    "on_ch3_act_title",
-                    "on_ch4_act_title",
-                    "tg_ch1_act_title",
-                    "tg_ch2_act_title",
-                    "tg_ch3_act_title",
-                    "tg_ch4_act_title",
-                    "inc_ch1_act_title",
-                    "inc_ch2_act_title",
-                    "inc_ch3_act_title",
-                    "inc_ch4_act_title",
-                    "dec_ch1_act_title",
-                    "dec_ch2_act_title",
-                    "dec_ch3_act_title",
-                    "dec_ch4_act_title"
-                ]
-            },
+            {% endfor -%}
             {
                 "id": "in1_lp",
                 "group": "gg_in_1_actions",
