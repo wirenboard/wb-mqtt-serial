@@ -48,7 +48,6 @@ test/*.out
 *.iws
 *.iml
 
-
 **/.vscode/*
 workspace.xml
 **/.cproject
@@ -76,3 +75,4 @@ wb-mqtt-serial-templates/config-wb-mr6c.json
 wb-mqtt-serial-templates/config-wb-mrm2-mini-nc.json
 wb-mqtt-serial-templates/config-wb-mrm2-mini.json
 wb-mqtt-serial-templates/config-wb-mrwm2.json
+wb-mqtt-serial-templates/config-ecodim-dali-gw2.json
