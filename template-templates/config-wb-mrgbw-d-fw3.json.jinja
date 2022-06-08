@@ -199,9 +199,9 @@
                 "max": 500
             },
             {
-                "id": "in{{in_num}}_dp_time",
-                "title": "dp_time_title",
-                "description": "dp_time_description",
+                "id": "in{{in_num}}_secp_waiting_time",
+                "title": "secp_waiting_time_title",
+                "description": "secp_waiting_time_description",
                 "order": 3,
                 "group": "gg_in_{{in_num}}_params",
                 "address": {{1140 + in_num - 1}},
@@ -2521,13 +2521,12 @@
 
                 "lp_hold_time_title": "Long Press Time (ms)",
                 "lp_repeat_time_title": "Parameter Change Rate While Holding Input (ms/unit)",
-                "dp_time_title": "Second press waiting time (ms)",
+                "secp_waiting_time_title": "Second Press Waiting Time (ms)",
                 "debounce_time_title": "Debounce Time (ms)",
 
                 "lp_hold_time_description": "If press is longer than the specified time then it is long",
                 "lp_repeat_time_description": "The smaller value, the faster parameter changes",
-                "dp_time_description": "If there is no second press during the specified time then press is single. 0 - disables all presses except short and long",
-                "debounce_time_description": "Must be 5-10 times less than double press time. If double presses are disabled - any value",
+                "secp_waiting_time_description": "If there is no second press during the specified time then press is single. 0 - disables all presses except short and long",
 
                 "pwm_frequency_factor_title": "PWM Frequency Factor",
                 "pwm_frequency_factor_description": "PWM frequency is calculated by formula: 24 kHz / factor",
@@ -2713,13 +2712,12 @@
 
                 "lp_hold_time_title": "Время длинного нажатия (мс)",
                 "lp_repeat_time_title": "Скорость изменения параметра при удержании кнопки (мс/ед)",
-                "dp_time_title": "Время ожидания второго нажатия (мс)",
+                "secp_waiting_time_title": "Время ожидания второго нажатия (мс)",
                 "debounce_time_title": "Время подавления дребезга (мс)",
 
                 "lp_hold_time_description": "Если нажатие длится больше указанного времени - считаем его длинным",
                 "lp_repeat_time_description": "Чем меньше значение, тем быстрее изменяется параметр",
-                "dp_time_description": "Если за указанное время второго нажатия не было - считаем нажатие одиночным. 0 - отключит все нажатия кроме короткого и длинного",
-                "debounce_time_description": "Должно быть в 5-10 раз меньше, чем время ожидания двойного нажатия. Если двойные нажатия отключены - любое значение",
+                "secp_waiting_time_description": "Если за указанное время второго нажатия не было - считаем нажатие одиночным. 0 - отключит все нажатия кроме короткого и длинного",
 
                 "Channel 1 (B) Minimum Value": "Нижний порог диммирования канала 1 (B)",
                 "Channel 2 (R) Minimum Value": "Нижний порог диммирования канала 2 (R)",
