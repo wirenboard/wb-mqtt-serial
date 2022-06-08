@@ -1,3 +1,9 @@
+wb-mqtt-serial (2.61.4) stable; urgency=medium
+
+  * Loading of device templates with parameters defined as array is fixed 
+
+ -- Petr Krasnoshchekov <petr.krasnoshchekov@wirenboard.ru>  Wed, 08 Jun 2022 12:08:00 +0500
+
 wb-mqtt-serial (2.61.3) stable; urgency=medium
 
   * Unwanted regeneration of JSON schema for wb-mqtt-homeui after config saving is fixed
