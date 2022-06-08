@@ -1,9 +1,15 @@
 wb-mqtt-serial (2.61.4) stable; urgency=medium
 
-  * Template for WB-MRGBW-D fw3 without subdevices using jinja. Previous
+  * Jinja-template for WB-MRGBW-D fw3 without subdevices. Previous
     template was marked as deprecated
 
  -- Dmitry Vorobjev <d.vorobjev@wirenboard.ru>  Wed, 08 Jun 2022 15:08:27 +0300
+
+wb-mqtt-serial (2.61.3) stable; urgency=medium
+
+  * Unwanted regeneration of JSON schema for wb-mqtt-homeui after config saving is fixed
+
+ -- Petr Krasnoshchekov <petr.krasnoshchekov@wirenboard.ru>  Mon, 06 Jun 2022 17:53:57 +0500
 
 wb-mqtt-serial (2.61.2) stable; urgency=medium
 
