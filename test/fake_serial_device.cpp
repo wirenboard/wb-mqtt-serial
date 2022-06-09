@@ -98,12 +98,12 @@ TRegisterValue TFakeSerialDevice::ReadRegisterImpl(PRegister reg)
                 }
             }
             value.Set(str);
-            FakePort->GetFixture().Emit() << "fake_serial_device '" << SlaveId << "': read address '" << reg->GetAddress()
-                                          << "' value '" << value.Get<std::string>() << "'";
+            FakePort->GetFixture().Emit() << "fake_serial_device '" << SlaveId << "': read address '"
+                                          << reg->GetAddress() << "' value '" << value.Get<std::string>() << "'";
         } else {
             value.Set(GetValue(&Registers[addr], reg->Get16BitWidth()));
-            FakePort->GetFixture().Emit() << "fake_serial_device '" << SlaveId << "': read address '" << reg->GetAddress()
-                                          << "' value '" << value.Get<uint64_t>() << "'";
+            FakePort->GetFixture().Emit() << "fake_serial_device '" << SlaveId << "': read address '"
+                                          << reg->GetAddress() << "' value '" << value.Get<uint64_t>() << "'";
         }
 
         return value;
