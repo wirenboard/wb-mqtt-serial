@@ -427,7 +427,7 @@ inline const char* RegisterFormatName(RegisterFormat fmt)
         case Char8:
             return "Char8";
         case String:
-            return "String32";
+            return "String";
         default:
             return "<unknown register type>";
     }
@@ -467,7 +467,7 @@ inline RegisterFormat RegisterFormatFromName(const std::string& name)
         return Double;
     else if (name == "char8")
         return Char8;
-    else if (name == "string32")
+    else if (name == "string")
         return String;
     else
         return U16;
