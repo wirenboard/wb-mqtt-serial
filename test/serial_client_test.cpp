@@ -882,53 +882,53 @@ TEST_F(TSerialClientTest, Double64)
     EXPECT_EQ("126000", GetTextValue(reg24));
 }
 
-TEST_F(TSerialClientTest, String32)
-{
-    PRegister reg20 = Reg(20, String32);
-    PRegister reg32 = Reg(62, String32);
-    SerialClient->AddRegister(reg20);
-    SerialClient->AddRegister(reg32);
-
-    Note() << "server -> client: 40ba401f7ced9168 , 4093b148b4395810";
-    Device->Registers[20] = 'H';
-    Device->Registers[21] = 'e';
-    Device->Registers[22] = 'l';
-    Device->Registers[23] = 'l';
-    Device->Registers[24] = 'o';
-    Device->Registers[25] = ',';
-    Device->Registers[26] = ' ';
-    Device->Registers[27] = 'w';
-    Device->Registers[28] = 'o';
-    Device->Registers[29] = 'r';
-    Device->Registers[30] = 'l';
-    Device->Registers[31] = 'd';
-    Device->Registers[32] = '!';
-
-    Device->Registers[62] = 'a';
-    Device->Registers[63] = 'b';
-    Device->Registers[64] = 'c';
-    Device->Registers[65] = 'd';
-
-    Note() << "Cycle()";
-    SerialClient->Cycle();
-    EXPECT_EQ(std::string("Hello, world!"), GetTextValue(reg20));
-    EXPECT_EQ("abcd", GetTextValue(reg32));
-
-    Note() << "client -> server: 10";
-    SerialClient->SetTextValue(reg20, "computer");
-    Note() << "Cycle()";
-    SerialClient->Cycle();
-    EXPECT_EQ("computer", GetTextValue(reg20));
-    EXPECT_EQ('c', static_cast<char>(Device->Registers[20]));
-    EXPECT_EQ('o', static_cast<char>(Device->Registers[21]));
-    EXPECT_EQ('m', static_cast<char>(Device->Registers[22]));
-    EXPECT_EQ('p', static_cast<char>(Device->Registers[23]));
-    EXPECT_EQ('u', static_cast<char>(Device->Registers[24]));
-    EXPECT_EQ('t', static_cast<char>(Device->Registers[25]));
-    EXPECT_EQ('e', static_cast<char>(Device->Registers[26]));
-    EXPECT_EQ('r', static_cast<char>(Device->Registers[27]));
-    EXPECT_EQ('\0', static_cast<char>(Device->Registers[28]));
-}
+//TEST_F(TSerialClientTest, String32)
+//{
+//    PRegister reg20 = Reg(20, String32);
+//    PRegister reg32 = Reg(62, String32);
+//    SerialClient->AddRegister(reg20);
+//    SerialClient->AddRegister(reg32);
+//
+//    Note() << "server -> client: 40ba401f7ced9168 , 4093b148b4395810";
+//    Device->Registers[20] = 'H';
+//    Device->Registers[21] = 'e';
+//    Device->Registers[22] = 'l';
+//    Device->Registers[23] = 'l';
+//    Device->Registers[24] = 'o';
+//    Device->Registers[25] = ',';
+//    Device->Registers[26] = ' ';
+//    Device->Registers[27] = 'w';
+//    Device->Registers[28] = 'o';
+//    Device->Registers[29] = 'r';
+//    Device->Registers[30] = 'l';
+//    Device->Registers[31] = 'd';
+//    Device->Registers[32] = '!';
+//
+//    Device->Registers[62] = 'a';
+//    Device->Registers[63] = 'b';
+//    Device->Registers[64] = 'c';
+//    Device->Registers[65] = 'd';
+//
+//    Note() << "Cycle()";
+//    SerialClient->Cycle();
+//    EXPECT_EQ(std::string("Hello, world!"), GetTextValue(reg20));
+//    EXPECT_EQ("abcd", GetTextValue(reg32));
+//
+//    Note() << "client -> server: 10";
+//    SerialClient->SetTextValue(reg20, "computer");
+//    Note() << "Cycle()";
+//    SerialClient->Cycle();
+//    EXPECT_EQ("computer", GetTextValue(reg20));
+//    EXPECT_EQ('c', static_cast<char>(Device->Registers[20]));
+//    EXPECT_EQ('o', static_cast<char>(Device->Registers[21]));
+//    EXPECT_EQ('m', static_cast<char>(Device->Registers[22]));
+//    EXPECT_EQ('p', static_cast<char>(Device->Registers[23]));
+//    EXPECT_EQ('u', static_cast<char>(Device->Registers[24]));
+//    EXPECT_EQ('t', static_cast<char>(Device->Registers[25]));
+//    EXPECT_EQ('e', static_cast<char>(Device->Registers[26]));
+//    EXPECT_EQ('r', static_cast<char>(Device->Registers[27]));
+//    EXPECT_EQ('\0', static_cast<char>(Device->Registers[28]));
+//}
 
 TEST_F(TSerialClientTest, offset)
 {

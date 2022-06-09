@@ -585,7 +585,7 @@ TRegisterValue GetRawValue(const TRegisterConfig& reg, const std::string& str)
             value.Set(IntToPackedBCD(FromScaledTextValue<uint64_t>(reg, str) & 0xFFFFFFFF, WordSizes::W32_SZ));
             break;
         case String32:
-            value.Set(str, 32);
+            value.Set(str);
             break;
         default:
             value.Set(FromScaledTextValue<uint64_t>(reg, str));
@@ -660,7 +660,7 @@ std::string ConvertFromRawValue(const TRegisterConfig& reg, TRegisterValue val)
         case Char8:
             return std::string(1, val.Get<uint8_t>());
         case String32:
-            return val.Get<std::string>();
+            return val.GetString();
         default:
             return ToScaledTextValue(reg, val.Get<uint64_t>());
     }

@@ -549,10 +549,10 @@ namespace Modbus // modbus protocol common utilities
 
         pdu[5] = widthInModbusWords * 2;
 
-        for (int i = 0; i < widthInModbusWords; ++i) {
+        for (uint32_t i = 0; (i < widthInModbusWords) && (i < value.size()); ++i) {
             address.Address = baseAddress + i;
 
-            auto data = value.at(reg.Get16BitWidth() - 1 - i);
+            auto data = value.at(i);
             tmpCache[address.AbsAddress] = data;
             WriteAs2Bytes(pdu + 6 + i * 2, data);
         }
@@ -710,34 +710,46 @@ namespace Modbus // modbus protocol common utilities
         }
 
         for (auto reg: range.RegisterList()) {
-            int w = reg->Get16BitWidth();
+
             auto bitWidth = reg->GetDataWidth();
-
-            TRegisterValue r;
-
             auto addr = GetUint32RegisterAddress(reg->GetAddress());
-            int wordIndex = (addr - range.GetStart());
-            auto reverseWordIndex = w - 1;
 
-            uint8_t bitsWritten = 0;
+            if (reg->Format == RegisterFormat::String32) {
+                std::string str;
+                for (uint32_t i = 0; i < reg->Get16BitWidth(); ++i) {
+                    str.push_back(static_cast<char>(destination[addr - range.GetStart() + i]));
+                }
 
-            while (w--) {
-                uint16_t data = destination[addr - range.GetStart() + w];
+                TRegisterValue val;
+                val.Set(str);
+                reg->SetValue(val);
+            } else {
+                int w = reg->Get16BitWidth();
+                uint64_t r = 0;
 
-                auto localBitOffset = std::max(static_cast<uint8_t>(reg->GetDataOffset()) - wordIndex * 16, 0);
+                int wordIndex = (addr - range.GetStart());
+                auto reverseWordIndex = w - 1;
 
-                auto bitCount = std::min(static_cast<uint32_t>(16 - localBitOffset), bitWidth);
+                uint8_t bitsWritten = 0;
 
-                auto mask = GetLSBMask(bitCount);
+                while (w--) {
+                    uint16_t data = destination[addr - range.GetStart() + w];
 
-                r |= TRegisterValue{mask & (data >> localBitOffset)} << bitsWritten;
+                    auto localBitOffset = std::max(static_cast<int8_t>(reg->GetDataOffset()) - wordIndex * 16, 0);
 
-                --reverseWordIndex;
-                ++wordIndex;
-                bitWidth -= bitCount;
-                bitsWritten += bitCount;
+                    auto bitCount = std::min(static_cast<uint32_t>(16 - localBitOffset), bitWidth);
+
+                    auto mask = GetLSBMask(bitCount);
+
+                    r |= (mask & (data >> localBitOffset)) << bitsWritten;
+
+                    --reverseWordIndex;
+                    ++wordIndex;
+                    bitWidth -= bitCount;
+                    bitsWritten += bitCount;
+                }
+                reg->SetValue(TRegisterValue{r});
             }
-            reg->SetValue(r);
         }
     }
 
@@ -800,36 +812,38 @@ namespace Modbus // modbus protocol common utilities
 
         vector<TRequest> requests(InferWriteRequestsCount(reg));
 
-        auto valueArray = value.Get<std::vector<TRegisterWord>>();
-
-        for (size_t i = 0; i < requests.size(); ++i) {
-            auto& req = requests[i];
+        if (IsPacking(reg)) {
+            auto& req = requests.front();
             req.resize(traits.GetPacketSize(InferWriteRequestPDUSize(reg)));
 
-            if (IsPacking(reg)) {
-                assert(requests.size() == 1 && "only one request is expected when using multiple write");
-                // Added workaround for data offset on write
-                if (reg.Format == RegisterFormat::String32) {
-                    ComposeMultipleWriteRequestPDU(traits.GetPDU(req), reg, valueArray, shift, tmpCache, cache);
-                } else {
-                    ComposeMultipleWriteRequestPDU(traits.GetPDU(req),
-                                                   reg,
-                                                   value.Get<uint64_t>(),
-                                                   shift,
-                                                   tmpCache,
-                                                   cache);
-                }
+            assert(requests.size() == 1 && "only one request is expected when using multiple write");
+            // Added workaround for data offset on write
+            if (reg.Format == RegisterFormat::String32) {
+                auto str = value.GetString();
+                std::vector<TRegisterWord> payloadBuf;
+                std::for_each(str.begin(), str.end(), [&payloadBuf](char ch) { payloadBuf.push_back(ch); });
+                ComposeMultipleWriteRequestPDU(traits.GetPDU(req), reg, payloadBuf, shift, tmpCache, cache);
             } else {
+                ComposeMultipleWriteRequestPDU(traits.GetPDU(req), reg, value.Get<uint64_t>(), shift, tmpCache, cache);
+            }
+            traits.FinalizeRequest(req, slaveId);
+        } else {
+            auto val = value.Get<uint64_t>();
+            for (size_t i = 0; i < requests.size(); ++i) {
+                auto& req = requests[i];
+                req.resize(traits.GetPacketSize(InferWriteRequestPDUSize(reg)));
+
                 ComposeSingleWriteRequestPDU(traits.GetPDU(req),
                                              reg,
-                                             valueArray.size() > i ? valueArray.at(i) : 0,
+                                             static_cast<uint16_t>(val & 0xffff),
                                              shift,
                                              requests.size() - i - 1,
                                              tmpCache,
                                              cache);
-            }
 
-            traits.FinalizeRequest(req, slaveId);
+                val >>= 16;
+                traits.FinalizeRequest(req, slaveId);
+            }
         }
 
         for (const auto& request: requests) {

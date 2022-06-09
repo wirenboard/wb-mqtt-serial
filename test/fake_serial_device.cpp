@@ -5,26 +5,21 @@ using namespace std;
 
 namespace // utility
 {
-    TRegisterValue GetValue(uint16_t* src, int width)
+    uint64_t GetValue(uint16_t* src, int width)
     {
-        TRegisterValue value;
-
-        std::vector<uint8_t> vec;
-        for (int i = width - 1; i >= 0; --i) {
-            vec.push_back(src[i]);
-            vec.push_back(src[i] >> 8);
-        };
-        value.Set(vec);
-        return value;
+        uint64_t res = 0;
+        for (int i = 0; i < width; ++i) {
+            auto bitCount = ((width - i) - 1) * 16;
+            res |= uint64_t(src[i]) << bitCount;
+        }
+        return res;
     }
 
-    void SetValue(uint16_t* dst, int width, const TRegisterValue& value)
+    void SetValue(uint16_t* dst, int width, uint64_t value)
     {
-        auto bufValue = value.Get<std::vector<uint16_t>>();
-        int32_t p;
-        uint32_t i;
-        for (p = width - 1, i = 0; p >= 0; --p, ++i) {
-            dst[p] = bufValue.size() > i ? bufValue.at(i) : 0;
+        for (int p = width - 1; p >= 0; --p) {
+            dst[p] = value & 0xffff;
+            value >>= 16;
         }
     }
 
@@ -93,7 +88,7 @@ TRegisterValue TFakeSerialDevice::ReadRegisterImpl(PRegister reg)
             throw runtime_error("invalid register type");
         }
 
-        auto value = GetValue(&Registers[addr], reg->Get16BitWidth());
+        auto value = TRegisterValue{GetValue(&Registers[addr], reg->Get16BitWidth())};
 
         FakePort->GetFixture().Emit() << "fake_serial_device '" << SlaveId << "': read address '" << reg->GetAddress()
                                       << "' value '" << value.Get<uint64_t>() << "'";
@@ -132,7 +127,7 @@ void TFakeSerialDevice::WriteRegisterImpl(PRegister reg, const TRegisterValue& v
             throw runtime_error("invalid register type");
         }
 
-        SetValue(&Registers[addr], reg->Get16BitWidth(), value);
+        SetValue(&Registers[addr], reg->Get16BitWidth(), value.Get<uint64_t>());
 
         FakePort->GetFixture().Emit() << "fake_serial_device '" << SlaveId << "': write to address '"
                                       << reg->GetAddress() << "' value '" << value.Get<uint64_t>() << "'";

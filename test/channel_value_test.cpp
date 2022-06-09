@@ -30,49 +30,27 @@ TEST_F(RegisterValueTest, Set)
     EXPECT_EQ(val, registerValue.Get<uint64_t>());
 }
 
-TEST_F(RegisterValueTest, rightShift)
-{
-    uint64_t val = 0xAABBCCDD;
-    TRegisterValue registerValue{val};
+//TEST_F(RegisterValueTest, orOperator)
+//{
+//    uint64_t val = 0xAABBCCDD;
+//    uint64_t valOther = 0x1122334400000055;
+//    TRegisterValue channelValue{val};
+//    TRegisterValue otherChannelValue{valOther};
+//    channelValue |= otherChannelValue;
+//    EXPECT_EQ(val | valOther, channelValue.Get<uint64_t>());
+//}
 
-    for (uint32_t i = 0; i < 64; ++i) {
-        auto result = registerValue >> i;
-        EXPECT_EQ(val >> i, result.Get<uint64_t>());
-    }
-}
-
-TEST_F(RegisterValueTest, leftShift)
-{
-    uint64_t val = 0xAABBCCDD;
-    TRegisterValue registerValue{val};
-
-    for (uint32_t i = 0; i < 64; ++i) {
-        auto result = registerValue << i;
-        EXPECT_EQ(val << i, result.Get<uint64_t>());
-    }
-}
-
-TEST_F(RegisterValueTest, orOperator)
-{
-    uint64_t val = 0xAABBCCDD;
-    uint64_t valOther = 0x1122334400000055;
-    TRegisterValue channelValue{val};
-    TRegisterValue otherChannelValue{valOther};
-    channelValue |= otherChannelValue;
-    EXPECT_EQ(val | valOther, channelValue.Get<uint64_t>());
-}
-
-TEST_F(RegisterValueTest, String)
-{
-    TRegisterValue value;
-    std::string str = "abcdefgh1423";
-    value.Set(str, 32);
-    EXPECT_EQ(str, value.Get<std::string>());
-
-    std::vector<uint16_t> vec = {'o', 'l', 'l', 'e', 'h'};
-    value.Set(vec);
-    EXPECT_EQ("hello", value.Get<std::string>());
-}
+//TEST_F(RegisterValueTest, String)
+//{
+//    TRegisterValue value;
+//    std::string str = "abcdefgh1423";
+//    value.Set(str, 32);
+//    EXPECT_EQ(str, value.Get<std::string>());
+//
+//    std::vector<uint16_t> vec = {'o', 'l', 'l', 'e', 'h'};
+//    value.Set(vec);
+//    EXPECT_EQ("hello", value.Get<std::string>());
+//}
 
 TEST_F(RegisterValueTest, ToString)
 {

@@ -17,7 +17,7 @@ public:
 
     void Set(uint64_t value);
 
-    void Set(const std::string& value, size_t width);
+    void Set(const std::string& value);
 
     void Set(const std::vector<uint8_t>& vec);
 
@@ -35,14 +35,14 @@ public:
 
     bool operator!=(const TRegisterValue& other) const;
 
-    TRegisterValue operator>>(uint32_t offset) const;
-
-    TRegisterValue operator<<(uint32_t offset) const;
-
-    TRegisterValue& operator|=(const TRegisterValue& other);
-
     std::string ToString();
+
+    std::string GetString() const{
+        return StringValue;
+    }
 
 private:
     std::deque<uint8_t> Value;
+    std::string StringValue;
+    bool HasString{false};
 };
