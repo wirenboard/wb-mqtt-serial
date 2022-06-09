@@ -714,7 +714,7 @@ namespace Modbus // modbus protocol common utilities
             auto bitWidth = reg->GetDataWidth();
             auto addr = GetUint32RegisterAddress(reg->GetAddress());
 
-            if (reg->Format == RegisterFormat::String32) {
+            if (reg->Format == RegisterFormat::String) {
                 std::string str;
                 for (uint32_t i = 0; i < reg->Get16BitWidth(); ++i) {
                     str.push_back(static_cast<char>(destination[addr - range.GetStart() + i]));
@@ -818,8 +818,8 @@ namespace Modbus // modbus protocol common utilities
 
             assert(requests.size() == 1 && "only one request is expected when using multiple write");
             // Added workaround for data offset on write
-            if (reg.Format == RegisterFormat::String32) {
-                auto str = value.GetString();
+            if (reg.Format == RegisterFormat::String) {
+                auto str = value.Get<std::string>();
                 std::vector<TRegisterWord> payloadBuf;
                 std::for_each(str.begin(), str.end(), [&payloadBuf](char ch) { payloadBuf.push_back(ch); });
                 ComposeMultipleWriteRequestPDU(traits.GetPDU(req), reg, payloadBuf, shift, tmpCache, cache);

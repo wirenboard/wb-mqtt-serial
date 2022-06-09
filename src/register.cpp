@@ -12,7 +12,7 @@
 size_t RegisterFormatByteWidth(RegisterFormat format)
 {
     switch (format) {
-        case String32:
+        case String:
             return 32;
         case S64:
         case U64:
@@ -584,7 +584,7 @@ TRegisterValue GetRawValue(const TRegisterConfig& reg, const std::string& str)
         case BCD32:
             value.Set(IntToPackedBCD(FromScaledTextValue<uint64_t>(reg, str) & 0xFFFFFFFF, WordSizes::W32_SZ));
             break;
-        case String32:
+        case String:
             value.Set(str);
             break;
         default:
@@ -659,8 +659,8 @@ std::string ConvertFromRawValue(const TRegisterConfig& reg, TRegisterValue val)
         }
         case Char8:
             return std::string(1, val.Get<uint8_t>());
-        case String32:
-            return val.GetString();
+        case String:
+            return val.Get<std::string>();
         default:
             return ToScaledTextValue(reg, val.Get<uint64_t>());
     }

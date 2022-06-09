@@ -19,10 +19,6 @@ public:
 
     void Set(const std::string& value);
 
-    void Set(const std::vector<uint8_t>& vec);
-
-    void Set(const std::vector<uint16_t>& vec);
-
     template<class T> T Get() const;
 
     TRegisterValue& operator=(const TRegisterValue& other);
@@ -35,14 +31,15 @@ public:
 
     bool operator!=(const TRegisterValue& other) const;
 
-    std::string ToString();
-
-    std::string GetString() const{
-        return StringValue;
-    }
-
 private:
-    std::deque<uint8_t> Value;
     std::string StringValue;
-    bool HasString{false};
+    uint64_t IntegerValue{0};
+    enum class ValueType
+    {
+        Undefine,
+        Integer,
+        String
+    };
+
+    ValueType Type{ValueType::Undefine};
 };
