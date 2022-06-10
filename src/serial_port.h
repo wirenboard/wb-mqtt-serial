@@ -34,6 +34,7 @@ public:
 private:
     TSerialPortSettings Settings;
     termios OldTermios;
+    size_t RxTrigBytes;
 };
 
 using PSerialPort = std::shared_ptr<TSerialPort>;
