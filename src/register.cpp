@@ -433,12 +433,11 @@ template<typename T> T RoundValue(T val, double round_to)
 
 TRegisterValue InvertWordOrderIfNeeded(const TRegisterConfig& reg, TRegisterValue value)
 {
-    if (reg.WordOrder == EWordOrder::BigEndian) {
+    if ((reg.WordOrder == EWordOrder::BigEndian) || (reg.Format == RegisterFormat::String)) {
         return value;
     }
-    // TODO Modify
     uint64_t result = 0;
-    uint64_t cur_value = value.Get<uint64_t>();
+    auto cur_value = value.Get<uint64_t>();
 
     for (int i = 0; i < reg.Get16BitWidth(); ++i) {
         uint16_t last_word = (((uint64_t)cur_value) & 0xFFFF);

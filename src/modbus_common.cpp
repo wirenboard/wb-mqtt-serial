@@ -720,9 +720,7 @@ namespace Modbus // modbus protocol common utilities
                     str.push_back(static_cast<char>(destination[addr - range.GetStart() + i]));
                 }
 
-                TRegisterValue val;
-                val.Set(str);
-                reg->SetValue(val);
+                reg->SetValue(TRegisterValue{str});
             } else {
                 int w = reg->Get16BitWidth();
                 uint64_t r = 0;

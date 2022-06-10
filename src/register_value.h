@@ -8,12 +8,21 @@
 class TRegisterValue
 {
 public:
+    enum class ValueType
+    {
+        Undefined,
+        Integer,
+        String
+    };
+
     TRegisterValue() = default;
 
     TRegisterValue(const TRegisterValue& other) = default;
     TRegisterValue(TRegisterValue&& other) = default;
 
     explicit TRegisterValue(uint64_t value);
+
+    explicit TRegisterValue(const std::string& stringValue);
 
     void Set(uint64_t value);
 
@@ -31,15 +40,11 @@ public:
 
     bool operator!=(const TRegisterValue& other) const;
 
+    ValueType GetType();
+
 private:
     std::string StringValue;
     uint64_t IntegerValue{0};
-    enum class ValueType
-    {
-        Undefine,
-        Integer,
-        String
-    };
 
-    ValueType Type{ValueType::Undefine};
+    ValueType Type{ValueType::Undefined};
 };

@@ -55,6 +55,11 @@ TRegisterValue::TRegisterValue(uint64_t value)
     Set(value);
 }
 
+TRegisterValue::TRegisterValue(const std::string& stringValue)
+{
+    Set(stringValue);
+}
+
 void TRegisterValue::Set(uint64_t value)
 {
     Type = ValueType::Integer;
@@ -130,4 +135,9 @@ bool TRegisterValue::operator==(uint64_t other) const
 bool TRegisterValue::operator!=(const TRegisterValue& other) const
 {
     return !(*this == other);
+}
+
+TRegisterValue::ValueType TRegisterValue::GetType()
+{
+    return Type;
 }
