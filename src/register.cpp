@@ -130,7 +130,14 @@ TRegisterValue TRegister::GetValue() const
 void TRegister::SetValue(const TRegisterValue& value, bool clearReadError)
 {
     if (Value != value) {
-        LOG(Debug) << "new val for " << ToString() << ": " << std::hex << value.Get<uint64_t>();
+        std::stringstream ss;
+        ss << "new val for " << ToString() << ": ";
+        if (value.GetType() == TRegisterValue::ValueType::String) {
+            ss << value.Get<std::string>();
+        } else {
+            ss << std::hex << value.Get<uint64_t>();
+        }
+        LOG(Debug) << ss.str();
     }
     Value = value;
     if (UnsupportedValue && (*UnsupportedValue == value)) {

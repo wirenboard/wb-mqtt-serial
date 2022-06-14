@@ -5,48 +5,61 @@
 #include <sstream>
 #include <vector>
 
+TRegisterValueException::TRegisterValueException(const char* file, int line, const std::string& message)
+    : WBMQTT::TBaseException(file, line, message)
+{}
+
 template<> uint64_t TRegisterValue::Get<>() const
 {
+    CheckIntegerValue();
     return IntegerValue;
 }
 
 template<> int64_t TRegisterValue::Get<>() const
 {
+    CheckIntegerValue();
     return static_cast<int64_t>(IntegerValue);
 }
 
 template<> uint16_t TRegisterValue::Get() const
 {
+    CheckIntegerValue();
     return static_cast<uint16_t>(IntegerValue);
 }
 
 template<> int16_t TRegisterValue::Get() const
 {
+    CheckIntegerValue();
     return static_cast<int16_t>(Get<uint16_t>());
 }
 
 template<> uint32_t TRegisterValue::Get() const
 {
+    CheckIntegerValue();
     return static_cast<uint32_t>(IntegerValue);
 }
 
 template<> int32_t TRegisterValue::Get() const
 {
+    CheckIntegerValue();
     return static_cast<int32_t>(Get<uint32_t>());
 }
 
 template<> uint8_t TRegisterValue::Get() const
 {
+    CheckIntegerValue();
     return static_cast<uint8_t>(IntegerValue);
 }
 
 template<> int8_t TRegisterValue::Get() const
 {
+    CheckIntegerValue();
     return static_cast<int8_t>(Get<uint8_t>());
 }
 
 template<> std::string TRegisterValue::Get() const
 {
+    CheckStringValue();
     return StringValue;
 }
 
@@ -137,7 +150,21 @@ bool TRegisterValue::operator!=(const TRegisterValue& other) const
     return !(*this == other);
 }
 
-TRegisterValue::ValueType TRegisterValue::GetType()
+TRegisterValue::ValueType TRegisterValue::GetType() const
 {
     return Type;
+}
+
+void TRegisterValue::CheckIntegerValue() const
+{
+    if (Type != ValueType::Integer) {
+        wb_throw(TRegisterValueException, "Value is not Integer");
+    }
+}
+
+void TRegisterValue::CheckStringValue() const
+{
+    if (Type != ValueType::String) {
+        wb_throw(TRegisterValueException, "Value is not String");
+    }
 }

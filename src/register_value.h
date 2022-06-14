@@ -1,9 +1,20 @@
 #pragma once
+
 #include <cstddef>
 #include <cstdint>
 #include <deque>
 #include <string>
 #include <vector>
+
+#include <wblib/exceptions.h>
+#include <wblib/utils.h>
+
+class TRegisterValueException: public WBMQTT::TBaseException
+{
+public:
+    explicit TRegisterValueException() = delete;
+    TRegisterValueException(const char* file, int line, const std::string& message);
+};
 
 class TRegisterValue
 {
@@ -40,11 +51,15 @@ public:
 
     bool operator!=(const TRegisterValue& other) const;
 
-    ValueType GetType();
+    ValueType GetType() const;
 
 private:
     std::string StringValue;
     uint64_t IntegerValue{0};
 
     ValueType Type{ValueType::Undefined};
+
+    inline void CheckIntegerValue() const;
+
+    inline void CheckStringValue() const;
 };
