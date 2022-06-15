@@ -1,6 +1,7 @@
 {
     "title": "WB-MR6LV",
     "device_type": "WB-MR6LV",
+    "deprecated": true,
     "device": {
         "name": "WB-MR6LV",
         "id": "wb-mr6lv",
