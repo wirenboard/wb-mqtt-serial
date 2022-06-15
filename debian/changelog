@@ -1,6 +1,7 @@
 wb-mqtt-serial (2.61.6) stable; urgency=medium
 
   * Support for wb-mqtt-homeui 2.39.2 is added
+  * Loading of device templates with parameters defined as array is fixed 
 
  -- Petr Krasnoshchekov <petr.krasnoshchekov@wirenboard.ru>  Wed, 15 Jun 2022 12:46:38 +0500
 

@@ -174,6 +174,12 @@ TEST_F(TConfigParserTest, SameSetupItems)
     PrintConfig(GetConfig("configs/parse_test_setup.json"));
 }
 
+TEST_F(TConfigParserTest, ParametersAsArray)
+{
+    // Check loading device template with parameters defined as array
+    PrintConfig(GetConfig("configs/parse_test_parameters_array.json"));
+}
+
 TEST_F(TConfigParserTest, UnsuccessfulParse)
 {
     Json::Value configSchema = LoadConfigSchema(GetDataFilePath("../wb-mqtt-serial.schema.json"));
