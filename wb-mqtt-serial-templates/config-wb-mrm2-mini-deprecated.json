@@ -1,5 +1,5 @@
 {
-    "title": "WB-MRM2-mini-NO_template_title",
+    "title": "WB-MRM2-mini/NO",
     "device_type": "WB-MRM2-mini",
     "deprecated": true,
     "device": {
@@ -249,12 +249,10 @@
         ],
         "translations": {
             "en": {
-                "WB-MRM2-mini-NO_template_title": "WB-MRM2-mini/NO - legacy template",
                 "baud_rate_description": "Make sure that communication with device is established before changing this parameter. Select required baud rate, save configuration and then change port baud rate to the same value.",
                 "Uptime": "Uptime (s)"
             },
             "ru": {
-                "WB-MRM2-mini-NO_template_title": "WB-MRM2-mini/NO - устаревший шаблон",
                 "Button 1": "Вход 1",
                 "Button 2": "Вход 2",
                 "Outputs": "Выходы",

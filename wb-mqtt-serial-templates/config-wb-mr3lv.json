@@ -1,5 +1,5 @@
 {
-    "title": "_WB-MR3LV-template-title",
+    "title": "WB-MR3LV",
     "device_type": "WB-MR3LV",
     "device": {
         "name": "WB-MR3LV",
@@ -321,14 +321,6 @@
                 "enabled": false,
                 "group": "hw_info"
             }
-        ],
-        "translations": {
-            "en": {
-                "_WB-MR3LV-template-title": "WB-MR3LV - legacy template"
-            },
-            "ru": {
-                "_WB-MR3LV-template-title": "WB-MR3LV - устаревший шаблон"
-            }
-        }
+        ]
     }
 }

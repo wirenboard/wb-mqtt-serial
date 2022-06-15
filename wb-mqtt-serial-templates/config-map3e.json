@@ -1,5 +1,5 @@
 {
-    "title": "_WB-MAP3E-template-title",
+    "title": "WB-MAP3E",
     "device_type": "WB-MAP3E",
     "device": {
         "name": "WB-MAP3E",
@@ -506,12 +506,10 @@
         ],
         "translations": {
             "en": {
-                "_WB-MAP3E-template-title": "WB-MAP3E - legacy template",
                 "Supply Voltage": "5V Supply",
                 "Uptime": "Uptime (s)"
             },
             "ru": {
-                "_WB-MAP3E-template-title": "WB-MAP3E - устаревший шаблон",
                 "Total": "Показатели по трем фазам",
                 "General": "Общее",
                 "HW Info": "Данные модуля",

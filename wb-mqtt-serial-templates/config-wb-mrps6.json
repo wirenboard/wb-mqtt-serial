@@ -1,5 +1,5 @@
 {
-    "title": "_WB-MRPS6-template-title",
+    "title": "WB-MRPS6",
     "device_type": "WB-MRPS6",
     "device": {
         "name": "WB-MRPS6",
@@ -71,14 +71,6 @@
                 "format": "u32",
                 "enabled": false
             }
-        ],
-        "translations": {
-            "en": {
-                "_WB-MRPS6-template-title": "WB-MRPS6 - legacy template"
-            },
-            "ru": {
-                "_WB-MRPS6-template-title": "WB-MRPS6 - устаревший шаблон"
-            }
-        }
+        ]
     }
 }
