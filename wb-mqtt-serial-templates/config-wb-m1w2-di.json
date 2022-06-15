@@ -1,6 +1,7 @@
 {
-    "title": "_WB-M1W2-DI-template-title",
+    "title": "WB-M1W2 DI",
     "device_type": "WB-M1W2 DI",
+    "deprecated": true,
     "device": {
         "name": "WB-M1W2",
         "id": "wb-m1w2",
@@ -97,14 +98,6 @@
                 "format": "u32",
                 "enabled": false
             }
-        ],
-        "translations": {
-            "en": {
-                "_WB-M1W2-DI-template-title": "WB-M1W2 DI - legacy template"
-            },
-            "ru": {
-                "_WB-M1W2-DI-template-title": "WB-M1W2 DI - устаревший шаблон"
-            }
-        }
+        ]
     }
 }
