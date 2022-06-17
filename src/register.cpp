@@ -13,7 +13,7 @@ size_t RegisterFormatByteWidth(RegisterFormat format)
 {
     switch (format) {
         case String:
-            return 0;
+            return 32;
         case S64:
         case U64:
         case Double:
