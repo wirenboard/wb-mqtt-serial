@@ -144,8 +144,10 @@ protected:
                         Emit() << "Name: " << setup_item->GetName();
                         Emit() << "Address: " << setup_item->GetRegisterConfig()->GetAddress();
                         Emit() << "Value: " << setup_item->GetValue();
-                        Emit() << "RawValue: 0x" << std::setfill('0') << std::setw(2) << std::hex
-                               << setup_item->GetRawValue().Get<uint64_t>();
+                        if (setup_item->GetRawValue().GetType() != TRegisterValue::ValueType::String) {
+                            Emit() << "RawValue: 0x" << std::setfill('0') << std::setw(2) << std::hex
+                                   << setup_item->GetRawValue().Get<uint64_t>();
+                        }
                         Emit() << "Reg type: " << setup_item->GetRegisterConfig()->TypeName << " ("
                                << setup_item->GetRegisterConfig()->Type << ")";
                         Emit() << "Reg format: " << RegisterFormatName(setup_item->GetRegisterConfig()->Format);
