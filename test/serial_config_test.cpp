@@ -113,12 +113,20 @@ protected:
                                 Emit() << "ReadRateLimit: " << reg->ReadRateLimit->count();
                             }
                             if (reg->ErrorValue) {
-                                Emit() << "ErrorValue: " << reg->ErrorValue->Get<uint64_t>();
+                                if (reg->ErrorValue->GetType() == TRegisterValue::ValueType::String) {
+                                    Emit() << "ErrorValue: " << reg->ErrorValue->Get<std::string>();
+                                } else {
+                                    Emit() << "ErrorValue: " << reg->ErrorValue->Get<uint64_t>();
+                                }
                             } else {
                                 Emit() << "ErrorValue: not set";
                             }
                             if (reg->UnsupportedValue) {
-                                Emit() << "UnsupportedValue: " << reg->UnsupportedValue->Get<uint64_t>();
+                                if (reg->UnsupportedValue->GetType() == TRegisterValue::ValueType::String) {
+                                    Emit() << "UnsupportedValue: " << reg->UnsupportedValue->Get<std::string>();
+                                } else {
+                                    Emit() << "UnsupportedValue: " << reg->UnsupportedValue->Get<uint64_t>();
+                                }
                             } else {
                                 Emit() << "UnsupportedValue: not set";
                             }

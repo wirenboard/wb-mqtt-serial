@@ -940,8 +940,18 @@ namespace Modbus // modbus protocol common utilities
         for (const auto& item: setupItems) {
             try {
                 WriteRegister(traits, port, slaveId, *item->Register, item->RawValue, cache, shift);
-                LOG(Info) << "Init: " << item->Name << ": setup register " << item->Register->ToString() << " <-- "
-                          << item->HumanReadableValue << " (0x" << std::hex << item->RawValue.Get<uint64_t>() << ")";
+
+                std::stringstream ss;
+                ss << "Init: " << item->Name << ": setup register " << item->Register->ToString() << " <-- "
+                   << item->HumanReadableValue;
+
+                if (item->RawValue.GetType() == TRegisterValue::ValueType::String) {
+                    ss << " ('" << item->RawValue.Get<std::string>() << "')";
+                } else {
+                    ss << " (0x" << std::hex << item->RawValue.Get<uint64_t>() << ")";
+                    // TODO: More verbose exception
+                }
+                LOG(Info) << ss.str();
             } catch (const TSerialDevicePermanentRegisterException& e) {
                 WarnFailedRegisterSetup(item, e.what());
             }

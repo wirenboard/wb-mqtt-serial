@@ -1,9 +1,4 @@
 #include "register_value.h"
-#include <algorithm>
-#include <iomanip>
-#include <iostream>
-#include <sstream>
-#include <vector>
 
 TRegisterValueException::TRegisterValueException(const char* file, int line, const std::string& message)
     : WBMQTT::TBaseException(file, line, message)
