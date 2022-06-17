@@ -258,6 +258,10 @@ namespace
             context.stride,
             RegisterFormatByteWidth(regType.DefaultFormat));
 
+        if ((regType.DefaultFormat == RegisterFormat::String) && (registerDesc.DataWidth == 0)) {
+            throw TConfigParserException("String size not set for register string format");
+        }
+
         res.RegisterConfig = TRegisterConfig::Create(regType.Index,
                                                      registerDesc,
                                                      regType.DefaultFormat,
