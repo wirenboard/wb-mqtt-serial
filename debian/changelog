@@ -1,3 +1,9 @@
+wb-mqtt-serial (2.61.7) stable; urgency=medium
+
+  * Amount of warnings about failed connection to Milur meter is reduced
+
+ -- Petr Krasnoshchekov <petr.krasnoshchekov@wirenboard.ru>  Mon, 20 Jun 2022 20:55:38 +0500
+
 wb-mqtt-serial (2.61.6) stable; urgency=medium
 
   * Title is updated for deprecated templates
