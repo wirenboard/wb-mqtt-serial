@@ -63,3 +63,5 @@ private:
 
     inline void CheckStringValue() const;
 };
+
+std::ostream& operator<<(std::ostream& os, const TRegisterValue& obj);

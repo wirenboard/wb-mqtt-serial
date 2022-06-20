@@ -163,3 +163,13 @@ void TRegisterValue::CheckStringValue() const
         wb_throw(TRegisterValueException, "Value is not String");
     }
 }
+
+std::ostream& operator<<(std::ostream& os, const TRegisterValue& obj)
+{
+    if (obj.GetType() == TRegisterValue::ValueType::String) {
+        os << obj.Get<std::string>();
+    } else {
+        os << std::showbase << std::hex << obj.Get<uint64_t>();
+    }
+    return os;
+}

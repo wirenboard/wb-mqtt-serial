@@ -24,44 +24,44 @@ fake_serial_device '151': transfer OK
 fake_serial_device '151': reconnected
 Publish: /devices/PollIntervalMissError/controls/Test: '0' (QoS 1, retained)
 >>> LoopOnce() [interval miss]
-fake_serial_device '151': read address '0' value '255'
+fake_serial_device '151': read address '0' value '0xff'
 Publish: /devices/PollIntervalMissError/controls/Test: '255' (QoS 1, retained)
 >>> LoopOnce() [interval miss]
-fake_serial_device '151': read address '0' value '255'
+fake_serial_device '151': read address '0' value '0xff'
 >>> LoopOnce() [interval miss]
-fake_serial_device '151': read address '0' value '255'
+fake_serial_device '151': read address '0' value '0xff'
 >>> LoopOnce() [interval miss]
-fake_serial_device '151': read address '0' value '255'
+fake_serial_device '151': read address '0' value '0xff'
 >>> LoopOnce() [interval miss]
-fake_serial_device '151': read address '0' value '255'
+fake_serial_device '151': read address '0' value '0xff'
 Publish: /devices/PollIntervalMissError/controls/Test/meta/error: 'p' (QoS 1, retained)
 >>> LoopOnce() [interval ok]
-fake_serial_device '151': read address '0' value '255'
->>> LoopOnce() [interval ok]
-fake_serial_device '151': read address '0' value '255'
->>> LoopOnce() [interval ok]
-fake_serial_device '151': read address '0' value '255'
->>> LoopOnce() [interval ok]
-fake_serial_device '151': read address '0' value '255'
->>> LoopOnce() [interval ok]
-fake_serial_device '151': read address '0' value '255'
->>> LoopOnce() [interval ok]
-fake_serial_device '151': read address '0' value '255'
->>> LoopOnce() [interval ok]
-fake_serial_device '151': read address '0' value '255'
->>> LoopOnce() [interval ok]
-fake_serial_device '151': read address '0' value '255'
->>> LoopOnce() [interval ok]
-fake_serial_device '151': read address '0' value '255'
->>> LoopOnce() [interval ok]
-fake_serial_device '151': read address '0' value '255'
+fake_serial_device '151': read address '0' value '0xff'
 Publish: /devices/PollIntervalMissError/controls/Test/meta/error: '' (QoS 1, retained)
+>>> LoopOnce() [interval ok]
+fake_serial_device '151': read address '0' value '0xff'
+>>> LoopOnce() [interval ok]
+fake_serial_device '151': read address '0' value '0xff'
+>>> LoopOnce() [interval ok]
+fake_serial_device '151': read address '0' value '0xff'
+>>> LoopOnce() [interval ok]
+fake_serial_device '151': read address '0' value '0xff'
+>>> LoopOnce() [interval ok]
+fake_serial_device '151': read address '0' value '0xff'
+>>> LoopOnce() [interval ok]
+fake_serial_device '151': read address '0' value '0xff'
+>>> LoopOnce() [interval ok]
+fake_serial_device '151': read address '0' value '0xff'
+>>> LoopOnce() [interval ok]
+fake_serial_device '151': read address '0' value '0xff'
+>>> LoopOnce() [interval ok]
+fake_serial_device '151': read address '0' value '0xff'
 Unsubscribe -- serial-client-integration-test: /devices/PollIntervalMissError/controls/Test/on
-Publish: /devices/PollIntervalMissError/controls/Test: '' (QoS 1, retained)
 Publish: /devices/PollIntervalMissError/controls/Test/meta: '' (QoS 1, retained)
 Publish: /devices/PollIntervalMissError/controls/Test/meta/order: '' (QoS 1, retained)
 Publish: /devices/PollIntervalMissError/controls/Test/meta/readonly: '' (QoS 1, retained)
 Publish: /devices/PollIntervalMissError/controls/Test/meta/type: '' (QoS 1, retained)
+Publish: /devices/PollIntervalMissError/controls/Test: '' (QoS 1, retained)
 Publish: /devices/PollIntervalMissError/controls/Test/meta/error: '' (QoS 1, retained)
 Publish: /devices/PollIntervalMissError/meta: '' (QoS 1, retained)
 Publish: /devices/PollIntervalMissError/meta/driver: '' (QoS 1, retained)

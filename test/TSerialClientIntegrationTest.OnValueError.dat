@@ -30,23 +30,22 @@ fake_serial_device '144': write address '0' failed: 'Serial protocol error: writ
 fake_serial_device '144': transfer FAIL
 Publish: /devices/OnValueTest/controls/Relay 1/meta/error: 'w' (QoS 1, retained)
 fake_serial_device '144': read address '0' value '0'
-Publish: /devices/OnValueTest/controls/Relay 1: '0' (QoS 1, retained)
-Publish: /devices/OnValueTest/controls/Relay 1/meta/error: '' (QoS 1, retained)
 >>> LoopOnce()
 fake_serial_device '144': write address '0' failed: 'Serial protocol error: write blocked'
 fake_serial_device '144': transfer FAIL
 fake_serial_device '144': read address '0' value '0'
 fake_serial_device: unblock address '0' for writing
 >>> LoopOnce()
-fake_serial_device '144': write to address '0' value '500'
+fake_serial_device '144': write to address '0' value '0x1f4'
 Publish: /devices/OnValueTest/controls/Relay 1: '1' (QoS 1, retained)
-fake_serial_device '144': read address '0' value '500'
+Publish: /devices/OnValueTest/controls/Relay 1/meta/error: '' (QoS 1, retained)
+fake_serial_device '144': read address '0' value '0x1f4'
 Unsubscribe -- serial-client-integration-test: /devices/OnValueTest/controls/Relay 1/on
-Publish: /devices/OnValueTest/controls/Relay 1: '' (QoS 1, retained)
 Publish: /devices/OnValueTest/controls/Relay 1/meta: '' (QoS 1, retained)
 Publish: /devices/OnValueTest/controls/Relay 1/meta/order: '' (QoS 1, retained)
 Publish: /devices/OnValueTest/controls/Relay 1/meta/readonly: '' (QoS 1, retained)
 Publish: /devices/OnValueTest/controls/Relay 1/meta/type: '' (QoS 1, retained)
+Publish: /devices/OnValueTest/controls/Relay 1: '' (QoS 1, retained)
 Publish: /devices/OnValueTest/controls/Relay 1/meta/error: '' (QoS 1, retained)
 Publish: /devices/OnValueTest/meta: '' (QoS 1, retained)
 Publish: /devices/OnValueTest/meta/driver: '' (QoS 1, retained)

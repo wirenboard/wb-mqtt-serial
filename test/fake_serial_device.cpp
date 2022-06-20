@@ -98,14 +98,12 @@ TRegisterValue TFakeSerialDevice::ReadRegisterImpl(PRegister reg)
                 }
             }
             value.Set(str);
-            FakePort->GetFixture().Emit() << "fake_serial_device '" << SlaveId << "': read address '"
-                                          << reg->GetAddress() << "' value '" << value.Get<std::string>() << "'";
         } else {
             value.Set(GetValue(&Registers[addr], reg->Get16BitWidth()));
-            FakePort->GetFixture().Emit() << "fake_serial_device '" << SlaveId << "': read address '"
-                                          << reg->GetAddress() << "' value '" << value.Get<uint64_t>() << "'";
         }
 
+        FakePort->GetFixture().Emit() << "fake_serial_device '" << SlaveId << "': read address '" << reg->GetAddress()
+                                      << "' value '" << value << "'";
         return value;
     } catch (const exception& e) {
         FakePort->GetFixture().Emit() << "fake_serial_device '" << SlaveId << "': read address '" << reg->GetAddress()
@@ -140,19 +138,16 @@ void TFakeSerialDevice::WriteRegisterImpl(PRegister reg, const TRegisterValue& v
             throw runtime_error("invalid register type");
         }
 
-        std::stringstream ss;
-        ss << "fake_serial_device '" << SlaveId << "': write to address '" << reg->GetAddress() << "' value '";
         if (reg->Format == RegisterFormat::String) {
             auto str = value.Get<std::string>();
             for (uint32_t i = 0; i < reg->Get16BitWidth(); ++i) {
                 Registers[addr + i] = i < str.size() ? str[i] : 0;
             }
-            ss << value.Get<std::string>();
         } else {
             SetValue(&Registers[addr], reg->Get16BitWidth(), value.Get<uint64_t>());
-            ss << value.Get<uint64_t>();
         }
-        FakePort->GetFixture().Emit() << ss.str() << "'";
+        FakePort->GetFixture().Emit() << "fake_serial_device '" << SlaveId << "': write to address '"
+                                      << reg->GetAddress() << "' value '" << value << "'";
 
     } catch (const exception& e) {
         FakePort->GetFixture().Emit() << "fake_serial_device '" << SlaveId << "': write address '" << reg->GetAddress()

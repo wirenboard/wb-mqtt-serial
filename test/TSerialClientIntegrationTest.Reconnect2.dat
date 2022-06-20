@@ -60,30 +60,30 @@ Unsubscribe -- serial-client-integration-test: /devices/reconnect-test-2/control
 >>> LoopOnce() [first start]
 Open()
 Sleep(150000)
-fake_serial_device '12': write to address '1' value '42'
-fake_serial_device '12': write to address '2' value '24'
+fake_serial_device '12': write to address '1' value '0x2a'
+fake_serial_device '12': write to address '2' value '0x18'
 fake_serial_device '12': transfer OK
 fake_serial_device '12': reconnected
-fake_serial_device '12': read address '1' value '42'
-fake_serial_device '12': read address '2' value '24'
+fake_serial_device '12': read address '1' value '0x2a'
+fake_serial_device '12': read address '2' value '0x18'
 Publish: /devices/reconnect-test-1/controls/I1: '0.042' (QoS 1, retained)
 Publish: /devices/reconnect-test-1/controls/I2: '0.024' (QoS 1, retained)
 Sleep(150000)
-fake_serial_device '13': write to address '1' value '32'
-fake_serial_device '13': write to address '2' value '64'
+fake_serial_device '13': write to address '1' value '0x20'
+fake_serial_device '13': write to address '2' value '0x40'
 fake_serial_device '13': transfer OK
 fake_serial_device '13': reconnected
-fake_serial_device '13': read address '1' value '32'
-fake_serial_device '13': read address '2' value '64'
+fake_serial_device '13': read address '1' value '0x20'
+fake_serial_device '13': read address '2' value '0x40'
 Publish: /devices/reconnect-test-2/controls/I1: '0.032' (QoS 1, retained)
 Publish: /devices/reconnect-test-2/controls/I2: '0.064' (QoS 1, retained)
 >>> LoopOnce()
 Sleep(150000)
-fake_serial_device '12': read address '1' value '42'
-fake_serial_device '12': read address '2' value '24'
+fake_serial_device '12': read address '1' value '0x2a'
+fake_serial_device '12': read address '2' value '0x18'
 Sleep(150000)
-fake_serial_device '13': read address '1' value '32'
-fake_serial_device '13': read address '2' value '64'
+fake_serial_device '13': read address '1' value '0x20'
+fake_serial_device '13': read address '2' value '0x40'
 >>> SimulateDisconnect(true)
 >>> LoopOnce()
 Sleep(150000)
@@ -94,8 +94,8 @@ fake_serial_device '12': transfer FAIL
 Publish: /devices/reconnect-test-1/controls/I1/meta/error: 'r' (QoS 1, retained)
 Publish: /devices/reconnect-test-1/controls/I2/meta/error: 'r' (QoS 1, retained)
 Sleep(150000)
-fake_serial_device '13': read address '1' value '32'
-fake_serial_device '13': read address '2' value '64'
+fake_serial_device '13': read address '1' value '0x20'
+fake_serial_device '13': read address '2' value '0x40'
 >>> LoopOnce()
 Sleep(150000)
 fake_serial_device '12': read address '1' failed: 'Serial protocol error: device disconnected'
@@ -103,8 +103,8 @@ fake_serial_device '12': transfer FAIL
 fake_serial_device '12': read address '2' failed: 'Serial protocol error: device disconnected'
 fake_serial_device '12': transfer FAIL
 Sleep(150000)
-fake_serial_device '13': read address '1' value '32'
-fake_serial_device '13': read address '2' value '64'
+fake_serial_device '13': read address '1' value '0x20'
+fake_serial_device '13': read address '2' value '0x40'
 >>> LoopOnce()
 Sleep(150000)
 fake_serial_device '12': read address '1' failed: 'Serial protocol error: device disconnected'
@@ -113,30 +113,31 @@ fake_serial_device '12': disconnected
 fake_serial_device '12': read address '2' failed: 'Serial protocol error: device disconnected'
 fake_serial_device '12': transfer FAIL
 Sleep(150000)
-fake_serial_device '13': read address '1' value '32'
-fake_serial_device '13': read address '2' value '64'
+fake_serial_device '13': read address '1' value '0x20'
+fake_serial_device '13': read address '2' value '0x40'
 >>> LoopOnce() (limited polling expected)
 Sleep(150000)
 fake_serial_device '12': write address '1' failed: 'Serial protocol error: device disconnected'
 fake_serial_device '12': transfer FAIL
-Sleep(150000)
-fake_serial_device '13': read address '1' value '1'
-fake_serial_device '13': read address '2' value '2'
+fake_serial_device '13': read address '1' value '0x1'
+fake_serial_device '13': read address '2' value '0x2'
 Publish: /devices/reconnect-test-2/controls/I1: '0.001' (QoS 1, retained)
 Publish: /devices/reconnect-test-2/controls/I2: '0.002' (QoS 1, retained)
 >>> SimulateDisconnect(false)
 >>> LoopOnce()
 Sleep(150000)
-fake_serial_device '12': write to address '1' value '42'
-fake_serial_device '12': write to address '2' value '24'
+fake_serial_device '12': write to address '1' value '0x2a'
+fake_serial_device '12': write to address '2' value '0x18'
 fake_serial_device '12': transfer OK
 fake_serial_device '12': reconnected
-fake_serial_device '12': read address '1' value '42'
-fake_serial_device '12': read address '2' value '24'
+fake_serial_device '12': read address '1' value '0x2a'
+fake_serial_device '12': read address '2' value '0x18'
+Publish: /devices/reconnect-test-1/controls/I1: '0.042' (QoS 1, retained)
 Publish: /devices/reconnect-test-1/controls/I1/meta/error: '' (QoS 1, retained)
+Publish: /devices/reconnect-test-1/controls/I2: '0.024' (QoS 1, retained)
 Publish: /devices/reconnect-test-1/controls/I2/meta/error: '' (QoS 1, retained)
 Sleep(150000)
-fake_serial_device '13': read address '1' value '1'
-fake_serial_device '13': read address '2' value '2'
+fake_serial_device '13': read address '1' value '0x1'
+fake_serial_device '13': read address '2' value '0x2'
 Close()
 stop: serial-client-integration-test

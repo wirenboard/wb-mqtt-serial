@@ -56,6 +56,6 @@ Ports:
             Name: s3
             Address: 9995
             Value: 10
-            RawValue: 0x05
+            RawValue: 0x5
             Reg type: holding (0)
             Reg format: U16

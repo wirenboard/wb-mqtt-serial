@@ -162,7 +162,7 @@ Ports:
                 Poll: 1
                 ReadOnly: 0
                 TypeName: holding
-                ErrorValue: 65535
+                ErrorValue: 0xffff
                 UnsupportedValue: not set
                 WordOrder: BigEndian
             ------
@@ -186,7 +186,7 @@ Ports:
                 Poll: 1
                 ReadOnly: 0
                 TypeName: holding
-                ErrorValue: 4294967295
+                ErrorValue: 0xffffffff
                 UnsupportedValue: not set
                 WordOrder: BigEndian
             ------
@@ -210,7 +210,7 @@ Ports:
                 Poll: 1
                 ReadOnly: 0
                 TypeName: holding
-                ErrorValue: 4294967295
+                ErrorValue: 0xffffffff
                 UnsupportedValue: not set
                 WordOrder: BigEndian
             ------
@@ -234,7 +234,7 @@ Ports:
                 Poll: 1
                 ReadOnly: 0
                 TypeName: holding
-                ErrorValue: 4294967295
+                ErrorValue: 0xffffffff
                 UnsupportedValue: not set
                 WordOrder: BigEndian
             ------
@@ -258,7 +258,7 @@ Ports:
                 Poll: 1
                 ReadOnly: 0
                 TypeName: holding
-                ErrorValue: 18446744073709551615
+                ErrorValue: 0xffffffffffffffff
                 UnsupportedValue: not set
                 WordOrder: BigEndian
             ------
@@ -282,7 +282,7 @@ Ports:
                 Poll: 1
                 ReadOnly: 0
                 TypeName: holding
-                ErrorValue: 18446744073709551615
+                ErrorValue: 0xffffffffffffffff
                 UnsupportedValue: not set
                 WordOrder: BigEndian
     ------
@@ -674,8 +674,8 @@ Ports:
                 Poll: 1
                 ReadOnly: 1
                 TypeName: holding
-                ErrorValue: 11
-                UnsupportedValue: 170
+                ErrorValue: 0xb
+                UnsupportedValue: 0xaa
                 WordOrder: LittleEndian
         ------
         Id: with subdevice_22
@@ -942,14 +942,14 @@ Ports:
             Name: Old Sub2 c2 s21
             Address: 20400
             Value: 1
-            RawValue: 0x01
+            RawValue: 0x1
             Reg type: holding (0)
             Reg format: U16
             ------
             Name: s1
             Address: 10
             Value: 15
-            RawValue: 0x0f
+            RawValue: 0xf
             Reg type: holding (0)
             Reg format: U16
             ------
@@ -977,7 +977,7 @@ Ports:
             Name: Sub s4
             Address: 10095
             Value: 10
-            RawValue: 0x05
+            RawValue: 0x5
             Reg type: holding (0)
             Reg format: U16
             ------

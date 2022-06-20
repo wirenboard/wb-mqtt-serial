@@ -2,27 +2,27 @@
 >>> Cycle()
 Open()
 Sleep(100000)
-fake_serial_device '1': read address '20' value '47851549213065437'
+fake_serial_device '1': read address '20' value '0xaa00bb00cc00dd'
 fake_serial_device '1': transfer OK
 fake_serial_device '1': reconnected
-fake_serial_device '1': read address '30' value '18446744073709551615'
+fake_serial_device '1': read address '30' value '0xffffffffffffffff'
 Read Callback: <fake:1:fake: 20> becomes 47851549213065437
 Error Callback: <fake:1:fake: 20>: no error
 Read Callback: <fake:1:fake: 30> becomes 18446744073709551615
 Error Callback: <fake:1:fake: 30>: no error
 >>> client -> server: 10
 >>> Cycle()
-fake_serial_device '1': write to address '20' value '10'
+fake_serial_device '1': write to address '20' value '0xa'
 Read Callback: <fake:1:fake: 20> becomes 10
-fake_serial_device '1': read address '20' value '10'
-fake_serial_device '1': read address '30' value '18446744073709551615'
+fake_serial_device '1': read address '20' value '0xa'
+fake_serial_device '1': read address '30' value '0xffffffffffffffff'
 Read Callback: <fake:1:fake: 20> becomes 10 [unchanged]
 Read Callback: <fake:1:fake: 30> becomes 18446744073709551615 [unchanged]
 >>> client -> server: -2
 >>> Cycle()
-fake_serial_device '1': write to address '20' value '18446744073709551614'
+fake_serial_device '1': write to address '20' value '0xfffffffffffffffe'
 Read Callback: <fake:1:fake: 20> becomes 18446744073709551614
-fake_serial_device '1': read address '20' value '18446744073709551614'
-fake_serial_device '1': read address '30' value '18446744073709551615'
+fake_serial_device '1': read address '20' value '0xfffffffffffffffe'
+fake_serial_device '1': read address '30' value '0xffffffffffffffff'
 Read Callback: <fake:1:fake: 20> becomes 18446744073709551614 [unchanged]
 Read Callback: <fake:1:fake: 30> becomes 18446744073709551615 [unchanged]

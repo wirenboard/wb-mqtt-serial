@@ -113,20 +113,12 @@ protected:
                                 Emit() << "ReadRateLimit: " << reg->ReadRateLimit->count();
                             }
                             if (reg->ErrorValue) {
-                                if (reg->ErrorValue->GetType() == TRegisterValue::ValueType::String) {
-                                    Emit() << "ErrorValue: " << reg->ErrorValue->Get<std::string>();
-                                } else {
-                                    Emit() << "ErrorValue: " << reg->ErrorValue->Get<uint64_t>();
-                                }
+                                Emit() << "ErrorValue: " << *reg->ErrorValue;
                             } else {
                                 Emit() << "ErrorValue: not set";
                             }
                             if (reg->UnsupportedValue) {
-                                if (reg->UnsupportedValue->GetType() == TRegisterValue::ValueType::String) {
-                                    Emit() << "UnsupportedValue: " << reg->UnsupportedValue->Get<std::string>();
-                                } else {
-                                    Emit() << "UnsupportedValue: " << reg->UnsupportedValue->Get<uint64_t>();
-                                }
+                                Emit() << "UnsupportedValue: " << *reg->UnsupportedValue;
                             } else {
                                 Emit() << "UnsupportedValue: not set";
                             }
@@ -144,10 +136,7 @@ protected:
                         Emit() << "Name: " << setup_item->GetName();
                         Emit() << "Address: " << setup_item->GetRegisterConfig()->GetAddress();
                         Emit() << "Value: " << setup_item->GetValue();
-                        if (setup_item->GetRawValue().GetType() != TRegisterValue::ValueType::String) {
-                            Emit() << "RawValue: 0x" << std::setfill('0') << std::setw(2) << std::hex
-                                   << setup_item->GetRawValue().Get<uint64_t>();
-                        }
+                        Emit() << "RawValue: " << setup_item->GetRawValue();
                         Emit() << "Reg type: " << setup_item->GetRegisterConfig()->TypeName << " ("
                                << setup_item->GetRegisterConfig()->Type << ")";
                         Emit() << "Reg format: " << RegisterFormatName(setup_item->GetRegisterConfig()->Format);

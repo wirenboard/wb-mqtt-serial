@@ -274,269 +274,269 @@ Sleep(20000)
 fake_serial_device '150': read address '0' value '0'
 fake_serial_device '150': transfer OK
 fake_serial_device '150': reconnected
-Publish: /devices/ErrorValueTest/controls/s16: '0' (QoS 1, retained)
 fake_serial_device '150': read address '1' value '0'
-Publish: /devices/ErrorValueTest/controls/u16: '0' (QoS 1, retained)
 fake_serial_device '150': read address '2' value '0'
-Publish: /devices/ErrorValueTest/controls/s8: '0' (QoS 1, retained)
 fake_serial_device '150': read address '3' value '0'
-Publish: /devices/ErrorValueTest/controls/u8: '0' (QoS 1, retained)
 fake_serial_device '150': read address '4' value '0'
-Publish: /devices/ErrorValueTest/controls/s24: '0' (QoS 1, retained)
 fake_serial_device '150': read address '6' value '0'
-Publish: /devices/ErrorValueTest/controls/u24: '0' (QoS 1, retained)
 fake_serial_device '150': read address '8' value '0'
-Publish: /devices/ErrorValueTest/controls/s32: '0' (QoS 1, retained)
 fake_serial_device '150': read address '10' value '0'
-Publish: /devices/ErrorValueTest/controls/u32: '0' (QoS 1, retained)
 fake_serial_device '150': read address '12' value '0'
-Publish: /devices/ErrorValueTest/controls/s64: '0' (QoS 1, retained)
 fake_serial_device '150': read address '16' value '0'
-Publish: /devices/ErrorValueTest/controls/u64: '0' (QoS 1, retained)
 fake_serial_device '150': read address '20' value '0'
-Publish: /devices/ErrorValueTest/controls/double: '0' (QoS 1, retained)
 fake_serial_device '150': read address '24' value '0'
-Publish: /devices/ErrorValueTest/controls/float: '0' (QoS 1, retained)
 fake_serial_device '150': read address '30' value '0'
-Publish: /devices/ErrorValueTest/controls/s16_le: '0' (QoS 1, retained)
 fake_serial_device '150': read address '31' value '0'
-Publish: /devices/ErrorValueTest/controls/u16_le: '0' (QoS 1, retained)
 fake_serial_device '150': read address '32' value '0'
-Publish: /devices/ErrorValueTest/controls/s8_le: '0' (QoS 1, retained)
 fake_serial_device '150': read address '33' value '0'
-Publish: /devices/ErrorValueTest/controls/u8_le: '0' (QoS 1, retained)
 fake_serial_device '150': read address '34' value '0'
-Publish: /devices/ErrorValueTest/controls/s24_le: '0' (QoS 1, retained)
 fake_serial_device '150': read address '36' value '0'
-Publish: /devices/ErrorValueTest/controls/u24_le: '0' (QoS 1, retained)
 fake_serial_device '150': read address '38' value '0'
-Publish: /devices/ErrorValueTest/controls/s32_le: '0' (QoS 1, retained)
 fake_serial_device '150': read address '40' value '0'
-Publish: /devices/ErrorValueTest/controls/u32_le: '0' (QoS 1, retained)
 fake_serial_device '150': read address '42' value '0'
-Publish: /devices/ErrorValueTest/controls/s64_le: '0' (QoS 1, retained)
 fake_serial_device '150': read address '46' value '0'
-Publish: /devices/ErrorValueTest/controls/u64_le: '0' (QoS 1, retained)
 fake_serial_device '150': read address '50' value '0'
-Publish: /devices/ErrorValueTest/controls/double_le: '0' (QoS 1, retained)
 fake_serial_device '150': read address '54' value '0'
+Publish: /devices/ErrorValueTest/controls/s16: '0' (QoS 1, retained)
+Publish: /devices/ErrorValueTest/controls/u16: '0' (QoS 1, retained)
+Publish: /devices/ErrorValueTest/controls/s8: '0' (QoS 1, retained)
+Publish: /devices/ErrorValueTest/controls/u8: '0' (QoS 1, retained)
+Publish: /devices/ErrorValueTest/controls/s24: '0' (QoS 1, retained)
+Publish: /devices/ErrorValueTest/controls/u24: '0' (QoS 1, retained)
+Publish: /devices/ErrorValueTest/controls/s32: '0' (QoS 1, retained)
+Publish: /devices/ErrorValueTest/controls/u32: '0' (QoS 1, retained)
+Publish: /devices/ErrorValueTest/controls/s64: '0' (QoS 1, retained)
+Publish: /devices/ErrorValueTest/controls/u64: '0' (QoS 1, retained)
+Publish: /devices/ErrorValueTest/controls/double: '0' (QoS 1, retained)
+Publish: /devices/ErrorValueTest/controls/float: '0' (QoS 1, retained)
+Publish: /devices/ErrorValueTest/controls/s16_le: '0' (QoS 1, retained)
+Publish: /devices/ErrorValueTest/controls/u16_le: '0' (QoS 1, retained)
+Publish: /devices/ErrorValueTest/controls/s8_le: '0' (QoS 1, retained)
+Publish: /devices/ErrorValueTest/controls/u8_le: '0' (QoS 1, retained)
+Publish: /devices/ErrorValueTest/controls/s24_le: '0' (QoS 1, retained)
+Publish: /devices/ErrorValueTest/controls/u24_le: '0' (QoS 1, retained)
+Publish: /devices/ErrorValueTest/controls/s32_le: '0' (QoS 1, retained)
+Publish: /devices/ErrorValueTest/controls/u32_le: '0' (QoS 1, retained)
+Publish: /devices/ErrorValueTest/controls/s64_le: '0' (QoS 1, retained)
+Publish: /devices/ErrorValueTest/controls/u64_le: '0' (QoS 1, retained)
+Publish: /devices/ErrorValueTest/controls/double_le: '0' (QoS 1, retained)
 Publish: /devices/ErrorValueTest/controls/float_le: '0' (QoS 1, retained)
 >>> LoopOnce() [all errors]
-fake_serial_device '150': read address '0' value '32767'
+fake_serial_device '150': read address '0' value '0x7fff'
+fake_serial_device '150': read address '1' value '0x7fff'
+fake_serial_device '150': read address '2' value '0x7f'
+fake_serial_device '150': read address '3' value '0x7f'
+fake_serial_device '150': read address '4' value '0x7fffff'
+fake_serial_device '150': read address '6' value '0x7fffff'
+fake_serial_device '150': read address '8' value '0x7fffffff'
+fake_serial_device '150': read address '10' value '0x7fffffff'
+fake_serial_device '150': read address '12' value '0x7fffffffffffffff'
+fake_serial_device '150': read address '16' value '0x7fffffffffffffff'
+fake_serial_device '150': read address '20' value '0x7fffffffffffffff'
+fake_serial_device '150': read address '24' value '0x7fffffff'
+fake_serial_device '150': read address '30' value '0x7fff'
+fake_serial_device '150': read address '31' value '0x7fff'
+fake_serial_device '150': read address '32' value '0x7f'
+fake_serial_device '150': read address '33' value '0x7f'
+fake_serial_device '150': read address '34' value '0xffff007f'
+fake_serial_device '150': read address '36' value '0xffff007f'
+fake_serial_device '150': read address '38' value '0xffff7fff'
+fake_serial_device '150': read address '40' value '0xffff7fff'
+fake_serial_device '150': read address '42' value '0xffffffffffff7fff'
+fake_serial_device '150': read address '46' value '0xffffffffffff7fff'
+fake_serial_device '150': read address '50' value '0xffffffffffff7fff'
+fake_serial_device '150': read address '54' value '0xffff7fff'
 Publish: /devices/ErrorValueTest/controls/s16/meta/error: 'r' (QoS 1, retained)
-fake_serial_device '150': read address '1' value '32767'
 Publish: /devices/ErrorValueTest/controls/u16/meta/error: 'r' (QoS 1, retained)
-fake_serial_device '150': read address '2' value '127'
 Publish: /devices/ErrorValueTest/controls/s8/meta/error: 'r' (QoS 1, retained)
-fake_serial_device '150': read address '3' value '127'
 Publish: /devices/ErrorValueTest/controls/u8/meta/error: 'r' (QoS 1, retained)
-fake_serial_device '150': read address '4' value '8388607'
 Publish: /devices/ErrorValueTest/controls/s24/meta/error: 'r' (QoS 1, retained)
-fake_serial_device '150': read address '6' value '8388607'
 Publish: /devices/ErrorValueTest/controls/u24/meta/error: 'r' (QoS 1, retained)
-fake_serial_device '150': read address '8' value '2147483647'
 Publish: /devices/ErrorValueTest/controls/s32/meta/error: 'r' (QoS 1, retained)
-fake_serial_device '150': read address '10' value '2147483647'
 Publish: /devices/ErrorValueTest/controls/u32/meta/error: 'r' (QoS 1, retained)
-fake_serial_device '150': read address '12' value '9223372036854775807'
 Publish: /devices/ErrorValueTest/controls/s64/meta/error: 'r' (QoS 1, retained)
-fake_serial_device '150': read address '16' value '9223372036854775807'
 Publish: /devices/ErrorValueTest/controls/u64/meta/error: 'r' (QoS 1, retained)
-fake_serial_device '150': read address '20' value '9223372036854775807'
 Publish: /devices/ErrorValueTest/controls/double/meta/error: 'r' (QoS 1, retained)
-fake_serial_device '150': read address '24' value '2147483647'
 Publish: /devices/ErrorValueTest/controls/float/meta/error: 'r' (QoS 1, retained)
-fake_serial_device '150': read address '30' value '32767'
 Publish: /devices/ErrorValueTest/controls/s16_le/meta/error: 'r' (QoS 1, retained)
-fake_serial_device '150': read address '31' value '32767'
 Publish: /devices/ErrorValueTest/controls/u16_le/meta/error: 'r' (QoS 1, retained)
-fake_serial_device '150': read address '32' value '127'
 Publish: /devices/ErrorValueTest/controls/s8_le/meta/error: 'r' (QoS 1, retained)
-fake_serial_device '150': read address '33' value '127'
 Publish: /devices/ErrorValueTest/controls/u8_le/meta/error: 'r' (QoS 1, retained)
-fake_serial_device '150': read address '34' value '4294901887'
 Publish: /devices/ErrorValueTest/controls/s24_le/meta/error: 'r' (QoS 1, retained)
-fake_serial_device '150': read address '36' value '4294901887'
 Publish: /devices/ErrorValueTest/controls/u24_le/meta/error: 'r' (QoS 1, retained)
-fake_serial_device '150': read address '38' value '4294934527'
 Publish: /devices/ErrorValueTest/controls/s32_le/meta/error: 'r' (QoS 1, retained)
-fake_serial_device '150': read address '40' value '4294934527'
 Publish: /devices/ErrorValueTest/controls/u32_le/meta/error: 'r' (QoS 1, retained)
-fake_serial_device '150': read address '42' value '18446744073709518847'
 Publish: /devices/ErrorValueTest/controls/s64_le/meta/error: 'r' (QoS 1, retained)
-fake_serial_device '150': read address '46' value '18446744073709518847'
 Publish: /devices/ErrorValueTest/controls/u64_le/meta/error: 'r' (QoS 1, retained)
-fake_serial_device '150': read address '50' value '18446744073709518847'
 Publish: /devices/ErrorValueTest/controls/double_le/meta/error: 'r' (QoS 1, retained)
-fake_serial_device '150': read address '54' value '4294934527'
 Publish: /devices/ErrorValueTest/controls/float_le/meta/error: 'r' (QoS 1, retained)
 Unsubscribe -- serial-client-integration-test: /devices/ErrorValueTest/controls/u64/on
-Publish: /devices/ErrorValueTest/controls/u64: '' (QoS 1, retained)
 Publish: /devices/ErrorValueTest/controls/u64/meta: '' (QoS 1, retained)
 Publish: /devices/ErrorValueTest/controls/u64/meta/order: '' (QoS 1, retained)
 Publish: /devices/ErrorValueTest/controls/u64/meta/readonly: '' (QoS 1, retained)
 Publish: /devices/ErrorValueTest/controls/u64/meta/type: '' (QoS 1, retained)
+Publish: /devices/ErrorValueTest/controls/u64: '' (QoS 1, retained)
 Publish: /devices/ErrorValueTest/controls/u64/meta/error: '' (QoS 1, retained)
 Unsubscribe -- serial-client-integration-test: /devices/ErrorValueTest/controls/s64/on
-Publish: /devices/ErrorValueTest/controls/s64: '' (QoS 1, retained)
 Publish: /devices/ErrorValueTest/controls/s64/meta: '' (QoS 1, retained)
 Publish: /devices/ErrorValueTest/controls/s64/meta/order: '' (QoS 1, retained)
 Publish: /devices/ErrorValueTest/controls/s64/meta/readonly: '' (QoS 1, retained)
 Publish: /devices/ErrorValueTest/controls/s64/meta/type: '' (QoS 1, retained)
+Publish: /devices/ErrorValueTest/controls/s64: '' (QoS 1, retained)
 Publish: /devices/ErrorValueTest/controls/s64/meta/error: '' (QoS 1, retained)
 Unsubscribe -- serial-client-integration-test: /devices/ErrorValueTest/controls/u32/on
-Publish: /devices/ErrorValueTest/controls/u32: '' (QoS 1, retained)
 Publish: /devices/ErrorValueTest/controls/u32/meta: '' (QoS 1, retained)
 Publish: /devices/ErrorValueTest/controls/u32/meta/order: '' (QoS 1, retained)
 Publish: /devices/ErrorValueTest/controls/u32/meta/readonly: '' (QoS 1, retained)
 Publish: /devices/ErrorValueTest/controls/u32/meta/type: '' (QoS 1, retained)
+Publish: /devices/ErrorValueTest/controls/u32: '' (QoS 1, retained)
 Publish: /devices/ErrorValueTest/controls/u32/meta/error: '' (QoS 1, retained)
 Unsubscribe -- serial-client-integration-test: /devices/ErrorValueTest/controls/float_le/on
-Publish: /devices/ErrorValueTest/controls/float_le: '' (QoS 1, retained)
 Publish: /devices/ErrorValueTest/controls/float_le/meta: '' (QoS 1, retained)
 Publish: /devices/ErrorValueTest/controls/float_le/meta/order: '' (QoS 1, retained)
 Publish: /devices/ErrorValueTest/controls/float_le/meta/readonly: '' (QoS 1, retained)
 Publish: /devices/ErrorValueTest/controls/float_le/meta/type: '' (QoS 1, retained)
+Publish: /devices/ErrorValueTest/controls/float_le: '' (QoS 1, retained)
 Publish: /devices/ErrorValueTest/controls/float_le/meta/error: '' (QoS 1, retained)
 Unsubscribe -- serial-client-integration-test: /devices/ErrorValueTest/controls/s16_le/on
-Publish: /devices/ErrorValueTest/controls/s16_le: '' (QoS 1, retained)
 Publish: /devices/ErrorValueTest/controls/s16_le/meta: '' (QoS 1, retained)
 Publish: /devices/ErrorValueTest/controls/s16_le/meta/order: '' (QoS 1, retained)
 Publish: /devices/ErrorValueTest/controls/s16_le/meta/readonly: '' (QoS 1, retained)
 Publish: /devices/ErrorValueTest/controls/s16_le/meta/type: '' (QoS 1, retained)
+Publish: /devices/ErrorValueTest/controls/s16_le: '' (QoS 1, retained)
 Publish: /devices/ErrorValueTest/controls/s16_le/meta/error: '' (QoS 1, retained)
 Unsubscribe -- serial-client-integration-test: /devices/ErrorValueTest/controls/u16_le/on
-Publish: /devices/ErrorValueTest/controls/u16_le: '' (QoS 1, retained)
 Publish: /devices/ErrorValueTest/controls/u16_le/meta: '' (QoS 1, retained)
 Publish: /devices/ErrorValueTest/controls/u16_le/meta/order: '' (QoS 1, retained)
 Publish: /devices/ErrorValueTest/controls/u16_le/meta/readonly: '' (QoS 1, retained)
 Publish: /devices/ErrorValueTest/controls/u16_le/meta/type: '' (QoS 1, retained)
+Publish: /devices/ErrorValueTest/controls/u16_le: '' (QoS 1, retained)
 Publish: /devices/ErrorValueTest/controls/u16_le/meta/error: '' (QoS 1, retained)
 Unsubscribe -- serial-client-integration-test: /devices/ErrorValueTest/controls/u24/on
-Publish: /devices/ErrorValueTest/controls/u24: '' (QoS 1, retained)
 Publish: /devices/ErrorValueTest/controls/u24/meta: '' (QoS 1, retained)
 Publish: /devices/ErrorValueTest/controls/u24/meta/order: '' (QoS 1, retained)
 Publish: /devices/ErrorValueTest/controls/u24/meta/readonly: '' (QoS 1, retained)
 Publish: /devices/ErrorValueTest/controls/u24/meta/type: '' (QoS 1, retained)
+Publish: /devices/ErrorValueTest/controls/u24: '' (QoS 1, retained)
 Publish: /devices/ErrorValueTest/controls/u24/meta/error: '' (QoS 1, retained)
 Unsubscribe -- serial-client-integration-test: /devices/ErrorValueTest/controls/s24/on
-Publish: /devices/ErrorValueTest/controls/s24: '' (QoS 1, retained)
 Publish: /devices/ErrorValueTest/controls/s24/meta: '' (QoS 1, retained)
 Publish: /devices/ErrorValueTest/controls/s24/meta/order: '' (QoS 1, retained)
 Publish: /devices/ErrorValueTest/controls/s24/meta/readonly: '' (QoS 1, retained)
 Publish: /devices/ErrorValueTest/controls/s24/meta/type: '' (QoS 1, retained)
+Publish: /devices/ErrorValueTest/controls/s24: '' (QoS 1, retained)
 Publish: /devices/ErrorValueTest/controls/s24/meta/error: '' (QoS 1, retained)
 Unsubscribe -- serial-client-integration-test: /devices/ErrorValueTest/controls/s16/on
-Publish: /devices/ErrorValueTest/controls/s16: '' (QoS 1, retained)
 Publish: /devices/ErrorValueTest/controls/s16/meta: '' (QoS 1, retained)
 Publish: /devices/ErrorValueTest/controls/s16/meta/order: '' (QoS 1, retained)
 Publish: /devices/ErrorValueTest/controls/s16/meta/readonly: '' (QoS 1, retained)
 Publish: /devices/ErrorValueTest/controls/s16/meta/type: '' (QoS 1, retained)
+Publish: /devices/ErrorValueTest/controls/s16: '' (QoS 1, retained)
 Publish: /devices/ErrorValueTest/controls/s16/meta/error: '' (QoS 1, retained)
 Unsubscribe -- serial-client-integration-test: /devices/ErrorValueTest/controls/s32/on
-Publish: /devices/ErrorValueTest/controls/s32: '' (QoS 1, retained)
 Publish: /devices/ErrorValueTest/controls/s32/meta: '' (QoS 1, retained)
 Publish: /devices/ErrorValueTest/controls/s32/meta/order: '' (QoS 1, retained)
 Publish: /devices/ErrorValueTest/controls/s32/meta/readonly: '' (QoS 1, retained)
 Publish: /devices/ErrorValueTest/controls/s32/meta/type: '' (QoS 1, retained)
+Publish: /devices/ErrorValueTest/controls/s32: '' (QoS 1, retained)
 Publish: /devices/ErrorValueTest/controls/s32/meta/error: '' (QoS 1, retained)
 Unsubscribe -- serial-client-integration-test: /devices/ErrorValueTest/controls/u8_le/on
-Publish: /devices/ErrorValueTest/controls/u8_le: '' (QoS 1, retained)
 Publish: /devices/ErrorValueTest/controls/u8_le/meta: '' (QoS 1, retained)
 Publish: /devices/ErrorValueTest/controls/u8_le/meta/order: '' (QoS 1, retained)
 Publish: /devices/ErrorValueTest/controls/u8_le/meta/readonly: '' (QoS 1, retained)
 Publish: /devices/ErrorValueTest/controls/u8_le/meta/type: '' (QoS 1, retained)
+Publish: /devices/ErrorValueTest/controls/u8_le: '' (QoS 1, retained)
 Publish: /devices/ErrorValueTest/controls/u8_le/meta/error: '' (QoS 1, retained)
 Unsubscribe -- serial-client-integration-test: /devices/ErrorValueTest/controls/u16/on
-Publish: /devices/ErrorValueTest/controls/u16: '' (QoS 1, retained)
 Publish: /devices/ErrorValueTest/controls/u16/meta: '' (QoS 1, retained)
 Publish: /devices/ErrorValueTest/controls/u16/meta/order: '' (QoS 1, retained)
 Publish: /devices/ErrorValueTest/controls/u16/meta/readonly: '' (QoS 1, retained)
 Publish: /devices/ErrorValueTest/controls/u16/meta/type: '' (QoS 1, retained)
+Publish: /devices/ErrorValueTest/controls/u16: '' (QoS 1, retained)
 Publish: /devices/ErrorValueTest/controls/u16/meta/error: '' (QoS 1, retained)
 Unsubscribe -- serial-client-integration-test: /devices/ErrorValueTest/controls/s8/on
-Publish: /devices/ErrorValueTest/controls/s8: '' (QoS 1, retained)
 Publish: /devices/ErrorValueTest/controls/s8/meta: '' (QoS 1, retained)
 Publish: /devices/ErrorValueTest/controls/s8/meta/order: '' (QoS 1, retained)
 Publish: /devices/ErrorValueTest/controls/s8/meta/readonly: '' (QoS 1, retained)
 Publish: /devices/ErrorValueTest/controls/s8/meta/type: '' (QoS 1, retained)
+Publish: /devices/ErrorValueTest/controls/s8: '' (QoS 1, retained)
 Publish: /devices/ErrorValueTest/controls/s8/meta/error: '' (QoS 1, retained)
 Unsubscribe -- serial-client-integration-test: /devices/ErrorValueTest/controls/u32_le/on
-Publish: /devices/ErrorValueTest/controls/u32_le: '' (QoS 1, retained)
 Publish: /devices/ErrorValueTest/controls/u32_le/meta: '' (QoS 1, retained)
 Publish: /devices/ErrorValueTest/controls/u32_le/meta/order: '' (QoS 1, retained)
 Publish: /devices/ErrorValueTest/controls/u32_le/meta/readonly: '' (QoS 1, retained)
 Publish: /devices/ErrorValueTest/controls/u32_le/meta/type: '' (QoS 1, retained)
+Publish: /devices/ErrorValueTest/controls/u32_le: '' (QoS 1, retained)
 Publish: /devices/ErrorValueTest/controls/u32_le/meta/error: '' (QoS 1, retained)
 Unsubscribe -- serial-client-integration-test: /devices/ErrorValueTest/controls/double/on
-Publish: /devices/ErrorValueTest/controls/double: '' (QoS 1, retained)
 Publish: /devices/ErrorValueTest/controls/double/meta: '' (QoS 1, retained)
 Publish: /devices/ErrorValueTest/controls/double/meta/order: '' (QoS 1, retained)
 Publish: /devices/ErrorValueTest/controls/double/meta/readonly: '' (QoS 1, retained)
 Publish: /devices/ErrorValueTest/controls/double/meta/type: '' (QoS 1, retained)
+Publish: /devices/ErrorValueTest/controls/double: '' (QoS 1, retained)
 Publish: /devices/ErrorValueTest/controls/double/meta/error: '' (QoS 1, retained)
 Unsubscribe -- serial-client-integration-test: /devices/ErrorValueTest/controls/float/on
-Publish: /devices/ErrorValueTest/controls/float: '' (QoS 1, retained)
 Publish: /devices/ErrorValueTest/controls/float/meta: '' (QoS 1, retained)
 Publish: /devices/ErrorValueTest/controls/float/meta/order: '' (QoS 1, retained)
 Publish: /devices/ErrorValueTest/controls/float/meta/readonly: '' (QoS 1, retained)
 Publish: /devices/ErrorValueTest/controls/float/meta/type: '' (QoS 1, retained)
+Publish: /devices/ErrorValueTest/controls/float: '' (QoS 1, retained)
 Publish: /devices/ErrorValueTest/controls/float/meta/error: '' (QoS 1, retained)
 Unsubscribe -- serial-client-integration-test: /devices/ErrorValueTest/controls/double_le/on
-Publish: /devices/ErrorValueTest/controls/double_le: '' (QoS 1, retained)
 Publish: /devices/ErrorValueTest/controls/double_le/meta: '' (QoS 1, retained)
 Publish: /devices/ErrorValueTest/controls/double_le/meta/order: '' (QoS 1, retained)
 Publish: /devices/ErrorValueTest/controls/double_le/meta/readonly: '' (QoS 1, retained)
 Publish: /devices/ErrorValueTest/controls/double_le/meta/type: '' (QoS 1, retained)
+Publish: /devices/ErrorValueTest/controls/double_le: '' (QoS 1, retained)
 Publish: /devices/ErrorValueTest/controls/double_le/meta/error: '' (QoS 1, retained)
 Unsubscribe -- serial-client-integration-test: /devices/ErrorValueTest/controls/s8_le/on
-Publish: /devices/ErrorValueTest/controls/s8_le: '' (QoS 1, retained)
 Publish: /devices/ErrorValueTest/controls/s8_le/meta: '' (QoS 1, retained)
 Publish: /devices/ErrorValueTest/controls/s8_le/meta/order: '' (QoS 1, retained)
 Publish: /devices/ErrorValueTest/controls/s8_le/meta/readonly: '' (QoS 1, retained)
 Publish: /devices/ErrorValueTest/controls/s8_le/meta/type: '' (QoS 1, retained)
+Publish: /devices/ErrorValueTest/controls/s8_le: '' (QoS 1, retained)
 Publish: /devices/ErrorValueTest/controls/s8_le/meta/error: '' (QoS 1, retained)
 Unsubscribe -- serial-client-integration-test: /devices/ErrorValueTest/controls/u8/on
-Publish: /devices/ErrorValueTest/controls/u8: '' (QoS 1, retained)
 Publish: /devices/ErrorValueTest/controls/u8/meta: '' (QoS 1, retained)
 Publish: /devices/ErrorValueTest/controls/u8/meta/order: '' (QoS 1, retained)
 Publish: /devices/ErrorValueTest/controls/u8/meta/readonly: '' (QoS 1, retained)
 Publish: /devices/ErrorValueTest/controls/u8/meta/type: '' (QoS 1, retained)
+Publish: /devices/ErrorValueTest/controls/u8: '' (QoS 1, retained)
 Publish: /devices/ErrorValueTest/controls/u8/meta/error: '' (QoS 1, retained)
 Unsubscribe -- serial-client-integration-test: /devices/ErrorValueTest/controls/s32_le/on
-Publish: /devices/ErrorValueTest/controls/s32_le: '' (QoS 1, retained)
 Publish: /devices/ErrorValueTest/controls/s32_le/meta: '' (QoS 1, retained)
 Publish: /devices/ErrorValueTest/controls/s32_le/meta/order: '' (QoS 1, retained)
 Publish: /devices/ErrorValueTest/controls/s32_le/meta/readonly: '' (QoS 1, retained)
 Publish: /devices/ErrorValueTest/controls/s32_le/meta/type: '' (QoS 1, retained)
+Publish: /devices/ErrorValueTest/controls/s32_le: '' (QoS 1, retained)
 Publish: /devices/ErrorValueTest/controls/s32_le/meta/error: '' (QoS 1, retained)
 Unsubscribe -- serial-client-integration-test: /devices/ErrorValueTest/controls/s24_le/on
-Publish: /devices/ErrorValueTest/controls/s24_le: '' (QoS 1, retained)
 Publish: /devices/ErrorValueTest/controls/s24_le/meta: '' (QoS 1, retained)
 Publish: /devices/ErrorValueTest/controls/s24_le/meta/order: '' (QoS 1, retained)
 Publish: /devices/ErrorValueTest/controls/s24_le/meta/readonly: '' (QoS 1, retained)
 Publish: /devices/ErrorValueTest/controls/s24_le/meta/type: '' (QoS 1, retained)
+Publish: /devices/ErrorValueTest/controls/s24_le: '' (QoS 1, retained)
 Publish: /devices/ErrorValueTest/controls/s24_le/meta/error: '' (QoS 1, retained)
 Unsubscribe -- serial-client-integration-test: /devices/ErrorValueTest/controls/u24_le/on
-Publish: /devices/ErrorValueTest/controls/u24_le: '' (QoS 1, retained)
 Publish: /devices/ErrorValueTest/controls/u24_le/meta: '' (QoS 1, retained)
 Publish: /devices/ErrorValueTest/controls/u24_le/meta/order: '' (QoS 1, retained)
 Publish: /devices/ErrorValueTest/controls/u24_le/meta/readonly: '' (QoS 1, retained)
 Publish: /devices/ErrorValueTest/controls/u24_le/meta/type: '' (QoS 1, retained)
+Publish: /devices/ErrorValueTest/controls/u24_le: '' (QoS 1, retained)
 Publish: /devices/ErrorValueTest/controls/u24_le/meta/error: '' (QoS 1, retained)
 Unsubscribe -- serial-client-integration-test: /devices/ErrorValueTest/controls/s64_le/on
-Publish: /devices/ErrorValueTest/controls/s64_le: '' (QoS 1, retained)
 Publish: /devices/ErrorValueTest/controls/s64_le/meta: '' (QoS 1, retained)
 Publish: /devices/ErrorValueTest/controls/s64_le/meta/order: '' (QoS 1, retained)
 Publish: /devices/ErrorValueTest/controls/s64_le/meta/readonly: '' (QoS 1, retained)
 Publish: /devices/ErrorValueTest/controls/s64_le/meta/type: '' (QoS 1, retained)
+Publish: /devices/ErrorValueTest/controls/s64_le: '' (QoS 1, retained)
 Publish: /devices/ErrorValueTest/controls/s64_le/meta/error: '' (QoS 1, retained)
 Unsubscribe -- serial-client-integration-test: /devices/ErrorValueTest/controls/u64_le/on
-Publish: /devices/ErrorValueTest/controls/u64_le: '' (QoS 1, retained)
 Publish: /devices/ErrorValueTest/controls/u64_le/meta: '' (QoS 1, retained)
 Publish: /devices/ErrorValueTest/controls/u64_le/meta/order: '' (QoS 1, retained)
 Publish: /devices/ErrorValueTest/controls/u64_le/meta/readonly: '' (QoS 1, retained)
 Publish: /devices/ErrorValueTest/controls/u64_le/meta/type: '' (QoS 1, retained)
+Publish: /devices/ErrorValueTest/controls/u64_le: '' (QoS 1, retained)
 Publish: /devices/ErrorValueTest/controls/u64_le/meta/error: '' (QoS 1, retained)
 Publish: /devices/ErrorValueTest/meta: '' (QoS 1, retained)
 Publish: /devices/ErrorValueTest/meta/driver: '' (QoS 1, retained)
