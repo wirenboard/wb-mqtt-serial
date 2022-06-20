@@ -20,10 +20,10 @@ Read Callback: <fake:1:fake: 33> becomes 0
 Error Callback: <fake:1:fake: 33>: no error
 >>> Cycle()
 fake_serial_device '1': read address '0' value '0'
-fake_serial_device '1': read address '1' value '0x1'
-fake_serial_device '1': read address '10' value '0x1'
-fake_serial_device '1': read address '22' value '0x1092'
-fake_serial_device '1': read address '33' value '0xa410'
+fake_serial_device '1': read address '1' value '1'
+fake_serial_device '1': read address '10' value '1'
+fake_serial_device '1': read address '22' value '4242'
+fake_serial_device '1': read address '33' value '42000'
 Read Callback: <fake:1:fake: 0> becomes 0 [unchanged]
 Read Callback: <fake:1:fake: 1> becomes 1
 Read Callback: <fake:1:fake: 10> becomes 1

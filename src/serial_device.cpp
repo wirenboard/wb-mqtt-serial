@@ -209,9 +209,17 @@ void TSerialDevice::WriteSetupRegisters()
     for (const auto& setup_item: SetupItems) {
         WriteRegisterImpl(setup_item->Register, setup_item->RawValue);
 
-        LOG(Info) << "Init: " << setup_item->Name << ": setup register " << setup_item->Register->ToString() << " <-- "
-                  << setup_item->HumanReadableValue << setup_item->RawValue;
-        // TODO: More verbose exception
+        std::stringstream ss;
+        ss << "Init: " << setup_item->Name << ": setup register " << setup_item->Register->ToString() << " <-- "
+           << setup_item->HumanReadableValue;
+
+        if (setup_item->RawValue.GetType() == TRegisterValue::ValueType::String) {
+            ss << " ('" << setup_item->RawValue << "')";
+        } else {
+            ss << " (0x" << std::hex << setup_item->RawValue << ")";
+            // TODO: More verbose exception
+        }
+        LOG(Info) << ss.str();
     }
     SetTransferResult(true);
 }
