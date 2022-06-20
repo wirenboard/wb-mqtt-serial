@@ -816,6 +816,7 @@ namespace Modbus // modbus protocol common utilities
 
             assert(requests.size() == 1 && "only one request is expected when using multiple write");
             // Added workaround for data offset on write
+            // Strings have their own writing procedure, which does not contain shifts.
             if (reg.Format == RegisterFormat::String) {
                 auto str = value.Get<std::string>();
                 std::vector<TRegisterWord> payloadBuf;
