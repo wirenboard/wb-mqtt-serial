@@ -1365,7 +1365,7 @@ TRegisterBitsAddress LoadRegisterBitsAddress(const Json::Value& register_data, c
     }
 
     if (register_data.isMember("string_data_size")) {
-        res.BitWidth = GetInt(register_data, "string_data_size") * 16;
+        res.BitWidth = GetInt(register_data, "string_data_size") * sizeof(char);
     }
     return res;
 }

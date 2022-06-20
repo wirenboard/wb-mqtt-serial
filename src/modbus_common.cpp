@@ -536,7 +536,13 @@ namespace Modbus // modbus protocol common utilities
         pdu[0] = GetFunction(reg, OperationType::OP_WRITE);
 
         auto addr = GetUint32RegisterAddress(reg.GetWriteAddress());
-        const auto widthInModbusWords = reg.Get16BitWidth();
+
+        uint32_t widthInModbusWords;
+        if (reg.Format == RegisterFormat::String) {
+            widthInModbusWords = reg.GetDataWidth() / sizeof(char);
+        } else {
+            widthInModbusWords = reg.Get16BitWidth();
+        }
 
         auto baseAddress = addr + shift;
 
@@ -716,7 +722,8 @@ namespace Modbus // modbus protocol common utilities
 
             if (reg->Format == RegisterFormat::String) {
                 std::string str;
-                for (uint32_t i = 0; i < reg->Get16BitWidth(); ++i) {
+                const auto dataSize = reg->GetDataWidth() / sizeof(char);
+                for (uint32_t i = 0; i < dataSize; ++i) {
                     str.push_back(static_cast<char>(destination[addr - range.GetStart() + i]));
                 }
 
