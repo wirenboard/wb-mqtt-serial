@@ -1,6 +1,7 @@
 {
-    "title": "_WB-MR6LV-template-title",
+    "title": "WB-MR6LV",
     "device_type": "WB-MR6LV",
+    "deprecated": true,
     "device": {
         "name": "WB-MR6LV",
         "id": "wb-mr6lv",
@@ -510,14 +511,6 @@
                 "enabled": false,
                 "group": "hw_info"
             }
-        ],
-        "translations": {
-            "en": {
-                "_WB-MR6LV-template-title": "WB-MR6LV - legacy template"
-            },
-            "ru": {
-                "_WB-MR6LV-template-title": "WB-MR6LV - устаревший шаблон"
-            }
-        }
+        ]
     }
 }

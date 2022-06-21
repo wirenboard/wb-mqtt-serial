@@ -20,7 +20,8 @@
                 "id": "",
                 "oneOf": ["subdevice1", "subdevice2" ],
                 "shift": 200,
-                "stride": 1
+                "stride": 1,
+                "device_type": "subdevice1"
             }
         ],
         "parameters" : {
