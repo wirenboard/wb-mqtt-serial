@@ -13,7 +13,7 @@ size_t RegisterFormatByteWidth(RegisterFormat format)
 {
     switch (format) {
         case String:
-            return 32; // The size will then be taken from the config parameter
+            return 0; // The size will then be taken from the config parameter
         case S64:
         case U64:
         case Double:
@@ -235,7 +235,7 @@ TRegisterConfig::TRegisterConfig(int type,
 
     auto maxOffset = RegisterFormatByteWidth(Format) * 8;
 
-    if (Address.DataOffset >= maxOffset) {
+    if ((Format != RegisterFormat::String) && (Address.DataOffset >= maxOffset)) {
         throw TSerialDeviceException("bit offset must not exceed " + std::to_string(maxOffset) + " bits");
     }
 

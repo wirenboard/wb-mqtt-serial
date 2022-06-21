@@ -75,7 +75,9 @@ protected:
                   double scale = 1,
                   double offset = 0,
                   double round_to = 0,
-                  EWordOrder word_order = EWordOrder::BigEndian)
+                  EWordOrder word_order = EWordOrder::BigEndian,
+                  uint32_t dataOffset = 0,
+                  uint32_t dataBitWidth = 0)
     {
         return TRegister::Intern(Device,
                                  TRegisterConfig::Create(TFakeSerialDevice::REG_FAKE,
@@ -86,7 +88,9 @@ protected:
                                                          round_to,
                                                          false,
                                                          "fake",
-                                                         word_order));
+                                                         word_order,
+                                                         dataOffset,
+                                                         dataBitWidth));
     }
     PFakeSerialPort Port;
     PSerialClient SerialClient;
@@ -884,8 +888,8 @@ TEST_F(TSerialClientTest, Double64)
 
 TEST_F(TSerialClientTest, String)
 {
-    PRegister reg20 = Reg(20, String);
-    PRegister reg32 = Reg(62, String);
+    PRegister reg20 = Reg(20, String, 1, 0, 0, EWordOrder::BigEndian, 0, 32 * 8);
+    PRegister reg32 = Reg(62, String, 1, 0, 0, EWordOrder::BigEndian, 0, 32 * 8);
     SerialClient->AddRegister(reg20);
     SerialClient->AddRegister(reg32);
 
