@@ -45,10 +45,12 @@ void AppendSetupItems(Json::Value& deviceTemplate, const Json::Value& config, TE
     }
 
     if (deviceTemplate.isMember("parameters")) {
+        Json::Value& templateParameters = deviceTemplate["parameters"];
         TJsonParams params(config);
-        for (auto it = deviceTemplate["parameters"].begin(); it != deviceTemplate["parameters"].end(); ++it) {
-            if (config.isMember(it.name())) {
-                auto& cfgItem = config[it.name()];
+        for (auto it = templateParameters.begin(); it != templateParameters.end(); ++it) {
+            auto name = templateParameters.isArray() ? (*it)["id"].asString() : it.name();
+            if (config.isMember(name)) {
+                auto& cfgItem = config[name];
                 if (cfgItem.isNumeric()) {
                     if (CheckCondition(*it, params, exprs)) {
                         Json::Value item(*it);
@@ -56,9 +58,9 @@ void AppendSetupItems(Json::Value& deviceTemplate, const Json::Value& config, TE
                         newSetup.append(item);
                     }
                 } else {
-                    LOG(Warn) << it.name() << " is not an integer";
+                    LOG(Warn) << name << " is not an integer";
                 }
-                deviceTemplate.removeMember(it.name());
+                deviceTemplate.removeMember(name);
             }
         }
         deviceTemplate.removeMember("parameters");
