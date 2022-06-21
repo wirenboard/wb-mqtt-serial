@@ -557,7 +557,10 @@
           "default" : 1,
           "propertyOrder": 11,
           "options": {
-            "grid_columns": 4
+            "grid_columns": 4,
+            "dependencies": {
+              "format": ["s16", "u16", "s8", "u8", "s24", "u24", "s32", "u32", "s64", "u64", "bcd8", "bcd16", "bcd24", "bcd32", "float", "double", "char8"]
+            }
           }
         },
         "offset": {
@@ -567,7 +570,10 @@
           "default" : 0,
           "propertyOrder": 12,
           "options": {
-            "grid_columns": 4
+            "grid_columns": 4,
+            "dependencies": {
+              "format": ["s16", "u16", "s8", "u8", "s24", "u24", "s32", "u32", "s64", "u64", "bcd8", "bcd16", "bcd24", "bcd32", "float", "double", "char8"]
+            }
           }
         },
         "round_to": {
@@ -677,7 +683,11 @@
           "title": "String size in characters",
           "minimum": 1,
           "default": 1,
-          "propertyOrder": 21
+          "propertyOrder": 21,
+          "options": {
+            "dependencies": {
+              "format": "string"
+            }}
         },
         "consists_of": {
           "not": {},
@@ -690,7 +700,7 @@
       },
       // FIXME: require "reg_type" and "address" for non-templated devices
       "required": ["name"],
-      "defaultProperties": ["name", "type", "reg_type", "format", "scale", "offset"],
+      "defaultProperties": ["name", "type", "reg_type", "format", "scale", "offset", "string_data_size"],
       "_format": "grid",
       "options": {
         "disable_collapse": true,
