@@ -43,7 +43,7 @@ namespace
     //          "enumTitles" : [ ... ]
     //      }
     //  }
-    Json::Value MakeParameterSchemaForAnyOf(const Json::Value& setupRegister, int index, TContext& context)
+    Json::Value MakeParameterSchemaForOneOf(const Json::Value& setupRegister, int index, TContext& context)
     {
         Json::Value r;
         r["type"] = setupRegister.isMember("scale") ? "number" : "integer";
@@ -83,7 +83,7 @@ namespace
     //  }
     Json::Value MakeParameterSchema(const Json::Value& setupRegister, int index, TContext& context)
     {
-        Json::Value r(MakeParameterSchemaForAnyOf(setupRegister, index, context));
+        Json::Value r(MakeParameterSchemaForOneOf(setupRegister, index, context));
         r["title"] = context.AddHashedTranslation(setupRegister["title"].asString());
         r["propertyOrder"] = index;
         SetIfExists(r, "group", setupRegister, "group");
@@ -102,7 +102,7 @@ namespace
         src.removeMember(key);
     }
 
-    void ConvertToAnyOfParameter(Json::Value& prop)
+    void ConvertToOneOfParameter(Json::Value& prop)
     {
         Json::Value newProp;
         SetAndRemoveIfExists(newProp, prop, "group");
@@ -115,8 +115,8 @@ namespace
                 prop.removeMember("options");
             }
         }
-        newProp["anyOf"] = Json::Value(Json::arrayValue);
-        newProp["anyOf"].append(prop);
+        newProp["oneOf"] = Json::Value(Json::arrayValue);
+        newProp["oneOf"].append(prop);
         prop = newProp;
     }
 
@@ -136,10 +136,10 @@ namespace
                 if (prop.empty()) {
                     prop = MakeParameterSchema(*it, firstParameterOrder + order, context);
                 } else {
-                    if (!prop.isMember("anyOf")) {
-                        ConvertToAnyOfParameter(prop);
+                    if (!prop.isMember("oneOf")) {
+                        ConvertToOneOfParameter(prop);
                     }
-                    prop["anyOf"].append(MakeParameterSchemaForAnyOf(*it, firstParameterOrder + order, context));
+                    prop["oneOf"].append(MakeParameterSchemaForOneOf(*it, firstParameterOrder + order, context));
                 }
                 ++n;
             }

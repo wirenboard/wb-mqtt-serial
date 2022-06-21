@@ -2,7 +2,32 @@ wb-mqtt-serial (2.62.0) stable; urgency=medium
 
   * Added the string data type for modbus register
 
- -- Roman Kochkin <roman.kochkin@wirenboard.ru>  Fri, 10 Jun 2022 10:49:00 +0400
+ -- Roman Kochkin <roman.kochkin@wirenboard.ru>  Tue, 21 Jun 2022 20:33:00 +0300
+
+wb-mqtt-serial (2.61.8) stable; urgency=medium
+
+  * Support for wb-mqtt-homeui 2.39.2 is added
+  * Loading of device templates with parameters defined as array is fixed 
+
+ -- Petr Krasnoshchekov <petr.krasnoshchekov@wirenboard.ru>  Tue, 21 Jun 2022 17:53:41 +0500
+
+wb-mqtt-serial (2.61.7) stable; urgency=medium
+
+  * Amount of warnings about failed connection to Milur meter is reduced
+
+ -- Petr Krasnoshchekov <petr.krasnoshchekov@wirenboard.ru>  Mon, 20 Jun 2022 20:55:38 +0500
+
+wb-mqtt-serial (2.61.6) stable; urgency=medium
+
+  * Title is updated for deprecated templates
+
+ -- Petr Krasnoshchekov <petr.krasnoshchekov@wirenboard.ru>  Wed, 15 Jun 2022 12:15:08 +0500
+
+wb-mqtt-serial (2.61.5) stable; urgency=medium
+
+  * Continuous port closing and opening during Energomera CE303 polling is fixed.
+
+ -- Petr Krasnoshchekov <petr.krasnoshchekov@wirenboard.ru>  Fri, 10 Jun 2022 15:15:57 +0500
 
 wb-mqtt-serial (2.61.4) stable; urgency=medium
 

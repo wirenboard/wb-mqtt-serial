@@ -167,7 +167,6 @@ void TMilurDevice::PrepareImpl()
     Port()->WriteBytes(buf, sizeof(buf) / sizeof(buf[0]));
     TSerialDevice::PrepareImpl();
     Port()->SkipNoise();
-    SetTransferResult(true);
 }
 
 uint64_t TMilurDevice::BuildIntVal(uint8_t* p, int sz) const
