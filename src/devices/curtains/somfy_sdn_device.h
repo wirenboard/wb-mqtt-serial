@@ -35,9 +35,12 @@ namespace Somfy
         std::vector<uint8_t> CloseCommand;
         uint8_t NodeType;
 
-        std::unordered_map<uint8_t, uint64_t> DataCache;
+        std::unordered_map<uint8_t, TRegisterValue> DataCache;
 
-        uint64_t GetCachedResponse(uint8_t requestHeader, uint8_t responseHeader, size_t bitOffset, size_t bitWidth);
+        TRegisterValue GetCachedResponse(uint8_t requestHeader,
+                                         uint8_t responseHeader,
+                                         size_t bitOffset,
+                                         size_t bitWidth);
 
         std::vector<uint8_t> ExecCommand(const std::vector<uint8_t>& request);
 
@@ -47,8 +50,8 @@ namespace Somfy
         static void Register(TSerialDeviceFactory& factory);
 
     protected:
-        uint64_t ReadRegisterImpl(PRegister reg) override;
-        void WriteRegisterImpl(PRegister reg, uint64_t value) override;
+        TRegisterValue ReadRegisterImpl(PRegister reg) override;
+        void WriteRegisterImpl(PRegister reg, const TRegisterValue& regValue) override;
         void InvalidateReadCache() override;
     };
 

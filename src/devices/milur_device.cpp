@@ -124,8 +124,9 @@ TEMDevice::ErrorType TMilurDevice::CheckForException(uint8_t* frame, int len, co
     return TEMDevice::OTHER_ERROR;
 }
 
-uint64_t TMilurDevice::ReadRegisterImpl(PRegister reg)
+TRegisterValue TMilurDevice::ReadRegisterImpl(PRegister reg)
 {
+    TRegisterValue retVal;
     uint8_t addr = GetUint32RegisterAddress(reg->GetAddress());
     int size = GetExpectedSize(reg->Type);
     uint8_t buf[MAX_LEN], *p = buf;
@@ -137,17 +138,22 @@ uint64_t TMilurDevice::ReadRegisterImpl(PRegister reg)
 
     switch (reg->Type) {
         case TMilurDevice::REG_PARAM:
-            return BuildIntVal(buf + 2, 3);
+            retVal.Set(BuildIntVal(buf + 2, 3));
+            break;
         case TMilurDevice::REG_POWER:
-            return BuildIntVal(buf + 2, 4);
+            retVal.Set(BuildIntVal(buf + 2, 4));
+            break;
         case TMilurDevice::REG_ENERGY:
-            return BuildBCB32(buf + 2);
+            retVal.Set(BuildBCB32(buf + 2));
+            break;
         case TMilurDevice::REG_POWERFACTOR:
         case TMilurDevice::REG_FREQ:
-            return BuildIntVal(buf + 2, 2);
+            retVal.Set(BuildIntVal(buf + 2, 2));
+            break;
         default:
             throw TSerialDeviceTransientErrorException("bad register type");
     }
+    return retVal;
 }
 
 void TMilurDevice::PrepareImpl()

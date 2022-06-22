@@ -50,5 +50,5 @@ public:
     static void Register(TSerialDeviceFactory& factory);
 
 protected:
-    void WriteRegisterImpl(PRegister reg, uint64_t value) override;
+    void WriteRegisterImpl(PRegister reg, const TRegisterValue& value) override;
 };

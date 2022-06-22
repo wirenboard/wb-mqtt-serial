@@ -87,7 +87,7 @@ std::string TEnergomeraIecModeCDevice::GetParameterRequest(const TRegister& reg)
     return reg.GetAddress().ToString();
 }
 
-uint64_t TEnergomeraIecModeCDevice::GetRegisterValue(const TRegister& reg, const std::string& value)
+TRegisterValue TEnergomeraIecModeCDevice::GetRegisterValue(const TRegister& reg, const std::string& value)
 {
     // Data in response starts from '(' and ends with ")\r\n"
     if (value.size() < 5 || value.front() != '(' || !WBMQTT::StringHasSuffix(value, ")\r\n")) {
@@ -100,18 +100,18 @@ uint64_t TEnergomeraIecModeCDevice::GetRegisterValue(const TRegister& reg, const
             // ww.dd.mm.yy
             v.erase(0, 3); // remove day of a week
             v.erase(std::remove(v.begin(), v.end(), '.'), v.end());
-            return strtoull(v.c_str(), nullptr, 10);
+            return TRegisterValue{strtoull(v.c_str(), nullptr, 10)};
         }
         case RegisterType::TIME: {
             // HH:MM:SS
             v.erase(std::remove(v.begin(), v.end(), ':'), v.end());
-            return strtoull(v.c_str(), nullptr, 10);
+            return TRegisterValue{strtoull(v.c_str(), nullptr, 10)};
         }
         case RegisterType::DEFAULT: {
             if (reg.Format == U64) {
-                return strtoull(v.c_str(), nullptr, 10);
+                return TRegisterValue{strtoull(v.c_str(), nullptr, 10)};
             }
-            return CopyDoubleToUint64(strtod(v.c_str(), nullptr));
+            return TRegisterValue{CopyDoubleToUint64(strtod(v.c_str(), nullptr))};
         }
         case RegisterType::ITEM: {
             // An example of a response with a list of values
@@ -120,7 +120,7 @@ uint64_t TEnergomeraIecModeCDevice::GetRegisterValue(const TRegister& reg, const
             // 68.02)<CR><LF>(45.29)<CR><LF>(22.73)<CR><LF>(0.00)<CR><LF>(0.00)<CR><LF>(0.00
             auto items = WBMQTT::StringSplit(v, ")\r\n(");
             if (items.size() > static_cast<unsigned int>(reg.GetDataOffset())) {
-                return CopyDoubleToUint64(strtod(items[reg.GetDataOffset()].c_str(), nullptr));
+                return TRegisterValue{CopyDoubleToUint64(strtod(items[reg.GetDataOffset()].c_str(), nullptr))};
             }
             throw TSerialDeviceTransientErrorException("malformed response");
         }

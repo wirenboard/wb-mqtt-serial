@@ -71,17 +71,17 @@ void TEMDeviceTest::SetUp()
 void TEMDeviceTest::VerifyMilurQuery()
 {
     EnqueueMilurPhaseCVoltageResponse();
-    ASSERT_EQ(0x03946f, MilurDev->ReadRegisterImpl(MilurPhaseCVoltageReg));
+    ASSERT_EQ(TRegisterValue{0x03946f}, MilurDev->ReadRegisterImpl(MilurPhaseCVoltageReg));
 
     EnqueueMilurPhaseCCurrentResponse();
-    ASSERT_EQ(0xffd8f0, MilurDev->ReadRegisterImpl(MilurPhaseCCurrentReg));
+    ASSERT_EQ(TRegisterValue{0xffd8f0}, MilurDev->ReadRegisterImpl(MilurPhaseCCurrentReg));
 
     EnqueueMilurTotalConsumptionResponse();
     // "milur BCD32" value 11144 packed as uint64_t
-    ASSERT_EQ(0x11144, MilurDev->ReadRegisterImpl(MilurTotalConsumptionReg));
+    ASSERT_EQ(TRegisterValue{0x11144}, MilurDev->ReadRegisterImpl(MilurTotalConsumptionReg));
 
     EnqueueMilurFrequencyResponse();
-    ASSERT_EQ(50080, MilurDev->ReadRegisterImpl(MilurFrequencyReg));
+    ASSERT_EQ(TRegisterValue{50080}, MilurDev->ReadRegisterImpl(MilurFrequencyReg));
 }
 
 void TEMDeviceTest::VerifyMercuryParamQuery()
@@ -92,22 +92,22 @@ void TEMDeviceTest::VerifyMercuryParamQuery()
     // C = command (0x08)
     // N = param number (0x11)
     // B = subparam spec (BWRI), 0x11 = voltage, phase 1
-    ASSERT_EQ(24128, Mercury230Dev->ReadRegisterImpl(Mercury230U1Reg));
+    ASSERT_EQ(TRegisterValue{24128}, Mercury230Dev->ReadRegisterImpl(Mercury230U1Reg));
 
     EnqueueMercury230I1Response();
     // subparam 0x21 = current (phase 1)
-    ASSERT_EQ(69, Mercury230Dev->ReadRegisterImpl(Mercury230I1Reg));
+    ASSERT_EQ(TRegisterValue{69}, Mercury230Dev->ReadRegisterImpl(Mercury230I1Reg));
 
     EnqueueMercury230U2Response();
     // subparam 0x12 = voltage (phase 2)
-    ASSERT_EQ(24043, Mercury230Dev->ReadRegisterImpl(Mercury230U2Reg));
+    ASSERT_EQ(TRegisterValue{24043}, Mercury230Dev->ReadRegisterImpl(Mercury230U2Reg));
 
     EnqueueMercury230PResponse();
     // Total power (P)
-    ASSERT_EQ(553095, Mercury230Dev->ReadRegisterImpl(Mercury230PReg));
+    ASSERT_EQ(TRegisterValue{553095}, Mercury230Dev->ReadRegisterImpl(Mercury230PReg));
 
     EnqueueMercury230TempResponse();
-    ASSERT_EQ(24, Mercury230Dev->ReadRegisterImpl(Mercury230TempReg));
+    ASSERT_EQ(TRegisterValue{24}, Mercury230Dev->ReadRegisterImpl(Mercury230TempReg));
 }
 
 TEST_F(TEMDeviceTest, Combined)

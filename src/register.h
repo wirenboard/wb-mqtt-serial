@@ -15,6 +15,7 @@
 #include <utility>
 #include <vector>
 
+#include "register_value.h"
 #include "serial_exc.h"
 
 enum RegisterFormat
@@ -35,7 +36,8 @@ enum RegisterFormat
     BCD32,
     Float,
     Double,
-    Char8
+    Char8,
+    String
 };
 
 enum class EWordOrder
@@ -181,8 +183,8 @@ public:
 struct TRegisterDesc
 {
     std::shared_ptr<IRegisterAddress> Address; //! Register address
-    uint8_t DataOffset{0};                     //! Offset of data in register in bits
-    uint8_t DataWidth{0};                      //! Width of data in register in bits
+    uint32_t DataOffset{0};                    //! Offset of data in register in bits
+    uint32_t DataWidth{0};                     //! Width of data in register in bits
 
     std::shared_ptr<IRegisterAddress> WriteAddress; //! Write Register address
 };
@@ -213,9 +215,10 @@ public:
 
     // Desired interval between register reads
     std::experimental::optional<std::chrono::milliseconds> ReadPeriod;
-    std::experimental::optional<uint64_t> ErrorValue;
+    std::experimental::optional<TRegisterValue> ErrorValue;
     EWordOrder WordOrder;
-    std::experimental::optional<uint64_t> UnsupportedValue;
+
+    std::experimental::optional<TRegisterValue> UnsupportedValue;
 
     TRegisterConfig(int type,
                     const TRegisterDesc& registerAddressesDescription,
@@ -230,9 +233,9 @@ public:
     /// Get the width in bits. If the width parameter in the config is zero,
     /// the value is calculated from the register width in bits according to the format.
     /// \return the width in bits
-    uint8_t GetDataWidth() const;
-    uint8_t GetDataOffset() const;
-    uint8_t GetByteWidth() const;
+    uint32_t GetDataWidth() const;
+    uint32_t GetDataOffset() const;
+    uint32_t GetByteWidth() const;
 
     void SetDataWidth(uint8_t width);
     void SetDataOffset(uint8_t offset);
@@ -262,8 +265,8 @@ public:
                                   bool readonly = false,
                                   const std::string& type_name = "",
                                   const EWordOrder word_order = EWordOrder::BigEndian,
-                                  uint8_t data_offset = 0,
-                                  uint8_t data_bit_width = 0);
+                                  uint32_t data_offset = 0,
+                                  uint32_t data_bit_width = 0);
 
     const IRegisterAddress& GetAddress() const;
     const IRegisterAddress& GetWriteAddress() const;
@@ -320,8 +323,8 @@ struct TRegister: public TRegisterConfig
     //! Set register's availability
     void SetAvailable(TRegisterAvailability available);
 
-    uint64_t GetValue() const;
-    void SetValue(uint64_t value, bool clearReadError = true);
+    TRegisterValue GetValue() const;
+    void SetValue(const TRegisterValue& value, bool clearReadError = true);
 
     void SetError(TError error);
     void ClearError(TError error);
@@ -335,7 +338,7 @@ struct TRegister: public TRegisterConfig
 private:
     std::weak_ptr<TSerialDevice> _Device;
     TRegisterAvailability Available = TRegisterAvailability::UNKNOWN;
-    uint64_t Value;
+    TRegisterValue Value;
     std::string ChannelName;
     TErrorState ErrorState;
     TReadPeriodMissChecker ReadPeriodMissChecker;
@@ -423,6 +426,8 @@ inline const char* RegisterFormatName(RegisterFormat fmt)
             return "Double";
         case Char8:
             return "Char8";
+        case String:
+            return "String";
         default:
             return "<unknown register type>";
     }
@@ -462,6 +467,8 @@ inline RegisterFormat RegisterFormatFromName(const std::string& name)
         return Double;
     else if (name == "char8")
         return Char8;
+    else if (name == "string")
+        return String;
     else
         return U16;
 }
@@ -503,7 +510,7 @@ public:
     bool Add(PRegister reg, std::chrono::milliseconds pollLimit) override;
 };
 
-uint64_t InvertWordOrderIfNeeded(const TRegisterConfig& reg, uint64_t value);
+TRegisterValue InvertWordOrderIfNeeded(const TRegisterConfig& reg, TRegisterValue value);
 
 /**
  * @brief Tries to get a value from string and
@@ -518,7 +525,7 @@ uint64_t InvertWordOrderIfNeeded(const TRegisterConfig& reg, uint64_t value);
  * @param reg register config
  * @param str string to convert
  */
-uint64_t ConvertToRawValue(const TRegisterConfig& reg, const std::string& str);
+TRegisterValue ConvertToRawValue(const TRegisterConfig& reg, const std::string& str);
 
 /**
  * @brief Converts raw bytes to string according to register config
@@ -527,4 +534,4 @@ uint64_t ConvertToRawValue(const TRegisterConfig& reg, const std::string& str);
  * @param reg register config
  * @param val raw bytes
  */
-std::string ConvertFromRawValue(const TRegisterConfig& reg, uint64_t val);
+std::string ConvertFromRawValue(const TRegisterConfig& reg, TRegisterValue val);

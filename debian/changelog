@@ -1,3 +1,9 @@
+wb-mqtt-serial (2.62.0) stable; urgency=medium
+
+  * Added the string data type for modbus register
+
+ -- Roman Kochkin <roman.kochkin@wirenboard.ru>  Tue, 21 Jun 2022 20:33:00 +0300
+
 wb-mqtt-serial (2.61.8) stable; urgency=medium
 
   * Support for wb-mqtt-homeui 2.39.2 is added
