@@ -101,7 +101,7 @@ namespace Modbus // modbus protocol declarations
 
 namespace // general utilities
 {
-    inline uint32_t GetModbusDataWidthInWords(const TRegister& reg)
+    inline uint32_t GetModbusDataWidthIn16BitWords(const TRegister& reg)
     {
         if (reg.Format == RegisterFormat::String) {
             return reg.GetDataWidth() / (sizeof(char) * 8);
@@ -120,7 +120,7 @@ namespace // general utilities
     inline bool IsPacking(const TRegister& reg)
     {
         return (reg.Type == Modbus::REG_HOLDING_MULTI) ||
-               ((reg.Type == Modbus::REG_HOLDING) && (GetModbusDataWidthInWords(reg) > 1));
+               ((reg.Type == Modbus::REG_HOLDING) && (GetModbusDataWidthIn16BitWords(reg) > 1));
     }
 
     inline bool IsPacking(Modbus::TModbusRegisterRange& range)
@@ -165,7 +165,7 @@ namespace Modbus // modbus protocol common utilities
         auto& deviceConfig = *(reg->Device()->DeviceConfig());
         bool isSingleBit = IsSingleBitType(reg->Type);
         auto addr = GetUint32RegisterAddress(reg->GetAddress());
-        const auto widthInWords = GetModbusDataWidthInWords(*reg);
+        const auto widthInWords = GetModbusDataWidthIn16BitWords(*reg);
 
         size_t extend;
         if (RegisterList().empty()) {
@@ -454,7 +454,7 @@ namespace Modbus // modbus protocol common utilities
     // returns count of modbus registers needed to represent TRegister
     uint16_t GetQuantity(TRegister& reg)
     {
-        int w = GetModbusDataWidthInWords(reg);
+        int w = GetModbusDataWidthIn16BitWords(reg);
 
         if (IsSingleBitType(reg.Type)) {
             if (w != 1) {
@@ -487,13 +487,13 @@ namespace Modbus // modbus protocol common utilities
     // returns number of bytes needed to hold request
     size_t InferWriteRequestPDUSize(const TRegister& reg)
     {
-        return IsPacking(reg) ? 6 + GetModbusDataWidthInWords(reg) * 2 : 5;
+        return IsPacking(reg) ? 6 + GetModbusDataWidthIn16BitWords(reg) * 2 : 5;
     }
 
     // returns number of requests needed to write register
     size_t InferWriteRequestsCount(const TRegister& reg)
     {
-        return IsPacking(reg) ? 1 : GetModbusDataWidthInWords(reg);
+        return IsPacking(reg) ? 1 : GetModbusDataWidthIn16BitWords(reg);
     }
 
     // returns number of bytes needed to hold response
@@ -546,7 +546,7 @@ namespace Modbus // modbus protocol common utilities
 
         auto addr = GetUint32RegisterAddress(reg.GetWriteAddress());
 
-        uint32_t widthInModbusWords = GetModbusDataWidthInWords(reg);
+        uint32_t widthInModbusWords = GetModbusDataWidthIn16BitWords(reg);
 
         auto baseAddress = addr + shift;
 
@@ -580,7 +580,7 @@ namespace Modbus // modbus protocol common utilities
 
         auto addr = GetUint32RegisterAddress(reg.GetWriteAddress());
         const auto bitWidth = reg.GetDataWidth();
-        const auto widthInModbusWords = GetModbusDataWidthInWords(reg);
+        const auto widthInModbusWords = GetModbusDataWidthIn16BitWords(reg);
 
         auto baseAddress = addr + shift;
 
@@ -726,14 +726,14 @@ namespace Modbus // modbus protocol common utilities
 
             if (reg->Format == RegisterFormat::String) {
                 std::string str;
-                const auto dataSize = GetModbusDataWidthInWords(*reg);
+                const auto dataSize = GetModbusDataWidthIn16BitWords(*reg);
                 for (uint32_t i = 0; i < dataSize; ++i) {
                     str.push_back(static_cast<char>(destination[addr - range.GetStart() + i]));
                 }
 
                 reg->SetValue(TRegisterValue{str});
             } else {
-                int w = GetModbusDataWidthInWords(*reg);
+                int w = GetModbusDataWidthIn16BitWords(*reg);
                 uint64_t r = 0;
 
                 int wordIndex = (addr - range.GetStart());
@@ -812,7 +812,7 @@ namespace Modbus // modbus protocol common utilities
     {
         Modbus::TRegisterCache tmpCache;
 
-        LOG(Debug) << "write " << GetModbusDataWidthInWords(reg) << " " << reg.TypeName << "(s) @ "
+        LOG(Debug) << "write " << GetModbusDataWidthIn16BitWords(reg) << " " << reg.TypeName << "(s) @ "
                    << reg.GetWriteAddress() << " of device " << reg.Device()->ToString();
 
         // 1 byte - function code, 2 bytes - register address, 2 bytes - value

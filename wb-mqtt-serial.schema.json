@@ -681,7 +681,7 @@
         "string_data_size": {
           "type": "integer",
           "title": "String size in characters",
-          "description": "For the modbus protocol, strings are read one character per register from the low byte. The parameter specifies the number of characters",
+          "description": "string_data_size_description",
           "minimum": 1,
           "default": 1,
           "propertyOrder": 21,
@@ -1888,7 +1888,8 @@
       "response_timeout_description": "Specifies maximum device's response time. Zero means no timeout. If not set, the default timeout (500ms) is used. If port's appropriate parameter is bigger, this one is overwritten.",
       "device_timeout_description": "Specifies timeout for device connection. If not set, default value 3000ms is used. Value -1 disables device reconnect. Zero means instant timeout.",
       "device_max_fail_cycles_desc": "Defines number of device polling cycles with all failed registers before marking device as disconnected. Default value is 2. Value -1 disables device reconnect. Zero means instant timeout.",
-      "max_unchanged_interval_desc": "Specifies the maximum interval in seconds between posting the same values to message queue. Zero means the values are posted to the queue every time they read from the device. By default, the values are only reported on change. Negative value means default behavior."
+      "max_unchanged_interval_desc": "Specifies the maximum interval in seconds between posting the same values to message queue. Zero means the values are posted to the queue every time they read from the device. By default, the values are only reported on change. Negative value means default behavior.",
+      "string_data_size_description": "For the modbus protocol, strings are read one character per register from the low byte. The parameter specifies the number of characters"
     },
     "ru": {
       "Serial Device Driver Configuration": "Настройка драйвера serial-устройств",
@@ -2060,7 +2061,7 @@
       "not faster than (deprecated)": "не чаще чем раз в (устаревший параметр)",
       "String size in characters": "Размер строки в символах",
       "String": "Строка",
-      "For the modbus protocol, strings are read one character per register from the low byte. The parameter specifies the number of characters" : "Для протокола modbus cтроки считываются по одному символу на регистр из младшего байта. Параметр определяет количество символов"
+      "string_data_size_description": "Для протокола modbus cтроки считываются по одному символу на регистр из младшего байта. Параметр определяет количество символов"
     }
   }
 }
