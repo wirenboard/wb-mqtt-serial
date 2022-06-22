@@ -259,7 +259,8 @@ namespace
             RegisterFormatByteWidth(regType.DefaultFormat));
 
         if ((regType.DefaultFormat == RegisterFormat::String) && (registerDesc.DataWidth == 0)) {
-            throw TConfigParserException("String size is not set for register string format");
+            throw TConfigParserException(readonly_override_error_message_prefix +
+                                         ": String size is not set for register string format");
         }
 
         res.RegisterConfig = TRegisterConfig::Create(regType.Index,
