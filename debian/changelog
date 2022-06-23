@@ -1,3 +1,9 @@
+wb-mqtt-serial (2.63.0) stable; urgency=medium
+
+  * Support for descriptions in device template's groups is added
+
+ -- Petr Krasnoshchekov <petr.krasnoshchekov@wirenboard.ru>  Thu, 23 Jun 2022 16:55:35 +0500
+
 wb-mqtt-serial (2.62.0) stable; urgency=medium
 
   * Added the string data type for modbus register
