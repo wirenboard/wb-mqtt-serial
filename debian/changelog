@@ -1,3 +1,10 @@
+wb-mqtt-serial (2.62.1) stable; urgency=medium
+
+  * Russian translation for Phase angle channel was corrected in WB-
+    MAP3E fw2, WB-MAP3ET, WB-MAP6S fw2 templates
+
+ -- Dmitry Vorobjev <d.vorobjev@wirenboard.ru>  Wed, 22 Jun 2022 17:08:54 +0300
+
 wb-mqtt-serial (2.62.0) stable; urgency=medium
 
   * Added the string data type for modbus register
