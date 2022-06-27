@@ -19,29 +19,31 @@
                 "order": {{in_num + 1}}
             },
             {
+                "title": "Actions for outputs when the input is closed / opened",
+                "id": "gg_in{{in_num}}_mapping_matrix_actions",
+                "order": 1,
+                "group": "g_in{{in_num}}"
+                
+            },
+            {
                 "title": "Press Parameters",
                 "id": "gg_in{{in_num}}_press_params",
                 "order": 1,
                 "group": "g_in{{in_num}}"
             },
-            {
-                "title": "Actions for outputs when the input is closed / opened",
-                "id": "gg_in{{in_num}}_mapping_matrix_actions",
-                "group": "g_in{{in_num}}",
-                "order": 1
-            },
             {% for out_num in range(1, OUTPUTS_NUMBER + 1) -%}
             {
                 "title": "Output {{out_num}} Actions",
                 "id": "gg_in{{in_num}}_out{{out_num}}_button_actions",
-                "group": "g_in{{in_num}}",
-                "order": {{out_num}}
+                "order": {{out_num + 1}},
+                "group": "g_in{{in_num}}"
+
             },
             {% endfor -%}
             {
                 "title": "input{{in_num}}_channels",
                 "id": "gg_in{{in_num}}_channels",
-                "order": 2,
+                "order": 3,
                 "group": "g_in{{in_num}}",
                 "ui_options": {
                     "wb": {
@@ -56,15 +58,52 @@
                 "order": 8
             },
             {
+                "title": "Output Safe State",
+                "id": "gg_outputs_safe_position",
+                "order": 1,
+                "group": "g_outputs"
+                
+            },
+            {
+                "title": "Outputs group",
+                "id": "gg_outputs_channels",
+                "order": 2,
+                "group": "g_outputs",
+                "ui_options": {
+                    "wb": {
+                        "disable_title": true
+                    }
+                }
+            },
+            {
+                "title": "Safety Mode",
+                "id": "g_safety",
+                "order": 9
+            },
+            {
+                "title": "Safety Behaviour",
+                "id": "gg_safety_behaviour",
+                "order": 1,
+                "group": "g_safety"
+            },
+            {
+                "title": "Inputs Control In Safety Mode",
+                "id": "gg_safety_input_control",
+                "order": 2,
+                "description": "poll_timeout_description",
+                "group": "g_safety"
+            },
+
+            {
                 "title": "General",
                 "id": "g_general",
-                "order": 9
+                "order": 10
             },
             {
                 "title": "HW Info",
                 "id": "g_hw_info",
-                "order": 10
-            }            
+                "order": 11
+            }           
         ],
 
         "setup": [
@@ -263,27 +302,46 @@
             },
             {% endfor -%}
             {% endfor -%}
-            "outputs_restore_state": {
-                "title": "Restore Last Outputs State After Power On",
-                "address": 6,
+                        {% for out_num in range(1, OUTPUTS_NUMBER + 1) -%}
+            "out{{out_num}}_safe_position": {
+                "title": "Output {{out_num}}",
+                "group": "gg_outputs_safe_position",
+                "address": {{930 + out_num - 1}},
                 "reg_type": "holding",
-                "enum": [0, 1],
                 "default": 0,
-                "enum_titles": ["no", "yes"],
-                "group": "g_outputs",
-                "order": 1
+                "order": {{2 + out_num - 1}},
+                "enum": [0, 1],
+                "enum_titles": [
+                    "Off",
+                    "On"
+                ]
             },
-            "safety_timer_s": {
-                "title": "Safety Timer (s)",
-                "description": "safety_timer_description",
-                "address": 8,
+            "out{{out_num}}_safety_behaviour": {
+                "title": "Output {{out_num}}",
+                "group": "gg_safety_behaviour",
+                "address": {{938 + out_num - 1}},
                 "reg_type": "holding",
-                "min": 0,
-                "max": 65535,
-                "default": 3600,
-                "group": "g_outputs",
-                "order": 2
+                "default": 0,
+                "enum": [0, 1],
+                "enum_titles": [
+                    "Don't сhange output state",
+                    "Switch output to safety state"
+                ]
             },
+            "out{{out_num}}_safety_input_control": {
+                "title": "Output {{out_num}}",
+                "group": "gg_safety_input_control",
+                "address": {{946 + out_num - 1}},
+                "reg_type": "holding",
+                "default": 0,
+                "enum": [0, 1, 2],
+                "enum_titles": [
+                    "Don't change",
+                    "Disable in safety mode",
+                    "Enable only in safety mode"
+                ]
+            },
+            {% endfor -%}
             "baud_rate": {
                     "title": "Baud rate",
                     "description": "baud_rate_description",
@@ -300,9 +358,42 @@
                     ],
                     "group": "g_general",
                     "order": 1
+            },
+            "outputs_power_on_state": {
+                "title": "Outputs State After Power On",
+                "address": 6,
+                "reg_type": "holding",
+                "enum": [0, 1, 2],
+                "default": 0,
+                "enum_titles": ["Safe State", "Restore Last State", "According To Inputs"],
+                "order": 1,
+                "group": "g_outputs"
+            },
+            "safety_mode_source": {
+                "title": "Safety Mode Trigger",
+                "group": "g_safety",
+                "address": 19,
+                "reg_type": "holding",
+                "enum": [1],
+                "default": 1,
+                "order": 1,
+                "enum_titles": [
+                    "Poll timeout"
+                ]
+            },
+            "poll_timeout_s": {
+                "title": "Safety Poll Timeout (s)",
+                "group": "g_safety",
+                "description": "poll_timeout_description",
+                "address": 8,
+                "order": 2,
+                "reg_type": "holding",
+                "min": 1,
+                "condition" : "safety_mode_source!=2",
+                "max": 65534,
+                "default": 10
             }
         },
-
         "channels": [
             {% for in_num in range(FIRST_INPUT, OUTPUTS_NUMBER + 1) -%}
             {
@@ -401,7 +492,7 @@
                 "reg_type": "coil",
                 "address": {{out_num - 1}},
                 "type": "switch",
-                "group": "g_outputs"
+                "group": "gg_outputs_channels"
             },
             {% endfor -%}
             {
