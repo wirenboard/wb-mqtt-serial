@@ -59,7 +59,7 @@
             },
             {
                 "title": "Output Safe State",
-                "id": "gg_outputs_safe_position",
+                "id": "gg_outputs_safe_state",
                 "order": 1,
                 "group": "g_outputs"
                 
@@ -302,10 +302,11 @@
             },
             {% endfor -%}
             {% endfor -%}
-                        {% for out_num in range(1, OUTPUTS_NUMBER + 1) -%}
-            "out{{out_num}}_safe_position": {
+
+            {% for out_num in range(1, OUTPUTS_NUMBER + 1) -%}
+            "out{{out_num}}_safe_state": {
                 "title": "Output {{out_num}}",
-                "group": "gg_outputs_safe_position",
+                "group": "gg_outputs_safe_state",
                 "address": {{930 + out_num - 1}},
                 "reg_type": "holding",
                 "default": 0,
