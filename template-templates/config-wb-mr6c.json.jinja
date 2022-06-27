@@ -307,10 +307,10 @@
             "out{{out_num}}_safe_state": {
                 "title": "Output {{out_num}}",
                 "group": "gg_outputs_safe_state",
+                "order": {{out_num}},
                 "address": {{930 + out_num - 1}},
                 "reg_type": "holding",
                 "default": 0,
-                "order": {{out_num}},
                 "enum": [0, 1],
                 "enum_titles": [
                     "Off",
@@ -320,6 +320,7 @@
             "out{{out_num}}_safety_behaviour": {
                 "title": "Output {{out_num}}",
                 "group": "gg_safety_behaviour",
+                "order": {{out_num}},
                 "address": {{938 + out_num - 1}},
                 "reg_type": "holding",
                 "default": 0,
@@ -332,6 +333,7 @@
             "out{{out_num}}_safety_input_control": {
                 "title": "Output {{out_num}}",
                 "group": "gg_safety_input_control",
+                "order": {{out_num}},
                 "address": {{946 + out_num - 1}},
                 "reg_type": "holding",
                 "default": 0,
