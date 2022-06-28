@@ -372,18 +372,6 @@
                 "order": 1,
                 "group": "g_outputs"
             },
-            "safety_mode_source": {
-                "title": "Safety Mode Trigger",
-                "group": "g_safety",
-                "address": 19,
-                "reg_type": "holding",
-                "enum": [1],
-                "default": 1,
-                "order": 1,
-                "enum_titles": [
-                    "Poll timeout"
-                ]
-            },
             "poll_timeout_s": {
                 "title": "Safety Poll Timeout (s)",
                 "group": "g_safety",
@@ -392,7 +380,6 @@
                 "order": 2,
                 "reg_type": "holding",
                 "min": 1,
-                "condition" : "safety_mode_source!=2",
                 "max": 65534,
                 "default": 10
             }
