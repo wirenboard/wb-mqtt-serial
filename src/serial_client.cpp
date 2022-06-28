@@ -31,18 +31,21 @@ namespace
                             << lastAccessedDevice->ToString() + "]";
             }
         }
-        try {
-            metrics.StartPoll({dev->DeviceConfig()->Id, "Start session"});
-            bool deviceWasDisconnected = dev->GetIsDisconnected();
-            if (deviceWasDisconnected || dev != lastAccessedDevice) {
-                dev->Prepare();
+        if (dev) {
+            try {
+                metrics.StartPoll({dev->DeviceConfig()->Id, "Start session"});
+                bool deviceWasDisconnected = dev->GetIsDisconnected();
+                if (deviceWasDisconnected || dev != lastAccessedDevice) {
+                    dev->Prepare();
+                }
+                return true;
+            } catch (const TSerialDeviceException& e) {
+                auto& logger = dev->GetIsDisconnected() ? Debug : Warn;
+                LOG(logger) << "Failed to open session: " << e.what() << " [slave_id is " << dev->ToString() + "]";
+                return false;
             }
-            return true;
-        } catch (const TSerialDeviceException& e) {
-            auto& logger = dev->GetIsDisconnected() ? Debug : Warn;
-            LOG(logger) << "Failed to open session: " << e.what() << " [slave_id is " << dev->ToString() + "]";
-            return false;
         }
+        return false;
     }
 
     bool IsHighPriority(const TRegister& reg)
@@ -224,6 +227,11 @@ void TSerialClient::WaitForPollAndFlush(std::chrono::steady_clock::time_point wa
             Metrics.StartPoll(Metrics::BUS_IDLE);
         }
         if (FlushNeeded->GetSignalValue(RPCSignal)) {
+            // End session with current device to make bus clean for RPC
+
+            PrepareToAccessDevice(LastAccessedDevice, NULL, Metrics);
+            LastAccessedDevice = NULL;
+
             RPCPortHandler.RPCRequestHandling(Port);
         }
 
@@ -251,6 +259,11 @@ void TSerialClient::MaybeFlushAvoidingPollStarvationButDontWait()
             DoFlush();
         }
         if (FlushNeeded->GetSignalValue(RPCSignal)) {
+            // End session with current device to make bus clean for RPC
+
+            PrepareToAccessDevice(LastAccessedDevice, NULL, Metrics);
+            LastAccessedDevice = NULL;
+
             RPCPortHandler.RPCRequestHandling(Port);
         }
     }
