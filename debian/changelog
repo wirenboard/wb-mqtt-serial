@@ -1,3 +1,9 @@
+wb-mqtt-serial (2.62.2) stable; urgency=medium
+
+  * Template for Teplomash KEV-BLOK-MK was added
+
+ -- Dmitry Vorobjev <d.vorobjev@wirenboard.ru>  Fri, 24 Jun 2022 17:37:11 +0300
+
 wb-mqtt-serial (2.62.1) stable; urgency=medium
 
   * Russian translation for Phase angle channel was corrected in WB-
