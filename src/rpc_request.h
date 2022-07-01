@@ -1,22 +1,20 @@
-#pragma once
-#include "wblib/json_utils.h"
+#include <wblib/json_utils.h>
 
-enum class RPCPortConfigSet
+enum class TRPCModbusMode
 {
-    RPC_TCP_SET,
-    RPC_SERIAL_SET
+    RPC_RTU,
+    RPC_TCP
 };
 
-class TRPCPortConfig
+class TRPCRequest
 {
 public:
     bool CheckParamSet(const Json::Value& request);
     bool LoadValues(const Json::Value& request);
 
-    RPCPortConfigSet ParametersSet;
-    std::string Path;
-    std::string Ip;
-    int Port;
+    enum TRPCModbusMode Mode;
+    std::string Path, Ip;
+    int PortNumber;
     std::vector<uint8_t> Msg;
     std::chrono::microseconds ResponseTimeout;
     std::chrono::microseconds FrameTimeout;
@@ -24,3 +22,5 @@ public:
     std::string Format;
     size_t ResponseSize;
 };
+
+typedef std::shared_ptr<TRPCRequest> PRPCRequest;

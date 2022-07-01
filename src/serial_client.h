@@ -39,8 +39,8 @@ public:
     void NotifyFlushNeeded();
     void ClearDevices();
 
-    bool RPCTransceive(const TRPCPortConfig& config, std::vector<uint8_t>& response, size_t& actualResponseSize);
-    Json::Value GetPortPath();
+    bool RPCTransceive(PRPCRequest request, std::vector<uint8_t>& response, size_t& actualResponseSize);
+    PPort GetPort();
 
 private:
     void Activate();

@@ -22,8 +22,6 @@ public:
 
     std::string GetDescription(bool verbose = true) const override;
 
-    Json::Value GetPath() const override;
-
 private:
     void OnReadyEmptyFd() override;
 

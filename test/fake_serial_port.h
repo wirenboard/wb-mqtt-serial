@@ -12,6 +12,8 @@
 #include "serial_device.h"
 #include "serial_driver.h"
 
+#include "rpc_handler.h"
+
 using WBMQTT::Testing::TLoggedFixture;
 
 class TFakeSerialPort: public TPort, public TExpector
@@ -51,8 +53,6 @@ public:
 
     std::string GetDescription(bool verbose = true) const override;
 
-    Json::Value GetPath() const override;
-
     void SetAllowOpen(bool allowOpen);
 
 private:
@@ -81,6 +81,7 @@ protected:
 
     PFakeSerialPort SerialPort;
     TSerialDeviceFactory DeviceFactory;
+    PRPCHandler rpcHandler;
 };
 
 class TSerialDeviceIntegrationTest: public virtual TSerialDeviceTest
@@ -99,6 +100,7 @@ protected:
 
     PMQTTSerialDriver SerialDriver;
     PHandlerConfig Config;
+    PRPCHandler rpcHandler;
     bool PortMakerCalled;
 
     static WBMQTT::TMap<std::string, TTemplateMap> Templates; // Key - path to folder, value - loaded templates map

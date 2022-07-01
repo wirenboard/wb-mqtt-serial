@@ -230,16 +230,14 @@ TControlArgs TSerialPortDriver::From(const PDeviceChannel& channel)
     return args;
 }
 
-bool TSerialPortDriver::RPCTransceive(const TRPCPortConfig& config,
-                                      std::vector<uint8_t>& response,
-                                      size_t& actualResponseSize)
+bool TSerialPortDriver::RPCTransceive(PRPCRequest request, std::vector<uint8_t>& response, size_t& actualResponseSize)
 {
-    return SerialClient->RPCTransceive(config, response, actualResponseSize);
+    return SerialClient->RPCTransceive(request, response, actualResponseSize);
 }
 
-Json::Value TSerialPortDriver::GetPortPath()
+PSerialClient TSerialPortDriver::GetSerialClient()
 {
-    return SerialClient->GetPortPath();
+    return SerialClient;
 }
 
 void TDeviceChannel::UpdateValueAndError(WBMQTT::TDeviceDriver& deviceDriver,

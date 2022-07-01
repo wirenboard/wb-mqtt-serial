@@ -8,7 +8,7 @@ TRPCPortHandler::TRPCPortHandler()
     Signal = Semaphore->SignalRegistration();
 }
 
-bool TRPCPortHandler::RPCTransceive(const TRPCPortConfig& config,
+bool TRPCPortHandler::RPCTransceive(PRPCRequest request,
                                     std::vector<uint8_t>& response,
                                     size_t& actualResponseSize,
                                     PBinarySemaphore rpcSemaphore,
@@ -16,13 +16,13 @@ bool TRPCPortHandler::RPCTransceive(const TRPCPortConfig& config,
 {
     RPCMutex.lock();
 
-    RPCWriteData = config.Msg;
-    RPCRequestedSize = config.ResponseSize;
-    RPCRespTimeout = config.ResponseTimeout;
-    RPCFrameTimeout = config.FrameTimeout;
+    RPCWriteData = request->Msg;
+    RPCRequestedSize = request->ResponseSize;
+    RPCRespTimeout = request->ResponseTimeout;
+    RPCFrameTimeout = request->FrameTimeout;
     RPCState = RPCPortState::RPC_WRITE;
     auto now = std::chrono::steady_clock::now();
-    auto until = now + config.TotalTimeout;
+    auto until = now + request->TotalTimeout;
     rpcSemaphore->Signal(rpcSignal);
 
     RPCMutex.unlock();

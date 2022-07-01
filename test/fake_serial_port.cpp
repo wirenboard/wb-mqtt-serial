@@ -262,13 +262,6 @@ std::string TFakeSerialPort::GetDescription(bool verbose) const
     return "<TFakeSerialPort>";
 }
 
-Json::Value TFakeSerialPort::GetPath() const
-{
-    Json::Value res;
-    res["path"] = "TFakeSerialPort";
-    return res;
-}
-
 void TSerialDeviceTest::SetUp()
 {
     RegisterProtocols(DeviceFactory);
@@ -329,7 +322,8 @@ void TSerialDeviceIntegrationTest::SetUp()
                         DeviceFactory,
                         CommonConfigSchema,
                         it->second,
-                        [=](const Json::Value&) { return std::make_pair(SerialPort, false); });
+                        rpcHandler,
+                        [=](const Json::Value&, PRPCHandler rpcHandler) { return std::make_pair(SerialPort, false); });
 
     MqttBroker = NewFakeMqttBroker(*this);
     MqttClient = MqttBroker->MakeClient("em-test");

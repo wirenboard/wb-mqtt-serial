@@ -4,7 +4,6 @@
 #include <iostream>
 #include <unistd.h>
 
-#include "rpc_port_handler.h"
 #include <wblib/json_utils.h>
 
 using namespace std::chrono_literals;
@@ -450,16 +449,14 @@ void TSerialClient::OpenPortCycle()
     Metrics.StartPoll(Metrics::BUS_IDLE);
 }
 
-bool TSerialClient::RPCTransceive(const TRPCPortConfig& config,
-                                  std::vector<uint8_t>& response,
-                                  size_t& actualResponseSize)
+bool TSerialClient::RPCTransceive(PRPCRequest request, std::vector<uint8_t>& response, size_t& actualResponseSize)
 {
-    return RPCPortHandler.RPCTransceive(config, response, actualResponseSize, FlushNeeded, RPCSignal);
+    return RPCPortHandler.RPCTransceive(request, response, actualResponseSize, FlushNeeded, RPCSignal);
 }
 
-Json::Value TSerialClient::GetPortPath()
+PPort TSerialClient::GetPort()
 {
-    return Port->GetPath();
+    return Port;
 }
 
 bool TRegisterComparePredicate::operator()(const PRegister& r1, const PRegister& r2) const

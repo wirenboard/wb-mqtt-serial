@@ -70,9 +70,8 @@ public:
 
     static void HandleControlOnValueEvent(const WBMQTT::TControlOnValueEvent& event);
 
-    bool RPCTransceive(const TRPCPortConfig& config, std::vector<uint8_t>& response, size_t& actualResponseSize);
-
-    Json::Value GetPortPath();
+    bool RPCTransceive(PRPCRequest request, std::vector<uint8_t>& response, size_t& actualResponseSize);
+    PSerialClient GetSerialClient();
 
 private:
     WBMQTT::TLocalDeviceArgs From(const PSerialDevice& device);

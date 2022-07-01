@@ -1,95 +1,7 @@
 #include <rpc_handler.h>
+#include <rpc_request.h>
 
 #define LOG(logger) ::logger.Log() << "[RPC] "
-
-TRPCHandler::TRPCHandler(PMQTTSerialDriver serialDriver, WBMQTT::PMqttRpcServer rpcServer)
-    : SerialDriver(serialDriver),
-      RpcServer(rpcServer)
-{
-    rpcServer->RegisterMethod("port", "Load", std::bind(&TRPCHandler::PortLoad, this, std::placeholders::_1));
-    rpcServer->RegisterMethod("metrics", "Load", std::bind(&TRPCHandler::LoadMetrics, this, std::placeholders::_1));
-}
-
-bool TRPCPortConfig::CheckParamSet(const Json::Value& request)
-{
-    bool pathEnt = request.isMember("path");
-    bool ipEnt = request.isMember("ip");
-    bool portEnt = request.isMember("port");
-    bool msgEnt = request.isMember("msg");
-    bool respSizeEnt = request.isMember("response_size");
-
-    bool serialConf = (pathEnt && !ipEnt && !portEnt);
-    bool tcpConf = (!pathEnt && ipEnt && portEnt);
-    bool paramConf = msgEnt && respSizeEnt;
-
-    bool correct = ((tcpConf || serialConf) && paramConf);
-    if (correct) {
-        ParametersSet = serialConf ? RPCPortConfigSet::RPC_SERIAL_SET : RPCPortConfigSet::RPC_TCP_SET;
-    }
-
-    return correct;
-}
-
-bool TRPCPortConfig::LoadValues(const Json::Value& request)
-{
-    bool res = true;
-
-    try {
-
-        if (ParametersSet == RPCPortConfigSet::RPC_SERIAL_SET) {
-            if (!WBMQTT::JSON::Get(request, "path", Path)) {
-                throw std::exception();
-            }
-        } else {
-            if (!WBMQTT::JSON::Get(request, "ip", Ip) || !WBMQTT::JSON::Get(request, "port", Port) || (Port < 0) ||
-                (Port > 65536)) {
-                throw std::exception();
-            }
-        }
-
-        if (!WBMQTT::JSON::Get(request, "response_size", ResponseSize) || (ResponseSize < 0)) {
-            throw std::exception();
-        }
-
-        if (!WBMQTT::JSON::Get(request, "response_timeout", ResponseTimeout)) {
-            ResponseTimeout = DefaultResponseTimeout;
-        }
-
-        if (!WBMQTT::JSON::Get(request, "frame_timeout", FrameTimeout)) {
-            FrameTimeout = DefaultFrameTimeout;
-        }
-
-        TotalTimeout = std::chrono::seconds(10);
-
-        if (!WBMQTT::JSON::Get(request, "format", Format)) {
-            Format = "";
-        }
-
-        std::string msgStr;
-        if (!WBMQTT::JSON::Get(request, "msg", msgStr) || (msgStr == "")) {
-            throw std::exception();
-        }
-
-        Msg.clear();
-        if (Format == "HEX") {
-            if (msgStr.size() % 2 != 0) {
-                throw std::exception();
-            }
-
-            for (unsigned int i = 0; i < msgStr.size(); i += 2) {
-                auto byte = strtol(msgStr.substr(i, 2).c_str(), NULL, 16);
-                Msg.push_back(byte);
-            }
-        } else {
-            Msg.assign(msgStr.begin(), msgStr.end());
-        }
-
-    } catch (std::exception e) {
-        res = false;
-    }
-
-    return res;
-}
 
 namespace
 {
@@ -116,6 +28,81 @@ namespace
     }
 }
 
+void TRPCHandler::RPCServerInitialize(WBMQTT::PMqttRpcServer RpcServer)
+{
+    RpcServer->RegisterMethod("port", "Load", std::bind(&TRPCHandler::PortLoad, this, std::placeholders::_1));
+    RpcServer->RegisterMethod("metrics", "Load", std::bind(&TRPCHandler::LoadMetrics, this, std::placeholders::_1));
+}
+
+void TRPCHandler::SerialDriverInitialize(PMQTTSerialDriver SerialDriver)
+{
+    this->SerialDriver = SerialDriver;
+    std::vector<PSerialPortDriver> portDrivers = SerialDriver->GetPortDrivers();
+    for (auto portDriver: portDrivers) {
+        PSerialClient serialClient = portDriver->GetSerialClient();
+        PPort port = serialClient->GetPort();
+        AddSerialPortDriver(portDriver, port);
+    }
+}
+
+void TRPCHandler::AddPort(PPort Port, enum TRPCModbusMode Mode, std::string Path, std::string Ip, int PortNumber)
+{
+    auto existedPort = std::find_if(Ports.begin(), Ports.end(), [&Port](TRPCPort RPCPort) {
+        if (Port == RPCPort.Port) {
+            return true;
+        }
+        return false;
+    });
+
+    if (existedPort == Ports.end()) {
+        TRPCPort newRPCPort;
+        newRPCPort.Port = Port;
+        newRPCPort.Mode = Mode;
+        newRPCPort.Path = Path;
+        newRPCPort.Ip = Ip;
+        newRPCPort.PortNumber = PortNumber;
+        Ports.push_back(newRPCPort);
+    }
+}
+
+void TRPCHandler::AddSerialPortDriver(PSerialPortDriver SerialPortDriver, PPort Port)
+{
+    auto existedPort = std::find_if(Ports.begin(), Ports.end(), [&SerialPortDriver, &Port](TRPCPort RPCPort) {
+        if (Port == RPCPort.Port) {
+            RPCPort.SerialPortDriver = SerialPortDriver;
+            return true;
+        }
+        return false;
+    });
+}
+
+bool TRPCHandler::FindSerialDriverByPath(enum TRPCModbusMode Mode,
+                                         std::string Path,
+                                         std::string Ip,
+                                         int PortNumber,
+                                         PSerialPortDriver SerialPortDriver)
+{
+    auto existedPort = std::find_if(Ports.begin(), Ports.end(), [&Mode, &Path, &Ip, &PortNumber](TRPCPort RPCPort) {
+        if (RPCPort.Mode == TRPCModbusMode::RPC_RTU) {
+            if (RPCPort.Path == Path) {
+                return true;
+            }
+        } else {
+            if ((RPCPort.Ip == Ip) && (RPCPort.PortNumber == PortNumber)) {
+                return true;
+            }
+        }
+        return false;
+    });
+
+    if (existedPort != Ports.end()) {
+        SerialPortDriver = existedPort->SerialPortDriver;
+        return true;
+    }
+
+    return false;
+}
+
 Json::Value TRPCHandler::PortLoad(const Json::Value& request)
 {
     Json::Value replyJSON;
@@ -126,32 +113,35 @@ Json::Value TRPCHandler::PortLoad(const Json::Value& request)
     std::vector<uint8_t> response;
     std::string responseStr;
 
+    PRPCRequest Request;
+
     try {
 
-        if (!Config.CheckParamSet(request)) {
+        if (!Request->CheckParamSet(request)) {
             throw TRPCException("Wrong mandatory parameters set", RPCPortHandlerResult::RPC_WRONG_PARAM_SET);
         }
 
-        if (!Config.LoadValues(request)) {
+        if (!Request->LoadValues(request)) {
             throw TRPCException("Wrong parameters types or values", RPCPortHandlerResult::RPC_WRONG_PARAM_VALUE);
         }
 
-        PSerialPortDriver portDriver;
-        bool find = SerialDriver->RPCGetPortDriverByPath(Config.Path, Config.Ip, Config.Port, portDriver);
+        PSerialPortDriver SerialPortDriver;
+        bool find =
+            FindSerialDriverByPath(Request->Mode, Request->Path, Request->Ip, Request->PortNumber, SerialPortDriver);
         if (!find) {
             throw TRPCException("Requested port doesn't exist", RPCPortHandlerResult::RPC_WRONG_PORT);
         }
 
-        if (!portDriver->RPCTransceive(Config, response, actualResponseSize)) {
+        if (!SerialPortDriver->RPCTransceive(Request, response, actualResponseSize)) {
             throw TRPCException("Port IO error", RPCPortHandlerResult::RPC_WRONG_IO);
         }
 
-        if (actualResponseSize != Config.ResponseSize) {
+        if (actualResponseSize != Request->ResponseSize) {
             throw TRPCException("Actual response length shorter than requested",
                                 RPCPortHandlerResult::RPC_WRONG_RESP_LNGTH);
         }
 
-        responseStr = PortLoadResponseFormat(response, actualResponseSize, Config.Format);
+        responseStr = PortLoadResponseFormat(response, actualResponseSize, Request->Format);
         errorMsg = "Success";
         resultCode = RPCPortHandlerResult::RPC_OK;
     } catch (TRPCException& e) {

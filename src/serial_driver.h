@@ -16,10 +16,8 @@ public:
     void Start();
     void Stop();
 
-    bool RPCGetPortDriverByPath(const std::string& path,
-                                const std::string& ip,
-                                int port,
-                                PSerialPortDriver& portDriver);
+    std::vector<PSerialPortDriver> GetPortDrivers();
+
     void RPCGetMetrics(Json::Value& metrics);
 
 private:

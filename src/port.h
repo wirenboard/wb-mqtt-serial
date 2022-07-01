@@ -64,8 +64,6 @@ public:
 
     virtual std::string GetDescription(bool verbose = true) const = 0;
 
-    virtual Json::Value GetPath() const = 0;
-
     /**
      * @brief Set new byte parameters if it is a serial port.
      *

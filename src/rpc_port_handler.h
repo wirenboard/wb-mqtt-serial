@@ -2,7 +2,7 @@
 
 #include "binary_semaphore.h"
 #include "port.h"
-#include "rpc_config.h"
+#include "rpc_request.h"
 #include <mutex>
 #include <wblib/rpc.h>
 
@@ -18,7 +18,7 @@ class TRPCPortHandler
 {
 public:
     TRPCPortHandler();
-    bool RPCTransceive(const TRPCPortConfig& config,
+    bool RPCTransceive(PRPCRequest request,
                        std::vector<uint8_t>& response,
                        size_t& actualResponseSize,
                        PBinarySemaphore rpcSemaphore,
