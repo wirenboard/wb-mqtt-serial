@@ -7265,7 +7265,7 @@
 
         "translations": {
             "en": {
-                "WB-MRGBW-D_template_title": "WB-MRGBW-D fw3 - legacy template",
+                "WB-MRGBW-D_template_title": "WB-MRGBW-D fw3",
 
                 "sp_title": "Short Press",
                 "lp_title": "Long Press",
@@ -7393,7 +7393,7 @@
                 "Uptime": "Uptime (s)"
             },
             "ru": {
-                "WB-MRGBW-D_template_title": "WB-MRGBW-D fw3 - устаревший шаблон",
+                "WB-MRGBW-D_template_title": "WB-MRGBW-D fw3",
 
                 "sp_title": "Короткое нажатие",
                 "lp_title": "Длинное нажатие",
