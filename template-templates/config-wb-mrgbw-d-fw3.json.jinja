@@ -2286,23 +2286,12 @@
                 "error_value": "0xFFFF",
                 "condition": "(dimmer_mode==0||dimmer_mode==1||dimmer_mode==2||dimmer_mode==256)"
             },
-            {% for out_num in range(1, OUTPUTS_NUMBER + 1) -%}
+            {% for ch_number, ch_name in CHANNELS  -%}
             {
-                {% if out_num == 1 -%}
-                "name": "Channel {{out_num}} (B) Raw PWM",
-                {% endif -%}
-                {% if out_num == 2 -%}
-                "name": "Channel {{out_num}} (R) Raw PWM",
-                {% endif -%}     
-                {% if out_num == 3 -%}
-                "name": "Channel {{out_num}} (G) Raw PWM",
-                {% endif -%}
-                {% if out_num == 4 -%}
-                "name": "Channel {{out_num}} (W) Raw PWM",
-                {% endif -%}
+                "name": "Channel {{ch_number}} ({{ch_name}}) Raw PWM",
                 "reg_type": "holding",
-                "order": {{out_num}},
-                "address": {{90 + out_num - 1}},
+                "order": {{ch_number}},
+                "address": {{90 + ch_number - 1}},
                 "type": "value",
                 "min": 0,
                 "max": 2048,
@@ -2424,13 +2413,13 @@
                 "fader_hue_title": "Time to Increase/Decrease Hue from 0 to 360°",
 
                 "no_act_title": "Nothing",
-                {% for number, name in CHANNELS  -%}
-                "off_ch{{number}}_act_title": "Disable channel {{number}} ({{name}})",
-                "on_ch{{number}}_act_title": "Enable channel {{number}} ({{name}})",
-                "tg_ch{{number}}_act_title": "Toggle channel {{number}} ({{name}})",
-                "inc_ch{{number}}_act_title": "Increase brightness of channel {{number}} ({{name}})",
-                "dec_ch{{number}}_act_title": "Decrease brightness of channel {{number}} ({{name}})",
-                "inc_dec_ch{{number}}_act_title": "Increase/decrease brightness of channel {{number}} ({{name}})",
+                {% for ch_number, ch_name in CHANNELS  -%}
+                "off_ch{{ch_number}}_act_title": "Disable channel {{ch_number}} ({{ch_name}})",
+                "on_ch{{ch_number}}_act_title": "Enable channel {{ch_number}} ({{ch_name}})",
+                "tg_ch{{ch_number}}_act_title": "Toggle channel {{ch_number}} ({{ch_name}})",
+                "inc_ch{{ch_number}}_act_title": "Increase brightness of channel {{ch_number}} ({{ch_name}})",
+                "dec_ch{{ch_number}}_act_title": "Decrease brightness of channel {{ch_number}} ({{ch_name}})",
+                "inc_dec_ch{{ch_number}}_act_title": "Increase/decrease brightness of channel {{ch_number}} ({{ch_name}})",
                 {% endfor %}
                 "off_ch12_act_title": "Disable channels 1_2 (B_R)",
                 "on_ch12_act_title": "Enable channels 1_2 (B_R)",
@@ -2549,13 +2538,13 @@
                 "Debug": "Диагностика",
 
                 "no_act_title": "Нет действия",
-                {% for number, name in CHANNELS  -%}
-                "off_ch{{number}}_act_title": "Выключить канал {{number}} ({{name}})",
-                "on_ch{{number}}_act_title": "Включить канал {{number}} ({{name}})",
-                "tg_ch{{number}}_act_title": "Переключить канал {{number}} ({{name}})",
-                "inc_ch{{number}}_act_title": "Увеличить яркость канала {{number}} ({{name}})",
-                "dec_ch{{number}}_act_title": "Уменьшить яркость канала {{number}} ({{name}})",
-                "inc_dec_ch{{number}}_act_title": "Увеличить/уменьшить яркость канала {{number}} ({{name}})",
+                {% for ch_number, ch_name in CHANNELS  -%}
+                "off_ch{{ch_number}}_act_title": "Выключить канал {{ch_number}} ({{ch_name}})",
+                "on_ch{{ch_number}}_act_title": "Включить канал {{ch_number}} ({{ch_name}})",
+                "tg_ch{{ch_number}}_act_title": "Переключить канал {{ch_number}} ({{ch_name}})",
+                "inc_ch{{ch_number}}_act_title": "Увеличить яркость канала {{ch_number}} ({{ch_name}})",
+                "dec_ch{{ch_number}}_act_title": "Уменьшить яркость канала {{ch_number}} ({{ch_name}})",
+                "inc_dec_ch{{ch_number}}_act_title": "Увеличить/уменьшить яркость канала {{ch_number}} ({{ch_name}})",
                 {% endfor %}
                 "off_ch12_act_title": "Выключить каналы 1 и 2 (B_R)",
                 "on_ch12_act_title": "Включить каналы 1 и 2 (B_R)",
