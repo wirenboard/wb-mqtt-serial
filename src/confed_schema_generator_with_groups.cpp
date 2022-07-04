@@ -186,6 +186,9 @@ namespace
         for (const Json::Value& group: deviceTemplate["groups"]) {
             Json::Value gr(group);
             gr["title"] = context.AddHashedTranslation(group["title"].asString());
+            if (group.isMember("description")) {
+                gr["description"] = context.AddHashedTranslation(group["description"].asString());
+            }
             res.append(gr);
         }
         return res;

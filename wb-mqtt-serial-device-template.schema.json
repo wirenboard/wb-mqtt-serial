@@ -50,6 +50,9 @@
             },
             "order": {
               "type": "integer"
+            },
+            "description": {
+              "type": "string"
             }
           },
           "required": ["title", "id"]

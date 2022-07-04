@@ -107,10 +107,10 @@ Publish: /devices/mercury200.02_0xFE123456/controls/Power: '765432' (QoS 1, reta
 << FE 12 34 56 63 12 34 56 78 76 54 32 79 0E
 EnqueueMercury200EnergyResponse()
 >> FE 12 34 56 27 36 D8
-Publish: /devices/mercury200.02_0xFE123456/controls/Power consumption tariff 1: '62.142' (QoS 1, retained)
-Publish: /devices/mercury200.02_0xFE123456/controls/Power consumption tariff 2: '20.834' (QoS 1, retained)
-Publish: /devices/mercury200.02_0xFE123456/controls/Power consumption tariff 3: '11.111' (QoS 1, retained)
-Publish: /devices/mercury200.02_0xFE123456/controls/Power consumption tariff 4: '22.222' (QoS 1, retained)
+Publish: /devices/mercury200.02_0xFE123456/controls/Power consumption tariff 1: '621.42' (QoS 1, retained)
+Publish: /devices/mercury200.02_0xFE123456/controls/Power consumption tariff 2: '208.34' (QoS 1, retained)
+Publish: /devices/mercury200.02_0xFE123456/controls/Power consumption tariff 3: '111.11' (QoS 1, retained)
+Publish: /devices/mercury200.02_0xFE123456/controls/Power consumption tariff 4: '222.22' (QoS 1, retained)
 << FE 12 34 56 27 00 06 21 42 00 02 08 34 00 01 11 11 00 02 22 22 2B 25
 Close()
 Publish: /devices/mercury200.02_0xFE123456/controls/Battery: '' (QoS 1, retained)
