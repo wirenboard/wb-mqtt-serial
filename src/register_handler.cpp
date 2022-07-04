@@ -26,7 +26,7 @@ bool TRegisterHandler::NeedToFlush()
 
 void TRegisterHandler::Flush()
 {
-    volatile uint64_t tempValue;
+    TRegisterValue tempValue; // must be volatile
     try {
         {
             std::lock_guard<std::mutex> lock(SetValueMutex);

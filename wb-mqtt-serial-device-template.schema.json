@@ -155,10 +155,7 @@
           "type": "integer"
         }
       },
-      "anyOf": [
-        { "required": ["device_type", "name"] },
-        { "required": ["oneOf", "name"] }
-      ]
+      "required": ["device_type", "name"]
     },
 
     "subdevice_device": {

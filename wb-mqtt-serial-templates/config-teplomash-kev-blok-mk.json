@@ -1,0 +1,224 @@
+{
+    "title": "teplomash_kev-blok-mk_template_title",
+    "device_type": "teplomash_kev-blok-mk",
+    "device": {
+        "name": "Тепломаш КЭВ-БЛОК-МК",
+        "id": "teplomash_kev-blok-mk",
+        "response_timeout_ms": 100,
+        "guard_interval_us": 5000,
+        "groups": [
+            {
+                "title": "Status",
+                "id": "status",
+                "order": 1
+            },
+            {
+                "title": "Temperature",
+                "id": "temperature",
+                "order": 2
+            },
+            {
+                "title": "Fan",
+                "id": "fan",
+                "order": 3
+            },
+            {
+                "title": "Alarms",
+                "id": "alarms",
+                "order": 4
+            }
+        ],
+        "channels": [
+            {
+                "name": "Air Heater Status",
+                "address": "5000",
+                "reg_type": "holding",
+                "type": "switch",
+                "format": "u16",
+                "group": "status"
+            },
+            {
+                "name": "Heating Mode",
+                "address": "5002",
+                "reg_type": "holding",
+                "type": "switch",
+                "format": "u16",
+                "offset": -1,
+                "group": "status"
+            },
+            {
+                "name": "Outdoor Temperature",
+                "address": "6002",
+                "reg_type": "input",
+                "type": "temperature",
+                "format": "s16",
+                "group": "temperature"
+            },
+            {
+                "name": "Indoor Temperature",
+                "address": "6003",
+                "reg_type": "input",
+                "type": "temperature",
+                "format": "s16",
+                "group": "temperature"
+            },
+            {
+                "name": "Temperature Setpoint",
+                "address": "5003",
+                "reg_type": "holding",
+                "type": "temperature",
+                "format": "s16",
+                "group": "temperature",
+                "min": 7,
+                "max": 35
+            },
+            {
+                "name": "Estimated Winter Temperature",
+                "address": "5005",
+                "reg_type": "holding",
+                "type": "temperature",
+                "format": "s16",
+                "min": 0,
+                "max": 99,
+                "group": "temperature"
+            },
+            {
+                "name": "Fan Speed",
+                "address": "5001",
+                "reg_type": "holding",
+                "type": "range",
+                "format": "u16",
+                "group": "fan",
+                "min": 1,
+                "max": 3
+            },
+            {
+                "name": "Fan Min Speed",
+                "address": "6000:8:1",
+                "reg_type": "input",
+                "type": "switch",
+                "format": "u16",
+                "group": "fan"
+            },
+            {
+                "name": "Fan Middle Speed",
+                "address": "6000:9:1",
+                "reg_type": "input",
+                "type": "switch",
+                "format": "u16",
+                "group": "fan"
+            },
+            {
+                "name": "Fan Max Speed",
+                "address": "6000:10:1",
+                "reg_type": "input",
+                "type": "switch",
+                "format": "u16",
+                "group": "fan"
+            },
+            {
+                "name": "Pump",
+                "address": "6000:11:1",
+                "reg_type": "input",
+                "type": "switch",
+                "format": "u16",
+                "group": "status"
+            },
+            {
+                "name": "Valve",
+                "address": "6000:12:1",
+                "reg_type": "input",
+                "type": "switch",
+                "format": "u16",
+                "group": "status"
+            },
+            {
+                "name": "Outdoor Temperature Alarm",
+                "address": "6000:1:1",
+                "reg_type": "input",
+                "type": "switch",
+                "format": "u16",
+                "group": "alarms"
+            },
+            {
+                "name": "Indoor Temperature Alarm",
+                "address": "6000:2:1",
+                "reg_type": "input",
+                "type": "switch",
+                "format": "u16",
+                "group": "alarms"
+            },
+            {
+                "name": "Limit Switch",
+                "address": "6000:3:1",
+                "reg_type": "input",
+                "type": "switch",
+                "format": "u16",
+                "group": "alarms"
+            },
+            {
+                "name": "Fire Alarm",
+                "address": "6000:4:1",
+                "reg_type": "input",
+                "type": "switch",
+                "format": "u16",
+                "group": "alarms"
+            },
+            {
+                "name": "Fault",
+                "address": "6000:5:1",
+                "reg_type": "input",
+                "type": "switch",
+                "format": "u16",
+                "group": "alarms"
+            },
+            {
+                "name": "Freezing Alarm",
+                "address": "6000:6:1",
+                "reg_type": "input",
+                "type": "switch",
+                "format": "u16",
+                "group": "alarms"
+            },
+            {
+                "name": "Connection Lost",
+                "address": "6000:7:1",
+                "reg_type": "input",
+                "type": "switch",
+                "format": "u16",
+                "group": "alarms"
+            }
+        ],
+        "translations": {
+            "en": {
+                "teplomash_kev-blok-mk_template_title": "Тепломаш КЭВ-БЛОК-МК (air heater control unit)"
+            },
+            "ru": {
+                "teplomash_kev-blok-mk_template_title": "Тепломаш КЭВ-БЛОК-МК (блок управления воздухонагревателями)",
+                "Status": "Статус",
+                "Temperature": "Температура",
+                "Fan": "Вентилятор",
+                "Alarms": "Аварии",
+                "Air Heater Status": "Статус воздухонагревателя",
+                "Heating Mode": "Режим нагрева",
+                "Outdoor Temperature": "Температура наружного воздуха",
+                "Indoor Temperature": "Температура в помещении",
+                "Temperature Setpoint": "Уставка температуры",
+                "Estimated Winter Temperature": "Ресчетная зимняя температура",
+                "Fan Speed": "Скорость вентилятора",
+                "Fan Min Speed": "Минимальная скорость вентилятора",
+                "Fan Middle Speed": "Средняя скорость вентилятора",
+                "Fan Max Speed": "Максимальная скорость вентилятора",
+                "Pump": "Насос",
+                "Valve": "Клапан",
+                "Outdoor Temperature Alarm": "Отказ датчика температуры наружного воздуха",
+                "Indoor Temperature Alarm": "Отказ датчика температуры в помещении",
+                "Limit Switch": "Концевой выключатель",
+                "Fire Alarm": "Пожар",
+                "Fault": "Отказ",
+                "Freezing Alarm": "Замерзание",
+                "Connection Lost": "Обрыв связи"
+            }
+        }
+    }
+}

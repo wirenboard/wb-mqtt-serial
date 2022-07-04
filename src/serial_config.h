@@ -270,8 +270,8 @@ void RegisterProtocols(TSerialDeviceFactory& deviceFactory);
 struct TRegisterBitsAddress
 {
     uint32_t Address = 0;
-    uint8_t BitWidth = 0;
-    uint8_t BitOffset = 0;
+    uint32_t BitWidth = 0;
+    uint32_t BitOffset = 0;
 };
 
 TRegisterBitsAddress LoadRegisterBitsAddress(const Json::Value& register_data, const std::string& jsonPropertyName);

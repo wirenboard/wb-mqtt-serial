@@ -122,7 +122,7 @@ void TIVTMDevice::ReadResponse(uint16_t addr, uint8_t* payload, uint16_t len)
     DecodeASCIIBytes(buf + 7, payload, len);
 }
 
-uint64_t TIVTMDevice::ReadRegisterImpl(PRegister reg)
+TRegisterValue TIVTMDevice::ReadRegisterImpl(PRegister reg)
 {
     Port()->SkipNoise();
 
@@ -135,7 +135,7 @@ uint64_t TIVTMDevice::ReadRegisterImpl(PRegister reg)
 
     // the response is little-endian. We inverse the byte order here to make it big-endian.
 
-    return (p[3] << 24) | (p[2] << 16) | (p[1] << 8) | p[0];
+    return TRegisterValue{static_cast<uint64_t>((p[3] << 24) | (p[2] << 16) | (p[1] << 8) | p[0])};
 }
 
 #if 0

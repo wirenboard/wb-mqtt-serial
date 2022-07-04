@@ -557,7 +557,10 @@
           "default" : 1,
           "propertyOrder": 11,
           "options": {
-            "grid_columns": 4
+            "grid_columns": 4,
+            "dependencies": {
+              "format": ["s16", "u16", "s8", "u8", "s24", "u24", "s32", "u32", "s64", "u64", "bcd8", "bcd16", "bcd24", "bcd32", "float", "double", "char8"]
+            }
           }
         },
         "offset": {
@@ -567,7 +570,10 @@
           "default" : 0,
           "propertyOrder": 12,
           "options": {
-            "grid_columns": 4
+            "grid_columns": 4,
+            "dependencies": {
+              "format": ["s16", "u16", "s8", "u8", "s24", "u24", "s32", "u32", "s64", "u64", "bcd8", "bcd16", "bcd24", "bcd32", "float", "double", "char8"]
+            }
           }
         },
         "round_to": {
@@ -672,6 +678,18 @@
           "title": "Word order",
           "propertyOrder": 20
         },
+        "string_data_size": {
+          "type": "integer",
+          "title": "String size in characters",
+          "description": "string_data_size_description",
+          "minimum": 1,
+          "default": 1,
+          "propertyOrder": 21,
+          "options": {
+            "dependencies": {
+              "format": "string"
+            }}
+        },
         "consists_of": {
           "not": {},
           "options": { "hidden": true }
@@ -683,7 +701,7 @@
       },
       // FIXME: require "reg_type" and "address" for non-templated devices
       "required": ["name"],
-      "defaultProperties": ["name", "type", "reg_type", "format", "scale", "offset"],
+      "defaultProperties": ["name", "type", "reg_type", "format", "scale", "offset", "string_data_size"],
       "_format": "grid",
       "options": {
         "disable_collapse": true,
@@ -1096,13 +1114,13 @@
     "format": {
       "type": "string",
       "title": "Format",
-      "enum": ["s16", "u16", "s8", "u8", "s24", "u24", "s32", "u32", "s64", "u64", "bcd8", "bcd16", "bcd24", "bcd32", "float", "double", "char8"],
+      "enum": ["s16", "u16", "s8", "u8", "s24", "u24", "s32", "u32", "s64", "u64", "bcd8", "bcd16", "bcd24", "bcd32", "float", "double", "char8", "string"],
       "options": {
         "enum_titles" : [ "Signed 16-bit integer", "Unsigned 16-bit integer", "Signed 8-bit integer", "Unsigned 8-bit integer",
                           "Signed 24-bit integer", "Unsigned 24-bit integer", "Signed 32-bit integer", "Unsigned 32-bit integer",
                           "Signed 64-bit integer", "Unsigned 64-bit integer",
                           "8-bit BCD", "16-bit BCD","24-bit BCD", "32-bit BCD", "IEEE754 32-bit float", "IEEE754 64-bit float (double)",
-                          "8-bit ASCII char"]
+                          "8-bit ASCII char", "String"]
       }
     },
     "word_order": {
@@ -1870,7 +1888,8 @@
       "response_timeout_description": "Specifies maximum device's response time. Zero means no timeout. If not set, the default timeout (500ms) is used. If port's appropriate parameter is bigger, this one is overwritten.",
       "device_timeout_description": "Specifies timeout for device connection. If not set, default value 3000ms is used. Value -1 disables device reconnect. Zero means instant timeout.",
       "device_max_fail_cycles_desc": "Defines number of device polling cycles with all failed registers before marking device as disconnected. Default value is 2. Value -1 disables device reconnect. Zero means instant timeout.",
-      "max_unchanged_interval_desc": "Specifies the maximum interval in seconds between posting the same values to message queue. Zero means the values are posted to the queue every time they read from the device. By default, the values are only reported on change. Negative value means default behavior."
+      "max_unchanged_interval_desc": "Specifies the maximum interval in seconds between posting the same values to message queue. Zero means the values are posted to the queue every time they read from the device. By default, the values are only reported on change. Negative value means default behavior.",
+      "string_data_size_description": "For the modbus protocol, strings are read one character per register from the low byte. The parameter specifies the number of characters"
     },
     "ru": {
       "Serial Device Driver Configuration": "Настройка драйвера serial-устройств",
@@ -2039,7 +2058,10 @@
       "custom period": "задать период",
       "do not read": "не опрашивать",
       "read_rate_limit_description": "Этот параметр устарел и не рекомендуется к использованию, вместо него пользуйтесь периодом опроса канала",
-      "not faster than (deprecated)": "не чаще чем раз в (устаревший параметр)"
+      "not faster than (deprecated)": "не чаще чем раз в (устаревший параметр)",
+      "String size in characters": "Размер строки в символах",
+      "String": "Строка",
+      "string_data_size_description": "Для протокола modbus cтроки считываются по одному символу на регистр из младшего байта. Параметр определяет количество символов"
     }
   }
 }

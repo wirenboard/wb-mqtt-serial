@@ -63,7 +63,7 @@ TFakeSerialDevice::TFakeSerialDevice(PDeviceConfig config, PPort port, PProtocol
     Devices.push_back(this);
 }
 
-uint64_t TFakeSerialDevice::ReadRegisterImpl(PRegister reg)
+TRegisterValue TFakeSerialDevice::ReadRegisterImpl(PRegister reg)
 {
     try {
         if (!FakePort->IsOpen()) {
@@ -88,11 +88,22 @@ uint64_t TFakeSerialDevice::ReadRegisterImpl(PRegister reg)
             throw runtime_error("invalid register type");
         }
 
-        auto value = GetValue(&Registers[addr], reg->Get16BitWidth());
+        TRegisterValue value;
+        if (reg->Format == RegisterFormat::String) {
+            std::string str;
+            for (uint32_t i = 0; i < reg->Get16BitWidth(); ++i) {
+                auto ch = static_cast<char>(Registers[addr + i]);
+                if (ch != '\0') {
+                    str.push_back(ch);
+                }
+            }
+            value.Set(str);
+        } else {
+            value.Set(GetValue(&Registers[addr], reg->Get16BitWidth()));
+        }
 
         FakePort->GetFixture().Emit() << "fake_serial_device '" << SlaveId << "': read address '" << reg->GetAddress()
                                       << "' value '" << value << "'";
-
         return value;
     } catch (const exception& e) {
         FakePort->GetFixture().Emit() << "fake_serial_device '" << SlaveId << "': read address '" << reg->GetAddress()
@@ -102,7 +113,7 @@ uint64_t TFakeSerialDevice::ReadRegisterImpl(PRegister reg)
     }
 }
 
-void TFakeSerialDevice::WriteRegisterImpl(PRegister reg, uint64_t value)
+void TFakeSerialDevice::WriteRegisterImpl(PRegister reg, const TRegisterValue& value)
 {
     try {
         if (!FakePort->IsOpen()) {
@@ -127,10 +138,17 @@ void TFakeSerialDevice::WriteRegisterImpl(PRegister reg, uint64_t value)
             throw runtime_error("invalid register type");
         }
 
-        SetValue(&Registers[addr], reg->Get16BitWidth(), value);
-
+        if (reg->Format == RegisterFormat::String) {
+            auto str = value.Get<std::string>();
+            for (uint32_t i = 0; i < reg->Get16BitWidth(); ++i) {
+                Registers[addr + i] = i < str.size() ? str[i] : 0;
+            }
+        } else {
+            SetValue(&Registers[addr], reg->Get16BitWidth(), value.Get<uint64_t>());
+        }
         FakePort->GetFixture().Emit() << "fake_serial_device '" << SlaveId << "': write to address '"
                                       << reg->GetAddress() << "' value '" << value << "'";
+
     } catch (const exception& e) {
         FakePort->GetFixture().Emit() << "fake_serial_device '" << SlaveId << "': write address '" << reg->GetAddress()
                                       << "' failed: '" << e.what() << "'";

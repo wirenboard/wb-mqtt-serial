@@ -136,8 +136,12 @@ protected:
                         Emit() << "Name: " << setup_item->GetName();
                         Emit() << "Address: " << setup_item->GetRegisterConfig()->GetAddress();
                         Emit() << "Value: " << setup_item->GetValue();
-                        Emit() << "RawValue: 0x" << std::setfill('0') << std::setw(2) << std::hex
-                               << setup_item->GetRawValue();
+                        if (setup_item->GetRawValue().GetType() == TRegisterValue::ValueType::String) {
+                            Emit() << "RawValue: " << setup_item->GetRawValue();
+                        } else {
+                            Emit() << "RawValue: 0x" << std::setfill('0') << std::setw(2) << std::hex
+                                   << setup_item->GetRawValue();
+                        }
                         Emit() << "Reg type: " << setup_item->GetRegisterConfig()->TypeName << " ("
                                << setup_item->GetRegisterConfig()->Type << ")";
                         Emit() << "Reg format: " << RegisterFormatName(setup_item->GetRegisterConfig()->Format);
@@ -172,6 +176,12 @@ TEST_F(TConfigParserTest, SameSetupItems)
 {
     // Check that setup registers in config have higher priority than setup registers with same addresses from template
     PrintConfig(GetConfig("configs/parse_test_setup.json"));
+}
+
+TEST_F(TConfigParserTest, ParametersAsArray)
+{
+    // Check loading device template with parameters defined as array
+    PrintConfig(GetConfig("configs/parse_test_parameters_array.json"));
 }
 
 TEST_F(TConfigParserTest, UnsuccessfulParse)

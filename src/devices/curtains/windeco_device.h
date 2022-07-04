@@ -22,8 +22,8 @@ namespace WinDeco
         static void Register(TSerialDeviceFactory& factory);
 
     protected:
-        uint64_t ReadRegisterImpl(PRegister reg) override;
-        void WriteRegisterImpl(PRegister reg, uint64_t value) override;
+        TRegisterValue ReadRegisterImpl(PRegister reg) override;
+        void WriteRegisterImpl(PRegister reg, const TRegisterValue& regValue) override;
     };
 
     std::vector<uint8_t> MakeRequest(uint8_t zoneId, uint8_t curtainId, uint8_t command);

@@ -187,7 +187,7 @@ namespace
                 ret = sscanf(presp, "(%lf)%n", &resp_val, &nread);
                 if (ret >= 1) {
                     presp += nread;
-                    reg->SetValue(CopyDoubleToUint64(resp_val));
+                    reg->SetValue(TRegisterValue{CopyDoubleToUint64(resp_val)});
                 } else {
                     // consume error message instead
                     int err_num;
@@ -242,6 +242,7 @@ void TEnergomeraIecWithFastReadDevice::ReadRegisterRange(PRegisterRange abstract
         char* presp = ReadResponse(*Port(), resp, RESPONSE_BUF_LEN, *DeviceConfig());
 
         ProcessResponse(*range, presp);
+        SetTransferResult(true);
     } catch (TSerialDeviceException& e) {
         for (auto& r: range->RegisterList()) {
             r->SetError(TRegister::TError::ReadError);
@@ -249,6 +250,7 @@ void TEnergomeraIecWithFastReadDevice::ReadRegisterRange(PRegisterRange abstract
         auto& logger = GetIsDisconnected() ? Debug : Warn;
         LOG(logger) << "TEnergomeraIecWithFastReadDevice::ReadRegisterRange(): " << e.what() << " [slave_id is "
                     << ToString() + "]";
+        SetTransferResult(false);
     }
 }
 

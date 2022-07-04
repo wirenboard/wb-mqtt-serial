@@ -55,19 +55,19 @@ void TMercury200Test::SetUp()
 void TMercury200Test::VerifyEnergyQuery()
 {
     EnqueueMercury200EnergyResponse();
-    ASSERT_EQ(0x62142, Mercury200Dev->ReadRegisterImpl(Mercury200RET1Reg));
-    ASSERT_EQ(0x20834, Mercury200Dev->ReadRegisterImpl(Mercury200RET2Reg));
-    ASSERT_EQ(0x11111, Mercury200Dev->ReadRegisterImpl(Mercury200RET3Reg));
-    ASSERT_EQ(0x22222, Mercury200Dev->ReadRegisterImpl(Mercury200RET4Reg));
+    ASSERT_EQ(TRegisterValue{0x62142}, Mercury200Dev->ReadRegisterImpl(Mercury200RET1Reg));
+    ASSERT_EQ(TRegisterValue{0x20834}, Mercury200Dev->ReadRegisterImpl(Mercury200RET2Reg));
+    ASSERT_EQ(TRegisterValue{0x11111}, Mercury200Dev->ReadRegisterImpl(Mercury200RET3Reg));
+    ASSERT_EQ(TRegisterValue{0x22222}, Mercury200Dev->ReadRegisterImpl(Mercury200RET4Reg));
     Mercury200Dev->InvalidateReadCache();
 }
 
 void TMercury200Test::VerifyParamQuery()
 {
     EnqueueMercury200ParamResponse();
-    ASSERT_EQ(0x1234, Mercury200Dev->ReadRegisterImpl(Mercury200UReg));
-    ASSERT_EQ(0x5678, Mercury200Dev->ReadRegisterImpl(Mercury200IReg));
-    ASSERT_EQ(0x765432, Mercury200Dev->ReadRegisterImpl(Mercury200PReg));
+    ASSERT_EQ(TRegisterValue{0x1234}, Mercury200Dev->ReadRegisterImpl(Mercury200UReg));
+    ASSERT_EQ(TRegisterValue{0x5678}, Mercury200Dev->ReadRegisterImpl(Mercury200IReg));
+    ASSERT_EQ(TRegisterValue{0x765432}, Mercury200Dev->ReadRegisterImpl(Mercury200PReg));
     Mercury200Dev->InvalidateReadCache();
 }
 
@@ -96,7 +96,7 @@ TEST_F(TMercury200Test, ParamsQuery)
 TEST_F(TMercury200Test, BatteryVoltageQuery)
 {
     EnqueueMercury200BatteryVoltageResponse();
-    ASSERT_EQ(0x0391, Mercury200Dev->ReadRegisterImpl(Mercury200BatReg));
+    ASSERT_EQ(TRegisterValue{0x0391}, Mercury200Dev->ReadRegisterImpl(Mercury200BatReg));
     SerialPort->Close();
 }
 

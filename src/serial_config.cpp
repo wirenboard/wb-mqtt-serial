@@ -258,6 +258,11 @@ namespace
             context.stride,
             RegisterFormatByteWidth(regType.DefaultFormat));
 
+        if ((regType.DefaultFormat == RegisterFormat::String) && (registerDesc.DataWidth == 0)) {
+            throw TConfigParserException(readonly_override_error_message_prefix +
+                                         ": String size is not set for register string format");
+        }
+
         res.RegisterConfig = TRegisterConfig::Create(regType.Index,
                                                      registerDesc,
                                                      regType.DefaultFormat,
@@ -269,11 +274,12 @@ namespace
                                                      regType.DefaultWordOrder);
 
         if (register_data.isMember("error_value")) {
-            res.RegisterConfig->ErrorValue = ToUint64(register_data["error_value"], "error_value");
+            res.RegisterConfig->ErrorValue = TRegisterValue{ToUint64(register_data["error_value"], "error_value")};
         }
 
         if (register_data.isMember("unsupported_value")) {
-            res.RegisterConfig->UnsupportedValue = ToUint64(register_data["unsupported_value"], "unsupported_value");
+            res.RegisterConfig->UnsupportedValue =
+                TRegisterValue{ToUint64(register_data["unsupported_value"], "unsupported_value")};
         }
 
         res.RegisterConfig->ReadRateLimit = GetReadRateLimit(register_data);
@@ -1052,7 +1058,7 @@ const std::string& TDeviceSetupItemConfig::GetValue() const
     return Value;
 }
 
-uint64_t TDeviceSetupItemConfig::GetRawValue() const
+TRegisterValue TDeviceSetupItemConfig::GetRawValue() const
 {
     return RawValue;
 }
@@ -1353,15 +1359,14 @@ TRegisterBitsAddress LoadRegisterBitsAddress(const Json::Value& register_data, c
             res.BitOffset = bitOffset;
             if (pos2 != string::npos) {
                 res.BitWidth = stoul(addressStr.substr(pos2 + 1));
-                if (res.BitWidth > 64) {
-                    throw TConfigParserException(
-                        "address parsing failed: bit count must be in range [0, 64] (address string: '" + addressStr +
-                        "')");
-                }
             }
         }
     } else {
         res.Address = GetInt(register_data, jsonPropertyName);
+    }
+
+    if (register_data.isMember("string_data_size")) {
+        res.BitWidth = GetInt(register_data, "string_data_size") * sizeof(char) * 8;
     }
     return res;
 }

@@ -20715,3 +20715,23 @@ pulsar-m-water
 	Consumption  =>  Consumption
 pulsar-water
 	Consumption  =>  Consumption
+teplomash_kev-blok-mk
+	Air Heater Status  =>  Air Heater Status
+	Connection Lost  =>  Connection Lost
+	Estimated Winter Temperature  =>  Estimated Winter Temperature
+	Fan Max Speed  =>  Fan Max Speed
+	Fan Middle Speed  =>  Fan Middle Speed
+	Fan Min Speed  =>  Fan Min Speed
+	Fan Speed  =>  Fan Speed
+	Fault  =>  Fault
+	Fire Alarm  =>  Fire Alarm
+	Freezing Alarm  =>  Freezing Alarm
+	Heating Mode  =>  Heating Mode
+	Indoor Temperature  =>  Indoor Temperature
+	Indoor Temperature Alarm  =>  Indoor Temperature Alarm
+	Limit Switch  =>  Limit Switch
+	Outdoor Temperature  =>  Outdoor Temperature
+	Outdoor Temperature Alarm  =>  Outdoor Temperature Alarm
+	Pump  =>  Pump
+	Temperature Setpoint  =>  Temperature Setpoint
+	Valve  =>  Valve

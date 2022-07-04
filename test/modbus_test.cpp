@@ -122,7 +122,7 @@ set<int> TModbusTest::VerifyQuery(PRegister reg)
     }
     set<int> readAddresses;
     set<int> errorRegisters;
-    map<int, uint64_t> registerValues;
+    map<int, TRegisterValue> registerValues;
 
     for (auto range: ranges) {
         ModbusDev->ReadRegisterRange(range);
@@ -139,7 +139,7 @@ set<int> TModbusTest::VerifyQuery(PRegister reg)
 
     for (auto registerValue: registerValues) {
         auto address = registerValue.first;
-        auto value = to_string(registerValue.second);
+        auto value = to_string(registerValue.second.Get<uint64_t>());
 
         switch (address) {
             case 0:

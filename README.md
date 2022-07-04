@@ -332,6 +332,8 @@ It's designed to be used on [Wiren Board](https://wirenboard.com/en/) family of 
                             // "double" - число с плавающей точкой двойной точности IEEE 754. 64 bit. (big-endian).
                             //     (занимает 4 регистра, начиная с указанного)
                             // "char8" - однобайтовый символ в кодировке ASCII
+                            // "string" - строка с настраиваемым количествои символов.
+                            //            Для протокола modbus cтроки считываются по одному символу на регистр из младшего байта. 
 
                             "format": "s8",
 
@@ -379,7 +381,10 @@ It's designed to be used on [Wiren Board](https://wirenboard.com/en/) family of 
                             "off_value": "0xAA",
 
                             // значение регистра, полученное от устройства, которое обозначает ошибку
-                            "error_value": "0xAA"
+                            "error_value": "0xAA",
+
+                            // Длина строки в символах. Необходимая опция, если выбран формат "string"
+                            "string_data_size": 5
                         },
                         {
                             // Ещё один канал
