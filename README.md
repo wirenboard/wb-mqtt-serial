@@ -636,7 +636,10 @@ It's designed to be used on [Wiren Board](https://wirenboard.com/en/) family of 
                 "order": 3,
 
                 // Группа вложена в другую группу
-                "group": "group2"
+                "group": "group2",
+
+                // Описание группы
+                "description": "Group description"
             },
             ...
         ]
