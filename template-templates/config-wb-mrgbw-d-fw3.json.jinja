@@ -1,5 +1,6 @@
 {% set INPUTS_NUMBER = 3 -%}
 {% set OUTPUTS_NUMBER = 4 -%}
+{% set CHANNELS = ((1, "B"), (2, "R"), (3, "G"), (4, "W")) -%}
 {
     "title": "WB-MRGBW-D_template_title",
     "device_type": "WB-MRGBW-D_fw3_nosubdev",
@@ -2423,7 +2424,6 @@
                 "fader_hue_title": "Time to Increase/Decrease Hue from 0 to 360°",
 
                 "no_act_title": "Nothing",
-                {% set CHANNELS = ((1, "B"), (2, "R"), (3, "G"), (4, "W")) -%}
                 {% for number, name in CHANNELS  -%}
                 "off_ch{{number}}_act_title": "Disable channel {{number}} ({{name}})",
                 "on_ch{{number}}_act_title": "Enable channel {{number}} ({{name}})",
@@ -2431,8 +2431,7 @@
                 "inc_ch{{number}}_act_title": "Increase brightness of channel {{number}} ({{name}})",
                 "dec_ch{{number}}_act_title": "Decrease brightness of channel {{number}} ({{name}})",
                 "inc_dec_ch{{number}}_act_title": "Increase/decrease brightness of channel {{number}} ({{name}})",
-                {% endfor -%}
-
+                {% endfor %}
                 "off_ch12_act_title": "Disable channels 1_2 (B_R)",
                 "on_ch12_act_title": "Enable channels 1_2 (B_R)",
                 "tg_ch12_act_title": "Toggle channels 1_2 (B_R)",
@@ -2550,31 +2549,14 @@
                 "Debug": "Диагностика",
 
                 "no_act_title": "Нет действия",
-                "off_ch1_act_title": "Выключить канал 1 (B)",
-                "off_ch2_act_title": "Выключить канал 2 (R)",
-                "off_ch3_act_title": "Выключить канал 3 (G)",
-                "off_ch4_act_title": "Выключить канал 4 (W)",
-                "on_ch1_act_title": "Включить канал 1 (B)",
-                "on_ch2_act_title": "Включить канал 2 (R)",
-                "on_ch3_act_title": "Включить канал 3 (G)",
-                "on_ch4_act_title": "Включить канал 4 (W)",
-                "tg_ch1_act_title": "Переключить канал 1 (B)",
-                "tg_ch2_act_title": "Переключить канал 2 (R)",
-                "tg_ch3_act_title": "Переключить канал 3 (G)",
-                "tg_ch4_act_title": "Переключить канал 4 (W)",
-                "inc_ch1_act_title": "Увеличить яркость канала 1 (B)",
-                "inc_ch2_act_title": "Увеличить яркость канала 2 (R)",
-                "inc_ch3_act_title": "Увеличить яркость канала 3 (G)",
-                "inc_ch4_act_title": "Увеличить яркость канала 4 (W)",
-                "dec_ch1_act_title": "Уменьшить яркость канала 1 (B)",
-                "dec_ch2_act_title": "Уменьшить яркость канала 2 (R)",
-                "dec_ch3_act_title": "Уменьшить яркость канала 3 (G)",
-                "dec_ch4_act_title": "Уменьшить яркость канала 4 (W)",
-                "inc_dec_ch1_act_title": "Увеличить/уменьшить яркость канала 1 (B)",
-                "inc_dec_ch2_act_title": "Увеличить/уменьшить яркость канала 2 (R)",
-                "inc_dec_ch3_act_title": "Увеличить/уменьшить яркость канала 3 (G)",
-                "inc_dec_ch4_act_title": "Увеличить/уменьшить яркость канала 4 (W)",
-
+                {% for number, name in CHANNELS  -%}
+                "off_ch{{number}}_act_title": "Выключить канал {{number}} ({{name}})",
+                "on_ch{{number}}_act_title": "Включить канал {{number}} ({{name}})",
+                "tg_ch{{number}}_act_title": "Переключить канал {{number}} ({{name}})",
+                "inc_ch{{number}}_act_title": "Увеличить яркость канала {{number}} ({{name}})",
+                "dec_ch{{number}}_act_title": "Уменьшить яркость канала {{number}} ({{name}})",
+                "inc_dec_ch{{number}}_act_title": "Увеличить/уменьшить яркость канала {{number}} ({{name}})",
+                {% endfor %}
                 "off_ch12_act_title": "Выключить каналы 1 и 2 (B_R)",
                 "on_ch12_act_title": "Включить каналы 1 и 2 (B_R)",
                 "tg_ch12_act_title": "Переключить каналы 1 и 2 (B_R)",
