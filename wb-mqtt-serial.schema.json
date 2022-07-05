@@ -1518,7 +1518,8 @@
           "_format": "unknown-device",
           "options": {
             "wb": {
-                "hide_from_selection": true
+                "hide_from_selection": true,
+                "group": "custom"
             }
           },
           "properties": {
@@ -1550,6 +1551,11 @@
               }
             }
           },
+          "options": {
+            "wb": {
+              "group": "custom"
+            }
+          },
           "required": ["protocol", "slave_id"],
           "defaultProperties": ["slave_id", "channels", "protocol"]
         },
@@ -1568,6 +1574,11 @@
               "options": {
                 "hidden": true
               }
+            }
+          },
+          "options": {
+            "wb": {
+              "group": "custom"
             }
           },
           "required": ["protocol", "slave_id"],
@@ -1590,6 +1601,11 @@
               }
             }
           },
+          "options": {
+            "wb": {
+              "group": "custom"
+            }
+          },
           "required": ["protocol", "slave_id"],
           "defaultProperties": ["slave_id", "channels", "protocol"]
         },
@@ -1608,6 +1624,11 @@
               "options": {
                 "hidden": true
               }
+            }
+          },
+          "options": {
+            "wb": {
+              "group": "custom"
             }
           },
           "required": ["protocol"],
@@ -1630,6 +1651,11 @@
               }
             }
           },
+          "options": {
+            "wb": {
+              "group": "custom"
+            }
+          },
           "required": ["protocol", "slave_id"],
           "defaultProperties": ["slave_id", "channels", "protocol"]
         },
@@ -1648,6 +1674,11 @@
               "options": {
                 "hidden": true
               }
+            }
+          },
+          "options": {
+            "wb": {
+              "group": "custom"
             }
           },
           "required": ["protocol", "slave_id"],
@@ -1670,6 +1701,11 @@
               }
             }
           },
+          "options": {
+            "wb": {
+              "group": "custom"
+            }
+          },
           "required": ["protocol", "slave_id"],
           "defaultProperties": ["slave_id", "channels", "protocol"]
         },
@@ -1688,6 +1724,11 @@
               "options": {
                 "hidden": true
               }
+            }
+          },
+          "options": {
+            "wb": {
+              "group": "custom"
             }
           },
           "required": ["protocol", "slave_id"],
@@ -1710,6 +1751,11 @@
               }
             }
           },
+          "options": {
+            "wb": {
+              "group": "custom"
+            }
+          },
           "required": ["protocol", "slave_id"],
           "defaultProperties": ["slave_id", "channels", "protocol"]
         },
@@ -1728,6 +1774,11 @@
               "options": {
                 "hidden": true
               }
+            }
+          },
+          "options": {
+            "wb": {
+              "group": "custom"
             }
           },
           "required": ["protocol"],
@@ -1750,6 +1801,11 @@
               }
             }
           },
+          "options": {
+            "wb": {
+              "group": "custom"
+            }
+          },
           "required": ["protocol"],
           "defaultProperties": ["slave_id", "channels", "protocol"]
         },
@@ -1768,6 +1824,11 @@
               "options": {
                 "hidden": true
               }
+            }
+          },
+          "options": {
+            "wb": {
+              "group": "custom"
             }
           },
           "required": ["protocol"],
@@ -1795,6 +1856,11 @@
               "options": { "hidden": true }
             }
           },
+          "options": {
+            "wb": {
+              "group": "custom"
+            }
+          },
           "required": ["slave_id"],
           "defaultProperties": ["slave_id", "channels", "protocol"]
         },
@@ -1815,6 +1881,11 @@
               }
             }
           },
+          "options": {
+            "wb": {
+              "group": "custom"
+            }
+          },
           "required": ["protocol", "slave_id"],
           "defaultProperties": ["slave_id", "channels", "protocol"]
         }
@@ -1823,7 +1894,13 @@
         "disable_edit_json": true,
         "keep_oneof_values": false,
         "wb": {
-          "disable_panel": true
+          "disable_panel": true,
+          "hidden_msg": "deprecated template",
+          "hidden_notice": "hidden_template_notice",
+          "groups": ["wb", "wb-old", "adapter", "climate", "level", "dimmer", "conditioner", 
+                     "ventilation", "refrigeration", "io", "relay", "curtain", "control-panel",
+                     "water-meter", "heat-meter", "power-meter", "thermostat", "motor-control",
+                     "custom"]
         }
       },
       "_format": "wb-multiple"
@@ -1889,7 +1966,27 @@
       "device_timeout_description": "Specifies timeout for device connection. If not set, default value 3000ms is used. Value -1 disables device reconnect. Zero means instant timeout.",
       "device_max_fail_cycles_desc": "Defines number of device polling cycles with all failed registers before marking device as disconnected. Default value is 2. Value -1 disables device reconnect. Zero means instant timeout.",
       "max_unchanged_interval_desc": "Specifies the maximum interval in seconds between posting the same values to message queue. Zero means the values are posted to the queue every time they read from the device. By default, the values are only reported on change. Negative value means default behavior.",
-      "string_data_size_description": "For the modbus protocol, strings are read one character per register from the low byte. The parameter specifies the number of characters"
+      "string_data_size_description": "For the modbus protocol, strings are read one character per register from the low byte. The parameter specifies the number of characters",
+      "hidden_template_notice": "Device template is deprecated, use newer version",
+      "wb": "Wiren Board devices",
+      "wb-old": "Deprecated Wiren Board devices",
+      "adapter": "Protocol adapters",
+      "climate": "Climate sensors",
+      "level": "Level sensors",
+      "dimmer": "Dimmers",
+      "conditioner": "Conditioner equipment",
+      "ventilation": "Ventilation equipment",
+      "refrigeration": "Refrigeration equipment",
+      "io": "IO modules",
+      "relay": "Relays",
+      "curtain": "Curtain motors",
+      "control-panel": "Control panels",
+      "water-meter": "Water meters",
+      "heat-meter": "Heat meters",
+      "power-meter": "Power meters",
+      "thermostat": "Thermostats",
+      "motor-control": "Motor controllers",
+      "custom": "Custom devices"
     },
     "ru": {
       "Serial Device Driver Configuration": "Настройка драйвера serial-устройств",
@@ -2061,7 +2158,28 @@
       "not faster than (deprecated)": "не чаще чем раз в (устаревший параметр)",
       "String size in characters": "Размер строки в символах",
       "String": "Строка",
-      "string_data_size_description": "Для протокола modbus cтроки считываются по одному символу на регистр из младшего байта. Параметр определяет количество символов"
+      "string_data_size_description": "Для протокола modbus строки считываются по одному символу на регистр из младшего байта. Параметр определяет количество символов",
+      "deprecated template": "устаревший шаблон",
+      "hidden_template_notice": "Шаблон устройства устарел, рекомендуется использовать новую версию",
+      "wb": "Устройства Wiren Board",
+      "wb-old": "Устаревшие устройства Wiren Board",
+      "adapter": "Адаптеры протоколов",
+      "climate": "Датчики климата",
+      "level": "Датчики уровня",
+      "dimmer": "Диммеры",
+      "conditioner": "Кондиционеры",
+      "ventilation": "Контроллеры вентиляции и климата ",
+      "refrigeration": "Контроллеры холодильного оборудования",
+      "io": "Модули ввода-вывода",
+      "relay": "Модули реле",
+      "curtain": "Моторы для штор/Электрокарнизы",
+      "control-panel": "Панели управления ",
+      "water-meter": "Счётчики воды",
+      "heat-meter": "Счётчики тепла",
+      "power-meter": "Счётчики электроэнергии",
+      "thermostat": "Термостаты",
+      "motor-control": "Управление двигателями (преобразователи частоты)",
+      "custom": "Произвольные устройства"
     }
   }
 }

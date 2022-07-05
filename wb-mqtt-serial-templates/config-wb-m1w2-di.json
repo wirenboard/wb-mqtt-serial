@@ -1,6 +1,7 @@
 {
     "title": "WB-M1W2 DI",
     "device_type": "WB-M1W2 DI",
+    "group": "wb",
     "deprecated": true,
     "device": {
         "name": "WB-M1W2",

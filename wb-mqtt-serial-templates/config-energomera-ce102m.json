@@ -1,6 +1,7 @@
 {
   "title": "Energomera CE102M",
   "device_type": "energomera_ce102m",
+  "group": "power-meter",
   "device": {
     "name": "Energomera CE102M",
     "id": "energomera102m",

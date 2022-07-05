@@ -1,6 +1,6 @@
-// Configuration options
 {
 	"device_type": "MSU21",
+    "group": "climate",
 	"device": {
 		"name": "MSU21",
 		"id": "msu21",

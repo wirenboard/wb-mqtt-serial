@@ -1,5 +1,6 @@
 {
     "device_type": "WBIO-DI-WD-14",
+    "group": "wb",
     "device": {
         "name": "WBIO-DI-WD-14",
         "id": "wb-mio-gpio",

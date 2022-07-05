@@ -1,5 +1,6 @@
 {
   "device_type": "NEVA MT 32x",
+  "group": "power-meter",
   "device": {
     "name": "NEVA MT 32x",
     "id": "neva32x",

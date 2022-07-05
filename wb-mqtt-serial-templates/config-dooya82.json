@@ -1,6 +1,7 @@
 {
     "device_type": "Dooya 82",
     "title": "Dooya 82 (sliding curtain motor)",
+    "group": "curtain",
     "device": {
         "name": "Dooya 82",
         "id": "dooya",

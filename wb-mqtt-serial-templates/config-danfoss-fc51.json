@@ -1,6 +1,7 @@
 {
     "title": "Danfoss FC 51",
     "device_type": "danfoss_fc_51",
+    "group": "refrigeration",
     "device": {
         "name": "Danfoss FC 51",
         "id": "danfoss-fc-51",

@@ -1,6 +1,7 @@
 {
     "title": "teplomash_kev-blok-mk_template_title",
     "device_type": "teplomash_kev-blok-mk",
+    "group": "climate",
     "device": {
         "name": "Тепломаш КЭВ-БЛОК-МК",
         "id": "teplomash_kev-blok-mk",

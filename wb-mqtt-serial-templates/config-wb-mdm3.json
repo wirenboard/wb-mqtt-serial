@@ -1,6 +1,7 @@
 {
     "title": "WB-MDM3_template_title",
     "device_type": "WB-MDM3",
+    "group": "wb",
     "device": {
         "name": "WB-MDM3",
         "id": "wb-mdm3",

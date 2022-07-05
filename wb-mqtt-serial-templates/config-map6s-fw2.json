@@ -1,6 +1,7 @@
 {
     "title": "WB-MAP6S-fw2_template_title",
     "device_type": "WB-MAP6S fw2",
+    "group": "wb",
     "device": {
         "name": "WB-MAP6S fw2",
         "id": "wb-map6s",

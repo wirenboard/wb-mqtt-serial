@@ -2,6 +2,7 @@
     "title": "WB-MRM2-mini/NO",
     "device_type": "WB-MRM2-mini",
     "deprecated": true,
+    "group": "wb-old",
     "device": {
         "name": "WB-MRM2-mini/NO",
         "id": "wb-mrm2-mini",

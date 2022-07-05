@@ -1,7 +1,8 @@
-//This teplate shoud be ued for trained WB-MIR device only
+//This template should be used for trained WB-MIR device only
 {
     "title": "_WB-MIR-simple-template-title",
     "device_type": "WB-MIR (simple)",
+    "group": "wb-old",
     "device": {
         "name": "WB-MIR (simple)",
         "id": "wb-mir-simple",

@@ -1,5 +1,6 @@
 {
     "device_type": "NEVA MT 113/123/124",
+    "group": "power-meter",
     "device": {
         "name": "NEVA MT 113/123/124",
         "id": "neva124",

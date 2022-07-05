@@ -1,6 +1,7 @@
 {
     "title": "WB-MWAC_template_title",
     "device_type": "WB-MWAC",
+    "group": "wb",
     "device": {
         "name": "WB-MWAC",
         "id": "wb-mwac",

@@ -1,6 +1,7 @@
 {
   "title": "Energomera CE308 Z",
   "device_type": "energomera_ce308_dlms",
+  "group": "power-meter",
   "device": {
     "name": "Energomera CE308",
     "id": "energomera308",

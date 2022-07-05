@@ -1,6 +1,7 @@
 {
     "title": "WB-MS-v2_template_title",
     "device_type": "WB-MS v.2",
+    "group": "wb",
     "device": {
         "name": "WB-MS v.2",
         "id": "wb-ms",

@@ -1,6 +1,7 @@
 {
   "title": "Mercury 234 D",
   "device_type": "mercury_234_dlms",
+  "group": "power-meter",
   "device": {
     "name": "Mercury 234",
     "id": "mercury234",

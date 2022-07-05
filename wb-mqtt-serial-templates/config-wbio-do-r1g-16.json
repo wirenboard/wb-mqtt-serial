@@ -1,5 +1,6 @@
 {
     "device_type": "WBIO-DO-R1G-16",
+    "group": "wb",
     "device": {
         "name": "WBIO-DO-R1G-16",
         "id": "wb-mio-gpio",

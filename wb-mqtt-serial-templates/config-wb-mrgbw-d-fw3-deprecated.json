@@ -2,6 +2,7 @@
     "title": "WB-MRGBW-D_template_title",
     "device_type": "WB-MRGBW-D fw3",
     "deprecated": true,
+    "group": "wb-old",
     "device": {
         "name": "WB-MRGBW-D-fw3",
         "id": "wb-mrgbw-d-fw3",

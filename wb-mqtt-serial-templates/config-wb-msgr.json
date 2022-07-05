@@ -1,6 +1,7 @@
 {
     "title": "_WB-MSGR-template-title",
     "device_type": "WB-MSGR",
+    "group": "wb-old",
     "device": {
         "name": "WB-MSGR",
         "id": "wb-msgr",

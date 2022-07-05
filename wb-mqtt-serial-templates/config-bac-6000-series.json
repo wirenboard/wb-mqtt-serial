@@ -1,5 +1,6 @@
-      {
+{
  "device_type": "BAC-6000 Series",
+ "group": "thermostat",
  "device": {
   "name": "BAC-6000 Series",
   "id": "bac-6000-series", 

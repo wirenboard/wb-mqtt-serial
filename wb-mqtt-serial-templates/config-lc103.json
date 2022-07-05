@@ -1,6 +1,6 @@
-// Configuration options
 {
 	"device_type" : "LC-103",
+	"group": "relay",
 	"device" : {
 		"name": "LC-103",
 		"id": "lc103",

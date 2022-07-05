@@ -243,6 +243,9 @@ void AddDeviceWithGroupsUISchema(const TDeviceTemplate& deviceTemplate,
     if (deviceTemplate.IsDeprecated) {
         res["options"]["wb"]["hide_from_selection"] = true;
     }
+    if (!deviceTemplate.Group.empty()) {
+        res["options"]["wb"]["group"] = deviceTemplate.Group;
+    }
 
     auto groups = MakeGroups(deviceTemplate.Schema, context);
     if (!groups.empty()) {

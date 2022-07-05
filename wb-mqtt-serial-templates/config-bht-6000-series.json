@@ -1,5 +1,6 @@
 {
  "device_type": "BHT-6000 Series",
+ "group": "thermostat",
  "device": {
   "name": "BHT-6000 Series",
   "id": "bht-6000-series", 

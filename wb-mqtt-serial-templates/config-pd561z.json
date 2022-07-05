@@ -1,6 +1,6 @@
-// Configuration options
 {
     "device_type": "PD561Z",
+    "group": "power-meter",
     "device": {
         "name": "PD561Z",
         "id": "pd561z",

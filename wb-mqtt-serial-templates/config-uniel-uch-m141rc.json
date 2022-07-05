@@ -1,6 +1,6 @@
-//Template config for uniel
 {
     "device_type": "UCH-M141RC",
+    "group": "dimmer",
     "device": {
         "name": "UCH-M141RC 0808",
         "id": "uchm141rc",

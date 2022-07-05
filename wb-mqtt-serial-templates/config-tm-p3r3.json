@@ -1,6 +1,6 @@
-// Configuration options
 {
     "device_type": "TM-P3R3",
+    "group": "relay",
     "device": {
         "name": "TM-P3R3",
         "id": "tmp3r3",

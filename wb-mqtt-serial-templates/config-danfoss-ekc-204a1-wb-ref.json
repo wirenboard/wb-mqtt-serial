@@ -1,6 +1,7 @@
 {
     "title": "Danfoss EKC 204A1/AK-CC 210 (WB-REF-DF-178A)",
     "device_type": "danfoss_ekc_204a1_wb_ref",
+    "group": "refrigeration",
     "device": {
         "name": "Danfoss EKC 204A1/AK-CC 210",
         "id": "danfoss-ekc-204a1",

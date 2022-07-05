@@ -1,7 +1,7 @@
-//Template config for wb-mrgb
 {
     "title": "_WB-MRGB-template-title",
     "device_type": "WB-MRGB",
+    "group": "wb-old",
     "device": {
         "name": "WB-MRGB",
         "id": "wb-mrgb",

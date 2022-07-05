@@ -1,6 +1,7 @@
 {
     "title": "_WB-MR14-template-title",
     "device_type": "WB-MR14",
+    "group": "wb-old",
     "device": {
         "name": "WB-MR14",
         "id": "wb-mr14",

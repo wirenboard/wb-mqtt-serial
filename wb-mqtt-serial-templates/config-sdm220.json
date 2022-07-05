@@ -1,6 +1,6 @@
-// Configuration options
 {
     "device_type": "SDM220",
+    "group": "power-meter",
     "device": {
         "name": "SDM220",
         "id": "sdm220",

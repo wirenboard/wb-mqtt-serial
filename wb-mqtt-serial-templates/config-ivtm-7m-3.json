@@ -1,5 +1,6 @@
 {
     "device_type": "IVTM-7M-3",
+    "group": "climate",
     "device": {
         "name": "IVTM-7M-3",
         "id": "ivtm7m3",

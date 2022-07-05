@@ -1,5 +1,6 @@
 {
     "device_type": "WP8027ADAM",
+    "group": "io",
     "device": {
         "name": "WP8027ADAM",
         "id": "wp8027adam",

@@ -1,6 +1,7 @@
 {
     "title": "haier_ycj-a002_template_title",
     "device_type": "haier_ycj-a002",
+    "group": "conditioner",
     "device": {
         "name": "Haier YCJ-A002",
         "id": "haier_ycj-a002",
