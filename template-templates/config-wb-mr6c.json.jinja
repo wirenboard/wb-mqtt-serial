@@ -361,22 +361,22 @@
                 "default": 10
             },
             "baud_rate": {
-                    "title": "Baud rate",
-                    "description": "baud_rate_description",
-                    "address": 110,
-                    "reg_type": "holding",
-                    "enum": [96, 192, 384, 576, 1152],
-                    "default": 96,
-                    "enum_titles": [
-                        "9600",
-                        "19200",
-                        "38400",
-                        "57600",
-                        "115200"
-                    ],
-                    "group": "g_general",
-                    "order": 1
-            },
+                "title": "Baud rate",
+                "description": "baud_rate_description",
+                "address": 110,
+                "reg_type": "holding",
+                "enum": [96, 192, 384, 576, 1152],
+                "default": 96,
+                "enum_titles": [
+                    "9600",
+                    "19200",
+                    "38400",
+                    "57600",
+                    "115200"
+                ],
+                "group": "g_general",
+                "order": 1
+            }
         },
         "channels": [
             {% for in_num in range(FIRST_INPUT, OUTPUTS_NUMBER + 1) -%}
