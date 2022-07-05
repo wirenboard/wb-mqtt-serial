@@ -337,23 +337,6 @@
             },
             {% endfor -%}
             {% endfor -%}
-            "baud_rate": {
-                    "title": "Baud rate",
-                    "description": "baud_rate_description",
-                    "address": 110,
-                    "reg_type": "holding",
-                    "enum": [96, 192, 384, 576, 1152],
-                    "default": 96,
-                    "enum_titles": [
-                        "9600",
-                        "19200",
-                        "38400",
-                        "57600",
-                        "115200"
-                    ],
-                    "group": "g_general",
-                    "order": 1
-            },
             "outputs_restore_state": {
                 "title": "Outputs State After Power On",
                 "description": "outputs_state_after_power_on_description",
@@ -375,6 +358,23 @@
                 "min": 1,
                 "max": 65534,
                 "default": 10
+            },
+            "baud_rate": {
+                    "title": "Baud rate",
+                    "description": "baud_rate_description",
+                    "address": 110,
+                    "reg_type": "holding",
+                    "enum": [96, 192, 384, 576, 1152],
+                    "default": 96,
+                    "enum_titles": [
+                        "9600",
+                        "19200",
+                        "38400",
+                        "57600",
+                        "115200"
+                    ],
+                    "group": "g_general",
+                    "order": 1
             }
         },
         "channels": [
