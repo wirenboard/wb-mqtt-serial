@@ -143,7 +143,7 @@ void TSerialClient::AddRegister(PRegister reg)
         throw TSerialDeviceException("can't add registers to the active client");
     if (Handlers.find(reg) != Handlers.end())
         throw TSerialDeviceException("duplicate register");
-    auto handler = Handlers[reg] = std::make_shared<TRegisterHandler>(reg->Device(), reg, FlushNeeded);
+    auto handler = Handlers[reg] = std::make_shared<TRegisterHandler>(reg->Device(), reg);
     RegList.push_back(reg);
     LOG(Debug) << "AddRegister: " << reg;
 }
