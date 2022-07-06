@@ -237,9 +237,9 @@ bool TSerialPortDriver::RPCTransceive(const TRPCPortConfig& config,
     return SerialClient->RPCTransceive(config, response, actualResponseSize);
 }
 
-Json::Value TSerialPortDriver::GetPortPath()
+PSerialClient TSerialPortDriver::GetSerialClient()
 {
-    return SerialClient->GetPortPath();
+    return SerialClient;
 }
 
 void TDeviceChannel::UpdateValueAndError(WBMQTT::TDeviceDriver& deviceDriver,

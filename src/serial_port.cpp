@@ -240,13 +240,6 @@ const TSerialPortSettings& TSerialPort::GetSettings() const
     return Settings;
 }
 
-Json::Value TSerialPort::GetPath() const
-{
-    Json::Value res;
-    res["path"] = Settings.Device;
-    return res;
-}
-
 TSerialPortWithIECHack::TSerialPortWithIECHack(PSerialPort port): Port(port), UseIECHack(false)
 {}
 
@@ -355,9 +348,4 @@ void TSerialPortWithIECHack::SetSerialPortByteFormat(const TSerialPortByteFormat
     }
     throw std::runtime_error("Can't change " + Port->GetSettings().ToString() +
                              " byte format. Set port settings to 8N1, please");
-}
-
-Json::Value TSerialPortWithIECHack::GetPath() const
-{
-    return Port->GetPath();
 }
