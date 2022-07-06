@@ -10,7 +10,7 @@
 #include "metrics.h"
 #include "poll_plan.h"
 #include "register_handler.h"
-#include "rpc_port_handler.h"
+#include "rpc_request_handler.h"
 #include "serial_device.h"
 
 struct TRegisterComparePredicate
@@ -39,7 +39,7 @@ public:
     void NotifyFlushNeeded();
     void ClearDevices();
 
-    bool RPCTransceive(const TRPCPortConfig& config, std::vector<uint8_t>& response, size_t& actualResponseSize);
+    std::vector<uint8_t> RPCTransceive(PRPCRequest Request);
     PPort GetPort();
 
 private:
@@ -68,14 +68,14 @@ private:
     TCallback ErrorCallback;
     PSerialDevice LastAccessedDevice;
     PBinarySemaphore FlushNeeded;
-    PBinarySemaphoreSignal RegisterSignal, RPCSignal;
+    PBinarySemaphoreSignal RegisterUpdateSignal, RPCSignal;
     TScheduler<PRegister, TRegisterComparePredicate> Scheduler;
 
     TPortOpenCloseLogic OpenCloseLogic;
     TLoggerWithTimeout ConnectLogger;
     Metrics::TMetrics& Metrics;
 
-    TRPCPortHandler RPCPortHandler;
+    PRPCRequestHandler RPCRequestHandler;
 };
 
 typedef std::shared_ptr<TSerialClient> PSerialClient;

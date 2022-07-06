@@ -230,11 +230,9 @@ TControlArgs TSerialPortDriver::From(const PDeviceChannel& channel)
     return args;
 }
 
-bool TSerialPortDriver::RPCTransceive(const TRPCPortConfig& config,
-                                      std::vector<uint8_t>& response,
-                                      size_t& actualResponseSize)
+std::vector<uint8_t> TSerialPortDriver::RPCTransceive(PRPCRequest Request)
 {
-    return SerialClient->RPCTransceive(config, response, actualResponseSize);
+    return SerialClient->RPCTransceive(Request);
 }
 
 PSerialClient TSerialPortDriver::GetSerialClient()

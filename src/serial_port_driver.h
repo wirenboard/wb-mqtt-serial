@@ -70,8 +70,7 @@ public:
 
     static void HandleControlOnValueEvent(const WBMQTT::TControlOnValueEvent& event);
 
-    bool RPCTransceive(const TRPCPortConfig& config, std::vector<uint8_t>& response, size_t& actualResponseSize);
-
+    std::vector<uint8_t> RPCTransceive(PRPCRequest Request);
     PSerialClient GetSerialClient();
 
 private:

@@ -1,7 +1,8 @@
-
 #pragma once
 #include "rpc_config.h"
-#include <serial_driver.h>
+#include "serial_driver.h"
+#include "serial_port_driver.h"
+#include <wblib/json_utils.h>
 #include <wblib/rpc.h>
 
 enum class RPCPortHandlerResult
@@ -14,19 +15,37 @@ enum class RPCPortHandlerResult
     RPC_WRONG_RESP_LNGTH = -5
 };
 
+class TRPCPortDriver: public TRPCPort
+{
+public:
+    PSerialPortDriver SerialPortDriver;
+};
+
+typedef std::shared_ptr<TRPCPortDriver> PRPCPortDriver;
+
 class TRPCHandler
 {
 public:
-    TRPCHandler(PMQTTSerialDriver serialDriver, WBMQTT::PMqttRpcServer rpcServer);
+    void RPCServerInitialize(WBMQTT::PMqttRpcServer RpcServer);
+    void SerialDriverInitialize(PMQTTSerialDriver SerialDriver);
+    void RPCConfigInitialize(PRPCConfig rpcConfig);
+    void AddSerialPortDriver(PSerialPortDriver SerialPortDriver, PPort Port);
 
 private:
-    PMQTTSerialDriver SerialDriver;
-    WBMQTT::PMqttRpcServer RpcServer;
-    TRPCPortConfig Config;
+    PSerialPortDriver FindSerialPortDriverByPath(enum TRPCPortMode Mode,
+                                                 std::string Path,
+                                                 std::string Ip,
+                                                 int PortNumber);
 
-    Json::Value PortLoad(const Json::Value& request);
-    Json::Value LoadMetrics(const Json::Value& request);
+    Json::Value PortLoad(const Json::Value& Request);
+    Json::Value LoadMetrics(const Json::Value& Request);
+
+    std::vector<PRPCPortDriver> PortDrivers;
+    PMQTTSerialDriver SerialDriver;
+    PRPCConfig Config;
 };
+
+typedef std::shared_ptr<TRPCHandler> PRPCHandler;
 
 class TRPCException: public std::runtime_error
 {

@@ -460,11 +460,9 @@ void TSerialClient::OpenPortCycle()
     Metrics.StartPoll(Metrics::BUS_IDLE);
 }
 
-bool TSerialClient::RPCTransceive(const TRPCPortConfig& config,
-                                  std::vector<uint8_t>& response,
-                                  size_t& actualResponseSize)
+std::vector<uint8_t> TSerialClient::RPCTransceive(PRPCRequest Request)
 {
-    return RPCPortHandler.RPCTransceive(config, response, actualResponseSize, FlushNeeded, RPCSignal);
+    return RPCRequestHandler->RPCTransceive(Request, FlushNeeded, RPCSignal);
 }
 
 PPort TSerialClient::GetPort()
