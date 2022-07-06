@@ -113,10 +113,15 @@ void TMQTTSerialDriver::Stop()
     ClearDevices();
 }
 
-void TMQTTSerialDriver::RPCGetMetrics(Json::Value& metrics)
+std::vector<PSerialPortDriver> TMQTTSerialDriver::GetPortDrivers()
+{
+    return PortDrivers;
+}
+
+Json::Value TMQTTSerialDriver::LoadMetrics()
 {
     auto time = std::chrono::steady_clock::now();
-    Json::Value res(Json::arrayValue);
+    Json::Value result(Json::arrayValue);
     for (auto& port: Metrics) {
         Json::Value item;
         item["port"] = port.first;
@@ -127,8 +132,7 @@ void TMQTTSerialDriver::RPCGetMetrics(Json::Value& metrics)
         if (!channels.empty()) {
             item["channels"].swap(channels);
         }
-        res.append(std::move(item));
+        result.append(std::move(item));
     }
-    metrics = res;
-    return;
+    return result;
 }

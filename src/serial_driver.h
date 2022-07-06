@@ -16,8 +16,9 @@ public:
     void Start();
     void Stop();
 
-    void RPCGetMetrics(Json::Value& metrics);
     std::vector<PSerialPortDriver> GetPortDrivers();
+
+    Json::Value LoadMetrics();
 
 private:
     std::vector<PSerialPortDriver> PortDrivers;

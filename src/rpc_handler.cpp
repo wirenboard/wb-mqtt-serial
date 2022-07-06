@@ -170,7 +170,5 @@ Json::Value TRPCHandler::PortLoad(const Json::Value& request)
 
 Json::Value TRPCHandler::LoadMetrics(const Json::Value& request)
 {
-    Json::Value metrics;
-    SerialDriver->RPCGetMetrics(metrics);
-    return metrics;
+    return SerialDriver->LoadMetrics();
 }
