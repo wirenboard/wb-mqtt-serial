@@ -1,5 +1,5 @@
 {
-    "title": "t13-frequency converter",
+    "title": "t13_frequency_title",
     "device_type": "t13_freq",
     "device": {
         "name": "t13-frequency converter",
@@ -63,7 +63,7 @@
                 "group": "hw_info"
             },
             {
-                "name": "Driver FV version",
+                "name": "Driver FW version",
                 "reg_type": "holding",
                 "address": 1,
                 "type": "text",
@@ -106,21 +106,23 @@
         ],
         "translations": {
             "en": {
-                "WB-MS-v2_template_title": "WB-MS v.2 (Modbus sensor)",
-                "temperature_readings_filter_deg_title": "Erroneous 1-Wire Temperature Readings Filter (°C)",
-                "temperature_readings_filter_deg_description": "New value is discarded if it differs from previous one by more than filter value. Write 0 to disable filter",
-                "selfheating_compensation_deg_description": "Compensation value is subtracted from measured temperature",
-                "Uptime": "Uptime (s)"
-            },
+                "t13_frequency_title": "T13 frequency сщтмукеук",
+                "Current": "Load current",
             "ru": {
-                "t13-frequency converter": "T13",
-                "Illuminance": "Освещенность",
+                "t13_frequency_title": "T13 преобразователь частоты",
                 "General": "Общее",
                 "HW Info": "Данные модуля",
                 "Debug": "Диагностика",
                 "no": "нет",
                 "yes": "да",
                 "Disabled": "Отключен",
+                "Frequency": "Частота",
+                "Start-stop-reverse": "Старт-Стоп-Реверс",
+                "Panel FW version": "Версия прошивки панели",
+                "Driver FW version": "Версия прошивки драйвера",
+                "Voltage bus": "Шина питания, напряжение",
+                "Current": "Ток нагрузки",
+                "Radiator temperature": "Температура радиатора",
             }
         }
     }
