@@ -9,8 +9,7 @@
 
 class TBinarySemaphoreSignal
 {
-private:
-    friend class TBinarySemaphore;
+public:
     bool value;
 };
 
@@ -23,10 +22,9 @@ public:
     {
         std::unique_lock<std::mutex> lock(Mutex);
 
-        bool r = Cond.wait_until(lock, until, [this]() {
+        return Cond.wait_until(lock, until, [this]() {
             return std::any_of(Signals.begin(), Signals.end(), [](PBinarySemaphoreSignal item) { return item->value; });
         });
-        return r;
     }
 
     bool GetSignalValue(PBinarySemaphoreSignal signal)
@@ -53,13 +51,13 @@ public:
         }
     }
 
-    PBinarySemaphoreSignal SignalRegistration()
+    PBinarySemaphoreSignal MakeSignal()
     {
         std::unique_lock<std::mutex> lock(Mutex);
-
         PBinarySemaphoreSignal new_signal = std::make_shared<TBinarySemaphoreSignal>();
         Signals.push_back(new_signal);
-        return Signals.back();
+        new_signal->value = false;
+        return new_signal;
     }
 
 private:

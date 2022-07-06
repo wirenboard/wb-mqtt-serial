@@ -4,7 +4,6 @@
 #include <iostream>
 #include <unistd.h>
 
-#include "rpc_port_handler.h"
 #include <wblib/json_utils.h>
 
 using namespace std::chrono_literals;
@@ -116,14 +115,16 @@ TSerialClient::TSerialClient(const std::vector<PSerialDevice>& devices,
     : Port(port),
       Devices(devices),
       Active(false),
-      FlushNeeded(new TBinarySemaphore),
       Scheduler(MAX_LOW_PRIORITY_LAG),
       OpenCloseLogic(openCloseSettings),
       ConnectLogger(PORT_OPEN_ERROR_NOTIFICATION_INTERVAL, "[serial client] "),
       Metrics(metrics)
 {
-    RegisterSignal = FlushNeeded->SignalRegistration();
-    RPCSignal = FlushNeeded->SignalRegistration();
+    FlushNeeded = std::make_shared<TBinarySemaphore>();
+    RPCRequestHandler = std::make_shared<TRPCRequestHandler>();
+    RegisterUpdateSignal = FlushNeeded->MakeSignal();
+    RPCSignal = FlushNeeded->MakeSignal();
+    FlushNeeded->ResetAllSignals();
 }
 
 TSerialClient::~TSerialClient()
@@ -220,12 +221,17 @@ void TSerialClient::WaitForPollAndFlush(std::chrono::steady_clock::time_point wa
     // Limit waiting time ro be responsive
     waitUntil = std::min(waitUntil, now + MAX_POLL_TIME);
     while (FlushNeeded->Wait(waitUntil)) {
-        if (FlushNeeded->GetSignalValue(RegisterSignal)) {
+        if (FlushNeeded->GetSignalValue(RegisterUpdateSignal)) {
             DoFlush();
             Metrics.StartPoll(Metrics::BUS_IDLE);
         }
         if (FlushNeeded->GetSignalValue(RPCSignal)) {
-            RPCPortHandler.RPCRequestHandling(Port);
+            // End session with current device to make bus clean for RPC
+
+            PrepareToAccessDevice(LastAccessedDevice, NULL, Metrics);
+            LastAccessedDevice = NULL;
+
+            RPCRequestHandler->RPCRequestHandling(Port);
         }
 
         FlushNeeded->ResetAllSignals();
@@ -237,7 +243,7 @@ void TSerialClient::UpdateFlushNeeded()
     for (const auto& reg: RegList) {
         auto handler = Handlers[reg];
         if (handler->NeedToFlush()) {
-            FlushNeeded->Signal(RegisterSignal);
+            FlushNeeded->Signal(RegisterUpdateSignal);
             break;
         }
     }
@@ -247,14 +253,27 @@ void TSerialClient::MaybeFlushAvoidingPollStarvationButDontWait()
 {
     // avoid poll starvation
     int flush_count_remaining = MAX_FLUSHES_WHEN_POLL_IS_DUE;
-    while (flush_count_remaining--) {
-        if (FlushNeeded->GetSignalValue(RegisterSignal)) {
+    bool continue_signal_handling;
+
+    do {
+        continue_signal_handling = false;
+
+        if (FlushNeeded->GetSignalValue(RegisterUpdateSignal)) {
             DoFlush();
+            continue_signal_handling = true;
         }
+
         if (FlushNeeded->GetSignalValue(RPCSignal)) {
-            RPCPortHandler.RPCRequestHandling(Port);
+            // End session with current device to make bus clean for RPC
+            PrepareToAccessDevice(LastAccessedDevice, NULL, Metrics);
+            LastAccessedDevice = NULL;
+
+            RPCRequestHandler->RPCRequestHandling(Port);
+            continue_signal_handling = true;
         }
-    }
+
+        flush_count_remaining--;
+    } while (continue_signal_handling && flush_count_remaining > 0);
 }
 
 void TSerialClient::SetReadError(PRegister reg)
@@ -323,7 +342,7 @@ void TSerialClient::ClosedPortCycle()
         wait_until = now + MAX_CLOSED_PORT_CYCLE_TIME;
     }
     while (FlushNeeded->Wait(wait_until)) {
-        if (FlushNeeded->GetSignalValue(RegisterSignal)) {
+        if (FlushNeeded->GetSignalValue(RegisterUpdateSignal)) {
 
             for (const auto& reg: RegList) {
                 auto handler = Handlers[reg];
@@ -334,6 +353,9 @@ void TSerialClient::ClosedPortCycle()
                     ErrorCallback(reg);
                 }
             }
+        }
+        if (FlushNeeded->GetSignalValue(RPCSignal)) {
+            RPCRequestHandler->RPCRequestHandling(Port);
         }
         FlushNeeded->ResetAllSignals();
     }
@@ -355,7 +377,7 @@ void TSerialClient::ClearDevices()
 void TSerialClient::SetTextValue(PRegister reg, const std::string& value)
 {
     GetHandler(reg)->SetTextValue(value);
-    FlushNeeded->Signal(RegisterSignal);
+    FlushNeeded->Signal(RegisterUpdateSignal);
 }
 
 void TSerialClient::SetReadCallback(const TSerialClient::TCallback& callback)
@@ -370,7 +392,7 @@ void TSerialClient::SetErrorCallback(const TSerialClient::TCallback& callback)
 
 void TSerialClient::NotifyFlushNeeded()
 {
-    FlushNeeded->Signal(RegisterSignal);
+    FlushNeeded->Signal(RegisterUpdateSignal);
 }
 
 PRegisterHandler TSerialClient::GetHandler(PRegister reg) const
