@@ -106,10 +106,11 @@
         ],
         "translations": {
             "en": {
-                "t13_frequency_title": "T13 frequency сщтмукеук",
+                "t13_frequency_title": "T13 frequency converter",
                 "Current": "Load current",
+	    },
             "ru": {
-                "t13_frequency_title": "T13 преобразователь частоты",
+                "t13_frequency_title": "Преобразователь частоты T13",
                 "General": "Общее",
                 "HW Info": "Данные модуля",
                 "Debug": "Диагностика",
