@@ -14,6 +14,7 @@
 #include <memory>
 #include <string>
 
+#include "rpc_config.h"
 #include "tcp_port_settings.h"
 
 using namespace std;
@@ -97,6 +98,7 @@ protected:
     PFakeSerialDevice Device;
     TSerialDeviceFactory DeviceFactory;
     Metrics::TMetrics Metrics;
+    PRPCConfig rpcConfig;
 
     bool HasSetupRegisters = false;
     TPortOpenCloseLogic::TSettings PortOpenCloseSettings;
@@ -1124,7 +1126,8 @@ void TSerialClientIntegrationTest::SetUp()
                         DeviceFactory,
                         configSchema,
                         t,
-                        [=](const Json::Value&) { return std::make_pair(Port, false); });
+                        rpcConfig,
+                        [=](const Json::Value&, PRPCConfig rpcConfig) { return std::make_pair(Port, false); });
 }
 
 void TSerialClientIntegrationTest::TearDown()
@@ -1538,27 +1541,31 @@ TEST_F(TSerialClientIntegrationTest, SlaveIdCollision)
                             DeviceFactory,
                             configSchema,
                             t,
-                            [=](const Json::Value&) { return std::make_pair(Port, false); }),
+                            rpcConfig,
+                            [=](const Json::Value&, PRPCConfig rpcConfig) { return std::make_pair(Port, false); }),
                  TConfigParserException);
 
     EXPECT_THROW(LoadConfig(GetDataFilePath("configs/config-collision-test2.json"),
                             DeviceFactory,
                             configSchema,
                             t,
-                            [=](const Json::Value&) { return std::make_pair(Port, false); }),
+                            rpcConfig,
+                            [=](const Json::Value&, PRPCConfig rpcConfig) { return std::make_pair(Port, false); }),
                  TConfigParserException);
 
     EXPECT_NO_THROW(LoadConfig(GetDataFilePath("configs/config-no-collision-test.json"),
                                DeviceFactory,
                                configSchema,
                                t,
-                               [=](const Json::Value&) { return std::make_pair(Port, false); }));
+                               rpcConfig,
+                               [=](const Json::Value&, PRPCConfig rpcConfig) { return std::make_pair(Port, false); }));
 
     EXPECT_NO_THROW(LoadConfig(GetDataFilePath("configs/config-no-collision-test2.json"),
                                DeviceFactory,
                                configSchema,
                                t,
-                               [=](const Json::Value&) { return std::make_pair(Port, false); }));
+                               rpcConfig,
+                               [=](const Json::Value&, PRPCConfig rpcConfig) { return std::make_pair(Port, false); }));
 }
 
 /** Reconnect test cases **/
@@ -1584,7 +1591,8 @@ PMQTTSerialDriver TSerialClientIntegrationTest::StartReconnectTest1Device(bool m
                         DeviceFactory,
                         configSchema,
                         t,
-                        [=](const Json::Value&) { return std::make_pair(Port, false); });
+                        rpcConfig,
+                        [=](const Json::Value&, PRPCConfig rpcConfig) { return std::make_pair(Port, false); });
 
     if (pollIntervalTest) {
         Config->PortConfigs[0]->Devices[0]->DeviceConfig()->DeviceChannelConfigs[0]->RegisterConfigs[0]->ReadPeriod =
@@ -1686,7 +1694,8 @@ PMQTTSerialDriver TSerialClientIntegrationTest::StartReconnectTest2Devices()
                         DeviceFactory,
                         configSchema,
                         t,
-                        [=](const Json::Value&) { return std::make_pair(Port, false); });
+                        rpcConfig,
+                        [=](const Json::Value&, PRPCConfig rpcConfig) { return std::make_pair(Port, false); });
 
     PMQTTSerialDriver mqttDriver = make_shared<TMQTTSerialDriver>(Driver, Config);
 
@@ -1906,7 +1915,8 @@ TEST_F(TSerialClientIntegrationTest, ReconnectOnPortWriteError)
                         DeviceFactory,
                         configSchema,
                         t,
-                        [=](const Json::Value&) { return std::make_pair(Port, false); });
+                        rpcConfig,
+                        [=](const Json::Value&, PRPCConfig rpcConfig) { return std::make_pair(Port, false); });
 
     PMQTTSerialDriver mqttDriver = make_shared<TMQTTSerialDriver>(Driver, Config);
 
@@ -1934,7 +1944,8 @@ TEST_F(TSerialClientIntegrationTest, OnTopicWriteError)
                         DeviceFactory,
                         configSchema,
                         t,
-                        [=](const Json::Value&) { return std::make_pair(Port, false); });
+                        rpcConfig,
+                        [=](const Json::Value&, PRPCConfig rpcConfig) { return std::make_pair(Port, false); });
 
     PMQTTSerialDriver mqttDriver = make_shared<TMQTTSerialDriver>(Driver, Config);
 

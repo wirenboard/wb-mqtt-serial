@@ -57,12 +57,6 @@ namespace
         {
             return std::string();
         }
-
-        Json::Value GetPath() const override
-        {
-            Json::Value res;
-            return res;
-        }
     };
 }
 

@@ -1,26 +1,14 @@
 #pragma once
-#include "wblib/json_utils.h"
+#include "rpc_port.h"
 
-enum class RPCPortConfigSet
-{
-    RPC_TCP_SET,
-    RPC_SERIAL_SET
-};
-
-class TRPCPortConfig
+class TRPCConfig
 {
 public:
-    bool CheckParamSet(const Json::Value& request);
-    bool LoadValues(const Json::Value& request);
+    void AddPort(PPort Port, enum TRPCPortMode Mode, std::string Path, std::string Ip, int PortNumber);
+    std::vector<PRPCPort> GetPorts();
 
-    RPCPortConfigSet ParametersSet;
-    std::string Path;
-    std::string Ip;
-    int Port;
-    std::vector<uint8_t> Msg;
-    std::chrono::microseconds ResponseTimeout;
-    std::chrono::microseconds FrameTimeout;
-    std::chrono::seconds TotalTimeout;
-    std::string Format;
-    size_t ResponseSize;
+private:
+    std::vector<PRPCPort> Ports;
 };
+
+typedef std::shared_ptr<TRPCConfig> PRPCConfig;

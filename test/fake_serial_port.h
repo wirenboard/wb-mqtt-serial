@@ -12,6 +12,8 @@
 #include "serial_device.h"
 #include "serial_driver.h"
 
+#include "rpc_config.h"
+
 using WBMQTT::Testing::TLoggedFixture;
 
 class TFakeSerialPort: public TPort, public TExpector
@@ -97,6 +99,7 @@ protected:
 
     PMQTTSerialDriver SerialDriver;
     PHandlerConfig Config;
+    PRPCConfig rpcConfig;
     bool PortMakerCalled;
 
     static WBMQTT::TMap<std::string, TTemplateMap> Templates; // Key - path to folder, value - loaded templates map
