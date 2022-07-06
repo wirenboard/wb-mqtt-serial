@@ -91,7 +91,6 @@
                 "description": "inputs_control_in_safety_mode_description",
                 "group": "g_safety"
             },
-
             {
                 "title": "General",
                 "id": "g_general",
@@ -337,7 +336,6 @@
             },
             {% endfor -%}
             {% endfor -%}
-
             "outputs_restore_state": {
                 "title": "Outputs State After Power On",
                 "description": "outputs_state_after_power_on_description",
@@ -378,6 +376,7 @@
                 "order": 1
             }
         },
+        
         "channels": [
             {% for in_num in range(FIRST_INPUT, OUTPUTS_NUMBER + 1) -%}
             {
@@ -629,8 +628,6 @@
                 "Safe state": "Перевести выход в безопасное состояние",
                 "Restore last state": "Восстановить последнее состояние",
                 "According to inputs": "Установить согласно состоянию входов",
-
-                "Safety Mode Trigger": "Переход в безопасный режим",
 
                 "sp_title": "Короткое нажатие",
                 "lp_title": "Длинное нажатие",
