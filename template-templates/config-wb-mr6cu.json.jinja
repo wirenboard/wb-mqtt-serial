@@ -1,0 +1,247 @@
+{% set OUTPUTS_NUMBER = 6 -%}
+{
+    "title": "WB-MR6CU_template_title",
+    "device_type": "WB-MR6CU",
+    "device": {
+        "name": "WB-MR6CU",
+        "id": "wb-mr6cu",
+        "max_read_registers": 0,
+        "response_timeout_ms": 1,
+        "frame_timeout_ms": 8,
+
+        "groups": [
+            {
+                "title": "Outputs",
+                "id": "g_outputs",
+                "order": 1
+            },
+            {
+                "title": "Output Safe State",
+                "id": "gg_outputs_safe_state",
+                "order": 1,
+                "group": "g_outputs"
+                
+            },
+            {
+                "title": "Outputs group",
+                "id": "gg_outputs_channels",
+                "order": 2,
+                "group": "g_outputs",
+                "ui_options": {
+                    "wb": {
+                        "disable_title": true
+                    }
+                }
+            },
+            {
+                "title": "Safety Mode",
+                "id": "g_safety",
+                "order": 2
+            },
+            {
+                "title": "Safety Behaviour",
+                "id": "gg_safety_behaviour",
+                "order": 1,
+                "group": "g_safety"
+            },
+            {
+                "title": "General",
+                "id": "g_general",
+                "order": 3
+            },
+            {
+                "title": "HW Info",
+                "id": "g_hw_info",
+                "order": 4
+            }
+        ],
+
+        "setup": [
+            {
+                "title": "disable legacy input mode control",
+                "address": 5,
+                "reg_type": "holding",
+                "value": 0
+            }
+        ],
+
+        "parameters": {
+            "outputs_restore_state": {
+                "title": "Outputs State After Power On",
+                "address": 6,
+                "reg_type": "holding",
+                "enum": [0, 1],
+                "default": 0,
+                "enum_titles": ["Safe state", "Restore last state"],
+                "order": 1,
+                "group": "g_outputs"
+            },
+            "safety_timer_s": {
+                "title": "Safety Poll Timeout (s)",
+                "group": "g_safety",
+                "description": "poll_timeout_description",
+                "address": 8,
+                "order": 2,
+                "reg_type": "holding",
+                "min": 1,
+                "max": 65534,
+                "default": 10
+            },
+            {% for out_num in range(1, OUTPUTS_NUMBER + 1) -%}
+            "out{{out_num}}_safe_state": {
+                "title": "Output {{out_num}}",
+                "group": "gg_outputs_safe_state",
+                "order": {{out_num}},
+                "address": {{930 + out_num - 1}},
+                "reg_type": "holding",
+                "default": 0,
+                "enum": [0, 1],
+                "enum_titles": [
+                    "Off",
+                    "On"
+                ]
+            },
+            "out{{out_num}}_safety_behaviour": {
+                "title": "Output {{out_num}}",
+                "group": "gg_safety_behaviour",
+                "order": {{out_num}},
+                "address": {{938 + out_num - 1}},
+                "reg_type": "holding",
+                "default": 0,
+                "enum": [0, 1],
+                "enum_titles": [
+                    "Don't сhange output state",
+                    "Switch output to safety state"
+                ]
+            },
+            {% endfor -%}
+            "baud_rate": {
+                "title": "Baud rate",
+                "description": "baud_rate_description",
+                "address": 110,
+                "reg_type": "holding",
+                "enum": [96, 192, 384, 576, 1152],
+                "default": 96,
+                "enum_titles": [
+                    "9600",
+                    "19200",
+                    "38400",
+                    "57600",
+                    "115200"
+                ],
+                "group": "g_general",
+                "order": 1
+            }
+        },
+
+        "channels": [
+            {% for out_num in range(1, OUTPUTS_NUMBER + 1) -%}
+            {
+                "name": "K{{out_num}}",
+                "reg_type": "coil",
+                "address": {{out_num - 1}},
+                "type": "switch",
+                "group": "gg_outputs_channels"
+            },
+            {% endfor -%}
+            {
+                "name": "Serial",
+                "reg_type": "input",
+                "address": 270,
+                "type": "text",
+                "format": "u32",
+                "group": "g_hw_info"
+            },
+            {
+                "name": "Supply Voltage",
+                "reg_type": "input",
+                "address": 121,
+                "type": "voltage",
+                "scale": 0.001,
+                "enabled": false,
+                "group": "g_hw_info"
+            },
+            {
+                "name": "Uptime",
+                "reg_type": "input",
+                "address": 104,
+                "type": "text",
+                "format": "u32",
+                "enabled": false,
+                "group": "g_hw_info"
+            },
+            {
+                "name": "Minimum Voltage Since Startup",
+                "reg_type": "input",
+                "address": 122,
+                "scale": 0.001,
+                "type": "voltage",
+                "enabled": false,
+                "group": "g_hw_info"
+            },
+            {
+                "name": "MCU Temperature",
+                "reg_type": "input",
+                "address": 124,
+                "type": "temperature",
+                "format": "s16",
+                "scale": 0.1,
+                "enabled": false,
+                "group": "g_hw_info"
+            },
+            {
+                "name": "MCU Voltage",
+                "reg_type": "input",
+                "address": 123,
+                "scale": 0.001,
+                "type": "voltage",
+                "enabled": false,
+                "group": "g_hw_info"
+            }
+        ],
+        "translations": {
+            "en": {
+                "WB-MR6CU_template_title": "WB-MR6CU v.2, WB-MRPS6 (6-channel relay)",
+                "baud_rate_description": "Make sure that communication with device is established before changing this parameter. Select required baud rate, save configuration and then change port baud rate to the same value.",
+                "Uptime": "Uptime (s)",
+
+                "poll_timeout_description": "Time in seconds without modbus polling before activation safety mode. Actions in safety mode are configured using appropriate parameters",
+            },
+            "ru": {
+                "WB-MR6CU_template_title": "WB-MR6CU v.2, WB-MRPS6 (6-канальный модуль реле)",
+                "Outputs": "Выходы",
+                "Safety Mode": "Безопасный режим",
+                "General": "Общее",
+                "HW Info": "Данные модуля",
+
+                {% for out_num in range(1, OUTPUTS_NUMBER + 1) -%}
+                "Output {{out_num}}": "Выход {{out_num}}",
+                {% endfor -%}
+
+                "Off": "Выключен",
+                "On": "Включен",
+
+                "Safety Behaviour": "Действие в безопасном режиме",
+                "Don't сhange output state": "Ничего не делать",
+                "Switch output to safety state": "Перевести выход в безопасное состояние",
+
+                "Output Safe State": "Безопасное состояние выходов",
+                "Safety Poll Timeout (s)": "Таймаут потери связи (с)",
+                "poll_timeout_description": "Время отсутствия опроса в секундах, после которого будет активирован безопасный режим. Действия в безопасном режиме настраиваются отдельно",
+                "Outputs State After Power On": "Состояния выходов при подаче питания",
+                "Safe state": "Перевести выход в безопасное состояние",
+                "Restore last state": "Восстановить последнее состояние",
+                "Safety Timer (s)": "Таймаут безопасного режима (с)",
+
+                "Baud rate": "Скорость обмена",
+                "baud_rate_description": "Перед изменением параметра убедитесь, что связь с устройством установлена. Выберите нужную скорость обмена, сохраните конфигурацию, а затем укажите в настройках порта эту же скорость.",
+                "Serial": "Серийный номер",
+                "Supply Voltage": "Напряжение питания",
+                "Uptime": "Время работы с момента включения (с)",
+                "Minimum Voltage Since Startup": "Минимальное напряжение с момента включения",
+                "MCU Temperature": "Температура МК",
+                "MCU Voltage": "Напряжение питания МК"
+            }
+        }
+    }
+}
