@@ -1,3 +1,9 @@
+wb-mqtt-serial (2.63.2) stable; urgency=medium
+
+  * New safety and restore settings were added in WB-MR templates
+
+ -- Dmitry Vorobjev <d.vorobjev@wirenboard.ru>  Thu, 07 Jul 2022 10:02:59 +0300
+
 wb-mqtt-serial (2.62.1) stable; urgency=medium
 
   * Russian translation for Phase angle channel was corrected in WB-
