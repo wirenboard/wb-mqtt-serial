@@ -585,7 +585,7 @@ namespace
         port_config->AddDevice(deviceFactory.CreateDevice(device_data, default_id, port_config, templates));
     }
 
-    PPort OpenSerialPort(const Json::Value& port_data)
+    PPort OpenSerialPort(const Json::Value& port_data, PRPCConfig rpcConfig)
     {
         TSerialPortSettings settings(port_data["path"].asString());
 
@@ -597,19 +597,29 @@ namespace
         Get(port_data, "data_bits", settings.DataBits);
         Get(port_data, "stop_bits", settings.StopBits);
 
-        return std::make_shared<TSerialPortWithIECHack>(std::make_shared<TSerialPort>(settings));
+        PPort port = std::make_shared<TSerialPortWithIECHack>(std::make_shared<TSerialPort>(settings));
+
+        rpcConfig->AddPort(port, TRPCPortMode::RPC_RTU, settings.Device, "", 0);
+
+        return port;
     }
 
-    PPort OpenTcpPort(const Json::Value& port_data)
+    PPort OpenTcpPort(const Json::Value& port_data, PRPCConfig rpcConfig)
     {
         TTcpPortSettings settings(port_data["address"].asString(), GetInt(port_data, "port"));
-        return std::make_shared<TTcpPort>(settings);
+
+        PPort port = std::make_shared<TTcpPort>(settings);
+
+        rpcConfig->AddPort(port, TRPCPortMode::RPC_TCP, "", settings.Address, settings.Port);
+
+        return port;
     }
 
     void LoadPort(PHandlerConfig handlerConfig,
                   const Json::Value& port_data,
                   const std::string& id_prefix,
                   TTemplateMap& templates,
+                  PRPCConfig rpcConfig,
                   TSerialDeviceFactory& deviceFactory,
                   TPortFactoryFn portFactory)
     {
@@ -627,7 +637,7 @@ namespace
         Get(port_data, "connection_timeout_ms", port_config->OpenCloseSettings.MaxFailTime);
         Get(port_data, "connection_max_fail_cycles", port_config->OpenCloseSettings.ConnectionMaxFailCycles);
 
-        std::tie(port_config->Port, port_config->IsModbusTcp) = portFactory(port_data);
+        std::tie(port_config->Port, port_config->IsModbusTcp) = portFactory(port_data, rpcConfig);
 
         const Json::Value& array = port_data["devices"];
         for (Json::Value::ArrayIndex index = 0; index < array.size(); ++index)
@@ -676,17 +686,17 @@ void SetIfExists(Json::Value& dst, const std::string& dstKey, const Json::Value&
     }
 }
 
-std::pair<PPort, bool> DefaultPortFactory(const Json::Value& port_data)
+std::pair<PPort, bool> DefaultPortFactory(const Json::Value& port_data, PRPCConfig rpcConfig)
 {
     auto port_type = port_data.get("port_type", "serial").asString();
     if (port_type == "serial") {
-        return {OpenSerialPort(port_data), false};
+        return {OpenSerialPort(port_data, rpcConfig), false};
     }
     if (port_type == "tcp") {
-        return {OpenTcpPort(port_data), false};
+        return {OpenTcpPort(port_data, rpcConfig), false};
     }
     if (port_type == "modbus tcp") {
-        return {OpenTcpPort(port_data), true};
+        return {OpenTcpPort(port_data, rpcConfig), true};
     }
     throw TConfigParserException("invalid port_type: '" + port_type + "'");
 }
@@ -941,6 +951,7 @@ PHandlerConfig LoadConfig(const std::string& configFileName,
                           TSerialDeviceFactory& deviceFactory,
                           const Json::Value& baseConfigSchema,
                           TTemplateMap& templates,
+                          PRPCConfig rpcConfig,
                           TPortFactoryFn portFactory)
 {
     PHandlerConfig handlerConfig(new THandlerConfig);
@@ -970,6 +981,7 @@ PHandlerConfig LoadConfig(const std::string& configFileName,
                  array[index],
                  "wb-modbus-" + std::to_string(index) + "-",
                  templates,
+                 rpcConfig,
                  deviceFactory,
                  portFactory);
     }

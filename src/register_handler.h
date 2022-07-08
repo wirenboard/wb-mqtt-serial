@@ -14,7 +14,7 @@ using WBMQTT::StringFormat;
 class TRegisterHandler
 {
 public:
-    TRegisterHandler(PSerialDevice dev, PRegister reg, PBinarySemaphore flush_needed);
+    TRegisterHandler(PSerialDevice dev, PRegister reg);
 
     PRegister Register() const;
 

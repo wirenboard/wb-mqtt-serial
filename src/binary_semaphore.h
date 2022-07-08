@@ -1,9 +1,19 @@
 #pragma once
 
+#include <algorithm>
 #include <chrono>
 #include <condition_variable>
 #include <memory>
 #include <mutex>
+#include <vector>
+
+class TBinarySemaphoreSignal
+{
+public:
+    bool value;
+};
+
+typedef std::shared_ptr<TBinarySemaphoreSignal> PBinarySemaphoreSignal;
 
 class TBinarySemaphore
 {
@@ -12,27 +22,46 @@ public:
     {
         std::unique_lock<std::mutex> lock(Mutex);
 
-        bool r = Cond.wait_until(lock, until, [this]() { return _Signaled; });
-        _Signaled = false;
-        return r;
+        return Cond.wait_until(lock, until, [this]() {
+            return std::any_of(Signals.begin(), Signals.end(), [](PBinarySemaphoreSignal item) { return item->value; });
+        });
     }
-    bool TryWait()
+
+    bool GetSignalValue(PBinarySemaphoreSignal signal)
     {
         std::unique_lock<std::mutex> lock(Mutex);
 
-        bool r = _Signaled;
-        _Signaled = false;
+        bool r = signal->value;
+        signal->value = false;
         return r;
     }
-    void Signal()
+
+    void Signal(PBinarySemaphoreSignal signal)
     {
         std::unique_lock<std::mutex> lock(Mutex);
-        _Signaled = true;
+        signal->value = true;
         Cond.notify_all();
     }
 
+    void ResetAllSignals()
+    {
+        std::unique_lock<std::mutex> lock(Mutex);
+        for (auto signal: Signals) {
+            signal->value = false;
+        }
+    }
+
+    PBinarySemaphoreSignal MakeSignal()
+    {
+        std::unique_lock<std::mutex> lock(Mutex);
+        PBinarySemaphoreSignal new_signal = std::make_shared<TBinarySemaphoreSignal>();
+        Signals.push_back(new_signal);
+        new_signal->value = false;
+        return new_signal;
+    }
+
 private:
-    bool _Signaled = false;
+    std::vector<PBinarySemaphoreSignal> Signals;
     std::mutex Mutex;
     std::condition_variable Cond;
 };

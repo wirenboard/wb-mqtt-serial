@@ -70,6 +70,9 @@ public:
 
     static void HandleControlOnValueEvent(const WBMQTT::TControlOnValueEvent& event);
 
+    std::vector<uint8_t> RPCTransceive(PRPCRequest Request);
+    PSerialClient GetSerialClient();
+
 private:
     WBMQTT::TLocalDeviceArgs From(const PSerialDevice& device);
     WBMQTT::TControlArgs From(const PDeviceChannel& channel);

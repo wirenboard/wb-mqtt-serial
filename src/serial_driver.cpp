@@ -32,8 +32,7 @@ namespace
     }
 }
 
-TMQTTSerialDriver::TMQTTSerialDriver(PDeviceDriver mqttDriver, PHandlerConfig config, WBMQTT::PMqttRpcServer rpc)
-    : Active(false)
+TMQTTSerialDriver::TMQTTSerialDriver(PDeviceDriver mqttDriver, PHandlerConfig config): Active(false)
 {
     try {
         for (const auto& portConfig: config->PortConfigs) {
@@ -55,11 +54,6 @@ TMQTTSerialDriver::TMQTTSerialDriver(PDeviceDriver mqttDriver, PHandlerConfig co
         LOG(Error) << "unable to create port driver. Cleaning.";
         ClearDevices();
         throw;
-    }
-
-    mqttDriver->On<TControlOnValueEvent>(&TSerialPortDriver::HandleControlOnValueEvent);
-    if (rpc) {
-        rpc->RegisterMethod("metrics", "Load", std::bind(&TMQTTSerialDriver::LoadMetrics, this, std::placeholders::_1));
     }
 }
 
@@ -117,10 +111,15 @@ void TMQTTSerialDriver::Stop()
     ClearDevices();
 }
 
-Json::Value TMQTTSerialDriver::LoadMetrics(const Json::Value& request)
+std::vector<PSerialPortDriver> TMQTTSerialDriver::GetPortDrivers()
+{
+    return PortDrivers;
+}
+
+Json::Value TMQTTSerialDriver::LoadMetrics()
 {
     auto time = std::chrono::steady_clock::now();
-    Json::Value res(Json::arrayValue);
+    Json::Value result(Json::arrayValue);
     for (auto& port: Metrics) {
         Json::Value item;
         item["port"] = port.first;
@@ -131,7 +130,7 @@ Json::Value TMQTTSerialDriver::LoadMetrics(const Json::Value& request)
         if (!channels.empty()) {
             item["channels"].swap(channels);
         }
-        res.append(std::move(item));
+        result.append(std::move(item));
     }
-    return res;
+    return result;
 }
