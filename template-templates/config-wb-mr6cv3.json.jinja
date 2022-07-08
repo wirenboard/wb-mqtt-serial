@@ -84,7 +84,7 @@
             {
                 "title": "Inputs Control In Safety Mode",
                 "id": "g_safety_input_control",
-                "description": "poll_timeout_description",
+                "description": "inputs_control_in_safety_mode_description",
                 "group": "g_safety"
             },
 
@@ -305,8 +305,8 @@
                 "order": {{2 + out_num - 1}},
                 "enum": [0, 1],
                 "enum_titles": [
-                    "OFF",
-                    "ON"
+                    "Off",
+                    "On"
                 ]
             },
             "out{{out_num}}_safety_behaviour": {
@@ -355,11 +355,12 @@
 
             "outputs_power_on_state": {
                 "title": "Outputs State After Power On",
+                "description": "outputs_state_after_power_on_description",
                 "address": 6,
                 "reg_type": "holding",
                 "enum": [0, 1, 2],
                 "default": 0,
-                "enum_titles": ["Safe State", "Restore Last State", "According To Inputs"],
+                "enum_titles": ["Safe state", "Restore last state", "According to inputs"],
                 "order": 1,
                 "group": "g_outputs"
             },
@@ -560,6 +561,7 @@
             "en": {
                 "WB-MR6Cv3_template_title": "WB-MR6C v.3 (6-channel relay with internal power supply)",
                 "mode_description": "For using button mapping-matrix firmware v1.17.0 or newer is required",
+                "outputs_state_after_power_on_description": "Option \"According to inputs\" works for latching switch mode only, firmware v1.18.4 or newer is required",
                 "baud_rate_description": "Make sure that communication with device is established before changing this parameter. Select required baud rate, save configuration and then change port baud rate to the same value.",
                 "Uptime": "Uptime (s)",
 
@@ -640,10 +642,11 @@
                 "Restore Last Outputs State After Power On": "Восстанавливать состояния выходов при включении",
                 "Safety Poll Timeout (s)": "Таймаут потери связи (с)",
                 "poll_timeout_description": "Параметр определяет время отсутствия опроса в секундах, после которого будет активирован безопасный режим. Действия в безопасном режиме настраиваются отдельно.",
+                "inputs_control_in_safety_mode_description": "Настройка изменения управления с входов при переходе модуля в безопасный режим",
                 "Outputs State After Power On": "Состояния реле при подаче питания",
-                "Safe State": "Перевести выход в безопасное состояние",
-                "Restore Last State": "Восстановить последнее состояние",
-                "According To Inputs": "Состояние соответствующее состоянию входов",
+                "Safe state": "Перевести выход в безопасное состояние",
+                "Restore last state": "Восстановить последнее состояние",
+                "According to inputs": "Установить согласно состоянию входов",
 
                 "Safety Mode Trigger": "Переход в безопасный режим",
                 "Poll timeout or loss bus power supply": "Потеря связи или пропадание низковольтного питания",
@@ -663,8 +666,8 @@
                 "secp_waiting_time_description": "Если за указанное время второго нажатия не было - считаем нажатие одиночным. 0 - отключит все нажатия кроме короткого и длинного",
                 "debounce_time_description": "Для детектирования нажатий значение должно быть в 5-10 раз меньше, чем время ожидания второго нажатия",
 
-                "OFF": "Реле отключено",
-                "ON": "Реле включено",
+                "Off":  "Выключен",
+                "On": "Включен",
 
                 "Safety Behaviour": "Действие в безопасном режиме",
                 "Don't сhange output state": "Ничего не делать",
@@ -678,6 +681,7 @@
                 "Baud rate": "Скорость обмена",
                 "baud_rate_description": "Перед изменением параметра убедитесь, что связь с устройством установлена. Выберите нужную скорость обмена, сохраните конфигурацию, а затем укажите в настройках порта эту же скорость.",
                 "mode_description": "Для использования mapping-матрицы для кнопок требуется прошивка v1.17.0 или новее",
+                "outputs_state_after_power_on_description": "Вариант \"Установить согласно состоянию входов\" применим только для режима \"Переключатель с фиксацией\", требуется прошивка v1.18.4 или новее",
 
                 "Serial": "Серийный номер",
                 "Supply Voltage": "Напряжение питания",
