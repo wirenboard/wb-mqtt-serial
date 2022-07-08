@@ -1,6 +1,6 @@
 {
     "device_type": "MSU34",
-    "group": "climate",
+    "group": "climate-sensor",
     "device": {
         "name": "MSU34+TLP",
         "id": "msu34tlp",

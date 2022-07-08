@@ -1,6 +1,6 @@
 {
     "device_type": "kvadro-1wire",
-    "group": "climate",
+    "group": "climate-sensor",
     "device": {
         "name": "Kvadro 1-Wire",
         "id": "kvadro-1wire",
