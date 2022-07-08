@@ -1,3 +1,10 @@
+wb-mqtt-serial (2.63.2) stable; urgency=medium
+
+  * Correction options names and descriptions in WB-MR6Cv3 template to
+    make them similary with other relay modules
+
+ -- Dmitry Vorobjev <d.vorobjev@wirenboard.ru>  Fri, 08 Jul 2022 12:21:30 +0300
+
 wb-mqtt-serial (2.63.1) stable; urgency=medium
 
   * Jinja-template for WB-MRGBW-D fw3 without subdevices. Previous
