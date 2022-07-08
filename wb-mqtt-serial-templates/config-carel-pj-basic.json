@@ -1,7 +1,7 @@
 {
     "title": "Carel PJ BASIC (PYEZ1R05J4, PYEZ1R05J5)",
     "device_type": "carel_pj_basic",
-    "group": "refrigeration",
+    "group": "g-refrigeration",
     "device": {
         "name": "Carel PJ BASIC",
         "id": "carel-pj-basic",

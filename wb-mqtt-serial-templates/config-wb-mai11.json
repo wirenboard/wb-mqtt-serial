@@ -1,7 +1,7 @@
 {
     "title": "WB-MAI11_template_title",
     "device_type": "WB-MAI11",
-    "group": "wb",
+    "group": "g-wb",
     "device": {
         "name": "WB-MAI11",
         "id": "wb-mai11",

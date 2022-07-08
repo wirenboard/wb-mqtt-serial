@@ -1,6 +1,6 @@
 {
 	"device_type": "DRB88",
-	"group": "dimmer",
+	"group": "g-dimmer",
 	"device": {
 		"name": "DRB88",
 		"id": "drb88",

@@ -1,6 +1,6 @@
 {
 	"device_type": "MSU24",
-    "group": "climate-sensor",
+    "group": "g-climate-sensor",
 	"device": {
 		"name": "MSU24",
 		"id": "msu24",

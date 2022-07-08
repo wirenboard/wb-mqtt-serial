@@ -1,7 +1,7 @@
 {
     "device_type": "pulsar-m-water",
     "title": "Pulsar-M Water Meter",
-    "group": "water-meter",
+    "group": "g-water-meter",
     "device": {
         "name": "Pulsar-M Water Meter",
         "id": "pulsar-m-water",

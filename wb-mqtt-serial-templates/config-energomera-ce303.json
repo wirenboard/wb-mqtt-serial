@@ -1,7 +1,7 @@
 {
   "device_type": "Energomera CE303",
   "title": "Energomera CE303",
-  "group": "power-meter",
+  "group": "g-power-meter",
   "device": {
     "name": "Energomera CE303",
     "id": "energomera303",

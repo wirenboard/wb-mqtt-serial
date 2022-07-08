@@ -1,7 +1,7 @@
 {
     "title": "Cityron ПУ-3",
     "device_type": "cityron_pu-3",
-    "group": "control-panel",
+    "group": "g-control-panel",
     "device": {
         "name": "Cityron ПУ-3",
         "id": "cityron-pu-3",

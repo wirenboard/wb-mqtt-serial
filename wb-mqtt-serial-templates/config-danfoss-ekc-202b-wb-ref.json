@@ -1,7 +1,7 @@
 {
     "title": "Danfoss EKC 202B (WB-REF-DF-178A)",
     "device_type": "danfoss_ekc_202b_wb_ref",
-    "group": "refrigeration",
+    "group": "g-refrigeration",
     "device": {
         "name": "Danfoss EKC 202B",
         "id": "danfoss-ekc-202b",
@@ -84,7 +84,7 @@
                 "min": 0.1,
                 "max": 20,
                 "default": 2,
-                "group": "thermostat",
+                "group": "g-thermostat",
                 "order": 1
             },
             "temperature_setpoint_max": {
@@ -97,7 +97,7 @@
                 "min": -49,
                 "max": 50,
                 "default": 50,
-                "group": "thermostat",
+                "group": "g-thermostat",
                 "order": 2
             },
             "temperature_setpoint_min": {
@@ -110,7 +110,7 @@
                 "min": -50,
                 "max": 49,
                 "default": -50,
-                "group": "thermostat",
+                "group": "g-thermostat",
                 "order": 3
             },
             "temperature_indication_adjustment": {
@@ -123,7 +123,7 @@
                 "min": -20,
                 "max": 20,
                 "default": 0,
-                "group": "thermostat",
+                "group": "g-thermostat",
                 "order": 4
             },
             "sair_temperature_adjustment": {
@@ -136,7 +136,7 @@
                 "min": -10,
                 "max": 10,
                 "default": 0,
-                "group": "thermostat",
+                "group": "g-thermostat",
                 "order": 6
             },
             "night_setpoint_offset": {
@@ -149,7 +149,7 @@
                 "min": -10,
                 "max": 10,
                 "default": 0,
-                "group": "thermostat",
+                "group": "g-thermostat",
                 "order": 7
             },
             "setpoint_offset_enabled": {
@@ -160,7 +160,7 @@
                 "default": 0,
                 "enum": [0, 1],
                 "enum_titles": ["no", "yes"],
-                "group": "thermostat",
+                "group": "g-thermostat",
                 "order": 8
             },
             "setpoint_offset_value": {
@@ -173,7 +173,7 @@
                 "min": -50,
                 "max": 50,
                 "default": 0,
-                "group": "thermostat",
+                "group": "g-thermostat",
                 "order": 9
             },
             "temperature_alarm_delay": {

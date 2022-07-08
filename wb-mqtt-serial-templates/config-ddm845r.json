@@ -1,6 +1,6 @@
 {
   "device_type": "DDM845R",
-  "group": "dimmer",
+  "group": "g-dimmer",
   "device": {
     "name": "DDM845R",
     "id": "ddm845r",

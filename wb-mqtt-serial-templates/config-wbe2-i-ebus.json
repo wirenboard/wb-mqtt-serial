@@ -1,6 +1,6 @@
 {
     "device_type": "WBE2-I-EBUS",
-    "group": "wb",
+    "group": "g-wb",
     "device": {
         "name": "WBE2-I-EBUS",
         "id": "wbe2-i-ebus",

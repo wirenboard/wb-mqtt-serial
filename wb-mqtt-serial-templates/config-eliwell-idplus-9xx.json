@@ -1,7 +1,7 @@
 {
     "title": "Eliwell IDPlus 9xx",
     "device_type": "eliwell_idplus_9xx",
-    "group": "refrigeration",
+    "group": "g-refrigeration",
     "device": {
         "name": "Eliwell IDPlus 9xx",
         "id": "eliwell-idplus-9xx",

@@ -1,7 +1,7 @@
 {
     "title": "_WB-MCM16-template-title",
     "device_type": "WB-MCM16",
-    "group": "wb-old",
+    "group": "g-wb-old",
     "device": {
         "name": "WB-MCM16",
         "id": "wb-mcm16",

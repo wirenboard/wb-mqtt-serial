@@ -2,7 +2,7 @@
 {
     "title": "_WB-MIR-simple-template-title",
     "device_type": "WB-MIR (simple)",
-    "group": "wb-old",
+    "group": "g-wb-old",
     "device": {
         "name": "WB-MIR (simple)",
         "id": "wb-mir-simple",

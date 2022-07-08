@@ -2,7 +2,7 @@
     "title": "WB-MR3LV",
     "device_type": "WB-MR3LV",
     "deprecated": true,
-    "group": "wb",
+    "group": "g-wb",
     "device": {
         "name": "WB-MR3LV",
         "id": "wb-mr3lv",

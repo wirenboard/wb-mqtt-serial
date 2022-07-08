@@ -1,7 +1,7 @@
 {
     "title": "_WB-MAP12H-all-harmonics-template-title",
     "device_type": "WB-MAP12H (+ all harmonics)",
-    "group": "wb-old",
+    "group": "g-wb-old",
     "device": {
         "name": "WB-MAP12H (+ all harmonics)",
         "id": "wb-map12h",

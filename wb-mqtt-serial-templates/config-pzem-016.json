@@ -1,6 +1,6 @@
 {
   "device_type": "PZEM-016",
-  "group": "power-meter",
+  "group": "g-power-meter",
   "device": {
     "name": "PZEM",
     "id": "pzem",

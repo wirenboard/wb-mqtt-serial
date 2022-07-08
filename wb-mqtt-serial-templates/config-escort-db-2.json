@@ -1,6 +1,6 @@
 {
     "device_type": "ESCORT DB-2",
-    "group": "level",
+    "group": "g-level",
     "device": {
         "name": "ESCORT DB-2",
         "id": "escort-db-2",

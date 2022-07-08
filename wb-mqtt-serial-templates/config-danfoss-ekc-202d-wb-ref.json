@@ -1,7 +1,7 @@
 {
     "title": "Danfoss EKC 202D (WB-REF-DF-178A)",
     "device_type": "danfoss_ekc_202d_wb_ref",
-    "group": "refrigeration",
+    "group": "g-refrigeration",
     "device": {
         "name": "Danfoss EKC 202D",
         "id": "danfoss-ekc-202d",
@@ -83,7 +83,7 @@
                 "min": 0.1,
                 "max": 20,
                 "default": 2,
-                "group": "thermostat",
+                "group": "g-thermostat",
                 "order": 1
             },
             "temperature_setpoint_max": {
@@ -96,7 +96,7 @@
                 "min": -49,
                 "max": 50,
                 "default": 50,
-                "group": "thermostat",
+                "group": "g-thermostat",
                 "order": 2
             },
             "temperature_setpoint_min": {
@@ -109,7 +109,7 @@
                 "min": -50,
                 "max": 49,
                 "default": -50,
-                "group": "thermostat",
+                "group": "g-thermostat",
                 "order": 3
             },
             "temperature_indication_adjustment": {
@@ -122,7 +122,7 @@
                 "min": -20,
                 "max": 20,
                 "default": 0,
-                "group": "thermostat",
+                "group": "g-thermostat",
                 "order": 4
             },
             "s4_temperature_adjustment": {
@@ -135,7 +135,7 @@
                 "min": -10,
                 "max": 10,
                 "default": 0,
-                "group": "thermostat",
+                "group": "g-thermostat",
                 "order": 6
             },
             "s3_temperature_adjustment": {
@@ -148,7 +148,7 @@
                 "min": -10,
                 "max": 10,
                 "default": 0,
-                "group": "thermostat",
+                "group": "g-thermostat",
                 "order": 7
             },
             "night_setpoint_offset": {
@@ -161,7 +161,7 @@
                 "min": -10,
                 "max": 10,
                 "default": 0,
-                "group": "thermostat",
+                "group": "g-thermostat",
                 "order": 8
             },
             "thermostat_sensor": {
@@ -173,7 +173,7 @@
                 "min": 0,
                 "max": 100,
                 "default": 100,
-                "group": "thermostat",
+                "group": "g-thermostat",
                 "order": 9
             },
             "setpoint_offset_enabled": {
@@ -184,7 +184,7 @@
                 "default": 0,
                 "enum": [0, 1],
                 "enum_titles": ["no", "yes"],
-                "group": "thermostat",
+                "group": "g-thermostat",
                 "order": 10
             },
             "setpoint_offset_value": {
@@ -197,7 +197,7 @@
                 "min": -50,
                 "max": 50,
                 "default": 0,
-                "group": "thermostat",
+                "group": "g-thermostat",
                 "order": 11
             },
             "temperature_alarm_delay": {

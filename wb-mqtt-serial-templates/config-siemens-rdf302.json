@@ -1,6 +1,6 @@
 {
  "device_type": "Siemens RDF302",
- "group": "thermostat",
+ "group": "g-thermostat",
  "device": {
   "name": "Siemens RDF302",
   "id": "siemens-rdf302",

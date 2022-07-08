@@ -1,6 +1,6 @@
 {
     "device_type": "mercury230",
-    "group": "power-meter",
+    "group": "g-power-meter",
     "title": "Mercury 230",
     "device": {
         "name": "Mercury 230AR-02",

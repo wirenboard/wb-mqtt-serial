@@ -1,7 +1,7 @@
 {
     "title": "Carel PJ EASY (Code: PJEZ*)",
     "device_type": "carel_pj_easy",
-    "group": "refrigeration",
+    "group": "g-refrigeration",
     "device": {
         "name": "Carel PJ EASY",
         "id": "carel-pj-easy",

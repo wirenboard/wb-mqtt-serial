@@ -1,6 +1,6 @@
 {
     "device_type": "S2K-SP1",
-    "group": "relay",
+    "group": "g-relay",
     "device": {
         "name": "S2K-SP1",
         "id": "s2k-sp1",

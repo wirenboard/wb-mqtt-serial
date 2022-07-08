@@ -1,6 +1,6 @@
 {
     "device_type": "PD561Z",
-    "group": "power-meter",
+    "group": "g-power-meter",
     "device": {
         "name": "PD561Z",
         "id": "pd561z",

@@ -1,7 +1,7 @@
 {
     "title": "_WB-MAP3H-basic-template-title",
     "device_type": "WB-MAP3H (basic)",
-    "group": "wb-old",
+    "group": "g-wb-old",
     "device": {
         "name": "WB-MAP3H (basic)",
         "id": "wb-map3h",

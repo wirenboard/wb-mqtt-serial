@@ -1,7 +1,7 @@
 {
     "title": "_WB-MDM2-template-title",
     "device_type": "WB-MDM2",
-    "group": "wb-old",
+    "group": "g-wb-old",
     "device": {
         "name": "WB-MDM2",
         "id": "wb-mdm2",

@@ -1,7 +1,7 @@
 {
     "title": "_WB-MS-THLS-template-title",
     "device_type": "WB-MS-THLS",
-    "group": "wb-old",
+    "group": "g-wb-old",
     "device": {
         "name": "WB-MS-THLS",
         "id": "wb-ms-thls",

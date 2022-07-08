@@ -1,7 +1,7 @@
 {
     "device_type": "WinDeco",
     "title": "WinDeco curtain motor",
-    "group": "curtain",
+    "group": "g-curtain",
     "device": {
         "name": "WinDeco",
         "id": "windeco",

@@ -1,6 +1,6 @@
 {
     "device_type": "WP8028ADAM",
-    "group": "io",
+    "group": "g-io",
     "device": {
         "name": "WP8028ADAM",
         "id": "wp8028adam",
