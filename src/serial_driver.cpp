@@ -55,6 +55,8 @@ TMQTTSerialDriver::TMQTTSerialDriver(PDeviceDriver mqttDriver, PHandlerConfig co
         ClearDevices();
         throw;
     }
+
+    mqttDriver->On<TControlOnValueEvent>(&TSerialPortDriver::HandleControlOnValueEvent);
 }
 
 void TMQTTSerialDriver::LoopOnce()
