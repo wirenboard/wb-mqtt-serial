@@ -1,3 +1,9 @@
+wb-mqtt-serial (2.64.0) stable; urgency=medium
+
+  * Device templates are organized in groups in web config editor
+
+ -- Petr Krasnoshchekov <petr.krasnoshchekov@wirenboard.ru>  Tue, 05 Jul 2022 10:43:19 +0500
+
 wb-mqtt-serial (2.63.1) stable; urgency=medium
 
   * Jinja-template for WB-MRGBW-D fw3 without subdevices. Previous

@@ -2,6 +2,7 @@
     "title": "WB-MRPS6",
     "device_type": "WB-MRPS6",
     "deprecated": true,
+    "group": "g-wb",
     "device": {
         "name": "WB-MRPS6",
         "id": "wb-mrps6",

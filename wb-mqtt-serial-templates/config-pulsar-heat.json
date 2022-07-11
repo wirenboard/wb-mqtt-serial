@@ -1,6 +1,7 @@
 {
     "device_type": "pulsar-heat",
     "title": "Pulsar Heat Meter",
+    "group": "g-heat-meter",
     "device": {
         "name": "Pulsar Heat Meter",
         "id": "pulsar-heat",

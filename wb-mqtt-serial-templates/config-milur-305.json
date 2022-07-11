@@ -1,5 +1,6 @@
 {
     "device_type": "milur305",
+    "group": "g-power-meter",
     "title": "Milur 305",
     "device": {
         "name": "Milur 305",

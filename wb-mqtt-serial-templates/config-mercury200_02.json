@@ -1,5 +1,6 @@
 {
     "device_type": "Mercury 200.02",
+    "group": "g-power-meter",
     "device": {
         "name": "Mercury 200.02",
         "id": "mercury200.02",

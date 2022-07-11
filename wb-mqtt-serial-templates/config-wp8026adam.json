@@ -1,12 +1,12 @@
 //timeout critical: 200 ms OK
 {
     "device_type": "WP8026ADAM",
+    "group": "g-io",
     "device": {
         "name": "WP8026ADAM",
         "id": "wp8026adam",
         "frame_timeout_ms": 0,
         "channels": [
-            //_____________________________________________________
             {
                 "name": "Digital Input 1",
                 "reg_type": "discrete",
@@ -103,7 +103,6 @@
                 "address": 15,
                 "type": "switch"
             }
-            //______________________________________________________
         ]
     }
 }
