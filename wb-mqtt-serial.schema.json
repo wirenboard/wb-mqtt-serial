@@ -1510,7 +1510,7 @@
 
     "device": {
       "title": "Device",
-      "headerTemplate": "{{self.name}} {{self.slave_id}}",
+      "headerTemplate": "{{self.name}} {{if self.slave_id==false}}broadcast{{else}}{{self.slave_id}}{{endif}}",
       "oneOf": [
         {
           "title" : "Unknown device",
@@ -2061,7 +2061,7 @@
       "not faster than (deprecated)": "не чаще чем раз в (устаревший параметр)",
       "String size in characters": "Размер строки в символах",
       "String": "Строка",
-      "string_data_size_description": "Для протокола modbus cтроки считываются по одному символу на регистр из младшего байта. Параметр определяет количество символов"
+      "string_data_size_description": "Для протокола modbus строки считываются по одному символу на регистр из младшего байта. Параметр определяет количество символов"
     }
   }
 }

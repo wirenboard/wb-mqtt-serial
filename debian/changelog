@@ -1,3 +1,9 @@
+wb-mqtt-serial (2.63.2) stable; urgency=medium
+
+  * The message "Broadcast" is added to device header in web config editor for appropriately configured devices
+
+ -- Petr Krasnoshchekov <petr.krasnoshchekov@wirenboard.ru>  Mon, 11 Jul 2022 10:12:22 +0500
+
 wb-mqtt-serial (2.63.1) stable; urgency=medium
 
   * Jinja-template for WB-MRGBW-D fw3 without subdevices. Previous
