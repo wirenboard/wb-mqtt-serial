@@ -1898,7 +1898,7 @@
           "hidden_msg": "deprecated template",
           "hidden_notice": "hidden_template_notice",
           "groups": ["g-wb", "g-wb-old", "g-adapter", "g-climate-sensor", "g-level", "g-dimmer", "g-air-conditioning", 
-                     "g-ventilation", "g-refrigeration", "g-io", "g-relay", "g-curtain", "g-control-panel",
+                     "g-climate-control", "g-refrigeration", "g-io", "g-relay", "g-curtain", "g-control-panel",
                      "g-water-meter", "g-heat-meter", "g-power-meter", "g-thermostat", "g-motor-control",
                      "g-custom"]
         }
@@ -1975,7 +1975,7 @@
       "g-level": "Level sensors",
       "g-dimmer": "Dimmers",
       "g-air-conditioning": "Air conditioning equipment",
-      "g-ventilation": "Ventilation equipment",
+      "g-climate-control": "Climate control equipment",
       "g-refrigeration": "Refrigeration equipment",
       "g-io": "IO modules",
       "g-relay": "Relays",
@@ -2168,7 +2168,7 @@
       "g-level": "Датчики уровня",
       "g-dimmer": "Диммеры",
       "g-air-conditioning": "Кондиционеры",
-      "g-ventilation": "Контроллеры вентиляции и климата",
+      "g-climate-control": "Контроллеры вентиляции и климата",
       "g-refrigeration": "Контроллеры холодильного оборудования",
       "g-io": "Модули ввода-вывода",
       "g-relay": "Модули реле",
