@@ -1,3 +1,9 @@
+wb-mqtt-serial (2.65.0) stable; urgency=medium
+
+  * Slave id is preserved after device type switching in wb-mqtt-homeui
+
+ -- Petr Krasnoshchekov <petr.krasnoshchekov@wirenboard.ru>  Thu, 14 Jul 2022 10:48:39 +0500
+
 wb-mqtt-serial (2.64.1) stable; urgency=medium
 
   * Titles of parameters with min/max channel values were corrected in

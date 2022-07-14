@@ -315,32 +315,21 @@
         "slave_id": {
           "title": "Slave id of the device or broadcast mode",
           "propertyOrder": 2,
-          "oneOf": [
-            {
-              "title": "decimal or hex slave id",
-              "type": "string",
-              "pattern": "^(0x[A-Fa-f\\d]+|\\d+)$",
-              "options": {
-                "inputAttributes": {
-                  "placeholder":  "decimal (e.g. 123) or hex (e.g. 0xAF)"
-                },
-                "patternmessage": "Should be decimal or hex"
-              }
-            },
-            {
-              "title": "broadcast",
-              "type": "boolean",
-              "enum": [ false ],
-              "default": false,
-              "readOnly": true,
-              "options": {
-                "enum_titles": ["broadcast_description"]
-              }
-            }
-          ],
+          "type": "string",
+          "pattern": "^(0x[A-Fa-f\\d]+|\\d+)$",
           "options": {
-            "keep_oneof_values": false
-          }
+            "show_opt_in": true,
+            "wb": {
+                "editor_title": "decimal or hex slave id",
+                "undefined_title": "broadcast",
+                "undefined_message" : "broadcast_description"
+            },
+            "inputAttributes": {
+              "placeholder":  "decimal (e.g. 123) or hex (e.g. 0xAF)"
+            },
+            "patternmessage": "Should be decimal or hex"
+          },
+          "_format" : "wb-optional"
         }
       }
     },
@@ -1900,7 +1889,8 @@
           "groups": ["g-wb", "g-wb-old", "g-adapter", "g-climate-sensor", "g-level", "g-dimmer", "g-air-conditioning", 
                      "g-climate-control", "g-refrigeration", "g-io", "g-relay", "g-curtain", "g-control-panel",
                      "g-water-meter", "g-heat-meter", "g-power-meter", "g-thermostat", "g-motor-control",
-                     "g-custom"]
+                     "g-custom"],
+          "keep_properties": ["slave_id"]
         }
       },
       "_format": "wb-multiple"

@@ -230,6 +230,7 @@ void AddDeviceWithGroupsUISchema(const TDeviceTemplate& deviceTemplate,
         return;
     }
     TContext context{deviceTemplate.Type, translations};
+    auto protocol = GetProtocolName(deviceTemplate.Schema);
     auto& res = Append(devicesArray);
 
     res["type"] = "object";
@@ -237,7 +238,9 @@ void AddDeviceWithGroupsUISchema(const TDeviceTemplate& deviceTemplate,
     res["_format"] = "groups";
     res["properties"]["device_type"] = MakeHiddenProperty(deviceTemplate.Type);
     MakeArray("required", res).append("device_type");
-    res["required"].append("slave_id");
+    if (!deviceFactory.GetProtocol(protocol)->SupportsBroadcast()) {
+        res["required"].append("slave_id");
+    }
 
     res["options"]["wb"]["disable_title"] = true;
     if (deviceTemplate.IsDeprecated) {
@@ -253,7 +256,6 @@ void AddDeviceWithGroupsUISchema(const TDeviceTemplate& deviceTemplate,
     }
 
     auto& allOf = MakeArray("allOf", res);
-    auto protocol = GetProtocolName(deviceTemplate.Schema);
     Append(allOf)["$ref"] = deviceFactory.GetCommonDeviceSchemaRef(protocol);
     allOf.append(MakeProtocolProperty());
 
