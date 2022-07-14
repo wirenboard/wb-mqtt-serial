@@ -1,6 +1,7 @@
 {
     "title": "WB-MAP3E-fw2_template_title",
     "device_type": "WB-MAP3E fw2",
+    "group": "g-wb",
     "device": {
         "name": "WB-MAP3E fw2",
         "id": "wb-map3e",

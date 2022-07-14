@@ -1,5 +1,6 @@
 {
     "device_type": "WBE2-I-OPENTHERM",
+    "group": "g-wb",
     "device": {
         "name": "WBE2-I-OPENTHERM",
         "id": "wbe2-i-opentherm",

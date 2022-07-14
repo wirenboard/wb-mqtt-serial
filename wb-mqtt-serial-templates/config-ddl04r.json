@@ -1,5 +1,6 @@
 {
     "device_type": "DDL04R",
+    "group": "g-dimmer",
     "device": {
         "name": "DDL04R",
         "id": "ddl04r",

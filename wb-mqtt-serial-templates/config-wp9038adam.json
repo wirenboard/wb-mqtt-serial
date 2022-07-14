@@ -1,12 +1,12 @@
 //timeout critical: 200 ms OK
 {
     "device_type": "WP9038ADAM",
+    "group": "g-io",
     "device": {
         "name": "WP9038ADAM",
         "id": "wp9038adam",
         "frame_timeout_ms": 0,
         "channels": [
-            //______________________________________________________
             {
                 "name": "Analog Input 1",
                 "reg_type": "holding",
@@ -49,7 +49,6 @@
                 "type": "current",
                 "scale": 0.004884
             },
-            //______________________________________________________
             {
                 "name": "Digital Input 1",
                 "reg_type": "discrete",
@@ -74,7 +73,6 @@
                 "address": 3,
                 "type": "switch"
             },
-            //______________________________________________________
             {
                 "name": "Digital Output 1",
                 "reg_type": "coil",
@@ -99,7 +97,6 @@
                 "address": 3,
                 "type": "switch"
             }
-            //______________________________________________________
         ]
     }
 }

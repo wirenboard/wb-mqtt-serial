@@ -1,9 +1,9 @@
 {% set INPUTS_NUMBER = 3 -%}
-{% set OUTPUTS_NUMBER = 4 -%}
 {% set CHANNELS = ((1, "B"), (2, "R"), (3, "G"), (4, "W")) -%}
 {
     "title": "WB-MRGBW-D_template_title",
     "device_type": "WB-MRGBW-D_fw3_nosubdev",
+    "group": "g-wb",
     "device": {
         "name": "WB-MRGBW-D-fw3",
         "id": "wb-mrgbw-d-fw3",
@@ -136,26 +136,26 @@
                 "order": 1,
                 "required": true
             },
-            {% for out_num in range(1, OUTPUTS_NUMBER + 1) -%}
+            {% for ch_number, ch_name in CHANNELS -%}
             {
-                "id": "ch{{out_num}}_min",
-                "title": "Channel {{out_num}} (B) Minimum Value",
+                "id": "ch{{ch_number}}_min",
+                "title": "Channel {{ch_number}} ({{ch_name}}) Minimum Value",
                 "description": "channel_min_value_description",
                 "order": 1,
                 "group": "gg_out_params",
-                "address": {{70 + out_num - 1}},
+                "address": {{70 + ch_number - 1}},
                 "reg_type": "holding",
                 "default": 1,
                 "min": 1,
                 "max": 2000
             },
             {
-                "id": "ch{{out_num}}_max",
-                "title": "Channel {{out_num}} (B) Maximum Value",
+                "id": "ch{{ch_number}}_max",
+                "title": "Channel {{ch_number}} ({{ch_name}}) Maximum Value",
                 "description": "channel_max_value_description",
                 "order": 2,
                 "group": "gg_out_params",
-                "address": {{80 + out_num - 1}},
+                "address": {{80 + ch_number - 1}},
                 "reg_type": "holding",
                 "default": 2048,
                 "min": 10,

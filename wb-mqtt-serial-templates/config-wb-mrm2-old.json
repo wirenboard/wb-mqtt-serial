@@ -1,7 +1,7 @@
-// Configuration options
 {
     "title": "_WB-MRM2-old-template-title",
     "device_type": "WB-MRM2-old",
+    "group": "g-wb-old",
     "device": {
         "name": "WB-MRM2-old",
         "id": "wb-mrm2-old",

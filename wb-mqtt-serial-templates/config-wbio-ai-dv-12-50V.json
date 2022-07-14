@@ -1,5 +1,6 @@
 {
-    "device_type": "WBIO-AI-DV-12-50V", 
+    "device_type": "WBIO-AI-DV-12-50V",
+    "group": "g-wb",
     "device": {
         "name": "WBIO-AI-DV-12-50V", 
         "id": "wbio-ai-dv-12-50v", 

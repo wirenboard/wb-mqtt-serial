@@ -1,6 +1,7 @@
 {
     "title": "WB-MAI2-mini_template_title",
     "device_type": "WB-MAI2-mini/CC",
+    "group": "g-wb",
     "device": {
         "name": "WB-MAI2-mini/CC",
         "id": "wb-mai2-mini",
