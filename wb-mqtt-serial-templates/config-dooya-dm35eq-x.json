@@ -1,6 +1,7 @@
 {
     "device_type": "Dooya DM35EQ-X",
     "title": "Dooya DM35EQ-X (roller blind motor)",
+    "group": "g-curtain",
     "device": {
         "name": "Dooya DM35EQ-X",
         "id": "dooya_dm35eq_x",

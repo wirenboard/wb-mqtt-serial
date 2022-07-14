@@ -1,6 +1,6 @@
-// Configuration options
 {
 	"device_type": "MSU24",
+    "group": "g-climate-sensor",
 	"device": {
 		"name": "MSU24",
 		"id": "msu24",

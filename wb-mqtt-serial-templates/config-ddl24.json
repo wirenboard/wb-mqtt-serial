@@ -1,6 +1,6 @@
-// Configuration options
 {
 	"device_type": "DDL24",
+	"group": "g-dimmer",
 	"device": {
 		"name": "DDL24",
 		"id": "ddl24",

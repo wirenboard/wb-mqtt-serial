@@ -5,6 +5,19 @@ wb-mqtt-serial (2.64.2) stable; urgency=medium
 
  -- Dmitry Vorobjev <d.vorobjev@wirenboard.ru>  Thu, 14 Jul 2022 10:21:56 +0300
 
+wb-mqtt-serial (2.64.1) stable; urgency=medium
+
+  * Titles of parameters with min/max channel values were corrected in
+    WB-MRGBW-D template
+
+ -- Dmitry Vorobjev <d.vorobjev@wirenboard.ru>  Tue, 12 Jul 2022 10:47:03 +0300
+
+wb-mqtt-serial (2.64.0) stable; urgency=medium
+
+  * Device templates are organized in groups in web config editor
+
+ -- Petr Krasnoshchekov <petr.krasnoshchekov@wirenboard.ru>  Tue, 05 Jul 2022 10:43:19 +0500
+
 wb-mqtt-serial (2.63.1) stable; urgency=medium
 
   * Jinja-template for WB-MRGBW-D fw3 without subdevices. Previous

@@ -1,6 +1,7 @@
 {
     "device_type": "Somfy RTS transmitter",
     "title": "Somfy RS485 RTS transmitter",
+    "group": "g-curtain",
     "device": {
         "name": "Somfy RTS transmitter",
         "id": "somfy",
