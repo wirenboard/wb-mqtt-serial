@@ -1,8 +1,8 @@
-wb-mqtt-serial (2.63.2) stable; urgency=medium
+wb-mqtt-serial (2.64.3) stable; urgency=medium
 
   * New safety and restore settings were added in WB-MR templates
 
- -- Dmitry Vorobjev <d.vorobjev@wirenboard.ru>  Thu, 07 Jul 2022 10:02:59 +0300
+ -- Dmitry Vorobjev <d.vorobjev@wirenboard.ru>  Thu, 14 Jul 2022 10:56:16 +0300
 
 wb-mqtt-serial (2.63.1) stable; urgency=medium
 
