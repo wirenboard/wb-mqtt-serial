@@ -1,6 +1,5 @@
 #pragma once
 #include "bcd_utils.h"
-#include "binary_semaphore.h"
 #include "register.h"
 #include "serial_device.h"
 #include <cmath>
@@ -34,7 +33,6 @@ private:
     PRegister Reg;
     volatile bool Dirty = false;
     std::mutex SetValueMutex;
-    PBinarySemaphore FlushNeeded;
     bool WriteFail;
     std::chrono::steady_clock::time_point WriteFirstTryTime;
 };

@@ -5,12 +5,11 @@
 #include <memory>
 #include <unordered_map>
 
-#include "binary_semaphore.h"
 #include "log.h"
 #include "metrics.h"
 #include "poll_plan.h"
 #include "register_handler.h"
-#include "rpc_request_handler.h"
+#include "serial_client_queue.h"
 #include "serial_device.h"
 
 struct TRegisterComparePredicate
@@ -39,7 +38,7 @@ public:
     void NotifyFlushNeeded();
     void ClearDevices();
 
-    std::vector<uint8_t> RPCTransceive(PRPCRequest Request);
+    void RPCSendQueueMessage(PRPCQueueMessage Message);
     PPort GetPort();
 
 private:
@@ -67,15 +66,12 @@ private:
     TCallback ReadCallback;
     TCallback ErrorCallback;
     PSerialDevice LastAccessedDevice;
-    PBinarySemaphore FlushNeeded;
-    PBinarySemaphoreSignal RegisterUpdateSignal, RPCSignal;
+    PSerialClientQueue FlushNeeded;
     TScheduler<PRegister, TRegisterComparePredicate> Scheduler;
 
     TPortOpenCloseLogic OpenCloseLogic;
     TLoggerWithTimeout ConnectLogger;
     Metrics::TMetrics& Metrics;
-
-    PRPCRequestHandler RPCRequestHandler;
 };
 
 typedef std::shared_ptr<TSerialClient> PSerialClient;
