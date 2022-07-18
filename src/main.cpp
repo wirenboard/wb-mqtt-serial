@@ -268,7 +268,6 @@ int main(int argc, char* argv[])
     TSerialDeviceFactory deviceFactory;
     RegisterProtocols(deviceFactory);
     PRPCConfig rpcConfig = std::make_shared<TRPCConfig>();
-    PRPCHandler rpcHandler = std::make_shared<TRPCHandler>();
     try {
         Json::Value configSchema = LoadConfigSchema(CONFIG_JSON_SCHEMA_FULL_FILE_PATH);
         TTemplateMap templates(TEMPLATES_DIR,
@@ -280,7 +279,6 @@ int main(int argc, char* argv[])
         }
 
         handlerConfig = LoadConfig(configFilename, deviceFactory, configSchema, templates, rpcConfig);
-        rpcHandler->RPCConfigInitialize(rpcConfig);
     } catch (const exception& e) {
         LOG(Error) << e.what();
         return 0;
@@ -304,7 +302,6 @@ int main(int argc, char* argv[])
                                         handlerConfig->PublishParameters);
 
         auto rpcServer(WBMQTT::NewMqttRpcServer(mqtt, APP_NAME));
-        rpcHandler->RPCServerInitialize(rpcServer);
 
         driver->StartLoop();
         WBMQTT::SignalHandling::OnSignals({SIGINT, SIGTERM}, [&] {
@@ -315,7 +312,7 @@ int main(int argc, char* argv[])
         driver->WaitForReady();
 
         auto serialDriver = make_shared<TMQTTSerialDriver>(driver, handlerConfig);
-        rpcHandler->SerialDriverInitialize(serialDriver);
+        PRPCHandler rpcHandler = std::make_shared<TRPCHandler>(rpcConfig, rpcServer, serialDriver);
 
         serialDriver->Start();
         rpcServer->Start();
