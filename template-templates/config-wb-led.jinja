@@ -2299,6 +2299,32 @@
                 "group": "g_debug"
             },
             {% endfor -%}
+            {
+                "name": "Board Temperature",
+                "reg_type": "input",
+                "address": 400,
+                "type": "value",
+                "units": "°C",
+                "format": "s16",
+                "group": "g_debug"
+            },
+            {
+                "name": "Available Power",
+                "reg_type": "input",
+                "address": 401,
+                "type": "value",
+                "units": "%",
+                "format": "u16",
+                "group": "g_debug"
+            },
+            {
+                "name": "Overcurrent protection",
+                "reg_type": "input",
+                "address": 402,
+                "type": "switch",
+                "format": "u16",
+                "group": "g_debug"
+            },
             {% for in_num in range(1, INPUTS_NUMBER + 1) -%}
             {
                 "name": "Input {{in_num}}",
@@ -2648,6 +2674,10 @@
                 "Channel 2 (R) Raw PWM": "Прямое управление ШИМ канала 2 (R)",
                 "Channel 3 (G) Raw PWM": "Прямое управление ШИМ канала 3 (G)",
                 "Channel 4 (W) Raw PWM": "Прямое управление ШИМ канала 4 (W)",
+
+                "Board Temperature": "Температура платы",
+                "Available Power": "Располагаемая мощность",
+                "Overcurrent protection": "Перегрузка по току",
 
                 "Input 1 Counter": "Счетчик замыканий входа 1",
                 "Input 2 Counter": "Счетчик замыканий входа 2",
