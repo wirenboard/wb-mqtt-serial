@@ -25,7 +25,7 @@ TSerialPortDriver::TSerialPortDriver(WBMQTT::PDeviceDriver mqttDriver,
       PublishPolicy(publishPolicy)
 {
     Description = Config->Port->GetDescription(false);
-    SerialClient = std::make_shared<TSerialClient>(Config->Devices, Config->Port, Config->OpenCloseSettings, metrics);
+    SerialClient = PSerialClient(new TSerialClient(Config->Devices, Config->Port, Config->OpenCloseSettings, metrics));
 }
 
 const std::string& TSerialPortDriver::GetShortDescription() const
