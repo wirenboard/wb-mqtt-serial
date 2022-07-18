@@ -1,5 +1,4 @@
 #include "file_descriptor_port.h"
-#include "binary_semaphore.h"
 #include "serial_exc.h"
 
 #include <iomanip>
