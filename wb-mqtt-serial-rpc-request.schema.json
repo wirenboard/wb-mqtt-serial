@@ -1,0 +1,74 @@
+{
+  "title": "RPC request schema",
+  "type": "object",
+  "properties": {
+    "msg": {
+      "description": "Message to send via RPC",
+      "type": "string"
+    },
+    "response_size": {
+      "description": "Excexted response size",
+      "type": "integer",
+      "minimum": 0,
+    },
+    "response_timeout": {
+      "description": "Timeout in milliseconds for response first byte receiving, default 500 (DefaultResponseTimeout from wb-mqtt-serial)",
+      "type": "integer",
+      "minimum": 500
+    },
+    "frame_timeout": {
+      "description": "Timeout in milliseconds between bytes receiving in port io, default 20 (DefaultFrameTimeout from wb-mqtt-serial)",
+      "type": "integer",
+      "minimum": 20
+    },
+    "total_timeout": {
+      "description": "Request execution time including queue time and thread operations, default 10",
+      "type": "integer",
+      "minimum": 20
+    },
+    "format": {
+      "description": "If format is HEX, msg interprets as string with only hex digits",
+      "type": "string",
+      "enum": [
+        "HEX",
+        "STR"
+      ]
+    }
+  },
+  "required": [
+    "msg",
+    "response_size"
+  ],
+  "oneOf": [
+    {
+      "properties": {
+        "path": {
+          "description": "Path to serial port",
+          "type": "string",
+        }
+      },
+      "required": [
+        "path"
+      ]
+    },
+    {
+      "properties": {
+        "ip": {
+          "description": "Client ip address",
+          "type": "string",
+          "pattern": "^((25[0-5]|(2[0-4]|1\\d|[1-9]|)\\d)(\\.(?!$)|$)){4}$"
+        },
+        "port": {
+          "description": "Client tcp port number",
+          "type": "integer",
+          "minimum": 0,
+          "maximum": 65535
+        }
+      },
+      "required": [
+        "ip",
+        "port"
+      ],
+    }
+  ]
+}
