@@ -1,9 +1,10 @@
 #include "rpc_handler.h"
-#include "queue.h"
 #include "rpc_port.h"
 #include "rpc_request.h"
+#include "serial_client_queue.h"
 #include "serial_device.h"
 #include "serial_exc.h"
+#include "wblib/exceptions.h"
 
 #define LOG(logger) ::logger.Log() << "[RPC] "
 
@@ -87,7 +88,7 @@ namespace
             }
 
         } catch (const std::runtime_error& e) {
-            throw TRPCException(e.what(), RPCResultCode::RPC_WRONG_PARAM_VALUE);
+            throw TRPCException(e.what(), TRPCResultCode::RPC_WRONG_PARAM_VALUE);
         }
 
         return options;
@@ -175,16 +176,13 @@ std::vector<uint8_t> TRPCPortDriver::SendRequest(PRPCRequest Request)
             return Message->Done->load(std::memory_order_relaxed);
         })) {
         Message->Cancelled->store(true, std::memory_order_relaxed);
-        throw TRPCException("Request handler is not responding", RPCResultCode::RPC_WRONG_IO);
+        throw TRPCException("Request handler is not responding", TRPCResultCode::RPC_WRONG_TIMEOUT);
     } else {
         switch (*Message->ResultCode) {
             case TRPCRequestResultCode::RPC_REQUEST_WRONG_IO:
-                throw TRPCException("Port IO error", RPCResultCode::RPC_WRONG_IO);
+                throw TRPCException("Port IO error", TRPCResultCode::RPC_WRONG_IO);
 
             case TRPCRequestResultCode::RPC_REQUEST_WRONG_RESPONSE_LENGTH:
-                throw TRPCException("Actual response length shorter than requested",
-                                    RPCResultCode::RPC_WRONG_RESPONSE_LENGTH);
-
             case TRPCRequestResultCode::RPC_REQUEST_OK:
                 return response = *Message->Response;
 
@@ -245,35 +243,32 @@ PRPCPortDriver TRPCHandler::FindPortDriver(PRPCPort RequestedPort)
         return *existedPortDriver;
     }
 
-    throw TRPCException("Requested port doesn't exist", RPCResultCode::RPC_WRONG_PORT);
+    throw TRPCException("Requested port doesn't exist", TRPCResultCode::RPC_WRONG_PORT);
 }
 
 Json::Value TRPCHandler::PortLoad(const Json::Value& Request)
 {
     Json::Value replyJSON;
-    std::string errorMsg;
-    RPCResultCode resultCode;
-
-    std::string responseStr;
 
     try {
         PRPCOptions options = ParseOptions(Request, RequestSchema);
         PRPCPortDriver rpcPortDriver = FindPortDriver(options->RPCPort);
         std::vector<uint8_t> response = rpcPortDriver->SendRequest(options->RPCRequest);
 
-        responseStr = PortLoadResponseFormat(response, options->RPCRequest->Format);
-        errorMsg = "Success";
-        resultCode = RPCResultCode::RPC_OK;
+        std::string responseStr = PortLoadResponseFormat(response, options->RPCRequest->Format);
+
+        replyJSON["response"] = responseStr;
     } catch (TRPCException& e) {
         LOG(Error) << e.GetResultMessage();
-        resultCode = e.GetResultCode();
-        errorMsg = e.GetResultMessage();
-        // responseStr = PortLoadResponseFormat(response, options.RPCRequest->Format);
+        switch (e.GetResultCode()) {
+            case TRPCResultCode::RPC_WRONG_TIMEOUT:
+                wb_throw(WBMQTT::TRequestTimeoutException, e.GetResultMessage());
+                break;
+            default:
+                throw std::runtime_error(e.GetResultMessage());
+                break;
+        }
     }
-
-    replyJSON["result_code"] = std::to_string(static_cast<int>(resultCode));
-    replyJSON["error_msg"] = errorMsg;
-    replyJSON["response"] = responseStr;
 
     return replyJSON;
 }
@@ -283,13 +278,13 @@ Json::Value TRPCHandler::LoadMetrics(const Json::Value& request)
     return SerialDriver->LoadMetrics();
 }
 
-TRPCException::TRPCException(const std::string& message, RPCResultCode resultCode)
+TRPCException::TRPCException(const std::string& message, TRPCResultCode resultCode)
     : std::runtime_error(message),
       Message(message),
       ResultCode(resultCode)
 {}
 
-RPCResultCode TRPCException::GetResultCode()
+TRPCResultCode TRPCException::GetResultCode()
 {
     return ResultCode;
 }

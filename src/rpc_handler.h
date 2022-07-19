@@ -8,18 +8,18 @@
 const std::chrono::seconds DefaultRPCTotalTimeout(10);
 
 // RPC Request execution result code
-enum class RPCResultCode
+enum class TRPCResultCode
 {
     // No errors
     RPC_OK = 0,
     // Wrong parameters value
-    RPC_WRONG_PARAM_VALUE = -2,
+    RPC_WRONG_PARAM_VALUE = -1,
     // Requested port was not found
-    RPC_WRONG_PORT = -3,
+    RPC_WRONG_PORT = -2,
     // Unsuccessful port IO
-    RPC_WRONG_IO = -4,
-    // Device response length differs drom required
-    RPC_WRONG_RESPONSE_LENGTH = -5
+    RPC_WRONG_IO = -3,
+    // RPC request handling timeout
+    RPC_WRONG_TIMEOUT = -4
 };
 
 struct TRPCOptions
@@ -66,11 +66,11 @@ namespace RPC_REQUEST
 class TRPCException: public std::runtime_error
 {
 public:
-    TRPCException(const std::string& message, RPCResultCode resultCode);
-    RPCResultCode GetResultCode();
+    TRPCException(const std::string& message, TRPCResultCode resultCode);
+    TRPCResultCode GetResultCode();
     std::string GetResultMessage();
 
 private:
     std::string Message;
-    RPCResultCode ResultCode;
+    TRPCResultCode ResultCode;
 };
