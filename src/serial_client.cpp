@@ -220,11 +220,11 @@ void TSerialClient::WaitForPollAndFlush(std::chrono::steady_clock::time_point wa
     waitUntil = std::min(waitUntil, now + MAX_POLL_TIME);
     while (FlushNeeded->WaitMessage(waitUntil)) {
         PQueueMessage message = FlushNeeded->PopMessage();
-        if (PSetValueQueueMessage p = std::static_pointer_cast<TSetValueQueueMessage>(message)) {
+        if (PSetValueQueueMessage p = std::dynamic_pointer_cast<TSetValueQueueMessage>(message)) {
             DoFlush();
             Metrics.StartPoll(Metrics::BUS_IDLE);
         }
-        if (PRPCQueueMessage p = std::static_pointer_cast<TRPCQueueMessage>(message)) {
+        if (PRPCQueueMessage p = std::dynamic_pointer_cast<TRPCQueueMessage>(message)) {
             // End session with current device to make bus clean for RPC
             PrepareToAccessDevice(LastAccessedDevice, NULL, Metrics);
             LastAccessedDevice = NULL;
@@ -254,10 +254,10 @@ void TSerialClient::MaybeFlushAvoidingPollStarvationButDontWait()
 
     do {
         message = FlushNeeded->PopMessage();
-        if (PSetValueQueueMessage p = std::static_pointer_cast<TSetValueQueueMessage>(message)) {
+        if (PSetValueQueueMessage p = std::dynamic_pointer_cast<TSetValueQueueMessage>(message)) {
             DoFlush();
         }
-        if (PRPCQueueMessage p = std::static_pointer_cast<TRPCQueueMessage>(message)) {
+        if (PRPCQueueMessage p = std::dynamic_pointer_cast<TRPCQueueMessage>(message)) {
             // End session with current device to make bus clean for RPC
             PrepareToAccessDevice(LastAccessedDevice, NULL, Metrics);
             LastAccessedDevice = NULL;
@@ -337,7 +337,7 @@ void TSerialClient::ClosedPortCycle()
 
     while (FlushNeeded->WaitMessage(wait_until)) {
         PQueueMessage message = FlushNeeded->PopMessage();
-        if (PSetValueQueueMessage p = std::static_pointer_cast<TSetValueQueueMessage>(message)) {
+        if (PSetValueQueueMessage p = std::dynamic_pointer_cast<TSetValueQueueMessage>(message)) {
             for (const auto& reg: RegList) {
                 auto handler = Handlers[reg];
                 if (!handler->NeedToFlush())
@@ -348,7 +348,7 @@ void TSerialClient::ClosedPortCycle()
                 }
             }
         }
-        if (PRPCQueueMessage p = std::static_pointer_cast<TRPCQueueMessage>(message)) {
+        if (PRPCQueueMessage p = std::dynamic_pointer_cast<TRPCQueueMessage>(message)) {
             RPC_REQUEST::Handle(p);
         }
     }

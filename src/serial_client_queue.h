@@ -10,7 +10,10 @@
 #include <vector>
 
 class TQueueMessage
-{};
+{
+public:
+    virtual ~TQueueMessage(){};
+};
 
 typedef std::shared_ptr<TQueueMessage> PQueueMessage;
 
