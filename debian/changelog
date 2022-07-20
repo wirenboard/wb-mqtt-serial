@@ -2,7 +2,13 @@ wb-mqtt-serial (2.65.0) stable; urgency=medium
 
   * Added WB-LED template
 
- -- Pavel Gasheev <pavel.gasheev@wirenboard.ru>  Mon, 18 Jul 2022 15:35:47 +0300
+ -- Pavel Gasheev <pavel.gasheev@wirenboard.ru>  Wed, 20 Jul 2022 08:56:17 +0300
+
+wb-mqtt-serial (2.64.4) stable; urgency=medium
+
+  * Symbol "+" was removed from parameter id in WB-MRGBW-D template
+
+ -- Dmitry Vorobjev <d.vorobjev@wirenboard.ru>  Tue, 19 Jul 2022 17:59:04 +0300
 
 wb-mqtt-serial (2.64.3) stable; urgency=medium
 
