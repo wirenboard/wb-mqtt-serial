@@ -544,7 +544,7 @@ VACON_10
 	V4.3 PI error (%)  =>  V4.3 PI error (%)
 	V4.4 PI output (%)  =>  V4.4 PI output (%)
 WB-LED
-	Available Power  =>  Available Power
+	Allowed Power  =>  Allowed Power
 	Board Temperature  =>  Board Temperature
 	CCT1  =>  CCT1
 	CCT1 Brightness  =>  CCT1 Brightness
@@ -598,7 +598,7 @@ WB-LED
 	Input 4 Single Press Counter  =>  Input 4 Single Press Counter
 	MCU Temperature  =>  MCU Temperature
 	MCU Voltage  =>  MCU Voltage
-	Overcurrent protection  =>  Overcurrent protection
+	Overcurrent  =>  Overcurrent
 	RGB Palette  =>  RGB Palette
 	RGB Strip  =>  RGB Strip
 	RGB Strip Brightness  =>  RGB Strip Brightness
