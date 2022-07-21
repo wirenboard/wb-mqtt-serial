@@ -312,7 +312,8 @@ int main(int argc, char* argv[])
         driver->WaitForReady();
 
         auto serialDriver = make_shared<TMQTTSerialDriver>(driver, handlerConfig);
-        PRPCHandler rpcHandler = std::make_shared<TRPCHandler>(rpcConfig, rpcServer, serialDriver);
+        PRPCHandler rpcHandler =
+            std::make_shared<TRPCHandler>(RPC_REQUEST_SCHEMA_FULL_FILE_PATH, rpcConfig, rpcServer, serialDriver);
 
         serialDriver->Start();
         rpcServer->Start();

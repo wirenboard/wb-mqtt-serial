@@ -7,30 +7,23 @@ PPort TRPCPort::GetPort()
     return this->Port;
 }
 
-bool TRPCPort::Compare(const PRPCPort other)
+TRPCSerialPort::TRPCSerialPort(PPort Port, const std::string& Path): TRPCPort(Port), Path(Path){};
+
+bool TRPCSerialPort::Match(const Json::Value& Request) const
 {
-    return this->CompareByParameters(other);
+    std::string Path;
+    return WBMQTT::JSON::Get(Request, "path", Path) && (Path == this->Path);
 }
 
-TRPCSerialPort::TRPCSerialPort(PPort Port, std::string Path): TRPCPort(Port), Path(Path){};
-
-bool TRPCSerialPort::CompareByParameters(const PRPCPort other)
-{
-    if (PRPCSerialPort p = std::dynamic_pointer_cast<TRPCSerialPort>(other)) {
-        return this->Path == p->Path;
-    }
-    return false;
-}
-
-TRPCTCPPort::TRPCTCPPort(PPort Port, std::string Ip, uint16_t PortNumber)
+TRPCTCPPort::TRPCTCPPort(PPort Port, const std::string& Ip, uint16_t PortNumber)
     : TRPCPort(Port),
       Ip(Ip),
       PortNumber(PortNumber){};
 
-bool TRPCTCPPort::CompareByParameters(const PRPCPort other)
+bool TRPCTCPPort::Match(const Json::Value& Request) const
 {
-    if (PRPCTCPPort p = std::dynamic_pointer_cast<TRPCTCPPort>(other)) {
-        return ((this->Ip == p->Ip) && (this->PortNumber = p->PortNumber));
-    }
-    return false;
+    std::string Ip;
+    int PortNumber;
+    return WBMQTT::JSON::Get(Request, "ip", Ip) && WBMQTT::JSON::Get(Request, "port", PortNumber) && (Ip == this->Ip) &&
+           (PortNumber == this->PortNumber);
 }

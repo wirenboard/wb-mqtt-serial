@@ -1,16 +1,16 @@
 #pragma once
 #include "port.h"
+#include "wblib/json_utils.h"
 
 class TRPCPort
 {
 public:
     TRPCPort(PPort Port);
     PPort GetPort();
-    bool Compare(const std::shared_ptr<TRPCPort> other);
+    virtual bool Match(const Json::Value& Request) const = 0;
 
 protected:
     PPort Port;
-    virtual bool CompareByParameters(const std::shared_ptr<TRPCPort> other) = 0;
 };
 
 typedef std::shared_ptr<TRPCPort> PRPCPort;
@@ -18,22 +18,22 @@ typedef std::shared_ptr<TRPCPort> PRPCPort;
 class TRPCSerialPort: public TRPCPort
 {
 public:
-    TRPCSerialPort(PPort Port, std::string Path);
+    TRPCSerialPort(PPort Port, const std::string& Path);
+    bool Match(const Json::Value& Request) const;
 
 protected:
     std::string Path;
-    virtual bool CompareByParameters(const PRPCPort other);
 };
 typedef std::shared_ptr<TRPCSerialPort> PRPCSerialPort;
 
 class TRPCTCPPort: public TRPCPort
 {
 public:
-    TRPCTCPPort(PPort Port, std::string Ip, uint16_t PortNumber);
+    TRPCTCPPort(PPort Port, const std::string& Ip, uint16_t PortNumber);
+    bool Match(const Json::Value& Request) const;
 
 protected:
     std::string Ip;
     uint16_t PortNumber;
-    virtual bool CompareByParameters(const PRPCPort other);
 };
 typedef std::shared_ptr<TRPCTCPPort> PRPCTCPPort;

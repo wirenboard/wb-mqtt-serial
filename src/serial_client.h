@@ -35,7 +35,6 @@ public:
     void SetTextValue(PRegister reg, const std::string& value);
     void SetReadCallback(const TCallback& callback);
     void SetErrorCallback(const TCallback& callback);
-    void NotifyFlushNeeded();
     void ClearDevices();
 
     void RPCSendQueueMessage(PRPCQueueMessage Message);
@@ -53,7 +52,6 @@ private:
     void SetRegistersAvailability(PSerialDevice dev, TRegisterAvailability availability);
     void ClosedPortCycle();
     void OpenPortCycle();
-    void UpdateFlushNeeded();
     void ProcessPolledRegister(PRegister reg);
     void ScheduleNextPoll(PRegister reg, std::chrono::steady_clock::time_point pollStartTime);
 
@@ -66,7 +64,7 @@ private:
     TCallback ReadCallback;
     TCallback ErrorCallback;
     PSerialDevice LastAccessedDevice;
-    PSerialClientQueue FlushNeeded;
+    TSerialClientQueue MessageQueue;
     TScheduler<PRegister, TRegisterComparePredicate> Scheduler;
 
     TPortOpenCloseLogic OpenCloseLogic;

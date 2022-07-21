@@ -7,7 +7,7 @@
       "type": "string"
     },
     "response_size": {
-      "description": "Excexted response size",
+      "description": "Expexted response size",
       "type": "integer",
       "minimum": 0,
     },
@@ -22,9 +22,9 @@
       "minimum": 20
     },
     "total_timeout": {
-      "description": "Request execution time including queue time and thread operations, default 10",
+      "description": "Request execution time in seconds including queue time and thread operations, default 10",
       "type": "integer",
-      "minimum": 20
+      "minimum": 10
     },
     "format": {
       "description": "If format is HEX, msg interprets as string with only hex digits",

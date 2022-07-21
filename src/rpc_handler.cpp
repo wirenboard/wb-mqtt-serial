@@ -8,8 +8,6 @@
 
 #define LOG(logger) ::logger.Log() << "[RPC] "
 
-const auto RPC_REQUEST_SCHEMA_FULL_FILE_PATH = "/usr/share/wb-mqtt-serial/wb-mqtt-serial-rpc-request.schema.json";
-
 namespace
 {
     std::vector<uint8_t> HexStringToByteVector(const std::string& HexString)
@@ -39,59 +37,47 @@ namespace
         return ss.str();
     }
 
-    PRPCOptions ParseOptions(const Json::Value& Request, const Json::Value& RequestSchema)
+    PRPCRequest ParseRequest(const Json::Value& Request, const Json::Value& RequestSchema)
     {
-        PRPCOptions options = std::make_shared<TRPCOptions>();
-        options->RPCRequest = std::make_shared<TRPCRequest>();
+        PRPCRequest RPCRequest = std::make_shared<TRPCRequest>();
 
         try {
             WBMQTT::JSON::Validate(Request, RequestSchema);
 
-            std::string Path;
-            if (WBMQTT::JSON::Get(Request, "path", Path)) {
-                options->RPCPort = std::make_shared<TRPCSerialPort>(nullptr, Path);
-            } else {
-                std::string Ip;
-                int PortNumber;
-                WBMQTT::JSON::Get(Request, "ip", Ip);
-                WBMQTT::JSON::Get(Request, "port", PortNumber);
-                options->RPCPort = std::make_shared<TRPCTCPPort>(nullptr, Ip, (uint16_t)PortNumber);
-            }
-
             std::string messageStr, formatStr;
-            WBMQTT::JSON::Get(Request, "response_size", options->RPCRequest->ResponseSize);
+            WBMQTT::JSON::Get(Request, "response_size", RPCRequest->ResponseSize);
             WBMQTT::JSON::Get(Request, "format", formatStr);
             WBMQTT::JSON::Get(Request, "msg", messageStr);
 
             if (formatStr == "HEX") {
-                options->RPCRequest->Format = TRPCMessageFormat::RPC_MESSAGE_FORMAT_HEX;
+                RPCRequest->Format = TRPCMessageFormat::RPC_MESSAGE_FORMAT_HEX;
             } else {
-                options->RPCRequest->Format = TRPCMessageFormat::RPC_MESSAGE_FORMAT_STR;
+                RPCRequest->Format = TRPCMessageFormat::RPC_MESSAGE_FORMAT_STR;
             }
 
-            if (options->RPCRequest->Format == TRPCMessageFormat::RPC_MESSAGE_FORMAT_HEX) {
-                options->RPCRequest->Message = HexStringToByteVector(messageStr);
+            if (RPCRequest->Format == TRPCMessageFormat::RPC_MESSAGE_FORMAT_HEX) {
+                RPCRequest->Message = HexStringToByteVector(messageStr);
             } else {
-                options->RPCRequest->Message.assign(messageStr.begin(), messageStr.end());
+                RPCRequest->Message.assign(messageStr.begin(), messageStr.end());
             }
 
-            if (!WBMQTT::JSON::Get(Request, "response_timeout", options->RPCRequest->ResponseTimeout)) {
-                options->RPCRequest->ResponseTimeout = DefaultResponseTimeout;
+            if (!WBMQTT::JSON::Get(Request, "response_timeout", RPCRequest->ResponseTimeout)) {
+                RPCRequest->ResponseTimeout = DefaultResponseTimeout;
             }
 
-            if (!WBMQTT::JSON::Get(Request, "frame_timeout", options->RPCRequest->FrameTimeout)) {
-                options->RPCRequest->FrameTimeout = DefaultFrameTimeout;
+            if (!WBMQTT::JSON::Get(Request, "frame_timeout", RPCRequest->FrameTimeout)) {
+                RPCRequest->FrameTimeout = DefaultFrameTimeout;
             }
 
-            if (!WBMQTT::JSON::Get(Request, "total_timeout", options->RPCRequest->FrameTimeout)) {
-                options->RPCRequest->TotalTimeout = DefaultRPCTotalTimeout;
+            if (!WBMQTT::JSON::Get(Request, "total_timeout", RPCRequest->TotalTimeout)) {
+                RPCRequest->TotalTimeout = DefaultRPCTotalTimeout;
             }
 
         } catch (const std::runtime_error& e) {
             throw TRPCException(e.what(), TRPCResultCode::RPC_WRONG_PARAM_VALUE);
         }
 
-        return options;
+        return RPCRequest;
     }
 
     std::string PortLoadResponseFormat(const std::vector<uint8_t>& response, TRPCMessageFormat format)
@@ -113,8 +99,8 @@ namespace RPC_REQUEST
     void Handle(PRPCQueueMessage Message)
     {
         // RPC Thread may meet TotalTimeout
-        if (Message->Cancelled->load(std::memory_order_relaxed)) {
-            Message->Done->store(true, std::memory_order_relaxed);
+        if (Message->Cancelled.load(std::memory_order_relaxed)) {
+            Message->Done.store(true, std::memory_order_relaxed);
             Message->Condition.notify_all();
             return;
         }
@@ -132,22 +118,22 @@ namespace RPC_REQUEST
                                                          Message->Request->ResponseTimeout,
                                                          Message->Request->FrameTimeout);
 
-            Message->Response->assign(readData.begin(), readData.begin() + ActualSize);
+            Message->Response.assign(readData.begin(), readData.begin() + ActualSize);
 
         } catch (TSerialDeviceException error) {
-            *Message->ResultCode = TRPCRequestResultCode::RPC_REQUEST_WRONG_IO;
-            Message->Done->store(true, std::memory_order_relaxed);
+            Message->ResultCode = TRPCRequestResultCode::RPC_REQUEST_WRONG_IO;
+            Message->Done.store(true, std::memory_order_relaxed);
             Message->Condition.notify_all();
             return;
         }
 
-        if (Message->Response->size() != Message->Request->ResponseSize) {
-            *Message->ResultCode = TRPCRequestResultCode::RPC_REQUEST_WRONG_RESPONSE_LENGTH;
+        if (Message->Response.size() != Message->Request->ResponseSize) {
+            Message->ResultCode = TRPCRequestResultCode::RPC_REQUEST_WRONG_RESPONSE_LENGTH;
         } else {
-            *Message->ResultCode = TRPCRequestResultCode::RPC_REQUEST_OK;
+            Message->ResultCode = TRPCRequestResultCode::RPC_REQUEST_OK;
         }
 
-        Message->Done->store(true, std::memory_order_relaxed);
+        Message->Done.store(true, std::memory_order_relaxed);
         Message->Condition.notify_all();
         return;
     }
@@ -156,16 +142,9 @@ namespace RPC_REQUEST
 std::vector<uint8_t> TRPCPortDriver::SendRequest(PRPCRequest Request)
 {
     std::vector<uint8_t> response;
-    PRPCQueueMessage Message = std::make_shared<TRPCQueueMessage>();
-    Message->Port = RPCPort->GetPort();
-    Message->Request = Request;
+    PRPCQueueMessage Message = std::make_shared<TRPCQueueMessage>(RPCPort->GetPort(), Request);
 
-    Message->Cancelled = std::make_shared<std::atomic<bool>>(false);
-    Message->Done = std::make_shared<std::atomic<bool>>(false);
-    Message->Response = std::make_shared<std::vector<uint8_t>>();
-    Message->ResultCode = std::make_shared<TRPCRequestResultCode>();
-
-    SerialPortDriver->RPCSendQueueMessage(Message);
+    SerialClient->RPCSendQueueMessage(Message);
 
     auto now = std::chrono::steady_clock::now();
     auto until = now + Request->TotalTimeout;
@@ -173,18 +152,18 @@ std::vector<uint8_t> TRPCPortDriver::SendRequest(PRPCRequest Request)
 
     std::unique_lock<std::mutex> lock(Mutex);
     if (!Message->Condition.wait_until(lock, until, [Message]() {
-            return Message->Done->load(std::memory_order_relaxed);
+            return Message->Done.load(std::memory_order_relaxed);
         })) {
-        Message->Cancelled->store(true, std::memory_order_relaxed);
+        Message->Cancelled.store(true, std::memory_order_relaxed);
         throw TRPCException("Request handler is not responding", TRPCResultCode::RPC_WRONG_TIMEOUT);
     } else {
-        switch (*Message->ResultCode) {
+        switch (Message->ResultCode) {
             case TRPCRequestResultCode::RPC_REQUEST_WRONG_IO:
                 throw TRPCException("Port IO error", TRPCResultCode::RPC_WRONG_IO);
 
             case TRPCRequestResultCode::RPC_REQUEST_WRONG_RESPONSE_LENGTH:
             case TRPCRequestResultCode::RPC_REQUEST_OK:
-                return response = *Message->Response;
+                return response = Message->Response;
 
             default:
                 break;
@@ -194,10 +173,13 @@ std::vector<uint8_t> TRPCPortDriver::SendRequest(PRPCRequest Request)
     return response;
 }
 
-TRPCHandler::TRPCHandler(PRPCConfig RpcConfig, WBMQTT::PMqttRpcServer RpcServer, PMQTTSerialDriver SerialDriver)
+TRPCHandler::TRPCHandler(const std::string& RequestSchemaFilePath,
+                         PRPCConfig RpcConfig,
+                         WBMQTT::PMqttRpcServer RpcServer,
+                         PMQTTSerialDriver SerialDriver)
 {
     try {
-        RequestSchema = WBMQTT::JSON::Parse(RPC_REQUEST_SCHEMA_FULL_FILE_PATH);
+        RequestSchema = WBMQTT::JSON::Parse(RequestSchemaFilePath);
     } catch (const std::runtime_error& e) {
         LOG(Error) << "RPC request schema readind error: " << e.what();
         throw std::runtime_error(e);
@@ -217,7 +199,7 @@ TRPCHandler::TRPCHandler(PRPCConfig RpcConfig, WBMQTT::PMqttRpcServer RpcServer,
 
         std::find_if(PortDrivers.begin(), PortDrivers.end(), [&serialPortDriver, &port](PRPCPortDriver rpcPortDriver) {
             if (port == rpcPortDriver->RPCPort->GetPort()) {
-                rpcPortDriver->SerialPortDriver = serialPortDriver;
+                rpcPortDriver->SerialClient = serialPortDriver->GetSerialClient();
                 return true;
             }
             return false;
@@ -228,22 +210,22 @@ TRPCHandler::TRPCHandler(PRPCConfig RpcConfig, WBMQTT::PMqttRpcServer RpcServer,
     RpcServer->RegisterMethod("metrics", "Load", std::bind(&TRPCHandler::LoadMetrics, this, std::placeholders::_1));
 }
 
-PRPCPortDriver TRPCHandler::FindPortDriver(PRPCPort RequestedPort)
+PRPCPortDriver TRPCHandler::FindPortDriver(const Json::Value& Request)
 {
-    auto existedPortDriver =
-        std::find_if(PortDrivers.begin(), PortDrivers.end(), [&RequestedPort](PRPCPortDriver rpcPortDriver) {
-            if (rpcPortDriver->RPCPort->Compare(RequestedPort)) {
-                return true;
-            }
+    std::vector<PRPCPortDriver> matches;
+    std::copy_if(PortDrivers.begin(),
+                 PortDrivers.end(),
+                 std::back_inserter(matches),
+                 [&Request](PRPCPortDriver rpcPortDriver) { return rpcPortDriver->RPCPort->Match(Request); });
 
-            return false;
-        });
-
-    if (existedPortDriver != PortDrivers.end()) {
-        return *existedPortDriver;
+    switch (matches.size()) {
+        case 0:
+            throw TRPCException("Requested port doesn't exist", TRPCResultCode::RPC_WRONG_PORT);
+        case 1:
+            return matches[0];
+        default:
+            throw TRPCException("More than one matches for requested port", TRPCResultCode::RPC_WRONG_PORT);
     }
-
-    throw TRPCException("Requested port doesn't exist", TRPCResultCode::RPC_WRONG_PORT);
 }
 
 Json::Value TRPCHandler::PortLoad(const Json::Value& Request)
@@ -251,11 +233,11 @@ Json::Value TRPCHandler::PortLoad(const Json::Value& Request)
     Json::Value replyJSON;
 
     try {
-        PRPCOptions options = ParseOptions(Request, RequestSchema);
-        PRPCPortDriver rpcPortDriver = FindPortDriver(options->RPCPort);
-        std::vector<uint8_t> response = rpcPortDriver->SendRequest(options->RPCRequest);
+        PRPCRequest RPCRequest = ParseRequest(Request, RequestSchema);
+        PRPCPortDriver rpcPortDriver = FindPortDriver(Request);
+        std::vector<uint8_t> response = rpcPortDriver->SendRequest(RPCRequest);
 
-        std::string responseStr = PortLoadResponseFormat(response, options->RPCRequest->Format);
+        std::string responseStr = PortLoadResponseFormat(response, RPCRequest->Format);
 
         replyJSON["response"] = responseStr;
     } catch (TRPCException& e) {
@@ -280,7 +262,6 @@ Json::Value TRPCHandler::LoadMetrics(const Json::Value& request)
 
 TRPCException::TRPCException(const std::string& message, TRPCResultCode resultCode)
     : std::runtime_error(message),
-      Message(message),
       ResultCode(resultCode)
 {}
 
@@ -291,5 +272,5 @@ TRPCResultCode TRPCException::GetResultCode()
 
 std::string TRPCException::GetResultMessage()
 {
-    return Message;
+    return this->what();
 }

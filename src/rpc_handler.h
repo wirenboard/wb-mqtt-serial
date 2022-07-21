@@ -6,6 +6,7 @@
 #include <wblib/rpc.h>
 
 const std::chrono::seconds DefaultRPCTotalTimeout(10);
+const auto RPC_REQUEST_SCHEMA_FULL_FILE_PATH = "/usr/share/wb-mqtt-serial/wb-mqtt-serial-rpc-request.schema.json";
 
 // RPC Request execution result code
 enum class TRPCResultCode
@@ -22,18 +23,10 @@ enum class TRPCResultCode
     RPC_WRONG_TIMEOUT = -4
 };
 
-struct TRPCOptions
-{
-    PRPCRequest RPCRequest;
-    PRPCPort RPCPort;
-};
-
-typedef std::shared_ptr<TRPCOptions> PRPCOptions;
-
 class TRPCPortDriver
 {
 public:
-    PSerialPortDriver SerialPortDriver;
+    PSerialClient SerialClient;
     PRPCPort RPCPort;
     std::vector<uint8_t> SendRequest(PRPCRequest Request);
 };
@@ -43,14 +36,17 @@ typedef std::shared_ptr<TRPCPortDriver> PRPCPortDriver;
 class TRPCHandler
 {
 public:
-    TRPCHandler(PRPCConfig RpcConfig, WBMQTT::PMqttRpcServer RpcServer, PMQTTSerialDriver SerialDriver);
+    TRPCHandler(const std::string& RequestSchemaFilePath,
+                PRPCConfig RpcConfig,
+                WBMQTT::PMqttRpcServer RpcServer,
+                PMQTTSerialDriver SerialDriver);
 
 private:
     Json::Value RequestSchema;
     PMQTTSerialDriver SerialDriver;
     std::vector<PRPCPortDriver> PortDrivers;
 
-    PRPCPortDriver FindPortDriver(PRPCPort RequestedPort);
+    PRPCPortDriver FindPortDriver(const Json::Value& Request);
 
     Json::Value PortLoad(const Json::Value& Request);
     Json::Value LoadMetrics(const Json::Value& Request);
@@ -71,6 +67,5 @@ public:
     std::string GetResultMessage();
 
 private:
-    std::string Message;
     TRPCResultCode ResultCode;
 };

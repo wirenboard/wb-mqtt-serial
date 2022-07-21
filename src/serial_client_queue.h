@@ -2,6 +2,7 @@
 
 #include "rpc_request.h"
 #include <algorithm>
+#include <atomic>
 #include <chrono>
 #include <condition_variable>
 #include <memory>
@@ -12,7 +13,7 @@
 class TQueueMessage
 {
 public:
-    virtual ~TQueueMessage(){};
+    virtual ~TQueueMessage() = default;
 };
 
 typedef std::shared_ptr<TQueueMessage> PQueueMessage;
@@ -25,13 +26,14 @@ typedef std::shared_ptr<TSetValueQueueMessage> PSetValueQueueMessage;
 class TRPCQueueMessage: public TQueueMessage
 {
 public:
+    TRPCQueueMessage(PPort Port, PRPCRequest Request);
     PPort Port;
     PRPCRequest Request;
     std::condition_variable Condition;
-    std::shared_ptr<std::atomic<bool>> Done;
-    std::shared_ptr<std::atomic<bool>> Cancelled;
-    std::shared_ptr<std::vector<uint8_t>> Response;
-    std::shared_ptr<TRPCRequestResultCode> ResultCode;
+    std::atomic<bool> Done;
+    std::atomic<bool> Cancelled;
+    std::vector<uint8_t> Response;
+    TRPCRequestResultCode ResultCode;
 };
 
 typedef std::shared_ptr<TRPCQueueMessage> PRPCQueueMessage;

@@ -121,9 +121,7 @@ TSerialClient::TSerialClient(const std::vector<PSerialDevice>& devices,
       OpenCloseLogic(openCloseSettings),
       ConnectLogger(PORT_OPEN_ERROR_NOTIFICATION_INTERVAL, "[serial client] "),
       Metrics(metrics)
-{
-    FlushNeeded = std::make_shared<TSerialClientQueue>();
-}
+{}
 
 TSerialClient::~TSerialClient()
 {
@@ -218,8 +216,8 @@ void TSerialClient::WaitForPollAndFlush(std::chrono::steady_clock::time_point wa
 
     // Limit waiting time ro be responsive
     waitUntil = std::min(waitUntil, now + MAX_POLL_TIME);
-    while (FlushNeeded->WaitMessage(waitUntil)) {
-        PQueueMessage message = FlushNeeded->PopMessage();
+    while (MessageQueue.WaitMessage(waitUntil)) {
+        PQueueMessage message = MessageQueue.PopMessage();
         if (PSetValueQueueMessage p = std::dynamic_pointer_cast<TSetValueQueueMessage>(message)) {
             DoFlush();
             Metrics.StartPoll(Metrics::BUS_IDLE);
@@ -234,18 +232,6 @@ void TSerialClient::WaitForPollAndFlush(std::chrono::steady_clock::time_point wa
     }
 }
 
-void TSerialClient::UpdateFlushNeeded()
-{
-    for (const auto& reg: RegList) {
-        auto handler = Handlers[reg];
-        if (handler->NeedToFlush()) {
-            PQueueMessage message = std::make_shared<TSetValueQueueMessage>();
-            FlushNeeded->PushMessage(message);
-            break;
-        }
-    }
-}
-
 void TSerialClient::MaybeFlushAvoidingPollStarvationButDontWait()
 {
     // avoid poll starvation
@@ -253,7 +239,7 @@ void TSerialClient::MaybeFlushAvoidingPollStarvationButDontWait()
     PQueueMessage message;
 
     do {
-        message = FlushNeeded->PopMessage();
+        message = MessageQueue.PopMessage();
         if (PSetValueQueueMessage p = std::dynamic_pointer_cast<TSetValueQueueMessage>(message)) {
             DoFlush();
         }
@@ -335,8 +321,8 @@ void TSerialClient::ClosedPortCycle()
         wait_until = now + MAX_CLOSED_PORT_CYCLE_TIME;
     }
 
-    while (FlushNeeded->WaitMessage(wait_until)) {
-        PQueueMessage message = FlushNeeded->PopMessage();
+    while (MessageQueue.WaitMessage(wait_until)) {
+        PQueueMessage message = MessageQueue.PopMessage();
         if (PSetValueQueueMessage p = std::dynamic_pointer_cast<TSetValueQueueMessage>(message)) {
             for (const auto& reg: RegList) {
                 auto handler = Handlers[reg];
@@ -371,7 +357,7 @@ void TSerialClient::SetTextValue(PRegister reg, const std::string& value)
 {
     GetHandler(reg)->SetTextValue(value);
     PQueueMessage message = std::make_shared<TSetValueQueueMessage>();
-    FlushNeeded->PushMessage(message);
+    MessageQueue.PushMessage(message);
 }
 
 void TSerialClient::SetReadCallback(const TSerialClient::TCallback& callback)
@@ -382,12 +368,6 @@ void TSerialClient::SetReadCallback(const TSerialClient::TCallback& callback)
 void TSerialClient::SetErrorCallback(const TSerialClient::TCallback& callback)
 {
     ErrorCallback = callback;
-}
-
-void TSerialClient::NotifyFlushNeeded()
-{
-    PQueueMessage message = std::make_shared<TSetValueQueueMessage>();
-    FlushNeeded->PushMessage(message);
 }
 
 PRegisterHandler TSerialClient::GetHandler(PRegister reg) const
@@ -451,13 +431,12 @@ void TSerialClient::OpenPortCycle()
         SetRegistersAvailability(device, TRegisterAvailability::UNKNOWN);
     }
     OpenCloseLogic.CloseIfNeeded(Port, device->GetIsDisconnected());
-    UpdateFlushNeeded();
     Metrics.StartPoll(Metrics::BUS_IDLE);
 }
 
 void TSerialClient::RPCSendQueueMessage(PRPCQueueMessage Message)
 {
-    FlushNeeded->PushMessage(Message);
+    MessageQueue.PushMessage(Message);
 }
 
 PPort TSerialClient::GetPort()

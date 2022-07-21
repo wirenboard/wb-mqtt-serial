@@ -230,11 +230,6 @@ TControlArgs TSerialPortDriver::From(const PDeviceChannel& channel)
     return args;
 }
 
-void TSerialPortDriver::RPCSendQueueMessage(PRPCQueueMessage Message)
-{
-    SerialClient->RPCSendQueueMessage(Message);
-}
-
 PSerialClient TSerialPortDriver::GetSerialClient()
 {
     return SerialClient;
