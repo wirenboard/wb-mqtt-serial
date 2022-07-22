@@ -1,3 +1,10 @@
+wb-mqtt-serial (2.65.1) stable; urgency=medium
+
+  * Russian translation of counters channels in WB-MRGBW-D and WB-LED
+    templates was made shorter
+
+ -- Dmitry Vorobjev <d.vorobjev@wirenboard.ru>  Fri, 22 Jul 2022 15:12:10 +0300
+
 wb-mqtt-serial (2.65.0) stable; urgency=medium
 
   * Added WB-LED template
