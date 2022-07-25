@@ -1,3 +1,9 @@
+wb-mqtt-serial (2.66.0) stable; urgency=medium
+
+  * Support for copying device configs in web editor is added
+
+ -- Petr Krasnoshchekov <petr.krasnoshchekov@wirenboard.ru>  Mon, 25 Jul 2022 07:23:11 +0500
+
 wb-mqtt-serial (2.65.1) stable; urgency=medium
 
   * Russian translation of counters channels in WB-MRGBW-D and WB-LED
