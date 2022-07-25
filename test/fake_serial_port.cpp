@@ -322,7 +322,8 @@ void TSerialDeviceIntegrationTest::SetUp()
                         DeviceFactory,
                         CommonConfigSchema,
                         it->second,
-                        [=](const Json::Value&) { return std::make_pair(SerialPort, false); });
+                        rpcConfig,
+                        [=](const Json::Value&, PRPCConfig config) { return std::make_pair(SerialPort, false); });
 
     MqttBroker = NewFakeMqttBroker(*this);
     MqttClient = MqttBroker->MakeClient("em-test");
