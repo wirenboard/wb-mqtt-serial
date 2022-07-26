@@ -1369,6 +1369,39 @@
                 "group": "debug"
             },
             {
+                "name": "CO2 Force Calibration To Value",
+                "reg_type": "holding",
+                "address": 88,
+                "max": 1500,
+                "error_value": "0xFFFF",
+                "enabled": false,
+                "group": "debug"
+            },
+            {
+                "name": "CO2 Force Calibration Cycle",
+                "reg_type": "holding",
+                "address": 89,
+                "max": 30,
+                "min": 1,
+                "error_value": "0xFFFF",
+                "enabled": false,
+                "group": "debug"
+            },
+            {
+                "name": "CO2 Sens Availability",
+                "reg_type": "input",
+                "address": 82,
+                "enabled": false,
+                "group": "debug"
+            },
+            {
+                "name": "CO2 Sens Type",
+                "reg_type": "input",
+                "address": 83,
+                "enabled": false,
+                "group": "debug"
+            },
+            {
                 "name": "VOC Version",
                 "reg_type": "input",
                 "address": 108,
@@ -1591,6 +1624,10 @@
                 "Sound High Gain ADC Raw": "Сырое значение High Gain ADC",
                 "Sound dB Offset": "Смещение уровня шума (дБ)",
                 "Sound ADC Offset": "Смещение Low Gain ADC",
+                "CO2 Force Calibration To Value": "Принудительная калибровка датчика CO2 на заданное значение концентрации",
+                "CO2 Force Calibration Cycle": "Длительность цикла для самокалибровки датчика CO2",
+                "CO2 Sens Availability": "Наличие датчика CO2",
+                "CO2 Sens Type": "Тип установленного датчика CO2",
                 "VOC Version": "Версия датчика VOC",
                 "VOC Raw": "Сырое значение датчика VOC",
                 "Motion Raw": "Сырое значение датчика движения",
