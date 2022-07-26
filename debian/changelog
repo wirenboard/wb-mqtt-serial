@@ -1,3 +1,9 @@
+wb-mqtt-serial (2.59.2-wb3) stable; urgency=medium
+
+  * Read timeout calculation for WB7 is fixed
+
+ -- Petr Krasnoshchekov <petr.krasnoshchekov@wirenboard.ru>  Tue, 26 Jul 2022 17:45:33 +0500
+
 wb-mqtt-serial (2.59.2-wb2) stable; urgency=medium
 
   * Amount of warnings about failed connection to Milur meter is reduced
