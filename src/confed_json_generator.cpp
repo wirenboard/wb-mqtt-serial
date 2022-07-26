@@ -311,7 +311,7 @@ namespace
             newDev["slave_id"] = newDev["slave_id"].asString();
         }
         if (!newDev.isMember("slave_id") || (newDev["slave_id"].isString() && newDev["slave_id"].asString().empty())) {
-            newDev["slave_id"] = false;
+            newDev.removeMember("slave_id");
         }
         if ((schema.isMember("parameters"))) {
             for (auto it = schema["parameters"].begin(); it != schema["parameters"].end(); ++it) {

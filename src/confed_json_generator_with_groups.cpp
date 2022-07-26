@@ -105,7 +105,7 @@ Json::Value MakeDeviceWithGroupsForConfed(const Json::Value& config, const Json:
         newDev["slave_id"] = newDev["slave_id"].asString();
     }
     if (!newDev.isMember("slave_id") || (newDev["slave_id"].isString() && newDev["slave_id"].asString().empty())) {
-        newDev["slave_id"] = false;
+        newDev.removeMember("slave_id");
     }
     return newDev;
 }
