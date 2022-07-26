@@ -54,11 +54,6 @@ private:
 
 typedef std::shared_ptr<TRPCHandler> PRPCHandler;
 
-namespace RPC_REQUEST
-{
-    void Handle(PRPCQueueMessage Message);
-}
-
 class TRPCException: public std::runtime_error
 {
 public:

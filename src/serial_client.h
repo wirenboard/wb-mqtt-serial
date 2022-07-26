@@ -1,16 +1,16 @@
 #pragma once
 
-#include <functional>
-#include <list>
-#include <memory>
-#include <unordered_map>
-
+#include "binary_semaphore.h"
 #include "log.h"
 #include "metrics.h"
 #include "poll_plan.h"
 #include "register_handler.h"
-#include "serial_client_queue.h"
+#include "rpc_request_handler.h"
 #include "serial_device.h"
+#include <functional>
+#include <list>
+#include <memory>
+#include <unordered_map>
 
 struct TRegisterComparePredicate
 {
@@ -36,9 +36,8 @@ public:
     void SetReadCallback(const TCallback& callback);
     void SetErrorCallback(const TCallback& callback);
     void ClearDevices();
-
-    void RPCSendQueueMessage(PRPCQueueMessage Message);
     PPort GetPort();
+    std::vector<uint8_t> RPCTransceive(PRPCRequest Request);
 
 private:
     void Activate();
@@ -54,7 +53,7 @@ private:
     void OpenPortCycle();
     void ProcessPolledRegister(PRegister reg);
     void ScheduleNextPoll(PRegister reg, std::chrono::steady_clock::time_point pollStartTime);
-
+    void UpdateFlushNeeded();
     PPort Port;
     std::list<PRegister> RegList;
     std::vector<PSerialDevice> Devices;
@@ -64,12 +63,15 @@ private:
     TCallback ReadCallback;
     TCallback ErrorCallback;
     PSerialDevice LastAccessedDevice;
-    TSerialClientQueue MessageQueue;
+    PBinarySemaphore FlushNeeded;
+    PBinarySemaphoreSignal RegisterUpdateSignal, RPCSignal;
     TScheduler<PRegister, TRegisterComparePredicate> Scheduler;
 
     TPortOpenCloseLogic OpenCloseLogic;
     TLoggerWithTimeout ConnectLogger;
     Metrics::TMetrics& Metrics;
+
+    PRPCRequestHandler RPCRequestHandler;
 };
 
 typedef std::shared_ptr<TSerialClient> PSerialClient;

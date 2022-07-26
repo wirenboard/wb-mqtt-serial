@@ -1,6 +1,4 @@
 #include "serial_client.h"
-#include "rpc_handler.h"
-#include "serial_client_queue.h"
 #include <chrono>
 #include <iostream>
 #include <unistd.h>
@@ -121,7 +119,13 @@ TSerialClient::TSerialClient(const std::vector<PSerialDevice>& devices,
       OpenCloseLogic(openCloseSettings),
       ConnectLogger(PORT_OPEN_ERROR_NOTIFICATION_INTERVAL, "[serial client] "),
       Metrics(metrics)
-{}
+{
+    FlushNeeded = std::make_shared<TBinarySemaphore>();
+    RPCRequestHandler = std::make_shared<TRPCRequestHandler>();
+    RegisterUpdateSignal = FlushNeeded->MakeSignal();
+    RPCSignal = FlushNeeded->MakeSignal();
+    FlushNeeded->ResetAllSignals();
+}
 
 TSerialClient::~TSerialClient()
 {
@@ -216,18 +220,29 @@ void TSerialClient::WaitForPollAndFlush(std::chrono::steady_clock::time_point wa
 
     // Limit waiting time ro be responsive
     waitUntil = std::min(waitUntil, now + MAX_POLL_TIME);
-    while (MessageQueue.WaitMessage(waitUntil)) {
-        PQueueMessage message = MessageQueue.PopMessage();
-        if (PSetValueQueueMessage p = std::dynamic_pointer_cast<TSetValueQueueMessage>(message)) {
+    while (FlushNeeded->Wait(waitUntil)) {
+        if (FlushNeeded->GetSignalValue(RegisterUpdateSignal)) {
             DoFlush();
             Metrics.StartPoll(Metrics::BUS_IDLE);
         }
-        if (PRPCQueueMessage p = std::dynamic_pointer_cast<TRPCQueueMessage>(message)) {
+        if (FlushNeeded->GetSignalValue(RPCSignal)) {
             // End session with current device to make bus clean for RPC
             PrepareToAccessDevice(LastAccessedDevice, NULL, Metrics);
             LastAccessedDevice = NULL;
+            RPCRequestHandler->RPCRequestHandling(Port);
+        }
 
-            RPC_REQUEST::Handle(p);
+        FlushNeeded->ResetAllSignals();
+    }
+}
+
+void TSerialClient::UpdateFlushNeeded()
+{
+    for (const auto& reg: RegList) {
+        auto handler = Handlers[reg];
+        if (handler->NeedToFlush()) {
+            FlushNeeded->Signal(RegisterUpdateSignal);
+            break;
         }
     }
 }
@@ -236,23 +251,24 @@ void TSerialClient::MaybeFlushAvoidingPollStarvationButDontWait()
 {
     // avoid poll starvation
     int flush_count_remaining = MAX_FLUSHES_WHEN_POLL_IS_DUE;
-    PQueueMessage message;
+    bool continueSignalHandling;
 
     do {
-        message = MessageQueue.PopMessage();
-        if (PSetValueQueueMessage p = std::dynamic_pointer_cast<TSetValueQueueMessage>(message)) {
+        continueSignalHandling = false;
+        if (FlushNeeded->GetSignalValue(RegisterUpdateSignal)) {
             DoFlush();
+            continueSignalHandling = true;
         }
-        if (PRPCQueueMessage p = std::dynamic_pointer_cast<TRPCQueueMessage>(message)) {
+        if (FlushNeeded->GetSignalValue(RPCSignal)) {
             // End session with current device to make bus clean for RPC
             PrepareToAccessDevice(LastAccessedDevice, NULL, Metrics);
             LastAccessedDevice = NULL;
-
-            RPC_REQUEST::Handle(p);
+            RPCRequestHandler->RPCRequestHandling(Port);
+            continueSignalHandling = true;
         }
 
         flush_count_remaining--;
-    } while (message && flush_count_remaining > 0);
+    } while (continueSignalHandling && flush_count_remaining > 0);
 }
 
 void TSerialClient::SetReadError(PRegister reg)
@@ -321,9 +337,8 @@ void TSerialClient::ClosedPortCycle()
         wait_until = now + MAX_CLOSED_PORT_CYCLE_TIME;
     }
 
-    while (MessageQueue.WaitMessage(wait_until)) {
-        PQueueMessage message = MessageQueue.PopMessage();
-        if (PSetValueQueueMessage p = std::dynamic_pointer_cast<TSetValueQueueMessage>(message)) {
+    while (FlushNeeded->Wait(wait_until)) {
+        if (FlushNeeded->GetSignalValue(RegisterUpdateSignal)) {
             for (const auto& reg: RegList) {
                 auto handler = Handlers[reg];
                 if (!handler->NeedToFlush())
@@ -334,9 +349,10 @@ void TSerialClient::ClosedPortCycle()
                 }
             }
         }
-        if (PRPCQueueMessage p = std::dynamic_pointer_cast<TRPCQueueMessage>(message)) {
-            RPC_REQUEST::Handle(p);
+        if (FlushNeeded->GetSignalValue(RPCSignal)) {
+            RPCRequestHandler->RPCRequestHandling(Port);
         }
+        FlushNeeded->ResetAllSignals();
     }
 
     TClosedPortRegisterReader reader;
@@ -356,8 +372,7 @@ void TSerialClient::ClearDevices()
 void TSerialClient::SetTextValue(PRegister reg, const std::string& value)
 {
     GetHandler(reg)->SetTextValue(value);
-    PQueueMessage message = std::make_shared<TSetValueQueueMessage>();
-    MessageQueue.PushMessage(message);
+    FlushNeeded->Signal(RegisterUpdateSignal);
 }
 
 void TSerialClient::SetReadCallback(const TSerialClient::TCallback& callback)
@@ -431,17 +446,18 @@ void TSerialClient::OpenPortCycle()
         SetRegistersAvailability(device, TRegisterAvailability::UNKNOWN);
     }
     OpenCloseLogic.CloseIfNeeded(Port, device->GetIsDisconnected());
+    UpdateFlushNeeded();
     Metrics.StartPoll(Metrics::BUS_IDLE);
-}
-
-void TSerialClient::RPCSendQueueMessage(PRPCQueueMessage Message)
-{
-    MessageQueue.PushMessage(Message);
 }
 
 PPort TSerialClient::GetPort()
 {
     return Port;
+}
+
+std::vector<uint8_t> TSerialClient::RPCTransceive(PRPCRequest Request)
+{
+    return RPCRequestHandler->RPCTransceive(Request, FlushNeeded, RPCSignal);
 }
 
 bool TRegisterComparePredicate::operator()(const PRegister& r1, const PRegister& r2) const

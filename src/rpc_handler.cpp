@@ -1,7 +1,6 @@
 #include "rpc_handler.h"
 #include "rpc_port.h"
 #include "rpc_request.h"
-#include "serial_client_queue.h"
 #include "serial_device.h"
 #include "serial_exc.h"
 #include "wblib/exceptions.h"
@@ -93,84 +92,9 @@ namespace
     }
 }
 
-namespace RPC_REQUEST
-{
-
-    void Handle(PRPCQueueMessage Message)
-    {
-        // RPC Thread may meet TotalTimeout
-        if (Message->Cancelled.load(std::memory_order_relaxed)) {
-            Message->Done.store(true, std::memory_order_relaxed);
-            Message->Condition.notify_all();
-            return;
-        }
-
-        try {
-
-            Message->Port->CheckPortOpen();
-            Message->Port->SleepSinceLastInteraction(Message->Request->FrameTimeout);
-            Message->Port->WriteBytes(Message->Request->Message);
-
-            std::vector<uint8_t> readData;
-            readData.reserve(Message->Request->ResponseSize);
-            size_t ActualSize = Message->Port->ReadFrame(readData.data(),
-                                                         Message->Request->ResponseSize,
-                                                         Message->Request->ResponseTimeout,
-                                                         Message->Request->FrameTimeout);
-
-            Message->Response.assign(readData.begin(), readData.begin() + ActualSize);
-
-        } catch (TSerialDeviceException error) {
-            Message->ResultCode = TRPCRequestResultCode::RPC_REQUEST_WRONG_IO;
-            Message->Done.store(true, std::memory_order_relaxed);
-            Message->Condition.notify_all();
-            return;
-        }
-
-        if (Message->Response.size() != Message->Request->ResponseSize) {
-            Message->ResultCode = TRPCRequestResultCode::RPC_REQUEST_WRONG_RESPONSE_LENGTH;
-        } else {
-            Message->ResultCode = TRPCRequestResultCode::RPC_REQUEST_OK;
-        }
-
-        Message->Done.store(true, std::memory_order_relaxed);
-        Message->Condition.notify_all();
-        return;
-    }
-}
-
 std::vector<uint8_t> TRPCPortDriver::SendRequest(PRPCRequest Request)
 {
-    std::vector<uint8_t> response;
-    PRPCQueueMessage Message = std::make_shared<TRPCQueueMessage>(RPCPort->GetPort(), Request);
-
-    SerialClient->RPCSendQueueMessage(Message);
-
-    auto now = std::chrono::steady_clock::now();
-    auto until = now + Request->TotalTimeout;
-    std::mutex Mutex;
-
-    std::unique_lock<std::mutex> lock(Mutex);
-    if (!Message->Condition.wait_until(lock, until, [Message]() {
-            return Message->Done.load(std::memory_order_relaxed);
-        })) {
-        Message->Cancelled.store(true, std::memory_order_relaxed);
-        throw TRPCException("Request handler is not responding", TRPCResultCode::RPC_WRONG_TIMEOUT);
-    } else {
-        switch (Message->ResultCode) {
-            case TRPCRequestResultCode::RPC_REQUEST_WRONG_IO:
-                throw TRPCException("Port IO error", TRPCResultCode::RPC_WRONG_IO);
-
-            case TRPCRequestResultCode::RPC_REQUEST_WRONG_RESPONSE_LENGTH:
-            case TRPCRequestResultCode::RPC_REQUEST_OK:
-                return response = Message->Response;
-
-            default:
-                break;
-        }
-    }
-
-    return response;
+    return SerialClient->RPCTransceive(Request);
 }
 
 TRPCHandler::TRPCHandler(const std::string& RequestSchemaFilePath,

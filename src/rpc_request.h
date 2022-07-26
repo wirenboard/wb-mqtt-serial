@@ -2,13 +2,6 @@
 #include "rpc_port.h"
 #include <wblib/json_utils.h>
 
-enum class TRPCRequestResultCode
-{
-    RPC_REQUEST_OK,
-    RPC_REQUEST_WRONG_IO,
-    RPC_REQUEST_WRONG_RESPONSE_LENGTH
-};
-
 enum class TRPCMessageFormat
 {
     RPC_MESSAGE_FORMAT_HEX,
