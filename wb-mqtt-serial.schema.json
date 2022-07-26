@@ -62,6 +62,7 @@
             "disable_array_delete_last_row": true,
             "disable_array_reorder": true,
             "disable_collapse": true,
+            "enable_array_copy": true,
             "wb": {
               "disable_panel": true
             }
@@ -315,32 +316,21 @@
         "slave_id": {
           "title": "Slave id of the device or broadcast mode",
           "propertyOrder": 2,
-          "oneOf": [
-            {
-              "title": "decimal or hex slave id",
-              "type": "string",
-              "pattern": "^(0x[A-Fa-f\\d]+|\\d+)$",
-              "options": {
-                "inputAttributes": {
-                  "placeholder":  "decimal (e.g. 123) or hex (e.g. 0xAF)"
-                },
-                "patternmessage": "Should be decimal or hex"
-              }
-            },
-            {
-              "title": "broadcast",
-              "type": "boolean",
-              "enum": [ false ],
-              "default": false,
-              "readOnly": true,
-              "options": {
-                "enum_titles": ["broadcast_description"]
-              }
-            }
-          ],
+          "type": "string",
+          "pattern": "^(0x[A-Fa-f\\d]+|\\d+)$",
           "options": {
-            "keep_oneof_values": false
-          }
+            "show_opt_in": true,
+            "wb": {
+                "editor_title": "decimal or hex slave id",
+                "undefined_title": "broadcast",
+                "undefined_message" : "broadcast_description"
+            },
+            "inputAttributes": {
+              "placeholder":  "decimal (e.g. 123) or hex (e.g. 0xAF)"
+            },
+            "patternmessage": "Should be decimal or hex"
+          },
+          "_format" : "wb-optional"
         }
       }
     },
@@ -1518,7 +1508,8 @@
           "_format": "unknown-device",
           "options": {
             "wb": {
-                "hide_from_selection": true
+                "hide_from_selection": true,
+                "group": "g-custom"
             }
           },
           "properties": {
@@ -1550,6 +1541,11 @@
               }
             }
           },
+          "options": {
+            "wb": {
+              "group": "g-custom"
+            }
+          },
           "required": ["protocol", "slave_id"],
           "defaultProperties": ["slave_id", "channels", "protocol"]
         },
@@ -1568,6 +1564,11 @@
               "options": {
                 "hidden": true
               }
+            }
+          },
+          "options": {
+            "wb": {
+              "group": "g-custom"
             }
           },
           "required": ["protocol", "slave_id"],
@@ -1590,6 +1591,11 @@
               }
             }
           },
+          "options": {
+            "wb": {
+              "group": "g-custom"
+            }
+          },
           "required": ["protocol", "slave_id"],
           "defaultProperties": ["slave_id", "channels", "protocol"]
         },
@@ -1608,6 +1614,11 @@
               "options": {
                 "hidden": true
               }
+            }
+          },
+          "options": {
+            "wb": {
+              "group": "g-custom"
             }
           },
           "required": ["protocol"],
@@ -1630,6 +1641,11 @@
               }
             }
           },
+          "options": {
+            "wb": {
+              "group": "g-custom"
+            }
+          },
           "required": ["protocol", "slave_id"],
           "defaultProperties": ["slave_id", "channels", "protocol"]
         },
@@ -1648,6 +1664,11 @@
               "options": {
                 "hidden": true
               }
+            }
+          },
+          "options": {
+            "wb": {
+              "group": "g-custom"
             }
           },
           "required": ["protocol", "slave_id"],
@@ -1670,6 +1691,11 @@
               }
             }
           },
+          "options": {
+            "wb": {
+              "group": "g-custom"
+            }
+          },
           "required": ["protocol", "slave_id"],
           "defaultProperties": ["slave_id", "channels", "protocol"]
         },
@@ -1688,6 +1714,11 @@
               "options": {
                 "hidden": true
               }
+            }
+          },
+          "options": {
+            "wb": {
+              "group": "g-custom"
             }
           },
           "required": ["protocol", "slave_id"],
@@ -1710,6 +1741,11 @@
               }
             }
           },
+          "options": {
+            "wb": {
+              "group": "g-custom"
+            }
+          },
           "required": ["protocol", "slave_id"],
           "defaultProperties": ["slave_id", "channels", "protocol"]
         },
@@ -1728,6 +1764,11 @@
               "options": {
                 "hidden": true
               }
+            }
+          },
+          "options": {
+            "wb": {
+              "group": "g-custom"
             }
           },
           "required": ["protocol"],
@@ -1750,6 +1791,11 @@
               }
             }
           },
+          "options": {
+            "wb": {
+              "group": "g-custom"
+            }
+          },
           "required": ["protocol"],
           "defaultProperties": ["slave_id", "channels", "protocol"]
         },
@@ -1768,6 +1814,11 @@
               "options": {
                 "hidden": true
               }
+            }
+          },
+          "options": {
+            "wb": {
+              "group": "g-custom"
             }
           },
           "required": ["protocol"],
@@ -1795,6 +1846,11 @@
               "options": { "hidden": true }
             }
           },
+          "options": {
+            "wb": {
+              "group": "g-custom"
+            }
+          },
           "required": ["slave_id"],
           "defaultProperties": ["slave_id", "channels", "protocol"]
         },
@@ -1815,6 +1871,11 @@
               }
             }
           },
+          "options": {
+            "wb": {
+              "group": "g-custom"
+            }
+          },
           "required": ["protocol", "slave_id"],
           "defaultProperties": ["slave_id", "channels", "protocol"]
         }
@@ -1823,7 +1884,14 @@
         "disable_edit_json": true,
         "keep_oneof_values": false,
         "wb": {
-          "disable_panel": true
+          "disable_panel": true,
+          "hidden_msg": "deprecated template",
+          "hidden_notice": "hidden_template_notice",
+          "groups": ["g-wb", "g-wb-old", "g-adapter", "g-climate-sensor", "g-level", "g-dimmer", "g-air-conditioning", 
+                     "g-climate-control", "g-refrigeration", "g-io", "g-relay", "g-curtain", "g-control-panel",
+                     "g-water-meter", "g-heat-meter", "g-power-meter", "g-thermostat", "g-motor-control",
+                     "g-custom"],
+          "keep_properties": ["slave_id"]
         }
       },
       "_format": "wb-multiple"
@@ -1889,7 +1957,27 @@
       "device_timeout_description": "Specifies timeout for device connection. If not set, default value 3000ms is used. Value -1 disables device reconnect. Zero means instant timeout.",
       "device_max_fail_cycles_desc": "Defines number of device polling cycles with all failed registers before marking device as disconnected. Default value is 2. Value -1 disables device reconnect. Zero means instant timeout.",
       "max_unchanged_interval_desc": "Specifies the maximum interval in seconds between posting the same values to message queue. Zero means the values are posted to the queue every time they read from the device. By default, the values are only reported on change. Negative value means default behavior.",
-      "string_data_size_description": "For the modbus protocol, strings are read one character per register from the low byte. The parameter specifies the number of characters"
+      "string_data_size_description": "For the modbus protocol, strings are read one character per register from the low byte. The parameter specifies the number of characters",
+      "hidden_template_notice": "Device template is deprecated, use newer version",
+      "g-wb": "Wiren Board devices",
+      "g-wb-old": "Deprecated Wiren Board devices",
+      "g-adapter": "Protocol adapters",
+      "g-climate-sensor": "Climate sensors",
+      "g-level": "Level sensors",
+      "g-dimmer": "Dimmers",
+      "g-air-conditioning": "Air conditioning equipment",
+      "g-climate-control": "Climate control equipment",
+      "g-refrigeration": "Refrigeration equipment",
+      "g-io": "IO modules",
+      "g-relay": "Relays",
+      "g-curtain": "Curtain motors",
+      "g-control-panel": "Control panels",
+      "g-water-meter": "Water meters",
+      "g-heat-meter": "Heat meters",
+      "g-power-meter": "Energy meters",
+      "g-thermostat": "Thermostats",
+      "g-motor-control": "Motor controllers",
+      "g-custom": "Custom devices"
     },
     "ru": {
       "Serial Device Driver Configuration": "Настройка драйвера serial-устройств",
@@ -2061,7 +2149,28 @@
       "not faster than (deprecated)": "не чаще чем раз в (устаревший параметр)",
       "String size in characters": "Размер строки в символах",
       "String": "Строка",
-      "string_data_size_description": "Для протокола modbus cтроки считываются по одному символу на регистр из младшего байта. Параметр определяет количество символов"
+      "string_data_size_description": "Для протокола modbus строки считываются по одному символу на регистр из младшего байта. Параметр определяет количество символов",
+      "deprecated template": "устаревший шаблон",
+      "hidden_template_notice": "Шаблон устройства устарел, рекомендуется использовать новую версию",
+      "g-wb": "Устройства Wiren Board",
+      "g-wb-old": "Устаревшие устройства Wiren Board",
+      "g-adapter": "Адаптеры протоколов",
+      "g-climate-sensor": "Датчики климата",
+      "g-level": "Датчики уровня",
+      "g-dimmer": "Диммеры",
+      "g-air-conditioning": "Кондиционеры",
+      "g-climate-control": "Контроллеры вентиляции и климата",
+      "g-refrigeration": "Контроллеры холодильного оборудования",
+      "g-io": "Модули ввода-вывода",
+      "g-relay": "Модули реле",
+      "g-curtain": "Моторы для штор/Электрокарнизы",
+      "g-control-panel": "Панели управления ",
+      "g-water-meter": "Счётчики воды",
+      "g-heat-meter": "Счётчики тепла",
+      "g-power-meter": "Счётчики электроэнергии",
+      "g-thermostat": "Термостаты",
+      "g-motor-control": "Управление двигателями (преобразователи частоты)",
+      "g-custom": "Произвольные устройства"
     }
   }
 }

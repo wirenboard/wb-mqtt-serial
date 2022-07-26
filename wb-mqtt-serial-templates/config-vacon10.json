@@ -1,5 +1,6 @@
 {
     "device_type": "VACON_10",
+    "group": "g-motor-control",
     "device": {
         "name": "VACON_10",
         "id": "vacon_10",

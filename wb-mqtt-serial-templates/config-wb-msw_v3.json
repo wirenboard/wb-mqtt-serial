@@ -1,6 +1,7 @@
 {
     "title": "WB-MSW-v3_template_title",
     "device_type": "WB-MSW v.3",
+    "group": "g-wb",
     "device": {
         "name": "WB-MSW v.3",
         "id": "wb-msw-v3",

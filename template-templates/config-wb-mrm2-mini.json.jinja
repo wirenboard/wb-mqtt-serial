@@ -1,10 +1,10 @@
 {% set OUTPUTS_NUMBER = 2 -%}
 {% set MMATRIX_OUTPUTS_NUMBER = 2 -%}
 {% set FIRST_INPUT = 1 -%}
-
 {
     "title": "WB-MRM2-mini-NO_template_title",
     "device_type": "WB-MRM2-mini-NO-inputs",
+    "group": "g-wb",
     "device": {
         "name": "WB-MRM2-mini/NO",
         "id": "wb-mrm2-mini",
@@ -20,29 +20,29 @@
                 "order": {{in_num + 1}}
             },
             {
+                "title": "Actions for outputs when the input is closed / opened",
+                "id": "gg_in{{in_num}}_mapping_matrix_actions",
+                "order": 1,
+                "group": "g_in{{in_num}}"
+            },
+            {
                 "title": "Press Parameters",
                 "id": "gg_in{{in_num}}_press_params",
                 "order": 1,
                 "group": "g_in{{in_num}}"
             },
-            {
-                "title": "Actions for outputs when the input is closed / opened",
-                "id": "gg_in{{in_num}}_mapping_matrix_actions",
-                "group": "g_in{{in_num}}",
-                "order": 1
-            },
             {% for out_num in range(1, OUTPUTS_NUMBER + 1) -%}
             {
                 "title": "Output {{out_num}} Actions",
                 "id": "gg_in{{in_num}}_out{{out_num}}_button_actions",
-                "group": "g_in{{in_num}}",
-                "order": {{out_num}}
+                "order": {{out_num + 1}},
+                "group": "g_in{{in_num}}"
             },
             {% endfor -%}
             {
                 "title": "input{{in_num}}_channels",
                 "id": "gg_in{{in_num}}_channels",
-                "order": 2,
+                "order": 3,
                 "group": "g_in{{in_num}}",
                 "ui_options": {
                     "wb": {
@@ -57,14 +57,50 @@
                 "order": 8
             },
             {
+                "title": "Output Safe State",
+                "id": "gg_outputs_safe_state",
+                "order": 1,
+                "group": "g_outputs"
+                
+            },
+            {
+                "title": "Outputs group",
+                "id": "gg_outputs_channels",
+                "order": 2,
+                "group": "g_outputs",
+                "ui_options": {
+                    "wb": {
+                        "disable_title": true
+                    }
+                }
+            },
+            {
+                "title": "Safety Mode",
+                "id": "g_safety",
+                "order": 9
+            },
+            {
+                "title": "Safety Behaviour",
+                "id": "gg_safety_behaviour",
+                "order": 1,
+                "group": "g_safety"
+            },
+            {
+                "title": "Inputs Control In Safety Mode",
+                "id": "gg_safety_input_control",
+                "order": 2,
+                "description": "inputs_control_in_safety_mode_description",
+                "group": "g_safety"
+            },
+            {
                 "title": "General",
                 "id": "g_general",
-                "order": 9
+                "order": 10
             },
             {
                 "title": "HW Info",
                 "id": "g_hw_info",
-                "order": 10
+                "order": 11
             }            
         ],
 
@@ -131,7 +167,6 @@
                 "group": "g_in{{in_num}}",
                 "order": 2
             },
-            
             "in{{in_num}}_lp_hold_time": {
                 "group": "gg_in{{in_num}}_press_params",
                 "title": "lp_hold_time_title",
@@ -164,7 +199,6 @@
                 "max": 2000,
                 "condition": "in{{in_num}}_mode==6"
             },
-            
             {% for out_num in range(1, OUTPUTS_NUMBER + 1) -%}
             "in{{in_num}}_out{{out_num}}_actions": {
                 "group": "gg_in{{in_num}}_mapping_matrix_actions",
@@ -201,9 +235,6 @@
                 ],
                 "condition": "in{{in_num}}_mode==4"
             },
-            {% endfor -%}
-            
-            {% for out_num in range(1, OUTPUTS_NUMBER + 1) -%}
             "in{{in_num}}_out{{out_num}}_sp": {
                 "group": "gg_in{{in_num}}_out{{out_num}}_button_actions",
                 "title": "sp_title",
@@ -264,44 +295,86 @@
                 "enum_titles": ["no action", "reset", "set", "toggle"],
                 "condition": "in{{in_num}}_mode==6"
             },
+            "out{{out_num}}_safe_state": {
+                "title": "Output {{out_num}}",
+                "group": "gg_outputs_safe_state",
+                "order": {{out_num}},
+                "address": {{930 + out_num - 1}},
+                "reg_type": "holding",
+                "default": 0,
+                "enum": [0, 1],
+                "enum_titles": [
+                    "Off",
+                    "On"
+                ]
+            },
+            "out{{out_num}}_safety_behaviour": {
+                "title": "Output {{out_num}}",
+                "group": "gg_safety_behaviour",
+                "order": {{out_num}},
+                "address": {{938 + out_num - 1}},
+                "reg_type": "holding",
+                "default": 0,
+                "enum": [0, 1],
+                "enum_titles": [
+                    "Don't сhange output state",
+                    "Switch output to safety state"
+                ]
+            },
+            "out{{out_num}}_safety_input_control": {
+                "title": "Output {{out_num}}",
+                "group": "gg_safety_input_control",
+                "order": {{out_num}},
+                "address": {{946 + out_num - 1}},
+                "reg_type": "holding",
+                "default": 0,
+                "enum": [0, 1, 2],
+                "enum_titles": [
+                    "Don't change",
+                    "Disable in safety mode",
+                    "Enable only in safety mode"
+                ]
+            },
             {% endfor -%}
             {% endfor -%}
             "outputs_restore_state": {
-                "title": "Restore Last Outputs State After Power On",
+                "title": "Outputs State After Power On",
+                "description": "outputs_state_after_power_on_description",
                 "address": 6,
                 "reg_type": "holding",
-                "enum": [0, 1],
+                "enum": [0, 1, 2],
                 "default": 0,
-                "enum_titles": ["no", "yes"],
-                "group": "g_outputs",
-                "order": 1
+                "enum_titles": ["Safe state", "Restore last state", "According to inputs"],
+                "order": 1,
+                "group": "g_outputs"
             },
             "safety_timer_s": {
-                "title": "Safety Timer (s)",
+                "title": "Safety Poll Timeout (s)",
+                "group": "g_safety",
+                "description": "poll_timeout_description",
                 "address": 8,
+                "order": 2,
                 "reg_type": "holding",
-                "min": 0,
-                "max": 65535,
-                "default": 3600,
-                "group": "g_outputs",
-                "order": 2
+                "min": 1,
+                "max": 65534,
+                "default": 10
             },
             "baud_rate": {
-                    "title": "Baud rate",
-                    "description": "baud_rate_description",
-                    "address": 110,
-                    "reg_type": "holding",
-                    "enum": [96, 192, 384, 576, 1152],
-                    "default": 96,
-                    "enum_titles": [
-                        "9600",
-                        "19200",
-                        "38400",
-                        "57600",
-                        "115200"
-                    ],
-                    "group": "g_general",
-                    "order": 1
+                "title": "Baud rate",
+                "description": "baud_rate_description",
+                "address": 110,
+                "reg_type": "holding",
+                "enum": [96, 192, 384, 576, 1152],
+                "default": 96,
+                "enum_titles": [
+                    "9600",
+                    "19200",
+                    "38400",
+                    "57600",
+                    "115200"
+                ],
+                "group": "g_general",
+                "order": 1
             }
         },
 
@@ -404,7 +477,7 @@
                 "reg_type": "coil",
                 "address": {{out_num - 1}},
                 "type": "switch",
-                "group": "g_outputs"
+                "group": "gg_outputs_channels"
             },
             {% endfor -%}
             {
@@ -467,8 +540,12 @@
             "en": {
                 "WB-MRM2-mini-NO_template_title": "WB-MRM2-mini/NO (2-channel relay)",
                 "mode_description": "For using button mapping-matrix firmware v1.17.1 or newer is required",
+                "outputs_state_after_power_on_description": "Option \"According to inputs\" works for latching switch mode only, firmware v1.18.4 or newer is required",
                 "baud_rate_description": "Make sure that communication with device is established before changing this parameter. Select required baud rate, save configuration and then change port baud rate to the same value.",
                 "Uptime": "Uptime (s)",
+
+                "poll_timeout_description": "Time in seconds without modbus polling before activation safety mode. Actions in safety mode are configured using appropriate parameters",
+                "inputs_control_in_safety_mode_description": "Sets change of control from the inputs when module switches to safety mode",
 
                 "sp_title": "Short Press",
                 "lp_title": "Long Press",
@@ -498,6 +575,7 @@
                 {% endfor -%}
 
                 "Outputs": "Выходы",
+                "Safety Mode": "Безопасный режим",
                 "General": "Общее",
                 "HW Info": "Данные модуля",
                 "Debug": "Диагностика",
@@ -509,8 +587,9 @@
                 {% for out_num in range(1, OUTPUTS_NUMBER + 1) -%}
                 "Output {{out_num}}": "Выход {{out_num}}",
                 "Output {{out_num}} Actions": "Действия для выхода {{out_num}}",
-
                 {% endfor -%}
+
+                "Output Safe State": "Безопасное состояние выходов",
 
                 "no action": "нет действия",
                 "reset": "выключить",
@@ -549,6 +628,14 @@
                 "no": "нет",
                 "yes": "да",
 
+                "Safety Poll Timeout (s)": "Таймаут потери связи (с)",
+                "poll_timeout_description": "Время отсутствия опроса в секундах, после которого будет активирован безопасный режим. Действия в безопасном режиме настраиваются отдельно",
+                "inputs_control_in_safety_mode_description": "Настройка изменения управления с входов при переходе модуля в безопасный режим",
+                "Outputs State After Power On": "Состояния выходов при подаче питания",
+                "Safe state": "Перевести выход в безопасное состояние",
+                "Restore last state": "Восстановить последнее состояние",
+                "According to inputs": "Установить согласно состоянию входов",
+
                 "sp_title": "Короткое нажатие",
                 "lp_title": "Длинное нажатие",
                 "dp_title": "Двойное нажатие",
@@ -562,9 +649,21 @@
                 "secp_waiting_time_description": "Если за указанное время второго нажатия не было - считаем нажатие одиночным. 0 - отключит все нажатия кроме короткого и длинного",
                 "debounce_time_description": "Для детектирования нажатий значение должно быть в 5-10 раз меньше, чем время ожидания второго нажатия",
 
+                "Off": "Выключен",
+                "On": "Включен",
+
+                "Safety Behaviour": "Действие в безопасном режиме",
+                "Don't сhange output state": "Ничего не делать",
+                "Switch output to safety state": "Перевести выход в безопасное состояние",
+                "Inputs Control In Safety Mode": "Управление с входов в безопасном режиме",
+                "Don't change": "Не блокировать",
+                "Disable in safety mode": "Блокировать в безопасном режиме",
+                "Enable only in safety mode": "Разрешить только в безопасном режиме",
+
                 "Baud rate": "Скорость обмена",
                 "baud_rate_description": "Перед изменением параметра убедитесь, что связь с устройством установлена. Выберите нужную скорость обмена, сохраните конфигурацию, а затем укажите в настройках порта эту же скорость.",
                 "mode_description": "Для использования mapping-матрицы для кнопок требуется прошивка v1.17.1 или новее",
+                "outputs_state_after_power_on_description": "Вариант \"Установить согласно состоянию входов\" применим только для режима \"Переключатель с фиксацией\", требуется прошивка v1.18.4 или новее",
 
                 "Serial": "Серийный номер",
                 "Supply Voltage": "Напряжение питания",

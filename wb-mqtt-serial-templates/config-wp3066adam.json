@@ -1,6 +1,7 @@
 //timeout critical: 200 ms OK
 {
     "device_type": "WP3066ADAM",
+    "group": "g-io",
     "device": {
         "name": "WP3066ADAM",
         "id": "wp3066adam",

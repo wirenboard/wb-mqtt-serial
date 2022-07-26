@@ -1,6 +1,7 @@
 {
     "title": "_WB-MR11-template-title",
     "device_type": "WB-MR11",
+    "group": "g-wb-old",
     "device": {
         "name": "WB-MR11",
         "id": "wb-mr11",

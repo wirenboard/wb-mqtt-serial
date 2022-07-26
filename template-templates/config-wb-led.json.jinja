@@ -1,12 +1,12 @@
-{% set INPUTS_NUMBER = 3 -%}
-{% set CHANNELS = ((1, "B"), (2, "R"), (3, "G"), (4, "W")) -%}
+{% set INPUTS_NUMBER = 4 -%}
+{% set OUTPUTS_NUMBER = 4 -%}
 {
-    "title": "WB-MRGBW-D_template_title",
-    "device_type": "WB-MRGBW-D_fw3_nosubdev",
+    "title": "WB-LED_template_title",
+    "device_type": "WB-LED",
     "group": "g-wb",
     "device": {
-        "name": "WB-MRGBW-D-fw3",
-        "id": "wb-mrgbw-d-fw3",
+        "name": "WB-LED",
+        "id": "wb-led",
         "max_read_registers": 0,
         "response_timeout_ms": 1,
         "frame_timeout_ms": 8,
@@ -136,10 +136,10 @@
                 "order": 1,
                 "required": true
             },
-            {% for ch_number, ch_name in CHANNELS -%}
+            {% for ch_number in range(1, OUTPUTS_NUMBER + 1) -%}
             {
                 "id": "ch{{ch_number}}_min",
-                "title": "Channel {{ch_number}} ({{ch_name}}) Minimum Value",
+                "title": "Channel {{ch_number}} Minimum Value",
                 "description": "channel_min_value_description",
                 "order": 1,
                 "group": "gg_out_params",
@@ -151,7 +151,7 @@
             },
             {
                 "id": "ch{{ch_number}}_max",
-                "title": "Channel {{ch_number}} ({{ch_name}}) Maximum Value",
+                "title": "Channel {{ch_number}} Maximum Value",
                 "description": "channel_max_value_description",
                 "order": 2,
                 "group": "gg_out_params",
@@ -227,7 +227,7 @@
             {
                 "id": "fader_inc_w1",
                 "group": "gg_fader_inc",
-                "title": "Channel 1 (B) Brightness",
+                "title": "Channel 1 Brightness",
                 "address": 3000,
                 "reg_type": "holding",
                 "default": 1000,
@@ -238,7 +238,7 @@
             {
                 "id": "fader_inc_w2",
                 "group": "gg_fader_inc",
-                "title": "Channel 2 (R) Brightness",
+                "title": "Channel 2 Brightness",
                 "address": 3001,
                 "reg_type": "holding",
                 "default": 1000,
@@ -249,7 +249,7 @@
             {
                 "id": "fader_inc_w3",
                 "group": "gg_fader_inc",
-                "title": "Channel 3 (G) Brightness",
+                "title": "Channel 3 Brightness",
                 "address": 3002,
                 "reg_type": "holding",
                 "default": 1000,
@@ -260,7 +260,7 @@
             {
                 "id": "fader_inc_w4",
                 "group": "gg_fader_inc",
-                "title": "Channel 4 (W) Brightness",
+                "title": "Channel 4 Brightness",
                 "address": 3003,
                 "reg_type": "holding",
                 "default": 1000,
@@ -271,7 +271,7 @@
             {
                 "id": "fader_inc_w1_w2",
                 "group": "gg_fader_inc",
-                "title": "Channels 1_2 (B_R) Brightness",
+                "title": "Channels 1_2 Brightness",
                 "address": 3004,
                 "reg_type": "holding",
                 "default": 1000,
@@ -282,7 +282,7 @@
             {
                 "id": "fader_inc_w3_w4",
                 "group": "gg_fader_inc",
-                "title": "Channels 3_4 (G_W) Brightness",
+                "title": "Channels 3_4 Brightness",
                 "order": 3,
                 "address": 3005,
                 "reg_type": "holding",
@@ -389,7 +389,7 @@
             {
                 "id": "fader_dec_w1",
                 "group": "gg_fader_dec",
-                "title": "Channel 1 (B) Brightness",
+                "title": "Channel 1 Brightness",
                 "address": 3100,
                 "reg_type": "holding",
                 "default": 1000,
@@ -400,7 +400,7 @@
             {
                 "id": "fader_dec_w2",
                 "group": "gg_fader_dec",
-                "title": "Channel 2 (R) Brightness",
+                "title": "Channel 2 Brightness",
                 "address": 3101,
                 "reg_type": "holding",
                 "default": 1000,
@@ -411,7 +411,7 @@
             {
                 "id": "fader_dec_w3",
                 "group": "gg_fader_dec",
-                "title": "Channel 3 (G) Brightness",
+                "title": "Channel 3 Brightness",
                 "address": 3102,
                 "reg_type": "holding",
                 "default": 1000,
@@ -422,7 +422,7 @@
             {
                 "id": "fader_dec_w4",
                 "group": "gg_fader_dec",
-                "title": "Channel 4 (W) Brightness",
+                "title": "Channel 4 Brightness",
                 "address": 3103,
                 "reg_type": "holding",
                 "default": 1000,
@@ -433,7 +433,7 @@
             {
                 "id": "fader_dec_w1_w2",
                 "group": "gg_fader_dec",
-                "title": "Channels 1_2 (B_R) Brightness",
+                "title": "Channels 1_2 Brightness",
                 "address": 3104,
                 "reg_type": "holding",
                 "default": 1000,
@@ -444,7 +444,7 @@
             {
                 "id": "fader_dec_w3_w4",
                 "group": "gg_fader_dec",
-                "title": "Channels 3_4 (G_W) Brightness",
+                "title": "Channels 3_4 Brightness",
                 "order": 3,
                 "address": 3105,
                 "reg_type": "holding",
@@ -2095,7 +2095,7 @@
             },
             {
                 "group": "gg_out_channels",
-                "name": "Channel 1 (B)",
+                "name": "Channel 1",
                 "address": 0,
                 "type": "switch",
                 "reg_type": "coil",
@@ -2103,7 +2103,7 @@
             },
             {
                 "group": "gg_out_channels",
-                "name": "Channel 1 (B) Brightness",
+                "name": "Channel 1 Brightness",
                 "address": 2000,
                 "type": "range",
                 "reg_type": "holding",
@@ -2114,7 +2114,7 @@
             },
             {
                 "group": "gg_out_channels",
-                "name": "Channel 2 (R)",
+                "name": "Channel 2",
                 "address": 1,
                 "type": "switch",
                 "reg_type": "coil",
@@ -2122,7 +2122,7 @@
             },
             {
                 "group": "gg_out_channels",
-                "name": "Channel 2 (R) Brightness",
+                "name": "Channel 2 Brightness",
                 "address": 2001,
                 "type": "range",
                 "reg_type": "holding",
@@ -2133,7 +2133,7 @@
             },
             {
                 "group": "gg_out_channels",
-                "name": "Channels 1_2 (B_R)",
+                "name": "Channels 1_2",
                 "address": 4,
                 "type": "switch",
                 "reg_type": "coil",
@@ -2141,7 +2141,7 @@
             },
             {
                 "group": "gg_out_channels",
-                "name": "Channels 1_2 (B_R) Brightness",
+                "name": "Channels 1_2 Brightness",
                 "address": 2004,
                 "type": "range",
                 "reg_type": "holding",
@@ -2152,7 +2152,7 @@
             },
             {
                 "group": "gg_out_channels",
-                "name": "CCT1 (channels 1_2)",
+                "name": "CCT1",
                 "address": 7,
                 "type": "switch",
                 "reg_type": "coil",
@@ -2182,7 +2182,7 @@
             },
             {
                 "group": "gg_out_channels",
-                "name": "Channel 3 (G)",
+                "name": "Channel 3",
                 "address": 2,
                 "type": "switch",
                 "reg_type": "coil",
@@ -2190,7 +2190,7 @@
             },
             {
                 "group": "gg_out_channels",
-                "name": "Channel 3 (G) Brightness",
+                "name": "Channel 3 Brightness",
                 "address": 2002,
                 "type": "range",
                 "reg_type": "holding",
@@ -2220,7 +2220,7 @@
             },
             {
                 "group": "gg_out_channels",
-                "name": "CCT2 (channels 3_4)",
+                "name": "CCT2",
                 "address": 8,
                 "type": "switch",
                 "reg_type": "coil",
@@ -2250,7 +2250,7 @@
             },
             {
                 "group": "gg_out_channels",
-                "name": "Channels 3_4 (G_W)",
+                "name": "Channels 3_4",
                 "address": 5,
                 "type": "switch",
                 "reg_type": "coil",
@@ -2258,7 +2258,7 @@
             },
             {
                 "group": "gg_out_channels",
-                "name": "Channel 4 (W)",
+                "name": "Channel 4",
                 "address": 3,
                 "type": "switch",
                 "reg_type": "coil",
@@ -2266,7 +2266,7 @@
             },
             {
                 "group": "gg_out_channels",
-                "name": "Channels 3_4 (G_W) Brightness",
+                "name": "Channels 3_4 Brightness",
                 "address": 2005,
                 "type": "range",
                 "reg_type": "holding",
@@ -2277,7 +2277,7 @@
             },
             {
                 "group": "gg_out_channels",
-                "name": "Channel 4 (W) Brightness",
+                "name": "Channel 4 Brightness",
                 "address": 2003,
                 "type": "range",
                 "reg_type": "holding",
@@ -2286,9 +2286,9 @@
                 "error_value": "0xFFFF",
                 "condition": "(dimmer_mode==0||dimmer_mode==1||dimmer_mode==2||dimmer_mode==256)"
             },
-            {% for ch_number, ch_name in CHANNELS  -%}
+            {% for ch_number in range(1, OUTPUTS_NUMBER + 1) -%}
             {
-                "name": "Channel {{ch_number}} ({{ch_name}}) Raw PWM",
+                "name": "Channel {{ch_number}} Raw PWM",
                 "reg_type": "holding",
                 "order": {{ch_number}},
                 "address": {{90 + ch_number - 1}},
@@ -2299,6 +2299,32 @@
                 "group": "g_debug"
             },
             {% endfor -%}
+            {
+                "name": "Board Temperature",
+                "reg_type": "input",
+                "address": 400,
+                "type": "value",
+                "units": "deg C",
+                "format": "s16",
+                "group": "g_debug"
+            },
+            {
+                "name": "Allowed Power",
+                "reg_type": "input",
+                "address": 401,
+                "type": "value",
+                "units": "%",
+                "format": "u16",
+                "group": "g_debug"
+            },
+            {
+                "name": "Overcurrent",
+                "reg_type": "input",
+                "address": 402,
+                "type": "switch",
+                "format": "u16",
+                "group": "g_debug"
+            },
             {% for in_num in range(1, INPUTS_NUMBER + 1) -%}
             {
                 "name": "Input {{in_num}}",
@@ -2401,7 +2427,7 @@
         ],
         "translations": {
             "en": {
-                "WB-MRGBW-D_template_title": "WB-MRGBW-D fw3 (4-channel CV LED Dimmer)",
+                "WB-LED_template_title": "WB-LED (4-channel CV LED Dimmer)",
 
                 "sp_title": "Short Press",
                 "lp_title": "Long Press",
@@ -2413,27 +2439,27 @@
                 "fader_hue_title": "Time to Increase/Decrease Hue from 0 to 360°",
 
                 "no_act_title": "Nothing",
-                {% for ch_number, ch_name in CHANNELS  -%}
-                "off_ch{{ch_number}}_act_title": "Disable channel {{ch_number}} ({{ch_name}})",
-                "on_ch{{ch_number}}_act_title": "Enable channel {{ch_number}} ({{ch_name}})",
-                "tg_ch{{ch_number}}_act_title": "Toggle channel {{ch_number}} ({{ch_name}})",
-                "inc_ch{{ch_number}}_act_title": "Increase brightness of channel {{ch_number}} ({{ch_name}})",
-                "dec_ch{{ch_number}}_act_title": "Decrease brightness of channel {{ch_number}} ({{ch_name}})",
-                "inc_dec_ch{{ch_number}}_act_title": "Increase/decrease brightness of channel {{ch_number}} ({{ch_name}})",
+                {% for ch_number in range(1, OUTPUTS_NUMBER + 1) -%}
+                "off_ch{{ch_number}}_act_title": "Disable channel {{ch_number}}",
+                "on_ch{{ch_number}}_act_title": "Enable channel {{ch_number}}",
+                "tg_ch{{ch_number}}_act_title": "Toggle channel {{ch_number}}",
+                "inc_ch{{ch_number}}_act_title": "Increase brightness of channel {{ch_number}}",
+                "dec_ch{{ch_number}}_act_title": "Decrease brightness of channel {{ch_number}}",
+                "inc_dec_ch{{ch_number}}_act_title": "Increase/decrease brightness of channel {{ch_number}}",
                 {% endfor %}
-                "off_ch12_act_title": "Disable channels 1_2 (B_R)",
-                "on_ch12_act_title": "Enable channels 1_2 (B_R)",
-                "tg_ch12_act_title": "Toggle channels 1_2 (B_R)",
-                "inc_ch12_act_title": "Increase brightness of channels 1_2 (B_R)",
-                "dec_ch12_act_title": "Decrease brightness of channels 1_2 (B_R)",
-                "inc_dec_ch12_act_title": "Increase/decrease brightness of channels 1_2 (B_R)",
+                "off_ch12_act_title": "Disable channels 1_2",
+                "on_ch12_act_title": "Enable channels 1_2",
+                "tg_ch12_act_title": "Toggle channels 1_2",
+                "inc_ch12_act_title": "Increase brightness of channels 1_2",
+                "dec_ch12_act_title": "Decrease brightness of channels 1_2",
+                "inc_dec_ch12_act_title": "Increase/decrease brightness of channels 1_2",
 
-                "off_ch34_act_title": "Disable channels 3_4 (G_W)",
-                "on_ch34_act_title": "Enable channels 3_4 (G_W)",
-                "tg_ch34_act_title": "Toggle channels 3_4 (G_W)",
-                "inc_ch34_act_title": "Increase brightness of channels 3_4 (G_W)",
-                "dec_ch34_act_title": "Decrease brightness of channels 3_4 (G_W)",
-                "inc_dec_ch34_act_title": "Increase/decrease brightness of channels 3_4 (G_W)",
+                "off_ch34_act_title": "Disable channels 3_4",
+                "on_ch34_act_title": "Enable channels 3_4",
+                "tg_ch34_act_title": "Toggle channels 3_4",
+                "inc_ch34_act_title": "Increase brightness of channels 3_4",
+                "dec_ch34_act_title": "Decrease brightness of channels 3_4",
+                "inc_dec_ch34_act_title": "Increase/decrease brightness of channels 3_4",
 
                 "off_cct1_act_title": "Disable CCT1",
                 "on_cct1_act_title": "Enable CCT1",
@@ -2515,7 +2541,7 @@
                 "Uptime": "Uptime (s)"
             },
             "ru": {
-                "WB-MRGBW-D_template_title": "WB-MRGBW-D fw3 (4-канальный диммер светодиодных лент)",
+                "WB-LED_template_title": "WB-LED (4-канальный диммер светодиодных лент)",
 
                 "sp_title": "Короткое нажатие",
                 "lp_title": "Длинное нажатие",
@@ -2526,10 +2552,6 @@
                 "fader_dec_title": "Время уменьшения значения с 0 до 100% в мс",
                 "fader_hue_title": "Время увеличения/уменьшения оттенка (Hue) с 0 до 360°",
 
-                "Input 1": "Вход 1",
-                "Input 2": "Вход 2",
-                "Input 3": "Вход 3",
-
                 "Actions": "Действия ",
 
                 "Outputs": "Выходы",
@@ -2538,27 +2560,32 @@
                 "Debug": "Диагностика",
 
                 "no_act_title": "Нет действия",
-                {% for ch_number, ch_name in CHANNELS  -%}
-                "off_ch{{ch_number}}_act_title": "Выключить канал {{ch_number}} ({{ch_name}})",
-                "on_ch{{ch_number}}_act_title": "Включить канал {{ch_number}} ({{ch_name}})",
-                "tg_ch{{ch_number}}_act_title": "Переключить канал {{ch_number}} ({{ch_name}})",
-                "inc_ch{{ch_number}}_act_title": "Увеличить яркость канала {{ch_number}} ({{ch_name}})",
-                "dec_ch{{ch_number}}_act_title": "Уменьшить яркость канала {{ch_number}} ({{ch_name}})",
-                "inc_dec_ch{{ch_number}}_act_title": "Увеличить/уменьшить яркость канала {{ch_number}} ({{ch_name}})",
+                {% for ch_number in range(1, OUTPUTS_NUMBER + 1) -%}
+                "off_ch{{ch_number}}_act_title": "Выключить канал {{ch_number}}",
+                "on_ch{{ch_number}}_act_title": "Включить канал {{ch_number}}",
+                "tg_ch{{ch_number}}_act_title": "Переключить канал {{ch_number}}",
+                "inc_ch{{ch_number}}_act_title": "Увеличить яркость канала {{ch_number}}",
+                "dec_ch{{ch_number}}_act_title": "Уменьшить яркость канала {{ch_number}}",
+                "inc_dec_ch{{ch_number}}_act_title": "Увеличить/уменьшить яркость канала {{ch_number}}",
+                "Channel {{ch_number}}": "Канал {{ch_number}}",
+                "Channel {{ch_number}} Brightness": "Яркость канала {{ch_number}}",
+                "Channel {{ch_number}} Raw PWM": "Прямое управление ШИМ канала {{ch_number}}",
+                "Channel {{ch_number}} Minimum Value": "Нижний порог диммирования канала {{ch_number}}",
+                "Channel {{ch_number}} Maximum Value": "Верхний порог диммирования канала {{ch_number}}",
                 {% endfor %}
-                "off_ch12_act_title": "Выключить каналы 1 и 2 (B_R)",
-                "on_ch12_act_title": "Включить каналы 1 и 2 (B_R)",
-                "tg_ch12_act_title": "Переключить каналы 1 и 2 (B_R)",
-                "inc_ch12_act_title": "Увеличить яркость каналов 1 и 2 (B_R)",
-                "dec_ch12_act_title": "Уменьшить яркость каналов 1 и 2 (B_R)",
-                "inc_dec_ch12_act_title": "Увеличить/уменьшить яркость каналов 1 и 2 (B_R)",
+                "off_ch12_act_title": "Выключить каналы 1 и 2",
+                "on_ch12_act_title": "Включить каналы 1 и 2",
+                "tg_ch12_act_title": "Переключить каналы 1 и 2",
+                "inc_ch12_act_title": "Увеличить яркость каналов 1 и 2",
+                "dec_ch12_act_title": "Уменьшить яркость каналов 1 и 2",
+                "inc_dec_ch12_act_title": "Увеличить/уменьшить яркость каналов 1 и 2",
 
-                "off_ch34_act_title": "Выключить каналы 3 и 4 (G_W)",
-                "on_ch34_act_title": "Включить каналы 3 и 4 (G_W)",
-                "tg_ch34_act_title": "Переключить каналы 3 и 4 (G_W)",
-                "inc_ch34_act_title": "Увеличить яркость каналов 3 и 4 (G_W)",
-                "dec_ch34_act_title": "Уменьшить яркость каналов 3 и 4 (G_W)",
-                "inc_dec_ch34_act_title": "Увеличить/уменьшить яркость каналов 3 и 4 (G_W)",
+                "off_ch34_act_title": "Выключить каналы 3 и 4",
+                "on_ch34_act_title": "Включить каналы 3 и 4",
+                "tg_ch34_act_title": "Переключить каналы 3 и 4",
+                "inc_ch34_act_title": "Увеличить яркость каналов 3 и 4",
+                "dec_ch34_act_title": "Уменьшить яркость каналов 3 и 4",
+                "inc_dec_ch34_act_title": "Увеличить/уменьшить яркость каналов 3 и 4",
 
                 "off_cct1_act_title": "Выключить CCT1",
                 "on_cct1_act_title": "Включить CCT1",
@@ -2614,25 +2641,17 @@
                 "inc_ch1234_act_title": "Увеличить яркость каналов 1_2_3_4",
                 "dec_ch1234_act_title": "Уменьшить яркость каналов 1_2_3_4",
                 "inc_dec_ch1234_act_title": "Увеличить/уменьшить яркость каналов 1_2_3_4",
-
-                "Channel 1 (B)": "Канал 1 (B)",
-                "Channel 2 (R)": "Канал 2 (R)",
-                "Channel 3 (G)": "Канал 3 (G)",
-                "Channel 4 (W)": "Канал 4 (W)",
-                "Channels 1_2 (B_R)": "Каналы 1_2 (B_R)",
-                "Channels 3_4 (G_W)": "Каналы 3_4 (G_W)",
-                "CCT1 (channels 1_2)": "Лента CCT1 (каналы 1_2)",
-                "CCT2 (channels 3_4)": "Лента CCT2 (каналы 3_4)",
+                
+                "Channels 1_2": "Каналы 1_2",
+                "Channels 3_4": "Каналы 3_4",
+                "CCT1": "Лента CCT1",
+                "CCT2": "Лента CCT2",
                 "RGB Strip": "Лента RGB",
                 "Hue Changing": "Изменение оттенка RGB ленты",
                 "Channels 1_2_3_4": "Каналы 1_2_3_4",
 
-                "Channel 1 (B) Brightness": "Яркость канала 1 (B)",
-                "Channel 2 (R) Brightness": "Яркость канала 2 (R)",
-                "Channel 3 (G) Brightness": "Яркость канала 3 (G)",
-                "Channel 4 (W) Brightness": "Яркость канала 4 (W)",
-                "Channels 1_2 (B_R) Brightness": "Яркость каналов 1_2 (B_R)",
-                "Channels 3_4 (G_W) Brightness": "Яркость каналов 3_4 (G_W)",
+                "Channels 1_2 Brightness": "Яркость каналов 1_2",
+                "Channels 3_4 Brightness": "Яркость каналов 3_4",
                 "CCT1 Temperature": "Цветовая температура ленты CCT1",
                 "CCT1 Brightness": "Яркость ленты CCT1",
                 "CCT2 Temperature": "Цветовая температура ленты CCT2",
@@ -2644,26 +2663,18 @@
                 "Hue Changing Rate": "Время изменения оттенка (Hue) на 1° (мс)",
                 "Channels 1_2_3_4 Brightness": "Яркость каналов 1_2_3_4",
 
-                "Channel 1 (B) Raw PWM": "Прямое управление ШИМ канала 1 (B)",
-                "Channel 2 (R) Raw PWM": "Прямое управление ШИМ канала 2 (R)",
-                "Channel 3 (G) Raw PWM": "Прямое управление ШИМ канала 3 (G)",
-                "Channel 4 (W) Raw PWM": "Прямое управление ШИМ канала 4 (W)",
+                "Board Temperature": "Температура платы",
+                "Allowed Power": "Разрешенная мощность",
+                "Overcurrent": "Перегрузка по току",
 
-                "Input 1 Counter": "Счетчик 1",
-                "Input 2 Counter": "Счетчик 2",
-                "Input 3 Counter": "Счетчик 3",
-                "Input 1 Single Press Counter": "Счетчик коротких нажатий входа 1",
-                "Input 2 Single Press Counter": "Счетчик коротких нажатий входа 2",
-                "Input 3 Single Press Counter": "Счетчик коротких нажатий входа 3",
-                "Input 1 Long Press Counter": "Счетчик длинных нажатий входа 1",
-                "Input 2 Long Press Counter": "Счетчик длинных нажатий входа 2",
-                "Input 3 Long Press Counter": "Счетчик длинных нажатий входа 3",
-                "Input 1 Double Press Counter": "Счетчик двойных нажатий входа 1",
-                "Input 2 Double Press Counter": "Счетчик двойных нажатий входа 2",
-                "Input 3 Double Press Counter": "Счетчик двойных нажатий входа 3",
-                "Input 1 Shortlong Press Counter": "Счетчик коротких, а затем длинных нажатий входа 1",
-                "Input 2 Shortlong Press Counter": "Счетчик коротких, а затем длинных нажатий входа 2",
-                "Input 3 Shortlong Press Counter": "Счетчик коротких, а затем длинных нажатий входа 3",
+                {% for in_num in range(1, INPUTS_NUMBER + 1) -%}
+                "Input {{in_num}}": "Вход {{in_num}}",
+                "Input {{in_num}} Counter": "Счетчик {{in_num}}",
+                "Input {{in_num}} Single Press Counter": "Счетчик коротких нажатий входа {{in_num}}",
+                "Input {{in_num}} Long Press Counter": "Счетчик длинных нажатий входа {{in_num}}",
+                "Input {{in_num}} Double Press Counter": "Счетчик двойных нажатий входа {{in_num}}",
+                "Input {{in_num}} Shortlong Press Counter": "Счетчик коротких, а затем длинных нажатий входа {{in_num}}",
+                {% endfor -%}
 
                 "Dimmer Mode": "Режим работы",
                 "dimmer_mode_description": "Выберите режим перед настройкой диммера",
@@ -2677,15 +2688,6 @@
                 "lp_repeat_time_description": "Чем меньше значение, тем быстрее изменяется параметр",
                 "secp_waiting_time_description": "Если за указанное время второго нажатия не было - считаем нажатие одиночным. 0 - отключит все нажатия кроме короткого и длинного",
                 "debounce_time_description": "Должно быть в 5-10 раз меньше, чем время ожидания второго нажатия. Если двойные нажатия отключены - любое значение",
-
-                "Channel 1 (B) Minimum Value": "Нижний порог диммирования канала 1 (B)",
-                "Channel 2 (R) Minimum Value": "Нижний порог диммирования канала 2 (R)",
-                "Channel 3 (G) Minimum Value": "Нижний порог диммирования канала 3 (G)",
-                "Channel 4 (W) Minimum Value": "Нижний порог диммирования канала 4 (W)",
-                "Channel 1 (B) Maximum Value": "Верхний порог диммирования канала 1 (B)",
-                "Channel 2 (R) Maximum Value": "Верхний порог диммирования канала 2 (R)",
-                "Channel 3 (G) Maximum Value": "Верхний порог диммирования канала 3 (G)",
-                "Channel 4 (W) Maximum Value": "Верхний порог диммирования канала 4 (W)",
 
                 "pwm_frequency_factor_title": "Делитель частоты ШИМ",
                 "pwm_frequency_factor_description": "Частота ШИМ рассчитывается по формуле: 24 кГц / делитель",

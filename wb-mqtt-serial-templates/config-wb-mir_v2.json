@@ -1,6 +1,7 @@
 {
     "title": "WB-MIR-v2_template_title",
     "device_type": "WB-MIR v2",
+    "group": "g-wb",
     "device": {
         "name": "WB-MIR v2",
         "id": "wb-mir_v2",

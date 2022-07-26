@@ -1,6 +1,6 @@
-// Configuration options
 {
     "device_type": "MSU34TLHP",
+    "group": "g-climate-sensor",
     "device": {
         "name": "MSU34+TLHP",
         "id": "msu34tlhp",

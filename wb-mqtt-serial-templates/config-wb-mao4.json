@@ -1,6 +1,7 @@
 {
     "title": "WB-MAO4_template_title",
     "device_type": "WB-MAO4",
+    "group": "g-wb",
     "device": {
         "name": "WB-MAO4",
         "id": "wb-mao4",

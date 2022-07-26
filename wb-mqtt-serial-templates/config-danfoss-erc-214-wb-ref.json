@@ -1,6 +1,7 @@
 {
     "title": "Danfoss ERC 214 (WB-REF-DF-ERC21)",
     "device_type": "danfoss_erc_214_wb_ref",
+    "group": "g-refrigeration",
     "device": {
         "name": "Danfoss ERC 214",
         "id": "danfoss-erc-214",

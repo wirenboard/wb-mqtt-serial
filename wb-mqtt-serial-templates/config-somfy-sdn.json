@@ -1,6 +1,7 @@
 {
     "device_type": "Somfy SDN",
     "title": "Somfy curtain motor",
+    "group": "g-curtain",
     "device": {
         "name": "Somfy SDN",
         "id": "somfy",

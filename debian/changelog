@@ -1,3 +1,60 @@
+wb-mqtt-serial (2.67.0) stable; urgency=medium
+
+  * Slave id is preserved after device type switching in wb-mqtt-homeui
+
+ -- Petr Krasnoshchekov <petr.krasnoshchekov@wirenboard.ru>  Tue, 26 Jul 2022 09:01:50 +0500
+
+wb-mqtt-serial (2.66.0) stable; urgency=medium
+
+  * Support for copying device configs in web editor is added
+
+ -- Petr Krasnoshchekov <petr.krasnoshchekov@wirenboard.ru>  Mon, 25 Jul 2022 07:23:11 +0500
+
+wb-mqtt-serial (2.65.1) stable; urgency=medium
+
+  * Russian translation of counters channels in WB-MRGBW-D and WB-LED
+    templates was made shorter
+
+ -- Dmitry Vorobjev <d.vorobjev@wirenboard.ru>  Fri, 22 Jul 2022 15:12:10 +0300
+
+wb-mqtt-serial (2.65.0) stable; urgency=medium
+
+  * Added WB-LED template
+
+ -- Pavel Gasheev <pavel.gasheev@wirenboard.ru>  Wed, 20 Jul 2022 08:56:17 +0300
+
+wb-mqtt-serial (2.64.4) stable; urgency=medium
+
+  * Symbol "+" was removed from parameter id in WB-MRGBW-D template
+
+ -- Dmitry Vorobjev <d.vorobjev@wirenboard.ru>  Tue, 19 Jul 2022 17:59:04 +0300
+
+wb-mqtt-serial (2.64.3) stable; urgency=medium
+
+  * New safety and restore settings were added in WB-MR templates
+
+ -- Dmitry Vorobjev <d.vorobjev@wirenboard.ru>  Thu, 14 Jul 2022 10:56:16 +0300
+ 
+wb-mqtt-serial (2.64.2) stable; urgency=medium
+
+  * Correction options names and descriptions in WB-MR6Cv3 template to
+    make them similary with other relay modules
+
+ -- Dmitry Vorobjev <d.vorobjev@wirenboard.ru>  Thu, 14 Jul 2022 10:21:56 +0300
+
+wb-mqtt-serial (2.64.1) stable; urgency=medium
+
+  * Titles of parameters with min/max channel values were corrected in
+    WB-MRGBW-D template
+
+ -- Dmitry Vorobjev <d.vorobjev@wirenboard.ru>  Tue, 12 Jul 2022 10:47:03 +0300
+
+wb-mqtt-serial (2.64.0) stable; urgency=medium
+
+  * Device templates are organized in groups in web config editor
+
+ -- Petr Krasnoshchekov <petr.krasnoshchekov@wirenboard.ru>  Tue, 05 Jul 2022 10:43:19 +0500
+
 wb-mqtt-serial (2.63.1) stable; urgency=medium
 
   * Jinja-template for WB-MRGBW-D fw3 without subdevices. Previous
