@@ -62,6 +62,7 @@
             "disable_array_delete_last_row": true,
             "disable_array_reorder": true,
             "disable_collapse": true,
+            "enable_array_copy": true,
             "wb": {
               "disable_panel": true
             }
