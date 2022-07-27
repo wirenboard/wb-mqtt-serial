@@ -10,16 +10,16 @@ TRPCRequestHandler::TRPCRequestHandler()
     Semaphore->ResetAllSignals();
 }
 
-std::vector<uint8_t> TRPCRequestHandler::RPCTransceive(PRPCRequest Request,
-                                                       PBinarySemaphore SerialClientSemaphore,
-                                                       PBinarySemaphoreSignal SerialClientSignal)
+std::vector<uint8_t> TRPCRequestHandler::RPCTransceive(PRPCRequest request,
+                                                       PBinarySemaphore serialClientSemaphore,
+                                                       PBinarySemaphoreSignal serialClientSignal)
 {
     Mutex.lock();
-    this->Request = Request;
+    this->Request = request;
     State = RPCRequestState::RPC_WRITE;
     auto now = std::chrono::steady_clock::now();
     auto until = now + Request->TotalTimeout; // + std::chrono::seconds();
-    SerialClientSemaphore->Signal(SerialClientSignal);
+    serialClientSemaphore->Signal(serialClientSignal);
 
     Mutex.unlock();
 
@@ -41,18 +41,18 @@ std::vector<uint8_t> TRPCRequestHandler::RPCTransceive(PRPCRequest Request,
     }
 }
 
-void TRPCRequestHandler::RPCRequestHandling(PPort Port)
+void TRPCRequestHandler::RPCRequestHandling(PPort port)
 {
     if (State == RPCRequestState::RPC_WRITE) {
         std::lock_guard<std::mutex> lock(Mutex);
         try {
-            Port->CheckPortOpen();
-            Port->SleepSinceLastInteraction(Request->FrameTimeout);
-            Port->WriteBytes(Request->Message);
+            port->CheckPortOpen();
+            port->SleepSinceLastInteraction(Request->FrameTimeout);
+            port->WriteBytes(Request->Message);
 
             std::vector<uint8_t> readData;
             readData.reserve(Request->ResponseSize);
-            size_t ActualSize = Port->ReadFrame(readData.data(),
+            size_t ActualSize = port->ReadFrame(readData.data(),
                                                 Request->ResponseSize,
                                                 Request->ResponseTimeout,
                                                 Request->FrameTimeout);

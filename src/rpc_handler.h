@@ -27,7 +27,7 @@ class TRPCPortDriver
 public:
     PSerialClient SerialClient;
     PRPCPort RPCPort;
-    std::vector<uint8_t> SendRequest(PRPCRequest Request);
+    std::vector<uint8_t> SendRequest(PRPCRequest request);
 };
 
 typedef std::shared_ptr<TRPCPortDriver> PRPCPortDriver;
@@ -35,20 +35,20 @@ typedef std::shared_ptr<TRPCPortDriver> PRPCPortDriver;
 class TRPCHandler
 {
 public:
-    TRPCHandler(const std::string& RequestSchemaFilePath,
-                PRPCConfig RpcConfig,
-                WBMQTT::PMqttRpcServer RpcServer,
-                PMQTTSerialDriver SerialDriver);
+    TRPCHandler(const std::string& requestSchemaFilePath,
+                PRPCConfig rpcConfig,
+                WBMQTT::PMqttRpcServer rpcServer,
+                PMQTTSerialDriver serialDriver);
 
 private:
     Json::Value RequestSchema;
     PMQTTSerialDriver SerialDriver;
     std::vector<PRPCPortDriver> PortDrivers;
 
-    PRPCPortDriver FindPortDriver(const Json::Value& Request);
+    PRPCPortDriver FindPortDriver(const Json::Value& request);
 
-    Json::Value PortLoad(const Json::Value& Request);
-    Json::Value LoadMetrics(const Json::Value& Request);
+    Json::Value PortLoad(const Json::Value& request);
+    Json::Value LoadMetrics(const Json::Value& request);
 };
 
 typedef std::shared_ptr<TRPCHandler> PRPCHandler;

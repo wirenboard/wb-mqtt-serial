@@ -18,10 +18,10 @@ class TRPCRequestHandler
 {
 public:
     TRPCRequestHandler();
-    std::vector<uint8_t> RPCTransceive(PRPCRequest Request,
-                                       PBinarySemaphore SerialClientSemaphore,
-                                       PBinarySemaphoreSignal SerialClientSignal);
-    void RPCRequestHandling(PPort Port);
+    std::vector<uint8_t> RPCTransceive(PRPCRequest request,
+                                       PBinarySemaphore serialClientSemaphore,
+                                       PBinarySemaphoreSignal serialClientSignal);
+    void RPCRequestHandling(PPort port);
 
 private:
     std::mutex Mutex;

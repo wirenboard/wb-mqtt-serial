@@ -4,8 +4,8 @@
 class TRPCConfig
 {
 public:
-    void AddSerialPort(PPort Port, const std::string& Path);
-    void AddTCPPort(PPort Port, const std::string& Ip, uint16_t PortNumber);
+    void AddSerialPort(PPort port, const std::string& path);
+    void AddTCPPort(PPort port, const std::string& ip, uint16_t portNumber);
     std::vector<PRPCPort> GetPorts();
 
 private:

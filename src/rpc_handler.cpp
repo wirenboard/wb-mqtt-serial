@@ -9,44 +9,44 @@
 
 namespace
 {
-    std::vector<uint8_t> HexStringToByteVector(const std::string& HexString)
+    std::vector<uint8_t> HexStringToByteVector(const std::string& hexString)
     {
         std::vector<uint8_t> byteVector;
-        if (HexString.size() % 2 != 0) {
+        if (hexString.size() % 2 != 0) {
             throw std::runtime_error("Hex message have odd char count");
         }
 
-        for (unsigned int i = 0; i < HexString.size(); i += 2) {
-            auto byte = strtol(HexString.substr(i, 2).c_str(), NULL, 16);
+        for (unsigned int i = 0; i < hexString.size(); i += 2) {
+            auto byte = strtol(hexString.substr(i, 2).c_str(), NULL, 16);
             byteVector.push_back(byte);
         }
 
         return byteVector;
     }
 
-    std::string ByteVectorToHexString(const std::vector<uint8_t>& ByteVector)
+    std::string ByteVectorToHexString(const std::vector<uint8_t>& byteVector)
     {
         std::stringstream ss;
         ss << std::hex << std::setfill('0');
 
-        for (size_t i = 0; i < ByteVector.size(); i++) {
-            ss << std::hex << std::setw(2) << static_cast<int>(ByteVector[i]);
+        for (size_t i = 0; i < byteVector.size(); i++) {
+            ss << std::hex << std::setw(2) << static_cast<int>(byteVector[i]);
         }
 
         return ss.str();
     }
 
-    PRPCRequest ParseRequest(const Json::Value& Request, const Json::Value& RequestSchema)
+    PRPCRequest ParseRequest(const Json::Value& request, const Json::Value& requestSchema)
     {
         PRPCRequest RPCRequest = std::make_shared<TRPCRequest>();
 
         try {
-            WBMQTT::JSON::Validate(Request, RequestSchema);
+            WBMQTT::JSON::Validate(request, requestSchema);
 
             std::string messageStr, formatStr;
-            WBMQTT::JSON::Get(Request, "response_size", RPCRequest->ResponseSize);
-            WBMQTT::JSON::Get(Request, "format", formatStr);
-            WBMQTT::JSON::Get(Request, "msg", messageStr);
+            WBMQTT::JSON::Get(request, "response_size", RPCRequest->ResponseSize);
+            WBMQTT::JSON::Get(request, "format", formatStr);
+            WBMQTT::JSON::Get(request, "msg", messageStr);
 
             if (formatStr == "HEX") {
                 RPCRequest->Format = TRPCMessageFormat::RPC_MESSAGE_FORMAT_HEX;
@@ -60,15 +60,15 @@ namespace
                 RPCRequest->Message.assign(messageStr.begin(), messageStr.end());
             }
 
-            if (!WBMQTT::JSON::Get(Request, "response_timeout", RPCRequest->ResponseTimeout)) {
+            if (!WBMQTT::JSON::Get(request, "response_timeout", RPCRequest->ResponseTimeout)) {
                 RPCRequest->ResponseTimeout = DefaultResponseTimeout;
             }
 
-            if (!WBMQTT::JSON::Get(Request, "frame_timeout", RPCRequest->FrameTimeout)) {
+            if (!WBMQTT::JSON::Get(request, "frame_timeout", RPCRequest->FrameTimeout)) {
                 RPCRequest->FrameTimeout = DefaultFrameTimeout;
             }
 
-            if (!WBMQTT::JSON::Get(Request, "total_timeout", RPCRequest->TotalTimeout)) {
+            if (!WBMQTT::JSON::Get(request, "total_timeout", RPCRequest->TotalTimeout)) {
                 RPCRequest->TotalTimeout = DefaultRPCTotalTimeout;
             }
 
@@ -92,30 +92,30 @@ namespace
     }
 }
 
-std::vector<uint8_t> TRPCPortDriver::SendRequest(PRPCRequest Request)
+std::vector<uint8_t> TRPCPortDriver::SendRequest(PRPCRequest request)
 {
-    return SerialClient->RPCTransceive(Request);
+    return SerialClient->RPCTransceive(request);
 }
 
-TRPCHandler::TRPCHandler(const std::string& RequestSchemaFilePath,
-                         PRPCConfig RpcConfig,
-                         WBMQTT::PMqttRpcServer RpcServer,
-                         PMQTTSerialDriver SerialDriver)
+TRPCHandler::TRPCHandler(const std::string& requestSchemaFilePath,
+                         PRPCConfig rpcConfig,
+                         WBMQTT::PMqttRpcServer rpcServer,
+                         PMQTTSerialDriver serialDriver)
 {
     try {
-        RequestSchema = WBMQTT::JSON::Parse(RequestSchemaFilePath);
+        RequestSchema = WBMQTT::JSON::Parse(requestSchemaFilePath);
     } catch (const std::runtime_error& e) {
         LOG(Error) << "RPC request schema reading error: " << e.what();
         throw std::runtime_error(e);
     }
 
-    for (auto RPCPort: RpcConfig->GetPorts()) {
+    for (auto RPCPort: rpcConfig->GetPorts()) {
         PRPCPortDriver RPCPortDriver = std::make_shared<TRPCPortDriver>();
         RPCPortDriver->RPCPort = RPCPort;
         PortDrivers.push_back(RPCPortDriver);
     }
 
-    this->SerialDriver = SerialDriver;
+    this->SerialDriver = serialDriver;
 
     std::vector<PSerialPortDriver> serialPortDrivers = SerialDriver->GetPortDrivers();
     for (auto serialPortDriver: serialPortDrivers) {
@@ -130,17 +130,17 @@ TRPCHandler::TRPCHandler(const std::string& RequestSchemaFilePath,
         });
     }
 
-    RpcServer->RegisterMethod("port", "Load", std::bind(&TRPCHandler::PortLoad, this, std::placeholders::_1));
-    RpcServer->RegisterMethod("metrics", "Load", std::bind(&TRPCHandler::LoadMetrics, this, std::placeholders::_1));
+    rpcServer->RegisterMethod("port", "Load", std::bind(&TRPCHandler::PortLoad, this, std::placeholders::_1));
+    rpcServer->RegisterMethod("metrics", "Load", std::bind(&TRPCHandler::LoadMetrics, this, std::placeholders::_1));
 }
 
-PRPCPortDriver TRPCHandler::FindPortDriver(const Json::Value& Request)
+PRPCPortDriver TRPCHandler::FindPortDriver(const Json::Value& request)
 {
     std::vector<PRPCPortDriver> matches;
     std::copy_if(PortDrivers.begin(),
                  PortDrivers.end(),
                  std::back_inserter(matches),
-                 [&Request](PRPCPortDriver rpcPortDriver) { return rpcPortDriver->RPCPort->Match(Request); });
+                 [&request](PRPCPortDriver rpcPortDriver) { return rpcPortDriver->RPCPort->Match(request); });
 
     switch (matches.size()) {
         case 0:
@@ -152,16 +152,16 @@ PRPCPortDriver TRPCHandler::FindPortDriver(const Json::Value& Request)
     }
 }
 
-Json::Value TRPCHandler::PortLoad(const Json::Value& Request)
+Json::Value TRPCHandler::PortLoad(const Json::Value& request)
 {
     Json::Value replyJSON;
 
     try {
-        PRPCRequest RPCRequest = ParseRequest(Request, RequestSchema);
-        PRPCPortDriver rpcPortDriver = FindPortDriver(Request);
-        std::vector<uint8_t> response = rpcPortDriver->SendRequest(RPCRequest);
+        PRPCRequest rpcRequest = ParseRequest(request, RequestSchema);
+        PRPCPortDriver rpcPortDriver = FindPortDriver(request);
+        std::vector<uint8_t> response = rpcPortDriver->SendRequest(rpcRequest);
 
-        std::string responseStr = PortLoadResponseFormat(response, RPCRequest->Format);
+        std::string responseStr = PortLoadResponseFormat(response, rpcRequest->Format);
 
         replyJSON["response"] = responseStr;
     } catch (TRPCException& e) {

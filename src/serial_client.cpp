@@ -455,9 +455,9 @@ PPort TSerialClient::GetPort()
     return Port;
 }
 
-std::vector<uint8_t> TSerialClient::RPCTransceive(PRPCRequest Request)
+std::vector<uint8_t> TSerialClient::RPCTransceive(PRPCRequest request)
 {
-    return RPCRequestHandler->RPCTransceive(Request, FlushNeeded, RPCSignal);
+    return RPCRequestHandler->RPCTransceive(request, FlushNeeded, RPCSignal);
 }
 
 bool TRegisterComparePredicate::operator()(const PRegister& r1, const PRegister& r2) const

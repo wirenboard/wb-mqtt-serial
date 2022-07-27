@@ -1,24 +1,24 @@
 #include "rpc_config.h"
 #include <algorithm>
 
-void TRPCConfig::AddSerialPort(PPort Port, const std::string& Path)
+void TRPCConfig::AddSerialPort(PPort port, const std::string& path)
 {
     auto existedPort =
-        std::find_if(Ports.begin(), Ports.end(), [&Port](PRPCPort RPCPort) { return Port == RPCPort->GetPort(); });
+        std::find_if(Ports.begin(), Ports.end(), [&port](PRPCPort RPCPort) { return port == RPCPort->GetPort(); });
 
     if (existedPort == Ports.end()) {
-        PRPCPort newRPCPort = std::make_shared<TRPCSerialPort>(Port, Path);
+        PRPCPort newRPCPort = std::make_shared<TRPCSerialPort>(port, path);
         Ports.push_back(newRPCPort);
     }
 }
 
-void TRPCConfig::AddTCPPort(PPort Port, const std::string& Ip, uint16_t PortNumber)
+void TRPCConfig::AddTCPPort(PPort port, const std::string& ip, uint16_t portNumber)
 {
     auto existedPort =
-        std::find_if(Ports.begin(), Ports.end(), [&Port](PRPCPort RPCPort) { return Port == RPCPort->GetPort(); });
+        std::find_if(Ports.begin(), Ports.end(), [&port](PRPCPort RPCPort) { return port == RPCPort->GetPort(); });
 
     if (existedPort == Ports.end()) {
-        PRPCPort newRPCPort = std::make_shared<TRPCTCPPort>(Port, Ip, PortNumber);
+        PRPCPort newRPCPort = std::make_shared<TRPCTCPPort>(port, ip, portNumber);
         Ports.push_back(newRPCPort);
     }
 }

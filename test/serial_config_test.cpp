@@ -17,7 +17,7 @@ class TConfigParserTest: public TLoggedFixture
 {
 protected:
     TSerialDeviceFactory DeviceFactory;
-    PRPCConfig rpcConfig = std::make_shared<TRPCConfig>();
+    PRPCConfig RPCConfig = std::make_shared<TRPCConfig>();
 
     void SetUp()
     {
@@ -159,7 +159,7 @@ protected:
             GetDataFilePath("device-templates/"),
             LoadConfigTemplatesSchema(GetDataFilePath("../wb-mqtt-serial-device-template.schema.json"), configSchema));
 
-        return LoadConfig(GetDataFilePath(filePath), DeviceFactory, configSchema, templateMap, rpcConfig);
+        return LoadConfig(GetDataFilePath(filePath), DeviceFactory, configSchema, templateMap, RPCConfig);
     }
 };
 
@@ -198,7 +198,7 @@ TEST_F(TConfigParserTest, UnsuccessfulParse)
         [&](const std::string& fname) {
             Emit() << "Parsing config " << fname;
             try {
-                PHandlerConfig config = LoadConfig(fname, DeviceFactory, configSchema, templateMap, rpcConfig);
+                PHandlerConfig config = LoadConfig(fname, DeviceFactory, configSchema, templateMap, RPCConfig);
             } catch (const std::exception& e) {
                 Emit() << e.what();
             }
