@@ -39,8 +39,6 @@ std::vector<uint8_t> TRPCRequestHandler::RPCTransceive(PRPCRequest Request,
     } else {
         throw TRPCException("Port IO error", TRPCResultCode::RPC_WRONG_IO);
     }
-
-    return Response;
 }
 
 void TRPCRequestHandler::RPCRequestHandling(PPort Port)

@@ -1,6 +1,6 @@
 wb-mqtt-serial (2.68.0) stable; urgency=medium
 
-  * Add RPC functionality
+  * Add RPC Port/Load method for exchanging data over available ports
 
  -- Ekaterina Volkova  <ekaterina.volkova@wirenboard.ru>  Tue, 26 Jul 2022 20:09:31 +0300
 

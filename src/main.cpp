@@ -40,6 +40,7 @@ const auto CONFIG_JSON_SCHEMA_FULL_FILE_PATH = "/usr/share/wb-mqtt-serial/wb-mqt
 const auto TEMPLATES_JSON_SCHEMA_FULL_FILE_PATH =
     "/usr/share/wb-mqtt-serial/wb-mqtt-serial-device-template.schema.json";
 const auto CONFED_JSON_SCHEMA_FULL_FILE_PATH = "/var/lib/wb-mqtt-confed/schemas/wb-mqtt-serial.schema.json";
+const auto RPC_REQUEST_SCHEMA_FULL_FILE_PATH = "/usr/share/wb-mqtt-serial/wb-mqtt-serial-rpc-request.schema.json";
 
 const auto SERIAL_DRIVER_STOP_TIMEOUT_S = chrono::seconds(60);
 

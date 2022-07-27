@@ -6,7 +6,6 @@
 #include <wblib/rpc.h>
 
 const std::chrono::seconds DefaultRPCTotalTimeout(10);
-const auto RPC_REQUEST_SCHEMA_FULL_FILE_PATH = "/usr/share/wb-mqtt-serial/wb-mqtt-serial-rpc-request.schema.json";
 
 // RPC Request execution result code
 enum class TRPCResultCode

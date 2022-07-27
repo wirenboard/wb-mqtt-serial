@@ -105,7 +105,7 @@ TRPCHandler::TRPCHandler(const std::string& RequestSchemaFilePath,
     try {
         RequestSchema = WBMQTT::JSON::Parse(RequestSchemaFilePath);
     } catch (const std::runtime_error& e) {
-        LOG(Error) << "RPC request schema readind error: " << e.what();
+        LOG(Error) << "RPC request schema reading error: " << e.what();
         throw std::runtime_error(e);
     }
 
@@ -172,7 +172,6 @@ Json::Value TRPCHandler::PortLoad(const Json::Value& Request)
                 break;
             default:
                 throw std::runtime_error(e.GetResultMessage());
-                break;
         }
     }
 
