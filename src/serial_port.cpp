@@ -214,7 +214,7 @@ size_t TSerialPort::ReadFrame(uint8_t* buf,
     return Base::ReadFrame(buf,
                            count,
                            responseTimeout + GetLinuxLag(Settings.BaudRate) + GetSendTime(RxTrigBytes),
-                           frameTimeout + std::chrono::milliseconds(15),
+                           frameTimeout + std::chrono::milliseconds(15) + GetSendTime(RxTrigBytes),
                            frameComplete);
 }
 
