@@ -4,7 +4,9 @@
 #include "serial_exc.h"
 
 #include <cmath>
+#include <experimental/filesystem>
 #include <fcntl.h>
+#include <fstream>
 #include <iomanip>
 #include <iostream>
 #include <string.h>
@@ -72,9 +74,34 @@ namespace
     {
         return std::chrono::milliseconds(baudRate < 9600 ? 34 : 24);
     }
-};
 
-TSerialPort::TSerialPort(const TSerialPortSettings& settings): Settings(settings)
+    size_t GetRxTrigBytes(const std::string& path)
+    {
+        std::experimental::filesystem::path dev(path);
+        while (std::experimental::filesystem::is_symlink(dev)) {
+            dev = std::experimental::filesystem::read_symlink(dev);
+        }
+        auto rxTrigBytesPath = "/sys/class/tty" / dev.filename() / "rx_trig_bytes";
+        std::ifstream f(rxTrigBytesPath);
+        if (f.is_open()) {
+            size_t val;
+            try {
+                f >> val;
+                if (f.good()) {
+                    LOG(Info) << rxTrigBytesPath << " = " << val;
+                    return val;
+                }
+            } catch (const std::exception& e) {
+                LOG(Warn) << rxTrigBytesPath << " read failed: " << e.what();
+            }
+        }
+        return 0;
+    }
+}
+
+TSerialPort::TSerialPort(const TSerialPortSettings& settings)
+    : Settings(settings),
+      RxTrigBytes(GetRxTrigBytes(Settings.Device))
 {
     memset(&OldTermios, 0, sizeof(termios));
 }
@@ -186,8 +213,8 @@ size_t TSerialPort::ReadFrame(uint8_t* buf,
 {
     return Base::ReadFrame(buf,
                            count,
-                           responseTimeout + GetLinuxLag(Settings.BaudRate),
-                           frameTimeout + std::chrono::milliseconds(15),
+                           responseTimeout + GetLinuxLag(Settings.BaudRate) + GetSendTime(RxTrigBytes),
+                           frameTimeout + std::chrono::milliseconds(15) + GetSendTime(RxTrigBytes),
                            frameComplete);
 }
 
