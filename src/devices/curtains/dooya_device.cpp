@@ -71,7 +71,8 @@ namespace
             throw TSerialDeviceTransientErrorException("Bad CRC");
         }
         if (Get<uint16_t>(bytes.cbegin() + ADDRESS_POSITION, bytes.cbegin() + ADDRESS_POSITION + ADDRESS_SIZE) !=
-            address) {
+            address)
+        {
             throw TSerialDeviceTransientErrorException("Bad address");
         }
         if ((bytes[3] != fn) || (bytes[4] != dataAddress)) {
