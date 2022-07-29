@@ -80,6 +80,7 @@
             },
             "co2_measurement_range": {
                 "title": "CO₂ Measurement Range (ppm)",
+                "description": "Only for Winsen CO2 sensor",
                 "address": 96,
                 "reg_type": "holding",
                 "enum": [2000, 5000, 10000],
@@ -1628,6 +1629,7 @@
                 "CO2 Force Calibration Cycle": "Длительность цикла для самокалибровки датчика CO2",
                 "CO2 Sens Availability": "Наличие датчика CO2",
                 "CO2 Sens Type": "Тип установленного датчика CO2",
+                "Only for Winsen CO2 sensor": "Только для CO2 датчика Winsen",
                 "VOC Version": "Версия датчика VOC",
                 "VOC Raw": "Сырое значение датчика VOC",
                 "Motion Raw": "Сырое значение датчика движения",
