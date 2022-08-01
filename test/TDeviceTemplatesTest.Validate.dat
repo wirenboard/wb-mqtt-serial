@@ -18661,6 +18661,10 @@ WB-MSW v.3
 	Buzzer  =>  Buzzer
 	CO2  =>  CO2
 	CO2 Force Calibration  =>  CO2 Force Calibration
+	CO2 Force Calibration Cycle  =>  CO2 Force Calibration Cycle
+	CO2 Force Calibration To Value  =>  CO2 Force Calibration To Value
+	CO2 Sens Availability  =>  CO2 Sens Availability
+	CO2 Sens Type  =>  CO2 Sens Type
 	Current Motion  =>  Current Motion
 	Erroneous TH Readings  =>  Erroneous TH Readings
 	Green LED  =>  Green LED
@@ -18821,10 +18825,6 @@ WB-MSW v.3
 	VOC Baseline  =>  VOC Baseline
 	VOC Raw  =>  VOC Raw
 	VOC Version  =>  VOC Version
-	CO2 Force Calibration To Value  =>  CO2 Force Calibration To Value
-	CO2 Force Calibration Cycle  =>  CO2 Force Calibration Cycle
-	CO2 Sens Availability  =>  CO2 Sens Availability
-	CO2 Sens Type  =>  CO2 Sens Type
 WB-MSW2
 	Buzzer  =>  Buzzer
 	CO2  =>  CO2
