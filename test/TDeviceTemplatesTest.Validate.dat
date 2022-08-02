@@ -18663,8 +18663,8 @@ WB-MSW v.3
 	CO2 Force Calibration  =>  CO2 Force Calibration
 	CO2 Force Calibration Cycle  =>  CO2 Force Calibration Cycle
 	CO2 Force Calibration To Value  =>  CO2 Force Calibration To Value
-	CO2 Sens Availability  =>  CO2 Sens Availability
-	CO2 Sens Type  =>  CO2 Sens Type
+	CO2 Sensor Availability  =>  CO2 Sensor Availability
+	CO2 Sensor Type  =>  CO2 Sensor Type
 	Current Motion  =>  Current Motion
 	Erroneous TH Readings  =>  Erroneous TH Readings
 	Green LED  =>  Green LED

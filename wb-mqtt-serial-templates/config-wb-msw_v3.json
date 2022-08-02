@@ -1390,14 +1390,14 @@
                 "group": "debug"
             },
             {
-                "name": "CO2 Sens Availability",
+                "name": "CO2 Sensor Availability",
                 "reg_type": "input",
                 "address": 82,
                 "enabled": false,
                 "group": "debug"
             },
             {
-                "name": "CO2 Sens Type",
+                "name": "CO2 Sensor Type",
                 "reg_type": "input",
                 "address": 83,
                 "enabled": false,
@@ -1628,8 +1628,8 @@
                 "Sound ADC Offset": "Смещение Low Gain ADC",
                 "CO2 Force Calibration To Value": "Принудительная калибровка датчика CO2 на заданное значение концентрации",
                 "CO2 Force Calibration Cycle": "Длительность цикла для самокалибровки датчика CO2",
-                "CO2 Sens Availability": "Наличие датчика CO2",
-                "CO2 Sens Type": "Тип установленного датчика CO2",
+                "CO2 Sensor Availability": "Наличие датчика CO2",
+                "CO2 Sensor Type": "Тип установленного датчика CO2",
                 "Only for Winsen CO2 sensor": "Только для CO2 датчика Winsen",
                 "VOC Version": "Версия датчика VOC",
                 "VOC Raw": "Сырое значение датчика VOC",
