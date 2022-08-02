@@ -1375,6 +1375,7 @@
                 "address": 88,
                 "max": 1500,
                 "min": 0,
+                "units": "ppm",
                 "error_value": "0xFFFF",
                 "enabled": false,
                 "group": "debug"
@@ -1385,6 +1386,7 @@
                 "address": 89,
                 "max": 30,
                 "min": 1,
+                "units": "day",
                 "error_value": "0xFFFF",
                 "enabled": false,
                 "group": "debug"
