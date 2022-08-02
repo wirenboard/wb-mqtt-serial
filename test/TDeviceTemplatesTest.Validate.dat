@@ -18659,12 +18659,12 @@ WB-MSGR
 WB-MSW v.3
 	Air Quality (VOC)  =>  Air Quality (VOC)
 	Buzzer  =>  Buzzer
-	CO2  =>  CO2
-	CO2 Force Calibration  =>  CO2 Force Calibration
-	CO2 Force Calibration Cycle  =>  CO2 Force Calibration Cycle
-	CO2 Force Calibration To Value  =>  CO2 Force Calibration To Value
-	CO2 Sensor Availability  =>  CO2 Sensor Availability
-	CO2 Sensor Type  =>  CO2 Sensor Type
+	CO₂  =>  CO₂
+	CO₂ Force Calibration  =>  CO₂ Force Calibration
+	CO₂ Force Calibration Cycle  =>  CO₂ Force Calibration Cycle
+	CO₂ Force Calibration To Value  =>  CO₂ Force Calibration To Value
+	CO₂ Sensor Availability  =>  CO₂ Sensor Availability
+	CO₂ Sensor Type  =>  CO₂ Sensor Type
 	Current Motion  =>  Current Motion
 	Erroneous TH Readings  =>  Erroneous TH Readings
 	Green LED  =>  Green LED

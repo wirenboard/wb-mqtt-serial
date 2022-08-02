@@ -80,7 +80,7 @@
             },
             "co2_measurement_range": {
                 "title": "CO₂ Measurement Range (ppm)",
-                "description": "Only for Winsen CO2 sensor",
+                "description": "Only for Winsen CO₂ sensor",
                 "address": 96,
                 "reg_type": "holding",
                 "enum": [2000, 5000, 10000],
@@ -177,7 +177,7 @@
                 "group": "air_quality"
             },
             {
-                "name": "CO2",
+                "name": "CO₂",
                 "reg_type": "input",
                 "address": 8,
                 "type": "concentration",
@@ -185,7 +185,7 @@
                 "group": "air_quality"
             },
             {
-                "name": "CO2 Force Calibration",
+                "name": "CO₂ Force Calibration",
                 "reg_type": "coil",
                 "address": 1,
                 "type": "switch",
@@ -1370,7 +1370,7 @@
                 "group": "debug"
             },
             {
-                "name": "CO2 Force Calibration To Value",
+                "name": "CO₂ Force Calibration To Value",
                 "reg_type": "holding",
                 "address": 88,
                 "max": 1500,
@@ -1380,7 +1380,7 @@
                 "group": "debug"
             },
             {
-                "name": "CO2 Force Calibration Cycle",
+                "name": "CO₂ Force Calibration Cycle",
                 "reg_type": "holding",
                 "address": 89,
                 "max": 30,
@@ -1390,14 +1390,14 @@
                 "group": "debug"
             },
             {
-                "name": "CO2 Sensor Availability",
+                "name": "CO₂ Sensor Availability",
                 "reg_type": "input",
                 "address": 82,
                 "enabled": false,
                 "group": "debug"
             },
             {
-                "name": "CO2 Sensor Type",
+                "name": "CO₂ Sensor Type",
                 "reg_type": "input",
                 "address": 83,
                 "enabled": false,
@@ -1503,8 +1503,8 @@
                 "baud_rate_description": "Перед изменением параметра убедитесь, что связь с устройством установлена. Выберите нужную скорость обмена, сохраните конфигурацию, а затем укажите в настройках порта эту же скорость.",
                 "Temperature": "Температура",
                 "Humidity": "Влажность",
-                "CO2": "Уровень CO2",
-                "CO2 Force Calibration": "Ручная калибровка датчика CO2",
+                "CO₂": "Уровень CO₂",
+                "CO₂ Force Calibration": "Ручная калибровка датчика CO₂",
                 "Air Quality (VOC)": "Качество воздуха (VOC)",
                 "VOC Baseline": "Смещение уровня VOC",
                 "Sound Level": "Уровень шума",
@@ -1626,11 +1626,11 @@
                 "Sound High Gain ADC Raw": "Сырое значение High Gain ADC",
                 "Sound dB Offset": "Смещение уровня шума (дБ)",
                 "Sound ADC Offset": "Смещение Low Gain ADC",
-                "CO2 Force Calibration To Value": "Принудительная калибровка датчика CO2 на заданное значение концентрации",
-                "CO2 Force Calibration Cycle": "Длительность цикла для самокалибровки датчика CO2",
-                "CO2 Sensor Availability": "Наличие датчика CO2",
-                "CO2 Sensor Type": "Тип установленного датчика CO2",
-                "Only for Winsen CO2 sensor": "Только для CO2 датчика Winsen",
+                "CO₂ Force Calibration To Value": "Принудительная калибровка датчика CO₂ на заданное значение концентрации",
+                "CO₂ Force Calibration Cycle": "Длительность цикла для самокалибровки датчика CO₂",
+                "CO₂ Sensor Availability": "Наличие датчика CO₂",
+                "CO₂ Sensor Type": "Тип установленного датчика CO₂",
+                "Only for Winsen CO₂ sensor": "Только для CO₂ датчика Winsen",
                 "VOC Version": "Версия датчика VOC",
                 "VOC Raw": "Сырое значение датчика VOC",
                 "Motion Raw": "Сырое значение датчика движения",
