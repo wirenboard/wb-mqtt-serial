@@ -1374,6 +1374,7 @@
                 "reg_type": "holding",
                 "address": 88,
                 "max": 1500,
+                "min": 0,
                 "error_value": "0xFFFF",
                 "enabled": false,
                 "group": "debug"
