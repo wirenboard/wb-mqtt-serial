@@ -1370,7 +1370,7 @@
                 "group": "debug"
             },
             {
-                "name": "CO2 Force Calibration To Value",
+                "name": "CO2 Calibration To Value",
                 "reg_type": "holding",
                 "address": 88,
                 "max": 1500,
@@ -1629,7 +1629,7 @@
                 "Sound High Gain ADC Raw": "Сырое значение High Gain ADC",
                 "Sound dB Offset": "Смещение уровня шума (дБ)",
                 "Sound ADC Offset": "Смещение Low Gain ADC",
-                "CO2 Force Calibration To Value": "Принудительная калибровка датчика CO2 на заданное значение концентрации",
+                "CO2 Calibration To Value": "Калибровать показания CO2",
                 "CO2 Calibration Cycle": "Период автокалибровки датчика CO2",
                 "CO2 Sensor Installed": "Датчик CO2 установлен",
                 "CO2 Sensor Type": "Тип датчика CO2",
