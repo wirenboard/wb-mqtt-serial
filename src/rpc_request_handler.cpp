@@ -1,40 +1,29 @@
 #include "rpc_request_handler.h"
-#include "binary_semaphore.h"
 #include "rpc_handler.h"
 #include "serial_exc.h"
-
-TRPCRequestHandler::TRPCRequestHandler()
-{
-    Semaphore = std::make_shared<TBinarySemaphore>();
-    Signal = Semaphore->MakeSignal();
-    Semaphore->ResetAllSignals();
-}
 
 std::vector<uint8_t> TRPCRequestHandler::RPCTransceive(PRPCRequest request,
                                                        PBinarySemaphore serialClientSemaphore,
                                                        PBinarySemaphoreSignal serialClientSignal)
 {
-    Mutex.lock();
-    this->Request = request;
-    State = RPCRequestState::RPC_WRITE;
+    std::unique_lock<std::mutex> lock(Mutex);
+    Request = request;
+    State = RPCRequestState::RPC_PENDING;
     auto now = std::chrono::steady_clock::now();
-    auto until = now + Request->TotalTimeout; // + std::chrono::seconds();
+    auto until = now + Request->TotalTimeout;
     serialClientSemaphore->Signal(serialClientSignal);
 
-    Mutex.unlock();
-
-    std::vector<uint8_t> Response;
-
-    if (!Semaphore->Wait(until)) {
+    if (!RequestExecution.wait_until(lock, until, [this]() {
+            return (State == RPCRequestState::RPC_COMPLETE) || (State == RPCRequestState::RPC_ERROR);
+        }))
+    {
         State = RPCRequestState::RPC_IDLE;
         throw TRPCException("Request handler is not responding", TRPCResultCode::RPC_WRONG_TIMEOUT);
     }
 
-    Semaphore->ResetAllSignals();
-
     RPCRequestState lastRequestState = State;
     State = RPCRequestState::RPC_IDLE;
-    if (lastRequestState == RPCRequestState::RPC_READ) {
+    if (lastRequestState == RPCRequestState::RPC_COMPLETE) {
         return ReadData;
     } else {
         throw TRPCException("Port IO error", TRPCResultCode::RPC_WRONG_IO);
@@ -43,8 +32,8 @@ std::vector<uint8_t> TRPCRequestHandler::RPCTransceive(PRPCRequest request,
 
 void TRPCRequestHandler::RPCRequestHandling(PPort port)
 {
-    if (State == RPCRequestState::RPC_WRITE) {
-        std::lock_guard<std::mutex> lock(Mutex);
+    std::lock_guard<std::mutex> lock(Mutex);
+    if (State == RPCRequestState::RPC_PENDING) {
         try {
             port->CheckPortOpen();
             port->SleepSinceLastInteraction(Request->FrameTimeout);
@@ -61,11 +50,11 @@ void TRPCRequestHandler::RPCRequestHandling(PPort port)
             for (size_t i = 0; i < ActualSize; i++) {
                 ReadData.push_back(readData[i]);
             }
-            State = RPCRequestState::RPC_READ;
+            State = RPCRequestState::RPC_COMPLETE;
         } catch (TSerialDeviceException error) {
             State = RPCRequestState::RPC_ERROR;
         }
 
-        Semaphore->Signal(Signal);
+        RequestExecution.notify_all();
     }
 }
