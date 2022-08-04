@@ -92,7 +92,7 @@ namespace
     }
 }
 
-std::vector<uint8_t> TRPCPortDriver::SendRequest(PRPCRequest request)
+std::vector<uint8_t> TRPCPortDriver::SendRequest(PRPCRequest request) const
 {
     return SerialClient->RPCTransceive(request);
 }
@@ -134,7 +134,7 @@ TRPCHandler::TRPCHandler(const std::string& requestSchemaFilePath,
     rpcServer->RegisterMethod("metrics", "Load", std::bind(&TRPCHandler::LoadMetrics, this, std::placeholders::_1));
 }
 
-PRPCPortDriver TRPCHandler::FindPortDriver(const Json::Value& request)
+PRPCPortDriver TRPCHandler::FindPortDriver(const Json::Value& request) const
 {
     std::vector<PRPCPortDriver> matches;
     std::copy_if(PortDrivers.begin(),
@@ -188,12 +188,12 @@ TRPCException::TRPCException(const std::string& message, TRPCResultCode resultCo
       ResultCode(resultCode)
 {}
 
-TRPCResultCode TRPCException::GetResultCode()
+TRPCResultCode TRPCException::GetResultCode() const
 {
     return ResultCode;
 }
 
-std::string TRPCException::GetResultMessage()
+std::string TRPCException::GetResultMessage() const
 {
     return this->what();
 }

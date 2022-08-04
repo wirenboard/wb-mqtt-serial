@@ -27,7 +27,7 @@ class TRPCPortDriver
 public:
     PSerialClient SerialClient;
     PRPCPort RPCPort;
-    std::vector<uint8_t> SendRequest(PRPCRequest request);
+    std::vector<uint8_t> SendRequest(PRPCRequest request) const;
 };
 
 typedef std::shared_ptr<TRPCPortDriver> PRPCPortDriver;
@@ -45,7 +45,7 @@ private:
     PMQTTSerialDriver SerialDriver;
     std::vector<PRPCPortDriver> PortDrivers;
 
-    PRPCPortDriver FindPortDriver(const Json::Value& request);
+    PRPCPortDriver FindPortDriver(const Json::Value& request) const;
 
     Json::Value PortLoad(const Json::Value& request);
     Json::Value LoadMetrics(const Json::Value& request);
@@ -57,8 +57,8 @@ class TRPCException: public std::runtime_error
 {
 public:
     TRPCException(const std::string& message, TRPCResultCode resultCode);
-    TRPCResultCode GetResultCode();
-    std::string GetResultMessage();
+    TRPCResultCode GetResultCode() const;
+    std::string GetResultMessage() const;
 
 private:
     TRPCResultCode ResultCode;

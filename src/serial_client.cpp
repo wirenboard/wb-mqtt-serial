@@ -455,7 +455,7 @@ PPort TSerialClient::GetPort()
     return Port;
 }
 
-std::vector<uint8_t> TSerialClient::RPCTransceive(PRPCRequest request)
+std::vector<uint8_t> TSerialClient::RPCTransceive(PRPCRequest request) const
 {
     return RPCRequestHandler->RPCTransceive(request, FlushNeeded, RPCSignal);
 }
