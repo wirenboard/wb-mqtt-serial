@@ -18661,7 +18661,7 @@ WB-MSW v.3
 	Buzzer  =>  Buzzer
 	CO2  =>  CO2
 	CO2 Autocalibration Period  =>  CO2 Autocalibration Period
-	CO2 Calibration To Value  =>  CO2 Calibration To Value
+	CO2 Reference Sensor Value  =>  CO2 Reference Sensor Value
 	CO2 Force Calibration  =>  CO2 Force Calibration
 	CO2 Sensor Installed  =>  CO2 Sensor Installed
 	CO2 Sensor Type  =>  CO2 Sensor Type
