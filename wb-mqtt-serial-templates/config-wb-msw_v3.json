@@ -1381,7 +1381,7 @@
                 "group": "debug"
             },
             {
-                "name": "CO2 Calibration Cycle",
+                "name": "CO2 Autocalibration Period",
                 "reg_type": "holding",
                 "address": 89,
                 "max": 30,
@@ -1630,7 +1630,7 @@
                 "Sound dB Offset": "Смещение уровня шума (дБ)",
                 "Sound ADC Offset": "Смещение Low Gain ADC",
                 "CO2 Calibration To Value": "Калибровать показания CO2",
-                "CO2 Calibration Cycle": "Период автокалибровки датчика CO2",
+                "CO2 Autocalibration Period": "Период автокалибровки датчика CO2",
                 "CO2 Sensor Installed": "Датчик CO2 установлен",
                 "CO2 Sensor Type": "Тип датчика CO2",
                 "Only for Winsen CO₂ sensor": "Только для CO₂ датчика Winsen",

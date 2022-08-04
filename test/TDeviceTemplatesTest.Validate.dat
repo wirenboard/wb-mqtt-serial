@@ -18660,7 +18660,7 @@ WB-MSW v.3
 	Air Quality (VOC)  =>  Air Quality (VOC)
 	Buzzer  =>  Buzzer
 	CO2  =>  CO2
-	CO2 Calibration Cycle  =>  CO2 Calibration Cycle
+	CO2 Autocalibration Period  =>  CO2 Autocalibration Period
 	CO2 Calibration To Value  =>  CO2 Calibration To Value
 	CO2 Force Calibration  =>  CO2 Force Calibration
 	CO2 Sensor Installed  =>  CO2 Sensor Installed
