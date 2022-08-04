@@ -1,14 +1,16 @@
 {
     "title": "t13_frequency_title",
-    "device_type": "t13_freq",
+    "device_type": "t13_VFD",
+    "group": "g-motor-control",
     "device": {
-        "name": "t13-frequency converter",
+        "name": "t13-VFD",
         "id": "t13_frequency_converter",
         "max_read_registers": 10,
         "poll_interval": 1000,
         "response_timeout_ms": 30,
         "frame_timeout_ms": 40,
         "device_max_fail_cycles": 8,
+        "guard_interval_us": 5000,
         "groups": [
             {
                 "title": "General",
@@ -106,11 +108,11 @@
         ],
         "translations": {
             "en": {
-                "t13_frequency_title": "T13 frequency converter",
+                "t13_frequency_title": "T13-400W-12-H, T13-750W-12-H",
                 "Current": "Load current",
-	    },
+        },
             "ru": {
-                "t13_frequency_title": "Преобразователь частоты T13",
+                "t13_frequency_title": "T13-400W-12-H, T13-750W-12-H",
                 "General": "Общее",
                 "HW Info": "Данные модуля",
                 "Debug": "Диагностика",
