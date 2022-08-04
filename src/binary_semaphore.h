@@ -29,7 +29,7 @@ public:
 
     bool GetSignalValue(PBinarySemaphoreSignal signal)
     {
-        std::unique_lock<std::mutex> lock(Mutex);
+        std::lock_guard<std::mutex> lock(Mutex);
 
         bool r = signal->value;
         signal->value = false;
@@ -38,22 +38,14 @@ public:
 
     void Signal(PBinarySemaphoreSignal signal)
     {
-        std::unique_lock<std::mutex> lock(Mutex);
+        std::lock_guard<std::mutex> lock(Mutex);
         signal->value = true;
         Cond.notify_all();
     }
 
-    void ResetAllSignals()
-    {
-        std::unique_lock<std::mutex> lock(Mutex);
-        for (auto signal: Signals) {
-            signal->value = false;
-        }
-    }
-
     PBinarySemaphoreSignal MakeSignal()
     {
-        std::unique_lock<std::mutex> lock(Mutex);
+        std::lock_guard<std::mutex> lock(Mutex);
         PBinarySemaphoreSignal new_signal = std::make_shared<TBinarySemaphoreSignal>();
         Signals.push_back(new_signal);
         new_signal->value = false;

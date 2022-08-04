@@ -124,7 +124,6 @@ TSerialClient::TSerialClient(const std::vector<PSerialDevice>& devices,
     RPCRequestHandler = std::make_shared<TRPCRequestHandler>();
     RegisterUpdateSignal = FlushNeeded->MakeSignal();
     RPCSignal = FlushNeeded->MakeSignal();
-    FlushNeeded->ResetAllSignals();
 }
 
 TSerialClient::~TSerialClient()
@@ -231,8 +230,6 @@ void TSerialClient::WaitForPollAndFlush(std::chrono::steady_clock::time_point wa
             LastAccessedDevice = NULL;
             RPCRequestHandler->RPCRequestHandling(Port);
         }
-
-        FlushNeeded->ResetAllSignals();
     }
 }
 
@@ -352,7 +349,6 @@ void TSerialClient::ClosedPortCycle()
         if (FlushNeeded->GetSignalValue(RPCSignal)) {
             RPCRequestHandler->RPCRequestHandling(Port);
         }
-        FlushNeeded->ResetAllSignals();
     }
 
     TClosedPortRegisterReader reader;

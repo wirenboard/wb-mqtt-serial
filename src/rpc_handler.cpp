@@ -94,7 +94,11 @@ namespace
 
 std::vector<uint8_t> TRPCPortDriver::SendRequest(PRPCRequest request) const
 {
-    return SerialClient->RPCTransceive(request);
+    if (SerialClient) {
+        return SerialClient->RPCTransceive(request);
+    } else {
+        throw TRPCException("SerialClient wasn't found for requested port", TRPCResultCode::RPC_WRONG_PORT);
+    }
 }
 
 TRPCHandler::TRPCHandler(const std::string& requestSchemaFilePath,
@@ -121,13 +125,17 @@ TRPCHandler::TRPCHandler(const std::string& requestSchemaFilePath,
     for (auto serialPortDriver: serialPortDrivers) {
         PPort port = serialPortDriver->GetSerialClient()->GetPort();
 
-        std::find_if(PortDrivers.begin(), PortDrivers.end(), [&serialPortDriver, &port](PRPCPortDriver rpcPortDriver) {
-            if (port == rpcPortDriver->RPCPort->GetPort()) {
-                rpcPortDriver->SerialClient = serialPortDriver->GetSerialClient();
-                return true;
-            }
-            return false;
-        });
+        auto findedPortDriver = std::find_if(PortDrivers.begin(),
+                                             PortDrivers.end(),
+                                             [&serialPortDriver, &port](PRPCPortDriver rpcPortDriver) {
+                                                 return port == rpcPortDriver->RPCPort->GetPort();
+                                             });
+
+        if (findedPortDriver != PortDrivers.end()) {
+            findedPortDriver->get()->SerialClient = serialPortDriver->GetSerialClient();
+        } else {
+            LOG(Warn) << "Can't find RPCPortDriver for " << port->GetDescription() << " port";
+        }
     }
 
     rpcServer->RegisterMethod("port", "Load", std::bind(&TRPCHandler::PortLoad, this, std::placeholders::_1));
@@ -165,7 +173,7 @@ Json::Value TRPCHandler::PortLoad(const Json::Value& request)
 
         replyJSON["response"] = responseStr;
     } catch (TRPCException& e) {
-        LOG(Error) << e.GetResultMessage();
+        LOG(Warn) << e.GetResultMessage();
         switch (e.GetResultCode()) {
             case TRPCResultCode::RPC_WRONG_TIMEOUT:
                 wb_throw(WBMQTT::TRequestTimeoutException, e.GetResultMessage());
