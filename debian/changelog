@@ -1,3 +1,9 @@
+wb-mqtt-serial (2.67.2) stable; urgency=medium
+
+  * Added thermostat template BAC-002ALN
+
+ -- Alexander Degtyarev <a.degtyarev@wirenboard.com>  Thu, 04 Aug 2022 16:10:00 +0400
+
 wb-mqtt-serial (2.67.1) stable; urgency=medium
 
   * Fix code formatting after clang-format update (15.0-20220704)
