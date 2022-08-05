@@ -1,8 +1,14 @@
-wb-mqtt-serial (2.67.2) stable; urgency=medium
+wb-mqtt-serial (2.68.1) stable; urgency=medium
 
   * Fix Neva energy meters polling
 
  -- Petr Krasnoshchekov <petr.krasnoshchekov@wirenboard.ru>  Fri, 05 Aug 2022 10:13:09 +0500
+
+wb-mqtt-serial (2.68.0) stable; urgency=medium
+
+  * Add read only parameters to device templates
+
+ -- Petr Krasnoshchekov <petr.krasnoshchekov@wirenboard.ru>  Mon, 01 Aug 2022 16:29:30 +0500
 
 wb-mqtt-serial (2.67.1) stable; urgency=medium
 

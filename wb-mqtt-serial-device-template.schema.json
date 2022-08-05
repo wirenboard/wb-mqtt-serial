@@ -79,7 +79,6 @@
               "type": "string"
             },
             "address": {
-              "title": "Address",
               "$ref": "#/definitions/address"
             },
             "enum": {
@@ -104,9 +103,22 @@
             },
             "required": {
               "type": "boolean"
+            },
+            "readonly": {
+              "type": "boolean"
             }
           },
-          "required": ["title", "address"]
+          "required": ["title"]
+        },
+        {
+          "oneOf": [
+            {
+              "required": ["address"]
+            },
+            {
+              "required": ["readonly"]
+            }
+          ]
         },
         { "$ref": "#/definitions/group_condition" }
       ]

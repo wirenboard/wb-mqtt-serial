@@ -1,0 +1,34 @@
+{
+    "device_type": "readonly parameters",
+    "device": {
+        "name": "readonly parameters",
+        "id": "readonly parameters",
+        "channels": [
+            {
+                "name": "Temperature",
+                "reg_type": "input",
+                "format": "s32",
+                "address": "0x0504"
+            }
+        ],
+        "parameters": [
+            {
+                "id": "p1",
+                "title": "p1",
+                "readonly": true
+            },
+            {
+                "id": "p2",
+                "title": "p2",
+                "address": 9996,
+                "condition": "p1==1"
+            },
+            {
+                "id": "p3",
+                "title": "p3",
+                "address": 9997,
+                "condition": "p1==0"
+            }
+        ]
+    }
+}
