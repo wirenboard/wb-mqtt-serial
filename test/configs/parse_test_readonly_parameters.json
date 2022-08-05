@@ -1,0 +1,17 @@
+{
+    "debug": false,
+    "ports": [
+        {
+            "path" : "/dev/ttyNSC0",
+            "devices" : [
+                {
+                    "device_type" : "readonly parameters",
+                    "slave_id": 2,
+                    "p1": 1,
+                    "p2": 3,
+                    "p3": 2
+                }
+            ]
+        }
+    ]
+}
