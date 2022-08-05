@@ -1,8 +1,14 @@
-wb-mqtt-serial (2.67.1) stable; urgency=medium
+wb-mqtt-serial (2.67.2) stable; urgency=medium
 
   * Fix Neva energy meters polling
 
- -- Petr Krasnoshchekov <petr.krasnoshchekov@wirenboard.ru>  Wed, 27 Jul 2022 11:36:11 +0500
+ -- Petr Krasnoshchekov <petr.krasnoshchekov@wirenboard.ru>  Fri, 05 Aug 2022 10:13:09 +0500
+
+wb-mqtt-serial (2.67.1) stable; urgency=medium
+
+  * Fix code formatting after clang-format update (15.0-20220704)
+
+ -- Nikita Maslov <nikita.maslov@wirenboard.ru>  Thu, 28 Jul 2022 21:45:08 +0300
 
 wb-mqtt-serial (2.67.0) stable; urgency=medium
 

@@ -1,3 +1,3 @@
-buildDebSbuild defaultTargets: 'wb6',
+buildDebSbuild defaultTargets: 'current-armhf',
                defaultRunLintian: true,
                defaultStyleCheckDirs: 'src test'
