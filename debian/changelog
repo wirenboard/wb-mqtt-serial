@@ -1,3 +1,10 @@
+wb-mqtt-serial (2.68.2) stable; urgency=medium
+
+* The bac-6000-series template is deprecated.
+* Added templates bac-6000aln and bac-6000elnw
+
+ -- Alexander Degtyarev <a.degtyarev@wirenboard.com>  Mon, 08 Aug 2022 12:27:00 +0400
+
 wb-mqtt-serial (2.68.1) stable; urgency=medium
 
   * Fix Neva energy meters polling
