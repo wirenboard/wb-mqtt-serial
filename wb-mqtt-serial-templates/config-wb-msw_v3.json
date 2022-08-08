@@ -78,6 +78,18 @@
                 "group": "air_quality",
                 "order": 2
             },
+            "co2_sensor_type": {
+                "id": "co2_sensor_type",
+                "title": "CO2 Sensor Type",
+                // "address": 83,
+                // "reg_type": "input",
+                "enum": [0, 1],
+                "enum_titles": ["MH-Z19B", "CM1106"],
+                "default": 0,
+                "group": "air_quality",
+                "order": 1,
+                "readonly": true
+            },
             "co2_measurement_range": {
                 "title": "CO₂ Measurement Range (ppm)",
                 "description": "Only for MH-Z19B CO₂ sensor",
@@ -87,7 +99,8 @@
                 "enum_titles": ["2000", "5000", "10000"],
                 "default": 5000,
                 "group": "air_quality",
-                "order": 3
+                "order": 3,
+                "condition": "co2_sensor_type==0"
             },
             "th_sensor_heater_enabled": {
                 "title": "TH Sensor Heater Enabled",
@@ -190,7 +203,8 @@
                 "address": 1,
                 "type": "switch",
                 "enabled": false,
-                "group": "air_quality"
+                "group": "air_quality",
+                "condition": "co2_sensor_type==0"
             },
             {
                 "name": "Air Quality (VOC)",
@@ -1378,6 +1392,7 @@
                 "units": "ppm",
                 "error_value": "0xFFFF",
                 "enabled": false,
+                "condition": "co2_sensor_type==1",
                 "group": "debug"
             },
             {
@@ -1389,6 +1404,7 @@
                 "units": "day",
                 "error_value": "0xFFFF",
                 "enabled": false,
+                "condition": "co2_sensor_type==1",
                 "group": "debug"
             },
             {
