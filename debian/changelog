@@ -1,3 +1,10 @@
+wb-mqtt-serial (2.68.2) stable; urgency=medium
+
+  * Parameters visibility and order correction in templates for LED
+    dimmers
+
+ -- Dmitry Vorobjev <d.vorobjev@wirenboard.ru>  Mon, 08 Aug 2022 09:23:26 +0300
+
 wb-mqtt-serial (2.68.1) stable; urgency=medium
 
   * Fix Neva energy meters polling
