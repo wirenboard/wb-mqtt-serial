@@ -4,6 +4,20 @@ BAC-6000 Series
 	Room temperature  =>  Room temperature
 	Setting Mode  =>  Setting Mode
 	Setting temperature  =>  Setting temperature
+BAC-6000ALN
+	Power  =>  Power
+	Fan Speed  =>  Fan Speed
+	Lock Buttons  =>  Lock Buttons
+	Room Temperature  =>  Room Temperature
+	Setting Mode  =>  Setting Mode
+	Setting Temperature  =>  Setting Temperature
+BAC-6000ELNW
+	Power  =>  Power
+	Fan Speed  =>  Fan Speed
+	Lock Buttons  =>  Lock Buttons
+	Room Temperature  =>  Room Temperature
+	Setting Mode  =>  Setting Mode
+	Setting Temperature  =>  Setting Temperature		
 BHT-6000 Series
 	Heating status  =>  Heating status
 	Lock buttons  =>  Lock buttons
