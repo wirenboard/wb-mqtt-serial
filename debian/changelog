@@ -1,3 +1,9 @@
+wb-mqtt-serial (2.68.3) stable; urgency=medium
+
+  * Fix readonly parameters validation in device templates
+
+ -- Petr Krasnoshchekov <petr.krasnoshchekov@wirenboard.ru>  Mon, 08 Aug 2022 16:43:52 +0500
+
 wb-mqtt-serial (2.68.2) stable; urgency=medium
 
   * Parameters visibility and order correction in templates for LED
