@@ -1086,6 +1086,9 @@ protected:
     void ReconnectTest1Device(function<void()>&& thunk, bool pollIntervalTest = false);
     void ReconnectTest2Devices(function<void()>&& thunk);
 
+    /**rpc request test functions**/
+    void SendRPCRequest(PMQTTSerialDriver serialDriver);
+
     PFakeMqttBroker MqttBroker;
     PFakeMqttClient MqttClient;
     PDeviceDriver Driver;
@@ -1566,6 +1569,63 @@ TEST_F(TSerialClientIntegrationTest, SlaveIdCollision)
                                t,
                                rpcConfig,
                                [=](const Json::Value&, PRPCConfig rpcConfig) { return std::make_pair(Port, false); }));
+}
+
+void TSerialClientIntegrationTest::SendRPCRequest(PMQTTSerialDriver serialDriver)
+{
+    std::vector<PSerialPortDriver> portDrivers = serialDriver->GetPortDrivers();
+    PSerialClient serialClient = portDrivers[0]->GetSerialClient();
+
+    std::vector<int> expected_request = {0x16, 0x05, 0x00, 0x0a, 0xff, 0x00, 0xaf, 0x1f};
+    std::vector<int> expected_response = {0x16, 0x05, 0x00, 0x0a, 0xff, 0x00, 0xaf, 0x1f};
+
+    PRPCRequest request = std::make_shared<TRPCRequest>();
+    request->ResponseTimeout = std::chrono::milliseconds(500);
+    request->FrameTimeout = std::chrono::milliseconds(20);
+    request->TotalTimeout = std::chrono::seconds(10);
+    std::copy(expected_request.begin(), expected_request.end(), back_inserter(request->Message));
+    request->ResponseSize = expected_response.size();
+
+    Port->Expect(expected_request, expected_response, NULL);
+    serialClient->RPCTransceive(request);
+}
+
+TEST_F(TSerialClientIntegrationTest, RPCRequestTransceive)
+{
+    Json::Value configSchema = LoadConfigSchema(GetDataFilePath("../wb-mqtt-serial.schema.json"));
+    AddFakeDeviceType(configSchema);
+    AddRegisterType(configSchema, "fake");
+    TTemplateMap t;
+
+    Config = LoadConfig(GetDataFilePath("configs/config-rpc-test.json"),
+                        DeviceFactory,
+                        configSchema,
+                        t,
+                        rpcConfig,
+                        [=](const Json::Value&, PRPCConfig rpcConfig) { return std::make_pair(Port, false); });
+
+    FilterConfig("RPCTest");
+
+    SerialDriver = make_shared<TMQTTSerialDriver>(Driver, Config);
+
+    auto device = TFakeSerialDevice::GetDevice("0x98");
+
+    if (!device) {
+        throw std::runtime_error("device not found or wrong type");
+    }
+
+    Note() << "LoopOnce() [first start]";
+    SerialDriver->LoopOnce();
+
+    PublishWaitOnValue("/devices/RPCTest/controls/RGB/on", "10;20;30", 0, true);
+    PublishWaitOnValue("/devices/RPCTest/controls/White/on", "42", 0, true);
+
+    Note() << "LoopOnce() [start thread]";
+    std::thread serialDriverThread(&TMQTTSerialDriver::LoopOnce, SerialDriver);
+    Note() << "RPC request send";
+    SendRPCRequest(SerialDriver);
+
+    serialDriverThread.join();
 }
 
 /** Reconnect test cases **/

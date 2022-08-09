@@ -180,7 +180,7 @@ size_t TFakeSerialPort::ReadFrame(uint8_t* buf,
         *p++ = (uint8_t)b;
     }
     DumpWhatWasRead();
-    if (nread == 0) {
+    if ((nread == 0) && (count != 0)) {
         throw TSerialDeviceTransientErrorException("request timed out");
     }
     return nread;

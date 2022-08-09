@@ -1,0 +1,97 @@
+Subscribe: /devices/+/meta/driver (QoS 0)
+Publish: /devices/RPCTest/meta: '{"driver":"serial-client-integration-test","title":{"en":"RPCTest"}}' (QoS 1, retained)
+Publish: /devices/RPCTest/meta/driver: 'serial-client-integration-test' (QoS 1, retained)
+Publish: /devices/RPCTest/meta/name: 'RPCTest' (QoS 1, retained)
+Publish: /devices/RPCTest/controls/Test/meta: '{"order":1,"readonly":false,"type":"value"}' (QoS 1, retained)
+Publish: /devices/RPCTest/controls/Test/meta/error: '' (QoS 1, retained)
+Publish: /devices/RPCTest/controls/Test/meta/order: '1' (QoS 1, retained)
+Publish: /devices/RPCTest/controls/Test/meta/readonly: '0' (QoS 1, retained)
+Publish: /devices/RPCTest/controls/Test/meta/type: 'value' (QoS 1, retained)
+Publish: /devices/RPCTest/controls/Test: '0' (QoS 1, retained)
+Subscribe: /devices/RPCTest/controls/Test/on (QoS 0)
+Publish: /devices/RPCTest/controls/RGB/meta: '{"order":2,"readonly":false,"type":"rgb"}' (QoS 1, retained)
+Publish: /devices/RPCTest/controls/RGB/meta/error: '' (QoS 1, retained)
+Publish: /devices/RPCTest/controls/RGB/meta/order: '2' (QoS 1, retained)
+Publish: /devices/RPCTest/controls/RGB/meta/readonly: '0' (QoS 1, retained)
+Publish: /devices/RPCTest/controls/RGB/meta/type: 'rgb' (QoS 1, retained)
+Publish: /devices/RPCTest/controls/RGB: '' (QoS 1, retained)
+Subscribe: /devices/RPCTest/controls/RGB/on (QoS 0)
+Publish: /devices/RPCTest/controls/White/meta: '{"max":255.0,"order":3,"readonly":false,"type":"dimmer"}' (QoS 1, retained)
+Publish: /devices/RPCTest/controls/White/meta/error: '' (QoS 1, retained)
+Publish: /devices/RPCTest/controls/White/meta/max: '255' (QoS 1, retained)
+Publish: /devices/RPCTest/controls/White/meta/order: '3' (QoS 1, retained)
+Publish: /devices/RPCTest/controls/White/meta/readonly: '0' (QoS 1, retained)
+Publish: /devices/RPCTest/controls/White/meta/type: 'dimmer' (QoS 1, retained)
+Publish: /devices/RPCTest/controls/White: '' (QoS 1, retained)
+Subscribe: /devices/RPCTest/controls/White/on (QoS 0)
+Subscribe: /devices/RPCTest/controls/# (QoS 0)
+(retain) -> /devices/RPCTest/controls/RGB/meta: '{"order":2,"readonly":false,"type":"rgb"}' (QoS 1, retained)
+(retain) -> /devices/RPCTest/controls/RGB/meta/order: '2' (QoS 1, retained)
+(retain) -> /devices/RPCTest/controls/RGB/meta/readonly: '0' (QoS 1, retained)
+(retain) -> /devices/RPCTest/controls/RGB/meta/type: 'rgb' (QoS 1, retained)
+(retain) -> /devices/RPCTest/controls/Test: '0' (QoS 1, retained)
+(retain) -> /devices/RPCTest/controls/Test/meta: '{"order":1,"readonly":false,"type":"value"}' (QoS 1, retained)
+(retain) -> /devices/RPCTest/controls/Test/meta/order: '1' (QoS 1, retained)
+(retain) -> /devices/RPCTest/controls/Test/meta/readonly: '0' (QoS 1, retained)
+(retain) -> /devices/RPCTest/controls/Test/meta/type: 'value' (QoS 1, retained)
+(retain) -> /devices/RPCTest/controls/White/meta: '{"max":255.0,"order":3,"readonly":false,"type":"dimmer"}' (QoS 1, retained)
+(retain) -> /devices/RPCTest/controls/White/meta/max: '255' (QoS 1, retained)
+(retain) -> /devices/RPCTest/controls/White/meta/order: '3' (QoS 1, retained)
+(retain) -> /devices/RPCTest/controls/White/meta/readonly: '0' (QoS 1, retained)
+(retain) -> /devices/RPCTest/controls/White/meta/type: 'dimmer' (QoS 1, retained)
+Unsubscribe -- serial-client-integration-test: /devices/RPCTest/controls/#
+>>> LoopOnce() [first start]
+Open()
+Sleep(20000)
+fake_serial_device '152': read address '0' value '0'
+fake_serial_device '152': transfer OK
+fake_serial_device '152': reconnected
+fake_serial_device '152': read address '4' value '0'
+fake_serial_device '152': read address '5' value '0'
+fake_serial_device '152': read address '6' value '0'
+fake_serial_device '152': read address '7' value '0'
+Publish: /devices/RPCTest/controls/Test: '0' (QoS 1, retained)
+Publish: /devices/RPCTest/controls/RGB: '0;0;0' (QoS 1, retained)
+Publish: /devices/RPCTest/controls/White: '0' (QoS 1, retained)
+Publish: /devices/RPCTest/controls/RGB/on: '10;20;30' (QoS 0, retained)
+Publish: /devices/RPCTest/controls/White/on: '42' (QoS 0, retained)
+>>> Start RPC Thread
+>>> LoopOnce() [rpc request]
+fake_serial_device '152': write to address '4' value '10'
+Publish: /devices/RPCTest/controls/RGB: '10;0;0' (QoS 1, retained)
+fake_serial_device '152': write to address '5' value '20'
+Publish: /devices/RPCTest/controls/RGB: '10;20;0' (QoS 1, retained)
+fake_serial_device '152': write to address '6' value '30'
+Publish: /devices/RPCTest/controls/RGB: '10;20;30' (QoS 1, retained)
+fake_serial_device '152': write to address '7' value '42'
+Publish: /devices/RPCTest/controls/White: '42' (QoS 1, retained)
+Sleep(20000)
+>> 16 05 00 0A FF 00 AF 1F
+<< 16 05 00 0A FF 00 AF 1F
+Sleep(20000)
+fake_serial_device '152': read address '4' value '10'
+fake_serial_device '152': read address '5' value '20'
+fake_serial_device '152': read address '6' value '30'
+Unsubscribe -- serial-client-integration-test: /devices/RPCTest/controls/White/on
+Publish: /devices/RPCTest/controls/White: '' (QoS 1, retained)
+Publish: /devices/RPCTest/controls/White/meta: '' (QoS 1, retained)
+Publish: /devices/RPCTest/controls/White/meta/max: '' (QoS 1, retained)
+Publish: /devices/RPCTest/controls/White/meta/order: '' (QoS 1, retained)
+Publish: /devices/RPCTest/controls/White/meta/readonly: '' (QoS 1, retained)
+Publish: /devices/RPCTest/controls/White/meta/type: '' (QoS 1, retained)
+Unsubscribe -- serial-client-integration-test: /devices/RPCTest/controls/RGB/on
+Publish: /devices/RPCTest/controls/RGB: '' (QoS 1, retained)
+Publish: /devices/RPCTest/controls/RGB/meta: '' (QoS 1, retained)
+Publish: /devices/RPCTest/controls/RGB/meta/order: '' (QoS 1, retained)
+Publish: /devices/RPCTest/controls/RGB/meta/readonly: '' (QoS 1, retained)
+Publish: /devices/RPCTest/controls/RGB/meta/type: '' (QoS 1, retained)
+Unsubscribe -- serial-client-integration-test: /devices/RPCTest/controls/Test/on
+Publish: /devices/RPCTest/controls/Test: '' (QoS 1, retained)
+Publish: /devices/RPCTest/controls/Test/meta: '' (QoS 1, retained)
+Publish: /devices/RPCTest/controls/Test/meta/order: '' (QoS 1, retained)
+Publish: /devices/RPCTest/controls/Test/meta/readonly: '' (QoS 1, retained)
+Publish: /devices/RPCTest/controls/Test/meta/type: '' (QoS 1, retained)
+Publish: /devices/RPCTest/meta: '' (QoS 1, retained)
+Publish: /devices/RPCTest/meta/driver: '' (QoS 1, retained)
+Publish: /devices/RPCTest/meta/name: '' (QoS 1, retained)
+stop: serial-client-integration-test
