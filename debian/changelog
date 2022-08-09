@@ -1,3 +1,9 @@
+wb-mqtt-serial (2.68.3) stable; urgency=medium
+
+  * Maximum brightness was decreased to 254 in ECOdim DALI GW2 template
+
+ -- Dmitry Vorobjev <d.vorobjev@wirenboard.ru>  Tue, 09 Aug 2022 11:47:19 +0300
+
 wb-mqtt-serial (2.68.2) stable; urgency=medium
 
   * Parameters visibility and order correction in templates for LED
