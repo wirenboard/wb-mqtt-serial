@@ -1393,7 +1393,7 @@
                 "error_value": "0xFFFF",
                 "enabled": false,
                 "condition": "co2_sensor_type==1",
-                "group": "debug"
+                "group": "air_quality"
             },
             {
                 "name": "CO2 Autocalibration Period",
@@ -1405,7 +1405,7 @@
                 "error_value": "0xFFFF",
                 "enabled": false,
                 "condition": "co2_sensor_type==1",
-                "group": "debug"
+                "group": "air_quality"
             },
             {
                 "name": "CO2 Sensor Installed",
