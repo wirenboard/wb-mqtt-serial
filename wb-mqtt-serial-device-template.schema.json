@@ -111,7 +111,7 @@
           "required": ["title"]
         },
         {
-          "oneOf": [
+          "anyOf": [
             {
               "required": ["address"]
             },
