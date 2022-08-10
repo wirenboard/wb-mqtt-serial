@@ -121,7 +121,8 @@ namespace
             auto it = regs.find(ch["name"].asString());
             if (it != regs.end()) {
                 if (TryToTransformSubDeviceChannel(ch, templates, subdeviceTypeHashes) ||
-                    TryToTransformSimpleChannel(ch, it->second)) {
+                    TryToTransformSimpleChannel(ch, it->second))
+                {
                     channels.append(ch);
                 }
             }

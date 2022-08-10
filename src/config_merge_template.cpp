@@ -52,7 +52,9 @@ void AppendSetupItems(Json::Value& deviceTemplate, const Json::Value& config, TE
             if (config.isMember(name)) {
                 auto& cfgItem = config[name];
                 if (cfgItem.isNumeric()) {
-                    if (CheckCondition(*it, params, exprs)) {
+                    // Readonly parameters are used now only for web-interface organization.
+                    // We will read them from devices in the future.
+                    if (!it->get("readonly", false).asBool() && CheckCondition(*it, params, exprs)) {
                         Json::Value item(*it);
                         item["value"] = cfgItem;
                         newSetup.append(item);

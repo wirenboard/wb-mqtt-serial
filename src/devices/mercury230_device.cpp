@@ -160,7 +160,8 @@ uint32_t TMercury230Device::ReadParam(uint32_t address, unsigned resp_payload_le
 
     if (resp_payload_len == 3) {
         if ((reg_type == REG_PARAM_SIGN_ACT) || (reg_type == REG_PARAM_SIGN_REACT) ||
-            (reg_type == REG_PARAM_SIGN_IGNORE)) {
+            (reg_type == REG_PARAM_SIGN_IGNORE))
+        {
             uint32_t magnitude = (((uint32_t)buf[0] & 0x3f) << 16) + ((uint32_t)buf[2] << 8) + (uint32_t)buf[1];
 
             int active_power_sign = (buf[0] & (1 << 7)) ? -1 : 1;
