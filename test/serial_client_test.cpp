@@ -1614,6 +1614,8 @@ TEST_F(TSerialClientIntegrationTest, RPCRequestTransceive)
         throw std::runtime_error("device not found or wrong type");
     }
 
+    device->SetSessionLogEnabled(true);
+
     Note() << "LoopOnce() [first start]";
     SerialDriver->LoopOnce();
 

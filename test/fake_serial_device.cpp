@@ -54,7 +54,8 @@ void TFakeSerialDevice::Register(TSerialDeviceFactory& factory)
 TFakeSerialDevice::TFakeSerialDevice(PDeviceConfig config, PPort port, PProtocol protocol)
     : TSerialDevice(config, port, protocol),
       TUInt32SlaveId(config->SlaveId),
-      Connected(true)
+      Connected(true),
+      SessionLogEnabled(false)
 {
     FakePort = dynamic_pointer_cast<TFakeSerialPort>(port);
     if (!FakePort) {
@@ -223,4 +224,24 @@ void TFakeSerialDevice::ClearDevices()
 PRegisterRange TFakeSerialDevice::CreateRegisterRange() const
 {
     return std::make_shared<TFakeRegisterRange>();
+}
+
+void TFakeSerialDevice::SetSessionLogEnabled(bool enabled)
+{
+    SessionLogEnabled = enabled;
+}
+
+void TFakeSerialDevice::Prepare()
+{
+    TSerialDevice::Prepare();
+    if (SessionLogEnabled) {
+        FakePort->GetFixture().Emit() << "fake_serial_device '" << SlaveId << "': prepare";
+    }
+}
+
+void TFakeSerialDevice::EndSession()
+{
+    if (SessionLogEnabled) {
+        FakePort->GetFixture().Emit() << "fake_serial_device '" << SlaveId << "': end session";
+    }
 }

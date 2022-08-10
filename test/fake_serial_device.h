@@ -33,6 +33,10 @@ public:
     static void ClearDevices();
     static void Register(TSerialDeviceFactory& factory);
 
+    void SetSessionLogEnabled(bool enabled);
+    void Prepare() override;
+    void EndSession() override;
+
 protected:
     TRegisterValue ReadRegisterImpl(PRegister reg) override;
     void WriteRegisterImpl(PRegister reg, const TRegisterValue& value) override;
@@ -41,6 +45,7 @@ private:
     PFakeSerialPort FakePort;
     std::map<int, std::pair<bool, bool>> Blockings;
     bool Connected;
+    bool SessionLogEnabled;
 
     static std::list<TFakeSerialDevice*> Devices;
 };
