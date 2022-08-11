@@ -1,8 +1,45 @@
-wb-mqtt-serial (2.68.0) stable; urgency=medium
+wb-mqtt-serial (2.69.0) stable; urgency=medium
 
   * Add RPC Port/Load method for exchanging data over available ports
 
- -- Ekaterina Volkova  <ekaterina.volkova@wirenboard.ru>  Tue, 26 Jul 2022 20:09:31 +0300
+ -- Ekaterina Volkova  <ekaterina.volkova@wirenboard.ru>  Tue, 11 Aug 2022 15:25:31 +0300
+
+wb-mqtt-serial (2.68.4) stable; urgency=medium
+
+  * Units correction in ECOdim DALI GW2 template
+
+ -- Dmitry Vorobjev <d.vorobjev@wirenboard.ru>  Tue, 09 Aug 2022 14:59:52 +0300
+
+wb-mqtt-serial (2.68.3) stable; urgency=medium
+
+  * Maximum brightness was decreased to 254 in ECOdim DALI GW2 template
+
+ -- Dmitry Vorobjev <d.vorobjev@wirenboard.ru>  Tue, 09 Aug 2022 11:47:19 +0300
+
+wb-mqtt-serial (2.68.2) stable; urgency=medium
+
+  * Parameters visibility and order correction in templates for LED
+    dimmers
+
+ -- Dmitry Vorobjev <d.vorobjev@wirenboard.ru>  Mon, 08 Aug 2022 09:23:26 +0300
+
+wb-mqtt-serial (2.68.1) stable; urgency=medium
+
+  * Fix Neva energy meters polling
+
+ -- Petr Krasnoshchekov <petr.krasnoshchekov@wirenboard.ru>  Fri, 05 Aug 2022 10:13:09 +0500
+
+wb-mqtt-serial (2.68.0) stable; urgency=medium
+
+  * Add read only parameters to device templates
+
+ -- Petr Krasnoshchekov <petr.krasnoshchekov@wirenboard.ru>  Mon, 01 Aug 2022 16:29:30 +0500
+
+wb-mqtt-serial (2.67.1) stable; urgency=medium
+
+  * Fix code formatting after clang-format update (15.0-20220704)
+
+ -- Nikita Maslov <nikita.maslov@wirenboard.ru>  Thu, 28 Jul 2022 21:45:08 +0300
 
 wb-mqtt-serial (2.67.0) stable; urgency=medium
 
