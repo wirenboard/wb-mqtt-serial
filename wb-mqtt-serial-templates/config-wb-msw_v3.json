@@ -78,15 +78,29 @@
                 "group": "air_quality",
                 "order": 2
             },
+            "co2_sensor_type": {
+                "id": "co2_sensor_type",
+                "title": "CO2 Sensor Type",
+                // "address": 83,
+                // "reg_type": "input",
+                "enum": [0, 1],
+                "enum_titles": ["MH-Z19B", "CM1106"],
+                "default": 0,
+                "group": "air_quality",
+                "order": 1,
+                "readonly": true
+            },
             "co2_measurement_range": {
                 "title": "CO₂ Measurement Range (ppm)",
+                "description": "Only for MH-Z19B CO₂ sensor",
                 "address": 96,
                 "reg_type": "holding",
                 "enum": [2000, 5000, 10000],
                 "enum_titles": ["2000", "5000", "10000"],
                 "default": 5000,
                 "group": "air_quality",
-                "order": 3
+                "order": 3,
+                "condition": "co2_sensor_type==0"
             },
             "th_sensor_heater_enabled": {
                 "title": "TH Sensor Heater Enabled",
@@ -184,12 +198,37 @@
                 "group": "air_quality"
             },
             {
+                "name": "CO2 Reference Sensor Value",
+                "reg_type": "holding",
+                "address": 88,
+                "max": 1500,
+                "min": 0,
+                "units": "ppm",
+                "error_value": "0xFFFF",
+                "enabled": false,
+                "condition": "co2_sensor_type==1",
+                "group": "air_quality"
+            },
+            {
+                "name": "CO2 Autocalibration Period",
+                "reg_type": "holding",
+                "address": 89,
+                "max": 30,
+                "min": 1,
+                "units": "day",
+                "error_value": "0xFFFF",
+                "enabled": false,
+                "condition": "co2_sensor_type==1",
+                "group": "air_quality"
+            },
+            {
                 "name": "CO2 Force Calibration",
                 "reg_type": "coil",
                 "address": 1,
                 "type": "switch",
                 "enabled": false,
-                "group": "air_quality"
+                "group": "air_quality",
+                "condition": "co2_sensor_type==0"
             },
             {
                 "name": "Air Quality (VOC)",
@@ -1369,6 +1408,21 @@
                 "group": "debug"
             },
             {
+                "name": "CO2 Sensor Installed",
+                "reg_type": "input",
+                "type": "switch",
+                "address": 82,
+                "enabled": false,
+                "group": "debug"
+            },
+            {
+                "name": "CO2 Sensor Type",
+                "reg_type": "input",
+                "address": 83,
+                "enabled": false,
+                "group": "debug"
+            },
+            {
                 "name": "VOC Version",
                 "reg_type": "input",
                 "address": 108,
@@ -1591,6 +1645,11 @@
                 "Sound High Gain ADC Raw": "Сырое значение High Gain ADC",
                 "Sound dB Offset": "Смещение уровня шума (дБ)",
                 "Sound ADC Offset": "Смещение Low Gain ADC",
+                "CO2 Reference Sensor Value": "Значение референсного датчика CO2",
+                "CO2 Autocalibration Period": "Период автокалибровки датчика CO2",
+                "CO2 Sensor Installed": "Датчик CO2 установлен",
+                "CO2 Sensor Type": "Тип датчика CO2",
+                "Only for MH-Z19B CO₂ sensor": "Только для CO₂ датчика MH-Z19B",
                 "VOC Version": "Версия датчика VOC",
                 "VOC Raw": "Сырое значение датчика VOC",
                 "Motion Raw": "Сырое значение датчика движения",

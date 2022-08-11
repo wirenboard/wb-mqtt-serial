@@ -1,3 +1,9 @@
+wb-mqtt-serial (2.68.6) stable; urgency=medium
+
+  * Added support CM1106 CO2 sensor for WB-MSWv3 template
+
+ -- Dmitry Orlov <dmitry.orlov@wirenboard.ru>  Wed, 10 Aug 2022 18:59:20 +0300
+
 wb-mqtt-serial (2.68.5) stable; urgency=medium
 
   * Fix readonly parameters validation in device templates
