@@ -41,15 +41,13 @@ void TRPCRequestHandler::RPCRequestHandling(PPort port)
 
             std::vector<uint8_t> readData;
             readData.reserve(Request->ResponseSize);
-            size_t ActualSize = port->ReadFrame(readData.data(),
+            size_t actualSize = port->ReadFrame(readData.data(),
                                                 Request->ResponseSize,
                                                 Request->ResponseTimeout,
                                                 Request->FrameTimeout);
 
             ReadData.clear();
-            for (size_t i = 0; i < ActualSize; i++) {
-                ReadData.push_back(readData[i]);
-            }
+            std::copy_n(readData.begin(), actualSize, std::back_inserter(ReadData));
             State = RPCRequestState::RPC_COMPLETE;
         } catch (TSerialDeviceException error) {
             State = RPCRequestState::RPC_ERROR;
