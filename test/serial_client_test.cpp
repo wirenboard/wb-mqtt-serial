@@ -1605,7 +1605,10 @@ TRPCResultCode TSerialClientIntegrationTest::SendRPCRequest(PMQTTSerialDriver se
 
     try {
         Note() << "Send RPC request";
-        serialClient->RPCTransceive(request);
+        std::vector<uint8_t> response = serialClient->RPCTransceive(request);
+        std::vector<int> responseInt;
+        std::copy(response.begin(), response.end(), back_inserter(responseInt));
+        EXPECT_EQ(responseInt == expectedResponse, true);
     } catch (TRPCException exception) {
         rpcException = exception;
     }
