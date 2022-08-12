@@ -1,8 +1,20 @@
 wb-mqtt-serial (2.69.0) stable; urgency=medium
 
-  * Add RPC Port/Load method for exchanging data over available ports
+  * Add RPC Port/Load method for exchanging data over available ports  
 
- -- Ekaterina Volkova  <ekaterina.volkova@wirenboard.ru>  Tue, 11 Aug 2022 15:25:31 +0300
+ -- Ekaterina Volkova <ekaterina.volkova@wirenboard.ru> Fri, 12 Aug 2022 08:53:31 +0300
+
+wb-mqtt-serial (2.68.6) stable; urgency=medium
+
+  * Added support CM1106 CO2 sensor for WB-MSWv3 template
+
+ -- Dmitry Orlov <dmitry.orlov@wirenboard.ru>  Wed, 10 Aug 2022 18:59:20 +0300
+
+wb-mqtt-serial (2.68.5) stable; urgency=medium
+
+  * Fix readonly parameters validation in device templates
+
+ -- Petr Krasnoshchekov <petr.krasnoshchekov@wirenboard.ru>  Wed, 10 Aug 2022 15:47:13 +0500
 
 wb-mqtt-serial (2.68.4) stable; urgency=medium
 
