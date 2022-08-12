@@ -75,7 +75,6 @@ fake_serial_device '152': prepare
 fake_serial_device '152': read address '4' value '10'
 fake_serial_device '152': read address '5' value '20'
 fake_serial_device '152': read address '6' value '30'
->>> RPC exception: Port IO error
 >>> [test case] RPC request exception: meeting total timeout
 Publish: /devices/RPCTest/controls/RGB/on: '10;20;30' (QoS 0, retained)
 Publish: /devices/RPCTest/controls/White/on: '42' (QoS 0, retained)
@@ -91,7 +90,6 @@ fake_serial_device '152': prepare
 fake_serial_device '152': read address '4' value '10'
 fake_serial_device '152': read address '5' value '20'
 fake_serial_device '152': read address '6' value '30'
->>> RPC exception: Request handler is not responding
 >>> [test case] RPC succesful case
 Publish: /devices/RPCTest/controls/RGB/on: '10;20;30' (QoS 0, retained)
 Publish: /devices/RPCTest/controls/White/on: '42' (QoS 0, retained)
@@ -128,24 +126,24 @@ fake_serial_device '152': read address '4' value '10'
 fake_serial_device '152': read address '5' value '20'
 fake_serial_device '152': read address '6' value '30'
 Unsubscribe -- serial-client-integration-test: /devices/RPCTest/controls/White/on
-Publish: /devices/RPCTest/controls/White: '' (QoS 1, retained)
 Publish: /devices/RPCTest/controls/White/meta: '' (QoS 1, retained)
 Publish: /devices/RPCTest/controls/White/meta/max: '' (QoS 1, retained)
 Publish: /devices/RPCTest/controls/White/meta/order: '' (QoS 1, retained)
 Publish: /devices/RPCTest/controls/White/meta/readonly: '' (QoS 1, retained)
 Publish: /devices/RPCTest/controls/White/meta/type: '' (QoS 1, retained)
+Publish: /devices/RPCTest/controls/White: '' (QoS 1, retained)
 Unsubscribe -- serial-client-integration-test: /devices/RPCTest/controls/RGB/on
-Publish: /devices/RPCTest/controls/RGB: '' (QoS 1, retained)
 Publish: /devices/RPCTest/controls/RGB/meta: '' (QoS 1, retained)
 Publish: /devices/RPCTest/controls/RGB/meta/order: '' (QoS 1, retained)
 Publish: /devices/RPCTest/controls/RGB/meta/readonly: '' (QoS 1, retained)
 Publish: /devices/RPCTest/controls/RGB/meta/type: '' (QoS 1, retained)
+Publish: /devices/RPCTest/controls/RGB: '' (QoS 1, retained)
 Unsubscribe -- serial-client-integration-test: /devices/RPCTest/controls/Test/on
-Publish: /devices/RPCTest/controls/Test: '' (QoS 1, retained)
 Publish: /devices/RPCTest/controls/Test/meta: '' (QoS 1, retained)
 Publish: /devices/RPCTest/controls/Test/meta/order: '' (QoS 1, retained)
 Publish: /devices/RPCTest/controls/Test/meta/readonly: '' (QoS 1, retained)
 Publish: /devices/RPCTest/controls/Test/meta/type: '' (QoS 1, retained)
+Publish: /devices/RPCTest/controls/Test: '' (QoS 1, retained)
 Publish: /devices/RPCTest/meta: '' (QoS 1, retained)
 Publish: /devices/RPCTest/meta/driver: '' (QoS 1, retained)
 Publish: /devices/RPCTest/meta/name: '' (QoS 1, retained)

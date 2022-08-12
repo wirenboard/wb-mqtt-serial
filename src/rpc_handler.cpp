@@ -13,7 +13,7 @@ namespace
     {
         std::vector<uint8_t> byteVector;
         if (hexString.size() % 2 != 0) {
-            throw std::runtime_error("Hex message have odd char count");
+            throw std::runtime_error("Hex message has odd char count");
         }
 
         for (unsigned int i = 0; i < hexString.size(); i += 2) {
@@ -110,7 +110,7 @@ TRPCHandler::TRPCHandler(const std::string& requestSchemaFilePath,
         RequestSchema = WBMQTT::JSON::Parse(requestSchemaFilePath);
     } catch (const std::runtime_error& e) {
         LOG(Error) << "RPC request schema reading error: " << e.what();
-        throw std::runtime_error(e);
+        throw;
     }
 
     for (auto RPCPort: rpcConfig->GetPorts()) {

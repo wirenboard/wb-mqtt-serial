@@ -176,7 +176,7 @@ public:
 
     // Prepare to access device (pauses for configured delay by default)
     // i.e. "StartSession". Called before any read/write/etc after communicating with another device
-    virtual void Prepare();
+    void Prepare();
 
     // Ends communication session with the device. Called before communicating with another device
     virtual void EndSession();

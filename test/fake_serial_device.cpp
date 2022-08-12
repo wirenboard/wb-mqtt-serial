@@ -231,9 +231,9 @@ void TFakeSerialDevice::SetSessionLogEnabled(bool enabled)
     SessionLogEnabled = enabled;
 }
 
-void TFakeSerialDevice::Prepare()
+void TFakeSerialDevice::PrepareImpl()
 {
-    TSerialDevice::Prepare();
+    TSerialDevice::PrepareImpl();
     if (SessionLogEnabled) {
         FakePort->GetFixture().Emit() << "fake_serial_device '" << SlaveId << "': prepare";
     }

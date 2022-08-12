@@ -34,12 +34,12 @@ public:
     static void Register(TSerialDeviceFactory& factory);
 
     void SetSessionLogEnabled(bool enabled);
-    void Prepare() override;
     void EndSession() override;
 
 protected:
     TRegisterValue ReadRegisterImpl(PRegister reg) override;
     void WriteRegisterImpl(PRegister reg, const TRegisterValue& value) override;
+    void PrepareImpl() override;
 
 private:
     PFakeSerialPort FakePort;
