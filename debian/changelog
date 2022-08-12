@@ -1,8 +1,8 @@
 wb-mqtt-serial (2.69.0) stable; urgency=medium
 
-  * Add RPC Port/Load method for exchanging data over available ports  
+  * Add RPC Port/Load method for exchanging data over available ports
 
- -- Ekaterina Volkova <ekaterina.volkova@wirenboard.ru> Fri, 12 Aug 2022 08:53:31 +0300
+ -- Ekaterina Volkova <ekaterina.volkova@wirenboard.ru>  Fri, 12 Aug 2022 18:01:20 +0300
 
 wb-mqtt-serial (2.68.6) stable; urgency=medium
 
