@@ -1088,11 +1088,11 @@ protected:
     void ReconnectTest2Devices(function<void()>&& thunk);
 
     /**rpc request test functions**/
-    void SendRPCRequest(PMQTTSerialDriver serialDriver,
-                        std::vector<int> expectedRequest,
-                        std::vector<int> expectedResponse,
-                        int expectedResponseLength,
-                        std::chrono::seconds totalTimeout);
+    TRPCResultCode SendRPCRequest(PMQTTSerialDriver serialDriver,
+                                  std::vector<int> expectedRequest,
+                                  std::vector<int> expectedResponse,
+                                  int expectedResponseLength,
+                                  std::chrono::seconds totalTimeout);
 
     PFakeMqttBroker MqttBroker;
     PFakeMqttClient MqttClient;
@@ -1579,11 +1579,11 @@ TEST_F(TSerialClientIntegrationTest, SlaveIdCollision)
 /* This function checks Serial Driver behaviour when RPC request and value publishing event occurs
  * Writing new values, then RPC IO through serial port and reading values are expected */
 
-void TSerialClientIntegrationTest::SendRPCRequest(PMQTTSerialDriver serialDriver,
-                                                  std::vector<int> expectedRequest,
-                                                  std::vector<int> expectedResponse,
-                                                  int expectedResponseLength,
-                                                  std::chrono::seconds totalTimeout)
+TRPCResultCode TSerialClientIntegrationTest::SendRPCRequest(PMQTTSerialDriver serialDriver,
+                                                            std::vector<int> expectedRequest,
+                                                            std::vector<int> expectedResponse,
+                                                            int expectedResponseLength,
+                                                            std::chrono::seconds totalTimeout)
 {
     PublishWaitOnValue("/devices/RPCTest/controls/RGB/on", "10;20;30", 0, true);
     PublishWaitOnValue("/devices/RPCTest/controls/White/on", "42", 0, true);
@@ -1612,7 +1612,7 @@ void TSerialClientIntegrationTest::SendRPCRequest(PMQTTSerialDriver serialDriver
 
     serialDriverThread.join();
 
-    // EXPECT_EQ(rpcException.GetResultCode(), TRPCResultCode::RPC_OK);
+    return rpcException.GetResultCode();
 }
 
 /* RPC Request sending test cases:
@@ -1657,21 +1657,34 @@ TEST_F(TSerialClientIntegrationTest, RPCRequestTransceive)
     // ReadFrame timeout case
     Note() << "[test case] ReadFrame exception: nothing to read";
     Port->Expect(expectedRequest, emptyVector, NULL);
-    SendRPCRequest(SerialDriver, expectedRequest, emptyVector, expectedResponse.size(), std::chrono::seconds(12));
+    EXPECT_EQ(
+        SendRPCRequest(SerialDriver, expectedRequest, emptyVector, expectedResponse.size(), std::chrono::seconds(12)),
+        TRPCResultCode::RPC_WRONG_IO);
 
     // Total timeout RPC thread case
     Note() << "[test case] RPC request exception: meeting total timeout";
-    SendRPCRequest(SerialDriver, expectedRequest, expectedResponse, expectedResponse.size(), std::chrono::seconds(0));
+    EXPECT_EQ(SendRPCRequest(SerialDriver,
+                             expectedRequest,
+                             expectedResponse,
+                             expectedResponse.size(),
+                             std::chrono::seconds(0)),
+              TRPCResultCode::RPC_WRONG_TIMEOUT);
 
     // Succesful case
     Note() << "[test case] RPC succesful case";
     Port->Expect(expectedRequest, expectedResponse, NULL);
-    SendRPCRequest(SerialDriver, expectedRequest, expectedResponse, expectedResponse.size(), std::chrono::seconds(12));
+    EXPECT_EQ(SendRPCRequest(SerialDriver,
+                             expectedRequest,
+                             expectedResponse,
+                             expectedResponse.size(),
+                             std::chrono::seconds(12)),
+              TRPCResultCode::RPC_OK);
 
     // Read zero length response
     Note() << "[test case] RPC request with zero length read";
     Port->Expect(expectedRequest, emptyVector, NULL);
-    SendRPCRequest(SerialDriver, expectedRequest, emptyVector, 0, std::chrono::seconds(12));
+    EXPECT_EQ(SendRPCRequest(SerialDriver, expectedRequest, emptyVector, 0, std::chrono::seconds(12)),
+              TRPCResultCode::RPC_OK);
 }
 
 /** Reconnect test cases **/
