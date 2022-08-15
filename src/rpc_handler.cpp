@@ -16,7 +16,7 @@ namespace
             throw std::runtime_error("Hex message has odd char count");
         }
 
-        for (unsigned int i = 0; i < hexString.size(); i += 2) {
+        for (size_t i = 0; i < hexString.size(); i += 2) {
             auto byte = strtol(hexString.substr(i, 2).c_str(), NULL, 16);
             byteVector.push_back(byte);
         }

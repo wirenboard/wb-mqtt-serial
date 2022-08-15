@@ -1091,7 +1091,7 @@ protected:
     TRPCResultCode SendRPCRequest(PMQTTSerialDriver serialDriver,
                                   std::vector<int> expectedRequest,
                                   std::vector<int> expectedResponse,
-                                  int expectedResponseLength,
+                                  size_t expectedResponseLength,
                                   std::chrono::seconds totalTimeout);
 
     PFakeMqttBroker MqttBroker;
@@ -1582,7 +1582,7 @@ TEST_F(TSerialClientIntegrationTest, SlaveIdCollision)
 TRPCResultCode TSerialClientIntegrationTest::SendRPCRequest(PMQTTSerialDriver serialDriver,
                                                             std::vector<int> expectedRequest,
                                                             std::vector<int> expectedResponse,
-                                                            int expectedResponseLength,
+                                                            size_t expectedResponseLength,
                                                             std::chrono::seconds totalTimeout)
 {
     PublishWaitOnValue("/devices/RPCTest/controls/RGB/on", "10;20;30", 0, true);
@@ -1601,7 +1601,7 @@ TRPCResultCode TSerialClientIntegrationTest::SendRPCRequest(PMQTTSerialDriver se
     Note() << "LoopOnce() [start thread]";
     std::thread serialDriverThread(&TMQTTSerialDriver::LoopOnce, SerialDriver);
 
-    TRPCException rpcException("", TRPCResultCode::RPC_OK);
+    TRPCResultCode resultCode = TRPCResultCode::RPC_OK;
 
     try {
         Note() << "Send RPC request";
@@ -1610,12 +1610,12 @@ TRPCResultCode TSerialClientIntegrationTest::SendRPCRequest(PMQTTSerialDriver se
         std::copy(response.begin(), response.end(), back_inserter(responseInt));
         EXPECT_EQ(responseInt == expectedResponse, true);
     } catch (TRPCException exception) {
-        rpcException = exception;
+        resultCode = exception.GetResultCode();
     }
 
     serialDriverThread.join();
 
-    return rpcException.GetResultCode();
+    return resultCode;
 }
 
 /* RPC Request sending test cases:
