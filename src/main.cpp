@@ -17,6 +17,8 @@
 #include "config_schema_generator.h"
 
 #include "device_template_generator.h"
+#include "rpc_config.h"
+#include "rpc_handler.h"
 #include "serial_port.h"
 
 #define STR(x) #x
@@ -38,6 +40,7 @@ const auto CONFIG_JSON_SCHEMA_FULL_FILE_PATH = "/usr/share/wb-mqtt-serial/wb-mqt
 const auto TEMPLATES_JSON_SCHEMA_FULL_FILE_PATH =
     "/usr/share/wb-mqtt-serial/wb-mqtt-serial-device-template.schema.json";
 const auto CONFED_JSON_SCHEMA_FULL_FILE_PATH = "/var/lib/wb-mqtt-confed/schemas/wb-mqtt-serial.schema.json";
+const auto RPC_REQUEST_SCHEMA_FULL_FILE_PATH = "/usr/share/wb-mqtt-serial/wb-mqtt-serial-rpc-request.schema.json";
 
 const auto SERIAL_DRIVER_STOP_TIMEOUT_S = chrono::seconds(60);
 
@@ -265,6 +268,7 @@ int main(int argc, char* argv[])
     PHandlerConfig handlerConfig;
     TSerialDeviceFactory deviceFactory;
     RegisterProtocols(deviceFactory);
+    PRPCConfig rpcConfig = std::make_shared<TRPCConfig>();
     try {
         Json::Value configSchema = LoadConfigSchema(CONFIG_JSON_SCHEMA_FULL_FILE_PATH);
         TTemplateMap templates(TEMPLATES_DIR,
@@ -275,7 +279,7 @@ int main(int argc, char* argv[])
         } catch (const TConfigParserException& e) {        // Pass exception if user templates dir doesn't exist
         }
 
-        handlerConfig = LoadConfig(configFilename, deviceFactory, configSchema, templates);
+        handlerConfig = LoadConfig(configFilename, deviceFactory, configSchema, templates, rpcConfig);
     } catch (const exception& e) {
         LOG(Error) << e.what();
         return 0;
@@ -308,7 +312,9 @@ int main(int argc, char* argv[])
 
         driver->WaitForReady();
 
-        auto serialDriver = make_shared<TMQTTSerialDriver>(driver, handlerConfig, rpcServer);
+        auto serialDriver = make_shared<TMQTTSerialDriver>(driver, handlerConfig);
+        PRPCHandler rpcHandler =
+            std::make_shared<TRPCHandler>(RPC_REQUEST_SCHEMA_FULL_FILE_PATH, rpcConfig, rpcServer, serialDriver);
 
         serialDriver->Start();
         rpcServer->Start();

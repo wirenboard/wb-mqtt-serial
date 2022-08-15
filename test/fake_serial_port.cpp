@@ -180,7 +180,7 @@ size_t TFakeSerialPort::ReadFrame(uint8_t* buf,
         *p++ = (uint8_t)b;
     }
     DumpWhatWasRead();
-    if (nread == 0) {
+    if ((nread == 0) && (count != 0)) {
         throw TSerialDeviceTransientErrorException("request timed out");
     }
     return nread;
@@ -322,7 +322,8 @@ void TSerialDeviceIntegrationTest::SetUp()
                         DeviceFactory,
                         CommonConfigSchema,
                         it->second,
-                        [=](const Json::Value&) { return std::make_pair(SerialPort, false); });
+                        rpcConfig,
+                        [=](const Json::Value&, PRPCConfig config) { return std::make_pair(SerialPort, false); });
 
     MqttBroker = NewFakeMqttBroker(*this);
     MqttClient = MqttBroker->MakeClient("em-test");

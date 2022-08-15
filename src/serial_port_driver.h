@@ -70,6 +70,8 @@ public:
 
     static void HandleControlOnValueEvent(const WBMQTT::TControlOnValueEvent& event);
 
+    PSerialClient GetSerialClient();
+
 private:
     WBMQTT::TLocalDeviceArgs From(const PSerialDevice& device);
     WBMQTT::TControlArgs From(const PDeviceChannel& channel);

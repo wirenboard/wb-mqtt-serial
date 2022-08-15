@@ -163,6 +163,10 @@ size_t TFileDescriptorPort::ReadFrame(uint8_t* buf,
     CheckPortOpen();
     size_t nread = 0;
 
+    if (!size) {
+        return 0;
+    }
+
     // Will wait first byte up to responseTimeout us
     auto selectTimeout = responseTimeout;
     while (nread < size) {

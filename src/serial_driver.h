@@ -9,14 +9,16 @@
 class TMQTTSerialDriver
 {
 public:
-    TMQTTSerialDriver(WBMQTT::PDeviceDriver mqtt_driver,
-                      PHandlerConfig handler_config,
-                      WBMQTT::PMqttRpcServer rpc = nullptr);
+    TMQTTSerialDriver(WBMQTT::PDeviceDriver mqtt_driver, PHandlerConfig handler_config);
     void LoopOnce();
     void ClearDevices();
 
     void Start();
     void Stop();
+
+    std::vector<PSerialPortDriver> GetPortDrivers();
+
+    Json::Value LoadMetrics();
 
 private:
     std::vector<PSerialPortDriver> PortDrivers;
