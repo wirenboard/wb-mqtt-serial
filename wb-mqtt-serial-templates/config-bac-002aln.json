@@ -23,7 +23,7 @@
 		],
 		"channels": [
 			{
-				"name": "Power",
+				"name": "Status",
 				"type": "switch",
 				"reg_type": "holding",
 				"address": 0,
@@ -40,7 +40,7 @@
 				"name": "Room Temperature",
 				"type": "value",
 				"reg_type": "holding",
-				"units": "°C",
+				"units": "deg C",
 				"address": 8,
 				"format": "u16",
 				"readonly": true,
@@ -49,10 +49,10 @@
 				"group": "sensors"
 			},
 			{
-				"name": "Setting Temperature",
+				"name": "Temperature Setpoint",
 				"type": "value",
 				"reg_type": "holding",
-				"units": "°C",
+				"units": "deg C",
 				"address": 3,
 				"format": "u16",
 				"scale": 0.1,
@@ -90,7 +90,7 @@
 				"group": "parameters"
 			},
 			{
-				"name": "Setting Mode",
+				"name": "Mode",
 				"type": "range",
 				"reg_type": "holding",
 				"address": 2,
@@ -120,7 +120,7 @@
 				"group": "general"
 			},
 			{
-				"name": "Week",
+				"name": "Day Of Week",
 				"type": "value",
 				"reg_type": "holding",
 				"address": 7,
@@ -131,22 +131,19 @@
 			}
 		],
 		"translations": {
-			"en": {
-				"Week": "Day of the week"
-			},
 			"ru": {
 				"Sensors": "Датчики",
 				"Parameters": "Параметры",
 				"General": "Общее",
-				"Power": "Статус термостата",
+				"Status": "Статус термостата",
 				"Fan Speed": "Скорость вентилятора",
-				"Setting Mode": "Режим",
-				"Setting Temperature": "Уставка температуры",
+				"Mode": "Режим",
+				"Temperature Setpoint": "Уставка температуры",
 				"Lock Buttons": "Блокировка кнопок",
 				"Hour": "Час",
 				"Minute": "Минуты",
-				"Week": "День недели",
-				"Room Temperature": "Температура в комнате",
+				"Day Of Week": "День недели",
+				"Room Temperature": "Температура в помещении",
 				"Valve": "Кран",
 				"Fan Status": "Статус вентилятора"
 			}
