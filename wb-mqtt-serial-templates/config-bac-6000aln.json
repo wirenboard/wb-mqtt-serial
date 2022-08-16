@@ -20,7 +20,7 @@
   ],
   "channels": [
     {
-      "name": "Power",
+      "name": "Status",
       "reg_type": "holding",
       "address": "0",
       "type": "switch",
@@ -42,18 +42,18 @@
     "reg_type": "holding",
     "address": "3",    
     "type": "value",
-    "units": "°C",
+    "units": "deg C",
     "format": "u16",
     "scale": 0.5,
     "readonly": true,
     "group": "sensors"
    },
    {
-    "name": "Setting Temperature",
+    "name": "Temperature Setpoint",
     "reg_type": "holding",
     "address": "4",    
     "type": "value",
-    "units": "°C",
+    "units": "deg C",
     "format": "u16",
     "scale": 0.5,
     "round_to": 0.5,
@@ -69,7 +69,7 @@
     "group": "parameters"
    },
    {
-    "name": "Setting Mode",
+    "name": "Mode",
     "reg_type": "holding",
     "address": "2",
     "type": "range",
@@ -82,12 +82,12 @@
     "ru": {
       "Sensors": "Датчики",
       "Parameters": "Параметры",
-      "Power": "Статус термостата",
+      "Status": "Статус термостата",
       "Fan Speed": "Скорость вентилятора",
-      "Setting Mode": "Режим",
-      "Setting Temperature": "Уставка температуры",
+      "Mode": "Режим",
+      "Temperature Setpoint": "Уставка температуры",
       "Lock Buttons": "Блокировка кнопок",
-      "Room Temperature": "Температура в комнате"
+      "Room Temperature": "Температура в помещении"
     }
   }
  }
