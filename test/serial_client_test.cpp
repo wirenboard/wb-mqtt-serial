@@ -1656,6 +1656,7 @@ TEST_F(TSerialClientIntegrationTest, RPCRequestTransceive)
 
     Note() << "LoopOnce() [first start]";
     SerialDriver->LoopOnce();
+    SerialDriver->LoopOnce();
 
     // ReadFrame timeout case
     Note() << "[test case] ReadFrame exception: nothing to read";

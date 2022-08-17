@@ -1,3 +1,10 @@
+wb-mqtt-serial (2.70.0) stable; urgency=medium
+
+  * Limit registers reads per second
+    New "rate_limit" parameter in config for setting limit
+
+ -- Petr Krasnoshchekov <petr.krasnoshchekov@wirenboard.ru>  Wed, 17 Aug 2022 18:02:41 +0500
+
 wb-mqtt-serial (2.69.1) stable; urgency=medium
 
   * Fixed translate to CO2 sensor for WB-MSWv3 template

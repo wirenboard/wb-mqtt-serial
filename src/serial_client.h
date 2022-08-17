@@ -25,7 +25,8 @@ public:
     TSerialClient(const std::vector<PSerialDevice>& devices,
                   PPort port,
                   const TPortOpenCloseLogic::TSettings& openCloseSettings,
-                  Metrics::TMetrics& metrics);
+                  Metrics::TMetrics& metrics,
+                  size_t lowPriorityRateLimit = std::numeric_limits<size_t>::max());
     TSerialClient(const TSerialClient& client) = delete;
     TSerialClient& operator=(const TSerialClient&) = delete;
     ~TSerialClient();

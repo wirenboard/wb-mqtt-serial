@@ -60,7 +60,8 @@ public:
     TSerialPortDriver(WBMQTT::PDeviceDriver mqttDriver,
                       PPortConfig port_config,
                       const WBMQTT::TPublishParameters& publishPolicy,
-                      Metrics::TMetrics& metrics);
+                      Metrics::TMetrics& metrics,
+                      size_t lowPriorityRateLimit);
 
     void SetUpDevices();
     void Cycle(std::chrono::steady_clock::time_point now = std::chrono::steady_clock::now());

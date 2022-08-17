@@ -30,11 +30,30 @@ namespace
         item["i95"] = value.Histogram.P95.count();
         return item;
     }
+
+    size_t GetChannelsCount(PPortConfig portConfig)
+    {
+        size_t res = 0;
+        for (const auto& device: portConfig->Devices) {
+            res += device->DeviceConfig()->DeviceChannelConfigs.size();
+        }
+        return res;
+    }
+
+    size_t GetChannelsCount(PHandlerConfig config)
+    {
+        size_t res = 0;
+        for (const auto& portConfig: config->PortConfigs) {
+            res += GetChannelsCount(portConfig);
+        }
+        return res;
+    }
 }
 
 TMQTTSerialDriver::TMQTTSerialDriver(PDeviceDriver mqttDriver, PHandlerConfig config): Active(false)
 {
     try {
+        size_t totalChannels = GetChannelsCount(config);
         for (const auto& portConfig: config->PortConfigs) {
 
             if (portConfig->Devices.empty()) {
@@ -43,7 +62,12 @@ TMQTTSerialDriver::TMQTTSerialDriver(PDeviceDriver mqttDriver, PHandlerConfig co
             }
 
             auto& m = Metrics[portConfig->Port->GetDescription()];
-            PortDrivers.push_back(make_shared<TSerialPortDriver>(mqttDriver, portConfig, config->PublishParameters, m));
+            auto rateLimit = (config->LowPriorityRegistersRateLimit * GetChannelsCount(portConfig)) / totalChannels;
+            if (rateLimit < 1) {
+                rateLimit = 1;
+            }
+            PortDrivers.push_back(
+                make_shared<TSerialPortDriver>(mqttDriver, portConfig, config->PublishParameters, m, rateLimit));
             PortDrivers.back()->SetUpDevices();
         }
     } catch (const exception& e) {
