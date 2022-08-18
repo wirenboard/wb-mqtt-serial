@@ -1,3 +1,9 @@
+wb-mqtt-serial (2.69.5) stable; urgency=medium
+
+  * Fix null-byte handling, when reading type=String from modbus
+
+ -- Vladimir Romanov <v.romanov@wirenboard.ru>  Mon, 22 Aug 2022 11:43:58 +0300
+
 wb-mqtt-serial (2.69.4) stable; urgency=medium
 
   * Add rpc port/Load request json schema file to makefile
@@ -114,7 +120,7 @@ wb-mqtt-serial (2.64.3) stable; urgency=medium
   * New safety and restore settings were added in WB-MR templates
 
  -- Dmitry Vorobjev <d.vorobjev@wirenboard.ru>  Thu, 14 Jul 2022 10:56:16 +0300
- 
+
 wb-mqtt-serial (2.64.2) stable; urgency=medium
 
   * Correction options names and descriptions in WB-MR6Cv3 template to
@@ -176,7 +182,7 @@ wb-mqtt-serial (2.62.0) stable; urgency=medium
 wb-mqtt-serial (2.61.8) stable; urgency=medium
 
   * Support for wb-mqtt-homeui 2.39.2 is added
-  * Loading of device templates with parameters defined as array is fixed 
+  * Loading of device templates with parameters defined as array is fixed
 
  -- Petr Krasnoshchekov <petr.krasnoshchekov@wirenboard.ru>  Tue, 21 Jun 2022 17:53:41 +0500
 
@@ -331,7 +337,7 @@ wb-mqtt-serial (2.56.2) stable; urgency=medium
 wb-mqtt-serial (2.56.1) stable; urgency=medium
 
   * read_period_ms max value is limited by 2 days
-  * read period miss error is calculated for at least 10 seconds intervals to make it less noisy 
+  * read period miss error is calculated for at least 10 seconds intervals to make it less noisy
 
  -- Petr Krasnoshchekov <petr.krasnoshchekov@wirenboard.ru>  Wed, 16 Mar 2022 13:09:46 +0500
 
@@ -450,7 +456,7 @@ wb-mqtt-serial (2.47.0) stable; urgency=medium
   * New poll scheduler
   * read_period_ms defines desired period of reading a channel.
     Channels with read_period has high priority. The service will
-    try to poll them in desired time. Other channels will be polled 
+    try to poll them in desired time. Other channels will be polled
     in remaining time. The scheduler divides bus capacity equally
     between high and low priority channels
   * poll_interval is removed
@@ -746,7 +752,7 @@ wb-mqtt-serial (2.32.0) stable; urgency=medium
 
 wb-mqtt-serial (2.31.9) stable; urgency=medium
 
-  * Uniform captions for addresses is added 
+  * Uniform captions for addresses is added
 
  -- Petr Krasnoshchekov <petr.krasnoshchekov@wirenboard.ru>  Wed, 08 Sep 2021 20:07:06 +0500
 
@@ -776,7 +782,7 @@ wb-mqtt-serial (2.31.5) stable; urgency=medium
 
 wb-mqtt-serial (2.31.4) stable; urgency=medium
 
-  * Config's setup section priority is raised. Setup registers in config have higher priority than 
+  * Config's setup section priority is raised. Setup registers in config have higher priority than
     setup registers with same addresses from device templates.
 
  -- Petr Krasnoshchekov <petr.krasnoshchekov@wirenboard.ru>  Tue, 07 Sep 2021 17:56:45 +0500
@@ -795,7 +801,7 @@ wb-mqtt-serial (2.31.2) stable; urgency=medium
 
 wb-mqtt-serial (2.31.1) stable; urgency=medium
 
-  * Compatibility with old configs is improved. Config validator will not raise an error if 
+  * Compatibility with old configs is improved. Config validator will not raise an error if
     protocol property set simultaneously with device_type is same as defined in template.
 
  -- Petr Krasnoshchekov <petr.krasnoshchekov@wirenboard.ru>  Thu, 02 Sep 2021 12:38:17 +0500
@@ -843,20 +849,20 @@ wb-mqtt-serial (2.28.1) stable; urgency=medium
 
   * BHT-6000-Series template was added
 
- -- Alexander Degtyarev <a.degtyarev@wirenboard.com>  Mon, 12 Jul 2021 20:56:52 +0400 
- 
+ -- Alexander Degtyarev <a.degtyarev@wirenboard.com>  Mon, 12 Jul 2021 20:56:52 +0400
+
 wb-mqtt-serial (2.28.0) stable; urgency=medium
 
   * BAC-6000-Series template was added
 
- -- Alexander Degtyarev <a.degtyarev@wirenboard.com>  Tue, 13 Jul 2021 13:58:25 +0400 
+ -- Alexander Degtyarev <a.degtyarev@wirenboard.com>  Tue, 13 Jul 2021 13:58:25 +0400
 
 wb-mqtt-serial (2.27.1) stable; urgency=medium
 
   * Change Somfy Enums
 
  -- Alexander Degtyarev <a.degtyarev@wirenboard.com>  Mon, 21 Jun 2021 10:44:05 +0400
- 
+
 wb-mqtt-serial (2.27.0) stable; urgency=medium
 
   * Remake MCM8 template using groups and parameters
@@ -921,7 +927,7 @@ wb-mqtt-serial (2.22.1) stable; urgency=medium
 
 wb-mqtt-serial (2.22.0) stable; urgency=medium
 
-  * off_value is added to channel's config. 
+  * off_value is added to channel's config.
     It defines a value written to register after receiving of "0" in "on" topic
 
  -- Petr Krasnoshchekov <petr.krasnoshchekov@wirenboard.ru>  Sun, 18 Jul 2021 16:33:03 +0500
@@ -961,7 +967,7 @@ wb-mqtt-serial (2.19.0) stable; urgency=medium
 wb-mqtt-serial (2.18.0) stable; urgency=medium
 
   * Support for parameter description in device templates is added.
-    Description is shown near parameter editor in web-interface. 
+    Description is shown near parameter editor in web-interface.
 
  -- Petr Krasnoshchekov <petr.krasnoshchekov@wirenboard.ru>  Tue, 06 Jul 2021 13:47:59 +0500
 
@@ -1069,7 +1075,7 @@ wb-mqtt-serial (2.15.0) stable; urgency=medium
   * NEVA MT 113/123/124 support
 
  -- Petr Krasnoshchekov <petr.krasnoshchekov@wirenboard.ru>  Tue, 01 Jun 2021 11:25:00 +0500
- 
+
 wb-mqtt-serial (2.14.0) experimental; urgency=medium
 
   * Support for WinDeco, Dooya and Somfy SDN curtain motors is added
@@ -1165,7 +1171,7 @@ wb-mqtt-serial (2.7.5) stable; urgency=medium
   * Add WB-MAP3ET template for the current version of wb-mqtt-serial.
 
  -- Alexander Degtyarev <a.degtyarev@wirenboard.com>  Tue, 12 Apr 2021 18:19:00 +0400
- 
+
 wb-mqtt-serial (2.7.4) stable; urgency=medium
 
   * Timeouts for NEVA and Energomera CE301/CE303 energy meters are adjusted
@@ -1183,19 +1189,19 @@ wb-mqtt-serial (2.7.2) stable; urgency=medium
   * Support for hex values in the first part of address of bit registers is added.
 
  -- Petr Krasnoshchekov <petr.krasnoshchekov@wirenboard.ru>  Fri, 19 Feb 2021 17:56:00 +0500
- 
+
 wb-mqtt-serial (2.7.1) stable; urgency=medium
 
   * Do not crash on duplicate channel names.
 
  -- Petr Krasnoshchekov <petr.krasnoshchekov@wirenboard.ru>  Mon, 08 Feb 2021 14:32:00 +0500
- 
+
 wb-mqtt-serial (2.7.0) stable; urgency=medium
 
   * Add template for MAP3EV.
 
  -- Boris Marochkin <b.marochkin@wirenboard.ru>  Tue, 02 Feb 2021 15:16:00 +0500
- 
+
 wb-mqtt-serial (2.6.9) unstable; urgency=medium
 
   * Driver stop timeout is increased.
@@ -1462,19 +1468,19 @@ wb-mqtt-serial (1.49.3) stable; urgency=medium
 
 wb-mqtt-serial (1.49.2) stable; urgency=medium
 
-  * add ddm845r template 
+  * add ddm845r template
 
  -- Alexander Kilpio <kilpio@wirenboard.ru>  Mon, 25 Mar 2019 15:05:00 +0300
 
 wb-mqtt-serial (1.49.1) stable; urgency=medium
 
-  * add  wb-mrm2-mini template 
+  * add  wb-mrm2-mini template
 
  -- Alexander Kilpio <kilpio@wirenboard.ru>  Mon, 14 Mar 2019 18:22:00 +0300
 
 wb-mqtt-serial (1.49.0) stable; urgency=medium
 
-  * add wbio-ai-dv-12(50V) template 
+  * add wbio-ai-dv-12(50V) template
 
  -- Attila Door <a.door@wirenboard.ru>  Mon, 04 Mar 2019 18:33:45 +0300
 
@@ -1499,7 +1505,7 @@ wb-mqtt-serial (1.47.1) stable; urgency=medium
 
 wb-mqtt-serial (1.47) stable; urgency=medium
 
-  * add template for WB-MWAC 
+  * add template for WB-MWAC
 
  -- sergey <sergey@contactless.ru>  Fri, 12 Oct 2018 14:21:45 +0300
 
@@ -1523,14 +1529,14 @@ wb-mqtt-serial (1.44.1) stable; urgency=medium
 
 wb-mqtt-serial (1.44) stable; urgency=medium
 
-  * add template for WB-MAI2-mini/CC two channel 0-20mA to Modbus RTU 
+  * add template for WB-MAI2-mini/CC two channel 0-20mA to Modbus RTU
     converter
 
  -- Evgeny Boger <boger@contactless.ru>  Tue, 31 Jul 2018 20:53:43 +0300
 
 wb-mqtt-serial (1.43.1) stable; urgency=medium
 
-  * remove channel mode registers from WB-MDM2 config for compatibility 
+  * remove channel mode registers from WB-MDM2 config for compatibility
     with old fw versions
 
  -- Evgeny Boger <boger@contactless.ru>  Sun, 29 Jul 2018 18:53:35 +0300
@@ -1543,7 +1549,7 @@ wb-mqtt-serial (1.43) stable; urgency=medium
 
 wb-mqtt-serial (1.42) stable; urgency=medium
 
-  * add templates for WB-MAP3H 
+  * add templates for WB-MAP3H
 
  -- Evgeny Boger <boger@contactless.ru>  Thu, 07 Jun 2018 13:08:37 +0300
 
@@ -1558,7 +1564,7 @@ wb-mqtt-serial (1.41.2) stable; urgency=medium
   * mcm16 json template for mcm fw 1.0.0
 
  -- Attila Door <a.door@wirenboard.ru>  Mon, 2 Apr 2018 12:20:45 +0300
- 
+
 wb-mqtt-serial (1.41.1) stable; urgency=medium
 
   * require mosquitto at startup
