@@ -1,3 +1,9 @@
+wb-mqtt-serial (2.69.4) stable; urgency=medium
+
+  * Add rpc port/Load request json schema file to makefile
+
+ -- Ekaterina Volkova <ekaterina.volkova@wirenboard.ru>  Fri, 19 Aug 2022 16:36:27 +0300
+
 wb-mqtt-serial (2.69.3) stable; urgency=medium
 
   * The bac-6000-series template is deprecated.
