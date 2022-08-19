@@ -1,3 +1,10 @@
+wb-mqtt-serial (2.68.6-wb102) stable; urgency=medium
+
+  * The bac-6000-series template is deprecated.
+  * Added templates bac-6000aln and bac-6000elnw
+
+ -- Alexander Degtyarev <a.degtyarev@wirenboard.com>  Thu, 19 Aug 2022 13:25:00 +0400
+
 wb-mqtt-serial (2.68.6-wb101) stable; urgency=medium
 
   * Added thermostat template BAC-002ALN
