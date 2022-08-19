@@ -1,0 +1,59 @@
+{
+    "debug": true,
+    "ports": [
+        {
+            "path": "/dev/ttyNSC0",
+            "baud_rate": 9600,
+            "parity": "N",
+            "data_bits": 8,
+            "stop_bits": 2,
+            "enabled": true,
+            "devices": [
+                {
+                    "name": "RPCTest",
+                    "id": "RPCTest",
+                    "slave_id": "0x98",
+                    "protocol": "fake",
+                    "channels": [
+                        {
+                            "name": "Test",
+                            "reg_type": "fake",
+                            "address": 0,
+                            "type": "value",
+                            "read_period_ms": 5000
+                        },
+                        {
+                            "name": "RGB",
+                            "type": "rgb",
+                            "consists_of": [
+                                {
+                                    "reg_type": "fake",
+                                    "address": 4,
+                                    "read_period_ms": 5000
+                                },
+                                {
+                                    "reg_type": "fake",
+                                    "address": 5,
+                                    "read_period_ms": 5000
+                                },
+                                {
+                                    "reg_type": "fake",
+                                    "address": 6,
+                                    "read_period_ms": 5000
+                                }
+                            ]
+                        },
+                        {
+                            "name": "White",
+                            "reg_type": "fake",
+                            "address": 7,
+                            "type": "dimmer",
+                            "max": "0xff",
+                            "read_period_ms": 5000
+                        }
+                    ]
+                }
+            ]
+        }
+    ]
+}

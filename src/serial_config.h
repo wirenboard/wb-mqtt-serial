@@ -12,6 +12,7 @@
 #include <wblib/json_utils.h>
 
 #include "port.h"
+#include "rpc_config.h"
 #include "serial_device.h"
 
 struct TDeviceTemplate
@@ -143,9 +144,9 @@ Json::Value LoadConfigTemplatesSchema(const std::string& templateSchemaFileName,
 void AddFakeDeviceType(Json::Value& configSchema);
 void AddRegisterType(Json::Value& configSchema, const std::string& registerType);
 
-typedef std::function<std::pair<PPort, bool>(const Json::Value& config)> TPortFactoryFn;
+typedef std::function<std::pair<PPort, bool>(const Json::Value& config, PRPCConfig rpcConfig)> TPortFactoryFn;
 
-std::pair<PPort, bool> DefaultPortFactory(const Json::Value& port_data);
+std::pair<PPort, bool> DefaultPortFactory(const Json::Value& port_data, PRPCConfig rpcConfig);
 
 Json::Value LoadConfigSchema(const std::string& schemaFileName);
 
@@ -304,6 +305,7 @@ PHandlerConfig LoadConfig(const std::string& configFileName,
                           TSerialDeviceFactory& deviceFactory,
                           const Json::Value& baseConfigSchema,
                           TTemplateMap& templates,
+                          PRPCConfig rpcConfig,
                           TPortFactoryFn portFactory = DefaultPortFactory);
 
 bool IsSubdeviceChannel(const Json::Value& channelSchema);

@@ -17,6 +17,7 @@ class TConfigParserTest: public TLoggedFixture
 {
 protected:
     TSerialDeviceFactory DeviceFactory;
+    PRPCConfig RPCConfig = std::make_shared<TRPCConfig>();
 
     void SetUp()
     {
@@ -158,7 +159,7 @@ protected:
             GetDataFilePath("device-templates/"),
             LoadConfigTemplatesSchema(GetDataFilePath("../wb-mqtt-serial-device-template.schema.json"), configSchema));
 
-        return LoadConfig(GetDataFilePath(filePath), DeviceFactory, configSchema, templateMap);
+        return LoadConfig(GetDataFilePath(filePath), DeviceFactory, configSchema, templateMap, RPCConfig);
     }
 };
 
@@ -197,7 +198,7 @@ TEST_F(TConfigParserTest, UnsuccessfulParse)
         [&](const std::string& fname) {
             Emit() << "Parsing config " << fname;
             try {
-                PHandlerConfig config = LoadConfig(fname, DeviceFactory, configSchema, templateMap);
+                PHandlerConfig config = LoadConfig(fname, DeviceFactory, configSchema, templateMap, RPCConfig);
             } catch (const std::exception& e) {
                 Emit() << e.what();
             }
@@ -296,4 +297,15 @@ TEST_F(TConfigParserTest, ParseModbusDevideWithWriteAddress)
     EXPECT_FALSE(regs.empty());
     EXPECT_EQ(GetUint32RegisterAddress(regs[0]->GetAddress()), 110);
     EXPECT_EQ(GetUint32RegisterAddress(regs[0]->GetWriteAddress()), 115);
+}
+
+TEST_F(TConfigParserTest, ParseReadonlyParameters)
+{
+    auto portConfigs = GetConfig("configs/parse_test_readonly_parameters.json")->PortConfigs;
+    EXPECT_FALSE(portConfigs.empty());
+    auto devices = portConfigs[0]->Devices;
+    EXPECT_FALSE(devices.empty());
+    auto setupItems = devices[0]->DeviceConfig()->SetupItemConfigs;
+    EXPECT_EQ(setupItems.size(), 1);
+    EXPECT_EQ(setupItems[0]->GetName(), "p2");
 }
