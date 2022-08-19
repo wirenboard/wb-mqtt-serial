@@ -1,0 +1,94 @@
+{
+    "device_type": "BAC-6000ALN",
+    "group": "g-thermostat",
+    "device": {
+        "name": "BAC-6000ALN",
+        "id": "bac-6000aln",
+        "response_timeout_ms": 100,
+        "guard_interval_us": 5000,
+        "groups": [
+            {
+                "title": "Sensors",
+                "id": "sensors",
+                "order": 1
+            },
+            {
+                "title": "Parameters",
+                "id": "parameters",
+                "order": 2
+            }
+        ],
+        "channels": [
+            {
+                "name": "Status",
+                "reg_type": "holding",
+                "address": "0",
+                "type": "switch",
+                "format": "u16",
+                "on_value": "0x00a5",
+                "off_value": "0x005a",
+                "group": "parameters"
+            },
+            {
+                "name": "Lock Buttons",
+                "reg_type": "holding",
+                "address": "5",
+                "type": "switch",
+                "format": "u16",
+                "group": "parameters"
+            },
+            {
+                "name": "Room Temperature",
+                "reg_type": "holding",
+                "address": "3",
+                "type": "value",
+                "units": "deg C",
+                "format": "u16",
+                "scale": 0.5,
+                "readonly": true,
+                "group": "sensors"
+            },
+            {
+                "name": "Temperature Setpoint",
+                "reg_type": "holding",
+                "address": "4",
+                "type": "value",
+                "units": "deg C",
+                "format": "u16",
+                "scale": 0.5,
+                "round_to": 0.5,
+                "group": "parameters"
+            },
+            {
+                "name": "Fan Speed",
+                "reg_type": "holding",
+                "address": "1",
+                "type": "range",
+                "format": "u16",
+                "max": 3,
+                "group": "parameters"
+            },
+            {
+                "name": "Mode",
+                "reg_type": "holding",
+                "address": "2",
+                "type": "range",
+                "format": "u16",
+                "max": 2,
+                "group": "parameters"
+            }
+        ],
+        "translations": {
+            "ru": {
+                "Sensors": "Датчики",
+                "Parameters": "Параметры",
+                "Status": "Статус термостата",
+                "Fan Speed": "Скорость вентилятора",
+                "Mode": "Режим",
+                "Temperature Setpoint": "Уставка температуры",
+                "Lock Buttons": "Блокировка кнопок",
+                "Room Temperature": "Температура в помещении"
+            }
+        }
+    }
+}

@@ -35,7 +35,7 @@ protected:
     PRegister ModbusHoldingU16WithAddressWrite;
     PRegister ModbusHoldingU16WithWriteBitOffset;
 
-    std::list<PRegister> StringHoldingRegs;
+    PRegister ModbusHoldingString;
 };
 
 PDeviceConfig TModbusTest::GetDeviceConfig()
@@ -68,7 +68,7 @@ void TModbusTest::SetUp()
     ModbusHoldingU64Multi = TRegister::Intern(ModbusDev, TRegisterConfig::Create(Modbus::REG_HOLDING_MULTI, 95, U64));
     ModbusHoldingU16Multi = TRegister::Intern(ModbusDev, TRegisterConfig::Create(Modbus::REG_HOLDING_MULTI, 99, U16));
 
-    TRegisterDesc regAddrDesc;
+    TRegisterDesc regAddrDesc, regStringDesc;
     regAddrDesc.Address = std::make_shared<TUint32RegisterAddress>(110);
     regAddrDesc.WriteAddress = std::make_shared<TUint32RegisterAddress>(115);
 
@@ -83,11 +83,11 @@ void TModbusTest::SetUp()
     ModbusHoldingU16WithWriteBitOffset =
         TRegister::Intern(ModbusDev, TRegisterConfig::Create(Modbus::REG_HOLDING, regAddrDesc, RegisterFormat::U16));
 
-    for (uint32_t i = 0; i < 16; ++i) {
-        StringHoldingRegs.push_back(
-            TRegister::Intern(ModbusDev, TRegisterConfig::Create(Modbus::REG_HOLDING, 120 + i, RegisterFormat::String))
-        );
-    }
+    regStringDesc.Address = std::make_shared<TUint32RegisterAddress>(120);
+    regStringDesc.DataWidth = 16 * sizeof(char) * 8;
+
+    ModbusHoldingString =
+        TRegister::Intern(ModbusDev, TRegisterConfig::Create(Modbus::REG_HOLDING, regStringDesc, RegisterFormat::String));
 
     SerialPort->Open();
 }
@@ -215,21 +215,21 @@ TEST_F(TModbusTest, ReadHoldingRegiterWithOffsetWriteOptions)
     EXPECT_EQ(reg->GetValue(), 5);
 }
 
-TEST_F(TModbusTest, ReadStringZeroBytedEnd)
+TEST_F(TModbusTest, ReadStringZeroBytesEnd)
 {
     EnqueueStringReadResponse();
 
     auto range = ModbusDev->CreateRegisterRange();
-    for (auto reg: StringHoldingRegs) {
-        range->Add(reg, std::chrono::milliseconds::max());
-    }
+    range->Add(ModbusHoldingString, std::chrono::milliseconds::max());
     ModbusDev->ReadRegisterRange(range);
     auto registerList = range->RegisterList();
-    EXPECT_EQ(registerList.size(), 16);
+    EXPECT_EQ(registerList.size(), 1);
     auto reg = registerList.front();
     EXPECT_EQ(GetUint32RegisterAddress(reg->GetAddress()), 120);
     EXPECT_FALSE(reg->GetErrorState().test(TRegister::TError::ReadError));
-    EXPECT_EQ(reg->GetValue(), "2.4.2-rc1");
+    EXPECT_EQ(reg->GetValue().Get<std::string>(), "2.4.2-rc1");
+
+    SerialPort->Close();
 }
 
 TEST_F(TModbusTest, WriteHoldingRegiterWithOffsetWriteOptions)

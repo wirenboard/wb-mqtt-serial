@@ -1,9 +1,35 @@
+BAC-002ALN
+	Day Of Week  =>  Day Of Week
+	Fan Speed  =>  Fan Speed
+	Fan Status  =>  Fan Status
+	Hour  =>  Hour
+	Lock Buttons  =>  Lock Buttons
+	Minute  =>  Minute
+	Mode  =>  Mode
+	Room Temperature  =>  Room Temperature
+	Status  =>  Status
+	Temperature Setpoint  =>  Temperature Setpoint
+	Valve  =>  Valve
 BAC-6000 Series
 	Fan Speed  =>  Fan Speed
 	Lock buttons  =>  Lock buttons
 	Room temperature  =>  Room temperature
 	Setting Mode  =>  Setting Mode
 	Setting temperature  =>  Setting temperature
+BAC-6000ALN
+	Fan Speed  =>  Fan Speed
+	Lock Buttons  =>  Lock Buttons
+	Mode  =>  Mode
+	Room Temperature  =>  Room Temperature
+	Status  =>  Status
+	Temperature Setpoint  =>  Temperature Setpoint
+BAC-6000ELNW
+	Fan Speed  =>  Fan Speed
+	Lock Buttons  =>  Lock Buttons
+	Mode  =>  Mode
+	Room Temperature  =>  Room Temperature
+	Status  =>  Status
+	Temperature Setpoint  =>  Temperature Setpoint
 BHT-6000 Series
 	Heating status  =>  Heating status
 	Lock buttons  =>  Lock buttons
