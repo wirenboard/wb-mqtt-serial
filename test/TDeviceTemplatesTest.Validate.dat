@@ -1,3 +1,15 @@
+BAC-002ALN
+	Day Of Week  =>  Day Of Week
+	Fan Speed  =>  Fan Speed
+	Fan Status  =>  Fan Status
+	Hour  =>  Hour
+	Lock Buttons  =>  Lock Buttons
+	Minute  =>  Minute
+	Mode  =>  Mode
+	Room Temperature  =>  Room Temperature
+	Status  =>  Status
+	Temperature Setpoint  =>  Temperature Setpoint
+	Valve  =>  Valve
 BAC-6000 Series
 	Fan Speed  =>  Fan Speed
 	Lock buttons  =>  Lock buttons
@@ -18674,7 +18686,11 @@ WB-MSW v.3
 	Air Quality (VOC)  =>  Air Quality (VOC)
 	Buzzer  =>  Buzzer
 	CO2  =>  CO2
+	CO2 Autocalibration Period  =>  CO2 Autocalibration Period
 	CO2 Force Calibration  =>  CO2 Force Calibration
+	CO2 Reference Sensor Value  =>  CO2 Reference Sensor Value
+	CO2 Sensor Installed  =>  CO2 Sensor Installed
+	CO2 Sensor Type  =>  CO2 Sensor Type
 	Current Motion  =>  Current Motion
 	Erroneous TH Readings  =>  Erroneous TH Readings
 	Green LED  =>  Green LED

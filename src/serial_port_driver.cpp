@@ -230,6 +230,11 @@ TControlArgs TSerialPortDriver::From(const PDeviceChannel& channel)
     return args;
 }
 
+PSerialClient TSerialPortDriver::GetSerialClient()
+{
+    return SerialClient;
+}
+
 void TDeviceChannel::UpdateValueAndError(WBMQTT::TDeviceDriver& deviceDriver,
                                          const WBMQTT::TPublishParameters& publishPolicy)
 {

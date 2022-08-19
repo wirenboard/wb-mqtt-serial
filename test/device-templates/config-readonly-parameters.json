@@ -28,6 +28,12 @@
                 "title": "p3",
                 "address": 9997,
                 "condition": "p1==0"
+            },
+            {
+                "id": "p4",
+                "title": "p4",
+                "readonly": true,
+                "address": 12345
             }
         ]
     }
