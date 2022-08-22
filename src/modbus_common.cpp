@@ -425,7 +425,7 @@ namespace Modbus // modbus protocol common utilities
         }
         typedef std::pair<const char*, bool> TModbusException;
         // clang-format off
-        const TModbusException errs[] =             
+        const TModbusException errs[] =
             { {"illegal function",                        true },     // 0x01
               {"illegal data address",                    true },     // 0x02
               {"illegal data value",                      true },     // 0x03
@@ -727,8 +727,12 @@ namespace Modbus // modbus protocol common utilities
             if (reg->Format == RegisterFormat::String) {
                 std::string str;
                 const auto dataSize = GetModbusDataWidthIn16BitWords(*reg);
+
                 for (uint32_t i = 0; i < dataSize; ++i) {
-                    str.push_back(static_cast<char>(destination[addr - range.GetStart() + i]));
+                    auto ch = static_cast<char>(destination[addr - range.GetStart() + i]);
+                    if (ch != '\0') {
+                        str.push_back(ch);
+                    }
                 }
 
                 reg->SetValue(TRegisterValue{str});
