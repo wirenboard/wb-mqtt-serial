@@ -747,6 +747,59 @@ void TModbusExpectations::EnqueueHoldingReadS64Response(uint8_t exception)
         __func__);
 }
 
+// read 16 holding (as String)
+void TModbusExpectations::EnqueueStringReadResponse(uint8_t exception)
+{
+    Expector()->Expect(
+        WrapPDU({
+            0x03, // function code
+            0x00, // starting address Hi
+            120,   // starting address Lo
+            0x00, // quantity Hi
+            0x10, // quantity Lo
+        }),
+        WrapPDU(exception == 0 ? std::vector<int>{
+                                     0x03, // function code
+                                     0x20, // byte count
+                                     // "2.4.2-rc1" in modbus regs
+                                     0x00, // data Hi
+                                     0x32, // data Lo
+                                     0x00, // data Hi
+                                     0x2e, // data Lo
+                                     0x00, // data Hi
+                                     0x34, // data Lo
+                                     0x00, // data Hi
+                                     0x2e, // data Lo
+                                     0x00, // data Hi
+                                     0x32, // data Lo
+                                     0x00, // data Hi
+                                     0x2d, // data Lo
+                                     0x00, // data Hi
+                                     0x72, // data Lo
+                                     0x00, // data Hi
+                                     0x63, // data Lo
+                                     0x00, // data Hi
+                                     0x31, // data Lo
+                                     0x00, // data Hi
+                                     0x00, // data Lo
+                                     0x00, // data Hi
+                                     0x00, // data Lo
+                                     0x00, // data Hi
+                                     0x00, // data Lo
+                                     0x00, // data Hi
+                                     0x00, // data Lo
+                                     0x00, // data Hi
+                                     0x00, // data Lo
+                                     0x00, // data Hi
+                                     0x00, // data Lo
+                                     0x00, // data Hi
+                                     0x00 // data Lo
+                                 }
+                               : std::vector<int>{0x83, // function code + 80
+                                                  exception}),
+        __func__);
+}
+
 // read 2 holding
 void TModbusExpectations::EnqueueHoldingReadF32Response(uint8_t exception)
 {
