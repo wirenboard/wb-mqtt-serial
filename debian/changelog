@@ -1,3 +1,9 @@
+wb-mqtt-serial (2.68.6-wb103) stable; urgency=medium
+
+  * Fix null-byte handling, when reading type=String from modbus
+
+ -- Vladimir Romanov <v.romanov@wirenboard.ru>  Mon, 22 Aug 2022 11:43:58 +0300
+
 wb-mqtt-serial (2.68.6-wb102) stable; urgency=medium
 
   * The bac-6000-series template is deprecated.
