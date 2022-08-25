@@ -60,6 +60,7 @@
             {
                 "title": "Output Safe State",
                 "id": "g_outputs_safe_position",
+                "description": "outputs_safe_state_description",
                 "group": "g_outputs"
             },
             {
@@ -80,6 +81,7 @@
             {
                 "title": "Safety Behaviour",
                 "id": "g_safety_behaviour",
+                "description": "safety_behaviour_description",
                 "group": "g_safety"
             },
             {
@@ -567,6 +569,9 @@
                 "Uptime": "Uptime (s)",
 
                 "poll_timeout_description": "Time in seconds without modbus polling before safety mode",
+                "inputs_control_in_safety_mode_description": "Sets change of control from the inputs when module switches to safety mode",
+                "safety_behaviour_description": "Controlling the transition of the output to a safe state in safe mode",
+                "outputs_safe_state_description": "The state to which the relay switches when the module is turned on (if the \"Set output to safe state\" item is selected in the \"States of the relay on power up\" setting), as well as in the safe mode, if the transition to the safe state is activated.",
 
                 "lp_hold_time_title": "Long Press Time (ms)",
                 "secp_waiting_time_title": "Second Press Waiting Time (ms)",
@@ -607,6 +612,7 @@
                 {% endfor -%}
 
                 "Output Safe State": "Безопасное состояние реле",
+                "outputs_safe_state_description": "Состояние в которое реле переходит при включении модуля (если в настройке \"Состояния реле при подаче питания\" выбран пункт \"Перевести выход в безопасное состояние\"), а также в безопасном режиме если переход в безопасное состояние активирован.",
 
                 "no action": "нет действия",
                 "reset": "выключить",
@@ -644,6 +650,7 @@
                 "Safety Poll Timeout (s)": "Таймаут потери связи (с)",
                 "poll_timeout_description": "Параметр определяет время отсутствия опроса в секундах, после которого будет активирован безопасный режим. Действия в безопасном режиме настраиваются отдельно.",
                 "inputs_control_in_safety_mode_description": "Настройка изменения управления с входов при переходе модуля в безопасный режим",
+                "safety_behaviour_description": "Управление переходом выхода в безопасное состояние в безопасном режиме",
                 "Outputs State After Power On": "Состояния реле при подаче питания",
                 "Safe state": "Перевести выход в безопасное состояние",
                 "Restore last state": "Восстановить последнее состояние",
