@@ -59,6 +59,7 @@
             {
                 "title": "Output Safe State",
                 "id": "g_outputs_safe_position",
+                "description": "outputs_safe_state_description",
                 "group": "g_outputs"
             },
             {
@@ -79,6 +80,7 @@
             {
                 "title": "Safety Behaviour",
                 "id": "g_safety_behaviour",
+                "description": "safety_behaviour_description",
                 "group": "g_safety"
             },
             {
@@ -359,7 +361,7 @@
                 "reg_type": "holding",
                 "enum": [0, 1, 2],
                 "default": 0,
-                "enum_titles": ["Safe State", "Restore Last State", "According To Inputs"],
+                "enum_titles": ["Safe state", "Restore last state", "According to inputs"],
                 "order": 1,
                 "group": "g_outputs"
             },
@@ -374,8 +376,8 @@
                 "order": 1,
                 "enum_titles": [
                     "Poll timeout or loss bus power supply",
-                    "Poll timeout",
-                    "Loss bus power supply"
+                    "Loss bus power supply",
+                    "Poll timeout"
                 ]
             },
             "poll_timeout_s": {
@@ -564,6 +566,9 @@
                 "Uptime": "Uptime (s)",
 
                 "poll_timeout_description": "Time in seconds without modbus polling before safety mode",
+                "inputs_control_in_safety_mode_description": "Sets change of control from the inputs when module switches to safety mode",
+                "safety_behaviour_description": "Action when module switches into safe mode",
+                "outputs_safe_state_description": "Outputs state after module power on (if the \"Set output to safe state\" item is selected in the \"States of the relay on power up\" setting) and in the safe mode, if the transition to the safe state is activated.",
 
                 "lp_hold_time_title": "Long Press Time (ms)",
                 "secp_waiting_time_title": "Second Press Waiting Time (ms)",
@@ -603,7 +608,8 @@
 
                 {% endfor -%}
 
-                "Output Safe State": "Безопасное состояние реле",
+                "Output Safe State": "Безопасное состояние выходов",
+                "outputs_safe_state_description": "Состояние выходов после включения модуля (если в настройке \"Состояния выходов при подаче питания\" выбран пункт \"Перевести выход в безопасное состояние\"), а также в безопасном режиме, если переход в безопасное состояние активирован.",
 
                 "no action": "нет действия",
                 "reset": "выключить",
@@ -640,10 +646,12 @@
                 "Restore Last Outputs State After Power On": "Восстанавливать состояния выходов при включении",
                 "Safety Poll Timeout (s)": "Таймаут потери связи (с)",
                 "poll_timeout_description": "Параметр определяет время отсутствия опроса в секундах, после которого будет активирован безопасный режим. Действия в безопасном режиме настраиваются отдельно.",
-                "Outputs State After Power On": "Состояния реле при подаче питания",
-                "Safe State": "Перевести выход в безопасное состояние",
-                "Restore Last State": "Восстановить последнее состояние",
-                "According To Inputs": "Состояние соответствующее состоянию входов",
+                "inputs_control_in_safety_mode_description": "Настройка изменения управления с входов при переходе модуля в безопасный режим",
+                "safety_behaviour_description": "Действие при переходе модуля в безопасный режим",
+                "Outputs State After Power On": "Состояния выходов при подаче питания",
+                "Safe state": "Перевести выход в безопасное состояние",
+                "Restore last state": "Восстановить последнее состояние",
+                "According to inputs": "Установить согласно состоянию входов",
 
                 "Safety Mode Trigger": "Переход в безопасный режим",
                 "Poll timeout or loss bus power supply": "Потеря связи или пропадание низковольтного питания",
