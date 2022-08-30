@@ -2110,6 +2110,7 @@
                 "Voltage angle L3": "Фазовый угол L3",
                 "Frequency": "Частота",
                 "Serial": "Серийный номер",
+                "FW Version": "Версия прошивки",
                 "Supply voltage": "Напряжение 5 В",
                 "Uptime": "Время работы с момента включения (с)",
                 "MCU Temperature": "Температура МК",
