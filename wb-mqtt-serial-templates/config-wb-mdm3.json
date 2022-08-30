@@ -620,6 +620,7 @@
                 "Input 5 counter": "Счетчик 5",
                 "Input 6 counter": "Счетчик 6",
                 "Serial": "Серийный номер",
+                "FW Version": "Версия прошивки",
                 "Supply voltage": "Напряжение питания",
                 "Uptime": "Время работы с момента включения (с)",
                 "MCU Temperature": "Температура МК",
