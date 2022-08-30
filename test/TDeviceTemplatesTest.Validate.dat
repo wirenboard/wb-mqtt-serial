@@ -17776,6 +17776,7 @@ WB-MIR (simple)
 	Play from ROM6  =>  Play from ROM6
 	Play from ROM7  =>  Play from ROM7
 WB-MIR v2
+	FW Version  =>  FW Version
 	Input 1: input1_1wire
 		External Temperature Sensor  =>  External Temperature Sensor
 		External Temperature Sensor OK  =>  External Temperature Sensor OK
