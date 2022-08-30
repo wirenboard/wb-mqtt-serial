@@ -1,3 +1,9 @@
+wb-mqtt-serial (2.69.8) stable; urgency=medium
+
+  * Add T13 frequency inverter template
+
+ -- Andrey Radionov <andrey.radionov@wirenboard.ru>  Tue, 30 Aug 2022 14:24:50 +0300
+
 wb-mqtt-serial (2.69.7) stable; urgency=medium
 
   * Fixed safety mode enum and description for WB-MR6C v.3 template
