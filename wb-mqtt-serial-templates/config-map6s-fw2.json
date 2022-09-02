@@ -709,6 +709,16 @@
                 "group": "hw_info"
             },
             {
+                "name": "FW Version",
+                "reg_type": "input",
+                "address": 250,
+                "type": "text",
+                "format": "string",
+                "string_data_size": 16,
+                "enabled": false,
+                "group": "hw_info"
+            },
+            {
                 "name": "Supply voltage",
                 "reg_type": "input",
                 "address": 121,
@@ -797,6 +807,7 @@
                 "Phase angle 6": "Угол между I6 и U",
                 "Frequency": "Частота",
                 "Serial": "Серийный номер",
+                "FW Version": "Версия прошивки",
                 "Supply voltage": "Напряжение 5 В",
                 "Uptime": "Время работы с момента включения (с)",
                 "MCU Temperature": "Температура МК",

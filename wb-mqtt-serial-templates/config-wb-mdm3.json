@@ -454,6 +454,16 @@
                 "group": "hw_info"
             },
             {
+                "name": "FW Version",
+                "reg_type": "input",
+                "address": 250,
+                "type": "text",
+                "format": "string",
+                "string_data_size": 16,
+                "enabled": false,
+                "group": "hw_info"
+            },
+            {
                 "name": "Supply voltage",
                 "reg_type": "input",
                 "address": 121,
@@ -610,6 +620,7 @@
                 "Input 5 counter": "Счетчик 5",
                 "Input 6 counter": "Счетчик 6",
                 "Serial": "Серийный номер",
+                "FW Version": "Версия прошивки",
                 "Supply voltage": "Напряжение питания",
                 "Uptime": "Время работы с момента включения (с)",
                 "MCU Temperature": "Температура МК",
