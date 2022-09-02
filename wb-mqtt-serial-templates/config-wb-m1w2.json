@@ -90,6 +90,16 @@
                 "group": "hw_info"
             },
             {
+                "name": "FW Version",
+                "reg_type": "input",
+                "address": 250,
+                "type": "text",
+                "format": "string",
+                "string_data_size": 16,
+                "enabled": false,
+                "group": "hw_info"
+            },
+            {
                 "name": "Input Voltage",
                 "reg_type": "input",
                 "address": 121,
@@ -285,6 +295,7 @@
                 "Discrete Input 2": "Дискретный вход 2",
                 "Counter 2": "Счетчик 2",
                 "Serial NO": "Серийный номер",
+                "FW Version": "Версия прошивки",
                 "Input Voltage": "Напряжение питания",
                 "Uptime": "Время работы с момента включения (с)",
                 "MCU Temperature": "Температура МК",

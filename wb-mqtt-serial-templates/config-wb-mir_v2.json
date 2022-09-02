@@ -1296,6 +1296,16 @@
                 "group": "hw_info"
             },
             {
+                "name": "FW Version",
+                "reg_type": "input",
+                "address": 250,
+                "type": "text",
+                "format": "string",
+                "string_data_size": 16,
+                "enabled": false,
+                "group": "hw_info"
+            },
+            {
                 "name": "Input Voltage",
                 "reg_type": "input",
                 "address": 121,
@@ -1542,6 +1552,7 @@
                 "Reset all ROM": "Стереть все команды в ROM",
                 "Input 1": "Вход 1",
                 "Serial NO": "Серийный номер",
+                "FW Version": "Версия прошивки",
                 "Input Voltage": "Напряжение питания",
                 "Uptime": "Время работы с момента включения (с)",
                 "MCU Temperature": "Температура МК",
