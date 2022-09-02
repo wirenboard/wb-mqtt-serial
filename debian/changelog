@@ -1,3 +1,10 @@
+wb-mqtt-serial (2.68.6-wb105) stable; urgency=medium
+
+  * Channel "FW Version" was added in Wirenboard Modbus modules
+    templates
+
+ -- Dmitry Vorobjev <d.vorobjev@wirenboard.ru>  Tue, 30 Aug 2022 15:56:17 +0300
+
 wb-mqtt-serial (2.68.6-wb104) stable; urgency=medium
 
   * Fixed safety mode enum and description for WB-MR6C v.3 template
