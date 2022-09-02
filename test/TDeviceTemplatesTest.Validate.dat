@@ -20837,13 +20837,13 @@ pulsar-m-water
 pulsar-water
 	Consumption  =>  Consumption
 t13_VFD
-    Current  =>  Current
-    Driver FW version  =>  Driver FW version
-    Frequency  =>  Frequency
-    Panel FW version  =>  Panel FW version
-    Radiator temperature  =>  Radiator temperature
-    Start-stop-reverse  =>  Start-stop-reverse
-    Voltage bus  =>  Voltage bus
+	Current  =>  Current
+	Driver FW version  =>  Driver FW version
+	Frequency  =>  Frequency
+	Panel FW version  =>  Panel FW version
+	Radiator temperature  =>  Radiator temperature
+	Start-stop-reverse  =>  Start-stop-reverse
+	Voltage bus  =>  Voltage bus
 teplomash_kev-blok-mk
 	Air Heater Status  =>  Air Heater Status
 	Connection Lost  =>  Connection Lost
