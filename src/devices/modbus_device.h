@@ -8,6 +8,7 @@
 #include "serial_device.h"
 
 #include "modbus_common.h"
+#include "running_average.h"
 
 template<class Dev> class TModbusDeviceFactory: public IDeviceFactory
 {
@@ -36,6 +37,7 @@ class TModbusDevice: public TSerialDevice, public TUInt32SlaveId
 {
     std::unique_ptr<Modbus::IModbusTraits> ModbusTraits;
     Modbus::TRegisterCache ModbusCache;
+    TRunningAverage<std::chrono::microseconds, 10> ResponseTime;
 
 public:
     TModbusDevice(std::unique_ptr<Modbus::IModbusTraits> modbusTraits,

@@ -44,14 +44,15 @@ TModbusDevice::TModbusDevice(std::unique_ptr<Modbus::IModbusTraits> modbusTraits
                              PProtocol protocol)
     : TSerialDevice(config, port, protocol),
       TUInt32SlaveId(config->SlaveId),
-      ModbusTraits(std::move(modbusTraits))
+      ModbusTraits(std::move(modbusTraits)),
+      ResponseTime(std::chrono::milliseconds::zero())
 {
     config->FrameTimeout = std::max(config->FrameTimeout, port->GetSendTime(3.5));
 }
 
 PRegisterRange TModbusDevice::CreateRegisterRange() const
 {
-    return Modbus::CreateRegisterRange();
+    return Modbus::CreateRegisterRange(ResponseTime.GetValue());
 }
 
 void TModbusDevice::WriteRegisterImpl(PRegister reg, const TRegisterValue& value)
@@ -61,7 +62,12 @@ void TModbusDevice::WriteRegisterImpl(PRegister reg, const TRegisterValue& value
 
 void TModbusDevice::ReadRegisterRange(PRegisterRange range)
 {
-    Modbus::ReadRegisterRange(*ModbusTraits, *Port(), SlaveId, range, ModbusCache);
+    auto modbus_range = std::dynamic_pointer_cast<Modbus::TModbusRegisterRange>(range);
+    if (!modbus_range) {
+        throw std::runtime_error("modbus range expected");
+    }
+    Modbus::ReadRegisterRange(*ModbusTraits, *Port(), SlaveId, *modbus_range, ModbusCache);
+    ResponseTime.AddValue(modbus_range->GetResponseTime());
 }
 
 void TModbusDevice::WriteSetupRegisters()

@@ -1,3 +1,9 @@
+wb-mqtt-serial (2.70.0) stable; urgency=medium
+
+  * Fix long read periods with big response_timeout_ms values
+
+ -- Petr Krasnoshchekov <petr.krasnoshchekov@wirenboard.ru>  Thu, 08 Sep 2022 10:13:37 +0500
+
 wb-mqtt-serial (2.69.9) stable; urgency=medium
 
   * Add T13 frequency inverter template

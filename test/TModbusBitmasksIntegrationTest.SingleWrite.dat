@@ -102,12 +102,6 @@ EnqueueU16Shift8HoldingReadResponse()
 EnqueueU8Shift0SingleBitHoldingReadResponse()
 >> 01 03 00 48 00 01 04 1C
 << 01 03 02 00 07 F9 86
-EnqueueU8Shift1SingleBitHoldingReadResponse()
->> 01 03 00 48 00 01 04 1C
-<< 01 03 02 00 07 F9 86
-EnqueueU8Shift2SingleBitHoldingReadResponse()
->> 01 03 00 48 00 01 04 1C
-<< 01 03 02 00 07 F9 86
 Close()
 Unsubscribe -- em-test: /devices/modbus-sample/controls/U8:2/on
 Publish: /devices/modbus-sample/controls/U8:2: '' (QoS 1, retained)
