@@ -243,6 +243,24 @@
                 "address": 263,
                 "type": "value"
             }
-        ]
+        ],
+        "translations": {
+            "ru": {
+                "Counter 1": "Счетчик 1",
+                "Counter 2": "Счетчик 2",
+                "Counter 3": "Счетчик 3",
+                "Counter 4": "Счетчик 4",
+                "Counter 5": "Счетчик 5",
+                "Counter 6": "Счетчик 6",
+                "Counter 7": "Счетчик 7",
+                "Counter 8": "Счетчик 8",
+                "Counter 9": "Счетчик 9",
+                "Counter 10": "Счетчик 10",
+                "Counter 11": "Счетчик 11",
+                "Counter 12": "Счетчик 12",
+                "Counter 13": "Счетчик 13",
+                "Counter 14": "Счетчик 14"
+            }
+        }
     }
 }
