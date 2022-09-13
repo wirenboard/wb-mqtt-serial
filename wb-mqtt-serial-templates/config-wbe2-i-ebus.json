@@ -216,16 +216,6 @@
                             "readonly": true
                         },
                         {
-                            "name": "Heating Setpoint",
-                            "address": 203,
-                            "reg_type": "holding",
-                            "type": "temperature",
-                            "format": "u16",
-                            "min": 0,
-                            "max": 85,
-                            "readonly": true
-                        },
-                        {
                             "name": "Outdoor Temperature",
                             "address": 206,
                             "reg_type": "holding",
@@ -235,6 +225,16 @@
                             "offset": -100,
                             "min": -50,
                             "max": 50
+                        },
+                        {
+                            "name": "Heating Setpoint",
+                            "address": 203,
+                            "reg_type": "holding",
+                            "type": "temperature",
+                            "format": "u16",
+                            "min": 0,
+                            "max": 85,
+                            "readonly": true
                         },
                         {
                             "name": "Heating Status",
