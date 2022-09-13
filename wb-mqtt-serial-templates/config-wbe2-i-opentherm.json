@@ -63,7 +63,7 @@
                 "group": "boiler_state"
             },
             {
-                "name": "Return Heating Temperature",
+                "name": "Heating Return Water Temperature",
                 "address": 216,
                 "reg_type": "input",
                 "type": "temperature",
@@ -400,7 +400,7 @@
                 "Error Code": "Код ошибки",
                 "Hot Water Temperature": "Температура ГВС",
                 "Heating Temperature": "Температура подачи отопления",
-                "Return Heating Temperature": "Температура обратной воды отопления",
+                "Heating Return Water Temperature": "Температура обратной воды отопления",
                 "Burner Modulation Level (%)": "Уровень модуляции горелки (%)",
                 "Water Pressure": "Давление воды",
                 "Boiler Outdoor Temperature Sensor": "Уличная температура (датчик котла)",
