@@ -1,5 +1,6 @@
 {
-    "device_type": "WBE2-I-EBUS_template_title",
+    "title": "WBE2-I-EBUS_template_title",
+    "device_type": "WBE2-I-EBUS",
     "group": "g-wb",
     "device": {
         "name": "WBE2-I-EBUS",
