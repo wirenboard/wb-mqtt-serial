@@ -17,9 +17,14 @@
                 "order": 2
             },
             {
+                "title": "OpenTherm Commands",
+                "id": "opentherm_commands",
+                "order": 4
+            },
+            {
                 "title": "HW Info",
                 "id": "hw_info",
-                "order": 4
+                "order": 5
             }
         ],
 
@@ -55,6 +60,15 @@
                 "type": "temperature",
                 "format": "u16",
                 "group": "boiler_state"
+            },
+            {
+                "name": "Return Heating Temperature",
+                "address": 216,
+                "reg_type": "input",
+                "type": "temperature",
+                "format": "u16",
+                "group": "boiler_state",
+                "enabled": false
             },
             {
                 "name": "Burner Modulation Level (%)",
@@ -142,6 +156,35 @@
                     "heating_off"
                 ],
                 "device_type": "room_sensor"
+            },
+            {
+                "name": "Command Type",
+                "address": 209,
+                "reg_type": "holding",
+                "type": "value",
+                "format": "u16",
+                "min": 1,
+                "max": 10,
+                "group": "opentherm_commands",
+                "enabled": false
+            },
+            {
+                "name": "Command ID",
+                "address": 210,
+                "reg_type": "holding",
+                "type": "value",
+                "format": "u16",
+                "group": "opentherm_commands",
+                "enabled": false
+            },
+            {
+                "name": "Data Type",
+                "address": 211,
+                "reg_type": "holding",
+                "type": "value",
+                "format": "u16",
+                "group": "opentherm_commands",
+                "enabled": false
             },
             {
                 "name": "FW Version",
@@ -237,19 +280,11 @@
                             "title": "Climate Curve Number",
                             "address": 206,
                             "reg_type": "holding",
-                            "enum": [
-                                1, 2, 3, 4, 5,
-                                6, 7, 8, 9, 10,
-                                11, 12, 13, 14, 15,
-                                16, 17, 18, 19
-                            ],
-                            "enum_titles": [
-                                "1", "2", "3", "4", "5",
-                                "6", "7", "8", "9", "10",
-                                "11", "12", "13", "14", "15",
-                                "16", "17", "18", "19"
-                            ],
-                            "default": 1
+                            "format": "u16",
+                            "min": 1,
+                            "max": 200,
+                            "default": 1,
+                            "order": 1
                         }
                     },
                     "channels": [
