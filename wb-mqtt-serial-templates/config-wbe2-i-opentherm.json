@@ -1,4 +1,5 @@
 {
+    "title": "WBE2-I-OPENTHERM_template_title",
     "device_type": "WBE2-I-OPENTHERM",
     "group": "g-wb",
     "device": {
@@ -278,6 +279,7 @@
                     "parameters": {
                         "climate_curve_number": {
                             "title": "Climate Curve Number",
+                            "description": "climate_curve_number_description",
                             "address": 206,
                             "reg_type": "holding",
                             "format": "u16",
@@ -382,6 +384,52 @@
                     ]
                 }
             }
-        ]
+        ],
+        "translations": {
+            "en": {
+                "WBE2-I-OPENTHERM_template_title": "WBE2-I-OPENTHERM (OpenTherm boiler interface)",
+                "climate_curve_number_description": "Values from 20 to 200 are transformed in module as value/200"
+            },
+            "ru": {
+                "WBE2-I-OPENTHERM_template_title": "WBE2-I-OPENTHERM (интерфейс OpenTherm для котлов)",
+                "Boiler State": "Состояние котла",
+                "Hot Water Settings": "Температура ГВС",
+                "OpenTherm Commands": "Команды OpenTherm",
+                "HW Info": "Данные модуля",
+                "Boiler Status": "Статус котла",
+                "Error Code": "Код ошибки",
+                "Hot Water Temperature": "Температура ГВС",
+                "Heating Temperature": "Температура подачи отопления",
+                "Return Heating Temperature": "Температура обратной воды отопления",
+                "Burner Modulation Level (%)": "Уровень модуляции горелки (%)",
+                "Water Pressure": "Давление воды",
+                "Boiler Outdoor Temperature Sensor": "Уличная температура (датчик котла)",
+                "Hot Water Setpoint Max": "Максимальная уставка ГВС",
+                "Hot Water Setpoint Min": "Минимальная уставка ГВС",
+                "Heating Setpoint Max": "Максимальная уставка отопления",
+                "Heating Setpoint Min": "Минимальная уставка отопления",
+                "Hot Water Setpoint": "Уставка ГВС",
+                "Heating Settings": "Параметры отопления",
+                "Command Type": "Тип команды",
+                "Command ID": "ID команды",
+                "Data Type": "Тип данных",
+                "FW Version": "Версия прошивки",
+
+                "Room Temperature Sensor": "Датчик комнатной температуры",
+                "Temperature Sensor Type": "Тип датчика температуры",
+                "Heating Setpoint": "Уставка отопления",
+                "Room Temperature": "Комнатная температура",
+                "Room Temperature Setpoint": "Уставка комнатной температуры",
+
+                "Outdoor Temperature Sensor": "Датчик уличной температуры",
+                "Climate Curve Number": "Номер климатической кривой",
+                "climate_curve_number_description": "Значения от 20 до 200 преобразуются в модуле как значение/200",
+                "Outdoor Temperature": "Уличная температура",
+                "Heating Status": "Статус отопления",
+
+                "Direct Heating Setpoint Control": "Управление уставкой отопления",
+                "Heating Off": "Отопление отключено"
+            }
+        }
     }
 }
