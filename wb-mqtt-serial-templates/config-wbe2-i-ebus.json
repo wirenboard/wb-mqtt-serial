@@ -310,7 +310,7 @@
             "ru": {
                 "WBE2-I-EBUS_template_title": "WBE2-I-EBUS (интерфейс eBus для котлов)",
                 "Boiler State": "Состояние котла",
-                "Hot Water Settings": "Температура ГВС",
+                "Hot Water Settings": "Параметры ГВС",
                 "HW Info": "Данные модуля",
                 "Error Code": "Код ошибки",
                 "Hot Water Temperature": "Температура ГВС",

@@ -393,7 +393,7 @@
             "ru": {
                 "WBE2-I-OPENTHERM_template_title": "WBE2-I-OPENTHERM (интерфейс OpenTherm для котлов)",
                 "Boiler State": "Состояние котла",
-                "Hot Water Settings": "Температура ГВС",
+                "Hot Water Settings": "Параметры ГВС",
                 "OpenTherm Commands": "Команды OpenTherm",
                 "HW Info": "Данные модуля",
                 "Boiler Status": "Статус котла",
