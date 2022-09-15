@@ -120,7 +120,7 @@ namespace Modbus // modbus protocol common utilities
 
     TModbusRegisterRange::TModbusRegisterRange(std::chrono::microseconds averageResponseTime)
         : AverageResponseTime(averageResponseTime),
-          ResponseTime(averageResponseTimeout)
+          ResponseTime(averageResponseTime)
     {}
 
     TModbusRegisterRange::~TModbusRegisterRange()
