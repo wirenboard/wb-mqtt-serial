@@ -707,9 +707,12 @@ TEST_F(TModbusBitmasksIntegrationTest, SingleWrite)
     PublishWaitOnValue("/devices/modbus-sample/controls/U8:1/on", "1");
 
     EnqueueU8Shift1SingleBitHoldingWriteResponse();
-    ExpectPollQueries(true);
+    EnqueueU8Shift0Bits8HoldingReadResponse();
+    EnqueueU16Shift8HoldingReadResponse(false);
+    // Read all single bit registers at once as they are located in the same modbus register
+    EnqueueU8Shift0SingleBitHoldingReadResponse(true);
     Note() << "LoopOnce()";
-    for (auto i = 0; i < 5; ++i) {
+    for (auto i = 0; i < 3; ++i) {
         SerialDriver->LoopOnce();
     }
 }
