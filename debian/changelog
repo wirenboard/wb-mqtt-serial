@@ -2,7 +2,13 @@ wb-mqtt-serial (2.70.0) stable; urgency=medium
 
   * Fix long read periods with big response_timeout_ms values
 
- -- Petr Krasnoshchekov <petr.krasnoshchekov@wirenboard.ru>  Thu, 08 Sep 2022 10:13:37 +0500
+ -- Petr Krasnoshchekov <petr.krasnoshchekov@wirenboard.ru>  Thu, 15 Sep 2022 13:23:54 +0500
+
+wb-mqtt-serial (2.69.10) stable; urgency=medium
+
+  * Russian translations were added in WBIO modules templates
+
+ -- Dmitry Vorobjev <d.vorobjev@wirenboard.ru>  Thu, 08 Sep 2022 15:28:17 +0300
 
 wb-mqtt-serial (2.69.9) stable; urgency=medium
 
