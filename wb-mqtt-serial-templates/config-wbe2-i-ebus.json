@@ -1,4 +1,5 @@
 {
+    "title": "WBE2-I-EBUS_template_title",
     "device_type": "WBE2-I-EBUS",
     "group": "g-wb",
     "device": {
@@ -180,12 +181,6 @@
                             "value": 0
                         },
                         {
-                            "title": "enable heating control by sensor",
-                            "address": 205,
-                            "reg_type": "holding",
-                            "value": 20
-                        },
-                        {
                             "title": "enable outdoor sensor",
                             "address": 208,
                             "reg_type": "holding",
@@ -221,6 +216,17 @@
                             "readonly": true
                         },
                         {
+                            "name": "Outdoor Temperature",
+                            "address": 206,
+                            "reg_type": "holding",
+                            "type": "temperature",
+                            "format": "s16",
+                            "scale": 0.1,
+                            "offset": -100,
+                            "min": -50,
+                            "max": 50
+                        },
+                        {
                             "name": "Heating Setpoint",
                             "address": 203,
                             "reg_type": "holding",
@@ -231,15 +237,10 @@
                             "readonly": true
                         },
                         {
-                            "name": "Outdoor Temperature",
-                            "address": 206,
+                            "name": "Heating Status",
                             "reg_type": "holding",
-                            "type": "temperature",
-                            "format": "s16",
-                            "scale": 0.1,
-                            "offset": -100,
-                            "min": -50,
-                            "max": 50
+                            "address": 205,
+                            "type": "switch"
                         }
                     ]
                 }
@@ -301,6 +302,40 @@
                     ]
                 }
             }
-        ]
+        ],
+        "translations": {
+            "en": {
+                "WBE2-I-EBUS_template_title": "WBE2-I-EBUS (eBus boiler interface)"
+            },
+            "ru": {
+                "WBE2-I-EBUS_template_title": "WBE2-I-EBUS (интерфейс eBus для котлов)",
+                "Boiler State": "Состояние котла",
+                "Hot Water Settings": "Параметры ГВС",
+                "HW Info": "Данные модуля",
+                "Error Code": "Код ошибки",
+                "Hot Water Temperature": "Температура ГВС",
+                "External Storage Water Temperature": "Температура ГВС внешнего накопителя",
+                "Heating Temperature": "Температура подачи отопления",
+                "Heating Return Water Temperature": "Температура обратной воды отопления",
+                "Boiler Outdoor Temperature Sensor": "Уличная температура (датчик котла)",
+                "Hot Water Setpoint": "Уставка ГВС",
+                "Heating Settings": "Параметры отопления",
+                "FW Version": "Версия прошивки",
+
+                "Room Temperature Sensor": "Датчик комнатной температуры",
+                "Temperature Sensor Type": "Тип датчика температуры",
+                "Heating Setpoint": "Уставка отопления",
+                "Room Temperature": "Комнатная температура",
+                "Room Temperature Setpoint": "Уставка комнатной температуры",
+
+                "Outdoor Temperature Sensor": "Датчик уличной температуры",
+                "Climate Curve Number": "Номер климатической кривой",
+                "Outdoor Temperature": "Уличная температура",
+                "Heating Status": "Статус отопления",
+
+                "Direct Heating Setpoint Control": "Управление уставкой отопления",
+                "Heating Off": "Отопление отключено"
+            }
+        }
     }
 }
