@@ -117,7 +117,43 @@ namespace Modbus // modbus protocol common utilities
         std::unique_ptr<Modbus::IModbusTraits> GetModbusTraits(PPort port) override;
     };
 
-    PRegisterRange CreateRegisterRange();
+    class TModbusRegisterRange: public TRegisterRange
+    {
+    public:
+        TModbusRegisterRange(std::chrono::microseconds averageResponseTime);
+        ~TModbusRegisterRange();
+
+        bool Add(PRegister reg, std::chrono::milliseconds pollLimit) override;
+
+        int GetStart() const;
+        int GetCount() const;
+        uint8_t* GetBits();
+        uint16_t* GetWords();
+        bool HasHoles() const;
+        const std::string& TypeName() const;
+        int Type() const;
+        PSerialDevice Device() const;
+
+        TRequest GetRequest(IModbusTraits& traits, uint8_t slaveId, int shift);
+        size_t GetResponseSize(IModbusTraits& traits);
+
+        void ReadRange(IModbusTraits& traits, TPort& port, uint8_t slaveId, int shift, Modbus::TRegisterCache& cache);
+
+        std::chrono::microseconds GetResponseTime() const;
+
+    private:
+        bool HasHolesFlg = false;
+        uint32_t Start;
+        size_t Count = 0;
+        uint8_t* Bits = 0;
+        uint16_t* Words = 0;
+        std::chrono::microseconds AverageResponseTime;
+        std::chrono::microseconds ResponseTime;
+
+        bool AddingRegisterIncreasesSize(bool isSingleBit, size_t extend);
+    };
+
+    PRegisterRange CreateRegisterRange(std::chrono::microseconds averageResponseTime);
 
     void WriteRegister(IModbusTraits& traits,
                        TPort& port,
@@ -130,7 +166,7 @@ namespace Modbus // modbus protocol common utilities
     void ReadRegisterRange(IModbusTraits& traits,
                            TPort& port,
                            uint8_t slaveId,
-                           PRegisterRange range,
+                           TModbusRegisterRange& range,
                            TRegisterCache& cache,
                            int shift = 0);
 
