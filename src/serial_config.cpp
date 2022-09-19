@@ -10,6 +10,7 @@
 #include <stdexcept>
 #include <string>
 #include <sys/stat.h>
+#include <sys/sysinfo.h>
 #include <sys/types.h>
 #include <unistd.h>
 
@@ -963,6 +964,11 @@ PHandlerConfig LoadConfig(const std::string& configFileName,
     } catch (const std::runtime_error& e) {
         throw std::runtime_error("File: " + configFileName + " error: " + e.what());
     }
+
+    // wb6 - single core - max 100 registers per second
+    // wb7 - 4 cores - max 800 registers per second
+    handlerConfig->LowPriorityRegistersRateLimit = (1 == get_nprocs_conf()) ? 100 : 800;
+    Get(Root, "rate_limit", handlerConfig->LowPriorityRegistersRateLimit);
 
     Get(Root, "debug", handlerConfig->Debug);
 

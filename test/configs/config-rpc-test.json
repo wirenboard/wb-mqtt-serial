@@ -28,18 +28,15 @@
                             "consists_of": [
                                 {
                                     "reg_type": "fake",
-                                    "address": 4,
-                                    "read_period_ms": 5000
+                                    "address": 4
                                 },
                                 {
                                     "reg_type": "fake",
-                                    "address": 5,
-                                    "read_period_ms": 5000
+                                    "address": 5
                                 },
                                 {
                                     "reg_type": "fake",
-                                    "address": 6,
-                                    "read_period_ms": 5000
+                                    "address": 6
                                 }
                             ]
                         },

@@ -111,14 +111,16 @@ namespace
 TSerialClient::TSerialClient(const std::vector<PSerialDevice>& devices,
                              PPort port,
                              const TPortOpenCloseLogic::TSettings& openCloseSettings,
-                             Metrics::TMetrics& metrics)
+                             Metrics::TMetrics& metrics,
+                             size_t lowPriorityRateLimit)
     : Port(port),
       Devices(devices),
       Active(false),
-      Scheduler(MAX_LOW_PRIORITY_LAG),
+      Scheduler(MAX_LOW_PRIORITY_LAG, lowPriorityRateLimit),
       OpenCloseLogic(openCloseSettings),
       ConnectLogger(PORT_OPEN_ERROR_NOTIFICATION_INTERVAL, "[serial client] "),
-      Metrics(metrics)
+      Metrics(metrics),
+      ThrottlingStateLogger()
 {
     FlushNeeded = std::make_shared<TBinarySemaphore>();
     RPCRequestHandler = std::make_shared<TRPCRequestHandler>();
@@ -168,10 +170,7 @@ void TSerialClient::PrepareRegisterRanges()
     auto now = std::chrono::steady_clock::now();
     for (auto& reg: RegList) {
         if (reg->AccessType != TRegisterConfig::EAccessType::WRITE_ONLY) {
-            // All registers are marked as high priority with poll time set to now.
-            // So they will be polled as soon as possible after service start.
-            // During next polls registers will be divided to low or high priority according to poll interval
-            Scheduler.AddEntry(reg, now, TPriority::High);
+            Scheduler.AddEntry(reg, now, IsHighPriority(*reg) ? TPriority::High : TPriority::Low);
         }
     }
 }
@@ -329,7 +328,7 @@ void TSerialClient::ScheduleNextPoll(PRegister reg, std::chrono::steady_clock::t
 void TSerialClient::ClosedPortCycle()
 {
     auto now = std::chrono::steady_clock::now();
-    auto wait_until = Scheduler.GetDeadline();
+    auto wait_until = Scheduler.GetDeadline(now);
     if (wait_until - now > MAX_CLOSED_PORT_CYCLE_TIME) {
         wait_until = now + MAX_CLOSED_PORT_CYCLE_TIME;
     }
@@ -400,13 +399,17 @@ void TSerialClient::SetRegistersAvailability(PSerialDevice dev, TRegisterAvailab
 
 void TSerialClient::OpenPortCycle()
 {
-    WaitForPollAndFlush(Scheduler.GetDeadline());
+    WaitForPollAndFlush(Scheduler.GetDeadline(std::chrono::steady_clock::now()));
     auto pollStartTime = std::chrono::steady_clock::now();
     Metrics.StartPoll(Metrics::NON_BUS_POLLING_TASKS);
 
     TRegisterReader reader(MAX_POLL_TIME);
 
-    Scheduler.AccumulateNext(pollStartTime, reader);
+    auto throttlingState = Scheduler.AccumulateNext(pollStartTime, reader);
+    auto throttlingMsg = ThrottlingStateLogger.GetMessage(throttlingState);
+    if (!throttlingMsg.empty()) {
+        LOG(Warn) << Port->GetDescription() << " " << throttlingMsg;
+    }
     auto range = reader.GetRegisterRange();
     if (!range) {
         // Nothing to read
@@ -473,4 +476,16 @@ bool TRegisterComparePredicate::operator()(const PRegister& r1, const PRegister&
     }
     // addresses are equal, compare offsets
     return r1->GetDataOffset() > r2->GetDataOffset();
+}
+
+TThrottlingStateLogger::TThrottlingStateLogger(): FirstTime(true)
+{}
+
+std::string TThrottlingStateLogger::GetMessage(TThrottlingState state)
+{
+    if (FirstTime && state == TThrottlingState::LowPriorityRateLimit) {
+        FirstTime = false;
+        return "Register read rate limit is exceeded";
+    }
+    return std::string();
 }

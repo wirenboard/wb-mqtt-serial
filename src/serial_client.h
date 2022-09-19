@@ -17,6 +17,16 @@ struct TRegisterComparePredicate
     bool operator()(const PRegister& r1, const PRegister& r2) const;
 };
 
+class TThrottlingStateLogger
+{
+    bool FirstTime;
+
+public:
+    TThrottlingStateLogger();
+
+    std::string GetMessage(TThrottlingState state);
+};
+
 class TSerialClient: public std::enable_shared_from_this<TSerialClient>
 {
 public:
@@ -25,7 +35,8 @@ public:
     TSerialClient(const std::vector<PSerialDevice>& devices,
                   PPort port,
                   const TPortOpenCloseLogic::TSettings& openCloseSettings,
-                  Metrics::TMetrics& metrics);
+                  Metrics::TMetrics& metrics,
+                  size_t lowPriorityRateLimit = std::numeric_limits<size_t>::max());
     TSerialClient(const TSerialClient& client) = delete;
     TSerialClient& operator=(const TSerialClient&) = delete;
     ~TSerialClient();
@@ -70,6 +81,7 @@ private:
     TPortOpenCloseLogic OpenCloseLogic;
     TLoggerWithTimeout ConnectLogger;
     Metrics::TMetrics& Metrics;
+    TThrottlingStateLogger ThrottlingStateLogger;
 
     PRPCRequestHandler RPCRequestHandler;
 };

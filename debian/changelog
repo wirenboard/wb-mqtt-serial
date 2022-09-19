@@ -1,3 +1,10 @@
+wb-mqtt-serial (2.71.0) stable; urgency=medium
+
+  * Limit registers reads per second
+    New "rate_limit" parameter in config for setting limit
+
+ -- Petr Krasnoshchekov <petr.krasnoshchekov@wirenboard.ru>  Mon, 19 Sep 2022 18:16:01 +0500
+
 wb-mqtt-serial (2.70.1) stable; urgency=medium
 
   * New channels and Russian translations were added in OpenTherm and

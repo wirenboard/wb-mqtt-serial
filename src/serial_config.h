@@ -127,6 +127,7 @@ struct THandlerConfig
 {
     bool Debug = false;
     WBMQTT::TPublishParameters PublishParameters;
+    size_t LowPriorityRegistersRateLimit;
     std::vector<PPortConfig> PortConfigs;
 
     void AddPortConfig(PPortConfig portConfig);

@@ -1913,7 +1913,7 @@
       "items": { "$ref": "#/definitions/port" },
       "minItems": 1,
       "_format": "tabs",
-      "propertyOrder": 2,
+      "propertyOrder": 4,
       "options" : {
           "disable_collapse" : true,
           "disable_array_delete_last_row": true,
@@ -1925,6 +1925,14 @@
       "title" : "Unchanged value posting interval",
       "description" : "max_unchanged_interval_desc",
       "default" : -1,
+      "propertyOrder" : 2
+    },
+    "rate_limit" : {
+      "type" : "integer",
+      "title" : "Maximum registers reads per second",
+      "description" : "rate_limit_desc",
+      "default" : 100,
+      "min": 1,
       "propertyOrder" : 3
     }
   },
@@ -1977,7 +1985,8 @@
       "g-power-meter": "Energy meters",
       "g-thermostat": "Thermostats",
       "g-motor-control": "Motor controllers",
-      "g-custom": "Custom devices"
+      "g-custom": "Custom devices",
+      "rate_limit_desc": "To reduce the load on the processor, it is not recommended to specify more than 100 reads for WB6 and 800 for WB7"
     },
     "ru": {
       "Serial Device Driver Configuration": "Настройка драйвера serial-устройств",
@@ -2170,7 +2179,9 @@
       "g-power-meter": "Счётчики электроэнергии",
       "g-thermostat": "Термостаты",
       "g-motor-control": "Управление двигателями (преобразователи частоты)",
-      "g-custom": "Произвольные устройства"
+      "g-custom": "Произвольные устройства",
+      "Maximum registers reads per second": "Максимальное количество чтений регистров в секунду",
+      "rate_limit_desc": "Для снижения нагрузки на процессор не рекомендуется указывать более 100 чтений для WB6 и 800 для WB7"
     }
   }
 }
