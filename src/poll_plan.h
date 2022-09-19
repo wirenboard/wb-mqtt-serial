@@ -73,6 +73,12 @@ enum class TItemAccumulationPolicy
     AccordingToPollLimitTime
 };
 
+enum class TThrottlingState
+{
+    NoThrottling,
+    LowPriorityRateLimit
+};
+
 class TRateLimiter
 {
     size_t RateLimit;
@@ -154,7 +160,7 @@ public:
      * @param accumulator - object of TAccumulator
      */
     template<class TAccumulator>
-    void AccumulateNext(std::chrono::steady_clock::time_point currentTime, TAccumulator& accumulator)
+    TThrottlingState AccumulateNext(std::chrono::steady_clock::time_point currentTime, TAccumulator& accumulator)
     {
         UpdateSelectionTime(currentTime);
         if (HighPriorityQueue.HasReadyItems(currentTime) &&
@@ -193,8 +199,11 @@ public:
                 if (!firstItem) {
                     SelectedPriority = TPriority::Low;
                 }
+                return LowPriorityRateLimit.IsOverLimit(currentTime) ? TThrottlingState::LowPriorityRateLimit
+                                                                     : TThrottlingState::NoThrottling;
             }
         }
+        return TThrottlingState::NoThrottling;
     }
 
 private:

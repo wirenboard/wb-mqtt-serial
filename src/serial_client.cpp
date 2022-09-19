@@ -119,7 +119,8 @@ TSerialClient::TSerialClient(const std::vector<PSerialDevice>& devices,
       Scheduler(MAX_LOW_PRIORITY_LAG, lowPriorityRateLimit),
       OpenCloseLogic(openCloseSettings),
       ConnectLogger(PORT_OPEN_ERROR_NOTIFICATION_INTERVAL, "[serial client] "),
-      Metrics(metrics)
+      Metrics(metrics),
+      ThrottlingState(TThrottlingState::NoThrottling)
 {
     FlushNeeded = std::make_shared<TBinarySemaphore>();
     RPCRequestHandler = std::make_shared<TRPCRequestHandler>();
@@ -404,8 +405,11 @@ void TSerialClient::OpenPortCycle()
 
     TRegisterReader reader(MAX_POLL_TIME);
 
-    Scheduler.AccumulateNext(pollStartTime, reader);
-    auto range = reader.GetRegisterRange();
+    auto throttlingState = Scheduler.AccumulateNext(pollStartTime, reader);
+    auto throttlingMsg = ThrottlingStateLogger.GetMessage(throttlingState);
+    if (!throttlingMsg.empty()) {
+        LOG(Warn) << Port->GetDescription() << " " << throttlingMsg;
+    }
     if (!range) {
         // Nothing to read
         return;
@@ -471,4 +475,16 @@ bool TRegisterComparePredicate::operator()(const PRegister& r1, const PRegister&
     }
     // addresses are equal, compare offsets
     return r1->GetDataOffset() > r2->GetDataOffset();
+}
+
+TThrottlingStateLogger::TThrottlingStateLogger(): FirstTime(true)
+{}
+
+std::string TThrottlingStateLogger::GetMessage(TThrottlingState state)
+{
+    if (FirstTime && state == TThrottlingState::LowPriorityRateLimit) {
+        FirstTime = false;
+        return "Register read rate limit is exceeded";
+    }
+    return std::string()
 }

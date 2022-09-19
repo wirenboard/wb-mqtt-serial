@@ -17,6 +17,16 @@ struct TRegisterComparePredicate
     bool operator()(const PRegister& r1, const PRegister& r2) const;
 };
 
+class TThrottlingStateLogger
+{
+    bool FirstTime;
+
+public:
+    TThrottlingStateLogger();
+
+    std::string GetMessage(TThrottlingState state);
+};
+
 class TSerialClient: public std::enable_shared_from_this<TSerialClient>
 {
 public:
@@ -71,6 +81,7 @@ private:
     TPortOpenCloseLogic OpenCloseLogic;
     TLoggerWithTimeout ConnectLogger;
     Metrics::TMetrics& Metrics;
+    TThrottlingStateLogger ThrottlingStateLogger;
 
     PRPCRequestHandler RPCRequestHandler;
 };
