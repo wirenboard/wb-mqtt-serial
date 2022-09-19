@@ -34,6 +34,8 @@ protected:
 
     PRegister ModbusHoldingU16WithAddressWrite;
     PRegister ModbusHoldingU16WithWriteBitOffset;
+
+    PRegister ModbusHoldingString;
 };
 
 PDeviceConfig TModbusTest::GetDeviceConfig()
@@ -66,7 +68,7 @@ void TModbusTest::SetUp()
     ModbusHoldingU64Multi = TRegister::Intern(ModbusDev, TRegisterConfig::Create(Modbus::REG_HOLDING_MULTI, 95, U64));
     ModbusHoldingU16Multi = TRegister::Intern(ModbusDev, TRegisterConfig::Create(Modbus::REG_HOLDING_MULTI, 99, U16));
 
-    TRegisterDesc regAddrDesc;
+    TRegisterDesc regAddrDesc, regStringDesc;
     regAddrDesc.Address = std::make_shared<TUint32RegisterAddress>(110);
     regAddrDesc.WriteAddress = std::make_shared<TUint32RegisterAddress>(115);
 
@@ -80,6 +82,12 @@ void TModbusTest::SetUp()
 
     ModbusHoldingU16WithWriteBitOffset =
         TRegister::Intern(ModbusDev, TRegisterConfig::Create(Modbus::REG_HOLDING, regAddrDesc, RegisterFormat::U16));
+
+    regStringDesc.Address = std::make_shared<TUint32RegisterAddress>(120);
+    regStringDesc.DataWidth = 16 * sizeof(char) * 8;
+
+    ModbusHoldingString =
+        TRegister::Intern(ModbusDev, TRegisterConfig::Create(Modbus::REG_HOLDING, regStringDesc, String));
 
     SerialPort->Open();
 }
@@ -205,6 +213,23 @@ TEST_F(TModbusTest, ReadHoldingRegiterWithOffsetWriteOptions)
     EXPECT_EQ(GetUint32RegisterAddress(reg->GetAddress()), 111);
     EXPECT_FALSE(reg->GetErrorState().test(TRegister::TError::ReadError));
     EXPECT_EQ(reg->GetValue(), 5);
+}
+
+TEST_F(TModbusTest, ReadStringZeroBytesEnd)
+{
+    EnqueueStringReadResponse();
+
+    auto range = ModbusDev->CreateRegisterRange();
+    range->Add(ModbusHoldingString, std::chrono::milliseconds::max());
+    ModbusDev->ReadRegisterRange(range);
+    auto registerList = range->RegisterList();
+    EXPECT_EQ(registerList.size(), 1);
+    auto reg = registerList.front();
+    EXPECT_EQ(GetUint32RegisterAddress(reg->GetAddress()), 120);
+    EXPECT_FALSE(reg->GetErrorState().test(TRegister::TError::ReadError));
+    EXPECT_EQ(reg->GetValue().Get<std::string>(), "2.4.2-rc1");
+
+    SerialPort->Close();
 }
 
 TEST_F(TModbusTest, WriteHoldingRegiterWithOffsetWriteOptions)
@@ -682,9 +707,12 @@ TEST_F(TModbusBitmasksIntegrationTest, SingleWrite)
     PublishWaitOnValue("/devices/modbus-sample/controls/U8:1/on", "1");
 
     EnqueueU8Shift1SingleBitHoldingWriteResponse();
-    ExpectPollQueries(true);
+    EnqueueU8Shift0Bits8HoldingReadResponse();
+    EnqueueU16Shift8HoldingReadResponse(false);
+    // Read all single bit registers at once as they are located in the same modbus register
+    EnqueueU8Shift0SingleBitHoldingReadResponse(true);
     Note() << "LoopOnce()";
-    for (auto i = 0; i < 5; ++i) {
+    for (auto i = 0; i < 3; ++i) {
         SerialDriver->LoopOnce();
     }
 }

@@ -49,7 +49,7 @@ void TRPCRequestHandler::RPCRequestHandling(PPort port)
             ReadData.clear();
             std::copy_n(readData.begin(), actualSize, std::back_inserter(ReadData));
             State = RPCRequestState::RPC_COMPLETE;
-        } catch (TSerialDeviceException error) {
+        } catch (const TSerialDeviceException& error) {
             State = RPCRequestState::RPC_ERROR;
         }
 

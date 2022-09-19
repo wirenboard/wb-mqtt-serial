@@ -4,6 +4,7 @@
  "device": {
   "name": "BAC-6000 Series",
   "id": "bac-6000-series", 
+  "deprecated": true,
   "channels": [
     {
     "name": "Lock buttons",

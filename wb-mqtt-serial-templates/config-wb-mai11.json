@@ -745,6 +745,16 @@
                 "group": "hw_info"
             },
             {
+                "name": "FW Version",
+                "reg_type": "input",
+                "address": 250,
+                "type": "text",
+                "format": "string",
+                "string_data_size": 16,
+                "enabled": false,
+                "group": "hw_info"
+            },
+            {
                 "name": "Uptime",
                 "reg_type": "input",
                 "address": 104,
@@ -5442,6 +5452,7 @@
                 "5V Output": "Напряжение на клеммах 5V",
                 "Internal Temperature": "Температура внутри модуля",
                 "Serial": "Серийный номер",
+                "FW Version": "Версия прошивки",
                 "Uptime": "Время работы с момента включения (с)",
                 "ADC Loop Duration": "Время цикла опроса АЦП",
                 "IN 1 P Read Interval": "IN 1 P: период опроса",

@@ -58,7 +58,8 @@ TModbusIODevice::TModbusIODevice(std::unique_ptr<Modbus::IModbusTraits> modbusTr
                                  PProtocol protocol)
     : TSerialDevice(config, port, protocol),
       TUInt32SlaveId(config->SlaveId),
-      ModbusTraits(std::move(modbusTraits))
+      ModbusTraits(std::move(modbusTraits)),
+      ResponseTime(std::chrono::milliseconds::zero())
 {
     auto SecondaryId = GetSecondaryId(config->SlaveId);
     Shift = (((SecondaryId - 1) % 4) + 1) * DeviceConfig()->Stride + DeviceConfig()->Shift;
@@ -67,7 +68,7 @@ TModbusIODevice::TModbusIODevice(std::unique_ptr<Modbus::IModbusTraits> modbusTr
 
 PRegisterRange TModbusIODevice::CreateRegisterRange() const
 {
-    return Modbus::CreateRegisterRange();
+    return Modbus::CreateRegisterRange(ResponseTime.GetValue());
 }
 
 void TModbusIODevice::WriteRegisterImpl(PRegister reg, const TRegisterValue& value)
@@ -77,7 +78,12 @@ void TModbusIODevice::WriteRegisterImpl(PRegister reg, const TRegisterValue& val
 
 void TModbusIODevice::ReadRegisterRange(PRegisterRange range)
 {
-    Modbus::ReadRegisterRange(*ModbusTraits, *Port(), SlaveId, range, ModbusCache, Shift);
+    auto modbus_range = std::dynamic_pointer_cast<Modbus::TModbusRegisterRange>(range);
+    if (!modbus_range) {
+        throw std::runtime_error("modbus range expected");
+    }
+    Modbus::ReadRegisterRange(*ModbusTraits, *Port(), SlaveId, *modbus_range, ModbusCache, Shift);
+    ResponseTime.AddValue(modbus_range->GetResponseTime());
 }
 
 void TModbusIODevice::WriteSetupRegisters()

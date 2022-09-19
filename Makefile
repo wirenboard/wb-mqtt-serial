@@ -114,6 +114,7 @@ install:
 
 	install -D -m 0644  wb-mqtt-serial.schema.json $(DESTDIR)/usr/share/wb-mqtt-serial/wb-mqtt-serial.schema.json
 	install -D -m 0644  wb-mqtt-serial-device-template.schema.json $(DESTDIR)/usr/share/wb-mqtt-serial/wb-mqtt-serial-device-template.schema.json
+	install -D -m 0644  wb-mqtt-serial-rpc-request.schema.json $(DESTDIR)/usr/share/wb-mqtt-serial/wb-mqtt-serial-rpc-request.schema.json
 	cp -r  wb-mqtt-serial-templates $(DESTDIR)/usr/share/wb-mqtt-serial/templates
 
 	install -D -m 0644  obis-hints.json $(DESTDIR)/usr/share/wb-mqtt-serial/obis-hints.json

@@ -1,9 +1,35 @@
+BAC-002ALN
+	Day Of Week  =>  Day Of Week
+	Fan Speed  =>  Fan Speed
+	Fan Status  =>  Fan Status
+	Hour  =>  Hour
+	Lock Buttons  =>  Lock Buttons
+	Minute  =>  Minute
+	Mode  =>  Mode
+	Room Temperature  =>  Room Temperature
+	Status  =>  Status
+	Temperature Setpoint  =>  Temperature Setpoint
+	Valve  =>  Valve
 BAC-6000 Series
 	Fan Speed  =>  Fan Speed
 	Lock buttons  =>  Lock buttons
 	Room temperature  =>  Room temperature
 	Setting Mode  =>  Setting Mode
 	Setting temperature  =>  Setting temperature
+BAC-6000ALN
+	Fan Speed  =>  Fan Speed
+	Lock Buttons  =>  Lock Buttons
+	Mode  =>  Mode
+	Room Temperature  =>  Room Temperature
+	Status  =>  Status
+	Temperature Setpoint  =>  Temperature Setpoint
+BAC-6000ELNW
+	Fan Speed  =>  Fan Speed
+	Lock Buttons  =>  Lock Buttons
+	Mode  =>  Mode
+	Room Temperature  =>  Room Temperature
+	Status  =>  Status
+	Temperature Setpoint  =>  Temperature Setpoint
 BHT-6000 Series
 	Heating status  =>  Heating status
 	Lock buttons  =>  Lock buttons
@@ -570,6 +596,7 @@ WB-LED
 	Channels 1_2_3_4 Brightness  =>  Channels 1_2_3_4 Brightness
 	Channels 3_4  =>  Channels 3_4
 	Channels 3_4 Brightness  =>  Channels 3_4 Brightness
+	FW Version  =>  FW Version
 	Hue Changing  =>  Hue Changing
 	Hue Changing Rate  =>  Hue Changing Rate
 	Input 1  =>  Input 1
@@ -608,6 +635,7 @@ WB-LED
 	Supply Voltage  =>  Supply Voltage
 	Uptime  =>  Uptime
 WB-M1W2
+	FW Version  =>  FW Version
 	Input 1: input1_1wire
 		External Sensor 1  =>  External Sensor 1
 		External Sensor 1 OK  =>  External Sensor 1 OK
@@ -641,6 +669,7 @@ WB-M1W2 DI
 WB-MAI11
 	5V Output  =>  5V Output
 	ADC Loop Duration  =>  ADC Loop Duration
+	FW Version  =>  FW Version
 	IN 1 N Read Interval  =>  IN 1 N Read Interval
 	IN 1 P Read Interval  =>  IN 1 P Read Interval
 	IN 10 N Read Interval  =>  IN 10 N Read Interval
@@ -12758,6 +12787,7 @@ WB-MAI11
 WB-MAI2-mini/CC
 	Current input 1 (mA)  =>  Current input 1 (mA)
 	Current input 2 (mA)  =>  Current input 2 (mA)
+	FW Version  =>  FW Version
 	Input Voltage  =>  Input Voltage
 	Serial NO  =>  Serial NO
 	Uptime  =>  Uptime
@@ -12770,6 +12800,7 @@ WB-MAO4
 	Channel 3 Duty Cycle Raw  =>  Channel 3 Duty Cycle Raw
 	Channel 4  =>  Channel 4
 	Channel 4 Duty Cycle Raw  =>  Channel 4 Duty Cycle Raw
+	FW Version  =>  FW Version
 	Input 1  =>  Input 1
 	Input 1 counter  =>  Input 1 counter
 	Input 2  =>  Input 2
@@ -12914,6 +12945,7 @@ WB-MAP12E fw2
 	Ch 4 Total Q  =>  Ch 4 Total Q
 	Ch 4 Total RP energy  =>  Ch 4 Total RP energy
 	Ch 4 Total S  =>  Ch 4 Total S
+	FW Version  =>  FW Version
 	Frequency  =>  Frequency
 	MCU Temperature  =>  MCU Temperature
 	MCU Voltage  =>  MCU Voltage
@@ -16771,6 +16803,7 @@ WB-MAP3E fw2
 	AP energy L1  =>  AP energy L1
 	AP energy L2  =>  AP energy L2
 	AP energy L3  =>  AP energy L3
+	FW Version  =>  FW Version
 	Frequency  =>  Frequency
 	Ipeak L1  =>  Ipeak L1
 	Ipeak L2  =>  Ipeak L2
@@ -16820,6 +16853,7 @@ WB-MAP3ET
 	AP energy L1  =>  AP energy L1
 	AP energy L2  =>  AP energy L2
 	AP energy L3  =>  AP energy L3
+	FW Version  =>  FW Version
 	Frequency  =>  Frequency
 	Ipeak L1  =>  Ipeak L1
 	Ipeak L2  =>  Ipeak L2
@@ -16866,6 +16900,7 @@ WB-MAP3ET
 	Voltage angle L2  =>  Voltage angle L2
 	Voltage angle L3  =>  Voltage angle L3
 WB-MAP3EV
+	FW Version  =>  FW Version
 	Frequency  =>  Frequency
 	MCU Temperature  =>  MCU Temperature
 	MCU Voltage  =>  MCU Voltage
@@ -17500,6 +17535,7 @@ WB-MAP6S fw2
 	AP energy 4  =>  AP energy 4
 	AP energy 5  =>  AP energy 5
 	AP energy 6  =>  AP energy 6
+	FW Version  =>  FW Version
 	Frequency  =>  Frequency
 	Irms 1  =>  Irms 1
 	Irms 2  =>  Irms 2
@@ -17587,6 +17623,7 @@ WB-MCM16
 	Serial NO  =>  Serial NO
 	Uptime  =>  Uptime
 WB-MCM8
+	FW Version  =>  FW Version
 	Input 1  =>  Input 1
 	Input 1 Double Press Counter  =>  Input 1 Double Press Counter
 	Input 1 Long Press Counter  =>  Input 1 Long Press Counter
@@ -17671,6 +17708,7 @@ WB-MDM3
 	Channel 2 Raw Duty (us)  =>  Channel 2 Raw Duty (us)
 	Channel 3  =>  Channel 3
 	Channel 3 Raw Duty (us)  =>  Channel 3 Raw Duty (us)
+	FW Version  =>  FW Version
 	Input 1  =>  Input 1
 	Input 1 counter  =>  Input 1 counter
 	Input 2  =>  Input 2
@@ -17738,6 +17776,7 @@ WB-MIR (simple)
 	Play from ROM6  =>  Play from ROM6
 	Play from ROM7  =>  Play from ROM7
 WB-MIR v2
+	FW Version  =>  FW Version
 	Input 1: input1_1wire
 		External Temperature Sensor  =>  External Temperature Sensor
 		External Temperature Sensor OK  =>  External Temperature Sensor OK
@@ -17997,6 +18036,7 @@ WB-MR14
 	Supply voltage  =>  Supply voltage
 	Uptime  =>  Uptime
 WB-MR3
+	FW Version  =>  FW Version
 	Input 0  =>  Input 0
 	Input 0 Double Press Counter  =>  Input 0 Double Press Counter
 	Input 0 Long Press Counter  =>  Input 0 Long Press Counter
@@ -18054,6 +18094,7 @@ WB-MR3LV
 	Supply Voltage  =>  Supply Voltage
 	Uptime  =>  Uptime
 WB-MR6C
+	FW Version  =>  FW Version
 	Input 0  =>  Input 0
 	Input 0 Double Press Counter  =>  Input 0 Double Press Counter
 	Input 0 Long Press Counter  =>  Input 0 Long Press Counter
@@ -18117,6 +18158,7 @@ WB-MR6C
 	Uptime  =>  Uptime
 WB-MR6C v.3
 	Bus Power Supply  =>  Bus Power Supply
+	FW Version  =>  FW Version
 	Input 0  =>  Input 0
 	Input 0 Double Press Counter  =>  Input 0 Double Press Counter
 	Input 0 Long Press Counter  =>  Input 0 Long Press Counter
@@ -18179,6 +18221,7 @@ WB-MR6C v.3
 	Supply Voltage  =>  Supply Voltage
 	Uptime  =>  Uptime
 WB-MR6C-NC
+	FW Version  =>  FW Version
 	Input 0  =>  Input 0
 	Input 0 Double Press Counter  =>  Input 0 Double Press Counter
 	Input 0 Long Press Counter  =>  Input 0 Long Press Counter
@@ -18241,6 +18284,7 @@ WB-MR6C-NC
 	Supply Voltage  =>  Supply Voltage
 	Uptime  =>  Uptime
 WB-MR6CU
+	FW Version  =>  FW Version
 	K1  =>  K1
 	K2  =>  K2
 	K3  =>  K3
@@ -18306,6 +18350,7 @@ WB-MRGBW-D
 		Channel G  =>  Channel G
 		Channel R  =>  Channel R
 		Channel W  =>  Channel W
+	FW Version  =>  FW Version
 	MCU Temperature  =>  MCU Temperature
 	MCU Voltage  =>  MCU Voltage
 	Serial NO  =>  Serial NO
@@ -18440,6 +18485,7 @@ WB-MRGBW-D_fw3_nosubdev
 	Channels 1_2_3_4 Brightness  =>  Channels 1_2_3_4 Brightness
 	Channels 3_4 (G_W)  =>  Channels 3_4 (G_W)
 	Channels 3_4 (G_W) Brightness  =>  Channels 3_4 (G_W) Brightness
+	FW Version  =>  FW Version
 	Hue Changing  =>  Hue Changing
 	Hue Changing Rate  =>  Hue Changing Rate
 	Input 1  =>  Input 1
@@ -18508,6 +18554,7 @@ WB-MRM2-mini-NC
 	Supply Voltage  =>  Supply Voltage
 	Uptime  =>  Uptime
 WB-MRM2-mini-NC-inputs
+	FW Version  =>  FW Version
 	Input 1  =>  Input 1
 	Input 1 Double Press Counter  =>  Input 1 Double Press Counter
 	Input 1 Long Press Counter  =>  Input 1 Long Press Counter
@@ -18531,6 +18578,7 @@ WB-MRM2-mini-NC-inputs
 	Supply Voltage  =>  Supply Voltage
 	Uptime  =>  Uptime
 WB-MRM2-mini-NO-inputs
+	FW Version  =>  FW Version
 	Input 1  =>  Input 1
 	Input 1 Double Press Counter  =>  Input 1 Double Press Counter
 	Input 1 Long Press Counter  =>  Input 1 Long Press Counter
@@ -18576,6 +18624,7 @@ WB-MRPS6
 WB-MRWM2
 	AP energy L1  =>  AP energy L1
 	AP energy L2  =>  AP energy L2
+	FW Version  =>  FW Version
 	Input 1  =>  Input 1
 	Input 1 Double Press Counter  =>  Input 1 Double Press Counter
 	Input 1 Long Press Counter  =>  Input 1 Long Press Counter
@@ -18605,6 +18654,7 @@ WB-MRWM2
 WB-MS v.2
 	Air Quality (VOC)  =>  Air Quality (VOC)
 	Erroneous TH Readings  =>  Erroneous TH Readings
+	FW Version  =>  FW Version
 	Humidity  =>  Humidity
 	Illuminance  =>  Illuminance
 	Illuminance Mode  =>  Illuminance Mode
@@ -18667,6 +18717,7 @@ WB-MSW v.3
 	CO2 Sensor Type  =>  CO2 Sensor Type
 	Current Motion  =>  Current Motion
 	Erroneous TH Readings  =>  Erroneous TH Readings
+	FW Version  =>  FW Version
 	Green LED  =>  Green LED
 	Humidity  =>  Humidity
 	Humidity Without Compensation  =>  Humidity Without Compensation
@@ -18851,6 +18902,7 @@ WB-MWAC
 	F3  =>  F3
 	F3 Counter  =>  F3 Counter
 	F3 Freq  =>  F3 Freq
+	FW Version  =>  FW Version
 	Input Voltage  =>  Input Voltage
 	K1  =>  K1
 	K2  =>  K2
@@ -18884,6 +18936,7 @@ WBE2-I-EBUS
 		Temperature Sensor Type  =>  Temperature Sensor Type
 	Heating Settings: outdoor_sensor
 		Heating Setpoint  =>  Heating Setpoint
+		Heating Status  =>  Heating Status
 		Outdoor Temperature  =>  Outdoor Temperature
 		Temperature Sensor Type  =>  Temperature Sensor Type
 	Heating Settings: direct_heating_control
@@ -18897,8 +18950,12 @@ WBE2-I-OPENTHERM
 	Boiler Outdoor Temperature Sensor  =>  Boiler Outdoor Temperature Sensor
 	Boiler Status  =>  Boiler Status
 	Burner Modulation Level (%)  =>  Burner Modulation Level (%)
+	Command ID  =>  Command ID
+	Command Type  =>  Command Type
+	Data Type  =>  Data Type
 	Error Code  =>  Error Code
 	FW Version  =>  FW Version
+	Heating Return Water Temperature  =>  Heating Return Water Temperature
 	Heating Setpoint Max  =>  Heating Setpoint Max
 	Heating Setpoint Min  =>  Heating Setpoint Min
 	Heating Settings: room_sensor
@@ -18908,6 +18965,7 @@ WBE2-I-OPENTHERM
 		Temperature Sensor Type  =>  Temperature Sensor Type
 	Heating Settings: outdoor_sensor
 		Heating Setpoint  =>  Heating Setpoint
+		Heating Status  =>  Heating Status
 		Outdoor Temperature  =>  Outdoor Temperature
 		Temperature Sensor Type  =>  Temperature Sensor Type
 	Heating Settings: direct_heating_control
@@ -20784,6 +20842,14 @@ pulsar-m-water
 	Consumption  =>  Consumption
 pulsar-water
 	Consumption  =>  Consumption
+t13_VFD
+	Current  =>  Current
+	Driver FW version  =>  Driver FW version
+	Frequency  =>  Frequency
+	Panel FW version  =>  Panel FW version
+	Radiator temperature  =>  Radiator temperature
+	Start-stop-reverse  =>  Start-stop-reverse
+	Voltage bus  =>  Voltage bus
 teplomash_kev-blok-mk
 	Air Heater Status  =>  Air Heater Status
 	Connection Lost  =>  Connection Lost

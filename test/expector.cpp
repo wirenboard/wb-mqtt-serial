@@ -1,4 +1,5 @@
 #include "expector.h"
+#include <string>
 
 std::vector<int> ExpectVectorFromString(const std::string& str)
 {

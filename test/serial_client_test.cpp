@@ -1609,7 +1609,7 @@ TRPCResultCode TSerialClientIntegrationTest::SendRPCRequest(PMQTTSerialDriver se
         std::vector<int> responseInt;
         std::copy(response.begin(), response.end(), back_inserter(responseInt));
         EXPECT_EQ(responseInt == expectedResponse, true);
-    } catch (TRPCException exception) {
+    } catch (const TRPCException& exception) {
         resultCode = exception.GetResultCode();
     }
 
