@@ -120,7 +120,7 @@ TSerialClient::TSerialClient(const std::vector<PSerialDevice>& devices,
       OpenCloseLogic(openCloseSettings),
       ConnectLogger(PORT_OPEN_ERROR_NOTIFICATION_INTERVAL, "[serial client] "),
       Metrics(metrics),
-      ThrottlingState(TThrottlingState::NoThrottling)
+      ThrottlingStateLogger()
 {
     FlushNeeded = std::make_shared<TBinarySemaphore>();
     RPCRequestHandler = std::make_shared<TRPCRequestHandler>();
@@ -410,6 +410,7 @@ void TSerialClient::OpenPortCycle()
     if (!throttlingMsg.empty()) {
         LOG(Warn) << Port->GetDescription() << " " << throttlingMsg;
     }
+    auto range = reader.GetRegisterRange();
     if (!range) {
         // Nothing to read
         return;
@@ -486,5 +487,5 @@ std::string TThrottlingStateLogger::GetMessage(TThrottlingState state)
         FirstTime = false;
         return "Register read rate limit is exceeded";
     }
-    return std::string()
+    return std::string();
 }
