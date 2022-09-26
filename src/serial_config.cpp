@@ -664,12 +664,6 @@ namespace
             }
         }
     }
-
-    inline bool HasNoEmptyProperty(const Json::Value& regCfg, const std::string& propertyName)
-    {
-        return regCfg.isMember(propertyName) &&
-               !(regCfg[propertyName].isString() && regCfg[propertyName].asString().empty());
-    }
 }
 
 std::string DecorateIfNotEmpty(const std::string& prefix, const std::string& str, const std::string& postfix)
@@ -1443,4 +1437,10 @@ TRegisterDesc TStringRegisterAddressFactory::LoadRegisterAddress(const Json::Val
 const IRegisterAddress& TStringRegisterAddressFactory::GetBaseRegisterAddress() const
 {
     return BaseRegisterAddress;
+}
+
+bool HasNoEmptyProperty(const Json::Value& regCfg, const std::string& propertyName)
+{
+    return regCfg.isMember(propertyName) &&
+           !(regCfg[propertyName].isString() && regCfg[propertyName].asString().empty());
 }

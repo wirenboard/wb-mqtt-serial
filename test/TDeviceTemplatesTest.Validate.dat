@@ -152,6 +152,25 @@ Energomera CE303
 	Voltage angle L1-L2  =>  Voltage angle L1-L2
 	Voltage angle L2-L3  =>  Voltage angle L2-L3
 	Voltage angle L3-L1  =>  Voltage angle L3-L1
+Glydea
+	Cause  =>  Cause
+	Current state  =>  Current state
+	Delete limits  =>  Delete limits
+	Direction  =>  Direction
+	Intermediate positions  =>  Intermediate positions
+	Last command source  =>  Last command source
+	Last position state  =>  Last position state
+	Limit down raw value  =>  Limit down raw value
+	Limit up raw value  =>  Limit up raw value
+	Motor position percent  =>  Motor position percent
+	Motor position raw value  =>  Motor position raw value
+	Move down  =>  Move down
+	Move up  =>  Move up
+	Position  =>  Position
+	Rolling speed up  =>  Rolling speed up
+	Set down limit  =>  Set down limit
+	Set up limit  =>  Set up limit
+	Stop  =>  Stop
 IVTM-7M-3
 	Humidity  =>  Humidity
 	Temperature  =>  Temperature
@@ -402,17 +421,25 @@ Somfy RTS transmitter
 	Up 8  =>  Up 8
 	Up 9  =>  Up 9
 Somfy SDN
+	Cause  =>  Cause
+	Current state  =>  Current state
 	Delete limits  =>  Delete limits
 	Direction  =>  Direction
-	Limits  =>  Limits
-	Motor position  =>  Motor position
+	Intermediate positions  =>  Intermediate positions
+	Last command source  =>  Last command source
+	Last position state  =>  Last position state
+	Limit down raw value  =>  Limit down raw value
+	Limit up raw value  =>  Limit up raw value
+	Motor position percent  =>  Motor position percent
+	Motor position raw value  =>  Motor position raw value
 	Move down  =>  Move down
 	Move up  =>  Move up
 	Position  =>  Position
-	Rolling speed  =>  Rolling speed
+	Rolling speed down  =>  Rolling speed down
+	Rolling speed slow  =>  Rolling speed slow
+	Rolling speed up  =>  Rolling speed up
 	Set down limit  =>  Set down limit
 	Set up limit  =>  Set up limit
-	Status  =>  Status
 	Stop  =>  Stop
 TM-P3R3
 	Input 0  =>  Input 0
