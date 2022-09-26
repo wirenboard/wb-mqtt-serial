@@ -14,8 +14,12 @@ namespace
     };
 
     const TRegisterTypes RegTypes{{POSITION, "position", "value", U8},
-                                  {PARAM, "param", "value", U64, true},
+                                  {PARAM, "param", "value", U64},
                                   {COMMAND, "command", "value", U64}};
+
+    // Key - setup command MSG, value - data size
+    const std::unordered_map<uint8_t, size_t> SetupDataSize{{Somfy::SET_MOTOR_ROTATION_DIRECTION, 1},
+                                                            {Somfy::SET_MOTOR_ROLLING_SPEED, 3}};
 
     const size_t CRC_SIZE = 2;
     const uint32_t HOST_ADDRESS = 0x0000FFFF;
@@ -130,6 +134,12 @@ namespace
             res.DataOffset = addr.BitOffset;
             res.DataWidth = addr.BitWidth;
             res.Address = std::make_shared<TSomfyAddress>(addr.Address, GetResponseAddress(regCfg));
+            if (HasNoEmptyProperty(regCfg, SerialConfig::WRITE_ADDRESS_PROPERTY_NAME)) {
+                auto writeAddress = LoadRegisterBitsAddress(regCfg, SerialConfig::WRITE_ADDRESS_PROPERTY_NAME);
+                res.WriteAddress = std::make_shared<TUint32RegisterAddress>(writeAddress.Address);
+            } else {
+                res.WriteAddress = std::make_shared<TUint32RegisterAddress>(addr.Address);
+            }
             return res;
         }
     };
@@ -159,6 +169,22 @@ namespace
                 ss << std::hex << std::setw(2) << std::setfill('0') << int(b) << " ";
             }
             Debug.Log() << "[Somfy] " << msg << ss.str();
+        }
+    }
+
+    std::vector<uint8_t> ToArray(uint64_t val)
+    {
+        std::vector<uint8_t> res;
+        Append(std::back_inserter(res), val);
+        return res;
+    }
+
+    void CopyBytes(std::vector<uint8_t>::iterator dstStart,
+                   std::vector<uint8_t>::iterator dstEnd,
+                   const std::vector<uint8_t>& src)
+    {
+        for (auto srcIt = src.begin(); dstStart != dstEnd && srcIt != src.end(); ++dstStart, ++srcIt) {
+            *dstStart = *srcIt;
         }
     }
 }
@@ -192,32 +218,68 @@ std::vector<uint8_t> Somfy::TDevice::ExecCommand(const std::vector<uint8_t>& req
     return respBytes;
 }
 
+std::vector<uint8_t> Somfy::TDevice::MakeDataForSetupCommand(uint8_t header,
+                                                             const std::vector<uint8_t>& readCache) const
+{
+    // Can't use read data size because some motors send more data than needed for setup command
+    auto dataIt = SetupDataSize.find(header);
+    std::vector<uint8_t> data;
+    if (dataIt != SetupDataSize.end()) {
+        data.resize(dataIt->second, 0);
+        CopyBytes(data.begin(), data.end(), readCache);
+    } else {
+        data = readCache;
+    }
+    return data;
+}
+
 void Somfy::TDevice::WriteRegisterImpl(PRegister reg, const TRegisterValue& regValue)
 {
     auto value = regValue.Get<uint64_t>();
-    if (reg->Type == POSITION) {
-        if (value == 0) {
-            Check(SlaveId, ACK, ExecCommand(CloseCommand));
+
+    switch (reg->Type) {
+        case POSITION: {
+            if (value == 0) {
+                Check(SlaveId, ACK, ExecCommand(CloseCommand));
+                return;
+            }
+            if (value == 100) {
+                Check(SlaveId, ACK, ExecCommand(OpenCommand));
+                return;
+            }
+            Check(SlaveId, ACK, ExecCommand(MakeSetPositionRequest(SlaveId, NodeType, value)));
             return;
         }
-        if (value == 100) {
-            Check(SlaveId, ACK, ExecCommand(OpenCommand));
+        case COMMAND: {
+            std::vector<uint8_t> data;
+            size_t l = (value & 0xFF);
+            for (; l != 0; --l) {
+                value >>= 8;
+                data.push_back(value & 0xFF);
+            }
+            auto addr = GetUint32RegisterAddress(reg->GetAddress());
+            Check(SlaveId, ACK, ExecCommand(MakeRequest(addr, SlaveId, NodeType, data)));
             return;
         }
-        Check(SlaveId, ACK, ExecCommand(MakeSetPositionRequest(SlaveId, NodeType, value)));
-        return;
-    }
-    if (reg->Type == COMMAND) {
-        std::vector<uint8_t> data;
-        size_t l = (value & 0xFF);
-        for (; l != 0; --l) {
-            value >>= 8;
-            data.push_back(value & 0xFF);
+        case PARAM: {
+            auto requestHeader = GetUint32RegisterAddress(reg->GetAddress());
+            auto it = WriteCache.find(requestHeader);
+            if (it == WriteCache.end()) {
+                throw TSerialDeviceTransientErrorException("Register " + reg->ToString() +
+                                                           " must be read before writing");
+            }
+            auto writeHeader = GetUint32RegisterAddress(reg->GetWriteAddress());
+            auto data = MakeDataForSetupCommand(writeHeader, it->second);
+            size_t width = (reg->GetDataWidth() == 0) ? RegisterFormatByteWidth(reg->Format) * 8 : reg->GetDataWidth();
+            CopyBytes(std::next(data.begin(), reg->GetDataOffset() / 8),
+                      std::next(data.begin(), (reg->GetDataOffset() + width) / 8),
+                      ToArray(value));
+            Check(SlaveId, ACK, ExecCommand(MakeRequest(writeHeader, SlaveId, NodeType, data)));
+            WriteCache[requestHeader] = data;
+            return;
         }
-        auto addr = GetUint32RegisterAddress(reg->GetAddress());
-        Check(SlaveId, ACK, ExecCommand(MakeRequest(addr, SlaveId, NodeType, data)));
-        return;
     }
+
     throw TSerialDevicePermanentRegisterException("Unsupported register type");
 }
 
@@ -232,8 +294,10 @@ TRegisterValue Somfy::TDevice::GetCachedResponse(uint8_t requestHeader,
         val = it->second;
     } else {
         auto req = MakeRequest(requestHeader, SlaveId, NodeType);
-        val.Set(ParseStatusReport(SlaveId, responseHeader, ExecCommand(req)));
+        auto data = ParseStatusReport(SlaveId, responseHeader, ExecCommand(req));
+        val.Set(Get<uint64_t>(data.begin(), data.end()));
         DataCache[requestHeader] = val;
+        WriteCache[requestHeader] = data;
     }
     if (bitOffset || bitWidth) {
         return TRegisterValue{(val.Get<uint64_t>() >> bitOffset) & GetLSBMask(bitWidth)};
@@ -294,10 +358,10 @@ std::vector<uint8_t> Somfy::MakeSetPositionRequest(uint32_t address, uint8_t nod
                        {0x04, static_cast<uint8_t>(position & 0xFF), 0x00, 0x00});
 }
 
-uint64_t Somfy::ParseStatusReport(uint32_t address, uint8_t header, const std::vector<uint8_t>& bytes)
+std::vector<uint8_t> Somfy::ParseStatusReport(uint32_t address, uint8_t header, const std::vector<uint8_t>& bytes)
 {
     Check(address, header, bytes);
-    return Get<uint64_t>(bytes.begin() + DATA_POS, bytes.end() - CRC_SIZE);
+    return std::vector<uint8_t>(bytes.begin() + DATA_POS, bytes.end() - CRC_SIZE);
 }
 
 void Somfy::FixReceivedFrame(std::vector<uint8_t>& bytes)
