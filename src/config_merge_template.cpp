@@ -208,18 +208,20 @@ void UpdateChannels(Json::Value& channelsFromTemplate,
                     ITemplateMap& channelTemplates,
                     const std::string& logPrefix)
 {
-    std::unordered_map<std::string, Json::ArrayIndex> channelNames;
+    std::unordered_map<std::string, std::vector<Json::ArrayIndex>> channelNames;
 
     for (Json::ArrayIndex i = 0; i < channelsFromTemplate.size(); ++i) {
-        channelNames.emplace(channelsFromTemplate[i]["name"].asString(), i);
+        channelNames[channelsFromTemplate[i]["name"].asString()].push_back(i);
     }
 
     for (const auto& elem: userChannels) {
         auto channelName(elem["name"].asString());
         if (channelNames.count(channelName)) {
-            MergeChannelProperties(channelsFromTemplate[channelNames[channelName]],
-                                   elem,
-                                   logPrefix + " channel \"" + channelName + "\"");
+            for (auto chIt: channelNames[channelName]) {
+                MergeChannelProperties(channelsFromTemplate[chIt],
+                                       elem,
+                                       logPrefix + " channel \"" + channelName + "\"");
+            }
         } else {
             if (elem.isMember("device_type")) {
                 throw TConfigParserException(logPrefix + " channel \"" + channelName +
