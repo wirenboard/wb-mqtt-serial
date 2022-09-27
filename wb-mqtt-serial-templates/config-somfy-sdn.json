@@ -203,9 +203,20 @@
                 "response_header": "0x33",
                 "write_address": "0x13",
                 "enabled": false,
+                "condition": "(node_type==7)||(node_type==8)||(node_type==9)"
+            },
+            {
+                "name": "Rolling speed down",
+                "type": "range",
+                "reg_type": "param",
+                "address": "0x23:8:8",
+                "response_header": "0x33",
+                "write_address": "0x13",
+                "enabled": false,
+                "readonly": true,
                 "min": 6,
                 "max": 28,
-                "condition": "node_type!=6"
+                "condition": "(node_type!=5)&&(node_type!=6)&&(node_type!=7)&&(node_type!=8)&&(node_type!=9)"
             },
             {
                 "name": "Rolling speed slow",
