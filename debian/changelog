@@ -1,3 +1,10 @@
+wb-mqtt-serial (2.71.1) stable; urgency=medium
+
+  * Templates for refrigerator controlles with televis protocol were
+    added
+
+ -- Dmitry Vorobjev <d.vorobjev@wirenboard.ru>  Wed, 28 Sep 2022 17:20:50 +0300
+
 wb-mqtt-serial (2.71.0) stable; urgency=medium
 
   * Limit registers reads per second
