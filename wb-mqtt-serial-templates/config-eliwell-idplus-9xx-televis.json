@@ -1,10 +1,10 @@
 {
-    "title": "Eliwell IDPlus 9xx",
-    "device_type": "eliwell_idplus_9xx",
+    "title": "Eliwell IDPlus 9xx (Televis)",
+    "device_type": "eliwell_idplus_9xx_televis",
     "group": "g-refrigeration",
     "device": {
-        "name": "Eliwell IDPlus 9xx",
-        "id": "eliwell-idplus-9xx",
+        "name": "Eliwell IDPlus 9xx (Televis)",
+        "id": "eliwell-idplus-9xx-televis",
         "max_read_registers": 15,
         "response_timeout_ms": 100,
         "frame_timeout_ms": 5,
