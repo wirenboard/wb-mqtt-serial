@@ -1384,6 +1384,8 @@
                 "type": "temperature",
                 "format": "s16",
                 "scale": 0.1,
+                "min": -50,
+                "max": 300,
                 "group": "control"
             },
             {
