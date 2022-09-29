@@ -5,7 +5,7 @@
     "device": {
         "name": "Eliwell IDPlus 9xx (Televis)",
         "id": "eliwell-idplus-9xx-televis",
-        "max_read_registers": 15,
+        "max_read_registers": 1,
         "response_timeout_ms": 100,
         "frame_timeout_ms": 5,
 
