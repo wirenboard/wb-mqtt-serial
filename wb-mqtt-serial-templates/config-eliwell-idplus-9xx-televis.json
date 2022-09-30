@@ -1163,7 +1163,8 @@
                 "scale": 0.1,
                 "readonly": true,
                 "error_value": "0x8000",
-                "group": "status"
+                "group": "status",
+                "enabled": false
             },
             {
                 "name": "Analogue Input 3",
@@ -1174,7 +1175,8 @@
                 "scale": 0.1,
                 "readonly": true,
                 "error_value": "0x8000",
-                "group": "status"
+                "group": "status",
+                "enabled": false
             },
             {
                 "name": "Digital Input 1",
