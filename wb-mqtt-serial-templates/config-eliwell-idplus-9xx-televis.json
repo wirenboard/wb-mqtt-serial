@@ -775,8 +775,8 @@
             },
             "defrost_display_mode": {
                 "title": "Display Mode During Defrost Cycle (ddL)",
-                "reg_type": "14197",
-                "address": 49253,
+                "reg_type": "holding",
+                "address": 14197,
                 "format": "u16",
                 "enum": [0, 1, 2],
                 "enum_titles": [
