@@ -1,6 +1,6 @@
 #include "file_utils.h"
 #include <algorithm>
-#include <experimental/filesystem>
+#include <filesystem>
 
 TNoDirError::TNoDirError(const std::string& msg): std::runtime_error(msg)
 {}
@@ -27,15 +27,15 @@ void WriteToFile(const std::string& fileName, const std::string& value)
 void IterateDir(const std::string& dirName, std::function<bool(const std::string&)> fn)
 {
     try {
-        const std::experimental::filesystem::path dirPath{dirName};
+        const std::filesystem::path dirPath{dirName};
 
-        for (const auto& entry: std::experimental::filesystem::directory_iterator(dirPath)) {
+        for (const auto& entry: std::filesystem::directory_iterator(dirPath)) {
             const auto filenameStr = entry.path().filename().string();
             if (fn(filenameStr)) {
                 return;
             }
         }
-    } catch (std::experimental::filesystem::filesystem_error const& ex) {
+    } catch (std::filesystem::filesystem_error const& ex) {
         throw TNoDirError(ex.what());
     }
 }

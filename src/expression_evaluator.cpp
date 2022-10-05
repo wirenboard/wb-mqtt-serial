@@ -1,8 +1,9 @@
 #include "expression_evaluator.h"
 
+#include <stdexcept>
 #include <vector>
 
-using namespace std::experimental;
+using namespace std;
 using namespace Expressions;
 
 namespace

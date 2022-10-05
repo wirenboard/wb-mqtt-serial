@@ -2,7 +2,7 @@
 #include <bitset>
 #include <chrono>
 #include <cmath>
-#include <experimental/optional>
+#include <optional>
 #include <functional>
 #include <list>
 #include <map>
@@ -211,14 +211,14 @@ public:
     std::string TypeName;
 
     // Minimal interval between register reads, if ReadPeriod is not set
-    std::experimental::optional<std::chrono::milliseconds> ReadRateLimit;
+    std::optional<std::chrono::milliseconds> ReadRateLimit;
 
     // Desired interval between register reads
-    std::experimental::optional<std::chrono::milliseconds> ReadPeriod;
-    std::experimental::optional<TRegisterValue> ErrorValue;
+    std::optional<std::chrono::milliseconds> ReadPeriod;
+    std::optional<TRegisterValue> ErrorValue;
     EWordOrder WordOrder;
 
-    std::experimental::optional<TRegisterValue> UnsupportedValue;
+    std::optional<TRegisterValue> UnsupportedValue;
 
     TRegisterConfig(int type,
                     const TRegisterDesc& registerAddressesDescription,
@@ -291,7 +291,7 @@ class TReadPeriodMissChecker
     size_t ReadCount;
 
 public:
-    TReadPeriodMissChecker(const std::experimental::optional<std::chrono::milliseconds>& readPeriod);
+    TReadPeriodMissChecker(const std::optional<std::chrono::milliseconds>& readPeriod);
 
     bool IsMissed(std::chrono::steady_clock::time_point readTime);
 };
