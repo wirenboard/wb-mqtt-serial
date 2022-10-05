@@ -1,3 +1,9 @@
+wb-mqtt-serial (2.71.1) stable; urgency=medium
+
+  * Support for C++17 standard
+
+ -- Roman Kochkin <roman.kochkin@wirenboard.ru>  Wed, 05 Oct 2022 10:22:47 +0400
+
 wb-mqtt-serial (2.71.0) stable; urgency=medium
 
   * Limit registers reads per second
