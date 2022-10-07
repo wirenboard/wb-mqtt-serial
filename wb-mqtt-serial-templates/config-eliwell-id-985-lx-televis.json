@@ -1785,6 +1785,7 @@
                 "format": "s16",
                 "scale": 0.1,
                 "group": "status",
+                "enabled": false,
                 "units": "deg C"
             },
             {
@@ -1795,6 +1796,7 @@
                 "format": "s16",
                 "scale": 0.1,
                 "group": "status",
+                "enabled": false,
                 "units": "deg C"
             },
             {
@@ -1915,14 +1917,16 @@
                 "address": 1959,
                 "reg_type": "discrete",
                 "type": "switch",
-                "group": "alarms"
+                "group": "alarms",
+                "enabled": false
             },
             {
                 "name": "Analog Input 3 Alarm",
                 "address": 1982,
                 "reg_type": "discrete",
                 "type": "switch",
-                "group": "alarms"
+                "group": "alarms",
+                "enabled": false
             },
             {
                 "name": "High Temperature Input1 Alarm",
@@ -1943,14 +1947,16 @@
                 "address": 1880,
                 "reg_type": "discrete",
                 "type": "switch",
-                "group": "alarms"
+                "group": "alarms",
+                "enabled": false
             },
             {
                 "name": "Low Temperature Input3 Alarm",
                 "address": 1883,
                 "reg_type": "discrete",
                 "type": "switch",
-                "group": "alarms"
+                "group": "alarms",
+                "enabled": false
             },
             {
                 "name": "Defrost Timeout",
@@ -2068,12 +2074,18 @@
             {
                 "name": "Device Address",
                 "address": 14182,
+                "reg_type": "holding",
+                "type": "value",
+                "format": "u16",
                 "readonly": true,
                 "group": "hw_info"
             },
             {
                 "name": "Device Family Address",
                 "address": 14183,
+                "reg_type": "holding",
+                "type": "value",
+                "format": "u16",
                 "readonly": true,
                 "group": "hw_info"
             },
