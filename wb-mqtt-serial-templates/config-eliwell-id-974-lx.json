@@ -3,7 +3,7 @@
     "device_type": "eliwell_id_974_lx",
     "group": "g-refrigeration",
     "device": {
-        "name": "Eliwell ID 974  LX",
+        "name": "Eliwell ID 974 LX",
         "id": "eliwell_id_974_lx",
         "response_timeout_ms": 100,
         "guard_interval_us": 5000,
@@ -47,6 +47,11 @@
                 "title": "Configuration (Cnf)",
                 "id": "configuration",
                 "order": 8
+            },
+            {
+                "title": "HW Info (Add)",
+                "id": "hw_info",
+                "order": 9
             }
         ],
         "parameters": [
@@ -57,7 +62,6 @@
                 "address": 14144,
                 "reg_type": "holding",
                 "format": "u16",
-                "scale": 0.1,
                 "min": 0,
                 "max": 250,
                 "default": 0,
@@ -71,7 +75,6 @@
                 "address": 14143,
                 "reg_type": "holding",
                 "format": "u16",
-                "scale": 0.1,
                 "min": 0,
                 "max": 250,
                 "default": 0,
@@ -85,7 +88,6 @@
                 "address": "14146",
                 "reg_type": "holding",
                 "format": "u16",
-                "scale": 0.1,
                 "min": 0,
                 "max": 255,
                 "default": 0,
@@ -99,7 +101,6 @@
                 "address": "14151",
                 "reg_type": "holding",
                 "format": "u16",
-                "scale": 0.1,
                 "min": 0,
                 "max": 250,
                 "default": 0,
@@ -116,7 +117,7 @@
                 "scale": 0.1,
                 "min": 1,
                 "max": 300,
-                "default": 20,
+                "default": 2,
                 "group": "compressor",
                 "order": 5
             },
@@ -126,8 +127,14 @@
                 "address": 14145,
                 "reg_type": "holding",
                 "format": "u16",
-                "enum": [0, 1],
-                "enum_titles": ["No", "Yes"],
+                "enum": [
+                    0,
+                    1
+                ],
+                "enum_titles": [
+                    "No",
+                    "Yes"
+                ],
                 "group": "compressor",
                 "order": 6
             },
@@ -138,7 +145,6 @@
                 "address": 14150,
                 "reg_type": "holding",
                 "format": "u16",
-                "scale": 0.1,
                 "min": 0,
                 "max": 250,
                 "default": 0,
@@ -152,7 +158,6 @@
                 "address": 14149,
                 "reg_type": "holding",
                 "format": "u16",
-                "scale": 0.1,
                 "min": 0,
                 "max": 250,
                 "default": 0,
@@ -167,9 +172,9 @@
                 "reg_type": "holding",
                 "format": "s16",
                 "scale": 0.1,
-                "min": -580,
-                "max": 3020,
-                "default": 990,
+                "min": -58,
+                "max": 302,
+                "default": 99,
                 "group": "compressor",
                 "order": 9
             },
@@ -181,9 +186,9 @@
                 "reg_type": "holding",
                 "format": "s16",
                 "scale": 0.1,
-                "min": -580,
-                "max": 990,
-                "default": -500,
+                "min": -58,
+                "max": 99,
+                "default": -50,
                 "group": "compressor",
                 "order": 10
             },
@@ -194,7 +199,6 @@
                 "address": 14152,
                 "reg_type": "holding",
                 "format": "u16",
-                "scale": 0.1,
                 "min": 0,
                 "max": 250,
                 "default": 0,
@@ -208,7 +212,6 @@
                 "address": 14148,
                 "reg_type": "holding",
                 "format": "u16",
-                "scale": 0.1,
                 "min": 0,
                 "max": 250,
                 "default": 1,
@@ -222,7 +225,6 @@
                 "address": 14147,
                 "reg_type": "holding",
                 "format": "u16",
-                "scale": 0.1,
                 "min": 0,
                 "max": 250,
                 "default": 0,
@@ -237,8 +239,8 @@
                 "reg_type": "holding",
                 "format": "s16",
                 "scale": 0.1,
-                "min": -300,
-                "max": 300,
+                "min": -30,
+                "max": 30,
                 "default": 0,
                 "group": "compressor",
                 "order": 14
@@ -262,7 +264,11 @@
                 "address": 14156,
                 "reg_type": "holding",
                 "format": "u16",
-                "enum": [0, 1, 2],
+                "enum": [
+                    0,
+                    1,
+                    2
+                ],
                 "enum_titles": [
                     "Hours of compressor operation",
                     "Hours of device operation",
@@ -316,8 +322,14 @@
                 "address": 14159,
                 "reg_type": "holding",
                 "format": "u16",
-                "enum": [0, 1],
-                "enum_titles": ["No", "Yes"],
+                "enum": [
+                    0,
+                    1
+                ],
+                "enum_titles": [
+                    "No",
+                    "Yes"
+                ],
                 "group": "defrost",
                 "order": 6
             },
@@ -329,9 +341,9 @@
                 "reg_type": "holding",
                 "format": "s16",
                 "scale": 0.1,
-                "min": -500,
-                "max": 1500,
-                "default": 80,
+                "min": -50,
+                "max": 150,
+                "default": 8,
                 "group": "defrost",
                 "order": 7
             },
@@ -341,8 +353,16 @@
                 "address": 14154,
                 "reg_type": "holding",
                 "format": "u16",
-                "enum": [0, 1, 2],
-                "enum_titles": ["Hours", "Minutes", "Seconds"],
+                "enum": [
+                    0,
+                    1,
+                    2
+                ],
+                "enum_titles": [
+                    "Hours",
+                    "Minutes",
+                    "Seconds"
+                ],
                 "group": "defrost",
                 "order": 8
             },
@@ -352,8 +372,16 @@
                 "address": 14155,
                 "reg_type": "holding",
                 "format": "u16",
-                "enum": [0, 1, 2],
-                "enum_titles": ["Hours", "Minutes", "Seconds"],
+                "enum": [
+                    0,
+                    1,
+                    2
+                ],
+                "enum_titles": [
+                    "Hours",
+                    "Minutes",
+                    "Seconds"
+                ],
                 "group": "defrost",
                 "order": 9
             },
@@ -363,8 +391,16 @@
                 "address": 14153,
                 "reg_type": "holding",
                 "format": "u16",
-                "enum": [0, 1, 2],
-                "enum_titles": ["Electrical", "Hot gas", "Free mode"],
+                "enum": [
+                    0,
+                    1,
+                    2
+                ],
+                "enum_titles": [
+                    "Electrical",
+                    "Hot gas",
+                    "Free mode"
+                ],
                 "group": "defrost",
                 "order": 10
             },
@@ -387,8 +423,14 @@
                 "address": 14164,
                 "reg_type": "holding",
                 "format": "u16",
-                "enum": [0, 1],
-                "enum_titles": ["No", "Yes"],
+                "enum": [
+                    0,
+                    1
+                ],
+                "enum_titles": [
+                    "No",
+                    "Yes"
+                ],
                 "group": "fans",
                 "order": 2
             },
@@ -413,9 +455,9 @@
                 "reg_type": "holding",
                 "format": "u16",
                 "scale": 0.1,
-                "min": 10,
-                "max": 500,
-                "default": 20,
+                "min": 1,
+                "max": 50,
+                "default": 2,
                 "group": "fans",
                 "order": 4
             },
@@ -425,8 +467,16 @@
                 "address": 14165,
                 "reg_type": "holding",
                 "format": "u16",
-                "enum": [0, 1, 2],
-                "enum_titles": ["No", "Yes", "Duty cycle"],
+                "enum": [
+                    0,
+                    1,
+                    2
+                ],
+                "enum_titles": [
+                    "No",
+                    "Yes",
+                    "Duty cycle"
+                ],
                 "group": "fans",
                 "order": 5
             },
@@ -462,8 +512,14 @@
                 "address": 14166,
                 "reg_type": "holding",
                 "format": "u16",
-                "enum": [0, 1],
-                "enum_titles": ["No", "Yes"],
+                "enum": [
+                    0,
+                    1
+                ],
+                "enum_titles": [
+                    "No",
+                    "Yes"
+                ],
                 "group": "fans",
                 "order": 8
             },
@@ -501,9 +557,9 @@
                 "reg_type": "holding",
                 "format": "s16",
                 "scale": 0.1,
-                "min": -500,
-                "max": 1500,
-                "default": -500,
+                "min": -50,
+                "max": 150,
+                "default": -5,
                 "group": "fans",
                 "order": 11
             },
@@ -513,8 +569,14 @@
                 "address": 14161,
                 "reg_type": "holding",
                 "format": "u16",
-                "enum": [0, 1],
-                "enum_titles": ["Absolute", "Relative"],
+                "enum": [
+                    0,
+                    1
+                ],
+                "enum_titles": [
+                    "Absolute",
+                    "Relative"
+                ],
                 "group": "fans",
                 "order": 12
             },
@@ -526,24 +588,11 @@
                 "reg_type": "holding",
                 "format": "s16",
                 "scale": 0.1,
-                "min": -500,
-                "max": 1500,
-                "default": 20,
+                "min": -50,
+                "max": 150,
+                "default": 2,
                 "group": "fans",
                 "order": 13
-            },
-            {
-                "id": "AOP",
-                "title": "Alarm Output Polarity (AOP)",
-                "address": 14179,
-                "reg_type": "holding",
-                "format": "u16",
-                "enum": [0, 1],
-                "enum_titles": [
-                    " Alarm active and output disabled",
-                    " Alarm active and output enabled"
-                ],
-                "group": "alarms"
             },
             {
                 "id": "Afd",
@@ -552,11 +601,29 @@
                 "address": 24112,
                 "reg_type": "holding",
                 "format": "u16",
-                "min": 10,
-                "max": 500,
-                "default": 20,
+                "scale": 0.1,
+                "min": 1,
+                "max": 50,
+                "default": 2,
                 "group": "alarms",
                 "order": 1
+            },
+            {
+                "id": "AOP",
+                "title": "Alarm Output Polarity (AOP)",
+                "address": 14179,
+                "reg_type": "holding",
+                "format": "u16",
+                "enum": [
+                    0,
+                    1
+                ],
+                "enum_titles": [
+                    " Alarm active and output disabled",
+                    " Alarm active and output enabled"
+                ],
+                "group": "alarms",
+                "order": 2
             },
             {
                 "id": "Att",
@@ -564,10 +631,16 @@
                 "address": 14172,
                 "reg_type": "holding",
                 "format": "u16",
-                "enum": [0, 1],
-                "enum_titles": ["Absolute", "Relative"],
+                "enum": [
+                    0,
+                    1
+                ],
+                "enum_titles": [
+                    "Absolute",
+                    "Relative"
+                ],
                 "group": "alarms",
-                "order": 2
+                "order": 3
             },
             {
                 "id": "dAO",
@@ -580,7 +653,7 @@
                 "max": 999,
                 "default": 0,
                 "group": "alarms",
-                "order": 3
+                "order": 4
             },
             {
                 "id": "dAt",
@@ -588,10 +661,16 @@
                 "address": 14177,
                 "reg_type": "holding",
                 "format": "u16",
-                "enum": [0, 1],
-                "enum_titles": ["Disabled", "Enabled"],
+                "enum": [
+                    0,
+                    1
+                ],
+                "enum_titles": [
+                    "Disabled",
+                    "Enabled"
+                ],
                 "group": "alarms",
-                "order": 4
+                "order": 5
             },
             {
                 "id": "EAL",
@@ -599,10 +678,16 @@
                 "address": 14178,
                 "reg_type": "holding",
                 "format": "u16",
-                "enum": [0, 1],
-                "enum_titles": ["Disabled", "Enabled"],
+                "enum": [
+                    0,
+                    1
+                ],
+                "enum_titles": [
+                    "Disabled",
+                    "Enabled"
+                ],
                 "group": "alarms",
-                "order": 5
+                "order": 6
             },
             {
                 "id": "HAL",
@@ -612,11 +697,11 @@
                 "reg_type": "holding",
                 "format": "s16",
                 "scale": 0.1,
-                "min": -500,
-                "max": 1500,
-                "default": 500,
+                "min": -50,
+                "max": 150,
+                "default": 50,
                 "group": "alarms",
-                "order": 6
+                "order": 7
             },
             {
                 "id": "LAL",
@@ -626,11 +711,11 @@
                 "reg_type": "holding",
                 "format": "s16",
                 "scale": 0.1,
-                "min": -500,
-                "max": 1500,
-                "default": -500,
+                "min": -50,
+                "max": 150,
+                "default": -50,
                 "group": "alarms",
-                "order": 7
+                "order": 8
             },
             {
                 "id": "OAO",
@@ -643,7 +728,7 @@
                 "max": 10,
                 "default": 0,
                 "group": "alarms",
-                "order": 8
+                "order": 9
             },
             {
                 "id": "PAO",
@@ -656,7 +741,7 @@
                 "max": 10,
                 "default": 0,
                 "group": "alarms",
-                "order": 9
+                "order": 10
             },
             {
                 "id": "tAO",
@@ -669,7 +754,7 @@
                 "max": 250,
                 "default": 0,
                 "group": "alarms",
-                "order": 10
+                "order": 11
             },
             {
                 "id": "tdO",
@@ -682,18 +767,7 @@
                 "max": 250,
                 "default": 0,
                 "group": "alarms",
-                "order": 11
-            },
-            {
-                "id": "LOC",
-                "title": "Keyboard Lock (LOC)",
-                "address": 14181,
-                "reg_type": "holding",
-                "format": "u16",
-                "enum": [0, 1],
-                "enum_titles": ["No", "Yes"],
-                "group": "display",
-                "order": 1
+                "order": 12
             },
             {
                 "id": "CA",
@@ -701,10 +775,18 @@
                 "address": 14183,
                 "reg_type": "holding",
                 "format": "u16",
-                "enum": [0, 1, 2],
-                "enum_titles": ["Display", "Regulator", "Both"],
+                "enum": [
+                    0,
+                    1,
+                    2
+                ],
+                "enum_titles": [
+                    "Display",
+                    "Regulator",
+                    "Both"
+                ],
                 "group": "display",
-                "order": 2
+                "order": 1
             },
             {
                 "id": "CA1",
@@ -718,7 +800,7 @@
                 "max": 120,
                 "default": 0,
                 "group": "display",
-                "order": 3
+                "order": 2
             },
             {
                 "id": "CA2",
@@ -732,7 +814,7 @@
                 "max": 120,
                 "default": 0,
                 "group": "display",
-                "order": 4
+                "order": 3
             },
             {
                 "id": "ddd",
@@ -740,10 +822,18 @@
                 "address": 14185,
                 "reg_type": "holding",
                 "format": "u16",
-                "enum": [0, 1, 2],
-                "enum_titles": ["Setpoint", "Probe 1", "Probe 2"],
+                "enum": [
+                    0,
+                    1,
+                    2
+                ],
+                "enum_titles": [
+                    "Setpoint",
+                    "Probe 1",
+                    "Probe 2"
+                ],
                 "group": "display",
-                "order": 5
+                "order": 4
             },
             {
                 "id": "ddL",
@@ -751,10 +841,18 @@
                 "address": 14184,
                 "reg_type": "holding",
                 "format": "u16",
-                "enum": [0, 1, 2],
-                "enum_titles": ["Probe value", "Freeze value", "Label deF"],
+                "enum": [
+                    0,
+                    1,
+                    2
+                ],
+                "enum_titles": [
+                    "Probe value",
+                    "Freeze value",
+                    "Label deF"
+                ],
                 "group": "display",
-                "order": 6
+                "order": 5
             },
             {
                 "id": "dro",
@@ -762,10 +860,16 @@
                 "address": 14201,
                 "reg_type": "holding",
                 "format": "u16",
-                "enum": [0, 1],
-                "enum_titles": ["C", "F"],
+                "enum": [
+                    0,
+                    1
+                ],
+                "enum_titles": [
+                    "C",
+                    "F"
+                ],
                 "group": "display",
-                "order": 7
+                "order": 6
             },
             {
                 "id": "HdL",
@@ -775,11 +879,11 @@
                 "reg_type": "holding",
                 "format": "s16",
                 "scale": 0.1,
-                "min": -550,
-                "max": 3020,
-                "default": 1400,
+                "min": -55,
+                "max": 302,
+                "default": 140,
                 "group": "display",
-                "order": 8
+                "order": 7
             },
             {
                 "id": "LdL",
@@ -789,8 +893,26 @@
                 "reg_type": "holding",
                 "format": "s16",
                 "scale": 0.1,
-                "min": -550,
-                "default": -550,
+                "min": -55,
+                "max": 302,
+                "default": -55,
+                "group": "display",
+                "order": 8
+            },
+            {
+                "id": "LOC",
+                "title": "Keyboard Lock (LOC)",
+                "address": 14181,
+                "reg_type": "holding",
+                "format": "u16",
+                "enum": [
+                    0,
+                    1
+                ],
+                "enum_titles": [
+                    "No",
+                    "Yes"
+                ],
                 "group": "display",
                 "order": 9
             },
@@ -815,8 +937,14 @@
                 "min": 0,
                 "max": 1,
                 "default": 0,
-                "enum": [0, 1],
-                "enum_titles": ["PTC", "NTC"],
+                "enum": [
+                    0,
+                    1
+                ],
+                "enum_titles": [
+                    "PTC",
+                    "NTC"
+                ],
                 "group": "configuration",
                 "order": 1
             },
@@ -835,18 +963,35 @@
             },
             {
                 "id": "H11",
-                "title": "Digital Inputs Configuration (H11)",
+                "title": "Digital Input Configuration (H11)",
                 "address": 24124,
                 "reg_type": "holding",
                 "format": "s16",
-                "enum": [0, 1, 2, 3, 4, 5],
+                "enum": [
+                    -5,
+                    -4,
+                    -3,
+                    -2,
+                    -1,
+                    0,
+                    1,
+                    2,
+                    3,
+                    4,
+                    5
+                ],
                 "enum_titles": [
+                    "external alarm (opening)",
+                    "door switch (opening)",
+                    "auxiliary (opening)",
+                    "reduced set point (opening)",
+                    "defrosting (opening)",
                     "disabled",
-                    "defrosting",
-                    "reduced set point",
-                    "auxiliary",
-                    "door switch",
-                    "external alarm"
+                    "defrosting (closing)",
+                    "reduced set point (closing)",
+                    "auxiliary (closing)",
+                    "door switch (closing)",
+                    "external alarm (closing)"
                 ],
                 "group": "configuration",
                 "order": 3
@@ -857,7 +1002,22 @@
                 "address": 14187,
                 "reg_type": "holding",
                 "format": "u16",
-                "enum": [0, 1, 2, 3, 4, 5],
+                "enum": [
+                    0,
+                    1,
+                    2,
+                    3,
+                    4,
+                    5
+                ],
+                "enum_titles": [
+                    "disabled",
+                    "compressor",
+                    "defrosting",
+                    "fans",
+                    "alarm",
+                    "auxiliary"
+                ],
                 "group": "configuration",
                 "order": 4
             },
@@ -867,7 +1027,14 @@
                 "address": 14188,
                 "reg_type": "holding",
                 "format": "u16",
-                "enum": [0, 1, 2, 3, 4, 5],
+                "enum": [
+                    0,
+                    1,
+                    2,
+                    3,
+                    4,
+                    5
+                ],
                 "enum_titles": [
                     "disabled",
                     "compressor",
@@ -885,7 +1052,14 @@
                 "address": 14189,
                 "reg_type": "holding",
                 "format": "u16",
-                "enum": [0, 1, 2, 3, 4, 5],
+                "enum": [
+                    0,
+                    1,
+                    2,
+                    3,
+                    4,
+                    5
+                ],
                 "enum_titles": [
                     "disabled",
                     "compressor",
@@ -903,7 +1077,14 @@
                 "address": 14191,
                 "reg_type": "holding",
                 "format": "u16",
-                "enum": [0, 1, 2, 3, 4, 5],
+                "enum": [
+                    0,
+                    1,
+                    2,
+                    3,
+                    4,
+                    5
+                ],
                 "enum_titles": [
                     "disabled",
                     "compressor",
@@ -921,7 +1102,14 @@
                 "address": 14192,
                 "reg_type": "holding",
                 "format": "u16",
-                "enum": [0, 1, 2, 3, 4, 5],
+                "enum": [
+                    0,
+                    1,
+                    2,
+                    3,
+                    4,
+                    5
+                ],
                 "enum_titles": [
                     "disabled",
                     "compressor",
@@ -939,7 +1127,14 @@
                 "address": 14193,
                 "reg_type": "holding",
                 "format": "u16",
-                "enum": [0, 1, 2, 3, 4, 5],
+                "enum": [
+                    0,
+                    1,
+                    2,
+                    3,
+                    4,
+                    5
+                ],
                 "enum_titles": [
                     "disabled",
                     "compressor",
@@ -957,7 +1152,14 @@
                 "address": 14194,
                 "reg_type": "holding",
                 "format": "u16",
-                "enum": [0, 1, 2, 3, 4, 5],
+                "enum": [
+                    0,
+                    1,
+                    2,
+                    3,
+                    4,
+                    5
+                ],
                 "enum_titles": [
                     "disabled",
                     "compressor",
@@ -979,8 +1181,8 @@
                 "format": "s16",
                 "scale": 0.1,
                 "group": "control",
-                "min": -580,
-                "max": 580,
+                "min": -58,
+                "max": 58,
                 "units": "deg C"
             },
             {
@@ -1001,6 +1203,7 @@
                 "format": "s16",
                 "scale": 0.1,
                 "group": "status",
+                "enabled": false,
                 "units": "deg C"
             },
             {
@@ -1054,37 +1257,6 @@
                 "group": "status"
             },
             {
-                "name": "Controller On",
-                "address": 1782,
-                "reg_type": "coil",
-                "type": "switch",
-                "group": "control"
-            },
-            {
-                "name": "Controller Off",
-                "address": 1783,
-                "reg_type": "coil",
-                "type": "switch",
-                "group": "control"
-            },
-            {
-                "name": "Defrost Status",
-                "address": 1785,
-                "reg_type": "coil",
-                "type": "switch",
-                "group": "control"
-            },
-            {
-                "name": "Control Enabled Time",
-                "address": 20115,
-                "reg_type": "holding",
-                "type": "value",
-                "format": "u16",
-                "group": "control",
-                "min": 0,
-                "max": 65535
-            },
-            {
                 "name": "Analog Input 1 Alarm",
                 "address": 1873,
                 "reg_type": "discrete",
@@ -1096,7 +1268,8 @@
                 "address": 1874,
                 "reg_type": "discrete",
                 "type": "switch",
-                "group": "alarms"
+                "group": "alarms",
+                "enabled": false
             },
             {
                 "name": "High Temperature Alarm",
@@ -1139,6 +1312,47 @@
                 "reg_type": "discrete",
                 "type": "switch",
                 "group": "alarms"
+            },
+            {
+                "name": "Controller On",
+                "address": 1782,
+                "reg_type": "coil",
+                "type": "switch",
+                "group": "control"
+            },
+            {
+                "name": "Controller Off",
+                "address": 1783,
+                "reg_type": "coil",
+                "type": "switch",
+                "group": "control"
+            },
+            {
+                "name": "Device Address",
+                "address": 14182,
+                "reg_type": "holding",
+                "type": "value",
+                "format": "u16",
+                "readonly": true,
+                "group": "hw_info"
+            },
+            {
+                "name": "Device Family Address",
+                "address": 14183,
+                "reg_type": "holding",
+                "type": "value",
+                "format": "u16",
+                "readonly": true,
+                "group": "hw_info"
+            },
+            {
+                "name": "Controller Type",
+                "address": 816,
+                "reg_type": "holding",
+                "type": "value",
+                "format": "u16",
+                "readonly": true,
+                "group": "hw_info"
             }
         ]
     },
