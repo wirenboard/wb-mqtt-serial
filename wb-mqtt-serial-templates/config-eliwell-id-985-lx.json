@@ -1833,21 +1833,21 @@
                 "units": "deg C"
             },
             {
-                "name": "Standby Mode Status",
+                "name": "Standby Mode",
                 "address": 1913,
                 "reg_type": "discrete",
                 "type": "switch",
                 "group": "status"
             },
             {
-                "name": "Economy Mode Status",
+                "name": "Economy Mode",
                 "address": 1912,
                 "reg_type": "discrete",
                 "type": "switch",
-                "group": "alarms"
+                "group": "status"
             },
             {
-                "name": "Digital Input1 Status",
+                "name": "Digital Input 1",
                 "address": 3444,
                 "reg_type": "discrete",
                 "type": "switch",
@@ -1855,7 +1855,7 @@
                 "group": "status"
             },
             {
-                "name": "Digital Input2 Status",
+                "name": "Digital Input 2",
                 "address": 3445,
                 "reg_type": "discrete",
                 "type": "switch",
@@ -1863,7 +1863,7 @@
                 "group": "status"
             },
             {
-                "name": "Light Status",
+                "name": "Light",
                 "address": 1914,
                 "reg_type": "discrete",
                 "type": "switch",
@@ -1929,21 +1929,21 @@
                 "enabled": false
             },
             {
-                "name": "High Temperature Input1 Alarm",
+                "name": "Input 1 High Temperature Alarm",
                 "address": 1885,
                 "reg_type": "discrete",
                 "type": "switch",
                 "group": "alarms"
             },
             {
-                "name": "Low Temperature Input1 Alarm",
+                "name": "Input 1 Low Temperature Alarm",
                 "address": 1886,
                 "reg_type": "discrete",
                 "type": "switch",
                 "group": "alarms"
             },
             {
-                "name": "High Temperature Input3 Alarm",
+                "name": "Input 3 High Temperature Alarm",
                 "address": 1880,
                 "reg_type": "discrete",
                 "type": "switch",
@@ -1951,7 +1951,7 @@
                 "enabled": false
             },
             {
-                "name": "Low Temperature Input3 Alarm",
+                "name": "Input 3 Low Temperature Alarm",
                 "address": 1883,
                 "reg_type": "discrete",
                 "type": "switch",
