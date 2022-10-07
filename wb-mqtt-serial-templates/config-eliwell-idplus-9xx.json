@@ -1,6 +1,7 @@
 {
-    "title": "Eliwell IDPlus 9xx",
+    "title": "Eliwell IDPlus 9xx (WB-REF-U-CR)",
     "device_type": "eliwell_idplus_9xx",
+    "deprecated": true,
     "group": "g-refrigeration",
     "device": {
         "name": "Eliwell IDPlus 9xx",
