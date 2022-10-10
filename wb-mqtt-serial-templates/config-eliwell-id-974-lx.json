@@ -1314,20 +1314,6 @@
                 "group": "alarms"
             },
             {
-                "name": "Controller On",
-                "address": 1782,
-                "reg_type": "coil",
-                "type": "switch",
-                "group": "control"
-            },
-            {
-                "name": "Controller Off",
-                "address": 1783,
-                "reg_type": "coil",
-                "type": "switch",
-                "group": "control"
-            },
-            {
                 "name": "Device Address",
                 "address": 14182,
                 "reg_type": "holding",
