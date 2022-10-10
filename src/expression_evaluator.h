@@ -1,7 +1,8 @@
 #pragma once
 
-#include <experimental/optional>
 #include <memory>
+#include <optional>
+#include <string>
 
 // EBNF:
 //
@@ -114,7 +115,7 @@ namespace Expressions
     public:
         virtual ~IParams() = default;
 
-        virtual std::experimental::optional<int32_t> Get(const std::string& name) const = 0;
+        virtual std::optional<int32_t> Get(const std::string& name) const = 0;
     };
 
     /**

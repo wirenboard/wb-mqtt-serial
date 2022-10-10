@@ -284,13 +284,13 @@ Json::Value MergeDeviceConfigWithTemplate(const Json::Value& deviceData,
 TJsonParams::TJsonParams(const Json::Value& params): Params(params)
 {}
 
-std::experimental::optional<int32_t> TJsonParams::Get(const std::string& name) const
+std::optional<int32_t> TJsonParams::Get(const std::string& name) const
 {
     const auto& param = Params[name];
     if (param.isInt()) {
-        return std::experimental::optional<int32_t>(param.asInt());
+        return std::optional<int32_t>(param.asInt());
     }
-    return std::experimental::nullopt;
+    return std::nullopt;
 }
 
 bool CheckCondition(const Json::Value& item, const TJsonParams& params, TExpressionsCache* exprs)

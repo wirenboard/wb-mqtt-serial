@@ -1,9 +1,15 @@
-wb-mqtt-serial (2.71.1) stable; urgency=medium
+wb-mqtt-serial (2.71.2) stable; urgency=medium
 
-  * Templates for refrigerator controlles with televis protocol were
+  * Templates for Eliwell refrigerator controlles with televis protocol were
     added
 
  -- Dmitry Vorobjev <d.vorobjev@wirenboard.ru>  Wed, 28 Sep 2022 17:20:50 +0300
+
+wb-mqtt-serial (2.71.1) stable; urgency=medium
+
+  * Support for C++17 standard
+
+ -- Roman Kochkin <roman.kochkin@wirenboard.ru>  Wed, 05 Oct 2022 10:22:47 +0400
 
 wb-mqtt-serial (2.71.0) stable; urgency=medium
 

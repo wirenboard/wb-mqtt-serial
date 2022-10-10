@@ -4,8 +4,8 @@
 #include "serial_exc.h"
 
 #include <cmath>
-#include <experimental/filesystem>
 #include <fcntl.h>
+#include <filesystem>
 #include <fstream>
 #include <iomanip>
 #include <iostream>
@@ -77,9 +77,9 @@ namespace
 
     size_t GetRxTrigBytes(const std::string& path)
     {
-        std::experimental::filesystem::path dev(path);
-        while (std::experimental::filesystem::is_symlink(dev)) {
-            dev = std::experimental::filesystem::read_symlink(dev);
+        std::filesystem::path dev(path);
+        while (std::filesystem::is_symlink(dev)) {
+            dev = std::filesystem::read_symlink(dev);
         }
         auto rxTrigBytesPath = "/sys/class/tty" / dev.filename() / "rx_trig_bytes";
         std::ifstream f(rxTrigBytesPath);

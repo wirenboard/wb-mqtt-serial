@@ -6,7 +6,7 @@
 #include <wblib/signal_handling.h>
 #include <wblib/wbmqtt.h>
 
-#include <experimental/filesystem>
+#include <filesystem>
 #include <fstream>
 #include <getopt.h>
 #include <unistd.h>
@@ -148,8 +148,8 @@ namespace
                 MakeJsonWriter(" ", "All")->write(MakeSchemaForConfed(*configSchema, *templates, deviceFactory), &f);
             }
             ifstream src(resultingSchemaFile, ios::binary);
-            experimental::filesystem::path file(CONFED_JSON_SCHEMA_FULL_FILE_PATH);
-            experimental::filesystem::create_directories(file.parent_path());
+            filesystem::path file(CONFED_JSON_SCHEMA_FULL_FILE_PATH);
+            filesystem::create_directories(file.parent_path());
             ofstream dst(file, ios::binary);
             dst << src.rdbuf();
         } catch (const exception& e) {

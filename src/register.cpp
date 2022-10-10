@@ -181,7 +181,7 @@ void TRegister::SetLastPollTime(std::chrono::steady_clock::time_point pollTime)
     }
 }
 
-TReadPeriodMissChecker::TReadPeriodMissChecker(const std::experimental::optional<std::chrono::milliseconds>& readPeriod)
+TReadPeriodMissChecker::TReadPeriodMissChecker(const std::optional<std::chrono::milliseconds>& readPeriod)
     : TotalReadTime(std::chrono::milliseconds::zero()),
       ReadCount(0)
 {

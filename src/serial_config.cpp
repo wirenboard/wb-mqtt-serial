@@ -167,7 +167,7 @@ namespace
         return deviceConfig.TypeMap->GetDefaultType();
     }
 
-    std::experimental::optional<std::chrono::milliseconds> GetReadRateLimit(const Json::Value& data)
+    std::optional<std::chrono::milliseconds> GetReadRateLimit(const Json::Value& data)
     {
         std::chrono::milliseconds res(-1);
         try {
@@ -176,19 +176,19 @@ namespace
         }
         Get(data, "read_rate_limit_ms", res);
         if (res < 0ms) {
-            return std::experimental::nullopt;
+            return std::nullopt;
         }
-        return std::experimental::make_optional(res);
+        return std::make_optional(res);
     }
 
-    std::experimental::optional<std::chrono::milliseconds> GetReadPeriod(const Json::Value& data)
+    std::optional<std::chrono::milliseconds> GetReadPeriod(const Json::Value& data)
     {
         std::chrono::milliseconds res(-1);
         Get(data, "read_period_ms", res);
         if (res < 0ms) {
-            return std::experimental::nullopt;
+            return std::nullopt;
         }
-        return std::experimental::make_optional(res);
+        return std::make_optional(res);
     }
 
     struct TLoadingContext
