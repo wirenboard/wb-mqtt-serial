@@ -1,5 +1,5 @@
 {
-    "title": "Eliwell IDPlus 9xx (WB-REF-U-CR)",
+    "title": "Eliwell IDPlus 9xx (TTL adapter, Modbus)",
     "device_type": "eliwell_idplus_9xx",
     "group": "g-refrigeration",
     "device": {
