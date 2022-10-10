@@ -20507,7 +20507,7 @@ eliwell_idplus_9xx
 	Reset Parameters Changed Indicator  =>  Reset Parameters Changed Indicator
 	Standby  =>  Standby
 	Temperature Setpoint  =>  Temperature Setpoint
-eliwell_idplus_9xx_televis
+eliwell_idplus_9xx_wb_ref
 	Alarm  =>  Alarm
 	Analog Input 1 High Threshold  =>  Analog Input 1 High Threshold
 	Analog Input 1 Low Threshold  =>  Analog Input 1 Low Threshold
