@@ -1,6 +1,6 @@
 {
     "title": "Eliwell ID 974 LX (WB-REF-U)",
-    "device_type": "eliwell_id_974_lx",
+    "device_type": "eliwell_id_974_lx_wb_ref",
     "group": "g-refrigeration",
     "device": {
         "name": "Eliwell ID 974 LX",
