@@ -20470,6 +20470,27 @@ ecodim_dali_gw2
 	Relay 1  =>  Relay 1
 	Relay 2  =>  Relay 2
 	Reset Gateway  =>  Reset Gateway
+eliwell_id_974_lx_wb_ref
+	Analog Input 1 Alarm  =>  Analog Input 1 Alarm
+	Analog Input 2 Alarm  =>  Analog Input 2 Alarm
+	Analogue input 1  =>  Analogue input 1
+	Analogue input 1 (control 1)  =>  Analogue input 1 (control 1)
+	Analogue input 2  =>  Analogue input 2
+	Analogue input 2 (control 1)  =>  Analogue input 2 (control 1)
+	Auxiliary Controller Active  =>  Auxiliary Controller Active
+	Controller Type  =>  Controller Type
+	Device Address  =>  Device Address
+	Device Family Address  =>  Device Family Address
+	Economy Mode  =>  Economy Mode
+	External Alarm  =>  External Alarm
+	High Temperature Alarm  =>  High Temperature Alarm
+	Low Temperature Alarm  =>  Low Temperature Alarm
+	Open Door Alarm  =>  Open Door Alarm
+	Relay 1  =>  Relay 1
+	Relay 2  =>  Relay 2
+	Relay 3  =>  Relay 3
+	Standby Mode  =>  Standby Mode
+	Temperature Setpoint  =>  Temperature Setpoint
 eliwell_id_985_lx_wb_ref
 	Analog Input 1 Alarm  =>  Analog Input 1 Alarm
 	Analog Input 2 Alarm  =>  Analog Input 2 Alarm
