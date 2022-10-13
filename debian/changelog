@@ -1,3 +1,9 @@
+wb-mqtt-serial (2.72.0) stable; urgency=medium
+
+  * Master switch action is added to WB-LED and WB-MRGBW-D templates
+
+ -- Pavel Gasheev <pavel.gasheev@wirenboard.ru>  Thu, 13 Oct 2022 10:24:47 +0300
+
 wb-mqtt-serial (2.71.2) stable; urgency=medium
 
   * Templates for Eliwell refrigerator controlles with televis protocol were
