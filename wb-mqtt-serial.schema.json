@@ -1911,7 +1911,6 @@
       "type": "array",
       "title": "List of ports",
       "items": { "$ref": "#/definitions/port" },
-      "minItems": 1,
       "_format": "tabs",
       "propertyOrder": 4,
       "options" : {
@@ -1936,8 +1935,6 @@
       "propertyOrder" : 3
     }
   },
-
-  "required": ["ports"],
 
   "options": {
     "disable_edit_json": true
