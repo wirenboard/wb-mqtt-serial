@@ -68,7 +68,7 @@ protected:
                         TTestLogIndent indent(*this);
                         Emit() << "------";
                         Emit() << "Name: " << device_channel->GetName();
-                        for (const auto it: device_channel->GetTitles()) {
+                        for (const auto& it: device_channel->GetTitles()) {
                             if (it.first != "en") {
                                 Emit() << "Name " << it.first << ": " << it.second;
                             }
