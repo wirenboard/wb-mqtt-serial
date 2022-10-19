@@ -148,10 +148,10 @@ void TPulsarDevice::WriteSysTimeRequest(uint32_t addr, uint16_t id)
 void TPulsarDevice::ReadResponse(uint32_t addr, uint8_t* payload, size_t size, uint16_t id)
 {
     const int exp_size = size + 10; /* payload size + service bytes */
-    uint8_t response[exp_size];
+    std::vector<uint8_t> response(exp_size);
 
-    int nread = Port()->ReadFrame(response,
-                                  exp_size,
+    int nread = Port()->ReadFrame(response.data(),
+                                  response.size(),
                                   DeviceConfig()->ResponseTimeout,
                                   DeviceConfig()->FrameTimeout,
                                   [](uint8_t* buf, int size) { return size >= 6 && size == buf[5]; });
@@ -168,11 +168,11 @@ void TPulsarDevice::ReadResponse(uint32_t addr, uint8_t* payload, size_t size, u
 
     /* check CRC16 */
     uint16_t crc_recv = ReadHex(&response[nread - 2], sizeof(uint16_t), false);
-    if (crc_recv != CalculateCRC16(response, nread - 2))
+    if (crc_recv != CalculateCRC16(response.data(), nread - 2))
         throw TSerialDeviceTransientErrorException("CRC mismatch");
 
     /* check address */
-    uint32_t addr_recv = ReadBCD(response, sizeof(uint32_t), true);
+    uint32_t addr_recv = ReadBCD(response.data(), sizeof(uint32_t), true);
     if (addr_recv != addr)
         throw TSerialDeviceTransientErrorException("slave address mismatch");
 
@@ -182,7 +182,7 @@ void TPulsarDevice::ReadResponse(uint32_t addr, uint8_t* payload, size_t size, u
         throw TSerialDeviceTransientErrorException("request ID mismatch");
 
     /* copy payload data to external buffer */
-    memcpy(payload, response + 6, size);
+    memcpy(payload, response.data() + 6, size);
 }
 
 TRegisterValue TPulsarDevice::ReadDataRegister(PRegister reg)

@@ -1,3 +1,9 @@
+wb-mqtt-serial (2.72.2) stable; urgency=medium
+
+  * pulsar: fix variable length array
+
+ -- Nikolay Korotkiy <nikolay.korotkiy@wirenboard.com>  Wed, 19 Oct 2022 11:35:11 +0300
+
 wb-mqtt-serial (2.72.1) stable; urgency=medium
 
   * Fix tests build.
