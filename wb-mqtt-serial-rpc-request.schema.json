@@ -9,7 +9,7 @@
     "response_size": {
       "description": "Expexted response size",
       "type": "integer",
-      "minimum": 0,
+      "minimum": 0
     },
     "response_timeout": {
       "description": "Timeout in milliseconds for response first byte receiving, default 500 (DefaultResponseTimeout from wb-mqtt-serial)",
@@ -44,7 +44,23 @@
       "properties": {
         "path": {
           "description": "Path to serial port",
-          "type": "string",
+          "type": "string"
+        },
+        "baud_rate": {
+          "description": "Baud rate",
+          "type": "integer"
+        },
+        "parity": {
+          "description": "Parity",
+          "type": "integer"
+        },
+        "data_bits": {
+          "description": "Data bits",
+          "type": "integer"
+        },
+        "stop_bits": {
+          "description": "Stop bits",
+          "type": "integer"
         }
       },
       "required": [
@@ -68,7 +84,7 @@
       "required": [
         "ip",
         "port"
-      ],
+      ]
     }
   ]
 }
