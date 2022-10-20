@@ -92,6 +92,49 @@ namespace
 
         return responseStr;
     }
+
+    std::vector<uint8_t> SendRequest(const Json::Value& request, PRPCRequest rpcRequest)
+    {
+        PPort port;
+        if (request.isMember("path")) {
+            std::string path;
+            WBMQTT::JSON::Get(request, "path", path);
+            TSerialPortSettings settings(path);
+
+            WBMQTT::JSON::Get(request, "baud_rate", settings.BaudRate);
+
+            if (request.isMember("parity"))
+                settings.Parity = request["parity"].asCString()[0];
+
+            WBMQTT::JSON::Get(request, "data_bits", settings.DataBits);
+            WBMQTT::JSON::Get(request, "stop_bits", settings.StopBits);
+
+            LOG(Debug) << "Create serial port: " << path;
+            port = std::make_shared<TSerialPortWithIECHack>(std::make_shared<TSerialPort>(settings));
+
+        } else if (request.isMember("ip") && request.isMember("port")) {
+            std::string address;
+            int portNumber;
+            WBMQTT::JSON::Get(request, "ip", address);
+            WBMQTT::JSON::Get(request, "port", portNumber);
+            TTcpPortSettings settings(address, portNumber);
+
+            LOG(Debug) << "Create tcp port: " << address << ":" << portNumber;
+            port = std::make_shared<TTcpPort>(settings);
+        }
+
+        port->Open();
+        port->WriteBytes(rpcRequest->Message);
+
+        std::vector<uint8_t> response(rpcRequest->ResponseSize);
+        port->ReadFrame(response.data(),
+                        rpcRequest->ResponseSize,
+                        rpcRequest->ResponseTimeout,
+                        rpcRequest->FrameTimeout);
+        port->Close();
+
+        return response;
+    }
 }
 
 std::vector<uint8_t> TRPCPortDriver::SendRequest(PRPCRequest request) const
@@ -174,43 +217,7 @@ Json::Value TRPCHandler::PortLoad(const Json::Value& request)
         if (rpcPortDriver != nullptr) {
             response = rpcPortDriver->SendRequest(rpcRequest);
         } else {
-            PPort port;
-            if (request.isMember("path")) {
-                std::string path;
-                WBMQTT::JSON::Get(request, "path", path);
-                TSerialPortSettings settings(path);
-
-                WBMQTT::JSON::Get(request, "baud_rate", settings.BaudRate);
-
-                if (request.isMember("parity"))
-                    settings.Parity = request["parity"].asCString()[0];
-
-                WBMQTT::JSON::Get(request, "data_bits", settings.DataBits);
-                WBMQTT::JSON::Get(request, "stop_bits", settings.StopBits);
-
-                LOG(Debug) << "Create serial port: " << path;
-                port = std::make_shared<TSerialPortWithIECHack>(std::make_shared<TSerialPort>(settings));
-
-            } else if (request.isMember("ip") && request.isMember("port")) {
-                std::string address;
-                int portNumber;
-                WBMQTT::JSON::Get(request, "ip", address);
-                WBMQTT::JSON::Get(request, "port", portNumber);
-                TTcpPortSettings settings(address, portNumber);
-
-                LOG(Debug) << "Create tcp port: " << address << ":" << portNumber;
-                port = std::make_shared<TTcpPort>(settings);
-            }
-
-            port->Open();
-            port->WriteBytes(rpcRequest->Message);
-
-            response.resize(rpcRequest->ResponseSize);
-            port->ReadFrame(response.data(),
-                            rpcRequest->ResponseSize,
-                            rpcRequest->ResponseTimeout,
-                            rpcRequest->FrameTimeout);
-            port->Close();
+            response = SendRequest(request, rpcRequest);
         }
 
         std::string responseStr = PortLoadResponseFormat(response, rpcRequest->Format);
