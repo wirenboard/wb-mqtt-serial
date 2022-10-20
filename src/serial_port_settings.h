@@ -2,6 +2,7 @@
 
 #include <sstream>
 #include <string>
+#include <wblib/json/json.h>
 
 struct TSerialPortByteFormat
 {
@@ -33,6 +34,17 @@ struct TSerialPortSettings: public TSerialPortByteFormat
         std::ostringstream ss;
         ss << "<" << Device << " " << BaudRate << " " << DataBits << " " << Parity << " " << StopBits << ">";
         return ss.str();
+    }
+
+    Json::Value ToJson() const
+    {
+        Json::Value jsonValue;
+        jsonValue["path"] = Device;
+        jsonValue["baud_rate"] = BaudRate;
+        jsonValue["data_bits"] = DataBits;
+        jsonValue["parity"] = std::string(1, Parity);
+        jsonValue["stop_bits"] = StopBits;
+        return jsonValue;
     }
 
     std::string Device;

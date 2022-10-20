@@ -22,6 +22,8 @@ public:
 
     std::string GetDescription(bool verbose = true) const override;
 
+    Json::Value GetConfig() const override;
+
 private:
     void OnReadyEmptyFd() override;
 

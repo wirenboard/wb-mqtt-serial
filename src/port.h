@@ -6,6 +6,7 @@
 #include <functional>
 #include <string>
 #include <vector>
+#include <wblib/json/json.h>
 
 #include "serial_port_settings.h"
 
@@ -61,6 +62,8 @@ public:
     virtual std::chrono::milliseconds GetSendTime(double bytesNumber) const;
 
     virtual std::string GetDescription(bool verbose = true) const = 0;
+
+    virtual Json::Value GetConfig() const = 0;
 
     /**
      * @brief Set new byte parameters if it is a serial port.
