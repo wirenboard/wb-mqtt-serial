@@ -48,19 +48,23 @@
         },
         "baud_rate": {
           "description": "Baud rate",
-          "type": "integer"
+          "type": "integer",
+          "enum": [110, 300, 600, 1200, 2400, 4800, 9600, 19200, 38400, 57600, 115200]
         },
         "parity": {
           "description": "Parity",
-          "type": "integer"
+          "type": "string",
+          "enum": ["N", "E", "O"]
         },
         "data_bits": {
           "description": "Data bits",
-          "type": "integer"
+          "type": "integer",
+          "enum": [5, 6, 7, 8]
         },
         "stop_bits": {
           "description": "Stop bits",
-          "type": "integer"
+          "type": "integer",
+          "enum": [1, 2]
         }
       },
       "required": [
