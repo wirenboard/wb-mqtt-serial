@@ -780,6 +780,18 @@ It's designed to be used on [Wiren Board](https://wirenboard.com/en/) family of 
 ]
 ```
 
+#### Пример использования
+
+Подписываемся на топик и ждем результата:
+```
+mosquitto_sub -t /rpc/v1/wb-mqtt-serial/metrics/Load/client_id/reply
+```
+
+Публикуем запрос:
+```
+mosquitto_pub -t /rpc/v1/wb-mqtt-serial/metrics/Load/client_id -m "{\"params\":{},\"id\":1}"
+```
+
 ### Прямое чтение и запись в порт
 Существует возможность выполнить запись и чтение из порта посредством MQTT RPC запроса. Выполнение запроса встраивается в цикл опроса устройств таким образом, что запрос выполнится с высоким приоритетом сразу после окончания текущего цикла опроса. 
 Для упрощенного использования данного функционала написана [Python-библиотека](https://github.com/wirenboard/mqtt-rpc/). Также по [ссылке](https://github.com/wirenboard/modbus-utils-rpc) доступна утилита для работы с modbus-устройствами при помощи RPC-функционала wb-mqtt-serial.
@@ -871,6 +883,18 @@ It's designed to be used on [Wiren Board](https://wirenboard.com/en/) family of 
     RPC Client -> {'msg': '1605000aff00af1f', 'path': '/dev/ttyRS485-2', 'total_timeout': 10, 'format': 'HEX', 'response_size': 8}
     RPC Client <- {"error":{"code":-32600,"data":"Request handler is not responding @ src/rpc_handler.cpp:179","message":"Request timeout"},"id":1,"result":null}
     ```
+
+#### Пример использования
+
+Подписываемся на топик и ждем результата:
+```
+mosquitto_sub -t /rpc/v1/wb-mqtt-serial/port/Load/client_id/reply
+```
+
+Публикуем запрос:
+```
+mosquitto_pub -t /rpc/v1/wb-mqtt-serial/port/Load/client_id -m "{\"params\":{\"path\":\"/dev/ttyNSC0\",\"msg\":\"Test\",\"response_size\":4},\"id\":1}"
+```
 
 ## Протоколы
 
