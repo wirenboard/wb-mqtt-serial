@@ -1,4 +1,4 @@
-wb-mqtt-serial (2.72.3) stable; urgency=medium
+wb-mqtt-serial (2.73.0) stable; urgency=medium
 
   * Add support for RPC connection to an arbitrary port
 
