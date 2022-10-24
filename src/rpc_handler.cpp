@@ -131,7 +131,6 @@ namespace
                         rpcRequest->ResponseSize,
                         rpcRequest->ResponseTimeout,
                         rpcRequest->FrameTimeout);
-        port->Close();
 
         return response;
     }
