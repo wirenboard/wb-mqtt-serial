@@ -1,5 +1,5 @@
 {% set CHANNELS_NUMBER = 1 -%}
-{%- set types_with_gain = [ 5888, 3, 2, 0, 256, 257, 4, 1] -%}
+{%- set types_with_gain = [ 5888, 3, 0, 256, 257, 4, 1] -%}
 {%- set types_with_min_max = [ 5376, 4864, 4865, 4866, 0, 256, 5120] -%}
 {%- set types_with_resistance = [258, 4, 5888, 4352, 4368, 4369, 4370, 4371, 4384, 4385, 4386, 4387, 4400, 4401, 4402,] -%}
 {%- set single_ended_modes =  [4352, 4353, 4354, 4355, 4368, 4369, 4370, 4371, 4384, 4385, 4386, 4387, 4400, 4401, 4402, 4864, 4865, 4866, 5120, 5376, 5632, 5888 ] -%}
@@ -314,7 +314,7 @@
                 "enum": [0, 1, 2, 4],
                 "enum_titles": ["auto"],
                 "default": 0,
-                "condition": "{{ format_list(ch_num, types_with_gain, "in%s_n_type==%s") }} && ({{ format_list(ch_num, single_ended_modes, "in%s_type==%s") }})"
+                "condition": "{{ format_list(ch_num, types_with_gain, "in%s_n_type==%s") }}&&({{ format_list(ch_num, single_ended_modes, "in%s_type==%s") }})"
             },
             "in{{ ch_num }}_n_min": {
                 "title": "Minimum value",
@@ -322,7 +322,7 @@
                 "order": 5,
                 "address": "0x{{ "%x"|format(ch_num-1) }}409",
                 "default": 0,
-                "condition": "{{ format_list(ch_num, types_with_min_max, "in%s_n_type==%s") }} && ({{ format_list(ch_num, single_ended_modes, "in%s_type==%s") }})"
+                "condition": "{{ format_list(ch_num, types_with_min_max, "in%s_n_type==%s") }}&&({{ format_list(ch_num, single_ended_modes, "in%s_type==%s") }})"
             },
             "in{{ ch_num }}_n_max": {
                 "title": "Maximum value",
@@ -330,7 +330,7 @@
                 "order": 6,
                 "address": "0x{{ "%x"|format(ch_num-1) }}40B",
                 "default": 10000,
-                "condition": "{{ format_list(ch_num, types_with_min_max, "in%s_n_type==%s") }} && ({{ format_list(ch_num, single_ended_modes, "in%s_type==%s") }})"
+                "condition": "{{ format_list(ch_num, types_with_min_max, "in%s_n_type==%s") }}&&({{ format_list(ch_num, single_ended_modes, "in%s_type==%s") }})"
             },
             {% endfor -%}
             "baud_rate": {
