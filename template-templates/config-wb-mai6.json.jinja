@@ -18,17 +18,17 @@
         "response_timeout_ms": 1,
 
         "groups": [
-            {% for n in range(1, CHANNELS_NUMBER + 1) -%}
+            {% for ch_num in range(1, CHANNELS_NUMBER + 1) -%}
             {
-                "title": "Input {{ n }}",
-                "id": "g_in{{ n }}",
-                "order": {{ n }}
+                "title": "Input {{ ch_num }}",
+                "id": "g_in{{ ch_num }}",
+                "order": {{ ch_num }}
             },
             {
                 "title": "IN_N",
-                "id": "gg_in{{ n }}_n",
-                "order": {{ n }},
-                "group": "g_in{{ n }}"
+                "id": "gg_in{{ ch_num }}_n",
+                "order": {{ ch_num }},
+                "group": "g_in{{ ch_num }}"
             },
             {% endfor -%}
             {
@@ -49,11 +49,11 @@
         ],
 
         "parameters": {
-            {% for n in range(1, CHANNELS_NUMBER + 1) -%}
-            "in{{ n }}_type": {
+            {% for ch_num in range(1, CHANNELS_NUMBER + 1) -%}
+            "in{{ ch_num }}_type": {
                 "title": "Type",
-                "address": "0x{{ "%x"|format(n-1) }}400",
-                "group": "g_in{{ n }}",
+                "address": "0x{{ "%x"|format(ch_num-1) }}400",
+                "group": "g_in{{ ch_num }}",
                 "order": 1,
                 "enum": [
                     4096,
@@ -147,11 +147,11 @@
                     "NTC thermistor 10k (B = 3988 K)"
                 ]
             },
-            "in{{ n }}_data_rate": {
+            "in{{ ch_num }}_data_rate": {
                 "required": true,
                 "title": "Sampling time",
-                "address": "0x{{ "%x"|format(n-1) }}402",
-                "group": "g_in{{ n }}",
+                "address": "0x{{ "%x"|format(ch_num-1) }}402",
+                "group": "g_in{{ ch_num }}",
                 "order": 2,
                 "enum_titles": [
                     "50 ms (20 SPS)",
@@ -164,55 +164,55 @@
                 ],
                 "enum": [ 20, 45, 90, 175, 330, 600, 1000 ]
             },
-            "in{{ n }}_measurements": {
+            "in{{ ch_num }}_measurements": {
                 "title": "Number of measurements",
                 "description": "Total sampling time of channel is (Sampling time * Number of measurements). Channels are polled sequentially.",
-                "group": "g_in{{ n }}",
+                "group": "g_in{{ ch_num }}",
                 "order": 3,
-                "address": "0x{{ "%x"|format(n-1) }}404",
+                "address": "0x{{ "%x"|format(ch_num-1) }}404",
                 "min": 1,
                 "max": 50
             },
-            "in{{ n }}_lowpass": {
+            "in{{ ch_num }}_lowpass": {
                 "title": "Lowpass filter time, ms",
-                "group": "g_in{{ n }}",
+                "group": "g_in{{ ch_num }}",
                 "order": 4,
-                "address": "0x{{ "%x"|format(n-1) }}406",
+                "address": "0x{{ "%x"|format(ch_num-1) }}406",
                 "min": 0,
                 "max": 65000
             },
-            "in{{n}}_gain": {
+            "in{{ch_num}}_gain": {
                 "title": "Gain",
-                "group": "g_in{{ n }}",
+                "group": "g_in{{ ch_num }}",
                 "order": 4,
-                "address": "0x{{ "%x"|format(n-1) }}40C",
+                "address": "0x{{ "%x"|format(ch_num-1) }}40C",
                 "enum": [0, 1, 2, 4],
                 "enum_titles": ["auto"],
                 "default": 0,
-                "condition": "{{ format_list(n, types_with_gain, "in%s_type==%s") }}"
+                "condition": "{{ format_list(ch_num, types_with_gain, "in%s_type==%s") }}"
             },
-            "in{{ n }}_min": {
+            "in{{ ch_num }}_min": {
                 "title": "Minimum value",
-                "group": "g_in{{ n }}",
+                "group": "g_in{{ ch_num }}",
                 "order": 5,
-                "address": "0x{{ "%x"|format(n-1) }}408",
+                "address": "0x{{ "%x"|format(ch_num-1) }}408",
                 "default": 0,
-                "condition": "{{ format_list(n, types_with_min_max, "in%s_type==%s") }}"
+                "condition": "{{ format_list(ch_num, types_with_min_max, "in%s_type==%s") }}"
             },
-            "in{{ n }}_max": {
+            "in{{ ch_num }}_max": {
                 "title": "Maximum value",
-                "group": "g_in{{ n }}",
+                "group": "g_in{{ ch_num }}",
                 "order": 6,
-                "address": "0x{{ "%x"|format(n-1) }}40A",
+                "address": "0x{{ "%x"|format(ch_num-1) }}40A",
                 "default": 10000,
-                "condition": "{{ format_list(n, types_with_min_max, "in%s_type==%s") }}"
+                "condition": "{{ format_list(ch_num, types_with_min_max, "in%s_type==%s") }}"
             },
-            "in{{ n }}_n_type": {
+            "in{{ ch_num }}_n_type": {
                 "title": "Type",
-                "address": "0x{{ "%x"|format(n-1) }}401",
-                "group": "gg_in{{ n }}_n",
+                "address": "0x{{ "%x"|format(ch_num-1) }}401",
+                "group": "gg_in{{ ch_num }}_n",
                 "order": 1,
-                "condition": "{{ format_list(n, single_ended_modes, "in%s_type==%s") }}",
+                "condition": "{{ format_list(ch_num, single_ended_modes, "in%s_type==%s") }}",
                 "enum": [
                     4352,
                     4353,
@@ -269,12 +269,12 @@
                     "NTC thermistor 10k (B = 3988 K)"
                 ]
             },
-            "in{{ n }}_n_data_rate": {
+            "in{{ ch_num }}_n_data_rate": {
                 "required": true,
                 "title": "Sampling time",
-                "group": "gg_in{{ n }}_n",
+                "group": "gg_in{{ ch_num }}_n",
                 "order": 2,
-                "address": "0x{{ "%x"|format(n-1) }}403",
+                "address": "0x{{ "%x"|format(ch_num-1) }}403",
                 "enum_titles": [
                     "50 ms (20 SPS)",
                     "22 ms (45 SPS)",
@@ -285,52 +285,52 @@
                     "1.0 ms (1000 SPS)"
                 ],
                 "enum": [ 20, 45, 90, 175, 330, 600, 1000 ],
-                "condition": "{{ format_list(n, single_ended_modes, "in%s_type==%s") }}"
+                "condition": "{{ format_list(ch_num, single_ended_modes, "in%s_type==%s") }}"
             },
-            "in{{ n }}_n_measurements": {
+            "in{{ ch_num }}_n_measurements": {
                 "title": "Number of measurements",
                 "description": "Total sampling time of channel is (Sampling time * Number of measurements). Channels are polled sequentially.",
-                "group": "gg_in{{ n }}_n",
+                "group": "gg_in{{ ch_num }}_n",
                 "order": 3,
-                "address": "0x{{ "%x"|format(n-1) }}405",
+                "address": "0x{{ "%x"|format(ch_num-1) }}405",
                 "min": 1,
                 "max": 50,
-                "condition": "{{ format_list(n, single_ended_modes, "in%s_type==%s") }}"
+                "condition": "{{ format_list(ch_num, single_ended_modes, "in%s_type==%s") }}"
             },
-            "in{{ n }}_n_lowpass": {
+            "in{{ ch_num }}_n_lowpass": {
                 "title": "Lowpass filter time, ms",
-                "group": "gg_in{{ n }}_n",
+                "group": "gg_in{{ ch_num }}_n",
                 "order": 4,
-                "address": "0x{{ "%x"|format(n-1) }}407",
+                "address": "0x{{ "%x"|format(ch_num-1) }}407",
                 "min": 0,
                 "max": 65000,
-                "condition": "{{ format_list(n, single_ended_modes, "in%s_type==%s") }}"
+                "condition": "{{ format_list(ch_num, single_ended_modes, "in%s_type==%s") }}"
             },
-            "in{{n}}_n_gain": {
+            "in{{ch_num}}_n_gain": {
                 "title": "Gain",
-                "group": "gg_in{{ n }}_n",
+                "group": "gg_in{{ ch_num }}_n",
                 "order": 4,
-                "address": "0x{{ "%x"|format(n-1) }}40D",
+                "address": "0x{{ "%x"|format(ch_num-1) }}40D",
                 "enum": [0, 1, 2, 4],
                 "enum_titles": ["auto"],
                 "default": 0,
-                "condition": "{{ format_list(n, types_with_gain, "in%s_n_type==%s") }} && ({{ format_list(n, single_ended_modes, "in%s_type==%s") }})"
+                "condition": "{{ format_list(ch_num, types_with_gain, "in%s_n_type==%s") }} && ({{ format_list(ch_num, single_ended_modes, "in%s_type==%s") }})"
             },
-            "in{{ n }}_n_min": {
+            "in{{ ch_num }}_n_min": {
                 "title": "Minimum value",
-                "group": "gg_in{{ n }}_n",
+                "group": "gg_in{{ ch_num }}_n",
                 "order": 5,
-                "address": "0x{{ "%x"|format(n-1) }}409",
+                "address": "0x{{ "%x"|format(ch_num-1) }}409",
                 "default": 0,
-                "condition": "{{ format_list(n, types_with_min_max, "in%s_n_type==%s") }} && ({{ format_list(n, single_ended_modes, "in%s_type==%s") }})"
+                "condition": "{{ format_list(ch_num, types_with_min_max, "in%s_n_type==%s") }} && ({{ format_list(ch_num, single_ended_modes, "in%s_type==%s") }})"
             },
-            "in{{ n }}_n_max": {
+            "in{{ ch_num }}_n_max": {
                 "title": "Maximum value",
-                "group": "gg_in{{ n }}_n",
+                "group": "gg_in{{ ch_num }}_n",
                 "order": 6,
-                "address": "0x{{ "%x"|format(n-1) }}40B",
+                "address": "0x{{ "%x"|format(ch_num-1) }}40B",
                 "default": 10000,
-                "condition": "{{ format_list(n, types_with_min_max, "in%s_n_type==%s") }} && ({{ format_list(n, single_ended_modes, "in%s_type==%s") }})"
+                "condition": "{{ format_list(ch_num, types_with_min_max, "in%s_n_type==%s") }} && ({{ format_list(ch_num, single_ended_modes, "in%s_type==%s") }})"
             },
             {% endfor -%}
             "baud_rate": {
@@ -353,131 +353,131 @@
         },
 
         "channels": [
-            {% for n in range(1, CHANNELS_NUMBER + 1) -%}
+            {% for ch_num in range(1, CHANNELS_NUMBER + 1) -%}
             {
-                "name": "In {{n}} P Resistance",
+                "name": "In {{ch_num}} P Resistance",
                 "type": "resistance",
                 "error_value": "0x7FFFFFFF",
                 "reg_type": "input",
                 "format": "s32",
-                "address": "0x{{ "%x"|format(n-1) }}500",
+                "address": "0x{{ "%x"|format(ch_num-1) }}500",
                 "scale": 0.01,
-                "group": "g_in{{ n }}",
-                "condition": "in{{ n }}_type==258||in{{ n }}_type==4||in{{ n }}_type==5888||(in{{ n }}_type>=4352&&in{{ n }}_type<=4658)"
+                "group": "g_in{{ ch_num }}",
+                "condition": "in{{ ch_num }}_type==258||in{{ ch_num }}_type==4||in{{ ch_num }}_type==5888||(in{{ ch_num }}_type>=4352&&in{{ ch_num }}_type<=4658)"
             },
             {
-                "name": "In {{n}} P Voltage",
+                "name": "In {{ch_num}} P Voltage",
                 "type": "voltage",
                 "scale": 0.000001,
                 "reg_type": "input",
                 "format": "s32",
                 "error_value": "0x7FFFFFFF",
-                "address": "0x{{ "%x"|format(n-1) }}500",
-                "group": "g_in{{ n }}",
-                "condition": "in{{ n }}_type==4096"
+                "address": "0x{{ "%x"|format(ch_num-1) }}500",
+                "group": "g_in{{ ch_num }}",
+                "condition": "in{{ ch_num }}_type==4096"
             },
             {
-                "name": "In {{n}} P Temperature",
+                "name": "In {{ch_num}} P Temperature",
                 "type": "temperature",
                 "scale": 0.1,
                 "reg_type": "input",
                 "error_value": "0x7fff",
                 "format": "s16",
-                "address": "0x{{ "%x"|format(n-1) }}504",
-                "group": "g_in{{ n }}",
-                "condition": "in{{ n }}_type==4096||in{{ n }}_type==4352"
+                "address": "0x{{ "%x"|format(ch_num-1) }}504",
+                "group": "g_in{{ ch_num }}",
+                "condition": "in{{ ch_num }}_type==4096||in{{ ch_num }}_type==4352"
             },
             {
-                "name": "In {{n}} P Current",
+                "name": "In {{ch_num}} P Current",
                 "type": "current",
                 "scale": 1e-9,
                 "error_value": "0x7FFFFFFF",
                 "reg_type": "input",
                 "format": "s32",
-                "address": "0x{{ "%x"|format(n-1) }}500",
-                "group": "g_in{{ n }}",
-                "condition": "in{{ n }}_type==4096||in{{ n }}_type==4352"
+                "address": "0x{{ "%x"|format(ch_num-1) }}500",
+                "group": "g_in{{ ch_num }}",
+                "condition": "in{{ ch_num }}_type==4096||in{{ ch_num }}_type==4352"
             },
             {
-                "name": "In {{n}} P Value",
+                "name": "In {{ch_num}} P Value",
                 "reg_type": "input",
                 "type": "value",
                 "format": "s16",
                 "error_value": "0x7fff",
-                "address": "0x{{ "%x"|format(n-1) }}504",
-                "group": "g_in{{ n }}",
-                "condition": "in{{ n }}_type==4096||in{{ n }}_type==4352"
+                "address": "0x{{ "%x"|format(ch_num-1) }}504",
+                "group": "g_in{{ ch_num }}",
+                "condition": "in{{ ch_num }}_type==4096||in{{ ch_num }}_type==4352"
             },
             {
-                "name": "In {{n}} P State",
+                "name": "In {{ch_num}} P State",
                 "reg_type": "input",
                 "format": "s16",
-                "address": "0x{{ "%x"|format(n-1) }}504",
-                "group": "g_in{{ n }}",
-                "condition": "in{{ n }}_type==5632"
+                "address": "0x{{ "%x"|format(ch_num-1) }}504",
+                "group": "g_in{{ ch_num }}",
+                "condition": "in{{ ch_num }}_type==5632"
             },
             {
-                "name": "In {{n}} N Resistance",
+                "name": "In {{ch_num}} N Resistance",
                 "type": "resistance",
                 "error_value": "0x7FFFFFFF",
                 "reg_type": "input",
                 "format": "s32",
-                "address": "0x{{ "%x"|format(n-1) }}500",
+                "address": "0x{{ "%x"|format(ch_num-1) }}500",
                 "scale": 0.01,
-                "condition": "in{{ n }}_n_type==258||in{{ n }}_n_type==4||in{{ n }}_n_type==5888||(in{{ n }}_n_type>=4352&&in{{ n }}_n_type<=4658)",
-                "group": "gg_in{{ n }}_n"
+                "condition": "in{{ ch_num }}_n_type==258||in{{ ch_num }}_n_type==4||in{{ ch_num }}_n_type==5888||(in{{ ch_num }}_n_type>=4352&&in{{ ch_num }}_n_type<=4658)",
+                "group": "gg_in{{ ch_num }}_n"
             },
             {
-                "name": "In {{n}} N Voltage",
+                "name": "In {{ch_num}} N Voltage",
                 "type": "voltage",
                 "scale": 0.000001,
                 "reg_type": "input",
                 "format": "s32",
                 "error_value": "0x7FFFFFFF",
-                "address": "0x{{ "%x"|format(n-1) }}500",
-                "condition": "in{{ n }}_n_type==4096",
-                "group": "gg_in{{ n }}_n"
+                "address": "0x{{ "%x"|format(ch_num-1) }}500",
+                "condition": "in{{ ch_num }}_n_type==4096",
+                "group": "gg_in{{ ch_num }}_n"
             },
             {
-                "name": "In {{n}} N Temperature",
+                "name": "In {{ch_num}} N Temperature",
                 "type": "temperature",
                 "scale": 0.1,
                 "reg_type": "input",
                 "error_value": "0x7fff",
                 "format": "s16",
-                "address": "0x{{ "%x"|format(n-1) }}504",
-                "condition": "in{{ n }}_n_type==4096||in{{ n }}_n_type==4352",
-                "group": "gg_in{{ n }}_n"
+                "address": "0x{{ "%x"|format(ch_num-1) }}504",
+                "condition": "in{{ ch_num }}_n_type==4096||in{{ ch_num }}_n_type==4352",
+                "group": "gg_in{{ ch_num }}_n"
             },
             {
-                "name": "In {{n}} N Current",
+                "name": "In {{ch_num}} N Current",
                 "type": "current",
                 "scale": 1e-9,
                 "error_value": "0x7FFFFFFF",
                 "reg_type": "input",
                 "format": "s32",
-                "address": "0x{{ "%x"|format(n-1) }}500",
-                "condition": "in{{ n }}_n_type==4096||in{{ n }}_n_type==4352",
-                "group": "gg_in{{ n }}_n"
+                "address": "0x{{ "%x"|format(ch_num-1) }}500",
+                "condition": "in{{ ch_num }}_n_type==4096||in{{ ch_num }}_n_type==4352",
+                "group": "gg_in{{ ch_num }}_n"
             },
             {
-                "name": "In {{n}} N Value",
+                "name": "In {{ch_num}} N Value",
                 "reg_type": "input",
                 "type": "value",
                 "format": "s16",
                 "error_value": "0x7fff",
-                "address": "0x{{ "%x"|format(n-1) }}504",
-                "condition": "in{{ n }}_n_type==4096||in{{ n }}_n_type==4352",
-                "group": "gg_in{{ n }}_n"
+                "address": "0x{{ "%x"|format(ch_num-1) }}504",
+                "condition": "in{{ ch_num }}_n_type==4096||in{{ ch_num }}_n_type==4352",
+                "group": "gg_in{{ ch_num }}_n"
             },
             {
-                "name": "In {{n}} N State",
+                "name": "In {{ch_num}} N State",
                 "reg_type": "input",
                 "format": "s16",
-                "address": "0x{{ "%x"|format(n-1) }}504",
-                "condition": "in{{ n }}_n_type==5632",
-                "group": "gg_in{{ n }}_n"
-            {% if n == CHANNELS_NUMBER -%}
+                "address": "0x{{ "%x"|format(ch_num-1) }}504",
+                "condition": "in{{ ch_num }}_n_type==5632",
+                "group": "gg_in{{ ch_num }}_n"
+            {% if ch_num == CHANNELS_NUMBER -%}
             }
             {% else -%}
             },
