@@ -217,7 +217,7 @@ void UpdateChannels(Json::Value& channelsFromTemplate,
     for (const auto& elem: userChannels) {
         auto channelName(elem["name"].asString());
         if (channelNames.count(channelName)) {
-            for (auto chIt: channelNames[channelName]) {
+            for (const auto& chIt: channelNames[channelName]) {
                 MergeChannelProperties(channelsFromTemplate[chIt],
                                        elem,
                                        logPrefix + " channel \"" + channelName + "\"");
