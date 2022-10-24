@@ -1,5 +1,5 @@
 {
-    "device_type": "Somfy SDN",
+    "device_type": "Somfy network",
     "title": "Somfy curtain motor",
     "group": "g-curtain",
     "device": {
