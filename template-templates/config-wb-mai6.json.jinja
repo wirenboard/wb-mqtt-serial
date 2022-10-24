@@ -1,3 +1,5 @@
+
+{% set CHANNELS_NUMBER = 6 -%}
 {
     "title": "WB-MAI11_template_title",
     "device_type": "WB-MAI6",
@@ -9,7 +11,7 @@
         "response_timeout_ms": 1,
 
         "groups": [
-            {% for n in range(1, 12) -%}
+            {% for n in range(1, CHANNELS_NUMBER + 1) -%}
             {
                 "title": "Input {{ n }}",
                 "id": "in{{ n }}",
@@ -48,7 +50,7 @@
         {%- endmacro %}
 
         "parameters": {
-            {% for n in range(1, 12) -%}
+            {% for n in range(1, CHANNELS_NUMBER + 1) -%}
             "in{{ n }}_type": {
                 "title": "Type",
                 "address": "0x{{ "%x"|format(n-1) }}400",
@@ -368,7 +370,7 @@
         },
 
         "channels": [
-            {% for n in range(1, 12) -%}
+            {% for n in range(1, CHANNELS_NUMBER + 1) -%}
             {
                 "name": "In {{n}} P Resistance",
                 "type": "resistance",
@@ -486,7 +488,11 @@
                 "address": "0x{{ "%x"|format(n-1) }}504",
                 "condition": "in{{ n }}_n_type==5632",
                 "group": "in{{ n }}_n"
+            {% if n == CHANNELS_NUMBER -%}
             }
+            {% else -%}
+            },
+            {% endif -%}
             {% endfor -%}
         ],
 
