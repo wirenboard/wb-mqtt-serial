@@ -404,6 +404,7 @@
                 "format": "s32",
                 "error_value": "0x7FFFFFFF",
                 "address": "0x{{ "%x"|format(n-1) }}500",
+                "group": "g_in{{ n }}",
                 "condition": "in{{ n }}_type==4096"
             },
             {
@@ -414,6 +415,7 @@
                 "error_value": "0x7fff",
                 "format": "s16",
                 "address": "0x{{ "%x"|format(n-1) }}504",
+                "group": "g_in{{ n }}",
                 "condition": "in{{ n }}_type==4096||in{{ n }}_type==4352"
             },
             {
@@ -424,6 +426,7 @@
                 "reg_type": "input",
                 "format": "s32",
                 "address": "0x{{ "%x"|format(n-1) }}500",
+                "group": "g_in{{ n }}",
                 "condition": "in{{ n }}_type==4096||in{{ n }}_type==4352"
             },
             {
@@ -433,6 +436,7 @@
                 "format": "s16",
                 "error_value": "0x7fff",
                 "address": "0x{{ "%x"|format(n-1) }}504",
+                "group": "g_in{{ n }}",
                 "condition": "in{{ n }}_type==4096||in{{ n }}_type==4352"
             },
             {
@@ -440,6 +444,7 @@
                 "reg_type": "input",
                 "format": "s16",
                 "address": "0x{{ "%x"|format(n-1) }}504",
+                "group": "g_in{{ n }}",
                 "condition": "in{{ n }}_type==5632"
             },
             {
@@ -451,7 +456,7 @@
                 "address": "0x{{ "%x"|format(n-1) }}500",
                 "scale": 0.01,
                 "condition": "in{{ n }}_n_type==258||in{{ n }}_n_type==4||in{{ n }}_n_type==5888||(in{{ n }}_n_type>=4352&&in{{ n }}_n_type<=4658)",
-                "group": "in{{ n }}_n"
+                "group": "gg_in{{ n }}_n"
             },
             {
                 "name": "In {{n}} N Voltage",
@@ -462,7 +467,7 @@
                 "error_value": "0x7FFFFFFF",
                 "address": "0x{{ "%x"|format(n-1) }}500",
                 "condition": "in{{ n }}_n_type==4096",
-                "group": "in{{ n }}_n"
+                "group": "gg_in{{ n }}_n"
             },
             {
                 "name": "In {{n}} N Temperature",
@@ -473,7 +478,7 @@
                 "format": "s16",
                 "address": "0x{{ "%x"|format(n-1) }}504",
                 "condition": "in{{ n }}_n_type==4096||in{{ n }}_n_type==4352",
-                "group": "in{{ n }}_n"
+                "group": "gg_in{{ n }}_n"
             },
             {
                 "name": "In {{n}} N Current",
@@ -484,7 +489,7 @@
                 "format": "s32",
                 "address": "0x{{ "%x"|format(n-1) }}500",
                 "condition": "in{{ n }}_n_type==4096||in{{ n }}_n_type==4352",
-                "group": "in{{ n }}_n"
+                "group": "gg_in{{ n }}_n"
             },
             {
                 "name": "In {{n}} N Value",
@@ -494,7 +499,7 @@
                 "error_value": "0x7fff",
                 "address": "0x{{ "%x"|format(n-1) }}504",
                 "condition": "in{{ n }}_n_type==4096||in{{ n }}_n_type==4352",
-                "group": "in{{ n }}_n"
+                "group": "gg_in{{ n }}_n"
             },
             {
                 "name": "In {{n}} N State",
@@ -502,7 +507,7 @@
                 "format": "s16",
                 "address": "0x{{ "%x"|format(n-1) }}504",
                 "condition": "in{{ n }}_n_type==5632",
-                "group": "in{{ n }}_n"
+                "group": "gg_in{{ n }}_n"
             {% if n == CHANNELS_NUMBER -%}
             }
             {% else -%}
