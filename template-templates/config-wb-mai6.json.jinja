@@ -191,7 +191,7 @@
                 "enum": [0, 1, 2, 4],
                 "enum_titles": ["auto"],
                 "default": 0,
-                "condition": "{{ format_list(n, types_with_gain, "in_%s_type==%s") }}"
+                "condition": "{{ format_list(n, types_with_gain, "in%s_type==%s") }}"
             },
             "in{{ n }}_min": {
                 "title": "Minimum value",
@@ -199,7 +199,7 @@
                 "order": 5,
                 "address": "0x{{ "%x"|format(n-1) }}408",
                 "default": 0,
-                "condition": "{{ format_list(n, types_with_min_max, "in_%s_type==%s") }}"
+                "condition": "{{ format_list(n, types_with_min_max, "in%s_type==%s") }}"
             },
             "in{{ n }}_max": {
                 "title": "Maximum value",
@@ -207,13 +207,14 @@
                 "order": 6,
                 "address": "0x{{ "%x"|format(n-1) }}40A",
                 "default": 10000,
-                "condition": "{{ format_list(n, types_with_min_max, "in_%s_type==%s") }}"
+                "condition": "{{ format_list(n, types_with_min_max, "in%s_type==%s") }}"
             },
             "in{{ n }}_n_type": {
                 "title": "Type",
                 "address": "0x{{ "%x"|format(n-1) }}401",
                 "group": "gg_in{{ n }}_n",
                 "order": 1,
+                "condition": "{{ format_list(n, single_ended_modes, "in%s_type==%s") }}",
                 "enum": [
                     4352,
                     4353,
@@ -285,7 +286,8 @@
                     "1.7 ms (600 SPS)",
                     "1.0 ms (1000 SPS)"
                 ],
-                "enum": [ 20, 45, 90, 175, 330, 600, 1000 ]
+                "enum": [ 20, 45, 90, 175, 330, 600, 1000 ],
+                "condition": "{{ format_list(n, single_ended_modes, "in%s_type==%s") }}"
             },
             "in{{ n }}_n_measurements": {
                 "title": "Number of measurements",
@@ -294,7 +296,8 @@
                 "order": 3,
                 "address": "0x{{ "%x"|format(n-1) }}405",
                 "min": 1,
-                "max": 50
+                "max": 50,
+                "condition": "{{ format_list(n, single_ended_modes, "in%s_type==%s") }}"
             },
             "in{{ n }}_n_lowpass": {
                 "title": "Lowpass filter time, ms",
@@ -302,7 +305,8 @@
                 "order": 4,
                 "address": "0x{{ "%x"|format(n-1) }}407",
                 "min": 0,
-                "max": 65000
+                "max": 65000,
+                "condition": "{{ format_list(n, single_ended_modes, "in%s_type==%s") }}"
             },
             "in{{n}}_n_gain": {
                 "title": "Gain",
@@ -312,7 +316,7 @@
                 "enum": [0, 1, 2, 4],
                 "enum_titles": ["auto"],
                 "default": 0,
-                "condition": "{{ format_list(n, types_with_gain, "in_%s_n_type==%s") }}"
+                "condition": "{{ format_list(n, types_with_gain, "in%s_n_type==%s") }} && ({{ format_list(n, single_ended_modes, "in%s_type==%s") }})"
             },
             "in{{ n }}_n_min": {
                 "title": "Minimum value",
@@ -320,7 +324,7 @@
                 "order": 5,
                 "address": "0x{{ "%x"|format(n-1) }}409",
                 "default": 0,
-                "condition": "{{ format_list(n, types_with_min_max, "in_%s_n_type==%s") }}"
+                "condition": "{{ format_list(n, types_with_min_max, "in%s_n_type==%s") }} && ({{ format_list(n, single_ended_modes, "in%s_type==%s") }})"
             },
             "in{{ n }}_n_max": {
                 "title": "Maximum value",
@@ -328,7 +332,7 @@
                 "order": 6,
                 "address": "0x{{ "%x"|format(n-1) }}40B",
                 "default": 10000,
-                "condition": "{{ format_list(n, types_with_min_max, "in_%s_n_type==%s") }}"
+                "condition": "{{ format_list(n, types_with_min_max, "in%s_n_type==%s") }} && ({{ format_list(n, single_ended_modes, "in%s_type==%s") }})"
             },
             {% endfor -%}
             "baud_rate": {
