@@ -1,8 +1,8 @@
 {% set CHANNELS_NUMBER = 1 -%}
 {%- set types_with_gain = [0, 1, 2, 3, 256, 257, 258] -%}
 {%- set types_with_min_max = [ 5376, 4864, 4865, 4866, 0, 256, 5120] -%}
-{%- set types_with_resistance = [258, 4, 5888, 4352, 4368, 4369, 4370, 4371, 4384, 4385, 4386, 4387, 4400, 4401, 4402,] -%}
-{%- set single_ended_modes =  [0, 1, 2, 3, 4352, 4353, 4354, 4355, 4368, 4369, 4370, 4371, 4384, 4385, 4386, 4387, 4400, 4401, 4402, 4864, 4865, 4866, 5120, 5376, 5632, 5888 ] -%}
+{%- set types_with_resistance = [258, 4, 5889, 4352, 4368, 4369, 4370, 4371, 4384, 4385, 4386, 4387, 4400, 4401, 4402,] -%}
+{%- set single_ended_modes =  [0, 1, 2, 3, 4352, 4353, 4354, 4355, 4368, 4369, 4370, 4371, 4384, 4385, 4386, 4387, 4400, 4401, 4402, 4864, 4865, 4866, 5120, 5376, 5632, 5889 ] -%}
 {%- macro format_list(index, types, format) -%}
     {% set separator = joiner('||') %}
     {%- for t in types -%}{{ separator() }}{{ format|format(index, t) }}{%- endfor -%}
@@ -56,14 +56,6 @@
                 "group": "g_in{{ ch_num }}",
                 "order": 1,
                 "enum": [
-                    0,
-                    1,
-                    2,
-                    3,
-                    256,
-                    257,
-                    258,
-
                     4096,
 
                     4352,
@@ -106,18 +98,17 @@
                     5376,
 
                     5632,
-                    5889
+                    5889,
 
+                    0,
+                    1,
+                    2,
+                    3,
+                    256,
+                    257,
+                    258
                 ],
                 "enum_titles": [
-                    "P: voltage measurement from ratiometric sensor",
-                    "P: single-ended voltage measurement from 0 to 30 V",
-                    "P: two-wire resistance measurement",
-                    "P: current measurement",
-                    "differential voltage measurement from ratiometric sensor",
-                    "voltage measurement in differentioal mode from -30 to 30 V",
-                    "three-wire resistance measurement",
-
                     "Thermocouple type K (ТХА)",
 
                     "2-wire RTD Pt 50 (α = 0.00385 °C⁻¹)",
@@ -160,7 +151,15 @@
                     "-50 to 50 mV sensor",
 
                     "dry contact sensor",
-                    "NTC thermistor 10k (B = 3988 K)"
+                    "NTC thermistor 10k (B = 3988 K)",
+
+                    "P: voltage measurement from ratiometric sensor",
+                    "P: single-ended voltage measurement from 0 to 30 V",
+                    "P: two-wire resistance measurement",
+                    "P: current measurement",
+                    "differential voltage measurement from ratiometric sensor",
+                    "voltage measurement in differentioal mode from -30 to 30 V",
+                    "three-wire resistance measurement"
                 ]
             },
             "in{{ ch_num }}_data_rate": {
@@ -230,11 +229,6 @@
                 "order": 1,
                 "condition": "{{ format_list(ch_num, single_ended_modes, "in%s_type==%s") }}",
                 "enum": [
-                    0,
-                    1,
-                    2,
-                    3,
-
                     4352,
                     4353,
                     4354,
@@ -259,14 +253,14 @@
                     5376,
 
                     5632,
-                    5889
+                    5889,
+
+                    0,
+                    1,
+                    2,
+                    3
                 ],
                 "enum_titles": [
-                    "N: voltage measurement from ratiometric sensor",
-                    "N: single-ended voltage measurement from 0 to 30 V",
-                    "N: two-wire resistance measurement",
-                    "N: current measurement",
-
                     "2-wire RTD Pt 50 (α = 0.00385 °C⁻¹)",
                     "2-wire RTD Pt 100 (α = 0.00385 °C⁻¹)",
                     "2-wire RTD Pt 500 (α = 0.00385 °C⁻¹)",
@@ -291,7 +285,12 @@
                     "-50 to 50 mV sensor",
 
                     "dry contact sensor",
-                    "NTC thermistor 10k (B = 3988 K)"
+                    "NTC thermistor 10k (B = 3988 K)",
+
+                    "N: voltage measurement from ratiometric sensor",
+                    "N: single-ended voltage measurement from 0 to 30 V",
+                    "N: two-wire resistance measurement",
+                    "N: current measurement"
                 ]
             },
             "in{{ ch_num }}_n_data_rate": {
