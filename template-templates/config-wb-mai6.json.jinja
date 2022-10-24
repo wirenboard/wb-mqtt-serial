@@ -14,12 +14,12 @@
             {% for n in range(1, CHANNELS_NUMBER + 1) -%}
             {
                 "title": "Input {{ n }}",
-                "id": "in{{ n }}",
+                "id": "g_in{{ n }}",
                 "order": {{ n }}
             },
             {
                 "title": "IN_N",
-                "id": "in{{ n }}_n",
+                "id": "gg_in{{ n }}_n",
                 "order": {{ n }},
                 "group": "in{{ n }}"
             },
@@ -54,6 +54,7 @@
             "in{{ n }}_type": {
                 "title": "Type",
                 "address": "0x{{ "%x"|format(n-1) }}400",
+                "group": "g_in{{ n }}",
                 "order": 1,
                 "enum": [
                     4096,
@@ -379,6 +380,7 @@
                 "format": "s32",
                 "address": "0x{{ "%x"|format(n-1) }}500",
                 "scale": 0.01,
+                "group": "g_in{{ n }}",
                 "condition": "in{{ n }}_type==258||in{{ n }}_type==4||in{{ n }}_type==5888||(in{{ n }}_type>=4352&&in{{ n }}_type<=4658)"
             },
             {
