@@ -20,6 +20,7 @@
             {
                 "name": "Status",
                 "type": "text",
+                "readonly": true,
                 "consists_of": [
                     {
                         "reg_type": "param",
@@ -88,6 +89,7 @@
             {
                 "name": "Motor position",
                 "type": "text",
+                "readonly": true,
                 "consists_of": [
                     {
                         "reg_type": "param",
@@ -110,6 +112,7 @@
             {
                 "name": "Limits",
                 "type": "text",
+                "readonly": true,
                 "consists_of": [
                     {
                         "reg_type": "param",
@@ -129,11 +132,13 @@
                 "reg_type": "param",
                 "address": "0x22",
                 "response_header": "0x32",
-                "enabled": false
+                "enabled": false,
+                "readonly": true
             },
             {
                 "name": "Rolling speed",
                 "type": "text",
+                "readonly": true,
                 "consists_of": [
                     {
                         "reg_type": "param",
