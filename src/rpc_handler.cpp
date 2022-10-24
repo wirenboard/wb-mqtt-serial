@@ -213,7 +213,7 @@ Json::Value TRPCHandler::PortLoad(const Json::Value& request)
         PRPCPortDriver rpcPortDriver = FindPortDriver(request);
 
         std::vector<uint8_t> response;
-        if (rpcPortDriver != nullptr) {
+        if (rpcPortDriver != nullptr && rpcPortDriver->SerialClient) {
             response = rpcPortDriver->SendRequest(rpcRequest);
         } else {
             response = SendRequest(request, rpcRequest);
