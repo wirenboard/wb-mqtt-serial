@@ -150,8 +150,9 @@
             "in{{ n }}_data_rate": {
                 "required": true,
                 "title": "Sampling time",
-                "order": 2,
                 "address": "0x{{ "%x"|format(n-1) }}402",
+                "group": "g_in{{ n }}",
+                "order": 2,
                 "enum_titles": [
                     "50 ms (20 SPS)",
                     "22 ms (45 SPS)",
@@ -166,6 +167,7 @@
             "in{{ n }}_measurements": {
                 "title": "Number of measurements",
                 "description": "Total sampling time of channel is (Sampling time * Number of measurements). Channels are polled sequentially.",
+                "group": "g_in{{ n }}",
                 "order": 3,
                 "address": "0x{{ "%x"|format(n-1) }}404",
                 "min": 1,
@@ -173,6 +175,7 @@
             },
             "in{{ n }}_lowpass": {
                 "title": "Lowpass filter time, ms",
+                "group": "g_in{{ n }}",
                 "order": 4,
                 "address": "0x{{ "%x"|format(n-1) }}406",
                 "min": 0,
@@ -180,6 +183,7 @@
             },
             "in{{n}}_gain": {
                 "title": "Gain",
+                "group": "g_in{{ n }}",
                 "order": 4,
                 "address": "0x{{ "%x"|format(n-1) }}40C",
                 "enum": [0, 1, 2, 4],
@@ -189,6 +193,7 @@
             },
             "in{{ n }}_min": {
                 "title": "Minimum value",
+                "group": "g_in{{ n }}",
                 "order": 5,
                 "address": "0x{{ "%x"|format(n-1) }}408",
                 "default": 0,
@@ -196,6 +201,7 @@
             },
             "in{{ n }}_max": {
                 "title": "Maximum value",
+                "group": "g_in{{ n }}",
                 "order": 6,
                 "address": "0x{{ "%x"|format(n-1) }}40A",
                 "default": 10000,
@@ -204,6 +210,7 @@
             "in{{ n }}_n_type": {
                 "title": "Type",
                 "address": "0x{{ "%x"|format(n-1) }}401",
+                "group": "gg_in{{ n }}_n",
                 "order": 1,
                 "enum": [
                     4352,
@@ -299,6 +306,7 @@
             "in{{ n }}_n_data_rate": {
                 "required": true,
                 "title": "Sampling time",
+                "group": "gg_in{{ n }}_n",
                 "order": 2,
                 "address": "0x{{ "%x"|format(n-1) }}403",
                 "enum_titles": [
@@ -315,6 +323,7 @@
             "in{{ n }}_n_measurements": {
                 "title": "Number of measurements",
                 "description": "Total sampling time of channel is (Sampling time * Number of measurements). Channels are polled sequentially.",
+                "group": "gg_in{{ n }}_n",
                 "order": 3,
                 "address": "0x{{ "%x"|format(n-1) }}405",
                 "min": 1,
@@ -322,6 +331,7 @@
             },
             "in{{ n }}_n_lowpass": {
                 "title": "Lowpass filter time, ms",
+                "group": "gg_in{{ n }}_n",
                 "order": 4,
                 "address": "0x{{ "%x"|format(n-1) }}407",
                 "min": 0,
@@ -329,6 +339,7 @@
             },
             "in{{n}}_n_gain": {
                 "title": "Gain",
+                "group": "gg_in{{ n }}_n",
                 "order": 4,
                 "address": "0x{{ "%x"|format(n-1) }}40D",
                 "enum": [0, 1, 2, 4],
@@ -338,6 +349,7 @@
             },
             "in{{ n }}_n_min": {
                 "title": "Minimum value",
+                "group": "gg_in{{ n }}_n",
                 "order": 5,
                 "address": "0x{{ "%x"|format(n-1) }}409",
                 "default": 0,
@@ -345,6 +357,7 @@
             },
             "in{{ n }}_n_max": {
                 "title": "Maximum value",
+                "group": "gg_in{{ n }}_n",
                 "order": 6,
                 "address": "0x{{ "%x"|format(n-1) }}40B",
                 "default": 10000,
