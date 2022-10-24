@@ -387,7 +387,7 @@
                 "address": "0x{{ "%x"|format(ch_num-1) }}500",
                 "scale": 0.01,
                 "group": "g_in{{ ch_num }}",
-                "condition": "in{{ ch_num }}_type==2||in{{ ch_num }}_type==258||in{{ ch_num }}_type==4||in{{ ch_num }}_type==5888||(in{{ ch_num }}_type>=4352&&in{{ ch_num }}_type<=4658)"
+                "condition": "in{{ ch_num }}_type==2||in{{ ch_num }}_type==258"
             },
             {
                 "name": "In {{ch_num}} P Percent",
@@ -409,7 +409,7 @@
                 "reg_type": "input",
                 "format": "s32",
                 "address": "0x{{ "%x"|format(ch_num-1) }}500",
-                "scale": 0.01,
+                "scale": 0.000001,
                 "group": "g_in{{ ch_num }}",
                 "condition": "in{{ ch_num }}_type==1||in{{ ch_num }}_type==257"
             },
@@ -421,12 +421,12 @@
                 "reg_type": "input",
                 "format": "s32",
                 "address": "0x{{ "%x"|format(ch_num-1) }}500",
-                "scale": 0.01,
+                "scale": 1e-9,
                 "group": "g_in{{ ch_num }}",
                 "condition": "in{{ ch_num }}_type==3"
             },
             {
-                "name": "In {{ch_num}} P Voltage",
+                "name": "In {{ch_num}} Voltage",
                 "type": "voltage",
                 "scale": 0.000001,
                 "reg_type": "input",
@@ -437,7 +437,7 @@
                 "condition": "in{{ ch_num }}_type==4096"
             },
             {
-                "name": "In {{ch_num}} P Temperature",
+                "name": "In {{ch_num}} Temperature",
                 "type": "temperature",
                 "scale": 0.1,
                 "reg_type": "input",
@@ -445,28 +445,18 @@
                 "format": "s16",
                 "address": "0x{{ "%x"|format(ch_num-1) }}504",
                 "group": "g_in{{ ch_num }}",
-                "condition": "in{{ ch_num }}_type==4096||in{{ ch_num }}_type==4352"
+                "condition": "in{{ ch_num }}_type==4096||in{{ ch_num }}_type==5889||in{{ ch_num }}_type>=4352||in{{ ch_num }}_type<=4658"
             },
             {
-                "name": "In {{ch_num}} P Current",
-                "type": "current",
-                "scale": 1e-9,
+                "name": "In {{ch_num}} Resistance",
+                "type": "resistance",
                 "error_value": "0x7FFFFFFF",
                 "reg_type": "input",
                 "format": "s32",
                 "address": "0x{{ "%x"|format(ch_num-1) }}500",
+                "scale": 0.01,
                 "group": "g_in{{ ch_num }}",
-                "condition": "in{{ ch_num }}_type==4096||in{{ ch_num }}_type==4352"
-            },
-            {
-                "name": "In {{ch_num}} P Value",
-                "reg_type": "input",
-                "type": "value",
-                "format": "s16",
-                "error_value": "0x7fff",
-                "address": "0x{{ "%x"|format(ch_num-1) }}504",
-                "group": "g_in{{ ch_num }}",
-                "condition": "in{{ ch_num }}_type==4096||in{{ ch_num }}_type==4352"
+                "condition": "in{{ ch_num }}_type==5889||(in{{ ch_num }}_type>=4352&&in{{ ch_num }}_type<=4658)"
             },
             {
                 "name": "In {{ch_num}} P State",
@@ -484,7 +474,7 @@
                 "format": "s32",
                 "address": "0x{{ "%x"|format(ch_num-1) }}500",
                 "scale": 0.01,
-                "condition": "in{{ ch_num }}_n_type==2||in{{ ch_num }}_n_type==5888||(in{{ ch_num }}_n_type>=4352&&in{{ ch_num }}_n_type<=4658)",
+                "condition": "in{{ ch_num }}_n_type==2||in{{ ch_num }}_n_type==5889||(in{{ ch_num }}_n_type>=4352&&in{{ ch_num }}_n_type<=4658)",
                 "group": "gg_in{{ ch_num }}_n"
             },
             {
