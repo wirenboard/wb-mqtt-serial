@@ -52,7 +52,7 @@
             {% for ch_num in range(1, CHANNELS_NUMBER + 1) -%}
             "in{{ ch_num }}_type": {
                 "title": "Type",
-                "address": "0x{{ "%x"|format(ch_num-1) }}400",
+                "address": "0x{{ "%x"|format(ch_num) }}400",
                 "group": "g_in{{ ch_num }}",
                 "order": 1,
                 "enum": [
@@ -165,7 +165,7 @@
             "in{{ ch_num }}_data_rate": {
                 "required": true,
                 "title": "Sampling time",
-                "address": "0x{{ "%x"|format(ch_num-1) }}402",
+                "address": "0x{{ "%x"|format(ch_num) }}402",
                 "group": "g_in{{ ch_num }}",
                 "order": 2,
                 "enum_titles": [
@@ -184,7 +184,7 @@
                 "description": "Total sampling time of channel is (Sampling time * Number of measurements). Channels are polled sequentially.",
                 "group": "g_in{{ ch_num }}",
                 "order": 3,
-                "address": "0x{{ "%x"|format(ch_num-1) }}404",
+                "address": "0x{{ "%x"|format(ch_num) }}404",
                 "min": 1,
                 "max": 50
             },
@@ -192,7 +192,7 @@
                 "title": "Lowpass filter time, ms",
                 "group": "g_in{{ ch_num }}",
                 "order": 4,
-                "address": "0x{{ "%x"|format(ch_num-1) }}406",
+                "address": "0x{{ "%x"|format(ch_num) }}406",
                 "min": 0,
                 "max": 65000
             },
@@ -200,7 +200,7 @@
                 "title": "Gain",
                 "group": "g_in{{ ch_num }}",
                 "order": 4,
-                "address": "0x{{ "%x"|format(ch_num-1) }}40C",
+                "address": "0x{{ "%x"|format(ch_num) }}40C",
                 "enum": [0, 1, 2, 4],
                 "enum_titles": ["auto"],
                 "default": 0,
@@ -210,7 +210,7 @@
                 "title": "Minimum value",
                 "group": "g_in{{ ch_num }}",
                 "order": 5,
-                "address": "0x{{ "%x"|format(ch_num-1) }}408",
+                "address": "0x{{ "%x"|format(ch_num) }}408",
                 "default": 0,
                 "condition": "{{ format_list(ch_num, types_with_min_max, "in%s_type==%s") }}"
             },
@@ -218,13 +218,13 @@
                 "title": "Maximum value",
                 "group": "g_in{{ ch_num }}",
                 "order": 6,
-                "address": "0x{{ "%x"|format(ch_num-1) }}40A",
+                "address": "0x{{ "%x"|format(ch_num) }}40A",
                 "default": 10000,
                 "condition": "{{ format_list(ch_num, types_with_min_max, "in%s_type==%s") }}"
             },
             "in{{ ch_num }}_n_type": {
                 "title": "Type",
-                "address": "0x{{ "%x"|format(ch_num-1) }}401",
+                "address": "0x{{ "%x"|format(ch_num) }}401",
                 "group": "gg_in{{ ch_num }}_n",
                 "order": 1,
                 "condition": "{{ format_list(ch_num, single_ended_modes, "in%s_type==%s") }}",
@@ -298,7 +298,7 @@
                 "title": "Sampling time",
                 "group": "gg_in{{ ch_num }}_n",
                 "order": 2,
-                "address": "0x{{ "%x"|format(ch_num-1) }}403",
+                "address": "0x{{ "%x"|format(ch_num) }}403",
                 "enum_titles": [
                     "50 ms (20 SPS)",
                     "22 ms (45 SPS)",
@@ -316,7 +316,7 @@
                 "description": "Total sampling time of channel is (Sampling time * Number of measurements). Channels are polled sequentially.",
                 "group": "gg_in{{ ch_num }}_n",
                 "order": 3,
-                "address": "0x{{ "%x"|format(ch_num-1) }}405",
+                "address": "0x{{ "%x"|format(ch_num) }}405",
                 "min": 1,
                 "max": 50,
                 "condition": "{{ format_list(ch_num, single_ended_modes, "in%s_type==%s") }}"
@@ -325,7 +325,7 @@
                 "title": "Lowpass filter time, ms",
                 "group": "gg_in{{ ch_num }}_n",
                 "order": 4,
-                "address": "0x{{ "%x"|format(ch_num-1) }}407",
+                "address": "0x{{ "%x"|format(ch_num) }}407",
                 "min": 0,
                 "max": 65000,
                 "condition": "{{ format_list(ch_num, single_ended_modes, "in%s_type==%s") }}"
@@ -334,7 +334,7 @@
                 "title": "Gain",
                 "group": "gg_in{{ ch_num }}_n",
                 "order": 4,
-                "address": "0x{{ "%x"|format(ch_num-1) }}40D",
+                "address": "0x{{ "%x"|format(ch_num) }}40D",
                 "enum": [0, 1, 2, 4],
                 "enum_titles": ["auto"],
                 "default": 0,
@@ -344,7 +344,7 @@
                 "title": "Minimum value",
                 "group": "gg_in{{ ch_num }}_n",
                 "order": 5,
-                "address": "0x{{ "%x"|format(ch_num-1) }}409",
+                "address": "0x{{ "%x"|format(ch_num) }}409",
                 "default": 0,
                 "condition": "{{ format_list(ch_num, types_with_min_max, "in%s_n_type==%s") }}&&({{ format_list(ch_num, single_ended_modes, "in%s_type==%s") }})"
             },
@@ -352,7 +352,7 @@
                 "title": "Maximum value",
                 "group": "gg_in{{ ch_num }}_n",
                 "order": 6,
-                "address": "0x{{ "%x"|format(ch_num-1) }}40B",
+                "address": "0x{{ "%x"|format(ch_num) }}40B",
                 "default": 10000,
                 "condition": "{{ format_list(ch_num, types_with_min_max, "in%s_n_type==%s") }}&&({{ format_list(ch_num, single_ended_modes, "in%s_type==%s") }})"
             },
@@ -384,7 +384,7 @@
                 "error_value": "0x7FFFFFFF",
                 "reg_type": "input",
                 "format": "s32",
-                "address": "0x{{ "%x"|format(ch_num-1) }}500",
+                "address": "0x{{ "%x"|format(ch_num) }}500",
                 "scale": 0.01,
                 "group": "g_in{{ ch_num }}",
                 "condition": "in{{ ch_num }}_type==2||in{{ ch_num }}_type==258"
@@ -396,7 +396,7 @@
                 "error_value": "0x7FFFFFFF",
                 "reg_type": "input",
                 "format": "s32",
-                "address": "0x{{ "%x"|format(ch_num-1) }}500",
+                "address": "0x{{ "%x"|format(ch_num) }}500",
                 "scale": 0.01,
                 "group": "g_in{{ ch_num }}",
                 "condition": "in{{ ch_num }}_type==0||in{{ ch_num }}_type==256"
@@ -408,7 +408,7 @@
                 "error_value": "0x7FFFFFFF",
                 "reg_type": "input",
                 "format": "s32",
-                "address": "0x{{ "%x"|format(ch_num-1) }}500",
+                "address": "0x{{ "%x"|format(ch_num) }}500",
                 "scale": 0.000001,
                 "group": "g_in{{ ch_num }}",
                 "condition": "in{{ ch_num }}_type==1||in{{ ch_num }}_type==257"
@@ -420,7 +420,7 @@
                 "error_value": "0x7FFFFFFF",
                 "reg_type": "input",
                 "format": "s32",
-                "address": "0x{{ "%x"|format(ch_num-1) }}500",
+                "address": "0x{{ "%x"|format(ch_num) }}500",
                 "scale": 1e-9,
                 "group": "g_in{{ ch_num }}",
                 "condition": "in{{ ch_num }}_type==3"
@@ -432,7 +432,7 @@
                 "reg_type": "input",
                 "format": "s32",
                 "error_value": "0x7FFFFFFF",
-                "address": "0x{{ "%x"|format(ch_num-1) }}500",
+                "address": "0x{{ "%x"|format(ch_num) }}500",
                 "group": "g_in{{ ch_num }}",
                 "condition": "in{{ ch_num }}_type==4096"
             },
@@ -443,7 +443,7 @@
                 "reg_type": "input",
                 "error_value": "0x7fff",
                 "format": "s16",
-                "address": "0x{{ "%x"|format(ch_num-1) }}504",
+                "address": "0x{{ "%x"|format(ch_num) }}504",
                 "group": "g_in{{ ch_num }}",
                 "condition": "in{{ ch_num }}_type==4096||in{{ ch_num }}_type==5889||in{{ ch_num }}_type>=4352||in{{ ch_num }}_type<=4658"
             },
@@ -453,7 +453,7 @@
                 "error_value": "0x7FFFFFFF",
                 "reg_type": "input",
                 "format": "s32",
-                "address": "0x{{ "%x"|format(ch_num-1) }}500",
+                "address": "0x{{ "%x"|format(ch_num) }}500",
                 "scale": 0.01,
                 "group": "g_in{{ ch_num }}",
                 "condition": "in{{ ch_num }}_type==5889||(in{{ ch_num }}_type>=4352&&in{{ ch_num }}_type<=4658)"
@@ -462,7 +462,7 @@
                 "name": "In {{ch_num}} P State",
                 "reg_type": "input",
                 "format": "s16",
-                "address": "0x{{ "%x"|format(ch_num-1) }}504",
+                "address": "0x{{ "%x"|format(ch_num) }}504",
                 "group": "g_in{{ ch_num }}",
                 "condition": "in{{ ch_num }}_type==5632"
             },
@@ -472,7 +472,7 @@
                 "error_value": "0x7FFFFFFF",
                 "reg_type": "input",
                 "format": "s32",
-                "address": "0x{{ "%x"|format(ch_num-1) }}500",
+                "address": "0x{{ "%x"|format(ch_num) }}500",
                 "scale": 0.01,
                 "condition": "in{{ ch_num }}_n_type==2||in{{ ch_num }}_n_type==5889||(in{{ ch_num }}_n_type>=4352&&in{{ ch_num }}_n_type<=4658)",
                 "group": "gg_in{{ ch_num }}_n"
@@ -484,7 +484,7 @@
                 "error_value": "0x7FFFFFFF",
                 "reg_type": "input",
                 "format": "s32",
-                "address": "0x{{ "%x"|format(ch_num-1) }}500",
+                "address": "0x{{ "%x"|format(ch_num) }}500",
                 "scale": 0.01,
                 "group": "gg_in{{ ch_num }}_n",
                 "condition": "in{{ ch_num }}_n_type==0"
@@ -496,7 +496,7 @@
                 "error_value": "0x7FFFFFFF",
                 "reg_type": "input",
                 "format": "s32",
-                "address": "0x{{ "%x"|format(ch_num-1) }}500",
+                "address": "0x{{ "%x"|format(ch_num) }}500",
                 "scale": 0.01,
                 "group": "gg_in{{ ch_num }}_n",
                 "condition": "in{{ ch_num }}_n_type==1"
@@ -508,7 +508,7 @@
                 "error_value": "0x7FFFFFFF",
                 "reg_type": "input",
                 "format": "s32",
-                "address": "0x{{ "%x"|format(ch_num-1) }}500",
+                "address": "0x{{ "%x"|format(ch_num) }}500",
                 "scale": 0.01,
                 "group": "gg_in{{ ch_num }}_n",
                 "condition": "in{{ ch_num }}_n_type==3"
@@ -520,7 +520,7 @@
                 "reg_type": "input",
                 "format": "s32",
                 "error_value": "0x7FFFFFFF",
-                "address": "0x{{ "%x"|format(ch_num-1) }}500",
+                "address": "0x{{ "%x"|format(ch_num) }}500",
                 "condition": "in{{ ch_num }}_n_type==4096",
                 "group": "gg_in{{ ch_num }}_n"
             },
@@ -531,7 +531,7 @@
                 "reg_type": "input",
                 "error_value": "0x7fff",
                 "format": "s16",
-                "address": "0x{{ "%x"|format(ch_num-1) }}504",
+                "address": "0x{{ "%x"|format(ch_num) }}504",
                 "condition": "in{{ ch_num }}_n_type==4096||in{{ ch_num }}_n_type==4352",
                 "group": "gg_in{{ ch_num }}_n"
             },
@@ -542,7 +542,7 @@
                 "error_value": "0x7FFFFFFF",
                 "reg_type": "input",
                 "format": "s32",
-                "address": "0x{{ "%x"|format(ch_num-1) }}500",
+                "address": "0x{{ "%x"|format(ch_num) }}500",
                 "condition": "in{{ ch_num }}_n_type==4096||in{{ ch_num }}_n_type==4352",
                 "group": "gg_in{{ ch_num }}_n"
             },
@@ -552,7 +552,7 @@
                 "type": "value",
                 "format": "s16",
                 "error_value": "0x7fff",
-                "address": "0x{{ "%x"|format(ch_num-1) }}504",
+                "address": "0x{{ "%x"|format(ch_num) }}504",
                 "condition": "in{{ ch_num }}_n_type==4096||in{{ ch_num }}_n_type==4352",
                 "group": "gg_in{{ ch_num }}_n"
             },
@@ -560,7 +560,7 @@
                 "name": "In {{ch_num}} N State",
                 "reg_type": "input",
                 "format": "s16",
-                "address": "0x{{ "%x"|format(ch_num-1) }}504",
+                "address": "0x{{ "%x"|format(ch_num) }}504",
                 "condition": "in{{ ch_num }}_n_type==5632",
                 "group": "gg_in{{ ch_num }}_n"
             {% if ch_num == CHANNELS_NUMBER -%}
