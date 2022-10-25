@@ -57,11 +57,6 @@ namespace
         {
             return std::string();
         }
-
-        Json::Value GetConfig() const
-        {
-            return Json::Value();
-        }
     };
 }
 

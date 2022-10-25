@@ -44,6 +44,7 @@ private:
     Json::Value RequestSchema;
     PMQTTSerialDriver SerialDriver;
     std::vector<PRPCPortDriver> PortDrivers;
+    PRPCConfig RPCConfig;
 
     PRPCPortDriver FindPortDriver(const Json::Value& request) const;
 

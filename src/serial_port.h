@@ -29,8 +29,6 @@ public:
 
     std::string GetDescription(bool verbose = true) const override;
 
-    Json::Value GetConfig() const override;
-
     const TSerialPortSettings& GetSettings() const;
 
 private:
@@ -72,8 +70,6 @@ public:
     std::chrono::milliseconds GetSendTime(double bytesNumber) const override;
 
     std::string GetDescription(bool verbose = true) const override;
-
-    Json::Value GetConfig() const override;
 
     void SetSerialPortByteFormat(const TSerialPortByteFormat* params) override;
 

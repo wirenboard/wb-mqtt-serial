@@ -233,11 +233,6 @@ std::string TSerialPort::GetDescription(bool verbose) const
     return Settings.Device;
 }
 
-Json::Value TSerialPort::GetConfig() const
-{
-    return Settings.ToJson();
-}
-
 const TSerialPortSettings& TSerialPort::GetSettings() const
 {
     return Settings;
@@ -327,11 +322,6 @@ std::chrono::milliseconds TSerialPortWithIECHack::GetSendTime(double bytesNumber
 std::string TSerialPortWithIECHack::GetDescription(bool verbose) const
 {
     return Port->GetDescription(verbose);
-}
-
-Json::Value TSerialPortWithIECHack::GetConfig() const
-{
-    return Port->GetConfig();
 }
 
 void TSerialPortWithIECHack::SetSerialPortByteFormat(const TSerialPortByteFormat* params)

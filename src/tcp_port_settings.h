@@ -2,7 +2,6 @@
 
 #include <sstream>
 #include <string>
-#include <wblib/json/json.h>
 
 struct TTcpPortSettings
 {
@@ -14,14 +13,6 @@ struct TTcpPortSettings
         std::ostringstream ss;
         ss << "<" << Address << ":" << Port << ">";
         return ss.str();
-    }
-
-    Json::Value ToJson() const
-    {
-        Json::Value jsonValue;
-        jsonValue["address"] = Address;
-        jsonValue["port"] = Port;
-        return jsonValue;
     }
 
     std::string Address;

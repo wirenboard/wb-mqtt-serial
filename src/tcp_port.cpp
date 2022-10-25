@@ -141,8 +141,3 @@ std::string TTcpPort::GetDescription(bool verbose) const
     }
     return Settings.Address;
 }
-
-Json::Value TTcpPort::GetConfig() const
-{
-    return Settings.ToJson();
-}

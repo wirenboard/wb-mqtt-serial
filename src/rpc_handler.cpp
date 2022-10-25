@@ -104,7 +104,7 @@ std::vector<uint8_t> TRPCPortDriver::SendRequest(PRPCRequest request) const
 TRPCHandler::TRPCHandler(const std::string& requestSchemaFilePath,
                          PRPCConfig rpcConfig,
                          WBMQTT::PMqttRpcServer rpcServer,
-                         PMQTTSerialDriver serialDriver)
+                         PMQTTSerialDriver serialDriver): RPCConfig(rpcConfig)
 {
     try {
         RequestSchema = WBMQTT::JSON::Parse(requestSchemaFilePath);
@@ -113,7 +113,7 @@ TRPCHandler::TRPCHandler(const std::string& requestSchemaFilePath,
         throw;
     }
 
-    for (auto RPCPort: rpcConfig->GetPorts()) {
+    for (auto RPCPort: RPCConfig->GetPorts()) {
         PRPCPortDriver RPCPortDriver = std::make_shared<TRPCPortDriver>();
         RPCPortDriver->RPCPort = RPCPort;
         PortDrivers.push_back(RPCPortDriver);
@@ -194,12 +194,7 @@ Json::Value TRPCHandler::LoadMetrics(const Json::Value& request)
 
 Json::Value TRPCHandler::LoadPorts(const Json::Value& request)
 {
-    Json::Value replyJSON(Json::arrayValue);
-    for (const auto& portDriver: PortDrivers) {
-        Json::Value item = portDriver->RPCPort->GetPort()->GetConfig();
-        replyJSON.append(std::move(item));
-    }
-    return replyJSON;
+    return RPCConfig->GetConfig();
 }
 
 TRPCException::TRPCException(const std::string& message, TRPCResultCode resultCode)
