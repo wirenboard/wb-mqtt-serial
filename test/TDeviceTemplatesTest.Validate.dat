@@ -402,6 +402,19 @@ Somfy RTS transmitter
 	Up 8  =>  Up 8
 	Up 9  =>  Up 9
 Somfy SDN
+	Delete limits  =>  Delete limits
+	Direction  =>  Direction
+	Limits  =>  Limits
+	Motor position  =>  Motor position
+	Move down  =>  Move down
+	Move up  =>  Move up
+	Position  =>  Position
+	Rolling speed  =>  Rolling speed
+	Set down limit  =>  Set down limit
+	Set up limit  =>  Set up limit
+	Status  =>  Status
+	Stop  =>  Stop
+Somfy network
 	Cause  =>  Cause
 	Current state  =>  Current state
 	Delete limits  =>  Delete limits
