@@ -3,6 +3,8 @@
 #include "rpc_request.h"
 #include "serial_device.h"
 #include "serial_exc.h"
+#include "serial_port.h"
+#include "tcp_port.h"
 #include "wblib/exceptions.h"
 
 #define LOG(logger) ::logger.Log() << "[RPC] "
@@ -90,6 +92,48 @@ namespace
 
         return responseStr;
     }
+
+    std::vector<uint8_t> SendRequest(const Json::Value& request, PRPCRequest rpcRequest)
+    {
+        PPort port;
+        if (request.isMember("path")) {
+            std::string path;
+            WBMQTT::JSON::Get(request, "path", path);
+            TSerialPortSettings settings(path);
+
+            WBMQTT::JSON::Get(request, "baud_rate", settings.BaudRate);
+
+            if (request.isMember("parity"))
+                settings.Parity = request["parity"].asCString()[0];
+
+            WBMQTT::JSON::Get(request, "data_bits", settings.DataBits);
+            WBMQTT::JSON::Get(request, "stop_bits", settings.StopBits);
+
+            LOG(Debug) << "Create serial port: " << path;
+            port = std::make_shared<TSerialPortWithIECHack>(std::make_shared<TSerialPort>(settings));
+
+        } else if (request.isMember("ip") && request.isMember("port")) {
+            std::string address;
+            int portNumber;
+            WBMQTT::JSON::Get(request, "ip", address);
+            WBMQTT::JSON::Get(request, "port", portNumber);
+            TTcpPortSettings settings(address, portNumber);
+
+            LOG(Debug) << "Create tcp port: " << address << ":" << portNumber;
+            port = std::make_shared<TTcpPort>(settings);
+        }
+
+        port->Open();
+        port->WriteBytes(rpcRequest->Message);
+
+        std::vector<uint8_t> response(rpcRequest->ResponseSize);
+        port->ReadFrame(response.data(),
+                        rpcRequest->ResponseSize,
+                        rpcRequest->ResponseTimeout,
+                        rpcRequest->FrameTimeout);
+
+        return response;
+    }
 }
 
 std::vector<uint8_t> TRPCPortDriver::SendRequest(PRPCRequest request) const
@@ -153,7 +197,7 @@ PRPCPortDriver TRPCHandler::FindPortDriver(const Json::Value& request) const
 
     switch (matches.size()) {
         case 0:
-            throw TRPCException("Requested port doesn't exist", TRPCResultCode::RPC_WRONG_PORT);
+            return nullptr;
         case 1:
             return matches[0];
         default:
@@ -168,7 +212,13 @@ Json::Value TRPCHandler::PortLoad(const Json::Value& request)
     try {
         PRPCRequest rpcRequest = ParseRequest(request, RequestSchema);
         PRPCPortDriver rpcPortDriver = FindPortDriver(request);
-        std::vector<uint8_t> response = rpcPortDriver->SendRequest(rpcRequest);
+
+        std::vector<uint8_t> response;
+        if (rpcPortDriver != nullptr && rpcPortDriver->SerialClient) {
+            response = rpcPortDriver->SendRequest(rpcRequest);
+        } else {
+            response = SendRequest(request, rpcRequest);
+        }
 
         std::string responseStr = PortLoadResponseFormat(response, rpcRequest->Format);
 

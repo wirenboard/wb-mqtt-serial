@@ -993,14 +993,7 @@ PHandlerConfig LoadConfig(const std::string& configFileName,
                  portFactory);
     }
 
-    // check are there any devices defined
-    for (const auto& port_config: handlerConfig->PortConfigs) {
-        if (!port_config->Devices.empty()) { // found one
-            return handlerConfig;
-        }
-    }
-
-    throw TConfigParserException("no devices defined in config. Nothing to do");
+    return handlerConfig;
 }
 
 void TPortConfig::AddDevice(PSerialDevice device)
