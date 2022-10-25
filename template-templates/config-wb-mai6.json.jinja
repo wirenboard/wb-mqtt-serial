@@ -398,7 +398,7 @@
                 "address": "0x{{ "%x"|format(ch_num) }}500",
                 "scale": 0.01,
                 "group": "g_in{{ ch_num }}",
-                "condition": "in{{ ch_num }}_type==2||(in{{ ch_num }}_type>=4352&&in{{ ch_num }}_type<=4402)||in{{ ch_num }}_type==5889"
+                "condition": "in{{ ch_num }}_type==2||(in{{ ch_num }}_type>=4352&&in{{ ch_num }}_type<=4402)||in{{ ch_num }}_type==5632||in{{ ch_num }}_type==5889"
             },
             {
                 "name": "In {{ch_num}} Percent",
@@ -497,7 +497,7 @@
                 "format": "s32",
                 "address": "0x{{ "%x"|format(ch_num) }}502",
                 "scale": 0.01,
-                "condition": "in{{ ch_num }}_n_type==2||in{{ ch_num }}_n_type==5889||(in{{ ch_num }}_n_type>=4352&&in{{ ch_num }}_n_type<=4402)",
+                "condition": "in{{ ch_num }}_n_type==2||in{{ ch_num }}_n_type==5632||in{{ ch_num }}_n_type==5889||(in{{ ch_num }}_n_type>=4352&&in{{ ch_num }}_n_type<=4402)",
                 "group": "gg_in{{ ch_num }}_n"
             },
             {
