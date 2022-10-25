@@ -556,6 +556,91 @@
                 "group": "gg_in{{ ch_num }}_n"
             },
             {% endfor -%}
+            {
+                "name": "5V Output",
+                "reg_type": "input",
+                "address": "0x0600",
+                "type": "voltage",
+                "scale": 0.001,
+                "format": "s16",
+                "group": "general"
+            },
+            {
+                "name": "Internal Temperature",
+                "reg_type": "input",
+                "address": "0x0601",
+                "type": "temperature",
+                "scale": 0.01,
+                "format": "s16",
+                "group": "general"
+            },
+            {
+                "name": "Serial",
+                "type": "text",
+                "reg_type": "input",
+                "address": 270,
+                "format": "u32",
+                "group": "hw_info"
+            },
+            {
+                "name": "FW Version",
+                "reg_type": "input",
+                "address": 250,
+                "type": "text",
+                "format": "string",
+                "string_data_size": 16,
+                "enabled": false,
+                "group": "hw_info"
+            },
+            {
+                "name": "Uptime",
+                "reg_type": "input",
+                "address": 104,
+                "format": "u32",
+                "group": "hw_info"
+            },
+            {% set OFFSET_CHANNELS = ["2-W P x1", "2-W N x1", "2-W P x2", "2-W N x2", "2-W P x4", "2-W N x4", "3-W"] -%}
+            {% for ch_name in OFFSET_CHANNELS  -%}
+            {
+                "name": "Temperature Offset {{ch_name}}",
+                "reg_type": "input",
+                "address": {{1538 + (loop.index - 1) * 2}},
+                "format": "s32",
+                "scale": 0.000015259,
+                "units": "deg C",
+                "enabled": false,
+                "group": "debug"
+            },
+            {% endfor -%}
+            {% for ch_num in range (1, CHANNELS_NUMBER + 1) -%}
+            {
+                "name": "IN {{ch_num}} P Read Interval",
+                "reg_type": "input",
+                "address": {{1553 + ch_num * 2 - 2}},
+                "format": "u16",
+                "scale": 0.001,
+                "enabled": false,
+                "group": "debug"
+            },
+            {
+                "name": "IN {{ch_num}} N Read Interval",
+                "reg_type": "input",
+                "address": {{1553 + ch_num * 2 - 1}},
+                "format": "u16",
+                "scale": 0.001,
+                "enabled": false,
+                "group": "debug"
+            },
+            {% endfor -%}
+            {
+                "name": "ADC Loop Duration",
+                "reg_type": "input",
+                "address": 1552,
+                "format": "u16",
+                "scale": 0.001,
+                "enabled": false,
+                "group": "debug"
+            }            
         ],
 
         "translations": {
