@@ -168,6 +168,7 @@
                 "address": "0x{{ "%x"|format(ch_num) }}402",
                 "group": "g_in{{ ch_num }}",
                 "order": 2,
+                "condition": "in{{ ch_num }}_type>=0",
                 "enum_titles": [
                     "50 ms (20 SPS)",
                     "22 ms (45 SPS)",
@@ -186,7 +187,8 @@
                 "order": 3,
                 "address": "0x{{ "%x"|format(ch_num) }}404",
                 "min": 1,
-                "max": 50
+                "max": 50,
+                "condition": "in{{ ch_num }}_type>=0"
             },
             "in{{ ch_num }}_lowpass": {
                 "title": "Lowpass filter time, ms",
@@ -194,7 +196,8 @@
                 "order": 4,
                 "address": "0x{{ "%x"|format(ch_num) }}406",
                 "min": 0,
-                "max": 65000
+                "max": 65000,
+                "condition": "in{{ ch_num }}_type>=0"
             },
             "in{{ch_num}}_gain": {
                 "title": "Gain",
@@ -309,7 +312,7 @@
                     "1.0 ms (1000 SPS)"
                 ],
                 "enum": [ 20, 45, 90, 175, 330, 600, 1000 ],
-                "condition": "{{ format_list(ch_num, single_ended_modes, "in%s_type==%s") }}"
+                "condition": "({{ format_list(ch_num, single_ended_modes, "in%s_type==%s") }})&&in{{ ch_num }}_n_type>=0"
             },
             "in{{ ch_num }}_n_measurements": {
                 "title": "Number of measurements",
@@ -319,7 +322,7 @@
                 "address": "0x{{ "%x"|format(ch_num) }}405",
                 "min": 1,
                 "max": 50,
-                "condition": "{{ format_list(ch_num, single_ended_modes, "in%s_type==%s") }}"
+                "condition": "({{ format_list(ch_num, single_ended_modes, "in%s_type==%s") }})&&in{{ ch_num }}_n_type>=0"
             },
             "in{{ ch_num }}_n_lowpass": {
                 "title": "Lowpass filter time, ms",
@@ -328,7 +331,7 @@
                 "address": "0x{{ "%x"|format(ch_num) }}407",
                 "min": 0,
                 "max": 65000,
-                "condition": "{{ format_list(ch_num, single_ended_modes, "in%s_type==%s") }}"
+                "condition": "({{ format_list(ch_num, single_ended_modes, "in%s_type==%s") }})&&in{{ ch_num }}_n_type>=0"
             },
             "in{{ch_num}}_n_gain": {
                 "title": "Gain",
