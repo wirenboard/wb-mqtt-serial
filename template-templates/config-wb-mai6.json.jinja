@@ -10,6 +10,7 @@
 {
     "title": "WB-MAI6_template_title",
     "device_type": "WB-MAI6",
+    "group": "g-wb",
     "device": {
         "name": "WB-MAI6",
         "id": "wb-mai6",
@@ -341,7 +342,7 @@
                 "enum": [0, 1, 2, 4],
                 "enum_titles": ["auto"],
                 "default": 0,
-                "condition": "{{ format_list(ch_num, types_with_gain, "in%s_n_type==%s") }}&&({{ format_list(ch_num, single_ended_modes, "in%s_type==%s") }})"
+                "condition": "{{ format_list(ch_num, types_with_gain, "in%s_n_type==%s") }}"
             },
             "in{{ ch_num }}_n_min": {
                 "title": "Minimum value",
@@ -349,7 +350,7 @@
                 "order": 5,
                 "address": "0x{{ "%x"|format(ch_num) }}409",
                 "default": 0,
-                "condition": "{{ format_list(ch_num, types_with_min_max, "in%s_n_type==%s") }}&&({{ format_list(ch_num, single_ended_modes, "in%s_type==%s") }})"
+                "condition": "{{ format_list(ch_num, types_with_min_max, "in%s_n_type==%s") }}"
             },
             "in{{ ch_num }}_n_max": {
                 "title": "Maximum value",
@@ -357,7 +358,7 @@
                 "order": 6,
                 "address": "0x{{ "%x"|format(ch_num) }}40B",
                 "default": 10000,
-                "condition": "{{ format_list(ch_num, types_with_min_max, "in%s_n_type==%s") }}&&({{ format_list(ch_num, single_ended_modes, "in%s_type==%s") }})"
+                "condition": "{{ format_list(ch_num, types_with_min_max, "in%s_n_type==%s") }}"
             },
             {% endfor -%}
             "baud_rate": {
