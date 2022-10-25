@@ -148,7 +148,8 @@ std::vector<uint8_t> TRPCPortDriver::SendRequest(PRPCRequest request) const
 TRPCHandler::TRPCHandler(const std::string& requestSchemaFilePath,
                          PRPCConfig rpcConfig,
                          WBMQTT::PMqttRpcServer rpcServer,
-                         PMQTTSerialDriver serialDriver): RPCConfig(rpcConfig)
+                         PMQTTSerialDriver serialDriver)
+    : RPCConfig(rpcConfig)
 {
     try {
         RequestSchema = WBMQTT::JSON::Parse(requestSchemaFilePath);
