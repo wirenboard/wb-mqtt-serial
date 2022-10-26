@@ -59,6 +59,7 @@
                 "group": "g_in{{ ch_num }}",
                 "order": 1,
                 "required": true,
+                "default": 65535,
                 "enum": [
                     65535,
 
@@ -236,6 +237,8 @@
                 "address": "0x{{ "%x"|format(ch_num) }}401",
                 "group": "gg_in{{ ch_num }}_n",
                 "order": 1,
+                "required": true,
+                "default": 65535,
                 "condition": "{{ format_list(ch_num, single_ended_modes, "in%s_type==%s") }}",
                 "enum": [
                     65535,
@@ -273,7 +276,7 @@
                 ],
                 "enum_titles": [
                     "Disabled",
-                    
+
                     "2-wire RTD Pt 50 (α = 0.00385 °C⁻¹)",
                     "2-wire RTD Pt 100 (α = 0.00385 °C⁻¹)",
                     "2-wire RTD Pt 500 (α = 0.00385 °C⁻¹)",
