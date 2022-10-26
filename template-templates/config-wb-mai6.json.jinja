@@ -58,7 +58,10 @@
                 "address": "0x{{ "%x"|format(ch_num) }}400",
                 "group": "g_in{{ ch_num }}",
                 "order": 1,
+                "required": true,
                 "enum": [
+                    65535,
+
                     4096,
 
                     4352,
@@ -112,6 +115,7 @@
                     258
                 ],
                 "enum_titles": [
+                    "Disabled",
                     "Thermocouple type K (ТХА)",
 
                     "P: 2-wire RTD Pt 50 (α = 0.00385 °C⁻¹)",
@@ -170,7 +174,7 @@
                 "address": "0x{{ "%x"|format(ch_num) }}402",
                 "group": "g_in{{ ch_num }}",
                 "order": 2,
-                "condition": "in{{ ch_num }}_type>=0",
+                "condition": "in{{ ch_num }}_type!=65535",
                 "enum_titles": [
                     "50 ms (20 SPS)",
                     "22 ms (45 SPS)",
@@ -190,7 +194,7 @@
                 "address": "0x{{ "%x"|format(ch_num) }}404",
                 "min": 1,
                 "max": 50,
-                "condition": "in{{ ch_num }}_type>=0"
+                "condition": "in{{ ch_num }}_type!=65535"
             },
             "in{{ ch_num }}_lowpass": {
                 "title": "Lowpass filter time, ms",
@@ -199,7 +203,7 @@
                 "address": "0x{{ "%x"|format(ch_num) }}406",
                 "min": 0,
                 "max": 65000,
-                "condition": "in{{ ch_num }}_type>=0"
+                "condition": "in{{ ch_num }}_type!=65535"
             },
             "in{{ch_num}}_gain": {
                 "title": "Gain",
@@ -234,6 +238,8 @@
                 "order": 1,
                 "condition": "{{ format_list(ch_num, single_ended_modes, "in%s_type==%s") }}",
                 "enum": [
+                    65535,
+
                     4352,
                     4353,
                     4354,
@@ -266,6 +272,8 @@
                     3
                 ],
                 "enum_titles": [
+                    "Disabled",
+                    
                     "2-wire RTD Pt 50 (α = 0.00385 °C⁻¹)",
                     "2-wire RTD Pt 100 (α = 0.00385 °C⁻¹)",
                     "2-wire RTD Pt 500 (α = 0.00385 °C⁻¹)",
@@ -313,7 +321,7 @@
                     "1.0 ms (1000 SPS)"
                 ],
                 "enum": [ 20, 45, 90, 175, 330, 600, 1000 ],
-                "condition": "in{{ ch_num }}_n_type>=0"
+                "condition": "in{{ ch_num }}_n_type!=65535"
             },
             "in{{ ch_num }}_n_measurements": {
                 "title": "Number of measurements",
@@ -323,7 +331,7 @@
                 "address": "0x{{ "%x"|format(ch_num) }}405",
                 "min": 1,
                 "max": 50,
-                "condition": "in{{ ch_num }}_n_type>=0"
+                "condition": "in{{ ch_num }}_n_type!=65535"
             },
             "in{{ ch_num }}_n_lowpass": {
                 "title": "Lowpass filter time, ms",
@@ -332,7 +340,7 @@
                 "address": "0x{{ "%x"|format(ch_num) }}407",
                 "min": 0,
                 "max": 65000,
-                "condition": "in{{ ch_num }}_n_type>=0"
+                "condition": "in{{ ch_num }}_n_type!=65535"
             },
             "in{{ch_num}}_n_gain": {
                 "title": "Gain",
@@ -733,7 +741,7 @@
                 {% endif -%}
                 {% endfor -%}
                 {% endfor -%}
-                "disabled": "отключен",
+                "Disabled": "Отключен",
                 "Thermocouple type K (ТХА)": "термопара типа K (ТХА)",
                 "NTC thermistor 10k (B = 3988 K)": "термистор NTC 10 кОм (B = 3988 K)",
                 "0-5 mA sensor": "измерение тока 0-5 мА",
