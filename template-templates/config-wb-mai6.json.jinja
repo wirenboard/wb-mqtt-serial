@@ -573,7 +573,7 @@
                 "reg_type": "input",
                 "format": "s32",
                 "address": "0x{{ "%x"|format(ch_num) }}502",
-                "scale": 0.01,
+                "scale": 0.000001,
                 "group": "gg_in{{ ch_num }}_n",
                 "condition": "in{{ ch_num }}_n_type==0||in{{ ch_num }}_n_type==1||in{{ ch_num }}_n_type==5120"
             },
@@ -585,7 +585,7 @@
                 "reg_type": "input",
                 "format": "s32",
                 "address": "0x{{ "%x"|format(ch_num) }}502",
-                "scale": 0.01,
+                "scale": 1e-9,
                 "group": "gg_in{{ ch_num }}_n",
                 "condition": "in{{ ch_num }}_n_type==3||in{{ ch_num }}_n_type==4864||in{{ ch_num }}_n_type==4865||in{{ ch_num }}_n_type==4866||in{{ ch_num }}_n_type==3"
             },
