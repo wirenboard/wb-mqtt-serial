@@ -383,7 +383,7 @@
         "channels": [
             {% for ch_num in range(1, CHANNELS_NUMBER + 1) -%}
             {
-                "name": "In {{ch_num}} Resistance",
+                "name": "IN {{ch_num}} Resistance",
                 "type": "resistance",
                 "error_value": "0x7FFFFFFF",
                 "reg_type": "input",
@@ -394,7 +394,7 @@
                 "condition": "(in{{ ch_num }}_type>=4608&&in{{ ch_num }}_type<=4658)||in{{ ch_num }}_type==258"
             },
             {
-                "name": "In {{ch_num}} P Resistance",
+                "name": "IN {{ch_num}} P Resistance",
                 "type": "resistance",
                 "error_value": "0x7FFFFFFF",
                 "reg_type": "input",
@@ -405,7 +405,7 @@
                 "condition": "in{{ ch_num }}_type==2||(in{{ ch_num }}_type>=4352&&in{{ ch_num }}_type<=4402)||in{{ ch_num }}_type==5632||in{{ ch_num }}_type==5889"
             },
             {
-                "name": "In {{ch_num}} Percent",
+                "name": "IN {{ch_num}} Percent",
                 "type": "value",
                 "units": "%",
                 "error_value": "0x7FFFFFFF",
@@ -417,7 +417,7 @@
                 "condition": "in{{ ch_num }}_type==256"
             },
             {
-                "name": "In {{ch_num}} P Percent",
+                "name": "IN {{ch_num}} P Percent",
                 "type": "value",
                 "units": "%",
                 "error_value": "0x7FFFFFFF",
@@ -429,7 +429,7 @@
                 "condition": "in{{ ch_num }}_type==0"
             },
             {
-                "name": "In {{ch_num}} Voltage",
+                "name": "IN {{ch_num}} Voltage",
                 "type": "voltage",
                 "scale": 0.000001,
                 "reg_type": "input",
@@ -440,7 +440,7 @@
                 "condition": "in{{ ch_num }}_type==4096||in{{ ch_num }}_type==256||in{{ ch_num }}_type==257||in{{ ch_num }}_type==5376"
             },
             {
-                "name": "In {{ch_num}} P Voltage",
+                "name": "IN {{ch_num}} P Voltage",
                 "type": "value",
                 "units": "V",
                 "error_value": "0x7FFFFFFF",
@@ -452,7 +452,7 @@
                 "condition": "in{{ ch_num }}_type==0||in{{ ch_num }}_type==1||in{{ ch_num }}_type==5120"
             },
             {
-                "name": "In {{ch_num}} P Current",
+                "name": "IN {{ch_num}} P Current",
                 "type": "value",
                 "units": "A",
                 "error_value": "0x7FFFFFFF",
@@ -464,7 +464,7 @@
                 "condition": "in{{ ch_num }}_type==3||in{{ ch_num }}_type==4864||in{{ ch_num }}_type==4865||in{{ ch_num }}_type==4866"
             },
             {
-                "name": "In {{ch_num}} Temperature",
+                "name": "IN {{ch_num}} Temperature",
                 "type": "temperature",
                 "scale": 0.1,
                 "reg_type": "input",
@@ -475,7 +475,7 @@
                 "condition": "in{{ ch_num }}_type==4096||(in{{ ch_num }}_type>=4608&&in{{ ch_num }}_type<=4658)"
             },
             {
-                "name": "In {{ch_num}} P Temperature",
+                "name": "IN {{ch_num}} P Temperature",
                 "type": "temperature",
                 "scale": 0.1,
                 "reg_type": "input",
@@ -486,7 +486,7 @@
                 "condition": "in{{ ch_num }}_type>=4352&&in{{ ch_num }}_type<=4402||in{{ ch_num }}_type==5889"
             },
             {
-                "name": "In {{ch_num}} P State",
+                "name": "IN {{ch_num}} P State",
                 "reg_type": "input",
                 "format": "s16",
                 "address": "0x{{ "%x"|format(ch_num) }}504",
@@ -494,7 +494,7 @@
                 "condition": "in{{ ch_num }}_type==5632"
             },
             {
-                "name": "In {{ch_num}} Value",
+                "name": "IN {{ch_num}} Value",
                 "reg_type": "input",
                 "type": "value",
                 "format": "s16",
@@ -504,7 +504,7 @@
                 "condition": "in{{ ch_num }}_type==5376"
             },
             {
-                "name": "In {{ch_num}} P Value",
+                "name": "IN {{ch_num}} P Value",
                 "reg_type": "input",
                 "type": "value",
                 "format": "s16",
@@ -514,7 +514,7 @@
                 "condition": "{{ format_list(ch_num, types_with_single_value_channel, "in%s_type==%s") }}"
             },
             {
-                "name": "In {{ch_num}} N Resistance",
+                "name": "IN {{ch_num}} N Resistance",
                 "type": "resistance",
                 "error_value": "0x7FFFFFFF",
                 "reg_type": "input",
@@ -525,7 +525,7 @@
                 "group": "gg_in{{ ch_num }}_n"
             },
             {
-                "name": "In {{ch_num}} N Temperature",
+                "name": "IN {{ch_num}} N Temperature",
                 "type": "temperature",
                 "scale": 0.1,
                 "reg_type": "input",
@@ -536,7 +536,7 @@
                 "group": "gg_in{{ ch_num }}_n"
             },
             {
-                "name": "In {{ch_num}} N Percent",
+                "name": "IN {{ch_num}} N Percent",
                 "type": "value",
                 "units": "%",
                 "error_value": "0x7FFFFFFF",
@@ -548,7 +548,7 @@
                 "condition": "in{{ ch_num }}_n_type==0"
             },
             {
-                "name": "In {{ch_num}} N Voltage",
+                "name": "IN {{ch_num}} N Voltage",
                 "type": "value",
                 "units": "V",
                 "error_value": "0x7FFFFFFF",
@@ -560,7 +560,7 @@
                 "condition": "in{{ ch_num }}_n_type==0||in{{ ch_num }}_n_type==1||in{{ ch_num }}_n_type==5120"
             },
             {
-                "name": "In {{ch_num}} N Current",
+                "name": "IN {{ch_num}} N Current",
                 "type": "value",
                 "units": "A",
                 "error_value": "0x7FFFFFFF",
@@ -572,7 +572,7 @@
                 "condition": "in{{ ch_num }}_n_type==3||in{{ ch_num }}_n_type==4864||in{{ ch_num }}_n_type==4865||in{{ ch_num }}_n_type==4866||in{{ ch_num }}_n_type==3"
             },
             {
-                "name": "In {{ch_num}} N State",
+                "name": "IN {{ch_num}} N State",
                 "reg_type": "input",
                 "format": "s16",
                 "address": "0x{{ "%x"|format(ch_num) }}505",
@@ -580,7 +580,7 @@
                 "group": "gg_in{{ ch_num }}_n"
             },
             {
-                "name": "In {{ch_num}} N Value",
+                "name": "IN {{ch_num}} N Value",
                 "reg_type": "input",
                 "type": "value",
                 "format": "s16",
@@ -719,13 +719,14 @@
                 {% set CHANNELS_NAMES_TEMPLATES = (""," P", " N") -%}
                 {% for ch_num in range (1, CHANNELS_NUMBER + 1) -%}
                 {% for ch_name_templ in CHANNELS_NAMES_TEMPLATES -%}
-                "Input {{ch_num}}{{ch_name_templ}} Resistance": "IN {{ch_num}}{{ch_name_templ}} Сопротивление",
-                "Input {{ch_num}}{{ch_name_templ}} Percent": "IN {{ch_num}}{{ch_name_templ}} Процент",
-                "Input {{ch_num}}{{ch_name_templ}} Voltage": "IN {{ch_num}}{{ch_name_templ}} Напряжение",
-                "Input {{ch_num}}{{ch_name_templ}} Temperature": "IN {{ch_num}}{{ch_name_templ}} Температура",
+                "IN {{ch_num}}{{ch_name_templ}} Resistance": "IN {{ch_num}}{{ch_name_templ}} Сопротивление",
+                "IN {{ch_num}}{{ch_name_templ}} Percent": "IN {{ch_num}}{{ch_name_templ}} Процент",
+                "IN {{ch_num}}{{ch_name_templ}} Voltage": "IN {{ch_num}}{{ch_name_templ}} Напряжение",
+                "IN {{ch_num}}{{ch_name_templ}} Temperature": "IN {{ch_num}}{{ch_name_templ}} Температура",
+                "IN {{ch_num}}{{ch_name_templ}} Value": "IN {{ch_num}}{{ch_name_templ}} Пересчитанное значение",
                 {% if ch_name_templ -%}
-                "Input {{ch_num}}{{ch_name_templ}} State": "IN {{ch_num}}{{ch_name_templ}} Состояние",
-                "Input {{ch_num}}{{ch_name_templ}} Current": "IN {{ch_num}}{{ch_name_templ}} Ток",
+                "IN {{ch_num}}{{ch_name_templ}} State": "IN {{ch_num}}{{ch_name_templ}} Состояние",
+                "IN {{ch_num}}{{ch_name_templ}} Current": "IN {{ch_num}}{{ch_name_templ}} Ток",
                 {% endif -%}
                 {% endfor -%}
                 {% endfor -%}
