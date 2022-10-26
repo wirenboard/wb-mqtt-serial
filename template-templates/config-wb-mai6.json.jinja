@@ -1,10 +1,10 @@
 {% set CHANNELS_NUMBER = 6 -%}
 {%- set types_with_gain = [0, 1, 3, 256, 257] -%}
 {%- set types_with_min_max = [ 5376, 4864, 4865, 4866, 0, 256, 5120] -%}
-{%- set types_with_value_channel = [ 4864, 4865, 4866, 5120, 5376] -%}
+{%- set types_with_single_value_channel = [ 4864, 4865, 4866, 5120] -%}
 {%- set types_with_percent_channel = [ 0, 256] -%}
 {%- set types_with_resistance = [258, 4, 5889, 4352, 4368, 4369, 4370, 4371, 4384, 4385, 4386, 4387, 4400, 4401, 4402,] -%}
-{%- set single_ended_modes =  [0, 1, 2, 3, 4352, 4353, 4354, 4355, 4368, 4369, 4370, 4371, 4384, 4385, 4386, 4387, 4400, 4401, 4402, 4864, 4865, 4866, 5120, 5376, 5632, 5889 ] -%}
+{%- set single_ended_modes =  [0, 1, 2, 3, 4352, 4353, 4354, 4355, 4368, 4369, 4370, 4371, 4384, 4385, 4386, 4387, 4400, 4401, 4402, 4864, 4865, 4866, 5120, 5632, 5889 ] -%}
 {%- macro format_list(index, types, format) -%}
     {% set separator = joiner('||') %}
     {%- for t in types -%}{{ separator() }}{{ format|format(index, t) }}{%- endfor -%}
@@ -114,21 +114,21 @@
                 "enum_titles": [
                     "Thermocouple type K (ТХА)",
 
-                    "2-wire RTD Pt 50 (α = 0.00385 °C⁻¹)",
-                    "2-wire RTD Pt 100 (α = 0.00385 °C⁻¹)",
-                    "2-wire RTD Pt 500 (α = 0.00385 °C⁻¹)",
-                    "2-wire RTD Pt 1000 (α = 0.00385 °C⁻¹)",
-                    "2-wire RTD 50P (α = 0.00391 °C⁻¹)",
-                    "2-wire RTD 100P (α = 0.00391 °C⁻¹)",
-                    "2-wire RTD 500P (α = 0.00391 °C⁻¹)",
-                    "2-wire RTD 1000P (α = 0.00391 °C⁻¹)",
-                    "2-wire RTD 50M (α = 0.00428 °C⁻¹)",
-                    "2-wire RTD 100M (α = 0.00428 °C⁻¹)",
-                    "2-wire RTD 500M (α = 0.00428 °C⁻¹)",
-                    "2-wire RTD 1000M (α = 0.00428 °C⁻¹)",
-                    "2-wire RTD Ni 100 (α = 0.00617 °C⁻¹)",
-                    "2-wire RTD Ni 500 (α = 0.00617 °C⁻¹)",
-                    "2-wire RTD Ni 1000 (α = 0.00617 °C⁻¹)",
+                    "P: 2-wire RTD Pt 50 (α = 0.00385 °C⁻¹)",
+                    "P: 2-wire RTD Pt 100 (α = 0.00385 °C⁻¹)",
+                    "P: 2-wire RTD Pt 500 (α = 0.00385 °C⁻¹)",
+                    "P: 2-wire RTD Pt 1000 (α = 0.00385 °C⁻¹)",
+                    "P: 2-wire RTD 50P (α = 0.00391 °C⁻¹)",
+                    "P: 2-wire RTD 100P (α = 0.00391 °C⁻¹)",
+                    "P: 2-wire RTD 500P (α = 0.00391 °C⁻¹)",
+                    "P: 2-wire RTD 1000P (α = 0.00391 °C⁻¹)",
+                    "P: 2-wire RTD 50M (α = 0.00428 °C⁻¹)",
+                    "P: 2-wire RTD 100M (α = 0.00428 °C⁻¹)",
+                    "P: 2-wire RTD 500M (α = 0.00428 °C⁻¹)",
+                    "P: 2-wire RTD 1000M (α = 0.00428 °C⁻¹)",
+                    "P: 2-wire RTD Ni 100 (α = 0.00617 °C⁻¹)",
+                    "P: 2-wire RTD Ni 500 (α = 0.00617 °C⁻¹)",
+                    "P: 2-wire RTD Ni 1000 (α = 0.00617 °C⁻¹)",
 
                     "3-wire RTD Pt 50 (α = 0.00385 °C⁻¹)",
                     "3-wire RTD Pt 100 (α = 0.00385 °C⁻¹)",
@@ -146,15 +146,15 @@
                     "3-wire RTD Ni 500 (α = 0.00617 °C⁻¹)",
                     "3-wire RTD Ni 1000 (α = 0.00617 °C⁻¹)",
 
-                    "0-5 mA sensor",
-                    "0-20 mA sensor",
-                    "4-20 mA sensor",
+                    "P: 0-5 mA sensor",
+                    "P: 0-20 mA sensor",
+                    "P: 4-20 mA sensor",
 
-                    "0-10 V sensor",
+                    "P: 0-10 V sensor",
                     "-50 to 50 mV sensor",
 
-                    "dry contact sensor",
-                    "NTC thermistor 10k (B = 3988 K)",
+                    "P: dry contact sensor",
+                    "P: NTC thermistor 10k (B = 3988 K)",
 
                     "P: voltage measurement from ratiometric sensor",
                     "P: single-ended voltage measurement from 0 to 30 V",
@@ -437,7 +437,7 @@
                 "error_value": "0x7FFFFFFF",
                 "address": "0x{{ "%x"|format(ch_num) }}500",
                 "group": "g_in{{ ch_num }}",
-                "condition": "in{{ ch_num }}_type==4096||in{{ ch_num }}_type==256||in{{ ch_num }}_type==257"
+                "condition": "in{{ ch_num }}_type==4096||in{{ ch_num }}_type==256||in{{ ch_num }}_type==257||in{{ ch_num }}_type==5376"
             },
             {
                 "name": "In {{ch_num}} P Voltage",
@@ -449,7 +449,7 @@
                 "address": "0x{{ "%x"|format(ch_num) }}500",
                 "scale": 0.000001,
                 "group": "g_in{{ ch_num }}",
-                "condition": "in{{ ch_num }}_type==0||in{{ ch_num }}_type==1||in{{ ch_num }}_type==5120||in{{ ch_num }}_type==5376"
+                "condition": "in{{ ch_num }}_type==0||in{{ ch_num }}_type==1||in{{ ch_num }}_type==5120"
             },
             {
                 "name": "In {{ch_num}} P Current",
@@ -494,6 +494,16 @@
                 "condition": "in{{ ch_num }}_type==5632"
             },
             {
+                "name": "In {{ch_num}} Value",
+                "reg_type": "input",
+                "type": "value",
+                "format": "s16",
+                "error_value": "0x7fff",
+                "address": "0x{{ "%x"|format(ch_num-1) }}504",
+                "group": "g_in{{ ch_num }}",
+                "condition": "in{{ ch_num }}_type==5376"
+            },
+            {
                 "name": "In {{ch_num}} P Value",
                 "reg_type": "input",
                 "type": "value",
@@ -501,7 +511,7 @@
                 "error_value": "0x7fff",
                 "address": "0x{{ "%x"|format(ch_num-1) }}504",
                 "group": "g_in{{ ch_num }}",
-                "condition": "{{ format_list(ch_num, types_with_value_channel, "in%s_type==%s") }}"
+                "condition": "{{ format_list(ch_num, types_with_single_value_channel, "in%s_type==%s") }}"
             },
             {
                 "name": "In {{ch_num}} N Resistance",
@@ -547,7 +557,7 @@
                 "address": "0x{{ "%x"|format(ch_num) }}502",
                 "scale": 0.01,
                 "group": "gg_in{{ ch_num }}_n",
-                "condition": "in{{ ch_num }}_n_type==0||in{{ ch_num }}_n_type==1||in{{ ch_num }}_n_type==5120||in{{ ch_num }}_n_type==5376"
+                "condition": "in{{ ch_num }}_n_type==0||in{{ ch_num }}_n_type==1||in{{ ch_num }}_n_type==5120"
             },
             {
                 "name": "In {{ch_num}} N Current",
@@ -577,7 +587,7 @@
                 "error_value": "0x7fff",
                 "address": "0x{{ "%x"|format(ch_num-1) }}505",
                 "group": "gg_in{{ ch_num }}_n",
-                "condition": "{{ format_list(ch_num, types_with_value_channel, "in%s_n_type==%s") }}"
+                "condition": "{{ format_list(ch_num, types_with_single_value_channel, "in%s_n_type==%s") }}"
             },
             {% endfor -%}
             {
