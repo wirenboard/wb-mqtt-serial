@@ -16,6 +16,8 @@ public:
     void Open() override;
     void Close() override;
 
+    void ApplySerialPortSettings(const TSerialPortSettings* settings = nullptr);
+
     void WriteBytes(const uint8_t* buf, int count) override;
 
     uint8_t ReadByte(const std::chrono::microseconds& timeout) override;
@@ -32,7 +34,7 @@ public:
     const TSerialPortSettings& GetSettings() const;
 
 private:
-    TSerialPortSettings Settings;
+    const TSerialPortSettings Settings;
     termios OldTermios;
     size_t RxTrigBytes;
 };

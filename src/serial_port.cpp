@@ -97,6 +97,56 @@ namespace
         }
         return 0;
     }
+
+    void MakeTermios(const TSerialPortSettings& settings, termios& dev)
+    {
+        memset(&dev, 0, sizeof(termios));
+        auto baud_rate = ConvertBaudRate(settings.BaudRate);
+        if (cfsetospeed(&dev, baud_rate) != 0 || cfsetispeed(&dev, baud_rate) != 0) {
+            throw std::runtime_error("can't set baud rate " + std::to_string(settings.BaudRate) + " " +
+                                    FormatErrno(errno));
+        }
+
+        if (settings.StopBits == 1) {
+            dev.c_cflag &= ~CSTOPB;
+        } else {
+            dev.c_cflag |= CSTOPB;
+        }
+
+        switch (settings.Parity) {
+            case 'N':
+                dev.c_cflag &= ~PARENB;
+                dev.c_iflag &= ~INPCK;
+                break;
+            case 'E':
+                dev.c_cflag |= PARENB;
+                dev.c_cflag &= ~PARODD;
+                dev.c_iflag |= INPCK;
+                break;
+            case 'O':
+                dev.c_cflag |= PARENB;
+                dev.c_cflag |= PARODD;
+                dev.c_iflag |= INPCK;
+                break;
+            default:
+                std::stringstream ss;
+                ss << "invalid parity value: ";
+                if (isprint(settings.Parity)) {
+                    ss << "'" << settings.Parity << "'";
+                } else {
+                    ss << "0x" << std::hex << std::uppercase << std::setfill('0') << std::setw(2)
+                    << int(settings.Parity);
+                }
+                throw std::runtime_error(ss.str());
+        }
+
+        dev.c_cflag = (dev.c_cflag & ~CSIZE) | ConvertDataBits(settings.DataBits) | CREAD | CLOCAL;
+        dev.c_lflag &= ~(ICANON | ECHO | ECHOE | ISIG);
+        dev.c_iflag &= ~(IXON | IXOFF | IXANY);
+        dev.c_oflag &= ~OPOST;
+        dev.c_cc[VMIN] = 0;
+        dev.c_cc[VTIME] = 0;
+    }
 }
 
 TSerialPort::TSerialPort(const TSerialPortSettings& settings)
@@ -116,61 +166,12 @@ void TSerialPort::Open()
         if (Fd < 0)
             throw std::runtime_error("can't open serial port");
 
-        termios dev;
-        memset(&dev, 0, sizeof(termios));
-        auto baud_rate = ConvertBaudRate(Settings.BaudRate);
-        if (cfsetospeed(&dev, baud_rate) != 0 || cfsetispeed(&dev, baud_rate) != 0) {
-            throw std::runtime_error("can't set baud rate " + std::to_string(Settings.BaudRate) + " " +
-                                     FormatErrno(errno));
-        }
-
-        if (Settings.StopBits == 1) {
-            dev.c_cflag &= ~CSTOPB;
-        } else {
-            dev.c_cflag |= CSTOPB;
-        }
-
-        switch (Settings.Parity) {
-            case 'N':
-                dev.c_cflag &= ~PARENB;
-                dev.c_iflag &= ~INPCK;
-                break;
-            case 'E':
-                dev.c_cflag |= PARENB;
-                dev.c_cflag &= ~PARODD;
-                dev.c_iflag |= INPCK;
-                break;
-            case 'O':
-                dev.c_cflag |= PARENB;
-                dev.c_cflag |= PARODD;
-                dev.c_iflag |= INPCK;
-                break;
-            default:
-                std::stringstream ss;
-                ss << "invalid parity value: ";
-                if (isprint(Settings.Parity)) {
-                    ss << "'" << Settings.Parity << "'";
-                } else {
-                    ss << "0x" << std::hex << std::uppercase << std::setfill('0') << std::setw(2)
-                       << int(Settings.Parity);
-                }
-                throw std::runtime_error(ss.str());
-        }
-
-        dev.c_cflag = (dev.c_cflag & ~CSIZE) | ConvertDataBits(Settings.DataBits) | CREAD | CLOCAL;
-        dev.c_lflag &= ~(ICANON | ECHO | ECHOE | ISIG);
-        dev.c_iflag &= ~(IXON | IXOFF | IXANY);
-        dev.c_oflag &= ~OPOST;
-        dev.c_cc[VMIN] = 0;
-        dev.c_cc[VTIME] = 0;
-
         if (tcgetattr(Fd, &OldTermios) != 0) {
             throw std::runtime_error("can't get termios attributes " + FormatErrno(errno));
         }
 
-        if (tcsetattr(Fd, TCSANOW, &dev) != 0) {
-            throw std::runtime_error("can't set termios attributes" + FormatErrno(errno));
-        }
+        ApplySerialPortSettings();
+
     } catch (const std::runtime_error& e) {
         if (Fd >= 0) {
             close(Fd);
@@ -188,6 +189,16 @@ void TSerialPort::Close()
         tcsetattr(Fd, TCSANOW, &OldTermios);
     }
     Base::Close();
+}
+
+void TSerialPort::ApplySerialPortSettings(const TSerialPortSettings* settings)
+{
+    termios dev;
+    MakeTermios(settings != nullptr ? *settings : Settings, dev);
+
+    if (tcsetattr(Fd, TCSANOW, &dev) != 0) {
+        throw std::runtime_error("can't set termios attributes" + FormatErrno(errno));
+    }
 }
 
 std::chrono::milliseconds TSerialPort::GetSendTime(double bytesNumber) const
