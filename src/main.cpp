@@ -75,7 +75,8 @@ namespace
              << "  -g                 Generate JSON Schema for wb-mqtt-confed" << endl
              << "  -j                 Make JSON for wb-mqtt-confed from /etc/wb-mqtt-serial.conf" << endl
              << "  -J                 Make /etc/wb-mqtt-serial.conf from wb-mqtt-confed output" << endl
-             << "  -G       options   Generate device template. Type \"-G help\" for options description" << endl;
+             << "  -G       options   Generate device template. Type \"-G help\" for options description" << endl
+             << "  -v                 Print the version" << endl;
     }
 
     /**
@@ -202,7 +203,7 @@ namespace
     {
         int c;
 
-        while ((c = getopt(argc, argv, "d:c:h:H:p:u:P:T:jJgG:")) != -1) {
+        while ((c = getopt(argc, argv, "d:c:h:H:p:u:P:T:jJgG:v")) != -1) {
             switch (c) {
                 case 'd':
                     SetDebugLevel(optarg);
@@ -237,6 +238,9 @@ namespace
                     exit(EXIT_SUCCESS);
                 case 'G':
                     GenerateDeviceTemplate(APP_NAME, USER_TEMPLATES_DIR, optarg);
+                    exit(EXIT_SUCCESS);
+                case 'v':
+                    PrintStartupInfo();
                     exit(EXIT_SUCCESS);
                 case '?':
                 default:

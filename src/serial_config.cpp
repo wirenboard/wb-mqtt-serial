@@ -600,7 +600,7 @@ namespace
 
         PPort port = std::make_shared<TSerialPortWithIECHack>(std::make_shared<TSerialPort>(settings));
 
-        rpcConfig->AddSerialPort(port, settings.Device);
+        rpcConfig->AddSerialPort(port, settings);
 
         return port;
     }
@@ -611,7 +611,7 @@ namespace
 
         PPort port = std::make_shared<TTcpPort>(settings);
 
-        rpcConfig->AddTCPPort(port, settings.Address, settings.Port);
+        rpcConfig->AddTCPPort(port, settings);
 
         return port;
     }

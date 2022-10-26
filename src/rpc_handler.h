@@ -44,11 +44,13 @@ private:
     Json::Value RequestSchema;
     PMQTTSerialDriver SerialDriver;
     std::vector<PRPCPortDriver> PortDrivers;
+    PRPCConfig RPCConfig;
 
     PRPCPortDriver FindPortDriver(const Json::Value& request) const;
 
     Json::Value PortLoad(const Json::Value& request);
     Json::Value LoadMetrics(const Json::Value& request);
+    Json::Value LoadPorts(const Json::Value& request);
 };
 
 typedef std::shared_ptr<TRPCHandler> PRPCHandler;
