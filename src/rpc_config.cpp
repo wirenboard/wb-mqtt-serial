@@ -41,7 +41,7 @@ std::vector<PRPCPort> TRPCConfig::GetPorts()
     return Ports;
 }
 
-Json::Value TRPCConfig::GetConfig() const
+Json::Value TRPCConfig::GetPortConfigs() const
 {
     return PortConfigs;
 }

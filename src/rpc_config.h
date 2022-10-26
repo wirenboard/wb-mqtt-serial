@@ -9,7 +9,7 @@ public:
     void AddSerialPort(PPort port, const TSerialPortSettings& settings);
     void AddTCPPort(PPort port, const TTcpPortSettings& settings);
     std::vector<PRPCPort> GetPorts();
-    Json::Value GetConfig() const;
+    Json::Value GetPortConfigs() const;
 
 private:
     std::vector<PRPCPort> Ports;

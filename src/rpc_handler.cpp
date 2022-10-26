@@ -245,7 +245,7 @@ Json::Value TRPCHandler::LoadMetrics(const Json::Value& request)
 
 Json::Value TRPCHandler::LoadPorts(const Json::Value& request)
 {
-    return RPCConfig->GetConfig();
+    return RPCConfig->GetPortConfigs();
 }
 
 TRPCException::TRPCException(const std::string& message, TRPCResultCode resultCode)
