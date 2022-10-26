@@ -13,7 +13,7 @@ public:
 
 private:
     std::vector<PRPCPort> Ports;
-    Json::Value Config{Json::arrayValue};
+    Json::Value PortConfigs{Json::arrayValue};
 };
 
 typedef std::shared_ptr<TRPCConfig> PRPCConfig;

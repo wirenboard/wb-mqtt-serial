@@ -16,7 +16,7 @@ void TRPCConfig::AddSerialPort(PPort port, const TSerialPortSettings& settings)
         item["data_bits"] = settings.DataBits;
         item["parity"] = std::string(1, settings.Parity);
         item["stop_bits"] = settings.StopBits;
-        Config.append(std::move(item));
+        PortConfigs.append(std::move(item));
     }
 }
 
@@ -32,7 +32,7 @@ void TRPCConfig::AddTCPPort(PPort port, const TTcpPortSettings& settings)
         Json::Value item;
         item["address"] = settings.Address;
         item["port"] = settings.Port;
-        Config.append(std::move(item));
+        PortConfigs.append(std::move(item));
     }
 }
 
@@ -43,5 +43,5 @@ std::vector<PRPCPort> TRPCConfig::GetPorts()
 
 Json::Value TRPCConfig::GetConfig() const
 {
-    return Config;
+    return PortConfigs;
 }
