@@ -17,6 +17,11 @@ public:
     std::chrono::milliseconds TotalTimeout;
     TRPCMessageFormat Format;
     size_t ResponseSize;
+
+    int BaudRate;
+    char Parity;
+    int DataBits;
+    int StopBits;
 };
 
 typedef std::shared_ptr<TRPCRequest> PRPCRequest;

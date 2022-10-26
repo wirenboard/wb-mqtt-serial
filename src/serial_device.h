@@ -77,6 +77,10 @@ const std::chrono::milliseconds DefaultResponseTimeout(500);
 const std::chrono::milliseconds DefaultDeviceTimeout(3000);
 const std::chrono::seconds MaxUnchangedIntervalLowLimit(5);
 const std::chrono::seconds DefaultMaxUnchangedInterval(-1);
+const int DefaultBaudRate = 9600;
+const char DefaultParity = 'N';
+const int DefaultDataBits = 8;
+const int DefaultStopBits = 1;
 
 struct TDeviceConfig
 {
