@@ -23,7 +23,7 @@
         "groups": [
             {% for ch_num in range(1, CHANNELS_NUMBER + 1) -%}
             {
-                "title": "Input {{ ch_num }}",
+                "title": "IN {{ ch_num }}",
                 "id": "g_in{{ ch_num }}",
                 "order": {{ ch_num }}
             },
