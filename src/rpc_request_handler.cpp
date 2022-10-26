@@ -38,11 +38,8 @@ void TRPCRequestHandler::RPCRequestHandling(PPort port)
             port->CheckPortOpen();
             port->SleepSinceLastInteraction(Request->FrameTimeout);
 
-            TSerialPortSettings settings("",
-                                         Request->BaudRate,
-                                         Request->Parity,
-                                         Request->DataBits,
-                                         Request->StopBits);
+            TSerialPortSettings settings("", Request->BaudRate, Request->Parity,
+                                         Request->DataBits, Request->StopBits);
             port->ApplySerialPortSettings(&settings);
 
             port->WriteBytes(Request->Message);

@@ -117,8 +117,8 @@ namespace
         if (request.isMember("path")) {
             std::string path;
             WBMQTT::JSON::Get(request, "path", path);
-            TSerialPortSettings settings(path, rpcRequest->BaudRate, rpcRequest->Parity, rpcRequest->DataBits, rpcRequest->StopBits);
-
+            TSerialPortSettings settings(path, rpcRequest->BaudRate, rpcRequest->Parity,
+                                         rpcRequest->DataBits, rpcRequest->StopBits);
             LOG(Debug) << "Create serial port: " << path;
             port = std::make_shared<TSerialPortWithIECHack>(std::make_shared<TSerialPort>(settings));
 
