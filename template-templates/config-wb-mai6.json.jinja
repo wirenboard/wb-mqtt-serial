@@ -708,7 +708,8 @@
             "en": {
                 "WB-MAI6_template_title": "WB-MAI6 (6-channel analog input module)",
                 "baud_rate_description": "Make sure that communication with device is established before changing this parameter. Select required baud rate, save configuration and then change port baud rate to the same value.",
-                "Uptime": "Uptime (s)"
+                "Uptime": "Uptime (s)",
+                "IN_N": "Channel N"
             },
             "ru": {
                 "WB-MAI6_template_title": "WB-MAI6 (6-канальный модуль аналоговых входов)",
@@ -718,6 +719,8 @@
                 "Sensor Type": "Тип датчика",
                 {% set CHANNELS_NAMES_TEMPLATES = (""," P", " N") -%}
                 {% for ch_num in range (1, CHANNELS_NUMBER + 1) -%}
+                "IN {{ch_num}} P Calibration Coefficient": "IN {{ch_num}} P Калибровочный коэффициент",
+                "IN {{ch_num}} N Calibration Coefficient": "IN {{ch_num}} N Калибровочный коэффициент",
                 {% for ch_name_templ in CHANNELS_NAMES_TEMPLATES -%}
                 "IN {{ch_num}}{{ch_name_templ}} Resistance": "IN {{ch_num}}{{ch_name_templ}} Сопротивление",
                 "IN {{ch_num}}{{ch_name_templ}} Percent": "IN {{ch_num}}{{ch_name_templ}} Процент",
@@ -802,7 +805,7 @@
                 "P: NTC thermistor 10k (B = 3988 K)": "P: термистор NTC 10 кОм (B = 3988 K)",
                 "P: current measurement": "P: измерение тока от 0 до 20 мА",
                 "IN_P": "P",
-                "IN_N": "N",
+                "IN_N": "Канал N",
                 "Sampling time": "Время одного измерения",
                 "50 ms (20 SPS)": "50 мс (20 SPS)",
                 "22 ms (45 SPS)": "22 мс (45 SPS)",
@@ -844,7 +847,11 @@
                 "IN 5 P Read Interval": "IN 5 P: период опроса",
                 "IN 5 N Read Interval": "IN 5 N: период опроса",
                 "IN 6 P Read Interval": "IN 6 P: период опроса",
-                "IN 6 N Read Interval": "IN 6 N: период опроса"
+                "IN 6 N Read Interval": "IN 6 N: период опроса",
+                "Resistance Offset 2-W 1-3 P": "Сдвиг сопротивления 2-W 1-3 P",
+                "Resistance Offset 2-W 1-3 N": "Сдвиг сопротивления 2-W 1-3 N",
+                "Resistance Offset 2-W 4-6 P": "Сдвиг сопротивления 2-W 4-6 P",
+                "Resistance Offset 2-W 4-6 N": "Сдвиг сопротивления 2-W 4-6 N"
             }
         }
     }
