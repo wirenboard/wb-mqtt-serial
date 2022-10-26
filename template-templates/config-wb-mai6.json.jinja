@@ -52,7 +52,7 @@
         "parameters": {
             {% for ch_num in range(1, CHANNELS_NUMBER + 1) -%}
             "in{{ ch_num }}_type": {
-                "title": "Type",
+                "title": "Sensor Type",
                 "address": "0x{{ "%x"|format(ch_num) }}400",
                 "group": "g_in{{ ch_num }}",
                 "order": 1,
@@ -159,7 +159,7 @@
                     "P: two-wire resistance measurement",
                     "P: current measurement",
                     "differential voltage measurement from ratiometric sensor",
-                    "voltage measurement in differentioal mode from -30 to 30 V",
+                    "voltage measurement in differential mode from -30 to 30 V",
                     "three-wire resistance measurement"
                 ]
             },
@@ -226,7 +226,7 @@
                 "condition": "{{ format_list(ch_num, types_with_min_max, "in%s_type==%s") }}"
             },
             "in{{ ch_num }}_n_type": {
-                "title": "Type",
+                "title": "Sensor Type",
                 "address": "0x{{ "%x"|format(ch_num) }}401",
                 "group": "gg_in{{ ch_num }}_n",
                 "order": 1,
