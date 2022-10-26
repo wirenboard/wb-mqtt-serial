@@ -37,6 +37,10 @@ void TRPCRequestHandler::RPCRequestHandling(PPort port)
         try {
             port->CheckPortOpen();
             port->SleepSinceLastInteraction(Request->FrameTimeout);
+
+            TSerialPortSettings settings("", Request->BaudRate, Request->Parity, Request->DataBits, Request->StopBits);
+            port->ApplySerialPortSettings(&settings);
+
             port->WriteBytes(Request->Message);
 
             std::vector<uint8_t> readData;
@@ -52,6 +56,8 @@ void TRPCRequestHandler::RPCRequestHandling(PPort port)
         } catch (const TSerialDeviceException& error) {
             State = RPCRequestState::RPC_ERROR;
         }
+
+        port->ApplySerialPortSettings();
 
         RequestExecution.notify_all();
     }

@@ -262,6 +262,11 @@ void TSerialPortWithIECHack::Close()
     Port->Close();
 }
 
+void TSerialPortWithIECHack::ApplySerialPortSettings(const TSerialPortSettings* settings)
+{
+    Port->ApplySerialPortSettings(settings);
+}
+
 void TSerialPortWithIECHack::Reopen()
 {
     Port->Reopen();

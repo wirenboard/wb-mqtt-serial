@@ -68,6 +68,8 @@ public:
      * @param params pointer to new parameters, if nullptr the port will use default values set on startup
      */
     virtual void SetSerialPortByteFormat(const TSerialPortByteFormat* params);
+
+    virtual void ApplySerialPortSettings(const TSerialPortSettings* settings = nullptr);
 };
 
 using PPort = std::shared_ptr<TPort>;
