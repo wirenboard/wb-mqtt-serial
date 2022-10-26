@@ -1,3 +1,9 @@
+wb-mqtt-serial (2.73.2) stable; urgency=medium
+
+  * Allow to change serial port settings for RPC request
+
+ -- Nikolay Korotkiy <nikolay.korotkiy@wirenboard.com>  Fri, 26 Oct 2022 19:41:00 +0300
+
 wb-mqtt-serial (2.73.1) stable; urgency=medium
 
   * Allow to get list of configured ports via RPC request
