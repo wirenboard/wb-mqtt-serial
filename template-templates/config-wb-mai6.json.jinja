@@ -676,14 +676,6 @@
             "en": {
                 "WB-MAI6_template_title": "WB-MAI6 (6-channel analog input module)",
                 "baud_rate_description": "Make sure that communication with device is established before changing this parameter. Select required baud rate, save configuration and then change port baud rate to the same value.",
-                "Input 1": "IN 1",
-                "Input 2": "IN 2",
-                "Input 3": "IN 3",
-                "Input 4": "IN 4",
-                "Input 5": "IN 5",
-                "Input 6": "IN 6",
-                "IN_P": "P",
-                "IN_N": "N",
                 "Uptime": "Uptime (s)"
             },
             "ru": {
@@ -691,12 +683,20 @@
                 "General": "Общее",
                 "HW Info": "Данные модуля",
                 "Debug": "Диагностика",
-                "Input 1": "IN 1",
-                "Input 2": "IN 2",
-                "Input 3": "IN 3",
-                "Input 4": "IN 4",
-                "Input 5": "IN 5",
-                "Input 6": "IN 6",
+                "Sensor Type": "Тип датчика",
+                {% set CHANNELS_NAMES_TEMPLATES = (""," P", " N") -%}
+                {% for ch_num in range (1, CHANNELS_NUMBER + 1) -%}
+                {% for ch_name_templ in CHANNELS_NAMES_TEMPLATES -%}
+                "Input {{ch_num}}{{ch_name_templ}} Resistance"
+                "Input {{ch_num}}{{ch_name_templ}} Percent"
+                "Input {{ch_num}}{{ch_name_templ}} Voltage"
+                "Input {{ch_num}}{{ch_name_templ}} Temperature"
+                {% if ch_name_templ -%}
+                "Input {{ch_num}}{{ch_name_templ}} State"
+                "Input {{ch_num}}{{ch_name_templ}} Current"
+                {% endif -%}
+                {% endfor -%}
+                {% endfor -%}
                 "disabled": "отключен",
                 "Thermocouple type K (ТХА)": "термопара типа K (ТХА)",
                 "NTC thermistor 10k (B = 3988 K)": "термистор NTC 10 кОм (B = 3988 K)",
@@ -758,12 +758,11 @@
                 "voltage measurement from ratiometric sensor": "измерение напряжения с ратиометрического датчика",
                 "P: voltage measurement from ratiometric sensor": "P: измерение напряжения с ратиометрического датчика",
                 "differential voltage measurement from ratiometric sensor": "дифф. режим измерения напряжения с ратиометрического датчика",
-                "single-ended voltage measurement from 0 to 2 V": "измерение положительного напряжения 0-2 В",
                 "0-1V sensor": "измерение напряжения 0-1 В",
-                "P: single-ended voltage measurement from 0 to 2 V": "P: измерение положительного напряжения 0-2 В",
-                "P: 0-1V sensor": "P: измерение напряжения 0-1 В",
+                "P: single-ended voltage measurement from 0 to 30 V": "P: измерение положительного напряжения 0-30 В",
+                "P: 0-30 V sensor": "P: измерение напряжения 0-30 В",
                 "-50 to 50 mV sensor": "измерение напряжения от -50 до 50 мВ",
-                "voltage measurement in differential mode from -2 to 2 V": "дифф. режим измерения напряжения от -2 до 2 В",
+                "voltage measurement in differential mode from -30 to 30 V": "дифф. режим измерения напряжения от -30 до 30 В",
                 "three-wire resistance measurement": "трехпроводная схема измерения сопротивления",
                 "resistance measurement using current measurement": "измерение сопротивления через измерение тока",
                 "P: resistance measurement using current measurement": "P: измерение сопротивления через измерение тока",
@@ -798,6 +797,7 @@
                 "5V Output": "Напряжение на клеммах 5V",
                 "Internal Temperature": "Температура внутри модуля",
                 "Serial": "Серийный номер",
+                "FW Version": "Версия прошивки",
                 "Uptime": "Время работы с момента включения (с)",
                 "ADC Loop Duration": "Время цикла опроса АЦП",
                 "IN 1 P Read Interval": "IN 1 P: период опроса",
