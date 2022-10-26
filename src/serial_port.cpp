@@ -104,7 +104,7 @@ namespace
         auto baud_rate = ConvertBaudRate(settings.BaudRate);
         if (cfsetospeed(&dev, baud_rate) != 0 || cfsetispeed(&dev, baud_rate) != 0) {
             throw std::runtime_error("can't set baud rate " + std::to_string(settings.BaudRate) + " " +
-                                    FormatErrno(errno));
+                                     FormatErrno(errno));
         }
 
         if (settings.StopBits == 1) {
@@ -135,7 +135,7 @@ namespace
                     ss << "'" << settings.Parity << "'";
                 } else {
                     ss << "0x" << std::hex << std::uppercase << std::setfill('0') << std::setw(2)
-                    << int(settings.Parity);
+                       << int(settings.Parity);
                 }
                 throw std::runtime_error(ss.str());
         }
