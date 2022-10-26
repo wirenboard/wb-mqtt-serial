@@ -28,7 +28,7 @@
                 "order": {{ ch_num }}
             },
             {
-                "title": "IN_N",
+                "title": "IN_N_title",
                 "id": "gg_in{{ ch_num }}_n",
                 "order": {{ ch_num }},
                 "group": "g_in{{ ch_num }}"
@@ -54,7 +54,7 @@
         "parameters": {
             {% for ch_num in range(1, CHANNELS_NUMBER + 1) -%}
             "in{{ ch_num }}_type": {
-                "title": "Sensor Type",
+                "title": "Mode",
                 "address": "0x{{ "%x"|format(ch_num) }}400",
                 "group": "g_in{{ ch_num }}",
                 "order": 1,
@@ -232,7 +232,7 @@
                 "condition": "{{ format_list(ch_num, types_with_min_max, "in%s_type==%s") }}"
             },
             "in{{ ch_num }}_n_type": {
-                "title": "Sensor Type",
+                "title": "Mode",
                 "address": "0x{{ "%x"|format(ch_num) }}401",
                 "group": "gg_in{{ ch_num }}_n",
                 "order": 1,
