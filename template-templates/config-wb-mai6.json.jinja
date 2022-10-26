@@ -517,7 +517,7 @@
                 "type": "value",
                 "format": "s16",
                 "error_value": "0x7fff",
-                "address": "0x{{ "%x"|format(ch_num-1) }}504",
+                "address": "0x{{ "%x"|format(ch_num) }}504",
                 "group": "g_in{{ ch_num }}",
                 "condition": "{{ format_list(ch_num, types_with_single_value_channel, "in%s_type==%s") }}"
             },
@@ -593,7 +593,7 @@
                 "type": "value",
                 "format": "s16",
                 "error_value": "0x7fff",
-                "address": "0x{{ "%x"|format(ch_num-1) }}505",
+                "address": "0x{{ "%x"|format(ch_num) }}505",
                 "group": "gg_in{{ ch_num }}_n",
                 "condition": "{{ format_list(ch_num, types_with_single_value_channel, "in%s_n_type==%s") }}"
             },
