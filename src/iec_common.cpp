@@ -184,8 +184,7 @@ TIEC61107Device::TIEC61107Device(PDeviceConfig device_config, PPort port, PProto
     }
 
     if (SlaveId.find_first_not_of("abcdefghijklmnopqrstuvwxyzABCDEFGHIJKLMNOPQRSTUVWXYZ01234567890 ") !=
-        std::string::npos)
-    {
+        std::string::npos) {
         throw TSerialDeviceException("The characters in SlaveId can only be a...z, A...Z, 0...9 and space");
     }
 }

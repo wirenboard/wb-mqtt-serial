@@ -276,8 +276,7 @@ namespace
                       << GetDescription(logicalName, obj, &cnv, obisHints);
             if (printAttributes) {
                 if ((obj->GetObjectType() == DLMS_OBJECT_TYPE_PROFILE_GENERIC) ||
-                    (dynamic_cast<CGXDLMSCustomObject*>(obj) != nullptr))
-                {
+                    (dynamic_cast<CGXDLMSCustomObject*>(obj) != nullptr)) {
                     std::cout << " (unsupported by wb-mqtt-serial)" << std::endl;
                     continue;
                 }
@@ -630,8 +629,7 @@ const CGXDLMSObjectCollection& TDlmsDevice::ReadAllObjects(bool readAttributes)
     if (readAttributes) {
         for (auto obj: objs) {
             if ((obj->GetObjectType() == DLMS_OBJECT_TYPE_PROFILE_GENERIC) ||
-                (dynamic_cast<CGXDLMSCustomObject*>(obj) != nullptr))
-            {
+                (dynamic_cast<CGXDLMSCustomObject*>(obj) != nullptr)) {
                 continue;
             }
             std::vector<int> attributes;
