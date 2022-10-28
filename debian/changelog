@@ -1,3 +1,9 @@
+wb-mqtt-serial (2.76.0) stable; urgency=medium
+
+  * Template for WB-MAI6 was added
+
+ -- Dmitry Vorobjev <d.vorobjev@wirenboard.ru>  Fri, 28 Oct 2022 10:24:18 +0300
+
 wb-mqtt-serial (2.75.0) stable; urgency=medium
 
   * Support for setting Somfy curtain motor parameters
