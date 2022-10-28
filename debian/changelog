@@ -1,4 +1,4 @@
-wb-mqtt-serial (2.73.2) stable; urgency=medium
+wb-mqtt-serial (2.74.0) stable; urgency=medium
 
   * Allow to change serial port settings for RPC request
 
