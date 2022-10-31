@@ -1,2 +1,5 @@
 # See https://docs.github.com/ for more info about CODEOWNERS syntax
 * @KraPete @sikmir
+
+wb-mqtt-serial-templates/ @wb-templates
+template-templates/ @wb-templates
