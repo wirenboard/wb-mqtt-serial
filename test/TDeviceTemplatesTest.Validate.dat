@@ -12807,7 +12807,6 @@ WB-MAI6
 	IN 1 N Voltage  =>  IN 1 N Voltage
 	IN 1 P Calibration Coefficient  =>  IN 1 P Calibration Coefficient
 	IN 1 P Current  =>  IN 1 P Current
-	IN 1 P Percent  =>  IN 1 P Percent
 	IN 1 P Read Interval  =>  IN 1 P Read Interval
 	IN 1 P Resistance  =>  IN 1 P Resistance
 	IN 1 P State  =>  IN 1 P State
@@ -12820,7 +12819,6 @@ WB-MAI6
 	IN 1 Voltage  =>  IN 1 Voltage
 	IN 2 N Calibration Coefficient  =>  IN 2 N Calibration Coefficient
 	IN 2 N Current  =>  IN 2 N Current
-	IN 2 N Percent  =>  IN 2 N Percent
 	IN 2 N Read Interval  =>  IN 2 N Read Interval
 	IN 2 N Resistance  =>  IN 2 N Resistance
 	IN 2 N State  =>  IN 2 N State
