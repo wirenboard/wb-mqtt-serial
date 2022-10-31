@@ -69,6 +69,11 @@ public:
      */
     virtual void SetSerialPortByteFormat(const TSerialPortByteFormat* params);
 
+    /**
+     * @brief Set new settings if it is a serial port.
+     *
+     * @param settings pointer to new settings, if nullptr the port will use default settings set on startup
+     */
     virtual void ApplySerialPortSettings(const TSerialPortSettings* settings = nullptr);
 };
 
