@@ -68,7 +68,11 @@
         }
       },
       "required": [
-        "path"
+        "path",
+        "baud_rate",
+        "parity",
+        "data_bits",
+        "stop_bits"
       ]
     },
     {

@@ -74,23 +74,10 @@ namespace
                 RPCRequest->TotalTimeout = DefaultRPCTotalTimeout;
             }
 
-            if (!WBMQTT::JSON::Get(request, "baud_rate", RPCRequest->BaudRate)) {
-                RPCRequest->BaudRate = DefaultBaudRate;
-            }
-
-            if (request.isMember("parity")) {
-                RPCRequest->Parity = request["parity"].asCString()[0];
-            } else {
-                RPCRequest->Parity = DefaultParity;
-            }
-
-            if (!WBMQTT::JSON::Get(request, "data_bits", RPCRequest->DataBits)) {
-                RPCRequest->DataBits = DefaultDataBits;
-            }
-
-            if (!WBMQTT::JSON::Get(request, "stop_bits", RPCRequest->StopBits)) {
-                RPCRequest->StopBits = DefaultStopBits;
-            }
+            WBMQTT::JSON::Get(request, "baud_rate", RPCRequest->BaudRate);
+            RPCRequest->Parity = request["parity"].asCString()[0];
+            WBMQTT::JSON::Get(request, "data_bits", RPCRequest->DataBits);
+            WBMQTT::JSON::Get(request, "stop_bits", RPCRequest->StopBits);
 
         } catch (const std::runtime_error& e) {
             throw TRPCException(e.what(), TRPCResultCode::RPC_WRONG_PARAM_VALUE);
