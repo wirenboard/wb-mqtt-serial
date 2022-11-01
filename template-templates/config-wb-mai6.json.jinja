@@ -743,44 +743,6 @@
                 "group": "debug"
             },
             {% endfor -%}
-            {% for ch_num in range (1, CHANNELS_NUMBER + 1) -%}
-            {
-                "name": "IN {{ch_num}} P Read Interval",
-                "reg_type": "input",
-                "address": {{1553 + ch_num * 2 - 2}},
-                "format": "u16",
-                "scale": 0.001,
-                "enabled": false,
-                "group": "debug"
-            },
-            {
-                "name": "IN {{ch_num}} N Read Interval",
-                "reg_type": "input",
-                "address": {{1553 + ch_num * 2 - 1}},
-                "format": "u16",
-                "scale": 0.001,
-                "enabled": false,
-                "group": "debug"
-            },
-            {% endfor -%}
-            {% for ch_num in range (1, CHANNELS_NUMBER + 1) -%}
-            {
-                "name": "IN {{ch_num}} P Calibration Coefficient",
-                "reg_type": "input",
-                "address": {{2048 + ch_num * 2 - 2}},
-                "format": "s16",
-                "enabled": false,
-                "group": "debug"
-            },
-            {
-                "name": "IN {{ch_num}} N Calibration Coefficient",
-                "reg_type": "input",
-                "address": {{2048 + ch_num * 2 - 1}},
-                "format": "s16",
-                "enabled": false,
-                "group": "debug"
-            },
-            {% endfor -%}
             {
                 "name": "ADC Loop Counter",
                 "reg_type": "input",
@@ -816,10 +778,6 @@
                 "Mode": "Режим",
                 {% set CHANNELS_NAMES_TEMPLATES = (""," P", " N") -%}
                 {% for ch_num in range (1, CHANNELS_NUMBER + 1) -%}
-                "IN {{ch_num}} P Calibration Coefficient": "IN {{ch_num}} P Калибровочный коэффициент",
-                "IN {{ch_num}} N Calibration Coefficient": "IN {{ch_num}} N Калибровочный коэффициент",
-                "IN {{ch_num}} P Read Interval": "IN 1 P: период опроса",
-                "IN {{ch_num}} N Read Interval": "IN 1 N: период опроса",
                 {% for ch_name_templ in CHANNELS_NAMES_TEMPLATES -%}
                 "IN {{ch_num}}{{ch_name_templ}} Resistance": "IN {{ch_num}}{{ch_name_templ}} Сопротивление",
                 "IN {{ch_num}}{{ch_name_templ}} Percent": "IN {{ch_num}}{{ch_name_templ}} Процент",
