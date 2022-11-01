@@ -26,6 +26,12 @@
                 "order": {{ ch_num }}
             },
             {
+                "title": "IN_P_title",
+                "id": "gg_in{{ ch_num }}_p",
+                "order": {{ ch_num }},
+                "group": "g_in{{ ch_num }}"
+            },
+            {
                 "title": "IN_N_title",
                 "id": "gg_in{{ ch_num }}_n",
                 "order": {{ ch_num }},
@@ -54,7 +60,7 @@
             "in{{ ch_num }}_type": {
                 "title": "Mode",
                 "address": "0x{{ "%x"|format(ch_num) }}400",
-                "group": "g_in{{ ch_num }}",
+                "group": "gg_in{{ ch_num }}_p",
                 "order": 1,
                 "required": true,
                 "default": 0,
@@ -170,7 +176,7 @@
             "in{{ ch_num }}_data_rate": {
                 "title": "Sampling time",
                 "address": "0x{{ "%x"|format(ch_num) }}402",
-                "group": "g_in{{ ch_num }}",
+                "group": "gg_in{{ ch_num }}_p",
                 "order": 2,
                 "condition": "in{{ ch_num }}_type!=0",
                 "enum_titles": [
@@ -187,7 +193,7 @@
             "in{{ ch_num }}_measurements": {
                 "title": "Number of measurements",
                 "description": "Total sampling time of channel is (Sampling time * Number of measurements). Channels are polled sequentially.",
-                "group": "g_in{{ ch_num }}",
+                "group": "gg_in{{ ch_num }}_p",
                 "order": 3,
                 "address": "0x{{ "%x"|format(ch_num) }}404",
                 "min": 1,
@@ -196,7 +202,7 @@
             },
             "in{{ ch_num }}_lowpass": {
                 "title": "Lowpass filter time, ms",
-                "group": "g_in{{ ch_num }}",
+                "group": "gg_in{{ ch_num }}_p",
                 "order": 4,
                 "address": "0x{{ "%x"|format(ch_num) }}406",
                 "min": 0,
@@ -205,7 +211,7 @@
             },
             "in{{ch_num}}_gain": {
                 "title": "Gain",
-                "group": "g_in{{ ch_num }}",
+                "group": "gg_in{{ ch_num }}_p",
                 "order": 4,
                 "address": "0x{{ "%x"|format(ch_num) }}40C",
                 "enum": [0, 1, 2, 4],
@@ -215,7 +221,7 @@
             },
             "in{{ ch_num }}_min": {
                 "title": "Minimum value",
-                "group": "g_in{{ ch_num }}",
+                "group": "gg_in{{ ch_num }}_p",
                 "order": 5,
                 "address": "0x{{ "%x"|format(ch_num) }}408",
                 "default": 0,
@@ -223,7 +229,7 @@
             },
             "in{{ ch_num }}_max": {
                 "title": "Maximum value",
-                "group": "g_in{{ ch_num }}",
+                "group": "gg_in{{ ch_num }}_p",
                 "order": 6,
                 "address": "0x{{ "%x"|format(ch_num) }}40A",
                 "default": 10000,
@@ -397,7 +403,7 @@
                 "format": "s32",
                 "address": "0x{{ "%x"|format(ch_num) }}500",
                 "scale": 0.01,
-                "group": "g_in{{ ch_num }}",
+                "group": "gg_in{{ ch_num }}_p",
                 "condition": "(in{{ ch_num }}_type>=4608&&in{{ ch_num }}_type<=4658)||in{{ ch_num }}_type==258"
             },
             {
@@ -409,7 +415,7 @@
                 "format": "s32",
                 "address": "0x{{ "%x"|format(ch_num) }}500",
                 "scale": 0.01,
-                "group": "g_in{{ ch_num }}",
+                "group": "gg_in{{ ch_num }}_p",
                 "condition": "in{{ ch_num }}_type==2||(in{{ ch_num }}_type>=4352&&in{{ ch_num }}_type<=4402)||in{{ ch_num }}_type==5632||in{{ ch_num }}_type==5889"
             },
             {
@@ -422,7 +428,7 @@
                 "format": "s32",
                 "error_value": "0x7FFFFFFF",
                 "address": "0x{{ "%x"|format(ch_num) }}500",
-                "group": "g_in{{ ch_num }}",
+                "group": "gg_in{{ ch_num }}_p",
                 "condition": "in{{ ch_num }}_type==4096||in{{ ch_num }}_type==257||in{{ ch_num }}_type==5376"
             },
             {
@@ -435,8 +441,7 @@
                 "address": "0x{{ "%x"|format(ch_num) }}500",
                 "scale": 0.000001,
                 "round_to": 0.001,
-                "group": "g_in{{ ch_num }}",
-                "condition": "in{{ ch_num }}_type==1||in{{ ch_num }}_type==5120||in{{ ch_num }}_type==5121"
+                "group": "gg_in{{ ch_num }}_p",
             },
             {
                 "name": "IN {{ch_num}} P Current",
@@ -448,7 +453,7 @@
                 "address": "0x{{ "%x"|format(ch_num) }}500",
                 "scale": 1e-6,
                 "round_to": 0.01,
-                "group": "g_in{{ ch_num }}",
+                "group": "gg_in{{ ch_num }}_p",
                 "condition": "in{{ ch_num }}_type==3||in{{ ch_num }}_type==4864||in{{ ch_num }}_type==4865||in{{ ch_num }}_type==4866"
             },
             {
@@ -460,7 +465,7 @@
                 "error_value": "0x7fff",
                 "format": "s16",
                 "address": "0x{{ "%x"|format(ch_num) }}504",
-                "group": "g_in{{ ch_num }}",
+                "group": "gg_in{{ ch_num }}_p",
                 "condition": "in{{ ch_num }}_type==4096||(in{{ ch_num }}_type>=4608&&in{{ ch_num }}_type<=4658)"
             },
             {
@@ -472,7 +477,7 @@
                 "error_value": "0x7fff",
                 "format": "s16",
                 "address": "0x{{ "%x"|format(ch_num) }}504",
-                "group": "g_in{{ ch_num }}",
+                "group": "gg_in{{ ch_num }}_p",
                 "condition": "in{{ ch_num }}_type>=4352&&in{{ ch_num }}_type<=4402||in{{ ch_num }}_type==5889"
             },
             {
@@ -481,7 +486,7 @@
                 "type": "switch",
                 "format": "s16",
                 "address": "0x{{ "%x"|format(ch_num) }}504",
-                "group": "g_in{{ ch_num }}",
+                "group": "gg_in{{ ch_num }}_p",
                 "condition": "in{{ ch_num }}_type==5632"
             },
             {
@@ -491,7 +496,7 @@
                 "format": "s16",
                 "error_value": "0x7fff",
                 "address": "0x{{ "%x"|format(ch_num) }}504",
-                "group": "g_in{{ ch_num }}",
+                "group": "gg_in{{ ch_num }}_p",
                 "condition": "in{{ ch_num }}_type==5376"
             },
             {
@@ -501,7 +506,7 @@
                 "format": "s16",
                 "error_value": "0x7fff",
                 "address": "0x{{ "%x"|format(ch_num) }}504",
-                "group": "g_in{{ ch_num }}",
+                "group": "gg_in{{ ch_num }}_p",
                 "condition": "{{ format_list(ch_num, TYPES_WITH_SINGLE_VALUE_CHANNEL, "in%s_type==%s") }}"
             },
             {
@@ -695,6 +700,7 @@
             "en": {
                 "WB-MAI6_template_title": "WB-MAI6 (6-channel analog input module)",
                 "baud_rate_description": "Make sure that communication with device is established before changing this parameter. Select required baud rate, save configuration and then change port baud rate to the same value.",
+                "IN_P_title": "Channel P",
                 "IN_N_title": "Channel N"
             },
             "ru": {
@@ -792,6 +798,7 @@
                 "P: current measurement": "P: измерение тока",
                 "single-ended voltage measurement from 0 to 30 V": "измерение положительного напряжения 0-30 В",
                 "current measurement": "измерение тока",
+                "IN_P_title": "Канал P",
                 "IN_N_title": "Канал N",
                 "Sampling time": "Время одного измерения",
                 "50 ms (20 SPS)": "50 мс (20 SPS)",
