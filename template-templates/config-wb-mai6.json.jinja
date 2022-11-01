@@ -2,7 +2,7 @@
 {% set TYPES_WITH_GAIN = [3, 257] -%}
 {% set TYPES_WITH_MIN_MAX = [ 5376, 4864, 4865, 4866, 5120, 5121] -%}
 {% set TYPES_WITH_SINGLE_VALUE_CHANNEL = [ 4864, 4865, 4866, 5120, 5121] -%}
-{% set TYPES_WITH_SINGLE_END =  [0, 1, 2, 3, 4352, 4353, 4354, 4355, 4368, 4369, 4370, 4371, 4384, 4385, 4386, 4387, 4400, 4401, 4402, 4864, 4865, 4866, 5120, 5121, 5632, 5889] -%}
+{% set TYPES_WITH_SINGLE_END =  [0, 1, 2, 3, 4352, 4353, 4354, 4355, 4368, 4369, 4370, 4371, 4384, 4385, 4386, 4387, 4400, 4401, 4402, 4864, 4865, 4866, 5120, 5121, 5632, 5889, 6144] -%}
 {% macro format_list(index, types, format) -%}
     {% set separator = joiner('||') -%}
     {% for t in types -%}{{ separator() }}{{ format|format(index, t) }}{% endfor -%}
@@ -112,6 +112,8 @@
                     5632,
                     5889,
 
+                    6144,
+
                     1,
                     2,
                     3,
@@ -165,6 +167,8 @@
 
                     "P: dry contact sensor",
                     "P: NTC thermistor 10k (B = 3988 K)",
+
+                    "P: Hall effect current sensor (2.5V±0.625V), single ended",
 
                     "P: single-ended voltage measurement from 0 to 30 V",
                     "P: two-wire resistance measurement",
@@ -235,6 +239,28 @@
                 "default": 10000,
                 "condition": "{{ format_list(ch_num, TYPES_WITH_MIN_MAX, "in%s_type==%s") }}"
             },
+            "in{{ ch_num }}_hall_zero_offset": {
+                "title": "Zero offset (A)",
+                "group": "gg_in{{ ch_num }}_p",
+                "order": 5,
+                "address": "0x{{ "%x"|format(ch_num) }}408",
+                "default": 0,
+                "scale" : 0.1,
+                "reg_type": "holding",
+                "format": "s16",
+                "condition": "in{{ ch_num }}_type==6144"
+            },
+            "in{{ ch_num }}_hall_rated_current": {
+                "title": "Rated current (A)",
+                "group": "gg_in{{ ch_num }}_p",
+                "order": 6,
+                "address": "0x{{ "%x"|format(ch_num) }}40A",
+                "default": 100,
+                "reg_type": "holding",
+                "format": "s16",
+                "scale": 0.1,
+                "condition": "in{{ ch_num }}_type==6144"
+            },
             "in{{ ch_num }}_n_type": {
                 "title": "Mode",
                 "address": "0x{{ "%x"|format(ch_num) }}401",
@@ -272,6 +298,8 @@
                     5632,
                     5889,
 
+                    6144,
+
                     1,
                     2,
                     3
@@ -304,6 +332,8 @@
 
                     "dry contact sensor",
                     "NTC thermistor 10k (B = 3988 K)",
+
+                    "Hall effect current sensor (2.5V±0.625V), single ended",
 
                     "single-ended voltage measurement from 0 to 30 V",
                     "two-wire resistance measurement",
@@ -371,6 +401,28 @@
                 "address": "0x{{ "%x"|format(ch_num) }}40B",
                 "default": 10000,
                 "condition": "{{ format_list(ch_num, TYPES_WITH_MIN_MAX, "in%s_n_type==%s") }}"
+            },
+            "in{{ ch_num }}_n_hall_zero_offset": {
+                "title": "Zero offset (A)",
+                "group": "gg_in{{ ch_num }}_n",
+                "order": 5,
+                "address": "0x{{ "%x"|format(ch_num) }}409",
+                "default": 0,
+                "scale" : 0.1,
+                "reg_type": "holding",
+                "format": "s16",
+                "condition": "in{{ ch_num }}_n_type==6144"
+            },
+            "in{{ ch_num }}_n_hall_rated_current": {
+                "title": "Rated current (A)",
+                "group": "gg_in{{ ch_num }}_n",
+                "order": 6,
+                "address": "0x{{ "%x"|format(ch_num) }}40B",
+                "default": 100,
+                "reg_type": "holding",
+                "format": "s16",
+                "scale": 0.1,
+                "condition": "in{{ ch_num }}_n_type==6144"
             },
             {% endfor -%}
             "baud_rate": {
@@ -442,6 +494,8 @@
                 "scale": 0.000001,
                 "round_to": 0.001,
                 "group": "gg_in{{ ch_num }}_p",
+                "condition": "in{{ ch_num }}_type==1||in{{ ch_num }}_type==5121||in{{ ch_num }}_type==6144"
+            },
             },
             {
                 "name": "IN {{ch_num}} P Current",
@@ -455,6 +509,19 @@
                 "round_to": 0.01,
                 "group": "gg_in{{ ch_num }}_p",
                 "condition": "in{{ ch_num }}_type==3||in{{ ch_num }}_type==4864||in{{ ch_num }}_type==4865||in{{ ch_num }}_type==4866"
+            },
+            {
+                "name": "IN {{ch_num}} P Current",
+                "type": "value",
+                "units": "A",
+                "error_value": "0x7FFF",
+                "reg_type": "input",
+                "format": "s16",
+                "address": "0x{{ "%x"|format(ch_num) }}504",
+                "scale": 0.1,
+                "round_to": 0.1,
+                "group": "gg_in{{ ch_num }}_p",
+                "condition": "in{{ ch_num }}_type==6144"
             },
             {
                 "name": "IN {{ch_num}} Temperature",
@@ -544,7 +611,7 @@
                 "scale": 0.000001,
                 "round_to": 0.001,
                 "group": "gg_in{{ ch_num }}_n",
-                "condition": "in{{ ch_num }}_n_type==1||in{{ ch_num }}_n_type==5120||in{{ ch_num }}_n_type==5121"
+                "condition": "in{{ ch_num }}_n_type==1||in{{ ch_num }}_n_type==5121||in{{ ch_num }}_n_type==6144"
             },
             {
                 "name": "IN {{ch_num}} N Current",
@@ -558,6 +625,19 @@
                 "round_to": 0.01,
                 "group": "gg_in{{ ch_num }}_n",
                 "condition": "in{{ ch_num }}_n_type==3||in{{ ch_num }}_n_type==4864||in{{ ch_num }}_n_type==4865||in{{ ch_num }}_n_type==4866||in{{ ch_num }}_n_type==3"
+            },
+            {
+                "name": "IN {{ch_num}} N Current",
+                "type": "value",
+                "units": "A",
+                "error_value": "0x7FFF",
+                "reg_type": "input",
+                "format": "s16",
+                "address": "0x{{ "%x"|format(ch_num) }}505",
+                "scale": 0.1,
+                "round_to": 0.1,
+                "group": "gg_in{{ ch_num }}_n",
+                "condition": "in{{ ch_num }}_n_type==6144"
             },
             {
                 "name": "IN {{ch_num}} N State",
@@ -798,6 +878,8 @@
                 "P: current measurement": "P: измерение тока",
                 "single-ended voltage measurement from 0 to 30 V": "измерение положительного напряжения 0-30 В",
                 "current measurement": "измерение тока",
+                "P: Hall effect current sensor (2.5V±0.625V), single ended": "P: датчик тока на эффекте Холла (2.5V±0.625V), однополярное подключение",
+                "Hall effect current sensor (2.5V±0.625V), single ended": "датчик тока на эффекте Холла (2.5V±0.625V), однополярное подключение",
                 "IN_P_title": "Канал P",
                 "IN_N_title": "Канал N",
                 "Sampling time": "Время одного измерения",
@@ -822,6 +904,8 @@
                 "State": "Состояние",
                 "Minimum value": "Минимальное пересчитанное значение",
                 "Maximum value": "Максимальное пересчитанное значение",
+                "Zero offset (A)" : "Сдвиг нуля (A)",
+                "Rated current (A)" : "Номинальный ток (A)",
                 "Value": "Пересчитанное значение",
                 "5V Output": "Напряжение на клеммах 5V",
                 "Internal Temperature": "Температура внутри модуля",
