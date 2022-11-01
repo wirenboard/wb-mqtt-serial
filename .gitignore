@@ -66,6 +66,22 @@ debhelper-build-stamp
 .clang-format
 build
 
+# Generated templates
+
+wb-mqtt-serial-templates/config-wb-mcm8.json
+wb-mqtt-serial-templates/config-wb-mr3.json
+wb-mqtt-serial-templates/config-wb-mr6c-nc.json
+wb-mqtt-serial-templates/config-wb-mr6c.json
+wb-mqtt-serial-templates/config-wb-mr6cu.json
+wb-mqtt-serial-templates/config-wb-mr6cv3.json
+wb-mqtt-serial-templates/config-wb-led.json
+wb-mqtt-serial-templates/config-wb-mrgbw-d-fw3.json
+wb-mqtt-serial-templates/config-wb-mrm2-mini-nc.json
+wb-mqtt-serial-templates/config-wb-mrm2-mini.json
+wb-mqtt-serial-templates/config-wb-mrwm2.json
+wb-mqtt-serial-templates/config-ecodim-dali-gw2.json
+wb-mqtt-serial-templates/config-wb-mai6.json
+
 ### direnv ###
 .direnv
 .envrc
