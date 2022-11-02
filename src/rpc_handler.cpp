@@ -106,7 +106,8 @@ namespace
             std::string path;
             WBMQTT::JSON::Get(request, "path", path);
             LOG(Debug) << "Create serial port: " << path;
-            port = std::make_shared<TSerialPortWithIECHack>(std::make_shared<TSerialPort>(rpcRequest->SerialPortSettings));
+            port =
+                std::make_shared<TSerialPortWithIECHack>(std::make_shared<TSerialPort>(rpcRequest->SerialPortSettings));
 
         } else if (request.isMember("ip") && request.isMember("port")) {
             std::string address;
