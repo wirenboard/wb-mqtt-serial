@@ -18,10 +18,7 @@ public:
     TRPCMessageFormat Format;
     size_t ResponseSize;
 
-    int BaudRate;
-    char Parity;
-    int DataBits;
-    int StopBits;
+    TSerialPortSettings SerialPortSettings;
 };
 
 typedef std::shared_ptr<TRPCRequest> PRPCRequest;

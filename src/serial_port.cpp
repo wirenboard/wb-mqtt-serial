@@ -170,7 +170,7 @@ void TSerialPort::Open()
             throw std::runtime_error("can't get termios attributes " + FormatErrno(errno));
         }
 
-        ApplySerialPortSettings();
+        ApplySerialPortSettings(Settings);
 
     } catch (const std::runtime_error& e) {
         if (Fd >= 0) {
@@ -191,14 +191,19 @@ void TSerialPort::Close()
     Base::Close();
 }
 
-void TSerialPort::ApplySerialPortSettings(const TSerialPortSettings* settings)
+void TSerialPort::ApplySerialPortSettings(const TSerialPortSettings& settings)
 {
     termios dev;
-    MakeTermios(settings != nullptr ? *settings : Settings, dev);
+    MakeTermios(settings, dev);
 
     if (tcsetattr(Fd, TCSANOW, &dev) != 0) {
         throw std::runtime_error("can't set termios attributes" + FormatErrno(errno));
     }
+}
+
+void TSerialPort::ResetSerialPortSettings()
+{
+    ApplySerialPortSettings(Settings);
 }
 
 std::chrono::milliseconds TSerialPort::GetSendTime(double bytesNumber) const
@@ -262,9 +267,14 @@ void TSerialPortWithIECHack::Close()
     Port->Close();
 }
 
-void TSerialPortWithIECHack::ApplySerialPortSettings(const TSerialPortSettings* settings)
+void TSerialPortWithIECHack::ApplySerialPortSettings(const TSerialPortSettings& settings)
 {
     Port->ApplySerialPortSettings(settings);
+}
+
+void TSerialPortWithIECHack::ResetSerialPortSettings()
+{
+    Port->ResetSerialPortSettings();
 }
 
 void TSerialPortWithIECHack::Reopen()

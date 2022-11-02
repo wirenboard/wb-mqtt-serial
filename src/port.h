@@ -74,7 +74,9 @@ public:
      *
      * @param settings pointer to new settings, if nullptr the port will use default settings set on startup
      */
-    virtual void ApplySerialPortSettings(const TSerialPortSettings* settings = nullptr);
+    virtual void ApplySerialPortSettings(const TSerialPortSettings& settings);
+
+    virtual void ResetSerialPortSettings();
 };
 
 using PPort = std::shared_ptr<TPort>;

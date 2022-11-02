@@ -16,7 +16,9 @@ public:
     void Open() override;
     void Close() override;
 
-    void ApplySerialPortSettings(const TSerialPortSettings* settings = nullptr) override;
+    void ApplySerialPortSettings(const TSerialPortSettings& settings) override;
+
+    void ResetSerialPortSettings() override;
 
     void WriteBytes(const uint8_t* buf, int count) override;
 
@@ -51,7 +53,8 @@ public:
 
     void Open() override;
     void Close() override;
-    void ApplySerialPortSettings(const TSerialPortSettings* settings = nullptr) override;
+    void ApplySerialPortSettings(const TSerialPortSettings& settings) override;
+    void ResetSerialPortSettings() override;
     void Reopen() override;
     bool IsOpen() const override;
     void CheckPortOpen() const override;
