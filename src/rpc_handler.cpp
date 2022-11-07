@@ -74,7 +74,6 @@ namespace
                 RPCRequest->TotalTimeout = DefaultRPCTotalTimeout;
             }
 
-            WBMQTT::JSON::Get(request, "path", RPCRequest->SerialPortSettings.Device);
             WBMQTT::JSON::Get(request, "baud_rate", RPCRequest->SerialPortSettings.BaudRate);
             RPCRequest->SerialPortSettings.Parity = request["parity"].asCString()[0];
             WBMQTT::JSON::Get(request, "data_bits", RPCRequest->SerialPortSettings.DataBits);
@@ -105,9 +104,10 @@ namespace
         if (request.isMember("path")) {
             std::string path;
             WBMQTT::JSON::Get(request, "path", path);
+            TSerialPortSettings settings(path, rpcRequest->SerialPortSettings);
+
             LOG(Debug) << "Create serial port: " << path;
-            port =
-                std::make_shared<TSerialPortWithIECHack>(std::make_shared<TSerialPort>(rpcRequest->SerialPortSettings));
+            port = std::make_shared<TSerialPort>(settings);
 
         } else if (request.isMember("ip") && request.isMember("port")) {
             std::string address;

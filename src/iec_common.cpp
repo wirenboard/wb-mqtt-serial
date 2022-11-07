@@ -192,15 +192,15 @@ TIEC61107Device::TIEC61107Device(PDeviceConfig device_config, PPort port, PProto
 
 void TIEC61107Device::EndSession()
 {
-    Port()->SetSerialPortByteFormat(nullptr); // Return old port settings
+    Port()->ResetSerialPortSettings(); // Return old port settings
     TSerialDevice::EndSession();
 }
 
 void TIEC61107Device::PrepareImpl()
 {
     TSerialDevice::PrepareImpl();
-    TSerialPortByteFormat bf('E', 7, 1);
-    Port()->SetSerialPortByteFormat(&bf);
+    TSerialPortConnectionSettings bf(9600, 'E', 7, 1);
+    Port()->ApplySerialPortSettings(bf);
 }
 
 TIEC61107Protocol::TIEC61107Protocol(const std::string& name, const TRegisterTypes& reg_types)

@@ -24,10 +24,7 @@ std::chrono::milliseconds TPort::GetSendTime(double bytesNumber) const
     return std::chrono::milliseconds::zero();
 }
 
-void TPort::SetSerialPortByteFormat(const TSerialPortByteFormat* params)
-{}
-
-void TPort::ApplySerialPortSettings(const TSerialPortSettings& settings)
+void TPort::ApplySerialPortSettings(const TSerialPortConnectionSettings& settings)
 {}
 
 void TPort::ResetSerialPortSettings()

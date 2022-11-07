@@ -16,7 +16,7 @@ public:
     void Open() override;
     void Close() override;
 
-    void ApplySerialPortSettings(const TSerialPortSettings& settings) override;
+    void ApplySerialPortSettings(const TSerialPortConnectionSettings& settings) override;
 
     void ResetSerialPortSettings() override;
 
@@ -46,50 +46,9 @@ using PSerialPort = std::shared_ptr<TSerialPort>;
 class TSerialPortSettingsGuard
 {
 public:
-    TSerialPortSettingsGuard(PPort port, const TSerialPortSettings& settings);
+    TSerialPortSettingsGuard(PPort port, const TSerialPortConnectionSettings& settings);
     ~TSerialPortSettingsGuard();
 
 private:
     PPort Port;
-};
-
-class TSerialPortWithIECHack: public TPort
-{
-    PSerialPort Port;
-
-public:
-    TSerialPortWithIECHack(PSerialPort port);
-    ~TSerialPortWithIECHack() = default;
-
-    void Open() override;
-    void Close() override;
-    void ApplySerialPortSettings(const TSerialPortSettings& settings) override;
-    void ResetSerialPortSettings() override;
-    void Reopen() override;
-    bool IsOpen() const override;
-    void CheckPortOpen() const override;
-
-    void WriteBytes(const uint8_t* buf, int count) override;
-
-    uint8_t ReadByte(const std::chrono::microseconds& timeout) override;
-
-    size_t ReadFrame(uint8_t* buf,
-                     size_t count,
-                     const std::chrono::microseconds& responseTimeout,
-                     const std::chrono::microseconds& frameTimeout,
-                     TFrameCompletePred frame_complete = 0) override;
-
-    void SkipNoise() override;
-
-    void SleepSinceLastInteraction(const std::chrono::microseconds& us) override;
-
-    std::chrono::milliseconds GetSendTime(double bytesNumber) const override;
-
-    std::string GetDescription(bool verbose = true) const override;
-
-    void SetSerialPortByteFormat(const TSerialPortByteFormat* params) override;
-
-private:
-    //! Use 7E to 8N conversion. The workaround allows using IEC devices and other devices on the same bus.
-    bool UseIECHack;
 };

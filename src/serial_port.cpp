@@ -98,7 +98,7 @@ namespace
         return 0;
     }
 
-    void MakeTermios(const TSerialPortSettings& settings, termios& dev)
+    void MakeTermios(const TSerialPortConnectionSettings& settings, termios& dev)
     {
         memset(&dev, 0, sizeof(termios));
         auto baud_rate = ConvertBaudRate(settings.BaudRate);
@@ -191,7 +191,7 @@ void TSerialPort::Close()
     Base::Close();
 }
 
-void TSerialPort::ApplySerialPortSettings(const TSerialPortSettings& settings)
+void TSerialPort::ApplySerialPortSettings(const TSerialPortConnectionSettings& settings)
 {
     termios dev;
     MakeTermios(settings, dev);
@@ -254,7 +254,7 @@ const TSerialPortSettings& TSerialPort::GetSettings() const
     return Settings;
 }
 
-TSerialPortSettingsGuard::TSerialPortSettingsGuard(PPort port, const TSerialPortSettings& settings): Port(port)
+TSerialPortSettingsGuard::TSerialPortSettingsGuard(PPort port, const TSerialPortConnectionSettings& settings): Port(port)
 {
     Port->ApplySerialPortSettings(settings);
 }
@@ -262,124 +262,4 @@ TSerialPortSettingsGuard::TSerialPortSettingsGuard(PPort port, const TSerialPort
 TSerialPortSettingsGuard::~TSerialPortSettingsGuard()
 {
     Port->ResetSerialPortSettings();
-}
-
-TSerialPortWithIECHack::TSerialPortWithIECHack(PSerialPort port): Port(port), UseIECHack(false)
-{}
-
-void TSerialPortWithIECHack::Open()
-{
-    Port->Open();
-}
-
-void TSerialPortWithIECHack::Close()
-{
-    Port->Close();
-}
-
-void TSerialPortWithIECHack::ApplySerialPortSettings(const TSerialPortSettings& settings)
-{
-    Port->ApplySerialPortSettings(settings);
-}
-
-void TSerialPortWithIECHack::ResetSerialPortSettings()
-{
-    Port->ResetSerialPortSettings();
-}
-
-void TSerialPortWithIECHack::Reopen()
-{
-    Port->Reopen();
-}
-
-bool TSerialPortWithIECHack::IsOpen() const
-{
-    return Port->IsOpen();
-}
-
-void TSerialPortWithIECHack::CheckPortOpen() const
-{
-    Port->CheckPortOpen();
-}
-
-void TSerialPortWithIECHack::WriteBytes(const uint8_t* buf, int count)
-{
-    if (UseIECHack) {
-        std::vector<uint8_t> buf_8bit(IEC::SetEvenParity(buf, count));
-        Port->WriteBytes(buf_8bit.data(), count);
-    } else {
-        Port->WriteBytes(buf, count);
-    }
-}
-
-uint8_t TSerialPortWithIECHack::ReadByte(const std::chrono::microseconds& timeout)
-{
-    auto c = Port->ReadByte(timeout);
-    if (UseIECHack) {
-        IEC::CheckStripEvenParity(&c, 1);
-    }
-    return c;
-}
-
-size_t TSerialPortWithIECHack::ReadFrame(uint8_t* buf,
-                                         size_t count,
-                                         const std::chrono::microseconds& responseTimeout,
-                                         const std::chrono::microseconds& frameTimeout,
-                                         TFrameCompletePred frameComplete)
-{
-    if (UseIECHack) {
-        auto wrappedFrameComplete = [=](uint8_t* buf, size_t count) {
-            std::vector<uint8_t> b(buf, buf + count);
-            IEC::CheckStripEvenParity(b.data(), count);
-            return frameComplete(b.data(), count);
-        };
-        auto l = Port->ReadFrame(buf, count, responseTimeout, frameTimeout, wrappedFrameComplete);
-        IEC::CheckStripEvenParity(buf, l);
-        return l;
-    }
-    return Port->ReadFrame(buf, count, responseTimeout, frameTimeout, frameComplete);
-}
-
-void TSerialPortWithIECHack::SkipNoise()
-{
-    Port->SkipNoise();
-}
-
-void TSerialPortWithIECHack::SleepSinceLastInteraction(const std::chrono::microseconds& us)
-{
-    Port->SleepSinceLastInteraction(us);
-}
-
-std::chrono::milliseconds TSerialPortWithIECHack::GetSendTime(double bytesNumber) const
-{
-    return Port->GetSendTime(bytesNumber);
-}
-
-std::string TSerialPortWithIECHack::GetDescription(bool verbose) const
-{
-    return Port->GetDescription(verbose);
-}
-
-void TSerialPortWithIECHack::SetSerialPortByteFormat(const TSerialPortByteFormat* params)
-{
-    if (params == nullptr) {
-        UseIECHack = false;
-        return;
-    }
-
-    if (Port->GetSettings().DataBits == 8 && Port->GetSettings().Parity == 'N' && Port->GetSettings().StopBits == 1 &&
-        params->DataBits == 7 && params->Parity == 'E' && params->StopBits == 1)
-    {
-        UseIECHack = true;
-        return;
-    }
-
-    if (Port->GetSettings().DataBits == 7 && Port->GetSettings().Parity == 'E' && Port->GetSettings().StopBits == 1 &&
-        params->DataBits == 7 && params->Parity == 'E' && params->StopBits == 1)
-    {
-        UseIECHack = false;
-        return;
-    }
-    throw std::runtime_error("Can't change " + Port->GetSettings().ToString() +
-                             " byte format. Set port settings to 8N1, please");
 }
