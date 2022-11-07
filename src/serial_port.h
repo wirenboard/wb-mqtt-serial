@@ -46,14 +46,8 @@ using PSerialPort = std::shared_ptr<TSerialPort>;
 class TSerialPortSettingsGuard
 {
 public:
-    TSerialPortSettingsGuard(PPort port, const TSerialPortSettings& settings): Port(port)
-    {
-        Port->ApplySerialPortSettings(settings);
-    }
-    ~TSerialPortSettingsGuard()
-    {
-        Port->ResetSerialPortSettings();
-    }
+    TSerialPortSettingsGuard(PPort port, const TSerialPortSettings& settings);
+    ~TSerialPortSettingsGuard();
 
 private:
     PPort Port;

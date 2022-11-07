@@ -254,6 +254,16 @@ const TSerialPortSettings& TSerialPort::GetSettings() const
     return Settings;
 }
 
+TSerialPortSettingsGuard::TSerialPortSettingsGuard(PPort port, const TSerialPortSettings& settings): Port(port)
+{
+    Port->ApplySerialPortSettings(settings);
+}
+
+TSerialPortSettingsGuard::~TSerialPortSettingsGuard()
+{
+    Port->ResetSerialPortSettings();
+}
+
 TSerialPortWithIECHack::TSerialPortWithIECHack(PSerialPort port): Port(port), UseIECHack(false)
 {}
 
