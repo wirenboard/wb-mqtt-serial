@@ -72,7 +72,7 @@ namespace IEC
         }
         return ss.str();
     }
-
+#if 0 // TSerialPortWithIECHack removed
     uint8_t GetParityBit(uint8_t byte)
     {
 // Even parity bit
@@ -111,7 +111,7 @@ namespace IEC
         }
         return buf_8bit;
     }
-
+#endif
     std::vector<uint8_t>& operator<<(std::vector<uint8_t>& v, uint8_t value)
     {
         v.push_back(value);

@@ -16,11 +16,11 @@ namespace IEC
     const uint8_t EOT = 0x04;
 
     typedef std::function<uint8_t(const uint8_t* buf, size_t size)> TCrcFn;
-
+#if 0 // TSerialPortWithIECHack removed
     void CheckStripEvenParity(uint8_t* buf, size_t nread);
 
     std::vector<uint8_t> SetEvenParity(const uint8_t* buf, size_t count);
-
+#endif
     size_t ReadFrame(TPort& port,
                      uint8_t* buf,
                      size_t count,

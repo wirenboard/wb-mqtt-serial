@@ -4,6 +4,7 @@
 
 #include "serial_port.h"
 
+#if 0 // TSerialPortWithIECHack removed
 namespace
 {
     class TSerialPortMock: public TSerialPort
@@ -140,3 +141,4 @@ TEST(TIECTest, WriteReadHack)
     iecPort->SetSerialPortByteFormat(nullptr);
     CheckWriteRead(port, iecPort, b, b, 0x81, bWithParity);
 }
+#endif
