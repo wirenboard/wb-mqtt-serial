@@ -152,7 +152,8 @@ void TSerialPortTest::SetUp()
     Serial->Open();
 
     FakeSerial->StartForwarding();
-    TSerialPortSettings secondary_settings(FakeSerial->GetSecondaryPtsName(), TSerialPortConnectionSettings(9600, 'N', 8, 1));
+    TSerialPortSettings secondary_settings(FakeSerial->GetSecondaryPtsName(),
+                                           TSerialPortConnectionSettings(9600, 'N', 8, 1));
     SecondarySerial =
         std::shared_ptr<TSerialPortTestWrapper>(new TSerialPortTestWrapper(secondary_settings, *this, Serial));
     SecondarySerial->Open();
