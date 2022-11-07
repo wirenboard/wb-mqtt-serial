@@ -43,6 +43,22 @@ private:
 
 using PSerialPort = std::shared_ptr<TSerialPort>;
 
+class TSerialPortSettingsGuard
+{
+public:
+    TSerialPortSettingsGuard(PPort port, const TSerialPortSettings& settings): Port(port)
+    {
+        Port->ApplySerialPortSettings(settings);
+    }
+    ~TSerialPortSettingsGuard()
+    {
+        Port->ResetSerialPortSettings();
+    }
+
+private:
+    PPort Port;
+};
+
 class TSerialPortWithIECHack: public TPort
 {
     PSerialPort Port;

@@ -1,6 +1,7 @@
 #include "rpc_request_handler.h"
 #include "rpc_handler.h"
 #include "serial_exc.h"
+#include "serial_port.h"
 
 std::vector<uint8_t> TRPCRequestHandler::RPCTransceive(PRPCRequest request,
                                                        PBinarySemaphore serialClientSemaphore,
@@ -38,7 +39,7 @@ void TRPCRequestHandler::RPCRequestHandling(PPort port)
             port->CheckPortOpen();
             port->SleepSinceLastInteraction(Request->FrameTimeout);
 
-            port->ApplySerialPortSettings(Request->SerialPortSettings);
+            TSerialPortSettingsGuard settingsGuard(port, Request->SerialPortSettings);
 
             port->WriteBytes(Request->Message);
 
@@ -55,8 +56,6 @@ void TRPCRequestHandler::RPCRequestHandling(PPort port)
         } catch (const TSerialDeviceException& error) {
             State = RPCRequestState::RPC_ERROR;
         }
-
-        port->ResetSerialPortSettings();
 
         RequestExecution.notify_all();
     }
