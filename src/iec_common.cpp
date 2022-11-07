@@ -6,6 +6,7 @@
 
 #include "log.h"
 #include "serial_exc.h"
+#include "serial_port.h"
 
 namespace IEC
 {
@@ -199,7 +200,9 @@ void TIEC61107Device::EndSession()
 void TIEC61107Device::PrepareImpl()
 {
     TSerialDevice::PrepareImpl();
-    TSerialPortConnectionSettings bf(9600, 'E', 7, 1);
+    // Get current baud rate
+    int baudRate = static_cast<TSerialPort*>(Port().get())->GetSettings().BaudRate;
+    TSerialPortConnectionSettings bf(baudRate, 'E', 7, 1);
     Port()->ApplySerialPortSettings(bf);
 }
 

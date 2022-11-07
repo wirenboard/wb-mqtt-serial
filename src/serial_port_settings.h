@@ -5,10 +5,7 @@
 
 struct TSerialPortConnectionSettings
 {
-    TSerialPortConnectionSettings(int baudRate = 9600,
-                                  char parity = 'N',
-                                  int dataBits = 8,
-                                  int stopBits = 1)
+    TSerialPortConnectionSettings(int baudRate = 9600, char parity = 'N', int dataBits = 8, int stopBits = 1)
         : BaudRate(baudRate),
           Parity(parity),
           DataBits(dataBits),
