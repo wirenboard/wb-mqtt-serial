@@ -69,6 +69,9 @@ public:
      */
     virtual void ApplySerialPortSettings(const TSerialPortConnectionSettings& settings);
 
+    /**
+     * @brief Reset connection parameters to preconfigured if it is a serial port
+     */
     virtual void ResetSerialPortSettings();
 };
 

@@ -43,6 +43,7 @@ private:
 
 using PSerialPort = std::shared_ptr<TSerialPort>;
 
+// Scope guard for changing serial port settings
 class TSerialPortSettingsGuard
 {
 public:
