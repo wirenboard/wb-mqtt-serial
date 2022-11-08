@@ -11,6 +11,7 @@ struct TSerialPortConnectionSettings
           DataBits(dataBits),
           StopBits(stopBits)
     {}
+
     TSerialPortConnectionSettings(const TSerialPortConnectionSettings& other)
         : BaudRate(other.BaudRate),
           Parity(other.Parity),
