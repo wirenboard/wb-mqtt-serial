@@ -74,10 +74,12 @@ namespace
                 RPCRequest->TotalTimeout = DefaultRPCTotalTimeout;
             }
 
-            WBMQTT::JSON::Get(request, "baud_rate", RPCRequest->SerialPortSettings.BaudRate);
-            RPCRequest->SerialPortSettings.Parity = request["parity"].asCString()[0];
-            WBMQTT::JSON::Get(request, "data_bits", RPCRequest->SerialPortSettings.DataBits);
-            WBMQTT::JSON::Get(request, "stop_bits", RPCRequest->SerialPortSettings.StopBits);
+            if (request.isMember("path")) {
+                WBMQTT::JSON::Get(request, "baud_rate", RPCRequest->SerialPortSettings.BaudRate);
+                RPCRequest->SerialPortSettings.Parity = request["parity"].asCString()[0];
+                WBMQTT::JSON::Get(request, "data_bits", RPCRequest->SerialPortSettings.DataBits);
+                WBMQTT::JSON::Get(request, "stop_bits", RPCRequest->SerialPortSettings.StopBits);
+            }
 
         } catch (const std::runtime_error& e) {
             throw TRPCException(e.what(), TRPCResultCode::RPC_WRONG_PARAM_VALUE);
