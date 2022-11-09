@@ -3,29 +3,34 @@
 #include <sstream>
 #include <string>
 
-struct TSerialPortByteFormat
+struct TSerialPortConnectionSettings
 {
-    TSerialPortByteFormat(char parity, int dataBits, int stopBits)
-        : Parity(parity),
+    TSerialPortConnectionSettings(int baudRate = 9600, char parity = 'N', int dataBits = 8, int stopBits = 1)
+        : BaudRate(baudRate),
+          Parity(parity),
           DataBits(dataBits),
           StopBits(stopBits)
     {}
 
+    TSerialPortConnectionSettings(const TSerialPortConnectionSettings& other)
+        : BaudRate(other.BaudRate),
+          Parity(other.Parity),
+          DataBits(other.DataBits),
+          StopBits(other.StopBits)
+    {}
+
+    int BaudRate;
     char Parity;
     int DataBits;
     int StopBits;
 };
 
-struct TSerialPortSettings: public TSerialPortByteFormat
+struct TSerialPortSettings: public TSerialPortConnectionSettings
 {
     TSerialPortSettings(const std::string& device = "/dev/ttyS0",
-                        int baudRate = 9600,
-                        char parity = 'N',
-                        int dataBits = 8,
-                        int stopBits = 1)
-        : TSerialPortByteFormat(parity, dataBits, stopBits),
-          Device(device),
-          BaudRate(baudRate)
+                        const TSerialPortConnectionSettings& connectionSettings = TSerialPortConnectionSettings())
+        : TSerialPortConnectionSettings(connectionSettings),
+          Device(device)
     {}
 
     std::string ToString() const
@@ -36,5 +41,4 @@ struct TSerialPortSettings: public TSerialPortByteFormat
     }
 
     std::string Device;
-    int BaudRate;
 };

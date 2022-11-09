@@ -74,6 +74,13 @@ namespace
                 RPCRequest->TotalTimeout = DefaultRPCTotalTimeout;
             }
 
+            if (request.isMember("path")) {
+                WBMQTT::JSON::Get(request, "baud_rate", RPCRequest->SerialPortSettings.BaudRate);
+                RPCRequest->SerialPortSettings.Parity = request["parity"].asCString()[0];
+                WBMQTT::JSON::Get(request, "data_bits", RPCRequest->SerialPortSettings.DataBits);
+                WBMQTT::JSON::Get(request, "stop_bits", RPCRequest->SerialPortSettings.StopBits);
+            }
+
         } catch (const std::runtime_error& e) {
             throw TRPCException(e.what(), TRPCResultCode::RPC_WRONG_PARAM_VALUE);
         }
@@ -99,18 +106,10 @@ namespace
         if (request.isMember("path")) {
             std::string path;
             WBMQTT::JSON::Get(request, "path", path);
-            TSerialPortSettings settings(path);
-
-            WBMQTT::JSON::Get(request, "baud_rate", settings.BaudRate);
-
-            if (request.isMember("parity"))
-                settings.Parity = request["parity"].asCString()[0];
-
-            WBMQTT::JSON::Get(request, "data_bits", settings.DataBits);
-            WBMQTT::JSON::Get(request, "stop_bits", settings.StopBits);
+            TSerialPortSettings settings(path, rpcRequest->SerialPortSettings);
 
             LOG(Debug) << "Create serial port: " << path;
-            port = std::make_shared<TSerialPortWithIECHack>(std::make_shared<TSerialPort>(settings));
+            port = std::make_shared<TSerialPort>(settings);
 
         } else if (request.isMember("ip") && request.isMember("port")) {
             std::string address;
@@ -134,7 +133,7 @@ namespace
 
         return response;
     }
-}
+} // namespace
 
 std::vector<uint8_t> TRPCPortDriver::SendRequest(PRPCRequest request) const
 {

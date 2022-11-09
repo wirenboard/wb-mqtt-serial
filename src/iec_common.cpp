@@ -6,6 +6,7 @@
 
 #include "log.h"
 #include "serial_exc.h"
+#include "serial_port.h"
 
 namespace IEC
 {
@@ -70,45 +71,6 @@ namespace IEC
             DumpASCIIChar(ss, buf[i]);
         }
         return ss.str();
-    }
-
-    uint8_t GetParityBit(uint8_t byte)
-    {
-// Even parity bit
-// Generating the look-up table while pre-processing
-#define P2(n) n, n ^ 1, n ^ 1, n
-#define P4(n) P2(n), P2(n ^ 1), P2(n ^ 1), P2(n)
-#define P6(n) P4(n), P4(n ^ 1), P4(n ^ 1), P4(n)
-#define LOOK_UP P6(0), P6(1)
-
-        static uint8_t table[128] = {LOOK_UP};
-#undef LOOK_UP
-#undef P6
-#undef P4
-#undef P2
-
-        return table[byte & 0x7F];
-    }
-
-    void CheckStripEvenParity(uint8_t* buf, size_t nread)
-    {
-        for (size_t i = 0; i < nread; ++i) {
-            uint8_t parity = !!(buf[i] & (1 << 7));
-            if (parity != GetParityBit(buf[i])) {
-                throw TSerialDeviceTransientErrorException("parity error " + std::to_string(buf[i]));
-            }
-            buf[i] &= 0x7F;
-        }
-    }
-
-    /* Writes 7E data in 8N mode appending parity bit.*/
-    std::vector<uint8_t> SetEvenParity(const uint8_t* buf, size_t count)
-    {
-        std::vector<uint8_t> buf_8bit(count);
-        for (size_t i = 0; i < count; ++i) {
-            buf_8bit[i] = buf[i] | (GetParityBit(buf[i]) << 7);
-        }
-        return buf_8bit;
     }
 
     std::vector<uint8_t>& operator<<(std::vector<uint8_t>& v, uint8_t value)
@@ -192,15 +154,15 @@ TIEC61107Device::TIEC61107Device(PDeviceConfig device_config, PPort port, PProto
 
 void TIEC61107Device::EndSession()
 {
-    Port()->SetSerialPortByteFormat(nullptr); // Return old port settings
+    Port()->ResetSerialPortSettings(); // Return old port settings
     TSerialDevice::EndSession();
 }
 
 void TIEC61107Device::PrepareImpl()
 {
     TSerialDevice::PrepareImpl();
-    TSerialPortByteFormat bf('E', 7, 1);
-    Port()->SetSerialPortByteFormat(&bf);
+    TSerialPortConnectionSettings bf(9600, 'E', 7, 1);
+    Port()->ApplySerialPortSettings(bf);
 }
 
 TIEC61107Protocol::TIEC61107Protocol(const std::string& name, const TRegisterTypes& reg_types)
