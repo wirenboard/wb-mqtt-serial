@@ -1,6 +1,7 @@
 #include "rpc_request_handler.h"
 #include "rpc_handler.h"
 #include "serial_exc.h"
+#include "serial_port.h"
 
 std::vector<uint8_t> TRPCRequestHandler::RPCTransceive(PRPCRequest request,
                                                        PBinarySemaphore serialClientSemaphore,
@@ -37,6 +38,9 @@ void TRPCRequestHandler::RPCRequestHandling(PPort port)
         try {
             port->CheckPortOpen();
             port->SleepSinceLastInteraction(Request->FrameTimeout);
+
+            TSerialPortSettingsGuard settingsGuard(port, Request->SerialPortSettings);
+
             port->WriteBytes(Request->Message);
 
             std::vector<uint8_t> readData;

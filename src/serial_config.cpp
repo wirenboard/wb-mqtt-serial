@@ -598,7 +598,7 @@ namespace
         Get(port_data, "data_bits", settings.DataBits);
         Get(port_data, "stop_bits", settings.StopBits);
 
-        PPort port = std::make_shared<TSerialPortWithIECHack>(std::make_shared<TSerialPort>(settings));
+        PPort port = std::make_shared<TSerialPort>(settings);
 
         rpcConfig->AddSerialPort(port, settings);
 

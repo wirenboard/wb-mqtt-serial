@@ -63,11 +63,16 @@ public:
     virtual std::string GetDescription(bool verbose = true) const = 0;
 
     /**
-     * @brief Set new byte parameters if it is a serial port.
+     * @brief Set new connection parameters if it is a serial port
      *
-     * @param params pointer to new parameters, if nullptr the port will use default values set on startup
+     * @param settings new settings
      */
-    virtual void SetSerialPortByteFormat(const TSerialPortByteFormat* params);
+    virtual void ApplySerialPortSettings(const TSerialPortConnectionSettings& settings);
+
+    /**
+     * @brief Reset connection parameters to preconfigured if it is a serial port
+     */
+    virtual void ResetSerialPortSettings();
 };
 
 using PPort = std::shared_ptr<TPort>;
