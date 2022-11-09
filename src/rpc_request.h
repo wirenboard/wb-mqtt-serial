@@ -17,6 +17,8 @@ public:
     std::chrono::milliseconds TotalTimeout;
     TRPCMessageFormat Format;
     size_t ResponseSize;
+
+    TSerialPortConnectionSettings SerialPortSettings;
 };
 
 typedef std::shared_ptr<TRPCRequest> PRPCRequest;

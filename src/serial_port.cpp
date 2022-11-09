@@ -97,6 +97,56 @@ namespace
         }
         return 0;
     }
+
+    void MakeTermios(const TSerialPortConnectionSettings& settings, termios& dev)
+    {
+        memset(&dev, 0, sizeof(termios));
+        auto baud_rate = ConvertBaudRate(settings.BaudRate);
+        if (cfsetospeed(&dev, baud_rate) != 0 || cfsetispeed(&dev, baud_rate) != 0) {
+            throw std::runtime_error("can't set baud rate " + std::to_string(settings.BaudRate) + " " +
+                                     FormatErrno(errno));
+        }
+
+        if (settings.StopBits == 1) {
+            dev.c_cflag &= ~CSTOPB;
+        } else {
+            dev.c_cflag |= CSTOPB;
+        }
+
+        switch (settings.Parity) {
+            case 'N':
+                dev.c_cflag &= ~PARENB;
+                dev.c_iflag &= ~INPCK;
+                break;
+            case 'E':
+                dev.c_cflag |= PARENB;
+                dev.c_cflag &= ~PARODD;
+                dev.c_iflag |= INPCK;
+                break;
+            case 'O':
+                dev.c_cflag |= PARENB;
+                dev.c_cflag |= PARODD;
+                dev.c_iflag |= INPCK;
+                break;
+            default:
+                std::stringstream ss;
+                ss << "invalid parity value: ";
+                if (isprint(settings.Parity)) {
+                    ss << "'" << settings.Parity << "'";
+                } else {
+                    ss << "0x" << std::hex << std::uppercase << std::setfill('0') << std::setw(2)
+                       << int(settings.Parity);
+                }
+                throw std::runtime_error(ss.str());
+        }
+
+        dev.c_cflag = (dev.c_cflag & ~CSIZE) | ConvertDataBits(settings.DataBits) | CREAD | CLOCAL;
+        dev.c_lflag &= ~(ICANON | ECHO | ECHOE | ISIG);
+        dev.c_iflag &= ~(IXON | IXOFF | IXANY);
+        dev.c_oflag &= ~OPOST;
+        dev.c_cc[VMIN] = 0;
+        dev.c_cc[VTIME] = 0;
+    }
 }
 
 TSerialPort::TSerialPort(const TSerialPortSettings& settings)
@@ -116,61 +166,12 @@ void TSerialPort::Open()
         if (Fd < 0)
             throw std::runtime_error("can't open serial port");
 
-        termios dev;
-        memset(&dev, 0, sizeof(termios));
-        auto baud_rate = ConvertBaudRate(Settings.BaudRate);
-        if (cfsetospeed(&dev, baud_rate) != 0 || cfsetispeed(&dev, baud_rate) != 0) {
-            throw std::runtime_error("can't set baud rate " + std::to_string(Settings.BaudRate) + " " +
-                                     FormatErrno(errno));
-        }
-
-        if (Settings.StopBits == 1) {
-            dev.c_cflag &= ~CSTOPB;
-        } else {
-            dev.c_cflag |= CSTOPB;
-        }
-
-        switch (Settings.Parity) {
-            case 'N':
-                dev.c_cflag &= ~PARENB;
-                dev.c_iflag &= ~INPCK;
-                break;
-            case 'E':
-                dev.c_cflag |= PARENB;
-                dev.c_cflag &= ~PARODD;
-                dev.c_iflag |= INPCK;
-                break;
-            case 'O':
-                dev.c_cflag |= PARENB;
-                dev.c_cflag |= PARODD;
-                dev.c_iflag |= INPCK;
-                break;
-            default:
-                std::stringstream ss;
-                ss << "invalid parity value: ";
-                if (isprint(Settings.Parity)) {
-                    ss << "'" << Settings.Parity << "'";
-                } else {
-                    ss << "0x" << std::hex << std::uppercase << std::setfill('0') << std::setw(2)
-                       << int(Settings.Parity);
-                }
-                throw std::runtime_error(ss.str());
-        }
-
-        dev.c_cflag = (dev.c_cflag & ~CSIZE) | ConvertDataBits(Settings.DataBits) | CREAD | CLOCAL;
-        dev.c_lflag &= ~(ICANON | ECHO | ECHOE | ISIG);
-        dev.c_iflag &= ~(IXON | IXOFF | IXANY);
-        dev.c_oflag &= ~OPOST;
-        dev.c_cc[VMIN] = 0;
-        dev.c_cc[VTIME] = 0;
-
         if (tcgetattr(Fd, &OldTermios) != 0) {
             throw std::runtime_error("can't get termios attributes " + FormatErrno(errno));
         }
 
-        if (tcsetattr(Fd, TCSANOW, &dev) != 0) {
-            throw std::runtime_error("can't set termios attributes" + FormatErrno(errno));
-        }
+        ApplySerialPortSettings(Settings);
+
     } catch (const std::runtime_error& e) {
         if (Fd >= 0) {
             close(Fd);
@@ -188,6 +189,21 @@ void TSerialPort::Close()
         tcsetattr(Fd, TCSANOW, &OldTermios);
     }
     Base::Close();
+}
+
+void TSerialPort::ApplySerialPortSettings(const TSerialPortConnectionSettings& settings)
+{
+    termios dev;
+    MakeTermios(settings, dev);
+
+    if (tcsetattr(Fd, TCSANOW, &dev) != 0) {
+        throw std::runtime_error("can't set termios attributes" + FormatErrno(errno));
+    }
+}
+
+void TSerialPort::ResetSerialPortSettings()
+{
+    ApplySerialPortSettings(Settings);
 }
 
 std::chrono::milliseconds TSerialPort::GetSendTime(double bytesNumber) const
@@ -238,112 +254,13 @@ const TSerialPortSettings& TSerialPort::GetSettings() const
     return Settings;
 }
 
-TSerialPortWithIECHack::TSerialPortWithIECHack(PSerialPort port): Port(port), UseIECHack(false)
-{}
-
-void TSerialPortWithIECHack::Open()
+TSerialPortSettingsGuard::TSerialPortSettingsGuard(PPort port, const TSerialPortConnectionSettings& settings)
+    : Port(port)
 {
-    Port->Open();
+    Port->ApplySerialPortSettings(settings);
 }
 
-void TSerialPortWithIECHack::Close()
+TSerialPortSettingsGuard::~TSerialPortSettingsGuard()
 {
-    Port->Close();
-}
-
-void TSerialPortWithIECHack::Reopen()
-{
-    Port->Reopen();
-}
-
-bool TSerialPortWithIECHack::IsOpen() const
-{
-    return Port->IsOpen();
-}
-
-void TSerialPortWithIECHack::CheckPortOpen() const
-{
-    Port->CheckPortOpen();
-}
-
-void TSerialPortWithIECHack::WriteBytes(const uint8_t* buf, int count)
-{
-    if (UseIECHack) {
-        std::vector<uint8_t> buf_8bit(IEC::SetEvenParity(buf, count));
-        Port->WriteBytes(buf_8bit.data(), count);
-    } else {
-        Port->WriteBytes(buf, count);
-    }
-}
-
-uint8_t TSerialPortWithIECHack::ReadByte(const std::chrono::microseconds& timeout)
-{
-    auto c = Port->ReadByte(timeout);
-    if (UseIECHack) {
-        IEC::CheckStripEvenParity(&c, 1);
-    }
-    return c;
-}
-
-size_t TSerialPortWithIECHack::ReadFrame(uint8_t* buf,
-                                         size_t count,
-                                         const std::chrono::microseconds& responseTimeout,
-                                         const std::chrono::microseconds& frameTimeout,
-                                         TFrameCompletePred frameComplete)
-{
-    if (UseIECHack) {
-        auto wrappedFrameComplete = [=](uint8_t* buf, size_t count) {
-            std::vector<uint8_t> b(buf, buf + count);
-            IEC::CheckStripEvenParity(b.data(), count);
-            return frameComplete(b.data(), count);
-        };
-        auto l = Port->ReadFrame(buf, count, responseTimeout, frameTimeout, wrappedFrameComplete);
-        IEC::CheckStripEvenParity(buf, l);
-        return l;
-    }
-    return Port->ReadFrame(buf, count, responseTimeout, frameTimeout, frameComplete);
-}
-
-void TSerialPortWithIECHack::SkipNoise()
-{
-    Port->SkipNoise();
-}
-
-void TSerialPortWithIECHack::SleepSinceLastInteraction(const std::chrono::microseconds& us)
-{
-    Port->SleepSinceLastInteraction(us);
-}
-
-std::chrono::milliseconds TSerialPortWithIECHack::GetSendTime(double bytesNumber) const
-{
-    return Port->GetSendTime(bytesNumber);
-}
-
-std::string TSerialPortWithIECHack::GetDescription(bool verbose) const
-{
-    return Port->GetDescription(verbose);
-}
-
-void TSerialPortWithIECHack::SetSerialPortByteFormat(const TSerialPortByteFormat* params)
-{
-    if (params == nullptr) {
-        UseIECHack = false;
-        return;
-    }
-
-    if (Port->GetSettings().DataBits == 8 && Port->GetSettings().Parity == 'N' && Port->GetSettings().StopBits == 1 &&
-        params->DataBits == 7 && params->Parity == 'E' && params->StopBits == 1)
-    {
-        UseIECHack = true;
-        return;
-    }
-
-    if (Port->GetSettings().DataBits == 7 && Port->GetSettings().Parity == 'E' && Port->GetSettings().StopBits == 1 &&
-        params->DataBits == 7 && params->Parity == 'E' && params->StopBits == 1)
-    {
-        UseIECHack = false;
-        return;
-    }
-    throw std::runtime_error("Can't change " + Port->GetSettings().ToString() +
-                             " byte format. Set port settings to 8N1, please");
+    Port->ResetSerialPortSettings();
 }
