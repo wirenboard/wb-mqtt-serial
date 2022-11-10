@@ -13,7 +13,7 @@ protected:
     }
     std::string GetTemplatePath() const override
     {
-        return "../wb-mqtt-serial-templates/";
+        return "../templates/";
     }
     void EnqueeCmdF0Response();
     void EnqueeCmdFCResponse();
