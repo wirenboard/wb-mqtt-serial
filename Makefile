@@ -15,6 +15,8 @@ else
 	BUILD_DIR ?= build/debug
 endif
 
+GENERATED_TEMPLATES_DIR = build/templates
+
 PREFIX = /usr
 
 # extract Git revision and version number from debian/changelog
@@ -72,8 +74,8 @@ $(BUILD_DIR)/test/%.o: test/%.cpp
 $(TEST_DIR)/$(TEST_BIN): $(COMMON_OBJS) $(TEST_OBJS)
 	$(CXX) $^ $(LDFLAGS) $(TEST_LDFLAGS) -o $@ -fno-lto
 
-$(BUILD_DIR)/templates/%.json: $(TEMPLATES_DIR)/%.json.jinja
-	mkdir -p $(BUILD_DIR)/templates
+$(GENERATED_TEMPLATES_DIR)/%.json: $(TEMPLATES_DIR)/%.json.jinja
+	mkdir -p $(GENERATED_TEMPLATES_DIR)
 	tools/template-generator.py $^ $@
 
 test: templates $(TEST_DIR)/$(TEST_BIN)
@@ -88,7 +90,7 @@ test: templates $(TEST_DIR)/$(TEST_BIN)
         $(TEST_DIR)/$(TEST_BIN) $(TEST_ARGS) || { $(TEST_DIR)/abt.sh show; exit 1; } \
 	fi
 
-templates: $(JINJA_TEMPLATES:$(TEMPLATES_DIR)/%.json.jinja=$(BUILD_DIR)/templates/%.json)
+templates: $(JINJA_TEMPLATES:$(TEMPLATES_DIR)/%.json.jinja=$(GENERATED_TEMPLATES_DIR)/%.json)
 
 clean :
 	rm -rf build/release
@@ -112,7 +114,7 @@ install:
 	install -D -m 0644 wb-mqtt-serial.wbconfigs $(DESTDIR)/etc/wb-configs.d/11wb-mqtt-serial
 
 	install -D -m 0644 *.schema.json -t $(DESTDIR)$(PREFIX)/share/wb-mqtt-serial
-	install -D -m 0644 templates/*.json $(BUILD_DIR)/templates/*.json -t $(DESTDIR)$(PREFIX)/share/wb-mqtt-serial/templates
+	install -D -m 0644 templates/*.json $(GENERATED_TEMPLATES_DIR)/*.json -t $(DESTDIR)$(PREFIX)/share/wb-mqtt-serial/templates
 
 	install -D -m 0644 obis-hints.json -t $(DESTDIR)$(PREFIX)/share/wb-mqtt-serial
 
