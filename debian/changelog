@@ -1,3 +1,9 @@
+wb-mqtt-serial (2.74.1) stable; urgency=medium
+
+  * Remove minimal time limits for RPC wb-mqtt-serial/port/Load
+
+ -- Petr Krasnoshchekov <petr.krasnoshchekov@wirenboard.ru>  Thu, 10 Nov 2022 14:00:52 +0500
+
 wb-mqtt-serial (2.74.0) stable; urgency=medium
 
   * Allow to change serial port settings for RPC request
