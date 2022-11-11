@@ -76,7 +76,7 @@ $(TEST_DIR)/$(TEST_BIN): $(COMMON_OBJS) $(TEST_OBJS)
 
 $(GENERATED_TEMPLATES_DIR)/%.json: $(TEMPLATES_DIR)/%.json.jinja
 	mkdir -p $(GENERATED_TEMPLATES_DIR)
-	tools/template-generator.py $^ $@
+	j2 -o $@ $^
 
 test: templates $(TEST_DIR)/$(TEST_BIN)
 	rm -f $(TEST_DIR)/*.dat.out

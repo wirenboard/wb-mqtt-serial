@@ -3,7 +3,7 @@ Maintainer: Evgeny Boger <boger@contactless.ru>
 Section: misc
 Priority: optional
 Standards-Version: 3.9.2
-Build-Depends: debhelper (>= 10), pkg-config, libwbmqtt1-3-dev (>= 3.7.0), libwbmqtt1-3-test-utils (>= 3.7.0), python3:amd64, python3-jinja2:all
+Build-Depends: debhelper (>= 10), pkg-config, libwbmqtt1-3-dev (>= 3.7.0), libwbmqtt1-3-test-utils (>= 3.7.0), j2cli:all
 Homepage: https://github.com/wirenboard/wb-mqtt-serial
 
 Package: wb-mqtt-serial
