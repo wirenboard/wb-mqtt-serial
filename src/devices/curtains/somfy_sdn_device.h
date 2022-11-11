@@ -15,6 +15,8 @@ namespace Somfy
         POST_MOTOR_POSITION = 0x0D,
         GET_MOTO_STATUS = 0x0E,
         SET_MOTOR_LIMITS = 0x11,
+        SET_MOTOR_ROTATION_DIRECTION = 0x12,
+        SET_MOTOR_ROLLING_SPEED = 0x13,
         NACK = 0x6F,
         ACK = 0x7F
     };
@@ -37,12 +39,17 @@ namespace Somfy
 
         std::unordered_map<uint8_t, TRegisterValue> DataCache;
 
+        // Key - read MSG (request header)
+        std::unordered_map<uint8_t, std::vector<uint8_t>> WriteCache;
+
         TRegisterValue GetCachedResponse(uint8_t requestHeader,
                                          uint8_t responseHeader,
                                          size_t bitOffset,
                                          size_t bitWidth);
 
         std::vector<uint8_t> ExecCommand(const std::vector<uint8_t>& request);
+
+        std::vector<uint8_t> MakeDataForSetupCommand(uint8_t header, const std::vector<uint8_t>& readCache) const;
 
     public:
         TDevice(PDeviceConfig config, uint8_t nodeType, PPort port, PProtocol protocol);
@@ -61,7 +68,7 @@ namespace Somfy
                                      const std::vector<uint8_t>& data = std::vector<uint8_t>());
     std::vector<uint8_t> MakeSetPositionRequest(uint32_t address, uint8_t nodeType, uint32_t position);
 
-    uint64_t ParseStatusReport(uint32_t address, uint8_t header, const std::vector<uint8_t>& bytes);
+    std::vector<uint8_t> ParseStatusReport(uint32_t address, uint8_t header, const std::vector<uint8_t>& bytes);
 
     //! All bytes except CRC in transmitted packet are inverted, let's invert them back to get real packet
     void FixReceivedFrame(std::vector<uint8_t>& bytes);

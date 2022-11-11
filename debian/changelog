@@ -1,3 +1,9 @@
+wb-mqtt-serial (2.75.0) stable; urgency=medium
+
+  * Support for setting Somfy curtain motor parameters
+
+ -- Petr Krasnoshchekov <petr.krasnoshchekov@wirenboard.ru>  Fri, 11 Nov 2022 11:43:27 +0500
+
 wb-mqtt-serial (2.74.2) stable; urgency=medium
 
   * Remove template-generator.py, use j2cli instead
