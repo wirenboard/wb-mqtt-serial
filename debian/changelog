@@ -1,3 +1,9 @@
+wb-mqtt-serial (2.74.2) stable; urgency=medium
+
+  * Remove template-generator.py, use j2cli instead
+
+ -- Nikolay Korotkiy <nikolay.korotkiy@wirenboard.com>  Fri, 11 Nov 2022 08:32:00 +0300
+
 wb-mqtt-serial (2.74.1) stable; urgency=medium
 
   * Reorganize templates, no functional changes
