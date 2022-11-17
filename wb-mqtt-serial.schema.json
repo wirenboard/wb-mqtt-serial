@@ -357,7 +357,10 @@
           "type": "string",
           "title": "MQTT id of the device",
           "description": "Used as part of the topic",
-          "minLength": 1,
+          "pattern": "^[^$#+\\/\"']+$",
+          "options": {
+            "patternmessage": "Invalid device ID"
+          },
           "propertyOrder": 4
         },
         "poll_interval": {
@@ -507,9 +510,7 @@
           "propertyOrder": 2
         },
         "id": {
-          "type": "string",
-          "title": "MQTT id of the channel",
-          "description": "Used as part of the topic",
+          "$ref": "#/definitions/channel_id",
           "propertyOrder": 3
         },
         "type": {
@@ -781,9 +782,7 @@
           "propertyOrder": 2
         },
         "id": {
-          "type": "string",
-          "title": "MQTT id of the channel",
-          "description": "Used as part of the topic",
+          "$ref": "#/definitions/channel_id",
           "propertyOrder": 3
         },
         "type": {
@@ -1039,7 +1038,19 @@
       "type": "string",
       "title": "Control name",
       "description": "This name is displayed both in UI and used as part of MQTT topic",
-      "minLength": 1
+      "pattern": "^[^$#+\\/\"']+$",
+      "options": {
+        "patternmessage": "Invalid channel ID"
+      }
+    },
+    "channel_id": {
+      "type": "string",
+      "title": "MQTT id of the channel",
+      "description": "Used as part of the topic",
+      "pattern": "^[^$#+\\/\"']+$",
+      "options": {
+        "patternmessage": "Invalid channel ID"
+      }
     },
     "control_type": {
       "type": "string",

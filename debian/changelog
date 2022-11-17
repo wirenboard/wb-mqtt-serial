@@ -1,3 +1,9 @@
+wb-mqtt-serial (2.76.0) stable; urgency=medium
+
+  * Add a check for prohibited characters in control and device IDs
+
+ -- Roman Kochkin <roman.kochkin@wirenboard.ru>  Thu, 17 Nov 2022 13:14:50 +0300
+
 wb-mqtt-serial (2.75.0) stable; urgency=medium
 
   * Support for setting Somfy curtain motor parameters

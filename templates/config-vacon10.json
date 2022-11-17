@@ -195,7 +195,7 @@
                 "type": "value"
             },
             {
-                "name": "Output frequency (+/- Hz)",
+                "name": "Output frequency (_plus_|- Hz)",
                 "reg_type": "input",
                 "address": 2103,
                 "scale": 0.01,
@@ -216,14 +216,14 @@
                 "type": "value"
             },
             {
-                "name": "Motor torque +/- % (of nom)",
+                "name": "Motor torque _plus_|- % (of nom)",
                 "reg_type": "input",
                 "address": 2106,
                 "scale": 0.1,
                 "type": "value"
             },
             {
-                "name": "Motor power +/- % (of nom)",
+                "name": "Motor power _plus_|- % (of nom)",
                 "reg_type": "input",
                 "address": 2107,
                 "scale": 0.1,
