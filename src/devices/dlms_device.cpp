@@ -1,5 +1,6 @@
 #include "dlms_device.h"
 #include "log.h"
+#include "common_utils.h"
 
 #include <fstream>
 
@@ -235,7 +236,7 @@ namespace
         auto description = GetDescription(logicalName, obj, cnv, obisHints);
         auto channelName = GetChannelName(logicalName, description, obisHints);
         Json::Value res;
-        res["name"] = channelName;
+        res["name"] = util::ConvertToMqttTopicValidString(channelName);
         res["reg_type"] = "default";
         res["address"] = logicalName;
         res["type"] = GetType(obj);
