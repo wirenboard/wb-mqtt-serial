@@ -413,12 +413,19 @@
           "default": 1,
           "propertyOrder": 105
         },
+        "min_read_registers": {
+          "type": "integer",
+          "title": "Minimum number of registers in a single bulk read request",
+          "minimum": 0,
+          "default": 1,
+          "propertyOrder": 106
+        },
         "guard_interval_us": {
           "type": "integer",
           "title": "Additional delay before each writing to port (us)",
           "minimum": 0,
           "default": 0,
-          "propertyOrder": 106
+          "propertyOrder": 107
         },
         "frame_timeout_ms": {
           "type": "integer",
@@ -426,7 +433,7 @@
           "description": "frame_timeout_description",
           "minimum": -1,
           "default": -1,
-          "propertyOrder": 107
+          "propertyOrder": 108
         },
         "response_timeout_ms": {
           "type": "integer",
@@ -434,7 +441,7 @@
           "description": "response_timeout_description",
           "minimum": -1,
           "default": -1,
-          "propertyOrder": 108
+          "propertyOrder": 109
         },
         "device_timeout_ms": {
           "type": "integer",
@@ -442,7 +449,7 @@
           "description": "device_timeout_description",
           "minimum": -1,
           "default": 3000,
-          "propertyOrder": 109
+          "propertyOrder": 110
         },
         "device_max_fail_cycles": {
           "type": "integer",
@@ -450,7 +457,7 @@
           "description": "device_max_fail_cycles_desc",
           "minimum": -1,
           "default": 2,
-          "propertyOrder": 110
+          "propertyOrder": 111
         }
       }
     },

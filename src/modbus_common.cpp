@@ -255,6 +255,11 @@ namespace Modbus // modbus protocol common utilities
 
     TRequest TModbusRegisterRange::GetRequest(IModbusTraits& traits, uint8_t slaveId, int shift)
     {
+        const auto& deviceConfig = *(Device()->DeviceConfig());
+        if (GetCount() < deviceConfig.MinReadRegisters) {
+            Count = deviceConfig.MinReadRegisters;
+        }
+
         TRequest request;
         // 1 byte - function code, 2 bytes - starting register address, 2 bytes - quantity of registers
         const uint16_t REQUEST_PDU_SIZE = 5;
@@ -265,7 +270,7 @@ namespace Modbus // modbus protocol common utilities
         return request;
     }
 
-    size_t TModbusRegisterRange::GetResponseSize(IModbusTraits& traits)
+    size_t TModbusRegisterRange::GetResponseSize(IModbusTraits& traits) const
     {
         return traits.GetPacketSize(InferReadResponsePDUSize(Type(), GetCount()));
     }
@@ -285,7 +290,7 @@ namespace Modbus // modbus protocol common utilities
         return RegisterList().front()->Device();
     }
 
-    bool TModbusRegisterRange::AddingRegisterIncreasesSize(bool isSingleBit, size_t extend)
+    bool TModbusRegisterRange::AddingRegisterIncreasesSize(bool isSingleBit, size_t extend) const
     {
         if (!isSingleBit) {
             return (extend != 0);
@@ -303,12 +308,12 @@ namespace Modbus // modbus protocol common utilities
                                          int shift,
                                          Modbus::TRegisterCache& cache)
     {
-        TResponse response(GetResponseSize(traits));
         try {
             auto request = GetRequest(traits, slaveId, shift);
             port.SleepSinceLastInteraction(Device()->DeviceConfig()->RequestDelay);
             port.WriteBytes(request.data(), request.size());
             auto startTime = std::chrono::steady_clock::now();
+            TResponse response(GetResponseSize(traits));
             auto pduSize = ReadResponse(traits, port, request, response, *Device()->DeviceConfig());
             ResponseTime =
                 std::chrono::duration_cast<std::chrono::microseconds>(std::chrono::steady_clock::now() - startTime);

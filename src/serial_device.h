@@ -108,6 +108,7 @@ struct TDeviceConfig
     int MaxRegHole = 0;
     int MaxBitHole = 0;
     int MaxReadRegisters = 1;
+    int MinReadRegisters = 1;
     int Stride = 0;
     int Shift = 0;
     PRegisterTypeMap TypeMap = 0;

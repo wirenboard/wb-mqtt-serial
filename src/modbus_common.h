@@ -135,7 +135,7 @@ namespace Modbus // modbus protocol common utilities
         PSerialDevice Device() const;
 
         TRequest GetRequest(IModbusTraits& traits, uint8_t slaveId, int shift);
-        size_t GetResponseSize(IModbusTraits& traits);
+        size_t GetResponseSize(IModbusTraits& traits) const;
 
         void ReadRange(IModbusTraits& traits, TPort& port, uint8_t slaveId, int shift, Modbus::TRegisterCache& cache);
 
@@ -150,7 +150,7 @@ namespace Modbus // modbus protocol common utilities
         std::chrono::microseconds AverageResponseTime;
         std::chrono::microseconds ResponseTime;
 
-        bool AddingRegisterIncreasesSize(bool isSingleBit, size_t extend);
+        bool AddingRegisterIncreasesSize(bool isSingleBit, size_t extend) const;
     };
 
     PRegisterRange CreateRegisterRange(std::chrono::microseconds averageResponseTime);
