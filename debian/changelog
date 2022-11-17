@@ -1,8 +1,14 @@
-wb-mqtt-serial (2.76.0) stable; urgency=medium
+wb-mqtt-serial (2.77.0) stable; urgency=medium
 
   * Added support for min_read_registers option
 
  -- Nikolay Korotkiy <nikolay.korotkiy@wirenboard.com>  Wed, 16 Nov 2022 09:21:00 +0400
+
+wb-mqtt-serial (2.76.0) stable; urgency=medium
+
+  * Template for WB-MAI6 was added
+
+ -- Dmitry Vorobjev <d.vorobjev@wirenboard.ru>  Wed, 16 Nov 2022 15:23:01 +0300
 
 wb-mqtt-serial (2.75.0) stable; urgency=medium
 
