@@ -2,7 +2,13 @@ wb-mqtt-serial (2.77.0) stable; urgency=medium
 
   * Add a check for prohibited characters in control and device IDs
 
- -- Roman Kochkin <roman.kochkin@wirenboard.ru>  Thu, 17 Nov 2022 13:14:50 +0300
+ -- Roman Kochkin <roman.kochkin@wirenboard.ru>  Fri, 18 Nov 2022 10:55:21 +0300
+
+wb-mqtt-serial (2.76.1) stable; urgency=medium
+
+  * Remove minimal time limits for RPC wb-mqtt-serial/port/Load
+
+ -- Petr Krasnoshchekov <petr.krasnoshchekov@wirenboard.ru>  Fri, 18 Nov 2022 09:57:38 +0500
 
 wb-mqtt-serial (2.76.0) stable; urgency=medium
 
