@@ -55,7 +55,7 @@ namespace Modbus // modbus protocol declarations
         };
     };
 
-    void ComposeReadRequestPDU(uint8_t* pdu, TModbusRegisterRange& range, int shift);
+    void ComposeReadRequestPDU(uint8_t* pdu, const TModbusRegisterRange& range, int shift);
     size_t InferReadResponsePDUSize(int type, size_t registerCount);
     // parses modbus response and stores result
     void ParseReadResponse(const uint8_t* pdu,
@@ -93,7 +93,7 @@ namespace // general utilities
                ((reg.Type == Modbus::REG_HOLDING) && (GetModbusDataWidthIn16BitWords(reg) > 1));
     }
 
-    inline bool IsPacking(Modbus::TModbusRegisterRange& range)
+    inline bool IsPacking(const Modbus::TModbusRegisterRange& range)
     {
         return (range.Type() == Modbus::REG_HOLDING_MULTI) ||
                ((range.Type() == Modbus::REG_HOLDING) && (range.GetCount() > 1));
@@ -253,13 +253,8 @@ namespace Modbus // modbus protocol common utilities
         return HasHolesFlg;
     }
 
-    TRequest TModbusRegisterRange::GetRequest(IModbusTraits& traits, uint8_t slaveId, int shift)
+    TRequest TModbusRegisterRange::GetRequest(IModbusTraits& traits, uint8_t slaveId, int shift) const
     {
-        const auto& deviceConfig = *(Device()->DeviceConfig());
-        if (GetCount() < deviceConfig.MinReadRegisters) {
-            Count = deviceConfig.MinReadRegisters;
-        }
-
         TRequest request;
         // 1 byte - function code, 2 bytes - starting register address, 2 bytes - quantity of registers
         const uint16_t REQUEST_PDU_SIZE = 5;
@@ -309,6 +304,10 @@ namespace Modbus // modbus protocol common utilities
                                          Modbus::TRegisterCache& cache)
     {
         try {
+            const auto& deviceConfig = *(Device()->DeviceConfig());
+            if (GetCount() < deviceConfig.MinReadRegisters) {
+                Count = deviceConfig.MinReadRegisters;
+            }
             auto request = GetRequest(traits, slaveId, shift);
             port.SleepSinceLastInteraction(Device()->DeviceConfig()->RequestDelay);
             port.WriteBytes(request.data(), request.size());
@@ -435,7 +434,7 @@ namespace Modbus // modbus protocol common utilities
         return GetFunctionImpl(reg.Type, op, reg.TypeName, IsPacking(reg));
     }
 
-    inline uint8_t GetFunction(TModbusRegisterRange& range, OperationType op)
+    inline uint8_t GetFunction(const TModbusRegisterRange& range, OperationType op)
     {
         return GetFunctionImpl(range.Type(), op, range.TypeName(), IsPacking(range));
     }
@@ -475,7 +474,7 @@ namespace Modbus // modbus protocol common utilities
     }
 
     // returns count of modbus registers needed to represent TRegister
-    uint16_t GetQuantity(TRegister& reg)
+    uint16_t GetQuantity(const TRegister& reg)
     {
         int w = GetModbusDataWidthIn16BitWords(reg);
 
@@ -494,7 +493,7 @@ namespace Modbus // modbus protocol common utilities
     }
 
     // returns count of modbus registers needed to represent TModbusRegisterRange
-    uint16_t GetQuantity(TModbusRegisterRange& range)
+    uint16_t GetQuantity(const TModbusRegisterRange& range)
     {
         auto type = range.Type();
 
@@ -542,7 +541,7 @@ namespace Modbus // modbus protocol common utilities
     }
 
     // fills pdu with read request data according to Modbus specification
-    void ComposeReadRequestPDU(uint8_t* pdu, TRegister& reg, int shift)
+    void ComposeReadRequestPDU(uint8_t* pdu, const TRegister& reg, int shift)
     {
         pdu[0] = GetFunction(reg, OperationType::OP_READ);
         auto addr = GetUint32RegisterAddress(reg.GetAddress());
@@ -550,7 +549,7 @@ namespace Modbus // modbus protocol common utilities
         WriteAs2Bytes(pdu + 3, GetQuantity(reg));
     }
 
-    void ComposeReadRequestPDU(uint8_t* pdu, TModbusRegisterRange& range, int shift)
+    void ComposeReadRequestPDU(uint8_t* pdu, const TModbusRegisterRange& range, int shift)
     {
         pdu[0] = GetFunction(range, OperationType::OP_READ);
         WriteAs2Bytes(pdu + 1, range.GetStart() + shift);

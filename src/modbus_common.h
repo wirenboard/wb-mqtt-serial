@@ -134,7 +134,7 @@ namespace Modbus // modbus protocol common utilities
         int Type() const;
         PSerialDevice Device() const;
 
-        TRequest GetRequest(IModbusTraits& traits, uint8_t slaveId, int shift);
+        TRequest GetRequest(IModbusTraits& traits, uint8_t slaveId, int shift) const;
         size_t GetResponseSize(IModbusTraits& traits) const;
 
         void ReadRange(IModbusTraits& traits, TPort& port, uint8_t slaveId, int shift, Modbus::TRegisterCache& cache);
