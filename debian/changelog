@@ -1,3 +1,9 @@
+wb-mqtt-serial (2.76.1) stable; urgency=medium
+
+  * Remove minimal time limits for RPC wb-mqtt-serial/port/Load
+
+ -- Petr Krasnoshchekov <petr.krasnoshchekov@wirenboard.ru>  Fri, 18 Nov 2022 09:57:38 +0500
+
 wb-mqtt-serial (2.76.0) stable; urgency=medium
 
   * Template for WB-MAI6 was added
