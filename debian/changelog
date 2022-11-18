@@ -1,8 +1,14 @@
-wb-mqtt-serial (2.76.2) stable; urgency=medium
+wb-mqtt-serial (2.76.3) stable; urgency=medium
 
   * Set WB-LED and WB-MRGBWD default input actions to none
 
  -- Petr Krasnoshchekov <petr.krasnoshchekov@wirenboard.ru>  Fri, 18 Nov 2022 11:55:42 +0500
+
+wb-mqtt-serial (2.76.2) stable; urgency=medium
+
+  * Add make lcov target to generate test coverage
+
+ -- Nikolay Korotkiy <nikolay.korotkiy@wirenboard.com>  Fri, 18 Nov 2022 07:23:01 +0400
 
 wb-mqtt-serial (2.76.1) stable; urgency=medium
 
