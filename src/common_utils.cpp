@@ -1,4 +1,5 @@
 #include "common_utils.h"
+#include <algorithm>
 #include <unordered_map>
 
 namespace
@@ -7,7 +8,14 @@ namespace
         {{'\'', "|"}, {'"', "|"}, {'/', "|"}, {'+', "_plus_"}, {'$', "_"}, {'#', "_"}};
 }
 
-std::string util::ConvertToMqttTopicValidString(const std::string& src)
+bool util::IsValidMqttTopicString(const std::string& src)
+{
+    return std::find_if(src.begin(), src.end(), [](auto ch) {
+               return ConvertToMqttStringMap.find(ch) != ConvertToMqttStringMap.end();
+           }) == src.end();
+}
+
+std::string util::ConvertToValidMqttTopicString(const std::string& src)
 {
     std::string validStr;
     for (auto const& ch: src) {

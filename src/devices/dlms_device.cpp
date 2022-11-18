@@ -228,13 +228,27 @@ namespace
         return "value";
     }
 
-    Json::Value MakeChannelDescription(CGXDLMSObject* obj, CGXDLMSConverter* cnv, const TObisCodeHints& obisHints)
+    struct TChannelDescription
+    {
+        Json::Value channel;
+        std::optional<std::string> title;
+    };
+
+    TChannelDescription MakeChannelDescription(CGXDLMSObject* obj,
+                                               CGXDLMSConverter* cnv,
+                                               const TObisCodeHints& obisHints)
     {
         std::string logicalName;
         obj->GetLogicalName(logicalName);
 
+        std::optional<std::string> title;
+
         auto description = GetDescription(logicalName, obj, cnv, obisHints);
-        auto channelName = util::ConvertToMqttTopicValidString(GetChannelName(logicalName, description, obisHints));
+        auto channelName = GetChannelName(logicalName, description, obisHints);
+        if (!util::IsValidMqttTopicString(channelName)) {
+            title = channelName;
+            channelName = util::ConvertToValidMqttTopicString(channelName);
+        }
         Json::Value res;
         res["name"] = channelName;
         res["reg_type"] = "default";
@@ -244,7 +258,7 @@ namespace
             res["enabled"] = false;
         }
         std::cout << AlignName(logicalName) << " " << description << " -> " << channelName << std::endl;
-        return res;
+        return {res, title};
     }
 
     TObisCodeHints LoadObisCodeHints()
@@ -321,9 +335,14 @@ namespace
         device["frame_timeout_ms"] = static_cast<Json::Int>(DEFAULT_FRAME_TIMEOUT.count());
         device["channels"] = Json::Value(Json::arrayValue);
         auto& channels = device["channels"];
+        auto& translations = device["translations"]["en"];
         for (auto obj: objs) {
             if (obj->GetObjectType() == DLMS_OBJECT_TYPE_REGISTER) {
-                channels.append(MakeChannelDescription(obj, &cnv, obisHints));
+                const auto description = MakeChannelDescription(obj, &cnv, obisHints);
+                channels.append(description.channel);
+                if (description.title) {
+                    translations[description.channel["name"].asString()] = *description.title;
+                }
             }
         }
         return res;
