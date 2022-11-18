@@ -41,7 +41,8 @@ TEST(TSomfyTest, ParseStatusReport)
         data{0xF2, 0xEF, 0xDF, 0x3F, 0x97, 0xF8, 0x00, 0x00, 0xFF, 0x45, 0xFE, 0xD4, 0x00, 0x00, 0x07, 0xA4};
     FixReceivedFrame(data);
 
-    ASSERT_EQ(ParseStatusReport(0x0768C0, Somfy::POST_MOTOR_POSITION, data), 0xFFFF2B01BA);
+    ASSERT_TRUE(
+        ArraysMatch(ParseStatusReport(0x0768C0, Somfy::POST_MOTOR_POSITION, data), {0xBA, 0x01, 0x2B, 0xFF, 0xFF}));
 
     data.back() = 0xAA;
     ASSERT_THROW(CheckExceptionMsg([&]() { ParseStatusReport(0x0768C0, Somfy::POST_MOTOR_POSITION, data); }, "Bad CRC"),

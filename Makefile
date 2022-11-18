@@ -15,6 +15,10 @@ else
 	BUILD_DIR ?= build/debug
 endif
 
+GENERATED_TEMPLATES_DIR = build/templates
+
+PREFIX = /usr
+
 # extract Git revision and version number from debian/changelog
 GIT_REVISION:=$(shell git rev-parse HEAD)
 DEB_VERSION:=$(shell head -1 debian/changelog | awk '{ print $$2 }' | sed 's/[\(\)]//g')
@@ -47,21 +51,18 @@ TEST_LDFLAGS = -lgtest -lwbmqtt_test_utils
 
 SRCS=$(SERIAL_SRCS) $(TEST_SRCS)
 
-
-TEMPLATE_TEMPLATES_DIR = template-templates
-TEMPLATES_DIR = wb-mqtt-serial-templates
-TEMPLATE_TEMPLATES_SRC := $(shell find $(TEMPLATE_TEMPLATES_DIR) \( -name *.jinja \) -execdir basename -s '.jinja' {} +)
-TEMPLATE_TEMPLATES := ${TEMPLATE_TEMPLATES_SRC:%=$(TEMPLATES_DIR)/%}
+TEMPLATES_DIR = templates
+JINJA_TEMPLATES = $(wildcard $(TEMPLATES_DIR)/*.json.jinja)
 
 .PHONY: all clean test templates
 
 all : templates $(SERIAL_BIN)
 
 $(SERIAL_BIN): $(COMMON_OBJS) $(BUILD_DIR)/src/main.cpp.o
-	${CXX} -o $(BUILD_DIR)/$@ $^ $(LDFLAGS)
+	$(CXX) -o $(BUILD_DIR)/$@ $^ $(LDFLAGS)
 
 $(BUILD_DIR)/%.c.o: %.c
-	${CC} -c $< -o $@ ${CFLAGS}
+	$(CC) -c $< -o $@ $(CFLAGS)
 
 $(BUILD_DIR)/%.cpp.o: %.cpp
 	mkdir -p $(dir $@)
@@ -71,10 +72,11 @@ $(BUILD_DIR)/test/%.o: test/%.cpp
 	$(CXX) -c $(CXXFLAGS) -o $@ $^
 
 $(TEST_DIR)/$(TEST_BIN): $(COMMON_OBJS) $(TEST_OBJS)
-	${CXX} $^ ${LDFLAGS} $(TEST_LDFLAGS) -o $@ -fno-lto
+	$(CXX) $^ $(LDFLAGS) $(TEST_LDFLAGS) -o $@ -fno-lto
 
-$(TEMPLATES_DIR)/%.json: $(TEMPLATE_TEMPLATES_DIR)/%.json.jinja
-	tools/template-generator.py $^ $@
+$(GENERATED_TEMPLATES_DIR)/%.json: $(TEMPLATES_DIR)/%.json.jinja
+	mkdir -p $(GENERATED_TEMPLATES_DIR)
+	j2 -o $@ $^
 
 test: templates $(TEST_DIR)/$(TEST_BIN)
 	rm -f $(TEST_DIR)/*.dat.out
@@ -88,7 +90,7 @@ test: templates $(TEST_DIR)/$(TEST_BIN)
         $(TEST_DIR)/$(TEST_BIN) $(TEST_ARGS) || { $(TEST_DIR)/abt.sh show; exit 1; } \
 	fi
 
-templates: $(TEMPLATE_TEMPLATES)
+templates: $(JINJA_TEMPLATES:$(TEMPLATES_DIR)/%.json.jinja=$(GENERATED_TEMPLATES_DIR)/%.json)
 
 clean :
 	rm -rf build/release
@@ -96,27 +98,24 @@ clean :
 	rm -rf $(TEST_DIR)/*.o $(TEST_DIR)/$(TEST_BIN)
 	find $(SRC_DIR) -name '*.o' -delete
 	rm -f $(SERIAL_BIN)
-	rm -rf $(TEMPLATE_TEMPLATES)
 
 install:
 	install -d $(DESTDIR)/var/lib/wb-mqtt-serial
 	install -d $(DESTDIR)/etc/wb-mqtt-serial.conf.d/templates
 
-	install -D -m 0644  config.sample.json $(DESTDIR)/etc/wb-mqtt-serial.conf.sample
+	install -D -m 0644 config.sample.json $(DESTDIR)/etc/wb-mqtt-serial.conf.sample
 
-	install -D -m 0644  config.json.wb234 $(DESTDIR)/usr/share/wb-mqtt-serial/wb-mqtt-serial.conf.wb234
-	install -D -m 0644  config.json.wb5 $(DESTDIR)/usr/share/wb-mqtt-serial/wb-mqtt-serial.conf.wb5
-	install -D -m 0644  config.json.wb6 $(DESTDIR)/usr/share/wb-mqtt-serial/wb-mqtt-serial.conf.wb6
-	install -D -m 0644  config.json.wb7 $(DESTDIR)/usr/share/wb-mqtt-serial/wb-mqtt-serial.conf.wb7
-	install -D -m 0644  config.json.default $(DESTDIR)/usr/share/wb-mqtt-serial/wb-mqtt-serial.conf.default
+	install -D -m 0644 config.json.wb234 $(DESTDIR)$(PREFIX)/share/wb-mqtt-serial/wb-mqtt-serial.conf.wb234
+	install -D -m 0644 config.json.wb5 $(DESTDIR)$(PREFIX)/share/wb-mqtt-serial/wb-mqtt-serial.conf.wb5
+	install -D -m 0644 config.json.wb6 $(DESTDIR)$(PREFIX)/share/wb-mqtt-serial/wb-mqtt-serial.conf.wb6
+	install -D -m 0644 config.json.wb7 $(DESTDIR)$(PREFIX)/share/wb-mqtt-serial/wb-mqtt-serial.conf.wb7
+	install -D -m 0644 config.json.default $(DESTDIR)$(PREFIX)/share/wb-mqtt-serial/wb-mqtt-serial.conf.default
 
-	install -D -m 0644  wb-mqtt-serial.wbconfigs $(DESTDIR)/etc/wb-configs.d/11wb-mqtt-serial
+	install -D -m 0644 wb-mqtt-serial.wbconfigs $(DESTDIR)/etc/wb-configs.d/11wb-mqtt-serial
 
-	install -D -m 0644  wb-mqtt-serial.schema.json $(DESTDIR)/usr/share/wb-mqtt-serial/wb-mqtt-serial.schema.json
-	install -D -m 0644  wb-mqtt-serial-device-template.schema.json $(DESTDIR)/usr/share/wb-mqtt-serial/wb-mqtt-serial-device-template.schema.json
-	install -D -m 0644  wb-mqtt-serial-rpc-request.schema.json $(DESTDIR)/usr/share/wb-mqtt-serial/wb-mqtt-serial-rpc-request.schema.json
-	cp -r  wb-mqtt-serial-templates $(DESTDIR)/usr/share/wb-mqtt-serial/templates
+	install -D -m 0644 *.schema.json -t $(DESTDIR)$(PREFIX)/share/wb-mqtt-serial
+	install -D -m 0644 templates/*.json $(GENERATED_TEMPLATES_DIR)/*.json -t $(DESTDIR)$(PREFIX)/share/wb-mqtt-serial/templates
 
-	install -D -m 0644  obis-hints.json $(DESTDIR)/usr/share/wb-mqtt-serial/obis-hints.json
+	install -D -m 0644 obis-hints.json -t $(DESTDIR)$(PREFIX)/share/wb-mqtt-serial
 
-	install -D -m 0755  $(BUILD_DIR)/$(SERIAL_BIN) $(DESTDIR)/usr/bin/$(SERIAL_BIN)
+	install -D -m 0755 $(BUILD_DIR)/$(SERIAL_BIN) -t $(DESTDIR)$(PREFIX)/bin

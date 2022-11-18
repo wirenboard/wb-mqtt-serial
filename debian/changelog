@@ -1,8 +1,32 @@
-wb-mqtt-serial (2.74.1) stable; urgency=medium
+wb-mqtt-serial (2.76.1) stable; urgency=medium
 
   * Remove minimal time limits for RPC wb-mqtt-serial/port/Load
 
- -- Petr Krasnoshchekov <petr.krasnoshchekov@wirenboard.ru>  Thu, 10 Nov 2022 14:00:52 +0500
+ -- Petr Krasnoshchekov <petr.krasnoshchekov@wirenboard.ru>  Fri, 18 Nov 2022 09:57:38 +0500
+
+wb-mqtt-serial (2.76.0) stable; urgency=medium
+
+  * Template for WB-MAI6 was added
+
+ -- Dmitry Vorobjev <d.vorobjev@wirenboard.ru>  Wed, 16 Nov 2022 15:23:01 +0300
+
+wb-mqtt-serial (2.75.0) stable; urgency=medium
+
+  * Support for setting Somfy curtain motor parameters
+
+ -- Petr Krasnoshchekov <petr.krasnoshchekov@wirenboard.ru>  Fri, 11 Nov 2022 11:43:27 +0500
+
+wb-mqtt-serial (2.74.2) stable; urgency=medium
+
+  * Remove template-generator.py, use j2cli instead
+
+ -- Nikolay Korotkiy <nikolay.korotkiy@wirenboard.com>  Fri, 11 Nov 2022 08:32:00 +0300
+
+wb-mqtt-serial (2.74.1) stable; urgency=medium
+
+  * Reorganize templates, no functional changes
+
+ -- Nikolay Korotkiy <nikolay.korotkiy@wirenboard.com>  Wed, 09 Nov 2022 13:34:00 +0300
 
 wb-mqtt-serial (2.74.0) stable; urgency=medium
 
