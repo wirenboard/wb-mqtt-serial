@@ -1,3 +1,9 @@
+wb-mqtt-serial (2.76.3) stable; urgency=medium
+
+  * WB-MR templates update for version 1.19.0 - debounce and mapping matrix
+
+ -- Nikita Kulikov <n.kulikov@wirenboard.ru>  Mon, 21 Nov 2022 17:52:54 +0600
+
 wb-mqtt-serial (2.76.2) stable; urgency=medium
 
   * Add make lcov target to generate test coverage
