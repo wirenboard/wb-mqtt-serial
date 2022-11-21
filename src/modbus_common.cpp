@@ -203,9 +203,9 @@ namespace Modbus // modbus protocol common utilities
         auto newPduSize = InferReadResponsePDUSize(reg->Type, Count + extend);
         // Request 8 bytes: SlaveID, Operation, Addr, Count, CRC
         // Response 5 bytes except data: SlaveID, Operation, Size, CRC
+        auto sendTime = reg->Device()->Port()->GetSendTime(newPduSize + 8 + 5);
         auto newPollTime = std::chrono::duration_cast<std::chrono::milliseconds>(
-            reg->Device()->Port()->GetSendTime(newPduSize + 8 + 5) + AverageResponseTime + deviceConfig.RequestDelay +
-            2 * deviceConfig.FrameTimeout);
+            sendTime + AverageResponseTime + deviceConfig.RequestDelay + 2 * deviceConfig.FrameTimeout);
 
         if (((Count != 0) && !AddingRegisterIncreasesSize(isSingleBit, extend)) || (newPollTime <= pollLimit)) {
 
@@ -216,6 +216,13 @@ namespace Modbus // modbus protocol common utilities
             RegisterList().push_back(reg);
             Count += extend;
             return true;
+        } else if (newPollTime <= pollLimit) {
+            LOG(Debug) << "Poll time for " << reg->ToString() << " is too long: " << newPollTime.count() << " ms"
+                       << " (sendTime=" << sendTime.count() << " ms, "
+                       << "AverageResponseTime=" << AverageResponseTime.count() << " ms, "
+                       << "RequestDelay=" << deviceConfig.RequestDelay.count() << " ms, "
+                       << "FrameTimeout=" << deviceConfig.FrameTimeout.count() << " ms)"
+                       << ", limit is " << pollLimit.count() << " ms";
         }
         return false;
     }
