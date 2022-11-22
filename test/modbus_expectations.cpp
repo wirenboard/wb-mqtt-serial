@@ -7,7 +7,7 @@ void TModbusExpectations::EnqueueCoilReadResponse(uint8_t exception)
         WrapPDU({
             0x01, // function code
             0x00, // starting address Hi
-            0,    // starting address Lo
+            0x00, // starting address Lo
             0x00, // quantity Hi
             0x02, // quantity Lo
         }),
@@ -27,7 +27,7 @@ void TModbusExpectations::EnqueueCoilOneByOneReadResponse(uint8_t exception)
         WrapPDU({
             0x01, // function code
             0x00, // starting address Hi
-            0,    // starting address Lo
+            0x00, // starting address Lo
             0x00, // quantity Hi
             0x01, // quantity Lo
         }),
@@ -44,7 +44,7 @@ void TModbusExpectations::EnqueueCoilOneByOneReadResponse(uint8_t exception)
         WrapPDU({
             0x01, // function code
             0x00, // starting address Hi
-            1,    // starting address Lo
+            0x01, // starting address Lo
             0x00, // quantity Hi
             0x01, // quantity Lo
         }),
@@ -65,7 +65,7 @@ void TModbusExpectations::EnqueueHoldingPackReadResponse(uint8_t exception)
         WrapPDU({
             0x03, // function code
             0x00, // starting address Hi
-            4,    // starting address Lo
+            0x04, // starting address Lo
             0x00, // quantity Hi
             0x06, // quantity Lo
         }),
@@ -94,7 +94,7 @@ void TModbusExpectations::EnqueueHoldingPackReadResponse(uint8_t exception)
         WrapPDU({
             0x03, // function code
             0x00, // starting address Hi
-            18,   // starting address Lo
+            0x12, // starting address Lo
             0x00, // quantity Hi
             0x01, // quantity Lo
         }),
@@ -116,7 +116,7 @@ void TModbusExpectations::EnqueueHoldingPartialPackReadResponse(uint8_t exceptio
         WrapPDU({
             0x03, // function code
             0x00, // starting address Hi
-            4,    // starting address Lo
+            0x04, // starting address Lo
             0x00, // quantity Hi
             0x03, // quantity Lo
         }),
@@ -138,7 +138,7 @@ void TModbusExpectations::EnqueueHoldingPartialPackReadResponse(uint8_t exceptio
         WrapPDU({
             0x03, // function code
             0x00, // starting address Hi
-            7,    // starting address Lo
+            0x07, // starting address Lo
             0x00, // quantity Hi
             0x01, // quantity Lo
         }),
@@ -156,7 +156,7 @@ void TModbusExpectations::EnqueueHoldingPartialPackReadResponse(uint8_t exceptio
         WrapPDU({
             0x03, // function code
             0x00, // starting address Hi
-            8,    // starting address Lo
+            0x08, // starting address Lo
             0x00, // quantity Hi
             0x01, // quantity Lo
         }),
@@ -174,7 +174,7 @@ void TModbusExpectations::EnqueueHoldingPartialPackReadResponse(uint8_t exceptio
         WrapPDU({
             0x03, // function code
             0x00, // starting address Hi
-            9,    // starting address Lo
+            0x09, // starting address Lo
             0x00, // quantity Hi
             0x01, // quantity Lo
         }),
@@ -193,7 +193,7 @@ void TModbusExpectations::EnqueueHoldingPartialPackReadResponse(uint8_t exceptio
         WrapPDU({
             0x03, // function code
             0x00, // starting address Hi
-            18,   // starting address Lo
+            0x12, // starting address Lo
             0x00, // quantity Hi
             0x01, // quantity Lo
         }),
@@ -215,7 +215,7 @@ void TModbusExpectations::EnqueueHoldingPackHoles10ReadResponse(uint8_t exceptio
         WrapPDU({
             0x03, // function code
             0x00, // starting address Hi
-            4,    // starting address Lo
+            0x04, // starting address Lo
             0x00, // quantity Hi
             0x0F, // quantity Lo
         }),
@@ -281,7 +281,7 @@ void TModbusExpectations::EnqueueHoldingPackUnavailableOnBorderReadResponse()
     Expector()->Expect(WrapPDU({
                            0x03, // function code
                            0x00, // starting address Hi
-                           12,   // starting address Lo
+                           0x0C, // starting address Lo
                            0x00, // quantity Hi
                            0x01, // quantity Lo
                        }),
@@ -338,7 +338,7 @@ void TModbusExpectations::EnqueueHoldingPackUnavailableInTheMiddleReadResponse()
     Expector()->Expect(WrapPDU({
                            0x03, // function code
                            0x00, // starting address Hi
-                           9,    // starting address Lo
+                           0x09, // starting address Lo
                            0x00, // quantity Hi
                            0x01, // quantity Lo
                        }),
@@ -426,7 +426,7 @@ void TModbusExpectations::EnqueueHoldingPackUnavailableAndHolesReadResponse()
     Expector()->Expect(WrapPDU({
                            0x03, // function code
                            0x00, // starting address Hi
-                           9,    // starting address Lo
+                           0x09, // starting address Lo
                            0x00, // quantity Hi
                            0x01, // quantity Lo
                        }),
@@ -439,7 +439,7 @@ void TModbusExpectations::EnqueueHoldingPackUnavailableAndHolesReadResponse()
     Expector()->Expect(WrapPDU({
                            0x03, // function code
                            0x00, // starting address Hi
-                           11,   // starting address Lo
+                           0x0B, // starting address Lo
                            0x00, // quantity Hi
                            0x01, // quantity Lo
                        }),
@@ -452,7 +452,7 @@ void TModbusExpectations::EnqueueHoldingPackUnavailableAndHolesReadResponse()
     Expector()->Expect(WrapPDU({
                            0x03, // function code
                            0x00, // starting address Hi
-                           12,   // starting address Lo
+                           0x0C, // starting address Lo
                            0x00, // quantity Hi
                            0x01, // quantity Lo
                        }),
@@ -637,7 +637,7 @@ void TModbusExpectations::EnqueueHoldingPackMax3ReadResponse(uint8_t exception)
         WrapPDU({
             0x03, // function code
             0x00, // starting address Hi
-            4,    // starting address Lo
+            0x04, // starting address Lo
             0x00, // quantity Hi
             0x03, // quantity Lo
         }),
@@ -660,7 +660,7 @@ void TModbusExpectations::EnqueueHoldingPackMax3ReadResponse(uint8_t exception)
         WrapPDU({
             0x03, // function code
             0x00, // starting address Hi
-            7,    // starting address Lo
+            0x07, // starting address Lo
             0x00, // quantity Hi
             0x03, // quantity Lo
         }),
@@ -683,7 +683,7 @@ void TModbusExpectations::EnqueueHoldingPackMax3ReadResponse(uint8_t exception)
         WrapPDU({
             0x03, // function code
             0x00, // starting address Hi
-            18,   // starting address Lo
+            0x12, // starting address Lo
             0x00, // quantity Hi
             0x01, // quantity Lo
         }),
@@ -705,7 +705,7 @@ void TModbusExpectations::EnqueueDiscreteReadResponse(uint8_t exception)
         WrapPDU({
             0x02, // function code
             0x00, // starting address Hi
-            20,   // starting address Lo
+            0x14, // starting address Lo
             0x00, // quantity Hi
             0x01, // quantity Lo
         }),
@@ -726,7 +726,7 @@ void TModbusExpectations::EnqueueHoldingReadS64Response(uint8_t exception)
         WrapPDU({
             0x03, // function code
             0x00, // starting address Hi
-            30,   // starting address Lo
+            0x1E, // starting address Lo
             0x00, // quantity Hi
             0x04, // quantity Lo
         }),
@@ -754,7 +754,7 @@ void TModbusExpectations::EnqueueStringReadResponse(uint8_t exception)
         WrapPDU({
             0x03, // function code
             0x00, // starting address Hi
-            120,   // starting address Lo
+            0x78, // starting address Lo
             0x00, // quantity Hi
             0x10, // quantity Lo
         }),
@@ -807,7 +807,7 @@ void TModbusExpectations::EnqueueHoldingReadF32Response(uint8_t exception)
         WrapPDU({
             0x03, // function code
             0x00, // starting address Hi
-            50,   // starting address Lo
+            0x32, // starting address Lo
             0x00, // quantity Hi
             0x02, // quantity Lo
         }),
@@ -831,7 +831,7 @@ void TModbusExpectations::EnqueueHoldingReadU16Response(uint8_t exception, bool 
         WrapPDU({
             0x03, // function code
             0x00, // starting address Hi
-            70,   // starting address Lo
+            0x46, // starting address Lo
             0x00, // quantity Hi
             0x01, // quantity Lo
         }),
@@ -854,7 +854,7 @@ void TModbusExpectations::EnqueueInputReadU16Response(uint8_t exception)
         WrapPDU({
             0x04, // function code
             0x00, // starting address Hi
-            40,   // starting address Lo
+            0x28, // starting address Lo
             0x00, // quantity Hi
             0x01, // quantity Lo
         }),
@@ -875,7 +875,7 @@ void TModbusExpectations::EnqueueHoldingSingleMax3ReadResponse(uint8_t exception
         WrapPDU({
             0x03, // function code
             0x00, // starting address Hi
-            90,   // starting address Lo
+            0x5A, // starting address Lo
             0x00, // quantity Hi
             0x04, // quantity Lo
         }),
@@ -899,7 +899,7 @@ void TModbusExpectations::EnqueueHoldingSingleMax3ReadResponse(uint8_t exception
         WrapPDU({
             0x03, // function code
             0x00, // starting address Hi
-            94,   // starting address Lo
+            0x5E, // starting address Lo
             0x00, // quantity Hi
             0x01, // quantity Lo
         }),
@@ -920,7 +920,7 @@ void TModbusExpectations::EnqueueHoldingMultiMax3ReadResponse(uint8_t exception)
         WrapPDU({
             0x03, // function code
             0x00, // starting address Hi
-            95,   // starting address Lo
+            0x5F, // starting address Lo
             0x00, // quantity Hi
             0x04, // quantity Lo
         }),
@@ -944,7 +944,7 @@ void TModbusExpectations::EnqueueHoldingMultiMax3ReadResponse(uint8_t exception)
         WrapPDU({
             0x03, // function code
             0x00, // starting address Hi
-            99,   // starting address Lo
+            0x63, // starting address Lo
             0x00, // quantity Hi
             0x01, // quantity Lo
         }),
@@ -965,7 +965,7 @@ void TModbusExpectations::EnqueueHoldingSingleReadResponse(uint8_t exception)
         WrapPDU({
             0x03, // function code
             0x00, // starting address Hi
-            90,   // starting address Lo
+            0x5A, // starting address Lo
             0x00, // quantity Hi
             0x05, // quantity Lo
         }),
@@ -994,7 +994,7 @@ void TModbusExpectations::EnqueueHoldingSingleOneByOneReadResponse(uint8_t excep
         WrapPDU({
             0x03, // function code
             0x00, // starting address Hi
-            90,   // starting address Lo
+            0x5A, // starting address Lo
             0x00, // quantity Hi
             0x04, // quantity Lo
         }),
@@ -1018,7 +1018,7 @@ void TModbusExpectations::EnqueueHoldingSingleOneByOneReadResponse(uint8_t excep
         WrapPDU({
             0x03, // function code
             0x00, // starting address Hi
-            94,   // starting address Lo
+            0x5E, // starting address Lo
             0x00, // quantity Hi
             0x01, // quantity Lo
         }),
@@ -1039,7 +1039,7 @@ void TModbusExpectations::EnqueueHoldingMultiReadResponse(uint8_t exception)
         WrapPDU({
             0x03, // function code
             0x00, // starting address Hi
-            95,   // starting address Lo
+            0x5F, // starting address Lo
             0x00, // quantity Hi
             0x05, // quantity Lo
         }),
@@ -1068,7 +1068,7 @@ void TModbusExpectations::EnqueueHoldingMultiOneByOneReadResponse(uint8_t except
         WrapPDU({
             0x03, // function code
             0x00, // starting address Hi
-            95,   // starting address Lo
+            0x5F, // starting address Lo
             0x00, // quantity Hi
             0x04, // quantity Lo
         }),
@@ -1092,7 +1092,7 @@ void TModbusExpectations::EnqueueHoldingMultiOneByOneReadResponse(uint8_t except
         WrapPDU({
             0x03, // function code
             0x00, // starting address Hi
-            99,   // starting address Lo
+            0x63, // starting address Lo
             0x00, // quantity Hi
             0x01, // quantity Lo
         }),
@@ -1113,14 +1113,14 @@ void TModbusExpectations::EnqueueHoldingSingleWriteU64Response(uint8_t exception
         WrapPDU({
             0x06, // function code
             0x00, // starting address Hi
-            93,   // starting address Lo
+            0x5D, // starting address Lo
             0x06, // value Hi
             0x07, // value Lo
         }),
         WrapPDU(exception == 0 ? std::vector<int>{
                                      0x06, // function code
                                      0x00, // starting address Hi
-                                     93,   // starting address Lo
+                                     0x5D, // starting address Lo
                                      0x06, // value Hi
                                      0x07, // value Lo
                                  }
@@ -1136,14 +1136,14 @@ void TModbusExpectations::EnqueueHoldingSingleWriteU64Response(uint8_t exception
         WrapPDU({
             0x06, // function code
             0x00, // starting address Hi
-            92,   // starting address Lo
+            0x5C, // starting address Lo
             0x04, // value Hi
             0x05, // value Lo
         }),
         WrapPDU(exception == 0 ? std::vector<int>{
                                      0x06, // function code
                                      0x00, // starting address Hi
-                                     92,   // starting address Lo
+                                     0x5C, // starting address Lo
                                      0x04, // value Hi
                                      0x05, // value Lo
                                  }
@@ -1155,14 +1155,14 @@ void TModbusExpectations::EnqueueHoldingSingleWriteU64Response(uint8_t exception
         WrapPDU({
             0x06, // function code
             0x00, // starting address Hi
-            91,   // starting address Lo
+            0x5B, // starting address Lo
             0x02, // value Hi
             0x03, // value Lo
         }),
         WrapPDU(exception == 0 ? std::vector<int>{
                                      0x06, // function code
                                      0x00, // starting address Hi
-                                     91,   // starting address Lo
+                                     0x5B, // starting address Lo
                                      0x02, // value Hi
                                      0x03, // value Lo
                                  }
@@ -1174,14 +1174,14 @@ void TModbusExpectations::EnqueueHoldingSingleWriteU64Response(uint8_t exception
         WrapPDU({
             0x06, // function code
             0x00, // starting address Hi
-            90,   // starting address Lo
+            0x5A, // starting address Lo
             0x00, // value Hi
             0x01, // value Lo
         }),
         WrapPDU(exception == 0 ? std::vector<int>{
                                      0x06, // function code
                                      0x00, // starting address Hi
-                                     90,   // starting address Lo
+                                     0x5A, // starting address Lo
                                      0x00, // value Hi
                                      0x01, // value Lo
                                  }
@@ -1196,14 +1196,14 @@ void TModbusExpectations::EnqueueHoldingSingleWriteU16Response(uint8_t exception
         WrapPDU({
             0x06, // function code
             0x00, // starting address Hi
-            94,   // starting address Lo
+            0x5E, // starting address Lo
             0x0f, // value Hi
             0x41, // value Lo
         }),
         WrapPDU(exception == 0 ? std::vector<int>{
                                      0x06, // function code
                                      0x00, // starting address Hi
-                                     94,   // starting address Lo
+                                     0x5E, // starting address Lo
                                      0x0f, // value Hi
                                      0x41, // value Lo
                                  }
@@ -1218,7 +1218,7 @@ void TModbusExpectations::EnqueueHoldingMultiWriteU64Response(uint8_t exception)
         WrapPDU({
             0x10, // function code
             0x00, // starting address Hi
-            95,   // starting address Lo
+            0x5F, // starting address Lo
             0x00, // quantity Hi
             0x04, // quantity Lo
             0x08, // byte count
@@ -1234,7 +1234,7 @@ void TModbusExpectations::EnqueueHoldingMultiWriteU64Response(uint8_t exception)
         WrapPDU(exception == 0 ? std::vector<int>{
                                      0x10, // function code
                                      0x00, // starting address Hi
-                                     95,   // starting address Lo
+                                     0x5F, // starting address Lo
                                      0x00, // quantity Hi
                                      0x04, // quantity Lo
                                  }
@@ -1249,7 +1249,7 @@ void TModbusExpectations::EnqueueHoldingMultiWriteU16Response(uint8_t exception)
         WrapPDU({
             0x10, // function code
             0x00, // starting address Hi
-            99,   // starting address Lo
+            0x63, // starting address Lo
             0x00, // quantity Hi
             0x01, // quantity Lo
             0x02, // byte count
@@ -1259,7 +1259,7 @@ void TModbusExpectations::EnqueueHoldingMultiWriteU16Response(uint8_t exception)
         WrapPDU(exception == 0 ? std::vector<int>{
                                      0x10, // function code
                                      0x00, // starting address Hi
-                                     99,   // starting address Lo
+                                     0x63, // starting address Lo
                                      0x00, // quantity Hi
                                      0x01, // quantity Lo
                                  }
@@ -1298,14 +1298,14 @@ void TModbusExpectations::EnqueueHoldingWriteU16Response(uint8_t exception)
         WrapPDU({
             0x06, // function code
             0x00, // starting address Hi
-            70,   // starting address Lo
+            0x46, // starting address Lo
             0x0f, // value Hi
             0x41, // value Lo
         }),
         WrapPDU(exception == 0 ? std::vector<int>{
                                      0x06, // function code
                                      0x00, // starting address Hi
-                                     70,   // starting address Lo
+                                     0x46, // starting address Lo
                                      0x0f, // value Hi
                                      0x41, // value Lo
                                  }
@@ -1320,14 +1320,14 @@ void TModbusExpectations::EnqueueHoldingWriteU16ResponseWithWriteAddress(uint8_t
         WrapPDU({
             0x06, // function code
             0x00, // starting address Hi
-            115,   // starting address Lo
+            0x73, // starting address Lo
             0x11, // value Hi
             0x9C, // value Lo
         }),
         WrapPDU(exception == 0 ? std::vector<int>{
                                      0x06, // function code
                                      0x00, // starting address Hi
-                                     115,   // starting address Lo
+                                     0x73, // starting address Lo
                                      0x11, // value Hi
                                      0x9C, // value Lo
                                  }
@@ -1342,14 +1342,14 @@ void TModbusExpectations::EnqueueHoldingWriteU16ResponseWithOffsetWriteOptions(u
         WrapPDU({
             0x06, // function code
             0x00, // starting address Hi
-            116,   // starting address Lo
+            0x74, // starting address Lo
             0x00, // value Hi
             0x14, // value Lo
         }),
         WrapPDU(exception == 0 ? std::vector<int>{
                                      0x06, // function code
                                      0x00, // starting address Hi
-                                     116,   // starting address Lo
+                                     0x74, // starting address Lo
                                      0x00, // value Hi
                                      0x14, // value Lo
                                  }
@@ -1364,7 +1364,7 @@ void TModbusExpectations::EnqueueHoldingReadU16ResponseWithWriteAddress(uint8_t 
         WrapPDU({
             0x03, // function code
             0x00, // starting address Hi
-            110,   // starting address Lo
+            0x6E, // starting address Lo
             0x00, // quantity Hi
             0x01, // quantity Lo
         }),
@@ -1385,7 +1385,7 @@ void TModbusExpectations::EnqueueHoldingReadU16ResponseWithOffsetWriteOptions(ui
         WrapPDU({
             0x03, // function code
             0x00, // starting address Hi
-            111,   // starting address Lo
+            0x6F, // starting address Lo
             0x00, // quantity Hi
             0x01, // quantity Lo
         }),
@@ -1432,7 +1432,7 @@ void TModbusExpectations::EnqueueHoldingWriteS64Response(uint8_t exception)
         WrapPDU({
             0x10, // function code
             0x00, // starting address Hi
-            30,   // starting address Lo
+            0x1E, // starting address Lo
             0x00, // quantity Hi
             0x04, // quantity Lo
             0x08, // byte count
@@ -1448,7 +1448,7 @@ void TModbusExpectations::EnqueueHoldingWriteS64Response(uint8_t exception)
         WrapPDU(exception == 0 ? std::vector<int>{
                                      0x10, // function code
                                      0x00, // starting address Hi
-                                     30,   // starting address Lo
+                                     0x1E, // starting address Lo
                                      0x00, // quantity Hi
                                      0x04, // quantity Lo
                                  }
@@ -1465,14 +1465,14 @@ void TModbusExpectations::EnqueueRGBWriteResponse(uint8_t exception)
         WrapPDU({
             0x06, // function code
             0x00, // starting address Hi
-            4,    // starting address Lo
+            0x04, // starting address Lo
             0x00, // data Hi
             0x0a, // data Lo
         }),
         WrapPDU(exception == 0 ? std::vector<int>{
                                      0x06, // function code
                                      0x00, // starting address Hi
-                                     4,    // starting address Lo
+                                     0x04, // starting address Lo
                                      0x00, // data Hi
                                      0x0a, // data Lo
                                  }
@@ -1485,14 +1485,14 @@ void TModbusExpectations::EnqueueRGBWriteResponse(uint8_t exception)
         WrapPDU({
             0x06, // function code
             0x00, // starting address Hi
-            5,    // starting address Lo
+            0x05, // starting address Lo
             0x00, // data Hi
             0x14, // data Lo
         }),
         WrapPDU(exception == 0 ? std::vector<int>{
                                      0x06, // function code
                                      0x00, // starting address Hi
-                                     5,    // starting address Lo
+                                     0x05, // starting address Lo
                                      0x00, // data Hi
                                      0x14, // data Lo
                                  }
@@ -1505,14 +1505,14 @@ void TModbusExpectations::EnqueueRGBWriteResponse(uint8_t exception)
         WrapPDU({
             0x06, // function code
             0x00, // starting address Hi
-            6,    // starting address Lo
+            0x06, // starting address Lo
             0x00, // data Hi
             0x1E, // data Lo
         }),
         WrapPDU(exception == 0 ? std::vector<int>{
                                      0x06, // function code
                                      0x00, // starting address Hi
-                                     6,    // starting address Lo
+                                     0x06, // starting address Lo
                                      0x00, // data Hi
                                      0x1E, // data Lo
                                  }
@@ -1528,7 +1528,7 @@ void TModbusExpectations::Enqueue10CoilsReadResponse(uint8_t exception)
         WrapPDU({
             0x01, // function code
             0x00, // starting address Hi
-            72,   // starting address Lo
+            0x48, // starting address Lo
             0x00, // quantity Hi
             0x0a, // quantity Lo
         }),
@@ -1581,7 +1581,7 @@ void TModbusExpectations::Enqueue10CoilsMax3ReadResponse(uint8_t exception)
         WrapPDU({
             0x01, // function code
             0x00, // starting address Hi
-            72,   // starting address Lo
+            0x48, // starting address Lo
             0x00, // quantity Hi
             0x03, // quantity Lo
         }),
@@ -1598,7 +1598,7 @@ void TModbusExpectations::Enqueue10CoilsMax3ReadResponse(uint8_t exception)
         WrapPDU({
             0x01, // function code
             0x00, // starting address Hi
-            75,   // starting address Lo
+            0x4B, // starting address Lo
             0x00, // quantity Hi
             0x03, // quantity Lo
         }),
@@ -1615,7 +1615,7 @@ void TModbusExpectations::Enqueue10CoilsMax3ReadResponse(uint8_t exception)
         WrapPDU({
             0x01, // function code
             0x00, // starting address Hi
-            78,   // starting address Lo
+            0x4E, // starting address Lo
             0x00, // quantity Hi
             0x03, // quantity Lo
         }),
@@ -1632,7 +1632,7 @@ void TModbusExpectations::Enqueue10CoilsMax3ReadResponse(uint8_t exception)
         WrapPDU({
             0x01, // function code
             0x00, // starting address Hi
-            81,   // starting address Lo
+            0x51, // starting address Lo
             0x00, // quantity Hi
             0x01, // quantity Lo
         }),
@@ -1798,7 +1798,7 @@ void TModbusExpectations::EnqueueU8Shift0Bits8HoldingReadResponse()
     Expector()->Expect(WrapPDU({
                            0x03, // function code
                            0x00, // starting address Hi
-                           70,   // starting address Lo
+                           0x46, // starting address Lo
                            0x00, // quantity Hi
                            0x01, // quantity Lo
                        }),
@@ -1816,7 +1816,7 @@ void TModbusExpectations::EnqueueU16Shift8HoldingReadResponse(bool afterWrite)
     Expector()->Expect(WrapPDU({
                            0x03, // function code
                            0x00, // starting address Hi
-                           70,   // starting address Lo
+                           0x46, // starting address Lo
                            0x00, // quantity Hi
                            0x02, // quantity Lo
                        }),
@@ -1836,7 +1836,7 @@ void TModbusExpectations::EnqueueU8Shift0SingleBitHoldingReadResponse(bool after
     Expector()->Expect(WrapPDU({
                            0x03, // function code
                            0x00, // starting address Hi
-                           72,   // starting address Lo
+                           0x48, // starting address Lo
                            0x00, // quantity Hi
                            0x01, // quantity Lo
                        }),
@@ -1854,7 +1854,7 @@ void TModbusExpectations::EnqueueU8Shift1SingleBitHoldingReadResponse(bool after
     Expector()->Expect(WrapPDU({
                            0x03, // function code
                            0x00, // starting address Hi
-                           72,   // starting address Lo
+                           0x48, // starting address Lo
                            0x00, // quantity Hi
                            0x01, // quantity Lo
                        }),
@@ -1872,7 +1872,7 @@ void TModbusExpectations::EnqueueU8Shift2SingleBitHoldingReadResponse(bool after
     Expector()->Expect(WrapPDU({
                            0x03, // function code
                            0x00, // starting address Hi
-                           72,   // starting address Lo
+                           0x48, // starting address Lo
                            0x00, // quantity Hi
                            0x01, // quantity Lo
                        }),
@@ -1890,14 +1890,14 @@ void TModbusExpectations::EnqueueU8Shift1SingleBitHoldingWriteResponse()
     Expector()->Expect(WrapPDU({
                            0x06, // function code
                            0x00, // starting address Hi
-                           72,   // starting address Lo
+                           0x48, // starting address Lo
                            0x00, // value Hi
                            0x07, // value Lo
                        }),
                        WrapPDU({
                            0x06, // function code
                            0x00, // starting address Hi
-                           72,   // starting address Lo
+                           0x48, // starting address Lo
                            0x00, // value Hi
                            0x07, // value Lo
                        }),
@@ -1909,7 +1909,7 @@ void TModbusExpectations::EnqueueU16Shift8HoldingWriteResponse()
     Expector()->Expect(WrapPDU({
                            0x10, // function code
                            0x00, // starting address Hi
-                           70,   // starting address Lo
+                           0x46, // starting address Lo
                            0x00, // quantity Hi
                            0x02, // quantity Lo
                            0x04, // byte count
@@ -1921,7 +1921,7 @@ void TModbusExpectations::EnqueueU16Shift8HoldingWriteResponse()
                        WrapPDU({
                            0x10, // function code
                            0x00, // starting address Hi
-                           70,   // starting address Lo
+                           0x46, // starting address Lo
                            0x00, // quantity Hi
                            0x02, // quantity Lo
                        }),
@@ -1935,7 +1935,7 @@ void TModbusExpectations::EnqueueHoldingSeparateReadResponse(uint8_t exception)
         WrapPDU({
             0x03, // function code
             0x00, // starting address Hi
-            4,    // starting address Lo
+            0x04, // starting address Lo
             0x00, // quantity Hi
             0x01, // quantity Lo
         }),
@@ -1953,7 +1953,7 @@ void TModbusExpectations::EnqueueHoldingSeparateReadResponse(uint8_t exception)
         WrapPDU({
             0x03, // function code
             0x00, // starting address Hi
-            5,    // starting address Lo
+            0x05, // starting address Lo
             0x00, // quantity Hi
             0x01, // quantity Lo
         }),
@@ -1971,7 +1971,7 @@ void TModbusExpectations::EnqueueHoldingSeparateReadResponse(uint8_t exception)
         WrapPDU({
             0x03, // function code
             0x00, // starting address Hi
-            6,    // starting address Lo
+            0x06, // starting address Lo
             0x00, // quantity Hi
             0x01, // quantity Lo
         }),
@@ -1989,7 +1989,7 @@ void TModbusExpectations::EnqueueHoldingSeparateReadResponse(uint8_t exception)
         WrapPDU({
             0x03, // function code
             0x00, // starting address Hi
-            7,    // starting address Lo
+            0x07, // starting address Lo
             0x00, // quantity Hi
             0x01, // quantity Lo
         }),
@@ -2007,7 +2007,7 @@ void TModbusExpectations::EnqueueHoldingSeparateReadResponse(uint8_t exception)
         WrapPDU({
             0x03, // function code
             0x00, // starting address Hi
-            8,    // starting address Lo
+            0x08, // starting address Lo
             0x00, // quantity Hi
             0x01, // quantity Lo
         }),
@@ -2025,7 +2025,7 @@ void TModbusExpectations::EnqueueHoldingSeparateReadResponse(uint8_t exception)
         WrapPDU({
             0x03, // function code
             0x00, // starting address Hi
-            9,    // starting address Lo
+            0x09, // starting address Lo
             0x00, // quantity Hi
             0x01, // quantity Lo
         }),
@@ -2044,7 +2044,7 @@ void TModbusExpectations::EnqueueHoldingSeparateReadResponse(uint8_t exception)
         WrapPDU({
             0x03, // function code
             0x00, // starting address Hi
-            18,   // starting address Lo
+            0x12, // starting address Lo
             0x00, // quantity Hi
             0x01, // quantity Lo
         }),
