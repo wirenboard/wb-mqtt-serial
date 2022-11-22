@@ -15,7 +15,7 @@ protected:
     void SetUp();
     set<int> VerifyQuery(PRegister reg = PRegister());
 
-    virtual PDeviceConfig GetDeviceConfig();
+    virtual PDeviceConfig GetDeviceConfig() const;
 
     PModbusDevice ModbusDev;
 
@@ -38,7 +38,7 @@ protected:
     PRegister ModbusHoldingString;
 };
 
-PDeviceConfig TModbusTest::GetDeviceConfig()
+PDeviceConfig TModbusTest::GetDeviceConfig() const
 {
     PDeviceConfig dev = std::make_shared<TDeviceConfig>("modbus", std::to_string(0x01), "modbus");
     dev->MaxReadRegisters = 10;
@@ -390,6 +390,19 @@ TEST_F(TModbusTest, WrongFunctionCodeWithExceptionWrite)
     }
 
     SerialPort->Close();
+}
+
+TEST_F(TModbusTest, MinReadRegisters)
+{
+    EnqueueHoldingReadU16Max3ReadResponse();
+
+    ModbusDev->DeviceConfig()->MinReadRegisters = 2;
+
+    auto range = ModbusDev->CreateRegisterRange();
+    range->Add(ModbusHoldingU16WithAddressWrite, std::chrono::milliseconds::max());
+    ModbusDev->ReadRegisterRange(range);
+    auto registerList = range->RegisterList();
+    EXPECT_EQ(registerList.size(), 1);
 }
 
 class TModbusIntegrationTest: public TSerialDeviceIntegrationTest, public TModbusExpectations
