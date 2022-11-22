@@ -403,6 +403,10 @@ TEST_F(TModbusTest, MinReadRegisters)
     ModbusDev->ReadRegisterRange(range);
     auto registerList = range->RegisterList();
     EXPECT_EQ(registerList.size(), 1);
+    auto reg = registerList.front();
+    EXPECT_EQ(GetUint32RegisterAddress(reg->GetAddress()), 110);
+    EXPECT_FALSE(reg->GetErrorState().test(TRegister::TError::ReadError));
+    EXPECT_EQ(reg->GetValue(), 0x15);
 }
 
 class TModbusIntegrationTest: public TSerialDeviceIntegrationTest, public TModbusExpectations

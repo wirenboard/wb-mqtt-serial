@@ -216,7 +216,8 @@ namespace Modbus // modbus protocol common utilities
             RegisterList().push_back(reg);
             Count += extend;
             return true;
-        } else if (newPollTime <= pollLimit) {
+        }
+        if (newPollTime <= pollLimit) {
             LOG(Debug) << "Poll time for " << reg->ToString() << " is too long: " << newPollTime.count() << " ms"
                        << " (sendTime=" << sendTime.count() << " ms, "
                        << "AverageResponseTime=" << AverageResponseTime.count() << " ms, "
