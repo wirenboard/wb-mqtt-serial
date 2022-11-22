@@ -394,7 +394,7 @@ TEST_F(TModbusTest, WrongFunctionCodeWithExceptionWrite)
 
 TEST_F(TModbusTest, MinReadRegisters)
 {
-    EnqueueHoldingReadU16Max3ReadResponse();
+    EnqueueHoldingReadU16Min2ReadResponse();
 
     ModbusDev->DeviceConfig()->MinReadRegisters = 2;
 

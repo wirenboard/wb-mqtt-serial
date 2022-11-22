@@ -1646,7 +1646,7 @@ void TModbusExpectations::Enqueue10CoilsMax3ReadResponse(uint8_t exception)
         __func__);
 }
 
-void TModbusExpectations::EnqueueHoldingReadU16Max3ReadResponse(uint8_t exception)
+void TModbusExpectations::EnqueueHoldingReadU16Min2ReadResponse(uint8_t exception)
 {
     Expector()->Expect(
         WrapPDU({
