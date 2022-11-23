@@ -137,6 +137,7 @@
                     "id" : "wb-mrgb",
                     "slave_id" : 2,
                     "max_read_registers": 0,
+                    "min_read_registers": 2,
                     "channels" : [
                         {
                             "name" : "RGB",

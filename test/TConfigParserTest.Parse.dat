@@ -411,7 +411,7 @@ Ports:
         MaxRegHole: 0
         MaxBitHole: 0
         MaxReadRegisters: 0
-        MinReadRegisters: 1
+        MinReadRegisters: 2
         GuardInterval: 105
         DeviceTimeout: 3000
         Response timeout: 222
