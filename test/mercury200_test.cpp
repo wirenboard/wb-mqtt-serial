@@ -10,7 +10,7 @@ protected:
     void VerifyEnergyQuery();
     void VerifyParamQuery();
 
-    virtual PDeviceConfig GetDeviceConfig();
+    virtual PDeviceConfig GetDeviceConfig() const;
 
     PMercury200Device Mercury200Dev;
 
@@ -24,7 +24,7 @@ protected:
     PRegister Mercury200BatReg;
 };
 
-PDeviceConfig TMercury200Test::GetDeviceConfig()
+PDeviceConfig TMercury200Test::GetDeviceConfig() const
 {
     return std::make_shared<TDeviceConfig>("mercury200", "0xFE123456", "mercury200");
 }

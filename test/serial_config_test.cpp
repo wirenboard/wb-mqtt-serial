@@ -58,6 +58,7 @@ protected:
                 Emit() << "MaxRegHole: " << device_config->MaxRegHole;
                 Emit() << "MaxBitHole: " << device_config->MaxBitHole;
                 Emit() << "MaxReadRegisters: " << device_config->MaxReadRegisters;
+                Emit() << "MinReadRegisters: " << device_config->MinReadRegisters;
                 Emit() << "GuardInterval: " << device_config->RequestDelay.count();
                 Emit() << "DeviceTimeout: " << device_config->DeviceTimeout.count();
                 Emit() << "Response timeout: " << device_config->ResponseTimeout.count();
