@@ -1646,6 +1646,27 @@ void TModbusExpectations::Enqueue10CoilsMax3ReadResponse(uint8_t exception)
         __func__);
 }
 
+void TModbusExpectations::EnqueueHoldingReadU16Min2ReadResponse(uint8_t exception)
+{
+    Expector()->Expect(
+        WrapPDU({
+            0x03, // function code
+            0x00, // starting address Hi
+            0x6E, // starting address Lo
+            0x00, // quantity Hi
+            0x02, // quantity Lo
+        }),
+        WrapPDU(exception == 0 ? std::vector<int>{
+                                               0x03, // function code
+                                               0x02, // byte count
+                                               0x00, // data Hi
+                                               0x15  // data Lo
+                                           }
+                                         : std::vector<int>{0x83, // function code + 80
+                                                            exception}),
+        __func__);
+}
+
 void TModbusExpectations::EnqueueInvalidCRCCoilReadResponse()
 {
     auto response = WrapPDU(std::vector<int>{

@@ -15,6 +15,7 @@ Ports:
         MaxRegHole: 0
         MaxBitHole: 0
         MaxReadRegisters: 1
+        MinReadRegisters: 1
         GuardInterval: 20000
         DeviceTimeout: 3000
         Response timeout: 500
@@ -99,6 +100,7 @@ Ports:
         MaxRegHole: 0
         MaxBitHole: 0
         MaxReadRegisters: 1
+        MinReadRegisters: 1
         GuardInterval: 0
         DeviceTimeout: 3000
         Response timeout: 500
@@ -136,6 +138,7 @@ Ports:
         MaxRegHole: 0
         MaxBitHole: 0
         MaxReadRegisters: 1
+        MinReadRegisters: 1
         GuardInterval: 0
         DeviceTimeout: 3000
         Response timeout: 500
@@ -299,6 +302,7 @@ Ports:
         MaxRegHole: 0
         MaxBitHole: 0
         MaxReadRegisters: 1
+        MinReadRegisters: 1
         GuardInterval: 1000
         DeviceTimeout: 2000
         Response timeout: 222
@@ -407,6 +411,7 @@ Ports:
         MaxRegHole: 0
         MaxBitHole: 0
         MaxReadRegisters: 0
+        MinReadRegisters: 2
         GuardInterval: 105
         DeviceTimeout: 3000
         Response timeout: 222
@@ -491,6 +496,7 @@ Ports:
         MaxRegHole: 2
         MaxBitHole: 2
         MaxReadRegisters: 42
+        MinReadRegisters: 1
         GuardInterval: 105
         DeviceTimeout: 3000
         Response timeout: 222
@@ -527,6 +533,7 @@ Ports:
         MaxRegHole: 1
         MaxBitHole: 1
         MaxReadRegisters: 1
+        MinReadRegisters: 1
         GuardInterval: 105
         DeviceTimeout: 3000
         Response timeout: 222
@@ -563,6 +570,7 @@ Ports:
         MaxRegHole: 0
         MaxBitHole: 0
         MaxReadRegisters: 1
+        MinReadRegisters: 1
         GuardInterval: 105
         DeviceTimeout: 3000
         Response timeout: 222
@@ -647,6 +655,7 @@ Ports:
         MaxRegHole: 0
         MaxBitHole: 0
         MaxReadRegisters: 1
+        MinReadRegisters: 1
         GuardInterval: 105
         DeviceTimeout: 3000
         Response timeout: 222
@@ -684,6 +693,7 @@ Ports:
         MaxRegHole: 0
         MaxBitHole: 0
         MaxReadRegisters: 1
+        MinReadRegisters: 1
         GuardInterval: 105
         DeviceTimeout: 3000
         Response timeout: 222

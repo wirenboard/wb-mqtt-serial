@@ -9,7 +9,7 @@ protected:
     void SetUp();
     void VerifyParamQuery();
 
-    virtual PDeviceConfig GetDeviceConfig();
+    virtual PDeviceConfig GetDeviceConfig() const;
 
     PMilurDevice MilurDev;
 
@@ -36,7 +36,7 @@ protected:
     PRegister MilurFrequencyReg;
 };
 
-PDeviceConfig TMilurTest::GetDeviceConfig()
+PDeviceConfig TMilurTest::GetDeviceConfig() const
 {
     return std::make_shared<TDeviceConfig>("milur", std::to_string(0xff), "milur");
 }
@@ -128,10 +128,10 @@ TEST_F(TMilurTest, Exception)
 class TMilurCustomPasswordTest: public TMilurTest
 {
 public:
-    PDeviceConfig GetDeviceConfig();
+    PDeviceConfig GetDeviceConfig() const override;
 };
 
-PDeviceConfig TMilurCustomPasswordTest::GetDeviceConfig()
+PDeviceConfig TMilurCustomPasswordTest::GetDeviceConfig() const
 {
     PDeviceConfig device_config = TMilurTest::GetDeviceConfig();
     device_config->Password = {0x02, 0x03, 0x04, 0x05, 0x06, 0x07};

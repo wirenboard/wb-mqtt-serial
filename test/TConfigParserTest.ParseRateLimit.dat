@@ -16,6 +16,7 @@ Ports:
         MaxRegHole: 0
         MaxBitHole: 0
         MaxReadRegisters: 1
+        MinReadRegisters: 1
         GuardInterval: 20000
         DeviceTimeout: 3000
         Response timeout: 500
@@ -128,6 +129,7 @@ Ports:
         MaxRegHole: 0
         MaxBitHole: 0
         MaxReadRegisters: 1
+        MinReadRegisters: 1
         GuardInterval: 20000
         DeviceTimeout: 3000
         Response timeout: 500
@@ -248,6 +250,7 @@ Ports:
         MaxRegHole: 0
         MaxBitHole: 0
         MaxReadRegisters: 1
+        MinReadRegisters: 1
         GuardInterval: 20000
         DeviceTimeout: 3000
         Response timeout: 500
@@ -360,6 +363,7 @@ Ports:
         MaxRegHole: 0
         MaxBitHole: 0
         MaxReadRegisters: 1
+        MinReadRegisters: 1
         GuardInterval: 20000
         DeviceTimeout: 3000
         Response timeout: 500
@@ -480,6 +484,7 @@ Ports:
         MaxRegHole: 0
         MaxBitHole: 0
         MaxReadRegisters: 1
+        MinReadRegisters: 1
         GuardInterval: 20000
         DeviceTimeout: 3000
         Response timeout: 500
@@ -600,6 +605,7 @@ Ports:
         MaxRegHole: 0
         MaxBitHole: 0
         MaxReadRegisters: 1
+        MinReadRegisters: 1
         GuardInterval: 20000
         DeviceTimeout: 3000
         Response timeout: 500
@@ -719,6 +725,7 @@ Ports:
         MaxRegHole: 0
         MaxBitHole: 0
         MaxReadRegisters: 1
+        MinReadRegisters: 1
         GuardInterval: 20000
         DeviceTimeout: 3000
         Response timeout: 500
