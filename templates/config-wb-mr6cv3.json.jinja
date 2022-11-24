@@ -25,6 +25,12 @@
                 "order": 1,
                 "group": "g_in{{in_num}}"
             },
+            {
+                "title": "Actions for outputs when the input is closed / opened",
+                "id": "gg_in{{in_num}}_mapping_matrix_actions",
+                "group": "g_in{{in_num}}",
+                "order": 1
+            },
             {% for out_num in range(1, OUTPUTS_NUMBER + 1) -%}
             {
                 "title": "Output {{out_num}} Actions",
@@ -191,6 +197,44 @@
                 "condition": "in{{in_num}}_mode==6"
             },
             {% for out_num in range(1, OUTPUTS_NUMBER + 1) -%}
+            "in{{in_num}}_out{{out_num}}_actions": {
+                "group": "gg_in{{in_num}}_mapping_matrix_actions",
+                "title": "Output {{out_num}}",
+                "order": {{out_num}},
+                {% if in_num == 0 -%}
+                "address": {{440 + out_num - 1}},
+                {% else -%}
+                "address": {{384 + out_num - 1 + (in_num-1) * MMATRIX_OUTPUTS_NUMBER}},
+                {% endif -%}
+                "reg_type": "holding",
+                "default": 0,
+                "enum": [0, 1, 2, 3, 4, 5, 6, 7, 8, 9, 10, 11, 12, 13, 14, 15],
+                "enum_titles": [
+                    "no action / no action",
+                    "no action / reset",
+                    "no action / set",
+                    "no action / toggle",
+
+                    "reset / no action",
+                    "reset / reset",
+                    "reset / set",
+                    "reset / toggle",
+
+                    "set / no action",
+                    "set / reset",
+                    "set / set",
+                    "set / toggle",
+
+                    "toggle / no action",
+                    "toggle / reset",
+                    "toggle / set",
+                    "toggle / toggle"
+                ],
+                "condition": "in{{in_num}}_mode==4"
+            },
+            {% endfor -%}
+
+            {% for out_num in range(1, OUTPUTS_NUMBER + 1) -%}
             "in{{in_num}}_out{{out_num}}_sp": {
                 "group": "gg_in{{in_num}}_out{{out_num}}_button_actions",
                 "title": "Short Press",
@@ -250,36 +294,6 @@
                 "enum": [0, 1, 2, 3],
                 "enum_titles": ["no action", "reset", "set", "toggle"],
                 "condition": "in{{in_num}}_mode==6"
-            },
-            "in{{in_num}}_out{{out_num}}_release": {
-                "group": "gg_in{{in_num}}_out{{out_num}}_button_actions",
-                "title": "release_title",
-                "order": 0,
-                {% if in_num == 0 -%}
-                "address": {{856 + out_num - 1}},
-                {% else -%}
-                "address": {{800 + out_num - 1 + (in_num-1) * MMATRIX_OUTPUTS_NUMBER}},
-                {% endif -%}
-                "reg_type": "holding",
-                "default": 0,
-                "enum": [0, 1, 2, 3],
-                "enum_titles": ["no action", "reset", "set", "toggle"],
-                "condition": "in{{in_num}}_mode==4"
-            },
-            "in{{in_num}}_out{{out_num}}_press": {
-                "group": "gg_in{{in_num}}_out{{out_num}}_button_actions",
-                "title": "press_title",
-                "order": 1,
-                {% if in_num == 0 -%}
-                "address": {{920 + out_num - 1}},
-                {% else -%}
-                "address": {{864 + out_num - 1 + (in_num-1) * MMATRIX_OUTPUTS_NUMBER}},
-                {% endif -%}
-                "reg_type": "holding",
-                "default": 0,
-                "enum": [0, 1, 2, 3],
-                "enum_titles": ["no action", "reset", "set", "toggle"],
-                "condition": "in{{in_num}}_mode==4"
             },
             {% endfor -%}
             {% endfor -%}
@@ -577,8 +591,6 @@
                 "secp_waiting_time_description": "If there is no second press during the specified time then press is single. 0 - disables all presses except short and long",
                 "debounce_time_description": "For press detection must be 5-10 times less than second press waiting time"
 
-                "release_title":"Release",
-                "press_title":"Press",
             },
             "ru": {
                 "WB-MR6Cv3_template_title": "WB-MR6C v.3 (6-канальный модуль реле с внутренним блоком питания)",
@@ -617,6 +629,26 @@
                 "set": "включить",
                 "toggle": "переключить",
 
+                "no action / no action": "нет действия / нет действия",
+                "no action / reset": "нет действия / выключить",
+                "no action / set": "нет действия / включить",
+                "no action / toggle": "нет действия / переключить",
+
+                "reset / no action": "выключить / нет действия",
+                "reset / reset": "выключить / выключить",
+                "reset / set": "выключить / включить",
+                "reset / toggle": "выключить / переключить",
+
+                "set / no action": "включить / нет действия",
+                "set / reset": "включить / выключить",
+                "set / set": "включить / включить",
+                "set / toggle": "включить / переключить",
+
+                "toggle / no action": "переключить / нет действия",
+                "toggle / reset": "переключить / выключить",
+                "toggle / set": "переключить / включить",
+                "toggle / toggle": "переключить / переключить",
+
                 "Push button": "Кнопка без фиксации",
                 "Latching switch": "Переключатель с фиксацией",
                 "Turn off all outputs": "Отключить все выходы",
@@ -643,8 +675,6 @@
                 "Long Press": "Длинное нажатие",
                 "Double Press": "Двойное нажатие",
                 "Short then long Press": "Короткое, затем длинное нажатие",
-                "release_title":"Размыкание",
-                "press_title":"Замыкание",
 
                 "lp_hold_time_title": "Время длинного нажатия (мс)",
                 "secp_waiting_time_title": "Время ожидания второго нажатия (мс)",
