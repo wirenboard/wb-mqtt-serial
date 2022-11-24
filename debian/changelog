@@ -1,3 +1,9 @@
+wb-mqtt-serial (2.77.1) stable; urgency=medium
+
+  * Somfy SDN: fix destination address checking
+
+ -- Nikolay Korotkiy <nikolay.korotkiy@wirenboard.com>  Wed, 23 Nov 2022 03:08:01 +0400
+
 wb-mqtt-serial (2.77.0) stable; urgency=medium
 
   * Added support for min_read_registers option
