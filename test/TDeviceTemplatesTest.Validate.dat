@@ -540,12 +540,12 @@ VACON_10
 	Fault counter  =>  Fault counter
 	MWh counter  =>  MWh counter
 	Motor current (A)  =>  Motor current (A)
-	Motor power plus|minus % (of nom)  =>  Motor power plus|minus % (of nom)
+	Motor power  =>  Motor power
 	Motor speed (%)  =>  Motor speed (%)
 	Motor speed (rpm)  =>  Motor speed (rpm)
-	Motor torque plus|minus % (of nom)  =>  Motor torque plus|minus % (of nom)
+	Motor torque  =>  Motor torque
 	Motor voltage  =>  Motor voltage
-	Output frequency (plus|minus Hz)  =>  Output frequency (plus|minus Hz)
+	Output frequency  =>  Output frequency
 	P1.1 Motor nominal voltage  =>  P1.1 Motor nominal voltage
 	P1.2 Motor nominal frequency (Hz)  =>  P1.2 Motor nominal frequency (Hz)
 	P1.3 Motor nominal speed (rpm)  =>  P1.3 Motor nominal speed (rpm)
