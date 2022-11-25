@@ -195,10 +195,11 @@
                 "type": "value"
             },
             {
-                "name": "Output frequency (+/- Hz)",
+                "name": "Output frequency",
                 "reg_type": "input",
                 "address": 2103,
                 "scale": 0.01,
+                "units": "Hz",
                 "type": "value"
             },
             {
@@ -216,18 +217,20 @@
                 "type": "value"
             },
             {
-                "name": "Motor torque +/- % (of nom)",
+                "name": "Motor torque",
                 "reg_type": "input",
                 "address": 2106,
                 "scale": 0.1,
-                "type": "value"
+                "type": "value",
+                "units": "%"
             },
             {
-                "name": "Motor power +/- % (of nom)",
+                "name": "Motor power",
                 "reg_type": "input",
                 "address": 2107,
                 "scale": 0.1,
-                "type": "value"
+                "type": "value",
+                "units": "%"
             },
             {
                 "name": "Motor voltage",
@@ -406,6 +409,16 @@
                 "address": "2000:2:1",
                 "type": "switch"
             }
-        ]
+        ],
+        "translations": {
+            "en": {
+                "Output frequency": "Output frequency (+/- Hz)",
+                "Motor torque": "Motor torque +/- % (of nom)",
+                "Motor power": "Motor power +/- % (of nom)"
+            },
+            "ru": {
+
+            }
+        }
     }
 }

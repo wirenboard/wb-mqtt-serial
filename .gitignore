@@ -53,6 +53,7 @@ workspace.xml
 **/.cproject
 **/.project
 **/.settings
+.idea
 
 # core
 *.core
