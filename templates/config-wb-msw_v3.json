@@ -126,7 +126,7 @@
                 "title": "Low-pass Filter Time Constant (ms)",
                 "address": 91,
                 "reg_type": "holding",
-                "scale": 0.1,
+                "scale": 10,
                 "default": 20,
                 "group": "sound_level",
                 "order": 1

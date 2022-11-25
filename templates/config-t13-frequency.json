@@ -5,8 +5,8 @@
     "device": {
         "name": "t13-VFD",
         "id": "t13_frequency_converter",
+        "min_read_registers": 2,
         "max_read_registers": 10,
-        "poll_interval": 1000,
         "response_timeout_ms": 30,
         "frame_timeout_ms": 40,
         "device_max_fail_cycles": 8,

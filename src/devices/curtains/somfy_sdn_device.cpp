@@ -67,7 +67,7 @@ namespace
             throw TSerialDeviceTransientErrorException("Bad header");
         }
         if (Get<uint32_t>(bytes.begin() + DESTINATION_START, bytes.begin() + DESTINATION_END) != HOST_ADDRESS) {
-            TSerialDeviceTransientErrorException("Bad destination address");
+            throw TSerialDeviceTransientErrorException("Bad destination address");
         }
         if (Get<uint32_t>(bytes.begin() + SOURCE_START, bytes.begin() + SOURCE_END) != address) {
             throw TSerialDeviceTransientErrorException("Bad source address");

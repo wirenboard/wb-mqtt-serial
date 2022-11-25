@@ -11,8 +11,8 @@ protected:
     void SetUp();
     void VerifyMilurQuery();
     void VerifyMercuryParamQuery();
-    virtual PDeviceConfig MilurConfig();
-    virtual PDeviceConfig Mercury230Config();
+    virtual PDeviceConfig MilurConfig() const;
+    virtual PDeviceConfig Mercury230Config() const;
     PMilurDevice MilurDev;
     PMercury230Device Mercury230Dev;
     PRegister MilurPhaseCVoltageReg;
@@ -28,12 +28,12 @@ protected:
     PRegister Mercury230PReg;
 };
 
-PDeviceConfig TEMDeviceTest::MilurConfig()
+PDeviceConfig TEMDeviceTest::MilurConfig() const
 {
     return std::make_shared<TDeviceConfig>("milur", std::to_string(0xff), "milur");
 }
 
-PDeviceConfig TEMDeviceTest::Mercury230Config()
+PDeviceConfig TEMDeviceTest::Mercury230Config() const
 {
     return std::make_shared<TDeviceConfig>("mercury230", std::to_string(0x00), "mercury230");
 }
@@ -134,12 +134,12 @@ TEST_F(TEMDeviceTest, Combined)
 class TEMCustomPasswordTest: public TEMDeviceTest
 {
 public:
-    PDeviceConfig MilurConfig();
+    PDeviceConfig MilurConfig() const;
 
-    PDeviceConfig Mercury230Config();
+    PDeviceConfig Mercury230Config() const;
 };
 
-PDeviceConfig TEMCustomPasswordTest::MilurConfig()
+PDeviceConfig TEMCustomPasswordTest::MilurConfig() const
 {
     PDeviceConfig device_config = TEMDeviceTest::MilurConfig();
     device_config->Password = {0x02, 0x03, 0x04, 0x05, 0x06, 0x07};
@@ -147,7 +147,7 @@ PDeviceConfig TEMCustomPasswordTest::MilurConfig()
     return device_config;
 }
 
-PDeviceConfig TEMCustomPasswordTest::Mercury230Config()
+PDeviceConfig TEMCustomPasswordTest::Mercury230Config() const
 {
     PDeviceConfig device_config = TEMDeviceTest::Mercury230Config();
     device_config->Password = {0x12, 0x13, 0x14, 0x15, 0x16, 0x17};

@@ -55,7 +55,7 @@ namespace Modbus // modbus protocol declarations
         };
     };
 
-    void ComposeReadRequestPDU(uint8_t* pdu, TModbusRegisterRange& range, int shift);
+    void ComposeReadRequestPDU(uint8_t* pdu, const TModbusRegisterRange& range, int shift);
     size_t InferReadResponsePDUSize(int type, size_t registerCount);
     // parses modbus response and stores result
     void ParseReadResponse(const uint8_t* pdu,
@@ -93,7 +93,7 @@ namespace // general utilities
                ((reg.Type == Modbus::REG_HOLDING) && (GetModbusDataWidthIn16BitWords(reg) > 1));
     }
 
-    inline bool IsPacking(Modbus::TModbusRegisterRange& range)
+    inline bool IsPacking(const Modbus::TModbusRegisterRange& range)
     {
         return (range.Type() == Modbus::REG_HOLDING_MULTI) ||
                ((range.Type() == Modbus::REG_HOLDING) && (range.GetCount() > 1));
@@ -203,9 +203,9 @@ namespace Modbus // modbus protocol common utilities
         auto newPduSize = InferReadResponsePDUSize(reg->Type, Count + extend);
         // Request 8 bytes: SlaveID, Operation, Addr, Count, CRC
         // Response 5 bytes except data: SlaveID, Operation, Size, CRC
+        auto sendTime = reg->Device()->Port()->GetSendTime(newPduSize + 8 + 5);
         auto newPollTime = std::chrono::duration_cast<std::chrono::milliseconds>(
-            reg->Device()->Port()->GetSendTime(newPduSize + 8 + 5) + AverageResponseTime + deviceConfig.RequestDelay +
-            2 * deviceConfig.FrameTimeout);
+            sendTime + AverageResponseTime + deviceConfig.RequestDelay + 2 * deviceConfig.FrameTimeout);
 
         if (((Count != 0) && !AddingRegisterIncreasesSize(isSingleBit, extend)) || (newPollTime <= pollLimit)) {
 
@@ -216,6 +216,14 @@ namespace Modbus // modbus protocol common utilities
             RegisterList().push_back(reg);
             Count += extend;
             return true;
+        }
+        if (newPollTime > pollLimit) {
+            LOG(Debug) << "Poll time for " << reg->ToString() << " is too long: " << newPollTime.count() << " ms"
+                       << " (sendTime=" << sendTime.count() << " ms, "
+                       << "AverageResponseTime=" << AverageResponseTime.count() << " ms, "
+                       << "RequestDelay=" << deviceConfig.RequestDelay.count() << " ms, "
+                       << "FrameTimeout=" << deviceConfig.FrameTimeout.count() << " ms)"
+                       << ", limit is " << pollLimit.count() << " ms";
         }
         return false;
     }
@@ -253,7 +261,7 @@ namespace Modbus // modbus protocol common utilities
         return HasHolesFlg;
     }
 
-    TRequest TModbusRegisterRange::GetRequest(IModbusTraits& traits, uint8_t slaveId, int shift)
+    TRequest TModbusRegisterRange::GetRequest(IModbusTraits& traits, uint8_t slaveId, int shift) const
     {
         TRequest request;
         // 1 byte - function code, 2 bytes - starting register address, 2 bytes - quantity of registers
@@ -265,7 +273,7 @@ namespace Modbus // modbus protocol common utilities
         return request;
     }
 
-    size_t TModbusRegisterRange::GetResponseSize(IModbusTraits& traits)
+    size_t TModbusRegisterRange::GetResponseSize(IModbusTraits& traits) const
     {
         return traits.GetPacketSize(InferReadResponsePDUSize(Type(), GetCount()));
     }
@@ -285,7 +293,7 @@ namespace Modbus // modbus protocol common utilities
         return RegisterList().front()->Device();
     }
 
-    bool TModbusRegisterRange::AddingRegisterIncreasesSize(bool isSingleBit, size_t extend)
+    bool TModbusRegisterRange::AddingRegisterIncreasesSize(bool isSingleBit, size_t extend) const
     {
         if (!isSingleBit) {
             return (extend != 0);
@@ -303,12 +311,16 @@ namespace Modbus // modbus protocol common utilities
                                          int shift,
                                          Modbus::TRegisterCache& cache)
     {
-        TResponse response(GetResponseSize(traits));
         try {
+            const auto& deviceConfig = *(Device()->DeviceConfig());
+            if (GetCount() < deviceConfig.MinReadRegisters) {
+                Count = deviceConfig.MinReadRegisters;
+            }
             auto request = GetRequest(traits, slaveId, shift);
             port.SleepSinceLastInteraction(Device()->DeviceConfig()->RequestDelay);
             port.WriteBytes(request.data(), request.size());
             auto startTime = std::chrono::steady_clock::now();
+            TResponse response(GetResponseSize(traits));
             auto pduSize = ReadResponse(traits, port, request, response, *Device()->DeviceConfig());
             ResponseTime =
                 std::chrono::duration_cast<std::chrono::microseconds>(std::chrono::steady_clock::now() - startTime);
@@ -430,7 +442,7 @@ namespace Modbus // modbus protocol common utilities
         return GetFunctionImpl(reg.Type, op, reg.TypeName, IsPacking(reg));
     }
 
-    inline uint8_t GetFunction(TModbusRegisterRange& range, OperationType op)
+    inline uint8_t GetFunction(const TModbusRegisterRange& range, OperationType op)
     {
         return GetFunctionImpl(range.Type(), op, range.TypeName(), IsPacking(range));
     }
@@ -470,7 +482,7 @@ namespace Modbus // modbus protocol common utilities
     }
 
     // returns count of modbus registers needed to represent TRegister
-    uint16_t GetQuantity(TRegister& reg)
+    uint16_t GetQuantity(const TRegister& reg)
     {
         int w = GetModbusDataWidthIn16BitWords(reg);
 
@@ -489,7 +501,7 @@ namespace Modbus // modbus protocol common utilities
     }
 
     // returns count of modbus registers needed to represent TModbusRegisterRange
-    uint16_t GetQuantity(TModbusRegisterRange& range)
+    uint16_t GetQuantity(const TModbusRegisterRange& range)
     {
         auto type = range.Type();
 
@@ -537,7 +549,7 @@ namespace Modbus // modbus protocol common utilities
     }
 
     // fills pdu with read request data according to Modbus specification
-    void ComposeReadRequestPDU(uint8_t* pdu, TRegister& reg, int shift)
+    void ComposeReadRequestPDU(uint8_t* pdu, const TRegister& reg, int shift)
     {
         pdu[0] = GetFunction(reg, OperationType::OP_READ);
         auto addr = GetUint32RegisterAddress(reg.GetAddress());
@@ -545,7 +557,7 @@ namespace Modbus // modbus protocol common utilities
         WriteAs2Bytes(pdu + 3, GetQuantity(reg));
     }
 
-    void ComposeReadRequestPDU(uint8_t* pdu, TModbusRegisterRange& range, int shift)
+    void ComposeReadRequestPDU(uint8_t* pdu, const TModbusRegisterRange& range, int shift)
     {
         pdu[0] = GetFunction(range, OperationType::OP_READ);
         WriteAs2Bytes(pdu + 1, range.GetStart() + shift);
