@@ -10,7 +10,7 @@ protected:
     void VerifyEnergyQuery();
     void VerifyParamQuery();
 
-    virtual PDeviceConfig GetDeviceConfig();
+    virtual PDeviceConfig GetDeviceConfig() const;
 
     PMercury230Device Mercury230Dev;
 
@@ -41,7 +41,7 @@ protected:
     PRegister Mercury230TempReg;
 };
 
-PDeviceConfig TMercury230Test::GetDeviceConfig()
+PDeviceConfig TMercury230Test::GetDeviceConfig() const
 {
     return std::make_shared<TDeviceConfig>("mercury230", std::to_string(0x00), "mercury230");
 }
@@ -218,10 +218,10 @@ TEST_F(TMercury230Test, Exception)
 class TMercury230CustomPasswordTest: public TMercury230Test
 {
 public:
-    PDeviceConfig GetDeviceConfig() override;
+    PDeviceConfig GetDeviceConfig() const override;
 };
 
-PDeviceConfig TMercury230CustomPasswordTest::GetDeviceConfig()
+PDeviceConfig TMercury230CustomPasswordTest::GetDeviceConfig() const
 {
     PDeviceConfig device_config = TMercury230Test::GetDeviceConfig();
     device_config->Password = {0x12, 0x13, 0x14, 0x15, 0x16, 0x17};

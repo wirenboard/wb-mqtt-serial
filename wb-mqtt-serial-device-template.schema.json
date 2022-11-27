@@ -146,7 +146,8 @@
           "$ref": "#/definitions/channel_name"
         },
         "id": {
-          "type": "string"
+          "type": "string",
+          "pattern": "^[^$#+\\/\"']*$"
         },
         "device_type": {
           "type": "string"

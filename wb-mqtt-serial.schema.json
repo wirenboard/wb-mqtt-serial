@@ -357,7 +357,10 @@
           "type": "string",
           "title": "MQTT id of the device",
           "description": "Used as part of the topic",
-          "minLength": 1,
+          "pattern": "^[^$#+\\/\"']+$",
+          "options": {
+            "patternmessage": "Invalid device ID"
+          },
           "propertyOrder": 4
         },
         "poll_interval": {
@@ -413,12 +416,19 @@
           "default": 1,
           "propertyOrder": 105
         },
+        "min_read_registers": {
+          "type": "integer",
+          "title": "Minimum number of registers in a single bulk read request",
+          "minimum": 0,
+          "default": 1,
+          "propertyOrder": 106
+        },
         "guard_interval_us": {
           "type": "integer",
           "title": "Additional delay before each writing to port (us)",
           "minimum": 0,
           "default": 0,
-          "propertyOrder": 106
+          "propertyOrder": 107
         },
         "frame_timeout_ms": {
           "type": "integer",
@@ -426,7 +436,7 @@
           "description": "frame_timeout_description",
           "minimum": -1,
           "default": -1,
-          "propertyOrder": 107
+          "propertyOrder": 108
         },
         "response_timeout_ms": {
           "type": "integer",
@@ -434,7 +444,7 @@
           "description": "response_timeout_description",
           "minimum": -1,
           "default": -1,
-          "propertyOrder": 108
+          "propertyOrder": 109
         },
         "device_timeout_ms": {
           "type": "integer",
@@ -442,7 +452,7 @@
           "description": "device_timeout_description",
           "minimum": -1,
           "default": 3000,
-          "propertyOrder": 109
+          "propertyOrder": 110
         },
         "device_max_fail_cycles": {
           "type": "integer",
@@ -450,7 +460,7 @@
           "description": "device_max_fail_cycles_desc",
           "minimum": -1,
           "default": 2,
-          "propertyOrder": 110
+          "propertyOrder": 111
         }
       }
     },
@@ -507,9 +517,7 @@
           "propertyOrder": 2
         },
         "id": {
-          "type": "string",
-          "title": "MQTT id of the channel",
-          "description": "Used as part of the topic",
+          "$ref": "#/definitions/channel_id",
           "propertyOrder": 3
         },
         "type": {
@@ -781,9 +789,7 @@
           "propertyOrder": 2
         },
         "id": {
-          "type": "string",
-          "title": "MQTT id of the channel",
-          "description": "Used as part of the topic",
+          "$ref": "#/definitions/channel_id",
           "propertyOrder": 3
         },
         "type": {
@@ -1039,7 +1045,19 @@
       "type": "string",
       "title": "Control name",
       "description": "This name is displayed both in UI and used as part of MQTT topic",
-      "minLength": 1
+      "pattern": "^[^$#+\\/\"']+$",
+      "options": {
+        "patternmessage": "Invalid channel name"
+      }
+    },
+    "channel_id": {
+      "type": "string",
+      "title": "MQTT id of the channel",
+      "description": "Used as part of the topic",
+      "pattern": "^[^$#+\\/\"']+$",
+      "options": {
+        "patternmessage": "Invalid channel ID"
+      }
     },
     "control_type": {
       "type": "string",
@@ -2178,7 +2196,10 @@
       "g-motor-control": "Управление двигателями (преобразователи частоты)",
       "g-custom": "Произвольные устройства",
       "Maximum registers reads per second": "Максимальное количество чтений регистров в секунду",
-      "rate_limit_desc": "Для снижения нагрузки на процессор не рекомендуется указывать более 100 чтений для WB6 и 800 для WB7"
+      "rate_limit_desc": "Для снижения нагрузки на процессор не рекомендуется указывать более 100 чтений для WB6 и 800 для WB7",
+      "Invalid channel ID": "Неверный идентификатор канала",
+      "Invalid channel name": "Неверное имя канала",
+      "Invalid device ID": "Неверный идентификатор устройства"
     }
   }
 }

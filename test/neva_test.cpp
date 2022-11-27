@@ -95,7 +95,7 @@ namespace
             SerialPort->Open();
         }
 
-        PDeviceConfig GetDeviceConfig()
+        PDeviceConfig GetDeviceConfig() const
         {
             auto cfg = std::make_shared<TDeviceConfig>("neva32x", "00000201", "neva");
             cfg->FrameTimeout = std::chrono::milliseconds::zero();

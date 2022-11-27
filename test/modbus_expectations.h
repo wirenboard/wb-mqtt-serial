@@ -42,6 +42,7 @@ public:
 
     void EnqueueHoldingWriteU16ResponseWithWriteAddress(uint8_t exception = 0);
     void EnqueueHoldingReadU16ResponseWithWriteAddress(uint8_t exception = 0);
+    void EnqueueHoldingReadU16Min2ReadResponse(uint8_t exception = 0);
 
     void EnqueueHoldingWriteU16ResponseWithOffsetWriteOptions(uint8_t exception = 0);
     void EnqueueHoldingReadU16ResponseWithOffsetWriteOptions(uint8_t exception = 0);

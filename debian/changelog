@@ -1,8 +1,38 @@
-wb-mqtt-serial (2.76.3) stable; urgency=medium
+wb-mqtt-serial (2.77.3) stable; urgency=medium
 
   * WB-MR templates update for version 1.19.0 - debounce and input frequency measure mode when disabled
 
  -- Nikita Kulikov <n.kulikov@wirenboard.ru>  Mon, 21 Nov 2022 17:52:54 +0600
+
+wb-mqtt-serial (2.77.2) stable; urgency=medium
+
+  * Add a check for prohibited characters in control and device IDs
+
+ -- Roman Kochkin <roman.kochkin@wirenboard.ru>  Fri, 25 Nov 2022 09:40:40 +0300
+
+wb-mqtt-serial (2.77.1) stable; urgency=medium
+
+  * Somfy SDN: fix destination address checking
+
+ -- Nikolay Korotkiy <nikolay.korotkiy@wirenboard.com>  Wed, 23 Nov 2022 03:08:01 +0400
+
+wb-mqtt-serial (2.77.0) stable; urgency=medium
+
+  * Added support for min_read_registers option
+
+ -- Nikolay Korotkiy <nikolay.korotkiy@wirenboard.com>  Mon, 21 Nov 2022 14:08:00 +0400
+
+wb-mqtt-serial (2.76.4) stable; urgency=medium
+
+  * Change scale for SPL low-pass filter
+
+ -- Alexander Karpin <alexander.karpin@wirenboard.ru>  Mon, 21 Nov 2022 11:53:00 +0300
+
+wb-mqtt-serial (2.76.3) stable; urgency=medium
+
+  * Set WB-LED and WB-MRGBWD default input actions to none
+
+ -- Petr Krasnoshchekov <petr.krasnoshchekov@wirenboard.ru>  Fri, 18 Nov 2022 11:55:42 +0500
 
 wb-mqtt-serial (2.76.2) stable; urgency=medium
 
