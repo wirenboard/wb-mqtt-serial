@@ -1,3 +1,9 @@
+wb-mqtt-serial (2.77.3) stable; urgency=medium
+
+  * WB-MR templates update for version 1.19.0 - debounce and input frequency measure mode when disabled
+
+ -- Nikita Kulikov <n.kulikov@wirenboard.ru>  Mon, 21 Nov 2022 17:52:54 +0600
+
 wb-mqtt-serial (2.77.2) stable; urgency=medium
 
   * Add a check for prohibited characters in control and device IDs
