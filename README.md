@@ -858,7 +858,7 @@ It's designed to be used on [Wiren Board](https://wirenboard.com/en/) family of 
 Примеры выполнения запросов:
 1. Успешное выполнение запроса:
     ```
-    RPC Client -> {"params": {"response_size": 8, "format": "HEX", "path": "/dev/ttyRS485-2", "baud_rate": 9600, "parity" : "N", "data_bits" : 8, "stop_bits" : 2, "msg": "0A03008000018499"}, "id" : 1}
+    RPC Client -> {"params": {"total_timeout": 10000, "response_size": 8, "format": "HEX", "path": "/dev/ttyRS485-2", "baud_rate": 9600, "parity" : "N", "data_bits" : 8, "stop_bits" : 2, "msg": "0A03008000018499"}, "id" : 1}
     RPC Client <- {"error":null,"id":1,"result":{"response":"1605000aff00af1f"}}
     ```
    
@@ -870,13 +870,13 @@ It's designed to be used on [Wiren Board](https://wirenboard.com/en/) family of 
 
 3. Ошибка выполнения запроса (ошибка ввода-вывода)
     ```
-    RPC Client -> {"params": {"response_size": 8, "format": "HEX", "path": "/dev/ttyRS485-2", "baud_rate": 9600, "parity" : "N", "data_bits" : 8, "stop_bits" : 2, "msg": "0A03008000018499"}, "id" : 1}
+    RPC Client -> {"params": {"total_timeout": 10000, "response_size": 8, "format": "HEX", "path": "/dev/ttyRS485-2", "baud_rate": 9600, "parity" : "N", "data_bits" : 8, "stop_bits" : 2, "msg": "0A03008000018499"}, "id" : 1}
     RPC Client <- {"error":{"code":-32000,"data":"Port IO error","message":"Server error"},"id":1,"result":null}
     ```
 
 4. Ошибка выполнения запроса (запрос в несуществующий порт)
     ```
-    RPC Client -> {"params": {"response_size": 8, "format": "HEX", "path": "/dev/ttyRS485-31337", "baud_rate": 9600, "parity" : "N", "data_bits" : 8, "stop_bits" : 2, "msg": "0A03008000018499"}, "id" : 1}
+    RPC Client -> {"params": {"total_timeout": 10000, "response_size": 8, "format": "HEX", "path": "/dev/ttyRS485-31337", "baud_rate": 9600, "parity" : "N", "data_bits" : 8, "stop_bits" : 2, "msg": "0A03008000018499"}, "id" : 1}
     RPC Client -> {"error":{"code":-32000,"data":"Requested port doesn't exist","message":"Server error"},"id":1,"result":null}
     ```
 
