@@ -858,7 +858,7 @@ It's designed to be used on [Wiren Board](https://wirenboard.com/en/) family of 
 Примеры выполнения запросов:
 1. Успешное выполнение запроса:
     ```
-    RPC Client -> {'response_size': 8, 'format': 'HEX', 'path': '/dev/ttyRS485-2', 'msg': '1605000aff00af1f', 'total_timeout': 10000}
+    RPC Client -> {"params": {"total_timeout": 10000, "response_size": 8, "format": "HEX", "path": "/dev/ttyRS485-2", "baud_rate": 9600, "parity" : "N", "data_bits" : 8, "stop_bits" : 2, "msg": "0A03008000018499"}, "id" : 1}
     RPC Client <- {"error":null,"id":1,"result":{"response":"1605000aff00af1f"}}
     ```
    
@@ -870,19 +870,19 @@ It's designed to be used on [Wiren Board](https://wirenboard.com/en/) family of 
 
 3. Ошибка выполнения запроса (ошибка ввода-вывода)
     ```
-    RPC Client -> {'msg': '1605000aff00af1f', 'total_timeout': 10000, 'path': '/dev/ttyRS485-2', 'format': 'HEX', 'response_size': 8}
+    RPC Client -> {"params": {"total_timeout": 10000, "response_size": 8, "format": "HEX", "path": "/dev/ttyRS485-2", "baud_rate": 9600, "parity" : "N", "data_bits" : 8, "stop_bits" : 2, "msg": "0A03008000018499"}, "id" : 1}
     RPC Client <- {"error":{"code":-32000,"data":"Port IO error","message":"Server error"},"id":1,"result":null}
     ```
 
 4. Ошибка выполнения запроса (запрос в несуществующий порт)
     ```
-    RPC Client -> {'path': '/dev/ttyRS485-34534', 'response_size': 8, 'total_timeout': 10000, 'msg': '1605000aff00af1f', 'format': 'HEX'}
+    RPC Client -> {"params": {"total_timeout": 10000, "response_size": 8, "format": "HEX", "path": "/dev/ttyRS485-31337", "baud_rate": 9600, "parity" : "N", "data_bits" : 8, "stop_bits" : 2, "msg": "0A03008000018499"}, "id" : 1}
     RPC Client -> {"error":{"code":-32000,"data":"Requested port doesn't exist","message":"Server error"},"id":1,"result":null}
     ```
 
 5. Таймаут выполнения запроса (слишком малое значение таймаута)
     ```
-    RPC Client -> {'msg': '1605000aff00af1f', 'path': '/dev/ttyRS485-2', 'total_timeout': 10, 'format': 'HEX', 'response_size': 8}
+    RPC Client -> {"params": {"response_size": 8, "format": "HEX", "path": "/dev/ttyRS485-2", "baud_rate": 9600, "parity" : "N", "data_bits" : 8, "stop_bits" : 2, "msg": "0A03008000018499", "total_timeout": 10}, "id" : 1}
     RPC Client <- {"error":{"code":-32600,"data":"Request handler is not responding @ src/rpc_handler.cpp:179","message":"Request timeout"},"id":1,"result":null}
     ```
 
