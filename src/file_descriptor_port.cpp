@@ -114,7 +114,7 @@ uint8_t TFileDescriptorPort::ReadByte(const chrono::microseconds& timeout)
 
     LastInteraction = std::chrono::steady_clock::now();
 
-    LOG(Debug) << "Read: " << hex << setw(2) << setfill('0') << int(b);
+    LOG(Debug) << GetDescription() << ": Read: " << hex << setw(2) << setfill('0') << int(b);
 
     return b;
 }
