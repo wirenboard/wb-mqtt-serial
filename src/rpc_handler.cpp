@@ -169,11 +169,10 @@ TRPCHandler::TRPCHandler(const std::string& requestSchemaFilePath,
     for (auto serialPortDriver: serialPortDrivers) {
         PPort port = serialPortDriver->GetSerialClient()->GetPort();
 
-        auto findedPortDriver = std::find_if(PortDrivers.begin(),
-                                             PortDrivers.end(),
-                                             [&port](PRPCPortDriver rpcPortDriver) {
-                                                 return port == rpcPortDriver->RPCPort->GetPort();
-                                             });
+        auto findedPortDriver =
+            std::find_if(PortDrivers.begin(), PortDrivers.end(), [&port](PRPCPortDriver rpcPortDriver) {
+                return port == rpcPortDriver->RPCPort->GetPort();
+            });
 
         if (findedPortDriver != PortDrivers.end()) {
             findedPortDriver->get()->SerialClient = serialPortDriver->GetSerialClient();

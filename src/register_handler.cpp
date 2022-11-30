@@ -7,7 +7,7 @@ using namespace std::chrono;
 
 namespace
 {
-    //const size_t MAX_WRITE_FAILS = 10;
+    // const size_t MAX_WRITE_FAILS = 10;
     const seconds MAX_WRITE_FAIL_TIME(600); // 10 minutes
 }
 
