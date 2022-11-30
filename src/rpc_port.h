@@ -15,10 +15,11 @@ protected:
 
 typedef std::shared_ptr<TRPCPort> PRPCPort;
 
-class TRPCSerialPort final: public TRPCPort
+class TRPCSerialPort: public TRPCPort
 {
 public:
     TRPCSerialPort(PPort Port, const std::string& Path);
+    virtual ~TRPCSerialPort() = default;
     bool Match(const Json::Value& Request) const;
 
 protected:
@@ -26,10 +27,11 @@ protected:
 };
 typedef std::shared_ptr<TRPCSerialPort> PRPCSerialPort;
 
-class TRPCTCPPort final: public TRPCPort
+class TRPCTCPPort: public TRPCPort
 {
 public:
     TRPCTCPPort(PPort Port, const std::string& Ip, uint16_t PortNumber);
+    virtual ~TRPCTCPPort() = default;
     bool Match(const Json::Value& Request) const;
 
 protected:
