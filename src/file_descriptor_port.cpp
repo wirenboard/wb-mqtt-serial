@@ -67,11 +67,11 @@ void TFileDescriptorPort::WriteBytes(const uint8_t* buf, int count)
     if (::Debug.IsEnabled()) {
         // TBD: move this to libwbmqtt (HexDump?)
         stringstream ss;
-        ss << "Write:" << hex << setfill('0');
+        ss << ": Write:" << hex << setfill('0');
         for (int i = 0; i < count; ++i) {
             ss << " " << setw(2) << int(buf[i]);
         }
-        LOG(Debug) << ss.str();
+        LOG(Debug) << GetDescription() << ss.str();
     }
 }
 
@@ -252,5 +252,5 @@ void TFileDescriptorPort::SleepSinceLastInteraction(const chrono::microseconds& 
     auto now = chrono::steady_clock::now();
     auto delta = chrono::duration_cast<chrono::microseconds>(now - LastInteraction);
     std::this_thread::sleep_for(us - delta);
-    LOG(Debug) << "Sleep " << us.count() << " us";
+    LOG(Debug) << GetDescription() << ": Sleep " << us.count() << " us";
 }
