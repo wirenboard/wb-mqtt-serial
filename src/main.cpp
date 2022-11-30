@@ -96,7 +96,7 @@ namespace
 
     pair<shared_ptr<Json::Value>, shared_ptr<TTemplateMap>> LoadTemplates()
     {
-        auto configSchema = make_shared<Json::Value>(std::move(LoadConfigSchema(CONFIG_JSON_SCHEMA_FULL_FILE_PATH)));
+        auto configSchema = make_shared<Json::Value>(LoadConfigSchema(CONFIG_JSON_SCHEMA_FULL_FILE_PATH));
         auto templates =
             make_shared<TTemplateMap>(TEMPLATES_DIR,
                                       LoadConfigTemplatesSchema(TEMPLATES_JSON_SCHEMA_FULL_FILE_PATH, *configSchema));

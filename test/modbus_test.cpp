@@ -420,8 +420,8 @@ protected:
         TEST_MAX_READ_REGISTERS_FIRST_CYCLE,
     };
 
-    void SetUp();
-    void TearDown();
+    void SetUp() override;
+    void TearDown() override;
     const char* ConfigPath() const override
     {
         return "configs/config-modbus-test.json";
@@ -737,14 +737,14 @@ TEST_F(TModbusBitmasksIntegrationTest, SingleWrite)
 class TModbusUnavailableRegistersIntegrationTest: public TSerialDeviceIntegrationTest, public TModbusExpectations
 {
 protected:
-    void SetUp()
+    void SetUp() override
     {
         SelectModbusType(MODBUS_RTU);
         TSerialDeviceIntegrationTest::SetUp();
         ASSERT_TRUE(!!SerialPort);
     }
 
-    void TearDown()
+    void TearDown() override
     {
         SerialPort->Close();
         TSerialDeviceIntegrationTest::TearDown();
@@ -812,14 +812,14 @@ class TModbusUnavailableRegistersAndHolesIntegrationTest: public TSerialDeviceIn
                                                           public TModbusExpectations
 {
 protected:
-    void SetUp()
+    void SetUp() override
     {
         SelectModbusType(MODBUS_RTU);
         TSerialDeviceIntegrationTest::SetUp();
         ASSERT_TRUE(!!SerialPort);
     }
 
-    void TearDown()
+    void TearDown() override
     {
         SerialPort->Close();
         TSerialDeviceIntegrationTest::TearDown();

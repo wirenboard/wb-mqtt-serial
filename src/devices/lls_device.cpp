@@ -66,7 +66,7 @@ namespace
     const size_t REQUEST_LEN = 4;
     const ptrdiff_t HEADER_SZ = 3;
     const uint8_t REQUEST_PREFIX = 0x31;
-    const uint8_t RESPONSE_PREFIX = 0x3E;
+    //const uint8_t RESPONSE_PREFIX = 0x3E;
 }
 
 std::vector<uint8_t> TLLSDevice::ExecCommand(uint8_t cmd)

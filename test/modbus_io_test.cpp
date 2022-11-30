@@ -7,8 +7,8 @@ using namespace std;
 class TModbusIOIntegrationTest: public TSerialDeviceIntegrationTest, public TModbusIOExpectations
 {
 protected:
-    void SetUp();
-    void TearDown();
+    void SetUp() override;
+    void TearDown() override;
     const char* ConfigPath() const override
     {
         return "configs/config-modbus-io-test.json";

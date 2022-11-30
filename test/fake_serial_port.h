@@ -27,24 +27,24 @@ public:
     TFakeSerialPort(WBMQTT::Testing::TLoggedFixture& fixture);
 
     void SetExpectedFrameTimeout(const std::chrono::microseconds& timeout);
-    void CheckPortOpen() const;
-    void Open();
-    void Close();
-    bool IsOpen() const;
-    void WriteBytes(const uint8_t* buf, int count);
-    uint8_t ReadByte(const std::chrono::microseconds& timeout);
+    void CheckPortOpen() const override;
+    void Open() override;
+    void Close() override;
+    bool IsOpen() const override;
+    void WriteBytes(const uint8_t* buf, int count) override;
+    uint8_t ReadByte(const std::chrono::microseconds& timeout) override;
     size_t ReadFrame(uint8_t* buf,
                      size_t count,
                      const std::chrono::microseconds& responseTimeout = std::chrono::microseconds(-1),
                      const std::chrono::microseconds& frameTimeout = std::chrono::microseconds(-1),
-                     TFrameCompletePred frame_complete = 0);
-    void SkipNoise();
+                     TFrameCompletePred frame_complete = 0) override;
+    void SkipNoise() override;
 
     void SleepSinceLastInteraction(const std::chrono::microseconds& us) override;
 
     std::chrono::milliseconds GetSendTime(double bytesNumber) const override;
 
-    void Expect(const std::vector<int>& request, const std::vector<int>& response, const char* func = 0);
+    void Expect(const std::vector<int>& request, const std::vector<int>& response, const char* func = 0) override;
     void DumpWhatWasRead();
     void SimulateDisconnect(TDisconnectType simulate);
     WBMQTT::Testing::TLoggedFixture& GetFixture();

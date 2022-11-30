@@ -103,9 +103,9 @@ TEST_F(TMercury200Test, BatteryVoltageQuery)
 class TMercury200IntegrationTest: public TSerialDeviceIntegrationTest, public TMercury200Expectations
 {
 protected:
-    void SetUp();
-    void TearDown();
-    const char* ConfigPath() const
+    void SetUp() override;
+    void TearDown() override;
+    const char* ConfigPath() const override
     {
         return "configs/config-mercury200-test.json";
     }

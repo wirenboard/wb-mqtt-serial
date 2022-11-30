@@ -16,17 +16,17 @@ namespace
         {}
         void Close() override
         {}
-        bool IsOpen() const
+        bool IsOpen() const override
         {
             return false;
         }
-        void CheckPortOpen() const
+        void CheckPortOpen() const override
         {}
 
-        void WriteBytes(const uint8_t* buf, int count)
+        void WriteBytes(const uint8_t* buf, int count) override
         {}
 
-        uint8_t ReadByte(const std::chrono::microseconds& timeout)
+        uint8_t ReadByte(const std::chrono::microseconds& timeout) override
         {
             return 0;
         }
@@ -35,7 +35,7 @@ namespace
                          size_t count,
                          const std::chrono::microseconds& responseTimeout,
                          const std::chrono::microseconds& frameTimeout,
-                         TFrameCompletePred frame_complete = 0)
+                         TFrameCompletePred frame_complete = 0) override
         {
             if (Pointer == Stream.size()) {
                 std::this_thread::sleep_for(std::chrono::milliseconds(15));
@@ -47,13 +47,13 @@ namespace
             return l;
         }
 
-        void SkipNoise()
+        void SkipNoise() override
         {}
 
-        void SleepSinceLastInteraction(const std::chrono::microseconds& us)
+        void SleepSinceLastInteraction(const std::chrono::microseconds& us) override
         {}
 
-        std::string GetDescription(bool verbose) const
+        std::string GetDescription(bool verbose) const override
         {
             return std::string();
         }

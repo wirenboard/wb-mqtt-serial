@@ -106,7 +106,7 @@ namespace
     class TNevaIntegrationTest: public TSerialDeviceIntegrationTest, public TNevaExpectations
     {
     protected:
-        const char* ConfigPath() const
+        const char* ConfigPath() const override
         {
             return "configs/config-neva-test.json";
         }

@@ -7,7 +7,7 @@ namespace
     class TEnergomeraIntegrationTest: public TSerialDeviceIntegrationTest, public virtual TExpectorProvider
     {
     protected:
-        const char* ConfigPath() const
+        const char* ConfigPath() const override
         {
             return "configs/config-energomera-test.json";
         }

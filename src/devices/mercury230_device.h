@@ -33,8 +33,8 @@ public:
     TRegisterValue ReadRegisterImpl(PRegister reg) override;
 
 protected:
-    bool ConnectionSetup();
-    ErrorType CheckForException(uint8_t* frame, int len, const char** message);
+    bool ConnectionSetup() override;
+    ErrorType CheckForException(uint8_t* frame, int len, const char** message) override;
 
 private:
     struct TValueArray

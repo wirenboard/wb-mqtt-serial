@@ -1,3 +1,9 @@
+wb-mqtt-serial (2.77.4) stable; urgency=medium
+
+  * Fix compiler warnings
+
+ -- Nikolay Korotkiy <nikolay.korotkiy@wirenboard.com>  Wed, 30 Nov 2022 10:30:05 +0400
+
 wb-mqtt-serial (2.77.3) stable; urgency=medium
 
   * WB-MR templates update for version 1.19.0 - debounce and input frequency measure mode when disabled

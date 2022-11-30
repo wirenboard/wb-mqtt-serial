@@ -15,7 +15,7 @@ protected:
 
 typedef std::shared_ptr<TRPCPort> PRPCPort;
 
-class TRPCSerialPort: public TRPCPort
+class TRPCSerialPort final : public TRPCPort
 {
 public:
     TRPCSerialPort(PPort Port, const std::string& Path);
@@ -26,7 +26,7 @@ protected:
 };
 typedef std::shared_ptr<TRPCSerialPort> PRPCSerialPort;
 
-class TRPCTCPPort: public TRPCPort
+class TRPCTCPPort final : public TRPCPort
 {
 public:
     TRPCTCPPort(PPort Port, const std::string& Ip, uint16_t PortNumber);
