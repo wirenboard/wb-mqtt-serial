@@ -6,6 +6,7 @@ class TRPCPort
 {
 public:
     TRPCPort(PPort Port);
+    virtual ~TRPCPort() = default;
     PPort GetPort();
     virtual bool Match(const Json::Value& Request) const = 0;
 
@@ -19,7 +20,6 @@ class TRPCSerialPort: public TRPCPort
 {
 public:
     TRPCSerialPort(PPort Port, const std::string& Path);
-    virtual ~TRPCSerialPort() = default;
     bool Match(const Json::Value& Request) const;
 
 protected:
@@ -31,7 +31,6 @@ class TRPCTCPPort: public TRPCPort
 {
 public:
     TRPCTCPPort(PPort Port, const std::string& Ip, uint16_t PortNumber);
-    virtual ~TRPCTCPPort() = default;
     bool Match(const Json::Value& Request) const;
 
 protected:
