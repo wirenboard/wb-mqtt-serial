@@ -149,9 +149,9 @@ TEST_F(TMilurCustomPasswordTest, Test)
 class TMilurIntegrationTest: public TSerialDeviceIntegrationTest, public TMilurExpectations
 {
 protected:
-    void SetUp();
-    void TearDown();
-    const char* ConfigPath() const
+    void SetUp() override;
+    void TearDown() override;
+    const char* ConfigPath() const override
     {
         return "configs/config-milur-test.json";
     }

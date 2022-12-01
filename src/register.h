@@ -91,7 +91,7 @@ public:
 
 typedef std::shared_ptr<TRegisterTypeMap> PRegisterTypeMap;
 
-struct TRegisterConfig;
+class TRegisterConfig;
 typedef std::shared_ptr<TRegisterConfig> PRegisterConfig;
 
 class TSerialDevice;

@@ -66,8 +66,8 @@ namespace Modbus // modbus protocol common utilities
                          const TRequest& req,
                          TResponse& resp) const override;
 
-        uint8_t* GetPDU(std::vector<uint8_t>& frame) const;
-        const uint8_t* GetPDU(const std::vector<uint8_t>& frame) const;
+        uint8_t* GetPDU(std::vector<uint8_t>& frame) const override;
+        const uint8_t* GetPDU(const std::vector<uint8_t>& frame) const override;
     };
 
     class TModbusTCPTraits: public IModbusTraits
@@ -92,8 +92,8 @@ namespace Modbus // modbus protocol common utilities
                          const TRequest& req,
                          TResponse& resp) const override;
 
-        uint8_t* GetPDU(std::vector<uint8_t>& frame) const;
-        const uint8_t* GetPDU(const std::vector<uint8_t>& frame) const;
+        uint8_t* GetPDU(std::vector<uint8_t>& frame) const override;
+        const uint8_t* GetPDU(const std::vector<uint8_t>& frame) const override;
     };
 
     class IModbusTraitsFactory

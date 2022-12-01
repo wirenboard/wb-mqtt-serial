@@ -88,7 +88,7 @@ std::vector<uint8_t> TLLSDevice::ExecCommand(uint8_t cmd)
     Port()->SleepSinceLastInteraction(DeviceConfig()->FrameTimeout);
 
     int len = Port()->ReadFrame(buf, RESPONSE_BUF_LEN, DeviceConfig()->ResponseTimeout, DeviceConfig()->FrameTimeout);
-    if (buf[0] != 0x3e) {
+    if (buf[0] != RESPONSE_PREFIX) {
         throw TSerialDeviceTransientErrorException("invalid response prefix");
     }
     if (buf[1] != SlaveId) {

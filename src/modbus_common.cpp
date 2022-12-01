@@ -22,11 +22,8 @@ typedef uint16_t TRegisterWord;
 namespace Modbus // modbus protocol declarations
 {
     const int MAX_READ_BITS = 2000;
-    const int MAX_WRITE_BITS = 1968;
 
     const int MAX_READ_REGISTERS = 125;
-    const int MAX_WRITE_REGISTERS = 123;
-    const int MAX_RW_WRITE_REGISTERS = 121;
 
     const size_t EXCEPTION_RESPONSE_PDU_SIZE = 2;
     const size_t WRITE_RESPONSE_PDU_SIZE = 5;

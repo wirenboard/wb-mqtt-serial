@@ -239,9 +239,9 @@ TEST_F(TMercury230CustomPasswordTest, Test)
 class TMercury230IntegrationTest: public TSerialDeviceIntegrationTest, public TMercury230Expectations
 {
 protected:
-    void SetUp();
-    void TearDown();
-    const char* ConfigPath() const
+    void SetUp() override;
+    void TearDown() override;
+    const char* ConfigPath() const override
     {
         return "configs/config-mercury230-test.json";
     }

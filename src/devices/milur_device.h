@@ -28,8 +28,8 @@ public:
 
 protected:
     void PrepareImpl() override;
-    bool ConnectionSetup();
-    ErrorType CheckForException(uint8_t* frame, int len, const char** message);
+    bool ConnectionSetup() override;
+    ErrorType CheckForException(uint8_t* frame, int len, const char** message) override;
     uint64_t BuildIntVal(uint8_t* p, int sz) const;
     uint64_t BuildBCB32(uint8_t* psrc) const;
     int GetExpectedSize(int type) const;

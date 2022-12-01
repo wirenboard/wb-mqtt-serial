@@ -71,7 +71,7 @@ namespace
     class TEnergomeraCe102MIntegrationTest: public TSerialDeviceIntegrationTest, public TEnergomeraCe102MExpectations
     {
     protected:
-        const char* ConfigPath() const
+        const char* ConfigPath() const override
         {
             return "configs/config-energomera-ce102m-test.json";
         }

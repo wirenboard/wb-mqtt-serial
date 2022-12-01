@@ -6,6 +6,7 @@ class TRPCPort
 {
 public:
     TRPCPort(PPort Port);
+    virtual ~TRPCPort() = default;
     PPort GetPort();
     virtual bool Match(const Json::Value& Request) const = 0;
 

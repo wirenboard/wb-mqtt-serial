@@ -53,9 +53,9 @@ TEST_F(TS2KDeviceTest, TestSetRelayState)
 class TS2KIntegrationTest: public TSerialDeviceIntegrationTest, public TS2KDeviceExpectations
 {
 protected:
-    void SetUp();
-    void TearDown();
-    const char* ConfigPath() const
+    void SetUp() override;
+    void TearDown() override;
+    const char* ConfigPath() const override
     {
         return "configs/config-s2k-test.json";
     }
