@@ -1,3 +1,9 @@
+wb-mqtt-serial (2.77.6) stable; urgency=medium
+
+  * Add details about port IO error to RPC response
+
+ -- Nikolay Korotkiy <nikolay.korotkiy@wirenboard.com>  Fri, 02 Dec 2022 19:14:00 +0400
+
 wb-mqtt-serial (2.77.5) stable; urgency=medium
 
   * Fix compiler warnings

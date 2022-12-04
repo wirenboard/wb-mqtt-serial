@@ -199,7 +199,7 @@ size_t TFileDescriptorPort::ReadFrame(uint8_t* buf,
     if (::Debug.IsEnabled()) {
         // TBD: move this to libwbmqtt (HexDump?)
         stringstream ss;
-        ss << "ReadFrame:" << hex << setfill('0');
+        ss << GetDescription() << ": ReadFrame:" << hex << setfill('0');
         for (size_t i = 0; i < nread; ++i) {
             ss << " " << setw(2) << int(buf[i]);
         }

@@ -158,7 +158,7 @@ void TSerialPortDriver::Cycle(std::chrono::steady_clock::time_point now)
 {
     try {
         SerialClient->Cycle();
-    } catch (TSerialDeviceException& e) {
+    } catch (const TSerialDeviceException& e) {
         LOG(Error) << "FATAL: " << e.what() << ". Stopping event loops.";
         exit(1);
     }
