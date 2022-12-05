@@ -871,7 +871,7 @@ It's designed to be used on [Wiren Board](https://wirenboard.com/en/) family of 
 3. Ошибка выполнения запроса (ошибка ввода-вывода)
     ```
     RPC Client -> {"params": {"total_timeout": 10000, "response_size": 8, "format": "HEX", "path": "/dev/ttyRS485-2", "baud_rate": 9600, "parity" : "N", "data_bits" : 8, "stop_bits" : 2, "msg": "0A03008000018499"}, "id" : 1}
-    RPC Client <- {"error":{"code":-32000,"data":"Port IO error","message":"Server error"},"id":1,"result":null}
+    RPC Client <- {"error":{"code":-32000,"data":"Port IO error: request timed out","message":"Server error"},"id":1,"result":null}
     ```
 
 4. Ошибка выполнения запроса (запрос в несуществующий порт)

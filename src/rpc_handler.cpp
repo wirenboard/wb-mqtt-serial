@@ -222,7 +222,7 @@ Json::Value TRPCHandler::PortLoad(const Json::Value& request)
         std::string responseStr = PortLoadResponseFormat(response, rpcRequest->Format);
 
         replyJSON["response"] = responseStr;
-    } catch (TRPCException& e) {
+    } catch (const TRPCException& e) {
         LOG(Warn) << e.GetResultMessage();
         switch (e.GetResultCode()) {
             case TRPCResultCode::RPC_WRONG_TIMEOUT:

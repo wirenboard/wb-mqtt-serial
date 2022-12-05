@@ -27,7 +27,7 @@ std::vector<uint8_t> TRPCRequestHandler::RPCTransceive(PRPCRequest request,
     if (lastRequestState == RPCRequestState::RPC_COMPLETE) {
         return ReadData;
     } else {
-        throw TRPCException("Port IO error", TRPCResultCode::RPC_WRONG_IO);
+        throw TRPCException("Port IO error: " + ErrorMessage, TRPCResultCode::RPC_WRONG_IO);
     }
 }
 
@@ -55,6 +55,7 @@ void TRPCRequestHandler::RPCRequestHandling(PPort port)
             State = RPCRequestState::RPC_COMPLETE;
         } catch (const TSerialDeviceException& error) {
             State = RPCRequestState::RPC_ERROR;
+            ErrorMessage = error.what();
         }
 
         RequestExecution.notify_all();

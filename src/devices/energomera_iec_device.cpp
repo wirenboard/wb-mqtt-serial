@@ -243,7 +243,7 @@ void TEnergomeraIecWithFastReadDevice::ReadRegisterRange(PRegisterRange abstract
 
         ProcessResponse(*range, presp);
         SetTransferResult(true);
-    } catch (TSerialDeviceException& e) {
+    } catch (const TSerialDeviceException& e) {
         for (auto& r: range->RegisterList()) {
             r->SetError(TRegister::TError::ReadError);
         }

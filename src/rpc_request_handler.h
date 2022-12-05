@@ -29,6 +29,7 @@ private:
     PRPCRequest Request;
     std::vector<uint8_t> ReadData;
     RPCRequestState State = RPCRequestState::RPC_IDLE;
+    std::string ErrorMessage;
 };
 
 typedef std::shared_ptr<TRPCRequestHandler> PRPCRequestHandler;

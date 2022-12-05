@@ -71,7 +71,7 @@ void TFileDescriptorPort::WriteBytes(const uint8_t* buf, int count)
         for (int i = 0; i < count; ++i) {
             ss << " " << setw(2) << int(buf[i]);
         }
-        LOG(Debug) << GetDescription() << ss.str();
+        LOG(Debug) << GetDescription(false) << ss.str();
     }
 }
 
@@ -114,7 +114,7 @@ uint8_t TFileDescriptorPort::ReadByte(const chrono::microseconds& timeout)
 
     LastInteraction = std::chrono::steady_clock::now();
 
-    LOG(Debug) << GetDescription() << ": Read: " << hex << setw(2) << setfill('0') << int(b);
+    LOG(Debug) << GetDescription(false) << ": Read: " << hex << setw(2) << setfill('0') << int(b);
 
     return b;
 }
@@ -199,7 +199,7 @@ size_t TFileDescriptorPort::ReadFrame(uint8_t* buf,
     if (::Debug.IsEnabled()) {
         // TBD: move this to libwbmqtt (HexDump?)
         stringstream ss;
-        ss << "ReadFrame:" << hex << setfill('0');
+        ss << GetDescription(false) << ": ReadFrame:" << hex << setfill('0');
         for (size_t i = 0; i < nread; ++i) {
             ss << " " << setw(2) << int(buf[i]);
         }
@@ -252,5 +252,5 @@ void TFileDescriptorPort::SleepSinceLastInteraction(const chrono::microseconds& 
     auto now = chrono::steady_clock::now();
     auto delta = chrono::duration_cast<chrono::microseconds>(now - LastInteraction);
     std::this_thread::sleep_for(us - delta);
-    LOG(Debug) << GetDescription() << ": Sleep " << us.count() << " us";
+    LOG(Debug) << GetDescription(false) << ": Sleep " << us.count() << " us";
 }
