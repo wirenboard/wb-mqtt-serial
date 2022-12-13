@@ -1456,6 +1456,14 @@
                 "group": "debug"
             },
             {
+                "name": "VOC Sensor Installed",
+                "reg_type": "input",
+                "address": 371,
+                "type": "switch",
+                "enabled": false,
+                "group": "debug"
+            },
+            {
                 "name": "VOC Version",
                 "reg_type": "input",
                 "address": 108,
@@ -1693,6 +1701,7 @@
                 "CO2 MH-Z19 Temperature": "Температура CO₂ датчика MH-Z19B",
                 "CO2 MH-Z19 Autocalibration Ticks (1 unit is ~7.5 min)": "Время цикла автокалибровки CO₂ датчика MH-Z19B (1 ед. ~7.5 минут)",
                 "CO2 MH-Z19 Autocalibration Count": "Число циклов автокалибровки CO₂ датчика MH-Z19B",
+                "VOC Sensor Installed": "Датчик VOC установлен",
                 "VOC Version": "Версия датчика VOC",
                 "VOC Raw": "Сырое значение датчика VOC",
                 "Motion Raw": "Сырое значение датчика движения",
