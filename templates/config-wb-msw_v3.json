@@ -234,7 +234,7 @@
                 "name": "Air Quality (VOC)",
                 "reg_type": "input",
                 "address": 11,
-                "type": "concentration",
+                "units": "ppb",
                 "scale": 1,
                 "error_value": "0xFFFF",
                 "group": "air_quality"
