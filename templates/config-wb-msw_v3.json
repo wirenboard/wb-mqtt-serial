@@ -1435,7 +1435,7 @@
             {
                 "name": "CO2 MH-Z19 Temperature",
                 "reg_type": "input",
-                "address": 354,
+                "address": 393,
                 "units": "deg C",
                 "format": "s16",
                 "enabled": false,
@@ -1444,14 +1444,14 @@
             {
                 "name": "CO2 MH-Z19 Autocalibration Ticks (1 unit is ~7.5 min)",
                 "reg_type": "input",
-                "address": 355,
+                "address": 394,
                 "enabled": false,
                 "group": "debug"
             },
             {
                 "name": "CO2 MH-Z19 Autocalibration Count",
                 "reg_type": "input",
-                "address": 356,
+                "address": 395,
                 "enabled": false,
                 "group": "debug"
             },
