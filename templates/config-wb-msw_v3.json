@@ -1433,6 +1433,16 @@
                 "group": "debug"
             },
             {
+                "name": "CO2 Sensor Software Version",
+                "reg_type": "input",
+                "address": 348,
+                "type": "text",
+                "format": "string",
+                "string_data_size": 10,
+                "enabled": false,
+                "group": "debug"
+            },
+            {
                 "name": "CO2 MH-Z19 Temperature",
                 "reg_type": "input",
                 "address": 393,
@@ -1697,6 +1707,7 @@
                 "CO2 Autocalibration Period": "Период автокалибровки датчика CO₂",
                 "CO2 Sensor Installed": "Датчик CO₂ установлен",
                 "CO2 Sensor Type": "Тип датчика CO₂",
+                "CO2 Sensor Software Version": "Версия ПО датчика CO₂",
                 "Only for MH-Z19B CO₂ sensor": "Только для CO₂ датчика MH-Z19B",
                 "CO2 MH-Z19 Temperature": "Температура CO₂ датчика MH-Z19B",
                 "CO2 MH-Z19 Autocalibration Ticks (1 unit is ~7.5 min)": "Время цикла автокалибровки CO₂ датчика MH-Z19B (1 ед. ~7.5 минут)",
