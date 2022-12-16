@@ -47,15 +47,6 @@
             "stop_bits": 2,
             "enabled": false,
             "devices" : []
-        },
-        {
-            "path" : "/dev/ttyMOD4",
-            "baud_rate": 9600,
-            "parity": "N",
-            "data_bits": 8,
-            "stop_bits": 2,
-            "enabled": false,
-            "devices" : []
         }
     ]
 }
