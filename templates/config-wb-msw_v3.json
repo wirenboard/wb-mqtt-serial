@@ -1452,7 +1452,7 @@
                 "group": "debug"
             },
             {
-                "name": "CO2 MH-Z19 Autocalibration Ticks (1 unit is ~7.5 min)",
+                "name": "CO2 MH-Z19 Autocalibration Ticks",
                 "reg_type": "input",
                 "address": 394,
                 "enabled": false,
@@ -1549,7 +1549,11 @@
                 "CO2 Reference Sensor Value": "CO₂ Reference Sensor Value",
                 "CO2 Autocalibration Period": "CO₂ Autocalibration Period",
                 "CO2 Sensor Installed": "CO₂ Sensor Installed",
-                "CO2 Sensor Type": "CO₂ Sensor Type"
+                "CO2 Sensor Type": "CO₂ Sensor Type",
+                "CO2 Sensor Software Version": "CO₂ Sensor Software Version",
+                "CO2 MH-Z19 Temperature": "CO₂ MH-Z19 Temperature",
+                "CO2 MH-Z19 Autocalibration Ticks": "CO₂ MH-Z19 Autocalibration Ticks (1 unit is ~7.5 min)",
+                "CO2 MH-Z19 Autocalibration Count": "CO₂ MH-Z19 Autocalibration Count"
             },
             "ru": {
                 "WB-MSW-v3_template_title": "WB-MSW v.3 (универсальный настенный Modbus-датчик)",
@@ -1710,7 +1714,7 @@
                 "CO2 Sensor Software Version": "Версия ПО датчика CO₂",
                 "Only for MH-Z19B CO₂ sensor": "Только для CO₂ датчика MH-Z19B",
                 "CO2 MH-Z19 Temperature": "Температура CO₂ датчика MH-Z19B",
-                "CO2 MH-Z19 Autocalibration Ticks (1 unit is ~7.5 min)": "Время цикла автокалибровки CO₂ датчика MH-Z19B (1 ед. ~7.5 минут)",
+                "CO2 MH-Z19 Autocalibration Ticks": "Время цикла автокалибровки CO₂ датчика MH-Z19B (1 ед. ~7.5 минут)",
                 "CO2 MH-Z19 Autocalibration Count": "Число циклов автокалибровки CO₂ датчика MH-Z19B",
                 "VOC Sensor Installed": "Датчик VOC установлен",
                 "VOC Version": "Версия датчика VOC",

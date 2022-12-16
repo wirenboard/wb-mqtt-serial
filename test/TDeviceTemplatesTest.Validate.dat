@@ -18846,7 +18846,7 @@ WB-MSW v.3
 	CO2 Autocalibration Period  =>  CO2 Autocalibration Period
 	CO2 Force Calibration  =>  CO2 Force Calibration
 	CO2 MH-Z19 Autocalibration Count  =>  CO2 MH-Z19 Autocalibration Count
-	CO2 MH-Z19 Autocalibration Ticks (1 unit is ~7.5 min)  =>  CO2 MH-Z19 Autocalibration Ticks (1 unit is ~7.5 min)
+	CO2 MH-Z19 Autocalibration Ticks  =>  CO2 MH-Z19 Autocalibration Ticks
 	CO2 MH-Z19 Temperature  =>  CO2 MH-Z19 Temperature
 	CO2 Reference Sensor Value  =>  CO2 Reference Sensor Value
 	CO2 Sensor Installed  =>  CO2 Sensor Installed
