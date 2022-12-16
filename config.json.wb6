@@ -13,7 +13,6 @@
             "devices" : []
         },
         {
-
             "path" : "/dev/ttyRS485-2",
             "baud_rate": 9600,
             "parity": "N",
@@ -23,7 +22,6 @@
             "devices" : []
         },
         {
-
             "path" : "/dev/ttyMOD1",
             "baud_rate": 9600,
             "parity": "N",
@@ -33,7 +31,6 @@
             "devices" : []
         },
         {
-
             "path" : "/dev/ttyMOD2",
             "baud_rate": 9600,
             "parity": "N",
@@ -43,8 +40,16 @@
             "devices" : []
         },
         {
-
             "path" : "/dev/ttyMOD3",
+            "baud_rate": 9600,
+            "parity": "N",
+            "data_bits": 8,
+            "stop_bits": 2,
+            "enabled": false,
+            "devices" : []
+        },
+        {
+            "path" : "/dev/ttyMOD4",
             "baud_rate": 9600,
             "parity": "N",
             "data_bits": 8,
