@@ -10,6 +10,8 @@ CONFFILE=/etc/wb-mqtt-serial.conf
 
 if of_machine_match "wirenboard,wirenboard-720"; then
     BOARD_CONF="/usr/share/wb-mqtt-serial/wb-mqtt-serial.conf.wb7"
+elif of_machine_match "contactless,imx6ul-wirenboard670"; then
+    BOARD_CONF="/usr/share/wb-mqtt-serial/wb-mqtt-serial.conf.wb67"
 elif of_machine_match "contactless,imx6ul-wirenboard60"; then
     BOARD_CONF="/usr/share/wb-mqtt-serial/wb-mqtt-serial.conf.wb6"
 elif of_machine_match "contactless,imx28-wirenboard50"; then

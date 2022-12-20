@@ -114,6 +114,7 @@ install:
 	install -D -m 0644 config.json.wb234 $(DESTDIR)$(PREFIX)/share/wb-mqtt-serial/wb-mqtt-serial.conf.wb234
 	install -D -m 0644 config.json.wb5 $(DESTDIR)$(PREFIX)/share/wb-mqtt-serial/wb-mqtt-serial.conf.wb5
 	install -D -m 0644 config.json.wb6 $(DESTDIR)$(PREFIX)/share/wb-mqtt-serial/wb-mqtt-serial.conf.wb6
+	install -D -m 0644 config.json.wb67 $(DESTDIR)$(PREFIX)/share/wb-mqtt-serial/wb-mqtt-serial.conf.wb67
 	install -D -m 0644 config.json.wb7 $(DESTDIR)$(PREFIX)/share/wb-mqtt-serial/wb-mqtt-serial.conf.wb7
 	install -D -m 0644 config.json.default $(DESTDIR)$(PREFIX)/share/wb-mqtt-serial/wb-mqtt-serial.conf.default
 
