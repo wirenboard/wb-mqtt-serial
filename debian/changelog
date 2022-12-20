@@ -1,3 +1,9 @@
+wb-mqtt-serial (2.77.8) UNRELEASED; urgency=medium
+
+  * Add missing default config for Wiren Board 6.7-6.9
+
+ -- Petr Krasnoshchekov <petr.krasnoshchekov@wirenboard.com>  Tue, 20 Dec 2022 12:24:02 +0500
+
 wb-mqtt-serial (2.77.7) stable; urgency=medium
 
   * Add /dev/ttyMOD4 to configs
