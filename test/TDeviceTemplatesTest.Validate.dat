@@ -18812,6 +18812,7 @@ WB-MS v.2
 	Uptime  =>  Uptime
 	VOC Baseline  =>  VOC Baseline
 	VOC Raw  =>  VOC Raw
+	VOC Sensor Installed  =>  VOC Sensor Installed
 	VOC Version  =>  VOC Version
 WB-MS-THLS
 	Humidity  =>  Humidity
@@ -18844,8 +18845,12 @@ WB-MSW v.3
 	CO2  =>  CO2
 	CO2 Autocalibration Period  =>  CO2 Autocalibration Period
 	CO2 Force Calibration  =>  CO2 Force Calibration
+	CO2 MH-Z19 Autocalibration Count  =>  CO2 MH-Z19 Autocalibration Count
+	CO2 MH-Z19 Autocalibration Ticks  =>  CO2 MH-Z19 Autocalibration Ticks
+	CO2 MH-Z19 Temperature  =>  CO2 MH-Z19 Temperature
 	CO2 Reference Sensor Value  =>  CO2 Reference Sensor Value
 	CO2 Sensor Installed  =>  CO2 Sensor Installed
+	CO2 Sensor Software Version  =>  CO2 Sensor Software Version
 	CO2 Sensor Type  =>  CO2 Sensor Type
 	Current Motion  =>  Current Motion
 	Erroneous TH Readings  =>  Erroneous TH Readings
@@ -19007,6 +19012,7 @@ WB-MSW v.3
 	Uptime  =>  Uptime
 	VOC Baseline  =>  VOC Baseline
 	VOC Raw  =>  VOC Raw
+	VOC Sensor Installed  =>  VOC Sensor Installed
 	VOC Version  =>  VOC Version
 WB-MSW2
 	Buzzer  =>  Buzzer

@@ -1,3 +1,11 @@
+wb-mqtt-serial (2.78.0) stable; urgency=medium
+
+  * Fix VOC units for WB-MS v2, WB-MSW v3: ppm -> ppb
+  * Add "VOC Sensor Installed" channel to WB-MS v2, WB-MSW v3 template
+  * Add debug channels for MH-Z19 sensor to MSW v3 template
+
+ -- Pavel Gasheev <pavel.gasheev@wirenboard.ru>  Tue, 20 Dec 2022 16:03:34 +0300
+
 wb-mqtt-serial (2.77.8) UNRELEASED; urgency=medium
 
   * Add missing default config for Wiren Board 6.7-6.9
