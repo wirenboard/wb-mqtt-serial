@@ -126,10 +126,11 @@ namespace
         port->WriteBytes(rpcRequest->Message);
 
         std::vector<uint8_t> response(rpcRequest->ResponseSize);
-        port->ReadFrame(response.data(),
-                        rpcRequest->ResponseSize,
-                        rpcRequest->ResponseTimeout,
-                        rpcRequest->FrameTimeout);
+        auto actualSize = port->ReadFrame(response.data(),
+                                          rpcRequest->ResponseSize,
+                                          rpcRequest->ResponseTimeout,
+                                          rpcRequest->FrameTimeout);
+        response.resize(actualSize);
 
         return response;
     }
