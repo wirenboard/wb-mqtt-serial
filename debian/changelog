@@ -1,3 +1,9 @@
+wb-mqtt-serial (2.78.1) stable; urgency=medium
+
+  * Fix port/Load RPC response size
+
+ -- Nikolay Korotkiy <nikolay.korotkiy@wirenboard.com>  Tue, 27 Dec 2022 02:12:00 +0400
+
 wb-mqtt-serial (2.78.0) stable; urgency=medium
 
   * Fix VOC units for WB-MS v2, WB-MSW v3: ppm -> ppb
