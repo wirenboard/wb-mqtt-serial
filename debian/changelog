@@ -1,3 +1,9 @@
+wb-mqtt-serial (2.78.2) stable; urgency=medium
+
+  * Update description of command line parameters for DLMS device template generation  
+
+ -- Petr Krasnoshchekov <petr.krasnoshchekov@wirenboard.com>  Wed, 18 Jan 2023 15:21:44 +0500
+
 wb-mqtt-serial (2.78.1) stable; urgency=medium
 
   * Fix port/Load RPC response size

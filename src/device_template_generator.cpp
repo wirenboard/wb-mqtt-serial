@@ -16,7 +16,7 @@ namespace
     void PrintDeviceTemplateGenerationOptionsUsage(const std::string& appName)
     {
         cout << "Usage:" << endl
-             << " " << appName << " -G mode,path_to_device,port_settings,protocol[:device_id][,options]" << endl
+             << " " << appName << " -G mode,path_to_device,port_settings,protocol:device_id[,options]" << endl
              << "Options:" << endl
              << "  mode            generation mode:" << endl
              << "                    print     - minimal information, no actual template generation" << endl
@@ -27,7 +27,7 @@ namespace
              << endl
              << "  protocol        one of:" << endl
              << "                    dlms_hdlc - DLMS/COSEM with HDLC interface," << endl
-             << "                                optional device_id is an address of a Physical Device" << endl
+             << "                                device_id is an address of a Physical Device" << endl
              << "  options         comma-separated list of protocol parameters:" << endl;
         DLMS::PrintDeviceTemplateGenerationOptionsUsage();
     }
