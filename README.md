@@ -945,7 +945,7 @@ OBIS-коды кодируются в адресе регистра следую
 Пример команд для генерации шаблона:
 ```bash
 # systemctl stop wb-mqtt-serial
-# wb-mqtt-serial -G print_all,/dev/ttyMOD3,9600-8-N-1,dlms_hdlc:75,32,high,12345678
+# wb-mqtt-serial -G print_all,/dev/ttyMOD3,9600-8-N-1,dlms_hdlc:75,32,low,12345678
 # systemctl start wb-mqtt-serial
 ```
 Подробнее об опциях параметра `-G` можно узнать во встроенной справке `wb-mqtt-serial -G help`.
