@@ -673,9 +673,9 @@ const CGXDLMSObjectCollection& TDlmsDevice::ReadAllObjects(bool readAttributes)
 void DLMS::PrintDeviceTemplateGenerationOptionsUsage()
 {
     std::cout << "dlms_hdlc protocol options:" << std::endl
-              << "  - client address, typical values:" << std::endl 
+              << "  - client address, typical values:" << std::endl
               << "      16 - public client" << std::endl
-              << "      32 - meterings reader" <<std::endl
+              << "      32 - meterings reader" << std::endl
               << "      48 - configuration tool" << std::endl
               << "  - authentication mechanism:" << std::endl
               << "     lowest" << std::endl
