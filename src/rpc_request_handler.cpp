@@ -37,6 +37,7 @@ void TRPCRequestHandler::RPCRequestHandling(PPort port)
     if (State == RPCRequestState::RPC_PENDING) {
         try {
             port->CheckPortOpen();
+            port->SkipNoise();
             port->SleepSinceLastInteraction(Request->FrameTimeout);
 
             TSerialPortSettingsGuard settingsGuard(port, Request->SerialPortSettings);
