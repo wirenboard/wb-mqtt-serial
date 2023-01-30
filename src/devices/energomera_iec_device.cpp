@@ -231,8 +231,8 @@ void TEnergomeraIecWithFastReadDevice::ReadRegisterRange(PRegisterRange abstract
         throw std::runtime_error("TEnergomeraRegisterRange expected");
     }
 
-    Port()->SkipNoise();
     Port()->CheckPortOpen();
+    Port()->SkipNoise();
 
     try {
         range->UpdateMasks();

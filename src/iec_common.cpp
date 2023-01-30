@@ -246,8 +246,8 @@ void TIEC61107ModeCDevice::InvalidateReadCache()
 
 TRegisterValue TIEC61107ModeCDevice::ReadRegisterImpl(PRegister reg)
 {
-    Port()->SkipNoise();
     Port()->CheckPortOpen();
+    Port()->SkipNoise();
     return GetRegisterValue(*reg, GetCachedResponse(GetParameterRequest(*reg)));
 }
 

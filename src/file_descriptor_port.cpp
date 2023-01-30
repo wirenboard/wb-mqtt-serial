@@ -16,7 +16,7 @@ using namespace std;
 
 namespace
 {
-    const chrono::milliseconds NoiseTimeout(10);
+    const chrono::milliseconds NoiseTimeout(1);
     const chrono::milliseconds ContinuousNoiseTimeout(100);
     const int ContinuousNoiseReopenNumber = 3;
 }
