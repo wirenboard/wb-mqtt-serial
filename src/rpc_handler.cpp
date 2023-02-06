@@ -224,7 +224,12 @@ Json::Value TRPCHandler::PortLoad(const Json::Value& request)
 
         replyJSON["response"] = responseStr;
     } catch (const TRPCException& e) {
-        LOG(Warn) << e.GetResultMessage();
+        if (e.GetResultCode() == TRPCResultCode::RPC_WRONG_IO) {
+            // Too many "request timed out" errors while scanning ports
+            LOG(Debug) << e.GetResultMessage();
+        } else {
+            LOG(Warn) << e.GetResultMessage();
+        }
         switch (e.GetResultCode()) {
             case TRPCResultCode::RPC_WRONG_TIMEOUT:
                 wb_throw(WBMQTT::TRequestTimeoutException, e.GetResultMessage());
