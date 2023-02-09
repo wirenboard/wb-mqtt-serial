@@ -88,7 +88,7 @@ namespace
             try {
                 f >> val;
                 if (f.good()) {
-                    LOG(Info) << rxTrigBytesPath << " = " << val;
+                    LOG(Debug) << rxTrigBytesPath << " = " << val;
                     return val;
                 }
             } catch (const std::exception& e) {
