@@ -48,7 +48,7 @@ public:
     void SetErrorCallback(const TCallback& callback);
     void ClearDevices();
     PPort GetPort();
-    std::vector<uint8_t> RPCTransceive(PRPCRequest request) const;
+    void RPCTransceive(PRPCRequest request) const;
 
 private:
     void Activate();

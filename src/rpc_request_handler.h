@@ -18,18 +18,15 @@ enum class RPCRequestState
 class TRPCRequestHandler
 {
 public:
-    std::vector<uint8_t> RPCTransceive(PRPCRequest request,
-                                       PBinarySemaphore serialClientSemaphore,
-                                       PBinarySemaphoreSignal serialClientSignal);
+    void RPCTransceive(PRPCRequest request,
+                       PBinarySemaphore serialClientSemaphore,
+                       PBinarySemaphoreSignal serialClientSignal);
     void RPCRequestHandling(PPort port);
 
 private:
     std::mutex Mutex;
-    std::condition_variable RequestExecution;
     PRPCRequest Request;
-    std::vector<uint8_t> ReadData;
     RPCRequestState State = RPCRequestState::RPC_IDLE;
-    std::string ErrorMessage;
 };
 
 typedef std::shared_ptr<TRPCRequestHandler> PRPCRequestHandler;

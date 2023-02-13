@@ -1,6 +1,7 @@
 #pragma once
 #include "rpc_port.h"
 #include <wblib/json_utils.h>
+#include <wblib/rpc.h>
 
 enum class TRPCMessageFormat
 {
@@ -19,6 +20,9 @@ public:
     size_t ResponseSize;
 
     TSerialPortConnectionSettings SerialPortSettings;
+
+    std::function<void(const std::vector<uint8_t>&)> OnResult = nullptr;
+    WBMQTT::TMqttRpcServer::TErrorCallback OnError = nullptr;
 };
 
 typedef std::shared_ptr<TRPCRequest> PRPCRequest;

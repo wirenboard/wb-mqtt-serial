@@ -136,10 +136,10 @@ namespace
     }
 } // namespace
 
-std::vector<uint8_t> TRPCPortDriver::SendRequest(PRPCRequest request) const
+void TRPCPortDriver::SendRequest(PRPCRequest request) const
 {
     if (SerialClient) {
-        return SerialClient->RPCTransceive(request);
+        SerialClient->RPCTransceive(request);
     } else {
         throw TRPCException("SerialClient wasn't found for requested port", TRPCResultCode::RPC_WRONG_PORT);
     }
@@ -215,16 +215,19 @@ void TRPCHandler::PortLoad(const Json::Value& request,
         PRPCRequest rpcRequest = ParseRequest(request, RequestSchema);
         PRPCPortDriver rpcPortDriver = FindPortDriver(request);
 
-        std::vector<uint8_t> response;
         if (rpcPortDriver != nullptr && rpcPortDriver->SerialClient) {
-            response = rpcPortDriver->SendRequest(rpcRequest);
+            rpcRequest->OnResult = [onResult, rpcRequest](const std::vector<uint8_t>& response) {
+                Json::Value replyJSON;
+                replyJSON["response"] = PortLoadResponseFormat(response, rpcRequest->Format);
+                onResult(replyJSON);
+            };
+            rpcRequest->OnError = onError;
+            rpcPortDriver->SendRequest(rpcRequest);
+            return;
         } else {
-            response = SendRequest(request, rpcRequest);
+            auto response = SendRequest(request, rpcRequest);
+            replyJSON["response"] = PortLoadResponseFormat(response, rpcRequest->Format);
         }
-
-        std::string responseStr = PortLoadResponseFormat(response, rpcRequest->Format);
-
-        replyJSON["response"] = responseStr;
     } catch (const TRPCException& e) {
         if (e.GetResultCode() == TRPCResultCode::RPC_WRONG_IO) {
             // Too many "request timed out" errors while scanning ports

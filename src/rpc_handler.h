@@ -27,7 +27,7 @@ class TRPCPortDriver
 public:
     PSerialClient SerialClient;
     PRPCPort RPCPort;
-    std::vector<uint8_t> SendRequest(PRPCRequest request) const;
+    void SendRequest(PRPCRequest request) const;
 };
 
 typedef std::shared_ptr<TRPCPortDriver> PRPCPortDriver;
