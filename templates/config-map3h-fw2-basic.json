@@ -114,17 +114,6 @@
                 "group": "l1"
             },
             {
-                "name": "U L1-L2",
-                "reg_type": "input",
-                "address": "0x141C",
-                "type": "voltage",
-                "format": "u16",
-                "scale": 0.01,
-                "round_to": 0.1,
-                "error_value": "0xFFFF",
-                "group": "l1"
-            },
-            {
                 "name": "THDN U L1",
                 "reg_type": "input",
                 "address": "0x10f1",
@@ -145,17 +134,6 @@
                 "group": "l2"
             },
             {
-                "name": "U L2-L3",
-                "reg_type": "input",
-                "address": "0x141D",
-                "type": "voltage",
-                "format": "u16",
-                "scale": 0.01,
-                "round_to": 0.1,
-                "error_value": "0xFFFF",
-                "group": "l2"
-            },
-            {
                 "name": "THDN U L2",
                 "reg_type": "input",
                 "address": "0x10f2",
@@ -173,32 +151,6 @@
                 "format": "u32",
                 "scale": 1.52588e-7,
                 "round_to": 0.001,
-                "group": "l3"
-            },
-
-
-
-
-            {
-                "name": "U L2-L3",
-                "reg_type": "input",
-                "address": "0x141D",
-                "type": "voltage",
-                "format": "u16",
-                "scale": 0.01,
-                "round_to": 0.1,
-                "error_value": "0xFFFF",
-                "group": "l2"
-            },
-            {
-                "name": "U L3-L1",
-                "reg_type": "input",
-                "address": "0x141E",
-                "type": "voltage",
-                "format": "u16",
-                "scale": 0.01,
-                "round_to": 0.1,
-                "error_value": "0xFFFF",
                 "group": "l3"
             },
             {
