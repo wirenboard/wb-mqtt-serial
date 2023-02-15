@@ -16936,6 +16936,9 @@ WB-MAP3E
 	Total Q  =>  Total Q
 	Total RP energy  =>  Total RP energy
 	Total S  =>  Total S
+	U L1-L2  =>  U L1-L2
+	U L2-L3  =>  U L2-L3
+	U L3-L1  =>  U L3-L1
 	Upeak L1  =>  Upeak L1
 	Upeak L2  =>  Upeak L2
 	Upeak L3  =>  Upeak L3
