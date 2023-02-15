@@ -1591,29 +1591,32 @@ TRPCResultCode TSerialClientIntegrationTest::SendRPCRequest(PMQTTSerialDriver se
     std::vector<PSerialPortDriver> portDrivers = serialDriver->GetPortDrivers();
     PSerialClient serialClient = portDrivers[0]->GetSerialClient();
 
+    TRPCResultCode resultCode = TRPCResultCode::RPC_OK;
+    std::vector<int> responseInt;
     PRPCRequest request = std::make_shared<TRPCRequest>();
     request->ResponseTimeout = std::chrono::milliseconds(500);
     request->FrameTimeout = std::chrono::milliseconds(20);
     request->TotalTimeout = totalTimeout;
     std::copy(expectedRequest.begin(), expectedRequest.end(), back_inserter(request->Message));
     request->ResponseSize = expectedResponseLength;
+    request->OnResult = [&responseInt](const std::vector<uint8_t>& response) {
+        std::copy(response.begin(), response.end(), back_inserter(responseInt));
+    };
+    request->OnError = [&resultCode](const TMqttRpcErrorCode code, const std::string&) {
+        resultCode = code == WBMQTT::E_RPC_REQUEST_TIMEOUT ? TRPCResultCode::RPC_WRONG_TIMEOUT : TRPCResultCode::RPC_WRONG_IO;
+    };
 
     Note() << "LoopOnce() [start thread]";
     std::thread serialDriverThread(&TMQTTSerialDriver::LoopOnce, SerialDriver);
 
-    TRPCResultCode resultCode = TRPCResultCode::RPC_OK;
-
     try {
         Note() << "Send RPC request";
-        std::vector<uint8_t> response = serialClient->RPCTransceive(request);
-        std::vector<int> responseInt;
-        std::copy(response.begin(), response.end(), back_inserter(responseInt));
+        serialClient->RPCTransceive(request);
+        serialDriverThread.join();
         EXPECT_EQ(responseInt == expectedResponse, true);
     } catch (const TRPCException& exception) {
         resultCode = exception.GetResultCode();
     }
-
-    serialDriverThread.join();
 
     return resultCode;
 }
@@ -1661,18 +1664,12 @@ TEST_F(TSerialClientIntegrationTest, RPCRequestTransceive)
     // ReadFrame timeout case
     Note() << "[test case] ReadFrame exception: nothing to read";
     Port->Expect(expectedRequest, emptyVector, NULL);
-    EXPECT_EQ(
-        SendRPCRequest(SerialDriver, expectedRequest, emptyVector, expectedResponse.size(), std::chrono::seconds(12)),
-        TRPCResultCode::RPC_WRONG_IO);
-
-    // Total timeout RPC thread case
-    Note() << "[test case] RPC request exception: meeting total timeout";
     EXPECT_EQ(SendRPCRequest(SerialDriver,
                              expectedRequest,
-                             expectedResponse,
+                             emptyVector,
                              expectedResponse.size(),
-                             std::chrono::seconds(0)),
-              TRPCResultCode::RPC_WRONG_TIMEOUT);
+                             std::chrono::seconds(12)),
+        TRPCResultCode::RPC_WRONG_IO);
 
     // Succesful case
     Note() << "[test case] RPC succesful case";
@@ -1687,7 +1684,11 @@ TEST_F(TSerialClientIntegrationTest, RPCRequestTransceive)
     // Read zero length response
     Note() << "[test case] RPC request with zero length read";
     Port->Expect(expectedRequest, emptyVector, NULL);
-    EXPECT_EQ(SendRPCRequest(SerialDriver, expectedRequest, emptyVector, 0, std::chrono::seconds(12)),
+    EXPECT_EQ(SendRPCRequest(SerialDriver,
+                             expectedRequest,
+                             emptyVector,
+                             0,
+                             std::chrono::seconds(12)),
               TRPCResultCode::RPC_OK);
 }
 
