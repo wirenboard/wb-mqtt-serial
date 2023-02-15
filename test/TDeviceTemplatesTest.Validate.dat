@@ -13093,9 +13093,6 @@ WB-MAP12E fw2
 	Urms L1  =>  Urms L1
 	Urms L2  =>  Urms L2
 	Urms L3  =>  Urms L3
-	U L1-L2  =>  U L1-L2
-	U L2-L3  =>  U L2-L3
-	U L3-L1  =>  U L3-L1
 	Voltage angle L1  =>  Voltage angle L1
 	Voltage angle L2  =>  Voltage angle L2
 	Voltage angle L3  =>  Voltage angle L3
