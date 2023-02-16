@@ -1,3 +1,9 @@
+wb-mqtt-serial (2.78.6) stable; urgency=medium
+
+  * Add linear voltage to MAP templates
+
+ -- Andrey Radionov <andrey.radionov@wirenboard.ru>  Wed, 15 Feb 2023 18:24:50 +0300
+
 wb-mqtt-serial (2.78.5) stable; urgency=medium
 
   * Suppress excessive serial port logging on Info log level
