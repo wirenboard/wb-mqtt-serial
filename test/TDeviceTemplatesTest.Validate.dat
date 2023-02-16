@@ -13083,6 +13083,9 @@ WB-MAP12E fw2
 	MCU Voltage  =>  MCU Voltage
 	Serial  =>  Serial
 	Supply voltage  =>  Supply voltage
+	U L1-L2  =>  U L1-L2
+	U L2-L3  =>  U L2-L3
+	U L3-L1  =>  U L3-L1
 	Upeak L1  =>  Upeak L1
 	Upeak L2  =>  Upeak L2
 	Upeak L3  =>  Upeak L3
@@ -15360,6 +15363,9 @@ WB-MAP12H fw2
 	THDN U L1  =>  THDN U L1
 	THDN U L2  =>  THDN U L2
 	THDN U L3  =>  THDN U L3
+	U L1-L2  =>  U L1-L2
+	U L2-L3  =>  U L2-L3
+	U L3-L1  =>  U L3-L1
 	Ufund L1  =>  Ufund L1
 	Ufund L2  =>  Ufund L2
 	Ufund L3  =>  Ufund L3
@@ -16283,6 +16289,9 @@ WB-MAP12H fw2 (+ all harmonics)
 	THDN U L1  =>  THDN U L1
 	THDN U L2  =>  THDN U L2
 	THDN U L3  =>  THDN U L3
+	U L1-L2  =>  U L1-L2
+	U L2-L3  =>  U L2-L3
+	U L3-L1  =>  U L3-L1
 	Ufund L1  =>  Ufund L1
 	Ufund L2  =>  Ufund L2
 	Ufund L3  =>  Ufund L3
@@ -16729,6 +16738,9 @@ WB-MAP12H fw2 (+ harmonics)
 	THDN U L1  =>  THDN U L1
 	THDN U L2  =>  THDN U L2
 	THDN U L3  =>  THDN U L3
+	U L1-L2  =>  U L1-L2
+	U L2-L3  =>  U L2-L3
+	U L3-L1  =>  U L3-L1
 	Ufund L1  =>  Ufund L1
 	Ufund L2  =>  Ufund L2
 	Ufund L3  =>  Ufund L3
@@ -16878,6 +16890,9 @@ WB-MAP12H fw2 (basic)
 	THDN U L1  =>  THDN U L1
 	THDN U L2  =>  THDN U L2
 	THDN U L3  =>  THDN U L3
+	U L1-L2  =>  U L1-L2
+	U L2-L3  =>  U L2-L3
+	U L3-L1  =>  U L3-L1
 	Uptime  =>  Uptime
 	Urms L1  =>  Urms L1
 	Urms L2  =>  Urms L2
@@ -16971,6 +16986,9 @@ WB-MAP3E fw2
 	Total Q  =>  Total Q
 	Total RP energy  =>  Total RP energy
 	Total S  =>  Total S
+	U L1-L2  =>  U L1-L2
+	U L2-L3  =>  U L2-L3
+	U L3-L1  =>  U L3-L1
 	Upeak L1  =>  Upeak L1
 	Upeak L2  =>  Upeak L2
 	Upeak L3  =>  Upeak L3
@@ -17021,6 +17039,9 @@ WB-MAP3ET
 	Total Q  =>  Total Q
 	Total RP energy  =>  Total RP energy
 	Total S  =>  Total S
+	U L1-L2  =>  U L1-L2
+	U L2-L3  =>  U L2-L3
+	U L3-L1  =>  U L3-L1
 	Upeak L1  =>  Upeak L1
 	Upeak L2  =>  Upeak L2
 	Upeak L3  =>  Upeak L3
@@ -17038,6 +17059,9 @@ WB-MAP3EV
 	MCU Voltage  =>  MCU Voltage
 	Serial  =>  Serial
 	Supply Voltage  =>  Supply Voltage
+	U L1-L2  =>  U L1-L2
+	U L2-L3  =>  U L2-L3
+	U L3-L1  =>  U L3-L1
 	Upeak L1  =>  Upeak L1
 	Upeak L2  =>  Upeak L2
 	Upeak L3  =>  Upeak L3
@@ -17409,6 +17433,9 @@ WB-MAP3H fw2
 	Total S  =>  Total S
 	Total S energy  =>  Total S energy
 	Total SV  =>  Total SV
+	U L1-L2  =>  U L1-L2
+	U L2-L3  =>  U L2-L3
+	U L3-L1  =>  U L3-L1
 	Ufund L1  =>  Ufund L1
 	Ufund L2  =>  Ufund L2
 	Ufund L3  =>  Ufund L3
@@ -17549,6 +17576,9 @@ WB-MAP3H fw2 (+ harmonics)
 	Total S  =>  Total S
 	Total S energy  =>  Total S energy
 	Total SV  =>  Total SV
+	U L1-L2  =>  U L1-L2
+	U L2-L3  =>  U L2-L3
+	U L3-L1  =>  U L3-L1
 	Ufund L1  =>  Ufund L1
 	Ufund L2  =>  Ufund L2
 	Ufund L3  =>  Ufund L3
@@ -17599,6 +17629,9 @@ WB-MAP3H fw2 (basic)
 	Total Q  =>  Total Q
 	Total RP energy  =>  Total RP energy
 	Total S  =>  Total S
+	U L1-L2  =>  U L1-L2
+	U L2-L3  =>  U L2-L3
+	U L3-L1  =>  U L3-L1
 	Uptime  =>  Uptime
 	Urms L1  =>  Urms L1
 	Urms L2  =>  Urms L2

@@ -1,8 +1,14 @@
-wb-mqtt-serial (2.78.6) stable; urgency=medium
+wb-mqtt-serial (2.78.7) stable; urgency=medium
 
   * Handle RPC calls in parallel (per serial port)
 
- -- Nikolay Korotkiy <nikolay.korotkiy@wirenboard.com>  Fri, 10 Feb 2023 16:31:00 +0400
+ -- Nikolay Korotkiy <nikolay.korotkiy@wirenboard.com>  Fri, 16 Feb 2023 16:31:00 +0400
+
+wb-mqtt-serial (2.78.6) stable; urgency=medium
+
+  * Add linear voltage to MAP templates
+
+ -- Andrey Radionov <andrey.radionov@wirenboard.ru>  Wed, 15 Feb 2023 18:24:50 +0300
 
 wb-mqtt-serial (2.78.5) stable; urgency=medium
 
