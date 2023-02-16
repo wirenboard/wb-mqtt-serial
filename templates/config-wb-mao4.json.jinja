@@ -80,7 +80,53 @@
                 ],
                 "group": "general",
                 "order": 1
-            }
+            },
+            {% for enumerator in range(0, INPUTS_NUMBER) -%}
+            "input {{enumerator + 1}} hold time": {
+                "title": "Input {{enumerator + 1}} hold time",
+                "description": "input_hold_time_description",
+                "address": {{1100 + enumerator}},
+                "reg_type": "holding",
+                "default": 1000,
+                "min": 500,
+                "max": 5000,
+                "group": "inputs",
+                "order": {{1 + 4 * enumerator}}
+            },
+            "input {{enumerator + 1}} repeat time": {
+                "title": "Input {{enumerator + 1}} repeat time",
+                "description": "input_repeat_time_description",
+                "address": {{1120 + enumerator}},
+                "reg_type": "holding",
+                "default": 20,
+                "min": 5,
+                "max": 500,
+                "group": "inputs",
+                "order": {{2 + 4 * enumerator}}
+            },
+            "input {{enumerator + 1}} double time": {
+                "title": "Input {{enumerator + 1}} double time",
+                "description": "input_double_time_description",
+                "address": {{1140 + enumerator}},
+                "reg_type": "holding",
+                "default": 300,
+                "min": 0,
+                "max": 2000,
+                "group": "inputs",
+                "order": {{3 + 4 * enumerator}}
+            },
+            "input {{enumerator + 1}} debounce time": {
+                "title": "Input {{enumerator + 1}} debounce time",
+                "description": "input_debounce_time_description",
+                "address": {{1160 + enumerator}},
+                "reg_type": "holding",
+                "default": 50,
+                "min": 5,
+                "max": 200,
+                "group": "inputs",
+                "order": {{4 + 4 * enumerator}}
+            }{% if not loop.last %},{% endif %}
+            {% endfor -%}
         },
 
         "channels": [
@@ -99,6 +145,35 @@
                 "type": "value",
                 "group": "inputs"
             },
+            {
+                "name": "Input {{enumerator + 1}} short press counter",
+                "reg_type": "input",
+                "address": {{464 + enumerator}},
+                "type": "value",
+                "group": "inputs"
+            },
+            {
+                "name": "Input {{enumerator + 1}} long press counter",
+                "reg_type": "input",
+                "address": {{480 + enumerator}},
+                "type": "value",
+                "group": "inputs"
+            },
+            {
+                "name": "Input {{enumerator + 1}} double press counter",
+                "reg_type": "input",
+                "address": {{496 + enumerator}},
+                "type": "value",
+                "group": "inputs"
+            },
+            {
+                "name": "Input {{enumerator + 1}} short long press counter",
+                "reg_type": "input",
+                "address": {{512 + enumerator}},
+                "type": "value",
+                "group": "inputs"
+            },
+            {% endfor -%}
             {% for enumerator in range(0, OUTPUTS_NUMBER) -%}
             {
                 "name": "Channel {{enumerator + 1}}",
@@ -181,7 +256,11 @@
                 "WB-MAO4_template_title": "WB-MAO4 (4-channel analog output module)",
                 "pwm_frequency_factor_description": "PWM frequency is calculated by formula: 24 kHz / Factor ",
                 "baud_rate_description": "Make sure that communication with device is established before changing this parameter. Select required baud rate, save configuration and then change port baud rate to the same value.",
-                "Uptime": "Uptime (s)"
+                "Uptime": "Uptime (s)",
+                "input_hold_time_description": "Presses that last longer than the specified time are counted as long presses",
+                "input_repeat_time_description": "Less time causes faster parameter change",
+                "input_double_time_description": "If during the specified time there was no second press, then the press counts as single. Setting 0 will disable all counters except short and long",
+                "input_debounce_time_description": "Should be 5-10 times less, than double press time. If double presses are disabled, any value could be set"
             },
             "ru": {
                 "WB-MAO4_template_title": "WB-MAO4 (4-канальный модуль аналогового вывода)",
@@ -205,6 +284,14 @@
                 "baud_rate_description": "Перед изменением параметра убедитесь, что связь с устройством установлена. Выберите нужную скорость обмена, сохраните конфигурацию, а затем укажите в настройках порта эту же скорость.",
                 {% for enumerator in range(1, OUTPUTS_NUMBER + 1) -%}
                 "Input {{enumerator}} counter": "Счетчик {{enumerator}}",
+                "Input {{enumerator}} short press counter": "Счетчик короткого нажатия {{enumerator}}",
+                "Input {{enumerator}} long press counter": "Счетчик долгого нажатия {{enumerator}}",
+                "Input {{enumerator}} double press counter": "Счетчик двойного нажатия {{enumerator}}",
+                "Input {{enumerator}} short long press counter": "Счетчик короткого, а затем долгого нажатия {{enumerator}}",
+                "Input {{enumerator}} hold time": "Время длинного нажатия {{enumerator}}",
+                "Input {{enumerator}} repeat time": "Скорость изменения параметра при удержании {{enumerator}}",
+                "Input {{enumerator}} double time": "Время ожидания двойного нажатия {{enumerator}}",
+                "Input {{enumerator}} debounce time": "Время подавления дребезга {{enumerator}}",
                 {% endfor -%}
                 "Channel 1": "Канал 1",
                 "Channel 2": "Канал 2",
@@ -219,7 +306,11 @@
                 "Channel 1 Duty Cycle Raw": "Сырое задание для канала 1",
                 "Channel 2 Duty Cycle Raw": "Сырое задание для канала 2",
                 "Channel 3 Duty Cycle Raw": "Сырое задание для канала 3",
-                "Channel 4 Duty Cycle Raw": "Сырое задание для канала 4"
+                "Channel 4 Duty Cycle Raw": "Сырое задание для канала 4",
+                "input_hold_time_description": "Если нажатие длится больше указанного времени - считаем его длинным",
+                "input_repeat_time_description": "Чем меньше значение, тем быстрее изменяется параметр",
+                "input_double_time_description": "Если за указанное время второго нажатия не было - считаем нажатие одиночным. 0 - отключит все нажатия кроме короткого и длинного",
+                "input_debounce_time_description": "Должно быть в 5-10 раз меньше, чем время ожидания второго нажатия. Если двойные нажатия отключены - любое значение"
             }
         }
     }
