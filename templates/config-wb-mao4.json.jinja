@@ -1,3 +1,6 @@
+{% set INPUTS_NUMBER = 3 -%}
+{% set OUTPUTS_NUMBER = 4 -%}
+
 {
     "title": "WB-MAO4_template_title",
     "device_type": "WB-MAO4",
@@ -81,80 +84,31 @@
         },
 
         "channels": [
+            {% for enumerator in range(0, INPUTS_NUMBER) -%}
             {
-                "name": "Input 1",
+                "name": "Input {{enumerator + 1}}",
                 "reg_type": "discrete",
-                "address": 0,
+                "address": {{enumerator}},
                 "type": "switch",
                 "group": "inputs"
             },
             {
-                "name": "Input 1 counter",
+                "name": "Input {{enumerator + 1}} counter",
                 "reg_type": "input",
-                "address": 32,
+                "address": {{32 + enumerator}},
                 "type": "value",
                 "group": "inputs"
             },
+            {% for enumerator in range(0, OUTPUTS_NUMBER) -%}
             {
-                "name": "Input 2",
-                "reg_type": "discrete",
-                "address": 1,
-                "type": "switch",
-                "group": "inputs"
-            },
-            {
-                "name": "Input 2 counter",
-                "reg_type": "input",
-                "address": 33,
-                "type": "value",
-                "group": "inputs"
-            },
-            {
-                "name": "Input 3",
-                "reg_type": "discrete",
-                "address": 2,
-                "type": "switch",
-                "group": "inputs"
-            },
-            {
-                "name": "Input 3 counter",
-                "reg_type": "input",
-                "address": 34,
-                "type": "value",
-                "group": "inputs"
-            },
-            {
-                "name": "Channel 1",
+                "name": "Channel {{enumerator + 1}}",
                 "reg_type": "holding",
-                "address": 0,
+                "address": {{enumerator}},
                 "type": "range",
                 "max": 10000,
                 "group": "outputs"
             },
-            {
-                "name": "Channel 2",
-                "reg_type": "holding",
-                "address": 1,
-                "type": "range",
-                "max": 10000,
-                "group": "outputs"
-            },
-            {
-                "name": "Channel 3",
-                "reg_type": "holding",
-                "address": 2,
-                "type": "range",
-                "max": 10000,
-                "group": "outputs"
-            },
-            {
-                "name": "Channel 4",
-                "reg_type": "holding",
-                "address": 3,
-                "type": "range",
-                "max": 10000,
-                "group": "outputs"
-            },
+            {% endfor -%}
             {
                 "name": "Serial",
                 "type": "text",
@@ -210,42 +164,17 @@
                 "enabled": false,
                 "group": "hw_info"
             },
+            {% for enumerator in range(0, OUTPUTS_NUMBER) -%}
             {
-                "name": "Channel 1 Duty Cycle Raw",
+                "name": "Channel {{enumerator + 1}} Duty Cycle Raw",
                 "reg_type": "holding",
-                "address": 90,
+                "address": {{90 + enumerator}},
                 "type": "value",
                 "readonly": true,
                 "enabled": false,
                 "group": "debug"
-            },
-            {
-                "name": "Channel 2 Duty Cycle Raw",
-                "reg_type": "holding",
-                "address": 91,
-                "type": "value",
-                "readonly": true,
-                "enabled": false,
-                "group": "debug"
-            },
-            {
-                "name": "Channel 3 Duty Cycle Raw",
-                "reg_type": "holding",
-                "address": 92,
-                "type": "value",
-                "readonly": true,
-                "enabled": false,
-                "group": "debug"
-            },
-            {
-                "name": "Channel 4 Duty Cycle Raw",
-                "reg_type": "holding",
-                "address": 93,
-                "type": "value",
-                "readonly": true,
-                "enabled": false,
-                "group": "debug"
-            }
+            }{% if not loop.last %},{% endif %}
+            {% endfor -%}
         ],
         "translations": {
             "en": {
@@ -274,9 +203,9 @@
                 "pwm_frequency_factor_description": "Частота ШИМ рассчитывается по формуле: 24 кГц / Делитель",
                 "Baud rate": "Скорость обмена",
                 "baud_rate_description": "Перед изменением параметра убедитесь, что связь с устройством установлена. Выберите нужную скорость обмена, сохраните конфигурацию, а затем укажите в настройках порта эту же скорость.",
-                "Input 1 counter": "Счетчик 1",
-                "Input 2 counter": "Счетчик 2",
-                "Input 3 counter": "Счетчик 3",
+                {% for enumerator in range(1, OUTPUTS_NUMBER + 1) -%}
+                "Input {{enumerator}} counter": "Счетчик {{enumerator}}",
+                {% endfor -%}
                 "Channel 1": "Канал 1",
                 "Channel 2": "Канал 2",
                 "Channel 3": "Канал 3",
