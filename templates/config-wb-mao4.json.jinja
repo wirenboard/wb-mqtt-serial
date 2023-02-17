@@ -36,7 +36,25 @@
                 "title": "Debug",
                 "id": "debug",
                 "order": 5
-            }
+            },
+            {% for enumerator in range(0, INPUTS_NUMBER) -%}
+            {
+                "title": "Input {{enumerator + 1}}",
+                "id": "input {{enumerator + 1}}",
+                "description": "Input {{enumerator + 1}} parameters",
+                "group": "inputs"
+            },
+            {% endfor -%}
+            {
+                "title": "Input counters",
+                "id": "input counters",
+                "group": "inputs",
+                "ui_options": {
+                    "wb": {
+                        "disable_title": true
+                    }
+                }
+            },
         ],
 
         "parameters": {
@@ -90,19 +108,8 @@
                 "default": 1000,
                 "min": 500,
                 "max": 5000,
-                "group": "inputs",
+                "group": "input {{enumerator + 1}}",
                 "order": {{1 + 4 * enumerator}}
-            },
-            "input {{enumerator + 1}} repeat time": {
-                "title": "Input {{enumerator + 1}} repeat time",
-                "description": "input_repeat_time_description",
-                "address": {{1120 + enumerator}},
-                "reg_type": "holding",
-                "default": 20,
-                "min": 5,
-                "max": 500,
-                "group": "inputs",
-                "order": {{2 + 4 * enumerator}}
             },
             "input {{enumerator + 1}} double time": {
                 "title": "Input {{enumerator + 1}} double time",
@@ -112,7 +119,7 @@
                 "default": 300,
                 "min": 0,
                 "max": 2000,
-                "group": "inputs",
+                "group": "input {{enumerator + 1}}",
                 "order": {{3 + 4 * enumerator}}
             },
             "input {{enumerator + 1}} debounce time": {
@@ -123,7 +130,7 @@
                 "default": 50,
                 "min": 5,
                 "max": 200,
-                "group": "inputs",
+                "group": "input {{enumerator + 1}}",
                 "order": {{4 + 4 * enumerator}}
             }{% if not loop.last %},{% endif %}
             {% endfor -%}
@@ -136,42 +143,42 @@
                 "reg_type": "discrete",
                 "address": {{enumerator}},
                 "type": "switch",
-                "group": "inputs"
+                "group": "input counters"
             },
             {
                 "name": "Input {{enumerator + 1}} counter",
                 "reg_type": "input",
                 "address": {{32 + enumerator}},
                 "type": "value",
-                "group": "inputs"
+                "group": "input counters"
             },
             {
                 "name": "Input {{enumerator + 1}} short press counter",
                 "reg_type": "input",
                 "address": {{464 + enumerator}},
                 "type": "value",
-                "group": "inputs"
+                "group": "input counters"
             },
             {
                 "name": "Input {{enumerator + 1}} long press counter",
                 "reg_type": "input",
                 "address": {{480 + enumerator}},
                 "type": "value",
-                "group": "inputs"
+                "group": "input counters"
             },
             {
                 "name": "Input {{enumerator + 1}} double press counter",
                 "reg_type": "input",
                 "address": {{496 + enumerator}},
                 "type": "value",
-                "group": "inputs"
+                "group": "input counters"
             },
             {
                 "name": "Input {{enumerator + 1}} short long press counter",
                 "reg_type": "input",
                 "address": {{512 + enumerator}},
                 "type": "value",
-                "group": "inputs"
+                "group": "input counters"
             },
             {% endfor -%}
             {% for enumerator in range(0, OUTPUTS_NUMBER) -%}
@@ -258,7 +265,6 @@
                 "baud_rate_description": "Make sure that communication with device is established before changing this parameter. Select required baud rate, save configuration and then change port baud rate to the same value.",
                 "Uptime": "Uptime (s)",
                 "input_hold_time_description": "Presses that last longer than the specified time are counted as long presses",
-                "input_repeat_time_description": "Less time causes faster parameter change",
                 "input_double_time_description": "If during the specified time there was no second press, then the press counts as single. Setting 0 will disable all counters except short and long",
                 "input_debounce_time_description": "Should be 5-10 times less, than double press time. If double presses are disabled, any value could be set"
             },
@@ -289,7 +295,6 @@
                 "Input {{enumerator}} double press counter": "Счетчик двойного нажатия {{enumerator}}",
                 "Input {{enumerator}} short long press counter": "Счетчик короткого, а затем долгого нажатия {{enumerator}}",
                 "Input {{enumerator}} hold time": "Время длинного нажатия {{enumerator}}",
-                "Input {{enumerator}} repeat time": "Скорость изменения параметра при удержании {{enumerator}}",
                 "Input {{enumerator}} double time": "Время ожидания двойного нажатия {{enumerator}}",
                 "Input {{enumerator}} debounce time": "Время подавления дребезга {{enumerator}}",
                 {% endfor -%}
@@ -308,7 +313,6 @@
                 "Channel 3 Duty Cycle Raw": "Сырое задание для канала 3",
                 "Channel 4 Duty Cycle Raw": "Сырое задание для канала 4",
                 "input_hold_time_description": "Если нажатие длится больше указанного времени - считаем его длинным",
-                "input_repeat_time_description": "Чем меньше значение, тем быстрее изменяется параметр",
                 "input_double_time_description": "Если за указанное время второго нажатия не было - считаем нажатие одиночным. 0 - отключит все нажатия кроме короткого и длинного",
                 "input_debounce_time_description": "Должно быть в 5-10 раз меньше, чем время ожидания второго нажатия. Если двойные нажатия отключены - любое значение"
             }
