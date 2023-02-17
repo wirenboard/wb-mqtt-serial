@@ -48,7 +48,8 @@ private:
 
     PRPCPortDriver FindPortDriver(const Json::Value& request) const;
 
-    void PortLoad(const Json::Value& request, WBMQTT::TMqttRpcServer::TResultCallback onResult, WBMQTT::TMqttRpcServer::TErrorCallback onError);
+    void PortLoad(const Json::Value& request, WBMQTT::TMqttRpcServer::TResultCallback onResult,
+                  WBMQTT::TMqttRpcServer::TErrorCallback onError);
     Json::Value LoadMetrics(const Json::Value& request);
     Json::Value LoadPorts(const Json::Value& request);
 };

@@ -1603,7 +1603,8 @@ TRPCResultCode TSerialClientIntegrationTest::SendRPCRequest(PMQTTSerialDriver se
         std::copy(response.begin(), response.end(), back_inserter(responseInt));
     };
     request->OnError = [&resultCode](const TMqttRpcErrorCode code, const std::string&) {
-        resultCode = code == WBMQTT::E_RPC_REQUEST_TIMEOUT ? TRPCResultCode::RPC_WRONG_TIMEOUT : TRPCResultCode::RPC_WRONG_IO;
+        resultCode = code == WBMQTT::E_RPC_REQUEST_TIMEOUT ? TRPCResultCode::RPC_WRONG_TIMEOUT
+                                                           : TRPCResultCode::RPC_WRONG_IO;
     };
 
     Note() << "LoopOnce() [start thread]";
@@ -1664,32 +1665,23 @@ TEST_F(TSerialClientIntegrationTest, RPCRequestTransceive)
     // ReadFrame timeout case
     Note() << "[test case] ReadFrame exception: nothing to read";
     Port->Expect(expectedRequest, emptyVector, NULL);
-    EXPECT_EQ(SendRPCRequest(SerialDriver,
-                             expectedRequest,
-                             emptyVector,
-                             expectedResponse.size(),
+    EXPECT_EQ(SendRPCRequest(SerialDriver, expectedRequest, emptyVector, expectedResponse.size(),
                              std::chrono::seconds(12)),
         TRPCResultCode::RPC_WRONG_IO);
 
     // Succesful case
     Note() << "[test case] RPC succesful case";
     Port->Expect(expectedRequest, expectedResponse, NULL);
-    EXPECT_EQ(SendRPCRequest(SerialDriver,
-                             expectedRequest,
-                             expectedResponse,
-                             expectedResponse.size(),
-                             std::chrono::seconds(12)),
+    EXPECT_EQ(SendRPCRequest(SerialDriver, expectedRequest, expectedResponse,
+                             expectedResponse.size(), std::chrono::seconds(12)),
               TRPCResultCode::RPC_OK);
 
     // Read zero length response
     Note() << "[test case] RPC request with zero length read";
     Port->Expect(expectedRequest, emptyVector, NULL);
-    EXPECT_EQ(SendRPCRequest(SerialDriver,
-                             expectedRequest,
-                             emptyVector,
-                             0,
-                             std::chrono::seconds(12)),
-              TRPCResultCode::RPC_OK);
+    EXPECT_EQ(
+        SendRPCRequest(SerialDriver, expectedRequest, emptyVector, 0, std::chrono::seconds(12)),
+        TRPCResultCode::RPC_OK);
 }
 
 /** Reconnect test cases **/

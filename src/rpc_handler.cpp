@@ -182,9 +182,13 @@ TRPCHandler::TRPCHandler(const std::string& requestSchemaFilePath,
         }
     }
 
-    rpcServer->RegisterAsyncMethod("port", "Load", std::bind(&TRPCHandler::PortLoad, this, std::placeholders::_1, std::placeholders::_2, std::placeholders::_3));
-    rpcServer->RegisterMethod("metrics", "Load", std::bind(&TRPCHandler::LoadMetrics, this, std::placeholders::_1));
-    rpcServer->RegisterMethod("ports", "Load", std::bind(&TRPCHandler::LoadPorts, this, std::placeholders::_1));
+    rpcServer->RegisterAsyncMethod("port", "Load",
+                                   std::bind(&TRPCHandler::PortLoad, this, std::placeholders::_1,
+                                             std::placeholders::_2, std::placeholders::_3));
+    rpcServer->RegisterMethod("metrics", "Load",
+                              std::bind(&TRPCHandler::LoadMetrics, this, std::placeholders::_1));
+    rpcServer->RegisterMethod("ports", "Load",
+                              std::bind(&TRPCHandler::LoadPorts, this, std::placeholders::_1));
 }
 
 PRPCPortDriver TRPCHandler::FindPortDriver(const Json::Value& request) const
