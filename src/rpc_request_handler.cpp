@@ -10,6 +10,7 @@ void TRPCRequestHandler::RPCTransceive(PRPCRequest request,
     std::unique_lock<std::mutex> lock(Mutex);
     Request = request;
     State = RPCRequestState::RPC_PENDING;
+    ExpireTime = std::chrono::steady_clock::now() + Request->TotalTimeout;
     serialClientSemaphore->Signal(serialClientSignal);
 }
 
@@ -17,6 +18,14 @@ void TRPCRequestHandler::RPCRequestHandling(PPort port)
 {
     std::lock_guard<std::mutex> lock(Mutex);
     if (State == RPCRequestState::RPC_PENDING) {
+        if (std::chrono::steady_clock::now() > ExpireTime) {
+            if (Request->OnError) {
+                Request->OnError(WBMQTT::E_RPC_REQUEST_TIMEOUT, "RPC request timeout");
+            }
+            State = RPCRequestState::RPC_IDLE;
+            return;
+        }
+
         try {
             port->CheckPortOpen();
             port->SkipNoise();
@@ -33,12 +42,10 @@ void TRPCRequestHandler::RPCRequestHandling(PPort port)
                                                 Request->FrameTimeout);
 
             response.resize(actualSize);
-            State = RPCRequestState::RPC_COMPLETE;
             if (Request->OnResult) {
                 Request->OnResult(response);
             }
         } catch (const TSerialDeviceException& error) {
-            State = RPCRequestState::RPC_ERROR;
             if (Request->OnError) {
                 Request->OnError(WBMQTT::E_RPC_SERVER_ERROR, std::string("Port IO error: ") + error.what());
             }
