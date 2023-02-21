@@ -1,4 +1,4 @@
-wb-mqtt-serial (2.78.8) stable; urgency=medium
+wb-mqtt-serial (2.79.0) stable; urgency=medium
 
   * Handle RPC calls in parallel (per serial port)
 
