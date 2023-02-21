@@ -7,6 +7,7 @@
 #include <sys/ioctl.h>
 #include <sys/select.h>
 #include <unistd.h>
+#include <wblib/utils.h>
 
 #include "log.h"
 
@@ -65,13 +66,7 @@ void TFileDescriptorPort::WriteBytes(const uint8_t* buf, int count)
     LastInteraction = std::chrono::steady_clock::now();
 
     if (::Debug.IsEnabled()) {
-        // TBD: move this to libwbmqtt (HexDump?)
-        stringstream ss;
-        ss << ": Write:" << hex << setfill('0');
-        for (int i = 0; i < count; ++i) {
-            ss << " " << setw(2) << int(buf[i]);
-        }
-        LOG(Debug) << GetDescription(false) << ss.str();
+        LOG(Debug) << GetDescription(false) << ": Write: " << WBMQTT::HexDump(buf, count);
     }
 }
 
@@ -197,13 +192,7 @@ size_t TFileDescriptorPort::ReadFrame(uint8_t* buf,
     LastInteraction = std::chrono::steady_clock::now();
 
     if (::Debug.IsEnabled()) {
-        // TBD: move this to libwbmqtt (HexDump?)
-        stringstream ss;
-        ss << GetDescription(false) << ": ReadFrame:" << hex << setfill('0');
-        for (size_t i = 0; i < nread; ++i) {
-            ss << " " << setw(2) << int(buf[i]);
-        }
-        LOG(Debug) << ss.str();
+        LOG(Debug) << GetDescription(false) << ": ReadFrame: " << WBMQTT::HexDump(buf, nread);
     }
 
     return nread;
@@ -220,13 +209,7 @@ void TFileDescriptorPort::SkipNoise()
         auto diff = std::chrono::steady_clock::now() - start;
 
         if (::Debug.IsEnabled()) {
-            // TBD: move this to libwbmqtt (HexDump?)
-            stringstream ss;
-            ss << "read noise: " << hex << setfill('0');
-            for (size_t i = 0; i < nread; ++i) {
-                ss << " " << setw(2) << int(buf[i]);
-            }
-            LOG(Debug) << ss.str();
+            LOG(Debug) << "read noise: " << WBMQTT::HexDump(buf, nread);
         }
 
         // if we are still getting data for already "ContinuousNoiseTimeout" milliseconds

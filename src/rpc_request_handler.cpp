@@ -3,38 +3,29 @@
 #include "serial_exc.h"
 #include "serial_port.h"
 
-std::vector<uint8_t> TRPCRequestHandler::RPCTransceive(PRPCRequest request,
-                                                       PBinarySemaphore serialClientSemaphore,
-                                                       PBinarySemaphoreSignal serialClientSignal)
+void TRPCRequestHandler::RPCTransceive(PRPCRequest request,
+                                       PBinarySemaphore serialClientSemaphore,
+                                       PBinarySemaphoreSignal serialClientSignal)
 {
     std::unique_lock<std::mutex> lock(Mutex);
     Request = request;
     State = RPCRequestState::RPC_PENDING;
-    auto now = std::chrono::steady_clock::now();
-    auto until = now + Request->TotalTimeout;
+    ExpireTime = std::chrono::steady_clock::now() + Request->TotalTimeout;
     serialClientSemaphore->Signal(serialClientSignal);
-
-    if (!RequestExecution.wait_until(lock, until, [this]() {
-            return (State == RPCRequestState::RPC_COMPLETE) || (State == RPCRequestState::RPC_ERROR);
-        }))
-    {
-        State = RPCRequestState::RPC_IDLE;
-        throw TRPCException("Request handler is not responding", TRPCResultCode::RPC_WRONG_TIMEOUT);
-    }
-
-    RPCRequestState lastRequestState = State;
-    State = RPCRequestState::RPC_IDLE;
-    if (lastRequestState == RPCRequestState::RPC_COMPLETE) {
-        return ReadData;
-    } else {
-        throw TRPCException("Port IO error: " + ErrorMessage, TRPCResultCode::RPC_WRONG_IO);
-    }
 }
 
 void TRPCRequestHandler::RPCRequestHandling(PPort port)
 {
     std::lock_guard<std::mutex> lock(Mutex);
     if (State == RPCRequestState::RPC_PENDING) {
+        if (std::chrono::steady_clock::now() > ExpireTime) {
+            if (Request->OnError) {
+                Request->OnError(WBMQTT::E_RPC_REQUEST_TIMEOUT, "RPC request timeout");
+            }
+            State = RPCRequestState::RPC_IDLE;
+            return;
+        }
+
         try {
             port->CheckPortOpen();
             port->SkipNoise();
@@ -44,21 +35,22 @@ void TRPCRequestHandler::RPCRequestHandling(PPort port)
 
             port->WriteBytes(Request->Message);
 
-            std::vector<uint8_t> readData;
-            readData.reserve(Request->ResponseSize);
-            size_t actualSize = port->ReadFrame(readData.data(),
+            std::vector<uint8_t> response(Request->ResponseSize);
+            size_t actualSize = port->ReadFrame(response.data(),
                                                 Request->ResponseSize,
                                                 Request->ResponseTimeout,
                                                 Request->FrameTimeout);
 
-            ReadData.clear();
-            std::copy_n(readData.begin(), actualSize, std::back_inserter(ReadData));
-            State = RPCRequestState::RPC_COMPLETE;
+            response.resize(actualSize);
+            if (Request->OnResult) {
+                Request->OnResult(response);
+            }
         } catch (const TSerialDeviceException& error) {
-            State = RPCRequestState::RPC_ERROR;
-            ErrorMessage = error.what();
+            if (Request->OnError) {
+                Request->OnError(WBMQTT::E_RPC_SERVER_ERROR, std::string("Port IO error: ") + error.what());
+            }
         }
 
-        RequestExecution.notify_all();
+        State = RPCRequestState::RPC_IDLE;
     }
 }
