@@ -165,6 +165,16 @@
                 "default": 8,
                 "group": "general",
                 "order": 2
+            },
+            "disable_indication": {
+                "title": "Status LED",
+                "address": 130,
+                "reg_type": "holding",
+                "enum": [0, 1],
+                "enum_titles": ["Enabled", "Disabled"],
+                "default": 0,
+                "group": "general",
+                "order": 3
             }
         },
 
@@ -1579,6 +1589,8 @@
                 "Low-pass Filter Time Constant (ms)": "Время усреднения шума (мс)",
                 "Low-pass Filter Time Constant (s)": "Время усреднения движения (с)",
                 "RS-485 Response Delay (ms)": "Задержка перед ответом по RS-485 (мс)",
+                "Status LED": "Статусный светодиод",
+                "Enabled": "Активен",
                 "Baud rate": "Скорость обмена",
                 "baud_rate_description": "Перед изменением параметра убедитесь, что связь с устройством установлена. Выберите нужную скорость обмена, сохраните конфигурацию, а затем укажите в настройках порта эту же скорость.",
                 "Temperature": "Температура",

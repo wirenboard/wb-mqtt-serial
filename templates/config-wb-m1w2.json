@@ -57,6 +57,16 @@
                 "default": 8,
                 "group": "general",
                 "order": 3
+            },
+            "disable_indication": {
+                "title": "Status LED",
+                "address": 130,
+                "reg_type": "holding",
+                "enum": [0, 1],
+                "enum_titles": ["Enabled", "Disabled"],
+                "default": 0,
+                "group": "general",
+                "order": 4
             }
         },
 
@@ -280,6 +290,8 @@
                 "temperature_readings_filter_deg_title": "Фильтр ошибочных значений датчиков 1-Wire (°C)",
                 "temperature_readings_filter_deg_description": "Новое значение отбрасывается, если оно отличается от предыдущего больше, чем на значение фильтра. Запишите 0, чтобы отключить фильтр",
                 "RS-485 Response Delay (ms)": "Задержка перед ответом по RS-485 (мс)",
+                "Status LED": "Статусный светодиод",
+                "Enabled": "Активен",
                 "Baud rate": "Скорость обмена",
                 "baud_rate_description": "Перед изменением параметра убедитесь, что связь с устройством установлена. Выберите нужную скорость обмена, сохраните конфигурацию, а затем укажите в настройках порта эту же скорость.",
                 "Input 1": "Вход 1",

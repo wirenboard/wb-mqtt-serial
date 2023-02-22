@@ -44,6 +44,16 @@
                 ],
                 "group": "general",
                 "order": 1
+            },
+            "disable_indication": {
+                "title": "Status LED",
+                "address": 130,
+                "reg_type": "holding",
+                "enum": [0, 1],
+                "enum_titles": ["Enabled", "Disabled"],
+                "default": 0,
+                "group": "general",
+                "order": 2
             }
         },
 
@@ -115,6 +125,9 @@
                 "General": "Общее",
                 "HW Info": "Данные модуля",
                 "Baud rate": "Скорость обмена",
+                "Status LED": "Статусный светодиод",
+                "Enabled": "Активен",
+                "Disabled": "Отключен",
                 "baud_rate_description": "Перед изменением параметра убедитесь, что связь с устройством установлена. Выберите нужную скорость обмена, сохраните конфигурацию, а затем укажите в настройках порта эту же скорость.",
                 "Current input 1 (mA)": "Токовый вход 1 (мА)",
                 "Current input 2 (mA)": "Токовый вход 2 (мА)",
