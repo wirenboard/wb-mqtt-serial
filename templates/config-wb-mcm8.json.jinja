@@ -127,16 +127,16 @@
             {% endfor -%}
             {% for encoder_num in range(0, 2) -%}
             "encoder_{{encoder_num + 1}}_mode" : {
-                "title": "Mode",
+                "title": "Encoder connetcion type",
                 "description": "encoder_{{encoder_num + 1}}_mode_description",
                 "address": {{376 + encoder_num}},
                 "reg_type": "holding",
                 "enum": [0, 1, 2],
                 "default": 0,
                 "enum_titles": [
-                    "Disabled",
-                    "Enabled, AB mode",
-                    "Enabled, ABZ mode"
+                    "Not used",
+                    "AB type",
+                    "ABZ type"
                 ],
                 "group": "gg_encoder_{{encoder_num + 1}}",
                 "order": 1
@@ -159,8 +159,8 @@
                 "enum": [0, 1],
                 "default": 0,
                 "enum_titles": [
-                    "Disabled",
-                    "Enabled, AB mode",
+                    "Not used",
+                    "AB type"
                 ],
                 "group": "gg_encoder_3",
                 "order": 1
@@ -252,7 +252,7 @@
                 "reg_type": "holding",
                 "address": {{368 + (encoder_num * 2)}},
                 "type": "value",
-                "format": "u32",
+                "format": "s32",
                 "group": "gg_encoder_channels",
                 "condition": "encoder_{{encoder_num + 1}}_mode==1"
             },
@@ -261,7 +261,7 @@
                 "reg_type": "holding",
                 "address": {{368 + (encoder_num * 2)}},
                 "type": "value",
-                "format": "u16",
+                "format": "s16",
                 "group": "gg_encoder_channels",
                 "order": 1,
                 "condition": "encoder_{{encoder_num + 1}}_mode==2"
@@ -271,7 +271,7 @@
                 "reg_type": "holding",
                 "address": {{369 + (encoder_num * 2)}},
                 "type": "value",
-                "format": "u16",
+                "format": "s16",
                 "group": "gg_encoder_channels",
                 "order": 2,
                 "condition": "encoder_{{encoder_num + 1}}_mode==2"
@@ -406,10 +406,11 @@
                 "MCU Temperature": "Температура МК",
                 "MCU Voltage": "Напряжение питания МК",
 
-                "Encoders": "Обработка энкодеров",
-                "Disabled": "Не используется",
-                "Enabled, AB mode": "Режим AB (два сигнала)",
-                "Enabled, ABZ mode": "Режим ABZ (три сигнала)",
+                "Encoders": "Работа с энкодерами",
+                "Encoder connetcion type": "Тип подключения энкодера",
+                "Not used": "Не используется",
+                "AB type": "2 сигнала, тип AB",
+                "ABZ type": "3 сигнала, тип ABZ",
                 {% for encoder_num in range(0, 3) -%}
                     "Encoder channel {{encoder_num + 1}}": "Канал энкодера {{encoder_num + 1}}",
                     "Encoder {{encoder_num + 1}} Position": "Положение энкодера {{encoder_num + 1}}",
