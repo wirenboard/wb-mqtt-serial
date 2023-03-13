@@ -1,3 +1,9 @@
+wb-mqtt-serial (2.80.2) stable; urgency=medium
+
+  * Fix safety timeout editing in wb-mqtt-homeui
+
+ -- Petr Krasnoshchekov <petr.krasnoshchekov@wirenboard.com>  Mon, 13 Mar 2023 10:34:38 +0500
+
 wb-mqtt-serial (2.80.1) stable; urgency=medium
 
   * Fix missing l1, l2, l3 groups in MAP12E template
