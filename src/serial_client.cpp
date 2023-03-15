@@ -3,6 +3,8 @@
 #include <iostream>
 #include <unistd.h>
 
+#include "modbus_ext_common.h"
+
 using namespace std::chrono_literals;
 
 #define LOG(logger) logger.Log() << "[serial client] "
@@ -395,9 +397,37 @@ void TSerialClient::SetRegistersAvailability(PSerialDevice dev, TRegisterAvailab
     }
 }
 
+class TModbusExtEventsVisitor: public ModbusExt::IEventsVisitor
+{
+public:
+    ~TModbusExtEventsVisitor() = default;
+
+    virtual void Event(uint32_t serialNumber,
+                       uint8_t slaveId,
+                       uint8_t eventType,
+                       uint16_t eventId,
+                       const uint8_t* data,
+                       size_t dataSize) override
+    {
+        LOG(Info) << "Event SN: " << serialNumber << ", SlaveId: " << static_cast<int>(slaveId)
+                  << " , Type: " << static_cast<int>(eventType) << ", Id: " << eventId
+                  << ", Data: " << WBMQTT::HexDump(data, dataSize);
+    }
+};
+
 void TSerialClient::OpenPortCycle()
 {
     WaitForPollAndFlush(Scheduler.GetDeadline(std::chrono::steady_clock::now()));
+
+    TModbusExtEventsVisitor visitor;
+    try {
+        auto res =
+            ModbusExt::ReadEvents(*Port, std::chrono::milliseconds(100), std::chrono::milliseconds(100), visitor);
+        LOG(Info) << "Read events res: " << res;
+    } catch (const std::exception& ex) {
+        LOG(Warn) << ex.what();
+    }
+
     auto pollStartTime = std::chrono::steady_clock::now();
     Metrics.StartPoll(Metrics::NON_BUS_POLLING_TASKS);
 

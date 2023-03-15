@@ -12,7 +12,7 @@
 class TPort: public std::enable_shared_from_this<TPort>
 {
 public:
-    using TFrameCompletePred = std::function<bool(uint8_t* buf, int size)>;
+    using TFrameCompletePred = std::function<bool(uint8_t* buf, size_t size)>;
 
     TPort() = default;
     TPort(const TPort&) = delete;
