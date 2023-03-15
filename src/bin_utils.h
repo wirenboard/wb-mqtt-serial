@@ -27,6 +27,19 @@ namespace BinUtils
     }
 
     /**
+     * @brief Convert a range of bytes starting from begin to a numeric value, assuming little-endian byte order.
+     *
+     * @tparam ResultType type of resulting value
+     * @tparam Iterator range iterator type
+     * @param begin start of range
+     * @return ResultType type of result. Default implementation expects numeric type
+     */
+    template<class ResultType, class Iterator> ResultType GetFrom(Iterator begin)
+    {
+        return Get<ResultType>(begin, begin + sizeof(ResultType));
+    }
+
+    /**
      * @brief Convert a range [begin, end) of bytes to a numeric value, assuming big-endian byte order.
      *
      * @tparam ResultType type of resulting value
@@ -62,6 +75,25 @@ namespace BinUtils
             *it = value & 0xFF;
             value >>= 8;
         }
+    }
+
+    /**
+     * @brief Append numeric value to a container using insert iterator.
+     *        The value is appended in big endian byte order.
+     *
+     * @tparam InsertIterator insert iterator type
+     * @tparam ValueType type of a value. Default implementation expects numeric value
+     * @param it insert iterator
+     * @param value value to append
+     * @param byteCount number of bytes to append
+     */
+    template<class InsertIterator, class ValueType>
+    void AppendBigEndian(InsertIterator it, ValueType value, size_t byteCount = sizeof(ValueType))
+    {
+        for (size_t i = byteCount - 1; i != 0; --i) {
+            *it = (value >> (i * 8)) & 0xFF;
+        }
+        *it = value & 0xFF;
     }
 
     /**

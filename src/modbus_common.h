@@ -53,7 +53,7 @@ namespace Modbus // modbus protocol common utilities
     {
         const size_t DATA_SIZE = 3; // number of bytes in ADU that is not in PDU (slaveID (1b) + crc value (2b))
 
-        TPort::TFrameCompletePred ExpectNBytes(int n) const;
+        TPort::TFrameCompletePred ExpectNBytes(size_t n) const;
 
     public:
         size_t GetPacketSize(size_t pduSize) const override;
@@ -181,6 +181,12 @@ namespace Modbus // modbus protocol common utilities
     {
     public:
         TMalformedResponseError(const std::string& what);
+    };
+
+    class TInvalidCRCError: public TMalformedResponseError
+    {
+    public:
+        TInvalidCRCError();
     };
 
 } // modbus protocol common utilities
