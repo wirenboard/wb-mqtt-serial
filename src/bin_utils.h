@@ -1,5 +1,6 @@
 #pragma once
 
+#include <initializer_list>
 #include <stddef.h>
 #include <stdint.h>
 
@@ -74,6 +75,20 @@ namespace BinUtils
         for (size_t i = 0; i < byteCount; ++i) {
             *it = value & 0xFF;
             value >>= 8;
+        }
+    }
+
+    /**
+     * @brief Append a list of uint8_t values to a container using insert iterator.
+     *
+     * @tparam InsertIterator insert iterator type
+     * @param it insert iterator
+     * @param values values to append
+     */
+    template<class InsertIterator> void Append(InsertIterator it, std::initializer_list<uint8_t> values)
+    {
+        for (auto value: values) {
+            *it = value;
         }
     }
 
