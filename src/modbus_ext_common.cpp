@@ -256,28 +256,28 @@ namespace ModbusExt // modbus extension protocol declarations
         Response.reserve(MAX_PACKET_SIZE);
     }
 
-    void TEventsEnabler::Enable(uint16_t addr, TEventRegisterType type)
+    void TEventsEnabler::AddRegister(uint16_t addr, TEventRegisterType type)
     {
         auto it = std::back_inserter(Request);
         Append(it, addr);
         Append(it, {type, 1});
         Request[ENABLE_EVENTS_RESPONSE_DATA_SIZE_POS] += ENABLE_EVENTS_REC_SIZE;
         if (Request.size() + CRC_SIZE + ENABLE_EVENTS_REC_SIZE > Request.capacity()) {
+            SendRequest();
+        }
+    }
+
+    void TEventsEnabler::SendRequest()
+    {
+        if (Request[ENABLE_EVENTS_RESPONSE_DATA_SIZE_POS] != 0) {
+            AppendBigEndian(std::back_inserter(Request), CRC16::CalculateCRC16(Request.data(), Request.size()));
             try {
-                Finalize();
+                EnableEvents();
                 ClearRequest();
             } catch (...) {
                 ClearRequest();
                 throw;
             }
-        }
-    }
-
-    void TEventsEnabler::Finalize()
-    {
-        if (Request[ENABLE_EVENTS_RESPONSE_DATA_SIZE_POS] != 0) {
-            AppendBigEndian(std::back_inserter(Request), CRC16::CalculateCRC16(Request.data(), Request.size()));
-            EnableEvents();
         }
     }
 
