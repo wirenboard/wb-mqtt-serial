@@ -30,6 +30,7 @@ namespace ModbusExt // modbus extension protocol common utilities
                     const std::chrono::milliseconds& frameTimeout,
                     IEventsVisitor& eventVisitor);
 
+    //! Class builds packet for enabling events from specified registers
     class TEventsEnabler
     {
     public:
@@ -41,8 +42,22 @@ namespace ModbusExt // modbus extension protocol common utilities
                        const std::chrono::milliseconds& frameTimeout,
                        TEventsEnabler::TVisitorFn visitor);
 
-        void Enable(uint16_t addr, TEventRegisterType type);
-        void Finalize();
+        /**
+         * @brief Add register to packet.
+         *        If resulting packet is almost as big as 256 bytes,
+         *        the class internally calls SendRequest and starts to build a new packet.
+         *
+         * @param addr register's address
+         * @param type register's type
+         */
+        void AddRegister(uint16_t addr, TEventRegisterType type);
+
+        /**
+         * @brief Call the function to send a build packet
+         *        The class parses answer and calls visitor for every register in answer,
+         *        so one can know if events are enabled for specific register.
+         */
+        void SendRequest();
 
     private:
         std::vector<uint8_t> Request;

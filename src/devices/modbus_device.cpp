@@ -89,12 +89,12 @@ void TModbusDevice::WriteSetupRegisters()
 
     try {
         for (uint16_t i = 464; i <= 471; ++i) {
-            e.Enable(i, ModbusExt::TEventRegisterType::INPUT);
+            e.AddRegister(i, ModbusExt::TEventRegisterType::INPUT);
         }
         for (uint16_t i = 496; i <= 503; ++i) {
-            e.Enable(i, ModbusExt::TEventRegisterType::INPUT);
+            e.AddRegister(i, ModbusExt::TEventRegisterType::INPUT);
         }
-        e.Finalize();
+        e.SendRequest();
     } catch (const std::exception& e) {
         LOG(Warn) << e.what();
     }
