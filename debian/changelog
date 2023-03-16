@@ -1,3 +1,9 @@
+wb-mqtt-serial (2.80.3) stable; urgency=medium
+
+  * Fix reading of config with custom Modbus devices in wb-mqtt-homeui
+
+ -- Petr Krasnoshchekov <petr.krasnoshchekov@wirenboard.com>  Wed, 15 Mar 2023 16:38:14 +0500
+
 wb-mqtt-serial (2.80.2) stable; urgency=medium
 
   * Fix safety timeout editing in wb-mqtt-homeui
