@@ -391,9 +391,9 @@ public:
                        const uint8_t* data,
                        size_t dataSize) override
     {
-        LOG(Info) << "Event SN: " << serialNumber << ", SlaveId: " << static_cast<int>(slaveId)
-                  << " , Type: " << static_cast<int>(eventType) << ", Id: " << eventId
-                  << ", Data: " << WBMQTT::HexDump(data, dataSize);
+        LOG(Error) << "Event SN: " << serialNumber << ", SlaveId: " << static_cast<int>(slaveId)
+                   << " , Type: " << static_cast<int>(eventType) << ", Id: " << eventId
+                   << ", Data: " << WBMQTT::HexDump(data, dataSize);
     }
 };
 
@@ -405,7 +405,7 @@ void TSerialClient::OpenPortCycle()
     try {
         auto res =
             ModbusExt::ReadEvents(*Port, std::chrono::milliseconds(100), std::chrono::milliseconds(100), visitor);
-        LOG(Info) << "Read events res: " << res;
+        LOG(Error) << "Read events res: " << res;
     } catch (const std::exception& ex) {
         LOG(Warn) << ex.what();
     }

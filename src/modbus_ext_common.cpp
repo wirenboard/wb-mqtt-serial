@@ -20,6 +20,8 @@ namespace ModbusExt // modbus extension protocol declarations
     const uint8_t EVENTS_CLEAR_COMMAND = 0x12;
     const uint8_t EVENTS_CLEAR_RESPONSE_COMMAND = 0x13;
     const uint8_t NO_EVENTS_RESPONSE_COMMAND = 0x14;
+    const uint8_t ENABLE_EVENTS_COMMAND = 0x18;
+    const uint8_t ENABLE_EVENTS_RESPONSE_COMMAND = 0x1A;
 
     const uint32_t ALL_DEVICES_SN = 0;
 
@@ -29,6 +31,8 @@ namespace ModbusExt // modbus extension protocol declarations
     const size_t CRC_SIZE = 2;
     const size_t MAX_PACKET_SIZE = 256;
     const size_t EVENT_HEADER_SIZE = 4;
+    const size_t MIN_ENABLE_EVENTS_RESPONSE_SIZE = 7;
+    const size_t ENABLE_EVENTS_REC_SIZE = 4;
 
     const uint8_t EVENTS_REQUEST_MAX_BYTES = MAX_PACKET_SIZE - EVENTS_RESPONSE_HEADER_SIZE - CRC_SIZE;
     const size_t ARBITRATION_HEADER_MAX_BYTES = 32;
@@ -44,6 +48,14 @@ namespace ModbusExt // modbus extension protocol declarations
     const size_t EVENT_TYPE_POS = 1;
     const size_t EVENT_ID_POS = 2;
     const size_t EVENT_DATA_POS = 4;
+
+    const size_t ENABLE_EVENTS_RESPONSE_SLAVE_ID_POS = 3;
+    const size_t ENABLE_EVENTS_RESPONSE_DATA_SIZE_POS = 4;
+    const size_t ENABLE_EVENTS_RESPONSE_DATA_POS = 5;
+
+    const size_t ENABLE_EVENTS_REC_ADDR_POS = 0;
+    const size_t ENABLE_EVENTS_REC_TYPE_POS = 2;
+    const size_t ENABLE_EVENTS_REC_STATE_POS = 3;
 
     size_t GetPacketStart(const uint8_t* data, size_t size)
     {
@@ -102,8 +114,11 @@ namespace ModbusExt // modbus extension protocol declarations
         };
     }
 
-    void CheckPacket(const uint8_t* packet, size_t size)
+    void CheckPacket(const uint8_t* packet, size_t size, size_t minSize = CRC_SIZE)
     {
+        if (size < minSize) {
+            throw Modbus::TMalformedResponseError("invalid packet size: " + std::to_string(size));
+        }
         auto crc = GetBigEndian<uint16_t>(packet + size - CRC_SIZE, packet + size);
         if (crc != CRC16::CalculateCRC16(packet, size - CRC_SIZE)) {
             throw Modbus::TInvalidCRCError();
@@ -150,11 +165,7 @@ namespace ModbusExt // modbus extension protocol declarations
         std::array<uint8_t, CLEAR_EVENTS_RESPONSE_SIZE> res;
         auto rc = port.ReadFrame(res.data(), res.size(), responseTimeout + frameTimeout, frameTimeout);
 
-        if (rc != res.size()) {
-            throw Modbus::TMalformedResponseError("invalid clear events packet size");
-        }
-
-        CheckPacket(res.data(), res.size());
+        CheckPacket(res.data(), rc, res.size());
 
         if (res[SUB_COMMAND_POS] != EVENTS_CLEAR_RESPONSE_COMMAND) {
             throw Modbus::TMalformedResponseError("invalid clear events response command");
@@ -174,14 +185,9 @@ namespace ModbusExt // modbus extension protocol declarations
 
         auto start = GetPacketStart(res.data(), res.size());
         auto packetSize = rc - start;
-
-        if (packetSize < NO_EVENTS_RESPONSE_SIZE) {
-            throw Modbus::TMalformedResponseError("invalid packet size");
-        }
-
         const uint8_t* packet = res.data() + start;
 
-        CheckPacket(packet, packetSize);
+        CheckPacket(packet, packetSize, NO_EVENTS_RESPONSE_SIZE);
 
         switch (packet[SUB_COMMAND_POS]) {
             case EVENTS_RESPONSE_COMMAND: {
@@ -202,6 +208,76 @@ namespace ModbusExt // modbus extension protocol declarations
             default: {
                 throw Modbus::TMalformedResponseError("invalid command");
             }
+        }
+    }
+
+    void TEventsEnabler::EnableEvents()
+    {
+        Port.WriteBytes(Request);
+
+        auto rc = Port.ReadFrame(Response.data(), Request.size(), ResponseTimeout + FrameTimeout, FrameTimeout);
+
+        CheckPacket(Response.data(), rc, MIN_ENABLE_EVENTS_RESPONSE_SIZE);
+        if (Response[SUB_COMMAND_POS] != ENABLE_EVENTS_RESPONSE_COMMAND) {
+            throw Modbus::TMalformedResponseError("invalid enable events response command");
+        }
+        if (Response[ENABLE_EVENTS_RESPONSE_SLAVE_ID_POS] != SlaveId) {
+            throw Modbus::TMalformedResponseError("invalid slave id");
+        }
+
+        const uint8_t* data = Response.data() + ENABLE_EVENTS_RESPONSE_DATA_POS;
+        const uint8_t* end = data + Response[ENABLE_EVENTS_RESPONSE_DATA_SIZE_POS];
+        for (; data + ENABLE_EVENTS_REC_SIZE <= end; data += ENABLE_EVENTS_REC_SIZE) {
+            Visitor(GetFrom<uint16_t>(data),
+                    static_cast<TEventRegisterType>(data[ENABLE_EVENTS_REC_TYPE_POS]),
+                    data[ENABLE_EVENTS_REC_STATE_POS]);
+        }
+    }
+
+    void TEventsEnabler::ClearRequest()
+    {
+        Request.erase(Request.begin() + ENABLE_EVENTS_RESPONSE_DATA_POS, Request.end());
+        Request[ENABLE_EVENTS_RESPONSE_DATA_SIZE_POS] = 0;
+    }
+
+    TEventsEnabler::TEventsEnabler(uint8_t slaveId,
+                                   TPort& port,
+                                   const std::chrono::milliseconds& responseTimeout,
+                                   const std::chrono::milliseconds& frameTimeout,
+                                   TEventsEnabler::TVisitorFn visitor)
+        : SlaveId(slaveId),
+          Port(port),
+          ResponseTimeout(responseTimeout),
+          FrameTimeout(frameTimeout),
+          Visitor(visitor)
+    {
+        Request.reserve(MAX_PACKET_SIZE);
+        Append(std::back_inserter(Request), {BROADCAST_ADDRESS, MODBUS_EXT_COMMAND, ENABLE_EVENTS_COMMAND, SlaveId, 0});
+        Response.reserve(MAX_PACKET_SIZE);
+    }
+
+    void TEventsEnabler::Enable(uint16_t addr, TEventRegisterType type)
+    {
+        auto it = std::back_inserter(Request);
+        Append(it, addr);
+        Append(it, {type, 1});
+        Request[ENABLE_EVENTS_RESPONSE_DATA_SIZE_POS] += ENABLE_EVENTS_REC_SIZE;
+        if (Request.size() + CRC_SIZE + ENABLE_EVENTS_REC_SIZE > Request.capacity()) {
+            try {
+                Finalize();
+                ClearRequest();
+            } catch (...) {
+                ClearRequest();
+                throw;
+            }
+        }
+    }
+
+    void TEventsEnabler::Finalize()
+    {
+        if (Request[ENABLE_EVENTS_RESPONSE_DATA_SIZE_POS] != 0) {
+            AppendBigEndian(std::back_inserter(Request), CRC16::CalculateCRC16(Request.data(), Request.size()));
+            EnableEvents();
         }
     }
 
