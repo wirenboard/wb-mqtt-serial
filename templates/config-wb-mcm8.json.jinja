@@ -43,7 +43,7 @@
             },
             {% for encoder_num in range(0, 3) -%}
             {
-                "title": "Encoder channel {{encoder_num + 1}}",
+                "title": "Encoder {{encoder_num + 1}}",
                 "id": "gg_encoder_{{encoder_num + 1}}",
                 "order": {{encoder_num + 1}},
                 "group": "g_encoders"
@@ -248,7 +248,7 @@
             {% endfor -%}
             {% for encoder_num in range(0, 3) -%}
             {
-                "name": "Encoder {{encoder_num + 1}} Position",
+                "name": "Encoder {{encoder_num + 1}} position",
                 "reg_type": "holding",
                 "address": {{368 + (encoder_num * 2)}},
                 "type": "value",
@@ -364,9 +364,9 @@
                 "debounce_time_description": "For press detection must be 5-10 times less than second press waiting time",
 
                 {% for encoder_num in range(0, 2) -%}
-                    "encoder_{{encoder_num + 1}}_mode_description": "When disabled inputs {{(encoder_num * 3) + 1}}, {{(encoder_num * 3) + 2}} and {{(encoder_num * 3) + 3}} work as usual with own mode configuration. AB mode use {{(encoder_num * 3) + 1}} and {{(encoder_num * 3) + 2}} inputs for represent position in pulses count only. Input {{(encoder_num * 3) + 3}} work as usual. In ABZ mode input {{(encoder_num * 3) + 3}} connected to Z signal (one puls per revolution) and position represented in revolutions counter and angle (pulses in one turn) counter.",
+                    "encoder_{{encoder_num + 1}}_mode_description": "When disabled inputs {{(encoder_num * 3) + 1}}, {{(encoder_num * 3) + 2}} and {{(encoder_num * 3) + 3}} work as usual with own mode configuration. <br>AB mode use {{(encoder_num * 3) + 1}} and {{(encoder_num * 3) + 2}} inputs for represent position in pulses count only. Input {{(encoder_num * 3) + 3}} work as usual. <br>In ABZ mode input {{(encoder_num * 3) + 3}} connected to Z signal (one puls per revolution) and position represented in revolutions counter and angle (pulses in one turn) counter.",
                 {% endfor -%}
-                "encoder_3_mode_description": "When disabled inputs 7 and 8 work as usual with own mode configuration. AB mode use 7 and 8 inputs for represent position in pulses count only."
+                "encoder_3_mode_description": "When disabled inputs 7 and 8 work as usual with own mode configuration. <br>AB mode use 7 and 8 inputs for represent position in pulses count only."
             },
             "ru": {
                 "WB-MCM8_template_title": "WB-MCM8 (8-канальный модуль счетных входов)",
@@ -412,16 +412,16 @@
                 "AB type": "2 сигнала, тип AB",
                 "ABZ type": "3 сигнала, тип ABZ",
                 {% for encoder_num in range(0, 3) -%}
-                    "Encoder channel {{encoder_num + 1}}": "Канал энкодера {{encoder_num + 1}}",
-                    "Encoder {{encoder_num + 1}} Position": "Положение энкодера {{encoder_num + 1}}",
+                    "Encoder {{encoder_num + 1}}": "Энкодер {{encoder_num + 1}}",
+                    "Encoder {{encoder_num + 1}} position": "Положение энкодера {{encoder_num + 1}}",
                     "Encoder {{encoder_num + 1}} revolutions": "Количество оборотов энкодера {{encoder_num + 1}}",
                     "Encoder {{encoder_num + 1}} angle": "Угол внутри оборота энкодера {{encoder_num + 1}}",
                 {% endfor -%}
                 {% for encoder_num in range(0, 2) -%}
-                    "encoder_{{encoder_num + 1}}_mode_description": "Когда отключен, входы {{(encoder_num * 3) + 1}}, {{(encoder_num * 3) + 2}} и {{(encoder_num * 3) + 3}} работают как обычные входы со своими настройками режима. В режиме AB входы {{(encoder_num * 3) + 1}} и {{(encoder_num * 3) + 2}} подключены к выходам A и B энкодера. Положение представляется как счетчик импульсов. Вход {{(encoder_num * 3) + 3}} работают как обычный вход. В режиме ABZ вход {{(encoder_num * 3) + 3}} подключен к выходу Z энкодера (один импульс на оборот). Положение представляется как отдельный счетчик оборотов и отдельный счетчик угла внутри оборота.",
+                    "encoder_{{encoder_num + 1}}_mode_description": "Когда отключен, входы {{(encoder_num * 3) + 1}}, {{(encoder_num * 3) + 2}} и {{(encoder_num * 3) + 3}} работают как обычные входы со своими настройками режима. <br>В режиме AB входы {{(encoder_num * 3) + 1}} и {{(encoder_num * 3) + 2}} подключены к выходам A и B энкодера. Положение представляется как счетчик импульсов. Вход {{(encoder_num * 3) + 3}} работает как обычный вход. <br>В режиме ABZ вход {{(encoder_num * 3) + 3}} подключен к выходу Z энкодера (один импульс на оборот). Положение представляется как отдельный счетчик оборотов и отдельный счетчик угла внутри оборота.",
                 {% endfor -%}
-                "encoder_3_mode_description": "Когда отключен, входы 7 и 8 работают как обычные входы со своими настройками режима. В режиме AB входы 7 и 8 подключены к выходам A и B энкодера. Положение представляется как счетчик импульсов.",
-                "Pulses per revolution (PPR)": "Количество импульсов на один оборот"
+                "encoder_3_mode_description": "Когда отключен, входы 7 и 8 работают как обычные входы со своими настройками режима. <br>В режиме AB входы 7 и 8 подключены к выходам A и B энкодера. Положение представляется как счетчик импульсов.",
+                "Pulses per revolution (PPR)": "Количество импульсов на один оборот. Введите значение, указанное на энкодере."
             }
         }
     }
