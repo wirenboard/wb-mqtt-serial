@@ -17857,13 +17857,6 @@ WB-MCM8
 	Input 8 Single Press Counter  =>  Input 8 Single Press Counter
 	Input 8 counter  =>  Input 8 counter
 	Input 8 freq  =>  Input 8 freq
-	Encoder 1 position => Encoder 1 position
-	Encoder 1 revolutions => Encoder 1 revolutions
-	Encoder 1 angle => Encoder 1 angle
-	Encoder 2 position => Encoder 1 position
-	Encoder 2 revolutions => Encoder 1 revolutions
-	Encoder 2 angle => Encoder 1 angle
-	Encoder 3 position => Encoder 1 position
 	MCU Temperature  =>  MCU Temperature
 	MCU Voltage  =>  MCU Voltage
 	Minimum Voltage Since Startup  =>  Minimum Voltage Since Startup
@@ -17871,6 +17864,13 @@ WB-MCM8
 	Serial  =>  Serial
 	Supply voltage  =>  Supply voltage
 	Uptime  =>  Uptime
+	Encoder 1 position => Encoder 1 position
+	Encoder 1 revolutions => Encoder 1 revolutions
+	Encoder 1 angle => Encoder 1 angle
+	Encoder 2 position => Encoder 1 position
+	Encoder 2 revolutions => Encoder 1 revolutions
+	Encoder 2 angle => Encoder 1 angle
+	Encoder 3 position => Encoder 1 position
 WB-MDM2
 	Button 1  =>  Button 1
 	Button 1 counter  =>  Button 1 counter
