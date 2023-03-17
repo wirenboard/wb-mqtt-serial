@@ -72,7 +72,7 @@ namespace ModbusExt // modbus extension protocol declarations
     {
         Modbus::TRequest request({BROADCAST_ADDRESS, MODBUS_EXT_COMMAND, EVENTS_REQUEST_COMMAND});
         auto it = std::back_inserter(request);
-        Append(it, startingSerialNumber);
+        AppendBigEndian(it, startingSerialNumber);
         Append(it, maxBytes);
         AppendBigEndian(it, CRC16::CalculateCRC16(request.data(), request.size()));
         return request;
@@ -194,7 +194,7 @@ namespace ModbusExt // modbus extension protocol declarations
                 if (EVENTS_RESPONSE_HEADER_SIZE + CRC_SIZE + packet[EVENTS_RESPONSE_DATA_SIZE_POS] != packetSize) {
                     throw Modbus::TMalformedResponseError("invalid data size");
                 }
-                IterateOverEvents(GetFrom<uint32_t>(packet + EVENTS_RESPONSE_SERIAL_NUMBER_POS),
+                IterateOverEvents(GetFromBigEndian<uint32_t>(packet + EVENTS_RESPONSE_SERIAL_NUMBER_POS),
                                   packet[EVENTS_RESPONSE_SLAVE_ID_POS],
                                   packet + EVENTS_RESPONSE_DATA_POS,
                                   packet[EVENTS_RESPONSE_DATA_SIZE_POS],
