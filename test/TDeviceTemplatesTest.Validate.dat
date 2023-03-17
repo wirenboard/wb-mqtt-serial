@@ -17870,7 +17870,7 @@ WB-MCM8
 	Encoder 2 position => Encoder 2 position
 	Encoder 2 revolutions => Encoder 2 revolutions
 	Encoder 2 angle => Encoder 2 angle
-	Encoder 3 position => Encoder 1 position
+	Encoder 3 position => Encoder 3 position
 WB-MDM2
 	Button 1  =>  Button 1
 	Button 1 counter  =>  Button 1 counter
