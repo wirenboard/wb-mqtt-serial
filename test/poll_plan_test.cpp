@@ -1,7 +1,7 @@
+#include "poll_plan.h"
+#include "gtest/gtest.h"
 #include <chrono>
 #include <vector>
-#include "gtest/gtest.h"
-#include "poll_plan.h"
 
 using namespace std::chrono_literals;
 
@@ -66,7 +66,8 @@ TEST(PollPlanTest, Scheduler)
     EXPECT_EQ(accumulator.Data[1], 3);
     accumulator.Data.clear();
     // Next 3 low priority items should be taken, throttling (rate limit is 2 per 1s)
-    EXPECT_EQ(scheduler.AccumulateNext(std::chrono::steady_clock::now(), accumulator), TThrottlingState::LowPriorityRateLimit);
+    EXPECT_EQ(scheduler.AccumulateNext(std::chrono::steady_clock::now(), accumulator),
+              TThrottlingState::LowPriorityRateLimit);
     EXPECT_EQ(accumulator.Data.size(), 3);
     EXPECT_EQ(accumulator.Data[0], 2);
     EXPECT_EQ(accumulator.Data[1], 4);

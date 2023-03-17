@@ -1,5 +1,5 @@
-#include "gtest/gtest.h"
 #include "bin_utils.h"
+#include "gtest/gtest.h"
 
 TEST(BinUtilsTest, Get)
 {
