@@ -51,6 +51,7 @@ TEST(PollPlanTest, RateLimiter)
 TEST(PollPlanTest, Scheduler)
 {
     TScheduler<int, std::less<int>> scheduler(1ms, 2);
+    // Emplace 2 high priority items and 3 low priority items
     scheduler.AddEntry(1, std::chrono::steady_clock::now(), TPriority::High);
     scheduler.AddEntry(2, std::chrono::steady_clock::now(), TPriority::Low);
     scheduler.AddEntry(3, std::chrono::steady_clock::now(), TPriority::High);
@@ -58,18 +59,22 @@ TEST(PollPlanTest, Scheduler)
     scheduler.AddEntry(5, std::chrono::steady_clock::now(), TPriority::Low);
     scheduler.AddEntry(6, std::chrono::steady_clock::now(), TPriority::Low);
     Accumulator accumulator;
+    // First 2 high priority items should be taken, no throttling
     EXPECT_EQ(scheduler.AccumulateNext(std::chrono::steady_clock::now(), accumulator), TThrottlingState::NoThrottling);
     EXPECT_EQ(accumulator.Data.size(), 2);
     EXPECT_EQ(accumulator.Data[0], 1);
     EXPECT_EQ(accumulator.Data[1], 3);
     accumulator.Data.clear();
+    // Next 3 low priority items should be taken, throttling (rate limit is 2 per 1s)
     EXPECT_EQ(scheduler.AccumulateNext(std::chrono::steady_clock::now(), accumulator), TThrottlingState::LowPriorityRateLimit);
     EXPECT_EQ(accumulator.Data.size(), 3);
     EXPECT_EQ(accumulator.Data[0], 2);
     EXPECT_EQ(accumulator.Data[1], 4);
     EXPECT_EQ(accumulator.Data[2], 5);
     accumulator.Data.clear();
+    // Wait for 1s (rate limit is 2 per 1s)
     sleep(1);
+    // Next 1 low priority item should be taken, no throttling
     EXPECT_EQ(scheduler.AccumulateNext(std::chrono::steady_clock::now(), accumulator), TThrottlingState::NoThrottling);
     EXPECT_EQ(accumulator.Data.size(), 1);
     EXPECT_EQ(accumulator.Data[0], 6);
