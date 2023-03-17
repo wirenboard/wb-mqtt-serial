@@ -1,3 +1,9 @@
+wb-mqtt-serial (2.81.0) stable; urgency=medium
+
+  * Added encoders to mcm8 template
+
+ -- Nikita Kulikov <n.kulikov@wirenboard.ru>  Mon, 06 Mar 2023 14:20:59 +0600
+
 wb-mqtt-serial (2.80.3) stable; urgency=medium
 
   * Fix reading of config with custom Modbus devices in wb-mqtt-homeui

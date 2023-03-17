@@ -17800,6 +17800,13 @@ WB-MCM16
 	Serial NO  =>  Serial NO
 	Uptime  =>  Uptime
 WB-MCM8
+	Encoder 1 angle  =>  Encoder 1 angle
+	Encoder 1 position  =>  Encoder 1 position
+	Encoder 1 revolutions  =>  Encoder 1 revolutions
+	Encoder 2 angle  =>  Encoder 2 angle
+	Encoder 2 position  =>  Encoder 2 position
+	Encoder 2 revolutions  =>  Encoder 2 revolutions
+	Encoder 3 position  =>  Encoder 3 position
 	FW Version  =>  FW Version
 	Input 1  =>  Input 1
 	Input 1 Double Press Counter  =>  Input 1 Double Press Counter
