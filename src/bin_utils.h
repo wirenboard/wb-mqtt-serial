@@ -60,6 +60,19 @@ namespace BinUtils
     }
 
     /**
+     * @brief Convert a range of bytes starting from begin to a numeric value, assuming big-endian byte order.
+     *
+     * @tparam ResultType type of resulting value
+     * @tparam Iterator range iterator type
+     * @param begin start of range
+     * @return ResultType type of result. Default implementation expects numeric type
+     */
+    template<class ResultType, class Iterator> ResultType GetFromBigEndian(Iterator begin)
+    {
+        return GetBigEndian<ResultType>(begin, begin + sizeof(ResultType));
+    }
+
+    /**
      * @brief Append numeric value to a container using insert iterator.
      *        The value is appended in little endian byte order.
      *
