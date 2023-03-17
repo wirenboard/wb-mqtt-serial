@@ -889,8 +889,7 @@
           "disable_panel": true
         },
         "disable_collapse": true
-      },
-      "_format": "wb-multiple"
+      }
     },
     "channelSettings": {
       "type": "object",

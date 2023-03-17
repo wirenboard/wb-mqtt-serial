@@ -4,6 +4,24 @@ wb-mqtt-serial (2.81.0) stable; urgency=medium
 
  -- Nikita Kulikov <n.kulikov@wirenboard.ru>  Mon, 06 Mar 2023 14:20:59 +0600
 
+wb-mqtt-serial (2.80.3) stable; urgency=medium
+
+  * Fix reading of config with custom Modbus devices in wb-mqtt-homeui
+
+ -- Petr Krasnoshchekov <petr.krasnoshchekov@wirenboard.com>  Wed, 15 Mar 2023 16:38:14 +0500
+
+wb-mqtt-serial (2.80.2) stable; urgency=medium
+
+  * Fix safety timeout editing in wb-mqtt-homeui
+
+ -- Petr Krasnoshchekov <petr.krasnoshchekov@wirenboard.com>  Mon, 13 Mar 2023 10:34:38 +0500
+
+wb-mqtt-serial (2.80.1) stable; urgency=medium
+
+  * Fix missing l1, l2, l3 groups in MAP12E template
+
+ -- Alexander Rakhman <alexander.rakhman@wirenboard.com>  Fri, 02 Mar 2023 17:52:00 +0300
+ 
 wb-mqtt-serial (2.80.0) stable; urgency=medium
 
   * Add ability to disable status LED in devices with ms based firmware
