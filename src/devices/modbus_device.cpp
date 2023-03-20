@@ -81,25 +81,26 @@ void TModbusDevice::WriteSetupRegisters()
         Modbus::EnableWbContinuousRead(shared_from_this(), *ModbusTraits, *Port(), SlaveId, ModbusCache);
     }
     Modbus::WriteSetupRegisters(*ModbusTraits, *Port(), SlaveId, SetupItems, ModbusCache);
+    /*
+        ModbusExt::TEventsEnabler e(SlaveId,
+                                    *Port(),
+                                    std::chrono::milliseconds(100),
+                                    std::chrono::milliseconds(100),
+                                    [](uint16_t addr, uint8_t type, uint8_t res) {
+                                        LOG(Error) << "Addr: " << addr << ", Type: " << static_cast<int>(type)
+                                                   << ", Res: " << static_cast<int>(res);
+                                    });
 
-    ModbusExt::TEventsEnabler e(SlaveId,
-                                *Port(),
-                                std::chrono::milliseconds(100),
-                                std::chrono::milliseconds(100),
-                                [](uint16_t addr, uint8_t type, uint8_t res) {
-                                    LOG(Error) << "Addr: " << addr << ", Type: " << static_cast<int>(type)
-                                               << ", Res: " << static_cast<int>(res);
-                                });
-
-    try {
-        for (uint16_t i = 464; i <= 471; ++i) {
-            e.AddRegister(i, ModbusExt::TEventRegisterType::INPUT);
+        try {
+            for (uint16_t i = 464; i <= 471; ++i) {
+                e.AddRegister(i, ModbusExt::TEventRegisterType::INPUT);
+            }
+            for (uint16_t i = 496; i <= 503; ++i) {
+                e.AddRegister(i, ModbusExt::TEventRegisterType::INPUT);
+            }
+            e.SendRequest();
+        } catch (const std::exception& e) {
+            LOG(Warn) << e.what();
         }
-        for (uint16_t i = 496; i <= 503; ++i) {
-            e.AddRegister(i, ModbusExt::TEventRegisterType::INPUT);
-        }
-        e.SendRequest();
-    } catch (const std::exception& e) {
-        LOG(Warn) << e.what();
-    }
+    */
 }

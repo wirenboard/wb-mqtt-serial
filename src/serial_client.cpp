@@ -400,16 +400,16 @@ public:
 void TSerialClient::OpenPortCycle()
 {
     WaitForPollAndFlush(Scheduler.GetDeadline(std::chrono::steady_clock::now()));
-
-    TModbusExtEventsVisitor visitor;
-    try {
-        auto res =
-            ModbusExt::ReadEvents(*Port, std::chrono::milliseconds(100), std::chrono::milliseconds(100), visitor);
-        LOG(Error) << "Read events res: " << res;
-    } catch (const std::exception& ex) {
-        LOG(Warn) << ex.what();
-    }
-
+    /*
+        TModbusExtEventsVisitor visitor;
+        try {
+            auto res =
+                ModbusExt::ReadEvents(*Port, std::chrono::milliseconds(100), std::chrono::milliseconds(100), visitor);
+            LOG(Error) << "Read events res: " << res;
+        } catch (const std::exception& ex) {
+            LOG(Warn) << ex.what();
+        }
+    */
     auto pollStartTime = std::chrono::steady_clock::now();
 
     TRegisterReader reader(MAX_POLL_TIME);
