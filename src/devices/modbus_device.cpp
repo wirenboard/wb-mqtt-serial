@@ -81,7 +81,7 @@ void TModbusDevice::WriteSetupRegisters()
         Modbus::EnableWbContinuousRead(shared_from_this(), *ModbusTraits, *Port(), SlaveId, ModbusCache);
     }
     Modbus::WriteSetupRegisters(*ModbusTraits, *Port(), SlaveId, SetupItems, ModbusCache);
-
+/*
     ModbusExt::TEventsEnabler e(SlaveId,
                                 *Port(),
                                 std::chrono::milliseconds(100),
@@ -102,4 +102,5 @@ void TModbusDevice::WriteSetupRegisters()
     } catch (const std::exception& e) {
         LOG(Warn) << e.what();
     }
+*/
 }

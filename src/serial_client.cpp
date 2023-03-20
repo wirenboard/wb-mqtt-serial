@@ -418,7 +418,7 @@ public:
 void TSerialClient::OpenPortCycle()
 {
     WaitForPollAndFlush(Scheduler.GetDeadline(std::chrono::steady_clock::now()));
-
+/*
     TModbusExtEventsVisitor visitor;
     try {
         auto res =
@@ -427,7 +427,7 @@ void TSerialClient::OpenPortCycle()
     } catch (const std::exception& ex) {
         LOG(Warn) << ex.what();
     }
-
+*/
     auto pollStartTime = std::chrono::steady_clock::now();
     Metrics.StartPoll(Metrics::NON_BUS_POLLING_TASKS);
 
