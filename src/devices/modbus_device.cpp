@@ -14,6 +14,23 @@ namespace
                                               {Modbus::REG_DISCRETE, "discrete", "switch", U8, true},
                                               {Modbus::REG_INPUT, "input", "value", U16, true}});
 
+    ModbusExt::TEventRegisterType ToEventRegisterType(const Modbus::RegisterType regType)
+    {
+        switch (regType) {
+            case Modbus::REG_COIL:
+                return ModbusExt::TEventRegisterType::COIL;
+            case Modbus::REG_DISCRETE:
+                return ModbusExt::TEventRegisterType::DISCRETE;
+            case Modbus::REG_HOLDING:
+            case Modbus::REG_HOLDING_SINGLE:
+            case Modbus::REG_HOLDING_MULTI:
+                return ModbusExt::TEventRegisterType::HOLDING;
+            case Modbus::REG_INPUT:
+                return ModbusExt::TEventRegisterType::INPUT;
+            default:
+                throw std::runtime_error("unsupported register type");
+        }
+    }
     class TModbusProtocol: public IProtocol
     {
     public:
@@ -81,26 +98,40 @@ void TModbusDevice::WriteSetupRegisters()
         Modbus::EnableWbContinuousRead(shared_from_this(), *ModbusTraits, *Port(), SlaveId, ModbusCache);
     }
     Modbus::WriteSetupRegisters(*ModbusTraits, *Port(), SlaveId, SetupItems, ModbusCache);
-    /*
-        ModbusExt::TEventsEnabler e(SlaveId,
-                                    *Port(),
-                                    std::chrono::milliseconds(100),
-                                    std::chrono::milliseconds(100),
-                                    [](uint16_t addr, uint8_t type, uint8_t res) {
-                                        LOG(Error) << "Addr: " << addr << ", Type: " << static_cast<int>(type)
-                                                   << ", Res: " << static_cast<int>(res);
-                                    });
 
-        try {
-            for (uint16_t i = 464; i <= 471; ++i) {
-                e.AddRegister(i, ModbusExt::TEventRegisterType::INPUT);
+    ModbusExt::TEventsEnabler ev(SlaveId,
+                                 *Port(),
+                                 std::chrono::milliseconds(100),
+                                 std::chrono::milliseconds(100),
+                                 std::bind(&TModbusDevice::OnEnabledEvent,
+                                           this,
+                                           std::placeholders::_1,
+                                           std::placeholders::_2,
+                                           std::placeholders::_3));
+
+    try {
+        for (const auto& ch: DeviceConfig()->DeviceChannelConfigs) {
+            for (const auto& reg: ch->RegisterConfigs) {
+                if (reg->IsSporadic) {
+                    ev.AddRegister(GetUint32RegisterAddress(reg->GetAddress()),
+                                   ToEventRegisterType(static_cast<Modbus::RegisterType>(reg->Type)));
+                }
             }
-            for (uint16_t i = 496; i <= 503; ++i) {
-                e.AddRegister(i, ModbusExt::TEventRegisterType::INPUT);
-            }
-            e.SendRequest();
-        } catch (const std::exception& e) {
-            LOG(Warn) << e.what();
         }
-    */
+        ev.SendRequest();
+    } catch (const std::exception& e) {
+        LOG(Warn) << e.what();
+    }
+}
+
+void TModbusDevice::OnEnabledEvent(uint16_t addr, uint8_t type, uint8_t res)
+{
+    if (res == 1) {
+        LOG(Info) << "Events are enabled for register: " << addr << ", type: " << static_cast<int>(type);
+    } else if (res == 0) {
+        LOG(Info) << "Events are disabled for register: " << addr << ", type: " << static_cast<int>(type);
+    } else {
+        LOG(Error) << "Error on enabling events for register: " << addr << ", type: " << static_cast<int>(type)
+                   << ", res: " << static_cast<int>(res);
+    }
 }
