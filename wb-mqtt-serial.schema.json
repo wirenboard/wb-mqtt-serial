@@ -688,6 +688,12 @@
               "format": "string"
             }}
         },
+        "sporadic": {
+          "title": "Sporadic",
+          "type": "boolean",
+          "default": false,
+          "propertyOrder": 22
+        },
         "consists_of": {
           "not": {},
           "options": { "hidden": true }

@@ -199,6 +199,7 @@ public:
     double Scale;
     double Offset;
     double RoundTo;
+    bool IsSporadic;
 
     enum class EAccessType
     {
@@ -226,6 +227,7 @@ public:
                     double scale,
                     double offset,
                     double round_to,
+                    bool sporadic,
                     bool readonly,
                     const std::string& type_name,
                     const EWordOrder word_order);
@@ -251,6 +253,7 @@ public:
                                   double scale = 1,
                                   double offset = 0,
                                   double round_to = 0,
+                                  bool sporadic = false,
                                   bool readonly = false,
                                   const std::string& type_name = "",
                                   const EWordOrder word_order = EWordOrder::BigEndian);
@@ -262,6 +265,7 @@ public:
                                   double scale = 1,
                                   double offset = 0,
                                   double round_to = 0,
+                                  bool sporadic = false,
                                   bool readonly = false,
                                   const std::string& type_name = "",
                                   const EWordOrder word_order = EWordOrder::BigEndian,
