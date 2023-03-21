@@ -218,6 +218,7 @@ TRegisterConfig::TRegisterConfig(int type,
                                  double scale,
                                  double offset,
                                  double round_to,
+                                 bool sporadic,
                                  bool readonly,
                                  const std::string& type_name,
                                  const EWordOrder word_order)
@@ -227,6 +228,7 @@ TRegisterConfig::TRegisterConfig(int type,
       Scale(scale),
       Offset(offset),
       RoundTo(round_to),
+      IsSporadic(sporadic),
       TypeName(type_name),
       WordOrder(word_order)
 {
@@ -292,6 +294,7 @@ PRegisterConfig TRegisterConfig::Create(int type,
                                         double scale,
                                         double offset,
                                         double round_to,
+                                        bool sporadic,
                                         bool readonly,
                                         const std::string& type_name,
                                         const EWordOrder word_order)
@@ -302,6 +305,7 @@ PRegisterConfig TRegisterConfig::Create(int type,
                                              scale,
                                              offset,
                                              round_to,
+                                             sporadic,
                                              readonly,
                                              type_name,
                                              word_order);
@@ -313,6 +317,7 @@ PRegisterConfig TRegisterConfig::Create(int type,
                                         double scale,
                                         double offset,
                                         double round_to,
+                                        bool sporadic,
                                         bool readonly,
                                         const std::string& type_name,
                                         const EWordOrder word_order,
@@ -325,7 +330,7 @@ PRegisterConfig TRegisterConfig::Create(int type,
     regAddressesDescription.DataOffset = data_offset;
     regAddressesDescription.DataWidth = data_bit_width;
 
-    return Create(type, regAddressesDescription, format, scale, offset, round_to, readonly, type_name, word_order);
+    return Create(type, regAddressesDescription, format, scale, offset, round_to, sporadic, readonly, type_name, word_order);
 }
 
 TUint32RegisterAddress::TUint32RegisterAddress(uint32_t address): Address(address)
