@@ -330,7 +330,16 @@ PRegisterConfig TRegisterConfig::Create(int type,
     regAddressesDescription.DataOffset = data_offset;
     regAddressesDescription.DataWidth = data_bit_width;
 
-    return Create(type, regAddressesDescription, format, scale, offset, round_to, sporadic, readonly, type_name, word_order);
+    return Create(type,
+                  regAddressesDescription,
+                  format,
+                  scale,
+                  offset,
+                  round_to,
+                  sporadic,
+                  readonly,
+                  type_name,
+                  word_order);
 }
 
 TUint32RegisterAddress::TUint32RegisterAddress(uint32_t address): Address(address)

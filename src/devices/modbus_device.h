@@ -66,6 +66,8 @@ public:
     void ReadRegisterRange(PRegisterRange range) override;
     void WriteSetupRegisters() override;
 
+    void OnEnabledEvent(uint16_t addr, uint8_t type, uint8_t res);
+
     static void Register(TSerialDeviceFactory& factory);
 
 protected:
