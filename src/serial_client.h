@@ -5,11 +5,13 @@
 #include "poll_plan.h"
 #include "register_handler.h"
 #include "rpc_request_handler.h"
-#include "serial_device.h"
 #include <functional>
 #include <list>
 #include <memory>
 #include <unordered_map>
+
+class TSerialDevice;
+typedef std::shared_ptr<TSerialDevice> PSerialDevice;
 
 struct TRegisterComparePredicate
 {
@@ -47,6 +49,8 @@ public:
     void ClearDevices();
     PPort GetPort();
     void RPCTransceive(PRPCRequest request) const;
+    PRegister FindRegister(uint8_t slaveId, uint16_t addr) const;
+    void ProcessPolledRegister(PRegister reg);
 
 private:
     void Activate();
@@ -58,10 +62,11 @@ private:
     void SetReadError(PRegister reg);
     PRegisterHandler GetHandler(PRegister) const;
     void SetRegistersAvailability(PSerialDevice dev, TRegisterAvailability availability);
+    void ReadEvents();
     void ClosedPortCycle();
     void OpenPortCycle();
-    void ProcessPolledRegister(PRegister reg);
     void ScheduleNextPoll(PRegister reg, std::chrono::steady_clock::time_point pollStartTime);
+    void UpdateSelectionTime(std::chrono::steady_clock::time_point currentTime);
     void UpdateFlushNeeded();
     PPort Port;
     std::list<PRegister> RegList;
@@ -81,6 +86,7 @@ private:
     TThrottlingStateLogger ThrottlingStateLogger;
 
     PRPCRequestHandler RPCRequestHandler;
+    std::chrono::steady_clock::time_point LastQueueSelectionTime;
 };
 
 typedef std::shared_ptr<TSerialClient> PSerialClient;

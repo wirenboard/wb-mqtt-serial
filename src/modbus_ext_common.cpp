@@ -2,6 +2,7 @@
 
 #include "bin_utils.h"
 #include "crc16.h"
+#include "log.h"
 #include "modbus_common.h"
 #include <stddef.h>
 #include <stdint.h>
@@ -9,19 +10,20 @@
 
 using namespace BinUtils;
 
+#define LOG(logger) logger.Log() << "[modbus-ext] "
+
 namespace ModbusExt // modbus extension protocol declarations
 {
     const uint8_t BROADCAST_ADDRESS = 0xFD;
 
     const uint8_t MODBUS_EXT_COMMAND = 0x60;
+    const uint8_t MODBUS_EXT_SETTINGS = 0x46;
 
     const uint8_t EVENTS_REQUEST_COMMAND = 0x10;
     const uint8_t EVENTS_RESPONSE_COMMAND = 0x11;
     const uint8_t EVENTS_CLEAR_COMMAND = 0x12;
     const uint8_t EVENTS_CLEAR_RESPONSE_COMMAND = 0x13;
     const uint8_t NO_EVENTS_RESPONSE_COMMAND = 0x14;
-    const uint8_t ENABLE_EVENTS_COMMAND = 0x18;
-    const uint8_t ENABLE_EVENTS_RESPONSE_COMMAND = 0x1A;
 
     const uint32_t ALL_DEVICES_SN = 0;
 
@@ -31,7 +33,7 @@ namespace ModbusExt // modbus extension protocol declarations
     const size_t CRC_SIZE = 2;
     const size_t MAX_PACKET_SIZE = 256;
     const size_t EVENT_HEADER_SIZE = 4;
-    const size_t MIN_ENABLE_EVENTS_RESPONSE_SIZE = 7;
+    const size_t MIN_ENABLE_EVENTS_RESPONSE_SIZE = 5;
     const size_t ENABLE_EVENTS_REC_SIZE = 4;
 
     const uint8_t EVENTS_REQUEST_MAX_BYTES = MAX_PACKET_SIZE - EVENTS_RESPONSE_HEADER_SIZE - CRC_SIZE;
@@ -49,12 +51,13 @@ namespace ModbusExt // modbus extension protocol declarations
     const size_t EVENT_ID_POS = 2;
     const size_t EVENT_DATA_POS = 4;
 
-    const size_t ENABLE_EVENTS_RESPONSE_SLAVE_ID_POS = 3;
-    const size_t ENABLE_EVENTS_RESPONSE_DATA_SIZE_POS = 4;
-    const size_t ENABLE_EVENTS_RESPONSE_DATA_POS = 5;
+    const size_t ENABLE_EVENTS_RESPONSE_SLAVE_ID_POS = 0;
+    const size_t ENABLE_EVENTS_RESPONSE_COMMAND_POS = 1;
+    const size_t ENABLE_EVENTS_RESPONSE_DATA_SIZE_POS = 2;
+    const size_t ENABLE_EVENTS_RESPONSE_DATA_POS = 3;
 
-    const size_t ENABLE_EVENTS_REC_ADDR_POS = 0;
-    const size_t ENABLE_EVENTS_REC_TYPE_POS = 2;
+    const size_t ENABLE_EVENTS_REC_TYPE_POS = 0;
+    const size_t ENABLE_EVENTS_REC_ADDR_POS = 1;
     const size_t ENABLE_EVENTS_REC_STATE_POS = 3;
 
     size_t GetPacketStart(const uint8_t* data, size_t size)
@@ -114,15 +117,20 @@ namespace ModbusExt // modbus extension protocol declarations
         };
     }
 
+    void CheckCRC16(const uint8_t* packet, size_t size)
+    {
+        auto crc = GetBigEndian<uint16_t>(packet + size - CRC_SIZE, packet + size);
+        if (crc != CRC16::CalculateCRC16(packet, size - CRC_SIZE)) {
+            throw Modbus::TInvalidCRCError();
+        }
+    }
+
     void CheckPacket(const uint8_t* packet, size_t size, size_t minSize = CRC_SIZE)
     {
         if (size < minSize) {
             throw Modbus::TMalformedResponseError("invalid packet size: " + std::to_string(size));
         }
-        auto crc = GetBigEndian<uint16_t>(packet + size - CRC_SIZE, packet + size);
-        if (crc != CRC16::CalculateCRC16(packet, size - CRC_SIZE)) {
-            throw Modbus::TInvalidCRCError();
-        }
+        CheckCRC16(packet, size);
         if (packet[0] != BROADCAST_ADDRESS) {
             throw Modbus::TMalformedResponseError("invalid address");
         }
@@ -217,18 +225,22 @@ namespace ModbusExt // modbus extension protocol declarations
 
         auto rc = Port.ReadFrame(Response.data(), Request.size(), ResponseTimeout + FrameTimeout, FrameTimeout);
 
-        CheckPacket(Response.data(), rc, MIN_ENABLE_EVENTS_RESPONSE_SIZE);
-        if (Response[SUB_COMMAND_POS] != ENABLE_EVENTS_RESPONSE_COMMAND) {
-            throw Modbus::TMalformedResponseError("invalid enable events response command");
+        if (rc < MIN_ENABLE_EVENTS_RESPONSE_SIZE) {
+            throw Modbus::TMalformedResponseError("invalid packet size: " + std::to_string(rc));
         }
+        CheckCRC16(Response.data(), rc);
         if (Response[ENABLE_EVENTS_RESPONSE_SLAVE_ID_POS] != SlaveId) {
             throw Modbus::TMalformedResponseError("invalid slave id");
+        }
+
+        if (Response[ENABLE_EVENTS_RESPONSE_COMMAND_POS] > 0x80) {
+            throw TSerialDevicePermanentRegisterException("modbus exception");
         }
 
         const uint8_t* data = Response.data() + ENABLE_EVENTS_RESPONSE_DATA_POS;
         const uint8_t* end = data + Response[ENABLE_EVENTS_RESPONSE_DATA_SIZE_POS];
         for (; data + ENABLE_EVENTS_REC_SIZE <= end; data += ENABLE_EVENTS_REC_SIZE) {
-            Visitor(GetFrom<uint16_t>(data),
+            Visitor(GetFromBigEndian<uint16_t>(data + ENABLE_EVENTS_REC_ADDR_POS),
                     static_cast<TEventRegisterType>(data[ENABLE_EVENTS_REC_TYPE_POS]),
                     data[ENABLE_EVENTS_REC_STATE_POS]);
         }
@@ -252,15 +264,17 @@ namespace ModbusExt // modbus extension protocol declarations
           Visitor(visitor)
     {
         Request.reserve(MAX_PACKET_SIZE);
-        Append(std::back_inserter(Request), {BROADCAST_ADDRESS, MODBUS_EXT_COMMAND, ENABLE_EVENTS_COMMAND, SlaveId, 0});
+        Append(std::back_inserter(Request), {SlaveId, MODBUS_EXT_SETTINGS, 0});
         Response.reserve(MAX_PACKET_SIZE);
     }
 
-    void TEventsEnabler::AddRegister(uint16_t addr, TEventRegisterType type)
+    void TEventsEnabler::AddRegister(uint16_t addr, TEventRegisterType type, bool enable)
     {
         auto it = std::back_inserter(Request);
-        Append(it, addr);
-        Append(it, {type, 1});
+        uint8_t setting = enable ? 1 : 0;
+        Append(it, static_cast<uint8_t>(type));
+        AppendBigEndian(it, addr);
+        Append(it, setting);
         Request[ENABLE_EVENTS_RESPONSE_DATA_SIZE_POS] += ENABLE_EVENTS_REC_SIZE;
         if (Request.size() + CRC_SIZE + ENABLE_EVENTS_REC_SIZE > Request.capacity()) {
             SendRequest();

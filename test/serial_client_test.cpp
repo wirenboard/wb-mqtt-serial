@@ -87,7 +87,7 @@ protected:
                                                          scale,
                                                          offset,
                                                          round_to,
-                                                         false,
+                                                         TRegisterConfig::TSporadicMode::DISABLED,
                                                          false,
                                                          "fake",
                                                          word_order,
