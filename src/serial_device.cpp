@@ -246,6 +246,11 @@ void TSerialDevice::SetSupportsHoles(bool supportsHoles)
     SupportsHoles = supportsHoles;
 }
 
+void TSerialDevice::SetSerialClient(PSerialClient client)
+{
+    SerialClient = client;
+}
+
 TUInt32SlaveId::TUInt32SlaveId(const std::string& slaveId, bool allowBroadcast): HasBroadcastSlaveId(false)
 {
     if (allowBroadcast) {

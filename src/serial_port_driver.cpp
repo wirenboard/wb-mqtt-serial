@@ -45,16 +45,17 @@ void TSerialPortDriver::SetUpDevices()
     try {
         auto tx = MqttDriver->BeginTx();
 
-        for (auto device: Config->Devices) {
+        for (const auto& device: Config->Devices) {
             auto mqttDevice = tx->CreateDevice(From(device)).GetValue();
             assert(mqttDevice);
+            device->SetSerialClient(SerialClient);
             Devices.push_back(device);
             // init channels' registers
-            for (auto& channelConfig: device->DeviceConfig()->DeviceChannelConfigs) {
+            for (const auto& channelConfig: device->DeviceConfig()->DeviceChannelConfigs) {
                 try {
                     auto channel = std::make_shared<TDeviceChannel>(device, channelConfig);
                     channel->Control = mqttDevice->CreateControl(tx, From(channel)).GetValue();
-                    for (auto& reg: channel->Registers) {
+                    for (const auto& reg: channel->Registers) {
                         RegisterToChannelMap.emplace(reg, channel);
                         SerialClient->AddRegister(reg);
                     }

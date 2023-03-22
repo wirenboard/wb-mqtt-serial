@@ -271,7 +271,8 @@ namespace
                                                      scale,
                                                      offset,
                                                      round_to,
-                                                     sporadic,
+                                                     sporadic ? TRegisterConfig::TSporadicMode::UNKNOWN
+                                                              : TRegisterConfig::TSporadicMode::DISABLED,
                                                      readonly,
                                                      regType.Name,
                                                      regType.DefaultWordOrder);

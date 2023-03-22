@@ -2,6 +2,7 @@
 #include "log.h"
 #include "modbus_common.h"
 #include "modbus_ext_common.h"
+#include "serial_client.h"
 
 #define LOG(logger) logger.Log() << "[modbus] "
 
@@ -99,10 +100,12 @@ void TModbusDevice::WriteSetupRegisters()
     }
     Modbus::WriteSetupRegisters(*ModbusTraits, *Port(), SlaveId, SetupItems, ModbusCache);
 
+    std::chrono::milliseconds responseTimeout = std::chrono::milliseconds(100);
+    std::chrono::milliseconds frameTimeout = std::chrono::milliseconds(100);
     ModbusExt::TEventsEnabler ev(SlaveId,
                                  *Port(),
-                                 std::chrono::milliseconds(100),
-                                 std::chrono::milliseconds(100),
+                                 responseTimeout,
+                                 frameTimeout,
                                  std::bind(&TModbusDevice::OnEnabledEvent,
                                            this,
                                            std::placeholders::_1,
@@ -112,26 +115,41 @@ void TModbusDevice::WriteSetupRegisters()
     try {
         for (const auto& ch: DeviceConfig()->DeviceChannelConfigs) {
             for (const auto& reg: ch->RegisterConfigs) {
-                if (reg->IsSporadic) {
-                    ev.AddRegister(GetUint32RegisterAddress(reg->GetAddress()),
-                                   ToEventRegisterType(static_cast<Modbus::RegisterType>(reg->Type)));
+                if (reg->SporadicMode == TRegisterConfig::TSporadicMode::UNKNOWN) {
+                    auto addr = GetUint32RegisterAddress(reg->GetAddress());
+                    auto type = ToEventRegisterType(static_cast<Modbus::RegisterType>(reg->Type));
+                    ev.AddRegister(addr, type, true);
                 }
             }
         }
+        LOG(Debug) << "Try to enable events on " << ToString();
         ev.SendRequest();
     } catch (const std::exception& e) {
-        LOG(Warn) << e.what();
+        LOG(Warn) << "Failed to enable events on " << ToString() << ": " << e.what();
     }
 }
 
 void TModbusDevice::OnEnabledEvent(uint16_t addr, uint8_t type, uint8_t res)
 {
+    auto serialClient = SerialClient.lock();
+    if (!serialClient) {
+        LOG(Error) << "Serial client is not set";
+        return;
+    }
+
+    auto reg = serialClient->FindRegister(static_cast<uint8_t>(SlaveId), addr);
+    if (!reg) {
+        LOG(Error) << "Register not found: " << reg->ToString();
+        return;
+    }
+
     if (res == 1) {
-        LOG(Info) << "Events are enabled for register: " << addr << ", type: " << static_cast<int>(type);
+        reg->SporadicMode = TRegisterConfig::TSporadicMode::ENABLED;
+        LOG(Info) << "Events are enabled for " << reg->ToString();
     } else if (res == 0) {
-        LOG(Info) << "Events are disabled for register: " << addr << ", type: " << static_cast<int>(type);
+        reg->SporadicMode = TRegisterConfig::TSporadicMode::DISABLED;
+        LOG(Info) << "Events are disabled for " << reg->ToString();
     } else {
-        LOG(Error) << "Error on enabling events for register: " << addr << ", type: " << static_cast<int>(type)
-                   << ", res: " << static_cast<int>(res);
+        LOG(Error) << "Error on enabling events for " << reg->ToString() << ", res: " << static_cast<int>(res);
     }
 }

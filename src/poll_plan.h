@@ -162,7 +162,6 @@ public:
     template<class TAccumulator>
     TThrottlingState AccumulateNext(std::chrono::steady_clock::time_point currentTime, TAccumulator& accumulator)
     {
-        UpdateSelectionTime(currentTime);
         if (HighPriorityQueue.HasReadyItems(currentTime) &&
             (!ShouldSelectLowPriority() || !LowPriorityQueue.HasReadyItems(currentTime)))
         {
@@ -206,12 +205,32 @@ public:
         return TThrottlingState::NoThrottling;
     }
 
+    void UpdateSelectionTime(const std::chrono::milliseconds& delta, TPriority priority)
+    {
+        auto OldHighPriorityTime = HighPriorityTime;
+        if (priority == TPriority::High) {
+            HighPriorityTime += delta;
+            if (HighPriorityTime < OldHighPriorityTime) { // Prevent overflow
+                HighPriorityTime = MaxLowPriorityLag;
+            }
+        } else {
+            HighPriorityTime -= delta;
+            if (HighPriorityTime > OldHighPriorityTime) { // Prevent underflow
+                HighPriorityTime = std::chrono::milliseconds::zero();
+            }
+        }
+    }
+
+    void UpdateSelectionTime(const std::chrono::milliseconds& delta)
+    {
+        UpdateSelectionTime(delta, SelectedPriority);
+    }
+
 private:
     TQueue LowPriorityQueue;
     TQueue HighPriorityQueue;
     std::chrono::milliseconds HighPriorityTime = std::chrono::milliseconds(0);
     std::chrono::milliseconds MaxLowPriorityLag;
-    std::chrono::steady_clock::time_point LastQueueSelectionTime;
     TPriority SelectedPriority;
     TRateLimiter LowPriorityRateLimit;
 
@@ -231,26 +250,6 @@ private:
     bool ShouldSelectLowPriority() const
     {
         return (HighPriorityTime >= MaxLowPriorityLag);
-    }
-
-    void UpdateSelectionTime(std::chrono::steady_clock::time_point currentTime)
-    {
-        if (LastQueueSelectionTime != std::chrono::steady_clock::time_point()) {
-            auto delta = std::chrono::duration_cast<std::chrono::milliseconds>(currentTime - LastQueueSelectionTime);
-            auto OldHighPriorityTime = HighPriorityTime;
-            if (SelectedPriority == TPriority::High) {
-                HighPriorityTime += delta;
-                if (HighPriorityTime < OldHighPriorityTime) { // Prevent overflow
-                    HighPriorityTime = MaxLowPriorityLag;
-                }
-            } else {
-                HighPriorityTime -= delta;
-                if (HighPriorityTime > OldHighPriorityTime) { // Prevent underflow
-                    HighPriorityTime = std::chrono::milliseconds::zero();
-                }
-            }
-        }
-        LastQueueSelectionTime = currentTime;
     }
 
     std::chrono::milliseconds GetLowPriorityLag() const

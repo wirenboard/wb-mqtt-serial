@@ -49,8 +49,9 @@ namespace ModbusExt // modbus extension protocol common utilities
          *
          * @param addr register's address
          * @param type register's type
+         * @param enable if true, the register will be enabled for events
          */
-        void AddRegister(uint16_t addr, TEventRegisterType type);
+        void AddRegister(uint16_t addr, TEventRegisterType type, bool enable);
 
         /**
          * @brief Call the function to send a build packet

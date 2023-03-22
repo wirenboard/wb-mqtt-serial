@@ -15,6 +15,9 @@
 #include "register.h"
 #include "serial_exc.h"
 
+class TSerialClient;
+typedef std::shared_ptr<TSerialClient> PSerialClient;
+
 typedef std::unordered_map<std::string, std::string> TTitleTranslations;
 
 struct TDeviceChannelConfig
@@ -203,12 +206,14 @@ public:
     bool GetIsDisconnected() const;
     bool GetSupportsHoles() const;
     void SetSupportsHoles(bool supportsHoles);
+    void SetSerialClient(PSerialClient client);
 
     // Reset values caches
     virtual void InvalidateReadCache();
 
 protected:
     std::vector<PDeviceSetupItem> SetupItems;
+    std::weak_ptr<TSerialClient> SerialClient;
 
     virtual void PrepareImpl();
     virtual TRegisterValue ReadRegisterImpl(PRegister reg);

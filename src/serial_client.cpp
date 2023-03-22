@@ -229,6 +229,7 @@ void TSerialClient::WaitForPollAndFlush(std::chrono::steady_clock::time_point wa
             LastAccessedDevice = NULL;
             RPCRequestHandler->RPCRequestHandling(Port);
         }
+        ReadEvents();
     }
 }
 
@@ -262,6 +263,7 @@ void TSerialClient::MaybeFlushAvoidingPollStarvationButDontWait()
             RPCRequestHandler->RPCRequestHandling(Port);
             continueSignalHandling = true;
         }
+        ReadEvents();
 
         flush_count_remaining--;
     } while (continueSignalHandling && flush_count_remaining > 0);
@@ -325,6 +327,15 @@ void TSerialClient::ScheduleNextPoll(PRegister reg, std::chrono::steady_clock::t
     Scheduler.AddEntry(reg, pollStartTime + 1us, TPriority::Low);
 }
 
+void TSerialClient::UpdateSelectionTime(std::chrono::steady_clock::time_point currentTime)
+{
+    if (LastQueueSelectionTime != std::chrono::steady_clock::time_point()) {
+        auto delta = std::chrono::duration_cast<std::chrono::milliseconds>(currentTime - LastQueueSelectionTime);
+        Scheduler.UpdateSelectionTime(delta);
+    }
+    LastQueueSelectionTime = currentTime;
+}
+
 void TSerialClient::ClosedPortCycle()
 {
     auto now = std::chrono::steady_clock::now();
@@ -348,9 +359,11 @@ void TSerialClient::ClosedPortCycle()
         if (FlushNeeded->GetSignalValue(RPCSignal)) {
             RPCRequestHandler->RPCRequestHandling(Port);
         }
+        ReadEvents();
     }
 
     TClosedPortRegisterReader reader;
+    UpdateSelectionTime(wait_until);
     Scheduler.AccumulateNext(wait_until, reader);
     for (auto& reg: reader.GetRegisters()) {
         SetReadError(reg);
@@ -399,7 +412,11 @@ void TSerialClient::SetRegistersAvailability(PSerialDevice dev, TRegisterAvailab
 
 class TModbusExtEventsVisitor: public ModbusExt::IEventsVisitor
 {
+    PSerialClient SerialClient;
+
 public:
+    TModbusExtEventsVisitor(PSerialClient serialClient): SerialClient(serialClient)
+    {}
     ~TModbusExtEventsVisitor() = default;
 
     virtual void Event(uint32_t serialNumber,
@@ -409,30 +426,80 @@ public:
                        const uint8_t* data,
                        size_t dataSize) override
     {
-        LOG(Error) << "Event SN: " << serialNumber << ", SlaveId: " << static_cast<int>(slaveId)
-                   << " , Type: " << static_cast<int>(eventType) << ", Id: " << eventId
-                   << ", Data: " << WBMQTT::HexDump(data, dataSize);
+        if (dataSize > 2) {
+            LOG(Error) << "Event data size is too big: " << dataSize;
+            return;
+        }
+
+        auto reg = SerialClient->FindRegister(slaveId, eventId);
+        if (reg && reg->SporadicMode == TRegisterConfig::TSporadicMode::ENABLED) {
+            LOG(Info) << "Event on " << reg->ToString() << ", data: " << WBMQTT::HexDump(data, dataSize);
+            uint64_t value = 0;
+            memcpy(&value, data, dataSize);
+            reg->SetValue(TRegisterValue(value));
+            // Keep excluded from polling
+            reg->SetAvailable(TRegisterAvailability::UNAVAILABLE);
+            SerialClient->ProcessPolledRegister(reg);
+        } else {
+            LOG(Warn) << "Register not found: " << ToString(slaveId, eventType, eventId);
+        }
+    }
+
+    std::string ToString(uint8_t slaveId, uint8_t eventType, uint16_t eventId) const
+    {
+        std::string type;
+        switch (eventType) {
+            case ModbusExt::TEventRegisterType::COIL:
+                type = "coil";
+                break;
+            case ModbusExt::TEventRegisterType::DISCRETE:
+                type = "discrete";
+                break;
+            case ModbusExt::TEventRegisterType::HOLDING:
+                type = "holding";
+                break;
+            case ModbusExt::TEventRegisterType::INPUT:
+                type = "input";
+                break;
+            default:
+                type = "unknown";
+                break;
+        }
+
+        return "<modbus:" + std::to_string(slaveId) + ":" + type + ": " + std::to_string(eventId) + ">";
     }
 };
+
+void TSerialClient::ReadEvents()
+{
+    auto now = std::chrono::steady_clock::now();
+    TModbusExtEventsVisitor visitor(shared_from_this());
+    try {
+        if (std::any_of(RegList.begin(), RegList.end(), [](const PRegister& reg) {
+                return reg->SporadicMode == TRegisterConfig::TSporadicMode::ENABLED;
+            }))
+        {
+            ModbusExt::ReadEvents(*Port, std::chrono::milliseconds(100), std::chrono::milliseconds(100), visitor);
+        }
+    } catch (const std::exception& ex) {
+        LOG(Warn) << "Failed to read events on " << Port->GetDescription() << ": " << ex.what();
+    }
+    auto delta = std::chrono::duration_cast<std::chrono::milliseconds>(std::chrono::steady_clock::now() - now);
+    if (delta > std::chrono::milliseconds(100)) {
+        LOG(Info) << "Reading events took " << delta.count() << " ms";
+    }
+}
 
 void TSerialClient::OpenPortCycle()
 {
     WaitForPollAndFlush(Scheduler.GetDeadline(std::chrono::steady_clock::now()));
-    /*
-        TModbusExtEventsVisitor visitor;
-        try {
-            auto res =
-                ModbusExt::ReadEvents(*Port, std::chrono::milliseconds(100), std::chrono::milliseconds(100), visitor);
-            LOG(Error) << "Read events res: " << res;
-        } catch (const std::exception& ex) {
-            LOG(Warn) << ex.what();
-        }
-    */
+
     auto pollStartTime = std::chrono::steady_clock::now();
     Metrics.StartPoll(Metrics::NON_BUS_POLLING_TASKS);
 
     TRegisterReader reader(MAX_POLL_TIME);
 
+    UpdateSelectionTime(pollStartTime);
     auto throttlingState = Scheduler.AccumulateNext(pollStartTime, reader);
     auto throttlingMsg = ThrottlingStateLogger.GetMessage(throttlingState);
     if (!throttlingMsg.empty()) {
@@ -485,6 +552,18 @@ PPort TSerialClient::GetPort()
 void TSerialClient::RPCTransceive(PRPCRequest request) const
 {
     RPCRequestHandler->RPCTransceive(request, FlushNeeded, RPCSignal);
+}
+
+PRegister TSerialClient::FindRegister(uint8_t slaveId, uint16_t addr) const
+{
+    for (const auto& reg: RegList) {
+        if (std::stoi(reg->Device()->DeviceConfig()->SlaveId) == slaveId &&
+            GetUint32RegisterAddress(reg->GetAddress()) == addr)
+        {
+            return reg;
+        }
+    }
+    return nullptr;
 }
 
 bool TRegisterComparePredicate::operator()(const PRegister& r1, const PRegister& r2) const
