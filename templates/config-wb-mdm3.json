@@ -7,6 +7,7 @@
         "id": "wb-mdm3",
         "response_timeout_ms": 1,
         "frame_timeout_ms": 8,
+        "enable_wb_continuous_read": true,
 
         "groups": [
             {

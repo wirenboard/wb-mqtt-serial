@@ -7,6 +7,7 @@
         "id": "danfoss-ekc-202b",
         "response_timeout_ms": 100,
         "frame_timeout_ms": 12,
+        "enable_wb_continuous_read": true,
 
         "groups": [
             {

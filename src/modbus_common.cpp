@@ -28,6 +28,9 @@ namespace Modbus // modbus protocol declarations
     const size_t EXCEPTION_RESPONSE_PDU_SIZE = 2;
     const size_t WRITE_RESPONSE_PDU_SIZE = 5;
 
+    const int MAX_HOLE_CONTINUOUS_16_BIT_REGISTERS = 10;
+    const int MAX_HOLE_CONTINUOUS_1_BIT_REGISTERS = MAX_HOLE_CONTINUOUS_16_BIT_REGISTERS * 8;
+
     enum Error : uint8_t
     {
         ERR_NONE = 0x0,
@@ -130,6 +133,8 @@ namespace Modbus // modbus protocol common utilities
 
     bool TModbusRegisterRange::Add(PRegister reg, std::chrono::milliseconds pollLimit)
     {
+        LOG(Debug) << "Try to add " << reg->ToString() << " " << reg->Device()->GetSupportsHoles();
+
         if (reg->GetAvailable() == TRegisterAvailability::UNAVAILABLE) {
             return true;
         }
@@ -157,6 +162,7 @@ namespace Modbus // modbus protocol common utilities
             if (reg->Device()->GetSupportsHoles()) {
                 maxHole = isSingleBit ? deviceConfig.MaxBitHole : deviceConfig.MaxRegHole;
             }
+            LOG(Debug) << "1 " << Start << " " << Count << " " << maxHole << " " << addr;
             if (Start + Count + maxHole < addr) {
                 return false;
             }
@@ -183,8 +189,12 @@ namespace Modbus // modbus protocol common utilities
                 if (reg->GetAvailable() == TRegisterAvailability::UNKNOWN) {
                     return false;
                 }
+                LOG(Debug) << "2";
+
                 HasHolesFlg = HasHolesFlg || (Start + Count < addr);
             }
+
+            LOG(Debug) << "3";
 
             extend = std::max(0, static_cast<int>(addr + widthInWords) - static_cast<int>(Start + Count));
 
@@ -196,6 +206,8 @@ namespace Modbus // modbus protocol common utilities
                 return false;
             }
         }
+
+        LOG(Debug) << "4";
 
         auto newPduSize = InferReadResponsePDUSize(reg->Type, Count + extend);
         // Request 8 bytes: SlaveID, Operation, Addr, Count, CRC
@@ -1148,4 +1160,27 @@ namespace Modbus // modbus protocol common utilities
         }
         return std::make_unique<Modbus::TModbusTCPTraits>(it->second);
     }
+
+    void EnableWbContinuousRead(PSerialDevice device,
+                                IModbusTraits& traits,
+                                TPort& port,
+                                uint8_t slaveId,
+                                TRegisterCache& cache)
+    {
+        auto reg = TRegister::Intern(device, TRegister::Create(Modbus::REG_HOLDING, 114));
+        try {
+            Modbus::WriteRegister(traits, port, slaveId, *reg, TRegisterValue(1), cache);
+            LOG(Info) << "Continuous read enabled [slave_id is " << device->DeviceConfig()->SlaveId + "]";
+            if (device->DeviceConfig()->MaxRegHole < MAX_HOLE_CONTINUOUS_16_BIT_REGISTERS) {
+                device->DeviceConfig()->MaxRegHole = MAX_HOLE_CONTINUOUS_16_BIT_REGISTERS;
+            }
+            if (device->DeviceConfig()->MaxBitHole < MAX_HOLE_CONTINUOUS_1_BIT_REGISTERS) {
+                device->DeviceConfig()->MaxBitHole = MAX_HOLE_CONTINUOUS_1_BIT_REGISTERS;
+            }
+        } catch (const TSerialDevicePermanentRegisterException& e) {
+            // A firmware doesn't support continuous read
+            LOG(Warn) << "Continuous read is not enabled [slave_id is " << device->DeviceConfig()->SlaveId + "]";
+        }
+    }
+
 } // modbus protocol utilities

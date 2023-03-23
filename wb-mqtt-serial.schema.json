@@ -1515,6 +1515,18 @@
       ]
     },
 
+    "modbus_device_properties": {
+      "properties": {
+        "supports_wb_continuous_read": {
+          "title": "Enable continuous read",
+          "description": "continuous_read_desc",
+          "type": "boolean",
+          "default": false,
+          "propertyOrder": 9
+        }
+      }
+    },
+
     "device": {
       "title": "Device",
       "headerTemplate": "{{self.name}} {{self.slave_id}}",
@@ -1847,7 +1859,8 @@
             { "$ref": "#/definitions/deviceProperties" },
             { "$ref": "#/definitions/common_channels_modbus" },
             { "$ref": "#/definitions/common_setup" },
-            { "$ref": "#/definitions/slave_id" }
+            { "$ref": "#/definitions/slave_id" },
+            { "$ref": "#/definitions/modbus_device_properties" }
           ],
           "properties": {
             "protocol": {
@@ -2000,7 +2013,8 @@
       "g-thermostat": "Thermostats",
       "g-motor-control": "Motor controllers",
       "g-custom": "Custom devices",
-      "rate_limit_desc": "To reduce the load on the processor, it is not recommended to specify more than 100 reads for WB6 and 800 for WB7"
+      "rate_limit_desc": "To reduce the load on the processor, it is not recommended to specify more than 100 reads for WB6 and 800 for WB7",
+      "continuous_read_desc": "Implemented in Wiren Board devices. The service tries to read registers at once even if they are spaced. This allows you to reduce the number of requests"
     },
     "ru": {
       "Serial Device Driver Configuration": "Настройка драйвера serial-устройств",
@@ -2198,7 +2212,9 @@
       "rate_limit_desc": "Для снижения нагрузки на процессор не рекомендуется указывать более 100 чтений для WB6 и 800 для WB7",
       "Invalid channel ID": "Неверный идентификатор канала",
       "Invalid channel name": "Неверное имя канала",
-      "Invalid device ID": "Неверный идентификатор устройства"
+      "Invalid device ID": "Неверный идентификатор устройства",
+      "Enable continuous read": "Включить режим непрерывного чтения регистров",
+      "continuous_read_desc": "Реализовано в устройствах Wiren Board. При активации сервис пытается запросить регистры одной командой, даже если они расположены с промежутками. Это позволяет уменьшить число запросов"
     }
   }
 }

@@ -74,7 +74,7 @@ void TSerialDevice::Prepare()
     bool deviceWasDisconnected = GetIsDisconnected();
     try {
         PrepareImpl();
-        if (deviceWasDisconnected && HasSetupItems()) {
+        if (deviceWasDisconnected) {
             WriteSetupRegisters();
         }
     } catch (const TSerialDeviceException& ex) {
@@ -199,11 +199,6 @@ void TSerialDevice::InitSetupItems()
     }
 }
 
-bool TSerialDevice::HasSetupItems() const
-{
-    return !_DeviceConfig->SetupItemConfigs.empty();
-}
-
 void TSerialDevice::WriteSetupRegisters()
 {
     for (const auto& setup_item: SetupItems) {
@@ -221,7 +216,9 @@ void TSerialDevice::WriteSetupRegisters()
         }
         LOG(Info) << ss.str();
     }
-    SetTransferResult(true);
+    if (!SetupItems.empty()) {
+        SetTransferResult(true);
+    }
 }
 
 PPort TSerialDevice::Port() const

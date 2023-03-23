@@ -2058,3 +2058,159 @@ void TModbusExpectations::EnqueueHoldingSeparateReadResponse(uint8_t exception)
                                                   exception}),
         __func__);
 }
+
+void TModbusExpectations::EnqueueContinuousReadEnableResponse(bool ok)
+{
+    if (!ok) {
+        Expector()->Expect(WrapPDU({
+                               0x06, // function code
+                               0x00, // starting address Hi
+                               0x72, // starting address Lo (114)
+                               0x00, // value Hi
+                               0x01, // value Lo
+                           }),
+                           WrapPDU({
+                               0x86, // function code + 80
+                               0x02, // illegal data address
+                           }),
+                           __func__);
+        return;
+    }
+    Expector()->Expect(WrapPDU({
+                           0x06, // function code
+                           0x00, // starting address Hi
+                           0x72, // starting address Lo (114)
+                           0x00, // value Hi
+                           0x01, // value Lo
+                       }),
+                       WrapPDU({
+                           0x06, // function code
+                           0x00, // starting address Hi   (11000)
+                           0x72, // starting address Lo
+                           0x00, // value Hi
+                           0x01, // value Lo
+                       }),
+                       __func__);
+}
+
+void TModbusExpectations::EnqueueContinuousReadResponse(bool separated)
+{
+    const uint8_t holdingAddresses[] = {1, 8, 20};
+    const uint8_t coilAddresses[] = {1, 70, 170};
+
+    if (separated) {
+        for (uint8_t i = 0; i < 3; ++i) {
+            Expector()->Expect(WrapPDU({
+                                   0x03,                // function code
+                                   0x00,                // starting address Hi
+                                   holdingAddresses[i], // starting address Lo
+                                   0x00,                // quantity Hi
+                                   0x01,                // quantity Lo
+                               }),
+                               WrapPDU({
+                                   0x03, // function code
+                                   0x02, // byte count
+                                   0x00, // data Hi
+                                   i,    // data Lo
+                               }),
+                               __func__);
+        }
+
+        for (uint8_t i = 0; i < 3; ++i) {
+            Expector()->Expect(WrapPDU({
+                                   0x01,             // function code
+                                   0x00,             // starting address Hi
+                                   coilAddresses[i], // starting address Lo
+                                   0x00,             // quantity Hi
+                                   0x01,             // quantity Lo
+                               }),
+                               WrapPDU({
+                                   0x01, // function code
+                                   0x01, // byte count
+                                   0x01, // status
+                               }),
+                               __func__);
+        }
+        return;
+    }
+
+    Expector()->Expect(WrapPDU({
+                           0x03, // function code
+                           0x00, // starting address Hi
+                           0x01, // starting address Lo
+                           0x00, // quantity Hi
+                           0x08, // quantity Lo
+                       }),
+                       WrapPDU({
+                           0x03, // function code
+                           0x10, // byte count
+                           0x00, // data Hi
+                           0x01, // data Lo
+                           0x00, // data Hi
+                           0x02, // data Lo
+                           0x00, // data Hi
+                           0x03, // data Lo
+                           0x00, // data Hi
+                           0x04, // data Lo
+                           0x00, // data Hi
+                           0x05, // data Lo
+                           0x00, // data Hi
+                           0x06, // data Lo
+                           0x00, // data Hi
+                           0x07, // data Lo
+                           0x00, // data Hi
+                           0x08, // data Lo
+                       }),
+                       __func__);
+
+    Expector()->Expect(WrapPDU({
+                           0x03,                // function code
+                           0x00,                // starting address Hi
+                           holdingAddresses[2], // starting address Lo
+                           0x00,                // quantity Hi
+                           0x01,                // quantity Lo
+                       }),
+                       WrapPDU({
+                           0x03, // function code
+                           0x02, // byte count
+                           0x00, // data Hi
+                           0x03, // data Lo
+                       }),
+                       __func__);
+
+    Expector()->Expect(WrapPDU({
+                           0x01, // function code
+                           0x00, // starting address Hi
+                           0x01, // starting address Lo
+                           0x00, // quantity Hi
+                           0x46, // quantity Lo
+                       }),
+                       WrapPDU({
+                           0x01, // function code
+                           0x09, // byte count
+                           0xFF, // status
+                           0xFF, // status
+                           0xFF, // status
+                           0xFF, // status
+                           0xFF, // status
+                           0xFF, // status
+                           0xFF, // status
+                           0xFF, // status
+                           0xFF, // status
+                       }),
+                       __func__);
+
+    Expector()->Expect(WrapPDU({
+                           0x01,             // function code
+                           0x00,             // starting address Hi
+                           coilAddresses[2], // starting address Lo
+                           0x00,             // quantity Hi
+                           0x01,             // quantity Lo
+                       }),
+                       WrapPDU({
+                           0x01, // function code
+                           0x01, // byte count
+                           0x01, // status
+                       }),
+                       __func__);
+}

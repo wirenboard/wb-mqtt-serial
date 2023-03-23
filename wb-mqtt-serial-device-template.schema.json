@@ -399,7 +399,8 @@
               ]
             },
             { "$ref": "#/definitions/deviceProperties" },
-            { "$ref": "#/definitions/subdevice_device" }
+            { "$ref": "#/definitions/subdevice_device" },
+            { "$ref": "#/definitions/modbus_device_properties" }
           ]
         }
       ]

@@ -3,6 +3,22 @@
 // setup section
 void TModbusIOExpectations::EnqueueSetupSectionWriteResponse(bool firstModule, bool error)
 {
+    Expector()->Expect(WrapPDU({
+                           0x06, // function code
+                           0x00, // starting address Hi
+                           0x72, // starting address Lo (114)
+                           0x00, // value Hi
+                           0x01, // value Lo
+                       }),
+                       WrapPDU({
+                           0x06, // function code
+                           0x00, // starting address Hi   (11000)
+                           0x72, // starting address Lo
+                           0x00, // value Hi
+                           0x01, // value Lo
+                       }),
+                       __func__);
+
     if (firstModule) {
         Expector()->Expect(WrapPDU({
                                0x06, // function code

@@ -8,6 +8,8 @@
         "response_timeout_ms": 100,
         "frame_timeout_ms": 12,
         "guard_interval_us": 5000,
+        "enable_wb_continuous_read": true,
+
         "groups": [
             {
                 "title": "Status",
