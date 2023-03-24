@@ -790,6 +790,7 @@ namespace Modbus // modbus protocol common utilities
                           const TDeviceConfig& config)
     {
         port.SleepSinceLastInteraction(config.RequestDelay);
+        port.SkipNoise();
         port.WriteBytes(request.data(), request.size());
 
         auto res = traits.ReadFrame(port, config.ResponseTimeout, config.FrameTimeout, request, response);
