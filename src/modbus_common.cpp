@@ -31,6 +31,8 @@ namespace Modbus // modbus protocol declarations
     const int MAX_HOLE_CONTINUOUS_16_BIT_REGISTERS = 10;
     const int MAX_HOLE_CONTINUOUS_1_BIT_REGISTERS = MAX_HOLE_CONTINUOUS_16_BIT_REGISTERS * 8;
 
+    const uin16_t ENABLE_CONTINUOUS_READ_REGISTER = 114;
+
     enum Error : uint8_t
     {
         ERR_NONE = 0x0,
@@ -1159,7 +1161,7 @@ namespace Modbus // modbus protocol common utilities
                                 uint8_t slaveId,
                                 TRegisterCache& cache)
     {
-        auto reg = TRegister::Intern(device, TRegister::Create(Modbus::REG_HOLDING, 114));
+        auto reg = TRegister::Intern(device, TRegister::Create(Modbus::REG_HOLDING, ENABLE_CONTINUOUS_READ_REGISTER));
         try {
             Modbus::WriteRegister(traits, port, slaveId, *reg, TRegisterValue(1), cache);
             LOG(Info) << "Continuous read enabled [slave_id is " << device->DeviceConfig()->SlaveId + "]";
