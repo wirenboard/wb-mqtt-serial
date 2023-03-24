@@ -31,7 +31,7 @@ namespace Modbus // modbus protocol declarations
     const int MAX_HOLE_CONTINUOUS_16_BIT_REGISTERS = 10;
     const int MAX_HOLE_CONTINUOUS_1_BIT_REGISTERS = MAX_HOLE_CONTINUOUS_16_BIT_REGISTERS * 8;
 
-    const uin16_t ENABLE_CONTINUOUS_READ_REGISTER = 114;
+    const uint16_t ENABLE_CONTINUOUS_READ_REGISTER = 114;
 
     enum Error : uint8_t
     {
