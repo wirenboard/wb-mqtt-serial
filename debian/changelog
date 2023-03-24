@@ -1,3 +1,9 @@
+wb-mqtt-serial (2.81.1) stable; urgency=medium
+
+  * Add noise skipping before Modbus requests
+
+ -- Petr Krasnoshchekov <petr.krasnoshchekov@wirenboard.com>  Fri, 24 Mar 2023 20:59:58 +0500
+
 wb-mqtt-serial (2.81.0) stable; urgency=medium
 
   * Added encoders to mcm8 template

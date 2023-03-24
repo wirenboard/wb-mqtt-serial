@@ -91,7 +91,7 @@ public:
           OtherEndPort(other_port),
           FloodThread(OtherEndPort, std::chrono::milliseconds(3000)){};
 
-    void SkipNoise() override
+    void SkipNoise(TPort::TSkipNoiseTimeoutPolicy timeoutPolicy = TPort::TSkipNoiseTimeoutPolicy::USE_TIMEOUT) override
     {
         Fixture.Emit() << "SkipNoise()";
         TSerialPort::SkipNoise();

@@ -47,7 +47,7 @@ namespace
             return l;
         }
 
-        void SkipNoise() override
+        void SkipNoise(TPort::TSkipNoiseTimeoutPolicy timeoutPolicy) override
         {}
 
         void SleepSinceLastInteraction(const std::chrono::microseconds& us) override

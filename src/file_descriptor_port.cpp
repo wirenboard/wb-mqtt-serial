@@ -198,34 +198,45 @@ size_t TFileDescriptorPort::ReadFrame(uint8_t* buf,
     return nread;
 }
 
-void TFileDescriptorPort::SkipNoise()
+void TFileDescriptorPort::SkipNoise(TPort::TSkipNoiseTimeoutPolicy timeoutPolicy)
 {
     uint8_t buf[255] = {};
-    auto start = std::chrono::steady_clock::now();
-    int ntries = 0;
 
-    while (Select(NoiseTimeout)) {
-        size_t nread = ReadAvailableData(buf, sizeof(buf) / sizeof(buf[0]));
-        auto diff = std::chrono::steady_clock::now() - start;
+    if (timeoutPolicy == TPort::TSkipNoiseTimeoutPolicy::USE_TIMEOUT) {
+        auto start = std::chrono::steady_clock::now();
+        int ntries = 0;
+        while (Select(NoiseTimeout)) {
+            size_t nread = ReadAvailableData(buf, sizeof(buf) / sizeof(buf[0]));
+            auto diff = std::chrono::steady_clock::now() - start;
 
-        if (::Debug.IsEnabled()) {
-            LOG(Debug) << "read noise: " << WBMQTT::HexDump(buf, nread);
-        }
+            if (::Debug.IsEnabled()) {
+                LOG(Debug) << GetDescription(false) << ": read noise: " << WBMQTT::HexDump(buf, nread);
+            }
 
-        // if we are still getting data for already "ContinuousNoiseTimeout" milliseconds
-        if (nread > 0) {
-            LastInteraction = std::chrono::steady_clock::now();
+            // if we are still getting data for already "ContinuousNoiseTimeout" milliseconds
+            if (nread > 0) {
+                LastInteraction = std::chrono::steady_clock::now();
 
-            if (diff > ContinuousNoiseTimeout) {
-                if (ntries < ContinuousNoiseReopenNumber) {
-                    LOG(Debug) << "continuous unsolicited data flow detected, reopen the port";
-                    Reopen();
-                    ntries += 1;
-                    start = std::chrono::steady_clock::now();
-                } else {
-                    throw TSerialDeviceTransientErrorException("continous unsolicited data flow");
+                if (diff > ContinuousNoiseTimeout) {
+                    if (ntries < ContinuousNoiseReopenNumber) {
+                        LOG(Debug) << GetDescription(false)
+                                   << ": continuous unsolicited data flow detected, reopen the port";
+                        Reopen();
+                        ntries += 1;
+                        start = std::chrono::steady_clock::now();
+                    } else {
+                        throw TSerialDeviceTransientErrorException("continuous unsolicited data flow");
+                    }
                 }
             }
+        }
+        return;
+    }
+    // Just try to skip some data without port reopening
+    if (Select(0us)) {
+        size_t nread = ReadAvailableData(buf, sizeof(buf) / sizeof(buf[0]));
+        if (::Debug.IsEnabled()) {
+            LOG(Debug) << GetDescription(false) << ": read noise: " << WBMQTT::HexDump(buf, nread);
         }
     }
 }

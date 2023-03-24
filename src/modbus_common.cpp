@@ -315,6 +315,7 @@ namespace Modbus // modbus protocol common utilities
             }
             auto request = GetRequest(traits, slaveId, shift);
             port.SleepSinceLastInteraction(Device()->DeviceConfig()->RequestDelay);
+            port.SkipNoise(TPort::TSkipNoiseTimeoutPolicy::NO_WAIT);
             port.WriteBytes(request.data(), request.size());
             auto startTime = std::chrono::steady_clock::now();
             TResponse response(GetResponseSize(traits));
@@ -887,6 +888,7 @@ namespace Modbus // modbus protocol common utilities
         for (const auto& request: requests) {
             try {
                 port.SleepSinceLastInteraction(reg.Device()->DeviceConfig()->RequestDelay);
+                port.SkipNoise(TPort::TSkipNoiseTimeoutPolicy::NO_WAIT);
                 port.WriteBytes(request.data(), request.size());
                 auto pduSize = ReadResponse(traits, port, request, response, *reg.Device()->DeviceConfig());
                 ParseWriteResponse(traits.GetPDU(response), pduSize);

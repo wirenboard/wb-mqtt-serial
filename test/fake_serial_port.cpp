@@ -186,12 +186,14 @@ size_t TFakeSerialPort::ReadFrame(uint8_t* buf,
     return nread;
 }
 
-void TFakeSerialPort::SkipNoise()
+void TFakeSerialPort::SkipNoise(TPort::TSkipNoiseTimeoutPolicy timeoutPolicy)
 {
     CheckPortOpen();
     SkipFrameBoundary();
     DumpWhatWasRead();
-    Fixture.Emit() << "SkipNoise()";
+    if (timeoutPolicy == TPort::TSkipNoiseTimeoutPolicy::USE_TIMEOUT) {
+        Fixture.Emit() << "SkipNoise()";
+    }
 }
 
 void TFakeSerialPort::SleepSinceLastInteraction(const std::chrono::microseconds& us)
