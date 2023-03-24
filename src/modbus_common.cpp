@@ -133,8 +133,6 @@ namespace Modbus // modbus protocol common utilities
 
     bool TModbusRegisterRange::Add(PRegister reg, std::chrono::milliseconds pollLimit)
     {
-        LOG(Debug) << "Try to add " << reg->ToString() << " " << reg->Device()->GetSupportsHoles();
-
         if (reg->GetAvailable() == TRegisterAvailability::UNAVAILABLE) {
             return true;
         }
@@ -162,7 +160,6 @@ namespace Modbus // modbus protocol common utilities
             if (reg->Device()->GetSupportsHoles()) {
                 maxHole = isSingleBit ? deviceConfig.MaxBitHole : deviceConfig.MaxRegHole;
             }
-            LOG(Debug) << "1 " << Start << " " << Count << " " << maxHole << " " << addr;
             if (Start + Count + maxHole < addr) {
                 return false;
             }
@@ -189,12 +186,9 @@ namespace Modbus // modbus protocol common utilities
                 if (reg->GetAvailable() == TRegisterAvailability::UNKNOWN) {
                     return false;
                 }
-                LOG(Debug) << "2";
 
                 HasHolesFlg = HasHolesFlg || (Start + Count < addr);
             }
-
-            LOG(Debug) << "3";
 
             extend = std::max(0, static_cast<int>(addr + widthInWords) - static_cast<int>(Start + Count));
 
@@ -206,8 +200,6 @@ namespace Modbus // modbus protocol common utilities
                 return false;
             }
         }
-
-        LOG(Debug) << "4";
 
         auto newPduSize = InferReadResponsePDUSize(reg->Type, Count + extend);
         // Request 8 bytes: SlaveID, Operation, Addr, Count, CRC
