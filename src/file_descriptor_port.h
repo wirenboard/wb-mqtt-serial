@@ -18,7 +18,15 @@ public:
                      const std::chrono::microseconds& responseTimeout,
                      const std::chrono::microseconds& frameTimeout,
                      TFrameCompletePred frame_complete = 0) override;
-    void SkipNoise(TPort::TSkipNoiseTimeoutPolicy timeoutPolicy = TSkipNoiseTimeoutPolicy::USE_TIMEOUT) override;
+
+    /**
+     * @brief Read from port and drop read data. Use to clear read buffer.
+     *        Reopens port after 100 ms of reading.
+     *        Throws TSerialDeviceTransientErrorException after 3 continuous reopening
+     *
+     * @param timeout - time to wait for first byte
+     */
+    void SkipNoise(const std::chrono::microseconds& timeout = DefaultSkipNoiseTimeout) override;
     void Close() override;
     void CheckPortOpen() const override;
     bool IsOpen() const override;

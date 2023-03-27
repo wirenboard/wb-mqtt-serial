@@ -14,6 +14,7 @@ class TModbusTest: public TSerialDeviceTest, public TModbusExpectations
 protected:
     void SetUp();
     set<int> VerifyQuery(PRegister reg = PRegister());
+    void ReadSingleRegister(PRegister reg);
 
     virtual PDeviceConfig GetDeviceConfig() const;
 
@@ -174,6 +175,13 @@ set<int> TModbusTest::VerifyQuery(PRegister reg)
     }
 
     return errorRegisters;
+}
+
+void TModbusTest::ReadSingleRegister(PRegister reg)
+{
+    auto range = ModbusDev->CreateRegisterRange();
+    range->Add(reg, std::chrono::milliseconds::max());
+    ModbusDev->ReadRegisterRange(range);
 }
 
 TEST_F(TModbusTest, ReadHoldingRegiterWithWriteAddress)
@@ -407,6 +415,19 @@ TEST_F(TModbusTest, MinReadRegisters)
     EXPECT_EQ(GetUint32RegisterAddress(reg->GetAddress()), 110);
     EXPECT_FALSE(reg->GetErrorState().test(TRegister::TError::ReadError));
     EXPECT_EQ(reg->GetValue(), 0x15);
+}
+
+TEST_F(TModbusTest, SkipNoiseBeforeReading)
+{
+    EnqueueReadResponsesWithNoiseAtTheEnd();
+
+    auto modbusHolding1 = TRegister::Intern(ModbusDev, TRegisterConfig::Create(Modbus::REG_HOLDING, 0x272E, U16));
+    auto modbusHolding2 = TRegister::Intern(ModbusDev, TRegisterConfig::Create(Modbus::REG_HOLDING, 0x2735, U16));
+
+    EXPECT_NO_THROW(ReadSingleRegister(modbusHolding1));
+    EXPECT_NO_THROW(ReadSingleRegister(modbusHolding2));
+    EXPECT_NO_THROW(ReadSingleRegister(modbusHolding1));
+    EXPECT_NO_THROW(ReadSingleRegister(modbusHolding2));
 }
 
 class TModbusIntegrationTest: public TSerialDeviceIntegrationTest, public TModbusExpectations

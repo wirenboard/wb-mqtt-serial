@@ -38,7 +38,7 @@ public:
                      const std::chrono::microseconds& responseTimeout = std::chrono::microseconds(-1),
                      const std::chrono::microseconds& frameTimeout = std::chrono::microseconds(-1),
                      TFrameCompletePred frame_complete = 0) override;
-    void SkipNoise(TPort::TSkipNoiseTimeoutPolicy timeoutPolicy = TPort::TSkipNoiseTimeoutPolicy::USE_TIMEOUT) override;
+    void SkipNoise(const std::chrono::microseconds& timeout = DefaultSkipNoiseTimeout) override;
 
     void SleepSinceLastInteraction(const std::chrono::microseconds& us) override;
 

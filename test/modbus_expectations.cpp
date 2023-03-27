@@ -2058,3 +2058,63 @@ void TModbusExpectations::EnqueueHoldingSeparateReadResponse(uint8_t exception)
                                                   exception}),
         __func__);
 }
+
+void TModbusExpectations::EnqueueReadResponsesWithNoiseAtTheEnd()
+{
+    auto responseWithNoise = WrapPDU({
+        0x03, // function code
+        0x02, // byte count
+        0x11, // data Hi 4
+        0x78, // data Lo 4
+    });
+    responseWithNoise.push_back(0xb0);
+    Expector()->Expect(WrapPDU({
+                           0x03, // function code
+                           0x27, // starting address Hi
+                           0x2E, // starting address Lo
+                           0x00, // quantity Hi
+                           0x01, // quantity Lo
+                       }),
+                       responseWithNoise,
+                       __func__);
+
+    Expector()->Expect(WrapPDU({
+                           0x03, // function code
+                           0x27, // starting address Hi
+                           0x35, // starting address Lo
+                           0x00, // quantity Hi
+                           0x01, // quantity Lo
+                       }),
+                       WrapPDU({
+                           0x03, // function code
+                           0x02, // byte count
+                           0x01, // data Hi 4
+                           0x79, // data Lo 4
+                       }),
+                       __func__);
+
+    Expector()->Expect(WrapPDU({
+                           0x03, // function code
+                           0x27, // starting address Hi
+                           0x2E, // starting address Lo
+                           0x00, // quantity Hi
+                           0x01, // quantity Lo
+                       }),
+                       responseWithNoise,
+                       __func__);
+
+    Expector()->Expect(WrapPDU({
+                           0x03, // function code
+                           0x27, // starting address Hi
+                           0x35, // starting address Lo
+                           0x00, // quantity Hi
+                           0x01, // quantity Lo
+                       }),
+                       WrapPDU({
+                           0x03, // function code
+                           0x02, // byte count
+                           0x01, // data Hi 4
+                           0x79, // data Lo 4
+                       }),
+                       __func__);
+}

@@ -9,15 +9,11 @@
 
 #include "serial_port_settings.h"
 
+const std::chrono::microseconds DefaultSkipNoiseTimeout(1000);
+
 class TPort: public std::enable_shared_from_this<TPort>
 {
 public:
-    enum TSkipNoiseTimeoutPolicy
-    {
-        NO_WAIT,
-        USE_TIMEOUT
-    };
-
     using TFrameCompletePred = std::function<bool(uint8_t* buf, int size)>;
 
     TPort() = default;
@@ -55,7 +51,12 @@ public:
                              const std::chrono::microseconds& frameTimeout,
                              TFrameCompletePred frame_complete = 0) = 0;
 
-    virtual void SkipNoise(TSkipNoiseTimeoutPolicy timeoutPolicy = TSkipNoiseTimeoutPolicy::USE_TIMEOUT) = 0;
+    /**
+     * @brief Read from port and drop read data. Use to clear read buffer.
+     *
+     * @param timeout - time to wait for first byte
+     */
+    virtual void SkipNoise(const std::chrono::microseconds& timeout = DefaultSkipNoiseTimeout) = 0;
 
     virtual void SleepSinceLastInteraction(const std::chrono::microseconds& us) = 0;
 
