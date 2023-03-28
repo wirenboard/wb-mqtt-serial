@@ -1,3 +1,9 @@
+wb-mqtt-serial (2.82.0) stable; urgency=medium
+
+  * Support continuous register read in Wiren Board devices
+
+ -- Petr Krasnoshchekov <petr.krasnoshchekov@wirenboard.com>  Thu, 23 Mar 2023 10:48:12 +0500
+
 wb-mqtt-serial (2.81.0) stable; urgency=medium
 
   * Added encoders to mcm8 template

@@ -81,6 +81,9 @@ Unsubscribe -- em-test: /devices/modbus-io-1-2/controls/#
 Open()
 Sleep(5000)
 EnqueueSetupSectionWriteResponse()
+>> 01 06 00 72 00 01 E8 11
+<< 01 06 00 72 00 01 E8 11
+EnqueueSetupSectionWriteResponse()
 >> 01 06 2A F8 FF FF 01 93
 << 01 06 2A F8 FF FF 01 93
 EnqueueSetupSectionWriteResponse()

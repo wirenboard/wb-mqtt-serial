@@ -8,6 +8,7 @@
         "max_read_registers": 60,
         "response_timeout_ms": 1,
         "frame_timeout_ms": 15,
+        "enable_wb_continuous_read": true,
 
         "groups": [
             {

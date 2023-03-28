@@ -78,4 +78,8 @@ public:
     void EnqueueHoldingSeparateReadResponse(uint8_t exception = 0);
     void EnqueueHoldingSingleOneByOneReadResponse(uint8_t exception = 0);
     void EnqueueHoldingMultiOneByOneReadResponse(uint8_t exception = 0);
+
+    /*------------ bitmasks ----------------*/
+    void EnqueueContinuousReadEnableResponse(bool ok = true);
+    void EnqueueContinuousReadResponse(bool separated = true);
 };
