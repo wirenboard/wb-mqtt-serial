@@ -91,10 +91,10 @@ public:
           OtherEndPort(other_port),
           FloodThread(OtherEndPort, std::chrono::milliseconds(3000)){};
 
-    void SkipNoise(const std::chrono::microseconds& timeout = DefaultSkipNoiseTimeout) override
+    bool SkipNoise(const std::chrono::microseconds& timeout = DefaultSkipNoiseTimeout) override
     {
         Fixture.Emit() << "SkipNoise()";
-        TSerialPort::SkipNoise();
+        return TSerialPort::SkipNoise();
     }
 
     uint8_t ReadByte(const std::chrono::microseconds& timeout) override

@@ -673,7 +673,7 @@ TEST_F(TModbusIntegrationTest, MaxReadRegisters)
 
 TEST_F(TModbusIntegrationTest, GuardInterval)
 {
-    Config->PortConfigs[0]->Devices[0]->DeviceConfig()->RequestDelay = chrono::microseconds(1000);
+    Config->PortConfigs[0]->Devices[0]->DeviceConfig()->RequestDelay = chrono::microseconds(10000);
     InvalidateConfigPoll();
 }
 

@@ -55,8 +55,9 @@ public:
      * @brief Read from port and drop read data. Use to clear read buffer.
      *
      * @param timeout - time to wait for first byte
+     * @return true - there was some noise, false - nothing read
      */
-    virtual void SkipNoise(const std::chrono::microseconds& timeout = DefaultSkipNoiseTimeout) = 0;
+    virtual bool SkipNoise(const std::chrono::microseconds& timeout = DefaultSkipNoiseTimeout) = 0;
 
     virtual void SleepSinceLastInteraction(const std::chrono::microseconds& us) = 0;
 

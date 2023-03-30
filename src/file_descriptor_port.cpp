@@ -72,17 +72,14 @@ void TFileDescriptorPort::WriteBytes(const uint8_t* buf, int count)
 bool TFileDescriptorPort::Select(const chrono::microseconds& us)
 {
     fd_set rfds;
-    struct timeval tv, *tvp = 0;
+    struct timeval tv;
 
     FD_ZERO(&rfds);
     FD_SET(Fd, &rfds);
-    if (us.count() > 0) {
-        tv.tv_sec = us.count() / 1000000;
-        tv.tv_usec = us.count() % 1000000;
-        tvp = &tv;
-    }
+    tv.tv_sec = us.count() / 1000000;
+    tv.tv_usec = us.count() % 1000000;
 
-    int r = select(Fd + 1, &rfds, NULL, NULL, tvp);
+    int r = select(Fd + 1, &rfds, NULL, NULL, &tv);
     if (r < 0) {
         throw TSerialDeviceException("TFileDescriptorPort::Select() failed " + to_string(errno));
     }
@@ -197,22 +194,24 @@ size_t TFileDescriptorPort::ReadFrame(uint8_t* buf,
     return nread;
 }
 
-void TFileDescriptorPort::SkipNoise(const std::chrono::microseconds& timeout)
+bool TFileDescriptorPort::SkipNoise(const std::chrono::microseconds& timeout)
 {
     uint8_t buf[255] = {};
 
     auto start = std::chrono::steady_clock::now();
     int ntries = 0;
+    bool hasNoise = false;
     while (Select(timeout)) {
         size_t nread = ReadAvailableData(buf, sizeof(buf) / sizeof(buf[0]));
         auto diff = std::chrono::steady_clock::now() - start;
 
         if (::Debug.IsEnabled()) {
-            LOG(Debug) << GetDescription(false) << ": read noise: " << WBMQTT::HexDump(buf, nread);
+            LOG(Debug) << GetDescription(false) << ": Read noise: " << WBMQTT::HexDump(buf, nread);
         }
 
         // if we are still getting data for already "ContinuousNoiseTimeout" milliseconds
         if (nread > 0) {
+            hasNoise = true;
             LastInteraction = std::chrono::steady_clock::now();
 
             if (diff > ContinuousNoiseTimeout) {
@@ -228,6 +227,7 @@ void TFileDescriptorPort::SkipNoise(const std::chrono::microseconds& timeout)
             }
         }
     }
+    return hasNoise;
 }
 
 void TFileDescriptorPort::SleepSinceLastInteraction(const chrono::microseconds& us)

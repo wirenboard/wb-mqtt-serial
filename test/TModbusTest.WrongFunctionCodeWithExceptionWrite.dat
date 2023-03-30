@@ -1,4 +1,5 @@
 Open()
+Sleep(5000)
 EnqueueWrongFunctionCodeCoilWriteResponse()
 >> 01 05 00 00 FF 00 8C 3A
 << 01 87 02 C2 31

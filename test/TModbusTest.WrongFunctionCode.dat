@@ -1,4 +1,5 @@
 Open()
+Sleep(5000)
 EnqueueWrongFunctionCodeCoilReadResponse()
 >> 01 01 00 00 00 01 FD CA
 << 01 02 01 01 60 48

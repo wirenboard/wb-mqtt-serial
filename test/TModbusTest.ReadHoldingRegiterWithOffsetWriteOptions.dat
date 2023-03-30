@@ -1,4 +1,5 @@
 Open()
+Sleep(5000)
 EnqueueHoldingReadU16ResponseWithOffsetWriteOptions()
 >> 01 03 00 6F 00 01 B4 17
 << 01 03 02 00 15 79 8B

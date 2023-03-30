@@ -314,7 +314,9 @@ namespace Modbus // modbus protocol common utilities
                 Count = deviceConfig.MinReadRegisters;
             }
             auto request = GetRequest(traits, slaveId, shift);
-            port.SleepSinceLastInteraction(Device()->DeviceConfig()->RequestDelay);
+            port.SleepSinceLastInteraction(
+                std::max(Device()->DeviceConfig()->RequestDelay,
+                         std::chrono::duration_cast<std::chrono::microseconds>(port.GetSendTime(3.5))));
             port.SkipNoise(0us);
             port.WriteBytes(request.data(), request.size());
             auto startTime = std::chrono::steady_clock::now();
@@ -887,7 +889,9 @@ namespace Modbus // modbus protocol common utilities
 
         for (const auto& request: requests) {
             try {
-                port.SleepSinceLastInteraction(reg.Device()->DeviceConfig()->RequestDelay);
+                port.SleepSinceLastInteraction(
+                    std::max(reg.Device()->DeviceConfig()->RequestDelay,
+                             std::chrono::duration_cast<std::chrono::microseconds>(port.GetSendTime(3.5))));
                 port.SkipNoise(0us);
                 port.WriteBytes(request.data(), request.size());
                 auto pduSize = ReadResponse(traits, port, request, response, *reg.Device()->DeviceConfig());

@@ -187,7 +187,7 @@ size_t TFakeSerialPort::ReadFrame(uint8_t* buf,
     return nread;
 }
 
-void TFakeSerialPort::SkipNoise(const std::chrono::microseconds& timeout)
+bool TFakeSerialPort::SkipNoise(const std::chrono::microseconds& timeout)
 {
     CheckPortOpen();
     DumpWhatWasRead();
@@ -203,6 +203,7 @@ void TFakeSerialPort::SkipNoise(const std::chrono::microseconds& timeout)
         Fixture.Emit() << "SkipNoise()";
     }
     DumpWhatWasRead();
+    return hasNoise;
 }
 
 void TFakeSerialPort::SleepSinceLastInteraction(const std::chrono::microseconds& us)

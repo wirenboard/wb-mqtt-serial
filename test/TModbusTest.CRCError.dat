@@ -1,4 +1,5 @@
 Open()
+Sleep(5000)
 EnqueueInvalidCRCCoilReadResponse()
 >> 01 01 00 00 00 01 FD CA
 << 01 01 01 02 D0 4A

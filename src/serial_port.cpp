@@ -95,7 +95,7 @@ namespace
                 LOG(Warn) << rxTrigBytesPath << " read failed: " << e.what();
             }
         }
-        return 0;
+        return 1;
     }
 
     void MakeTermios(const TSerialPortConnectionSettings& settings, termios& dev)
@@ -247,6 +247,21 @@ std::string TSerialPort::GetDescription(bool verbose) const
         return Settings.ToString();
     }
     return Settings.Device;
+}
+
+bool TSerialPort::SkipNoise(const std::chrono::microseconds& timeout)
+{
+    auto currentTimeout = timeout;
+    auto fifoWaitTime = GetSendTime(RxTrigBytes);
+    bool hasNoise = false;
+    while (TFileDescriptorPort::SkipNoise(currentTimeout)) {
+        if (timeout >= fifoWaitTime) {
+            return true;
+        }
+        currentTimeout = fifoWaitTime;
+        hasNoise = true;
+    }
+    return hasNoise;
 }
 
 const TSerialPortSettings& TSerialPort::GetSettings() const

@@ -35,6 +35,8 @@ public:
 
     const TSerialPortSettings& GetSettings() const;
 
+    bool SkipNoise(const std::chrono::microseconds& timeout = DefaultSkipNoiseTimeout) override;
+
 private:
     const TSerialPortSettings Settings;
     termios OldTermios;

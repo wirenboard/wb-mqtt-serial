@@ -26,7 +26,7 @@ public:
      *
      * @param timeout - time to wait for first byte
      */
-    void SkipNoise(const std::chrono::microseconds& timeout = DefaultSkipNoiseTimeout) override;
+    bool SkipNoise(const std::chrono::microseconds& timeout = DefaultSkipNoiseTimeout) override;
     void Close() override;
     void CheckPortOpen() const override;
     bool IsOpen() const override;

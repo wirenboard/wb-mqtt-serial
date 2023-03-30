@@ -1,4 +1,5 @@
 Open()
+Sleep(5000)
 EnqueueHoldingReadU16ResponseWithWriteAddress()
 >> 01 03 00 6E 00 01 E5 D7
 << 01 03 02 00 15 79 8B

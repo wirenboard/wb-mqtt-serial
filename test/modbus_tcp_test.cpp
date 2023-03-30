@@ -47,8 +47,10 @@ namespace
             return l;
         }
 
-        void SkipNoise(const std::chrono::microseconds& timeout = DefaultSkipNoiseTimeout) override
-        {}
+        bool SkipNoise(const std::chrono::microseconds& timeout = DefaultSkipNoiseTimeout) override
+        {
+            return false;
+        }
 
         void SleepSinceLastInteraction(const std::chrono::microseconds& us) override
         {}
