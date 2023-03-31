@@ -1,3 +1,9 @@
+wb-mqtt-serial (2.83.0) stable; urgency=medium
+
+  * Add mao4 actions configuration
+
+ -- Dmitry Borisov <dmitry.borisov@wirenboard.com>  Fri, 31 Mar 2023 16:00:00 +0600
+
 wb-mqtt-serial (2.82.0) stable; urgency=medium
 
   * Support continuous register read in Wiren Board devices
