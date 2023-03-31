@@ -12924,12 +12924,16 @@ WB-MAI6
 	Serial  =>  Serial
 	Uptime  =>  Uptime
 WB-MAO4
+	K1  =>  K1
 	Channel 1  =>  Channel 1
 	Channel 1 Duty Cycle Raw  =>  Channel 1 Duty Cycle Raw
+	K2  =>  K2
 	Channel 2  =>  Channel 2
 	Channel 2 Duty Cycle Raw  =>  Channel 2 Duty Cycle Raw
+	K3  =>  K3
 	Channel 3  =>  Channel 3
 	Channel 3 Duty Cycle Raw  =>  Channel 3 Duty Cycle Raw
+	K4  =>  K4
 	Channel 4  =>  Channel 4
 	Channel 4 Duty Cycle Raw  =>  Channel 4 Duty Cycle Raw
 	FW Version  =>  FW Version

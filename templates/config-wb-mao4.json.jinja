@@ -1,5 +1,6 @@
 {% set INPUTS_NUMBER = 3 -%}
 {% set OUTPUTS_NUMBER = 4 -%}
+{% set PRESS_TYPES = ["short", "long", "double", "short long"] %}
 
 {
     "title": "WB-MAO4_template_title",
@@ -20,11 +21,19 @@
                 "id": "input {{enumerator + 1}}",
                 "order": {{enumerator + 1}}
             },
+            {% for press_type in PRESS_TYPES -%}
+            {
+                "title": "Input {{enumerator + 1}} {{ press_type | capitalize }} Press Actions",
+                "id": "input {{enumerator + 1}} {{press_type}} press actions",
+                "group": "input {{enumerator + 1}}",
+                "order": {{loop.index}}
+            },
+            {% endfor -%}
             {
                 "title": "Input {{enumerator + 1}} Parameters",
                 "id": "input {{enumerator + 1}} parameters",
                 "group": "input {{enumerator + 1}}",
-                "order": 1,
+                "order": 5,
                 "ui_options": {
                     "wb": {
                         "disable_title": true
@@ -35,7 +44,7 @@
                 "title": "Input {{enumerator + 1}} Counters",
                 "id": "input {{enumerator + 1}} counters",
                 "group": "input {{enumerator + 1}}",
-                "order": 2,
+                "order": 6,
                 "ui_options": {
                     "wb": {
                         "disable_title": true
@@ -47,6 +56,25 @@
                 "title": "Outputs",
                 "id": "outputs",
                 "order": {{INPUTS_NUMBER + 1}}
+            },
+            {% for enumerator in range(0, OUTPUTS_NUMBER) -%}
+            {
+                "title": "Output {{enumerator + 1}}",
+                "id": "output{{enumerator + 1}}",
+                "group": "outputs",
+                "order": 1
+            },
+            {% endfor -%}
+            {
+                "title": "Output Channels",
+                "id": "output channels",
+                "group": "outputs",
+                "order": {{OUTPUTS_NUMBER}},
+                "ui_options": {
+                    "wb": {
+                        "disable_title": true
+                    }
+                }
             },
             {
                 "title": "General",
@@ -90,6 +118,138 @@
                 "group": "outputs",
                 "order": 2
             },
+            {% for ch_number in range(1, OUTPUTS_NUMBER + 1) -%}
+            "ch{{ch_number}}_min": {
+                "title": "Channel {{ch_number}} Minimum Value",
+                "description": "channel_min_value_description",
+                "group": "output{{ch_number}}",
+                "address": {{1296 + ch_number - 1}},
+                "reg_type": "holding",
+                "default": 1,
+                "min": 0,
+                "max": 10000,
+                "order": 1
+            },
+            "ch{{ch_number}}_max": {
+                "title": "Channel {{ch_number}} Maximum Value",
+                "description": "channel_max_value_description",
+                "group": "output{{ch_number}}",
+                "address": {{1304 + ch_number - 1}},
+                "reg_type": "holding",
+                "default": 10000,
+                "min": 0,
+                "max": 10000,
+                "order": 2
+            },
+            "fader{{ch_number}} increment": {
+                "title": "Fader increment output {{ch_number}} value rate (mV/s)",
+                "description": "Fader will increase output value with that rate",
+                "group": "output{{ch_number}}",
+                "address": {{1312 + ch_number - 1}},
+                "reg_type": "holding",
+                "default": 2000,
+                "min": 1,
+                "max": 10000,
+                "order": 3
+            },
+            "fader{{ch_number}} decrement": {
+                "title": "Fader decrement output {{ch_number}} value rate (mV/s)",
+                "description": "Fader will decrease output value with that rate",
+                "group": "output{{ch_number}}",
+                "address": {{1320 + ch_number - 1}},
+                "reg_type": "holding",
+                "default": 2000,
+                "min": 1,
+                "max": 10000,
+                "order": 4
+            },
+            "action{{ch_number}} repeat time": {
+                "title": "Action modify slider {{ch_number}} value repeat time (ms)",
+                "description": "Output value will change by 1 with specified time interval",
+                "group": "output{{ch_number}}",
+                "address": {{1280 + ch_number - 1}},
+                "reg_type": "holding",
+                "default": 2000,
+                "min": 1,
+                "max": 10000,
+                "order": 5
+            },
+            {% endfor -%}
+            {% for ch_number in range(0, INPUTS_NUMBER) -%}
+            "input {{ch_number + 1}} hold time": {
+                "title": "input_hold_time_title",
+                "description": "input_hold_time_description",
+                "address": {{1100 + ch_number}},
+                "reg_type": "holding",
+                "default": 1000,
+                "min": 500,
+                "max": 5000,
+                "group": "input {{ch_number + 1}} parameters",
+                "order": 1
+            },
+            "input {{ch_number + 1}} double time": {
+                "title": "input_double_time_title",
+                "description": "input_double_time_description",
+                "address": {{1140 + ch_number}},
+                "reg_type": "holding",
+                "default": 300,
+                "min": 0,
+                "max": 2000,
+                "group": "input {{ch_number + 1}} parameters",
+                "order": 2
+            },
+            "input {{ch_number + 1}} debounce time": {
+                "title": "input_debounce_time_title",
+                "description": "input_debounce_time_description",
+                "address": {{1160 + ch_number}},
+                "reg_type": "holding",
+                "default": 50,
+                "min": 5,
+                "max": 200,
+                "group": "input {{ch_number + 1}} parameters",
+                "order": 3
+            },
+            {% for press_type in PRESS_TYPES -%}
+            "input_{{ch_number + 1}}_{{press_type}}_press_output_channel": {
+                "id": "input_{{ch_number + 1}}_{{press_type}}_press_output_channel",
+                "title": "Output Channel",
+                "address": {{1056 + (loop.index0 * 8) + ch_number}},
+                "reg_type": "holding",
+                "enum": [0, 1, 2, 3, 4, 5],
+                "enum_titles": [
+                    "No Action",
+                    "Channel 1",
+                    "Channel 2",
+                    "Channel 3",
+                    "Channel 4",
+                    "All Channels"
+                ],
+                "default": 0,
+                "group": "input {{ch_number + 1}} {{press_type}} press actions",
+                "order": {{4 + loop.index0 * 2 + 1}}
+            },
+            "input {{ch_number + 1}} {{press_type}} press output action": {
+                "title": "Output Action",
+                "address": {{1024 + (loop.index0 * 8) + ch_number}},
+                "reg_type": "holding",
+                {% if press_type in ["long", "short long"] %}"enum": [0, 1, 2, 3, 4, 5],{% else %}"enum": [0, 1, 2],{% endif %}
+                "enum_titles": [
+                    "Turn Off",
+                    "Turn On",
+                    "Toggle"{% if press_type in ["long", "short long"] %},
+                    "Increase",
+                    "Decrease",
+                    "Increase/Decrease"{% endif %}
+                ],
+                "default": 0,
+                "group": "input {{ch_number + 1}} {{press_type}} press actions",
+                "order": {{4 + loop.index0 * 2 + 2}},
+                {% set var_name = "input_{}_{}_press_output_channel".format(ch_number + 1, press_type) %}
+
+                "condition": "{{var_name}}==1||{{var_name}}==2||{{var_name}}==3||{{var_name}}==4||{{var_name}}==5"
+            },
+            {% endfor -%}
+            {% endfor -%}
             "baud_rate": {
                 "title": "Baud rate",
                 "description": "baud_rate_description",
@@ -106,42 +266,7 @@
                 ],
                 "group": "general",
                 "order": 1
-            },
-            {% for enumerator in range(0, INPUTS_NUMBER) -%}
-            "input {{enumerator + 1}} hold time": {
-                "title": "input_hold_time_title",
-                "description": "input_hold_time_description",
-                "address": {{1100 + enumerator}},
-                "reg_type": "holding",
-                "default": 1000,
-                "min": 500,
-                "max": 5000,
-                "group": "input {{enumerator + 1}} parameters",
-                "order": 1
-            },
-            "input {{enumerator + 1}} double time": {
-                "title": "input_double_time_title",
-                "description": "input_double_time_description",
-                "address": {{1140 + enumerator}},
-                "reg_type": "holding",
-                "default": 300,
-                "min": 0,
-                "max": 2000,
-                "group": "input {{enumerator + 1}} parameters",
-                "order": 2
-            },
-            "input {{enumerator + 1}} debounce time": {
-                "title": "input_debounce_time_title",
-                "description": "input_debounce_time_description",
-                "address": {{1160 + enumerator}},
-                "reg_type": "holding",
-                "default": 50,
-                "min": 5,
-                "max": 200,
-                "group": "input {{enumerator + 1}} parameters",
-                "order": 3
-            }{% if not loop.last %},{% endif %}
-            {% endfor -%}
+            }
         },
 
         "channels": [
@@ -195,12 +320,27 @@
             {% endfor -%}
             {% for enumerator in range(0, OUTPUTS_NUMBER) -%}
             {
+                "name": "K{{enumerator + 1}}",
+                "reg_type": "coil",
+                "address": {{enumerator}},
+                "type": "switch",
+                "group": "output channels"
+            },
+            {
                 "name": "Channel {{enumerator + 1}}",
                 "reg_type": "holding",
                 "address": {{enumerator}},
                 "type": "range",
                 "max": 10000,
-                "group": "outputs"
+                "group": "output channels"
+            },
+            {
+                "name": "Slider {{enumerator + 1}}",
+                "reg_type": "holding",
+                "address": {{8 + enumerator}},
+                "type": "range",
+                "max": 100,
+                "group": "output channels"
             },
             {% endfor -%}
             {
@@ -277,6 +417,9 @@
                 "baud_rate_description": "Make sure that communication with device is established before changing this parameter. Select required baud rate, save configuration and then change port baud rate to the same value.",
                 "Uptime": "Uptime (s)",
 
+                "channel_min_value_description": "Value Corresponding to Minimum Voltage (mV)",
+                "channel_max_value_description": "Value Corresponding to Maximum Voltage (mV)",
+
                 "input_hold_time_title": "Long Press Time (ms)",
                 "input_double_time_title": "Second Press Waiting Time (ms)",
                 "input_debounce_time_title": "Debounce Time (ms)",
@@ -308,10 +451,16 @@
                 "Input {{enumerator}} Short Long Press Counter": "Счетчик короткого, а затем долгого нажатия {{enumerator}}",
                 {% endfor -%}
 
-                {% for enumerator in range(1, OUTPUTS_NUMBER + 1) -%}
-                "Channel {{enumerator}}": "Канал {{enumerator}}",
-                "Channel {{enumerator}} Duty Cycle Raw": "Сырое задание для канала {{enumerator}}",
+                {% for ch_number in range(1, OUTPUTS_NUMBER + 1) -%}
+                "Output {{ch_number}}": "Выход {{ch_number}}",
+                "Channel {{ch_number}}": "Канал {{ch_number}}",
+                "Channel {{ch_number}} Duty Cycle Raw": "Сырое задание для канала {{ch_number}}",
+                "Channel {{ch_number}} Minimum Value": "Нижний порог диммирования канала {{ch_number}}",
+                "Channel {{ch_number}} Maximum Value": "Верхний порог диммирования канала {{ch_number}}",
                 {% endfor -%}
+
+                "channel_min_value_description": "Минимальное напряжение для канала (мВ)",
+                "channel_max_value_description": "Максимальное напряжение для канала (мВ)",
 
                 "Serial": "Серийный номер",
                 "FW Version": "Версия прошивки",
