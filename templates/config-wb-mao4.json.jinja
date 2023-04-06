@@ -93,8 +93,9 @@
             }
         ],
 
-        "parameters": {
-            "outputs_mode": {
+        "parameters": [
+            {
+                "id": "outputs_mode",
                 "title": "Outputs Mode",
                 "address": 10,
                 "reg_type": "holding",
@@ -107,7 +108,8 @@
                 "group": "outputs",
                 "order": 1
             },
-            "pwm_frequency_factor": {
+            {
+                "id": "pwm_frequency_factor",
                 "title": "PWM Frequency Factor",
                 "description": "pwm_frequency_factor_description",
                 "address": 9,
@@ -119,7 +121,8 @@
                 "order": 2
             },
             {% for ch_number in range(1, OUTPUTS_NUMBER + 1) -%}
-            "ch{{ch_number}}_min": {
+            {
+                "id": "ch{{ch_number}}_min",
                 "title": "Channel {{ch_number}} Minimum Value",
                 "description": "channel_min_value_description",
                 "group": "output{{ch_number}}",
@@ -130,7 +133,8 @@
                 "max": 10000,
                 "order": 1
             },
-            "ch{{ch_number}}_max": {
+            {
+                "id": "ch{{ch_number}}_max",
                 "title": "Channel {{ch_number}} Maximum Value",
                 "description": "channel_max_value_description",
                 "group": "output{{ch_number}}",
@@ -141,30 +145,33 @@
                 "max": 10000,
                 "order": 2
             },
-            "fader{{ch_number}} increment": {
-                "title": "Fader increment output {{ch_number}} value rate (mV/s)",
-                "description": "Fader will increase output value with that rate",
+            {
+                "id": "fader{{ch_number}} decrement",
+                "title": "Fader level {{ch_number}} decrement rate (%/s)",
+                "description": "Fader will decrease output level with that rate",
                 "group": "output{{ch_number}}",
                 "address": {{1312 + ch_number - 1}},
                 "reg_type": "holding",
-                "default": 2000,
+                "default": 20,
                 "min": 1,
-                "max": 10000,
+                "max": 1000,
                 "order": 3
             },
-            "fader{{ch_number}} decrement": {
-                "title": "Fader decrement output {{ch_number}} value rate (mV/s)",
-                "description": "Fader will decrease output value with that rate",
+            {
+                "id": "fader{{ch_number}} increment",
+                "title": "Fader level {{ch_number}} increment rate (%/s)",
+                "description": "Fader will increase output level with that rate",
                 "group": "output{{ch_number}}",
                 "address": {{1320 + ch_number - 1}},
                 "reg_type": "holding",
-                "default": 2000,
+                "default": 20,
                 "min": 1,
-                "max": 10000,
+                "max": 1000,
                 "order": 4
             },
-            "action{{ch_number}} repeat time": {
-                "title": "Action modify slider {{ch_number}} value repeat time (ms)",
+            {
+                "id": "action{{ch_number}} repeat time (ms)",
+                "title": "Action modify slider {{ch_number}} value repeat time",
                 "description": "Output value will change by 1 with specified time interval",
                 "group": "output{{ch_number}}",
                 "address": {{1280 + ch_number - 1}},
@@ -176,7 +183,8 @@
             },
             {% endfor -%}
             {% for ch_number in range(0, INPUTS_NUMBER) -%}
-            "input {{ch_number + 1}} hold time": {
+            {
+                "id": "input {{ch_number + 1}} hold time (ms)",
                 "title": "input_hold_time_title",
                 "description": "input_hold_time_description",
                 "address": {{1100 + ch_number}},
@@ -187,7 +195,8 @@
                 "group": "input {{ch_number + 1}} parameters",
                 "order": 1
             },
-            "input {{ch_number + 1}} double time": {
+            {
+                "id": "input {{ch_number + 1}} double time (ms)",
                 "title": "input_double_time_title",
                 "description": "input_double_time_description",
                 "address": {{1140 + ch_number}},
@@ -198,7 +207,8 @@
                 "group": "input {{ch_number + 1}} parameters",
                 "order": 2
             },
-            "input {{ch_number + 1}} debounce time": {
+            {
+                "id": "input {{ch_number + 1}} debounce time (ms)",
                 "title": "input_debounce_time_title",
                 "description": "input_debounce_time_description",
                 "address": {{1160 + ch_number}},
@@ -210,8 +220,9 @@
                 "order": 3
             },
             {% for press_type in PRESS_TYPES -%}
-            "input_{{ch_number + 1}}_{{press_type}}_press_output_channel": {
-                "id": "input_{{ch_number + 1}}_{{press_type}}_press_output_channel",
+{% set out_ch_wildcard = ("input {} {} press output channel".format(ch_number + 1, press_type))|replace(' ', '_')  %}
+            {
+                "id": "{{out_ch_wildcard}}",
                 "title": "Output Channel",
                 "address": {{1056 + (loop.index0 * 8) + ch_number}},
                 "reg_type": "holding",
@@ -226,9 +237,10 @@
                 ],
                 "default": 0,
                 "group": "input {{ch_number + 1}} {{press_type}} press actions",
-                "order": {{4 + loop.index0 * 2 + 1}}
+                "order": 1
             },
-            "input {{ch_number + 1}} {{press_type}} press output action": {
+            {
+                "id": "input {{ch_number + 1}} {{press_type}} press output action",
                 "title": "Output Action",
                 "address": {{1024 + (loop.index0 * 8) + ch_number}},
                 "reg_type": "holding",
@@ -243,14 +255,11 @@
                 ],
                 "default": 0,
                 "group": "input {{ch_number + 1}} {{press_type}} press actions",
-                "order": {{4 + loop.index0 * 2 + 2}},
-                {% set var_name = "input_{}_{}_press_output_channel".format(ch_number + 1, press_type) %}
-
-                "condition": "{{var_name}}==1||{{var_name}}==2||{{var_name}}==3||{{var_name}}==4||{{var_name}}==5"
+                "order": 2
             },
-            {% endfor -%}
-            {% endfor -%}
-            "baud_rate": {
+            {% endfor -%}{% endfor -%}
+            {
+                "id": "baud_rate",
                 "title": "Baud rate",
                 "description": "baud_rate_description",
                 "address": 110,
@@ -267,7 +276,7 @@
                 "group": "general",
                 "order": 1
             }
-        },
+        ],
 
         "channels": [
             {% for enumerator in range(0, INPUTS_NUMBER) -%}
@@ -335,9 +344,9 @@
                 "group": "output channels"
             },
             {
-                "name": "Slider {{enumerator + 1}}",
+                "name": "Level (%) {{enumerator + 1}}",
                 "reg_type": "holding",
-                "address": {{8 + enumerator}},
+                "address": {{16 + enumerator}},
                 "type": "range",
                 "max": 100,
                 "group": "output channels"
