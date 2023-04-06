@@ -1,3 +1,9 @@
+wb-mqtt-serial (2.82.1) stable; urgency=medium
+
+  * fix mcm8 template. change PPR to CPR
+
+ -- Nikita Kulikov <n.kulikov@wirenboard.ru>  Thu, 06 Apr 2023 20:09:47 +0600
+
 wb-mqtt-serial (2.82.0) stable; urgency=medium
 
   * Support continuous register read in Wiren Board devices
