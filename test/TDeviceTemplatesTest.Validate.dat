@@ -18891,7 +18891,7 @@ WB-MSGR
 	Rs ratio  =>  Rs ratio
 	Rs0  =>  Rs0
 	Uptime  =>  Uptime
-WB-MSW v.4
+WB-MSW v.3
 	Air Quality (VOC)  =>  Air Quality (VOC)
 	Buzzer  =>  Buzzer
 	CO2  =>  CO2
@@ -19066,15 +19066,11 @@ WB-MSW v.4
 	VOC Raw  =>  VOC Raw
 	VOC Sensor Installed  =>  VOC Sensor Installed
 	VOC Version  =>  VOC Version
-WB-MSW v.3
+WB-MSW v.4
 	Air Quality (VOC)  =>  Air Quality (VOC)
 	Buzzer  =>  Buzzer
 	CO2  =>  CO2
 	CO2 Autocalibration Period  =>  CO2 Autocalibration Period
-	CO2 Force Calibration  =>  CO2 Force Calibration
-	CO2 MH-Z19 Autocalibration Count  =>  CO2 MH-Z19 Autocalibration Count
-	CO2 MH-Z19 Autocalibration Ticks  =>  CO2 MH-Z19 Autocalibration Ticks
-	CO2 MH-Z19 Temperature  =>  CO2 MH-Z19 Temperature
 	CO2 Reference Sensor Value  =>  CO2 Reference Sensor Value
 	CO2 Sensor Installed  =>  CO2 Sensor Installed
 	CO2 Sensor Software Version  =>  CO2 Sensor Software Version
@@ -19226,14 +19222,13 @@ WB-MSW v.3
 	Red LED  =>  Red LED
 	Reset all ROM  =>  Reset all ROM
 	Serial  =>  Serial
-	Sound ADC Channel  =>  Sound ADC Channel
 	Sound ADC Offset  =>  Sound ADC Offset
-	Sound High Gain ADC Raw  =>  Sound High Gain ADC Raw
+	Sound Gain ADC Raw  =>  Sound Gain ADC Raw
 	Sound Level  =>  Sound Level
-	Sound Low Gain ADC Raw  =>  Sound Low Gain ADC Raw
 	Sound dB Offset  =>  Sound dB Offset
 	Successful TH Readings  =>  Successful TH Readings
 	Supply Voltage  =>  Supply Voltage
+	TH Sensor Heater Enabled  =>  TH Sensor Heater Enabled
 	Temperature  =>  Temperature
 	Temperature Without Compensation  =>  Temperature Without Compensation
 	Uptime  =>  Uptime
