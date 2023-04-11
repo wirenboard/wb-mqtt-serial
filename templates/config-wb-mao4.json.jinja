@@ -200,7 +200,7 @@
             {% endfor -%}
             {% for ch_number in range(0, INPUTS_NUMBER) -%}
             {
-                "id": "input {{ch_number + 1}} hold time (ms)",
+                "id": "input {{ch_number + 1}} hold time",
                 "title": "Long Press Time (ms)",
                 "description": "input_hold_time_description",
                 "address": {{1100 + ch_number}},
@@ -212,7 +212,7 @@
                 "order": 1
             },
             {
-                "id": "input {{ch_number + 1}} double time (ms)",
+                "id": "input {{ch_number + 1}} double time",
                 "title": "Second Press Waiting Time (ms)",
                 "description": "input_double_time_description",
                 "address": {{1140 + ch_number}},
@@ -224,7 +224,7 @@
                 "order": 2
             },
             {
-                "id": "input {{ch_number + 1}} debounce time (ms)",
+                "id": "input {{ch_number + 1}} debounce time",
                 "title": "Debounce Time (ms)",
                 "description": "input_debounce_time_description",
                 "address": {{1160 + ch_number}},
