@@ -1,3 +1,9 @@
+wb-mqtt-serial (2.82.1) stable; urgency=medium
+
+  * Add unit tests, fix coverage report, no functional changes
+
+ -- Nikolay Korotkiy <nikolay.korotkiy@wirenboard.com>  Tue, 12 Apr 2023 14:25:00 +0400
+
 wb-mqtt-serial (2.82.0) stable; urgency=medium
 
   * Support continuous register read in Wiren Board devices
