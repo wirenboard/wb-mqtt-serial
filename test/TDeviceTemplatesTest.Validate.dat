@@ -12926,15 +12926,19 @@ WB-MAI6
 WB-MAO4
 	K1  =>  K1
 	Channel 1  =>  Channel 1
+	Dimmer 1 level  =>  Dimmer 1 level
 	Channel 1 Duty Cycle Raw  =>  Channel 1 Duty Cycle Raw
 	K2  =>  K2
 	Channel 2  =>  Channel 2
+	Dimmer 2 level  =>  Dimmer 2 level
 	Channel 2 Duty Cycle Raw  =>  Channel 2 Duty Cycle Raw
 	K3  =>  K3
 	Channel 3  =>  Channel 3
+	Dimmer 3 level  =>  Dimmer 3 level
 	Channel 3 Duty Cycle Raw  =>  Channel 3 Duty Cycle Raw
 	K4  =>  K4
 	Channel 4  =>  Channel 4
+	Dimmer 4 level  =>  Dimmer 4 level
 	Channel 4 Duty Cycle Raw  =>  Channel 4 Duty Cycle Raw
 	FW Version  =>  FW Version
 	Input 1  =>  Input 1
