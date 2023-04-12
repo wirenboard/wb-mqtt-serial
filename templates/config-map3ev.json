@@ -8,6 +8,7 @@
         "max_read_registers": 60,
         "response_timeout_ms": 1,
         "frame_timeout_ms": 15,
+        "enable_wb_continuous_read": true,
 
         "groups": [
             {
@@ -69,6 +70,17 @@
                 "group": "measured_values"
             },
             {
+                "name": "U L1-L2",
+                "reg_type": "input",
+                "address": "0x141C",
+                "type": "voltage",
+                "format": "u16",
+                "scale": 0.01,
+                "round_to": 0.1,
+                "error_value": "0xFFFF",
+                "group": "l1"
+            },
+            {
                 "name": "Upeak L1",
                 "reg_type": "input",
                 "address": "0x1810",
@@ -90,6 +102,17 @@
                 "group": "measured_values"
             },
             {
+                "name": "U L2-L3",
+                "reg_type": "input",
+                "address": "0x141D",
+                "type": "voltage",
+                "format": "u16",
+                "scale": 0.01,
+                "round_to": 0.1,
+                "error_value": "0xFFFF",
+                "group": "l2"
+            },
+            {
                 "name": "Upeak L2",
                 "reg_type": "input",
                 "address": "0x1812",
@@ -109,6 +132,17 @@
                 "scale": 1.52588e-7,
                 "round_to": 0.001,
                 "group": "measured_values"
+            },
+            {
+                "name": "U L3-L1",
+                "reg_type": "input",
+                "address": "0x141E",
+                "type": "voltage",
+                "format": "u16",
+                "scale": 0.01,
+                "round_to": 0.1,
+                "error_value": "0xFFFF",
+                "group": "l3"
             },
             {
                 "name": "Upeak L3",

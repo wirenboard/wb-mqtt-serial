@@ -28,6 +28,11 @@ namespace Modbus // modbus protocol declarations
     const size_t EXCEPTION_RESPONSE_PDU_SIZE = 2;
     const size_t WRITE_RESPONSE_PDU_SIZE = 5;
 
+    const int MAX_HOLE_CONTINUOUS_16_BIT_REGISTERS = 10;
+    const int MAX_HOLE_CONTINUOUS_1_BIT_REGISTERS = MAX_HOLE_CONTINUOUS_16_BIT_REGISTERS * 8;
+
+    const uint16_t ENABLE_CONTINUOUS_READ_REGISTER = 114;
+
     enum Error : uint8_t
     {
         ERR_NONE = 0x0,
@@ -183,6 +188,7 @@ namespace Modbus // modbus protocol common utilities
                 if (reg->GetAvailable() == TRegisterAvailability::UNKNOWN) {
                     return false;
                 }
+
                 HasHolesFlg = HasHolesFlg || (Start + Count < addr);
             }
 
@@ -1148,4 +1154,27 @@ namespace Modbus // modbus protocol common utilities
         }
         return std::make_unique<Modbus::TModbusTCPTraits>(it->second);
     }
+
+    void EnableWbContinuousRead(PSerialDevice device,
+                                IModbusTraits& traits,
+                                TPort& port,
+                                uint8_t slaveId,
+                                TRegisterCache& cache)
+    {
+        auto reg = TRegister::Intern(device, TRegister::Create(Modbus::REG_HOLDING, ENABLE_CONTINUOUS_READ_REGISTER));
+        try {
+            Modbus::WriteRegister(traits, port, slaveId, *reg, TRegisterValue(1), cache);
+            LOG(Info) << "Continuous read enabled [slave_id is " << device->DeviceConfig()->SlaveId + "]";
+            if (device->DeviceConfig()->MaxRegHole < MAX_HOLE_CONTINUOUS_16_BIT_REGISTERS) {
+                device->DeviceConfig()->MaxRegHole = MAX_HOLE_CONTINUOUS_16_BIT_REGISTERS;
+            }
+            if (device->DeviceConfig()->MaxBitHole < MAX_HOLE_CONTINUOUS_1_BIT_REGISTERS) {
+                device->DeviceConfig()->MaxBitHole = MAX_HOLE_CONTINUOUS_1_BIT_REGISTERS;
+            }
+        } catch (const TSerialDevicePermanentRegisterException& e) {
+            // A firmware doesn't support continuous read
+            LOG(Warn) << "Continuous read is not enabled [slave_id is " << device->DeviceConfig()->SlaveId + "]";
+        }
+    }
+
 } // modbus protocol utilities

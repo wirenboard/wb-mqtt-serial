@@ -1,14 +1,13 @@
 {
-    "title": "WB-MSW-v3_template_title",
-    "device_type": "WB-MSW v.3",
+    "title": "WB-MSW-v4_template_title",
+    "device_type": "WB-MSW v.4",
     "group": "g-wb",
     "device": {
-        "name": "WB-MSW v.3",
-        "id": "wb-msw-v3",
+        "name": "WB-MSW v.4",
+        "id": "wb-msw-v4",
         "max_read_registers": 0,
         "response_timeout_ms": 150,
         "frame_timeout_ms": 12,
-        "enable_wb_continuous_read": true,
 
         "groups": [
             {
@@ -78,40 +77,6 @@
                 "default": 1,
                 "group": "air_quality",
                 "order": 2
-            },
-            "co2_sensor_type": {
-                "id": "co2_sensor_type",
-                "title": "CO2 Sensor Type",
-                // "address": 83,
-                // "reg_type": "input",
-                "enum": [0, 1],
-                "enum_titles": ["MH-Z19B", "CM1106"],
-                "default": 0,
-                "group": "air_quality",
-                "order": 1,
-                "readonly": true
-            },
-            "co2_measurement_range": {
-                "title": "CO₂ Measurement Range (ppm)",
-                "description": "Only for MH-Z19B CO₂ sensor",
-                "address": 96,
-                "reg_type": "holding",
-                "enum": [2000, 5000, 10000],
-                "enum_titles": ["2000", "5000", "10000"],
-                "default": 5000,
-                "group": "air_quality",
-                "order": 3,
-                "condition": "co2_sensor_type==0"
-            },
-            "th_sensor_heater_enabled": {
-                "title": "TH Sensor Heater Enabled",
-                "address": 2,
-                "reg_type": "coil",
-                "enum": [0, 1],
-                "enum_titles": ["no", "yes"],
-                "default": 0,
-                "group": "air_quality",
-                "order": 4
             },
             "selfheating_compensation_deg": {
                 "title": "Self-Heating Compensation (°C)",
@@ -217,7 +182,6 @@
                 "units": "ppm",
                 "error_value": "0xFFFF",
                 "enabled": false,
-                "condition": "co2_sensor_type==1",
                 "group": "air_quality"
             },
             {
@@ -229,17 +193,15 @@
                 "units": "day",
                 "error_value": "0xFFFF",
                 "enabled": false,
-                "condition": "co2_sensor_type==1",
                 "group": "air_quality"
             },
             {
-                "name": "CO2 Force Calibration",
+                "name": "TH Sensor Heater Enabled",
+                "address": 2,
                 "reg_type": "coil",
-                "address": 1,
                 "type": "switch",
                 "enabled": false,
-                "group": "air_quality",
-                "condition": "co2_sensor_type==0"
+                "group": "air_quality"
             },
             {
                 "name": "Air Quality (VOC)",
@@ -1385,24 +1347,9 @@
                 "group": "hw_info"
             },
             {
-                "name": "Sound ADC Channel",
-                "reg_type": "input",
-                "address": 86,
-                "enabled": false,
-                "group": "debug"
-            },
-            {
-                "name": "Sound Low Gain ADC Raw",
+                "name": "Sound Gain ADC Raw",
                 "reg_type": "input",
                 "address": 100,
-                "scale": 0.0625,
-                "enabled": false,
-                "group": "debug"
-            },
-            {
-                "name": "Sound High Gain ADC Raw",
-                "reg_type": "input",
-                "address": 87,
                 "scale": 0.0625,
                 "enabled": false,
                 "group": "debug"
@@ -1450,29 +1397,6 @@
                 "type": "text",
                 "format": "string",
                 "string_data_size": 10,
-                "enabled": false,
-                "group": "debug"
-            },
-            {
-                "name": "CO2 MH-Z19 Temperature",
-                "reg_type": "input",
-                "address": 393,
-                "units": "deg C",
-                "format": "s16",
-                "enabled": false,
-                "group": "debug"
-            },
-            {
-                "name": "CO2 MH-Z19 Autocalibration Ticks",
-                "reg_type": "input",
-                "address": 394,
-                "enabled": false,
-                "group": "debug"
-            },
-            {
-                "name": "CO2 MH-Z19 Autocalibration Count",
-                "reg_type": "input",
-                "address": 395,
                 "enabled": false,
                 "group": "debug"
             },
@@ -1550,7 +1474,7 @@
         ],
         "translations": {
             "en": {
-                "WB-MSW-v3_template_title": "WB-MSW v.3 (wall-mounted Modbus sensor)",
+                "WB-MSW-v4_template_title": "WB-MSW v.4 (wall-mounted Modbus sensor)",
                 "group_sound_level_title": "Sound Level",
                 "selfheating_compensation_deg_description": "Compensation value is subtracted from measured temperature",
                 "baud_rate_description": "Make sure that communication with device is established before changing this parameter. Select required baud rate, save configuration and then change port baud rate to the same value.",
@@ -1562,12 +1486,9 @@
                 "CO2 Sensor Installed": "CO₂ Sensor Installed",
                 "CO2 Sensor Type": "CO₂ Sensor Type",
                 "CO2 Sensor Software Version": "CO₂ Sensor Software Version",
-                "CO2 MH-Z19 Temperature": "CO₂ MH-Z19 Temperature",
-                "CO2 MH-Z19 Autocalibration Ticks": "CO₂ MH-Z19 Autocalibration Ticks (1 unit is ~7.5 min)",
-                "CO2 MH-Z19 Autocalibration Count": "CO₂ MH-Z19 Autocalibration Count"
             },
             "ru": {
-                "WB-MSW-v3_template_title": "WB-MSW v.3 (универсальный настенный Modbus-датчик)",
+                "WB-MSW-v4_template_title": "WB-MSW v.4 (универсальный настенный Modbus-датчик)",
                 "Air Quality": "Параметры воздуха",
                 "group_sound_level_title": "Шум",
                 "Illuminance": "Освещенность",
@@ -1725,10 +1646,6 @@
                 "CO2 Sensor Installed": "Датчик CO₂ установлен",
                 "CO2 Sensor Type": "Тип датчика CO₂",
                 "CO2 Sensor Software Version": "Версия ПО датчика CO₂",
-                "Only for MH-Z19B CO₂ sensor": "Только для CO₂ датчика MH-Z19B",
-                "CO2 MH-Z19 Temperature": "Температура CO₂ датчика MH-Z19B",
-                "CO2 MH-Z19 Autocalibration Ticks": "Время цикла автокалибровки CO₂ датчика MH-Z19B (1 ед. ~7.5 минут)",
-                "CO2 MH-Z19 Autocalibration Count": "Число циклов автокалибровки CO₂ датчика MH-Z19B",
                 "VOC Sensor Installed": "Датчик VOC установлен",
                 "VOC Version": "Версия датчика VOC",
                 "VOC Raw": "Сырое значение датчика VOC",

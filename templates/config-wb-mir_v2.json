@@ -8,6 +8,7 @@
         "max_read_registers": 0,
         "response_timeout_ms": 1,
         "frame_timeout_ms": 12,
+        "enable_wb_continuous_read": true,
 
         "groups": [
             {
@@ -52,6 +53,16 @@
                 "default": 8,
                 "group": "general",
                 "order": 2
+            },
+            "disable_indication": {
+                "title": "Status LED",
+                "address": 130,
+                "reg_type": "holding",
+                "enum": [0, 1],
+                "enum_titles": ["Enabled", "Disabled"],
+                "default": 0,
+                "group": "general",
+                "order": 3
             }
         },
 
@@ -1425,6 +1436,8 @@
                 "General": "Общее",
                 "HW Info": "Данные модуля",
                 "RS-485 Response Delay (ms)": "Задержка перед ответом по RS-485 (мс)",
+                "Status LED": "Индикатор состояния",
+                "Enabled": "Активен",
                 "Baud rate": "Скорость обмена",
                 "baud_rate_description": "Перед изменением параметра убедитесь, что связь с устройством установлена. Выберите нужную скорость обмена, сохраните конфигурацию, а затем укажите в настройках порта эту же скорость.",
                 "Learn to RAM": "Записать команду в RAM",

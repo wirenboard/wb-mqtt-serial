@@ -7,6 +7,9 @@
         "id": "eliwell_id_985_lx",
         "response_timeout_ms": 100,
         "guard_interval_us": 5000,
+        "max_read_registers": 0,
+        "enable_wb_continuous_read": true,
+
         "groups": [
             {
                 "title": "Status",

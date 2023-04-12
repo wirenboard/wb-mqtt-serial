@@ -8,6 +8,7 @@
         "max_read_registers": 0,
         "response_timeout_ms": 1,
         "frame_timeout_ms": 12,
+        "enable_wb_continuous_read": true,
 
         "groups": [
             {
@@ -44,6 +45,16 @@
                 ],
                 "group": "general",
                 "order": 1
+            },
+            "disable_indication": {
+                "title": "Status LED",
+                "address": 130,
+                "reg_type": "holding",
+                "enum": [0, 1],
+                "enum_titles": ["Enabled", "Disabled"],
+                "default": 0,
+                "group": "general",
+                "order": 2
             }
         },
 
@@ -115,6 +126,9 @@
                 "General": "Общее",
                 "HW Info": "Данные модуля",
                 "Baud rate": "Скорость обмена",
+                "Status LED": "Индикатор состояния",
+                "Enabled": "Активен",
+                "Disabled": "Отключен",
                 "baud_rate_description": "Перед изменением параметра убедитесь, что связь с устройством установлена. Выберите нужную скорость обмена, сохраните конфигурацию, а затем укажите в настройках порта эту же скорость.",
                 "Current input 1 (mA)": "Токовый вход 1 (мА)",
                 "Current input 2 (mA)": "Токовый вход 2 (мА)",

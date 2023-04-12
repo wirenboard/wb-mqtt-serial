@@ -54,6 +54,7 @@ workspace.xml
 **/.project
 **/.settings
 .idea
+.devcontainer
 
 # core
 *.core

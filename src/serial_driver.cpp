@@ -55,14 +55,12 @@ TMQTTSerialDriver::TMQTTSerialDriver(PDeviceDriver mqttDriver, PHandlerConfig co
     try {
         size_t totalChannels = GetChannelsCount(config);
         for (const auto& portConfig: config->PortConfigs) {
-
-            if (portConfig->Devices.empty()) {
-                LOG(Warn) << "no devices defined for port " << portConfig->Port->GetDescription() << ". Skipping.";
-                continue;
-            }
-
             auto& m = Metrics[portConfig->Port->GetDescription()];
-            auto rateLimit = (config->LowPriorityRegistersRateLimit * GetChannelsCount(portConfig)) / totalChannels;
+            auto rateLimit = config->LowPriorityRegistersRateLimit;
+            if (totalChannels != 0) {
+                rateLimit *= GetChannelsCount(portConfig);
+                rateLimit /= totalChannels;
+            }
             if (rateLimit < 1) {
                 rateLimit = 1;
             }

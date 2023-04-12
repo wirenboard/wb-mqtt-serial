@@ -1,3 +1,69 @@
+wb-mqtt-serial (2.82.2) stable; urgency=medium
+
+  * Added template for MSW v.4
+
+ -- Maxim Tomchuk <maxim.tomchuk@wirenboard.ru>  Wed, 12 Apr 2023 11:09:12 +0300
+
+wb-mqtt-serial (2.82.1) stable; urgency=medium
+
+  * Add unit tests, fix coverage report, no functional changes
+
+ -- Nikolay Korotkiy <nikolay.korotkiy@wirenboard.com>  Tue, 12 Apr 2023 14:25:00 +0400
+
+wb-mqtt-serial (2.82.0) stable; urgency=medium
+
+  * Support continuous register read in Wiren Board devices
+
+ -- Petr Krasnoshchekov <petr.krasnoshchekov@wirenboard.com>  Thu, 23 Mar 2023 10:48:12 +0500
+
+wb-mqtt-serial (2.81.0) stable; urgency=medium
+
+  * Added encoders to mcm8 template
+
+ -- Nikita Kulikov <n.kulikov@wirenboard.ru>  Mon, 06 Mar 2023 14:20:59 +0600
+
+wb-mqtt-serial (2.80.3) stable; urgency=medium
+
+  * Fix reading of config with custom Modbus devices in wb-mqtt-homeui
+
+ -- Petr Krasnoshchekov <petr.krasnoshchekov@wirenboard.com>  Wed, 15 Mar 2023 16:38:14 +0500
+
+wb-mqtt-serial (2.80.2) stable; urgency=medium
+
+  * Fix safety timeout editing in wb-mqtt-homeui
+
+ -- Petr Krasnoshchekov <petr.krasnoshchekov@wirenboard.com>  Mon, 13 Mar 2023 10:34:38 +0500
+
+wb-mqtt-serial (2.80.1) stable; urgency=medium
+
+  * Fix missing l1, l2, l3 groups in MAP12E template
+
+ -- Alexander Rakhman <alexander.rakhman@wirenboard.com>  Fri, 02 Mar 2023 17:52:00 +0300
+
+wb-mqtt-serial (2.80.0) stable; urgency=medium
+
+  * Add ability to disable status LED in devices with ms based firmware
+
+ -- Dmitry Borisov <dmitry.borisov@wirenboard.com>  Fri, 22 Feb 2023 12:00:00 +0600
+
+wb-mqtt-serial (2.79.0) stable; urgency=medium
+
+  * Handle RPC calls in parallel (per serial port)
+
+ -- Nikolay Korotkiy <nikolay.korotkiy@wirenboard.com>  Fri, 21 Feb 2023 16:31:00 +0400
+
+wb-mqtt-serial (2.78.7) stable; urgency=medium
+
+  * Add button press counters to MAO4 templates
+
+ -- Dmitry Borisov <dmitry.borisov@wirenboard.com>  Fri, 17 Feb 2023 11:00:00 +0600
+
+wb-mqtt-serial (2.78.6) stable; urgency=medium
+
+  * Add linear voltage to MAP templates
+
+ -- Andrey Radionov <andrey.radionov@wirenboard.ru>  Wed, 15 Feb 2023 18:24:50 +0300
+
 wb-mqtt-serial (2.78.5) stable; urgency=medium
 
   * Suppress excessive serial port logging on Info log level
@@ -19,7 +85,7 @@ wb-mqtt-serial (2.78.3) stable; urgency=medium
 
 wb-mqtt-serial (2.78.2) stable; urgency=medium
 
-  * Update description of command line parameters for DLMS device template generation  
+  * Update description of command line parameters for DLMS device template generation
 
  -- Petr Krasnoshchekov <petr.krasnoshchekov@wirenboard.com>  Wed, 18 Jan 2023 15:21:44 +0500
 

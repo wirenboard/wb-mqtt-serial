@@ -136,10 +136,10 @@ namespace
     }
 } // namespace
 
-std::vector<uint8_t> TRPCPortDriver::SendRequest(PRPCRequest request) const
+void TRPCPortDriver::SendRequest(PRPCRequest request) const
 {
     if (SerialClient) {
-        return SerialClient->RPCTransceive(request);
+        SerialClient->RPCTransceive(request);
     } else {
         throw TRPCException("SerialClient wasn't found for requested port", TRPCResultCode::RPC_WRONG_PORT);
     }
@@ -182,7 +182,10 @@ TRPCHandler::TRPCHandler(const std::string& requestSchemaFilePath,
         }
     }
 
-    rpcServer->RegisterMethod("port", "Load", std::bind(&TRPCHandler::PortLoad, this, std::placeholders::_1));
+    rpcServer->RegisterAsyncMethod(
+        "port",
+        "Load",
+        std::bind(&TRPCHandler::PortLoad, this, std::placeholders::_1, std::placeholders::_2, std::placeholders::_3));
     rpcServer->RegisterMethod("metrics", "Load", std::bind(&TRPCHandler::LoadMetrics, this, std::placeholders::_1));
     rpcServer->RegisterMethod("ports", "Load", std::bind(&TRPCHandler::LoadPorts, this, std::placeholders::_1));
 }
@@ -205,7 +208,9 @@ PRPCPortDriver TRPCHandler::FindPortDriver(const Json::Value& request) const
     }
 }
 
-Json::Value TRPCHandler::PortLoad(const Json::Value& request)
+void TRPCHandler::PortLoad(const Json::Value& request,
+                           WBMQTT::TMqttRpcServer::TResultCallback onResult,
+                           WBMQTT::TMqttRpcServer::TErrorCallback onError)
 {
     Json::Value replyJSON;
 
@@ -213,16 +218,19 @@ Json::Value TRPCHandler::PortLoad(const Json::Value& request)
         PRPCRequest rpcRequest = ParseRequest(request, RequestSchema);
         PRPCPortDriver rpcPortDriver = FindPortDriver(request);
 
-        std::vector<uint8_t> response;
         if (rpcPortDriver != nullptr && rpcPortDriver->SerialClient) {
-            response = rpcPortDriver->SendRequest(rpcRequest);
+            rpcRequest->OnResult = [onResult, rpcRequest](const std::vector<uint8_t>& response) {
+                Json::Value replyJSON;
+                replyJSON["response"] = PortLoadResponseFormat(response, rpcRequest->Format);
+                onResult(replyJSON);
+            };
+            rpcRequest->OnError = onError;
+            rpcPortDriver->SendRequest(rpcRequest);
+            return;
         } else {
-            response = SendRequest(request, rpcRequest);
+            auto response = SendRequest(request, rpcRequest);
+            replyJSON["response"] = PortLoadResponseFormat(response, rpcRequest->Format);
         }
-
-        std::string responseStr = PortLoadResponseFormat(response, rpcRequest->Format);
-
-        replyJSON["response"] = responseStr;
     } catch (const TRPCException& e) {
         if (e.GetResultCode() == TRPCResultCode::RPC_WRONG_IO) {
             // Too many "request timed out" errors while scanning ports
@@ -232,14 +240,15 @@ Json::Value TRPCHandler::PortLoad(const Json::Value& request)
         }
         switch (e.GetResultCode()) {
             case TRPCResultCode::RPC_WRONG_TIMEOUT:
-                wb_throw(WBMQTT::TRequestTimeoutException, e.GetResultMessage());
+                onError(WBMQTT::E_RPC_REQUEST_TIMEOUT, e.GetResultMessage());
                 break;
             default:
-                throw std::runtime_error(e.GetResultMessage());
+                onError(WBMQTT::E_RPC_SERVER_ERROR, e.GetResultMessage());
         }
+        return;
     }
 
-    return replyJSON;
+    onResult(replyJSON);
 }
 
 Json::Value TRPCHandler::LoadMetrics(const Json::Value& request)

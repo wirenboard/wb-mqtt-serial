@@ -1,6 +1,4 @@
 #include "modbus_io_device.h"
-#include "modbus_common.h"
-#include "modbus_device.h"
 
 namespace
 {
@@ -53,17 +51,17 @@ void TModbusIODevice::Register(TSerialDeviceFactory& factory)
 }
 
 TModbusIODevice::TModbusIODevice(std::unique_ptr<Modbus::IModbusTraits> modbusTraits,
-                                 PDeviceConfig config,
+                                 const TModbusDeviceConfig& config,
                                  PPort port,
                                  PProtocol protocol)
-    : TSerialDevice(config, port, protocol),
-      TUInt32SlaveId(config->SlaveId),
+    : TSerialDevice(config.CommonConfig, port, protocol),
+      TUInt32SlaveId(config.CommonConfig->SlaveId),
       ModbusTraits(std::move(modbusTraits)),
       ResponseTime(std::chrono::milliseconds::zero())
 {
-    auto SecondaryId = GetSecondaryId(config->SlaveId);
+    auto SecondaryId = GetSecondaryId(config.CommonConfig->SlaveId);
     Shift = (((SecondaryId - 1) % 4) + 1) * DeviceConfig()->Stride + DeviceConfig()->Shift;
-    config->FrameTimeout = std::max(config->FrameTimeout, port->GetSendTime(3.5));
+    config.CommonConfig->FrameTimeout = std::max(config.CommonConfig->FrameTimeout, port->GetSendTime(3.5));
 }
 
 PRegisterRange TModbusIODevice::CreateRegisterRange() const
@@ -88,5 +86,6 @@ void TModbusIODevice::ReadRegisterRange(PRegisterRange range)
 
 void TModbusIODevice::WriteSetupRegisters()
 {
+    Modbus::EnableWbContinuousRead(shared_from_this(), *ModbusTraits, *Port(), SlaveId, ModbusCache);
     Modbus::WriteSetupRegisters(*ModbusTraits, *Port(), SlaveId, SetupItems, ModbusCache, Shift);
 }

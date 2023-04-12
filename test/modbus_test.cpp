@@ -15,7 +15,7 @@ protected:
     void SetUp();
     set<int> VerifyQuery(PRegister reg = PRegister());
 
-    virtual PDeviceConfig GetDeviceConfig() const;
+    virtual TModbusDeviceConfig GetDeviceConfig() const;
 
     PModbusDevice ModbusDev;
 
@@ -38,11 +38,12 @@ protected:
     PRegister ModbusHoldingString;
 };
 
-PDeviceConfig TModbusTest::GetDeviceConfig() const
+TModbusDeviceConfig TModbusTest::GetDeviceConfig() const
 {
-    PDeviceConfig dev = std::make_shared<TDeviceConfig>("modbus", std::to_string(0x01), "modbus");
-    dev->MaxReadRegisters = 10;
-    return dev;
+    TModbusDeviceConfig config;
+    config.CommonConfig = std::make_shared<TDeviceConfig>("modbus", std::to_string(0x01), "modbus");
+    config.CommonConfig->MaxReadRegisters = 10;
+    return config;
 }
 
 void TModbusTest::SetUp()
@@ -848,6 +849,45 @@ TEST_F(TModbusUnavailableRegistersAndHolesIntegrationTest, HolesAndUnavailable)
     SerialDriver->LoopOnce();
     Note() << "LoopOnce() [new ranges]";
     for (auto i = 0; i < 2; ++i) {
+        SerialDriver->LoopOnce();
+    }
+}
+
+class TModbusContinuousRegisterReadTest: public TSerialDeviceIntegrationTest, public TModbusExpectations
+{
+protected:
+    const char* ConfigPath() const override
+    {
+        return "configs/config-modbus-continuous-read-test.json";
+    }
+};
+
+TEST_F(TModbusContinuousRegisterReadTest, Supported)
+{
+    EnqueueContinuousReadEnableResponse();
+    EnqueueContinuousReadResponse();
+    Note() << "LoopOnce() [one by one]";
+    for (auto i = 0; i < 6; ++i) {
+        SerialDriver->LoopOnce();
+    }
+    EnqueueContinuousReadResponse(false);
+    Note() << "LoopOnce() [continuous]";
+    for (auto i = 0; i < 4; ++i) {
+        SerialDriver->LoopOnce();
+    }
+}
+
+TEST_F(TModbusContinuousRegisterReadTest, NotSupported)
+{
+    EnqueueContinuousReadEnableResponse(false);
+    EnqueueContinuousReadResponse();
+    Note() << "LoopOnce() [one by one]";
+    for (auto i = 0; i < 6; ++i) {
+        SerialDriver->LoopOnce();
+    }
+    EnqueueContinuousReadResponse();
+    Note() << "LoopOnce() [separated]";
+    for (auto i = 0; i < 6; ++i) {
         SerialDriver->LoopOnce();
     }
 }
