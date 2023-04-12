@@ -39,8 +39,8 @@ CFLAGS = -Wall -I$(SRC_DIR) -I$(GURUX_INCLUDE)
 ifeq ($(DEBUG),)
 	CXXFLAGS += -O3
 else
-	CXXFLAGS += -g -O0 -fprofile-arcs -ftest-coverage -ggdb
-	LDFLAGS += -lgcov
+	CXXFLAGS += -g -O0 --coverage -ggdb
+	LDFLAGS += --coverage
 endif
 
 TEST_DIR = test
@@ -58,17 +58,11 @@ JINJA_TEMPLATES = $(wildcard $(TEMPLATES_DIR)/*.json.jinja)
 
 all : templates $(SERIAL_BIN)
 
-$(SERIAL_BIN): $(COMMON_OBJS) $(BUILD_DIR)/src/main.cpp.o
+$(SERIAL_BIN): $(COMMON_OBJS) $(BUILD_DIR)/$(SRC_DIR)/main.cpp.o
 	$(CXX) -o $(BUILD_DIR)/$@ $^ $(LDFLAGS)
-
-$(BUILD_DIR)/%.c.o: %.c
-	$(CC) -c $< -o $@ $(CFLAGS)
 
 $(BUILD_DIR)/%.cpp.o: %.cpp
 	mkdir -p $(dir $@)
-	$(CXX) -c $(CXXFLAGS) -o $@ $^
-
-$(BUILD_DIR)/test/%.o: test/%.cpp
 	$(CXX) -c $(CXXFLAGS) -o $@ $^
 
 $(TEST_DIR)/$(TEST_BIN): $(COMMON_OBJS) $(TEST_OBJS)
@@ -94,16 +88,14 @@ templates: $(JINJA_TEMPLATES:$(TEMPLATES_DIR)/%.json.jinja=$(GENERATED_TEMPLATES
 
 lcov: test
 ifeq ($(DEBUG), 1)
-	geninfo --no-external -b . -o $(BUILD_DIR)/coverage.info $(BUILD_DIR)/src
-	genhtml $(BUILD_DIR)/coverage.info -o $(BUILD_DIR)/cov_html
+	geninfo --no-external -b . -o $(BUILD_DIR)/coverage.info $(BUILD_DIR)/$(SRC_DIR) $(BUILD_DIR)/$(TEST_DIR)
+	genhtml -o $(BUILD_DIR)/cov_html $(BUILD_DIR)/coverage.info
 endif
 
-clean :
-	rm -rf build/release
-	rm -rf build/debug
-	rm -rf $(TEST_DIR)/*.o $(TEST_DIR)/$(TEST_BIN)
-	find $(SRC_DIR) -name '*.o' -delete
-	rm -f $(SERIAL_BIN)
+clean:
+	-rm -rf build/release
+	-rm -rf build/debug
+	-rm -rf $(TEST_DIR)/$(TEST_BIN)
 
 install:
 	install -d $(DESTDIR)/var/lib/wb-mqtt-serial
