@@ -213,7 +213,6 @@ protected:
     virtual void PrepareImpl();
     virtual TRegisterValue ReadRegisterImpl(PRegister reg);
     virtual void WriteRegisterImpl(PRegister reg, const TRegisterValue& value);
-    bool HasSetupItems() const;
     virtual void WriteSetupRegisters();
 
 private:

@@ -183,4 +183,10 @@ namespace Modbus // modbus protocol common utilities
         TMalformedResponseError(const std::string& what);
     };
 
+    void EnableWbContinuousRead(PSerialDevice device,
+                                IModbusTraits& traits,
+                                TPort& port,
+                                uint8_t slaveId,
+                                TRegisterCache& cache);
+
 } // modbus protocol common utilities

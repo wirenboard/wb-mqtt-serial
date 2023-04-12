@@ -39,15 +39,16 @@ void TModbusDevice::Register(TSerialDeviceFactory& factory)
 }
 
 TModbusDevice::TModbusDevice(std::unique_ptr<Modbus::IModbusTraits> modbusTraits,
-                             PDeviceConfig config,
+                             const TModbusDeviceConfig& config,
                              PPort port,
                              PProtocol protocol)
-    : TSerialDevice(config, port, protocol),
-      TUInt32SlaveId(config->SlaveId),
+    : TSerialDevice(config.CommonConfig, port, protocol),
+      TUInt32SlaveId(config.CommonConfig->SlaveId),
       ModbusTraits(std::move(modbusTraits)),
-      ResponseTime(std::chrono::milliseconds::zero())
+      ResponseTime(std::chrono::milliseconds::zero()),
+      EnableWbContinuousRead(config.EnableWbContinuousRead)
 {
-    config->FrameTimeout = std::max(config->FrameTimeout, port->GetSendTime(3.5));
+    config.CommonConfig->FrameTimeout = std::max(config.CommonConfig->FrameTimeout, port->GetSendTime(3.5));
 }
 
 PRegisterRange TModbusDevice::CreateRegisterRange() const
@@ -72,5 +73,8 @@ void TModbusDevice::ReadRegisterRange(PRegisterRange range)
 
 void TModbusDevice::WriteSetupRegisters()
 {
+    if (EnableWbContinuousRead) {
+        Modbus::EnableWbContinuousRead(shared_from_this(), *ModbusTraits, *Port(), SlaveId, ModbusCache);
+    }
     Modbus::WriteSetupRegisters(*ModbusTraits, *Port(), SlaveId, SetupItems, ModbusCache);
 }
