@@ -1,3 +1,9 @@
+wb-mqtt-serial (2.82.3) stable; urgency=medium
+
+  * Add continuous register read support to MSW v.4 template
+
+ -- Petr Krasnoshchekov <petr.krasnoshchekov@wirenboard.com>  Wed, 12 Apr 2023 15:32:27 +0500
+
 wb-mqtt-serial (2.82.2) stable; urgency=medium
 
   * Added template for MSW v.4
