@@ -1,3 +1,9 @@
+wb-mqtt-serial (2.82.3) stable; urgency=medium
+
+  * Update Readme.md, no functional changes
+
+ -- Petr Krasnoshchekov <petr.krasnoshchekov@wirenboard.com>  Wed, 12 Apr 2023 18:19:22 +0500
+
 wb-mqtt-serial (2.82.2) stable; urgency=medium
 
   * Added template for MSW v.4
