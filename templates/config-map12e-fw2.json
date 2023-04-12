@@ -1705,7 +1705,7 @@
                 "group": "channel3_l3"
             },
             {
-                "name": "Ch 3 RP energy L3",
+                "name": "Ch 3 RN energy L3",
                 "reg_type": "input",
                 "address": "0x323c",
                 "type": "value",
