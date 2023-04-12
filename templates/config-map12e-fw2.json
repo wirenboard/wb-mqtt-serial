@@ -595,6 +595,17 @@
                 "group": "channel1_l1"
             },
             {
+                "name": "Ch 1 AN energy L1",
+                "reg_type": "input",
+                "address": "0x1214",
+                "type": "power_consumption",
+                "format": "u64",
+                "scale": 1e-5,
+                "round_to": 1e-6,
+                "word_order": "little_endian",
+                "group": "channel1_l1"
+            },            
+            {
                 "name": "Ch 1 RP energy L1",
                 "reg_type": "input",
                 "address": "0x1224",
@@ -605,6 +616,17 @@
                 "word_order": "little_endian",
                 "group": "channel1_l1"
             },
+            {
+                "name": "Ch 1 RN energy L1",
+                "reg_type": "input",
+                "address": "0x1234",
+                "type": "value",
+                "format": "u64",
+                "scale": 1e-5,
+                "round_to": 1e-6,
+                "word_order": "little_endian",
+                "group": "channel1_l1"
+            },            
             {
                 "name": "Ch 1 Phase angle L1",
                 "reg_type": "input",
@@ -688,6 +710,17 @@
                 "group": "channel1_l2"
             },
             {
+                "name": "Ch 1 AN energy L2",
+                "reg_type": "input",
+                "address": "0x1218",
+                "type": "power_consumption",
+                "format": "u64",
+                "scale": 1e-5,
+                "round_to": 1e-6,
+                "word_order": "little_endian",
+                "group": "channel1_l2"
+            },            
+            {
                 "name": "Ch 1 RP energy L2",
                 "reg_type": "input",
                 "address": "0x1228",
@@ -698,6 +731,17 @@
                 "word_order": "little_endian",
                 "group": "channel1_l2"
             },
+            {
+                "name": "Ch 1 RN energy L2",
+                "reg_type": "input",
+                "address": "0x1238",
+                "type": "value",
+                "format": "u64",
+                "scale": 1e-5,
+                "round_to": 1e-6,
+                "word_order": "little_endian",
+                "group": "channel1_l2"
+            },            
             {
                 "name": "Ch 1 Phase angle L2",
                 "reg_type": "input",
@@ -781,6 +825,17 @@
                 "group": "channel1_l3"
             },
             {
+                "name": "Ch 1 AN energy L3",
+                "reg_type": "input",
+                "address": "0x121c",
+                "type": "power_consumption",
+                "format": "u64",
+                "scale": 1e-5,
+                "round_to": 1e-6,
+                "word_order": "little_endian",
+                "group": "channel1_l3"
+            },            
+            {
                 "name": "Ch 1 RP energy L3",
                 "reg_type": "input",
                 "address": "0x122c",
@@ -791,6 +846,17 @@
                 "word_order": "little_endian",
                 "group": "channel1_l3"
             },
+            {
+                "name": "Ch 1 RN energy L3",
+                "reg_type": "input",
+                "address": "0x123c",
+                "type": "value",
+                "format": "u64",
+                "scale": 1e-5,
+                "round_to": 1e-6,
+                "word_order": "little_endian",
+                "group": "channel1_l3"
+            },            
             {
                 "name": "Ch 1 Phase angle L3",
                 "reg_type": "input",
@@ -853,6 +919,17 @@
                 "group": "channel1_total"
             },
             {
+                "name": "Ch 1 Total AN energy",
+                "reg_type": "input",
+                "address": "0x1210",
+                "type": "power_consumption",
+                "format": "u64",
+                "scale": 1e-5,
+                "round_to": 1e-6,
+                "word_order": "little_endian",
+                "group": "channel1_total"
+            },            
+            {
                 "name": "Ch 1 Total RP energy",
                 "reg_type": "input",
                 "address": "0x1220",
@@ -863,6 +940,17 @@
                 "word_order": "little_endian",
                 "group": "channel1_total"
             },
+            {
+                "name": "Ch 1 Total RN energy",
+                "reg_type": "input",
+                "address": "0x1230",
+                "type": "value",
+                "format": "u64",
+                "scale": 1e-5,
+                "round_to": 1e-6,
+                "word_order": "little_endian",
+                "group": "channel1_total"
+            },            
             {
                 "name": "Ch 2 Irms L1",
                 "reg_type": "input",
@@ -936,6 +1024,17 @@
                 "group": "channel2_l1"
             },
             {
+                "name": "Ch 2 AN energy L1",
+                "reg_type": "input",
+                "address": "0x2214",
+                "type": "power_consumption",
+                "format": "u64",
+                "scale": 1e-5,
+                "round_to": 1e-6,
+                "word_order": "little_endian",
+                "group": "channel2_l1"
+            },            
+            {
                 "name": "Ch 2 RP energy L1",
                 "reg_type": "input",
                 "address": "0x2224",
@@ -946,6 +1045,17 @@
                 "word_order": "little_endian",
                 "group": "channel2_l1"
             },
+            {
+                "name": "Ch 2 RN energy L1",
+                "reg_type": "input",
+                "address": "0x2234",
+                "type": "value",
+                "format": "u64",
+                "scale": 1e-5,
+                "round_to": 1e-6,
+                "word_order": "little_endian",
+                "group": "channel2_l1"
+            },            
             {
                 "name": "Ch 2 Phase angle L1",
                 "reg_type": "input",
@@ -1029,6 +1139,17 @@
                 "group": "channel2_l2"
             },
             {
+                "name": "Ch 2 AN energy L2",
+                "reg_type": "input",
+                "address": "0x2218",
+                "type": "power_consumption",
+                "format": "u64",
+                "scale": 1e-5,
+                "round_to": 1e-6,
+                "word_order": "little_endian",
+                "group": "channel2_l2"
+            },            
+            {
                 "name": "Ch 2 RP energy L2",
                 "reg_type": "input",
                 "address": "0x2228",
@@ -1039,6 +1160,17 @@
                 "word_order": "little_endian",
                 "group": "channel2_l2"
             },
+            {
+                "name": "Ch 2 RN energy L2",
+                "reg_type": "input",
+                "address": "0x2238",
+                "type": "value",
+                "format": "u64",
+                "scale": 1e-5,
+                "round_to": 1e-6,
+                "word_order": "little_endian",
+                "group": "channel2_l2"
+            },            
             {
                 "name": "Ch 2 Phase angle L2",
                 "reg_type": "input",
@@ -1122,6 +1254,17 @@
                 "group": "channel2_l3"
             },
             {
+                "name": "Ch 2 AN energy L3",
+                "reg_type": "input",
+                "address": "0x221c",
+                "type": "power_consumption",
+                "format": "u64",
+                "scale": 1e-5,
+                "round_to": 1e-6,
+                "word_order": "little_endian",
+                "group": "channel2_l3"
+            },            
+            {
                 "name": "Ch 2 RP energy L3",
                 "reg_type": "input",
                 "address": "0x222c",
@@ -1132,6 +1275,17 @@
                 "word_order": "little_endian",
                 "group": "channel2_l3"
             },
+            {
+                "name": "Ch 2 RN energy L3",
+                "reg_type": "input",
+                "address": "0x223c",
+                "type": "value",
+                "format": "u64",
+                "scale": 1e-5,
+                "round_to": 1e-6,
+                "word_order": "little_endian",
+                "group": "channel2_l3"
+            },            
             {
                 "name": "Ch 2 Phase angle L3",
                 "reg_type": "input",
@@ -1194,6 +1348,17 @@
                 "group": "channel2_total"
             },
             {
+                "name": "Ch 2 Total AN energy",
+                "reg_type": "input",
+                "address": "0x2210",
+                "type": "power_consumption",
+                "format": "u64",
+                "scale": 1e-5,
+                "round_to": 1e-6,
+                "word_order": "little_endian",
+                "group": "channel2_total"
+            },            
+            {
                 "name": "Ch 2 Total RP energy",
                 "reg_type": "input",
                 "address": "0x2220",
@@ -1204,6 +1369,17 @@
                 "word_order": "little_endian",
                 "group": "channel2_total"
             },
+            {
+                "name": "Ch 2 Total RN energy",
+                "reg_type": "input",
+                "address": "0x2230",
+                "type": "value",
+                "format": "u64",
+                "scale": 1e-5,
+                "round_to": 1e-6,
+                "word_order": "little_endian",
+                "group": "channel2_total"
+            },            
             {
                 "name": "Ch 3 Irms L1",
                 "reg_type": "input",
@@ -1277,6 +1453,17 @@
                 "group": "channel3_l1"
             },
             {
+                "name": "Ch 3 AN energy L1",
+                "reg_type": "input",
+                "address": "0x3214",
+                "type": "power_consumption",
+                "format": "u64",
+                "scale": 1e-5,
+                "round_to": 1e-6,
+                "word_order": "little_endian",
+                "group": "channel3_l1"
+            },            
+            {
                 "name": "Ch 3 RP energy L1",
                 "reg_type": "input",
                 "address": "0x3224",
@@ -1287,6 +1474,17 @@
                 "word_order": "little_endian",
                 "group": "channel3_l1"
             },
+            {
+                "name": "Ch 3 RN energy L1",
+                "reg_type": "input",
+                "address": "0x3234",
+                "type": "value",
+                "format": "u64",
+                "scale": 1e-5,
+                "round_to": 1e-6,
+                "word_order": "little_endian",
+                "group": "channel3_l1"
+            },            
             {
                 "name": "Ch 3 Phase angle L1",
                 "reg_type": "input",
@@ -1370,6 +1568,17 @@
                 "group": "channel3_l2"
             },
             {
+                "name": "Ch 3 AN energy L2",
+                "reg_type": "input",
+                "address": "0x3218",
+                "type": "power_consumption",
+                "format": "u64",
+                "scale": 1e-5,
+                "round_to": 1e-6,
+                "word_order": "little_endian",
+                "group": "channel3_l2"
+            },            
+            {
                 "name": "Ch 3 RP energy L2",
                 "reg_type": "input",
                 "address": "0x3228",
@@ -1380,6 +1589,17 @@
                 "word_order": "little_endian",
                 "group": "channel3_l2"
             },
+            {
+                "name": "Ch 3 RN energy L2",
+                "reg_type": "input",
+                "address": "0x3238",
+                "type": "value",
+                "format": "u64",
+                "scale": 1e-5,
+                "round_to": 1e-6,
+                "word_order": "little_endian",
+                "group": "channel3_l2"
+            },            
             {
                 "name": "Ch 3 Phase angle L2",
                 "reg_type": "input",
@@ -1463,6 +1683,17 @@
                 "group": "channel3_l3"
             },
             {
+                "name": "Ch 3 AN energy L3",
+                "reg_type": "input",
+                "address": "0x321c",
+                "type": "power_consumption",
+                "format": "u64",
+                "scale": 1e-5,
+                "round_to": 1e-6,
+                "word_order": "little_endian",
+                "group": "channel3_l3"
+            },            
+            {
                 "name": "Ch 3 RP energy L3",
                 "reg_type": "input",
                 "address": "0x322c",
@@ -1473,6 +1704,17 @@
                 "word_order": "little_endian",
                 "group": "channel3_l3"
             },
+            {
+                "name": "Ch 3 RN energy L3",
+                "reg_type": "input",
+                "address": "0x323c",
+                "type": "value",
+                "format": "u64",
+                "scale": 1e-5,
+                "round_to": 1e-6,
+                "word_order": "little_endian",
+                "group": "channel3_l3"
+            },            
             {
                 "name": "Ch 3 Phase angle L3",
                 "reg_type": "input",
@@ -1535,6 +1777,17 @@
                 "group": "channel3_total"
             },
             {
+                "name": "Ch 3 Total AN energy",
+                "reg_type": "input",
+                "address": "0x3210",
+                "type": "power_consumption",
+                "format": "u64",
+                "scale": 1e-5,
+                "round_to": 1e-6,
+                "word_order": "little_endian",
+                "group": "channel3_total"
+            },            
+            {
                 "name": "Ch 3 Total RP energy",
                 "reg_type": "input",
                 "address": "0x3220",
@@ -1545,6 +1798,17 @@
                 "word_order": "little_endian",
                 "group": "channel3_total"
             },
+            {
+                "name": "Ch 3 Total RN energy",
+                "reg_type": "input",
+                "address": "0x3230",
+                "type": "value",
+                "format": "u64",
+                "scale": 1e-5,
+                "round_to": 1e-6,
+                "word_order": "little_endian",
+                "group": "channel3_total"
+            },            
             {
                 "name": "Ch 4 Irms L1",
                 "reg_type": "input",
@@ -1618,6 +1882,17 @@
                 "group": "channel4_l1"
             },
             {
+                "name": "Ch 4 AN energy L1",
+                "reg_type": "input",
+                "address": "0x4214",
+                "type": "power_consumption",
+                "format": "u64",
+                "scale": 1e-5,
+                "round_to": 1e-6,
+                "word_order": "little_endian",
+                "group": "channel4_l1"
+            },            
+            {
                 "name": "Ch 4 RP energy L1",
                 "reg_type": "input",
                 "address": "0x4224",
@@ -1628,6 +1903,17 @@
                 "word_order": "little_endian",
                 "group": "channel4_l1"
             },
+            {
+                "name": "Ch 4 RN energy L1",
+                "reg_type": "input",
+                "address": "0x4234",
+                "type": "value",
+                "format": "u64",
+                "scale": 1e-5,
+                "round_to": 1e-6,
+                "word_order": "little_endian",
+                "group": "channel4_l1"
+            },            
             {
                 "name": "Ch 4 Phase angle L1",
                 "reg_type": "input",
@@ -1711,6 +1997,17 @@
                 "group": "channel4_l2"
             },
             {
+                "name": "Ch 4 AN energy L2",
+                "reg_type": "input",
+                "address": "0x4218",
+                "type": "power_consumption",
+                "format": "u64",
+                "scale": 1e-5,
+                "round_to": 1e-6,
+                "word_order": "little_endian",
+                "group": "channel4_l2"
+            },            
+            {
                 "name": "Ch 4 RP energy L2",
                 "reg_type": "input",
                 "address": "0x4228",
@@ -1721,6 +2018,17 @@
                 "word_order": "little_endian",
                 "group": "channel4_l2"
             },
+            {
+                "name": "Ch 4 RN energy L2",
+                "reg_type": "input",
+                "address": "0x4238",
+                "type": "value",
+                "format": "u64",
+                "scale": 1e-5,
+                "round_to": 1e-6,
+                "word_order": "little_endian",
+                "group": "channel4_l2"
+            },            
             {
                 "name": "Ch 4 Phase angle L2",
                 "reg_type": "input",
@@ -1804,6 +2112,17 @@
                 "group": "channel4_l3"
             },
             {
+                "name": "Ch 4 AN energy L3",
+                "reg_type": "input",
+                "address": "0x421c",
+                "type": "power_consumption",
+                "format": "u64",
+                "scale": 1e-5,
+                "round_to": 1e-6,
+                "word_order": "little_endian",
+                "group": "channel4_l3"
+            },            
+            {
                 "name": "Ch 4 RP energy L3",
                 "reg_type": "input",
                 "address": "0x422c",
@@ -1814,6 +2133,17 @@
                 "word_order": "little_endian",
                 "group": "channel4_l3"
             },
+            {
+                "name": "Ch 4 RN energy L3",
+                "reg_type": "input",
+                "address": "0x423c",
+                "type": "value",
+                "format": "u64",
+                "scale": 1e-5,
+                "round_to": 1e-6,
+                "word_order": "little_endian",
+                "group": "channel4_l3"
+            },            
             {
                 "name": "Ch 4 Phase angle L3",
                 "reg_type": "input",
@@ -1876,6 +2206,17 @@
                 "group": "channel4_total"
             },
             {
+                "name": "Ch 4 Total AN energy",
+                "reg_type": "input",
+                "address": "0x4210",
+                "type": "power_consumption",
+                "format": "u64",
+                "scale": 1e-5,
+                "round_to": 1e-6,
+                "word_order": "little_endian",
+                "group": "channel4_total"
+            },            
+            {
                 "name": "Ch 4 Total RP energy",
                 "reg_type": "input",
                 "address": "0x4220",
@@ -1886,6 +2227,17 @@
                 "word_order": "little_endian",
                 "group": "channel4_total"
             },
+            {
+                "name": "Ch 4 Total RN energy",
+                "reg_type": "input",
+                "address": "0x4230",
+                "type": "value",
+                "format": "u64",
+                "scale": 1e-5,
+                "round_to": 1e-6,
+                "word_order": "little_endian",
+                "group": "channel4_total"
+            },            
             {
                 "name": "Urms L1",
                 "reg_type": "input",

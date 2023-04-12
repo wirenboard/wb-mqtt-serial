@@ -1,8 +1,20 @@
-wb-mqtt-serial (2.83.0) stable; urgency=medium
+wb-mqtt-serial (2.83.1) stable; urgency=medium
 
   * Add continuous register read support to MSW v.4 template
 
- -- Petr Krasnoshchekov <petr.krasnoshchekov@wirenboard.com>  Wed, 12 Apr 2023 15:32:27 +0500
+ -- Petr Krasnoshchekov <petr.krasnoshchekov@wirenboard.com>  Wed, 12 Apr 2023 20:55:47 +0500
+
+wb-mqtt-serial (2.83.0) stable; urgency=medium
+
+  * Add MAP12E negative energy registers
+
+ -- Petr Krasnoshchekov <petr.krasnoshchekov@wirenboard.com>  Wed, 12 Apr 2023 18:30:12 +0500
+
+wb-mqtt-serial (2.82.3) stable; urgency=medium
+
+  * Update Readme.md, no functional changes
+
+ -- Petr Krasnoshchekov <petr.krasnoshchekov@wirenboard.com>  Wed, 12 Apr 2023 18:19:22 +0500
 
 wb-mqtt-serial (2.82.2) stable; urgency=medium
 
