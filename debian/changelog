@@ -1,6 +1,6 @@
-wb-mqtt-serial (2.82.2) stable; urgency=medium
+wb-mqtt-serial (2.83.0) stable; urgency=medium
 
-  * Added template for MSW v.4
+  * Add template for WB-MSW v.4
 
  -- Maxim Tomchuk <maxim.tomchuk@wirenboard.ru>  Wed, 12 Apr 2023 11:09:12 +0300
 
