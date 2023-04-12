@@ -1,5 +1,6 @@
 #pragma once
 
+#include <initializer_list>
 #include <stddef.h>
 #include <stdint.h>
 
@@ -27,6 +28,19 @@ namespace BinUtils
     }
 
     /**
+     * @brief Convert a range of bytes starting from begin to a numeric value, assuming little-endian byte order.
+     *
+     * @tparam ResultType type of resulting value
+     * @tparam Iterator range iterator type
+     * @param begin start of range
+     * @return ResultType type of result. Default implementation expects numeric type
+     */
+    template<class ResultType, class Iterator> ResultType GetFrom(Iterator begin)
+    {
+        return Get<ResultType>(begin, begin + sizeof(ResultType));
+    }
+
+    /**
      * @brief Convert a range [begin, end) of bytes to a numeric value, assuming big-endian byte order.
      *
      * @tparam ResultType type of resulting value
@@ -46,6 +60,19 @@ namespace BinUtils
     }
 
     /**
+     * @brief Convert a range of bytes starting from begin to a numeric value, assuming big-endian byte order.
+     *
+     * @tparam ResultType type of resulting value
+     * @tparam Iterator range iterator type
+     * @param begin start of range
+     * @return ResultType type of result. Default implementation expects numeric type
+     */
+    template<class ResultType, class Iterator> ResultType GetFromBigEndian(Iterator begin)
+    {
+        return GetBigEndian<ResultType>(begin, begin + sizeof(ResultType));
+    }
+
+    /**
      * @brief Append numeric value to a container using insert iterator.
      *        The value is appended in little endian byte order.
      *
@@ -62,6 +89,39 @@ namespace BinUtils
             *it = value & 0xFF;
             value >>= 8;
         }
+    }
+
+    /**
+     * @brief Append a list of uint8_t values to a container using insert iterator.
+     *
+     * @tparam InsertIterator insert iterator type
+     * @param it insert iterator
+     * @param values values to append
+     */
+    template<class InsertIterator> void Append(InsertIterator it, std::initializer_list<uint8_t> values)
+    {
+        for (auto value: values) {
+            *it = value;
+        }
+    }
+
+    /**
+     * @brief Append numeric value to a container using insert iterator.
+     *        The value is appended in big endian byte order.
+     *
+     * @tparam InsertIterator insert iterator type
+     * @tparam ValueType type of a value. Default implementation expects numeric value
+     * @param it insert iterator
+     * @param value value to append
+     * @param byteCount number of bytes to append
+     */
+    template<class InsertIterator, class ValueType>
+    void AppendBigEndian(InsertIterator it, ValueType value, size_t byteCount = sizeof(ValueType))
+    {
+        for (size_t i = byteCount - 1; i != 0; --i) {
+            *it = (value >> (i * 8)) & 0xFF;
+        }
+        *it = value & 0xFF;
     }
 
     /**
