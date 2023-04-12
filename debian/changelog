@@ -1,4 +1,4 @@
-wb-mqtt-serial (2.82.3) stable; urgency=medium
+wb-mqtt-serial (2.83.0) stable; urgency=medium
 
   * Add continuous register read support to MSW v.4 template
 
