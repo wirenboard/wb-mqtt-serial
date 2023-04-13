@@ -58,7 +58,6 @@ private:
     void PrepareRegisterRanges();
     void DoFlush();
     void WaitForPollAndFlush(std::chrono::steady_clock::time_point waitUntil);
-    void MaybeFlushAvoidingPollStarvationButDontWait();
     void SetReadError(PRegister reg);
     PRegisterHandler GetHandler(PRegister) const;
     void SetRegistersAvailability(PSerialDevice dev, TRegisterAvailability availability);
@@ -87,6 +86,8 @@ private:
 
     PRPCRequestHandler RPCRequestHandler;
     std::chrono::steady_clock::time_point LastQueueSelectionTime;
+
+    std::chrono::steady_clock::time_point NextEventsRead;
 };
 
 typedef std::shared_ptr<TSerialClient> PSerialClient;
