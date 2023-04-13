@@ -58,7 +58,6 @@ Publish: /devices/RPCTest/controls/RGB: '0;0;0' (QoS 1, retained)
 Publish: /devices/RPCTest/controls/RGB/on: '10;20;30' (QoS 0, retained)
 Publish: /devices/RPCTest/controls/White/on: '42' (QoS 0, retained)
 >>> Send RPC request
->>> LoopOnce() [start thread]
 fake_serial_device '152': write to address '4' value '10'
 Publish: /devices/RPCTest/controls/RGB: '10;0;0' (QoS 1, retained)
 fake_serial_device '152': write to address '5' value '20'
@@ -80,7 +79,6 @@ fake_serial_device '152': read address '6' value '30'
 Publish: /devices/RPCTest/controls/RGB/on: '10;20;30' (QoS 0, retained)
 Publish: /devices/RPCTest/controls/White/on: '42' (QoS 0, retained)
 >>> Send RPC request
->>> LoopOnce() [start thread]
 fake_serial_device '152': write to address '4' value '10'
 fake_serial_device '152': write to address '5' value '20'
 fake_serial_device '152': write to address '6' value '30'
@@ -99,7 +97,6 @@ fake_serial_device '152': read address '6' value '30'
 Publish: /devices/RPCTest/controls/RGB/on: '10;20;30' (QoS 0, retained)
 Publish: /devices/RPCTest/controls/White/on: '42' (QoS 0, retained)
 >>> Send RPC request
->>> LoopOnce() [start thread]
 fake_serial_device '152': write to address '4' value '10'
 fake_serial_device '152': write to address '5' value '20'
 fake_serial_device '152': write to address '6' value '30'

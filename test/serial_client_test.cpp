@@ -1609,10 +1609,7 @@ TRPCResultCode TSerialClientIntegrationTest::SendRPCRequest(PMQTTSerialDriver se
     try {
         Note() << "Send RPC request";
         serialClient->RPCTransceive(request);
-
-        Note() << "LoopOnce() [start thread]";
-        std::thread serialDriverThread(&TMQTTSerialDriver::LoopOnce, SerialDriver);
-        serialDriverThread.join();
+        SerialDriver->LoopOnce();
         EXPECT_EQ(responseInt == expectedResponse, true);
     } catch (const TRPCException& exception) {
         resultCode = exception.GetResultCode();
