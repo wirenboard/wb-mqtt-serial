@@ -16,6 +16,7 @@ namespace
     const auto MAX_POLL_TIME = 100ms;
     const auto MAX_LOW_PRIORITY_LAG = 1s;
     const auto MAX_FLUSHES_WHEN_POLL_IS_DUE = 20;
+    const auto EVENTS_READ_INTERVAL = 50ms;
 
     bool PrepareToAccessDevice(PSerialDevice lastAccessedDevice, PSerialDevice dev, Metrics::TMetrics& metrics)
     {
@@ -204,9 +205,8 @@ void TSerialClient::DoFlush()
 void TSerialClient::WaitForPollAndFlush(std::chrono::steady_clock::time_point waitUntil)
 {
     auto now = std::chrono::steady_clock::now();
-    if (now >= waitUntil) {
-        MaybeFlushAvoidingPollStarvationButDontWait();
-        return;
+    if (now > waitUntil) {
+        waitUntil = now;
     }
 
     if (Debug.IsEnabled()) {
@@ -216,8 +216,9 @@ void TSerialClient::WaitForPollAndFlush(std::chrono::steady_clock::time_point wa
                    << std::chrono::duration_cast<std::chrono::milliseconds>(waitUntil.time_since_epoch()).count();
     }
 
-    // Limit waiting time ro be responsive
+    // Limit waiting time to be responsive
     waitUntil = std::min(waitUntil, now + MAX_POLL_TIME);
+    waitUntil = std::min(waitUntil, NextEventsRead);
     while (FlushNeeded->Wait(waitUntil)) {
         if (FlushNeeded->GetSignalValue(RegisterUpdateSignal)) {
             DoFlush();
@@ -229,8 +230,8 @@ void TSerialClient::WaitForPollAndFlush(std::chrono::steady_clock::time_point wa
             LastAccessedDevice = NULL;
             RPCRequestHandler->RPCRequestHandling(Port);
         }
-        ReadEvents();
     }
+    ReadEvents();
 }
 
 void TSerialClient::UpdateFlushNeeded()
@@ -242,31 +243,6 @@ void TSerialClient::UpdateFlushNeeded()
             break;
         }
     }
-}
-
-void TSerialClient::MaybeFlushAvoidingPollStarvationButDontWait()
-{
-    // avoid poll starvation
-    int flush_count_remaining = MAX_FLUSHES_WHEN_POLL_IS_DUE;
-    bool continueSignalHandling;
-
-    do {
-        continueSignalHandling = false;
-        if (FlushNeeded->GetSignalValue(RegisterUpdateSignal)) {
-            DoFlush();
-            continueSignalHandling = true;
-        }
-        if (FlushNeeded->GetSignalValue(RPCSignal)) {
-            // End session with current device to make bus clean for RPC
-            PrepareToAccessDevice(LastAccessedDevice, NULL, Metrics);
-            LastAccessedDevice = NULL;
-            RPCRequestHandler->RPCRequestHandling(Port);
-            continueSignalHandling = true;
-        }
-        ReadEvents();
-
-        flush_count_remaining--;
-    } while (continueSignalHandling && flush_count_remaining > 0);
 }
 
 void TSerialClient::SetReadError(PRegister reg)
@@ -473,8 +449,12 @@ public:
 void TSerialClient::ReadEvents()
 {
     auto now = std::chrono::steady_clock::now();
+    if (now < NextEventsRead) {
+        return;
+    }
     TModbusExtEventsVisitor visitor(shared_from_this());
     try {
+        NextEventsRead = now + EVENTS_READ_INTERVAL;
         if (std::any_of(RegList.begin(), RegList.end(), [](const PRegister& reg) {
                 return reg->SporadicMode == TRegisterConfig::TSporadicMode::ENABLED;
             }))
