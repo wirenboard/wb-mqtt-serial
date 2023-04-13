@@ -81,6 +81,11 @@ std::string TRegisterConfig::ToString() const
     return s.str();
 }
 
+bool TRegisterConfig::IsHighPriority() const
+{
+    return bool(ReadPeriod);
+}
+
 const IRegisterAddress& TRegisterConfig::GetAddress() const
 {
     if (AccessType == EAccessType::WRITE_ONLY) {

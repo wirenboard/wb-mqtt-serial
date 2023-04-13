@@ -254,6 +254,8 @@ public:
 
     std::string ToString() const;
 
+    bool IsHighPriority() const;
+
     static PRegisterConfig Create(int type = 0,
                                   const TRegisterDesc& registerAddressesDescription = {},
                                   RegisterFormat format = U16,

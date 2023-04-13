@@ -12,13 +12,25 @@ namespace ModbusExt // modbus extension protocol common utilities
         INPUT = 4
     };
 
+    enum TEventPriority : uint8_t
+    {
+        DISABLE = 0,
+        LOW = 1,
+        HIGH = 2
+    };
+
+    struct TEventConfirmationState
+    {
+        uint8_t SlaveId;
+        uint8_t Flag;
+    };
+
     class IEventsVisitor
     {
     public:
         virtual ~IEventsVisitor() = default;
 
-        virtual void Event(uint32_t serialNumber,
-                           uint8_t slaveId,
+        virtual void Event(uint8_t slaveId,
                            uint8_t eventType,
                            uint16_t eventId,
                            const uint8_t* data,
@@ -28,13 +40,14 @@ namespace ModbusExt // modbus extension protocol common utilities
     bool ReadEvents(TPort& port,
                     const std::chrono::milliseconds& responseTimeout,
                     const std::chrono::milliseconds& frameTimeout,
-                    IEventsVisitor& eventVisitor);
+                    IEventsVisitor& eventVisitor,
+                    TEventConfirmationState& state);
 
     //! Class builds packet for enabling events from specified registers
     class TEventsEnabler
     {
     public:
-        typedef std::function<void(uint16_t, TEventRegisterType, uint8_t)> TVisitorFn;
+        typedef std::function<void(uint16_t, bool)> TVisitorFn;
 
         TEventsEnabler(uint8_t slaveId,
                        TPort& port,
@@ -49,9 +62,9 @@ namespace ModbusExt // modbus extension protocol common utilities
          *
          * @param addr register's address
          * @param type register's type
-         * @param enable if true, the register will be enabled for events
+         * @param priority register's priority
          */
-        void AddRegister(uint16_t addr, TEventRegisterType type, bool enable);
+        void AddRegister(uint16_t addr, TEventRegisterType type, TEventPriority priority);
 
         /**
          * @brief Call the function to send a build packet
@@ -63,6 +76,7 @@ namespace ModbusExt // modbus extension protocol common utilities
     private:
         std::vector<uint8_t> Request;
         std::vector<uint8_t> Response;
+        std::vector<uint8_t> Registers;
 
         uint8_t SlaveId;
         TPort& Port;

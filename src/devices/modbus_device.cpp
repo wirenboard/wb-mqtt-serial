@@ -14,7 +14,7 @@ namespace
                                               {Modbus::REG_COIL, "coil", "switch", U8},
                                               {Modbus::REG_DISCRETE, "discrete", "switch", U8, true},
                                               {Modbus::REG_INPUT, "input", "value", U16, true}});
-#if 0
+
     ModbusExt::TEventRegisterType ToEventRegisterType(const Modbus::RegisterType regType)
     {
         switch (regType) {
@@ -32,7 +32,7 @@ namespace
                 throw std::runtime_error("unsupported register type");
         }
     }
-#endif
+
     class TModbusProtocol: public IProtocol
     {
     public:
@@ -100,18 +100,15 @@ void TModbusDevice::WriteSetupRegisters()
         Modbus::EnableWbContinuousRead(shared_from_this(), *ModbusTraits, *Port(), SlaveId, ModbusCache);
     }
     Modbus::WriteSetupRegisters(*ModbusTraits, *Port(), SlaveId, SetupItems, ModbusCache);
-#if 0
+
     std::chrono::milliseconds responseTimeout = std::chrono::milliseconds(100);
     std::chrono::milliseconds frameTimeout = std::chrono::milliseconds(100);
-    ModbusExt::TEventsEnabler ev(SlaveId,
-                                 *Port(),
-                                 responseTimeout,
-                                 frameTimeout,
-                                 std::bind(&TModbusDevice::OnEnabledEvent,
-                                           this,
-                                           std::placeholders::_1,
-                                           std::placeholders::_2,
-                                           std::placeholders::_3));
+    ModbusExt::TEventsEnabler ev(
+        SlaveId,
+        *Port(),
+        responseTimeout,
+        frameTimeout,
+        std::bind(&TModbusDevice::OnEnabledEvent, this, std::placeholders::_1, std::placeholders::_2));
 
     try {
         for (const auto& ch: DeviceConfig()->DeviceChannelConfigs) {
@@ -119,7 +116,10 @@ void TModbusDevice::WriteSetupRegisters()
                 if (reg->SporadicMode == TRegisterConfig::TSporadicMode::UNKNOWN) {
                     auto addr = GetUint32RegisterAddress(reg->GetAddress());
                     auto type = ToEventRegisterType(static_cast<Modbus::RegisterType>(reg->Type));
-                    ev.AddRegister(addr, type, true);
+                    ev.AddRegister(addr,
+                                   type,
+                                   reg->IsHighPriority() ? ModbusExt::TEventPriority::HIGH
+                                                         : ModbusExt::TEventPriority::LOW);
                 }
             }
         }
@@ -128,10 +128,9 @@ void TModbusDevice::WriteSetupRegisters()
     } catch (const std::exception& e) {
         LOG(Warn) << "Failed to enable events on " << ToString() << ": " << e.what();
     }
-#endif
 }
 
-void TModbusDevice::OnEnabledEvent(uint16_t addr, uint8_t type, uint8_t res)
+void TModbusDevice::OnEnabledEvent(uint16_t addr, bool res)
 {
     auto serialClient = SerialClient.lock();
     if (!serialClient) {
@@ -141,17 +140,15 @@ void TModbusDevice::OnEnabledEvent(uint16_t addr, uint8_t type, uint8_t res)
 
     auto reg = serialClient->FindRegister(static_cast<uint8_t>(SlaveId), addr);
     if (!reg) {
-        LOG(Error) << "Register not found: " << reg->ToString();
+        LOG(Error) << "Register not found: " << addr;
         return;
     }
 
-    if (res == 1) {
+    if (res) {
         reg->SporadicMode = TRegisterConfig::TSporadicMode::ENABLED;
         LOG(Info) << "Events are enabled for " << reg->ToString();
-    } else if (res == 0) {
+    } else {
         reg->SporadicMode = TRegisterConfig::TSporadicMode::DISABLED;
         LOG(Info) << "Events are disabled for " << reg->ToString();
-    } else {
-        LOG(Error) << "Error on enabling events for " << reg->ToString() << ", res: " << static_cast<int>(res);
     }
 }

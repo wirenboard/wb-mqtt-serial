@@ -2,6 +2,7 @@
 
 #include "binary_semaphore.h"
 #include "log.h"
+#include "modbus_ext_common.h"
 #include "poll_plan.h"
 #include "register_handler.h"
 #include "rpc_request_handler.h"
@@ -73,6 +74,7 @@ private:
     std::unordered_map<PRegister, PRegisterHandler> Handlers;
 
     bool Active;
+    ModbusExt::TEventConfirmationState EventState;
     TCallback ReadCallback;
     TCallback ErrorCallback;
     PSerialDevice LastAccessedDevice;

@@ -45,11 +45,6 @@ namespace
         return false;
     }
 
-    bool IsHighPriority(const TRegister& reg)
-    {
-        return bool(reg.ReadPeriod);
-    }
-
     class TRegisterReader
     {
         PRegisterRange RegisterRange;
@@ -115,6 +110,7 @@ TSerialClient::TSerialClient(const std::vector<PSerialDevice>& devices,
     RPCRequestHandler = std::make_shared<TRPCRequestHandler>();
     RegisterUpdateSignal = FlushNeeded->MakeSignal();
     RPCSignal = FlushNeeded->MakeSignal();
+    EventState = {0, 0};
 }
 
 TSerialClient::~TSerialClient()
@@ -157,7 +153,7 @@ void TSerialClient::PrepareRegisterRanges()
     auto now = std::chrono::steady_clock::now();
     for (auto& reg: RegList) {
         if (reg->AccessType != TRegisterConfig::EAccessType::WRITE_ONLY) {
-            Scheduler.AddEntry(reg, now, IsHighPriority(*reg) ? TPriority::High : TPriority::Low);
+            Scheduler.AddEntry(reg, now, reg->IsHighPriority() ? TPriority::High : TPriority::Low);
         }
     }
 }
@@ -272,7 +268,7 @@ void TSerialClient::ScheduleNextPoll(PRegister reg, std::chrono::steady_clock::t
     if (reg->GetAvailable() == TRegisterAvailability::UNAVAILABLE) {
         return;
     }
-    if (IsHighPriority(*reg)) {
+    if (reg->IsHighPriority()) {
         Scheduler.AddEntry(reg, pollStartTime + *(reg->ReadPeriod), TPriority::High);
         return;
     }
@@ -377,8 +373,7 @@ public:
     {}
     ~TModbusExtEventsVisitor() = default;
 
-    virtual void Event(uint32_t serialNumber,
-                       uint8_t slaveId,
+    virtual void Event(uint8_t slaveId,
                        uint8_t eventType,
                        uint16_t eventId,
                        const uint8_t* data,
@@ -441,14 +436,14 @@ void TSerialClient::ReadEvents()
                 return reg->SporadicMode == TRegisterConfig::TSporadicMode::ENABLED;
             }))
         {
-            ModbusExt::ReadEvents(*Port, std::chrono::milliseconds(100), std::chrono::milliseconds(100), visitor);
+            ModbusExt::ReadEvents(*Port,
+                                  std::chrono::milliseconds(100),
+                                  std::chrono::milliseconds(100),
+                                  visitor,
+                                  EventState);
         }
     } catch (const std::exception& ex) {
         LOG(Warn) << "Failed to read events on " << Port->GetDescription() << ": " << ex.what();
-    }
-    auto delta = std::chrono::duration_cast<std::chrono::milliseconds>(std::chrono::steady_clock::now() - now);
-    if (delta > std::chrono::milliseconds(100)) {
-        LOG(Info) << "Reading events took " << delta.count() << " ms";
     }
 }
 
