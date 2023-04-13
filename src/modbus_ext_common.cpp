@@ -16,13 +16,10 @@ namespace ModbusExt // modbus extension protocol declarations
 {
     const uint8_t BROADCAST_ADDRESS = 0xFD;
 
-    const uint8_t MODBUS_EXT_COMMAND = 0x60;
-    const uint8_t MODBUS_EXT_SETTINGS = 0x46;
+    const uint8_t MODBUS_EXT_COMMAND = 0x46;
 
     const uint8_t EVENTS_REQUEST_COMMAND = 0x10;
     const uint8_t EVENTS_RESPONSE_COMMAND = 0x11;
-    const uint8_t EVENTS_CLEAR_COMMAND = 0x12;
-    const uint8_t EVENTS_CLEAR_RESPONSE_COMMAND = 0x13;
     const uint8_t NO_EVENTS_RESPONSE_COMMAND = 0x14;
 
     const uint32_t ALL_DEVICES_SN = 0;
@@ -78,18 +75,6 @@ namespace ModbusExt // modbus extension protocol declarations
         AppendBigEndian(it, startingSerialNumber);
         Append(it, maxBytes);
         AppendBigEndian(it, CRC16::CalculateCRC16(request.data(), request.size()));
-        return request;
-    }
-
-    Modbus::TRequest MakeClearEventsRequest(const uint8_t* readEventsResponse, size_t size)
-    {
-        Modbus::TRequest request(size - CRC_SIZE);
-        memcpy(request.data(), readEventsResponse, EVENTS_RESPONSE_SLAVE_ID_POS);
-        request[SUB_COMMAND_POS] = EVENTS_CLEAR_COMMAND;
-        memcpy(request.data() + EVENTS_RESPONSE_SLAVE_ID_POS,
-               readEventsResponse + EVENTS_RESPONSE_DATA_SIZE_POS,
-               size - CRC_SIZE - EVENTS_RESPONSE_DATA_SIZE_POS);
-        AppendBigEndian(std::back_inserter(request), CRC16::CalculateCRC16(request.data(), request.size()));
         return request;
     }
 
@@ -162,24 +147,6 @@ namespace ModbusExt // modbus extension protocol declarations
         }
     }
 
-    void ClearEvents(TPort& port,
-                     const std::chrono::milliseconds& responseTimeout,
-                     const std::chrono::milliseconds& frameTimeout,
-                     const uint8_t* readEventsResponse,
-                     size_t size)
-    {
-        auto req = MakeClearEventsRequest(readEventsResponse, size);
-        port.WriteBytes(req);
-        std::array<uint8_t, CLEAR_EVENTS_RESPONSE_SIZE> res;
-        auto rc = port.ReadFrame(res.data(), res.size(), responseTimeout + frameTimeout, frameTimeout);
-
-        CheckPacket(res.data(), rc, res.size());
-
-        if (res[SUB_COMMAND_POS] != EVENTS_CLEAR_RESPONSE_COMMAND) {
-            throw Modbus::TMalformedResponseError("invalid clear events response command");
-        }
-    }
-
     bool ReadEvents(TPort& port,
                     const std::chrono::milliseconds& responseTimeout,
                     const std::chrono::milliseconds& frameTimeout,
@@ -207,7 +174,6 @@ namespace ModbusExt // modbus extension protocol declarations
                                   packet + EVENTS_RESPONSE_DATA_POS,
                                   packet[EVENTS_RESPONSE_DATA_SIZE_POS],
                                   eventVisitor);
-                ClearEvents(port, responseTimeout, frameTimeout, packet, packetSize);
                 return true;
             }
             case NO_EVENTS_RESPONSE_COMMAND: {
@@ -264,7 +230,7 @@ namespace ModbusExt // modbus extension protocol declarations
           Visitor(visitor)
     {
         Request.reserve(MAX_PACKET_SIZE);
-        Append(std::back_inserter(Request), {SlaveId, MODBUS_EXT_SETTINGS, 0});
+        Append(std::back_inserter(Request), {SlaveId, MODBUS_EXT_COMMAND, 0});
         Response.reserve(MAX_PACKET_SIZE);
     }
 
