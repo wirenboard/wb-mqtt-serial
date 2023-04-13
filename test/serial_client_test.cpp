@@ -98,7 +98,6 @@ protected:
     PFakeSerialDevice Device;
     TSerialDeviceFactory DeviceFactory;
     PRPCConfig rpcConfig;
-    Metrics::TMetrics Metrics;
 
     bool HasSetupRegisters = false;
     TPortOpenCloseLogic::TSettings PortOpenCloseSettings;
@@ -148,7 +147,7 @@ void TSerialClientTest::SetUp()
     Device->InitSetupItems();
     std::vector<PSerialDevice> devices;
     devices.push_back(Device);
-    SerialClient = std::make_shared<TSerialClient>(devices, Port, PortOpenCloseSettings, Metrics);
+    SerialClient = std::make_shared<TSerialClient>(devices, Port, PortOpenCloseSettings);
 #if 0
     SerialClient->SetModbusDebug(true);
 #endif
@@ -1607,13 +1606,10 @@ TRPCResultCode TSerialClientIntegrationTest::SendRPCRequest(PMQTTSerialDriver se
             code == WBMQTT::E_RPC_REQUEST_TIMEOUT ? TRPCResultCode::RPC_WRONG_TIMEOUT : TRPCResultCode::RPC_WRONG_IO;
     };
 
-    Note() << "LoopOnce() [start thread]";
-    std::thread serialDriverThread(&TMQTTSerialDriver::LoopOnce, SerialDriver);
-
     try {
         Note() << "Send RPC request";
         serialClient->RPCTransceive(request);
-        serialDriverThread.join();
+        SerialDriver->LoopOnce();
         EXPECT_EQ(responseInt == expectedResponse, true);
     } catch (const TRPCException& exception) {
         resultCode = exception.GetResultCode();
@@ -1625,8 +1621,8 @@ TRPCResultCode TSerialClientIntegrationTest::SendRPCRequest(PMQTTSerialDriver se
 /* RPC Request sending test cases:
  * 1. ReadFrame timeout (port IO exception)
  * 2. RPC request timeout
- * 3. Sussecful RPC request execution
- * 4. Sussecful RPC request execution with zero length read
+ * 3. Successful RPC request execution
+ * 4. Successful RPC request execution with zero length read
  */
 
 TEST_F(TSerialClientIntegrationTest, RPCRequestTransceive)
@@ -1669,8 +1665,8 @@ TEST_F(TSerialClientIntegrationTest, RPCRequestTransceive)
         SendRPCRequest(SerialDriver, expectedRequest, emptyVector, expectedResponse.size(), std::chrono::seconds(12)),
         TRPCResultCode::RPC_WRONG_IO);
 
-    // Succesful case
-    Note() << "[test case] RPC succesful case";
+    // Successful case
+    Note() << "[test case] RPC successful case";
     Port->Expect(expectedRequest, expectedResponse, NULL);
     EXPECT_EQ(SendRPCRequest(SerialDriver,
                              expectedRequest,
