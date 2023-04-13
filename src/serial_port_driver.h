@@ -60,7 +60,6 @@ public:
     TSerialPortDriver(WBMQTT::PDeviceDriver mqttDriver,
                       PPortConfig port_config,
                       const WBMQTT::TPublishParameters& publishPolicy,
-                      Metrics::TMetrics& metrics,
                       size_t lowPriorityRateLimit);
 
     void SetUpDevices();

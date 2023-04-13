@@ -13,24 +13,6 @@ using namespace WBMQTT;
 
 namespace
 {
-    Json::Value MakeLoadItem(const Metrics::TPollItem& pollItem, const Metrics::TMetrics::TResult& value)
-    {
-        Json::Value item;
-        auto& names = item["names"];
-        if (pollItem.Controls.empty()) {
-            names.append(pollItem.Device);
-        } else {
-            for (const auto& c: pollItem.Controls) {
-                names.append(pollItem.Device + "/" + c);
-            }
-        }
-        item["bl"] = StringFormat("%.2f", value.BusLoad.Minute * 100.0);
-        item["bl15"] = StringFormat("%.2f", value.BusLoad.FifteenMinutes * 100.0);
-        item["i50"] = value.Histogram.P50.count();
-        item["i95"] = value.Histogram.P95.count();
-        return item;
-    }
-
     size_t GetChannelsCount(PPortConfig portConfig)
     {
         size_t res = 0;
@@ -55,7 +37,6 @@ TMQTTSerialDriver::TMQTTSerialDriver(PDeviceDriver mqttDriver, PHandlerConfig co
     try {
         size_t totalChannels = GetChannelsCount(config);
         for (const auto& portConfig: config->PortConfigs) {
-            auto& m = Metrics[portConfig->Port->GetDescription()];
             auto rateLimit = config->LowPriorityRegistersRateLimit;
             if (totalChannels != 0) {
                 rateLimit *= GetChannelsCount(portConfig);
@@ -65,7 +46,7 @@ TMQTTSerialDriver::TMQTTSerialDriver(PDeviceDriver mqttDriver, PHandlerConfig co
                 rateLimit = 1;
             }
             PortDrivers.push_back(
-                make_shared<TSerialPortDriver>(mqttDriver, portConfig, config->PublishParameters, m, rateLimit));
+                make_shared<TSerialPortDriver>(mqttDriver, portConfig, config->PublishParameters, rateLimit));
             PortDrivers.back()->SetUpDevices();
         }
     } catch (const exception& e) {
@@ -138,23 +119,4 @@ void TMQTTSerialDriver::Stop()
 std::vector<PSerialPortDriver> TMQTTSerialDriver::GetPortDrivers()
 {
     return PortDrivers;
-}
-
-Json::Value TMQTTSerialDriver::LoadMetrics()
-{
-    auto time = std::chrono::steady_clock::now();
-    Json::Value result(Json::arrayValue);
-    for (auto& port: Metrics) {
-        Json::Value item;
-        item["port"] = port.first;
-        Json::Value channels(Json::arrayValue);
-        for (const auto& channel: port.second.GetBusLoad(time)) {
-            channels.append(MakeLoadItem(channel.first, channel.second));
-        }
-        if (!channels.empty()) {
-            item["channels"].swap(channels);
-        }
-        result.append(std::move(item));
-    }
-    return result;
 }

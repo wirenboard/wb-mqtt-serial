@@ -19,7 +19,6 @@ using namespace WBMQTT;
 TSerialPortDriver::TSerialPortDriver(WBMQTT::PDeviceDriver mqttDriver,
                                      PPortConfig portConfig,
                                      const WBMQTT::TPublishParameters& publishPolicy,
-                                     Metrics::TMetrics& metrics,
                                      size_t lowPriorityRateLimit)
     : MqttDriver(mqttDriver),
       Config(portConfig),
@@ -27,7 +26,7 @@ TSerialPortDriver::TSerialPortDriver(WBMQTT::PDeviceDriver mqttDriver,
 {
     Description = Config->Port->GetDescription(false);
     SerialClient = PSerialClient(
-        new TSerialClient(Config->Devices, Config->Port, Config->OpenCloseSettings, metrics, lowPriorityRateLimit));
+        new TSerialClient(Config->Devices, Config->Port, Config->OpenCloseSettings, lowPriorityRateLimit));
 }
 
 const std::string& TSerialPortDriver::GetShortDescription() const
