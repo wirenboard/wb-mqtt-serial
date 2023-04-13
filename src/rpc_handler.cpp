@@ -186,7 +186,6 @@ TRPCHandler::TRPCHandler(const std::string& requestSchemaFilePath,
         "port",
         "Load",
         std::bind(&TRPCHandler::PortLoad, this, std::placeholders::_1, std::placeholders::_2, std::placeholders::_3));
-    rpcServer->RegisterMethod("metrics", "Load", std::bind(&TRPCHandler::LoadMetrics, this, std::placeholders::_1));
     rpcServer->RegisterMethod("ports", "Load", std::bind(&TRPCHandler::LoadPorts, this, std::placeholders::_1));
 }
 
@@ -249,11 +248,6 @@ void TRPCHandler::PortLoad(const Json::Value& request,
     }
 
     onResult(replyJSON);
-}
-
-Json::Value TRPCHandler::LoadMetrics(const Json::Value& request)
-{
-    return SerialDriver->LoadMetrics();
 }
 
 Json::Value TRPCHandler::LoadPorts(const Json::Value& request)

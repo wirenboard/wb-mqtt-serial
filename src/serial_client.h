@@ -2,7 +2,6 @@
 
 #include "binary_semaphore.h"
 #include "log.h"
-#include "metrics.h"
 #include "poll_plan.h"
 #include "register_handler.h"
 #include "rpc_request_handler.h"
@@ -35,7 +34,6 @@ public:
     TSerialClient(const std::vector<PSerialDevice>& devices,
                   PPort port,
                   const TPortOpenCloseLogic::TSettings& openCloseSettings,
-                  Metrics::TMetrics& metrics,
                   size_t lowPriorityRateLimit = std::numeric_limits<size_t>::max());
     TSerialClient(const TSerialClient& client) = delete;
     TSerialClient& operator=(const TSerialClient&) = delete;
@@ -80,7 +78,6 @@ private:
 
     TPortOpenCloseLogic OpenCloseLogic;
     TLoggerWithTimeout ConnectLogger;
-    Metrics::TMetrics& Metrics;
     TThrottlingStateLogger ThrottlingStateLogger;
 
     PRPCRequestHandler RPCRequestHandler;
