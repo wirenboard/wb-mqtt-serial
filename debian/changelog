@@ -1,3 +1,9 @@
+wb-mqtt-serial (2.81.0-wb100) stable; urgency=medium
+
+  * Added template for MSW v.4
+
+ -- Ekaterina Volkova <ekaterina.volkova@wirenboard.ru>  Fri, 14 Apr 2023 18:09:12 +0300
+
 wb-mqtt-serial (2.81.0) stable; urgency=medium
 
   * Added encoders to mcm8 template
@@ -21,7 +27,7 @@ wb-mqtt-serial (2.80.1) stable; urgency=medium
   * Fix missing l1, l2, l3 groups in MAP12E template
 
  -- Alexander Rakhman <alexander.rakhman@wirenboard.com>  Fri, 02 Mar 2023 17:52:00 +0300
- 
+
 wb-mqtt-serial (2.80.0) stable; urgency=medium
 
   * Add ability to disable status LED in devices with ms based firmware
@@ -67,7 +73,7 @@ wb-mqtt-serial (2.78.3) stable; urgency=medium
 
 wb-mqtt-serial (2.78.2) stable; urgency=medium
 
-  * Update description of command line parameters for DLMS device template generation  
+  * Update description of command line parameters for DLMS device template generation
 
  -- Petr Krasnoshchekov <petr.krasnoshchekov@wirenboard.com>  Wed, 18 Jan 2023 15:21:44 +0500
 
