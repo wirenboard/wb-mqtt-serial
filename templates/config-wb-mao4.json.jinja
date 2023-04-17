@@ -240,7 +240,7 @@
             {
                 "id": "{{action_bind}}_number",
                 "title": "Output Number",
-                "address": {{832 + (loop.index0 * 16) + ch_number}},
+                "address": {{768 + (loop.index0 * 16) + ch_number}},
                 "reg_type": "holding",
                 "enum": [0, 1, 2, 3, 4, 100],
                 "enum_titles": [
@@ -258,7 +258,7 @@
             {
                 "id": "{{action_bind}}_action",
                 "title": "Output Action",
-                "address": {{768 + (loop.index0 * 16) + ch_number}},
+                "address": {{832 + (loop.index0 * 16) + ch_number}},
                 "reg_type": "holding",
                 {% if press_type in ["long", "short long"] %}"enum": [0, 1, 2, 3, 4, 5],{% else %}"enum": [0, 1, 2, 3, 4],{% endif %}
                 "enum_titles": [
