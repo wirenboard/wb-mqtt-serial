@@ -239,7 +239,7 @@ namespace ModbusExt // modbus extension protocol declarations
         auto it = std::back_inserter(Request);
         Append(it, static_cast<uint8_t>(type));
         AppendBigEndian(it, addr);
-        Append(it, 1);
+        Append(it, static_cast<uint8_t>(1));
         Append(it, static_cast<uint8_t>(priority));
         Registers.push_back(addr);
         Request[ENABLE_EVENTS_RESPONSE_DATA_SIZE_POS] += ENABLE_EVENTS_REC_SIZE;
