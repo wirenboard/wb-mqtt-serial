@@ -2,8 +2,8 @@
     "tests": [
         {
             "name": "single channel polling",
-            "enable": true,
-            "wb-mqtt-serial-config": "stand/wb-mqtt-serial-single-channel.conf",
+            "enable": false,
+            "wb-mqtt-serial-config": "/opt/stand/wb-mqtt-serial-single-channel.conf",
             "max-cycle-timeout-ms": 0,
             "iterations": 50,
             "hist-interval-ms": 10,
@@ -15,20 +15,72 @@
                 ]
             }
         },
-        { 
+        {
             "name": "single channel sporadic",
-            "enable": true,
-            "wb-mqtt-serial-config": "stand/wb-mqtt-serial-single-channel-sporadic.conf",
-            "max-cycle-timeout-ms": 0,
-            "iterations": 50,
+            "enable": false,
+            "wb-mqtt-serial-config": "/opt/stand/wb-mqtt-serial-single-channel-sporadic.conf",
+            "max-cycle-timeout-ms": 200,
+            "iterations": 100,
             "hist-interval-ms": 10,
             "single-click-time-ms": 60,
-            "single-click-timeout-ms": 100,
+            "single-click-timeout-ms": 0,
             "lines": {
-                "EXT1_K1": [
-                    "/devices/wb-mr6c_1/controls/Input 1 Single Press Counter"
+                "EXT3_K1": [
+                    "/devices/wb-mr6c_4/controls/Input 4 Single Press Counter"
+                ]
+            }
+        },
+        {
+            "name": "single channel sporadic and poll",
+            "enable": false,
+            "wb-mqtt-serial-config": "/opt/stand/wb-mqtt-serial-single-channel-sporadic-poll.conf",
+            "max-cycle-timeout-ms": 200,
+            "iterations": 100,
+            "hist-interval-ms": 10,
+            "single-click-time-ms": 60,
+            "single-click-timeout-ms": 0,
+            "lines": {
+                "EXT3_K1": [
+                    "/devices/wb-mr6c_4/controls/Input 4 Single Press Counter"
+                ]
+            }
+        },
+        {
+            "name": "single channel sporadic and poll many",
+            "enable": true,
+            "wb-mqtt-serial-config": "/opt/stand/wb-mqtt-serial-single-channel-sporadic-poll-many.conf",
+            "max-cycle-timeout-ms": 200,
+            "iterations": 5000,
+            "hist-interval-ms": 10,
+            "single-click-time-ms": 60,
+            "single-click-timeout-ms": 0,
+            "lines": {
+                "EXT3_K1": [
+                    "/devices/wb-mr6c_4/controls/Input 4 Single Press Counter"
+                ]
+            }
+        },
+        { 
+            "name": "single channel sporadic many and poll many",
+            "enable": false,
+            "wb-mqtt-serial-config": "/opt/stand/wb-mqtt-serial-single-channel-sporadic-many-poll-many.conf",
+            "max-cycle-timeout-ms": 200,
+            "iterations": 5000,
+            "hist-interval-ms": 10,
+            "single-click-time-ms": 60,
+            "single-click-timeout-ms": 0,
+            "lines": {
+                "EXT1_K5": [
+                    "/devices/wb-mr6c_1/controls/Input 5 Single Press Counter",
+                    "/devices/wb-mr6c_2/controls/Input 5 Single Press Counter",
+                    "/devices/wb-mr6c_3/controls/Input 5 Single Press Counter",
+                    "/devices/wb-mr6c_4/controls/Input 5 Single Press Counter",
+                    "/devices/wb-mr6c_5/controls/Input 5 Single Press Counter",
+                    "/devices/wb-mr6c_6/controls/Input 5 Single Press Counter",
+                    "/devices/wb-mr6c_7/controls/Input 5 Single Press Counter",
+                    "/devices/wb-mr6c_8/controls/Input 5 Single Press Counter"
                 ]
             }
         }
     ]
-} 
+}
