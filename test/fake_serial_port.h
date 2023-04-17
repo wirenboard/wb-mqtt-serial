@@ -53,6 +53,8 @@ public:
 
     void SetAllowOpen(bool allowOpen);
 
+    void SetBaudRate(size_t value);
+
 private:
     void SkipFrameBoundary();
     const int FRAME_BOUNDARY = -1;
@@ -66,6 +68,7 @@ private:
     std::vector<int> Resp;
     size_t ReqPos, RespPos, DumpPos;
     std::chrono::microseconds ExpectedFrameTimeout = std::chrono::microseconds(-1);
+    size_t BaudRate;
 };
 
 typedef std::shared_ptr<TFakeSerialPort> PFakeSerialPort;
