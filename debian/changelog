@@ -1,3 +1,9 @@
+wb-mqtt-serial (2.83.3) stable; urgency=medium
+
+  * WB-M* templates: more description added for second press waiting time and debounce time
+
+ -- Pavel Gasheev <pavel.gasheev@wirenboard.ru>  Mon, 17 Apr 2023 16:00:48 +0300
+
 wb-mqtt-serial (2.83.2) stable; urgency=medium
 
   * Remove metrics
