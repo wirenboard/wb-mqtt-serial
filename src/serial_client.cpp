@@ -13,7 +13,7 @@ namespace
 {
     const auto PORT_OPEN_ERROR_NOTIFICATION_INTERVAL = 5min;
     const auto MAX_CLOSED_PORT_CYCLE_TIME = 500ms;
-    const auto MAX_POLL_TIME = 100ms;
+    const auto MAX_POLL_TIME = 50ms;
     const auto MAX_LOW_PRIORITY_LAG = 1s;
     const auto MAX_FLUSHES_WHEN_POLL_IS_DUE = 20;
     const auto EVENTS_READ_INTERVAL = 50ms;
@@ -386,7 +386,7 @@ public:
 
         auto reg = SerialClient->FindRegister(slaveId, eventId);
         if (reg && reg->SporadicMode == TRegisterConfig::TSporadicMode::ENABLED) {
-            LOG(Info) << "Event on " << reg->ToString() << ", data: " << WBMQTT::HexDump(data, dataSize);
+            LOG(Debug) << "Event on " << reg->ToString() << ", data: " << WBMQTT::HexDump(data, dataSize);
             uint64_t value = 0;
             memcpy(&value, data, dataSize);
             reg->SetValue(TRegisterValue(value));
@@ -436,11 +436,12 @@ void TSerialClient::ReadEvents()
                 return reg->SporadicMode == TRegisterConfig::TSporadicMode::ENABLED;
             }))
         {
-            ModbusExt::ReadEvents(*Port,
-                                  std::chrono::milliseconds(100),
-                                  std::chrono::milliseconds(100),
-                                  visitor,
-                                  EventState);
+            while (ModbusExt::ReadEvents(*Port,
+                                         std::chrono::milliseconds(100),
+                                         std::chrono::milliseconds(100),
+                                         visitor,
+                                         EventState))
+            {}
         }
     } catch (const std::exception& ex) {
         LOG(Warn) << "Failed to read events on " << Port->GetDescription() << ": " << ex.what();
