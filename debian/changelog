@@ -3,7 +3,7 @@ wb-mqtt-serial (2.84.0) stable; urgency=medium
   * Add mao4 actions configuration
   * Add ability to disable status LED in mao4
 
- -- Dmitry Borisov <dmitry.borisov@wirenboard.com>  Thu, 13 Apr 2023 16:00:00 +0600
+ -- Dmitry Borisov <dmitry.borisov@wirenboard.com>  Thu, 17 Apr 2023 16:00:00 +0600
 
 wb-mqtt-serial (2.83.2) stable; urgency=medium
 
