@@ -2570,8 +2570,8 @@
 
                 "lp_hold_time_description": "If press is longer than the specified time then it is long",
                 "lp_repeat_time_description": "The smaller value, the faster parameter changes",
-                "secp_waiting_time_description": "If there is no second press during the specified time then press is single. 0 - disables all presses except short and long",
-                "debounce_time_description": "Must be 5-10 times less than second press waiting time. If double presses are disabled - any value",
+                "secp_waiting_time_description": "If there is no second press during the specified time then press is single. 0 - disables all presses except short and long. Increases single press detection delay",
+                "debounce_time_description": "Must be 5-10 times less than second press waiting time. If double presses are disabled - any value. Increases presses detection delay",
 
                 "pwm_frequency_factor_title": "PWM Frequency Factor",
                 "pwm_frequency_factor_description": "PWM frequency is calculated by formula: 24 kHz / factor",
@@ -2746,8 +2746,8 @@
 
                 "lp_hold_time_description": "Если нажатие длится больше указанного времени - считаем его длинным",
                 "lp_repeat_time_description": "Чем меньше значение, тем быстрее изменяется параметр",
-                "secp_waiting_time_description": "Если за указанное время второго нажатия не было - считаем нажатие одиночным. 0 - отключит все нажатия кроме короткого и длинного",
-                "debounce_time_description": "Должно быть в 5-10 раз меньше, чем время ожидания второго нажатия. Если двойные нажатия отключены - любое значение",
+                "secp_waiting_time_description": "Если за указанное время второго нажатия не было - считаем нажатие одиночным. 0 - отключит все нажатия кроме короткого и длинного. Добавляет задержку на детектирование одиночного нажатия",
+                "debounce_time_description": "Должно быть в 5-10 раз меньше, чем время ожидания второго нажатия. Добавляет задержку на детектирование нажатий. Если двойные нажатия отключены - любое значение",
 
                 "Channel 1 (B) Minimum Value": "Нижний порог диммирования канала 1 (B)",
                 "Channel 2 (R) Minimum Value": "Нижний порог диммирования канала 2 (R)",
