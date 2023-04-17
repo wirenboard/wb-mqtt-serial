@@ -7,6 +7,7 @@ namespace
     {
     public:
         std::vector<uint8_t> Request;
+        std::vector<uint8_t> Response;
 
         TPortMock()
         {}
@@ -38,20 +39,8 @@ namespace
                          const std::chrono::microseconds& frameTimeout,
                          TFrameCompletePred frame_complete = 0) override
         {
-            buf[0] = 0x0A; // slave id
-            buf[1] = 0x46; // command
-            buf[2] = 0x18; // subcommand
-            buf[3] = 0x05; // data size
-            buf[4] = 0x80; // 101 enabled (1000 0000)
-            buf[5] = 0x80; // 102 enabled (1000 0000)
-            buf[6] = 0x80; // 103 enabled (1000 0000)
-            buf[7] = 0x80; // 104 enabled (1000 0000)
-            buf[8] = 0x00; // 105 disabled (0000 0000)
-            // CRC
-            buf[9] = 0x20;
-            buf[10] = 0x28;
-
-            return 11;
+            memcpy(buf, Response.data(), Response.size());
+            return Response.size();
         }
 
         void SkipNoise() override
@@ -64,6 +53,17 @@ namespace
         {
             return std::string();
         }
+    };
+
+    class TTestEventsVisitor: public ModbusExt::IEventsVisitor
+    {
+    public:
+        virtual void Event(uint8_t slaveId,
+                           uint8_t eventType,
+                           uint16_t eventId,
+                           const uint8_t* data,
+                           size_t dataSize) override
+        {}
     };
 }
 
@@ -81,6 +81,9 @@ TEST(TModbusExtTest, EventsEnabler)
     ev.AddRegister(103, ModbusExt::TEventRegisterType::INPUT, ModbusExt::TEventPriority::LOW);
     ev.AddRegister(104, ModbusExt::TEventRegisterType::INPUT, ModbusExt::TEventPriority::LOW);
     ev.AddRegister(105, ModbusExt::TEventRegisterType::INPUT, ModbusExt::TEventPriority::LOW);
+
+    port.Response = {0x0A, 0x46, 0x18, 0x05, 0x80, 0x80, 0x80, 0x80, 0x00, 0x20, 0x28};
+
     ev.SendRequest();
 
     EXPECT_EQ(port.Request.size(), 31);
@@ -128,4 +131,25 @@ TEST(TModbusExtTest, EventsEnabler)
     EXPECT_TRUE(response[103]);
     EXPECT_TRUE(response[104]);
     EXPECT_FALSE(response[105]);
+}
+
+TEST(TModbusExtTest, ReadEvents)
+{
+    TPortMock port;
+    TTestEventsVisitor visitor;
+    ModbusExt::TEventConfirmationState state = {0, 0};
+    port.Response = {0xFD, 0x46, 0x14, 0xD2, 0x5F};
+    ModbusExt::ReadEvents(port, std::chrono::milliseconds(100), std::chrono::milliseconds(100), visitor, state);
+
+    EXPECT_EQ(port.Request.size(), 9);
+    EXPECT_EQ(port.Request[0], 0xFD); // broadcast
+    EXPECT_EQ(port.Request[1], 0x46); // command
+    EXPECT_EQ(port.Request[2], 0x10); // subcommand
+    EXPECT_EQ(port.Request[3], 0x00); // min slave id
+    EXPECT_EQ(port.Request[4], 0xF8); // max length
+    EXPECT_EQ(port.Request[5], 0x00); // slave id (confirmation)
+    EXPECT_EQ(port.Request[6], 0x00); // flag (confirmation)
+    // CRC
+    EXPECT_EQ(port.Request[7], 0x79);
+    EXPECT_EQ(port.Request[8], 0x5B);
 }
