@@ -102,10 +102,9 @@ const IRegisterAddress& TRegisterConfig::GetWriteAddress() const
     return *Address.Address;
 }
 
-TRegister::TRegister(PSerialDevice device, PRegisterConfig config, const std::string& channelName)
+TRegister::TRegister(PSerialDevice device, PRegisterConfig config)
     : TRegisterConfig(*config),
       _Device(device),
-      ChannelName(channelName),
       ReadPeriodMissChecker(config->ReadPeriod)
 {}
 
@@ -125,6 +124,12 @@ TRegisterAvailability TRegister::GetAvailable() const
 void TRegister::SetAvailable(TRegisterAvailability available)
 {
     Available = available;
+    if (Available == TRegisterAvailability::UNAVAILABLE) {
+        ExcludeFromPolling();
+    }
+    if (Available == TRegisterAvailability::UNKNOWN) {
+        IncludeInPolling();
+    }
 }
 
 TRegisterValue TRegister::GetValue() const
@@ -140,10 +145,10 @@ void TRegister::SetValue(const TRegisterValue& value, bool clearReadError)
     Value = value;
     if (UnsupportedValue && (*UnsupportedValue == value)) {
         SetError(TRegister::TError::ReadError);
-        Available = TRegisterAvailability::UNAVAILABLE;
+        SetAvailable(TRegisterAvailability::UNAVAILABLE);
         return;
     }
-    Available = TRegisterAvailability::AVAILABLE;
+    SetAvailable(TRegisterAvailability::AVAILABLE);
     if (ErrorValue && InvertWordOrderIfNeeded(*this, ErrorValue.value()) == value) {
         LOG(Debug) << "register " << ToString() << " contains error value";
         SetError(TError::ReadError);
@@ -152,11 +157,6 @@ void TRegister::SetValue(const TRegisterValue& value, bool clearReadError)
             ClearError(TError::ReadError);
         }
     }
-}
-
-const std::string& TRegister::GetChannelName() const
-{
-    return ChannelName;
 }
 
 void TRegister::SetError(TRegister::TError error)
@@ -184,6 +184,21 @@ void TRegister::SetLastPollTime(std::chrono::steady_clock::time_point pollTime)
     } else {
         ClearError(TError::PollIntervalMissError);
     }
+}
+
+bool TRegister::IsExcludedFromPolling() const
+{
+    return ExcludedFromPolling;
+}
+
+void TRegister::ExcludeFromPolling()
+{
+    ExcludedFromPolling = true;
+}
+
+void TRegister::IncludeInPolling()
+{
+    ExcludedFromPolling = false;
 }
 
 TReadPeriodMissChecker::TReadPeriodMissChecker(const std::optional<std::chrono::milliseconds>& readPeriod)

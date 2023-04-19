@@ -182,7 +182,6 @@ void TSerialPortDriver::ClearDevices() noexcept
             }
         }
         Devices.clear();
-        SerialClient->ClearDevices();
     } catch (const exception& e) {
         LOG(Warn) << "TSerialPortDriver::ClearDevices(): " << e.what();
     } catch (...) {

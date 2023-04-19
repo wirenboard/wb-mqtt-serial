@@ -113,6 +113,55 @@ public:
     }
 };
 
+class TTotalTimeBalancer
+{
+    std::chrono::milliseconds TotalTime;
+    std::chrono::milliseconds MaxTotalTime;
+
+public:
+    TTotalTimeBalancer(std::chrono::milliseconds maxTotalTime): MaxTotalTime(maxTotalTime)
+    {
+        Reset();
+    }
+
+    void IncrementTotalTime(const std::chrono::milliseconds& delta)
+    {
+        auto OldTotalTime = TotalTime;
+        TotalTime += delta;
+        if (TotalTime < OldTotalTime) { // Prevent overflow
+            TotalTime = MaxTotalTime;
+        }
+    }
+
+    void DecrementTotalTime(const std::chrono::milliseconds& delta)
+    {
+        auto OldTotalTime = TotalTime;
+        TotalTime -= delta;
+        if (TotalTime > OldTotalTime) { // Prevent underflow
+            TotalTime = std::chrono::milliseconds::zero();
+        }
+    }
+
+    bool ShouldDecrement() const
+    {
+        return (TotalTime >= MaxTotalTime);
+    }
+
+    std::chrono::milliseconds GetTimeToDecrement() const
+    {
+        auto delta = (TotalTime - MaxTotalTime);
+        if (delta > std::chrono::milliseconds::zero()) {
+            return delta;
+        }
+        return std::chrono::milliseconds::zero();
+    }
+
+    void Reset()
+    {
+        TotalTime = std::chrono::milliseconds::zero();
+    }
+};
+
 template<class TEntry, class TComparePredicate> class TScheduler
 {
 public:
@@ -120,9 +169,11 @@ public:
     using TItem = typename TQueue::TItem;
 
     TScheduler(std::chrono::milliseconds maxLowPriorityLag, size_t lowPriorityRateLimit)
-        : MaxLowPriorityLag(maxLowPriorityLag),
+        : TimeBalancer(maxLowPriorityLag),
           LowPriorityRateLimit(lowPriorityRateLimit)
-    {}
+    {
+        ResetLoadBalancing();
+    }
 
     void AddEntry(TEntry entry, std::chrono::steady_clock::time_point deadline, TPriority priority)
     {
@@ -148,12 +199,13 @@ public:
     }
 
     /**
-     * @brief Selects entries from queue with deadline less or equal to currentTime
+     * @brief Selects entries with same priority from queue with deadline less or equal to currentTime
      *
      * @tparam TAccumulator - function or class with method
      *                        bool operator()(TEntry& e,
      *                                        TItemAccumulationPolicy policy,
-     *                                        std::chrono::milliseconds limit)
+     *                                        std::chrono::milliseconds limit,
+     *                                        TPriority priority)
      *                        It is called for each item with expired deadline
      *                        If it returns false next items processing stops.
      * @param currentTime - time against which items deadline is compared
@@ -165,13 +217,13 @@ public:
         if (HighPriorityQueue.HasReadyItems(currentTime) &&
             (!ShouldSelectLowPriority() || !LowPriorityQueue.HasReadyItems(currentTime)))
         {
-            SelectedPriority = TPriority::High;
             bool firstItem = true;
             while (HighPriorityQueue.HasReadyItems(currentTime) &&
                    accumulator(HighPriorityQueue.GetTop().Data,
                                firstItem ? TItemAccumulationPolicy::Force
                                          : TItemAccumulationPolicy::AccordingToPollLimitTime,
-                               std::chrono::milliseconds::max()))
+                               std::chrono::milliseconds::max(),
+                               TPriority::High))
             {
                 HighPriorityQueue.Pop();
                 firstItem = false;
@@ -189,14 +241,12 @@ public:
                        accumulator(LowPriorityQueue.GetTop().Data,
                                    (force && firstItem) ? TItemAccumulationPolicy::Force
                                                         : TItemAccumulationPolicy::AccordingToPollLimitTime,
-                                   pollLimit))
+                                   pollLimit,
+                                   TPriority::Low))
                 {
                     LowPriorityQueue.Pop();
                     LowPriorityRateLimit.NewItem(currentTime);
                     firstItem = false;
-                }
-                if (!firstItem) {
-                    SelectedPriority = TPriority::Low;
                 }
                 return LowPriorityRateLimit.IsOverLimit(currentTime) ? TThrottlingState::LowPriorityRateLimit
                                                                      : TThrottlingState::NoThrottling;
@@ -207,31 +257,22 @@ public:
 
     void UpdateSelectionTime(const std::chrono::milliseconds& delta, TPriority priority)
     {
-        auto OldHighPriorityTime = HighPriorityTime;
         if (priority == TPriority::High) {
-            HighPriorityTime += delta;
-            if (HighPriorityTime < OldHighPriorityTime) { // Prevent overflow
-                HighPriorityTime = MaxLowPriorityLag;
-            }
+            TimeBalancer.IncrementTotalTime(delta);
         } else {
-            HighPriorityTime -= delta;
-            if (HighPriorityTime > OldHighPriorityTime) { // Prevent underflow
-                HighPriorityTime = std::chrono::milliseconds::zero();
-            }
+            TimeBalancer.DecrementTotalTime(delta);
         }
     }
 
-    void UpdateSelectionTime(const std::chrono::milliseconds& delta)
+    void ResetLoadBalancing()
     {
-        UpdateSelectionTime(delta, SelectedPriority);
+        TimeBalancer.Reset();
     }
 
 private:
     TQueue LowPriorityQueue;
     TQueue HighPriorityQueue;
-    std::chrono::milliseconds HighPriorityTime = std::chrono::milliseconds(0);
-    std::chrono::milliseconds MaxLowPriorityLag;
-    TPriority SelectedPriority;
+    TTotalTimeBalancer TimeBalancer;
     TRateLimiter LowPriorityRateLimit;
 
     std::chrono::milliseconds GetLowPriorityPollLimit(std::chrono::steady_clock::time_point currentTime) const
@@ -249,15 +290,11 @@ private:
 
     bool ShouldSelectLowPriority() const
     {
-        return (HighPriorityTime >= MaxLowPriorityLag);
+        return TimeBalancer.ShouldDecrement();
     }
 
     std::chrono::milliseconds GetLowPriorityLag() const
     {
-        auto delta = (HighPriorityTime - MaxLowPriorityLag);
-        if (delta > std::chrono::milliseconds::zero()) {
-            return delta;
-        }
-        return std::chrono::milliseconds::zero();
+        return TimeBalancer.GetTimeToDecrement();
     }
 };

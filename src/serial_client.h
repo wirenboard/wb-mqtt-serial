@@ -6,6 +6,9 @@
 #include "poll_plan.h"
 #include "register_handler.h"
 #include "rpc_request_handler.h"
+#include "serial_client_device_access_handler.h"
+#include "serial_client_events_reader.h"
+#include "serial_client_register_poller.h"
 #include <functional>
 #include <list>
 #include <memory>
@@ -13,21 +16,6 @@
 
 class TSerialDevice;
 typedef std::shared_ptr<TSerialDevice> PSerialDevice;
-
-struct TRegisterComparePredicate
-{
-    bool operator()(const PRegister& r1, const PRegister& r2) const;
-};
-
-class TThrottlingStateLogger
-{
-    bool FirstTime;
-
-public:
-    TThrottlingStateLogger();
-
-    std::string GetMessage(TThrottlingState state);
-};
 
 class TSerialClient: public std::enable_shared_from_this<TSerialClient>
 {
@@ -47,7 +35,6 @@ public:
     void SetTextValue(PRegister reg, const std::string& value);
     void SetReadCallback(const TCallback& callback);
     void SetErrorCallback(const TCallback& callback);
-    void ClearDevices();
     PPort GetPort();
     void RPCTransceive(PRPCRequest request) const;
     PRegister FindRegister(uint8_t slaveId, uint16_t addr) const;
@@ -56,40 +43,34 @@ public:
 private:
     void Activate();
     void Connect();
-    void PrepareRegisterRanges();
     void DoFlush();
-    void WaitForPollAndFlush(std::chrono::steady_clock::time_point waitUntil);
+    void WaitForPollAndFlush(std::chrono::steady_clock::time_point now,
+                             std::chrono::steady_clock::time_point waitUntil);
     void SetReadError(PRegister reg);
     PRegisterHandler GetHandler(PRegister) const;
-    void SetRegistersAvailability(PSerialDevice dev, TRegisterAvailability availability);
-    void ReadEvents();
     void ClosedPortCycle();
     void OpenPortCycle();
-    void ScheduleNextPoll(PRegister reg, std::chrono::steady_clock::time_point pollStartTime);
-    void UpdateSelectionTime(std::chrono::steady_clock::time_point currentTime);
     void UpdateFlushNeeded();
+
     PPort Port;
     std::list<PRegister> RegList;
-    std::vector<PSerialDevice> Devices;
     std::unordered_map<PRegister, PRegisterHandler> Handlers;
 
     bool Active;
-    ModbusExt::TEventConfirmationState EventState;
     TCallback ReadCallback;
     TCallback ErrorCallback;
-    PSerialDevice LastAccessedDevice;
     PBinarySemaphore FlushNeeded;
     PBinarySemaphoreSignal RegisterUpdateSignal, RPCSignal;
-    TScheduler<PRegister, TRegisterComparePredicate> Scheduler;
 
     TPortOpenCloseLogic OpenCloseLogic;
     TLoggerWithTimeout ConnectLogger;
-    TThrottlingStateLogger ThrottlingStateLogger;
 
     PRPCRequestHandler RPCRequestHandler;
-    std::chrono::steady_clock::time_point LastQueueSelectionTime;
 
-    std::chrono::steady_clock::time_point NextEventsRead;
+    TSerialClientEventsReader EventsReader;
+    TSerialClientRegisterPoller RegisterPoller;
+    TSerialClientDeviceAccessHandler LastAccessedDevice;
+    TTotalTimeBalancer TimeBalancer;
 };
 
 typedef std::shared_ptr<TSerialClient> PSerialClient;

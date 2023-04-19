@@ -203,8 +203,7 @@ public:
     enum class TSporadicMode
     {
         DISABLED,
-        ENABLED,
-        UNKNOWN
+        ENABLED
     };
     TSporadicMode SporadicMode{TSporadicMode::DISABLED};
 
@@ -321,7 +320,7 @@ struct TRegister: public TRegisterConfig
 
     typedef std::bitset<TError::MAX_ERRORS> TErrorState;
 
-    TRegister(PSerialDevice device, PRegisterConfig config, const std::string& channelName = std::string());
+    TRegister(PSerialDevice device, PRegisterConfig config);
 
     std::string ToString() const;
 
@@ -345,8 +344,9 @@ struct TRegister: public TRegisterConfig
 
     void SetLastPollTime(std::chrono::steady_clock::time_point pollTime);
 
-    //! Used for metrics
-    const std::string& GetChannelName() const;
+    bool IsExcludedFromPolling() const;
+    void ExcludeFromPolling();
+    void IncludeInPolling();
 
 private:
     std::weak_ptr<TSerialDevice> _Device;
@@ -355,6 +355,7 @@ private:
     std::string ChannelName;
     TErrorState ErrorState;
     TReadPeriodMissChecker ReadPeriodMissChecker;
+    bool ExcludedFromPolling = false;
 
     // Intern() implementation for TRegister
 private:
@@ -362,9 +363,7 @@ private:
     static std::mutex Mutex;
 
 public:
-    static PRegister Intern(PSerialDevice device,
-                            PRegisterConfig config,
-                            const std::string& channelName = std::string())
+    static PRegister Intern(PSerialDevice device, PRegisterConfig config)
     {
         std::unique_lock<std::mutex> lock(Mutex); // thread-safe
         std::tuple<PSerialDevice, PRegisterConfig> args(device, config);
@@ -372,7 +371,7 @@ public:
         auto it = RegStorage.find(args);
 
         if (it == RegStorage.end()) {
-            auto ret = std::make_shared<TRegister>(device, config, channelName);
+            auto ret = std::make_shared<TRegister>(device, config);
             return RegStorage[args] = ret;
         }
 

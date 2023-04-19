@@ -9,7 +9,7 @@ struct Accumulator
 {
     std::vector<std::tuple<int, TItemAccumulationPolicy, std::chrono::milliseconds>> Data;
 
-    bool operator()(int value, TItemAccumulationPolicy policy, std::chrono::milliseconds pollLimit)
+    bool operator()(int value, TItemAccumulationPolicy policy, std::chrono::milliseconds pollLimit, TPriority priority)
     {
         Data.push_back({value, policy, pollLimit});
         return true;
@@ -60,7 +60,7 @@ TEST(PollPlanTest, Scheduler)
     scheduler.AddEntry(5, init + 4us, TPriority::Low);
     scheduler.AddEntry(6, init + 5us, TPriority::Low);
     Accumulator accumulator;
-    auto now = std::chrono::steady_clock::now();
+    auto now = init + 1ms;
     // First 2 high priority items should be taken, no throttling
     EXPECT_EQ(scheduler.AccumulateNext(now, accumulator), TThrottlingState::NoThrottling);
     EXPECT_EQ(accumulator.Data.size(), 2);
@@ -71,11 +71,10 @@ TEST(PollPlanTest, Scheduler)
     EXPECT_EQ(std::get<1>(accumulator.Data[1]), TItemAccumulationPolicy::AccordingToPollLimitTime);
     EXPECT_EQ(std::get<2>(accumulator.Data[1]), std::chrono::milliseconds::max());
     accumulator.Data.clear();
-    scheduler.UpdateSelectionTime(1ms);
+    scheduler.UpdateSelectionTime(1ms, TPriority::High);
     // Emplace another 1 high priority item
     scheduler.AddEntry(7, init + 6us, TPriority::High);
     // Next 3 low priority items should be taken, throttling (rate limit is 2 per 1s)
-    now = std::chrono::steady_clock::now();
     EXPECT_EQ(scheduler.AccumulateNext(now, accumulator), TThrottlingState::LowPriorityRateLimit);
     EXPECT_EQ(accumulator.Data.size(), 3);
     EXPECT_EQ(std::get<0>(accumulator.Data[0]), 2);
@@ -88,20 +87,20 @@ TEST(PollPlanTest, Scheduler)
     EXPECT_EQ(std::get<1>(accumulator.Data[2]), TItemAccumulationPolicy::AccordingToPollLimitTime);
     EXPECT_EQ(std::get<2>(accumulator.Data[2]), std::chrono::milliseconds::zero());
     accumulator.Data.clear();
-    scheduler.UpdateSelectionTime(1ms);
+    scheduler.UpdateSelectionTime(1ms, TPriority::Low);
     // Wait for 1s (rate limit is 2 per 1s)
     sleep(1);
     // Next 1 high priority item should be taken, no throttling
-    now = std::chrono::steady_clock::now();
+    now += 1s;
     EXPECT_EQ(scheduler.AccumulateNext(now, accumulator), TThrottlingState::NoThrottling);
     EXPECT_EQ(accumulator.Data.size(), 1);
     EXPECT_EQ(std::get<0>(accumulator.Data[0]), 7);
     EXPECT_EQ(std::get<1>(accumulator.Data[0]), TItemAccumulationPolicy::Force);
     EXPECT_EQ(std::get<2>(accumulator.Data[0]), std::chrono::milliseconds::max());
     accumulator.Data.clear();
-    scheduler.UpdateSelectionTime(1ms);
+    scheduler.UpdateSelectionTime(1ms, TPriority::High);
     // Next 1 low priority item should be taken, no throttling
-    now = std::chrono::steady_clock::now();
+    now += 1ms;
     EXPECT_EQ(scheduler.AccumulateNext(now, accumulator), TThrottlingState::NoThrottling);
     EXPECT_EQ(accumulator.Data.size(), 1);
     EXPECT_EQ(std::get<0>(accumulator.Data[0]), 6);

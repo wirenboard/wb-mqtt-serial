@@ -21,8 +21,8 @@ namespace ModbusExt // modbus extension protocol common utilities
 
     struct TEventConfirmationState
     {
-        uint8_t SlaveId;
-        uint8_t Flag;
+        uint8_t SlaveId = 0;
+        uint8_t Flag = 0;
     };
 
     class IEventsVisitor
@@ -47,7 +47,7 @@ namespace ModbusExt // modbus extension protocol common utilities
     class TEventsEnabler
     {
     public:
-        typedef std::function<void(uint16_t, bool)> TVisitorFn;
+        typedef std::function<void(TEventRegisterType, uint16_t, bool)> TVisitorFn;
 
         TEventsEnabler(uint8_t slaveId,
                        TPort& port,
@@ -64,7 +64,7 @@ namespace ModbusExt // modbus extension protocol common utilities
          * @param type register's type
          * @param priority register's priority
          */
-        void AddRegister(uint16_t addr, TEventRegisterType type, TEventPriority priority);
+        void AddRegister(uint16_t addr, uint8_t type, TEventPriority priority);
 
         /**
          * @brief Call the function to send a build packet

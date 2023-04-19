@@ -207,7 +207,8 @@ namespace ModbusExt // modbus extension protocol declarations
         // const uint8_t* end = data + Response[ENABLE_EVENTS_RESPONSE_DATA_SIZE_POS];
 
         for (const auto& addr: Registers) {
-            Visitor(addr, data[0] == 0x80); // TODO
+            // TODO: read type
+            Visitor(TEventRegisterType::HOLDING, addr, data[0] == 0x80);
             data++;
         }
     }
@@ -234,10 +235,10 @@ namespace ModbusExt // modbus extension protocol declarations
         Response.reserve(MAX_PACKET_SIZE);
     }
 
-    void TEventsEnabler::AddRegister(uint16_t addr, TEventRegisterType type, TEventPriority priority)
+    void TEventsEnabler::AddRegister(uint16_t addr, uint8_t type, TEventPriority priority)
     {
         auto it = std::back_inserter(Request);
-        Append(it, static_cast<uint8_t>(type));
+        Append(it, type);
         AppendBigEndian(it, addr);
         Append(it, static_cast<uint8_t>(1));
         Append(it, static_cast<uint8_t>(priority));
