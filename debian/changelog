@@ -1,3 +1,9 @@
+wb-mqtt-serial (2.84.0) stable; urgency=medium
+
+  * Add ext modbus proto
+
+ -- Nikolay Korotkiy <nikolay.korotkiy@wirenboard.com>  Tue, 18 Apr 2023 15:25:00 +0400
+
 wb-mqtt-serial (2.83.2) stable; urgency=medium
 
   * Remove metrics

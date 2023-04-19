@@ -113,12 +113,8 @@ namespace Modbus // modbus protocol common utilities
         : TSerialDeviceTransientErrorException("malformed response: " + what)
     {}
 
-    class TInvalidCRCError: public TMalformedResponseError
-    {
-    public:
-        TInvalidCRCError(): TMalformedResponseError("invalid crc")
-        {}
-    };
+    TInvalidCRCError::TInvalidCRCError(): TMalformedResponseError("invalid crc")
+    {}
 
     TModbusRegisterRange::TModbusRegisterRange(std::chrono::microseconds averageResponseTime)
         : AverageResponseTime(averageResponseTime),
@@ -985,13 +981,13 @@ namespace Modbus // modbus protocol common utilities
 
     // TModbusRTUTraits
 
-    TPort::TFrameCompletePred TModbusRTUTraits::ExpectNBytes(int n) const
+    TPort::TFrameCompletePred TModbusRTUTraits::ExpectNBytes(size_t n) const
     {
-        return [=](uint8_t* buf, int size) {
+        return [=](uint8_t* buf, size_t size) {
             if (size < 2)
                 return false;
             if (Modbus::IsException(buf + 1)) // GetPDU
-                return size >= static_cast<int>(EXCEPTION_RESPONSE_PDU_SIZE + DATA_SIZE);
+                return size >= EXCEPTION_RESPONSE_PDU_SIZE + DATA_SIZE;
             return size >= n;
         };
     }
