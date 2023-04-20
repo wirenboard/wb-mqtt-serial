@@ -189,7 +189,7 @@ TEST(TModbusExtTest, ReadEvents)
 {
     TPortMock port;
     TTestEventsVisitor visitor;
-    ModbusExt::TEventConfirmationState state = {0, 0};
+    ModbusExt::TEventConfirmationState state;
 
     port.Response = {0xFD, 0x46, 0x14, 0xD2, 0x5F}; // No events
     try {
@@ -236,19 +236,20 @@ TEST(TModbusExtTest, ReadEvents)
                           std::chrono::milliseconds(100),
                           visitor,
                           state,
+                          5,
                           std::chrono::milliseconds(10));
 
     EXPECT_EQ(port.Request.size(), 9);
     EXPECT_EQ(port.Request[0], 0xFD); // slave id
     EXPECT_EQ(port.Request[1], 0x46); // command
     EXPECT_EQ(port.Request[2], 0x10); // subcommand
-    EXPECT_EQ(port.Request[3], 0x00); // min slave id
+    EXPECT_EQ(port.Request[3], 0x05); // min slave id
     EXPECT_EQ(port.Request[4], 0x02); // max length
     EXPECT_EQ(port.Request[5], 0x05); // slave id (confirmation)
     EXPECT_EQ(port.Request[6], 0x01); // flag (confirmation)
     // CRC16
     EXPECT_EQ(port.Request[7], 0x9B);
-    EXPECT_EQ(port.Request[8], 0xFA);
+    EXPECT_EQ(port.Request[8], 0x36);
 
     EXPECT_EQ(visitor.Events.size(), 0);
 }

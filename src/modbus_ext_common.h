@@ -21,8 +21,8 @@ namespace ModbusExt // modbus extension protocol common utilities
 
     struct TEventConfirmationState
     {
-        uint8_t SlaveId;
-        uint8_t Flag;
+        uint8_t SlaveId = 0;
+        uint8_t Flag = 0;
     };
 
     class IEventsVisitor
@@ -42,6 +42,7 @@ namespace ModbusExt // modbus extension protocol common utilities
                     const std::chrono::milliseconds& frameTimeout,
                     IEventsVisitor& eventVisitor,
                     TEventConfirmationState& state,
+                    uint8_t startingSlaveId = 0,
                     const std::chrono::milliseconds& maxEventsReadTime = std::chrono::milliseconds(0));
 
     //! Class builds packet for enabling events from specified registers
@@ -81,8 +82,8 @@ namespace ModbusExt // modbus extension protocol common utilities
 
         uint8_t SlaveId;
         TPort& Port;
-        const std::chrono::milliseconds& ResponseTimeout;
-        const std::chrono::milliseconds& FrameTimeout;
+        std::chrono::milliseconds ResponseTimeout;
+        std::chrono::milliseconds FrameTimeout;
         TVisitorFn Visitor;
 
         void EnableEvents();

@@ -147,6 +147,7 @@ namespace ModbusExt // modbus extension protocol declarations
                     const std::chrono::milliseconds& frameTimeout,
                     IEventsVisitor& eventVisitor,
                     TEventConfirmationState& state,
+                    uint8_t startingSlaveId,
                     const std::chrono::milliseconds& maxEventsReadTime)
     {
         uint8_t maxBytes = EVENTS_REQUEST_MAX_BYTES;
@@ -156,7 +157,7 @@ namespace ModbusExt // modbus extension protocol declarations
                          static_cast<uint8_t>(std::ceil(maxEventsReadTime.count() / port.GetSendTime(1).count())));
             maxBytes -= EVENTS_RESPONSE_HEADER_SIZE + CRC_SIZE;
         }
-        auto req = MakeReadEventsRequest(state, 0, maxBytes);
+        auto req = MakeReadEventsRequest(state, startingSlaveId, maxBytes);
         port.WriteBytes(req);
 
         std::array<uint8_t, MAX_PACKET_SIZE + ARBITRATION_HEADER_MAX_BYTES> res;
