@@ -18,6 +18,7 @@ namespace ModbusExt // modbus extension protocol declarations
 
     const uint8_t MODBUS_EXT_COMMAND = 0x46;
 
+    // Function codes
     const uint8_t EVENTS_REQUEST_COMMAND = 0x10;
     const uint8_t EVENTS_RESPONSE_COMMAND = 0x11;
     const uint8_t NO_EVENTS_RESPONSE_COMMAND = 0x14;
@@ -29,12 +30,16 @@ namespace ModbusExt // modbus extension protocol declarations
     const size_t MAX_PACKET_SIZE = 256;
     const size_t EVENT_HEADER_SIZE = 4;
     const size_t MIN_ENABLE_EVENTS_RESPONSE_SIZE = 6;
-    const size_t ENABLE_EVENTS_REC_SIZE = 5;
+    const size_t MIN_ENABLE_EVENTS_REC_SIZE = 5;
+    const size_t EXCEPTION_SIZE = 5;
 
     const uint8_t EVENTS_REQUEST_MAX_BYTES = MAX_PACKET_SIZE - EVENTS_RESPONSE_HEADER_SIZE - CRC_SIZE;
     const size_t ARBITRATION_HEADER_MAX_BYTES = 32;
 
+    const size_t SLAVE_ID_POS = 0;
+    const size_t COMMAND_POS = 1;
     const size_t SUB_COMMAND_POS = 2;
+    const size_t EXCEPTION_CODE_POS = 2;
 
     const size_t EVENTS_RESPONSE_SLAVE_ID_POS = 0;
     const size_t EVENTS_RESPONSE_CONFIRM_FLAG_POS = 3;
@@ -46,8 +51,6 @@ namespace ModbusExt // modbus extension protocol declarations
     const size_t EVENT_ID_POS = 2;
     const size_t EVENT_DATA_POS = 4;
 
-    const size_t ENABLE_EVENTS_RESPONSE_SLAVE_ID_POS = 0;
-    const size_t ENABLE_EVENTS_RESPONSE_COMMAND_POS = 1;
     const size_t ENABLE_EVENTS_RESPONSE_DATA_SIZE_POS = 3;
     const size_t ENABLE_EVENTS_RESPONSE_DATA_POS = 4;
 
@@ -106,21 +109,13 @@ namespace ModbusExt // modbus extension protocol declarations
 
     void CheckCRC16(const uint8_t* packet, size_t size)
     {
+        if (size < CRC_SIZE) {
+            throw Modbus::TMalformedResponseError("invalid packet size: " + std::to_string(size));
+        }
+
         auto crc = GetBigEndian<uint16_t>(packet + size - CRC_SIZE, packet + size);
         if (crc != CRC16::CalculateCRC16(packet, size - CRC_SIZE)) {
             throw Modbus::TInvalidCRCError();
-        }
-    }
-
-    void CheckPacket(const uint8_t* packet, size_t size, size_t minSize = CRC_SIZE)
-    {
-        if (size < minSize) {
-            throw Modbus::TMalformedResponseError("invalid packet size: " + std::to_string(size));
-        }
-        CheckCRC16(packet, size);
-
-        if (packet[1] != MODBUS_EXT_COMMAND) {
-            throw Modbus::TMalformedResponseError("invalid command");
         }
     }
 
@@ -152,11 +147,18 @@ namespace ModbusExt // modbus extension protocol declarations
     {
         uint8_t maxBytes = EVENTS_REQUEST_MAX_BYTES;
         if (maxEventsReadTime.count() > 0) {
-            maxBytes =
-                std::min(maxBytes,
-                         static_cast<uint8_t>(std::ceil(maxEventsReadTime.count() / port.GetSendTime(1).count())));
-            maxBytes -= EVENTS_RESPONSE_HEADER_SIZE + CRC_SIZE;
+            auto timePerByte = port.GetSendTime(1);
+            if (timePerByte.count() != 0) {
+                maxBytes = std::min(maxBytes,
+                                    static_cast<uint8_t>(std::ceil(maxEventsReadTime.count() / timePerByte.count())));
+                if (maxBytes > EVENTS_RESPONSE_HEADER_SIZE + CRC_SIZE) {
+                    maxBytes -= EVENTS_RESPONSE_HEADER_SIZE + CRC_SIZE;
+                } else {
+                    maxBytes = 0;
+                }
+            }
         }
+
         auto req = MakeReadEventsRequest(state, startingSlaveId, maxBytes);
         port.WriteBytes(req);
 
@@ -167,16 +169,25 @@ namespace ModbusExt // modbus extension protocol declarations
         auto packetSize = rc - start;
         const uint8_t* packet = res.data() + start;
 
-        CheckPacket(packet, packetSize, NO_EVENTS_RESPONSE_SIZE);
+        CheckCRC16(packet, packetSize);
+
+        if (packet[COMMAND_POS] == req[COMMAND_POS] + 0x80) {
+            throw TSerialDevicePermanentRegisterException("modbus exception, code " +
+                                                          std::to_string(packet[EXCEPTION_CODE_POS]));
+        }
+
+        if (packet[COMMAND_POS] != MODBUS_EXT_COMMAND) {
+            throw Modbus::TMalformedResponseError("invalid command");
+        }
 
         switch (packet[SUB_COMMAND_POS]) {
             case EVENTS_RESPONSE_COMMAND: {
                 if (EVENTS_RESPONSE_HEADER_SIZE + CRC_SIZE + packet[EVENTS_RESPONSE_DATA_SIZE_POS] != packetSize) {
                     throw Modbus::TMalformedResponseError("invalid data size");
                 }
-                state.SlaveId = packet[EVENTS_RESPONSE_SLAVE_ID_POS];
+                state.SlaveId = packet[SLAVE_ID_POS];
                 state.Flag = packet[EVENTS_RESPONSE_CONFIRM_FLAG_POS];
-                IterateOverEvents(packet[EVENTS_RESPONSE_SLAVE_ID_POS],
+                IterateOverEvents(packet[SLAVE_ID_POS],
                                   packet + EVENTS_RESPONSE_DATA_POS,
                                   packet[EVENTS_RESPONSE_DATA_SIZE_POS],
                                   eventVisitor);
@@ -189,7 +200,7 @@ namespace ModbusExt // modbus extension protocol declarations
                 return false;
             }
             default: {
-                throw Modbus::TMalformedResponseError("invalid command");
+                throw Modbus::TMalformedResponseError("invalid sub command");
             }
         }
     }
@@ -200,16 +211,19 @@ namespace ModbusExt // modbus extension protocol declarations
 
         auto rc = Port.ReadFrame(Response.data(), Request.size(), ResponseTimeout + FrameTimeout, FrameTimeout);
 
+        CheckCRC16(Response.data(), rc);
+
+        if (Response[COMMAND_POS] == Request[COMMAND_POS] + 0x80) {
+            throw TSerialDevicePermanentRegisterException("modbus exception, code " +
+                                                          std::to_string(Response[EXCEPTION_CODE_POS]));
+        }
+
         if (rc < MIN_ENABLE_EVENTS_RESPONSE_SIZE) {
             throw Modbus::TMalformedResponseError("invalid packet size: " + std::to_string(rc));
         }
-        CheckCRC16(Response.data(), rc);
-        if (Response[ENABLE_EVENTS_RESPONSE_SLAVE_ID_POS] != SlaveId) {
-            throw Modbus::TMalformedResponseError("invalid slave id");
-        }
 
-        if (Response[ENABLE_EVENTS_RESPONSE_COMMAND_POS] > 0x80) {
-            throw TSerialDevicePermanentRegisterException("modbus exception");
+        if (Response[SLAVE_ID_POS] != SlaveId) {
+            throw Modbus::TMalformedResponseError("invalid slave id");
         }
 
         const uint8_t* data = Response.data() + ENABLE_EVENTS_RESPONSE_DATA_POS;
@@ -251,8 +265,8 @@ namespace ModbusExt // modbus extension protocol declarations
         Append(it, static_cast<uint8_t>(1));
         Append(it, static_cast<uint8_t>(priority));
         RegistersInfo.push_back({addr, type});
-        Request[ENABLE_EVENTS_RESPONSE_DATA_SIZE_POS] += ENABLE_EVENTS_REC_SIZE;
-        if (Request.size() + CRC_SIZE + ENABLE_EVENTS_REC_SIZE > Request.capacity()) {
+        Request[ENABLE_EVENTS_RESPONSE_DATA_SIZE_POS] += MIN_ENABLE_EVENTS_REC_SIZE;
+        if (Request.size() + CRC_SIZE + MIN_ENABLE_EVENTS_REC_SIZE > Request.capacity()) {
             SendRequest();
         }
     }

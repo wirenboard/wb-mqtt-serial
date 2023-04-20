@@ -58,7 +58,7 @@ namespace
 
         std::chrono::milliseconds GetSendTime(double bytesNumber) const override
         {
-            return std::chrono::milliseconds(1);
+            return std::chrono::milliseconds((int)bytesNumber);
         }
     };
 
@@ -236,7 +236,8 @@ TEST(TModbusExtTest, ReadEvents)
 
     port.Response =
         {0xFF, 0xFF, 0xFF, 0x05, 0x46, 0x11, 0x01, 0x01, 0x06, 0x02, 0x04, 0x01, 0xD0, 0x04, 0x00, 0x2B, 0xAC};
-    ModbusExt::ReadEvents(port, std::chrono::milliseconds(100), std::chrono::milliseconds(100), visitor, state);
+    EXPECT_NO_THROW(
+        ModbusExt::ReadEvents(port, std::chrono::milliseconds(100), std::chrono::milliseconds(100), visitor, state));
 
     EXPECT_EQ(port.Request.size(), 9);
     EXPECT_EQ(port.Request[0], 0xFD); // slave id
@@ -255,25 +256,25 @@ TEST(TModbusExtTest, ReadEvents)
 
     port.Response = {0xFF, 0xFF, 0xFF, 0xFD, 0x46, 0x14, 0xD2, 0x5F}; // No events
     visitor.Events.clear();
-    ModbusExt::ReadEvents(port,
-                          std::chrono::milliseconds(100),
-                          std::chrono::milliseconds(100),
-                          visitor,
-                          state,
-                          5,
-                          std::chrono::milliseconds(10));
+    EXPECT_NO_THROW(ModbusExt::ReadEvents(port,
+                                          std::chrono::milliseconds(100),
+                                          std::chrono::milliseconds(100),
+                                          visitor,
+                                          state,
+                                          5,
+                                          std::chrono::milliseconds(50)));
 
     EXPECT_EQ(port.Request.size(), 9);
     EXPECT_EQ(port.Request[0], 0xFD); // slave id
     EXPECT_EQ(port.Request[1], 0x46); // command
     EXPECT_EQ(port.Request[2], 0x10); // subcommand
     EXPECT_EQ(port.Request[3], 0x05); // min slave id
-    EXPECT_EQ(port.Request[4], 0x02); // max length
+    EXPECT_EQ(port.Request[4], 0x2A); // max length
     EXPECT_EQ(port.Request[5], 0x05); // slave id (confirmation)
     EXPECT_EQ(port.Request[6], 0x01); // flag (confirmation)
 
-    EXPECT_EQ(port.Request[7], 0x9B); // CRC16 LSB
-    EXPECT_EQ(port.Request[8], 0x36); // CRC16 MSB
+    EXPECT_EQ(port.Request[7], 0x1B); // CRC16 LSB
+    EXPECT_EQ(port.Request[8], 0x3E); // CRC16 MSB
 
     EXPECT_EQ(visitor.Events.size(), 0);
 }
