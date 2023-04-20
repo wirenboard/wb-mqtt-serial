@@ -48,7 +48,7 @@ namespace ModbusExt // modbus extension protocol common utilities
     class TEventsEnabler
     {
     public:
-        typedef std::function<void(uint16_t, bool)> TVisitorFn;
+        typedef std::function<void(uint8_t, uint16_t, bool)> TVisitorFn;
 
         TEventsEnabler(uint8_t slaveId,
                        TPort& port,
@@ -77,7 +77,7 @@ namespace ModbusExt // modbus extension protocol common utilities
     private:
         std::vector<uint8_t> Request;
         std::vector<uint8_t> Response;
-        std::vector<uint8_t> Registers;
+        std::vector<std::pair<uint16_t, TEventRegisterType>> RegistersInfo;
 
         uint8_t SlaveId;
         TPort& Port;

@@ -214,8 +214,8 @@ namespace ModbusExt // modbus extension protocol declarations
         const uint8_t* data = Response.data() + ENABLE_EVENTS_RESPONSE_DATA_POS;
         // const uint8_t* end = data + Response[ENABLE_EVENTS_RESPONSE_DATA_SIZE_POS];
 
-        for (const auto& addr: Registers) {
-            Visitor(addr, data[0] == (1 << 7));
+        for (const auto& reg: RegistersInfo) {
+            Visitor(reg.second, reg.first, data[0] == (1 << 7));
             data++;
         }
     }
@@ -249,7 +249,7 @@ namespace ModbusExt // modbus extension protocol declarations
         AppendBigEndian(it, addr);
         Append(it, static_cast<uint8_t>(1));
         Append(it, static_cast<uint8_t>(priority));
-        Registers.push_back(addr);
+        RegistersInfo.push_back({addr, type});
         Request[ENABLE_EVENTS_RESPONSE_DATA_SIZE_POS] += ENABLE_EVENTS_REC_SIZE;
         if (Request.size() + CRC_SIZE + ENABLE_EVENTS_REC_SIZE > Request.capacity()) {
             SendRequest();

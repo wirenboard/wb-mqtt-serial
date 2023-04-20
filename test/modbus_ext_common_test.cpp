@@ -87,7 +87,7 @@ TEST(TModbusExtTest, EventsEnablerOneReg)
                                  port,
                                  std::chrono::milliseconds(100),
                                  std::chrono::milliseconds(100),
-                                 [&response](uint16_t reg, bool enabled) { response[reg] = enabled; });
+                                 [&response](uint8_t type, uint16_t reg, bool enabled) { response[reg] = enabled; });
     ev.AddRegister(101, ModbusExt::TEventRegisterType::COIL, ModbusExt::TEventPriority::HIGH);
 
     try {
@@ -125,7 +125,7 @@ TEST(TModbusExtTest, EventsEnablerTwoRanges)
                                  port,
                                  std::chrono::milliseconds(100),
                                  std::chrono::milliseconds(100),
-                                 [&response](uint16_t reg, bool enabled) { response[reg] = enabled; });
+                                 [&response](uint8_t type, uint16_t reg, bool enabled) { response[reg] = enabled; });
     ev.AddRegister(101, ModbusExt::TEventRegisterType::COIL, ModbusExt::TEventPriority::HIGH);
     ev.AddRegister(102, ModbusExt::TEventRegisterType::COIL, ModbusExt::TEventPriority::HIGH);
     ev.AddRegister(103, ModbusExt::TEventRegisterType::INPUT, ModbusExt::TEventPriority::LOW);
