@@ -9,7 +9,8 @@ namespace ModbusExt // modbus extension protocol common utilities
         COIL = 1,
         DISCRETE = 2,
         HOLDING = 3,
-        INPUT = 4
+        INPUT = 4,
+        REBOOT = 15
     };
 
     enum TEventPriority : uint8_t
