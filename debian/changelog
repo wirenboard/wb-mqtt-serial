@@ -1,3 +1,9 @@
+wb-mqtt-serial (2.81.0-wb101) stable; urgency=medium
+
+  * Decrease response and frame timeouts in MSW v.4 template
+
+ -- Petr Krasnoshchekov <petr.krasnoshchekov@wirenboard.com>  Thu, 13 Apr 2023 15:00:53 +0500
+
 wb-mqtt-serial (2.81.0-wb100) stable; urgency=medium
 
   * Added template for MSW v.4
