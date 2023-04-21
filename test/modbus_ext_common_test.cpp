@@ -210,7 +210,7 @@ TEST(TModbusExtTest, ReadEventsIllegalFunction)
         TSerialDevicePermanentRegisterException);
 }
 
-TEST(TModbusExtTest, ReadEvents)
+TEST(TModbusExtTest, ReadEventsNoEventsNoConfirmation)
 {
     TPortMock port;
     TTestEventsVisitor visitor;
@@ -238,6 +238,13 @@ TEST(TModbusExtTest, ReadEvents)
     EXPECT_EQ(port.Request[8], 0x5B); // CRC16 MSB
 
     EXPECT_EQ(visitor.Events.size(), 0);
+}
+
+TEST(TModbusExtTest, ReadEventsWithConfirmation)
+{
+    TPortMock port;
+    TTestEventsVisitor visitor;
+    ModbusExt::TEventConfirmationState state;
 
     port.Response =
         {0xFF, 0xFF, 0xFF, 0x05, 0x46, 0x11, 0x01, 0x01, 0x06, 0x02, 0x04, 0x01, 0xD0, 0x04, 0x00, 0x2B, 0xAC};
@@ -266,7 +273,6 @@ TEST(TModbusExtTest, ReadEvents)
 
     port.Response = {0xFF, 0xFF, 0xFF, 0xFD, 0x46, 0x14, 0xD2, 0x5F}; // No events
     visitor.Events.clear();
-    bool ret = true;
     EXPECT_NO_THROW(ret = ModbusExt::ReadEvents(port,
                                                 std::chrono::milliseconds(100),
                                                 std::chrono::milliseconds(100),
