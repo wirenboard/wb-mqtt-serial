@@ -1,8 +1,18 @@
 #pragma once
 
+#include <algorithm>
 #include <chrono>
 #include <memory>
 #include <queue>
+
+template<typename TItem> class TPriorityQueue: public std::priority_queue<TItem>
+{
+public:
+    template<typename Pred> bool Contains(Pred pred) const
+    {
+        return std::find_if(this->c.cbegin(), this->c.cend(), pred) != this->c.cend();
+    }
+};
 
 template<class TEntry, typename ComparePredicate> class TPriorityQueueSchedule
 {
@@ -57,8 +67,13 @@ public:
         return !Entries.empty() && (GetDeadline() <= time);
     }
 
+    bool Contains(TEntry entry) const
+    {
+        return Entries.Contains([&](const TItem& item) { return item.Data == entry; });
+    }
+
 private:
-    std::priority_queue<TItem> Entries;
+    TPriorityQueue<TItem> Entries;
 };
 
 enum class TPriority
@@ -267,6 +282,11 @@ public:
     void ResetLoadBalancing()
     {
         TimeBalancer.Reset();
+    }
+
+    bool Contains(TEntry entry)
+    {
+        return LowPriorityQueue.Contains(entry) || HighPriorityQueue.Contains(entry);
     }
 
 private:

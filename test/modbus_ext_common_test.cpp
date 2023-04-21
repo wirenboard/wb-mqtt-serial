@@ -1,6 +1,8 @@
 #include "modbus_ext_common.h"
 #include "gtest/gtest.h"
 
+using namespace std::chrono_literals;
+
 namespace
 {
     class TPortMock: public TPort
@@ -75,7 +77,7 @@ TEST(TModbusExtTest, EventsEnabler)
                                  port,
                                  std::chrono::milliseconds(100),
                                  std::chrono::milliseconds(100),
-                                 [&response](uint16_t reg, bool enabled) { response[reg] = enabled; });
+                                 [&response](uint8_t type, uint16_t reg, bool enabled) { response[reg] = enabled; });
     ev.AddRegister(101, ModbusExt::TEventRegisterType::COIL, ModbusExt::TEventPriority::HIGH);
     ev.AddRegister(102, ModbusExt::TEventRegisterType::COIL, ModbusExt::TEventPriority::HIGH);
     ev.AddRegister(103, ModbusExt::TEventRegisterType::INPUT, ModbusExt::TEventPriority::LOW);
@@ -139,7 +141,7 @@ TEST(TModbusExtTest, ReadEvents)
     TTestEventsVisitor visitor;
     ModbusExt::TEventConfirmationState state = {0, 0};
     port.Response = {0xFD, 0x46, 0x14, 0xD2, 0x5F};
-    ModbusExt::ReadEvents(port, std::chrono::milliseconds(100), std::chrono::milliseconds(100), visitor, state);
+    ModbusExt::ReadEvents(port, 100ms, 100ms, 100ms, 0, state, visitor);
 
     EXPECT_EQ(port.Request.size(), 9);
     EXPECT_EQ(port.Request[0], 0xFD); // broadcast

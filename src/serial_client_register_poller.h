@@ -39,7 +39,8 @@ public:
                                 TSerialClientDeviceAccessHandler& lastAccessedDevice);
     void SetReadCallback(TRegisterCallback callback);
     void SetErrorCallback(TRegisterCallback callback);
-    void SetDeviceConnectedCallback(TDeviceCallback callback);
+    void SetDeviceDisconnectedCallback(TDeviceCallback callback);
+    void DeviceDisconnected(PSerialDevice device);
 
     std::chrono::steady_clock::time_point GetDeadline(std::chrono::steady_clock::time_point currentTime) const;
 
@@ -52,6 +53,7 @@ private:
 
     TRegisterCallback ReadCallback;
     TRegisterCallback ErrorCallback;
+    TDeviceCallback DeviceDisconnectedCallback;
 
     TScheduler<PRegister, TRegisterComparePredicate> Scheduler;
 

@@ -143,12 +143,14 @@ namespace ModbusExt // modbus extension protocol declarations
     }
 
     bool ReadEvents(TPort& port,
-                    const std::chrono::milliseconds& responseTimeout,
-                    const std::chrono::milliseconds& frameTimeout,
-                    IEventsVisitor& eventVisitor,
-                    TEventConfirmationState& state)
+                    std::chrono::milliseconds responseTimeout,
+                    std::chrono::milliseconds frameTimeout,
+                    std::chrono::milliseconds maxReadingTime,
+                    uint8_t startingSlaveId,
+                    TEventConfirmationState& state,
+                    IEventsVisitor& eventVisitor)
     {
-        auto req = MakeReadEventsRequest(state);
+        auto req = MakeReadEventsRequest(state, startingSlaveId);
         port.WriteBytes(req);
 
         std::array<uint8_t, MAX_PACKET_SIZE + ARBITRATION_HEADER_MAX_BYTES> res;
@@ -221,8 +223,8 @@ namespace ModbusExt // modbus extension protocol declarations
 
     TEventsEnabler::TEventsEnabler(uint8_t slaveId,
                                    TPort& port,
-                                   const std::chrono::milliseconds& responseTimeout,
-                                   const std::chrono::milliseconds& frameTimeout,
+                                   std::chrono::milliseconds responseTimeout,
+                                   std::chrono::milliseconds frameTimeout,
                                    TEventsEnabler::TVisitorFn visitor)
         : SlaveId(slaveId),
           Port(port),

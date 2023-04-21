@@ -4,6 +4,8 @@
 
 namespace ModbusExt // modbus extension protocol common utilities
 {
+    const uint8_t RESTART_EVENT = 0xF0;
+
     enum TEventRegisterType : uint8_t
     {
         COIL = 1,
@@ -37,11 +39,25 @@ namespace ModbusExt // modbus extension protocol common utilities
                            size_t dataSize) = 0;
     };
 
+    /**
+     * @brief
+     *
+     * @param port
+     * @param responseTimeout
+     * @param frameTimeout
+     * @param maxReadingTime
+     * @param state
+     * @param eventVisitor
+     * @return true - there are more events from devices
+     * @return false - no more events
+     */
     bool ReadEvents(TPort& port,
-                    const std::chrono::milliseconds& responseTimeout,
-                    const std::chrono::milliseconds& frameTimeout,
-                    IEventsVisitor& eventVisitor,
-                    TEventConfirmationState& state);
+                    std::chrono::milliseconds responseTimeout,
+                    std::chrono::milliseconds frameTimeout,
+                    std::chrono::milliseconds maxReadingTime,
+                    uint8_t startingSlaveId,
+                    TEventConfirmationState& state,
+                    IEventsVisitor& eventVisitor);
 
     //! Class builds packet for enabling events from specified registers
     class TEventsEnabler
@@ -51,8 +67,8 @@ namespace ModbusExt // modbus extension protocol common utilities
 
         TEventsEnabler(uint8_t slaveId,
                        TPort& port,
-                       const std::chrono::milliseconds& responseTimeout,
-                       const std::chrono::milliseconds& frameTimeout,
+                       std::chrono::milliseconds responseTimeout,
+                       std::chrono::milliseconds frameTimeout,
                        TEventsEnabler::TVisitorFn visitor);
 
         /**

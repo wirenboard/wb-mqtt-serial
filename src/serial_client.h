@@ -37,7 +37,6 @@ public:
     void SetErrorCallback(const TCallback& callback);
     PPort GetPort();
     void RPCTransceive(PRPCRequest request) const;
-    PRegister FindRegister(uint8_t slaveId, uint16_t addr) const;
     void ProcessPolledRegister(PRegister reg);
 
 private:
@@ -46,7 +45,6 @@ private:
     void DoFlush();
     void WaitForPollAndFlush(std::chrono::steady_clock::time_point now,
                              std::chrono::steady_clock::time_point waitUntil);
-    void SetReadError(PRegister reg);
     PRegisterHandler GetHandler(PRegister) const;
     void ClosedPortCycle();
     void OpenPortCycle();

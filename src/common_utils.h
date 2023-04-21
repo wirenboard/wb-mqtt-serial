@@ -1,4 +1,5 @@
 #pragma once
+#include <chrono>
 #include <string>
 
 namespace util
@@ -12,4 +13,14 @@ namespace util
     /// \param src original string
     /// \return modified string
     std::string ConvertToValidMqttTopicString(const std::string& src);
+
+    class TSpendTimeMeter
+    {
+        std::chrono::steady_clock::time_point StartTime;
+
+    public:
+        void Start();
+
+        std::chrono::microseconds GetSpendTime() const;
+    };
 }

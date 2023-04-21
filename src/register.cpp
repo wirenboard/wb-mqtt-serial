@@ -127,9 +127,6 @@ void TRegister::SetAvailable(TRegisterAvailability available)
     if (Available == TRegisterAvailability::UNAVAILABLE) {
         ExcludeFromPolling();
     }
-    if (Available == TRegisterAvailability::UNKNOWN) {
-        IncludeInPolling();
-    }
 }
 
 TRegisterValue TRegister::GetValue() const

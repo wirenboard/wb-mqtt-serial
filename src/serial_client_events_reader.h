@@ -15,27 +15,22 @@ struct TEventsReaderRegisterDesc
     uint16_t Addr;
     uint8_t Type;
 
-    bool operator==(const TEventsReaderRegisterDesc& other) const
-    {
-        return SlaveId == other.SlaveId && Addr == other.Addr && Type == other.Type;
-    }
+    bool operator==(const TEventsReaderRegisterDesc& other) const;
 };
 
 struct TRegisterDescHasher: public std::unary_function<TEventsReaderRegisterDesc, size_t>
 {
 public:
-    size_t operator()(const TEventsReaderRegisterDesc& reg) const
-    {
-        return (reg.SlaveId << 24) + (reg.Addr << 8) + reg.Type;
-    }
+    size_t operator()(const TEventsReaderRegisterDesc& reg) const;
 };
 
 class TSerialClientEventsReader
 {
 public:
-    typedef std::function<void(PRegister)> TAfterEventFn;
+    typedef std::function<void(PRegister)> TRegisterCallback;
+    typedef std::function<void(PSerialDevice)> TDeviceCallback;
 
-    TSerialClientEventsReader();
+    TSerialClientEventsReader(std::chrono::milliseconds readPeriod, size_t maxReadErrors);
 
     void AddRegister(PRegister reg);
 
@@ -44,13 +39,21 @@ public:
     void ReadEvents(TPort& port,
                     std::chrono::steady_clock::time_point now,
                     std::chrono::milliseconds maxReadingTime,
-                    TAfterEventFn afterEventFn);
+                    TRegisterCallback registerCallback,
+                    TDeviceCallback deviceRestartedHandler);
 
     std::chrono::steady_clock::time_point GetNextEventsReadTime() const;
 
+    void DeviceDisconnected(PSerialDevice device);
+    void SetReadErrors(TRegisterCallback callback);
+
 private:
+    uint8_t LastAccessedSlaveId;
     ModbusExt::TEventConfirmationState EventState;
     std::chrono::steady_clock::time_point NextEventsReadTime;
+    std::chrono::milliseconds ReadPeriod;
+    size_t ReadErrors;
+    size_t MaxReadErrors;
 
     std::unordered_map<TEventsReaderRegisterDesc, PRegister, TRegisterDescHasher> Regs;
     std::unordered_set<uint8_t> DevicesWithEnabledEvents;

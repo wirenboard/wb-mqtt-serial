@@ -206,19 +206,34 @@ PSerialDevice TSerialClientRegisterPoller::OpenPortCycle(TPort& port,
     }
 
     if (deviceWasConnected && device->GetIsDisconnected()) {
-        for (auto& reg: RegList) {
-            if (reg->Device() == device) {
-                bool wasExcludedFromPolling = reg->IsExcludedFromPolling();
-                reg->SetAvailable(TRegisterAvailability::UNKNOWN);
-                if (wasExcludedFromPolling) {
-                    ScheduleNextPoll(reg, currentTime);
-                }
-            }
+        DeviceDisconnected(device);
+        if (DeviceDisconnectedCallback) {
+            DeviceDisconnectedCallback(device);
         }
     }
 
-    Scheduler.UpdateSelectionTime(duration_cast<milliseconds>(steady_clock::now() - currentTime), reader.GetPriority());
+    Scheduler.UpdateSelectionTime(ceil<milliseconds>(steady_clock::now() - currentTime), reader.GetPriority());
     return device;
+}
+
+void TSerialClientRegisterPoller::DeviceDisconnected(PSerialDevice device)
+{
+    auto currentTime = std::chrono::steady_clock::now();
+    for (auto& reg: RegList) {
+        if (reg->Device() == device) {
+            bool wasExcludedFromPolling = reg->IsExcludedFromPolling();
+            reg->SetAvailable(TRegisterAvailability::UNKNOWN);
+            reg->IncludeInPolling();
+            if (wasExcludedFromPolling && !Scheduler.Contains(reg)) {
+                ScheduleNextPoll(reg, currentTime);
+            }
+        }
+    }
+}
+
+void TSerialClientRegisterPoller::SetDeviceDisconnectedCallback(TDeviceCallback deviceDisconnectedCallback)
+{
+    DeviceDisconnectedCallback = deviceDisconnectedCallback;
 }
 
 std::chrono::steady_clock::time_point TSerialClientRegisterPoller::GetDeadline(

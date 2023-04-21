@@ -28,3 +28,13 @@ std::string util::ConvertToValidMqttTopicString(const std::string& src)
 
     return validStr;
 }
+
+void util::TSpendTimeMeter::Start()
+{
+    StartTime = std::chrono::steady_clock::now();
+}
+
+std::chrono::microseconds util::TSpendTimeMeter::GetSpendTime() const
+{
+    return std::chrono::ceil<std::chrono::microseconds>(StartTime - std::chrono::steady_clock::now());
+}

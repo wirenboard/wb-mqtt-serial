@@ -56,7 +56,8 @@ TSerialDevice::TSerialDevice(PDeviceConfig config, PPort port, PProtocol protoco
       LastSuccessfulCycle(),
       IsDisconnected(true),
       RemainingFailCycles(config->DeviceMaxFailCycles),
-      SupportsHoles(true)
+      SupportsHoles(true),
+      ForceDisconnectionLogging(true)
 {}
 
 std::string TSerialDevice::ToString() const
@@ -175,14 +176,10 @@ void TSerialDevice::SetTransferResult(bool ok)
             --RemainingFailCycles;
         }
 
-        if ((std::chrono::steady_clock::now() - LastSuccessfulCycle > _DeviceConfig->DeviceTimeout) &&
-            RemainingFailCycles == 0 &&
-            (!IsDisconnected || LastSuccessfulCycle == std::chrono::steady_clock::time_point()))
+        if (RemainingFailCycles == 0 && (!IsDisconnected || ForceDisconnectionLogging) &&
+            (std::chrono::steady_clock::now() - LastSuccessfulCycle > _DeviceConfig->DeviceTimeout))
         {
-            IsDisconnected = true;
-            SetSupportsHoles(true);
-            LastSuccessfulCycle = std::chrono::steady_clock::now();
-            LOG(Info) << "device " << ToString() << " is disconnected";
+            SetDisconnected();
         }
     }
 }
@@ -246,9 +243,12 @@ void TSerialDevice::SetSupportsHoles(bool supportsHoles)
     SupportsHoles = supportsHoles;
 }
 
-void TSerialDevice::SetSerialClient(PSerialClient client)
+void TSerialDevice::SetDisconnected()
 {
-    SerialClient = client;
+    IsDisconnected = true;
+    SetSupportsHoles(true);
+    ForceDisconnectionLogging = false;
+    LOG(Info) << "device " << ToString() << " is disconnected";
 }
 
 TUInt32SlaveId::TUInt32SlaveId(const std::string& slaveId, bool allowBroadcast): HasBroadcastSlaveId(false)

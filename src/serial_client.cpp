@@ -18,6 +18,8 @@ namespace
     const auto MAX_FLUSHES_WHEN_POLL_IS_DUE = 20;
     const auto BALANCING_THRESHOLD = 500ms;
     const auto MIN_READ_EVENTS_TIME = 25ms;
+    const auto READ_EVENTS_PERIOD = 50ms;
+    const size_t MAX_EVENT_READ_ERRORS = 10;
 };
 
 TSerialClient::TSerialClient(const std::vector<PSerialDevice>& devices,
@@ -28,6 +30,7 @@ TSerialClient::TSerialClient(const std::vector<PSerialDevice>& devices,
       Active(false),
       OpenCloseLogic(openCloseSettings),
       ConnectLogger(PORT_OPEN_ERROR_NOTIFICATION_INTERVAL, "[serial client] "),
+      EventsReader(READ_EVENTS_PERIOD, MAX_EVENT_READ_ERRORS),
       RegisterPoller(lowPriorityRateLimit),
       LastAccessedDevice(EventsReader),
       TimeBalancer(BALANCING_THRESHOLD)
@@ -36,6 +39,8 @@ TSerialClient::TSerialClient(const std::vector<PSerialDevice>& devices,
     RPCRequestHandler = std::make_shared<TRPCRequestHandler>();
     RegisterUpdateSignal = FlushNeeded->MakeSignal();
     RPCSignal = FlushNeeded->MakeSignal();
+    RegisterPoller.SetDeviceDisconnectedCallback(
+        [this](PSerialDevice device) { EventsReader.DeviceDisconnected(device); });
 }
 
 TSerialClient::~TSerialClient()
@@ -130,14 +135,6 @@ void TSerialClient::UpdateFlushNeeded()
     }
 }
 
-void TSerialClient::SetReadError(PRegister reg)
-{
-    reg->SetError(TRegister::TError::ReadError);
-    if (ErrorCallback) {
-        ErrorCallback(reg);
-    }
-}
-
 void TSerialClient::ProcessPolledRegister(PRegister reg)
 {
     if (reg->GetErrorState().test(TRegister::ReadError) || reg->GetErrorState().test(TRegister::WriteError)) {
@@ -190,8 +187,7 @@ void TSerialClient::ClosedPortCycle()
         }
     }
 
-    // TODO: Set read error to sporadic registers
-
+    EventsReader.SetReadErrors([this](PRegister reg) { ProcessPolledRegister(reg); });
     RegisterPoller.ClosedPortCycle(wait_until);
 }
 
@@ -242,16 +238,22 @@ void TSerialClient::OpenPortCycle()
         maxEventsReadTime = MIN_READ_EVENTS_TIME;
     }
     auto readEventsStartTime = steady_clock::now();
-    EventsReader.ReadEvents(*Port, readEventsStartTime, maxEventsReadTime, [this](PRegister reg) {
-        ProcessPolledRegister(reg);
-    });
+    EventsReader.ReadEvents(
+        *Port,
+        readEventsStartTime,
+        maxEventsReadTime,
+        [this](PRegister reg) { ProcessPolledRegister(reg); },
+        [this](PSerialDevice device) {
+            device->SetDisconnected();
+            RegisterPoller.DeviceDisconnected(device);
+        });
 
     auto pollingStartTime = steady_clock::now();
-    auto readEventsTime = duration_cast<milliseconds>(pollingStartTime - readEventsStartTime);
+    auto readEventsTime = ceil<milliseconds>(pollingStartTime - readEventsStartTime);
     TimeBalancer.IncrementTotalTime(readEventsTime);
     auto device =
         RegisterPoller.OpenPortCycle(*Port, pollingStartTime, MAX_POLL_TIME - readEventsTime, LastAccessedDevice);
-    TimeBalancer.DecrementTotalTime(duration_cast<milliseconds>(steady_clock::now() - pollingStartTime));
+    TimeBalancer.DecrementTotalTime(ceil<milliseconds>(steady_clock::now() - pollingStartTime));
 
     if (device) {
         OpenCloseLogic.CloseIfNeeded(Port, device->GetIsDisconnected());
@@ -268,16 +270,4 @@ PPort TSerialClient::GetPort()
 void TSerialClient::RPCTransceive(PRPCRequest request) const
 {
     RPCRequestHandler->RPCTransceive(request, FlushNeeded, RPCSignal);
-}
-
-PRegister TSerialClient::FindRegister(uint8_t slaveId, uint16_t addr) const
-{
-    for (const auto& reg: RegList) {
-        if (std::stoi(reg->Device()->DeviceConfig()->SlaveId) == slaveId &&
-            GetUint32RegisterAddress(reg->GetAddress()) == addr)
-        {
-            return reg;
-        }
-    }
-    return nullptr;
 }

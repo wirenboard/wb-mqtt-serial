@@ -47,7 +47,6 @@ void TSerialPortDriver::SetUpDevices()
         for (const auto& device: Config->Devices) {
             auto mqttDevice = tx->CreateDevice(From(device)).GetValue();
             assert(mqttDevice);
-            device->SetSerialClient(SerialClient);
             Devices.push_back(device);
             // init channels' registers
             for (const auto& channelConfig: device->DeviceConfig()->DeviceChannelConfigs) {
