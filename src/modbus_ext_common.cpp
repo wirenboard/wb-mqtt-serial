@@ -171,11 +171,6 @@ namespace ModbusExt // modbus extension protocol declarations
 
         CheckCRC16(packet, packetSize);
 
-        if (packet[COMMAND_POS] == req[COMMAND_POS] + 0x80) {
-            throw TSerialDevicePermanentRegisterException("modbus exception, code " +
-                                                          std::to_string(packet[EXCEPTION_CODE_POS]));
-        }
-
         if (packet[COMMAND_POS] != MODBUS_EXT_COMMAND) {
             throw Modbus::TMalformedResponseError("invalid command");
         }

@@ -209,18 +209,6 @@ TEST(TModbusExtTest, EventsEnablerTwoRanges)
     EXPECT_TRUE(response[112]);
 }
 
-TEST(TModbusExtTest, ReadEventsIllegalFunction)
-{
-    TPortMock port;
-    TTestEventsVisitor visitor;
-    ModbusExt::TEventConfirmationState state;
-
-    port.Response = {0x0A, 0xC6, 0x01, 0xC3, 0xA2};
-    EXPECT_THROW(
-        ModbusExt::ReadEvents(port, std::chrono::milliseconds(100), std::chrono::milliseconds(100), visitor, state),
-        TSerialDevicePermanentRegisterException);
-}
-
 TEST(TModbusExtTest, ReadEventsNoEventsNoConfirmation)
 {
     TPortMock port;
