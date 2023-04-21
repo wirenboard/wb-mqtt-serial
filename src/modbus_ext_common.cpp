@@ -227,11 +227,19 @@ namespace ModbusExt // modbus extension protocol declarations
         }
 
         const uint8_t* data = Response.data() + ENABLE_EVENTS_RESPONSE_DATA_POS;
-        // const uint8_t* end = data + Response[ENABLE_EVENTS_RESPONSE_DATA_SIZE_POS];
+        const uint8_t* end = data + Response[ENABLE_EVENTS_RESPONSE_DATA_SIZE_POS];
 
-        for (const auto& reg: RegistersInfo) {
-            Visitor(reg.second, reg.first, data[0] == (1 << 7));
-            data++;
+        for (const auto& reg: Settings) {
+            auto dataSize = (reg.second.size() + 7) / 8;
+            auto type = reg.first.first;
+            auto addr = reg.first.second;
+            for (size_t i = 0; i < reg.second.size(); ++i) {
+                if (dataSize > 0 && data + dataSize <= end) {
+                    std::bitset<8> bits(data[i / 8]);
+                    Visitor(type, addr + i, bits.test(7 - (8 + i) % 8));
+                }
+            }
+            data += dataSize;
         }
     }
 
@@ -259,29 +267,52 @@ namespace ModbusExt // modbus extension protocol declarations
 
     void TEventsEnabler::AddRegister(uint16_t addr, TEventType type, TEventPriority priority)
     {
-        auto it = std::back_inserter(Request);
-        Append(it, static_cast<uint8_t>(type));
-        AppendBigEndian(it, addr);
-        Append(it, static_cast<uint8_t>(1));
-        Append(it, static_cast<uint8_t>(priority));
-        RegistersInfo.push_back({addr, type});
-        Request[ENABLE_EVENTS_RESPONSE_DATA_SIZE_POS] += MIN_ENABLE_EVENTS_REC_SIZE;
-        if (Request.size() + CRC_SIZE + MIN_ENABLE_EVENTS_REC_SIZE > Request.capacity()) {
+        auto it = std::find_if(Settings.begin(), Settings.end(), [type, addr](const auto& v) {
+            auto nextAddr = v.first.second + static_cast<uint16_t>(v.second.size());
+            return v.first.first == type && nextAddr == addr;
+        });
+        if (it != Settings.end()) {
+            it->second.push_back(priority);
+            Request[ENABLE_EVENTS_RESPONSE_DATA_SIZE_POS] += 1;
+        } else {
+            Settings[std::make_pair(type, addr)].push_back(priority);
+            Request[ENABLE_EVENTS_RESPONSE_DATA_SIZE_POS] += MIN_ENABLE_EVENTS_REC_SIZE;
+        }
+
+        if (Request.size() + Request[ENABLE_EVENTS_RESPONSE_DATA_SIZE_POS] + CRC_SIZE + MIN_ENABLE_EVENTS_REC_SIZE >
+            Request.capacity())
+        {
             SendRequest();
         }
     }
 
     void TEventsEnabler::SendRequest()
     {
-        if (Request[ENABLE_EVENTS_RESPONSE_DATA_SIZE_POS] != 0) {
-            AppendBigEndian(std::back_inserter(Request), CRC16::CalculateCRC16(Request.data(), Request.size()));
-            try {
-                EnableEvents();
-                ClearRequest();
-            } catch (...) {
-                ClearRequest();
-                throw;
+        if (Request[ENABLE_EVENTS_RESPONSE_DATA_SIZE_POS] == 0) {
+            return;
+        }
+
+        auto it = std::back_inserter(Request);
+        for (const auto& reg: Settings) {
+            auto type = reg.first.first;
+            auto addr = reg.first.second;
+
+            Append(it, static_cast<uint8_t>(type));
+            AppendBigEndian(it, addr);
+            Append(it, static_cast<uint8_t>(reg.second.size()));
+
+            for (const auto& priority: reg.second) {
+                Append(it, static_cast<uint8_t>(priority));
             }
+        }
+
+        AppendBigEndian(std::back_inserter(Request), CRC16::CalculateCRC16(Request.data(), Request.size()));
+        try {
+            EnableEvents();
+            ClearRequest();
+        } catch (...) {
+            ClearRequest();
+            throw;
         }
     }
 

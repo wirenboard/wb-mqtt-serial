@@ -135,7 +135,10 @@ TEST(TModbusExtTest, EventsEnablerIllegalFunction)
 TEST(TModbusExtTest, EventsEnablerTwoRanges)
 {
     TPortMock port;
-    port.Response = {0x0A, 0x46, 0x18, 0x05, 0x80, 0x80, 0x80, 0x80, 0x00, 0x20, 0x28};
+    // 0xC0 = 0b11000000
+    // 0xDF = 0b11011111
+    // 0x40 = 0b01000000
+    port.Response = {0x0A, 0x46, 0x18, 0x03, 0xC0, 0xDF, 0x40, 0xC6, 0x1C};
 
     std::map<uint16_t, bool> response;
     ModbusExt::TEventsEnabler ev(10,
@@ -143,59 +146,67 @@ TEST(TModbusExtTest, EventsEnablerTwoRanges)
                                  std::chrono::milliseconds(100),
                                  std::chrono::milliseconds(100),
                                  [&response](uint8_t type, uint16_t reg, bool enabled) { response[reg] = enabled; });
+
     ev.AddRegister(101, ModbusExt::TEventType::COIL, ModbusExt::TEventPriority::HIGH);
     ev.AddRegister(102, ModbusExt::TEventType::COIL, ModbusExt::TEventPriority::HIGH);
+
     ev.AddRegister(103, ModbusExt::TEventType::INPUT, ModbusExt::TEventPriority::LOW);
     ev.AddRegister(104, ModbusExt::TEventType::INPUT, ModbusExt::TEventPriority::LOW);
     ev.AddRegister(105, ModbusExt::TEventType::INPUT, ModbusExt::TEventPriority::LOW);
+    ev.AddRegister(106, ModbusExt::TEventType::INPUT, ModbusExt::TEventPriority::LOW);
+    ev.AddRegister(107, ModbusExt::TEventType::INPUT, ModbusExt::TEventPriority::LOW);
+    ev.AddRegister(108, ModbusExt::TEventType::INPUT, ModbusExt::TEventPriority::LOW);
+    ev.AddRegister(109, ModbusExt::TEventType::INPUT, ModbusExt::TEventPriority::LOW);
+    ev.AddRegister(110, ModbusExt::TEventType::INPUT, ModbusExt::TEventPriority::HIGH);
+    ev.AddRegister(111, ModbusExt::TEventType::INPUT, ModbusExt::TEventPriority::HIGH);
+    ev.AddRegister(112, ModbusExt::TEventType::INPUT, ModbusExt::TEventPriority::HIGH);
 
     EXPECT_NO_THROW(ev.SendRequest());
 
-    EXPECT_EQ(port.Request.size(), 31);
+    EXPECT_EQ(port.Request.size(), 26);
     EXPECT_EQ(port.Request[0], 0x0A); // slave id
     EXPECT_EQ(port.Request[1], 0x46); // command
     EXPECT_EQ(port.Request[2], 0x18); // subcommand
-    EXPECT_EQ(port.Request[3], 0x19); // settings size
+    EXPECT_EQ(port.Request[3], 0x14); // settings size
 
     EXPECT_EQ(port.Request[4], 0x01); // event type
     EXPECT_EQ(port.Request[5], 0x00); // address MSB
     EXPECT_EQ(port.Request[6], 0x65); // address LSB
-    EXPECT_EQ(port.Request[7], 0x01); // count
-    EXPECT_EQ(port.Request[8], 0x02); // priority
+    EXPECT_EQ(port.Request[7], 0x02); // count
+    EXPECT_EQ(port.Request[8], 0x02); // priority 101
+    EXPECT_EQ(port.Request[9], 0x02); // priority 102
 
-    EXPECT_EQ(port.Request[9], 0x01);  // event type
-    EXPECT_EQ(port.Request[10], 0x00); // address MSB
-    EXPECT_EQ(port.Request[11], 0x66); // address LSB
-    EXPECT_EQ(port.Request[12], 0x01); // count
-    EXPECT_EQ(port.Request[13], 0x02); // priority
+    EXPECT_EQ(port.Request[10], 0x04); // event type
+    EXPECT_EQ(port.Request[11], 0x00); // address MSB
+    EXPECT_EQ(port.Request[12], 0x67); // address LSB
+    EXPECT_EQ(port.Request[13], 0x0A); // count
+    EXPECT_EQ(port.Request[14], 0x01); // priority 103
+    EXPECT_EQ(port.Request[15], 0x01); // priority 104
+    EXPECT_EQ(port.Request[16], 0x01); // priority 105
+    EXPECT_EQ(port.Request[17], 0x01); // priority 106
+    EXPECT_EQ(port.Request[18], 0x01); // priority 107
+    EXPECT_EQ(port.Request[19], 0x01); // priority 108
+    EXPECT_EQ(port.Request[20], 0x01); // priority 109
+    EXPECT_EQ(port.Request[21], 0x02); // priority 110
+    EXPECT_EQ(port.Request[22], 0x02); // priority 111
+    EXPECT_EQ(port.Request[23], 0x02); // priority 112
 
-    EXPECT_EQ(port.Request[14], 0x04); // event type
-    EXPECT_EQ(port.Request[15], 0x00); // address MSB
-    EXPECT_EQ(port.Request[16], 0x67); // address LSB
-    EXPECT_EQ(port.Request[17], 0x01); // count
-    EXPECT_EQ(port.Request[18], 0x01); // priority
+    EXPECT_EQ(port.Request[24], 0x25); // CRC16 LSB
+    EXPECT_EQ(port.Request[25], 0xF0); // CRC16 MSB
 
-    EXPECT_EQ(port.Request[19], 0x04); // event type
-    EXPECT_EQ(port.Request[20], 0x00); // address MSB
-    EXPECT_EQ(port.Request[21], 0x68); // address LSB
-    EXPECT_EQ(port.Request[22], 0x01); // count
-    EXPECT_EQ(port.Request[23], 0x01); // priority
-
-    EXPECT_EQ(port.Request[24], 0x04); // event type
-    EXPECT_EQ(port.Request[25], 0x00); // address MSB
-    EXPECT_EQ(port.Request[26], 0x69); // address LSB
-    EXPECT_EQ(port.Request[27], 0x01); // count
-    EXPECT_EQ(port.Request[28], 0x01); // priority
-
-    EXPECT_EQ(port.Request[29], 0x59); // CRC16 LSB
-    EXPECT_EQ(port.Request[30], 0x4C); // CRC16 MSB
-
-    EXPECT_EQ(response.size(), 5);
+    EXPECT_EQ(response.size(), 12);
     EXPECT_TRUE(response[101]);
     EXPECT_TRUE(response[102]);
     EXPECT_TRUE(response[103]);
     EXPECT_TRUE(response[104]);
     EXPECT_FALSE(response[105]);
+    EXPECT_TRUE(response[106]);
+    EXPECT_TRUE(response[107]);
+    EXPECT_TRUE(response[108]);
+    EXPECT_TRUE(response[109]);
+    EXPECT_TRUE(response[110]);
+    EXPECT_FALSE(response[111]);
+    EXPECT_TRUE(response[112]);
 }
 
 TEST(TModbusExtTest, ReadEventsIllegalFunction)

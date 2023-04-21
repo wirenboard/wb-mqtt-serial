@@ -1,6 +1,7 @@
 #pragma once
 
 #include "port.h"
+#include <map>
 
 namespace ModbusExt // modbus extension protocol common utilities
 {
@@ -79,7 +80,7 @@ namespace ModbusExt // modbus extension protocol common utilities
     private:
         std::vector<uint8_t> Request;
         std::vector<uint8_t> Response;
-        std::vector<std::pair<uint16_t, TEventType>> RegistersInfo;
+        std::map<std::pair<TEventType, uint16_t>, std::vector<TEventPriority>> Settings;
 
         uint8_t SlaveId;
         TPort& Port;
