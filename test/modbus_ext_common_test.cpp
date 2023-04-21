@@ -74,7 +74,7 @@ namespace
                            const uint8_t* data,
                            size_t dataSize) override
         {
-            if (eventType == ModbusExt::TEventRegisterType::REBOOT) {
+            if (eventType == ModbusExt::TEventType::REBOOT) {
                 Reboot = true;
                 return;
             }
@@ -94,7 +94,7 @@ TEST(TModbusExtTest, EventsEnablerOneReg)
                                  std::chrono::milliseconds(100),
                                  std::chrono::milliseconds(100),
                                  [&response](uint8_t type, uint16_t reg, bool enabled) { response[reg] = enabled; });
-    ev.AddRegister(101, ModbusExt::TEventRegisterType::COIL, ModbusExt::TEventPriority::HIGH);
+    ev.AddRegister(101, ModbusExt::TEventType::COIL, ModbusExt::TEventPriority::HIGH);
 
     EXPECT_NO_THROW(ev.SendRequest());
 
@@ -127,7 +127,7 @@ TEST(TModbusExtTest, EventsEnablerIllegalFunction)
                                  std::chrono::milliseconds(100),
                                  std::chrono::milliseconds(100),
                                  [](uint8_t, uint16_t, bool) {});
-    ev.AddRegister(101, ModbusExt::TEventRegisterType::COIL, ModbusExt::TEventPriority::HIGH);
+    ev.AddRegister(101, ModbusExt::TEventType::COIL, ModbusExt::TEventPriority::HIGH);
 
     EXPECT_THROW(ev.SendRequest(), TSerialDevicePermanentRegisterException);
 }
@@ -143,11 +143,11 @@ TEST(TModbusExtTest, EventsEnablerTwoRanges)
                                  std::chrono::milliseconds(100),
                                  std::chrono::milliseconds(100),
                                  [&response](uint8_t type, uint16_t reg, bool enabled) { response[reg] = enabled; });
-    ev.AddRegister(101, ModbusExt::TEventRegisterType::COIL, ModbusExt::TEventPriority::HIGH);
-    ev.AddRegister(102, ModbusExt::TEventRegisterType::COIL, ModbusExt::TEventPriority::HIGH);
-    ev.AddRegister(103, ModbusExt::TEventRegisterType::INPUT, ModbusExt::TEventPriority::LOW);
-    ev.AddRegister(104, ModbusExt::TEventRegisterType::INPUT, ModbusExt::TEventPriority::LOW);
-    ev.AddRegister(105, ModbusExt::TEventRegisterType::INPUT, ModbusExt::TEventPriority::LOW);
+    ev.AddRegister(101, ModbusExt::TEventType::COIL, ModbusExt::TEventPriority::HIGH);
+    ev.AddRegister(102, ModbusExt::TEventType::COIL, ModbusExt::TEventPriority::HIGH);
+    ev.AddRegister(103, ModbusExt::TEventType::INPUT, ModbusExt::TEventPriority::LOW);
+    ev.AddRegister(104, ModbusExt::TEventType::INPUT, ModbusExt::TEventPriority::LOW);
+    ev.AddRegister(105, ModbusExt::TEventType::INPUT, ModbusExt::TEventPriority::LOW);
 
     EXPECT_NO_THROW(ev.SendRequest());
 
@@ -217,8 +217,13 @@ TEST(TModbusExtTest, ReadEvents)
     ModbusExt::TEventConfirmationState state;
 
     port.Response = {0xFF, 0xFF, 0xFF, 0xFD, 0x46, 0x14, 0xD2, 0x5F}; // No events
-    EXPECT_NO_THROW(
-        ModbusExt::ReadEvents(port, std::chrono::milliseconds(100), std::chrono::milliseconds(100), visitor, state));
+    bool ret = true;
+    EXPECT_NO_THROW(ret = ModbusExt::ReadEvents(port,
+                                                std::chrono::milliseconds(100),
+                                                std::chrono::milliseconds(100),
+                                                visitor,
+                                                state));
+    EXPECT_FALSE(ret);
 
     EXPECT_EQ(port.Request.size(), 9);
     EXPECT_EQ(port.Request[0], 0xFD); // broadcast
@@ -236,8 +241,13 @@ TEST(TModbusExtTest, ReadEvents)
 
     port.Response =
         {0xFF, 0xFF, 0xFF, 0x05, 0x46, 0x11, 0x01, 0x01, 0x06, 0x02, 0x04, 0x01, 0xD0, 0x04, 0x00, 0x2B, 0xAC};
-    EXPECT_NO_THROW(
-        ModbusExt::ReadEvents(port, std::chrono::milliseconds(100), std::chrono::milliseconds(100), visitor, state));
+    bool ret = false;
+    EXPECT_NO_THROW(ret = ModbusExt::ReadEvents(port,
+                                                std::chrono::milliseconds(100),
+                                                std::chrono::milliseconds(100),
+                                                visitor,
+                                                state));
+    EXPECT_TRUE(ret);
 
     EXPECT_EQ(port.Request.size(), 9);
     EXPECT_EQ(port.Request[0], 0xFD); // slave id
@@ -256,13 +266,15 @@ TEST(TModbusExtTest, ReadEvents)
 
     port.Response = {0xFF, 0xFF, 0xFF, 0xFD, 0x46, 0x14, 0xD2, 0x5F}; // No events
     visitor.Events.clear();
-    EXPECT_NO_THROW(ModbusExt::ReadEvents(port,
-                                          std::chrono::milliseconds(100),
-                                          std::chrono::milliseconds(100),
-                                          visitor,
-                                          state,
-                                          5,
-                                          std::chrono::milliseconds(50)));
+    bool ret = true;
+    EXPECT_NO_THROW(ret = ModbusExt::ReadEvents(port,
+                                                std::chrono::milliseconds(100),
+                                                std::chrono::milliseconds(100),
+                                                visitor,
+                                                state,
+                                                5,
+                                                std::chrono::milliseconds(50)));
+    EXPECT_FALSE(ret);
 
     EXPECT_EQ(port.Request.size(), 9);
     EXPECT_EQ(port.Request[0], 0xFD); // slave id
@@ -287,8 +299,13 @@ TEST(TModbusExtTest, ReadEventsReboot)
 
     port.Response =
         {0xFF, 0xFF, 0xFF, 0xFD, 0x46, 0x11, 0x00, 0x00, 0x04, 0x00, 0x0F, 0x00, 0x00, 0xFF, 0x5E}; // Reboot event
-    EXPECT_NO_THROW(
-        ModbusExt::ReadEvents(port, std::chrono::milliseconds(100), std::chrono::milliseconds(100), visitor, state));
+    bool ret = false;
+    EXPECT_NO_THROW(ret = ModbusExt::ReadEvents(port,
+                                                std::chrono::milliseconds(100),
+                                                std::chrono::milliseconds(100),
+                                                visitor,
+                                                state));
+    EXPECT_TRUE(ret);
 
     EXPECT_TRUE(visitor.Reboot);
 }

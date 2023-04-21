@@ -257,7 +257,7 @@ namespace ModbusExt // modbus extension protocol declarations
         Response.reserve(MAX_PACKET_SIZE);
     }
 
-    void TEventsEnabler::AddRegister(uint16_t addr, TEventRegisterType type, TEventPriority priority)
+    void TEventsEnabler::AddRegister(uint16_t addr, TEventType type, TEventPriority priority)
     {
         auto it = std::back_inserter(Request);
         Append(it, static_cast<uint8_t>(type));

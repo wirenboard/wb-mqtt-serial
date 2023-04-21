@@ -4,7 +4,7 @@
 
 namespace ModbusExt // modbus extension protocol common utilities
 {
-    enum TEventRegisterType : uint8_t
+    enum TEventType : uint8_t
     {
         COIL = 1,
         DISCRETE = 2,
@@ -67,7 +67,7 @@ namespace ModbusExt // modbus extension protocol common utilities
          * @param type register's type
          * @param priority register's priority
          */
-        void AddRegister(uint16_t addr, TEventRegisterType type, TEventPriority priority);
+        void AddRegister(uint16_t addr, TEventType type, TEventPriority priority);
 
         /**
          * @brief Call the function to send a build packet
@@ -79,7 +79,7 @@ namespace ModbusExt // modbus extension protocol common utilities
     private:
         std::vector<uint8_t> Request;
         std::vector<uint8_t> Response;
-        std::vector<std::pair<uint16_t, TEventRegisterType>> RegistersInfo;
+        std::vector<std::pair<uint16_t, TEventType>> RegistersInfo;
 
         uint8_t SlaveId;
         TPort& Port;
