@@ -21,6 +21,7 @@ namespace util
     public:
         void Start();
 
+        std::chrono::steady_clock::time_point GetStartTime() const;
         std::chrono::microseconds GetSpendTime() const;
     };
 }

@@ -106,6 +106,9 @@ public:
 
     void NewItem(std::chrono::steady_clock::time_point time)
     {
+        if (RateLimit == 0) {
+            return;
+        }
         if (time - StartTime <= std::chrono::seconds(1)) {
             ++Count;
             return;
@@ -116,6 +119,9 @@ public:
 
     bool IsOverLimit(std::chrono::steady_clock::time_point time) const
     {
+        if (RateLimit == 0) {
+            return false;
+        }
         if (time - StartTime <= std::chrono::seconds(1)) {
             return Count > RateLimit;
         }
@@ -177,7 +183,7 @@ public:
     }
 };
 
-template<class TEntry, class TComparePredicate> class TScheduler
+template<class TEntry, class TComparePredicate = std::less<TEntry>> class TScheduler
 {
 public:
     using TQueue = TPriorityQueueSchedule<TEntry, TComparePredicate>;
@@ -229,8 +235,12 @@ public:
     template<class TAccumulator>
     TThrottlingState AccumulateNext(std::chrono::steady_clock::time_point currentTime, TAccumulator& accumulator)
     {
+        if (!LowPriorityQueue.HasReadyItems(currentTime)) {
+            ResetLoadBalancing();
+        }
+
         if (HighPriorityQueue.HasReadyItems(currentTime) &&
-            (!ShouldSelectLowPriority() || !LowPriorityQueue.HasReadyItems(currentTime)))
+            (!ShouldSelectLowPriority(currentTime) || !LowPriorityQueue.HasReadyItems(currentTime)))
         {
             bool firstItem = true;
             while (HighPriorityQueue.HasReadyItems(currentTime) &&
@@ -246,7 +256,7 @@ public:
         } else {
             if (LowPriorityQueue.HasReadyItems(currentTime)) {
                 const auto pollLimit = GetLowPriorityPollLimit(currentTime);
-                bool force = ShouldSelectLowPriority() || HighPriorityQueue.IsEmpty();
+                bool force = ShouldSelectLowPriority(currentTime);
                 bool firstItem = true;
                 // Set maximum allowed poll limit to first low priority item,
                 // if it is selected to balance load.
@@ -308,9 +318,9 @@ private:
         return GetLowPriorityLag();
     }
 
-    bool ShouldSelectLowPriority() const
+    bool ShouldSelectLowPriority(std::chrono::steady_clock::time_point currentTime) const
     {
-        return TimeBalancer.ShouldDecrement();
+        return !LowPriorityRateLimit.IsOverLimit(currentTime) && TimeBalancer.ShouldDecrement();
     }
 
     std::chrono::milliseconds GetLowPriorityLag() const

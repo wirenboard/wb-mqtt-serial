@@ -31,18 +31,19 @@ public:
 
     TSerialClientRegisterPoller(size_t lowPriorityRateLimit = std::numeric_limits<size_t>::max());
 
-    void PrepareRegisterRanges(const std::list<PRegister>& regList);
+    void PrepareRegisterRanges(const std::list<PRegister>& regList, std::chrono::steady_clock::time_point currentTime);
     void ClosedPortCycle(std::chrono::steady_clock::time_point currentTime);
     PSerialDevice OpenPortCycle(TPort& port,
                                 std::chrono::steady_clock::time_point currentTime,
                                 std::chrono::milliseconds maxPollingTime,
+                                bool readAtLeastOneRegister,
                                 TSerialClientDeviceAccessHandler& lastAccessedDevice);
     void SetReadCallback(TRegisterCallback callback);
     void SetErrorCallback(TRegisterCallback callback);
     void SetDeviceDisconnectedCallback(TDeviceCallback callback);
     void DeviceDisconnected(PSerialDevice device);
 
-    std::chrono::steady_clock::time_point GetDeadline(std::chrono::steady_clock::time_point currentTime) const;
+    std::chrono::steady_clock::time_point GetDeadline() const;
 
 private:
     void ProcessPolledRegister(PRegister reg);
@@ -58,4 +59,6 @@ private:
     TScheduler<PRegister, TRegisterComparePredicate> Scheduler;
 
     TThrottlingStateLogger ThrottlingStateLogger;
+
+    std::chrono::steady_clock::time_point Deadline;
 };

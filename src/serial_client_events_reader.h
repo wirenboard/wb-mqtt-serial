@@ -30,28 +30,25 @@ public:
     typedef std::function<void(PRegister)> TRegisterCallback;
     typedef std::function<void(PSerialDevice)> TDeviceCallback;
 
-    TSerialClientEventsReader(std::chrono::milliseconds readPeriod, size_t maxReadErrors);
+    TSerialClientEventsReader(size_t maxReadErrors);
 
     void AddRegister(PRegister reg);
 
     void EnableEvents(PSerialDevice device, TPort& port);
 
-    void ReadEvents(TPort& port,
-                    std::chrono::steady_clock::time_point now,
+    bool ReadEvents(TPort& port,
                     std::chrono::milliseconds maxReadingTime,
                     TRegisterCallback registerCallback,
                     TDeviceCallback deviceRestartedHandler);
 
-    std::chrono::steady_clock::time_point GetNextEventsReadTime() const;
-
     void DeviceDisconnected(PSerialDevice device);
     void SetReadErrors(TRegisterCallback callback);
+
+    bool HasRegisters() const;
 
 private:
     uint8_t LastAccessedSlaveId;
     ModbusExt::TEventConfirmationState EventState;
-    std::chrono::steady_clock::time_point NextEventsReadTime;
-    std::chrono::milliseconds ReadPeriod;
     size_t ReadErrors;
     size_t MaxReadErrors;
 

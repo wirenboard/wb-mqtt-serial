@@ -17,6 +17,12 @@
 class TSerialDevice;
 typedef std::shared_ptr<TSerialDevice> PSerialDevice;
 
+enum TClientTaskType
+{
+    POLLING,
+    EVENTS
+};
+
 class TSerialClient: public std::enable_shared_from_this<TSerialClient>
 {
 public:
@@ -68,7 +74,8 @@ private:
     TSerialClientEventsReader EventsReader;
     TSerialClientRegisterPoller RegisterPoller;
     TSerialClientDeviceAccessHandler LastAccessedDevice;
-    TTotalTimeBalancer TimeBalancer;
+    TScheduler<TClientTaskType> TimeBalancer;
+    std::chrono::milliseconds ReadEventsPeriod;
 };
 
 typedef std::shared_ptr<TSerialClient> PSerialClient;

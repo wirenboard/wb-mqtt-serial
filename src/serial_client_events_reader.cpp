@@ -143,38 +143,34 @@ public:
     }
 };
 
-TSerialClientEventsReader::TSerialClientEventsReader(std::chrono::milliseconds readPeriod, size_t maxReadErrors)
+TSerialClientEventsReader::TSerialClientEventsReader(size_t maxReadErrors)
     : LastAccessedSlaveId(0),
-      ReadPeriod(readPeriod),
       ReadErrors(0),
       MaxReadErrors(maxReadErrors)
 {}
 
-void TSerialClientEventsReader::ReadEvents(TPort& port,
-                                           steady_clock::time_point now,
+bool TSerialClientEventsReader::ReadEvents(TPort& port,
                                            milliseconds maxReadingTime,
                                            TRegisterCallback registerCallback,
                                            TDeviceCallback deviceRestartedHandler)
 {
-    if (DevicesWithEnabledEvents.empty() || now < NextEventsReadTime) {
-        return;
+    if (DevicesWithEnabledEvents.empty()) {
+        return false;
     }
     TModbusExtEventsVisitor visitor(Regs, DevicesWithEnabledEvents, registerCallback, deviceRestartedHandler);
-    NextEventsReadTime = now + ReadPeriod;
     util::TSpendTimeMeter spendTimeMeter;
-    auto spendTime = 0us;
     for (auto spendTime = 0us; spendTime < maxReadingTime; spendTime = spendTimeMeter.GetSpendTime()) {
         try {
             if (!ModbusExt::ReadEvents(port,
-                                       milliseconds(100),
-                                       milliseconds(100),
+                                       100ms,
+                                       100ms,
                                        floor<milliseconds>(maxReadingTime - spendTime),
                                        LastAccessedSlaveId,
                                        EventState,
                                        visitor))
             {
                 LastAccessedSlaveId = 0;
-                return;
+                return true;
             }
             // TODO: Limit reads from same slaveId
             LastAccessedSlaveId = visitor.GetSlaveId();
@@ -188,11 +184,7 @@ void TSerialClientEventsReader::ReadEvents(TPort& port,
             }
         }
     }
-}
-
-std::chrono::steady_clock::time_point TSerialClientEventsReader::GetNextEventsReadTime() const
-{
-    return NextEventsReadTime;
+    return true;
 }
 
 void TSerialClientEventsReader::EnableEvents(PSerialDevice device, TPort& port)
@@ -203,12 +195,10 @@ void TSerialClientEventsReader::EnableEvents(PSerialDevice device, TPort& port)
     }
     uint8_t slaveId = static_cast<uint8_t>(modbusDevice->SlaveId);
     DevicesWithEnabledEvents.erase(slaveId);
-    std::chrono::milliseconds responseTimeout = std::chrono::milliseconds(100);
-    std::chrono::milliseconds frameTimeout = std::chrono::milliseconds(100);
     ModbusExt::TEventsEnabler ev(slaveId,
                                  port,
-                                 responseTimeout,
-                                 frameTimeout,
+                                 100ms,
+                                 100ms,
                                  std::bind(&TSerialClientEventsReader::OnEnabledEvent,
                                            this,
                                            slaveId,
@@ -217,22 +207,13 @@ void TSerialClientEventsReader::EnableEvents(PSerialDevice device, TPort& port)
                                            std::placeholders::_3));
 
     try {
-        std::vector<std::pair<TEventsReaderRegisterDesc, ModbusExt::TEventPriority>> regsToEnable;
         for (const auto& reg: Regs) {
             if (reg.first.SlaveId == slaveId) {
-                regsToEnable.emplace_back(reg.first,
-                                          reg.second->IsHighPriority() ? ModbusExt::TEventPriority::HIGH
-                                                                       : ModbusExt::TEventPriority::LOW);
+                ev.AddRegister(reg.first.Addr,
+                               reg.first.Type,
+                               reg.second->IsHighPriority() ? ModbusExt::TEventPriority::HIGH
+                                                            : ModbusExt::TEventPriority::LOW);
             }
-        }
-        std::sort(regsToEnable.begin(), regsToEnable.end(), [](const auto& r1, const auto& r2) {
-            if (r1.first.Type == r2.first.Type) {
-                return r1.first.Type < r2.first.Type;
-            }
-            return r1.first.Addr < r2.first.Addr;
-        });
-        for (const auto& reg: regsToEnable) {
-            ev.AddRegister(reg.first.Addr, reg.first.Type, reg.second);
         }
         LOG(Debug) << "Try to enable events on modbus device: " << slaveId;
         ev.SendRequest();
@@ -247,7 +228,6 @@ void TSerialClientEventsReader::OnEnabledEvent(uint8_t slaveId,
                                                bool res)
 {
     auto reg = Regs.find({slaveId, addr, type});
-
     if (reg != Regs.end()) {
         if (res) {
             reg->second->ExcludeFromPolling();
@@ -292,6 +272,11 @@ void TSerialClientEventsReader::SetReadErrors(TRegisterCallback callback)
             }
         }
     }
+}
+
+bool TSerialClientEventsReader::HasRegisters() const
+{
+    return !Regs.empty();
 }
 
 bool TEventsReaderRegisterDesc::operator==(const TEventsReaderRegisterDesc& other) const

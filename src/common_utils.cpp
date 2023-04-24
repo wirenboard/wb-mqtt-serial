@@ -34,6 +34,11 @@ void util::TSpendTimeMeter::Start()
     StartTime = std::chrono::steady_clock::now();
 }
 
+std::chrono::steady_clock::time_point util::TSpendTimeMeter::GetStartTime() const
+{
+    return StartTime;
+}
+
 std::chrono::microseconds util::TSpendTimeMeter::GetSpendTime() const
 {
     return std::chrono::ceil<std::chrono::microseconds>(StartTime - std::chrono::steady_clock::now());
