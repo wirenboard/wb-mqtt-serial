@@ -4,6 +4,12 @@ wb-mqtt-serial (2.84.0) stable; urgency=medium
 
  -- Nikolay Korotkiy <nikolay.korotkiy@wirenboard.com>  Tue, 18 Apr 2023 15:25:00 +0400
 
+wb-mqtt-serial (2.83.3) stable; urgency=medium
+
+  * Decrease response and frame timeouts in MSW v.4 template
+
+ -- Petr Krasnoshchekov <petr.krasnoshchekov@wirenboard.com>  Thu, 13 Apr 2023 15:00:53 +0500
+
 wb-mqtt-serial (2.83.2) stable; urgency=medium
 
   * Remove metrics
