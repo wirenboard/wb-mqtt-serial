@@ -85,7 +85,7 @@ bool TFileDescriptorPort::Select(const chrono::microseconds& us)
 
     int r = select(Fd + 1, &rfds, NULL, NULL, tvp);
     if (r < 0) {
-        throw TSerialDeviceException("TFileDescriptorPort::Select() failed " + to_string(errno));
+        throw TSerialDeviceErrnoException("TFileDescriptorPort::Select() failed: ", errno);
     }
 
     return r > 0;

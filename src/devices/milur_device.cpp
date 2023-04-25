@@ -4,9 +4,9 @@
 namespace
 {
 
-    TPort::TFrameCompletePred ExpectNBytes(int slave_id_width, int n)
+    TPort::TFrameCompletePred ExpectNBytes(size_t slave_id_width, size_t n)
     {
-        return [slave_id_width, n](uint8_t* buf, int size) {
+        return [slave_id_width, n](uint8_t* buf, size_t size) {
             if (size < 2)
                 return false;
             if (buf[slave_id_width] & 0x80)
