@@ -83,7 +83,7 @@ class TModbusExtEventsVisitor: public ModbusExt::IEventsVisitor
             reg->second->SetValue(TRegisterValue(value));
             RegisterChangedCallback(reg->second);
         } else {
-            // TODO: disable event
+            // TODO: disable event on device
             LOG(Warn) << "Unexpected event from: " << MakeRegisterDescriptionString(slaveId, eventType, eventId);
         }
     }
