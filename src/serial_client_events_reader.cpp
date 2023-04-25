@@ -215,10 +215,12 @@ void TSerialClientEventsReader::EnableEvents(PSerialDevice device, TPort& port)
                                                             : ModbusExt::TEventPriority::LOW);
             }
         }
-        LOG(Debug) << "Try to enable events on modbus device: " << slaveId;
-        ev.SendRequest();
+        LOG(Debug) << "Try to enable events on modbus device: " << modbusDevice->SlaveId;
+        ev.SendRequests();
     } catch (const TSerialDevicePermanentRegisterException& e) {
-        LOG(Warn) << "Failed to enable events on modbus device: " << slaveId << ": " << e.what();
+        LOG(Warn) << "Failed to enable events on modbus device: " << modbusDevice->SlaveId << ": " << e.what();
+    } catch (const TSerialDeviceTransientErrorException& e) {
+        throw TSerialDeviceTransientErrorException(std::string("Failed to enable events: ") + e.what());
     }
 }
 

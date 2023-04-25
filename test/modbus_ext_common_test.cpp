@@ -90,7 +90,7 @@ namespace
 TEST(TModbusExtTest, EventsEnablerOneReg)
 {
     TPortMock port;
-    port.Response = {0x0A, 0x46, 0x18, 0x01, 0x80, 0x29, 0x7E};
+    port.Response = {0x0A, 0x46, 0x18, 0x01, 0x01, 0xE9, 0x1E};
 
     std::map<uint16_t, bool> response;
     ModbusExt::TEventsEnabler ev(10,
@@ -100,7 +100,7 @@ TEST(TModbusExtTest, EventsEnablerOneReg)
                                  [&response](uint8_t type, uint16_t reg, bool enabled) { response[reg] = enabled; });
     ev.AddRegister(101, ModbusExt::TEventType::COIL, ModbusExt::TEventPriority::HIGH);
 
-    EXPECT_NO_THROW(ev.SendRequest());
+    EXPECT_NO_THROW(ev.SendRequests());
 
     EXPECT_EQ(port.Request.size(), 11);
     EXPECT_EQ(port.Request[0], 0x0A); // slave id
@@ -133,16 +133,16 @@ TEST(TModbusExtTest, EventsEnablerIllegalFunction)
                                  [](uint8_t, uint16_t, bool) {});
     ev.AddRegister(101, ModbusExt::TEventType::COIL, ModbusExt::TEventPriority::HIGH);
 
-    EXPECT_THROW(ev.SendRequest(), TSerialDevicePermanentRegisterException);
+    EXPECT_THROW(ev.SendRequests(), TSerialDevicePermanentRegisterException);
 }
 
 TEST(TModbusExtTest, EventsEnablerTwoRanges)
 {
     TPortMock port;
-    // 0xC0 = 0b11000000
-    // 0xDF = 0b11011111
-    // 0x40 = 0b01000000
-    port.Response = {0x0A, 0x46, 0x18, 0x03, 0xC0, 0xDF, 0x40, 0xC6, 0x1C};
+    // 0x03 = 0b00000011
+    // 0xFB = 0b11111011
+    // 0x02 = 0b00000010
+    port.Response = {0x0A, 0x46, 0x18, 0x03, 0x03, 0xFB, 0x02, 0xAD, 0x11};
 
     std::map<uint16_t, bool> response;
     ModbusExt::TEventsEnabler ev(10,
@@ -165,7 +165,7 @@ TEST(TModbusExtTest, EventsEnablerTwoRanges)
     ev.AddRegister(111, ModbusExt::TEventType::INPUT, ModbusExt::TEventPriority::HIGH);
     ev.AddRegister(112, ModbusExt::TEventType::INPUT, ModbusExt::TEventPriority::HIGH);
 
-    EXPECT_NO_THROW(ev.SendRequest());
+    EXPECT_NO_THROW(ev.SendRequests());
 
     EXPECT_EQ(port.Request.size(), 26);
     EXPECT_EQ(port.Request[0], 0x0A); // slave id

@@ -1,7 +1,6 @@
 #pragma once
 
 #include "port.h"
-#include <map>
 
 namespace ModbusExt // modbus extension protocol common utilities
 {
@@ -81,12 +80,21 @@ namespace ModbusExt // modbus extension protocol common utilities
          *        The class parses answer and calls visitor for every register in answer,
          *        so one can know if events are enabled for specific register.
          */
-        void SendRequest();
+        void SendRequests();
 
     private:
+        struct TRegisterToEnable
+        {
+            TEventType Type;
+            uint16_t Addr;
+            TEventPriority Priority;
+        };
+
         std::vector<uint8_t> Request;
         std::vector<uint8_t> Response;
-        std::map<std::pair<TEventType, uint16_t>, std::vector<TEventPriority>> Settings;
+        std::vector<TRegisterToEnable> Settings;
+        std::vector<TRegisterToEnable>::const_iterator SettingsStart;
+        std::vector<TRegisterToEnable>::const_iterator SettingsEnd;
 
         uint8_t SlaveId;
         TPort& Port;
@@ -96,6 +104,8 @@ namespace ModbusExt // modbus extension protocol common utilities
 
         void EnableEvents();
         void ClearRequest();
+
+        void SendRequest();
     };
 
 } // modbus extension protocol common utilities
