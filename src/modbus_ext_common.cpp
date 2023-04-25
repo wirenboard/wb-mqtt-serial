@@ -227,7 +227,8 @@ namespace ModbusExt // modbus extension protocol declarations
 
         CheckCRC16(Response.data(), rc);
 
-        if (Response[COMMAND_POS] == Request[COMMAND_POS] + 0x80) {
+        // Old firmwares can send any command with exception bit
+        if (Response[COMMAND_POS] > 0x80) {
             throw TSerialDevicePermanentRegisterException("modbus exception, code " +
                                                           std::to_string(Response[EXCEPTION_CODE_POS]));
         }
