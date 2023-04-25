@@ -175,7 +175,9 @@ namespace ModbusExt // modbus extension protocol declarations
                     TEventConfirmationState& state,
                     IEventsVisitor& eventVisitor)
     {
-        // TODO: Count request and arbitration
+        // TODO: Count request and arbitration.
+        //       maxEventsReadTime limits not only response, but total request-response time.
+        //       So request and arbitration time must be subtracted from time for response
         auto maxBytes = GetMaxReadEventsResponseSize(port, maxEventsReadTime);
 
         auto req = MakeReadEventsRequest(state, startingSlaveId, maxBytes);

@@ -77,7 +77,7 @@ class TModbusExtEventsVisitor: public ModbusExt::IEventsVisitor
     {
         auto reg = Regs.find({slaveId, eventId, eventType});
         if (reg != Regs.end()) {
-            LOG(Info) << "Event on " << reg->second->ToString() << ", data: " << WBMQTT::HexDump(data, dataSize);
+            LOG(Debug) << "Event on " << reg->second->ToString() << ", data: " << WBMQTT::HexDump(data, dataSize);
             uint64_t value = 0;
             memcpy(&value, data, std::min(dataSize, sizeof(value)));
             reg->second->SetValue(TRegisterValue(value));

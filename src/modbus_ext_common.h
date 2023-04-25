@@ -40,15 +40,8 @@ namespace ModbusExt // modbus extension protocol common utilities
     };
 
     /**
-     * @brief
+     * @brief Read events
      *
-     * @param port
-     * @param responseTimeout
-     * @param frameTimeout
-     * @param maxReadingTime
-     * @param startingSlaveId
-     * @param state
-     * @param eventVisitor
      * @return true - there are more events from devices
      * @return false - no more events
      */
