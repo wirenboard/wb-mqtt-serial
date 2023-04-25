@@ -400,6 +400,7 @@
                 "address": {{in_num - 1}},
                 {% endif -%}
                 "type": "switch",
+                "sporadic": true,
                 "group": "gg_in{{in_num}}_channels"
             },
             {
@@ -411,6 +412,7 @@
                 "address": {{32 + in_num - 1}},
                 {% endif -%}
                 "type": "value",
+                "sporadic": true,
                 "group": "gg_in{{in_num}}_channels"
             },
             {
@@ -438,6 +440,7 @@
                 "address": {{464 + in_num - 1}},
                 {% endif -%}
                 "type": "value",
+                "sporadic": true,
                 "group": "gg_in{{in_num}}_channels",
                 "condition": "in{{in_num}}_mode==6"
             },
@@ -451,6 +454,7 @@
                 "address": {{480 + in_num - 1}},
                 {% endif -%}
                 "type": "value",
+                "sporadic": true,
                 "group": "gg_in{{in_num}}_channels",
                 "condition": "in{{in_num}}_mode==6"
             },
@@ -464,6 +468,7 @@
                 "address": {{496 + in_num - 1}},
                 {% endif -%}
                 "type": "value",
+                "sporadic": true,
                 "group": "gg_in{{in_num}}_channels",
                 "condition": "in{{in_num}}_mode==6"
             },
@@ -477,6 +482,7 @@
                 "address": {{512 + in_num - 1}},
                 {% endif -%}
                 "type": "value",
+                "sporadic": true,
                 "group": "gg_in{{in_num}}_channels",
                 "condition": "in{{in_num}}_mode==6"
             },
@@ -487,6 +493,7 @@
                 "reg_type": "coil",
                 "address": {{out_num - 1}},
                 "type": "switch",
+                "sporadic": true,
                 "group": "gg_outputs_channels"
             },
             {% endfor -%}

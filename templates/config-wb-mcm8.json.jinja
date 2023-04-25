@@ -193,6 +193,7 @@
                 "reg_type": "discrete",
                 "address": {{in_num - 1}},
                 "type": "switch",
+                "sporadic": true,
                 "group": "gg_in{{in_num}}_channels"
             },
             {
@@ -201,6 +202,7 @@
                 "format": "u32",
                 "address": {{60 + (in_num - 1) * 2}},
                 "type": "value",
+                "sporadic": true,
                 "group": "gg_in{{in_num}}_channels"
             },
             {
@@ -220,6 +222,7 @@
                 "reg_type": "input",
                 "address": {{464 + in_num - 1}},
                 "type": "value",
+                "sporadic": true,
                 "group": "gg_in{{in_num}}_channels",
                 "condition": "in{{in_num}}_mode==1"
             },
@@ -228,6 +231,7 @@
                 "reg_type": "input",
                 "address": {{480 + in_num - 1}},
                 "type": "value",
+                "sporadic": true,
                 "group": "gg_in{{in_num}}_channels",
                 "condition": "in{{in_num}}_mode==1"
             },
@@ -236,6 +240,7 @@
                 "reg_type": "input",
                 "address": {{496 + in_num - 1}},
                 "type": "value",
+                "sporadic": true,
                 "group": "gg_in{{in_num}}_channels",
                 "condition": "in{{in_num}}_mode==1"
             },
@@ -244,6 +249,7 @@
                 "reg_type": "input",
                 "address": {{512 + in_num - 1}},
                 "type": "value",
+                "sporadic": true,
                 "group": "gg_in{{in_num}}_channels",
                 "condition": "in{{in_num}}_mode==1"
             },
@@ -254,6 +260,7 @@
                 "reg_type": "holding",
                 "address": {{368 + (encoder_num * 2)}},
                 "type": "value",
+                "sporadic": true,
                 "format": "s32",
                 "group": "gg_encoder_channels",
                 "condition": "encoder_{{encoder_num + 1}}_mode==1"
@@ -263,6 +270,7 @@
                 "reg_type": "holding",
                 "address": {{368 + (encoder_num * 2)}},
                 "type": "value",
+                "sporadic": true,
                 "format": "s16",
                 "group": "gg_encoder_channels",
                 "order": 1,
@@ -273,6 +281,7 @@
                 "reg_type": "holding",
                 "address": {{369 + (encoder_num * 2)}},
                 "type": "value",
+                "sporadic": true,
                 "format": "s16",
                 "group": "gg_encoder_channels",
                 "order": 2,
@@ -284,6 +293,7 @@
                 "reg_type": "holding",
                 "address": 372,
                 "type": "value",
+                "sporadic": true,
                 "format": "s32",
                 "group": "gg_encoder_channels",
                 "condition": "encoder_3_mode==1"
