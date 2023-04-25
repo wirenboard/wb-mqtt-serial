@@ -1,3 +1,9 @@
+wb-mqtt-serial (2.85.0) stable; urgency=medium
+
+  * Add fast modbus events polling with time limiting 
+
+ -- Petr Krasnoshchekov <petr.krasnoshchekov@wirenboard.com>  Tue, 25 Apr 2023 12:52:19 +0500
+
 wb-mqtt-serial (2.84.0) stable; urgency=medium
 
   * Add ext modbus proto

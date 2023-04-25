@@ -42,7 +42,7 @@ public:
 
     void SleepSinceLastInteraction(const std::chrono::microseconds& us) override;
 
-    std::chrono::milliseconds GetSendTime(double bytesNumber) const override;
+    std::chrono::microseconds GetSendTime(double bytesNumber) const override;
 
     void Expect(const std::vector<int>& request, const std::vector<int>& response, const char* func = 0) override;
     void DumpWhatWasRead();
@@ -52,6 +52,8 @@ public:
     std::string GetDescription(bool verbose = true) const override;
 
     void SetAllowOpen(bool allowOpen);
+
+    void SetBaudRate(size_t value);
 
 private:
     void SkipFrameBoundary();
@@ -66,6 +68,7 @@ private:
     std::vector<int> Resp;
     size_t ReqPos, RespPos, DumpPos;
     std::chrono::microseconds ExpectedFrameTimeout = std::chrono::microseconds(-1);
+    size_t BaudRate;
 };
 
 typedef std::shared_ptr<TFakeSerialPort> PFakeSerialPort;

@@ -2,6 +2,8 @@
 #include "serial_exc.h"
 #include "gtest/gtest.h"
 
+#include <cmath>
+
 namespace
 {
     class TPortMock: public TPort
@@ -56,9 +58,11 @@ namespace
             return std::string();
         }
 
-        std::chrono::milliseconds GetSendTime(double bytesNumber) const override
+        std::chrono::microseconds GetSendTime(double bytesNumber) const override
         {
-            return std::chrono::milliseconds((int)bytesNumber);
+            // 115200 8-N-2
+            auto us = std::ceil((1000000.0 * 11 * bytesNumber) / 115200.0);
+            return std::chrono::microseconds(static_cast<std::chrono::microseconds::rep>(us));
         }
     };
 
@@ -220,8 +224,10 @@ TEST(TModbusExtTest, ReadEventsNoEventsNoConfirmation)
     EXPECT_NO_THROW(ret = ModbusExt::ReadEvents(port,
                                                 std::chrono::milliseconds(100),
                                                 std::chrono::milliseconds(100),
-                                                visitor,
-                                                state));
+                                                std::chrono::milliseconds(100),
+                                                0,
+                                                state,
+                                                visitor));
     EXPECT_FALSE(ret);
 
     EXPECT_EQ(port.Request.size(), 9);
@@ -251,8 +257,10 @@ TEST(TModbusExtTest, ReadEventsWithConfirmation)
     EXPECT_NO_THROW(ret = ModbusExt::ReadEvents(port,
                                                 std::chrono::milliseconds(100),
                                                 std::chrono::milliseconds(100),
-                                                visitor,
-                                                state));
+                                                std::chrono::milliseconds(100),
+                                                0,
+                                                state,
+                                                visitor));
     EXPECT_TRUE(ret);
 
     EXPECT_EQ(port.Request.size(), 9);
@@ -275,10 +283,10 @@ TEST(TModbusExtTest, ReadEventsWithConfirmation)
     EXPECT_NO_THROW(ret = ModbusExt::ReadEvents(port,
                                                 std::chrono::milliseconds(100),
                                                 std::chrono::milliseconds(100),
-                                                visitor,
-                                                state,
+                                                std::chrono::milliseconds(5),
                                                 5,
-                                                std::chrono::milliseconds(50)));
+                                                state,
+                                                visitor));
     EXPECT_FALSE(ret);
 
     EXPECT_EQ(port.Request.size(), 9);
@@ -286,12 +294,12 @@ TEST(TModbusExtTest, ReadEventsWithConfirmation)
     EXPECT_EQ(port.Request[1], 0x46); // command
     EXPECT_EQ(port.Request[2], 0x10); // subcommand
     EXPECT_EQ(port.Request[3], 0x05); // min slave id
-    EXPECT_EQ(port.Request[4], 0x2A); // max length
+    EXPECT_EQ(port.Request[4], 0x2C); // max length
     EXPECT_EQ(port.Request[5], 0x05); // slave id (confirmation)
     EXPECT_EQ(port.Request[6], 0x01); // flag (confirmation)
 
-    EXPECT_EQ(port.Request[7], 0x1B); // CRC16 LSB
-    EXPECT_EQ(port.Request[8], 0x3E); // CRC16 MSB
+    EXPECT_EQ(port.Request[7], 0xFB); // CRC16 LSB
+    EXPECT_EQ(port.Request[8], 0x3F); // CRC16 MSB
 
     EXPECT_EQ(visitor.Events.size(), 0);
 }
@@ -308,8 +316,10 @@ TEST(TModbusExtTest, ReadEventsReboot)
     EXPECT_NO_THROW(ret = ModbusExt::ReadEvents(port,
                                                 std::chrono::milliseconds(100),
                                                 std::chrono::milliseconds(100),
-                                                visitor,
-                                                state));
+                                                std::chrono::milliseconds(100),
+                                                0,
+                                                state,
+                                                visitor));
     EXPECT_TRUE(ret);
 
     EXPECT_TRUE(visitor.Reboot);

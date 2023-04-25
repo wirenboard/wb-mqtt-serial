@@ -39,13 +39,26 @@ namespace ModbusExt // modbus extension protocol common utilities
                            size_t dataSize) = 0;
     };
 
+    /**
+     * @brief
+     *
+     * @param port
+     * @param responseTimeout
+     * @param frameTimeout
+     * @param maxReadingTime
+     * @param startingSlaveId
+     * @param state
+     * @param eventVisitor
+     * @return true - there are more events from devices
+     * @return false - no more events
+     */
     bool ReadEvents(TPort& port,
-                    const std::chrono::milliseconds& responseTimeout,
-                    const std::chrono::milliseconds& frameTimeout,
-                    IEventsVisitor& eventVisitor,
+                    std::chrono::milliseconds responseTimeout,
+                    std::chrono::milliseconds frameTimeout,
+                    std::chrono::milliseconds maxReadingTime,
+                    uint8_t startingSlaveId,
                     TEventConfirmationState& state,
-                    uint8_t startingSlaveId = 0,
-                    const std::chrono::milliseconds& maxEventsReadTime = std::chrono::milliseconds(0));
+                    IEventsVisitor& eventVisitor);
 
     //! Class builds packet for enabling events from specified registers
     class TEventsEnabler
@@ -55,8 +68,8 @@ namespace ModbusExt // modbus extension protocol common utilities
 
         TEventsEnabler(uint8_t slaveId,
                        TPort& port,
-                       const std::chrono::milliseconds& responseTimeout,
-                       const std::chrono::milliseconds& frameTimeout,
+                       std::chrono::milliseconds responseTimeout,
+                       std::chrono::milliseconds frameTimeout,
                        TEventsEnabler::TVisitorFn visitor);
 
         /**

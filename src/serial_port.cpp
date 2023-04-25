@@ -82,20 +82,19 @@ namespace
             dev = std::filesystem::read_symlink(dev);
         }
         auto rxTrigBytesPath = "/sys/class/tty" / dev.filename() / "rx_trig_bytes";
-        std::ifstream f(rxTrigBytesPath);
+        std::ofstream f(rxTrigBytesPath);
         if (f.is_open()) {
-            size_t val;
             try {
-                f >> val;
+                f << 1;
                 if (f.good()) {
-                    LOG(Debug) << rxTrigBytesPath << " = " << val;
-                    return val;
+                    LOG(Debug) << rxTrigBytesPath << " = 1";
+                    return 1;
                 }
             } catch (const std::exception& e) {
-                LOG(Warn) << rxTrigBytesPath << " read failed: " << e.what();
+                LOG(Warn) << rxTrigBytesPath << " write failed: " << e.what();
             }
         }
-        return 0;
+        return 1;
     }
 
     void MakeTermios(const TSerialPortConnectionSettings& settings, termios& dev)
@@ -206,14 +205,14 @@ void TSerialPort::ResetSerialPortSettings()
     ApplySerialPortSettings(Settings);
 }
 
-std::chrono::milliseconds TSerialPort::GetSendTime(double bytesNumber) const
+std::chrono::microseconds TSerialPort::GetSendTime(double bytesNumber) const
 {
     size_t bitsPerByte = 1 + Settings.DataBits + Settings.StopBits;
     if (Settings.Parity != 'N') {
         ++bitsPerByte;
     }
-    auto ms = std::ceil((1000.0 * bitsPerByte * bytesNumber) / double(Settings.BaudRate));
-    return std::chrono::milliseconds(static_cast<std::chrono::milliseconds::rep>(ms));
+    auto us = std::ceil((1000000.0 * bitsPerByte * bytesNumber) / double(Settings.BaudRate));
+    return std::chrono::microseconds(static_cast<std::chrono::microseconds::rep>(us));
 }
 
 uint8_t TSerialPort::ReadByte(const std::chrono::microseconds& timeout)

@@ -33,7 +33,7 @@ TLLSDevice::TLLSDevice(PDeviceConfig config, PPort port, PProtocol protocol)
     : TSerialDevice(config, port, protocol),
       TUInt32SlaveId(config->SlaveId)
 {
-    auto timeout = port->GetSendTime(3.5) + std::chrono::milliseconds(1);
+    auto timeout = std::chrono::ceil<std::chrono::milliseconds>(port->GetSendTime(3.5)) + std::chrono::milliseconds(1);
     config->FrameTimeout = std::max(config->FrameTimeout, timeout);
 }
 

@@ -201,6 +201,7 @@ public:
 
     virtual void SetTransferResult(bool ok);
     bool GetIsDisconnected() const;
+    void SetDisconnected();
     bool GetSupportsHoles() const;
     void SetSupportsHoles(bool supportsHoles);
 
@@ -223,6 +224,7 @@ private:
     bool IsDisconnected;
     int RemainingFailCycles;
     bool SupportsHoles;
+    bool ForceDisconnectionLogging;
 };
 
 typedef std::shared_ptr<TSerialDevice> PSerialDevice;

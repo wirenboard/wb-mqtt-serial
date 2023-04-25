@@ -33,7 +33,7 @@ namespace ModbusExt // modbus extension protocol declarations
     const size_t MIN_ENABLE_EVENTS_REC_SIZE = 5;
     const size_t EXCEPTION_SIZE = 5;
 
-    const uint8_t EVENTS_REQUEST_MAX_BYTES = MAX_PACKET_SIZE - EVENTS_RESPONSE_HEADER_SIZE - CRC_SIZE;
+    const size_t EVENTS_REQUEST_MAX_BYTES = MAX_PACKET_SIZE - EVENTS_RESPONSE_HEADER_SIZE - CRC_SIZE;
     const size_t ARBITRATION_HEADER_MAX_BYTES = 32;
 
     const size_t SLAVE_ID_POS = 0;
@@ -50,6 +50,7 @@ namespace ModbusExt // modbus extension protocol declarations
     const size_t EVENT_TYPE_POS = 1;
     const size_t EVENT_ID_POS = 2;
     const size_t EVENT_DATA_POS = 4;
+    const size_t MAX_EVENT_SIZE = 6;
 
     const size_t ENABLE_EVENTS_RESPONSE_DATA_SIZE_POS = 3;
     const size_t ENABLE_EVENTS_RESPONSE_DATA_POS = 4;
@@ -57,6 +58,12 @@ namespace ModbusExt // modbus extension protocol declarations
     const size_t ENABLE_EVENTS_REC_TYPE_POS = 0;
     const size_t ENABLE_EVENTS_REC_ADDR_POS = 1;
     const size_t ENABLE_EVENTS_REC_STATE_POS = 3;
+
+    bool IsRegisterEvent(TEventType type)
+    {
+        return type == TEventType::COIL || type == TEventType::DISCRETE || type == TEventType::HOLDING ||
+               type == TEventType::INPUT;
+    }
 
     size_t GetPacketStart(const uint8_t* data, size_t size)
     {
@@ -66,6 +73,29 @@ namespace ModbusExt // modbus extension protocol declarations
             }
         }
         return size;
+    }
+
+    uint8_t GetMaxReadEventsResponseSize(const TPort& port, std::chrono::milliseconds maxTime)
+    {
+        if (maxTime.count() <= 0) {
+            return MAX_EVENT_SIZE;
+        }
+        auto timePerByte = port.GetSendTime(1);
+        if (timePerByte.count() == 0) {
+            return EVENTS_REQUEST_MAX_BYTES;
+        }
+        auto maxBytes = std::chrono::duration_cast<std::chrono::microseconds>(maxTime).count() / timePerByte.count();
+        if (maxBytes > MAX_PACKET_SIZE) {
+            maxBytes = MAX_PACKET_SIZE;
+        }
+        if (maxBytes <= EVENTS_RESPONSE_HEADER_SIZE + MAX_EVENT_SIZE + CRC_SIZE) {
+            return MAX_EVENT_SIZE;
+        }
+        maxBytes -= EVENTS_RESPONSE_HEADER_SIZE + CRC_SIZE;
+        if (maxBytes > std::numeric_limits<uint8_t>::max()) {
+            return std::numeric_limits<uint8_t>::max();
+        }
+        return static_cast<uint8_t>(maxBytes);
     }
 
     Modbus::TRequest MakeReadEventsRequest(const TEventConfirmationState& state,
@@ -138,26 +168,15 @@ namespace ModbusExt // modbus extension protocol declarations
     }
 
     bool ReadEvents(TPort& port,
-                    const std::chrono::milliseconds& responseTimeout,
-                    const std::chrono::milliseconds& frameTimeout,
-                    IEventsVisitor& eventVisitor,
-                    TEventConfirmationState& state,
+                    std::chrono::milliseconds responseTimeout,
+                    std::chrono::milliseconds frameTimeout,
+                    std::chrono::milliseconds maxEventsReadTime,
                     uint8_t startingSlaveId,
-                    const std::chrono::milliseconds& maxEventsReadTime)
+                    TEventConfirmationState& state,
+                    IEventsVisitor& eventVisitor)
     {
-        uint8_t maxBytes = EVENTS_REQUEST_MAX_BYTES;
-        if (maxEventsReadTime.count() > 0) {
-            auto timePerByte = port.GetSendTime(1);
-            if (timePerByte.count() != 0) {
-                maxBytes = std::min(maxBytes,
-                                    static_cast<uint8_t>(std::ceil(maxEventsReadTime.count() / timePerByte.count())));
-                if (maxBytes > EVENTS_RESPONSE_HEADER_SIZE + CRC_SIZE) {
-                    maxBytes -= EVENTS_RESPONSE_HEADER_SIZE + CRC_SIZE;
-                } else {
-                    maxBytes = 0;
-                }
-            }
-        }
+        // TODO: Count request and arbitration
+        auto maxBytes = GetMaxReadEventsResponseSize(port, maxEventsReadTime);
 
         auto req = MakeReadEventsRequest(state, startingSlaveId, maxBytes);
         port.WriteBytes(req);
@@ -246,8 +265,8 @@ namespace ModbusExt // modbus extension protocol declarations
 
     TEventsEnabler::TEventsEnabler(uint8_t slaveId,
                                    TPort& port,
-                                   const std::chrono::milliseconds& responseTimeout,
-                                   const std::chrono::milliseconds& frameTimeout,
+                                   std::chrono::milliseconds responseTimeout,
+                                   std::chrono::milliseconds frameTimeout,
                                    TEventsEnabler::TVisitorFn visitor)
         : SlaveId(slaveId),
           Port(port),
@@ -262,6 +281,9 @@ namespace ModbusExt // modbus extension protocol declarations
 
     void TEventsEnabler::AddRegister(uint16_t addr, TEventType type, TEventPriority priority)
     {
+        if (!IsRegisterEvent(type)) {
+            return;
+        }
         auto it = std::find_if(Settings.begin(), Settings.end(), [type, addr](const auto& v) {
             auto nextAddr = v.first.second + static_cast<uint16_t>(v.second.size());
             return v.first.first == type && nextAddr == addr;

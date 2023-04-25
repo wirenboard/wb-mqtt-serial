@@ -131,7 +131,7 @@ namespace Modbus // modbus protocol common utilities
 
     bool TModbusRegisterRange::Add(PRegister reg, std::chrono::milliseconds pollLimit)
     {
-        if (reg->GetAvailable() == TRegisterAvailability::UNAVAILABLE) {
+        if (reg->IsExcludedFromPolling()) {
             return true;
         }
 
@@ -203,7 +203,7 @@ namespace Modbus // modbus protocol common utilities
         // Request 8 bytes: SlaveID, Operation, Addr, Count, CRC
         // Response 5 bytes except data: SlaveID, Operation, Size, CRC
         auto sendTime = reg->Device()->Port()->GetSendTime(newPduSize + 8 + 5);
-        auto newPollTime = std::chrono::duration_cast<std::chrono::milliseconds>(
+        auto newPollTime = std::chrono::ceil<std::chrono::milliseconds>(
             sendTime + AverageResponseTime + deviceConfig.RequestDelay + 2 * deviceConfig.FrameTimeout);
 
         if (((Count != 0) && !AddingRegisterIncreasesSize(isSingleBit, extend)) || (newPollTime <= pollLimit)) {

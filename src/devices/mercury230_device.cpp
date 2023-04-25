@@ -62,7 +62,8 @@ TMercury230Device::TMercury230Device(PDeviceConfig device_config, PPort port, PP
 
         Mercury 200 documentation says about 5-6 bytes delay. It is similar to table for Mercury 230.
     */
-    device_config->FrameTimeout = std::max(device_config->FrameTimeout, port->GetSendTime(6));
+    device_config->FrameTimeout =
+        std::max(device_config->FrameTimeout, std::chrono::ceil<std::chrono::milliseconds>(port->GetSendTime(6)));
 
     /*
         Mercury 230 documentation:
@@ -74,7 +75,9 @@ TMercury230Device::TMercury230Device(PDeviceConfig device_config, PPort port, PP
         1600 ms - 300
     */
     const std::chrono::milliseconds minTimeout(150);
-    auto timeout = std::max(minTimeout, std::chrono::milliseconds(115) + port->GetSendTime(35));
+    auto timeout =
+        std::max(minTimeout,
+                 std::chrono::milliseconds(115) + std::chrono::ceil<std::chrono::milliseconds>(port->GetSendTime(35)));
     device_config->ResponseTimeout = std::max(device_config->FrameTimeout, timeout);
 }
 
