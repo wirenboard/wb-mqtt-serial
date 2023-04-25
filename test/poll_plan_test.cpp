@@ -9,7 +9,7 @@ struct Accumulator
 {
     std::vector<std::tuple<int, TItemAccumulationPolicy, std::chrono::milliseconds>> Data;
 
-    bool operator()(int value, TItemAccumulationPolicy policy, std::chrono::milliseconds pollLimit, TPriority priority)
+    bool operator()(int value, TItemAccumulationPolicy policy, std::chrono::milliseconds pollLimit)
     {
         Data.push_back({value, policy, pollLimit});
         return true;
