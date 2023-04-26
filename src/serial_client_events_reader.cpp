@@ -28,7 +28,7 @@ namespace
 
     std::string MakeRegisterDescriptionString(uint8_t slaveId, uint8_t eventType, uint16_t eventId)
     {
-        return "<modbus:" + std::to_string(slaveId) + ":" + EventTypeToString(eventType) + ": " +
+        return "<modbus:" + std::to_string(slaveId) + ":" + EventTypeToString(eventType) + ":" +
                std::to_string(eventId) + ">";
     }
 
@@ -236,7 +236,7 @@ void TSerialClientEventsReader::OnEnabledEvent(uint8_t slaveId, uint8_t type, ui
             reg->second->IncludeInPolling();
         }
     }
-    LOG(Info) << "Events are " << (res ? "enabled for" : "disabled for")
+    LOG(Info) << "Events are " << (res ? "enabled for " : "disabled for ")
               << MakeRegisterDescriptionString(slaveId, type, addr);
 }
 

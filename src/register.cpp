@@ -74,7 +74,7 @@ bool TSameAddressRegisterRange::Add(PRegister reg, std::chrono::milliseconds pol
 std::string TRegisterConfig::ToString() const
 {
     std::stringstream s;
-    s << TypeName << ": " << (AccessType != EAccessType::WRITE_ONLY ? GetAddress() : GetWriteAddress());
+    s << TypeName << ":" << (AccessType != EAccessType::WRITE_ONLY ? GetAddress() : GetWriteAddress());
     if (Address.DataOffset != 0 || Address.DataWidth != 0) {
         s << ":" << static_cast<int>(Address.DataOffset) << ":" << static_cast<int>(Address.DataWidth);
     }
