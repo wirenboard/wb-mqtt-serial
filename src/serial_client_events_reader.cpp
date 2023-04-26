@@ -33,7 +33,7 @@ namespace
 
     std::string MakeRegisterDescriptionString(uint8_t slaveId, uint8_t eventType, uint16_t eventId)
     {
-        return "<" + MakeDeviceDescriptionString(slaveId) + ":" + EventTypeToString(eventType) + ":" +
+        return "<" + MakeDeviceDescriptionString(slaveId) + ":" + EventTypeToString(eventType) + ": " +
                std::to_string(eventId) + ">";
     }
 
