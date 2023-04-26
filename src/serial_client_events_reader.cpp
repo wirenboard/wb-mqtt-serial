@@ -165,6 +165,7 @@ bool TSerialClientEventsReader::ReadEvents(TPort& port,
     }
     TModbusExtEventsVisitor visitor(Regs, DevicesWithEnabledEvents, registerCallback, deviceRestartedHandler);
     util::TSpendTimeMeter spendTimeMeter;
+    spendTimeMeter.Start();
     for (auto spendTime = 0us; spendTime < maxReadingTime; spendTime = spendTimeMeter.GetSpendTime()) {
         try {
             if (!ModbusExt::ReadEvents(port,
