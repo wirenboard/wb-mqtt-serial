@@ -64,6 +64,27 @@ namespace
         }
         return nullptr;
     }
+
+    void DisableEventsFromRegs(TPort& port, const std::list<TEventsReaderRegisterDesc>& regs)
+    {
+        if (regs.empty()) {
+            return;
+        }
+        for (auto regIt = regs.cbegin(); regIt != regs.cend(); ++regIt) {
+            uint8_t slaveId = regIt->SlaveId;
+            ModbusExt::TEventsEnabler enabler(slaveId, port, 100ms, 100ms, [](uint8_t, uint16_t, bool) {});
+            for (; regIt != regs.cend() && slaveId == regIt->SlaveId; ++regIt) {
+                enabler.AddRegister(regIt->Addr,
+                                    static_cast<ModbusExt::TEventType>(regIt->Type),
+                                    ModbusExt::TEventPriority::DISABLE);
+            }
+            try {
+                enabler.SendRequests();
+            } catch (const TSerialDeviceException& ex) {
+                LOG(Warn) << "Failed to disable unexpected events: " << ex.what();
+            }
+        }
+    }
 };
 
 class TModbusExtEventsVisitor: public ModbusExt::IEventsVisitor
@@ -73,6 +94,7 @@ class TModbusExtEventsVisitor: public ModbusExt::IEventsVisitor
     TSerialClientEventsReader::TRegisterCallback RegisterChangedCallback;
     TSerialClientEventsReader::TDeviceCallback DeviceRestartedCallback;
     uint8_t SlaveId = 0;
+    std::list<TEventsReaderRegisterDesc> RegsToDisable;
 
     void ProcessRegisterChangeEvent(uint8_t slaveId,
                                     uint8_t eventType,
@@ -88,8 +110,8 @@ class TModbusExtEventsVisitor: public ModbusExt::IEventsVisitor
             reg->second->SetValue(TRegisterValue(value));
             RegisterChangedCallback(reg->second);
         } else {
-            // TODO: disable event on device
             LOG(Warn) << "Unexpected event from: " << MakeRegisterDescriptionString(slaveId, eventType, eventId);
+            RegsToDisable.emplace_back(TEventsReaderRegisterDesc{slaveId, eventId, eventType});
         }
     }
 
@@ -147,6 +169,11 @@ public:
     {
         return SlaveId;
     }
+
+    const std::list<TEventsReaderRegisterDesc>& GetRegsToDisable() const
+    {
+        return RegsToDisable;
+    }
 };
 
 TSerialClientEventsReader::TSerialClientEventsReader(size_t maxReadErrors)
@@ -177,7 +204,8 @@ bool TSerialClientEventsReader::ReadEvents(TPort& port,
                                        visitor))
             {
                 LastAccessedSlaveId = 0;
-                return true;
+                ReadErrors = 0;
+                break;
             }
             // TODO: Limit reads from same slaveId
             LastAccessedSlaveId = visitor.GetSlaveId();
@@ -191,6 +219,7 @@ bool TSerialClientEventsReader::ReadEvents(TPort& port,
             }
         }
     }
+    DisableEventsFromRegs(port, visitor.GetRegsToDisable());
     return true;
 }
 

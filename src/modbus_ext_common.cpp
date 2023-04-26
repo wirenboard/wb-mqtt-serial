@@ -345,10 +345,12 @@ namespace ModbusExt // modbus extension protocol declarations
             }
             return a.Type < b.Type;
         });
-
+        auto last = std::unique(Settings.begin(), Settings.end(), [](const auto& a, const auto& b) {
+            return a.Type == b.Type && a.Addr == b.Addr;
+        });
+        Settings.erase(last, Settings.end());
         for (SettingsEnd = SettingsStart = Settings.cbegin(); SettingsEnd != Settings.cend();) {
             SendRequest();
         }
     }
-
 }
