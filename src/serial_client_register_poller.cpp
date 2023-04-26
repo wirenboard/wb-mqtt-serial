@@ -180,7 +180,7 @@ PSerialDevice TSerialClientRegisterPoller::OpenPortCycle(TPort& port,
 
     if (!range) {
         // Nothing to read
-        Deadline = Scheduler.GetDeadline(currentTime);
+        Deadline = Scheduler.IsEmpty() ? currentTime + 1s : Scheduler.GetDeadline(currentTime);
         return nullptr;
     }
 
@@ -221,7 +221,7 @@ PSerialDevice TSerialClientRegisterPoller::OpenPortCycle(TPort& port,
     }
 
     Scheduler.UpdateSelectionTime(ceil<milliseconds>(steady_clock::now() - currentTime), reader.GetPriority());
-    Deadline = Scheduler.GetDeadline(currentTime);
+    Deadline = Scheduler.IsEmpty() ? currentTime + 1s : Scheduler.GetDeadline(currentTime);
     return device;
 }
 
@@ -237,6 +237,9 @@ void TSerialClientRegisterPoller::DeviceDisconnected(PSerialDevice device)
                 ScheduleNextPoll(reg, currentTime);
             }
         }
+    }
+    if (!Scheduler.IsEmpty()) {
+        Deadline = Scheduler.GetDeadline(currentTime);
     }
 }
 

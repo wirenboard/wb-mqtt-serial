@@ -296,6 +296,11 @@ public:
         return LowPriorityQueue.Contains(entry) || HighPriorityQueue.Contains(entry);
     }
 
+    bool IsEmpty() const
+    {
+        return LowPriorityQueue.IsEmpty() && HighPriorityQueue.IsEmpty();
+    }
+
 private:
     TQueue LowPriorityQueue;
     TQueue HighPriorityQueue;
@@ -307,8 +312,7 @@ private:
         if (HighPriorityQueue.IsEmpty()) {
             return std::chrono::milliseconds::max();
         }
-        auto delta =
-            std::chrono::ceil<std::chrono::milliseconds>(HighPriorityQueue.GetDeadline() - currentTime);
+        auto delta = std::chrono::ceil<std::chrono::milliseconds>(HighPriorityQueue.GetDeadline() - currentTime);
         if (delta > std::chrono::milliseconds(0)) {
             return delta;
         }
