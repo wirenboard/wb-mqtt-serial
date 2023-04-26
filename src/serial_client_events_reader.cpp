@@ -26,9 +26,14 @@ namespace
         return "unknown";
     }
 
+    std::string MakeDeviceDescriptionString(uint8_t slaveId)
+    {
+        return "modbus:" + std::to_string(slaveId);
+    }
+
     std::string MakeRegisterDescriptionString(uint8_t slaveId, uint8_t eventType, uint16_t eventId)
     {
-        return "<modbus:" + std::to_string(slaveId) + ":" + EventTypeToString(eventType) + ":" +
+        return "<" + MakeDeviceDescriptionString(slaveId) + ":" + EventTypeToString(eventType) + ":" +
                std::to_string(eventId) + ">";
     }
 
@@ -77,7 +82,7 @@ class TModbusExtEventsVisitor: public ModbusExt::IEventsVisitor
     {
         auto reg = Regs.find({slaveId, eventId, eventType});
         if (reg != Regs.end()) {
-            LOG(Debug) << "Event on " << reg->second->ToString() << ", data: " << WBMQTT::HexDump(data, dataSize);
+            LOG(Debug) << "Event from " << reg->second->ToString() << ", data: " << WBMQTT::HexDump(data, dataSize);
             uint64_t value = 0;
             memcpy(&value, data, std::min(dataSize, sizeof(value)));
             reg->second->SetValue(TRegisterValue(value));
@@ -93,11 +98,12 @@ class TModbusExtEventsVisitor: public ModbusExt::IEventsVisitor
         DevicesWithEnabledEvents.erase(slaveId);
         for (const auto& reg: Regs) {
             if (reg.first.SlaveId == slaveId) {
+                LOG(Debug) << "Restart event from " << MakeDeviceDescriptionString(slaveId);
                 DeviceRestartedCallback(reg.second->Device());
                 return;
             }
         }
-        LOG(Warn) << "Restart event from unknown device: " << static_cast<int>(slaveId);
+        LOG(Warn) << "Restart event from unknown device " << MakeDeviceDescriptionString(slaveId);
     }
 
 public:
@@ -131,8 +137,8 @@ public:
                 return;
             }
             default:
-                LOG(Warn) << "Unexpected event from <modbus: " + std::to_string(slaveId) +
-                                 "> type: " + std::to_string(eventType) + ", id: " + std::to_string(eventId);
+                LOG(Warn) << "Unexpected event from " << MakeDeviceDescriptionString(slaveId)
+                          << " type: " << static_cast<int>(eventType) << ", id: " << eventId;
                 break;
         }
     }
@@ -215,10 +221,10 @@ void TSerialClientEventsReader::EnableEvents(PSerialDevice device, TPort& port)
                                                             : ModbusExt::TEventPriority::LOW);
             }
         }
-        LOG(Debug) << "Try to enable events on modbus device: " << modbusDevice->SlaveId;
+        LOG(Debug) << "Try to enable events for " << MakeDeviceDescriptionString(slaveId);
         ev.SendRequests();
     } catch (const TSerialDevicePermanentRegisterException& e) {
-        LOG(Warn) << "Failed to enable events on modbus device: " << modbusDevice->SlaveId << ": " << e.what();
+        LOG(Warn) << "Failed to enable events for " << MakeDeviceDescriptionString(slaveId) << ": " << e.what();
     } catch (const TSerialDeviceTransientErrorException& e) {
         throw TSerialDeviceTransientErrorException(std::string("Failed to enable events: ") + e.what());
     }
