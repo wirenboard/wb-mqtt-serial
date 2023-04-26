@@ -308,7 +308,7 @@ private:
             return std::chrono::milliseconds::max();
         }
         auto delta =
-            std::chrono::duration_cast<std::chrono::milliseconds>(HighPriorityQueue.GetDeadline() - currentTime);
+            std::chrono::ceil<std::chrono::milliseconds>(HighPriorityQueue.GetDeadline() - currentTime);
         if (delta > std::chrono::milliseconds(0)) {
             return delta;
         }
