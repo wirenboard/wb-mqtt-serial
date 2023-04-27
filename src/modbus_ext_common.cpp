@@ -59,12 +59,6 @@ namespace ModbusExt // modbus extension protocol declarations
     const size_t ENABLE_EVENTS_REC_ADDR_POS = 1;
     const size_t ENABLE_EVENTS_REC_STATE_POS = 3;
 
-    bool IsRegisterEvent(TEventType type)
-    {
-        return type == TEventType::COIL || type == TEventType::DISCRETE || type == TEventType::HOLDING ||
-               type == TEventType::INPUT;
-    }
-
     size_t GetPacketStart(const uint8_t* data, size_t size)
     {
         for (size_t i = 0; i < size; ++i) {
@@ -296,9 +290,6 @@ namespace ModbusExt // modbus extension protocol declarations
 
     void TEventsEnabler::AddRegister(uint16_t addr, TEventType type, TEventPriority priority)
     {
-        if (!IsRegisterEvent(type)) {
-            return;
-        }
         Settings.emplace_back(TRegisterToEnable{type, addr, priority});
     }
 
@@ -353,4 +344,10 @@ namespace ModbusExt // modbus extension protocol declarations
             SendRequest();
         }
     }
+
+    bool TEventsEnabler::HasEventsToSetup() const
+    {
+        return !Settings.empty();
+    }
+
 }

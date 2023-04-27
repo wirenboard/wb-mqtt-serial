@@ -49,6 +49,7 @@ private:
     void ProcessPolledRegister(PRegister reg);
     void SetReadError(PRegister reg);
     void ScheduleNextPoll(PRegister reg, std::chrono::steady_clock::time_point pollStartTime);
+    void SetDeadline(std::chrono::steady_clock::time_point deadline);
 
     std::list<PRegister> RegList;
 

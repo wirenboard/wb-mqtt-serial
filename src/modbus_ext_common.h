@@ -82,6 +82,8 @@ namespace ModbusExt // modbus extension protocol common utilities
          */
         void SendRequests();
 
+        bool HasEventsToSetup() const;
+
     private:
         struct TRegisterToEnable
         {

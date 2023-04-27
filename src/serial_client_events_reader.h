@@ -30,6 +30,10 @@ public:
     typedef std::function<void(PRegister)> TRegisterCallback;
     typedef std::function<void(PSerialDevice)> TDeviceCallback;
 
+    // Several TRegister objects can have same modbus address,
+    // but represent different value regions
+    typedef std::unordered_map<TEventsReaderRegisterDesc, std::vector<PRegister>, TRegisterDescHasher> TRegsMap;
+
     TSerialClientEventsReader(size_t maxReadErrors);
 
     void AddRegister(PRegister reg);
@@ -52,7 +56,7 @@ private:
     size_t ReadErrors;
     size_t MaxReadErrors;
 
-    std::unordered_map<TEventsReaderRegisterDesc, PRegister, TRegisterDescHasher> Regs;
+    TRegsMap Regs;
     std::unordered_set<uint8_t> DevicesWithEnabledEvents;
 
     void OnEnabledEvent(uint8_t slaveId, uint8_t type, uint16_t addr, bool res);

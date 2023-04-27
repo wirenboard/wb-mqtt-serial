@@ -180,7 +180,7 @@ PSerialDevice TSerialClientRegisterPoller::OpenPortCycle(TPort& port,
 
     if (!range) {
         // Nothing to read
-        Deadline = Scheduler.IsEmpty() ? currentTime + 1s : Scheduler.GetDeadline(currentTime);
+        SetDeadline(Scheduler.IsEmpty() ? currentTime + 1s : Scheduler.GetDeadline(currentTime));
         return nullptr;
     }
 
@@ -188,10 +188,10 @@ PSerialDevice TSerialClientRegisterPoller::OpenPortCycle(TPort& port,
     if (range->RegisterList().empty()) {
         if (reader.GetPriority() == TPriority::High) {
             // High priority registers are limited by maxPollingTime
-            Deadline = currentTime + maxPollingTime;
+            SetDeadline(currentTime + maxPollingTime);
         } else {
             // Low priority registers are limited by high priority and maxPollingTime
-            Deadline = std::min(Scheduler.GetHighPriorityDeadline(), currentTime + maxPollingTime);
+            SetDeadline(std::min(Scheduler.GetHighPriorityDeadline(), currentTime + maxPollingTime));
         }
         return nullptr;
     }
@@ -221,7 +221,7 @@ PSerialDevice TSerialClientRegisterPoller::OpenPortCycle(TPort& port,
     }
 
     Scheduler.UpdateSelectionTime(ceil<milliseconds>(steady_clock::now() - currentTime), reader.GetPriority());
-    Deadline = Scheduler.IsEmpty() ? currentTime + 1s : Scheduler.GetDeadline(currentTime);
+    SetDeadline(Scheduler.IsEmpty() ? currentTime + 1s : Scheduler.GetDeadline(currentTime));
     return device;
 }
 
@@ -239,7 +239,7 @@ void TSerialClientRegisterPoller::DeviceDisconnected(PSerialDevice device)
         }
     }
     if (!Scheduler.IsEmpty()) {
-        Deadline = Scheduler.GetDeadline(currentTime);
+        SetDeadline(Scheduler.GetDeadline(currentTime));
     }
 }
 
@@ -251,6 +251,11 @@ void TSerialClientRegisterPoller::SetDeviceDisconnectedCallback(TDeviceCallback 
 std::chrono::steady_clock::time_point TSerialClientRegisterPoller::GetDeadline() const
 {
     return Deadline;
+}
+
+void TSerialClientRegisterPoller::SetDeadline(std::chrono::steady_clock::time_point deadline)
+{
+    Deadline = deadline;
 }
 
 bool TRegisterComparePredicate::operator()(const PRegister& r1, const PRegister& r2) const

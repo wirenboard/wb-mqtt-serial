@@ -37,6 +37,28 @@ namespace
                std::to_string(eventId) + ">";
     }
 
+    std::string MakeEventDescriptionString(uint8_t slaveId, uint8_t eventType, uint16_t eventId)
+    {
+        switch (eventType) {
+            case ModbusExt::TEventType::COIL:
+            case ModbusExt::TEventType::DISCRETE:
+            case ModbusExt::TEventType::HOLDING:
+            case ModbusExt::TEventType::INPUT: {
+                return "<" + MakeDeviceDescriptionString(slaveId) + ":" + EventTypeToString(eventType) + ": " +
+                       std::to_string(eventId) + ">";
+            }
+            case ModbusExt::REBOOT: {
+                return "<" + MakeDeviceDescriptionString(slaveId) + ": reboot>";
+            }
+            default:
+                return "unknown event from " + MakeDeviceDescriptionString(slaveId) +
+                       " type: " + std::to_string(eventType) + ", id: " + std::to_string(eventId);
+                break;
+        }
+        return "<" + MakeDeviceDescriptionString(slaveId) + ":" + EventTypeToString(eventType) + ": " +
+               std::to_string(eventId) + ">";
+    }
+
     ModbusExt::TEventType ToEventRegisterType(const Modbus::RegisterType regType)
     {
         switch (regType) {
@@ -70,8 +92,10 @@ namespace
         if (regs.empty()) {
             return;
         }
-        for (auto regIt = regs.cbegin(); regIt != regs.cend(); ++regIt) {
+        auto regIt = regs.cbegin();
+        while (regIt != regs.cend()) {
             uint8_t slaveId = regIt->SlaveId;
+            LOG(Warn) << "Disable unexpected events from " << MakeDeviceDescriptionString(slaveId);
             ModbusExt::TEventsEnabler enabler(slaveId, port, 100ms, 100ms, [](uint8_t, uint16_t, bool) {});
             for (; regIt != regs.cend() && slaveId == regIt->SlaveId; ++regIt) {
                 enabler.AddRegister(regIt->Addr,
@@ -89,7 +113,7 @@ namespace
 
 class TModbusExtEventsVisitor: public ModbusExt::IEventsVisitor
 {
-    const std::unordered_map<TEventsReaderRegisterDesc, PRegister, TRegisterDescHasher>& Regs;
+    const TSerialClientEventsReader::TRegsMap& Regs;
     std::unordered_set<uint8_t>& DevicesWithEnabledEvents;
     TSerialClientEventsReader::TRegisterCallback RegisterChangedCallback;
     TSerialClientEventsReader::TDeviceCallback DeviceRestartedCallback;
@@ -102,13 +126,16 @@ class TModbusExtEventsVisitor: public ModbusExt::IEventsVisitor
                                     const uint8_t* data,
                                     size_t dataSize)
     {
-        auto reg = Regs.find({slaveId, eventId, eventType});
-        if (reg != Regs.end()) {
-            LOG(Debug) << "Event from " << reg->second->ToString() << ", data: " << WBMQTT::HexDump(data, dataSize);
+        auto regArray = Regs.find({slaveId, eventId, eventType});
+        if (regArray != Regs.end()) {
+            LOG(Debug) << "Event from " << regArray->second.front()->ToString()
+                       << ", data: " << WBMQTT::HexDump(data, dataSize);
             uint64_t value = 0;
             memcpy(&value, data, std::min(dataSize, sizeof(value)));
-            reg->second->SetValue(TRegisterValue(value));
-            RegisterChangedCallback(reg->second);
+            for (auto reg: regArray->second) {
+                reg->SetValue(TRegisterValue(value));
+                RegisterChangedCallback(reg);
+            }
         } else {
             LOG(Warn) << "Unexpected event from: " << MakeRegisterDescriptionString(slaveId, eventType, eventId);
             RegsToDisable.emplace_back(TEventsReaderRegisterDesc{slaveId, eventId, eventType});
@@ -121,7 +148,7 @@ class TModbusExtEventsVisitor: public ModbusExt::IEventsVisitor
         for (const auto& reg: Regs) {
             if (reg.first.SlaveId == slaveId) {
                 LOG(Debug) << "Restart event from " << MakeDeviceDescriptionString(slaveId);
-                DeviceRestartedCallback(reg.second->Device());
+                DeviceRestartedCallback(reg.second.front()->Device());
                 return;
             }
         }
@@ -129,7 +156,7 @@ class TModbusExtEventsVisitor: public ModbusExt::IEventsVisitor
     }
 
 public:
-    TModbusExtEventsVisitor(const std::unordered_map<TEventsReaderRegisterDesc, PRegister, TRegisterDescHasher>& regs,
+    TModbusExtEventsVisitor(const TSerialClientEventsReader::TRegsMap& regs,
                             std::unordered_set<uint8_t>& devicesWithEnabledEvents,
                             TSerialClientEventsReader::TRegisterCallback registerChangedCallback,
                             TSerialClientEventsReader::TDeviceCallback deviceRestartedCallback)
@@ -243,16 +270,19 @@ void TSerialClientEventsReader::EnableEvents(PSerialDevice device, TPort& port)
                                            std::placeholders::_3));
 
     try {
-        for (const auto& reg: Regs) {
-            if (reg.first.SlaveId == slaveId) {
-                ev.AddRegister(reg.first.Addr,
-                               static_cast<ModbusExt::TEventType>(reg.first.Type),
-                               reg.second->IsHighPriority() ? ModbusExt::TEventPriority::HIGH
-                                                            : ModbusExt::TEventPriority::LOW);
+        for (const auto& regArray: Regs) {
+            if (regArray.first.SlaveId == slaveId) {
+                ev.AddRegister(regArray.first.Addr,
+                               static_cast<ModbusExt::TEventType>(regArray.first.Type),
+                               regArray.second.front()->IsHighPriority() ? ModbusExt::TEventPriority::HIGH
+                                                                         : ModbusExt::TEventPriority::LOW);
             }
         }
-        LOG(Debug) << "Try to enable events for " << MakeDeviceDescriptionString(slaveId);
-        ev.SendRequests();
+        if (ev.HasEventsToSetup()) {
+            ev.AddRegister(0, ModbusExt::TEventType::REBOOT, ModbusExt::TEventPriority::DISABLE);
+            LOG(Debug) << "Try to enable events for " << MakeDeviceDescriptionString(slaveId);
+            ev.SendRequests();
+        }
     } catch (const TSerialDevicePermanentRegisterException& e) {
         LOG(Warn) << "Failed to enable events for " << MakeDeviceDescriptionString(slaveId) << ": " << e.what();
     } catch (const TSerialDeviceTransientErrorException& e) {
@@ -262,18 +292,20 @@ void TSerialClientEventsReader::EnableEvents(PSerialDevice device, TPort& port)
 
 void TSerialClientEventsReader::OnEnabledEvent(uint8_t slaveId, uint8_t type, uint16_t addr, bool res)
 {
-    auto reg = Regs.find({slaveId, addr, type});
-    if (reg != Regs.end()) {
-        if (res) {
-            reg->second->ExcludeFromPolling();
-            reg->second->SetAvailable(TRegisterAvailability::AVAILABLE);
-            DevicesWithEnabledEvents.emplace(slaveId);
-        } else {
-            reg->second->IncludeInPolling();
+    auto regArray = Regs.find({slaveId, addr, type});
+    if (regArray != Regs.end()) {
+        for (const auto& reg: regArray->second) {
+            if (res) {
+                reg->ExcludeFromPolling();
+                reg->SetAvailable(TRegisterAvailability::AVAILABLE);
+                DevicesWithEnabledEvents.emplace(slaveId);
+            } else {
+                reg->IncludeInPolling();
+            }
         }
     }
     LOG(Info) << "Events are " << (res ? "enabled for " : "disabled for ")
-              << MakeRegisterDescriptionString(slaveId, type, addr);
+              << MakeEventDescriptionString(slaveId, type, addr);
 }
 
 void TSerialClientEventsReader::AddRegister(PRegister reg)
@@ -281,10 +313,10 @@ void TSerialClientEventsReader::AddRegister(PRegister reg)
     if (reg->SporadicMode != TRegisterConfig::TSporadicMode::DISABLED) {
         auto dev = ToModbusDevice(reg->Device().get());
         if (dev != nullptr) {
-            Regs.emplace(TEventsReaderRegisterDesc{static_cast<uint8_t>(dev->SlaveId),
-                                                   static_cast<uint16_t>(GetUint32RegisterAddress(reg->GetAddress())),
-                                                   ToEventRegisterType(static_cast<Modbus::RegisterType>(reg->Type))},
-                         reg);
+            TEventsReaderRegisterDesc regDesc{static_cast<uint8_t>(dev->SlaveId),
+                                              static_cast<uint16_t>(GetUint32RegisterAddress(reg->GetAddress())),
+                                              ToEventRegisterType(static_cast<Modbus::RegisterType>(reg->Type))};
+            Regs[regDesc].push_back(reg);
         }
     }
 }
@@ -299,11 +331,13 @@ void TSerialClientEventsReader::DeviceDisconnected(PSerialDevice device)
 
 void TSerialClientEventsReader::SetReadErrors(TRegisterCallback callback)
 {
-    for (const auto& reg: Regs) {
-        if (reg.second->IsExcludedFromPolling()) {
-            reg.second->SetError(TRegister::TError::ReadError);
-            if (callback) {
-                callback(reg.second);
+    for (const auto& regArray: Regs) {
+        for (const auto& reg: regArray.second) {
+            if (reg->IsExcludedFromPolling()) {
+                reg->SetError(TRegister::TError::ReadError);
+                if (callback) {
+                    callback(reg);
+                }
             }
         }
     }
