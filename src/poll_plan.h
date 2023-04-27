@@ -137,40 +137,39 @@ public:
 class TTotalTimeBalancer
 {
     std::chrono::milliseconds TotalTime;
+
+    //! Maximum allowed TotalTime that does not need to be reduced
+    std::chrono::milliseconds TotalTimeThreshold;
+
+    //! Limits TotalTime allowed values by [-MaxTotalTime, MaxTotalTime]
     std::chrono::milliseconds MaxTotalTime;
 
 public:
-    TTotalTimeBalancer(std::chrono::milliseconds maxTotalTime): MaxTotalTime(maxTotalTime)
+    TTotalTimeBalancer(std::chrono::milliseconds totalTimeThreshold, std::chrono::milliseconds maxTotalTime)
+        : TotalTimeThreshold(totalTimeThreshold),
+          MaxTotalTime(maxTotalTime)
     {
         Reset();
     }
 
     void IncrementTotalTime(const std::chrono::milliseconds& delta)
     {
-        auto OldTotalTime = TotalTime;
-        TotalTime += delta;
-        if (TotalTime < OldTotalTime) { // Prevent overflow
-            TotalTime = MaxTotalTime;
-        }
+        TotalTime = std::min(TotalTime + delta, MaxTotalTime);
     }
 
     void DecrementTotalTime(const std::chrono::milliseconds& delta)
     {
-        auto OldTotalTime = TotalTime;
-        TotalTime -= delta;
-        if (TotalTime > OldTotalTime) { // Prevent underflow
-            TotalTime = std::chrono::milliseconds::zero();
-        }
+        TotalTime = std::max(TotalTime - delta, -MaxTotalTime);
     }
 
     bool ShouldDecrement() const
     {
-        return (TotalTime >= MaxTotalTime);
+        return (TotalTime >= TotalTimeThreshold);
     }
 
     std::chrono::milliseconds GetTimeToDecrement() const
     {
-        auto delta = (TotalTime - MaxTotalTime);
+        auto delta = (TotalTime - TotalTimeThreshold);
         if (delta > std::chrono::milliseconds::zero()) {
             return delta;
         }
@@ -190,7 +189,7 @@ public:
     using TItem = typename TQueue::TItem;
 
     TScheduler(std::chrono::milliseconds maxLowPriorityLag, size_t lowPriorityRateLimit)
-        : TimeBalancer(maxLowPriorityLag),
+        : TimeBalancer(maxLowPriorityLag, 10 * maxLowPriorityLag),
           LowPriorityRateLimit(lowPriorityRateLimit)
     {
         ResetLoadBalancing();
