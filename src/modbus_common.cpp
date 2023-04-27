@@ -131,7 +131,7 @@ namespace Modbus // modbus protocol common utilities
 
     bool TModbusRegisterRange::Add(PRegister reg, std::chrono::milliseconds pollLimit)
     {
-        if (reg->IsExcludedFromPolling()) {
+        if (reg->GetAvailable() == TRegisterAvailability::UNAVAILABLE) {
             return true;
         }
 
