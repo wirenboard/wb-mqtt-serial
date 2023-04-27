@@ -350,4 +350,9 @@ namespace ModbusExt // modbus extension protocol declarations
         return !Settings.empty();
     }
 
+    void TEventConfirmationState::Reset()
+    {
+        Flag = 0;
+        SlaveId = 0;
+    }
 }

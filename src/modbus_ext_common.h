@@ -24,6 +24,8 @@ namespace ModbusExt // modbus extension protocol common utilities
     {
         uint8_t SlaveId = 0;
         uint8_t Flag = 0;
+
+        void Reset();
     };
 
     class IEventsVisitor

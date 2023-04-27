@@ -232,6 +232,7 @@ bool TSerialClientEventsReader::ReadEvents(TPort& port,
             {
                 LastAccessedSlaveId = 0;
                 ReadErrors = 0;
+                EventState.Reset();
                 break;
             }
             // TODO: Limit reads from same slaveId
