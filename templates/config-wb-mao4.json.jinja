@@ -256,7 +256,7 @@
                 "order": 1
             },
             {
-                "id": "{{action_bind}}_action",
+                "id": "{{action_bind}}_action_single",
                 "title": "Output Action",
                 "address": {{832 + (loop.index0 * 16) + ch_number}},
                 "reg_type": "holding",
@@ -275,9 +275,9 @@
                 "condition": "({{action_bind}}_number!=0)&&({{action_bind}}_number!=100)"
             },
             {
-                "id": "{{action_bind}}_action",
+                "id": "{{action_bind}}_action_all",
                 "title": "Output Action",
-                "address": {{768 + (loop.index0 * 16) + ch_number}},
+                "address": {{832 + (loop.index0 * 16) + ch_number}},
                 "reg_type": "holding",
                 "enum": [0, 1, 3, 4],
                 "enum_titles": [
