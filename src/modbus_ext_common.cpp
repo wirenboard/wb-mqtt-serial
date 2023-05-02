@@ -21,7 +21,7 @@ namespace ModbusExt // modbus extension protocol declarations
     // Function codes
     const uint8_t EVENTS_REQUEST_COMMAND = 0x10;
     const uint8_t EVENTS_RESPONSE_COMMAND = 0x11;
-    const uint8_t NO_EVENTS_RESPONSE_COMMAND = 0x14;
+    const uint8_t NO_EVENTS_RESPONSE_COMMAND = 0x12;
     const uint8_t ENABLE_EVENTS_COMMAND = 0x18;
 
     const size_t NO_EVENTS_RESPONSE_SIZE = 5;
@@ -293,7 +293,7 @@ namespace ModbusExt // modbus extension protocol declarations
         Settings.emplace_back(TRegisterToEnable{type, addr, priority});
     }
 
-    void TEventsEnabler::SendRequest()
+    void TEventsEnabler::SendSingleRequest()
     {
         ClearRequest();
         auto requestBack = std::back_inserter(Request);
@@ -341,7 +341,7 @@ namespace ModbusExt // modbus extension protocol declarations
         });
         Settings.erase(last, Settings.end());
         for (SettingsEnd = SettingsStart = Settings.cbegin(); SettingsEnd != Settings.cend();) {
-            SendRequest();
+            SendSingleRequest();
         }
     }
 

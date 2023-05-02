@@ -219,7 +219,7 @@ TEST(TModbusExtTest, ReadEventsNoEventsNoConfirmation)
     TTestEventsVisitor visitor;
     ModbusExt::TEventConfirmationState state;
 
-    port.Response = {0xFF, 0xFF, 0xFF, 0xFD, 0x46, 0x14, 0xD2, 0x5F}; // No events
+    port.Response = {0xFF, 0xFF, 0xFF, 0xFD, 0x46, 0x12, 0x52, 0x5D}; // No events
     bool ret = true;
     EXPECT_NO_THROW(ret = ModbusExt::ReadEvents(port,
                                                 std::chrono::milliseconds(100),
@@ -278,7 +278,7 @@ TEST(TModbusExtTest, ReadEventsWithConfirmation)
     EXPECT_EQ(visitor.Events.size(), 1);
     EXPECT_EQ(visitor.Events[464], 4);
 
-    port.Response = {0xFF, 0xFF, 0xFF, 0xFD, 0x46, 0x14, 0xD2, 0x5F}; // No events
+    port.Response = {0xFF, 0xFF, 0xFF, 0xFD, 0x46, 0x12, 0x52, 0x5D}; // No events
     visitor.Events.clear();
     EXPECT_NO_THROW(ret = ModbusExt::ReadEvents(port,
                                                 std::chrono::milliseconds(100),

@@ -18,10 +18,12 @@ struct TEventsReaderRegisterDesc
     bool operator==(const TEventsReaderRegisterDesc& other) const;
 };
 
-struct TRegisterDescHasher: public std::unary_function<TEventsReaderRegisterDesc, size_t>
+template<> struct std::hash<TEventsReaderRegisterDesc>
 {
-public:
-    size_t operator()(const TEventsReaderRegisterDesc& reg) const;
+    size_t operator()(const TEventsReaderRegisterDesc& reg) const noexcept
+    {
+        return (reg.SlaveId << 24) + (reg.Addr << 8) + reg.Type;
+    }
 };
 
 class TSerialClientEventsReader
@@ -32,7 +34,7 @@ public:
 
     // Several TRegister objects can have same modbus address,
     // but represent different value regions
-    typedef std::unordered_map<TEventsReaderRegisterDesc, std::vector<PRegister>, TRegisterDescHasher> TRegsMap;
+    typedef std::unordered_map<TEventsReaderRegisterDesc, std::vector<PRegister>> TRegsMap;
 
     TSerialClientEventsReader(size_t maxReadErrors);
 

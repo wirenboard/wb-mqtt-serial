@@ -353,8 +353,3 @@ bool TEventsReaderRegisterDesc::operator==(const TEventsReaderRegisterDesc& othe
 {
     return SlaveId == other.SlaveId && Addr == other.Addr && Type == other.Type;
 }
-
-size_t TRegisterDescHasher::operator()(const TEventsReaderRegisterDesc& reg) const
-{
-    return (reg.SlaveId << 24) + (reg.Addr << 8) + reg.Type;
-}

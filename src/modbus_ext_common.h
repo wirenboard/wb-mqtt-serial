@@ -109,7 +109,7 @@ namespace ModbusExt // modbus extension protocol common utilities
         void EnableEvents();
         void ClearRequest();
 
-        void SendRequest();
+        void SendSingleRequest();
     };
 
 } // modbus extension protocol common utilities
