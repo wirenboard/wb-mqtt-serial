@@ -76,10 +76,8 @@ public:
 
     /**
      * @brief Get baudrate of a serial port
-     *
-     * @return baudrate or 0, if not a serial port
      */
-    virtual size_t GetBaudrate() const;
+    virtual std::optional<uint32_t> GetBaudrate() const;
 };
 
 using PPort = std::shared_ptr<TPort>;

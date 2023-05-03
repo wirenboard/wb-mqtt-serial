@@ -72,17 +72,21 @@ namespace ModbusExt // modbus extension protocol declarations
     // TIME = BIT_TIME_US * ((20 + S) + (9 * (12 + A)))
     std::chrono::milliseconds GetTimeout(const TPort& port)
     {
-        const std::unordered_map<size_t, std::pair<size_t, size_t>> koefs = {{1200, {16, 1}},
-                                                                             {2400, {16, 1}},
-                                                                             {4800, {16, 1}},
-                                                                             {9600, {16, 1}},
-                                                                             {19200, {16, 4}},
-                                                                             {38400, {32, 4}},
-                                                                             {57600, {48, 4}},
-                                                                             {115200, {96, 8}},
-                                                                             {230400, {192, 12}}};
+        const std::unordered_map<uint32_t, std::pair<size_t, size_t>> koefs = {{1200, {16, 1}},
+                                                                               {2400, {16, 1}},
+                                                                               {4800, {16, 1}},
+                                                                               {9600, {16, 1}},
+                                                                               {19200, {16, 4}},
+                                                                               {38400, {32, 4}},
+                                                                               {57600, {48, 4}},
+                                                                               {115200, {96, 8}},
+                                                                               {230400, {192, 12}}};
+        auto baudrate = port.GetBaudrate();
+        if (!baudrate.has_value()) {
+            return std::chrono::milliseconds(100);
+        }
         try {
-            const auto koef = koefs.at(port.GetBaudrate());
+            const auto koef = koefs.at(*baudrate);
             const auto bits = ((20 + koef.first) + 9 * (12 + koef.second));
             return std::chrono::ceil<std::chrono::milliseconds>(port.GetSendTime(bits / 8.0));
         } catch (const std::out_of_range& ex) {
@@ -288,7 +292,8 @@ namespace ModbusExt // modbus extension protocol declarations
     {
         Port.WriteBytes(Request);
 
-        auto rc = Port.ReadFrame(Response.data(), Request.size(), Timeout, Timeout);
+        // Use response timeout from MR6C template
+        auto rc = Port.ReadFrame(Response.data(), Request.size(), std::chrono::milliseconds(8), FrameTimeout);
 
         CheckCRC16(Response.data(), rc);
 
@@ -351,7 +356,7 @@ namespace ModbusExt // modbus extension protocol declarations
         Request.reserve(MAX_PACKET_SIZE);
         Append(std::back_inserter(Request), {SlaveId, MODBUS_EXT_COMMAND, ENABLE_EVENTS_COMMAND, 0});
         Response.reserve(MAX_PACKET_SIZE);
-        Timeout = GetTimeout(port);
+        FrameTimeout = std::chrono::ceil<std::chrono::milliseconds>(port.GetSendTime(3.5));
     }
 
     void TEventsEnabler::AddRegister(uint16_t addr, TEventType type, TEventPriority priority)

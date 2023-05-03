@@ -24,9 +24,9 @@ std::chrono::microseconds TPort::GetSendTime(double bytesNumber) const
     return std::chrono::microseconds::zero();
 }
 
-size_t TPort::GetBaudrate() const
+std::optional<uint32_t> TPort::GetBaudrate() const
 {
-    return 0;
+    return std::nullopt;
 }
 
 void TPort::ApplySerialPortSettings(const TSerialPortConnectionSettings& settings)

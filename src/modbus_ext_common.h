@@ -106,7 +106,7 @@ namespace ModbusExt // modbus extension protocol common utilities
         uint8_t SlaveId;
         TPort& Port;
         size_t MaxRegDistance;
-        std::chrono::milliseconds Timeout;
+        std::chrono::milliseconds FrameTimeout;
         TVisitorFn Visitor;
 
         void EnableEvents();

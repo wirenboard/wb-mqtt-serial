@@ -25,7 +25,12 @@ bool TSerialClientDeviceAccessHandler::PrepareToAccess(PSerialDevice dev)
             if (devWasDisconnected || dev != LastAccessedDevice) {
                 dev->Prepare();
                 if (devWasDisconnected) {
-                    EventsReader.EnableEvents(dev, *(dev->Port()));
+                    try {
+                        EventsReader.EnableEvents(dev, *(dev->Port()));
+                    } catch (const TSerialDeviceException& e) {
+                        dev->SetDisconnected();
+                        throw;
+                    }
                 }
             }
             LastAccessedDevice = dev;

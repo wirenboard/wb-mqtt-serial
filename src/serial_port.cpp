@@ -264,7 +264,7 @@ TSerialPortSettingsGuard::~TSerialPortSettingsGuard()
     Port->ResetSerialPortSettings();
 }
 
-size_t TSerialPort::GetBaudrate() const
+std::optional<uint32_t> TSerialPort::GetBaudrate() const
 {
     return Settings.BaudRate;
 }
