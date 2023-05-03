@@ -34,6 +34,7 @@ public:
     std::string GetDescription(bool verbose = true) const override;
 
     const TSerialPortSettings& GetSettings() const;
+    size_t GetBaudrate() const override;
 
 private:
     const TSerialPortSettings Settings;

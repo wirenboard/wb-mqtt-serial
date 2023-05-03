@@ -59,6 +59,37 @@ namespace ModbusExt // modbus extension protocol declarations
     const size_t ENABLE_EVENTS_REC_ADDR_POS = 1;
     const size_t ENABLE_EVENTS_REC_STATE_POS = 3;
 
+    //             S       A
+    // 1200        16      1
+    // 2400        16      1
+    // 4800        16      1
+    // 9600        16      1
+    // 19200       16      4
+    // 38400       32      4
+    // 57600       48      4
+    // 115200      96      8
+    // 230400      192     12
+    // TIME = BIT_TIME_US * ((20 + S) + (9 * (12 + A)))
+    std::chrono::milliseconds GetTimeout(const TPort& port)
+    {
+        const std::unordered_map<size_t, std::pair<size_t, size_t>> koefs = {{1200, {16, 1}},
+                                                                             {2400, {16, 1}},
+                                                                             {4800, {16, 1}},
+                                                                             {9600, {16, 1}},
+                                                                             {19200, {16, 4}},
+                                                                             {38400, {32, 4}},
+                                                                             {57600, {48, 4}},
+                                                                             {115200, {96, 8}},
+                                                                             {230400, {192, 12}}};
+        try {
+            const auto koef = koefs.at(port.GetBaudrate());
+            const auto bits = ((20 + koef.first) + 9 * (12 + koef.second));
+            return std::chrono::ceil<std::chrono::milliseconds>(port.GetSendTime(bits / 8.0));
+        } catch (const std::out_of_range& ex) {
+            return std::chrono::milliseconds(100);
+        }
+    }
+
     size_t GetPacketStart(const uint8_t* data, size_t size)
     {
         for (size_t i = 0; i < size; ++i) {
@@ -162,8 +193,6 @@ namespace ModbusExt // modbus extension protocol declarations
     }
 
     bool ReadEvents(TPort& port,
-                    std::chrono::milliseconds responseTimeout,
-                    std::chrono::milliseconds frameTimeout,
                     std::chrono::milliseconds maxEventsReadTime,
                     uint8_t startingSlaveId,
                     TEventConfirmationState& state,
@@ -177,8 +206,9 @@ namespace ModbusExt // modbus extension protocol declarations
         auto req = MakeReadEventsRequest(state, startingSlaveId, maxBytes);
         port.WriteBytes(req);
 
+        const auto timeout = GetTimeout(port);
         std::array<uint8_t, MAX_PACKET_SIZE + ARBITRATION_HEADER_MAX_BYTES> res;
-        auto rc = port.ReadFrame(res.data(), res.size(), responseTimeout + frameTimeout, frameTimeout, ExpectEvents());
+        auto rc = port.ReadFrame(res.data(), res.size(), timeout, timeout, ExpectEvents());
 
         auto start = GetPacketStart(res.data(), res.size());
         auto packetSize = rc - start;
@@ -258,7 +288,7 @@ namespace ModbusExt // modbus extension protocol declarations
     {
         Port.WriteBytes(Request);
 
-        auto rc = Port.ReadFrame(Response.data(), Request.size(), ResponseTimeout + FrameTimeout, FrameTimeout);
+        auto rc = Port.ReadFrame(Response.data(), Request.size(), Timeout, Timeout);
 
         CheckCRC16(Response.data(), rc);
 
@@ -308,14 +338,10 @@ namespace ModbusExt // modbus extension protocol declarations
 
     TEventsEnabler::TEventsEnabler(uint8_t slaveId,
                                    TPort& port,
-                                   std::chrono::milliseconds responseTimeout,
-                                   std::chrono::milliseconds frameTimeout,
                                    TEventsEnabler::TVisitorFn visitor,
                                    TEventsEnablerFlags flags)
         : SlaveId(slaveId),
           Port(port),
-          ResponseTimeout(responseTimeout),
-          FrameTimeout(frameTimeout),
           MaxRegDistance(1),
           Visitor(visitor)
     {
@@ -325,6 +351,7 @@ namespace ModbusExt // modbus extension protocol declarations
         Request.reserve(MAX_PACKET_SIZE);
         Append(std::back_inserter(Request), {SlaveId, MODBUS_EXT_COMMAND, ENABLE_EVENTS_COMMAND, 0});
         Response.reserve(MAX_PACKET_SIZE);
+        Timeout = GetTimeout(port);
     }
 
     void TEventsEnabler::AddRegister(uint16_t addr, TEventType type, TEventPriority priority)

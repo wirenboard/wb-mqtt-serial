@@ -263,3 +263,8 @@ TSerialPortSettingsGuard::~TSerialPortSettingsGuard()
 {
     Port->ResetSerialPortSettings();
 }
+
+size_t TSerialPort::GetBaudrate() const
+{
+    return Settings.BaudRate;
+}

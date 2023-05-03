@@ -47,8 +47,6 @@ namespace ModbusExt // modbus extension protocol common utilities
      * @return false - no more events
      */
     bool ReadEvents(TPort& port,
-                    std::chrono::milliseconds responseTimeout,
-                    std::chrono::milliseconds frameTimeout,
                     std::chrono::milliseconds maxReadingTime,
                     uint8_t startingSlaveId,
                     TEventConfirmationState& state,
@@ -68,8 +66,6 @@ namespace ModbusExt // modbus extension protocol common utilities
 
         TEventsEnabler(uint8_t slaveId,
                        TPort& port,
-                       std::chrono::milliseconds responseTimeout,
-                       std::chrono::milliseconds frameTimeout,
                        TEventsEnabler::TVisitorFn visitor,
                        TEventsEnablerFlags flags = TEventsEnablerFlags::NO_HOLES);
 
@@ -109,9 +105,8 @@ namespace ModbusExt // modbus extension protocol common utilities
 
         uint8_t SlaveId;
         TPort& Port;
-        std::chrono::milliseconds ResponseTimeout;
-        std::chrono::milliseconds FrameTimeout;
         size_t MaxRegDistance;
+        std::chrono::milliseconds Timeout;
         TVisitorFn Visitor;
 
         void EnableEvents();

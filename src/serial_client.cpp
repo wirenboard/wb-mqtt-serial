@@ -23,13 +23,11 @@ namespace
 
     std::chrono::milliseconds GetReadEventsPeriod(const TPort& port)
     {
-        auto sendByteTime = port.GetSendTime(1);
-        // >= 115200
-        if (sendByteTime < 100us) {
+        auto baudrate = port.GetBaudrate();
+        if (baudrate >= 115200 || baudrate == 0) {
             return 50ms;
         }
-        // >= 38400
-        if (sendByteTime < 300us) {
+        if (baudrate >= 38400) {
             return 100ms;
         }
         // < 38400

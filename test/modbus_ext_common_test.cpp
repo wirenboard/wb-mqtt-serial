@@ -93,11 +93,9 @@ TEST(TModbusExtTest, EventsEnablerOneReg)
     port.Response = {0x0A, 0x46, 0x18, 0x01, 0x01, 0xE9, 0x1E};
 
     std::map<uint16_t, bool> response;
-    ModbusExt::TEventsEnabler ev(10,
-                                 port,
-                                 std::chrono::milliseconds(100),
-                                 std::chrono::milliseconds(100),
-                                 [&response](uint8_t type, uint16_t reg, bool enabled) { response[reg] = enabled; });
+    ModbusExt::TEventsEnabler ev(10, port, [&response](uint8_t type, uint16_t reg, bool enabled) {
+        response[reg] = enabled;
+    });
     ev.AddRegister(101, ModbusExt::TEventType::COIL, ModbusExt::TEventPriority::HIGH);
 
     EXPECT_NO_THROW(ev.SendRequests());
@@ -126,11 +124,7 @@ TEST(TModbusExtTest, EventsEnablerIllegalFunction)
     TPortMock port;
     port.Response = {0x0A, 0xC6, 0x01, 0xC3, 0xA2};
 
-    ModbusExt::TEventsEnabler ev(10,
-                                 port,
-                                 std::chrono::milliseconds(100),
-                                 std::chrono::milliseconds(100),
-                                 [](uint8_t, uint16_t, bool) {});
+    ModbusExt::TEventsEnabler ev(10, port, [](uint8_t, uint16_t, bool) {});
     ev.AddRegister(101, ModbusExt::TEventType::COIL, ModbusExt::TEventPriority::HIGH);
 
     EXPECT_THROW(ev.SendRequests(), TSerialDevicePermanentRegisterException);
@@ -145,11 +139,9 @@ TEST(TModbusExtTest, EventsEnablerTwoRanges)
     port.Response = {0x0A, 0x46, 0x18, 0x03, 0x03, 0xFB, 0x02, 0xAD, 0x11};
 
     std::map<uint16_t, bool> response;
-    ModbusExt::TEventsEnabler ev(10,
-                                 port,
-                                 std::chrono::milliseconds(100),
-                                 std::chrono::milliseconds(100),
-                                 [&response](uint8_t type, uint16_t reg, bool enabled) { response[reg] = enabled; });
+    ModbusExt::TEventsEnabler ev(10, port, [&response](uint8_t type, uint16_t reg, bool enabled) {
+        response[reg] = enabled;
+    });
 
     ev.AddRegister(101, ModbusExt::TEventType::COIL, ModbusExt::TEventPriority::HIGH);
     ev.AddRegister(102, ModbusExt::TEventType::COIL, ModbusExt::TEventPriority::HIGH);
@@ -226,8 +218,6 @@ TEST(TModbusExtTest, EventsEnablerRangesWithHoles)
     ModbusExt::TEventsEnabler ev(
         10,
         port,
-        std::chrono::milliseconds(100),
-        std::chrono::milliseconds(100),
         [&response](uint8_t type, uint16_t reg, bool enabled) { response[reg] = enabled; },
         ModbusExt::TEventsEnabler::DISABLE_EVENTS_IN_HOLES);
 
@@ -314,13 +304,7 @@ TEST(TModbusExtTest, ReadEventsNoEventsNoConfirmation)
 
     port.Response = {0xFF, 0xFF, 0xFF, 0xFD, 0x46, 0x12, 0x52, 0x5D}; // No events
     bool ret = true;
-    EXPECT_NO_THROW(ret = ModbusExt::ReadEvents(port,
-                                                std::chrono::milliseconds(100),
-                                                std::chrono::milliseconds(100),
-                                                std::chrono::milliseconds(100),
-                                                0,
-                                                state,
-                                                visitor));
+    EXPECT_NO_THROW(ret = ModbusExt::ReadEvents(port, std::chrono::milliseconds(100), 0, state, visitor));
     EXPECT_FALSE(ret);
 
     EXPECT_EQ(port.Request.size(), 9);
@@ -347,13 +331,7 @@ TEST(TModbusExtTest, ReadEventsWithConfirmation)
     port.Response =
         {0xFF, 0xFF, 0xFF, 0x05, 0x46, 0x11, 0x01, 0x01, 0x06, 0x02, 0x04, 0x01, 0xD0, 0x04, 0x00, 0x2B, 0xAC};
     bool ret = false;
-    EXPECT_NO_THROW(ret = ModbusExt::ReadEvents(port,
-                                                std::chrono::milliseconds(100),
-                                                std::chrono::milliseconds(100),
-                                                std::chrono::milliseconds(100),
-                                                0,
-                                                state,
-                                                visitor));
+    EXPECT_NO_THROW(ret = ModbusExt::ReadEvents(port, std::chrono::milliseconds(100), 0, state, visitor));
     EXPECT_TRUE(ret);
 
     EXPECT_EQ(port.Request.size(), 9);
@@ -373,13 +351,7 @@ TEST(TModbusExtTest, ReadEventsWithConfirmation)
 
     port.Response = {0xFF, 0xFF, 0xFF, 0xFD, 0x46, 0x12, 0x52, 0x5D}; // No events
     visitor.Events.clear();
-    EXPECT_NO_THROW(ret = ModbusExt::ReadEvents(port,
-                                                std::chrono::milliseconds(100),
-                                                std::chrono::milliseconds(100),
-                                                std::chrono::milliseconds(5),
-                                                5,
-                                                state,
-                                                visitor));
+    EXPECT_NO_THROW(ret = ModbusExt::ReadEvents(port, std::chrono::milliseconds(5), 5, state, visitor));
     EXPECT_FALSE(ret);
 
     EXPECT_EQ(port.Request.size(), 9);
@@ -406,13 +378,7 @@ TEST(TModbusExtTest, ReadEventsReboot)
     port.Response =
         {0xFF, 0xFF, 0xFF, 0xFD, 0x46, 0x11, 0x00, 0x00, 0x04, 0x00, 0x0F, 0x00, 0x00, 0xFF, 0x5E}; // Reboot event
     bool ret = false;
-    EXPECT_NO_THROW(ret = ModbusExt::ReadEvents(port,
-                                                std::chrono::milliseconds(100),
-                                                std::chrono::milliseconds(100),
-                                                std::chrono::milliseconds(100),
-                                                0,
-                                                state,
-                                                visitor));
+    EXPECT_NO_THROW(ret = ModbusExt::ReadEvents(port, std::chrono::milliseconds(100), 0, state, visitor));
     EXPECT_TRUE(ret);
 
     EXPECT_TRUE(visitor.Reboot);

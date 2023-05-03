@@ -96,7 +96,7 @@ namespace
         while (regIt != regs.cend()) {
             uint8_t slaveId = regIt->SlaveId;
             LOG(Warn) << "Disable unexpected events from " << MakeDeviceDescriptionString(slaveId);
-            ModbusExt::TEventsEnabler enabler(slaveId, port, 100ms, 100ms, [](uint8_t, uint16_t, bool) {});
+            ModbusExt::TEventsEnabler enabler(slaveId, port, [](uint8_t, uint16_t, bool) {});
             for (; regIt != regs.cend() && slaveId == regIt->SlaveId; ++regIt) {
                 enabler.AddRegister(regIt->Addr,
                                     static_cast<ModbusExt::TEventType>(regIt->Type),
@@ -223,8 +223,6 @@ bool TSerialClientEventsReader::ReadEvents(TPort& port,
     for (auto spendTime = 0us; spendTime < maxReadingTime; spendTime = spendTimeMeter.GetSpendTime()) {
         try {
             if (!ModbusExt::ReadEvents(port,
-                                       100ms,
-                                       100ms,
                                        floor<milliseconds>(maxReadingTime - spendTime),
                                        LastAccessedSlaveId,
                                        EventState,
@@ -261,8 +259,6 @@ void TSerialClientEventsReader::EnableEvents(PSerialDevice device, TPort& port)
     DevicesWithEnabledEvents.erase(slaveId);
     ModbusExt::TEventsEnabler ev(slaveId,
                                  port,
-                                 100ms,
-                                 100ms,
                                  std::bind(&TSerialClientEventsReader::OnEnabledEvent,
                                            this,
                                            slaveId,
