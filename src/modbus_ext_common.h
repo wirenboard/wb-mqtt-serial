@@ -60,11 +60,18 @@ namespace ModbusExt // modbus extension protocol common utilities
     public:
         typedef std::function<void(uint8_t, uint16_t, bool)> TVisitorFn;
 
+        enum TEventsEnablerFlags
+        {
+            NO_HOLES,
+            DISABLE_EVENTS_IN_HOLES
+        };
+
         TEventsEnabler(uint8_t slaveId,
                        TPort& port,
                        std::chrono::milliseconds responseTimeout,
                        std::chrono::milliseconds frameTimeout,
-                       TEventsEnabler::TVisitorFn visitor);
+                       TEventsEnabler::TVisitorFn visitor,
+                       TEventsEnablerFlags flags = TEventsEnablerFlags::NO_HOLES);
 
         /**
          * @brief Add register to packet.
@@ -104,6 +111,7 @@ namespace ModbusExt // modbus extension protocol common utilities
         TPort& Port;
         std::chrono::milliseconds ResponseTimeout;
         std::chrono::milliseconds FrameTimeout;
+        size_t MaxRegDistance;
         TVisitorFn Visitor;
 
         void EnableEvents();

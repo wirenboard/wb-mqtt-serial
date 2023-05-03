@@ -221,6 +221,39 @@ namespace ModbusExt // modbus extension protocol declarations
                request.capacity();
     }
 
+    class TBitIterator
+    {
+        uint8_t* Data;
+        const uint8_t* End;
+        size_t BitIndex;
+
+    public:
+        TBitIterator(uint8_t* data, size_t size): Data(data), End(data + size), BitIndex(0)
+        {}
+
+        void NextBit()
+        {
+            ++BitIndex;
+            if (BitIndex == 8) {
+                NextByte();
+            }
+        }
+
+        void NextByte()
+        {
+            ++Data;
+            BitIndex = 0;
+            if (Data > End) {
+                throw Modbus::TMalformedResponseError("not enough data in enable events response");
+            }
+        }
+
+        bool GetBit() const
+        {
+            return (*Data >> BitIndex) & 0x01;
+        }
+    };
+
     void TEventsEnabler::EnableEvents()
     {
         Port.WriteBytes(Request);
@@ -243,26 +276,27 @@ namespace ModbusExt // modbus extension protocol declarations
             throw Modbus::TMalformedResponseError("invalid slave id");
         }
 
-        const uint8_t* data = Response.data() + ENABLE_EVENTS_RESPONSE_DATA_POS - 1;
-        const uint8_t* end = data + Response[ENABLE_EVENTS_RESPONSE_DATA_SIZE_POS];
+        TBitIterator dataIt(Response.data() + ENABLE_EVENTS_RESPONSE_DATA_POS - 1,
+                            Response[ENABLE_EVENTS_RESPONSE_DATA_SIZE_POS]);
 
         TEventType lastType = TEventType::REBOOT;
-        uint16_t lastAddr = 0;
-        size_t bitIndex = 0;
+        uint16_t lastRegAddr = 0;
+        uint16_t lastDataAddr = 0;
 
         for (auto regIt = SettingsStart; regIt != SettingsEnd; ++regIt) {
-            if (lastType != regIt->Type || lastAddr + 1 != regIt->Addr || bitIndex == 7) {
-                ++data;
-                bitIndex = 0;
+            if (lastType != regIt->Type || lastRegAddr + MaxRegDistance < regIt->Addr) {
+                dataIt.NextByte();
+                lastDataAddr = regIt->Addr;
+                lastType = regIt->Type;
+                Visitor(lastType, lastDataAddr, dataIt.GetBit());
             } else {
-                ++bitIndex;
+                do {
+                    dataIt.NextBit();
+                    ++lastDataAddr;
+                    Visitor(lastType, lastDataAddr, dataIt.GetBit());
+                } while (lastDataAddr != regIt->Addr);
             }
-            if (data > end) {
-                throw Modbus::TMalformedResponseError("not enough data in enable events response");
-            }
-            lastType = regIt->Type;
-            lastAddr = regIt->Addr;
-            Visitor(lastType, lastAddr, (*data >> bitIndex) & 0x01);
+            lastRegAddr = regIt->Addr;
         }
     }
 
@@ -276,13 +310,18 @@ namespace ModbusExt // modbus extension protocol declarations
                                    TPort& port,
                                    std::chrono::milliseconds responseTimeout,
                                    std::chrono::milliseconds frameTimeout,
-                                   TEventsEnabler::TVisitorFn visitor)
+                                   TEventsEnabler::TVisitorFn visitor,
+                                   TEventsEnablerFlags flags)
         : SlaveId(slaveId),
           Port(port),
           ResponseTimeout(responseTimeout),
           FrameTimeout(frameTimeout),
+          MaxRegDistance(1),
           Visitor(visitor)
     {
+        if (flags == TEventsEnablerFlags::DISABLE_EVENTS_IN_HOLES) {
+            MaxRegDistance = MIN_ENABLE_EVENTS_REC_SIZE;
+        }
         Request.reserve(MAX_PACKET_SIZE);
         Append(std::back_inserter(Request), {SlaveId, MODBUS_EXT_COMMAND, ENABLE_EVENTS_COMMAND, 0});
         Response.reserve(MAX_PACKET_SIZE);
@@ -302,7 +341,7 @@ namespace ModbusExt // modbus extension protocol declarations
         auto regIt = SettingsEnd;
         size_t regCountPos;
         for (; HasSpaceForEnableEventRecord(Request) && regIt != Settings.cend(); ++regIt) {
-            if (lastType != regIt->Type || lastAddr + 1 != regIt->Addr) {
+            if (lastType != regIt->Type || lastAddr + MaxRegDistance < regIt->Addr) {
                 Append(requestBack, static_cast<uint8_t>(regIt->Type));
                 AppendBigEndian(requestBack, regIt->Addr);
                 Append(requestBack, static_cast<uint8_t>(1));
@@ -310,9 +349,13 @@ namespace ModbusExt // modbus extension protocol declarations
                 Append(requestBack, static_cast<uint8_t>(regIt->Priority));
                 Request[ENABLE_EVENTS_RESPONSE_DATA_SIZE_POS] += MIN_ENABLE_EVENTS_REC_SIZE;
             } else {
-                Request[regCountPos] += 1;
+                const auto nRegs = static_cast<size_t>(regIt->Addr - lastAddr);
+                Request[regCountPos] += nRegs;
+                for (size_t i = 0; i + 1 < nRegs; ++i) {
+                    Append(requestBack, static_cast<uint8_t>(TEventPriority::DISABLE));
+                }
                 Append(requestBack, static_cast<uint8_t>(regIt->Priority));
-                Request[ENABLE_EVENTS_RESPONSE_DATA_SIZE_POS] += 1;
+                Request[ENABLE_EVENTS_RESPONSE_DATA_SIZE_POS] += nRegs;
             }
             lastType = regIt->Type;
             lastAddr = regIt->Addr;

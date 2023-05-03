@@ -268,7 +268,8 @@ void TSerialClientEventsReader::EnableEvents(PSerialDevice device, TPort& port)
                                            slaveId,
                                            std::placeholders::_1,
                                            std::placeholders::_2,
-                                           std::placeholders::_3));
+                                           std::placeholders::_3),
+                                 ModbusExt::TEventsEnabler::DISABLE_EVENTS_IN_HOLES);
 
     try {
         for (const auto& regArray: Regs) {
