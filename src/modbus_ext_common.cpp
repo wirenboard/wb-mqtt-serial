@@ -60,12 +60,11 @@ namespace ModbusExt // modbus extension protocol declarations
     const size_t ENABLE_EVENTS_REC_ADDR_POS = 1;
     const size_t ENABLE_EVENTS_REC_STATE_POS = 3;
 
-    // max(3.5 symbols, (12 bits + 800us)) + 9 * max(13 bits, 12 bits + 50us)
+    // max(3.5 symbols, (20 bits + 800us)) + 9 * max(13 bits, 12 bits + 50us)
     std::chrono::milliseconds GetTimeout(const TPort& port)
     {
-        const auto twelveBits = port.GetSendTimeBits(12);
-        const auto cmdTime = std::max(port.GetSendTimeBytes(3.5), twelveBits + 800us);
-        const auto arbitrationTime = 9 * std::max(twelveBits + 50us, port.GetSendTimeBits(13));
+        const auto cmdTime = std::max(port.GetSendTimeBytes(3.5), port.GetSendTimeBits(20) + 800us);
+        const auto arbitrationTime = 9 * std::max(port.GetSendTimeBits(13), port.GetSendTimeBits(12) + 50us);
         return std::chrono::ceil<std::chrono::milliseconds>(cmdTime + arbitrationTime);
     }
 
