@@ -29,12 +29,12 @@ public:
                      const std::chrono::microseconds& frameTimeout,
                      TFrameCompletePred frameComplete = 0) override;
 
-    std::chrono::microseconds GetSendTime(double bytesNumber) const override;
+    std::chrono::microseconds GetSendTimeBytes(double bytesNumber) const override;
+    std::chrono::microseconds GetSendTimeBits(size_t bitsNumber) const override;
 
     std::string GetDescription(bool verbose = true) const override;
 
     const TSerialPortSettings& GetSettings() const;
-    std::optional<uint32_t> GetBaudrate() const override;
 
 private:
     const TSerialPortSettings Settings;

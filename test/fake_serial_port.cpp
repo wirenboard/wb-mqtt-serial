@@ -251,7 +251,7 @@ void TFakeSerialPort::SetAllowOpen(bool allowOpen)
     AllowOpen = allowOpen;
 }
 
-std::chrono::microseconds TFakeSerialPort::GetSendTime(double bytesNumber) const
+std::chrono::microseconds TFakeSerialPort::GetSendTimeBytes(double bytesNumber) const
 {
     auto us = std::ceil((1000000.0 * 11 * bytesNumber) / double(BaudRate));
     return std::chrono::microseconds(static_cast<std::chrono::microseconds::rep>(us));

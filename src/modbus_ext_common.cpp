@@ -9,6 +9,7 @@
 #include <vector>
 
 using namespace BinUtils;
+using namespace std::chrono_literals;
 
 #define LOG(logger) logger.Log() << "[modbus-ext] "
 
@@ -59,39 +60,13 @@ namespace ModbusExt // modbus extension protocol declarations
     const size_t ENABLE_EVENTS_REC_ADDR_POS = 1;
     const size_t ENABLE_EVENTS_REC_STATE_POS = 3;
 
-    //             S       A
-    // 1200        16      1
-    // 2400        16      1
-    // 4800        16      1
-    // 9600        16      1
-    // 19200       16      4
-    // 38400       32      4
-    // 57600       48      4
-    // 115200      96      8
-    // 230400      192     12
-    // TIME = BIT_TIME_US * ((20 + S) + (9 * (12 + A)))
+    // max(3.5 symbols, (12 bits + 800us)) + 9 * max(13 bits, 12 bits + 50us)
     std::chrono::milliseconds GetTimeout(const TPort& port)
     {
-        const std::unordered_map<uint32_t, std::pair<size_t, size_t>> koefs = {{1200, {16, 1}},
-                                                                               {2400, {16, 1}},
-                                                                               {4800, {16, 1}},
-                                                                               {9600, {16, 1}},
-                                                                               {19200, {16, 4}},
-                                                                               {38400, {32, 4}},
-                                                                               {57600, {48, 4}},
-                                                                               {115200, {96, 8}},
-                                                                               {230400, {192, 12}}};
-        auto baudrate = port.GetBaudrate();
-        if (!baudrate.has_value()) {
-            return std::chrono::milliseconds(100);
-        }
-        try {
-            const auto koef = koefs.at(*baudrate);
-            const auto bits = ((20 + koef.first) + 9 * (12 + koef.second));
-            return std::chrono::ceil<std::chrono::milliseconds>(port.GetSendTime(bits / 8.0));
-        } catch (const std::out_of_range& ex) {
-            return std::chrono::milliseconds(100);
-        }
+        const auto twelveBits = port.GetSendTimeBits(12);
+        const auto cmdTime = std::max(port.GetSendTimeBytes(3.5), twelveBits + 800us);
+        const auto arbitrationTime = 9 * std::max(twelveBits + 50us, port.GetSendTimeBits(13));
+        return std::chrono::ceil<std::chrono::milliseconds>(cmdTime + arbitrationTime);
     }
 
     size_t GetPacketStart(const uint8_t* data, size_t size)
@@ -109,7 +84,7 @@ namespace ModbusExt // modbus extension protocol declarations
         if (maxTime.count() <= 0) {
             return MAX_EVENT_SIZE;
         }
-        auto timePerByte = port.GetSendTime(1);
+        auto timePerByte = port.GetSendTimeBytes(1);
         if (timePerByte.count() == 0) {
             return EVENTS_REQUEST_MAX_BYTES;
         }
@@ -293,7 +268,7 @@ namespace ModbusExt // modbus extension protocol declarations
         Port.WriteBytes(Request);
 
         // Use response timeout from MR6C template
-        auto rc = Port.ReadFrame(Response.data(), Request.size(), std::chrono::milliseconds(8), FrameTimeout);
+        auto rc = Port.ReadFrame(Response.data(), Request.size(), 8ms, FrameTimeout);
 
         CheckCRC16(Response.data(), rc);
 
@@ -356,7 +331,7 @@ namespace ModbusExt // modbus extension protocol declarations
         Request.reserve(MAX_PACKET_SIZE);
         Append(std::back_inserter(Request), {SlaveId, MODBUS_EXT_COMMAND, ENABLE_EVENTS_COMMAND, 0});
         Response.reserve(MAX_PACKET_SIZE);
-        FrameTimeout = std::chrono::ceil<std::chrono::milliseconds>(port.GetSendTime(3.5));
+        FrameTimeout = std::chrono::ceil<std::chrono::milliseconds>(port.GetSendTimeBytes(3.5));
     }
 
     void TEventsEnabler::AddRegister(uint16_t addr, TEventType type, TEventPriority priority)

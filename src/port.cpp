@@ -19,14 +19,14 @@ void TPort::WriteBytes(const std::string& buf)
     WriteBytes(reinterpret_cast<const uint8_t*>(buf.c_str()), buf.size());
 }
 
-std::chrono::microseconds TPort::GetSendTime(double bytesNumber) const
+std::chrono::microseconds TPort::GetSendTimeBytes(double bytesNumber) const
 {
     return std::chrono::microseconds::zero();
 }
 
-std::optional<uint32_t> TPort::GetBaudrate() const
+std::chrono::microseconds TPort::GetSendTimeBits(size_t bitsNumber) const
 {
-    return std::nullopt;
+    return std::chrono::microseconds::zero();
 }
 
 void TPort::ApplySerialPortSettings(const TSerialPortConnectionSettings& settings)

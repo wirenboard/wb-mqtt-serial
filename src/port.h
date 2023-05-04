@@ -58,7 +58,14 @@ public:
      *
      * @param bytesCount number of bytes
      */
-    virtual std::chrono::microseconds GetSendTime(double bytesNumber) const;
+    virtual std::chrono::microseconds GetSendTimeBytes(double bytesNumber) const;
+
+    /**
+     * @brief Calculate sending time for bitsNumber bits
+     *
+     * @param bitsCount number of bits
+     */
+    virtual std::chrono::microseconds GetSendTimeBits(size_t bitsNumber) const;
 
     virtual std::string GetDescription(bool verbose = true) const = 0;
 
@@ -73,11 +80,6 @@ public:
      * @brief Reset connection parameters to preconfigured if it is a serial port
      */
     virtual void ResetSerialPortSettings();
-
-    /**
-     * @brief Get baudrate of a serial port
-     */
-    virtual std::optional<uint32_t> GetBaudrate() const;
 };
 
 using PPort = std::shared_ptr<TPort>;

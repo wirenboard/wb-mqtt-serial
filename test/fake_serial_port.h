@@ -42,7 +42,7 @@ public:
 
     void SleepSinceLastInteraction(const std::chrono::microseconds& us) override;
 
-    std::chrono::microseconds GetSendTime(double bytesNumber) const override;
+    std::chrono::microseconds GetSendTimeBytes(double bytesNumber) const override;
 
     void Expect(const std::vector<int>& request, const std::vector<int>& response, const char* func = 0) override;
     void DumpWhatWasRead();

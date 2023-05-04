@@ -205,13 +205,18 @@ void TSerialPort::ResetSerialPortSettings()
     ApplySerialPortSettings(Settings);
 }
 
-std::chrono::microseconds TSerialPort::GetSendTime(double bytesNumber) const
+std::chrono::microseconds TSerialPort::GetSendTimeBytes(double bytesNumber) const
 {
     size_t bitsPerByte = 1 + Settings.DataBits + Settings.StopBits;
     if (Settings.Parity != 'N') {
         ++bitsPerByte;
     }
-    auto us = std::ceil((1000000.0 * bitsPerByte * bytesNumber) / double(Settings.BaudRate));
+    return GetSendTimeBits(std::ceil(bitsPerByte * bytesNumber));
+}
+
+std::chrono::microseconds TSerialPort::GetSendTimeBits(size_t bitsNumber) const
+{
+    auto us = std::ceil(bitsNumber * 1000000.0 / double(Settings.BaudRate));
     return std::chrono::microseconds(static_cast<std::chrono::microseconds::rep>(us));
 }
 
@@ -228,15 +233,15 @@ size_t TSerialPort::ReadFrame(uint8_t* buf,
 {
     return Base::ReadFrame(buf,
                            count,
-                           responseTimeout + GetLinuxLag(Settings.BaudRate) + GetSendTime(RxTrigBytes),
-                           frameTimeout + std::chrono::milliseconds(15) + GetSendTime(RxTrigBytes),
+                           responseTimeout + GetLinuxLag(Settings.BaudRate) + GetSendTimeBytes(RxTrigBytes),
+                           frameTimeout + std::chrono::milliseconds(15) + GetSendTimeBytes(RxTrigBytes),
                            frameComplete);
 }
 
 void TSerialPort::WriteBytes(const uint8_t* buf, int count)
 {
     Base::WriteBytes(buf, count);
-    SleepSinceLastInteraction(GetSendTime(count));
+    SleepSinceLastInteraction(GetSendTimeBytes(count));
     LastInteraction = std::chrono::steady_clock::now();
 }
 
@@ -262,9 +267,4 @@ TSerialPortSettingsGuard::TSerialPortSettingsGuard(PPort port, const TSerialPort
 TSerialPortSettingsGuard::~TSerialPortSettingsGuard()
 {
     Port->ResetSerialPortSettings();
-}
-
-std::optional<uint32_t> TSerialPort::GetBaudrate() const
-{
-    return Settings.BaudRate;
 }

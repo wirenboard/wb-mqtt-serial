@@ -42,8 +42,8 @@ TMilurDevice::TMilurDevice(PDeviceConfig device_config, PPort port, PProtocol pr
         SlaveIdWidth = 4;
     }
 
-    device_config->FrameTimeout =
-        std::max(device_config->FrameTimeout, std::chrono::ceil<std::chrono::milliseconds>(port->GetSendTime(3.5)));
+    device_config->FrameTimeout = std::max(device_config->FrameTimeout,
+                                           std::chrono::ceil<std::chrono::milliseconds>(port->GetSendTimeBytes(3.5)));
 }
 
 bool TMilurDevice::ConnectionSetup()

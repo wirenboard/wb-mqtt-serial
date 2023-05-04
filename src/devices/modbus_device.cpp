@@ -50,8 +50,9 @@ TModbusDevice::TModbusDevice(std::unique_ptr<Modbus::IModbusTraits> modbusTraits
       ResponseTime(std::chrono::milliseconds::zero()),
       EnableWbContinuousRead(config.EnableWbContinuousRead)
 {
-    config.CommonConfig->FrameTimeout = std::max(config.CommonConfig->FrameTimeout,
-                                                 std::chrono::ceil<std::chrono::milliseconds>(port->GetSendTime(3.5)));
+    config.CommonConfig->FrameTimeout =
+        std::max(config.CommonConfig->FrameTimeout,
+                 std::chrono::ceil<std::chrono::milliseconds>(port->GetSendTimeBytes(3.5)));
 }
 
 PRegisterRange TModbusDevice::CreateRegisterRange() const

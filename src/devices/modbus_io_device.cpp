@@ -61,8 +61,9 @@ TModbusIODevice::TModbusIODevice(std::unique_ptr<Modbus::IModbusTraits> modbusTr
 {
     auto SecondaryId = GetSecondaryId(config.CommonConfig->SlaveId);
     Shift = (((SecondaryId - 1) % 4) + 1) * DeviceConfig()->Stride + DeviceConfig()->Shift;
-    config.CommonConfig->FrameTimeout = std::max(config.CommonConfig->FrameTimeout,
-                                                 std::chrono::ceil<std::chrono::milliseconds>(port->GetSendTime(3.5)));
+    config.CommonConfig->FrameTimeout =
+        std::max(config.CommonConfig->FrameTimeout,
+                 std::chrono::ceil<std::chrono::milliseconds>(port->GetSendTimeBytes(3.5)));
 }
 
 PRegisterRange TModbusIODevice::CreateRegisterRange() const

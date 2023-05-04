@@ -47,7 +47,7 @@ TMercury200Device::TMercury200Device(PDeviceConfig config, PPort port, PProtocol
       TUInt32SlaveId(config->SlaveId)
 {
     config->FrameTimeout =
-        std::max(config->FrameTimeout, std::chrono::ceil<std::chrono::milliseconds>(port->GetSendTime(6)));
+        std::max(config->FrameTimeout, std::chrono::ceil<std::chrono::milliseconds>(port->GetSendTimeBytes(6)));
 }
 
 std::vector<uint8_t> TMercury200Device::ExecCommand(uint8_t cmd)

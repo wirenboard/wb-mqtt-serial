@@ -202,7 +202,7 @@ namespace Modbus // modbus protocol common utilities
         auto newPduSize = InferReadResponsePDUSize(reg->Type, Count + extend);
         // Request 8 bytes: SlaveID, Operation, Addr, Count, CRC
         // Response 5 bytes except data: SlaveID, Operation, Size, CRC
-        auto sendTime = reg->Device()->Port()->GetSendTime(newPduSize + 8 + 5);
+        auto sendTime = reg->Device()->Port()->GetSendTimeBytes(newPduSize + 8 + 5);
         auto newPollTime = std::chrono::ceil<std::chrono::milliseconds>(
             sendTime + AverageResponseTime + deviceConfig.RequestDelay + 2 * deviceConfig.FrameTimeout);
 

@@ -58,7 +58,7 @@ namespace
             return std::string();
         }
 
-        std::chrono::microseconds GetSendTime(double bytesNumber) const override
+        std::chrono::microseconds GetSendTimeBytes(double bytesNumber) const override
         {
             // 115200 8-N-2
             auto us = std::ceil((1000000.0 * 11 * bytesNumber) / 115200.0);
