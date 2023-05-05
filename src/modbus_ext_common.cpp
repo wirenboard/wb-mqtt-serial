@@ -182,11 +182,13 @@ namespace ModbusExt // modbus extension protocol declarations
         auto maxBytes = GetMaxReadEventsResponseSize(port, maxEventsReadTime);
 
         auto req = MakeReadEventsRequest(state, startingSlaveId, maxBytes);
+        port.SleepSinceLastInteraction(port.GetSendTimeBytes(3.5));
         port.WriteBytes(req);
 
         const auto timeout = GetTimeout(port);
         std::array<uint8_t, MAX_PACKET_SIZE + ARBITRATION_HEADER_MAX_BYTES> res;
         auto rc = port.ReadFrame(res.data(), res.size(), timeout, timeout, ExpectEvents());
+        port.SleepSinceLastInteraction(port.GetSendTimeBytes(3.5));
 
         auto start = GetPacketStart(res.data(), res.size());
         auto packetSize = rc - start;

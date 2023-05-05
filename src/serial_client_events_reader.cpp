@@ -346,6 +346,11 @@ bool TSerialClientEventsReader::HasRegisters() const
     return !Regs.empty();
 }
 
+bool TSerialClientEventsReader::HasDevicesWithEnabledEvents() const
+{
+    return !DevicesWithEnabledEvents.empty();
+}
+
 bool TEventsReaderRegisterDesc::operator==(const TEventsReaderRegisterDesc& other) const
 {
     return SlaveId == other.SlaveId && Addr == other.Addr && Type == other.Type;

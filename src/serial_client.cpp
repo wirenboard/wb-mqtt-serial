@@ -272,16 +272,19 @@ void TSerialClient::OpenPortCycle()
     }
 
     if (handler.TaskType == TClientTaskType::EVENTS) {
-        if (EventsReader.ReadEvents(
-                *Port,
-                MAX_POLL_TIME,
-                [this](PRegister reg) { ProcessPolledRegister(reg); },
-                [this](PSerialDevice device) {
-                    device->SetDisconnected();
-                    RegisterPoller.DeviceDisconnected(device);
-                }))
-        {
-            TimeBalancer.UpdateSelectionTime(ceil<milliseconds>(spendTime.GetSpendTime()), TPriority::High);
+        if (EventsReader.HasDevicesWithEnabledEvents()) {
+            LastAccessedDevice.PrepareToAccess(nullptr);
+            if (EventsReader.ReadEvents(
+                    *Port,
+                    MAX_POLL_TIME,
+                    [this](PRegister reg) { ProcessPolledRegister(reg); },
+                    [this](PSerialDevice device) {
+                        device->SetDisconnected();
+                        RegisterPoller.DeviceDisconnected(device);
+                    }))
+            {
+                TimeBalancer.UpdateSelectionTime(ceil<milliseconds>(spendTime.GetSpendTime()), TPriority::High);
+            }
         }
         TimeBalancer.AddEntry(TClientTaskType::EVENTS, spendTime.GetStartTime() + ReadEventsPeriod, TPriority::High);
     } else {

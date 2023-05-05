@@ -51,6 +51,7 @@ public:
     void SetReadErrors(TRegisterCallback callback);
 
     bool HasRegisters() const;
+    bool HasDevicesWithEnabledEvents() const;
 
 private:
     uint8_t LastAccessedSlaveId;
