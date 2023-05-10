@@ -1,10 +1,11 @@
 {
-    "title": "Danfoss EKC 202B (WB-REF-DF-178A)",
-    "device_type": "danfoss_ekc_202b_wb_ref_df_178a",
+    "title": "Danfoss EKC 202D (WB-REF-DF-178A)",
+    "device_type": "danfoss_ekc_202d_wb_ref",
     "group": "g-refrigeration",
+    "deprecated": true,
     "device": {
-        "name": "Danfoss EKC 202B",
-        "id": "danfoss-ekc-202b",
+        "name": "Danfoss EKC 202D",
+        "id": "danfoss-ekc-202d",
         "response_timeout_ms": 100,
         "frame_timeout_ms": 12,
         "max_read_registers": 0,
@@ -128,8 +129,8 @@
                 "group": "thermostat",
                 "order": 4
             },
-            "sair_temperature_adjustment": {
-                "title": "Sair Temperature Adjustment (r09)",
+            "s4_temperature_adjustment": {
+                "title": "S4 Temperature Adjustment (r09)",
                 "description": "units: °C",
                 "address": 10113,
                 "reg_type": "holding",
@@ -140,6 +141,19 @@
                 "default": 0,
                 "group": "thermostat",
                 "order": 6
+            },
+            "s3_temperature_adjustment": {
+                "title": "S3 Temperature Adjustment (r10)",
+                "description": "units: °C",
+                "address": 10114,
+                "reg_type": "holding",
+                "format": "s16",
+                "scale": 0.1,
+                "min": -10,
+                "max": 10,
+                "default": 0,
+                "group": "thermostat",
+                "order": 7
             },
             "night_setpoint_offset": {
                 "title": "Night Setpoint Offset (r13)",
@@ -152,7 +166,19 @@
                 "max": 10,
                 "default": 0,
                 "group": "thermostat",
-                "order": 7
+                "order": 8
+            },
+            "thermostat_sensor": {
+                "title": "Thermostat Sensor (r15)",
+                "description": "units: %; 0% = S3; 100% = S4; other = combination S3 and S4",
+                "address": 10123,
+                "reg_type": "holding",
+                "format": "u16",
+                "min": 0,
+                "max": 100,
+                "default": 100,
+                "group": "thermostat",
+                "order": 9
             },
             "setpoint_offset_enabled": {
                 "title": "Setpoint Offset Enabled (r39)",
@@ -163,7 +189,7 @@
                 "enum": [0, 1],
                 "enum_titles": ["no", "yes"],
                 "group": "thermostat",
-                "order": 8
+                "order": 10
             },
             "setpoint_offset_value": {
                 "title": "Setpoint Offset Value (r40)",
@@ -176,7 +202,7 @@
                 "max": 50,
                 "default": 0,
                 "group": "thermostat",
-                "order": 9
+                "order": 11
             },
             "temperature_alarm_delay": {
                 "title": "Temperature Alarm Delay (A03)",
@@ -252,18 +278,29 @@
                 "group": "alarm",
                 "order": 6
             },
-            "condenser_high_temperature_alarm": {
-                "title": "Condenser High Temperature Alarm (A37)",
-                "description": "units: °C",
-                "address": 20038,
+            "di2_alarm_delay": {
+                "title": "DI2 Alarm Delay (A28)",
+                "description": "units: minutes",
+                "address": 20028,
                 "reg_type": "holding",
                 "format": "u16",
-                "scale": 0.1,
                 "min": 0,
-                "max": 99.9,
-                "default": 50,
+                "max": 240,
+                "default": 30,
                 "group": "alarm",
                 "order": 7
+            },
+            "thermostat_alarm_signal_source": {
+                "title": "Source Signal For Thermostat Alarm (A36)",
+                "description": "units: %; 0% = S3; 100% = S4; other = combination S3 and S4",
+                "address": 20037,
+                "reg_type": "holding",
+                "format": "u16",
+                "min": 0,
+                "max": 100,
+                "default": 100,
+                "group": "alarm",
+                "order": 8
             },
             "compressor_minimum_on_time": {
                 "title": "Compressor Minimum On Time (c01)",
@@ -372,7 +409,7 @@
                 "group": "defrost",
                 "order": 6
             },
-            "fan_start_delay_after_defrost_d07": {
+            "fan_start_delay_after_defrost(d07)": {
                 "title": "Fan Start Delay After Defrost(d07)",
                 "description": "units: minutes",
                 "address": 11006,
@@ -423,8 +460,20 @@
                 "group": "defrost",
                 "order": 10
             },
+            "defrost_start_delay": {
+                "title": "Defrost Start Delay (d16)",
+                "description": "units: minutes",
+                "address": 11018,
+                "reg_type": "holding",
+                "format": "u16",
+                "min": 0,
+                "max": 60,
+                "default": 0,
+                "group": "defrost",
+                "order": 11
+            },
             "compressor_working_time_between_defrosts": {
-                "title": "Compressor Working Time Between Defrosts (d18)",
+                "title": "Compressor Working Time Between Defrosts (D18)",
                 "description": "units: hours; 0 = off",
                 "address": 11020,
                 "reg_type": "holding",
@@ -433,10 +482,10 @@
                 "max": 48,
                 "default": 0,
                 "group": "defrost",
-                "order": 11
+                "order": 12
             },
             "defrost_on_demand": {
-                "title": "Defrost On Demand (d19)",
+                "title": "Defrost On Demand (D19)",
                 "description": "units: °C; 20 °C = off; S5 temperature’s permitted variation during frost build-up",
                 "address": 11021,
                 "reg_type": "holding",
@@ -446,7 +495,7 @@
                 "max": 20,
                 "default": 20,
                 "group": "defrost",
-                "order": 12
+                "order": 13
             },
             "fan_stop_when_compressor_is_off": {
                 "title": "Fan Stop When Compressor Is Off (F01)",
@@ -661,7 +710,7 @@
                     "alarm function when closed",
                     "alarm function when opened",
                     "case cleaning (pulse signal)",
-                    "inject off when opened"
+                    "forced cooling"
                 ],
                 "group": "miscellaneous",
                 "order": 2
@@ -689,6 +738,97 @@
                 "group": "miscellaneous",
                 "order": 4
             },
+            "temperature_for_display": {
+                "title": "Temperature For Display (o17)",
+                "description": "units: %; 0% = S3; 100% = S4; other = combination S3 and S4",
+                "address": 12021,
+                "reg_type": "holding",
+                "format": "u16",
+                "min": 0,
+                "max": 100,
+                "default": 100,
+                "group": "miscellaneous",
+                "order": 5
+            },
+            "di2_function": {
+                "title": "DI2 Function (o37)",
+                "address": 12055,
+                "reg_type": "holding",
+                "format": "u16",
+                "default": 0,
+                "enum": [
+                    0, 1, 2, 3, 4, 5, 6, 7, 8, 9, 10, 11, 12
+                ],
+                "enum_titles": [
+                    "not used",
+                    "DI2 status",
+                    "door function with alarm when open",
+                    "door alarm when open",
+                    "defrost start (pulse-signal)",
+                    "external start command",
+                    "night mode on",
+                    "change reference to r40",
+                    "alarm function when closed",
+                    "alarm function when opened",
+                    "case cleaning (pulse signal)",
+                    "forced cooling",
+                    "coordinated defrost"
+                ],
+                "group": "miscellaneous",
+                "order": 6
+            },
+            "backligth_mode": {
+                "title": "Backlight Mode (o38)",
+                "description": "relay 4",
+                "address": 12057,
+                "reg_type": "holding",
+                "format": "u16",
+                "default": 1,
+                "enum": [1, 2, 3],
+                "enum_titles": [
+                    "backlight is on during day operation",
+                    "controlled via data communication",
+                    "controlled by door switch"
+                ],
+                "group": "miscellaneous",
+                "order": 7
+            },
+            "railheat_on_time_during_day": {
+                "title": "Railheat On Time During Day Operation (o41)",
+                "description": "units: %",
+                "address": 12060,
+                "reg_type": "holding",
+                "format": "u16",
+                "min": 0,
+                "max": 100,
+                "default": 100,
+                "group": "miscellaneous",
+                "order": 8
+            },
+            "railheat_on_time_during_night": {
+                "title": "Railheat On Time During Night Operation (o42)",
+                "description": "units: %",
+                "address": 12061,
+                "reg_type": "holding",
+                "format": "u16",
+                "min": 0,
+                "max": 100,
+                "default": 100,
+                "group": "miscellaneous",
+                "order": 9
+            },
+            "railheat_period": {
+                "title": "Railheat Period (o43)",
+                "description": "units: minutes",
+                "address": 12062,
+                "reg_type": "holding",
+                "format": "u16",
+                "min": 6,
+                "max": 60,
+                "default": 10,
+                "group": "miscellaneous",
+                "order": 10
+            },
             "case_clean_mode": {
                 "title": "Case Clean Mode (o46)",
                 "address": 12056,
@@ -702,22 +842,7 @@
                     "cleaning with stopped fans, all other outputs are off"
                 ],
                 "group": "miscellaneous",
-                "order": 5
-            },
-            "s5_sensor_mode": {
-                "title": "S5 Sensor Mode (o70)",
-                "address": 12083,
-                "reg_type": "holding",
-                "format": "u16",
-                "default": 0,
-                "enum": [0, 1, 2],
-                "enum_titles": [
-                    "defrost sensor",
-                    "product sensor",
-                    "condenser sensor with alarm"
-                ],
-                "group": "miscellaneous",
-                "order": 6
+                "order": 11
             }
         },
         "channels": [
@@ -742,8 +867,18 @@
                 "group": "status"
             },
             {
-                "name": "Sensor Sair Temperature",
-                "address": 12589,
+                "name": "Sensor S3 Temperature",
+                "address": 12530,
+                "reg_type": "holding",
+                "type": "temperature",
+                "format": "s16",
+                "scale": 0.1,
+                "readonly": true,
+                "group": "status"
+            },
+            {
+                "name": "Sensor S4 Temperature",
+                "address": 12531,
                 "reg_type": "holding",
                 "type": "temperature",
                 "format": "s16",
@@ -762,6 +897,26 @@
                 "group": "status"
             },
             {
+                "name": "Thermostat Temperature",
+                "address": 12532,
+                "reg_type": "holding",
+                "type": "temperature",
+                "format": "s16",
+                "scale": 0.1,
+                "readonly": true,
+                "group": "status"
+            },
+            {
+                "name": "Thermostat Alarm Measured Temperature",
+                "address": 12578,
+                "reg_type": "holding",
+                "type": "temperature",
+                "format": "s16",
+                "scale": 0.1,
+                "readonly": true,
+                "group": "status"
+            },
+            {
                 "name": "Controller State",
                 "address": 12007,
                 "reg_type": "holding",
@@ -771,8 +926,17 @@
                 "group": "status"
             },
             {
+                "name": "Application Mode",
+                "address": 12086,
+                "reg_type": "holding",
+                "type": "value",
+                "format": "u16",
+                "readonly": true,
+                "group": "status"
+            },
+            {
                 "name": "Standby Mode Active",
-                "address": 30012,
+                "address": 30013,
                 "reg_type": "holding",
                 "type": "switch",
                 "format": "u16",
@@ -808,7 +972,7 @@
             },
             {
                 "name": "Case Cleaning Active",
-                "address": 30011,
+                "address": 30012,
                 "reg_type": "holding",
                 "type": "switch",
                 "format": "u16",
@@ -818,6 +982,15 @@
             {
                 "name": "DI1 Status",
                 "address": 12002,
+                "reg_type": "holding",
+                "type": "switch",
+                "format": "u16",
+                "readonly": true,
+                "group": "status"
+            },
+            {
+                "name": "DI2 Status",
+                "address": 12556,
                 "reg_type": "holding",
                 "type": "switch",
                 "format": "u16",
@@ -845,6 +1018,33 @@
             {
                 "name": "Defrost Relay Status",
                 "address": 12512,
+                "reg_type": "holding",
+                "type": "switch",
+                "format": "u16",
+                "readonly": true,
+                "group": "status"
+            },
+            {
+                "name": "Railheat Relay Status",
+                "address": 12579,
+                "reg_type": "holding",
+                "type": "switch",
+                "format": "u16",
+                "readonly": true,
+                "group": "status"
+            },
+            {
+                "name": "Alarm Relay Status",
+                "address": 12583,
+                "reg_type": "holding",
+                "type": "switch",
+                "format": "u16",
+                "readonly": true,
+                "group": "status"
+            },
+            {
+                "name": "Backlight Relay Status",
+                "address": 12584,
                 "reg_type": "holding",
                 "type": "switch",
                 "format": "u16",
@@ -881,7 +1081,7 @@
                 "enabled": false
             },
             {
-                "name": "Sair Error",
+                "name": "S3 Error",
                 "address": 30002,
                 "reg_type": "holding",
                 "type": "switch",
@@ -891,7 +1091,7 @@
                 "enabled": false
             },
             {
-                "name": "S5 Error",
+                "name": "S4 Error",
                 "address": 30003,
                 "reg_type": "holding",
                 "type": "switch",
@@ -901,7 +1101,7 @@
                 "enabled": false
             },
             {
-                "name": "High Temperature Alarm",
+                "name": "S5 Error",
                 "address": 30004,
                 "reg_type": "holding",
                 "type": "switch",
@@ -911,7 +1111,7 @@
                 "enabled": false
             },
             {
-                "name": "Low Temperature Alarm",
+                "name": "High Temperature Alarm",
                 "address": 30005,
                 "reg_type": "holding",
                 "type": "switch",
@@ -921,7 +1121,7 @@
                 "enabled": false
             },
             {
-                "name": "Door Alarm",
+                "name": "Low Temperature Alarm",
                 "address": 30006,
                 "reg_type": "holding",
                 "type": "switch",
@@ -931,7 +1131,7 @@
                 "enabled": false
             },
             {
-                "name": "DI1 Alarm",
+                "name": "Door Alarm",
                 "address": 30007,
                 "reg_type": "holding",
                 "type": "switch",
@@ -941,7 +1141,7 @@
                 "enabled": false
             },
             {
-                "name": "Condencer Alarm",
+                "name": "DI1 Alarm",
                 "address": 30008,
                 "reg_type": "holding",
                 "type": "switch",
@@ -951,7 +1151,7 @@
                 "enabled": false
             },
             {
-                "name": "Maximum Defrost Time Alarm",
+                "name": "DI2 Alarm",
                 "address": 30009,
                 "reg_type": "holding",
                 "type": "switch",
@@ -961,8 +1161,18 @@
                 "enabled": false
             },
             {
-                "name": "Maximum Hold Time Alarm",
+                "name": "Maximum Defrost Time Alarm",
                 "address": 30010,
+                "reg_type": "holding",
+                "type": "switch",
+                "format": "u16",
+                "readonly": true,
+                "group": "status",
+                "enabled": false
+            },
+            {
+                "name": "Maximum Hold Time Alarm",
+                "address": 30011,
                 "reg_type": "holding",
                 "type": "switch",
                 "format": "u16",
@@ -1002,6 +1212,23 @@
                 "type": "switch",
                 "format": "u16",
                 "group": "control"
+            },
+            {
+                "name": "Forced Cooling Start",
+                "address": 13044,
+                "reg_type": "holding",
+                "type": "switch",
+                "format": "u16",
+                "group": "control"
+            },
+            {
+                "name": "Backlight On",
+                "address": 12058,
+                "reg_type": "holding",
+                "type": "switch",
+                "format": "u16",
+                "group": "control",
+                "enabled": false
             },
             {
                 "name": "Reset Alarm",
