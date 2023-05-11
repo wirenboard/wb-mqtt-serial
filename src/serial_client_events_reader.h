@@ -58,9 +58,11 @@ private:
     ModbusExt::TEventConfirmationState EventState;
     size_t ReadErrors;
     size_t MaxReadErrors;
+    bool ClearErrorsOnSuccessfulRead;
 
     TRegsMap Regs;
     std::unordered_set<uint8_t> DevicesWithEnabledEvents;
 
     void OnEnabledEvent(uint8_t slaveId, uint8_t type, uint16_t addr, bool res);
+    void ClearReadErrors(TRegisterCallback callback);
 };

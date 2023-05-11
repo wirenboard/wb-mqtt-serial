@@ -206,7 +206,8 @@ public:
 TSerialClientEventsReader::TSerialClientEventsReader(size_t maxReadErrors)
     : LastAccessedSlaveId(0),
       ReadErrors(0),
-      MaxReadErrors(maxReadErrors)
+      MaxReadErrors(maxReadErrors),
+      ClearErrorsOnSuccessfulRead(false)
 {}
 
 bool TSerialClientEventsReader::ReadEvents(TPort& port,
@@ -229,19 +230,20 @@ bool TSerialClientEventsReader::ReadEvents(TPort& port,
                                        visitor))
             {
                 LastAccessedSlaveId = 0;
-                ReadErrors = 0;
                 EventState.Reset();
+                ClearReadErrors(registerCallback);
                 break;
             }
             // TODO: Limit reads from same slaveId
             LastAccessedSlaveId = visitor.GetSlaveId();
-            ReadErrors = 0;
+            ClearReadErrors(registerCallback);
         } catch (const TSerialDeviceException& ex) {
             LOG(Warn) << "Reading events failed: " << ex.what();
             ++ReadErrors;
             if (ReadErrors > MaxReadErrors) {
                 SetReadErrors(registerCallback);
                 ReadErrors = 0;
+                ClearErrorsOnSuccessfulRead = true;
             }
         }
     }
@@ -335,6 +337,24 @@ void TSerialClientEventsReader::SetReadErrors(TRegisterCallback callback)
                 reg->SetError(TRegister::TError::ReadError);
                 if (callback) {
                     callback(reg);
+                }
+            }
+        }
+    }
+}
+
+void TSerialClientEventsReader::ClearReadErrors(TRegisterCallback callback)
+{
+    ReadErrors = 0;
+    if (ClearErrorsOnSuccessfulRead) {
+        ClearErrorsOnSuccessfulRead = false;
+        for (const auto& regArray: Regs) {
+            for (const auto& reg: regArray.second) {
+                if (reg->IsExcludedFromPolling()) {
+                    reg->ClearError(TRegister::TError::ReadError);
+                    if (callback) {
+                        callback(reg);
+                    }
                 }
             }
         }
