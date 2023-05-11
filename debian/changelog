@@ -1,6 +1,7 @@
 wb-mqtt-serial (2.84.2) stable; urgency=medium
 
-  * Fix incorrect parameter names in device templates
+  * Fix incorrect parameter names in device templates (deprecate broken templates)
+  * Enable validation of parameter names in device templates
 
  -- Nikolay Korotkiy <nikolay.korotkiy@wirenboard.com>  Thu, 10 May 2023 19:21:00 +0400
 
