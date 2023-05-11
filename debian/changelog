@@ -1,8 +1,18 @@
 wb-mqtt-serial (2.85.0) stable; urgency=medium
 
-  * Add fast modbus events polling with time limiting 
+  * Add fast modbus events support
+  * Enable sporadic registers for templates:
+    * WB-MCM8
+    * WB-MR3
+    * WB-MR6
+    * WB-MR6C
+    * WB-MRWL3
+    * WB-MRWM2
+    * WB-MR6Cv3
+    * WB-MWAC
+    * WB-MR2m
 
- -- Petr Krasnoshchekov <petr.krasnoshchekov@wirenboard.com>  Tue, 25 Apr 2023 12:52:19 +0500
+ -- Petr Krasnoshchekov <petr.krasnoshchekov@wirenboard.com>  Thu, 11 May 2023 16:38:49 +0500
 
 wb-mqtt-serial (2.84.1) stable; urgency=medium
 

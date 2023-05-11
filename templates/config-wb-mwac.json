@@ -314,6 +314,7 @@
                 "reg_type": "discrete",
                 "address": 0,
                 "type": "switch",
+                "sporadic": true,
                 "group": "input_s1"
             },
             {
@@ -321,6 +322,7 @@
                 "reg_type": "input",
                 "address": 32,
                 "type": "value",
+                "sporadic": true,
                 "group": "input_s1"
             },
             {
@@ -339,6 +341,7 @@
                 "reg_type": "discrete",
                 "address": 1,
                 "type": "switch",
+                "sporadic": true,
                 "group": "input_s2"
             },
             {
@@ -346,6 +349,7 @@
                 "reg_type": "input",
                 "address": 33,
                 "type": "value",
+                "sporadic": true,
                 "group": "input_s2"
             },
             {
@@ -364,6 +368,7 @@
                 "reg_type": "discrete",
                 "address": 2,
                 "type": "switch",
+                "sporadic": true,
                 "group": "input_s3"
             },
             {
@@ -371,6 +376,7 @@
                 "reg_type": "input",
                 "address": 34,
                 "type": "value",
+                "sporadic": true,
                 "group": "input_s3"
             },
             {
@@ -389,6 +395,7 @@
                 "reg_type": "discrete",
                 "address": 3,
                 "type": "switch",
+                "sporadic": true,
                 "group": "input_f1"
             },
             {
@@ -396,6 +403,7 @@
                 "reg_type": "input",
                 "address": 35,
                 "type": "value",
+                "sporadic": true,
                 "group": "input_f1"
             },
             {
@@ -414,6 +422,7 @@
                 "reg_type": "discrete",
                 "address": 4,
                 "type": "switch",
+                "sporadic": true,
                 "group": "input_f2"
             },
             {
@@ -421,6 +430,7 @@
                 "reg_type": "input",
                 "address": 36,
                 "type": "value",
+                "sporadic": true,
                 "group": "input_f2"
             },
             {
@@ -439,6 +449,7 @@
                 "reg_type": "discrete",
                 "address": 5,
                 "type": "switch",
+                "sporadic": true,
                 "group": "input_f3"
             },
             {
@@ -446,6 +457,7 @@
                 "reg_type": "input",
                 "address": 37,
                 "type": "value",
+                "sporadic": true,
                 "group": "input_f3"
             },
             {
@@ -464,6 +476,7 @@
                 "reg_type": "coil",
                 "address": 0,
                 "type": "switch",
+                "sporadic": true,
                 "group": "outputs"
             },
             {
@@ -471,6 +484,7 @@
                 "reg_type": "coil",
                 "address": 1,
                 "type": "switch",
+                "sporadic": true,
                 "group": "outputs"
             },
             {
@@ -478,6 +492,7 @@
                 "reg_type": "coil",
                 "address": 2,
                 "type": "switch",
+                "sporadic": true,
                 "group": "outputs"
             },
             {
