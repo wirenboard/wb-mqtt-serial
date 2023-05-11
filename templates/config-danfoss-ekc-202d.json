@@ -1,6 +1,6 @@
 {
     "title": "Danfoss EKC 202D (EKA 178A)",
-    "device_type": "danfoss_ekc_202d_eka_178a",
+    "device_type": "tpl1_danfoss_ekc_202d",
     "group": "g-refrigeration",
     "device": {
         "name": "Danfoss EKC 202D",

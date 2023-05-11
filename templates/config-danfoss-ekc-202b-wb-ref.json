@@ -1,6 +1,6 @@
 {
     "title": "Danfoss EKC 202B (WB-REF-DF-178A)",
-    "device_type": "danfoss_ekc_202b_wb_ref_df_178a",
+    "device_type": "tpl1_danfoss_ekc_202b_wb_ref",
     "group": "g-refrigeration",
     "device": {
         "name": "Danfoss EKC 202B",
