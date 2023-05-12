@@ -1,8 +1,18 @@
 #pragma once
 
+#include <algorithm>
 #include <chrono>
 #include <memory>
 #include <queue>
+
+template<typename TItem> class TPriorityQueue: public std::priority_queue<TItem>
+{
+public:
+    template<typename Pred> bool Contains(Pred pred) const
+    {
+        return std::find_if(this->c.cbegin(), this->c.cend(), pred) != this->c.cend();
+    }
+};
 
 template<class TEntry, typename ComparePredicate> class TPriorityQueueSchedule
 {
@@ -57,8 +67,13 @@ public:
         return !Entries.empty() && (GetDeadline() <= time);
     }
 
+    bool Contains(TEntry entry) const
+    {
+        return Entries.Contains([&](const TItem& item) { return item.Data == entry; });
+    }
+
 private:
-    std::priority_queue<TItem> Entries;
+    TPriorityQueue<TItem> Entries;
 };
 
 enum class TPriority
@@ -91,6 +106,9 @@ public:
 
     void NewItem(std::chrono::steady_clock::time_point time)
     {
+        if (RateLimit == 0) {
+            return;
+        }
         if (time - StartTime <= std::chrono::seconds(1)) {
             ++Count;
             return;
@@ -101,6 +119,9 @@ public:
 
     bool IsOverLimit(std::chrono::steady_clock::time_point time) const
     {
+        if (RateLimit == 0) {
+            return false;
+        }
         if (time - StartTime <= std::chrono::seconds(1)) {
             return Count > RateLimit;
         }
@@ -113,16 +134,66 @@ public:
     }
 };
 
-template<class TEntry, class TComparePredicate> class TScheduler
+class TTotalTimeBalancer
+{
+    std::chrono::milliseconds TotalTime;
+
+    //! Maximum allowed TotalTime that does not need to be reduced
+    std::chrono::milliseconds TotalTimeThreshold;
+
+    //! Limits TotalTime allowed values by [-MaxTotalTime, MaxTotalTime]
+    std::chrono::milliseconds MaxTotalTime;
+
+public:
+    TTotalTimeBalancer(std::chrono::milliseconds totalTimeThreshold, std::chrono::milliseconds maxTotalTime)
+        : TotalTimeThreshold(totalTimeThreshold),
+          MaxTotalTime(maxTotalTime)
+    {
+        Reset();
+    }
+
+    void IncrementTotalTime(const std::chrono::milliseconds& delta)
+    {
+        TotalTime = std::min(TotalTime + delta, MaxTotalTime);
+    }
+
+    void DecrementTotalTime(const std::chrono::milliseconds& delta)
+    {
+        TotalTime = std::max(TotalTime - delta, -MaxTotalTime);
+    }
+
+    bool ShouldDecrement() const
+    {
+        return (TotalTime >= TotalTimeThreshold);
+    }
+
+    std::chrono::milliseconds GetTimeToDecrement() const
+    {
+        auto delta = (TotalTime - TotalTimeThreshold);
+        if (delta > std::chrono::milliseconds::zero()) {
+            return delta;
+        }
+        return std::chrono::milliseconds::zero();
+    }
+
+    void Reset()
+    {
+        TotalTime = std::chrono::milliseconds::zero();
+    }
+};
+
+template<class TEntry, class TComparePredicate = std::less<TEntry>> class TScheduler
 {
 public:
     using TQueue = TPriorityQueueSchedule<TEntry, TComparePredicate>;
     using TItem = typename TQueue::TItem;
 
     TScheduler(std::chrono::milliseconds maxLowPriorityLag, size_t lowPriorityRateLimit)
-        : MaxLowPriorityLag(maxLowPriorityLag),
+        : TimeBalancer(maxLowPriorityLag, 10 * maxLowPriorityLag),
           LowPriorityRateLimit(lowPriorityRateLimit)
-    {}
+    {
+        ResetLoadBalancing();
+    }
 
     void AddEntry(TEntry entry, std::chrono::steady_clock::time_point deadline, TPriority priority)
     {
@@ -148,7 +219,7 @@ public:
     }
 
     /**
-     * @brief Selects entries from queue with deadline less or equal to currentTime
+     * @brief Selects entries with same priority from queue with deadline less or equal to currentTime
      *
      * @tparam TAccumulator - function or class with method
      *                        bool operator()(TEntry& e,
@@ -162,11 +233,13 @@ public:
     template<class TAccumulator>
     TThrottlingState AccumulateNext(std::chrono::steady_clock::time_point currentTime, TAccumulator& accumulator)
     {
-        UpdateSelectionTime(currentTime);
+        if (!LowPriorityQueue.HasReadyItems(currentTime)) {
+            ResetLoadBalancing();
+        }
+
         if (HighPriorityQueue.HasReadyItems(currentTime) &&
-            (!ShouldSelectLowPriority() || !LowPriorityQueue.HasReadyItems(currentTime)))
+            (!ShouldSelectLowPriority(currentTime) || !LowPriorityQueue.HasReadyItems(currentTime)))
         {
-            SelectedPriority = TPriority::High;
             bool firstItem = true;
             while (HighPriorityQueue.HasReadyItems(currentTime) &&
                    accumulator(HighPriorityQueue.GetTop().Data,
@@ -180,7 +253,7 @@ public:
         } else {
             if (LowPriorityQueue.HasReadyItems(currentTime)) {
                 const auto pollLimit = GetLowPriorityPollLimit(currentTime);
-                bool force = ShouldSelectLowPriority() || HighPriorityQueue.IsEmpty();
+                bool force = ShouldSelectLowPriority(currentTime);
                 bool firstItem = true;
                 // Set maximum allowed poll limit to first low priority item,
                 // if it is selected to balance load.
@@ -196,9 +269,6 @@ public:
                     LowPriorityRateLimit.NewItem(currentTime);
                     firstItem = false;
                 }
-                if (!firstItem) {
-                    SelectedPriority = TPriority::Low;
-                }
                 return LowPriorityRateLimit.IsOverLimit(currentTime) ? TThrottlingState::LowPriorityRateLimit
                                                                      : TThrottlingState::NoThrottling;
             }
@@ -206,13 +276,34 @@ public:
         return TThrottlingState::NoThrottling;
     }
 
+    void UpdateSelectionTime(const std::chrono::milliseconds& delta, TPriority priority)
+    {
+        if (priority == TPriority::High) {
+            TimeBalancer.IncrementTotalTime(delta);
+        } else {
+            TimeBalancer.DecrementTotalTime(delta);
+        }
+    }
+
+    void ResetLoadBalancing()
+    {
+        TimeBalancer.Reset();
+    }
+
+    bool Contains(TEntry entry)
+    {
+        return LowPriorityQueue.Contains(entry) || HighPriorityQueue.Contains(entry);
+    }
+
+    bool IsEmpty() const
+    {
+        return LowPriorityQueue.IsEmpty() && HighPriorityQueue.IsEmpty();
+    }
+
 private:
     TQueue LowPriorityQueue;
     TQueue HighPriorityQueue;
-    std::chrono::milliseconds HighPriorityTime = std::chrono::milliseconds(0);
-    std::chrono::milliseconds MaxLowPriorityLag;
-    std::chrono::steady_clock::time_point LastQueueSelectionTime;
-    TPriority SelectedPriority;
+    TTotalTimeBalancer TimeBalancer;
     TRateLimiter LowPriorityRateLimit;
 
     std::chrono::milliseconds GetLowPriorityPollLimit(std::chrono::steady_clock::time_point currentTime) const
@@ -220,45 +311,20 @@ private:
         if (HighPriorityQueue.IsEmpty()) {
             return std::chrono::milliseconds::max();
         }
-        auto delta =
-            std::chrono::duration_cast<std::chrono::milliseconds>(HighPriorityQueue.GetDeadline() - currentTime);
+        auto delta = std::chrono::ceil<std::chrono::milliseconds>(HighPriorityQueue.GetDeadline() - currentTime);
         if (delta > std::chrono::milliseconds(0)) {
             return delta;
         }
         return GetLowPriorityLag();
     }
 
-    bool ShouldSelectLowPriority() const
+    bool ShouldSelectLowPriority(std::chrono::steady_clock::time_point currentTime) const
     {
-        return (HighPriorityTime >= MaxLowPriorityLag);
-    }
-
-    void UpdateSelectionTime(std::chrono::steady_clock::time_point currentTime)
-    {
-        if (LastQueueSelectionTime != std::chrono::steady_clock::time_point()) {
-            auto delta = std::chrono::duration_cast<std::chrono::milliseconds>(currentTime - LastQueueSelectionTime);
-            auto OldHighPriorityTime = HighPriorityTime;
-            if (SelectedPriority == TPriority::High) {
-                HighPriorityTime += delta;
-                if (HighPriorityTime < OldHighPriorityTime) { // Prevent overflow
-                    HighPriorityTime = MaxLowPriorityLag;
-                }
-            } else {
-                HighPriorityTime -= delta;
-                if (HighPriorityTime > OldHighPriorityTime) { // Prevent underflow
-                    HighPriorityTime = std::chrono::milliseconds::zero();
-                }
-            }
-        }
-        LastQueueSelectionTime = currentTime;
+        return !LowPriorityRateLimit.IsOverLimit(currentTime) && TimeBalancer.ShouldDecrement();
     }
 
     std::chrono::milliseconds GetLowPriorityLag() const
     {
-        auto delta = (HighPriorityTime - MaxLowPriorityLag);
-        if (delta > std::chrono::milliseconds::zero()) {
-            return delta;
-        }
-        return std::chrono::milliseconds::zero();
+        return TimeBalancer.GetTimeToDecrement();
     }
 };

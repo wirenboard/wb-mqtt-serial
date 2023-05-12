@@ -87,6 +87,7 @@ protected:
                                                          scale,
                                                          offset,
                                                          round_to,
+                                                         TRegisterConfig::TSporadicMode::DISABLED,
                                                          false,
                                                          "fake",
                                                          word_order,
@@ -180,10 +181,7 @@ TEST_F(TSerialClientTest, PortOpenError)
     // TSerialClient must try to open port during every cycle and set /meta/error for controls
 
     PRegister reg0 = Reg(0, U8);
-    reg0->ReadPeriod = 1ms;
-
     PRegister reg1 = Reg(1, U8);
-    reg1->ReadPeriod = 1ms;
 
     SerialClient->AddRegister(reg0);
     SerialClient->AddRegister(reg1);

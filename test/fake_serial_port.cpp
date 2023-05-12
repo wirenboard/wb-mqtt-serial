@@ -23,7 +23,8 @@ TFakeSerialPort::TFakeSerialPort(TLoggedFixture& fixture)
       DisconnectType(NoDisconnect),
       ReqPos(0),
       RespPos(0),
-      DumpPos(0)
+      DumpPos(0),
+      BaudRate(9600)
 {}
 
 void TFakeSerialPort::SetExpectedFrameTimeout(const std::chrono::microseconds& timeout)
@@ -250,16 +251,20 @@ void TFakeSerialPort::SetAllowOpen(bool allowOpen)
     AllowOpen = allowOpen;
 }
 
-std::chrono::milliseconds TFakeSerialPort::GetSendTime(double bytesNumber) const
+std::chrono::microseconds TFakeSerialPort::GetSendTimeBytes(double bytesNumber) const
 {
-    // 9600 8-N-2
-    auto ms = std::ceil((1000.0 * 11 * bytesNumber) / 9600.0);
-    return std::chrono::milliseconds(static_cast<std::chrono::milliseconds::rep>(ms));
+    auto us = std::ceil((1000000.0 * 11 * bytesNumber) / double(BaudRate));
+    return std::chrono::microseconds(static_cast<std::chrono::microseconds::rep>(us));
 }
 
 std::string TFakeSerialPort::GetDescription(bool verbose) const
 {
     return "<TFakeSerialPort>";
+}
+
+void TFakeSerialPort::SetBaudRate(size_t value)
+{
+    BaudRate = value;
 }
 
 void TSerialDeviceTest::SetUp()

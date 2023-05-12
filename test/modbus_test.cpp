@@ -585,6 +585,7 @@ TEST_F(TModbusIntegrationTest, Errors)
 
 TEST_F(TModbusIntegrationTest, Holes)
 {
+    SerialPort->SetBaudRate(115200);
     // we check that driver issue long read requests for holding registers 4-18 and all coils
     Config->PortConfigs[0]->Devices[0]->DeviceConfig()->MaxRegHole = 10;
     Config->PortConfigs[0]->Devices[0]->DeviceConfig()->MaxBitHole = 80;
@@ -600,6 +601,8 @@ TEST_F(TModbusIntegrationTest, Holes)
 
 TEST_F(TModbusIntegrationTest, HolesAutoDisable)
 {
+    SerialPort->SetBaudRate(115200);
+
     Config->PortConfigs[0]->Devices[0]->DeviceConfig()->MaxRegHole = 10;
     InvalidateConfigPoll();
 

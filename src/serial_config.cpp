@@ -240,6 +240,7 @@ namespace
         double scale = Read(register_data, "scale", 1.0); // TBD: check for zero, too
         double offset = Read(register_data, "offset", 0.0);
         double round_to = Read(register_data, "round_to", 0.0);
+        bool sporadic = Read(register_data, "sporadic", false);
 
         bool readonly = ReadChannelsReadonlyProperty(register_data,
                                                      "readonly",
@@ -270,6 +271,8 @@ namespace
                                                      scale,
                                                      offset,
                                                      round_to,
+                                                     sporadic ? TRegisterConfig::TSporadicMode::ENABLED
+                                                              : TRegisterConfig::TSporadicMode::DISABLED,
                                                      readonly,
                                                      regType.Name,
                                                      regType.DefaultWordOrder);
