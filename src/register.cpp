@@ -81,6 +81,11 @@ std::string TRegisterConfig::ToString() const
     return s.str();
 }
 
+bool TRegisterConfig::IsHighPriority() const
+{
+    return bool(ReadPeriod);
+}
+
 const IRegisterAddress& TRegisterConfig::GetAddress() const
 {
     if (AccessType == EAccessType::WRITE_ONLY) {
@@ -97,10 +102,9 @@ const IRegisterAddress& TRegisterConfig::GetWriteAddress() const
     return *Address.Address;
 }
 
-TRegister::TRegister(PSerialDevice device, PRegisterConfig config, const std::string& channelName)
+TRegister::TRegister(PSerialDevice device, PRegisterConfig config)
     : TRegisterConfig(*config),
       _Device(device),
-      ChannelName(channelName),
       ReadPeriodMissChecker(config->ReadPeriod)
 {}
 
@@ -120,6 +124,9 @@ TRegisterAvailability TRegister::GetAvailable() const
 void TRegister::SetAvailable(TRegisterAvailability available)
 {
     Available = available;
+    if (Available == TRegisterAvailability::UNAVAILABLE) {
+        ExcludeFromPolling();
+    }
 }
 
 TRegisterValue TRegister::GetValue() const
@@ -135,10 +142,10 @@ void TRegister::SetValue(const TRegisterValue& value, bool clearReadError)
     Value = value;
     if (UnsupportedValue && (*UnsupportedValue == value)) {
         SetError(TRegister::TError::ReadError);
-        Available = TRegisterAvailability::UNAVAILABLE;
+        SetAvailable(TRegisterAvailability::UNAVAILABLE);
         return;
     }
-    Available = TRegisterAvailability::AVAILABLE;
+    SetAvailable(TRegisterAvailability::AVAILABLE);
     if (ErrorValue && InvertWordOrderIfNeeded(*this, ErrorValue.value()) == value) {
         LOG(Debug) << "register " << ToString() << " contains error value";
         SetError(TError::ReadError);
@@ -147,11 +154,6 @@ void TRegister::SetValue(const TRegisterValue& value, bool clearReadError)
             ClearError(TError::ReadError);
         }
     }
-}
-
-const std::string& TRegister::GetChannelName() const
-{
-    return ChannelName;
 }
 
 void TRegister::SetError(TRegister::TError error)
@@ -179,6 +181,21 @@ void TRegister::SetLastPollTime(std::chrono::steady_clock::time_point pollTime)
     } else {
         ClearError(TError::PollIntervalMissError);
     }
+}
+
+bool TRegister::IsExcludedFromPolling() const
+{
+    return ExcludedFromPolling;
+}
+
+void TRegister::ExcludeFromPolling()
+{
+    ExcludedFromPolling = true;
+}
+
+void TRegister::IncludeInPolling()
+{
+    ExcludedFromPolling = false;
 }
 
 TReadPeriodMissChecker::TReadPeriodMissChecker(const std::optional<std::chrono::milliseconds>& readPeriod)
@@ -218,6 +235,7 @@ TRegisterConfig::TRegisterConfig(int type,
                                  double scale,
                                  double offset,
                                  double round_to,
+                                 TSporadicMode sporadic,
                                  bool readonly,
                                  const std::string& type_name,
                                  const EWordOrder word_order)
@@ -227,6 +245,7 @@ TRegisterConfig::TRegisterConfig(int type,
       Scale(scale),
       Offset(offset),
       RoundTo(round_to),
+      SporadicMode(sporadic),
       TypeName(type_name),
       WordOrder(word_order)
 {
@@ -292,6 +311,7 @@ PRegisterConfig TRegisterConfig::Create(int type,
                                         double scale,
                                         double offset,
                                         double round_to,
+                                        TSporadicMode sporadic,
                                         bool readonly,
                                         const std::string& type_name,
                                         const EWordOrder word_order)
@@ -302,6 +322,7 @@ PRegisterConfig TRegisterConfig::Create(int type,
                                              scale,
                                              offset,
                                              round_to,
+                                             sporadic,
                                              readonly,
                                              type_name,
                                              word_order);
@@ -313,6 +334,7 @@ PRegisterConfig TRegisterConfig::Create(int type,
                                         double scale,
                                         double offset,
                                         double round_to,
+                                        TSporadicMode sporadic,
                                         bool readonly,
                                         const std::string& type_name,
                                         const EWordOrder word_order,
@@ -325,7 +347,16 @@ PRegisterConfig TRegisterConfig::Create(int type,
     regAddressesDescription.DataOffset = data_offset;
     regAddressesDescription.DataWidth = data_bit_width;
 
-    return Create(type, regAddressesDescription, format, scale, offset, round_to, readonly, type_name, word_order);
+    return Create(type,
+                  regAddressesDescription,
+                  format,
+                  scale,
+                  offset,
+                  round_to,
+                  sporadic,
+                  readonly,
+                  type_name,
+                  word_order);
 }
 
 TUint32RegisterAddress::TUint32RegisterAddress(uint32_t address): Address(address)

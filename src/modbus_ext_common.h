@@ -1,7 +1,6 @@
 #pragma once
 
 #include "port.h"
-#include <map>
 
 namespace ModbusExt // modbus extension protocol common utilities
 {
@@ -25,6 +24,8 @@ namespace ModbusExt // modbus extension protocol common utilities
     {
         uint8_t SlaveId = 0;
         uint8_t Flag = 0;
+
+        void Reset();
     };
 
     class IEventsVisitor
@@ -39,13 +40,17 @@ namespace ModbusExt // modbus extension protocol common utilities
                            size_t dataSize) = 0;
     };
 
+    /**
+     * @brief Read events
+     *
+     * @return true - there are more events from devices
+     * @return false - no more events
+     */
     bool ReadEvents(TPort& port,
-                    const std::chrono::milliseconds& responseTimeout,
-                    const std::chrono::milliseconds& frameTimeout,
-                    IEventsVisitor& eventVisitor,
+                    std::chrono::milliseconds maxReadingTime,
+                    uint8_t startingSlaveId,
                     TEventConfirmationState& state,
-                    uint8_t startingSlaveId = 0,
-                    const std::chrono::milliseconds& maxEventsReadTime = std::chrono::milliseconds(0));
+                    IEventsVisitor& eventVisitor);
 
     //! Class builds packet for enabling events from specified registers
     class TEventsEnabler
@@ -53,11 +58,16 @@ namespace ModbusExt // modbus extension protocol common utilities
     public:
         typedef std::function<void(uint8_t, uint16_t, bool)> TVisitorFn;
 
+        enum TEventsEnablerFlags
+        {
+            NO_HOLES,
+            DISABLE_EVENTS_IN_HOLES
+        };
+
         TEventsEnabler(uint8_t slaveId,
                        TPort& port,
-                       const std::chrono::milliseconds& responseTimeout,
-                       const std::chrono::milliseconds& frameTimeout,
-                       TEventsEnabler::TVisitorFn visitor);
+                       TEventsEnabler::TVisitorFn visitor,
+                       TEventsEnablerFlags flags = TEventsEnablerFlags::NO_HOLES);
 
         /**
          * @brief Add register to packet.
@@ -75,21 +85,34 @@ namespace ModbusExt // modbus extension protocol common utilities
          *        The class parses answer and calls visitor for every register in answer,
          *        so one can know if events are enabled for specific register.
          */
-        void SendRequest();
+        void SendRequests();
+
+        bool HasEventsToSetup() const;
 
     private:
+        struct TRegisterToEnable
+        {
+            TEventType Type;
+            uint16_t Addr;
+            TEventPriority Priority;
+        };
+
         std::vector<uint8_t> Request;
         std::vector<uint8_t> Response;
-        std::map<std::pair<TEventType, uint16_t>, std::vector<TEventPriority>> Settings;
+        std::vector<TRegisterToEnable> Settings;
+        std::vector<TRegisterToEnable>::const_iterator SettingsStart;
+        std::vector<TRegisterToEnable>::const_iterator SettingsEnd;
 
         uint8_t SlaveId;
         TPort& Port;
-        std::chrono::milliseconds ResponseTimeout;
+        size_t MaxRegDistance;
         std::chrono::milliseconds FrameTimeout;
         TVisitorFn Visitor;
 
         void EnableEvents();
         void ClearRequest();
+
+        void SendSingleRequest();
     };
 
 } // modbus extension protocol common utilities

@@ -9,6 +9,7 @@
 #include <vector>
 
 using namespace BinUtils;
+using namespace std::chrono_literals;
 
 #define LOG(logger) logger.Log() << "[modbus-ext] "
 
@@ -21,7 +22,7 @@ namespace ModbusExt // modbus extension protocol declarations
     // Function codes
     const uint8_t EVENTS_REQUEST_COMMAND = 0x10;
     const uint8_t EVENTS_RESPONSE_COMMAND = 0x11;
-    const uint8_t NO_EVENTS_RESPONSE_COMMAND = 0x14;
+    const uint8_t NO_EVENTS_RESPONSE_COMMAND = 0x12;
     const uint8_t ENABLE_EVENTS_COMMAND = 0x18;
 
     const size_t NO_EVENTS_RESPONSE_SIZE = 5;
@@ -33,7 +34,7 @@ namespace ModbusExt // modbus extension protocol declarations
     const size_t MIN_ENABLE_EVENTS_REC_SIZE = 5;
     const size_t EXCEPTION_SIZE = 5;
 
-    const uint8_t EVENTS_REQUEST_MAX_BYTES = MAX_PACKET_SIZE - EVENTS_RESPONSE_HEADER_SIZE - CRC_SIZE;
+    const size_t EVENTS_REQUEST_MAX_BYTES = MAX_PACKET_SIZE - EVENTS_RESPONSE_HEADER_SIZE - CRC_SIZE;
     const size_t ARBITRATION_HEADER_MAX_BYTES = 32;
 
     const size_t SLAVE_ID_POS = 0;
@@ -50,6 +51,7 @@ namespace ModbusExt // modbus extension protocol declarations
     const size_t EVENT_TYPE_POS = 1;
     const size_t EVENT_ID_POS = 2;
     const size_t EVENT_DATA_POS = 4;
+    const size_t MAX_EVENT_SIZE = 6;
 
     const size_t ENABLE_EVENTS_RESPONSE_DATA_SIZE_POS = 3;
     const size_t ENABLE_EVENTS_RESPONSE_DATA_POS = 4;
@@ -57,6 +59,14 @@ namespace ModbusExt // modbus extension protocol declarations
     const size_t ENABLE_EVENTS_REC_TYPE_POS = 0;
     const size_t ENABLE_EVENTS_REC_ADDR_POS = 1;
     const size_t ENABLE_EVENTS_REC_STATE_POS = 3;
+
+    // max(3.5 symbols, (20 bits + 800us)) + 9 * max(13 bits, 12 bits + 50us)
+    std::chrono::milliseconds GetTimeout(const TPort& port)
+    {
+        const auto cmdTime = std::max(port.GetSendTimeBytes(3.5), port.GetSendTimeBits(20) + 800us);
+        const auto arbitrationTime = 9 * std::max(port.GetSendTimeBits(13), port.GetSendTimeBits(12) + 50us);
+        return std::chrono::ceil<std::chrono::milliseconds>(cmdTime + arbitrationTime);
+    }
 
     size_t GetPacketStart(const uint8_t* data, size_t size)
     {
@@ -66,6 +76,29 @@ namespace ModbusExt // modbus extension protocol declarations
             }
         }
         return size;
+    }
+
+    uint8_t GetMaxReadEventsResponseSize(const TPort& port, std::chrono::milliseconds maxTime)
+    {
+        if (maxTime.count() <= 0) {
+            return MAX_EVENT_SIZE;
+        }
+        auto timePerByte = port.GetSendTimeBytes(1);
+        if (timePerByte.count() == 0) {
+            return EVENTS_REQUEST_MAX_BYTES;
+        }
+        auto maxBytes = std::chrono::duration_cast<std::chrono::microseconds>(maxTime).count() / timePerByte.count();
+        if (maxBytes > MAX_PACKET_SIZE) {
+            maxBytes = MAX_PACKET_SIZE;
+        }
+        if (maxBytes <= EVENTS_RESPONSE_HEADER_SIZE + MAX_EVENT_SIZE + CRC_SIZE) {
+            return MAX_EVENT_SIZE;
+        }
+        maxBytes -= EVENTS_RESPONSE_HEADER_SIZE + CRC_SIZE;
+        if (maxBytes > std::numeric_limits<uint8_t>::max()) {
+            return std::numeric_limits<uint8_t>::max();
+        }
+        return static_cast<uint8_t>(maxBytes);
     }
 
     Modbus::TRequest MakeReadEventsRequest(const TEventConfirmationState& state,
@@ -138,32 +171,24 @@ namespace ModbusExt // modbus extension protocol declarations
     }
 
     bool ReadEvents(TPort& port,
-                    const std::chrono::milliseconds& responseTimeout,
-                    const std::chrono::milliseconds& frameTimeout,
-                    IEventsVisitor& eventVisitor,
-                    TEventConfirmationState& state,
+                    std::chrono::milliseconds maxEventsReadTime,
                     uint8_t startingSlaveId,
-                    const std::chrono::milliseconds& maxEventsReadTime)
+                    TEventConfirmationState& state,
+                    IEventsVisitor& eventVisitor)
     {
-        uint8_t maxBytes = EVENTS_REQUEST_MAX_BYTES;
-        if (maxEventsReadTime.count() > 0) {
-            auto timePerByte = port.GetSendTime(1);
-            if (timePerByte.count() != 0) {
-                maxBytes = std::min(maxBytes,
-                                    static_cast<uint8_t>(std::ceil(maxEventsReadTime.count() / timePerByte.count())));
-                if (maxBytes > EVENTS_RESPONSE_HEADER_SIZE + CRC_SIZE) {
-                    maxBytes -= EVENTS_RESPONSE_HEADER_SIZE + CRC_SIZE;
-                } else {
-                    maxBytes = 0;
-                }
-            }
-        }
+        // TODO: Count request and arbitration.
+        //       maxEventsReadTime limits not only response, but total request-response time.
+        //       So request and arbitration time must be subtracted from time for response
+        auto maxBytes = GetMaxReadEventsResponseSize(port, maxEventsReadTime);
 
         auto req = MakeReadEventsRequest(state, startingSlaveId, maxBytes);
+        port.SleepSinceLastInteraction(port.GetSendTimeBytes(3.5));
         port.WriteBytes(req);
 
+        const auto timeout = GetTimeout(port);
         std::array<uint8_t, MAX_PACKET_SIZE + ARBITRATION_HEADER_MAX_BYTES> res;
-        auto rc = port.ReadFrame(res.data(), res.size(), responseTimeout + frameTimeout, frameTimeout, ExpectEvents());
+        auto rc = port.ReadFrame(res.data(), res.size(), timeout, timeout, ExpectEvents());
+        port.SleepSinceLastInteraction(port.GetSendTimeBytes(3.5));
 
         auto start = GetPacketStart(res.data(), res.size());
         auto packetSize = rc - start;
@@ -200,15 +225,56 @@ namespace ModbusExt // modbus extension protocol declarations
         }
     }
 
+    bool HasSpaceForEnableEventRecord(const std::vector<uint8_t>& request)
+    {
+        return request.size() + request[ENABLE_EVENTS_RESPONSE_DATA_SIZE_POS] + CRC_SIZE + MIN_ENABLE_EVENTS_REC_SIZE <
+               request.capacity();
+    }
+
+    class TBitIterator
+    {
+        uint8_t* Data;
+        const uint8_t* End;
+        size_t BitIndex;
+
+    public:
+        TBitIterator(uint8_t* data, size_t size): Data(data), End(data + size), BitIndex(0)
+        {}
+
+        void NextBit()
+        {
+            ++BitIndex;
+            if (BitIndex == 8) {
+                NextByte();
+            }
+        }
+
+        void NextByte()
+        {
+            ++Data;
+            BitIndex = 0;
+            if (Data > End) {
+                throw Modbus::TMalformedResponseError("not enough data in enable events response");
+            }
+        }
+
+        bool GetBit() const
+        {
+            return (*Data >> BitIndex) & 0x01;
+        }
+    };
+
     void TEventsEnabler::EnableEvents()
     {
         Port.WriteBytes(Request);
 
-        auto rc = Port.ReadFrame(Response.data(), Request.size(), ResponseTimeout + FrameTimeout, FrameTimeout);
+        // Use response timeout from MR6C template
+        auto rc = Port.ReadFrame(Response.data(), Request.size(), 8ms, FrameTimeout);
 
         CheckCRC16(Response.data(), rc);
 
-        if (Response[COMMAND_POS] == Request[COMMAND_POS] + 0x80) {
+        // Old firmwares can send any command with exception bit
+        if (Response[COMMAND_POS] > 0x80) {
             throw TSerialDevicePermanentRegisterException("modbus exception, code " +
                                                           std::to_string(Response[EXCEPTION_CODE_POS]));
         }
@@ -221,20 +287,27 @@ namespace ModbusExt // modbus extension protocol declarations
             throw Modbus::TMalformedResponseError("invalid slave id");
         }
 
-        const uint8_t* data = Response.data() + ENABLE_EVENTS_RESPONSE_DATA_POS;
-        const uint8_t* end = data + Response[ENABLE_EVENTS_RESPONSE_DATA_SIZE_POS];
+        TBitIterator dataIt(Response.data() + ENABLE_EVENTS_RESPONSE_DATA_POS - 1,
+                            Response[ENABLE_EVENTS_RESPONSE_DATA_SIZE_POS]);
 
-        for (const auto& reg: Settings) {
-            auto dataSize = (reg.second.size() + 7) / 8;
-            auto type = reg.first.first;
-            auto addr = reg.first.second;
-            for (size_t i = 0; i < reg.second.size(); ++i) {
-                if (dataSize > 0 && data + dataSize <= end) {
-                    std::bitset<8> bits(data[i / 8]);
-                    Visitor(type, addr + i, bits.test(7 - (8 + i) % 8));
-                }
+        TEventType lastType = TEventType::REBOOT;
+        uint16_t lastRegAddr = 0;
+        uint16_t lastDataAddr = 0;
+
+        for (auto regIt = SettingsStart; regIt != SettingsEnd; ++regIt) {
+            if (lastType != regIt->Type || lastRegAddr + MaxRegDistance < regIt->Addr) {
+                dataIt.NextByte();
+                lastDataAddr = regIt->Addr;
+                lastType = regIt->Type;
+                Visitor(lastType, lastDataAddr, dataIt.GetBit());
+            } else {
+                do {
+                    dataIt.NextBit();
+                    ++lastDataAddr;
+                    Visitor(lastType, lastDataAddr, dataIt.GetBit());
+                } while (lastDataAddr != regIt->Addr);
             }
-            data += dataSize;
+            lastRegAddr = regIt->Addr;
         }
     }
 
@@ -246,69 +319,91 @@ namespace ModbusExt // modbus extension protocol declarations
 
     TEventsEnabler::TEventsEnabler(uint8_t slaveId,
                                    TPort& port,
-                                   const std::chrono::milliseconds& responseTimeout,
-                                   const std::chrono::milliseconds& frameTimeout,
-                                   TEventsEnabler::TVisitorFn visitor)
+                                   TEventsEnabler::TVisitorFn visitor,
+                                   TEventsEnablerFlags flags)
         : SlaveId(slaveId),
           Port(port),
-          ResponseTimeout(responseTimeout),
-          FrameTimeout(frameTimeout),
+          MaxRegDistance(1),
           Visitor(visitor)
     {
+        if (flags == TEventsEnablerFlags::DISABLE_EVENTS_IN_HOLES) {
+            MaxRegDistance = MIN_ENABLE_EVENTS_REC_SIZE;
+        }
         Request.reserve(MAX_PACKET_SIZE);
         Append(std::back_inserter(Request), {SlaveId, MODBUS_EXT_COMMAND, ENABLE_EVENTS_COMMAND, 0});
         Response.reserve(MAX_PACKET_SIZE);
+        FrameTimeout = std::chrono::ceil<std::chrono::milliseconds>(port.GetSendTimeBytes(3.5));
     }
 
     void TEventsEnabler::AddRegister(uint16_t addr, TEventType type, TEventPriority priority)
     {
-        auto it = std::find_if(Settings.begin(), Settings.end(), [type, addr](const auto& v) {
-            auto nextAddr = v.first.second + static_cast<uint16_t>(v.second.size());
-            return v.first.first == type && nextAddr == addr;
-        });
-        if (it != Settings.end()) {
-            it->second.push_back(priority);
-            Request[ENABLE_EVENTS_RESPONSE_DATA_SIZE_POS] += 1;
-        } else {
-            Settings[std::make_pair(type, addr)].push_back(priority);
-            Request[ENABLE_EVENTS_RESPONSE_DATA_SIZE_POS] += MIN_ENABLE_EVENTS_REC_SIZE;
-        }
-
-        if (Request.size() + Request[ENABLE_EVENTS_RESPONSE_DATA_SIZE_POS] + CRC_SIZE + MIN_ENABLE_EVENTS_REC_SIZE >
-            Request.capacity())
-        {
-            SendRequest();
-        }
+        Settings.emplace_back(TRegisterToEnable{type, addr, priority});
     }
 
-    void TEventsEnabler::SendRequest()
+    void TEventsEnabler::SendSingleRequest()
     {
-        if (Request[ENABLE_EVENTS_RESPONSE_DATA_SIZE_POS] == 0) {
-            return;
-        }
-
-        auto it = std::back_inserter(Request);
-        for (const auto& reg: Settings) {
-            auto type = reg.first.first;
-            auto addr = reg.first.second;
-
-            Append(it, static_cast<uint8_t>(type));
-            AppendBigEndian(it, addr);
-            Append(it, static_cast<uint8_t>(reg.second.size()));
-
-            for (const auto& priority: reg.second) {
-                Append(it, static_cast<uint8_t>(priority));
+        ClearRequest();
+        auto requestBack = std::back_inserter(Request);
+        TEventType lastType = TEventType::REBOOT;
+        uint16_t lastAddr = 0;
+        auto regIt = SettingsEnd;
+        size_t regCountPos;
+        for (; HasSpaceForEnableEventRecord(Request) && regIt != Settings.cend(); ++regIt) {
+            if (lastType != regIt->Type || lastAddr + MaxRegDistance < regIt->Addr) {
+                Append(requestBack, static_cast<uint8_t>(regIt->Type));
+                AppendBigEndian(requestBack, regIt->Addr);
+                Append(requestBack, static_cast<uint8_t>(1));
+                regCountPos = Request.size() - 1;
+                Append(requestBack, static_cast<uint8_t>(regIt->Priority));
+                Request[ENABLE_EVENTS_RESPONSE_DATA_SIZE_POS] += MIN_ENABLE_EVENTS_REC_SIZE;
+            } else {
+                const auto nRegs = static_cast<size_t>(regIt->Addr - lastAddr);
+                Request[regCountPos] += nRegs;
+                for (size_t i = 0; i + 1 < nRegs; ++i) {
+                    Append(requestBack, static_cast<uint8_t>(TEventPriority::DISABLE));
+                }
+                Append(requestBack, static_cast<uint8_t>(regIt->Priority));
+                Request[ENABLE_EVENTS_RESPONSE_DATA_SIZE_POS] += nRegs;
             }
+            lastType = regIt->Type;
+            lastAddr = regIt->Addr;
         }
+
+        SettingsStart = SettingsEnd;
+        SettingsEnd = regIt;
 
         AppendBigEndian(std::back_inserter(Request), CRC16::CalculateCRC16(Request.data(), Request.size()));
-        try {
-            EnableEvents();
-            ClearRequest();
-        } catch (...) {
-            ClearRequest();
-            throw;
+        EnableEvents();
+    }
+
+    void TEventsEnabler::SendRequests()
+    {
+        if (Settings.empty()) {
+            return;
+        }
+        std::sort(Settings.begin(), Settings.end(), [](const auto& a, const auto& b) {
+            if (a.Type == b.Type) {
+                return a.Addr < b.Addr;
+            }
+            return a.Type < b.Type;
+        });
+        auto last = std::unique(Settings.begin(), Settings.end(), [](const auto& a, const auto& b) {
+            return a.Type == b.Type && a.Addr == b.Addr;
+        });
+        Settings.erase(last, Settings.end());
+        for (SettingsEnd = SettingsStart = Settings.cbegin(); SettingsEnd != Settings.cend();) {
+            SendSingleRequest();
         }
     }
 
+    bool TEventsEnabler::HasEventsToSetup() const
+    {
+        return !Settings.empty();
+    }
+
+    void TEventConfirmationState::Reset()
+    {
+        Flag = 0;
+        SlaveId = 0;
+    }
 }

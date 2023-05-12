@@ -100,7 +100,8 @@ Dooya::TDevice::TDevice(PDeviceConfig config, PPort port, PProtocol protocol)
       CloseCommand{MakeRequest(SlaveId, {CONTROL, CLOSE}), CONTROL_RESPONSE_SIZE},
       GetPositionCommand{MakeRequest(SlaveId, {READ, GET_POSITION, GET_POSITION_DATA_LENGTH}), RESPONSE_SIZE}
 {
-    config->FrameTimeout = std::max(config->FrameTimeout, port->GetSendTime(3.5));
+    config->FrameTimeout =
+        std::max(config->FrameTimeout, std::chrono::ceil<std::chrono::milliseconds>(port->GetSendTimeBytes(3.5)));
 }
 
 std::vector<uint8_t> Dooya::TDevice::ExecCommand(const TRequest& request)
