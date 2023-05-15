@@ -1,0 +1,22 @@
+{
+    "device_type": "parameters_array_invalid_id",
+    "device": {
+        "name": "parameters array invalid id",
+        "id": "parameters array invalid id",
+        "channels": [
+            {
+                "name": "Temperature",
+                "reg_type": "input",
+                "format": "s32",
+                "address": "0x0504"
+            }
+        ],
+        "parameters": [
+            {
+                "id": "test 123",
+                "title": "p1",
+                "address": 9992
+            }
+        ]
+    }
+}
