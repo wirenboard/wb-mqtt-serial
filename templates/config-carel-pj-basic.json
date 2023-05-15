@@ -136,7 +136,7 @@
                 "format": "s16"
             },
 
-            "_3rd_input_configuration": {
+            "third_input_configuration": {
                 "title": "3rd Input Configuration (A4)",
                 "group": "sensors",
                 "reg_type": "holding",
