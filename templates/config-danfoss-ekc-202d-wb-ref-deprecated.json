@@ -1,10 +1,11 @@
 {
-    "title": "Danfoss EKC 204A1/AK-CC 210 (WB-REF-DF-178A)",
-    "device_type": "tpl1_danfoss_ekc_204a1_wb_ref",
+    "title": "Danfoss EKC 202D (WB-REF-DF-178A)",
+    "device_type": "danfoss_ekc_202d_wb_ref",
     "group": "g-refrigeration",
+    "deprecated": true,
     "device": {
-        "name": "Danfoss EKC 204A1/AK-CC 210",
-        "id": "danfoss-ekc-204a1",
+        "name": "Danfoss EKC 202D",
+        "id": "danfoss-ekc-202d",
         "response_timeout_ms": 100,
         "frame_timeout_ms": 12,
         "max_read_registers": 0,
@@ -47,29 +48,24 @@
                 "order": 7
             },
             {
-                "title": "HACCP",
-                "id": "haccp",
-                "order": 8
-            },
-            {
                 "title": "Real Time Clock",
                 "id": "clock",
-                "order": 9
+                "order": 8
             },
             {
                 "title": "Miscellaneous",
                 "id": "miscellaneous",
-                "order": 10
+                "order": 9
             },
             {
                 "title": "Controller Info",
                 "id": "controller_info",
-                "order": 11
+                "order": 10
             },
             {
                 "title": "Card Info",
                 "id": "card_info",
-                "order": 12
+                "order": 11
             }
         ],
         "setup": [
@@ -184,19 +180,6 @@
                 "group": "thermostat",
                 "order": 9
             },
-            "heating_differential": {
-                "title": "Heating On Differential (r36)",
-                "description": "units: °C; heating function is started a number of degrees below the\nthermostats cutout temperature",
-                "address": 10149,
-                "reg_type": "holding",
-                "format": "u16",
-                "scale": 0.1,
-                "min": -15,
-                "max": -3,
-                "default": -15,
-                "group": "thermostat",
-                "order": 10
-            },
             "setpoint_offset_enabled": {
                 "title": "Setpoint Offset Enabled (r39)",
                 "address": 10150,
@@ -206,7 +189,7 @@
                 "enum": [0, 1],
                 "enum_titles": ["no", "yes"],
                 "group": "thermostat",
-                "order": 11
+                "order": 10
             },
             "setpoint_offset_value": {
                 "title": "Setpoint Offset Value (r40)",
@@ -219,7 +202,7 @@
                 "max": 50,
                 "default": 0,
                 "group": "thermostat",
-                "order": 12
+                "order": 11
             },
             "temperature_alarm_delay": {
                 "title": "Temperature Alarm Delay (A03)",
@@ -343,18 +326,6 @@
                 "group": "compressor",
                 "order": 2
             },
-            "compressor2_start_delay": {
-                "title": "Compressor 2 Start Delay (c05)",
-                "description": "units: seconds",
-                "address": 10505,
-                "reg_type": "holding",
-                "format": "u16",
-                "min": 0,
-                "max": 999,
-                "default": 0,
-                "group": "compressor",
-                "order": 3
-            },
             "compressor_relay_inverted_mode": {
                 "title": "Compressor Relay Inverted Mode (c30)",
                 "address": 10532,
@@ -364,7 +335,7 @@
                 "enum": [0, 1],
                 "enum_titles": ["no", "yes"],
                 "group": "compressor",
-                "order": 4
+                "order": 3
             },
             "defrost_method": {
                 "title": "Defrost Method (d01)",
@@ -438,7 +409,7 @@
                 "group": "defrost",
                 "order": 6
             },
-            "fan_start_delay_after_defrost_d07": {
+            "fan_start_delay_after_defrost(d07)": {
                 "title": "Fan Start Delay After Defrost(d07)",
                 "description": "units: minutes",
                 "address": 11006,
@@ -501,20 +472,8 @@
                 "group": "defrost",
                 "order": 11
             },
-            "drain_delay": {
-                "title": "Drain Delay (d17)",
-                "description": "units: minutes",
-                "address": 11019,
-                "reg_type": "holding",
-                "format": "u16",
-                "min": 0,
-                "max": 60,
-                "default": 0,
-                "group": "defrost",
-                "order": 12
-            },
             "compressor_working_time_between_defrosts": {
-                "title": "Compressor Working Time Between Defrosts (d18)",
+                "title": "Compressor Working Time Between Defrosts (D18)",
                 "description": "units: hours; 0 = off",
                 "address": 11020,
                 "reg_type": "holding",
@@ -523,10 +482,10 @@
                 "max": 48,
                 "default": 0,
                 "group": "defrost",
-                "order": 13
+                "order": 12
             },
             "defrost_on_demand": {
-                "title": "Defrost On Demand (d19)",
+                "title": "Defrost On Demand (D19)",
                 "description": "units: °C; 20 °C = off; S5 temperature’s permitted variation during frost build-up",
                 "address": 11021,
                 "reg_type": "holding",
@@ -536,7 +495,7 @@
                 "max": 20,
                 "default": 20,
                 "group": "defrost",
-                "order": 14
+                "order": 13
             },
             "fan_stop_when_compressor_is_off": {
                 "title": "Fan Stop When Compressor Is Off (F01)",
@@ -573,58 +532,6 @@
                 "default": 50,
                 "group": "fans",
                 "order": 3
-            },
-            "haccp_sensor": {
-                "title": "HACCP Sensor (h11)",
-                "address": 12090,
-                "reg_type": "holding",
-                "format": "u16",
-                "default": 0,
-                "enum": [0, 1, 2],
-                "enum_titles": [
-                    "no HACCP function",
-                    "S3 and/or S4 sensors (according to h14)",
-                    "S5 sensor"
-                ],
-                "group": "haccp",
-                "order": 1
-            },
-            "haccp_alarm_temperature": {
-                "title": "HACCP Alarm Temperature (h12)",
-                "description": "units: °C",
-                "address": 12091,
-                "reg_type": "holding",
-                "format": "s16",
-                "scale": 0.1,
-                "min": -50,
-                "max": 50,
-                "default": 8,
-                "group": "haccp",
-                "order": 2
-            },
-            "haccp_alarm_delay": {
-                "title": "HACCP Alarm Delay (h13)",
-                "description": "units: minutes",
-                "address": 12092,
-                "reg_type": "holding",
-                "format": "u16",
-                "min": 0,
-                "max": 240,
-                "default": 30,
-                "group": "haccp",
-                "order": 3
-            },
-            "haccp_s3s4_ratio": {
-                "title": "HACCP S3S4 sensors ratio (h14)",
-                "description": "units: %; 0% = S3; 100% = S4; other = combination S3 and S4",
-                "address": 12093,
-                "reg_type": "holding",
-                "format": "u16",
-                "min": 0,
-                "max": 100,
-                "default": 100,
-                "group": "haccp",
-                "order": 4
             },
             "defrost1_hour": {
                 "title": "Defrost 1 Hour (t01)",
@@ -879,7 +786,7 @@
                 "default": 1,
                 "enum": [1, 2, 3],
                 "enum_titles": [
-                    "bakclight is on during day operation",
+                    "backlight is on during day operation",
                     "controlled via data communication",
                     "controlled by door switch"
                 ],
@@ -1010,26 +917,6 @@
                 "group": "status"
             },
             {
-                "name": "HACCP Temperature",
-                "address": 12094,
-                "reg_type": "holding",
-                "type": "temperature",
-                "format": "s16",
-                "scale": 0.1,
-                "readonly": true,
-                "group": "status"
-            },
-            {
-                "name": "HACCP Peak Temperature",
-                "address": 12095,
-                "reg_type": "holding",
-                "type": "temperature",
-                "format": "s16",
-                "scale": 0.1,
-                "readonly": true,
-                "group": "status"
-            },
-            {
                 "name": "Controller State",
                 "address": 12007,
                 "reg_type": "holding",
@@ -1049,7 +936,16 @@
             },
             {
                 "name": "Standby Mode Active",
-                "address": 30014,
+                "address": 30013,
+                "reg_type": "holding",
+                "type": "switch",
+                "format": "u16",
+                "readonly": true,
+                "group": "status"
+            },
+            {
+                "name": "Defrosting Active",
+                "address": 11036,
                 "reg_type": "holding",
                 "type": "switch",
                 "format": "u16",
@@ -1076,7 +972,7 @@
             },
             {
                 "name": "Case Cleaning Active",
-                "address": 30013,
+                "address": 30012,
                 "reg_type": "holding",
                 "type": "switch",
                 "format": "u16",
@@ -1111,15 +1007,6 @@
                 "group": "status"
             },
             {
-                "name": "Compressor 2 Relay Status",
-                "address": 12588,
-                "reg_type": "holding",
-                "type": "switch",
-                "format": "u16",
-                "readonly": true,
-                "group": "status"
-            },
-            {
                 "name": "Fan Relay Status",
                 "address": 12511,
                 "reg_type": "holding",
@@ -1140,15 +1027,6 @@
             {
                 "name": "Railheat Relay Status",
                 "address": 12579,
-                "reg_type": "holding",
-                "type": "switch",
-                "format": "u16",
-                "readonly": true,
-                "group": "status"
-            },
-            {
-                "name": "Suction Valve Relay Status",
-                "address": 12585,
                 "reg_type": "holding",
                 "type": "switch",
                 "format": "u16",
@@ -1253,7 +1131,7 @@
                 "enabled": false
             },
             {
-                "name": "HACCP Alarm",
+                "name": "Door Alarm",
                 "address": 30007,
                 "reg_type": "holding",
                 "type": "switch",
@@ -1263,7 +1141,7 @@
                 "enabled": false
             },
             {
-                "name": "Door Alarm",
+                "name": "DI1 Alarm",
                 "address": 30008,
                 "reg_type": "holding",
                 "type": "switch",
@@ -1273,7 +1151,7 @@
                 "enabled": false
             },
             {
-                "name": "DI1 Alarm",
+                "name": "DI2 Alarm",
                 "address": 30009,
                 "reg_type": "holding",
                 "type": "switch",
@@ -1283,7 +1161,7 @@
                 "enabled": false
             },
             {
-                "name": "DI2 Alarm",
+                "name": "Maximum Defrost Time Alarm",
                 "address": 30010,
                 "reg_type": "holding",
                 "type": "switch",
@@ -1293,18 +1171,8 @@
                 "enabled": false
             },
             {
-                "name": "Maximum Defrost Time Alarm",
-                "address": 30011,
-                "reg_type": "holding",
-                "type": "switch",
-                "format": "u16",
-                "readonly": true,
-                "group": "status",
-                "enabled": false
-            },
-            {
                 "name": "Maximum Hold Time Alarm",
-                "address": 30012,
+                "address": 30011,
                 "reg_type": "holding",
                 "type": "switch",
                 "format": "u16",

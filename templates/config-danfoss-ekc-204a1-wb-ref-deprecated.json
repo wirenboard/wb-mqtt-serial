@@ -1,7 +1,8 @@
 {
     "title": "Danfoss EKC 204A1/AK-CC 210 (WB-REF-DF-178A)",
-    "device_type": "tpl1_danfoss_ekc_204a1_wb_ref",
+    "device_type": "danfoss_ekc_204a1_wb_ref",
     "group": "g-refrigeration",
+    "deprecated": true,
     "device": {
         "name": "Danfoss EKC 204A1/AK-CC 210",
         "id": "danfoss-ekc-204a1",
@@ -438,7 +439,7 @@
                 "group": "defrost",
                 "order": 6
             },
-            "fan_start_delay_after_defrost_d07": {
+            "fan_start_delay_after_defrost(d07)": {
                 "title": "Fan Start Delay After Defrost(d07)",
                 "description": "units: minutes",
                 "address": 11006,

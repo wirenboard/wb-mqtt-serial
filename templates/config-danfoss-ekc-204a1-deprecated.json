@@ -1,15 +1,14 @@
 {
-    "title": "Danfoss EKC 204A1/AK-CC 210 (WB-REF-DF-178A)",
-    "device_type": "tpl1_danfoss_ekc_204a1_wb_ref",
+    "title": "Danfoss EKC 204A1/AK-CC 210 (EKA 178A)",
+    "device_type": "danfoss_ekc_204a1",
     "group": "g-refrigeration",
+    "deprecated": true,
     "device": {
         "name": "Danfoss EKC 204A1/AK-CC 210",
         "id": "danfoss-ekc-204a1",
         "response_timeout_ms": 100,
         "frame_timeout_ms": 12,
-        "max_read_registers": 0,
-        "enable_wb_continuous_read": true,
-
+        "guard_interval_us": 5000,
         "groups": [
             {
                 "title": "Status",
@@ -65,17 +64,12 @@
                 "title": "Controller Info",
                 "id": "controller_info",
                 "order": 11
-            },
-            {
-                "title": "Card Info",
-                "id": "card_info",
-                "order": 12
             }
         ],
         "setup": [
             {
                 "title": "set temperature units Celsius degrees",
-                "address": 10105,
+                "address": 104,
                 "reg_type": "holding",
                 "value": 0
             }
@@ -84,7 +78,7 @@
             "differential": {
                 "title": "Differential (r01)",
                 "description": "units: °C",
-                "address": 10101,
+                "address": 100,
                 "reg_type": "holding",
                 "format": "u16",
                 "scale": 0.1,
@@ -97,7 +91,7 @@
             "temperature_setpoint_max": {
                 "title": "Temperature Setpoint Max (r02)",
                 "description": "units: °C",
-                "address": 10102,
+                "address": 101,
                 "reg_type": "holding",
                 "format": "s16",
                 "scale": 0.1,
@@ -110,7 +104,7 @@
             "temperature_setpoint_min": {
                 "title": "Temperature Setpoint Min (r03)",
                 "description": "units: °C",
-                "address": 10103,
+                "address": 102,
                 "reg_type": "holding",
                 "format": "s16",
                 "scale": 0.1,
@@ -123,7 +117,7 @@
             "temperature_indication_adjustment": {
                 "title": "Temperature Indication Adjustment (r04)",
                 "description": "units: °C",
-                "address": 10104,
+                "address": 103,
                 "reg_type": "holding",
                 "format": "s16",
                 "scale": 0.1,
@@ -136,7 +130,7 @@
             "s4_temperature_adjustment": {
                 "title": "S4 Temperature Adjustment (r09)",
                 "description": "units: °C",
-                "address": 10113,
+                "address": 112,
                 "reg_type": "holding",
                 "format": "s16",
                 "scale": 0.1,
@@ -149,7 +143,7 @@
             "s3_temperature_adjustment": {
                 "title": "S3 Temperature Adjustment (r10)",
                 "description": "units: °C",
-                "address": 10114,
+                "address": 113,
                 "reg_type": "holding",
                 "format": "s16",
                 "scale": 0.1,
@@ -162,7 +156,7 @@
             "night_setpoint_offset": {
                 "title": "Night Setpoint Offset (r13)",
                 "description": "units: °C",
-                "address": 10125,
+                "address": 124,
                 "reg_type": "holding",
                 "format": "s16",
                 "scale": 0.1,
@@ -175,7 +169,7 @@
             "thermostat_sensor": {
                 "title": "Thermostat Sensor (r15)",
                 "description": "units: %; 0% = S3; 100% = S4; other = combination S3 and S4",
-                "address": 10123,
+                "address": 122,
                 "reg_type": "holding",
                 "format": "u16",
                 "min": 0,
@@ -187,7 +181,7 @@
             "heating_differential": {
                 "title": "Heating On Differential (r36)",
                 "description": "units: °C; heating function is started a number of degrees below the\nthermostats cutout temperature",
-                "address": 10149,
+                "address": 148,
                 "reg_type": "holding",
                 "format": "u16",
                 "scale": 0.1,
@@ -199,7 +193,7 @@
             },
             "setpoint_offset_enabled": {
                 "title": "Setpoint Offset Enabled (r39)",
-                "address": 10150,
+                "address": 149,
                 "reg_type": "holding",
                 "format": "u16",
                 "default": 0,
@@ -211,7 +205,7 @@
             "setpoint_offset_value": {
                 "title": "Setpoint Offset Value (r40)",
                 "description": "units: °C",
-                "address": 10151,
+                "address": 150,
                 "reg_type": "holding",
                 "format": "s16",
                 "scale": 0.1,
@@ -224,7 +218,7 @@
             "temperature_alarm_delay": {
                 "title": "Temperature Alarm Delay (A03)",
                 "description": "units: minutes",
-                "address": 20002,
+                "address": 10001,
                 "reg_type": "holding",
                 "format": "u16",
                 "min": 0,
@@ -236,7 +230,7 @@
             "door_open_alarm_delay": {
                 "title": "Door Open Alarm Delay (A04)",
                 "description": "units: minutes",
-                "address": 20003,
+                "address": 10002,
                 "reg_type": "holding",
                 "format": "u16",
                 "min": 0,
@@ -248,7 +242,7 @@
             "defrost_temperature_alarm_delay": {
                 "title": "Defrost Temperature Alarm Delay (A12)",
                 "description": "units: minutes",
-                "address": 20018,
+                "address": 10017,
                 "reg_type": "holding",
                 "format": "u16",
                 "min": 0,
@@ -260,7 +254,7 @@
             "high_temperature_alarm": {
                 "title": "High Temperature Alarm (A13)",
                 "description": "units: °C",
-                "address": 20019,
+                "address": 10018,
                 "reg_type": "holding",
                 "format": "s16",
                 "scale": 0.1,
@@ -273,7 +267,7 @@
             "low_temperature_alarm": {
                 "title": "Low Temperature Alarm (A14)",
                 "description": "units: °C",
-                "address": 20020,
+                "address": 10019,
                 "reg_type": "holding",
                 "format": "s16",
                 "scale": 0.1,
@@ -286,7 +280,7 @@
             "di1_alarm_delay": {
                 "title": "DI1 Alarm Delay (A27)",
                 "description": "units: minutes",
-                "address": 20028,
+                "address": 10027,
                 "reg_type": "holding",
                 "format": "u16",
                 "min": 0,
@@ -298,7 +292,7 @@
             "di2_alarm_delay": {
                 "title": "DI2 Alarm Delay (A28)",
                 "description": "units: minutes",
-                "address": 20028,
+                "address": 10027,
                 "reg_type": "holding",
                 "format": "u16",
                 "min": 0,
@@ -310,7 +304,7 @@
             "thermostat_alarm_signal_source": {
                 "title": "Source Signal For Thermostat Alarm (A36)",
                 "description": "units: %; 0% = S3; 100% = S4; other = combination S3 and S4",
-                "address": 20037,
+                "address": 10036,
                 "reg_type": "holding",
                 "format": "u16",
                 "min": 0,
@@ -322,7 +316,7 @@
             "compressor_minimum_on_time": {
                 "title": "Compressor Minimum On Time (c01)",
                 "description": "units: minutes",
-                "address": 10500,
+                "address": 499,
                 "reg_type": "holding",
                 "format": "u16",
                 "min": 0,
@@ -334,7 +328,7 @@
             "compressor_minimum_off_time": {
                 "title": "Compressor Minimum Off Time (c02)",
                 "description": "units: minutes",
-                "address": 10501,
+                "address": 500,
                 "reg_type": "holding",
                 "format": "u16",
                 "min": 0,
@@ -346,7 +340,7 @@
             "compressor2_start_delay": {
                 "title": "Compressor 2 Start Delay (c05)",
                 "description": "units: seconds",
-                "address": 10505,
+                "address": 504,
                 "reg_type": "holding",
                 "format": "u16",
                 "min": 0,
@@ -357,7 +351,7 @@
             },
             "compressor_relay_inverted_mode": {
                 "title": "Compressor Relay Inverted Mode (c30)",
-                "address": 10532,
+                "address": 531,
                 "reg_type": "holding",
                 "format": "u16",
                 "default": 0,
@@ -368,7 +362,7 @@
             },
             "defrost_method": {
                 "title": "Defrost Method (d01)",
-                "address": 11000,
+                "address": 999,
                 "reg_type": "holding",
                 "format": "u16",
                 "default": 1,
@@ -380,7 +374,7 @@
             "defrost_stop_temperature": {
                 "title": "Defrost Stop Temperature (d02)",
                 "description": "units: °C",
-                "address": 11001,
+                "address": 1000,
                 "reg_type": "holding",
                 "format": "u16",
                 "scale": 0.1,
@@ -393,7 +387,7 @@
             "defrost_interval": {
                 "title": "Defrost Interval (d03)",
                 "description": "units: hours",
-                "address": 11002,
+                "address": 1001,
                 "reg_type": "holding",
                 "format": "u16",
                 "min": 0,
@@ -405,7 +399,7 @@
             "defrost_maximum_duration": {
                 "title": "Defrost Maximum Duration (d04)",
                 "description": "units: minutes",
-                "address": 11003,
+                "address": 1002,
                 "reg_type": "holding",
                 "format": "u16",
                 "min": 0,
@@ -417,7 +411,7 @@
             "defrost_displacement_time": {
                 "title": "Defrost Displacement Time (d05)",
                 "description": "units: minutes",
-                "address": 11004,
+                "address": 1003,
                 "reg_type": "holding",
                 "format": "u16",
                 "min": 0,
@@ -429,7 +423,7 @@
             "drip_off_time": {
                 "title": "Drip Off Time (d06)",
                 "description": "units: minutes",
-                "address": 11005,
+                "address": 1004,
                 "reg_type": "holding",
                 "format": "u16",
                 "min": 0,
@@ -438,10 +432,10 @@
                 "group": "defrost",
                 "order": 6
             },
-            "fan_start_delay_after_defrost_d07": {
+            "fan_start_delay_after_defrost(d07)": {
                 "title": "Fan Start Delay After Defrost(d07)",
                 "description": "units: minutes",
-                "address": 11006,
+                "address": 1005,
                 "reg_type": "holding",
                 "format": "u16",
                 "min": 0,
@@ -453,7 +447,7 @@
             "fan_start_temperature": {
                 "title": "Fan Start Temperature (d08)",
                 "description": "units: °C",
-                "address": 11007,
+                "address": 1006,
                 "reg_type": "holding",
                 "format": "s16",
                 "scale": 0.1,
@@ -465,7 +459,7 @@
             },
             "fan_mode_during_defrost": {
                 "title": "Fan Mode During Defrost (d09)",
-                "address": 11008,
+                "address": 1007,
                 "reg_type": "holding",
                 "format": "u16",
                 "default": 1,
@@ -480,7 +474,7 @@
             },
             "defrost_stop_sensor": {
                 "title": "Defrost Stop Sensor (d10)",
-                "address": 11009,
+                "address": 1008,
                 "reg_type": "holding",
                 "format": "u16",
                 "default": 0,
@@ -492,7 +486,7 @@
             "defrost_start_delay": {
                 "title": "Defrost Start Delay (d16)",
                 "description": "units: minutes",
-                "address": 11018,
+                "address": 1017,
                 "reg_type": "holding",
                 "format": "u16",
                 "min": 0,
@@ -504,7 +498,7 @@
             "drain_delay": {
                 "title": "Drain Delay (d17)",
                 "description": "units: minutes",
-                "address": 11019,
+                "address": 1018,
                 "reg_type": "holding",
                 "format": "u16",
                 "min": 0,
@@ -516,7 +510,7 @@
             "compressor_working_time_between_defrosts": {
                 "title": "Compressor Working Time Between Defrosts (d18)",
                 "description": "units: hours; 0 = off",
-                "address": 11020,
+                "address": 1019,
                 "reg_type": "holding",
                 "format": "u16",
                 "min": 0,
@@ -528,7 +522,7 @@
             "defrost_on_demand": {
                 "title": "Defrost On Demand (d19)",
                 "description": "units: °C; 20 °C = off; S5 temperature’s permitted variation during frost build-up",
-                "address": 11021,
+                "address": 1020,
                 "reg_type": "holding",
                 "format": "u16",
                 "scale": 0.1,
@@ -540,7 +534,7 @@
             },
             "fan_stop_when_compressor_is_off": {
                 "title": "Fan Stop When Compressor Is Off (F01)",
-                "address": 11500,
+                "address": 1499,
                 "reg_type": "holding",
                 "format": "u16",
                 "default": 0,
@@ -552,7 +546,7 @@
             "fan_stop_delay": {
                 "title": "Fan Stop Delay (F02)",
                 "description": "units: minutes",
-                "address": 11503,
+                "address": 1502,
                 "reg_type": "holding",
                 "format": "u16",
                 "min": 0,
@@ -564,7 +558,7 @@
             "fan_stop_temperature": {
                 "title": "Fan Stop S5 Temperature (F04)",
                 "description": "units: °C",
-                "address": 11505,
+                "address": 1504,
                 "reg_type": "holding",
                 "format": "s16",
                 "scale": 0.1,
@@ -576,7 +570,7 @@
             },
             "haccp_sensor": {
                 "title": "HACCP Sensor (h11)",
-                "address": 12090,
+                "address": 2089,
                 "reg_type": "holding",
                 "format": "u16",
                 "default": 0,
@@ -592,7 +586,7 @@
             "haccp_alarm_temperature": {
                 "title": "HACCP Alarm Temperature (h12)",
                 "description": "units: °C",
-                "address": 12091,
+                "address": 2090,
                 "reg_type": "holding",
                 "format": "s16",
                 "scale": 0.1,
@@ -605,7 +599,7 @@
             "haccp_alarm_delay": {
                 "title": "HACCP Alarm Delay (h13)",
                 "description": "units: minutes",
-                "address": 12092,
+                "address": 2091,
                 "reg_type": "holding",
                 "format": "u16",
                 "min": 0,
@@ -617,7 +611,7 @@
             "haccp_s3s4_ratio": {
                 "title": "HACCP S3S4 sensors ratio (h14)",
                 "description": "units: %; 0% = S3; 100% = S4; other = combination S3 and S4",
-                "address": 12093,
+                "address": 2092,
                 "reg_type": "holding",
                 "format": "u16",
                 "min": 0,
@@ -629,7 +623,7 @@
             "defrost1_hour": {
                 "title": "Defrost 1 Hour (t01)",
                 "description": "units: hours",
-                "address": 11201,
+                "address": 1200,
                 "reg_type": "holding",
                 "format": "u16",
                 "min": 0,
@@ -641,7 +635,7 @@
             "defrost1_minute": {
                 "title": "Defrost 1 Minute (t11)",
                 "description": "units: minutes",
-                "address": 11211,
+                "address": 1210,
                 "reg_type": "holding",
                 "format": "u16",
                 "min": 0,
@@ -653,7 +647,7 @@
             "defrost2_hour": {
                 "title": "Defrost 2 Hour (t02)",
                 "description": "units: hours",
-                "address": 11202,
+                "address": 1201,
                 "reg_type": "holding",
                 "format": "u16",
                 "min": 0,
@@ -665,7 +659,7 @@
             "defrost2_minute": {
                 "title": "Defrost 2 Minute (t12)",
                 "description": "units: minutes",
-                "address": 11212,
+                "address": 1211,
                 "reg_type": "holding",
                 "format": "u16",
                 "min": 0,
@@ -677,7 +671,7 @@
             "defrost3_hour": {
                 "title": "Defrost 3 Hour (t03)",
                 "description": "units: hours",
-                "address": 11203,
+                "address": 1202,
                 "reg_type": "holding",
                 "format": "u16",
                 "min": 0,
@@ -689,7 +683,7 @@
             "defrost3_minute": {
                 "title": "Defrost 3 Minute (t13)",
                 "description": "units: minutes",
-                "address": 11213,
+                "address": 1212,
                 "reg_type": "holding",
                 "format": "u16",
                 "min": 0,
@@ -701,7 +695,7 @@
             "defrost4_hour": {
                 "title": "Defrost 4 Hour (t04)",
                 "description": "units: hours",
-                "address": 11204,
+                "address": 1203,
                 "reg_type": "holding",
                 "format": "u16",
                 "min": 0,
@@ -713,7 +707,7 @@
             "defrost4_minute": {
                 "title": "Defrost 4 Minute (t14)",
                 "description": "units: minutes",
-                "address": 11214,
+                "address": 1213,
                 "reg_type": "holding",
                 "format": "u16",
                 "min": 0,
@@ -725,7 +719,7 @@
             "defrost5_hour": {
                 "title": "Defrost 5 Hour (t05)",
                 "description": "units: hours",
-                "address": 11205,
+                "address": 1204,
                 "reg_type": "holding",
                 "format": "u16",
                 "min": 0,
@@ -737,7 +731,7 @@
             "defrost5_minute": {
                 "title": "Defrost 5 Minute (t15)",
                 "description": "units: minutes",
-                "address": 11215,
+                "address": 1214,
                 "reg_type": "holding",
                 "format": "u16",
                 "min": 0,
@@ -749,7 +743,7 @@
             "defrost6_hour": {
                 "title": "Defrost 6 Hour (t06)",
                 "description": "units: hours",
-                "address": 11206,
+                "address": 1205,
                 "reg_type": "holding",
                 "format": "u16",
                 "min": 0,
@@ -761,7 +755,7 @@
             "defrost6_minute": {
                 "title": "Defrost 6 Minute (t16)",
                 "description": "units: minutes",
-                "address": 11216,
+                "address": 1215,
                 "reg_type": "holding",
                 "format": "u16",
                 "min": 0,
@@ -773,7 +767,7 @@
             "controller_start_delay": {
                 "title": "Controller Start Delay (o01)",
                 "description": "units: seconds",
-                "address": 12000,
+                "address": 1999,
                 "reg_type": "holding",
                 "format": "u16",
                 "min": 0,
@@ -784,7 +778,7 @@
             },
             "di1_function": {
                 "title": "DI1 Function (o02)",
-                "address": 12001,
+                "address": 2000,
                 "reg_type": "holding",
                 "format": "u16",
                 "default": 0,
@@ -810,7 +804,7 @@
             },
             "sensor_type": {
                 "title": "Sensor Type (o06)",
-                "address": 12014,
+                "address": 2013,
                 "reg_type": "holding",
                 "format": "u16",
                 "default": 0,
@@ -822,7 +816,7 @@
             "maximum_standby_time_after_defrost": {
                 "title": "Maximum Standby Time After Defrost (o16)",
                 "description": "units: minutes",
-                "address": 12020,
+                "address": 2019,
                 "reg_type": "holding",
                 "format": "u16",
                 "min": 0,
@@ -834,7 +828,7 @@
             "temperature_for_display": {
                 "title": "Temperature For Display (o17)",
                 "description": "units: %; 0% = S3; 100% = S4; other = combination S3 and S4",
-                "address": 12021,
+                "address": 2020,
                 "reg_type": "holding",
                 "format": "u16",
                 "min": 0,
@@ -845,7 +839,7 @@
             },
             "di2_function": {
                 "title": "DI2 Function (o37)",
-                "address": 12055,
+                "address": 2054,
                 "reg_type": "holding",
                 "format": "u16",
                 "default": 0,
@@ -873,7 +867,7 @@
             "backligth_mode": {
                 "title": "Backlight Mode (o38)",
                 "description": "relay 4",
-                "address": 12057,
+                "address": 2056,
                 "reg_type": "holding",
                 "format": "u16",
                 "default": 1,
@@ -889,7 +883,7 @@
             "railheat_on_time_during_day": {
                 "title": "Railheat On Time During Day Operation (o41)",
                 "description": "units: %",
-                "address": 12060,
+                "address": 2059,
                 "reg_type": "holding",
                 "format": "u16",
                 "min": 0,
@@ -901,7 +895,7 @@
             "railheat_on_time_during_night": {
                 "title": "Railheat On Time During Night Operation (o42)",
                 "description": "units: %",
-                "address": 12061,
+                "address": 2060,
                 "reg_type": "holding",
                 "format": "u16",
                 "min": 0,
@@ -913,7 +907,7 @@
             "railheat_period": {
                 "title": "Railheat Period (o43)",
                 "description": "units: minutes",
-                "address": 12062,
+                "address": 2061,
                 "reg_type": "holding",
                 "format": "u16",
                 "min": 6,
@@ -924,7 +918,7 @@
             },
             "case_clean_mode": {
                 "title": "Case Clean Mode (o46)",
-                "address": 12056,
+                "address": 2055,
                 "reg_type": "holding",
                 "format": "u16",
                 "default": 0,
@@ -941,7 +935,7 @@
         "channels": [
             {
                 "name": "Actual Temperature Setpoint",
-                "address": 12546,
+                "address": 2545,
                 "reg_type": "holding",
                 "type": "temperature",
                 "format": "s16",
@@ -951,7 +945,7 @@
             },
             {
                 "name": "Displayed Air Temperature",
-                "address": 12576,
+                "address": 2575,
                 "reg_type": "holding",
                 "type": "temperature",
                 "format": "s16",
@@ -961,7 +955,7 @@
             },
             {
                 "name": "Sensor S3 Temperature",
-                "address": 12530,
+                "address": 2529,
                 "reg_type": "holding",
                 "type": "temperature",
                 "format": "s16",
@@ -971,7 +965,7 @@
             },
             {
                 "name": "Sensor S4 Temperature",
-                "address": 12531,
+                "address": 2530,
                 "reg_type": "holding",
                 "type": "temperature",
                 "format": "s16",
@@ -981,7 +975,7 @@
             },
             {
                 "name": "Sensor S5 Temperature",
-                "address": 11011,
+                "address": 1010,
                 "reg_type": "holding",
                 "type": "temperature",
                 "format": "s16",
@@ -991,7 +985,7 @@
             },
             {
                 "name": "Thermostat Temperature",
-                "address": 12532,
+                "address": 2531,
                 "reg_type": "holding",
                 "type": "temperature",
                 "format": "s16",
@@ -1001,7 +995,7 @@
             },
             {
                 "name": "Thermostat Alarm Measured Temperature",
-                "address": 12578,
+                "address": 2577,
                 "reg_type": "holding",
                 "type": "temperature",
                 "format": "s16",
@@ -1011,7 +1005,7 @@
             },
             {
                 "name": "HACCP Temperature",
-                "address": 12094,
+                "address": 2093,
                 "reg_type": "holding",
                 "type": "temperature",
                 "format": "s16",
@@ -1021,7 +1015,7 @@
             },
             {
                 "name": "HACCP Peak Temperature",
-                "address": 12095,
+                "address": 2094,
                 "reg_type": "holding",
                 "type": "temperature",
                 "format": "s16",
@@ -1031,7 +1025,7 @@
             },
             {
                 "name": "Controller State",
-                "address": 12007,
+                "address": 2006,
                 "reg_type": "holding",
                 "type": "value",
                 "format": "u16",
@@ -1040,7 +1034,7 @@
             },
             {
                 "name": "Application Mode",
-                "address": 12086,
+                "address": 2085,
                 "reg_type": "holding",
                 "type": "value",
                 "format": "u16",
@@ -1049,7 +1043,7 @@
             },
             {
                 "name": "Standby Mode Active",
-                "address": 30014,
+                "address": 20013,
                 "reg_type": "holding",
                 "type": "switch",
                 "format": "u16",
@@ -1058,7 +1052,7 @@
             },
             {
                 "name": "Hold After Defrost Active",
-                "address": 12022,
+                "address": 2021,
                 "reg_type": "holding",
                 "type": "switch",
                 "format": "u16",
@@ -1067,7 +1061,7 @@
             },
             {
                 "name": "Night Mode Active",
-                "address": 12533,
+                "address": 2532,
                 "reg_type": "holding",
                 "type": "switch",
                 "format": "u16",
@@ -1076,7 +1070,7 @@
             },
             {
                 "name": "Case Cleaning Active",
-                "address": 30013,
+                "address": 20012,
                 "reg_type": "holding",
                 "type": "switch",
                 "format": "u16",
@@ -1085,7 +1079,7 @@
             },
             {
                 "name": "DI1 Status",
-                "address": 12002,
+                "address": 2001,
                 "reg_type": "holding",
                 "type": "switch",
                 "format": "u16",
@@ -1094,7 +1088,7 @@
             },
             {
                 "name": "DI2 Status",
-                "address": 12556,
+                "address": 2555,
                 "reg_type": "holding",
                 "type": "switch",
                 "format": "u16",
@@ -1103,7 +1097,7 @@
             },
             {
                 "name": "Cooling Relay Status",
-                "address": 12510,
+                "address": 2509,
                 "reg_type": "holding",
                 "type": "switch",
                 "format": "u16",
@@ -1112,7 +1106,7 @@
             },
             {
                 "name": "Compressor 2 Relay Status",
-                "address": 12588,
+                "address": 2587,
                 "reg_type": "holding",
                 "type": "switch",
                 "format": "u16",
@@ -1121,7 +1115,7 @@
             },
             {
                 "name": "Fan Relay Status",
-                "address": 12511,
+                "address": 2510,
                 "reg_type": "holding",
                 "type": "switch",
                 "format": "u16",
@@ -1130,7 +1124,7 @@
             },
             {
                 "name": "Defrost Relay Status",
-                "address": 12512,
+                "address": 2511,
                 "reg_type": "holding",
                 "type": "switch",
                 "format": "u16",
@@ -1139,7 +1133,7 @@
             },
             {
                 "name": "Railheat Relay Status",
-                "address": 12579,
+                "address": 2578,
                 "reg_type": "holding",
                 "type": "switch",
                 "format": "u16",
@@ -1148,7 +1142,7 @@
             },
             {
                 "name": "Suction Valve Relay Status",
-                "address": 12585,
+                "address": 2584,
                 "reg_type": "holding",
                 "type": "switch",
                 "format": "u16",
@@ -1157,7 +1151,7 @@
             },
             {
                 "name": "Alarm Relay Status",
-                "address": 12583,
+                "address": 2582,
                 "reg_type": "holding",
                 "type": "switch",
                 "format": "u16",
@@ -1166,7 +1160,7 @@
             },
             {
                 "name": "Backlight Relay Status",
-                "address": 12584,
+                "address": 2583,
                 "reg_type": "holding",
                 "type": "switch",
                 "format": "u16",
@@ -1175,7 +1169,7 @@
             },
             {
                 "name": "Controller Alarm",
-                "address": 12541,
+                "address": 2540,
                 "reg_type": "holding",
                 "type": "switch",
                 "format": "u16",
@@ -1184,7 +1178,7 @@
             },
             {
                 "name": "EKC Error",
-                "address": 30000,
+                "address": 19999,
                 "reg_type": "holding",
                 "type": "switch",
                 "format": "u16",
@@ -1194,7 +1188,7 @@
             },
             {
                 "name": "RTC Error",
-                "address": 30001,
+                "address": 20000,
                 "reg_type": "holding",
                 "type": "switch",
                 "format": "u16",
@@ -1204,7 +1198,7 @@
             },
             {
                 "name": "S3 Error",
-                "address": 30002,
+                "address": 20001,
                 "reg_type": "holding",
                 "type": "switch",
                 "format": "u16",
@@ -1214,7 +1208,7 @@
             },
             {
                 "name": "S4 Error",
-                "address": 30003,
+                "address": 20002,
                 "reg_type": "holding",
                 "type": "switch",
                 "format": "u16",
@@ -1224,7 +1218,7 @@
             },
             {
                 "name": "S5 Error",
-                "address": 30004,
+                "address": 20003,
                 "reg_type": "holding",
                 "type": "switch",
                 "format": "u16",
@@ -1234,7 +1228,7 @@
             },
             {
                 "name": "High Temperature Alarm",
-                "address": 30005,
+                "address": 20004,
                 "reg_type": "holding",
                 "type": "switch",
                 "format": "u16",
@@ -1244,7 +1238,7 @@
             },
             {
                 "name": "Low Temperature Alarm",
-                "address": 30006,
+                "address": 20005,
                 "reg_type": "holding",
                 "type": "switch",
                 "format": "u16",
@@ -1254,7 +1248,7 @@
             },
             {
                 "name": "HACCP Alarm",
-                "address": 30007,
+                "address": 20006,
                 "reg_type": "holding",
                 "type": "switch",
                 "format": "u16",
@@ -1264,7 +1258,7 @@
             },
             {
                 "name": "Door Alarm",
-                "address": 30008,
+                "address": 20007,
                 "reg_type": "holding",
                 "type": "switch",
                 "format": "u16",
@@ -1274,7 +1268,7 @@
             },
             {
                 "name": "DI1 Alarm",
-                "address": 30009,
+                "address": 20008,
                 "reg_type": "holding",
                 "type": "switch",
                 "format": "u16",
@@ -1284,7 +1278,7 @@
             },
             {
                 "name": "DI2 Alarm",
-                "address": 30010,
+                "address": 20009,
                 "reg_type": "holding",
                 "type": "switch",
                 "format": "u16",
@@ -1294,7 +1288,7 @@
             },
             {
                 "name": "Maximum Defrost Time Alarm",
-                "address": 30011,
+                "address": 20010,
                 "reg_type": "holding",
                 "type": "switch",
                 "format": "u16",
@@ -1304,7 +1298,7 @@
             },
             {
                 "name": "Maximum Hold Time Alarm",
-                "address": 30012,
+                "address": 20011,
                 "reg_type": "holding",
                 "type": "switch",
                 "format": "u16",
@@ -1314,7 +1308,7 @@
             },
             {
                 "name": "Temperature Setpoint",
-                "address": 10100,
+                "address": 99,
                 "reg_type": "holding",
                 "type": "temperature",
                 "format": "s16",
@@ -1323,7 +1317,7 @@
             },
             {
                 "name": "Controller Start",
-                "address": 10117,
+                "address": 116,
                 "reg_type": "holding",
                 "type": "switch",
                 "format": "u16",
@@ -1331,7 +1325,7 @@
             },
             {
                 "name": "Defrost Start",
-                "address": 11013,
+                "address": 1012,
                 "reg_type": "holding",
                 "type": "switch",
                 "format": "u16",
@@ -1339,7 +1333,7 @@
             },
             {
                 "name": "Night Mode Start",
-                "address": 10126,
+                "address": 125,
                 "reg_type": "holding",
                 "type": "switch",
                 "format": "u16",
@@ -1347,7 +1341,7 @@
             },
             {
                 "name": "Forced Cooling Start",
-                "address": 13044,
+                "address": 3043,
                 "reg_type": "holding",
                 "type": "switch",
                 "format": "u16",
@@ -1355,7 +1349,7 @@
             },
             {
                 "name": "Backlight On",
-                "address": 12058,
+                "address": 2057,
                 "reg_type": "holding",
                 "type": "switch",
                 "format": "u16",
@@ -1364,7 +1358,7 @@
             },
             {
                 "name": "Reset Alarm",
-                "address": 12046,
+                "address": 2045,
                 "reg_type": "holding",
                 "type": "switch",
                 "format": "u16",
@@ -1372,7 +1366,7 @@
             },
             {
                 "name": "Controller SW Version",
-                "address": 12003,
+                "address": 2002,
                 "reg_type": "holding",
                 "type": "text",
                 "format": "u16",
@@ -1382,40 +1376,12 @@
             },
             {
                 "name": "Controller Order Number",
-                "address": 12011,
+                "address": 2010,
                 "reg_type": "holding",
                 "type": "text",
                 "format": "u16",
                 "readonly": true,
                 "group": "controller_info",
-                "enabled": false
-            },
-            {
-                "name": "Serial",
-                "address": 270,
-                "reg_type": "input",
-                "type": "text",
-                "format": "u32",
-                "group": "card_info",
-                "enabled": false
-            },
-            {
-                "name": "Supply Voltage",
-                "address": 121,
-                "reg_type": "input",
-                "type": "voltage",
-                "format": "u16",
-                "scale": 0.001,
-                "group": "card_info",
-                "enabled": false
-            },
-            {
-                "name": "Uptime",
-                "address": 104,
-                "reg_type": "input",
-                "type": "text",
-                "format": "u32",
-                "group": "card_info",
                 "enabled": false
             }
         ]
