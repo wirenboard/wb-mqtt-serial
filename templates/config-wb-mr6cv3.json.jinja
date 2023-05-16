@@ -391,7 +391,7 @@
                 "order": 2,
                 "reg_type": "holding",
                 "min": 1,
-                "condition" : "safety_mode_source!=1",
+                "condition" : "isDefined(safety_mode_source)&&safety_mode_source!=1",
                 "max": 65534,
                 "default": 10
             }

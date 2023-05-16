@@ -30,73 +30,63 @@ namespace
 class TExpressionsTest: public TLoggedFixture
 {
 protected:
-    void PrintOp(const TToken* expr, const std::string& op, const std::string& prefix)
+    void PrintOp(const TAstNode* expr, const std::string& op, const std::string& prefix)
     {
         Print(expr->GetLeft(), prefix + "  ");
         Emit() << prefix << op;
         Print(expr->GetRight(), prefix + "  ");
     }
 
-    void Print(const TToken* expr, const std::string& prefix = std::string())
+    void Print(const TAstNode* expr, const std::string& prefix = std::string())
     {
         if (!expr) {
             Emit() << prefix << "undefined token";
+            return;
         }
         switch (expr->GetType()) {
-            case TTokenType::Number: {
+            case TAstNodeType::Number: {
                 Emit() << prefix << expr->GetValue();
                 break;
             }
-            case TTokenType::Equal: {
+            case TAstNodeType::Equal: {
                 PrintOp(expr, "==", prefix + "  ");
                 break;
             }
-            case TTokenType::NotEqual: {
+            case TAstNodeType::NotEqual: {
                 PrintOp(expr, "!=", prefix + "  ");
                 break;
             }
-            case TTokenType::Greater: {
+            case TAstNodeType::Greater: {
                 PrintOp(expr, ">", prefix + "  ");
                 break;
             }
-            case TTokenType::Less: {
+            case TAstNodeType::Less: {
                 PrintOp(expr, "<", prefix + "  ");
                 break;
             }
-            case TTokenType::GreaterEqual: {
+            case TAstNodeType::GreaterEqual: {
                 PrintOp(expr, ">=", prefix + "  ");
                 break;
             }
-            case TTokenType::LessEqual: {
+            case TAstNodeType::LessEqual: {
                 PrintOp(expr, "<=", prefix + "  ");
                 break;
             }
-            case TTokenType::Or: {
+            case TAstNodeType::Or: {
                 PrintOp(expr, "||", prefix + "  ");
                 break;
             }
-            case TTokenType::And: {
+            case TAstNodeType::And: {
                 PrintOp(expr, "&&", prefix + "  ");
                 break;
             }
-            case TTokenType::Ident: {
+            case TAstNodeType::Ident: {
                 Emit() << prefix << expr->GetValue();
                 break;
             }
-            case TTokenType::LeftBr: {
-                Emit() << prefix << expr->GetValue();
+            case TAstNodeType::Func: {
+                Emit() << prefix << expr->GetValue() << "(" << expr->GetRight()->GetValue() << ")";
                 break;
-            }
-            case TTokenType::RightBr: {
-                Emit() << prefix << expr->GetValue();
-                break;
-            }
-            case TTokenType::EOL: {
-                Emit() << "EOL";
-                break;
-            }
-            default: {
-                throw std::runtime_error("unknown token");
             }
         }
     }
@@ -132,17 +122,39 @@ TEST_F(TExpressionsTest, ParsingError)
 
 TEST_F(TExpressionsTest, Eval)
 {
-    std::vector<std::string> trueExpressions =
-        {"a==1", "a!=3", "a<2", "a>-1", "a>=1", "a<=1", "a==1||b==10", "a==1&&b==2", "a==1||c==2"};
-    std::vector<std::string> falseExpressions =
-        {"a!=1", "a==3", "a>1", "a<-1", "a>=2", "a<=0", "a==2||b==10", "a==2&&b==2", "a==1&&c==2"};
+    std::vector<std::string> trueExpressions = {"a==1",
+                                                "a!=3",
+                                                "a<2",
+                                                "a>-1",
+                                                "a>=1",
+                                                "a<=1",
+                                                "a==1||b==10",
+                                                "a==1&&b==2",
+                                                "a==1||c==2",
+                                                "isDefined(a)",
+                                                "a==1&&isDefined(a)"};
+    std::vector<std::string> falseExpressions = {"a!=1",
+                                                 "a==3",
+                                                 "a>1",
+                                                 "a<-1",
+                                                 "a>=2",
+                                                 "a<=0",
+                                                 "a==2||b==10",
+                                                 "a==2&&b==2",
+                                                 "a==1&&c==2",
+                                                 "isDefined(c)",
+                                                 "a==1&&isDefined(c)"};
 
     TParams params;
     TParser parser;
     for (const auto& expr: trueExpressions) {
-        ASSERT_TRUE(Eval(parser.Parse(expr).get(), params)) << expr;
+        bool res;
+        ASSERT_NO_THROW(res = Eval(parser.Parse(expr).get(), params)) << expr;
+        ASSERT_TRUE(res) << expr;
     }
     for (const auto& expr: falseExpressions) {
-        ASSERT_FALSE(Eval(parser.Parse(expr).get(), params)) << expr;
+        bool res;
+        ASSERT_NO_THROW(res = Eval(parser.Parse(expr).get(), params)) << expr;
+        ASSERT_FALSE(res) << expr;
     }
 }

@@ -59,10 +59,34 @@ operator expected at position 7
 
 
 "b(a==1)"
-operator expected at position 2
+unknown function b at position 1
 
 
 "1(a==1)"
 operator expected at position 2
+
+
+"isDefined()"
+identifier expected at position 11
+
+
+"isDefined(a"
+right bracket expected at position 12
+
+
+"isDefined(a==1)"
+right bracket expected at position 12
+
+
+"isDefined(1)"
+identifier expected at position 11
+
+
+"(isDefined(a)"
+right bracket expected at position 14
+
+
+"isDefined(a))"
+operator expected at position 13
 
 
