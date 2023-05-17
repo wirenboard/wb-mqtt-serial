@@ -1,6 +1,6 @@
 {
     "title": "Carel PJ BASIC (PYEZ1R05J4, PYEZ1R05J5)",
-    "device_type": "carel_pj_basic",
+    "device_type": "tpl1_carel_pj_basic",
     "group": "g-refrigeration",
     "device": {
         "name": "Carel PJ BASIC",
@@ -136,7 +136,7 @@
                 "format": "s16"
             },
 
-            "3rd_input_configuration": {
+            "third_input_configuration": {
                 "title": "3rd Input Configuration (A4)",
                 "group": "sensors",
                 "reg_type": "holding",

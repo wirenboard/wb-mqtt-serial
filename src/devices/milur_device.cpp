@@ -4,9 +4,9 @@
 namespace
 {
 
-    TPort::TFrameCompletePred ExpectNBytes(int slave_id_width, int n)
+    TPort::TFrameCompletePred ExpectNBytes(size_t slave_id_width, size_t n)
     {
-        return [slave_id_width, n](uint8_t* buf, int size) {
+        return [slave_id_width, n](uint8_t* buf, size_t size) {
             if (size < 2)
                 return false;
             if (buf[slave_id_width] & 0x80)
@@ -42,7 +42,8 @@ TMilurDevice::TMilurDevice(PDeviceConfig device_config, PPort port, PProtocol pr
         SlaveIdWidth = 4;
     }
 
-    device_config->FrameTimeout = std::max(device_config->FrameTimeout, port->GetSendTime(3.5));
+    device_config->FrameTimeout = std::max(device_config->FrameTimeout,
+                                           std::chrono::ceil<std::chrono::milliseconds>(port->GetSendTimeBytes(3.5)));
 }
 
 bool TMilurDevice::ConnectionSetup()

@@ -6,8 +6,8 @@
         "name": "WB-MSW v.4",
         "id": "wb-msw-v4",
         "max_read_registers": 0,
-        "response_timeout_ms": 150,
-        "frame_timeout_ms": 12,
+        "response_timeout_ms": 1,
+        "frame_timeout_ms": 0,
         "enable_wb_continuous_read": true,
 
         "groups": [
@@ -1486,7 +1486,7 @@
                 "CO2 Autocalibration Period": "CO₂ Autocalibration Period",
                 "CO2 Sensor Installed": "CO₂ Sensor Installed",
                 "CO2 Sensor Type": "CO₂ Sensor Type",
-                "CO2 Sensor Software Version": "CO₂ Sensor Software Version",
+                "CO2 Sensor Software Version": "CO₂ Sensor Software Version"
             },
             "ru": {
                 "WB-MSW-v4_template_title": "WB-MSW v.4 (универсальный настенный Modbus-датчик)",

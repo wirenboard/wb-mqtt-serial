@@ -3,7 +3,7 @@
 
 {
     "title": "WB-MAO4_template_title",
-    "device_type": "WB-MAO4",
+    "device_type": "tpl1_wb_mao4",
     "group": "g-wb",
     "device": {
         "name": "WB-MAO4",
@@ -108,7 +108,7 @@
                 "order": 1
             },
             {% for enumerator in range(0, INPUTS_NUMBER) -%}
-            "input {{enumerator + 1}} hold time": {
+            "input_{{enumerator + 1}}_hold_time": {
                 "title": "input_hold_time_title",
                 "description": "input_hold_time_description",
                 "address": {{1100 + enumerator}},
@@ -119,7 +119,7 @@
                 "group": "input {{enumerator + 1}} parameters",
                 "order": 1
             },
-            "input {{enumerator + 1}} double time": {
+            "input_{{enumerator + 1}}_double_time": {
                 "title": "input_double_time_title",
                 "description": "input_double_time_description",
                 "address": {{1140 + enumerator}},
@@ -130,7 +130,7 @@
                 "group": "input {{enumerator + 1}} parameters",
                 "order": 2
             },
-            "input {{enumerator + 1}} debounce time": {
+            "input_{{enumerator + 1}}_debounce_time": {
                 "title": "input_debounce_time_title",
                 "description": "input_debounce_time_description",
                 "address": {{1160 + enumerator}},

@@ -1,0 +1,22 @@
+{
+    "device_type": "parameters_object_invalid_name",
+    "deprecated": true,
+    "device": {
+        "name": "parameters object invalid name",
+        "id": "parameters object invalid name",
+        "channels": [
+            {
+                "name": "Temperature",
+                "reg_type": "input",
+                "format": "s32",
+                "address": "0x0504"
+            }
+        ],
+        "parameters": {
+            "123test": {
+                "title": "p1",
+                "address": 9992
+            }
+        }
+    }
+}
