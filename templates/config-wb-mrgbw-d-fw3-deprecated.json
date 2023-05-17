@@ -7379,8 +7379,8 @@
 
                 "lp_hold_time_description": "If press is longer than the specified time then it is long",
                 "lp_repeat_time_description": "The smaller value, the faster parameter changes",
-                "dp_time_description": "If there is no second press during the specified time then press is single. 0 - disables all presses except short and long. Increases single press detection delay",
-                "debounce_time_description": "Must be 5-10 times less than second press waiting time. If double presses are disabled - any value. Increases presses detection delay",
+                "dp_time_description": "If there is no second press during the specified time then press is single. 0 - disables all presses except short and long. Adds a delay to the response to a short press",
+                "debounce_time_description": "Must be 5-10 times less than second press waiting time. Adds a delay to the response to presses",
 
                 "pwm_frequency_factor_title": "PWM Frequency Factor",
                 "pwm_frequency_factor_description": "PWM frequency is calculated by formula: 24 kHz / factor",
