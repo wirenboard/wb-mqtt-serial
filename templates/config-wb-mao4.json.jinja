@@ -282,8 +282,8 @@
                 "input_debounce_time_title": "Debounce Time (ms)",
 
                 "input_hold_time_description": "Presses that last longer than the specified time are counted as long presses",
-                "input_double_time_description": "If during the specified time there was no second press, then the press counts as single. Setting 0 will disable all counters except short and long",
-                "input_debounce_time_description": "Should be 5-10 times less, than double press time. If double presses are disabled, any value could be set"
+                "input_double_time_description": "If there is no second press during the specified time then press is single. 0 - disables all presses except short and long. Adds a delay to the response to a short press",
+                "input_debounce_time_description": "Must be 5-10 times less than second press waiting time. Adds a delay to the response to presses"
             },
             "ru": {
                 "WB-MAO4_template_title": "WB-MAO4 (4-канальный модуль аналогового вывода)",
@@ -325,8 +325,8 @@
                 "input_debounce_time_title": "Время подавления дребезга (мс)",
 
                 "input_hold_time_description": "Если нажатие длится больше указанного времени - считаем его длинным",
-                "input_double_time_description": "Если за указанное время второго нажатия не было - считаем нажатие одиночным. 0 - отключит все нажатия кроме короткого и длинного",
-                "input_debounce_time_description": "Должно быть в 5-10 раз меньше, чем время ожидания второго нажатия. Если двойные нажатия отключены - любое значение"
+                "input_double_time_description": "Если за указанное время второго нажатия не было - считаем нажатие одиночным. 0 - отключит все нажатия кроме короткого и длинного. Вносит задержку в реакцию на короткое нажатие",
+                "input_debounce_time_description": "Должно быть в 5-10 раз меньше, чем время ожидания второго нажатия. Вносит задержку в реакцию на нажатия"
             }
         }
     }
