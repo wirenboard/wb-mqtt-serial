@@ -14,13 +14,13 @@ namespace IEC
 
     TPort::TFrameCompletePred GetCRLFPacketPred()
     {
-        return [](uint8_t* b, int s) { return s >= 2 && b[s - 1] == '\n' && b[s - 2] == '\r'; };
+        return [](uint8_t* b, size_t s) { return s >= 2 && b[s - 1] == '\n' && b[s - 2] == '\r'; };
     }
 
     // replies are either single-byte ACK, NACK or ends with ETX followed by CRC byte
     TPort::TFrameCompletePred GetProgModePacketPred(uint8_t startByte)
     {
-        return [=](uint8_t* b, int s) {
+        return [=](uint8_t* b, size_t s) {
             return (s == 1 && b[s - 1] == IEC::ACK) ||                   // single-byte ACK
                    (s == 1 && b[s - 1] == IEC::NAK) ||                   // single-byte NAK
                    (s > 3 && b[0] == startByte && b[s - 2] == IEC::ETX); // <STX> ... <ETX>[CRC]

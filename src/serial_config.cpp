@@ -240,6 +240,7 @@ namespace
         double scale = Read(register_data, "scale", 1.0); // TBD: check for zero, too
         double offset = Read(register_data, "offset", 0.0);
         double round_to = Read(register_data, "round_to", 0.0);
+        bool sporadic = Read(register_data, "sporadic", false);
 
         bool readonly = ReadChannelsReadonlyProperty(register_data,
                                                      "readonly",
@@ -270,6 +271,8 @@ namespace
                                                      scale,
                                                      offset,
                                                      round_to,
+                                                     sporadic ? TRegisterConfig::TSporadicMode::ENABLED
+                                                              : TRegisterConfig::TSporadicMode::DISABLED,
                                                      readonly,
                                                      regType.Name,
                                                      regType.DefaultWordOrder);
@@ -761,6 +764,13 @@ void TTemplateMap::AddTemplatesDir(const std::string& templatesDir, bool passInv
 Json::Value TTemplateMap::Validate(const std::string& deviceType, const std::string& filePath)
 {
     Json::Value root(WBMQTT::JSON::Parse(filePath));
+
+    bool isDeprecated = false;
+    if (Get(root, "deprecated", isDeprecated) && isDeprecated) {
+        // Skip deprecated template validation, it may be broken according to latest schema
+        return root;
+    }
+
     try {
         Validator->Validate(root);
     } catch (const std::runtime_error& e) {

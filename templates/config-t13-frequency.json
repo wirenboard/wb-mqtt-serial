@@ -104,12 +104,12 @@
                 "scale": 1,
                 "enabled": false,
                 "group": "debug"
-            },
+            }
         ],
         "translations": {
             "en": {
                 "t13_frequency_title": "T13-400W-12-H, T13-750W-12-H",
-                "Current": "Load current",
+                "Current": "Load current"
         },
             "ru": {
                 "t13_frequency_title": "T13-400W-12-H, T13-750W-12-H",
@@ -125,7 +125,7 @@
                 "Driver FW version": "Версия прошивки драйвера",
                 "Voltage bus": "Шина питания, напряжение",
                 "Current": "Ток нагрузки",
-                "Radiator temperature": "Температура радиатора",
+                "Radiator temperature": "Температура радиатора"
             }
         }
     }

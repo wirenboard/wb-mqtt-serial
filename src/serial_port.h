@@ -29,7 +29,8 @@ public:
                      const std::chrono::microseconds& frameTimeout,
                      TFrameCompletePred frameComplete = 0) override;
 
-    std::chrono::milliseconds GetSendTime(double bytesNumber) const override;
+    std::chrono::microseconds GetSendTimeBytes(double bytesNumber) const override;
+    std::chrono::microseconds GetSendTimeBits(size_t bitsNumber) const override;
 
     std::string GetDescription(bool verbose = true) const override;
 

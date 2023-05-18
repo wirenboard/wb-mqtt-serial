@@ -193,6 +193,7 @@
                 "reg_type": "discrete",
                 "address": {{in_num - 1}},
                 "type": "switch",
+                "sporadic": true,
                 "group": "gg_in{{in_num}}_channels"
             },
             {
@@ -201,6 +202,7 @@
                 "format": "u32",
                 "address": {{60 + (in_num - 1) * 2}},
                 "type": "value",
+                "sporadic": true,
                 "group": "gg_in{{in_num}}_channels"
             },
             {
@@ -220,6 +222,7 @@
                 "reg_type": "input",
                 "address": {{464 + in_num - 1}},
                 "type": "value",
+                "sporadic": true,
                 "group": "gg_in{{in_num}}_channels",
                 "condition": "in{{in_num}}_mode==1"
             },
@@ -228,6 +231,7 @@
                 "reg_type": "input",
                 "address": {{480 + in_num - 1}},
                 "type": "value",
+                "sporadic": true,
                 "group": "gg_in{{in_num}}_channels",
                 "condition": "in{{in_num}}_mode==1"
             },
@@ -236,6 +240,7 @@
                 "reg_type": "input",
                 "address": {{496 + in_num - 1}},
                 "type": "value",
+                "sporadic": true,
                 "group": "gg_in{{in_num}}_channels",
                 "condition": "in{{in_num}}_mode==1"
             },
@@ -244,6 +249,7 @@
                 "reg_type": "input",
                 "address": {{512 + in_num - 1}},
                 "type": "value",
+                "sporadic": true,
                 "group": "gg_in{{in_num}}_channels",
                 "condition": "in{{in_num}}_mode==1"
             },
@@ -254,6 +260,7 @@
                 "reg_type": "holding",
                 "address": {{368 + (encoder_num * 2)}},
                 "type": "value",
+                "sporadic": false,
                 "format": "s32",
                 "group": "gg_encoder_channels",
                 "condition": "encoder_{{encoder_num + 1}}_mode==1"
@@ -263,6 +270,7 @@
                 "reg_type": "holding",
                 "address": {{368 + (encoder_num * 2)}},
                 "type": "value",
+                "sporadic": false,
                 "format": "s16",
                 "group": "gg_encoder_channels",
                 "order": 1,
@@ -273,6 +281,7 @@
                 "reg_type": "holding",
                 "address": {{369 + (encoder_num * 2)}},
                 "type": "value",
+                "sporadic": false,
                 "format": "s16",
                 "group": "gg_encoder_channels",
                 "order": 2,
@@ -284,6 +293,7 @@
                 "reg_type": "holding",
                 "address": 372,
                 "type": "value",
+                "sporadic": false,
                 "format": "s32",
                 "group": "gg_encoder_channels",
                 "condition": "encoder_3_mode==1"
@@ -371,8 +381,8 @@
                 "debounce_time_title": "Debounce Time (ms)",
 
                 "lp_hold_time_description": "If press is longer than the specified time then it is long",
-                "secp_waiting_time_description": "If there is no second press during the specified time then press is single. 0 - disables all presses except short and long",
-                "debounce_time_description": "For press detection must be 5-10 times less than second press waiting time",
+                "secp_waiting_time_description": "If there is no second press during the specified time then press is single. 0 - disables all presses except short and long. Adds a delay to the response to a short press",
+                "debounce_time_description": "For press detection must be 5-10 times less than second press waiting time. Adds a delay to the response to presses",
 
                 {% for encoder_num in range(0, 2) -%}
                     "encoder_{{encoder_num + 1}}_mode_description": "When disabled inputs {{(encoder_num * 3) + 1}}, {{(encoder_num * 3) + 2}} and {{(encoder_num * 3) + 3}} work as usual with own mode configuration. <br>AB mode use {{(encoder_num * 3) + 1}} and {{(encoder_num * 3) + 2}} inputs for represent position in pulses count only. Input {{(encoder_num * 3) + 3}} work as usual. <br>In ABZ mode input {{(encoder_num * 3) + 3}} connected to Z signal (one puls per revolution) and position represented in revolutions counter and angle (pulses in one turn) counter.",
@@ -406,8 +416,8 @@
                 "debounce_time_title": "Время подавления дребезга (мс)",
 
                 "lp_hold_time_description": "Если нажатие длится больше указанного времени - считаем его длинным",
-                "secp_waiting_time_description": "Если за указанное время второго нажатия не было - считаем нажатие одиночным. 0 - отключит все нажатия кроме короткого и длинного",
-                "debounce_time_description": "Для детектирования нажатий значение должно быть в 5-10 раз меньше, чем время ожидания второго нажатия",
+                "secp_waiting_time_description": "Если за указанное время второго нажатия не было - считаем нажатие одиночным. 0 - отключит все нажатия кроме короткого и длинного. Вносит задержку в реакцию на короткое нажатие",
+                "debounce_time_description": "Для детектирования нажатий значение должно быть в 5-10 раз меньше, чем время ожидания второго нажатия. Вносит задержку в реакцию на нажатия",
                 "Reset all counters": "Сбросить все счетчики",
                 "Serial": "Серийный номер",
                 "FW Version": "Версия прошивки",

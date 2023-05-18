@@ -4,7 +4,7 @@
 
 {
     "title": "WB-MAO4_template_title",
-    "device_type": "WB-MAO4",
+    "device_type": "tpl1_wb_mao4",
     "group": "g-wb",
     "device": {
         "name": "WB-MAO4",
@@ -200,7 +200,7 @@
             {% endfor -%}
             {% for ch_number in range(0, INPUTS_NUMBER) -%}
             {
-                "id": "input {{ch_number + 1}} hold time",
+                "id": "input_{{ch_number + 1}}_hold_time",
                 "title": "Long Press Time (ms)",
                 "description": "input_hold_time_description",
                 "address": {{1100 + ch_number}},
@@ -212,7 +212,7 @@
                 "order": 1
             },
             {
-                "id": "input {{ch_number + 1}} double time",
+                "id": "input_{{ch_number + 1}}_double_time",
                 "title": "Second Press Waiting Time (ms)",
                 "description": "input_double_time_description",
                 "address": {{1140 + ch_number}},
@@ -224,7 +224,7 @@
                 "order": 2
             },
             {
-                "id": "input {{ch_number + 1}} debounce time",
+                "id": "input_{{ch_number + 1}}_debounce_time",
                 "title": "Debounce Time (ms)",
                 "description": "input_debounce_time_description",
                 "address": {{1160 + ch_number}},
@@ -284,7 +284,7 @@
                     "Turn Off",
                     "Turn On",
                     "Increase level",
-                    "Decrease level",
+                    "Decrease level"
                 ],
                 "default": 0,
                 "group": "input_{{ch_number + 1}}_{{press_type | replace(' ', '_') }}_press_action",
@@ -318,8 +318,7 @@
                 "enum": [0, 1],
                 "enum_titles": ["Enabled", "Disabled"],
                 "default": 0,
-                "group": "general",
-                "order": 3
+                "group": "general"
             }
         ],
 
@@ -481,8 +480,8 @@
                 "action_repeat_time_description": "During long-lasting actions channel level will be changed by 1% every specified period of time",
 
                 "input_hold_time_description": "Presses that last longer than the specified time are counted as long presses",
-                "input_double_time_description": "If during the specified time there was no second press, then the press counts as single. Setting 0 will disable all counters except short and long",
-                "input_debounce_time_description": "Should be 5-10 times less, than double press time. If double presses are disabled, any value could be set"
+                "input_double_time_description": "If there is no second press during the specified time then press is single. 0 - disables all presses except short and long. Adds a delay to the response to a short press",
+                "input_debounce_time_description": "Must be 5-10 times less than second press waiting time. Adds a delay to the response to presses"
             },
             "ru": {
                 "Enabled": "Активен",
@@ -555,12 +554,12 @@
                 "Debounce Time (ms)": "Время подавления дребезга (мс)",
 
                 "input_hold_time_description": "Если нажатие длится больше указанного времени - считаем его длинным",
-                "input_double_time_description": "Если за указанное время второго нажатия не было - считаем нажатие одиночным. 0 - отключит все нажатия кроме короткого и длинного",
-                "input_debounce_time_description": "Должно быть в 5-10 раз меньше, чем время ожидания второго нажатия. Если двойные нажатия отключены - любое значение",
+                "input_double_time_description": "Если за указанное время второго нажатия не было - считаем нажатие одиночным. 0 - отключит все нажатия кроме короткого и длинного. Вносит задержку в реакцию на короткое нажатие",
+                "input_debounce_time_description": "Должно быть в 5-10 раз меньше, чем время ожидания второго нажатия. Вносит задержку в реакцию на нажатия",
 
                 "decrease_rate_description": "Во время плавных переходов, выходной уровень будет уменьшаться на 1% через указанный период времени. При 0 значении, уровень уменьшится мгновенно",
                 "increase_rate_description": "Во время плавных переходов, выходной уровень будет увеличиваться на 1% через указанный период времени. При 0 значении, уровень увеличится мгновенно",
-                "action_repeat_time_description": "Во время долгих действий, выходной уровень будет изменяться на 1% через указанный период времени",
+                "action_repeat_time_description": "Во время долгих действий, выходной уровень будет изменяться на 1% через указанный период времени"
             }
         }
     }

@@ -113,12 +113,8 @@ namespace Modbus // modbus protocol common utilities
         : TSerialDeviceTransientErrorException("malformed response: " + what)
     {}
 
-    class TInvalidCRCError: public TMalformedResponseError
-    {
-    public:
-        TInvalidCRCError(): TMalformedResponseError("invalid crc")
-        {}
-    };
+    TInvalidCRCError::TInvalidCRCError(): TMalformedResponseError("invalid crc")
+    {}
 
     TModbusRegisterRange::TModbusRegisterRange(std::chrono::microseconds averageResponseTime)
         : AverageResponseTime(averageResponseTime),
@@ -206,8 +202,8 @@ namespace Modbus // modbus protocol common utilities
         auto newPduSize = InferReadResponsePDUSize(reg->Type, Count + extend);
         // Request 8 bytes: SlaveID, Operation, Addr, Count, CRC
         // Response 5 bytes except data: SlaveID, Operation, Size, CRC
-        auto sendTime = reg->Device()->Port()->GetSendTime(newPduSize + 8 + 5);
-        auto newPollTime = std::chrono::duration_cast<std::chrono::milliseconds>(
+        auto sendTime = reg->Device()->Port()->GetSendTimeBytes(newPduSize + 8 + 5);
+        auto newPollTime = std::chrono::ceil<std::chrono::milliseconds>(
             sendTime + AverageResponseTime + deviceConfig.RequestDelay + 2 * deviceConfig.FrameTimeout);
 
         if (((Count != 0) && !AddingRegisterIncreasesSize(isSingleBit, extend)) || (newPollTime <= pollLimit)) {
@@ -222,8 +218,8 @@ namespace Modbus // modbus protocol common utilities
         }
         if (newPollTime > pollLimit) {
             LOG(Debug) << "Poll time for " << reg->ToString() << " is too long: " << newPollTime.count() << " ms"
-                       << " (sendTime=" << sendTime.count() << " ms, "
-                       << "AverageResponseTime=" << AverageResponseTime.count() << " ms, "
+                       << " (sendTime=" << sendTime.count() << " us, "
+                       << "AverageResponseTime=" << AverageResponseTime.count() << " us, "
                        << "RequestDelay=" << deviceConfig.RequestDelay.count() << " ms, "
                        << "FrameTimeout=" << deviceConfig.FrameTimeout.count() << " ms)"
                        << ", limit is " << pollLimit.count() << " ms";
@@ -985,13 +981,13 @@ namespace Modbus // modbus protocol common utilities
 
     // TModbusRTUTraits
 
-    TPort::TFrameCompletePred TModbusRTUTraits::ExpectNBytes(int n) const
+    TPort::TFrameCompletePred TModbusRTUTraits::ExpectNBytes(size_t n) const
     {
-        return [=](uint8_t* buf, int size) {
+        return [=](uint8_t* buf, size_t size) {
             if (size < 2)
                 return false;
             if (Modbus::IsException(buf + 1)) // GetPDU
-                return size >= static_cast<int>(EXCEPTION_RESPONSE_PDU_SIZE + DATA_SIZE);
+                return size >= EXCEPTION_RESPONSE_PDU_SIZE + DATA_SIZE;
             return size >= n;
         };
     }

@@ -1,6 +1,8 @@
 #include "modbus_device.h"
 #include "modbus_common.h"
 
+#define LOG(logger) logger.Log() << "[modbus] "
+
 namespace
 {
     const TRegisterTypes ModbusRegisterTypes({{Modbus::REG_HOLDING, "holding", "value", U16},
@@ -48,7 +50,9 @@ TModbusDevice::TModbusDevice(std::unique_ptr<Modbus::IModbusTraits> modbusTraits
       ResponseTime(std::chrono::milliseconds::zero()),
       EnableWbContinuousRead(config.EnableWbContinuousRead)
 {
-    config.CommonConfig->FrameTimeout = std::max(config.CommonConfig->FrameTimeout, port->GetSendTime(3.5));
+    config.CommonConfig->FrameTimeout =
+        std::max(config.CommonConfig->FrameTimeout,
+                 std::chrono::ceil<std::chrono::milliseconds>(port->GetSendTimeBytes(3.5)));
 }
 
 PRegisterRange TModbusDevice::CreateRegisterRange() const
