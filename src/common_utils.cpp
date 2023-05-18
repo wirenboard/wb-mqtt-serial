@@ -29,17 +29,20 @@ std::string util::ConvertToValidMqttTopicString(const std::string& src)
     return validStr;
 }
 
-void util::TSpendTimeMeter::Start()
+util::TSpentTimeMeter::TSpentTimeMeter(util::TGetNowFn nowFn): NowFn(nowFn)
+{}
+
+void util::TSpentTimeMeter::Start()
 {
-    StartTime = std::chrono::steady_clock::now();
+    StartTime = NowFn();
 }
 
-std::chrono::steady_clock::time_point util::TSpendTimeMeter::GetStartTime() const
+std::chrono::steady_clock::time_point util::TSpentTimeMeter::GetStartTime() const
 {
     return StartTime;
 }
 
-std::chrono::microseconds util::TSpendTimeMeter::GetSpendTime() const
+std::chrono::microseconds util::TSpentTimeMeter::GetSpentTime() const
 {
-    return std::chrono::ceil<std::chrono::microseconds>(std::chrono::steady_clock::now() - StartTime);
+    return std::chrono::ceil<std::chrono::microseconds>(NowFn() - StartTime);
 }
