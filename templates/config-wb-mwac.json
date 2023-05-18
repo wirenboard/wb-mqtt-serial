@@ -22,9 +22,21 @@
                 "order": 2
             },
             {
+                "title": "Actions for outputs when the input is closed / opened",
+                "id": "gg_in1_mapping_matrix_actions",
+                "order": 1,
+                "group": "input_s1"
+            },
+            {
                 "title": "Input S2",
                 "id": "input_s2",
                 "order": 3
+            },
+            {
+                "title": "Actions for outputs when the input is closed / opened",
+                "id": "gg_in2_mapping_matrix_actions",
+                "order": 1,
+                "group": "input_s2"
             },
             {
                 "title": "Input S3",
@@ -32,9 +44,21 @@
                 "order": 4
             },
             {
+                "title": "Actions for outputs when the input is closed / opened",
+                "id": "gg_in3_mapping_matrix_actions",
+                "order": 1,
+                "group": "input_s3"
+            },
+            {
                 "title": "Input F1",
                 "id": "input_f1",
                 "order": 5
+            },
+            {
+                "title": "Actions for outputs when the input is closed / opened",
+                "id": "gg_in4_mapping_matrix_actions",
+                "order": 1,
+                "group": "input_f1"
             },
             {
                 "title": "Input F2",
@@ -42,9 +66,21 @@
                 "order": 6
             },
             {
+                "title": "Actions for outputs when the input is closed / opened",
+                "id": "gg_in5_mapping_matrix_actions",
+                "order": 1,
+                "group": "input_f2"
+            },
+            {
                 "title": "Input F3",
                 "id": "input_f3",
                 "order": 7
+            },
+            {
+                "title": "Actions for outputs when the input is closed / opened",
+                "id": "gg_in6_mapping_matrix_actions",
+                "order": 1,
+                "group": "input_f3"
             },
             {
                 "title": "Outputs",
@@ -52,14 +88,50 @@
                 "order": 8
             },
             {
+                "title": "Output Safe State",
+                "id": "gg_outputs_safe_state",
+                "order": 1,
+                "group": "outputs"
+                
+            },
+            {
+                "title": "Outputs group",
+                "id": "gg_outputs_channels",
+                "order": 2,
+                "group": "outputs",
+                "ui_options": {
+                    "wb": {
+                        "disable_title": true
+                    }
+                }
+            },
+            {
+                "title": "Safety Mode",
+                "id": "g_safety",
+                "order": 9
+            },
+            {
+                "title": "Safety Behaviour",
+                "id": "gg_safety_behaviour",
+                "order": 1,
+                "group": "g_safety"
+            },
+            {
+                "title": "Inputs Control In Safety Mode",
+                "id": "gg_safety_input_control",
+                "order": 2,
+                "description": "inputs_control_in_safety_mode_description",
+                "group": "g_safety"
+            },
+            {
                 "title": "General",
                 "id": "general",
-                "order": 9
+                "order": 10
             },
             {
                 "title": "HW Info",
                 "id": "hw_info",
-                "order": 10
+                "order": 11
             }
         ],
 
@@ -100,6 +172,192 @@
                 "group": "input_s1",
                 "order": 2
             },
+            "in1_out1_actions": {
+                "group": "gg_in1_mapping_matrix_actions",
+                "title": "K1",
+                "order": 1,
+                "address": 384,
+                "reg_type": "holding",
+                "default": 9,
+                "enum": [0, 1, 2, 3, 4, 5, 6, 7, 8, 9, 10, 11, 12, 13, 14, 15],
+                "enum_titles": [
+                    "no action / no action",
+                    "no action / reset",
+                    "no action / set",
+                    "no action / toggle",
+
+                    "reset / no action",
+                    "reset / reset",
+                    "reset / set",
+                    "reset / toggle",
+
+                    "set / no action",
+                    "set / reset",
+                    "set / set",
+                    "set / toggle",
+
+                    "toggle / no action",
+                    "toggle / reset",
+                    "toggle / set",
+                    "toggle / toggle"
+                ],
+                "condition": "in1_mode==4"
+            },
+            "in1_out2_actions": {
+                "group": "gg_in1_mapping_matrix_actions",
+                "title": "K2",
+                "order": 2,
+                "address": 385,
+                "reg_type": "holding",
+                "default": 0,
+                "enum": [0, 1, 2, 3, 4, 5, 6, 7, 8, 9, 10, 11, 12, 13, 14, 15],
+                "enum_titles": [
+                    "no action / no action",
+                    "no action / reset",
+                    "no action / set",
+                    "no action / toggle",
+
+                    "reset / no action",
+                    "reset / reset",
+                    "reset / set",
+                    "reset / toggle",
+
+                    "set / no action",
+                    "set / reset",
+                    "set / set",
+                    "set / toggle",
+
+                    "toggle / no action",
+                    "toggle / reset",
+                    "toggle / set",
+                    "toggle / toggle"
+                ],
+                "condition": "in1_mode==4"
+            },
+            "in1_out3_actions": {
+                "group": "gg_in1_mapping_matrix_actions",
+                "title": "Alarm",
+                "order": 3,
+                "address": 386,
+                "reg_type": "holding",
+                "default": 0,
+                "enum": [0, 1, 2, 3, 4, 5, 6, 7, 8, 9, 10, 11, 12, 13, 14, 15],
+                "enum_titles": [
+                    "no action / no action",
+                    "no action / reset",
+                    "no action / set",
+                    "no action / toggle",
+
+                    "reset / no action",
+                    "reset / reset",
+                    "reset / set",
+                    "reset / toggle",
+
+                    "set / no action",
+                    "set / reset",
+                    "set / set",
+                    "set / toggle",
+
+                    "toggle / no action",
+                    "toggle / reset",
+                    "toggle / set",
+                    "toggle / toggle"
+                ],
+                "condition": "in1_mode==4"
+            },
+            "in1_out1_actions_20min": {
+                "group": "gg_in1_mapping_matrix_actions",
+                "title": "K1",
+                "order": 1,
+                "address": 384,
+                "reg_type": "holding",
+                "default": 9,
+                "enum": [0, 1, 2, 3, 4, 5, 6, 7, 8, 9, 10, 11, 12, 13, 14, 15],
+                "enum_titles": [
+                    "no action / no action",
+                    "no action / reset",
+                    "no action / set",
+                    "no action / toggle",
+
+                    "reset / no action",
+                    "reset / reset",
+                    "reset / set",
+                    "reset / toggle",
+
+                    "set / no action",
+                    "set / reset",
+                    "set / set",
+                    "set / toggle",
+
+                    "toggle / no action",
+                    "toggle / reset",
+                    "toggle / set",
+                    "toggle / toggle"
+                ],
+                "condition": "in1_mode==5"
+            },
+            "in1_out2_actions_20min": {
+                "group": "gg_in1_mapping_matrix_actions",
+                "title": "K2",
+                "order": 2,
+                "address": 385,
+                "reg_type": "holding",
+                "default": 0,
+                "enum": [0, 1, 2, 3, 4, 5, 6, 7, 8, 9, 10, 11, 12, 13, 14, 15],
+                "enum_titles": [
+                    "no action / no action",
+                    "no action / reset",
+                    "no action / set",
+                    "no action / toggle",
+
+                    "reset / no action",
+                    "reset / reset",
+                    "reset / set",
+                    "reset / toggle",
+
+                    "set / no action",
+                    "set / reset",
+                    "set / set",
+                    "set / toggle",
+
+                    "toggle / no action",
+                    "toggle / reset",
+                    "toggle / set",
+                    "toggle / toggle"
+                ],
+                "condition": "in1_mode==5"
+            },
+            "in1_out3_actions_20min": {
+                "group": "gg_in1_mapping_matrix_actions",
+                "title": "Alarm",
+                "order": 3,
+                "address": 386,
+                "reg_type": "holding",
+                "default": 0,
+                "enum": [0, 1, 2, 3, 4, 5, 6, 7, 8, 9, 10, 11, 12, 13, 14, 15],
+                "enum_titles": [
+                    "no action / no action",
+                    "no action / reset",
+                    "no action / set",
+                    "no action / toggle",
+
+                    "reset / no action",
+                    "reset / reset",
+                    "reset / set",
+                    "reset / toggle",
+
+                    "set / no action",
+                    "set / reset",
+                    "set / set",
+                    "set / toggle",
+
+                    "toggle / no action",
+                    "toggle / reset",
+                    "toggle / set",
+                    "toggle / toggle"
+                ],
+                "condition": "in1_mode==5"
+            },
             "in2_mode": {
                 "title": "Input S2 Mode",
                 "address": 10,
@@ -126,6 +384,192 @@
                 "default": 50,
                 "group": "input_s2",
                 "order": 2
+            },
+            "in2_out1_actions": {
+                "group": "gg_in2_mapping_matrix_actions",
+                "title": "K1",
+                "order": 1,
+                "address": 392,
+                "reg_type": "holding",
+                "default": 0,
+                "enum": [0, 1, 2, 3, 4, 5, 6, 7, 8, 9, 10, 11, 12, 13, 14, 15],
+                "enum_titles": [
+                    "no action / no action",
+                    "no action / reset",
+                    "no action / set",
+                    "no action / toggle",
+
+                    "reset / no action",
+                    "reset / reset",
+                    "reset / set",
+                    "reset / toggle",
+
+                    "set / no action",
+                    "set / reset",
+                    "set / set",
+                    "set / toggle",
+
+                    "toggle / no action",
+                    "toggle / reset",
+                    "toggle / set",
+                    "toggle / toggle"
+                ],
+                "condition": "in2_mode==4"
+            },
+            "in2_out2_actions": {
+                "group": "gg_in2_mapping_matrix_actions",
+                "title": "K2",
+                "order": 2,
+                "address": 393,
+                "reg_type": "holding",
+                "default": 9,
+                "enum": [0, 1, 2, 3, 4, 5, 6, 7, 8, 9, 10, 11, 12, 13, 14, 15],
+                "enum_titles": [
+                    "no action / no action",
+                    "no action / reset",
+                    "no action / set",
+                    "no action / toggle",
+
+                    "reset / no action",
+                    "reset / reset",
+                    "reset / set",
+                    "reset / toggle",
+
+                    "set / no action",
+                    "set / reset",
+                    "set / set",
+                    "set / toggle",
+
+                    "toggle / no action",
+                    "toggle / reset",
+                    "toggle / set",
+                    "toggle / toggle"
+                ],
+                "condition": "in2_mode==4"
+            },
+            "in2_out3_actions": {
+                "group": "gg_in2_mapping_matrix_actions",
+                "title": "Alarm",
+                "order": 3,
+                "address": 394,
+                "reg_type": "holding",
+                "default": 0,
+                "enum": [0, 1, 2, 3, 4, 5, 6, 7, 8, 9, 10, 11, 12, 13, 14, 15],
+                "enum_titles": [
+                    "no action / no action",
+                    "no action / reset",
+                    "no action / set",
+                    "no action / toggle",
+
+                    "reset / no action",
+                    "reset / reset",
+                    "reset / set",
+                    "reset / toggle",
+
+                    "set / no action",
+                    "set / reset",
+                    "set / set",
+                    "set / toggle",
+
+                    "toggle / no action",
+                    "toggle / reset",
+                    "toggle / set",
+                    "toggle / toggle"
+                ],
+                "condition": "in2_mode==4"
+            },
+            "in2_out1_actions_20min": {
+                "group": "gg_in2_mapping_matrix_actions",
+                "title": "K1",
+                "order": 1,
+                "address": 392,
+                "reg_type": "holding",
+                "default": 0,
+                "enum": [0, 1, 2, 3, 4, 5, 6, 7, 8, 9, 10, 11, 12, 13, 14, 15],
+                "enum_titles": [
+                    "no action / no action",
+                    "no action / reset",
+                    "no action / set",
+                    "no action / toggle",
+
+                    "reset / no action",
+                    "reset / reset",
+                    "reset / set",
+                    "reset / toggle",
+
+                    "set / no action",
+                    "set / reset",
+                    "set / set",
+                    "set / toggle",
+
+                    "toggle / no action",
+                    "toggle / reset",
+                    "toggle / set",
+                    "toggle / toggle"
+                ],
+                "condition": "in2_mode==5"
+            },
+            "in2_out2_actions_20min": {
+                "group": "gg_in2_mapping_matrix_actions",
+                "title": "K2",
+                "order": 2,
+                "address": 393,
+                "reg_type": "holding",
+                "default": 9,
+                "enum": [0, 1, 2, 3, 4, 5, 6, 7, 8, 9, 10, 11, 12, 13, 14, 15],
+                "enum_titles": [
+                    "no action / no action",
+                    "no action / reset",
+                    "no action / set",
+                    "no action / toggle",
+
+                    "reset / no action",
+                    "reset / reset",
+                    "reset / set",
+                    "reset / toggle",
+
+                    "set / no action",
+                    "set / reset",
+                    "set / set",
+                    "set / toggle",
+
+                    "toggle / no action",
+                    "toggle / reset",
+                    "toggle / set",
+                    "toggle / toggle"
+                ],
+                "condition": "in2_mode==5"
+            },
+            "in2_out3_actions_20min": {
+                "group": "gg_in2_mapping_matrix_actions",
+                "title": "Alarm",
+                "order": 3,
+                "address": 394,
+                "reg_type": "holding",
+                "default": 0,
+                "enum": [0, 1, 2, 3, 4, 5, 6, 7, 8, 9, 10, 11, 12, 13, 14, 15],
+                "enum_titles": [
+                    "no action / no action",
+                    "no action / reset",
+                    "no action / set",
+                    "no action / toggle",
+
+                    "reset / no action",
+                    "reset / reset",
+                    "reset / set",
+                    "reset / toggle",
+
+                    "set / no action",
+                    "set / reset",
+                    "set / set",
+                    "set / toggle",
+
+                    "toggle / no action",
+                    "toggle / reset",
+                    "toggle / set",
+                    "toggle / toggle"
+                ],
+                "condition": "in2_mode==5"
             },
             "in3_mode": {
                 "title": "Input S3 Mode",
@@ -154,6 +598,192 @@
                 "group": "input_s3",
                 "order": 2
             },
+            "in3_out1_actions": {
+                "group": "gg_in3_mapping_matrix_actions",
+                "title": "K1",
+                "order": 1,
+                "address": 400,
+                "reg_type": "holding",
+                "default": 0,
+                "enum": [0, 1, 2, 3, 4, 5, 6, 7, 8, 9, 10, 11, 12, 13, 14, 15],
+                "enum_titles": [
+                    "no action / no action",
+                    "no action / reset",
+                    "no action / set",
+                    "no action / toggle",
+
+                    "reset / no action",
+                    "reset / reset",
+                    "reset / set",
+                    "reset / toggle",
+
+                    "set / no action",
+                    "set / reset",
+                    "set / set",
+                    "set / toggle",
+
+                    "toggle / no action",
+                    "toggle / reset",
+                    "toggle / set",
+                    "toggle / toggle"
+                ],
+                "condition": "in3_mode==4"
+            },
+            "in3_out2_actions": {
+                "group": "gg_in3_mapping_matrix_actions",
+                "title": "K2",
+                "order": 2,
+                "address": 401,
+                "reg_type": "holding",
+                "default": 0,
+                "enum": [0, 1, 2, 3, 4, 5, 6, 7, 8, 9, 10, 11, 12, 13, 14, 15],
+                "enum_titles": [
+                    "no action / no action",
+                    "no action / reset",
+                    "no action / set",
+                    "no action / toggle",
+
+                    "reset / no action",
+                    "reset / reset",
+                    "reset / set",
+                    "reset / toggle",
+
+                    "set / no action",
+                    "set / reset",
+                    "set / set",
+                    "set / toggle",
+
+                    "toggle / no action",
+                    "toggle / reset",
+                    "toggle / set",
+                    "toggle / toggle"
+                ],
+                "condition": "in3_mode==4"
+            },
+            "in3_out3_actions": {
+                "group": "gg_in3_mapping_matrix_actions",
+                "title": "Alarm",
+                "order": 3,
+                "address": 402,
+                "reg_type": "holding",
+                "default": 4,
+                "enum": [0, 1, 2, 3, 4, 5, 6, 7, 8, 9, 10, 11, 12, 13, 14, 15],
+                "enum_titles": [
+                    "no action / no action",
+                    "no action / reset",
+                    "no action / set",
+                    "no action / toggle",
+
+                    "reset / no action",
+                    "reset / reset",
+                    "reset / set",
+                    "reset / toggle",
+
+                    "set / no action",
+                    "set / reset",
+                    "set / set",
+                    "set / toggle",
+
+                    "toggle / no action",
+                    "toggle / reset",
+                    "toggle / set",
+                    "toggle / toggle"
+                ],
+                "condition": "in3_mode==4"
+            },
+            "in3_out1_actions_20min": {
+                "group": "gg_in3_mapping_matrix_actions",
+                "title": "K1",
+                "order": 1,
+                "address": 400,
+                "reg_type": "holding",
+                "default": 0,
+                "enum": [0, 1, 2, 3, 4, 5, 6, 7, 8, 9, 10, 11, 12, 13, 14, 15],
+                "enum_titles": [
+                    "no action / no action",
+                    "no action / reset",
+                    "no action / set",
+                    "no action / toggle",
+
+                    "reset / no action",
+                    "reset / reset",
+                    "reset / set",
+                    "reset / toggle",
+
+                    "set / no action",
+                    "set / reset",
+                    "set / set",
+                    "set / toggle",
+
+                    "toggle / no action",
+                    "toggle / reset",
+                    "toggle / set",
+                    "toggle / toggle"
+                ],
+                "condition": "in3_mode==5"
+            },
+            "in3_out2_actions_20min": {
+                "group": "gg_in3_mapping_matrix_actions",
+                "title": "K2",
+                "order": 2,
+                "address": 401,
+                "reg_type": "holding",
+                "default": 0,
+                "enum": [0, 1, 2, 3, 4, 5, 6, 7, 8, 9, 10, 11, 12, 13, 14, 15],
+                "enum_titles": [
+                    "no action / no action",
+                    "no action / reset",
+                    "no action / set",
+                    "no action / toggle",
+
+                    "reset / no action",
+                    "reset / reset",
+                    "reset / set",
+                    "reset / toggle",
+
+                    "set / no action",
+                    "set / reset",
+                    "set / set",
+                    "set / toggle",
+
+                    "toggle / no action",
+                    "toggle / reset",
+                    "toggle / set",
+                    "toggle / toggle"
+                ],
+                "condition": "in3_mode==5"
+            },
+            "in3_out3_actions_20min": {
+                "group": "gg_in3_mapping_matrix_actions",
+                "title": "Alarm",
+                "order": 3,
+                "address": 402,
+                "reg_type": "holding",
+                "default": 4,
+                "enum": [0, 1, 2, 3, 4, 5, 6, 7, 8, 9, 10, 11, 12, 13, 14, 15],
+                "enum_titles": [
+                    "no action / no action",
+                    "no action / reset",
+                    "no action / set",
+                    "no action / toggle",
+
+                    "reset / no action",
+                    "reset / reset",
+                    "reset / set",
+                    "reset / toggle",
+
+                    "set / no action",
+                    "set / reset",
+                    "set / set",
+                    "set / toggle",
+
+                    "toggle / no action",
+                    "toggle / reset",
+                    "toggle / set",
+                    "toggle / toggle"
+                ],
+                "condition": "in3_mode==5"
+            },
             "in4_mode": {
                 "title": "Input F1 Mode",
                 "address": 12,
@@ -180,6 +810,192 @@
                 "default": 50,
                 "group": "input_f1",
                 "order": 2
+            },
+            "in4_out1_actions": {
+                "group": "gg_in4_mapping_matrix_actions",
+                "title": "K1",
+                "order": 1,
+                "address": 408,
+                "reg_type": "holding",
+                "default": 4,
+                "enum": [0, 1, 2, 3, 4, 5, 6, 7, 8, 9, 10, 11, 12, 13, 14, 15],
+                "enum_titles": [
+                    "no action / no action",
+                    "no action / reset",
+                    "no action / set",
+                    "no action / toggle",
+
+                    "reset / no action",
+                    "reset / reset",
+                    "reset / set",
+                    "reset / toggle",
+
+                    "set / no action",
+                    "set / reset",
+                    "set / set",
+                    "set / toggle",
+
+                    "toggle / no action",
+                    "toggle / reset",
+                    "toggle / set",
+                    "toggle / toggle"
+                ],
+                "condition": "in4_mode==4"
+            },
+            "in4_out2_actions": {
+                "group": "gg_in4_mapping_matrix_actions",
+                "title": "K2",
+                "order": 2,
+                "address": 409,
+                "reg_type": "holding",
+                "default": 4,
+                "enum": [0, 1, 2, 3, 4, 5, 6, 7, 8, 9, 10, 11, 12, 13, 14, 15],
+                "enum_titles": [
+                    "no action / no action",
+                    "no action / reset",
+                    "no action / set",
+                    "no action / toggle",
+
+                    "reset / no action",
+                    "reset / reset",
+                    "reset / set",
+                    "reset / toggle",
+
+                    "set / no action",
+                    "set / reset",
+                    "set / set",
+                    "set / toggle",
+
+                    "toggle / no action",
+                    "toggle / reset",
+                    "toggle / set",
+                    "toggle / toggle"
+                ],
+                "condition": "in4_mode==4"
+            },
+            "in4_out3_actions": {
+                "group": "gg_in4_mapping_matrix_actions",
+                "title": "Alarm",
+                "order": 3,
+                "address": 410,
+                "reg_type": "holding",
+                "default": 8,
+                "enum": [0, 1, 2, 3, 4, 5, 6, 7, 8, 9, 10, 11, 12, 13, 14, 15],
+                "enum_titles": [
+                    "no action / no action",
+                    "no action / reset",
+                    "no action / set",
+                    "no action / toggle",
+
+                    "reset / no action",
+                    "reset / reset",
+                    "reset / set",
+                    "reset / toggle",
+
+                    "set / no action",
+                    "set / reset",
+                    "set / set",
+                    "set / toggle",
+
+                    "toggle / no action",
+                    "toggle / reset",
+                    "toggle / set",
+                    "toggle / toggle"
+                ],
+                "condition": "in4_mode==4"
+            },
+            "in4_out1_actions_20min": {
+                "group": "gg_in4_mapping_matrix_actions",
+                "title": "K1",
+                "order": 1,
+                "address": 408,
+                "reg_type": "holding",
+                "default": 4,
+                "enum": [0, 1, 2, 3, 4, 5, 6, 7, 8, 9, 10, 11, 12, 13, 14, 15],
+                "enum_titles": [
+                    "no action / no action",
+                    "no action / reset",
+                    "no action / set",
+                    "no action / toggle",
+
+                    "reset / no action",
+                    "reset / reset",
+                    "reset / set",
+                    "reset / toggle",
+
+                    "set / no action",
+                    "set / reset",
+                    "set / set",
+                    "set / toggle",
+
+                    "toggle / no action",
+                    "toggle / reset",
+                    "toggle / set",
+                    "toggle / toggle"
+                ],
+                "condition": "in4_mode==5"
+            },
+            "in4_out2_actions_20min": {
+                "group": "gg_in4_mapping_matrix_actions",
+                "title": "K2",
+                "order": 2,
+                "address": 409,
+                "reg_type": "holding",
+                "default": 4,
+                "enum": [0, 1, 2, 3, 4, 5, 6, 7, 8, 9, 10, 11, 12, 13, 14, 15],
+                "enum_titles": [
+                    "no action / no action",
+                    "no action / reset",
+                    "no action / set",
+                    "no action / toggle",
+
+                    "reset / no action",
+                    "reset / reset",
+                    "reset / set",
+                    "reset / toggle",
+
+                    "set / no action",
+                    "set / reset",
+                    "set / set",
+                    "set / toggle",
+
+                    "toggle / no action",
+                    "toggle / reset",
+                    "toggle / set",
+                    "toggle / toggle"
+                ],
+                "condition": "in4_mode==5"
+            },
+            "in4_out3_actions_20min": {
+                "group": "gg_in4_mapping_matrix_actions",
+                "title": "Alarm",
+                "order": 3,
+                "address": 410,
+                "reg_type": "holding",
+                "default": 8,
+                "enum": [0, 1, 2, 3, 4, 5, 6, 7, 8, 9, 10, 11, 12, 13, 14, 15],
+                "enum_titles": [
+                    "no action / no action",
+                    "no action / reset",
+                    "no action / set",
+                    "no action / toggle",
+
+                    "reset / no action",
+                    "reset / reset",
+                    "reset / set",
+                    "reset / toggle",
+
+                    "set / no action",
+                    "set / reset",
+                    "set / set",
+                    "set / toggle",
+
+                    "toggle / no action",
+                    "toggle / reset",
+                    "toggle / set",
+                    "toggle / toggle"
+                ],
+                "condition": "in4_mode==5"
             },
             "in5_mode": {
                 "title": "Input F2 Mode",
@@ -208,6 +1024,192 @@
                 "group": "input_f2",
                 "order": 2
             },
+            "in5_out1_actions": {
+                "group": "gg_in5_mapping_matrix_actions",
+                "title": "K1",
+                "order": 1,
+                "address": 416,
+                "reg_type": "holding",
+                "default": 4,
+                "enum": [0, 1, 2, 3, 4, 5, 6, 7, 8, 9, 10, 11, 12, 13, 14, 15],
+                "enum_titles": [
+                    "no action / no action",
+                    "no action / reset",
+                    "no action / set",
+                    "no action / toggle",
+
+                    "reset / no action",
+                    "reset / reset",
+                    "reset / set",
+                    "reset / toggle",
+
+                    "set / no action",
+                    "set / reset",
+                    "set / set",
+                    "set / toggle",
+
+                    "toggle / no action",
+                    "toggle / reset",
+                    "toggle / set",
+                    "toggle / toggle"
+                ],
+                "condition": "in5_mode==4"
+            },
+            "in5_out2_actions": {
+                "group": "gg_in5_mapping_matrix_actions",
+                "title": "K2",
+                "order": 2,
+                "address": 417,
+                "reg_type": "holding",
+                "default": 4,
+                "enum": [0, 1, 2, 3, 4, 5, 6, 7, 8, 9, 10, 11, 12, 13, 14, 15],
+                "enum_titles": [
+                    "no action / no action",
+                    "no action / reset",
+                    "no action / set",
+                    "no action / toggle",
+
+                    "reset / no action",
+                    "reset / reset",
+                    "reset / set",
+                    "reset / toggle",
+
+                    "set / no action",
+                    "set / reset",
+                    "set / set",
+                    "set / toggle",
+
+                    "toggle / no action",
+                    "toggle / reset",
+                    "toggle / set",
+                    "toggle / toggle"
+                ],
+                "condition": "in5_mode==4"
+            },
+            "in5_out3_actions": {
+                "group": "gg_in5_mapping_matrix_actions",
+                "title": "Alarm",
+                "order": 3,
+                "address": 418,
+                "reg_type": "holding",
+                "default": 8,
+                "enum": [0, 1, 2, 3, 4, 5, 6, 7, 8, 9, 10, 11, 12, 13, 14, 15],
+                "enum_titles": [
+                    "no action / no action",
+                    "no action / reset",
+                    "no action / set",
+                    "no action / toggle",
+
+                    "reset / no action",
+                    "reset / reset",
+                    "reset / set",
+                    "reset / toggle",
+
+                    "set / no action",
+                    "set / reset",
+                    "set / set",
+                    "set / toggle",
+
+                    "toggle / no action",
+                    "toggle / reset",
+                    "toggle / set",
+                    "toggle / toggle"
+                ],
+                "condition": "in5_mode==4"
+            },
+            "in5_out1_actions_20min": {
+                "group": "gg_in5_mapping_matrix_actions",
+                "title": "K1",
+                "order": 1,
+                "address": 416,
+                "reg_type": "holding",
+                "default": 4,
+                "enum": [0, 1, 2, 3, 4, 5, 6, 7, 8, 9, 10, 11, 12, 13, 14, 15],
+                "enum_titles": [
+                    "no action / no action",
+                    "no action / reset",
+                    "no action / set",
+                    "no action / toggle",
+
+                    "reset / no action",
+                    "reset / reset",
+                    "reset / set",
+                    "reset / toggle",
+
+                    "set / no action",
+                    "set / reset",
+                    "set / set",
+                    "set / toggle",
+
+                    "toggle / no action",
+                    "toggle / reset",
+                    "toggle / set",
+                    "toggle / toggle"
+                ],
+                "condition": "in5_mode==5"
+            },
+            "in5_out2_actions_20min": {
+                "group": "gg_in5_mapping_matrix_actions",
+                "title": "K2",
+                "order": 2,
+                "address": 417,
+                "reg_type": "holding",
+                "default": 4,
+                "enum": [0, 1, 2, 3, 4, 5, 6, 7, 8, 9, 10, 11, 12, 13, 14, 15],
+                "enum_titles": [
+                    "no action / no action",
+                    "no action / reset",
+                    "no action / set",
+                    "no action / toggle",
+
+                    "reset / no action",
+                    "reset / reset",
+                    "reset / set",
+                    "reset / toggle",
+
+                    "set / no action",
+                    "set / reset",
+                    "set / set",
+                    "set / toggle",
+
+                    "toggle / no action",
+                    "toggle / reset",
+                    "toggle / set",
+                    "toggle / toggle"
+                ],
+                "condition": "in5_mode==5"
+            },
+            "in5_out3_actions_20min": {
+                "group": "gg_in5_mapping_matrix_actions",
+                "title": "Alarm",
+                "order": 3,
+                "address": 418,
+                "reg_type": "holding",
+                "default": 8,
+                "enum": [0, 1, 2, 3, 4, 5, 6, 7, 8, 9, 10, 11, 12, 13, 14, 15],
+                "enum_titles": [
+                    "no action / no action",
+                    "no action / reset",
+                    "no action / set",
+                    "no action / toggle",
+
+                    "reset / no action",
+                    "reset / reset",
+                    "reset / set",
+                    "reset / toggle",
+
+                    "set / no action",
+                    "set / reset",
+                    "set / set",
+                    "set / toggle",
+
+                    "toggle / no action",
+                    "toggle / reset",
+                    "toggle / set",
+                    "toggle / toggle"
+                ],
+                "condition": "in5_mode==5"
+            },
             "in6_mode": {
                 "title": "Input F3 Mode",
                 "address": 14,
@@ -235,6 +1237,192 @@
                 "group": "input_f3",
                 "order": 2
             },
+            "in6_out1_actions": {
+                "group": "gg_in6_mapping_matrix_actions",
+                "title": "K1",
+                "order": 1,
+                "address": 424,
+                "reg_type": "holding",
+                "default": 4,
+                "enum": [0, 1, 2, 3, 4, 5, 6, 7, 8, 9, 10, 11, 12, 13, 14, 15],
+                "enum_titles": [
+                    "no action / no action",
+                    "no action / reset",
+                    "no action / set",
+                    "no action / toggle",
+
+                    "reset / no action",
+                    "reset / reset",
+                    "reset / set",
+                    "reset / toggle",
+
+                    "set / no action",
+                    "set / reset",
+                    "set / set",
+                    "set / toggle",
+
+                    "toggle / no action",
+                    "toggle / reset",
+                    "toggle / set",
+                    "toggle / toggle"
+                ],
+                "condition": "in6_mode==4"
+            },
+            "in6_out2_actions": {
+                "group": "gg_in6_mapping_matrix_actions",
+                "title": "K2",
+                "order": 2,
+                "address": 425,
+                "reg_type": "holding",
+                "default": 4,
+                "enum": [0, 1, 2, 3, 4, 5, 6, 7, 8, 9, 10, 11, 12, 13, 14, 15],
+                "enum_titles": [
+                    "no action / no action",
+                    "no action / reset",
+                    "no action / set",
+                    "no action / toggle",
+
+                    "reset / no action",
+                    "reset / reset",
+                    "reset / set",
+                    "reset / toggle",
+
+                    "set / no action",
+                    "set / reset",
+                    "set / set",
+                    "set / toggle",
+
+                    "toggle / no action",
+                    "toggle / reset",
+                    "toggle / set",
+                    "toggle / toggle"
+                ],
+                "condition": "in6_mode==4"
+            },
+            "in6_out3_actions": {
+                "group": "gg_in6_mapping_matrix_actions",
+                "title": "Alarm",
+                "order": 3,
+                "address": 426,
+                "reg_type": "holding",
+                "default": 8,
+                "enum": [0, 1, 2, 3, 4, 5, 6, 7, 8, 9, 10, 11, 12, 13, 14, 15],
+                "enum_titles": [
+                    "no action / no action",
+                    "no action / reset",
+                    "no action / set",
+                    "no action / toggle",
+
+                    "reset / no action",
+                    "reset / reset",
+                    "reset / set",
+                    "reset / toggle",
+
+                    "set / no action",
+                    "set / reset",
+                    "set / set",
+                    "set / toggle",
+
+                    "toggle / no action",
+                    "toggle / reset",
+                    "toggle / set",
+                    "toggle / toggle"
+                ],
+                "condition": "in6_mode==4"
+            },
+            "in6_out1_actions_20min": {
+                "group": "gg_in6_mapping_matrix_actions",
+                "title": "K1",
+                "order": 1,
+                "address": 424,
+                "reg_type": "holding",
+                "default": 4,
+                "enum": [0, 1, 2, 3, 4, 5, 6, 7, 8, 9, 10, 11, 12, 13, 14, 15],
+                "enum_titles": [
+                    "no action / no action",
+                    "no action / reset",
+                    "no action / set",
+                    "no action / toggle",
+
+                    "reset / no action",
+                    "reset / reset",
+                    "reset / set",
+                    "reset / toggle",
+
+                    "set / no action",
+                    "set / reset",
+                    "set / set",
+                    "set / toggle",
+
+                    "toggle / no action",
+                    "toggle / reset",
+                    "toggle / set",
+                    "toggle / toggle"
+                ],
+                "condition": "in6_mode==5"
+            },
+            "in6_out2_actions_20min": {
+                "group": "gg_in6_mapping_matrix_actions",
+                "title": "K2",
+                "order": 2,
+                "address": 425,
+                "reg_type": "holding",
+                "default": 4,
+                "enum": [0, 1, 2, 3, 4, 5, 6, 7, 8, 9, 10, 11, 12, 13, 14, 15],
+                "enum_titles": [
+                    "no action / no action",
+                    "no action / reset",
+                    "no action / set",
+                    "no action / toggle",
+
+                    "reset / no action",
+                    "reset / reset",
+                    "reset / set",
+                    "reset / toggle",
+
+                    "set / no action",
+                    "set / reset",
+                    "set / set",
+                    "set / toggle",
+
+                    "toggle / no action",
+                    "toggle / reset",
+                    "toggle / set",
+                    "toggle / toggle"
+                ],
+                "condition": "in6_mode==5"
+            },
+            "in6_out3_actions_20min": {
+                "group": "gg_in6_mapping_matrix_actions",
+                "title": "Alarm",
+                "order": 3,
+                "address": 426,
+                "reg_type": "holding",
+                "default": 8,
+                "enum": [0, 1, 2, 3, 4, 5, 6, 7, 8, 9, 10, 11, 12, 13, 14, 15],
+                "enum_titles": [
+                    "no action / no action",
+                    "no action / reset",
+                    "no action / set",
+                    "no action / toggle",
+
+                    "reset / no action",
+                    "reset / reset",
+                    "reset / set",
+                    "reset / toggle",
+
+                    "set / no action",
+                    "set / reset",
+                    "set / set",
+                    "set / toggle",
+
+                    "toggle / no action",
+                    "toggle / reset",
+                    "toggle / set",
+                    "toggle / toggle"
+                ],
+                "condition": "in6_mode==5"
+            },
             "outputs_restore_state": {
                 "title": "Restore Last Outputs State After Power On",
                 "address": 6,
@@ -250,7 +1438,7 @@
                 "address": 8,
                 "reg_type": "holding",
                 "default": 3600,
-                "group": "outputs",
+                "group": "g_safety",
                 "order": 2
             },
             "baud_rate": {
@@ -269,6 +1457,86 @@
                 ],
                 "group": "general",
                 "order": 1
+            },
+            "out1_safe_state": {
+                "title": "K1",
+                "group": "gg_outputs_safe_state",
+                "order": 1,
+                "address": 930,
+                "reg_type": "holding",
+                "default": 0,
+                "enum": [0, 1],
+                "enum_titles": [
+                    "Off",
+                    "On"
+                ]
+            },
+            "out1_safety_behaviour": {
+                "title": "K1",
+                "group": "gg_safety_behaviour",
+                "order": 1,
+                "address": 938,
+                "reg_type": "holding",
+                "default": 0,
+                "enum": [0, 1],
+                "enum_titles": [
+                    "Don't сhange output state",
+                    "Switch output to safety state"
+                ]
+            },
+            "out1_safety_input_control": {
+                "title": "K1",
+                "group": "gg_safety_input_control",
+                "order": 1,
+                "address": 946,
+                "reg_type": "holding",
+                "default": 0,
+                "enum": [0, 1, 2],
+                "enum_titles": [
+                    "Don't change",
+                    "Disable in safety mode",
+                    "Enable only in safety mode"
+                ]
+            },
+            "out2_safe_state": {
+                "title": "K2",
+                "group": "gg_outputs_safe_state",
+                "order": 2,
+                "address": 931,
+                "reg_type": "holding",
+                "default": 0,
+                "enum": [0, 1],
+                "enum_titles": [
+                    "Off",
+                    "On"
+                ]
+            },
+            "out2_safety_behaviour": {
+                "title": "K2",
+                "group": "gg_safety_behaviour",
+                "order": 2,
+                "address": 939,
+                "reg_type": "holding",
+                "default": 0,
+                "enum": [0, 1],
+                "enum_titles": [
+                    "Don't сhange output state",
+                    "Switch output to safety state"
+                ]
+            },
+            "out2_safety_input_control": {
+                "title": "K2",
+                "group": "gg_safety_input_control",
+                "order": 2,
+                "address": 947,
+                "reg_type": "holding",
+                "default": 0,
+                "enum": [0, 1, 2],
+                "enum_titles": [
+                    "Don't change",
+                    "Disable in safety mode",
+                    "Enable only in safety mode"
+                ]
             }
         },
 
@@ -555,7 +1823,8 @@
             "en": {
                 "WB-MWAC_template_title": "WB-MWAC (water leak and meters controller)",
                 "baud_rate_description": "Make sure that communication with device is established before changing this parameter. Select required baud rate, save configuration and then change port baud rate to the same value.",
-                "Uptime": "Uptime (s)"
+                "Uptime": "Uptime (s)",
+                "inputs_control_in_safety_mode_description": "Sets change of control from the inputs when module switches to safety mode"
             },
             "ru": {
                 "WB-MWAC_template_title": "WB-MWAC (модуль контроля протечек и расхода воды )",
@@ -615,7 +1884,42 @@
                 "Input Voltage": "Напряжение питания",
                 "Uptime": "Время работы с момента включения (с)",
                 "MCU Temperature": "Температура МК",
-                "MCU Voltage": "Напряжение питания МК"
+                "MCU Voltage": "Напряжение питания МК",
+
+                "Off": "Выключен",
+                "On": "Включен",
+                "Safety Mode": "Безопасный режим",
+                "Safety Behaviour": "Действие в безопасном режиме",
+                "Don't сhange output state": "Ничего не делать",
+                "Switch output to safety state": "Перевести выход в безопасное состояние",
+                "Inputs Control In Safety Mode": "Управление с входов в безопасном режиме",
+                "Don't change": "Не блокировать",
+                "Disable in safety mode": "Блокировать в безопасном режиме",
+                "Enable only in safety mode": "Разрешить только в безопасном режиме",
+                "Output Safe State": "Безопасное состояние выходов",
+                "inputs_control_in_safety_mode_description": "Настройка изменения управления с входов при переходе модуля в безопасный режим",
+
+                "no action / no action": "нет действия / нет действия",
+                "no action / reset": "нет действия / выключить",
+                "no action / set": "нет действия / включить",
+                "no action / toggle": "нет действия / переключить",
+
+                "reset / no action": "выключить / нет действия",
+                "reset / reset": "выключить / выключить",
+                "reset / set": "выключить / включить",
+                "reset / toggle": "выключить / переключить",
+
+                "set / no action": "включить / нет действия",
+                "set / reset": "включить / выключить",
+                "set / set": "включить / включить",
+                "set / toggle": "включить / переключить",
+
+                "toggle / no action": "переключить / нет действия",
+                "toggle / reset": "переключить / выключить",
+                "toggle / set": "переключить / включить",
+                "toggle / toggle": "переключить / переключить",
+                "Actions for outputs when the input is closed / opened": "Действия для выходов при замыкании / размыкании входа"
+
             }
         }
     }
