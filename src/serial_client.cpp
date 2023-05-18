@@ -274,8 +274,6 @@ void TSerialClient::OpenPortCycle()
         return;
     }
 
-    std::cout << TimeBalancer.GetTotalTime().count() << std::endl;
-
     if (handler.TaskType == TClientTaskType::EVENTS) {
         if (EventsReader.HasDevicesWithEnabledEvents()) {
             LastAccessedDevice.PrepareToAccess(nullptr);
