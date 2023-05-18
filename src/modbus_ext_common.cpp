@@ -187,7 +187,7 @@ namespace ModbusExt // modbus extension protocol declarations
 
         const auto timeout = GetTimeout(port);
         std::array<uint8_t, MAX_PACKET_SIZE + ARBITRATION_HEADER_MAX_BYTES> res;
-        auto rc = port.ReadFrame(res.data(), res.size(), timeout, timeout, ExpectEvents());
+        auto rc = port.ReadFrame(res.data(), res.size(), timeout, timeout, ExpectEvents()).Count;
         port.SleepSinceLastInteraction(port.GetSendTimeBytes(3.5));
 
         auto start = GetPacketStart(res.data(), res.size());
@@ -269,7 +269,7 @@ namespace ModbusExt // modbus extension protocol declarations
         Port.WriteBytes(Request);
 
         // Use response timeout from MR6C template
-        auto rc = Port.ReadFrame(Response.data(), Request.size(), 8ms, FrameTimeout);
+        auto rc = Port.ReadFrame(Response.data(), Request.size(), 8ms, FrameTimeout).Count;
 
         CheckCRC16(Response.data(), rc);
 

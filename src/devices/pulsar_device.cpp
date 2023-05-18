@@ -150,11 +150,13 @@ void TPulsarDevice::ReadResponse(uint32_t addr, uint8_t* payload, size_t size, u
     const int exp_size = size + 10; /* payload size + service bytes */
     std::vector<uint8_t> response(exp_size);
 
-    int nread = Port()->ReadFrame(response.data(),
-                                  response.size(),
-                                  DeviceConfig()->ResponseTimeout,
-                                  DeviceConfig()->FrameTimeout,
-                                  [](uint8_t* buf, int size) { return size >= 6 && size == buf[5]; });
+    int nread = Port()
+                    ->ReadFrame(response.data(),
+                                response.size(),
+                                DeviceConfig()->ResponseTimeout,
+                                DeviceConfig()->FrameTimeout,
+                                [](uint8_t* buf, int size) { return size >= 6 && size == buf[5]; })
+                    .Count;
 
     /* check size */
     if (nread < 6)

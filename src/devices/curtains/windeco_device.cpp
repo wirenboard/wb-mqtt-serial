@@ -84,7 +84,9 @@ std::vector<uint8_t> WinDeco::TDevice::ExecCommand(const std::vector<uint8_t>& r
     Port()->WriteBytes(request);
     std::vector<uint8_t> respBytes(PACKET_SIZE);
     auto bytesRead =
-        Port()->ReadFrame(respBytes.data(), PACKET_SIZE, DeviceConfig()->ResponseTimeout, DeviceConfig()->FrameTimeout);
+        Port()
+            ->ReadFrame(respBytes.data(), PACKET_SIZE, DeviceConfig()->ResponseTimeout, DeviceConfig()->FrameTimeout)
+            .Count;
     respBytes.resize(bytesRead);
     return respBytes;
 }

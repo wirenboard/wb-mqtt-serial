@@ -207,11 +207,13 @@ std::vector<uint8_t> Somfy::TDevice::ExecCommand(const std::vector<uint8_t>& req
     Port()->SleepSinceLastInteraction(DeviceConfig()->FrameTimeout);
     Port()->WriteBytes(request);
     std::vector<uint8_t> respBytes(MAX_RESPONSE_SIZE);
-    auto bytesRead = Port()->ReadFrame(respBytes.data(),
-                                       respBytes.size(),
-                                       DeviceConfig()->ResponseTimeout,
-                                       DeviceConfig()->FrameTimeout,
-                                       FrameComplete);
+    auto bytesRead = Port()
+                         ->ReadFrame(respBytes.data(),
+                                     respBytes.size(),
+                                     DeviceConfig()->ResponseTimeout,
+                                     DeviceConfig()->FrameTimeout,
+                                     FrameComplete)
+                         .Count;
     respBytes.resize(bytesRead);
     FixReceivedFrame(respBytes);
     PrintDebugDump(respBytes, "Frame read: ");

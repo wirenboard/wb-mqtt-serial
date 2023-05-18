@@ -37,14 +37,16 @@ namespace
             return 0;
         }
 
-        size_t ReadFrame(uint8_t* buf,
-                         size_t count,
-                         const std::chrono::microseconds& responseTimeout,
-                         const std::chrono::microseconds& frameTimeout,
-                         TFrameCompletePred frame_complete = 0) override
+        TReadFrameResult ReadFrame(uint8_t* buf,
+                                   size_t count,
+                                   const std::chrono::microseconds& responseTimeout,
+                                   const std::chrono::microseconds& frameTimeout,
+                                   TFrameCompletePred frame_complete = 0) override
         {
+            TReadFrameResult res;
+            res.Count = Response.size();
             memcpy(buf, Response.data(), Response.size());
-            return Response.size();
+            return res;
         }
 
         void SkipNoise() override
