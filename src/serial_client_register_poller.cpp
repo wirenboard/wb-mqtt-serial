@@ -163,12 +163,14 @@ void TSerialClientRegisterPoller::SetErrorCallback(TRegisterCallback callback)
     ErrorCallback = std::move(callback);
 }
 
-PSerialDevice TSerialClientRegisterPoller::OpenPortCycle(TPort& port,
-                                                         std::chrono::steady_clock::time_point currentTime,
-                                                         std::chrono::milliseconds maxPollingTime,
-                                                         bool readAtLeastOneRegister,
-                                                         TSerialClientDeviceAccessHandler& lastAccessedDevice)
+TPollResult TSerialClientRegisterPoller::OpenPortCycle(TPort& port,
+                                                       std::chrono::steady_clock::time_point currentTime,
+                                                       std::chrono::milliseconds maxPollingTime,
+                                                       bool readAtLeastOneRegister,
+                                                       TSerialClientDeviceAccessHandler& lastAccessedDevice)
 {
+    TPollResult res;
+
     TRegisterReader reader(maxPollingTime, readAtLeastOneRegister);
 
     auto throttlingState = Scheduler.AccumulateNext(currentTime, reader);
@@ -180,20 +182,21 @@ PSerialDevice TSerialClientRegisterPoller::OpenPortCycle(TPort& port,
 
     if (!range) {
         // Nothing to read
-        SetDeadline(Scheduler.IsEmpty() ? currentTime + 1s : Scheduler.GetDeadline(currentTime));
-        return nullptr;
+        res.Deadline = Scheduler.IsEmpty() ? currentTime + 1s : Scheduler.GetDeadline(currentTime);
+        return res;
     }
 
     // There are registers waiting read, but they don't fit in allowed poll limit
     if (range->RegisterList().empty()) {
+        res.NotEnoughTime = true;
         if (reader.GetPriority() == TPriority::High) {
             // High priority registers are limited by maxPollingTime
-            SetDeadline(currentTime + maxPollingTime);
+            res.Deadline = currentTime + maxPollingTime;
         } else {
             // Low priority registers are limited by high priority and maxPollingTime
-            SetDeadline(std::min(Scheduler.GetHighPriorityDeadline(), currentTime + maxPollingTime));
+            res.Deadline = std::min(Scheduler.GetHighPriorityDeadline(), currentTime + maxPollingTime);
         }
-        return nullptr;
+        return res;
     }
 
     auto device = range->RegisterList().front()->Device();
@@ -221,8 +224,8 @@ PSerialDevice TSerialClientRegisterPoller::OpenPortCycle(TPort& port,
     }
 
     Scheduler.UpdateSelectionTime(ceil<milliseconds>(steady_clock::now() - currentTime), reader.GetPriority());
-    SetDeadline(Scheduler.IsEmpty() ? currentTime + 1s : Scheduler.GetDeadline(currentTime));
-    return device;
+    res.Deadline = Scheduler.IsEmpty() ? currentTime + 1s : Scheduler.GetDeadline(currentTime);
+    return res;
 }
 
 void TSerialClientRegisterPoller::DeviceDisconnected(PSerialDevice device)
@@ -238,24 +241,11 @@ void TSerialClientRegisterPoller::DeviceDisconnected(PSerialDevice device)
             }
         }
     }
-    if (!Scheduler.IsEmpty()) {
-        SetDeadline(Scheduler.GetDeadline(currentTime));
-    }
 }
 
 void TSerialClientRegisterPoller::SetDeviceDisconnectedCallback(TDeviceCallback deviceDisconnectedCallback)
 {
     DeviceDisconnectedCallback = deviceDisconnectedCallback;
-}
-
-std::chrono::steady_clock::time_point TSerialClientRegisterPoller::GetDeadline() const
-{
-    return Deadline;
-}
-
-void TSerialClientRegisterPoller::SetDeadline(std::chrono::steady_clock::time_point deadline)
-{
-    Deadline = deadline;
 }
 
 bool TRegisterComparePredicate::operator()(const PRegister& r1, const PRegister& r2) const

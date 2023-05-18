@@ -42,7 +42,7 @@ public:
 
     void EnableEvents(PSerialDevice device, TPort& port);
 
-    bool ReadEvents(TPort& port,
+    void ReadEvents(TPort& port,
                     std::chrono::milliseconds maxReadingTime,
                     TRegisterCallback registerCallback,
                     TDeviceCallback deviceRestartedHandler);

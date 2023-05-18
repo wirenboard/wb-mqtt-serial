@@ -1,6 +1,7 @@
 #pragma once
 
 #include "binary_semaphore.h"
+#include "common_utils.h"
 #include "log.h"
 #include "modbus_ext_common.h"
 #include "poll_plan.h"
@@ -76,6 +77,9 @@ private:
     TSerialClientDeviceAccessHandler LastAccessedDevice;
     TScheduler<TClientTaskType> TimeBalancer;
     std::chrono::milliseconds ReadEventsPeriod;
+
+    util::TSpendTimeMeter SpendTime;
+    bool LastCycleWasTooSmallToPoll;
 };
 
 typedef std::shared_ptr<TSerialClient> PSerialClient;

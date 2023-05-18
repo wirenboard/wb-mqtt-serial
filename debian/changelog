@@ -1,3 +1,9 @@
+wb-mqtt-serial (2.85.3) stable; urgency=medium
+
+  * Fix stop polling some registers
+
+ -- Petr Krasnoshchekov <petr.krasnoshchekov@wirenboard.com>  Wed, 17 May 2023 09:14:52 +0500
+
 wb-mqtt-serial (2.85.2) stable; urgency=medium
 
   * WB-M* templates: more description added for second press waiting time and debounce time

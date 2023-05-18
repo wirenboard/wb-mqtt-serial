@@ -23,6 +23,13 @@ public:
     std::string GetMessage(TThrottlingState state);
 };
 
+struct TPollResult
+{
+    PSerialDevice Device;
+    bool NotEnoughTime = false;
+    std::chrono::steady_clock::time_point Deadline;
+};
+
 class TSerialClientRegisterPoller
 {
 public:
@@ -33,17 +40,15 @@ public:
 
     void PrepareRegisterRanges(const std::list<PRegister>& regList, std::chrono::steady_clock::time_point currentTime);
     void ClosedPortCycle(std::chrono::steady_clock::time_point currentTime);
-    PSerialDevice OpenPortCycle(TPort& port,
-                                std::chrono::steady_clock::time_point currentTime,
-                                std::chrono::milliseconds maxPollingTime,
-                                bool readAtLeastOneRegister,
-                                TSerialClientDeviceAccessHandler& lastAccessedDevice);
+    TPollResult OpenPortCycle(TPort& port,
+                              std::chrono::steady_clock::time_point currentTime,
+                              std::chrono::milliseconds maxPollingTime,
+                              bool readAtLeastOneRegister,
+                              TSerialClientDeviceAccessHandler& lastAccessedDevice);
     void SetReadCallback(TRegisterCallback callback);
     void SetErrorCallback(TRegisterCallback callback);
     void SetDeviceDisconnectedCallback(TDeviceCallback callback);
     void DeviceDisconnected(PSerialDevice device);
-
-    std::chrono::steady_clock::time_point GetDeadline() const;
 
 private:
     void ProcessPolledRegister(PRegister reg);
@@ -60,6 +65,4 @@ private:
     TScheduler<PRegister, TRegisterComparePredicate> Scheduler;
 
     TThrottlingStateLogger ThrottlingStateLogger;
-
-    std::chrono::steady_clock::time_point Deadline;
 };

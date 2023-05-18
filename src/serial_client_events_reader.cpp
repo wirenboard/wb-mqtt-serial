@@ -210,14 +210,11 @@ TSerialClientEventsReader::TSerialClientEventsReader(size_t maxReadErrors)
       ClearErrorsOnSuccessfulRead(false)
 {}
 
-bool TSerialClientEventsReader::ReadEvents(TPort& port,
+void TSerialClientEventsReader::ReadEvents(TPort& port,
                                            milliseconds maxReadingTime,
                                            TRegisterCallback registerCallback,
                                            TDeviceCallback deviceRestartedHandler)
 {
-    if (DevicesWithEnabledEvents.empty()) {
-        return false;
-    }
     TModbusExtEventsVisitor visitor(Regs, DevicesWithEnabledEvents, registerCallback, deviceRestartedHandler);
     util::TSpendTimeMeter spendTimeMeter;
     spendTimeMeter.Start();
@@ -248,7 +245,6 @@ bool TSerialClientEventsReader::ReadEvents(TPort& port,
         }
     }
     DisableEventsFromRegs(port, visitor.GetRegsToDisable());
-    return true;
 }
 
 void TSerialClientEventsReader::EnableEvents(PSerialDevice device, TPort& port)
