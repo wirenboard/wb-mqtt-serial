@@ -180,6 +180,11 @@ public:
     {
         TotalTime = std::chrono::milliseconds::zero();
     }
+
+    std::chrono::milliseconds GetTotalTime() const
+    {
+        return TotalTime;
+    }
 };
 
 template<class TEntry, class TComparePredicate = std::less<TEntry>> class TScheduler
@@ -294,6 +299,11 @@ public:
     bool IsEmpty() const
     {
         return LowPriorityQueue.IsEmpty() && HighPriorityQueue.IsEmpty();
+    }
+
+    std::chrono::milliseconds GetTotalTime() const
+    {
+        return TimeBalancer.GetTotalTime();
     }
 
 private:

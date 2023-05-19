@@ -146,12 +146,7 @@ void TSerialClientTest::SetUp()
     config->FrameTimeout = std::chrono::milliseconds(100);
     Device = std::make_shared<TFakeSerialDevice>(config, Port, DeviceFactory.GetProtocol("fake"));
     Device->InitSetupItems();
-    std::vector<PSerialDevice> devices;
-    devices.push_back(Device);
-    SerialClient = std::make_shared<TSerialClient>(devices, Port, PortOpenCloseSettings);
-#if 0
-    SerialClient->SetModbusDebug(true);
-#endif
+    SerialClient = std::make_shared<TSerialClient>(Port, PortOpenCloseSettings, std::chrono::steady_clock::now);
     SerialClient->SetReadCallback([this](PRegister reg) {
         if (reg->GetErrorState().count()) {
             EmitErrorMsg(reg);

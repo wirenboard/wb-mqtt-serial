@@ -213,15 +213,16 @@ TSerialClientEventsReader::TSerialClientEventsReader(size_t maxReadErrors)
 void TSerialClientEventsReader::ReadEvents(TPort& port,
                                            milliseconds maxReadingTime,
                                            TRegisterCallback registerCallback,
-                                           TDeviceCallback deviceRestartedHandler)
+                                           TDeviceCallback deviceRestartedHandler,
+                                           util::TGetNowFn nowFn)
 {
     TModbusExtEventsVisitor visitor(Regs, DevicesWithEnabledEvents, registerCallback, deviceRestartedHandler);
-    util::TSpendTimeMeter spendTimeMeter;
-    spendTimeMeter.Start();
-    for (auto spendTime = 0us; spendTime < maxReadingTime; spendTime = spendTimeMeter.GetSpendTime()) {
+    util::TSpentTimeMeter spentTimeMeter(nowFn);
+    spentTimeMeter.Start();
+    for (auto spentTime = 0us; spentTime < maxReadingTime; spentTime = spentTimeMeter.GetSpentTime()) {
         try {
             if (!ModbusExt::ReadEvents(port,
-                                       floor<milliseconds>(maxReadingTime - spendTime),
+                                       floor<milliseconds>(maxReadingTime - spentTime),
                                        LastAccessedSlaveId,
                                        EventState,
                                        visitor))

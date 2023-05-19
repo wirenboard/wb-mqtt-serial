@@ -287,6 +287,10 @@ namespace ModbusExt // modbus extension protocol declarations
             throw Modbus::TMalformedResponseError("invalid slave id");
         }
 
+        if (Response[SUB_COMMAND_POS] != ENABLE_EVENTS_COMMAND) {
+            throw Modbus::TMalformedResponseError("invalid sub command");
+        }
+
         TBitIterator dataIt(Response.data() + ENABLE_EVENTS_RESPONSE_DATA_POS - 1,
                             Response[ENABLE_EVENTS_RESPONSE_DATA_SIZE_POS]);
 

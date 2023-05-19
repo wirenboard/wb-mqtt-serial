@@ -1,5 +1,6 @@
 #pragma once
 
+#include "common_utils.h"
 #include "definitions.h"
 
 #include <chrono>
@@ -94,7 +95,7 @@ public:
         std::chrono::milliseconds ReopenTimeout = std::chrono::milliseconds(5000);
     };
 
-    TPortOpenCloseLogic(const TPortOpenCloseLogic::TSettings& settings);
+    TPortOpenCloseLogic(const TPortOpenCloseLogic::TSettings& settings, util::TGetNowFn nowFn);
 
     void OpenIfAllowed(PPort port);
     void CloseIfNeeded(PPort port, bool allPreviousDataExchangeWasFailed);
@@ -104,4 +105,5 @@ private:
     std::chrono::steady_clock::time_point LastSuccessfulCycle;
     size_t RemainingFailCycles;
     std::chrono::steady_clock::time_point NextOpenTryTime;
+    util::TGetNowFn NowFn;
 };

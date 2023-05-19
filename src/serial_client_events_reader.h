@@ -4,6 +4,7 @@
 
 #include <unordered_map>
 
+#include "common_utils.h"
 #include "devices/modbus_device.h"
 #include "modbus_ext_common.h"
 #include "port.h"
@@ -45,7 +46,8 @@ public:
     void ReadEvents(TPort& port,
                     std::chrono::milliseconds maxReadingTime,
                     TRegisterCallback registerCallback,
-                    TDeviceCallback deviceRestartedHandler);
+                    TDeviceCallback deviceRestartedHandler,
+                    util::TGetNowFn nowFn);
 
     void DeviceDisconnected(PSerialDevice device);
     void SetReadErrors(TRegisterCallback callback);
