@@ -1,4 +1,3 @@
-
 wb-mqtt-serial (2.85.3) stable; urgency=medium
 
   * WB-MAP3EV templates: fix wrong group name
