@@ -23,14 +23,14 @@
             },
             {% for press_type in PRESS_TYPES -%}
             {
-                "title": "Input {{ ch_number }} {{ press_type | title }} Press Action",
+                "title": "{{ press_type | title }} Press Action",
                 "id": "input_{{ ch_number }}_{{ press_type | replace(' ', '_') }}_press_action",
                 "group": "input_{{ ch_number }}",
                 "order": {{loop.index}}
             },
             {% endfor -%}
             {
-                "title": "Input {{ ch_number }} Parameters",
+                "title": "Input Parameters",
                 "id": "input_{{ ch_number }}_parameters",
                 "group": "input_{{ch_number }}",
                 "order": 5,
@@ -41,7 +41,7 @@
                 }
             },
             {
-                "title": "Input {{ ch_number }} Counters",
+                "title": "Input Counters",
                 "id": "input_{{ ch_number }}_counters",
                 "group": "input_{{ ch_number }}",
                 "order": 6,
@@ -58,34 +58,24 @@
                 "order": {{INPUTS_NUMBER + 1}}
             },
             {
-                "title": "Output Channels",
-                "id": "output_channels",
+                "title": "Outputs Common Settings",
+                "id": "outputs_common",
                 "group": "outputs",
-                "order": {{OUTPUTS_NUMBER}},
-                "ui_options": {
-                    "wb": {
-                        "disable_title": true
-                    }
-                }
-            },
-            {
-                "title": "Dimmer",
-                "id": "dimmer",
-                "order": {{INPUTS_NUMBER + 2}}
+                "order": 1
             },
             {% for ch_number in range(1, OUTPUTS_NUMBER + 1) -%}
             {
                 "title": "Output {{ ch_number }}",
-                "id": "dimmer{{ ch_number }}",
-                "group": "dimmer",
-                "order": 1
+                "id": "output{{ ch_number }}",
+                "group": "outputs",
+                "order": {{ ch_number + 1 }}
             },
             {% endfor -%}
             {
-                "title": "Dimmer Channels",
-                "id": "dimmer_channels",
-                "group": "dimmer",
-                "order": {{OUTPUTS_NUMBER}},
+                "title": "Output Channels",
+                "id": "output_channels",
+                "group": "outputs",
+                "order": {{OUTPUTS_NUMBER + 2}},
                 "ui_options": {
                     "wb": {
                         "disable_title": true
@@ -95,17 +85,17 @@
             {
                 "title": "General",
                 "id": "general",
-                "order": {{INPUTS_NUMBER + 3}}
+                "order": {{INPUTS_NUMBER + 2}}
             },
             {
                 "title": "HW Info",
                 "id": "hw_info",
-                "order": {{INPUTS_NUMBER + 4}}
+                "order": {{INPUTS_NUMBER + 3}}
             },
             {
                 "title": "Debug",
                 "id": "debug",
-                "order": {{INPUTS_NUMBER + 5}}
+                "order": {{INPUTS_NUMBER + 4}}
             }
         ],
 
@@ -121,7 +111,7 @@
                     "Analog 0-10 V"
                 ],
                 "default": 1,
-                "group": "outputs",
+                "group": "outputs_common",
                 "order": 1
             },
             {
@@ -133,15 +123,15 @@
                 "default": 24,
                 "min": 1,
                 "max": 240,
-                "group": "outputs",
+                "group": "outputs_common",
                 "order": 2
             },
             {% for ch_number in range(1, OUTPUTS_NUMBER + 1) -%}
             {
                 "id": "output{{ ch_number }}_min",
-                "title": "Output {{ ch_number }} Minimum Value (mV)",
+                "title": "Voltage at 1% dimming level (mV)",
                 "description": "output_min_value_description",
-                "group": "dimmer{{ ch_number }}",
+                "group": "output{{ ch_number }}",
                 "address": {{ 912 + ch_number - 1 }},
                 "reg_type": "holding",
                 "default": 1,
@@ -151,9 +141,9 @@
             },
             {
                 "id": "output{{ ch_number }}_max",
-                "title": "Output {{ch_number}} Maximum Value (mV)",
+                "title": "Voltage at 100% dimming level (mV)",
                 "description": "output_max_value_description",
-                "group": "dimmer{{ch_number}}",
+                "group": "output{{ch_number}}",
                 "address": {{928 + ch_number - 1}},
                 "reg_type": "holding",
                 "default": 10000,
@@ -163,9 +153,9 @@
             },
             {
                 "id": "output{{ ch_number }}_decrement_rate",
-                "title": "Output {{ ch_number }} level decrement rate (ms/%)",
+                "title": "Dimming level decrement rate (ms/%)",
                 "description": "increase_rate_description",
-                "group": "dimmer{{ch_number}}",
+                "group": "output{{ch_number}}",
                 "address": {{944 + ch_number - 1}},
                 "reg_type": "holding",
                 "default": 20,
@@ -175,9 +165,9 @@
             },
             {
                 "id": "channel{{ ch_number }}_increment_rate",
-                "title": "Output {{ ch_number }} level increment rate (ms/%)",
+                "title": "Dimming level increment rate (ms/%)",
                 "description": "decrease_rate_description",
-                "group": "dimmer{{ch_number}}",
+                "group": "output{{ch_number}}",
                 "address": {{960 + ch_number - 1}},
                 "reg_type": "holding",
                 "default": 20,
@@ -187,9 +177,9 @@
             },
             {
                 "id": "action{{ch_number}}_repeat_time",
-                "title": "Output {{ ch_number }} action repeat time (ms)",
+                "title": "Action repeat time (ms)",
                 "description": "action_repeat_time_description",
-                "group": "dimmer{{ch_number}}",
+                "group": "output{{ch_number}}",
                 "address": {{896 + ch_number - 1}},
                 "reg_type": "holding",
                 "default": 20,
@@ -257,7 +247,7 @@
             },
             {
                 "id": "{{action_bind}}_action_single",
-                "title": "Output Action",
+                "title": "Action",
                 "address": {{832 + (loop.index0 * 16) + ch_number}},
                 "reg_type": "holding",
                 {% if press_type in ["long", "short long"] %}"enum": [0, 1, 2, 3, 4, 5],{% else %}"enum": [0, 1, 2, 3, 4],{% endif %}
@@ -276,7 +266,7 @@
             },
             {
                 "id": "{{action_bind}}_action_all",
-                "title": "Output Action",
+                "title": "Action",
                 "address": {{832 + (loop.index0 * 16) + ch_number}},
                 "reg_type": "holding",
                 "enum": [0, 1, 3, 4],
@@ -336,11 +326,11 @@
                 "reg_type": "input",
                 "address": {{32 + index}},
                 "type": "value",
+                "enabled": false,
                 "group": "input_{{index + 1}}_counters"
             },
             {
                 "name": "Input {{index + 1}} Short Press Counter",
-                "enabled": false,
                 "reg_type": "input",
                 "address": {{464 + index}},
                 "type": "value",
@@ -348,7 +338,6 @@
             },
             {
                 "name": "Input {{index + 1}} Long Press Counter",
-                "enabled": false,
                 "reg_type": "input",
                 "address": {{480 + index}},
                 "type": "value",
@@ -356,7 +345,6 @@
             },
             {
                 "name": "Input {{index + 1}} Double Press Counter",
-                "enabled": false,
                 "reg_type": "input",
                 "address": {{496 + index}},
                 "type": "value",
@@ -364,7 +352,6 @@
             },
             {
                 "name": "Input {{index + 1}} Short Long Press Counter",
-                "enabled": false,
                 "reg_type": "input",
                 "address": {{512 + index}},
                 "type": "value",
@@ -373,29 +360,28 @@
             {% endfor -%}
             {% for index in range(0, OUTPUTS_NUMBER) -%}
             {
-                "name": "K{{index + 1}}",
-                "enabled": false,
+                "name": "Output {{index + 1}} Switch",
                 "reg_type": "coil",
-                "address": {{index}},
+                "address": {{16 + index}},
                 "type": "switch",
-                "group": "dimmer_channels"
-            },
-            {
-                "name": "Channel {{index + 1}}",
-                "reg_type": "holding",
-                "address": {{index}},
-                "type": "range",
-                "max": 10000,
                 "group": "output_channels"
             },
             {
-                "name": "Dimmer {{index + 1}} level",
-                "enabled": false,
+                "name": "Output {{index + 1}} Dimming Level",
                 "reg_type": "holding",
                 "address": {{16 + index}},
                 "type": "range",
                 "max": 100,
-                "group": "dimmer_channels"
+                "group": "output_channels"
+            },
+            {
+                "name": "Output {{index + 1}} Voltage",
+                "reg_type": "holding",
+                "address": {{index}},
+                "type": "range",
+                "max": 10000,
+                "enabled": false,
+                "group": "output_channels"
             },
             {% endfor -%}
             {
@@ -523,7 +509,7 @@
                 "Increase level": "Увеличить уровень",
                 "Increase/Decrease level": "Увеличить/уменьшить уровень",
                 "Output Number": "Номер выхода",
-                "Output Action": "Действие с выходом",
+                "Action": "Действие",
 
                 {% for ch_number in range(1, OUTPUTS_NUMBER + 1) -%}
                 "Output {{ch_number}}": "Выход {{ch_number}}",
