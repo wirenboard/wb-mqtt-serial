@@ -98,7 +98,6 @@
                 "order": {{INPUTS_NUMBER + 4}}
             }
         ],
-
         "parameters": [
             {
                 "id": "outputs_mode",
@@ -130,7 +129,7 @@
             {
                 "id": "output{{ ch_number }}_min",
                 "title": "Voltage at 1% dimming level (mV)",
-                "description": "output_min_value_description",
+                "description": "level_1_voltage_description",
                 "group": "output{{ ch_number }}",
                 "address": {{ 912 + ch_number - 1 }},
                 "reg_type": "holding",
@@ -142,7 +141,7 @@
             {
                 "id": "output{{ ch_number }}_max",
                 "title": "Voltage at 100% dimming level (mV)",
-                "description": "output_max_value_description",
+                "description": "level_100_voltage_description",
                 "group": "output{{ch_number}}",
                 "address": {{928 + ch_number - 1}},
                 "reg_type": "holding",
@@ -226,7 +225,7 @@
                 "order": 3
             },
             {% for press_type in PRESS_TYPES -%}
-{% set action_bind = ("input {} {} press output".format(ch_number + 1, press_type))|replace(' ', '_')  %}
+            {% set action_bind = ("input {} {} press output".format(ch_number + 1, press_type))|replace(' ', '_')  %}
             {
                 "id": "{{action_bind}}_number",
                 "title": "Output Number",
@@ -311,7 +310,6 @@
                 "group": "general"
             }
         ],
-
         "channels": [
             {% for index in range(0, INPUTS_NUMBER) -%}
             {
@@ -458,8 +456,8 @@
                 "baud_rate_description": "Make sure that communication with device is established before changing this parameter. Select required baud rate, save configuration and then change port baud rate to the same value.",
                 "Uptime": "Uptime (s)",
 
-                "output_min_value_description": "Value Corresponding to Minimum Voltage (mV)",
-                "output_max_value_description": "Value Corresponding to Maximum Voltage (mV)",
+                "level_1_voltage_description": "Sets voltage range boundary corresponding to 1% dimming level",
+                "level_100_voltage_description": "Sets voltage range boundary corresponding to 100% dimming level",
 
                 "increase_rate_description": "During smooth transitions, channel level will be decreased by 1% every specified period of time. If set to 0, level will increase instantly",
                 "decrease_rate_description": "During smooth transitions, channel level will be increased by 1% every specified period of time. If set to 0, level will decrease instantly",
@@ -484,7 +482,6 @@
                 "pwm_frequency_factor_description": "Частота ШИМ рассчитывается по формуле: 24 кГц / Делитель",
                 "Baud rate": "Скорость обмена",
                 "baud_rate_description": "Перед изменением параметра убедитесь, что связь с устройством установлена. Выберите нужную скорость обмена, сохраните конфигурацию, а затем укажите в настройках порта эту же скорость.",
-                "Dimmer": "Диммер",
 
                 {% for ch_number in range(1, INPUTS_NUMBER + 1) -%}
                 "Input {{ch_number}}": "Вход {{ch_number}}",
@@ -493,12 +490,12 @@
                 "Input {{ch_number}} Long Press Counter": "Счетчик долгого нажатия {{ch_number}}",
                 "Input {{ch_number}} Double Press Counter": "Счетчик двойного нажатия {{ch_number}}",
                 "Input {{ch_number}} Short Long Press Counter": "Счетчик короткого, а затем долгого нажатия {{ch_number}}",
-
-                "Input {{ch_number}} Short Press Action": "Действие, для короткого нажатия на канале {{ch_number}}",
-                "Input {{ch_number}} Long Press Action": "Действие, для длинного нажатия на канале {{ch_number}}",
-                "Input {{ch_number}} Double Press Action": "Действие, для двойного нажатия на канале {{ch_number}}",
-                "Input {{ch_number}} Short Long Press Action": "Действие, для короткого, затем длинного нажатия на канале {{ch_number}}",
                 {% endfor -%}
+
+                "Short Press Action": "Действие, для короткого нажатия",
+                "Long Press Action": "Действие, для длинного нажатия",
+                "Double Press Action": "Действие, для двойного нажатия",
+                "Short Long Press Action": "Действие, для короткого, затем длинного нажатия",
 
                 "No Action": "Ничего не делать",
                 "All Outputs": "Все выходы",
@@ -513,19 +510,22 @@
 
                 {% for ch_number in range(1, OUTPUTS_NUMBER + 1) -%}
                 "Output {{ch_number}}": "Выход {{ch_number}}",
-                "Channel {{ch_number}}": "Канал {{ch_number}}",
-                "Dimmer {{ch_number}} level": "Уровень диммера {{ch_number}}",
+                "Output {{ch_number}} Switch": "Выключатель выхода {{ch_number}}",
+                "Output {{ch_number}} Dimming Level": "Уровень диммирования выхода {{ch_number}}",
+                "Output {{ch_number}} Voltage": "Напряжение на выходе {{ch_number}}",
                 "Channel {{ch_number}} Duty Cycle Raw": "Прямое задание скважности ШИМ на выходе {{ch_number}}",
-                "Dimmer {{ch_number}}": "Диммер {{ch_number}}",
-                "Output {{ch_number}} Minimum Value (mV)": "Нижний порог диммирования выхода {{ch_number}} (мВ)",
-                "Output {{ch_number}} Maximum Value (mV)": "Верхний порог диммирования выхода {{ch_number}} (мВ)",
-                "Output {{ch_number}} level decrement rate (ms/%)": "Скорость возрастания уровня на выходе {{ch_number}} (мс/%)",
-                "Output {{ch_number}} level increment rate (ms/%)": "Скорость убывания уровня на выходе {{ch_number}} (мс/%)",
-                "Output {{ch_number}} action repeat time (ms)": "Длительность периода повторения действий на выходе {{ch_number}} (мс)",
                 {% endfor -%}
 
-                "output_min_value_description": "Минимальное напряжение для канала (мВ)",
-                "output_max_value_description": "Максимальное напряжение для канала (мВ)",
+                "Outputs Common Settings": "Общие настройки выходов",
+
+                "Voltage at 1% dimming level (mV)": "Напряжение при уровне диммирования 1% (мВ)",
+                "Voltage at 100% dimming level (mV)": "Напряжение при уровне диммирования 100% (мВ)",
+                "Dimming level decrement rate (ms/%)": "Скорость убывания уровня диммирования (мс/%)",
+                "Dimming level increment rate (ms/%)": "Скорость возрастания уровня диммирования (мс/%)",
+                "Action repeat time (ms)": "Длительность периода повторения действий (мс)",
+
+                "level_1_voltage_description": "Задает границу диапазона напряжения, соответствующую 1% уровня диммирования",
+                "level_100_voltage_description": "Задает границу диапазона напряжения, соответствующую 1% уровня диммирования",
 
                 "Serial": "Серийный номер",
                 "FW Version": "Версия прошивки",
