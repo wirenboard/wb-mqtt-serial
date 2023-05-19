@@ -1,3 +1,9 @@
+wb-mqtt-serial (2.85.3) stable; urgency=medium
+
+  * WB-MAP3EV templates: fix wrong group name
+
+ -- Andrey Radionov <andrey.radionov@wirenboard.ru>  Wed, 19 may 2023 13:16:50 +0300
+
 wb-mqtt-serial (2.85.2) stable; urgency=medium
 
   * WB-M* templates: more description added for second press waiting time and debounce time
