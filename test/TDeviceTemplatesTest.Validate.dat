@@ -12924,9 +12924,13 @@ WB-MAI6
 	Serial  =>  Serial
 	Uptime  =>  Uptime
 WB-MAO4
+	Channel 1  =>  Channel 1
 	Channel 1 Duty Cycle Raw  =>  Channel 1 Duty Cycle Raw
+	Channel 2  =>  Channel 2
 	Channel 2 Duty Cycle Raw  =>  Channel 2 Duty Cycle Raw
+	Channel 3  =>  Channel 3
 	Channel 3 Duty Cycle Raw  =>  Channel 3 Duty Cycle Raw
+	Channel 4  =>  Channel 4
 	Channel 4 Duty Cycle Raw  =>  Channel 4 Duty Cycle Raw
 	FW Version  =>  FW Version
 	Input 1  =>  Input 1
@@ -12949,18 +12953,6 @@ WB-MAO4
 	Input 3 Short Press Counter  =>  Input 3 Short Press Counter
 	MCU Temperature  =>  MCU Temperature
 	MCU Voltage  =>  MCU Voltage
-	Output 1 Dimming Level  =>  Output 1 Dimming Level
-	Output 1 Switch  =>  Output 1 Switch
-	Output 1 Voltage  =>  Output 1 Voltage
-	Output 2 Dimming Level  =>  Output 2 Dimming Level
-	Output 2 Switch  =>  Output 2 Switch
-	Output 2 Voltage  =>  Output 2 Voltage
-	Output 3 Dimming Level  =>  Output 3 Dimming Level
-	Output 3 Switch  =>  Output 3 Switch
-	Output 3 Voltage  =>  Output 3 Voltage
-	Output 4 Dimming Level  =>  Output 4 Dimming Level
-	Output 4 Switch  =>  Output 4 Switch
-	Output 4 Voltage  =>  Output 4 Voltage
 	Serial  =>  Serial
 	Supply voltage  =>  Supply voltage
 	Uptime  =>  Uptime
@@ -21665,13 +21657,9 @@ tpl1_danfoss_ekc_204a1_wb_ref
 	Thermostat Temperature  =>  Thermostat Temperature
 	Uptime  =>  Uptime
 tpl1_wb_mao4
-	Channel 1  =>  Channel 1
 	Channel 1 Duty Cycle Raw  =>  Channel 1 Duty Cycle Raw
-	Channel 2  =>  Channel 2
 	Channel 2 Duty Cycle Raw  =>  Channel 2 Duty Cycle Raw
-	Channel 3  =>  Channel 3
 	Channel 3 Duty Cycle Raw  =>  Channel 3 Duty Cycle Raw
-	Channel 4  =>  Channel 4
 	Channel 4 Duty Cycle Raw  =>  Channel 4 Duty Cycle Raw
 	FW Version  =>  FW Version
 	Input 1  =>  Input 1
@@ -21694,6 +21682,18 @@ tpl1_wb_mao4
 	Input 3 Short Press Counter  =>  Input 3 Short Press Counter
 	MCU Temperature  =>  MCU Temperature
 	MCU Voltage  =>  MCU Voltage
+	Output 1 Dimming Level  =>  Output 1 Dimming Level
+	Output 1 Switch  =>  Output 1 Switch
+	Output 1 Voltage  =>  Output 1 Voltage
+	Output 2 Dimming Level  =>  Output 2 Dimming Level
+	Output 2 Switch  =>  Output 2 Switch
+	Output 2 Voltage  =>  Output 2 Voltage
+	Output 3 Dimming Level  =>  Output 3 Dimming Level
+	Output 3 Switch  =>  Output 3 Switch
+	Output 3 Voltage  =>  Output 3 Voltage
+	Output 4 Dimming Level  =>  Output 4 Dimming Level
+	Output 4 Switch  =>  Output 4 Switch
+	Output 4 Voltage  =>  Output 4 Voltage
 	Serial  =>  Serial
 	Supply voltage  =>  Supply voltage
 	Uptime  =>  Uptime
