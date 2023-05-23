@@ -358,7 +358,7 @@
             {% endfor -%}
             {% for index in range(0, OUTPUTS_NUMBER) -%}
             {
-                "name": "Channel {{index + 1}}",
+                "name": "Channel {{index + 1}} Switch",
                 "reg_type": "coil",
                 "address": {{16 + index}},
                 "type": "switch",
@@ -373,7 +373,7 @@
                 "group": "output_channels"
             },
             {
-                "name": "Channel {{index + 1}} Voltage",
+                "name": "Channel {{index + 1}}",
                 "reg_type": "holding",
                 "address": {{index}},
                 "type": "range",
@@ -456,6 +456,11 @@
                 "baud_rate_description": "Make sure that communication with device is established before changing this parameter. Select required baud rate, save configuration and then change port baud rate to the same value.",
                 "Uptime": "Uptime (s)",
 
+                {% for ch_number in range(1, OUTPUTS_NUMBER + 1) -%}
+                "Channel {{ch_number}} Switch": "Channel {{ch_number}}",
+                "Channel {{ch_number}}": "Channel {{ch_number}} Voltage",
+                {% endfor -%}
+
                 "level_1_voltage_description": "Sets voltage range boundary corresponding to 1% dimming level",
                 "level_100_voltage_description": "Sets voltage range boundary corresponding to 100% dimming level",
 
@@ -510,9 +515,9 @@
 
                 {% for ch_number in range(1, OUTPUTS_NUMBER + 1) -%}
                 "Output {{ch_number}}": "Выход {{ch_number}}",
-                "Channel {{ch_number}}": "Канал {{ch_number}}",
+                "Channel {{ch_number}} Switch": "Канал {{ch_number}}",
                 "Channel {{ch_number}} Dimming Level": "Уровень диммирования канала {{ch_number}}",
-                "Channel {{ch_number}} Voltage": "Напряжение канала {{ch_number}}",
+                "Channel {{ch_number}}": "Напряжение канала {{ch_number}}",
                 "Channel {{ch_number}} Duty Cycle Raw": "Прямое задание скважности ШИМ на выходе {{ch_number}}",
                 {% endfor -%}
 
