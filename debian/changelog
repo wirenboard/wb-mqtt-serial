@@ -1,3 +1,9 @@
+wb-mqtt-serial (2.85.4) stable; urgency=medium
+
+  * Disable events on input counters of WB-MCM8
+
+ -- Petr Krasnoshchekov <petr.krasnoshchekov@wirenboard.com>  Fri, 19 May 2023 18:00:26 +0500
+
 wb-mqtt-serial (2.85.3) stable; urgency=medium
 
   * WB-MAP3EV templates: fix wrong group name
