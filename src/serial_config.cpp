@@ -764,6 +764,13 @@ void TTemplateMap::AddTemplatesDir(const std::string& templatesDir, bool passInv
 Json::Value TTemplateMap::Validate(const std::string& deviceType, const std::string& filePath)
 {
     Json::Value root(WBMQTT::JSON::Parse(filePath));
+
+    bool isDeprecated = false;
+    if (Get(root, "deprecated", isDeprecated) && isDeprecated) {
+        // Skip deprecated template validation, it may be broken according to latest schema
+        return root;
+    }
+
     try {
         Validator->Validate(root);
     } catch (const std::runtime_error& e) {

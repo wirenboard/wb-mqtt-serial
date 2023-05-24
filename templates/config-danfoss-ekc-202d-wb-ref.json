@@ -1,6 +1,6 @@
 {
     "title": "Danfoss EKC 202D (WB-REF-DF-178A)",
-    "device_type": "danfoss_ekc_202d_wb_ref",
+    "device_type": "tpl1_danfoss_ekc_202d_wb_ref",
     "group": "g-refrigeration",
     "device": {
         "name": "Danfoss EKC 202D",
@@ -408,7 +408,7 @@
                 "group": "defrost",
                 "order": 6
             },
-            "fan_start_delay_after_defrost(d07)": {
+            "fan_start_delay_after_defrost_d07": {
                 "title": "Fan Start Delay After Defrost(d07)",
                 "description": "units: minutes",
                 "address": 11006,

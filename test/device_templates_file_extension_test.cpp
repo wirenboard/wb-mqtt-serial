@@ -109,3 +109,15 @@ TEST_F(TDeviceTemplatesTest, Validate)
         PrintDevice(dt.Schema, "", subdeviceTemplates, 1);
     }
 }
+
+TEST_F(TDeviceTemplatesTest, InvalidParameterName)
+{
+    Json::Value configSchema(LoadConfigSchema(TLoggedFixture::GetDataFilePath("../wb-mqtt-serial.schema.json")));
+    Json::Value templatesSchema(
+        LoadConfigTemplatesSchema(TLoggedFixture::GetDataFilePath("../wb-mqtt-serial-device-template.schema.json"),
+                                  configSchema));
+    TTemplateMap templates(TLoggedFixture::GetDataFilePath("device-templates"), templatesSchema, false);
+    EXPECT_THROW(templates.GetTemplate("parameters_array_invalid_id"), std::runtime_error);
+    EXPECT_NO_THROW(templates.GetTemplate("parameters_object_invalid_name"));
+    EXPECT_THROW(templates.GetTemplate("tpl1_parameters_object_invalid_name"), std::runtime_error);
+}
