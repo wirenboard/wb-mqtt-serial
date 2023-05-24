@@ -95,7 +95,6 @@ namespace
 
     optional<int32_t> EvalFunction(const TAstNode* expr, const IParams& params)
     {
-        // Only isDefined function is supported
         return params.Get(expr->GetRight()->GetValue()).has_value();
     }
 
