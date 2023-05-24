@@ -52,7 +52,6 @@ public:
     void DeviceDisconnected(PSerialDevice device);
     void SetReadErrors(TRegisterCallback callback);
 
-    bool HasRegisters() const;
     bool HasDevicesWithEnabledEvents() const;
 
 private:

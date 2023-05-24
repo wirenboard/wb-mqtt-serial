@@ -232,7 +232,7 @@ public:
 
 TEST_F(TPollTest, SingleDeviceSingleRegister)
 {
-    // One register without fixed read period
+    // One register without fixed read period and without events support
     // Check what poller reads it as soon as possible
 
     Port->SetBaudRate(115200);
@@ -292,6 +292,9 @@ TEST_F(TPollTest, SingleDeviceSeveralRegisters)
         Cycle(serialClient, lastAccessedDevice);
         EnqueueReadHolding(1, 1, 1, 10ms);
         Cycle(serialClient, lastAccessedDevice);
+
+        // Not enough time before reading register with read period
+        Cycle(serialClient, lastAccessedDevice);
     }
 }
 
@@ -311,9 +314,6 @@ TEST_F(TPollTest, SingleDeviceSingleRegisterWithEvents)
 
     TSerialClientRegisterAndEventsReader serialClient(regList, 50ms, [this]() { return TimeMock.GetTime(); });
     TSerialClientDeviceAccessHandler lastAccessedDevice(serialClient.GetEventsReader());
-
-    // Read events, but nothing configured
-    Cycle(serialClient, lastAccessedDevice);
 
     // Read registers
     EnqueueEnableEvents(1, 1, 10ms);
@@ -345,9 +345,6 @@ TEST_F(TPollTest, SingleDeviceSingleRegisterWithEventsAndPolling)
 
     TSerialClientRegisterAndEventsReader serialClient(regList, 50ms, [this]() { return TimeMock.GetTime(); });
     TSerialClientDeviceAccessHandler lastAccessedDevice(serialClient.GetEventsReader());
-
-    // Read events, but nothing configured
-    Cycle(serialClient, lastAccessedDevice);
 
     // Enable events and read first register
     EnqueueEnableEvents(1, 1, 10ms);
@@ -388,9 +385,6 @@ TEST_F(TPollTest, SingleDeviceSingleRegisterWithEventsAndPollingWithReadPeriod)
 
     TSerialClientRegisterAndEventsReader serialClient(regList, 50ms, [this]() { return TimeMock.GetTime(); });
     TSerialClientDeviceAccessHandler lastAccessedDevice(serialClient.GetEventsReader());
-
-    // Read events, but nothing configured
-    Cycle(serialClient, lastAccessedDevice);
 
     // Enable events and read registers
     EnqueueEnableEvents(1, 1, 10ms);
@@ -471,9 +465,6 @@ TEST_F(TPollTest, SingleDeviceEventsAndBigReadTime)
     TSerialClientRegisterAndEventsReader serialClient(regList, 50ms, [this]() { return TimeMock.GetTime(); });
     TSerialClientDeviceAccessHandler lastAccessedDevice(serialClient.GetEventsReader());
 
-    // Read events, but nothing configured
-    Cycle(serialClient, lastAccessedDevice);
-
     // Enable events and read registers
     EnqueueEnableEvents(1, 1, 10ms);
     EnqueueReadHolding(1, 1, 1, 10ms);
@@ -551,9 +542,6 @@ TEST_F(TPollTest, SingleDeviceSingleRegisterWithEventsAndErrors)
     TSerialClientRegisterAndEventsReader serialClient(regList, 50ms, [this]() { return TimeMock.GetTime(); });
     TSerialClientDeviceAccessHandler lastAccessedDevice(serialClient.GetEventsReader());
 
-    // Read events, but nothing configured
-    Cycle(serialClient, lastAccessedDevice);
-
     // Read registers
     EnqueueEnableEvents(1, 1, 10ms);
     EnqueueReadHolding(1, 1, 1, 10ms);
@@ -592,20 +580,17 @@ TEST_F(TPollTest, SingleDeviceEnableEventsError)
     TSerialClientRegisterAndEventsReader serialClient(regList, 50ms, [this]() { return TimeMock.GetTime(); });
     TSerialClientDeviceAccessHandler lastAccessedDevice(serialClient.GetEventsReader());
 
-    // Read events, but nothing configured
-    Cycle(serialClient, lastAccessedDevice);
-
     // Read registers
     EnqueueEnableEvents(1, 1, 10ms, 0x01, true);
     Cycle(serialClient, lastAccessedDevice);
 
+    // Events are disabled, poll register
     EnqueueEnableEvents(1, 1, 10ms, 0x00);
     EnqueueReadHolding(1, 1, 1, 10ms);
     Cycle(serialClient, lastAccessedDevice);
 
-    for (size_t i = 0; i < 3; ++i) {
+    for (size_t i = 0; i < 10; ++i) {
         EnqueueReadHolding(1, 1, 1, 10ms);
-        Cycle(serialClient, lastAccessedDevice);
         Cycle(serialClient, lastAccessedDevice);
     }
 }

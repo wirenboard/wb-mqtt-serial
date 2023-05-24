@@ -18,6 +18,12 @@
 class TSerialDevice;
 typedef std::shared_ptr<TSerialDevice> PSerialDevice;
 
+enum TClientTaskType
+{
+    POLLING,
+    EVENTS
+};
+
 class TSerialClientRegisterAndEventsReader: public util::TNonCopyable
 {
 public:
@@ -46,12 +52,6 @@ private:
     util::TSpentTimeMeter SpentTime;
     bool LastCycleWasTooSmallToPoll;
     util::TGetNowFn NowFn;
-};
-
-enum TClientTaskType
-{
-    POLLING,
-    EVENTS
 };
 
 class TSerialClient: public std::enable_shared_from_this<TSerialClient>, util::TNonCopyable
@@ -100,7 +100,7 @@ private:
     PRPCRequestHandler RPCRequestHandler;
 
     std::unique_ptr<TSerialClientDeviceAccessHandler> LastAccessedDevice;
-    std::unique_ptr<TSerialClientRegisterAndEventsReader> RegHandler;
+    std::unique_ptr<TSerialClientRegisterAndEventsReader> RegReader;
 
     util::TGetNowFn NowFn;
 

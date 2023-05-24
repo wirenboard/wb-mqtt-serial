@@ -61,7 +61,7 @@ TSerialClient::~TSerialClient()
 
 void TSerialClient::AddRegister(PRegister reg)
 {
-    if (RegHandler)
+    if (RegReader)
         throw TSerialDeviceException("can't add registers to the active client");
     if (Handlers.find(reg) != Handlers.end())
         throw TSerialDeviceException("duplicate register");
@@ -72,12 +72,12 @@ void TSerialClient::AddRegister(PRegister reg)
 
 void TSerialClient::Activate()
 {
-    if (!RegHandler) {
-        RegHandler = std::make_unique<TSerialClientRegisterAndEventsReader>(RegList,
-                                                                            GetReadEventsPeriod(*Port),
-                                                                            NowFn,
-                                                                            LowPriorityRateLimit);
-        LastAccessedDevice = std::make_unique<TSerialClientDeviceAccessHandler>(RegHandler->GetEventsReader());
+    if (!RegReader) {
+        RegReader = std::make_unique<TSerialClientRegisterAndEventsReader>(RegList,
+                                                                           GetReadEventsPeriod(*Port),
+                                                                           NowFn,
+                                                                           LowPriorityRateLimit);
+        LastAccessedDevice = std::make_unique<TSerialClientDeviceAccessHandler>(RegReader->GetEventsReader());
     }
 }
 
@@ -197,7 +197,7 @@ void TSerialClient::ClosedPortCycle()
         }
     }
 
-    RegHandler->ClosedPortCycle(wait_until, [this](PRegister reg) { ProcessPolledRegister(reg); });
+    RegReader->ClosedPortCycle(wait_until, [this](PRegister reg) { ProcessPolledRegister(reg); });
 }
 
 void TSerialClient::SetTextValue(PRegister reg, const std::string& value)
@@ -228,9 +228,9 @@ void TSerialClient::OpenPortCycle()
 {
     UpdateFlushNeeded();
     auto currentTime = NowFn();
-    WaitForPollAndFlush(currentTime, RegHandler->GetDeadline(currentTime));
+    WaitForPollAndFlush(currentTime, RegReader->GetDeadline(currentTime));
 
-    auto device = RegHandler->OpenPortCycle(
+    auto device = RegReader->OpenPortCycle(
         *Port,
         [this](PRegister reg) { ProcessPolledRegister(reg); },
         *LastAccessedDevice);
@@ -268,10 +268,6 @@ TSerialClientRegisterAndEventsReader::TSerialClientRegisterAndEventsReader(const
     RegisterPoller.PrepareRegisterRanges(regList, currentTime);
     for (const auto& reg: regList) {
         EventsReader.AddRegister(reg);
-    }
-
-    if (EventsReader.HasRegisters()) {
-        TimeBalancer.AddEntry(TClientTaskType::EVENTS, currentTime, TPriority::High);
     }
     TimeBalancer.AddEntry(TClientTaskType::POLLING, currentTime, TPriority::Low);
 }
@@ -330,8 +326,10 @@ PSerialDevice TSerialClientRegisterAndEventsReader::OpenPortCycle(TPort& port,
                 },
                 NowFn);
             TimeBalancer.UpdateSelectionTime(ceil<milliseconds>(SpentTime.GetSpentTime()), TPriority::High);
+            TimeBalancer.AddEntry(TClientTaskType::EVENTS,
+                                  SpentTime.GetStartTime() + ReadEventsPeriod,
+                                  TPriority::High);
         }
-        TimeBalancer.AddEntry(TClientTaskType::EVENTS, SpentTime.GetStartTime() + ReadEventsPeriod, TPriority::High);
         SpentTime.Start();
         return nullptr;
     }
@@ -357,6 +355,11 @@ PSerialDevice TSerialClientRegisterAndEventsReader::OpenPortCycle(TPort& port,
         LastCycleWasTooSmallToPoll = false;
         TimeBalancer.UpdateSelectionTime(ceil<milliseconds>(SpentTime.GetSpentTime()), TPriority::Low);
     }
+
+    if (EventsReader.HasDevicesWithEnabledEvents() && !TimeBalancer.Contains(TClientTaskType::EVENTS)) {
+        TimeBalancer.AddEntry(TClientTaskType::EVENTS, SpentTime.GetStartTime() + ReadEventsPeriod, TPriority::High);
+    }
+
     SpentTime.Start();
     return res.Device;
 }

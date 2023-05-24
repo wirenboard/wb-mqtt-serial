@@ -358,11 +358,6 @@ void TSerialClientEventsReader::ClearReadErrors(TRegisterCallback callback)
     }
 }
 
-bool TSerialClientEventsReader::HasRegisters() const
-{
-    return !Regs.empty();
-}
-
 bool TSerialClientEventsReader::HasDevicesWithEnabledEvents() const
 {
     return !DevicesWithEnabledEvents.empty();

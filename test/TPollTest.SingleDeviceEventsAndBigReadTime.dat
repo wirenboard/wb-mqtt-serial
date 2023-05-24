@@ -1,0 +1,252 @@
+Open()
+0: Cycle
+Sleep(1000)
+EnqueueEnableEvents()
+>> 01 46 18 0A 03 00 01 01 01 0F 00 00 01 00 28 7D
+<< 01 46 18 02 01 00 2E F5
+Sleep(100000)
+EnqueueReadHolding()
+>> 01 03 00 01 00 01 D5 CA
+<< 01 03 02 00 00 B8 44
+121000: <modbus:1:(type 0): 1>
+121000: Cycle end
+
+121000: Cycle
+Sleep(335)
+EnqueueReadEvents()
+>> FD 46 10 00 F8 00 00 79 5B
+<< FD 46 12 52 5D
+Sleep(335)
+125670: Cycle end
+
+125670: Cycle
+171000: Cycle end
+
+171000: Cycle
+Sleep(335)
+EnqueueReadEvents()
+>> FD 46 10 00 F8 00 00 79 5B
+<< FD 46 12 52 5D
+Sleep(335)
+175670: Cycle end
+
+175670: Cycle
+221000: Cycle end
+
+221000: Cycle
+Sleep(335)
+EnqueueReadEvents()
+>> FD 46 10 00 F8 00 00 79 5B
+<< FD 46 12 52 5D
+Sleep(335)
+225670: Cycle end
+
+225670: Cycle
+271000: Cycle end
+
+271000: Cycle
+Sleep(335)
+EnqueueReadEvents()
+>> FD 46 10 00 F8 00 00 79 5B
+<< FD 46 12 52 5D
+Sleep(335)
+275670: Cycle end
+
+275670: Cycle
+321000: Cycle end
+
+321000: Cycle
+Sleep(335)
+EnqueueReadEvents()
+>> FD 46 10 00 F8 00 00 79 5B
+<< FD 46 12 52 5D
+Sleep(335)
+325670: Cycle end
+
+325670: Cycle
+371000: Cycle end
+
+371000: Cycle
+Sleep(335)
+EnqueueReadEvents()
+>> FD 46 10 00 F8 00 00 79 5B
+<< FD 46 12 52 5D
+Sleep(335)
+375670: Cycle end
+
+375670: Cycle
+421000: Cycle end
+
+421000: Cycle
+Sleep(335)
+EnqueueReadEvents()
+>> FD 46 10 00 F8 00 00 79 5B
+<< FD 46 12 52 5D
+Sleep(335)
+425670: Cycle end
+
+425670: Cycle
+471000: Cycle end
+
+471000: Cycle
+Sleep(335)
+EnqueueReadEvents()
+>> FD 46 10 00 F8 00 00 79 5B
+<< FD 46 12 52 5D
+Sleep(335)
+475670: Cycle end
+
+475670: Cycle
+521000: Cycle end
+
+521000: Cycle
+Sleep(335)
+EnqueueReadEvents()
+>> FD 46 10 00 F8 00 00 79 5B
+<< FD 46 12 52 5D
+Sleep(335)
+525670: Cycle end
+
+525670: Cycle
+571000: Cycle end
+
+571000: Cycle
+Sleep(335)
+EnqueueReadEvents()
+>> FD 46 10 00 F8 00 00 79 5B
+<< FD 46 12 52 5D
+Sleep(335)
+575670: Cycle end
+
+575670: Cycle
+621000: Cycle end
+
+621000: Cycle
+Sleep(335)
+EnqueueReadEvents()
+>> FD 46 10 00 F8 00 00 79 5B
+<< FD 46 12 52 5D
+Sleep(335)
+625670: Cycle end
+
+625670: Cycle
+671000: Cycle end
+
+671000: Cycle
+Sleep(335)
+EnqueueReadEvents()
+>> FD 46 10 00 F8 00 00 79 5B
+<< FD 46 12 52 5D
+Sleep(335)
+675670: Cycle end
+
+675670: Cycle
+721000: Cycle end
+
+721000: Cycle
+Sleep(335)
+EnqueueReadEvents()
+>> FD 46 10 00 F8 00 00 79 5B
+<< FD 46 12 52 5D
+Sleep(335)
+725670: Cycle end
+
+725670: Cycle
+771000: Cycle end
+
+771000: Cycle
+Sleep(335)
+EnqueueReadEvents()
+>> FD 46 10 00 F8 00 00 79 5B
+<< FD 46 12 52 5D
+Sleep(335)
+775670: Cycle end
+
+775670: Cycle
+Sleep(1000)
+Sleep(100000)
+EnqueueReadHolding()
+>> 01 03 00 02 00 01 25 CA
+<< 01 03 02 00 00 B8 44
+886670: <modbus:1:(type 0): 2>
+886670: Cycle end
+
+886670: Cycle
+Sleep(335)
+EnqueueReadEvents()
+>> FD 46 10 00 F8 00 00 79 5B
+<< FD 46 12 52 5D
+Sleep(335)
+891340: Cycle end
+
+891340: Cycle
+936670: Cycle end
+
+936670: Cycle
+Sleep(335)
+EnqueueReadEvents()
+>> FD 46 10 00 F8 00 00 79 5B
+<< FD 46 12 52 5D
+Sleep(335)
+941340: Cycle end
+
+941340: Cycle
+986670: Cycle end
+
+986670: Cycle
+Sleep(335)
+EnqueueReadEvents()
+>> FD 46 10 00 F8 00 00 79 5B
+<< FD 46 12 52 5D
+Sleep(335)
+991340: Cycle end
+
+991340: Cycle
+Sleep(1000)
+Sleep(100000)
+EnqueueReadHolding()
+>> 01 03 00 02 00 01 25 CA
+<< 01 03 02 00 00 B8 44
+1102340: <modbus:1:(type 0): 2>
+1102340: Cycle end
+
+1102340: Cycle
+Sleep(335)
+EnqueueReadEvents()
+>> FD 46 10 00 F8 00 00 79 5B
+<< FD 46 12 52 5D
+Sleep(335)
+1107010: Cycle end
+
+1107010: Cycle
+1152340: Cycle end
+
+1152340: Cycle
+Sleep(335)
+EnqueueReadEvents()
+>> FD 46 10 00 F8 00 00 79 5B
+<< FD 46 12 52 5D
+Sleep(335)
+1157010: Cycle end
+
+1157010: Cycle
+1202340: Cycle end
+
+1202340: Cycle
+Sleep(335)
+EnqueueReadEvents()
+>> FD 46 10 00 F8 00 00 79 5B
+<< FD 46 12 52 5D
+Sleep(335)
+1207010: Cycle end
+
+1207010: Cycle
+Sleep(1000)
+Sleep(100000)
+EnqueueReadHolding()
+>> 01 03 00 02 00 01 25 CA
+<< 01 03 02 00 00 B8 44
+1318010: <modbus:1:(type 0): 2>
+1318010: Cycle end
+
+Close()
