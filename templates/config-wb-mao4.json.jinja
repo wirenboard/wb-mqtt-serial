@@ -1,5 +1,6 @@
 {% set INPUTS_NUMBER = 3 -%}
 {% set OUTPUTS_NUMBER = 4 -%}
+{% set PRESS_TYPES = ["short", "long", "double", "short long"] %}
 
 {
     "title": "WB-MAO4_template_title",
@@ -14,17 +15,25 @@
         "enable_wb_continuous_read": true,
 
         "groups": [
-            {% for enumerator in range(0, INPUTS_NUMBER) -%}
+            {% for ch_number in range(1, INPUTS_NUMBER + 1) -%}
             {
-                "title": "Input {{enumerator + 1}}",
-                "id": "input {{enumerator + 1}}",
-                "order": {{enumerator + 1}}
+                "title": "Input {{ ch_number }}",
+                "id": "input_{{ ch_number }}",
+                "order": {{ ch_number }}
             },
+            {% for press_type in PRESS_TYPES -%}
             {
-                "title": "Input {{enumerator + 1}} Parameters",
-                "id": "input {{enumerator + 1}} parameters",
-                "group": "input {{enumerator + 1}}",
-                "order": 1,
+                "title": "{{ press_type | title }} Press Action",
+                "id": "input_{{ ch_number }}_{{ press_type | replace(' ', '_') }}_press_action",
+                "group": "input_{{ ch_number }}",
+                "order": {{loop.index}}
+            },
+            {% endfor -%}
+            {
+                "title": "Input Parameters",
+                "id": "input_{{ ch_number }}_parameters",
+                "group": "input_{{ch_number }}",
+                "order": 5,
                 "ui_options": {
                     "wb": {
                         "disable_title": true
@@ -32,10 +41,10 @@
                 }
             },
             {
-                "title": "Input {{enumerator + 1}} Counters",
-                "id": "input {{enumerator + 1}} counters",
-                "group": "input {{enumerator + 1}}",
-                "order": 2,
+                "title": "Input Counters",
+                "id": "input_{{ ch_number }}_counters",
+                "group": "input_{{ ch_number }}",
+                "order": 6,
                 "ui_options": {
                     "wb": {
                         "disable_title": true
@@ -47,6 +56,31 @@
                 "title": "Outputs",
                 "id": "outputs",
                 "order": {{INPUTS_NUMBER + 1}}
+            },
+            {
+                "title": "Outputs Common Settings",
+                "id": "outputs_common",
+                "group": "outputs",
+                "order": 1
+            },
+            {% for ch_number in range(1, OUTPUTS_NUMBER + 1) -%}
+            {
+                "title": "Output {{ ch_number }}",
+                "id": "output{{ ch_number }}",
+                "group": "outputs",
+                "order": {{ ch_number + 1 }}
+            },
+            {% endfor -%}
+            {
+                "title": "Output Channels",
+                "id": "output_channels",
+                "group": "outputs",
+                "order": {{OUTPUTS_NUMBER + 2}},
+                "ui_options": {
+                    "wb": {
+                        "disable_title": true
+                    }
+                }
             },
             {
                 "title": "General",
@@ -64,9 +98,9 @@
                 "order": {{INPUTS_NUMBER + 4}}
             }
         ],
-
-        "parameters": {
-            "outputs_mode": {
+        "parameters": [
+            {
+                "id": "outputs_mode",
                 "title": "Outputs Mode",
                 "address": 10,
                 "reg_type": "holding",
@@ -76,10 +110,11 @@
                     "Analog 0-10 V"
                 ],
                 "default": 1,
-                "group": "outputs",
+                "group": "outputs_common",
                 "order": 1
             },
-            "pwm_frequency_factor": {
+            {
+                "id": "pwm_frequency_factor",
                 "title": "PWM Frequency Factor",
                 "description": "pwm_frequency_factor_description",
                 "address": 9,
@@ -87,10 +122,167 @@
                 "default": 24,
                 "min": 1,
                 "max": 240,
-                "group": "outputs",
+                "group": "outputs_common",
                 "order": 2
             },
-            "baud_rate": {
+            {% for ch_number in range(1, OUTPUTS_NUMBER + 1) -%}
+            {
+                "id": "output{{ ch_number }}_min",
+                "title": "Voltage at 1% dimming level (mV)",
+                "description": "level_1_voltage_description",
+                "group": "output{{ ch_number }}",
+                "address": {{ 912 + ch_number - 1 }},
+                "reg_type": "holding",
+                "default": 1,
+                "min": 0,
+                "max": 10000,
+                "order": 1
+            },
+            {
+                "id": "output{{ ch_number }}_max",
+                "title": "Voltage at 100% dimming level (mV)",
+                "description": "level_100_voltage_description",
+                "group": "output{{ch_number}}",
+                "address": {{928 + ch_number - 1}},
+                "reg_type": "holding",
+                "default": 10000,
+                "min": 0,
+                "max": 10000,
+                "order": 2
+            },
+            {
+                "id": "output{{ ch_number }}_decrement_rate",
+                "title": "Dimming level decrement rate (ms/%)",
+                "description": "increase_rate_description",
+                "group": "output{{ch_number}}",
+                "address": {{944 + ch_number - 1}},
+                "reg_type": "holding",
+                "default": 20,
+                "min": 0,
+                "max": 500,
+                "order": 3
+            },
+            {
+                "id": "channel{{ ch_number }}_increment_rate",
+                "title": "Dimming level increment rate (ms/%)",
+                "description": "decrease_rate_description",
+                "group": "output{{ch_number}}",
+                "address": {{960 + ch_number - 1}},
+                "reg_type": "holding",
+                "default": 20,
+                "min": 0,
+                "max": 500,
+                "order": 4
+            },
+            {
+                "id": "action{{ch_number}}_repeat_time",
+                "title": "Action repeat time (ms)",
+                "description": "action_repeat_time_description",
+                "group": "output{{ch_number}}",
+                "address": {{896 + ch_number - 1}},
+                "reg_type": "holding",
+                "default": 20,
+                "min": 5,
+                "max": 500,
+                "order": 5
+            },
+            {% endfor -%}
+            {% for ch_number in range(0, INPUTS_NUMBER) -%}
+            {
+                "id": "input_{{ch_number + 1}}_hold_time",
+                "title": "Long Press Time (ms)",
+                "description": "input_hold_time_description",
+                "address": {{1100 + ch_number}},
+                "reg_type": "holding",
+                "default": 1000,
+                "min": 500,
+                "max": 5000,
+                "group": "input_{{ch_number + 1}}_parameters",
+                "order": 1
+            },
+            {
+                "id": "input_{{ch_number + 1}}_double_time",
+                "title": "Second Press Waiting Time (ms)",
+                "description": "input_double_time_description",
+                "address": {{1140 + ch_number}},
+                "reg_type": "holding",
+                "default": 300,
+                "min": 0,
+                "max": 2000,
+                "group": "input_{{ch_number + 1}}_parameters",
+                "order": 2
+            },
+            {
+                "id": "input_{{ch_number + 1}}_debounce_time",
+                "title": "Debounce Time (ms)",
+                "description": "input_debounce_time_description",
+                "address": {{1160 + ch_number}},
+                "reg_type": "holding",
+                "default": 50,
+                "min": 5,
+                "max": 200,
+                "group": "input_{{ch_number + 1}}_parameters",
+                "order": 3
+            },
+            {% for press_type in PRESS_TYPES -%}
+            {% set action_bind = ("input {} {} press output".format(ch_number + 1, press_type))|replace(' ', '_')  %}
+            {
+                "id": "{{action_bind}}_number",
+                "title": "Output Number",
+                "address": {{768 + (loop.index0 * 16) + ch_number}},
+                "reg_type": "holding",
+                "enum": [0, 1, 2, 3, 4, 100],
+                "enum_titles": [
+                    "No Action",
+                    "Output 1",
+                    "Output 2",
+                    "Output 3",
+                    "Output 4",
+                    "All Outputs"
+                ],
+                "default": 0,
+                "group": "input_{{ch_number + 1}}_{{press_type | replace(' ', '_')}}_press_action",
+                "order": 1
+            },
+            {
+                "id": "{{action_bind}}_action_single",
+                "title": "Action",
+                "address": {{832 + (loop.index0 * 16) + ch_number}},
+                "reg_type": "holding",
+                {% if press_type in ["long", "short long"] %}"enum": [0, 1, 2, 3, 4, 5],{% else %}"enum": [0, 1, 2, 3, 4],{% endif %}
+                "enum_titles": [
+                    "Turn Off",
+                    "Turn On",
+                    "Toggle",
+                    "Decrease level",
+                    "Increase level"{% if press_type in ["long", "short long"] %},
+                    "Increase/Decrease level"{% endif %}
+                ],
+                "default": 0,
+                "group": "input_{{ch_number + 1}}_{{press_type | replace(' ', '_')}}_press_action",
+                "order": 2,
+                "condition": "({{action_bind}}_number!=0)&&({{action_bind}}_number!=100)"
+            },
+            {
+                "id": "{{action_bind}}_action_all",
+                "title": "Action",
+                "address": {{832 + (loop.index0 * 16) + ch_number}},
+                "reg_type": "holding",
+                "enum": [0, 1, 3, 4],
+                "enum_titles": [
+                    "Turn Off",
+                    "Turn On",
+                    "Increase level",
+                    "Decrease level"
+                ],
+                "default": 0,
+                "group": "input_{{ch_number + 1}}_{{press_type | replace(' ', '_') }}_press_action",
+                "order": 2,
+                "condition": "{{ action_bind }}_number==100"
+            },
+            {% endfor -%}{% endfor -%}
+            {
+                "id": "baud_rate",
                 "title": "Baud rate",
                 "description": "baud_rate_description",
                 "address": 110,
@@ -107,100 +299,87 @@
                 "group": "general",
                 "order": 1
             },
-            {% for enumerator in range(0, INPUTS_NUMBER) -%}
-            "input_{{enumerator + 1}}_hold_time": {
-                "title": "input_hold_time_title",
-                "description": "input_hold_time_description",
-                "address": {{1100 + enumerator}},
+            {
+                "id": "disable_indication",
+                "title": "Status LED",
+                "address": 130,
                 "reg_type": "holding",
-                "default": 1000,
-                "min": 500,
-                "max": 5000,
-                "group": "input {{enumerator + 1}} parameters",
-                "order": 1
-            },
-            "input_{{enumerator + 1}}_double_time": {
-                "title": "input_double_time_title",
-                "description": "input_double_time_description",
-                "address": {{1140 + enumerator}},
-                "reg_type": "holding",
-                "default": 300,
-                "min": 0,
-                "max": 2000,
-                "group": "input {{enumerator + 1}} parameters",
-                "order": 2
-            },
-            "input_{{enumerator + 1}}_debounce_time": {
-                "title": "input_debounce_time_title",
-                "description": "input_debounce_time_description",
-                "address": {{1160 + enumerator}},
-                "reg_type": "holding",
-                "default": 50,
-                "min": 5,
-                "max": 200,
-                "group": "input {{enumerator + 1}} parameters",
-                "order": 3
-            }{% if not loop.last %},{% endif %}
-            {% endfor -%}
-        },
-
+                "enum": [0, 1],
+                "enum_titles": ["Enabled", "Disabled"],
+                "default": 0,
+                "group": "general"
+            }
+        ],
         "channels": [
-            {% for enumerator in range(0, INPUTS_NUMBER) -%}
+            {% for index in range(0, INPUTS_NUMBER) -%}
             {
-                "name": "Input {{enumerator + 1}}",
+                "name": "Input {{index + 1}}",
                 "reg_type": "discrete",
-                "address": {{enumerator}},
+                "address": {{index}},
                 "type": "switch",
-                "group": "input {{enumerator + 1}} counters"
+                "group": "input_{{index + 1}}_counters"
             },
             {
-                "name": "Input {{enumerator + 1}} Counter",
+                "name": "Input {{index + 1}} Counter",
                 "reg_type": "input",
-                "address": {{32 + enumerator}},
+                "address": {{32 + index}},
                 "type": "value",
-                "group": "input {{enumerator + 1}} counters"
-            },
-            {
-                "name": "Input {{enumerator + 1}} Short Press Counter",
                 "enabled": false,
-                "reg_type": "input",
-                "address": {{464 + enumerator}},
-                "type": "value",
-                "group": "input {{enumerator + 1}} counters"
+                "group": "input_{{index + 1}}_counters"
             },
             {
-                "name": "Input {{enumerator + 1}} Long Press Counter",
-                "enabled": false,
+                "name": "Input {{index + 1}} Short Press Counter",
                 "reg_type": "input",
-                "address": {{480 + enumerator}},
+                "address": {{464 + index}},
                 "type": "value",
-                "group": "input {{enumerator + 1}} counters"
+                "group": "input_{{index + 1}}_counters"
             },
             {
-                "name": "Input {{enumerator + 1}} Double Press Counter",
-                "enabled": false,
+                "name": "Input {{index + 1}} Long Press Counter",
                 "reg_type": "input",
-                "address": {{496 + enumerator}},
+                "address": {{480 + index}},
                 "type": "value",
-                "group": "input {{enumerator + 1}} counters"
+                "group": "input_{{index + 1}}_counters"
             },
             {
-                "name": "Input {{enumerator + 1}} Short Long Press Counter",
-                "enabled": false,
+                "name": "Input {{index + 1}} Double Press Counter",
                 "reg_type": "input",
-                "address": {{512 + enumerator}},
+                "address": {{496 + index}},
                 "type": "value",
-                "group": "input {{enumerator + 1}} counters"
+                "group": "input_{{index + 1}}_counters"
+            },
+            {
+                "name": "Input {{index + 1}} Short Long Press Counter",
+                "reg_type": "input",
+                "address": {{512 + index}},
+                "type": "value",
+                "group": "input_{{index + 1}}_counters"
             },
             {% endfor -%}
-            {% for enumerator in range(0, OUTPUTS_NUMBER) -%}
+            {% for index in range(0, OUTPUTS_NUMBER) -%}
             {
-                "name": "Channel {{enumerator + 1}}",
+                "name": "Channel {{index + 1}} Switch",
+                "reg_type": "coil",
+                "address": {{16 + index}},
+                "type": "switch",
+                "group": "output_channels"
+            },
+            {
+                "name": "Channel {{index + 1}} Dimming Level",
                 "reg_type": "holding",
-                "address": {{enumerator}},
+                "address": {{16 + index}},
+                "type": "range",
+                "max": 100,
+                "group": "output_channels"
+            },
+            {
+                "name": "Channel {{index + 1}}",
+                "reg_type": "holding",
+                "address": {{index}},
                 "type": "range",
                 "max": 10000,
-                "group": "outputs"
+                "enabled": false,
+                "group": "output_channels"
             },
             {% endfor -%}
             {
@@ -258,11 +437,11 @@
                 "enabled": false,
                 "group": "hw_info"
             },
-            {% for enumerator in range(0, OUTPUTS_NUMBER) -%}
+            {% for index in range(0, OUTPUTS_NUMBER) -%}
             {
-                "name": "Channel {{enumerator + 1}} Duty Cycle Raw",
+                "name": "Channel {{index + 1}} Duty Cycle Raw",
                 "reg_type": "holding",
-                "address": {{90 + enumerator}},
+                "address": {{90 + index}},
                 "type": "value",
                 "readonly": true,
                 "enabled": false,
@@ -277,15 +456,25 @@
                 "baud_rate_description": "Make sure that communication with device is established before changing this parameter. Select required baud rate, save configuration and then change port baud rate to the same value.",
                 "Uptime": "Uptime (s)",
 
-                "input_hold_time_title": "Long Press Time (ms)",
-                "input_double_time_title": "Second Press Waiting Time (ms)",
-                "input_debounce_time_title": "Debounce Time (ms)",
+                {% for ch_number in range(1, OUTPUTS_NUMBER + 1) -%}
+                "Channel {{ch_number}} Switch": "Channel {{ch_number}}",
+                "Channel {{ch_number}}": "Channel {{ch_number}} Voltage",
+                {% endfor -%}
+
+                "level_1_voltage_description": "Sets voltage range boundary corresponding to 1% dimming level",
+                "level_100_voltage_description": "Sets voltage range boundary corresponding to 100% dimming level",
+
+                "increase_rate_description": "During smooth transitions, channel level will be decreased by 1% every specified period of time. If set to 0, level will increase instantly",
+                "decrease_rate_description": "During smooth transitions, channel level will be increased by 1% every specified period of time. If set to 0, level will decrease instantly",
+                "action_repeat_time_description": "During long-lasting actions channel level will be changed by 1% every specified period of time",
 
                 "input_hold_time_description": "Presses that last longer than the specified time are counted as long presses",
                 "input_double_time_description": "If there is no second press during the specified time then press is single. 0 - disables all presses except short and long. Adds a delay to the response to a short press",
                 "input_debounce_time_description": "Must be 5-10 times less than second press waiting time. Adds a delay to the response to presses"
             },
             "ru": {
+                "Enabled": "Активен",
+                "Disabled": "Отключен",
                 "WB-MAO4_template_title": "WB-MAO4 (4-канальный модуль аналогового вывода)",
                 "Outputs": "Выходы",
                 "General": "Общее",
@@ -299,19 +488,49 @@
                 "Baud rate": "Скорость обмена",
                 "baud_rate_description": "Перед изменением параметра убедитесь, что связь с устройством установлена. Выберите нужную скорость обмена, сохраните конфигурацию, а затем укажите в настройках порта эту же скорость.",
 
-                {% for enumerator in range(1, INPUTS_NUMBER + 1) -%}
-                "Input {{enumerator}}": "Вход {{enumerator}}",
-                "Input {{enumerator}} Counter": "Счетчик {{enumerator}}",
-                "Input {{enumerator}} Short Press Counter": "Счетчик короткого нажатия {{enumerator}}",
-                "Input {{enumerator}} Long Press Counter": "Счетчик долгого нажатия {{enumerator}}",
-                "Input {{enumerator}} Double Press Counter": "Счетчик двойного нажатия {{enumerator}}",
-                "Input {{enumerator}} Short Long Press Counter": "Счетчик короткого, а затем долгого нажатия {{enumerator}}",
+                {% for ch_number in range(1, INPUTS_NUMBER + 1) -%}
+                "Input {{ch_number}}": "Вход {{ch_number}}",
+                "Input {{ch_number}} Counter": "Счетчик {{ch_number}}",
+                "Input {{ch_number}} Short Press Counter": "Счетчик коротких нажатий входа {{ch_number}}",
+                "Input {{ch_number}} Long Press Counter": "Счетчик длинных нажатий входа {{ch_number}}",
+                "Input {{ch_number}} Double Press Counter": "Счетчик двойных нажатий входа {{ch_number}}",
+                "Input {{ch_number}} Short Long Press Counter": "Счетчик коротких, а затем длинных нажатий входа {{ch_number}}",
                 {% endfor -%}
 
-                {% for enumerator in range(1, OUTPUTS_NUMBER + 1) -%}
-                "Channel {{enumerator}}": "Канал {{enumerator}}",
-                "Channel {{enumerator}} Duty Cycle Raw": "Сырое задание для канала {{enumerator}}",
+                "Short Press Action": "Действие для короткого нажатия",
+                "Long Press Action": "Действие для длинного нажатия",
+                "Double Press Action": "Действие для двойного нажатия",
+                "Short Long Press Action": "Действие для короткого, затем длинного нажатия",
+
+                "No Action": "Ничего не делать",
+                "All Outputs": "Все выходы",
+                "Turn Off": "Выключить",
+                "Turn On": "Включить",
+                "Toggle": "Переключить",
+                "Decrease level": "Уменьшить уровень",
+                "Increase level": "Увеличить уровень",
+                "Increase/Decrease level": "Увеличить/уменьшить уровень",
+                "Output Number": "Номер выхода",
+                "Action": "Действие",
+
+                {% for ch_number in range(1, OUTPUTS_NUMBER + 1) -%}
+                "Output {{ch_number}}": "Выход {{ch_number}}",
+                "Channel {{ch_number}} Switch": "Канал {{ch_number}}",
+                "Channel {{ch_number}} Dimming Level": "Уровень диммирования канала {{ch_number}}",
+                "Channel {{ch_number}}": "Напряжение канала {{ch_number}}",
+                "Channel {{ch_number}} Duty Cycle Raw": "Прямое задание скважности ШИМ на выходе {{ch_number}}",
                 {% endfor -%}
+
+                "Outputs Common Settings": "Общие настройки выходов",
+
+                "Voltage at 1% dimming level (mV)": "Нижний порог диммирования (мВ)",
+                "Voltage at 100% dimming level (mV)": "Верхний порог диммирования (мВ)",
+                "Dimming level decrement rate (ms/%)": "Время уменьшения значения на 1% (мс)",
+                "Dimming level increment rate (ms/%)": "Время увеличения значения на 1% в (мс)",
+                "Action repeat time (ms)": "Длительность периода повторения действий (мс)",
+
+                "level_1_voltage_description": "Задает границу диапазона напряжения, соответствующую 1% уровня диммирования",
+                "level_100_voltage_description": "Задает границу диапазона напряжения, соответствующую 100% уровня диммирования",
 
                 "Serial": "Серийный номер",
                 "FW Version": "Версия прошивки",
@@ -319,14 +538,19 @@
                 "Uptime": "Время работы с момента включения (с)",
                 "MCU Temperature": "Температура МК",
                 "MCU Voltage": "Напряжение питания МК",
+                "Status LED": "Индикатор состояния",
 
-                "input_hold_time_title": "Время длинного нажатия (мс)",
-                "input_double_time_title": "Время ожидания второго нажатия (мс)",
-                "input_debounce_time_title": "Время подавления дребезга (мс)",
+                "Long Press Time (ms)": "Время длинного нажатия (мс)",
+                "Second Press Waiting Time (ms)": "Время ожидания второго нажатия (мс)",
+                "Debounce Time (ms)": "Время подавления дребезга (мс)",
 
                 "input_hold_time_description": "Если нажатие длится больше указанного времени - считаем его длинным",
                 "input_double_time_description": "Если за указанное время второго нажатия не было - считаем нажатие одиночным. 0 - отключит все нажатия кроме короткого и длинного. Вносит задержку в реакцию на короткое нажатие",
-                "input_debounce_time_description": "Должно быть в 5-10 раз меньше, чем время ожидания второго нажатия. Вносит задержку в реакцию на нажатия"
+                "input_debounce_time_description": "Должно быть в 5-10 раз меньше, чем время ожидания второго нажатия. Вносит задержку в реакцию на нажатия",
+
+                "decrease_rate_description": "Во время плавных переходов, выходной уровень будет уменьшаться на 1% через указанный период времени. При 0 значении, уровень уменьшится мгновенно",
+                "increase_rate_description": "Во время плавных переходов, выходной уровень будет увеличиваться на 1% через указанный период времени. При 0 значении, уровень увеличится мгновенно",
+                "action_repeat_time_description": "Во время долгих действий, выходной уровень будет изменяться на 1% через указанный период времени"
             }
         }
     }

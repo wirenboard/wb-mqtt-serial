@@ -1,3 +1,10 @@
+wb-mqtt-serial (2.86.0) stable; urgency=medium
+
+  * Add mao4 actions configuration
+  * Add ability to disable status LED in mao4
+
+ -- Dmitry Borisov <dmitry.borisov@wirenboard.com>  Thu, 26 May 2023 12:30:00 +0600
+
 wb-mqtt-serial (2.85.4) stable; urgency=medium
 
   * Disable events on input counters of WB-MCM8
