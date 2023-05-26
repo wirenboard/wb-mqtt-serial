@@ -1,9 +1,9 @@
-wb-mqtt-serial (2.85.3) stable; urgency=medium
+wb-mqtt-serial (2.86.1) stable; urgency=medium
 
   * WB-MWAC template: add safety mode registers and mapping-matrix registers
 
- -- Roman Matveev <roman.matveev@wirenboard.ru>  Thu, 18 May 2023 17:31:14 +0300
-
+ -- Roman Matveev <roman.matveev@wirenboard.ru>  Thu, 26 May 2023 12:35:14 +0300
+ 
 wb-mqtt-serial (2.85.2) stable; urgency=medium
 
   * WB-M* templates: more description added for second press waiting time and debounce time
