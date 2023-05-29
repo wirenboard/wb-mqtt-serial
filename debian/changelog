@@ -2,7 +2,7 @@ wb-mqtt-serial (2.86.1) stable; urgency=medium
 
   * WB-MWAC template: add safety mode registers and mapping-matrix registers
 
- -- Roman Matveev <roman.matveev@wirenboard.ru>  Thu, 26 May 2023 12:35:14 +0300
+ -- Roman Matveev <roman.matveev@wirenboard.ru>  Thu, 29 May 2023 19:35:00 +0300
  
 wb-mqtt-serial (2.85.2) stable; urgency=medium
 
