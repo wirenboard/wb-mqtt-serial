@@ -1,4 +1,4 @@
-wb-mqtt-serial (2.85.2) stable; urgency=medium
+wb-mqtt-serial (2.86.2) stable; urgency=medium
 
   * Fix calculation of average response time of modbus devices
 
