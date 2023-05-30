@@ -87,7 +87,7 @@ namespace ModbusExt // modbus extension protocol declarations
         if (timePerByte.count() == 0) {
             return EVENTS_REQUEST_MAX_BYTES;
         }
-        auto maxBytes = std::chrono::duration_cast<std::chrono::microseconds>(maxTime).count() / timePerByte.count();
+        size_t maxBytes = std::chrono::duration_cast<std::chrono::microseconds>(maxTime).count() / timePerByte.count();
         if (maxBytes > MAX_PACKET_SIZE) {
             maxBytes = MAX_PACKET_SIZE;
         }
@@ -287,19 +287,25 @@ namespace ModbusExt // modbus extension protocol declarations
             throw Modbus::TMalformedResponseError("invalid slave id");
         }
 
+        if (Response[SUB_COMMAND_POS] != ENABLE_EVENTS_COMMAND) {
+            throw Modbus::TMalformedResponseError("invalid sub command");
+        }
+
         TBitIterator dataIt(Response.data() + ENABLE_EVENTS_RESPONSE_DATA_POS - 1,
                             Response[ENABLE_EVENTS_RESPONSE_DATA_SIZE_POS]);
 
         TEventType lastType = TEventType::REBOOT;
         uint16_t lastRegAddr = 0;
         uint16_t lastDataAddr = 0;
+        bool firstRegister = true;
 
         for (auto regIt = SettingsStart; regIt != SettingsEnd; ++regIt) {
-            if (lastType != regIt->Type || lastRegAddr + MaxRegDistance < regIt->Addr) {
+            if (firstRegister || (lastType != regIt->Type) || (lastRegAddr + MaxRegDistance < regIt->Addr)) {
                 dataIt.NextByte();
                 lastDataAddr = regIt->Addr;
                 lastType = regIt->Type;
                 Visitor(lastType, lastDataAddr, dataIt.GetBit());
+                firstRegister = false;
             } else {
                 do {
                     dataIt.NextBit();
@@ -348,14 +354,16 @@ namespace ModbusExt // modbus extension protocol declarations
         uint16_t lastAddr = 0;
         auto regIt = SettingsEnd;
         size_t regCountPos;
+        bool firstRegister = true;
         for (; HasSpaceForEnableEventRecord(Request) && regIt != Settings.cend(); ++regIt) {
-            if (lastType != regIt->Type || lastAddr + MaxRegDistance < regIt->Addr) {
+            if (firstRegister || (lastType != regIt->Type) || (lastAddr + MaxRegDistance < regIt->Addr)) {
                 Append(requestBack, static_cast<uint8_t>(regIt->Type));
                 AppendBigEndian(requestBack, regIt->Addr);
                 Append(requestBack, static_cast<uint8_t>(1));
                 regCountPos = Request.size() - 1;
                 Append(requestBack, static_cast<uint8_t>(regIt->Priority));
                 Request[ENABLE_EVENTS_RESPONSE_DATA_SIZE_POS] += MIN_ENABLE_EVENTS_REC_SIZE;
+                firstRegister = false;
             } else {
                 const auto nRegs = static_cast<size_t>(regIt->Addr - lastAddr);
                 Request[regCountPos] += nRegs;

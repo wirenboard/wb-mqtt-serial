@@ -210,21 +210,19 @@ TSerialClientEventsReader::TSerialClientEventsReader(size_t maxReadErrors)
       ClearErrorsOnSuccessfulRead(false)
 {}
 
-bool TSerialClientEventsReader::ReadEvents(TPort& port,
+void TSerialClientEventsReader::ReadEvents(TPort& port,
                                            milliseconds maxReadingTime,
                                            TRegisterCallback registerCallback,
-                                           TDeviceCallback deviceRestartedHandler)
+                                           TDeviceCallback deviceRestartedHandler,
+                                           util::TGetNowFn nowFn)
 {
-    if (DevicesWithEnabledEvents.empty()) {
-        return false;
-    }
     TModbusExtEventsVisitor visitor(Regs, DevicesWithEnabledEvents, registerCallback, deviceRestartedHandler);
-    util::TSpendTimeMeter spendTimeMeter;
-    spendTimeMeter.Start();
-    for (auto spendTime = 0us; spendTime < maxReadingTime; spendTime = spendTimeMeter.GetSpendTime()) {
+    util::TSpentTimeMeter spentTimeMeter(nowFn);
+    spentTimeMeter.Start();
+    for (auto spentTime = 0us; spentTime < maxReadingTime; spentTime = spentTimeMeter.GetSpentTime()) {
         try {
             if (!ModbusExt::ReadEvents(port,
-                                       floor<milliseconds>(maxReadingTime - spendTime),
+                                       floor<milliseconds>(maxReadingTime - spentTime),
                                        LastAccessedSlaveId,
                                        EventState,
                                        visitor))
@@ -248,7 +246,6 @@ bool TSerialClientEventsReader::ReadEvents(TPort& port,
         }
     }
     DisableEventsFromRegs(port, visitor.GetRegsToDisable());
-    return true;
 }
 
 void TSerialClientEventsReader::EnableEvents(PSerialDevice device, TPort& port)
@@ -359,11 +356,6 @@ void TSerialClientEventsReader::ClearReadErrors(TRegisterCallback callback)
             }
         }
     }
-}
-
-bool TSerialClientEventsReader::HasRegisters() const
-{
-    return !Regs.empty();
 }
 
 bool TSerialClientEventsReader::HasDevicesWithEnabledEvents() const
