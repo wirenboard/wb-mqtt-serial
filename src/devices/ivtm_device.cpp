@@ -83,12 +83,12 @@ void TIVTMDevice::ReadResponse(uint16_t addr, uint8_t* payload, uint16_t len)
     uint8_t buf[MAX_LEN];
 
     auto nread = Port()
-                    ->ReadFrame(buf,
-                                MAX_LEN,
-                                DeviceConfig()->ResponseTimeout,
-                                DeviceConfig()->FrameTimeout,
-                                [](uint8_t* buf, int size) { return size > 0 && buf[size - 1] == '\r'; })
-                    .Count;
+                     ->ReadFrame(buf,
+                                 MAX_LEN,
+                                 DeviceConfig()->ResponseTimeout,
+                                 DeviceConfig()->FrameTimeout,
+                                 [](uint8_t* buf, int size) { return size > 0 && buf[size - 1] == '\r'; })
+                     .Count;
     if (nread < 10)
         throw TSerialDeviceTransientErrorException("frame too short");
 
