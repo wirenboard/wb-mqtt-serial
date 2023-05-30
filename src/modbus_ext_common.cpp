@@ -87,7 +87,7 @@ namespace ModbusExt // modbus extension protocol declarations
         if (timePerByte.count() == 0) {
             return EVENTS_REQUEST_MAX_BYTES;
         }
-        auto maxBytes = std::chrono::duration_cast<std::chrono::microseconds>(maxTime).count() / timePerByte.count();
+        size_t maxBytes = std::chrono::duration_cast<std::chrono::microseconds>(maxTime).count() / timePerByte.count();
         if (maxBytes > MAX_PACKET_SIZE) {
             maxBytes = MAX_PACKET_SIZE;
         }
