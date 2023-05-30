@@ -33,7 +33,9 @@ bool TEMDevice::ReadResponse(int expectedByte1, uint8_t* payload, int len, TPort
 {
     uint8_t buf[MAX_LEN], *p = buf;
     int nread =
-        Port()->ReadFrame(buf, MAX_LEN, DeviceConfig()->ResponseTimeout, DeviceConfig()->FrameTimeout, frame_complete);
+        Port()
+            ->ReadFrame(buf, MAX_LEN, DeviceConfig()->ResponseTimeout, DeviceConfig()->FrameTimeout, frame_complete)
+            .Count;
     if (nread < 3 + SlaveIdWidth)
         throw TSerialDeviceTransientErrorException("frame too short");
 

@@ -585,11 +585,13 @@ void TDlmsDevice::Read(unsigned char eop, CGXByteBuffer& reply)
     };
 
     uint8_t buf[MAX_PACKET_SIZE];
-    auto bytesRead = Port()->ReadFrame(buf,
-                                       sizeof(buf),
-                                       DeviceConfig()->ResponseTimeout,
-                                       DeviceConfig()->FrameTimeout,
-                                       frameCompleteFn);
+    auto bytesRead = Port()
+                         ->ReadFrame(buf,
+                                     sizeof(buf),
+                                     DeviceConfig()->ResponseTimeout,
+                                     DeviceConfig()->FrameTimeout,
+                                     frameCompleteFn)
+                         .Count;
     reply.Set(buf, bytesRead);
 }
 

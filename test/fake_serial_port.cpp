@@ -145,17 +145,19 @@ uint8_t TFakeSerialPort::ReadByte(const std::chrono::microseconds& /*timeout*/)
     return Resp[RespPos++];
 }
 
-size_t TFakeSerialPort::ReadFrame(uint8_t* buf,
-                                  size_t count,
-                                  const std::chrono::microseconds& responseTimeout,
-                                  const std::chrono::microseconds& frameTimeout,
-                                  TFrameCompletePred frame_complete)
+TReadFrameResult TFakeSerialPort::ReadFrame(uint8_t* buf,
+                                            size_t count,
+                                            const std::chrono::microseconds& responseTimeout,
+                                            const std::chrono::microseconds& frameTimeout,
+                                            TFrameCompletePred frame_complete)
 {
+    TReadFrameResult res;
+
     switch (DisconnectType) {
         case NoDisconnect:
             break;
         case SilentReadAndWriteFailure:
-            return 0;
+            return res;
         case BadFileDescriptorOnWriteAndRead: {
             Fixture.Emit() << "read frame error EBADF";
             throw TSerialDeviceErrnoException("read frame error ", EBADF);
@@ -167,9 +169,8 @@ size_t TFakeSerialPort::ReadFrame(uint8_t* buf,
         throw std::runtime_error("TFakeSerialPort::ReadFrame: bad timeout: " + std::to_string(frameTimeout.count()) +
                                  " instead of " + std::to_string(ExpectedFrameTimeout.count()));
     }
-    size_t nread = 0;
     uint8_t* p = buf;
-    for (; nread < count; ++nread) {
+    for (; res.Count < count; ++res.Count) {
         if (RespPos == Resp.size())
             break;
         int b = Resp[RespPos++];
@@ -181,10 +182,10 @@ size_t TFakeSerialPort::ReadFrame(uint8_t* buf,
         *p++ = (uint8_t)b;
     }
     DumpWhatWasRead();
-    if ((nread == 0) && (count != 0)) {
+    if ((res.Count == 0) && (count != 0)) {
         throw TSerialDeviceTransientErrorException("request timed out");
     }
-    return nread;
+    return res;
 }
 
 void TFakeSerialPort::SkipNoise()

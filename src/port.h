@@ -10,6 +10,15 @@
 
 #include "serial_port_settings.h"
 
+struct TReadFrameResult
+{
+    //! Received byte count
+    size_t Count = 0;
+
+    //! Time to first byte
+    std::chrono::microseconds ResponseTime = std::chrono::microseconds::zero();
+};
+
 class TPort: public std::enable_shared_from_this<TPort>
 {
 public:
@@ -42,13 +51,12 @@ public:
      * @param responseTimeout maximum waiting timeout before first byte of frame
      * @param frameTimeout minimum inter-frame delay
      * @param frame_complete
-     * @return size_t received byte count
      */
-    virtual size_t ReadFrame(uint8_t* buf,
-                             size_t count,
-                             const std::chrono::microseconds& responseTimeout,
-                             const std::chrono::microseconds& frameTimeout,
-                             TFrameCompletePred frame_complete = 0) = 0;
+    virtual TReadFrameResult ReadFrame(uint8_t* buf,
+                                       size_t count,
+                                       const std::chrono::microseconds& responseTimeout,
+                                       const std::chrono::microseconds& frameTimeout,
+                                       TFrameCompletePred frame_complete = 0) = 0;
 
     virtual void SkipNoise() = 0;
 

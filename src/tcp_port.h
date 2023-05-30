@@ -14,11 +14,11 @@ public:
     void Open() override;
     void WriteBytes(const uint8_t* buf, int count) override;
     uint8_t ReadByte(const std::chrono::microseconds& timeout) override;
-    size_t ReadFrame(uint8_t* buf,
-                     size_t count,
-                     const std::chrono::microseconds& responseTimeout,
-                     const std::chrono::microseconds& frameTimeout,
-                     TFrameCompletePred frame_complete = 0) override;
+    TReadFrameResult ReadFrame(uint8_t* buf,
+                               size_t count,
+                               const std::chrono::microseconds& responseTimeout,
+                               const std::chrono::microseconds& frameTimeout,
+                               TFrameCompletePred frame_complete = 0) override;
 
     std::string GetDescription(bool verbose = true) const override;
 

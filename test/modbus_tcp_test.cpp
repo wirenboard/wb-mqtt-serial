@@ -31,20 +31,21 @@ namespace
             return 0;
         }
 
-        size_t ReadFrame(uint8_t* buf,
-                         size_t count,
-                         const std::chrono::microseconds& responseTimeout,
-                         const std::chrono::microseconds& frameTimeout,
-                         TFrameCompletePred frame_complete = 0) override
+        TReadFrameResult ReadFrame(uint8_t* buf,
+                                   size_t count,
+                                   const std::chrono::microseconds& responseTimeout,
+                                   const std::chrono::microseconds& frameTimeout,
+                                   TFrameCompletePred frame_complete = 0) override
         {
+            TReadFrameResult res;
             if (Pointer == Stream.size()) {
                 std::this_thread::sleep_for(std::chrono::milliseconds(15));
                 Pointer = 0;
             }
-            size_t l = std::min(count, Stream.size() - Pointer);
-            memcpy(buf, &Stream[Pointer], l);
-            Pointer += l;
-            return l;
+            res.Count = std::min(count, Stream.size() - Pointer);
+            memcpy(buf, &Stream[Pointer], res.Count);
+            Pointer += res.Count;
+            return res;
         }
 
         void SkipNoise() override
@@ -116,7 +117,7 @@ TEST_F(TModbusTCPTraitsTest, ReadFrameGood)
     Modbus::TRequest req = {0, 1, 0, 0, 0, 4, 100, 7, 8, 9};
     Modbus::TRequest resp;
 
-    ASSERT_EQ(traits.ReadFrame(port, t, t, req, resp), 1);
+    ASSERT_EQ(traits.ReadFrame(port, t, t, req, resp).Count, 1);
 
     TestEqual(resp, r);
 }
@@ -182,7 +183,7 @@ TEST_F(TModbusTCPTraitsTest, ReadFramePassWrongTransactionId)
     Modbus::TRequest req = {0, 1, 0, 0, 0, 4, 100, 7, 8, 9};
     Modbus::TRequest resp;
 
-    auto pduSize = traits.ReadFrame(port, t, t, req, resp);
+    auto pduSize = traits.ReadFrame(port, t, t, req, resp).Count;
     resp.resize(traits.GetPacketSize(pduSize));
     TestEqual(resp, goodResp);
 }

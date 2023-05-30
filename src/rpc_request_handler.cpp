@@ -36,10 +36,9 @@ void TRPCRequestHandler::RPCRequestHandling(PPort port)
             port->WriteBytes(Request->Message);
 
             std::vector<uint8_t> response(Request->ResponseSize);
-            size_t actualSize = port->ReadFrame(response.data(),
-                                                Request->ResponseSize,
-                                                Request->ResponseTimeout,
-                                                Request->FrameTimeout);
+            size_t actualSize =
+                port->ReadFrame(response.data(), Request->ResponseSize, Request->ResponseTimeout, Request->FrameTimeout)
+                    .Count;
 
             response.resize(actualSize);
             if (Request->OnResult) {

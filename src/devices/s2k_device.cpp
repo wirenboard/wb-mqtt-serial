@@ -92,7 +92,7 @@ void TS2KDevice::WriteRegisterImpl(PRegister reg, const TRegisterValue& value)
     command[6] = CrcS2K(command, 6);
     Port()->WriteBytes(command, 7);
     uint8_t response[256];
-    int size = Port()->ReadFrame(response, 256, DeviceConfig()->ResponseTimeout, DeviceConfig()->FrameTimeout);
+    int size = Port()->ReadFrame(response, 256, DeviceConfig()->ResponseTimeout, DeviceConfig()->FrameTimeout).Count;
     if (size != 6 || response[0] != (uint8_t)SlaveId || response[1] != 5 || response[2] != 0x16) {
         throw TSerialDeviceTransientErrorException("incorrect response for 0x15 command");
     }
@@ -127,7 +127,8 @@ TRegisterValue TS2KDevice::ReadRegisterImpl(PRegister reg)
             command[6] = CrcS2K(command, 6);
             Port()->WriteBytes(command, 7);
             uint8_t response[256];
-            int size = Port()->ReadFrame(response, 256, DeviceConfig()->ResponseTimeout, DeviceConfig()->FrameTimeout);
+            int size =
+                Port()->ReadFrame(response, 256, DeviceConfig()->ResponseTimeout, DeviceConfig()->FrameTimeout).Count;
             if (size != 6 || response[0] != (uint8_t)SlaveId || response[1] != 0x5 || response[2] != 0x6) {
                 throw TSerialDeviceTransientErrorException("incorrect response for 0x5 command");
             }

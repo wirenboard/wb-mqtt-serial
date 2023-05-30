@@ -129,7 +129,8 @@ namespace
         auto actualSize = port->ReadFrame(response.data(),
                                           rpcRequest->ResponseSize,
                                           rpcRequest->ResponseTimeout,
-                                          rpcRequest->FrameTimeout);
+                                          rpcRequest->FrameTimeout)
+                              .Count;
         response.resize(actualSize);
 
         return response;
