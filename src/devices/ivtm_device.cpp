@@ -82,7 +82,7 @@ void TIVTMDevice::ReadResponse(uint16_t addr, uint8_t* payload, uint16_t len)
 {
     uint8_t buf[MAX_LEN];
 
-    int nread = Port()
+    auto nread = Port()
                     ->ReadFrame(buf,
                                 MAX_LEN,
                                 DeviceConfig()->ResponseTimeout,
