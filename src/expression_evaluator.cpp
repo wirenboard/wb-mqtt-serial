@@ -1,6 +1,7 @@
 #include "expression_evaluator.h"
 
 #include <stdexcept>
+#include <unordered_map>
 #include <vector>
 
 using namespace std;
@@ -20,30 +21,30 @@ namespace
      *        https://en.cppreference.com/w/cpp/language/operator_precedence
      *        Lower value, higher priority
      */
-    size_t GetPriority(TTokenType type)
+    size_t GetPriority(TAstNodeType type)
     {
         switch (type) {
-            case TTokenType::Greater:
-            case TTokenType::Less:
-            case TTokenType::GreaterEqual:
-            case TTokenType::LessEqual:
+            case TAstNodeType::Greater:
+            case TAstNodeType::Less:
+            case TAstNodeType::GreaterEqual:
+            case TAstNodeType::LessEqual:
                 return 9;
-            case TTokenType::Equal:
-            case TTokenType::NotEqual:
+            case TAstNodeType::Equal:
+            case TAstNodeType::NotEqual:
                 return 10;
-            case TTokenType::And:
+            case TAstNodeType::And:
                 return 14;
-            case TTokenType::Or:
+            case TAstNodeType::Or:
                 return 15;
             default:
                 return 0;
         }
     }
 
-    // Input token sequence must be valid. It must have odd length.
-    // Odd tokens are values or expression trees, even values are operators.
-    std::unique_ptr<TToken> TreeByPriority(std::vector<std::unique_ptr<TToken>>::iterator begin,
-                                           std::vector<std::unique_ptr<TToken>>::iterator end)
+    // Input ast node sequence must be valid. It must have odd length.
+    // Odd nodes are numbers, identifiers, functions or expression trees, even values are operators.
+    std::unique_ptr<TAstNode> TreeByPriority(std::vector<std::unique_ptr<TAstNode>>::iterator begin,
+                                             std::vector<std::unique_ptr<TAstNode>>::iterator end)
     {
         if (begin + 1 == end) {
             return std::move(*begin);
@@ -56,41 +57,56 @@ namespace
                 }
             }
         }
-        std::unique_ptr<TToken> root(std::move(*rootIt));
+        std::unique_ptr<TAstNode> root(std::move(*rootIt));
         root->SetLeft(TreeByPriority(begin, rootIt));
         root->SetRight(TreeByPriority(rootIt + 1, end));
         return root;
     }
 
-    void ThrowParserError(const std::string& msg, const TLexer& lexer)
+    void ThrowParserError(const std::string& msg, size_t pos)
     {
-        throw std::runtime_error(msg + std::to_string(lexer.GetLastTokenPosition()));
+        throw std::runtime_error(msg + std::to_string(pos + 1));
     }
 
-    void ThrowMissingRightBracketError(const TLexer& lexer)
+    void ThrowMissingRightBracketError(size_t pos)
     {
-        ThrowParserError("right bracket expected at position ", lexer);
+        ThrowParserError("right bracket expected at position ", pos);
     }
 
-    void ThrowMissingOperatorError(const TLexer& lexer)
+    void ThrowMissingOperatorError(size_t pos)
     {
-        ThrowParserError("operator expected at position ", lexer);
+        ThrowParserError("operator expected at position ", pos);
     }
 
-    void ThrowMissingIdentifierError(const TLexer& lexer)
+    void ThrowMissingIdentifierError(size_t pos)
     {
-        ThrowParserError("identifier, number or left bracket are expected at position ", lexer);
+        ThrowParserError("identifier expected at position ", pos);
     }
 
-    optional<int32_t> EvalImpl(const TToken* expr, const IParams& params)
+    void ThrowMissingIdentifierOrNumberOrLeftBracketError(size_t pos)
+    {
+        ThrowParserError("identifier, number or left bracket are expected at position ", pos);
+    }
+
+    void ThrowUnknownFunctionError(const std::string& name, size_t pos)
+    {
+        ThrowParserError("unknown function " + name + " at position ", pos);
+    }
+
+    optional<int32_t> EvalFunction(const TAstNode* expr, const IParams& params)
+    {
+        return params.Get(expr->GetRight()->GetValue()).has_value();
+    }
+
+    optional<int32_t> EvalImpl(const TAstNode* expr, const IParams& params)
     {
         if (!expr) {
             throw std::runtime_error("undefined token");
         }
         switch (expr->GetType()) {
-            case TTokenType::Number:
+            case TAstNodeType::Number:
                 return optional<int32_t>(atoi(expr->GetValue().c_str()));
-            case TTokenType::Equal: {
+            case TAstNodeType::Equal: {
                 auto v1 = EvalImpl(expr->GetLeft(), params);
                 if (!v1) {
                     return false;
@@ -98,97 +114,120 @@ namespace
                 auto v2 = EvalImpl(expr->GetRight(), params);
                 return v2 ? v1 == v2 : false;
             }
-            case TTokenType::NotEqual: {
+            case TAstNodeType::NotEqual: {
                 auto v1 = EvalImpl(expr->GetLeft(), params);
                 if (!v1)
                     return true;
                 auto v2 = EvalImpl(expr->GetRight(), params);
                 return v2 ? v1 != v2 : true;
             }
-            case TTokenType::Greater: {
+            case TAstNodeType::Greater: {
                 auto v1 = EvalImpl(expr->GetLeft(), params);
                 if (!v1)
                     return false;
                 auto v2 = EvalImpl(expr->GetRight(), params);
                 return v2 ? v1 > v2 : false;
             }
-            case TTokenType::Less: {
+            case TAstNodeType::Less: {
                 auto v1 = EvalImpl(expr->GetLeft(), params);
                 if (!v1)
                     return false;
                 auto v2 = EvalImpl(expr->GetRight(), params);
                 return v2 ? v1 < v2 : false;
             }
-            case TTokenType::GreaterEqual: {
+            case TAstNodeType::GreaterEqual: {
                 auto v1 = EvalImpl(expr->GetLeft(), params);
                 if (!v1)
                     return false;
                 auto v2 = EvalImpl(expr->GetRight(), params);
                 return v2 ? v1 >= v2 : false;
             }
-            case TTokenType::LessEqual: {
+            case TAstNodeType::LessEqual: {
                 auto v1 = EvalImpl(expr->GetLeft(), params);
                 if (!v1)
                     return false;
                 auto v2 = EvalImpl(expr->GetRight(), params);
                 return v2 ? v1 <= v2 : false;
             }
-            case TTokenType::Or: {
+            case TAstNodeType::Or: {
                 auto v1 = EvalImpl(expr->GetLeft(), params);
                 if (!v1)
                     return false;
                 auto v2 = EvalImpl(expr->GetRight(), params);
                 return v2 ? v1.value() || v2.value() : false;
             }
-            case TTokenType::And: {
+            case TAstNodeType::And: {
                 auto v1 = EvalImpl(expr->GetLeft(), params);
                 if (!v1)
                     return false;
                 auto v2 = EvalImpl(expr->GetRight(), params);
                 return v2 ? v1.value() && v2.value() : false;
             }
-            case TTokenType::Ident: {
+            case TAstNodeType::Ident: {
                 return params.Get(expr->GetValue());
             }
-            case TTokenType::LeftBr:
-            case TTokenType::RightBr:
-            case TTokenType::EOL:
-                throw std::runtime_error("bad token value");
+            case TAstNodeType::Func: {
+                return EvalFunction(expr, params);
+            }
         }
         return nullopt;
     }
 
 }
 
-TToken::TToken(TTokenType type, const std::string& value): Type(type), Value(value)
+TToken::TToken(TTokenType type, size_t pos, const std::string& value): Type(type), Value(value), Pos(pos)
 {}
 
-void TToken::SetLeft(std::unique_ptr<TToken> node)
+TAstNode::TAstNode(const TToken& token)
+{
+    const std::unordered_map<TTokenType, TAstNodeType> types = {{TTokenType::Number, TAstNodeType::Number},
+                                                                {TTokenType::Ident, TAstNodeType::Ident},
+                                                                {TTokenType::Equal, TAstNodeType::Equal},
+                                                                {TTokenType::NotEqual, TAstNodeType::NotEqual},
+                                                                {TTokenType::Greater, TAstNodeType::Greater},
+                                                                {TTokenType::Less, TAstNodeType::Less},
+                                                                {TTokenType::GreaterEqual, TAstNodeType::GreaterEqual},
+                                                                {TTokenType::LessEqual, TAstNodeType::LessEqual},
+                                                                {TTokenType::Or, TAstNodeType::Or},
+                                                                {TTokenType::And, TAstNodeType::And}};
+    auto it = types.find(token.Type);
+    if (it != types.end()) {
+        Type = it->second;
+    } else {
+        throw std::runtime_error("Can't make AST node");
+    }
+    Value = token.Value;
+}
+
+TAstNode::TAstNode(const TAstNodeType& type, const std::string& value): Type(type), Value(value)
+{}
+
+void TAstNode::SetLeft(std::unique_ptr<TAstNode> node)
 {
     Left.swap(node);
 }
 
-void TToken::SetRight(std::unique_ptr<TToken> node)
+void TAstNode::SetRight(std::unique_ptr<TAstNode> node)
 {
     Right.swap(node);
 }
 
-const TToken* TToken::GetLeft() const
+const TAstNode* TAstNode::GetLeft() const
 {
     return Left.get();
 }
 
-const TToken* TToken::GetRight() const
+const TAstNode* TAstNode::GetRight() const
 {
     return Right.get();
 }
 
-const std::string& TToken::GetValue() const
+const std::string& TAstNode::GetValue() const
 {
     return Value;
 }
 
-TTokenType TToken::GetType() const
+TAstNodeType TAstNode::GetType() const
 {
     return Type;
 }
@@ -212,22 +251,15 @@ bool TLexer::CompareChar(char c) const
     return SomethingToParse() && (*Pos == c);
 }
 
-TLexer::TLexer(const std::string& str)
+std::optional<TToken> TLexer::GetOpOrBracket()
 {
-    Start = str.begin();
-    Pos = Start;
-    TokenStart = Start;
-    End = str.end();
-}
-
-std::unique_ptr<TToken> TLexer::GetOpOrBracket()
-{
+    auto tokenStart = Pos - Start;
     switch (*Pos) {
         case '=': {
             ++Pos;
             if (CompareChar('=')) {
                 ++Pos;
-                return std::make_unique<TToken>(TTokenType::Equal);
+                return TToken(TTokenType::Equal, tokenStart);
             }
             ThrowUnexpected();
         }
@@ -235,7 +267,7 @@ std::unique_ptr<TToken> TLexer::GetOpOrBracket()
             ++Pos;
             if (CompareChar('=')) {
                 ++Pos;
-                return std::make_unique<TToken>(TTokenType::NotEqual);
+                return TToken(TTokenType::NotEqual, tokenStart);
             }
             ThrowUnexpected();
         }
@@ -243,23 +275,23 @@ std::unique_ptr<TToken> TLexer::GetOpOrBracket()
             ++Pos;
             if (CompareChar('=')) {
                 ++Pos;
-                return std::make_unique<TToken>(TTokenType::LessEqual);
+                return TToken(TTokenType::LessEqual, tokenStart);
             }
-            return std::make_unique<TToken>(TTokenType::Less);
+            return TToken(TTokenType::Less, tokenStart);
         }
         case '>': {
             ++Pos;
             if (CompareChar('=')) {
                 ++Pos;
-                return std::make_unique<TToken>(TTokenType::GreaterEqual);
+                return TToken(TTokenType::GreaterEqual, tokenStart);
             }
-            return std::make_unique<TToken>(TTokenType::Greater);
+            return TToken(TTokenType::Greater, tokenStart);
         }
         case '|': {
             ++Pos;
             if (CompareChar('|')) {
                 ++Pos;
-                return std::make_unique<TToken>(TTokenType::Or);
+                return TToken(TTokenType::Or, tokenStart);
             }
             ThrowUnexpected();
         }
@@ -267,27 +299,26 @@ std::unique_ptr<TToken> TLexer::GetOpOrBracket()
             ++Pos;
             if (CompareChar('&')) {
                 ++Pos;
-                return std::make_unique<TToken>(TTokenType::And);
+                return TToken(TTokenType::And, tokenStart);
             }
             ThrowUnexpected();
         }
         case '(': {
             ++Pos;
-            return std::make_unique<TToken>(TTokenType::LeftBr);
+            return TToken(TTokenType::LeftBr, tokenStart);
         }
         case ')': {
             ++Pos;
-            return std::make_unique<TToken>(TTokenType::RightBr);
-        }
-        default: {
-            return nullptr;
+            return TToken(TTokenType::RightBr, tokenStart);
         }
     }
+    return nullopt;
 }
 
-std::unique_ptr<TToken> TLexer::GetNumber()
+std::optional<TToken> TLexer::GetNumber()
 {
     std::string value;
+    auto tokenStart = Pos - Start;
     if (*Pos == '-') {
         ++Pos;
         value += '-';
@@ -298,146 +329,193 @@ std::unique_ptr<TToken> TLexer::GetNumber()
         for (; SomethingToParse() && isdigit(*Pos); ++Pos) {
             value += *Pos;
         }
-        return std::make_unique<TToken>(TTokenType::Number, value);
+        return TToken(TTokenType::Number, tokenStart, value);
     }
     if (!value.empty()) {
         ThrowUnexpected();
     }
-    return nullptr;
+    return nullopt;
 }
 
-std::unique_ptr<TToken> TLexer::GetIdent()
+std::optional<TToken> TLexer::GetIdent()
 {
     if (isalpha(*Pos)) {
+        auto tokenStart = Pos - Start;
         std::string identifier;
         identifier += *Pos;
         ++Pos;
         for (; SomethingToParse() && (isalpha(*Pos) || isdigit(*Pos) || *Pos == '_'); ++Pos) {
             identifier += *Pos;
         }
-        return std::make_unique<TToken>(TTokenType::Ident, identifier);
+        return TToken(TTokenType::Ident, tokenStart, identifier);
     }
-    return nullptr;
+    return nullopt;
 }
 
-std::unique_ptr<TToken> TLexer::GetNextToken()
+std::vector<TToken> TLexer::GetTokens(const std::string& str)
 {
-    TokenStart = Pos;
-    if (!SomethingToParse()) {
-        return std::make_unique<TToken>(TTokenType::EOL);
-    }
-    auto token = GetOpOrBracket();
-    if (token) {
-        return token;
-    }
-    token = GetNumber();
-    if (token) {
-        return token;
-    }
-    token = GetIdent();
-    if (token) {
-        return token;
-    }
-    ThrowUnexpected();
-    return nullptr;
-}
+    Start = str.begin();
+    Pos = Start;
+    End = str.end();
 
-size_t TLexer::GetLastTokenPosition() const
-{
-    return TokenStart - Start + 1;
-}
-
-std::unique_ptr<TToken> TParser::ParseRightOperand(TLexer& lexer)
-{
-    if (Token->GetType() == TTokenType::Number || Token->GetType() == TTokenType::Ident) {
-        auto nextToken = lexer.GetNextToken();
-        Token.swap(nextToken);
-        return nextToken;
-    }
-    if (Token->GetType() == TTokenType::LeftBr) {
-        Token = lexer.GetNextToken();
-        auto res = ParseExpression(lexer);
-        if (Token->GetType() != TTokenType::RightBr) {
-            ThrowMissingRightBracketError(lexer);
+    std::vector<TToken> tokens;
+    while (SomethingToParse()) {
+        auto token = GetOpOrBracket();
+        if (token) {
+            tokens.emplace_back(*token);
+            continue;
         }
-        Token = lexer.GetNextToken();
-        return res;
+        token = GetNumber();
+        if (token) {
+            tokens.emplace_back(*token);
+            continue;
+        }
+        token = GetIdent();
+        if (token) {
+            tokens.emplace_back(*token);
+        } else {
+            ThrowUnexpected();
+        }
     }
-    ThrowMissingIdentifierError(lexer);
-    return nullptr;
+    tokens.emplace_back(TToken(TTokenType::EOL, Pos - Start));
+    return tokens;
 }
 
-std::unique_ptr<TToken> TParser::ParseConditionWithBrackets(TLexer& lexer)
+std::unique_ptr<TAstNode> TParser::ParseFunction()
 {
-    if (Token->GetType() != TTokenType::LeftBr) {
+    if (Token->Type != TTokenType::Ident) {
         return nullptr;
     }
-    std::vector<std::unique_ptr<TToken>> tokens;
-    Token = lexer.GetNextToken();
-    tokens.emplace_back(ParseExpression(lexer));
-    if (Token->GetType() != TTokenType::RightBr) {
-        ThrowMissingRightBracketError(lexer);
+    auto nextToken = Token + 1;
+    if (nextToken->Type != TTokenType::LeftBr) {
+        return nullptr;
     }
-    Token = lexer.GetNextToken();
-    while (IsOperator(Token->GetType())) {
-        tokens.emplace_back(std::move(Token));
-        Token = lexer.GetNextToken();
-        tokens.emplace_back(ParseRightOperand(lexer));
+    ++nextToken;
+    if (nextToken->Type != TTokenType::Ident) {
+        ThrowMissingIdentifierError(nextToken->Pos);
+    }
+    if (Token->Value != "isDefined") {
+        ThrowUnknownFunctionError(Token->Value, Token->Pos);
+    }
+    auto node = std::make_unique<TAstNode>(TAstNodeType::Func, Token->Value);
+    node->SetRight(std::make_unique<TAstNode>(*nextToken));
+    ++nextToken;
+    if (nextToken->Type != TTokenType::RightBr) {
+        ThrowMissingRightBracketError(nextToken->Pos);
+    }
+    Token = ++nextToken;
+    return node;
+}
+
+std::unique_ptr<TAstNode> TParser::ParseRightOperand()
+{
+    auto fn = ParseFunction();
+    if (fn) {
+        return fn;
+    }
+    if (Token->Type == TTokenType::Number || Token->Type == TTokenType::Ident) {
+        auto node = std::make_unique<TAstNode>(*Token);
+        ++Token;
+        return node;
+    }
+    if (Token->Type != TTokenType::LeftBr) {
+        ThrowMissingIdentifierOrNumberOrLeftBracketError(Token->Pos);
+    }
+    ++Token;
+    auto res = ParseExpression();
+    if (Token->Type != TTokenType::RightBr) {
+        ThrowMissingRightBracketError(Token->Pos);
+    }
+    ++Token;
+    return res;
+}
+
+std::unique_ptr<TAstNode> TParser::ParseConditionWithBrackets()
+{
+    if (Token->Type != TTokenType::LeftBr) {
+        return nullptr;
+    }
+    std::vector<std::unique_ptr<TAstNode>> tokens;
+    ++Token;
+    tokens.emplace_back(ParseExpression());
+    if (Token->Type != TTokenType::RightBr) {
+        ThrowMissingRightBracketError(Token->Pos);
+    }
+    ++Token;
+    while (IsOperator(Token->Type)) {
+        tokens.emplace_back(std::make_unique<TAstNode>(*Token));
+        ++Token;
+        tokens.emplace_back(ParseRightOperand());
     }
     return TreeByPriority(tokens.begin(), tokens.end());
 }
 
-std::unique_ptr<TToken> TParser::ParseCondition(TLexer& lexer)
+std::unique_ptr<TAstNode> TParser::ParseCondition()
 {
-    if (Token->GetType() != TTokenType::Number && Token->GetType() != TTokenType::Ident) {
-        return nullptr;
+    std::vector<std::unique_ptr<TAstNode>> tokens;
+    auto currentToken = Token;
+    auto fn = ParseFunction();
+    if (fn) {
+        if (!IsOperator(Token->Type)) {
+            Token = currentToken;
+            return nullptr;
+        }
+        tokens.emplace_back(std::move(fn));
+    } else {
+        if (Token->Type != TTokenType::Number && Token->Type != TTokenType::Ident) {
+            return nullptr;
+        }
+        tokens.emplace_back(std::make_unique<TAstNode>(*Token));
+        ++Token;
     }
-    std::vector<std::unique_ptr<TToken>> tokens;
-    tokens.emplace_back(std::move(Token));
-    Token = lexer.GetNextToken();
-    if (!IsOperator(Token->GetType())) {
-        ThrowMissingOperatorError(lexer);
+    if (!IsOperator(Token->Type)) {
+        ThrowMissingOperatorError(Token->Pos);
     }
-    tokens.emplace_back(std::move(Token));
-    Token = lexer.GetNextToken();
-    tokens.emplace_back(ParseRightOperand(lexer));
-    while (IsOperator(Token->GetType())) {
-        tokens.emplace_back(std::move(Token));
-        Token = lexer.GetNextToken();
-        tokens.emplace_back(ParseRightOperand(lexer));
+    tokens.emplace_back(std::make_unique<TAstNode>(*Token));
+    ++Token;
+    tokens.emplace_back(ParseRightOperand());
+    while (IsOperator(Token->Type)) {
+        tokens.emplace_back(std::make_unique<TAstNode>(*Token));
+        ++Token;
+        tokens.emplace_back(ParseRightOperand());
     }
     return TreeByPriority(tokens.begin(), tokens.end());
 }
 
-std::unique_ptr<TToken> TParser::ParseExpression(TLexer& lexer)
+std::unique_ptr<TAstNode> TParser::ParseExpression()
 {
-    auto root = ParseCondition(lexer);
+    auto root = ParseCondition();
     if (root) {
         return root;
     }
-    root = ParseConditionWithBrackets(lexer);
+    root = ParseConditionWithBrackets();
     if (root) {
         return root;
     }
-    ThrowMissingIdentifierError(lexer);
+    root = ParseFunction();
+    if (root) {
+        return root;
+    }
+    ThrowMissingIdentifierOrNumberOrLeftBracketError(Token->Pos);
     return nullptr;
 }
 
-std::unique_ptr<TToken> TParser::Parse(const std::string& str)
+std::unique_ptr<TAstNode> TParser::Parse(const std::string& str)
 {
-    TLexer lexer(str);
-    Token = lexer.GetNextToken();
-    auto root = ParseExpression(lexer);
-    if (Token->GetType() != TTokenType::EOL) {
+    TLexer lexer;
+    auto tokens = lexer.GetTokens(str);
+    Token = tokens.cbegin();
+    auto root = ParseExpression();
+    if (Token->Type != TTokenType::EOL) {
         if (root) {
-            ThrowMissingOperatorError(lexer);
+            ThrowMissingOperatorError(Token->Pos);
         }
-        ThrowParserError("unexpected symbol at position ", lexer);
+        ThrowParserError("unexpected symbol at position ", Token->Pos);
     }
     return root;
 }
 
-bool Expressions::Eval(const Expressions::TToken* expr, const IParams& params)
+bool Expressions::Eval(const Expressions::TAstNode* expr, const IParams& params)
 {
     auto res = EvalImpl(expr, params);
     return res && res.value();

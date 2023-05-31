@@ -7,7 +7,7 @@ Json::Value MergeDeviceConfigWithTemplate(const Json::Value& deviceData,
                                           const std::string& deviceType,
                                           const Json::Value& deviceTemplate);
 
-typedef std::unordered_map<std::string, std::unique_ptr<Expressions::TToken>> TExpressionsCache;
+typedef std::unordered_map<std::string, std::unique_ptr<Expressions::TAstNode>> TExpressionsCache;
 
 class TJsonParams: public Expressions::IParams
 {

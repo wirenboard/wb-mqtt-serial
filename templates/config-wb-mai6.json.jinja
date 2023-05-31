@@ -356,7 +356,7 @@
                     "1.0 ms (1000 SPS)"
                 ],
                 "enum": [ 20, 45, 90, 175, 330, 600, 1000 ],
-                "condition": "in{{ ch_num }}_n_type!=0"
+                "condition": "isDefined(in{{ ch_num }}_n_type)&&in{{ ch_num }}_n_type!=0"
             },
             "in{{ ch_num }}_n_measurements": {
                 "title": "Number of measurements",
@@ -366,7 +366,7 @@
                 "address": "0x{{ "%x"|format(ch_num) }}405",
                 "min": 1,
                 "max": 50,
-                "condition": "in{{ ch_num }}_n_type!=0"
+                "condition": "isDefined(in{{ ch_num }}_n_type)&&in{{ ch_num }}_n_type!=0"
             },
             "in{{ ch_num }}_n_lowpass": {
                 "title": "Lowpass filter time, ms",
@@ -375,7 +375,7 @@
                 "address": "0x{{ "%x"|format(ch_num) }}407",
                 "min": 0,
                 "max": 65000,
-                "condition": "in{{ ch_num }}_n_type!=0"
+                "condition": "isDefined(in{{ ch_num }}_n_type)&&in{{ ch_num }}_n_type!=0"
             },
             "in{{ch_num}}_n_gain": {
                 "title": "Gain",

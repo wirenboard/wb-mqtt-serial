@@ -3,6 +3,7 @@
 #include <memory>
 #include <optional>
 #include <string>
+#include <vector>
 
 // EBNF:
 //
@@ -18,10 +19,11 @@
 //        | "x" | "y" | "z" ;
 // number = [ "-" ], digit, { digit } ;
 // identifier = letter , { letter | digit | "_" } ;
-// right operand = identifier | number | "(", expression, ")" ;
-// condition = identifier | number , operator, right operand, { operator, right operand } ;
+// function = identifier, "(", identifier, ")";
+// right operand = identifier | number | function | "(", expression, ")" ;
+// condition = identifier | number | function , operator, right operand, { operator, right operand } ;
 // condition with brackets = "(", expression, ")" , [ { operator, right operand } ] ;
-// expression = condition | condition with brackets ;
+// expression = condition | condition with brackets | function;
 
 namespace Expressions
 {
@@ -42,24 +44,49 @@ namespace Expressions
         EOL           // end of line
     };
 
-    //! AST tree node
-    class TToken
+    struct TToken
     {
-        std::unique_ptr<TToken> Left;
-        std::unique_ptr<TToken> Right;
         TTokenType Type;
+        std::string Value;
+        size_t Pos;
+
+        TToken(TTokenType type, size_t pos, const std::string& value = std::string());
+    };
+
+    enum class TAstNodeType
+    {
+        Number,       // integer number
+        Equal,        // ==
+        NotEqual,     // !=
+        Greater,      // >
+        Less,         // <
+        GreaterEqual, // >=
+        LessEqual,    // <=
+        Or,           // ||
+        And,          // &&
+        Ident,        // identifier
+        Func          // function
+    };
+
+    //! AST tree node
+    class TAstNode
+    {
+        std::unique_ptr<TAstNode> Left;
+        std::unique_ptr<TAstNode> Right;
+        TAstNodeType Type;
         std::string Value;
 
     public:
-        TToken(TTokenType type, const std::string& value = std::string());
+        TAstNode(const TToken& token);
+        TAstNode(const TAstNodeType& type, const std::string& value);
 
-        void SetLeft(std::unique_ptr<TToken> node);
-        void SetRight(std::unique_ptr<TToken> node);
+        void SetLeft(std::unique_ptr<TAstNode> node);
+        void SetRight(std::unique_ptr<TAstNode> node);
 
-        const TToken* GetLeft() const;
-        const TToken* GetRight() const;
+        const TAstNode* GetLeft() const;
+        const TAstNode* GetRight() const;
         const std::string& GetValue() const;
-        TTokenType GetType() const;
+        TAstNodeType GetType() const;
     };
 
     class TLexer
@@ -73,31 +100,28 @@ namespace Expressions
         bool SomethingToParse() const;
         bool CompareChar(char c) const;
 
-        std::unique_ptr<TToken> GetOpOrBracket();
-        std::unique_ptr<TToken> GetNumber();
-        std::unique_ptr<TToken> GetIdent();
+        std::optional<TToken> GetOpOrBracket();
+        std::optional<TToken> GetNumber();
+        std::optional<TToken> GetIdent();
 
     public:
-        TLexer(const std::string& str);
-
         /**
          * @brief Read next token from string.
          *        Throw std::runtime_error on parsing error.
          */
-        std::unique_ptr<TToken> GetNextToken();
-
-        //! Get the last read token position in chars starting from 1
-        size_t GetLastTokenPosition() const;
+        std::vector<TToken> GetTokens(const std::string& str);
     };
 
     class TParser
     {
-        std::unique_ptr<TToken> Token;
+        //! A token to analyze
+        std::vector<TToken>::const_iterator Token;
 
-        std::unique_ptr<TToken> ParseRightOperand(TLexer& lexer);
-        std::unique_ptr<TToken> ParseCondition(TLexer& lexer);
-        std::unique_ptr<TToken> ParseConditionWithBrackets(TLexer& lexer);
-        std::unique_ptr<TToken> ParseExpression(TLexer& lexer);
+        std::unique_ptr<TAstNode> ParseRightOperand();
+        std::unique_ptr<TAstNode> ParseCondition();
+        std::unique_ptr<TAstNode> ParseConditionWithBrackets();
+        std::unique_ptr<TAstNode> ParseExpression();
+        std::unique_ptr<TAstNode> ParseFunction();
 
     public:
         /**
@@ -105,9 +129,9 @@ namespace Expressions
          *        Throw std::runtime_error on parsing error.
          *
          * @param str string containing expression to parse
-         * @return std::unique_ptr<TToken> resulting AST
+         * @return resulting AST
          */
-        std::unique_ptr<TToken> Parse(const std::string& str);
+        std::unique_ptr<TAstNode> Parse(const std::string& str);
     };
 
     class IParams
@@ -123,8 +147,8 @@ namespace Expressions
      *        Throw std::runtime_error on evaluation error.
      *
      * @param expression AST of an expression to evaluate
-     * @param params Parameters propvider
-     * @return result of espression evaluation
+     * @param params Parameters provider
+     * @return result of expression evaluation
      */
-    bool Eval(const TToken* expression, const IParams& params);
+    bool Eval(const TAstNode* expression, const IParams& params);
 }

@@ -216,3 +216,57 @@ a==1&&b==3||(c<4||c>5)
         5
 
 
+isDefined(a)
+isDefined(a)
+
+
+isDefined(a)&&isDefined(b)
+    isDefined(a)
+  &&
+    isDefined(b)
+
+
+a==1&&isDefined(a)
+        a
+      ==
+        1
+  &&
+    isDefined(a)
+
+
+a==1&&(isDefined(a))
+        a
+      ==
+        1
+  &&
+    isDefined(a)
+
+
+a==1&&isDefined(a)||b==3&&isDefined(b)
+            a
+          ==
+            1
+      &&
+        isDefined(a)
+  ||
+            b
+          ==
+            3
+      &&
+        isDefined(b)
+
+
+a==1&&(isDefined(a)||b==3&&isDefined(b))
+        a
+      ==
+        1
+  &&
+        isDefined(a)
+      ||
+                b
+              ==
+                3
+          &&
+            isDefined(b)
+
+
