@@ -107,7 +107,7 @@ namespace IEC
                      TPort::TFrameCompletePred frame_complete,
                      const std::string& logPrefix)
     {
-        size_t nread = port.ReadFrame(buf, count, responseTimeout, frameTimeout, frame_complete);
+        size_t nread = port.ReadFrame(buf, count, responseTimeout, frameTimeout, frame_complete).Count;
         if (Debug.IsEnabled()) {
             Debug.Log() << logPrefix << "ReadFrame: " << ToString(buf, nread);
         }

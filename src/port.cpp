@@ -35,7 +35,9 @@ void TPort::ApplySerialPortSettings(const TSerialPortConnectionSettings& setting
 void TPort::ResetSerialPortSettings()
 {}
 
-TPortOpenCloseLogic::TPortOpenCloseLogic(const TPortOpenCloseLogic::TSettings& settings): Settings(settings)
+TPortOpenCloseLogic::TPortOpenCloseLogic(const TPortOpenCloseLogic::TSettings& settings, util::TGetNowFn nowFn)
+    : Settings(settings),
+      NowFn(nowFn)
 {}
 
 void TPortOpenCloseLogic::OpenIfAllowed(PPort port)
@@ -44,7 +46,7 @@ void TPortOpenCloseLogic::OpenIfAllowed(PPort port)
         return;
     }
 
-    auto currentTime = std::chrono::steady_clock::now();
+    auto currentTime = NowFn();
     if (NextOpenTryTime > currentTime) {
         return;
     }
@@ -55,7 +57,7 @@ void TPortOpenCloseLogic::OpenIfAllowed(PPort port)
         NextOpenTryTime = currentTime + Settings.ReopenTimeout;
         throw;
     }
-    LastSuccessfulCycle = std::chrono::steady_clock::now();
+    LastSuccessfulCycle = NowFn();
     RemainingFailCycles = Settings.ConnectionMaxFailCycles;
 }
 
@@ -70,7 +72,7 @@ void TPortOpenCloseLogic::CloseIfNeeded(PPort port, bool allPreviousDataExchange
         return;
     }
 
-    auto currentTime = std::chrono::steady_clock::now();
+    auto currentTime = NowFn();
     if (!allPreviousDataExchangeWasFailed) {
         LastSuccessfulCycle = currentTime;
         RemainingFailCycles = Settings.ConnectionMaxFailCycles;

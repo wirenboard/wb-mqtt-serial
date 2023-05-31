@@ -1,8 +1,27 @@
-wb-mqtt-serial (2.86.0) stable; urgency=medium
+wb-mqtt-serial (2.87.0) stable; urgency=medium
 
   * Add function isDefined to device template conditions
 
- -- Petr Krasnoshchekov <petr.krasnoshchekov@wirenboard.com>  Wed, 24 May 2023 09:06:21 +0500
+ -- Petr Krasnoshchekov <petr.krasnoshchekov@wirenboard.com>  Wed, 31 May 2023 09:17:42 +0500
+
+wb-mqtt-serial (2.86.2) stable; urgency=medium
+
+  * Fix calculation of average response time of modbus devices
+
+ -- Petr Krasnoshchekov <petr.krasnoshchekov@wirenboard.com>  Tue, 30 May 2023 13:49:39 +0500
+
+wb-mqtt-serial (2.86.1) stable; urgency=medium
+
+  * Fix stop polling some registers
+
+ -- Petr Krasnoshchekov <petr.krasnoshchekov@wirenboard.com>  Tue, 30 May 2023 12:08:03 +0500
+
+wb-mqtt-serial (2.86.0) stable; urgency=medium
+
+  * Add mao4 actions configuration
+  * Add ability to disable status LED in mao4
+
+ -- Dmitry Borisov <dmitry.borisov@wirenboard.com>  Thu, 26 May 2023 12:30:00 +0600
 
 wb-mqtt-serial (2.85.4) stable; urgency=medium
 

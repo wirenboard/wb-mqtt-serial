@@ -40,7 +40,10 @@ namespace
                 return false;
             }
             if (ReadAtLeastOneRegister) {
-                return RegisterRange->Add(reg, milliseconds::max());
+                if (policy == TItemAccumulationPolicy::Force) {
+                    return RegisterRange->Add(reg, milliseconds::max());
+                }
+                return RegisterRange->Add(reg, pollLimit);
             }
             if (policy == TItemAccumulationPolicy::Force) {
                 return RegisterRange->Add(reg, MaxPollTime);
@@ -98,27 +101,6 @@ void TSerialClientRegisterPoller::PrepareRegisterRanges(const std::list<PRegiste
     }
 }
 
-void TSerialClientRegisterPoller::SetReadError(PRegister reg)
-{
-    reg->SetError(TRegister::TError::ReadError);
-    if (ErrorCallback) {
-        ErrorCallback(reg);
-    }
-}
-
-void TSerialClientRegisterPoller::ProcessPolledRegister(PRegister reg)
-{
-    if (reg->GetErrorState().test(TRegister::ReadError) || reg->GetErrorState().test(TRegister::WriteError)) {
-        if (ErrorCallback) {
-            ErrorCallback(reg);
-        }
-    } else {
-        if (ReadCallback) {
-            ReadCallback(reg);
-        }
-    }
-}
-
 void TSerialClientRegisterPoller::ScheduleNextPoll(PRegister reg, steady_clock::time_point pollStartTime)
 {
     if (reg->IsExcludedFromPolling()) {
@@ -137,7 +119,7 @@ void TSerialClientRegisterPoller::ScheduleNextPoll(PRegister reg, steady_clock::
     Scheduler.AddEntry(reg, pollStartTime + 1us, TPriority::Low);
 }
 
-void TSerialClientRegisterPoller::ClosedPortCycle(steady_clock::time_point currentTime)
+void TSerialClientRegisterPoller::ClosedPortCycle(steady_clock::time_point currentTime, TRegisterCallback callback)
 {
     Scheduler.ResetLoadBalancing();
 
@@ -146,32 +128,28 @@ void TSerialClientRegisterPoller::ClosedPortCycle(steady_clock::time_point curre
         reader.ClearRegisters();
         Scheduler.AccumulateNext(currentTime, reader);
         for (auto& reg: reader.GetRegisters()) {
-            SetReadError(reg);
+            reg->SetError(TRegister::TError::ReadError);
+            if (callback) {
+                callback(reg);
+            }
             ScheduleNextPoll(reg, currentTime);
             reg->Device()->SetTransferResult(false);
         }
     } while (!reader.GetRegisters().empty());
 }
 
-void TSerialClientRegisterPoller::SetReadCallback(TRegisterCallback callback)
+TPollResult TSerialClientRegisterPoller::OpenPortCycle(TPort& port,
+                                                       const util::TSpentTimeMeter& spentTime,
+                                                       std::chrono::milliseconds maxPollingTime,
+                                                       bool readAtLeastOneRegister,
+                                                       TSerialClientDeviceAccessHandler& lastAccessedDevice,
+                                                       TRegisterCallback callback)
 {
-    ReadCallback = std::move(callback);
-}
+    TPollResult res;
 
-void TSerialClientRegisterPoller::SetErrorCallback(TRegisterCallback callback)
-{
-    ErrorCallback = std::move(callback);
-}
-
-PSerialDevice TSerialClientRegisterPoller::OpenPortCycle(TPort& port,
-                                                         std::chrono::steady_clock::time_point currentTime,
-                                                         std::chrono::milliseconds maxPollingTime,
-                                                         bool readAtLeastOneRegister,
-                                                         TSerialClientDeviceAccessHandler& lastAccessedDevice)
-{
     TRegisterReader reader(maxPollingTime, readAtLeastOneRegister);
 
-    auto throttlingState = Scheduler.AccumulateNext(currentTime, reader);
+    auto throttlingState = Scheduler.AccumulateNext(spentTime.GetStartTime(), reader);
     auto throttlingMsg = ThrottlingStateLogger.GetMessage(throttlingState);
     if (!throttlingMsg.empty()) {
         LOG(Warn) << port.GetDescription() << " " << throttlingMsg;
@@ -180,54 +158,60 @@ PSerialDevice TSerialClientRegisterPoller::OpenPortCycle(TPort& port,
 
     if (!range) {
         // Nothing to read
-        SetDeadline(Scheduler.IsEmpty() ? currentTime + 1s : Scheduler.GetDeadline(currentTime));
-        return nullptr;
+        res.Deadline =
+            Scheduler.IsEmpty() ? spentTime.GetStartTime() + 1s : Scheduler.GetDeadline(spentTime.GetStartTime());
+        return res;
     }
 
     // There are registers waiting read, but they don't fit in allowed poll limit
     if (range->RegisterList().empty()) {
+        res.NotEnoughTime = true;
         if (reader.GetPriority() == TPriority::High) {
             // High priority registers are limited by maxPollingTime
-            SetDeadline(currentTime + maxPollingTime);
+            res.Deadline = spentTime.GetStartTime() + maxPollingTime;
         } else {
             // Low priority registers are limited by high priority and maxPollingTime
-            SetDeadline(std::min(Scheduler.GetHighPriorityDeadline(), currentTime + maxPollingTime));
+            res.Deadline = std::min(Scheduler.GetHighPriorityDeadline(), spentTime.GetStartTime() + maxPollingTime);
         }
-        return nullptr;
+        return res;
     }
 
     auto device = range->RegisterList().front()->Device();
     bool deviceWasConnected = !device->GetIsDisconnected();
+
+    bool readOk = false;
     if (lastAccessedDevice.PrepareToAccess(device)) {
         device->ReadRegisterRange(range);
-        for (auto& reg: range->RegisterList()) {
-            reg->SetLastPollTime(currentTime);
-            ProcessPolledRegister(reg);
-            ScheduleNextPoll(reg, currentTime);
+        readOk = true;
+    }
+
+    for (auto& reg: range->RegisterList()) {
+        reg->SetLastPollTime(spentTime.GetStartTime());
+        if (!readOk) {
+            reg->SetError(TRegister::TError::ReadError);
         }
-    } else {
-        for (auto& reg: range->RegisterList()) {
-            reg->SetLastPollTime(currentTime);
-            ScheduleNextPoll(reg, currentTime);
-            SetReadError(reg);
+        if (callback) {
+            callback(reg);
         }
+        ScheduleNextPoll(reg, spentTime.GetStartTime());
     }
 
     if (deviceWasConnected && device->GetIsDisconnected()) {
-        DeviceDisconnected(device);
+        DeviceDisconnected(device, spentTime.GetStartTime());
         if (DeviceDisconnectedCallback) {
             DeviceDisconnectedCallback(device);
         }
     }
 
-    Scheduler.UpdateSelectionTime(ceil<milliseconds>(steady_clock::now() - currentTime), reader.GetPriority());
-    SetDeadline(Scheduler.IsEmpty() ? currentTime + 1s : Scheduler.GetDeadline(currentTime));
-    return device;
+    Scheduler.UpdateSelectionTime(ceil<milliseconds>(spentTime.GetSpentTime()), reader.GetPriority());
+    res.Deadline =
+        Scheduler.IsEmpty() ? spentTime.GetStartTime() + 1s : Scheduler.GetDeadline(spentTime.GetStartTime());
+    return res;
 }
 
-void TSerialClientRegisterPoller::DeviceDisconnected(PSerialDevice device)
+void TSerialClientRegisterPoller::DeviceDisconnected(PSerialDevice device,
+                                                     std::chrono::steady_clock::time_point currentTime)
 {
-    auto currentTime = std::chrono::steady_clock::now();
     for (auto& reg: RegList) {
         if (reg->Device() == device) {
             bool wasExcludedFromPolling = reg->IsExcludedFromPolling();
@@ -238,24 +222,11 @@ void TSerialClientRegisterPoller::DeviceDisconnected(PSerialDevice device)
             }
         }
     }
-    if (!Scheduler.IsEmpty()) {
-        SetDeadline(Scheduler.GetDeadline(currentTime));
-    }
 }
 
 void TSerialClientRegisterPoller::SetDeviceDisconnectedCallback(TDeviceCallback deviceDisconnectedCallback)
 {
     DeviceDisconnectedCallback = deviceDisconnectedCallback;
-}
-
-std::chrono::steady_clock::time_point TSerialClientRegisterPoller::GetDeadline() const
-{
-    return Deadline;
-}
-
-void TSerialClientRegisterPoller::SetDeadline(std::chrono::steady_clock::time_point deadline)
-{
-    Deadline = deadline;
 }
 
 bool TRegisterComparePredicate::operator()(const PRegister& r1, const PRegister& r2) const

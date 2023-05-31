@@ -1,5 +1,6 @@
 #pragma once
 
+#include "common_utils.h"
 #include "definitions.h"
 
 #include <chrono>
@@ -8,6 +9,15 @@
 #include <vector>
 
 #include "serial_port_settings.h"
+
+struct TReadFrameResult
+{
+    //! Received byte count
+    size_t Count = 0;
+
+    //! Time to first byte
+    std::chrono::microseconds ResponseTime = std::chrono::microseconds::zero();
+};
 
 class TPort: public std::enable_shared_from_this<TPort>
 {
@@ -41,13 +51,12 @@ public:
      * @param responseTimeout maximum waiting timeout before first byte of frame
      * @param frameTimeout minimum inter-frame delay
      * @param frame_complete
-     * @return size_t received byte count
      */
-    virtual size_t ReadFrame(uint8_t* buf,
-                             size_t count,
-                             const std::chrono::microseconds& responseTimeout,
-                             const std::chrono::microseconds& frameTimeout,
-                             TFrameCompletePred frame_complete = 0) = 0;
+    virtual TReadFrameResult ReadFrame(uint8_t* buf,
+                                       size_t count,
+                                       const std::chrono::microseconds& responseTimeout,
+                                       const std::chrono::microseconds& frameTimeout,
+                                       TFrameCompletePred frame_complete = 0) = 0;
 
     virtual void SkipNoise() = 0;
 
@@ -94,7 +103,7 @@ public:
         std::chrono::milliseconds ReopenTimeout = std::chrono::milliseconds(5000);
     };
 
-    TPortOpenCloseLogic(const TPortOpenCloseLogic::TSettings& settings);
+    TPortOpenCloseLogic(const TPortOpenCloseLogic::TSettings& settings, util::TGetNowFn nowFn);
 
     void OpenIfAllowed(PPort port);
     void CloseIfNeeded(PPort port, bool allPreviousDataExchangeWasFailed);
@@ -104,4 +113,5 @@ private:
     std::chrono::steady_clock::time_point LastSuccessfulCycle;
     size_t RemainingFailCycles;
     std::chrono::steady_clock::time_point NextOpenTryTime;
+    util::TGetNowFn NowFn;
 };

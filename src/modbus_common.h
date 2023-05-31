@@ -39,11 +39,11 @@ namespace Modbus // modbus protocol common utilities
          *
          * @return size_t PDU size in bytes
          */
-        virtual size_t ReadFrame(TPort& port,
-                                 const std::chrono::milliseconds& responseTimeout,
-                                 const std::chrono::milliseconds& frameTimeout,
-                                 const TRequest& req,
-                                 TResponse& resp) const = 0;
+        virtual TReadFrameResult ReadFrame(TPort& port,
+                                           const std::chrono::milliseconds& responseTimeout,
+                                           const std::chrono::milliseconds& frameTimeout,
+                                           const TRequest& req,
+                                           TResponse& resp) const = 0;
 
         virtual uint8_t* GetPDU(std::vector<uint8_t>& frame) const = 0;
         virtual const uint8_t* GetPDU(const std::vector<uint8_t>& frame) const = 0;
@@ -60,11 +60,11 @@ namespace Modbus // modbus protocol common utilities
 
         void FinalizeRequest(TRequest& request, uint8_t slaveId) override;
 
-        size_t ReadFrame(TPort& port,
-                         const std::chrono::milliseconds& responseTimeout,
-                         const std::chrono::milliseconds& frameTimeout,
-                         const TRequest& req,
-                         TResponse& resp) const override;
+        TReadFrameResult ReadFrame(TPort& port,
+                                   const std::chrono::milliseconds& responseTimeout,
+                                   const std::chrono::milliseconds& frameTimeout,
+                                   const TRequest& req,
+                                   TResponse& resp) const override;
 
         uint8_t* GetPDU(std::vector<uint8_t>& frame) const override;
         const uint8_t* GetPDU(const std::vector<uint8_t>& frame) const override;
@@ -86,11 +86,11 @@ namespace Modbus // modbus protocol common utilities
 
         void FinalizeRequest(TRequest& request, uint8_t slaveId) override;
 
-        size_t ReadFrame(TPort& port,
-                         const std::chrono::milliseconds& responseTimeout,
-                         const std::chrono::milliseconds& frameTimeout,
-                         const TRequest& req,
-                         TResponse& resp) const override;
+        TReadFrameResult ReadFrame(TPort& port,
+                                   const std::chrono::milliseconds& responseTimeout,
+                                   const std::chrono::milliseconds& frameTimeout,
+                                   const TRequest& req,
+                                   TResponse& resp) const override;
 
         uint8_t* GetPDU(std::vector<uint8_t>& frame) const override;
         const uint8_t* GetPDU(const std::vector<uint8_t>& frame) const override;
