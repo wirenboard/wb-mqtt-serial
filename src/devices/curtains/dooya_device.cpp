@@ -108,10 +108,12 @@ std::vector<uint8_t> Dooya::TDevice::ExecCommand(const TRequest& request)
 {
     Port()->WriteBytes(request.Data);
     std::vector<uint8_t> respBytes(request.ResponseSize);
-    auto bytesRead = Port()->ReadFrame(respBytes.data(),
-                                       respBytes.size(),
-                                       DeviceConfig()->ResponseTimeout,
-                                       DeviceConfig()->FrameTimeout);
+    auto bytesRead = Port()
+                         ->ReadFrame(respBytes.data(),
+                                     respBytes.size(),
+                                     DeviceConfig()->ResponseTimeout,
+                                     DeviceConfig()->FrameTimeout)
+                         .Count;
     respBytes.resize(bytesRead);
     return respBytes;
 }

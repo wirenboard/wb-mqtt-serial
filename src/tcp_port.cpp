@@ -117,11 +117,11 @@ uint8_t TTcpPort::ReadByte(const std::chrono::microseconds& timeout)
     return Base::ReadByte(timeout + ResponseTCPLag);
 }
 
-size_t TTcpPort::ReadFrame(uint8_t* buf,
-                           size_t count,
-                           const std::chrono::microseconds& responseTimeout,
-                           const std::chrono::microseconds& frameTimeout,
-                           TFrameCompletePred frame_complete)
+TReadFrameResult TTcpPort::ReadFrame(uint8_t* buf,
+                                     size_t count,
+                                     const std::chrono::microseconds& responseTimeout,
+                                     const std::chrono::microseconds& frameTimeout,
+                                     TFrameCompletePred frame_complete)
 {
     if (IsOpen()) {
         return Base::ReadFrame(buf,
@@ -131,7 +131,7 @@ size_t TTcpPort::ReadFrame(uint8_t* buf,
                                frame_complete);
     }
     LOG(Debug) << "Attempt to read from not open port";
-    return 0;
+    return TReadFrameResult();
 }
 
 std::string TTcpPort::GetDescription(bool verbose) const

@@ -180,6 +180,11 @@ public:
     {
         TotalTime = std::chrono::milliseconds::zero();
     }
+
+    std::chrono::milliseconds GetTotalTime() const
+    {
+        return TotalTime;
+    }
 };
 
 template<class TEntry, class TComparePredicate = std::less<TEntry>> class TScheduler
@@ -189,7 +194,7 @@ public:
     using TItem = typename TQueue::TItem;
 
     TScheduler(std::chrono::milliseconds maxLowPriorityLag, size_t lowPriorityRateLimit)
-        : TimeBalancer(maxLowPriorityLag, 10 * maxLowPriorityLag),
+        : TimeBalancer(maxLowPriorityLag, 2 * maxLowPriorityLag),
           LowPriorityRateLimit(lowPriorityRateLimit)
     {
         ResetLoadBalancing();
@@ -233,10 +238,6 @@ public:
     template<class TAccumulator>
     TThrottlingState AccumulateNext(std::chrono::steady_clock::time_point currentTime, TAccumulator& accumulator)
     {
-        if (!LowPriorityQueue.HasReadyItems(currentTime)) {
-            ResetLoadBalancing();
-        }
-
         if (HighPriorityQueue.HasReadyItems(currentTime) &&
             (!ShouldSelectLowPriority(currentTime) || !LowPriorityQueue.HasReadyItems(currentTime)))
         {
@@ -298,6 +299,11 @@ public:
     bool IsEmpty() const
     {
         return LowPriorityQueue.IsEmpty() && HighPriorityQueue.IsEmpty();
+    }
+
+    std::chrono::milliseconds GetTotalTime() const
+    {
+        return TimeBalancer.GetTotalTime();
     }
 
 private:

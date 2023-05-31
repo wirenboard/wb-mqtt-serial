@@ -64,11 +64,11 @@ namespace Modbus // modbus protocol declarations
                            size_t pduSize,
                            TModbusRegisterRange& range,
                            Modbus::TRegisterCache& cache);
-    size_t ReadResponse(IModbusTraits& traits,
-                        TPort& port,
-                        const TRequest& request,
-                        TResponse& response,
-                        const TDeviceConfig& config);
+    TReadFrameResult ReadResponse(IModbusTraits& traits,
+                                  TPort& port,
+                                  const TRequest& request,
+                                  TResponse& response,
+                                  const TDeviceConfig& config);
 }
 
 namespace // general utilities
@@ -318,12 +318,10 @@ namespace Modbus // modbus protocol common utilities
             auto request = GetRequest(traits, slaveId, shift);
             port.SleepSinceLastInteraction(Device()->DeviceConfig()->RequestDelay);
             port.WriteBytes(request.data(), request.size());
-            auto startTime = std::chrono::steady_clock::now();
             TResponse response(GetResponseSize(traits));
-            auto pduSize = ReadResponse(traits, port, request, response, *Device()->DeviceConfig());
-            ResponseTime =
-                std::chrono::duration_cast<std::chrono::microseconds>(std::chrono::steady_clock::now() - startTime);
-            ParseReadResponse(traits.GetPDU(response), pduSize, *this, cache);
+            auto readRes = ReadResponse(traits, port, request, response, *Device()->DeviceConfig());
+            ResponseTime = readRes.ResponseTime;
+            ParseReadResponse(traits.GetPDU(response), readRes.Count, *this, cache);
         } catch (const TMalformedResponseError&) {
             try {
                 port.SkipNoise();
@@ -812,16 +810,16 @@ namespace Modbus // modbus protocol common utilities
         return std::make_shared<TModbusRegisterRange>(averageResponseTime);
     }
 
-    size_t ReadResponse(IModbusTraits& traits,
-                        TPort& port,
-                        const TRequest& request,
-                        TResponse& response,
-                        const TDeviceConfig& config)
+    TReadFrameResult ReadResponse(IModbusTraits& traits,
+                                  TPort& port,
+                                  const TRequest& request,
+                                  TResponse& response,
+                                  const TDeviceConfig& config)
     {
         auto res = traits.ReadFrame(port, config.ResponseTimeout, config.FrameTimeout, request, response);
         // PDU size must be at least 2 bytes
-        if (res < 2) {
-            throw TMalformedResponseError("Wrong PDU size: " + to_string(res));
+        if (res.Count < 2) {
+            throw TMalformedResponseError("Wrong PDU size: " + to_string(res.Count));
         }
         auto requestFunctionCode = traits.GetPDU(request)[0];
         auto responseFunctionCode = traits.GetPDU(response)[0] & 127; // get actual function code even if exception
@@ -890,7 +888,7 @@ namespace Modbus // modbus protocol common utilities
             try {
                 port.SleepSinceLastInteraction(reg.Device()->DeviceConfig()->RequestDelay);
                 port.WriteBytes(request.data(), request.size());
-                auto pduSize = ReadResponse(traits, port, request, response, *reg.Device()->DeviceConfig());
+                auto pduSize = ReadResponse(traits, port, request, response, *reg.Device()->DeviceConfig()).Count;
                 ParseWriteResponse(traits.GetPDU(response), pduSize);
             } catch (const TMalformedResponseError&) {
                 try {
@@ -1003,11 +1001,11 @@ namespace Modbus // modbus protocol common utilities
         WriteAs2Bytes(&request[request.size() - 2], CRC16::CalculateCRC16(request.data(), request.size() - 2));
     }
 
-    size_t TModbusRTUTraits::ReadFrame(TPort& port,
-                                       const std::chrono::milliseconds& responseTimeout,
-                                       const std::chrono::milliseconds& frameTimeout,
-                                       const TRequest& req,
-                                       TResponse& res) const
+    TReadFrameResult TModbusRTUTraits::ReadFrame(TPort& port,
+                                                 const std::chrono::milliseconds& responseTimeout,
+                                                 const std::chrono::milliseconds& frameTimeout,
+                                                 const TRequest& req,
+                                                 TResponse& res) const
     {
         auto rc = port.ReadFrame(res.data(),
                                  res.size(),
@@ -1015,12 +1013,12 @@ namespace Modbus // modbus protocol common utilities
                                  frameTimeout,
                                  ExpectNBytes(res.size()));
         // RTU response should be at least 3 bytes: 1 byte slave_id, 2 bytes CRC
-        if (rc < DATA_SIZE) {
+        if (rc.Count < DATA_SIZE) {
             throw Modbus::TMalformedResponseError("invalid data size");
         }
 
-        uint16_t crc = (res[rc - 2] << 8) + res[rc - 1];
-        if (crc != CRC16::CalculateCRC16(res.data(), rc - 2)) {
+        uint16_t crc = (res[rc.Count - 2] << 8) + res[rc.Count - 1];
+        if (crc != CRC16::CalculateCRC16(res.data(), rc.Count - 2)) {
             throw TInvalidCRCError();
         }
 
@@ -1029,7 +1027,8 @@ namespace Modbus // modbus protocol common utilities
         if (requestSlaveId != responseSlaveId) {
             throw TSerialDeviceTransientErrorException("request and response slave id mismatch");
         }
-        return rc - DATA_SIZE;
+        rc.Count -= DATA_SIZE;
+        return rc;
     }
 
     uint8_t* TModbusRTUTraits::GetPDU(std::vector<uint8_t>& frame) const
@@ -1078,11 +1077,11 @@ namespace Modbus // modbus protocol common utilities
         SetMBAP(request, *TransactionId, request.size() - MBAP_SIZE, slaveId);
     }
 
-    size_t TModbusTCPTraits::ReadFrame(TPort& port,
-                                       const std::chrono::milliseconds& responseTimeout,
-                                       const std::chrono::milliseconds& frameTimeout,
-                                       const TRequest& req,
-                                       TResponse& res) const
+    TReadFrameResult TModbusTCPTraits::ReadFrame(TPort& port,
+                                                 const std::chrono::milliseconds& responseTimeout,
+                                                 const std::chrono::milliseconds& frameTimeout,
+                                                 const TRequest& req,
+                                                 TResponse& res) const
     {
         auto startTime = chrono::steady_clock::now();
         while (chrono::duration_cast<chrono::milliseconds>(chrono::steady_clock::now() - startTime) <
@@ -1093,12 +1092,12 @@ namespace Modbus // modbus protocol common utilities
             }
             auto rc = port.ReadFrame(res.data(), MBAP_SIZE, responseTimeout + frameTimeout, frameTimeout);
 
-            if (rc < MBAP_SIZE) {
+            if (rc.Count < MBAP_SIZE) {
                 throw TMalformedResponseError("Can't read full MBAP");
             }
 
             auto len = GetLengthFromMBAP(res);
-            // MBAP length should be at least 1 byte for unit indentifier
+            // MBAP length should be at least 1 byte for unit identifier
             if (len == 0) {
                 throw TMalformedResponseError("Wrong MBAP length value: 0");
             }
@@ -1109,15 +1108,16 @@ namespace Modbus // modbus protocol common utilities
             }
 
             rc = port.ReadFrame(res.data() + MBAP_SIZE, len, frameTimeout, frameTimeout);
-            if (rc != len) {
-                throw TMalformedResponseError("Wrong PDU size: " + to_string(rc) + ", expected " + to_string(len));
+            if (rc.Count != len) {
+                throw TMalformedResponseError("Wrong PDU size: " + to_string(rc.Count) + ", expected " +
+                                              to_string(len));
             }
 
             // check transaction id
             if (req[0] == res[0] && req[1] == res[1]) {
                 // check unit identifier
                 if (req[6] != res[6]) {
-                    throw TSerialDeviceTransientErrorException("request and response unit indentifier mismatch");
+                    throw TSerialDeviceTransientErrorException("request and response unit identifier mismatch");
                 }
                 return rc;
             }

@@ -1,9 +1,46 @@
-wb-mqtt-serial (2.86.1) stable; urgency=medium
+wb-mqtt-serial (2.87.1) stable; urgency=medium
 
   * WB-MWAC template: add safety mode registers and mapping-matrix registers
 
- -- Roman Matveev <roman.matveev@wirenboard.ru>  Thu, 29 May 2023 19:35:00 +0300
- 
+ -- Roman Matveev <roman.matveev@wirenboard.ru>  Thu, 31 May 2023 15:40:00 +0300
+
+wb-mqtt-serial (2.87.0) stable; urgency=medium
+
+  * Add function isDefined to device template conditions
+
+ -- Petr Krasnoshchekov <petr.krasnoshchekov@wirenboard.com>  Wed, 31 May 2023 09:17:42 +0500
+
+wb-mqtt-serial (2.86.2) stable; urgency=medium
+
+  * Fix calculation of average response time of modbus devices
+
+ -- Petr Krasnoshchekov <petr.krasnoshchekov@wirenboard.com>  Tue, 30 May 2023 13:49:39 +0500
+
+wb-mqtt-serial (2.86.1) stable; urgency=medium
+
+  * Fix stop polling some registers
+
+ -- Petr Krasnoshchekov <petr.krasnoshchekov@wirenboard.com>  Tue, 30 May 2023 12:08:03 +0500
+
+wb-mqtt-serial (2.86.0) stable; urgency=medium
+
+  * Add mao4 actions configuration
+  * Add ability to disable status LED in mao4
+
+ -- Dmitry Borisov <dmitry.borisov@wirenboard.com>  Thu, 26 May 2023 12:30:00 +0600
+
+wb-mqtt-serial (2.85.4) stable; urgency=medium
+
+  * Disable events on input counters of WB-MCM8
+
+ -- Petr Krasnoshchekov <petr.krasnoshchekov@wirenboard.com>  Fri, 19 May 2023 18:00:26 +0500
+
+wb-mqtt-serial (2.85.3) stable; urgency=medium
+
+  * WB-MAP3EV templates: fix wrong group name
+
+ -- Andrey Radionov <andrey.radionov@wirenboard.ru>  Wed, 19 may 2023 13:16:50 +0300
+
 wb-mqtt-serial (2.85.2) stable; urgency=medium
 
   * WB-M* templates: more description added for second press waiting time and debounce time

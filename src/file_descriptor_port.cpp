@@ -1,5 +1,6 @@
 #include "file_descriptor_port.h"
 #include "binary_semaphore.h"
+#include "common_utils.h"
 #include "serial_exc.h"
 
 #include <iomanip>
@@ -149,30 +150,32 @@ size_t TFileDescriptorPort::ReadAvailableData(uint8_t* buf, size_t max_read)
 }
 
 // Reading becomes unstable when using timeout less than default because of bufferization
-size_t TFileDescriptorPort::ReadFrame(uint8_t* buf,
-                                      size_t size,
-                                      const std::chrono::microseconds& responseTimeout,
-                                      const std::chrono::microseconds& frameTimeout,
-                                      TFrameCompletePred frame_complete)
+TReadFrameResult TFileDescriptorPort::ReadFrame(uint8_t* buf,
+                                                size_t size,
+                                                const std::chrono::microseconds& responseTimeout,
+                                                const std::chrono::microseconds& frameTimeout,
+                                                TFrameCompletePred frame_complete)
 {
     CheckPortOpen();
-    size_t nread = 0;
+    TReadFrameResult res;
 
     if (!size) {
-        return 0;
+        return res;
     }
+
+    util::TSpentTimeMeter spentTime(std::chrono::steady_clock::now);
 
     // Will wait first byte up to responseTimeout us
     auto selectTimeout = responseTimeout;
-    while (nread < size) {
-        if (frame_complete && frame_complete(buf, nread)) {
+    while (res.Count < size) {
+        if (frame_complete && frame_complete(buf, res.Count)) {
             break;
         }
 
         if (!Select(selectTimeout))
             break; // end of the frame
 
-        size_t nb = ReadAvailableData(buf + nread, size - nread);
+        size_t nb = ReadAvailableData(buf + res.Count, size - res.Count);
 
         // Got Fd as ready for read from select, but no actual data to read
         if (nb == 0) {
@@ -182,20 +185,23 @@ size_t TFileDescriptorPort::ReadFrame(uint8_t* buf,
         // Got something, switch to frameTimeout to detect frame boundary
         // Delay between bytes in one message can't be more than frameTimeout
         selectTimeout = frameTimeout;
-        nread += nb;
+        if (res.Count == 0) {
+            res.ResponseTime = spentTime.GetSpentTime();
+        }
+        res.Count += nb;
     }
 
-    if (!nread) {
+    if (!res.Count) {
         throw TSerialDeviceTransientErrorException("request timed out");
     }
 
     LastInteraction = std::chrono::steady_clock::now();
 
     if (::Debug.IsEnabled()) {
-        LOG(Debug) << GetDescription(false) << ": ReadFrame: " << WBMQTT::HexDump(buf, nread);
+        LOG(Debug) << GetDescription(false) << ": ReadFrame: " << WBMQTT::HexDump(buf, res.Count);
     }
 
-    return nread;
+    return res;
 }
 
 void TFileDescriptorPort::SkipNoise()
@@ -223,7 +229,7 @@ void TFileDescriptorPort::SkipNoise()
                     ntries += 1;
                     start = std::chrono::steady_clock::now();
                 } else {
-                    throw TSerialDeviceTransientErrorException("continous unsolicited data flow");
+                    throw TSerialDeviceTransientErrorException("continuous unsolicited data flow");
                 }
             }
         }

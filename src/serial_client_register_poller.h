@@ -23,6 +23,13 @@ public:
     std::string GetMessage(TThrottlingState state);
 };
 
+struct TPollResult
+{
+    PSerialDevice Device;
+    bool NotEnoughTime = false;
+    std::chrono::steady_clock::time_point Deadline;
+};
+
 class TSerialClientRegisterPoller
 {
 public:
@@ -32,34 +39,24 @@ public:
     TSerialClientRegisterPoller(size_t lowPriorityRateLimit = std::numeric_limits<size_t>::max());
 
     void PrepareRegisterRanges(const std::list<PRegister>& regList, std::chrono::steady_clock::time_point currentTime);
-    void ClosedPortCycle(std::chrono::steady_clock::time_point currentTime);
-    PSerialDevice OpenPortCycle(TPort& port,
-                                std::chrono::steady_clock::time_point currentTime,
-                                std::chrono::milliseconds maxPollingTime,
-                                bool readAtLeastOneRegister,
-                                TSerialClientDeviceAccessHandler& lastAccessedDevice);
-    void SetReadCallback(TRegisterCallback callback);
-    void SetErrorCallback(TRegisterCallback callback);
+    void ClosedPortCycle(std::chrono::steady_clock::time_point currentTime, TRegisterCallback callback);
+    TPollResult OpenPortCycle(TPort& port,
+                              const util::TSpentTimeMeter& spentTime,
+                              std::chrono::milliseconds maxPollingTime,
+                              bool readAtLeastOneRegister,
+                              TSerialClientDeviceAccessHandler& lastAccessedDevice,
+                              TRegisterCallback callback);
     void SetDeviceDisconnectedCallback(TDeviceCallback callback);
-    void DeviceDisconnected(PSerialDevice device);
-
-    std::chrono::steady_clock::time_point GetDeadline() const;
+    void DeviceDisconnected(PSerialDevice device, std::chrono::steady_clock::time_point currentTime);
 
 private:
-    void ProcessPolledRegister(PRegister reg);
-    void SetReadError(PRegister reg);
     void ScheduleNextPoll(PRegister reg, std::chrono::steady_clock::time_point pollStartTime);
-    void SetDeadline(std::chrono::steady_clock::time_point deadline);
 
     std::list<PRegister> RegList;
 
-    TRegisterCallback ReadCallback;
-    TRegisterCallback ErrorCallback;
     TDeviceCallback DeviceDisconnectedCallback;
 
     TScheduler<PRegister, TRegisterComparePredicate> Scheduler;
 
     TThrottlingStateLogger ThrottlingStateLogger;
-
-    std::chrono::steady_clock::time_point Deadline;
 };
