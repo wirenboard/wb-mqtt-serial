@@ -1,3 +1,9 @@
+wb-mqtt-serial (2.86.2) stable; urgency=medium
+
+  * Fix calculation of average response time of modbus devices
+
+ -- Petr Krasnoshchekov <petr.krasnoshchekov@wirenboard.com>  Tue, 30 May 2023 13:49:39 +0500
+
 wb-mqtt-serial (2.86.1) stable; urgency=medium
 
   * Fix stop polling some registers

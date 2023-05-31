@@ -50,11 +50,11 @@ namespace
             FrameReadTimes.push_back(frameReadTime);
         }
 
-        size_t ReadFrame(uint8_t* buf,
-                         size_t count,
-                         const microseconds& responseTimeout = -1ms,
-                         const microseconds& frameTimeout = -1ms,
-                         TFrameCompletePred frame_complete = 0) override
+        TReadFrameResult ReadFrame(uint8_t* buf,
+                                   size_t count,
+                                   const microseconds& responseTimeout = -1ms,
+                                   const microseconds& frameTimeout = -1ms,
+                                   TFrameCompletePred frame_complete = 0) override
         {
             if (!FrameReadTimes.empty()) {
                 TimeMock.AddTime(FrameReadTimes.front());

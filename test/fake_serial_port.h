@@ -33,11 +33,11 @@ public:
     bool IsOpen() const override;
     void WriteBytes(const uint8_t* buf, int count) override;
     uint8_t ReadByte(const std::chrono::microseconds& timeout) override;
-    size_t ReadFrame(uint8_t* buf,
-                     size_t count,
-                     const std::chrono::microseconds& responseTimeout = std::chrono::microseconds(-1),
-                     const std::chrono::microseconds& frameTimeout = std::chrono::microseconds(-1),
-                     TFrameCompletePred frame_complete = 0) override;
+    TReadFrameResult ReadFrame(uint8_t* buf,
+                               size_t count,
+                               const std::chrono::microseconds& responseTimeout = std::chrono::microseconds(-1),
+                               const std::chrono::microseconds& frameTimeout = std::chrono::microseconds(-1),
+                               TFrameCompletePred frame_complete = 0) override;
     void SkipNoise() override;
 
     void SleepSinceLastInteraction(const std::chrono::microseconds& us) override;

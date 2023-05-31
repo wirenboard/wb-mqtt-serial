@@ -106,7 +106,9 @@ int TMercury200Device::RequestResponse(uint32_t slave, uint8_t cmd, uint8_t* res
     uint8_t request[REQUEST_LEN];
     FillCommand(request, slave, cmd);
     Port()->WriteBytes(request, REQUEST_LEN);
-    return Port()->ReadFrame(response, RESPONSE_BUF_LEN, DeviceConfig()->ResponseTimeout, DeviceConfig()->FrameTimeout);
+    return Port()
+        ->ReadFrame(response, RESPONSE_BUF_LEN, DeviceConfig()->ResponseTimeout, DeviceConfig()->FrameTimeout)
+        .Count;
 }
 
 void TMercury200Device::FillCommand(uint8_t* buf, uint32_t id, uint8_t cmd) const
