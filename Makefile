@@ -34,10 +34,9 @@ COMMON_OBJS := $(COMMON_SRCS:%=$(BUILD_DIR)/%.o)
 
 LDFLAGS = -lpthread -lwbmqtt1 -lstdc++fs
 CXXFLAGS = -std=c++17 -Wall -Werror -I$(SRC_DIR) -I$(GURUX_INCLUDE) -DWBMQTT_COMMIT="$(GIT_REVISION)" -DWBMQTT_VERSION="$(DEB_VERSION)" -Wno-psabi
-CFLAGS = -Wall -I$(SRC_DIR) -I$(GURUX_INCLUDE)
 
 ifeq ($(DEBUG),)
-	CXXFLAGS += -O3
+	CXXFLAGS += -O3 -DNDEBUG
 else
 	CXXFLAGS += -g -O0 --coverage -ggdb
 	LDFLAGS += --coverage
