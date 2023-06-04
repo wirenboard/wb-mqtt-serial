@@ -77,7 +77,7 @@
                 "group": "boiler_state",
                 "enabled": false
             },
-			 {
+            {
                 "name": "Hot Water Setpoint Max",
                 "address": 211,
                 "reg_type": "input",
