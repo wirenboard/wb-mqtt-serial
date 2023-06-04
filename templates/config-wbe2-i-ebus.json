@@ -85,7 +85,8 @@
                 "format": "u16",
                 "group": "boiler_state"
             },
-            { "name": "Water Pressure",
+            {
+                "name": "Water Pressure",
                 "address": 212,
                 "reg_type": "input",
                 "type": "pressure",
