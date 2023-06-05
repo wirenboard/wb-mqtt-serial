@@ -31,3 +31,6 @@ TSerialDevicePermanentRegisterException::TSerialDevicePermanentRegisterException
 TSerialDeviceInternalErrorException::TSerialDeviceInternalErrorException(const std::string& message)
     : TSerialDeviceTransientErrorException(message)
 {}
+
+TResponseTimeoutException::TResponseTimeoutException(): TSerialDeviceTransientErrorException("request timed out")
+{}
