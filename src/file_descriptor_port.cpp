@@ -192,7 +192,7 @@ TReadFrameResult TFileDescriptorPort::ReadFrame(uint8_t* buf,
     }
 
     if (!res.Count) {
-        throw TSerialDeviceTransientErrorException("request timed out");
+        throw TResponseTimeoutException();
     }
 
     LastInteraction = std::chrono::steady_clock::now();

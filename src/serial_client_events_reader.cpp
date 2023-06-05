@@ -282,6 +282,8 @@ void TSerialClientEventsReader::EnableEvents(PSerialDevice device, TPort& port)
         }
     } catch (const TSerialDevicePermanentRegisterException& e) {
         LOG(Warn) << "Failed to enable events for " << MakeDeviceDescriptionString(slaveId) << ": " << e.what();
+    } catch (const TResponseTimeoutException& e) {
+        LOG(Warn) << "Failed to enable events for " << MakeDeviceDescriptionString(slaveId) << ": " << e.what();
     } catch (const TSerialDeviceTransientErrorException& e) {
         throw TSerialDeviceTransientErrorException(std::string("Failed to enable events: ") + e.what());
     }

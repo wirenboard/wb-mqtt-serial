@@ -1,3 +1,9 @@
+wb-mqtt-serial (2.87.5) stable; urgency=medium
+
+  * Poll registers if a device firmware doesn't respond to enable events command 
+
+ -- Petr Krasnoshchekov <petr.krasnoshchekov@wirenboard.com>  Mon, 05 Jun 2023 19:58:51 +0500
+
 wb-mqtt-serial (2.87.4) stable; urgency=medium
 
   * Minor fix debug logging

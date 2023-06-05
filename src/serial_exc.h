@@ -67,3 +67,10 @@ class TSerialDevicePermanentRegisterException: public TSerialDeviceException
 public:
     TSerialDevicePermanentRegisterException(const std::string& message);
 };
+
+//! Response timeout expired exception
+class TResponseTimeoutException: public TSerialDeviceTransientErrorException
+{
+public:
+    TResponseTimeoutException();
+};
