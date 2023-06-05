@@ -303,7 +303,12 @@ void TDeviceChannel::PublishValueAndError(WBMQTT::TDeviceDriver& deviceDriver,
                                           const std::string& error)
 {
     if (::Debug.IsEnabled()) {
-        LOG(Debug) << Describe() << " <-- " << value << ", error: \"" << error << "\"";
+        std::stringstream ss;
+        ss << Describe() << " <-- " << value;
+        if (!error.empty()) {
+            ss << ", error: \"" << error << "\"";
+        }
+        LOG(Debug) << ss.str();
     }
     CachedCurrentValue = value;
     CachedErrorText = error;
