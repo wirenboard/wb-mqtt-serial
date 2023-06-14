@@ -354,7 +354,7 @@
                 "scale": 0.01,
                 "round_to": 0.1,
                 "error_value": "0xFFFF",
-                "group": "general"
+                "group": "l1"
             },
             {
                 "name": "THDN U L1",
@@ -385,7 +385,7 @@
                 "scale": 0.01,
                 "round_to": 0.1,
                 "error_value": "0xFFFF",
-                "group": "general"
+                "group": "l2"
             },
 
             {
@@ -417,7 +417,7 @@
                 "scale": 0.01,
                 "round_to": 0.1,
                 "error_value": "0xFFFF",
-                "group": "general"
+                "group": "l3"
             },
             {
                 "name": "THDN U L3",
