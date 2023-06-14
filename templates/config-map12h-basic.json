@@ -354,7 +354,7 @@
                 "scale": 3.125e-5,
                 "round_to": 0.0001,
                 "word_order": "little_endian",
-                "group": "channel1_l2"
+                "group": "general"
             },
             {
                 "name": "Ch 1 RP energy L2",
@@ -385,7 +385,7 @@
                 "format": "u16",
                 "scale": 0.01,
                 "round_to": 0.01,
-                "group": "channel1_l3"
+                "group": "general"
             },
             {
                 "name": "Ch 1 P L3",
@@ -415,7 +415,7 @@
                 "format": "s32",
                 "scale": 1.52588e-5,
                 "round_to": 0.01,
-                "group": "channel1_l3"
+                "group": "general"
             },
             {
                 "name": "Ch 1 PF L3",
