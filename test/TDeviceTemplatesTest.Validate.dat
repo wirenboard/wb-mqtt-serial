@@ -19317,8 +19317,8 @@ WB-MWAC
 	Uptime  =>  Uptime
 WBE2-I-EBUS
 	Boiler Outdoor Temperature Sensor  =>  Boiler Outdoor Temperature Sensor
-	Boiler Status => Boiler Status
-	Burner Modulation Level => Burner Modulation Level
+	Boiler Status  =>  Boiler Status
+	Burner Modulation Level  =>  Burner Modulation Level
 	Error Code  =>  Error Code
 	External Storage Water Temperature  =>  External Storage Water Temperature
 	FW Version  =>  FW Version
@@ -19339,10 +19339,10 @@ WBE2-I-EBUS
 		Heating Setpoint  =>  Heating Setpoint
 	Heating Temperature  =>  Heating Temperature
 	Hot Water Setpoint  =>  Hot Water Setpoint
-	Hot Water Setpoint Max => Hot Water Setpoint Max
+	Hot Water Setpoint Max  =>  Hot Water Setpoint Max
 	Hot Water Temperature  =>  Hot Water Temperature
-	Invalid Connection => Invalid Connection
-	Water Pressure => Water Pressure
+	Invalid Connection  =>  Invalid Connection
+	Water Pressure  =>  Water Pressure
 WBE2-I-OPENTHERM
 	Boiler Outdoor Temperature Sensor  =>  Boiler Outdoor Temperature Sensor
 	Boiler Status  =>  Boiler Status
@@ -19374,7 +19374,7 @@ WBE2-I-OPENTHERM
 	Hot Water Setpoint Max  =>  Hot Water Setpoint Max
 	Hot Water Setpoint Min  =>  Hot Water Setpoint Min
 	Hot Water Temperature  =>  Hot Water Temperature
-	Invalid Connection => Invalid Connection
+	Invalid Connection  =>  Invalid Connection
 	Water Pressure  =>  Water Pressure
 WBIO-AI-DV-12
 	A1  =>  A1
