@@ -1,0 +1,76 @@
+{
+    "device_type": "Mercury 200.02",
+    "group": "g-power-meter",
+    "device": {
+        "name": "Mercury 200.02",
+        "id": "mercury200.02",
+        "protocol": "mercury200",
+        "frame_timeout_ms": 0,
+        "channels": [
+            {
+                "name": "Power consumption tariff 1",
+                "reg_type": "param32",
+                "address": "0x2700",
+                "format": "bcd32",
+                "type": "power_consumption",
+                "scale": 0.01
+            },
+            {
+                "name": "Power consumption tariff 2",
+                "reg_type": "param32",
+                "address": "0x2704",
+                "format": "bcd32",
+                "type": "power_consumption",
+                "scale": 0.01
+            },
+            {
+                "name": "Power consumption tariff 3",
+                "reg_type": "param32",
+                "address": "0x2708",
+                "format": "bcd32",
+                "type": "power_consumption",
+                "scale": 0.01
+            },
+            {
+                "name": "Power consumption tariff 4",
+                "reg_type": "param32",
+                "address": "0x270C",
+                "format": "bcd32",
+                "type": "power_consumption",
+                "scale": 0.01
+            },
+            {
+                "name": "Voltage",
+                "reg_type": "param16",
+                "address": "0x6300",
+                "format": "bcd16",
+                "type": "value",
+                "scale": 0.1
+            },
+            {
+                "name": "Current",
+                "reg_type": "param16",
+                "address": "0x6302",
+                "format": "bcd16",
+                "type": "value",
+                "scale": 0.01
+            },
+            {
+                "name": "Power",
+                "reg_type": "param24",
+                "address": "0x6304",
+                "format": "bcd24",
+                "type": "power",
+                "scale": 1.0
+            },
+            {
+                "name": "Battery",
+                "reg_type": "param16",
+                "address": "0x2900",
+                "format": "bcd16",
+                "type": "voltage",
+                "scale": 0.01
+            }
+        ]
+    }
+}

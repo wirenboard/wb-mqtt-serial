@@ -1,0 +1,149 @@
+{
+    "device_type": "WBIO-DO-R1G-16",
+    "group": "g-wb",
+    "device": {
+        "name": "WBIO-DO-R1G-16",
+        "id": "wb-mio-gpio",
+        "protocol": "modbus_io",
+        "stride": 1000,
+        "shift": 500,
+        "max_read_registers": 0,
+        "response_timeout_ms": 40,
+        "frame_timeout_ms": 8,
+        "setup": [
+            {
+                "title": "IODIR",
+                "address": 10000,
+                "value": "0x0000"
+            },
+            {
+                "title": "IPOL",
+                "address": 10001,
+                "value": "0x0000"
+            },
+            {
+                "title": "GPINTEN",
+                "address": 10002,
+                "value": "0xffff"
+            },
+            {
+                "title": "DEFVAL",
+                "address": 10003,
+                "value": "0x0000"
+            },
+            {
+                "title": "INTCON",
+                "address": 10004,
+                "value": "0x0000"
+            },
+            {
+                "title": "IOCON",
+                "address": 10005,
+                "value": "0x4444"
+            },
+            {
+                "title": "FLAG",
+                "address": 9999,
+                "value": 1
+            }
+        ],
+        "channels": [
+            {
+                "name": "K1",
+                "reg_type": "coil",
+                "address": 0,
+                "type": "switch"
+            },
+            {
+                "name": "K2",
+                "reg_type": "coil",
+                "address": 1,
+                "type": "switch"
+            },
+            {
+                "name": "K3",
+                "reg_type": "coil",
+                "address": 2,
+                "type": "switch"
+            },
+            {
+                "name": "K4",
+                "reg_type": "coil",
+                "address": 3,
+                "type": "switch"
+            },
+            {
+                "name": "K5",
+                "reg_type": "coil",
+                "address": 4,
+                "type": "switch"
+            },
+            {
+                "name": "K6",
+                "reg_type": "coil",
+                "address": 5,
+                "type": "switch"
+            },
+            {
+                "name": "K7",
+                "reg_type": "coil",
+                "address": 6,
+                "type": "switch"
+            },
+            {
+                "name": "K8",
+                "reg_type": "coil",
+                "address": 7,
+                "type": "switch"
+            },
+            {
+                "name": "K9",
+                "reg_type": "coil",
+                "address": 8,
+                "type": "switch"
+            },
+            {
+                "name": "K10",
+                "reg_type": "coil",
+                "address": 9,
+                "type": "switch"
+            },
+            {
+                "name": "K11",
+                "reg_type": "coil",
+                "address": 10,
+                "type": "switch"
+            },
+            {
+                "name": "K12",
+                "reg_type": "coil",
+                "address": 11,
+                "type": "switch"
+            },
+            {
+                "name": "K13",
+                "reg_type": "coil",
+                "address": 12,
+                "type": "switch"
+            },
+            {
+                "name": "K14",
+                "reg_type": "coil",
+                "address": 13,
+                "type": "switch"
+            },
+            {
+                "name": "K15",
+                "reg_type": "coil",
+                "address": 14,
+                "type": "switch"
+            },
+            {
+                "name": "K16",
+                "reg_type": "coil",
+                "address": 15,
+                "type": "switch"
+            }
+        ]
+    }
+}

@@ -1,0 +1,142 @@
+{
+    "title": "WB-MAI2-mini_template_title",
+    "device_type": "WB-MAI2-mini/CC",
+    "group": "g-wb",
+    "device": {
+        "name": "WB-MAI2-mini/CC",
+        "id": "wb-mai2-mini",
+        "max_read_registers": 0,
+        "response_timeout_ms": 1,
+        "frame_timeout_ms": 12,
+        "enable_wb_continuous_read": true,
+
+        "groups": [
+            {
+                "title": "Inputs",
+                "id": "inputs",
+                "order": 1
+            },
+            {
+                "title": "General",
+                "id": "general",
+                "order": 2
+            },
+            {
+                "title": "HW Info",
+                "id": "hw_info",
+                "order": 3
+            }
+        ],
+
+        "parameters": {
+            "baud_rate": {
+                "title": "Baud rate",
+                "description": "baud_rate_description",
+                "address": 110,
+                "reg_type": "holding",
+                "enum": [96, 192, 384, 576, 1152],
+                "default": 96,
+                "enum_titles": [
+                    "9600",
+                    "19200",
+                    "38400",
+                    "57600",
+                    "115200"
+                ],
+                "group": "general",
+                "order": 1
+            },
+            "disable_indication": {
+                "title": "Status LED",
+                "address": 130,
+                "reg_type": "holding",
+                "enum": [0, 1],
+                "enum_titles": ["Enabled", "Disabled"],
+                "default": 0,
+                "group": "general",
+                "order": 2
+            }
+        },
+
+        "channels": [
+            {
+                "name": "Current input 1 (mA)",
+                "type": "value",
+                "reg_type": "input",
+                "address": "246",
+                "format": "s16",
+                "scale": 3.125e-2,
+                "group": "inputs"
+            },
+            {
+                "name": "Current input 2 (mA)",
+                "type": "value",
+                "reg_type": "input",
+                "address": "247",
+                "format": "s16",
+                "scale": 3.125e-2,
+                "group": "inputs"
+            },
+            {
+                "name": "Serial NO",
+                "reg_type": "input",
+                "address": 270,
+                "type": "text",
+                "format": "u32",
+                "group": "hw_info"
+            },
+            {
+                "name": "FW Version",
+                "reg_type": "input",
+                "address": 250,
+                "type": "text",
+                "format": "string",
+                "string_data_size": 16,
+                "enabled": false,
+                "group": "hw_info"
+            },
+            {
+                "name": "Input Voltage",
+                "reg_type": "input",
+                "address": 121,
+                "type": "voltage",
+                "scale": 0.001,
+                "enabled": false,
+                "group": "hw_info"
+            },
+            {
+                "name": "Uptime",
+                "reg_type": "input",
+                "address": 104,
+                "type": "text",
+                "format": "u32",
+                "enabled": false,
+                "group": "hw_info"
+            }
+        ],
+        "translations": {
+            "en": {
+                "WB-MAI2-mini_template_title": "WB-MAI2-mini/CC (2-channel analog input module)",
+                "baud_rate_description": "Make sure that communication with device is established before changing this parameter. Select required baud rate, save configuration and then change port baud rate to the same value.",
+                "Uptime": "Uptime (s)"
+            },
+            "ru": {
+                "WB-MAI2-mini_template_title": "WB-MAI2-mini/CC (2-канальный модуль измерения токового сигнала)",
+                "Inputs": "Входы",
+                "General": "Общее",
+                "HW Info": "Данные модуля",
+                "Baud rate": "Скорость обмена",
+                "Status LED": "Индикатор состояния",
+                "Enabled": "Активен",
+                "Disabled": "Отключен",
+                "baud_rate_description": "Перед изменением параметра убедитесь, что связь с устройством установлена. Выберите нужную скорость обмена, сохраните конфигурацию, а затем укажите в настройках порта эту же скорость.",
+                "Current input 1 (mA)": "Токовый вход 1 (мА)",
+                "Current input 2 (mA)": "Токовый вход 2 (мА)",
+                "Serial NO": "Серийный номер",
+                "FW Version": "Версия прошивки",
+                "Input Voltage": "Напряжение питания",
+                "Uptime": "Время работы с момента включения (с)"
+            }
+        }
+    }
+}

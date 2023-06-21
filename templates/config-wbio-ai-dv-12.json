@@ -1,0 +1,270 @@
+{
+    "device_type": "WBIO-AI-DV-12",
+    "group": "g-wb",
+    "device": {
+        "name": "WBIO-AI-DV-12", 
+        "id": "wbio-ai-dv-12", 
+        "protocol": "modbus_io", 
+        "stride": 1000, 
+        "max_read_registers": 0,
+        "response_timeout_ms": 40,
+        "frame_timeout_ms": 8,
+        "setup": [
+            {
+                "title": "CONF_A1", 
+                "address": 19500, 
+                "value": "0x0"
+            }, 
+            {
+                "title": "CONF_A2", 
+                "address": 19501, 
+                "value": "0x0"
+            }, 
+            {
+                "title": "CONF_A3", 
+                "address": 19502, 
+                "value": "0x0"
+            }, 
+            {
+                "title": "CONF_A4", 
+                "address": 19503, 
+                "value": "0x0"
+            }, 
+            {
+                "title": "CONF_A5", 
+                "address": 19506, 
+                "value": "0x0"
+            }, 
+            {
+                "title": "CONF_A6", 
+                "address": 19507, 
+                "value": "0x0"
+            }, 
+            {
+                "title": "CONF_A7", 
+                "address": 19508, 
+                "value": "0x0"
+            }, 
+            {
+                "title": "CONF_A8", 
+                "address": 19509, 
+                "value": "0x0"
+            }, 
+            {
+                "title": "CONF_A9", 
+                "address": 19512, 
+                "value": "0x0"
+            }, 
+            {
+                "title": "CONF_A10", 
+                "address": 19513, 
+                "value": "0x0"
+            }, 
+            {
+                "title": "CONF_A11", 
+                "address": 19514, 
+                "value": "0x0"
+            }, 
+            {
+                "title": "CONF_A12", 
+                "address": 19515, 
+                "value": "0x0"
+            }, 
+            {
+                "title": "CONF_A1_A2", 
+                "address": 19504, 
+                "value": "0x0"
+            }, 
+            {
+                "title": "CONF_A3_A4", 
+                "address": 19505, 
+                "value": "0x0"
+            }, 
+            {
+                "title": "CONF_A5_A6", 
+                "address": 19510, 
+                "value": "0x0"
+            }, 
+            {
+                "title": "CONF_A7_A8", 
+                "address": 19511, 
+                "value": "0x0"
+            }, 
+            {
+                "title": "CONF_A9_A10", 
+                "address": 19516, 
+                "value": "0x0"
+            }, 
+            {
+                "title": "CONF_A11_A12", 
+                "address": 19517, 
+                "value": "0x0"
+            }
+        ], 
+        "channels": [
+            {
+                "name": "A1", 
+                "reg_type": "input", 
+                "readonly": true, 
+                "address": 19000, 
+                "format": "s16", 
+                "scale": 0.01, 
+                "type": "voltage"
+            }, 
+            {
+                "name": "A2", 
+                "reg_type": "input", 
+                "readonly": true, 
+                "address": 19001, 
+                "format": "s16", 
+                "scale": 0.01, 
+                "type": "voltage"
+            }, 
+            {
+                "name": "A3", 
+                "reg_type": "input", 
+                "readonly": true, 
+                "address": 19002, 
+                "format": "s16", 
+                "scale": 0.01, 
+                "type": "voltage"
+            }, 
+            {
+                "name": "A4", 
+                "reg_type": "input", 
+                "readonly": true, 
+                "address": 19003, 
+                "format": "s16", 
+                "scale": 0.01, 
+                "type": "voltage"
+            }, 
+            {
+                "name": "A5", 
+                "reg_type": "input", 
+                "readonly": true, 
+                "address": 19006, 
+                "format": "s16", 
+                "scale": 0.01, 
+                "type": "voltage"
+            }, 
+            {
+                "name": "A6", 
+                "reg_type": "input", 
+                "readonly": true, 
+                "address": 19007, 
+                "format": "s16", 
+                "scale": 0.01, 
+                "type": "voltage"
+            }, 
+            {
+                "name": "A7", 
+                "reg_type": "input", 
+                "readonly": true, 
+                "address": 19008, 
+                "format": "s16", 
+                "scale": 0.01, 
+                "type": "voltage"
+            }, 
+            {
+                "name": "A8", 
+                "reg_type": "input", 
+                "readonly": true, 
+                "address": 19009, 
+                "format": "s16", 
+                "scale": 0.01, 
+                "type": "voltage"
+            }, 
+            {
+                "name": "A9", 
+                "reg_type": "input", 
+                "readonly": true, 
+                "address": 19012, 
+                "format": "s16", 
+                "scale": 0.01, 
+                "type": "voltage"
+            }, 
+            {
+                "name": "A10", 
+                "reg_type": "input", 
+                "readonly": true, 
+                "address": 19013, 
+                "format": "s16", 
+                "scale": 0.01, 
+                "type": "voltage"
+            }, 
+            {
+                "name": "A11", 
+                "reg_type": "input", 
+                "readonly": true, 
+                "address": 19014, 
+                "format": "s16", 
+                "scale": 0.01, 
+                "type": "voltage"
+            }, 
+            {
+                "name": "A12", 
+                "reg_type": "input", 
+                "readonly": true, 
+                "address": 19015, 
+                "format": "s16", 
+                "scale": 0.01, 
+                "type": "voltage"
+            }, 
+            {
+                "name": "A1_A2", 
+                "reg_type": "input", 
+                "readonly": true, 
+                "address": 19004, 
+                "format": "s16", 
+                "scale": 0.01, 
+                "type": "voltage"
+            }, 
+            {
+                "name": "A3_A4", 
+                "reg_type": "input", 
+                "readonly": true, 
+                "address": 19005, 
+                "format": "s16", 
+                "scale": 0.01, 
+                "type": "voltage"
+            }, 
+            {
+                "name": "A5_A6", 
+                "reg_type": "input", 
+                "readonly": true, 
+                "address": 19010, 
+                "format": "s16", 
+                "scale": 0.01, 
+                "type": "voltage"
+            }, 
+            {
+                "name": "A7_A8", 
+                "reg_type": "input", 
+                "readonly": true, 
+                "address": 19011, 
+                "format": "s16", 
+                "scale": 0.01, 
+                "type": "voltage"
+            }, 
+            {
+                "name": "A9_A10", 
+                "reg_type": "input", 
+                "readonly": true, 
+                "address": 19016, 
+                "format": "s16", 
+                "scale": 0.01, 
+                "type": "voltage"
+            }, 
+            {
+                "name": "A11_A12", 
+                "reg_type": "input", 
+                "readonly": true, 
+                "address": 19017, 
+                "format": "s16", 
+                "scale": 0.01, 
+                "type": "voltage"
+            }
+        ]
+    }
+}
+

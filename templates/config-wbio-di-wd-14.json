@@ -1,0 +1,266 @@
+{
+    "device_type": "WBIO-DI-WD-14",
+    "group": "g-wb",
+    "device": {
+        "name": "WBIO-DI-WD-14",
+        "id": "wb-mio-gpio",
+        "protocol": "modbus_io",
+        "stride": 1000,
+        "max_read_registers": 0,
+        "response_timeout_ms": 40,
+        "frame_timeout_ms": 8,
+        "setup": [
+            {
+                "title": "IODIR",
+                "address": 10000,
+                "value": "0xffff"
+            },
+            {
+                "title": "IPOL",
+                "address": 10001,
+                "value": "0x0000"
+            },
+            {
+                "title": "GPINTEN",
+                "address": 10002,
+                "value": "0xffff"
+            },
+            {
+                "title": "DEFVAL",
+                "address": 10003,
+                "value": "0x0000"
+            },
+            {
+                "title": "INTCON",
+                "address": 10004,
+                "value": "0x0000"
+            },
+            {
+                "title": "IOCON",
+                "address": 10005,
+                "value": "0x4444"
+            },
+            {
+                "title": "CONFIG-FLAG",
+                "address": 9999,
+                "value": 1
+            }
+        ],
+        "channels": [
+            {
+                "name": "IN1",
+                "reg_type": "coil",
+                "readonly": true,
+                "address": 0,
+                "type": "switch"
+            },
+            {
+                "name": "IN2",
+                "reg_type": "coil",
+                "readonly": true,
+                "address": 1,
+                "type": "switch"
+            },
+            {
+                "name": "IN3",
+                "reg_type": "coil",
+                "readonly": true,
+                "address": 2,
+                "type": "switch"
+            },
+            {
+                "name": "IN4",
+                "reg_type": "coil",
+                "readonly": true,
+                "address": 3,
+                "type": "switch"
+            },
+            {
+                "name": "IN5",
+                "reg_type": "coil",
+                "readonly": true,
+                "address": 4,
+                "type": "switch"
+            },
+            {
+                "name": "IN6",
+                "reg_type": "coil",
+                "readonly": true,
+                "address": 5,
+                "type": "switch"
+            },
+            {
+                "name": "IN7",
+                "reg_type": "coil",
+                "readonly": true,
+                "address": 6,
+                "type": "switch"
+            },
+            {
+                "name": "IN8",
+                "reg_type": "coil",
+                "readonly": true,
+                "address": 7,
+                "type": "switch"
+            },
+            {
+                "name": "IN9",
+                "reg_type": "coil",
+                "readonly": true,
+                "address": 8,
+                "type": "switch"
+            },
+            {
+                "name": "IN10",
+                "reg_type": "coil",
+                "readonly": true,
+                "address": 9,
+                "type": "switch"
+            },
+            {
+                "name": "IN11",
+                "reg_type": "coil",
+                "readonly": true,
+                "address": 10,
+                "type": "switch"
+            },
+            {
+                "name": "IN12",
+                "reg_type": "coil",
+                "readonly": true,
+                "address": 11,
+                "type": "switch"
+            },
+            {
+                "name": "IN13",
+                "reg_type": "coil",
+                "readonly": true,
+                "address": 12,
+                "type": "switch"
+            },
+            {
+                "name": "IN14",
+                "reg_type": "coil",
+                "readonly": true,
+                "address": 13,
+                "type": "switch"
+            },
+            {
+                "name": "Counter 1",
+                "reg_type": "holding",
+                "readonly": true,
+                "address": 250,
+                "type": "value"
+            },
+            {
+                "name": "Counter 2",
+                "reg_type": "holding",
+                "readonly": true,
+                "address": 251,
+                "type": "value"
+            },
+            {
+                "name": "Counter 3",
+                "reg_type": "holding",
+                "readonly": true,
+                "address": 252,
+                "type": "value"
+            },
+            {
+                "name": "Counter 4",
+                "reg_type": "holding",
+                "readonly": true,
+                "address": 253,
+                "type": "value"
+            },
+            {
+                "name": "Counter 5",
+                "reg_type": "holding",
+                "readonly": true,
+                "address": 254,
+                "type": "value"
+            },
+            {
+                "name": "Counter 6",
+                "reg_type": "holding",
+                "readonly": true,
+                "address": 255,
+                "type": "value"
+            },
+            {
+                "name": "Counter 7",
+                "reg_type": "holding",
+                "readonly": true,
+                "address": 256,
+                "type": "value"
+            },
+            {
+                "name": "Counter 8",
+                "reg_type": "holding",
+                "readonly": true,
+                "address": 257,
+                "type": "value"
+            },
+            {
+                "name": "Counter 9",
+                "reg_type": "holding",
+                "readonly": true,
+                "address": 258,
+                "type": "value"
+            },
+            {
+                "name": "Counter 10",
+                "reg_type": "holding",
+                "readonly": true,
+                "address": 259,
+                "type": "value"
+            },
+            {
+                "name": "Counter 11",
+                "reg_type": "holding",
+                "readonly": true,
+                "address": 260,
+                "type": "value"
+            },
+            {
+                "name": "Counter 12",
+                "reg_type": "holding",
+                "readonly": true,
+                "address": 261,
+                "type": "value"
+            },
+            {
+                "name": "Counter 13",
+                "reg_type": "holding",
+                "readonly": true,
+                "address": 262,
+                "type": "value"
+            },
+            {
+                "name": "Counter 14",
+                "reg_type": "holding",
+                "readonly": true,
+                "address": 263,
+                "type": "value"
+            }
+        ],
+        "translations": {
+            "ru": {
+                "Counter 1": "Счетчик 1",
+                "Counter 2": "Счетчик 2",
+                "Counter 3": "Счетчик 3",
+                "Counter 4": "Счетчик 4",
+                "Counter 5": "Счетчик 5",
+                "Counter 6": "Счетчик 6",
+                "Counter 7": "Счетчик 7",
+                "Counter 8": "Счетчик 8",
+                "Counter 9": "Счетчик 9",
+                "Counter 10": "Счетчик 10",
+                "Counter 11": "Счетчик 11",
+                "Counter 12": "Счетчик 12",
+                "Counter 13": "Счетчик 13",
+                "Counter 14": "Счетчик 14"
+            }
+        }
+    }
+}

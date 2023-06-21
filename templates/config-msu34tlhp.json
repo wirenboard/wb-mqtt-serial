@@ -1,0 +1,38 @@
+{
+    "device_type": "MSU34TLHP",
+    "group": "g-climate-sensor",
+    "device": {
+        "name": "MSU34+TLHP",
+        "id": "msu34tlhp",
+        "frame_timeout_ms": 0,
+        "channels": [
+            {
+                "name": "Illuminance",
+                "reg_type": "input",
+                "address": 0,
+                "type": "lux"
+            },
+            {
+                "name": "Temp 1",
+                "reg_type": "input",
+                "address": 1,
+                "type": "temperature",
+                "format": "s8"
+            },
+            {
+                "name": "Pressure",
+                "reg_type": "input",
+                "address": 2,
+                "type": "pressure",
+                "scale": 0.075
+            },
+            {
+                "name": "Humidity",
+                "reg_type": "input",
+                "address": 3,
+                "type": "rel_humidity",
+                "format": "s8"
+            }
+        ]
+    }
+}

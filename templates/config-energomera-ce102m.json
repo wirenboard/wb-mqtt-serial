@@ -1,0 +1,184 @@
+{
+  "title": "Energomera CE102M",
+  "device_type": "energomera_ce102m",
+  "group": "g-power-meter",
+  "device": {
+    "name": "Energomera CE102M",
+    "id": "energomera102m",
+    "protocol" : "energomera_iec_mode_c",
+    "frame_timeout_ms" : 20,
+    "response_timeout_ms": 1500,
+    "password": ["0x77", "0x77", "0x77"],
+    "channels" : 
+    [
+      {
+        "name": "Urms",
+        "reg_type": "default",
+        "type": "voltage",
+        "address": "VOLTA()"
+      },
+      {
+        "name": "Irms",
+        "reg_type": "default",
+        "address": "CURRE()",
+        "type": "current"
+      },
+      {
+        "name": "Frequency",
+        "reg_type": "default",
+        "address": "FREQU()"
+      },
+      {
+        "name": "P",
+        "reg_type": "default",
+        "type": "power",
+        "address": "POWEP()",
+        "scale": 1000
+      },
+      {
+        "name": "PF",
+        "reg_type": "default",
+        "address": "COS_f()"
+      },
+      {
+        "name": "Serial",
+        "reg_type": "default",
+        "type": "value",
+        "address": "SNUMB()",
+        "format": "u64"
+      },
+      {
+        "name": "A energy",
+        "reg_type": "item_1",
+        "type": "power_consumption",
+        "address": "ET0PE()"
+      },
+      {
+        "name": "A energy T1",
+        "reg_type": "item_2",
+        "type": "power_consumption",
+        "address": "ET0PE()"
+      },
+      {
+        "name": "A energy T2",
+        "reg_type": "item_3",
+        "type": "power_consumption",
+        "address": "ET0PE()"
+      },
+      {
+        "name": "A energy T3",
+        "reg_type": "item_4",
+        "type": "power_consumption",
+        "address": "ET0PE()"
+      },
+      {
+        "name": "A energy T4",
+        "reg_type": "item_5",
+        "type": "power_consumption",
+        "address": "ET0PE()"
+      },
+      {
+      "name": "A energy, 1 month ago",
+      "reg_type": "default",
+      "type": "power_consumption",
+      "address": "ENM01(1)",
+      "enabled" : false
+      },
+      {
+        "name": "A energy, 2 months ago",
+        "reg_type": "default",
+        "type": "power_consumption",
+        "address": "ENM02(1)",
+        "enabled" : false
+      },
+      {
+        "name": "A energy, 3 months ago",
+        "reg_type": "default",
+        "type": "power_consumption",
+        "address": "ENM03(1)",
+        "enabled" : false
+      },
+      {
+        "name": "A energy, 4 months ago",
+        "reg_type": "default",
+        "type": "power_consumption",
+        "address": "ENM04(1)",
+        "enabled" : false
+      },
+      {
+        "name": "A energy, 5 months ago",
+        "reg_type": "default",
+        "type": "power_consumption",
+        "address": "ENM05(1)",
+        "enabled" : false
+      },
+      {
+        "name": "A energy, 6 months ago",
+        "reg_type": "default",
+        "type": "power_consumption",
+        "address": "ENM06(1)",
+        "enabled" : false
+      },
+      {
+        "name": "A energy, 7 months ago",
+        "reg_type": "default",
+        "type": "power_consumption",
+        "address": "ENM07(1)",
+        "enabled" : false
+      },
+      {
+        "name": "A energy, 8 months ago",
+        "reg_type": "default",
+        "type": "power_consumption",
+        "address": "ENM08(1)",
+        "enabled" : false
+      },
+      {
+        "name": "A energy, 9 months ago",
+        "reg_type": "default",
+        "type": "power_consumption",
+        "address": "ENM09(1)",
+        "enabled" : false
+      },
+      {
+        "name": "A energy, 10 months ago",
+        "reg_type": "default",
+        "type": "power_consumption",
+        "address": "ENM10(1)",
+        "enabled" : false
+      },
+      {
+        "name": "A energy, 11 months ago",
+        "reg_type": "default",
+        "type": "power_consumption",
+        "address": "ENM11(1)",
+        "enabled" : false
+      },
+      {
+        "name": "A energy, 12 months ago",
+        "reg_type": "default",
+        "type": "power_consumption",
+        "address": "ENM12(1)",
+        "enabled" : false
+      },
+      {
+        "name": "Date",
+        "reg_type": "date",
+        "address": "DATE_()",
+        "enabled" : false
+      },
+      {
+        "name": "Time",
+        "reg_type": "time",
+        "address": "TIME_()",
+        "enabled" : false
+      },
+      {
+        "name": "Address",
+        "reg_type": "default",
+        "address": "IDPAS()",
+        "enabled" : false
+      }
+    ]
+  }
+}

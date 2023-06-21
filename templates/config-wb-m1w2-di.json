@@ -1,0 +1,104 @@
+{
+    "title": "WB-M1W2 DI",
+    "device_type": "WB-M1W2 DI",
+    "group": "g-wb",
+    "deprecated": true,
+    "device": {
+        "name": "WB-M1W2",
+        "id": "wb-m1w2",
+        "max_read_registers": 0,
+        "response_timeout_ms": 1,
+        "frame_timeout_ms": 12,
+        "parameters": {
+            "in1_mode": {
+                "title": "Input 1 mode",
+                "address": 275,
+                "enum": [0, 1],
+                "default": 0,
+                "enum_titles": ["1-Wire", "discrete input"]
+            },
+            "in2_mode": {
+                "title": "Input 2 mode",
+                "address": 276,
+                "enum": [0, 1],
+                "default": 0,
+                "enum_titles": ["1-Wire", "discrete input"]
+            }
+        },
+        "channels": [
+            {
+                "name": "Internal Temperature",
+                "type": "temperature",
+                "reg_type": "input",
+                "address": "6",
+                "format": "s16",
+                "scale": 0.0625
+            },
+            {
+                "name": "External Sensor 1",
+                "type": "temperature",
+                "reg_type": "input",
+                "address": "7",
+                "format": "s16",
+                "scale": 0.0625,
+                "error_value": "0x7FFF"
+            },
+            {
+                "name": "External Sensor 2",
+                "type": "temperature",
+                "reg_type": "input",
+                "address": "8",
+                "format": "s16",
+                "scale": 0.0625,
+                "error_value": "0x7FFF"
+            },
+            {
+                "name": "Input Voltage",
+                "reg_type": "input",
+                "address": 121,
+                "scale": 0.001,
+                "type": "voltage"
+            },
+            {
+                "name": "Serial NO",
+                "type": "text",
+                "reg_type": "input",
+                "address": 270,
+                "format": "u32"
+            },
+            {
+                "name": "Discrete Input 1",
+                "type": "switch",
+                "reg_type": "discrete",
+                "address": 0
+            },
+            {
+                "name": "Discrete Input 2",
+                "type": "switch",
+                "reg_type": "discrete",
+                "address": 1
+            },
+            {
+                "name": "Counter 1",
+                "type": "value",
+                "reg_type": "input",
+                "address": 277,
+                "format": "u16"
+            },
+            {
+                "name": "Counter 2",
+                "type": "value",
+                "reg_type": "input",
+                "address": 278,
+                "format": "u16"
+            },
+            {
+                "name": "Uptime",
+                "reg_type": "input",
+                "address": 104,
+                "format": "u32",
+                "enabled": false
+            }
+        ]
+    }
+}

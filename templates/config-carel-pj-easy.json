@@ -1,0 +1,418 @@
+{
+    "title": "Carel PJ EASY (Code: PJEZ*)",
+    "device_type": "carel_pj_easy",
+    "group": "g-refrigeration",
+    "device": {
+        "name": "Carel PJ EASY",
+        "id": "carel-pj-easy",
+        "max_read_registers": 0,
+        "response_timeout_ms": 150,
+        "frame_timeout_ms": 12,
+        "enable_wb_continuous_read": true,
+
+        "groups": [
+            {
+                "title": "Defrost",
+                "id": "defrost",
+                "order": 1
+            },
+            {
+                "title": "Temperature Sensors",
+                "id": "temp_sensors",
+                "order": 2
+            },
+            {
+                "title": "Alarms",
+                "id": "alarms",
+                "order": 3
+            },
+            {
+                "title": "Status",
+                "id": "status",
+                "order": 4
+            },
+            {
+                "title": "Setpoint",
+                "id": "setpoint",
+                "order": 5
+            },
+            {
+                "title": "Control",
+                "id": "control",
+                "order": 6
+            }
+        ],
+
+        "parameters": {
+            "defrost_type": {
+                "title": "Defrost Type (d0)",
+                "address": 444,
+                "reg_type": "holding",
+                "enum": [0, 1, 2, 3, 4],
+                "default": 0,
+                "enum_titles": [
+                    "heater, end by temperature",
+                    "hot gas, end by temperature",
+                    "heater, end by time",
+                    "hot gas, end by time",
+                    "heater with temperature control, end by time"
+                ],
+                "group": "defrost",
+                "order": 1
+            },
+            "defrost_interval": {
+                "group": "defrost",
+                "title": "Interval Between Defrosts (dI)",
+                "address": 442,
+                "reg_type": "holding",
+                "description": " unit: hours",
+                "default": 8,
+                "min": 0,
+                "max": 24
+            },
+            "max_defrost_duration": {
+                "group": "defrost",
+                "title": "Maximum Defrost Duration (dP)",
+                "reg_type": "holding",
+                "address": 446,
+                "default": 30,
+                "min": 1,
+                "max": 99,
+                "description": "unit: minutes"
+            },
+            "alarm_bypass_after_defrost_time": {
+                "group": "defrost",
+                "title": "Alarm Bypass Time After Defrost (d8)",
+                "reg_type": "holding",
+                "address": 443,
+                "description": "unit: hours",
+                "min": 0,
+                "max": 15,
+                "default": 0
+            },
+            "defrost_dripping_time": {
+                "group": "defrost",
+                "title": "Dripping Time After Defrost (dd)",
+                "reg_type": "holding",
+                "address": 439,
+                "description": "unit: minutes",
+                "min": 0,
+                "max": 15,
+                "default": 2
+            },
+            "end_defrost_temp": {
+                "title": "End Defrost Temperature (dt)",
+                "reg_type": "holding",
+                "address": 408,
+                "type": "temperature",
+                "scale": 0.1,
+                "format": "s16",
+                "group": "defrost",
+                "description": "",
+                "min": -50,
+                "max": 90,
+                "default": 12
+            },
+
+            "probe1_offset": {
+                "title": "Probe 1 Offset (/C1)",
+                "group": "temp_sensors",
+                "reg_type": "holding",
+                "address": 412,
+                "type": "temperature",
+                "description": "",
+                "scale": 0.1,
+                "min": -20,
+                "max": 20,
+                "default": 0,
+                "format": "s16"
+            },
+            "probe2_offset": {
+                "title": "Probe 2 Offset (/C2)",
+                "group": "temp_sensors",
+                "reg_type": "holding",
+                "address": 410,
+                "type": "temperature",
+                "description": "",
+                "scale": 0.1,
+                "min": -20,
+                "max": 20,
+                "default": 0,
+                "format": "s16"
+            },
+            "probe3_offset": {
+                "title": "Probe 3 Offset (/C3)",
+                "group": "temp_sensors",
+                "reg_type": "holding",
+                "address": 414,
+                "type": "temperature",
+                "description": "",
+                "scale": 0.1,
+                "min": -20,
+                "max": 20,
+                "default": 0,
+                "format": "s16"
+            },
+
+            "control_differential": {
+                "title": "Control Differential (rd)",
+                "group": "setpoint",
+                "reg_type": "holding",
+                "address": 407,
+                "type": "temperature",
+                "description": "",
+                "scale": 0.1,
+                "format": "s16",
+                "min": 0,
+                "max": 19,
+                "default": 2
+            },
+            "min_allowed_setpoint": {
+                "title": "Minimum Set Point Allowed (r1)",
+                "reg_type": "holding",
+                "group": "setpoint",
+                "address": 411,
+                "type": "temperature",
+                "scale": 0.1,
+                "format": "s16",
+                "description": "",
+                "min": -50,
+                "max": 90,
+                "default": 90
+            },
+            "max_allowed_setpoint": {
+                "title": "Maximum Set Point Allowed (r2)",
+                "reg_type": "holding",
+                "group": "setpoint",
+                "address": 413,
+                "type": "temperature",
+                "scale": 0.1,
+                "format": "s16",
+                "description": "",
+                "min": -50,
+                "max": 90,
+                "default": 90
+            },
+            "low_temp_alarm_threshold": {
+                "title": "Low Temperature Alarm Threshold (AL)",
+                "reg_type": "holding",
+                "group": "alarms",
+                "address": 401,
+                "type": "temperature",
+                "scale": 0.1,
+                "format": "s16",
+                "description": "behaviour depends on A0: A0<=0: AL and AH expressed as absolutes, A0>0: AL and AH expressed relative to the set point (St or St + r4 in night-time operation)",
+                "min": -50,
+                "max": 90,
+                "default": -50,
+                "order": 2
+            },
+            "high_temp_alarm_threshold": {
+                "title": "High Temperature Alarm Threshold (AH)",
+                "reg_type": "holding",
+                "group": "alarms",
+                "address": 404,
+                "type": "temperature",
+                "scale": 0.1,
+                "format": "s16",
+                "description": "behaviour depends on A0: A0<=0: AL and AH expressed as absolutes, A0>0: AL and AH expressed relative to the set point (St or St + r4 in night-time operation)",
+                "min": -50,
+                "max": 90,
+                "default": 90,
+                "order": 3
+            },
+
+            "temp_alarm_delay": {
+                "title": "Temperature Alarm Delay (Ad)",
+                "reg_type": "holding",
+                "group": "alarms",
+                "address": 445,
+                "format": "s16",
+                "description": "unit: minute. Indicates after how many minutes the temperature alarm is signalled from when it is detected. If the temperature, after the delay Ad, is within the allowed limits, the alarm is not signalled.",
+                "min": 0,
+                "max": 99,
+                "default": 0,
+                "order": 4
+            }
+        },
+
+        "channels": [
+            {
+                "name": "1st probe alarm",
+                "group": "alarms",
+                "reg_type": "discrete",
+                "address": 4,
+                "type": "switch"
+            },
+            {
+                "name": "2nd probe alarm",
+                "group": "alarms",
+                "reg_type": "discrete",
+                "address": 1,
+                "type": "switch"
+            },
+            {
+                "name": "3rd probe alarm",
+                "group": "alarms",
+                "reg_type": "discrete",
+                "address": 9,
+                "type": "switch"
+            },
+            {
+                "name": "Low temperature alarm",
+                "group": "alarms",
+                "reg_type": "discrete",
+                "address": 12,
+                "type": "switch"
+            },
+            {
+                "name": "High temperature alarm",
+                "group": "alarms",
+                "reg_type": "discrete",
+                "address": 3,
+                "type": "switch"
+            },
+            {
+                "name": "Timeout defrost alarm",
+                "group": "alarms",
+                "reg_type": "discrete",
+                "address": 10,
+                "type": "switch"
+            },
+            {
+                "name": "Pre-opened door alarm",
+                "group": "alarms",
+                "reg_type": "discrete",
+                "address": 25,
+                "type": "switch"
+            },
+            {
+                "name": "Opened door alarm",
+                "group": "alarms",
+                "reg_type": "discrete",
+                "address": 28,
+                "type": "switch"
+            },
+
+            {
+                "name": "Digital input status",
+                "reg_type": "discrete",
+                "group": "status",
+                "address": 7,
+                "type": "switch"
+            },
+            {
+                "name": "Compressor relay status",
+                "reg_type": "discrete",
+                "group": "status",
+                "address": 0,
+                "type": "switch"
+            },
+            {
+                "name": "Defrost relay status",
+                "group": "status",
+                "reg_type": "discrete",
+                "address": 13,
+                "type": "switch"
+            },
+            {
+                "name": "Fan relay status",
+                "group": "status",
+                "reg_type": "discrete",
+                "address": 8,
+                "type": "switch"
+            },
+            {
+                "name": "Auxiliary relay status",
+                "group": "status",
+                "reg_type": "discrete",
+                "address": 11,
+                "type": "switch"
+            },
+            {
+                "name": "Defrost status",
+                "group": "status",
+                "reg_type": "discrete",
+                "address": 29,
+                "type": "switch"
+            },
+
+            {
+                "name": "Defrost command",
+                "group": "control",
+                "reg_type": "coil",
+                "address": 24,
+                "type": "switch"
+            },
+            {
+                "name": "OFF-ON command",
+                "group": "control",
+                "reg_type": "coil",
+                "address": 36,
+                "type": "switch",
+                "on_value": 0,
+                "off_value": 1
+            },
+            {
+                "name": "Buzzer Inhibition",
+                "group": "control",
+                "reg_type": "coil",
+                "address": 40,
+                "type": "switch"
+            },
+            {
+                "name": "Carel serial address",
+                "group": "status",
+                "reg_type": "input",
+                "address": 436,
+                "type": "value"
+            },
+            {
+                "name": "Defrost Probe Reading",
+                "group": "temp_sensors",
+                "reg_type": "input",
+                "address": 405,
+                "type": "temperature",
+                "scale": 0.1,
+                "format": "s16"
+            },
+            {
+                "name": "Probe 1 reading",
+                "group": "temp_sensors",
+                "reg_type": "input",
+                "address": 409,
+                "type": "temperature",
+                "scale": 0.1,
+                "format": "s16"
+            },
+            {
+                "name": "Probe 2 reading",
+                "group": "temp_sensors",
+                "reg_type": "input",
+                "address": 406,
+                "type": "temperature",
+                "scale": 0.1,
+                "format": "s16"
+            },
+            {
+                "name": "Probe 3 reading",
+                "group": "temp_sensors",
+                "reg_type": "input",
+                "address": 403,
+                "type": "temperature",
+                "scale": 0.1,
+                "format": "s16"
+            },
+            {
+                "name": "Set Point",
+                "group": "setpoint",
+                "reg_type": "holding",
+                "address": 415,
+                "type": "temperature",
+                "scale": 0.1,
+                "round_to": 0.1,
+                "format": "s16"
+            }
+        ]
+    }
+}

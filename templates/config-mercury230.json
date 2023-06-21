@@ -1,0 +1,240 @@
+{
+    "device_type": "mercury230",
+    "group": "g-power-meter",
+    "title": "Mercury 230",
+    "device": {
+        "name": "Mercury 230AR-02",
+        "id": "mercury230ar02",
+        "protocol": "mercury230",
+        "frame_timeout_ms": 0,
+        "channels": [
+            {
+                "name": "Total consumption",
+                "reg_type": "array",
+                "address": "0x0000",
+                "format": "u32",
+                "type": "power_consumption",
+                "scale": 0.001
+            },
+            {
+                "name": "Total reactive energy",
+                "reg_type": "array",
+                "address": "0x0002",
+                "format": "u32",
+                "type": "power_consumption",
+                "scale": 0.001
+            },
+            {
+                "name": "AP1",
+                "reg_type": "array12",
+                "address": "0x0600",
+                "format": "u32",
+                "type": "power_consumption",
+                "scale": 0.001
+            },
+            {
+                "name": "AP2",
+                "reg_type": "array12",
+                "address": "0x0601",
+                "format": "u32",
+                "type": "power_consumption",
+                "scale": 0.001
+            },
+            {
+                "name": "AP3",
+                "reg_type": "array12",
+                "address": "0x0602",
+                "format": "u32",
+                "type": "power_consumption",
+                "scale": 0.001
+            },
+            {
+                "name": "P",
+                "reg_type": "param_sign_active",
+                "address": "0x1100",
+                "format": "s24",
+                "type": "power",
+                "scale": 0.01
+            },
+            {
+                "name": "P1",
+                "reg_type": "param_sign_active",
+                "address": "0x1101",
+                "format": "s24",
+                "type": "power",
+                "scale": 0.01
+            },
+            {
+                "name": "P2",
+                "reg_type": "param_sign_active",
+                "address": "0x1102",
+                "format": "s24",
+                "type": "power",
+                "scale": 0.01
+            },
+            {
+                "name": "P3",
+                "reg_type": "param_sign_active",
+                "address": "0x1103",
+                "format": "s24",
+                "type": "power",
+                "scale": 0.01
+            },
+            {
+                "name": "Q",
+                "reg_type": "param_sign_reactive",
+                "address": "0x1104",
+                "format": "s24",
+                "type": "power",
+                "scale": 0.01
+            },
+            {
+                "name": "Q1",
+                "reg_type": "param_sign_reactive",
+                "address": "0x1105",
+                "format": "s24",
+                "type": "power",
+                "scale": 0.01
+            },
+            {
+                "name": "Q2",
+                "reg_type": "param_sign_reactive",
+                "address": "0x1106",
+                "format": "s24",
+                "type": "power",
+                "scale": 0.01
+            },
+            {
+                "name": "Q3",
+                "reg_type": "param_sign_reactive",
+                "address": "0x1107",
+                "format": "s24",
+                "type": "power",
+                "scale": 0.01
+            },
+            {
+                "name": "U1",
+                "reg_type": "param",
+                "address": "0x1111",
+                "format": "u24",
+                "type": "voltage",
+                "scale": 0.01
+            },
+            {
+                "name": "U2",
+                "reg_type": "param",
+                "address": "0x1112",
+                "format": "u24",
+                "type": "voltage",
+                "scale": 0.01
+            },
+            {
+                "name": "U3",
+                "reg_type": "param",
+                "address": "0x1113",
+                "format": "u24",
+                "type": "voltage",
+                "scale": 0.01
+            },
+            {
+                "name": "I1",
+                "reg_type": "param",
+                "address": "0x1121",
+                "format": "u24",
+                "type": "value",
+                "scale": 0.001
+            },
+            {
+                "name": "I2",
+                "reg_type": "param",
+                "address": "0x1122",
+                "format": "u24",
+                "type": "value",
+                "scale": 0.001
+            },
+            {
+                "name": "I3",
+                "reg_type": "param",
+                "address": "0x1123",
+                "format": "u24",
+                "type": "value",
+                "scale": 0.001
+            },
+            {
+                "name": "Frequency",
+                "reg_type": "param",
+                "address": "0x1140",
+                "format": "u24",
+                "type": "value",
+                "scale": 0.01
+            },
+            {
+                "name": "PF",
+                "reg_type": "param_sign_active",
+                "address": "0x1130",
+                "format": "s24",
+                "type": "value",
+                "scale": 0.001
+            },
+            {
+                "name": "PF1",
+                "reg_type": "param_sign_active",
+                "address": "0x1131",
+                "format": "s24",
+                "type": "value",
+                "scale": 0.001
+            },
+            {
+                "name": "PF2",
+                "reg_type": "param_sign_active",
+                "address": "0x1132",
+                "format": "s24",
+                "type": "value",
+                "scale": 0.001
+            },
+            {
+                "name": "PF3",
+                "reg_type": "param_sign_active",
+                "address": "0x1133",
+                "format": "s24",
+                "type": "value",
+                "scale": 0.001
+            },
+            {
+                "name": "KU1",
+                "reg_type": "param",
+                "address": "0x1161",
+                "format": "u16",
+                "type": "value",
+                "error_value": "0xffff",
+                "scale": 0.01
+            },
+            {
+                "name": "KU2",
+                "reg_type": "param",
+                "address": "0x1162",
+                "format": "u16",
+                "type": "value",
+                "error_value": "0xffff",
+                "scale": 0.01
+            },
+            {
+                "name": "KU3",
+                "reg_type": "param",
+                "address": "0x1163",
+                "format": "u16",
+                "type": "value",
+                "error_value": "0xffff",
+                "scale": 0.01
+            },
+            {
+                "name": "Temperature",
+                "reg_type": "param_be",
+                "address": "0x1170",
+                "format": "u16",
+                "type": "value",
+                "scale": 1
+            }
+        ]
+    }
+}

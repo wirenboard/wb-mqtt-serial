@@ -1,0 +1,259 @@
+{
+    "device_type": "Somfy network",
+    "title": "Somfy curtain motor",
+    "group": "g-curtain",
+    "device": {
+        "name": "Somfy SDN",
+        "id": "somfy",
+        "protocol": "somfy",
+        "response_timeout_ms": 255,
+        "frame_timeout_ms": 10,
+        "channels": [
+            {
+                "name": "Position",
+                "reg_type": "position",
+                "address": 0,
+                "max": 100,
+                "type": "range"
+            },
+            {
+                "name": "Last position state",
+                "type": "value",
+                "reg_type": "param",
+                "address": "0x0E:8:8",
+                "response_header": "0x0F",
+                "readonly": true
+            },
+            {
+                "name": "Current state",
+                "type": "value",
+                "reg_type": "param",
+                "address": "0x0E:0:8",
+                "response_header": "0x0F",
+                "readonly": true
+            },
+            {
+                "name": "Last command source",
+                "type": "value",
+                "reg_type": "param",
+                "address": "0x0E:16:8",
+                "response_header": "0x0F",
+                "readonly": true,
+                "enabled": false
+            },
+            {
+                "name": "Cause",
+                "type": "value",
+                "reg_type": "param",
+                "address": "0x0E:24:8",
+                "response_header": "0x0F",
+                "readonly": true,
+                "enabled": false
+            },
+            {
+                "name": "Stop",
+                "type": "pushbutton",
+                "reg_type": "command",
+                "address": "0x02",
+                "on_value": "0x0101"
+            },
+            {
+                "name": "Move down",
+                "type": "pushbutton",
+                "reg_type": "command",
+                "address": "0x04",
+                "on_value": "0x0A0204",
+                "enabled": false,
+                "condition": "node_type!=6"
+            },
+            {
+                "name": "Move up",
+                "type": "pushbutton",
+                "reg_type": "command",
+                "address": "0x04",
+                "on_value": "0x0A0304",
+                "enabled": false,
+                "condition": "node_type!=6"
+            },
+            {
+                "name": "Move down",
+                "type": "pushbutton",
+                "reg_type": "command",
+                "address": "0x04",
+                "on_value": "0x0A0404",
+                "enabled": false,
+                "condition": "node_type==6"
+            },
+            {
+                "name": "Move up",
+                "type": "pushbutton",
+                "reg_type": "command",
+                "address": "0x04",
+                "on_value": "0x0A0504",
+                "enabled": false,
+                "condition": "node_type==6"
+            },
+            {
+                "name": "Delete limits",
+                "type": "pushbutton",
+                "reg_type": "command",
+                "address": "0x11",
+                "on_value": "0x04",
+                "enabled": false
+            },
+            {
+                "name": "Set up limit",
+                "type": "pushbutton",
+                "reg_type": "command",
+                "address": "0x11",
+                "on_value": "0x010104",
+                "enabled": false
+            },
+            {
+                "name": "Set down limit",
+                "type": "pushbutton",
+                "reg_type": "command",
+                "address": "0x11",
+                "on_value": "0x0104",
+                "enabled": false
+            },
+            {
+                "name": "Intermediate position",
+                "type": "value",
+                "reg_type": "param",
+                "address": "0x0C:32:8",
+                "response_header": "0x0D",
+                "readonly": true,
+                "enabled": false
+            },
+            {
+                "name": "Motor position percent",
+                "type": "value",
+                "reg_type": "param",
+                "address": "0x0C:16:8",
+                "response_header": "0x0D",
+                "readonly": true,
+                "enabled": false
+            },
+            {
+                "name": "Motor position raw value",
+                "type": "value",
+                "reg_type": "param",
+                "address": "0x0C:0:16",
+                "response_header": "0x0D",
+                "readonly": true,
+                "enabled": false
+            },
+            {
+                "name": "Limit up raw value",
+                "type": "value",
+                "reg_type": "param",
+                "address": "0x21:0:16",
+                "response_header": "0x31",
+                "readonly": true,
+                "enabled": false
+            },
+            {
+                "name": "Limit down raw value",
+                "type": "value",
+                "reg_type": "param",
+                "address": "0x21:16:16",
+                "response_header": "0x31",
+                "readonly": true,
+                "enabled": false
+            },
+            {
+                "name": "Direction",
+                "type": "switch",
+                "reg_type": "param",
+                "address": "0x22",
+                "response_header": "0x32",
+                "write_address": "0x12",
+                "enabled": false
+            },
+            {
+                "name": "Rolling speed up",
+                "type": "range",
+                "min": 87,
+                "max": 140,
+                "reg_type": "param",
+                "address": "0x23:0:8",
+                "response_header": "0x33",
+                "write_address": "0x13",
+                "enabled": false,
+                "condition": "node_type==6"
+            },
+            {
+                "name": "Rolling speed up",
+                "type": "range",
+                "reg_type": "param",
+                "address": "0x23:0:8",
+                "response_header": "0x33",
+                "write_address": "0x13",
+                "enabled": false,
+                "min": 6,
+                "max": 28,
+                "condition": "node_type!=6"
+            },
+            {
+                "name": "Rolling speed down",
+                "type": "range",
+                "reg_type": "param",
+                "address": "0x23:8:8",
+                "response_header": "0x33",
+                "write_address": "0x13",
+                "enabled": false,
+                "condition": "(node_type==7)||(node_type==8)||(node_type==9)"
+            },
+            {
+                "name": "Rolling speed down",
+                "type": "range",
+                "reg_type": "param",
+                "address": "0x23:8:8",
+                "response_header": "0x33",
+                "write_address": "0x13",
+                "enabled": false,
+                "readonly": true,
+                "min": 6,
+                "max": 28,
+                "condition": "(node_type!=5)&&(node_type!=6)&&(node_type!=7)&&(node_type!=8)&&(node_type!=9)"
+            },
+            {
+                "name": "Rolling speed slow",
+                "type": "range",
+                "reg_type": "param",
+                "address": "0x23:16:8",
+                "response_header": "0x33",
+                "write_address": "0x13",
+                "enabled": false,
+                "min": 6,
+                "max": 28,
+                "condition": "node_type!=6"
+            }
+        ],
+        "translations": {
+            "ru": {
+              "Position": "Позиция",
+              "Move down": "Опустить",
+              "Move up": "Поднять",
+              "Direction": "Направление",
+              "Current state": "Текущее состояние",
+              "Cause": "Причина",
+              "Rolling speed up": "Cкорость открытия",
+              "Rolling speed down": "Cкорость закрытия",
+              "Rolling speed slow": "Cкорость в медленном режиме",
+              "Last command source": "Источник полученной команды",
+              "Last position state": "Последнее направление движения",
+              "Intermediate position": "Промежуточное положение",
+              "Motor position percent": "Положение мотора (процент)",
+              "Motor position raw value": "Положение мотора (необработанное)",
+              "Limit up raw value": "Концевое положение открытия (необработанное)",
+              "Limit down raw value": "Концевое положение закрытия (необработанное)",
+              "Delete limits": "Удалить концевые положения",
+              "Set up limit": "Установить концевое положение открытия",
+              "Set down limit": "Установить концевое положение закрытия",
+              "Stop": "Остановить"
+            }
+        }
+    }
+}

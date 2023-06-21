@@ -1,0 +1,138 @@
+{
+  "device_type": "Energomera CE301/CE303",
+  "title": "Energomera CE301",
+  "group": "g-power-meter",
+  "device": {
+    "name": "Energomera CE301",
+    "id": "energomera301",
+    "protocol" : "energomera_iec",
+    "frame_timeout_ms" : 1500,
+    "response_timeout_ms": 1500,
+    "channels": [
+      {
+        "name": "Total A energy",
+        "reg_type": "group_single",
+        "type": "power_consumption",
+        "address": "0x100101"
+      },
+      {
+        "name": "Total P",
+        "reg_type": "group_single",
+        "type": "power",
+        "scale" : 1000,
+        "address": "0x400304"
+      },
+      {
+        "name": "P L1",
+        "reg_type": "group_single",
+        "type": "power",
+        "scale" : 1000,
+        "address": "0x400301"
+      },
+      {
+        "name": "P L2",
+        "reg_type": "group_single",
+        "type": "power",
+        "scale" : 1000,
+        "address": "0x400302"
+      },
+      {
+        "name": "P L3",
+        "reg_type": "group_single",
+        "type": "power",
+        "scale" : 1000,
+        "address": "0x400303"
+      },
+      {
+        "name": "Urms L1",
+        "reg_type": "group_single",
+        "type": "voltage",
+        "address": "0x400101"
+      },
+      {
+        "name": "Urms L2",
+        "reg_type": "group_single",
+        "type": "voltage",
+        "address": "0x400102"
+      },
+      {
+        "name": "Urms L3",
+        "reg_type": "group_single",
+        "type": "voltage",
+        "address": "0x400103"
+      },
+      {
+        "name": "Irms L1",
+        "reg_type": "group_single",
+        "type": "current",
+        "address": "0x400201"
+      },
+      {
+        "name": "Irms L2",
+        "reg_type": "group_single",
+        "type": "current",
+        "address": "0x400202"
+      },
+      {
+        "name": "Irms L3",
+        "reg_type": "group_single",
+        "type": "current",
+        "address": "0x400203"
+      },
+      {
+        "name": "Frequency",
+        "reg_type": "group_single",
+        "type": "value",
+        "address": "0x400D01"
+      },
+      {
+        "name": "Voltage angle L1-L2",
+        "reg_type": "group_single",
+        "type": "value",
+        "address": "0x400B01"
+      },
+      {
+        "name": "Voltage angle L3-L1",
+        "reg_type": "group_single",
+        "type": "value",
+        "address": "0x400B03"
+      },
+      {
+        "name": "Voltage angle L2-L3",
+        "reg_type": "group_single",
+        "type": "value",
+        "address": "0x400B02"
+      },
+      {
+        "name": "PF L1",
+        "reg_type": "group_single",
+        "type": "value",
+        "address": "0x400701"
+      },
+      {
+        "name": "PF L2",
+        "reg_type": "group_single",
+        "type": "value",
+        "address": "0x400702"
+      },
+      {
+        "name": "PF L3",
+        "reg_type": "group_single",
+        "type": "value",
+        "address": "0x400703"
+      },
+      {
+        "name": "Total PF",
+        "reg_type": "group_single",
+        "type": "value",
+        "address": "0x400704"
+      },
+      {
+        "name": "Serial",
+        "reg_type": "group_single",
+        "type": "value",
+        "address": "0x500301"
+      }
+    ]
+  }
+}

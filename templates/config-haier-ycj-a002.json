@@ -1,0 +1,93 @@
+{
+    "title": "haier_ycj-a002_template_title",
+    "device_type": "haier_ycj-a002",
+    "group": "g-air-conditioning",
+    "device": {
+        "name": "Haier YCJ-A002",
+        "id": "haier_ycj-a002",
+        "response_timeout_ms": 100,
+        "guard_interval_us": 10000,
+        "channels": [
+            {
+                "name": "Indoor Unit Status",
+                "address": "0",
+                "reg_type": "coil",
+                "type": "switch"
+            },
+            {
+                "name": "Air Conditioner Mode",
+                "address": "1",
+                "reg_type": "holding",
+                "type": "range",
+                "format": "u16",
+                "min": 1,
+                "max": 5
+            },
+            {
+                "name": "Indoor Temperature",
+                "address": "0",
+                "reg_type": "input",
+                "units": "deg C",
+                "format": "s16"
+            },
+            {
+                "name": "Temperature Setpoint",
+                "address": "0",
+                "reg_type": "holding",
+                "units": "deg C",
+                "format": "s16",
+                "min": 16,
+                "max": 30
+            },
+            {
+                "name": "Fan Speed",
+                "address": "2",
+                "reg_type": "holding",
+                "type": "range",
+                "format": "u16",
+                "min": 1,
+                "max": 4
+            },
+            {
+                "name": "Indoor Unit Blocking Mode",
+                "address": "3",
+                "reg_type": "holding",
+                "type": "value",
+                "format": "u16",
+                "min": 1,
+                "max": 4,
+                "enabled": false
+            },
+            {
+                "name": "Alarm Code",
+                "address": "1",
+                "reg_type": "input",
+                "type": "value",
+                "format": "u16"
+            },
+            {
+                "name": "Device Number",
+                "address": "2",
+                "reg_type": "input",
+                "type": "value",
+                "format": "u16"
+            }
+        ],
+        "translations": {
+            "en": {
+                "haier_ycj-a002_template_title": "Haier YCJ-A002 (air conditioner adapter)"
+            },
+            "ru": {
+                "haier_ycj-a002_template_title": "Haier YCJ-A002 (адаптер кондиционера)",
+                "Indoor Unit Status": "Статус внутреннего блока",
+                "Air Conditioner Mode": "Режим работы кондиционера",
+                "Indoor Unit Blocking Mode": "Режим блокировки внутреннего блока",
+                "Indoor Temperature": "Температура в помещении",
+                "Temperature Setpoint": "Уставка температуры",
+                "Fan Speed": "Скорость вентилятора",
+                "Alarm Code": "Код ошибки",
+                "Device Number": "Номер устройства"
+            }
+        }
+    }
+}

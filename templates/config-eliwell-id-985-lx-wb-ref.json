@@ -1,0 +1,2107 @@
+{
+    "title": "Eliwell ID 985 LX (WB-REF-U)",
+    "device_type": "eliwell_id_985_lx_wb_ref",
+    "group": "g-refrigeration",
+    "device": {
+        "name": "Eliwell ID 985 LX",
+        "id": "eliwell_id_985_lx",
+        "response_timeout_ms": 100,
+        "guard_interval_us": 5000,
+        "max_read_registers": 0,
+        "enable_wb_continuous_read": true,
+
+        "groups": [
+            {
+                "title": "Status",
+                "id": "status",
+                "order": 1
+            },
+            {
+                "title": "Control",
+                "id": "control",
+                "order": 2
+            },
+            {
+                "title": "Compressor (CP)",
+                "id": "compressor",
+                "order": 3
+            },
+            {
+                "title": "Defrost (dEF)",
+                "id": "defrost",
+                "order": 4
+            },
+            {
+                "title": "Fans (Fan)",
+                "id": "fans",
+                "order": 5
+            },
+            {
+                "title": "Alarms (AL)",
+                "id": "alarms",
+                "order": 6
+            },
+            {
+                "title": "Display (diS)",
+                "id": "display",
+                "order": 7
+            },
+            {
+                "title": "Configuration (Cnf)",
+                "id": "configuration",
+                "order": 8
+            },
+            {
+                "title": "Light And Inputs (Lit)",
+                "id": "inputs",
+                "order": 9
+            },
+            {
+                "title": "HW Info (Add)",
+                "id": "hw_info",
+                "order": 10
+            }
+        ],
+        "parameters": [
+            {
+                "id": "CAt",
+                "title": "Maximum Compressor On Time (CAt)",
+                "description": "units: minutes",
+                "address": 14156,
+                "reg_type": "holding",
+                "format": "u16",
+                "min": 0,
+                "max": 250,
+                "default": 0,
+                "group": "compressor",
+                "order": 1
+            },
+            {
+                "id": "Cit",
+                "title": "Minimum Compressor On Time (Cit)",
+                "description": "units: minutes",
+                "address": 14155,
+                "reg_type": "holding",
+                "format": "u16",
+                "min": 0,
+                "max": 250,
+                "default": 0,
+                "group": "compressor",
+                "order": 2
+            },
+            {
+                "id": "dAd",
+                "title": "Digital Input Enabling Delay (dAd)",
+                "description": "units: minutes",
+                "address": "14158",
+                "reg_type": "holding",
+                "format": "u16",
+                "min": 0,
+                "max": 255,
+                "default": 0,
+                "group": "compressor",
+                "order": 3
+            },
+            {
+                "id": "dbi",
+                "title": "Delay Between Starts (dbi)",
+                "description": "units: minutes",
+                "address": "14163",
+                "reg_type": "holding",
+                "format": "u16",
+                "min": 0,
+                "max": 250,
+                "default": 0,
+                "group": "compressor",
+                "order": 4
+            },
+            {
+                "id": "diF",
+                "title": "Differential (diF)",
+                "description": "units: degrees",
+                "address": 24098,
+                "reg_type": "holding",
+                "format": "u16",
+                "scale": 0.1,
+                "min": 0.1,
+                "max": 30,
+                "default": 2,
+                "group": "compressor",
+                "order": 5
+            },
+            {
+                "id": "dOd",
+                "title": "Digital Input Disables Loads (dOd)",
+                "address": 14157,
+                "reg_type": "holding",
+                "format": "u16",
+                "default": 0,
+                "enum": [
+                    0,
+                    1
+                ],
+                "enum_titles": [
+                    "No",
+                    "Yes"
+                ],
+                "group": "compressor",
+                "order": 6
+            },
+            {
+                "id": "dOF",
+                "title": "Delay After Shutdown (dOF)",
+                "description": "units: minutes",
+                "address": 14162,
+                "reg_type": "holding",
+                "format": "u16",
+                "min": 0,
+                "max": 250,
+                "default": 0,
+                "group": "compressor",
+                "order": 7
+            },
+            {
+                "id": "dOn",
+                "title": "Delay On Start (dOn)",
+                "description": "units: seconds",
+                "address": 14161,
+                "reg_type": "holding",
+                "format": "u16",
+                "min": 0,
+                "max": 250,
+                "default": 0,
+                "group": "compressor",
+                "order": 8
+            },
+            {
+                "id": "HSE",
+                "title": "Setpoint Maximum Value (HSE)",
+                "description": "units: degrees",
+                "address": 24132,
+                "reg_type": "holding",
+                "format": "s16",
+                "scale": 0.1,
+                "min": -58,
+                "max": 302,
+                "default": 5,
+                "group": "compressor",
+                "order": 9
+            },
+            {
+                "id": "LSE",
+                "title": "Setpoint Minimum Value (LSE)",
+                "description": "units: degrees",
+                "address": 24134,
+                "reg_type": "holding",
+                "format": "s16",
+                "scale": 0.1,
+                "min": -58,
+                "max": 302,
+                "default": -0.5,
+                "group": "compressor",
+                "order": 10
+            },
+            {
+                "id": "OdO",
+                "title": "Output Delay From Power On (OdO)",
+                "description": "units: minutes",
+                "address": 14164,
+                "reg_type": "holding",
+                "format": "u16",
+                "min": 0,
+                "max": 250,
+                "default": 0,
+                "group": "compressor",
+                "order": 11
+            },
+            {
+                "id": "OFt",
+                "title": "Faulty Probe Off Time (OFt)",
+                "description": "units: minutes",
+                "address": 14160,
+                "reg_type": "holding",
+                "format": "u16",
+                "min": 0,
+                "max": 250,
+                "default": 1,
+                "group": "compressor",
+                "order": 12
+            },
+            {
+                "id": "Ont",
+                "title": "Faulty Probe On Time For Faulty Probe (Ont)",
+                "description": "units: minutes",
+                "address": 14159,
+                "reg_type": "holding",
+                "format": "u16",
+                "min": 0,
+                "max": 250,
+                "default": 0,
+                "group": "compressor",
+                "order": 13
+            },
+            {
+                "id": "OSP",
+                "title": "Setpoint Offset (OSP)",
+                "description": "units: degrees",
+                "address": 24100,
+                "reg_type": "holding",
+                "format": "s16",
+                "scale": 0.1,
+                "min": -30,
+                "max": 30,
+                "default": 0,
+                "group": "compressor",
+                "order": 14
+            },
+            {
+                "id": "Cod",
+                "title": "Compressor Off Before Defrost (Cod)",
+                "description": "units: minutes",
+                "address": 14172,
+                "reg_type": "holding",
+                "format": "u16",
+                "min": 0,
+                "max": 60,
+                "default": 0,
+                "group": "defrost",
+                "order": 1
+            },
+            {
+                "id": "dCt",
+                "title": "Counting Mode For Defrosting Interval (dCt)",
+                "address": 14168,
+                "reg_type": "holding",
+                "format": "u16",
+                "min": 0,
+                "max": 3,
+                "default": 1,
+                "enum": [
+                    0,
+                    1,
+                    2
+                ],
+                "enum_titles": [
+                    "Hours of compressor operation",
+                    "Hours of device operation",
+                    "Compressor stops"
+                ],
+                "group": "defrost",
+                "order": 2
+            },
+            {
+                "id": "dEt",
+                "title": "Defrosting Time Out (dEt)",
+                "description": "units: minutes",
+                "address": 14170,
+                "reg_type": "holding",
+                "format": "u16",
+                "min": 1,
+                "max": 250,
+                "default": 30,
+                "group": "defrost",
+                "order": 3
+            },
+            {
+                "id": "dit",
+                "title": "Interval Between Defrosting Operations (dit)",
+                "description": "units: hours",
+                "address": 14211,
+                "reg_type": "holding",
+                "format": "u16",
+                "min": 0,
+                "max": 250,
+                "default": 6,
+                "group": "defrost",
+                "order": 4
+            },
+            {
+                "id": "dOH",
+                "title": "Defrosting Start Offset (dOH)",
+                "description": "units: minutes",
+                "address": 14169,
+                "reg_type": "holding",
+                "format": "u16",
+                "min": 0,
+                "max": 59,
+                "default": 0,
+                "group": "defrost",
+                "order": 5
+            },
+            {
+                "id": "dPO",
+                "title": "Defrost At Power On (dPO)",
+                "address": 14171,
+                "reg_type": "holding",
+                "format": "u16",
+                "default": 0,
+                "enum": [
+                    0,
+                    1
+                ],
+                "enum_titles": [
+                    "No",
+                    "Yes"
+                ],
+                "group": "defrost",
+                "order": 6
+            },
+            {
+                "id": "dS2",
+                "title": "Defrosting End Temperature For Evaporator 2 (dS2)",
+                "description": "units: degrees",
+                "address": 24318,
+                "reg_type": "holding",
+                "format": "s16",
+                "scale": 0.1,
+                "min": -50,
+                "max": 150,
+                "default": 8,
+                "group": "defrost",
+                "order": 7
+            },
+            {
+                "id": "dSt",
+                "title": "Defrosting End Temperature (dSt)",
+                "description": "units: degrees",
+                "address": 24102,
+                "reg_type": "holding",
+                "format": "s16",
+                "scale": 0.1,
+                "min": -50,
+                "max": 150,
+                "default": 8,
+                "group": "defrost",
+                "order": 8
+            },
+            {
+                "id": "dt1",
+                "title": "Defrost Intervals Units (dt1)",
+                "address": 14166,
+                "reg_type": "holding",
+                "format": "u16",
+                "min": 0,
+                "max": 2,
+                "default": 0,
+                "enum": [
+                    0,
+                    1,
+                    2
+                ],
+                "enum_titles": [
+                    "Hours",
+                    "Minutes",
+                    "Seconds"
+                ],
+                "group": "defrost",
+                "order": 9
+            },
+            {
+                "id": "dt2",
+                "title": "Defrost Duration Units (dt2)",
+                "address": 14167,
+                "reg_type": "holding",
+                "format": "u16",
+                "min": 0,
+                "max": 2,
+                "default": 1,
+                "enum": [
+                    0,
+                    1,
+                    2
+                ],
+                "enum_titles": [
+                    "Hours",
+                    "Minutes",
+                    "Seconds"
+                ],
+                "group": "defrost",
+                "order": 10
+            },
+            {
+                "id": "dtY",
+                "title": "Defrosting Running Mode (dtY)",
+                "address": 14165,
+                "reg_type": "holding",
+                "format": "u16",
+                "min": 0,
+                "max": 2,
+                "default": 0,
+                "enum": [
+                    0,
+                    1,
+                    2
+                ],
+                "enum_titles": [
+                    "Electrical",
+                    "Hot gas",
+                    "Free mode"
+                ],
+                "group": "defrost",
+                "order": 11
+            },
+            {
+                "id": "tcd",
+                "title": "Compressor Working Time Before Defrost (tcd)",
+                "description": "units: minutes",
+                "address": 24104,
+                "reg_type": "holding",
+                "format": "s16",
+                "min": -31,
+                "max": 31,
+                "default": 0,
+                "group": "defrost",
+                "order": 12
+            },
+            {
+                "id": "dCd",
+                "title": "Exclude condenser fans during defrosting (dCd)",
+                "address": 14327,
+                "reg_type": "holding",
+                "format": "u16",
+                "min": 0,
+                "max": 1,
+                "default": 1,
+                "group": "fans",
+                "order": 1
+            },
+            {
+                "id": "dCF",
+                "title": "Condenser Fan Operating Differential (dCF)",
+                "description": "units: degrees",
+                "address": 24324,
+                "reg_type": "holding",
+                "format": "s16",
+                "scale": 0.1,
+                "min": -30,
+                "max": 30,
+                "default": 2,
+                "group": "fans",
+                "order": 2
+            },
+            {
+                "id": "dFd",
+                "title": "Disable Fans In Defrost Mode (dFd)",
+                "address": 14176,
+                "reg_type": "holding",
+                "format": "u16",
+                "default": 0,
+                "enum": [
+                    0,
+                    1
+                ],
+                "enum_titles": [
+                    "No",
+                    "Yes"
+                ],
+                "group": "fans",
+                "order": 3
+            },
+            {
+                "id": "dt",
+                "title": "Dripping Time (dt)",
+                "description": "units: minutes",
+                "address": 14175,
+                "reg_type": "holding",
+                "format": "u16",
+                "min": 0,
+                "max": 250,
+                "default": 0,
+                "group": "fans",
+                "order": 4
+            },
+            {
+                "id": "FAd",
+                "title": "Fan Differential (FAd)",
+                "description": "units: degrees",
+                "address": 24110,
+                "reg_type": "holding",
+                "format": "u16",
+                "scale": 0.1,
+                "min": 10,
+                "max": 50,
+                "default": 2,
+                "group": "fans",
+                "order": 5
+            },
+            {
+                "id": "FCO",
+                "title": "Stop Fans With Compressor (FCO)",
+                "address": 14177,
+                "reg_type": "holding",
+                "format": "u16",
+                "default": 1,
+                "enum": [
+                    0,
+                    1,
+                    2
+                ],
+                "enum_titles": [
+                    "No",
+                    "Yes",
+                    "Duty cycle"
+                ],
+                "group": "fans",
+                "order": 6
+            },
+            {
+                "id": "FdC",
+                "title": "Off Delay After Compressor Shutdown (FdC)",
+                "description": "units: minutes",
+                "address": 14179,
+                "reg_type": "holding",
+                "format": "u16",
+                "min": 0,
+                "max": 99,
+                "default": 0,
+                "group": "fans",
+                "order": 7
+            },
+            {
+                "id": "Fdt",
+                "title": "Fan Delay Time (Fdt)",
+                "description": "units: minutes",
+                "address": 14174,
+                "reg_type": "holding",
+                "format": "u16",
+                "min": 0,
+                "max": 250,
+                "default": 0,
+                "group": "fans",
+                "order": 8
+            },
+            {
+                "id": "Fod",
+                "title": "Fans Off By Door (Fod)",
+                "address": 14178,
+                "reg_type": "holding",
+                "format": "u16",
+                "min": 0,
+                "max": 1,
+                "default": 0,
+                "enum": [
+                    0,
+                    1
+                ],
+                "enum_titles": [
+                    "No",
+                    "Yes"
+                ],
+                "group": "fans",
+                "order": 9
+            },
+            {
+                "id": "FoF",
+                "title": "Off Time For Fans In Duty Cycle (FoF)",
+                "description": "units: minutes",
+                "address": 14181,
+                "reg_type": "holding",
+                "format": "u16",
+                "min": 0,
+                "max": 99,
+                "default": 0,
+                "group": "fans",
+                "order": 10
+            },
+            {
+                "id": "Fon",
+                "title": "On Time For Fans In Duty Cycle (Fon)",
+                "description": "units: minutes",
+                "address": 14180,
+                "reg_type": "holding",
+                "format": "u16",
+                "min": 0,
+                "max": 99,
+                "default": 0,
+                "group": "fans",
+                "order": 11
+            },
+            {
+                "id": "Fot",
+                "title": "Fan Start Temperature (Fot)",
+                "description": "units: degrees",
+                "address": 24108,
+                "reg_type": "holding",
+                "format": "s16",
+                "scale": 0.1,
+                "min": -50,
+                "max": 150,
+                "default": -0.5,
+                "group": "fans",
+                "order": 12
+            },
+            {
+                "id": "FPt",
+                "title": "Fans Control Mode (FPt)",
+                "address": 14173,
+                "reg_type": "holding",
+                "format": "u16",
+                "default": 0,
+                "enum": [
+                    0,
+                    1
+                ],
+                "enum_titles": [
+                    "Absolute",
+                    "Relative"
+                ],
+                "group": "fans",
+                "order": 13
+            },
+            {
+                "id": "FSt",
+                "title": "Fan Stop Temperature (FSt)",
+                "description": "units: degrees",
+                "address": 24106,
+                "reg_type": "holding",
+                "format": "s16",
+                "scale": 0.1,
+                "min": -50,
+                "max": 150,
+                "default": 2,
+                "group": "fans",
+                "order": 14
+            },
+            {
+                "id": "SCF",
+                "title": "Condenser Fan Activation Setpoint (SCF)",
+                "description": "units: degrees",
+                "address": 24322,
+                "reg_type": "holding",
+                "format": "s16",
+                "scale": 0.1,
+                "min": -50,
+                "max": 150,
+                "default": 1,
+                "group": "fans",
+                "order": 15
+            },
+            {
+                "id": "tCF",
+                "title": "Condenser Fan Startup delay (tCF)",
+                "address": 14326,
+                "reg_type": "holding",
+                "format": "u16",
+                "min": 0,
+                "max": 59,
+                "default": 0,
+                "group": "fans",
+                "order": 16
+            },
+            {
+                "id": "Afd",
+                "title": "Allarm Fan Differential (Afd)",
+                "description": "units: degrees",
+                "address": 24112,
+                "reg_type": "holding",
+                "format": "u16",
+                "scale": 0.1,
+                "min": 1,
+                "max": 50,
+                "default": 2,
+                "group": "alarms",
+                "order": 1
+            },
+            {
+                "id": "AOP",
+                "title": "Alarm Output Polarity (AOP)",
+                "address": 14191,
+                "reg_type": "holding",
+                "format": "u16",
+                "enum": [
+                    0,
+                    1
+                ],
+                "enum_titles": [
+                    " Alarm active and output disabled",
+                    " Alarm active and output enabled"
+                ],
+                "group": "alarms",
+                "order": 2
+            },
+            {
+                "id": "Att",
+                "title": "Alarm Type (Att)",
+                "address": 14184,
+                "reg_type": "holding",
+                "format": "u16",
+                "enum": [
+                    0,
+                    1
+                ],
+                "enum_titles": [
+                    "Absolute",
+                    "Relative"
+                ],
+                "group": "alarms",
+                "order": 3
+            },
+            {
+                "id": "dA3",
+                "title": "Alarm Differential 3rd Probe",
+                "description": "units: degrees",
+                "address": 24150,
+                "reg_type": "holding",
+                "format": "u16",
+                "scale": 0.1,
+                "min": -30,
+                "max": 30,
+                "default": 2,
+                "group": "alarms",
+                "order": 4
+            },
+            {
+                "id": "dAO",
+                "title": "Disable Alarm After Defrost (dAO)",
+                "description": "units: minutes",
+                "address": 24114,
+                "reg_type": "holding",
+                "format": "u16",
+                "min": 0,
+                "max": 999,
+                "default": 0,
+                "group": "alarms",
+                "order": 5
+            },
+            {
+                "id": "dAt",
+                "title": "Defrost Timeout Alarm (dAt)",
+                "address": 14189,
+                "reg_type": "holding",
+                "format": "u16",
+                "default": 0,
+                "enum": [
+                    0,
+                    1
+                ],
+                "enum_titles": [
+                    "Disabled",
+                    "Enabled"
+                ],
+                "group": "alarms",
+                "order": 6
+            },
+            {
+                "id": "HAL",
+                "title": "Maximum Temperature Alarm (HAL)",
+                "description": "units: degrees",
+                "address": 24136,
+                "reg_type": "holding",
+                "format": "u16",
+                "scale": 0.1,
+                "min": -50,
+                "max": 150,
+                "default": 50,
+                "group": "alarms",
+                "order": 7
+            },
+            {
+                "id": "LAL",
+                "title": "Minimum Temperature Alarm (LAL)",
+                "description": "units: degrees",
+                "address": 24138,
+                "reg_type": "holding",
+                "format": "u16",
+                "scale": 0.1,
+                "min": -50,
+                "max": 150,
+                "default": -50,
+                "group": "alarms",
+                "order": 8
+            },
+            {
+                "id": "OAO",
+                "title": "Alarm Delay After Closing Door (OAO)",
+                "description": "units: hours",
+                "address": 14186,
+                "reg_type": "holding",
+                "format": "u16",
+                "min": 0,
+                "max": 10,
+                "default": 0,
+                "group": "alarms",
+                "order": 9
+            },
+            {
+                "id": "PAO",
+                "title": "Disable Alarm On Start (PAO)",
+                "description": "units: hours",
+                "address": 14185,
+                "reg_type": "holding",
+                "format": "u16",
+                "min": 0,
+                "max": 10,
+                "default": 0,
+                "group": "alarms",
+                "order": 10
+            },
+            {
+                "id": "PbA",
+                "title": "Probe Temperature Alarm Signalling",
+                "address": 14216,
+                "reg_type": "holding",
+                "format": "u16",
+                "default": 0,
+                "enum": [
+                    0,
+                    1,
+                    2,
+                    3
+                ],
+                "enum_titles": [
+                    "On probe 1",
+                    "On probe 3",
+                    "On probe 1 and 3",
+                    "On probe 1 and 3 (external threshold)"
+                ],
+                "group": "alarms",
+                "order": 11
+            },
+            {
+                "id": "rLO",
+                "title": "External Alarm Disables Controller",
+                "address": 14190,
+                "reg_type": "holding",
+                "format": "u16",
+                "default": 0,
+                "enum": [
+                    0,
+                    1
+                ],
+                "enum_titles": [
+                    "No",
+                    "Yes"
+                ],
+                "group": "alarms",
+                "order": 12
+            },
+            {
+                "id": "SA3",
+                "title": "Probe 3 Alarm Setpoint",
+                "description": "units: degrees",
+                "address": 24148,
+                "reg_type": "holding",
+                "format": "u16",
+                "scale": 0.1,
+                "min": -50,
+                "max": 150,
+                "default": 5,
+                "group": "alarms",
+                "order": 13
+            },
+            {
+                "id": "tAO",
+                "title": "Alarm Delay Time (tAO)",
+                "description": "units: minutes",
+                "address": 14188,
+                "reg_type": "holding",
+                "format": "u16",
+                "min": 0,
+                "max": 250,
+                "default": 0,
+                "group": "alarms",
+                "order": 14
+            },
+            {
+                "id": "tdO",
+                "title": "Door Open Timeout (tdO)",
+                "description": "units: minutes",
+                "address": 14187,
+                "reg_type": "holding",
+                "format": "u16",
+                "min": 0,
+                "max": 250,
+                "default": 0,
+                "group": "alarms",
+                "order": 15
+            },
+            {
+                "id": "CA1",
+                "title": "Probe 1 Display Offset (CA1)",
+                "description": "units: degrees",
+                "address": 24116,
+                "reg_type": "holding",
+                "format": "s16",
+                "scale": 0.1,
+                "min": -12,
+                "max": 12,
+                "default": 0,
+                "group": "display",
+                "order": 1
+            },
+            {
+                "id": "CA2",
+                "title": "Probe 2 Display Offset (CA2)",
+                "description": "units: degrees",
+                "address": 24118,
+                "reg_type": "holding",
+                "format": "s16",
+                "scale": 0.1,
+                "min": -12,
+                "max": 12,
+                "default": 0,
+                "group": "display",
+                "order": 2
+            },
+            {
+                "id": "CA3",
+                "title": "Probe 3 Display Offset (CA3)",
+                "description": "units: degrees",
+                "address": 24120,
+                "reg_type": "holding",
+                "format": "s16",
+                "scale": 0.1,
+                "min": -12,
+                "max": 12,
+                "default": 0,
+                "group": "display",
+                "order": 3
+            },
+            {
+                "id": "CAI",
+                "title": "Calibration Intervention (CAI)",
+                "address": 14195,
+                "reg_type": "holding",
+                "format": "u16",
+                "default": 2,
+                "enum": [
+                    0,
+                    1,
+                    2
+                ],
+                "enum_titles": [
+                    "Display",
+                    "Regulator",
+                    "Both"
+                ],
+                "group": "display",
+                "order": 4
+            },
+            {
+                "id": "ddd",
+                "title": "Display Value Type (ddd)",
+                "address": 14197,
+                "reg_type": "holding",
+                "format": "u16",
+                "default": 1,
+                "enum": [
+                    0,
+                    1,
+                    2
+                ],
+                "enum_titles": [
+                    "Setpoint",
+                    "Probe 1",
+                    "Probe 2"
+                ],
+                "group": "display",
+                "order": 5
+            },
+            {
+                "id": "ddL",
+                "title": "Display Lock (ddL)",
+                "address": 14196,
+                "reg_type": "holding",
+                "format": "u16",
+                "default": 1,
+                "enum": [
+                    0,
+                    1,
+                    2
+                ],
+                "enum_titles": [
+                    "Probe value",
+                    "Freeze value",
+                    "Label deF"
+                ],
+                "group": "display",
+                "order": 6
+            },
+            {
+                "id": "dro",
+                "title": "Temperature Units (C/F) (dro)",
+                "address": 14226,
+                "reg_type": "holding",
+                "format": "u16",
+                "default": 0,
+                "enum": [
+                    0,
+                    1
+                ],
+                "enum_titles": [
+                    "C",
+                    "F"
+                ],
+                "group": "display",
+                "order": 7
+            },
+            {
+                "id": "Ero",
+                "title": "Display On Eco (Ero)",
+                "address": 14328,
+                "reg_type": "holding",
+                "format": "u16",
+                "default": 1,
+                "enum": [
+                    0,
+                    1,
+                    2,
+                    3
+                ],
+                "enum_titles": [
+                    "Probe 1",
+                    "Probe 2",
+                    "Probe 3",
+                    "Setpoint"
+                ],
+                "group": "display",
+                "order": 8
+            },
+            {
+                "id": "HdL",
+                "title": "Maximum Displayable Value (HdL)",
+                "description": "units: degrees",
+                "address": 24124,
+                "reg_type": "holding",
+                "format": "s16",
+                "scale": 0.1,
+                "min": -55,
+                "max": 302,
+                "default": 14,
+                "group": "display",
+                "order": 9
+            },
+            {
+                "id": "Ldd",
+                "title": "Display Lock Timeout After Defrosting (Ldd)",
+                "description": "units: minutes",
+                "address": 14217,
+                "reg_type": "holding",
+                "format": "u16",
+                "min": 0,
+                "max": 255,
+                "default": 0,
+                "group": "display",
+                "order": 10
+            },
+            {
+                "id": "LdL",
+                "title": "Minimum Displayable Value (LdL)",
+                "description": "units: degrees",
+                "address": 24122,
+                "reg_type": "holding",
+                "format": "s16",
+                "scale": 0.1,
+                "min": -55,
+                "max": 302,
+                "default": -5,
+                "group": "display",
+                "order": 11
+            },
+            {
+                "id": "LOC",
+                "title": "Keyboard Lock (LOC)",
+                "address": 14193,
+                "reg_type": "holding",
+                "format": "u16",
+                "default": 0,
+                "enum": [
+                    0,
+                    1
+                ],
+                "enum_titles": [
+                    "No",
+                    "Yes"
+                ],
+                "group": "display",
+                "order": 12
+            },
+            {
+                "id": "ndt",
+                "title": "Display Decimal Point (ndt)",
+                "address": 14194,
+                "reg_type": "holding",
+                "format": "u16",
+                "min": 0,
+                "max": 1,
+                "default": 0,
+                "group": "display",
+                "order": 13
+            },
+            {
+                "id": "H00",
+                "title": "Probe Type (H00)",
+                "address": 14225,
+                "reg_type": "holding",
+                "format": "u16",
+                "min": 0,
+                "max": 1,
+                "default": 1,
+                "enum": [
+                    0,
+                    1
+                ],
+                "enum_titles": [
+                    "PTC",
+                    "NTC"
+                ],
+                "group": "configuration",
+                "order": 1
+            },
+            {
+                "id": "H02",
+                "title": "Key Enabling Time (H02)",
+                "description": "units: seconds",
+                "address": 14198,
+                "reg_type": "holding",
+                "format": "u16",
+                "min": 0,
+                "max": 15,
+                "default": 5,
+                "group": "configuration",
+                "order": 2
+            },
+            {
+                "id": "H06",
+                "title": "Aux Control When Controller Is Off (H06)",
+                "address": 14218,
+                "reg_type": "holding",
+                "format": "u16",
+                "default": 1,
+                "enum": [
+                    0,
+                    1
+                ],
+                "enum_titles": [
+                    "Disabled",
+                    "Enabled"
+                ],
+                "group": "configuration",
+                "order": 3
+            },
+            {
+                "id": "H08",
+                "title": "Controller State In Standby (H08)",
+                "address": 14219,
+                "reg_type": "holding",
+                "format": "u16",
+                "default": 2,
+                "enum": [
+                    0,
+                    1,
+                    2
+                ],
+                "enum_titles": [
+                    "Display off, loads on",
+                    "Display on, loads blocked",
+                    "Display off, loads blocked"
+                ],
+                "group": "configuration",
+                "order": 4
+            },
+            {
+                "id": "H11",
+                "title": "Digital Input 1 Configuration (H11)",
+                "address": 24126,
+                "reg_type": "holding",
+                "format": "s16",
+                "default": 0,
+                "enum": [
+                    -8,
+                    -7,
+                    -6,
+                    -5,
+                    -4,
+                    -3,
+                    -2,
+                    -1,
+                    0,
+                    1,
+                    2,
+                    3,
+                    4,
+                    5,
+                    6,
+                    7,
+                    8
+                ],
+                "enum_titles": [
+                    "Maintenence request (opening)",
+                    "Standby (opening)",
+                    "Disable storage HACCP alarms (opening)",
+                    "external alarm (opening)",
+                    "door switch (opening)",
+                    "auxiliary (opening)",
+                    "reduced set point (opening)",
+                    "defrosting (opening)",
+                    "disabled",
+                    "defrosting (closing)",
+                    "reduced set point (closing)",
+                    "auxiliary (closing)",
+                    "door switch (closing)",
+                    "external alarm (closing)",
+                    "Disable storage HACCP alarms (closing)",
+                    "Standby (closing)",
+                    "Maintenence request (closing)"
+                ],
+                "group": "configuration",
+                "order": 5
+            },
+            {
+                "id": "H12",
+                "title": "Digital Inputs 2 Configuration (H12)",
+                "address": 24152,
+                "reg_type": "holding",
+                "format": "s16",
+                "default": 0,
+                "enum": [
+                    -8,
+                    -7,
+                    -6,
+                    -5,
+                    -4,
+                    -3,
+                    -2,
+                    -1,
+                    0,
+                    1,
+                    2,
+                    3,
+                    4,
+                    5,
+                    6,
+                    7,
+                    8
+                ],
+                "enum_titles": [
+                    "Maintenence request (opening)",
+                    "Standby (opening)",
+                    "Disable storage HACCP alarms (opening)",
+                    "external alarm (opening)",
+                    "door switch (opening)",
+                    "auxiliary (opening)",
+                    "reduced set point (opening)",
+                    "defrosting (opening)",
+                    "disabled",
+                    "defrosting (closing)",
+                    "reduced set point (closing)",
+                    "auxiliary (closing)",
+                    "door switch (closing)",
+                    "external alarm (closing)",
+                    "Disable storage HACCP alarms (closing)",
+                    "Standby (closing)",
+                    "Maintenence request (closing)"
+                ],
+                "group": "configuration",
+                "order": 6
+            },
+            {
+                "id": "H21",
+                "title": "Digital Output 1 Configurability (H21)",
+                "address": 14199,
+                "reg_type": "holding",
+                "format": "u16",
+                "default": 1,
+                "enum": [
+                    0,
+                    1,
+                    2,
+                    3,
+                    4,
+                    5,
+                    6,
+                    7,
+                    8,
+                    9
+                ],
+                "enum_titles": [
+                    "disabled",
+                    "compressor",
+                    "defrosting",
+                    "fans",
+                    "alarm",
+                    "auxiliary",
+                    "standby",
+                    "light",
+                    "buzzer",
+                    "defrost 2nd evaporator"
+                ],
+                "group": "configuration",
+                "order": 7
+            },
+            {
+                "id": "H22",
+                "title": "Digital Output 2 Configurability (H22)",
+                "address": 14200,
+                "reg_type": "holding",
+                "format": "u16",
+                "default": 2,
+                "enum": [
+                    0,
+                    1,
+                    2,
+                    3,
+                    4,
+                    5,
+                    6,
+                    7,
+                    8,
+                    9
+                ],
+                "enum_titles": [
+                    "disabled",
+                    "compressor",
+                    "defrosting",
+                    "fans",
+                    "alarm",
+                    "auxiliary",
+                    "standby",
+                    "light",
+                    "buzzer",
+                    "defrost 2nd evaporator"
+                ],
+                "group": "configuration",
+                "order": 8
+            },
+            {
+                "id": "H23",
+                "title": "Digital Output 3 Configurability (H23)",
+                "address": 14201,
+                "reg_type": "holding",
+                "format": "u16",
+                "default": 3,
+                "enum": [
+                    0,
+                    1,
+                    2,
+                    3,
+                    4,
+                    5,
+                    6,
+                    7,
+                    8,
+                    9
+                ],
+                "enum_titles": [
+                    "disabled",
+                    "compressor",
+                    "defrosting",
+                    "fans",
+                    "alarm",
+                    "auxiliary",
+                    "standby",
+                    "light",
+                    "buzzer",
+                    "defrost 2nd evaporator"
+                ],
+                "group": "configuration",
+                "order": 9
+            },
+            {
+                "id": "H24",
+                "title": "Digital Output 4 Configurability (H24)",
+                "address": 14202,
+                "reg_type": "holding",
+                "format": "u16",
+                "default": 4,
+                "enum": [
+                    0,
+                    1,
+                    2,
+                    3,
+                    4,
+                    5,
+                    6,
+                    7,
+                    8,
+                    9
+                ],
+                "enum_titles": [
+                    "disabled",
+                    "compressor",
+                    "defrosting",
+                    "fans",
+                    "alarm",
+                    "auxiliary",
+                    "standby",
+                    "light",
+                    "buzzer",
+                    "defrost 2nd evaporator"
+                ],
+                "group": "configuration",
+                "order": 10
+            },
+            {
+                "id": "H31",
+                "title": "Up Key Configuration (H31)",
+                "address": 14204,
+                "reg_type": "holding",
+                "format": "u16",
+                "default": 1,
+                "enum": [
+                    0,
+                    1,
+                    2,
+                    3,
+                    4,
+                    5,
+                    6,
+                    7,
+                    8
+                ],
+                "enum_titles": [
+                    "disabled",
+                    "defrosting",
+                    "auxilary",
+                    "reduced set",
+                    "HACCP alarm reset",
+                    "disable alarms HACCP",
+                    "light",
+                    "standby",
+                    "maintenance request"
+                ],
+                "group": "configuration",
+                "order": 11
+            },
+            {
+                "id": "H32",
+                "title": "Down Key Configuration (H32)",
+                "address": 14205,
+                "reg_type": "holding",
+                "format": "u16",
+                "default": 0,
+                "enum": [
+                    0,
+                    1,
+                    2,
+                    3,
+                    4,
+                    5,
+                    6,
+                    7,
+                    8
+                ],
+                "enum_titles": [
+                    "disabled",
+                    "defrosting",
+                    "auxilary",
+                    "reduced set",
+                    "HACCP alarm reset",
+                    "disable alarms HACCP",
+                    "light",
+                    "standby",
+                    "maintenance request"
+                ],
+                "group": "configuration",
+                "order": 12
+            },
+            {
+                "id": "H33",
+                "title": "Esc Key Configuration (H33)",
+                "address": 14206,
+                "reg_type": "holding",
+                "format": "u16",
+                "default": 0,
+                "enum": [
+                    0,
+                    1,
+                    2,
+                    3,
+                    4,
+                    5,
+                    6,
+                    7,
+                    8
+                ],
+                "enum_titles": [
+                    "disabled",
+                    "defrosting",
+                    "auxilary",
+                    "reduced set",
+                    "HACCP alarm reset",
+                    "disable alarms HACCP",
+                    "light",
+                    "standby",
+                    "maintenance request"
+                ],
+                "group": "configuration",
+                "order": 13
+            },
+            {
+                "id": "H40",
+                "title": "Inversion Prob1 And Probe 2 (H40)",
+                "address": 14207,
+                "reg_type": "holding",
+                "format": "u16",
+                "default": 0,
+                "enum": [
+                    0,
+                    1
+                ],
+                "enum_titles": [
+                    "No",
+                    "Yes"
+                ],
+                "group": "configuration",
+                "order": 14
+            },
+            {
+                "id": "H41",
+                "title": "Presence Of Control Probe (H41)",
+                "address": 14208,
+                "reg_type": "holding",
+                "format": "u16",
+                "default": 1,
+                "enum": [
+                    0,
+                    1
+                ],
+                "enum_titles": [
+                    "No",
+                    "Yes"
+                ],
+                "group": "configuration",
+                "order": 15
+            },
+            {
+                "id": "H42",
+                "title": "Presence Of Evaporator Probe (H42)",
+                "address": 14209,
+                "reg_type": "holding",
+                "format": "u16",
+                "default": 1,
+                "enum": [
+                    0,
+                    1
+                ],
+                "enum_titles": [
+                    "No",
+                    "Yes"
+                ],
+                "group": "configuration",
+                "order": 16
+            },
+            {
+                "id": "H43",
+                "title": "Presence Of Display Probe (H43)",
+                "address": 14210,
+                "reg_type": "holding",
+                "format": "u16",
+                "default": 0,
+                "enum": [
+                    0,
+                    1
+                ],
+                "enum_titles": [
+                    "No",
+                    "Yes"
+                ],
+                "group": "configuration",
+                "order": 17
+            },
+            {
+                "id": "H45",
+                "title": "Defrost With Dual Evaporator (H45)",
+                "address": 14316,
+                "reg_type": "holding",
+                "format": "u16",
+                "default": 1,
+                "enum": [
+                    0,
+                    1,
+                    2
+                ],
+                "enum_titles": [
+                    "1st evaporator < dSt",
+                    "1st evaporator < dSt or 2nd evaporator < dS2",
+                    "1st evaporator < dSt and 2nd evaporator < dS2"
+                ],
+                "group": "configuration",
+                "order": 18
+            },
+            {
+                "id": "H48",
+                "title": "Presence Of RTC",
+                "address": 14307,
+                "reg_type": "holding",
+                "format": "u16",
+                "default": 1,
+                "enum": [
+                    0,
+                    1
+                ],
+                "enum_titles": [
+                    "No",
+                    "Yes"
+                ],
+                "group": "configuration",
+                "order": 19
+            },
+            {
+                "id": "dCO",
+                "title": "Compressor Delay With Consensus (dCO)",
+                "description": "units: minutes",
+                "address": 14331,
+                "reg_type": "holding",
+                "format": "u16",
+                "min": 0,
+                "max": 250,
+                "default": 0,
+                "group": "inputs",
+                "order": 1
+            },
+            {
+                "id": "dFO",
+                "title": "Fans Delay With Consensus (dFO)",
+                "description": "units: minutes",
+                "address": 14332,
+                "reg_type": "holding",
+                "format": "u16",
+                "min": 0,
+                "max": 250,
+                "default": 0,
+                "group": "inputs",
+                "order": 2
+            },
+            {
+                "id": "dLt",
+                "title": "Light Relay Disable Delay (dLt)",
+                "description": "units: minutes",
+                "address": 14221,
+                "reg_type": "holding",
+                "format": "u16",
+                "min": 0,
+                "max": 31,
+                "default": 0,
+                "group": "inputs",
+                "order": 3
+            },
+            {
+                "id": "dOA",
+                "title": "Forced Behaviour From Input (dOA)",
+                "address": 14329,
+                "reg_type": "holding",
+                "format": "u16",
+                "default": 0,
+                "enum": [
+                    0,
+                    1,
+                    2,
+                    3
+                ],
+                "enum_titles": [
+                    "disabled",
+                    "compressor enabled",
+                    "fan enabled",
+                    "compressor and fan enabled"
+                ],
+                "group": "inputs",
+                "order": 4
+            },
+            {
+                "id": "dSd",
+                "title": "Lght Relay Enabled From Door Switch (dSd)",
+                "address": 14220,
+                "reg_type": "holding",
+                "format": "u16",
+                "default": 1,
+                "enum": [
+                    0,
+                    1
+                ],
+                "enum_titles": [
+                    "No",
+                    "Yes"
+                ],
+                "group": "inputs",
+                "order": 5
+            },
+            {
+                "id": "OFL",
+                "title": "Light Relay Disabled (OFL)",
+                "address": 14222,
+                "reg_type": "holding",
+                "format": "u16",
+                "default": 0,
+                "enum": [
+                    0,
+                    1
+                ],
+                "enum_titles": [
+                    "No",
+                    "Yes"
+                ],
+                "group": "inputs",
+                "order": 6
+            },
+            {
+                "id": "PEA",
+                "title": "Behaviour Type From Input (PEA)",
+                "address": 14330,
+                "reg_type": "holding",
+                "format": "u16",
+                "default": 0,
+                "enum": [
+                    0,
+                    1,
+                    2,
+                    3
+                ],
+                "enum_titles": [
+                    "disabled",
+                    "door light",
+                    "external alarm",
+                    "door light and external alarm"
+                ],
+                "group": "inputs",
+                "order": 7
+            }
+        ],
+        "channels": [
+            {
+                "name": "Temperature Setpoint",
+                "address": 24130,
+                "reg_type": "holding",
+                "type": "value",
+                "format": "s16",
+                "scale": 0.1,
+                "group": "control",
+                "min": -58,
+                "max": 58,
+                "units": "deg C"
+            },
+            {
+                "name": "Analogue input 1",
+                "address": 20450,
+                "reg_type": "input",
+                "type": "value",
+                "format": "s16",
+                "scale": 0.1,
+                "group": "status",
+                "units": "deg C"
+            },
+            {
+                "name": "Analogue input 2",
+                "address": 20452,
+                "reg_type": "input",
+                "type": "value",
+                "format": "s16",
+                "scale": 0.1,
+                "group": "status",
+                "enabled": false,
+                "units": "deg C"
+            },
+            {
+                "name": "Analogue input 3",
+                "address": 20454,
+                "reg_type": "input",
+                "type": "value",
+                "format": "s16",
+                "scale": 0.1,
+                "group": "status",
+                "enabled": false,
+                "units": "deg C"
+            },
+            {
+                "name": "Analogue input 1 (control 1)",
+                "address": 20456,
+                "reg_type": "input",
+                "type": "value",
+                "format": "s16",
+                "scale": 0.1,
+                "group": "status",
+                "enabled": false,
+                "units": "deg C"
+            },
+            {
+                "name": "Analogue input 2 (control 1)",
+                "address": 20458,
+                "reg_type": "input",
+                "type": "value",
+                "format": "s16",
+                "scale": 0.1,
+                "group": "status",
+                "enabled": false,
+                "units": "deg C"
+            },
+            {
+                "name": "Analogue input 3 (control 1)",
+                "address": 20460,
+                "reg_type": "input",
+                "type": "value",
+                "format": "s16",
+                "scale": 0.1,
+                "group": "status",
+                "enabled": false,
+                "units": "deg C"
+            },
+            {
+                "name": "Standby Mode",
+                "address": 1913,
+                "reg_type": "discrete",
+                "type": "switch",
+                "group": "status"
+            },
+            {
+                "name": "Economy Mode",
+                "address": 1912,
+                "reg_type": "discrete",
+                "type": "switch",
+                "group": "status"
+            },
+            {
+                "name": "Digital Input 1",
+                "address": 3444,
+                "reg_type": "discrete",
+                "type": "switch",
+                "format": "u16",
+                "group": "status"
+            },
+            {
+                "name": "Digital Input 2",
+                "address": 3445,
+                "reg_type": "discrete",
+                "type": "switch",
+                "format": "u16",
+                "group": "status"
+            },
+            {
+                "name": "Light",
+                "address": 1914,
+                "reg_type": "discrete",
+                "type": "switch",
+                "format": "u16",
+                "group": "status"
+            },
+            {
+                "name": "Relay 1",
+                "address": 1476,
+                "reg_type": "discrete",
+                "type": "switch",
+                "group": "status"
+            },
+            {
+                "name": "Relay 2",
+                "address": 1475,
+                "reg_type": "discrete",
+                "type": "switch",
+                "group": "status"
+            },
+            {
+                "name": "Relay 3",
+                "address": 1474,
+                "reg_type": "discrete",
+                "type": "switch",
+                "group": "status"
+            },
+            {
+                "name": "Relay 4",
+                "address": 1473,
+                "reg_type": "discrete",
+                "type": "switch",
+                "group": "status"
+            },
+            {
+                "name": "Relay 5",
+                "address": 1472,
+                "reg_type": "discrete",
+                "type": "switch",
+                "group": "status"
+            },
+            {
+                "name": "Analog Input 1 Alarm",
+                "address": 1881,
+                "reg_type": "discrete",
+                "type": "switch",
+                "group": "alarms"
+            },
+            {
+                "name": "Analog Input 2 Alarm",
+                "address": 1959,
+                "reg_type": "discrete",
+                "type": "switch",
+                "group": "alarms",
+                "enabled": false
+            },
+            {
+                "name": "Analog Input 3 Alarm",
+                "address": 1982,
+                "reg_type": "discrete",
+                "type": "switch",
+                "group": "alarms",
+                "enabled": false
+            },
+            {
+                "name": "Input 1 High Temperature Alarm",
+                "address": 1885,
+                "reg_type": "discrete",
+                "type": "switch",
+                "group": "alarms"
+            },
+            {
+                "name": "Input 1 Low Temperature Alarm",
+                "address": 1886,
+                "reg_type": "discrete",
+                "type": "switch",
+                "group": "alarms"
+            },
+            {
+                "name": "Input 3 High Temperature Alarm",
+                "address": 1880,
+                "reg_type": "discrete",
+                "type": "switch",
+                "group": "alarms",
+                "enabled": false
+            },
+            {
+                "name": "Input 3 Low Temperature Alarm",
+                "address": 1883,
+                "reg_type": "discrete",
+                "type": "switch",
+                "group": "alarms",
+                "enabled": false
+            },
+            {
+                "name": "Defrost Timeout",
+                "address": 1890,
+                "reg_type": "discrete",
+                "type": "switch",
+                "group": "alarms"
+            },
+            {
+                "name": "Auxiliary Controller Active",
+                "address": 1916,
+                "reg_type": "discrete",
+                "type": "switch",
+                "group": "alarms"
+            },
+            {
+                "name": "External Alarm",
+                "address": 1884,
+                "reg_type": "discrete",
+                "type": "switch",
+                "group": "alarms"
+            },
+            {
+                "name": "Open Door Alarm",
+                "address": 1887,
+                "reg_type": "discrete",
+                "type": "switch",
+                "group": "alarms"
+            },
+            {
+                "name": "Pressure Switch Alarm",
+                "address": 1893,
+                "reg_type": "discrete",
+                "type": "switch",
+                "group": "alarms"
+            },
+            {
+                "name": "Battery Alarm",
+                "address": 1892,
+                "reg_type": "discrete",
+                "type": "switch",
+                "group": "alarms"
+            },
+            {
+                "name": "Controller On",
+                "address": 1782,
+                "reg_type": "coil",
+                "type": "switch",
+                "group": "control"
+            },
+            {
+                "name": "Controller Off",
+                "address": 1783,
+                "reg_type": "coil",
+                "type": "switch",
+                "group": "control"
+            },
+            {
+                "name": "Economy On",
+                "address": 1778,
+                "reg_type": "coil",
+                "type": "switch",
+                "group": "control"
+            },
+            {
+                "name": "Economy Off",
+                "address": 1779,
+                "reg_type": "coil",
+                "type": "switch",
+                "group": "control"
+            },
+            {
+                "name": "Mabual Defrost On",
+                "address": 1785,
+                "reg_type": "coil",
+                "type": "switch",
+                "group": "control"
+            },
+            {
+                "name": "Reset Parameters Changed Indicator",
+                "address": 1787,
+                "reg_type": "coil",
+                "type": "switch",
+                "group": "control",
+                "enabled": false
+            },
+            {
+                "name": "Light On",
+                "address": 1776,
+                "reg_type": "coil",
+                "type": "switch",
+                "group": "control"
+            },
+            {
+                "name": "Light Off",
+                "address": 1777,
+                "reg_type": "coil",
+                "type": "switch",
+                "group": "control"
+            },
+            {
+                "name": "Silence Alarm",
+                "address": 1784,
+                "reg_type": "coil",
+                "type": "switch",
+                "group": "control"
+            },
+            {
+                "name": "Stop For Maintenance",
+                "address": 1788,
+                "reg_type": "coil",
+                "type": "switch",
+                "group": "control"
+            },
+            {
+                "name": "Device Address",
+                "address": 14182,
+                "reg_type": "holding",
+                "type": "value",
+                "format": "u16",
+                "readonly": true,
+                "group": "hw_info"
+            },
+            {
+                "name": "Device Family Address",
+                "address": 14183,
+                "reg_type": "holding",
+                "type": "value",
+                "format": "u16",
+                "readonly": true,
+                "group": "hw_info"
+            },
+            {
+                "name": "Controller Type",
+                "address": 816,
+                "reg_type": "holding",
+                "type": "value",
+                "format": "u16",
+                "readonly": true,
+                "group": "hw_info"
+            }
+        ]
+    },
+    "translations": {}
+}

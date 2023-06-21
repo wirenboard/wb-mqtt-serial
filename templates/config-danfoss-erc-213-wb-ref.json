@@ -1,0 +1,975 @@
+{
+    "title": "Danfoss ERC 213 (WB-REF-DF-ERC21)",
+    "device_type": "danfoss_erc_213_wb_ref",
+    "group": "g-refrigeration",
+    "device": {
+        "name": "Danfoss ERC 213",
+        "id": "danfoss-erc-213",
+        "response_timeout_ms": 100,
+        "frame_timeout_ms": 12,
+        "guard_interval_us": 5000,
+        "max_read_registers": 0,
+        "enable_wb_continuous_read": true,
+
+        "groups": [
+            {
+                "title": "Status",
+                "id": "status",
+                "order": 1
+            },
+            {
+                "title": "Control",
+                "id": "control",
+                "order": 2
+            },
+            {
+                "title": "Reference",
+                "id": "reference",
+                "order": 3
+            },
+            {
+                "title": "Alarm",
+                "id": "alarm",
+                "order": 4
+            },
+            {
+                "title": "Defrost",
+                "id": "defrost",
+                "order": 5
+            },
+            {
+                "title": "Fans",
+                "id": "fans",
+                "order": 6
+            },
+            {
+                "title": "Compressor",
+                "id": "compressor",
+                "order": 7
+            },
+            {
+                "title": "Others",
+                "id": "others",
+                "order": 8
+            },
+            {
+                "title": "Polarity",
+                "id": "polarity",
+                "order": 9
+            },
+            {
+                "title": "Controller Info",
+                "id": "controller_info",
+                "order": 10
+            }
+        ],
+        "setup": [
+            {
+                "title": "set temperature units Celsius degrees",
+                "address": 104,
+                "reg_type": "holding",
+                "value": 0
+            }
+        ],
+        "parameters": {
+            "differential": {
+                "title": "Differential (r01)",
+                "description": "units: °C",
+                "address": 100,
+                "reg_type": "holding",
+                "format": "s16",
+                "scale": 0.01,
+                "min": 0.1,
+                "max": 20,
+                "default": 2,
+                "group": "reference",
+                "order": 1
+            },
+            "temperature_setpoint_min": {
+                "title": "Minimum Temperature Setpoint  (r02)",
+                "description": "units: °C",
+                "address": 102,
+                "reg_type": "holding",
+                "format": "s16",
+                "scale": 0.01,
+                "min": -100,
+                "max": 200,
+                "default": -35,
+                "group": "reference",
+                "order": 2
+            },
+            "temperature_setpoint_max": {
+                "title": "Maximum Temperature Setpoint (r03)",
+                "description": "units: °C",
+                "address": 101,
+                "reg_type": "holding",
+                "format": "s16",
+                "scale": 0.01,
+                "min": -100,
+                "max": 200,
+                "default": 50,
+                "group": "reference",
+                "order": 3
+            },
+            "display_temperature_offset": {
+                "title": "Display Temperature Offset (r04)",
+                "description": "units: °C",
+                "address": 103,
+                "reg_type": "holding",
+                "format": "s16",
+                "scale": 0.01,
+                "min": -10,
+                "max": 10,
+                "default": 0,
+                "group": "reference",
+                "order": 4
+            },
+            "sair_calibration": {
+                "title": "Calibration Of Sair (r09)",
+                "description": "units: °C",
+                "address": 112,
+                "reg_type": "holding",
+                "format": "s16",
+                "scale": 0.01,
+                "min": -20,
+                "max": 20,
+                "default": 0,
+                "group": "reference",
+                "order": 5
+            },
+            "night_setback_mode": {
+                "title": "Night Setback Mode (r13)",
+                "description": "units: °C; offset temperature during night\r\nmode",
+                "address": 124,
+                "reg_type": "holding",
+                "format": "s16",
+                "scale": 0.01,
+                "min": -50,
+                "max": 50,
+                "default": 0,
+                "group": "reference",
+                "order": 6
+            },
+            "thermostat_reference_displacement": {
+                "title": "Thermostat Reference Displacement (r40)",
+                "description": "units: °C",
+                "address": 150,
+                "reg_type": "holding",
+                "format": "s16",
+                "scale": 0.01,
+                "min": -50,
+                "max": 50,
+                "default": 0,
+                "group": "reference",
+                "order": 7
+            },
+            "pulldown_duration": {
+                "title": "Pulldown Duration (r96)",
+                "description": "units: minutes",
+                "address": 213,
+                "reg_type": "holding",
+                "format": "u16",
+                "min": 0,
+                "max": 990,
+                "default": 0,
+                "group": "reference",
+                "order": 8
+            },
+            "pulldown_limit_temperature": {
+                "title": "Pulldown Limit Temperature (r97)",
+                "description": "units: °C",
+                "address": 214,
+                "reg_type": "holding",
+                "format": "s16",
+                "scale": 0.01,
+                "min": -100,
+                "max": 200,
+                "default": 0,
+                "group": "reference",
+                "order": 9
+            },
+            "operation_alarm_delay": {
+                "title": "Alarm Delay During Normal Operation (A03)",
+                "description": "units: minutes",
+                "address": 10001,
+                "reg_type": "holding",
+                "format": "u16",
+                "min": 0,
+                "max": 240,
+                "default": 30,
+                "group": "alarm",
+                "order": 1
+            },
+            "other_alarm_delay": {
+                "title": "Other Alarm Delay (A12)",
+                "description": "units: minutes",
+                "address": 10017,
+                "reg_type": "holding",
+                "format": "u16",
+                "min": 0,
+                "max": 240,
+                "default": 60,
+                "group": "alarm",
+                "order": 2
+            },
+            "high_temperature_alarm_limit": {
+                "title": "High Temperature Alarm Limit (A13)",
+                "description": "units: °C",
+                "address": 10018,
+                "reg_type": "holding",
+                "format": "s16",
+                "scale": 0.01,
+                "min": -100,
+                "max": 200,
+                "default": 8,
+                "group": "alarm",
+                "order": 3
+            },
+            "low_temperature_alarm_limit": {
+                "title": "Low Temperature Alarm Limit (A14)",
+                "description": "units: °C",
+                "address": 10019,
+                "reg_type": "holding",
+                "format": "s16",
+                "scale": 0.01,
+                "min": -100,
+                "max": 200,
+                "default": -30,
+                "group": "alarm",
+                "order": 4
+            },
+            "di1_delay": {
+                "title": "DI1 Delay (A27)",
+                "description": "units: minutes",
+                "address": 10027,
+                "reg_type": "holding",
+                "format": "u16",
+                "min": 0,
+                "max": 240,
+                "default": 30,
+                "group": "alarm",
+                "order": 5
+            },
+            "di2_delay": {
+                "title": "DI2 Delay (A28)",
+                "description": "units: minutes",
+                "address": 10028,
+                "reg_type": "holding",
+                "format": "u16",
+                "min": 0,
+                "max": 240,
+                "default": 30,
+                "group": "alarm",
+                "order": 6
+            },
+            "condenser_alarm_temperature_limit": {
+                "title": "Condenser Alarm Temperature Limit (A37)",
+                "description": "units: °C",
+                "address": 10037,
+                "reg_type": "holding",
+                "format": "s16",
+                "scale": 0.01,
+                "min": 0,
+                "max": 200,
+                "default": 80,
+                "group": "alarm",
+                "order": 7
+            },
+            "condenser_stop_temperature_limit": {
+                "title": "Condenser Stop Temperature Limit (A54)",
+                "description": "units: °C",
+                "address": 10054,
+                "reg_type": "holding",
+                "format": "s16",
+                "scale": 0.01,
+                "min": 0,
+                "max": 200,
+                "default": 85,
+                "group": "alarm",
+                "order": 8
+            },
+            "voltage_protection_enabled": {
+                "title": "Voltage Protection Enabled (A72)",
+                "address": 10083,
+                "reg_type": "holding",
+                "format": "u16",
+                "default": 0,
+                "enum": [0, 1],
+                "enum_titles": ["no", "yes"],
+                "group": "alarm",
+                "order": 9
+            },
+            "compressor_minimum_start_voltage": {
+                "title": "Compressor Minimum Start Voltage (A73)",
+                "description": "units: V",
+                "address": 10084,
+                "reg_type": "holding",
+                "format": "u16",
+                "min": 0,
+                "max": 270,
+                "default": 0,
+                "group": "alarm",
+                "order": 10
+            },
+            "compressor_minimum_stop_voltage": {
+                "title": "Compressor Minimum Stop Voltage (A74)",
+                "description": "units: V",
+                "address": 10085,
+                "reg_type": "holding",
+                "format": "u16",
+                "min": 0,
+                "max": 270,
+                "default": 0,
+                "group": "alarm",
+                "order": 11
+            },
+            "compressor_maximum_voltage": {
+                "title": "Compressor Maximum Voltage (A75)",
+                "description": "units: V",
+                "address": 10086,
+                "reg_type": "holding",
+                "format": "u16",
+                "min": 0,
+                "max": 270,
+                "default": 270,
+                "group": "alarm",
+                "order": 12
+            },
+            "defrost_type": {
+                "title": "Defrost Type (d01)",
+                "address": 999,
+                "reg_type": "holding",
+                "format": "u16",
+                "default": 2,
+                "enum": [0, 1, 2, 3],
+                "enum_titles": [
+                    "no",
+                    "electrical",
+                    "gas",
+                    "brine"
+                ],
+                "group": "defrost",
+                "order": 1
+            },
+            "def_stop_temperature": {
+                "title": "Def Stop Temperature (d02)",
+                "description": "units: °C",
+                "address": 1000,
+                "reg_type": "holding",
+                "format": "s16",
+                "scale": 0.01,
+                "min": 0,
+                "max": 50,
+                "default": 6,
+                "group": "defrost",
+                "order": 2
+            },
+            "defrost_interval": {
+                "title": "Defrost Interval (d03)",
+                "description": "units: hours",
+                "address": 1001,
+                "reg_type": "holding",
+                "format": "u16",
+                "min": 0,
+                "max": 240,
+                "default": 8,
+                "group": "defrost",
+                "order": 3
+            },
+            "maximum_defrost_time": {
+                "title": "Maximum Defrost Time (d04)",
+                "description": "units: minutes",
+                "address": 1002,
+                "reg_type": "holding",
+                "format": "u16",
+                "min": 0,
+                "max": 480,
+                "default": 30,
+                "group": "defrost",
+                "order": 4
+            },
+            "powerup_defrost_delay": {
+                "title": "Defrost Delay At Power Up (or DI Signal) (d05)",
+                "description": "units: minutes",
+                "address": 1003,
+                "reg_type": "holding",
+                "format": "u16",
+                "min": 0,
+                "max": 240,
+                "default": 0,
+                "group": "defrost",
+                "order": 5
+            },
+            "drip_off_time": {
+                "title": "Drip Off Time (d06)",
+                "description": "units: minutes",
+                "address": 1004,
+                "reg_type": "holding",
+                "format": "u16",
+                "min": 0,
+                "max": 60,
+                "default": 0,
+                "group": "defrost",
+                "order": 6
+            },
+            "fan_delay_after_defrost": {
+                "title": "Fan Delay After Defrost (d07)",
+                "description": "units: minutes",
+                "address": 1006,
+                "reg_type": "holding",
+                "format": "u16",
+                "min": 0,
+                "max": 60,
+                "default": 0,
+                "group": "defrost",
+                "order": 7
+            },
+            "fan_start_temperature_after_defrost": {
+                "title": "Fan Start Temperature After Defrost (d08)",
+                "description": "units: °C",
+                "address": 1005,
+                "reg_type": "holding",
+                "format": "s16",
+                "min": -50,
+                "max": 0,
+                "default": -5,
+                "group": "defrost",
+                "order": 8
+            },
+            "fan_mode_during_defrost": {
+                "title": "Fan Mode During Defrost (d09)",
+                "address": 1007,
+                "reg_type": "holding",
+                "format": "u16",
+                "default": 1,
+                "enum": [0, 1, 2],
+                "enum_titles": [
+                    "stopped",
+                    "running (stopped during fan delay D07)",
+                    "running during pump down and defrost, stopped after that"
+                ],
+                "group": "defrost",
+                "order": 9
+            },
+            "defrost_stop_sensor": {
+                "title": "Defrost Stop Sensor (d10)",
+                "address": 1008,
+                "reg_type": "holding",
+                "format": "u16",
+                "default": 0,
+                "enum": [0, 1, 2],
+                "enum_titles": [
+                    "none (defrost is based on time)",
+                    "air temperature sensor",
+                    "defrost sensor"
+                ],
+                "group": "defrost",
+                "order": 10
+            },
+            "compressor_working_time_between_defrosts": {
+                "title": "Compressor Working Time Between Defrosts (d18)",
+                "description": "units: hours; 0 = off",
+                "address": 1019,
+                "reg_type": "holding",
+                "format": "u16",
+                "min": 0,
+                "max": 96,
+                "default": 0,
+                "group": "defrost",
+                "order": 11
+            },
+            "defrost_on_demand": {
+                "title": "Defrost On Demand (d19)",
+                "description": "units: °C; 20 °C = off; S5 temperature’s permitted variation during frost build-up",
+                "address": 1020,
+                "reg_type": "holding",
+                "format": "u16",
+                "scale": 0.01,
+                "min": 0,
+                "max": 20,
+                "default": 20,
+                "group": "defrost",
+                "order": 12
+            },
+            "continous_cycle_defrost_delay": {
+                "title": "Defrost Delay After Continous Cycle (d30)",
+                "description": "units: minutes",
+                "address": 1047,
+                "reg_type": "holding",
+                "format": "u16",
+                "min": 0,
+                "max": 960,
+                "default": 0,
+                "group": "defrost",
+                "order": 13
+            },
+            "fan_mode_when_compressor_off": {
+                "title": "Fan Mode When Compressor Is Off (F01)",
+                "address": 1499,
+                "reg_type": "holding",
+                "format": "u16",
+                "min": 0,
+                "max": 2,
+                "default": 1,
+                "enum": [0, 1, 2],
+                "enum_titles": [
+                    "fan follow compressor",
+                    "fan always on",
+                    "fan pulsating"
+                ],
+                "group": "fans",
+                "order": 1
+            },
+            "fan_stop_evaporator_temperature": {
+                "title": "Fan Stop Evaporator Temperature (F04)",
+                "description": "units: °C",
+                "address": 1504,
+                "reg_type": "holding",
+                "format": "s16",
+                "scale": 0.01,
+                "min": -50,
+                "max": 50,
+                "default": 50,
+                "group": "fans",
+                "order": 2
+            },
+            "fan_on_cycle": {
+                "title": "Fan On Cycle Time (F07)",
+                "description": "units: minutes",
+                "address": 1507,
+                "reg_type": "holding",
+                "format": "u16",
+                "min": 0,
+                "max": 15,
+                "default": 2,
+                "group": "fans",
+                "order": 3
+            },
+            "fan_off_cycle": {
+                "title": "Fan Off Cycle Time (F08)",
+                "description": "units: minutes",
+                "address": 1508,
+                "reg_type": "holding",
+                "format": "u16",
+                "min": 0,
+                "max": 15,
+                "default": 2,
+                "group": "fans",
+                "order": 4
+            },
+            "compressor_minimum_on_time": {
+                "title": "Compressor Minimum On Time (C01)",
+                "description": "units: minutes",
+                "address": 499,
+                "reg_type": "holding",
+                "format": "u16",
+                "min": 0,
+                "max": 30,
+                "default": 0,
+                "group": "compressor",
+                "order": 1
+            },
+            "compressor_minimum_off_time": {
+                "title": "Compressor Minimum Off Time (C02)",
+                "description": "units: minutes",
+                "address": 500,
+                "reg_type": "holding",
+                "format": "u16",
+                "min": 0,
+                "max": 30,
+                "default": 2,
+                "group": "compressor",
+                "order": 2
+            },
+            "open_door_compressor_off_delay": {
+                "title": "Compressor Off Delay At Open Door (C04)",
+                "description": "units: minutes",
+                "address": 503,
+                "reg_type": "holding",
+                "format": "u16",
+                "min": 0,
+                "max": 15,
+                "default": 0,
+                "group": "compressor",
+                "order": 3
+            },
+            "zero_crossing_selection": {
+                "title": "Zero Crossing Selection (C70)",
+                "description": "disable zero crossing when external relay is used",
+                "address": 539,
+                "reg_type": "holding",
+                "format": "u16",
+                "min": 0,
+                "max": 1,
+                "default": 1,
+                "enum": [0, 1],
+                "enum_titles": ["no", "yes"],
+                "group": "compressor",
+                "order": 4
+            },
+            "startup_ouputs_delay": {
+                "title": "Delay Of Outputs At Startup (o01)",
+                "description": "units: minutes",
+                "address": 1999,
+                "reg_type": "holding",
+                "format": "u16",
+                "min": 0,
+                "max": 600,
+                "default": 5,
+                "group": "others",
+                "order": 1
+            },
+            "di1_config": {
+                "title": "DI1 Config (o02)",
+                "address": 2000,
+                "reg_type": "holding",
+                "format": "u16",
+                "min": 0,
+                "max": 10,
+                "default": 0,
+                "enum": [0, 1, 2, 3, 4, 5, 6, 7, 8, 9, 10],
+                "enum_titles": [
+                    "not used",
+                    "status display output",
+                    "door alarm with resumption",
+                    "door alarm without resumption",
+                    "controller start",
+                    "day/night mode switch",
+                    "reference displacement",
+                    "external alarm",
+                    "defrost start",
+                    "pull down",
+                    "condenser sensor"
+                ],
+                "group": "others",
+                "order": 2
+            },
+            "sensor_type_selection": {
+                "title": "Sensor Type Selection (o06)",
+                "address": 2013,
+                "reg_type": "holding",
+                "format": "u16",
+                "default": 1,
+                "enum": [0, 1, 2, 3],
+                "enum_titles": [
+                    "NTC 5 K",
+                    "NTC 10K",
+                    "PTC",
+                    "Pt1000"
+                ],
+                "group": "others",
+                "order": 3
+            },
+            "display_temperature_resolution": {
+                "title": "Display Temperature Resolution (o15)",
+                "address": 2018,
+                "reg_type": "holding",
+                "format": "u16",
+                "default": 0,
+                "enum": [0, 1, 2],
+                "enum_titles": [
+                    "0.1 °C",
+                    "0.5 °C",
+                    "1.0 °C"
+                ],
+                "group": "others",
+                "order": 4
+            },
+            "di2_config": {
+                "title": "DI2 Config (o37)",
+                "address": 2054,
+                "reg_type": "holding",
+                "format": "u16",
+                "default": 0,
+                "enum": [0, 1, 2, 3, 4, 5, 6, 7, 8, 9],
+                "enum_titles": [
+                    "not used",
+                    "status display output",
+                    "door alarm with resumption",
+                    "door alarm with resumption",
+                    "controller start",
+                    "day/night mode switch",
+                    "reference displacement",
+                    "external alarm",
+                    "defrost start",
+                    "pull down"
+                ],
+                "group": "others",
+                "order": 6
+            },
+            "predefined_applications": {
+                "title": "Predefined Applications (o61)",
+                "address": 2076,
+                "reg_type": "holding",
+                "format": "u16",
+                "default": 0,
+                "enum": [0, 1, 2, 3, 4, 5],
+                "enum_titles": [
+                    "no application",
+                    "medium temperature; timed natural defrost",
+                    "medium temperature; timed electrical defrost",
+                    "low temperature; timed electrical defrost",
+                    "medium temperature; electrical defrost by temperature",
+                    "low temperature; electrical defrost by temperature"
+                ],
+                "group": "others",
+                "order": 7
+            },
+            "do2_config": {
+                "title": "DO2 Config (o71)",
+                "address": 2083,
+                "reg_type": "holding",
+                "format": "u16",
+                "default": 0,
+                "enum": [0, 1],
+                "enum_titles": ["defrost", "alarm"],
+                "group": "others",
+                "order": 8
+            },
+            "display_at_defrost": {
+                "title": "Display At Defrost (o91)",
+                "address": 2121,
+                "reg_type": "holding",
+                "format": "u16",
+                "default": 2,
+                "enum": [0, 1, 2],
+                "enum_titles": [
+                    "actual air temperature",
+                    "temperature before befrost",
+                    "-d- is displayed"
+                ],
+                "group": "others",
+                "order": 9
+            },
+            "di1_input_polarity": {
+                "title": "DI1 Input Polarity (P73)",
+                "address": 2186,
+                "reg_type": "holding",
+                "format": "u16",
+                "default": 1,
+                "enum": [0, 1],
+                "enum_titles": [
+                    "normally opened = activated when input is short circuit",
+                    "normally closed = activated when input is open circuit"
+                ],
+                "group": "polarity",
+                "order": 1
+            },
+            "di2_input_polarity": {
+                "title": "DI2 Input Polarity (P74)",
+                "address": 2187,
+                "reg_type": "holding",
+                "format": "u16",
+                "default": 1,
+                "enum": [0, 1],
+                "enum_titles": [
+                    "normally opened = activated when input is short circuit",
+                    "normally closed = activated when input is open circuit"
+                ],
+                "group": "polarity",
+                "order": 2
+            },
+            "invert_alarm_relay": {
+                "title": "Invert Alarm Relay (P75)",
+                "address": 2188,
+                "reg_type": "holding",
+                "format": "u16",
+                "default": 0,
+                "enum": [0, 1],
+                "enum_titles": [
+                    "normal",
+                    "invert relay action"
+                ],
+                "group": "polarity",
+                "order": 3
+            },
+            "key_board_lock": {
+                "title": "Key Board Lock (P76)",
+                "description": "enable keyboard lock functionality after 5 minutes of no activity on the keypad",
+                "address": 2189,
+                "reg_type": "holding",
+                "format": "u16",
+                "default": 0,
+                "enum": [0, 1],
+                "enum_titles": ["no", "yes"],
+                "group": "polarity",
+                "order": 4
+            }
+        },
+        "channels": [
+            {
+                "name": "Actual Temperature Setpoint",
+                "address": 2500,
+                "reg_type": "holding",
+                "type": "temperature",
+                "format": "s16",
+                "scale": 0.01,
+                "readonly": true,
+                "group": "status"
+            },
+            {
+                "name": "Air Temperature Sensor ",
+                "address": 2529,
+                "reg_type": "holding",
+                "type": "temperature",
+                "format": "s16",
+                "scale": 0.01,
+                "readonly": true,
+                "group": "status"
+            },
+            {
+                "name": "Defrost Temperature Sensor ",
+                "address": 1010,
+                "reg_type": "holding",
+                "type": "temperature",
+                "format": "s16",
+                "scale": 0.01,
+                "readonly": true,
+                "group": "status"
+            },
+            {
+                "name": "Condencer Temperature Sensor ",
+                "address": 2646,
+                "reg_type": "holding",
+                "type": "temperature",
+                "format": "s16",
+                "scale": 0.01,
+                "readonly": true,
+                "group": "status"
+            },
+            {
+                "name": "Controller State",
+                "address": 2006,
+                "reg_type": "holding",
+                "type": "value",
+                "format": "u16",
+                "readonly": true,
+                "group": "status"
+            },
+            {
+                "name": "Night Mode Active",
+                "address": 2532,
+                "reg_type": "holding",
+                "type": "switch",
+                "format": "u16",
+                "readonly": true,
+                "group": "status"
+            },
+            {
+                "name": "DI1 Status",
+                "address": 2001,
+                "reg_type": "holding",
+                "type": "switch",
+                "format": "u16",
+                "readonly": true,
+                "group": "status"
+            },
+            {
+                "name": "DI2 Status",
+                "address": 2555,
+                "reg_type": "holding",
+                "type": "switch",
+                "format": "u16",
+                "readonly": true,
+                "group": "status"
+            },
+            {
+                "name": "Compressor Relay Status",
+                "address": 2509,
+                "reg_type": "holding",
+                "type": "switch",
+                "format": "u16",
+                "readonly": true,
+                "group": "status"
+            },
+            {
+                "name": "Fan Relay Status",
+                "address": 2510,
+                "reg_type": "holding",
+                "type": "switch",
+                "format": "u16",
+                "readonly": true,
+                "group": "status"
+            },
+            {
+                "name": "Defrost Relay Status",
+                "address": 2511,
+                "reg_type": "holding",
+                "type": "switch",
+                "format": "u16",
+                "readonly": true,
+                "group": "status"
+            },
+            {
+                "name": "Alarm Relay Status",
+                "address": 2582,
+                "reg_type": "holding",
+                "type": "switch",
+                "format": "u16",
+                "readonly": true,
+                "group": "status"
+            },
+            {
+                "name": "Relay 1 Turn On Counter",
+                "address": 2034,
+                "reg_type": "holding",
+                "type": "value",
+                "format": "u16",
+                "scale": 100,
+                "readonly": true,
+                "group": "status",
+                "enabled": false
+            },
+            {
+                "name": "Relay 2 Turn On Counter",
+                "address": 2035,
+                "reg_type": "holding",
+                "type": "value",
+                "format": "u16",
+                "scale": 100,
+                "readonly": true,
+                "group": "status",
+                "enabled": false
+            },
+            {
+                "name": "Relay 3 Turn On Counter",
+                "address": 2036,
+                "reg_type": "holding",
+                "type": "value",
+                "format": "u16",
+                "scale": 100,
+                "readonly": true,
+                "group": "status",
+                "enabled": false
+            },
+            {
+                "name": "Temperature Setpoint",
+                "address": 99,
+                "reg_type": "holding",
+                "type": "temperature",
+                "format": "s16",
+                "scale": 0.01,
+                "group": "control"
+            },
+            {
+                "name": "Controller Start",
+                "address": 116,
+                "reg_type": "holding",
+                "type": "switch",
+                "format": "u16",
+                "group": "control"
+            },
+            {
+                "name": "Controller Firmware Version",
+                "address": 2002,
+                "reg_type": "holding",
+                "type": "value",
+                "format": "u16",
+                "scale": 0.01,
+                "readonly": true,
+                "group": "controller_info",
+                "enabled": false
+            }
+        ]
+    }
+}

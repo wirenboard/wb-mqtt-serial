@@ -1,0 +1,30 @@
+{
+	"device_type": "MSU21",
+    "group": "g-climate-sensor",
+	"device": {
+		"name": "MSU21",
+		"id": "msu21",
+		"frame_timeout_ms": 0,
+		"setup": [
+			{
+				"title": "Input 0 type",
+				"address": 1,
+				"value": 2
+			},
+			{
+				"title": "Input 0 module",
+				"address": "0x03",
+				"value": "6"
+			}
+		],
+		"channels": [
+			{
+				"name": "Temperature",
+				"reg_type": "input",
+				"address": 0,
+				"type": "temperature",
+				"format": "s8"
+			}
+		]
+	}
+}

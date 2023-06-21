@@ -1,0 +1,145 @@
+{
+  "device_type": "NEVA MT 32x",
+  "group": "g-power-meter",
+  "device": {
+    "name": "NEVA MT 32x",
+    "id": "neva32x",
+    "protocol" : "neva",
+    "frame_timeout_ms" : 20,
+    "response_timeout_ms" : 1500,
+    "channels": [
+      {
+        "name": "Total A energy",
+        "reg_type": "item_1",
+        "type": "power_consumption",
+        "address": "0x0F0880FF"
+      },
+      {
+        "name": "Total RP energy",
+        "reg_type": "item_1",
+        "type": "power_consumption",
+        "address": "0x030880FF"
+      },
+      {
+        "name": "Total RN energy",
+        "reg_type": "item_1",
+        "type": "power_consumption",
+        "address": "0x040880FF"
+      },
+      {
+        "name": "Total P",
+        "reg_type": "default",
+        "type": "power",
+        "address": "0x100700FF"
+      },
+      {
+        "name": "P L1",
+        "reg_type": "default",
+        "type": "power",
+        "address": "0x240700FF"
+      },
+      {
+        "name": "P L2",
+        "reg_type": "default",
+        "type": "power",
+        "address": "0x380700FF"
+      },
+      {
+        "name": "P L3",
+        "reg_type": "default",
+        "type": "power",
+        "address": "0x4C0700FF"
+      },
+      {
+        "name": "Urms L1",
+        "reg_type": "default",
+        "type": "voltage",
+        "address": "0x200700FF"
+      },
+      {
+        "name": "Urms L2",
+        "reg_type": "default",
+        "type": "voltage",
+        "address": "0x340700FF"
+      },
+      {
+        "name": "Urms L3",
+        "reg_type": "default",
+        "type": "voltage",
+        "address": "0x480700FF"
+      },
+      {
+        "name": "Irms L1",
+        "reg_type": "default",
+        "type": "current",
+        "address": "0x1F0700FF"
+      },
+      {
+        "name": "Irms L2",
+        "reg_type": "default",
+        "type": "current",
+        "address": "0x330700FF"
+      },
+      {
+        "name": "Irms L3",
+        "reg_type": "default",
+        "type": "current",
+        "address": "0x470700FF"
+      },
+      {
+        "name": "Frequency",
+        "reg_type": "default",
+        "type": "value",
+        "address": "0x0E0701FF"
+      },
+      {
+        "name": "Voltage angle L1-L2",
+        "reg_type": "default",
+        "type": "value",
+        "address": "0x51070AFF"
+      },
+      {
+        "name": "Voltage angle L3-L1",
+        "reg_type": "default",
+        "type": "value",
+        "address": "0x510714FF"
+      },
+      {
+        "name": "Voltage angle L2-L3",
+        "reg_type": "default",
+        "type": "value",
+        "address": "0x510715FF"
+      },
+      {
+        "name": "PF L1",
+        "reg_type": "power_factor",
+        "type": "value",
+        "address": "0x2107FFFF"
+      },
+      {
+        "name": "PF L2",
+        "reg_type": "power_factor",
+        "type": "value",
+        "address": "0x3507FFFF"
+      },
+      {
+        "name": "PF L3",
+        "reg_type": "power_factor",
+        "type": "value",
+        "address": "0x4907FFFF"
+      },
+      {
+        "name": "Total PF",
+        "reg_type": "power_factor",
+        "type": "value",
+        "address": "0x0D07FFFF"
+      },
+      {
+        "name": "Temperature",
+        "reg_type": "temperature",
+        "type": "temperature",
+        "address": "0x600900FF"
+      }
+    ]
+  }
+}

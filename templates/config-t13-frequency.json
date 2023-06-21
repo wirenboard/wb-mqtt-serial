@@ -1,0 +1,132 @@
+{
+    "title": "t13_frequency_title",
+    "device_type": "t13_VFD",
+    "group": "g-motor-control",
+    "device": {
+        "name": "t13-VFD",
+        "id": "t13_frequency_converter",
+        "min_read_registers": 2,
+        "max_read_registers": 10,
+        "response_timeout_ms": 30,
+        "frame_timeout_ms": 40,
+        "device_max_fail_cycles": 8,
+        "guard_interval_us": 5000,
+        "groups": [
+            {
+                "title": "General",
+                "id": "general",
+                "order": 1
+            },
+            {
+                "title": "HW Info",
+                "id": "hw_info",
+                "order": 2
+            },
+            {
+                "title": "Debug",
+                "id": "debug",
+                "order": 3
+            }
+        ],
+
+        "parameters": {
+        },
+
+        "channels": [
+            {
+                "name": "Frequency",
+                "reg_type": "holding",
+                "address": 2,
+                "scale": 0.1,
+                "max": 990,
+                "type": "value",
+                "format": "u16",
+                "group": "general"
+            },
+            {
+                "name": "Start-stop-reverse",
+                "reg_type": "holding",
+                "address": 3,
+                "min": 1,
+                "max": 3,
+                "type": "range",
+                "default": 2,
+                "format": "u16",
+                "group": "general"
+            },
+            {
+                "name": "Panel FW version",
+                "reg_type": "holding",
+                "address": 0,
+                "type": "text",
+                "readonly": true,
+                "format": "u16",
+                "enabled": false,
+                "group": "hw_info"
+            },
+            {
+                "name": "Driver FW version",
+                "reg_type": "holding",
+                "address": 1,
+                "type": "text",
+                "readonly": true,
+                "format": "u16",
+                "enabled": false,
+                "group": "hw_info"
+            },
+            {
+                "name": "Voltage bus",
+                "reg_type": "holding",
+                "address": 8,
+                "scale": 0.1,
+                "type": "voltage",
+                "readonly": true,
+                "enabled": false,
+                "group": "debug"
+            },
+            {
+                "name": "Current",
+                "reg_type": "holding",
+                "address": 9,
+                "scale": 0.01,
+                "type": "current",
+                "readonly": true,
+                "enabled": false,
+                "group": "debug"
+            },
+            {
+                "name": "Radiator temperature",
+                "reg_type": "holding",
+                "address": 10,
+                "type": "temperature",
+                "readonly": true,
+                "format": "s16",
+                "scale": 1,
+                "enabled": false,
+                "group": "debug"
+            }
+        ],
+        "translations": {
+            "en": {
+                "t13_frequency_title": "T13-400W-12-H, T13-750W-12-H",
+                "Current": "Load current"
+        },
+            "ru": {
+                "t13_frequency_title": "T13-400W-12-H, T13-750W-12-H",
+                "General": "Общее",
+                "HW Info": "Данные модуля",
+                "Debug": "Диагностика",
+                "no": "нет",
+                "yes": "да",
+                "Disabled": "Отключен",
+                "Frequency": "Частота",
+                "Start-stop-reverse": "Старт-Стоп-Реверс",
+                "Panel FW version": "Версия прошивки панели",
+                "Driver FW version": "Версия прошивки драйвера",
+                "Voltage bus": "Шина питания, напряжение",
+                "Current": "Ток нагрузки",
+                "Radiator temperature": "Температура радиатора"
+            }
+        }
+    }
+}
