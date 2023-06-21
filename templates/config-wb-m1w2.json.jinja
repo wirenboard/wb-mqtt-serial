@@ -80,7 +80,7 @@
             "in{{in_num}}_debounce_ms": {
                 "title": "debounce_time_title",
                 "description": "debounce_time_description",
-                "address": {{20 + in_num - 1}},
+                "address": {{98 + in_num - 1}},{# NOTE: 20 регистр(как в MCM8) был занят в старом m1w2(Последнее валидное значение температуры с датчика на 1 входе), переносим на 98 #}
                 "reg_type": "holding",
                 "min": 0,
                 "max": 100,
