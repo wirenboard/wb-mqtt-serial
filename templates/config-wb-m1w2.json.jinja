@@ -86,7 +86,8 @@
                 "max": 100,
                 "default": 50,
                 "group": "g_in{{in_num}}",
-                "order": 2
+                "order": 2,
+                "condition": "in{{in_num}}_mode==1"
             },
             "in{{in_num}}_lp_hold_time": {
                 "group": "gg_in{{in_num}}_press_params",
@@ -138,7 +139,7 @@
                 "scale": 0.0625,
                 "default": 1,
                 "group": "g_general",
-                "order": 2
+                "order": 2,
             },
             "rs485_response_delay_ms": {
                 "title": "RS-485 Response Delay (ms)",
@@ -168,7 +169,8 @@
                 "address": {{in_num - 1}},
                 "type": "switch",
                 "sporadic": true,
-                "group": "gg_in{{in_num}}_channels"
+                "group": "gg_in{{in_num}}_channels",
+                "condition": "in{{in_num}}_mode==1"
             },
             {
                 "name": "Input {{in_num}} counter",
@@ -176,7 +178,8 @@
                 "format": "u32",
                 "address": {{60 + (in_num - 1) * 2}},
                 "type": "value",
-                "group": "gg_in{{in_num}}_channels"
+                "group": "gg_in{{in_num}}_channels",
+                "condition": "in{{in_num}}_mode==1"
             },
             {#
             {
