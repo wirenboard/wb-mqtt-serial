@@ -1,9 +1,14 @@
-wb-mqtt-serial (2.87.6) stable; urgency=medium
+wb-mqtt-serial (2.87.7) stable; urgency=medium
 
   * New WB-M1W2 config with buttons support, old marked as deprecated
 
  -- Radmir Khakimov <radmir.khakimov@wirenboard.com>  Wed, 21 Jun 2023 18:32:51 +0500
 
+wb-mqtt-serial (2.87.6) stable; urgency=medium
+
+  * WB-MAP12 templates: fix wrong groups name
+
+ -- Andrey Radionov <andrey.radionov@wirenboard.ru>  Wed, 14 Jun 2023 17:57:33 +0400
 wb-mqtt-serial (2.87.5) stable; urgency=medium
 
   * Poll registers if a device firmware does not respond to enable events command
