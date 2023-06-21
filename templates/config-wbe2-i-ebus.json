@@ -77,7 +77,7 @@
                 "group": "boiler_state",
                 "enabled": false
             },
-            {
+			 {
                 "name": "Hot Water Setpoint Max",
                 "address": 211,
                 "reg_type": "input",
@@ -85,21 +85,21 @@
                 "format": "u16",
                 "group": "boiler_state"
             },
-            {
-                "name": "Water Pressure",
+            { "name": "Water Pressure",
                 "address": 212,
                 "reg_type": "input",
                 "type": "pressure",
                 "format": "s16",
-		"scale" :0.001,
+				"scale" :0.001,
                 "group": "boiler_state"
             },
-            { "name": "Burner Modulation Level (%)",
+            { "name": "Burner Modulation Level",
                 "address": 213,
                 "reg_type": "input",
                 "type": "value",
                 "format": "s16",
-		"scale" :0.1,
+				"scale" :0.1,
+                "units": "%",
                 "group": "boiler_state"
             },
             { "name": "Invalid Connection",
@@ -358,8 +358,8 @@
                 "Heating Return Water Temperature": "Температура обратной воды отопления",
                 "Boiler Outdoor Temperature Sensor": "Уличная температура (датчик котла)",
 				"Hot Water Setpoint Max": "Максимальное значение температуры ГВС",
-                "Water Pressure": "Давление воды",
-                "Burner Modulation Level (%)" : "Уровень модуляции горелки (%)",
+                "Water Pressure": "Давление",
+                "Burner Modulation Level" : "Модуляция котла",
                 "Invalid Connection": "Ошибка связи с котлом",
                 "Boiler Status" : "Состояние контуров котла",
                 "Hot Water Setpoint": "Уставка ГВС",
