@@ -1,9 +1,39 @@
-wb-mqtt-serial (2.87.2) stable; urgency=medium
+wb-mqtt-serial (2.87.7) stable; urgency=medium
 
   * WBE2-I-OPENTHERM template: add Invalid Connection register
-  * WBE2-I-EBUS template: add Hot Water Setpoint Max, Water Pressure, Burner Modulation Level (%), Invalid Connection, Boiler Status registers
+  * WBE2-I-EBUS template: add Hot Water Setpoint Max, Water Pressure, Burner Modulation Level, Invalid Connection, Boiler Status registers
 
- -- Roman Matveev <roman.matveev@wirenboard.ru>  Thu, 31 May 2023 18:35:00 +0300
+ -- Roman Matveev <roman.matveev@wirenboard.ru>  Thu, 21 Jun 2023 12:56:00 +0300
+ 
+wb-mqtt-serial (2.87.6) stable; urgency=medium
+
+  * WB-MAP12 templates: fix wrong groups name
+
+ -- Andrey Radionov <andrey.radionov@wirenboard.ru>  Wed, 14 Jun 2023 17:57:33 +0400
+
+wb-mqtt-serial (2.87.5) stable; urgency=medium
+
+  * Poll registers if a device firmware does not respond to enable events command 
+
+ -- Petr Krasnoshchekov <petr.krasnoshchekov@wirenboard.com>  Mon, 05 Jun 2023 19:58:51 +0500
+
+wb-mqtt-serial (2.87.4) stable; urgency=medium
+
+  * Minor fix debug logging
+
+ -- Nikolay Korotkiy <nikolay.korotkiy@wirenboard.com>  Mon, 05 Jun 2023 11:10:00 +0400
+
+wb-mqtt-serial (2.87.3) stable; urgency=medium
+
+  * Remove comments from config files
+
+ -- Nikolay Korotkiy <nikolay.korotkiy@wirenboard.com>  Fri, 02 Jun 2023 01:21:00 +0400
+
+wb-mqtt-serial (2.87.2) stable; urgency=medium
+
+  * Update build options. No functional changes
+
+ -- Petr Krasnoshchekov <petr.krasnoshchekov@wirenboard.com>  Thu, 01 Jun 2023 10:28:39 +0500
  
 wb-mqtt-serial (2.87.1) stable; urgency=medium
 

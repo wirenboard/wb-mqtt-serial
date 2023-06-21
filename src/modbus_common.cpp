@@ -1124,7 +1124,7 @@ namespace Modbus // modbus protocol common utilities
 
             LOG(Debug) << "Transaction id mismatch";
         }
-        throw TSerialDeviceTransientErrorException("request timed out");
+        throw TResponseTimeoutException();
     }
 
     uint8_t* TModbusTCPTraits::GetPDU(std::vector<uint8_t>& frame) const

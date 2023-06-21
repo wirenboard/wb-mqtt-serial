@@ -183,7 +183,7 @@ TReadFrameResult TFakeSerialPort::ReadFrame(uint8_t* buf,
     }
     DumpWhatWasRead();
     if ((res.Count == 0) && (count != 0)) {
-        throw TSerialDeviceTransientErrorException("request timed out");
+        throw TResponseTimeoutException();
     }
     return res;
 }
