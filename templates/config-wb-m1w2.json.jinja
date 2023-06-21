@@ -117,6 +117,34 @@
                 ],
                 "group": "g_general",
                 "order": 1
+            },
+            "temperature_readings_filter_deg": {
+                "title": "temperature_readings_filter_deg_title",
+                "description": "temperature_readings_filter_deg_description",
+                "address": 99,
+                "reg_type": "holding",
+                "scale": 0.0625,
+                "default": 1,
+                "group": "g_general",
+                "order": 2
+            },
+            "rs485_response_delay_ms": {
+                "title": "RS-485 Response Delay (ms)",
+                "address": 113,
+                "reg_type": "holding",
+                "default": 8,
+                "group": "g_general",
+                "order": 3
+            },
+            "disable_indication": {
+                "title": "Status LED",
+                "address": 130, {# FIMXE: нет в карте регистров M1W2, но в прошивке видимо был #}
+                "reg_type": "holding",
+                "enum": [0, 1],
+                "enum_titles": ["Enabled", "Disabled"],
+                "default": 0,
+                "group": "g_general",
+                "order": 4
             }
         },
 
