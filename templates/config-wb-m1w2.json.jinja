@@ -38,31 +38,6 @@
             },
             {% endfor -%}
             {
-                "title": "Encoders",
-                "id": "g_encoders",
-                "order": 9
-            },
-            {% for encoder_num in range(0, 3) -%}
-            {
-                "title": "Encoder {{encoder_num + 1}}",
-                "id": "gg_encoder_{{encoder_num + 1}}",
-                "order": {{encoder_num + 1}},
-                "group": "g_encoders"
-            },
-            {% endfor -%}
-            {
-                "title": "encoder_channels",
-                "id": "gg_encoder_channels",
-                "order": 4,
-                "group": "g_encoders",
-                "ui_options": {
-                    "wb": {
-                        "disable_title": true
-                    }
-                }
-
-            },
-            {
                 "title": "General",
                 "id": "g_general",
                 "order": 10
@@ -127,46 +102,6 @@
             },
             {% endfor -%}
             {% for encoder_num in range(0, 2) -%}
-            "encoder_{{encoder_num + 1}}_mode" : {
-                "title": "Encoder connection type",
-                "description": "encoder_{{encoder_num + 1}}_mode_description",
-                "address": {{376 + encoder_num}},
-                "reg_type": "holding",
-                "enum": [0, 1, 2],
-                "default": 0,
-                "enum_titles": [
-                    "Not used",
-                    "AB type",
-                    "ABZ type"
-                ],
-                "group": "gg_encoder_{{encoder_num + 1}}",
-                "order": 1
-            },
-            "encoder_{{encoder_num + 1}}_ppr" : {
-                "title": "Pulses per revolution (PPR)",
-                "address": {{380 + encoder_num}},
-                "reg_type": "holding",
-                "default": 0,
-                "min": 0,
-                "group": "gg_encoder_{{encoder_num + 1}}",
-                "order": 2,
-                "condition": "encoder_{{encoder_num + 1}}_mode==2"
-            },
-            {% endfor -%}
-            "encoder_3_mode" : {
-                "title": "Mode",
-                "description": "encoder_3_mode_description",
-                "address": {{378}},
-                "reg_type": "holding",
-                "enum": [0, 1],
-                "default": 0,
-                "enum_titles": [
-                    "Not used",
-                    "AB type"
-                ],
-                "group": "gg_encoder_3",
-                "order": 1
-            },
             "baud_rate": {
                 "title": "Baud rate",
                 "description": "baud_rate_description",
@@ -253,50 +188,6 @@
                 "condition": "in{{in_num}}_mode==1"
             },
             {% endfor -%}
-            {% for encoder_num in range(0, 2) -%}
-            {
-                "name": "Encoder {{encoder_num + 1}} position",
-                "reg_type": "holding",
-                "address": {{368 + (encoder_num * 2)}},
-                "type": "value",
-                "sporadic": false,
-                "format": "s32",
-                "group": "gg_encoder_channels",
-                "condition": "encoder_{{encoder_num + 1}}_mode==1"
-            },
-            {
-                "name": "Encoder {{encoder_num + 1}} revolutions",
-                "reg_type": "holding",
-                "address": {{368 + (encoder_num * 2)}},
-                "type": "value",
-                "sporadic": false,
-                "format": "s16",
-                "group": "gg_encoder_channels",
-                "order": 1,
-                "condition": "encoder_{{encoder_num + 1}}_mode==2"
-            },
-            {
-                "name": "Encoder {{encoder_num + 1}} angle",
-                "reg_type": "holding",
-                "address": {{369 + (encoder_num * 2)}},
-                "type": "value",
-                "sporadic": false,
-                "format": "s16",
-                "group": "gg_encoder_channels",
-                "order": 2,
-                "condition": "encoder_{{encoder_num + 1}}_mode==2"
-            },
-            {% endfor -%}
-            {
-                "name": "Encoder 3 position",
-                "reg_type": "holding",
-                "address": 372,
-                "type": "value",
-                "sporadic": false,
-                "format": "s32",
-                "group": "gg_encoder_channels",
-                "condition": "encoder_3_mode==1"
-            },
             {
                 "name": "Reset all counters",
                 "reg_type": "holding",
