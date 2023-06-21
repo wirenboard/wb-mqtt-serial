@@ -1,12 +1,12 @@
-{% set INPUTS_NUMBER = 8 -%}
+{% set INPUTS_NUMBER = 2 -%}
 {% set FIRST_INPUT = 1 -%}
 {
-    "title": "WB-MCM8_template_title",
-    "device_type": "WB-MCM8",
+    "title": "WB-M1W2_template_title",
+    "device_type": "WB-M1W2",
     "group": "g-wb",
     "device": {
-        "name": "WB-MCM8",
-        "id": "wb-mcm8",
+        "name": "WB-M1W2",
+        "id": "wb-m1w2",
         "max_read_registers": 0,
         "response_timeout_ms": 1,
         "frame_timeout_ms": 8,
@@ -370,8 +370,11 @@
         ],
         "translations": {
             "en": {
-                "WB-MCM8_template_title": "WB-MCM8 (8-channel pulse counter)",
-                "mode_description": "For press detection firmware v1.3.2 or newer is required",
+                "temperature_readings_filter_deg_title": "Erroneous 1-Wire Temperature Readings Filter (°C)",
+                "temperature_readings_filter_deg_description": "New value is discarded if it differs from previous one by more than filter value. Write 0 to disable filter",
+
+                "WB-M1W2_template_title": "WB-M1W2 (2-channel temperature measurement and pulse-counter module)",
+                "mode_description": "For press detection firmware v5.0.0 or newer is required",
                 "baud_rate_description": "Make sure that communication with device is established before changing this parameter. Select required baud rate, save configuration and then change port baud rate to the same value.",
                 "Uptime": "Uptime (s)",
 
@@ -382,14 +385,10 @@
                 "lp_hold_time_description": "If press is longer than the specified time then it is long",
                 "secp_waiting_time_description": "If there is no second press during the specified time then press is single. 0 - disables all presses except short and long. Adds a delay to the response to a short press",
                 "debounce_time_description": "For press detection must be 5-10 times less than second press waiting time. Adds a delay to the response to presses",
-
-                {% for encoder_num in range(0, 2) -%}
-                    "encoder_{{encoder_num + 1}}_mode_description": "When disabled inputs {{(encoder_num * 3) + 1}}, {{(encoder_num * 3) + 2}} and {{(encoder_num * 3) + 3}} work as usual with own mode configuration. <br>AB mode use {{(encoder_num * 3) + 1}} and {{(encoder_num * 3) + 2}} inputs for represent position in pulses count only. Input {{(encoder_num * 3) + 3}} work as usual. <br>In ABZ mode input {{(encoder_num * 3) + 3}} connected to Z signal (one puls per revolution) and position represented in revolutions counter and angle (pulses in one turn) counter.",
-                {% endfor -%}
-                "encoder_3_mode_description": "When disabled inputs 7 and 8 work as usual with own mode configuration. <br>AB mode use 7 and 8 inputs for represent position in pulses count only."
             },
             "ru": {
-                "WB-MCM8_template_title": "WB-MCM8 (8-канальный модуль счетных входов)",
+                "WB-M1W2_template_title": "WB-M1W2 (2-канальный преобразователь для термометров 1-Wire с функцией счётных входов)",
+                "1-Wire": "Датчик 1-Wire",
                 {% for in_num in range(FIRST_INPUT, INPUTS_NUMBER + 1) -%}
                 "Input {{in_num}}": "Вход {{in_num}}",
                 "Input {{in_num}} counter": "Счетчик {{in_num}}",
@@ -398,17 +397,26 @@
                 "Input {{in_num}} Long Press Counter": "Счетчик длинных нажатий входа {{in_num}}",
                 "Input {{in_num}} Double Press Counter": "Счетчик двойных нажатий входа {{in_num}}",
                 "Input {{in_num}} Shortlong Press Counter": "Счетчик коротких, а затем длинных нажатий входа {{in_num}}",
+                "External Sensor {{in_num}}": "Датчик температуры {{in_num}}",
+                "External Sensor {{in_num}} OK": "Датчик температуры {{in_num}} подключен",
                 {% endfor -%}
 
                 "General": "Общее",
                 "HW Info": "Данные модуля",
+                "temperature_readings_filter_deg_title": "Фильтр ошибочных значений датчиков 1-Wire (°C)",
+                "temperature_readings_filter_deg_description": "Новое значение отбрасывается, если оно отличается от предыдущего больше, чем на значение фильтра. Запишите 0, чтобы отключить фильтр",
+                "RS-485 Response Delay (ms)": "Задержка перед ответом по RS-485 (мс)",
+                "Status LED": "Индикатор состояния",
+                "Enabled": "Активен",
+                "Disabled": "Отключен",
                 "Mode": "Режим работы",
                 "Press Parameters": "Параметры нажатий",
                 "Counting and frequency measurement": "Счет и измерение частоты",
                 "Counting and press detection": "Счет и детектирование нажатий",
-                "mode_description": "Для детектирования нажатий требуется прошивка v1.3.2 или новее",
+                "mode_description": "Для детектирования нажатий требуется прошивка v5.0.0 или новее",
                 "Baud rate": "Скорость обмена",
                 "baud_rate_description": "Перед изменением параметра убедитесь, что связь с устройством установлена. Выберите нужную скорость обмена, сохраните конфигурацию, а затем укажите в настройках порта эту же скорость.",
+                "Discrete Input": "Дискретный вход",
 
                 "lp_hold_time_title": "Время длинного нажатия (мс)",
                 "secp_waiting_time_title": "Время ожидания второго нажатия (мс)",
@@ -424,24 +432,7 @@
                 "Uptime": "Время работы с момента включения (с)",
                 "Minimum Voltage Since Startup": "Минимальное напряжение с момента включения",
                 "MCU Temperature": "Температура МК",
-                "MCU Voltage": "Напряжение питания МК",
-
-                "Encoders": "Работа с энкодерами",
-                "Encoder connection type": "Тип подключения энкодера",
-                "Not used": "Не используется",
-                "AB type": "2 сигнала, тип AB",
-                "ABZ type": "3 сигнала, тип ABZ",
-                {% for encoder_num in range(0, 3) -%}
-                    "Encoder {{encoder_num + 1}}": "Энкодер {{encoder_num + 1}}",
-                    "Encoder {{encoder_num + 1}} position": "Положение энкодера {{encoder_num + 1}}",
-                    "Encoder {{encoder_num + 1}} revolutions": "Количество оборотов энкодера {{encoder_num + 1}}",
-                    "Encoder {{encoder_num + 1}} angle": "Угол внутри оборота энкодера {{encoder_num + 1}}",
-                {% endfor -%}
-                {% for encoder_num in range(0, 2) -%}
-                    "encoder_{{encoder_num + 1}}_mode_description": "Когда отключен, входы {{(encoder_num * 3) + 1}}, {{(encoder_num * 3) + 2}} и {{(encoder_num * 3) + 3}} работают как обычные входы со своими настройками режима. <br>В режиме AB входы {{(encoder_num * 3) + 1}} и {{(encoder_num * 3) + 2}} подключены к выходам A и B энкодера. Положение представляется как счетчик импульсов. Вход {{(encoder_num * 3) + 3}} работает как обычный вход. <br>В режиме ABZ вход {{(encoder_num * 3) + 3}} подключен к выходу Z энкодера (один импульс на оборот). Положение представляется как отдельный счетчик оборотов и отдельный счетчик угла внутри оборота.",
-                {% endfor -%}
-                "encoder_3_mode_description": "Когда отключен, входы 7 и 8 работают как обычные входы со своими настройками режима. <br>В режиме AB входы 7 и 8 подключены к выходам A и B энкодера. Положение представляется как счетчик импульсов.",
-                "Pulses per revolution (PPR)": "Количество импульсов на один оборот. <br>Введите значение, указанное на энкодере."
+                "MCU Voltage": "Напряжение питания МК"
             }
         }
     }
