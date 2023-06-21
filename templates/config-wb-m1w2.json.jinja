@@ -231,6 +231,7 @@
                 "format": "s16",
                 "scale": 0.0625,
                 "error_value": "0x7FFF",
+                "group": "gg_in{{in_num}}_channels",
                 "condition": "in{{in_num}}_mode==0"
             },
             {
@@ -239,6 +240,7 @@
                 "address": {{16 + in_num - 1}},
                 "type": "switch",
                 "enabled": false,
+                "group": "gg_in{{in_num}}_channels",
                 "condition": "in{{in_num}}_mode==0"
             },
             {% endfor -%}
