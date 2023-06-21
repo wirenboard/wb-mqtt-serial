@@ -167,8 +167,8 @@
             {
                 "name": "Input {{in_num}} counter",
                 "reg_type": "input",
-                "format": "u32",
-                "address": {{60 + (in_num - 1) * 2}},
+                "format": "u16",{# NOTE: в MCM8 - 32, 16 тут может не хватить #}
+                "address": {{277 + in_num - 1}},
                 "type": "value",
                 "group": "gg_in{{in_num}}_channels",
                 "condition": "in{{in_num}}_mode==1"
