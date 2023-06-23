@@ -12,17 +12,6 @@
         "frame_timeout_ms": 8,
         "enable_wb_continuous_read": true,
 
-        "setup": [ {# Пока так, в будущем возможно будет переключение входа в режим подсчёта частоты #}
-            {% for in_num in range(FIRST_INPUT, INPUTS_NUMBER + 1) -%}
-            {
-                "title": "set input discrete{{in_num}} to process buttons",
-                "address": {{9 + in_num - 1}},
-                "reg_type": "holding",
-                "value": 1
-            },
-            {% endfor -%}
-        ],
-
         "groups": [
             {% for in_num in range(FIRST_INPUT, INPUTS_NUMBER + 1) -%}
             {
