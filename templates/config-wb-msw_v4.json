@@ -1449,7 +1449,7 @@
                 "group": "debug"
             },
             {
-                "name": "VOC Equivalent CO2 Concentration (eCO2)",
+                "name": "VOC Equivalent CO2 Concentration",
                 "reg_type": "input",
                 "address": 360,
                 "format": "u16",
@@ -1522,7 +1522,7 @@
                 "CO2 Sensor Installed": "CO₂ Sensor Installed",
                 "CO2 Sensor Type": "CO₂ Sensor Type",
                 "CO2 Sensor Software Version": "CO₂ Sensor Software Version",
-                "VOC Equivalent CO2 Concentration (eCO2)": "VOC Equivalent CO₂ Concentration (eCO₂)"
+                "VOC Equivalent CO2 Concentration": "VOC Equivalent CO₂ Concentration (eCO₂)"
             },
             "ru": {
                 "WB-MSW-v4_template_title": "WB-MSW v.4 (универсальный настенный Modbus-датчик)",
@@ -1688,7 +1688,7 @@
                 "VOC Version": "Версия датчика VOC",
                 "VOC Raw": "Сырое значение датчика VOC",
                 "VOC Raw R4": "Сырое значение датчика VOC R4",
-                "VOC Equivalent CO2 Concentration (eCO2)": "Эквивалентное качеству воздуха значение CO₂ (eCO₂)",
+                "VOC Equivalent CO2 Concentration": "Эквивалентное качеству воздуха значение CO₂ (eCO₂)",
                 "VOC Sensor Status": "Состояние датчика VOC",
                 "Motion Raw": "Сырое значение датчика движения",
                 "Successful TH Readings": "Успешные запросы к датчику TH",
