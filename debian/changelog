@@ -1,3 +1,9 @@
+wb-mqtt-serial (2.88.0) stable; urgency=medium
+
+  * WB-MSW4 template: add ENS160 VOC sensor support
+
+ -- Pavel Gasheev <pavel.gasheev@wirenboard.ru>  Tue, 27 Jun 2023 13:54:43 +0300
+
 wb-mqtt-serial (2.87.7) stable; urgency=medium
 
   * WBE2-I-OPENTHERM template: add Invalid Connection register
