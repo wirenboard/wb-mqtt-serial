@@ -214,6 +214,15 @@
                 "group": "air_quality"
             },
             {
+                "name": "Air Quality Index",
+                "reg_type": "input",
+                "address": 12,
+                "scale": 1,
+                "error_value": "0xFFFF",
+                "enabled": false,
+                "group": "air_quality"
+            },
+            {
                 "name": "Sound Level",
                 "reg_type": "input",
                 "address": 3,
@@ -1421,7 +1430,14 @@
                 "name": "VOC Raw",
                 "reg_type": "input",
                 "address": 107,
-                "error_value": "0xFFFF",
+                "enabled": false,
+                "group": "debug"
+            },
+            {
+                "name": "VOC Raw R4",
+                "reg_type": "input",
+                "address": 364,
+                "format": "u16",
                 "enabled": false,
                 "group": "debug"
             },
@@ -1429,6 +1445,25 @@
                 "name": "VOC Baseline",
                 "reg_type": "input",
                 "address": 106,
+                "enabled": false,
+                "group": "debug"
+            },
+            {
+                "name": "VOC Equivalent CO2 Concentration (eCO2)",
+                "reg_type": "input",
+                "address": 360,
+                "format": "u16",
+                "error_value": "0xFFFF",
+                "units": "ppm",
+                "enabled": false,
+                "group": "debug"
+            },
+            {
+                "name": "VOC Sensor Status",
+                "reg_type": "input",
+                "address": 363,
+                "format": "u16",
+                "error_value": "0xFFFF",
                 "enabled": false,
                 "group": "debug"
             },
@@ -1486,7 +1521,8 @@
                 "CO2 Autocalibration Period": "CO₂ Autocalibration Period",
                 "CO2 Sensor Installed": "CO₂ Sensor Installed",
                 "CO2 Sensor Type": "CO₂ Sensor Type",
-                "CO2 Sensor Software Version": "CO₂ Sensor Software Version"
+                "CO2 Sensor Software Version": "CO₂ Sensor Software Version",
+                "VOC Equivalent CO2 Concentration (eCO2)": "VOC Equivalent CO₂ Concentration (eCO₂)"
             },
             "ru": {
                 "WB-MSW-v4_template_title": "WB-MSW v.4 (универсальный настенный Modbus-датчик)",
@@ -1521,6 +1557,7 @@
                 "CO2": "Уровень CO₂",
                 "CO2 Force Calibration": "Ручная калибровка датчика CO₂",
                 "Air Quality (VOC)": "Качество воздуха (VOC)",
+                "Air Quality Index": "Индекс качества воздуха (AQI)",
                 "VOC Baseline": "Смещение уровня VOC",
                 "Sound Level": "Уровень шума",
                 "Max Motion": "Максимальное движение",
@@ -1650,6 +1687,9 @@
                 "VOC Sensor Installed": "Датчик VOC установлен",
                 "VOC Version": "Версия датчика VOC",
                 "VOC Raw": "Сырое значение датчика VOC",
+                "VOC Raw R4": "Сырое значение датчика VOC R4",
+                "VOC Equivalent CO2 Concentration (eCO2)": "Эквивалентное качеству воздуха значение CO₂ (eCO₂)",
+                "VOC Sensor Status": "Состояние датчика VOC",
                 "Motion Raw": "Сырое значение датчика движения",
                 "Successful TH Readings": "Успешные запросы к датчику TH",
                 "Erroneous TH Readings": "Ошибочные запросы к датчику TH",
