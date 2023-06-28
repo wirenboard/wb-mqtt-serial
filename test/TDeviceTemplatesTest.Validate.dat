@@ -336,6 +336,30 @@ Siemens RDF302
 	Room operating mode  =>  Room operating mode
 	Room temperature  =>  Room temperature
 	Room temperature: Current setpoint  =>  Room temperature: Current setpoint
+SOKOL-M
+	Temperature  =>  Temperature
+	Pressure1  =>  Pressure1
+	Pressure2  =>  Pressure2
+	Relative humidity  =>  Relative humidity
+	Wind speed  =>  Wind speed
+	Wind direction  =>  Wind direction
+	Precipitation rate  =>  Precipitation rate
+	Illumination level  =>  Illumination level
+	Wind speed ultrasonic  =>  Wind speed ultrasonic
+	Wind direction ultrasonic  =>  Wind direction ultrasonic
+	Snow cover  =>  Snow cover
+	Sun radiation  =>  Sun radiation
+	Pm25  =>  Pm25
+	Pm10  =>  Pm10
+	CO2  =>  CO2
+	CO  =>  CO
+	NO  =>  NO
+	NO2  =>  NO2
+	SO2  =>  SO2
+	H2S  =>  H2S
+	HCN  =>  HCN
+	NH3  =>  NH3
+	CH2O  =>  CH2O
 Somfy RTS transmitter
 	Down 1  =>  Down 1
 	Down 10  =>  Down 10
