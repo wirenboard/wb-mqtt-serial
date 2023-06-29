@@ -77,7 +77,6 @@
             },
             {
                 "name": "Precipitation rate",
-                "units": "mm",
                 "reg_type": "holding",
                 "scale": 0.1,
                 "format": "u16",
