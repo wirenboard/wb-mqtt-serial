@@ -36,7 +36,6 @@
             },
             {
                 "name": "Pressure2",
-                "units": "mmhg",
                 "reg_type": "holding",
                 "scale": 0.0750187546,
                 "format": "u16",
@@ -89,7 +88,6 @@
             },
             {
                 "name": "Illumination level",
-                "units": "lx",
                 "reg_type": "holding",
                 "format": "u16",
                 "address": 9,
@@ -120,7 +118,6 @@
             },
             {
                 "name": "Snow cover",
-                "units": "cm",
                 "reg_type": "holding",
                 "format": "u16",
                 "address": 12,
@@ -130,7 +127,6 @@
             },
             {
                 "name": "Sun radiation",
-                "units": "W/m2",
                 "reg_type": "holding",
                 "format": "u16",
                 "address": 13,
