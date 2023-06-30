@@ -327,15 +327,6 @@ SDM220
 	Reactive Power  =>  Reactive Power
 	Voltage  =>  Voltage
 	cos(Phi)  =>  cos(Phi)
-Siemens RDF302
-	Cooling output  =>  Cooling output
-	Electric heater output  =>  Electric heater output
-	Fan operation  =>  Fan operation
-	Fan output  =>  Fan output
-	Heating output  =>  Heating output
-	Room operating mode  =>  Room operating mode
-	Room temperature  =>  Room temperature
-	Room temperature: Current setpoint  =>  Room temperature: Current setpoint
 SOKOL-M
 	Temperature  =>  Temperature
 	Pressure1  =>  Pressure1
@@ -360,6 +351,15 @@ SOKOL-M
 	HCN  =>  HCN
 	NH3  =>  NH3
 	CH2O  =>  CH2O
+Siemens RDF302
+	Cooling output  =>  Cooling output
+	Electric heater output  =>  Electric heater output
+	Fan operation  =>  Fan operation
+	Fan output  =>  Fan output
+	Heating output  =>  Heating output
+	Room operating mode  =>  Room operating mode
+	Room temperature  =>  Room temperature
+	Room temperature: Current setpoint  =>  Room temperature: Current setpoint
 Somfy RTS transmitter
 	Down 1  =>  Down 1
 	Down 10  =>  Down 10
