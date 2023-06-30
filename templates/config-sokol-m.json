@@ -4,13 +4,7 @@
     "device": {
         "name": "sokol-m",
         "id": "sokol-m",
-        "groups": [
-            {
-                "title": "Channels",
-                "id": "channels",
-                "order": 0
-            }
-        ],
+
         "channels": [
             {
                 "name": "Temperature",
@@ -77,6 +71,7 @@
             },
             {
                 "name": "Precipitation rate",
+                "units": "mm",
                 "reg_type": "holding",
                 "scale": 0.1,
                 "format": "u16",
@@ -233,16 +228,25 @@
                 "readonly": true
             }
         ],
-        "parameters": [
-        ],
+
         "translations": {
             "en":  {
                 "Pm25":"Dust 2.5 microns",  
                 "Pm10": "Dust 10 microns",
                 "Pressure1": "Pressure",
-                "Pressure2": "Pressure"
+                "Pressure2": "Pressure",
+                "CO2": "CO₂ level",
+                "CO": "CO level",
+                "NO": "NO level",
+                "NO2": "NO₂ level",
+                "SO2": "SO₂ level",
+                "H2S": "H₂S level",
+                "HCN": "HCN level",
+                "NH3": "NH₃ level",
+                "CH2O": "CH₂O level"
             },
             "ru": {
+                "SOKOL-M": "Сокол-М",
                 "Temperature": "Температура воздуха",
                 "Pressure1": "Атмосферное давление",
                 "Pressure2": "Атмосферное давление",
@@ -257,15 +261,15 @@
                 "Sun radiation": "Солнечная радиация",
                 "Pm25": "Пыль 2,5 мкм",
                 "Pm10": "Пыль 10 мкм",
-                "CO2": "Уровень CO2",
+                "CO2": "Уровень CO₂",
                 "CO": "Уровень CO",
                 "NO": "Уровень NO",
-                "NO2": "Уровень NO2",
-                "SO2": "Уровень SO2",
-                "H2S": "Уровень H2S",
+                "NO2": "Уровень NO₂",
+                "SO2": "Уровень SO₂",
+                "H2S": "Уровень H₂S",
                 "HCN": "Уровень HCN",
-                "NH3": "Уровень NH3",
-                "CH2O": "Уровень CH2O"
+                "NH3": "Уровень NH₃",
+                "CH2O": "Уровень CH₂O"
             }    
         }
     }
