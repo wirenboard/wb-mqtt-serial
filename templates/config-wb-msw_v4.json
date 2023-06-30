@@ -219,6 +219,7 @@
                 "address": 12,
                 "scale": 1,
                 "error_value": "0xFFFF",
+                "unsupported_value": "0xFFFE",
                 "enabled": false,
                 "group": "air_quality"
             },
@@ -1454,6 +1455,7 @@
                 "address": 360,
                 "format": "u16",
                 "error_value": "0xFFFF",
+                "unsupported_value": "0xFFFE",
                 "units": "ppm",
                 "enabled": false,
                 "group": "debug"
@@ -1464,6 +1466,7 @@
                 "address": 363,
                 "format": "u16",
                 "error_value": "0xFFFF",
+                "unsupported_value": "0xFFFE",
                 "enabled": false,
                 "group": "debug"
             },
