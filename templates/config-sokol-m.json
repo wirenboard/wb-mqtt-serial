@@ -18,7 +18,7 @@
                 "readonly": true
             },
             {
-                "name": "Pressure1",
+                "name": "Pressure",
                 "units": "bar",
                 "reg_type": "holding",
                 "scale": 0.01,
@@ -223,7 +223,6 @@
             "en":  {
                 "Pm25":"Dust 2.5 microns",  
                 "Pm10": "Dust 10 microns",
-                "Pressure1": "Pressure",
                 "CO2": "CO₂ level",
                 "CO": "CO level",
                 "NO": "NO level",
@@ -237,7 +236,7 @@
             "ru": {
                 "SOKOL-M": "Сокол-М",
                 "Temperature": "Температура воздуха",
-                "Pressure1": "Атмосферное давление",
+                "Pressure": "Атмосферное давление",
                 "Relative humidity":"Относительная влажность воздуха",
                 "Wind speed": "Скорость ветра",
                 "Wind direction": "Направление ветра",
