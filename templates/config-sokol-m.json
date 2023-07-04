@@ -29,16 +29,6 @@
                 "readonly": true
             },
             {
-                "name": "Pressure2",
-                "reg_type": "holding",
-                "scale": 0.0750187546,
-                "format": "u16",
-                "address": 4,
-                "type": "value",
-                "group": "channels",
-                "readonly": true
-            },
-            {
                 "name": "Relative humidity",
                 "units": "%, RH",
                 "reg_type": "holding",
@@ -234,7 +224,6 @@
                 "Pm25":"Dust 2.5 microns",  
                 "Pm10": "Dust 10 microns",
                 "Pressure1": "Pressure",
-                "Pressure2": "Pressure",
                 "CO2": "CO₂ level",
                 "CO": "CO level",
                 "NO": "NO level",
@@ -249,7 +238,6 @@
                 "SOKOL-M": "Сокол-М",
                 "Temperature": "Температура воздуха",
                 "Pressure1": "Атмосферное давление",
-                "Pressure2": "Атмосферное давление",
                 "Relative humidity":"Относительная влажность воздуха",
                 "Wind speed": "Скорость ветра",
                 "Wind direction": "Направление ветра",
