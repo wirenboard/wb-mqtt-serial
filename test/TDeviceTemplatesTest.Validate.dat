@@ -341,7 +341,6 @@ SOKOL-M
 	Pm25  =>  Pm25
 	Precipitation rate  =>  Precipitation rate
 	Pressure1  =>  Pressure1
-	Pressure2  =>  Pressure2
 	Relative humidity  =>  Relative humidity
 	SO2  =>  SO2
 	Snow cover  =>  Snow cover
