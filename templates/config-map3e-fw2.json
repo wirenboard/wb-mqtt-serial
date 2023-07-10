@@ -163,6 +163,20 @@
                 "default": 60,
                 "group": "general",
                 "order": 2
+            },
+            "invalid_measurements_correction": {
+                "title": "Invalid measurements correction",
+                "description": "invalid_measurements_correction_description",
+                "address": "101",
+                "reg_type": "holding",
+                "enum": [0, 1],
+                "default": 0,
+                "enum_titles": [
+                    "Enabled",
+                    "Disabled"
+                ],
+                "group": "general",
+                "order": 3
             }
         },
 
@@ -714,6 +728,7 @@
             "en": {
                 "WB-MAP3E-fw2_template_title": "WB-MAP3E fw2 (3-phase enegry meter)",
                 "baud_rate_description": "Make sure that communication with device is established before changing this parameter. Select required baud rate, save configuration and then change port baud rate to the same value.",
+                "invalid_measurements_correction_description": "Set voltage or current to zero if it is below threshold value. See ERRMAP0003 and ERRMAP0004 for details.",
                 "Supply Voltage": "5V Supply",
                 "Uptime": "Uptime (s)"
             },
@@ -732,6 +747,10 @@
                 "Phi L3": "Фазовая задержка L3",
                 "Actual Phase L3": "Фаза транформатора L3",
                 "Peaks Measurement Period (s)": "Период сброса пиковых значений (с)",
+                "Invalid measurements correction": "Исправление некорректных измерений",
+                "Enabled": "Включено",
+                "Disabled": "Выключено",
+                "invalid_measurements_correction_description": "Обнуление показателей напряжения или тока, если они ниже порогового значения. Подробнее: ERRMAP0003 и ERRMAP0004.",
                 "Baud rate": "Скорость обмена",
                 "baud_rate_description": "Перед изменением параметра убедитесь, что связь с устройством установлена. Выберите нужную скорость обмена, сохраните конфигурацию, а затем укажите в настройках порта эту же скорость.",
                 "Voltage angle L1": "Фазовый угол L1",
