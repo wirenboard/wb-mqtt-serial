@@ -261,6 +261,30 @@ NEVA MT 32x
 	Voltage angle L1-L2  =>  Voltage angle L1-L2
 	Voltage angle L2-L3  =>  Voltage angle L2-L3
 	Voltage angle L3-L1  =>  Voltage angle L3-L1
+ONOKOM-AIR-GR-1-MB-B
+	Active  =>  Active
+	Active mode  =>  Active mode
+	Disable screen when power off  =>  Disable screen when power off
+	Eco mode  =>  Eco mode
+	Fan speed  =>  Fan speed
+	Hardware version  =>  Hardware version
+	Horizontal vanes  =>  Horizontal vanes
+	Indoor air temperature  =>  Indoor air temperature
+	Ionization  =>  Ionization
+	Modbus ID  =>  Modbus ID
+	Mode  =>  Mode
+	Outdoor air temperature  =>  Outdoor air temperature
+	Quiet mode  =>  Quiet mode
+	Screen light  =>  Screen light
+	Sleep mode  =>  Sleep mode
+	Smart fan speed  =>  Smart fan speed
+	Software version  =>  Software version
+	Target temperature  =>  Target temperature
+	Temeperature correction  =>  Temeperature correction
+	Thermostat state  =>  Thermostat state
+	Turbo mode  =>  Turbo mode
+	Vanes swing  =>  Vanes swing
+	Vertical vanes  =>  Vertical vanes
 PD561Z
 	FR  =>  FR
 	Ia  =>  Ia
