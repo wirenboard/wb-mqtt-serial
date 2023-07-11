@@ -44,7 +44,7 @@
         ],
         "parameters": {
             "Disable_screen_when_power_off": {
-                "title": "Отключать экран при отключении питания",
+                "title": "Disable screen when power off",
                 "address": 41,
                 "reg_type": "coil",
                 "enum": [0, 1],
@@ -315,7 +315,7 @@
                 "Screen light": "Подсветка экрана",
                 "Disable screen when power off": "Отключать экран при отключении питания",
 
-                "no":"Нет", 
+                "no": "Нет", 
                 "yes": "Да",
 
                 "Quiet mode": "Режим тихий",
