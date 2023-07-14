@@ -1,3 +1,9 @@
+wb-mqtt-serial (2.89.0) stable; urgency=medium
+
+  * Add phase loss detection control to WB-MAP templates
+
+ -- Dmitry Borisov <dmitry.borisov@wirenboard.com>  Thu, 14 Jul 2023 15:30:00 +0600
+
 wb-mqtt-serial (2.88.1) stable; urgency=medium
 
   * Fix build tests. No functional changes
