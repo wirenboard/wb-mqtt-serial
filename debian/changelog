@@ -1,3 +1,9 @@
+wb-mqtt-serial (2.81.0-wb102) stable; urgency=medium
+
+  * Fix all failing tests
+
+ -- Vladimir Romanov <v.romanov@wirenboard.com>  Tue, 18 Jul 2023 18:23:12 +0500
+
 wb-mqtt-serial (2.81.0-wb101) stable; urgency=medium
 
   * Decrease response and frame timeouts in MSW v.4 template
