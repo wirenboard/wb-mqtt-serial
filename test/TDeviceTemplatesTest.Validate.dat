@@ -312,6 +312,23 @@ ONOKOM-AIR-GR-1-MB-B
 	Turbo mode  =>  Turbo mode
 	Vanes swing  =>  Vanes swing
 	Vertical vanes  =>  Vertical vanes
+ONOKOM-AIR-ME-1-MB-B
+	Active  =>  Active
+	Active mode  =>  Active mode
+	Device version  =>  Device version
+	Fan speed  =>  Fan speed
+	Firmware version  =>  Firmware version
+	Horizontal vanes  =>  Horizontal vanes
+	Indoor air temperature  =>  Indoor air temperature
+	Modbus ID  =>  Modbus ID
+	Mode  =>  Mode
+	Quiet mode  =>  Quiet mode
+	Smart fan speed  =>  Smart fan speed
+	Target temperature  =>  Target temperature
+	Temeperature correction  =>  Temeperature correction
+	Thermostat state  =>  Thermostat state
+	Vanes swing  =>  Vanes swing
+	Vertical vanes  =>  Vertical vanes
 PD561Z
 	FR  =>  FR
 	Ia  =>  Ia
