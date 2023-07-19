@@ -1,6 +1,6 @@
 wb-mqtt-serial (2.90.1) stable; urgency=medium
 
-  * Add negativ energy registers to MAP templates
+  * Add negative energy registers to MAP templates
 
  -- Roman Matveev <roman.matveev@wirenboard.ru>  Thu, 18 Jul 2023 20:38:00 +0300
 
