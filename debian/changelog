@@ -1,3 +1,9 @@
+wb-mqtt-serial (2.91.0) stable; urgency=medium
+
+  * Add new template ONOKOM-AIR-ME-1-MB-B
+
+ -- Roman Matveev <roman.matveev@wirenboard.ru>  Thu, 18 Jul 2023 21:22:00 +0300
+
 wb-mqtt-serial (2.90.0) stable; urgency=medium
 
   * Add new template ONOKOM-AIR-AUX-1-MB-B
