@@ -288,6 +288,26 @@ ONOKOM-AIR-AUX-1-MB-B
 	Turbo mode  =>  Turbo mode
 	Vanes swing  =>  Vanes swing
 	Vertical vanes  =>  Vertical vanes
+ONOKOM-AIR-DK-1-MB-B
+	Active  =>  Active
+	Active mode  =>  Active mode
+	Device version  =>  Device version
+	Eco mode  =>  Eco mode
+	Fan speed  =>  Fan speed
+	Firmware version  =>  Firmware version
+	Horizontal vanes  =>  Horizontal vanes
+	Indoor air temperature  =>  Indoor air temperature
+	Modbus ID  =>  Modbus ID
+	Mode  =>  Mode
+	Outdoor air temperature  =>  Outdoor air temperature
+	Quiet mode  =>  Quiet mode
+	Screen light  =>  Screen light
+	Screen low brightness  =>  Screen low brightness
+	Target temperature  =>  Target temperature
+	Temeperature correction  =>  Temeperature correction
+	Thermostat state  =>  Thermostat state
+	Vanes swing  =>  Vanes swing
+	Vertical vanes  =>  Vertical vanes
 ONOKOM-AIR-GR-1-MB-B
 	Active  =>  Active
 	Active mode  =>  Active mode
