@@ -1,3 +1,9 @@
+wb-mqtt-serial (2.91.1) stable; urgency=medium
+
+  * Add negative energy registers to MAP templates
+
+ -- Roman Matveev <roman.matveev@wirenboard.ru>  Thu, 21 Jul 2023 09:58:00 +0300
+
 wb-mqtt-serial (2.91.0) stable; urgency=medium
 
   * Add new template ONOKOM-AIR-ME-1-MB-B

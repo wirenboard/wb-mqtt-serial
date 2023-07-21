@@ -250,9 +250,31 @@
                 "group": "channel_1"
             },
             {
+                "name": "AN energy 1",
+                "reg_type": "input",
+                "address": "0x121c",
+                "type": "power_consumption",
+                "format": "u64",
+                "scale": 1e-5,
+                "round_to": 1e-6,
+                "word_order": "little_endian",
+                "group": "channel_1"
+            }, 
+            {
                 "name": "RP energy 1",
                 "reg_type": "input",
                 "address": "0x122c",
+                "type": "value",
+                "format": "u64",
+                "scale": 1e-5,
+                "round_to": 1e-6,
+                "word_order": "little_endian",
+                "group": "channel_1"
+            },
+            {
+                "name": "RN energy 1",
+                "reg_type": "input",
+                "address": "0x123c",
                 "type": "value",
                 "format": "u64",
                 "scale": 1e-5,
@@ -332,9 +354,31 @@
                 "group": "channel_2"
             },
             {
+                "name": "AN energy 2",
+                "reg_type": "input",
+                "address": "0x1218",
+                "type": "power_consumption",
+                "format": "u64",
+                "scale": 1e-5,
+                "round_to": 1e-6,
+                "word_order": "little_endian",
+                "group": "channel_2"
+            },  
+            {
                 "name": "RP energy 2",
                 "reg_type": "input",
                 "address": "0x1228",
+                "type": "value",
+                "format": "u64",
+                "scale": 1e-5,
+                "round_to": 1e-6,
+                "word_order": "little_endian",
+                "group": "channel_2"
+            },
+            {
+                "name": "RN energy 2",
+                "reg_type": "input",
+                "address": "0x1238",
                 "type": "value",
                 "format": "u64",
                 "scale": 1e-5,
@@ -414,9 +458,31 @@
                 "group": "channel_3"
             },
             {
+                "name": "AN energy 3",
+                "reg_type": "input",
+                "address": "0x1214",
+                "type": "power_consumption",
+                "format": "u64",
+                "scale": 1e-5,
+                "round_to": 1e-6,
+                "word_order": "little_endian",
+                "group": "channel_3"
+            },
+            {
                 "name": "RP energy 3",
                 "reg_type": "input",
                 "address": "0x1224",
+                "type": "value",
+                "format": "u64",
+                "scale": 1e-5,
+                "round_to": 1e-6,
+                "word_order": "little_endian",
+                "group": "channel_3"
+            },
+            {
+                "name": "RN energy 3",
+                "reg_type": "input",
+                "address": "0x1234",
                 "type": "value",
                 "format": "u64",
                 "scale": 1e-5,
@@ -496,9 +562,31 @@
                 "group": "channel_4"
             },
             {
+                "name": "AN energy 4",
+                "reg_type": "input",
+                "address": "0x221c",
+                "type": "power_consumption",
+                "format": "u64",
+                "scale": 1e-5,
+                "round_to": 1e-6,
+                "word_order": "little_endian",
+                "group": "channel_4"
+            },
+            {
                 "name": "RP energy 4",
                 "reg_type": "input",
                 "address": "0x222c",
+                "type": "value",
+                "format": "u64",
+                "scale": 1e-5,
+                "round_to": 1e-6,
+                "word_order": "little_endian",
+                "group": "channel_4"
+            },
+            {
+                "name": "RN energy 4",
+                "reg_type": "input",
+                "address": "0x223c",
                 "type": "value",
                 "format": "u64",
                 "scale": 1e-5,
@@ -578,6 +666,17 @@
                 "group": "channel_5"
             },
             {
+                "name": "AN energy 5",
+                "reg_type": "input",
+                "address": "0x2218",
+                "type": "power_consumption",
+                "format": "u64",
+                "scale": 1e-5,
+                "round_to": 1e-6,
+                "word_order": "little_endian",
+                "group": "channel_5"
+            },
+            {
                 "name": "RP energy 5",
                 "reg_type": "input",
                 "address": "0x2228",
@@ -588,6 +687,17 @@
                 "word_order": "little_endian",
                 "group": "channel_5"
             },
+            {
+                "name": "RN energy 5",
+                "reg_type": "input",
+                "address": "0x2238",
+                "type": "value",
+                "format": "u64",
+                "scale": 1e-5,
+                "round_to": 1e-6,
+                "word_order": "little_endian",
+                "group": "channel_5"
+            },  
             {
                 "name": "Phase angle 5",
                 "reg_type": "input",
@@ -660,9 +770,31 @@
                 "group": "channel_6"
             },
             {
+                "name": "AN energy 6",
+                "reg_type": "input",
+                "address": "0x2214",
+                "type": "power_consumption",
+                "format": "u64",
+                "scale": 1e-5,
+                "round_to": 1e-6,
+                "word_order": "little_endian",
+                "group": "channel_6"
+            },
+            {
                 "name": "RP energy 6",
                 "reg_type": "input",
                 "address": "0x2224",
+                "type": "value",
+                "format": "u64",
+                "scale": 1e-5,
+                "round_to": 1e-6,
+                "word_order": "little_endian",
+                "group": "channel_6"
+            },
+            {
+                "name": "RN energy 6",
+                "reg_type": "input",
+                "address": "0x2234",
                 "type": "value",
                 "format": "u64",
                 "scale": 1e-5,
@@ -790,21 +922,33 @@
                 "baud_rate_description": "Перед изменением параметра убедитесь, что связь с устройством установлена. Выберите нужную скорость обмена, сохраните конфигурацию, а затем укажите в настройках порта эту же скорость.",
                 "AP energy 1": "Энергия AP 1",
                 "RP energy 1": "Энергия RP 1",
+                "AN energy 1": "Энергия AN 1",
+                "RN energy 1": "Энергия RN 1",
                 "Phase angle 1": "Угол между I1 и U",
                 "AP energy 2": "Энергия AP 2",
                 "RP energy 2": "Энергия RP 2",
+                "AN energy 2": "Энергия AN 2",
+                "RN energy 2": "Энергия RN 2",
                 "Phase angle 2": "Угол между I2 и U",
                 "AP energy 3": "Энергия AP 3",
                 "RP energy 3": "Энергия RP 3",
+                "AN energy 3": "Энергия AN 3",
+                "RN energy 3": "Энергия RN 3",
                 "Phase angle 3": "Угол между I3 и U",
                 "AP energy 4": "Энергия AP 4",
                 "RP energy 4": "Энергия RP 4",
+                "AN energy 4": "Энергия AN 4",
+                "RN energy 4": "Энергия RN 4",
                 "Phase angle 4": "Угол между I4 и U",
                 "AP energy 5": "Энергия AP 5",
                 "RP energy 5": "Энергия RP 5",
+                "AN energy 5": "Энергия AN 5",
+                "RN energy 5": "Энергия RN 5",
                 "Phase angle 5": "Угол между I5 и U",
                 "AP energy 6": "Энергия AP 6",
                 "RP energy 6": "Энергия RP 6",
+                "AN energy 6": "Энергия AN 6",
+                "RN energy 6": "Энергия RN 6",
                 "Phase angle 6": "Угол между I6 и U",
                 "Frequency": "Частота",
                 "Serial": "Серийный номер",

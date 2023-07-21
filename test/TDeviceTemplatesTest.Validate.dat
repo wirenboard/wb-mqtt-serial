@@ -17082,6 +17082,9 @@ WB-MAP3E
 	Voltage angle L2  =>  Voltage angle L2
 	Voltage angle L3  =>  Voltage angle L3
 WB-MAP3E fw2
+	AN energy L1  =>  AN energy L1
+	AN energy L2  =>  AN energy L2
+	AN energy L3  =>  AN energy L3
 	AP energy L1  =>  AP energy L1
 	AP energy L2  =>  AP energy L2
 	AP energy L3  =>  AP energy L3
@@ -17107,6 +17110,9 @@ WB-MAP3E fw2
 	Q L1  =>  Q L1
 	Q L2  =>  Q L2
 	Q L3  =>  Q L3
+	RN energy L1  =>  RN energy L1
+	RN energy L2  =>  RN energy L2
+	RN energy L3  =>  RN energy L3
 	RP energy L1  =>  RP energy L1
 	RP energy L2  =>  RP energy L2
 	RP energy L3  =>  RP energy L3
@@ -17115,10 +17121,12 @@ WB-MAP3E fw2
 	S L3  =>  S L3
 	Serial  =>  Serial
 	Supply Voltage  =>  Supply Voltage
+	Total AN energy  =>  Total AN energy
 	Total AP energy  =>  Total AP energy
 	Total P  =>  Total P
 	Total PF  =>  Total PF
 	Total Q  =>  Total Q
+	Total RN energy  =>  Total RN energy
 	Total RP energy  =>  Total RP energy
 	Total S  =>  Total S
 	U L1-L2  =>  U L1-L2
@@ -17135,6 +17143,9 @@ WB-MAP3E fw2
 	Voltage angle L2  =>  Voltage angle L2
 	Voltage angle L3  =>  Voltage angle L3
 WB-MAP3ET
+	AN energy L1  =>  AN energy L1
+	AN energy L2  =>  AN energy L2
+	AN energy L3  =>  AN energy L3
 	AP energy L1  =>  AP energy L1
 	AP energy L2  =>  AP energy L2
 	AP energy L3  =>  AP energy L3
@@ -17160,6 +17171,9 @@ WB-MAP3ET
 	Q L1  =>  Q L1
 	Q L2  =>  Q L2
 	Q L3  =>  Q L3
+	RN energy L1  =>  RN energy L1
+	RN energy L2  =>  RN energy L2
+	RN energy L3  =>  RN energy L3
 	RP energy L1  =>  RP energy L1
 	RP energy L2  =>  RP energy L2
 	RP energy L3  =>  RP energy L3
@@ -17168,10 +17182,12 @@ WB-MAP3ET
 	S L3  =>  S L3
 	Serial  =>  Serial
 	Supply Voltage  =>  Supply Voltage
+	Total AN energy  =>  Total AN energy
 	Total AP energy  =>  Total AP energy
 	Total P  =>  Total P
 	Total PF  =>  Total PF
 	Total Q  =>  Total Q
+	Total RN energy  =>  Total RN energy
 	Total RP energy  =>  Total RP energy
 	Total S  =>  Total S
 	U L1-L2  =>  U L1-L2
@@ -17829,6 +17845,12 @@ WB-MAP6S
 	Uptime  =>  Uptime
 	Urms  =>  Urms
 WB-MAP6S fw2
+	AN energy 1  =>  AN energy 1
+	AN energy 2  =>  AN energy 2
+	AN energy 3  =>  AN energy 3
+	AN energy 4  =>  AN energy 4
+	AN energy 5  =>  AN energy 5
+	AN energy 6  =>  AN energy 6
 	AP energy 1  =>  AP energy 1
 	AP energy 2  =>  AP energy 2
 	AP energy 3  =>  AP energy 3
@@ -17869,6 +17891,12 @@ WB-MAP6S fw2
 	Q 4  =>  Q 4
 	Q 5  =>  Q 5
 	Q 6  =>  Q 6
+	RN energy 1  =>  RN energy 1
+	RN energy 2  =>  RN energy 2
+	RN energy 3  =>  RN energy 3
+	RN energy 4  =>  RN energy 4
+	RN energy 5  =>  RN energy 5
+	RN energy 6  =>  RN energy 6
 	RP energy 1  =>  RP energy 1
 	RP energy 2  =>  RP energy 2
 	RP energy 3  =>  RP energy 3
