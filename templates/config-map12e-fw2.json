@@ -522,13 +522,13 @@
             "phase_loss_detection": {
                 "title": "Phase loss detection",
                 "description": "phase_loss_detection_description",
-                "address": 101,
+                "address": 102,
                 "reg_type": "holding",
                 "enum": [0, 1],
-                "default": 0,
+                "default": 1,
                 "enum_titles": [
-                    "Enabled",
-                    "Disabled"
+                    "Disabled",
+                    "Enabled"
                 ],
                 "group": "general",
                 "order": 3
