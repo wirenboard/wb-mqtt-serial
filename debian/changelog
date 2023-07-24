@@ -1,8 +1,26 @@
-wb-mqtt-serial (2.90.0) stable; urgency=medium
+wb-mqtt-serial (2.92.0) stable; urgency=medium
 
   * Add phase loss detection control to WB-MAP templates
 
- -- Dmitry Borisov <dmitry.borisov@wirenboard.com>  Thu, 14 Jul 2023 15:30:00 +0600
+ -- Dmitry Borisov <dmitry.borisov@wirenboard.com>  Thu, 24 Jul 2023 15:30:00 +0600
+
+wb-mqtt-serial (2.91.1) stable; urgency=medium
+
+  * Add negative energy registers to MAP templates
+
+ -- Roman Matveev <roman.matveev@wirenboard.ru>  Thu, 21 Jul 2023 09:58:00 +0300
+
+wb-mqtt-serial (2.91.0) stable; urgency=medium
+
+  * Add new template ONOKOM-AIR-ME-1-MB-B
+
+ -- Roman Matveev <roman.matveev@wirenboard.ru>  Thu, 18 Jul 2023 21:22:00 +0300
+
+wb-mqtt-serial (2.90.0) stable; urgency=medium
+
+  * Add new template ONOKOM-AIR-AUX-1-MB-B
+
+ -- Roman Matveev <roman.matveev@wirenboard.ru>  Fri, 14 Jul 2023 13:06:00 +0300
 
 wb-mqtt-serial (2.89.0) stable; urgency=medium
 
