@@ -1,3 +1,9 @@
+wb-mqtt-serial (2.92.1) stable; urgency=medium
+
+  * Fix warnings about too long poll period
+
+ -- Petr Krasnoshchekov <petr.krasnoshchekov@wirenboard.com>  Tue, 25 Jul 2023 15:36:31 +0500
+
 wb-mqtt-serial (2.92.0) stable; urgency=medium
 
   * Add new template ONOKOM-AIR-DK-1-MB-B

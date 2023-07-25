@@ -164,6 +164,7 @@ TReadFrameResult TFileDescriptorPort::ReadFrame(uint8_t* buf,
     }
 
     util::TSpentTimeMeter spentTime(std::chrono::steady_clock::now);
+    spentTime.Start();
 
     // Will wait first byte up to responseTimeout us
     auto selectTimeout = responseTimeout;
