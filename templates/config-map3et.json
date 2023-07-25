@@ -70,6 +70,20 @@
                 "default": 60,
                 "group": "general",
                 "order": 2
+            },
+            "phase_loss_detection": {
+                "title": "Phase loss detection",
+                "description": "phase_loss_detection_description",
+                "address": 102,
+                "reg_type": "holding",
+                "enum": [0, 1],
+                "default": 1,
+                "enum_titles": [
+                    "Disabled",
+                    "Enabled"
+                ],
+                "group": "general",
+                "order": 3
             }
         },
 
@@ -709,6 +723,7 @@
             "en": {
                 "WB-MAP3ET_template_title": "WB-MAP3ET (3-phase enegry meter)",
                 "baud_rate_description": "Make sure that communication with device is established before changing this parameter. Select required baud rate, save configuration and then change port baud rate to the same value.",
+                "phase_loss_detection_description": "Resets voltage and power values if voltage on phase is less than 30% of maximum voltage among all phases. Firmware v2.6.3 or newer is required.",
                 "Supply Voltage": "5V Supply",
                 "Uptime": "Uptime (s)"
             },
@@ -720,6 +735,10 @@
                 "Peaks Measurement Period (s)": "Период сброса пиковых значений (с)",
                 "Baud rate": "Скорость обмена",
                 "baud_rate_description": "Перед изменением параметра убедитесь, что связь с устройством установлена. Выберите нужную скорость обмена, сохраните конфигурацию, а затем укажите в настройках порта эту же скорость.",
+                "Phase loss detection": "Обнаруживать отключения фаз",
+                "Enabled": "Включено",
+                "Disabled": "Выключено",
+                "phase_loss_detection_description": "Обнуляет показатели напряжения и связанных с ними мощностей, если напряжение на фазе будет менее 30% от наибольшего из трех фаз. Для прошивок v2.6.3 и новее.",
                 "Voltage angle L1": "Фазовый угол L1",
                 "AP energy L1": "Энергия AP L1",
                 "RP energy L1": "Энергия RP L1",
