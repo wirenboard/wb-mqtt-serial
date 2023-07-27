@@ -188,12 +188,18 @@
 
         "channels": [
             {% for in_num in range(FIRST_INPUT, INPUTS_NUMBER + 1) -%}
+            {% set NO_SPORADIC_MODE = 0 -%}
+            {% for s_en, s_cond in [
+                ("false", "(isDefined(in"~in_num~"_mode)==0||in"~in_num~"_mode=="~NO_SPORADIC_MODE),
+                ("true", "isDefined(in"~in_num~"_mode)&&in"~in_num~"_mode!="~NO_SPORADIC_MODE),
+            ] -%}
             {
                 "name": "Input {{in_num}}",
                 "reg_type": "discrete",
                 "address": {{in_num - 1}},
                 "type": "switch",
-                "sporadic": true,
+                "sporadic": {{s_en}},
+                "condition": "{{s_cond}}",
                 "group": "gg_in{{in_num}}_channels"
             },
             {
@@ -202,8 +208,11 @@
                 "format": "u32",
                 "address": {{60 + (in_num - 1) * 2}},
                 "type": "value",
+                "sporadic": {{s_en}},
+                "condition": "{{s_cond}}",
                 "group": "gg_in{{in_num}}_channels"
             },
+            {% endfor -%}
             {
                 "name": "Input {{in_num}} freq",
                 "reg_type": "input",
