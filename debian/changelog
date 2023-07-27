@@ -1,3 +1,9 @@
+wb-mqtt-serial (2.93.2) stable; urgency=medium
+
+  * WB-MR*, WB-MCM8, WB-MWAC templates: add condition for some special sporadic channels
+
+ -- Pavel Gasheev <pavel.gasheev@wirenboard.ru>  Thu, 27 Jul 2023 09:42:19 +0300
+
 wb-mqtt-serial (2.93.1) stable; urgency=medium
 
   * Fix warnings about too long poll period
