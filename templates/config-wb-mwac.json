@@ -1583,6 +1583,16 @@
                 "address": 0,
                 "type": "switch",
                 "sporadic": true,
+                "condition": "isDefined(in1_mode)&&in1_mode!=3",
+                "group": "input_s1"
+            },
+            {
+                "name": "S1",
+                "reg_type": "discrete",
+                "address": 0,
+                "type": "switch",
+                "sporadic": false,
+                "condition": "isDefined(in1_mode)==0||in1_mode==3",
                 "group": "input_s1"
             },
             {
@@ -1591,6 +1601,16 @@
                 "address": 32,
                 "type": "value",
                 "sporadic": true,
+                "condition": "isDefined(in1_mode)&&in1_mode!=3",
+                "group": "input_s1"
+            },
+            {
+                "name": "S1 Counter",
+                "reg_type": "input",
+                "address": 32,
+                "type": "value",
+                "sporadic": false,
+                "condition": "isDefined(in1_mode)==0||in1_mode==3",
                 "group": "input_s1"
             },
             {
@@ -1610,6 +1630,16 @@
                 "address": 1,
                 "type": "switch",
                 "sporadic": true,
+                "condition": "isDefined(in2_mode)&&in2_mode!=3",
+                "group": "input_s2"
+            },
+            {
+                "name": "S2",
+                "reg_type": "discrete",
+                "address": 1,
+                "type": "switch",
+                "sporadic": false,
+                "condition": "isDefined(in2_mode)==0||in2_mode==3",
                 "group": "input_s2"
             },
             {
@@ -1618,6 +1648,16 @@
                 "address": 33,
                 "type": "value",
                 "sporadic": true,
+                "condition": "isDefined(in2_mode)&&in2_mode!=3",
+                "group": "input_s2"
+            },
+            {
+                "name": "S2 Counter",
+                "reg_type": "input",
+                "address": 33,
+                "type": "value",
+                "sporadic": false,
+                "condition": "isDefined(in2_mode)==0||in2_mode==3",
                 "group": "input_s2"
             },
             {
@@ -1637,6 +1677,16 @@
                 "address": 2,
                 "type": "switch",
                 "sporadic": true,
+                "condition": "isDefined(in3_mode)&&in3_mode!=3",
+                "group": "input_s3"
+            },
+            {
+                "name": "S3",
+                "reg_type": "discrete",
+                "address": 2,
+                "type": "switch",
+                "sporadic": false,
+                "condition": "isDefined(in3_mode)==0||in3_mode==3",
                 "group": "input_s3"
             },
             {
@@ -1645,6 +1695,16 @@
                 "address": 34,
                 "type": "value",
                 "sporadic": true,
+                "condition": "isDefined(in3_mode)&&in3_mode!=3",
+                "group": "input_s3"
+            },
+            {
+                "name": "S3 Counter",
+                "reg_type": "input",
+                "address": 34,
+                "type": "value",
+                "sporadic": false,
+                "condition": "isDefined(in3_mode)==0||in3_mode==3",
                 "group": "input_s3"
             },
             {
@@ -1664,6 +1724,16 @@
                 "address": 3,
                 "type": "switch",
                 "sporadic": true,
+                "condition": "isDefined(in4_mode)&&in4_mode!=3",
+                "group": "input_f1"
+            },
+            {
+                "name": "F1",
+                "reg_type": "discrete",
+                "address": 3,
+                "type": "switch",
+                "sporadic": false,
+                "condition": "isDefined(in4_mode)==0||in4_mode==3",
                 "group": "input_f1"
             },
             {
@@ -1672,6 +1742,16 @@
                 "address": 35,
                 "type": "value",
                 "sporadic": true,
+                "condition": "isDefined(in4_mode)&&in4_mode!=3",
+                "group": "input_f1"
+            },
+            {
+                "name": "F1 Counter",
+                "reg_type": "input",
+                "address": 35,
+                "type": "value",
+                "sporadic": false,
+                "condition": "isDefined(in4_mode)==0||in4_mode==3",
                 "group": "input_f1"
             },
             {
@@ -1691,6 +1771,16 @@
                 "address": 4,
                 "type": "switch",
                 "sporadic": true,
+                "condition": "isDefined(in5_mode)&&in5_mode!=3",
+                "group": "input_f2"
+            },
+            {
+                "name": "F2",
+                "reg_type": "discrete",
+                "address": 4,
+                "type": "switch",
+                "sporadic": false,
+                "condition": "isDefined(in5_mode)==0||in5_mode==3",
                 "group": "input_f2"
             },
             {
@@ -1699,6 +1789,16 @@
                 "address": 36,
                 "type": "value",
                 "sporadic": true,
+                "condition": "isDefined(in5_mode)&&in5_mode!=3",
+                "group": "input_f2"
+            },
+            {
+                "name": "F2 Counter",
+                "reg_type": "input",
+                "address": 36,
+                "type": "value",
+                "sporadic": false,
+                "condition": "isDefined(in5_mode)==0||in5_mode==3",
                 "group": "input_f2"
             },
             {
@@ -1718,6 +1818,16 @@
                 "address": 5,
                 "type": "switch",
                 "sporadic": true,
+                "condition": "isDefined(in6_mode)&&in6_mode!=3",
+                "group": "input_f3"
+            },
+            {
+                "name": "F3",
+                "reg_type": "discrete",
+                "address": 5,
+                "type": "switch",
+                "sporadic": false,
+                "condition": "isDefined(in6_mode)==0||in6_mode==3",
                 "group": "input_f3"
             },
             {
@@ -1726,6 +1836,16 @@
                 "address": 37,
                 "type": "value",
                 "sporadic": true,
+                "condition": "isDefined(in6_mode)&&in6_mode!=3",
+                "group": "input_f3"
+            },
+            {
+                "name": "F3 Counter",
+                "reg_type": "input",
+                "address": 37,
+                "type": "value",
+                "sporadic": false,
+                "condition": "isDefined(in6_mode)==0||in6_mode==3",
                 "group": "input_f3"
             },
             {
