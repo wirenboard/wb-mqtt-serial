@@ -1,3 +1,9 @@
+a
+1
+(a)
+(1)
+((a))
+((1))
 a==1
 (a==1)
 ((a==1))
@@ -28,3 +34,4 @@ a==1&&isDefined(a)
 a==1&&(isDefined(a))
 a==1&&isDefined(a)||b==3&&isDefined(b)
 a==1&&(isDefined(a)||b==3&&isDefined(b))
+(isDefined(in1_mode)==0||in1_mode==0)==0

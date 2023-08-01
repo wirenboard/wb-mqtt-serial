@@ -1,3 +1,9 @@
+wb-mqtt-serial (2.93.5) stable; urgency=medium
+
+  * Fix segmentation fault on conditions evaluation in device templates
+
+ -- Petr Krasnoshchekov <petr.krasnoshchekov@wirenboard.com>  Tue, 01 Aug 2023 16:38:39 +0500
+
 wb-mqtt-serial (2.93.4) stable; urgency=medium
 
   * WB-LED and WB-MRGBW-D templates: add sporadic events for channels
