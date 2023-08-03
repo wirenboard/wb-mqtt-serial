@@ -19,11 +19,11 @@
 //        | "x" | "y" | "z" ;
 // number = [ "-" ], digit, { digit } ;
 // identifier = letter , { letter | digit | "_" } ;
-// function = identifier, "(", identifier, ")";
-// right operand = identifier | number | function | "(", expression, ")" ;
-// condition = identifier | number | function , operator, right operand, { operator, right operand } ;
-// condition with brackets = "(", expression, ")" , [ { operator, right operand } ] ;
-// expression = condition | condition with brackets | function;
+// function = identifier, "(", identifier, ")" ;
+// operand = identifier | number | function | condition with brackets ;
+// condition = operand , { operator, operand } ;
+// condition with brackets = "(", expression, ")" ;
+// expression = condition | condition with brackets ;
 
 namespace Expressions
 {
@@ -117,7 +117,7 @@ namespace Expressions
         //! A token to analyze
         std::vector<TToken>::const_iterator Token;
 
-        std::unique_ptr<TAstNode> ParseRightOperand();
+        std::unique_ptr<TAstNode> ParseOperand();
         std::unique_ptr<TAstNode> ParseCondition();
         std::unique_ptr<TAstNode> ParseConditionWithBrackets();
         std::unique_ptr<TAstNode> ParseExpression();
