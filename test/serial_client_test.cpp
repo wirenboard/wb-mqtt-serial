@@ -10,6 +10,7 @@
 
 #include <algorithm>
 #include <cassert>
+#include <filesystem>
 #include <gtest/gtest.h>
 #include <map>
 #include <memory>
@@ -25,6 +26,8 @@ using namespace WBMQTT::Testing;
 
 namespace
 {
+    const auto DB_PATH = "/tmp/wb-mqtt-serial-test.db";
+
     std::string GetTextValue(PRegister reg)
     {
         return ConvertFromRawValue(*reg, reg->GetValue());
@@ -1103,6 +1106,7 @@ void TSerialClientIntegrationTest::SetUp()
 {
     SetMode(E_Unordered);
     TSerialClientTest::SetUp();
+    std::filesystem::remove(DB_PATH);
 
     MqttBroker = NewFakeMqttBroker(*this);
     MqttClient = MqttBroker->MakeClient(Name);
@@ -1113,7 +1117,7 @@ void TSerialClientIntegrationTest::SetUp()
                            .SetIsTesting(true)
                            .SetReownUnknownDevices(true)
                            .SetUseStorage(true)
-                           .SetStoragePath("/tmp/wb-mqtt-serial-test.db"));
+                           .SetStoragePath(DB_PATH));
 
     Driver->StartLoop();
 
@@ -1137,6 +1141,7 @@ void TSerialClientIntegrationTest::TearDown()
     }
     Driver->StopLoop();
     TSerialClientTest::TearDown();
+    std::filesystem::remove(DB_PATH);
 }
 
 void TSerialClientIntegrationTest::FilterConfig(const std::string& device_name)

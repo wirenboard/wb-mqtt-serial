@@ -49,12 +49,11 @@ namespace
         if (begin + 1 == end) {
             return std::move(*begin);
         }
-        auto rootIt = begin;
-        for (auto it = begin; it != end; ++it) {
-            if (!(*it)->GetLeft()) {
-                if (GetPriority((*rootIt)->GetType()) <= GetPriority((*it)->GetType())) {
-                    rootIt = it;
-                }
+        // Iterate over even nodes (operators)
+        auto rootIt = begin + 1;
+        for (auto it = rootIt; it != end && it + 1 != end; it += 2) {
+            if (GetPriority((*rootIt)->GetType()) <= GetPriority((*it)->GetType())) {
+                rootIt = it;
             }
         }
         std::unique_ptr<TAstNode> root(std::move(*rootIt));
@@ -407,7 +406,7 @@ std::unique_ptr<TAstNode> TParser::ParseFunction()
     return node;
 }
 
-std::unique_ptr<TAstNode> TParser::ParseRightOperand()
+std::unique_ptr<TAstNode> TParser::ParseOperand()
 {
     auto fn = ParseFunction();
     if (fn) {
@@ -418,16 +417,12 @@ std::unique_ptr<TAstNode> TParser::ParseRightOperand()
         ++Token;
         return node;
     }
-    if (Token->Type != TTokenType::LeftBr) {
-        ThrowMissingIdentifierOrNumberOrLeftBracketError(Token->Pos);
+    auto node = ParseConditionWithBrackets();
+    if (node) {
+        return node;
     }
-    ++Token;
-    auto res = ParseExpression();
-    if (Token->Type != TTokenType::RightBr) {
-        ThrowMissingRightBracketError(Token->Pos);
-    }
-    ++Token;
-    return res;
+    ThrowMissingIdentifierOrNumberOrLeftBracketError(Token->Pos);
+    return nullptr;
 }
 
 std::unique_ptr<TAstNode> TParser::ParseConditionWithBrackets()
@@ -437,47 +432,22 @@ std::unique_ptr<TAstNode> TParser::ParseConditionWithBrackets()
     }
     std::vector<std::unique_ptr<TAstNode>> tokens;
     ++Token;
-    tokens.emplace_back(ParseExpression());
+    auto res = ParseExpression();
     if (Token->Type != TTokenType::RightBr) {
         ThrowMissingRightBracketError(Token->Pos);
     }
     ++Token;
-    while (IsOperator(Token->Type)) {
-        tokens.emplace_back(std::make_unique<TAstNode>(*Token));
-        ++Token;
-        tokens.emplace_back(ParseRightOperand());
-    }
-    return TreeByPriority(tokens.begin(), tokens.end());
+    return res;
 }
 
 std::unique_ptr<TAstNode> TParser::ParseCondition()
 {
     std::vector<std::unique_ptr<TAstNode>> tokens;
-    auto currentToken = Token;
-    auto fn = ParseFunction();
-    if (fn) {
-        if (!IsOperator(Token->Type)) {
-            Token = currentToken;
-            return nullptr;
-        }
-        tokens.emplace_back(std::move(fn));
-    } else {
-        if (Token->Type != TTokenType::Number && Token->Type != TTokenType::Ident) {
-            return nullptr;
-        }
-        tokens.emplace_back(std::make_unique<TAstNode>(*Token));
-        ++Token;
-    }
-    if (!IsOperator(Token->Type)) {
-        ThrowMissingOperatorError(Token->Pos);
-    }
-    tokens.emplace_back(std::make_unique<TAstNode>(*Token));
-    ++Token;
-    tokens.emplace_back(ParseRightOperand());
+    tokens.emplace_back(ParseOperand());
     while (IsOperator(Token->Type)) {
         tokens.emplace_back(std::make_unique<TAstNode>(*Token));
         ++Token;
-        tokens.emplace_back(ParseRightOperand());
+        tokens.emplace_back(ParseOperand());
     }
     return TreeByPriority(tokens.begin(), tokens.end());
 }
@@ -489,10 +459,6 @@ std::unique_ptr<TAstNode> TParser::ParseExpression()
         return root;
     }
     root = ParseConditionWithBrackets();
-    if (root) {
-        return root;
-    }
-    root = ParseFunction();
     if (root) {
         return root;
     }

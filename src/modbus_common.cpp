@@ -1157,7 +1157,8 @@ namespace Modbus // modbus protocol common utilities
                                 uint8_t slaveId,
                                 TRegisterCache& cache)
     {
-        auto reg = TRegister::Intern(device, TRegister::Create(Modbus::REG_HOLDING, ENABLE_CONTINUOUS_READ_REGISTER));
+        auto reg = std::make_shared<TRegister>(device,
+                                               TRegister::Create(Modbus::REG_HOLDING, ENABLE_CONTINUOUS_READ_REGISTER));
         try {
             Modbus::WriteRegister(traits, port, slaveId, *reg, TRegisterValue(1), cache);
             LOG(Info) << "Continuous read enabled [slave_id is " << device->DeviceConfig()->SlaveId + "]";

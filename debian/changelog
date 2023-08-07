@@ -4,6 +4,84 @@ wb-mqtt-serial (2.88.0) stable; urgency=medium
 
  -- Pavel Gasheev <pavel.gasheev@wirenboard.ru>  Tue, 27 Jun 2023 13:54:43 +0300
 
+wb-mqtt-serial (2.93.5) stable; urgency=medium
+
+  * Fix segmentation fault on conditions evaluation in device templates
+
+ -- Petr Krasnoshchekov <petr.krasnoshchekov@wirenboard.com>  Tue, 01 Aug 2023 16:38:39 +0500
+
+wb-mqtt-serial (2.93.4) stable; urgency=medium
+
+  * WB-LED and WB-MRGBW-D templates: add sporadic events for channels
+
+ -- Pavel Gasheev <pavel.gasheev@wirenboard.ru>  Mon, 31 Jul 2023 13:19:22 +0300
+
+wb-mqtt-serial (2.93.3) stable; urgency=medium
+
+  * Fixed increasing memory consumption if there are disconnected devices
+
+ -- Petr Krasnoshchekov <petr.krasnoshchekov@wirenboard.com>  Mon, 31 Jul 2023 12:29:01 +0500
+
+wb-mqtt-serial (2.93.2) stable; urgency=medium
+
+  * WB-MR*, WB-MCM8, WB-MWAC templates: add condition for some special sporadic channels
+
+ -- Pavel Gasheev <pavel.gasheev@wirenboard.ru>  Thu, 27 Jul 2023 09:42:19 +0300
+
+wb-mqtt-serial (2.93.1) stable; urgency=medium
+
+  * Fix warnings about too long poll period
+
+ -- Petr Krasnoshchekov <petr.krasnoshchekov@wirenboard.com>  Tue, 25 Jul 2023 18:25:41 +0500
+
+wb-mqtt-serial (2.93.0) stable; urgency=medium
+
+  * Add phase loss detection control to WB-MAP templates
+
+ -- Dmitry Borisov <dmitry.borisov@wirenboard.com>  Thu, 25 Jul 2023 15:30:00 +0600
+
+wb-mqtt-serial (2.92.0) stable; urgency=medium
+
+  * Add new template ONOKOM-AIR-DK-1-MB-B
+
+ -- Roman Matveev <roman.matveev@wirenboard.ru>  Fri, 21 Jul 2023 12:29:00 +0300
+
+wb-mqtt-serial (2.91.1) stable; urgency=medium
+
+  * Add negative energy registers to MAP templates
+
+ -- Roman Matveev <roman.matveev@wirenboard.ru>  Fri, 21 Jul 2023 09:58:00 +0300
+
+wb-mqtt-serial (2.91.0) stable; urgency=medium
+
+  * Add new template ONOKOM-AIR-ME-1-MB-B
+
+ -- Roman Matveev <roman.matveev@wirenboard.ru>  Thu, 18 Jul 2023 21:22:00 +0300
+
+wb-mqtt-serial (2.90.0) stable; urgency=medium
+
+  * Add new template ONOKOM-AIR-AUX-1-MB-B
+
+ -- Roman Matveev <roman.matveev@wirenboard.ru>  Fri, 14 Jul 2023 13:06:00 +0300
+
+wb-mqtt-serial (2.89.0) stable; urgency=medium
+
+  * Add new template ONOKOM-AIR-GR-1-MB-B
+
+ -- Roman Matveev <roman.matveev@wirenboard.ru>  Fri, 07 Jul 2023 11:28:00 +0300
+
+wb-mqtt-serial (2.88.1) stable; urgency=medium
+
+  * Fix build tests. No functional changes
+
+ -- Petr Krasnoshchekov <petr.krasnoshchekov@wirenboard.com>  Thu, 06 Jul 2023 10:44:01 +0500
+
+wb-mqtt-serial (2.88.0) stable; urgency=medium
+
+  * Add new template for Sokol-M weather station
+
+ -- Roman Matveev <roman.matveev@wirenboard.ru>  Thu, 30 Jun 2023 10:45:00 +0300
+
 wb-mqtt-serial (2.87.7) stable; urgency=medium
 
   * WBE2-I-OPENTHERM template: add Invalid Connection register
