@@ -19,31 +19,31 @@
                 "name": "Open",
                 "type": "pushbutton",
                 "reg_type": "command",
-                "address": "0x01"
+                "write_address": "0x01"
             },
             {
                 "name": "Close",
                 "type": "pushbutton",
                 "reg_type": "command",
-                "address": "0x02"
+                "write_address": "0x02"
             },
             {
                 "name": "Stop",
                 "type": "pushbutton",
                 "reg_type": "command",
-                "address": "0x03"
+                "write_address": "0x03"
             },
             {
                 "name": "Delete end positions",
                 "type": "pushbutton",
                 "reg_type": "command",
-                "address": "0x07"
+                "write_address": "0x07"
             },
             {
                 "name": "Factory Default",
                 "type": "pushbutton",
                 "reg_type": "command",
-                "address": "0x08"
+                "write_address": "0x08"
             },
             {
                 "name": "Direction",

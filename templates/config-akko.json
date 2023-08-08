@@ -1,0 +1,181 @@
+{
+    "device_type": "AKKO",
+    "title": "AKKO",
+    "group": "g-curtain",
+    "device": {
+        "name": "akko",
+        "id": "akko",
+        "protocol": "dooya",
+        "response_timeout_ms": 100,
+        "parameters": {
+            "jogging_mode": {
+                "title": "Jogging mode",
+                "address": "0x0A",
+                "reg_type": "param",
+                "enum": [0, 1],
+                "default": 0,
+                "enum_titles": [
+                    "disable",
+                    "enable"
+                ]
+            }
+        },
+        "channels": [
+            {
+                "name": "Position",
+                "reg_type": "position",
+                "address": 0,
+                "max": 100,
+                "type": "range"
+            },
+            {
+                "name": "Open",
+                "type": "pushbutton",
+                "reg_type": "command",
+                "write_address": "0x01"
+            },
+            {
+                "name": "Close",
+                "type": "pushbutton",
+                "reg_type": "command",
+                "write_address": "0x02"
+            },
+            {
+                "name": "Stop",
+                "type": "pushbutton",
+                "reg_type": "command",
+                "write_address": "0x03"
+            },
+            {
+                "name": "Set top limit",
+                "type": "pushbutton",
+                "reg_type": "command_with_param",
+                "write_address": "0x05",
+                "on_value": "0x01"
+            },
+            {
+                "name": "Set bottom limit",
+                "type": "pushbutton",
+                "reg_type": "command_with_param",
+                "write_address": "0x05",
+                "on_value": "0x02"
+            },
+            {
+                "name": "Set third limit",
+                "type": "pushbutton",
+                "reg_type": "command_with_param",
+                "write_address": "0x05",
+                "on_value": "0x03"
+            },
+            {
+                "name": "Set forth limit",
+                "type": "pushbutton",
+                "reg_type": "command_with_param",
+                "write_address": "0x05",
+                "on_value": "0x04"
+            },
+            {
+                "name": "Run until top limit",
+                "type": "pushbutton",
+                "reg_type": "command_with_param",
+                "write_address": "0x06",
+                "on_value": "0x01"
+            },
+            {
+                "name": "Run until bottom limit",
+                "type": "pushbutton",
+                "reg_type": "command_with_param",
+                "write_address": "0x06",
+                "on_value": "0x02"
+            },
+            {
+                "name": "Run until third limit",
+                "type": "pushbutton",
+                "reg_type": "command_with_param",
+                "write_address": "0x06",
+                "on_value": "0x03"
+            },
+            {
+                "name": "Run until forth limit",
+                "type": "pushbutton",
+                "reg_type": "command_with_param",
+                "write_address": "0x06",
+                "on_value": "0x04"
+            },
+            {
+                "name": "Delete limits",
+                "type": "pushbutton",
+                "reg_type": "command",
+                "write_address": "0x07"
+            },
+            {
+                "name": "Delete top limit",
+                "type": "pushbutton",
+                "reg_type": "command_with_param",
+                "write_address": "0x07",
+                "on_value": "0x01"
+            },
+            {
+                "name": "Delete bottom limit",
+                "type": "pushbutton",
+                "reg_type": "command_with_param",
+                "write_address": "0x07",
+                "on_value": "0x02"
+            },
+            {
+                "name": "Delete third limit",
+                "type": "pushbutton",
+                "reg_type": "command_with_param",
+                "write_address": "0x07",
+                "on_value": "0x03"
+            },
+            {
+                "name": "Delete forth limit",
+                "type": "pushbutton",
+                "reg_type": "command_with_param",
+                "write_address": "0x07",
+                "on_value": "0x04"
+            },
+            {
+                "name": "Factory Default",
+                "type": "pushbutton",
+                "reg_type": "command",
+                "write_address": "0x08"
+            },
+            {
+                "name": "Direction",
+                "reg_type": "param",
+                "address": 3,
+                "max": 1,
+                "type": "switch",
+                "enabled": false
+            }
+        ],
+        "translations": {
+            "ru": {
+                "Jogging mode": "Jogging mode",
+                "Position": "Позиция",
+                "Stop": "Остановить",
+                "Open": "Открыть",
+                "Close": "Закрыть",
+                "Direction": "Инверсия",
+                "Factory Default": "Сбросить настройки",
+                "disable": "отключить",
+                "enable": "включить",
+                "Set top limit": "Установить верхнюю границу",
+                "Set bottom limit": "Установить нижнюю границу",
+                "Set third limit": "Установить третью границу",
+                "Set forth limit": "Установить четвёртую границу",
+                "Run until top limit": "Двигаться до верхней границы",
+                "Run until bottom limit": "Двигаться до нижней границы",
+                "Run until third limit": "Двигаться до третьей границы",
+                "Run until forth limit": "Двигаться до четвёртой границы",
+                "Delete top limit": "Удалить верхнюю границу",
+                "Delete bottom limit": "Удалить нижнюю границу",
+                "Delete third limit": "Удалить третью границу",
+                "Delete forth limit": "Удалить четвёртую границу",
+                "Delete limits": "Удалить все границы"
+            }
+        }
+    }
+}

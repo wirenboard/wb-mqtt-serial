@@ -10,13 +10,15 @@ namespace
     {
         POSITION,
         PARAM,
-        COMMAND
+        COMMAND,           // Command without data
+        COMMAND_WITH_PARAM // Command with one byte of data
     };
 
     const TRegisterTypes RegTypes{
         {POSITION, "position", "value", U8},
         {PARAM, "param", "value", U8},
         {COMMAND, "command", "value", U8},
+        {COMMAND_WITH_PARAM, "command_with_param", "value", U8},
     };
 
     enum TCommands
@@ -154,6 +156,16 @@ void Dooya::TDevice::WriteRegisterImpl(PRegister reg, const TRegisterValue& regV
             TRequest req;
             req.Data = MakeRequest(SlaveId, {CONTROL, dataAddress});
             req.ResponseSize = CONTROL_RESPONSE_SIZE;
+            if (req.Data != ExecCommand(req)) {
+                throw TSerialDeviceTransientErrorException("Bad response");
+            }
+            return;
+        }
+        case COMMAND_WITH_PARAM: {
+            uint8_t dataAddress = GetUint32RegisterAddress(reg->GetAddress());
+            TRequest req;
+            req.Data = MakeRequest(SlaveId, {CONTROL, dataAddress, 1, static_cast<uint8_t>(value)});
+            req.ResponseSize = CONTROL_RESPONSE_SIZE + 2;
             if (req.Data != ExecCommand(req)) {
                 throw TSerialDeviceTransientErrorException("Bad response");
             }
