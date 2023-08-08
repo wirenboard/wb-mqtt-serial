@@ -19008,6 +19008,7 @@ WB-MRWM2
 	Urms L2  =>  Urms L2
 WB-MS v.2
 	Air Quality (VOC)  =>  Air Quality (VOC)
+	Air Quality Index  =>  Air Quality Index
 	Erroneous TH Readings  =>  Erroneous TH Readings
 	FW Version  =>  FW Version
 	Humidity  =>  Humidity
@@ -19034,8 +19035,11 @@ WB-MS v.2
 	Temperature  =>  Temperature
 	Uptime  =>  Uptime
 	VOC Baseline  =>  VOC Baseline
+	VOC Equivalent CO2 Concentration  =>  VOC Equivalent CO2 Concentration
 	VOC Raw  =>  VOC Raw
+	VOC Raw R4  =>  VOC Raw R4
 	VOC Sensor Installed  =>  VOC Sensor Installed
+	VOC Sensor Status  =>  VOC Sensor Status
 	VOC Version  =>  VOC Version
 WB-MS-THLS
 	Humidity  =>  Humidity
