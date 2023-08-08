@@ -1,3 +1,23 @@
+AKKO
+	Close  =>  Close
+	Delete bottom limit  =>  Delete bottom limit
+	Delete forth limit  =>  Delete forth limit
+	Delete limits  =>  Delete limits
+	Delete third limit  =>  Delete third limit
+	Delete top limit  =>  Delete top limit
+	Direction  =>  Direction
+	Factory Default  =>  Factory Default
+	Open  =>  Open
+	Position  =>  Position
+	Run until bottom limit  =>  Run until bottom limit
+	Run until forth limit  =>  Run until forth limit
+	Run until third limit  =>  Run until third limit
+	Run until top limit  =>  Run until top limit
+	Set bottom limit  =>  Set bottom limit
+	Set forth limit  =>  Set forth limit
+	Set third limit  =>  Set third limit
+	Set top limit  =>  Set top limit
+	Stop  =>  Stop
 BAC-002ALN
 	Day Of Week  =>  Day Of Week
 	Fan Speed  =>  Fan Speed
