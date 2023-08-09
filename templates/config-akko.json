@@ -1,6 +1,6 @@
 {
     "device_type": "AKKO",
-    "title": "AKKO",
+    "title": "AKKO curtain motor",
     "group": "g-curtain",
     "device": {
         "name": "akko",
@@ -15,9 +15,10 @@
                 "enum": [0, 1],
                 "default": 0,
                 "enum_titles": [
-                    "disable",
-                    "enable"
-                ]
+                    "disabled",
+                    "enabled"
+                ],
+                "required": true
             }
         },
         "channels": [
@@ -153,6 +154,7 @@
         ],
         "translations": {
             "ru": {
+                "AKKO curtain motor": "AKKO  (Мотор штор)",
                 "Jogging mode": "Jogging mode",
                 "Position": "Позиция",
                 "Stop": "Остановить",
@@ -160,8 +162,8 @@
                 "Close": "Закрыть",
                 "Direction": "Инверсия",
                 "Factory Default": "Сбросить настройки",
-                "disable": "отключить",
-                "enable": "включить",
+                "disabled": "отключен",
+                "enabled": "включен",
                 "Set top limit": "Установить верхнюю границу",
                 "Set bottom limit": "Установить нижнюю границу",
                 "Set third limit": "Установить третью границу",
