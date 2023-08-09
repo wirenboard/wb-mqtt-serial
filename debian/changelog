@@ -1,3 +1,9 @@
+wb-mqtt-serial (2.94.0) stable; urgency=medium
+
+  * WB-MSW4, WB-MS v2 templates: add ENS160 VOC sensor support
+
+ -- Pavel Gasheev <pavel.gasheev@wirenboard.ru>  Mon, 07 Aug 2023 16:14:08 +0300
+
 wb-mqtt-serial (2.93.5) stable; urgency=medium
 
   * Fix segmentation fault on conditions evaluation in device templates
