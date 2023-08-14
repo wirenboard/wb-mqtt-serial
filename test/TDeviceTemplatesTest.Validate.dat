@@ -261,6 +261,94 @@ NEVA MT 32x
 	Voltage angle L1-L2  =>  Voltage angle L1-L2
 	Voltage angle L2-L3  =>  Voltage angle L2-L3
 	Voltage angle L3-L1  =>  Voltage angle L3-L1
+ONOKOM-AIR-AUX-1-MB-B
+	Active  =>  Active
+	Active mode  =>  Active mode
+	Anti-fungus  =>  Anti-fungus
+	Compressor power  =>  Compressor power
+	Current fan speed  =>  Current fan speed
+	Device version  =>  Device version
+	Eco mode  =>  Eco mode
+	Fan speed  =>  Fan speed
+	Firmware version  =>  Firmware version
+	Horizontal vanes  =>  Horizontal vanes
+	Indoor air temperature  =>  Indoor air temperature
+	Ionization  =>  Ionization
+	Modbus ID  =>  Modbus ID
+	Mode  =>  Mode
+	Outdoor air temperature  =>  Outdoor air temperature
+	Quiet mode  =>  Quiet mode
+	Screen light  =>  Screen light
+	Self-clean  =>  Self-clean
+	Sleep mode  =>  Sleep mode
+	Smart fan speed  =>  Smart fan speed
+	Target temperature  =>  Target temperature
+	Temeperature correction  =>  Temeperature correction
+	Thermostat state  =>  Thermostat state
+	Turbo mode  =>  Turbo mode
+	Vanes swing  =>  Vanes swing
+	Vertical vanes  =>  Vertical vanes
+ONOKOM-AIR-DK-1-MB-B
+	Active  =>  Active
+	Active mode  =>  Active mode
+	Device version  =>  Device version
+	Eco mode  =>  Eco mode
+	Fan speed  =>  Fan speed
+	Firmware version  =>  Firmware version
+	Horizontal vanes  =>  Horizontal vanes
+	Indoor air temperature  =>  Indoor air temperature
+	Modbus ID  =>  Modbus ID
+	Mode  =>  Mode
+	Outdoor air temperature  =>  Outdoor air temperature
+	Quiet mode  =>  Quiet mode
+	Screen light  =>  Screen light
+	Screen low brightness  =>  Screen low brightness
+	Target temperature  =>  Target temperature
+	Temeperature correction  =>  Temeperature correction
+	Thermostat state  =>  Thermostat state
+	Vanes swing  =>  Vanes swing
+	Vertical vanes  =>  Vertical vanes
+ONOKOM-AIR-GR-1-MB-B
+	Active  =>  Active
+	Active mode  =>  Active mode
+	Disable screen when power off  =>  Disable screen when power off
+	Eco mode  =>  Eco mode
+	Fan speed  =>  Fan speed
+	Hardware version  =>  Hardware version
+	Horizontal vanes  =>  Horizontal vanes
+	Indoor air temperature  =>  Indoor air temperature
+	Ionization  =>  Ionization
+	Modbus ID  =>  Modbus ID
+	Mode  =>  Mode
+	Outdoor air temperature  =>  Outdoor air temperature
+	Quiet mode  =>  Quiet mode
+	Screen light  =>  Screen light
+	Sleep mode  =>  Sleep mode
+	Smart fan speed  =>  Smart fan speed
+	Software version  =>  Software version
+	Target temperature  =>  Target temperature
+	Temeperature correction  =>  Temeperature correction
+	Thermostat state  =>  Thermostat state
+	Turbo mode  =>  Turbo mode
+	Vanes swing  =>  Vanes swing
+	Vertical vanes  =>  Vertical vanes
+ONOKOM-AIR-ME-1-MB-B
+	Active  =>  Active
+	Active mode  =>  Active mode
+	Device version  =>  Device version
+	Fan speed  =>  Fan speed
+	Firmware version  =>  Firmware version
+	Horizontal vanes  =>  Horizontal vanes
+	Indoor air temperature  =>  Indoor air temperature
+	Modbus ID  =>  Modbus ID
+	Mode  =>  Mode
+	Quiet mode  =>  Quiet mode
+	Smart fan speed  =>  Smart fan speed
+	Target temperature  =>  Target temperature
+	Temeperature correction  =>  Temeperature correction
+	Thermostat state  =>  Thermostat state
+	Vanes swing  =>  Vanes swing
+	Vertical vanes  =>  Vertical vanes
 PD561Z
 	FR  =>  FR
 	Ia  =>  Ia
@@ -327,6 +415,29 @@ SDM220
 	Reactive Power  =>  Reactive Power
 	Voltage  =>  Voltage
 	cos(Phi)  =>  cos(Phi)
+SOKOL-M
+	CH2O  =>  CH2O
+	CO  =>  CO
+	CO2  =>  CO2
+	H2S  =>  H2S
+	HCN  =>  HCN
+	Illumination level  =>  Illumination level
+	NH3  =>  NH3
+	NO  =>  NO
+	NO2  =>  NO2
+	Pm10  =>  Pm10
+	Pm25  =>  Pm25
+	Precipitation rate  =>  Precipitation rate
+	Pressure  =>  Pressure
+	Relative humidity  =>  Relative humidity
+	SO2  =>  SO2
+	Snow cover  =>  Snow cover
+	Sun radiation  =>  Sun radiation
+	Temperature  =>  Temperature
+	Wind direction  =>  Wind direction
+	Wind direction ultrasonic  =>  Wind direction ultrasonic
+	Wind speed  =>  Wind speed
+	Wind speed ultrasonic  =>  Wind speed ultrasonic
 Siemens RDF302
 	Cooling output  =>  Cooling output
 	Electric heater output  =>  Electric heater output
@@ -17014,6 +17125,9 @@ WB-MAP3E
 	Voltage angle L2  =>  Voltage angle L2
 	Voltage angle L3  =>  Voltage angle L3
 WB-MAP3E fw2
+	AN energy L1  =>  AN energy L1
+	AN energy L2  =>  AN energy L2
+	AN energy L3  =>  AN energy L3
 	AP energy L1  =>  AP energy L1
 	AP energy L2  =>  AP energy L2
 	AP energy L3  =>  AP energy L3
@@ -17039,6 +17153,9 @@ WB-MAP3E fw2
 	Q L1  =>  Q L1
 	Q L2  =>  Q L2
 	Q L3  =>  Q L3
+	RN energy L1  =>  RN energy L1
+	RN energy L2  =>  RN energy L2
+	RN energy L3  =>  RN energy L3
 	RP energy L1  =>  RP energy L1
 	RP energy L2  =>  RP energy L2
 	RP energy L3  =>  RP energy L3
@@ -17047,10 +17164,12 @@ WB-MAP3E fw2
 	S L3  =>  S L3
 	Serial  =>  Serial
 	Supply Voltage  =>  Supply Voltage
+	Total AN energy  =>  Total AN energy
 	Total AP energy  =>  Total AP energy
 	Total P  =>  Total P
 	Total PF  =>  Total PF
 	Total Q  =>  Total Q
+	Total RN energy  =>  Total RN energy
 	Total RP energy  =>  Total RP energy
 	Total S  =>  Total S
 	U L1-L2  =>  U L1-L2
@@ -17067,6 +17186,9 @@ WB-MAP3E fw2
 	Voltage angle L2  =>  Voltage angle L2
 	Voltage angle L3  =>  Voltage angle L3
 WB-MAP3ET
+	AN energy L1  =>  AN energy L1
+	AN energy L2  =>  AN energy L2
+	AN energy L3  =>  AN energy L3
 	AP energy L1  =>  AP energy L1
 	AP energy L2  =>  AP energy L2
 	AP energy L3  =>  AP energy L3
@@ -17092,6 +17214,9 @@ WB-MAP3ET
 	Q L1  =>  Q L1
 	Q L2  =>  Q L2
 	Q L3  =>  Q L3
+	RN energy L1  =>  RN energy L1
+	RN energy L2  =>  RN energy L2
+	RN energy L3  =>  RN energy L3
 	RP energy L1  =>  RP energy L1
 	RP energy L2  =>  RP energy L2
 	RP energy L3  =>  RP energy L3
@@ -17100,10 +17225,12 @@ WB-MAP3ET
 	S L3  =>  S L3
 	Serial  =>  Serial
 	Supply Voltage  =>  Supply Voltage
+	Total AN energy  =>  Total AN energy
 	Total AP energy  =>  Total AP energy
 	Total P  =>  Total P
 	Total PF  =>  Total PF
 	Total Q  =>  Total Q
+	Total RN energy  =>  Total RN energy
 	Total RP energy  =>  Total RP energy
 	Total S  =>  Total S
 	U L1-L2  =>  U L1-L2
@@ -17761,6 +17888,12 @@ WB-MAP6S
 	Uptime  =>  Uptime
 	Urms  =>  Urms
 WB-MAP6S fw2
+	AN energy 1  =>  AN energy 1
+	AN energy 2  =>  AN energy 2
+	AN energy 3  =>  AN energy 3
+	AN energy 4  =>  AN energy 4
+	AN energy 5  =>  AN energy 5
+	AN energy 6  =>  AN energy 6
 	AP energy 1  =>  AP energy 1
 	AP energy 2  =>  AP energy 2
 	AP energy 3  =>  AP energy 3
@@ -17801,6 +17934,12 @@ WB-MAP6S fw2
 	Q 4  =>  Q 4
 	Q 5  =>  Q 5
 	Q 6  =>  Q 6
+	RN energy 1  =>  RN energy 1
+	RN energy 2  =>  RN energy 2
+	RN energy 3  =>  RN energy 3
+	RN energy 4  =>  RN energy 4
+	RN energy 5  =>  RN energy 5
+	RN energy 6  =>  RN energy 6
 	RP energy 1  =>  RP energy 1
 	RP energy 2  =>  RP energy 2
 	RP energy 3  =>  RP energy 3
@@ -18892,6 +19031,7 @@ WB-MRWM2
 	Urms L2  =>  Urms L2
 WB-MS v.2
 	Air Quality (VOC)  =>  Air Quality (VOC)
+	Air Quality Index  =>  Air Quality Index
 	Erroneous TH Readings  =>  Erroneous TH Readings
 	FW Version  =>  FW Version
 	Humidity  =>  Humidity
@@ -18918,8 +19058,11 @@ WB-MS v.2
 	Temperature  =>  Temperature
 	Uptime  =>  Uptime
 	VOC Baseline  =>  VOC Baseline
+	VOC Equivalent CO2 Concentration  =>  VOC Equivalent CO2 Concentration
 	VOC Raw  =>  VOC Raw
+	VOC Raw R4  =>  VOC Raw R4
 	VOC Sensor Installed  =>  VOC Sensor Installed
+	VOC Sensor Status  =>  VOC Sensor Status
 	VOC Version  =>  VOC Version
 WB-MS-THLS
 	Humidity  =>  Humidity
@@ -19123,6 +19266,7 @@ WB-MSW v.3
 	VOC Version  =>  VOC Version
 WB-MSW v.4
 	Air Quality (VOC)  =>  Air Quality (VOC)
+	Air Quality Index  =>  Air Quality Index
 	Buzzer  =>  Buzzer
 	CO2  =>  CO2
 	CO2 Autocalibration Period  =>  CO2 Autocalibration Period
@@ -19288,8 +19432,11 @@ WB-MSW v.4
 	Temperature Without Compensation  =>  Temperature Without Compensation
 	Uptime  =>  Uptime
 	VOC Baseline  =>  VOC Baseline
+	VOC Equivalent CO2 Concentration  =>  VOC Equivalent CO2 Concentration
 	VOC Raw  =>  VOC Raw
+	VOC Raw R4  =>  VOC Raw R4
 	VOC Sensor Installed  =>  VOC Sensor Installed
+	VOC Sensor Status  =>  VOC Sensor Status
 	VOC Version  =>  VOC Version
 WB-MSW2
 	Buzzer  =>  Buzzer
@@ -19340,6 +19487,8 @@ WB-MWAC
 	Uptime  =>  Uptime
 WBE2-I-EBUS
 	Boiler Outdoor Temperature Sensor  =>  Boiler Outdoor Temperature Sensor
+	Boiler Status  =>  Boiler Status
+	Burner Modulation Level  =>  Burner Modulation Level
 	Error Code  =>  Error Code
 	External Storage Water Temperature  =>  External Storage Water Temperature
 	FW Version  =>  FW Version
@@ -19360,7 +19509,10 @@ WBE2-I-EBUS
 		Heating Setpoint  =>  Heating Setpoint
 	Heating Temperature  =>  Heating Temperature
 	Hot Water Setpoint  =>  Hot Water Setpoint
+	Hot Water Setpoint Max  =>  Hot Water Setpoint Max
 	Hot Water Temperature  =>  Hot Water Temperature
+	Invalid Connection  =>  Invalid Connection
+	Water Pressure  =>  Water Pressure
 WBE2-I-OPENTHERM
 	Boiler Outdoor Temperature Sensor  =>  Boiler Outdoor Temperature Sensor
 	Boiler Status  =>  Boiler Status
@@ -19392,6 +19544,7 @@ WBE2-I-OPENTHERM
 	Hot Water Setpoint Max  =>  Hot Water Setpoint Max
 	Hot Water Setpoint Min  =>  Hot Water Setpoint Min
 	Hot Water Temperature  =>  Hot Water Temperature
+	Invalid Connection  =>  Invalid Connection
 	Water Pressure  =>  Water Pressure
 WBIO-AI-DV-12
 	A1  =>  A1

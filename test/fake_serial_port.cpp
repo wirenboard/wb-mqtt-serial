@@ -6,6 +6,7 @@
 
 #include <algorithm>
 #include <cassert>
+#include <filesystem>
 #include <stdexcept>
 
 #include "config_schema_generator.h"
@@ -15,6 +16,11 @@
 using namespace WBMQTT;
 using namespace WBMQTT::Testing;
 using namespace std::literals;
+
+namespace
+{
+    const auto DB_PATH = "/tmp/wb-mqtt-serial-test.db";
+}
 
 TFakeSerialPort::TFakeSerialPort(TLoggedFixture& fixture)
     : Fixture(fixture),
@@ -331,6 +337,7 @@ void TSerialDeviceIntegrationTest::SetUp()
                         rpcConfig,
                         [=](const Json::Value&, PRPCConfig config) { return std::make_pair(SerialPort, false); });
 
+    std::filesystem::remove(DB_PATH);
     MqttBroker = NewFakeMqttBroker(*this);
     MqttClient = MqttBroker->MakeClient("em-test");
     auto backend = NewDriverBackend(MqttClient);
@@ -340,7 +347,7 @@ void TSerialDeviceIntegrationTest::SetUp()
                            .SetIsTesting(true)
                            .SetReownUnknownDevices(true)
                            .SetUseStorage(true)
-                           .SetStoragePath("/tmp/wb-mqtt-serial-test.db"));
+                           .SetStoragePath(DB_PATH));
 
     Driver->StartLoop();
 
@@ -352,6 +359,7 @@ void TSerialDeviceIntegrationTest::TearDown()
     SerialDriver->ClearDevices();
     Driver->StopLoop();
     TSerialDeviceTest::TearDown();
+    std::filesystem::remove(DB_PATH);
 }
 
 void TSerialDeviceIntegrationTest::Publish(const std::string& topic,

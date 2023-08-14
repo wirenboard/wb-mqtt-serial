@@ -6,14 +6,6 @@ identifier, number or left bracket are expected at position 1
 unexpected symbol ' ' at position 1
 
 
-"a"
-operator expected at position 2
-
-
-"1"
-operator expected at position 2
-
-
 "a=="
 identifier, number or left bracket are expected at position 4
 

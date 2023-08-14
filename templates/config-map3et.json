@@ -70,6 +70,20 @@
                 "default": 60,
                 "group": "general",
                 "order": 2
+            },
+            "phase_loss_detection": {
+                "title": "Phase loss detection",
+                "description": "phase_loss_detection_description",
+                "address": 102,
+                "reg_type": "holding",
+                "enum": [0, 1],
+                "default": 1,
+                "enum_titles": [
+                    "Disabled",
+                    "Enabled"
+                ],
+                "group": "general",
+                "order": 3
             }
         },
 
@@ -192,6 +206,17 @@
                 "group": "l1"
             },
             {
+                "name": "AN energy L1",
+                "reg_type": "input",
+                "address": "0x1214",
+                "type": "power_consumption",
+                "format": "u64",
+                "scale": 1e-5,
+                "round_to": 1e-6,
+                "word_order": "little_endian",
+                "group": "l1"
+            },
+            {
                 "name": "RP energy L1",
                 "reg_type": "input",
                 "address": "0x1224",
@@ -202,6 +227,17 @@
                 "word_order": "little_endian",
                 "group": "l1"
             },
+            {
+                "name": "RN energy L1",
+                "reg_type": "input",
+                "address": "0x1234",
+                "type": "value",
+                "format": "u64",
+                "scale": 1e-5,
+                "round_to": 1e-6,
+                "word_order": "little_endian",
+                "group": "l1"
+            }, 
             {
                 "name": "Phase angle L1",
                 "reg_type": "input",
@@ -330,6 +366,17 @@
                 "group": "l2"
             },
             {
+                "name": "AN energy L2",
+                "reg_type": "input",
+                "address": "0x1218",
+                "type": "power_consumption",
+                "format": "u64",
+                "scale": 1e-5,
+                "round_to": 1e-6,
+                "word_order": "little_endian",
+                "group": "l2"
+            },
+            {
                 "name": "RP energy L2",
                 "reg_type": "input",
                 "address": "0x1228",
@@ -340,6 +387,17 @@
                 "word_order": "little_endian",
                 "group": "l2"
             },
+            {
+                "name": "RN energy L2",
+                "reg_type": "input",
+                "address": "0x1238",
+                "type": "value",
+                "format": "u64",
+                "scale": 1e-5,
+                "round_to": 1e-6,
+                "word_order": "little_endian",
+                "group": "l2"
+            }, 
             {
                 "name": "Phase angle L2",
                 "reg_type": "input",
@@ -360,17 +418,6 @@
                 "round_to": 0.001,
                 "error_value": "0xFFFFFFFF",
                 "group": "l3"
-            },
-            {
-                "name": "U L2-L3",
-                "reg_type": "input",
-                "address": "0x141D",
-                "type": "voltage",
-                "format": "u16",
-                "scale": 0.01,
-                "round_to": 0.1,
-                "error_value": "0xFFFF",
-                "group": "l2"
             },
             {
                 "name": "U L3-L1",
@@ -479,9 +526,31 @@
                 "group": "l3"
             },
             {
+                "name": "AN energy L3",
+                "reg_type": "input",
+                "address": "0x121c",
+                "type": "power_consumption",
+                "format": "u64",
+                "scale": 1e-5,
+                "round_to": 1e-6,
+                "word_order": "little_endian",
+                "group": "l3"
+            },
+            {
                 "name": "RP energy L3",
                 "reg_type": "input",
                 "address": "0x122c",
+                "type": "value",
+                "format": "u64",
+                "scale": 1e-5,
+                "round_to": 1e-6,
+                "word_order": "little_endian",
+                "group": "l3"
+            },
+            {
+                "name": "RN energy L3",
+                "reg_type": "input",
+                "address": "0x123c",
                 "type": "value",
                 "format": "u64",
                 "scale": 1e-5,
@@ -551,6 +620,17 @@
                 "group": "total"
             },
             {
+                "name": "Total AN energy",
+                "reg_type": "input",
+                "address": "0x1210",
+                "type": "power_consumption",
+                "format": "u64",
+                "scale": 1e-5,
+                "round_to": 1e-6,
+                "word_order": "little_endian",
+                "group": "total"
+            }, 
+            {
                 "name": "Total RP energy",
                 "reg_type": "input",
                 "address": "0x1220",
@@ -561,6 +641,17 @@
                 "word_order": "little_endian",
                 "group": "total"
             },
+            {
+                "name": "Total RN energy",
+                "reg_type": "input",
+                "address": "0x1230",
+                "type": "value",
+                "format": "u64",
+                "scale": 1e-5,
+                "round_to": 1e-6,
+                "word_order": "little_endian",
+                "group": "total"
+            }, 
             {
                 "name": "Frequency",
                 "reg_type": "input",
@@ -632,6 +723,7 @@
             "en": {
                 "WB-MAP3ET_template_title": "WB-MAP3ET (3-phase enegry meter)",
                 "baud_rate_description": "Make sure that communication with device is established before changing this parameter. Select required baud rate, save configuration and then change port baud rate to the same value.",
+                "phase_loss_detection_description": "Resets voltage and power values if voltage on phase is less than 30% of maximum voltage among all phases. Firmware v2.6.3 or newer is required.",
                 "Supply Voltage": "5V Supply",
                 "Uptime": "Uptime (s)"
             },
@@ -643,17 +735,27 @@
                 "Peaks Measurement Period (s)": "Период сброса пиковых значений (с)",
                 "Baud rate": "Скорость обмена",
                 "baud_rate_description": "Перед изменением параметра убедитесь, что связь с устройством установлена. Выберите нужную скорость обмена, сохраните конфигурацию, а затем укажите в настройках порта эту же скорость.",
+                "Phase loss detection": "Обнаруживать отключения фаз",
+                "Enabled": "Включено",
+                "Disabled": "Выключено",
+                "phase_loss_detection_description": "Обнуляет показатели напряжения и связанных с ними мощностей, если напряжение на фазе будет менее 30% от наибольшего из трех фаз. Для прошивок v2.6.3 и новее.",
                 "Voltage angle L1": "Фазовый угол L1",
                 "AP energy L1": "Энергия AP L1",
                 "RP energy L1": "Энергия RP L1",
+                "AN energy L1": "Энергия AN L1",
+                "RN energy L1": "Энергия RN L1",
                 "Phase angle L1": "Угол между I и U фазы L1",
                 "Voltage angle L2": "Фазовый угол L2",
                 "AP energy L2": "Энергия AP L2",
                 "RP energy L2": "Энергия RP L2",
+                "AN energy L2": "Энергия AN L2",
+                "RN energy L2": "Энергия RN L2",
                 "Phase angle L2": "Угол между I и U фазы L2",
                 "Voltage angle L3": "Фазовый угол L3",
                 "AP energy L3": "Энергия AP L3",
                 "RP energy L3": "Энергия RP L3",
+                "AN energy L3": "Энергия AN L3",
+                "RN energy L3": "Энергия RN L3",
                 "Phase angle L3": "Угол между I и U фазы L3",
                 "Total P": "P по трем фазам",
                 "Total Q": "Q по трем фазам",
@@ -661,6 +763,8 @@
                 "Total PF": "PF по трем фазам",
                 "Total AP energy": "Энергия AP по трем фазам",
                 "Total RP energy": "Энергия RP по трем фазам",
+                "Total AN energy": "Энергия AN по трем фазам",
+                "Total RN energy": "Энергия RN по трем фазам",
                 "Frequency": "Частота",
                 "Serial": "Серийный номер",
                 "FW Version": "Версия прошивки",

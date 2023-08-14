@@ -1,0 +1,263 @@
+{
+    "device_type": "SOKOL-M",
+    "group": "g-climate-sensor",
+    "device": {
+        "name": "sokol-m",
+        "id": "sokol-m",
+
+        "channels": [
+            {
+                "name": "Temperature",
+                "units": "deg C",
+                "scale": 0.01,
+                "reg_type": "holding",
+                "format": "u16",
+                "address": 3,
+                "type": "temperature",
+                "group": "channels",
+                "readonly": true
+            },
+            {
+                "name": "Pressure",
+                "units": "bar",
+                "reg_type": "holding",
+                "scale": 0.01,
+                "format": "u16",
+                "address": 4,
+                "type": "value",
+                "group": "channels",
+                "readonly": true
+            },
+            {
+                "name": "Relative humidity",
+                "units": "%, RH",
+                "reg_type": "holding",
+                "format": "u16",
+                "address": 5,
+                "type": "value",
+                "group": "channels",
+                "readonly": true
+            },
+            {
+                "name": "Wind speed",
+                "units": "m/s",
+                "reg_type": "holding",
+                "scale": 0.01,
+                "format": "u16",
+                "address": 6,
+                "type": "value",
+                "group": "channels",
+                "readonly": true
+            },
+            {
+                "name": "Wind direction",
+                "units": "deg",
+                "reg_type": "holding",
+                "format": "u16",
+                "address": 7,
+                "type": "value",
+                "group": "channels",
+                "readonly": true
+            },
+            {
+                "name": "Precipitation rate",
+                "units": "mm",
+                "reg_type": "holding",
+                "scale": 0.1,
+                "format": "u16",
+                "address": 8,
+                "type": "value",
+                "group": "channels",
+                "readonly": true
+            },
+            {
+                "name": "Illumination level",
+                "reg_type": "holding",
+                "format": "u16",
+                "address": 9,
+                "type": "value",
+                "group": "channels",
+                "readonly": true
+            },
+            {
+                "name": "Wind speed ultrasonic",
+                "units": "m/s",
+                "reg_type": "holding",
+                "scale": 0.01,
+                "format": "u16",
+                "address": 10,
+                "type": "value",
+                "group": "channels",
+                "readonly": true
+            },
+            {
+                "name": "Wind direction ultrasonic",
+                "units": "deg",
+                "reg_type": "holding",
+                "format": "u16",
+                "address": 11,
+                "type": "value",
+                "group": "channels",
+                "readonly": true
+            },
+            {
+                "name": "Snow cover",
+                "reg_type": "holding",
+                "format": "u16",
+                "address": 12,
+                "type": "value",
+                "group": "channels",
+                "readonly": true
+            },
+            {
+                "name": "Sun radiation",
+                "reg_type": "holding",
+                "format": "u16",
+                "address": 13,
+                "type": "value",
+                "group": "channels",
+                "readonly": true
+            },
+            {
+                "name": "Pm25",
+                "reg_type": "holding",
+                "format": "u16",
+                "address": 70,
+                "type": "value",
+                "group": "channels",
+                "readonly": true
+            },
+            {
+                "name": "Pm10",
+                "reg_type": "holding",
+                "format": "u16",
+                "address": 71,
+                "type": "value",
+                "group": "channels",
+                "readonly": true
+            },
+            {
+                "name": "CO2",
+                "reg_type": "holding",
+                "format": "u16",
+                "address": 72,
+                "type": "value",
+                "group": "channels",
+                "readonly": true
+            },
+            {
+                "name": "CO",
+                "reg_type": "holding",
+                "format": "u16",
+                "address": 73,
+                "type": "value",
+                "group": "channels",
+                "readonly": true
+            },
+            {
+                "name": "NO",
+                "reg_type": "holding",
+                "format": "u16",
+                "address": 74,
+                "type": "value",
+                "group": "channels",
+                "readonly": true
+            },
+            {
+                "name": "NO2",
+                "reg_type": "holding",
+                "format": "u16",
+                "address": 75,
+                "type": "value",
+                "group": "channels",
+                "readonly": true
+            },
+            {
+                "name": "SO2",
+                "reg_type": "holding",
+                "format": "u16",
+                "address": 76,
+                "type": "value",
+                "group": "channels",
+                "readonly": true
+            },
+            {
+                "name": "H2S",
+                "reg_type": "holding",
+                "format": "u16",
+                "address": 77,
+                "type": "value",
+                "group": "channels",
+                "readonly": true
+            },
+            {
+                "name": "HCN",
+                "reg_type": "holding",
+                "format": "u16",
+                "address": 78,
+                "type": "value",
+                "group": "channels",
+                "readonly": true
+            },
+            {
+                "name": "NH3",
+                "reg_type": "holding",
+                "format": "u16",
+                "address": 79,
+                "type": "value",
+                "group": "channels",
+                "readonly": true
+            },
+            {
+                "name": "CH2O",
+                "reg_type": "holding",
+                "format": "u16",
+                "address": 80,
+                "type": "value",
+                "group": "channels",
+                "readonly": true
+            }
+        ],
+
+        "translations": {
+            "en":  {
+                "Pm25":"Dust 2.5 microns",  
+                "Pm10": "Dust 10 microns",
+                "CO2": "CO₂ level",
+                "CO": "CO level",
+                "NO": "NO level",
+                "NO2": "NO₂ level",
+                "SO2": "SO₂ level",
+                "H2S": "H₂S level",
+                "HCN": "HCN level",
+                "NH3": "NH₃ level",
+                "CH2O": "CH₂O level"
+            },
+            "ru": {
+                "SOKOL-M": "Сокол-М",
+                "Temperature": "Температура воздуха",
+                "Pressure": "Атмосферное давление",
+                "Relative humidity":"Относительная влажность воздуха",
+                "Wind speed": "Скорость ветра",
+                "Wind direction": "Направление ветра",
+                "Precipitation rate": "Уровень осадков",
+                "Illumination level": "Уровень освещенности",
+                "Wind speed ultrasonic": "Скорость ветра УЗ анемометра",
+                "Wind direction ultrasonic": "Направление ветра УЗ анемометра",
+                "Snow cover": "Снежный покров",
+                "Sun radiation": "Солнечная радиация",
+                "Pm25": "Пыль 2,5 мкм",
+                "Pm10": "Пыль 10 мкм",
+                "CO2": "Уровень CO₂",
+                "CO": "Уровень CO",
+                "NO": "Уровень NO",
+                "NO2": "Уровень NO₂",
+                "SO2": "Уровень SO₂",
+                "H2S": "Уровень H₂S",
+                "HCN": "Уровень HCN",
+                "NH3": "Уровень NH₃",
+                "CH2O": "Уровень CH₂O"
+            }    
+        }
+    }
+}

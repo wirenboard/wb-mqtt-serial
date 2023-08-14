@@ -145,6 +145,16 @@
                 "group": "air_quality"
             },
             {
+                "name": "Air Quality Index",
+                "reg_type": "input",
+                "address": 12,
+                "scale": 1,
+                "error_value": "0xFFFF",
+                "unsupported_value": "0xFFFE",
+                "enabled": false,
+                "group": "air_quality"
+            },
+            {
                 "name": "Illuminance",
                 "reg_type": "input",
                 "address": 2,
@@ -259,9 +269,38 @@
                 "group": "debug"
             },
             {
+                "name": "VOC Raw R4",
+                "reg_type": "input",
+                "address": 364,
+                "format": "u16",
+                "enabled": false,
+                "group": "debug"
+            },
+            {
                 "name": "VOC Baseline",
                 "reg_type": "input",
                 "address": 106,
+                "enabled": false,
+                "group": "debug"
+            },
+            {
+                "name": "VOC Equivalent CO2 Concentration",
+                "reg_type": "input",
+                "address": 360,
+                "format": "u16",
+                "error_value": "0xFFFF",
+                "unsupported_value": "0xFFFE",
+                "units": "ppm",
+                "enabled": false,
+                "group": "debug"
+            },
+            {
+                "name": "VOC Sensor Status",
+                "reg_type": "input",
+                "address": 363,
+                "format": "u16",
+                "error_value": "0xFFFF",
+                "unsupported_value": "0xFFFE",
                 "enabled": false,
                 "group": "debug"
             },
@@ -408,6 +447,7 @@
                 "temperature_readings_filter_deg_description": "New value is discarded if it differs from previous one by more than filter value. Write 0 to disable filter",
                 "selfheating_compensation_deg_description": "Compensation value is subtracted from measured temperature",
                 "baud_rate_description": "Make sure that communication with device is established before changing this parameter. Select required baud rate, save configuration and then change port baud rate to the same value.",
+                "VOC Equivalent CO2 Concentration": "VOC Equivalent CO₂ Concentration (eCO₂)",
                 "Uptime": "Uptime (s)"
             },
             "ru": {
@@ -433,6 +473,7 @@
                 "Temperature": "Температура",
                 "Humidity": "Влажность",
                 "Air Quality (VOC)": "Качество воздуха (VOC)",
+                "Air Quality Index": "Индекс качества воздуха (AQI)",
                 "VOC Baseline": "Смещение уровня VOC",
                 "Serial": "Серийный номер",
                 "FW Version": "Версия прошивки",
@@ -445,6 +486,9 @@
                 "VOC Sensor Installed": "Датчик VOC установлен",
                 "VOC Version": "Версия датчика VOC",
                 "VOC Raw": "Сырое значение датчика VOC",
+                "VOC Raw R4": "Сырое значение датчика VOC R4",
+                "VOC Equivalent CO2 Concentration": "Эквивалентное качеству воздуха значение CO₂ (eCO₂)",
+                "VOC Sensor Status": "Состояние датчика VOC",
                 "Illuminance Mode": "Режим измерения освещенности",
                 "Successful TH Readings": "Успешные запросы к датчику TH",
                 "Erroneous TH Readings": "Ошибочные запросы к датчику TH",

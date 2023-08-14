@@ -1,0 +1,329 @@
+{
+    "title": "template_title",
+    "device_type": "ONOKOM-AIR-GR-1-MB-B",
+    "group": "g-air-conditioning",
+    "device": {
+        "name": "ONOKOM-AIR-GR-1-MB-B",
+        "id": "ONOKOM-AIR-GR-1-MB-B",
+        "groups": [
+            {
+                "title": "General",
+                "id": "general",
+                "order": 1
+            },
+            {
+                "title": "Additional",
+                "id": "additional",
+                "order": 2
+            },
+            {
+                "title": "Temperature control",
+                "id": "temperatureControl",
+                "order": 3
+            },
+            {
+                "title": "Vanes",
+                "id": "vanes",
+                "order": 4
+            },
+            {
+                "title": "Indication",
+                "id": "indication",
+                "order": 5
+            },
+            {
+                "title": "HW Info",
+                "id": "hw_info",
+                "order": 6
+            },
+            {
+                "title": "Debug",
+                "id": "debug",
+                "order": 7
+            }
+        ],
+        "parameters": {
+            "Disable_screen_when_power_off": {
+                "title": "Disable screen when power off",
+                "address": 41,
+                "reg_type": "coil",
+                "enum": [0, 1],
+                "enum_titles": ["no", "yes"],
+                "group": "indication",
+                "order": 1
+            }
+        },
+        "channels": [
+            {
+                "name": "Active", 
+                "group": "general",
+                "reg_type": "coil", 
+                "address": 1,
+                "type": "switch",
+                "enabled": true
+            },
+            {   
+                "name": "Mode",
+                "reg_type": "holding", 
+                "group": "general",
+                "address": 1, 
+                "type": "range",
+                "enabled": true,
+                "min": 1,
+                "max": 5
+            },
+            {   
+                "name": "Active mode",
+                "group": "general",
+                "reg_type": "holding", 
+                "address": 2, 
+                "type": "range",
+                "min": 0,
+                "max": 5, 
+                "enabled": false
+            },
+            {   
+                "name": "Indoor air temperature",
+                "group": "temperatureControl",
+                "reg_type": "holding", 
+                "address": 3, 
+                "scale": 0.01,
+                "format": "s16", 
+                "type": "value",
+                "enabled": true,
+                "units": "°C"
+            },
+            {   
+                "name": "Outdoor air temperature",
+                "group": "temperatureControl",
+                "reg_type": "holding", 
+                "address": 4, 
+                "scale": 0.01,
+                "format": "s16", 
+                "type": "value",
+                "enabled": false,
+                "readonly": true,
+                "units": "°C"
+            },
+            {   
+                "name": "Target temperature",
+                "group": "temperatureControl",
+                "reg_type": "holding", 
+                "address": 5, 
+                "scale": 0.01,
+                "type": "range",
+                "units": "°C",
+                "format": "s16", 
+                "enabled": true,
+                "min": 18,
+                "max": 30
+            },
+            {   
+                "name": "Thermostat state",
+                "group": "temperatureControl",
+                "reg_type": "holding", 
+                "address": 6, 
+                "readonly": true,
+                "type": "range",
+                "min": 0,
+                "max": 2,
+                "enabled": true
+            },
+            {   
+                "name": "Fan speed",
+                "group": "general",
+                "reg_type": "holding", 
+                "address": 7, 
+                "type": "range",
+                "enabled": true,
+                "min": 0,
+                "max": 3
+            },
+            {   
+                "name": "Smart fan speed",
+                "group": "general",
+                "reg_type": "holding", 
+                "address": 8, 
+                "type": "range",
+                "min": 0,
+                "max": 5, 
+                "enabled": false
+            },
+            {   
+                "name": "Horizontal vanes",
+                "group": "vanes",
+                "reg_type": "holding", 
+                "address": 9, 
+                "type": "range",
+                "min": 0,
+                "max": 6
+            },
+            {   
+                "name": "Vertical vanes",
+                "group": "vanes",
+                "reg_type": "holding", 
+                "address": 10, 
+                "type": "range",
+                "enabled": true,
+                "min": 0,
+                "max": 6
+            },
+            {   
+                "name": "Vanes swing",
+                "group": "vanes",
+                "reg_type": "holding", 
+                "address": 11, 
+                "type": "range",
+                "min": 0,
+                "max": 3, 
+                "enabled": false
+            },
+            {
+                "name": "Screen light", 
+                "group": "indication",
+                "reg_type": "coil",
+                "enabled": true, 
+                "address": 2,
+                "type": "range",
+                "min": 0,
+                "max": 1
+            },
+            {
+                "name": "Disable screen when power off", 
+                "group": "indication",
+                "reg_type": "coil", 
+                "address": 41,
+                "type": "switch", 
+                "enabled": false
+            },
+            {
+                "name": "Quiet mode", 
+                "group": "additional",
+                "reg_type": "coil", 
+                "enabled": true,
+                "address": 4,
+                "type": "switch"
+            },
+            {
+                "name": "Eco mode", 
+                "group": "additional",
+                "reg_type": "coil",
+                "enabled": true, 
+                "address": 6,
+                "type": "switch"
+            },
+            {
+                "name": "Turbo mode", 
+                "group": "additional",
+                "reg_type": "coil", 
+                "enabled": true,
+                "address": 7,
+                "type": "switch"
+            },
+            {
+                "name": "Sleep mode", 
+                "group": "additional",
+                "reg_type": "coil",
+                "enabled": true, 
+                "address": 8,
+                "type": "switch"
+            },
+            {
+                "name": "Ionization", 
+                "group": "additional",
+                "reg_type": "coil", 
+                "enabled": true,
+                "address": 9,
+                "type": "switch"
+            },
+            {   
+                "name": "Temeperature correction",
+                "group": "debug",
+                "reg_type": "holding",
+                "format": "s16", 
+                "address": 20, 
+                "type": "value",
+                "min": -30,
+                "max": 30, 
+                "enabled": false
+            },
+            {
+                "name": "Modbus ID", 
+                "group": "hw_info",
+                "reg_type": "holding", 
+                "address": 128,
+                "type": "value",
+                "readonly": false, 
+                "enabled": false
+            },
+            {
+                "name": "Hardware version", 
+                "group": "hw_info",
+                "reg_type": "holding", 
+                "address": 201,
+                "type": "value",
+                "readonly": true, 
+                "enabled": false
+            },
+            {
+                "name": "Software version", 
+                "group": "hw_info",
+                "reg_type": "holding", 
+                "address": 250,
+                "type": "value",
+                "readonly": true, 
+                "enabled": false
+            }
+        ],
+        "translations": {
+            "en": {
+                "template_title": "ONOKOM AIR GR-1-MB-B (Adapter for household and semi-industrial GREE systems)"
+            },
+            "ru": {
+                "template_title": "ONOKOM AIR GR-1-MB-B (Адаптер для бытовых и полупромышленных систем GREE)",
+
+                "General": "Основные режимы и функции",
+                "Additional": "Дополнительные режимы и функции",
+                "Temperature control": "Контроль температуры",
+                "Indication": "Индикация",
+                "Vanes": "Жалюзи",
+                "HW Info": "Данные модуля",
+                "Debug": "Диагностика",
+
+                "Active": "Состояние",
+                "Mode": "Режим",
+                "Active mode": "Состояние и режим",
+                "Fan speed": "Скорость вентилятора",
+                "Smart fan speed": "Скорость вентилятора расширенная",
+
+                "Indoor air temperature": "Температура воздуха в помещении",
+                "Outdoor air temperature": "Температура воздуха на улице",
+                "Target temperature": "Целевая температура",
+                "Thermostat state": "Состояние термостата",
+
+                "Temeperature correction": "Коррекция температуры",
+                "Connection with air conditioning": "Связь с кондиционером",
+
+                "Modbus ID": "Modbus адрес",
+                "Hardware version": "Аппаратная версия",
+                "Software version": "Програмная версия",
+
+                "Horizontal vanes": "Горизонтальные жалюзи",
+                "Vertical vanes": "Вертикальные жалюзи",
+                "Vanes swing": "Качание жалюзи",
+
+                "Screen light": "Подсветка экрана",
+                "Disable screen when power off": "Отключать экран при отключении питания",
+
+                "no": "Нет", 
+                "yes": "Да",
+
+                "Quiet mode": "Режим тихий",
+                "Eco mode": "Режим эко",
+                "Turbo mode": "Режим турбо",
+                "Sleep mode": "Режим сна",
+                "Ionization": "Функция ионизации"
+            }
+        }
+    }
+}

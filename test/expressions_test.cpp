@@ -99,7 +99,9 @@ TEST_F(TExpressionsTest, Ast)
     TParser parser;
     while (std::getline(f, buf)) {
         Emit() << buf;
-        Print(parser.Parse(buf).get());
+        std::unique_ptr<TAstNode> res;
+        ASSERT_NO_THROW(res = parser.Parse(buf)) << buf;
+        Print(res.get());
         Emit() << "\n";
     }
 }
@@ -113,6 +115,7 @@ TEST_F(TExpressionsTest, ParsingError)
         Emit() << "\"" << buf << "\"";
         try {
             Print(parser.Parse(buf).get());
+            FAIL() << buf << " must throw parsing error";
         } catch (const std::exception& e) {
             Emit() << e.what();
         }
