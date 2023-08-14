@@ -94,7 +94,7 @@ wb-mqtt-serial (2.87.7) stable; urgency=medium
   * WBE2-I-EBUS template: add Hot Water Setpoint Max, Water Pressure, Burner Modulation Level, Invalid Connection, Boiler Status registers
 
  -- Roman Matveev <roman.matveev@wirenboard.ru>  Thu, 21 Jun 2023 12:56:00 +0300
-
+ 
 wb-mqtt-serial (2.87.6) stable; urgency=medium
 
   * WB-MAP12 templates: fix wrong groups name
@@ -124,7 +124,7 @@ wb-mqtt-serial (2.87.2) stable; urgency=medium
   * Update build options. No functional changes
 
  -- Petr Krasnoshchekov <petr.krasnoshchekov@wirenboard.com>  Thu, 01 Jun 2023 10:28:39 +0500
-
+ 
 wb-mqtt-serial (2.87.1) stable; urgency=medium
 
   * WB-MWAC template: add safety mode registers and mapping-matrix registers
