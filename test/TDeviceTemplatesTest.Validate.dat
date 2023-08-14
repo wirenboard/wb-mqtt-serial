@@ -20216,29 +20216,29 @@ danfoss_ekc_204a1_wb_ref
 	Uptime  =>  Uptime
 danfoss_erc_211_wb_ref
 	Actual Temperature Setpoint  =>  Actual Temperature Setpoint
-	Air Temperature Sensor   =>  Air Temperature Sensor
+	Air Temperature Sensor   =>  Air Temperature Sensor 
 	Compressor Relay Status  =>  Compressor Relay Status
 	Controller Firmware Version  =>  Controller Firmware Version
 	Controller Start  =>  Controller Start
 	Controller State  =>  Controller State
 	DI1 Status  =>  DI1 Status
-	Defrost Temperature Sensor   =>  Defrost Temperature Sensor
+	Defrost Temperature Sensor   =>  Defrost Temperature Sensor 
 	Night Mode Active  =>  Night Mode Active
 	Relay 1 Turn On Counter  =>  Relay 1 Turn On Counter
 	Temperature Setpoint  =>  Temperature Setpoint
 danfoss_erc_213_wb_ref
 	Actual Temperature Setpoint  =>  Actual Temperature Setpoint
-	Air Temperature Sensor   =>  Air Temperature Sensor
+	Air Temperature Sensor   =>  Air Temperature Sensor 
 	Alarm Relay Status  =>  Alarm Relay Status
 	Compressor Relay Status  =>  Compressor Relay Status
-	Condencer Temperature Sensor   =>  Condencer Temperature Sensor
+	Condencer Temperature Sensor   =>  Condencer Temperature Sensor 
 	Controller Firmware Version  =>  Controller Firmware Version
 	Controller Start  =>  Controller Start
 	Controller State  =>  Controller State
 	DI1 Status  =>  DI1 Status
 	DI2 Status  =>  DI2 Status
 	Defrost Relay Status  =>  Defrost Relay Status
-	Defrost Temperature Sensor   =>  Defrost Temperature Sensor
+	Defrost Temperature Sensor   =>  Defrost Temperature Sensor 
 	Fan Relay Status  =>  Fan Relay Status
 	Night Mode Active  =>  Night Mode Active
 	Relay 1 Turn On Counter  =>  Relay 1 Turn On Counter
@@ -20247,17 +20247,17 @@ danfoss_erc_213_wb_ref
 	Temperature Setpoint  =>  Temperature Setpoint
 danfoss_erc_214_wb_ref
 	Actual Temperature Setpoint  =>  Actual Temperature Setpoint
-	Air Temperature Sensor   =>  Air Temperature Sensor
+	Air Temperature Sensor   =>  Air Temperature Sensor 
 	Alarm Relay Status  =>  Alarm Relay Status
 	Compressor Relay Status  =>  Compressor Relay Status
-	Condencer Temperature Sensor   =>  Condencer Temperature Sensor
+	Condencer Temperature Sensor   =>  Condencer Temperature Sensor 
 	Controller Firmware Version  =>  Controller Firmware Version
 	Controller Start  =>  Controller Start
 	Controller State  =>  Controller State
 	DI1 Status  =>  DI1 Status
 	DI2 Status  =>  DI2 Status
 	Defrost Relay Status  =>  Defrost Relay Status
-	Defrost Temperature Sensor   =>  Defrost Temperature Sensor
+	Defrost Temperature Sensor   =>  Defrost Temperature Sensor 
 	Fan Relay Status  =>  Fan Relay Status
 	Light Relay Status  =>  Light Relay Status
 	Night Mode Active  =>  Night Mode Active
