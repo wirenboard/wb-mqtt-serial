@@ -59,7 +59,6 @@
                 "enum": [0, 1],
                 "default": 0,
                 "enum_titles": [
-                    {# "Counting and frequency measurement", #}
                     "1-Wire",
                     "Counting and press detection"
                 ],
@@ -69,10 +68,10 @@
             "in{{in_num}}_debounce_ms": {
                 "title": "debounce_time_title",
                 "description": "debounce_time_description",
-                "address": {{97 + in_num - 1}},{# NOTE: 20 регистр(как в MCM8) был занят в старом m1w2(Последнее валидное значение температуры с датчика на 1 входе), переносим на 97 #}
+                "address": {{340 + in_num - 1}},
                 "reg_type": "holding",
                 "min": 0,
-                "max": 100,
+                "max": 2000,
                 "default": 50,
                 "group": "g_in{{in_num}}",
                 "order": 2,
@@ -156,26 +155,12 @@
             {
                 "name": "Input {{in_num}} counter",
                 "reg_type": "input",
-                "format": "u16",{# NOTE: в MCM8 - 32, 16 тут может не хватить #}
+                "format": "u16",
                 "address": {{277 + in_num - 1}},
                 "type": "value",
                 "group": "gg_in{{in_num}}_channels",
                 "condition": "in{{in_num}}_mode==1"
             },
-            {#
-            {
-                "name": "Input {{in_num}} freq",
-                "reg_type": "input",
-                "address": {{40 + (in_num - 1) * 2}},
-                "type": "value",
-                "format": "u32",
-                "scale": 1.52588e-5,
-                "round_to": 0.001,
-                "enabled": false,
-                "group": "gg_in{{in_num}}_channels",
-                "condition": "in{{in_num}}_mode==0"
-            },
-            #}
             {
                 "name": "Input {{in_num}} Single Press Counter",
                 "reg_type": "input",
@@ -321,7 +306,6 @@
                 {% for in_num in range(FIRST_INPUT, INPUTS_NUMBER + 1) -%}
                 "Input {{in_num}}": "Вход {{in_num}}",
                 "Input {{in_num}} counter": "Счетчик {{in_num}}",
-                {# "Input {{in_num}} freq": "Частота {{in_num}}", #}
                 "Input {{in_num}} Single Press Counter": "Счетчик коротких нажатий входа {{in_num}}",
                 "Input {{in_num}} Long Press Counter": "Счетчик длинных нажатий входа {{in_num}}",
                 "Input {{in_num}} Double Press Counter": "Счетчик двойных нажатий входа {{in_num}}",
@@ -339,7 +323,6 @@
                 "Disabled": "Отключен",
                 "Mode": "Режим работы",
                 "Press Parameters": "Параметры нажатий",
-                {# "Counting and frequency measurement": "Счет и измерение частоты", #}
                 "Counting and press detection": "Счет и детектирование нажатий",
                 "mode_description": "Для детектирования нажатий требуется прошивка v5.0.0 или новее",
                 "Baud rate": "Скорость обмена",
