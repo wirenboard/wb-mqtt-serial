@@ -2,7 +2,7 @@ wb-mqtt-serial (2.95.0) stable; urgency=medium
 
   * New WB-M1W2 config with buttons support, old marked as deprecated
 
- -- Radmir Khakimov <radmir.khakimov@wirenboard.com>  Wed, 21 Jun 2023 18:32:51 +0500
+ -- Radmir Khakimov <radmir.khakimov@wirenboard.com>  Mon, 14 Aug 2023 17:55:51 +0500
 
 wb-mqtt-serial (2.94.0) stable; urgency=medium
 
