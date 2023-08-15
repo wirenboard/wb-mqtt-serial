@@ -1,3 +1,9 @@
+wb-mqtt-serial (2.95.0) stable; urgency=medium
+
+  * NEVA MT 324 support tarif day/night
+
+ -- Sergey Zolotonos <sergey.zolotonos@gmail.com>  Mon, 13 Aug 2023 19:45:08 +0300
+
 wb-mqtt-serial (2.94.0) stable; urgency=medium
 
   * WB-MSW4, WB-MS v2 templates: add ENS160 VOC sensor support
