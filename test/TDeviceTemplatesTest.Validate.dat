@@ -250,6 +250,8 @@ NEVA MT 32x
 	PF L2  =>  PF L2
 	PF L3  =>  PF L3
 	Temperature  =>  Temperature
+	Total A T1 energy  =>  Total A T1 energy
+	Total A T2 energy  =>  Total A T2 energy
 	Total A energy  =>  Total A energy
 	Total P  =>  Total P
 	Total PF  =>  Total PF
