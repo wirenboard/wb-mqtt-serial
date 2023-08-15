@@ -3,7 +3,7 @@
     "device_type": "teplomash_kev-blok-mk",
     "group": "g-climate-control",
     "device": {
-        "name": "Тепломаш КЭВ-БЛОК-МК",
+        "name": "Teplomash KEV-BLOK-MK",
         "id": "teplomash_kev-blok-mk",
         "response_timeout_ms": 100,
         "guard_interval_us": 5000,
@@ -192,10 +192,11 @@
         ],
         "translations": {
             "en": {
-                "teplomash_kev-blok-mk_template_title": "Тепломаш КЭВ-БЛОК-МК (air heater control unit)"
+                "teplomash_kev-blok-mk_template_title": "Teplomash KEV-BLOK-MK (air heater control unit)"
             },
             "ru": {
                 "teplomash_kev-blok-mk_template_title": "Тепломаш КЭВ-БЛОК-МК (блок управления воздухонагревателями)",
+                "Teplomash KEV-BLOK-MK": "Тепломаш КЭВ-БЛОК-МК",
                 "Status": "Статус",
                 "Temperature": "Температура",
                 "Fan": "Вентилятор",

@@ -1,3 +1,9 @@
+wb-mqtt-serial (2.94.1) stable; urgency=medium
+
+  * Teplomash KEV-BLOK-MK template: fix translation
+
+ -- Nikolay Korotkiy <nikolay.korotkiy@wirenboard.com>  Tue, 15 Aug 2023 17:45:00 +0400
+
 wb-mqtt-serial (2.94.0) stable; urgency=medium
 
   * WB-MSW4, WB-MS v2 templates: add ENS160 VOC sensor support
