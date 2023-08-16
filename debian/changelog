@@ -1,8 +1,20 @@
-wb-mqtt-serial (2.95.0) stable; urgency=medium
+wb-mqtt-serial (2.96.0) stable; urgency=medium
 
   * New WB-M1W2 config with buttons support, old marked as deprecated
 
- -- Radmir Khakimov <radmir.khakimov@wirenboard.com>  Mon, 14 Aug 2023 17:55:51 +0500
+ -- Radmir Khakimov <radmir.khakimov@wirenboard.com>  Wed, 16 Aug 2023 22:12:51 +0500
+
+wb-mqtt-serial (2.95.1) stable; urgency=medium
+
+  * WB-MSW3, WB-MSW4 templates: add sporadic for PIR channels
+
+ -- Pavel Gasheev <pavel.gasheev@wirenboard.ru>  Wed, 16 Aug 2023 15:30:42 +0300
+
+wb-mqtt-serial (2.95.0) stable; urgency=medium
+
+  * NEVA MT 324 support tarif day/night
+
+ -- Sergey Zolotonos <sergey.zolotonos@gmail.com>  Mon, 13 Aug 2023 19:45:08 +0300
 
 wb-mqtt-serial (2.94.0) stable; urgency=medium
 
