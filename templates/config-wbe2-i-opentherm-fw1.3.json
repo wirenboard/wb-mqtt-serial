@@ -1,9 +1,9 @@
 {
     "title": "WBE2-I-OPENTHERM_template_title",
-    "device_type": "WBE2-I-OPENTHERM",
+    "device_type": "WBE2-I-OPENTHERM-FW-1.3",
     "group": "g-wb",
     "device": {
-        "name": "WBE2-I-OPENTHERM",
+        "name": "WBE2-I-OPENTHERM fw1.3",
         "id": "wbe2-i-opentherm",
 
         "groups": [
@@ -195,14 +195,6 @@
                 "format": "u16",
                 "scale": 0.01,
                 "group": "hw_info"
-            },
-            {
-                "name": "Invalid Connection",
-                "address": 217,
-                "reg_type": "input",
-                "type": "value",
-                "format": "u16",
-                "group": "boiler_state"
             }
         ],
 
@@ -395,11 +387,11 @@
         ],
         "translations": {
             "en": {
-                "WBE2-I-OPENTHERM_template_title": "WBE2-I-OPENTHERM (OpenTherm boiler interface)",
+                "WBE2-I-OPENTHERM_template_title": "WBE2-I-OPENTHERM fw1.3 (OpenTherm boiler interface)",
                 "climate_curve_number_description": "Values from 20 to 200 are transformed in module as value/200"
             },
             "ru": {
-                "WBE2-I-OPENTHERM_template_title": "WBE2-I-OPENTHERM (интерфейс OpenTherm для котлов)",
+                "WBE2-I-OPENTHERM_template_title": "WBE2-I-OPENTHERM fw1.3 (интерфейс OpenTherm для котлов)",
                 "Boiler State": "Состояние котла",
                 "Hot Water Settings": "Параметры ГВС",
                 "OpenTherm Commands": "Команды OpenTherm",
@@ -422,8 +414,7 @@
                 "Command ID": "ID команды",
                 "Data Type": "Тип данных",
                 "FW Version": "Версия прошивки",
-				"Invalid Connection": "Ошибка связи с котлом",
-				
+
                 "Room Temperature Sensor": "Датчик комнатной температуры",
                 "Temperature Sensor Type": "Тип датчика температуры",
                 "Heating Setpoint": "Уставка отопления",
