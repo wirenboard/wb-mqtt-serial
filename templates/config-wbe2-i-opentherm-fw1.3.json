@@ -195,6 +195,14 @@
                 "format": "u16",
                 "scale": 0.01,
                 "group": "hw_info"
+            },
+            {
+                "name": "Invalid Connection",
+                "address": 217,
+                "reg_type": "input",
+                "type": "value",
+                "format": "u16",
+                "group": "boiler_state"
             }
         ],
 
@@ -414,7 +422,8 @@
                 "Command ID": "ID команды",
                 "Data Type": "Тип данных",
                 "FW Version": "Версия прошивки",
-
+				"Invalid Connection": "Ошибка связи с котлом",
+				
                 "Room Temperature Sensor": "Датчик комнатной температуры",
                 "Temperature Sensor Type": "Тип датчика температуры",
                 "Heating Setpoint": "Уставка отопления",
