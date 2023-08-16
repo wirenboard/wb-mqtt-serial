@@ -1,6 +1,6 @@
 wb-mqtt-serial (2.96.0) stable; urgency=medium
 
-  * Add WBE2-I-OPENTHERM fw1.3 template
+  * Add WBE2-I-OPENTHERM fw1.4 template
 
  -- Roman Matveev <roman.matveev@wirenboard.ru>  Wed, 16 Aug 2023 13:08:00 +0300
 
