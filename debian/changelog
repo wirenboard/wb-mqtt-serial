@@ -1,3 +1,9 @@
+wb-mqtt-serial (2.96.0) stable; urgency=medium
+
+  * Add WBE2-I-OPENTHERM fw1.3 template
+
+ -- Roman Matveev <roman.matveev@wirenboard.ru>  Wed, 16 Aug 2023 13:08:00 +0300
+
 wb-mqtt-serial (2.95.0) stable; urgency=medium
 
   * NEVA MT 324 support tarif day/night
