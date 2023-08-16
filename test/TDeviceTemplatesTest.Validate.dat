@@ -19525,6 +19525,39 @@ WBE2-I-OPENTHERM-FW-1.3
 	Hot Water Temperature  =>  Hot Water Temperature
 	Invalid Connection  =>  Invalid Connection
 	Water Pressure  =>  Water Pressure
+WBE2-I-OPENTHERM-FW-1.4
+	Boiler Outdoor Temperature Sensor  =>  Boiler Outdoor Temperature Sensor
+	Boiler Status  =>  Boiler Status
+	Burner Modulation Level (%)  =>  Burner Modulation Level (%)
+	Command ID  =>  Command ID
+	Command Type  =>  Command Type
+	Data Type  =>  Data Type
+	Error Code  =>  Error Code
+	FW Version  =>  FW Version
+	Heating Return Water Temperature  =>  Heating Return Water Temperature
+	Heating Setpoint Max  =>  Heating Setpoint Max
+	Heating Setpoint Min  =>  Heating Setpoint Min
+	Heating Settings: room_sensor
+		Heating Setpoint  =>  Heating Setpoint
+		Room Temperature  =>  Room Temperature
+		Room Temperature Setpoint  =>  Room Temperature Setpoint
+		Temperature Sensor Type  =>  Temperature Sensor Type
+	Heating Settings: outdoor_sensor
+		Heating Setpoint  =>  Heating Setpoint
+		Heating Status  =>  Heating Status
+		Outdoor Temperature  =>  Outdoor Temperature
+		Temperature Sensor Type  =>  Temperature Sensor Type
+	Heating Settings: direct_heating_control
+		Heating Setpoint  =>  Heating Setpoint
+	Heating Settings: heating_off
+		Heating Setpoint  =>  Heating Setpoint
+	Heating Temperature  =>  Heating Temperature
+	Hot Water Setpoint  =>  Hot Water Setpoint
+	Hot Water Setpoint Max  =>  Hot Water Setpoint Max
+	Hot Water Setpoint Min  =>  Hot Water Setpoint Min
+	Hot Water Temperature  =>  Hot Water Temperature
+	Invalid Connection  =>  Invalid Connection
+	Water Pressure  =>  Water Pressure
 WBIO-AI-DV-12
 	A1  =>  A1
 	A10  =>  A10
