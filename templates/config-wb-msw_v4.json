@@ -246,6 +246,7 @@
                 "type": "value",
                 "reg_type": "input",
                 "address": 280,
+                "sporadic": true,
                 "error_value": "0xFFFF",
                 "group": "motion"
             },
@@ -254,6 +255,7 @@
                 "type": "value",
                 "reg_type": "input",
                 "address": 283,
+                "sporadic": true,
                 "error_value": "0xFFFF",
                 "group": "motion"
             },
