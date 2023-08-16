@@ -131,7 +131,7 @@
             },
             "disable_indication": {
                 "title": "Status LED",
-                "address": 130, {# FIMXE: нет в карте регистров M1W2, но в прошивке видимо был #}
+                "address": 130,
                 "reg_type": "holding",
                 "enum": [0, 1],
                 "enum_titles": ["Enabled", "Disabled"],
@@ -158,6 +158,7 @@
                 "format": "u16",
                 "address": {{277 + in_num - 1}},
                 "type": "value",
+                "sporadic": true,
                 "group": "gg_in{{in_num}}_channels",
                 "condition": "in{{in_num}}_mode==1"
             },
@@ -184,6 +185,7 @@
                 "reg_type": "input",
                 "address": {{496 + in_num - 1}},
                 "type": "value",
+                "enabled": false,
                 "sporadic": true,
                 "group": "gg_in{{in_num}}_channels",
                 "condition": "in{{in_num}}_mode==1"
@@ -193,6 +195,7 @@
                 "reg_type": "input",
                 "address": {{512 + in_num - 1}},
                 "type": "value",
+                "enabled": false,
                 "sporadic": true,
                 "group": "gg_in{{in_num}}_channels",
                 "condition": "in{{in_num}}_mode==1"
@@ -201,7 +204,8 @@
                 "name": "External Sensor {{in_num}}",
                 "reg_type": "input",
                 "address": {{7 + in_num - 1}},
-                "type": "temperature",
+                "type": "value",
+                "units": "deg C",
                 "format": "s16",
                 "scale": 0.0625,
                 "error_value": "0x7FFF",
@@ -237,10 +241,11 @@
                 "group": "g_hw_info"
             },
             {
-                "name": "Supply voltage",
+                "name": "Supply Voltage",
                 "reg_type": "input",
                 "address": 121,
-                "type": "voltage",
+                "type": "value",
+                "units": "V",
                 "scale": 0.001,
                 "enabled": false,
                 "group": "g_hw_info"
@@ -258,7 +263,8 @@
                 "reg_type": "input",
                 "address": 122,
                 "scale": 0.001,
-                "type": "voltage",
+                "type": "value",
+                "units": "V",
                 "enabled": false,
                 "group": "g_hw_info"
             },
@@ -266,7 +272,8 @@
                 "name": "MCU Temperature",
                 "reg_type": "input",
                 "address": 124,
-                "type": "temperature",
+                "type": "value",
+                "units": "deg C",
                 "format": "s16",
                 "scale": 0.1,
                 "enabled": false,
@@ -277,7 +284,8 @@
                 "reg_type": "input",
                 "address": 123,
                 "scale": 0.001,
-                "type": "voltage",
+                "type": "value",
+                "units": "V",
                 "enabled": false,
                 "group": "g_hw_info"
             }
@@ -285,20 +293,20 @@
         "translations": {
             "en": {
                 "temperature_readings_filter_deg_title": "Erroneous 1-Wire Temperature Readings Filter (°C)",
-                "temperature_readings_filter_deg_description": "New value is discarded if it differs from previous one by more than filter value. Write 0 to disable filter",
+                "temperature_readings_filter_deg_description": "If new value equals 85 °C, it is discarded if it differs from previous one by more than filter value. Write 0 to disable filter. Default value is 1",
 
                 "WB-M1W2_template_title": "WB-M1W2 (2-channel temperature measurement and pulse-counter module)",
-                "mode_description": "For press detection firmware v5.0.0 or newer is required",
-                "baud_rate_description": "Make sure that communication with device is established before changing this parameter. Select required baud rate, save configuration and then change port baud rate to the same value.",
-                "Uptime": "Uptime (s)",
+                "mode_description": "For press detection firmware version 5.0.0 or newer is required",
+                "baud_rate_description": "Make sure that communication with device is established before changing this parameter. Select required baud rate, save configuration and then change port baud rate to the same value. Default value is 9600",
+                "units": "s",
 
                 "lp_hold_time_title": "Long Press Time (ms)",
                 "secp_waiting_time_title": "Second Press Waiting Time (ms)",
                 "debounce_time_title": "Debounce Time (ms)",
 
-                "lp_hold_time_description": "If press is longer than the specified time then it is long",
-                "secp_waiting_time_description": "If there is no second press during the specified time then press is single. 0 - disables all presses except short and long. Adds a delay to the response to a short press",
-                "debounce_time_description": "For press detection must be 5-10 times less than second press waiting time. Adds a delay to the response to presses",
+                "lp_hold_time_description": "If press is longer than the specified time then it is long. Default value is 1000",
+                "secp_waiting_time_description": "If there is no second press during the specified time then press is single. 0 - disables all presses except short and long. Adds a delay to the response to a short press. Default value is 300",
+                "debounce_time_description": "For press detection must be 5-10 times less than second press waiting time. Adds a delay to the response to presses. Default value is 50",
             },
             "ru": {
                 "WB-M1W2_template_title": "WB-M1W2 (2-канальный преобразователь для термометров 1-Wire с функцией счётных входов)",
@@ -317,27 +325,27 @@
                 "General": "Общее",
                 "HW Info": "Данные модуля",
                 "temperature_readings_filter_deg_title": "Фильтр ошибочных значений датчиков 1-Wire (°C)",
-                "temperature_readings_filter_deg_description": "Новое значение отбрасывается, если оно отличается от предыдущего больше, чем на значение фильтра. Запишите 0, чтобы отключить фильтр",
+                "temperature_readings_filter_deg_description": "Если значение температуры равно 85 °C, то оно отбрасывается, если оно отличается от предыдущего больше, чем на значение фильтра. Запишите 0, чтобы отключить фильтр. Значение по умолчанию - 1",
                 "Status LED": "Индикатор состояния",
                 "Enabled": "Активен",
                 "Disabled": "Отключен",
                 "Mode": "Режим работы",
                 "Press Parameters": "Параметры нажатий",
                 "Counting and press detection": "Счет и детектирование нажатий",
-                "mode_description": "Для детектирования нажатий требуется прошивка v5.0.0 или новее",
+                "mode_description": "Для детектирования нажатий требуется прошивка версии 5.0.0 или новее",
                 "Baud rate": "Скорость обмена",
-                "baud_rate_description": "Перед изменением параметра убедитесь, что связь с устройством установлена. Выберите нужную скорость обмена, сохраните конфигурацию, а затем укажите в настройках порта эту же скорость.",
+                "baud_rate_description": "Перед изменением параметра убедитесь, что связь с устройством установлена. Выберите нужную скорость обмена, сохраните конфигурацию, а затем укажите в настройках порта эту же скорость. Значение по умолчанию - 9600",
 
                 "lp_hold_time_title": "Время длинного нажатия (мс)",
                 "secp_waiting_time_title": "Время ожидания второго нажатия (мс)",
                 "debounce_time_title": "Время подавления дребезга (мс)",
 
-                "lp_hold_time_description": "Если нажатие длится больше указанного времени - считаем его длинным",
-                "secp_waiting_time_description": "Если за указанное время второго нажатия не было - считаем нажатие одиночным. 0 - отключит все нажатия кроме короткого и длинного. Вносит задержку в реакцию на короткое нажатие",
-                "debounce_time_description": "Для детектирования нажатий значение должно быть в 5-10 раз меньше, чем время ожидания второго нажатия. Вносит задержку в реакцию на нажатия",
+                "lp_hold_time_description": "Если нажатие длится больше указанного времени - считаем его длинным. Значение по умолчанию - 1000",
+                "secp_waiting_time_description": "Если за указанное время второго нажатия не было - считаем нажатие одиночным. 0 - отключит все нажатия кроме короткого и длинного. Вносит задержку в реакцию на короткое нажатие. Значение по умолчанию - 300",
+                "debounce_time_description": "Для детектирования нажатий значение должно быть в 5-10 раз меньше, чем время ожидания второго нажатия. Вносит задержку в реакцию на нажатия. Значение по умолчанию - 50",
                 "Serial": "Серийный номер",
                 "FW Version": "Версия прошивки",
-                "Supply voltage": "Напряжение питания",
+                "Supply Voltage": "Напряжение питания",
                 "Uptime": "Время работы с момента включения (с)",
                 "Minimum Voltage Since Startup": "Минимальное напряжение с момента включения",
                 "MCU Temperature": "Температура МК",
@@ -346,4 +354,3 @@
         }
     }
 }
-
