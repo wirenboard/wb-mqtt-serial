@@ -1925,9 +1925,9 @@
           "disable_panel": true,
           "hidden_msg": "deprecated template",
           "hidden_notice": "hidden_template_notice",
-          "groups": ["g-wb", "g-wb-old", "g-adapter", "g-climate-sensor", "g-level", "g-dimmer", "g-air-conditioning", 
+          "groups": ["g-wb", "g-wb-old", "g-adapter", "g-climate-sensor", "g-level", "g-dimmer", "g-air-conditioning",
                      "g-climate-control", "g-refrigeration", "g-io", "g-relay", "g-curtain", "g-control-panel",
-                     "g-water-meter", "g-heat-meter", "g-power-meter", "g-thermostat", "g-motor-control",
+                     "g-water-meter", "g-heat-meter", "g-power-meter", "g-thermostat", "g-motor-control", "g-oni",
                      "g-custom"],
           "keep_properties": ["slave_id"]
         }
@@ -2020,6 +2020,7 @@
       "g-power-meter": "Energy meters",
       "g-thermostat": "Thermostats",
       "g-motor-control": "Motor controllers",
+      "g-oni": "ONI devices",
       "g-custom": "Custom devices",
       "rate_limit_desc": "To reduce the load on the processor, it is not recommended to specify more than 100 reads for WB6 and 800 for WB7",
       "continuous_read_desc": "Implemented in Wiren Board devices. The service tries to read registers at once even if they are spaced. This allows you to reduce the number of requests",
@@ -2216,6 +2217,7 @@
       "g-power-meter": "Счётчики электроэнергии",
       "g-thermostat": "Термостаты",
       "g-motor-control": "Управление двигателями (преобразователи частоты)",
+      "g-oni": "Устройства ONI",
       "g-custom": "Произвольные устройства",
       "Maximum registers reads per second": "Максимальное количество чтений регистров в секунду",
       "rate_limit_desc": "Для снижения нагрузки на процессор не рекомендуется указывать более 100 чтений для WB6 и 800 для WB7",
