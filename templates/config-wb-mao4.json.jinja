@@ -1,14 +1,21 @@
+{% set title_en = title_en | default("WB-MAO4 (4-channel analog output module)") -%}
+{% set title_ru = title_ru | default("WB-MAO4 (4-канальный модуль аналогового вывода)") -%}
+{% set device_type = device_type | default("tpl1_wb_mao4") -%}
+{% set group = group | default("g-wb") -%}
+{% set device_name = device_name | default("WB-MAO4") -%}
+{% set device_id = device_id | default("wb-mao4") -%}
+
 {% set INPUTS_NUMBER = 3 -%}
 {% set OUTPUTS_NUMBER = 4 -%}
 {% set PRESS_TYPES = ["short", "long", "double", "short long"] %}
 
 {
-    "title": "WB-MAO4_template_title",
-    "device_type": "tpl1_wb_mao4",
-    "group": "g-wb",
+    "title": "template_title",
+    "device_type": "{{ device_type }}",
+    "group": "{{ group }}",
     "device": {
-        "name": "WB-MAO4",
-        "id": "wb-mao4",
+        "name": "{{ device_name }}",
+        "id": "{{ device_id }}",
         "max_read_registers": 0,
         "response_timeout_ms": 1,
         "frame_timeout_ms": 8,
@@ -451,7 +458,7 @@
         ],
         "translations": {
             "en": {
-                "WB-MAO4_template_title": "WB-MAO4 (4-channel analog output module)",
+                "template_title": "{{ title_en }}",
                 "pwm_frequency_factor_description": "PWM frequency is calculated by formula: 24 kHz / Factor ",
                 "baud_rate_description": "Make sure that communication with device is established before changing this parameter. Select required baud rate, save configuration and then change port baud rate to the same value.",
                 "Uptime": "Uptime (s)",
@@ -475,7 +482,7 @@
             "ru": {
                 "Enabled": "Активен",
                 "Disabled": "Отключен",
-                "WB-MAO4_template_title": "WB-MAO4 (4-канальный модуль аналогового вывода)",
+                "template_title": "{{ title_ru }}",
                 "Outputs": "Выходы",
                 "General": "Общее",
                 "HW Info": "Данные модуля",

@@ -1,3 +1,9 @@
+wb-mqtt-serial (2.97.0) stable; urgency=medium
+
+  * Add ONI templates
+
+ -- Nikolay Korotkiy <nikolay.korotkiy@wirenboard.com>  Thu, 17 Aug 2023 15:15:00 +0400
+
 wb-mqtt-serial (2.96.0) stable; urgency=medium
 
   * New WB-M1W2 config with buttons support, old marked as deprecated
