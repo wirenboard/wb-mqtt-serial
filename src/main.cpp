@@ -37,8 +37,11 @@ const auto CONFIG_FULL_FILE_PATH = "/etc/wb-mqtt-serial.conf";
 const auto TEMPLATES_DIR = "/usr/share/wb-mqtt-serial/templates";
 const auto USER_TEMPLATES_DIR = "/etc/wb-mqtt-serial.conf.d/templates";
 const auto CONFIG_JSON_SCHEMA_FULL_FILE_PATH = "/usr/share/wb-mqtt-serial/wb-mqtt-serial.schema.json";
+const auto USER_CONFIG_JSON_SCHEMA_FULL_FILE_PATH = "/etc/wb-mqtt-serial.conf.d/wb-mqtt-serial.schema.json";
 const auto TEMPLATES_JSON_SCHEMA_FULL_FILE_PATH =
     "/usr/share/wb-mqtt-serial/wb-mqtt-serial-device-template.schema.json";
+const auto USER_TEMPLATES_JSON_SCHEMA_FULL_FILE_PATH =
+    "/etc/wb-mqtt-serial.conf.d/wb-mqtt-serial-device-template.schema.json";
 const auto CONFED_JSON_SCHEMA_FULL_FILE_PATH = "/var/lib/wb-mqtt-confed/schemas/wb-mqtt-serial.schema.json";
 const auto RPC_REQUEST_SCHEMA_FULL_FILE_PATH = "/usr/share/wb-mqtt-serial/wb-mqtt-serial-rpc-request.schema.json";
 
@@ -96,10 +99,17 @@ namespace
 
     pair<shared_ptr<Json::Value>, shared_ptr<TTemplateMap>> LoadTemplates()
     {
-        auto configSchema = make_shared<Json::Value>(LoadConfigSchema(CONFIG_JSON_SCHEMA_FULL_FILE_PATH));
+        auto configSchemaPath = CONFIG_JSON_SCHEMA_FULL_FILE_PATH;
+        if (filesystem::exists(USER_CONFIG_JSON_SCHEMA_FULL_FILE_PATH)) {
+            configSchemaPath = USER_CONFIG_JSON_SCHEMA_FULL_FILE_PATH;
+        }
+        auto configSchema = make_shared<Json::Value>(LoadConfigSchema(configSchemaPath));
+        auto templatesSchemaPath = TEMPLATES_JSON_SCHEMA_FULL_FILE_PATH;
+        if (filesystem::exists(USER_TEMPLATES_JSON_SCHEMA_FULL_FILE_PATH)) {
+            templatesSchemaPath = USER_TEMPLATES_JSON_SCHEMA_FULL_FILE_PATH;
+        }
         auto templates =
-            make_shared<TTemplateMap>(TEMPLATES_DIR,
-                                      LoadConfigTemplatesSchema(TEMPLATES_JSON_SCHEMA_FULL_FILE_PATH, *configSchema));
+            make_shared<TTemplateMap>(TEMPLATES_DIR, LoadConfigTemplatesSchema(templatesSchemaPath, *configSchema));
         try {
             templates->AddTemplatesDir(USER_TEMPLATES_DIR); // User templates dir
         } catch (const TConfigParserException& e) {
@@ -274,16 +284,10 @@ int main(int argc, char* argv[])
     RegisterProtocols(deviceFactory);
     PRPCConfig rpcConfig = std::make_shared<TRPCConfig>();
     try {
-        Json::Value configSchema = LoadConfigSchema(CONFIG_JSON_SCHEMA_FULL_FILE_PATH);
-        TTemplateMap templates(TEMPLATES_DIR,
-                               LoadConfigTemplatesSchema(TEMPLATES_JSON_SCHEMA_FULL_FILE_PATH, configSchema));
-
-        try {
-            templates.AddTemplatesDir(USER_TEMPLATES_DIR); // User templates dir
-        } catch (const TConfigParserException& e) {        // Pass exception if user templates dir doesn't exist
-        }
-
-        handlerConfig = LoadConfig(configFilename, deviceFactory, configSchema, templates, rpcConfig);
+        shared_ptr<Json::Value> configSchema;
+        shared_ptr<TTemplateMap> templates;
+        std::tie(configSchema, templates) = LoadTemplates();
+        handlerConfig = LoadConfig(configFilename, deviceFactory, *configSchema, *templates, rpcConfig);
     } catch (const exception& e) {
         LOG(Error) << e.what();
         return 0;

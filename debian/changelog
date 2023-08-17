@@ -1,3 +1,9 @@
+wb-mqtt-serial (2.96.0) stable; urgency=medium
+
+  * Support for user defined schemas in /etc/wb-mqtt-serial.conf.d/ folder is added
+
+ -- Nikolay Korotkiy <nikolay.korotkiy@wirenboard.com>  Thu, 17 Aug 2023 13:08:00 +0400
+
 wb-mqtt-serial (2.95.1) stable; urgency=medium
 
   * WB-MSW3, WB-MSW4 templates: add sporadic for PIR channels
