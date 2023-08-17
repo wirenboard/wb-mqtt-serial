@@ -789,6 +789,30 @@ WB-M1W2
 	MCU Voltage  =>  MCU Voltage
 	Serial NO  =>  Serial NO
 	Uptime  =>  Uptime
+WB-M1W2 BUTTONS
+	External Sensor 1  =>  External Sensor 1
+	External Sensor 1 OK  =>  External Sensor 1 OK
+	External Sensor 2  =>  External Sensor 2
+	External Sensor 2 OK  =>  External Sensor 2 OK
+	FW Version  =>  FW Version
+	Input 1  =>  Input 1
+	Input 1 Double Press Counter  =>  Input 1 Double Press Counter
+	Input 1 Long Press Counter  =>  Input 1 Long Press Counter
+	Input 1 Shortlong Press Counter  =>  Input 1 Shortlong Press Counter
+	Input 1 Single Press Counter  =>  Input 1 Single Press Counter
+	Input 1 counter  =>  Input 1 counter
+	Input 2  =>  Input 2
+	Input 2 Double Press Counter  =>  Input 2 Double Press Counter
+	Input 2 Long Press Counter  =>  Input 2 Long Press Counter
+	Input 2 Shortlong Press Counter  =>  Input 2 Shortlong Press Counter
+	Input 2 Single Press Counter  =>  Input 2 Single Press Counter
+	Input 2 counter  =>  Input 2 counter
+	MCU Temperature  =>  MCU Temperature
+	MCU Voltage  =>  MCU Voltage
+	Minimum Voltage Since Startup  =>  Minimum Voltage Since Startup
+	Serial  =>  Serial
+	Supply Voltage  =>  Supply Voltage
+	Uptime  =>  Uptime
 WB-M1W2 DI
 	Counter 1  =>  Counter 1
 	Counter 2  =>  Counter 2

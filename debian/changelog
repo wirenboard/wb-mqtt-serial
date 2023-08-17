@@ -1,3 +1,9 @@
+wb-mqtt-serial (2.96.0) stable; urgency=medium
+
+  * New WB-M1W2 config with buttons support, old marked as deprecated
+
+ -- Radmir Khakimov <radmir.khakimov@wirenboard.com>  Wed, 16 Aug 2023 22:12:51 +0500
+
 wb-mqtt-serial (2.95.1) stable; urgency=medium
 
   * WB-MSW3, WB-MSW4 templates: add sporadic for PIR channels
