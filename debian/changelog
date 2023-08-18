@@ -1,3 +1,9 @@
+wb-mqtt-serial (2.93.3-wb100) stable; urgency=medium
+
+  * Add ONI templates
+
+ -- Nikolay Korotkiy <nikolay.korotkiy@wirenboard.com>  Thu, 17 Aug 2023 15:15:00 +0400
+
 wb-mqtt-serial (2.93.3) stable; urgency=medium
 
   * Fixed increasing memory consumption if there are disconnected devices
