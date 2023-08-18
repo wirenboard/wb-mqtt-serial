@@ -69,7 +69,7 @@ $(TEST_DIR)/$(TEST_BIN): $(COMMON_OBJS) $(TEST_OBJS)
 
 $(GENERATED_TEMPLATES_DIR)/%.json: $(TEMPLATES_DIR)/%.json.jinja
 	mkdir -p $(GENERATED_TEMPLATES_DIR)
-	j2 -o $@ $^
+	(cd $(TEMPLATES_DIR); j2 -o ../$@ $(notdir $^))
 
 test: templates $(TEST_DIR)/$(TEST_BIN)
 	rm -f $(TEST_DIR)/*.dat.out

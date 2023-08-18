@@ -1,9 +1,9 @@
 {
     "title": "WBE2-I-OPENTHERM_template_title",
-    "device_type": "WBE2-I-OPENTHERM",
+    "device_type": "WBE2-I-OPENTHERM-FW-1.4",
     "group": "g-wb",
     "device": {
-        "name": "WBE2-I-OPENTHERM",
+        "name": "WBE2-I-OPENTHERM fw1.4",
         "id": "wbe2-i-opentherm",
 
         "groups": [
@@ -347,6 +347,20 @@
                             "value": 0
                         }
                     ],
+                    "parameters": {
+                        "boiler_mode": {
+                            "title": "Current Boiler Mode",
+                            "address": 212,
+                            "reg_type": "holding",
+                            "enum": [
+                                0, 1, 2
+                            ],
+                            "enum_titles": [
+                                "STANDBY", "WINTER", "SUMMER"
+                            ],
+                            "default": 1
+                        }
+                    },
                     "channels": [
                         {
                             "name": "Heating Setpoint",
@@ -395,11 +409,11 @@
         ],
         "translations": {
             "en": {
-                "WBE2-I-OPENTHERM_template_title": "WBE2-I-OPENTHERM (OpenTherm boiler interface)",
+                "WBE2-I-OPENTHERM_template_title": "WBE2-I-OPENTHERM fw1.4 (OpenTherm boiler interface)",
                 "climate_curve_number_description": "Values from 20 to 200 are transformed in module as value/200"
             },
             "ru": {
-                "WBE2-I-OPENTHERM_template_title": "WBE2-I-OPENTHERM (интерфейс OpenTherm для котлов)",
+                "WBE2-I-OPENTHERM_template_title": "WBE2-I-OPENTHERM fw1.4 (интерфейс OpenTherm для котлов)",
                 "Boiler State": "Состояние котла",
                 "Hot Water Settings": "Параметры ГВС",
                 "OpenTherm Commands": "Команды OpenTherm",
@@ -437,7 +451,11 @@
                 "Heating Status": "Статус отопления",
 
                 "Direct Heating Setpoint Control": "Управление уставкой отопления",
-                "Heating Off": "Отопление отключено"
+                "Heating Off": "Отопление отключено",
+				"Current Boiler Mode": "Текущий режим работы котла",
+				"STANDBY": "СПЯЩИЙ РЕЖИМ",
+				"WINTER": "ЗИМА",
+				"SUMMER": "ЛЕТО"
             }
         }
     }

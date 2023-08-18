@@ -15,6 +15,18 @@
         "address": "0x0F0880FF"
       },
       {
+        "name": "Total A T1 energy",
+        "reg_type": "item_2",
+        "type": "power_consumption",
+        "address": "0x0F0880FF"
+      },
+      {
+        "name": "Total A T2 energy",
+        "reg_type": "item_3",
+        "type": "power_consumption",
+        "address": "0x0F0880FF"
+      },
+      {
         "name": "Total RP energy",
         "reg_type": "item_1",
         "type": "power_consumption",
