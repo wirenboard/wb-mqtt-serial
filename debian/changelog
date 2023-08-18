@@ -1,3 +1,9 @@
+wb-mqtt-serial (2.98.1) stable; urgency=medium
+
+  * Teplomash KEV-BLOK-MK template: fix translation
+
+ -- Nikolay Korotkiy <nikolay.korotkiy@wirenboard.com>  Fri, 18 Aug 2023 17:45:00 +0400
+
 wb-mqtt-serial (2.98.0) stable; urgency=medium
 
   * Add WBE2-I-OPENTHERM fw1.4 template
@@ -21,7 +27,6 @@ wb-mqtt-serial (2.95.1) stable; urgency=medium
   * WB-MSW3, WB-MSW4 templates: add sporadic for PIR channels
 
  -- Pavel Gasheev <pavel.gasheev@wirenboard.ru>  Wed, 16 Aug 2023 15:30:42 +0300
-
 
 wb-mqtt-serial (2.95.0) stable; urgency=medium
 
