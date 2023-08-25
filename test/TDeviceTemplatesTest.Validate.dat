@@ -334,6 +334,31 @@ ONOKOM-AIR-GR-1-MB-B
 	Turbo mode  =>  Turbo mode
 	Vanes swing  =>  Vanes swing
 	Vertical vanes  =>  Vertical vanes
+ONOKOM-AIR-HS-3-MB-B
+	Active  =>  Active
+	Active mode  =>  Active mode
+	Currernt compressor power  =>  Currernt compressor power
+	Device version  =>  Device version
+	Eco mode  =>  Eco mode
+	Fan speed  =>  Fan speed
+	Firmware version  =>  Firmware version
+	Horizontal vanes  =>  Horizontal vanes
+	Indoor air temperature  =>  Indoor air temperature
+	Indoor heat exchanger temperature  =>  Indoor heat exchanger temperature
+	Modbus ID  =>  Modbus ID
+	Mode  =>  Mode
+	Outdoor air temperature  =>  Outdoor air temperature
+	Outdoor heat exchanger temperature  =>  Outdoor heat exchanger temperature
+	Quiet mode  =>  Quiet mode
+	Screen light  =>  Screen light
+	Sleep mode  =>  Sleep mode
+	Smart fan speed  =>  Smart fan speed
+	Target compressor power  =>  Target compressor power
+	Target temperature  =>  Target temperature
+	Temeperature correction  =>  Temeperature correction
+	Thermostat state  =>  Thermostat state
+	Vanes swing  =>  Vanes swing
+	Vertical vanes  =>  Vertical vanes
 ONOKOM-AIR-ME-1-MB-B
 	Active  =>  Active
 	Active mode  =>  Active mode
