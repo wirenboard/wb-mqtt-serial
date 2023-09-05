@@ -48,7 +48,7 @@ namespace
             return res;
         }
 
-        void SkipNoise(std::chrono::microseconds timeout) override
+        void SkipNoise() override
         {}
 
         void SleepSinceLastInteraction(const std::chrono::microseconds& us) override

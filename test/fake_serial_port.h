@@ -38,7 +38,7 @@ public:
                                const std::chrono::microseconds& responseTimeout = std::chrono::microseconds(-1),
                                const std::chrono::microseconds& frameTimeout = std::chrono::microseconds(-1),
                                TFrameCompletePred frame_complete = 0) override;
-    void SkipNoise(std::chrono::microseconds timeout) override;
+    void SkipNoise() override;
 
     void SleepSinceLastInteraction(const std::chrono::microseconds& us) override;
 

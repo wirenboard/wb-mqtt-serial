@@ -18,7 +18,7 @@ public:
                                const std::chrono::microseconds& responseTimeout,
                                const std::chrono::microseconds& frameTimeout,
                                TFrameCompletePred frame_complete = 0) override;
-    void SkipNoise(std::chrono::microseconds timeout) override;
+    void SkipNoise() override;
     void Close() override;
     void CheckPortOpen() const override;
     bool IsOpen() const override;

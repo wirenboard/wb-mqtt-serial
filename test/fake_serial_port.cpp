@@ -195,7 +195,7 @@ TReadFrameResult TFakeSerialPort::ReadFrame(uint8_t* buf,
     return res;
 }
 
-void TFakeSerialPort::SkipNoise(std::chrono::microseconds timeout)
+void TFakeSerialPort::SkipNoise()
 {
     CheckPortOpen();
     if (RespPos != 0 && Resp[RespPos - 1] != FRAME_BOUNDARY) {
@@ -204,11 +204,7 @@ void TFakeSerialPort::SkipNoise(std::chrono::microseconds timeout)
         }
     }
     SkipFrameBoundary();
-    if (timeout == DefaultSkipNoiseTimeout) {
-        Fixture.Emit() << "SkipNoise()";
-    } else {
-        Fixture.Emit() << "SkipNoise(" << timeout.count() << "us)";
-    }
+    Fixture.Emit() << "SkipNoise()";
     DumpWhatWasRead();
 }
 

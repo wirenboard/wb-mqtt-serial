@@ -2,5 +2,4 @@ Open()
 EnqueueReadResponseWithNoiseAtTheEnd()
 >> 01 03 27 2E 00 01 EE B7
 << 01 03 02 11 78 B4 36
-SkipNoise(5000us)
 << B0 AA

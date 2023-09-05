@@ -1026,7 +1026,8 @@ namespace Modbus // modbus protocol common utilities
         }
 
         if (ForceFrameTimeout) {
-            port.SkipNoise(frameTimeout);
+            std::array<uint8_t, 256> buf;
+            port.ReadFrame(buf.data(), buf.size(), frameTimeout, frameTimeout);
         }
 
         auto requestSlaveId = req[0];
