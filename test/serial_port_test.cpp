@@ -177,7 +177,7 @@ TEST_F(TSerialPortTest, TestSkipNoise)
     uint8_t buf[] = {1, 2, 3};
     Serial->WriteBytes(buf, sizeof(buf));
     usleep(300);
-    static_cast<TPort*>(SecondarySerial.get())->SkipNoise();
+    SecondarySerial->SkipNoise();
 
     buf[0] = 0x04;
     // Should read 0x04, not 0x01
