@@ -179,7 +179,7 @@ void TSerialPort::Open()
         throw TSerialDeviceException(Settings.Device + ", " + e.what());
     }
     LastInteraction = std::chrono::steady_clock::now();
-    SkipNoise(); // flush data from previous instance if any
+    TPort::SkipNoise(); // flush data from previous instance if any
 }
 
 void TSerialPort::Close()

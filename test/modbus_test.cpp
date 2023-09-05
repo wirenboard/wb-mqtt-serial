@@ -410,6 +410,24 @@ TEST_F(TModbusTest, MinReadRegisters)
     EXPECT_EQ(reg->GetValue(), 0x15);
 }
 
+TEST_F(TModbusTest, SkipNoiseAtPacketEnd)
+{
+    EnqueueReadResponseWithNoiseAtTheEnd();
+
+    auto modbusRtuTraits = std::make_unique<Modbus::TModbusRTUTraits>(true);
+    auto deviceConfig = GetDeviceConfig();
+    deviceConfig.CommonConfig->FrameTimeout = 0ms;
+    auto dev = std::make_shared<TModbusDevice>(std::move(modbusRtuTraits),
+                                               deviceConfig,
+                                               SerialPort,
+                                               DeviceFactory.GetProtocol("modbus"));
+
+    auto range = dev->CreateRegisterRange();
+    auto reg = TRegister::Intern(dev, TRegisterConfig::Create(Modbus::REG_HOLDING, 0x272E, U16));
+    range->Add(reg, std::chrono::milliseconds::max());
+    EXPECT_NO_THROW(dev->ReadRegisterRange(range));
+}
+
 class TModbusIntegrationTest: public TSerialDeviceIntegrationTest, public TModbusExpectations
 {
 protected:

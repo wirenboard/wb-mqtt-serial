@@ -49,7 +49,7 @@ namespace
             return res;
         }
 
-        void SkipNoise() override
+        void SkipNoise(std::chrono::microseconds timeout) override
         {}
 
         void SleepSinceLastInteraction(const std::chrono::microseconds& us) override

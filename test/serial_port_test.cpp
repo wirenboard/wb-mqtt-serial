@@ -91,10 +91,10 @@ public:
           OtherEndPort(other_port),
           FloodThread(OtherEndPort, std::chrono::milliseconds(3000)){};
 
-    void SkipNoise() override
+    void SkipNoise(std::chrono::microseconds timeout) override
     {
         Fixture.Emit() << "SkipNoise()";
-        TSerialPort::SkipNoise();
+        TSerialPort::SkipNoise(timeout);
     }
 
     uint8_t ReadByte(const std::chrono::microseconds& timeout) override
@@ -177,7 +177,7 @@ TEST_F(TSerialPortTest, TestSkipNoise)
     uint8_t buf[] = {1, 2, 3};
     Serial->WriteBytes(buf, sizeof(buf));
     usleep(300);
-    SecondarySerial->SkipNoise();
+    static_cast<TPort*>(SecondarySerial.get())->SkipNoise();
 
     buf[0] = 0x04;
     // Should read 0x04, not 0x01

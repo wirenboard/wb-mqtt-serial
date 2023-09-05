@@ -87,3 +87,8 @@ void TPortOpenCloseLogic::CloseIfNeeded(PPort port, bool allPreviousDataExchange
         port->Close();
     }
 }
+
+void TPort::SkipNoise()
+{
+    SkipNoise(DefaultSkipNoiseTimeout);
+}

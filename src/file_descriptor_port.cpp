@@ -18,7 +18,6 @@ using namespace std;
 
 namespace
 {
-    const chrono::milliseconds NoiseTimeout(1);
     const chrono::milliseconds ContinuousNoiseTimeout(100);
     const int ContinuousNoiseReopenNumber = 3;
 }
@@ -205,13 +204,13 @@ TReadFrameResult TFileDescriptorPort::ReadFrame(uint8_t* buf,
     return res;
 }
 
-void TFileDescriptorPort::SkipNoise()
+void TFileDescriptorPort::SkipNoise(std::chrono::microseconds timeout)
 {
     uint8_t buf[255] = {};
     auto start = std::chrono::steady_clock::now();
     int ntries = 0;
 
-    while (Select(NoiseTimeout)) {
+    while (Select(timeout)) {
         size_t nread = ReadAvailableData(buf, sizeof(buf) / sizeof(buf[0]));
         auto diff = std::chrono::steady_clock::now() - start;
 

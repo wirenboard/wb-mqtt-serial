@@ -176,16 +176,17 @@ TReadFrameResult TFakeSerialPort::ReadFrame(uint8_t* buf,
                                  " instead of " + std::to_string(ExpectedFrameTimeout.count()));
     }
     uint8_t* p = buf;
-    for (; res.Count < count; ++res.Count) {
+    while (res.Count < count) {
         if (RespPos == Resp.size())
             break;
         int b = Resp[RespPos++];
-        // TBD: after frame_ready arg is added,
-        // make sure the frame becomes 'ready' exactly on the boundary.
-        // Note though that frame_ready will be optional.
         if (b == FRAME_BOUNDARY)
             break;
         *p++ = (uint8_t)b;
+        ++res.Count;
+        if (frame_complete && frame_complete(buf, res.Count)) {
+            break;
+        }
     }
     DumpWhatWasRead();
     if ((res.Count == 0) && (count != 0)) {
@@ -194,12 +195,21 @@ TReadFrameResult TFakeSerialPort::ReadFrame(uint8_t* buf,
     return res;
 }
 
-void TFakeSerialPort::SkipNoise()
+void TFakeSerialPort::SkipNoise(std::chrono::microseconds timeout)
 {
     CheckPortOpen();
+    if (RespPos != 0 && Resp[RespPos - 1] != FRAME_BOUNDARY) {
+        while (RespPos < Resp.size() && Resp[RespPos] != FRAME_BOUNDARY) {
+            RespPos++;
+        }
+    }
     SkipFrameBoundary();
+    if (timeout == DefaultSkipNoiseTimeout) {
+        Fixture.Emit() << "SkipNoise()";
+    } else {
+        Fixture.Emit() << "SkipNoise(" << timeout.count() << "us)";
+    }
     DumpWhatWasRead();
-    Fixture.Emit() << "SkipNoise()";
 }
 
 void TFakeSerialPort::SleepSinceLastInteraction(const std::chrono::microseconds& us)

@@ -53,9 +53,13 @@ namespace Modbus // modbus protocol common utilities
     {
         const size_t DATA_SIZE = 3; // number of bytes in ADU that is not in PDU (slaveID (1b) + crc value (2b))
 
+        bool ForceFrameTimeout;
+
         TPort::TFrameCompletePred ExpectNBytes(size_t n) const;
 
     public:
+        TModbusRTUTraits(bool forceFrameTimeout = false);
+
         size_t GetPacketSize(size_t pduSize) const override;
 
         void FinalizeRequest(TRequest& request, uint8_t slaveId) override;
@@ -100,7 +104,7 @@ namespace Modbus // modbus protocol common utilities
     {
     public:
         virtual ~IModbusTraitsFactory() = default;
-        virtual std::unique_ptr<Modbus::IModbusTraits> GetModbusTraits(PPort port) = 0;
+        virtual std::unique_ptr<Modbus::IModbusTraits> GetModbusTraits(PPort port, bool forceFrameTimeout) = 0;
     };
 
     class TModbusTCPTraitsFactory: public IModbusTraitsFactory
@@ -108,13 +112,13 @@ namespace Modbus // modbus protocol common utilities
         std::unordered_map<PPort, std::shared_ptr<uint16_t>> TransactionIds;
 
     public:
-        std::unique_ptr<Modbus::IModbusTraits> GetModbusTraits(PPort port) override;
+        std::unique_ptr<Modbus::IModbusTraits> GetModbusTraits(PPort port, bool forceFrameTimeout) override;
     };
 
     class TModbusRTUTraitsFactory: public IModbusTraitsFactory
     {
     public:
-        std::unique_ptr<Modbus::IModbusTraits> GetModbusTraits(PPort port) override;
+        std::unique_ptr<Modbus::IModbusTraits> GetModbusTraits(PPort port, bool forceFrameTimeout) override;
     };
 
     class TModbusRegisterRange: public TRegisterRange

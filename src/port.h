@@ -10,6 +10,8 @@
 
 #include "serial_port_settings.h"
 
+const std::chrono::milliseconds DefaultSkipNoiseTimeout(1);
+
 struct TReadFrameResult
 {
     //! Received byte count
@@ -58,7 +60,8 @@ public:
                                        const std::chrono::microseconds& frameTimeout,
                                        TFrameCompletePred frame_complete = 0) = 0;
 
-    virtual void SkipNoise() = 0;
+    void SkipNoise();
+    virtual void SkipNoise(std::chrono::microseconds timeout) = 0;
 
     virtual void SleepSinceLastInteraction(const std::chrono::microseconds& us) = 0;
 
