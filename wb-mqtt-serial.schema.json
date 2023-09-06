@@ -444,6 +444,7 @@
           "title": "Force frame timeout",
           "description": "force_frame_timeout_desc",
           "default": false,
+          "_format": "checkbox",
           "propertyOrder": 109
         },
         "response_timeout_ms": {
