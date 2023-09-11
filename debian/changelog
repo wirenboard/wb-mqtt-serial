@@ -1,3 +1,9 @@
+wb-mqtt-serial (2.99.1) stable; urgency=medium
+
+  * Fix round_to default value (wb-mqtt-serial.schema.json)
+
+ -- Nikolay Korotkiy <nikolay.korotkiy@wirenboard.com>  Mon, 11 Sep 2023 11:48:00 +0400
+
 wb-mqtt-serial (2.99.0) stable; urgency=medium
 
   * Add new template ONOKOM-AIR-HS-3-MB-B

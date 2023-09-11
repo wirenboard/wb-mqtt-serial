@@ -579,7 +579,7 @@
           "type": "number",
           "title": "Round to",
           "description": "Value displayed = round((value read * scale) + offset) / round_to) * round_to",
-          "default" : 1,
+          "default": 0.1,
           "propertyOrder": 13,
           "minimum": 0
         },
