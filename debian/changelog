@@ -1,3 +1,9 @@
+wb-mqtt-serial (2.93.3-wb101) stable; urgency=medium
+
+  * WB-LED and WB-MRGBW-D templates: add sporadic events for channels
+
+ -- Pavel Gasheev <pavel.gasheev@wirenboard.ru>  Tue, 12 Sep 2023 12:09:51 +0300
+
 wb-mqtt-serial (2.93.3-wb100) stable; urgency=medium
 
   * Add ONI templates
