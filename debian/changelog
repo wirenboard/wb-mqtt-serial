@@ -1,7 +1,8 @@
 wb-mqtt-serial (2.101.0) stable; urgency=medium
 
   * Add force frame timeout config parameter.
-    Some devices can send garbage after responses, so packet end can be defined only by time between bytes. All extra data is dropped.
+    Some devices can send garbage after responses, so packet end can be defined only by time between bytes.
+    All extra data is dropped.
 
  -- Petr Krasnoshchekov <petr.krasnoshchekov@wirenboard.com>  Thu, 14 Sep 2023 08:15:06 +0500
 
