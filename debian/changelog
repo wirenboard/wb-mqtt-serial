@@ -1,9 +1,15 @@
-wb-mqtt-serial (2.100.0) stable; urgency=medium
+wb-mqtt-serial (2.101.0) stable; urgency=medium
 
   * Add force frame timeout config parameter.
     Some devices can send garbage after responses, so packet end can be defined only by time between bytes. All extra data is dropped.
 
- -- Petr Krasnoshchekov <petr.krasnoshchekov@wirenboard.com>  Tue, 05 Sep 2023 10:49:46 +0500
+ -- Petr Krasnoshchekov <petr.krasnoshchekov@wirenboard.com>  Thu, 14 Sep 2023 08:15:06 +0500
+
+wb-mqtt-serial (2.100.0) stable; urgency=medium
+
+  * Add new template ONOKOM-AIR-HR-1-MB-B
+
+ -- Roman Matveev <roman.matveev@wirenboard.ru>  Tue, 12 Sep 2023 19:10:00 +0300
 
 wb-mqtt-serial (2.99.0) stable; urgency=medium
 

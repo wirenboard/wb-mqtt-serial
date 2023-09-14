@@ -334,6 +334,32 @@ ONOKOM-AIR-GR-1-MB-B
 	Turbo mode  =>  Turbo mode
 	Vanes swing  =>  Vanes swing
 	Vertical vanes  =>  Vertical vanes
+ONOKOM-AIR-HR-1-MB-B
+	AC connected  =>  AC connected
+	Active  =>  Active
+	Active mode  =>  Active mode
+	Beeper  =>  Beeper
+	Device version  =>  Device version
+	Eco mode  =>  Eco mode
+	Fan speed  =>  Fan speed
+	Firmware version  =>  Firmware version
+	Horizontal vanes  =>  Horizontal vanes
+	Indoor air temperature  =>  Indoor air temperature
+	Ionization  =>  Ionization
+	Modbus ID  =>  Modbus ID
+	Mode  =>  Mode
+	Outdoor air temperature  =>  Outdoor air temperature
+	Quiet mode  =>  Quiet mode
+	Screen light  =>  Screen light
+	Self-clean  =>  Self-clean
+	Sleep mode  =>  Sleep mode
+	Smart fan speed  =>  Smart fan speed
+	Target temperature  =>  Target temperature
+	Temeperature correction  =>  Temeperature correction
+	Thermostat state  =>  Thermostat state
+	Turbo mode  =>  Turbo mode
+	Vanes swing  =>  Vanes swing
+	Vertical vanes  =>  Vertical vanes
 ONOKOM-AIR-HS-3-MB-B
 	Active  =>  Active
 	Active mode  =>  Active mode
