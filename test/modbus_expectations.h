@@ -82,4 +82,6 @@ public:
     /*------------ bitmasks ----------------*/
     void EnqueueContinuousReadEnableResponse(bool ok = true);
     void EnqueueContinuousReadResponse(bool separated = true);
+
+    void EnqueueReadResponseWithNoiseAtTheEnd();
 };
