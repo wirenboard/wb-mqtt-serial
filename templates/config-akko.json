@@ -1,0 +1,278 @@
+{
+    "device_type": "AKKO",
+    "title": "AKKO curtain motor",
+    "group": "g-curtain",
+    "device": {
+        "name": "akko",
+        "id": "akko",
+        "protocol": "dooya",
+        "response_timeout_ms": 100,
+        "groups": [
+            {
+                "title": "Main",
+                "id": "main",
+                "order": 1
+            },
+            {
+                "title": "Limits",
+                "id": "limits",
+                "order": 2
+            },
+            {
+                "title": "Venetian blinds",
+                "id": "venetian",
+                "order": 3
+            },
+            {
+                "title": "Settings",
+                "id": "settings",
+                "order": 4
+            }
+        ],
+        "parameters": {
+            "power_on_remind": {
+                "title": "Power on remind",
+                "address": "0x0C",
+                "reg_type": "param",
+                "enum": [0, 1, 2, 3],
+                "default": 0,
+                "enum_titles": [
+                    "no remind",
+                    "rotation",
+                    "beep",
+                    "rotation and beep"
+                ]
+            }
+        },
+        "channels": [
+            {
+                "name": "Position",
+                "reg_type": "position",
+                "address": 0,
+                "type": "range",
+                "max": 100,
+                "group": "main"
+            },
+            {
+                "name": "Angle",
+                "reg_type": "angle",
+                "address": 0,
+                "max": 180,
+                "type": "range",
+                "enabled": false,
+                "group": "venetian"
+            },
+            {
+                "name": "Jogging mode",
+                "address": "0x0A",
+                "reg_type": "param",
+                "max": 1,
+                "type": "switch",
+                "enabled": false,
+                "group": "settings"
+            },
+            {
+                "name": "Open",
+                "type": "pushbutton",
+                "reg_type": "command",
+                "address": "0x01",
+                "group": "main"
+            },
+            {
+                "name": "Close",
+                "type": "pushbutton",
+                "reg_type": "command",
+                "address": "0x02",
+                "group": "main"
+            },
+            {
+                "name": "Stop",
+                "type": "pushbutton",
+                "reg_type": "command",
+                "address": "0x03",
+                "group": "main"
+            },
+            {
+                "name": "Set top limit",
+                "type": "pushbutton",
+                "reg_type": "command",
+                "address": "0x0501",
+                "group": "limits"
+            },
+            {
+                "name": "Set bottom limit",
+                "type": "pushbutton",
+                "reg_type": "command",
+                "address": "0x0502",
+                "group": "limits"
+            },
+            {
+                "name": "Set third limit",
+                "type": "pushbutton",
+                "reg_type": "command",
+                "address": "0x0503",
+                "group": "limits"
+            },
+            {
+                "name": "Set forth limit",
+                "type": "pushbutton",
+                "reg_type": "command",
+                "address": "0x0504",
+                "enabled": false,
+                "group": "limits"
+            },
+            {
+                "name": "Run until top limit",
+                "type": "pushbutton",
+                "reg_type": "command",
+                "address": "0x0601",
+                "group": "limits"
+            },
+            {
+                "name": "Run until bottom limit",
+                "type": "pushbutton",
+                "reg_type": "command",
+                "address": "0x0602",
+                "group": "limits"
+            },
+            {
+                "name": "Run until third limit",
+                "type": "pushbutton",
+                "reg_type": "command",
+                "address": "0x0603",
+                "group": "limits"
+            },
+            {
+                "name": "Run until forth limit",
+                "type": "pushbutton",
+                "reg_type": "command",
+                "address": "0x0604",
+                "enabled": false,
+                "group": "limits"
+            },
+            {
+                "name": "Delete limits",
+                "type": "pushbutton",
+                "reg_type": "command",
+                "address": "0x07",
+                "group": "limits"
+            },
+            {
+                "name": "Delete top limit",
+                "type": "pushbutton",
+                "reg_type": "command",
+                "address": "0x0701",
+                "group": "limits"
+            },
+            {
+                "name": "Delete bottom limit",
+                "type": "pushbutton",
+                "reg_type": "command",
+                "address": "0x0702",
+                "group": "limits"
+            },
+            {
+                "name": "Delete third limit",
+                "type": "pushbutton",
+                "reg_type": "command",
+                "address": "0x0703",
+                "group": "limits"
+            },
+            {
+                "name": "Delete forth limit",
+                "type": "pushbutton",
+                "reg_type": "command",
+                "address": "0x0704",
+                "enabled": false,
+                "group": "limits"
+            },
+            {
+                "name": "Factory Default",
+                "type": "pushbutton",
+                "reg_type": "command",
+                "address": "0x08",
+                "group": "settings"
+            },
+            {
+                "name": "Direction",
+                "reg_type": "param",
+                "address": 3,
+                "max": 1,
+                "type": "switch",
+                "enabled": false,
+                "group": "settings"
+            },
+            {
+                "name": "Type",
+                "reg_type": "type",
+                "address": "0xF0",
+                "enabled": false,
+                "readonly": true,
+                "group": "settings"
+            },
+            {
+                "name": "Motor situation",
+                "reg_type": "param",
+                "address": "0x05",
+                "enabled": false,
+                "readonly": true,
+                "group": "main"
+            },
+            { 
+                "name": "Angle coefficient",
+                "reg_type": "param",
+                "address": "0x08",
+                "enabled": false,
+                "group": "venetian"
+            },
+            {
+                "name": "Power on remind",
+                "address": "0x0C",
+                "reg_type": "param",
+                "max": 3,
+                "enabled": false,
+                "group": "settings"
+            }
+        ],
+        "translations": {
+            "ru": {
+                "AKKO curtain motor": "AKKO  (Мотор штор)",
+                "Position": "Позиция",
+                "Stop": "Остановить",
+                "Open": "Открыть",
+                "Close": "Закрыть",
+                "Direction": "Инверсия",
+                "Factory Default": "Сбросить настройки",
+                "disabled": "отключен",
+                "enabled": "включен",
+                "Set top limit": "Установить верхнюю границу",
+                "Set bottom limit": "Установить нижнюю границу",
+                "Set third limit": "Установить третье положение",
+                "Set forth limit": "Установить четвёртое положение",
+                "Run until top limit": "Двигаться до верхней границы",
+                "Run until bottom limit": "Двигаться до нижней границы",
+                "Run until third limit": "Двигаться до третьего положения",
+                "Run until forth limit": "Двигаться до четвёртого положения",
+                "Delete top limit": "Удалить верхнюю границу",
+                "Delete bottom limit": "Удалить нижнюю границу",
+                "Delete third limit": "Удалить третье положение",
+                "Delete forth limit": "Удалить четвёртое положение",
+                "Delete limits": "Удалить все границы",
+                "Angle coefficient": "Коэффициент угла поворота ламелей",
+                "Angle": "Угол поворота ламелей",
+                "Jogging mode": "Шаговый режим",
+                "Motor situation": "Состояние мотора",
+                "no remind": "без оповещения",
+                "beep": "звуковой сигнал",
+                "rotation": "поворот",
+                "rotation and beep": "поворот и звуковой сигнал",
+                "Power on remind": "Оповещение при включении",
+                "Type": "Тип мотора",
+                "Main": "Основные",
+                "Limits": "Границы",
+                "Venetian blinds": "Венецианские шторы",
+                "Settings": "Настройки"
+            }
+        }
+    }
+}

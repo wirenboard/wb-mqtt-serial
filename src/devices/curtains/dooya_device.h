@@ -30,4 +30,9 @@ namespace Dooya
 
     std::vector<uint8_t> MakeRequest(uint16_t address, const std::vector<uint8_t>& data);
     size_t ParsePositionResponse(uint16_t address, uint8_t fn, uint8_t dataAddress, const std::vector<uint8_t>& bytes);
+    void ParseCommandResponse(uint16_t address,
+                              uint8_t fn,
+                              uint8_t dataAddress,
+                              const Dooya::TRequest& request,
+                              const std::vector<uint8_t>& responseBytes);
 }
