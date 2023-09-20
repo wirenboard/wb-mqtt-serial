@@ -20,7 +20,7 @@ namespace
         {PARAM, "param", "value", U8},
         {COMMAND, "command", "value", U8},
         {ANGLE, "angle", "value", U8},
-        {MOTOR_TYPE, "type", "text", U8, true},
+        {MOTOR_TYPE, "type", "text", String, true},
     };
 
     enum TCommands

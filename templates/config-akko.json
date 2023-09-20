@@ -208,6 +208,7 @@
                 "address": "0xF0",
                 "enabled": false,
                 "readonly": true,
+                "string_data_size": 10,
                 "group": "settings"
             },
             {
