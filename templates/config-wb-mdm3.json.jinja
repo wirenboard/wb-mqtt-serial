@@ -2,8 +2,6 @@
 {% set OUTPUTS_NUMBER = 3 -%}
 {% set PRESS_TYPES = ["short", "long", "double", "short long"] %}
 
-"sporadic": true,
-
 {
     "title": "WB-MDM3_template_title",
     "device_type": "WB-MDM3",
@@ -17,81 +15,130 @@
         "enable_wb_continuous_read": true,
 
         "groups": [
-            {
-                "title": "Inputs",
-                "id": "inputs",
-                "order": 1
-            },
             {% for ch_number in range(0, OUTPUTS_NUMBER) -%}
             {
-                "title": "Channel {{ch_number + 1}}",
-                "id": "channel_{{ch_number + 1}}",
-                "order": {{2 + ch_number}}
+                "title": "Inputs {{ch_number * 2 + 1}}-{{ch_number * 2 + 2}}",
+                "id": "inputs{{ch_number * 2 + 1}}{{ch_number * 2 + 2}}",
+                "order": {{ch_number + 1}}
+            },
+            {% endfor -%}
+            {% for ch_number in range(1, INPUTS_NUMBER + 1) -%}
+            {
+                "title": "Input {{ch_number}}",
+                "id": "input_{{ch_number}}",
+                "order": {{ch_number % 2 + 1}},
+                "group": "inputs{{(ch_number - 1) // 2 * 2 + 1}}{{(ch_number - 1) // 2 * 2 + 2}}"
+            },
+            {% endfor -%}
+            {% for ch_number in range(1, OUTPUTS_NUMBER + 1) -%}
+            {
+                "title": "Channel {{ch_number}}",
+                "id": "channel_{{ch_number}}",
+                "order": {{3 + ch_number}}
             },
             {% endfor -%}
             {
                 "title": "General",
                 "id": "general",
-                "order": {{1 + OUTPUTS_NUMBER + 1}}
+                "order": {{3 + OUTPUTS_NUMBER + 1}}
             },
             {
                 "title": "HW Info",
                 "id": "hw_info",
-                "order": {{1 + OUTPUTS_NUMBER + 2}}
+                "order": {{3 + OUTPUTS_NUMBER + 2}}
             },
             {
                 "title": "Debug",
                 "id": "debug",
-                "order": {{1 + OUTPUTS_NUMBER + 3}}
+                "order": {{3 + OUTPUTS_NUMBER + 3}}
             }
         ],
 
-        "parameters": {
-            "inputs12_mode": {
-                "title": "Inputs 1-2 Mode",
-                "address": 16,
+        "parameters": [
+            {% for ch_number in range(0, OUTPUTS_NUMBER) -%}
+            {
+                "id": "inputs{{ch_number * 2 + 1}}{{ch_number * 2 + 2}}_mode",
+                "title": "Inputs Mode",
+                "address": {{16 + ch_number}},
                 "reg_type": "holding",
-                "enum": [0, 1, 2],
+                "enum": [0, 1, 2, 3],
                 "default": 0,
                 "enum_titles": [
                     "control disabled",
-                    "channel 1: 1-button control",
-                    "channel 1: 2-button control"
+                    "channel {{1 + ch_number}}: 1-button control",
+                    "channel {{1 + ch_number}}: 2-button control",
+                    "custom mode"
                 ],
-                "group": "inputs",
+                "group": "inputs{{ch_number * 2 + 1}}{{ch_number * 2 + 2}}",
                 "order": 1
             },
-            "inputs34_mode": {
-                "title": "Inputs 3-4 Mode",
-                "address": 17,
+            {% endfor -%}
+
+            {% for ch_number in range(0, INPUTS_NUMBER) -%}
+            {% for press_type in PRESS_TYPES -%}
+            {% set action_bind = ("input {} {} press output".format(ch_number + 1, press_type))|replace(' ', '_')  %}
+            {% set selected_mode = ("inputs{}{}_mode".format(ch_number // 2 * 2 + 1, ch_number // 2 * 2 + 2)) %}
+            {
+                "id": "{{action_bind}}_number",
+                "title": "Output Number",
+                "address": {{768 + (loop.index0 * 16) + ch_number}},
                 "reg_type": "holding",
-                "enum": [0, 1, 2],
-                "default": 0,
+                "enum": [0, 1, 2, 3, 4, 100],
                 "enum_titles": [
-                    "control disabled",
-                    "channel 2: 1-button control",
-                    "channel 2: 2-button control"
+                    "No Action",
+                    "Output 1",
+                    "Output 2",
+                    "Output 3",
+                    "Output 4",
+                    "All Outputs"
                 ],
-                "group": "inputs",
-                "order": 2
+                "default": 0,
+                "group": "input_{{ch_number + 1}}",
+                "order": 1,
+                "condition": "{{selected_mode}}==3)"
             },
-            "inputs56_mode": {
-                "title": "Inputs 5-6 Mode",
-                "address": 18,
+            {
+                "id": "{{action_bind}}_action_single",
+                "title": "Action",
+                "address": {{832 + (loop.index0 * 16) + ch_number}},
                 "reg_type": "holding",
-                "enum": [0, 1, 2],
-                "default": 0,
+                {% if press_type in ["long", "short long"] %}"enum": [0, 1, 2, 3, 4, 5],{% else %}"enum": [0, 1, 2, 3, 4],{% endif %}
                 "enum_titles": [
-                    "control disabled",
-                    "channel 3: 1-button control",
-                    "channel 3: 2-button control"
+                    "Turn Off",
+                    "Turn On",
+                    "Toggle",
+                    "Decrease level",
+                    "Increase level"{% if press_type in ["long", "short long"] %},
+                    "Increase/Decrease level"{% endif %}
                 ],
-                "group": "inputs",
-                "order": 3
+                "default": 0,
+                "group": "input_{{ch_number + 1}}",
+                "order": 2,
+                "condition": "({{action_bind}}_number!=0)&&({{action_bind}}_number!=100)&&{{selected_mode}}==3)"
             },
+            {
+                "id": "{{action_bind}}_action_all",
+                "title": "Action",
+                "address": {{832 + (loop.index0 * 16) + ch_number}},
+                "reg_type": "holding",
+                "enum": [0, 1, 3, 4],
+                "enum_titles": [
+                    "Turn Off",
+                    "Turn On",
+                    "Increase level",
+                    "Decrease level"
+                ],
+                "default": 0,
+                "group": "input_{{ch_number + 1}}",
+                "order": 2,
+                "condition": "(({{ action_bind }}_number==100)&&{{selected_mode}}==3)"
+            },
+            {% endfor -%}{% endfor -%}
+
 
             {% for ch_number in range(0, OUTPUTS_NUMBER) -%}
-            "channel{{ ch_number + 1}}_dimming_curve": {
+            {
+                "id": "channel{{ ch_number + 1}}_dimming_curve",
                 "title": "Channel {{ ch_number + 1}} Dimming Curve",
                 "address": {{50 + ch_number}},
                 "reg_type": "holding",
@@ -105,7 +152,8 @@
                 "group": "channel_{{ ch_number + 1}}",
                 "order": 1
             },
-            "channel{{ ch_number + 1}}_dimming_type": {
+            {
+                "id": "channel{{ ch_number + 1}}_dimming_type",
                 "title": "Channel {{ ch_number + 1}} Dimming Type",
                 "address": {{60 + ch_number}},
                 "reg_type": "holding",
@@ -118,7 +166,8 @@
                 "group": "channel_{{ ch_number + 1 }}",
                 "order": 2
             },
-            "channel{{ ch_number + 1 }}_min_value": {
+            {
+                "id": "channel{{ ch_number + 1 }}_min_value",
                 "title": "Channel {{ ch_number + 1 }} Min Value (us)",
                 "description": "channel_min_value_description",
                 "address": {{70 + ch_number}},
@@ -129,7 +178,8 @@
                 "group": "channel_{{ ch_number + 1 }}",
                 "order": 3
             },
-            "channel{{ ch_number + 1 }}_max_value": {
+            {
+                "id": "channel{{ ch_number + 1 }}_max_value",
                 "title": "Channel {{ ch_number + 1 }} Max Value (us)",
                 "description": "channel_max_value_description",
                 "address": {{80 + ch_number}},
@@ -140,7 +190,8 @@
                 "group": "channel_{{ ch_number + 1 }}",
                 "order": 4
             },
-            "channel{{ ch_number + 1 }}_increase_rate": {
+            {
+                "id": "channel{{ ch_number + 1 }}_increase_rate",
                 "title": "Channel {{ ch_number + 1 }} Increase Rate (ms/%)",
                 "address": {{140 + ch_number}},
                 "reg_type": "holding",
@@ -150,7 +201,8 @@
                 "group": "channel_{{ ch_number + 1 }}",
                 "order": 5
             },
-            "channel{{ ch_number + 1 }}_decrease_rate": {
+            {
+                "id": "channel{{ ch_number + 1 }}_decrease_rate",
                 "title": "Channel {{ ch_number + 1 }} Decrease Rate (ms/%)",
                 "address": {{150 + ch_number}},
                 "reg_type": "holding",
@@ -162,7 +214,8 @@
             },
             {% endfor -%}
 
-            "baud_rate": {
+            {
+                "id": "baud_rate",
                 "title": "Baud rate",
                 "description": "baud_rate_description",
                 "address": 110,
@@ -179,7 +232,7 @@
                 "group": "general",
                 "order": 1
             }
-        },
+        ],
 
         "channels": [
             {% for ch_number in range(0, INPUTS_NUMBER) -%}
@@ -188,14 +241,48 @@
                 "reg_type": "discrete",
                 "address": {{ch_number}},
                 "type": "switch",
-                "group": "inputs"
+                "group": "inputs{{ch_number // 2 * 2 + 1}}{{ch_number // 2 * 2 + 2}}",
+                "sporadic": true
             },
             {
                 "name": "Input {{ch_number + 1}} counter",
                 "reg_type": "input",
                 "address": {{32 + ch_number}},
                 "type": "value",
-                "group": "inputs"
+                "group": "inputs{{ch_number // 2 * 2 + 1}}{{ch_number // 2 * 2 + 2}}",
+                "sporadic": true
+            },
+            {
+                "name": "Input {{ch_number + 1}} Short Press Counter",
+                "reg_type": "input",
+                "address": {{464 + ch_number}},
+                "type": "value",
+                "group": "inputs{{ch_number // 2 * 2 + 1}}{{ch_number // 2 * 2 + 2}}",
+                "sporadic": true
+            },
+            {
+                "name": "Input {{ch_number + 1}} Long Press Counter",
+                "reg_type": "input",
+                "address": {{480 + ch_number}},
+                "type": "value",
+                "group": "inputs{{ch_number // 2 * 2 + 1}}{{ch_number // 2 * 2 + 2}}",
+                "sporadic": true
+            },
+            {
+                "name": "Input {{ch_number + 1}} Double Press Counter",
+                "reg_type": "input",
+                "address": {{496 + ch_number}},
+                "type": "value",
+                "group": "inputs{{ch_number // 2 * 2 + 1}}{{ch_number // 2 * 2 + 2}}",
+                "sporadic": true
+            },
+            {
+                "name": "Input {{ch_number + 1}} Short Long Press Counter",
+                "reg_type": "input",
+                "address": {{512 + ch_number}},
+                "type": "value",
+                "group": "inputs{{ch_number // 2 * 2 + 1}}{{ch_number // 2 * 2 + 2}}",
+                "sporadic": true
             },
             {% endfor -%}
 
