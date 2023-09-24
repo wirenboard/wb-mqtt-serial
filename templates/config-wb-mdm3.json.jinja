@@ -29,6 +29,14 @@
                 "order": {{ch_number % 2 + 1}},
                 "group": "inputs{{(ch_number - 1) // 2 * 2 + 1}}{{(ch_number - 1) // 2 * 2 + 2}}"
             },
+            {% for press_type in PRESS_TYPES -%}
+            {
+                "title": "{{ press_type | title }} Press Action",
+                "id": "input_{{ ch_number }}_{{ press_type | replace(' ', '_') }}_press_action",
+                "group": "input_{{ ch_number }}",
+                "order": {{loop.index}}
+            },
+            {% endfor -%}
             {% endfor -%}
             {% for ch_number in range(1, OUTPUTS_NUMBER + 1) -%}
             {
@@ -93,9 +101,9 @@
                     "All Outputs"
                 ],
                 "default": 0,
-                "group": "input_{{ch_number + 1}}",
+                "group": "input_{{ ch_number + 1 }}_{{ press_type | replace(' ', '_') }}_press_action",
                 "order": 1,
-                "condition": "{{selected_mode}}==3)"
+                "condition": "{{selected_mode}}==3"
             },
             {
                 "id": "{{action_bind}}_action_single",
@@ -112,9 +120,9 @@
                     "Increase/Decrease level"{% endif %}
                 ],
                 "default": 0,
-                "group": "input_{{ch_number + 1}}",
+                "group": "input_{{ ch_number + 1 }}_{{ press_type | replace(' ', '_') }}_press_action",
                 "order": 2,
-                "condition": "({{action_bind}}_number!=0)&&({{action_bind}}_number!=100)&&{{selected_mode}}==3)"
+                "condition": "((isDefined({{action_bind}}_number))&&({{action_bind}}_number!=0)&&({{action_bind}}_number!=100)&&({{selected_mode}}==3))"
             },
             {
                 "id": "{{action_bind}}_action_all",
@@ -129,13 +137,11 @@
                     "Decrease level"
                 ],
                 "default": 0,
-                "group": "input_{{ch_number + 1}}",
+                "group": "input_{{ ch_number + 1 }}_{{ press_type | replace(' ', '_') }}_press_action",
                 "order": 2,
-                "condition": "(({{ action_bind }}_number==100)&&{{selected_mode}}==3)"
+                "condition": "((isDefined({{action_bind}}_number))&&({{ action_bind }}_number==100)&&({{selected_mode}}==3))"
             },
             {% endfor -%}{% endfor -%}
-
-
             {% for ch_number in range(0, OUTPUTS_NUMBER) -%}
             {
                 "id": "channel{{ ch_number + 1}}_dimming_curve",
