@@ -1,6 +1,6 @@
 {% set INPUTS_NUMBER = 6 -%}
 {% set OUTPUTS_NUMBER = 3 -%}
-{% set PRESS_TYPES = ["short", "long", "double", "short long"] %}
+{% set PRESS_TYPES = ["short", "long", "double", "short long"] -%}
 
 {
     "title": "WB-MDM3_template_title",
@@ -85,7 +85,7 @@
             {% for ch_number in range(0, INPUTS_NUMBER) -%}
             {% for press_type in PRESS_TYPES -%}
             {% set action_bind = ("input {} {} press output".format(ch_number + 1, press_type))|replace(' ', '_')  %}
-            {% set selected_mode = ("inputs{}{}_mode".format(ch_number // 2 * 2 + 1, ch_number // 2 * 2 + 2)) %}
+            {% set selected_mode = ("inputs{}{}_mode".format(ch_number // 2 * 2 + 1, ch_number // 2 * 2 + 2)) -%}
             {
                 "id": "{{action_bind}}_number",
                 "title": "Output Number",
