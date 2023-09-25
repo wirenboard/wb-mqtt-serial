@@ -12,16 +12,16 @@ namespace
         PARAM,
         COMMAND,
         ANGLE,
-        MOTOR_TYPE
+        MOTOR_TYPE,
+        MOTOR_SITUATION
     };
 
-    const TRegisterTypes RegTypes{
-        {POSITION, "position", "value", U8},
-        {PARAM, "param", "value", U8},
-        {COMMAND, "command", "value", U8},
-        {ANGLE, "angle", "value", U8},
-        {MOTOR_TYPE, "type", "text", String, true},
-    };
+    const TRegisterTypes RegTypes{{POSITION, "position", "value", U8},
+                                  {PARAM, "param", "value", U8},
+                                  {COMMAND, "command", "value", U8},
+                                  {ANGLE, "angle", "value", U8},
+                                  {MOTOR_TYPE, "type", "text", String, true},
+                                  {MOTOR_SITUATION, "status", "text", String, true}};
 
     enum TCommands
     {
@@ -200,6 +200,20 @@ void Dooya::TDevice::WriteRegisterImpl(PRegister reg, const TRegisterValue& regV
     }
 }
 
+TRegisterValue Dooya::TDevice::ReadEnumParameter(TRegister& reg, const std::unordered_map<uint8_t, std::string>& names)
+{
+    auto addr = GetUint32RegisterAddress(reg.GetAddress());
+    TRequest req;
+    req.Data = MakeRequest(SlaveId, {READ, static_cast<uint8_t>(addr & 0xFF), 1});
+    req.ResponseSize = RESPONSE_SIZE;
+    uint8_t res = ParseReadResponse(SlaveId, READ, 1, ExecCommand(req));
+    auto it = names.find(res);
+    if (it != names.end()) {
+        return TRegisterValue{it->second};
+    }
+    return TRegisterValue{"0x" + WBMQTT::HexDump(&res, 1)};
+}
+
 TRegisterValue Dooya::TDevice::ReadRegisterImpl(PRegister reg)
 {
     switch (reg->Type) {
@@ -225,19 +239,15 @@ TRegisterValue Dooya::TDevice::ReadRegisterImpl(PRegister reg)
             return TRegisterValue{ParseReadResponse(SlaveId, READ, 1, ExecCommand(req))};
         }
         case MOTOR_TYPE: {
-            auto addr = GetUint32RegisterAddress(reg->GetAddress());
-            TRequest req;
-            req.Data = MakeRequest(SlaveId, {READ, static_cast<uint8_t>(addr & 0xFF), 1});
-            req.ResponseSize = RESPONSE_SIZE;
-            uint8_t res = ParseReadResponse(SlaveId, READ, 1, ExecCommand(req));
-            switch (res) {
-                case 0x11:
-                    return TRegisterValue{"roller"};
-                case 0x12:
-                    return TRegisterValue{"venetian"};
-                default:
-                    return TRegisterValue{"0x" + WBMQTT::HexDump(&res, 1)};
-            }
+            std::unordered_map<uint8_t, std::string> names{{0x11, "roller"}, {0x12, "venetian"}};
+            return ReadEnumParameter(*reg, names);
+        }
+        case MOTOR_SITUATION: {
+            std::unordered_map<uint8_t, std::string> names{{0, "stopped"},
+                                                           {1, "opening"},
+                                                           {2, "closing"},
+                                                           {3, "setting"}};
+            return ReadEnumParameter(*reg, names);
         }
     }
     throw TSerialDevicePermanentRegisterException("Unsupported register type");

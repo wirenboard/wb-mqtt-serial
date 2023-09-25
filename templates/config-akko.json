@@ -41,7 +41,8 @@
                     "rotation",
                     "beep",
                     "rotation and beep"
-                ]
+                ],
+                "group": "settings"
             }
         },
         "channels": [
@@ -52,24 +53,6 @@
                 "type": "range",
                 "max": 100,
                 "group": "main"
-            },
-            {
-                "name": "Angle",
-                "reg_type": "angle",
-                "address": 0,
-                "max": 180,
-                "type": "range",
-                "enabled": false,
-                "group": "venetian"
-            },
-            {
-                "name": "Jogging mode",
-                "address": "0x0A",
-                "reg_type": "param",
-                "max": 1,
-                "type": "switch",
-                "enabled": false,
-                "group": "settings"
             },
             {
                 "name": "Open",
@@ -90,6 +73,15 @@
                 "type": "pushbutton",
                 "reg_type": "command",
                 "address": "0x03",
+                "group": "main"
+            },
+            {
+                "name": "Motor situation",
+                "reg_type": "status",
+                "address": "0x05",
+                "enabled": false,
+                "readonly": true,
+                "string_data_size": 10,
                 "group": "main"
             },
             {
@@ -187,10 +179,28 @@
                 "group": "limits"
             },
             {
-                "name": "Factory Default",
-                "type": "pushbutton",
-                "reg_type": "command",
+                "name": "Angle",
+                "reg_type": "angle",
+                "address": 0,
+                "max": 180,
+                "type": "range",
+                "enabled": false,
+                "group": "venetian"
+            },
+            {
+                "name": "Angle coefficient",
+                "reg_type": "param",
                 "address": "0x08",
+                "enabled": false,
+                "group": "venetian"
+            },
+            {
+                "name": "Jogging mode",
+                "address": "0x0A",
+                "reg_type": "param",
+                "max": 1,
+                "type": "switch",
+                "enabled": false,
                 "group": "settings"
             },
             {
@@ -212,26 +222,19 @@
                 "group": "settings"
             },
             {
-                "name": "Motor situation",
-                "reg_type": "param",
-                "address": "0x05",
-                "enabled": false,
-                "readonly": true,
-                "group": "main"
-            },
-            { 
-                "name": "Angle coefficient",
-                "reg_type": "param",
-                "address": "0x08",
-                "enabled": false,
-                "group": "venetian"
-            },
-            {
                 "name": "Power on remind",
                 "address": "0x0C",
                 "reg_type": "param",
                 "max": 3,
                 "enabled": false,
+                "group": "settings",
+                "type": "range"
+            },
+            {
+                "name": "Factory Default",
+                "type": "pushbutton",
+                "reg_type": "command",
+                "address": "0x08",
                 "group": "settings"
             }
         ],

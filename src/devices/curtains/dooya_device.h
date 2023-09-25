@@ -17,6 +17,7 @@ namespace Dooya
         TRequest GetPositionCommand;
 
         std::vector<uint8_t> ExecCommand(const TRequest& request);
+        TRegisterValue ReadEnumParameter(TRegister& reg, const std::unordered_map<uint8_t, std::string>& names);
 
     public:
         TDevice(PDeviceConfig config, PPort port, PProtocol protocol);
