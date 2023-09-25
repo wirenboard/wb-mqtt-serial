@@ -61,7 +61,7 @@ bool TMilurDevice::ConnectionSetup()
     uint8_t buf[MAX_LEN];
     WriteCommand(0x08, setupCmd, 7);
     try {
-        if (!ReadResponse(0x08, buf, 1, ExpectNBytes(SlaveIdWidth, 5)))
+        if (!ReadResponse(0x08, buf, 1, ExpectNBytes(SlaveIdWidth, SlaveIdWidth + 4)))
             return false;
         if (buf[0] != uint8_t(DeviceConfig()->AccessLevel))
             throw TSerialDeviceException("invalid milur access level in response");
