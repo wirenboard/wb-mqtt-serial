@@ -48,6 +48,12 @@
                 "order": {{loop.index}}
             },
             {% endfor -%}
+            {
+                "title": "Input Parameters",
+                "id": "input_{{ ch_number }}_parameters",
+                "group": "input_{{ ch_number }}",
+                "order": 5
+            },
             {% endfor -%}
             {% for ch_number in range(1, OUTPUTS_NUMBER + 1) -%}
             {
@@ -153,6 +159,44 @@
                 "condition": "((isDefined({{action_bind}}_number))&&({{ action_bind }}_number==100)&&({{selected_mode}}==3))"
             },
             {% endfor -%}{% endfor -%}
+            {% for ch_number in range(0, INPUTS_NUMBER) -%}
+            {
+                "id": "input_{{ch_number + 1}}_hold_time",
+                "title": "Long Press Time (ms)",
+                "description": "input_hold_time_description",
+                "address": {{1100 + ch_number}},
+                "reg_type": "holding",
+                "default": 1000,
+                "min": 500,
+                "max": 5000,
+                "group": "input_{{ch_number + 1}}_parameters",
+                "order": 1
+            },
+            {
+                "id": "input_{{ch_number + 1}}_double_time",
+                "title": "Second Press Waiting Time (ms)",
+                "description": "input_double_time_description",
+                "address": {{1140 + ch_number}},
+                "reg_type": "holding",
+                "default": 300,
+                "min": 0,
+                "max": 2000,
+                "group": "input_{{ch_number + 1}}_parameters",
+                "order": 2
+            },
+            {
+                "id": "input_{{ch_number + 1}}_debounce_time",
+                "title": "Debounce Time (ms)",
+                "description": "input_debounce_time_description",
+                "address": {{1160 + ch_number}},
+                "reg_type": "holding",
+                "default": 50,
+                "min": 5,
+                "max": 200,
+                "group": "input_{{ch_number + 1}}_parameters",
+                "order": 3
+            },
+            {% endfor -%}
             {% for ch_number in range(0, OUTPUTS_NUMBER) -%}
             {
                 "id": "channel{{ ch_number + 1}}_dimming_curve",
@@ -210,6 +254,7 @@
             {
                 "id": "channel{{ ch_number + 1 }}_increase_rate",
                 "title": "Channel {{ ch_number + 1 }} Increase Rate (ms/%)",
+                "description": "increase_rate_description",
                 "address": {{140 + ch_number}},
                 "reg_type": "holding",
                 "min": 1,
@@ -221,6 +266,7 @@
             {
                 "id": "channel{{ ch_number + 1 }}_decrease_rate",
                 "title": "Channel {{ ch_number + 1 }} Decrease Rate (ms/%)",
+                "description": "decrease_rate_description",
                 "address": {{150 + ch_number}},
                 "reg_type": "holding",
                 "min": 1,
@@ -419,6 +465,15 @@
                 "inputs_mode_description": "Custom mode allows to set actions for each input and press type. Available since firmware version 2.7.0",
                 "channel_min_value_description": "Raw dimmer value corresponding to minimum brightness (1%)",
                 "channel_max_value_description": "Raw dimmer value corresponding to maximum brightness (100%)",
+
+                "increase_rate_description": "During smooth transitions, channel level will be decreased by 1% every specified period of time",
+                "decrease_rate_description": "During smooth transitions, channel level will be increased by 1% every specified period of time",
+                "action_repeat_time_description": "During long-lasting actions channel level will be changed by 1% every specified period of time",
+
+                "input_hold_time_description": "Presses that last longer than the specified time are counted as long presses",
+                "input_double_time_description": "If there is no second press during the specified time then press is single. 0 - disables all presses except short and long. Adds a delay to the response to a short press",
+                "input_debounce_time_description": "Must be 5-10 times less than second press waiting time. Adds a delay to the response to presses",
+
                 "baud_rate_description": "Make sure that communication with device is established before changing this parameter. Select required baud rate, save configuration and then change port baud rate to the same value.",
                 "Uptime": "Uptime (s)"
             },
@@ -480,6 +535,18 @@
                 "Increase/Decrease level": "Увеличить/уменьшить уровень",
                 "Output Number": "Номер выхода",
                 "Action": "Действие",
+
+                "Long Press Time (ms)": "Время длинного нажатия (мс)",
+                "Second Press Waiting Time (ms)": "Время ожидания второго нажатия (мс)",
+                "Debounce Time (ms)": "Время подавления дребезга (мс)",
+
+                "input_hold_time_description": "Если нажатие длится больше указанного времени - считаем его длинным",
+                "input_double_time_description": "Если за указанное время второго нажатия не было - считаем нажатие одиночным. 0 - отключит все нажатия кроме короткого и длинного. Вносит задержку в реакцию на короткое нажатие",
+                "input_debounce_time_description": "Должно быть в 5-10 раз меньше, чем время ожидания второго нажатия. Вносит задержку в реакцию на нажатия",
+
+                "decrease_rate_description": "Во время плавных переходов, выходной уровень будет уменьшаться на 1% через указанный период времени",
+                "increase_rate_description": "Во время плавных переходов, выходной уровень будет увеличиваться на 1% через указанный период времени",
+                "action_repeat_time_description": "Во время долгих действий, выходной уровень будет изменяться на 1% через указанный период времени",
 
                 "Serial": "Серийный номер",
                 "FW Version": "Версия прошивки",
