@@ -8,14 +8,9 @@
         "guard_interval_us": 5000,
         "groups": [
             {
-                "title": "Sensors", 
-                "id": "sensors",
-                "order": 1
-            },
-            {
-                "title": "Parameters",
+                "title": "Parameters", 
                 "id": "parameters",
-                "order": 2
+                "order": 1
             }
         ],
         "channels": [
@@ -30,7 +25,7 @@
                 "max": 50,
                 "readonly": true,
                 "scale": 0.1,
-                "group": "sensors"
+                "group": "parameters"
             },     
             {
                 "name": "Fan status",
@@ -38,7 +33,7 @@
                 "address": "1",
                 "type": "value",
                 "format": "u16",
-                "group": "sensors"
+                "group": "parameters"
             },
             {
                 "name": "Valve status",
@@ -47,7 +42,7 @@
                 "type": "value",
                 "format": "u16",
                 "readonly": true,
-                "group": "sensors"
+                "group": "parameters"
             },           
             {
                 "name": "Mode operation",
@@ -116,7 +111,9 @@
                 "reg_type": "holding",
                 "address": "6",
                 "type": "value",
-                "format": "u8",
+                "format": "bcd16",
+                "min": 0,
+                "max": 23,
                 "readonly": false,
                 "group": "parameters"
             },
@@ -125,7 +122,9 @@
                 "reg_type": "holding",
                 "address": "7",
                 "type": "value",
-                "format": "u8",
+                "format": "bcd16",
+                "min": 0,
+                "max": 59,
                 "readonly": false,
                 "group": "parameters"
             },
@@ -550,7 +549,6 @@
         ],
         "translations": {
             "ru": {
-                "Sensors": "Датчики",
                 "Parameters": "Параметры",
                 "Return air temperature": "Температура в помещении",
                 "Fan status": "Статус вентилятора",
