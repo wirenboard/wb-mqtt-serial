@@ -275,6 +275,18 @@
                 "group": "channel_{{ ch_number + 1 }}",
                 "order": 6
             },
+            {
+                "id": "action{{ch_number + 1}}_repeat_time",
+                "title": "Action repeat time (ms)",
+                "description": "action_repeat_time_description",
+                "group": "channel_{{ch_number + 1}}",
+                "address": {{896 + ch_number}},
+                "reg_type": "holding",
+                "default": 40,
+                "min": 5,
+                "max": 500,
+                "order": 7
+            },
             {% endfor -%}
 
             {
