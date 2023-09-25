@@ -428,13 +428,21 @@
           "default": -1,
           "propertyOrder": 107
         },
+        "force_frame_timeout": {
+          "type": "boolean",
+          "title": "Force frame timeout",
+          "description": "force_frame_timeout_desc",
+          "default": false,
+          "_format": "checkbox",
+          "propertyOrder": 108
+        },
         "response_timeout_ms": {
           "type": "integer",
           "title": "Response timeout (ms)",
           "description": "response_timeout_description",
           "minimum": -1,
           "default": -1,
-          "propertyOrder": 108
+          "propertyOrder": 109
         },
         "device_timeout_ms": {
           "type": "integer",
@@ -442,7 +450,7 @@
           "description": "device_timeout_description",
           "minimum": -1,
           "default": 3000,
-          "propertyOrder": 109
+          "propertyOrder": 110
         },
         "device_max_fail_cycles": {
           "type": "integer",
@@ -450,7 +458,7 @@
           "description": "device_max_fail_cycles_desc",
           "minimum": -1,
           "default": 2,
-          "propertyOrder": 110
+          "propertyOrder": 111
         }
       }
     },
@@ -1977,7 +1985,8 @@
       "g-power-meter": "Energy meters",
       "g-thermostat": "Thermostats",
       "g-motor-control": "Motor controllers",
-      "g-custom": "Custom devices"
+      "g-custom": "Custom devices",
+      "force_frame_timeout_desc": "Wait frame timeout after receiving expected frame bytes count. All extra data is treated as noise and is dropped."
     },
     "ru": {
       "Serial Device Driver Configuration": "Настройка драйвера serial-устройств",
@@ -2170,7 +2179,9 @@
       "g-power-meter": "Счётчики электроэнергии",
       "g-thermostat": "Термостаты",
       "g-motor-control": "Управление двигателями (преобразователи частоты)",
-      "g-custom": "Произвольные устройства"
+      "g-custom": "Произвольные устройства",
+      "force_frame_timeout_desc": "Использовать значение задержки между сообщениями для определения границ пакетов. Продолжать принимать данные, даже если получено ожидаемое число байт. Все дополнительно полученные данные будут отброшены. Более строгое соблюдение стандарта MODBUS, но медленнее опрос",
+      "Force frame timeout": "Разделять сообщения по времени"
     }
   }
 }

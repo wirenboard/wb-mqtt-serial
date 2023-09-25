@@ -979,6 +979,9 @@ namespace Modbus // modbus protocol common utilities
 
     // TModbusRTUTraits
 
+    TModbusRTUTraits::TModbusRTUTraits(bool forceFrameTimeout): ForceFrameTimeout(forceFrameTimeout)
+    {}
+
     TPort::TFrameCompletePred TModbusRTUTraits::ExpectNBytes(int n) const
     {
         return [=](uint8_t* buf, int size) {
@@ -1020,6 +1023,11 @@ namespace Modbus // modbus protocol common utilities
         uint16_t crc = (res[rc - 2] << 8) + res[rc - 1];
         if (crc != CRC16::CalculateCRC16(res.data(), rc - 2)) {
             throw TInvalidCRCError();
+        }
+
+        if (ForceFrameTimeout) {
+            std::array<uint8_t, 256> buf;
+            port.ReadFrame(buf.data(), buf.size(), frameTimeout, frameTimeout);
         }
 
         auto requestSlaveId = req[0];
@@ -1135,12 +1143,12 @@ namespace Modbus // modbus protocol common utilities
         return &frame[MBAP_SIZE];
     }
 
-    std::unique_ptr<Modbus::IModbusTraits> TModbusRTUTraitsFactory::GetModbusTraits(PPort /*port*/)
+    std::unique_ptr<Modbus::IModbusTraits> TModbusRTUTraitsFactory::GetModbusTraits(PPort port, bool forceFrameTimeout)
     {
-        return std::make_unique<Modbus::TModbusRTUTraits>();
+        return std::make_unique<Modbus::TModbusRTUTraits>(forceFrameTimeout);
     }
 
-    std::unique_ptr<Modbus::IModbusTraits> TModbusTCPTraitsFactory::GetModbusTraits(PPort port)
+    std::unique_ptr<Modbus::IModbusTraits> TModbusTCPTraitsFactory::GetModbusTraits(PPort port, bool forceFrameTimeout)
     {
         auto it = TransactionIds.find(port);
         if (it == TransactionIds.end()) {
