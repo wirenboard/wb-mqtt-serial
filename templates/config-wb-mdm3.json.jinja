@@ -1,6 +1,6 @@
 {% set INPUTS_NUMBER = 6 -%}
 {% set OUTPUTS_NUMBER = 3 -%}
-{% set PRESS_TYPES = ["short", "long", "double", "short long"] -%}
+{% set PRESS_TYPES = ["single", "long", "double", "shortlong"] -%}
 
 {
     "title": "WB-MDM3_template_title",
@@ -258,7 +258,7 @@
                 "sporadic": true
             },
             {
-                "name": "Input {{ch_number + 1}} Short Press Counter",
+                "name": "Input {{ch_number + 1}} Single Press Counter",
                 "reg_type": "input",
                 "address": {{464 + ch_number}},
                 "type": "value",
@@ -282,7 +282,7 @@
                 "sporadic": true
             },
             {
-                "name": "Input {{ch_number + 1}} Short Long Press Counter",
+                "name": "Input {{ch_number + 1}} Shortlong Press Counter",
                 "reg_type": "input",
                 "address": {{512 + ch_number}},
                 "type": "value",
@@ -451,10 +451,10 @@
                 "Input {{ch_number}} Short Long Press Counter": "Счетчик коротких, а затем длинных нажатий входа {{ch_number}}",
                 {% endfor -%}
 
-                "Short Press Action": "Действие для короткого нажатия",
+                "Single Press Action": "Действие для короткого нажатия",
                 "Long Press Action": "Действие для длинного нажатия",
                 "Double Press Action": "Действие для двойного нажатия",
-                "Short Long Press Action": "Действие для короткого, затем длинного нажатия",
+                "Shortlong Press Counter": "Действие для короткого, затем длинного нажатия",
 
                 "No Action": "Ничего не делать",
                 "All Outputs": "Все выходы",
