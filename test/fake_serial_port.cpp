@@ -168,16 +168,17 @@ size_t TFakeSerialPort::ReadFrame(uint8_t* buf,
     }
     size_t nread = 0;
     uint8_t* p = buf;
-    for (; nread < count; ++nread) {
+    while (nread < count) {
         if (RespPos == Resp.size())
             break;
         int b = Resp[RespPos++];
-        // TBD: after frame_ready arg is added,
-        // make sure the frame becomes 'ready' exactly on the boundary.
-        // Note though that frame_ready will be optional.
         if (b == FRAME_BOUNDARY)
             break;
         *p++ = (uint8_t)b;
+        ++nread;
+        if (frame_complete && frame_complete(buf, nread)) {
+            break;
+        }
     }
     DumpWhatWasRead();
     if (nread == 0) {
@@ -189,9 +190,14 @@ size_t TFakeSerialPort::ReadFrame(uint8_t* buf,
 void TFakeSerialPort::SkipNoise()
 {
     CheckPortOpen();
+    if (RespPos != 0 && Resp[RespPos - 1] != FRAME_BOUNDARY) {
+        while (RespPos < Resp.size() && Resp[RespPos] != FRAME_BOUNDARY) {
+            RespPos++;
+        }
+    }
     SkipFrameBoundary();
-    DumpWhatWasRead();
     Fixture.Emit() << "SkipNoise()";
+    DumpWhatWasRead();
 }
 
 void TFakeSerialPort::SleepSinceLastInteraction(const std::chrono::microseconds& us)

@@ -26,7 +26,12 @@ public:
                                PPort port,
                                PProtocol protocol) const override
     {
-        auto dev = std::make_shared<Dev>(ModbusTraitsFactory->GetModbusTraits(port), deviceConfig, port, protocol);
+        bool forceFrameTimeout = false;
+        WBMQTT::JSON::Get(data, "force_frame_timeout", forceFrameTimeout);
+        auto dev = std::make_shared<Dev>(ModbusTraitsFactory->GetModbusTraits(port, forceFrameTimeout),
+                                         deviceConfig,
+                                         port,
+                                         protocol);
         dev->InitSetupItems();
         return dev;
     }

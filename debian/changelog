@@ -1,3 +1,11 @@
+wb-mqtt-serial (2.68.6-wb108) stable; urgency=medium
+
+  * Add force frame timeout config parameter.
+    Some devices can send garbage after responses, so packet end can be defined only by time between bytes.
+    All extra data is dropped.
+
+ -- Petr Krasnoshchekov <petr.krasnoshchekov@wirenboard.com>  Mon, 25 Sep 2023 12:26:12 +0500
+
 wb-mqtt-serial (2.68.6-wb106) stable; urgency=medium
 
   * Template for WB-MAI6 was added
