@@ -18179,6 +18179,15 @@ WB-MDM3
 	Input 6 counter  =>  Input 6 counter
 	K1  =>  K1
 	K2  =>  K2
+	K3  =>  K3
+	Last AC Voltage Period (us)  =>  Last AC Voltage Period (us)
+	MCU Temperature  =>  MCU Temperature
+	MCU Voltage  =>  MCU Voltage
+	Overcurrent  =>  Overcurrent
+	Serial  =>  Serial
+	Supply voltage  =>  Supply voltage
+	Uptime  =>  Uptime
+	Zero-Сross Offset (us)  =>  Zero-Сross Offset (us)
 WB-MIR
 	External Temperature Sensor  =>  External Temperature Sensor
 	Input Voltage  =>  Input Voltage
