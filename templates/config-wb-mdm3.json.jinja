@@ -78,14 +78,15 @@
             {
                 "id": "inputs{{ch_number * 2 + 1}}{{ch_number * 2 + 2}}_mode",
                 "title": "Inputs Mode",
+                "description": "inputs_mode_description",
                 "address": {{16 + ch_number}},
                 "reg_type": "holding",
                 "enum": [0, 1, 2, 3],
                 "default": 0,
                 "enum_titles": [
                     "control disabled",
-                    "channel {{1 + ch_number}}: 1-button control",
-                    "channel {{1 + ch_number}}: 2-button control",
+                    "1-button control",
+                    "2-button control",
                     "custom mode"
                 ],
                 "group": "inputs{{ch_number * 2 + 1}}{{ch_number * 2 + 2}}",
@@ -415,6 +416,7 @@
         "translations": {
             "en": {
                 "WB-MDM3_template_title": "WB-MDM3 (3-channel MOSFET dimmer)",
+                "inputs_mode_description": "Custom mode allows to set actions for each input and press type. Available since firmware version 2.7.0",
                 "channel_min_value_description": "Raw dimmer value corresponding to minimum brightness (1%)",
                 "channel_max_value_description": "Raw dimmer value corresponding to maximum brightness (100%)",
                 "baud_rate_description": "Make sure that communication with device is established before changing this parameter. Select required baud rate, save configuration and then change port baud rate to the same value.",
@@ -428,7 +430,10 @@
                 "Debug": "Диагностика",
                 "Inputs Mode": "Режим работы входов",
                 "control disabled": "Управление отключено",
+                "1-button control": "1-кнопочный режим",
+                "2-button control": "2-кнопочный режим",
                 "custom mode": "Пользовательский режим",
+                "inputs_mode_description": "Пользовательский режим позволяет задать действия для каждого входа и типа нажатия. Доступно с версии прошивки 2.7.0",
                 "LED lamp or incandescent lamp (logarithmic)": "лампа светодиодная или накаливания (логарифмическая кривая яркости)",
                 "resistive load (linear)": "резистивная нагрузка (линейная кривая яркости)",
                 "switching mode (on/off)": "ключевой режим",
@@ -447,8 +452,6 @@
                 "Channel {{ch_number}} Max Value (us)": "Верхний порог диммирования канала {{ch_number}} (мкс)",
                 "Channel {{ch_number}} Increase Rate (ms/%)": "Скорость увеличения яркости канала {{ch_number}} (мс/%)",
                 "Channel {{ch_number}} Decrease Rate (ms/%)": "Скорость уменьшения яркости канала {{ch_number}} (мс/%)",
-                "channel {{ch_number}}: 1-button control": "1-кнопочный режим",
-                "channel {{ch_number}}: 2-button control": "2-кнопочный режим",
                 "Inputs {{(ch_number - 1) * 2 + 1}}-{{(ch_number - 1) * 2 + 2}}": "Входы {{(ch_number - 1) * 2 + 1}}-{{(ch_number - 1) * 2 + 2}}",
                 "Output {{ch_number}}": "Выход {{ch_number}}",
                 {% endfor -%}
