@@ -21,12 +21,23 @@
                 "id": "inputs{{ch_number * 2 + 1}}{{ch_number * 2 + 2}}",
                 "order": {{ch_number + 1}}
             },
+            {
+                "title": "Inputs {{ch_number * 2 + 1}}-{{ch_number * 2 + 2}} Counters",
+                "id": "inputs{{ch_number * 2 + 1}}{{ch_number * 2 + 2}}_counters",
+                "group": "inputs{{ch_number * 2 + 1}}{{ch_number * 2 + 2}}",
+                "order": 3,
+                "ui_options": {
+                    "wb": {
+                        "disable_title": true
+                    }
+                }
+            },
             {% endfor -%}
             {% for ch_number in range(1, INPUTS_NUMBER + 1) -%}
             {
                 "title": "Input {{ch_number}}",
                 "id": "input_{{ch_number}}",
-                "order": {{ch_number % 2 + 1}},
+                "order": {{(ch_number + 1) % 2 + 1}},
                 "group": "inputs{{(ch_number - 1) // 2 * 2 + 1}}{{(ch_number - 1) // 2 * 2 + 2}}"
             },
             {% for press_type in PRESS_TYPES -%}
@@ -109,13 +120,13 @@
                 "title": "Action",
                 "address": {{832 + (loop.index0 * 16) + ch_number}},
                 "reg_type": "holding",
-                {% if press_type in ["long", "short long"] %}"enum": [0, 1, 2, 3, 4, 5],{% else %}"enum": [0, 1, 2, 3, 4],{% endif %}
+                {% if press_type in ["long", "shortlong"] %}"enum": [0, 1, 2, 3, 4, 5],{% else %}"enum": [0, 1, 2, 3, 4],{% endif %}
                 "enum_titles": [
                     "Turn Off",
                     "Turn On",
                     "Toggle",
                     "Decrease level",
-                    "Increase level"{% if press_type in ["long", "short long"] %},
+                    "Increase level"{% if press_type in ["long", "shortlong"] %},
                     "Increase/Decrease level"{% endif %}
                 ],
                 "default": 0,
@@ -246,7 +257,7 @@
                 "reg_type": "discrete",
                 "address": {{ch_number}},
                 "type": "switch",
-                "group": "inputs{{ch_number // 2 * 2 + 1}}{{ch_number // 2 * 2 + 2}}",
+                "group": "inputs{{ch_number // 2 * 2 + 1}}{{ch_number // 2 * 2 + 2}}_counters",
                 "sporadic": true
             },
             {
@@ -254,7 +265,7 @@
                 "reg_type": "input",
                 "address": {{32 + ch_number}},
                 "type": "value",
-                "group": "inputs{{ch_number // 2 * 2 + 1}}{{ch_number // 2 * 2 + 2}}",
+                "group": "inputs{{ch_number // 2 * 2 + 1}}{{ch_number // 2 * 2 + 2}}_counters",
                 "sporadic": true
             },
             {
@@ -262,7 +273,7 @@
                 "reg_type": "input",
                 "address": {{464 + ch_number}},
                 "type": "value",
-                "group": "inputs{{ch_number // 2 * 2 + 1}}{{ch_number // 2 * 2 + 2}}",
+                "group": "inputs{{ch_number // 2 * 2 + 1}}{{ch_number // 2 * 2 + 2}}_counters",
                 "sporadic": true
             },
             {
@@ -270,7 +281,7 @@
                 "reg_type": "input",
                 "address": {{480 + ch_number}},
                 "type": "value",
-                "group": "inputs{{ch_number // 2 * 2 + 1}}{{ch_number // 2 * 2 + 2}}",
+                "group": "inputs{{ch_number // 2 * 2 + 1}}{{ch_number // 2 * 2 + 2}}_counters",
                 "sporadic": true
             },
             {
@@ -278,7 +289,7 @@
                 "reg_type": "input",
                 "address": {{496 + ch_number}},
                 "type": "value",
-                "group": "inputs{{ch_number // 2 * 2 + 1}}{{ch_number // 2 * 2 + 2}}",
+                "group": "inputs{{ch_number // 2 * 2 + 1}}{{ch_number // 2 * 2 + 2}}_counters",
                 "sporadic": true
             },
             {
@@ -286,7 +297,7 @@
                 "reg_type": "input",
                 "address": {{512 + ch_number}},
                 "type": "value",
-                "group": "inputs{{ch_number // 2 * 2 + 1}}{{ch_number // 2 * 2 + 2}}",
+                "group": "inputs{{ch_number // 2 * 2 + 1}}{{ch_number // 2 * 2 + 2}}_counters",
                 "sporadic": true
             },
             {% endfor -%}
@@ -445,10 +456,10 @@
                 {% for ch_number in range(1, INPUTS_NUMBER + 1) -%}
                 "Input {{ch_number}}": "Вход {{ch_number}}",
                 "Input {{ch_number}} counter": "Счетчик {{ch_number}}",
-                "Input {{ch_number}} Short Press Counter": "Счетчик коротких нажатий входа {{ch_number}}",
+                "Input {{ch_number}} Single Press Counter": "Счетчик коротких нажатий входа {{ch_number}}",
                 "Input {{ch_number}} Long Press Counter": "Счетчик длинных нажатий входа {{ch_number}}",
                 "Input {{ch_number}} Double Press Counter": "Счетчик двойных нажатий входа {{ch_number}}",
-                "Input {{ch_number}} Short Long Press Counter": "Счетчик коротких, а затем длинных нажатий входа {{ch_number}}",
+                "Input {{ch_number}} Shortlong Press Counter": "Счетчик коротких, а затем длинных нажатий входа {{ch_number}}",
                 {% endfor -%}
 
                 "Single Press Action": "Действие для короткого нажатия",
