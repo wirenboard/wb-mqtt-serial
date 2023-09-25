@@ -456,18 +456,16 @@
                 "Channel 3 Decrease Rate (ms/%)": "Скорость уменьшения яркости канала 3 (мс/%)",
                 "Baud rate": "Скорость обмена",
                 "baud_rate_description": "Перед изменением параметра убедитесь, что связь с устройством установлена. Выберите нужную скорость обмена, сохраните конфигурацию, а затем укажите в настройках порта эту же скорость.",
-                "Input 1": "Вход 1",
-                "Input 2": "Вход 2",
-                "Input 3": "Вход 3",
-                "Input 4": "Вход 4",
-                "Input 5": "Вход 5",
-                "Input 6": "Вход 6",
-                "Input 1 counter": "Счетчик 1",
-                "Input 2 counter": "Счетчик 2",
-                "Input 3 counter": "Счетчик 3",
-                "Input 4 counter": "Счетчик 4",
-                "Input 5 counter": "Счетчик 5",
-                "Input 6 counter": "Счетчик 6",
+
+                {% for ch_number in range(1, INPUTS_NUMBER + 1) -%}
+                "Input {{ch_number}}": "Вход {{ch_number}}",
+                "Input {{ch_number}} counter": "Счетчик {{ch_number}}",
+                "Input {{ch_number}} Short Press Counter": "Счетчик коротких нажатий входа {{ch_number}}",
+                "Input {{ch_number}} Long Press Counter": "Счетчик длинных нажатий входа {{ch_number}}",
+                "Input {{ch_number}} Double Press Counter": "Счетчик двойных нажатий входа {{ch_number}}",
+                "Input {{ch_number}} Short Long Press Counter": "Счетчик коротких, а затем длинных нажатий входа {{ch_number}}",
+                {% endfor -%}
+
                 "Serial": "Серийный номер",
                 "FW Version": "Версия прошивки",
                 "Supply voltage": "Напряжение питания",
