@@ -25,7 +25,7 @@
                 "title": "Inputs {{ch_number * 2 + 1}}-{{ch_number * 2 + 2}} Counters",
                 "id": "inputs{{ch_number * 2 + 1}}{{ch_number * 2 + 2}}_counters",
                 "group": "inputs{{ch_number * 2 + 1}}{{ch_number * 2 + 2}}",
-                "order": 3,
+                "order": 4,
                 "ui_options": {
                     "wb": {
                         "disable_title": true
@@ -37,7 +37,7 @@
             {
                 "title": "Input {{ch_number}}",
                 "id": "input_{{ch_number}}",
-                "order": {{(ch_number + 1) % 2 + 1}},
+                "order": {{(ch_number + 1) % 2 + 2}},
                 "group": "inputs{{(ch_number - 1) // 2 * 2 + 1}}{{(ch_number - 1) // 2 * 2 + 2}}"
             },
             {% for press_type in PRESS_TYPES -%}
