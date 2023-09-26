@@ -21,17 +21,6 @@
                 "id": "inputs{{ch_number * 2 + 1}}{{ch_number * 2 + 2}}",
                 "order": {{ch_number + 1}}
             },
-            {
-                "title": "Inputs {{ch_number * 2 + 1}}-{{ch_number * 2 + 2}} Counters",
-                "id": "inputs{{ch_number * 2 + 1}}{{ch_number * 2 + 2}}_counters",
-                "group": "inputs{{ch_number * 2 + 1}}{{ch_number * 2 + 2}}",
-                "order": 4,
-                "ui_options": {
-                    "wb": {
-                        "disable_title": true
-                    }
-                }
-            },
             {% endfor -%}
             {% for ch_number in range(1, INPUTS_NUMBER + 1) -%}
             {
@@ -55,11 +44,22 @@
                 "order": 5
             },
             {% endfor -%}
-            {% for ch_number in range(1, OUTPUTS_NUMBER + 1) -%}
+            {% for ch_number in range(0, OUTPUTS_NUMBER) -%}
             {
-                "title": "Channel {{ch_number}}",
-                "id": "channel_{{ch_number}}",
-                "order": {{3 + ch_number}}
+                "title": "Channel {{ch_number + 1}}",
+                "id": "channel_{{ch_number + 1}}",
+                "order": {{3 + ch_number + 1}}
+            },
+            {
+                "title": "Inputs {{ch_number * 2 + 1}}-{{ch_number * 2 + 2}} Counters",
+                "id": "inputs{{ch_number * 2 + 1}}{{ch_number * 2 + 2}}_counters",
+                "group": "inputs{{ch_number * 2 + 1}}{{ch_number * 2 + 2}}",
+                "order": 4,
+                "ui_options": {
+                    "wb": {
+                        "disable_title": true
+                    }
+                }
             },
             {% endfor -%}
             {
