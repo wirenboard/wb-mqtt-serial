@@ -32,6 +32,7 @@ public:
  *  Future polling can be successful.
  *  Polling of other registers of the device is allowed.
  *  Current register read should be marked as read error.
+ *  Current register write should be marked as write error, retry to write.
  *  Example: crc error, answer timeout.
  */
 class TSerialDeviceTransientErrorException: public TSerialDeviceException
@@ -45,6 +46,7 @@ public:
  *  Future polling can be successful.
  *  Polling of other registers of the device is allowed.
  *  Current register read should be marked as read error.
+ *  Current register write should be marked as write error, but do not retry to write.
  *  Example: reading curtain motor position returns invalid position due to motor misconfiguration.
  */
 class TSerialDeviceInternalErrorException: public TSerialDeviceTransientErrorException

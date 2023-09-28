@@ -19,6 +19,34 @@ bool TRegisterHandler::NeedToFlush()
     return Dirty;
 }
 
+void TRegisterHandler::HandleWriteErrorNoRetry(const TRegisterValue& tempValue, const char* msg)
+{
+    LOG(Warn) << "failed to write: " << Reg->ToString() << ": " << msg;
+    {
+        std::lock_guard<std::mutex> lock(SetValueMutex);
+        Dirty = (tempValue != ValueToSet);
+        WriteFail = false;
+    }
+    Reg->SetError(TRegister::TError::WriteError);
+}
+
+void TRegisterHandler::HandleWriteErrorRetryWrite(const TRegisterValue& tempValue, const char* msg)
+{
+    LOG(Warn) << "failed to write: " << Reg->ToString() << ": " << msg;
+    {
+        std::lock_guard<std::mutex> lock(SetValueMutex);
+        if (!WriteFail) {
+            WriteFirstTryTime = steady_clock::now();
+        }
+        WriteFail = true;
+        if (duration_cast<seconds>(steady_clock::now() - WriteFirstTryTime) > MAX_WRITE_FAIL_TIME) {
+            Dirty = (tempValue != ValueToSet);
+            WriteFail = false;
+        }
+    }
+    Reg->SetError(TRegister::TError::WriteError);
+}
+
 void TRegisterHandler::Flush()
 {
     TRegisterValue tempValue; // must be volatile
@@ -35,29 +63,14 @@ void TRegisterHandler::Flush()
         }
         Reg->SetValue(tempValue, false);
         Reg->ClearError(TRegister::TError::WriteError);
+    } catch (const TSerialDeviceInternalErrorException& e) {
+        HandleWriteErrorNoRetry(tempValue, e.what());
+        return;
     } catch (const TSerialDevicePermanentRegisterException& e) {
-        LOG(Warn) << "failed to write: " << Reg->ToString() << ": " << e.what();
-        {
-            std::lock_guard<std::mutex> lock(SetValueMutex);
-            Dirty = (tempValue != ValueToSet);
-            WriteFail = false;
-        }
-        Reg->SetError(TRegister::TError::WriteError);
+        HandleWriteErrorNoRetry(tempValue, e.what());
         return;
     } catch (const TSerialDeviceException& e) {
-        LOG(Warn) << "failed to write: " << Reg->ToString() << ": " << e.what();
-        {
-            std::lock_guard<std::mutex> lock(SetValueMutex);
-            if (!WriteFail) {
-                WriteFirstTryTime = steady_clock::now();
-            }
-            WriteFail = true;
-            if (duration_cast<seconds>(steady_clock::now() - WriteFirstTryTime) > MAX_WRITE_FAIL_TIME) {
-                Dirty = (tempValue != ValueToSet);
-                WriteFail = false;
-            }
-        }
-        Reg->SetError(TRegister::TError::WriteError);
+        HandleWriteErrorRetryWrite(tempValue, e.what());
     }
 }
 
