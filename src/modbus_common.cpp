@@ -1029,7 +1029,7 @@ namespace Modbus // modbus protocol common utilities
             std::array<uint8_t, 256> buf;
             try {
                 port.ReadFrame(buf.data(), buf.size(), frameTimeout, frameTimeout);
-            } catch (const TResponseTimeoutException& e) {
+            } catch (const TSerialDeviceTransientErrorException& e) {
                 // No extra data
             }
         }
