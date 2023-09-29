@@ -1,8 +1,14 @@
+wb-mqtt-serial (2.103.0) stable; urgency=medium
+
+* Add new template Ridan Greencon-R
+
+ -- Roman Matveev <roman.matveev@wirenboard.ru>  Fri, 29 Sep 2023 11:29:00 +0300
+
 wb-mqtt-serial (2.102.0) stable; urgency=medium
 
-  * Add new template Ridan Greencon-R
+  * Add AKKO curtain motors support
 
- -- Roman Matveev <roman.matveev@wirenboard.ru>  Fri, 22 Sep 2023 17:19:00 +0300
+ -- Petr Krasnoshchekov <petr.krasnoshchekov@wirenboard.com>  Tue, 19 Sep 2023 15:50:58 +0500
 
 wb-mqtt-serial (2.101.0) stable; urgency=medium
 

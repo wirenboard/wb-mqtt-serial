@@ -141,6 +141,22 @@
       ]
     },
 
+    "parameters": {
+      "oneOf": [
+        {
+          "type": "object",
+          "propertyNames": {
+            "pattern": "^(?!(?:break|case|catch|class|const|continue|debugger|default|delete|do|else|enum|export|extends|false|finally|for|function|if|import|in|instanceof|new|null|return|super|switch|this|throw|true|try|typeof|var|void|while|with)\\b)[a-zA-Z_$][a-zA-Z0-9_$]*$"
+          },
+          "additionalProperties": { "$ref": "#/definitions/parameter" }
+        },
+        {
+          "type": "array",
+          "items": { "$ref": "#/definitions/parameter_in_array" }
+        }
+      ]
+    },
+
     "subdevice_channel": {
       "type": "object",
       "properties": {
@@ -183,20 +199,8 @@
           "type": "array",
           "items": { "$ref": "#/definitions/setup_item" }
         },
-        "parameters": {
-          "oneOf": [
-            {
-              "type": "object",
-              "propertyNames": {
-                "pattern": "^(?!(?:break|case|catch|class|const|continue|debugger|default|delete|do|else|enum|export|extends|false|finally|for|function|if|import|in|instanceof|new|null|return|super|switch|this|throw|true|try|typeof|var|void|while|with)\\b)[a-zA-Z_$][a-zA-Z0-9_$]*$"
-              },
-              "additionalProperties": { "$ref": "#/definitions/parameter" }
-            },
-            {
-              "type": "array",
-              "items": { "$ref": "#/definitions/parameter_in_array" }
-            }
-          ]
+        "parameters": { 
+          "$ref": "#/definitions/parameters"
         },
         "channels" : {
           "type": "array",
@@ -301,7 +305,7 @@
           "properties": {
             "protocol": {
               "type": "string",
-              "enum": ["milur", "mercury230", "ivtm", "pulsar", "mercury200", "lls", "neva", "energomera_iec", "windeco", "dooya"]
+              "enum": ["milur", "mercury230", "ivtm", "pulsar", "mercury200", "lls", "neva", "energomera_iec", "windeco"]
             },
             "parameters": { "not" : {} },
             "subdevices": { "not" : {} }
@@ -319,9 +323,11 @@
           "properties": {
             "protocol": {
               "type": "string",
-              "enum": ["uniel", "s2k"]
+              "enum": ["uniel", "s2k", "dooya"]
             },
-            "parameters": { "not" : {} },
+            "parameters": { 
+              "$ref": "#/definitions/parameters"
+            },
             "subdevices": { "not" : {} }
           },
           "required": ["protocol"]
