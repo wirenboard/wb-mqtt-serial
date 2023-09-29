@@ -2038,16 +2038,18 @@ void TModbusExpectations::EnqueueHoldingSeparateReadResponse(uint8_t exception)
         __func__);
 }
 
-void TModbusExpectations::EnqueueReadResponseWithNoiseAtTheEnd()
+void TModbusExpectations::EnqueueReadResponseWithNoiseAtTheEnd(bool addNoise)
 {
-    auto responseWithNoise = WrapPDU({
+    auto response = WrapPDU({
         0x03, // function code
         0x02, // byte count
         0x11, // data Hi 4
         0x78, // data Lo 4
     });
-    responseWithNoise.push_back(0xb0);
-    responseWithNoise.push_back(0xaa);
+    if (addNoise) {
+        response.push_back(0xb0);
+        response.push_back(0xaa);
+    }
     Expector()->Expect(WrapPDU({
                            0x03, // function code
                            0x27, // starting address Hi
@@ -2055,6 +2057,6 @@ void TModbusExpectations::EnqueueReadResponseWithNoiseAtTheEnd()
                            0x00, // quantity Hi
                            0x01, // quantity Lo
                        }),
-                       responseWithNoise,
+                       response,
                        __func__);
 }

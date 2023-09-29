@@ -78,5 +78,5 @@ public:
     void EnqueueHoldingSingleOneByOneReadResponse(uint8_t exception = 0);
     void EnqueueHoldingMultiOneByOneReadResponse(uint8_t exception = 0);
 
-    void EnqueueReadResponseWithNoiseAtTheEnd();
+    void EnqueueReadResponseWithNoiseAtTheEnd(bool addNoise);
 };

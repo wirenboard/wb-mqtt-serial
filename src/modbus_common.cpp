@@ -1027,7 +1027,11 @@ namespace Modbus // modbus protocol common utilities
 
         if (ForceFrameTimeout) {
             std::array<uint8_t, 256> buf;
-            port.ReadFrame(buf.data(), buf.size(), frameTimeout, frameTimeout);
+            try {
+                port.ReadFrame(buf.data(), buf.size(), frameTimeout, frameTimeout);
+            } catch (const TSerialDeviceTransientErrorException& e) {
+                // No extra data
+            }
         }
 
         auto requestSlaveId = req[0];

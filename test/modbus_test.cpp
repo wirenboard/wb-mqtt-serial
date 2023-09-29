@@ -394,7 +394,8 @@ TEST_F(TModbusTest, WrongFunctionCodeWithExceptionWrite)
 
 TEST_F(TModbusTest, SkipNoiseAtPacketEnd)
 {
-    EnqueueReadResponseWithNoiseAtTheEnd();
+    EnqueueReadResponseWithNoiseAtTheEnd(true);
+    EnqueueReadResponseWithNoiseAtTheEnd(false);
 
     auto modbusRtuTraits = std::make_unique<Modbus::TModbusRTUTraits>(true);
     auto deviceConfig = GetDeviceConfig();
@@ -407,6 +408,9 @@ TEST_F(TModbusTest, SkipNoiseAtPacketEnd)
     auto range = dev->CreateRegisterRange();
     auto reg = TRegister::Intern(dev, TRegisterConfig::Create(Modbus::REG_HOLDING, 0x272E, U16));
     range->Add(reg, std::chrono::milliseconds::max());
+    // Read with noise
+    EXPECT_NO_THROW(dev->ReadRegisterRange(range));
+    // Read without noise
     EXPECT_NO_THROW(dev->ReadRegisterRange(range));
 }
 
