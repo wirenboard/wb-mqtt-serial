@@ -492,7 +492,6 @@
         ],
         "translations": {
             "ru": {
-                "Parameters": "Параметры",
                 "Return air temperature": "Температура в помещении",
                 "Fan status": "Статус вентилятора",
                 "Valve status": "Статус привода",
