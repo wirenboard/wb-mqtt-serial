@@ -83,5 +83,5 @@ public:
     void EnqueueContinuousReadEnableResponse(bool ok = true);
     void EnqueueContinuousReadResponse(bool separated = true);
 
-    void EnqueueReadResponseWithNoiseAtTheEnd();
+    void EnqueueReadResponseWithNoiseAtTheEnd(bool addNoise);
 };
