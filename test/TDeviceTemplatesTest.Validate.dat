@@ -464,7 +464,7 @@ Ridan Greencon-R
 	Period 3 time (Mo-Fr), minutes  =>  Period 3 time (Mo-Fr), minutes
 	Period 3 time (Sat), hour  =>  Period 3 time (Sat), hour
 	Period 3 time (Sat), minutes  =>  Period 3 time (Sat), minutes
-	Period 3 time (Sun), hour =>  Period 3 time (Sun), hour
+	Period 3 time (Sun), hour  =>  Period 3 time (Sun), hour
 	Period 3 time (Sun), minutes  =>  Period 3 time (Sun), minutes
 	Period 4 temperature (Mo-Fr)  =>  Period 4 temperature (Mo-Fr)
 	Period 4 temperature (Sat)  =>  Period 4 temperature (Sat)
