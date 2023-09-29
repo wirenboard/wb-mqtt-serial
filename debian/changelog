@@ -1,3 +1,10 @@
+wb-mqtt-serial (2.68.6-wb109) stable; urgency=medium
+
+  * Fix timeout error when force frame timeout config parameter is enabled,
+    but there isn't extra garbage data after device's responses.
+
+ -- Petr Krasnoshchekov <petr.krasnoshchekov@wirenboard.com>  Fri, 29 Sep 2023 15:45:03 +0500
+
 wb-mqtt-serial (2.68.6-wb108) stable; urgency=medium
 
   * Add force frame timeout config parameter.
