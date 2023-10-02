@@ -89,10 +89,10 @@
                 "enum": [0, 1, 2, 3],
                 "default": 0,
                 "enum_titles": [
-                    "control disabled",
-                    "1-button control",
-                    "2-button control",
-                    "custom mode"
+                    "Control disabled",
+                    "Control output {{ch_number + 1}} in 1-button mode",
+                    "Control output {{ch_number + 1}} in 2-button mode",
+                    "Custom mode"
                 ],
                 "group": "g_mode",
                 "order": {{ch_number}}
@@ -498,10 +498,8 @@
                 "Debug": "Диагностика",
                 "Inputs Mode": "Режим работы входов",
                 "Input Parameters": "Параметры нажатий",
-                "control disabled": "Управление отключено",
-                "1-button control": "1-кнопочный режим",
-                "2-button control": "2-кнопочный режим",
-                "custom mode": "Пользовательский режим",
+                "Control disabled": "Управление отключено",
+                "Custom mode": "Пользовательский режим",
                 "inputs_mode_description": "Пользовательский режим позволяет задать действия для каждого входа и типа нажатия. Доступно с версии прошивки 2.7.0",
                 "LED lamp or incandescent lamp (logarithmic)": "лампа светодиодная или накаливания (логарифмическая кривая яркости)",
                 "resistive load (linear)": "резистивная нагрузка (линейная кривая яркости)",
@@ -523,6 +521,8 @@
                 "Channel {{ch_number}} Decrease Rate (ms/%)": "Скорость уменьшения яркости канала {{ch_number}} (мс/%)",
                 "Inputs {{(ch_number - 1) * 2 + 1}}-{{(ch_number - 1) * 2 + 2}} Mode": "Входы {{(ch_number - 1) * 2 + 1}}-{{(ch_number - 1) * 2 + 2}}",
                 "Output {{ch_number}}": "Выход {{ch_number}}",
+                "Control output {{ch_number + 1}} in 1-button mode": "Управление выходом {{ch_number}} в 1-кнопочном режиме",
+                "Control output {{ch_number + 1}} in 2-button mode": "Управление выходом {{ch_number}} в 2-кнопочном режиме",
                 {% endfor -%}
 
                 {% for ch_number in range(1, INPUTS_NUMBER + 1) -%}
