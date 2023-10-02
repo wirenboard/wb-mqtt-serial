@@ -1,8 +1,8 @@
-wb-mqtt-serial (2.102.0) stable; urgency=medium
+wb-mqtt-serial (2.104.0) stable; urgency=medium
 
   * WB-MDM3 template: rework to jinja, add button bindings functionality
 
- -- Pavel Gasheev <pavel.gasheev@wirenboard.ru>  Mon, 25 Sep 2023 09:32:07 +0300
+ -- Pavel Gasheev <pavel.gasheev@wirenboard.ru>  Mon, 02 Oct 2023 10:56:34 +0300
 
 wb-mqtt-serial (2.103.0) stable; urgency=medium
 
