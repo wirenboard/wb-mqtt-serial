@@ -82,7 +82,7 @@
             {% for ch_number in range(0, OUTPUTS_NUMBER) -%}
             {
                 "id": "inputs{{ch_number * 2 + 1}}{{ch_number * 2 + 2}}_mode",
-                "title": "Inputs {{ch_number * 2 + 1}}-{{ch_number * 2 + 2}} Mode",
+                "title": "Inputs {{ch_number * 2 + 1}}-{{ch_number * 2 + 2}}",
                 "description": "inputs_mode_description",
                 "address": {{16 + ch_number}},
                 "reg_type": "holding",
@@ -521,7 +521,7 @@
                 "Channel {{ch_number}} Max Value (us)": "Верхний порог диммирования канала {{ch_number}} (мкс)",
                 "Channel {{ch_number}} Increase Rate (ms/%)": "Скорость увеличения яркости канала {{ch_number}} (мс/%)",
                 "Channel {{ch_number}} Decrease Rate (ms/%)": "Скорость уменьшения яркости канала {{ch_number}} (мс/%)",
-                "Inputs {{(ch_number - 1) * 2 + 1}}-{{(ch_number - 1) * 2 + 2}} Mode": "Режим работы входов {{(ch_number - 1) * 2 + 1}}-{{(ch_number - 1) * 2 + 2}}",
+                "Inputs {{(ch_number - 1) * 2 + 1}}-{{(ch_number - 1) * 2 + 2}} Mode": "Входы {{(ch_number - 1) * 2 + 1}}-{{(ch_number - 1) * 2 + 2}}",
                 "Output {{ch_number}}": "Выход {{ch_number}}",
                 {% endfor -%}
 
