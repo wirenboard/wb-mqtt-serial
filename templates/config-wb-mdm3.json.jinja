@@ -15,19 +15,16 @@
         "enable_wb_continuous_read": true,
 
         "groups": [
-            {% for ch_number in range(0, OUTPUTS_NUMBER) -%}
             {
-                "title": "Inputs {{ch_number * 2 + 1}}-{{ch_number * 2 + 2}}",
-                "id": "inputs{{ch_number * 2 + 1}}{{ch_number * 2 + 2}}",
-                "order": {{ch_number + 1}}
+                "title": "Mode",
+                "id": "g_mode",
+                "order": 1
             },
-            {% endfor -%}
             {% for ch_number in range(1, INPUTS_NUMBER + 1) -%}
             {
                 "title": "Input {{ch_number}}",
                 "id": "input_{{ch_number}}",
-                "order": {{(ch_number + 1) % 2 + 2}},
-                "group": "inputs{{(ch_number - 1) // 2 * 2 + 1}}{{(ch_number - 1) // 2 * 2 + 2}}"
+                "order": {{(ch_number + 1) % 2 + 2}}
             },
             {% for press_type in PRESS_TYPES -%}
             {
@@ -50,10 +47,12 @@
                 "id": "channel_{{ch_number + 1}}",
                 "order": {{3 + ch_number + 1}}
             },
+            {% endfor -%}
+            {% for ch_number in range(1, INPUTS_NUMBER + 1) -%}
             {
-                "title": "Inputs {{ch_number * 2 + 1}}-{{ch_number * 2 + 2}} Counters",
-                "id": "inputs{{ch_number * 2 + 1}}{{ch_number * 2 + 2}}_counters",
-                "group": "inputs{{ch_number * 2 + 1}}{{ch_number * 2 + 2}}",
+                "title": "Inputs {{ch_number}} Counters",
+                "id": "input_{{ch_number}}_counters",
+                "group": "input_{{ch_number}}",
                 "order": 4,
                 "ui_options": {
                     "wb": {
@@ -83,7 +82,7 @@
             {% for ch_number in range(0, OUTPUTS_NUMBER) -%}
             {
                 "id": "inputs{{ch_number * 2 + 1}}{{ch_number * 2 + 2}}_mode",
-                "title": "Inputs Mode",
+                "title": "Inputs {{ch_number * 2 + 1}}-{{ch_number * 2 + 2}} Mode",
                 "description": "inputs_mode_description",
                 "address": {{16 + ch_number}},
                 "reg_type": "holding",
@@ -95,8 +94,8 @@
                     "2-button control",
                     "custom mode"
                 ],
-                "group": "inputs{{ch_number * 2 + 1}}{{ch_number * 2 + 2}}",
-                "order": 1
+                "group": "g_mode",
+                "order": {{ch_number}}
             },
             {% endfor -%}
 
@@ -316,7 +315,7 @@
                 "reg_type": "discrete",
                 "address": {{ch_number}},
                 "type": "switch",
-                "group": "inputs{{ch_number // 2 * 2 + 1}}{{ch_number // 2 * 2 + 2}}_counters",
+                "group": "input_{{ch_number + 1}}_counters",
                 "sporadic": true
             },
             {
@@ -324,7 +323,7 @@
                 "reg_type": "input",
                 "address": {{32 + ch_number}},
                 "type": "value",
-                "group": "inputs{{ch_number // 2 * 2 + 1}}{{ch_number // 2 * 2 + 2}}_counters",
+                "group": "input_{{ch_number + 1}}_counters",
                 "sporadic": true
             },
             {
@@ -332,7 +331,7 @@
                 "reg_type": "input",
                 "address": {{464 + ch_number}},
                 "type": "value",
-                "group": "inputs{{ch_number // 2 * 2 + 1}}{{ch_number // 2 * 2 + 2}}_counters",
+                "group": "input_{{ch_number + 1}}_counters",
                 "sporadic": true
             },
             {
@@ -340,7 +339,7 @@
                 "reg_type": "input",
                 "address": {{480 + ch_number}},
                 "type": "value",
-                "group": "inputs{{ch_number // 2 * 2 + 1}}{{ch_number // 2 * 2 + 2}}_counters",
+                "group": "input_{{ch_number + 1}}_counters",
                 "sporadic": true
             },
             {
@@ -349,7 +348,7 @@
                 "address": {{496 + ch_number}},
                 "type": "value",
                 "enabled": false,
-                "group": "inputs{{ch_number // 2 * 2 + 1}}{{ch_number // 2 * 2 + 2}}_counters",
+                "group": "input_{{ch_number + 1}}_counters",
                 "sporadic": true
             },
             {
@@ -358,7 +357,7 @@
                 "address": {{512 + ch_number}},
                 "type": "value",
                 "enabled": false,
-                "group": "inputs{{ch_number // 2 * 2 + 1}}{{ch_number // 2 * 2 + 2}}_counters",
+                "group": "input_{{ch_number + 1}}_counters",
                 "sporadic": true
             },
             {% endfor -%}
@@ -493,7 +492,7 @@
             },
             "ru": {
                 "WB-MDM3_template_title": "WB-MDM3 (3-канальный диммер)",
-                "Inputs": "Входы",
+                "Mode": "Режим работы",
                 "General": "Общее",
                 "HW Info": "Данные модуля",
                 "Debug": "Диагностика",
@@ -522,7 +521,7 @@
                 "Channel {{ch_number}} Max Value (us)": "Верхний порог диммирования канала {{ch_number}} (мкс)",
                 "Channel {{ch_number}} Increase Rate (ms/%)": "Скорость увеличения яркости канала {{ch_number}} (мс/%)",
                 "Channel {{ch_number}} Decrease Rate (ms/%)": "Скорость уменьшения яркости канала {{ch_number}} (мс/%)",
-                "Inputs {{(ch_number - 1) * 2 + 1}}-{{(ch_number - 1) * 2 + 2}}": "Входы {{(ch_number - 1) * 2 + 1}}-{{(ch_number - 1) * 2 + 2}}",
+                "Inputs {{(ch_number - 1) * 2 + 1}}-{{(ch_number - 1) * 2 + 2}} Mode": "Режим работы входов {{(ch_number - 1) * 2 + 1}}-{{(ch_number - 1) * 2 + 2}}",
                 "Output {{ch_number}}": "Выход {{ch_number}}",
                 {% endfor -%}
 
