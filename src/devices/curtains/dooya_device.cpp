@@ -10,14 +10,18 @@ namespace
     {
         POSITION,
         PARAM,
-        COMMAND
+        COMMAND,
+        ANGLE,
+        MOTOR_TYPE,
+        MOTOR_SITUATION
     };
 
-    const TRegisterTypes RegTypes{
-        {POSITION, "position", "value", U8},
-        {PARAM, "param", "value", U8},
-        {COMMAND, "command", "value", U8},
-    };
+    const TRegisterTypes RegTypes{{POSITION, "position", "value", U8},
+                                  {PARAM, "param", "value", U8},
+                                  {COMMAND, "command", "value", U8},
+                                  {ANGLE, "angle", "value", U8},
+                                  {MOTOR_TYPE, "type", "text", String, true},
+                                  {MOTOR_SITUATION, "status", "text", String, true}};
 
     enum TCommands
     {
@@ -53,6 +57,11 @@ namespace
         return {Dooya::MakeRequest(address, {CONTROL, SET_POSITION, position}), RESPONSE_SIZE};
     }
 
+    Dooya::TRequest MakeSetAngleRequest(uint16_t address, uint8_t angle)
+    {
+        return {Dooya::MakeRequest(address, {CONTROL, SET_POSITION, 0xFF, angle}), RESPONSE_SIZE + 1};
+    }
+
     uint16_t CalcCrc(const uint8_t* data, size_t size)
     {
         auto crc = CRC16::CalculateCRC16(data, size);
@@ -61,7 +70,7 @@ namespace
 
     void Check(uint16_t address, size_t size, uint8_t fn, uint8_t dataAddress, const std::vector<uint8_t>& bytes)
     {
-        if (bytes.size() != size) {
+        if (bytes.size() < size) {
             throw TSerialDeviceTransientErrorException("Bad response size");
         }
         if (bytes[0] != 0x55) {
@@ -85,6 +94,20 @@ namespace
         Check(address, RESPONSE_SIZE, fn, dataAddress, bytes);
         return bytes[DATA_POSITION];
     }
+
+    TPort::TFrameCompletePred ExpectNBytes(size_t n)
+    {
+        return [=](uint8_t* buf, size_t size) {
+            if (size < n)
+                return false;
+            // Got expected bytes count and CRC is ok
+            if (size == n && Get<uint16_t>(buf + n - CRC_SIZE, buf + n) == CalcCrc(buf, n - CRC_SIZE)) {
+                return true;
+            }
+            // Malformed packet or packet with error code. Wait for frame timeout
+            return false;
+        };
+    }
 }
 
 void Dooya::TDevice::Register(TSerialDeviceFactory& factory)
@@ -107,12 +130,16 @@ Dooya::TDevice::TDevice(PDeviceConfig config, PPort port, PProtocol protocol)
 std::vector<uint8_t> Dooya::TDevice::ExecCommand(const TRequest& request)
 {
     Port()->WriteBytes(request.Data);
-    std::vector<uint8_t> respBytes(request.ResponseSize);
+    // Reserve extra space for packets with errors
+    // Example: Open command good response, 7 bytes: 55 01 01 03 01 b9 00
+    //          Open error (could be already opened), 8 bytes: 55 01 01 03 01 ff 81 f2
+    std::vector<uint8_t> respBytes(request.ResponseSize + 10);
     auto bytesRead = Port()
                          ->ReadFrame(respBytes.data(),
                                      respBytes.size(),
                                      DeviceConfig()->ResponseTimeout,
-                                     DeviceConfig()->FrameTimeout)
+                                     DeviceConfig()->FrameTimeout,
+                                     ExpectNBytes(request.ResponseSize))
                          .Count;
     respBytes.resize(bytesRead);
     return respBytes;
@@ -150,16 +177,41 @@ void Dooya::TDevice::WriteRegisterImpl(PRegister reg, const TRegisterValue& regV
             return;
         }
         case COMMAND: {
-            uint8_t dataAddress = GetUint32RegisterAddress(reg->GetAddress());
+            auto data = GetUint32RegisterAddress(reg->GetAddress());
             TRequest req;
-            req.Data = MakeRequest(SlaveId, {CONTROL, dataAddress});
-            req.ResponseSize = CONTROL_RESPONSE_SIZE;
-            if (req.Data != ExecCommand(req)) {
-                throw TSerialDeviceTransientErrorException("Bad response");
+            uint8_t dataAddress;
+            // Command with parameter
+            if (data > 0xFF) {
+                dataAddress = static_cast<uint8_t>((data >> 8) & 0xFF);
+                req.Data = MakeRequest(SlaveId, {CONTROL, dataAddress, static_cast<uint8_t>(data & 0xFF)});
+                req.ResponseSize = CONTROL_RESPONSE_SIZE + 1;
+            } else {
+                dataAddress = static_cast<uint8_t>(data & 0xFF);
+                req.Data = MakeRequest(SlaveId, {CONTROL, dataAddress});
+                req.ResponseSize = CONTROL_RESPONSE_SIZE;
             }
+            ParseCommandResponse(SlaveId, CONTROL, dataAddress, req, ExecCommand(req));
+            return;
+        }
+        case ANGLE: {
+            ExecCommand(MakeSetAngleRequest(SlaveId, value));
             return;
         }
     }
+}
+
+TRegisterValue Dooya::TDevice::ReadEnumParameter(TRegister& reg, const std::unordered_map<uint8_t, std::string>& names)
+{
+    auto addr = GetUint32RegisterAddress(reg.GetAddress());
+    TRequest req;
+    req.Data = MakeRequest(SlaveId, {READ, static_cast<uint8_t>(addr & 0xFF), 1});
+    req.ResponseSize = RESPONSE_SIZE;
+    uint8_t res = ParseReadResponse(SlaveId, READ, 1, ExecCommand(req));
+    auto it = names.find(res);
+    if (it != names.end()) {
+        return TRegisterValue{it->second};
+    }
+    return TRegisterValue{"0x" + WBMQTT::HexDump(&res, 1)};
 }
 
 TRegisterValue Dooya::TDevice::ReadRegisterImpl(PRegister reg)
@@ -178,6 +230,24 @@ TRegisterValue Dooya::TDevice::ReadRegisterImpl(PRegister reg)
         }
         case COMMAND: {
             return TRegisterValue{1};
+        }
+        case ANGLE: {
+            auto addr = 0x06;
+            TRequest req;
+            req.Data = MakeRequest(SlaveId, {READ, static_cast<uint8_t>(addr & 0xFF), 1});
+            req.ResponseSize = RESPONSE_SIZE;
+            return TRegisterValue{ParseReadResponse(SlaveId, READ, 1, ExecCommand(req))};
+        }
+        case MOTOR_TYPE: {
+            std::unordered_map<uint8_t, std::string> names{{0x11, "roller"}, {0x12, "venetian"}};
+            return ReadEnumParameter(*reg, names);
+        }
+        case MOTOR_SITUATION: {
+            std::unordered_map<uint8_t, std::string> names{{0, "stopped"},
+                                                           {1, "opening"},
+                                                           {2, "closing"},
+                                                           {3, "setting"}};
+            return ReadEnumParameter(*reg, names);
         }
     }
     throw TSerialDevicePermanentRegisterException("Unsupported register type");
@@ -206,4 +276,23 @@ size_t Dooya::ParsePositionResponse(uint16_t address,
         throw TSerialDeviceInternalErrorException("Unknown position");
     }
     return bytes[DATA_POSITION];
+}
+
+void Dooya::ParseCommandResponse(uint16_t address,
+                                 uint8_t fn,
+                                 uint8_t dataAddress,
+                                 const Dooya::TRequest& request,
+                                 const std::vector<uint8_t>& responseBytes)
+{
+    Check(address, request.ResponseSize, fn, dataAddress, responseBytes);
+
+    // Device must return the same bytes as in command
+    if (request.Data != responseBytes) {
+        // Unsupported command parameter or an internal device's error
+        // Example: move to unset position, no limit settings, open already opened curtain etc
+        if (responseBytes[DATA_POSITION] == 0xFF) {
+            throw TSerialDeviceInternalErrorException("device can't execute command");
+        }
+        throw TSerialDeviceInternalErrorException("response mismatch");
+    }
 }

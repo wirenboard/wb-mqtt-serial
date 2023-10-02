@@ -17,6 +17,7 @@ namespace Dooya
         TRequest GetPositionCommand;
 
         std::vector<uint8_t> ExecCommand(const TRequest& request);
+        TRegisterValue ReadEnumParameter(TRegister& reg, const std::unordered_map<uint8_t, std::string>& names);
 
     public:
         TDevice(PDeviceConfig config, PPort port, PProtocol protocol);
@@ -30,4 +31,9 @@ namespace Dooya
 
     std::vector<uint8_t> MakeRequest(uint16_t address, const std::vector<uint8_t>& data);
     size_t ParsePositionResponse(uint16_t address, uint8_t fn, uint8_t dataAddress, const std::vector<uint8_t>& bytes);
+    void ParseCommandResponse(uint16_t address,
+                              uint8_t fn,
+                              uint8_t dataAddress,
+                              const Dooya::TRequest& request,
+                              const std::vector<uint8_t>& responseBytes);
 }
