@@ -19,11 +19,6 @@
                 "order": 2
             },
             {
-                "title": "Venetian blinds",
-                "id": "venetian",
-                "order": 3
-            },
-            {
                 "title": "Settings",
                 "id": "settings",
                 "order": 4
@@ -179,22 +174,6 @@
                 "group": "limits"
             },
             {
-                "name": "Angle",
-                "reg_type": "angle",
-                "address": 0,
-                "max": 180,
-                "type": "range",
-                "enabled": false,
-                "group": "venetian"
-            },
-            {
-                "name": "Angle coefficient",
-                "reg_type": "param",
-                "address": "0x08",
-                "enabled": false,
-                "group": "venetian"
-            },
-            {
                 "name": "Jogging mode",
                 "address": "0x0A",
                 "reg_type": "param",
@@ -262,8 +241,6 @@
                 "Delete third limit": "Удалить третье положение",
                 "Delete forth limit": "Удалить четвёртое положение",
                 "Delete limits": "Удалить все границы",
-                "Angle coefficient": "Коэффициент угла поворота ламелей",
-                "Angle": "Угол поворота ламелей",
                 "Jogging mode": "Шаговый режим",
                 "Motor situation": "Состояние мотора",
                 "no remind": "без оповещения",
@@ -274,7 +251,6 @@
                 "Type": "Тип мотора",
                 "Main": "Основные",
                 "Limits": "Границы",
-                "Venetian blinds": "Венецианские шторы",
                 "Settings": "Настройки"
             }
         }
