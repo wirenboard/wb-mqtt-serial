@@ -1,0 +1,2959 @@
+{
+    "title": "Komfovent_ping2_template_title",
+    "device_type": "Komfovent_ping2",
+    "group": "g-climate-control",
+    "device": {
+        "name": "Komfovent_ping2",
+        "id": "Komfovent_ping2",
+        "groups": [
+            {
+                "title": "Main",
+                "id": "main",
+                "order": 1
+            },
+            {
+                "title": "Mode 1",
+                "id": "mode1",
+                "order": 2
+            },
+            {
+                "title": "Mode 2",
+                "id": "mode2",
+                "order": 3
+            },
+            {
+                "title": "Mode 3",
+                "id": "mode3",
+                "order": 4
+            },
+            {
+                "title": "Temperature maintenance mode",
+                "id": "temperatureMaintenanceMode",
+                "order": 5
+            },
+            {
+                "title": "OVR mode",
+                "id": "modeOvr",
+                "order": 6
+            },
+            {
+                "title": "Flow control mode",
+                "id": "flowСontrolMode",
+                "order": 7
+            },
+            {
+                "title": "Recirculation mode",
+                "id": "recirculationMode",
+                "order": 8
+            },
+            {
+                "title": "Functions",
+                "id": "functions",
+                "order": 9
+            },
+            {
+                "title": "Schedules",
+                "id": "schedules",
+                "order": 10
+            },
+            {
+                "title": "inputs",
+                "id": "inputs",
+                "order": 11
+            },
+            {
+                "title": "outputs",
+                "id": "outputs",
+                "order": 12
+            },
+            {
+                "title": "General",
+                "id": "general",
+                "order": 13
+            },
+            {
+                "title": "Sensors",
+                "id": "sensors",
+                "order": 14
+            },
+            {
+                "title": "Debug",
+                "id": "debug",
+                "order": 15
+            },
+            {
+                "title": "Alarms",
+                "id": "alarms",
+                "order": 16
+            },
+            {
+                "title": "Sunday",
+                "id": "Sunday",
+                "order": 1,
+                "group": "schedules"
+            },
+            {
+                "title": "Monday",
+                "id": "Monday",
+                "order": 2,
+                "group": "schedules" 
+            },
+            {
+                "title": "Tuesday",
+                "id": "Tuesday",
+                "order": 3,
+                "group": "schedules"  
+            },
+            {
+                "title": "Wednesday",
+                "id": "Wednesday",
+                "order": 4,
+                "group": "schedules"
+            },
+            {
+                "title": "Thursday",
+                "id": "Thursday",
+                "order": 5,
+                "group": "schedules" 
+            },
+            {
+                "title": "Friday",
+                "id": "Friday",
+                "order": 6,
+                "group": "schedules" 
+            },
+            {
+                "title": "Saturday",
+                "id": "Saturday",
+                "order": 7,
+                "group": "schedules" 
+            },
+            {
+                "title": "N1 Event",
+                "id": "N1_Event_for_Sunday",
+                "order": 1,
+                "group": "Sunday"
+                
+            },
+            {
+                "title": "N2 Event",
+                "id": "N2_Event_for_Sunday",
+                "order": 2,
+                "group": "Sunday"
+                
+            },
+            {
+                "title": "N3 Event",
+                "id": "N3_Event_for_Sunday",
+                "order": 3,
+                "group": "Sunday"
+                
+            },
+            {
+                "title": "N1 Event",
+                "id": "N1_Event_for_Monday",
+                "order": 1,
+                "group": "Monday"
+                
+            },
+            {
+                "title": "N2 Event",
+                "id": "N2_Event_for_Monday",
+                "order": 2,
+                "group": "Monday"
+                
+            },
+            {
+                "title": "N3 Event",
+                "id": "N3_Event_for_Monday",
+                "order": 3,
+                "group": "Monday"
+                
+            },
+            {
+                "title": "N1 Event",
+                "id": "N1_Event_for_Tuesday",
+                "order": 1,
+                "group": "Tuesday"
+                
+            },
+            {
+                "title": "N2 Event",
+                "id": "N2_Event_for_Tuesday",
+                "order": 2,
+                "group": "Tuesday"
+                
+            },
+            {
+                "title": "N3 Event",
+                "id": "N3_Event_for_Tuesday",
+                "order": 3,
+                "group": "Tuesday"
+                
+            },
+            {
+                "title": "N1 Event",
+                "id": "N1_Event_for_Wednesday",
+                "order": 1,
+                "group": "Wednesday"
+                
+            },
+            {
+                "title": "N2 Event",
+                "id": "N2_Event_for_Wednesday",
+                "order": 2,
+                "group": "Wednesday"
+                
+            },
+            {
+                "title": "N3 Event",
+                "id": "N3_Event_for_Wednesday",
+                "order": 3,
+                "group": "Wednesday"
+                
+            },
+            {
+                "title": "N1 Event",
+                "id": "N1_Event_for_Thursday",
+                "order": 1,
+                "group": "Thursday"
+                
+            },
+            {
+                "title": "N2 Event",
+                "id": "N2_Event_for_Thursday",
+                "order": 2,
+                "group": "Thursday"
+                
+            },
+            {
+                "title": "N3 Event",
+                "id": "N3_Event_for_Thursday",
+                "order": 3,
+                "group": "Thursday"
+                
+            },
+            {
+                "title": "N1 Event",
+                "id": "N1_Event_for_Friday",
+                "order": 1,
+                "group": "Friday"
+                
+            },
+            {
+                "title": "N2 Event",
+                "id": "N2_Event_for_Friday",
+                "order": 2,
+                "group": "Friday"
+                
+            },
+            {
+                "title": "N3 Event",
+                "id": "N3_Event_for_Friday",
+                "order": 3,
+                "group": "Friday"
+                
+            },
+            {
+                "title": "N1 Event",
+                "id": "N1_Event_for_Saturday",
+                "order": 1,
+                "group": "Saturday"
+                
+            },
+            {
+                "title": "N2 Event",
+                "id": "N2_Event_for_Saturday",
+                "order": 2,
+                "group": "Saturday"
+                
+            },
+            {
+                "title": "N3 Event",
+                "id": "N3_Event_for_Saturday",
+                "order": 3,
+                "group": "Saturday"
+                
+            },
+            {
+                "title": "schedules hannels",
+                "id": "schedules_channels",
+                "order": 5,
+                "group": "schedules",
+                "ui_options": {
+                    "wb": {
+                        "disable_title": true
+                    }
+                }
+            }
+        ],   
+
+        "parameters": [
+            {
+                "id": "FirstLevelAdjustingOfSupplyIntensity",
+                "title": "1 level adjusting of supply intensity",
+                "address": 1050,
+                "reg_type": "holding",
+                "min": 20,
+                "max": 100,
+                "group": "mode1",
+                "order": 1
+            },
+            {
+                "id": "FirstLevelAdjustingOfExhaustIntensity",
+                "title": "1 level adjusting of exhaust intensity",
+                "address": 1053,
+                "reg_type": "holding",
+                "min": 20,
+                "max": 100,
+                "group": "mode1",
+                "order": 2
+            },
+            {
+                "id": "SecondLevelAdjustingOfSupplyIntensity",
+                "title": "2 level adjusting of supply intensity",
+                "address": 1051,
+                "reg_type": "holding",
+                "min": 20,
+                "max": 100,
+                "group": "mode2", 
+                "order": 1
+            },
+            {
+                "id": "SecondLevelAdjustingOfExhaustIntensity",
+                "title": "2 level adjusting of exhaust intensity",
+                "address": 1054,
+                "reg_type": "holding",
+                "min": 20,
+                "max": 100,
+                "group": "mode2",
+                "order": 2
+            },
+            {
+                "id": "ThirdLevelAdjustingOfSupplyIntensity",
+                "title": "3 level adjusting of supply intensity",
+                "address": 1052,
+                "reg_type": "holding",
+                "min": 20,
+                "max": 100,
+                "group": "mode3",
+                "order": 1
+            },
+            {
+                "id": "ThirdLevelAdjustingOfExhaustIntensity",
+                "title": "3 level adjusting of exhaust intensity",
+                "address": 1055,
+                "reg_type": "holding",
+                "min": 20,
+                "max": 100,
+                "group": "mode3",
+                "order": 2
+            },
+            {
+                "id": "ovrIntensityForSupplyFan",
+                "title": "OVR intensity for supply fan",
+                "address": 1073,
+                "reg_type": "holding",
+                "min": 20,
+                "max": 100,
+                "group": "modeOvr",
+                "order": 1
+            },
+            {
+                "id": "ovrIntensityForExhaustFan",
+                "title": "OVR intensity for exhaust fan",
+                "address": 1074,
+                "reg_type": "holding",
+                "min": 20,
+                "max": 100,
+                "group": "modeOvr",
+                "order": 2
+            },
+            {
+                "id": "flowControl",
+                "title": "Flow control mode",
+                "address": 1059,
+                "reg_type": "holding",
+                "group": "flowСontrolMode",
+                "enum": [0, 1],
+                "enum_titles": [
+                    "CAV",
+                    "VAV"
+                ],
+                "order": 1
+            },
+            {
+                "id": "setPointForAirQuality",
+                "title": "Set point for air quality",
+                "address": 1037,
+                "reg_type": "holding",
+                "min": 0,
+                "max": 100,
+                "group": "functions",
+                "order": 1
+            },
+            {
+                "id": "temperatureCorrectionValue",
+                "title": "Temperature correction value",
+                "address": 895,
+                "format": "s16",
+                "reg_type": "holding",
+                "min": -9,
+                "max": 9,
+                "group": "functions",
+                "order": 2
+            },
+            {
+                "id": "StartTimeOfTemperatureCorrection",
+                "title": "Start time of temperature correction",
+                "description": "time_description",
+                "address": 896,
+                "format": "s16",
+                "reg_type": "holding",
+                "min": 0,
+                "max": 1440,
+                "group": "functions",
+                "order": 3
+            },
+            {
+                "id": "StopTimeOfTemperatureCorrection",
+                "title": "Stop time of temperature correction",
+                "description": "time_description",
+                "address": 897,
+                "format": "s16",
+                "reg_type": "holding",
+                "min": 0,
+                "max": 1440,
+                "group": "functions",
+                "order": 4
+            },
+            {
+                "id": "exhaustCorrectionValue",
+                "title": "Exhaust correction value",
+                "address": 1057,
+                "format": "s16",
+                "reg_type": "holding",
+                "min": -50,
+                "max": 50,
+                "group": "functions",
+                "order": 5
+            },
+            {
+                "id": "operationTimeOfExhaustCorrection",
+                "title": "Operation time of exhaust correction",
+                "description": "minutes_description",
+                "address": 1058,
+                "reg_type": "holding",
+                "min": 1,
+                "max": 99,
+                "group": "functions",
+                "order": 6
+            },
+            {
+                "id": "seasonMode",
+                "title": "Season mode",
+                "address": 533,
+                "reg_type": "holding",
+                "group": "temperatureMaintenanceMode",
+                "enum": [0, 1, 2],
+                "enum_titles": [
+                    "Summer",
+                    "Winter",
+                    "Auto"
+                ],
+                "order": 1
+            },
+            {
+                "id": "regulationMode",
+                "title": "Regulation mode",
+                "address": 768,
+                "reg_type": "holding",
+                "group": "temperatureMaintenanceMode",
+                "enum": [0, 1, 2],
+                "enum_titles": [
+                    "Supply",
+                    "Exhaust",
+                    "Auto"
+                ],
+                "order": 2
+            },
+            {
+                "id": "startTimeOfAirRecirculation",
+                "title": "Start time of air recirculation",
+                "description": "time_description",
+                "address": 783,
+                "reg_type": "holding",
+                "min": 0,
+                "max": 1440,
+                "group": "recirculationMode",
+                "order": 1
+            },
+            {
+                "id": "stopTimeOfAirRecirculation",
+                "title": "Stop time of air recirculation",
+                "description": "time_description",
+                "address": 784,
+                "reg_type": "holding",
+                "min": 0,
+                "max": 1440,
+                "group": "recirculationMode",
+                "order": 2
+            },
+            {
+                "id": "startTimeOfN1EventForSunday",
+                "title": "Start time",
+                "description": "time_description",
+                "address": 832,
+                "reg_type": "holding",
+                "min": 0,
+                "max": 1440,
+                "group": "N1_Event_for_Sunday",
+                "order": 1
+            },
+            {
+                "id": "stopTimeOfN1EventForSunday",
+                "title": "Stop time",
+                "description": "time_description",
+                "address": 833,
+                "reg_type": "holding",
+                "min": 0,
+                "max": 1440,
+                "group": "N1_Event_for_Sunday",
+                "order": 2
+            },
+            {
+                "id": "IntensityLevelOfN1EventForSunday",
+                "title": "State",
+                "address": 874,
+                "reg_type": "holding",
+                "group": "N1_Event_for_Sunday",
+                "enum": [0, 1, 2, 3],
+                "enum_titles": [
+                    "Standby",
+                    "Mode 1",
+                    "Mode 2",
+                    "Mode 3"
+                ],
+                "order": 3
+            },
+            {
+                "id": "startTimeOfN2EventForSunday",
+                "title": "Start time",
+                "description": "time_description",
+                "address": 834,
+                "reg_type": "holding",
+                "min": 0,
+                "max": 1440,
+                "group": "N2_Event_for_Sunday",
+                "order": 1
+            },
+            {
+                "id": "stopTimeOfN2EventForSunday",
+                "title": "Stop time",
+                "description": "time_description",
+                "address": 835,
+                "reg_type": "holding",
+                "min": 0,
+                "max": 1440,
+                "group": "N2_Event_for_Sunday",
+                "order": 2
+            },
+            {
+                "id": "IntensityLevelOfN2EventForSunday",
+                "title": "State",
+                "address": 875,
+                "reg_type": "holding",
+                "group": "N2_Event_for_Sunday",
+                "enum": [0, 1, 2, 3],
+                "enum_titles": [
+                    "Standby",
+                    "Mode 1",
+                    "Mode 2",
+                    "Mode 3"
+                ],
+                "order": 3
+            },
+            {
+                "id": "startTimeOfN3EventForSunday",
+                "title": "Start time",
+                "description": "time_description",
+                "address": 836,
+                "reg_type": "holding",
+                "min": 0,
+                "max": 1440,
+                "group": "N3_Event_for_Sunday",
+                "order": 1
+            },
+            {
+                "id": "stopTimeOfN3EventForSunday",
+                "title": "Stop time",
+                "description": "time_description",
+                "address": 837,
+                "reg_type": "holding",
+                "min": 0,
+                "max": 1440,
+                "group": "N3_Event_for_Sunday",
+                "order": 2
+            },
+            {
+                "id": "IntensityLevelOfN3EventForSunday",
+                "title": "State",
+                "address": 876,
+                "reg_type": "holding",
+                "group": "N3_Event_for_Sunday",
+                "enum": [0, 1, 2, 3],
+                "enum_titles": [
+                    "Standby",
+                    "Mode 1",
+                    "Mode 2",
+                    "Mode 3"
+                ],
+                "order": 3
+            },
+
+            {
+                "id": "startTimeOfN1EventForMonday",
+                "title": "Start time",
+                "description": "time_description",
+                "address": 838,
+                "reg_type": "holding",
+                "min": 0,
+                "max": 1440,
+                "group": "N1_Event_for_Monday",
+                "order": 1
+            },
+            {
+                "id": "stopTimeOfN1EventForMonday",
+                "title": "Stop time",
+                "description": "time_description",
+                "address": 839,
+                "reg_type": "holding",
+                "min": 0,
+                "max": 1440,
+                "group": "N1_Event_for_Monday",
+                "order": 2
+            },
+            {
+                "id": "IntensityLevelOfN1EventForMonday",
+                "title": "State",
+                "address": 877,
+                "reg_type": "holding",
+                "group": "N1_Event_for_Monday",
+                "enum": [0, 1, 2, 3],
+                "enum_titles": [
+                    "Standby",
+                    "Mode 1",
+                    "Mode 2",
+                    "Mode 3"
+                ],
+                "order": 3
+            },
+            {
+                "id": "startTimeOfN2EventForMonday",
+                "title": "Start time",
+                "description": "time_description",
+                "address": 840,
+                "reg_type": "holding",
+                "min": 0,
+                "max": 1440,
+                "group": "N2_Event_for_Monday",
+                "order": 1
+            },
+            {
+                "id": "stopTimeOfN2EventForMonday",
+                "title": "Stop time",
+                "description": "time_description",
+                "address": 841,
+                "reg_type": "holding",
+                "min": 0,
+                "max": 1440,
+                "group": "N2_Event_for_Monday",
+                "order": 2
+            },
+            {
+                "id": "IntensityLevelOfN2EventForMonday",
+                "title": "State",
+                "address": 878,
+                "reg_type": "holding",
+                "group": "N2_Event_for_Monday",
+                "enum": [0, 1, 2, 3],
+                "enum_titles": [
+                    "Standby",
+                    "Mode 1",
+                    "Mode 2",
+                    "Mode 3"
+                ],
+                "order": 3
+            },
+            {
+                "id": "startTimeOfN3EventForMonday",
+                "title": "Start time",
+                "description": "time_description",
+                "address": 842,
+                "reg_type": "holding",
+                "min": 0,
+                "max": 1440,
+                "group": "N3_Event_for_Monday",
+                "order": 1
+            },
+            {
+                "id": "stopTimeOfN3EventForMonday",
+                "title": "Stop time",
+                "description": "time_description",
+                "address": 843,
+                "reg_type": "holding",
+                "min": 0,
+                "max": 1440,
+                "group": "N3_Event_for_Monday",
+                "order": 2
+            },
+            {
+                "id": "IntensityLevelOfN3EventForMonday",
+                "title": "State",
+                "address": 879,
+                "reg_type": "holding",
+                "group": "N3_Event_for_Monday",
+                "enum": [0, 1, 2, 3],
+                "enum_titles": [
+                    "Standby",
+                    "Mode 1",
+                    "Mode 2",
+                    "Mode 3"
+                ],
+                "order": 3
+            },
+
+            {
+                "id": "startTimeOfN1EventForTuesday",
+                "title": "Start time",
+                "description": "time_description",
+                "address": 844,
+                "reg_type": "holding",
+                "min": 0,
+                "max": 1440,
+                "group": "N1_Event_for_Tuesday",
+                "order": 1
+            },
+            {
+                "id": "stopTimeOfN1EventForTuesday",
+                "title": "Stop time",
+                "description": "time_description",
+                "address": 845,
+                "reg_type": "holding",
+                "min": 0,
+                "max": 1440,
+                "group": "N1_Event_for_Tuesday",
+                "order": 2
+            },
+            {
+                "id": "IntensityLevelOfN1EventForTuesday",
+                "title": "State",
+                "address": 880,
+                "reg_type": "holding",
+                "group": "N1_Event_for_Tuesday",
+                "enum": [0, 1, 2, 3],
+                "enum_titles": [
+                    "Standby",
+                    "Mode 1",
+                    "Mode 2",
+                    "Mode 3"
+                ],
+                "order": 3
+            },
+            {
+                "id": "startTimeOfN2EventForTuesday",
+                "title": "Start time",
+                "description": "time_description",
+                "address": 846,
+                "reg_type": "holding",
+                "min": 0,
+                "max": 1440,
+                "group": "N2_Event_for_Tuesday",
+                "order": 1
+            },
+            {
+                "id": "stopTimeOfN2EventForTuesday",
+                "title": "Stop time",
+                "description": "time_description",
+                "address": 847,
+                "reg_type": "holding",
+                "min": 0,
+                "max": 1440,
+                "group": "N2_Event_for_Tuesday",
+                "order": 2
+            },
+            {
+                "id": "IntensityLevelOfN2EventForTuesday",
+                "title": "State",
+                "address": 881,
+                "reg_type": "holding",
+                "group": "N2_Event_for_Tuesday",
+                "enum": [0, 1, 2, 3],
+                "enum_titles": [
+                    "Standby",
+                    "Mode 1",
+                    "Mode 2",
+                    "Mode 3"
+                ],
+                "order": 3
+            },
+            {
+                "id": "startTimeOfN3EventForTuesday",
+                "title": "Start time",
+                "description": "time_description",
+                "address": 848,
+                "reg_type": "holding",
+                "min": 0,
+                "max": 1440,
+                "group": "N3_Event_for_Tuesday",
+                "order": 1
+            },
+            {
+                "id": "stopTimeOfN3EventForTuesday",
+                "title": "Stop time",
+                "description": "time_description",
+                "address": 849,
+                "reg_type": "holding",
+                "min": 0,
+                "max": 1440,
+                "group": "N3_Event_for_Tuesday",
+                "order": 2
+            },
+            {
+                "id": "IntensityLevelOfN3EventForTuesday",
+                "title": "State",
+                "address": 882,
+                "reg_type": "holding",
+                "group": "N3_Event_for_Tuesday",
+                "enum": [0, 1, 2, 3],
+                "enum_titles": [
+                    "Standby",
+                    "Mode 1",
+                    "Mode 2",
+                    "Mode 3"
+                ],
+                "order": 3
+            },
+
+            {
+                "id": "startTimeOfN1EventForWednesday",
+                "title": "Start time",
+                "description": "time_description",
+                "address": 850,
+                "reg_type": "holding",
+                "min": 0,
+                "max": 1440,
+                "group": "N1_Event_for_Wednesday",
+                "order": 1
+            },
+            {
+                "id": "stopTimeOfN1EventForWednesday",
+                "title": "Stop time",
+                "description": "time_description",
+                "address": 851,
+                "reg_type": "holding",
+                "min": 0,
+                "max": 1440,
+                "group": "N1_Event_for_Wednesday",
+                "order": 2
+            },
+            {
+                "id": "IntensityLevelOfN1EventForWednesday",
+                "title": "State",
+                "address": 883,
+                "reg_type": "holding",
+                "group": "N1_Event_for_Wednesday",
+                "enum": [0, 1, 2, 3],
+                "enum_titles": [
+                    "Standby",
+                    "Mode 1",
+                    "Mode 2",
+                    "Mode 3"
+                ],
+                "order": 3
+            },
+            {
+                "id": "startTimeOfN2EventForWednesday",
+                "title": "Start time",
+                "description": "time_description",
+                "address": 852,
+                "reg_type": "holding",
+                "min": 0,
+                "max": 1440,
+                "group": "N2_Event_for_Wednesday",
+                "order": 1
+            },
+            {
+                "id": "stopTimeOfN2EventForWednesday",
+                "title": "Stop time",
+                "description": "time_description",
+                "address": 853,
+                "reg_type": "holding",
+                "min": 0,
+                "max": 1440,
+                "group": "N2_Event_for_Wednesday",
+                "order": 2
+            },
+            {
+                "id": "IntensityLevelOfN2EventForWednesday",
+                "title": "State",
+                "address": 884,
+                "reg_type": "holding",
+                "group": "N2_Event_for_Wednesday",
+                "enum": [0, 1, 2, 3],
+                "enum_titles": [
+                    "Standby",
+                    "Mode 1",
+                    "Mode 2",
+                    "Mode 3"
+                ],
+                "order": 3
+            },
+            {
+                "id": "startTimeOfN3EventForWednesday",
+                "title": "Start time",
+                "description": "time_description",
+                "address": 854,
+                "reg_type": "holding",
+                "min": 0,
+                "max": 1440,
+                "group": "N3_Event_for_Wednesday",
+                "order": 1
+            },
+            {
+                "id": "stopTimeOfN3EventForWednesday",
+                "title": "Stop time",
+                "description": "time_description",
+                "address": 855,
+                "reg_type": "holding",
+                "min": 0,
+                "max": 1440,
+                "group": "N3_Event_for_Wednesday",
+                "order": 2
+            },
+            {
+                "id": "IntensityLevelOfN3EventForWednesday",
+                "title": "State",
+                "address": 885,
+                "reg_type": "holding",
+                "group": "N3_Event_for_Wednesday",
+                "enum": [0, 1, 2, 3],
+                "enum_titles": [
+                    "Standby",
+                    "Mode 1",
+                    "Mode 2",
+                    "Mode 3"
+                ],
+                "order": 3
+            },
+
+            {
+                "id": "startTimeOfN1EventForThursday",
+                "title": "Start time",
+                "description": "time_description",
+                "address": 856,
+                "reg_type": "holding",
+                "min": 0,
+                "max": 1440,
+                "group": "N1_Event_for_Thursday",
+                "order": 1
+            },
+            {
+                "id": "stopTimeOfN1EventForThursday",
+                "title": "Stop time",
+                "description": "time_description",
+                "address": 857,
+                "reg_type": "holding",
+                "min": 0,
+                "max": 1440,
+                "group": "N1_Event_for_Thursday",
+                "order": 2
+            },
+            {
+                "id": "IntensityLevelOfN1EventForThursday",
+                "title": "State",
+                "address": 886,
+                "reg_type": "holding",
+                "group": "N1_Event_for_Thursday",
+                "enum": [0, 1, 2, 3],
+                "enum_titles": [
+                    "Standby",
+                    "Mode 1",
+                    "Mode 2",
+                    "Mode 3"
+                ],
+                "order": 3
+            },
+            {
+                "id": "startTimeOfN2EventForThursday",
+                "title": "Start time",
+                "description": "time_description",
+                "address": 858,
+                "reg_type": "holding",
+                "min": 0,
+                "max": 1440,
+                "group": "N2_Event_for_Thursday",
+                "order": 1
+            },
+            {
+                "id": "stopTimeOfN2EventForThursday",
+                "title": "Stop time",
+                "description": "time_description",
+                "address": 859,
+                "reg_type": "holding",
+                "min": 0,
+                "max": 1440,
+                "group": "N2_Event_for_Thursday",
+                "order": 2
+            },
+            {
+                "id": "IntensityLevelOfN2EventForThursday",
+                "title": "State",
+                "address": 887,
+                "reg_type": "holding",
+                "group": "N2_Event_for_Thursday",
+                "enum": [0, 1, 2, 3],
+                "enum_titles": [
+                    "Standby",
+                    "Mode 1",
+                    "Mode 2",
+                    "Mode 3"
+                ],
+                "order": 3
+            },
+            {
+                "id": "startTimeOfN3EventForThursday",
+                "title": "Start time",
+                "description": "time_description",
+                "address": 860,
+                "reg_type": "holding",
+                "min": 0,
+                "max": 1440,
+                "group": "N3_Event_for_Thursday",
+                "order": 1
+            },
+            {
+                "id": "stopTimeOfN3EventForThursday",
+                "title": "Stop time",
+                "description": "time_description",
+                "address": 861,
+                "reg_type": "holding",
+                "min": 0,
+                "max": 1440,
+                "group": "N3_Event_for_Thursday",
+                "order": 2
+            },
+            {
+                "id": "IntensityLevelOfN3EventForThursday",
+                "title": "State",
+                "address": 888,
+                "reg_type": "holding",
+                "group": "N3_Event_for_Thursday",
+                "enum": [0, 1, 2, 3],
+                "enum_titles": [
+                    "Standby",
+                    "Mode 1",
+                    "Mode 2",
+                    "Mode 3"
+                ],
+                "order": 3
+            },
+
+            {
+                "id": "startTimeOfN1EventForFriday",
+                "title": "Start time",
+                "description": "time_description",
+                "address": 862,
+                "reg_type": "holding",
+                "min": 0,
+                "max": 1440,
+                "group": "N1_Event_for_Friday",
+                "order": 1
+            },
+            {
+                "id": "stopTimeOfN1EventForFriday",
+                "title": "Stop time",
+                "description": "time_description",
+                "address": 863,
+                "reg_type": "holding",
+                "min": 0,
+                "max": 1440,
+                "group": "N1_Event_for_Friday",
+                "order": 2
+            },
+            {
+                "id": "IntensityLevelOfN1EventForFriday",
+                "title": "State",
+                "address": 889,
+                "reg_type": "holding",
+                "group": "N1_Event_for_Friday",
+                "enum": [0, 1, 2, 3],
+                "enum_titles": [
+                    "Standby",
+                    "Mode 1",
+                    "Mode 2",
+                    "Mode 3"
+                ],
+                "order": 3
+            },
+            {
+                "id": "startTimeOfN2EventForFriday",
+                "title": "Start time",
+                "description": "time_description",
+                "address": 864,
+                "reg_type": "holding",
+                "min": 0,
+                "max": 1440,
+                "group": "N2_Event_for_Friday",
+                "order": 1
+            },
+            {
+                "id": "stopTimeOfN2EventForFriday",
+                "title": "Stop time",
+                "description": "time_description",
+                "address": 865,
+                "reg_type": "holding",
+                "min": 0,
+                "max": 1440,
+                "group": "N2_Event_for_Friday",
+                "order": 2
+            },
+            {
+                "id": "IntensityLevelOfN2EventForFriday",
+                "title": "State",
+                "address": 890,
+                "reg_type": "holding",
+                "group": "N2_Event_for_Friday",
+                "enum": [0, 1, 2, 3],
+                "enum_titles": [
+                    "Standby",
+                    "Mode 1",
+                    "Mode 2",
+                    "Mode 3"
+                ],
+                "order": 3
+            },
+            {
+                "id": "startTimeOfN3EventForFriday",
+                "title": "Start time",
+                "description": "time_description",
+                "address": 866,
+                "reg_type": "holding",
+                "min": 0,
+                "max": 1440,
+                "group": "N3_Event_for_Friday",
+                "order": 1
+            },
+            {
+                "id": "stopTimeOfN3EventForFriday",
+                "title": "Stop time",
+                "description": "time_description",
+                "address": 867,
+                "reg_type": "holding",
+                "min": 0,
+                "max": 1440,
+                "group": "N3_Event_for_Friday",
+                "order": 2
+            },
+            {
+                "id": "IntensityLevelOfN3EventForFriday",
+                "title": "State",
+                "address": 891,
+                "reg_type": "holding",
+                "group": "N3_Event_for_Friday",
+                "enum": [0, 1, 2, 3],
+                "enum_titles": [
+                    "Standby",
+                    "Mode 1",
+                    "Mode 2",
+                    "Mode 3"
+                ],
+                "order": 3
+            },
+
+            {
+                "id": "startTimeOfN1EventForSaturday",
+                "title": "Start time",
+                "description": "time_description",
+                "address": 868,
+                "reg_type": "holding",
+                "min": 0,
+                "max": 1440,
+                "group": "N1_Event_for_Saturday",
+                "order": 1
+            },
+            {
+                "id": "stopTimeOfN1EventForSaturday",
+                "title": "Stop time",
+                "description": "time_description",
+                "address": 869,
+                "reg_type": "holding",
+                "min": 0,
+                "max": 1440,
+                "group": "N1_Event_for_Saturday",
+                "order": 2
+            },
+            {
+                "id": "IntensityLevelOfN1EventForSaturday",
+                "title": "State",
+                "address": 892,
+                "reg_type": "holding",
+                "group": "N1_Event_for_Saturday",
+                "enum": [0, 1, 2, 3],
+                "enum_titles": [
+                    "Standby",
+                    "Mode 1",
+                    "Mode 2",
+                    "Mode 3"
+                ],
+                "order": 3
+            },
+            {
+                "id": "startTimeOfN2EventForSaturday",
+                "title": "Start time",
+                "description": "time_description",
+                "address": 870,
+                "reg_type": "holding",
+                "min": 0,
+                "max": 1440,
+                "group": "N2_Event_for_Saturday",
+                "order": 1
+            },
+            {
+                "id": "stopTimeOfN2EventForSaturday",
+                "title": "Stop time",
+                "description": "time_description",
+                "address": 871,
+                "reg_type": "holding",
+                "min": 0,
+                "max": 1440,
+                "group": "N2_Event_for_Saturday",
+                "order": 2
+            },
+            {
+                "id": "IntensityLevelOfN2EventForSaturday",
+                "title": "State",
+                "address": 893,
+                "reg_type": "holding",
+                "group": "N2_Event_for_Saturday",
+                "enum": [0, 1, 2, 3],
+                "enum_titles": [
+                    "Standby",
+                    "Mode 1",
+                    "Mode 2",
+                    "Mode 3"
+                ],
+                "order": 3
+            },
+            {
+                "id": "startTimeOfN3EventForSaturday",
+                "title": "Start time",
+                "description": "time_description",
+                "address": 872,
+                "reg_type": "holding",
+                "min": 0,
+                "max": 1440,
+                "group": "N3_Event_for_Saturday",
+                "order": 1
+            },
+            {
+                "id": "stopTimeOfN3EventForSaturday",
+                "title": "Stop time",
+                "description": "time_description",
+                "address": 873,
+                "reg_type": "holding",
+                "min": 0,
+                "max": 1440,
+                "group": "N3_Event_for_Saturday",
+                "order": 2
+            },
+            {
+                "id": "IntensityLevelOfN3EventForSaturday",
+                "title": "State",
+                "address": 894,
+                "reg_type": "holding",
+                "group": "N3_Event_for_Saturday",
+                "enum": [0, 1, 2, 3],
+                "enum_titles": [
+                    "Standby",
+                    "Mode 1",
+                    "Mode 2",
+                    "Mode 3"
+                ],
+                "order": 3
+            }
+            ],
+
+        "channels": [
+            {
+                "name": "Outdoor air temperature",
+                "reg_type": "holding",
+                "units": "deg C",
+                "format": "float",
+                "address": 128,
+                "type": "value",
+                "group": "sensors",
+                "round_to": 0.1,
+                "readonly": true,
+                "enabled": false
+            },
+            {
+                "name": "Room air temperature",
+                "reg_type": "holding",
+                "units": "deg C",
+                "format": "float",
+                "address": 130,
+                "type": "value",
+                "group": "sensors",
+                "round_to": 0.1,
+                "readonly": true,
+                "enabled": true
+            },
+            {
+                "name": "Supply air temperature",
+                "reg_type": "holding",
+                "units": "deg C",
+                "format": "float",
+                "address": 132,
+                "type": "value",
+                "group": "sensors",
+                "round_to": 0.1,
+                "readonly": true,
+                "enabled": true
+            },
+            {
+                "name": "Anti-freezing temperature",
+                "reg_type": "holding",
+                "units": "deg C",
+                "format": "float",
+                "address": 136,
+                "type": "value",
+                "group": "sensors",
+                "round_to": 0.1,
+                "readonly": true,
+                "enabled": false
+            },
+            {
+                "name": "Return water temperature",
+                "reg_type": "holding",
+                "units": "deg C",
+                "format": "float",
+                "address": 138,
+                "type": "value",
+                "group": "sensors",
+                "round_to": 0.1,
+                "readonly": true,
+                "enabled": false
+            },
+            {
+                "name": "Supply pressure",
+                "reg_type": "holding",
+                "units": "Па",
+                "format": "float",
+                "address": 140,
+                "type": "value",
+                "group": "sensors",
+                "readonly": true,
+                "enabled": false
+            },
+            {
+                "name": "Exhaust pressure",
+                "reg_type": "holding",
+                "units": "Па",
+                "format": "float",
+                "address": 142,
+                "type": "value",
+                "group": "sensors",
+                "readonly": true,
+                "enabled": false
+            },
+            {
+                "name": "Supply fan control output",
+                "reg_type": "holding",
+                "units": "V",
+                "format": "float",
+                "address": 144,
+                "type": "value",
+                "group": "debug",
+                "readonly": true,
+                "enabled": false
+            },
+            {
+                "name": "Exhaust fan control output",
+                "reg_type": "holding",
+                "units": "V",
+                "format": "float",
+                "address": 146,
+                "type": "value",
+                "group": "debug",
+                "readonly": true,
+                "enabled": false
+            },
+            {
+                "name": "Supply air flow",
+                "reg_type": "holding",
+                "units": "m^3/h",
+                "format": "float",
+                "address": 148,
+                "type": "value",
+                "group": "debug",
+                "readonly": true,
+                "enabled": false
+            },
+            {
+                "name": "Exhaust air flow",
+                "reg_type": "holding",
+                "units": "m^3/h",
+                "format": "float",
+                "address": 150,
+                "type": "value",
+                "group": "debug",
+                "readonly": true,
+                "enabled": false
+            },
+            {
+                "name": "Rotor control output",
+                "reg_type": "holding",
+                "units": "V",
+                "format": "float",
+                "address": 152,
+                "type": "value",
+                "group": "debug",
+                "round_to": 0.1,
+                "readonly": true,
+                "enabled": false
+            },
+            {
+                "name": "Water heater control output",
+                "reg_type": "holding",
+                "units": "V",
+                "format": "float",
+                "address": 154,
+                "type": "value",
+                "group": "debug",
+                "round_to": 0.1,
+                "readonly": true,
+                "enabled": false
+            },
+            {
+                "name": "Electric heater output power",
+                "reg_type": "holding",
+                "units": "%",
+                "format": "float",
+                "address": 156,
+                "type": "value",
+                "group": "debug",
+                "round_to": 0.1,
+                "readonly": true,
+                "enabled": false
+            },
+            {
+                "name": "Water cooler control output",
+                "reg_type": "holding",
+                "units": "V",
+                "format": "float",
+                "address": 158,
+                "type": "value",
+                "group": "debug",
+                "round_to": 0.1,
+                "readonly": true,
+                "enabled": false
+            },
+            {
+                "name": "Electric cooler output power",
+                "reg_type": "holding",
+                "units": "%",
+                "format": "float",
+                "address": 160,
+                "type": "value",
+                "group": "debug",
+                "readonly": true,
+                "enabled": false
+            },
+            {
+                "name": "AHU current operating status",
+                "reg_type": "holding",
+                "address": 162,
+                "group": "main",
+                "type": "value",
+                "readonly": true,
+                "enabled": true
+            },
+            {
+                "name": "Air quality input",
+                "reg_type": "holding",
+                "units": "V",
+                "format": "float",
+                "address": 163,
+                "type": "value",
+                "group": "inputs",
+                "readonly": true,
+                "enabled": false
+            },
+            {
+                "name": "Supply pressure input",
+                "reg_type": "holding",
+                "units": "V",
+                "format": "float",
+                "address": 165,
+                "type": "value",
+                "group": "inputs",
+                "readonly": true,
+                "enabled": false
+            },
+            {
+                "name": "Exhaust pressure input",
+                "reg_type": "holding",
+                "units": "V",
+                "format": "float",
+                "address": 167,
+                "type": "value",
+                "group": "inputs",
+                
+                "readonly": true,
+                "enabled": false
+            },
+            {
+                "name": "AHU set operating status",
+                "reg_type": "holding",
+                "address": 169,
+                "group": "debug",
+                "type": "value",
+                "readonly": true,
+                "enabled": true
+            },
+            {
+                "name": "Set fan intensity",
+                "reg_type": "holding",
+                "format": "u16",
+                "address": 170,
+                "type": "value",
+                "group": "debug",
+                "readonly": true,
+                "enabled": false
+            },
+            {
+                "name": "Current fan intensity",
+                "reg_type": "holding",
+                "address": 176,
+                "group": "debug",
+                "type": "range",
+                "max": 3,
+                "readonly": true,
+                "enabled": false
+            },
+            {
+                "name": "Temperature set point",
+                "reg_type": "holding",
+                "units": "deg C",
+                "format": "float",
+                "address": 171,
+                "type": "value",
+                "group": "temperatureMaintenanceMode",
+                "readonly": true,
+                "enabled": false
+            },
+            {
+                "name": "Current supply air set point",
+                "reg_type": "holding",
+                "units": "deg C",
+                "format": "float",
+                "address": 177,
+                "type": "value",
+                "group": "temperatureMaintenanceMode",
+                "readonly": true,
+                "enabled": false
+            },
+            {
+                "name": "Room set point",
+                "reg_type": "holding",
+                "units": "deg C",
+                "format": "float",
+                "address": 179,
+                "type": "value",
+                "group": "temperatureMaintenanceMode",
+                "readonly": true,
+                "enabled": false
+            },
+            {
+                "name": "Year",
+                "reg_type": "holding",
+                "format": "u16",
+                "address": 256,
+                "type": "value",
+                "group": "general",
+                "readonly": false,
+                "enabled": false
+            },
+            {
+                "name": "Month",
+                "reg_type": "holding",
+                "address": "257:8:8",
+                "type": "value",
+                "group": "general",
+                "readonly": false,
+                "enabled": false
+            },
+            {
+                "name": "Day",
+                "reg_type": "holding",
+                "address": "257:0:8",
+                "type": "value",
+                "group": "general",
+                "readonly": false,
+                "enabled": false
+            },
+            {
+                "name": "Hours",
+                "reg_type": "holding",
+                "address": "258:8:8",
+                "type": "value",
+                "group": "general",
+                "readonly": false,
+                "enabled": false
+            },
+            {
+                "name": "Minutes",
+                "reg_type": "holding",
+                "address": "258:0:8",
+                "type": "value",
+                "group": "general",
+                "readonly": false,
+                "enabled": false
+            },
+            {
+                "name": "Seconds",
+                "reg_type": "holding",
+                "address": "259:8:8",
+                "type": "value",
+                "group": "general",
+                "readonly": false,
+                "enabled": false
+            },
+            {
+                "name": "Weekday",
+                "reg_type": "holding",
+                "address": "259:0:8",
+                "type": "value",
+                "group": "general",
+                "readonly": false,
+                "enabled": false
+            },
+            {
+                "name": "Supply air fan overheating",
+                "reg_type": "holding",
+                "address": "296:0:1",
+                "type": "switch",
+                "group": "alarms",
+                "readonly": true,
+                "enabled": false
+            },
+            {
+                "name": "Supply air fan overheating",
+                "reg_type": "holding",
+                "address": "296:0:1",
+                "type": "switch",
+                "group": "alarms",
+                "readonly": true,
+                "enabled": false
+            },
+            {
+                "name": "Exhaust air fan overheating",
+                "reg_type": "holding",
+                "address": "296:1:1",
+                "type": "switch",
+                "group": "alarms",
+                "readonly": true,
+                "enabled": false
+            },
+            {
+                "name": "Rotor rotating signal",
+                "reg_type": "holding",
+                "address": "296:2:1",
+                "type": "switch",
+                "group": "inputs",
+                "readonly": true,
+                "enabled": false
+            },
+            {
+                "name": "Electric heater overheating",
+                "reg_type": "holding",
+                "address": "296:3:1",
+                "type": "switch",
+                "group": "alarms",
+                "readonly": true,
+                "enabled": false
+            },
+            {
+                "name": "Remote start-stop",
+                "reg_type": "holding",
+                "address": "296:4:1",
+                "type": "switch",
+                "group": "inputs",
+                "readonly": true,
+                "enabled": false
+            },
+            {
+                "name": "Fire alarm",
+                "reg_type": "holding",
+                "address": "296:5:1",
+                "type": "switch",
+                "group": "alarms",
+                "readonly": true,
+                "enabled": false
+            },
+            {
+                "name": "Change supply air filter",
+                "reg_type": "holding",
+                "address": "296:6:1",
+                "type": "switch",
+                "group": "alarms",
+                "readonly": true,
+                "enabled": false
+            },
+            {
+                "name": "Change exhaust air filter",
+                "reg_type": "holding",
+                "address": "296:7:1",
+                "type": "switch",
+                "group": "alarms",
+                "readonly": true,
+                "enabled": false
+            },
+            {
+                "name": "Water circulation pump",
+                "reg_type": "holding",
+                "address": "297:0:1",
+                "type": "switch",
+                "group": "outputs",
+                "readonly": true,
+                "enabled": false
+            },
+            {
+                "name": "Air damper actuator",
+                "reg_type": "holding",
+                "address": "297:1:1",
+                "type": "switch",
+                "group": "outputs",
+                "readonly": true,
+                "enabled": false
+            },
+            {
+                "name": "Common alarm signal",
+                "reg_type": "holding",
+                "address": "297:2:1",
+                "type": "switch",
+                "group": "alarms",
+                "readonly": true,
+                "enabled": false
+            },
+            {
+                "name": "DX cooling second step",
+                "reg_type": "holding",
+                "address": "297:3:1",
+                "type": "switch",
+                "group": "outputs",
+                "readonly": true,
+                "enabled": false
+            },
+            {
+                "name": "Heat exchanger On-Off signal",
+                "reg_type": "holding",
+                "address": "297:4:1",
+                "type": "switch",
+                "group": "outputs",
+                "readonly": true,
+                "enabled": false
+            },
+            {
+                "name": "DX cooling first step or 1 speed of fans",
+                "reg_type": "holding",
+                "address": "297:5:1",
+                "type": "switch",
+                "group": "outputs",
+                "readonly": true,
+                "enabled": false
+            },
+            {
+                "name": "Not used or 2 speed of fans",
+                "reg_type": "holding",
+                "address": "297:6:1",
+                "type": "switch",
+                "group": "outputs",
+                "readonly": true,
+                "enabled": false
+            },
+            {
+                "name": "Not used or 3 speed of fans",
+                "reg_type": "holding",
+                "address": "297:7:1",
+                "type": "switch",
+                "group": "outputs",
+                "readonly": true,
+                "enabled": false
+            },
+            {
+                "name": "Unit stop code",
+                "reg_type": "holding",
+                "address": 316,
+                "type": "value",
+                "group": "alarms",
+                "readonly": true,
+                "enabled": false
+            },
+            {
+                "name": "State",
+                "reg_type": "holding",
+                "address": 314,
+                "group": "main",
+                "type": "switch",
+                "enabled": true
+            },
+            {
+                "name": "Schedule mode",
+                "reg_type": "holding",
+                "address": 532,
+                "group": "schedules_channels",
+                "type": "switch",
+                "enabled": false
+            },
+            {
+                "name": "Current schedule mode",
+                "reg_type": "holding",
+                "address": 173,
+                "group": "schedules_channels",
+                "type": "switch",
+                "readonly": true,
+                "enabled": false
+            },
+            {
+                "name": "Season mode",
+                "reg_type": "holding",
+                "address": 533,
+                "min": 0,
+                "max": 2,
+                "group": "temperatureMaintenanceMode",
+                "type": "range",
+                "enabled": true
+        
+            },
+            {
+                "name": "Weekly filters check",
+                "reg_type": "holding",
+                "address": 561,
+                "group": "debug",
+                "type": "switch",
+                "enabled": false
+            },
+            {
+                "name": "Regulation mode",
+                "reg_type": "holding",
+                "address": 768,
+                "min": 0,
+                "max": 2,
+                "group": "temperatureMaintenanceMode",
+                "type": "range",
+                "enabled": true
+        
+            },
+            {
+                "name": "Current regulation mode",
+                "reg_type": "holding",
+                "units": "deg C",
+                "format": "u16",
+                "address": 174,
+                "type": "range",
+                "max": 1,
+                "group": "temperatureMaintenanceMode",
+                "readonly": true,
+                "enabled": false
+            },
+            {
+                "name": "Supply air set point temperature",
+                "reg_type": "holding",
+                "address": 512,
+                "scale": 0.01,
+                "group": "temperatureMaintenanceMode",
+                "type": "value",
+                "enabled": true
+        
+            },
+            {
+                "name": "Room air set point temperature",
+                "reg_type": "holding",
+                "address": 770,
+                "scale": 0.01,
+                "group": "temperatureMaintenanceMode",
+                "type": "value",
+                "enabled": true
+        
+            },
+            {
+                "name": "Operation of recirculation",
+                "reg_type": "holding",
+                "address": 782,
+                "group": "recirculationMode",
+                "type": "switch",
+                "enabled": false
+            },
+            {
+                "name": "Start time of air recirculation",
+                "reg_type": "holding",
+                "address": 783,
+                "min": 0,
+                "max": 1440,
+                "group": "recirculationMode",
+                "type": "value",
+                "enabled": false   
+            },
+            {
+                "name": "Stop time of air recirculation",
+                "reg_type": "holding",
+                "address": 784,
+                "min": 0,
+                "max": 1440,
+                "group": "recirculationMode",
+                "type": "value",
+                "enabled": false
+            },
+            {
+                "name": "Temperature correction value",
+                "reg_type": "holding",
+                "format": "s16",
+                "address": 895,
+                "min": -9,
+                "max": 9,
+                "group": "functions",
+                "type": "value",
+                "enabled": false
+            },
+            {
+                "name": "Start time of temperature correction",
+                "reg_type": "holding",
+                "address": 896,
+                "min": 0,
+                "max": 1440,
+                "group": "functions",
+                "type": "value",
+                "enabled": false
+            },
+            {
+                "name": "Stop time of temperature correction",
+                "reg_type": "holding",
+                "address": 897,
+                "min": 0,
+                "max": 1440,
+                "group": "functions",
+                "type": "value",
+                "enabled": false    
+            },
+            {
+                "name": "Modbus slave address",
+                "reg_type": "holding",
+                "address": 899,
+                "min": 1,
+                "max": 254,
+                "group": "general",
+                "type": "value",
+                "enabled": false
+            },
+            {
+                "name": "Air quality mode",
+                "reg_type": "holding",
+                "address": 1033,
+                "group": "functions",
+                "type": "switch",
+                "enabled": false
+            },
+            {
+                "name": "Set point for air quality",
+                "reg_type": "holding",
+                "address": 1037,
+                "min": 0,
+                "max": 100,
+                "group": "functions",
+                "type": "range",
+                "enabled": false
+            },
+            {
+                "name": "Target mode",
+                "reg_type": "holding",
+                "address": 1049,
+                "min": 1,
+                "max": 3,
+                "group": "main",
+                "type": "range",
+                "enabled": true
+            },
+            {
+                "name": "1 level adjusting of supply intensity",
+                "reg_type": "holding",
+                "address": 1050,
+                "min": 20,
+                "max": 100,
+                "group": "mode1",
+                "type": "range",
+                "enabled": false
+            },
+            {
+                "name": "2 level adjusting of supply intensity",
+                "reg_type": "holding",
+                "address": 1051,
+                "min": 20,
+                "max": 100,
+                "group": "mode2",
+                "type": "range",
+                "enabled": false
+            },
+            {
+                "name": "3 level adjusting of supply intensity",
+                "reg_type": "holding",
+                "address": 1052,
+                "min": 20,
+                "max": 100,
+                "group": "mode3",
+                "type": "range",
+                "enabled": true
+            },
+            {
+                "name": "1 level adjusting of exhaust intensity",
+                "reg_type": "holding",
+                "address": 1053,
+                "min": 20,
+                "max": 100,
+                "group": "mode1",
+                "type": "range",
+                "enabled": false
+            },
+            {
+                "name": "2 level adjusting of exhaust intensity",
+                "reg_type": "holding",
+                "address": 1054,
+                "min": 20,
+                "max": 100,
+                "group": "mode2",
+                "type": "range",
+                "enabled": false
+            },
+            {
+                "name": "3 level adjusting of exhaust intensity",
+                "reg_type": "holding",
+                "address": 1055,
+                "min": 20,
+                "max": 100,
+                "group": "mode3",
+                "type": "range",
+                "enabled": true
+            },
+            {
+                "name": "Exhaust air flow correction",
+                "reg_type": "holding",
+                "address": 1056,
+                "group": "functions",
+                "type": "switch",
+                "enabled": false
+            },
+            {
+                "name": "Exhaust correction value",
+                "reg_type": "holding",
+                "format": "s16",
+                "address": 1057,
+                "min": -50,
+                "max": 50,
+                "group": "functions",
+                "type": "range",
+                "enabled": false
+            },
+            {
+                "name": "Operation time of exhaust correction",
+                "reg_type": "holding",
+                "address": 1058,
+                "min": 1,
+                "max": 99,
+                "group": "functions",
+                "type": "range",
+                "enabled": false
+            },
+            {
+                "name": "Flow control mode",
+                "reg_type": "holding",
+                "address": 1059,
+                "group": "flowСontrolMode",
+                "min": 0,
+                "max": 1,
+                "type": "range",
+                "enabled": false
+            },
+            {
+                "name": "OVR mode",
+                "reg_type": "holding",
+                "address": 1072,
+                "group": "modeOvr",
+                "type": "switch",
+                "enabled": false
+            },
+            {
+                "name": "OVR intensity for supply fan",
+                "reg_type": "holding",
+                "address": 1073,
+                "min": 20,
+                "max": 100,
+                "group": "modeOvr",
+                "type": "range",
+                "enabled": false
+            },
+            {
+                "name": "OVR intensity for exhaust fan",
+                "reg_type": "holding",
+                "address": 1074,
+                "min": 20,
+                "max": 100,
+                "group": "modeOvr",
+                "type": "range",
+                "enabled": false
+            },
+            {
+                "name":"Start time of N1 event for sunday",
+                "reg_type":"holding",
+                "address":832,
+                "min":0,
+                "max":1440,
+                "group":"schedules_channels",
+                "type":"value",
+                "enabled":false
+             },
+             {
+                "name":"Stop time of N1 event for sunday",
+                "reg_type":"holding",
+                "address":833,
+                "min":0,
+                "max":1440,
+                "group":"schedules_channels",
+                "type":"value",
+                "enabled":false
+             },
+             {
+                "name":"Start time of N2 event for sunday",
+                "reg_type":"holding",
+                "address":834,
+                "min":0,
+                "max":1440,
+                "group":"schedules_channels",
+                "type":"value",
+                "enabled":false
+             },
+             {
+                "name":"Stop time of N2 event for sunday",
+                "reg_type":"holding",
+                "address":835,
+                "min":0,
+                "max":1440,
+                "group":"schedules_channels",
+                "type":"value",
+                "enabled":false
+             },
+             {
+                "name":"Start time of N3 event for sunday",
+                "reg_type":"holding",
+                "address":836,
+                "min":0,
+                "max":1440,
+                "group":"schedules_channels",
+                "type":"value",
+                "enabled":false
+             },
+             {
+                "name":"Stop time of N3 event for sunday",
+                "reg_type":"holding",
+                "address":837,
+                "min":0,
+                "max":1440,
+                "group":"schedules_channels",
+                "type":"value",
+                "enabled":false
+             },
+             {
+                "name":"Start time of N1 event for monday",
+                "reg_type":"holding",
+                "address":838,
+                "min":0,
+                "max":1440,
+                "group":"schedules_channels",
+                "type":"value",
+                "enabled":false
+             },
+             {
+                "name":"Stop time of N1 event for monday",
+                "reg_type":"holding",
+                "address":839,
+                "min":0,
+                "max":1440,
+                "group":"schedules_channels",
+                "type":"value",
+                "enabled":false
+             },
+             {
+                "name":"Start time of N2 event for monday",
+                "reg_type":"holding",
+                "address":840,
+                "min":0,
+                "max":1440,
+                "group":"schedules_channels",
+                "type":"value",
+                "enabled":false
+             },
+             {
+                "name":"Stop time of N2 event for monday",
+                "reg_type":"holding",
+                "address":841,
+                "min":0,
+                "max":1440,
+                "group":"schedules_channels",
+                "type":"value",
+                "enabled":false
+             },
+             {
+                "name":"Start time of N3 event for monday",
+                "reg_type":"holding",
+                "address":842,
+                "min":0,
+                "max":1440,
+                "group":"schedules_channels",
+                "type":"value",
+                "enabled":false
+             },
+             {
+                "name":"Stop time of N3 event for monday",
+                "reg_type":"holding",
+                "address":843,
+                "min":0,
+                "max":1440,
+                "group":"schedules_channels",
+                "type":"value",
+                "enabled":false
+             },
+             {
+                "name":"Start time of N1 event for tuesday",
+                "reg_type":"holding",
+                "address":844,
+                "min":0,
+                "max":1440,
+                "group":"schedules_channels",
+                "type":"value",
+                "enabled":false
+             },
+             {
+                "name":"Stop time of N1 event for tuesday",
+                "reg_type":"holding",
+                "address":845,
+                "min":0,
+                "max":1440,
+                "group":"schedules_channels",
+                "type":"value",
+                "enabled":false
+             },
+             {
+                "name":"Start time of N2 event for tuesday",
+                "reg_type":"holding",
+                "address":846,
+                "min":0,
+                "max":1440,
+                "group":"schedules_channels",
+                "type":"value",
+                "enabled":false
+             },
+             {
+                "name":"Stop time of N2 event for tuesday",
+                "reg_type":"holding",
+                "address":847,
+                "min":0,
+                "max":1440,
+                "group":"schedules_channels",
+                "type":"value",
+                "enabled":false
+             },
+             {
+                "name":"Start time of N3 event for tuesday",
+                "reg_type":"holding",
+                "address":848,
+                "min":0,
+                "max":1440,
+                "group":"schedules_channels",
+                "type":"value",
+                "enabled":false
+             },
+             {
+                "name":"Stop time of N3 event for tuesday",
+                "reg_type":"holding",
+                "address":849,
+                "min":0,
+                "max":1440,
+                "group":"schedules_channels",
+                "type":"value",
+                "enabled":false
+             },
+             {
+                "name":"Start time of N1 event for wednesday",
+                "reg_type":"holding",
+                "address":850,
+                "min":0,
+                "max":1440,
+                "group":"schedules_channels",
+                "type":"value",
+                "enabled":false
+             },
+             {
+                "name":"Stop time of N1 event for wednesday",
+                "reg_type":"holding",
+                "address":851,
+                "min":0,
+                "max":1440,
+                "group":"schedules_channels",
+                "type":"value",
+                "enabled":false
+             },
+             {
+                "name":"Start time of N2 event for wednesday",
+                "reg_type":"holding",
+                "address":852,
+                "min":0,
+                "max":1440,
+                "group":"schedules_channels",
+                "type":"value",
+                "enabled":false
+             },
+             {
+                "name":"Stop time of N2 event for wednesday",
+                "reg_type":"holding",
+                "address":853,
+                "min":0,
+                "max":1440,
+                "group":"schedules_channels",
+                "type":"value",
+                "enabled":false
+             },
+             {
+                "name":"Start time of N3 event for wednesday",
+                "reg_type":"holding",
+                "address":854,
+                "min":0,
+                "max":1440,
+                "group":"schedules_channels",
+                "type":"value",
+                "enabled":false
+             },
+             {
+                "name":"Stop time of N3 event for wednesday",
+                "reg_type":"holding",
+                "address":855,
+                "min":0,
+                "max":1440,
+                "group":"schedules_channels",
+                "type":"value",
+                "enabled":false
+             },
+             {
+                "name":"Start time of N1 event for thursday",
+                "reg_type":"holding",
+                "address":856,
+                "min":0,
+                "max":1440,
+                "group":"schedules_channels",
+                "type":"value",
+                "enabled":false
+             },
+             {
+                "name":"Stop time of N1 event for thursday",
+                "reg_type":"holding",
+                "address":857,
+                "min":0,
+                "max":1440,
+                "group":"schedules_channels",
+                "type":"value",
+                "enabled":false
+             },
+             {
+                "name":"Start time of N2 event for thursday",
+                "reg_type":"holding",
+                "address":858,
+                "min":0,
+                "max":1440,
+                "group":"schedules_channels",
+                "type":"value",
+                "enabled":false
+             },
+             {
+                "name":"Stop time of N2 event for thursday",
+                "reg_type":"holding",
+                "address":859,
+                "min":0,
+                "max":1440,
+                "group":"schedules_channels",
+                "type":"value",
+                "enabled":false
+             },
+             {
+                "name":"Start time of N3 event for thursday",
+                "reg_type":"holding",
+                "address":860,
+                "min":0,
+                "max":1440,
+                "group":"schedules_channels",
+                "type":"value",
+                "enabled":false
+             },
+             {
+                "name":"Stop time of N3 event for thursday",
+                "reg_type":"holding",
+                "address":861,
+                "min":0,
+                "max":1440,
+                "group":"schedules_channels",
+                "type":"value",
+                "enabled":false
+             },
+             {
+                "name":"Start time of N1 event for friday",
+                "reg_type":"holding",
+                "address":862,
+                "min":0,
+                "max":1440,
+                "group":"schedules_channels",
+                "type":"value",
+                "enabled":false
+             },
+             {
+                "name":"Stop time of N1 event for friday",
+                "reg_type":"holding",
+                "address":863,
+                "min":0,
+                "max":1440,
+                "group":"schedules_channels",
+                "type":"value",
+                "enabled":false
+             },
+             {
+                "name":"Start time of N2 event for friday",
+                "reg_type":"holding",
+                "address":864,
+                "min":0,
+                "max":1440,
+                "group":"schedules_channels",
+                "type":"value",
+                "enabled":false
+             },
+             {
+                "name":"Stop time of N2 event for friday",
+                "reg_type":"holding",
+                "address":865,
+                "min":0,
+                "max":1440,
+                "group":"schedules_channels",
+                "type":"value",
+                "enabled":false
+             },
+             {
+                "name":"Start time of N3 event for friday",
+                "reg_type":"holding",
+                "address":866,
+                "min":0,
+                "max":1440,
+                "group":"schedules_channels",
+                "type":"value",
+                "enabled":false
+             },
+             {
+                "name":"Stop time of N3 event for friday",
+                "reg_type":"holding",
+                "address":867,
+                "min":0,
+                "max":1440,
+                "group":"schedules_channels",
+                "type":"value",
+                "enabled":false
+             },
+             {
+                "name":"Start time of N1 event for saturday",
+                "reg_type":"holding",
+                "address":868,
+                "min":0,
+                "max":1440,
+                "group":"schedules_channels",
+                "type":"value",
+                "enabled":false
+             },
+             {
+                "name":"Stop time of N1 event for saturday",
+                "reg_type":"holding",
+                "address":869,
+                "min":0,
+                "max":1440,
+                "group":"schedules_channels",
+                "type":"value",
+                "enabled":false
+             },
+             {
+                "name":"Start time of N2 event for saturday",
+                "reg_type":"holding",
+                "address":870,
+                "min":0,
+                "max":1440,
+                "group":"schedules_channels",
+                "type":"value",
+                "enabled":false
+             },
+             {
+                "name":"Stop time of N2 event for saturday",
+                "reg_type":"holding",
+                "address":871,
+                "min":0,
+                "max":1440,
+                "group":"schedules_channels",
+                "type":"value",
+                "enabled":false
+             },
+             {
+                "name":"Start time of N3 event for saturday",
+                "reg_type":"holding",
+                "address":872,
+                "min":0,
+                "max":1440,
+                "group":"schedules_channels",
+                "type":"value",
+                "enabled":false
+             },
+             {
+                "name":"Stop time of N3 event for saturday",
+                "reg_type":"holding",
+                "address":873,
+                "min":0,
+                "max":1440,
+                "group":"schedules_channels",
+                "type":"value",
+                "enabled":false
+             },
+             {
+                "name":"Mode of N1 event for sunday",
+                "reg_type":"holding",
+                "address":874,
+                "min":0,
+                "max":3,
+                "group":"schedules_channels",
+                "type":"range",
+                "enabled":false
+             },
+             {
+                "name":"Mode of N2 event for sunday",
+                "reg_type":"holding",
+                "address":875,
+                "min":0,
+                "max":3,
+                "group":"schedules_channels",
+                "type":"range",
+                "enabled":false
+             },
+             {
+                "name":"Mode of N3 event for sunday",
+                "reg_type":"holding",
+                "address":876,
+                "min":0,
+                "max":3,
+                "group":"schedules_channels",
+                "type":"range",
+                "enabled":false
+             },
+             {
+                "name":"Mode of N1 event for monday",
+                "reg_type":"holding",
+                "address":877,
+                "min":0,
+                "max":3,
+                "group":"schedules_channels",
+                "type":"range",
+                "enabled":false
+             },
+             {
+                "name":"Mode of N2 event for monday",
+                "reg_type":"holding",
+                "address":878,
+                "min":0,
+                "max":3,
+                "group":"schedules_channels",
+                "type":"range",
+                "enabled":false
+             },
+             {
+                "name":"Mode of N3 event for monday",
+                "reg_type":"holding",
+                "address":879,
+                "min":0,
+                "max":3,
+                "group":"schedules_channels",
+                "type":"range",
+                "enabled":false
+             },
+             {
+                "name":"Mode of N1 event for tuesday",
+                "reg_type":"holding",
+                "address":880,
+                "min":0,
+                "max":3,
+                "group":"schedules_channels",
+                "type":"range",
+                "enabled":false
+             },
+             {
+                "name":"Mode of N2 event for tuesday",
+                "reg_type":"holding",
+                "address":881,
+                "min":0,
+                "max":3,
+                "group":"schedules_channels",
+                "type":"range",
+                "enabled":false
+             },
+             {
+                "name":"Mode of N3 event for tuesday",
+                "reg_type":"holding",
+                "address":882,
+                "min":0,
+                "max":3,
+                "group":"schedules_channels",
+                "type":"range",
+                "enabled":false
+             },
+             {
+                "name":"Mode of N1 event for wednesday",
+                "reg_type":"holding",
+                "address":883,
+                "min":0,
+                "max":3,
+                "group":"schedules_channels",
+                "type":"range",
+                "enabled":false
+             },
+             {
+                "name":"Mode of N2 event for wednesday",
+                "reg_type":"holding",
+                "address":884,
+                "min":0,
+                "max":3,
+                "group":"schedules_channels",
+                "type":"range",
+                "enabled":false
+             },
+             {
+                "name":"Mode of N3 event for wednesday",
+                "reg_type":"holding",
+                "address":885,
+                "min":0,
+                "max":3,
+                "group":"schedules_channels",
+                "type":"range",
+                "enabled":false
+             },
+             {
+                "name":"Mode of N1 event for thursday",
+                "reg_type":"holding",
+                "address":886,
+                "min":0,
+                "max":3,
+                "group":"schedules_channels",
+                "type":"range",
+                "enabled":false
+             },
+             {
+                "name":"Mode of N2 event for thursday",
+                "reg_type":"holding",
+                "address":887,
+                "min":0,
+                "max":3,
+                "group":"schedules_channels",
+                "type":"range",
+                "enabled":false
+             },
+             {
+                "name":"Mode of N3 event for thursday",
+                "reg_type":"holding",
+                "address":888,
+                "min":0,
+                "max":3,
+                "group":"schedules_channels",
+                "type":"range",
+                "enabled":false
+             },
+             {
+                "name":"Mode of N1 event for friday",
+                "reg_type":"holding",
+                "address":889,
+                "min":0,
+                "max":3,
+                "group":"schedules_channels",
+                "type":"range",
+                "enabled":false
+             },
+             {
+                "name":"Mode of N2 event for friday",
+                "reg_type":"holding",
+                "address":890,
+                "min":0,
+                "max":3,
+                "group":"schedules_channels",
+                "type":"range",
+                "enabled":false
+             },
+             {
+                "name":"Mode of N3 event for friday",
+                "reg_type":"holding",
+                "address":891,
+                "min":0,
+                "max":3,
+                "group":"schedules_channels",
+                "type":"range",
+                "enabled":false
+             },
+             {
+                "name":"Mode of N1 event for saturday",
+                "reg_type":"holding",
+                "address":892,
+                "min":0,
+                "max":3,
+                "group":"schedules_channels",
+                "type":"range",
+                "enabled":false
+             },
+             {
+                "name":"Mode of N2 event for saturday",
+                "reg_type":"holding",
+                "address":893,
+                "min":0,
+                "max":3,
+                "group":"schedules_channels",
+                "type":"range",
+                "enabled":false
+             },
+             {
+                "name":"Mode of N3 event for saturday",
+                "reg_type":"holding",
+                "address":894,
+                "min":0,
+                "max":3,
+                "group":"schedules_channels",
+                "type":"range",
+                "enabled":false
+             }
+        ],
+        "translations": {
+            "en": {
+                "Komfovent_ping2_template_title": "Network module PING2 for Komfovent C3/C4",
+                "time_description": "Time is indicated in minutes, using the following formula: hh * 60 + mm = value",
+                "minutes_description": "Time is indicated in minutes"
+            },
+            "ru": {
+                "time_description": "Время указывается в минутах, по следующей формуле: чч * 60 + мм = значение",
+                "minutes_description": "Время указывается в минутах",
+                
+                "Komfovent_ping2_template_title": "Сетевой модуль PING2 для Komfovent C3/C4",
+                "Main": "Основные",
+                "General": "Общее",
+                "Mode 1": "Режим 1",
+                "Mode 2": "Режим 2",
+                "Mode 3": "Режим 3",
+                "OVR mode": "Режим OVR",
+                "Temperature maintenance mode": "Режим поддержания температуры",
+                "Flow control mode": "Режим управления потоком",
+                "Schedules": "Расписания",
+                "Target mode": "Целевой режим",
+                "Functions": "Функции",
+                "Sensors": "Датчики",
+                "inputs": "Входы",
+                "outputs": "Выходы",
+                "Debug": "Диагностика",
+                "HW Info": "Данные модуля",
+                "Alarms": "Авария",
+
+                "Summer": "Лето",
+                "Winter": "Зима",
+                "Auto": "Авто",
+                "Supply": "Приток",
+                "Exhaust": "Вытяжка",
+                "Standby": "Выключена",
+
+                "State": "Состояние",
+                "Outdoor air Temperature": "Наружный воздух",
+                "Room air temperature": "Воздух в помещении",
+                "Supply air temperature": "Приточный воздух",
+                "Anti-freezing temperature": "Температура защиты от замерзания",
+                "Return water temperature": "Температура обратной воды",
+                "Supply pressure": "Давление приточного воздуха",
+                "Exhaust pressure": "Давление выходящего воздуха",
+                "Supply air flow": "Поток приточного воздуха",
+                "Exhaust air flow": "Поток отработанного воздуха",
+                "Supply fan control output": "Выход управления приточным вентилятором",
+                "Exhaust fan control output": "Выход управления вытяжным вентилятором",
+                "Rotor control output": "Выходной сигнал управления ротором",
+                "Water heater control output": "Выход управления водонагревателем",
+                "Electric heater output power": "Выходная мощность электронагревателя",
+                "Water cooler control output": "Выход управления водяным охладителем",
+                "Electric cooler output power": "Выходная мощность электрического охладителя",
+                "AHU current operating status": "Текущее рабочее состояние ПВУ",
+                "Air quality input": "Вход данные по качеству воздуха",
+                "Supply pressure input": "Вход давление приточного воздуха",
+                "Exhaust pressure input": "Вход давление отработанного воздуха",
+                "AHU set operating status": "ПВУ Устанавливает рабочее состояние",
+                "Temperature set point": "Заданное значение температуры",
+                "Current fan intensity": "Текущая интенсивность вентилятора",
+                "Regulation mode": "Режим регулирования",
+                "Current regulation mode": "Текущий режимм регулирования",
+                "Current supply air set point": "Текущее заданное значение приточного воздуха",
+                "Room set point": "Текущее заданное значение вытяжного воздуха",
+                "Auto mode": "Автоматический режим",
+                "Set fan intensity": "Установленный режим",
+                "Year": "Год",
+                "Month": "Месяц",
+                "Day": "Число",
+                "Hours": "Час",
+                "Minutes": "Минуты",
+                "Seconds": "Секунды",
+                "Weekday": "День недели",
+                "Supply air fan overheating": "Перегрев вентилятора приточного воздуха",
+                "Exhaust air fan overheating": "Перегрев вентилятора вытяжного воздуха",
+                "Rotor rotating signal": "Сигнал о вращении ротора",
+                "Electric heater overheating": "Перегрев электронагревателя",
+                "Remote start-stop": "Удаленный запуск-остановка",
+                "Fire alarm": "Пожарная сигнализация",
+                "Change supply air filter": "Замените фильтр приточного воздуха",
+                "Change exhaust air filter": "Замените фильтр отработанного воздуха",
+                "Water circulation pump": "Циркуляционный насос для воды",
+                "Air damper actuator": "Привод воздушной заслонки",
+                "Common alarm signal": "Общий сигнал тревоги",
+                "DX cooling second step": "Второй этап охлаждения DX",
+                "Heat exchanger On-Off signal": "Сигнал включения-выключения теплообменника",
+                "DX cooling first step or 1 speed of fans": "Первая ступень охлаждения DX или 1 скорость вращения вентиляторов",
+                "Not used or 2 speed of fans": "не используется или 2 скорости вращения вентиляторов",
+                "Not used or 3 speed of fans": "не используется или 3 скорости вращения вентиляторов",
+                "Unit stop code": "Код остановки устройства",
+                "Season mode": "Сезонный режим",
+                "Weekly filters check": "Еженедельная проверка фильтров",
+                "Operation of recirculation": "Режим рециркуляции",
+                "Start time of air recirculation": "Время начала рециркуляции воздуха",
+                "Stop time of air recirculation": "Время остановки рециркуляции воздуха",
+                "Room air set point temperature": "Заданная температура воздуха в помещении",
+                "Supply air set point temperature": "Заданная температура приточного воздуха",
+                "Temperature correction value": "Значение коррекции температуры",
+                "Start time of temperature correction": "Время начала коррекции температуры",
+                "Stop time of temperature correction": "Время остановки коррекции температуры",
+                "Modbus slave address": "Адрес подчиненного устройства Modbus",
+                "1 level adjusting of supply intensity": "Уровень 1 Регулировка интенсивности приточного вентилятора",
+                "1 level adjusting of exhaust intensity": "Уровень 1 Регулировка интенсивности вытяжного вентилятора",
+                "2 level adjusting of supply intensity": "Уровень 2 Регулировка интенсивности приточного вентилятора",
+                "2 level adjusting of exhaust intensity": "Уровень 2 Регулировка интенсивности вытяжного вентилятора",
+                "3 level adjusting of supply intensity": "Уровень 3 Регулировка интенсивности приточного вентилятора",
+                "3 level adjusting of exhaust intensity": "Уровень 3 Регулировка интенсивности вытяжного вентилятора",
+                "OVR intensity for supply fan": "OVR интенсивность приточного вентилятора",
+                "OVR intensity for exhaust fan": "OVR интенсивность вытяжного вентилятора",
+                "Air quality mode": "Режим контроля качества воздуха",
+                "Set point for air quality": "Заданное значение качества воздуха",
+                "Exhaust correction value": "Корректирующее значение вытяжного вентилятора",
+                "Operation time of exhaust correction": "Время работы коррекции вытяжного вентилятора",
+                "Exhaust air flow correction": "Коррекция вытяжного вентилятора",
+                "Recirculation mode": "Режим рециркуляции",
+                "Schedule mode": "Режим расписания",
+
+                "Start time of N1 event for sunday": "Время начала события N1 в воскресенье",
+                "Stop time of N1 event for sunday": "Время окончания события N1 в воскресенье",
+                "Start time of N2 event for sunday": "Время начала события N2 в воскресенье",
+                "Stop time of N2 event for sunday": "Время окончания события N2 в воскресенье",
+                "Start time of N3 event for sunday": "Время начала события N3 в воскресенье",
+                "Stop time of N3 event for sunday": "Время окончания события N3 в воскресенье",
+
+                "Start time of N1 event for monday": "Время начала события N1 в понедельник",
+                "Stop time of N1 event for monday": "Время окончания события N1 в понедельник",
+                "Start time of N2 event for monday": "Время начала события N2 в понедельник",
+                "Stop time of N2 event for monday": "Время окончания события N2 в понедельник",
+                "Start time of N3 event for monday": "Время начала события N3 в понедельник",
+                "Stop time of N3 event for monday": "Время окончания события N3 в понедельник",
+
+                "Start time of N1 event for tuesday": "Время начала события N1 в вторник",
+                "Stop time of N1 event for tuesday": "Время окончания события N1 в вторник",
+                "Start time of N2 event for tuesday": "Время начала события N2 в вторник",
+                "Stop time of N2 event for tuesday": "Время окончания события N2 в вторник",
+                "Start time of N3 event for tuesday": "Время начала события N3 в вторник",
+                "Stop time of N3 event for tuesday": "Время окончания события N3 в вторник",
+
+                "Start time of N1 event for wednesday": "Время начала события N1 в среду",
+                "Stop time of N1 event for wednesday": "Время окончания события N1 в среду",
+                "Start time of N2 event for wednesday": "Время начала события N2 в среду",
+                "Stop time of N2 event for wednesday": "Время окончания события N2 в среду",
+                "Start time of N3 event for wednesday": "Время начала события N3 в среду",
+                "Stop time of N3 event for wednesday": "Время окончания события N3 в среду",
+
+                "Start time of N1 event for thursday": "Время начала события N1 в четверг",
+                "Stop time of N1 event for thursday": "Время окончания события N1 в четверг",
+                "Start time of N2 event for thursday": "Время начала события N2 в четверг",
+                "Stop time of N2 event for thursday": "Время окончания события N2 в четверг",
+                "Start time of N3 event for thursday": "Время начала события N3 в четверг",
+                "Stop time of N3 event for thursday": "Время окончания события N3 в четверг",
+
+                "Start time of N1 event for friday": "Время начала события N1 в пятницу",
+                "Stop time of N1 event for friday": "Время окончания события N1 в пятницу",
+                "Start time of N2 event for friday": "Время начала события N2 в пятницу",
+                "Stop time of N2 event for friday": "Время окончания события N2 в пятницу",
+                "Start time of N3 event for friday": "Время начала события N3 в пятницу",
+                "Stop time of N3 event for friday": "Время окончания события N3 в пятницу",
+
+                "Start time of N1 event for saturday": "Время начала события N1 в субботу",
+                "Stop time of N1 event for saturday": "Время окончания события N1 в субботу",
+                "Start time of N2 event for saturday": "Время начала события N2 в субботу",
+                "Stop time of N2 event for saturday": "Время окончания события N2 в субботу",
+                "Start time of N3 event for saturday": "Время начала события N3 в субботу",
+                "Stop time of N3 event for saturday": "Время окончания события N3 в субботу",
+
+                "Mode of N1 event for sunday": "Режим события №1 в воскресенье",
+                "Mode of N2 event for sunday": "Режим события №2 в воскресенье",
+                "Mode of N3 event for sunday": "Режим события №3 в воскресенье",
+
+                "Mode of N1 event for monday": "Режим события №1 в Понедельник",
+                "Mode of N2 event for monday": "Режим события №2 в Понедельник",
+                "Mode of N3 event for monday": "Режим события №3 в Понедельник",
+
+                "Mode of N1 event for tuesday": "Режим события №1 в Вторник",
+                "Mode of N2 event for tuesday": "Режим события №2 в Вторник",
+                "Mode of N3 event for tuesday": "Режим события №3 в Вторник",
+
+                "Mode of N1 event for wednesday": "Режим события №1 в Среда",
+                "Mode of N2 event for wednesday": "Режим события №2 в Среда",
+                "Mode of N3 event for wednesday": "Режим события №3 в Среда",
+
+                "Mode of N1 event for thursday": "Режим события №1 в Четверг",
+                "Mode of N2 event for thursday": "Режим события №2 в Четверг",
+                "Mode of N3 event for thursday": "Режим события №3 в Четверг",
+
+                "Mode of N1 event for friday": "Режим события №1 в Пятница",
+                "Mode of N2 event for friday": "Режим события №2 в Пятница",
+                "Mode of N3 event for friday": "Режим события №3 в Пятница",
+
+                "Mode of N1 event for saturday": "Режим события №1 в Суббота",
+                "Mode of N2 event for saturday": "Режим события №2 в Суббота",
+                "Mode of N3 event for saturday": "Режим события №3 в Суббота",
+
+                "Sunday": "Воскресенье",
+                "Monday": "Понедельник",
+                "Tuesday": "Вторник",
+                "Wednesday": "Среда",
+                "Thursday": "Четверг",
+                "Friday": "Пятница",
+                "Saturday": "Суббота",
+
+                "Start time": "Время начала",
+                "Stop time": "Время окончания",
+
+                "N1 Event": "Событие №1",
+                "N2 Event": "Событие №2",
+                "N3 Event": "Событие №3",
+                
+                "Current schedule mode": "Состояние режима расписания"
+            }
+        }
+    }
+}
