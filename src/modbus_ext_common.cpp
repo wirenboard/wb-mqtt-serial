@@ -133,9 +133,11 @@ namespace ModbusExt // modbus extension protocol declarations
                 case NO_EVENTS_RESPONSE_COMMAND: {
                     return size == start + NO_EVENTS_RESPONSE_SIZE;
                 }
-                default:
-                    // Unexpected sub command
-                    return true;
+                default: {
+                    // Unexpected sub command.
+                    // Can't calculate size, so read until timeout or max packet size
+                    return false;
+                }
             }
         };
     }
