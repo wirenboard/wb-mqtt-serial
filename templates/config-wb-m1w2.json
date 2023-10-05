@@ -271,7 +271,7 @@
             },
             {
                 "title": "Disabled",
-                "device_type": "input_disabled"
+                "device_type": "input_disabled",
                 "device": {}
             }
         ],
