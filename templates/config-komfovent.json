@@ -1836,7 +1836,6 @@
                 "group": "temperatureMaintenanceMode",
                 "type": "range",
                 "enabled": true
-        
             },
             {
                 "name": "Weekly filters check",
