@@ -295,7 +295,9 @@ void TSerialClientEventsReader::OnEnabledEvent(uint8_t slaveId, uint8_t type, ui
     if (regArray != Regs.end()) {
         for (const auto& reg: regArray->second) {
             if (res) {
-                reg->ExcludeFromPolling();
+                if (reg->SporadicMode == TRegisterConfig::TSporadicMode::ONLY_EVENTS) {
+                    reg->ExcludeFromPolling();
+                }
                 reg->SetAvailable(TRegisterAvailability::AVAILABLE);
                 DevicesWithEnabledEvents.emplace(slaveId);
             } else {
