@@ -13,18 +13,15 @@
         "groups": [
             {
                 "title": "Measured Values",
-                "id": "measured_values",
-                "order": 1
+                "id": "measured_values"
             },
             {
                 "title": "General",
-                "id": "general",
-                "order": 2
+                "id": "general"
             },
             {
                 "title": "HW Info",
-                "id": "hw_info",
-                "order": 3
+                "id": "hw_info"
             }
         ],
 

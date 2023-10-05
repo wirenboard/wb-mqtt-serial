@@ -10,18 +10,15 @@
         "groups": [
             {
                 "title": "Main",
-                "id": "main",
-                "order": 1
+                "id": "main"
             },
             {
                 "title": "Limits",
-                "id": "limits",
-                "order": 2
+                "id": "limits"
             },
             {
                 "title": "Settings",
-                "id": "settings",
-                "order": 4
+                "id": "settings"
             }
         ],
         "parameters": {

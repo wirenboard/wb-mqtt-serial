@@ -13,38 +13,31 @@
         "groups": [
             {
                 "title": "Defrost",
-                "id": "defrost",
-                "order": 1
+                "id": "defrost"
             },
             {
                 "title": "Temperature and Digital Sensors",
-                "id": "sensors",
-                "order": 2
+                "id": "sensors"
             },
             {
                 "title": "Compressor and Fan",
-                "id": "compressor_fan",
-                "order": 3
+                "id": "compressor_fan"
             },
             {
                 "title": "Alarms",
-                "id": "alarms",
-                "order": 4
+                "id": "alarms"
             },
             {
                 "title": "Status",
-                "id": "status",
-                "order": 5
+                "id": "status"
             },
             {
                 "title": "Setpoint",
-                "id": "setpoint",
-                "order": 6
+                "id": "setpoint"
             },
             {
                 "title": "Control",
-                "id": "control",
-                "order": 7
+                "id": "control"
             }
         ],
 

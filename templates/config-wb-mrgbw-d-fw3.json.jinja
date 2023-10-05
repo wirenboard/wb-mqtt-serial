@@ -16,41 +16,34 @@
             {% for in_num in range(1, INPUTS_NUMBER + 1) -%}
             {
                 "title": "Input {{in_num}}",
-                "id": "g_input_{{in_num}}",
-                "order": {{in_num}}
+                "id": "g_input_{{in_num}}"
             },
             {% endfor -%}
             {
                 "title": "Outputs",
-                "id": "g_outputs",
-                "order": 4
+                "id": "g_outputs"
             },
             {
                 "title": "General",
-                "id": "g_general",
-                "order": 5
+                "id": "g_general"
             },
             {
                 "title": "HW Info",
-                "id": "g_hw_info",
-                "order": 6
+                "id": "g_hw_info"
             },
             {
                 "title": "Debug",
-                "id": "g_debug",
-                "order": 7
+                "id": "g_debug"
             },
             {% for in_num in range(1, INPUTS_NUMBER + 1) -%}
             {
                 "title": "Actions",
                 "id": "gg_in_{{in_num}}_actions",
-                "order": 1,
                 "group": "g_input_{{in_num}}"
             },
             {
                 "title": "params",
                 "id": "gg_in_{{in_num}}_params",
-                "order": 2,
                 "group": "g_input_{{in_num}}",
                 "ui_options": {
                     "wb": {
@@ -61,7 +54,6 @@
             {
                 "title": "Input {{in_num}} Channels",
                 "id": "gg_in_{{in_num}}_channels",
-                "order": 100,
                 "group": "g_input_{{in_num}}",
                 "ui_options": {
                     "wb": {
@@ -73,25 +65,21 @@
             {
                 "title": "fader_hue_title",
                 "id": "gg_fader_hue",
-                "order": 2,
                 "group": "g_outputs"
             },
             {
                 "title": "fader_inc_title",
                 "id": "gg_fader_inc",
-                "order": 3,
                 "group": "g_outputs"
             },
             {
                 "title": "fader_dec_title",
                 "id": "gg_fader_dec",
-                "order": 4,
                 "group": "g_outputs"
             },
             {
                 "title": "params",
                 "id": "gg_out_params",
-                "order": 50,
                 "group": "g_outputs",
                 "ui_options": {
                     "wb": {
@@ -102,7 +90,6 @@
             {
                 "title": "Outputs Channels",
                 "id": "gg_out_channels",
-                "order": 100,
                 "group": "g_outputs",
                 "ui_options": {
                     "wb": {

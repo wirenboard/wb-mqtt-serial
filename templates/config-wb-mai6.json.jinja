@@ -30,36 +30,30 @@
             {% for ch_num in range(1, CHANNELS_NUMBER + 1) -%}
             {
                 "title": "IN {{ ch_num }}",
-                "id": "g_in{{ ch_num }}",
-                "order": {{ ch_num }}
+                "id": "g_in{{ ch_num }}"
             },
             {
                 "title": "IN_P_title",
                 "id": "gg_in{{ ch_num }}_p",
-                "order": {{ ch_num }},
                 "group": "g_in{{ ch_num }}"
             },
             {
                 "title": "IN_N_title",
                 "id": "gg_in{{ ch_num }}_n",
-                "order": {{ ch_num }},
                 "group": "g_in{{ ch_num }}"
             },
             {% endfor -%}
             {
                 "title": "General",
-                "id": "general",
-                "order": 7
+                "id": "general"
             },
             {
                 "title": "HW Info",
-                "id": "hw_info",
-                "order": 8
+                "id": "hw_info"
             },
             {
                 "title": "Debug",
-                "id": "debug",
-                "order": 9
+                "id": "debug"
             }
         ],
 

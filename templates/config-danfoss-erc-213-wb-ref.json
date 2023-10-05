@@ -14,53 +14,43 @@
         "groups": [
             {
                 "title": "Status",
-                "id": "status",
-                "order": 1
+                "id": "status"
             },
             {
                 "title": "Control",
-                "id": "control",
-                "order": 2
+                "id": "control"
             },
             {
                 "title": "Reference",
-                "id": "reference",
-                "order": 3
+                "id": "reference"
             },
             {
                 "title": "Alarm",
-                "id": "alarm",
-                "order": 4
+                "id": "alarm"
             },
             {
                 "title": "Defrost",
-                "id": "defrost",
-                "order": 5
+                "id": "defrost"
             },
             {
                 "title": "Fans",
-                "id": "fans",
-                "order": 6
+                "id": "fans"
             },
             {
                 "title": "Compressor",
-                "id": "compressor",
-                "order": 7
+                "id": "compressor"
             },
             {
                 "title": "Others",
-                "id": "others",
-                "order": 8
+                "id": "others"
             },
             {
                 "title": "Polarity",
-                "id": "polarity",
-                "order": 9
+                "id": "polarity"
             },
             {
                 "title": "Controller Info",
-                "id": "controller_info",
-                "order": 10
+                "id": "controller_info"
             }
         ],
         "setup": [

@@ -13,63 +13,51 @@
         "groups": [
             {
                 "title": "Status",
-                "id": "status",
-                "order": 1
+                "id": "status"
             },
             {
                 "title": "Control",
-                "id": "control",
-                "order": 2
+                "id": "control"
             },
             {
                 "title": "Compressor (CP)",
-                "id": "compressor",
-                "order": 3
+                "id": "compressor"
             },
             {
                 "title": "Defrost (dEF)",
-                "id": "defrost",
-                "order": 4
+                "id": "defrost"
             },
             {
                 "title": "Fans (Fan)",
-                "id": "fans",
-                "order": 5
+                "id": "fans"
             },
             {
                 "title": "Alarms (AL)",
-                "id": "alarms",
-                "order": 6
+                "id": "alarms"
             },
             {
                 "title": "Light And Inputs (Lit)",
-                "id": "inputs",
-                "order": 7
+                "id": "inputs"
             },
             {
                 "title": "Pressure Switch (PrE)",
-                "id": "pressure_switch",
-                "order": 8
+                "id": "pressure_switch"
             },
             {
                 "title": "Display (diS)",
-                "id": "display",
-                "order": 9
+                "id": "display"
             },
             {
                 "title": "HACCP (HCP)",
-                "id": "haccp",
-                "order": 10
+                "id": "haccp"
             },
             {
                 "title": "Configuration (Cnf)",
-                "id": "configuration",
-                "order": 11
+                "id": "configuration"
             },
             {
                 "title": "HW Info (Add)",
-                "id": "hw_info",
-                "order": 12
+                "id": "hw_info"
             }
         ],
 

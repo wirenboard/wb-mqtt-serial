@@ -10,23 +10,19 @@
         "groups": [
             {
                 "title": "Status",
-                "id": "status",
-                "order": 1
+                "id": "status"
             },
             {
                 "title": "Temperature",
-                "id": "temperature",
-                "order": 2
+                "id": "temperature"
             },
             {
                 "title": "Fan",
-                "id": "fan",
-                "order": 3
+                "id": "fan"
             },
             {
                 "title": "Alarms",
-                "id": "alarms",
-                "order": 4
+                "id": "alarms"
             }
         ],
         "channels": [

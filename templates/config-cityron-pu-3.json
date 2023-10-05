@@ -10,18 +10,15 @@
         "groups": [
             {
                 "title": "Parameters",
-                "id": "parameters",
-                "order": 1
+                "id": "parameters"
             },
             {
                 "title": "General",
-                "id": "general",
-                "order": 2
+                "id": "general"
             },
             {
                 "title": "Data Storage",
-                "id": "data_storage",
-                "order": 3
+                "id": "data_storage"
             }
         ],
         "parameters": {

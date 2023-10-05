@@ -25,22 +25,19 @@
             {% for ch_number in range(1, INPUTS_NUMBER + 1) -%}
             {
                 "title": "Input {{ ch_number }}",
-                "id": "input_{{ ch_number }}",
-                "order": {{ ch_number }}
+                "id": "input_{{ ch_number }}"
             },
             {% for press_type in PRESS_TYPES -%}
             {
                 "title": "{{ press_type | title }} Press Action",
                 "id": "input_{{ ch_number }}_{{ press_type | replace(' ', '_') }}_press_action",
-                "group": "input_{{ ch_number }}",
-                "order": {{loop.index}}
+                "group": "input_{{ ch_number }}"
             },
             {% endfor -%}
             {
                 "title": "Input Parameters",
                 "id": "input_{{ ch_number }}_parameters",
                 "group": "input_{{ch_number }}",
-                "order": 5,
                 "ui_options": {
                     "wb": {
                         "disable_title": true
@@ -51,7 +48,6 @@
                 "title": "Input Counters",
                 "id": "input_{{ ch_number }}_counters",
                 "group": "input_{{ ch_number }}",
-                "order": 6,
                 "ui_options": {
                     "wb": {
                         "disable_title": true
@@ -61,28 +57,24 @@
             {% endfor -%}
             {
                 "title": "Outputs",
-                "id": "outputs",
-                "order": {{INPUTS_NUMBER + 1}}
+                "id": "outputs"
             },
             {
                 "title": "Outputs Common Settings",
                 "id": "outputs_common",
-                "group": "outputs",
-                "order": 1
+                "group": "outputs"
             },
             {% for ch_number in range(1, OUTPUTS_NUMBER + 1) -%}
             {
                 "title": "Output {{ ch_number }}",
                 "id": "output{{ ch_number }}",
-                "group": "outputs",
-                "order": {{ ch_number + 1 }}
+                "group": "outputs"
             },
             {% endfor -%}
             {
                 "title": "Output Channels",
                 "id": "output_channels",
                 "group": "outputs",
-                "order": {{OUTPUTS_NUMBER + 2}},
                 "ui_options": {
                     "wb": {
                         "disable_title": true
@@ -91,18 +83,15 @@
             },
             {
                 "title": "General",
-                "id": "general",
-                "order": {{INPUTS_NUMBER + 2}}
+                "id": "general"
             },
             {
                 "title": "HW Info",
-                "id": "hw_info",
-                "order": {{INPUTS_NUMBER + 3}}
+                "id": "hw_info"
             },
             {
                 "title": "Debug",
-                "id": "debug",
-                "order": {{INPUTS_NUMBER + 4}}
+                "id": "debug"
             }
         ],
         "parameters": [

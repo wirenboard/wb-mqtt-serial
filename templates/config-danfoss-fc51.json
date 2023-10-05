@@ -13,18 +13,15 @@
         "groups": [
             {
                 "title": "Drive Status",
-                "id": "drive_status",
-                "order": 1
+                "id": "drive_status"
             },
             {
                 "title": "Drive Commands",
-                "id": "drive_commands",
-                "order": 2
+                "id": "drive_commands"
             },
             {
                 "title": "Diagnostics",
-                "id": "diagnostics",
-                "order": 3
+                "id": "diagnostics"
             }
         ],
 

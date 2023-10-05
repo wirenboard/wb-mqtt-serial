@@ -13,33 +13,27 @@
         "groups": [
             {
                 "title": "L1",
-                "id": "l1",
-                "order": 1
+                "id": "l1"
             },
             {
                 "title": "L2",
-                "id": "l2",
-                "order": 2
+                "id": "l2"
             },
             {
                 "title": "L3",
-                "id": "l3",
-                "order": 3
+                "id": "l3"
             },
             {
                 "title": "Total",
-                "id": "total",
-                "order": 4
+                "id": "total"
             },
             {
                 "title": "General",
-                "id": "general",
-                "order": 5
+                "id": "general"
             },
             {
                 "title": "HW Info",
-                "id": "hw_info",
-                "order": 6
+                "id": "hw_info"
             }
         ],
 
