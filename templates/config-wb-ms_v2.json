@@ -13,28 +13,23 @@
         "groups": [
             {
                 "title": "Air Quality",
-                "id": "air_quality",
-                "order": 1
+                "id": "air_quality"
             },
             {
                 "title": "Illuminance",
-                "id": "illuminance",
-                "order": 2
+                "id": "illuminance"
             },
             {
                 "title": "General",
-                "id": "general",
-                "order": 5
+                "id": "general"
             },
             {
                 "title": "HW Info",
-                "id": "hw_info",
-                "order": 6
+                "id": "hw_info"
             },
             {
                 "title": "Debug",
-                "id": "debug",
-                "order": 7
+                "id": "debug"
             }
         ],
 
@@ -436,7 +431,7 @@
             },
             {
                 "title": "Disabled",
-                "device_type": "input_disabled",
+                "device_type": "input_disabled"
                 "device": {}
             }
         ],

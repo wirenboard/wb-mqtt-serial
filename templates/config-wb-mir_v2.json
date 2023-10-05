@@ -13,18 +13,15 @@
         "groups": [
             {
                 "title": "IR Commands",
-                "id": "ir_commands",
-                "order": 1
+                "id": "ir_commands"
             },
             {
                 "title": "General",
-                "id": "general",
-                "order": 3
+                "id": "general"
             },
             {
                 "title": "HW Info",
-                "id": "hw_info",
-                "order": 4
+                "id": "hw_info"
             }
         ],
 

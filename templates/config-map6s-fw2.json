@@ -13,43 +13,35 @@
         "groups": [
             {
                 "title": "Channel 1",
-                "id": "channel_1",
-                "order": 1
+                "id": "channel_1"
             },
             {
                 "title": "Channel 2",
-                "id": "channel_2",
-                "order": 2
+                "id": "channel_2"
             },
             {
                 "title": "Channel 3",
-                "id": "channel_3",
-                "order": 3
+                "id": "channel_3"
             },
             {
                 "title": "Channel 4",
-                "id": "channel_4",
-                "order": 4
+                "id": "channel_4"
             },
             {
                 "title": "Channel 5",
-                "id": "channel_5",
-                "order": 5
+                "id": "channel_5"
             },
             {
                 "title": "Channel 6",
-                "id": "channel_6",
-                "order": 6
+                "id": "channel_6"
             },
             {
                 "title": "General",
-                "id": "general",
-                "order": 7
+                "id": "general"
             },
             {
                 "title": "HW Info",
-                "id": "hw_info",
-                "order": 8
+                "id": "hw_info"
             }
         ],
 

@@ -18,14 +18,12 @@
             {% for enumerator in range(0, INPUTS_NUMBER) -%}
             {
                 "title": "Input {{enumerator + 1}}",
-                "id": "input {{enumerator + 1}}",
-                "order": {{enumerator + 1}}
+                "id": "input {{enumerator + 1}}"
             },
             {
                 "title": "Input {{enumerator + 1}} Parameters",
                 "id": "input {{enumerator + 1}} parameters",
                 "group": "input {{enumerator + 1}}",
-                "order": 1,
                 "ui_options": {
                     "wb": {
                         "disable_title": true
@@ -36,7 +34,6 @@
                 "title": "Input {{enumerator + 1}} Counters",
                 "id": "input {{enumerator + 1}} counters",
                 "group": "input {{enumerator + 1}}",
-                "order": 2,
                 "ui_options": {
                     "wb": {
                         "disable_title": true
@@ -46,23 +43,19 @@
             {% endfor -%}
             {
                 "title": "Outputs",
-                "id": "outputs",
-                "order": {{INPUTS_NUMBER + 1}}
+                "id": "outputs"
             },
             {
                 "title": "General",
-                "id": "general",
-                "order": {{INPUTS_NUMBER + 2}}
+                "id": "general"
             },
             {
                 "title": "HW Info",
-                "id": "hw_info",
-                "order": {{INPUTS_NUMBER + 3}}
+                "id": "hw_info"
             },
             {
                 "title": "Debug",
-                "id": "debug",
-                "order": {{INPUTS_NUMBER + 4}}
+                "id": "debug"
             }
         ],
 

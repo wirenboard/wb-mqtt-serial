@@ -12,93 +12,75 @@
         "groups": [
             {
                 "title": "Channel 1 L1",
-                "id": "channel1_l1",
-                "order": 1
+                "id": "channel1_l1"
             },
             {
                 "title": "Channel 1 L2",
-                "id": "channel1_l2",
-                "order": 2
+                "id": "channel1_l2"
             },
             {
                 "title": "Channel 1 L3",
-                "id": "channel1_l3",
-                "order": 3
+                "id": "channel1_l3"
             },
             {
                 "title": "Channel 1 Total",
-                "id": "channel1_total",
-                "order": 4
+                "id": "channel1_total"
             },
             {
                 "title": "Channel 2 L1",
-                "id": "channel2_l1",
-                "order": 5
+                "id": "channel2_l1"
             },
             {
                 "title": "Channel 2 L2",
-                "id": "channel2_l2",
-                "order": 6
+                "id": "channel2_l2"
             },
             {
                 "title": "Channel 2 L3",
-                "id": "channel2_l3",
-                "order": 7
+                "id": "channel2_l3"
             },
             {
                 "title": "Channel 2 Total",
-                "id": "channel2_total",
-                "order": 8
+                "id": "channel2_total"
             },
             {
                 "title": "Channel 3 L1",
-                "id": "channel3_l1",
-                "order": 9
+                "id": "channel3_l1"
             },
             {
                 "title": "Channel 3 L2",
-                "id": "channel3_l2",
-                "order": 10
+                "id": "channel3_l2"
             },
             {
                 "title": "Channel 3 L3",
-                "id": "channel3_l3",
-                "order": 11
+                "id": "channel3_l3"
             },
             {
                 "title": "Channel 3 Total",
-                "id": "channel3_total",
-                "order": 12
+                "id": "channel3_total"
             },
             {
                 "title": "Channel 4 L1",
-                "id": "channel4_l1",
-                "order": 13
+                "id": "channel4_l1"
             },
             {
                 "title": "Channel 4 L2",
-                "id": "channel4_l2",
-                "order": 14
+                "id": "channel4_l2"
             },
             {
                 "title": "Channel 4 L3",
-                "id": "channel4_l3",
-                "order": 15
+                "id": "channel4_l3"
             },
             {
                 "title": "Channel 4 Total",
-                "id": "channel4_total",
-                "order": 16
+                "id": "channel4_total"
             },
             {
                 "title": "General",
-                "id": "general",
-                "order": 17
+                "id": "general"
             },
             {
                 "title": "HW Info",
-                "id": "hw_info",
-                "order": 18
+                "id": "hw_info"
             }
         ],
 

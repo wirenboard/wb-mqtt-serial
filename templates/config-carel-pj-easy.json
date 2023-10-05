@@ -13,33 +13,27 @@
         "groups": [
             {
                 "title": "Defrost",
-                "id": "defrost",
-                "order": 1
+                "id": "defrost"
             },
             {
                 "title": "Temperature Sensors",
-                "id": "temp_sensors",
-                "order": 2
+                "id": "temp_sensors"
             },
             {
                 "title": "Alarms",
-                "id": "alarms",
-                "order": 3
+                "id": "alarms"
             },
             {
                 "title": "Status",
-                "id": "status",
-                "order": 4
+                "id": "status"
             },
             {
                 "title": "Setpoint",
-                "id": "setpoint",
-                "order": 5
+                "id": "setpoint"
             },
             {
                 "title": "Control",
-                "id": "control",
-                "order": 6
+                "id": "control"
             }
         ],
 

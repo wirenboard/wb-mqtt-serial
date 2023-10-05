@@ -13,28 +13,23 @@
         "groups": [
             {
                 "title": "Button 1",
-                "id": "button_1",
-                "order": 1
+                "id": "button_1"
             },
             {
                 "title": "Button 2",
-                "id": "button_2",
-                "order": 2
+                "id": "button_2"
             },
             {
                 "title": "Outputs",
-                "id": "outputs",
-                "order": 3
+                "id": "outputs"
             },
             {
                 "title": "General",
-                "id": "general",
-                "order": 4
+                "id": "general"
             },
             {
                 "title": "HW Info",
-                "id": "hw_info",
-                "order": 5
+                "id": "hw_info"
             }
         ],
 

@@ -23,19 +23,16 @@
             {% for in_num in range(FIRST_INPUT, INPUTS_NUMBER + 1) -%}
             {
                 "title": "Input {{in_num}}",
-                "id": "g_in{{in_num}}",
-                "order": {{in_num}}
+                "id": "g_in{{in_num}}"
             },
             {
                 "title": "Press Parameters",
                 "id": "gg_in{{in_num}}_press_params",
-                "order": 1,
                 "group": "g_in{{in_num}}"
             },
             {
                 "title": "input{{in_num}}_channels",
                 "id": "gg_in{{in_num}}_channels",
-                "order": 2,
                 "group": "g_in{{in_num}}",
                 "ui_options": {
                     "wb": {
@@ -46,21 +43,18 @@
             {% endfor -%}
             {
                 "title": "Encoders",
-                "id": "g_encoders",
-                "order": 9
+                "id": "g_encoders"
             },
             {% for encoder_num in range(0, 3) -%}
             {
                 "title": "Encoder {{encoder_num + 1}}",
                 "id": "gg_encoder_{{encoder_num + 1}}",
-                "order": {{encoder_num + 1}},
                 "group": "g_encoders"
             },
             {% endfor -%}
             {
                 "title": "encoder_channels",
                 "id": "gg_encoder_channels",
-                "order": 4,
                 "group": "g_encoders",
                 "ui_options": {
                     "wb": {
@@ -71,13 +65,11 @@
             },
             {
                 "title": "General",
-                "id": "g_general",
-                "order": 10
+                "id": "g_general"
             },
             {
                 "title": "HW Info",
-                "id": "g_hw_info",
-                "order": 11
+                "id": "g_hw_info"
             }
         ],
 

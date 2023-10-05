@@ -13,18 +13,15 @@
         "groups": [
             {
                 "title": "Inputs",
-                "id": "inputs",
-                "order": 1
+                "id": "inputs"
             },
             {
                 "title": "General",
-                "id": "general",
-                "order": 2
+                "id": "general"
             },
             {
                 "title": "HW Info",
-                "id": "hw_info",
-                "order": 3
+                "id": "hw_info"
             }
         ],
 
