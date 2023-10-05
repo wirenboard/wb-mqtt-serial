@@ -276,7 +276,8 @@
                 
             },
             {
-                "title": "schedules hannels",
+                "title": "schedules channels",
+
                 "id": "schedules_channels",
                 "order": 5,
                 "group": "schedules",
