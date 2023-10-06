@@ -8,38 +8,31 @@
         "groups": [
             {
                 "title": "General",
-                "id": "general",
-                "order": 1
+                "id": "general"
             },
             {
                 "title": "Temperature control",
-                "id": "temperatureControl",
-                "order": 2
+                "id": "temperatureControl"
             },
             {
                 "title": "Vanes",
-                "id": "vanes",
-                "order": 3
+                "id": "vanes"
             },
             {
                 "title": "Additional",
-                "id": "additional",
-                "order": 4
+                "id": "additional"
             },
             {
                 "title": "Indication",
-                "id": "indication",
-                "order": 5
+                "id": "indication"
             },
             {
                 "title": "HW Info",
-                "id": "hw_info",
-                "order": 6
+                "id": "hw_info"
             },
             {
                 "title": "Debug",
-                "id": "debug",
-                "order": 7
+                "id": "debug"
             }
         ],
         "channels": [

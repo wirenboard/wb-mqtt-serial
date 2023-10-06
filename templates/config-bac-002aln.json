@@ -7,18 +7,15 @@
         "groups": [
             {
                 "title": "Sensors",
-                "id": "sensors",
-                "order": 1
+                "id": "sensors"
             },
             {
                 "title": "Parameters",
-                "id": "parameters",
-                "order": 2
+                "id": "parameters"
             },
             {
                 "title": "General",
-                "id": "general",
-                "order": 3
+                "id": "general"
             }
         ],
         "channels": [

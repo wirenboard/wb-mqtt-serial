@@ -13,58 +13,47 @@
         "groups": [
             {
                 "title": "Status",
-                "id": "status",
-                "order": 1
+                "id": "status"
             },
             {
                 "title": "Control",
-                "id": "control",
-                "order": 2
+                "id": "control"
             },
             {
                 "title": "Thermostat",
-                "id": "thermostat",
-                "order": 3
+                "id": "thermostat"
             },
             {
                 "title": "Alarm",
-                "id": "alarm",
-                "order": 4
+                "id": "alarm"
             },
             {
                 "title": "Compressor",
-                "id": "compressor",
-                "order": 5
+                "id": "compressor"
             },
             {
                 "title": "Defrost",
-                "id": "defrost",
-                "order": 6
+                "id": "defrost"
             },
             {
                 "title": "Fans",
-                "id": "fans",
-                "order": 7
+                "id": "fans"
             },
             {
                 "title": "Real Time Clock",
-                "id": "clock",
-                "order": 8
+                "id": "clock"
             },
             {
                 "title": "Miscellaneous",
-                "id": "miscellaneous",
-                "order": 9
+                "id": "miscellaneous"
             },
             {
                 "title": "Controller Info",
-                "id": "controller_info",
-                "order": 10
+                "id": "controller_info"
             },
             {
                 "title": "Card Info",
-                "id": "card_info",
-                "order": 11
+                "id": "card_info"
             }
         ],
         "setup": [

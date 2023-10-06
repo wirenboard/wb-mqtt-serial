@@ -14,18 +14,15 @@
         "groups": [
             {
                 "title": "General",
-                "id": "general",
-                "order": 1
+                "id": "general"
             },
             {
                 "title": "HW Info",
-                "id": "hw_info",
-                "order": 2
+                "id": "hw_info"
             },
             {
                 "title": "Debug",
-                "id": "debug",
-                "order": 3
+                "id": "debug"
             }
         ],
 

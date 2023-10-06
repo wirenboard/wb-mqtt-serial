@@ -9,23 +9,19 @@
         "groups": [
             {
                 "title": "Boiler State",
-                "id": "boiler_state",
-                "order": 1
+                "id": "boiler_state"
             },
             {
                 "title": "Hot Water Settings",
-                "id": "hot_water_settings",
-                "order": 2
+                "id": "hot_water_settings"
             },
             {
                 "title": "OpenTherm Commands",
-                "id": "opentherm_commands",
-                "order": 4
+                "id": "opentherm_commands"
             },
             {
                 "title": "HW Info",
-                "id": "hw_info",
-                "order": 5
+                "id": "hw_info"
             }
         ],
 

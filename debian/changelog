@@ -4,6 +4,13 @@ wb-mqtt-serial (2.105.0) stable; urgency=medium
 
  -- Roman Matveev <roman.matveev@wirenboard.ru>  Wed, 04 Oct 2023 16:58:00 +0300
 
+wb-mqtt-serial (2.104.3) stable; urgency=medium
+
+  * Remove order parameter in groups in device templates.
+    No functional changes
+
+ -- Petr Krasnoshchekov <petr.krasnoshchekov@wirenboard.com>  Thu, 05 Oct 2023 10:10:42 +0500
+
 wb-mqtt-serial (2.104.2) stable; urgency=medium
 
   * Remove AKKO venetian blinds motors support

@@ -542,83 +542,67 @@
         "groups": [
             {
                 "title": "Channel 1",
-                "id": "ch1",
-                "order": 1
+                "id": "ch1"
             },
             {
                 "title": "Channel 2",
-                "id": "ch2",
-                "order": 2
+                "id": "ch2"
             },
             {
                 "title": "Channel 3",
-                "id": "ch3",
-                "order": 3
+                "id": "ch3"
             },
             {
                 "title": "Channel 4",
-                "id": "ch4",
-                "order": 4
+                "id": "ch4"
             },
             {
                 "title": "Channel 5",
-                "id": "ch5",
-                "order": 5
+                "id": "ch5"
             },
             {
                 "title": "Channel 6",
-                "id": "ch6",
-                "order": 6
+                "id": "ch6"
             },
             {
                 "title": "Channel 7",
-                "id": "ch7",
-                "order": 7
+                "id": "ch7"
             },
             {
                 "title": "Channel 8",
-                "id": "ch8",
-                "order": 8
+                "id": "ch8"
             },
             {
                 "title": "Channel 9",
-                "id": "ch9",
-                "order": 9
+                "id": "ch9"
             },
             {
                 "title": "Channel 10",
-                "id": "ch10",
-                "order": 10
+                "id": "ch10"
             },
             {
                 "title": "Channel 11",
-                "id": "ch11",
-                "order": 11
+                "id": "ch11"
             },
             {
                 "title": "Channel 12",
-                "id": "ch12",
-                "order": 12
+                "id": "ch12"
             },
             {
                 "title": "Channel 13",
-                "id": "ch13",
-                "order": 13
+                "id": "ch13"
             },
             {
                 "title": "Channel 14",
-                "id": "ch14",
-                "order": 14
+                "id": "ch14"
             },
             {
                 "title": "Channel 15",
-                "id": "ch15",
-                "order": 15
+                "id": "ch15"
             },
             {
                 "title": "Channel 16",
-                "id": "ch16",
-                "order": 16
+                "id": "ch16"
             }
         ],
 

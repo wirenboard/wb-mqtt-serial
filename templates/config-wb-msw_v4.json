@@ -13,48 +13,39 @@
         "groups": [
             {
                 "title": "Air Quality",
-                "id": "air_quality",
-                "order": 1
+                "id": "air_quality"
             },
             {
                 "title": "group_sound_level_title",
-                "id": "sound_level",
-                "order": 2
+                "id": "sound_level"
             },
             {
                 "title": "Illuminance",
-                "id": "illuminance",
-                "order": 3
+                "id": "illuminance"
             },
             {
                 "title": "Motion",
-                "id": "motion",
-                "order": 4
+                "id": "motion"
             },
             {
                 "title": "Indication",
-                "id": "indication",
-                "order": 5
+                "id": "indication"
             },
             {
                 "title": "IR Commands",
-                "id": "ir_commands",
-                "order": 6
+                "id": "ir_commands"
             },
             {
                 "title": "General",
-                "id": "general",
-                "order": 7
+                "id": "general"
             },
             {
                 "title": "HW Info",
-                "id": "hw_info",
-                "order": 8
+                "id": "hw_info"
             },
             {
                 "title": "Debug",
-                "id": "debug",
-                "order": 9
+                "id": "debug"
             }
         ],
 
