@@ -1,3 +1,9 @@
+wb-mqtt-serial (2.104.4) stable; urgency=medium
+
+  * Fix fast modbus packets reading error
+
+ -- Petr Krasnoshchekov <petr.krasnoshchekov@wirenboard.com>  Mon, 09 Oct 2023 10:30:24 +0500
+
 wb-mqtt-serial (2.104.3) stable; urgency=medium
 
   * Remove order parameter in groups in device templates.
