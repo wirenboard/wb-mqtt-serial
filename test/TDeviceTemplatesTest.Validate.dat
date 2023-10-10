@@ -276,6 +276,8 @@ NEVA MT 32x
 	Temperature  =>  Temperature
 	Total A T1 energy  =>  Total A T1 energy
 	Total A T2 energy  =>  Total A T2 energy
+	Total A T3 energy  =>  Total A T3 energy
+	Total A T4 energy  =>  Total A T4 energy
 	Total A energy  =>  Total A energy
 	Total P  =>  Total P
 	Total PF  =>  Total PF

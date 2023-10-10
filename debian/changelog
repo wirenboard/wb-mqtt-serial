@@ -1,3 +1,9 @@
+wb-mqtt-serial (2.105.1) stable; urgency=medium
+
+  * Add NEVA MT 324 third and forth tarifs reading
+
+ -- Petr Krasnoshchekov <petr.krasnoshchekov@wirenboard.com>  Tue, 10 Oct 2023 12:26:11 +0500
+
 wb-mqtt-serial (2.105.0) stable; urgency=medium
 
   * Add semi-sporadic register parameter. It marks registers as readable with events, but doesn't exclude them from normal polling
