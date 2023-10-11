@@ -1,3 +1,9 @@
+wb-mqtt-serial (2.106.0) stable; urgency=medium
+ 
+ * Add new template for Komfovent
+
+ -- Roman Matveev <roman.matveev@wirenboard.ru>  Wed, 11 Oct 2023 12:08:00 +0300
+
 wb-mqtt-serial (2.105.0) stable; urgency=medium
 
   * Add semi-sporadic register parameter. It marks registers as readable with events, but doesn't exclude them from normal polling
