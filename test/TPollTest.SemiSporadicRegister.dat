@@ -1,0 +1,106 @@
+Open()
+0: Cycle
+Sleep(1000)
+EnqueueEnableEvents()
+>> 01 46 18 0A 03 00 01 01 01 0F 00 00 01 00 28 7D
+<< 01 46 18 02 01 00 2E F5
+Sleep(10000)
+EnqueueReadHolding()
+>> 01 03 00 01 00 01 D5 CA
+<< 01 03 02 00 00 B8 44
+31000: <modbus:1:(type 0): 1>
+31000: Cycle end
+
+31000: Cycle
+Sleep(10000)
+EnqueueReadHolding()
+>> 01 03 00 02 00 01 25 CA
+<< 01 03 02 00 00 B8 44
+51000: <modbus:1:(type 0): 2>
+51000: Cycle end
+
+51000: Cycle
+Sleep(335)
+EnqueueReadEvents()
+>> FD 46 10 00 F8 00 00 79 5B
+<< FD 46 12 52 5D
+Sleep(335)
+55670: Cycle end
+
+55670: Cycle
+Sleep(1000)
+Sleep(10000)
+EnqueueReadHolding()
+>> 01 03 00 01 00 01 D5 CA
+<< 01 03 02 00 00 B8 44
+76670: <modbus:1:(type 0): 1>
+76670: Cycle end
+
+76670: Cycle
+Sleep(10000)
+EnqueueReadHolding()
+>> 01 03 00 02 00 01 25 CA
+<< 01 03 02 00 00 B8 44
+96670: <modbus:1:(type 0): 2>
+96670: Cycle end
+
+96670: Cycle
+101000: Cycle end
+
+101000: Cycle
+Sleep(335)
+EnqueueReadEvents()
+>> FD 46 10 00 F8 00 00 79 5B
+<< FD 46 12 52 5D
+Sleep(335)
+105670: Cycle end
+
+105670: Cycle
+Sleep(1000)
+Sleep(10000)
+EnqueueReadHolding()
+>> 01 03 00 01 00 01 D5 CA
+<< 01 03 02 00 00 B8 44
+126670: <modbus:1:(type 0): 1>
+126670: Cycle end
+
+126670: Cycle
+Sleep(10000)
+EnqueueReadHolding()
+>> 01 03 00 02 00 01 25 CA
+<< 01 03 02 00 00 B8 44
+146670: <modbus:1:(type 0): 2>
+146670: Cycle end
+
+146670: Cycle
+151000: Cycle end
+
+151000: Cycle
+Sleep(335)
+EnqueueReadEvents()
+>> FD 46 10 00 F8 00 00 79 5B
+<< FD 46 12 52 5D
+Sleep(335)
+155670: Cycle end
+
+155670: Cycle
+Sleep(1000)
+Sleep(10000)
+EnqueueReadHolding()
+>> 01 03 00 01 00 01 D5 CA
+<< 01 03 02 00 00 B8 44
+176670: <modbus:1:(type 0): 1>
+176670: Cycle end
+
+176670: Cycle
+Sleep(10000)
+EnqueueReadHolding()
+>> 01 03 00 02 00 01 25 CA
+<< 01 03 02 00 00 B8 44
+196670: <modbus:1:(type 0): 2>
+196670: Cycle end
+
+196670: Cycle
+201000: Cycle end
+
+Close()
