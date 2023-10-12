@@ -203,7 +203,8 @@ public:
     enum class TSporadicMode
     {
         DISABLED,
-        ENABLED
+        ONLY_EVENTS,
+        EVENTS_AND_POLLING
     };
     TSporadicMode SporadicMode{TSporadicMode::DISABLED};
 

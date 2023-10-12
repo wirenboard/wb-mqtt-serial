@@ -1,3 +1,9 @@
+wb-mqtt-serial (2.105.0) stable; urgency=medium
+
+  * Add semi-sporadic register parameter. It marks registers as readable with events, but doesn't exclude them from normal polling
+
+ -- Petr Krasnoshchekov <petr.krasnoshchekov@wirenboard.com>  Thu, 12 Oct 2023 08:44:25 +0500
+
 wb-mqtt-serial (2.104.4) stable; urgency=medium
 
   * Fix fast modbus packets reading error
