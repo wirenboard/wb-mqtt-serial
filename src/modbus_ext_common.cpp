@@ -68,16 +68,6 @@ namespace ModbusExt // modbus extension protocol declarations
         return std::chrono::ceil<std::chrono::milliseconds>(cmdTime + arbitrationTime);
     }
 
-    size_t GetPacketStart(const uint8_t* data, size_t size)
-    {
-        for (size_t i = 0; i < size; ++i) {
-            if (data[i] != 0xFF) {
-                return i;
-            }
-        }
-        return size;
-    }
-
     uint8_t GetMaxReadEventsResponseSize(const TPort& port, std::chrono::milliseconds maxTime)
     {
         if (maxTime.count() <= 0) {
@@ -115,32 +105,6 @@ namespace ModbusExt // modbus extension protocol declarations
         return request;
     }
 
-    TPort::TFrameCompletePred ExpectEvents()
-    {
-        return [=](uint8_t* buf, size_t size) {
-            auto start = GetPacketStart(buf, size);
-            if (start + SUB_COMMAND_POS >= size) {
-                return false;
-            }
-            switch (buf[start + SUB_COMMAND_POS]) {
-                case EVENTS_RESPONSE_COMMAND: {
-                    if (size <= start + EVENTS_RESPONSE_HEADER_SIZE) {
-                        return false;
-                    }
-                    return size ==
-                           start + EVENTS_RESPONSE_HEADER_SIZE + buf[start + EVENTS_RESPONSE_DATA_SIZE_POS] + CRC_SIZE;
-                }
-                case NO_EVENTS_RESPONSE_COMMAND: {
-                    return size == start + NO_EVENTS_RESPONSE_SIZE;
-                }
-                default:
-                    // Unexpected sub command.
-                    // Can't calculate size, so read until timeout or max packet size
-                    return false;
-            }
-        };
-    }
-
     void CheckCRC16(const uint8_t* packet, size_t size)
     {
         if (size < CRC_SIZE) {
@@ -151,6 +115,58 @@ namespace ModbusExt // modbus extension protocol declarations
         if (crc != CRC16::CalculateCRC16(packet, size - CRC_SIZE)) {
             throw Modbus::TInvalidCRCError();
         }
+    }
+
+    bool IsModbusExtPacket(const uint8_t* buf, size_t size)
+    {
+        if ((buf[0] == 0xFF) || (SUB_COMMAND_POS >= size) || (buf[COMMAND_POS] != MODBUS_EXT_COMMAND)) {
+            return false;
+        }
+
+        switch (buf[SUB_COMMAND_POS]) {
+            case EVENTS_RESPONSE_COMMAND: {
+                if (size != EVENTS_RESPONSE_HEADER_SIZE + buf[EVENTS_RESPONSE_DATA_SIZE_POS] + CRC_SIZE) {
+                    return false;
+                }
+                break;
+            }
+            case NO_EVENTS_RESPONSE_COMMAND: {
+                if (size != NO_EVENTS_RESPONSE_SIZE) {
+                    return false;
+                }
+                break;
+            }
+            default: {
+                // Unexpected sub command
+                return false;
+            }
+        }
+
+        try {
+            CheckCRC16(buf, size);
+        } catch (const Modbus::TInvalidCRCError& err) {
+            return false;
+        } catch (const Modbus::TMalformedResponseError& err) {
+            return false;
+        }
+        return true;
+    }
+
+    const uint8_t* GetPacketStart(const uint8_t* data, size_t size)
+    {
+        while (size > SUB_COMMAND_POS) {
+            if (IsModbusExtPacket(data, size)) {
+                return data;
+            }
+            ++data;
+            --size;
+        }
+        return nullptr;
+    }
+
+    TPort::TFrameCompletePred ExpectEvents()
+    {
+        return [=](uint8_t* buf, size_t size) { return GetPacketStart(buf, size) != nullptr; };
     }
 
     void IterateOverEvents(uint8_t slaveId, const uint8_t* data, size_t size, IEventsVisitor& eventVisitor)
@@ -191,21 +207,13 @@ namespace ModbusExt // modbus extension protocol declarations
         auto rc = port.ReadFrame(res.data(), res.size(), timeout, timeout, ExpectEvents()).Count;
         port.SleepSinceLastInteraction(port.GetSendTimeBytes(3.5));
 
-        auto start = GetPacketStart(res.data(), res.size());
-        auto packetSize = rc - start;
-        const uint8_t* packet = res.data() + start;
-
-        CheckCRC16(packet, packetSize);
-
-        if (packet[COMMAND_POS] != MODBUS_EXT_COMMAND) {
-            throw Modbus::TMalformedResponseError("invalid command");
+        const uint8_t* packet = GetPacketStart(res.data(), rc);
+        if (packet == nullptr) {
+            throw Modbus::TMalformedResponseError("invalid packet");
         }
 
         switch (packet[SUB_COMMAND_POS]) {
             case EVENTS_RESPONSE_COMMAND: {
-                if (EVENTS_RESPONSE_HEADER_SIZE + CRC_SIZE + packet[EVENTS_RESPONSE_DATA_SIZE_POS] != packetSize) {
-                    throw Modbus::TMalformedResponseError("invalid data size");
-                }
                 state.SlaveId = packet[SLAVE_ID_POS];
                 state.Flag = packet[EVENTS_RESPONSE_CONFIRM_FLAG_POS];
                 IterateOverEvents(packet[SLAVE_ID_POS],
