@@ -1,3 +1,9 @@
+wb-mqtt-serial (2.107.0) stable; urgency=medium
+
+  * Support 230400 baudrate
+
+ -- Pavel Gasheev <pavel.gasheev@wirenboard.ru>  Mon, 16 Oct 2023 10:01:22 +0300
+
 wb-mqtt-serial (2.106.1) stable; urgency=medium
 
   * Fix fast modbus packets reading error
