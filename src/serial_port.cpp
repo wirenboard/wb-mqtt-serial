@@ -47,6 +47,8 @@ namespace
                 return B57600;
             case 115200:
                 return B115200;
+            case 230400:
+                return B230400;
             default:
                 LOG(Warn) << "unsupported baud rate " << rate << " defaulting to 9600";
                 return B9600;
