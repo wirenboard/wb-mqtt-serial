@@ -115,4 +115,6 @@ namespace ModbusExt // modbus extension protocol common utilities
         void SendSingleRequest();
     };
 
+    const uint8_t* GetPacketStart(const uint8_t* data, size_t size);
+
 } // modbus extension protocol common utilities

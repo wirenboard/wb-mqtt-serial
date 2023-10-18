@@ -308,7 +308,7 @@ TEST_F(TPollTest, SingleDeviceSingleRegisterWithEvents)
     Port->SetBaudRate(115200);
     auto config = MakeDeviceConfig("device1", "1");
     config.CommonConfig->RequestDelay = 10ms;
-    config.CommonConfig->AddChannel(MakeChannelConfig("device1", 1, 0ms, TRegisterConfig::TSporadicMode::ENABLED));
+    config.CommonConfig->AddChannel(MakeChannelConfig("device1", 1, 0ms, TRegisterConfig::TSporadicMode::ONLY_EVENTS));
     auto device = MakeDevice(config);
     auto regList = GetRegList(device);
 
@@ -338,7 +338,7 @@ TEST_F(TPollTest, SingleDeviceSingleRegisterWithEventsAndPolling)
     Port->SetBaudRate(115200);
     auto config = MakeDeviceConfig("device1", "1");
     config.CommonConfig->RequestDelay = 10ms;
-    config.CommonConfig->AddChannel(MakeChannelConfig("device1", 1, 0ms, TRegisterConfig::TSporadicMode::ENABLED));
+    config.CommonConfig->AddChannel(MakeChannelConfig("device1", 1, 0ms, TRegisterConfig::TSporadicMode::ONLY_EVENTS));
     config.CommonConfig->AddChannel(MakeChannelConfig("device1", 2));
     auto device = MakeDevice(config);
     auto regList = GetRegList(device);
@@ -377,7 +377,7 @@ TEST_F(TPollTest, SingleDeviceSingleRegisterWithEventsAndPollingWithReadPeriod)
     Port->SetBaudRate(115200);
     auto config = MakeDeviceConfig("device1", "1");
     config.CommonConfig->RequestDelay = 10ms;
-    config.CommonConfig->AddChannel(MakeChannelConfig("device1", 1, 0ms, TRegisterConfig::TSporadicMode::ENABLED));
+    config.CommonConfig->AddChannel(MakeChannelConfig("device1", 1, 0ms, TRegisterConfig::TSporadicMode::ONLY_EVENTS));
     config.CommonConfig->AddChannel(MakeChannelConfig("device1", 2, 100ms));
     config.CommonConfig->AddChannel(MakeChannelConfig("device1", 3));
     auto device = MakeDevice(config);
@@ -457,7 +457,7 @@ TEST_F(TPollTest, SingleDeviceEventsAndBigReadTime)
     Port->SetBaudRate(115200);
     auto config = MakeDeviceConfig("device1", "1");
     config.CommonConfig->RequestDelay = 100ms;
-    config.CommonConfig->AddChannel(MakeChannelConfig("device1", 1, 0ms, TRegisterConfig::TSporadicMode::ENABLED));
+    config.CommonConfig->AddChannel(MakeChannelConfig("device1", 1, 0ms, TRegisterConfig::TSporadicMode::ONLY_EVENTS));
     config.CommonConfig->AddChannel(MakeChannelConfig("device1", 2));
     auto device = MakeDevice(config);
     auto regList = GetRegList(device);
@@ -535,7 +535,7 @@ TEST_F(TPollTest, SingleDeviceSingleRegisterWithEventsAndErrors)
     Port->SetBaudRate(115200);
     auto config = MakeDeviceConfig("device1", "1");
     config.CommonConfig->RequestDelay = 10ms;
-    config.CommonConfig->AddChannel(MakeChannelConfig("device1", 1, 0ms, TRegisterConfig::TSporadicMode::ENABLED));
+    config.CommonConfig->AddChannel(MakeChannelConfig("device1", 1, 0ms, TRegisterConfig::TSporadicMode::ONLY_EVENTS));
     auto device = MakeDevice(config);
     auto regList = GetRegList(device);
 
@@ -573,7 +573,7 @@ TEST_F(TPollTest, SingleDeviceEnableEventsError)
     Port->SetBaudRate(115200);
     auto config = MakeDeviceConfig("device1", "1");
     config.CommonConfig->RequestDelay = 10ms;
-    config.CommonConfig->AddChannel(MakeChannelConfig("device1", 1, 0ms, TRegisterConfig::TSporadicMode::ENABLED));
+    config.CommonConfig->AddChannel(MakeChannelConfig("device1", 1, 0ms, TRegisterConfig::TSporadicMode::ONLY_EVENTS));
     auto device = MakeDevice(config);
     auto regList = GetRegList(device);
 
@@ -591,6 +591,45 @@ TEST_F(TPollTest, SingleDeviceEnableEventsError)
 
     for (size_t i = 0; i < 10; ++i) {
         EnqueueReadHolding(1, 1, 1, 10ms);
+        Cycle(serialClient, lastAccessedDevice);
+    }
+}
+
+TEST_F(TPollTest, SemiSporadicRegister)
+{
+    // One register with events and polling and one without read period
+    // 1. Events must be enabled
+    // 2. The register is read once by normal request and NOT excluded from polling
+    // 3. Events read requests are sent every 50ms
+    // 4. Both registers must be polled during free time
+
+    Port->SetBaudRate(115200);
+    auto config = MakeDeviceConfig("device1", "1");
+    config.CommonConfig->RequestDelay = 10ms;
+    config.CommonConfig->AddChannel(
+        MakeChannelConfig("device1", 1, 0ms, TRegisterConfig::TSporadicMode::EVENTS_AND_POLLING));
+    config.CommonConfig->AddChannel(MakeChannelConfig("device1", 2));
+    auto device = MakeDevice(config);
+    auto regList = GetRegList(device);
+
+    TSerialClientRegisterAndEventsReader serialClient(regList, 50ms, [this]() { return TimeMock.GetTime(); });
+    TSerialClientDeviceAccessHandler lastAccessedDevice(serialClient.GetEventsReader());
+
+    // Enable events and read first register
+    EnqueueEnableEvents(1, 1, 10ms);
+    EnqueueReadHolding(1, 1, 1, 10ms);
+    Cycle(serialClient, lastAccessedDevice);
+    EnqueueReadHolding(1, 2, 1, 10ms);
+    Cycle(serialClient, lastAccessedDevice);
+
+    for (size_t i = 0; i < 3; ++i) {
+        EnqueueReadEvents(4ms);
+        Cycle(serialClient, lastAccessedDevice);
+        EnqueueReadHolding(1, 1, 1, 10ms);
+        Cycle(serialClient, lastAccessedDevice);
+        EnqueueReadHolding(1, 2, 1, 10ms);
+        Cycle(serialClient, lastAccessedDevice);
+        // Not enough time for polling
         Cycle(serialClient, lastAccessedDevice);
     }
 }

@@ -1,8 +1,32 @@
-wb-mqtt-serial (2.104.3ubuntu1) UNRELEASED; urgency=medium
+wb-mqtt-serial (2.106.3) stable; urgency=low
 
   * WB-MAO4 templates: add sporadic events for channels
 
  -- Daniil Safonov <Daniil.Safonov@wirenboard.ru>  Wed, 18 Oct 2023 19:01:42 +0600
+
+wb-mqtt-serial (2.106.2) stable; urgency=medium
+
+  * Add NEVA MT 324 third and forth tarifs reading
+
+ -- Petr Krasnoshchekov <petr.krasnoshchekov@wirenboard.com>  Tue, 17 Oct 2023 09:14:36 +0500
+
+wb-mqtt-serial (2.106.1) stable; urgency=medium
+
+  * Fix fast modbus packets reading error
+
+ -- Petr Krasnoshchekov <petr.krasnoshchekov@wirenboard.com>  Thu, 12 Oct 2023 08:56:20 +0500
+
+wb-mqtt-serial (2.106.0) stable; urgency=medium
+ 
+ * Add new template for Komfovent
+
+ -- Roman Matveev <roman.matveev@wirenboard.ru>  Wed, 11 Oct 2023 12:08:00 +0300
+
+wb-mqtt-serial (2.105.0) stable; urgency=medium
+
+  * Add semi-sporadic register parameter. It marks registers as readable with events, but doesn't exclude them from normal polling
+
+ -- Petr Krasnoshchekov <petr.krasnoshchekov@wirenboard.com>  Thu, 05 Oct 2023 15:46:55 +0500
 
 wb-mqtt-serial (2.104.3) stable; urgency=medium
 
@@ -32,7 +56,7 @@ wb-mqtt-serial (2.104.0) stable; urgency=medium
 
 wb-mqtt-serial (2.103.0) stable; urgency=medium
 
-* Add new template Ridan Greencon-R
+  * Add new template Ridan Greencon-R
 
  -- Roman Matveev <roman.matveev@wirenboard.ru>  Fri, 29 Sep 2023 11:29:00 +0300
 
