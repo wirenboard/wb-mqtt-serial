@@ -150,6 +150,7 @@ namespace
 
 TSerialPort::TSerialPort(const TSerialPortSettings& settings)
     : Settings(settings),
+      InitialSettings(settings),
       RxTrigBytes(GetRxTrigBytes(Settings.Device))
 {
     memset(&OldTermios, 0, sizeof(termios));
@@ -198,11 +199,18 @@ void TSerialPort::ApplySerialPortSettings(const TSerialPortConnectionSettings& s
     if (tcsetattr(Fd, TCSANOW, &dev) != 0) {
         throw std::runtime_error("can't set termios attributes" + FormatErrno(errno));
     }
+
+    if (tcflush(Fd, TCIOFLUSH) != 0) {
+        throw std::runtime_error("can't flush port" + FormatErrno(errno));
+    }
+
+    Settings.Set(settings);
+    LOG(Debug) << "Setup " << Settings.Device << " port: " << ToString(settings);
 }
 
 void TSerialPort::ResetSerialPortSettings()
 {
-    ApplySerialPortSettings(Settings);
+    ApplySerialPortSettings(InitialSettings);
 }
 
 std::chrono::microseconds TSerialPort::GetSendTimeBytes(double bytesNumber) const
