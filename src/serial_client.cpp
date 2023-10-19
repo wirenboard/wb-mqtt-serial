@@ -331,6 +331,8 @@ PSerialDevice TSerialClientRegisterAndEventsReader::OpenPortCycle(TPort& port,
                                   TPriority::High);
         }
         SpentTime.Start();
+
+        // TODO: Need to notify port open/close logic about errors
         return nullptr;
     }
 
