@@ -2071,3 +2071,56 @@ TEST_F(TSerialClientIntegrationTest, OnTopicWriteError)
     Note() << "LoopOnce()";
     mqttDriver->LoopOnce();
 }
+
+TEST_F(TSerialClientIntegrationTest, ReconnectAfterNetworkDisconnect)
+{
+    // The test simulates reconnection after loosing network connection to TCP-based device
+    // A socket is alive, writes are successful, reads fail with timeout
+    // The logic must close an reopen port
+
+    Json::Value configSchema = LoadConfigSchema(GetDataFilePath("../wb-mqtt-serial.schema.json"));
+    AddFakeDeviceType(configSchema);
+    AddRegisterType(configSchema, "fake");
+    TTemplateMap t;
+    Config = LoadConfig(GetDataFilePath("configs/reconnect_test_network.json"),
+                        DeviceFactory,
+                        configSchema,
+                        t,
+                        rpcConfig,
+                        [=](const Json::Value&, PRPCConfig config) { return std::make_pair(Port, false); });
+
+    PMQTTSerialDriver mqttDriver = make_shared<TMQTTSerialDriver>(Driver, Config);
+
+    auto device = TFakeSerialDevice::GetDevice("12");
+    if (!device) {
+        throw std::runtime_error("device not found");
+    }
+
+    // successful reads
+    for (auto i = 0; i < 3; ++i) {
+        Note() << "LoopOnce()";
+        mqttDriver->LoopOnce();
+    }
+
+    // read errors
+    device->BlockReadFor(1, true);
+
+    std::this_thread::sleep_for(std::chrono::milliseconds(70));
+
+    for (auto i = 0; i < 3; ++i) {
+        Note() << "LoopOnce()";
+        mqttDriver->LoopOnce();
+    }
+
+    // device is disconnected
+    std::this_thread::sleep_for(std::chrono::milliseconds(100));
+    mqttDriver->LoopOnce();
+
+    // port reopen
+    device->BlockReadFor(1, false);
+
+    for (auto i = 0; i < 3; ++i) {
+        Note() << "LoopOnce()";
+        mqttDriver->LoopOnce();
+    }
+}
