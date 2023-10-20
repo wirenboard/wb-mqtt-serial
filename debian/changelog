@@ -1,3 +1,9 @@
+wb-mqtt-serial (2.93.3-wb103) stable; urgency=medium
+
+  * Fix port reopen after connection errors
+
+ -- Petr Krasnoshchekov <petr.krasnoshchekov@wirenboard.com>  Thu, 19 Oct 2023 12:11:14 +0500
+
 wb-mqtt-serial (2.93.3-wb102) stable; urgency=medium
 
   * Fix fast modbus reading errors 
