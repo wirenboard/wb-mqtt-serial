@@ -205,7 +205,9 @@ void TSerialPort::ApplySerialPortSettings(const TSerialPortConnectionSettings& s
     }
 
     Settings.Set(settings);
-    LOG(Debug) << "Setup " << Settings.Device << " port: " << ToString(settings);
+    LOG(Debug) << "Setup " << Settings.Device << " port: " << settings.BaudRate << " " << settings.DataBits << " "
+               << settings.Parity << " " << settings.StopBits;
+    ;
 }
 
 void TSerialPort::ResetSerialPortSettings()
