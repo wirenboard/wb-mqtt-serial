@@ -33,6 +33,11 @@ struct TSerialPortSettings: public TSerialPortConnectionSettings
           Device(device)
     {}
 
+    void Set(const TSerialPortConnectionSettings& settings)
+    {
+        *static_cast<TSerialPortConnectionSettings*>(this) = settings;
+    }
+
     std::string ToString() const
     {
         std::ostringstream ss;
