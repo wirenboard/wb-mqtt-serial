@@ -176,12 +176,12 @@ TPollResult TSerialClientRegisterPoller::OpenPortCycle(TPort& port,
         return res;
     }
 
-    auto device = range->RegisterList().front()->Device();
-    bool deviceWasConnected = !device->GetIsDisconnected();
+    res.Device = range->RegisterList().front()->Device();
+    bool deviceWasConnected = !res.Device->GetIsDisconnected();
 
     bool readOk = false;
-    if (lastAccessedDevice.PrepareToAccess(device)) {
-        device->ReadRegisterRange(range);
+    if (lastAccessedDevice.PrepareToAccess(res.Device)) {
+        res.Device->ReadRegisterRange(range);
         readOk = true;
     }
 
@@ -196,10 +196,10 @@ TPollResult TSerialClientRegisterPoller::OpenPortCycle(TPort& port,
         ScheduleNextPoll(reg, spentTime.GetStartTime());
     }
 
-    if (deviceWasConnected && device->GetIsDisconnected()) {
-        DeviceDisconnected(device, spentTime.GetStartTime());
+    if (deviceWasConnected && res.Device->GetIsDisconnected()) {
+        DeviceDisconnected(res.Device, spentTime.GetStartTime());
         if (DeviceDisconnectedCallback) {
-            DeviceDisconnectedCallback(device);
+            DeviceDisconnectedCallback(res.Device);
         }
     }
 
