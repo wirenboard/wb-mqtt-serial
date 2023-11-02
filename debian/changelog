@@ -1,12 +1,30 @@
-wb-mqtt-serial (2.106.3) stable; urgency=low
+wb-mqtt-serial (2.106.6) stable; urgency=low
 
   * WB-MAO4 templates: add sporadic events for channels
 
- -- Daniil Safonov <Daniil.Safonov@wirenboard.ru>  Wed, 18 Oct 2023 19:01:42 +0600
+ -- Daniil Safonov <Daniil.Safonov@wirenboard.ru>  Wed, 2 Nov 2023 21:42:00 +0600
+
+wb-mqtt-serial (2.106.5) stable; urgency=medium
+
+  * JSON schema: add missed translation
+
+ -- Nikolay Korotkiy <nikolay.korotkiy@wirenboard.com>  Mon, 30 Oct 2023 18:10:00 +0400
+
+wb-mqtt-serial (2.106.4) stable; urgency=medium
+
+  * Fix modbus scanning error
+
+ -- Petr Krasnoshchekov <petr.krasnoshchekov@wirenboard.com>  Mon, 23 Oct 2023 16:10:37 +0500
+
+wb-mqtt-serial (2.106.3) stable; urgency=medium
+
+  * Fix port reopen after connection errors
+
+ -- Petr Krasnoshchekov <petr.krasnoshchekov@wirenboard.com>  Thu, 19 Oct 2023 12:11:14 +0500
 
 wb-mqtt-serial (2.106.2) stable; urgency=medium
 
-  * Add NEVA MT 324 third and forth tarifs reading
+  * Add NEVA MT 324 third and forth tariffs reading
 
  -- Petr Krasnoshchekov <petr.krasnoshchekov@wirenboard.com>  Tue, 17 Oct 2023 09:14:36 +0500
 

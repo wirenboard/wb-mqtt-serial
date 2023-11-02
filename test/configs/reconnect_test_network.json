@@ -1,0 +1,33 @@
+{
+  "ports": [
+    {
+      "path" : "/dev/ttyNSC0",
+      "baud_rate": 9600,
+      "parity": "N",
+      "data_bits": 8,
+      "stop_bits": 1,
+      "connection_timeout_ms" : 70,
+      "connection_max_fail_cycles": 2,
+      "devices" : [
+        {
+          "name": "Reconnect test",
+          "id": "reconnect-test",
+          "slave_id": 12,
+          "protocol": "fake",
+          "device_timeout_ms": 50,
+          "device_max_fail_cycles": 2,
+          "channels": [
+            {
+              "name": "I1",
+              "reg_type": "fake",
+              "address": "0x01",
+              "format": "u8",
+              "type": "value",
+              "scale": 0.001
+            }
+          ]
+        }
+      ]
+    }
+  ]
+}

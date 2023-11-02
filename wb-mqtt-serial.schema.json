@@ -2091,6 +2091,7 @@
       "Max dummy read register count": "Максимальное число считываемых промежуточных регистров",
       "Max dummy read bit count": "Максимальное число считываемых промежуточных бит",
       "Maximum number of registers in a single bulk read request": "Максимальное число регистров, считываемых за один запрос",
+      "Minimum number of registers in a single bulk read request": "Минимальное число регистров, считываемых за один запрос",
       "Additional delay before each writing to port (us)": "Дополнительная задержка перед записью в порт (мкс)",
       "Frame timeout (ms)": "Задержка между сообщениями (мс)",
       "Device timeout (ms)": "Время ожидания устройства (мс)",

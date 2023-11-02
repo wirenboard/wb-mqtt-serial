@@ -37,7 +37,8 @@ public:
     const TSerialPortSettings& GetSettings() const;
 
 private:
-    const TSerialPortSettings Settings;
+    TSerialPortSettings Settings;
+    TSerialPortConnectionSettings InitialSettings;
     termios OldTermios;
     size_t RxTrigBytes;
 };
