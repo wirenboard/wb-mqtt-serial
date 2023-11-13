@@ -359,7 +359,8 @@
                 "reg_type": "coil",
                 "address": {{ch_number}},
                 "type": "switch",
-                "group": "channel_{{ch_number + 1}}"
+                "group": "channel_{{ch_number + 1}}",
+                "sporadic": true
             },
             {
                 "name": "Channel {{ch_number + 1}}",
@@ -367,7 +368,8 @@
                 "address": {{ch_number}},
                 "type": "range",
                 "max": 100,
-                "group": "channel_{{ch_number + 1}}"
+                "group": "channel_{{ch_number + 1}}",
+                "sporadic": true
             },
             {
                 "name": "Channel {{ch_number + 1}} Raw Duty (us)",

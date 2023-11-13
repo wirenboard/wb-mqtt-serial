@@ -1,3 +1,9 @@
+wb-mqtt-serial (2.106.7) stable; urgency=medium
+
+  * WB-MDM3 template: add sporadic for state and brightness registers
+
+ -- Pavel Gasheev <pavel.gasheev@wirenboard.ru>  Mon, 13 Nov 2023 16:37:56 +0300
+
 wb-mqtt-serial (2.106.6) stable; urgency=low
 
   * WB-MAO4 templates: add sporadic events for channels
