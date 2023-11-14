@@ -488,7 +488,7 @@
                 "units": "deg C",
                 "scale": 0.1,
                 "readonly": false
-            },
+            }
         ],
         "translations": {
             "ru": {
