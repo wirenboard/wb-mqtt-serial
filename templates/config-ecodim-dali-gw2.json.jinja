@@ -221,138 +221,58 @@
                 "group": "broadcast_commands",
                 "on_value": 1
             },
-            {
-                "name": "Group 0 Devices Available",
-                "address": 2002,
-                "reg_type": "holding",
-                "type": "switch",
-                "format": "u16",
-                "scale": 0.5,
-                "readonly": true,
-                "group": "group_commands"
-            },
-            {
-                "name": "Group 0 Fault",
-                "address": 2003,
-                "reg_type": "holding",
-                "type": "switch",
-                "format": "u16",
-                "scale": 0.5,
-                "readonly": true,
-                "group": "group_commands"
-            },
-            {
-                "name": "Group 0 Status",
-                "address": 2004,
-                "reg_type": "holding",
-                "type": "switch",
-                "format": "u16",
-                "scale": 0.5,
-                "readonly": true,
-                "group": "group_commands"
-            },
-            {
-                "name": "Group 0 Adjustable Color Temperature Devices",
-                "address": 2622,
-                "reg_type": "holding",
-                "type": "switch",
-                "format": "u16",
-                "scale": 0.5,
-                "readonly": true,
-                "group": "group_commands"
-            },
-            {
-                "name": "Group 0 Command",
-                "write_address": 2001,
-                "reg_type": "holding",
-                "type": "value",
-                "format": "u16",
-                "group": "group_commands",
-                "min": 0,
-                "max": 31
-            },
-            {
-                "name": "Group 0 Brightness",
-                "write_address": 2000,
-                "reg_type": "holding",
-                "type": "range",
-                "format": "u16",
-                "group": "group_commands",
-                "min": 0,
-                "max": 254
-            },
-            {
-                "name": "Group 0 Color Temperature",
-                "write_address": 2620,
-                "reg_type": "holding",
-                "type": "range",
-                "format": "u16",
-                "group": "group_commands",
-                "min": 1000,
-                "max": 10000
-            },
-            {
-                "name": "Group 0 Increase Color Temperature",
-                "write_address": 2621,
-                "reg_type": "holding",
-                "type": "pushbutton",
-                "format": "u16",
-                "group": "group_commands",
-                "on_value": 0
-            },
-            {
-                "name": "Group 0 Decrease Color Temperature",
-                "write_address": 2621,
-                "reg_type": "holding",
-                "type": "pushbutton",
-                "format": "u16",
-                "group": "group_commands",
-                "on_value": 1
-            },
-            {% for G in range(1, 16) -%}
+            {% for G in range(0, 16) -%}
             {
                 "name": "Group {{G}} Devices Available",
-                "address": "{{2002  + G * 5}}",
+                "address": "{{2002 + G * 5}}",
                 "reg_type": "holding",
                 "type": "switch",
                 "format": "u16",
                 "scale": 0.5,
                 "readonly": true,
-                "group": "group_commands",
-                "enabled": false
+                {% if G != 0 -%}
+                "enabled": false,
+                {% endif -%}
+                "group": "group_commands"
             },
             {
                 "name": "Group {{G}} Fault",
-                "address": "{{2003  + G * 5}}",
+                "address": "{{2003 + G * 5}}",
                 "reg_type": "holding",
                 "type": "switch",
                 "format": "u16",
                 "scale": 0.5,
                 "readonly": true,
-                "group": "group_commands",
-                "enabled": false
+                {% if G != 0 -%}
+                "enabled": false,
+                {% endif -%}
+                "group": "group_commands"
             },
             {
                 "name": "Group {{G}} Status",
-                "address": "{{2004  + G * 5}}",
+                "address": "{{2004 + G * 5}}",
                 "reg_type": "holding",
                 "type": "switch",
                 "format": "u16",
                 "scale": 0.5,
                 "readonly": true,
-                "group": "group_commands",
-                "enabled": false
+                {% if G != 0 -%}
+                "enabled": false,
+                {% endif -%}
+                "group": "group_commands"
             },
             {
                 "name": "Group {{G}} Adjustable Color Temperature Devices",
-                "address": "{{2622  + G * 5}}",
+                "address": "{{2622 + G * 5}}",
                 "reg_type": "holding",
                 "type": "switch",
                 "format": "u16",
                 "scale": 0.5,
                 "readonly": true,
-                "group": "group_commands",
-                "enabled": false
+                {% if G != 0 -%}
+                "enabled": false,
+                {% endif -%}
+                "group": "group_commands"
             },
             {
                 "name": "Group {{G}} Command",
@@ -361,7 +281,9 @@
                 "type": "value",
                 "format": "u16",
                 "group": "group_commands",
+                {% if G != 0 -%}
                 "enabled": false,
+                {% endif -%}
                 "min": 0,
                 "max": 31
             },
@@ -372,134 +294,51 @@
                 "type": "range",
                 "format": "u16",
                 "group": "group_commands",
+                {% if G != 0 -%}
                 "enabled": false,
+                {% endif -%}
                 "min": 0,
                 "max": 254
             },
             {
                 "name": "Group {{G}} Color Temperature",
-                "write_address": "{{2620  + G * 5}}",
+                "write_address": "{{2620 + G * 5}}",
                 "reg_type": "holding",
                 "type": "range",
                 "format": "u16",
                 "group": "group_commands",
+                {% if G != 0 -%}
                 "enabled": false,
+                {% endif -%}
                 "min": 1000,
                 "max": 10000
             },
             {
                 "name": "Group {{G}} Increase Color Temperature",
-                "write_address": "{{2621  + G * 5}}",
+                "write_address": "{{2621 + G * 5}}",
                 "reg_type": "holding",
                 "type": "pushbutton",
                 "format": "u16",
                 "group": "group_commands",
+                {% if G != 0 -%}
                 "enabled": false,
+                {% endif -%}
                 "on_value": 0
             },
             {
                 "name": "Group {{G}} Decrease Color Temperature",
-                "write_address": "{{2621  + G * 5}}",
+                "write_address": "{{2621 + G * 5}}",
                 "reg_type": "holding",
                 "type": "pushbutton",
                 "format": "u16",
                 "group": "group_commands",
+                {% if G != 0 -%}
                 "enabled": false,
+                {% endif -%}
                 "on_value": 1
             },
             {% endfor -%}
-            {
-                "name": "Device 0 Available",
-                "address": 3002,
-                "reg_type": "holding",
-                "type": "value",
-                "format": "u16",
-                "readonly": true,
-                "group": "individual_commands"
-            },
-            {
-                "name": "Device 0 Status",
-                "address": 3003,
-                "reg_type": "holding",
-                "type": "value",
-                "format": "u16",
-                "readonly": true,
-                "group": "individual_commands"
-            },
-            {
-                "name": "Device 0 Color Control Mode",
-                "address": 3322,
-                "reg_type": "holding",
-                "type": "value",
-                "format": "u16",
-                "readonly": true,
-                "group": "individual_commands",
-                "enabled": false
-            },
-            {
-                "name": "Device 0 Color Change Status",
-                "address": 3323 ,
-                "reg_type": "holding",
-                "type": "value",
-                "format": "u16",
-                "readonly": true,
-                "group": "individual_commands",
-                "enabled": false
-            },
-            {
-                "name": "Device 0 Command",
-                "write_address": 3001,
-                "reg_type": "holding",
-                "type": "value",
-                "format": "u16",
-                "group": "individual_commands",
-                "min": 0,
-                "max": 31
-            },
-            {
-                "name": "Device 0 Brightness",
-                "address": 3004,
-                "write_address": 3000,
-                "reg_type": "holding",
-                "type": "range",
-                "format": "u16",
-                "group": "individual_commands",
-                "min": 0,
-                "max": 254
-            },
-            {
-                "name": "Device 0 Color Temperature",
-                "address": 3324 ,
-                "write_address": 3320,
-                "reg_type": "holding",
-                "type": "range",
-                "format": "u16",
-                "group": "individual_commands",
-                "enabled": false,
-                "min": 1000,
-                "max": 10000
-            },
-            {
-                "name": "Device 0 Increase Color Temperature",
-                "write_address": 3321,
-                "reg_type": "holding",
-                "type": "pushbutton",
-                "format": "u16",
-                "group": "individual_commands",
-                "enabled": false,
-                "on_value": 0
-            },
-            {
-                "name": "Device 0 Decrease Color Temperature",
-                "write_address": 3321,
-                "reg_type": "holding",
-                "type": "pushbutton",
-                "format": "u16",
-                "group": "individual_commands",
-                "enabled": false,
-                "on_value": 1
-            },
-            {% for A in range(1, 64) -%}
+            {% for A in range(0, 64) -%}
             {
                 "name": "Device {{A}} Available",
                 "address": "{{3002 + A * 5}}",
@@ -507,8 +346,10 @@
                 "type": "value",
                 "format": "u16",
                 "readonly": true,
-                "group": "individual_commands",
-                "enabled": false
+                {% if A != 0 -%}
+                "enabled": false,
+                {% endif -%}
+                "group": "individual_commands"
             },
             {
                 "name": "Device {{A}} Status",
@@ -517,8 +358,10 @@
                 "type": "value",
                 "format": "u16",
                 "readonly": true,
-                "group": "individual_commands",
-                "enabled": false
+                {% if A != 0 -%}
+                "enabled": false,
+                {% endif -%}
+                "group": "individual_commands"
             },
             {
                 "name": "Device {{A}} Color Control Mode",
@@ -527,8 +370,10 @@
                 "type": "value",
                 "format": "u16",
                 "readonly": true,
-                "group": "individual_commands",
-                "enabled": false
+                {% if A != 0 -%}
+                "enabled": false,
+                {% endif -%}
+                "group": "individual_commands"
             },
             {
                 "name": "Device {{A}} Color Change Status",
@@ -537,8 +382,10 @@
                 "type": "value",
                 "format": "u16",
                 "readonly": true,
-                "group": "individual_commands",
-                "enabled": false
+                {% if A != 0 -%}
+                "enabled": false,
+                {% endif -%}
+                "group": "individual_commands"
             },
             {
                 "name": "Device {{A}} Command",
@@ -547,7 +394,9 @@
                 "type": "value",
                 "format": "u16",
                 "group": "individual_commands",
+                {% if A != 0 -%}
                 "enabled": false,
+                {% endif -%}
                 "min": 0,
                 "max": 31
             },
@@ -559,7 +408,9 @@
                 "type": "range",
                 "format": "u16",
                 "group": "individual_commands",
+                {% if A != 0 -%}
                 "enabled": false,
+                {% endif -%}
                 "min": 0,
                 "max": 254
             },
@@ -571,7 +422,9 @@
                 "type": "range",
                 "format": "u16",
                 "group": "individual_commands",
+                {% if A != 0 -%}
                 "enabled": false,
+                {% endif -%}
                 "min": 1000,
                 "max": 10000
             },
@@ -582,7 +435,9 @@
                 "type": "pushbutton",
                 "format": "u16",
                 "group": "individual_commands",
+                {% if A != 0 -%}
                 "enabled": false,
+                {% endif -%}
                 "on_value": 0
             },
             {
@@ -592,7 +447,9 @@
                 "type": "pushbutton",
                 "format": "u16",
                 "group": "individual_commands",
+                {% if A != 0 -%}
                 "enabled": false,
+                {% endif -%}
                 "on_value": 1
             },
             {% endfor -%}

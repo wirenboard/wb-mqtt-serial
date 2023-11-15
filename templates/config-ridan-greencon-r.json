@@ -1,9 +1,9 @@
 {
-    "device_type": "Ridan Greencon-R",  
-    "group": "g-thermostat",     
+    "device_type": "Ridan Greencon-R",
+    "group": "g-thermostat",
     "device": {
-        "name": "Ridan Greencon-R",  
-        "id": "Ridan Greencon-R",    
+        "name": "Ridan Greencon-R",
+        "id": "Ridan Greencon-R",
 
         "channels": [
             {
@@ -17,7 +17,7 @@
                 "max": 50,
                 "readonly": true,
                 "scale": 0.1
-            },     
+            },
             {
                 "name": "Fan status",
                 "reg_type": "input",
@@ -32,7 +32,7 @@
                 "type": "value",
                 "format": "u16",
                 "readonly": true
-            },           
+            },
             {
                 "name": "Mode operation",
                 "reg_type": "holding",
@@ -132,7 +132,7 @@
             {
                 "name": "Period 1 time (Mo-Fr), hour",
                 "reg_type": "holding",
-                "address":"10:8:8",
+                "address": "10:8:8",
                 "type": "range",
                 "min": 0,
                 "max": 23,
@@ -141,7 +141,7 @@
             {
                 "name": "Period 1 time (Mo-Fr), minutes",
                 "reg_type": "holding",
-                "address":"10:0:8",
+                "address": "10:0:8",
                 "type": "range",
                 "min": 0,
                 "max": 59,
@@ -162,7 +162,7 @@
             {
                 "name": "Period 2 time (Mo-Fr), hour",
                 "reg_type": "holding",
-                "address":"12:8:8",
+                "address": "12:8:8",
                 "type": "range",
                 "min": 0,
                 "max": 23,
@@ -171,7 +171,7 @@
             {
                 "name": "Period 2 time (Mo-Fr), minutes",
                 "reg_type": "holding",
-                "address":"12:0:8",
+                "address": "12:0:8",
                 "type": "range",
                 "min": 0,
                 "max": 59,
@@ -192,7 +192,7 @@
             {
                 "name": "Period 3 time (Mo-Fr), hour",
                 "reg_type": "holding",
-                "address":"14:8:8",
+                "address": "14:8:8",
                 "type": "range",
                 "min": 0,
                 "max": 23,
@@ -201,7 +201,7 @@
             {
                 "name": "Period 3 time (Mo-Fr), minutes",
                 "reg_type": "holding",
-                "address":"14:0:8",
+                "address": "14:0:8",
                 "type": "range",
                 "min": 0,
                 "max": 59,
@@ -222,7 +222,7 @@
             {
                 "name": "Period 4 time (Mo-Fr), hour",
                 "reg_type": "holding",
-                "address":"16:8:8",
+                "address": "16:8:8",
                 "type": "range",
                 "min": 0,
                 "max": 23,
@@ -231,7 +231,7 @@
             {
                 "name": "Period 4 time (Mo-Fr), minutes",
                 "reg_type": "holding",
-                "address":"16:0:8",
+                "address": "16:0:8",
                 "type": "range",
                 "min": 0,
                 "max": 59,
@@ -252,7 +252,7 @@
             {
                 "name": "Period 1 time (Sat), hour",
                 "reg_type": "holding",
-                "address":"18:8:8",
+                "address": "18:8:8",
                 "type": "range",
                 "min": 0,
                 "max": 23,
@@ -261,7 +261,7 @@
             {
                 "name": "Period 1 time (Sat), minutes",
                 "reg_type": "holding",
-                "address":"18:0:8",
+                "address": "18:0:8",
                 "type": "range",
                 "min": 0,
                 "max": 59,
@@ -282,7 +282,7 @@
             {
                 "name": "Period 2 time (Sat), hour",
                 "reg_type": "holding",
-                "address":"20:8:8",
+                "address": "20:8:8",
                 "type": "range",
                 "min": 0,
                 "max": 23,
@@ -291,7 +291,7 @@
             {
                 "name": "Period 2 time (Sat), minutes",
                 "reg_type": "holding",
-                "address":"20:0:8",
+                "address": "20:0:8",
                 "type": "range",
                 "min": 0,
                 "max": 59,
@@ -312,7 +312,7 @@
             {
                 "name": "Period 3 time (Sat), hour",
                 "reg_type": "holding",
-                "address":"22:8:8",
+                "address": "22:8:8",
                 "type": "range",
                 "min": 0,
                 "max": 23,
@@ -321,7 +321,7 @@
             {
                 "name": "Period 3 time (Sat), minutes",
                 "reg_type": "holding",
-                "address":"22:0:8",
+                "address": "22:0:8",
                 "type": "range",
                 "min": 0,
                 "max": 59,
@@ -342,7 +342,7 @@
             {
                 "name": "Period 4 time (Sat), hour",
                 "reg_type": "holding",
-                "address":"24:8:8",
+                "address": "24:8:8",
                 "type": "range",
                 "min": 0,
                 "max": 23,
@@ -351,7 +351,7 @@
             {
                 "name": "Period 4 time (Sat), minutes",
                 "reg_type": "holding",
-                "address":"24:0:8",
+                "address": "24:0:8",
                 "type": "range",
                 "min": 0,
                 "max": 59,
@@ -372,7 +372,7 @@
             {
                 "name": "Period 1 time (Sun), hour",
                 "reg_type": "holding",
-                "address":"26:8:8",
+                "address": "26:8:8",
                 "type": "range",
                 "min": 0,
                 "max": 23,
@@ -381,7 +381,7 @@
             {
                 "name": "Period 1 time (Sun), minutes",
                 "reg_type": "holding",
-                "address":"26:0:8",
+                "address": "26:0:8",
                 "type": "range",
                 "min": 0,
                 "max": 59,
@@ -402,7 +402,7 @@
             {
                 "name": "Period 2 time (Sun), hour",
                 "reg_type": "holding",
-                "address":"28:8:8",
+                "address": "28:8:8",
                 "type": "range",
                 "min": 0,
                 "max": 23,
@@ -411,7 +411,7 @@
             {
                 "name": "Period 2 time (Sun), minutes",
                 "reg_type": "holding",
-                "address":"28:0:8",
+                "address": "28:0:8",
                 "type": "range",
                 "min": 0,
                 "max": 59,
@@ -432,7 +432,7 @@
             {
                 "name": "Period 3 time (Sun), hour",
                 "reg_type": "holding",
-                "address":"30:8:8",
+                "address": "30:8:8",
                 "type": "range",
                 "min": 0,
                 "max": 23,
@@ -441,7 +441,7 @@
             {
                 "name": "Period 3 time (Sun), minutes",
                 "reg_type": "holding",
-                "address":"30:0:8",
+                "address": "30:0:8",
                 "type": "range",
                 "min": 0,
                 "max": 59,
@@ -462,7 +462,7 @@
             {
                 "name": "Period 4 time (Sun), hour",
                 "reg_type": "holding",
-                "address":"32:8:8",
+                "address": "32:8:8",
                 "type": "range",
                 "min": 0,
                 "max": 23,
@@ -471,7 +471,7 @@
             {
                 "name": "Period 4 time (Sun), minutes",
                 "reg_type": "holding",
-                "address":"32:0:8",
+                "address": "32:0:8",
                 "type": "range",
                 "min": 0,
                 "max": 59,
@@ -488,7 +488,7 @@
                 "units": "deg C",
                 "scale": 0.1,
                 "readonly": false
-            },
+            }
         ],
         "translations": {
             "ru": {

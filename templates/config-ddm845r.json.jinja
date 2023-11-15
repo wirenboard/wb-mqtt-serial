@@ -1,0 +1,45 @@
+{
+    "device_type": "DDM845R",
+    "group": "g-dimmer",
+    "device": {
+        "name": "DDM845R",
+        "id": "ddm845r",
+        "guard_interval_us": 3500,
+        "max_read_registers": 10,
+        "frame_timeout_ms": 0,
+        "channels": [
+            {% for ch_num in range(0, 4) -%}
+            {
+                "name": "Channel {{ch_num + 1}}",
+                "reg_type": "holding",
+                "address": "0x{{"%X"|format(40 + ch_num)}}",
+                "type": "range",
+                "max": "0x3ff"
+            },
+            {% endfor -%}
+            {
+                "name": "All channels",
+                "reg_type": "holding",
+                "address": "0x2C",
+                "type": "range",
+                "max": "0x64"
+            },
+            {% for in_num in range(0, 8) -%}
+            {
+                "name": "Input {{in_num + 1}} state",
+                "reg_type": "input",
+                "address": {{4 + in_num}},
+                "type": "value"
+            },
+            {% endfor -%}
+            {
+                "name": "MCU Temperature",
+                "type": "temperature",
+                "reg_type": "input",
+                "address": "60",
+                "scale": 0.01,
+                "round_to": 1.0
+            }
+        ]
+    }
+}
