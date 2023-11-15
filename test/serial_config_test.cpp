@@ -290,12 +290,12 @@ TEST_F(TConfedSchemaTest, MergeTranslations)
         std::sort(langs2.begin(), langs2.end());
         ASSERT_EQ(langs1, langs2) << i;
 
-        for (const auto& lang : langs1) {
+        for (const auto& lang: langs1) {
             std::vector<std::string> msgs1, msgs2;
-            for (const auto& key : schema["translations"][lang].getMemberNames()) {
+            for (const auto& key: schema["translations"][lang].getMemberNames()) {
                 msgs1.push_back(schema["translations"][lang][key].asString());
             }
-            for (const auto& key : tr[lang].getMemberNames()) {
+            for (const auto& key: tr[lang].getMemberNames()) {
                 msgs2.push_back(tr[lang][key].asString());
             }
             std::sort(msgs1.begin(), msgs1.end());
