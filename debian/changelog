@@ -1,6 +1,7 @@
 wb-mqtt-serial (2.106.9) stable; urgency=medium
 
-  * Fix TConfedSchemaTest.MergeTranslations test
+  * Fix TConfedSchemaTest.MergeTranslations test on arm64
+  * Add arm64 build, no functional changes
 
  -- Nikolay Korotkiy <nikolay.korotkiy@wirenboard.com>  Wed, 15 Nov 2023 11:00:00 +0400
 
