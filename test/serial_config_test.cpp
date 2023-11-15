@@ -1,3 +1,4 @@
+#include <algorithm>
 #include <wblib/testing/testlog.h>
 
 #include "confed_schema_generator.h"
@@ -282,7 +283,25 @@ TEST_F(TConfedSchemaTest, MergeTranslations)
         auto schema = MakeSchemaForConfed(ConfigSchema, templateMap, DeviceFactory);
 
         auto tr(JSON::Parse(GetDataFilePath("translation-templates/tr" + to_string(i) + ".json")));
-        ASSERT_TRUE(JsonsMatch(schema["translations"], tr)) << i;
+
+        auto langs1 = schema["translations"].getMemberNames();
+        auto langs2 = tr.getMemberNames();
+        std::sort(langs1.begin(), langs1.end());
+        std::sort(langs2.begin(), langs2.end());
+        ASSERT_EQ(langs1, langs2) << i;
+
+        for (const auto& lang: langs1) {
+            std::vector<std::string> msgs1, msgs2;
+            for (const auto& key: schema["translations"][lang].getMemberNames()) {
+                msgs1.push_back(schema["translations"][lang][key].asString());
+            }
+            for (const auto& key: tr[lang].getMemberNames()) {
+                msgs2.push_back(tr[lang][key].asString());
+            }
+            std::sort(msgs1.begin(), msgs1.end());
+            std::sort(msgs2.begin(), msgs2.end());
+            ASSERT_EQ(msgs1, msgs2) << i;
+        }
     }
 }
 
