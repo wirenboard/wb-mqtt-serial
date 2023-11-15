@@ -590,7 +590,7 @@
             },
             {
                 "id": "Afd",
-                "title": "Allarm Fan Differential (Afd)",
+                "title": "Alarm Fan Differential (Afd)",
                 "description": "units: degrees",
                 "address": 24112,
                 "reg_type": "holding",
@@ -613,8 +613,8 @@
                     1
                 ],
                 "enum_titles": [
-                    " Alarm active and output disabled",
-                    " Alarm active and output enabled"
+                    "Alarm active and output disabled",
+                    "Alarm active and output enabled"
                 ],
                 "group": "alarms",
                 "order": 2
