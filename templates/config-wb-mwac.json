@@ -114,15 +114,6 @@
             }
         ],
 
-        "setup": [
-            {
-                "title": "disable legacy input mode control",
-                "reg_type": "holding",
-                "address": 5,
-                "value": 0
-            }
-        ],
-
         "parameters": {
             "in1_mode": {
                 "title": "Input S1 Mode",
@@ -146,7 +137,7 @@
                 "address": 20,
                 "reg_type": "holding",
                 "min": 0,
-                "max": 100,
+                "max": 2000,
                 "default": 50,
                 "group": "input_s1",
                 "order": 2
@@ -359,7 +350,7 @@
                 "address": 21,
                 "reg_type": "holding",
                 "min": 0,
-                "max": 100,
+                "max": 2000,
                 "default": 50,
                 "group": "input_s2",
                 "order": 2
@@ -572,7 +563,7 @@
                 "address": 22,
                 "reg_type": "holding",
                 "min": 0,
-                "max": 100,
+                "max": 2000,
                 "default": 50,
                 "group": "input_s3",
                 "order": 2
@@ -785,7 +776,7 @@
                 "address": 23,
                 "reg_type": "holding",
                 "min": 0,
-                "max": 100,
+                "max": 2000,
                 "default": 50,
                 "group": "input_f1",
                 "order": 2
@@ -998,7 +989,7 @@
                 "address": 24,
                 "reg_type": "holding",
                 "min": 0,
-                "max": 100,
+                "max": 2000,
                 "default": 50,
                 "group": "input_f2",
                 "order": 2
@@ -1211,7 +1202,7 @@
                 "address": 25,
                 "reg_type": "holding",
                 "min": 0,
-                "max": 100,
+                "max": 2000,
                 "default": 50,
                 "group": "input_f3",
                 "order": 2
