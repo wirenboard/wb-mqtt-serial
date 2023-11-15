@@ -222,6 +222,7 @@
                 "on_value": 1
             },
             {% for G in range(0, 16) -%}
+            {% set enabled = 'true' if G == 0 else 'false' -%}
             {
                 "name": "Group {{G}} Devices Available",
                 "address": "{{2002 + G * 5}}",
@@ -230,10 +231,8 @@
                 "format": "u16",
                 "scale": 0.5,
                 "readonly": true,
-                {% if G != 0 -%}
-                "enabled": false,
-                {% endif -%}
-                "group": "group_commands"
+                "group": "group_commands",
+                "enabled": {{enabled}}
             },
             {
                 "name": "Group {{G}} Fault",
@@ -243,10 +242,8 @@
                 "format": "u16",
                 "scale": 0.5,
                 "readonly": true,
-                {% if G != 0 -%}
-                "enabled": false,
-                {% endif -%}
-                "group": "group_commands"
+                "group": "group_commands",
+                "enabled": {{enabled}}
             },
             {
                 "name": "Group {{G}} Status",
@@ -256,10 +253,8 @@
                 "format": "u16",
                 "scale": 0.5,
                 "readonly": true,
-                {% if G != 0 -%}
-                "enabled": false,
-                {% endif -%}
-                "group": "group_commands"
+                "group": "group_commands",
+                "enabled": {{enabled}}
             },
             {
                 "name": "Group {{G}} Adjustable Color Temperature Devices",
@@ -269,10 +264,8 @@
                 "format": "u16",
                 "scale": 0.5,
                 "readonly": true,
-                {% if G != 0 -%}
-                "enabled": false,
-                {% endif -%}
-                "group": "group_commands"
+                "group": "group_commands",
+                "enabled": {{enabled}}
             },
             {
                 "name": "Group {{G}} Command",
@@ -281,9 +274,7 @@
                 "type": "value",
                 "format": "u16",
                 "group": "group_commands",
-                {% if G != 0 -%}
-                "enabled": false,
-                {% endif -%}
+                "enabled": {{enabled}},
                 "min": 0,
                 "max": 31
             },
@@ -294,9 +285,7 @@
                 "type": "range",
                 "format": "u16",
                 "group": "group_commands",
-                {% if G != 0 -%}
-                "enabled": false,
-                {% endif -%}
+                "enabled": {{enabled}},
                 "min": 0,
                 "max": 254
             },
@@ -307,9 +296,7 @@
                 "type": "range",
                 "format": "u16",
                 "group": "group_commands",
-                {% if G != 0 -%}
-                "enabled": false,
-                {% endif -%}
+                "enabled": {{enabled}},
                 "min": 1000,
                 "max": 10000
             },
@@ -320,9 +307,7 @@
                 "type": "pushbutton",
                 "format": "u16",
                 "group": "group_commands",
-                {% if G != 0 -%}
-                "enabled": false,
-                {% endif -%}
+                "enabled": {{enabled}},
                 "on_value": 0
             },
             {
@@ -332,13 +317,12 @@
                 "type": "pushbutton",
                 "format": "u16",
                 "group": "group_commands",
-                {% if G != 0 -%}
-                "enabled": false,
-                {% endif -%}
+                "enabled": {{enabled}},
                 "on_value": 1
             },
             {% endfor -%}
             {% for A in range(0, 64) -%}
+            {% set enabled = 'true' if A == 0 else 'false' -%}
             {
                 "name": "Device {{A}} Available",
                 "address": "{{3002 + A * 5}}",
@@ -346,10 +330,8 @@
                 "type": "value",
                 "format": "u16",
                 "readonly": true,
-                {% if A != 0 -%}
-                "enabled": false,
-                {% endif -%}
-                "group": "individual_commands"
+                "group": "individual_commands",
+                "enabled": {{enabled}}
             },
             {
                 "name": "Device {{A}} Status",
@@ -358,10 +340,8 @@
                 "type": "value",
                 "format": "u16",
                 "readonly": true,
-                {% if A != 0 -%}
-                "enabled": false,
-                {% endif -%}
-                "group": "individual_commands"
+                "group": "individual_commands",
+                "enabled": {{enabled}}
             },
             {
                 "name": "Device {{A}} Color Control Mode",
@@ -370,10 +350,8 @@
                 "type": "value",
                 "format": "u16",
                 "readonly": true,
-                {% if A != 0 -%}
-                "enabled": false,
-                {% endif -%}
-                "group": "individual_commands"
+                "group": "individual_commands",
+                "enabled": false
             },
             {
                 "name": "Device {{A}} Color Change Status",
@@ -382,10 +360,8 @@
                 "type": "value",
                 "format": "u16",
                 "readonly": true,
-                {% if A != 0 -%}
-                "enabled": false,
-                {% endif -%}
-                "group": "individual_commands"
+                "group": "individual_commands",
+                "enabled": false
             },
             {
                 "name": "Device {{A}} Command",
@@ -394,9 +370,7 @@
                 "type": "value",
                 "format": "u16",
                 "group": "individual_commands",
-                {% if A != 0 -%}
-                "enabled": false,
-                {% endif -%}
+                "enabled": {{enabled}},
                 "min": 0,
                 "max": 31
             },
@@ -408,9 +382,7 @@
                 "type": "range",
                 "format": "u16",
                 "group": "individual_commands",
-                {% if A != 0 -%}
-                "enabled": false,
-                {% endif -%}
+                "enabled": {{enabled}},
                 "min": 0,
                 "max": 254
             },
@@ -422,9 +394,7 @@
                 "type": "range",
                 "format": "u16",
                 "group": "individual_commands",
-                {% if A != 0 -%}
                 "enabled": false,
-                {% endif -%}
                 "min": 1000,
                 "max": 10000
             },
@@ -435,9 +405,7 @@
                 "type": "pushbutton",
                 "format": "u16",
                 "group": "individual_commands",
-                {% if A != 0 -%}
                 "enabled": false,
-                {% endif -%}
                 "on_value": 0
             },
             {
@@ -447,9 +415,7 @@
                 "type": "pushbutton",
                 "format": "u16",
                 "group": "individual_commands",
-                {% if A != 0 -%}
                 "enabled": false,
-                {% endif -%}
                 "on_value": 1
             },
             {% endfor -%}
