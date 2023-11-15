@@ -1,8 +1,14 @@
-wb-mqtt-serial (2.106.7) stable; urgency=medium
+wb-mqtt-serial (2.106.8) stable; urgency=medium
 
   * Cleanup templates, no functional changes
 
  -- Nikolay Korotkiy <nikolay.korotkiy@wirenboard.com>  Wed, 15 Nov 2023 07:00:00 +0400
+
+wb-mqtt-serial (2.106.7) stable; urgency=medium
+
+  * WB-MDM3 template: add sporadic for state and brightness registers
+
+ -- Pavel Gasheev <pavel.gasheev@wirenboard.ru>  Mon, 13 Nov 2023 16:37:56 +0300
 
 wb-mqtt-serial (2.106.6) stable; urgency=low
 
