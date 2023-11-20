@@ -1,3 +1,9 @@
+wb-mqtt-serial (2.106.10) stable; urgency=low
+
+  * WB-LED & WB-MRGBW templates: add sporadic events for output channels
+
+ -- Daniil Safonov <Daniil.Safonov@wirenboard.ru>  Wed, 20 Nov 2023 17:00:00 +0600
+
 wb-mqtt-serial (2.106.9) stable; urgency=medium
 
   * Fix TConfedSchemaTest.MergeTranslations test on arm64
