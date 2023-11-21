@@ -571,7 +571,9 @@
                 "dp_title": "Double Press",
                 "slp_title": "Shortlong Press",
 
+                {% for in_num in range(FIRST_INPUT, OUTPUTS_NUMBER + 1) -%} 
                 "Input {{in_num}} counter": "Input {{in_num}} counter (deprecated)",
+                {% endfor -%}
 
                 "lp_hold_time_title": "Long Press Time (ms)",
                 "secp_waiting_time_title": "Second Press Waiting Time (ms)",
