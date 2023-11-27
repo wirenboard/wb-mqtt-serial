@@ -1,3 +1,9 @@
+wb-mqtt-serial (2.106.10) stable; urgency=medium
+
+  * Log as a warning when device is disconnected
+
+ -- Nikolay Korotkiy <nikolay.korotkiy@wirenboard.com>  Fri, 24 Nov 2023 16:00:00 +0400
+
 wb-mqtt-serial (2.106.9) stable; urgency=medium
 
   * Fix TConfedSchemaTest.MergeTranslations test on arm64
