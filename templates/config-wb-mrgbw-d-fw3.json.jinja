@@ -2066,12 +2066,14 @@
                 "address": 9,
                 "type": "switch",
                 "reg_type": "coil",
+                "sporadic": true,
                 "condition": "(dimmer_mode==256)"
             },
             {
                 "group": "gg_out_channels",
                 "name": "RGB Palette",
                 "type": "rgb",
+                "sporadic": true,
                 "consists_of": [
                     {
                         "reg_type": "holding",
@@ -2094,6 +2096,7 @@
                 "address": 2014,
                 "type": "range",
                 "reg_type": "holding",
+                "sporadic": true,
                 "min": 0,
                 "max": 360,
                 "error_value": "0xFFFF",
@@ -2105,6 +2108,7 @@
                 "address": 2015,
                 "type": "range",
                 "reg_type": "holding",
+                "sporadic": true,
                 "min": 0,
                 "max": 100,
                 "error_value": "0xFFFF",
@@ -2116,6 +2120,7 @@
                 "address": 2016,
                 "type": "range",
                 "reg_type": "holding",
+                "sporadic": true,
                 "min": 0,
                 "max": 100,
                 "error_value": "0xFFFF",
@@ -2127,13 +2132,16 @@
                 "address": 10,
                 "type": "switch",
                 "reg_type": "coil",
+                "sporadic": true,
                 "condition": "(dimmer_mode==256)"
             },
             {
                 "group": "gg_out_channels",
                 "name": "Hue Changing Rate",
                 "address": 2017,
+                "type": "value",
                 "reg_type": "holding",
+                "sporadic": true,
                 "min": 3,
                 "max": 10000,
                 "error_value": "0xFFFF",
@@ -2145,6 +2153,7 @@
                 "address": 0,
                 "type": "switch",
                 "reg_type": "coil",
+                "sporadic": true,
                 "condition": "(dimmer_mode==0||dimmer_mode==16||dimmer_mode==32)"
             },
             {
@@ -2153,6 +2162,7 @@
                 "address": 2000,
                 "type": "range",
                 "reg_type": "holding",
+                "sporadic": true,
                 "min": 0,
                 "max": 100,
                 "error_value": "0xFFFF",
@@ -2164,6 +2174,7 @@
                 "address": 1,
                 "type": "switch",
                 "reg_type": "coil",
+                "sporadic": true,
                 "condition": "(dimmer_mode==0||dimmer_mode==16||dimmer_mode==32)"
             },
             {
@@ -2172,6 +2183,7 @@
                 "address": 2001,
                 "type": "range",
                 "reg_type": "holding",
+                "sporadic": true,
                 "min": 0,
                 "max": 100,
                 "error_value": "0xFFFF",
@@ -2183,6 +2195,7 @@
                 "address": 4,
                 "type": "switch",
                 "reg_type": "coil",
+                "sporadic": true,
                 "condition": "(dimmer_mode==1||dimmer_mode==17||dimmer_mode==33)"
             },
             {
@@ -2191,6 +2204,7 @@
                 "address": 2004,
                 "type": "range",
                 "reg_type": "holding",
+                "sporadic": true,
                 "min": 0,
                 "max": 100,
                 "error_value": "0xFFFF",
@@ -2202,6 +2216,7 @@
                 "address": 7,
                 "type": "switch",
                 "reg_type": "coil",
+                "sporadic": true,
                 "condition": "(dimmer_mode==2||dimmer_mode==18||dimmer_mode==34)"
             },
             {
@@ -2210,6 +2225,7 @@
                 "address": 2007,
                 "type": "range",
                 "reg_type": "holding",
+                "sporadic": true,
                 "min": 0,
                 "max": 100,
                 "error_value": "0xFFFF",
@@ -2221,6 +2237,7 @@
                 "address": 2008,
                 "type": "range",
                 "reg_type": "holding",
+                "sporadic": true,
                 "min": 0,
                 "max": 100,
                 "error_value": "0xFFFF",
@@ -2232,6 +2249,7 @@
                 "address": 2,
                 "type": "switch",
                 "reg_type": "coil",
+                "sporadic": true,
                 "condition": "(dimmer_mode==0||dimmer_mode==1||dimmer_mode==2)"
             },
             {
@@ -2240,6 +2258,7 @@
                 "address": 2002,
                 "type": "range",
                 "reg_type": "holding",
+                "sporadic": true,
                 "min": 0,
                 "max": 100,
                 "error_value": "0xFFFF",
@@ -2251,6 +2270,7 @@
                 "address": 6,
                 "type": "switch",
                 "reg_type": "coil",
+                "sporadic": true,
                 "condition": "(dimmer_mode==512)"
             },
             {
@@ -2259,6 +2279,7 @@
                 "address": 2006,
                 "type": "range",
                 "reg_type": "holding",
+                "sporadic": true,
                 "min": 0,
                 "max": 100,
                 "error_value": "0xFFFF",
@@ -2270,6 +2291,7 @@
                 "address": 8,
                 "type": "switch",
                 "reg_type": "coil",
+                "sporadic": true,
                 "condition": "(dimmer_mode==32||dimmer_mode==33||dimmer_mode==34)"
             },
             {
@@ -2278,6 +2300,7 @@
                 "address": 2009,
                 "type": "range",
                 "reg_type": "holding",
+                "sporadic": true,
                 "min": 0,
                 "max": 100,
                 "error_value": "0xFFFF",
@@ -2289,6 +2312,7 @@
                 "address": 2010,
                 "type": "range",
                 "reg_type": "holding",
+                "sporadic": true,
                 "min": 0,
                 "max": 100,
                 "error_value": "0xFFFF",
@@ -2300,6 +2324,7 @@
                 "address": 5,
                 "type": "switch",
                 "reg_type": "coil",
+                "sporadic": true,
                 "condition": "(dimmer_mode==16||dimmer_mode==17||dimmer_mode==18)"
             },
             {
@@ -2308,6 +2333,7 @@
                 "address": 3,
                 "type": "switch",
                 "reg_type": "coil",
+                "sporadic": true,
                 "condition": "(dimmer_mode==0||dimmer_mode==1||dimmer_mode==2||dimmer_mode==256)"
             },
             {
@@ -2316,6 +2342,7 @@
                 "address": 2005,
                 "type": "range",
                 "reg_type": "holding",
+                "sporadic": true,
                 "min": 0,
                 "max": 100,
                 "error_value": "0xFFFF",
@@ -2586,7 +2613,7 @@
                 "slp_title": "Короткое, затем длинное нажатие",
 
                 "fader_inc_title": "Время увеличения значения c 0 до 100% в мс",
-                "fader_dec_title": "Время уменьшения значения с 0 до 100% в мс",
+                "fader_dec_title": "Время уменьшения значения с 100% до 0 в мс",
                 "fader_hue_title": "Время увеличения/уменьшения оттенка (Hue) с 0 до 360°",
 
                 "Input 1": "Вход 1",
