@@ -248,7 +248,7 @@ void TSerialDevice::SetDisconnected()
     IsDisconnected = true;
     SetSupportsHoles(true);
     ForceDisconnectionLogging = false;
-    LOG(Info) << "device " << ToString() << " is disconnected";
+    LOG(Warn) << "device " << ToString() << " is disconnected";
 }
 
 TUInt32SlaveId::TUInt32SlaveId(const std::string& slaveId, bool allowBroadcast): HasBroadcastSlaveId(false)
