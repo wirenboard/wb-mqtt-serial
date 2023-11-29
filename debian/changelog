@@ -1,3 +1,9 @@
+wb-mqtt-serial (2.107.0) stable; urgency=medium
+
+  * Add support for Dauerhaft curtain motor
+
+ -- Nikolay Korotkiy <nikolay.korotkiy@wirenboard.com>  Tue, 28 Nov 2023 18:00:00 +0400
+
 wb-mqtt-serial (2.106.10) stable; urgency=medium
 
   * Log as a warning when device is disconnected

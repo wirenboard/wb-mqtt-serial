@@ -29,6 +29,7 @@ It's designed to be used on [Wiren Board](https://wirenboard.com/en/) family of 
   - [Somfy SDN](#somfy-sdn)
   - [WinDeco](#windeco)
   - [Dooya](#dooya)
+  - [Dauerhaft](#dauerhaft)
   - [Меркурий 200](#меркурий-200)
   - [Таблица шаблонов device_type](#таблица-шаблонов-device_type)
 
@@ -46,7 +47,8 @@ It's designed to be used on [Wiren Board](https://wirenboard.com/en/) family of 
 - [DLMS/COSEM](https://www.dlms.com), СПОДЭС (ГОСТ Р 58940-2020),
 - [Somfy SDN](https://www.somfy.com),
 - WinDeco,
-- Dooya.
+- Dooya,
+- Dauerhaft.
 
 ### Управление драйвером
 
@@ -998,6 +1000,10 @@ OBIS-коды кодируются в адресе регистра следую
 Для организации доступа к настройкам можно использовать канал с типом регистра `param`.
 Адрес данных задаётся в адресе регистра.
 
+### Dauerhaft
+
+Для организации отправки команд можно использовать канал с типом регистра `command`. В этом случае код команды задаётся в адресе регистра.
+
 ### Меркурий 200
 
 Типы регистров:
@@ -1102,3 +1108,8 @@ OBIS-коды кодируются в адресе регистра следую
 |:----------------------------------------------:|:--------------:|:--------------:|:---------------------:|
 | Мотор управления шторами Dooya DT82            | Dooya 82       | dooya          |  Dooya 82             |
 | Мотор управления шторами Akko AM82             | Dooya 82       | dooya          |  Dooya 82             |
+
+**Dauerhaft**
+|                     Device                     | device_type    | id_prefix      | name_prefix           |
+|:----------------------------------------------:|:--------------:|:--------------:|:---------------------:|
+| Мотор управления шторами Dauerhaft             | Dauerhaft      | dauerhaft      |  Dauerhaft            |
