@@ -21,6 +21,7 @@ namespace
         CONTROL = 0x0a,
         SET_POSITION = 0xdd,
         MOTOR_STATUS = 0xcc,
+        CURTAIN_MOTOR_STATUS = 0xca,
         SPEED_SETTINGS = 0xd9,
         HAND_CONTROL_SETTINGS = 0xd2,
         BAUD_RATE_SETTINGS = 0xda,
@@ -28,7 +29,9 @@ namespace
     };
 
     const size_t MOTOR_STATUS_RESPONSE_SIZE = 10;
-    const size_t MOTOR_STATUS_POSITION_OFFSET = 8;
+    const size_t CURTAIN_MOTOR_STATUS_RESPONSE_SIZE = 9;
+    const size_t MOTOR_STATUS_POSITION_OFFSET = 7;
+    const size_t CURTAIN_MOTOR_STATUS_BITS_OFFSET = 8;
 
     uint8_t CalcCrc(const std::vector<uint8_t>& bytes)
     {
