@@ -74,14 +74,16 @@ std::vector<uint8_t> Dauerhaft::TDevice::ExecCommand(const TRequest& request)
     Port()->SkipNoise();
     Port()->WriteBytes(request.Data);
     std::vector<uint8_t> respBytes(request.ResponseSize);
-    auto bytesRead = Port()
-                         ->ReadFrame(respBytes.data(),
-                                     respBytes.size(),
-                                     DeviceConfig()->ResponseTimeout,
-                                     DeviceConfig()->FrameTimeout,
-                                     request.ResponseSize != 0 ? ExpectNBytes(request.ResponseSize) : 0)
-                         .Count;
-    respBytes.resize(bytesRead);
+    if (request.ResponseSize != 0) {
+        auto bytesRead = Port()
+                            ->ReadFrame(respBytes.data(),
+                                        respBytes.size(),
+                                        DeviceConfig()->ResponseTimeout,
+                                        DeviceConfig()->FrameTimeout,
+                                        ExpectNBytes(request.ResponseSize))
+                            .Count;
+        respBytes.resize(bytesRead);
+    }
     return respBytes;
 }
 
