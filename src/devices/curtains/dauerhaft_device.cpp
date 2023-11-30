@@ -5,12 +5,10 @@ namespace
     enum TRegTypes
     {
         POSITION,
-        PARAM,
         COMMAND
     };
 
     const TRegisterTypes RegTypes{{POSITION, "position", "value", U8},
-                                  {PARAM, "param", "value", U8},
                                   {COMMAND, "command", "value", U8}};
 
     enum THeadCodes
