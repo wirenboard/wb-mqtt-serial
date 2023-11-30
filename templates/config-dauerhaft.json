@@ -23,7 +23,8 @@
                 "address": 0,
                 "type": "range",
                 "max": 100,
-                "group": "main"
+                "group": "main",
+                "enabled": false
             },
             {
                 "name": "Stop",
@@ -81,28 +82,32 @@
                 "type": "pushbutton",
                 "reg_type": "command",
                 "address": "0x01",
-                "group": "main"
+                "group": "main",
+                "enabled": false
             },
             {
                 "name": "Move to the middle limit 2",
                 "type": "pushbutton",
                 "reg_type": "command",
                 "address": "0x02",
-                "group": "main"
+                "group": "main",
+                "enabled": false
             },
             {
                 "name": "Move to the middle limit 3",
                 "type": "pushbutton",
                 "reg_type": "command",
                 "address": "0x03",
-                "group": "main"
+                "group": "main",
+                "enabled": false
             },
             {
                 "name": "Move to the middle limit 4",
                 "type": "pushbutton",
                 "reg_type": "command",
                 "address": "0x04",
-                "group": "main"
+                "group": "main",
+                "enabled": false
             }
         ],
         "translations": {
