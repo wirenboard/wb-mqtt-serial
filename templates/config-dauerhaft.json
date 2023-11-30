@@ -6,127 +6,46 @@
         "name": "Dauerhaft Roll 35/45",
         "id": "dauerhaft",
         "protocol": "dauerhaft",
-        "groups": [
-            {
-                "title": "Main",
-                "id": "main"
-            },
-            {
-                "title": "Settings",
-                "id": "settings"
-            }
-        ],
         "channels": [
-            {
-                "name": "Position",
-                "reg_type": "position",
-                "address": 0,
-                "type": "range",
-                "max": 100,
-                "group": "main",
-                "enabled": false
-            },
             {
                 "name": "Stop",
                 "type": "pushbutton",
                 "reg_type": "command",
-                "address": "0xcc",
-                "group": "main"
+                "address": "0xcc"
             },
             {
                 "name": "Move up",
                 "type": "pushbutton",
                 "reg_type": "command",
-                "address": "0xdd",
-                "group": "main"
+                "address": "0xdd"
             },
             {
                 "name": "Move down",
                 "type": "pushbutton",
                 "reg_type": "command",
-                "address": "0xee",
-                "group": "main"
+                "address": "0xee"
             },
             {
                 "name": "Dot move up",
                 "type": "pushbutton",
                 "reg_type": "command",
-                "address": "0x0d",
-                "group": "main"
+                "address": "0x0d"
             },
             {
                 "name": "Dot move down",
                 "type": "pushbutton",
                 "reg_type": "command",
-                "address": "0x0e",
-                "group": "main"
-            },
-            {
-                "name": "Learn",
-                "type": "pushbutton",
-                "reg_type": "command",
-                "address": "0xaa",
-                "group": "main",
-                "enabled": false
-            },
-            {
-                "name": "Delete",
-                "type": "pushbutton",
-                "reg_type": "command",
-                "address": "0xa6",
-                "group": "main",
-                "enabled": false
-            },
-            {
-                "name": "Move to the middle limit 1",
-                "type": "pushbutton",
-                "reg_type": "command",
-                "address": "0x01",
-                "group": "main",
-                "enabled": false
-            },
-            {
-                "name": "Move to the middle limit 2",
-                "type": "pushbutton",
-                "reg_type": "command",
-                "address": "0x02",
-                "group": "main",
-                "enabled": false
-            },
-            {
-                "name": "Move to the middle limit 3",
-                "type": "pushbutton",
-                "reg_type": "command",
-                "address": "0x03",
-                "group": "main",
-                "enabled": false
-            },
-            {
-                "name": "Move to the middle limit 4",
-                "type": "pushbutton",
-                "reg_type": "command",
-                "address": "0x04",
-                "group": "main",
-                "enabled": false
+                "address": "0x0e"
             }
         ],
         "translations": {
             "ru": {
                 "Dauerhaft curtain motor": "Dauerhaft (Мотор штор)",
-                "Main": "Основные",
-                "Settings": "Настройки",
-                "Position": "Позиция",
                 "Stop": "Остановить",
                 "Move up": "Поднять",
                 "Move down": "Опустить",
                 "Dot move up": "Поднять на шаг",
-                "Dot move down": "Опустить на шаг",
-                "Learn": "Записать",
-                "Delete": "Удалить",
-                "Move to the middle limit 1": "Передельное положение 1",
-                "Move to the middle limit 2": "Передельное положение 2",
-                "Move to the middle limit 3": "Передельное положение 3",
-                "Move to the middle limit 4": "Передельное положение 4"
+                "Dot move down": "Опустить на шаг"
             }
         }
     }

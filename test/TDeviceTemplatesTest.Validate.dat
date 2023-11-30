@@ -106,17 +106,10 @@ DRB88
 	Relay 7  =>  Relay 7
 	Relay 8  =>  Relay 8
 Dauerhaft Roll 35/45
-	Delete  =>  Delete
 	Dot move down  =>  Dot move down
 	Dot move up  =>  Dot move up
-	Learn  =>  Learn
 	Move down  =>  Move down
-	Move to the middle limit 1  =>  Move to the middle limit 1
-	Move to the middle limit 2  =>  Move to the middle limit 2
-	Move to the middle limit 3  =>  Move to the middle limit 3
-	Move to the middle limit 4  =>  Move to the middle limit 4
 	Move up  =>  Move up
-	Position  =>  Position
 	Stop  =>  Stop
 Dooya 82
 	Close  =>  Close
