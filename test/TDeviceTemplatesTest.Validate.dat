@@ -105,6 +105,12 @@ DRB88
 	Relay 6  =>  Relay 6
 	Relay 7  =>  Relay 7
 	Relay 8  =>  Relay 8
+Dauerhaft Roll 35/45
+	Dot move down  =>  Dot move down
+	Dot move up  =>  Dot move up
+	Move down  =>  Move down
+	Move up  =>  Move up
+	Stop  =>  Stop
 Dooya 82
 	Close  =>  Close
 	Direction  =>  Direction

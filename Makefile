@@ -29,7 +29,7 @@ SRC_DIR = src
 GURUX_SRC = thirdparty/gurux/development/src
 GURUX_INCLUDE = thirdparty/gurux/development/include
 
-COMMON_SRCS := $(shell find $(SRC_DIR) $(GURUX_SRC) \( -name *.cpp -or -name *.c \) -and -not -name main.cpp)
+COMMON_SRCS := $(shell find $(SRC_DIR) $(GURUX_SRC) \( -name "*.cpp" -or -name "*.c" \) -and -not -name main.cpp)
 COMMON_OBJS := $(COMMON_SRCS:%=$(BUILD_DIR)/%.o)
 
 LDFLAGS = -lpthread -lwbmqtt1 -lstdc++fs
@@ -43,7 +43,7 @@ else
 endif
 
 TEST_DIR = test
-TEST_SRCS := $(shell find $(TEST_DIR) \( -name *.cpp -or -name *.c \))
+TEST_SRCS := $(shell find $(TEST_DIR) \( -name "*.cpp" -or -name "*.c" \))
 TEST_OBJS := $(TEST_SRCS:%=$(BUILD_DIR)/%.o)
 TEST_BIN = wb-homa-test
 TEST_LDFLAGS = -lgtest -lwbmqtt_test_utils
