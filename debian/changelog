@@ -1,3 +1,9 @@
+wb-mqtt-serial (2.107.1) stable; urgency=medium
+
+  * WB-MAP* templates: set semi-sporadic mode for Urms channels
+
+ -- Pavel Gasheev <pavel.gasheev@wirenboard.ru>  Fri, 01 Dec 2023 12:24:45 +0300
+
 wb-mqtt-serial (2.107.0) stable; urgency=medium
 
   * Add support for Dauerhaft curtain motor
