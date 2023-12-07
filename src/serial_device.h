@@ -77,6 +77,7 @@ const std::chrono::milliseconds DefaultResponseTimeout(500);
 const std::chrono::milliseconds DefaultDeviceTimeout(3000);
 const std::chrono::seconds MaxUnchangedIntervalLowLimit(5);
 const std::chrono::seconds DefaultMaxUnchangedInterval(-1);
+const std::chrono::seconds DefaultMaxWriteFailTime(600);
 
 struct TDeviceConfig
 {
@@ -103,6 +104,8 @@ struct TDeviceConfig
 
     //! Delay before sending any request
     std::chrono::microseconds RequestDelay = std::chrono::microseconds::zero();
+
+    std::chrono::seconds MaxWriteFailTime = DefaultMaxWriteFailTime;
 
     int AccessLevel = DEFAULT_ACCESS_LEVEL;
     int MaxRegHole = 0;

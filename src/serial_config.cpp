@@ -568,6 +568,7 @@ namespace
         Get(device_data, "response_timeout_ms", device_config->ResponseTimeout);
         Get(device_data, "device_timeout_ms", device_config->DeviceTimeout);
         Get(device_data, "device_max_fail_cycles", device_config->DeviceMaxFailCycles);
+        Get(device_data, "max_write_fail_time_s", device_config->MaxWriteFailTime);
         Get(device_data, "max_reg_hole", device_config->MaxRegHole);
         Get(device_data, "max_bit_hole", device_config->MaxBitHole);
         Get(device_data, "max_read_registers", device_config->MaxReadRegisters);
