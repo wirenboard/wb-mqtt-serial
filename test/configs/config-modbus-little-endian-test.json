@@ -1,0 +1,63 @@
+{
+  "debug": true,
+  "ports": [
+    {
+      "path" : "/dev/ttyNSC0",
+      "baud_rate": 9600,
+      "parity": "N",
+      "data_bits": 8,
+      "stop_bits": 1,
+      "devices" : [
+        {
+            "slave_id": 1,
+            "name": "Modbus-sample",
+            "id": "modbus-sample",
+            "max_read_registers": 1,
+            "frame_timeout_ms": 0,
+            "channels": [
+                {
+                  "name" : "U8",
+                  "reg_type" : "holding",
+                  "address" : "1",
+                  "type": "value",
+                  "format": "u8",
+                  "word_order": "little_endian"
+                },
+                {
+                  "name" : "U16",
+                  "reg_type" : "holding",
+                  "address" : "2",
+                  "type": "value",
+                  "format": "u16",
+                  "word_order": "little_endian"
+                },
+                {
+                  "name" : "U24",
+                  "reg_type" : "holding",
+                  "address" : "3",
+                  "type": "value",
+                  "format": "u24",
+                  "word_order": "little_endian"
+                },
+                {
+                  "name" : "U32",
+                  "reg_type" : "holding",
+                  "address" : "6",
+                  "type": "value",
+                  "format": "u32",
+                  "word_order": "little_endian"
+                },
+                {
+                  "name" : "U64",
+                  "reg_type" : "holding",
+                  "address" : "12",
+                  "type": "value",
+                  "format": "u64",
+                  "word_order": "little_endian"
+                }
+            ]
+        }
+      ]
+    }
+  ]
+}

@@ -239,11 +239,25 @@ public:
                     const std::string& type_name,
                     const EWordOrder word_order);
 
-    /// Get the width in bits. If the width parameter in the config is zero,
-    /// the value is calculated from the register width in bits according to the format.
-    /// \return the width in bits
+    /**
+     * @brief Get the width of data in bits.
+     *        If the DataWidth parameter in config is zero,
+     *        the value is calculated from the register width in bits according to the format.
+     *        The width can be less or equal to ByteWidth of the register
+     */
     uint32_t GetDataWidth() const;
+
+    /**
+     * @brief Get offset of data in register
+     *
+     * @return offset of data in bits.
+     */
     uint32_t GetDataOffset() const;
+
+    /**
+     * @brief Get register width in bytes
+     *        Returns width according to Format value, not counting DataWidth and DataOffset in config
+     */
     uint32_t GetByteWidth() const;
 
     void SetDataWidth(uint8_t width);
@@ -522,8 +536,6 @@ class TSameAddressRegisterRange: public TRegisterRange
 public:
     bool Add(PRegister reg, std::chrono::milliseconds pollLimit) override;
 };
-
-TRegisterValue InvertWordOrderIfNeeded(const TRegisterConfig& reg, TRegisterValue value);
 
 /**
  * @brief Tries to get a value from string and

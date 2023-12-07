@@ -146,7 +146,7 @@ void TRegister::SetValue(const TRegisterValue& value, bool clearReadError)
         return;
     }
     SetAvailable(TRegisterAvailability::AVAILABLE);
-    if (ErrorValue && InvertWordOrderIfNeeded(*this, ErrorValue.value()) == value) {
+    if (ErrorValue && ErrorValue.value() == value) {
         LOG(Debug) << "register " << ToString() << " contains error value";
         SetError(TError::ReadError);
     } else {
@@ -279,7 +279,10 @@ uint32_t TRegisterConfig::GetByteWidth() const
 
 uint8_t TRegisterConfig::Get16BitWidth() const
 {
-    auto totalBit = Address.DataOffset + GetDataWidth();
+    if (Format == RegisterFormat::String) {
+        return GetDataWidth() / (sizeof(char) * 8);
+    }
+    auto totalBit = std::max(GetByteWidth() * 8, Address.DataOffset + GetDataWidth());
     return totalBit / 16 + (totalBit % 16 ? 1 : 0);
 }
 
@@ -462,23 +465,6 @@ template<typename T> T RoundValue(T val, double round_to)
     return round_to > 0 ? std::round(val / round_to) * round_to : val;
 }
 
-TRegisterValue InvertWordOrderIfNeeded(const TRegisterConfig& reg, TRegisterValue value)
-{
-    if ((reg.WordOrder == EWordOrder::BigEndian) || (reg.Format == RegisterFormat::String)) {
-        return value;
-    }
-    uint64_t result = 0;
-    auto cur_value = value.Get<uint64_t>();
-
-    for (int i = 0; i < reg.Get16BitWidth(); ++i) {
-        uint16_t last_word = (((uint64_t)cur_value) & 0xFFFF);
-        result <<= 16;
-        result |= last_word;
-        cur_value >>= 16;
-    }
-    return TRegisterValue{result};
-}
-
 template<class T> struct TConvertTraits
 {};
 
@@ -625,7 +611,7 @@ TRegisterValue GetRawValue(const TRegisterConfig& reg, const std::string& str)
 
 TRegisterValue ConvertToRawValue(const TRegisterConfig& reg, const std::string& str)
 {
-    return InvertWordOrderIfNeeded(reg, GetRawValue(reg, str));
+    return GetRawValue(reg, str);
 }
 
 template<typename T> std::string ToScaledTextValue(const TRegisterConfig& reg, T val)
@@ -649,7 +635,6 @@ template<> std::string ToScaledTextValue(const TRegisterConfig& reg, double val)
 
 std::string ConvertFromRawValue(const TRegisterConfig& reg, TRegisterValue val)
 {
-    val = InvertWordOrderIfNeeded(reg, val);
     switch (reg.Format) {
         case U8:
             return ToScaledTextValue(reg, val.Get<uint8_t>());

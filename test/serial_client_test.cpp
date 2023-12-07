@@ -572,40 +572,6 @@ TEST_F(TSerialClientTest, S24)
     EXPECT_EQ("-0.123", GetTextValue(reg24));
 }
 
-TEST_F(TSerialClientTest, WordSwap)
-{
-    PRegister reg20 = Reg(20, S32, 1, 0, 0, EWordOrder::LittleEndian);
-    PRegister reg24 = Reg(24, U64, 1, 0, 0, EWordOrder::LittleEndian);
-    SerialClient->AddRegister(reg24);
-    SerialClient->AddRegister(reg20);
-
-    Note() << "server -> client: 0x00BB, 0x00AA";
-    Device->Registers[20] = 0x00BB;
-    Device->Registers[21] = 0x00AA;
-    Note() << "Cycle()";
-    SerialClient->Cycle();
-    EXPECT_EQ(to_string(0x00AA00BB), GetTextValue(reg20));
-
-    Note() << "client -> server: -2";
-    SerialClient->SetTextValue(reg20, "-2");
-    Note() << "Cycle()";
-    SerialClient->Cycle();
-    EXPECT_EQ(to_string(-2), GetTextValue(reg20));
-    EXPECT_EQ(0xFFFE, Device->Registers[20]);
-    EXPECT_EQ(0xFFFF, Device->Registers[21]);
-
-    // U64
-    Note() << "client -> server: 10";
-    SerialClient->SetTextValue(reg24, "47851549213065437"); // 0x00AA00BB00CC00DD
-    Note() << "Cycle()";
-    SerialClient->Cycle();
-    EXPECT_EQ(to_string(0x00AA00BB00CC00DD), GetTextValue(reg24));
-    EXPECT_EQ(0x00DD, Device->Registers[24]);
-    EXPECT_EQ(0x00CC, Device->Registers[25]);
-    EXPECT_EQ(0x00BB, Device->Registers[26]);
-    EXPECT_EQ(0x00AA, Device->Registers[27]);
-}
-
 TEST_F(TSerialClientTest, U32)
 {
     PRegister reg20 = Reg(20, U32);
@@ -1284,32 +1250,6 @@ TEST_F(TSerialClientIntegrationTest, OnValueError)
     ASSERT_EQ(500, device->Registers[0]);
 }
 
-TEST_F(TSerialClientIntegrationTest, WordSwap)
-{
-    FilterConfig("WordsLETest");
-
-    SerialDriver = make_shared<TMQTTSerialDriver>(Driver, Config);
-
-    auto device = TFakeSerialDevice::GetDevice("0x91");
-
-    if (!device) {
-        throw std::runtime_error("device not found or wrong type");
-    }
-
-    device->Registers[0] = 0;
-    Note() << "LoopOnce()";
-    SerialDriver->LoopOnce();
-
-    PublishWaitOnValue("/devices/WordsLETest/controls/Voltage/on", "123", 0, true);
-
-    Note() << "LoopOnce()";
-    SerialDriver->LoopOnce();
-    ASSERT_EQ(123, device->Registers[0]);
-    ASSERT_EQ(0, device->Registers[1]);
-    ASSERT_EQ(0, device->Registers[2]);
-    ASSERT_EQ(0, device->Registers[3]);
-}
-
 TEST_F(TSerialClientIntegrationTest, Round)
 {
     FilterConfig("RoundTest");
@@ -1504,34 +1444,6 @@ TEST_F(TSerialClientIntegrationTest, ErrorValue)
     device->Registers[23] = 0xFFFF;
     device->Registers[24] = 0x7FFF;
     device->Registers[25] = 0xFFFF;
-
-    // fake little-endian
-    device->Registers[30] = 0x7FFF;
-    device->Registers[31] = 0x7FFF;
-    device->Registers[32] = 0x7F;
-    device->Registers[33] = 0x7F;
-    device->Registers[34] = 0xFFFF;
-    device->Registers[35] = 0x7F;
-    device->Registers[36] = 0xFFFF;
-    device->Registers[37] = 0x7F;
-    device->Registers[38] = 0xFFFF;
-    device->Registers[39] = 0x7FFF;
-    device->Registers[40] = 0xFFFF;
-    device->Registers[41] = 0x7FFF;
-    device->Registers[42] = 0xFFFF;
-    device->Registers[43] = 0xFFFF;
-    device->Registers[44] = 0xFFFF;
-    device->Registers[45] = 0x7FFF;
-    device->Registers[46] = 0xFFFF;
-    device->Registers[47] = 0xFFFF;
-    device->Registers[48] = 0xFFFF;
-    device->Registers[49] = 0x7FFF;
-    device->Registers[50] = 0xFFFF;
-    device->Registers[51] = 0xFFFF;
-    device->Registers[52] = 0xFFFF;
-    device->Registers[53] = 0x7FFF;
-    device->Registers[54] = 0xFFFF;
-    device->Registers[55] = 0x7FFF;
 
     Note() << "LoopOnce() [all errors]";
     SerialDriver->LoopOnce();
