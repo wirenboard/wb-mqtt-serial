@@ -294,7 +294,7 @@
                 "sporadic": true,
                 "group": "outputs"
             },
-            {% endfor -%}
+            {% endfor -%}           
             {
                 "name": "Alarm",
                 "reg_type": "coil",
@@ -375,6 +375,17 @@
                 "enabled": false,
                 "sporadic": false,
                 "group": "hw_info"
+            },
+            {
+                "name": "Start cleaning mode timer (minutes)",
+                "reg_type": "holding",
+                "address": 975,
+                "type": "value",
+                "format": "u16",
+                "min": 0,
+                "max": 1440,
+                "enabled": true,
+                "group": "cleaning_mode"
             }
         ],
         "translations": {
@@ -421,6 +432,7 @@
                 "MCU Voltage": "Напряжение питания МК",
                 "Battery freshness (2-0, measured at startup)": "Свежесть батарейки (2-0, измерено при загрузке)",
                 "Vout overloaded": "Выход Vout перегружен",
+                "Start cleaning mode timer (minutes)": "Запуск таймера режима уборки (минуты)",
 
                 "Off": "Выключен",
                 "On": "Включен",

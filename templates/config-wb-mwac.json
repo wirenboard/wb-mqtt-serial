@@ -1907,6 +1907,17 @@
                 "type": "voltage",
                 "enabled": false,
                 "group": "hw_info"
+            },
+            {
+                "name": "Start cleaning mode timer (minutes)",
+                "reg_type": "holding",
+                "address": 975,
+                "type": "value",
+                "format": "u16",
+                "min": 0,
+                "max": 1440,
+                "enabled": true,
+                "group": "cleaning_mode"
             }
         ],
         "translations": {
@@ -1917,7 +1928,7 @@
                 "inputs_control_in_safety_mode_description": "Sets change of control from the inputs when module switches to safety mode"
             },
             "ru": {
-                "WB-MWAC_template_title": "WB-MWAC (модуль контроля протечек и расхода воды )",
+                "WB-MWAC_template_title": "WB-MWAC (модуль контроля протечек и расхода воды)",
                 "Counters": "Счетчики",
                 "Input S1": "Вход S1",
                 "Input S2": "Вход S2",
@@ -1975,6 +1986,7 @@
                 "Uptime": "Время работы с момента включения (с)",
                 "MCU Temperature": "Температура МК",
                 "MCU Voltage": "Напряжение питания МК",
+                "Start cleaning mode timer (minutes)": "Запуск таймера режима уборки (минуты)",
 
                 "Off": "Выключен",
                 "On": "Включен",
