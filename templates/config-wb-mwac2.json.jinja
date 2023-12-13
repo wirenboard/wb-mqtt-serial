@@ -359,16 +359,7 @@
                 "group": "hw_info"
             },
             {
-                "name": "Battery Voltage",
-                "reg_type": "input",
-                "address": 119,
-                "scale": 0.001,
-                "type": "voltage",
-                "enabled": false,
-                "group": "hw_info"
-            },
-            {
-                "name": "Battery freshness (2-0)",
+                "name": "Battery freshness (2-0, measured at startup)",
                 "reg_type": "input",
                 "address": 118,
                 "type": "value",
@@ -377,7 +368,7 @@
                 "group": "hw_info"
             },
             {
-                "name": "Vout OK",
+                "name": "Vout overloaded",
                 "reg_type": "input",
                 "address": 462,
                 "type": "switch",
@@ -388,13 +379,13 @@
         ],
         "translations": {
             "en": {
-                "WB-MWAC_template_title": "WB-MWAC v2 (water leak and meters controller)",
+                "WB-MWAC_template_title": "WB-MWAC v.2 (water leak and meters controller)",
                 "baud_rate_description": "Make sure that communication with device is established before changing this parameter. Select required baud rate, save configuration and then change port baud rate to the same value.",
                 "Uptime": "Uptime (s)",
                 "inputs_control_in_safety_mode_description": "Sets change of control from the inputs when module switches to safety mode"
             },
             "ru": {
-                "WB-MWAC_template_title": "WB-MWAC v2 (модуль контроля протечек и расхода воды )",
+                "WB-MWAC_template_title": "WB-MWAC v.2 (модуль контроля протечек и расхода воды)",
                 "Counters": "Счетчики",
                 {% for in_num in range(1, INPUTS_NUMBER + 1) -%}
                 "Input F{{ in_num }}": "Вход F{{ in_num }}",
@@ -428,9 +419,8 @@
                 "Uptime": "Время работы с момента включения (с)",
                 "MCU Temperature": "Температура МК",
                 "MCU Voltage": "Напряжение питания МК",
-                "Battery Voltage": "Напряжение на батарейке",
-                "Battery freshness (2-0)": "Свежесть батарейки (0-2)",
-                "Vout OK": "Выход Vout в норме",
+                "Battery freshness (2-0, measured at startup)": "Свежесть батарейки (2-0, измерено при загрузке)",
+                "Vout overloaded": "Выход Vout перегружен",
 
                 "Off": "Выключен",
                 "On": "Включен",
