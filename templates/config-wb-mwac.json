@@ -111,7 +111,11 @@
             {
                 "title": "HW Info",
                 "id": "hw_info"
-            }
+            },
+            {
+                "title": "Cleaning mode",
+                "id": "cleaning_mode"
+            }            
         ],
 
         "parameters": {
@@ -1930,6 +1934,7 @@
             "ru": {
                 "WB-MWAC_template_title": "WB-MWAC (модуль контроля протечек и расхода воды)",
                 "Counters": "Счетчики",
+                "Cleaning mode": "Режим уборки",
                 "Input S1": "Вход S1",
                 "Input S2": "Вход S2",
                 "Input S3": "Вход S3",
