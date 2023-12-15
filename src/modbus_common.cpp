@@ -607,33 +607,27 @@ namespace Modbus // modbus protocol common utilities
 
         auto baseAddress = addr + shift;
 
-        TAddress address{0};
-
-        address.Type = reg.Type;
-
         WriteAs2Bytes(pdu + 1, baseAddress);
         WriteAs2Bytes(pdu + 3, widthInModbusWords);
 
         pdu[5] = widthInModbusWords * 2;
 
         // Fill value from cache
-        uint64_t valueToWrite = 0;
+        TAddress address{0};
+        address.Type = reg.Type;
+        address.Address = baseAddress;
+        int step_k = 1;
         if (reg.WordOrder == EWordOrder::LittleEndian) {
-            for (int i = widthInModbusWords - 1; i >= 0; --i) {
-                address.Address = baseAddress + i;
-                valueToWrite <<= 16;
-                if (cache.count(address.AbsAddress)) {
-                    valueToWrite |= cache.at(address.AbsAddress);
-                }
+            address.Address += widthInModbusWords - 1;
+            step_k = -1;
+        }
+        uint64_t valueToWrite = 0;
+        for (size_t i = 0; i < widthInModbusWords; ++i) {
+            valueToWrite <<= 16;
+            if (cache.count(address.AbsAddress)) {
+                valueToWrite |= cache.at(address.AbsAddress);
             }
-        } else {
-            for (size_t i = 0; i < widthInModbusWords; ++i) {
-                address.Address = baseAddress + i;
-                valueToWrite <<= 16;
-                if (cache.count(address.AbsAddress)) {
-                    valueToWrite |= cache.at(address.AbsAddress);
-                }
-            }
+            address.Address += step_k;
         }
 
         // Clear place for data to be written
@@ -642,23 +636,19 @@ namespace Modbus // modbus protocol common utilities
         // Place data
         valueToWrite |= (value <<= reg.GetDataOffset());
 
-        // Reorder words
-        if (reg.WordOrder == EWordOrder::BigEndian) {
-            uint64_t r = 0;
-            for (int i = widthInModbusWords - 1; i >= 0; --i) {
-                r <<= 16;
-                r |= valueToWrite & 0xFFFF;
-                valueToWrite >>= 16;
-            }
-            valueToWrite = r;
-        }
-
         for (size_t i = 0; i < widthInModbusWords; ++i) {
             address.Address = baseAddress + i;
-            uint16_t wordValue = valueToWrite & 0xFFFF;
+            uint16_t wordValue = (reg.WordOrder == EWordOrder::BigEndian)
+                                     ? (valueToWrite >> (widthInModbusWords - 1) * 16) & 0xFFFF
+                                     : valueToWrite & 0xFFFF;
+
             tmpCache[address.AbsAddress] = wordValue;
             WriteAs2Bytes(pdu + 6 + i * 2, wordValue);
-            valueToWrite >>= 16;
+            if (reg.WordOrder == EWordOrder::BigEndian) {
+                valueToWrite <<= 16;
+            } else {
+                valueToWrite >>= 16;
+            }
         }
     }
 
