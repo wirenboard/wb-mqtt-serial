@@ -415,6 +415,9 @@
           ]
         }
       ]
+    },
+    "group": {
+      "type": "string"
     }
   },
   "required": ["device_type", "device"]
