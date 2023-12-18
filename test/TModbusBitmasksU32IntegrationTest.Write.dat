@@ -1,0 +1,139 @@
+Subscribe: /devices/+/meta/driver (QoS 0)
+Publish: /devices/modbus-sample/meta: '{"driver":"em-test","title":{"en":"Modbus-sample"}}' (QoS 1, retained)
+Publish: /devices/modbus-sample/meta/driver: 'em-test' (QoS 1, retained)
+Publish: /devices/modbus-sample/meta/name: 'Modbus-sample' (QoS 1, retained)
+Publish: /devices/modbus-sample/controls/U32:1/meta: '{"order":1,"readonly":false,"type":"value"}' (QoS 1, retained)
+Publish: /devices/modbus-sample/controls/U32:1/meta/error: '' (QoS 1, retained)
+Publish: /devices/modbus-sample/controls/U32:1/meta/order: '1' (QoS 1, retained)
+Publish: /devices/modbus-sample/controls/U32:1/meta/readonly: '0' (QoS 1, retained)
+Publish: /devices/modbus-sample/controls/U32:1/meta/type: 'value' (QoS 1, retained)
+Publish: /devices/modbus-sample/controls/U32:1: '0' (QoS 1, retained)
+Subscribe: /devices/modbus-sample/controls/U32:1/on (QoS 0)
+Publish: /devices/modbus-sample/controls/U32:20/meta: '{"order":2,"readonly":false,"type":"value"}' (QoS 1, retained)
+Publish: /devices/modbus-sample/controls/U32:20/meta/error: '' (QoS 1, retained)
+Publish: /devices/modbus-sample/controls/U32:20/meta/order: '2' (QoS 1, retained)
+Publish: /devices/modbus-sample/controls/U32:20/meta/readonly: '0' (QoS 1, retained)
+Publish: /devices/modbus-sample/controls/U32:20/meta/type: 'value' (QoS 1, retained)
+Publish: /devices/modbus-sample/controls/U32:20: '0' (QoS 1, retained)
+Subscribe: /devices/modbus-sample/controls/U32:20/on (QoS 0)
+Publish: /devices/modbus-sample/controls/U32:1 le/meta: '{"order":3,"readonly":false,"type":"value"}' (QoS 1, retained)
+Publish: /devices/modbus-sample/controls/U32:1 le/meta/error: '' (QoS 1, retained)
+Publish: /devices/modbus-sample/controls/U32:1 le/meta/order: '3' (QoS 1, retained)
+Publish: /devices/modbus-sample/controls/U32:1 le/meta/readonly: '0' (QoS 1, retained)
+Publish: /devices/modbus-sample/controls/U32:1 le/meta/type: 'value' (QoS 1, retained)
+Publish: /devices/modbus-sample/controls/U32:1 le: '0' (QoS 1, retained)
+Subscribe: /devices/modbus-sample/controls/U32:1 le/on (QoS 0)
+Publish: /devices/modbus-sample/controls/U32:20 le/meta: '{"order":4,"readonly":false,"type":"value"}' (QoS 1, retained)
+Publish: /devices/modbus-sample/controls/U32:20 le/meta/error: '' (QoS 1, retained)
+Publish: /devices/modbus-sample/controls/U32:20 le/meta/order: '4' (QoS 1, retained)
+Publish: /devices/modbus-sample/controls/U32:20 le/meta/readonly: '0' (QoS 1, retained)
+Publish: /devices/modbus-sample/controls/U32:20 le/meta/type: 'value' (QoS 1, retained)
+Publish: /devices/modbus-sample/controls/U32:20 le: '0' (QoS 1, retained)
+Subscribe: /devices/modbus-sample/controls/U32:20 le/on (QoS 0)
+Subscribe: /devices/modbus-sample/controls/# (QoS 0)
+(retain) -> /devices/modbus-sample/controls/U32:1: '0' (QoS 1, retained)
+(retain) -> /devices/modbus-sample/controls/U32:1 le: '0' (QoS 1, retained)
+(retain) -> /devices/modbus-sample/controls/U32:1 le/meta: '{"order":3,"readonly":false,"type":"value"}' (QoS 1, retained)
+(retain) -> /devices/modbus-sample/controls/U32:1 le/meta/order: '3' (QoS 1, retained)
+(retain) -> /devices/modbus-sample/controls/U32:1 le/meta/readonly: '0' (QoS 1, retained)
+(retain) -> /devices/modbus-sample/controls/U32:1 le/meta/type: 'value' (QoS 1, retained)
+(retain) -> /devices/modbus-sample/controls/U32:1/meta: '{"order":1,"readonly":false,"type":"value"}' (QoS 1, retained)
+(retain) -> /devices/modbus-sample/controls/U32:1/meta/order: '1' (QoS 1, retained)
+(retain) -> /devices/modbus-sample/controls/U32:1/meta/readonly: '0' (QoS 1, retained)
+(retain) -> /devices/modbus-sample/controls/U32:1/meta/type: 'value' (QoS 1, retained)
+(retain) -> /devices/modbus-sample/controls/U32:20: '0' (QoS 1, retained)
+(retain) -> /devices/modbus-sample/controls/U32:20 le: '0' (QoS 1, retained)
+(retain) -> /devices/modbus-sample/controls/U32:20 le/meta: '{"order":4,"readonly":false,"type":"value"}' (QoS 1, retained)
+(retain) -> /devices/modbus-sample/controls/U32:20 le/meta/order: '4' (QoS 1, retained)
+(retain) -> /devices/modbus-sample/controls/U32:20 le/meta/readonly: '0' (QoS 1, retained)
+(retain) -> /devices/modbus-sample/controls/U32:20 le/meta/type: 'value' (QoS 1, retained)
+(retain) -> /devices/modbus-sample/controls/U32:20/meta: '{"order":2,"readonly":false,"type":"value"}' (QoS 1, retained)
+(retain) -> /devices/modbus-sample/controls/U32:20/meta/order: '2' (QoS 1, retained)
+(retain) -> /devices/modbus-sample/controls/U32:20/meta/readonly: '0' (QoS 1, retained)
+(retain) -> /devices/modbus-sample/controls/U32:20/meta/type: 'value' (QoS 1, retained)
+Unsubscribe -- em-test: /devices/modbus-sample/controls/#
+>>> LoopOnce()
+Open()
+Sleep(5000)
+EnqueueU32BitsHoldingReadResponse()
+>> 01 03 00 46 00 02 25 DE
+<< 01 03 04 00 05 00 00 EA 32
+Publish: /devices/modbus-sample/controls/U32:1 le: '2' (QoS 1, retained)
+EnqueueU32BitsHoldingReadResponse()
+>> 01 03 00 46 00 02 25 DE
+<< 01 03 04 00 00 00 70 FB D7
+Publish: /devices/modbus-sample/controls/U32:20 le: '7' (QoS 1, retained)
+EnqueueU32BitsHoldingReadResponse()
+>> 01 03 00 4A 00 02 E5 DD
+<< 01 03 04 00 00 00 05 3A 30
+Publish: /devices/modbus-sample/controls/U32:1: '2' (QoS 1, retained)
+EnqueueU32BitsHoldingReadResponse()
+>> 01 03 00 4A 00 02 E5 DD
+<< 01 03 04 00 70 00 00 FB E8
+Publish: /devices/modbus-sample/controls/U32:20: '7' (QoS 1, retained)
+Publish: /devices/modbus-sample/controls/U32:1/on: '1' (QoS 0, retained)
+Publish: /devices/modbus-sample/controls/U32:20/on: '4' (QoS 0, retained)
+Publish: /devices/modbus-sample/controls/U32:1 le/on: '1' (QoS 0, retained)
+Publish: /devices/modbus-sample/controls/U32:20 le/on: '4' (QoS 0, retained)
+>>> LoopOnce()
+EnqueueU32BitsHoldingWriteResponse()
+>> 01 10 00 4A 00 02 04 00 70 00 02 F7 FA
+<< 01 10 00 4A 00 02 60 1E
+Publish: /devices/modbus-sample/controls/U32:1: '1' (QoS 1, retained)
+EnqueueU32BitsHoldingWriteResponse()
+>> 01 10 00 4A 00 02 04 00 40 00 02 F7 F5
+<< 01 10 00 4A 00 02 60 1E
+Publish: /devices/modbus-sample/controls/U32:20: '4' (QoS 1, retained)
+EnqueueU32BitsHoldingWriteResponse()
+>> 01 10 00 46 00 02 04 00 02 00 70 D7 91
+<< 01 10 00 46 00 02 A0 1D
+Publish: /devices/modbus-sample/controls/U32:1 le: '1' (QoS 1, retained)
+EnqueueU32BitsHoldingWriteResponse()
+>> 01 10 00 46 00 02 04 00 02 00 40 D7 85
+<< 01 10 00 46 00 02 A0 1D
+Publish: /devices/modbus-sample/controls/U32:20 le: '4' (QoS 1, retained)
+EnqueueU32BitsHoldingReadResponse()
+>> 01 03 00 46 00 02 25 DE
+<< 01 03 04 00 07 00 00 4B F2
+Publish: /devices/modbus-sample/controls/U32:1 le: '3' (QoS 1, retained)
+EnqueueU32BitsHoldingReadResponse()
+>> 01 03 00 46 00 02 25 DE
+<< 01 03 04 00 00 00 50 FA 0F
+Publish: /devices/modbus-sample/controls/U32:20 le: '5' (QoS 1, retained)
+EnqueueU32BitsHoldingReadResponse()
+>> 01 03 00 4A 00 02 E5 DD
+<< 01 03 04 00 00 00 07 BB F1
+Publish: /devices/modbus-sample/controls/U32:1: '3' (QoS 1, retained)
+EnqueueU32BitsHoldingReadResponse()
+>> 01 03 00 4A 00 02 E5 DD
+<< 01 03 04 00 50 00 00 FA 22
+Publish: /devices/modbus-sample/controls/U32:20: '5' (QoS 1, retained)
+Close()
+Unsubscribe -- em-test: /devices/modbus-sample/controls/U32:20 le/on
+Publish: /devices/modbus-sample/controls/U32:20 le/meta: '' (QoS 1, retained)
+Publish: /devices/modbus-sample/controls/U32:20 le/meta/order: '' (QoS 1, retained)
+Publish: /devices/modbus-sample/controls/U32:20 le/meta/readonly: '' (QoS 1, retained)
+Publish: /devices/modbus-sample/controls/U32:20 le/meta/type: '' (QoS 1, retained)
+Publish: /devices/modbus-sample/controls/U32:20 le: '' (QoS 1, retained)
+Unsubscribe -- em-test: /devices/modbus-sample/controls/U32:1 le/on
+Publish: /devices/modbus-sample/controls/U32:1 le/meta: '' (QoS 1, retained)
+Publish: /devices/modbus-sample/controls/U32:1 le/meta/order: '' (QoS 1, retained)
+Publish: /devices/modbus-sample/controls/U32:1 le/meta/readonly: '' (QoS 1, retained)
+Publish: /devices/modbus-sample/controls/U32:1 le/meta/type: '' (QoS 1, retained)
+Publish: /devices/modbus-sample/controls/U32:1 le: '' (QoS 1, retained)
+Unsubscribe -- em-test: /devices/modbus-sample/controls/U32:20/on
+Publish: /devices/modbus-sample/controls/U32:20/meta: '' (QoS 1, retained)
+Publish: /devices/modbus-sample/controls/U32:20/meta/order: '' (QoS 1, retained)
+Publish: /devices/modbus-sample/controls/U32:20/meta/readonly: '' (QoS 1, retained)
+Publish: /devices/modbus-sample/controls/U32:20/meta/type: '' (QoS 1, retained)
+Publish: /devices/modbus-sample/controls/U32:20: '' (QoS 1, retained)
+Unsubscribe -- em-test: /devices/modbus-sample/controls/U32:1/on
+Publish: /devices/modbus-sample/controls/U32:1/meta: '' (QoS 1, retained)
+Publish: /devices/modbus-sample/controls/U32:1/meta/order: '' (QoS 1, retained)
+Publish: /devices/modbus-sample/controls/U32:1/meta/readonly: '' (QoS 1, retained)
+Publish: /devices/modbus-sample/controls/U32:1/meta/type: '' (QoS 1, retained)
+Publish: /devices/modbus-sample/controls/U32:1: '' (QoS 1, retained)
+Publish: /devices/modbus-sample/meta: '' (QoS 1, retained)
+Publish: /devices/modbus-sample/meta/driver: '' (QoS 1, retained)
+Publish: /devices/modbus-sample/meta/name: '' (QoS 1, retained)
+stop: em-test

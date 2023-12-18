@@ -760,6 +760,47 @@ TEST_F(TModbusBitmasksIntegrationTest, SingleWrite)
     }
 }
 
+class TModbusBitmasksU32IntegrationTest: public TModbusIntegrationTest
+{
+protected:
+    const char* ConfigPath() const override
+    {
+        return "configs/config-modbus-bitmasks-u32-test.json";
+    }
+
+    void ExpectPollQueries(bool afterWrite = false);
+};
+
+TEST_F(TModbusBitmasksU32IntegrationTest, Poll)
+{
+    EnqueueU32BitsHoldingReadResponse(false);
+    Note() << "LoopOnce()";
+    for (auto i = 0; i < 4; ++i) {
+        SerialDriver->LoopOnce();
+    }
+}
+
+TEST_F(TModbusBitmasksU32IntegrationTest, Write)
+{
+    EnqueueU32BitsHoldingReadResponse(false);
+    Note() << "LoopOnce()";
+    for (auto i = 0; i < 4; ++i) {
+        SerialDriver->LoopOnce();
+    }
+
+    PublishWaitOnValue("/devices/modbus-sample/controls/U32:1/on", "1");
+    PublishWaitOnValue("/devices/modbus-sample/controls/U32:20/on", "4");
+    PublishWaitOnValue("/devices/modbus-sample/controls/U32:1 le/on", "1");
+    PublishWaitOnValue("/devices/modbus-sample/controls/U32:20 le/on", "4");
+
+    EnqueueU32BitsHoldingWriteResponse();
+    EnqueueU32BitsHoldingReadResponse(true);
+    Note() << "LoopOnce()";
+    for (auto i = 0; i < 4; ++i) {
+        SerialDriver->LoopOnce();
+    }
+}
+
 class TModbusUnavailableRegistersIntegrationTest: public TSerialDeviceIntegrationTest, public TModbusExpectations
 {
 protected:
@@ -913,6 +954,43 @@ TEST_F(TModbusContinuousRegisterReadTest, NotSupported)
     EnqueueContinuousReadResponse();
     Note() << "LoopOnce() [separated]";
     for (auto i = 0; i < 6; ++i) {
+        SerialDriver->LoopOnce();
+    }
+}
+
+class TModbusLittleEndianRegisterTest: public TSerialDeviceIntegrationTest, public TModbusExpectations
+{
+protected:
+    const char* ConfigPath() const override
+    {
+        return "configs/config-modbus-little-endian-test.json";
+    }
+};
+
+TEST_F(TModbusLittleEndianRegisterTest, Read)
+{
+    EnqueueLittleEndianReadResponses();
+    for (auto i = 0; i < 5; ++i) {
+        SerialDriver->LoopOnce();
+    }
+}
+
+TEST_F(TModbusLittleEndianRegisterTest, Write)
+{
+    EnqueueLittleEndianReadResponses();
+    for (auto i = 0; i < 5; ++i) {
+        SerialDriver->LoopOnce();
+    }
+
+    PublishWaitOnValue("/devices/modbus-sample/controls/U8/on", "1");
+    PublishWaitOnValue("/devices/modbus-sample/controls/U16/on", std::to_string(0x0304));
+    PublishWaitOnValue("/devices/modbus-sample/controls/U24/on", std::to_string(0x050607));
+    PublishWaitOnValue("/devices/modbus-sample/controls/U32/on", std::to_string(0x08090A0B));
+    PublishWaitOnValue("/devices/modbus-sample/controls/U64/on", std::to_string(0x0C0D0E0F11121314));
+
+    EnqueueLittleEndianWriteResponses();
+    EnqueueLittleEndianReadResponses();
+    for (auto i = 0; i < 5; ++i) {
         SerialDriver->LoopOnce();
     }
 }
