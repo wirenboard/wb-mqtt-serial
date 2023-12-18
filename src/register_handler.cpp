@@ -5,11 +5,6 @@
 
 using namespace std::chrono;
 
-namespace
-{
-    const seconds MAX_WRITE_FAIL_TIME(600); // 10 minutes
-}
-
 TRegisterHandler::TRegisterHandler(PSerialDevice dev, PRegister reg): Dev(dev), Reg(reg), WriteFail(false)
 {}
 
@@ -39,7 +34,9 @@ void TRegisterHandler::HandleWriteErrorRetryWrite(const TRegisterValue& tempValu
             WriteFirstTryTime = steady_clock::now();
         }
         WriteFail = true;
-        if (duration_cast<seconds>(steady_clock::now() - WriteFirstTryTime) > MAX_WRITE_FAIL_TIME) {
+        if (duration_cast<seconds>(steady_clock::now() - WriteFirstTryTime) >
+            Reg->Device()->DeviceConfig()->MaxWriteFailTime)
+        {
             Dirty = (tempValue != ValueToSet);
             WriteFail = false;
         }

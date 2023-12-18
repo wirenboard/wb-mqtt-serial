@@ -1,8 +1,14 @@
-wb-mqtt-serial (2.107.1) stable; urgency=medium
+wb-mqtt-serial (2.108.1) stable; urgency=medium
 
   * Fix reading bits from modbus channels wider than 16 bits
 
- -- Petr Krasnoshchekov <petr.krasnoshchekov@wirenboard.com>  Thu, 07 Dec 2023 09:34:51 +0500
+ -- Petr Krasnoshchekov <petr.krasnoshchekov@wirenboard.com>  Mon, 18 Dec 2023 10:10:58 +0500
+
+wb-mqtt-serial (2.108.0) stable; urgency=medium
+
+  * Add configuration parameter for maximum write retry time
+
+ -- Petr Krasnoshchekov <petr.krasnoshchekov@wirenboard.com>  Thu, 07 Dec 2023 12:09:04 +0500
 
 wb-mqtt-serial (2.107.0) stable; urgency=medium
 
