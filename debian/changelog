@@ -1,8 +1,14 @@
-wb-mqtt-serial (2.108.2) stable; urgency=medium
+wb-mqtt-serial (2.108.3) stable; urgency=medium
 
   * JSON schema: add missed "group" property
 
  -- Nikolay Korotkiy <nikolay.korotkiy@wirenboard.com>  Mon, 18 Dec 2023 10:15:00 +0400
+
+wb-mqtt-serial (2.108.2) stable; urgency=medium
+
+  * WB-MAP* templates: set semi-sporadic mode for Urms channels
+
+ -- Pavel Gasheev <pavel.gasheev@wirenboard.ru>  Mon, 18 Dec 2023 10:05:36 +0300
 
 wb-mqtt-serial (2.108.1) stable; urgency=medium
 
