@@ -809,6 +809,7 @@
                 "reg_type": "input",
                 "address": "0x10d9",
                 "type": "voltage",
+                "semi-sporadic": true,
                 "format": "u16",
                 "scale": 0.01,
                 "round_to": 0.01,
