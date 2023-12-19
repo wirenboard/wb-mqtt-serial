@@ -7,7 +7,7 @@ namespace
     TPort::TFrameCompletePred ExpectNBytes(size_t slave_id_width, size_t n)
     {
         return [slave_id_width, n](uint8_t* buf, size_t size) {
-            if (size < 2)
+            if (size < slave_id_width + 1)
                 return false;
             if (buf[slave_id_width] & 0x80)
                 return size >= 5 + slave_id_width; // exception response

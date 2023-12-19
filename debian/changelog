@@ -1,3 +1,9 @@
+wb-mqtt-serial (2.108.4) stable; urgency=medium
+
+  * Milur: fix potential issue with reading registers
+
+ -- Nikolay Korotkiy <nikolay.korotkiy@wirenboard.com>  Mon, 18 Dec 2023 16:00:00 +0400
+
 wb-mqtt-serial (2.108.3) stable; urgency=medium
 
   * JSON schema: add missed "group" property
