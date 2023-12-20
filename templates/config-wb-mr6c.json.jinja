@@ -290,6 +290,9 @@
                 "enum_titles": ["no action", "reset", "set", "toggle"],
                 "condition": "in{{in_num}}_mode==6"
             },
+            {% endfor -%}
+            {% endfor -%}
+            {% for out_num in range(1, OUTPUTS_NUMBER + 1) -%}
             "out{{out_num}}_safe_state": {
                 "title": "Output {{out_num}}",
                 "group": "gg_outputs_safe_state",
@@ -330,7 +333,6 @@
                     "Enable only in safety mode"
                 ]
             },
-            {% endfor -%}
             {% endfor -%}
             "outputs_restore_state": {
                 "title": "Outputs State After Power On",
