@@ -414,38 +414,6 @@
                 "condition": "isDefined(curtain{{curtain_num}}_mode)==0||curtain{{curtain_num}}_mode==0"
             },
             {% endfor -%}
-            {% for curtain_num in range(1, OUTPUTS_NUMBER // 2 + 1) -%}
-            "curtain{{curtain_num}}_safety_behaviour": {
-                "title": "Curtain {{curtain_num}}",
-                "group": "gg_safety_behaviour",
-                "order": {{curtain_num}},
-                "address": {{938 + curtain_num - 1}},
-                "reg_type": "holding",
-                "default": 0,
-                "enum": [0, 1, 2],
-                "enum_titles": [
-                    "Don't сhange",
-                    "Open curtain",
-                    "Close curtain"
-                ],
-                "condition": "curtain{{curtain_num}}_mode==1"
-            },
-            "curtain{{curtain_num}}_safety_input_control": {
-                "title": "Curtain {{curtain_num}}",
-                "group": "gg_safety_input_control",
-                "order": {{curtain_num}},
-                "address": {{946 + curtain_num - 1}},
-                "reg_type": "holding",
-                "default": 0,
-                "enum": [0, 1, 2],
-                "enum_titles": [
-                    "Don't change",
-                    "Disable in safety mode",
-                    "Enable only in safety mode"
-                ],
-                "condition": "curtain{{curtain_num}}_mode==1"
-            },
-            {% endfor -%}
             "outputs_restore_state": {
                 "title": "Outputs State After Power On",
                 "description": "outputs_state_after_power_on_description",
@@ -491,7 +459,8 @@
                 "default": 5.0,
                 "min": 1.0,
                 "max": 180.0,
-                "order": 2
+                "order": 2,
+                "condition": "curtain{{curtain_num}}_mode==1"
             },
             "curtain{{curtain_num}}_close_time": {
                 "title": "Curtain {{curtain_num}} close time (s)",
@@ -502,7 +471,38 @@
                 "default": 5.0,
                 "min": 1.0,
                 "max": 180.0,
-                "order": 3
+                "order": 3,
+                "condition": "curtain{{curtain_num}}_mode==1"
+            },
+            "curtain{{curtain_num}}_safety_behaviour": {
+                "title": "Curtain {{curtain_num}}",
+                "group": "gg_safety_behaviour",
+                "order": {{curtain_num}},
+                "address": {{938 + curtain_num - 1}},
+                "reg_type": "holding",
+                "default": 0,
+                "enum": [0, 1, 2],
+                "enum_titles": [
+                    "Don't сhange",
+                    "Open curtain",
+                    "Close curtain"
+                ],
+                "condition": "curtain{{curtain_num}}_mode==1"
+            },
+            "curtain{{curtain_num}}_safety_input_control": {
+                "title": "Curtain {{curtain_num}}",
+                "group": "gg_safety_input_control",
+                "order": {{curtain_num}},
+                "address": {{946 + curtain_num - 1}},
+                "reg_type": "holding",
+                "default": 0,
+                "enum": [0, 1, 2],
+                "enum_titles": [
+                    "Don't change",
+                    "Disable in safety mode",
+                    "Enable only in safety mode"
+                ],
+                "condition": "curtain{{curtain_num}}_mode==1"
             },
             {% endfor -%}
             "baud_rate": {
