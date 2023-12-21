@@ -1,0 +1,2049 @@
+{
+    "title": "WB-MWAC_template_title",
+    "device_type": "WB-MWAC-v2",
+    "group": "g-wb",
+    "device": {
+        "name": "WB-MWAC-v2",
+        "id": "wb-mwac-v2",
+        "max_read_registers": 0,
+        "response_timeout_ms": 1,
+        "frame_timeout_ms": 8,
+        "enable_wb_continuous_read": true,
+
+        "groups": [
+            {
+                "title": "Counters",
+                "id": "counters"
+            },
+            {
+                "title": "Input F1",
+                "id": "input_f1"
+            },
+            {
+                "title": "Actions for outputs when the input is closed/opened",
+                "id": "gg_in1_mapping_matrix_actions",
+                "group": "input_f1"
+            },
+            {
+                "title": "Input F2",
+                "id": "input_f2"
+            },
+            {
+                "title": "Actions for outputs when the input is closed/opened",
+                "id": "gg_in2_mapping_matrix_actions",
+                "group": "input_f2"
+            },
+            {
+                "title": "Input F3",
+                "id": "input_f3"
+            },
+            {
+                "title": "Actions for outputs when the input is closed/opened",
+                "id": "gg_in3_mapping_matrix_actions",
+                "group": "input_f3"
+            },
+            {
+                "title": "Input F4",
+                "id": "input_f4"
+            },
+            {
+                "title": "Actions for outputs when the input is closed/opened",
+                "id": "gg_in4_mapping_matrix_actions",
+                "group": "input_f4"
+            },
+            {
+                "title": "Input F5",
+                "id": "input_f5"
+            },
+            {
+                "title": "Actions for outputs when the input is closed/opened",
+                "id": "gg_in5_mapping_matrix_actions",
+                "group": "input_f5"
+            },
+            {
+                "title": "Input F6",
+                "id": "input_f6"
+            },
+            {
+                "title": "Actions for outputs when the input is closed/opened",
+                "id": "gg_in6_mapping_matrix_actions",
+                "group": "input_f6"
+            },
+            {
+                "title": "Outputs",
+                "id": "outputs"
+            },
+            {
+                "title": "Output Safe State",
+                "id": "gg_outputs_safe_state",
+                "group": "outputs"
+            },
+            {
+                "title": "Outputs group",
+                "id": "gg_outputs_channels",
+                "group": "outputs",
+                "ui_options": {
+                    "wb": {
+                        "disable_title": true
+                    }
+                }
+            },
+            {
+                "title": "Safety Mode",
+                "id": "g_safety"
+            },
+            {
+                "title": "Cleaning mode",
+                "id": "cleaning_mode"
+            },
+            {
+                "title": "Safety Behaviour",
+                "id": "gg_safety_behaviour",
+                "group": "g_safety"
+            },
+            {
+                "title": "Inputs Control In Safety Mode",
+                "id": "gg_safety_input_control",
+                "description": "inputs_control_in_safety_mode_description",
+                "group": "g_safety"
+            },
+            {
+                "title": "General",
+                "id": "general"
+            },
+            {
+                "title": "HW Info",
+                "id": "hw_info"
+            }
+        ],
+
+        "parameters": {
+            "in1_mode": {
+                "title": "Input F1 Mode",
+                "address": 9,
+                "reg_type": "holding",
+                "enum": [3, 4, 7, 5],
+                "default": 5,
+                "enum_titles": [
+                    "control disabled",
+                    "push button",
+                    "latching button",
+                    "leakage sensor + check after 20 min."
+                ],
+                "group": "input_f1",
+                "order": 1
+            },
+            "in1_debounce_ms": {
+                "title": "Input F1 Debounce (0 — 2000 ms, 50 by default)",
+                "address": 20,
+                "reg_type": "holding",
+                "min": 0,
+                "max": 2000,
+                "default": 50,
+                "group": "input_f1",
+                "order": 2
+            },
+            
+            "in1_out1_actions":
+            { 
+                "group": "gg_in1_mapping_matrix_actions",
+                "title": "K1",
+                "order": 1,
+                "address": 864,
+                "reg_type": "holding",
+                "default": 1,
+                "enum": [0, 1, 2, 3],
+                "enum_titles": [
+                    "do nothing",
+                    "off",
+                    "on",
+                    "toggle"
+                ],
+                "condition": "in1_mode==4"
+            },
+            
+            
+            "in1_out2_actions":
+            { 
+                "group": "gg_in1_mapping_matrix_actions",
+                "title": "K2",
+                "order": 2,
+                "address": 865,
+                "reg_type": "holding",
+                "default": 1,
+                "enum": [0, 1, 2, 3],
+                "enum_titles": [
+                    "do nothing",
+                    "off",
+                    "on",
+                    "toggle"
+                ],
+                "condition": "in1_mode==4"
+            },
+            
+            
+            "in1_out3_actions":
+            { 
+                "group": "gg_in1_mapping_matrix_actions",
+                "title": "Alarm",
+                "order": 3,
+                "address": 866,
+                "reg_type": "holding",
+                "default": 1,
+                "enum": [0, 1],
+                "enum_titles": [
+                    "do nothing",
+                    "off"
+                ],
+                "condition": "in1_mode==4"
+            },
+            
+            
+            "in1_out4_actions":
+            { 
+                "group": "gg_in1_mapping_matrix_actions",
+                "title": "Cleaning mode",
+                    
+                "order": 4,
+                "address": 867,
+                "reg_type": "holding",
+                "default": 0,
+                "enum": [0, 1, 2, 3],
+                "enum_titles": [
+                    "do nothing",
+                    "off",
+                    "on",
+                    "toggle"
+                ],
+                "condition": "in1_mode==4"
+            },
+            
+            
+            "in1_out1_actions_20min":
+            { 
+                "group": "gg_in1_mapping_matrix_actions",
+                "title": "K1",
+                "order": 1,
+                "address": 864,
+                "reg_type": "holding",
+                "default": 1,
+                "enum": [0, 1, 2],
+                "enum_titles": [
+                    "do nothing",
+                    "off",
+                    "on"
+                ],
+                "condition": "in1_mode==5"
+            },
+            
+            
+            "in1_out2_actions_20min":
+            { 
+                "group": "gg_in1_mapping_matrix_actions",
+                "title": "K2",
+                "order": 2,
+                "address": 865,
+                "reg_type": "holding",
+                "default": 1,
+                "enum": [0, 1, 2],
+                "enum_titles": [
+                    "do nothing",
+                    "off",
+                    "on"
+                ],
+                "condition": "in1_mode==5"
+            },
+            
+            
+            "in1_out3_actions_20min":
+            { 
+                "group": "gg_in1_mapping_matrix_actions",
+                "title": "Alarm",
+                "order": 3,
+                "address": 866,
+                "reg_type": "holding",
+                "default": 2,
+                "enum": [0, 2],
+                "enum_titles": [
+                    "do nothing",
+                    "on"
+                ],
+                "condition": "in1_mode==5"
+            },
+            
+            "in1_out1_actions_latching":
+            {
+                "group": "gg_in1_mapping_matrix_actions",
+                "title": "K1",
+                "order": 1,
+                "address": 384,
+                "reg_type": "holding",
+                "default": 0,
+                "enum": [0, 9],
+                "enum_titles": [
+                    "do nothing",
+                    "control"
+                ],
+                "condition": "in1_mode==7"
+            },
+            "in1_out2_actions_latching":
+            {
+                "group": "gg_in1_mapping_matrix_actions",
+                "title": "K2",
+                "order": 2,
+                "address": 385,
+                "reg_type": "holding",
+                "default": 0,
+                "enum": [0, 9],
+                "enum_titles": [
+                    "do nothing",
+                    "control"
+                ],
+                "condition": "in1_mode==7"
+            },
+            "in1_out3_actions_latching":
+            {
+                "group": "gg_in1_mapping_matrix_actions",
+                "title": "Alarm",
+                "order": 3,
+                "address": 386,
+                "reg_type": "holding",
+                "default": 0,
+                "enum": [0, 5],
+                "enum_titles": [
+                    "do nothing",
+                    "off"
+                ],
+                "condition": "in1_mode==7"
+            },
+            "in1_out4_actions_latching":
+            {
+                "group": "gg_in1_mapping_matrix_actions",
+                "title": "Cleaning mode",
+                "order": 4,
+                "address": 387,
+                "reg_type": "holding",
+                "default": 0,
+                "enum": [0, 9],
+                "enum_titles": [
+                    "do nothing",
+                    "control"
+                ],
+                "condition": "in1_mode==7"
+            },
+            "in2_mode": {
+                "title": "Input F2 Mode",
+                "address": 10,
+                "reg_type": "holding",
+                "enum": [3, 4, 7, 5],
+                "default": 5,
+                "enum_titles": [
+                    "control disabled",
+                    "push button",
+                    "latching button",
+                    "leakage sensor + check after 20 min."
+                ],
+                "group": "input_f2",
+                "order": 1
+            },
+            "in2_debounce_ms": {
+                "title": "Input F2 Debounce (0 — 2000 ms, 50 by default)",
+                "address": 21,
+                "reg_type": "holding",
+                "min": 0,
+                "max": 2000,
+                "default": 50,
+                "group": "input_f2",
+                "order": 2
+            },
+            
+            "in2_out1_actions":
+            { 
+                "group": "gg_in2_mapping_matrix_actions",
+                "title": "K1",
+                "order": 1,
+                "address": 872,
+                "reg_type": "holding",
+                "default": 1,
+                "enum": [0, 1, 2, 3],
+                "enum_titles": [
+                    "do nothing",
+                    "off",
+                    "on",
+                    "toggle"
+                ],
+                "condition": "in2_mode==4"
+            },
+            
+            
+            "in2_out2_actions":
+            { 
+                "group": "gg_in2_mapping_matrix_actions",
+                "title": "K2",
+                "order": 2,
+                "address": 873,
+                "reg_type": "holding",
+                "default": 1,
+                "enum": [0, 1, 2, 3],
+                "enum_titles": [
+                    "do nothing",
+                    "off",
+                    "on",
+                    "toggle"
+                ],
+                "condition": "in2_mode==4"
+            },
+            
+            
+            "in2_out3_actions":
+            { 
+                "group": "gg_in2_mapping_matrix_actions",
+                "title": "Alarm",
+                "order": 3,
+                "address": 874,
+                "reg_type": "holding",
+                "default": 1,
+                "enum": [0, 1],
+                "enum_titles": [
+                    "do nothing",
+                    "off"
+                ],
+                "condition": "in2_mode==4"
+            },
+            
+            
+            "in2_out4_actions":
+            { 
+                "group": "gg_in2_mapping_matrix_actions",
+                "title": "Cleaning mode",
+                    
+                "order": 4,
+                "address": 875,
+                "reg_type": "holding",
+                "default": 0,
+                "enum": [0, 1, 2, 3],
+                "enum_titles": [
+                    "do nothing",
+                    "off",
+                    "on",
+                    "toggle"
+                ],
+                "condition": "in2_mode==4"
+            },
+            
+            
+            "in2_out1_actions_20min":
+            { 
+                "group": "gg_in2_mapping_matrix_actions",
+                "title": "K1",
+                "order": 1,
+                "address": 872,
+                "reg_type": "holding",
+                "default": 1,
+                "enum": [0, 1, 2],
+                "enum_titles": [
+                    "do nothing",
+                    "off",
+                    "on"
+                ],
+                "condition": "in2_mode==5"
+            },
+            
+            
+            "in2_out2_actions_20min":
+            { 
+                "group": "gg_in2_mapping_matrix_actions",
+                "title": "K2",
+                "order": 2,
+                "address": 873,
+                "reg_type": "holding",
+                "default": 1,
+                "enum": [0, 1, 2],
+                "enum_titles": [
+                    "do nothing",
+                    "off",
+                    "on"
+                ],
+                "condition": "in2_mode==5"
+            },
+            
+            
+            "in2_out3_actions_20min":
+            { 
+                "group": "gg_in2_mapping_matrix_actions",
+                "title": "Alarm",
+                "order": 3,
+                "address": 874,
+                "reg_type": "holding",
+                "default": 2,
+                "enum": [0, 2],
+                "enum_titles": [
+                    "do nothing",
+                    "on"
+                ],
+                "condition": "in2_mode==5"
+            },
+            
+            "in2_out1_actions_latching":
+            {
+                "group": "gg_in2_mapping_matrix_actions",
+                "title": "K1",
+                "order": 1,
+                "address": 392,
+                "reg_type": "holding",
+                "default": 0,
+                "enum": [0, 9],
+                "enum_titles": [
+                    "do nothing",
+                    "control"
+                ],
+                "condition": "in2_mode==7"
+            },
+            "in2_out2_actions_latching":
+            {
+                "group": "gg_in2_mapping_matrix_actions",
+                "title": "K2",
+                "order": 2,
+                "address": 393,
+                "reg_type": "holding",
+                "default": 0,
+                "enum": [0, 9],
+                "enum_titles": [
+                    "do nothing",
+                    "control"
+                ],
+                "condition": "in2_mode==7"
+            },
+            "in2_out3_actions_latching":
+            {
+                "group": "gg_in2_mapping_matrix_actions",
+                "title": "Alarm",
+                "order": 3,
+                "address": 394,
+                "reg_type": "holding",
+                "default": 0,
+                "enum": [0, 5],
+                "enum_titles": [
+                    "do nothing",
+                    "off"
+                ],
+                "condition": "in2_mode==7"
+            },
+            "in2_out4_actions_latching":
+            {
+                "group": "gg_in2_mapping_matrix_actions",
+                "title": "Cleaning mode",
+                "order": 4,
+                "address": 395,
+                "reg_type": "holding",
+                "default": 0,
+                "enum": [0, 9],
+                "enum_titles": [
+                    "do nothing",
+                    "control"
+                ],
+                "condition": "in2_mode==7"
+            },
+            "in3_mode": {
+                "title": "Input F3 Mode",
+                "address": 11,
+                "reg_type": "holding",
+                "enum": [3, 4, 7, 5],
+                "default": 5,
+                "enum_titles": [
+                    "control disabled",
+                    "push button",
+                    "latching button",
+                    "leakage sensor + check after 20 min."
+                ],
+                "group": "input_f3",
+                "order": 1
+            },
+            "in3_debounce_ms": {
+                "title": "Input F3 Debounce (0 — 2000 ms, 50 by default)",
+                "address": 22,
+                "reg_type": "holding",
+                "min": 0,
+                "max": 2000,
+                "default": 50,
+                "group": "input_f3",
+                "order": 2
+            },
+            
+            "in3_out1_actions":
+            { 
+                "group": "gg_in3_mapping_matrix_actions",
+                "title": "K1",
+                "order": 1,
+                "address": 880,
+                "reg_type": "holding",
+                "default": 1,
+                "enum": [0, 1, 2, 3],
+                "enum_titles": [
+                    "do nothing",
+                    "off",
+                    "on",
+                    "toggle"
+                ],
+                "condition": "in3_mode==4"
+            },
+            
+            
+            "in3_out2_actions":
+            { 
+                "group": "gg_in3_mapping_matrix_actions",
+                "title": "K2",
+                "order": 2,
+                "address": 881,
+                "reg_type": "holding",
+                "default": 1,
+                "enum": [0, 1, 2, 3],
+                "enum_titles": [
+                    "do nothing",
+                    "off",
+                    "on",
+                    "toggle"
+                ],
+                "condition": "in3_mode==4"
+            },
+            
+            
+            "in3_out3_actions":
+            { 
+                "group": "gg_in3_mapping_matrix_actions",
+                "title": "Alarm",
+                "order": 3,
+                "address": 882,
+                "reg_type": "holding",
+                "default": 1,
+                "enum": [0, 1],
+                "enum_titles": [
+                    "do nothing",
+                    "off"
+                ],
+                "condition": "in3_mode==4"
+            },
+            
+            
+            "in3_out4_actions":
+            { 
+                "group": "gg_in3_mapping_matrix_actions",
+                "title": "Cleaning mode",
+                    
+                "order": 4,
+                "address": 883,
+                "reg_type": "holding",
+                "default": 0,
+                "enum": [0, 1, 2, 3],
+                "enum_titles": [
+                    "do nothing",
+                    "off",
+                    "on",
+                    "toggle"
+                ],
+                "condition": "in3_mode==4"
+            },
+            
+            
+            "in3_out1_actions_20min":
+            { 
+                "group": "gg_in3_mapping_matrix_actions",
+                "title": "K1",
+                "order": 1,
+                "address": 880,
+                "reg_type": "holding",
+                "default": 1,
+                "enum": [0, 1, 2],
+                "enum_titles": [
+                    "do nothing",
+                    "off",
+                    "on"
+                ],
+                "condition": "in3_mode==5"
+            },
+            
+            
+            "in3_out2_actions_20min":
+            { 
+                "group": "gg_in3_mapping_matrix_actions",
+                "title": "K2",
+                "order": 2,
+                "address": 881,
+                "reg_type": "holding",
+                "default": 1,
+                "enum": [0, 1, 2],
+                "enum_titles": [
+                    "do nothing",
+                    "off",
+                    "on"
+                ],
+                "condition": "in3_mode==5"
+            },
+            
+            
+            "in3_out3_actions_20min":
+            { 
+                "group": "gg_in3_mapping_matrix_actions",
+                "title": "Alarm",
+                "order": 3,
+                "address": 882,
+                "reg_type": "holding",
+                "default": 2,
+                "enum": [0, 2],
+                "enum_titles": [
+                    "do nothing",
+                    "on"
+                ],
+                "condition": "in3_mode==5"
+            },
+            
+            "in3_out1_actions_latching":
+            {
+                "group": "gg_in3_mapping_matrix_actions",
+                "title": "K1",
+                "order": 1,
+                "address": 400,
+                "reg_type": "holding",
+                "default": 0,
+                "enum": [0, 9],
+                "enum_titles": [
+                    "do nothing",
+                    "control"
+                ],
+                "condition": "in3_mode==7"
+            },
+            "in3_out2_actions_latching":
+            {
+                "group": "gg_in3_mapping_matrix_actions",
+                "title": "K2",
+                "order": 2,
+                "address": 401,
+                "reg_type": "holding",
+                "default": 0,
+                "enum": [0, 9],
+                "enum_titles": [
+                    "do nothing",
+                    "control"
+                ],
+                "condition": "in3_mode==7"
+            },
+            "in3_out3_actions_latching":
+            {
+                "group": "gg_in3_mapping_matrix_actions",
+                "title": "Alarm",
+                "order": 3,
+                "address": 402,
+                "reg_type": "holding",
+                "default": 0,
+                "enum": [0, 5],
+                "enum_titles": [
+                    "do nothing",
+                    "off"
+                ],
+                "condition": "in3_mode==7"
+            },
+            "in3_out4_actions_latching":
+            {
+                "group": "gg_in3_mapping_matrix_actions",
+                "title": "Cleaning mode",
+                "order": 4,
+                "address": 403,
+                "reg_type": "holding",
+                "default": 0,
+                "enum": [0, 9],
+                "enum_titles": [
+                    "do nothing",
+                    "control"
+                ],
+                "condition": "in3_mode==7"
+            },
+            "in4_mode": {
+                "title": "Input F4 Mode",
+                "address": 12,
+                "reg_type": "holding",
+                "enum": [3, 4, 7, 5],
+                "default": 5,
+                "enum_titles": [
+                    "control disabled",
+                    "push button",
+                    "latching button",
+                    "leakage sensor + check after 20 min."
+                ],
+                "group": "input_f4",
+                "order": 1
+            },
+            "in4_debounce_ms": {
+                "title": "Input F4 Debounce (0 — 2000 ms, 50 by default)",
+                "address": 23,
+                "reg_type": "holding",
+                "min": 0,
+                "max": 2000,
+                "default": 50,
+                "group": "input_f4",
+                "order": 2
+            },
+            
+            "in4_out1_actions":
+            { 
+                "group": "gg_in4_mapping_matrix_actions",
+                "title": "K1",
+                "order": 1,
+                "address": 888,
+                "reg_type": "holding",
+                "default": 1,
+                "enum": [0, 1, 2, 3],
+                "enum_titles": [
+                    "do nothing",
+                    "off",
+                    "on",
+                    "toggle"
+                ],
+                "condition": "in4_mode==4"
+            },
+            
+            
+            "in4_out2_actions":
+            { 
+                "group": "gg_in4_mapping_matrix_actions",
+                "title": "K2",
+                "order": 2,
+                "address": 889,
+                "reg_type": "holding",
+                "default": 1,
+                "enum": [0, 1, 2, 3],
+                "enum_titles": [
+                    "do nothing",
+                    "off",
+                    "on",
+                    "toggle"
+                ],
+                "condition": "in4_mode==4"
+            },
+            
+            
+            "in4_out3_actions":
+            { 
+                "group": "gg_in4_mapping_matrix_actions",
+                "title": "Alarm",
+                "order": 3,
+                "address": 890,
+                "reg_type": "holding",
+                "default": 1,
+                "enum": [0, 1],
+                "enum_titles": [
+                    "do nothing",
+                    "off"
+                ],
+                "condition": "in4_mode==4"
+            },
+            
+            
+            "in4_out4_actions":
+            { 
+                "group": "gg_in4_mapping_matrix_actions",
+                "title": "Cleaning mode",
+                    
+                "order": 4,
+                "address": 891,
+                "reg_type": "holding",
+                "default": 0,
+                "enum": [0, 1, 2, 3],
+                "enum_titles": [
+                    "do nothing",
+                    "off",
+                    "on",
+                    "toggle"
+                ],
+                "condition": "in4_mode==4"
+            },
+            
+            
+            "in4_out1_actions_20min":
+            { 
+                "group": "gg_in4_mapping_matrix_actions",
+                "title": "K1",
+                "order": 1,
+                "address": 888,
+                "reg_type": "holding",
+                "default": 1,
+                "enum": [0, 1, 2],
+                "enum_titles": [
+                    "do nothing",
+                    "off",
+                    "on"
+                ],
+                "condition": "in4_mode==5"
+            },
+            
+            
+            "in4_out2_actions_20min":
+            { 
+                "group": "gg_in4_mapping_matrix_actions",
+                "title": "K2",
+                "order": 2,
+                "address": 889,
+                "reg_type": "holding",
+                "default": 1,
+                "enum": [0, 1, 2],
+                "enum_titles": [
+                    "do nothing",
+                    "off",
+                    "on"
+                ],
+                "condition": "in4_mode==5"
+            },
+            
+            
+            "in4_out3_actions_20min":
+            { 
+                "group": "gg_in4_mapping_matrix_actions",
+                "title": "Alarm",
+                "order": 3,
+                "address": 890,
+                "reg_type": "holding",
+                "default": 2,
+                "enum": [0, 2],
+                "enum_titles": [
+                    "do nothing",
+                    "on"
+                ],
+                "condition": "in4_mode==5"
+            },
+            
+            "in4_out1_actions_latching":
+            {
+                "group": "gg_in4_mapping_matrix_actions",
+                "title": "K1",
+                "order": 1,
+                "address": 408,
+                "reg_type": "holding",
+                "default": 0,
+                "enum": [0, 9],
+                "enum_titles": [
+                    "do nothing",
+                    "control"
+                ],
+                "condition": "in4_mode==7"
+            },
+            "in4_out2_actions_latching":
+            {
+                "group": "gg_in4_mapping_matrix_actions",
+                "title": "K2",
+                "order": 2,
+                "address": 409,
+                "reg_type": "holding",
+                "default": 0,
+                "enum": [0, 9],
+                "enum_titles": [
+                    "do nothing",
+                    "control"
+                ],
+                "condition": "in4_mode==7"
+            },
+            "in4_out3_actions_latching":
+            {
+                "group": "gg_in4_mapping_matrix_actions",
+                "title": "Alarm",
+                "order": 3,
+                "address": 410,
+                "reg_type": "holding",
+                "default": 0,
+                "enum": [0, 5],
+                "enum_titles": [
+                    "do nothing",
+                    "off"
+                ],
+                "condition": "in4_mode==7"
+            },
+            "in4_out4_actions_latching":
+            {
+                "group": "gg_in4_mapping_matrix_actions",
+                "title": "Cleaning mode",
+                "order": 4,
+                "address": 411,
+                "reg_type": "holding",
+                "default": 0,
+                "enum": [0, 9],
+                "enum_titles": [
+                    "do nothing",
+                    "control"
+                ],
+                "condition": "in4_mode==7"
+            },
+            "in5_mode": {
+                "title": "Input F5 Mode",
+                "address": 13,
+                "reg_type": "holding",
+                "enum": [3, 4, 7, 5],
+                "default": 5,
+                "enum_titles": [
+                    "control disabled",
+                    "push button",
+                    "latching button",
+                    "leakage sensor + check after 20 min."
+                ],
+                "group": "input_f5",
+                "order": 1
+            },
+            "in5_debounce_ms": {
+                "title": "Input F5 Debounce (0 — 2000 ms, 50 by default)",
+                "address": 24,
+                "reg_type": "holding",
+                "min": 0,
+                "max": 2000,
+                "default": 50,
+                "group": "input_f5",
+                "order": 2
+            },
+            
+            "in5_out1_actions":
+            { 
+                "group": "gg_in5_mapping_matrix_actions",
+                "title": "K1",
+                "order": 1,
+                "address": 896,
+                "reg_type": "holding",
+                "default": 1,
+                "enum": [0, 1, 2, 3],
+                "enum_titles": [
+                    "do nothing",
+                    "off",
+                    "on",
+                    "toggle"
+                ],
+                "condition": "in5_mode==4"
+            },
+            
+            
+            "in5_out2_actions":
+            { 
+                "group": "gg_in5_mapping_matrix_actions",
+                "title": "K2",
+                "order": 2,
+                "address": 897,
+                "reg_type": "holding",
+                "default": 1,
+                "enum": [0, 1, 2, 3],
+                "enum_titles": [
+                    "do nothing",
+                    "off",
+                    "on",
+                    "toggle"
+                ],
+                "condition": "in5_mode==4"
+            },
+            
+            
+            "in5_out3_actions":
+            { 
+                "group": "gg_in5_mapping_matrix_actions",
+                "title": "Alarm",
+                "order": 3,
+                "address": 898,
+                "reg_type": "holding",
+                "default": 1,
+                "enum": [0, 1],
+                "enum_titles": [
+                    "do nothing",
+                    "off"
+                ],
+                "condition": "in5_mode==4"
+            },
+            
+            
+            "in5_out4_actions":
+            { 
+                "group": "gg_in5_mapping_matrix_actions",
+                "title": "Cleaning mode",
+                    
+                "order": 4,
+                "address": 899,
+                "reg_type": "holding",
+                "default": 0,
+                "enum": [0, 1, 2, 3],
+                "enum_titles": [
+                    "do nothing",
+                    "off",
+                    "on",
+                    "toggle"
+                ],
+                "condition": "in5_mode==4"
+            },
+            
+            
+            "in5_out1_actions_20min":
+            { 
+                "group": "gg_in5_mapping_matrix_actions",
+                "title": "K1",
+                "order": 1,
+                "address": 896,
+                "reg_type": "holding",
+                "default": 1,
+                "enum": [0, 1, 2],
+                "enum_titles": [
+                    "do nothing",
+                    "off",
+                    "on"
+                ],
+                "condition": "in5_mode==5"
+            },
+            
+            
+            "in5_out2_actions_20min":
+            { 
+                "group": "gg_in5_mapping_matrix_actions",
+                "title": "K2",
+                "order": 2,
+                "address": 897,
+                "reg_type": "holding",
+                "default": 1,
+                "enum": [0, 1, 2],
+                "enum_titles": [
+                    "do nothing",
+                    "off",
+                    "on"
+                ],
+                "condition": "in5_mode==5"
+            },
+            
+            
+            "in5_out3_actions_20min":
+            { 
+                "group": "gg_in5_mapping_matrix_actions",
+                "title": "Alarm",
+                "order": 3,
+                "address": 898,
+                "reg_type": "holding",
+                "default": 2,
+                "enum": [0, 2],
+                "enum_titles": [
+                    "do nothing",
+                    "on"
+                ],
+                "condition": "in5_mode==5"
+            },
+            
+            "in5_out1_actions_latching":
+            {
+                "group": "gg_in5_mapping_matrix_actions",
+                "title": "K1",
+                "order": 1,
+                "address": 416,
+                "reg_type": "holding",
+                "default": 0,
+                "enum": [0, 9],
+                "enum_titles": [
+                    "do nothing",
+                    "control"
+                ],
+                "condition": "in5_mode==7"
+            },
+            "in5_out2_actions_latching":
+            {
+                "group": "gg_in5_mapping_matrix_actions",
+                "title": "K2",
+                "order": 2,
+                "address": 417,
+                "reg_type": "holding",
+                "default": 0,
+                "enum": [0, 9],
+                "enum_titles": [
+                    "do nothing",
+                    "control"
+                ],
+                "condition": "in5_mode==7"
+            },
+            "in5_out3_actions_latching":
+            {
+                "group": "gg_in5_mapping_matrix_actions",
+                "title": "Alarm",
+                "order": 3,
+                "address": 418,
+                "reg_type": "holding",
+                "default": 0,
+                "enum": [0, 5],
+                "enum_titles": [
+                    "do nothing",
+                    "off"
+                ],
+                "condition": "in5_mode==7"
+            },
+            "in5_out4_actions_latching":
+            {
+                "group": "gg_in5_mapping_matrix_actions",
+                "title": "Cleaning mode",
+                "order": 4,
+                "address": 419,
+                "reg_type": "holding",
+                "default": 0,
+                "enum": [0, 9],
+                "enum_titles": [
+                    "do nothing",
+                    "control"
+                ],
+                "condition": "in5_mode==7"
+            },
+            "in6_mode": {
+                "title": "Input F6 Mode",
+                "address": 14,
+                "reg_type": "holding",
+                "enum": [3, 4, 7, 5],
+                "default": 5,
+                "enum_titles": [
+                    "control disabled",
+                    "push button",
+                    "latching button",
+                    "leakage sensor + check after 20 min."
+                ],
+                "group": "input_f6",
+                "order": 1
+            },
+            "in6_debounce_ms": {
+                "title": "Input F6 Debounce (0 — 2000 ms, 50 by default)",
+                "address": 25,
+                "reg_type": "holding",
+                "min": 0,
+                "max": 2000,
+                "default": 50,
+                "group": "input_f6",
+                "order": 2
+            },
+            
+            "in6_out1_actions":
+            { 
+                "group": "gg_in6_mapping_matrix_actions",
+                "title": "K1",
+                "order": 1,
+                "address": 904,
+                "reg_type": "holding",
+                "default": 1,
+                "enum": [0, 1, 2, 3],
+                "enum_titles": [
+                    "do nothing",
+                    "off",
+                    "on",
+                    "toggle"
+                ],
+                "condition": "in6_mode==4"
+            },
+            
+            
+            "in6_out2_actions":
+            { 
+                "group": "gg_in6_mapping_matrix_actions",
+                "title": "K2",
+                "order": 2,
+                "address": 905,
+                "reg_type": "holding",
+                "default": 1,
+                "enum": [0, 1, 2, 3],
+                "enum_titles": [
+                    "do nothing",
+                    "off",
+                    "on",
+                    "toggle"
+                ],
+                "condition": "in6_mode==4"
+            },
+            
+            
+            "in6_out3_actions":
+            { 
+                "group": "gg_in6_mapping_matrix_actions",
+                "title": "Alarm",
+                "order": 3,
+                "address": 906,
+                "reg_type": "holding",
+                "default": 1,
+                "enum": [0, 1],
+                "enum_titles": [
+                    "do nothing",
+                    "off"
+                ],
+                "condition": "in6_mode==4"
+            },
+            
+            
+            "in6_out4_actions":
+            { 
+                "group": "gg_in6_mapping_matrix_actions",
+                "title": "Cleaning mode",
+                    
+                "order": 4,
+                "address": 907,
+                "reg_type": "holding",
+                "default": 0,
+                "enum": [0, 1, 2, 3],
+                "enum_titles": [
+                    "do nothing",
+                    "off",
+                    "on",
+                    "toggle"
+                ],
+                "condition": "in6_mode==4"
+            },
+            
+            
+            "in6_out1_actions_20min":
+            { 
+                "group": "gg_in6_mapping_matrix_actions",
+                "title": "K1",
+                "order": 1,
+                "address": 904,
+                "reg_type": "holding",
+                "default": 1,
+                "enum": [0, 1, 2],
+                "enum_titles": [
+                    "do nothing",
+                    "off",
+                    "on"
+                ],
+                "condition": "in6_mode==5"
+            },
+            
+            
+            "in6_out2_actions_20min":
+            { 
+                "group": "gg_in6_mapping_matrix_actions",
+                "title": "K2",
+                "order": 2,
+                "address": 905,
+                "reg_type": "holding",
+                "default": 1,
+                "enum": [0, 1, 2],
+                "enum_titles": [
+                    "do nothing",
+                    "off",
+                    "on"
+                ],
+                "condition": "in6_mode==5"
+            },
+            
+            
+            "in6_out3_actions_20min":
+            { 
+                "group": "gg_in6_mapping_matrix_actions",
+                "title": "Alarm",
+                "order": 3,
+                "address": 906,
+                "reg_type": "holding",
+                "default": 2,
+                "enum": [0, 2],
+                "enum_titles": [
+                    "do nothing",
+                    "on"
+                ],
+                "condition": "in6_mode==5"
+            },
+            
+            "in6_out1_actions_latching":
+            {
+                "group": "gg_in6_mapping_matrix_actions",
+                "title": "K1",
+                "order": 1,
+                "address": 424,
+                "reg_type": "holding",
+                "default": 0,
+                "enum": [0, 9],
+                "enum_titles": [
+                    "do nothing",
+                    "control"
+                ],
+                "condition": "in6_mode==7"
+            },
+            "in6_out2_actions_latching":
+            {
+                "group": "gg_in6_mapping_matrix_actions",
+                "title": "K2",
+                "order": 2,
+                "address": 425,
+                "reg_type": "holding",
+                "default": 0,
+                "enum": [0, 9],
+                "enum_titles": [
+                    "do nothing",
+                    "control"
+                ],
+                "condition": "in6_mode==7"
+            },
+            "in6_out3_actions_latching":
+            {
+                "group": "gg_in6_mapping_matrix_actions",
+                "title": "Alarm",
+                "order": 3,
+                "address": 426,
+                "reg_type": "holding",
+                "default": 0,
+                "enum": [0, 5],
+                "enum_titles": [
+                    "do nothing",
+                    "off"
+                ],
+                "condition": "in6_mode==7"
+            },
+            "in6_out4_actions_latching":
+            {
+                "group": "gg_in6_mapping_matrix_actions",
+                "title": "Cleaning mode",
+                "order": 4,
+                "address": 427,
+                "reg_type": "holding",
+                "default": 0,
+                "enum": [0, 9],
+                "enum_titles": [
+                    "do nothing",
+                    "control"
+                ],
+                "condition": "in6_mode==7"
+            },
+            "outputs_restore_state": {
+                "title": "Restore Last Outputs State After Power On",
+                "address": 6,
+                "reg_type": "holding",
+                "enum": [0, 1],
+                "default": 0,
+                "enum_titles": ["no", "yes"],
+                "group": "outputs",
+                "order": 1
+            },
+            "safety_timer_s": {
+                "title": "Safety Timer (s)",
+                "address": 8,
+                "reg_type": "holding",
+                "default": 3600,
+                "group": "g_safety",
+                "order": 2
+            },
+            "baud_rate": {
+                "title": "Baud rate",
+                "description": "baud_rate_description",
+                "address": 110,
+                "reg_type": "holding",
+                "enum": [96, 192, 384, 576, 1152],
+                "default": 96,
+                "enum_titles": [
+                    "9600",
+                    "19200",
+                    "38400",
+                    "57600",
+                    "115200"
+                ],
+                "group": "general",
+                "order": 1
+            },
+            "out1_safe_state": {
+                "title": "K1",
+                "group": "gg_outputs_safe_state",
+                "order": 1,
+                "address": 930,
+                "reg_type": "holding",
+                "default": 0,
+                "enum": [0, 1],
+                "enum_titles": [
+                    "Off",
+                    "On"
+                ]
+            },
+            "out1_safety_behaviour": {
+                "title": "K1",
+                "group": "gg_safety_behaviour",
+                "order": 1,
+                "address": 938,
+                "reg_type": "holding",
+                "default": 0,
+                "enum": [0, 1],
+                "enum_titles": [
+                    "Don't сhange output state",
+                    "Switch output to safety state"
+                ]
+            },
+            "out1_safety_input_control": {
+                "title": "K1",
+                "group": "gg_safety_input_control",
+                "order": 1,
+                "address": 946,
+                "reg_type": "holding",
+                "default": 0,
+                "enum": [0, 1, 2],
+                "enum_titles": [
+                    "Don't change",
+                    "Disable in safety mode",
+                    "Enable only in safety mode"
+                ]
+            },
+            "out2_safe_state": {
+                "title": "K2",
+                "group": "gg_outputs_safe_state",
+                "order": 2,
+                "address": 931,
+                "reg_type": "holding",
+                "default": 0,
+                "enum": [0, 1],
+                "enum_titles": [
+                    "Off",
+                    "On"
+                ]
+            },
+            "out2_safety_behaviour": {
+                "title": "K2",
+                "group": "gg_safety_behaviour",
+                "order": 2,
+                "address": 939,
+                "reg_type": "holding",
+                "default": 0,
+                "enum": [0, 1],
+                "enum_titles": [
+                    "Don't сhange output state",
+                    "Switch output to safety state"
+                ]
+            },
+            "out2_safety_input_control": {
+                "title": "K2",
+                "group": "gg_safety_input_control",
+                "order": 2,
+                "address": 947,
+                "reg_type": "holding",
+                "default": 0,
+                "enum": [0, 1, 2],
+                "enum_titles": [
+                    "Don't change",
+                    "Disable in safety mode",
+                    "Enable only in safety mode"
+                ]
+            },
+            "P1_counter_offset": {
+                "title": "P1 Counter Offset (0 — 4294967295)",
+                "address": 312,
+                "reg_type": "holding",
+                "format": "u32",
+                "min": 0,
+                "max": 4294967295,
+                "default": 0,
+                "group": "counters",
+                "order": 1
+            },
+            "P2_counter_offset": {
+                "title": "P2 Counter Offset (0 — 4294967295)",
+                "address": 314,
+                "reg_type": "holding",
+                "format": "u32",
+                "min": 0,
+                "max": 4294967295,
+                "default": 0,
+                "group": "counters",
+                "order": 2
+            },
+            "cleaning_mode_timer_min": {
+                "title": "Cleaning mode timer (1 — 1440 minutes, 30 by default)",
+                "address": 975,
+                "reg_type": "holding",
+                "min": 1,
+                "max": 1440,
+                "default": 30,
+                "group": "cleaning_mode",
+                "order": 1
+            },
+        },
+
+        "channels": [
+            {
+                "name": "P1",
+                "reg_type": "discrete",
+                "address": 10,
+                "type": "switch",
+                "sporadic": false,
+                "group": "counters"
+            },
+            {
+                "name": "P1 Counter",
+                "reg_type": "input",
+                "address": 316,
+                "type": "value",
+                "format": "u32",
+                "group": "counters"
+            },
+            {
+                "name": "P2",
+                "reg_type": "discrete",
+                "address": 11,
+                "type": "switch",
+                "sporadic": false,
+                "group": "counters"
+            },
+            {
+                "name": "P2 Counter",
+                "reg_type": "input",
+                "address": 318,
+                "type": "value",
+                "format": "u32",
+                "group": "counters"
+            },
+            {
+                "name": "F1",
+                "reg_type": "discrete",
+                "address": 0,
+                "type": "switch",
+                "sporadic": true,
+                "condition": "isDefined(in1_mode)&&in1_mode!=3",
+                "group": "input_f1"
+            },
+            {
+                "name": "F1",
+                "reg_type": "discrete",
+                "address": 0,
+                "type": "switch",
+                "sporadic": false,
+                "condition": "isDefined(in1_mode)==0||in1_mode==3",
+                "group": "input_f1"
+            },
+            {
+                "name": "F1 Counter",
+                "reg_type": "input",
+                "address": 32,
+                "type": "value",
+                "sporadic": true,
+                "condition": "isDefined(in1_mode)&&in1_mode!=3",
+                "group": "input_f1"
+            },
+            {
+                "name": "F1 Counter",
+                "reg_type": "input",
+                "address": 32,
+                "type": "value",
+                "sporadic": false,
+                "condition": "isDefined(in1_mode)==0||in1_mode==3",
+                "group": "input_f1"
+            },
+            {
+                "name": "Input F1 sensor performance (only for Larnitech sensors)",
+                "reg_type": "input",
+                "address": 1071,
+                "type": "switch",
+                "sporadic": false,
+                "enabled": false,
+                "group": "input_f1"
+            },
+            {
+                "name": "F2",
+                "reg_type": "discrete",
+                "address": 1,
+                "type": "switch",
+                "sporadic": true,
+                "condition": "isDefined(in2_mode)&&in2_mode!=3",
+                "group": "input_f2"
+            },
+            {
+                "name": "F2",
+                "reg_type": "discrete",
+                "address": 1,
+                "type": "switch",
+                "sporadic": false,
+                "condition": "isDefined(in2_mode)==0||in2_mode==3",
+                "group": "input_f2"
+            },
+            {
+                "name": "F2 Counter",
+                "reg_type": "input",
+                "address": 33,
+                "type": "value",
+                "sporadic": true,
+                "condition": "isDefined(in2_mode)&&in2_mode!=3",
+                "group": "input_f2"
+            },
+            {
+                "name": "F2 Counter",
+                "reg_type": "input",
+                "address": 33,
+                "type": "value",
+                "sporadic": false,
+                "condition": "isDefined(in2_mode)==0||in2_mode==3",
+                "group": "input_f2"
+            },
+            {
+                "name": "Input F2 sensor performance (only for Larnitech sensors)",
+                "reg_type": "input",
+                "address": 1072,
+                "type": "switch",
+                "sporadic": false,
+                "enabled": false,
+                "group": "input_f2"
+            },
+            {
+                "name": "F3",
+                "reg_type": "discrete",
+                "address": 2,
+                "type": "switch",
+                "sporadic": true,
+                "condition": "isDefined(in3_mode)&&in3_mode!=3",
+                "group": "input_f3"
+            },
+            {
+                "name": "F3",
+                "reg_type": "discrete",
+                "address": 2,
+                "type": "switch",
+                "sporadic": false,
+                "condition": "isDefined(in3_mode)==0||in3_mode==3",
+                "group": "input_f3"
+            },
+            {
+                "name": "F3 Counter",
+                "reg_type": "input",
+                "address": 34,
+                "type": "value",
+                "sporadic": true,
+                "condition": "isDefined(in3_mode)&&in3_mode!=3",
+                "group": "input_f3"
+            },
+            {
+                "name": "F3 Counter",
+                "reg_type": "input",
+                "address": 34,
+                "type": "value",
+                "sporadic": false,
+                "condition": "isDefined(in3_mode)==0||in3_mode==3",
+                "group": "input_f3"
+            },
+            {
+                "name": "Input F3 sensor performance (only for Larnitech sensors)",
+                "reg_type": "input",
+                "address": 1073,
+                "type": "switch",
+                "sporadic": false,
+                "enabled": false,
+                "group": "input_f3"
+            },
+            {
+                "name": "F4",
+                "reg_type": "discrete",
+                "address": 3,
+                "type": "switch",
+                "sporadic": true,
+                "condition": "isDefined(in4_mode)&&in4_mode!=3",
+                "group": "input_f4"
+            },
+            {
+                "name": "F4",
+                "reg_type": "discrete",
+                "address": 3,
+                "type": "switch",
+                "sporadic": false,
+                "condition": "isDefined(in4_mode)==0||in4_mode==3",
+                "group": "input_f4"
+            },
+            {
+                "name": "F4 Counter",
+                "reg_type": "input",
+                "address": 35,
+                "type": "value",
+                "sporadic": true,
+                "condition": "isDefined(in4_mode)&&in4_mode!=3",
+                "group": "input_f4"
+            },
+            {
+                "name": "F4 Counter",
+                "reg_type": "input",
+                "address": 35,
+                "type": "value",
+                "sporadic": false,
+                "condition": "isDefined(in4_mode)==0||in4_mode==3",
+                "group": "input_f4"
+            },
+            {
+                "name": "Input F4 sensor performance (only for Larnitech sensors)",
+                "reg_type": "input",
+                "address": 1074,
+                "type": "switch",
+                "sporadic": false,
+                "enabled": false,
+                "group": "input_f4"
+            },
+            {
+                "name": "F5",
+                "reg_type": "discrete",
+                "address": 4,
+                "type": "switch",
+                "sporadic": true,
+                "condition": "isDefined(in5_mode)&&in5_mode!=3",
+                "group": "input_f5"
+            },
+            {
+                "name": "F5",
+                "reg_type": "discrete",
+                "address": 4,
+                "type": "switch",
+                "sporadic": false,
+                "condition": "isDefined(in5_mode)==0||in5_mode==3",
+                "group": "input_f5"
+            },
+            {
+                "name": "F5 Counter",
+                "reg_type": "input",
+                "address": 36,
+                "type": "value",
+                "sporadic": true,
+                "condition": "isDefined(in5_mode)&&in5_mode!=3",
+                "group": "input_f5"
+            },
+            {
+                "name": "F5 Counter",
+                "reg_type": "input",
+                "address": 36,
+                "type": "value",
+                "sporadic": false,
+                "condition": "isDefined(in5_mode)==0||in5_mode==3",
+                "group": "input_f5"
+            },
+            {
+                "name": "Input F5 sensor performance (only for Larnitech sensors)",
+                "reg_type": "input",
+                "address": 1075,
+                "type": "switch",
+                "sporadic": false,
+                "enabled": false,
+                "group": "input_f5"
+            },
+            {
+                "name": "F6",
+                "reg_type": "discrete",
+                "address": 5,
+                "type": "switch",
+                "sporadic": true,
+                "condition": "isDefined(in6_mode)&&in6_mode!=3",
+                "group": "input_f6"
+            },
+            {
+                "name": "F6",
+                "reg_type": "discrete",
+                "address": 5,
+                "type": "switch",
+                "sporadic": false,
+                "condition": "isDefined(in6_mode)==0||in6_mode==3",
+                "group": "input_f6"
+            },
+            {
+                "name": "F6 Counter",
+                "reg_type": "input",
+                "address": 37,
+                "type": "value",
+                "sporadic": true,
+                "condition": "isDefined(in6_mode)&&in6_mode!=3",
+                "group": "input_f6"
+            },
+            {
+                "name": "F6 Counter",
+                "reg_type": "input",
+                "address": 37,
+                "type": "value",
+                "sporadic": false,
+                "condition": "isDefined(in6_mode)==0||in6_mode==3",
+                "group": "input_f6"
+            },
+            {
+                "name": "Input F6 sensor performance (only for Larnitech sensors)",
+                "reg_type": "input",
+                "address": 1076,
+                "type": "switch",
+                "sporadic": false,
+                "enabled": false,
+                "group": "input_f6"
+            },
+            {
+                "name": "K1",
+                "reg_type": "coil",
+                "address": 0,
+                "type": "switch",
+                "sporadic": true,
+                "group": "outputs"
+            },
+            {
+                "name": "K2",
+                "reg_type": "coil",
+                "address": 1,
+                "type": "switch",
+                "sporadic": true,
+                "group": "outputs"
+            },
+            {
+                "name": "Alarm",
+                "reg_type": "coil",
+                "address": 2,
+                "type": "switch",
+                "group": "outputs"
+            },
+            {
+                "name": "Cleaning mode",
+                "reg_type": "coil",
+                "address": 3,
+                "type": "switch",
+                "group": "outputs"
+            },
+            {
+                "name": "Serial",
+                "reg_type": "input",
+                "address": 270,
+                "type": "text",
+                "format": "u32",
+                "group": "hw_info"
+            },
+            {
+                "name": "FW Version",
+                "reg_type": "input",
+                "address": 250,
+                "type": "text",
+                "format": "string",
+                "string_data_size": 16,
+                "enabled": false,
+                "group": "hw_info"
+            },
+            {
+                "name": "Input Voltage",
+                "reg_type": "input",
+                "address": 121,
+                "type": "voltage",
+                "scale": 0.001,
+                "enabled": false,
+                "group": "hw_info"
+            },
+            {
+                "name": "Uptime",
+                "reg_type": "input",
+                "address": 104,
+                "type": "text",
+                "format": "u32",
+                "enabled": false,
+                "group": "hw_info"
+            },
+            {
+                "name": "MCU Temperature",
+                "reg_type": "input",
+                "address": 124,
+                "type": "temperature",
+                "format": "s16",
+                "scale": 0.1,
+                "enabled": false,
+                "group": "hw_info"
+            },
+            {
+                "name": "MCU Voltage",
+                "reg_type": "input",
+                "address": 123,
+                "scale": 0.001,
+                "type": "voltage",
+                "enabled": false,
+                "group": "hw_info"
+            },
+            {
+                "name": "Battery freshness (2 — 0, measured at startup)",
+                "reg_type": "input",
+                "address": 118,
+                "type": "value",
+                "enabled": false,
+                "sporadic": false,
+                "group": "hw_info"
+            },
+            {
+                "name": "Vout overloaded",
+                "reg_type": "input",
+                "address": 462,
+                "type": "switch",
+                "enabled": false,
+                "sporadic": false,
+                "group": "hw_info"
+            }
+        ],
+        "translations": {
+            "en": {
+                "WB-MWAC_template_title": "WB-MWAC v.2 (water leak and meters controller)",
+                "baud_rate_description": "Make sure that communication with device is established before changing this parameter. Select required baud rate, save configuration and then change port baud rate to the same value.",
+                "Uptime": "Uptime (s)",
+                "inputs_control_in_safety_mode_description": "Sets change of control from the inputs when module switches to safety mode"
+            },
+            "ru": {
+                "WB-MWAC_template_title": "WB-MWAC v.2 (модуль контроля протечек и расхода воды)",
+                "Counters": "Счетчики",
+                "Cleaning mode": "Режим уборки",
+                "Input F1": "Вход F1",
+                "Input F1 Mode": "Режим работы входа F1",
+                "Input F1 Debounce (0 — 2000 ms, 50 by default)": "Время защиты от дребезга входа F1 (0 — 2000 мс, 50 по умолчанию)",
+                "F1 Counter": "Счетчик F1",
+                "Input F1 sensor performance (only for Larnitech sensors)":  "Работоспособность датчика на входе F1 (только для датчиков Larnitech)",
+                "Input F2": "Вход F2",
+                "Input F2 Mode": "Режим работы входа F2",
+                "Input F2 Debounce (0 — 2000 ms, 50 by default)": "Время защиты от дребезга входа F2 (0 — 2000 мс, 50 по умолчанию)",
+                "F2 Counter": "Счетчик F2",
+                "Input F2 sensor performance (only for Larnitech sensors)":  "Работоспособность датчика на входе F2 (только для датчиков Larnitech)",
+                "Input F3": "Вход F3",
+                "Input F3 Mode": "Режим работы входа F3",
+                "Input F3 Debounce (0 — 2000 ms, 50 by default)": "Время защиты от дребезга входа F3 (0 — 2000 мс, 50 по умолчанию)",
+                "F3 Counter": "Счетчик F3",
+                "Input F3 sensor performance (only for Larnitech sensors)":  "Работоспособность датчика на входе F3 (только для датчиков Larnitech)",
+                "Input F4": "Вход F4",
+                "Input F4 Mode": "Режим работы входа F4",
+                "Input F4 Debounce (0 — 2000 ms, 50 by default)": "Время защиты от дребезга входа F4 (0 — 2000 мс, 50 по умолчанию)",
+                "F4 Counter": "Счетчик F4",
+                "Input F4 sensor performance (only for Larnitech sensors)":  "Работоспособность датчика на входе F4 (только для датчиков Larnitech)",
+                "Input F5": "Вход F5",
+                "Input F5 Mode": "Режим работы входа F5",
+                "Input F5 Debounce (0 — 2000 ms, 50 by default)": "Время защиты от дребезга входа F5 (0 — 2000 мс, 50 по умолчанию)",
+                "F5 Counter": "Счетчик F5",
+                "Input F5 sensor performance (only for Larnitech sensors)":  "Работоспособность датчика на входе F5 (только для датчиков Larnitech)",
+                "Input F6": "Вход F6",
+                "Input F6 Mode": "Режим работы входа F6",
+                "Input F6 Debounce (0 — 2000 ms, 50 by default)": "Время защиты от дребезга входа F6 (0 — 2000 мс, 50 по умолчанию)",
+                "F6 Counter": "Счетчик F6",
+                "Input F6 sensor performance (only for Larnitech sensors)":  "Работоспособность датчика на входе F6 (только для датчиков Larnitech)",
+                "Outputs": "Выходы",
+                "General": "Общее",
+                "HW Info": "Данные модуля",
+                "turn off all outputs": "отключить все выходы",
+                "control disabled": "управление отключено",
+                "push button": "кнопка без фиксации",
+                "leakage sensor + check after 20 min.": "датчик протечки + проверить через 20 мин.",
+                "latching button": "кнопка с фиксацией",
+                "Restore Last Outputs State After Power On": "Восстанавливать cостояния выходов при включении",
+                "no": "нет",
+                "yes": "да",
+                "Safety Timer (s)": "Таймаут безопасного режима (с)",
+                "Baud rate": "Скорость обмена",
+                "baud_rate_description": "Перед изменением параметра убедитесь, что связь с устройством установлена. Выберите нужную скорость обмена, сохраните конфигурацию, а затем укажите в настройках порта эту же скорость.",
+                "P1 Counter": "Счетчик P1",
+                "P1 Counter Offset (0 — 4294967295)": "Начальное значение счетчика P1 (0 — 4294967295)",
+                "P2 Counter": "Счетчик P2",
+                "P2 Counter Offset (0 — 4294967295)": "Начальное значение счетчика P2 (0 — 4294967295)",
+                "Alarm": "Авария",
+                "Serial": "Серийный номер",
+                "FW Version": "Версия прошивки",
+                "Input Voltage": "Напряжение питания",
+                "Uptime": "Время работы с момента включения (с)",
+                "MCU Temperature": "Температура МК",
+                "MCU Voltage": "Напряжение питания МК",
+                "Battery freshness (2 — 0, measured at startup)": "Свежесть батарейки (2 — 0, измерено при загрузке)",
+                "Vout overloaded": "Выход Vout перегружен",
+                "Cleaning mode timer (1 — 1440 minutes, 30 by default)": "Таймер режима уборки (1 — 1440 минут, 30 по умолчанию)",
+
+                "Off": "Выключен",
+                "On": "Включен",
+                "Safety Mode": "Безопасный режим",
+                "Safety Behaviour": "Действие в безопасном режиме",
+                "Don't сhange output state": "Ничего не делать",
+                "Switch output to safety state": "Перевести выход в безопасное состояние",
+                "Inputs Control In Safety Mode": "Управление с входов в безопасном режиме",
+                "Don't change": "Не блокировать",
+                "Disable in safety mode": "Блокировать в безопасном режиме",
+                "Enable only in safety mode": "Разрешить только в безопасном режиме",
+                "Output Safe State": "Безопасное состояние выходов",
+                "inputs_control_in_safety_mode_description": "Настройка изменения управления с входов при переходе модуля в безопасный режим",
+
+                "do nothing": "нет действия",
+                "off": "выключить",
+                "on": "включить",
+                "toggle": "переключить",
+
+                "control": "управлять",
+
+                "Actions for outputs when the input is closed/opened": "Действия для выходов при замыкании/размыкании входа"
+            }
+        }
+    }
+}

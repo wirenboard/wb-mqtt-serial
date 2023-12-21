@@ -1,6 +1,11 @@
 {% set LP_INPUTS_NUMBER = 2 -%}
 {% set INPUTS_NUMBER = 6 -%}
-{% set OUTPUTS_NUMBER = 3 -%}
+{% set OUTPUTS_NUMBER = 4 -%}
+
+{% set OUT_NUM_K1 = 1 -%}
+{% set OUT_NUM_K2 = 2 -%}
+{% set OUT_NUM_ALARM = 3 -%}
+{% set OUT_NUM_CLEANING_MODE = 4 -%}
 {
     "title": "WB-MWAC_template_title",
     "device_type": "WB-MWAC-v2",
@@ -24,7 +29,7 @@
                 "id": "input_f{{ in_num }}"
             },
             {
-                "title": "Actions for outputs when the input is closed / opened",
+                "title": "Actions for outputs when the input is closed/opened",
                 "id": "gg_in{{ in_num }}_mapping_matrix_actions",
                 "group": "input_f{{ in_num }}"
             },
@@ -53,6 +58,10 @@
                 "id": "g_safety"
             },
             {
+                "title": "Cleaning mode",
+                "id": "cleaning_mode"
+            },
+            {
                 "title": "Safety Behaviour",
                 "id": "gg_safety_behaviour",
                 "group": "g_safety"
@@ -70,10 +79,6 @@
             {
                 "title": "HW Info",
                 "id": "hw_info"
-            },
-            {
-                "title": "Cleaning mode",
-                "id": "cleaning_mode"
             }
         ],
 
@@ -83,21 +88,19 @@
                 "title": "Input F{{ in_num }} Mode",
                 "address": {{ 8 + in_num }},
                 "reg_type": "holding",
-                "enum": [0, 1, 2, 3, 4, 5],
+                "enum": [3, 4, 7, 5],
                 "default": 5,
                 "enum_titles": [
-                    "push button",
-                    "latching switch",
-                    "turn off all outputs",
                     "control disabled",
-                    "operate according to mapping-matrix",
-                    "operate according to mapping-matrix, repeat action in 20 min if input still activated"
+                    "push button",
+                    "latching button",
+                    "leakage sensor + check after 20 min."
                 ],
                 "group": "input_f{{ in_num }}",
                 "order": 1
             },
             "in{{ in_num }}_debounce_ms": {
-                "title": "Input F{{ in_num }} Debounce (ms)",
+                "title": "Input F{{ in_num }} Debounce (0 — 2000 ms, 50 by default)",
                 "address": {{ 19 + in_num }},
                 "reg_type": "holding",
                 "min": 0,
@@ -107,40 +110,91 @@
                 "order": 2
             },
             {% for i in range(2) -%}
-            {% for out_num in range(1, OUTPUTS_NUMBER + 1) -%}
-            {% if i == 0 %} "in{{ in_num }}_out{{ out_num }}_actions": { {% else %} "in{{ in_num }}_out{{ out_num }}_actions_20min": { {% endif %}
+            {% for out_num in range(1, OUTPUTS_NUMBER + 1 - i) -%}
+            {% if i == 0 %}
+            "in{{ in_num }}_out{{ out_num }}_actions":
+            { {% else %}
+            "in{{ in_num }}_out{{ out_num }}_actions_20min":
+            { {% endif %}
                 "group": "gg_in{{ in_num }}_mapping_matrix_actions",
-                "title": {% if out_num == 1 %}"K1"{% elif out_num == 2 %}"K2"{% else %}"Alarm"{% endif %},
+                "title": 
+                    {%- if out_num == OUT_NUM_K1 %} "K1",
+                    {%- elif out_num == OUT_NUM_K2 %} "K2",
+                    {%- elif out_num == OUT_NUM_ALARM %} "Alarm",
+                    {%- else %} "Cleaning mode",
+                    {% endif %}
+                "order": {{ out_num }},
+                "address": {{ 864 + ((in_num - 1) * 8) + (out_num - 1) }},
+                "reg_type": "holding",
+                "default": 
+                    {%- if out_num == OUT_NUM_CLEANING_MODE %} 0,
+                    {%- elif out_num == OUT_NUM_ALARM %}
+                        {%- if i == 0 %} 1,
+                        {%- else %} 2,
+                        {%- endif %}
+                    {%- else %} 1,
+                    {%- endif -%}
+                {% if out_num == OUT_NUM_ALARM %}
+                "enum": [0, {% if i == 0 %}1{% else %}2{% endif %}],
+                "enum_titles": [
+                    "do nothing",
+                    {% if i == 0 %}"off"{% else %}"on"{% endif %}
+                ],
+                {% elif i == 1 %}
+                "enum": [0, 1, 2],
+                "enum_titles": [
+                    "do nothing",
+                    "off",
+                    "on"
+                ],
+                {% else %}
+                "enum": [0, 1, 2, 3],
+                "enum_titles": [
+                    "do nothing",
+                    "off",
+                    "on",
+                    "toggle"
+                ],
+                {% endif -%}
+
+                "condition": "in{{ in_num }}_mode=={{ 4 + i }}"
+            },
+            
+            {% endfor -%}
+            {% endfor -%}
+
+            {% for out_num in range(1, OUTPUTS_NUMBER + 1) -%}
+            "in{{ in_num }}_out{{ out_num }}_actions_latching":
+            {
+                "group": "gg_in{{ in_num }}_mapping_matrix_actions",
+                "title": 
+                    {%- if out_num == OUT_NUM_K1 %} "K1",
+                    {%- elif out_num == OUT_NUM_K2 %} "K2",
+                    {%- elif out_num == OUT_NUM_ALARM %} "Alarm",
+                    {%- else %} "Cleaning mode",
+                    {%- endif %}
                 "order": {{ out_num }},
                 "address": {{ 384 + ((in_num - 1) * 8) + (out_num - 1) }},
                 "reg_type": "holding",
-                "default": {% if out_num == 3 %}8{% else %}4{% endif %},
-                "enum": [0, 1, 2, 3, 4, 5, 6, 7, 8, 9, 10, 11, 12, 13, 14, 15],
+                "default": 0,
+                {%- if out_num == OUT_NUM_ALARM %}
+                "enum": [0, 5],
                 "enum_titles": [
-                    "no action / no action",
-                    "no action / reset",
-                    "no action / set",
-                    "no action / toggle",
-
-                    "reset / no action",
-                    "reset / reset",
-                    "reset / set",
-                    "reset / toggle",
-
-                    "set / no action",
-                    "set / reset",
-                    "set / set",
-                    "set / toggle",
-
-                    "toggle / no action",
-                    "toggle / reset",
-                    "toggle / set",
-                    "toggle / toggle"
+                    "do nothing",
+                    "off"
                 ],
-                "condition": "in{{ in_num }}_mode=={{ 4 + i }}"
+                {% else %}
+                "enum": [0, 9],
+                "enum_titles": [
+                    "do nothing",
+                    "control"
+                ],
+                {% endif -%}
+
+                "condition": "in{{ in_num }}_mode==7"
             },
             {% endfor -%}
-            {% endfor -%}
+
             {% endfor -%}
 
             "outputs_restore_state": {
@@ -178,7 +232,7 @@
                 "group": "general",
                 "order": 1
             },
-            {% for out_num in range(1, OUTPUTS_NUMBER) -%}
+            {% for out_num in range(1, OUTPUTS_NUMBER - 1) -%}
             "out{{ out_num }}_safe_state": {
                 "title": "K{{ out_num }}",
                 "group": "gg_outputs_safe_state",
@@ -220,6 +274,31 @@
                 ]
             },
             {% endfor -%}
+
+            {% for lp_in_num in range(1, LP_INPUTS_NUMBER + 1) -%}
+            "P{{ lp_in_num }}_counter_offset": {
+                "title": "P{{ lp_in_num }} Counter Offset (0 — 4294967295)",
+                "address": {{ 312 + 2 * (lp_in_num - 1) }},
+                "reg_type": "holding",
+                "format": "u32",
+                "min": 0,
+                "max": 4294967295,
+                "default": 0,
+                "group": "counters",
+                "order": {{ lp_in_num }}
+            },
+            {% endfor -%}
+
+            "cleaning_mode_timer_min": {
+                "title": "Cleaning mode timer (1 — 1440 minutes, 30 by default)",
+                "address": 975,
+                "reg_type": "holding",
+                "min": 1,
+                "max": 1440,
+                "default": 30,
+                "group": "cleaning_mode",
+                "order": 1
+            },
         },
 
         "channels": [
@@ -238,16 +317,6 @@
                 "address": {{ 316 + 2 * (lp_in_num - 1) }},
                 "type": "value",
                 "format": "u32",
-                "group": "counters"
-            },
-            {
-                "name": "P{{ lp_in_num }} Counter Offset",
-                "reg_type": "holding",
-                "address": {{ 312 + 2 * (lp_in_num - 1) }},
-                "type": "value",
-                "format": "u32",
-                "min": 0,
-                "enabled": false,
                 "group": "counters"
             },
             {% endfor -%}
@@ -288,8 +357,17 @@
                 "condition": "isDefined(in{{ in_num }}_mode)==0||in{{ in_num }}_mode==3",
                 "group": "input_f{{ in_num }}"
             },
+            {
+                "name": "Input F{{ in_num }} sensor performance (only for Larnitech sensors)",
+                "reg_type": "input",
+                "address": {{ 1070 + in_num}},
+                "type": "switch",
+                "sporadic": false,
+                "enabled": false,
+                "group": "input_f{{ in_num }}"
+            },
             {% endfor -%}
-            {% for out_num in range(1, OUTPUTS_NUMBER) -%}
+            {% for out_num in range(1, OUTPUTS_NUMBER - 1) -%}
             {
                 "name": "K{{ out_num }}",
                 "reg_type": "coil",
@@ -298,13 +376,20 @@
                 "sporadic": true,
                 "group": "outputs"
             },
-            {% endfor -%}           
+            {% endfor -%}
             {
                 "name": "Alarm",
                 "reg_type": "coil",
                 "address": 2,
                 "type": "switch",
                 "sporadic": true,
+                "group": "outputs"
+            },
+            {
+                "name": "Cleaning mode",
+                "reg_type": "coil",
+                "address": 3,
+                "type": "switch",
                 "group": "outputs"
             },
             {
@@ -363,7 +448,7 @@
                 "group": "hw_info"
             },
             {
-                "name": "Battery freshness (2-0, measured at startup)",
+                "name": "Battery freshness (2 — 0, measured at startup)",
                 "reg_type": "input",
                 "address": 118,
                 "type": "value",
@@ -379,17 +464,6 @@
                 "enabled": false,
                 "sporadic": false,
                 "group": "hw_info"
-            },
-            {
-                "name": "Start cleaning mode timer (minutes)",
-                "reg_type": "holding",
-                "address": 975,
-                "type": "value",
-                "format": "u16",
-                "min": 0,
-                "max": 1440,
-                "enabled": true,
-                "group": "cleaning_mode"
             }
         ],
         "translations": {
@@ -406,18 +480,18 @@
                 {% for in_num in range(1, INPUTS_NUMBER + 1) -%}
                 "Input F{{ in_num }}": "Вход F{{ in_num }}",
                 "Input F{{ in_num }} Mode": "Режим работы входа F{{ in_num }}",
-                "Input F{{ in_num }} Debounce (ms)": "Время защиты от дребезга входа F{{ in_num }} (мс)",
+                "Input F{{ in_num }} Debounce (0 — 2000 ms, 50 by default)": "Время защиты от дребезга входа F{{ in_num }} (0 — 2000 мс, 50 по умолчанию)",
                 "F{{ in_num }} Counter": "Счетчик F{{ in_num }}",
+                "Input F{{ in_num }} sensor performance (only for Larnitech sensors)":  "Работоспособность датчика на входе F{{ in_num }} (только для датчиков Larnitech)",
                 {% endfor -%}
                 "Outputs": "Выходы",
                 "General": "Общее",
                 "HW Info": "Данные модуля",
-                "push button": "кнопка без фиксации",
-                "latching switch": "переключатель с фиксацией",
                 "turn off all outputs": "отключить все выходы",
                 "control disabled": "управление отключено",
-                "operate according to mapping-matrix": "управлять по mapping-матрице",
-                "operate according to mapping-matrix, repeat action in 20 min if input still activated": "управлять по mapping-матрице; повторить действие через 20 мин., если вход все еще активирован",
+                "push button": "кнопка без фиксации",
+                "leakage sensor + check after 20 min.": "датчик протечки + проверить через 20 мин.",
+                "latching button": "кнопка с фиксацией",
                 "Restore Last Outputs State After Power On": "Восстанавливать cостояния выходов при включении",
                 "no": "нет",
                 "yes": "да",
@@ -426,7 +500,7 @@
                 "baud_rate_description": "Перед изменением параметра убедитесь, что связь с устройством установлена. Выберите нужную скорость обмена, сохраните конфигурацию, а затем укажите в настройках порта эту же скорость.",
                 {% for lp_in_num in range(1, LP_INPUTS_NUMBER + 1) -%}
                 "P{{ lp_in_num }} Counter": "Счетчик P{{ lp_in_num }}",
-                "P{{ lp_in_num }} Counter Offset": "Начальное значение счетчика P{{ lp_in_num }}",
+                "P{{ lp_in_num }} Counter Offset (0 — 4294967295)": "Начальное значение счетчика P{{ lp_in_num }} (0 — 4294967295)",
                 {% endfor -%}
                 "Alarm": "Авария",
                 "Serial": "Серийный номер",
@@ -435,9 +509,9 @@
                 "Uptime": "Время работы с момента включения (с)",
                 "MCU Temperature": "Температура МК",
                 "MCU Voltage": "Напряжение питания МК",
-                "Battery freshness (2-0, measured at startup)": "Свежесть батарейки (2-0, измерено при загрузке)",
+                "Battery freshness (2 — 0, measured at startup)": "Свежесть батарейки (2 — 0, измерено при загрузке)",
                 "Vout overloaded": "Выход Vout перегружен",
-                "Start cleaning mode timer (minutes)": "Запуск таймера режима уборки (минуты)",
+                "Cleaning mode timer (1 — 1440 minutes, 30 by default)": "Таймер режима уборки (1 — 1440 минут, 30 по умолчанию)",
 
                 "Off": "Выключен",
                 "On": "Включен",
@@ -452,26 +526,14 @@
                 "Output Safe State": "Безопасное состояние выходов",
                 "inputs_control_in_safety_mode_description": "Настройка изменения управления с входов при переходе модуля в безопасный режим",
 
-                "no action / no action": "нет действия / нет действия",
-                "no action / reset": "нет действия / выключить",
-                "no action / set": "нет действия / включить",
-                "no action / toggle": "нет действия / переключить",
+                "do nothing": "нет действия",
+                "off": "выключить",
+                "on": "включить",
+                "toggle": "переключить",
 
-                "reset / no action": "выключить / нет действия",
-                "reset / reset": "выключить / выключить",
-                "reset / set": "выключить / включить",
-                "reset / toggle": "выключить / переключить",
+                "control": "управлять",
 
-                "set / no action": "включить / нет действия",
-                "set / reset": "включить / выключить",
-                "set / set": "включить / включить",
-                "set / toggle": "включить / переключить",
-
-                "toggle / no action": "переключить / нет действия",
-                "toggle / reset": "переключить / выключить",
-                "toggle / set": "переключить / включить",
-                "toggle / toggle": "переключить / переключить",
-                "Actions for outputs when the input is closed / opened": "Действия для выходов при замыкании / размыкании входа"
+                "Actions for outputs when the input is closed/opened": "Действия для выходов при замыкании/размыкании входа"
             }
         }
     }
