@@ -36,6 +36,13 @@
                 "id": "gg_in{{in_num}}_press_params",
                 "group": "g_in{{in_num}}"
             },
+            {% for curtain_num in range(1, OUTPUTS_NUMBER // 2 + 1) -%}
+            {
+                "title": "Curtain {{curtain_num}} Actions",
+                "id": "gg_in{{in_num}}_curtain{{curtain_num}}_button_actions",
+                "group": "g_in{{in_num}}"
+            },
+            {% endfor -%}
             {% for out_num in range(1, OUTPUTS_NUMBER + 1) -%}
             {
                 "title": "Output {{out_num}} Actions",
@@ -62,7 +69,6 @@
                 "title": "Output Safe State",
                 "id": "gg_outputs_safe_state",
                 "group": "g_outputs"
-                
             },
             {
                 "title": "Outputs group",
@@ -90,13 +96,34 @@
                 "group": "g_safety"
             },
             {
+                "title": "Curtains Control",
+                "id": "g_curtains_control"
+            },
+            {% for curtain_num in range(1, OUTPUTS_NUMBER // 2 + 1) -%}
+            {
+                "title": "Curtains {{curtain_num}}",
+                "id": "gg_curtains_{{curtain_num}}",
+                "group": "g_curtains_control"
+            },
+            {% endfor -%}
+            {
+                "title": "Curtains Channels",
+                "id": "gg_curtains_channels",
+                "group": "g_curtains_control",
+                "ui_options": {
+                    "wb": {
+                        "disable_title": true
+                    }
+                }
+            },
+            {
                 "title": "General",
                 "id": "g_general"
             },
             {
                 "title": "HW Info",
                 "id": "g_hw_info"
-            }           
+            }
         ],
 
         "setup": [
@@ -230,6 +257,7 @@
                 ],
                 "condition": "in{{in_num}}_mode==4"
             },
+            {% set curtain_num = (out_num + 1) // 2 -%}
             "in{{in_num}}_out{{out_num}}_sp": {
                 "group": "gg_in{{in_num}}_out{{out_num}}_button_actions",
                 "title": "sp_title",
@@ -243,7 +271,7 @@
                 "default": 0,
                 "enum": [0, 1, 2, 3],
                 "enum_titles": ["no action", "reset", "set", "toggle"],
-                "condition": "in{{in_num}}_mode==6"
+                "condition": "in{{in_num}}_mode==6&&(isDefined(curtain{{curtain_num}}_mode)==0||curtain{{curtain_num}}_mode==0)"
             },
             "in{{in_num}}_out{{out_num}}_lp": {
                 "group": "gg_in{{in_num}}_out{{out_num}}_button_actions",
@@ -258,7 +286,7 @@
                 "default": 0,
                 "enum": [0, 1, 2, 3],
                 "enum_titles": ["no action", "reset", "set", "toggle"],
-                "condition": "in{{in_num}}_mode==6"
+                "condition": "in{{in_num}}_mode==6&&(isDefined(curtain{{curtain_num}}_mode)==0||curtain{{curtain_num}}_mode==0)"
             },
             "in{{in_num}}_out{{out_num}}_dp": {
                 "group": "gg_in{{in_num}}_out{{out_num}}_button_actions",
@@ -273,7 +301,7 @@
                 "default": 0,
                 "enum": [0, 1, 2, 3],
                 "enum_titles": ["no action", "reset", "set", "toggle"],
-                "condition": "in{{in_num}}_mode==6"
+                "condition": "in{{in_num}}_mode==6&&(isDefined(curtain{{curtain_num}}_mode)==0||curtain{{curtain_num}}_mode==0)"
             },
             "in{{in_num}}_out{{out_num}}_slp": {
                 "group": "gg_in{{in_num}}_out{{out_num}}_button_actions",
@@ -288,11 +316,60 @@
                 "default": 0,
                 "enum": [0, 1, 2, 3],
                 "enum_titles": ["no action", "reset", "set", "toggle"],
-                "condition": "in{{in_num}}_mode==6"
+                "condition": "in{{in_num}}_mode==6&&(isDefined(curtain{{curtain_num}}_mode)==0||curtain{{curtain_num}}_mode==0)"
             },
+            {% endfor -%}
+            {% for curtain_num in range(1, OUTPUTS_NUMBER // 2 + 1) -%}
+            "in{{in_num}}_curtain{{curtain_num}}_sp": {
+                "group": "gg_in{{in_num}}_curtain{{curtain_num}}_button_actions",
+                "title": "sp_title",
+                "order": 1,
+                "address": {{600 + curtain_num - 1}},
+                "reg_type": "holding",
+                "default": 0,
+                "enum": [0, 1, 2, 3],
+                "enum_titles": ["no action", "open", "close", "open/close"],
+                "condition": "in{{in_num}}_mode==6&&curtain{{curtain_num}}_mode==1"
+            },
+            "in{{in_num}}_curtain{{curtain_num}}_lp": {
+                "group": "gg_in{{in_num}}_curtain{{curtain_num}}_button_actions",
+                "title": "lp_title",
+                "order": 2,
+                "address": {{664 + curtain_num - 1}},
+                "reg_type": "holding",
+                "default": 0,
+                "enum": [0, 1, 2, 3, 4, 5, 6],
+                "enum_titles": ["no action", "open", "close", "open/close", "opening while pressed", "closing while pressed", "opening/closing while pressed"],
+                "condition": "in{{in_num}}_mode==6&&curtain{{curtain_num}}_mode==1"
+            },
+            "in{{in_num}}_curtain{{curtain_num}}_dp": {
+                "group": "gg_in{{in_num}}_curtain{{curtain_num}}_button_actions",
+                "title": "dp_title",
+                "order": 3,
+                "address": {{728 + curtain_num - 1}},
+                "reg_type": "holding",
+                "default": 0,
+                "enum": [0, 1, 2, 3],
+                "enum_titles": ["no action", "open", "close", "open/close"],
+                "condition": "in{{in_num}}_mode==6&&curtain{{curtain_num}}_mode==1"
+            },
+            "in{{in_num}}_curtain{{curtain_num}}_slp": {
+                "group": "gg_in{{in_num}}_curtain{{curtain_num}}_button_actions",
+                "title": "slp_title",
+                "order": 4,
+                "address": {{792 + curtain_num - 1}},
+                "reg_type": "holding",
+                "default": 0,
+                "enum": [0, 1, 2, 3, 4, 5, 6],
+                "enum_titles": ["no action", "open", "close", "open/close", "opening while pressed", "closing while pressed", "opening/closing while pressed"],
+                "condition": "in{{in_num}}_mode==6&&curtain{{curtain_num}}_mode==1"
+            },
+            {% endfor -%}
+            {% for out_num in range(1, OUTPUTS_NUMBER + 1) -%}
             {% endfor -%}
             {% endfor -%}
             {% for out_num in range(1, OUTPUTS_NUMBER + 1) -%}
+            {% set curtain_num = (out_num + 1) // 2 -%}
             "out{{out_num}}_safe_state": {
                 "title": "Output {{out_num}}",
                 "group": "gg_outputs_safe_state",
@@ -304,7 +381,8 @@
                 "enum_titles": [
                     "Off",
                     "On"
-                ]
+                ],
+                "condition": "isDefined(curtain{{curtain_num}}_mode)==0||curtain{{curtain_num}}_mode==0"
             },
             "out{{out_num}}_safety_behaviour": {
                 "title": "Output {{out_num}}",
@@ -317,7 +395,8 @@
                 "enum_titles": [
                     "Don't сhange output state",
                     "Switch output to safety state"
-                ]
+                ],
+                "condition": "isDefined(curtain{{curtain_num}}_mode)==0||curtain{{curtain_num}}_mode==0"
             },
             "out{{out_num}}_safety_input_control": {
                 "title": "Output {{out_num}}",
@@ -331,7 +410,40 @@
                     "Don't change",
                     "Disable in safety mode",
                     "Enable only in safety mode"
-                ]
+                ],
+                "condition": "isDefined(curtain{{curtain_num}}_mode)==0||curtain{{curtain_num}}_mode==0"
+            },
+            {% endfor -%}
+            {% for curtain_num in range(1, OUTPUTS_NUMBER // 2 + 1) -%}
+            "curtain{{curtain_num}}_safety_behaviour": {
+                "title": "Curtain {{curtain_num}}",
+                "group": "gg_safety_behaviour",
+                "order": {{curtain_num}},
+                "address": {{938 + curtain_num - 1}},
+                "reg_type": "holding",
+                "default": 0,
+                "enum": [0, 1, 2],
+                "enum_titles": [
+                    "Don't сhange",
+                    "Open curtain",
+                    "Close curtain"
+                ],
+                "condition": "curtain{{curtain_num}}_mode==1"
+            },
+            "curtain{{curtain_num}}_safety_input_control": {
+                "title": "Curtain {{curtain_num}}",
+                "group": "gg_safety_input_control",
+                "order": {{curtain_num}},
+                "address": {{946 + curtain_num - 1}},
+                "reg_type": "holding",
+                "default": 0,
+                "enum": [0, 1, 2],
+                "enum_titles": [
+                    "Don't change",
+                    "Disable in safety mode",
+                    "Enable only in safety mode"
+                ],
+                "condition": "curtain{{curtain_num}}_mode==1"
             },
             {% endfor -%}
             "outputs_restore_state": {
@@ -356,6 +468,43 @@
                 "max": 65534,
                 "default": 10
             },
+            {% for curtain_num in range(1, OUTPUTS_NUMBER // 2 + 1) -%}
+            "curtain{{curtain_num}}_mode": {
+                "title": "Use outputs {{curtain_num * 2 - 1}}-{{curtain_num * 2}} for curtain {{curtain_num}} control",
+                "group": "gg_curtains_{{curtain_num}}",
+                "address": {{ 8 + curtain_num - 1 }},
+                "reg_type": "holding",
+                "default": 0,
+                "enum": [0, 1],
+                "enum_titles": [
+                    "No, use outputs {{curtain_num * 2 - 1}}-{{curtain_num * 2}} as regular outputs",
+                    "Use output {{curtain_num * 2 - 1}} for open, output {{curtain_num * 2}} for close"
+                ],
+                "order": 1
+            },
+            "curtain{{curtain_num}}_open_time": {
+                "title": "Curtain {{curtain_num}} open time (s)",
+                "group": "gg_curtains_{{curtain_num}}",
+                "address": {{ 16 + curtain_num - 1 }},
+                "reg_type": "holding",
+                "scale": 0.1,
+                "default": 5.0,
+                "min": 1.0,
+                "max": 180.0,
+                "order": 2
+            },
+            "curtain{{curtain_num}}_close_time": {
+                "title": "Curtain {{curtain_num}} close time (s)",
+                "group": "gg_curtains_{{curtain_num}}",
+                "address": {{ 24 + curtain_num - 1 }},
+                "reg_type": "holding",
+                "scale": 0.1,
+                "default": 5.0,
+                "min": 1.0,
+                "max": 180.0,
+                "order": 3
+            },
+            {% endfor -%}
             "baud_rate": {
                 "title": "Baud rate",
                 "description": "baud_rate_description",
@@ -374,7 +523,6 @@
                 "order": 1
             }
         },
-        
         "channels": [
             {% for in_num in range(FIRST_INPUT, OUTPUTS_NUMBER + 1) -%}
             {% set NO_SPORADIC_MODE = 3 -%}
@@ -489,6 +637,26 @@
                 "type": "switch",
                 "sporadic": true,
                 "group": "gg_outputs_channels"
+            },
+            {% endfor -%}
+            {% for curtain_num in range(1, OUTPUTS_NUMBER // 2 + 1) -%}
+            {
+                "name": "Curtain {{curtain_num}} Open",
+                "reg_type": "coil",
+                "address": {{curtain_num - 1}},
+                "type": "switch",
+                "sporadic": true,
+                "group": "gg_curtains_channels",
+                "condition": "curtain{{curtain_num}}_mode==1"
+            },
+            {
+                "name": "Curtain {{curtain_num}} Close",
+                "reg_type": "coil",
+                "address": {{curtain_num + 3}},
+                "type": "switch",
+                "sporadic": true,
+                "group": "gg_curtains_channels",
+                "condition": "curtain{{curtain_num}}_mode==1"
             },
             {% endfor -%}
             {
