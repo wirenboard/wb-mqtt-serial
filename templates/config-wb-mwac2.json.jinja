@@ -212,7 +212,7 @@
             {% for in_num in range(1, FRONT_PANEL_BUTTONS_NUMBER + 1) -%}
             "b{{ in_num }}_mode": {
                 "title": "Button B{{ in_num }} Mode",
-                "address": {{ 8 + in_num }},
+                "address": {{ 8 + INPUTS_NUMBER + in_num }},
                 "reg_type": "holding",
                 "enum": [3, 4],
                 "default": 4,
@@ -225,7 +225,7 @@
             },
             "b{{ in_num }}_debounce_ms": {
                 "title": "Button B{{ in_num }} Debounce (0 — 2000 ms, 50 by default)",
-                "address": {{ 19 + in_num }},
+                "address": {{ 19 + INPUTS_NUMBER + in_num }},
                 "reg_type": "holding",
                 "min": 0,
                 "max": 2000,
@@ -244,7 +244,7 @@
                     {%- else %} "Cleaning mode",
                     {% endif %}
                 "order": {{ out_num }},
-                "address": {{ 864 + ((in_num - 1) * 8) + (out_num - 1) }},
+                "address": {{ 864 + ((INPUTS_NUMBER + in_num - 1) * 8) + (out_num - 1) }},
                 "reg_type": "holding",
                 "default":
                     {%- if in_num == OUT_NUM_K1 and out_num == OUT_NUM_K1 %} 3,
