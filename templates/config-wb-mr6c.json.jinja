@@ -327,8 +327,8 @@
                 "address": {{600 + curtain_num - 1}},
                 "reg_type": "holding",
                 "default": 0,
-                "enum": [0, 1, 2, 3],
-                "enum_titles": ["no action", "open", "close", "open/close"],
+                "enum": [0, 1, 2, 3, 4],
+                "enum_titles": ["no action", "open", "close", "open/close", "stop"],
                 "condition": "in{{in_num}}_mode==6&&curtain{{curtain_num}}_mode==1"
             },
             "in{{in_num}}_curtain{{curtain_num}}_lp": {
@@ -338,8 +338,8 @@
                 "address": {{664 + curtain_num - 1}},
                 "reg_type": "holding",
                 "default": 0,
-                "enum": [0, 1, 2, 3, 4, 5, 6],
-                "enum_titles": ["no action", "open", "close", "open/close", "opening while pressed", "closing while pressed", "opening/closing while pressed"],
+                "enum": [0, 1, 2, 3, 4, 5, 6, 7],
+                "enum_titles": ["no action", "open", "close", "open/close", "stop", "opening while pressed", "closing while pressed", "opening/closing while pressed"],
                 "condition": "in{{in_num}}_mode==6&&curtain{{curtain_num}}_mode==1"
             },
             "in{{in_num}}_curtain{{curtain_num}}_dp": {
@@ -349,8 +349,8 @@
                 "address": {{728 + curtain_num - 1}},
                 "reg_type": "holding",
                 "default": 0,
-                "enum": [0, 1, 2, 3],
-                "enum_titles": ["no action", "open", "close", "open/close"],
+                "enum": [0, 1, 2, 3, 4],
+                "enum_titles": ["no action", "open", "close", "open/close", "stop"],
                 "condition": "in{{in_num}}_mode==6&&curtain{{curtain_num}}_mode==1"
             },
             "in{{in_num}}_curtain{{curtain_num}}_slp": {
@@ -360,8 +360,8 @@
                 "address": {{792 + curtain_num - 1}},
                 "reg_type": "holding",
                 "default": 0,
-                "enum": [0, 1, 2, 3, 4, 5, 6],
-                "enum_titles": ["no action", "open", "close", "open/close", "opening while pressed", "closing while pressed", "opening/closing while pressed"],
+                "enum": [0, 1, 2, 3, 4, 5, 6, 7],
+                "enum_titles": ["no action", "open", "close", "open/close", "stop", "opening while pressed", "closing while pressed", "opening/closing while pressed"],
                 "condition": "in{{in_num}}_mode==6&&curtain{{curtain_num}}_mode==1"
             },
             {% endfor -%}
@@ -474,6 +474,31 @@
                 "order": 3,
                 "condition": "curtain{{curtain_num}}_mode==1"
             },
+            "curtain{{curtain_num}}_deadtime": {
+                "title": "Curtain {{curtain_num}} dead time (ms)",
+                "group": "gg_curtains_{{curtain_num}}",
+                "address": {{ 32 + curtain_num - 1 }},
+                "reg_type": "holding",
+                "default": 200,
+                "min": 100,
+                "max": 10000,
+                "order": 4,
+                "condition": "curtain{{curtain_num}}_mode==1"
+            },
+            "curtain{{curtain_num}}_safe_state": {
+                "title": "Curtain {{curtain_num}}",
+                "group": "gg_outputs_safe_state",
+                "order": {{curtain_num}},
+                "address": {{938 + curtain_num - 1}},
+                "reg_type": "holding",
+                "default": 0,
+                "enum": [0, 1],
+                "enum_titles": [
+                    "Opened",
+                    "Closed"
+                ],
+                "condition": "curtain{{curtain_num}}_mode==1"
+            },
             "curtain{{curtain_num}}_safety_behaviour": {
                 "title": "Curtain {{curtain_num}}",
                 "group": "gg_safety_behaviour",
@@ -481,11 +506,10 @@
                 "address": {{938 + curtain_num - 1}},
                 "reg_type": "holding",
                 "default": 0,
-                "enum": [0, 1, 2],
+                "enum": [0, 1],
                 "enum_titles": [
-                    "Don't сhange",
-                    "Open curtain",
-                    "Close curtain"
+                    "Don't сhange output state",
+                    "Switch output to safety state"
                 ],
                 "condition": "curtain{{curtain_num}}_mode==1"
             },
