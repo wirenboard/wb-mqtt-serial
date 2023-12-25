@@ -52,6 +52,7 @@
             },
             {
                 "title": "Output Safe State",
+                "description": "outputs_safe_state_description",
                 "id": "gg_outputs_safe_state",
                 "group": "outputs"
             },
@@ -67,14 +68,17 @@
             },
             {
                 "title": "Safety Mode",
+                "description": "safety_mode_description",
                 "id": "g_safety"
             },
             {
                 "title": "Cleaning mode",
-                "id": "cleaning_mode"
+                "id": "cleaning_mode",
+                "description": "cleaning_mode_description",
             },
             {
                 "title": "Safety Behaviour",
+                "description": "safety_behaviour_description",
                 "id": "gg_safety_behaviour",
                 "group": "g_safety"
             },
@@ -98,6 +102,7 @@
             {% for in_num in range(1, INPUTS_NUMBER + 1) -%}
             "in{{ in_num }}_mode": {
                 "title": "Input F{{ in_num }} Mode",
+                "description": "input_f_mode_description",
                 "address": {{ 8 + in_num }},
                 "reg_type": "holding",
                 "enum": [3, 4, 7, 5],
@@ -106,13 +111,14 @@
                     "control disabled",
                     "push button",
                     "latching button",
-                    "leakage sensor + check after 20 min."
+                    "leakage sensor"
                 ],
                 "group": "input_f{{ in_num }}",
                 "order": 1
             },
             "in{{ in_num }}_debounce_ms": {
-                "title": "Input F{{ in_num }} Debounce (0 — 2000 ms, 50 by default)",
+                "title": "Input F{{ in_num }} Debounce",
+                "description": "debounce_description",
                 "address": {{ 19 + in_num }},
                 "reg_type": "holding",
                 "min": 0,
@@ -224,7 +230,8 @@
                 "order": 1
             },
             "b{{ in_num }}_debounce_ms": {
-                "title": "Button B{{ in_num }} Debounce (0 — 2000 ms, 50 by default)",
+                "title": "Button B{{ in_num }} Debounce",
+                "description": "debounce_description",
                 "address": {{ 19 + INPUTS_NUMBER + in_num }},
                 "reg_type": "holding",
                 "min": 0,
@@ -285,6 +292,7 @@
             },
             "safety_timer_s": {
                 "title": "Safety Timer (s)",
+                "description": "poll_timeout_description",
                 "address": 8,
                 "reg_type": "holding",
                 "default": 3600,
@@ -353,7 +361,8 @@
 
             {% for lp_in_num in range(1, LP_INPUTS_NUMBER + 1) -%}
             "P{{ lp_in_num }}_counter_offset": {
-                "title": "P{{ lp_in_num }} Counter Offset (0 — 4294967295)",
+                "title": "P{{ lp_in_num }} Counter Offset",
+                "description": "counter_offset_description",
                 "address": {{ 312 + 2 * (lp_in_num - 1) }},
                 "reg_type": "holding",
                 "format": "u32",
@@ -366,7 +375,8 @@
             {% endfor -%}
 
             "cleaning_mode_timer_min": {
-                "title": "Cleaning mode timer (1 — 1440 minutes, 30 by default)",
+                "title": "Cleaning mode timer",
+                "description": "cleaning_mode_timer_description",
                 "address": 975,
                 "reg_type": "holding",
                 "min": 1,
@@ -466,7 +476,7 @@
                 "reg_type": "coil",
                 "address": 3,
                 "type": "switch",
-                "group": "outputs"
+                "group": "cleaning_mode"
             },
             {
                 "name": "Serial",
@@ -547,7 +557,16 @@
                 "WB-MWAC_template_title": "WB-MWAC v.2 (water leak and meters controller)",
                 "baud_rate_description": "Make sure that communication with device is established before changing this parameter. Select required baud rate, save configuration and then change port baud rate to the same value.",
                 "Uptime": "Uptime (s)",
-                "inputs_control_in_safety_mode_description": "Sets change of control from the inputs when module switches to safety mode"
+                "inputs_control_in_safety_mode_description": "Sets change of control from the inputs when module switches to safety mode. Does not affect leakage sensors",
+                "cleaning_mode_description": "Cleaning mode is used to disable reactions on flood sensors when a room is being celaned. When cleaning mode is enabled, the system will not react to flood sensors triggering. Cleaning mode is disabled automatically after the specified time.",
+                "counter_offset_description": "0 — 4294967295",
+                "debounce_description": "0 — 2000 ms, 50 by default",
+                "safety_mode_description": "When RS-485 connection is lost, the flood protection module will work autonomously. However, it is possible to set a certain state of the outputs in case of connection loss. For this purpose, there is a safety mode.",
+                "cleaning_mode_timer_description": "1 — 1440 min, 30 by default",
+                "outputs_safe_state_description": "Outputs state after module power on (if \"Switch output to safety state\" is selected in \"Outputs behaviour on power on\" setting), as well as in safety mode if transition to safety state is activated.",
+                "poll_timeout_description": "Parameter defines the time of absence of polling in seconds, after which safety mode will be activated.",
+                "safety_behaviour_description": "Safe state of outputs is configured on \"Outputs\" tab",
+                "input_f_mode_description": "In leakage sensor mode, when the sensor is triggered, after 20 minutes, the module will perform a repeated poll and turn off the alarm if the cause of the triggering is eliminated."
             },
             "ru": {
                 "WB-MWAC_template_title": "WB-MWAC v.2 (модуль контроля протечек и расхода воды)",
@@ -556,7 +575,7 @@
                 {% for in_num in range(1, INPUTS_NUMBER + FRONT_PANEL_BUTTONS_NUMBER + 1) -%}
                 "Input F{{ in_num }}": "Вход F{{ in_num }}",
                 "Input F{{ in_num }} Mode": "Режим работы входа F{{ in_num }}",
-                "Input F{{ in_num }} Debounce (0 — 2000 ms, 50 by default)": "Время защиты от дребезга входа F{{ in_num }} (0 — 2000 мс, 50 по умолчанию)",
+                "Input F{{ in_num }} Debounce": "Время защиты от дребезга входа F{{ in_num }}",
                 "F{{ in_num }} Counter": "Счетчик F{{ in_num }}",
                 "Input F{{ in_num }} sensor performance (only for Larnitech sensors)":  "Работоспособность датчика на входе F{{ in_num }} (только для датчиков Larnitech)",
                 {% endfor -%}
@@ -564,7 +583,7 @@
                 "Button B{{ b_num }}": "Кнопка B{{ b_num }}",
                 "Actions for outputs when the button is pressed": "Действия для выходов при нажатии кнопки",
                 "Button B{{ b_num }} Mode": "Режим работы кнопки B{{ b_num }}",
-                "Button B{{ b_num }} Debounce (0 — 2000 ms, 50 by default)": "Время защиты от дребезга кнопки B{{ b_num }} (0 — 2000 мс, 50 по умолчанию)",
+                "Button B{{ b_num }} Debounce": "Время защиты от дребезга кнопки B{{ b_num }}",
                 {% endfor -%}
 
                 "Outputs": "Выходы",
@@ -573,7 +592,7 @@
                 "turn off all outputs": "отключить все выходы",
                 "control disabled": "управление отключено",
                 "push button": "кнопка без фиксации",
-                "leakage sensor + check after 20 min.": "датчик протечки + проверить через 20 мин.",
+                "leakage sensor": "датчик протечки",
                 "latching button": "кнопка с фиксацией",
                 "Restore Last Outputs State After Power On": "Восстанавливать cостояния выходов при включении",
                 "no": "нет",
@@ -583,7 +602,7 @@
                 "baud_rate_description": "Перед изменением параметра убедитесь, что связь с устройством установлена. Выберите нужную скорость обмена, сохраните конфигурацию, а затем укажите в настройках порта эту же скорость.",
                 {% for lp_in_num in range(1, LP_INPUTS_NUMBER + 1) -%}
                 "P{{ lp_in_num }} Counter": "Счетчик P{{ lp_in_num }}",
-                "P{{ lp_in_num }} Counter Offset (0 — 4294967295)": "Начальное значение счетчика P{{ lp_in_num }} (0 — 4294967295)",
+                "P{{ lp_in_num }} Counter Offset": "Начальное значение счетчика P{{ lp_in_num }}",
                 {% endfor -%}
                 "Alarm": "Авария",
                 "Serial": "Серийный номер",
@@ -594,7 +613,7 @@
                 "MCU Voltage": "Напряжение питания МК",
                 "Battery freshness (2 — 0, measured at startup)": "Свежесть батарейки (2 — 0, измерено при загрузке)",
                 "Vout overloaded": "Выход Vout перегружен",
-                "Cleaning mode timer (1 — 1440 minutes, 30 by default)": "Таймер режима уборки (1 — 1440 минут, 30 по умолчанию)",
+                "Cleaning mode timer": "Таймер режима уборки",
 
                 "Off": "Выключен",
                 "On": "Включен",
@@ -607,7 +626,7 @@
                 "Disable in safety mode": "Блокировать в безопасном режиме",
                 "Enable only in safety mode": "Разрешить только в безопасном режиме",
                 "Output Safe State": "Безопасное состояние выходов",
-                "inputs_control_in_safety_mode_description": "Настройка изменения управления с входов при переходе модуля в безопасный режим",
+                "inputs_control_in_safety_mode_description": "Настройка изменения управления с входов при переходе модуля в безопасный режим. Не влияет на датчики протечки",
 
                 "do nothing": "нет действия",
                 "off": "выключить",
@@ -616,7 +635,16 @@
 
                 "control": "управлять",
 
-                "Actions for outputs when the input is closed/opened": "Действия для выходов при замыкании/размыкании входа"
+                "Actions for outputs when the input is closed/opened": "Действия для выходов при замыкании/размыкании входа",
+
+                "cleaning_mode_description": "Режим уборки используется для отключения реакции на датчики протечки при уборке помещения. При включенном режиме уборки система не будет реагировать на срабатывание датчиков протечки. Режим уборки отключается автоматически по истечении указанного времени.",
+                "debounce_description": "0 — 2000 мс, 50 по умолчанию",
+                "safety_mode_description": "При потере связи по RS-485 модуль защиты от протечек будет работать автономно. Однако есть возможность задать определенное состояние выходов в случае обрыва связи. Для этого существует безопасный режим.",
+                "cleaning_mode_timer_description": "1 — 1440 мин, 30 по умолчанию",
+                "outputs_safe_state_description": "Состояние выходов после включения модуля (если в настройке \"Восстанавливать cостояния выходов при включении\" выбран пункт \"Нет\"), а также в безопасном режиме, если переход в безопасное состояние активирован.",
+                "poll_timeout_description": "Параметр определяет время отсутствия опроса в секундах, после которого будет активирован безопасный режим.",
+                "safety_behaviour_description": "Безопасное состояние выходов настраивается на вкладке \"Выходы\"",
+                "input_f_mode_description": "В режиме датчик протечки, при срабатывании датчика, через 20 минут будет произведён повторный опрос и выключение тревоги, в случае устранения причины срабатывания."
             }
         }
     }
