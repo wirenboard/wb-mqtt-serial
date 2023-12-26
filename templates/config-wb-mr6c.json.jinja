@@ -62,7 +62,6 @@
                 "title": "Output Safe State",
                 "id": "gg_outputs_safe_state",
                 "group": "g_outputs"
-                
             },
             {
                 "title": "Outputs group",
@@ -290,6 +289,9 @@
                 "enum_titles": ["no action", "reset", "set", "toggle"],
                 "condition": "in{{in_num}}_mode==6"
             },
+            {% endfor -%}
+            {% endfor -%}
+            {% for out_num in range(1, OUTPUTS_NUMBER + 1) -%}
             "out{{out_num}}_safe_state": {
                 "title": "Output {{out_num}}",
                 "group": "gg_outputs_safe_state",
@@ -331,7 +333,6 @@
                 ]
             },
             {% endfor -%}
-            {% endfor -%}
             "outputs_restore_state": {
                 "title": "Outputs State After Power On",
                 "description": "outputs_state_after_power_on_description",
@@ -372,7 +373,6 @@
                 "order": 1
             }
         },
-        
         "channels": [
             {% for in_num in range(FIRST_INPUT, OUTPUTS_NUMBER + 1) -%}
             {% set NO_SPORADIC_MODE = 3 -%}
