@@ -1,4 +1,3 @@
-
 wb-mqtt-serial (2.109.0) stable; urgency=medium
 
   * Add CT reverse setting to map templates
