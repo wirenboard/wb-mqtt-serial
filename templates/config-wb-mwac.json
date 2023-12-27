@@ -25,6 +25,16 @@
                 "group": "input_s1"
             },
             {
+                "title": "input_s1_channels",
+                "id": "gg_in1_channels",
+                "group": "input_s1",
+                "ui_options": {
+                    "wb": {
+                        "disable_title": true
+                    }
+                }
+            },
+            {
                 "title": "Input S2",
                 "id": "input_s2"
             },
@@ -32,6 +42,16 @@
                 "title": "Actions for outputs when the input is closed / opened",
                 "id": "gg_in2_mapping_matrix_actions",
                 "group": "input_s2"
+            },
+            {
+                "title": "input_s2_channels",
+                "id": "gg_in2_channels",
+                "group": "input_s2",
+                "ui_options": {
+                    "wb": {
+                        "disable_title": true
+                    }
+                }
             },
             {
                 "title": "Input S3",
@@ -43,6 +63,16 @@
                 "group": "input_s3"
             },
             {
+                "title": "input_s3_channels",
+                "id": "gg_in3_channels",
+                "group": "input_s3",
+                "ui_options": {
+                    "wb": {
+                        "disable_title": true
+                    }
+                }
+            },
+            {
                 "title": "Input F1",
                 "id": "input_f1"
             },
@@ -50,6 +80,16 @@
                 "title": "Actions for outputs when the input is closed / opened",
                 "id": "gg_in4_mapping_matrix_actions",
                 "group": "input_f1"
+            },
+            {
+                "title": "input_f1_channels",
+                "id": "gg_in4_channels",
+                "group": "input_f1",
+                "ui_options": {
+                    "wb": {
+                        "disable_title": true
+                    }
+                }
             },
             {
                 "title": "Input F2",
@@ -61,6 +101,16 @@
                 "group": "input_f2"
             },
             {
+                "title": "input_f2_channels",
+                "id": "gg_in5_channels",
+                "group": "input_f2",
+                "ui_options": {
+                    "wb": {
+                        "disable_title": true
+                    }
+                }
+            },
+            {
                 "title": "Input F3",
                 "id": "input_f3"
             },
@@ -68,6 +118,16 @@
                 "title": "Actions for outputs when the input is closed / opened",
                 "id": "gg_in6_mapping_matrix_actions",
                 "group": "input_f3"
+            },
+            {
+                "title": "input_f3_channels",
+                "id": "gg_in6_channels",
+                "group": "input_f3",
+                "ui_options": {
+                    "wb": {
+                        "disable_title": true
+                    }
+                }
             },
             {
                 "title": "Outputs",
@@ -94,6 +154,11 @@
                 "id": "g_safety"
             },
             {
+                "title": "Cleaning mode",
+                "description": "cleaning_mode_description",
+                "id": "cleaning_mode"
+            },
+            {
                 "title": "Safety Behaviour",
                 "id": "gg_safety_behaviour",
                 "group": "g_safety"
@@ -111,11 +176,7 @@
             {
                 "title": "HW Info",
                 "id": "hw_info"
-            },
-            {
-                "title": "Cleaning mode",
-                "id": "cleaning_mode"
-            }            
+            }
         ],
 
         "setup": [
@@ -222,6 +283,37 @@
                 "title": "Alarm",
                 "order": 3,
                 "address": 386,
+                "reg_type": "holding",
+                "default": 0,
+                "enum": [0, 1, 2, 3, 4, 5, 6, 7, 8, 9, 10, 11, 12, 13, 14, 15],
+                "enum_titles": [
+                    "no action / no action",
+                    "no action / reset",
+                    "no action / set",
+                    "no action / toggle",
+
+                    "reset / no action",
+                    "reset / reset",
+                    "reset / set",
+                    "reset / toggle",
+
+                    "set / no action",
+                    "set / reset",
+                    "set / set",
+                    "set / toggle",
+
+                    "toggle / no action",
+                    "toggle / reset",
+                    "toggle / set",
+                    "toggle / toggle"
+                ],
+                "condition": "in1_mode==4"
+            },
+            "in1_out4_actions": {
+                "group": "gg_in1_mapping_matrix_actions",
+                "title": "Cleaning mode",
+                "order": 3,
+                "address": 387,
                 "reg_type": "holding",
                 "default": 0,
                 "enum": [0, 1, 2, 3, 4, 5, 6, 7, 8, 9, 10, 11, 12, 13, 14, 15],
@@ -461,6 +553,37 @@
                 ],
                 "condition": "in2_mode==4"
             },
+            "in2_out4_actions": {
+                "group": "gg_in2_mapping_matrix_actions",
+                "title": "Cleaning mode",
+                "order": 3,
+                "address": 395,
+                "reg_type": "holding",
+                "default": 0,
+                "enum": [0, 1, 2, 3, 4, 5, 6, 7, 8, 9, 10, 11, 12, 13, 14, 15],
+                "enum_titles": [
+                    "no action / no action",
+                    "no action / reset",
+                    "no action / set",
+                    "no action / toggle",
+
+                    "reset / no action",
+                    "reset / reset",
+                    "reset / set",
+                    "reset / toggle",
+
+                    "set / no action",
+                    "set / reset",
+                    "set / set",
+                    "set / toggle",
+
+                    "toggle / no action",
+                    "toggle / reset",
+                    "toggle / set",
+                    "toggle / toggle"
+                ],
+                "condition": "in2_mode==4"
+            },            
             "in2_out1_actions_20min": {
                 "group": "gg_in2_mapping_matrix_actions",
                 "title": "K1",
@@ -674,6 +797,37 @@
                 ],
                 "condition": "in3_mode==4"
             },
+            "in3_out4_actions": {
+                "group": "gg_in3_mapping_matrix_actions",
+                "title": "Cleaning mode",
+                "order": 3,
+                "address": 403,
+                "reg_type": "holding",
+                "default": 0,
+                "enum": [0, 1, 2, 3, 4, 5, 6, 7, 8, 9, 10, 11, 12, 13, 14, 15],
+                "enum_titles": [
+                    "no action / no action",
+                    "no action / reset",
+                    "no action / set",
+                    "no action / toggle",
+
+                    "reset / no action",
+                    "reset / reset",
+                    "reset / set",
+                    "reset / toggle",
+
+                    "set / no action",
+                    "set / reset",
+                    "set / set",
+                    "set / toggle",
+
+                    "toggle / no action",
+                    "toggle / reset",
+                    "toggle / set",
+                    "toggle / toggle"
+                ],
+                "condition": "in3_mode==4"
+            },            
             "in3_out1_actions_20min": {
                 "group": "gg_in3_mapping_matrix_actions",
                 "title": "K1",
@@ -887,6 +1041,37 @@
                 ],
                 "condition": "in4_mode==4"
             },
+            "in4_out4_actions": {
+                "group": "gg_in4_mapping_matrix_actions",
+                "title": "Cleaning mode",
+                "order": 3,
+                "address": 411,
+                "reg_type": "holding",
+                "default": 0,
+                "enum": [0, 1, 2, 3, 4, 5, 6, 7, 8, 9, 10, 11, 12, 13, 14, 15],
+                "enum_titles": [
+                    "no action / no action",
+                    "no action / reset",
+                    "no action / set",
+                    "no action / toggle",
+
+                    "reset / no action",
+                    "reset / reset",
+                    "reset / set",
+                    "reset / toggle",
+
+                    "set / no action",
+                    "set / reset",
+                    "set / set",
+                    "set / toggle",
+
+                    "toggle / no action",
+                    "toggle / reset",
+                    "toggle / set",
+                    "toggle / toggle"
+                ],
+                "condition": "in4_mode==4"
+            },            
             "in4_out1_actions_20min": {
                 "group": "gg_in4_mapping_matrix_actions",
                 "title": "K1",
@@ -1100,6 +1285,37 @@
                 ],
                 "condition": "in5_mode==4"
             },
+            "in5_out4_actions": {
+                "group": "gg_in5_mapping_matrix_actions",
+                "title": "Cleaning mode",
+                "order": 3,
+                "address": 419,
+                "reg_type": "holding",
+                "default": 0,
+                "enum": [0, 1, 2, 3, 4, 5, 6, 7, 8, 9, 10, 11, 12, 13, 14, 15],
+                "enum_titles": [
+                    "no action / no action",
+                    "no action / reset",
+                    "no action / set",
+                    "no action / toggle",
+
+                    "reset / no action",
+                    "reset / reset",
+                    "reset / set",
+                    "reset / toggle",
+
+                    "set / no action",
+                    "set / reset",
+                    "set / set",
+                    "set / toggle",
+
+                    "toggle / no action",
+                    "toggle / reset",
+                    "toggle / set",
+                    "toggle / toggle"
+                ],
+                "condition": "in5_mode==4"
+            },            
             "in5_out1_actions_20min": {
                 "group": "gg_in5_mapping_matrix_actions",
                 "title": "K1",
@@ -1289,6 +1505,37 @@
                 "address": 426,
                 "reg_type": "holding",
                 "default": 8,
+                "enum": [0, 1, 2, 3, 4, 5, 6, 7, 8, 9, 10, 11, 12, 13, 14, 15],
+                "enum_titles": [
+                    "no action / no action",
+                    "no action / reset",
+                    "no action / set",
+                    "no action / toggle",
+
+                    "reset / no action",
+                    "reset / reset",
+                    "reset / set",
+                    "reset / toggle",
+
+                    "set / no action",
+                    "set / reset",
+                    "set / set",
+                    "set / toggle",
+
+                    "toggle / no action",
+                    "toggle / reset",
+                    "toggle / set",
+                    "toggle / toggle"
+                ],
+                "condition": "in6_mode==4"
+            },
+            "in6_out4_actions": {
+                "group": "gg_in6_mapping_matrix_actions",
+                "title": "Cleaning mode",
+                "order": 3,
+                "address": 426,
+                "reg_type": "holding",
+                "default": 0,
                 "enum": [0, 1, 2, 3, 4, 5, 6, 7, 8, 9, 10, 11, 12, 13, 14, 15],
                 "enum_titles": [
                     "no action / no action",
@@ -1520,6 +1767,18 @@
                     "Disable in safety mode",
                     "Enable only in safety mode"
                 ]
+            },
+
+            "cleaning_mode_timer_min": {
+                "title": "Cleaning mode timer",
+                "description": "cleaning_mode_timer_description",
+                "address": 975,
+                "reg_type": "holding",
+                "min": 1,
+                "max": 1440,
+                "default": 30,
+                "group": "cleaning_mode",
+                "order": 1
             }
         },
 
@@ -1567,7 +1826,7 @@
                 "type": "switch",
                 "sporadic": true,
                 "condition": "isDefined(in1_mode)&&in1_mode!=3",
-                "group": "input_s1"
+                "group": "gg_in1_channels"
             },
             {
                 "name": "S1",
@@ -1576,7 +1835,7 @@
                 "type": "switch",
                 "sporadic": false,
                 "condition": "isDefined(in1_mode)==0||in1_mode==3",
-                "group": "input_s1"
+                "group": "gg_in1_channels"
             },
             {
                 "name": "S1 Counter",
@@ -1585,7 +1844,7 @@
                 "type": "value",
                 "sporadic": true,
                 "condition": "isDefined(in1_mode)&&in1_mode!=3",
-                "group": "input_s1"
+                "group": "gg_in1_channels"
             },
             {
                 "name": "S1 Counter",
@@ -1594,7 +1853,17 @@
                 "type": "value",
                 "sporadic": false,
                 "condition": "isDefined(in1_mode)==0||in1_mode==3",
-                "group": "input_s1"
+                "group": "gg_in1_channels"
+            },
+            {
+                "name": "Input S1 sensor performance (only for Larnitech sensors)",
+                "reg_type": "input",
+                "address": 1070,
+                "type": "switch",
+                "sporadic": false,
+                "enabled": false,
+                "condition": "in1_mode==5",
+                "group": "gg_in1_channels"
             },
             {
                 "name": "S1 Freq",
@@ -1605,7 +1874,7 @@
                 "scale": 1.52588e-5,
                 "round_to": 0.001,
                 "enabled": false,
-                "group": "input_s1"
+                "group": "gg_in1_channels"
             },
             {
                 "name": "S2",
@@ -1614,7 +1883,7 @@
                 "type": "switch",
                 "sporadic": true,
                 "condition": "isDefined(in2_mode)&&in2_mode!=3",
-                "group": "input_s2"
+                "group": "gg_in2_channels"
             },
             {
                 "name": "S2",
@@ -1623,7 +1892,7 @@
                 "type": "switch",
                 "sporadic": false,
                 "condition": "isDefined(in2_mode)==0||in2_mode==3",
-                "group": "input_s2"
+                "group": "gg_in2_channels"
             },
             {
                 "name": "S2 Counter",
@@ -1632,7 +1901,7 @@
                 "type": "value",
                 "sporadic": true,
                 "condition": "isDefined(in2_mode)&&in2_mode!=3",
-                "group": "input_s2"
+                "group": "gg_in2_channels"
             },
             {
                 "name": "S2 Counter",
@@ -1641,7 +1910,17 @@
                 "type": "value",
                 "sporadic": false,
                 "condition": "isDefined(in2_mode)==0||in2_mode==3",
-                "group": "input_s2"
+                "group": "gg_in2_channels"
+            },
+            {
+                "name": "Input S2 sensor performance (only for Larnitech sensors)",
+                "reg_type": "input",
+                "address": 1071,
+                "type": "switch",
+                "sporadic": false,
+                "enabled": false,
+                "condition": "in2_mode==5",
+                "group": "gg_in2_channels"
             },
             {
                 "name": "S2 Freq",
@@ -1652,7 +1931,7 @@
                 "scale": 1.52588e-5,
                 "round_to": 0.001,
                 "enabled": false,
-                "group": "input_s2"
+                "group": "gg_in2_channels"
             },
             {
                 "name": "S3",
@@ -1661,7 +1940,7 @@
                 "type": "switch",
                 "sporadic": true,
                 "condition": "isDefined(in3_mode)&&in3_mode!=3",
-                "group": "input_s3"
+                "group": "gg_in3_channels"
             },
             {
                 "name": "S3",
@@ -1670,7 +1949,7 @@
                 "type": "switch",
                 "sporadic": false,
                 "condition": "isDefined(in3_mode)==0||in3_mode==3",
-                "group": "input_s3"
+                "group": "gg_in3_channels"
             },
             {
                 "name": "S3 Counter",
@@ -1679,7 +1958,7 @@
                 "type": "value",
                 "sporadic": true,
                 "condition": "isDefined(in3_mode)&&in3_mode!=3",
-                "group": "input_s3"
+                "group": "gg_in3_channels"
             },
             {
                 "name": "S3 Counter",
@@ -1688,7 +1967,17 @@
                 "type": "value",
                 "sporadic": false,
                 "condition": "isDefined(in3_mode)==0||in3_mode==3",
-                "group": "input_s3"
+                "group": "gg_in3_channels"
+            },
+            {
+                "name": "Input S3 sensor performance (only for Larnitech sensors)",
+                "reg_type": "input",
+                "address": 1072,
+                "type": "switch",
+                "sporadic": false,
+                "enabled": false,
+                "condition": "in3_mode==5",
+                "group": "gg_in3_channels"
             },
             {
                 "name": "S3 Freq",
@@ -1699,7 +1988,7 @@
                 "scale": 1.52588e-5,
                 "round_to": 0.001,
                 "enabled": false,
-                "group": "input_s3"
+                "group": "gg_in3_channels"
             },
             {
                 "name": "F1",
@@ -1708,7 +1997,7 @@
                 "type": "switch",
                 "sporadic": true,
                 "condition": "isDefined(in4_mode)&&in4_mode!=3",
-                "group": "input_f1"
+                "group": "gg_in4_channels"
             },
             {
                 "name": "F1",
@@ -1717,7 +2006,7 @@
                 "type": "switch",
                 "sporadic": false,
                 "condition": "isDefined(in4_mode)==0||in4_mode==3",
-                "group": "input_f1"
+                "group": "gg_in4_channels"
             },
             {
                 "name": "F1 Counter",
@@ -1726,7 +2015,7 @@
                 "type": "value",
                 "sporadic": true,
                 "condition": "isDefined(in4_mode)&&in4_mode!=3",
-                "group": "input_f1"
+                "group": "gg_in4_channels"
             },
             {
                 "name": "F1 Counter",
@@ -1735,7 +2024,17 @@
                 "type": "value",
                 "sporadic": false,
                 "condition": "isDefined(in4_mode)==0||in4_mode==3",
-                "group": "input_f1"
+                "group": "gg_in4_channels"
+            },
+            {
+                "name": "Input F1 sensor performance (only for Larnitech sensors)",
+                "reg_type": "input",
+                "address": 1073,
+                "type": "switch",
+                "sporadic": false,
+                "enabled": false,
+                "condition": "in4_mode==5",
+                "group": "gg_in4_channels"
             },
             {
                 "name": "F1 Freq",
@@ -1746,7 +2045,7 @@
                 "scale": 1.52588e-5,
                 "round_to": 0.001,
                 "enabled": false,
-                "group": "input_f1"
+                "group": "gg_in4_channels"
             },
             {
                 "name": "F2",
@@ -1755,7 +2054,7 @@
                 "type": "switch",
                 "sporadic": true,
                 "condition": "isDefined(in5_mode)&&in5_mode!=3",
-                "group": "input_f2"
+                "group": "gg_in5_channels"
             },
             {
                 "name": "F2",
@@ -1764,7 +2063,7 @@
                 "type": "switch",
                 "sporadic": false,
                 "condition": "isDefined(in5_mode)==0||in5_mode==3",
-                "group": "input_f2"
+                "group": "gg_in5_channels"
             },
             {
                 "name": "F2 Counter",
@@ -1773,7 +2072,7 @@
                 "type": "value",
                 "sporadic": true,
                 "condition": "isDefined(in5_mode)&&in5_mode!=3",
-                "group": "input_f2"
+                "group": "gg_in5_channels"
             },
             {
                 "name": "F2 Counter",
@@ -1782,7 +2081,17 @@
                 "type": "value",
                 "sporadic": false,
                 "condition": "isDefined(in5_mode)==0||in5_mode==3",
-                "group": "input_f2"
+                "group": "gg_in5_channels"
+            },
+            {
+                "name": "Input F2 sensor performance (only for Larnitech sensors)",
+                "reg_type": "input",
+                "address": 1074,
+                "type": "switch",
+                "sporadic": false,
+                "enabled": false,
+                "condition": "in5_mode==5",
+                "group": "gg_in5_channels"
             },
             {
                 "name": "F2 Freq",
@@ -1793,7 +2102,7 @@
                 "scale": 1.52588e-5,
                 "round_to": 0.001,
                 "enabled": false,
-                "group": "input_f2"
+                "group": "gg_in5_channels"
             },
             {
                 "name": "F3",
@@ -1802,7 +2111,7 @@
                 "type": "switch",
                 "sporadic": true,
                 "condition": "isDefined(in6_mode)&&in6_mode!=3",
-                "group": "input_f3"
+                "group": "gg_in6_channels"
             },
             {
                 "name": "F3",
@@ -1811,7 +2120,7 @@
                 "type": "switch",
                 "sporadic": false,
                 "condition": "isDefined(in6_mode)==0||in6_mode==3",
-                "group": "input_f3"
+                "group": "gg_in6_channels"
             },
             {
                 "name": "F3 Counter",
@@ -1820,7 +2129,7 @@
                 "type": "value",
                 "sporadic": true,
                 "condition": "isDefined(in6_mode)&&in6_mode!=3",
-                "group": "input_f3"
+                "group": "gg_in6_channels"
             },
             {
                 "name": "F3 Counter",
@@ -1829,7 +2138,17 @@
                 "type": "value",
                 "sporadic": false,
                 "condition": "isDefined(in6_mode)==0||in6_mode==3",
-                "group": "input_f3"
+                "group": "gg_in6_channels"
+            },
+            {
+                "name": "Input F3 sensor performance (only for Larnitech sensors)",
+                "reg_type": "input",
+                "address": 1075,
+                "type": "switch",
+                "sporadic": false,
+                "enabled": false,
+                "condition": "in6_mode==5",
+                "group": "gg_in6_channels"
             },
             {
                 "name": "F3 Freq",
@@ -1840,7 +2159,7 @@
                 "scale": 1.52588e-5,
                 "round_to": 0.001,
                 "enabled": false,
-                "group": "input_f3"
+                "group": "gg_in6_channels"
             },
             {
                 "name": "K1",
@@ -1848,7 +2167,7 @@
                 "address": 0,
                 "type": "switch",
                 "sporadic": true,
-                "group": "outputs"
+                "group": "gg_outputs_channels"
             },
             {
                 "name": "K2",
@@ -1856,7 +2175,7 @@
                 "address": 1,
                 "type": "switch",
                 "sporadic": true,
-                "group": "outputs"
+                "group": "gg_outputs_channels"
             },
             {
                 "name": "Alarm",
@@ -1864,7 +2183,7 @@
                 "address": 2,
                 "type": "switch",
                 "sporadic": true,
-                "group": "outputs"
+                "group": "gg_outputs_channels"
             },
             {
                 "name": "Serial",
@@ -1923,6 +2242,7 @@
             },
             {
                 "name": "Start cleaning mode timer (minutes)",
+                "description:": "cleaning_mode_timer_description",
                 "reg_type": "holding",
                 "address": 975,
                 "type": "value",
@@ -1938,12 +2258,17 @@
                 "WB-MWAC_template_title": "WB-MWAC (water leak and meters controller)",
                 "baud_rate_description": "Make sure that communication with device is established before changing this parameter. Select required baud rate, save configuration and then change port baud rate to the same value.",
                 "Uptime": "Uptime (s)",
-                "inputs_control_in_safety_mode_description": "Sets change of control from the inputs when module switches to safety mode"
+                "inputs_control_in_safety_mode_description": "Sets change of control from the inputs when module switches to safety mode",
+                "cleaning_mode_description": "Cleaning mode is used to disable reactions on flood sensors when a room is being celaned. Disabled automatically after the specified time.",
+                "cleaning_mode_timer_description": "1 – 1440 min, 30 by default"
             },
             "ru": {
                 "WB-MWAC_template_title": "WB-MWAC (модуль контроля протечек и расхода воды)",
                 "Counters": "Счетчики",
                 "Cleaning mode": "Режим уборки",
+                "cleaning_mode_description": "Режим уборки используется для отключения реакции на датчики протечки при уборке помещения. Отключается автоматически по истечении указанного времени.",
+                "cleaning_mode_timer_description": "1 — 1440 мин, 30 по умолчанию",
+                "Cleaning mode timer": "Таймер режима уборки",
                 "Input S1": "Вход S1",
                 "Input S2": "Вход S2",
                 "Input S3": "Вход S3",
@@ -2034,8 +2359,14 @@
                 "toggle / reset": "переключить / выключить",
                 "toggle / set": "переключить / включить",
                 "toggle / toggle": "переключить / переключить",
-                "Actions for outputs when the input is closed / opened": "Действия для выходов при замыкании / размыкании входа"
+                "Actions for outputs when the input is closed / opened": "Действия для выходов при замыкании / размыкании входа",
 
+                "Input S1 sensor performance (only for Larnitech sensors)":  "Работоспособность датчика на входе S1 (только для датчиков Larnitech)",
+                "Input S2 sensor performance (only for Larnitech sensors)":  "Работоспособность датчика на входе S2 (только для датчиков Larnitech)",
+                "Input S3 sensor performance (only for Larnitech sensors)":  "Работоспособность датчика на входе S3 (только для датчиков Larnitech)",
+                "Input F1 sensor performance (only for Larnitech sensors)":  "Работоспособность датчика на входе F1 (только для датчиков Larnitech)",
+                "Input F2 sensor performance (only for Larnitech sensors)":  "Работоспособность датчика на входе F2 (только для датчиков Larnitech)",
+                "Input F3 sensor performance (only for Larnitech sensors)":  "Работоспособность датчика на входе F3 (только для датчиков Larnitech)"
             }
         }
     }
