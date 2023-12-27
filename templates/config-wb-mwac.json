@@ -2246,18 +2246,6 @@
                 "type": "voltage",
                 "enabled": false,
                 "group": "hw_info"
-            },
-            {
-                "name": "Start cleaning mode timer (minutes)",
-                "description:": "cleaning_mode_timer_description",
-                "reg_type": "holding",
-                "address": 975,
-                "type": "value",
-                "format": "u16",
-                "min": 0,
-                "max": 1440,
-                "enabled": true,
-                "group": "cleaning_mode"
             }
         ],
         "translations": {
@@ -2332,7 +2320,6 @@
                 "Uptime": "Время работы с момента включения (с)",
                 "MCU Temperature": "Температура МК",
                 "MCU Voltage": "Напряжение питания МК",
-                "Start cleaning mode timer (minutes)": "Запуск таймера режима уборки (минуты)",
 
                 "Off": "Выключен",
                 "On": "Включен",
