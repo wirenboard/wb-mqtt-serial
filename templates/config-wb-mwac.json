@@ -2186,6 +2186,13 @@
                 "group": "gg_outputs_channels"
             },
             {
+                "name": "Cleaning mode",
+                "reg_type": "coil",
+                "address": 3,
+                "type": "switch",
+                "group": "cleaning_mode"
+            },
+            {
                 "name": "Serial",
                 "reg_type": "input",
                 "address": 270,
