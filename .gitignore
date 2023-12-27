@@ -67,6 +67,7 @@ debian/*.substvars
 debhelper-build-stamp
 .clang-format
 build
+compile_commands.json
 
 ### direnv ###
 .direnv

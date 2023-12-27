@@ -855,11 +855,11 @@ TSubDevicesTemplateMap::TSubDevicesTemplateMap(const std::string& deviceType, co
         for (const auto& subdeviceTemplate: Templates) {
             for (const auto& ch: subdeviceTemplate.second.Schema["channels"]) {
                 if (ch.isMember("device_type")) {
-                    GetTemplate(ch["device_type"].asString());
+                    TSubDevicesTemplateMap::GetTemplate(ch["device_type"].asString());
                 }
                 if (ch.isMember("oneOf")) {
                     for (const auto& subdeviceType: ch["oneOf"]) {
-                        GetTemplate(subdeviceType.asString());
+                        TSubDevicesTemplateMap::GetTemplate(subdeviceType.asString());
                     }
                 }
             }
