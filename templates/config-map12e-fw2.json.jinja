@@ -78,6 +78,17 @@
                 "group": "channel{{ch_num}}_l1",
                 "order": 3
             },
+            "channel{{ch_num}}_l1_ct_reverse": {
+                "title": "Channel {{ch_num}} CT Reverse L1",
+                "address": "0x{{"%X"|format(5296 + (ch_num - 1) * 4096)}}",
+                "reg_type": "holding",
+                "format": "u16",
+                "enum": [0, 1],
+                "default": 0,
+                "enum_titles": ["No", "Yes"],
+                "group": "channel{{ch_num}}_l1",
+                "order": 4
+            },
             "channel{{ch_num}}_l2_turns": {
                 "title": "Channel {{ch_num}} Turns L2",
                 "address": "0x{{"%X"|format(5217 + (ch_num - 1) * 4096)}}",
@@ -109,6 +120,17 @@
                 "group": "channel{{ch_num}}_l2",
                 "order": 3
             },
+            "channel{{ch_num}}_l2_ct_reverse": {
+                "title": "Channel {{ch_num}} CT Reverse L2",
+                "address": "0x{{"%X"|format(5297 + (ch_num - 1) * 4096)}}",
+                "reg_type": "holding",
+                "format": "u16",
+                "enum": [0, 1],
+                "default": 0,
+                "enum_titles": ["No", "Yes"],
+                "group": "channel{{ch_num}}_l2",
+                "order": 4
+            },
             "channel{{ch_num}}_l3_turns": {
                 "title": "Channel {{ch_num}} Turns L3",
                 "address": "0x{{"%X"|format(5218 + (ch_num - 1) * 4096)}}",
@@ -139,6 +161,17 @@
                 "description": "Firmware v2.3.0 or newer is required",
                 "group": "channel{{ch_num}}_l3",
                 "order": 3
+            },
+            "channel{{ch_num}}_l3_ct_reverse": {
+                "title": "Channel {{ch_num}} CT Reverse L3",
+                "address": "0x{{"%X"|format(5298 + (ch_num - 1) * 4096)}}",
+                "reg_type": "holding",
+                "format": "u16",
+                "enum": [0, 1],
+                "default": 0,
+                "enum_titles": ["No", "Yes"],
+                "group": "channel{{ch_num}}_l3",
+                "order": 4
             },
             {% endfor -%}
             "baud_rate": {

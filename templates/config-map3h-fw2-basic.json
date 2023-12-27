@@ -57,6 +57,17 @@
                 "group": "l1",
                 "order": 2
             },
+            "l1_ct_reverse": {
+                "title": "Current Transformer Reverse L1",
+                "address": "0x14b0",
+                "reg_type": "holding",
+                "format": "u16",
+                "enum": [0, 1],
+                "default": 0,
+                "enum_titles": ["No", "Yes"],
+                "group": "l1",
+                "order": 3
+            },
             "l2_turns": {
                 "title": "Turns L2",
                 "address": "0x1461",
@@ -76,6 +87,17 @@
                 "group": "l2",
                 "order": 2
             },
+            "l2_ct_reverse": {
+                "title": "Current Transformer Reverse L2",
+                "address": "0x14b1",
+                "reg_type": "holding",
+                "format": "u16",
+                "enum": [0, 1],
+                "default": 0,
+                "enum_titles": ["No", "Yes"],
+                "group": "l2",
+                "order": 3
+            },
             "l3_turns": {
                 "title": "Turns L3",
                 "address": "0x1462",
@@ -94,6 +116,17 @@
                 "max": 32767,
                 "group": "l3",
                 "order": 2
+            },
+            "l3_ct_reverse": {
+                "title": "Current Transformer Reverse L3",
+                "address": "0x14b2",
+                "reg_type": "holding",
+                "format": "u16",
+                "enum": [0, 1],
+                "default": 0,
+                "enum_titles": ["No", "Yes"],
+                "group": "l3",
+                "order": 3
             }
         },
 
