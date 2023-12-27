@@ -2254,14 +2254,14 @@
                 "baud_rate_description": "Make sure that communication with device is established before changing this parameter. Select required baud rate, save configuration and then change port baud rate to the same value.",
                 "Uptime": "Uptime (s)",
                 "inputs_control_in_safety_mode_description": "Sets change of control from the inputs when module switches to safety mode",
-                "cleaning_mode_description": "Cleaning mode is used to disable reactions on flood sensors when a room is being celaned. Disabled automatically after the specified time.",
+                "cleaning_mode_description": "Cleaning mode is used to disable reactions on flood sensors when a room is being celaned. When started/stopped, a sound signal is emitted, and during the activity of the mode, the indicators of the inputs periodically flash briefly. Disabled automatically after the specified time.",
                 "cleaning_mode_timer_description": "1 – 1440 min, 30 by default"
             },
             "ru": {
                 "WB-MWAC_template_title": "WB-MWAC (модуль контроля протечек и расхода воды)",
                 "Counters": "Счетчики",
                 "Cleaning mode": "Режим уборки",
-                "cleaning_mode_description": "Режим уборки используется для отключения реакции на датчики протечки при уборке помещения. Отключается автоматически по истечении указанного времени.",
+                "cleaning_mode_description": "Режим уборки используется для отключения реакции на датчики протечки при уборке помещения. При запуске/остановке издаётся звуковой сигнал, во время активности режима, индикаторы входов периодически коротко моргают. Отключается автоматически по истечении указанного времени.",
                 "cleaning_mode_timer_description": "1 — 1440 мин, 30 по умолчанию",
                 "Cleaning mode timer": "Таймер режима уборки",
                 "Input S1": "Вход S1",

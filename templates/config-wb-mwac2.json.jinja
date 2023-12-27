@@ -457,12 +457,12 @@
             {% endfor -%}
 
             "outputs_restore_state": {
-                "title": "Restore Last Outputs State After Power On",
+                "title": "Outputs State After Power On",
                 "address": 6,
                 "reg_type": "holding",
                 "enum": [0, 1],
                 "default": 0,
-                "enum_titles": ["no", "yes"],
+                "enum_titles": ["Safe state", "Restore last state"],
                 "group": "outputs",
                 "order": 1
             },
@@ -783,13 +783,13 @@
 
                 "input_f_mode_description": "In leakage sensor mode, when the sensor is triggered, after 20 minutes, the module will perform a repeated poll and turn off the alarm if the cause of the triggering is eliminated.",
 
-                "inputs_control_in_safety_mode_description": "Sets change of control from the inputs when module switches to safety mode. Does not affect leakage sensors.",
+                "inputs_control_in_safety_mode_description": "Sets change of control from the inputs when module switches to safety mode. Does not affect \"leakage sensor\" mode.",
                 "safety_mode_description": "When RS-485 connection is lost, the flood protection module will work autonomously. However, it is possible to set a certain state of the outputs in case of connection loss. For this purpose, there is a safety mode.",
                 "safety_behaviour_description": "Safe state of outputs is configured on \"Outputs\" tab.",
                 "outputs_safe_state_description": "Outputs state after module power on (if \"Switch output to safety state\" is selected in \"Outputs behaviour on power on\" setting), as well as in safety mode if transition to safety state is activated.",
                 "poll_timeout_description": "Parameter defines the time of absence of polling in seconds, after which safety mode will be activated.",
 
-                "cleaning_mode_description": "Cleaning mode is used to disable reactions on flood sensors when a room is being celaned. Disabled automatically after the specified time.",
+                "cleaning_mode_description": "Cleaning mode is used to disable reactions on flood sensors when a room is being celaned. When started/stopped, a sound signal is emitted, and during the activity of the mode, the indicators of the inputs periodically flash briefly. Disabled automatically after the specified time.",
                 "cleaning_mode_timer_description": "1 – 1440 min, 30 by default",
 
                 "debounce_description": "For button press detection, the value must be 5 — 10 times less than the waiting time for the second press. Adds a delay to the response to presses. 0 – 2000 ms, 50 by default.",
@@ -807,7 +807,7 @@
                 "counter_offset_description": "0 — 4294967295 (32 бита)",
 
                 "Cleaning mode": "Режим уборки",
-                "cleaning_mode_description": "Режим уборки используется для отключения реакции на датчики протечки при уборке помещения. Отключается автоматически по истечении указанного времени.",
+                "cleaning_mode_description": "Режим уборки используется для отключения реакции на датчики протечки при уборке помещения. При запуске/остановке издаётся звуковой сигнал, во время активности режима, индикаторы входов периодически коротко моргают. Отключается автоматически по истечении указанного времени.",
                 "cleaning_mode_timer_description": "1 — 1440 мин, 30 по умолчанию",
                 "Cleaning mode timer": "Таймер режима уборки",
 
@@ -879,9 +879,9 @@
                 "on": "включить",
                 "toggle": "переключить",
 
-                "Restore Last Outputs State After Power On": "Восстанавливать cостояния выходов при включении",
-                "no": "нет",
-                "yes": "да",
+                "Outputs State After Power On": "Состояния выходов при подаче питания",
+                "Safe state": "Перевести выход в безопасное состояние",
+                "Restore last state": "Восстановить последнее состояние",
                 "Output Safe State": "Безопасное состояние выходов",
                 "Off": "Выключен",
                 "On": "Включен",
@@ -890,10 +890,10 @@
                 "Safety Behaviour": "Действие в безопасном режиме",
                 "Safety Timer (s)": "Таймаут безопасного режима (с)",
                 "safety_mode_description": "При потере связи по RS-485 модуль защиты от протечек будет работать автономно. Однако есть возможность задать определенное состояние выходов в случае обрыва связи. Для этого существует безопасный режим.",
-                "outputs_safe_state_description": "Состояние выходов после включения модуля (если в настройке \"Восстанавливать cостояния выходов при включении\" выбран пункт \"Нет\"), а также в безопасном режиме, если переход в безопасное состояние активирован.",
+                "outputs_safe_state_description": "Состояние выходов после включения модуля (если в настройке \"Состояния выходов при подаче питания\" выбран пункт \"Перевести выход в безопасное состояние\"), а также в безопасном режиме, если переход в безопасное состояние активирован.",
                 "poll_timeout_description": "Параметр определяет время отсутствия опроса в секундах, после которого будет активирован безопасный режим.",
                 "safety_behaviour_description": "Безопасное состояние выходов настраивается на вкладке \"Выходы\".",
-                "inputs_control_in_safety_mode_description": "Настройка изменения управления с входов при переходе модуля в безопасный режим. Не влияет на датчики протечки.",
+                "inputs_control_in_safety_mode_description": "Настройка изменения управления с входов при переходе модуля в безопасный режим. Не влияет на режим \"Датчик протечки\".",
                 "Don't сhange output state": "Ничего не делать",
                 "Switch output to safety state": "Перевести выход в безопасное состояние",
                 "Inputs Control In Safety Mode": "Управление с входов в безопасном режиме",
