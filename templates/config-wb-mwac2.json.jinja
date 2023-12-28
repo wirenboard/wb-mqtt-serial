@@ -35,7 +35,7 @@
                 "group": "input_f{{ in_num }}"
             },
             {
-                "title": "Actions for outputs when the input is closed",
+                "title": "Actions for outputs when sensor is triggered",
                 "id": "gg_in{{ in_num }}_mapping_matrix_actions",
                 "group": "input_f{{ in_num }}"
             },
@@ -45,7 +45,7 @@
                 {% if out_num == OUT_NUM_K1 %} "K1 actions",
                 {% elif out_num == OUT_NUM_K2 %} "K2 actions",
                 {% elif out_num == OUT_NUM_ALARM %} "Alarm actions",
-                {% else %} "Cleaning mode actions",
+                {% else %} "Wet cleaning mode actions",
                 {% endif %}
                 "id": "gg_in{{in_num}}_out{{out_num}}_button_actions",
                 "group": "input_f{{in_num}}"
@@ -90,9 +90,9 @@
                 "id": "g_safety"
             },
             {
-                "title": "Cleaning mode",
-                "id": "cleaning_mode",
-                "description": "cleaning_mode_description",
+                "title": "Wet cleaning mode",
+                "id": "wet_cleaning_mode",
+                "description": "wet_cleaning_mode_description",
             },
             {
                 "title": "Safety Behaviour",
@@ -133,7 +133,7 @@
                 "order": 1
             },
             "in{{ in_num }}_debounce_ms": {
-                "title": "Input F{{ in_num }} Debounce",
+                "title": "Input F{{ in_num }} Debounce (ms)",
                 "description": "debounce_description",
                 "address": {{ 19 + in_num }},
                 "reg_type": "holding",
@@ -383,15 +383,15 @@
             },
             {% endfor -%}
 
-            "cleaning_mode_timer_min": {
-                "title": "Cleaning mode timer",
-                "description": "cleaning_mode_timer_description",
+            "wet_cleaning_mode_timer_min": {
+                "title": "Wet cleaning mode timer (min)",
+                "description": "wet_cleaning_mode_timer_description",
                 "address": 975,
                 "reg_type": "holding",
                 "min": 1,
                 "max": 1440,
                 "default": 20,
-                "group": "cleaning_mode",
+                "group": "wet_cleaning_mode",
                 "order": 1
             },
         },
@@ -525,11 +525,11 @@
                 "group": "gg_outputs_channels"
             },
             {
-                "name": "Cleaning mode",
+                "name": "Wet cleaning mode",
                 "reg_type": "coil",
                 "address": 3,
                 "type": "switch",
-                "group": "cleaning_mode"
+                "group": "wet_cleaning_mode"
             },
             {
                 "name": "Serial",
@@ -614,11 +614,11 @@
                 "inputs_control_in_safety_mode_description": "Sets change of control from the inputs when module switches to safety mode. Does not affect \"leakage sensor\" mode.",
                 "safety_mode_description": "When RS-485 connection is lost, the flood protection module will work autonomously. However, it is possible to set a certain state of the outputs in case of connection loss. For this purpose, there is a safety mode.",
                 "safety_behaviour_description": "Safe state of outputs is configured on \"Outputs\" tab.",
-                "outputs_safe_state_description": "Outputs state after module power on (if \"Switch output to safety state\" is selected in \"Outputs behaviour on power on\" setting), as well as in safety mode if transition to safety state is activated.",
+                "outputs_safe_state_description": "Outputs safe state and \"Outputs State After Power On\" settings. By default, safe mode is disabled, \"Safe state\" is set to the \"Outputs State After Power On\" setting, and safe state for each output is set to \"Off\".",
                 "poll_timeout_description": "Parameter defines the time of absence of polling in seconds, after which safety mode will be activated.",
 
-                "cleaning_mode_description": "Cleaning mode is used to disable reactions on flood sensors when a room is being celaned. When started/stopped, a sound signal is emitted, and during the activity of the mode, the indicators of the inputs periodically flash briefly. Disabled automatically after the specified time.",
-                "cleaning_mode_timer_description": "1 – 1440 min, 20 by default",
+                "wet_cleaning_mode_description": "Wet cleaning mode is used to disable reactions on flood sensors when a room is being celaned. When started/stopped, a sound signal is emitted, and during the activity of the mode, the indicators of the inputs periodically flash briefly. Disabled automatically after the specified time.",
+                "wet_cleaning_mode_timer_description": "1 – 1440 min, 20 by default",
 
                 "debounce_description": "For button press detection, the value must be 5 — 10 times less than the waiting time for the second press. Adds a delay to the response to presses. 0 – 2000 ms, 50 by default.",
                 "lp_hold_time_title": "Long Press Time (ms)",
@@ -633,15 +633,15 @@
 
                 "Counters": "Счетчики",
 
-                "Cleaning mode": "Режим уборки",
-                "cleaning_mode_description": "Режим уборки используется для отключения реакции на датчики протечки при уборке помещения. При запуске/остановке издаётся звуковой сигнал, во время активности режима, индикаторы входов периодически коротко моргают. Отключается автоматически по истечении указанного времени.",
-                "cleaning_mode_timer_description": "1 — 1440 мин, 20 по умолчанию",
-                "Cleaning mode timer": "Таймер режима уборки",
+                "Wet cleaning mode": "Режим влажной уборки",
+                "wet_cleaning_mode_description": "Режим влажной уборки используется для отключения реакции на датчики протечки при уборке помещения. При запуске/остановке издаётся звуковой сигнал, во время активности режима, индикаторы входов периодически коротко моргают. Отключается автоматически по истечении указанного времени.",
+                "wet_cleaning_mode_timer_description": "1 — 1440 мин, 20 по умолчанию",
+                "Wet cleaning mode timer (min)": "Таймер режима влажной уборки (мин)",
 
                 {% for in_num in range(1, INPUTS_NUMBER + 1) -%}
                 "Input F{{ in_num }}": "Вход F{{ in_num }}",
                 "Input F{{ in_num }} Mode": "Режим работы входа F{{ in_num }}",
-                "Input F{{ in_num }} Debounce": "Время защиты от дребезга входа F{{ in_num }}",
+                "Input F{{ in_num }} Debounce (ms)": "Время защиты от дребезга входа F{{ in_num }} (мс)",
                 "Input F{{ in_num }} Single Press Counter": "Счетчик коротких нажатий входа F{{ in_num }}",
                 "Input F{{ in_num }} Long Press Counter": "Счетчик длинных нажатий входа F{{ in_num }}",
                 "Input F{{ in_num }} Double Press Counter": "Счетчик двойных нажатий входа F{{ in_num }}",
@@ -654,7 +654,7 @@
                 "leakage sensor": "датчик протечки",
                 "discrete input or button": "дискретный вход или кнопка",
 
-                "Actions for outputs when the input is closed": "Действия для выходов при замыкании входа",
+                "Actions for outputs when sensor is triggered": "Действия для выходов при срабатывании датчика",
 
                 "Outputs": "Выходы",
                 "General": "Общее",
@@ -690,7 +690,7 @@
                 "Safety Behaviour": "Действие в безопасном режиме",
                 "Safety Timer (s)": "Таймаут безопасного режима (с)",
                 "safety_mode_description": "При потере связи по RS-485 модуль защиты от протечек будет работать автономно. Однако есть возможность задать определенное состояние выходов в случае обрыва связи. Для этого существует безопасный режим.",
-                "outputs_safe_state_description": "Состояние выходов после включения модуля (если в настройке \"Состояния выходов при подаче питания\" выбран пункт \"Перевести выход в безопасное состояние\"), а также в безопасном режиме, если переход в безопасное состояние активирован.",
+                "outputs_safe_state_description": "Состояние выходов для безопасного режима и настройки \"Состояния выходов при подаче питания\". По умолчанию безопасный режим отключен, в настройке \"Состояния выходов при подаче питания\" установлено \"Перевести в безопасное состояние\", а безопасное состояние для каждого выхода установлено в \"Выключен\".",
                 "poll_timeout_description": "Параметр определяет время отсутствия опроса в секундах, после которого будет активирован безопасный режим.",
                 "safety_behaviour_description": "Безопасное состояние выходов настраивается на вкладке \"Выходы\".",
                 "inputs_control_in_safety_mode_description": "Настройка изменения управления с входов при переходе модуля в безопасный режим. Не влияет на режим \"Датчик протечки\".",
@@ -718,7 +718,7 @@
                 "K1 actions": "Действия для K1",
                 "K2 actions": "Действия для K2",
                 "Alarm actions": "Действия для тревоги",
-                "Cleaning mode actions": "Действия для режима уборки"
+                "Wet cleaning mode actions": "Действия для режима влажной уборки"
             }
         }
     }
