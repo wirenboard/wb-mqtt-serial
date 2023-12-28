@@ -670,7 +670,7 @@
                 "sporadic": true,
                 "group": "gg_in{{ in_num }}_channels",
                 "condition": "in{{in_num}}_mode==4"
-            },            
+            },
             {% endfor -%}
 
             {% for out_num in range(1, OUTPUTS_NUMBER - 1) -%}
@@ -824,7 +824,7 @@
                 {% endfor -%}
 
                 "input_f_mode_description": "В режиме датчик протечки, при срабатывании датчика, через 20 минут будет произведён повторный опрос и выключение тревоги, в случае устранения причины срабатывания.",
-                
+
                 "control disabled": "управление отключено",
                 "leakage sensor": "датчик протечки",
                 "discrete input or button": "дискретный вход или кнопка",
