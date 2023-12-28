@@ -384,21 +384,6 @@
             },
             {% endfor -%}
 
-            {% for lp_in_num in range(1, LP_INPUTS_NUMBER + 1) -%}
-            "P{{ lp_in_num }}_counter_offset": {
-                "title": "P{{ lp_in_num }} Counter Offset",
-                "description": "counter_offset_description",
-                "address": {{ 312 + 2 * (lp_in_num - 1) }},
-                "reg_type": "holding",
-                "format": "u32",
-                "min": 0,
-                "max": 4294967295,
-                "default": 0,
-                "group": "counters",
-                "order": {{ lp_in_num }}
-            },
-            {% endfor -%}
-
             "cleaning_mode_timer_min": {
                 "title": "Cleaning mode timer",
                 "description": "cleaning_mode_timer_description",
@@ -685,7 +670,6 @@
 
                 {% for lp_in_num in range(1, LP_INPUTS_NUMBER + 1) -%}
                 "P{{ lp_in_num }} Counter": "Счетчик P{{ lp_in_num }}",
-                "P{{ lp_in_num }} Counter Offset": "Начальное значение счетчика P{{ lp_in_num }}",
                 {% endfor -%}
 
                 "Alarm": "Авария",
