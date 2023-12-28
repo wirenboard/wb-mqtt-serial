@@ -612,10 +612,6 @@
                 "baud_rate_description": "Make sure that communication with device is established before changing this parameter. Select required baud rate, save configuration and then change port baud rate to the same value.",
                 "Uptime": "Uptime (s)",
 
-                "counter_offset_description": "0 — 4294967295 (32 bit)",
-
-                "input_f_mode_description": "In leakage sensor mode, when the sensor is triggered, after 20 minutes, the module will perform a repeated poll and turn off the alarm if the cause of the triggering is eliminated.",
-
                 "inputs_control_in_safety_mode_description": "Sets change of control from the inputs when module switches to safety mode. Does not affect \"leakage sensor\" mode.",
                 "safety_mode_description": "When RS-485 connection is lost, the flood protection module will work autonomously. However, it is possible to set a certain state of the outputs in case of connection loss. For this purpose, there is a safety mode.",
                 "safety_behaviour_description": "Safe state of outputs is configured on \"Outputs\" tab.",
@@ -637,7 +633,6 @@
                 "baud_rate_description": "Перед изменением параметра убедитесь, что связь с устройством установлена. Выберите нужную скорость обмена, сохраните конфигурацию, а затем укажите в настройках порта эту же скорость.",
 
                 "Counters": "Счетчики",
-                "counter_offset_description": "0 — 4294967295 (32 бита)",
 
                 "Cleaning mode": "Режим уборки",
                 "cleaning_mode_description": "Режим уборки используется для отключения реакции на датчики протечки при уборке помещения. При запуске/остановке издаётся звуковой сигнал, во время активности режима, индикаторы входов периодически коротко моргают. Отключается автоматически по истечении указанного времени.",
@@ -655,8 +650,6 @@
                 "F{{ in_num }} Counter": "Счетчик F{{ in_num }}",
                 "Input F{{ in_num }} sensor performance (only for Larnitech sensors)":  "Работоспособность датчика на входе F{{ in_num }} (только для датчиков Larnitech)",
                 {% endfor -%}
-
-                "input_f_mode_description": "В режиме датчик протечки, при срабатывании датчика, через 20 минут будет произведён повторный опрос и выключение тревоги, в случае устранения причины срабатывания.",
 
                 "control disabled": "управление отключено",
                 "leakage sensor": "датчик протечки",
