@@ -120,7 +120,6 @@
             {% for in_num in range(1, INPUTS_NUMBER + 1) -%}
             "in{{ in_num }}_mode": {
                 "title": "Input F{{ in_num }} Mode",
-                "description": "input_f_mode_description",
                 "address": {{ 8 + in_num }},
                 "reg_type": "holding",
                 "enum": [3, 4, 5],
