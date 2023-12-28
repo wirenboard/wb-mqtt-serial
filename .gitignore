@@ -1,14 +1,4 @@
 *.o
-wb-homa-gpio/wb-homa-gpio
-wb-mqtt-serial/wb-mqtt-serial
-wb-mqtt-serial/test/wb-homa-test
-wb-mqtt-serial/test/*.out
-wb-homa-ninja-bridge/wb-homa-ninja-bridge
-wb-homa-w1/wb-homa-w1
-wb-homa-adc/wb-homa-adc
-wb-mqtt-lirc/wb-mqtt-lirc
-mqtt-logger/mqtt-logger
-wb-homa-zway/wb-homa-zway
 test/wb-homa-test
 *.deb
 debian/files
@@ -21,11 +11,8 @@ debian/files
 *.debhelper
 debian/*.substvars
 debian/wb-mqtt-serial/
-debian/wb-homa-modbus/
 debian/tmp/
 .d
-wb-mqtt-serial/build
-wb-mqtt-serial
 vgcore.*
 test/*.out
 
@@ -61,11 +48,10 @@ workspace.xml
 
 debian/tmp
 debian/files
-debian/wb-homa-modbus
 debian/wb-mqtt-serial
 debian/*.substvars
 debhelper-build-stamp
-.clang-format
+.clang-*
 build
 compile_commands.json
 
