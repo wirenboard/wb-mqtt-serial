@@ -68,35 +68,6 @@
             },
             {% endfor -%}
 
-            {% for b_num in range(1, FRONT_PANEL_BUTTONS_NUMBER + 1) -%}
-            {
-                "title": "Button B{{ b_num }}",
-                "id": "button_b{{ b_num }}"
-            },
-            {
-                "title": "Press Parameters",
-                "id": "gg_b{{ b_num }}_press_params",
-                "group": "button_b{{ b_num }}"
-            },
-            {% for out_num in range(1, OUTPUTS_NUMBER + 1) -%}
-            {
-                "title":
-                {%- if out_num == OUT_NUM_K1 %} "K1 actions",
-                {% elif out_num == OUT_NUM_K2 %} "K2 actions",
-                {% elif out_num == OUT_NUM_ALARM %} "Alarm actions",
-                {% else %} "Cleaning mode actions",
-                {% endif %}
-                "id": "gg_b{{ b_num }}_out{{ out_num }}_button_actions",
-                "group": "button_b{{ b_num }}"
-            },
-            {% endfor -%}
-            {
-                "title": "Indication for B{{ b_num }}",
-                "id": "gg_b{{ b_num }}_indication",
-                "group": "button_b{{ b_num }}"
-            },
-
-            {% endfor -%}
             {
                 "title": "Outputs",
                 "id": "outputs"
@@ -334,125 +305,6 @@
                 "condition": "in{{in_num}}_mode==4"
             },
             {% endfor -%}
-
-            {% endfor -%}
-
-            {% for in_num in range(1, FRONT_PANEL_BUTTONS_NUMBER + 1) -%}
-            "b{{ in_num }}_debounce_ms": {
-                "title": "Button B{{ in_num }} Debounce",
-                "description": "debounce_description",
-                "address": {{ 19 + INPUTS_NUMBER + in_num }},
-                "reg_type": "holding",
-                "min": 0,
-                "max": 2000,
-                "default": 50,
-                "group": "button_b{{ in_num }}",
-                "order": 2
-            },
-            "b{{ in_num }}_lp_hold_time": {
-                "group": "gg_b{{in_num}}_press_params",
-                "title": "lp_hold_time_title",
-                "description": "lp_hold_time_description",
-                "order": 1,
-                "address": {{ 1100 + 6 + in_num - 1 }},
-                "reg_type": "holding",
-                "default": 1000,
-                "min": 500,
-                "max": 5000
-            },
-            "b{{ in_num }}_secp_waiting_time": {
-                "group": "gg_b{{in_num}}_press_params",
-                "title": "secp_waiting_time_title",
-                "description": "secp_waiting_time_description",
-                "order": 2,
-                "address": {{ 1140 + 6 + in_num - 1 }},
-                "reg_type": "holding",
-                "default": 300,
-                "min": 0,
-                "max": 2000
-            },
-
-            {% for out_num in range(1, OUTPUTS_NUMBER + 1) -%}
-            "b{{ in_num }}_out{{ out_num }}_sp": {
-                "group": "gg_b{{ in_num }}_out{{ out_num }}_button_actions",
-                "title": "Short Press",
-                "order": 1,
-                "address": {{ 544 + out_num - 1 + (6 + in_num-1) * MMATRIX_OUTPUTS_NUMBER }},
-                "reg_type": "holding",
-                "default":
-                {%- if in_num == BUTTON_1 and (out_num == OUT_NUM_K1 or out_num == OUT_NUM_K2) %} 3,
-                {% elif in_num == BUTTON_2 and out_num == OUT_NUM_ALARM %} 2,
-                {% else %} 0,
-                {% endif -%}
-
-                {%- if out_num == OUT_NUM_ALARM %}
-                "enum": [0, 2],
-                "enum_titles": ["do nothing", "off"],
-                {% else %}
-                "enum": [0, 1, 2, 3],
-                "enum_titles": ["do nothing", "off", "on", "toggle"],
-                {% endif -%}
-            },
-            "b{{ in_num }}_out{{ out_num }}_lp": {
-                "group": "gg_b{{ in_num }}_out{{ out_num }}_button_actions",
-                "title": "Long Press",
-                "order": 2,
-                "address": {{ 608 + out_num - 1 + (6 + in_num-1) * MMATRIX_OUTPUTS_NUMBER }},
-                "reg_type": "holding",
-                "default":
-                {%- if in_num == BUTTON_2 and out_num == OUT_NUM_CLEANING_MODE %} 3,
-                {% else %} 0,
-                {% endif -%}
-
-                {%- if out_num == OUT_NUM_ALARM %}
-                "enum": [0, 2],
-                "enum_titles": ["do nothing", "off"],
-                {% else %}
-                "enum": [0, 1, 2, 3],
-                "enum_titles": ["do nothing", "off", "on", "toggle"],
-                {% endif -%}
-            },
-            {% endfor -%}
-
-            "b{{ in_num }}_indication": {
-                "title": "Color",
-                "address": {{ 953 + in_num }},
-                "reg_type": "holding",
-                "enum": [0, 1, 2, 3, 4],
-                "default":
-                {%- if in_num == BUTTON_1 %} 1,
-                {% elif in_num == BUTTON_2 %} 4,
-                {% endif -%}
-                "enum_titles": [
-                    "do not use",
-                    "green",
-                    "red",
-                    "green blinking",
-                    "red blinking"
-                ],
-                "group": "gg_b{{ in_num }}_indication",
-                "order": 1
-            },
-            "b{{ in_num }}_indication_action": {
-                "title": "State",
-                "address": {{ 956 + in_num }},
-                "reg_type": "holding",
-                "enum": [0, 1, 2, 3, 4, 5],
-                "default":
-                {%- if in_num == BUTTON_1 %} 2,
-                {% elif in_num == BUTTON_2 %} 5,
-                {% endif -%}
-                "enum_titles": [
-                    "K1 on",
-                    "K2 on",
-                    "K1 and K2 on",
-                    "K1 or(exclusive) K2 on",
-                    "cleaning mode is active",
-                    "alarm is active"
-                ],
-                "group": "gg_b{{ in_num }}_indication",
-                "order": 2
-            },
 
             {% endfor -%}
 
@@ -790,7 +642,7 @@
                 "poll_timeout_description": "Parameter defines the time of absence of polling in seconds, after which safety mode will be activated.",
 
                 "cleaning_mode_description": "Cleaning mode is used to disable reactions on flood sensors when a room is being celaned. When started/stopped, a sound signal is emitted, and during the activity of the mode, the indicators of the inputs periodically flash briefly. Disabled automatically after the specified time.",
-                "cleaning_mode_timer_description": "1 – 1440 min, 30 by default",
+                "cleaning_mode_timer_description": "1 – 1440 min, 20 by default",
 
                 "debounce_description": "For button press detection, the value must be 5 — 10 times less than the waiting time for the second press. Adds a delay to the response to presses. 0 – 2000 ms, 50 by default.",
                 "lp_hold_time_title": "Long Press Time (ms)",
@@ -808,10 +660,10 @@
 
                 "Cleaning mode": "Режим уборки",
                 "cleaning_mode_description": "Режим уборки используется для отключения реакции на датчики протечки при уборке помещения. При запуске/остановке издаётся звуковой сигнал, во время активности режима, индикаторы входов периодически коротко моргают. Отключается автоматически по истечении указанного времени.",
-                "cleaning_mode_timer_description": "1 — 1440 мин, 30 по умолчанию",
+                "cleaning_mode_timer_description": "1 — 1440 мин, 20 по умолчанию",
                 "Cleaning mode timer": "Таймер режима уборки",
 
-                {% for in_num in range(1, INPUTS_NUMBER + FRONT_PANEL_BUTTONS_NUMBER + 1) -%}
+                {% for in_num in range(1, INPUTS_NUMBER + 1) -%}
                 "Input F{{ in_num }}": "Вход F{{ in_num }}",
                 "Input F{{ in_num }} Mode": "Режим работы входа F{{ in_num }}",
                 "Input F{{ in_num }} Debounce": "Время защиты от дребезга входа F{{ in_num }}",
@@ -830,30 +682,6 @@
                 "discrete input or button": "дискретный вход или кнопка",
 
                 "Actions for outputs when the input is closed": "Действия для выходов при замыкании входа",
-
-                {% for b_num in range(1, FRONT_PANEL_BUTTONS_NUMBER + 1) -%}
-                "Button B{{ b_num }}": "Кнопка B{{ b_num }}",
-                "Actions for outputs when the button is pressed": "Действия для выходов при нажатии кнопки",
-                "Button B{{ b_num }} Mode": "Режим работы кнопки B{{ b_num }}",
-                "Button B{{ b_num }} Debounce": "Время защиты от дребезга кнопки B{{ b_num }}",
-                "Indication for B{{ b_num }}": "Индикация для кнопки B{{ b_num }}",
-                {% endfor -%}
-
-                "Color": "Цвет",
-                "State": "Состояние",
-
-                "do not use": "не использовать",
-                "green": "зеленый",
-                "red": "красный",
-                "green blinking": "зеленый мигающий",
-                "red blinking": "красный мигающий",
-
-                "K1 on": "K1 включен",
-                "K2 on": "K2 включен",
-                "K1 and K2 on": "K1 и K2 включены",
-                "K1 or(exclusive) K2 on": "K1 или(исключающее) K2 включен",
-                "cleaning mode is active": "режим уборки активен",
-                "alarm is active": "тревога активна",
 
                 "Outputs": "Выходы",
                 "General": "Общее",
