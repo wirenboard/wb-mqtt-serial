@@ -464,7 +464,7 @@
                 "group": "gg_in{{ in_num }}_channels"
             },
             {
-                "name": "Input {{in_num}} Single Press Counter",
+                "name": "Input F{{ in_num }} Single Press Counter",
                 "enabled": false,
                 "reg_type": "input",
                 "address": {{ 464 + in_num - 1 }},
@@ -474,7 +474,7 @@
                 "condition": "in{{ in_num }}_mode==4"
             },
             {
-                "name": "Input {{in_num}} Long Press Counter",
+                "name": "Input F{{ in_num }} Long Press Counter",
                 "enabled": false,
                 "reg_type": "input",
                 "address": {{ 480 + in_num - 1 }},
@@ -484,7 +484,7 @@
                 "condition": "in{{in_num}}_mode==4"
             },
             {
-                "name": "Input {{in_num}} Double Press Counter",
+                "name": "Input F{{ in_num }} Double Press Counter",
                 "enabled": false,
                 "reg_type": "input",
                 "address": {{ 496 + in_num - 1}},
@@ -494,14 +494,14 @@
                 "condition": "in{{in_num}}_mode==4"
             },
             {
-                "name": "Input {{in_num}} Shortlong Press Counter",
+                "name": "Input F{{ in_num }} Shortlong Press Counter",
                 "enabled": false,
                 "reg_type": "input",
                 "address": {{ 512 + in_num - 1}},
                 "type": "value",
                 "sporadic": true,
                 "group": "gg_in{{ in_num }}_channels",
-                "condition": "in{{in_num}}_mode==4"
+                "condition": "in{{ in_num }}_mode==4"
             },
             {% endfor -%}
 
@@ -642,12 +642,12 @@
                 "Input F{{ in_num }}": "Вход F{{ in_num }}",
                 "Input F{{ in_num }} Mode": "Режим работы входа F{{ in_num }}",
                 "Input F{{ in_num }} Debounce": "Время защиты от дребезга входа F{{ in_num }}",
-                "Input {{in_num}} Single Press Counter": "Счетчик коротких нажатий входа F{{ in_num }}",
-                "Input {{in_num}} Long Press Counter": "Счетчик длинных нажатий входа F{{ in_num }}",
-                "Input {{in_num}} Double Press Counter": "Счетчик двойных нажатий входа F{{ in_num }}",
-                "Input {{in_num}} Shortlong Press Counter": "Счетчик коротких, а затем длинных нажатий входа F{{ in_num }}",
+                "Input F{{ in_num }} Single Press Counter": "Счетчик коротких нажатий входа F{{ in_num }}",
+                "Input F{{ in_num }} Long Press Counter": "Счетчик длинных нажатий входа F{{ in_num }}",
+                "Input F{{ in_num }} Double Press Counter": "Счетчик двойных нажатий входа F{{ in_num }}",
+                "Input F{{ in_num }} Shortlong Press Counter": "Счетчик коротких, а затем длинных нажатий входа F{{ in_num }}",
                 "F{{ in_num }} Counter": "Счетчик F{{ in_num }}",
-                "Input F{{ in_num }} sensor performance (only for Larnitech sensors)":  "Работоспособность датчика на входе F{{ in_num }} (только для датчиков Larnitech)",
+                "Input F{{ in_num }} sensor performance (only for Larnitech sensors)": "Работоспособность датчика на входе F{{ in_num }} (только для датчиков Larnitech)",
                 {% endfor -%}
 
                 "control disabled": "управление отключено",
