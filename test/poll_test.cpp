@@ -41,6 +41,8 @@ namespace
               TimeMock(timeMock)
         {}
 
+        using TFakeSerialPort::Expect;
+
         void Expect(const std::vector<int>& request,
                     const std::vector<int>& response,
                     const char* func,
@@ -74,7 +76,7 @@ namespace
 class TPollTest: public TLoggedFixture, public TModbusExpectationsBase
 {
 public:
-    void SetUp()
+    void SetUp() override
     {
         TLoggedFixture::SetUp();
         TimeMock.Reset();
@@ -83,7 +85,7 @@ public:
         Port->Open();
     }
 
-    void TearDown()
+    void TearDown() override
     {
         Port->Close();
         TLoggedFixture::TearDown();

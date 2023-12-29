@@ -634,7 +634,8 @@ namespace Modbus // modbus protocol common utilities
         valueToWrite &= ~(GetLSBMask(reg.GetDataWidth()) << reg.GetDataOffset());
 
         // Place data
-        valueToWrite |= (value <<= reg.GetDataOffset());
+        value <<= reg.GetDataOffset();
+        valueToWrite |= value;
 
         for (size_t i = 0; i < widthInModbusWords; ++i) {
             address.Address = baseAddress + i;
