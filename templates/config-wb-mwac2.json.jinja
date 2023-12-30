@@ -177,7 +177,7 @@
                     {%- else %} "Alarm",
                     {%- endif %}
                 "order": {{ out_num }},
-                "address": {{ 864 + ((in_num - 1) * MMATRIX_OUTPUTS_NUMBER) + (out_num - 1) }},
+                "address": {{ 928 + ((in_num - 1) * MMATRIX_OUTPUTS_NUMBER) + (out_num - 1) }},
                 "reg_type": "holding",
                 "default": 
                     {%- if out_num == OUT_NUM_ALARM %} 2,
