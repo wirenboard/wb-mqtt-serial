@@ -486,8 +486,8 @@
                 "condition": "curtain{{curtain_num}}_mode==1"
             },
             "curtain{{curtain_num}}_safe_state": {
-                "title": "Curtain {{curtain_num}}",
-                "group": "gg_outputs_safe_state",
+                "title": "Curtain {{curtain_num}} safe state",
+                "group": "gg_curtains_{{curtain_num}}",
                 "order": {{curtain_num}},
                 "address": {{938 + curtain_num - 1}},
                 "reg_type": "holding",
@@ -497,6 +497,23 @@
                     "Opened",
                     "Closed"
                 ],
+                "order": 5,
+                "condition": "curtain{{curtain_num}}_mode==1"
+            },
+            "curtain{{curtain_num}}_powerup_action": {
+                "title": "Curtain {{curtain_num}} power up action",
+                "group": "gg_curtains_{{curtain_num}}",
+                "order": {{curtain_num}},
+                "address": {{938 + curtain_num - 1}},
+                "reg_type": "holding",
+                "default": 0,
+                "enum": [0, 1, 2],
+                "enum_titles": [
+                    "No change",
+                    "Open",
+                    "Close"
+                ],
+                "order": 6,
                 "condition": "curtain{{curtain_num}}_mode==1"
             },
             "curtain{{curtain_num}}_safety_behaviour": {
