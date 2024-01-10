@@ -179,7 +179,7 @@
                 "order": {{ out_num }},
                 "address": {{ 928 + ((in_num - 1) * MMATRIX_OUTPUTS_NUMBER) + (out_num - 1) }},
                 "reg_type": "holding",
-                "default": 
+                "default":
                     {%- if out_num == OUT_NUM_ALARM %} 2,
                     {%- else %} 1,
                     {%- endif -%}
@@ -211,7 +211,7 @@
                 "reg_type": "holding",
                 "default": 0,
                 {%- if out_num == OUT_NUM_ALARM %}
-                "enum": [0, 2],
+                "enum": [0, 1],
                 "enum_titles": ["do nothing", "off"],
                 {% else %}
                 "enum": [0, 1, 2, 3],
@@ -227,7 +227,7 @@
                 "reg_type": "holding",
                 "default": 0,
                 {%- if out_num == OUT_NUM_ALARM %}
-                "enum": [0, 2],
+                "enum": [0, 1],
                 "enum_titles": ["do nothing", "off"],
                 {% else %}
                 "enum": [0, 1, 2, 3],
@@ -243,7 +243,7 @@
                 "reg_type": "holding",
                 "default": 0,
                 {%- if out_num == OUT_NUM_ALARM %}
-                "enum": [0, 2],
+                "enum": [0, 1],
                 "enum_titles": ["do nothing", "off"],
                 {% else %}
                 "enum": [0, 1, 2, 3],
@@ -259,7 +259,7 @@
                 "reg_type": "holding",
                 "default": 0,
                 {%- if out_num == OUT_NUM_ALARM %}
-                "enum": [0, 2],
+                "enum": [0, 1],
                 "enum_titles": ["do nothing", "off"],
                 {% else %}
                 "enum": [0, 1, 2, 3],
@@ -275,7 +275,7 @@
                 "reg_type": "holding",
                 "default": 0,
                 {%- if out_num == OUT_NUM_ALARM %}
-                "enum": [0, 2],
+                "enum": [0, 1],
                 "enum_titles": ["do nothing", "off"],
                 {% else %}
                 "enum": [0, 1, 2, 3],
@@ -291,7 +291,7 @@
                 "reg_type": "holding",
                 "default": 0,
                 {%- if out_num == OUT_NUM_ALARM %}
-                "enum": [0, 2],
+                "enum": [0, 1],
                 "enum_titles": ["do nothing", "off"],
                 {% else %}
                 "enum": [0, 1, 2, 3],
