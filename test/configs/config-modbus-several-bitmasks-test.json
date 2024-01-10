@@ -1,0 +1,57 @@
+{
+    "debug": true,
+    "max_unchanged_interval": 100,
+    "ports": [
+        {
+            "path" : "/dev/ttyNSC0",
+            "baud_rate": 9600,
+            "parity": "N",
+            "data_bits": 8,
+            "stop_bits": 1,
+            "enabled": true,
+            "devices" : [
+                {
+                    "slave_id": 1,
+                    "enabled": true,
+                    "name": "Modbus-sample",
+                    "id": "modbus-sample",
+                    "max_read_registers": 10,
+                    "frame_timeout_ms": 0,
+                    "channels":
+                    [
+                        {
+                            "name": "Presence of negative floors",
+                            "reg_type": "input",
+                            "address": "0x10:8:7"
+                        },
+                        {
+                            "name": "Total number of stops",
+                            "reg_type": "input",
+                            "address": "0x10:0:8"
+                        },
+                        {
+                            "name": "Current stop (floor)",
+                            "reg_type": "input",
+                            "address": "0x11:8:8"
+                        },
+                        {
+                            "name": "State of door 1",
+                            "reg_type": "input",
+                            "address": "0x11:0:8"
+                        },
+                        {
+                            "name": "State of door 2",
+                            "reg_type": "input",
+                            "address": "0x12:8:8"
+                        },
+                        {
+                            "name": "Motion state",
+                            "reg_type": "input",
+                            "address": "0x12:0:8"
+                        }
+                    ]
+                }
+            ]
+        }
+    ]
+}

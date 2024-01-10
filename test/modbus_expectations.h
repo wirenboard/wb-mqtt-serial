@@ -91,4 +91,7 @@ public:
 
     void EnqueueLittleEndianReadResponses();
     void EnqueueLittleEndianWriteResponses();
+
+    /*--------------------------------------*/
+    void EnqueueInputReadResponse(uint8_t addrLow, const std::vector<int>& data);
 };
