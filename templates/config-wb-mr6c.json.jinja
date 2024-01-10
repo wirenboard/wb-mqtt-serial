@@ -667,7 +667,7 @@
             {
                 "name": "Curtain {{curtain_num}} Open",
                 "reg_type": "coil",
-                "address": {{curtain_num - 1}},
+                "address": {{16 + curtain_num - 1}},
                 "type": "switch",
                 "sporadic": true,
                 "group": "gg_curtains_channels",
@@ -676,7 +676,7 @@
             {
                 "name": "Curtain {{curtain_num}} Close",
                 "reg_type": "coil",
-                "address": {{curtain_num + 3}},
+                "address": {{17 + curtain_num - 1}},
                 "type": "switch",
                 "sporadic": true,
                 "group": "gg_curtains_channels",
