@@ -326,7 +326,7 @@
                 "title": "sp_title",
                 "order": 1,
                 {% set mm_row_offset = 7 if in_num == 0 else in_num - 1 -%}
-                "address": {{1280 + curtain_num - 1 + mm_row_offset * CURTAINS_MMATRIX_OUTPUTS_NUMBER}},
+                "address": {{1400 + curtain_num - 1 + mm_row_offset * CURTAINS_MMATRIX_OUTPUTS_NUMBER}},
                 "reg_type": "holding",
                 "default": 0,
                 "enum": [0, 1, 2, 3, 4],
@@ -338,7 +338,7 @@
                 "title": "lp_title",
                 "order": 2,
                 {% set mm_row_offset = 7 if in_num == 0 else in_num - 1 -%}
-                "address": {{1304 + curtain_num - 1 + mm_row_offset * CURTAINS_MMATRIX_OUTPUTS_NUMBER}},
+                "address": {{1432 + curtain_num - 1 + mm_row_offset * CURTAINS_MMATRIX_OUTPUTS_NUMBER}},
                 "reg_type": "holding",
                 "default": 0,
                 "enum": [0, 1, 2, 3, 4, 5, 6, 7],
@@ -350,7 +350,7 @@
                 "title": "dp_title",
                 "order": 3,
                 {% set mm_row_offset = 7 if in_num == 0 else in_num - 1 -%}
-                "address": {{1328 + curtain_num - 1 + mm_row_offset * CURTAINS_MMATRIX_OUTPUTS_NUMBER}},
+                "address": {{1464 + curtain_num - 1 + mm_row_offset * CURTAINS_MMATRIX_OUTPUTS_NUMBER}},
                 "reg_type": "holding",
                 "default": 0,
                 "enum": [0, 1, 2, 3, 4],
@@ -362,7 +362,7 @@
                 "title": "slp_title",
                 "order": 4,
                 {% set mm_row_offset = 7 if in_num == 0 else in_num - 1 -%}
-                "address": {{1352 + curtain_num - 1 + mm_row_offset * CURTAINS_MMATRIX_OUTPUTS_NUMBER}},
+                "address": {{1496 + curtain_num - 1 + mm_row_offset * CURTAINS_MMATRIX_OUTPUTS_NUMBER}},
                 "reg_type": "holding",
                 "default": 0,
                 "enum": [0, 1, 2, 3, 4, 5, 6, 7],
@@ -445,7 +445,7 @@
             "curtain{{curtain_num}}_mode": {
                 "title": "Use outputs {{curtain_num * 2 - 1}}-{{curtain_num * 2}} for curtain {{curtain_num}} control",
                 "group": "gg_curtains_{{curtain_num}}",
-                "address": {{ 8 + curtain_num - 1 }},
+                "address": {{ 1280 + curtain_num - 1 }},
                 "reg_type": "holding",
                 "default": 0,
                 "enum": [0, 1],
@@ -458,7 +458,7 @@
             "curtain{{curtain_num}}_open_time": {
                 "title": "Curtain {{curtain_num}} open time (s)",
                 "group": "gg_curtains_{{curtain_num}}",
-                "address": {{ 16 + curtain_num - 1 }},
+                "address": {{ 1328 + curtain_num - 1 }},
                 "reg_type": "holding",
                 "scale": 0.1,
                 "default": 5.0,
@@ -470,7 +470,7 @@
             "curtain{{curtain_num}}_close_time": {
                 "title": "Curtain {{curtain_num}} close time (s)",
                 "group": "gg_curtains_{{curtain_num}}",
-                "address": {{ 24 + curtain_num - 1 }},
+                "address": {{ 1332 + curtain_num - 1 }},
                 "reg_type": "holding",
                 "scale": 0.1,
                 "default": 5.0,
@@ -482,7 +482,7 @@
             "curtain{{curtain_num}}_deadtime": {
                 "title": "Curtain {{curtain_num}} dead time (ms)",
                 "group": "gg_curtains_{{curtain_num}}",
-                "address": {{ 32 + curtain_num - 1 }},
+                "address": {{ 1336 + curtain_num - 1 }},
                 "reg_type": "holding",
                 "default": 200,
                 "min": 100,
@@ -490,10 +490,10 @@
                 "order": 4,
                 "condition": "curtain{{curtain_num}}_mode==1"
             },
-            "curtain{{curtain_num}}_safe_state": {
-                "title": "Curtain {{curtain_num}} safe state",
+            "curtain{{curtain_num}}_safe_position": {
+                "title": "Curtain {{curtain_num}} safe position",
                 "group": "gg_curtains_{{curtain_num}}",
-                "address": {{938 + curtain_num - 1}},
+                "address": {{1292 + curtain_num - 1}},
                 "reg_type": "holding",
                 "default": 0,
                 "enum": [0, 1],
@@ -507,7 +507,7 @@
             "curtain{{curtain_num}}_powerup_action": {
                 "title": "Curtain {{curtain_num}} power up action",
                 "group": "gg_curtains_{{curtain_num}}",
-                "address": {{938 + curtain_num - 1}},
+                "address": {{1284 + curtain_num - 1}},
                 "reg_type": "holding",
                 "default": 0,
                 "enum": [0, 1, 2],
@@ -523,7 +523,7 @@
                 "title": "Curtain {{curtain_num}}",
                 "group": "gg_safety_behaviour",
                 "order": {{curtain_num}},
-                "address": {{938 + curtain_num - 1}},
+                "address": {{1288 + curtain_num - 1}},
                 "reg_type": "holding",
                 "default": 0,
                 "enum": [0, 1],
@@ -537,7 +537,7 @@
                 "title": "Curtain {{curtain_num}}",
                 "group": "gg_safety_input_control",
                 "order": {{curtain_num}},
-                "address": {{946 + curtain_num - 1}},
+                "address": {{1296 + curtain_num - 1}},
                 "reg_type": "holding",
                 "default": 0,
                 "enum": [0, 1, 2],
