@@ -7,6 +7,7 @@
 
 {% set OUTPUTS_NUMBER = 6 -%}
 {% set MMATRIX_OUTPUTS_NUMBER = 8 -%}
+{% set CURTAINS_MMATRIX_OUTPUTS_NUMBER = MMATRIX_OUTPUTS_NUMBER // 2 -%}
 {% set FIRST_INPUT = 0 -%}
 {
     "title": "template_title",
@@ -324,7 +325,8 @@
                 "group": "gg_in{{in_num}}_curtain{{curtain_num}}_button_actions",
                 "title": "sp_title",
                 "order": 1,
-                "address": {{600 + curtain_num - 1}},
+                {% set mm_row_offset = 7 if in_num == 0 else in_num - 1 -%}
+                "address": {{1280 + curtain_num - 1 + mm_row_offset * CURTAINS_MMATRIX_OUTPUTS_NUMBER}},
                 "reg_type": "holding",
                 "default": 0,
                 "enum": [0, 1, 2, 3, 4],
@@ -335,7 +337,8 @@
                 "group": "gg_in{{in_num}}_curtain{{curtain_num}}_button_actions",
                 "title": "lp_title",
                 "order": 2,
-                "address": {{664 + curtain_num - 1}},
+                {% set mm_row_offset = 7 if in_num == 0 else in_num - 1 -%}
+                "address": {{1304 + curtain_num - 1 + mm_row_offset * CURTAINS_MMATRIX_OUTPUTS_NUMBER}},
                 "reg_type": "holding",
                 "default": 0,
                 "enum": [0, 1, 2, 3, 4, 5, 6, 7],
@@ -346,7 +349,8 @@
                 "group": "gg_in{{in_num}}_curtain{{curtain_num}}_button_actions",
                 "title": "dp_title",
                 "order": 3,
-                "address": {{728 + curtain_num - 1}},
+                {% set mm_row_offset = 7 if in_num == 0 else in_num - 1 -%}
+                "address": {{1328 + curtain_num - 1 + mm_row_offset * CURTAINS_MMATRIX_OUTPUTS_NUMBER}},
                 "reg_type": "holding",
                 "default": 0,
                 "enum": [0, 1, 2, 3, 4],
@@ -357,7 +361,8 @@
                 "group": "gg_in{{in_num}}_curtain{{curtain_num}}_button_actions",
                 "title": "slp_title",
                 "order": 4,
-                "address": {{792 + curtain_num - 1}},
+                {% set mm_row_offset = 7 if in_num == 0 else in_num - 1 -%}
+                "address": {{1352 + curtain_num - 1 + mm_row_offset * CURTAINS_MMATRIX_OUTPUTS_NUMBER}},
                 "reg_type": "holding",
                 "default": 0,
                 "enum": [0, 1, 2, 3, 4, 5, 6, 7],
@@ -488,7 +493,6 @@
             "curtain{{curtain_num}}_safe_state": {
                 "title": "Curtain {{curtain_num}} safe state",
                 "group": "gg_curtains_{{curtain_num}}",
-                "order": {{curtain_num}},
                 "address": {{938 + curtain_num - 1}},
                 "reg_type": "holding",
                 "default": 0,
@@ -503,7 +507,6 @@
             "curtain{{curtain_num}}_powerup_action": {
                 "title": "Curtain {{curtain_num}} power up action",
                 "group": "gg_curtains_{{curtain_num}}",
-                "order": {{curtain_num}},
                 "address": {{938 + curtain_num - 1}},
                 "reg_type": "holding",
                 "default": 0,
