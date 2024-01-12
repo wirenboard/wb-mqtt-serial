@@ -315,11 +315,9 @@ namespace
         r["propertyOrder"] = propertyOrder;
 
         std::string format(deviceTemplate["ui_options"].get("channels_format", "default").asString());
-        bool tabs = deviceTemplate.isMember("groups");
+        bool tabs = true;
         if (format == "default") {
             tabs = std::any_of(channels.begin(), channels.end(), IsSubdeviceChannel);
-        } else {
-            tabs = true;
         }
 
         if (tabs) {

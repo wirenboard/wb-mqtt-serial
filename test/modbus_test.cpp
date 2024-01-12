@@ -760,6 +760,31 @@ TEST_F(TModbusBitmasksIntegrationTest, SingleWrite)
     }
 }
 
+class TModbusSeveralBitmasksIntegrationTest: public TModbusIntegrationTest
+{
+protected:
+    const char* ConfigPath() const override
+    {
+        return "configs/config-modbus-several-bitmasks-test.json";
+    }
+};
+
+TEST_F(TModbusSeveralBitmasksIntegrationTest, Poll)
+{
+    EnqueueInputReadResponse(16, {0xA1, 0xA2});
+    EnqueueInputReadResponse(16, {0xA1, 0xA2});
+    EnqueueInputReadResponse(17, {0xB3, 0xB4});
+    EnqueueInputReadResponse(17, {0xB3, 0xB4});
+    EnqueueInputReadResponse(18, {0xC5, 0xC6});
+    EnqueueInputReadResponse(18, {0xC5, 0xC6});
+    EnqueueInputReadResponse(16, {0x00, 0x02, 0x02, 0x04, 0xff, 0x04});
+
+    Note() << "LoopOnce()";
+    for (auto i = 0; i < 7; ++i) {
+        SerialDriver->LoopOnce();
+    }
+}
+
 class TModbusBitmasksU32IntegrationTest: public TModbusIntegrationTest
 {
 protected:

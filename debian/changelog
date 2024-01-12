@@ -1,3 +1,15 @@
+wb-mqtt-serial (2.108.8) stable; urgency=medium
+
+  * Add tests. No functional changes
+
+ -- Petr Krasnoshchekov <petr.krasnoshchekov@wirenboard.com>  Wed, 10 Jan 2024 16:47:24 +0500
+
+wb-mqtt-serial (2.108.7) stable; urgency=medium
+
+  * Fix clang-tidy issues
+
+ -- Nikolay Korotkiy <nikolay.korotkiy@wirenboard.com>  Wed, 27 Dec 2023 18:00:00 +0400
+
 wb-mqtt-serial (2.108.6) stable; urgency=medium
 
   * Fix duplicated parameters for MR3, MR6C, MR6C-NC templates

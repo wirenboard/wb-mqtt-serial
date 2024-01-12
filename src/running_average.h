@@ -1,4 +1,5 @@
 #pragma once
+#include <stddef.h>
 #include <stdint.h>
 
 template<class ValueType, size_t WindowSize> class TRunningAverage

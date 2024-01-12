@@ -255,6 +255,7 @@ TUInt32SlaveId::TUInt32SlaveId(const std::string& slaveId, bool allowBroadcast):
 {
     if (allowBroadcast) {
         if (slaveId.empty()) {
+            SlaveId = 0;
             HasBroadcastSlaveId = true;
             return;
         }

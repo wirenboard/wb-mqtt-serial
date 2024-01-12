@@ -2571,3 +2571,20 @@ void TModbusExpectations::EnqueueLittleEndianWriteResponses()
                        }),
                        __func__);
 }
+
+void TModbusExpectations::EnqueueInputReadResponse(uint8_t addrLow, const std::vector<int>& data)
+{
+    std::vector<int> resp;
+    resp.push_back(0x04);
+    resp.push_back(data.size());
+    resp.insert(resp.end(), data.begin(), data.end());
+    Expector()->Expect(WrapPDU({
+                           0x04,                              // function code
+                           0x00,                              // starting address Hi
+                           addrLow,                           // starting address Lo
+                           0x00,                              // quantity Hi
+                           static_cast<int>(data.size() / 2), // quantity Lo
+                       }),
+                       WrapPDU(resp),
+                       __func__);
+}
