@@ -1,3 +1,9 @@
+wb-mqtt-serial (2.109.0) stable; urgency=medium
+
+  * Add CT reverse setting to map templates
+
+ -- Dmitry Borisov <dmitry.borisov@wirenboard.com>  Fri, 12 Jan 2023 18:40:00 +0600
+
 wb-mqtt-serial (2.108.8) stable; urgency=medium
 
   * Add tests. No functional changes
