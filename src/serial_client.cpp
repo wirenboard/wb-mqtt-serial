@@ -15,9 +15,9 @@ namespace
     const auto PORT_OPEN_ERROR_NOTIFICATION_INTERVAL = 5min;
     const auto CLOSED_PORT_CYCLE_TIME = 500ms;
     const auto MAX_POLL_TIME = 100ms;
-    const auto MAX_FLUSHES_WHEN_POLL_IS_DUE = 20;
+    // const auto MAX_FLUSHES_WHEN_POLL_IS_DUE = 20;
     const auto BALANCING_THRESHOLD = 500ms;
-    const auto MIN_READ_EVENTS_TIME = 25ms;
+    // const auto MIN_READ_EVENTS_TIME = 25ms;
     const size_t MAX_EVENT_READ_ERRORS = 10;
 
     std::chrono::milliseconds GetReadEventsPeriod(const TPort& port)

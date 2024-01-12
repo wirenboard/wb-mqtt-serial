@@ -151,12 +151,12 @@ TEST_F(TExpressionsTest, Eval)
     TParams params;
     TParser parser;
     for (const auto& expr: trueExpressions) {
-        bool res;
+        bool res = false;
         ASSERT_NO_THROW(res = Eval(parser.Parse(expr).get(), params)) << expr;
         ASSERT_TRUE(res) << expr;
     }
     for (const auto& expr: falseExpressions) {
-        bool res;
+        bool res = true;
         ASSERT_NO_THROW(res = Eval(parser.Parse(expr).get(), params)) << expr;
         ASSERT_FALSE(res) << expr;
     }
