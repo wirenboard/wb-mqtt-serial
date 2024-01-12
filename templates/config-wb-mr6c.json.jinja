@@ -98,12 +98,13 @@
             },
             {
                 "title": "Curtains Control",
+                "description": "curtains_control_description",
                 "id": "g_curtains_control"
             },
             {% for curtain_num in range(1, OUTPUTS_NUMBER // 2 + 1) -%}
             {
-                "title": "Curtains {{curtain_num}}",
-                "id": "gg_curtains_{{curtain_num}}",
+                "title": "Curtain {{curtain_num}}",
+                "id": "gg_curtain_{{curtain_num}}",
                 "group": "g_curtains_control"
             },
             {% endfor -%}
@@ -223,6 +224,7 @@
                 "condition": "in{{in_num}}_mode==6"
             },
             {% for out_num in range(1, OUTPUTS_NUMBER + 1) -%}
+            {% set curtain_num = (out_num + 1) // 2 -%}
             "in{{in_num}}_out{{out_num}}_actions": {
                 "group": "gg_in{{in_num}}_mapping_matrix_actions",
                 "title": "Output {{out_num}}",
@@ -256,9 +258,8 @@
                     "toggle / set",
                     "toggle / toggle"
                 ],
-                "condition": "in{{in_num}}_mode==4"
+                "condition": "in{{in_num}}_mode==4&&(isDefined(curtain{{curtain_num}}_mode)==0||curtain{{curtain_num}}_mode==0)"
             },
-            {% set curtain_num = (out_num + 1) // 2 -%}
             "in{{in_num}}_out{{out_num}}_sp": {
                 "group": "gg_in{{in_num}}_out{{out_num}}_button_actions",
                 "title": "sp_title",
@@ -443,78 +444,78 @@
             },
             {% for curtain_num in range(1, OUTPUTS_NUMBER // 2 + 1) -%}
             "curtain{{curtain_num}}_mode": {
-                "title": "Use outputs {{curtain_num * 2 - 1}}-{{curtain_num * 2}} for curtain {{curtain_num}} control",
-                "group": "gg_curtains_{{curtain_num}}",
+                "title": "Use outputs {{curtain_num * 2 - 1}} and {{curtain_num * 2}} for curtain {{curtain_num}} control",
+                "group": "gg_curtain_{{curtain_num}}",
                 "address": {{ 1280 + curtain_num - 1 }},
                 "reg_type": "holding",
                 "default": 0,
                 "enum": [0, 1],
                 "enum_titles": [
-                    "No, use outputs {{curtain_num * 2 - 1}}-{{curtain_num * 2}} as regular outputs",
+                    "No, use outputs {{curtain_num * 2 - 1}} and {{curtain_num * 2}} as regular outputs",
                     "Use output {{curtain_num * 2 - 1}} for open, output {{curtain_num * 2}} for close"
                 ],
                 "order": 1
             },
             "curtain{{curtain_num}}_open_time": {
-                "title": "Curtain {{curtain_num}} open time (s)",
-                "group": "gg_curtains_{{curtain_num}}",
+                "title": "Open time (s)",
+                "group": "gg_curtain_{{curtain_num}}",
                 "address": {{ 1328 + curtain_num - 1 }},
                 "reg_type": "holding",
                 "scale": 0.1,
-                "default": 5.0,
+                "default": 10.0,
                 "min": 1.0,
-                "max": 180.0,
+                "max": 600.0,
                 "order": 2,
                 "condition": "curtain{{curtain_num}}_mode==1"
             },
             "curtain{{curtain_num}}_close_time": {
-                "title": "Curtain {{curtain_num}} close time (s)",
-                "group": "gg_curtains_{{curtain_num}}",
+                "title": "Close time (s)",
+                "group": "gg_curtain_{{curtain_num}}",
                 "address": {{ 1332 + curtain_num - 1 }},
                 "reg_type": "holding",
                 "scale": 0.1,
-                "default": 5.0,
+                "default": 10.0,
                 "min": 1.0,
-                "max": 180.0,
+                "max": 600.0,
                 "order": 3,
                 "condition": "curtain{{curtain_num}}_mode==1"
             },
             "curtain{{curtain_num}}_deadtime": {
-                "title": "Curtain {{curtain_num}} dead time (ms)",
-                "group": "gg_curtains_{{curtain_num}}",
+                "title": "Dead time (ms)",
+                "group": "gg_curtain_{{curtain_num}}",
                 "address": {{ 1336 + curtain_num - 1 }},
                 "reg_type": "holding",
-                "default": 200,
-                "min": 100,
+                "default": 500,
+                "min": 50,
                 "max": 10000,
                 "order": 4,
                 "condition": "curtain{{curtain_num}}_mode==1"
             },
             "curtain{{curtain_num}}_safe_position": {
-                "title": "Curtain {{curtain_num}} safe position",
-                "group": "gg_curtains_{{curtain_num}}",
+                "title": "Safe position",
+                "group": "gg_curtain_{{curtain_num}}",
                 "address": {{1292 + curtain_num - 1}},
                 "reg_type": "holding",
                 "default": 0,
                 "enum": [0, 1],
                 "enum_titles": [
-                    "Opened",
-                    "Closed"
+                    "opened",
+                    "closed"
                 ],
                 "order": 5,
                 "condition": "curtain{{curtain_num}}_mode==1"
             },
             "curtain{{curtain_num}}_powerup_action": {
-                "title": "Curtain {{curtain_num}} power up action",
-                "group": "gg_curtains_{{curtain_num}}",
+                "title": "Power up action",
+                "group": "gg_curtain_{{curtain_num}}",
                 "address": {{1284 + curtain_num - 1}},
                 "reg_type": "holding",
                 "default": 0,
                 "enum": [0, 1, 2],
                 "enum_titles": [
-                    "No change",
-                    "Open",
-                    "Close"
+                    "no change",
+                    "open",
+                    "close"
                 ],
                 "order": 6,
                 "condition": "curtain{{curtain_num}}_mode==1"
@@ -674,20 +675,32 @@
             },
             {% endfor -%}
             {% for out_num in range(1, OUTPUTS_NUMBER + 1) -%}
+            {% set curtain_num = (out_num + 1) // 2 -%}
             {
                 "name": "K{{out_num}}",
                 "reg_type": "coil",
                 "address": {{out_num - 1}},
                 "type": "switch",
                 "sporadic": true,
-                "group": "gg_outputs_channels"
+                "group": "gg_outputs_channels",
+                "condition": "isDefined(curtain{{curtain_num}}_mode)==0||curtain{{curtain_num}}_mode==0"
+            },
+            {
+                "name": "K{{out_num}}",
+                "reg_type": "coil",
+                "readonly": true,
+                "address": {{out_num - 1}},
+                "type": "switch",
+                "sporadic": true,
+                "group": "gg_outputs_channels",
+                "condition": "curtain{{curtain_num}}_mode==1"
             },
             {% endfor -%}
             {% for curtain_num in range(1, OUTPUTS_NUMBER // 2 + 1) -%}
             {
                 "name": "Curtain {{curtain_num}} Open",
                 "reg_type": "coil",
-                "address": {{16 + curtain_num - 1}},
+                "address": {{16 + (curtain_num - 1) * 2}},
                 "type": "switch",
                 "sporadic": true,
                 "group": "gg_curtains_channels",
@@ -696,7 +709,7 @@
             {
                 "name": "Curtain {{curtain_num}} Close",
                 "reg_type": "coil",
-                "address": {{17 + curtain_num - 1}},
+                "address": {{17 + (curtain_num - 1) * 2}},
                 "type": "switch",
                 "sporadic": true,
                 "group": "gg_curtains_channels",
@@ -791,7 +804,10 @@
 
                 "lp_hold_time_description": "If press is longer than the specified time then it is long",
                 "secp_waiting_time_description": "If there is no second press during the specified time then press is single. 0 - disables all presses except short and long. Adds a delay to the response to a short press",
-                "debounce_time_description": "For press detection must be 5-10 times less than second press waiting time. Adds a delay to the response to presses. Firmware up to 1.19.0 supports maximum 250 ms"
+                "debounce_time_description": "For press detection must be 5-10 times less than second press waiting time. Adds a delay to the response to presses. Firmware up to 1.19.0 supports maximum 250 ms",
+
+                "curtains_control_description": "For using curtain mode firmware v1.21.0 or newer is required",
+                "curtain_mode_description": "Firmware 1.21.0 or newer is required for using curtain mode"
             },
             "ru": {
                 "template_title": "{{ title_ru}}",
@@ -887,6 +903,37 @@
                 "Don't change": "Не блокировать",
                 "Disable in safety mode": "Блокировать в безопасном режиме",
                 "Enable only in safety mode": "Разрешить только в безопасном режиме",
+
+                "no change": "не менять",
+                "open": "открыть",
+                "close": "закрыть",
+                "open/close": "открыть/закрыть",
+                "stop": "остановить",
+                "opening while pressed": "открывать пока кнопка нажата",
+                "closing while pressed": "закрывать пока кнопка нажата",
+                "opening/closing while pressed": "открывать/закрывать пока кнопка нажата",
+
+                "opened": "oткрыта",
+                "closed": "закрыта",
+
+                "Curtains Control": "Управление шторами",
+                "Open time (s)": "Время открытия (с)",
+                "Close time (s)": "Время закрытия (с)",
+                "Dead time (ms)": "Пауза при смене направления (мс)",
+                "Safe position": "Безопасное положение",
+                "Power up action": "Действие при подаче питания",
+
+                {% for curtain_num in range(1, OUTPUTS_NUMBER // 2 + 1) -%}
+                "Curtain {{curtain_num}}": "Штора {{curtain_num}}",
+                "Curtain {{curtain_num}} Open": "Открыть штору {{curtain_num}}",
+                "Curtain {{curtain_num}} Close": "Закрыть штору {{curtain_num}}",
+                "Curtain {{curtain_num}} Actions": "Действия для шторы {{curtain_num}}",
+                "Use outputs {{curtain_num * 2 - 1}} and {{curtain_num * 2}} for curtain {{curtain_num}} control": "Использовать выходы {{curtain_num * 2 - 1}} и {{curtain_num * 2}} для управления шторой {{curtain_num}}",
+                "No, use outputs {{curtain_num * 2 - 1}} and {{curtain_num * 2}} as regular outputs": "Нет, использовать выходы {{curtain_num * 2 - 1}} и {{curtain_num * 2}} как обычные выходы",
+                "Use output {{curtain_num * 2 - 1}} for open, output {{curtain_num * 2}} for close": "Да, использовать выход {{curtain_num * 2 - 1}} для открытия, выход {{curtain_num * 2}} для закрытия",
+                {% endfor -%}
+
+                "curtains_control_description": "Для использования режима штор требуется прошивка 1.21.0 или новее",
 
                 "Baud rate": "Скорость обмена",
                 "baud_rate_description": "Перед изменением параметра убедитесь, что связь с устройством установлена. Выберите нужную скорость обмена, сохраните конфигурацию, а затем укажите в настройках порта эту же скорость.",
