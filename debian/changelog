@@ -1,3 +1,9 @@
+wb-mqtt-serial (2.109.0) stable; urgency=medium
+
+  * Curtains support for WB-MR* templates
+
+ -- Pavel Gasheev <pavel.gasheev@wirenboard.ru>  Fri, 12 Jan 2024 16:58:52 +0300
+
 wb-mqtt-serial (2.108.8) stable; urgency=medium
 
   * Add tests. No functional changes
