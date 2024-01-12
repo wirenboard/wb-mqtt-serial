@@ -22402,6 +22402,12 @@ tpl1_oni_plc_w_ema_06U00
 	Serial  =>  Serial
 	Uptime  =>  Uptime
 tpl1_oni_plc_w_emd_0706
+	Curtain 1 Close  =>  Curtain 1 Close
+	Curtain 1 Open  =>  Curtain 1 Open
+	Curtain 2 Close  =>  Curtain 2 Close
+	Curtain 2 Open  =>  Curtain 2 Open
+	Curtain 3 Close  =>  Curtain 3 Close
+	Curtain 3 Open  =>  Curtain 3 Open
 	FW Version  =>  FW Version
 	Input 0  =>  Input 0
 	Input 0 Double Press Counter  =>  Input 0 Double Press Counter
