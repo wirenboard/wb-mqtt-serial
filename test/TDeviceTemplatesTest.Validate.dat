@@ -18778,6 +18778,12 @@ WB-MR3LV
 	Supply Voltage  =>  Supply Voltage
 	Uptime  =>  Uptime
 WB-MR6C
+	Curtain 1 Close  =>  Curtain 1 Close
+	Curtain 1 Open  =>  Curtain 1 Open
+	Curtain 2 Close  =>  Curtain 2 Close
+	Curtain 2 Open  =>  Curtain 2 Open
+	Curtain 3 Close  =>  Curtain 3 Close
+	Curtain 3 Open  =>  Curtain 3 Open
 	FW Version  =>  FW Version
 	Input 0  =>  Input 0
 	Input 0 Double Press Counter  =>  Input 0 Double Press Counter
