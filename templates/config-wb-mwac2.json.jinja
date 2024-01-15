@@ -1,5 +1,6 @@
 {% set LP_INPUTS_NUMBER = 2 -%}
 {% set INPUTS_NUMBER = 6 -%}
+{% set IN_NUM_CLEANING_TRIG = 6 -%}
 {% set MMATRIX_OUTPUTS_NUMBER = 8 -%}
 {% set OUTPUTS_NUMBER = 4 -%}
 
@@ -25,8 +26,9 @@
                 "id": "counters"
             },
             {% for in_num in range(1, INPUTS_NUMBER + 1) -%}
+            {% set letter = "F" if in_num < IN_NUM_CLEANING_TRIG else "S" -%}
             {
-                "title": "Input F{{ in_num }}",
+                "title": "Input {{ letter }}{{ in_num }}",
                 "id": "input_f{{ in_num }}"
             },
             {
@@ -118,12 +120,13 @@
 
         "parameters": {
             {% for in_num in range(1, INPUTS_NUMBER + 1) -%}
+            {% set letter = "F" if in_num < IN_NUM_CLEANING_TRIG else "S" -%}
             "in{{ in_num }}_mode": {
-                "title": "Input F{{ in_num }} Mode",
+                "title": "Input {{ letter }}{{ in_num }} Mode",
                 "address": {{ 8 + in_num }},
                 "reg_type": "holding",
                 "enum": [3, 4, 5],
-                "default": 5,
+                "default": {{ 4 if in_num == IN_NUM_CLEANING_TRIG else 5 }},
                 "enum_titles": [
                     "control disabled",
                     "discrete input or button",
@@ -133,7 +136,7 @@
                 "order": 1
             },
             "in{{ in_num }}_debounce_ms": {
-                "title": "Input F{{ in_num }} Debounce (ms)",
+                "title": "Input {{ letter }}{{ in_num }} Debounce (ms)",
                 "description": "debounce_description",
                 "address": {{ 19 + in_num }},
                 "reg_type": "holding",
@@ -203,8 +206,8 @@
             {% endfor -%}
 
             {% for out_num in range(1, OUTPUTS_NUMBER + 1) -%}
-            "in{{in_num}}_out{{out_num}}_contact_closure": {
-                "group": "gg_in{{in_num}}_out{{out_num}}_button_actions",
+            "in{{ in_num }}_out{{ out_num }}_contact_closure": {
+                "group": "gg_in{{ in_num }}_out{{ out_num }}_button_actions",
                 "title": "Contact closure",
                 "order": 1,
                 "address": {{ 864 + out_num - 1 + (in_num - 1) * MMATRIX_OUTPUTS_NUMBER }},
@@ -241,11 +244,12 @@
                 "order": 3,
                 "address": {{ 544 + out_num - 1 + (in_num - 1) * MMATRIX_OUTPUTS_NUMBER }},
                 "reg_type": "holding",
-                "default": 0,
                 {%- if out_num == OUT_NUM_ALARM %}
+                "default": 0,
                 "enum": [0, 1],
                 "enum_titles": ["do nothing", "off"],
                 {% else %}
+                "default": {{ 3 if in_num == IN_NUM_CLEANING_TRIG else 0 }},
                 "enum": [0, 1, 2, 3],
                 "enum_titles": ["do nothing", "off", "on", "toggle"],
                 {% endif -%}
@@ -417,8 +421,9 @@
             {% endfor -%}
 
             {% for in_num in range(1, INPUTS_NUMBER + 1) -%}
+            {% set letter = "F" if in_num < IN_NUM_CLEANING_TRIG else "S" -%}
             {
-                "name": "F{{ in_num }}",
+                "name": "{{ letter }}{{ in_num }}",
                 "reg_type": "discrete",
                 "address": {{ in_num - 1 }},
                 "type": "switch",
@@ -427,7 +432,7 @@
                 "group": "gg_in{{ in_num }}_channels"
             },
             {
-                "name": "F{{ in_num }}",
+                "name": "{{ letter }}{{ in_num }}",
                 "reg_type": "discrete",
                 "address": {{ in_num - 1 }},
                 "type": "switch",
@@ -436,7 +441,7 @@
                 "group": "gg_in{{ in_num }}_channels"
             },
             {
-                "name": "F{{ in_num }} Counter",
+                "name": "Input {{ letter }}{{ in_num }} Counter",
                 "reg_type": "input",
                 "address": {{ 31 + in_num}},
                 "type": "value",
@@ -445,7 +450,7 @@
                 "group": "gg_in{{ in_num }}_channels"
             },
             {
-                "name": "F{{ in_num }} Counter",
+                "name": "Input {{ letter }}{{ in_num }} Counter",
                 "reg_type": "input",
                 "address": {{ 31 + in_num }},
                 "type": "value",
@@ -454,7 +459,7 @@
                 "group": "gg_in{{ in_num }}_channels"
             },
             {
-                "name": "Input F{{ in_num }} sensor performance (only for Larnitech sensors)",
+                "name": "Input {{ letter }}{{ in_num }} sensor performance (only for Larnitech sensors)",
                 "reg_type": "input",
                 "address": {{ 1070 + in_num }},
                 "type": "switch",
@@ -464,7 +469,7 @@
                 "group": "gg_in{{ in_num }}_channels"
             },
             {
-                "name": "Input F{{ in_num }} Single Press Counter",
+                "name": "Input {{ letter }}{{ in_num }} Single Press Counter",
                 "enabled": false,
                 "reg_type": "input",
                 "address": {{ 464 + in_num - 1 }},
@@ -474,7 +479,7 @@
                 "condition": "in{{ in_num }}_mode==4"
             },
             {
-                "name": "Input F{{ in_num }} Long Press Counter",
+                "name": "Input {{ letter }}{{ in_num }} Long Press Counter",
                 "enabled": false,
                 "reg_type": "input",
                 "address": {{ 480 + in_num - 1 }},
@@ -484,7 +489,7 @@
                 "condition": "in{{in_num}}_mode==4"
             },
             {
-                "name": "Input F{{ in_num }} Double Press Counter",
+                "name": "Input {{ letter }}{{ in_num }} Double Press Counter",
                 "enabled": false,
                 "reg_type": "input",
                 "address": {{ 496 + in_num - 1}},
@@ -494,7 +499,7 @@
                 "condition": "in{{in_num}}_mode==4"
             },
             {
-                "name": "Input F{{ in_num }} Shortlong Press Counter",
+                "name": "Input {{ letter }}{{ in_num }} Shortlong Press Counter",
                 "enabled": false,
                 "reg_type": "input",
                 "address": {{ 512 + in_num - 1}},
@@ -618,9 +623,9 @@
                 "poll_timeout_description": "Parameter defines the time of absence of polling in seconds, after which safety mode will be activated.",
 
                 "wet_cleaning_mode_description": "Wet cleaning mode is used to disable reactions on flood sensors when a room is being celaned. When started/stopped, a sound signal is emitted, and during the activity of the mode, the indicators of the inputs periodically flash briefly. Disabled automatically after the specified time.",
-                "wet_cleaning_mode_timer_description": "1 – 1440 min, 20 by default",
+                "wet_cleaning_mode_timer_description": "1 — 1440 min, 20 by default",
 
-                "debounce_description": "For button press detection, the value must be 5 — 10 times less than the waiting time for the second press. Adds a delay to the response to presses. 0 – 2000 ms, 50 by default.",
+                "debounce_description": "For button press detection, the value must be 5 — 10 times less than the waiting time for the second press. Adds a delay to the response to presses. 0 — 2000 ms, 50 by default.",
                 "lp_hold_time_title": "Long Press Time (ms)",
                 "lp_hold_time_description": "If press is longer than the specified time then it is long. 500 — 5000 ms, 1000 by default.",
                 "secp_waiting_time_title": "Second Press Waiting Time (ms)",
@@ -639,15 +644,16 @@
                 "Wet cleaning mode timer (min)": "Таймер режима влажной уборки (мин)",
 
                 {% for in_num in range(1, INPUTS_NUMBER + 1) -%}
-                "Input F{{ in_num }}": "Вход F{{ in_num }}",
-                "Input F{{ in_num }} Mode": "Режим работы входа F{{ in_num }}",
-                "Input F{{ in_num }} Debounce (ms)": "Время защиты от дребезга входа F{{ in_num }} (мс)",
-                "Input F{{ in_num }} Single Press Counter": "Счетчик коротких нажатий входа F{{ in_num }}",
-                "Input F{{ in_num }} Long Press Counter": "Счетчик длинных нажатий входа F{{ in_num }}",
-                "Input F{{ in_num }} Double Press Counter": "Счетчик двойных нажатий входа F{{ in_num }}",
-                "Input F{{ in_num }} Shortlong Press Counter": "Счетчик коротких, а затем длинных нажатий входа F{{ in_num }}",
-                "F{{ in_num }} Counter": "Счетчик F{{ in_num }}",
-                "Input F{{ in_num }} sensor performance (only for Larnitech sensors)": "Работоспособность датчика на входе F{{ in_num }} (только для датчиков Larnitech)",
+                {% set letter = "F" if in_num < IN_NUM_CLEANING_TRIG else "S" -%}
+                "Input {{ letter }}{{ in_num }}": "Вход {{ letter }}{{ in_num }}",
+                "Input {{ letter }}{{ in_num }} Mode": "Режим работы входа {{ letter }}{{ in_num }}",
+                "Input {{ letter }}{{ in_num }} Debounce (ms)": "Время защиты от дребезга входа {{ letter }}{{ in_num }} (мс)",
+                "Input {{ letter }}{{ in_num }} Single Press Counter": "Счетчик коротких нажатий входа {{ letter }}{{ in_num }}",
+                "Input {{ letter }}{{ in_num }} Long Press Counter": "Счетчик длинных нажатий входа {{ letter }}{{ in_num }}",
+                "Input {{ letter }}{{ in_num }} Double Press Counter": "Счетчик двойных нажатий входа {{ letter }}{{ in_num }}",
+                "Input {{ letter }}{{ in_num }} Shortlong Press Counter": "Счетчик коротких, а затем длинных нажатий входа {{ letter }}{{ in_num }}",
+                "Input {{ letter }}{{ in_num }} Counter": "Счетчик входа {{ letter }}{{ in_num }}",
+                "Input {{ letter }}{{ in_num }} sensor performance (only for Larnitech sensors)": "Работоспособность датчика на входе {{ letter }}{{ in_num }} (только для датчиков Larnitech)",
                 {% endfor -%}
 
                 "control disabled": "управление отключено",
