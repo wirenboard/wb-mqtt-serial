@@ -11,6 +11,10 @@ namespace Dauerhaft
     };
     class TDevice: public TSerialDevice, public TUInt32SlaveId
     {
+        uint8_t MotorId;
+        uint8_t LowChannelId;
+        uint8_t HighChannelId;
+
         std::vector<uint8_t> ExecCommand(const TRequest& request);
 
     public:
@@ -23,5 +27,9 @@ namespace Dauerhaft
         void WriteRegisterImpl(PRegister reg, const TRegisterValue& regValue) override;
     };
 
-    std::vector<uint8_t> MakeRequest(uint8_t command, uint8_t data);
+    std::vector<uint8_t> MakeRequest(uint8_t id,
+                                     uint8_t channelLow,
+                                     uint8_t channelHigh,
+                                     uint8_t command,
+                                     uint8_t data);
 }
