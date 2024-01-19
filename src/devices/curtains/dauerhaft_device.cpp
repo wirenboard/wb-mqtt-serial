@@ -65,7 +65,10 @@ void Dauerhaft::TDevice::Register(TSerialDeviceFactory& factory)
 
 Dauerhaft::TDevice::TDevice(PDeviceConfig config, PPort port, PProtocol protocol)
     : TSerialDevice(config, port, protocol),
-      TUInt32SlaveId(config->SlaveId)
+      TUInt32SlaveId(config->SlaveId),
+      MotorId((SlaveId >> 16) & 0xFF),
+      LowChannelId((SlaveId >> 8) & 0xFF),
+      HighChannelId(SlaveId & 0xFF)
 {}
 
 std::vector<uint8_t> Dauerhaft::TDevice::ExecCommand(const TRequest& request)
@@ -95,7 +98,7 @@ TRegisterValue Dauerhaft::TDevice::ReadRegisterImpl(PRegister reg)
         }
         case POSITION: {
             TRequest req;
-            req.Data = MakeRequest(MOTOR_STATUS, 0xcc);
+            req.Data = MakeRequest(MotorId, LowChannelId, HighChannelId, MOTOR_STATUS, 0xcc);
             req.ResponseSize = MOTOR_STATUS_RESPONSE_SIZE;
             auto resp = ExecCommand(req);
             return TRegisterValue{resp[MOTOR_STATUS_POSITION_OFFSET]};
@@ -111,13 +114,13 @@ void Dauerhaft::TDevice::WriteRegisterImpl(PRegister reg, const TRegisterValue& 
         case COMMAND: {
             auto addr = GetUint32RegisterAddress(reg->GetAddress());
             TRequest req;
-            req.Data = MakeRequest(CONTROL, addr);
+            req.Data = MakeRequest(MotorId, LowChannelId, HighChannelId, CONTROL, addr);
             ExecCommand(req);
             return;
         }
         case POSITION: {
             TRequest req;
-            req.Data = MakeRequest(SET_POSITION, value);
+            req.Data = MakeRequest(MotorId, LowChannelId, HighChannelId, SET_POSITION, value);
             ExecCommand(req);
             return;
         }
@@ -125,9 +128,13 @@ void Dauerhaft::TDevice::WriteRegisterImpl(PRegister reg, const TRegisterValue& 
     throw TSerialDevicePermanentRegisterException("Unsupported register type");
 }
 
-std::vector<uint8_t> Dauerhaft::MakeRequest(uint8_t command, uint8_t data)
+std::vector<uint8_t> Dauerhaft::MakeRequest(uint8_t id,
+                                            uint8_t channelLow,
+                                            uint8_t channelHigh,
+                                            uint8_t command,
+                                            uint8_t data)
 {
-    std::vector<uint8_t> res{REQUEST, 0x00, 0x00, 0x00, command, data, 0x00};
+    std::vector<uint8_t> res{REQUEST, id, channelLow, channelHigh, command, data, 0x00};
     res.back() = CalcCrc({res.begin() + 1, res.end() - 1});
     return res;
 }

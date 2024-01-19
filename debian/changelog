@@ -4,6 +4,12 @@ wb-mqtt-serial (2.109.0) stable; urgency=medium
 
  -- Pavel Gasheev <pavel.gasheev@wirenboard.ru>  Fri, 12 Jan 2024 16:58:52 +0300
 
+wb-mqtt-serial (2.108.9) stable; urgency=medium
+
+  * Dauerhaft: add motor ID and channel ID configuration
+
+ -- Nikolay Korotkiy <nikolay.korotkiy@wirenboard.com>  Mon, 15 Jan 2024 20:00:00 +0400
+
 wb-mqtt-serial (2.108.8) stable; urgency=medium
 
   * Add tests. No functional changes
