@@ -322,11 +322,11 @@
             },
             {% endfor -%}
             {% for curtain_num in range(1, OUTPUTS_NUMBER // 2 + 1) -%}
+            {% set mm_row_offset = 7 if in_num == 0 else in_num - 1 -%}
             "in{{in_num}}_curtain{{curtain_num}}_sp": {
                 "group": "gg_in{{in_num}}_curtain{{curtain_num}}_button_actions",
                 "title": "sp_title",
                 "order": 1,
-                {% set mm_row_offset = 7 if in_num == 0 else in_num - 1 -%}
                 "address": {{1400 + curtain_num - 1 + mm_row_offset * CURTAINS_MMATRIX_OUTPUTS_NUMBER}},
                 "reg_type": "holding",
                 "default": 0,
@@ -338,7 +338,6 @@
                 "group": "gg_in{{in_num}}_curtain{{curtain_num}}_button_actions",
                 "title": "lp_title",
                 "order": 2,
-                {% set mm_row_offset = 7 if in_num == 0 else in_num - 1 -%}
                 "address": {{1432 + curtain_num - 1 + mm_row_offset * CURTAINS_MMATRIX_OUTPUTS_NUMBER}},
                 "reg_type": "holding",
                 "default": 0,
@@ -350,7 +349,6 @@
                 "group": "gg_in{{in_num}}_curtain{{curtain_num}}_button_actions",
                 "title": "dp_title",
                 "order": 3,
-                {% set mm_row_offset = 7 if in_num == 0 else in_num - 1 -%}
                 "address": {{1464 + curtain_num - 1 + mm_row_offset * CURTAINS_MMATRIX_OUTPUTS_NUMBER}},
                 "reg_type": "holding",
                 "default": 0,
@@ -362,7 +360,6 @@
                 "group": "gg_in{{in_num}}_curtain{{curtain_num}}_button_actions",
                 "title": "slp_title",
                 "order": 4,
-                {% set mm_row_offset = 7 if in_num == 0 else in_num - 1 -%}
                 "address": {{1496 + curtain_num - 1 + mm_row_offset * CURTAINS_MMATRIX_OUTPUTS_NUMBER}},
                 "reg_type": "holding",
                 "default": 0,
