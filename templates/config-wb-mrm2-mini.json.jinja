@@ -1,4 +1,5 @@
 {% set OUTPUTS_NUMBER = 2 -%}
+{% set CURTAINS_NUMBER = OUTPUTS_NUMBER // 2 -%}
 {% set MMATRIX_OUTPUTS_NUMBER = 2 -%}
 {% set CURTAINS_MMATRIX_OUTPUTS_NUMBER = MMATRIX_OUTPUTS_NUMBER // 2 -%}
 {% set FIRST_INPUT = 1 -%}
@@ -30,7 +31,7 @@
                 "id": "gg_in{{in_num}}_press_params",
                 "group": "g_in{{in_num}}"
             },
-            {% for curtain_num in range(1, OUTPUTS_NUMBER // 2 + 1) -%}
+            {% for curtain_num in range(1, CURTAINS_NUMBER + 1) -%}
             {
                 "title": "Curtain {{curtain_num}} Actions",
                 "id": "gg_in{{in_num}}_curtain{{curtain_num}}_button_actions",
@@ -94,7 +95,7 @@
                 "description": "curtains_control_description",
                 "id": "g_curtains_control"
             },
-            {% for curtain_num in range(1, OUTPUTS_NUMBER // 2 + 1) -%}
+            {% for curtain_num in range(1, CURTAINS_NUMBER + 1) -%}
             {
                 "title": "Curtain {{curtain_num}}",
                 "id": "gg_curtain_{{curtain_num}}",
@@ -314,7 +315,7 @@
                 "condition": "in{{in_num}}_mode==6&&(isDefined(curtain{{curtain_num}}_mode)==0||curtain{{curtain_num}}_mode==0)"
             },
             {% endfor -%}
-            {% for curtain_num in range(1, OUTPUTS_NUMBER // 2 + 1) -%}
+            {% for curtain_num in range(1, CURTAINS_NUMBER + 1) -%}
             {% set mm_row_offset = 7 if in_num == 0 else in_num - 1 -%}
             "in{{in_num}}_curtain{{curtain_num}}_sp": {
                 "group": "gg_in{{in_num}}_curtain{{curtain_num}}_button_actions",
@@ -430,7 +431,7 @@
                 "max": 65534,
                 "default": 10
             },
-            {% for curtain_num in range(1, OUTPUTS_NUMBER // 2 + 1) -%}
+            {% for curtain_num in range(1, CURTAINS_NUMBER + 1) -%}
             "curtain{{curtain_num}}_mode": {
                 "title": "Use outputs {{curtain_num * 2 - 1}} and {{curtain_num * 2}} for curtain {{curtain_num}} control",
                 "group": "gg_curtain_{{curtain_num}}",
@@ -673,7 +674,7 @@
                 "condition": "curtain{{curtain_num}}_mode==1"
             },
             {% endfor -%}
-            {% for curtain_num in range(1, OUTPUTS_NUMBER // 2 + 1) -%}
+            {% for curtain_num in range(1, CURTAINS_NUMBER + 1) -%}
             {
                 "name": "Curtain {{curtain_num}} Open",
                 "reg_type": "coil",
@@ -901,7 +902,7 @@
                 "Action when safety mode is activated": "Действие при переходе в безопасный режим",
                 "Power up action": "Действие при подаче питания",
 
-                {% for curtain_num in range(1, OUTPUTS_NUMBER // 2 + 1) -%}
+                {% for curtain_num in range(1, CURTAINS_NUMBER + 1) -%}
                 "Curtain {{curtain_num}}": "Штора {{curtain_num}}",
                 "Curtain {{curtain_num}} Open": "Открыть штору {{curtain_num}}",
                 "Curtain {{curtain_num}} Close": "Закрыть штору {{curtain_num}}",
