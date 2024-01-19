@@ -18720,6 +18720,8 @@ WB-MR14
 	Supply voltage  =>  Supply voltage
 	Uptime  =>  Uptime
 WB-MR3
+	Curtain 1 Close  =>  Curtain 1 Close
+	Curtain 1 Open  =>  Curtain 1 Open
 	FW Version  =>  FW Version
 	Input 0  =>  Input 0
 	Input 0 Double Press Counter  =>  Input 0 Double Press Counter
@@ -18848,6 +18850,12 @@ WB-MR6C
 	Uptime  =>  Uptime
 WB-MR6C v.3
 	Bus Power Supply  =>  Bus Power Supply
+	Curtain 1 Close  =>  Curtain 1 Close
+	Curtain 1 Open  =>  Curtain 1 Open
+	Curtain 2 Close  =>  Curtain 2 Close
+	Curtain 2 Open  =>  Curtain 2 Open
+	Curtain 3 Close  =>  Curtain 3 Close
+	Curtain 3 Open  =>  Curtain 3 Open
 	FW Version  =>  FW Version
 	Input 0  =>  Input 0
 	Input 0 Double Press Counter  =>  Input 0 Double Press Counter
@@ -18974,6 +18982,12 @@ WB-MR6C-NC
 	Supply Voltage  =>  Supply Voltage
 	Uptime  =>  Uptime
 WB-MR6CU
+	Curtain 1 Close  =>  Curtain 1 Close
+	Curtain 1 Open  =>  Curtain 1 Open
+	Curtain 2 Close  =>  Curtain 2 Close
+	Curtain 2 Open  =>  Curtain 2 Open
+	Curtain 3 Close  =>  Curtain 3 Close
+	Curtain 3 Open  =>  Curtain 3 Open
 	FW Version  =>  FW Version
 	K1  =>  K1
 	K2  =>  K2
@@ -19268,6 +19282,8 @@ WB-MRM2-mini-NC-inputs
 	Supply Voltage  =>  Supply Voltage
 	Uptime  =>  Uptime
 WB-MRM2-mini-NO-inputs
+	Curtain 1 Close  =>  Curtain 1 Close
+	Curtain 1 Open  =>  Curtain 1 Open
 	FW Version  =>  FW Version
 	Input 1  =>  Input 1
 	Input 1 Double Press Counter  =>  Input 1 Double Press Counter
