@@ -371,8 +371,6 @@
                 "condition": "in{{in_num}}_mode==6&&curtain{{curtain_num}}_mode==1"
             },
             {% endfor -%}
-            {% for out_num in range(1, OUTPUTS_NUMBER + 1) -%}
-            {% endfor -%}
             {% endfor -%}
             {% for out_num in range(1, OUTPUTS_NUMBER + 1) -%}
             {% set curtain_num = (out_num + 1) // 2 -%}
