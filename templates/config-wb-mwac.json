@@ -1667,7 +1667,7 @@
                 "title": "Safety Timer (s)",
                 "address": 8,
                 "reg_type": "holding",
-                "default": 3600,
+                "default": 10,
                 "group": "g_safety",
                 "order": 2
             },
