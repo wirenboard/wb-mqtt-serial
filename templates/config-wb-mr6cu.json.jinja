@@ -1,4 +1,5 @@
 {% set OUTPUTS_NUMBER = 6 -%}
+{% set CURTAINS_NUMBER = OUTPUTS_NUMBER // 2 -%}
 {
     "title": "WB-MR6CU_template_title",
     "device_type": "WB-MR6CU",
@@ -20,7 +21,6 @@
                 "title": "Output Safe State",
                 "id": "gg_outputs_safe_state",
                 "group": "g_outputs"
-                
             },
             {
                 "title": "Outputs group",
@@ -40,6 +40,28 @@
                 "title": "Safety Behaviour",
                 "id": "gg_safety_behaviour",
                 "group": "g_safety"
+            },
+            {
+                "title": "Curtains Control",
+                "description": "curtains_control_description",
+                "id": "g_curtains_control"
+            },
+            {% for curtain_num in range(1, CURTAINS_NUMBER + 1) -%}
+            {
+                "title": "Curtain {{curtain_num}}",
+                "id": "gg_curtain_{{curtain_num}}",
+                "group": "g_curtains_control"
+            },
+            {% endfor -%}
+            {
+                "title": "Curtains Channels",
+                "id": "gg_curtains_channels",
+                "group": "g_curtains_control",
+                "ui_options": {
+                    "wb": {
+                        "disable_title": true
+                    }
+                }
             },
             {
                 "title": "General",
@@ -83,6 +105,7 @@
                 "default": 10
             },
             {% for out_num in range(1, OUTPUTS_NUMBER + 1) -%}
+            {% set curtain_num = (out_num + 1) // 2 -%}
             "out{{out_num}}_safe_state": {
                 "title": "Output {{out_num}}",
                 "group": "gg_outputs_safe_state",
@@ -94,7 +117,8 @@
                 "enum_titles": [
                     "Off",
                     "On"
-                ]
+                ],
+                "condition": "isDefined(curtain{{curtain_num}}_mode)==0||curtain{{curtain_num}}_mode==0"
             },
             "out{{out_num}}_safety_behaviour": {
                 "title": "Output {{out_num}}",
@@ -107,7 +131,88 @@
                 "enum_titles": [
                     "Don't сhange output state",
                     "Switch output to safety state"
-                ]
+                ],
+                "condition": "isDefined(curtain{{curtain_num}}_mode)==0||curtain{{curtain_num}}_mode==0"
+            },
+            {% endfor -%}
+            {% for curtain_num in range(1, CURTAINS_NUMBER + 1) -%}
+            "curtain{{curtain_num}}_mode": {
+                "title": "Use outputs {{curtain_num * 2 - 1}} and {{curtain_num * 2}} for curtain {{curtain_num}} control",
+                "group": "gg_curtain_{{curtain_num}}",
+                "address": {{ 1280 + curtain_num - 1 }},
+                "reg_type": "holding",
+                "default": 0,
+                "enum": [0, 1],
+                "enum_titles": [
+                    "No, use outputs {{curtain_num * 2 - 1}} and {{curtain_num * 2}} as regular outputs",
+                    "Use output {{curtain_num * 2 - 1}} for open, output {{curtain_num * 2}} for close"
+                ],
+                "order": 1
+            },
+            "curtain{{curtain_num}}_open_time": {
+                "title": "Open time (s)",
+                "group": "gg_curtain_{{curtain_num}}",
+                "address": {{ 1328 + curtain_num - 1 }},
+                "reg_type": "holding",
+                "scale": 0.1,
+                "default": 10.0,
+                "min": 1.0,
+                "max": 600.0,
+                "order": 2,
+                "condition": "curtain{{curtain_num}}_mode==1"
+            },
+            "curtain{{curtain_num}}_close_time": {
+                "title": "Close time (s)",
+                "group": "gg_curtain_{{curtain_num}}",
+                "address": {{ 1332 + curtain_num - 1 }},
+                "reg_type": "holding",
+                "scale": 0.1,
+                "default": 10.0,
+                "min": 1.0,
+                "max": 600.0,
+                "order": 3,
+                "condition": "curtain{{curtain_num}}_mode==1"
+            },
+            "curtain{{curtain_num}}_deadtime": {
+                "title": "Dead time (ms)",
+                "group": "gg_curtain_{{curtain_num}}",
+                "address": {{ 1336 + curtain_num - 1 }},
+                "reg_type": "holding",
+                "default": 500,
+                "min": 50,
+                "max": 10000,
+                "order": 4,
+                "condition": "curtain{{curtain_num}}_mode==1"
+            },
+            "curtain{{curtain_num}}_safety_action": {
+                "title": "Action when safety mode is activated",
+                "group": "gg_curtain_{{curtain_num}}",
+                "address": {{1288 + curtain_num - 1}},
+                "reg_type": "holding",
+                "default": 0,
+                "enum": [0, 1, 2],
+                "enum_titles": [
+                    "no action",
+                    "open",
+                    "close"
+                ],
+                "order": 5,
+                "condition": "curtain{{curtain_num}}_mode==1"
+            },
+            "curtain{{curtain_num}}_powerup_action": {
+                "title": "Power up action",
+                "group": "gg_curtain_{{curtain_num}}",
+                "address": {{1284 + curtain_num - 1}},
+                "reg_type": "holding",
+                "default": 0,
+                "enum": [0, 1, 2],
+                "enum_titles": [
+                    "no action",
+                    "open",
+                    "close"
+                ],
+                "order": 6,
+                "condition": "curtain{{curtain_num}}_mode==1"
             },
             {% endfor -%}
             "baud_rate": {
@@ -131,12 +236,45 @@
 
         "channels": [
             {% for out_num in range(1, OUTPUTS_NUMBER + 1) -%}
+            {% set curtain_num = (out_num + 1) // 2 -%}
             {
                 "name": "K{{out_num}}",
                 "reg_type": "coil",
                 "address": {{out_num - 1}},
                 "type": "switch",
-                "group": "gg_outputs_channels"
+                "sporadic": true,
+                "group": "gg_outputs_channels",
+                "condition": "isDefined(curtain{{curtain_num}}_mode)==0||curtain{{curtain_num}}_mode==0"
+            },
+            {
+                "name": "K{{out_num}}",
+                "reg_type": "coil",
+                "readonly": true,
+                "address": {{out_num - 1}},
+                "type": "switch",
+                "sporadic": true,
+                "group": "gg_outputs_channels",
+                "condition": "curtain{{curtain_num}}_mode==1"
+            },
+            {% endfor -%}
+            {% for curtain_num in range(1, CURTAINS_NUMBER + 1) -%}
+            {
+                "name": "Curtain {{curtain_num}} Open",
+                "reg_type": "coil",
+                "address": {{16 + (curtain_num - 1) * 2}},
+                "type": "switch",
+                "sporadic": true,
+                "group": "gg_curtains_channels",
+                "condition": "curtain{{curtain_num}}_mode==1"
+            },
+            {
+                "name": "Curtain {{curtain_num}} Close",
+                "reg_type": "coil",
+                "address": {{17 + (curtain_num - 1) * 2}},
+                "type": "switch",
+                "sporadic": true,
+                "group": "gg_curtains_channels",
+                "condition": "curtain{{curtain_num}}_mode==1"
             },
             {% endfor -%}
             {
@@ -210,7 +348,9 @@
                 "baud_rate_description": "Make sure that communication with device is established before changing this parameter. Select required baud rate, save configuration and then change port baud rate to the same value.",
                 "Uptime": "Uptime (s)",
 
-                "poll_timeout_description": "Time in seconds without modbus polling before activation safety mode. Actions in safety mode are configured using appropriate parameters"
+                "poll_timeout_description": "Time in seconds without modbus polling before activation safety mode. Actions in safety mode are configured using appropriate parameters",
+
+                "curtains_control_description": "For using curtain mode firmware v1.21.0 or newer is required. For setup buttons actions select \"Operate according to button mapping-matrix\" mode and configure actions for buttons"
             },
             "ru": {
                 "WB-MR6CU_template_title": "WB-MR6CU v.2, WB-MRPS6 (6-канальный модуль реле)",
@@ -237,6 +377,27 @@
                 "Safe state": "Перевести выход в безопасное состояние",
                 "Restore last state": "Восстановить последнее состояние",
                 "Safety Timer (s)": "Таймаут безопасного режима (с)",
+
+                "open": "открыть",
+                "close": "закрыть",
+
+                "Curtains Control": "Управление шторами",
+                "Open time (s)": "Время открытия (с)",
+                "Close time (s)": "Время закрытия (с)",
+                "Dead time (ms)": "Пауза при смене направления (мс)",
+                "Action when safety mode is activated": "Действие при переходе в безопасный режим",
+                "Power up action": "Действие при подаче питания",
+
+                {% for curtain_num in range(1, CURTAINS_NUMBER + 1) -%}
+                "Curtain {{curtain_num}}": "Штора {{curtain_num}}",
+                "Curtain {{curtain_num}} Open": "Открыть штору {{curtain_num}}",
+                "Curtain {{curtain_num}} Close": "Закрыть штору {{curtain_num}}",
+                "Use outputs {{curtain_num * 2 - 1}} and {{curtain_num * 2}} for curtain {{curtain_num}} control": "Использовать выходы {{curtain_num * 2 - 1}} и {{curtain_num * 2}} для управления шторой {{curtain_num}}",
+                "No, use outputs {{curtain_num * 2 - 1}} and {{curtain_num * 2}} as regular outputs": "Нет, использовать выходы {{curtain_num * 2 - 1}} и {{curtain_num * 2}} как обычные выходы",
+                "Use output {{curtain_num * 2 - 1}} for open, output {{curtain_num * 2}} for close": "Да, использовать выход {{curtain_num * 2 - 1}} для открытия, выход {{curtain_num * 2}} для закрытия",
+                {% endfor -%}
+
+                "curtains_control_description": "Для использования режима штор требуется прошивка 1.21.0 или новее. Для настройки действий на нажатия выберите режим \"Управлять по mapping-матрице для кнопок\" на вкладке требуемого входа.",
 
                 "Baud rate": "Скорость обмена",
                 "baud_rate_description": "Перед изменением параметра убедитесь, что связь с устройством установлена. Выберите нужную скорость обмена, сохраните конфигурацию, а затем укажите в настройках порта эту же скорость.",
