@@ -1,3 +1,9 @@
+wb-mqtt-serial (2.109.1) stable; urgency=medium
+
+  * MRM2mini template: fix curtains mapping matrix size
+
+ -- Pavel Gasheev <pavel.gasheev@wirenboard.ru>  Tue, 23 Jan 2024 15:38:22 +0300
+
 wb-mqtt-serial (2.109.0) stable; urgency=medium
 
   * Curtains support for WB-MR* templates
