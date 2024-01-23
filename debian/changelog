@@ -2,7 +2,7 @@ wb-mqtt-serial (2.109.0) stable; urgency=medium
 
   * Curtains support for WB-MR* templates
 
- -- Pavel Gasheev <pavel.gasheev@wirenboard.ru>  Fri, 19 Jan 2024 15:43:12 +0300
+ -- Pavel Gasheev <pavel.gasheev@wirenboard.ru>  Tue, 23 Jan 2024 11:14:22 +0300
 
 wb-mqtt-serial (2.108.9) stable; urgency=medium
 
