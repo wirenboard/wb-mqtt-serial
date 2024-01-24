@@ -490,7 +490,34 @@
                 "group": "gg_outputs_channels"
             },
             {% endfor -%}
-             {% for out_num in range(1, OUTPUTS_NUMBER + 1) -%}
+            {% for out_num in range(1, OUTPUTS_NUMBER + 1) -%}
+            {
+                "name": "out {{out_num}} protection vh",
+                "reg_type": "discrete",
+                "address": {{out_num + 400}},
+                "type": "switch",
+                "sporadic": true,
+                "group": "gg_outputs_channels"
+            },
+            {
+                "name": "out {{out_num}} protection vl",
+                "reg_type": "discrete",
+                "address": {{out_num + 402}},
+                "type": "switch",
+                "sporadic": true,
+                "group": "gg_outputs_channels"
+
+            },
+            {
+                "name": "out {{out_num}} protection ch",
+                "reg_type": "discrete",
+                "address": {{out_num + 404}},
+                "type": "switch",
+                "sporadic": true,
+                "group": "gg_outputs_channels"
+            },
+            {% endfor -%}
+            {% for out_num in range(1, OUTPUTS_NUMBER + 1) -%}
             {
                 "name": "Urms L{{out_num}}",
                 "reg_type": "input",
@@ -619,6 +646,9 @@
                 "Input {{in_num}} Long Press Counter": "Счетчик длинных нажатий входа {{in_num}}",
                 "Input {{in_num}} Double Press Counter": "Счетчик двойных нажатий входа {{in_num}}",
                 "Input {{in_num}} Shortlong Press Counter": "Счетчик коротких, а затем длинных нажатий входа {{in_num}}",
+                "out {{in_num}} protection ch":"Превышено напряжение на выходе {{in_num}}",
+                "out {{in_num}} protection vl":"Напряжение низкое на выходе {{in_num}}",
+                "out {{in_num}} protection vh":"Мощность превышена на выходе {{in_num}}",
                 {% endfor -%}
 
                 "Outputs": "Выходы",
