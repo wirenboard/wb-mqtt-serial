@@ -154,7 +154,7 @@
                 "id": "g_safety"
             },
             {
-                "title": "Cleaning mode",
+                "title": "Wet cleaning mode",
                 "description": "cleaning_mode_description",
                 "id": "cleaning_mode"
             },
@@ -311,7 +311,7 @@
             },
             "in1_out4_actions": {
                 "group": "gg_in1_mapping_matrix_actions",
-                "title": "Cleaning mode",
+                "title": "Wet cleaning mode",
                 "order": 3,
                 "address": 387,
                 "reg_type": "holding",
@@ -555,7 +555,7 @@
             },
             "in2_out4_actions": {
                 "group": "gg_in2_mapping_matrix_actions",
-                "title": "Cleaning mode",
+                "title": "Wet cleaning mode",
                 "order": 3,
                 "address": 395,
                 "reg_type": "holding",
@@ -799,7 +799,7 @@
             },
             "in3_out4_actions": {
                 "group": "gg_in3_mapping_matrix_actions",
-                "title": "Cleaning mode",
+                "title": "Wet cleaning mode",
                 "order": 3,
                 "address": 403,
                 "reg_type": "holding",
@@ -1043,7 +1043,7 @@
             },
             "in4_out4_actions": {
                 "group": "gg_in4_mapping_matrix_actions",
-                "title": "Cleaning mode",
+                "title": "Wet cleaning mode",
                 "order": 3,
                 "address": 411,
                 "reg_type": "holding",
@@ -1287,7 +1287,7 @@
             },
             "in5_out4_actions": {
                 "group": "gg_in5_mapping_matrix_actions",
-                "title": "Cleaning mode",
+                "title": "Wet cleaning mode",
                 "order": 3,
                 "address": 419,
                 "reg_type": "holding",
@@ -1531,7 +1531,7 @@
             },
             "in6_out4_actions": {
                 "group": "gg_in6_mapping_matrix_actions",
-                "title": "Cleaning mode",
+                "title": "Wet cleaning mode",
                 "order": 3,
                 "address": 426,
                 "reg_type": "holding",
@@ -1770,7 +1770,7 @@
             },
 
             "cleaning_mode_timer_min": {
-                "title": "Cleaning mode timer",
+                "title": "Wet cleaning mode timer",
                 "description": "cleaning_mode_timer_description",
                 "address": 975,
                 "reg_type": "holding",
@@ -2186,7 +2186,7 @@
                 "group": "gg_outputs_channels"
             },
             {
-                "name": "Cleaning mode",
+                "name": "Wet cleaning mode",
                 "reg_type": "coil",
                 "address": 3,
                 "type": "switch",
@@ -2254,16 +2254,16 @@
                 "baud_rate_description": "Make sure that communication with device is established before changing this parameter. Select required baud rate, save configuration and then change port baud rate to the same value.",
                 "Uptime": "Uptime (s)",
                 "inputs_control_in_safety_mode_description": "Sets change of control from the inputs when module switches to safety mode",
-                "cleaning_mode_description": "Cleaning mode is used to disable reactions on flood sensors when a room is being celaned. When started/stopped, a sound signal is emitted, and during the activity of the mode, the indicators of the inputs periodically flash briefly. Disabled automatically after the specified time.",
+                "cleaning_mode_description": "Wet cleaning mode is used to disable reactions on flood sensors when a room is being celaned. When started/stopped, a sound signal is emitted, and during the activity of the mode, the indicators of the inputs periodically flash briefly. Disabled automatically after the specified time.",
                 "cleaning_mode_timer_description": "1 – 1440 min, 20 by default"
             },
             "ru": {
                 "WB-MWAC_template_title": "WB-MWAC (модуль контроля протечек и расхода воды)",
                 "Counters": "Счетчики",
-                "Cleaning mode": "Режим уборки",
-                "cleaning_mode_description": "Режим уборки используется для отключения реакции на датчики протечки при уборке помещения. При запуске/остановке издаётся звуковой сигнал, во время активности режима, индикаторы входов периодически коротко моргают. Отключается автоматически по истечении указанного времени.",
+                "Wet cleaning mode": "Режим влажной уборки",
+                "cleaning_mode_description": "Режим влажной уборки используется для отключения реакции на датчики протечки при уборке помещения. При запуске/остановке издаётся звуковой сигнал, во время активности режима, индикаторы входов периодически коротко моргают. Отключается автоматически по истечении указанного времени.",
                 "cleaning_mode_timer_description": "1 — 1440 мин, 20 по умолчанию",
-                "Cleaning mode timer": "Таймер режима уборки",
+                "Wet cleaning mode timer": "Таймер режима влажной уборки",
                 "Input S1": "Вход S1",
                 "Input S2": "Вход S2",
                 "Input S3": "Вход S3",
