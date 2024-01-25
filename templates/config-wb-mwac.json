@@ -1856,16 +1856,6 @@
                 "group": "gg_in1_channels"
             },
             {
-                "name": "Input S1 sensor performance (only for Larnitech sensors)",
-                "reg_type": "input",
-                "address": 1070,
-                "type": "switch",
-                "sporadic": false,
-                "enabled": false,
-                "condition": "in1_mode==5",
-                "group": "gg_in1_channels"
-            },
-            {
                 "name": "S1 Freq",
                 "reg_type": "input",
                 "address": 40,
@@ -1910,16 +1900,6 @@
                 "type": "value",
                 "sporadic": false,
                 "condition": "isDefined(in2_mode)==0||in2_mode==3",
-                "group": "gg_in2_channels"
-            },
-            {
-                "name": "Input S2 sensor performance (only for Larnitech sensors)",
-                "reg_type": "input",
-                "address": 1071,
-                "type": "switch",
-                "sporadic": false,
-                "enabled": false,
-                "condition": "in2_mode==5",
                 "group": "gg_in2_channels"
             },
             {
@@ -1970,16 +1950,6 @@
                 "group": "gg_in3_channels"
             },
             {
-                "name": "Input S3 sensor performance (only for Larnitech sensors)",
-                "reg_type": "input",
-                "address": 1072,
-                "type": "switch",
-                "sporadic": false,
-                "enabled": false,
-                "condition": "in3_mode==5",
-                "group": "gg_in3_channels"
-            },
-            {
                 "name": "S3 Freq",
                 "reg_type": "input",
                 "address": 44,
@@ -2024,16 +1994,6 @@
                 "type": "value",
                 "sporadic": false,
                 "condition": "isDefined(in4_mode)==0||in4_mode==3",
-                "group": "gg_in4_channels"
-            },
-            {
-                "name": "Input F1 sensor performance (only for Larnitech sensors)",
-                "reg_type": "input",
-                "address": 1073,
-                "type": "switch",
-                "sporadic": false,
-                "enabled": false,
-                "condition": "in4_mode==5",
                 "group": "gg_in4_channels"
             },
             {
@@ -2084,16 +2044,6 @@
                 "group": "gg_in5_channels"
             },
             {
-                "name": "Input F2 sensor performance (only for Larnitech sensors)",
-                "reg_type": "input",
-                "address": 1074,
-                "type": "switch",
-                "sporadic": false,
-                "enabled": false,
-                "condition": "in5_mode==5",
-                "group": "gg_in5_channels"
-            },
-            {
                 "name": "F2 Freq",
                 "reg_type": "input",
                 "address": 48,
@@ -2138,16 +2088,6 @@
                 "type": "value",
                 "sporadic": false,
                 "condition": "isDefined(in6_mode)==0||in6_mode==3",
-                "group": "gg_in6_channels"
-            },
-            {
-                "name": "Input F3 sensor performance (only for Larnitech sensors)",
-                "reg_type": "input",
-                "address": 1075,
-                "type": "switch",
-                "sporadic": false,
-                "enabled": false,
-                "condition": "in6_mode==5",
                 "group": "gg_in6_channels"
             },
             {
@@ -2353,14 +2293,7 @@
                 "toggle / reset": "переключить / выключить",
                 "toggle / set": "переключить / включить",
                 "toggle / toggle": "переключить / переключить",
-                "Actions for outputs when the input is closed / opened": "Действия для выходов при замыкании / размыкании входа",
-
-                "Input S1 sensor performance (only for Larnitech sensors)":  "Работоспособность датчика на входе S1 (только для датчиков Larnitech)",
-                "Input S2 sensor performance (only for Larnitech sensors)":  "Работоспособность датчика на входе S2 (только для датчиков Larnitech)",
-                "Input S3 sensor performance (only for Larnitech sensors)":  "Работоспособность датчика на входе S3 (только для датчиков Larnitech)",
-                "Input F1 sensor performance (only for Larnitech sensors)":  "Работоспособность датчика на входе F1 (только для датчиков Larnitech)",
-                "Input F2 sensor performance (only for Larnitech sensors)":  "Работоспособность датчика на входе F2 (только для датчиков Larnitech)",
-                "Input F3 sensor performance (only for Larnitech sensors)":  "Работоспособность датчика на входе F3 (только для датчиков Larnitech)"
+                "Actions for outputs when the input is closed / opened": "Действия для выходов при замыкании / размыкании входа"
             }
         }
     }
