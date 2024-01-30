@@ -1667,6 +1667,8 @@
                 "title": "Safety Timer (s)",
                 "address": 8,
                 "reg_type": "holding",
+                "min": 1,
+                "max": 65535,
                 "default": 10,
                 "group": "g_safety",
                 "order": 2
