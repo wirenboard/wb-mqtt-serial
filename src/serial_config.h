@@ -15,6 +15,12 @@
 #include "rpc_config.h"
 #include "serial_device.h"
 
+struct TDeviceTemplateHardware
+{
+    std::string Signature; //! Device signature
+    std::string Fw;        //! Firmware version (semver)
+};
+
 struct TDeviceTemplate
 {
     std::string Type;
@@ -22,6 +28,7 @@ struct TDeviceTemplate
     Json::Value Schema;
     bool IsDeprecated = false;
     std::string Group;
+    std::vector<TDeviceTemplateHardware> Hardware;
 
     TDeviceTemplate(const std::string& type, const std::string title, const Json::Value& schema);
 };
