@@ -330,6 +330,16 @@
                 "group": "outputs",
                 "order": 1
             },
+            "outputs_restore_state_after_leakage_fix": {
+                "title": "Restore Outputs State After Leakage Fix",
+                "address": 970,
+                "reg_type": "holding",
+                "enum": [0, 1],
+                "default": 0,
+                "enum_titles": ["On", "Off"],
+                "group": "outputs",
+                "order": 2
+            },            
             "safety_timer_s": {
                 "title": "Safety Timer (s)",
                 "description": "poll_timeout_description",
@@ -709,6 +719,8 @@
                 "Output Safe State": "Безопасное состояние выходов",
                 "Off": "Выключен",
                 "On": "Включен",
+
+                "Restore Outputs State After Leakage Fix": "Автоматически восстанавливать состояние кранов после устранения протечки",
 
                 "Safety Mode": "Безопасный режим",
                 "Safety Behaviour": "Действие в безопасном режиме",
