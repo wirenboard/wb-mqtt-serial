@@ -2132,6 +2132,7 @@
                 "reg_type": "coil",
                 "address": 3,
                 "type": "switch",
+                "sporadic": true,
                 "group": "cleaning_mode"
             },
             {
