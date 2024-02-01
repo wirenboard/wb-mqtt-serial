@@ -274,11 +274,12 @@
                 "order": 4,
                 "address": {{ 608 + out_num - 1 + (in_num - 1) * MMATRIX_OUTPUTS_NUMBER }},
                 "reg_type": "holding",
-                "default": 0,
                 {%- if out_num == OUT_NUM_ALARM %}
+                "default": {{ 1 if in_num == IN_NUM_CLEANING_TRIG else 0 }},
                 "enum": [0, 1],
                 "enum_titles": ["do nothing", "off"],
                 {% else %}
+                "default": 0,
                 "enum": [0, 1, 2, 3],
                 "enum_titles": ["do nothing", "off", "on", "toggle"],
                 {% endif -%}
