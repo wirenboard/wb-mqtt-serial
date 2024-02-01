@@ -185,7 +185,7 @@
             },
 
             {% for out_num in range(1, OUTPUTS_NUMBER) -%}
-            "in{{ in_num }}_out{{ out_num }}_actions_20min": {
+            "in{{ in_num }}_out{{ out_num }}_actions_leakage_sensor": {
                 "group": "gg_in{{ in_num }}_mapping_matrix_actions",
                 "title": 
                     {%- if out_num == OUT_NUM_K1 %} "K1",
@@ -339,7 +339,7 @@
                 "enum_titles": ["On", "Off"],
                 "group": "outputs",
                 "order": 2
-            },            
+            },
             "safety_timer_s": {
                 "title": "Safety Timer (s)",
                 "description": "poll_timeout_description",
