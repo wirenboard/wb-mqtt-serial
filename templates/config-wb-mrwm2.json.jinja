@@ -55,8 +55,33 @@
                 "title": "Output Safe State",
                 "id": "gg_outputs_safe_state",
                 "group": "g_outputs"
-                
             },
+            {
+                "title": "Protection Mode",
+                "id": "gg_protection",
+            },
+            {% for out_num in range(1, OUTPUTS_NUMBER + 1) -%}
+            {
+                "title": "Protection channel {{out_num}}",
+                "group": "gg_protection",
+                "id": "gg_protection_channel_{{out_num}}",
+            },
+            {
+                "title": "Protection channel {{out_num}} power",
+                "group": "gg_protection_channel_{{out_num}}",
+                "id": "gg_protection_channel_{{out_num}}_power",
+            },
+            {
+                "title": "Protection channel {{out_num}} high voltage",
+                "group": "gg_protection_channel_{{out_num}}",
+                "id": "gg_protection_channel_{{out_num}}_high_voltage",
+            },
+            {
+                "title": "Protection channel {{out_num}} low voltage",
+                "group": "gg_protection_channel_{{out_num}}",
+                "id": "gg_protection_channel_{{out_num}}_low_voltage",
+            },
+            {% endfor -%}
             {
                 "title": "Outputs group",
                 "id": "gg_outputs_channels",
@@ -110,6 +135,9 @@
         ],
 
         "parameters": {
+
+
+
             {% for in_num in range(FIRST_INPUT, OUTPUTS_NUMBER + 1) -%}
             {% if in_num == 0 -%}
             "in{{in_num}}_mode": {
@@ -291,6 +319,9 @@
                 "enum_titles": ["no action", "reset", "set", "toggle"],
                 "condition": "in{{in_num}}_mode==6"
             },
+            {% endfor -%}
+            {% endfor -%}
+            {% for out_num in range(1, OUTPUTS_NUMBER + 1) -%}
             "out{{out_num}}_safe_state": {
                 "title": "Output {{out_num}}",
                 "group": "gg_outputs_safe_state",
@@ -332,6 +363,86 @@
                 ]
             },
             {% endfor -%}
+            {% for out_num in range(1, OUTPUTS_NUMBER + 1) -%}
+            "out{{out_num}}_safe_mode_power_mode": {
+                "title": "Enable Power protection",
+                "group": "gg_protection_channel_{{out_num}}_power",
+                "order": 1,
+                "address": 930,
+                "reg_type": "holding",
+                "default": 0,
+                "enum": [0, 1],
+                "enum_titles": [
+                    "Off",
+                    "On"
+                ]
+            },
+            "out{{out_num}}_safe_mode_power_value": {
+                "title": "Level of high power protection, W",
+                "group": "gg_protection_channel_{{out_num}}_power",
+                "order": 2,
+                "address": {{ 946 + out_num - 1 }},
+                "reg_type": "holding",
+                "default": 3000,
+                "min": 10,
+                "max": 4600,
+                "order": 2,
+                "condition": "out{{out_num}}_safe_mode_power_mode==1"
+            },
+            {% endfor -%}
+            {% for out_num in range(1, OUTPUTS_NUMBER + 1) -%}
+            "out{{out_num}}_safe_mode_voltage_high_mode": {
+                "title": "Enable High voltage protection",
+                "group": "gg_protection_channel_{{out_num}}_high_voltage",
+                "order": 1,
+                "address": 930,
+                "reg_type": "holding",
+                "default": 0,
+                "enum": [0, 1],
+                "enum_titles": [
+                    "Off",
+                    "On"
+                ]
+            },
+            "out{{out_num}}_safe_mode_voltage_high_value": {
+                "title": "Level of high voltage protection",
+                "group": "gg_protection_channel_{{out_num}}_high_voltage",
+                "order": 2,
+                "address": {{ 946 + out_num - 1 }},
+                "reg_type": "holding",
+                "default": 260,
+                "min": 100,
+                "max": 400,
+                "order": 2,
+                "condition": "out{{out_num}}_safe_mode_voltage_high_mode==1"
+            },
+            {% endfor -%}
+            {% for out_num in range(1, OUTPUTS_NUMBER + 1) -%}
+            "out{{out_num}}_safe_mode_voltage_low_mode": {
+                "title": "Enable Low voltage protection",
+                "group": "gg_protection_channel_{{out_num}}_low_voltage",
+                "order": 1,
+                "address": 933,
+                "reg_type": "holding",
+                "default": 0,
+                "enum": [0, 1],
+                "enum_titles": [
+                    "Off",
+                    "On"
+                ]
+            },
+            "out{{out_num}}_safe_mode_voltage_low_value": {
+                "title": "Level of low voltage protection, V",
+                "group": "gg_protection_channel_{{out_num}}_low_voltage",
+                "order": 2,
+                "address": {{ 946 + out_num - 1 }},
+                "reg_type": "holding",
+                "default": 200,
+                "min": 80,
+                "max": 230,
+                "order": 2,
+                "condition": "out{{out_num}}_safe_mode_voltage_low_mode==1"
+            },
             {% endfor -%}
             "outputs_restore_state": {
                 "title": "Outputs State After Power On",
@@ -492,7 +603,7 @@
             {% endfor -%}
             {% for out_num in range(1, OUTPUTS_NUMBER + 1) -%}
             {
-                "name": "out {{out_num}} protection vh",
+                "name": "out {{out_num}} protection high voltage",
                 "reg_type": "discrete",
                 "address": {{out_num + 400}},
                 "type": "switch",
@@ -500,7 +611,7 @@
                 "group": "gg_outputs_channels"
             },
             {
-                "name": "out {{out_num}} protection vl",
+                "name": "out {{out_num}} protection low voltage",
                 "reg_type": "discrete",
                 "address": {{out_num + 402}},
                 "type": "switch",
@@ -509,7 +620,7 @@
 
             },
             {
-                "name": "out {{out_num}} protection ch",
+                "name": "out {{out_num}} protection power",
                 "reg_type": "discrete",
                 "address": {{out_num + 404}},
                 "type": "switch",
@@ -646,9 +757,9 @@
                 "Input {{in_num}} Long Press Counter": "Счетчик длинных нажатий входа {{in_num}}",
                 "Input {{in_num}} Double Press Counter": "Счетчик двойных нажатий входа {{in_num}}",
                 "Input {{in_num}} Shortlong Press Counter": "Счетчик коротких, а затем длинных нажатий входа {{in_num}}",
-                "out {{in_num}} protection ch":"Превышено напряжение на выходе {{in_num}}",
-                "out {{in_num}} protection vl":"Напряжение низкое на выходе {{in_num}}",
-                "out {{in_num}} protection vh":"Мощность превышена на выходе {{in_num}}",
+                "out {{in_num}} protection high voltage":"Превышено напряжение на выходе {{in_num}}",
+                "out {{in_num}} protection low voltage":"Напряжение низкое на выходе {{in_num}}",
+                "out {{in_num}} protection power":"Мощность превышена на выходе {{in_num}}",
                 {% endfor -%}
 
                 "Outputs": "Выходы",
@@ -660,6 +771,15 @@
                 "Press Parameters": "Параметры нажатий",
 
                 "Actions for outputs when the input is closed / opened": "Действия для выходов при замыкании / размыкании входа",
+
+                "Protection Mode": "Режимы защит",
+                {% for out_num in range(1, OUTPUTS_NUMBER + 1) -%}
+                "OutputPPP {{out_num}}": "Выход с защитой {{out_num}}",
+                "Output {{out_num}} Safe Mode Power": "Ограничение мощности на канале {{out_num}}",
+                "Output {{out_num}} Safe Mode HighVoltage": "Ограничение высокого напряжения на канале {{out_num}}",
+                "Output {{out_num}} Safe Mode LowVoltage": "Ограничение низкого напряжения на канале {{out_num}}",
+                {% endfor -%}
+
 
                 {% for out_num in range(1, OUTPUTS_NUMBER + 1) -%}
                 "Output {{out_num}}": "Выход {{out_num}}",
