@@ -1,3 +1,9 @@
+wb-mqtt-serial (2.109.2) stable; urgency=low
+
+  * WB-MRWM2 templates: add protection modes by power and low/high voltage
+
+ -- Daniil Safonov <Daniil.Safonov@wirenboard.ru>  Fri, 02 Feb 2024 17:00:00 +0600
+
 wb-mqtt-serial (2.109.1) stable; urgency=medium
 
   * MRM2mini template: fix curtains mapping matrix size
