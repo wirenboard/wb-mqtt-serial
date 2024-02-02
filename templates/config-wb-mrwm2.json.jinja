@@ -150,9 +150,6 @@
         ],
 
         "parameters": {
-
-
-
             {% for in_num in range(FIRST_INPUT, OUTPUTS_NUMBER + 1) -%}
             {% if in_num == 0 -%}
             "in{{in_num}}_mode": {
@@ -794,7 +791,6 @@
                 "Output {{out_num}} Safe Mode HighVoltage": "Ограничение высокого напряжения на канале {{out_num}}",
                 "Output {{out_num}} Safe Mode LowVoltage": "Ограничение низкого напряжения на канале {{out_num}}",
                 {% endfor -%}
-
 
                 {% for out_num in range(1, OUTPUTS_NUMBER + 1) -%}
                 "Output {{out_num}}": "Выход {{out_num}}",
