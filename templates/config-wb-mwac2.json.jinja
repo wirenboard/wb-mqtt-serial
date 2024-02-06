@@ -446,7 +446,7 @@
                 "address": 975,
                 "reg_type": "holding",
                 "min": 1,
-                "max": 1440,
+                "max": 360,
                 "default": 20,
                 "group": "wet_cleaning_mode",
                 "order": 1
@@ -687,7 +687,7 @@
                 "poll_timeout_description": "Parameter defines the time of absence of polling in seconds, after which safety mode will be activated. 1 — 65534 ms, 10 by default.",
 
                 "wet_cleaning_mode_description": "Wet cleaning mode is used to disable reactions on flood sensors when a room is being celaned. When started/stopped, a sound signal is emitted, and during the activity of the mode, the indicators of the inputs periodically flash briefly. Disabled automatically after the specified time.",
-                "wet_cleaning_mode_timer_description": "1 — 1440 min, 20 by default",
+                "wet_cleaning_mode_timer_description": "1 — 360 min, 20 by default",
 
                 "debounce_description": "For button press detection, the value must be 5 — 10 times less than the waiting time for the second press. Adds a delay to the response to presses. 0 — 2000 ms, 50 by default.",
                 "debounce_description_no_buttons": "Adds a delay to the response. 0 — 2000 ms, 50 by default.",                
@@ -715,7 +715,7 @@
 
                 "Wet cleaning mode": "Режим влажной уборки",
                 "wet_cleaning_mode_description": "Режим влажной уборки используется для отключения реакции на датчики протечки при уборке помещения. При запуске/остановке издаётся звуковой сигнал, во время активности режима, индикаторы входов периодически коротко моргают. Отключается автоматически по истечении указанного времени.",
-                "wet_cleaning_mode_timer_description": "1 — 1440 мин, 20 по умолчанию",
+                "wet_cleaning_mode_timer_description": "1 — 360 мин, 20 по умолчанию",
                 "Wet cleaning mode timer (min)": "Таймер режима влажной уборки (мин)",
 
                 {% for in_num in range(1, INPUTS_NUMBER + 1) -%}
