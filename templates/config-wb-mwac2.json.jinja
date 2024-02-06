@@ -128,14 +128,15 @@
                 "address": {{ 312 + 2 * (lp_in_num - 1) }},
                 "reg_type": "holding",
                 "default": 0,
+                "format": "u32",
                 "min": 0,
                 "max": 4294967295,
                 "group": "counter{{ lp_in_num }}",
                 "order": 1
             },
-            "lp_counter{{ lp_in_num }}_divider": {
-                "title": "Counter Divider",
-                "description": "counter_divider_description",
+            "lp_counter{{ lp_in_num }}_pulse_weight": {
+                "title": "Counter Pulse Weight",
+                "description": "counter_pulse_weight_description",
                 "address": {{ 308 + (lp_in_num - 1) }},
                 "reg_type": "holding",
                 "default": 1,
@@ -469,7 +470,18 @@
                 "reg_type": "input",
                 "address": {{ 316 + 2 * (lp_in_num - 1) }},
                 "type": "value",
+                "enabled": false,
                 "format": "u32",
+                "group": "counter{{ lp_in_num }}"
+            },
+            {
+                "name": "P{{ lp_in_num }} Volume",
+                "reg_type": "input",
+                "address": {{ 304 + 2 * (lp_in_num - 1) }},
+                "type": "value",
+                "units": "m^3",
+                "format": "u32",
+                "scale": 0.01,
                 "group": "counter{{ lp_in_num }}"
             },
             {
@@ -696,8 +708,8 @@
                 "secp_waiting_time_title": "Second Press Waiting Time (ms)",
                 "secp_waiting_time_description": "If there is no second press during the specified time then press is single. 0 — disables all presses except short and long. Adds a delay to the response to a short press. 0 — 2000 ms, 300 by default.",
 
-                "counter_offset_description": "Here you can enter the initial value of the counter in cubic meters",
-                "counter_divider_description": "Standard counters issue 1, 10, 50, or 100 pulses per cubic meter. Refer to the technical documentation for your counter. 1 — 100, 1 by default",
+                "counter_offset_description": "Initial value of the counter in liters",
+                "counter_pulse_weight_description": "Common counters have a weight of 1, 10, 50, or 100 liters per pulse. Check the technical documentation for your counter. 1 — 10000, 1 by default",
             },
             "ru": {
                 "WB-MWAC_template_title": "WB-MWAC v.2 (модуль контроля протечек и расхода воды)",
@@ -709,9 +721,9 @@
                 {% endfor -%}
 
                 "Counter Offset": "Начальное значение счётчика",
-                "Counter Divider": "Импульсов на кубический метр",
-                "counter_offset_description": "Здесь можно ввести начальное значение счётчика в кубических метрах",
-                "counter_divider_description": "Стандартные счётчики выдают 1, 10, 50, или 100 импульсов на кубический метр. Ознакомьтесь с технической документацией на ваш счётчик. 1 — 100, 1 по умолчанию",
+                "Counter Pulse Weight": "Вес импульса",
+                "counter_offset_description": "Начальное значение счётчика в литрах",
+                "counter_pulse_weight_description": "Распространённые счётчики имеют вес 1, 10, 50, или 100 литров на импульс. Ознакомьтесь с технической документацией на ваш счётчик. 1 — 10000, 1 по умолчанию",
 
                 "Wet cleaning mode": "Режим влажной уборки",
                 "wet_cleaning_mode_description": "Режим влажной уборки используется для отключения реакции на датчики протечки при уборке помещения. При запуске/остановке издаётся звуковой сигнал, во время активности режима, индикаторы входов периодически коротко моргают. Отключается автоматически по истечении указанного времени.",
@@ -743,6 +755,7 @@
 
                 {% for lp_in_num in range(1, LP_INPUTS_NUMBER + 1) -%}
                 "P{{ lp_in_num }} Counter": "Счетчик P{{ lp_in_num }}",
+                "P{{ lp_in_num }} Volume": "Счетчик объёма P{{ lp_in_num }}",
                 "P{{ lp_in_num }} Counter Reset": "Сброс счетчика P{{ lp_in_num }}",
                 {% endfor -%}
 
