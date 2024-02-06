@@ -51,8 +51,8 @@
                 {% elif out_num == OUT_NUM_ALARM %} "Alarm actions",
                 {% else %} "Wet cleaning mode actions",
                 {% endif %}
-                "id": "gg_in{{in_num}}_out{{out_num}}_button_actions",
-                "group": "input_f{{in_num}}"
+                "id": "gg_in{{ in_num }}_out{{ out_num }}_button_actions",
+                "group": "input_f{{ in_num }}"
             },
             {% endfor -%}
 
@@ -317,7 +317,7 @@
                 "group": "gg_in{{ in_num }}_out{{ out_num }}_button_actions",
                 "title": "Double Press",
                 "order": 5,
-                "address": {{ 672 + out_num - 1 + (in_num-1) * MMATRIX_OUTPUTS_NUMBER }},
+                "address": {{ 672 + out_num - 1 + (in_num - 1) * MMATRIX_OUTPUTS_NUMBER }},
                 "reg_type": "holding",
                 "default": 0,
                 {%- if out_num == OUT_NUM_ALARM %}
@@ -333,7 +333,7 @@
                 "group": "gg_in{{ in_num }}_out{{ out_num }}_button_actions",
                 "title": "Short then long Press",
                 "order": 6,
-                "address": {{ 736 + out_num - 1 + (in_num-1) * MMATRIX_OUTPUTS_NUMBER }},
+                "address": {{ 736 + out_num - 1 + (in_num - 1) * MMATRIX_OUTPUTS_NUMBER }},
                 "reg_type": "holding",
                 "default": 0,
                 {%- if out_num == OUT_NUM_ALARM %}
@@ -459,7 +459,7 @@
             {
                 "name": "P{{ lp_in_num }}",
                 "reg_type": "discrete",
-                "address": {{ 9 + lp_in_num }},
+                "address": {{ 10 + (lp_in_num - 1) }},
                 "type": "switch",
                 "enabled": false,
                 "sporadic": false,
@@ -517,7 +517,7 @@
             {
                 "name": "Input {{ letter }}{{ in_num }} Counter",
                 "reg_type": "input",
-                "address": {{ 31 + in_num}},
+                "address": {{ 32 + (in_num - 1) }},
                 "type": "value",
                 "sporadic": true,
                 "condition": "isDefined(in{{ in_num }}_mode)&&in{{ in_num }}_mode!=3",
@@ -526,7 +526,7 @@
             {
                 "name": "Input {{ letter }}{{ in_num }} Counter",
                 "reg_type": "input",
-                "address": {{ 31 + in_num }},
+                "address": {{ 32 + (in_num - 1) }},
                 "type": "value",
                 "sporadic": false,
                 "condition": "isDefined(in{{ in_num }}_mode)==0||in{{ in_num }}_mode==3",
@@ -535,7 +535,7 @@
             {
                 "name": "Input {{ letter }}{{ in_num }} sensor performance (only for Larnitech sensors)",
                 "reg_type": "discrete",
-                "address": {{ 20 + in_num }},
+                "address": {{ 20 + (in_num - 1) }},
                 "type": "switch",
                 "sporadic": true,
                 "enabled": false,
@@ -546,7 +546,7 @@
                 "name": "Input {{ letter }}{{ in_num }} Single Press Counter",
                 "enabled": false,
                 "reg_type": "input",
-                "address": {{ 464 + in_num - 1 }},
+                "address": {{ 464 + (in_num - 1) }},
                 "type": "value",
                 "sporadic": true,
                 "group": "gg_in{{ in_num }}_channels",
@@ -556,7 +556,7 @@
                 "name": "Input {{ letter }}{{ in_num }} Long Press Counter",
                 "enabled": false,
                 "reg_type": "input",
-                "address": {{ 480 + in_num - 1 }},
+                "address": {{ 480 + (in_num - 1) }},
                 "type": "value",
                 "sporadic": true,
                 "group": "gg_in{{ in_num }}_channels",
@@ -566,7 +566,7 @@
                 "name": "Input {{ letter }}{{ in_num }} Double Press Counter",
                 "enabled": false,
                 "reg_type": "input",
-                "address": {{ 496 + in_num - 1}},
+                "address": {{ 496 + (in_num - 1) }},
                 "type": "value",
                 "sporadic": true,
                 "group": "gg_in{{ in_num }}_channels",
@@ -576,7 +576,7 @@
                 "name": "Input {{ letter }}{{ in_num }} Shortlong Press Counter",
                 "enabled": false,
                 "reg_type": "input",
-                "address": {{ 512 + in_num - 1}},
+                "address": {{ 512 + (in_num - 1) }},
                 "type": "value",
                 "sporadic": true,
                 "group": "gg_in{{ in_num }}_channels",
