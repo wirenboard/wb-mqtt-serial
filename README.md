@@ -48,7 +48,7 @@ It's designed to be used on [Wiren Board](https://wirenboard.com/en/) family of 
 - [Somfy SDN](https://www.somfy.com),
 - WinDeco,
 - Dooya,
-- Dauerhaft.
+- Dauerhaft/[A-OK](https://a-okmotors.com).
 
 ### Управление драйвером
 
