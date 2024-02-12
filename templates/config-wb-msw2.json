@@ -2,6 +2,11 @@
     "title": "_WB-MSW2-template-title",
     "device_type": "WB-MSW2",
     "group": "g-wb-old",
+    "hw": [
+        {
+            "signature": "WBMSW2"
+        }
+    ],
     "device": {
         "name": "WB-MSW2",
         "id": "wb-msw2",

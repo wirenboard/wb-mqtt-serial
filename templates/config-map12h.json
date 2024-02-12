@@ -2,6 +2,11 @@
     "title": "_WB-MAP12H-template-title",
     "device_type": "WB-MAP12H",
     "group": "g-wb-old",
+    "hw": [
+        {
+            "signature": "MAP12\u0002H"
+        }
+    ],
     "device": {
         "name": "WB-MAP12H",
         "id": "wb-map12h",

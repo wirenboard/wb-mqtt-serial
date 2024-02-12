@@ -2,6 +2,12 @@
     "title": "_WB-MAP3H-fw2-template-title",
     "device_type": "WB-MAP3H fw2",
     "group": "g-wb-old",
+    "hw": [
+        {
+            "signature": "MAP3H",
+            "fw": "2.0.0"
+        }
+    ],
     "device": {
         "name": "WB-MAP3H fw2",
         "id": "wb-map3h",

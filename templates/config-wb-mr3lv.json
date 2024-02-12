@@ -3,6 +3,11 @@
     "device_type": "WB-MR3LV",
     "deprecated": true,
     "group": "g-wb",
+    "hw": [
+        {
+            "signature": "MRWL3"
+        }
+    ],
     "device": {
         "name": "WB-MR3LV",
         "id": "wb-mr3lv",
