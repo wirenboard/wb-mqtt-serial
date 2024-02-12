@@ -5,10 +5,13 @@ namespace
     enum TRegTypes
     {
         POSITION,
-        COMMAND
+        COMMAND,
+        PARAM
     };
 
-    const TRegisterTypes RegTypes{{POSITION, "position", "value", U8}, {COMMAND, "command", "value", U8}};
+    const TRegisterTypes RegTypes{{POSITION, "position", "value", U8},
+                                  {COMMAND, "command", "value", U8},
+                                  {PARAM, "param", "value", U8}};
 
     enum THeadCodes
     {
@@ -22,9 +25,7 @@ namespace
         SET_POSITION = 0xdd,
         MOTOR_STATUS = 0xcc,
         CURTAIN_MOTOR_STATUS = 0xca,
-        SPEED_SETTINGS = 0xd9,
         HAND_CONTROL_SETTINGS = 0xd2,
-        BAUD_RATE_SETTINGS = 0xda,
         MOTOR_SETTINGS = 0xd5
     };
 
@@ -121,6 +122,13 @@ void Dauerhaft::TDevice::WriteRegisterImpl(PRegister reg, const TRegisterValue& 
         case POSITION: {
             TRequest req;
             req.Data = MakeRequest(MotorId, LowChannelId, HighChannelId, SET_POSITION, value);
+            ExecCommand(req);
+            return;
+        }
+        case PARAM: {
+            auto addr = GetUint32RegisterAddress(reg->GetAddress());
+            TRequest req;
+            req.Data = MakeRequest(MotorId, LowChannelId, HighChannelId, addr, value);
             ExecCommand(req);
             return;
         }

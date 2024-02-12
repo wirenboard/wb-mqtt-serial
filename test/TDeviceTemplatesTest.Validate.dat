@@ -105,6 +105,13 @@ DRB88
 	Relay 6  =>  Relay 6
 	Relay 7  =>  Relay 7
 	Relay 8  =>  Relay 8
+Dauerhaft CM5
+	Close  =>  Close
+	Delete  =>  Delete
+	Learn  =>  Learn
+	Open  =>  Open
+	Position  =>  Position
+	Stop  =>  Stop
 Dauerhaft Roll 35/45
 	Dot move down  =>  Dot move down
 	Dot move up  =>  Dot move up
