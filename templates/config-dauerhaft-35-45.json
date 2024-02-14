@@ -6,16 +6,6 @@
         "name": "Dauerhaft Roll 35/45",
         "id": "dauerhaft-35-45",
         "protocol": "dauerhaft",
-        "groups": [
-            {
-                "title": "Main",
-                "id": "main"
-            },
-            {
-                "title": "Settings",
-                "id": "settings"
-            }
-        ],
         "parameters": {
             "baud_rate": {
                 "title": "Baud rate",
@@ -30,8 +20,7 @@
                     "4800",
                     "9600",
                     "19200"
-                ],
-                "group": "settings"
+                ]
             }
         },
         "channels": [
@@ -39,36 +28,31 @@
                 "name": "Stop",
                 "type": "pushbutton",
                 "reg_type": "command",
-                "address": "0xcc",
-                "group": "main"
+                "address": "0xcc"
             },
             {
                 "name": "Move up",
                 "type": "pushbutton",
                 "reg_type": "command",
-                "address": "0xdd",
-                "group": "main"
+                "address": "0xdd"
             },
             {
                 "name": "Move down",
                 "type": "pushbutton",
                 "reg_type": "command",
-                "address": "0xee",
-                "group": "main"
+                "address": "0xee"
             },
             {
                 "name": "Dot move up",
                 "type": "pushbutton",
                 "reg_type": "command",
-                "address": "0x0d",
-                "group": "main"
+                "address": "0x0d"
             },
             {
                 "name": "Dot move down",
                 "type": "pushbutton",
                 "reg_type": "command",
-                "address": "0x0e",
-                "group": "main"
+                "address": "0x0e"
             }
         ],
         "translations": {
