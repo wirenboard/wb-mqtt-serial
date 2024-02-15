@@ -27,12 +27,14 @@ namespace
     {
         POSITION,
         COMMAND,
-        PARAM
+        PARAM,
+        STATUS
     };
 
     const TRegisterTypes RegTypes{{POSITION, "position", "value", U8},
                                   {COMMAND, "command", "value", U8},
-                                  {PARAM, "param", "value", U8}};
+                                  {PARAM, "param", "value", U8},
+                                  {STATUS, "status", "value", U8}};
 
     enum THeadCodes
     {
@@ -139,7 +141,11 @@ TRegisterValue Aok::TDevice::ReadRegisterImpl(PRegister reg)
             return TRegisterValue{1};
         }
         case POSITION: {
-            return GetCachedResponse(MOTOR_STATUS, 0xcc, MOTOR_STATUS_POSITION_OFFSET * 8, 8);
+            return GetCachedResponse(MOTOR_STATUS, 0, MOTOR_STATUS_POSITION_OFFSET * 8, 8);
+        }
+        case STATUS: {
+            auto addr = GetUint32RegisterAddress(reg->GetAddress());
+            return GetCachedResponse((addr >> 8) & 0xFF, addr & 0xFF, reg->GetDataOffset(), reg->GetDataWidth());
         }
     }
     throw TSerialDevicePermanentRegisterException("Unsupported register type");

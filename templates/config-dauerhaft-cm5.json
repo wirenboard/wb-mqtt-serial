@@ -65,6 +65,30 @@
                 "reg_type": "command",
                 "address": "0xa6",
                 "enabled": false
+            },
+            {
+                "name": "Current",
+                "type": "value",
+                "reg_type": "status",
+                "address": "0xcc00:0:8",
+                "units": "mA",
+                "enabled": false
+            },
+            {
+                "name": "Voltage",
+                "type": "value",
+                "reg_type": "status",
+                "address": "0xcc00:1:8",
+                "units": "V",
+                "enabled": false
+            },
+            {
+                "name": "Current rotational speed",
+                "type": "value",
+                "reg_type": "status",
+                "address": "0xcc00:2:8",
+                "units": "rpm",
+                "enabled": false
             }
         ],
         "translations": {
@@ -82,7 +106,10 @@
                 "Open": "Открыть",
                 "Close": "Закрыть",
                 "Learn": "Обучить",
-                "Delete": "Удалить"
+                "Delete": "Удалить",
+                "Current": "Ток",
+                "Voltage": "Напряжение",
+                "Current rotational speed": "Текущая скорость вращения"
             }
         }
     }
