@@ -2,11 +2,6 @@
     "title": "_WB-MAP3E-template-title",
     "device_type": "WB-MAP3E",
     "group": "g-wb-old",
-    "hw": [
-        {
-            "signature": "MAP3E"
-        }
-    ],
     "device": {
         "name": "WB-MAP3E",
         "id": "wb-map3e",
