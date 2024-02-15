@@ -92,10 +92,7 @@ Aok::TDevice::TDevice(PDeviceConfig config, PPort port, PProtocol protocol)
       HighChannelId(SlaveId & 0xFF)
 {}
 
-TRegisterValue Aok::TDevice::GetCachedResponse(uint8_t command,
-                                               uint8_t data,
-                                               size_t bitOffset,
-                                               size_t bitWidth)
+TRegisterValue Aok::TDevice::GetCachedResponse(uint8_t command, uint8_t data, size_t bitOffset, size_t bitWidth)
 {
     TRegisterValue val;
     uint16_t key = (command << 8) | data;

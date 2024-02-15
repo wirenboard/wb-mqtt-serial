@@ -17,10 +17,7 @@ namespace Aok
 
         std::unordered_map<uint16_t, TRegisterValue> DataCache;
 
-        TRegisterValue GetCachedResponse(uint8_t command,
-                                         uint8_t data,
-                                         size_t bitOffset,
-                                         size_t bitWidth);
+        TRegisterValue GetCachedResponse(uint8_t command, uint8_t data, size_t bitOffset, size_t bitWidth);
 
         std::vector<uint8_t> ExecCommand(const TRequest& request);
 
