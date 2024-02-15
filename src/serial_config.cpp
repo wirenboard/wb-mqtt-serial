@@ -24,7 +24,7 @@
 #include "config_schema_generator.h"
 #include "file_utils.h"
 
-#include "devices/curtains/dauerhaft_device.h"
+#include "devices/curtains/a_ok_device.h"
 #include "devices/curtains/dooya_device.h"
 #include "devices/curtains/somfy_sdn_device.h"
 #include "devices/curtains/windeco_device.h"
@@ -1358,7 +1358,7 @@ void RegisterProtocols(TSerialDeviceFactory& deviceFactory)
     Dooya::TDevice::Register(deviceFactory);
     WinDeco::TDevice::Register(deviceFactory);
     Somfy::TDevice::Register(deviceFactory);
-    Dauerhaft::TDevice::Register(deviceFactory);
+    Aok::TDevice::Register(deviceFactory);
 }
 
 TRegisterBitsAddress LoadRegisterBitsAddress(const Json::Value& register_data, const std::string& jsonPropertyName)

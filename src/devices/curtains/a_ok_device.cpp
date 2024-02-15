@@ -1,4 +1,4 @@
-#include "dauerhaft_device.h"
+#include "a_ok_device.h"
 
 namespace
 {
@@ -58,13 +58,13 @@ namespace
     }
 }
 
-void Dauerhaft::TDevice::Register(TSerialDeviceFactory& factory)
+void Aok::TDevice::Register(TSerialDeviceFactory& factory)
 {
-    factory.RegisterProtocol(new TUint32SlaveIdProtocol("dauerhaft", RegTypes),
-                             new TBasicDeviceFactory<Dauerhaft::TDevice>("#/definitions/simple_device_no_channels"));
+    factory.RegisterProtocol(new TUint32SlaveIdProtocol("a_ok", RegTypes),
+                             new TBasicDeviceFactory<Aok::TDevice>("#/definitions/simple_device_no_channels"));
 }
 
-Dauerhaft::TDevice::TDevice(PDeviceConfig config, PPort port, PProtocol protocol)
+Aok::TDevice::TDevice(PDeviceConfig config, PPort port, PProtocol protocol)
     : TSerialDevice(config, port, protocol),
       TUInt32SlaveId(config->SlaveId),
       MotorId((SlaveId >> 16) & 0xFF),
@@ -72,7 +72,7 @@ Dauerhaft::TDevice::TDevice(PDeviceConfig config, PPort port, PProtocol protocol
       HighChannelId(SlaveId & 0xFF)
 {}
 
-std::vector<uint8_t> Dauerhaft::TDevice::ExecCommand(const TRequest& request)
+std::vector<uint8_t> Aok::TDevice::ExecCommand(const TRequest& request)
 {
     Port()->SleepSinceLastInteraction(DeviceConfig()->FrameTimeout);
     Port()->SkipNoise();
@@ -91,7 +91,7 @@ std::vector<uint8_t> Dauerhaft::TDevice::ExecCommand(const TRequest& request)
     return respBytes;
 }
 
-TRegisterValue Dauerhaft::TDevice::ReadRegisterImpl(PRegister reg)
+TRegisterValue Aok::TDevice::ReadRegisterImpl(PRegister reg)
 {
     switch (reg->Type) {
         case COMMAND: {
@@ -108,7 +108,7 @@ TRegisterValue Dauerhaft::TDevice::ReadRegisterImpl(PRegister reg)
     throw TSerialDevicePermanentRegisterException("Unsupported register type");
 }
 
-void Dauerhaft::TDevice::WriteRegisterImpl(PRegister reg, const TRegisterValue& regValue)
+void Aok::TDevice::WriteRegisterImpl(PRegister reg, const TRegisterValue& regValue)
 {
     auto value = regValue.Get<uint64_t>();
     switch (reg->Type) {
@@ -136,11 +136,11 @@ void Dauerhaft::TDevice::WriteRegisterImpl(PRegister reg, const TRegisterValue& 
     throw TSerialDevicePermanentRegisterException("Unsupported register type");
 }
 
-std::vector<uint8_t> Dauerhaft::MakeRequest(uint8_t id,
-                                            uint8_t channelLow,
-                                            uint8_t channelHigh,
-                                            uint8_t command,
-                                            uint8_t data)
+std::vector<uint8_t> Aok::MakeRequest(uint8_t id,
+                                      uint8_t channelLow,
+                                      uint8_t channelHigh,
+                                      uint8_t command,
+                                      uint8_t data)
 {
     std::vector<uint8_t> res{REQUEST, id, channelLow, channelHigh, command, data, 0x00};
     res.back() = CalcCrc({res.begin() + 1, res.end() - 1});

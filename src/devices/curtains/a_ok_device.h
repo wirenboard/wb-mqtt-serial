@@ -2,7 +2,7 @@
 
 #include "serial_config.h"
 
-namespace Dauerhaft
+namespace Aok
 {
     struct TRequest
     {

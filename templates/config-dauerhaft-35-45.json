@@ -5,7 +5,7 @@
     "device": {
         "name": "Dauerhaft Roll 35/45",
         "id": "dauerhaft-35-45",
-        "protocol": "dauerhaft",
+        "protocol": "a_ok",
         "parameters": {
             "baud_rate": {
                 "title": "Baud rate",
