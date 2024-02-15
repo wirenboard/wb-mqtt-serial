@@ -1,4 +1,25 @@
 #include "a_ok_device.h"
+#include "bin_utils.h"
+
+/**
+ * A-OK communication protocol
+ *
+ * WB to motor frame:
+ * +---------+------+-------+------+-----------------------+
+ * |Head code|ID    |Chanel |Data  |Verify                 |
+ * +---------+------+-------+------+-----------------------+
+ * |0x9a     |1 byte|2 bytes|2 byte|1 byte: ID^Channel^Data|
+ * +---------+------+-------+------+-----------------------+
+ *
+ * Motor to WB frame (for status inquiry commands only):
+ * +---------+------+-------+------+-----------------------+
+ * |Head code|ID    |Chanel |Data  |Verify                 |
+ * +---------+------+-------+------+-----------------------+
+ * |0xd8     |1 byte|2 bytes|5 byte|1 byte: ID^Channel^Data|
+ * +---------+------+-------+------+-----------------------+
+ */
+
+using namespace BinUtils;
 
 namespace
 {
@@ -25,14 +46,13 @@ namespace
         SET_POSITION = 0xdd,
         MOTOR_STATUS = 0xcc,
         CURTAIN_MOTOR_STATUS = 0xca,
-        HAND_CONTROL_SETTINGS = 0xd2,
-        MOTOR_SETTINGS = 0xd5
+        TUBULAR_MOTOR_STATUS = 0xcb
     };
 
     const size_t MOTOR_STATUS_RESPONSE_SIZE = 10;
-    // const size_t CURTAIN_MOTOR_STATUS_RESPONSE_SIZE = 9;
-    const size_t MOTOR_STATUS_POSITION_OFFSET = 7;
-    // const size_t CURTAIN_MOTOR_STATUS_BITS_OFFSET = 8;
+    const size_t MOTOR_STATUS_DATA_OFFSET = 4;
+    const size_t MOTOR_STATUS_DATA_SIZE = 5;
+    const size_t MOTOR_STATUS_POSITION_OFFSET = 3;
 
     uint8_t CalcCrc(const std::vector<uint8_t>& bytes)
     {
@@ -72,6 +92,30 @@ Aok::TDevice::TDevice(PDeviceConfig config, PPort port, PProtocol protocol)
       HighChannelId(SlaveId & 0xFF)
 {}
 
+TRegisterValue Aok::TDevice::GetCachedResponse(uint8_t command,
+                                               uint8_t data,
+                                               size_t bitOffset,
+                                               size_t bitWidth)
+{
+    TRegisterValue val;
+    uint16_t key = (command << 8) | data;
+    auto it = DataCache.find(command);
+    if (it != DataCache.end()) {
+        val = it->second;
+    } else {
+        TRequest req;
+        req.Data = MakeRequest(MotorId, LowChannelId, HighChannelId, command, data);
+        req.ResponseSize = MOTOR_STATUS_RESPONSE_SIZE;
+        auto resp = ExecCommand(req);
+        val.Set(Get<uint64_t>(resp.begin() + MOTOR_STATUS_DATA_OFFSET, resp.end() - 1));
+        DataCache[key] = val;
+    }
+    if (bitOffset || bitWidth) {
+        return TRegisterValue{(val.Get<uint64_t>() >> bitOffset) & GetLSBMask(bitWidth)};
+    }
+    return val;
+}
+
 std::vector<uint8_t> Aok::TDevice::ExecCommand(const TRequest& request)
 {
     Port()->SleepSinceLastInteraction(DeviceConfig()->FrameTimeout);
@@ -98,11 +142,7 @@ TRegisterValue Aok::TDevice::ReadRegisterImpl(PRegister reg)
             return TRegisterValue{1};
         }
         case POSITION: {
-            TRequest req;
-            req.Data = MakeRequest(MotorId, LowChannelId, HighChannelId, MOTOR_STATUS, 0xcc);
-            req.ResponseSize = MOTOR_STATUS_RESPONSE_SIZE;
-            auto resp = ExecCommand(req);
-            return TRegisterValue{resp[MOTOR_STATUS_POSITION_OFFSET]};
+            return GetCachedResponse(MOTOR_STATUS, 0xcc, MOTOR_STATUS_POSITION_OFFSET * 8, 8);
         }
     }
     throw TSerialDevicePermanentRegisterException("Unsupported register type");
@@ -113,7 +153,7 @@ void Aok::TDevice::WriteRegisterImpl(PRegister reg, const TRegisterValue& regVal
     auto value = regValue.Get<uint64_t>();
     switch (reg->Type) {
         case COMMAND: {
-            auto addr = GetUint32RegisterAddress(reg->GetAddress());
+            auto addr = GetUint32RegisterAddress(reg->GetWriteAddress());
             TRequest req;
             req.Data = MakeRequest(MotorId, LowChannelId, HighChannelId, CONTROL, addr);
             ExecCommand(req);
@@ -126,7 +166,7 @@ void Aok::TDevice::WriteRegisterImpl(PRegister reg, const TRegisterValue& regVal
             return;
         }
         case PARAM: {
-            auto addr = GetUint32RegisterAddress(reg->GetAddress());
+            auto addr = GetUint32RegisterAddress(reg->GetWriteAddress());
             TRequest req;
             req.Data = MakeRequest(MotorId, LowChannelId, HighChannelId, addr, value);
             ExecCommand(req);
@@ -134,6 +174,11 @@ void Aok::TDevice::WriteRegisterImpl(PRegister reg, const TRegisterValue& regVal
         }
     }
     throw TSerialDevicePermanentRegisterException("Unsupported register type");
+}
+
+void Aok::TDevice::InvalidateReadCache()
+{
+    DataCache.clear();
 }
 
 std::vector<uint8_t> Aok::MakeRequest(uint8_t id,
