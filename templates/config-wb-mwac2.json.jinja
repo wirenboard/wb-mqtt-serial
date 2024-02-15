@@ -125,12 +125,10 @@
             "lp_counter{{ lp_in_num }}_offset": {
                 "title": "Counter Offset",
                 "description": "counter_offset_description",
-                "address": {{ 312 + 2 * (lp_in_num - 1) }},
+                "address": {{ 302 + 4 * (lp_in_num - 1) }},
                 "reg_type": "holding",
                 "default": 0,
-                "format": "u32",
-                "min": 0,
-                "max": 4294967295,
+                "format": "u64",
                 "group": "counter{{ lp_in_num }}",
                 "order": 1
             },
@@ -477,11 +475,11 @@
             {
                 "name": "P{{ lp_in_num }} Volume",
                 "reg_type": "input",
-                "address": {{ 306 + 2 * (lp_in_num - 1) }},
+                "address": {{ 456 + 4 * (lp_in_num - 1) }},
                 "type": "value",
                 "units": "m^3",
-                "format": "u32",
-                "scale": 0.01,
+                "format": "u64",
+                "scale": 0.001,
                 "group": "counter{{ lp_in_num }}"
             },
             {
