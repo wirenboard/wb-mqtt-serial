@@ -265,7 +265,7 @@
                 "default": 0,
                 "group": "input_{{ch_number + 1}}_{{press_type | replace(' ', '_')}}_press_action",
                 "order": 2,
-                "condition": "({{action_bind}}_number!=0)&&({{action_bind}}_number!=100)"
+                "condition": "({{action_bind}}_number>0)&&({{action_bind}}_number!=100)"
             },
             {
                 "id": "{{action_bind}}_action_all",
