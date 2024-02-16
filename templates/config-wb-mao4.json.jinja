@@ -9,6 +9,7 @@
 {% set INPUTS_NUMBER = 3 -%}
 {% set OUTPUTS_NUMBER = 4 -%}
 {% set PRESS_TYPES = ["short", "long", "double", "short long"] %}
+{% set LIGHT_SCENES_NUMBER = 10 -%}
 
 {
     "title": "template_title",
@@ -89,6 +90,61 @@
                     }
                 }
             },
+            {
+                "title": "Light Groups",
+                "id": "g_light_groups",
+                "description": "light_groups_description"
+            },
+            {
+                "title": "Light Scenes",
+                "id": "light_scenes",
+                "description": "light_scenes_description"
+            },
+            {% for ls_number in range(1, LIGHT_SCENES_NUMBER + 1) -%}
+            {
+                "title": "Light Scene {{ ls_number }}",
+                "id": "light_scene_{{ ls_number }}",
+                "group": "light_scenes"
+            },
+            {% for ch_number in range(1, OUTPUTS_NUMBER + 1) -%}
+            {
+                "title": "Channel {{ ch_number }}",
+                "id": "light_scene_{{ ls_number }}_ch_{{ ch_number }}",
+                "group": "light_scene_{{ ls_number }}"
+            },
+            {% endfor -%}
+            {% endfor -%}
+
+            {
+                "title": "Safety Mode",
+                "id": "g_safety",
+                "description": "g_safety_description"
+            },
+            {
+                "title": "Safety Behaviour",
+                "id": "gg_safety_behaviour",
+                "description": "safety_behaviour_description",
+                "group": "g_safety"
+            },
+            {% for ch_number in range(1, OUTPUTS_NUMBER + 1) -%}
+            {
+                "title": "Channel {{ ch_number }}",
+                "id": "gg_safete_mode_ch_{{ ch_number }}",
+                "group": "gg_safety_behaviour",
+                "ui_options": {
+                    "wb": {
+                        "disable_title": true
+                    }
+                }
+            },
+            {% endfor -%}
+            {
+                "title": "Inputs Control In Safety Mode",
+                "id": "gg_safety_input_control",
+                "description": "inputs_control_in_safety_mode_description",
+                "group": "g_safety"
+            },
+
             {
                 "title": "General",
                 "id": "general"
@@ -235,14 +291,18 @@
                 "title": "Output Number",
                 "address": {{768 + (loop.index0 * 16) + ch_number}},
                 "reg_type": "holding",
-                "enum": [0, 1, 2, 3, 4, 100],
+                "enum": [0, 1, 2, 3, 4, 100, 101, 102, 103, 104],
                 "enum_titles": [
                     "No Action",
                     "Output 1",
                     "Output 2",
                     "Output 3",
                     "Output 4",
-                    "All Outputs"
+                    "All Outputs",
+                    "Group 1",
+                    "Group 2",
+                    "Group 3",
+                    "Group 4"
                 ],
                 "default": 0,
                 "group": "input_{{ch_number + 1}}_{{press_type | replace(' ', '_')}}_press_action",
@@ -284,7 +344,189 @@
                 "order": 2,
                 "condition": "{{ action_bind }}_number==100"
             },
+            {
+                "id": "{{action_bind}}_action_group_light_off",
+                "title": "Action if Light is Off",
+                "address": {{832 + (loop.index0 * 16) + ch_number}},
+                "reg_type": "holding",
+                "enum": [1, 4, {% if press_type in ["long", "short long"] %}5,{% endif %} 6, 7, 8, 9, 10, 11, 12, 13, 14, 15],
+                "enum_titles": [
+                    "Turn On",
+                    "Increase level",
+                    {% if press_type in ["long", "short long"] %}"Increase/Decrease level",{% endif %}
+                    "Set Scene 1",
+                    "Set Scene 2",
+                    "Set Scene 3",
+                    "Set Scene 4",
+                    "Set Scene 5",
+                    "Set Scene 6",
+                    "Set Scene 7",
+                    "Set Scene 8",
+                    "Set Scene 9",
+                    "Set Scene 10"
+                ],
+                "default": 1,
+                "group": "input_{{ch_number + 1}}_{{press_type | replace(' ', '_') }}_press_action",
+                "order": 2,
+                "condition": "{{ action_bind }}_number>100"
+            },
+            {
+                "id": "{{action_bind}}_action_group_light_on",
+                "title": "Action if Light is On",
+                "address": {{832 + (loop.index0 * 16) + ch_number}},
+                "reg_type": "holding",
+                "enum": [0, 3, 4, {% if press_type in ["long", "short long"] %}5,{% endif %} 6, 7, 8, 9, 10, 11, 12, 13, 14, 15],
+                "enum_titles": [
+                    "Turn Off",
+                    "Decrease level",
+                    "Increase level",
+                    {% if press_type in ["long", "short long"] %}"Increase/Decrease level",{% endif %}
+                    "Set Scene 1",
+                    "Set Scene 2",
+                    "Set Scene 3",
+                    "Set Scene 4",
+                    "Set Scene 5",
+                    "Set Scene 6",
+                    "Set Scene 7",
+                    "Set Scene 8",
+                    "Set Scene 9",
+                    "Set Scene 10"
+                ],
+                "default": 0,
+                "group": "input_{{ch_number + 1}}_{{press_type | replace(' ', '_') }}_press_action",
+                "order": 2,
+                "condition": "{{ action_bind }}_number>100"
+            },
             {% endfor -%}{% endfor -%}
+
+            {% for ch_number in range(1, OUTPUTS_NUMBER + 1) -%}
+            {
+                "id": "ch_{{ch_number}}_light_group",
+                "title": "Channel {{ch_number}} Light Group",
+                "reg_type": "holding",
+                "address": {{896 + ch_number - 1}},
+                "type": "enum",
+                "enum": [0, 1, 2, 3, 4],
+                "enum_titles": [
+                    "No Group",
+                    "Group 1",
+                    "Group 2",
+                    "Group 3",
+                    "Group 4"
+                ],
+                "group": "g_light_groups"
+            },
+            {% endfor -%}
+            {
+                "id": "light_scenes_number",
+                "title": "Light Scenes Number",
+                "type": "enum",
+                "enum": [0, 1, 2, 3, 4, 5, 6, 7, 8, 9, 10],
+                "default": 0,
+                "required": true,
+                "readonly": true,
+                "group": "light_scenes"
+            },
+            {% for ls_number in range(1, LIGHT_SCENES_NUMBER + 1) -%}
+            {
+                "id": "light_scene_{{ls_number}}_group",
+                "title": "Light Group to Control",
+                "reg_type": "holding",
+                "address": {{ls_number - 1}},
+                "type": "enum",
+                "enum": [1, 2, 3, 4],
+                "enum_titles": [
+                    "Group 1",
+                    "Group 2",
+                    "Group 3",
+                    "Group 4"
+                ],
+                "required": true,
+                "group": "light_scene_{{ ls_number }}",
+                "condition": "light_scenes_number>={{ls_number}}"
+            },
+            {% for ch_number in range(1, OUTPUTS_NUMBER + 1) -%}
+            {
+                "id": "light_scene_{{ls_number}}_ch_{{ch_number}}_action",
+                "title": "Action",
+                "reg_type": "holding",
+                "address": {{(ls_number - 1) * 16 + ch_number}},
+                "type": "enum",
+                "enum": [0, 1, 2],
+                "enum_titles": [
+                    "No Action",
+                    "Turn Off",
+                    "Set Brightness"
+                ],
+                "required": true,
+                "group": "light_scene_{{ ls_number }}_ch_{{ ch_number }}",
+                "condition": "light_scenes_number>={{ls_number}}&&isDefined(ch_{{ch_number}}_light_group)&&ch_{{ch_number}}_light_group==light_scene_{{ls_number}}_group"
+            },
+            {
+                "id": "light_scene_{{ls_number}}_ch_{{ch_number}}_fading",
+                "title": "Fading",
+                "reg_type": "holding",
+                "address": {{(ls_number - 1) * 16 + ch_number}},
+                "max": 100,
+                "required": true,
+                "condition": "light_scene_{{ls_number}}_ch_{{ch_number}}_action>=1",
+                "group": "light_scene_{{ ls_number }}_ch_{{ ch_number }}"
+            },
+            {
+                "id": "light_scene_{{ls_number}}_ch_{{ch_number}}_level",
+                "title": "Brightness",
+                "reg_type": "holding",
+                "address": {{(ls_number - 1) * 16 + ch_number}},
+                "max": 100,
+                "required": true,
+                "condition": "light_scene_{{ls_number}}_ch_{{ch_number}}_action==2",
+                "group": "light_scene_{{ ls_number }}_ch_{{ ch_number }}"
+            },
+            {% endfor -%}
+            {% endfor -%}
+
+            {% for ch_number in range(1, OUTPUTS_NUMBER + 1) -%}
+            {
+                "id": "safety_mode_ch_{{ch_number}}_action",
+                "title": "Channel {{ch_number}} Action",
+                "reg_type": "holding",
+                "address": {{16 + ch_number}},
+                "type": "enum",
+                "enum": [0, 1, 2],
+                "enum_titles": [
+                    "No Action",
+                    "Turn Off",
+                    "Turn On"
+                ],
+                "required": true,
+                "group": "gg_safete_mode_ch_{{ ch_number }}"
+            },
+            {
+                "id": "safety_mode_ch_{{ch_number}}_level",
+                "title": "Channel {{ch_number}} Brightness",
+                "reg_type": "holding",
+                "address": {{16 + ch_number}},
+                "max": 100,
+                "required": true,
+                "condition": "safety_mode_ch_{{ch_number}}_action==2",
+                "group": "gg_safete_mode_ch_{{ ch_number }}"
+            },
+            {
+                "id": "ch_{{ch_number}}_safety_input_control",
+                "title": "Channel {{ch_number}}",
+                "group": "gg_safety_input_control",
+                "address": {{946 + ch_number - 1}},
+                "reg_type": "holding",
+                "default": 0,
+                "enum": [0, 1, 2],
+                "enum_titles": [
+                    "Don't change",
+                    "Disable in safety mode",
+                    "Enable only in safety mode"
+                ]
+            },
+            {% endfor -%}
+
             {
                 "id": "baud_rate",
                 "title": "Baud rate",
