@@ -699,7 +699,7 @@
                 "safety_behaviour_description": "Safe state of outputs is configured on \"Outputs\" tab.",
                 "outputs_safe_state_description": "Outputs safe state and \"Outputs State After Power On\" settings. By default, safe mode is disabled, \"Safe state\" is set to the \"Outputs State After Power On\" setting, and safe state for each output is set to \"Off\".",
                 "poll_timeout_description": "Parameter defines the time of absence of polling in seconds, after which safety mode will be activated. 1 — 65534 ms, 10 by default.",
-                "restore_outputs_state_after_leakage_fix_description": "If the parameter is set to \"On\", the relay state is restored to the original when exiting the \"Leakage\" mode. If an alarm is reset or wet cleaning mode is activated from the input, and the relay state is switched, then the relay state will be restored first, and then switched according to the input setting.",
+                "restore_outputs_state_after_leakage_fix_description": "\"On\" — relay state is set to the state before the leakage, then input settings are analyzed. \"Off\" — input settings are analyzed immediately.",
 
                 "wet_cleaning_mode_description": "Wet cleaning mode is used to disable reactions on flood sensors when a room is being celaned. When started/stopped, a sound signal is emitted, and during the activity of the mode, the indicators of the inputs periodically flash briefly. Disabled automatically after the specified time.",
                 "wet_cleaning_mode_timer_description": "1 — 360 min, 20 by default",
@@ -793,7 +793,7 @@
                 "safety_mode_description": "При потере связи по RS-485 модуль защиты от протечек будет работать автономно. Однако есть возможность задать определенное состояние выходов в случае обрыва связи. Для этого существует безопасный режим.",
                 "outputs_safe_state_description": "Состояние выходов для безопасного режима и настройки \"Состояния выходов при подаче питания\". По умолчанию безопасный режим отключен, в настройке \"Состояния выходов при подаче питания\" установлено \"Перевести в безопасное состояние\", а безопасное состояние для каждого выхода установлено в \"Выключен\".",
                 "poll_timeout_description": "Параметр определяет время отсутствия опроса в секундах, после которого будет активирован безопасный режим. 1 — 65534 с, 10 по умолчанию.",
-                "restore_outputs_state_after_leakage_fix_description": "Если параметр установлен в положение "Включен", состояние реле восстанавливается в исходное при выходе из режима "Протечка". Если со входа сбрасывается тревога или включается режим влажной уборки, и при этом переключается состояния реле, то сначала произойдет восстановление состояния реле, а затем переключение в соответствии с настройкой входа.",
+                "restore_outputs_state_after_leakage_fix_description": "\"Включен\" — состояние реле устанавливается в положение до утечки, затем анализируются настройки входов. \"Выключен\" — сразу анализируются настройки входов.",
                 "safety_behaviour_description": "Безопасное состояние выходов настраивается на вкладке \"Выходы\".",
                 "inputs_control_in_safety_mode_description": "Настройка изменения управления с входов при переходе модуля в безопасный режим. Не влияет на режим \"Датчик протечки\".",
                 "Don't сhange output state": "Ничего не делать",
