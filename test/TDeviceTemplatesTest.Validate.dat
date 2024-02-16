@@ -107,11 +107,14 @@ DRB88
 	Relay 8  =>  Relay 8
 Dauerhaft CM5
 	Close  =>  Close
+	Current  =>  Current
+	Current rotational speed  =>  Current rotational speed
 	Delete  =>  Delete
 	Learn  =>  Learn
 	Open  =>  Open
 	Position  =>  Position
 	Stop  =>  Stop
+	Voltage  =>  Voltage
 Dauerhaft Roll 35/45
 	Dot move down  =>  Dot move down
 	Dot move up  =>  Dot move up
