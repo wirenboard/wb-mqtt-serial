@@ -6,7 +6,7 @@
         "name": "WB-MSW-LORA v.4",
         "id": "wb-msw-lora-v4",
         "max_read_registers": 0,
-        "response_timeout_ms": 1,
+        "response_timeout_ms": 2000,
         "frame_timeout_ms": 0,
         "enable_wb_continuous_read": true,
 
