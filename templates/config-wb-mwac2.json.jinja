@@ -151,10 +151,11 @@
                 "title": "Input {{ letter }}{{ in_num }} Mode",
                 "address": {{ 8 + in_num }},
                 "reg_type": "holding",
-                "enum": [3, 4, 5],
+                "enum": [3, 6, 4, 5],
                 "default": {{ 4 if in_num == IN_NUM_SHORT_CLEANING_ON_LONG_RES_ALARM else 5 }},
                 "enum_titles": [
                     "control disabled",
+                    "control by edges",
                     "discrete input or button",
                     "leakage sensor"
                 ],
@@ -245,38 +246,6 @@
             {% endfor -%}
 
             {% for out_num in range(1, OUTPUTS_NUMBER + 1) -%}
-            "in{{ in_num }}_out{{ out_num }}_contact_closure": {
-                "group": "gg_in{{ in_num }}_out{{ out_num }}_button_actions",
-                "title": "Contact closure",
-                "order": 1,
-                "address": {{ 864 + out_num - 1 + (in_num - 1) * MMATRIX_OUTPUTS_NUMBER }},
-                "reg_type": "holding",
-                "default": 0,
-                {%- if out_num == OUT_NUM_ALARM %}
-                "enum": [0, 1],
-                "enum_titles": ["do nothing", "off"],
-                {% else %}
-                "enum": [0, 1, 2, 3],
-                "enum_titles": ["do nothing", "off", "on", "toggle"],
-                {% endif -%}
-                "condition": "in{{ in_num }}_mode==4"
-            },
-            "in{{ in_num }}_out{{ out_num }}_contact_opening": {
-                "group": "gg_in{{ in_num }}_out{{ out_num }}_button_actions",
-                "title": "Contact opening",
-                "order": 2,
-                "address": {{ 800 + out_num - 1 + (in_num - 1) * MMATRIX_OUTPUTS_NUMBER }},
-                "reg_type": "holding",
-                "default": 0,
-                {%- if out_num == OUT_NUM_ALARM %}
-                "enum": [0, 1],
-                "enum_titles": ["do nothing", "off"],
-                {% else %}
-                "enum": [0, 1, 2, 3],
-                "enum_titles": ["do nothing", "off", "on", "toggle"],
-                {% endif -%}
-                "condition": "in{{ in_num }}_mode==4"
-            },
             "in{{ in_num }}_out{{ out_num }}_sp": {
                 "group": "gg_in{{ in_num }}_out{{ out_num }}_button_actions",
                 "title": "Short Press",
@@ -342,6 +311,41 @@
                 "enum_titles": ["do nothing", "off", "on", "toggle"],
                 {% endif -%}
                 "condition": "in{{ in_num }}_mode==4"
+            },
+            {% endfor -%}
+
+            {% for out_num in range(1, OUTPUTS_NUMBER + 1) -%}
+            "in{{ in_num }}_out{{ out_num }}_contact_closure": {
+                "group": "gg_in{{ in_num }}_out{{ out_num }}_button_actions",
+                "title": "Contact closure",
+                "order": 1,
+                "address": {{ 864 + out_num - 1 + (in_num - 1) * MMATRIX_OUTPUTS_NUMBER }},
+                "reg_type": "holding",
+                "default": 0,
+                {%- if out_num == OUT_NUM_ALARM %}
+                "enum": [0, 1],
+                "enum_titles": ["do nothing", "off"],
+                {% else %}
+                "enum": [0, 1, 2, 3],
+                "enum_titles": ["do nothing", "off", "on", "toggle"],
+                {% endif -%}
+                "condition": "in{{ in_num }}_mode==6"
+            },
+            "in{{ in_num }}_out{{ out_num }}_contact_opening": {
+                "group": "gg_in{{ in_num }}_out{{ out_num }}_button_actions",
+                "title": "Contact opening",
+                "order": 2,
+                "address": {{ 800 + out_num - 1 + (in_num - 1) * MMATRIX_OUTPUTS_NUMBER }},
+                "reg_type": "holding",
+                "default": 0,
+                {%- if out_num == OUT_NUM_ALARM %}
+                "enum": [0, 1],
+                "enum_titles": ["do nothing", "off"],
+                {% else %}
+                "enum": [0, 1, 2, 3],
+                "enum_titles": ["do nothing", "off", "on", "toggle"],
+                {% endif -%}
+                "condition": "in{{ in_num }}_mode==6"
             },
             {% endfor -%}
 
