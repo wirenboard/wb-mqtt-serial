@@ -96,21 +96,26 @@
                 "id": "g_light_scene_{{ ls_number }}",
                 "description": "light_scenes_description"
             },
-            {% for ch_number in range(1, OUTPUTS_NUMBER + 1) -%}
             {
-                "title": "Channel {{ ch_number }} Actions",
-                "id": "gg_ls_{{ ls_number }}_ch_{{ ch_number }}",
+                "title": "Actions if Light is Off",
+                "id": "gg_ls_{{ ls_number }}_actions_off",
                 "group": "g_light_scene_{{ ls_number }}"
             },
             {
-                "title": "Action if Channel is Off",
+                "title": "Actions if Light is On",
+                "id": "gg_ls_{{ ls_number }}_actions_on",
+                "group": "g_light_scene_{{ ls_number }}"
+            },
+            {% for ch_number in range(1, OUTPUTS_NUMBER + 1) -%}
+            {
+                "title": "Channel {{ ch_number }} Actions",
                 "id": "gg_ls_{{ ls_number }}_ch_{{ ch_number }}_action_off",
-                "group": "gg_ls_{{ ls_number }}_ch_{{ ch_number }}"
+                "group": "gg_ls_{{ ls_number }}_actions_off"
             },
             {
-                "title": "Action if Channel is On",
+                "title": "Channel {{ ch_number }} Actions",
                 "id": "gg_ls_{{ ls_number }}_ch_{{ ch_number }}_action_on",
-                "group": "gg_ls_{{ ls_number }}_ch_{{ ch_number }}"
+                "group": "gg_ls_{{ ls_number }}_actions_on"
             },
             {% endfor -%}
             {% endfor -%}
@@ -360,6 +365,19 @@
             {% endfor -%}{% endfor -%}
 
             {% for ls_number in range(1, LIGHT_SCENES_NUMBER + 1) -%}
+            {
+                "id": "ls_{{ls_number}}_light_on_off_condition",
+                "title": "Light On/Off Condition",
+                "reg_type": "holding",
+                "address": {{(ls_number - 1) * 16 }},
+                "type": "enum",
+                "enum": [0, 1],
+                "enum_titles": [
+                    "Light is on if any affected channel is on. Otherwise light is off",
+                    "Light is on if all affected channels are on. Otherwise light is off"
+                ],
+                "group": "g_light_scene_{{ ls_number }}"
+            },
             {% for ch_number in range(1, OUTPUTS_NUMBER + 1) -%}
             {
                 "id": "ls_{{ls_number}}_ch_{{ch_number}}_action_off",
@@ -369,7 +387,7 @@
                 "type": "enum",
                 "enum": [0, 1, 2],
                 "enum_titles": [
-                    "No Action",
+                    "Channel not Affected by Scene",
                     "Turn On",
                     "Turn On and Set Brightness"
                 ],
@@ -401,10 +419,11 @@
                 "reg_type": "holding",
                 "address": {{(ls_number - 1) * 16 + ch_number}},
                 "type": "enum",
-                "enum": [0, 1],
+                "enum": [0, 1, 2],
                 "enum_titles": [
-                    "No Action",
-                    "Turn Off"
+                    "Channel not Affected by Scene",
+                    "Turn Off",
+                    "Set Brightness"
                 ],
                 "group": "gg_ls_{{ls_number}}_ch_{{ch_number}}_action_on"
             },
@@ -417,6 +436,16 @@
                 "required": true,
                 "group": "gg_ls_{{ls_number}}_ch_{{ch_number}}_action_on",
                 "condition": "ls_{{ls_number}}_ch_{{ch_number}}_action_on>=1"
+            },
+            {
+                "id": "ls_{{ls_number}}_ch_{{ch_number}}_level_on",
+                "title": "Brightness",
+                "reg_type": "holding",
+                "address": {{(ls_number - 1) * 16 + ch_number}},
+                "max": 100,
+                "required": true,
+                "group": "gg_ls_{{ls_number}}_ch_{{ch_number}}_action_on",
+                "condition": "ls_{{ls_number}}_ch_{{ch_number}}_action_on==2"
             },
             {% endfor -%}
             {% endfor -%}
