@@ -67,16 +67,6 @@
                 "id": "gg_protection_channel_{{out_num}}",
             },
             {
-                "title": "Protection channel {{out_num}} power",
-                "group": "gg_protection_channel_{{out_num}}",
-                "id": "gg_protection_channel_{{out_num}}_power",
-                "ui_options": {
-                    "wb": {
-                        "disable_title": true
-                    }
-                }
-            },
-            {
                 "title": "Protection channel {{out_num}} high voltage",
                 "group": "gg_protection_channel_{{out_num}}",
                 "id": "gg_protection_channel_{{out_num}}_high_voltage",
@@ -376,38 +366,13 @@
             },
             {% endfor -%}
             {% for out_num in range(1, OUTPUTS_NUMBER + 1) -%}
-            "out{{out_num}}_safe_mode_power_mode": {
-                "title": "Enable Power protection",
-                "group": "gg_protection_channel_{{out_num}}_power",
-                "order": 1,
-                "address": 930,
-                "reg_type": "holding",
-                "default": 0,
-                "enum": [0, 1],
-                "enum_titles": [
-                    "Off",
-                    "On"
-                ]
-            },
-            "out{{out_num}}_safe_mode_power_value": {
-                "title": "Level of high power protection, W",
-                "group": "gg_protection_channel_{{out_num}}_power",
-                "order": 2,
-                "address": {{ 946 + out_num - 1 }},
-                "reg_type": "holding",
-                "default": 3000,
-                "min": 10,
-                "max": 4600,
-                "order": 2,
-                "condition": "out{{out_num}}_safe_mode_power_mode==1"
-            },
             {% endfor -%}
             {% for out_num in range(1, OUTPUTS_NUMBER + 1) -%}
             "out{{out_num}}_safe_mode_voltage_high_mode": {
                 "title": "Enable High voltage protection",
                 "group": "gg_protection_channel_{{out_num}}_high_voltage",
                 "order": 1,
-                "address": 930,
+                "address": {{ 1306 + out_num - 1 }},
                 "reg_type": "holding",
                 "default": 0,
                 "enum": [0, 1],
@@ -420,7 +385,7 @@
                 "title": "Level of high voltage protection, V",
                 "group": "gg_protection_channel_{{out_num}}_high_voltage",
                 "order": 2,
-                "address": {{ 946 + out_num - 1 }},
+                "address": {{ 1300 + out_num - 1 }},
                 "reg_type": "holding",
                 "default": 260,
                 "min": 100,
@@ -434,7 +399,7 @@
                 "title": "Enable Low voltage protection",
                 "group": "gg_protection_channel_{{out_num}}_low_voltage",
                 "order": 1,
-                "address": 933,
+                "address": {{ 1308 + out_num - 1 }},
                 "reg_type": "holding",
                 "default": 0,
                 "enum": [0, 1],
@@ -447,7 +412,7 @@
                 "title": "Level of low voltage protection, V",
                 "group": "gg_protection_channel_{{out_num}}_low_voltage",
                 "order": 2,
-                "address": {{ 946 + out_num - 1 }},
+                "address": {{ 1302 + out_num - 1 }},
                 "reg_type": "holding",
                 "default": 200,
                 "min": 80,
@@ -455,6 +420,31 @@
                 "order": 2,
                 "condition": "out{{out_num}}_safe_mode_voltage_low_mode==1"
             },
+            "out{{out_num}}_safe_mode_voltage_timeout_off": {
+                "title": "Level of high voltage protection, V",
+                "group": "gg_protection_channel_{{out_num}}_low_voltage",
+                "order": 2,
+                "address": {{ 1312 + out_num - 1 }},
+                "reg_type": "holding",
+                "default": 100,
+                "min": 10,
+                "max": 600,
+                "order": 2,
+                "condition": "out{{out_num}}_safe_mode_voltage_low_mode==1"
+            },
+            "out{{out_num}}_safe_mode_voltage_timeout_on": {
+                "title": "Level of high voltage protection, V",
+                "group": "gg_protection_channel_{{out_num}}_low_voltage",
+                "order": 2,
+                "address": {{ 1310 + out_num - 1 }},
+                "reg_type": "holding",
+                "default": 0,
+                "min": 0,
+                "max": 600,
+                "order": 2,
+                "condition": "out{{out_num}}_safe_mode_voltage_low_mode==1"
+            },
+
             {% endfor -%}
             "outputs_restore_state": {
                 "title": "Outputs State After Power On",
@@ -617,7 +607,7 @@
             {
                 "name": "out {{out_num}} protection high voltage",
                 "reg_type": "discrete",
-                "address": {{out_num + 400}},
+                "address": {{out_num -1 + 1322}},
                 "type": "switch",
                 "sporadic": true,
                 "group": "gg_outputs_channels"
@@ -625,20 +615,22 @@
             {
                 "name": "out {{out_num}} protection low voltage",
                 "reg_type": "discrete",
-                "address": {{out_num + 402}},
+                "address": {{out_num - 1 + 1324}},
                 "type": "switch",
                 "sporadic": true,
                 "group": "gg_outputs_channels"
 
             },
+            {#
             {
                 "name": "out {{out_num}} protection power",
                 "reg_type": "discrete",
-                "address": {{out_num + 404}},
+                "address": {{out_num - 1 + 1320}},
                 "type": "switch",
                 "sporadic": true,
                 "group": "gg_outputs_channels"
             },
+            #}
             {% endfor -%}
             {% for out_num in range(1, OUTPUTS_NUMBER + 1) -%}
             {
@@ -648,6 +640,15 @@
                 "type": "voltage",
                 "format": "u16",
                 "scale": 0.01,
+                "group": "g_l{{out_num}}"
+            },
+            {
+                "name": "Irms L{{out_num}}",
+                "reg_type": "input",
+                "address": {{1298 + out_num - 1}},
+                "type": "current",
+                "format": "u16",
+                "scale": 0.001,
                 "group": "g_l{{out_num}}"
             },
             {
@@ -736,7 +737,7 @@
         ],
         "translations": {
             "en": {
-                "WB-MRWM2-template-title": "WB-MRWM2 (2-channel power metering relay)",
+                "WB-MRWM2-template-title": "WB-MRWM2 v222 (2-channel power metering relay)",
                 "mode_description": "For using button mapping-matrix firmware v1.17.0 or newer is required",
                 "outputs_state_after_power_on_description": "Option \"According to inputs\" works for latching switch mode only, firmware v1.18.4 or newer is required",
                 "baud_rate_description": "Make sure that communication with device is established before changing this parameter. Select required baud rate, save configuration and then change port baud rate to the same value.",
@@ -759,7 +760,7 @@
                 "debounce_time_description": "For press detection must be 5-10 times less than second press waiting time. Adds a delay to the response to presses. Firmware up to 1.19.0 supports maximum 250 ms"
             },
             "ru": {
-                "WB-MRWM2-template-title": "WB-MRWM2 (2-канальный модуль реле с измерением мощности)",
+                "WB-MRWM2-template-title": "WB-MRWM2 v222 (2-канальный модуль реле с измерением мощности)",
 
                 {% for in_num in range(FIRST_INPUT, OUTPUTS_NUMBER + 1) -%}
                 "Input {{in_num}}": "Вход {{in_num}}",
