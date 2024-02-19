@@ -106,6 +106,16 @@
                 "id": "gg_ls_{{ ls_number }}_actions_on",
                 "group": "g_light_scene_{{ ls_number }}"
             },
+            {
+                "title": "Light Scene {{ ls_number }} Channels",
+                "id": "gg_ls_{{ ls_number }}_channels",
+                "group": "g_light_scene_{{ ls_number }}",
+                "ui_options": {
+                    "wb": {
+                        "disable_title": true
+                    }
+                }
+            },
             {% for ch_number in range(1, OUTPUTS_NUMBER + 1) -%}
             {
                 "title": "Channel {{ ch_number }} Actions",
@@ -126,6 +136,11 @@
                 "description": "g_safety_description"
             },
             {
+                "title": "Power Up Behaviour",
+                "id": "g_power_up_behaviour",
+                "description": "g_power_up_behaviour_description"
+            },
+            {
                 "title": "Safety Behaviour",
                 "id": "gg_safety_behaviour",
                 "description": "safety_behaviour_description",
@@ -141,6 +156,11 @@
                         "disable_title": true
                     }
                 }
+            },
+            {
+                "title": "Channel {{ ch_number }}",
+                "id": "gg_power_up_behaviour_ch_{{ ch_number }}",
+                "group": "g_power_up_behaviour"
             },
             {% endfor -%}
             {
@@ -457,13 +477,13 @@
                 "reg_type": "holding",
                 "address": {{16 + ch_number}},
                 "type": "enum",
-                "enum": [0, 1, 2],
+                "enum": [0, 1, 2, 3],
                 "enum_titles": [
                     "No Action",
                     "Turn Off",
-                    "Turn On"
+                    "Turn On",
+                    "Turn On and Set Brightness"
                 ],
-                "required": true,
                 "group": "gg_safete_mode_ch_{{ ch_number }}"
             },
             {
@@ -473,14 +493,41 @@
                 "address": {{16 + ch_number}},
                 "max": 100,
                 "required": true,
-                "condition": "safety_mode_ch_{{ch_number}}_action==2",
+                "condition": "safety_mode_ch_{{ch_number}}_action==3",
                 "group": "gg_safete_mode_ch_{{ ch_number }}"
             },
             {
-                "id": "ch_{{ch_number}}_safety_input_control",
-                "title": "Channel {{ch_number}}",
+                "id": "power_up_behaviour_ch_{{ch_number}}_action",
+                "title": "Action on Power Up",
+                "reg_type": "holding",
+                "address": {{16 + ch_number}},
+                "type": "enum",
+                "enum": [0, 1, 2, 3],
+                "enum_titles": [
+                    "Turn Off",
+                    "Set Previous State",
+                    "Turn On",
+                    "Turn On and Set Brightness"
+                ],
+                "group": "gg_power_up_behaviour_ch_{{ ch_number }}"
+            },
+            {
+                "id": "power_up_behaviour_ch_{{ch_number}}_level",
+                "title": "Brightness",
+                "reg_type": "holding",
+                "address": {{16 + ch_number}},
+                "max": 100,
+                "required": true,
+                "condition": "power_up_behaviour_ch_{{ch_number}}_action==3",
+                "group": "gg_power_up_behaviour_ch_{{ ch_number }}"
+            },
+            {% endfor -%}
+            {% for in_number in range(1, INPUTS_NUMBER + 1) -%}
+            {
+                "id": "in_{{in_number}}_safety_input_control",
+                "title": "Input {{in_number}}",
                 "group": "gg_safety_input_control",
-                "address": {{946 + ch_number - 1}},
+                "address": {{946 + in_number - 1}},
                 "reg_type": "holding",
                 "default": 0,
                 "enum": [0, 1, 2],
@@ -491,7 +538,6 @@
                 ]
             },
             {% endfor -%}
-
             {
                 "id": "baud_rate",
                 "title": "Baud rate",
@@ -598,6 +644,17 @@
                 "max": 10000,
                 "enabled": false,
                 "group": "output_channels"
+            },
+            {% endfor -%}
+            {% for ls_number in range(1, LIGHT_SCENES_NUMBER + 1) -%}
+            {
+                "name": "Set Scene {{ls_number}}",
+                "reg_type": "coil",
+                "address": {{(ls_number - 1) * 16 + 15}},
+                "type": "switch",
+                "sporadic": true,
+                "enabled": false,
+                "group": "gg_ls_{{ls_number}}_channels"
             },
             {% endfor -%}
             {
