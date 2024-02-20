@@ -4,6 +4,7 @@
 {% set group = group | default("g-wb") -%}
 {% set device_name = device_name | default("WB-MR6C") -%}
 {% set device_id = device_id | default("wb-mr6c") -%}
+{% set has_signature = has_signature | default(true) -%}
 
 {% set OUTPUTS_NUMBER = 6 -%}
 {% set CURTAINS_NUMBER = OUTPUTS_NUMBER // 2 -%}
@@ -14,6 +15,7 @@
     "title": "template_title",
     "device_type": "{{ device_type }}",
     "group": "{{ group }}",
+{% if has_signature %}
     "hw": [
         {
             "signature": "WBMR6C"
@@ -22,6 +24,7 @@
             "signature": "WBMR6"
         }
     ],
+{% endif %}
     "device": {
         "name": "{{ device_name }}",
         "id": "{{ device_id }}",
