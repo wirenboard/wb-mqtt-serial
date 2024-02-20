@@ -612,6 +612,8 @@
                 "sporadic": true,
                 "group": "gg_outputs_channels"
             },
+            {% endfor -%}
+            {% for out_num in range(1, OUTPUTS_NUMBER + 1) -%}
             {
                 "name": "out {{out_num}} protection low voltage",
                 "reg_type": "discrete",
@@ -621,16 +623,6 @@
                 "group": "gg_outputs_channels"
 
             },
-            {#
-            {
-                "name": "out {{out_num}} protection power",
-                "reg_type": "discrete",
-                "address": {{out_num - 1 + 1320}},
-                "type": "switch",
-                "sporadic": true,
-                "group": "gg_outputs_channels"
-            },
-            #}
             {% endfor -%}
             {% for out_num in range(1, OUTPUTS_NUMBER + 1) -%}
             {
@@ -771,7 +763,7 @@
                 "Input {{in_num}} Double Press Counter": "Счетчик двойных нажатий входа {{in_num}}",
                 "Input {{in_num}} Shortlong Press Counter": "Счетчик коротких, а затем длинных нажатий входа {{in_num}}",
                 "out {{in_num}} protection high voltage":"Превышено напряжение на выходе {{in_num}}",
-                "out {{in_num}} protection low voltage":"Напряжение низкое на выходе {{in_num}}",
+                "out {{in_num}} protection low voltage":"Занижено напряжение на выходе {{in_num}}",
                 "out {{in_num}} protection power":"Мощность превышена на выходе {{in_num}}",
                 {% endfor -%}
 
