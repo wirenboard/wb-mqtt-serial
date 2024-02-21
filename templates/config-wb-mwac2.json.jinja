@@ -48,8 +48,8 @@
                 "title":
                 {% if out_num == OUT_NUM_K1 %} "K1 actions",
                 {% elif out_num == OUT_NUM_K2 %} "K2 actions",
-                {% elif out_num == OUT_NUM_ALARM %} "Alarm actions",
-                {% else %} "Wet cleaning mode actions",
+                {% elif out_num == OUT_NUM_ALARM %} "Actions for \"Alarm\" mode",
+                {% else %} "Actions for \"Wet cleaning\" mode",
                 {% endif %}
                 "id": "gg_in{{ in_num }}_out{{ out_num }}_button_actions",
                 "group": "input_f{{ in_num }}"
@@ -820,8 +820,8 @@
 
                 "K1 actions": "Действия для K1",
                 "K2 actions": "Действия для K2",
-                "Alarm actions": "Действия для тревоги",
-                "Wet cleaning mode actions": "Действия для режима влажной уборки"
+                "Actions for \"Alarm\" mode": "Действия для режима \"Авария\"",
+                "Actions for \"Wet cleaning\" mode": "Действия для режима \"Влажная уборка\""
             }
         }
     }
