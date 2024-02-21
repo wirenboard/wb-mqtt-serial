@@ -1,8 +1,14 @@
-wb-mqtt-serial (2.109.2) stable; urgency=medium
+wb-mqtt-serial (2.109.3) stable; urgency=medium
 
   * Add Dauerhaft CM5 template
 
- -- Nikolay Korotkiy <nikolay.korotkiy@wirenboard.com>  Mon, 12 Feb 2024 20:00:00 +0400
+ -- Nikolay Korotkiy <nikolay.korotkiy@wirenboard.com>  Wed, 21 Feb 2024 20:00:00 +0400
+
+wb-mqtt-serial (2.109.2) stable; urgency=medium
+
+  * MSW4-LORA template: added template for WB-MSW-LORA v.4 as it was broken by fast modbus
+
+ -- Maxim Tomchuk <maxim.tomchuk@wirenboard.ru>  Fri, 16 Feb 2024 17:48:00 +0300
 
 wb-mqtt-serial (2.109.1) stable; urgency=medium
 
