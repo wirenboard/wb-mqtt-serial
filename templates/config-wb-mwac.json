@@ -1770,6 +1770,46 @@
                     "Enable only in safety mode"
                 ]
             },
+            "alarm_safe_state": {
+                "title": "Alarm",
+                "group": "gg_outputs_safe_state",
+                "order": 3,
+                "address": 932,
+                "reg_type": "holding",
+                "default": 0,
+                "enum": [0, 1],
+                "enum_titles": [
+                    "Off",
+                    "On"
+                ]
+            },
+            "alarm_safety_behaviour": {
+                "title": "Alarm",
+                "group": "gg_safety_behaviour",
+                "order": 3,
+                "address": 940,
+                "reg_type": "holding",
+                "default": 0,
+                "enum": [0, 1],
+                "enum_titles": [
+                    "Don't сhange output state",
+                    "Switch output to safety state"
+                ]
+            },
+            "alarm_safety_input_control": {
+                "title": "Alarm",
+                "group": "gg_safety_input_control",
+                "order": 3,
+                "address": 948,
+                "reg_type": "holding",
+                "default": 0,
+                "enum": [0, 1, 2],
+                "enum_titles": [
+                    "Don't change",
+                    "Disable in safety mode",
+                    "Enable only in safety mode"
+                ]
+            },
 
             "cleaning_mode_timer_min": {
                 "title": "Wet cleaning mode timer",
