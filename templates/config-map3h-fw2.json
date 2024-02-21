@@ -4,8 +4,7 @@
     "group": "g-wb-old",
     "hw": [
         {
-            "signature": "MAP3H",
-            "fw": "2.0.0"
+            "signature": "MAP3H\u0002"
         }
     ],
     "device": {

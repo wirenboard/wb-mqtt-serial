@@ -5,6 +5,9 @@
     "hw": [
         {
             "signature": "MAP6S\u0002E"
+        },
+        {
+            "signature": "MAP6S\u0002"
         }
     ],
     "device": {
