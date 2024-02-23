@@ -372,7 +372,7 @@
                 "title": "Enable High voltage protection",
                 "group": "gg_protection_channel_{{out_num}}_high_voltage",
                 "order": 1,
-                "address": {{ 1306 + out_num - 1 }},
+                "address": {{ 1360 + out_num - 1 }},
                 "reg_type": "holding",
                 "default": 0,
                 "enum": [0, 1],
@@ -385,7 +385,7 @@
                 "title": "Level of high voltage protection, V",
                 "group": "gg_protection_channel_{{out_num}}_high_voltage",
                 "order": 2,
-                "address": {{ 1304 + out_num - 1 }},
+                "address": {{ 1310 + out_num - 1 }},
                 "reg_type": "holding",
                 "default": 260,
                 "min": 100,
@@ -399,7 +399,7 @@
                 "title": "Enable Low voltage protection",
                 "group": "gg_protection_channel_{{out_num}}_low_voltage",
                 "order": 1,
-                "address": {{ 1308 + out_num - 1 }},
+                "address": {{ 1350 + out_num - 1 }},
                 "reg_type": "holding",
                 "default": 0,
                 "enum": [0, 1],
@@ -421,10 +421,10 @@
                 "condition": "out{{out_num}}_safe_mode_voltage_low_mode==1"
             },
             "out{{out_num}}_safe_mode_voltage_timeout_off": {
-                "title": "Level of high voltage protection, V",
+                "title": "voltage_timeout_off",
                 "group": "gg_protection_channel_{{out_num}}_low_voltage",
                 "order": 2,
-                "address": {{ 1312 + out_num - 1 }},
+                "address": {{ 1370 + out_num - 1 }},
                 "reg_type": "holding",
                 "default": 100,
                 "min": 10,
@@ -433,7 +433,7 @@
                 "condition": "out{{out_num}}_safe_mode_voltage_low_mode==1"
             },
             "out{{out_num}}_safe_mode_voltage_timeout_on": {
-                "title": "Level of high voltage protection, V",
+                "title": "voltage_timeout_on",
                 "group": "gg_protection_channel_{{out_num}}_low_voltage",
                 "order": 2,
                 "address": {{ 1310 + out_num - 1 }},
@@ -444,7 +444,6 @@
                 "order": 2,
                 "condition": "out{{out_num}}_safe_mode_voltage_low_mode==1"
             },
-
             {% endfor -%}
             "outputs_restore_state": {
                 "title": "Outputs State After Power On",
@@ -607,7 +606,7 @@
             {
                 "name": "out {{out_num}} protection high voltage",
                 "reg_type": "discrete",
-                "address": {{out_num -1 + 1322}},
+                "address": {{out_num -1 + 1310}},
                 "type": "switch",
                 "sporadic": true,
                 "group": "gg_outputs_channels"
@@ -617,7 +616,7 @@
             {
                 "name": "out {{out_num}} protection low voltage",
                 "reg_type": "discrete",
-                "address": {{out_num - 1 + 1324}},
+                "address": {{out_num - 1 + 1302}},
                 "type": "switch",
                 "sporadic": true,
                 "group": "gg_outputs_channels"
