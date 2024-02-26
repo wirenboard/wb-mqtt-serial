@@ -72,6 +72,7 @@
                 "reg_type": "status",
                 "address": "0xcc00:0:8",
                 "units": "mA",
+                "readonly": true,
                 "enabled": false
             },
             {
@@ -80,6 +81,7 @@
                 "reg_type": "status",
                 "address": "0xcc00:1:8",
                 "units": "V",
+                "readonly": true,
                 "enabled": false
             },
             {
@@ -88,6 +90,7 @@
                 "reg_type": "status",
                 "address": "0xcc00:2:8",
                 "units": "rpm",
+                "readonly": true,
                 "enabled": false
             }
         ],
