@@ -84,6 +84,8 @@ void Aok::TDevice::Register(TSerialDeviceFactory& factory)
 {
     factory.RegisterProtocol(new TUint32SlaveIdProtocol("a_ok", RegTypes),
                              new TBasicDeviceFactory<Aok::TDevice>("#/definitions/simple_device_no_channels"));
+    factory.RegisterProtocol(new TUint32SlaveIdProtocol("dauerhaft", RegTypes),
+                             new TBasicDeviceFactory<Aok::TDevice>("#/definitions/simple_device_no_channels"));
 }
 
 Aok::TDevice::TDevice(PDeviceConfig config, PPort port, PProtocol protocol)

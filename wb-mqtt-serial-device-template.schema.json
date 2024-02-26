@@ -305,7 +305,7 @@
           "properties": {
             "protocol": {
               "type": "string",
-              "enum": ["milur", "mercury230", "ivtm", "pulsar", "mercury200", "lls", "neva", "energomera_iec", "windeco"]
+              "enum": ["milur", "mercury230", "ivtm", "pulsar", "mercury200", "lls", "neva", "energomera_iec", "windeco", "dauerhaft"]
             },
             "parameters": { "not" : {} },
             "subdevices": { "not" : {} }
