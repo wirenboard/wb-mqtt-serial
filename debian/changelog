@@ -1,3 +1,9 @@
+wb-mqtt-serial (2.108.9-wb100) stable; urgency=medium
+
+  * MSW4-LORA template: added template for WB-MSW-LORA v.4 as it was broken by fast modbus
+
+ -- Maxim Tomchuk <maxim.tomchuk@wirenboard.ru>  Mon, 19 Feb 2024 13:48:30 +0300
+
 wb-mqtt-serial (2.108.9) stable; urgency=medium
 
   * Dauerhaft: add motor ID and channel ID configuration
