@@ -1,0 +1,75 @@
+{
+    "device_type": "Dauerhaft Roll 35/45",
+    "title": "template_title",
+    "group": "g-curtain",
+    "device": {
+        "name": "Dauerhaft Roll 35/45",
+        "id": "dauerhaft-35-45",
+        "protocol": "a_ok",
+        "parameters": {
+            "baud_rate": {
+                "title": "Baud rate",
+                "description": "baud_rate_description",
+                "reg_type": "param",
+                "address": "0xda",
+                "enum": [0, 1, 2, 3, 4],
+                "default": 1,
+                "enum_titles": [
+                    "1200",
+                    "2400",
+                    "4800",
+                    "9600",
+                    "19200"
+                ]
+            }
+        },
+        "channels": [
+            {
+                "name": "Stop",
+                "type": "pushbutton",
+                "reg_type": "command",
+                "address": "0xcc"
+            },
+            {
+                "name": "Move up",
+                "type": "pushbutton",
+                "reg_type": "command",
+                "address": "0xdd"
+            },
+            {
+                "name": "Move down",
+                "type": "pushbutton",
+                "reg_type": "command",
+                "address": "0xee"
+            },
+            {
+                "name": "Dot move up",
+                "type": "pushbutton",
+                "reg_type": "command",
+                "address": "0x0d"
+            },
+            {
+                "name": "Dot move down",
+                "type": "pushbutton",
+                "reg_type": "command",
+                "address": "0x0e"
+            }
+        ],
+        "translations": {
+            "en": {
+                "template_title": "Dauerhaft Roll 35/45 (tubular curtain motor)",
+                "baud_rate_description": "Make sure that communication with device is established before changing this parameter. Select required baud rate, save configuration and then change port baud rate to the same value."
+            },
+            "ru": {
+                "template_title": "Dauerhaft Roll 35/45 (Мотор рулонных штор)",
+                "Baud rate": "Скорость обмена",
+                "baud_rate_description": "Перед изменением параметра убедитесь, что связь с устройством установлена. Выберите нужную скорость обмена, сохраните конфигурацию, а затем укажите в настройках порта эту же скорость.",
+                "Stop": "Остановить",
+                "Move up": "Поднять",
+                "Move down": "Опустить",
+                "Dot move up": "Поднять на шаг",
+                "Dot move down": "Опустить на шаг"
+            }
+        }
+    }
+}

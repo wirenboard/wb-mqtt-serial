@@ -1,6 +1,7 @@
 {
     "device_type": "Dauerhaft Roll 35/45",
     "title": "Dauerhaft curtain motor",
+    "deprecated": true,
     "group": "g-curtain",
     "device": {
         "name": "Dauerhaft Roll 35/45",

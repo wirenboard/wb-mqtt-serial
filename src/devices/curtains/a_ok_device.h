@@ -2,7 +2,7 @@
 
 #include "serial_config.h"
 
-namespace Dauerhaft
+namespace Aok
 {
     struct TRequest
     {
@@ -15,6 +15,10 @@ namespace Dauerhaft
         uint8_t LowChannelId;
         uint8_t HighChannelId;
 
+        std::unordered_map<uint16_t, TRegisterValue> DataCache;
+
+        TRegisterValue GetCachedResponse(uint8_t command, uint8_t data, size_t bitOffset, size_t bitWidth);
+
         std::vector<uint8_t> ExecCommand(const TRequest& request);
 
     public:
@@ -25,6 +29,7 @@ namespace Dauerhaft
     protected:
         TRegisterValue ReadRegisterImpl(PRegister reg) override;
         void WriteRegisterImpl(PRegister reg, const TRegisterValue& regValue) override;
+        void InvalidateReadCache() override;
     };
 
     std::vector<uint8_t> MakeRequest(uint8_t id,
