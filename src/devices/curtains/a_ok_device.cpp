@@ -34,7 +34,7 @@ namespace
     const TRegisterTypes RegTypes{{POSITION, "position", "value", U8},
                                   {COMMAND, "command", "value", U8},
                                   {PARAM, "param", "value", U8},
-                                  {STATUS, "status", "value", U8}};
+                                  {STATUS, "status", "value", U64}};
 
     enum THeadCodes
     {
