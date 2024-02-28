@@ -79,7 +79,7 @@
                 "name": "Voltage",
                 "type": "value",
                 "reg_type": "status",
-                "address": "0xcc00:1:8",
+                "address": "0xcc00:8:8",
                 "units": "V",
                 "readonly": true,
                 "enabled": false
@@ -88,7 +88,7 @@
                 "name": "Current rotational speed",
                 "type": "value",
                 "reg_type": "status",
-                "address": "0xcc00:2:8",
+                "address": "0xcc00:16:8",
                 "units": "rpm",
                 "readonly": true,
                 "enabled": false
