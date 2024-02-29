@@ -110,11 +110,12 @@ Dauerhaft CM5
 	Current  =>  Current
 	Current rotational speed  =>  Current rotational speed
 	Delete  =>  Delete
-	Direction  =>  Direction
 	Hand pull  =>  Hand pull
 	Learn  =>  Learn
 	Open  =>  Open
 	Position  =>  Position
+	Reverse  =>  Reverse
+	Running  =>  Running
 	Slow start  =>  Slow start
 	Stop  =>  Stop
 	Voltage  =>  Voltage
