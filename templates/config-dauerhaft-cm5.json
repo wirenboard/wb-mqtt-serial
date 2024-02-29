@@ -92,6 +92,27 @@
                 "units": "rpm",
                 "readonly": true,
                 "enabled": false
+            },
+            {
+                "name": "Hand pull",
+                "type": "switch",
+                "reg_type": "zonebit",
+                "address": "0",
+                "enabled": false
+            },
+            {
+                "name": "Direction",
+                "type": "switch",
+                "reg_type": "zonebit",
+                "address": "1",
+                "enabled": false
+            },
+            {
+                "name": "Slow start",
+                "type": "switch",
+                "reg_type": "zonebit",
+                "address": "3",
+                "enabled": false
             }
         ],
         "translations": {
@@ -112,7 +133,10 @@
                 "Delete": "Удалить",
                 "Current": "Ток",
                 "Voltage": "Напряжение",
-                "Current rotational speed": "Текущая скорость вращения"
+                "Current rotational speed": "Текущая скорость вращения",
+                "Hand pull": "Движение рукой",
+                "Direction": "Направление",
+                "Slow start": "Медленный старт"
             }
         }
     }
