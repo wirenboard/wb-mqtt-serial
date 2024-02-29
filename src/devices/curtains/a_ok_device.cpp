@@ -57,7 +57,7 @@ namespace
     const size_t CRC_SIZE = 1;
     const size_t MOTOR_STATUS_RESPONSE_SIZE = 10;
     const size_t MOTOR_STATUS_DATA_OFFSET = 4;
-    const size_t MOTOR_STATUS_DATA_SIZE = 5;
+    // const size_t MOTOR_STATUS_DATA_SIZE = 5;
     const size_t MOTOR_STATUS_POSITION_OFFSET = 3;
     const size_t MOTOR_STATUS_ZONEBIT_OFFSET = 4;
 

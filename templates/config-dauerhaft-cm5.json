@@ -98,6 +98,8 @@
                 "type": "switch",
                 "reg_type": "zonebit",
                 "address": "0",
+                "on_value": 0,
+                "off_value": 1,
                 "enabled": false
             },
             {
@@ -112,6 +114,8 @@
                 "type": "switch",
                 "reg_type": "zonebit",
                 "address": "3",
+                "on_value": 0,
+                "off_value": 1,
                 "enabled": false
             }
         ],
