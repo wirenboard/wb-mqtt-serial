@@ -2,6 +2,11 @@
     "title": "_WB-MS-THLS-template-title",
     "device_type": "WB-MS-THLS",
     "group": "g-wb-old",
+    "hw": [
+        {
+            "signature": "WBMS"
+        }
+    ],
     "device": {
         "name": "WB-MS-THLS",
         "id": "wb-ms-thls",

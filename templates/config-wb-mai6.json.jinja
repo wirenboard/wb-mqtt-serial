@@ -4,6 +4,7 @@
 {% set group = group | default("g-wb") -%}
 {% set device_name = device_name | default("WB-MAI6") -%}
 {% set device_id = device_id | default("wb-mai6") -%}
+{% set has_signature = has_signature | default(true) -%}
 
 {% set CHANNELS_NUMBER = 6 -%}
 {% set TYPES_WITH_GAIN = [3, 257] -%}
@@ -18,6 +19,13 @@
     "title": "template_title",
     "device_type": "{{ device_type }}",
     "group": "{{ group }}",
+{% if has_signature %}
+    "hw": [
+        {
+            "signature": "WBMAI6"
+        }
+    ],
+{% endif %}
     "device": {
         "name": "{{ device_name }}",
         "id": "{{ device_id }}",

@@ -812,6 +812,14 @@ std::shared_ptr<TDeviceTemplate> TTemplateMap::GetTemplatePtr(const std::string&
         auto deviceTemplate = std::make_shared<TDeviceTemplate>(deviceType, deviceTypeTitle, root["device"]);
         Get(root, "deprecated", deviceTemplate->IsDeprecated);
         Get(root, "group", deviceTemplate->Group);
+        if (root.isMember("hw")) {
+            for (const auto& hwItem: root["hw"]) {
+                TDeviceTemplateHardware hw;
+                Get(hwItem, "signature", hw.Signature);
+                Get(hwItem, "fw", hw.Fw);
+                deviceTemplate->Hardware.push_back(std::move(hw));
+            }
+        }
         ValidTemplates.insert({deviceType, deviceTemplate});
         return deviceTemplate;
     }

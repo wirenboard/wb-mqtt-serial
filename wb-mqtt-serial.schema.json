@@ -2006,7 +2006,8 @@
     "service": "wb-mqtt-serial",
     "toJSON": ["wb-mqtt-serial", "-j"],
     "fromJSON": ["wb-mqtt-serial", "-J"],
-    "validate": false
+    "validate": false,
+    "editor": "serial-config"
   },
 
   "translations": {
