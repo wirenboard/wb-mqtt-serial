@@ -3,6 +3,7 @@ test/wb-homa-test
 *.deb
 debian/files
 *.build
+*.buildinfo
 *.changes
 *.dsc
 */core.*

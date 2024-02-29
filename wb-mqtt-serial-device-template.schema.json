@@ -342,7 +342,7 @@
           "properties": {
             "protocol": {
               "type": "string",
-              "enum": ["uniel", "s2k", "dooya"]
+              "enum": ["uniel", "s2k", "dooya", "a_ok"]
             },
             "parameters": { 
               "$ref": "#/definitions/parameters"
