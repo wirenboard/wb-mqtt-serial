@@ -28,13 +28,15 @@ namespace
         POSITION,
         COMMAND,
         PARAM,
-        STATUS
+        STATUS,
+        ZONEBIT
     };
 
     const TRegisterTypes RegTypes{{POSITION, "position", "value", U8},
                                   {COMMAND, "command", "value", U8},
                                   {PARAM, "param", "value", U8},
-                                  {STATUS, "status", "value", U64}};
+                                  {STATUS, "status", "value", U64},
+                                  {ZONEBIT, "zonebit", "value", U8}};
 
     enum THeadCodes
     {
@@ -46,15 +48,18 @@ namespace
     {
         CONTROL = 0x0a,
         SET_POSITION = 0xdd,
+        SET_CURTAIN_MOTOR_SETTING = 0xd5,
         MOTOR_STATUS = 0xcc,
         CURTAIN_MOTOR_STATUS = 0xca,
         TUBULAR_MOTOR_STATUS = 0xcb
     };
 
+    const size_t CRC_SIZE = 1;
     const size_t MOTOR_STATUS_RESPONSE_SIZE = 10;
     const size_t MOTOR_STATUS_DATA_OFFSET = 4;
-    const size_t MOTOR_STATUS_DATA_SIZE = 5;
+    // const size_t MOTOR_STATUS_DATA_SIZE = 5;
     const size_t MOTOR_STATUS_POSITION_OFFSET = 3;
+    const size_t MOTOR_STATUS_ZONEBIT_OFFSET = 4;
 
     uint8_t CalcCrc(const std::vector<uint8_t>& bytes)
     {
@@ -101,7 +106,7 @@ TRegisterValue Aok::TDevice::GetCachedResponse(uint8_t command, uint8_t data, si
 {
     TRegisterValue val;
     uint16_t key = (command << 8) | data;
-    auto it = DataCache.find(command);
+    auto it = DataCache.find(key);
     if (it != DataCache.end()) {
         val = it->second;
     } else {
@@ -109,7 +114,7 @@ TRegisterValue Aok::TDevice::GetCachedResponse(uint8_t command, uint8_t data, si
         req.Data = MakeRequest(MotorId, LowChannelId, HighChannelId, command, data);
         req.ResponseSize = MOTOR_STATUS_RESPONSE_SIZE;
         auto resp = ExecCommand(req);
-        val.Set(Get<uint64_t>(resp.begin() + MOTOR_STATUS_DATA_OFFSET, resp.end() - 1));
+        val.Set(Get<uint64_t>(resp.begin() + MOTOR_STATUS_DATA_OFFSET, resp.end() - CRC_SIZE));
         DataCache[key] = val;
     }
     if (bitOffset || bitWidth) {
@@ -150,6 +155,13 @@ TRegisterValue Aok::TDevice::ReadRegisterImpl(PRegister reg)
             auto addr = GetUint32RegisterAddress(reg->GetAddress());
             return GetCachedResponse((addr >> 8) & 0xFF, addr & 0xFF, reg->GetDataOffset(), reg->GetDataWidth());
         }
+        case ZONEBIT: {
+            auto addr = GetUint32RegisterAddress(reg->GetAddress());
+            return GetCachedResponse(CURTAIN_MOTOR_STATUS,
+                                     CURTAIN_MOTOR_STATUS,
+                                     MOTOR_STATUS_ZONEBIT_OFFSET * 8 + addr,
+                                     1);
+        }
     }
     throw TSerialDevicePermanentRegisterException("Unsupported register type");
 }
@@ -178,6 +190,19 @@ void Aok::TDevice::WriteRegisterImpl(PRegister reg, const TRegisterValue& regVal
             ExecCommand(req);
             return;
         }
+        case ZONEBIT: {
+            auto addr = GetUint32RegisterAddress(reg->GetWriteAddress());
+            TRegisterValue val =
+                GetCachedResponse(CURTAIN_MOTOR_STATUS, CURTAIN_MOTOR_STATUS, MOTOR_STATUS_ZONEBIT_OFFSET * 8, 8);
+            TRequest req;
+            req.Data = MakeRequest(MotorId,
+                                   LowChannelId,
+                                   HighChannelId,
+                                   SET_CURTAIN_MOTOR_SETTING,
+                                   (val.Get<uint8_t>() & ~(1 << addr)) | (value << addr));
+            ExecCommand(req);
+            return;
+        }
     }
     throw TSerialDevicePermanentRegisterException("Unsupported register type");
 }
@@ -194,6 +219,6 @@ std::vector<uint8_t> Aok::MakeRequest(uint8_t id,
                                       uint8_t data)
 {
     std::vector<uint8_t> res{REQUEST, id, channelLow, channelHigh, command, data, 0x00};
-    res.back() = CalcCrc({res.begin() + 1, res.end() - 1});
+    res.back() = CalcCrc({res.begin() + 1, res.end() - CRC_SIZE});
     return res;
 }
