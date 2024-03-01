@@ -536,7 +536,7 @@
                 "group": "gg_in{{ in_num }}_channels"
             },
             {
-                "name": "Input {{ letter }}{{ in_num }} sensor performance (only for Larnitech sensors)",
+                "name": "Input {{ letter }}{{ in_num }} sensor presence (only for Larnitech sensors)",
                 "reg_type": "discrete",
                 "address": {{ 20 + (in_num - 1) }},
                 "type": "switch",
@@ -743,7 +743,7 @@
                 "Input {{ letter }}{{ in_num }} Double Press Counter": "Счётчик двойных нажатий входа {{ letter }}{{ in_num }}",
                 "Input {{ letter }}{{ in_num }} Shortlong Press Counter": "Счётчик коротких, а затем длинных нажатий входа {{ letter }}{{ in_num }}",
                 "Input {{ letter }}{{ in_num }} Counter": "Счётчик входа {{ letter }}{{ in_num }}",
-                "Input {{ letter }}{{ in_num }} sensor performance (only for Larnitech sensors)": "Работоспособность датчика на входе {{ letter }}{{ in_num }} (только для датчиков Larnitech)",
+                "Input {{ letter }}{{ in_num }} sensor presence (only for Larnitech sensors)": "Наличие датчика на входе {{ letter }}{{ in_num }} (только для датчиков Larnitech)",
                 {% endfor -%}
 
                 "control disabled": "управление отключено",
