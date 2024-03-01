@@ -1,3 +1,9 @@
+wb-mqtt-serial (2.110.0) stable; urgency=medium
+ 
+  * Add new template for dali-logic-lite-ps-x1
+
+ -- Mikhail Burchu <mikhail.burchu@wirenboard.com>  Fri, 1 Mar 2024 17:30:00 +0300
+
 wb-mqtt-serial (2.109.2) stable; urgency=medium
 
   * MSW4-LORA template: added template for WB-MSW-LORA v.4 as it was broken by fast modbus
