@@ -151,8 +151,8 @@
                 "title": "Input {{ letter }}{{ in_num }} Mode",
                 "address": {{ 8 + in_num }},
                 "reg_type": "holding",
-                "enum": [3, 6, 4, 5],
-                "default": {{ 4 if in_num == IN_NUM_SHORT_CLEANING_ON_LONG_RES_ALARM else 5 }},
+                "enum": [3, 4, 6, 5],
+                "default": {{ 6 if in_num == IN_NUM_SHORT_CLEANING_ON_LONG_RES_ALARM else 5 }},
                 "enum_titles": [
                     "control disabled",
                     "control by edges",
