@@ -1,4 +1,4 @@
-wb-mqtt-serial (2.110.0) stable; urgency=medium
+wb-mqtt-serial (2.111.0) stable; urgency=medium
  
   * Add new template for dali-logic-lite-ps-x1
 
