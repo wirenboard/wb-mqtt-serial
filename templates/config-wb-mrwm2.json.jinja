@@ -86,6 +86,16 @@
                     }
                 }
             },
+            {
+                "title": "Protection channel {{out_num}} timeout",
+                "group": "gg_protection_channel_{{out_num}}",
+                "id": "gg_protection_channel_{{out_num}}_timeout",
+                "ui_options": {
+                    "wb": {
+                        "disable_title": true
+                    }
+                }
+            },
             {% endfor -%}
             {
                 "title": "Outputs group",
@@ -422,27 +432,27 @@
             },
             "out{{out_num}}_safe_mode_voltage_timeout_off": {
                 "title": "voltage_timeout_off",
-                "group": "gg_protection_channel_{{out_num}}_low_voltage",
+                "group": "gg_protection_channel_{{out_num}}_timeout",
                 "order": 2,
-                "address": {{ 1370 + out_num - 1 }},
+                "address": {{ 1334 + out_num - 1 }},
                 "reg_type": "holding",
                 "default": 100,
                 "min": 10,
                 "max": 600,
                 "order": 2,
-                "condition": "out{{out_num}}_safe_mode_voltage_low_mode==1"
+                "condition": "out{{out_num}}_safe_mode_voltage_low_mode==1||out{{out_num}}_safe_mode_voltage_high_mode==1"
             },
             "out{{out_num}}_safe_mode_voltage_timeout_on": {
                 "title": "voltage_timeout_on",
-                "group": "gg_protection_channel_{{out_num}}_low_voltage",
+                "group": "gg_protection_channel_{{out_num}}_timeout",
                 "order": 2,
-                "address": {{ 1310 + out_num - 1 }},
+                "address": {{ 1342 + out_num - 1 }},
                 "reg_type": "holding",
                 "default": 0,
                 "min": 0,
                 "max": 600,
                 "order": 2,
-                "condition": "out{{out_num}}_safe_mode_voltage_low_mode==1"
+                "condition": "out{{out_num}}_safe_mode_voltage_low_mode==1||out{{out_num}}_safe_mode_voltage_high_mode==1"
             },
             {% endfor -%}
             "outputs_restore_state": {
