@@ -1,0 +1,133 @@
+{
+    "title": "INTELLIGENT ARLIGHT DALI-LOGIC-LITE-PS-x1 (Modbus TCP - DALI gateway)",
+    "device_type": "dali_logic_lite_ps_x1",
+    "group": "g-adapter",
+    "device": {
+        "name": "DALI-LOGIC-LITE-PS-X1",
+        "id": "dali_logic_lite_ps_x1",
+        "response_timeout_ms": 100,
+        "guard_interval_us": 5000,
+        "groups": [
+            {
+                "title": "Group Commands",
+                "id": "group_commands"
+            },
+            {
+                "title": "Individual Commands",
+                "id": "individual_commands"
+            }
+        ],
+        "channels": [
+            {% for G in range(0, 16) -%}
+            {% set enabled = 'true' if G == 0 else 'false' -%}
+            {
+                "name": "Group {{G}} Brightness",
+                "write_address": "{{384 + G}}",
+                "reg_type": "holding",
+                "type": "range",
+                "sporadic": false,
+                "format": "u16",
+                "group": "group_commands",
+                "enabled": {{enabled}},
+                "min": 0,
+                "max": 254
+            },
+            {
+                "name": "Group {{G}} Brightness Cache",
+                "address": "{{2688 + G}}",
+                "reg_type": "holding",
+                "type": "value",
+                "sporadic": false,
+                "format": "u16",
+                "readonly": true,
+                "group": "group_commands",
+                "enabled": {{enabled}}
+            },
+            {
+                "name": "Group {{G}} Scene",
+                "address": "{{640 + G}}",
+                "reg_type": "holding",
+                "type": "value",
+                "sporadic": false,
+                "format": "u16",
+                "group": "group_commands",
+                "enabled": {{enabled}},
+                "min": 0,
+                "max": 15
+            },
+            {% endfor -%}
+            {% for A in range(0, 64) -%}
+            {% set enabled = 'true' if A == 0 else 'false' -%}
+            {% set comma = ',' if A != 63 else '' -%}
+            {
+                "name": "Device {{A}} Status",
+                "address": "{{0 + A}}",
+                "reg_type": "holding",
+                "type" : "value",
+                "sporadic": false,
+                "format": "u16",
+                "readonly": true,
+                "group": "individual_commands",
+                "enabled": {{enabled}}
+            },
+            {
+                "name": "Device {{A}} Brightness",
+                "write_address": "{{256 + A}}",
+                "reg_type": "holding",
+                "type": "range",
+                "sporadic": false,
+                "format": "u16",
+                "group": "individual_commands",
+                "enabled": {{enabled}},
+                "min": 0,
+                "max": 254
+            },
+            {
+                "name": "Device {{A}} Brightness Cache",
+                "address": "{{2560 + A}}",
+                "reg_type": "holding",
+                "type": "value",
+                "sporadic": false,
+                "format": "u16",
+                "readonly": true,
+                "group": "individual_commands",
+                "enabled": {{enabled}}
+            },
+            {
+                "name": "Device {{A}} Scene",
+                "address": "{{512 + A}}",
+                "reg_type": "holding",
+                "type": "value",
+                "sporadic": false,
+                "format": "u16",
+                "group": "individual_commands",
+                "enabled": {{enabled}},
+                "min": 0,
+                "max": 15
+            }{{comma}}
+            {% endfor -%}
+        ],
+ 
+        "translations": {
+            "en": {
+            },
+            "ru": {
+                "INTELLIGENT ARLIGHT DALI-LOGIC-LITE-PS-X1 (Modbus TCP - DALI gateway)": "INTELLIGENT ARLIGHT DALI-LOGIC-LITE-PS-X1 (шлюз Modbus TCP - DALI)",
+                "Group Commands": "Групповые команды",
+                "Individual Commands": "Индивидуальные команды",
+		        {% for G in range(0, 16) -%}
+			    "Group {{G}} Brightness": "Яркость группы {{G}}",
+			    "Group {{G}} Brightness Cache": "Яркость (кешированная) группы {{G}}",
+			    "Group {{G}} Scene": "Активация сцены группы {{G}}",
+		        {% endfor -%}
+		        {% for A in range(0, 64) -%}
+		        {% set comma = ',' if A != 63 else '' -%}
+			    "Device {{A}} Status": "Статус устройства {{A}}",
+			    "Device {{A}} Brightness": "Яркость устройства {{A}}",
+			    "Device {{A}} Brightness Cache": "Яркость (кешированная) устройства {{A}}",
+			    "Device {{A}} Scene": "Активация сцены устройства {{A}}"{{comma}}
+		        {% endfor -%}
+            }
+        }
+    }
+}
