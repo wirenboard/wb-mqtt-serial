@@ -8,6 +8,11 @@
 {% set OUT_NUM_K2 = 2 -%}
 {% set OUT_NUM_ALARM = 3 -%}
 {% set OUT_NUM_CLEANING_MODE = 4 -%}
+
+{% set IN_MODE_INACTIVE = 3 -%}
+{% set IN_MODE_EDGES = 4 -%}
+{% set IN_MODE_BUTTON = 6 -%}
+{% set IN_MODE_FLOOD_SENSOR = 5 -%}
 {
     "title": "WB-MWAC_template_title",
     "device_type": "WB-MWAC-v2",
@@ -151,8 +156,8 @@
                 "title": "Input {{ letter }}{{ in_num }} Mode",
                 "address": {{ 8 + in_num }},
                 "reg_type": "holding",
-                "enum": [3, 4, 6, 5],
-                "default": {{ 6 if in_num == IN_NUM_SHORT_CLEANING_ON_LONG_RES_ALARM else 5 }},
+                "enum": [{{ IN_MODE_INACTIVE }}, {{ IN_MODE_EDGES }}, {{ IN_MODE_BUTTON }}, {{ IN_MODE_FLOOD_SENSOR }}],
+                "default": {{ IN_MODE_BUTTON if in_num == IN_NUM_SHORT_CLEANING_ON_LONG_RES_ALARM else IN_MODE_FLOOD_SENSOR }},
                 "enum_titles": [
                     "control disabled",
                     "control by edges",
@@ -172,7 +177,7 @@
                 "default": 50,
                 "group": "input_f{{ in_num }}",
                 "order": 2,
-                "condition": "in{{in_num}}_mode==4"
+                "condition": "in{{ in_num }}_mode=={{ IN_MODE_BUTTON }}"
             },
             "in{{ in_num }}_debounce_ms_no_buttons": {
                 "title": "Input {{ letter }}{{ in_num }} Debounce (ms)",
@@ -184,7 +189,7 @@
                 "default": 50,
                 "group": "input_f{{ in_num }}",
                 "order": 2,
-                "condition": "in{{in_num}}_mode!=4"
+                "condition": "in{{ in_num }}_mode!={{ IN_MODE_BUTTON }}"
             },
             "in{{ in_num }}_lp_hold_time": {
                 "group": "gg_in{{ in_num }}_press_params",
@@ -196,7 +201,7 @@
                 "default": 1000,
                 "min": 500,
                 "max": 5000,
-                "condition": "in{{ in_num }}_mode==4"
+                "condition": "in{{ in_num }}_mode=={{ IN_MODE_BUTTON }}"
             },
             "in{{ in_num }}_secp_waiting_time": {
                 "group": "gg_in{{ in_num }}_press_params",
@@ -208,7 +213,7 @@
                 "default": 300,
                 "min": 0,
                 "max": 2000,
-                "condition": "in{{ in_num }}_mode==4"
+                "condition": "in{{ in_num }}_mode=={{ IN_MODE_BUTTON }}"
             },
 
             {% for out_num in range(1, OUTPUTS_NUMBER) -%}
@@ -241,7 +246,7 @@
                 ],
                 {% endif -%}
 
-                "condition": "in{{ in_num }}_mode==5"
+                "condition": "in{{ in_num }}_mode=={{ IN_MODE_FLOOD_SENSOR }}"
             },
             {% endfor -%}
 
@@ -261,7 +266,7 @@
                 "enum": [0, 1, 2, 3],
                 "enum_titles": ["do nothing", "off", "on", "toggle"],
                 {% endif -%}
-                "condition": "in{{ in_num }}_mode==4"
+                "condition": "in{{ in_num }}_mode=={{ IN_MODE_BUTTON }}"
             },
             "in{{in_num}}_out{{ out_num }}_lp": {
                 "group": "gg_in{{ in_num }}_out{{ out_num }}_button_actions",
@@ -278,7 +283,7 @@
                 "enum": [0, 1, 2, 3],
                 "enum_titles": ["do nothing", "off", "on", "toggle"],
                 {% endif -%}
-                "condition": "in{{ in_num }}_mode==4"
+                "condition": "in{{ in_num }}_mode=={{ IN_MODE_BUTTON }}"
             },
             "in{{ in_num }}_out{{ out_num }}_dp": {
                 "group": "gg_in{{ in_num }}_out{{ out_num }}_button_actions",
@@ -294,7 +299,7 @@
                 "enum": [0, 1, 2, 3],
                 "enum_titles": ["do nothing", "off", "on", "toggle"],
                 {% endif -%}
-                "condition": "in{{ in_num }}_mode==4"
+                "condition": "in{{ in_num }}_mode=={{ IN_MODE_BUTTON }}"
             },
             "in{{ in_num }}_out{{ out_num }}_slp": {
                 "group": "gg_in{{ in_num }}_out{{ out_num }}_button_actions",
@@ -310,7 +315,7 @@
                 "enum": [0, 1, 2, 3],
                 "enum_titles": ["do nothing", "off", "on", "toggle"],
                 {% endif -%}
-                "condition": "in{{ in_num }}_mode==4"
+                "condition": "in{{ in_num }}_mode=={{ IN_MODE_BUTTON }}"
             },
             {% endfor -%}
 
@@ -329,7 +334,7 @@
                 "enum": [0, 1, 2, 3],
                 "enum_titles": ["do nothing", "off", "on", "toggle"],
                 {% endif -%}
-                "condition": "in{{ in_num }}_mode==6"
+                "condition": "in{{ in_num }}_mode=={{ IN_MODE_EDGES }}"
             },
             "in{{ in_num }}_out{{ out_num }}_contact_opening": {
                 "group": "gg_in{{ in_num }}_out{{ out_num }}_button_actions",
@@ -345,7 +350,7 @@
                 "enum": [0, 1, 2, 3],
                 "enum_titles": ["do nothing", "off", "on", "toggle"],
                 {% endif -%}
-                "condition": "in{{ in_num }}_mode==6"
+                "condition": "in{{ in_num }}_mode=={{ IN_MODE_EDGES }}"
             },
             {% endfor -%}
 
@@ -505,7 +510,7 @@
                 "address": {{ in_num - 1 }},
                 "type": "switch",
                 "sporadic": true,
-                "condition": "isDefined(in{{ in_num }}_mode)&&in{{ in_num }}_mode!=3",
+                "condition": "isDefined(in{{ in_num }}_mode)&&in{{ in_num }}_mode!={{ IN_MODE_INACTIVE }}",
                 "group": "gg_in{{ in_num }}_channels"
             },
             {
@@ -514,7 +519,7 @@
                 "address": {{ in_num - 1 }},
                 "type": "switch",
                 "sporadic": false,
-                "condition": "isDefined(in{{ in_num }}_mode)==0||in{{ in_num }}_mode==3",
+                "condition": "isDefined(in{{ in_num }}_mode)==0||in{{ in_num }}_mode=={{ IN_MODE_INACTIVE }}",
                 "group": "gg_in{{ in_num }}_channels"
             },
             {
@@ -523,7 +528,7 @@
                 "address": {{ 32 + (in_num - 1) }},
                 "type": "value",
                 "sporadic": true,
-                "condition": "isDefined(in{{ in_num }}_mode)&&in{{ in_num }}_mode!=3",
+                "condition": "isDefined(in{{ in_num }}_mode)&&in{{ in_num }}_mode!={{ IN_MODE_INACTIVE }}",
                 "group": "gg_in{{ in_num }}_channels"
             },
             {
@@ -532,7 +537,7 @@
                 "address": {{ 32 + (in_num - 1) }},
                 "type": "value",
                 "sporadic": false,
-                "condition": "isDefined(in{{ in_num }}_mode)==0||in{{ in_num }}_mode==3",
+                "condition": "isDefined(in{{ in_num }}_mode)==0||in{{ in_num }}_mode=={{ IN_MODE_INACTIVE }}",
                 "group": "gg_in{{ in_num }}_channels"
             },
             {
@@ -542,7 +547,7 @@
                 "type": "switch",
                 "semi-sporadic": true,
                 "enabled": false,
-                "condition": "in{{ in_num }}_mode==5",
+                "condition": "in{{ in_num }}_mode=={{ IN_MODE_FLOOD_SENSOR }}",
                 "group": "gg_in{{ in_num }}_channels"
             },
             {
@@ -553,7 +558,7 @@
                 "type": "value",
                 "sporadic": true,
                 "group": "gg_in{{ in_num }}_channels",
-                "condition": "in{{ in_num }}_mode==4"
+                "condition": "in{{ in_num }}_mode=={{ IN_MODE_BUTTON }}"
             },
             {
                 "name": "Input {{ letter }}{{ in_num }} Long Press Counter",
@@ -563,7 +568,7 @@
                 "type": "value",
                 "sporadic": true,
                 "group": "gg_in{{ in_num }}_channels",
-                "condition": "in{{in_num}}_mode==4"
+                "condition": "in{{in_num}}_mode=={{ IN_MODE_BUTTON }}"
             },
             {
                 "name": "Input {{ letter }}{{ in_num }} Double Press Counter",
@@ -573,7 +578,7 @@
                 "type": "value",
                 "sporadic": true,
                 "group": "gg_in{{ in_num }}_channels",
-                "condition": "in{{in_num}}_mode==4"
+                "condition": "in{{in_num}}_mode=={{ IN_MODE_BUTTON }}"
             },
             {
                 "name": "Input {{ letter }}{{ in_num }} Shortlong Press Counter",
@@ -583,7 +588,7 @@
                 "type": "value",
                 "sporadic": true,
                 "group": "gg_in{{ in_num }}_channels",
-                "condition": "in{{ in_num }}_mode==4"
+                "condition": "in{{ in_num }}_mode=={{ IN_MODE_BUTTON }}"
             },
             {% endfor -%}
 
