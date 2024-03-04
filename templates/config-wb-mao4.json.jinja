@@ -44,12 +44,12 @@
             },
             {% endfor -%}
             {
-                "title": "Input {{ ch_number }} Switch On Action",
+                "title": "Switch On Action",
                 "id": "input_{{ ch_number }}_switch_on_action",
                 "group": "input_{{ ch_number }}"
             },
             {
-                "title": "Input {{ ch_number }} Switch Off Action",
+                "title": "Switch Off Action",
                 "id": "input_{{ ch_number }}_switch_off_action",
                 "group": "input_{{ ch_number }}"
             },
@@ -284,7 +284,8 @@
             {% for ch_number in range(0, INPUTS_NUMBER) -%}
             {
                 "id": "input_{{ch_number + 1}}_mode",
-                "title": "Input {{ch_number + 1}} Mode",
+                "title": "Input Mode",
+                "description": "input_mode_description",
                 "address": {{1024 + ch_number}},
                 "reg_type": "holding",
                 "enum": [0, 1],
@@ -305,7 +306,7 @@
                 "min": 500,
                 "max": 5000,
                 "group": "input_{{ch_number + 1}}_parameters",
-                "condition": "!isDefined(input_{{ch_number + 1}}_mode)||input_{{ch_number + 1}}_mode==0",
+                "condition": "isDefined(input_{{ch_number + 1}}_mode)==0||input_{{ch_number + 1}}_mode==0",
                 "order": 1
             },
             {
@@ -318,7 +319,7 @@
                 "min": 0,
                 "max": 2000,
                 "group": "input_{{ch_number + 1}}_parameters",
-                "condition": "!isDefined(input_{{ch_number + 1}}_mode)||input_{{ch_number + 1}}_mode==0",
+                "condition": "isDefined(input_{{ch_number + 1}}_mode)==0||input_{{ch_number + 1}}_mode==0",
                 "order": 2
             },
             {
@@ -359,7 +360,7 @@
                 ],
                 "default": 0,
                 "group": "input_{{ch_number + 1}}_{{press_type | replace(' ', '_')}}_press_action",
-                "condition": "!isDefined(input_{{ch_number + 1}}_mode)||input_{{ch_number + 1}}_mode==0",
+                "condition": "isDefined(input_{{ch_number + 1}}_mode)==0||input_{{ch_number + 1}}_mode==0",
                 "order": 1
             },
             {
@@ -453,7 +454,7 @@
                     "Turn On",
                     "Toggle"
                 ],
-                "default": {{ 1 if sw_act == "off" else 0}},
+                "default": {{ 0 if sw_act == "off" else 1}},
                 "group": "input_{{ ch_number + 1}}_switch_{{sw_act}}_action",
                 "condition": "input_{{ch_number + 1}}_switch_{{sw_act}}_channel>=1&&input_{{ch_number + 1}}_switch_{{sw_act}}_channel<=4",
                 "order": 2
@@ -468,7 +469,7 @@
                     "Turn Off",
                     "Turn On"
                 ],
-                "default": {{ 1 if sw_act == "off" else 0}},
+                "default": {{ 0 if sw_act == "off" else 1}},
                 "group": "input_{{ ch_number + 1}}_switch_{{sw_act}}_action",
                 "condition": "input_{{ch_number + 1}}_switch_{{sw_act}}_channel==100",
                 "order": 2
@@ -484,7 +485,7 @@
                     "Turn On Scene Light",
                     "Toggle Scene Light"
                 ],
-                "default": {{ 1 if sw_act == "off" else 0 }},
+                "default": {{ 0 if sw_act == "off" else 1 }},
                 "group": "input_{{ ch_number + 1}}_switch_{{sw_act}}_action",
                 "condition": "input_{{ch_number + 1}}_switch_{{sw_act}}_channel>=101",
                 "order": 2
@@ -870,6 +871,10 @@
                 "input_double_time_description": "If there is no second press during the specified time then press is single. 0 - disables all presses except short and long. Adds a delay to the response to a short press",
                 "input_debounce_time_description": "Must be 5-10 times less than second press waiting time. Adds a delay to the response to presses",
 
+                "input_mode_description": "Button is the default mode. Switch mode supported since firmware version 2.5.0",
+                "light_scenes_description": "Light scenes are used to control multiple channels simultaneously. Supported since firmware version 2.5.0",
+                "g_safety_description": "Safety mode is activated when there is no modbus polling for the specified time. Supported since firmware version 2.5.0",
+
                 "poll_timeout_description": "Time in seconds without modbus polling before activation safety mode. Actions in safety mode are configured using appropriate parameters",
                 "inputs_control_in_safety_mode_description": "Sets change of control from the inputs when module switches to safety mode"
             },
@@ -933,7 +938,13 @@
                 "level_1_voltage_description": "Задает границу диапазона напряжения, соответствующую 1% уровня диммирования",
                 "level_100_voltage_description": "Задает границу диапазона напряжения, соответствующую 100% уровня диммирования",
 
-                "light_scene_description": "Настройка сцен освещения. Доступно с версии прошивки 2.5.0",
+                "Input Mode": "Режим работы входа",
+                "Button": "Кнопка без фиксации",
+                "Switch": "Выключатель с фиксацией",
+                "Switch On Action": "Действие при включении выключателя",
+                "Switch Off Action": "Действие при выключении выключателя",
+
+                "light_scene_description": "Сцены позволяют объединить несколько каналов и устанавливать заранее определенный уровень яркости. Доступно с версии прошивки 2.5.0",
                 "Light On/Off Condition": "Условие включенного света",
                 "Light is on if any used channel is on. Otherwise light is off": "Свет включен, если хотя бы один используемый канал включен. Иначе свет выключен",
                 "Light is on if all used channels are on. Otherwise light is off": "Свет включен, если все используемые каналы включены. Иначе свет выключен",
@@ -977,6 +988,8 @@
                 "Long Press Time (ms)": "Время длинного нажатия (мс)",
                 "Second Press Waiting Time (ms)": "Время ожидания второго нажатия (мс)",
                 "Debounce Time (ms)": "Время подавления дребезга (мс)",
+
+                "input_mode_description": "Режим работы входа по умолчанию - кнопка без фиксации. Работа в режиме выключателя с фиксацией доступна с версии прошивки 2.5.0",
 
                 "input_hold_time_description": "Если нажатие длится больше указанного времени - считаем его длинным",
                 "input_double_time_description": "Если за указанное время второго нажатия не было - считаем нажатие одиночным. 0 - отключит все нажатия кроме короткого и длинного. Вносит задержку в реакцию на короткое нажатие",
