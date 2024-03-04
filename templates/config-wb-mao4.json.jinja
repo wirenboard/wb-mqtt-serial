@@ -143,13 +143,12 @@
             {
                 "title": "Safety Behaviour",
                 "id": "gg_safety_behaviour",
-                "description": "safety_behaviour_description",
                 "group": "g_safety"
             },
             {% for ch_number in range(1, OUTPUTS_NUMBER + 1) -%}
             {
                 "title": "Channel {{ ch_number }}",
-                "id": "gg_safete_mode_ch_{{ ch_number }}",
+                "id": "gg_safety_mode_ch_{{ ch_number }}",
                 "group": "gg_safety_behaviour",
                 "ui_options": {
                     "wb": {
@@ -158,7 +157,7 @@
                 }
             },
             {
-                "title": "Channel {{ ch_number }}",
+                "title": "Channel {{ ch_number }} Switch",
                 "id": "gg_power_up_behaviour_ch_{{ ch_number }}",
                 "group": "g_power_up_behaviour"
             },
@@ -472,10 +471,22 @@
             {% endfor -%}
             {% endfor -%}
 
+            {
+                "id": "safety_timer_s",
+                "title": "Safety Poll Timeout (s)",
+                "group": "g_safety",
+                "description": "poll_timeout_description",
+                "address": 8,
+                "order": 2,
+                "reg_type": "holding",
+                "min": 1,
+                "max": 65534,
+                "default": 10
+            },
             {% for ch_number in range(1, OUTPUTS_NUMBER + 1) -%}
             {
                 "id": "safety_mode_ch_{{ch_number}}_action",
-                "title": "Channel {{ch_number}} Action",
+                "title": "Channel {{ch_number}} Switch",
                 "reg_type": "holding",
                 "address": {{648 + ch_number - 1}},
                 "type": "enum",
@@ -486,7 +497,7 @@
                     "Turn On",
                     "Turn On and Set Brightness"
                 ],
-                "group": "gg_safete_mode_ch_{{ ch_number }}"
+                "group": "gg_safety_mode_ch_{{ ch_number }}"
             },
             {
                 "id": "safety_mode_ch_{{ch_number}}_level",
@@ -497,11 +508,11 @@
                 "max": 100,
                 "required": true,
                 "condition": "safety_mode_ch_{{ch_number}}_action==3",
-                "group": "gg_safete_mode_ch_{{ ch_number }}"
+                "group": "gg_safety_mode_ch_{{ ch_number }}"
             },
             {
                 "id": "power_up_behaviour_ch_{{ch_number}}_action",
-                "title": "Action on Power Up",
+                "title": "Action",
                 "reg_type": "holding",
                 "address": {{664 + ch_number - 1}},
                 "type": "enum",
@@ -748,7 +759,10 @@
 
                 "input_hold_time_description": "Presses that last longer than the specified time are counted as long presses",
                 "input_double_time_description": "If there is no second press during the specified time then press is single. 0 - disables all presses except short and long. Adds a delay to the response to a short press",
-                "input_debounce_time_description": "Must be 5-10 times less than second press waiting time. Adds a delay to the response to presses"
+                "input_debounce_time_description": "Must be 5-10 times less than second press waiting time. Adds a delay to the response to presses",
+
+                "poll_timeout_description": "Time in seconds without modbus polling before activation safety mode. Actions in safety mode are configured using appropriate parameters",
+                "inputs_control_in_safety_mode_description": "Sets change of control from the inputs when module switches to safety mode"
             },
             "ru": {
                 "Enabled": "Активен",
@@ -809,6 +823,38 @@
 
                 "level_1_voltage_description": "Задает границу диапазона напряжения, соответствующую 1% уровня диммирования",
                 "level_100_voltage_description": "Задает границу диапазона напряжения, соответствующую 100% уровня диммирования",
+
+                "Scene Mode": "Режим сцен",
+                "light_scene_description": "Настройка сцен освещения. Доступно с версии прошивки 2.5.0",
+                "Light On/Off Condition": "Условие включенного света",
+                "Light is on if any used channel is on. Otherwise light is off": "Свет включен, если хотя бы один используемый канал включен. Иначе свет выключен",
+                "Light is on if all used channels are on. Otherwise light is off": "Свет включен, если все используемые каналы включены. Иначе свет выключен",
+                "Action if Light is Off": "Действие, если свет выключен",
+                "Action if Light is On": "Действие, если свет включен",
+                "Channel not Used in Scene": "Канал не используется в сцене",
+                "Turn On and Set Brightness": "Включить и установить яркость",
+                "Dimming level rate (ms/%)": "Время изменения уровня (мс/%)",
+                "Brightness": "Яркость",
+
+                {% for ls_number in range(1, LIGHT_SCENES_NUMBER + 1) -%}
+                "Light Scene {{ls_number}}": "Сцена {{ls_number}}",
+                "Set Scene {{ls_number}}": "Установить сцену {{ls_number}}",
+                {% endfor -%}
+
+                "Safety Mode": "Безопасный режим",
+                "g_safety_description": "Настройка поведения устройства в случае потери связи с контроллером. Доступно с версии прошивки 2.5.0",
+                "Safety Behaviour": "Действие в безопасном режиме",
+                "Inputs Control In Safety Mode": "Управление с входов в безопасном режиме",
+                "Don't change": "Не блокировать",
+                "Disable in safety mode": "Блокировать в безопасном режиме",
+                "Enable only in safety mode": "Разрешить только в безопасном режиме",
+                "Safety Poll Timeout (s)": "Таймаут потери связи (с)",
+                "poll_timeout_description": "Время отсутствия опроса в секундах, после которого будет активирован безопасный режим. Действия в безопасном режиме настраиваются отдельно",
+                "inputs_control_in_safety_mode_description": "Настройка изменения управления с входов при переходе модуля в безопасный режим",
+
+                "Power Up Behaviour": "Поведение при включении питания",
+                "g_power_up_behaviour_description": "Настройка поведения выходов при включении питания устройства. Доступно с версии прошивки 2.5.0",
+                "Set Previous State": "Установить предыдущее состояние",
 
                 "Serial": "Серийный номер",
                 "FW Version": "Версия прошивки",
