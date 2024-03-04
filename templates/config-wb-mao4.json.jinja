@@ -340,7 +340,7 @@
                 "title": "Output Number",
                 "address": {{768 + (loop.index0 * 16) + ch_number}},
                 "reg_type": "holding",
-                "enum": [0, 1, 2, 3, 4, 100, 101],
+                "enum": [0, 1, 2, 3, 4, 100, 101, 102, 103, 104, 105, 106, 107, 108],
                 "enum_titles": [
                     "No Action",
                     "Output 1",
@@ -348,7 +348,14 @@
                     "Output 3",
                     "Output 4",
                     "All Outputs",
-                    "Scene Mode"
+                    "Light Scene 1",
+                    "Light Scene 2",
+                    "Light Scene 3",
+                    "Light Scene 4",
+                    "Light Scene 5",
+                    "Light Scene 6",
+                    "Light Scene 7",
+                    "Light Scene 8"
                 ],
                 "default": 0,
                 "group": "input_{{ch_number + 1}}_{{press_type | replace(' ', '_')}}_press_action",
@@ -393,19 +400,18 @@
             },
             {
                 "id": "{{action_bind}}_action_scene",
-                "title": "Scene",
+                "title": "Action",
                 "address": {{832 + (loop.index0 * 16) + ch_number}},
                 "reg_type": "holding",
-                "enum": [{% for ls_number in range(0, LIGHT_SCENES_NUMBER) %}{{ 10 + ls_number }}{% if not loop.last %}, {% endif %}{% endfor %}],
+                "enum": [0, 1, 2],
                 "enum_titles": [
-                    {% for ls_number in range(1, LIGHT_SCENES_NUMBER + 1) -%}
-                    "Set Scene {{ls_number}}"{% if not loop.last %},{% endif %}
-                    {% endfor -%}
+                    "Turn Off Scene Light",
+                    "Turn On Scene Light",
+                    "Toggle Scene Light"
                 ],
                 "group": "input_{{ch_number + 1}}_{{press_type | replace(' ', '_') }}_press_action",
                 "order": 2,
-                "required": true,
-                "condition": "{{ action_bind }}_number==101"
+                "condition": "{{ action_bind }}_number>=101"
             },
             {% endfor -%}
             {% for sw_act in ["on", "off"] -%}
@@ -927,7 +933,6 @@
                 "level_1_voltage_description": "Задает границу диапазона напряжения, соответствующую 1% уровня диммирования",
                 "level_100_voltage_description": "Задает границу диапазона напряжения, соответствующую 100% уровня диммирования",
 
-                "Scene Mode": "Режим сцен",
                 "light_scene_description": "Настройка сцен освещения. Доступно с версии прошивки 2.5.0",
                 "Light On/Off Condition": "Условие включенного света",
                 "Light is on if any used channel is on. Otherwise light is off": "Свет включен, если хотя бы один используемый канал включен. Иначе свет выключен",
@@ -938,10 +943,12 @@
                 "Turn On and Set Brightness": "Включить и установить яркость",
                 "Dimming level rate (ms/%)": "Время изменения уровня (мс/%)",
                 "Brightness": "Яркость",
+                "Turn Off Scene Light": "Выключить свет сцены",
+                "Turn On Scene Light": "Включить свет сцены",
+                "Toggle Scene Light": "Переключить свет сцены",
 
                 {% for ls_number in range(1, LIGHT_SCENES_NUMBER + 1) -%}
                 "Light Scene {{ls_number}}": "Сцена {{ls_number}}",
-                "Set Scene {{ls_number}}": "Установить сцену {{ls_number}}",
                 {% endfor -%}
 
                 "Safety Mode": "Безопасный режим",
