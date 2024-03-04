@@ -24,7 +24,7 @@
 #include "config_schema_generator.h"
 #include "file_utils.h"
 
-#include "devices/curtains/dauerhaft_device.h"
+#include "devices/curtains/a_ok_device.h"
 #include "devices/curtains/dooya_device.h"
 #include "devices/curtains/somfy_sdn_device.h"
 #include "devices/curtains/windeco_device.h"
@@ -812,6 +812,14 @@ std::shared_ptr<TDeviceTemplate> TTemplateMap::GetTemplatePtr(const std::string&
         auto deviceTemplate = std::make_shared<TDeviceTemplate>(deviceType, deviceTypeTitle, root["device"]);
         Get(root, "deprecated", deviceTemplate->IsDeprecated);
         Get(root, "group", deviceTemplate->Group);
+        if (root.isMember("hw")) {
+            for (const auto& hwItem: root["hw"]) {
+                TDeviceTemplateHardware hw;
+                Get(hwItem, "signature", hw.Signature);
+                Get(hwItem, "fw", hw.Fw);
+                deviceTemplate->Hardware.push_back(std::move(hw));
+            }
+        }
         ValidTemplates.insert({deviceType, deviceTemplate});
         return deviceTemplate;
     }
@@ -1358,7 +1366,7 @@ void RegisterProtocols(TSerialDeviceFactory& deviceFactory)
     Dooya::TDevice::Register(deviceFactory);
     WinDeco::TDevice::Register(deviceFactory);
     Somfy::TDevice::Register(deviceFactory);
-    Dauerhaft::TDevice::Register(deviceFactory);
+    Aok::TDevice::Register(deviceFactory);
 }
 
 TRegisterBitsAddress LoadRegisterBitsAddress(const Json::Value& register_data, const std::string& jsonPropertyName)

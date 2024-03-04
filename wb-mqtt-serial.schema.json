@@ -1145,7 +1145,7 @@
                "param_be", "param_sign_active", "param_sign_reactive", "array12", "default", "param16", 
                "param24", "param32", "power", "freq", "power_factor", "group_single", 
                "temperature", "item_1", "item_2", "item_3", "item_4", "item_5", 
-               "alarm", "position", "command", "date", "time", "angle", "type", "status",
+               "alarm", "position", "command", "date", "time", "angle", "type", "status", "zonebit",
                // obis_* are deprecated, use item_*, temperature and power_factor
                "obis_cdef", "obis_cdef_pf", "obis_cdef_temp", "obis_cdef_1", "obis_cdef_2", "obis_cdef_3", "obis_cdef_4", "obis_cdef_5"]
     },
@@ -2006,7 +2006,8 @@
     "service": "wb-mqtt-serial",
     "toJSON": ["wb-mqtt-serial", "-j"],
     "fromJSON": ["wb-mqtt-serial", "-J"],
-    "validate": false
+    "validate": false,
+    "editor": "serial-config"
   },
 
   "translations": {

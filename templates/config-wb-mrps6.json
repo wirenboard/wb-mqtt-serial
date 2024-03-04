@@ -3,6 +3,11 @@
     "device_type": "WB-MRPS6",
     "deprecated": true,
     "group": "g-wb",
+    "hw": [
+        {
+            "signature": "MRPS6"
+        }
+    ],
     "device": {
         "name": "WB-MRPS6",
         "id": "wb-mrps6",

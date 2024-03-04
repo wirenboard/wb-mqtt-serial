@@ -2,6 +2,11 @@
     "title": "WB-MRGBW-D_template_title",
     "device_type": "WB-MRGBW-D",
     "group": "g-wb",
+    "hw": [
+        {
+            "signature": "WB-MRGBW-D"
+        }
+    ],
     "device": {
         "name": "WB-MRGBW-D",
         "id": "wb-mrgbw-d",

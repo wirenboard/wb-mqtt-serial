@@ -1,11 +1,11 @@
-#include "devices/curtains/dauerhaft_device.h"
+#include "devices/curtains/a_ok_device.h"
 #include "test_utils.h"
 #include <wblib/testing/common.h>
 
-using namespace Dauerhaft;
+using namespace Aok;
 using namespace WBMQTT::Testing;
 
-TEST(TDauerhaftTest, MakeRequest)
+TEST(TAokTest, MakeRequest)
 {
     ASSERT_TRUE(ArraysMatch(MakeRequest(0x10, 0x2, 0x3, 0x0a, 0xdd), {0x9a, 0x10, 0x2, 0x3, 0x0a, 0xdd, 0xc6}));
     ASSERT_TRUE(ArraysMatch(MakeRequest(0x0, 0x0, 0x0, 0x0a, 0xcc), {0x9a, 0x0, 0x0, 0x0, 0x0a, 0xcc, 0xc6}));
