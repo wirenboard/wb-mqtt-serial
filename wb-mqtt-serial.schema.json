@@ -112,7 +112,10 @@
               "default": 9600,
               "propertyOrder": 4,
               "options": {
-                "grid_columns": 2
+                "grid_columns": 2,
+                "wb": {
+                  "show_editor":true
+                }
               }    
             },
             "parity": {
@@ -122,7 +125,10 @@
               "default": "N",
               "propertyOrder": 5,
               "options": {
-                "grid_columns": 2
+                "grid_columns": 2,
+                "wb": {
+                  "show_editor":true
+                }
               }    
             },
             "data_bits": {
@@ -132,7 +138,10 @@
               "default": 8,
               "propertyOrder": 6,
               "options": {
-                "grid_columns": 2
+                "grid_columns": 2,
+                "wb": {
+                  "show_editor":true
+                }
               }    
             },
             "stop_bits": {
@@ -142,11 +151,14 @@
               "default": 1,
               "propertyOrder": 7,
               "options": {
-                "grid_columns": 2
+                "grid_columns": 2,
+                "wb": {
+                  "show_editor":true
+                }
               }    
             }
           },
-          "required": ["path", "baud_rate", "parity", "data_bits", "stop_bits"]
+          "required": ["path"]
         },
         { "$ref" : "#/definitions/commonPortSettings"}
       ],
