@@ -29,7 +29,10 @@
           "propertyOrder": 8,
           "options": {
             "grid_columns": 12,
-            "show_opt_in": true
+            "show_opt_in": true,
+            "wb" : {
+              "disabledEditorText": " "
+            }
           }
         },
         "guard_interval_us": {
@@ -41,7 +44,10 @@
           "propertyOrder": 9,
           "options": {
             "grid_columns": 12,
-            "show_opt_in": true
+            "show_opt_in": true,
+            "wb" : {
+              "disabledEditorText": " "
+            }
           }
         },
         "poll_interval": {
