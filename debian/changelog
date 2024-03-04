@@ -1,3 +1,9 @@
+wb-mqtt-serial (2.111.0) stable; urgency=medium
+
+  * Add new template for dali-logic-lite-ps-x1
+
+ -- Mikhail Burchu <mikhail.burchu@wirenboard.com>  Fri, 1 Mar 2024 17:30:00 +0300
+
 wb-mqtt-serial (2.110.1) stable; urgency=medium
 
   * Dauerhaft: add curtain motor settings support
