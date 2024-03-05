@@ -1,3 +1,9 @@
+wb-mqtt-serial (2.112.0) stable; urgency=medium
+
+  * WB-MAO4 template: add support for scenes, safety mode, switch mode
+
+ -- Pavel Gasheev <pavel.gasheev@wirenboard.ru>  Tue, 05 Mar 2024 10:39:50 +0300
+
 wb-mqtt-serial (2.111.0) stable; urgency=medium
 
   * Add new template for dali-logic-lite-ps-x1
