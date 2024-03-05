@@ -128,12 +128,12 @@
             },
             {% for ch_number in range(1, OUTPUTS_NUMBER + 1) -%}
             {
-                "title": "Channel {{ ch_number }} Actions",
+                "title": "Channel {{ ch_number }} Switch",
                 "id": "gg_ls_{{ ls_number }}_ch_{{ ch_number }}_action_off",
                 "group": "gg_ls_{{ ls_number }}_actions_off"
             },
             {
-                "title": "Channel {{ ch_number }} Actions",
+                "title": "Channel {{ ch_number }} Switch",
                 "id": "gg_ls_{{ ls_number }}_ch_{{ ch_number }}_action_on",
                 "group": "gg_ls_{{ ls_number }}_actions_on"
             },
@@ -944,12 +944,12 @@
                 "Switch On Action": "Действие при включении выключателя",
                 "Switch Off Action": "Действие при выключении выключателя",
 
-                "light_scene_description": "Сцены позволяют объединить несколько каналов и устанавливать заранее определенный уровень яркости. Доступно с версии прошивки 2.5.0",
+                "light_scenes_description": "Сцены позволяют объединить несколько каналов и устанавливать заранее определенный уровень яркости. Доступно с версии прошивки 2.5.0",
                 "Light On/Off Condition": "Условие включенного света",
                 "Light is on if any used channel is on. Otherwise light is off": "Свет включен, если хотя бы один используемый канал включен. Иначе свет выключен",
                 "Light is on if all used channels are on. Otherwise light is off": "Свет включен, если все используемые каналы включены. Иначе свет выключен",
-                "Action if Light is Off": "Действие, если свет выключен",
-                "Action if Light is On": "Действие, если свет включен",
+                "Actions if Light is Off": "Действие, если свет выключен",
+                "Actions if Light is On": "Действие, если свет включен",
                 "Channel not Used in Scene": "Канал не используется в сцене",
                 "Turn On and Set Brightness": "Включить и установить яркость",
                 "Dimming level rate (ms/%)": "Время изменения уровня (мс/%)",
