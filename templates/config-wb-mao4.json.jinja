@@ -772,6 +772,15 @@
             },
             {% endfor -%}
             {% for ls_number in range(1, LIGHT_SCENES_NUMBER + 1) -%}
+            {
+                "name": "Scene {{ls_number}} Light",
+                "reg_type": "discrete",
+                "address": {{ 32 + (ls_number - 1) }},
+                "type": "switch",
+                "enabled": false,
+                "sporadic": true,
+                "group": "gg_ls_{{ls_number}}_channels"
+            },
             {% for ls_action in ["Off", "On", "Toggle"] -%}
             {
                 "name": "Scene {{ls_number}} Light {{ls_action}}",
@@ -962,6 +971,7 @@
 
                 {% for ls_number in range(1, LIGHT_SCENES_NUMBER + 1) -%}
                 "Light Scene {{ls_number}}": "Сцена {{ls_number}}",
+                "Scene {{ls_number}} Light": "Свет сцены {{ls_number}}",
                 "Scene {{ls_number}} Light Off": "Выключить свет сцены {{ls_number}}",
                 "Scene {{ls_number}} Light On": "Включить свет сцены {{ls_number}}",
                 "Scene {{ls_number}} Light Toggle": "Переключить свет сцены {{ls_number}}",
