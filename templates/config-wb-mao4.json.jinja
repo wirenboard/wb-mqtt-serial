@@ -341,7 +341,7 @@
                 "title": "Output Number",
                 "address": {{768 + (loop.index0 * 16) + ch_number}},
                 "reg_type": "holding",
-                "enum": [0, 1, 2, 3, 4, 100, 101, 102, 103, 104, 105, 106, 107, 108],
+                "enum": [0, 1, 2, 3, 4, 100, 32, 33, 34, 35, 36, 37, 38, 39],
                 "enum_titles": [
                     "No Action",
                     "Output 1",
@@ -412,7 +412,7 @@
                 ],
                 "group": "input_{{ch_number + 1}}_{{press_type | replace(' ', '_') }}_press_action",
                 "order": 2,
-                "condition": "{{ action_bind }}_number>=101"
+                "condition": "{{ action_bind }}_number>=32&&{{ action_bind }}_number<=39"
             },
             {% endfor -%}
             {% for sw_act in ["on", "off"] -%}
@@ -421,7 +421,7 @@
                 "title": "Output Number",
                 "address": {{1024 + (loop.index0 * 16) + ch_number}},
                 "reg_type": "holding",
-                "enum": [0, 1, 2, 3, 4, 100, 101, 102, 103, 104, 105, 106, 107, 108],
+                "enum": [0, 1, 2, 3, 4, 100, 32, 33, 34, 35, 36, 37, 38, 39],
                 "enum_titles": [
                     "No Action",
                     "Output 1",
@@ -487,7 +487,7 @@
                 ],
                 "default": {{ 0 if sw_act == "off" else 1 }},
                 "group": "input_{{ ch_number + 1}}_switch_{{sw_act}}_action",
-                "condition": "input_{{ch_number + 1}}_switch_{{sw_act}}_channel>=101",
+                "condition": "input_{{ch_number + 1}}_switch_{{sw_act}}_channel>=32&&input_{{ch_number + 1}}_switch_{{sw_act}}_channel<=39",
                 "order": 2
             },
             {% endfor -%}
@@ -772,14 +772,16 @@
             },
             {% endfor -%}
             {% for ls_number in range(1, LIGHT_SCENES_NUMBER + 1) -%}
+            {% for ls_action in ["Off", "On", "Toggle"] -%}
             {
-                "name": "Set Scene {{ls_number}}",
+                "name": "Scene {{ls_number}} Light {{ls_action}}",
                 "reg_type": "coil",
-                "address": {{ 32 + (ls_number - 1)}},
+                "address": {{ 32 + (ls_number - 1) * 8 + loop.index0 }},
                 "type": "pushbutton",
                 "enabled": false,
                 "group": "gg_ls_{{ls_number}}_channels"
             },
+            {% endfor -%}
             {% endfor -%}
             {
                 "name": "Serial",
@@ -960,6 +962,9 @@
 
                 {% for ls_number in range(1, LIGHT_SCENES_NUMBER + 1) -%}
                 "Light Scene {{ls_number}}": "Сцена {{ls_number}}",
+                "Scene {{ls_number}} Light Off": "Выключить свет сцены {{ls_number}}",
+                "Scene {{ls_number}} Light On": "Включить свет сцены {{ls_number}}",
+                "Scene {{ls_number}} Light Toggle": "Переключить свет сцены {{ls_number}}",
                 {% endfor -%}
 
                 "Safety Mode": "Безопасный режим",
