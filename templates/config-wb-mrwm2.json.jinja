@@ -96,6 +96,16 @@
                     }
                 }
             },
+            {
+                "title": "Protection channel {{out_num}} auto power on",
+                "group": "gg_protection_channel_{{out_num}}",
+                "id": "gg_protection_channel_{{out_num}}_power_on",
+                "ui_options": {
+                    "wb": {
+                        "disable_title": true
+                    }
+                }
+            },            
             {% endfor -%}
             {
                 "title": "Outputs group",
@@ -453,6 +463,19 @@
                 "max": 600,
                 "order": 2,
                 "condition": "out{{out_num}}_safe_mode_voltage_low_mode==1||out{{out_num}}_safe_mode_voltage_high_mode==1"
+            },
+            "out{{out_num}}_safe_mode_power_on": {
+                "title": "Enable auto power on",
+                "group": "gg_protection_channel_{{out_num}}_power_on",
+                "order": 1,
+                "address": {{ 1350 + out_num - 1 }},
+                "reg_type": "holding",
+                "default": 0,
+                "enum": [0, 1],
+                "enum_titles": [
+                    "Off",
+                    "On"
+                ]
             },
             {% endfor -%}
             "outputs_restore_state": {
