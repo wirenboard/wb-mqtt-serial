@@ -286,7 +286,7 @@
                 "id": "input_{{ch_number + 1}}_mode",
                 "title": "Input Mode",
                 "description": "input_mode_description",
-                "address": {{1024 + ch_number}},
+                "address": {{40 + ch_number}},
                 "reg_type": "holding",
                 "enum": [0, 1],
                 "enum_titles": [
@@ -306,7 +306,7 @@
                 "min": 500,
                 "max": 5000,
                 "group": "input_{{ch_number + 1}}_parameters",
-                "condition": "isDefined(input_{{ch_number + 1}}_mode)==0||input_{{ch_number + 1}}_mode==0",
+                "condition": "input_{{ch_number + 1}}_mode!=1",
                 "order": 1
             },
             {
@@ -319,7 +319,7 @@
                 "min": 0,
                 "max": 2000,
                 "group": "input_{{ch_number + 1}}_parameters",
-                "condition": "isDefined(input_{{ch_number + 1}}_mode)==0||input_{{ch_number + 1}}_mode==0",
+                "condition": "input_{{ch_number + 1}}_mode!=1",
                 "order": 2
             },
             {
@@ -360,7 +360,7 @@
                 ],
                 "default": 0,
                 "group": "input_{{ch_number + 1}}_{{press_type | replace(' ', '_')}}_press_action",
-                "condition": "isDefined(input_{{ch_number + 1}}_mode)==0||input_{{ch_number + 1}}_mode==0",
+                "condition": "input_{{ch_number + 1}}_mode!=1",
                 "order": 1
             },
             {
@@ -415,7 +415,7 @@
                 "condition": "{{ action_bind }}_number>=32&&{{ action_bind }}_number<=39"
             },
             {% endfor -%}
-            {% for sw_act in ["on", "off"] -%}
+            {% for sw_act in ["off", "on"] -%}
             {
                 "id": "input_{{ch_number + 1}}_switch_{{sw_act}}_channel",
                 "title": "Output Number",
@@ -446,7 +446,7 @@
             {
                 "id": "input_{{ch_number + 1}}_switch_{{sw_act}}_action_single",
                 "title": "Action",
-                "address": {{1064 + (loop.index0 * 16) + ch_number}},
+                "address": {{1056 + (loop.index0 * 16) + ch_number}},
                 "reg_type": "holding",
                 "enum": [0, 1, 2],
                 "enum_titles": [
@@ -462,7 +462,7 @@
             {
                 "id": "input_{{ch_number + 1}}_switch_{{sw_act}}_action_all",
                 "title": "Action",
-                "address": {{1064 + (loop.index0 * 16) + ch_number}},
+                "address": {{1056 + (loop.index0 * 16) + ch_number}},
                 "reg_type": "holding",
                 "enum": [0, 1],
                 "enum_titles": [
@@ -477,7 +477,7 @@
             {
                 "id": "input_{{ch_number + 1}}_switch_{{sw_act}}_action_scene",
                 "title": "Action",
-                "address": {{1064 + (loop.index0 * 16) + ch_number}},
+                "address": {{1056 + (loop.index0 * 16) + ch_number}},
                 "reg_type": "holding",
                 "enum": [0, 1, 2],
                 "enum_titles": [
@@ -716,6 +716,7 @@
                 "address": {{464 + index}},
                 "type": "value",
                 "sporadic": true,
+                "condition": "input_{{index + 1}}_mode!=1",
                 "group": "input_{{index + 1}}_counters"
             },
             {
@@ -724,6 +725,7 @@
                 "address": {{480 + index}},
                 "type": "value",
                 "sporadic": true,
+                "condition": "input_{{index + 1}}_mode!=1",
                 "group": "input_{{index + 1}}_counters"
             },
             {
@@ -732,6 +734,7 @@
                 "address": {{496 + index}},
                 "type": "value",
                 "sporadic": true,
+                "condition": "input_{{index + 1}}_mode!=1",
                 "group": "input_{{index + 1}}_counters"
             },
             {
@@ -740,6 +743,7 @@
                 "address": {{512 + index}},
                 "type": "value",
                 "sporadic": true,
+                "condition": "input_{{index + 1}}_mode!=1",
                 "group": "input_{{index + 1}}_counters"
             },
             {% endfor -%}
