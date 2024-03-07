@@ -1,3 +1,3 @@
 buildDebSbuild defaultTargets: 'bullseye-armhf bullseye-arm64',
                defaultRunLintian: true,
-               defaultStyleCheckDirs: 'src test'
+               defaultSbuildArgs: '--extra-repository="deb http://deb.wirenboard.com/all experimental.enum main"'

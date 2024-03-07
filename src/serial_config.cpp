@@ -428,6 +428,19 @@ namespace
             channel->SetTitle(it.second, it.first);
         }
 
+        if (channel_data.isMember("enum") && channel_data.isMember("enum_titles")) {
+            const auto& enumValues = channel_data["enum"];
+            const auto& enumTitles = channel_data["enum_titles"];
+            if (enumValues.size() != enumTitles.size()) {
+                throw TConfigParserException("enum and enum_titles should have the same size -- " +
+                                             device_config->DeviceType);
+            }
+
+            for (Json::ArrayIndex i = 0; i < enumValues.size(); ++i) {
+                channel->SetEnumTitles(enumValues[i].asString(), Translate(enumTitles[i].asString(), true, context));
+            }
+        }
+
         if (channel_data.isMember("max")) {
             channel->Max = GetDouble(channel_data, "max");
         }
@@ -1065,6 +1078,18 @@ void TDeviceChannelConfig::SetTitle(const std::string& name, const std::string& 
 {
     if (!lang.empty()) {
         Titles[lang] = name;
+    }
+}
+
+const std::map<std::string, TTitleTranslations>& TDeviceChannelConfig::GetEnumTitles() const
+{
+    return EnumTitles;
+}
+
+void TDeviceChannelConfig::SetEnumTitles(const std::string& value, const TTitleTranslations& titles)
+{
+    if (!value.empty()) {
+        EnumTitles[value] = titles;
     }
 }
 
