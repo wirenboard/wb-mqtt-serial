@@ -75,7 +75,7 @@
               "reg_type": "relay_default",
               "address": "0x01",
               "enum": [0, 1],
-              "enum_titles": ["zero", "onw"],
+              "enum_titles": ["zero", "one"],
               "format": "u8"
             },
             {
