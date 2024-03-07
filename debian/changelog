@@ -1,3 +1,9 @@
+wb-mqtt-serial (2.112.0) stable; urgency=medium
+
+  * Add WB-MWAC v.2 template
+
+ -- Radmir Khakimov <radmir.khakimov@wirenboard.com>  Wed, 7 Mar 2023 21:12:51 +0500
+
 wb-mqtt-serial (2.111.0) stable; urgency=medium
 
   * Add new template for dali-logic-lite-ps-x1
