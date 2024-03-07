@@ -24,6 +24,7 @@
 #include "config_schema_generator.h"
 #include "file_utils.h"
 
+#include "devices/curtains/a_ok_device.h"
 #include "devices/curtains/dooya_device.h"
 #include "devices/curtains/somfy_sdn_device.h"
 #include "devices/curtains/windeco_device.h"
@@ -567,6 +568,7 @@ namespace
         Get(device_data, "response_timeout_ms", device_config->ResponseTimeout);
         Get(device_data, "device_timeout_ms", device_config->DeviceTimeout);
         Get(device_data, "device_max_fail_cycles", device_config->DeviceMaxFailCycles);
+        Get(device_data, "max_write_fail_time_s", device_config->MaxWriteFailTime);
         Get(device_data, "max_reg_hole", device_config->MaxRegHole);
         Get(device_data, "max_bit_hole", device_config->MaxBitHole);
         Get(device_data, "max_read_registers", device_config->MaxReadRegisters);
@@ -810,6 +812,14 @@ std::shared_ptr<TDeviceTemplate> TTemplateMap::GetTemplatePtr(const std::string&
         auto deviceTemplate = std::make_shared<TDeviceTemplate>(deviceType, deviceTypeTitle, root["device"]);
         Get(root, "deprecated", deviceTemplate->IsDeprecated);
         Get(root, "group", deviceTemplate->Group);
+        if (root.isMember("hw")) {
+            for (const auto& hwItem: root["hw"]) {
+                TDeviceTemplateHardware hw;
+                Get(hwItem, "signature", hw.Signature);
+                Get(hwItem, "fw", hw.Fw);
+                deviceTemplate->Hardware.push_back(std::move(hw));
+            }
+        }
         ValidTemplates.insert({deviceType, deviceTemplate});
         return deviceTemplate;
     }
@@ -853,11 +863,11 @@ TSubDevicesTemplateMap::TSubDevicesTemplateMap(const std::string& deviceType, co
         for (const auto& subdeviceTemplate: Templates) {
             for (const auto& ch: subdeviceTemplate.second.Schema["channels"]) {
                 if (ch.isMember("device_type")) {
-                    GetTemplate(ch["device_type"].asString());
+                    TSubDevicesTemplateMap::GetTemplate(ch["device_type"].asString());
                 }
                 if (ch.isMember("oneOf")) {
                     for (const auto& subdeviceType: ch["oneOf"]) {
-                        GetTemplate(subdeviceType.asString());
+                        TSubDevicesTemplateMap::GetTemplate(subdeviceType.asString());
                     }
                 }
             }
@@ -1356,6 +1366,7 @@ void RegisterProtocols(TSerialDeviceFactory& deviceFactory)
     Dooya::TDevice::Register(deviceFactory);
     WinDeco::TDevice::Register(deviceFactory);
     Somfy::TDevice::Register(deviceFactory);
+    Aok::TDevice::Register(deviceFactory);
 }
 
 TRegisterBitsAddress LoadRegisterBitsAddress(const Json::Value& register_data, const std::string& jsonPropertyName)

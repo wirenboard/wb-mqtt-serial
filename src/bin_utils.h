@@ -87,7 +87,7 @@ namespace BinUtils
     {
         for (size_t i = 0; i < byteCount; ++i) {
             *it = value & 0xFF;
-            value >>= 8;
+            value >>= 8; // NOLINT(clang-diagnostic-shift-count-overflow)
         }
     }
 

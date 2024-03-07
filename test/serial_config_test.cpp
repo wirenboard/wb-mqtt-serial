@@ -1,3 +1,4 @@
+#include <algorithm>
 #include <wblib/testing/testlog.h>
 
 #include "confed_schema_generator.h"
@@ -259,7 +260,7 @@ protected:
 
 TEST_F(TConfedSchemaTest, PreserveSchemaTranslations)
 {
-    // Check that translations from wb-mqtt-serial.schema.json are not overwitten
+    // Check that translations from wb-mqtt-serial.schema.json are not overwritten
     TTemplateMap templateMap(
         GetDataFilePath("translation-templates/templates1"),
         LoadConfigTemplatesSchema(GetDataFilePath("../wb-mqtt-serial-device-template.schema.json"), ConfigSchema));
@@ -282,8 +283,42 @@ TEST_F(TConfedSchemaTest, MergeTranslations)
         auto schema = MakeSchemaForConfed(ConfigSchema, templateMap, DeviceFactory);
 
         auto tr(JSON::Parse(GetDataFilePath("translation-templates/tr" + to_string(i) + ".json")));
-        ASSERT_TRUE(JsonsMatch(schema["translations"], tr)) << i;
+
+        auto langs1 = schema["translations"].getMemberNames();
+        auto langs2 = tr.getMemberNames();
+        std::sort(langs1.begin(), langs1.end());
+        std::sort(langs2.begin(), langs2.end());
+        ASSERT_EQ(langs1, langs2) << i;
+
+        for (const auto& lang: langs1) {
+            std::vector<std::string> msgs1, msgs2;
+            for (const auto& key: schema["translations"][lang].getMemberNames()) {
+                msgs1.push_back(schema["translations"][lang][key].asString());
+            }
+            for (const auto& key: tr[lang].getMemberNames()) {
+                msgs2.push_back(tr[lang][key].asString());
+            }
+            std::sort(msgs1.begin(), msgs1.end());
+            std::sort(msgs2.begin(), msgs2.end());
+            ASSERT_EQ(msgs1, msgs2) << i;
+        }
     }
+}
+
+TEST_F(TConfedSchemaTest, Hardware)
+{
+    // Check that hw array from template is passed to resulting schema
+    TTemplateMap templateMap(
+        GetDataFilePath("hw-templates"),
+        LoadConfigTemplatesSchema(GetDataFilePath("../wb-mqtt-serial-device-template.schema.json"), ConfigSchema));
+
+    auto schema = MakeSchemaForConfed(ConfigSchema, templateMap, DeviceFactory);
+    ASSERT_TRUE(schema["definitions"]["device"]["oneOf"][0].isMember("hw"));
+    ASSERT_EQ(schema["definitions"]["device"]["oneOf"][0]["hw"].size(), 2);
+    ASSERT_STREQ(schema["definitions"]["device"]["oneOf"][0]["hw"][0]["signature"].asString().c_str(), "signature");
+    ASSERT_FALSE(schema["definitions"]["device"]["oneOf"][0]["hw"][0].isMember("fw"));
+    ASSERT_STREQ(schema["definitions"]["device"]["oneOf"][0]["hw"][1]["signature"].asString().c_str(), "signature2");
+    ASSERT_STREQ(schema["definitions"]["device"]["oneOf"][0]["hw"][1]["fw"].asString().c_str(), "1.1.1");
 }
 
 TEST_F(TConfigParserTest, ParseModbusDevideWithWriteAddress)

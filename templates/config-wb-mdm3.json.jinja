@@ -6,6 +6,11 @@
     "title": "WB-MDM3_template_title",
     "device_type": "WB-MDM3",
     "group": "g-wb",
+    "hw": [
+        {
+            "signature": "WBMD3"
+        }
+    ],
     "device": {
         "name": "WB-MDM3",
         "id": "wb-mdm3",
@@ -247,7 +252,7 @@
                 "description": "increase_rate_description",
                 "address": {{140 + ch_number}},
                 "reg_type": "holding",
-                "min": 1,
+                "min": 0,
                 "max": 100,
                 "default": 10,
                 "group": "channel_{{ ch_number + 1 }}",
@@ -259,7 +264,7 @@
                 "description": "decrease_rate_description",
                 "address": {{150 + ch_number}},
                 "reg_type": "holding",
-                "min": 1,
+                "min": 0,
                 "max": 100,
                 "default": 10,
                 "group": "channel_{{ ch_number + 1 }}",

@@ -26,6 +26,7 @@ namespace
     public:
         TRegisterReader(milliseconds maxPollTime, bool readAtLeastOneRegister)
             : MaxPollTime(maxPollTime),
+              Priority(TPriority::Low),
               ReadAtLeastOneRegister(readAtLeastOneRegister)
         {}
 

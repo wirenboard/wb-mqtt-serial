@@ -1,0 +1,880 @@
+{
+    "title": "WB-MAP12E-fw2_template_title",
+    "device_type": "WB-MAP12E fw2",
+    "group": "g-wb",
+    "hw": [
+        {
+            "signature": "MAP12\u0002E"
+        }
+    ],
+    "device": {
+        "name": "WB-MAP12E fw2",
+        "id": "wb-map12e",
+        "max_read_registers": 60,
+        "response_timeout_ms": 1,
+        "frame_timeout_ms": 15,
+        "enable_wb_continuous_read": true,
+
+        "groups": [
+            {% for i in range(1, 4) -%}
+            {
+                "title": "L{{i}}",
+                "id": "l{{i}}"
+            },
+            {% endfor -%}
+            {% for ch_num in range(1, 5) -%}
+            {
+                "title": "Channel {{ch_num}} L1",
+                "id": "channel{{ch_num}}_l1"
+            },
+            {
+                "title": "Channel {{ch_num}} L2",
+                "id": "channel{{ch_num}}_l2"
+            },
+            {
+                "title": "Channel {{ch_num}} L3",
+                "id": "channel{{ch_num}}_l3"
+            },
+            {
+                "title": "Channel {{ch_num}} Total",
+                "id": "channel{{ch_num}}_total"
+            },
+            {% endfor -%}
+            {
+                "title": "General",
+                "id": "general"
+            },
+            {
+                "title": "HW Info",
+                "id": "hw_info"
+            }
+        ],
+
+        "parameters": {
+            {% for ch_num in range(1, 5) -%}
+            "channel{{ch_num}}_l1_turns": {
+                "title": "Channel {{ch_num}} Turns L1",
+                "address": "0x{{"%X"|format(5216 + (ch_num - 1) * 4096)}}",
+                "reg_type": "holding",
+                "format": "u16",
+                "min": 0,
+                "group": "channel{{ch_num}}_l1",
+                "order": 1
+            },
+            "channel{{ch_num}}_l1_phi": {
+                "title": "Channel {{ch_num}} Phi L1",
+                "address": "0x{{"%X"|format(5219 + (ch_num - 1) * 4096)}}",
+                "reg_type": "holding",
+                "format": "s16",
+                "min": -32768,
+                "max": 32767,
+                "group": "channel{{ch_num}}_l1",
+                "order": 2
+            },
+            "channel{{ch_num}}_l1_phase": {
+                "title": "Channel {{ch_num}} Actual Phase L1",
+                "address": "0x{{"%X"|format(5280 + (ch_num - 1) * 4096)}}",
+                "reg_type": "holding",
+                "format": "u16",
+                "enum": [1, 2, 3],
+                "default": 1,
+                "enum_titles": ["L1", "L2", "L3"],
+                "description": "Firmware v2.3.0 or newer is required",
+                "group": "channel{{ch_num}}_l1",
+                "order": 3
+            },
+            "channel{{ch_num}}_l2_turns": {
+                "title": "Channel {{ch_num}} Turns L2",
+                "address": "0x{{"%X"|format(5217 + (ch_num - 1) * 4096)}}",
+                "reg_type": "holding",
+                "format": "u16",
+                "min": 0,
+                "group": "channel{{ch_num}}_l2",
+                "order": 1
+            },
+            "channel{{ch_num}}_l2_phi": {
+                "title": "Channel {{ch_num}} Phi L2",
+                "address": "0x{{"%X"|format(5220 + (ch_num - 1) * 4096)}}",
+                "reg_type": "holding",
+                "format": "s16",
+                "min": -32768,
+                "max": 32767,
+                "group": "channel{{ch_num}}_l2",
+                "order": 2
+            },
+            "channel{{ch_num}}_l2_phase": {
+                "title": "Channel {{ch_num}} Actual Phase L2",
+                "address": "0x{{"%X"|format(5281 + (ch_num - 1) * 4096)}}",
+                "reg_type": "holding",
+                "format": "u16",
+                "enum": [1, 2, 3],
+                "default": 2,
+                "enum_titles": ["L1", "L2", "L3"],
+                "description": "Firmware v2.3.0 or newer is required",
+                "group": "channel{{ch_num}}_l2",
+                "order": 3
+            },
+            "channel{{ch_num}}_l3_turns": {
+                "title": "Channel {{ch_num}} Turns L3",
+                "address": "0x{{"%X"|format(5218 + (ch_num - 1) * 4096)}}",
+                "reg_type": "holding",
+                "format": "u16",
+                "min": 0,
+                "group": "channel{{ch_num}}_l3",
+                "order": 1
+            },
+            "channel{{ch_num}}_l3_phi": {
+                "title": "Channel {{ch_num}} Phi L3",
+                "address": "0x{{"%X"|format(5221 + (ch_num - 1) * 4096)}}",
+                "reg_type": "holding",
+                "format": "s16",
+                "min": -32768,
+                "max": 32767,
+                "group": "channel{{ch_num}}_l3",
+                "order": 2
+            },
+            "channel{{ch_num}}_l3_phase": {
+                "title": "Channel {{ch_num}} Actual Phase L3",
+                "address": "0x{{"%X"|format(5282 + (ch_num - 1) * 4096)}}",
+                "reg_type": "holding",
+                "format": "u16",
+                "enum": [1, 2, 3],
+                "default": 3,
+                "enum_titles": ["L1", "L2", "L3"],
+                "description": "Firmware v2.3.0 or newer is required",
+                "group": "channel{{ch_num}}_l3",
+                "order": 3
+            },
+            {% endfor -%}
+            "baud_rate": {
+                "title": "Baud rate",
+                "description": "baud_rate_description",
+                "address": 110,
+                "reg_type": "holding",
+                "enum": [96, 192, 384, 576, 1152],
+                "default": 96,
+                "enum_titles": [
+                    "9600",
+                    "19200",
+                    "38400",
+                    "57600",
+                    "115200"
+                ],
+                "group": "general",
+                "order": 1
+            },
+            "peaks_measurement_period_s": {
+                "title": "Peaks Measurement Period (s)",
+                "address": "0x10F0",
+                "reg_type": "holding",
+                "format": "u16",
+                "min": 1,
+                "default": 60,
+                "group": "general",
+                "description": "Firmware v2.3.0 or newer is required",
+                "order": 2
+            },
+            "phase_loss_detection": {
+                "title": "Phase loss detection",
+                "description": "phase_loss_detection_description",
+                "address": 102,
+                "reg_type": "holding",
+                "enum": [0, 1],
+                "default": 1,
+                "enum_titles": [
+                    "Disabled",
+                    "Enabled"
+                ],
+                "group": "general",
+                "order": 3
+            }
+        },
+
+        "channels": [
+            {% for ch_num in range(1, 5) -%}
+            {
+                "name": "Ch {{ch_num}} Irms L1",
+                "reg_type": "input",
+                "address": "0x{{"%x"|format(5142 + (ch_num - 1) * 4096)}}",
+                "type": "current",
+                "format": "u32",
+                "scale": 2.44141e-7,
+                "round_to": 0.0001,
+                "group": "channel{{ch_num}}_l1"
+            },
+            {
+                "name": "Ch {{ch_num}} Ipeak L1",
+                "reg_type": "input",
+                "address": "0x{{"%x"|format(6168 + (ch_num - 1) * 4096)}}",
+                "type": "current",
+                "format": "s32",
+                "scale": 0.016,
+                "round_to": 0.01,
+                "word_order": "little_endian",
+                "group": "channel{{ch_num}}_l1"
+            },
+            {
+                "name": "Ch {{ch_num}} P L1",
+                "reg_type": "input",
+                "address": "0x{{"%x"|format(4866 + (ch_num - 1) * 4096)}}",
+                "type": "power",
+                "format": "s32",
+                "scale": 0.00512,
+                "round_to": 0.01,
+                "group": "channel{{ch_num}}_l1"
+            },
+            {
+                "name": "Ch {{ch_num}} Q L1",
+                "reg_type": "input",
+                "address": "0x{{"%x"|format(4874 + (ch_num - 1) * 4096)}}",
+                "type": "value",
+                "format": "s32",
+                "scale": 0.00512,
+                "round_to": 0.01,
+                "group": "channel{{ch_num}}_l1"
+            },
+            {
+                "name": "Ch {{ch_num}} S L1",
+                "reg_type": "input",
+                "address": "0x{{"%x"|format(4882 + (ch_num - 1) * 4096)}}",
+                "type": "value",
+                "format": "s32",
+                "scale": 0.00512,
+                "round_to": 0.01,
+                "group": "channel{{ch_num}}_l1"
+            },
+            {
+                "name": "Ch {{ch_num}} PF L1",
+                "reg_type": "input",
+                "address": "0x{{"%x"|format(4285 + (ch_num - 1) * 4096)}}",
+                "type": "value",
+                "format": "s16",
+                "scale": 0.001,
+                "round_to": 0.01,
+                "group": "channel{{ch_num}}_l1"
+            },
+            {
+                "name": "Ch {{ch_num}} AP energy L1",
+                "reg_type": "input",
+                "address": "0x{{"%x"|format(4612 + (ch_num - 1) * 4096)}}",
+                "type": "power_consumption",
+                "format": "u64",
+                "scale": 1e-5,
+                "round_to": 1e-6,
+                "word_order": "little_endian",
+                "group": "channel{{ch_num}}_l1"
+            },
+            {
+                "name": "Ch {{ch_num}} AN energy L1",
+                "reg_type": "input",
+                "address": "0x{{"%x"|format(4628 + (ch_num - 1) * 4096)}}",
+                "type": "power_consumption",
+                "format": "u64",
+                "scale": 1e-5,
+                "round_to": 1e-6,
+                "word_order": "little_endian",
+                "group": "channel{{ch_num}}_l1"
+            },
+            {
+                "name": "Ch {{ch_num}} RP energy L1",
+                "reg_type": "input",
+                "address": "0x{{"%x"|format(4644 + (ch_num - 1) * 4096)}}",
+                "type": "value",
+                "format": "u64",
+                "scale": 1e-5,
+                "round_to": 1e-6,
+                "word_order": "little_endian",
+                "group": "channel{{ch_num}}_l1"
+            },
+            {
+                "name": "Ch {{ch_num}} RN energy L1",
+                "reg_type": "input",
+                "address": "0x{{"%x"|format(4660 + (ch_num - 1) * 4096)}}",
+                "type": "value",
+                "format": "u64",
+                "scale": 1e-5,
+                "round_to": 1e-6,
+                "word_order": "little_endian",
+                "group": "channel{{ch_num}}_l1"
+            },
+            {
+                "name": "Ch {{ch_num}} Phase angle L1",
+                "reg_type": "input",
+                "address": "0x{{"%x"|format(4345 + (ch_num - 1) * 4096)}}",
+                "type": "value",
+                "format": "s16",
+                "scale": 0.1,
+                "round_to": 0.01,
+                "group": "channel{{ch_num}}_l1"
+            },
+            {
+                "name": "Ch {{ch_num}} Irms L2",
+                "reg_type": "input",
+                "address": "0x{{"%x"|format(5144 + (ch_num - 1) * 4096)}}",
+                "type": "current",
+                "format": "u32",
+                "scale": 2.44141e-7,
+                "round_to": 0.0001,
+                "group": "channel{{ch_num}}_l2"
+            },
+            {
+                "name": "Ch {{ch_num}} Ipeak L2",
+                "reg_type": "input",
+                "address": "0x{{"%x"|format(6170 + (ch_num - 1) * 4096)}}",
+                "type": "current",
+                "format": "s32",
+                "scale": 0.016,
+                "round_to": 0.01,
+                "word_order": "little_endian",
+                "group": "channel{{ch_num}}_l2"
+            },
+            {
+                "name": "Ch {{ch_num}} P L2",
+                "reg_type": "input",
+                "address": "0x{{"%x"|format(4868 + (ch_num - 1) * 4096)}}",
+                "type": "power",
+                "format": "s32",
+                "scale": 0.00512,
+                "round_to": 0.01,
+                "group": "channel{{ch_num}}_l2"
+            },
+            {
+                "name": "Ch {{ch_num}} Q L2",
+                "reg_type": "input",
+                "address": "0x{{"%x"|format(4876 + (ch_num - 1) * 4096)}}",
+                "type": "value",
+                "format": "s32",
+                "scale": 0.00512,
+                "round_to": 0.01,
+                "group": "channel{{ch_num}}_l2"
+            },
+            {
+                "name": "Ch {{ch_num}} S L2",
+                "reg_type": "input",
+                "address": "0x{{"%x"|format(4884 + (ch_num - 1) * 4096)}}",
+                "type": "value",
+                "format": "s32",
+                "scale": 0.00512,
+                "round_to": 0.01,
+                "group": "channel{{ch_num}}_l2"
+            },
+            {
+                "name": "Ch {{ch_num}} PF L2",
+                "reg_type": "input",
+                "address": "0x{{"%x"|format(4286 + (ch_num - 1) * 4096)}}",
+                "type": "value",
+                "format": "s16",
+                "scale": 0.001,
+                "round_to": 0.01,
+                "group": "channel{{ch_num}}_l2"
+            },
+            {
+                "name": "Ch {{ch_num}} AP energy L2",
+                "reg_type": "input",
+                "address": "0x{{"%x"|format(4616 + (ch_num - 1) * 4096)}}",
+                "type": "power_consumption",
+                "format": "u64",
+                "scale": 1e-5,
+                "round_to": 1e-6,
+                "word_order": "little_endian",
+                "group": "channel{{ch_num}}_l2"
+            },
+            {
+                "name": "Ch {{ch_num}} AN energy L2",
+                "reg_type": "input",
+                "address": "0x{{"%x"|format(4632 + (ch_num - 1) * 4096)}}",
+                "type": "power_consumption",
+                "format": "u64",
+                "scale": 1e-5,
+                "round_to": 1e-6,
+                "word_order": "little_endian",
+                "group": "channel{{ch_num}}_l2"
+            },
+            {
+                "name": "Ch {{ch_num}} RP energy L2",
+                "reg_type": "input",
+                "address": "0x{{"%x"|format(4648 + (ch_num - 1) * 4096)}}",
+                "type": "value",
+                "format": "u64",
+                "scale": 1e-5,
+                "round_to": 1e-6,
+                "word_order": "little_endian",
+                "group": "channel{{ch_num}}_l2"
+            },
+            {
+                "name": "Ch {{ch_num}} RN energy L2",
+                "reg_type": "input",
+                "address": "0x{{"%x"|format(4664 + (ch_num - 1) * 4096)}}",
+                "type": "value",
+                "format": "u64",
+                "scale": 1e-5,
+                "round_to": 1e-6,
+                "word_order": "little_endian",
+                "group": "channel{{ch_num}}_l2"
+            },
+            {
+                "name": "Ch {{ch_num}} Phase angle L2",
+                "reg_type": "input",
+                "address": "0x{{"%x"|format(4346 + (ch_num - 1) * 4096)}}",
+                "type": "value",
+                "format": "s16",
+                "scale": 0.1,
+                "round_to": 0.01,
+                "group": "channel{{ch_num}}_l2"
+            },
+            {
+                "name": "Ch {{ch_num}} Irms L3",
+                "reg_type": "input",
+                "address": "0x{{"%x"|format(5146 + (ch_num - 1) * 4096)}}",
+                "type": "current",
+                "format": "u32",
+                "scale": 2.44141e-7,
+                "round_to": 0.0001,
+                "group": "channel{{ch_num}}_l3"
+            },
+            {
+                "name": "Ch {{ch_num}} Ipeak L3",
+                "reg_type": "input",
+                "address": "0x{{"%x"|format(6172 + (ch_num - 1) * 4096)}}",
+                "type": "current",
+                "format": "s32",
+                "scale": 0.016,
+                "round_to": 0.01,
+                "word_order": "little_endian",
+                "group": "channel{{ch_num}}_l3"
+            },
+            {
+                "name": "Ch {{ch_num}} P L3",
+                "reg_type": "input",
+                "address": "0x{{"%x"|format(4870 + (ch_num - 1) * 4096)}}",
+                "type": "power",
+                "format": "s32",
+                "scale": 0.00512,
+                "round_to": 0.01,
+                "group": "channel{{ch_num}}_l3"
+            },
+            {
+                "name": "Ch {{ch_num}} Q L3",
+                "reg_type": "input",
+                "address": "0x{{"%x"|format(4878 + (ch_num - 1) * 4096)}}",
+                "type": "value",
+                "format": "s32",
+                "scale": 0.00512,
+                "round_to": 0.01,
+                "group": "channel{{ch_num}}_l3"
+            },
+            {
+                "name": "Ch {{ch_num}} S L3",
+                "reg_type": "input",
+                "address": "0x{{"%x"|format(4886 + (ch_num - 1) * 4096)}}",
+                "type": "value",
+                "format": "s32",
+                "scale": 0.00512,
+                "round_to": 0.01,
+                "group": "channel{{ch_num}}_l3"
+            },
+            {
+                "name": "Ch {{ch_num}} PF L3",
+                "reg_type": "input",
+                "address": "0x{{"%x"|format(4287 + (ch_num - 1) * 4096)}}",
+                "type": "value",
+                "format": "s16",
+                "scale": 0.001,
+                "round_to": 0.01,
+                "group": "channel{{ch_num}}_l3"
+            },
+            {
+                "name": "Ch {{ch_num}} AP energy L3",
+                "reg_type": "input",
+                "address": "0x{{"%x"|format(4620 + (ch_num - 1) * 4096)}}",
+                "type": "power_consumption",
+                "format": "u64",
+                "scale": 1e-5,
+                "round_to": 1e-6,
+                "word_order": "little_endian",
+                "group": "channel{{ch_num}}_l3"
+            },
+            {
+                "name": "Ch {{ch_num}} AN energy L3",
+                "reg_type": "input",
+                "address": "0x{{"%x"|format(4636 + (ch_num - 1) * 4096)}}",
+                "type": "power_consumption",
+                "format": "u64",
+                "scale": 1e-5,
+                "round_to": 1e-6,
+                "word_order": "little_endian",
+                "group": "channel{{ch_num}}_l3"
+            },
+            {
+                "name": "Ch {{ch_num}} RP energy L3",
+                "reg_type": "input",
+                "address": "0x{{"%x"|format(4652 + (ch_num - 1) * 4096)}}",
+                "type": "value",
+                "format": "u64",
+                "scale": 1e-5,
+                "round_to": 1e-6,
+                "word_order": "little_endian",
+                "group": "channel{{ch_num}}_l3"
+            },
+            {
+                "name": "Ch {{ch_num}} RN energy L3",
+                "reg_type": "input",
+                "address": "0x{{"%x"|format(4668 + (ch_num - 1) * 4096)}}",
+                "type": "value",
+                "format": "u64",
+                "scale": 1e-5,
+                "round_to": 1e-6,
+                "word_order": "little_endian",
+                "group": "channel{{ch_num}}_l3"
+            },
+            {
+                "name": "Ch {{ch_num}} Phase angle L3",
+                "reg_type": "input",
+                "address": "0x{{"%x"|format(4347 + (ch_num - 1) * 4096)}}",
+                "type": "value",
+                "format": "s16",
+                "scale": 0.1,
+                "round_to": 0.01,
+                "group": "channel{{ch_num}}_l3"
+            },
+            {
+                "name": "Ch {{ch_num}} Total P",
+                "reg_type": "input",
+                "address": "0x{{"%x"|format(4864 + (ch_num - 1) * 4096)}}",
+                "type": "power",
+                "format": "s32",
+                "scale": 0.00512,
+                "round_to": 0.01,
+                "group": "channel{{ch_num}}_total"
+            },
+            {
+                "name": "Ch {{ch_num}} Total Q",
+                "reg_type": "input",
+                "address": "0x{{"%x"|format(4872 + (ch_num - 1) * 4096)}}",
+                "type": "value",
+                "format": "s32",
+                "scale": 0.00512,
+                "round_to": 0.01,
+                "group": "channel{{ch_num}}_total"
+            },
+            {
+                "name": "Ch {{ch_num}} Total S",
+                "reg_type": "input",
+                "address": "0x{{"%x"|format(4880 + (ch_num - 1) * 4096)}}",
+                "type": "value",
+                "format": "s32",
+                "scale": 0.00512,
+                "round_to": 0.01,
+                "group": "channel{{ch_num}}_total"
+            },
+            {
+                "name": "Ch {{ch_num}} Total PF",
+                "reg_type": "input",
+                "address": "0x{{"%x"|format(4284 + (ch_num - 1) * 4096)}}",
+                "type": "value",
+                "format": "s16",
+                "scale": 0.001,
+                "round_to": 0.01,
+                "group": "channel{{ch_num}}_total"
+            },
+            {
+                "name": "Ch {{ch_num}} Total AP energy",
+                "reg_type": "input",
+                "address": "0x{{"%x"|format(4608 + (ch_num - 1) * 4096)}}",
+                "type": "power_consumption",
+                "format": "u64",
+                "scale": 1e-5,
+                "round_to": 1e-6,
+                "word_order": "little_endian",
+                "group": "channel{{ch_num}}_total"
+            },
+            {
+                "name": "Ch {{ch_num}} Total AN energy",
+                "reg_type": "input",
+                "address": "0x{{"%x"|format(4624 + (ch_num - 1) * 4096)}}",
+                "type": "power_consumption",
+                "format": "u64",
+                "scale": 1e-5,
+                "round_to": 1e-6,
+                "word_order": "little_endian",
+                "group": "channel{{ch_num}}_total"
+            },
+            {
+                "name": "Ch {{ch_num}} Total RP energy",
+                "reg_type": "input",
+                "address": "0x{{"%x"|format(4640 + (ch_num - 1) * 4096)}}",
+                "type": "value",
+                "format": "u64",
+                "scale": 1e-5,
+                "round_to": 1e-6,
+                "word_order": "little_endian",
+                "group": "channel{{ch_num}}_total"
+            },
+            {
+                "name": "Ch {{ch_num}} Total RN energy",
+                "reg_type": "input",
+                "address": "0x{{"%x"|format(4656 + (ch_num - 1) * 4096)}}",
+                "type": "value",
+                "format": "u64",
+                "scale": 1e-5,
+                "round_to": 1e-6,
+                "word_order": "little_endian",
+                "group": "channel{{ch_num}}_total"
+            },
+            {% endfor -%}
+            {
+                "name": "Urms L1",
+                "reg_type": "input",
+                "address": "0x1410",
+                "type": "voltage",
+                "semi-sporadic": true,
+                "format": "u32",
+                "scale": 1.52588e-7,
+                "round_to": 0.001,
+                "error_value": "0xFFFFFFFF",
+                "group": "l1"
+            },
+            {
+                "name": "U L1-L2",
+                "reg_type": "input",
+                "address": "0x141C",
+                "type": "voltage",
+                "format": "u16",
+                "scale": 0.01,
+                "round_to": 0.1,
+                "error_value": "0xFFFF",
+                "group": "l1"
+            },
+            {
+                "name": "Upeak L1",
+                "reg_type": "input",
+                "address": "0x1810",
+                "type": "voltage",
+                "format": "s32",
+                "scale": 0.01,
+                "round_to": 0.01,
+                "word_order": "little_endian",
+                "error_value": "0x7FFFFFFF",
+                "group": "l1"
+            },
+            {
+                "name": "Voltage angle L1",
+                "reg_type": "input",
+                "address": "0x10fd",
+                "type": "value",
+                "format": "s16",
+                "scale": 0.1,
+                "round_to": 0.01,
+                "error_value": "0x7FFF",
+                "group": "l1"
+            },
+            {
+                "name": "Urms L2",
+                "reg_type": "input",
+                "address": "0x1412",
+                "type": "voltage",
+                "semi-sporadic": true,
+                "format": "u32",
+                "scale": 1.52588e-7,
+                "round_to": 0.001,
+                "error_value": "0xFFFFFFFF",
+                "group": "l2"
+            },
+            {
+                "name": "U L2-L3",
+                "reg_type": "input",
+                "address": "0x141D",
+                "type": "voltage",
+                "format": "u16",
+                "scale": 0.01,
+                "round_to": 0.1,
+                "error_value": "0xFFFF",
+                "group": "l2"
+            },
+            {
+                "name": "Upeak L2",
+                "reg_type": "input",
+                "address": "0x1812",
+                "type": "voltage",
+                "format": "s32",
+                "scale": 0.01,
+                "round_to": 0.01,
+                "word_order": "little_endian",
+                "error_value": "0x7FFFFFFF",
+                "group": "l2"
+            },
+            {
+                "name": "Voltage angle L2",
+                "reg_type": "input",
+                "address": "0x10fe",
+                "type": "value",
+                "format": "s16",
+                "scale": 0.1,
+                "round_to": 0.01,
+                "error_value": "0x7FFF",
+                "group": "l2"
+            },
+            {
+                "name": "Urms L3",
+                "reg_type": "input",
+                "address": "0x1414",
+                "type": "voltage",
+                "semi-sporadic": true,
+                "format": "u32",
+                "scale": 1.52588e-7,
+                "round_to": 0.001,
+                "error_value": "0xFFFFFFFF",
+                "group": "l3"
+            },
+            {
+                "name": "U L3-L1",
+                "reg_type": "input",
+                "address": "0x141E",
+                "type": "voltage",
+                "format": "u16",
+                "scale": 0.01,
+                "round_to": 0.1,
+                "error_value": "0xFFFF",
+                "group": "l3"
+            },
+            {
+                "name": "Upeak L3",
+                "reg_type": "input",
+                "address": "0x1814",
+                "type": "voltage",
+                "format": "s32",
+                "scale": 0.01,
+                "round_to": 0.01,
+                "word_order": "little_endian",
+                "error_value": "0x7FFFFFFF",
+                "group": "l3"
+            },
+            {
+                "name": "Voltage angle L3",
+                "reg_type": "input",
+                "address": "0x10ff",
+                "type": "value",
+                "format": "s16",
+                "scale": 0.1,
+                "round_to": 0.01,
+                "error_value": "0x7FFF",
+                "group": "l3"
+            },
+            {
+                "name": "Frequency",
+                "reg_type": "input",
+                "address": "0x10f8",
+                "type": "value",
+                "format": "u16",
+                "scale": 0.01,
+                "round_to": 0.01,
+                "group": "general"
+            },
+            {
+                "name": "Serial",
+                "reg_type": "input",
+                "address": 270,
+                "type": "text",
+                "format": "u32",
+                "offset": -4261412864,
+                "group": "hw_info"
+            },
+            {
+                "name": "FW Version",
+                "reg_type": "input",
+                "address": 250,
+                "type": "text",
+                "format": "string",
+                "string_data_size": 16,
+                "enabled": false,
+                "group": "hw_info"
+            },
+            {
+                "name": "Supply voltage",
+                "reg_type": "input",
+                "address": 121,
+                "type": "voltage",
+                "scale": 0.001,
+                "enabled": false,
+                "group": "hw_info"
+            },
+            {
+                "name": "Uptime",
+                "reg_type": "input",
+                "address": 104,
+                "type": "text",
+                "format": "u32",
+                "enabled": false,
+                "group": "hw_info"
+            },
+            {
+                "name": "MCU Temperature",
+                "reg_type": "input",
+                "address": 124,
+                "type": "temperature",
+                "format": "s16",
+                "scale": 0.1,
+                "enabled": false,
+                "group": "hw_info"
+            },
+            {
+                "name": "MCU Voltage",
+                "reg_type": "input",
+                "address": 123,
+                "scale": 0.001,
+                "type": "voltage",
+                "enabled": false,
+                "group": "hw_info"
+            }
+        ],
+        "translations": {
+            "en": {
+                "WB-MAP12E-fw2_template_title": "WB-MAP12E fw2 (multi-channel enegry meter)",
+                "baud_rate_description": "Make sure that communication with device is established before changing this parameter. Select required baud rate, save configuration and then change port baud rate to the same value.",
+                "phase_loss_detection_description": "Resets voltage and power values if voltage on phase is less than 30% of maximum voltage among all phases. Firmware v2.6.3 or newer is required.",
+                "Supply voltage": "5V Supply",
+                "Uptime": "Uptime (s)"
+            },
+            "ru": {
+                "WB-MAP12E-fw2_template_title": "WB-MAP12E fw2 (многоканальный счетчик электроэнергии)",
+                {% for ch_num in range(1, 5) -%}
+                "Channel {{ch_num}} L1": "Канал {{ch_num}} L1",
+                "Channel {{ch_num}} L2": "Канал {{ch_num}} L2",
+                "Channel {{ch_num}} L3": "Канал {{ch_num}} L3",
+                "Channel {{ch_num}} Total": "Канал {{ch_num}} Показатели по трем фазам",
+                {% endfor -%}
+                "General": "Общее",
+                "HW Info": "Данные модуля",
+                {% for ch_num in range(1, 5) -%}
+                "Channel {{ch_num}} Turns L1": "Коэффициент трансформации L1",
+                "Channel {{ch_num}} Phi L1": "Фазовая задержка L1",
+                "Channel {{ch_num}} Actual Phase L1": "Фаза транформатора L1",
+                "Channel {{ch_num}} Turns L2": "Коэффициент трансформации L2",
+                "Channel {{ch_num}} Phi L2": "Фазовая задержка L2",
+                "Channel {{ch_num}} Actual Phase L2": "Фаза транформатора L2",
+                "Channel {{ch_num}} Turns L3": "Коэффициент трансформации L3",
+                "Channel {{ch_num}} Phi L3": "Фазовая задержка L3",
+                "Channel {{ch_num}} Actual Phase L3": "Фаза транформатора L3",
+                {% endfor -%}
+                "Peaks Measurement Period (s)": "Период сброса пиковых значений (с)",
+                "Baud rate": "Скорость обмена",
+                "baud_rate_description": "Перед изменением параметра убедитесь, что связь с устройством установлена. Выберите нужную скорость обмена, сохраните конфигурацию, а затем укажите в настройках порта эту же скорость.",
+                "Phase loss detection": "Обнаруживать отключения фаз",
+                "Enabled": "Включено",
+                "Disabled": "Выключено",
+                "phase_loss_detection_description": "Обнуляет показатели напряжения и связанных с ними мощностей, если напряжение на фазе будет менее 30% от наибольшего из трех фаз. Для прошивок v2.6.3 и новее.",
+                "Voltage angle L1": "Фазовый угол L1",
+                "Voltage angle L2": "Фазовый угол L2",
+                "Voltage angle L3": "Фазовый угол L3",
+                "Frequency": "Частота",
+                "Serial": "Серийный номер",
+                "FW Version": "Версия прошивки",
+                "Supply voltage": "Напряжение 5 В",
+                "Uptime": "Время работы с момента включения (с)",
+                "MCU Temperature": "Температура МК",
+                "MCU Voltage": "Напряжение питания МК",
+                "Firmware v2.3.0 or newer is required": "Для прошивок v2.3.0 и новее"
+            }
+        }
+    }
+}

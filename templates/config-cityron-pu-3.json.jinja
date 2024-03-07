@@ -1,9 +1,9 @@
 {
-    "title": "Cityron ПУ-3",
+    "title": "Cityron PU-3",
     "device_type": "cityron_pu-3",
     "group": "g-control-panel",
     "device": {
-        "name": "Cityron ПУ-3",
+        "name": "Cityron PU-3",
         "id": "cityron-pu-3",
         "response_timeout_ms": 100,
         "guard_interval_us": 5000,
@@ -190,189 +190,32 @@
                 "format": "u16",
                 "group": "general"
             },
+            {% for reg in range(300, 310) -%}
             {
-                "name": "Register 300",
-                "address": 300,
+                "name": "Register {{reg}}",
+                "address": {{reg}},
                 "reg_type": "holding",
                 "type": "value",
                 "format": "s16",
                 "group": "data_storage",
                 "enabled": false
             },
+            {% endfor -%}
+            {% for reg in range(400, 410) -%}
             {
-                "name": "Register 301",
-                "address": 301,
-                "reg_type": "holding",
-                "type": "value",
-                "format": "s16",
-                "group": "data_storage",
-                "enabled": false
-            },
-            {
-                "name": "Register 302",
-                "address": 302,
-                "reg_type": "holding",
-                "type": "value",
-                "format": "s16",
-                "group": "data_storage",
-                "enabled": false
-            },
-            {
-                "name": "Register 303",
-                "address": 303,
-                "reg_type": "holding",
-                "type": "value",
-                "format": "s16",
-                "group": "data_storage",
-                "enabled": false
-            },
-            {
-                "name": "Register 304",
-                "address": 304,
-                "reg_type": "holding",
-                "type": "value",
-                "format": "s16",
-                "group": "data_storage",
-                "enabled": false
-            },
-            {
-                "name": "Register 305",
-                "address": 305,
-                "reg_type": "holding",
-                "type": "value",
-                "format": "s16",
-                "group": "data_storage",
-                "enabled": false
-            },
-            {
-                "name": "Register 306",
-                "address": 306,
-                "reg_type": "holding",
-                "type": "value",
-                "format": "s16",
-                "group": "data_storage",
-                "enabled": false
-            },
-            {
-                "name": "Register 307",
-                "address": 307,
-                "reg_type": "holding",
-                "type": "value",
-                "format": "s16",
-                "group": "data_storage",
-                "enabled": false
-            },
-            {
-                "name": "Register 308",
-                "address": 308,
-                "reg_type": "holding",
-                "type": "value",
-                "format": "s16",
-                "group": "data_storage",
-                "enabled": false
-            },
-            {
-                "name": "Register 309",
-                "address": 309,
-                "reg_type": "holding",
-                "type": "value",
-                "format": "s16",
-                "group": "data_storage",
-                "enabled": false
-            },
-            {
-                "name": "Register 400",
-                "address": 400,
+                "name": "Register {{reg}}",
+                "address": {{reg}},
                 "reg_type": "holding",
                 "type": "value",
                 "format": "u16",
                 "group": "data_storage",
                 "enabled": false
-            },
-            {
-                "name": "Register 401",
-                "address": 401,
-                "reg_type": "holding",
-                "type": "value",
-                "format": "u16",
-                "group": "data_storage",
-                "enabled": false
-            },
-            {
-                "name": "Register 402",
-                "address": 402,
-                "reg_type": "holding",
-                "type": "value",
-                "format": "u16",
-                "group": "data_storage",
-                "enabled": false
-            },
-            {
-                "name": "Register 403",
-                "address": 403,
-                "reg_type": "holding",
-                "type": "value",
-                "format": "u16",
-                "group": "data_storage",
-                "enabled": false
-            },
-            {
-                "name": "Register 404",
-                "address": 404,
-                "reg_type": "holding",
-                "type": "value",
-                "format": "u16",
-                "group": "data_storage",
-                "enabled": false
-            },
-            {
-                "name": "Register 405",
-                "address": 405,
-                "reg_type": "holding",
-                "type": "value",
-                "format": "u16",
-                "group": "data_storage",
-                "enabled": false
-            },
-            {
-                "name": "Register 406",
-                "address": 406,
-                "reg_type": "holding",
-                "type": "value",
-                "format": "u16",
-                "group": "data_storage",
-                "enabled": false
-            },
-            {
-                "name": "Register 407",
-                "address": 407,
-                "reg_type": "holding",
-                "type": "value",
-                "format": "u16",
-                "group": "data_storage",
-                "enabled": false
-            },
-            {
-                "name": "Register 408",
-                "address": 408,
-                "reg_type": "holding",
-                "type": "value",
-                "format": "u16",
-                "group": "data_storage",
-                "enabled": false
-            },
-            {
-                "name": "Register 409",
-                "address": 409,
-                "reg_type": "holding",
-                "type": "value",
-                "format": "u16",
-                "group": "data_storage",
-                "enabled": false
-            }
+            }{% if not loop.last %},{% endif %}
+            {% endfor -%}
         ],
         "translations": {
             "ru": {
+                "Cityron PU-3": "Cityron ПУ-3",
                 "Parameters": "Параметры",
                 "General": "Общее",
                 "Data Storage": "Хранилище данных",
@@ -394,26 +237,12 @@
                 "Hour": "Час",
                 "Minute": "Минута",
                 "Day Of Week": "День недели",
-                "Register 300": "Регистр 300",
-                "Register 301": "Регистр 301",
-                "Register 302": "Регистр 302",
-                "Register 303": "Регистр 303",
-                "Register 304": "Регистр 304",
-                "Register 305": "Регистр 305",
-                "Register 306": "Регистр 306",
-                "Register 307": "Регистр 307",
-                "Register 308": "Регистр 308",
-                "Register 309": "Регистр 309",
-                "Register 400": "Регистр 400",
-                "Register 401": "Регистр 401",
-                "Register 402": "Регистр 402",
-                "Register 403": "Регистр 403",
-                "Register 404": "Регистр 404",
-                "Register 405": "Регистр 405",
-                "Register 406": "Регистр 406",
-                "Register 407": "Регистр 407",
-                "Register 408": "Регистр 408",
-                "Register 409": "Регистр 409"
+                {% for reg in range(300, 310) -%}
+                "Register {{reg}}": "Регистр {{reg}}",
+                {% endfor -%}
+                {% for reg in range(400, 410) -%}
+                "Register {{reg}}": "Регистр {{reg}}"{% if not loop.last %},{% endif %}
+                {% endfor -%}
             }
         }
     }

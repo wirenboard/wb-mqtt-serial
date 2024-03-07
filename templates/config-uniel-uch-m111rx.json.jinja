@@ -1,0 +1,63 @@
+{% set INPUTS_NUMBER = 8 -%}
+{% set RELAYS_NUMBER = 8 -%}
+{% set TIMERS_NUMBER = 8 -%}
+{% set TYPES_NUMBER = 8 -%}
+{
+    "device_type": "UCH-M111RX",
+    "group": "g-dimmer",
+    "device": {
+        "name": "UCH-M111RX 0808",
+        "id": "uchm111rx",
+        "protocol": "uniel",
+        "response_timeout_ms": 500,
+        "frame_timeout_ms": 100,
+        "channels": [
+            {% for in_num in range(0, INPUTS_NUMBER) -%}
+            {
+                "name": "Input {{in_num}}",
+                "reg_type": "input",
+                "address": "0x{{"%02x"|format(10 + in_num)}}"
+            },
+            {% endfor -%}
+            {% for rel_num in range(0, RELAYS_NUMBER) -%}
+            {
+                "name": "Relay {{rel_num}}",
+                "reg_type": "relay",
+                "address": "0x{{"%X"|format(18 + rel_num)}}"
+            },
+            {% endfor -%}
+            {
+                "name": "LowThr",
+                "reg_type": "param",
+                "address": "0x02",
+                "type": "range",
+                "max": "0xff"
+            },
+            {
+                "name": "HiThr",
+                "reg_type": "param",
+                "address": "0x03",
+                "type": "range",
+                "max": "0xff"
+            },
+            {# Timers. set switch off delay #}
+            {% for timer_num in range(0, TIMERS_NUMBER) -%}
+            {
+                "name": "Timer {{timer_num}}",
+                "reg_type": "param",
+                "address": "0x{{"%X"|format(26 + timer_num)}}",
+                "type": "range",
+                "max": "0xff"
+            },
+            {% endfor -%}
+            {# Input types. 0 = SW (normally open), 0xff = MS (normally closed) #}
+            {% for type_num in range(0, TYPES_NUMBER) -%}
+            {
+                "name": "Type {{type_num}}",
+                "reg_type": "relay",
+                "address": "0x{{"%X"|format(34 + type_num)}}"
+            }{% if not loop.last %},{% endif %}
+            {% endfor -%}
+        ]
+    }
+}

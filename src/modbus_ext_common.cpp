@@ -32,7 +32,7 @@ namespace ModbusExt // modbus extension protocol declarations
     const size_t EVENT_HEADER_SIZE = 4;
     const size_t MIN_ENABLE_EVENTS_RESPONSE_SIZE = 6;
     const size_t MIN_ENABLE_EVENTS_REC_SIZE = 5;
-    const size_t EXCEPTION_SIZE = 5;
+    // const size_t EXCEPTION_SIZE = 5;
 
     const size_t EVENTS_REQUEST_MAX_BYTES = MAX_PACKET_SIZE - EVENTS_RESPONSE_HEADER_SIZE - CRC_SIZE;
     const size_t ARBITRATION_HEADER_MAX_BYTES = 32;
@@ -42,7 +42,7 @@ namespace ModbusExt // modbus extension protocol declarations
     const size_t SUB_COMMAND_POS = 2;
     const size_t EXCEPTION_CODE_POS = 2;
 
-    const size_t EVENTS_RESPONSE_SLAVE_ID_POS = 0;
+    // const size_t EVENTS_RESPONSE_SLAVE_ID_POS = 0;
     const size_t EVENTS_RESPONSE_CONFIRM_FLAG_POS = 3;
     const size_t EVENTS_RESPONSE_DATA_SIZE_POS = 5;
     const size_t EVENTS_RESPONSE_DATA_POS = 6;
@@ -56,9 +56,9 @@ namespace ModbusExt // modbus extension protocol declarations
     const size_t ENABLE_EVENTS_RESPONSE_DATA_SIZE_POS = 3;
     const size_t ENABLE_EVENTS_RESPONSE_DATA_POS = 4;
 
-    const size_t ENABLE_EVENTS_REC_TYPE_POS = 0;
-    const size_t ENABLE_EVENTS_REC_ADDR_POS = 1;
-    const size_t ENABLE_EVENTS_REC_STATE_POS = 3;
+    // const size_t ENABLE_EVENTS_REC_TYPE_POS = 0;
+    // const size_t ENABLE_EVENTS_REC_ADDR_POS = 1;
+    // const size_t ENABLE_EVENTS_REC_STATE_POS = 3;
 
     // max(3.5 symbols, (20 bits + 800us)) + 9 * max(13 bits, 12 bits + 50us)
     std::chrono::milliseconds GetTimeout(const TPort& port)

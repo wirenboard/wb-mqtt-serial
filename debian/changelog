@@ -1,3 +1,136 @@
+wb-mqtt-serial (2.111.0) stable; urgency=medium
+
+  * Add new template for dali-logic-lite-ps-x1
+
+ -- Mikhail Burchu <mikhail.burchu@wirenboard.com>  Fri, 1 Mar 2024 17:30:00 +0300
+
+wb-mqtt-serial (2.110.1) stable; urgency=medium
+
+  * Dauerhaft: add curtain motor settings support
+
+ -- Nikolay Korotkiy <nikolay.korotkiy@wirenboard.com>  Thu, 29 Feb 2024 09:00:00 +0400
+
+wb-mqtt-serial (2.110.0) stable; urgency=medium
+
+  * Add support for device signatures in templates of Wiren Board devices
+
+ -- Petr Krasnoshchekov <petr.krasnoshchekov@wirenboard.com>  Thu, 29 Feb 2024 09:37:59 +0500
+
+wb-mqtt-serial (2.109.3) stable; urgency=medium
+
+  * Add Dauerhaft CM5 template
+
+ -- Nikolay Korotkiy <nikolay.korotkiy@wirenboard.com>  Wed, 21 Feb 2024 20:00:00 +0400
+
+wb-mqtt-serial (2.109.2) stable; urgency=medium
+
+  * MSW4-LORA template: added template for WB-MSW-LORA v.4 as it was broken by fast modbus
+
+ -- Maxim Tomchuk <maxim.tomchuk@wirenboard.ru>  Fri, 16 Feb 2024 17:48:00 +0300
+
+wb-mqtt-serial (2.109.1) stable; urgency=medium
+
+  * MRM2mini template: fix curtains mapping matrix size
+
+ -- Pavel Gasheev <pavel.gasheev@wirenboard.ru>  Tue, 23 Jan 2024 15:38:22 +0300
+
+wb-mqtt-serial (2.109.0) stable; urgency=medium
+
+  * Curtains support for WB-MR* templates
+
+ -- Pavel Gasheev <pavel.gasheev@wirenboard.ru>  Tue, 23 Jan 2024 11:14:22 +0300
+
+wb-mqtt-serial (2.108.9) stable; urgency=medium
+
+  * Dauerhaft: add motor ID and channel ID configuration
+
+ -- Nikolay Korotkiy <nikolay.korotkiy@wirenboard.com>  Mon, 15 Jan 2024 20:00:00 +0400
+
+wb-mqtt-serial (2.108.8) stable; urgency=medium
+
+  * Add tests. No functional changes
+
+ -- Petr Krasnoshchekov <petr.krasnoshchekov@wirenboard.com>  Wed, 10 Jan 2024 16:47:24 +0500
+
+wb-mqtt-serial (2.108.7) stable; urgency=medium
+
+  * Fix clang-tidy issues
+
+ -- Nikolay Korotkiy <nikolay.korotkiy@wirenboard.com>  Wed, 27 Dec 2023 18:00:00 +0400
+
+wb-mqtt-serial (2.108.6) stable; urgency=medium
+
+  * Fix duplicated parameters for MR3, MR6C, MR6C-NC templates
+
+ -- Pavel Gasheev <pavel.gasheev@wirenboard.ru>  Thu, 21 Dec 2023 22:35:19 +0300
+
+wb-mqtt-serial (2.108.5) stable; urgency=medium
+
+  * Changing min value increase_rate_description and decrease_rate_description in /templates/config-wb-mdm3.json.jinja
+
+ -- avspnz <aleksandr.shlyapnikov@wirenboard.com>  Wed, 20 Dec 2023 15:00:00 +0300
+
+wb-mqtt-serial (2.108.4) stable; urgency=medium
+
+  * Milur: fix potential issue with reading registers
+
+ -- Nikolay Korotkiy <nikolay.korotkiy@wirenboard.com>  Mon, 18 Dec 2023 16:00:00 +0400
+
+wb-mqtt-serial (2.108.3) stable; urgency=medium
+
+  * JSON schema: add missed "group" property
+
+ -- Nikolay Korotkiy <nikolay.korotkiy@wirenboard.com>  Mon, 18 Dec 2023 10:15:00 +0400
+
+wb-mqtt-serial (2.108.2) stable; urgency=medium
+
+  * WB-MAP* templates: set semi-sporadic mode for Urms channels
+
+ -- Pavel Gasheev <pavel.gasheev@wirenboard.ru>  Mon, 18 Dec 2023 10:05:36 +0300
+
+wb-mqtt-serial (2.108.1) stable; urgency=medium
+
+  * Fix reading bits from modbus channels wider than 16 bits
+
+ -- Petr Krasnoshchekov <petr.krasnoshchekov@wirenboard.com>  Mon, 18 Dec 2023 10:10:58 +0500
+
+wb-mqtt-serial (2.108.0) stable; urgency=medium
+
+  * Add configuration parameter for maximum write retry time
+
+ -- Petr Krasnoshchekov <petr.krasnoshchekov@wirenboard.com>  Thu, 07 Dec 2023 12:09:04 +0500
+
+wb-mqtt-serial (2.107.0) stable; urgency=medium
+
+  * Add support for Dauerhaft curtain motor
+
+ -- Nikolay Korotkiy <nikolay.korotkiy@wirenboard.com>  Tue, 28 Nov 2023 18:00:00 +0400
+
+wb-mqtt-serial (2.106.11) stable; urgency=low
+
+  * WB-LED & WB-MRGBW templates: add sporadic events for output channels
+
+ -- Daniil Safonov <Daniil.Safonov@wirenboard.ru>  Wed, 28 Nov 2023 17:00:00 +0600
+
+wb-mqtt-serial (2.106.10) stable; urgency=medium
+
+  * Log as a warning when device is disconnected
+
+ -- Nikolay Korotkiy <nikolay.korotkiy@wirenboard.com>  Fri, 24 Nov 2023 16:00:00 +0400
+
+wb-mqtt-serial (2.106.9) stable; urgency=medium
+
+  * Fix TConfedSchemaTest.MergeTranslations test on arm64
+  * Add arm64 build, no functional changes
+
+ -- Nikolay Korotkiy <nikolay.korotkiy@wirenboard.com>  Wed, 15 Nov 2023 11:00:00 +0400
+
+wb-mqtt-serial (2.106.8) stable; urgency=medium
+
+  * Cleanup templates, no functional changes
+
+ -- Nikolay Korotkiy <nikolay.korotkiy@wirenboard.com>  Wed, 15 Nov 2023 07:00:00 +0400
+
 wb-mqtt-serial (2.106.7) stable; urgency=medium
 
   * WB-MDM3 template: add sporadic for state and brightness registers

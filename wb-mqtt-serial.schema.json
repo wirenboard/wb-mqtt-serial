@@ -470,6 +470,14 @@
           "minimum": -1,
           "default": 2,
           "propertyOrder": 112
+        },
+        "max_write_fail_time_s": {
+          "type": "integer",
+          "title": "Max write fail time (s)",
+          "description": "max_write_fail_time_desc",
+          "minimum": 0,
+          "default": 600,
+          "propertyOrder": 113
         }
       }
     },
@@ -1137,7 +1145,7 @@
                "param_be", "param_sign_active", "param_sign_reactive", "array12", "default", "param16", 
                "param24", "param32", "power", "freq", "power_factor", "group_single", 
                "temperature", "item_1", "item_2", "item_3", "item_4", "item_5", 
-               "alarm", "position", "command", "date", "time", "angle", "type", "status",
+               "alarm", "position", "command", "date", "time", "angle", "type", "status", "zonebit",
                // obis_* are deprecated, use item_*, temperature and power_factor
                "obis_cdef", "obis_cdef_pf", "obis_cdef_temp", "obis_cdef_1", "obis_cdef_2", "obis_cdef_3", "obis_cdef_4", "obis_cdef_5"]
     },
@@ -1998,7 +2006,8 @@
     "service": "wb-mqtt-serial",
     "toJSON": ["wb-mqtt-serial", "-j"],
     "fromJSON": ["wb-mqtt-serial", "-J"],
-    "validate": false
+    "validate": false,
+    "editor": "serial-config"
   },
 
   "translations": {
@@ -2041,7 +2050,8 @@
       "continuous_read_desc": "Implemented in Wiren Board devices. The service tries to read registers at once even if they are spaced. This allows you to reduce the number of requests",
       "sporadic_description": "If a protocol allows, the register is excluded from periodic polling. Its change is sent by a special event",
       "semi_sporadic_description": "If a protocol allows, the register change is sent by a special event. At the same time, periodic polling continues",
-      "force_frame_timeout_desc": "Wait frame timeout after receiving expected frame bytes count. All extra data is treated as noise and is dropped."
+      "force_frame_timeout_desc": "Wait frame timeout after receiving expected frame bytes count. All extra data is treated as noise and is dropped.",
+      "max_write_fail_time_desc": "Maximum time that attempts to write a register will continue"
     },
     "ru": {
       "Serial Device Driver Configuration": "Настройка драйвера serial-устройств",
@@ -2249,7 +2259,9 @@
       "sporadic_description": "Если протокол передачи позволяет, то регистр исключается из периодического опроса. Его изменение отправляется специальным событием",
       "semi_sporadic_description": "Если протокол передачи позволяет, изменение состояния отправляется специальным событием. При этом продолжается периодический опрос",
       "force_frame_timeout_desc": "Использовать значение задержки между сообщениями для определения границ пакетов. Продолжать принимать данные, даже если получено ожидаемое число байт. Все дополнительно полученные данные будут отброшены. Более строгое соблюдение стандарта MODBUS, но медленнее опрос",
-      "Force frame timeout": "Разделять сообщения по времени"
+      "Force frame timeout": "Разделять сообщения по времени",
+      "Max write fail time (s)": "Время повторных попыток записать регистр (с)",
+      "max_write_fail_time_desc": "Максимальное время, в течение которого будут продолжаться попытки записать регистр"
     }
   }
 }

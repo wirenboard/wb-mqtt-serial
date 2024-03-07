@@ -28,7 +28,7 @@ TFileDescriptorPort::TFileDescriptorPort(): Fd(-1)
 
 TFileDescriptorPort::~TFileDescriptorPort()
 {
-    if (IsOpen()) {
+    if (TFileDescriptorPort::IsOpen()) {
         close(Fd);
     }
 }

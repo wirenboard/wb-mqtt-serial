@@ -2,6 +2,11 @@
     "title": "_WB-MAP3H-fw2-template-title",
     "device_type": "WB-MAP3H fw2",
     "group": "g-wb-old",
+    "hw": [
+        {
+            "signature": "MAP3H\u0002"
+        }
+    ],
     "device": {
         "name": "WB-MAP3H fw2",
         "id": "wb-map3h",
@@ -103,6 +108,7 @@
                 "reg_type": "input",
                 "address": "0x1410",
                 "type": "voltage",
+                "semi-sporadic": true,
                 "format": "u32",
                 "scale": 1.52588e-7,
                 "round_to": 0.001,
@@ -154,6 +160,7 @@
                 "reg_type": "input",
                 "address": "0x1412",
                 "type": "voltage",
+                "semi-sporadic": true,
                 "format": "u32",
                 "scale": 1.52588e-7,
                 "round_to": 0.001,
@@ -205,6 +212,7 @@
                 "reg_type": "input",
                 "address": "0x1414",
                 "type": "voltage",
+                "semi-sporadic": true,
                 "format": "u32",
                 "scale": 1.52588e-7,
                 "round_to": 0.001,

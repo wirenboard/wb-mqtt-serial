@@ -72,6 +72,9 @@ public:
     void EnqueueU8Shift1SingleBitHoldingReadResponse(bool afterWrite);
     void EnqueueU8Shift2SingleBitHoldingReadResponse(bool afterWrite);
 
+    void EnqueueU32BitsHoldingReadResponse(bool afterWrite);
+    void EnqueueU32BitsHoldingWriteResponse();
+
     void EnqueueU8Shift1SingleBitHoldingWriteResponse();
     void EnqueueU16Shift8HoldingWriteResponse();
 
@@ -79,9 +82,16 @@ public:
     void EnqueueHoldingSingleOneByOneReadResponse(uint8_t exception = 0);
     void EnqueueHoldingMultiOneByOneReadResponse(uint8_t exception = 0);
 
-    /*------------ bitmasks ----------------*/
+    /*--------------------------------------*/
+
     void EnqueueContinuousReadEnableResponse(bool ok = true);
     void EnqueueContinuousReadResponse(bool separated = true);
 
     void EnqueueReadResponseWithNoiseAtTheEnd(bool addNoise);
+
+    void EnqueueLittleEndianReadResponses();
+    void EnqueueLittleEndianWriteResponses();
+
+    /*--------------------------------------*/
+    void EnqueueInputReadResponse(uint8_t addrLow, const std::vector<int>& data);
 };
