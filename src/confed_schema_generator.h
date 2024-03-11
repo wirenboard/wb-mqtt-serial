@@ -45,3 +45,5 @@ Json::Value MakeSchemaForConfed(const Json::Value& configSchema,
 void TransformGroupsToSubdevices(Json::Value& schema,
                                  Json::Value& subdevices,
                                  Json::Value* mainSchemaTranslations = nullptr);
+
+Json::Value MakeHardwareArray(const TDeviceTemplate& deviceTemplate);
