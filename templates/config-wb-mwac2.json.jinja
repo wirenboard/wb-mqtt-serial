@@ -99,7 +99,7 @@
                 "id": "g_safety"
             },
             {
-                "title": "Wet cleaning mode",
+                "title": "wet_cleaning_mode_name",
                 "id": "wet_cleaning_mode",
                 "description": "wet_cleaning_mode_description",
             },
@@ -222,7 +222,7 @@
                 "title": 
                     {%- if out_num == OUT_NUM_K1 %} "Output K1",
                     {%- elif out_num == OUT_NUM_K2 %} "Output K2",
-                    {%- else %} "\"Leak\" mode",
+                    {%- else %} "leak_mode_name",
                     {%- endif %}
                 "order": {{ out_num }},
                 "address": {{ 8260 + ((in_num - 1) * MMATRIX_OUTPUTS_NUMBER) + (out_num - 1) }},
@@ -409,7 +409,7 @@
 
             {% for out_num in range(1, OUTPUTS_NUMBER) -%}
             "out{{ out_num }}_safe_state": {
-                "title": {%if out_num == OUT_NUM_ALARM %}"\"Leak\" mode"{% else %}"Output K{{ out_num }}"{% endif %},
+                "title": {%if out_num == OUT_NUM_ALARM %}"Leakage notification"{% else %}"Output K{{ out_num }}"{% endif %},
                 "group": "gg_outputs_safe_state",
                 "order": {{ out_num }},
                 "address": {{ 930 + (out_num - 1) }},
@@ -422,7 +422,7 @@
                 ]
             },
             "out{{ out_num }}_safety_behaviour": {
-                "title": {%if out_num == OUT_NUM_ALARM %}"\"Leak\" mode"{% else %}"Output K{{ out_num }}"{% endif %},
+                "title": {%if out_num == OUT_NUM_ALARM %}"Leakage notification"{% else %}"Output K{{ out_num }}"{% endif %},
                 "group": "gg_safety_behaviour",
                 "order": {{ out_num }},
                 "address": {{ 938 + (out_num - 1) }},
@@ -435,7 +435,7 @@
                 ]
             },
             "out{{ out_num }}_safety_input_control": {
-                "title": {%if out_num == OUT_NUM_ALARM %}"\"Leak\" mode"{% else %}"Output K{{ out_num }}"{% endif %},
+                "title": {%if out_num == OUT_NUM_ALARM %}"Leakage notification"{% else %}"Output K{{ out_num }}"{% endif %},
                 "group": "gg_safety_input_control",
                 "order": {{ out_num }},
                 "address": {{ 946 + (out_num - 1) }},
@@ -451,7 +451,7 @@
             {% endfor -%}
 
             "wet_cleaning_mode_timer_min": {
-                "title": "Wet cleaning mode timer (min)",
+                "title": "\"Wet cleaning\" mode timer (min)",
                 "description": "wet_cleaning_mode_timer_description",
                 "address": 975,
                 "reg_type": "holding",
@@ -605,7 +605,7 @@
             {% endfor -%}
 
             {
-                "name": "Leak",
+                "name": "leak_mode_name",
                 "reg_type": "coil",
                 "address": 2,
                 "type": "switch",
@@ -613,7 +613,7 @@
                 "group": "gg_outputs_channels"
             },
             {
-                "name": "Wet cleaning mode",
+                "name": "wet_cleaning_mode_name",
                 "reg_type": "coil",
                 "address": 3,
                 "type": "switch",
@@ -705,10 +705,13 @@
                 "safety_behaviour_description": "Safe state is configured on \"Outputs\" tab.",
                 "outputs_safe_state_description": "State for safe mode and \"Relays State After Power On\" settings. By default, safe mode is disabled and safe states are set to \"Off\".",
                 "poll_timeout_description": "Parameter defines the time of absence of polling in seconds, after which safety mode will be activated. 1 - 65534 ms, 10 by default.",
-                "restore_outputs_state_after_leakage_fix_description": "\"On\" - relay are set to the state before the leakage, then the settings of the interaction of inputs with the relay are analyzed. \"Off\" - the settings of the interaction of inputs with the relay are analyzed immediately.",
-                "relays_state_after_poweron_description": "Default - \"Switch output to safety state\"",
+                "restore_outputs_state_after_leakage_fix_description": "\"On\" - relays are set to the state before the leakage, then the settings of the interaction of inputs with the relay are analyzed. \"Off\" - the settings of the interaction of inputs with the relays are analyzed immediately.",
+                "relays_state_after_poweron_description": "Default - \"Switch to safety state\"",
 
-                "wet_cleaning_mode_description": "Wet cleaning mode is used to disable reactions on flood sensors when a room is being celaned. When started/stopped, a sound signal is emitted, and during the activity of the mode, the indicators of the inputs periodically flash briefly. Disabled automatically after the specified time.",
+                "leak_mode_name": "\"Leak\" mode",
+
+                "wet_cleaning_mode_name": "\"Wet cleaning\" mode",
+                "wet_cleaning_mode_description": "\"Wet cleaning\" mode is used to disable reactions on flood sensors when a room is being cleaned. When the mode is started/stopped, a sound signal is emitted, and the indicators of the inputs periodically flash briefly during the activity of the mode. Disabled automatically after the specified time.",
                 "wet_cleaning_mode_timer_description": "1 - 360 min, 20 by default",
 
                 "debounce_description": "For button press detection, the value must be 5 - 10 times less than the waiting time for the second press. Adds a delay to the response to presses. 0 - 2000 ms, 50 by default.",
@@ -735,10 +738,10 @@
                 "counter_offset_description": "Начальное значение счётчика в литрах",
                 "counter_pulse_weight_description": "Распространённые счётчики имеют вес 1, 10, 50, или 100 литров на импульс. Ознакомьтесь с технической документацией на ваш счётчик. 1 — 10000, 1 по умолчанию",
 
-                "Wet cleaning mode": "Режим влажной уборки",
-                "wet_cleaning_mode_description": "Режим влажной уборки используется для отключения реакции на датчики протечки при влажной уборке помещения. При запуске/остановке режима издаётся звуковой сигнал, индикаторы входов периодически коротко моргают во время активности режима. Отключается автоматически по истечении указанного времени.",
+                "wet_cleaning_mode_name": "Режим \"Влажная уборка\"",
+                "wet_cleaning_mode_description": "Режим \"Влажная уборка\" используется для отключения реакции на датчики протечки при влажной уборке помещения. При запуске/остановке режима издаётся звуковой сигнал, индикаторы входов периодически коротко моргают во время активности режима. Отключается автоматически по истечении указанного времени.",
                 "wet_cleaning_mode_timer_description": "1 — 360 мин, 20 по умолчанию",
-                "Wet cleaning mode timer (min)": "Таймер режима влажной уборки (мин)",
+                "\"Wet cleaning\" mode timer (min)": "Таймер режима \"Влажная уборка\" (мин)",
 
                 {% for in_num in range(1, INPUTS_NUMBER + 1) -%}
                 {% set letter = "F" if in_num < IN_NUM_SHORT_CLEANING_ON_LONG_RES_ALARM else "S" -%}
@@ -770,8 +773,8 @@
                 "P{{ lp_in_num }} Counter Reset": "Сброс счётчика P{{ lp_in_num }}",
                 {% endfor -%}
 
-                "Leak": "Протечка",
-                "\"Leak\" mode": "Режим \"Протечка\"",
+                "leak_mode_name": "Режим \"Протечка\"",
+                "Leakage notification": "Оповещение о протечке",
                 "Serial": "Серийный номер",
                 "FW Version": "Версия прошивки",
                 "Input Voltage": "Напряжение питания",
