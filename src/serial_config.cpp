@@ -431,13 +431,12 @@ namespace
         if (channel_data.isMember("enum") && channel_data.isMember("enum_titles")) {
             const auto& enumValues = channel_data["enum"];
             const auto& enumTitles = channel_data["enum_titles"];
-            if (enumValues.size() != enumTitles.size()) {
-                throw TConfigParserException("enum and enum_titles should have the same size -- " +
-                                             device_config->DeviceType);
-            }
-
-            for (Json::ArrayIndex i = 0; i < enumValues.size(); ++i) {
-                channel->SetEnumTitles(enumValues[i].asString(), Translate(enumTitles[i].asString(), true, context));
+            if (enumValues.size() == enumTitles.size()) {
+                for (Json::ArrayIndex i = 0; i < enumValues.size(); ++i) {
+                    channel->SetEnumTitles(enumValues[i].asString(), Translate(enumTitles[i].asString(), true, context));
+                }
+            } else {
+                LOG(Warn) << "enum and enum_titles should have the same size -- " << device_config->DeviceType;
             }
         }
 

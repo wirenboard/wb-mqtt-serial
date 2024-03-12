@@ -74,16 +74,12 @@
               "name": "Relay default 1",
               "reg_type": "relay_default",
               "address": "0x01",
-              "enum": [0, 1],
-              "enum_titles": ["zero", "one"],
               "format": "u8"
             },
             {
               "name": "Relay default 2",
               "reg_type": "relay_default",
               "address": "0x02",
-              "enum": ["2", "3"],
-              "enum_titles": ["two", "three"],
               "format": "u8"
             },
             {

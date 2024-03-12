@@ -1,0 +1,43 @@
+{
+    "debug": false,
+    "ports": [
+      {
+        "port_type" : "serial",
+        "path" : "/dev/ttyAPP1",
+        "baud_rate": 9600,
+        "parity": "N",
+        "data_bits": 8,
+        "stop_bits": 1,
+        "enabled": true,
+        "devices" : [
+          {
+            "name": "PseudoS2K",
+            "id": "pseudo_s2k",
+            "slave_id": 1,
+            "enabled": true,
+            "protocol": "s2k",
+            "frame_timeout_ms": 100,
+            "channels": [
+              {
+                "name": "Relay default 1",
+                "reg_type": "relay_default",
+                "address": "0x01",
+                "enum": [0, 1],
+                "enum_titles": ["zero", "one"],
+                "format": "u8"
+              },
+              {
+                "name": "Relay default 2",
+                "reg_type": "relay_default",
+                "address": "0x02",
+                "enum": ["2", "3"],
+                "enum_titles": ["two", "three"],
+                "format": "u8"
+              }
+            ]
+          }
+        ]
+      }
+    ]
+  }
+  
