@@ -433,10 +433,12 @@ namespace
             const auto& enumTitles = channel_data["enum_titles"];
             if (enumValues.size() == enumTitles.size()) {
                 for (Json::ArrayIndex i = 0; i < enumValues.size(); ++i) {
-                    channel->SetEnumTitles(enumValues[i].asString(), Translate(enumTitles[i].asString(), true, context));
+                    channel->SetEnumTitles(enumValues[i].asString(),
+                                           Translate(enumTitles[i].asString(), true, context));
                 }
             } else {
-                LOG(Warn) << errorMsgPrefix << ": enum and enum_titles should have the same size -- " << device_config->DeviceType;
+                LOG(Warn) << errorMsgPrefix << ": enum and enum_titles should have the same size -- "
+                          << device_config->DeviceType;
             }
         }
 
