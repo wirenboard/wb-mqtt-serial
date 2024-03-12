@@ -436,7 +436,7 @@ namespace
                     channel->SetEnumTitles(enumValues[i].asString(), Translate(enumTitles[i].asString(), true, context));
                 }
             } else {
-                LOG(Warn) << "enum and enum_titles should have the same size -- " << device_config->DeviceType;
+                LOG(Warn) << errorMsgPrefix << ": enum and enum_titles should have the same size -- " << device_config->DeviceType;
             }
         }
 
