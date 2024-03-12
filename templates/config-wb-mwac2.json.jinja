@@ -44,16 +44,16 @@
                 "group": "input_f{{ in_num }}"
             },
             {
-                "title": "Actions for outputs when sensor is triggered",
+                "title": "Actions when sensor is triggered",
                 "id": "gg_in{{ in_num }}_mapping_matrix_actions",
                 "group": "input_f{{ in_num }}"
             },
             {% for out_num in range(1, OUTPUTS_NUMBER + 1) -%}
             {
                 "title":
-                {% if out_num == OUT_NUM_K1 %} "K1 actions",
-                {% elif out_num == OUT_NUM_K2 %} "K2 actions",
-                {% elif out_num == OUT_NUM_ALARM %} "Actions for \"Alarm\" mode",
+                {% if out_num == OUT_NUM_K1 %} "Output K1 actions",
+                {% elif out_num == OUT_NUM_K2 %} "Output K2 actions",
+                {% elif out_num == OUT_NUM_ALARM %} "Actions for \"Leak\" mode",
                 {% else %} "Actions for \"Wet cleaning\" mode",
                 {% endif %}
                 "id": "gg_in{{ in_num }}_out{{ out_num }}_button_actions",
@@ -78,7 +78,7 @@
                 "id": "outputs"
             },
             {
-                "title": "Output Safe State",
+                "title": "Safe State",
                 "description": "outputs_safe_state_description",
                 "id": "gg_outputs_safe_state",
                 "group": "outputs"
@@ -220,9 +220,9 @@
             "in{{ in_num }}_out{{ out_num }}_actions_leakage_sensor": {
                 "group": "gg_in{{ in_num }}_mapping_matrix_actions",
                 "title": 
-                    {%- if out_num == OUT_NUM_K1 %} "K1",
-                    {%- elif out_num == OUT_NUM_K2 %} "K2",
-                    {%- else %} "Alarm",
+                    {%- if out_num == OUT_NUM_K1 %} "Output K1",
+                    {%- elif out_num == OUT_NUM_K2 %} "Output K2",
+                    {%- else %} "\"Leak\" mode",
                     {%- endif %}
                 "order": {{ out_num }},
                 "address": {{ 8260 + ((in_num - 1) * MMATRIX_OUTPUTS_NUMBER) + (out_num - 1) }},
@@ -358,11 +358,12 @@
 
             "outputs_restore_state": {
                 "title": "Relays State After Power On",
+                "description": "relays_state_after_poweron_description",
                 "address": 6,
                 "reg_type": "holding",
                 "enum": [0, 1],
                 "default": 0,
-                "enum_titles": ["Safe state", "Restore last state"],
+                "enum_titles": ["Switch to safety state", "Restore last state"],
                 "group": "outputs",
                 "order": 1
             },
@@ -408,7 +409,7 @@
 
             {% for out_num in range(1, OUTPUTS_NUMBER) -%}
             "out{{ out_num }}_safe_state": {
-                "title": {%if out_num == OUT_NUM_ALARM %}"Alarm"{% else %}"K{{ out_num }}"{% endif %},
+                "title": {%if out_num == OUT_NUM_ALARM %}"\"Leak\" mode"{% else %}"Output K{{ out_num }}"{% endif %},
                 "group": "gg_outputs_safe_state",
                 "order": {{ out_num }},
                 "address": {{ 930 + (out_num - 1) }},
@@ -421,7 +422,7 @@
                 ]
             },
             "out{{ out_num }}_safety_behaviour": {
-                "title": {%if out_num == OUT_NUM_ALARM %}"Alarm"{% else %}"K{{ out_num }}"{% endif %},
+                "title": {%if out_num == OUT_NUM_ALARM %}"\"Leak\" mode"{% else %}"Output K{{ out_num }}"{% endif %},
                 "group": "gg_safety_behaviour",
                 "order": {{ out_num }},
                 "address": {{ 938 + (out_num - 1) }},
@@ -429,12 +430,12 @@
                 "default": 0,
                 "enum": [0, 1],
                 "enum_titles": [
-                    "Don't сhange output state",
-                    "Switch output to safety state"
+                    "Don't сhange state",
+                    "Switch to safety state"
                 ]
             },
             "out{{ out_num }}_safety_input_control": {
-                "title": {%if out_num == OUT_NUM_ALARM %}"Alarm"{% else %}"K{{ out_num }}"{% endif %},
+                "title": {%if out_num == OUT_NUM_ALARM %}"\"Leak\" mode"{% else %}"Output K{{ out_num }}"{% endif %},
                 "group": "gg_safety_input_control",
                 "order": {{ out_num }},
                 "address": {{ 946 + (out_num - 1) }},
@@ -604,7 +605,7 @@
             {% endfor -%}
 
             {
-                "name": "Alarm",
+                "name": "Leak",
                 "reg_type": "coil",
                 "address": 2,
                 "type": "switch",
@@ -700,11 +701,12 @@
                 "Uptime": "Uptime (s)",
 
                 "inputs_control_in_safety_mode_description": "Sets change of control from the inputs when module switches to safety mode. Does not affect \"leakage sensor\" mode.",
-                "safety_mode_description": "When RS-485 connection is lost, the flood protection module will work autonomously. However, it is possible to set a certain state of the outputs in case of connection loss. For this purpose, there is a safety mode.",
-                "safety_behaviour_description": "Safe state of outputs is configured on \"Outputs\" tab.",
-                "outputs_safe_state_description": "Outputs safe state and \"Relays State After Power On\" settings (only for options K1 and K2). By default, safe mode is disabled, \"Safe state\" is set to the \"Relays State After Power On\" setting, and safe state for each output is set to \"Off\".",
+                "safety_mode_description": "When RS-485 connection is lost, the flood protection module will work autonomously. However, it is possible to set a certain state of the outputs and \"Leak\" mode in case of connection loss. For this purpose, there is a safety mode.",
+                "safety_behaviour_description": "Safe state is configured on \"Outputs\" tab.",
+                "outputs_safe_state_description": "State for safe mode and \"Relays State After Power On\" settings. By default, safe mode is disabled and safe states are set to \"Off\".",
                 "poll_timeout_description": "Parameter defines the time of absence of polling in seconds, after which safety mode will be activated. 1 - 65534 ms, 10 by default.",
                 "restore_outputs_state_after_leakage_fix_description": "\"On\" - relay are set to the state before the leakage, then the settings of the interaction of inputs with the relay are analyzed. \"Off\" - the settings of the interaction of inputs with the relay are analyzed immediately.",
+                "relays_state_after_poweron_description": "Default - \"Switch output to safety state\"",
 
                 "wet_cleaning_mode_description": "Wet cleaning mode is used to disable reactions on flood sensors when a room is being celaned. When started/stopped, a sound signal is emitted, and during the activity of the mode, the indicators of the inputs periodically flash briefly. Disabled automatically after the specified time.",
                 "wet_cleaning_mode_timer_description": "1 - 360 min, 20 by default",
@@ -734,7 +736,7 @@
                 "counter_pulse_weight_description": "Распространённые счётчики имеют вес 1, 10, 50, или 100 литров на импульс. Ознакомьтесь с технической документацией на ваш счётчик. 1 — 10000, 1 по умолчанию",
 
                 "Wet cleaning mode": "Режим влажной уборки",
-                "wet_cleaning_mode_description": "Режим влажной уборки используется для отключения реакции на датчики протечки при уборке помещения. При запуске/остановке издаётся звуковой сигнал, во время активности режима, индикаторы входов периодически коротко моргают. Отключается автоматически по истечении указанного времени.",
+                "wet_cleaning_mode_description": "Режим влажной уборки используется для отключения реакции на датчики протечки при влажной уборке помещения. При запуске/остановке режима издаётся звуковой сигнал, индикаторы входов периодически коротко моргают во время активности режима. Отключается автоматически по истечении указанного времени.",
                 "wet_cleaning_mode_timer_description": "1 — 360 мин, 20 по умолчанию",
                 "Wet cleaning mode timer (min)": "Таймер режима влажной уборки (мин)",
 
@@ -756,7 +758,7 @@
                 "leakage sensor": "датчик протечки",
                 "discrete input or button": "дискретный вход или кнопка",
 
-                "Actions for outputs when sensor is triggered": "Действия для выходов при срабатывании датчика",
+                "Actions when sensor is triggered": "Действия при срабатывании датчика",
 
                 "Outputs": "Выходы",
                 "General": "Общее",
@@ -768,7 +770,8 @@
                 "P{{ lp_in_num }} Counter Reset": "Сброс счётчика P{{ lp_in_num }}",
                 {% endfor -%}
 
-                "Alarm": "Авария",
+                "Leak": "Протечка",
+                "\"Leak\" mode": "Режим \"Протечка\"",
                 "Serial": "Серийный номер",
                 "FW Version": "Версия прошивки",
                 "Input Voltage": "Напряжение питания",
@@ -784,9 +787,8 @@
                 "toggle": "переключить",
 
                 "Relays State After Power On": "Состояния реле при подаче питания",
-                "Safe state": "Перевести выход в безопасное состояние",
                 "Restore last state": "Восстановить последнее состояние",
-                "Output Safe State": "Безопасное состояние выходов",
+                "Safe State": "Безопасное состояние",
                 "Off": "Выключен",
                 "On": "Включен",
 
@@ -795,18 +797,19 @@
                 "Safety Mode": "Безопасный режим",
                 "Safety Behaviour": "Действие в безопасном режиме",
                 "Safety Timer (s)": "Таймаут безопасного режима (с)",
-                "safety_mode_description": "При потере связи по RS-485 модуль защиты от протечек будет работать автономно. Однако есть возможность задать определенное состояние выходов в случае обрыва связи. Для этого существует безопасный режим.",
-                "outputs_safe_state_description": "Состояние выходов для безопасного режима и настройки \"Состояния реле при подаче питания\" (только для опций K1 и K2). По умолчанию безопасный режим отключен, в настройке \"Состояния реле при подаче питания\" установлено \"Перевести в безопасное состояние\", а безопасное состояние для каждого выхода установлено в \"Выключен\".",
+                "safety_mode_description": "При потере связи по RS-485 модуль защиты от протечек будет работать автономно. Однако есть возможность задать определенное состояние выходов и режима \"Протечка\" в случае обрыва связи. Для этого существует безопасный режим.",
+                "outputs_safe_state_description": "Состояние для безопасного режима и настройки \"Состояния реле при подаче питания\". По умолчанию безопасный режим отключен, а настройки безопасных состояний установлены в \"Выключен\".",
                 "poll_timeout_description": "Параметр определяет время отсутствия опроса в секундах, после которого будет активирован безопасный режим. 1 — 65534 с, 10 по умолчанию.",
                 "restore_outputs_state_after_leakage_fix_description": "\"Включен\" — реле устанавливются в положение до протечки, затем анализируются настройки взаимодействия входов с реле. \"Выключен\" — сразу анализируются настройки взаимодействия входов с реле.",
-                "safety_behaviour_description": "Безопасное состояние выходов настраивается на вкладке \"Выходы\".",
+                "safety_behaviour_description": "Безопасное состояние настраивается на вкладке \"Выходы\".",
                 "inputs_control_in_safety_mode_description": "Настройка изменения управления с входов при переходе модуля в безопасный режим. Не влияет на режим \"Датчик протечки\".",
-                "Don't сhange output state": "Ничего не делать",
-                "Switch output to safety state": "Перевести выход в безопасное состояние",
+                "Don't сhange state": "Ничего не делать",
+                "Switch to safety state": "Перевести в безопасное состояние",
                 "Inputs Control In Safety Mode": "Управление с входов в безопасном режиме",
                 "Don't change": "Не блокировать",
                 "Disable in safety mode": "Блокировать в безопасном режиме",
                 "Enable only in safety mode": "Разрешить только в безопасном режиме",
+                "relays_state_after_poweron_description": "По умолчанию — \"Перевести в безопасное состояние\"",
 
                 "Press Parameters": "Параметры нажатий",
                 "debounce_description": "Для детектирования нажатий значение должно быть в 5 — 10 раз меньше, чем время ожидания второго нажатия. Вносит задержку в реакцию на нажатия. 0 — 2000 мс, 50 по умолчанию.",
@@ -823,9 +826,12 @@
                 "Double Press": "Двойное нажатие",
                 "Short then long Press": "Короткое, затем длинное нажатие",
 
-                "K1 actions": "Действия для K1",
-                "K2 actions": "Действия для K2",
-                "Actions for \"Alarm\" mode": "Действия для режима \"Авария\"",
+                "Output K1": "Выход K1",
+                "Output K2": "Выход K2",
+
+                "Output K1 actions": "Действия для выхода K1",
+                "Output K2 actions": "Действия для выхода K2",
+                "Actions for \"Leak\" mode": "Действия для режима \"Протечка\"",
                 "Actions for \"Wet cleaning\" mode": "Действия для режима \"Влажная уборка\""
             }
         }
