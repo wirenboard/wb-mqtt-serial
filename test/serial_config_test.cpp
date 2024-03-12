@@ -345,3 +345,21 @@ TEST_F(TConfigParserTest, ParseReadonlyParameters)
     EXPECT_EQ(setupItems.size(), 1);
     EXPECT_EQ(setupItems[0]->GetName(), "p2");
 }
+
+TEST_F(TConfigParserTest, ParseEnum)
+{
+    auto portConfigs = GetConfig("configs/parse_enum.json")->PortConfigs;
+    EXPECT_FALSE(portConfigs.empty());
+    auto devices = portConfigs[0]->Devices;
+    EXPECT_FALSE(devices.empty());
+    auto deviceChannels = devices[0]->DeviceConfig()->DeviceChannelConfigs;
+    EXPECT_FALSE(deviceChannels.empty());
+    auto titles1 = deviceChannels[0]->GetEnumTitles();
+    EXPECT_EQ(titles1.size(), 2);
+    EXPECT_EQ(titles1["0"]["en"], "zero");
+    EXPECT_EQ(titles1["1"]["en"], "one");
+    auto titles2 = deviceChannels[1]->GetEnumTitles();
+    EXPECT_EQ(titles2.size(), 2);
+    EXPECT_EQ(titles2["2"]["en"], "two");
+    EXPECT_EQ(titles2["3"]["en"], "three");
+}
