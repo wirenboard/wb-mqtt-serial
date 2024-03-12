@@ -703,7 +703,8 @@
           "options": {
             "dependencies": {
               "format": "string"
-            }}
+            }
+          }
         },
         "sporadic": {
           "title": "Dispatched with an event",
@@ -718,6 +719,23 @@
           "type": "boolean",
           "default": false,
           "propertyOrder": 23
+        },
+        "enum": {
+          "title": "List of values",
+          "type": "array",
+          "items": {
+            "oneOf": [
+              { "type": "string" },
+              { "type": "number" }
+            ]
+          },
+          "propertyOrder": 24
+        },
+        "enum_titles": {
+          "title": "List of value titles",
+          "type": "array",
+          "items": { "type": "string" },
+          "propertyOrder": 25
         },
         "consists_of": {
           "not": {},
@@ -2258,6 +2276,8 @@
       "Dispatched with an event and polling": "Передаётся с помощью события и периодически опрашивается",
       "sporadic_description": "Если протокол передачи позволяет, то регистр исключается из периодического опроса. Его изменение отправляется специальным событием",
       "semi_sporadic_description": "Если протокол передачи позволяет, изменение состояния отправляется специальным событием. При этом продолжается периодический опрос",
+      "List of values": "Список значений",
+      "List of value titles": "Список названий значений",
       "force_frame_timeout_desc": "Использовать значение задержки между сообщениями для определения границ пакетов. Продолжать принимать данные, даже если получено ожидаемое число байт. Все дополнительно полученные данные будут отброшены. Более строгое соблюдение стандарта MODBUS, но медленнее опрос",
       "Force frame timeout": "Разделять сообщения по времени",
       "Max write fail time (s)": "Время повторных попыток записать регистр (с)",
