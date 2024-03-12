@@ -195,19 +195,6 @@ namespace
     }
 }
 
-Json::Value MakeHardwareArray(const TDeviceTemplate& deviceTemplate)
-{
-    Json::Value res(Json::arrayValue);
-    for (const auto& hwItem: deviceTemplate.Hardware) {
-        auto& hw = Append(res);
-        hw["signature"] = hwItem.Signature;
-        if (!hwItem.Fw.empty()) {
-            hw["fw"] = hwItem.Fw;
-        }
-    }
-    return res;
-}
-
 //  {
 //      "type": "object",
 //      "title": DEVICE_TITLE_HASH,
