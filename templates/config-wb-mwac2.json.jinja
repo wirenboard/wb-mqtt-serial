@@ -651,7 +651,8 @@
                 "name": "Uptime",
                 "reg_type": "input",
                 "address": 104,
-                "type": "text",
+                "type": "value",
+                "units": "s",
                 "format": "u32",
                 "enabled": false,
                 "group": "hw_info"
@@ -676,7 +677,7 @@
                 "group": "hw_info"
             },
             {
-                "name": "Battery state (2 - good, 1 - normal, 0 - discharged), measured at startup",
+                "name": "Battery state (2 - good, 1 - normal, 0 - discharged), measured at module startup",
                 "reg_type": "input",
                 "address": 971,
                 "type": "value",
@@ -698,7 +699,7 @@
             "en": {
                 "WB-MWAC_template_title": "WB-MWAC v.2 (water leak and meters controller)",
                 "baud_rate_description": "Make sure that communication with device is established before changing this parameter. Select required baud rate, save configuration and then change port baud rate to the same value.",
-                "Uptime": "Uptime (s)",
+                "Uptime": "Uptime",
 
                 "inputs_control_in_safety_mode_description": "Sets change of control from the inputs when module switches to safety mode. Does not affect \"leakage sensor\" mode.",
                 "safety_mode_description": "If communication via RS-485 is lost, the leakage protection module will work autonomously. The user can also set the status of outputs and leakage alerts using safe mode.",
@@ -776,10 +777,10 @@
                 "Serial": "Серийный номер",
                 "FW Version": "Версия прошивки",
                 "Input Voltage": "Напряжение питания",
-                "Uptime": "Время работы с момента включения (с)",
+                "Uptime": "Время работы",
                 "MCU Temperature": "Температура МК",
                 "MCU Voltage": "Напряжение питания МК",
-                "Battery state (2 - good, 1 - normal, 0 - discharged), measured at startup": "Состояние батарейки (2 — отличное, 1 — норма, 0 — разряжена), измерено при загрузке",
+                "Battery state (2 - good, 1 - normal, 0 - discharged), measured at module startup": "Состояние батарейки (2 — отличное, 1 — норма, 0 — разряжена), измерено при включении модуля",
                 "iVout overloaded": "Выход iVout перегружен",
 
                 "do nothing": "нет действия",
