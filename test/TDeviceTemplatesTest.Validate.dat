@@ -20002,7 +20002,7 @@ WB-MWAC
 	Serial  =>  Serial
 	Uptime  =>  Uptime
 WB-MWAC-v2
-	Battery state (2 - good, 1 - normal, 0 - discharged), measured at module startup  =>  Battery state (2 - good, 1 - normal, 0 - discharged), measured at module startup
+	battery_state  =>  battery_state
 	F1  =>  F1
 	F2  =>  F2
 	F3  =>  F3
