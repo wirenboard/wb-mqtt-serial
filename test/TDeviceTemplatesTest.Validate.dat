@@ -20002,7 +20002,6 @@ WB-MWAC
 	Serial  =>  Serial
 	Uptime  =>  Uptime
 WB-MWAC-v2
-	battery_state  =>  battery_state
 	F1  =>  F1
 	F2  =>  F2
 	F3  =>  F3
@@ -20062,6 +20061,7 @@ WB-MWAC-v2
 	S6  =>  S6
 	Serial  =>  Serial
 	Uptime  =>  Uptime
+	battery_state  =>  battery_state
 	iVout overloaded  =>  iVout overloaded
 	wet_cleaning_mode_name  =>  wet_cleaning_mode_name
 WBE2-I-EBUS
