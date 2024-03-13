@@ -1,3 +1,9 @@
+wb-mqtt-serial (2.112.1) stable; urgency=medium
+
+  * Fix publishing period if publish unchanged values is allowed
+
+ -- Petr Krasnoshchekov <petr.krasnoshchekov@wirenboard.com>  Wed, 13 Mar 2024 17:20:25 +0500
+
 wb-mqtt-serial (2.112.0) stable; urgency=medium
 
   * Add support for enums in templates
