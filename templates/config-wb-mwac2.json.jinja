@@ -53,7 +53,7 @@
                 "title":
                 {% if out_num == OUT_NUM_K1 %} "Output K1 actions",
                 {% elif out_num == OUT_NUM_K2 %} "Output K2 actions",
-                {% elif out_num == OUT_NUM_ALARM %} "Actions for \"Leak\" mode",
+                {% elif out_num == OUT_NUM_ALARM %} "Actions for leakage notification",
                 {% else %} "Actions for \"Wet cleaning\" mode",
                 {% endif %}
                 "id": "gg_in{{ in_num }}_out{{ out_num }}_button_actions",
@@ -128,7 +128,7 @@
         "parameters": {
             {% for lp_in_num in range(1, LP_INPUTS_NUMBER + 1) -%}
             "lp_counter{{ lp_in_num }}_offset": {
-                "title": "Counter Offset",
+                "title": "Counter Offset (L)",
                 "description": "counter_offset_description",
                 "address": {{ 1076 + 4 * (lp_in_num - 1) }},
                 "reg_type": "holding",
@@ -138,13 +138,13 @@
                 "order": 1
             },
             "lp_counter{{ lp_in_num }}_pulse_weight": {
-                "title": "Counter Pulse Weight",
+                "title": "Counter Pulse Weight (L)",
                 "description": "counter_pulse_weight_description",
                 "address": {{ 1066 + (lp_in_num - 1) }},
                 "reg_type": "holding",
                 "default": 1,
                 "min": 1,
-                "max:": 100,
+                "max:": 10000,
                 "group": "counter{{ lp_in_num }}",
                 "order": 2
             },
@@ -153,7 +153,7 @@
             {% for in_num in range(1, INPUTS_NUMBER + 1) -%}
             {% set letter = "F" if in_num < IN_NUM_SHORT_CLEANING_ON_LONG_RES_ALARM else "S" -%}
             "in{{ in_num }}_mode": {
-                "title": "Input {{ letter }}{{ in_num }} Mode",
+                "title": "Mode",
                 "address": {{ 8 + in_num }},
                 "reg_type": "holding",
                 "enum": [{{ IN_MODE_INACTIVE }}, {{ IN_MODE_EDGES }}, {{ IN_MODE_BUTTON }}, {{ IN_MODE_FLOOD_SENSOR }}],
@@ -168,7 +168,7 @@
                 "order": 1
             },
             "in{{ in_num }}_debounce_ms": {
-                "title": "Input {{ letter }}{{ in_num }} Debounce (ms)",
+                "title": "Debounce (ms)",
                 "description": "debounce_description",
                 "address": {{ 19 + in_num }},
                 "reg_type": "holding",
@@ -180,7 +180,7 @@
                 "condition": "in{{ in_num }}_mode=={{ IN_MODE_BUTTON }}"
             },
             "in{{ in_num }}_debounce_ms_no_buttons": {
-                "title": "Input {{ letter }}{{ in_num }} Debounce (ms)",
+                "title": "Debounce (ms)",
                 "description": "debounce_description_no_buttons",
                 "address": {{ 19 + in_num }},
                 "reg_type": "holding",
@@ -222,7 +222,7 @@
                 "title": 
                     {%- if out_num == OUT_NUM_K1 %} "Output K1",
                     {%- elif out_num == OUT_NUM_K2 %} "Output K2",
-                    {%- else %} "leak_mode_name",
+                    {%- else %} "Leakage notification",
                     {%- endif %}
                 "order": {{ out_num }},
                 "address": {{ 8260 + ((in_num - 1) * MMATRIX_OUTPUTS_NUMBER) + (out_num - 1) }},
@@ -605,7 +605,7 @@
             {% endfor -%}
 
             {
-                "name": "leak_mode_name",
+                "name": "Leakage notification",
                 "reg_type": "coil",
                 "address": 2,
                 "type": "switch",
@@ -701,28 +701,26 @@
                 "Uptime": "Uptime (s)",
 
                 "inputs_control_in_safety_mode_description": "Sets change of control from the inputs when module switches to safety mode. Does not affect \"leakage sensor\" mode.",
-                "safety_mode_description": "When RS-485 connection is lost, the flood protection module will work autonomously. However, it is possible to set a certain state of the outputs and \"Leak\" mode in case of connection loss. For this purpose, there is a safety mode.",
+                "safety_mode_description": "If communication via RS-485 is lost, the leakage protection module will work autonomously. The user can also set the status of outputs and leakage alerts using safe mode.",
                 "safety_behaviour_description": "Safe state is configured on \"Outputs\" tab.",
-                "outputs_safe_state_description": "State for safe mode and \"Relays State After Power On\" settings. By default, safe mode is disabled and safe states are set to \"Off\".",
-                "poll_timeout_description": "Parameter defines the time of absence of polling in seconds, after which safety mode will be activated. 1 - 65534 ms, 10 by default.",
+                "outputs_safe_state_description": "State for safe mode and \"Relays State After Power On\" settings.",
+                "poll_timeout_description": "Parameter defines the time of absence of polling in seconds, after which safety mode will be activated. Recommended 10 s.",
                 "restore_outputs_state_after_leakage_fix_description": "\"On\" - relays are set to the state before the leakage, then the settings of the interaction of inputs with the relay are analyzed. \"Off\" - the settings of the interaction of inputs with the relays are analyzed immediately.",
-                "relays_state_after_poweron_description": "Default - \"Switch to safety state\"",
-
-                "leak_mode_name": "\"Leak\" mode",
+                "relays_state_after_poweron_description": "Default - \"Switch to safety state\".",
 
                 "wet_cleaning_mode_name": "\"Wet cleaning\" mode",
-                "wet_cleaning_mode_description": "\"Wet cleaning\" mode is used to disable reactions on flood sensors when a room is being cleaned. When the mode is started/stopped, a sound signal is emitted, and the indicators of the inputs periodically flash briefly during the activity of the mode. Disabled automatically after the specified time.",
+                "wet_cleaning_mode_description": "In the \"Wet cleaning\" mode, the module does not respond for the specified time to the leakage sensors, and the input indicators flash briefly. Switching the mode on and off is accompanied by a sound indication.",
                 "wet_cleaning_mode_timer_description": "1 - 360 min, 20 by default",
 
-                "debounce_description": "For button press detection, the value must be 5 - 10 times less than the waiting time for the second press. Adds a delay to the response to presses. 0 - 2000 ms, 50 by default.",
-                "debounce_description_no_buttons": "Adds a delay to the response. 0 - 2000 ms, 50 by default.",                
+                "debounce_description": "For button press detection, the value must be 5 - 10 times less than the waiting time for the second press. Adds a delay to the response to presses. Recommended 50 ms.",
+                "debounce_description_no_buttons": "Adds a delay to the response. Recommended 50 ms.",
                 "lp_hold_time_title": "Long Press Time (ms)",
-                "lp_hold_time_description": "If press is longer than the specified time then it is long. 500 — 5000 ms, 1000 by default.",
+                "lp_hold_time_description": "If press is longer than the specified time then it is long. Recommended 1000 ms.",
                 "secp_waiting_time_title": "Second Press Waiting Time (ms)",
-                "secp_waiting_time_description": "If there is no second press during the specified time then press is single. 0 - disables all presses except short and long. Adds a delay to the response to a short press. 0 - 2000 ms, 300 by default.",
+                "secp_waiting_time_description": "If there is no second press during the specified time then press is single. 0 - disables all presses except short and long. Adds a delay to the response to a short press. Recommended 300 ms.",
 
-                "counter_offset_description": "Initial value of the counter in liters",
-                "counter_pulse_weight_description": "Common counters have a weight of 1, 10, 50, or 100 liters per pulse. Check the technical documentation for your counter. 1 - 10000, 1 by default",
+                "counter_offset_description": "The value will be added to the volume counter.",
+                "counter_pulse_weight_description": "See the technical documentation for your meter.",
             },
             "ru": {
                 "WB-MWAC_template_title": "WB-MWAC v.2 (модуль контроля протечек и расхода воды)",
@@ -733,21 +731,22 @@
                 "Counter {{ lp_in_num }}": "Счетчик {{ lp_in_num }}",
                 {% endfor -%}
 
-                "Counter Offset": "Начальное значение счетчика",
-                "Counter Pulse Weight": "Вес импульса",
-                "counter_offset_description": "Начальное значение счетчика в литрах",
-                "counter_pulse_weight_description": "Распространенные счетчики имеют вес 1, 10, 50, или 100 литров на импульс. Ознакомьтесь с технической документацией на ваш счетчик. 1 — 10000, 1 по умолчанию",
+                "Counter Offset (L)": "Начальное значение счетчика (л)",
+                "Counter Pulse Weight (L)": "Вес импульса (л)",
+                "counter_offset_description": "Значение будет прибавлено к счетчику объема.",
+                "counter_pulse_weight_description": "Смотрите в технической документации на ваш счетчик.",
 
                 "wet_cleaning_mode_name": "Режим \"Влажная уборка\"",
-                "wet_cleaning_mode_description": "Режим \"Влажная уборка\" используется для отключения реакции на датчики протечки при влажной уборке помещения. При запуске/остановке режима издается звуковой сигнал, индикаторы входов периодически коротко моргают во время активности режима. Отключается автоматически по истечении указанного времени.",
+                "wet_cleaning_mode_description": "В режиме \"Влажная уборка\" модуль не реагирует заданное время на датчики протечки, а индикаторы входов коротко мигают. Включение и выключение режима сопровождается звуковой индикацией.",
                 "wet_cleaning_mode_timer_description": "1 — 360 мин, 20 по умолчанию",
                 "\"Wet cleaning\" mode timer (min)": "Таймер режима \"Влажная уборка\" (мин)",
+
+                "Mode": "Режим работы",
+                "Debounce (ms)": "Время защиты от дребезга (мс)",
 
                 {% for in_num in range(1, INPUTS_NUMBER + 1) -%}
                 {% set letter = "F" if in_num < IN_NUM_SHORT_CLEANING_ON_LONG_RES_ALARM else "S" -%}
                 "Input {{ letter }}{{ in_num }}": "Вход {{ letter }}{{ in_num }}",
-                "Input {{ letter }}{{ in_num }} Mode": "Режим работы входа {{ letter }}{{ in_num }}",
-                "Input {{ letter }}{{ in_num }} Debounce (ms)": "Время защиты от дребезга входа {{ letter }}{{ in_num }} (мс)",
                 "Input {{ letter }}{{ in_num }} Single Press Counter": "Счетчик коротких нажатий входа {{ letter }}{{ in_num }}",
                 "Input {{ letter }}{{ in_num }} Long Press Counter": "Счетчик длинных нажатий входа {{ letter }}{{ in_num }}",
                 "Input {{ letter }}{{ in_num }} Double Press Counter": "Счетчик двойных нажатий входа {{ letter }}{{ in_num }}",
@@ -773,7 +772,6 @@
                 "P{{ lp_in_num }} Counter Reset": "Сброс счетчика P{{ lp_in_num }}",
                 {% endfor -%}
 
-                "leak_mode_name": "Режим \"Протечка\"",
                 "Leakage notification": "Оповещение о протечке",
                 "Serial": "Серийный номер",
                 "FW Version": "Версия прошивки",
@@ -800,9 +798,9 @@
                 "Safety Mode": "Безопасный режим",
                 "Safety Behaviour": "Действие в безопасном режиме",
                 "Safety Timer (s)": "Таймаут безопасного режима (с)",
-                "safety_mode_description": "При потере связи по RS-485 модуль защиты от протечек будет работать автономно. Однако есть возможность задать определенное состояние выходов и режима \"Протечка\" в случае обрыва связи. Для этого существует безопасный режим.",
-                "outputs_safe_state_description": "Состояние для безопасного режима и настройки \"Состояния реле при подаче питания\". По умолчанию безопасный режим отключен, а настройки безопасных состояний установлены в \"Выключен\".",
-                "poll_timeout_description": "Параметр определяет время отсутствия опроса в секундах, после которого будет активирован безопасный режим. 1 — 65534 с, 10 по умолчанию.",
+                "safety_mode_description": "При потере связи по RS-485 модуль защиты от протечек будет работать автономно. Также пользователь может задать состояние выходов и оповещения о протечке с помощью безопасного режима.",
+                "outputs_safe_state_description": "Состояние для безопасного режима и настройки \"Состояния реле при подаче питания\".",
+                "poll_timeout_description": "Параметр определяет время отсутствия опроса в секундах, после которого будет активирован безопасный режим. Рекомендовано 10 с.",
                 "restore_outputs_state_after_leakage_fix_description": "\"Включен\" — реле устанавливются в положение до протечки, затем анализируются настройки взаимодействия входов с реле. \"Выключен\" — сразу анализируются настройки взаимодействия входов с реле.",
                 "safety_behaviour_description": "Безопасное состояние настраивается на вкладке \"Выходы\".",
                 "inputs_control_in_safety_mode_description": "Настройка изменения управления с входов при переходе модуля в безопасный режим. Не влияет на режим \"Датчик протечки\".",
@@ -812,15 +810,15 @@
                 "Don't change": "Не блокировать",
                 "Disable in safety mode": "Блокировать в безопасном режиме",
                 "Enable only in safety mode": "Разрешить только в безопасном режиме",
-                "relays_state_after_poweron_description": "По умолчанию — \"Перевести в безопасное состояние\"",
+                "relays_state_after_poweron_description": "По умолчанию — \"Перевести в безопасное состояние\".",
 
                 "Press Parameters": "Параметры нажатий",
-                "debounce_description": "Для детектирования нажатий значение должно быть в 5 — 10 раз меньше, чем время ожидания второго нажатия. Вносит задержку в реакцию на нажатия. 0 — 2000 мс, 50 по умолчанию.",
-                "debounce_description_no_buttons": "Вносит задержку в реакцию. 0 — 2000 мс, 50 по умолчанию.",
+                "debounce_description": "Для детектирования нажатий значение должно быть в 5 — 10 раз меньше, чем время ожидания второго нажатия. Вносит задержку в реакцию на нажатия. Рекомендовано 50 мс.",
+                "debounce_description_no_buttons": "Вносит задержку в реакцию. Рекомендовано 50 мс.",
                 "lp_hold_time_title": "Время длинного нажатия (мс)",
-                "lp_hold_time_description": "Если нажатие длится больше указанного времени — считаем его длинным. 500 — 5000 мс, 1000 по умолчанию.",
+                "lp_hold_time_description": "Если нажатие длится больше указанного времени — считаем его длинным. Рекомендовано 1000 мс.",
                 "secp_waiting_time_title": "Время ожидания второго нажатия (мс)",
-                "secp_waiting_time_description": "Если за указанное время второго нажатия не было — считаем нажатие одиночным. 0 — отключит все нажатия кроме короткого и длинного. Вносит задержку в реакцию на короткое нажатие. 0 — 2000 мс, 300 по умолчанию.",
+                "secp_waiting_time_description": "Если за указанное время второго нажатия не было — считаем нажатие одиночным. 0 — отключит все нажатия кроме короткого и длинного. Вносит задержку в реакцию на короткое нажатие. Рекомендовано 300 мс.",
 
                 "Contact closure": "Замыкание контакта",
                 "Contact opening": "Размыкание контакта",
@@ -834,7 +832,7 @@
 
                 "Output K1 actions": "Действия для выхода K1",
                 "Output K2 actions": "Действия для выхода K2",
-                "Actions for \"Leak\" mode": "Действия для режима \"Протечка\"",
+                "Actions for leakage notification": "Действия для оповещения о протечке",
                 "Actions for \"Wet cleaning\" mode": "Действия для режима \"Влажная уборка\""
             }
         }
