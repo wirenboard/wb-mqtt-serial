@@ -595,7 +595,7 @@
 
             {% for out_num in range(1, OUTPUTS_NUMBER - 1) -%}
             {
-                "name": "K{{ out_num }}",
+                "name": "Output K{{ out_num }}",
                 "reg_type": "coil",
                 "address": {{ out_num - 1 }},
                 "type": "switch",
