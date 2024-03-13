@@ -347,7 +347,7 @@
             {
                 "name": "{{ letter }}{{ in_num - in_num_offset }} Freq",
                 "reg_type": "input",
-                "address": {{ 39 + in_num}},
+                "address": {{ 40 + (in_num - 1) * 2 }},
                 "type": "value",
                 "format": "u32",
                 "scale": 1.52588e-5,
