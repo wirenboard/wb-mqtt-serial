@@ -157,14 +157,9 @@
             },
             {% for ch_number in range(1, OUTPUTS_NUMBER + 1) -%}
             {
-                "title": "Channel {{ ch_number }}",
+                "title": "Channel {{ ch_number }} Switch",
                 "id": "gg_safety_mode_ch_{{ ch_number }}",
-                "group": "gg_safety_behaviour",
-                "ui_options": {
-                    "wb": {
-                        "disable_title": true
-                    }
-                }
+                "group": "gg_safety_behaviour"
             },
             {
                 "title": "Channel {{ ch_number }} Switch",
@@ -294,6 +289,7 @@
                     "Switch"
                 ],
                 "default": 0,
+                "required": true,
                 "group": "input_{{ch_number + 1}}"
             },
             {
@@ -306,7 +302,7 @@
                 "min": 500,
                 "max": 5000,
                 "group": "input_{{ch_number + 1}}_parameters",
-                "condition": "input_{{ch_number + 1}}_mode!=1",
+                "condition": "input_{{ch_number + 1}}_mode==0",
                 "order": 1
             },
             {
@@ -319,7 +315,7 @@
                 "min": 0,
                 "max": 2000,
                 "group": "input_{{ch_number + 1}}_parameters",
-                "condition": "input_{{ch_number + 1}}_mode!=1",
+                "condition": "input_{{ch_number + 1}}_mode==0",
                 "order": 2
             },
             {
@@ -360,7 +356,7 @@
                 ],
                 "default": 0,
                 "group": "input_{{ch_number + 1}}_{{press_type | replace(' ', '_')}}_press_action",
-                "condition": "input_{{ch_number + 1}}_mode!=1",
+                "condition": "input_{{ch_number + 1}}_mode==0",
                 "order": 1
             },
             {
@@ -534,11 +530,12 @@
             },
             {
                 "id": "ls_{{ls_number}}_ch_{{ch_number}}_level_off",
-                "title": "Brightness",
+                "title": "Brightness (%)",
                 "reg_type": "holding",
                 "address": {{1280 + 32 + 256 * (ls_number - 1) + (ch_number - 1)}},
                 "min": 1,
                 "max": 100,
+                "default": 50,
                 "required": true,
                 "group": "gg_ls_{{ls_number}}_ch_{{ch_number}}_action_off",
                 "condition": "ls_{{ls_number}}_ch_{{ch_number}}_action_off==3"
@@ -569,11 +566,12 @@
             },
             {
                 "id": "ls_{{ls_number}}_ch_{{ch_number}}_level_on",
-                "title": "Brightness",
+                "title": "Brightness (%)",
                 "reg_type": "holding",
                 "address": {{1280 + 96 + 256 * (ls_number - 1) + (ch_number - 1)}},
                 "min": 1,
                 "max": 100,
+                "default": 50,
                 "required": true,
                 "group": "gg_ls_{{ls_number}}_ch_{{ch_number}}_action_on",
                 "condition": "ls_{{ls_number}}_ch_{{ch_number}}_action_on==3"
@@ -596,7 +594,7 @@
             {% for ch_number in range(1, OUTPUTS_NUMBER + 1) -%}
             {
                 "id": "safety_mode_ch_{{ch_number}}_action",
-                "title": "Channel {{ch_number}} Switch",
+                "title": "Action",
                 "reg_type": "holding",
                 "address": {{648 + ch_number - 1}},
                 "type": "enum",
@@ -611,11 +609,12 @@
             },
             {
                 "id": "safety_mode_ch_{{ch_number}}_level",
-                "title": "Channel {{ch_number}} Brightness",
+                "title": "Brightness (%)",
                 "reg_type": "holding",
                 "address": {{656 + ch_number - 1}},
                 "min": 1,
                 "max": 100,
+                "default": 50,
                 "required": true,
                 "condition": "safety_mode_ch_{{ch_number}}_action==3",
                 "group": "gg_safety_mode_ch_{{ ch_number }}"
@@ -637,11 +636,12 @@
             },
             {
                 "id": "power_up_behaviour_ch_{{ch_number}}_level",
-                "title": "Brightness",
+                "title": "Brightness (%)",
                 "reg_type": "holding",
                 "address": {{672 + ch_number - 1}},
                 "min": 1,
                 "max": 100,
+                "default": 50,
                 "required": true,
                 "condition": "power_up_behaviour_ch_{{ch_number}}_action==3",
                 "group": "gg_power_up_behaviour_ch_{{ ch_number }}"
@@ -777,7 +777,7 @@
             {% endfor -%}
             {% for ls_number in range(1, LIGHT_SCENES_NUMBER + 1) -%}
             {
-                "name": "Light Scene {{ls_number}}",
+                "name": "Scene {{ls_number}} Light",
                 "reg_type": "coil",
                 "address": {{ 32 + (ls_number - 1) }},
                 "type": "switch",
@@ -958,13 +958,14 @@
                 "Channel not Used in Scene": "Канал не используется в сцене",
                 "Turn On and Set Brightness": "Включить и установить яркость",
                 "Dimming level rate (ms/%)": "Время изменения уровня (мс/%)",
-                "Brightness": "Яркость",
+                "Brightness (%)": "Яркость (%)",
                 "Turn Off Scene Light": "Выключить свет сцены",
                 "Turn On Scene Light": "Включить свет сцены",
                 "Toggle Scene Light": "Переключить свет сцены",
 
                 {% for ls_number in range(1, LIGHT_SCENES_NUMBER + 1) -%}
                 "Light Scene {{ls_number}}": "Сцена {{ls_number}}",
+                "Scene {{ls_number}} Light": "Свет сцены {{ls_number}}",
                 {% endfor -%}
 
                 "Safety Mode": "Безопасный режим",
