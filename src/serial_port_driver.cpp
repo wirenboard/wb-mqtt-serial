@@ -229,6 +229,10 @@ TControlArgs TSerialPortDriver::From(const PDeviceChannel& channel)
         args.SetTitle(tr.second, tr.first);
     }
 
+    for (const auto& it: channel->GetEnumTitles()) {
+        args.SetEnumValueTitles(it.first, it.second);
+    }
+
     return args;
 }
 
