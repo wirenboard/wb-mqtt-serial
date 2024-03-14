@@ -22796,7 +22796,6 @@ tpl1_oni_plc_w_ema_0304
 	Input 3 Short Press Counter  =>  Input 3 Short Press Counter
 	MCU Temperature  =>  MCU Temperature
 	MCU Voltage  =>  MCU Voltage
-	Serial  =>  Serial
 	Scene 1 Light  =>  Scene 1 Light
 	Scene 2 Light  =>  Scene 2 Light
 	Scene 3 Light  =>  Scene 3 Light
@@ -22805,6 +22804,7 @@ tpl1_oni_plc_w_ema_0304
 	Scene 6 Light  =>  Scene 6 Light
 	Scene 7 Light  =>  Scene 7 Light
 	Scene 8 Light  =>  Scene 8 Light
+	Serial  =>  Serial
 	Supply voltage  =>  Supply voltage
 	Uptime  =>  Uptime
 tpl1_oni_plc_w_ema_06U00
@@ -23025,7 +23025,6 @@ tpl1_wb_mao4
 	Input 3 Short Press Counter  =>  Input 3 Short Press Counter
 	MCU Temperature  =>  MCU Temperature
 	MCU Voltage  =>  MCU Voltage
-	Serial  =>  Serial
 	Scene 1 Light  =>  Scene 1 Light
 	Scene 2 Light  =>  Scene 2 Light
 	Scene 3 Light  =>  Scene 3 Light
@@ -23034,5 +23033,6 @@ tpl1_wb_mao4
 	Scene 6 Light  =>  Scene 6 Light
 	Scene 7 Light  =>  Scene 7 Light
 	Scene 8 Light  =>  Scene 8 Light
+	Serial  =>  Serial
 	Supply voltage  =>  Supply voltage
 	Uptime  =>  Uptime
