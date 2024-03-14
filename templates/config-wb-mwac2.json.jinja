@@ -53,7 +53,7 @@
                 "title":
                 {% if out_num == OUT_NUM_K1 %} "Output K1 actions",
                 {% elif out_num == OUT_NUM_K2 %} "Output K2 actions",
-                {% elif out_num == OUT_NUM_ALARM %} "Actions for leakage notification",
+                {% elif out_num == OUT_NUM_ALARM %} "Actions for \"leakage\" mode",
                 {% else %} "Actions for \"Wet cleaning\" mode",
                 {% endif %}
                 "id": "gg_in{{ in_num }}_out{{ out_num }}_button_actions",
@@ -79,7 +79,6 @@
             },
             {
                 "title": "Safe State",
-                "description": "outputs_safe_state_description",
                 "id": "gg_outputs_safe_state",
                 "group": "outputs"
             },
@@ -110,7 +109,7 @@
                 "group": "g_safety"
             },
             {
-                "title": "Inputs Control In Safety Mode",
+                "title": "Outputs Control By Inputs In Safety Mode",
                 "id": "gg_safety_input_control",
                 "description": "inputs_control_in_safety_mode_description",
                 "group": "g_safety"
@@ -138,7 +137,7 @@
                 "order": 1
             },
             "lp_counter{{ lp_in_num }}_pulse_weight": {
-                "title": "Counter Pulse Weight (L)",
+                "title": "Counter Pulse Weight (L/pulse)",
                 "description": "counter_pulse_weight_description",
                 "address": {{ 1066 + (lp_in_num - 1) }},
                 "reg_type": "holding",
@@ -222,7 +221,7 @@
                 "title": 
                     {%- if out_num == OUT_NUM_K1 %} "Output K1",
                     {%- elif out_num == OUT_NUM_K2 %} "Output K2",
-                    {%- else %} "Leakage notification",
+                    {%- else %} "leakage_mode_name",
                     {%- endif %}
                 "order": {{ out_num }},
                 "address": {{ 8260 + ((in_num - 1) * MMATRIX_OUTPUTS_NUMBER) + (out_num - 1) }},
@@ -363,7 +362,7 @@
                 "reg_type": "holding",
                 "enum": [0, 1],
                 "default": 0,
-                "enum_titles": ["Switch to safety state", "Restore last state"],
+                "enum_titles": ["Switch to the safety state", "Restore last state"],
                 "group": "outputs",
                 "order": 1
             },
@@ -397,11 +396,11 @@
                 "enum": [96, 192, 384, 576, 1152],
                 "default": 96,
                 "enum_titles": [
-                    "9600",
-                    "19200",
-                    "38400",
-                    "57600",
-                    "115200"
+                    "9600 kbps",
+                    "19200 kbps",
+                    "38400 kbps",
+                    "57600 kbps",
+                    "115200 kbps"
                 ],
                 "group": "general",
                 "order": 1
@@ -409,7 +408,7 @@
 
             {% for out_num in range(1, OUTPUTS_NUMBER) -%}
             "out{{ out_num }}_safe_state": {
-                "title": {%if out_num == OUT_NUM_ALARM %}"Leakage notification"{% else %}"Output K{{ out_num }}"{% endif %},
+                "title": {%if out_num == OUT_NUM_ALARM %}"leakage_mode_name"{% else %}"Output K{{ out_num }}"{% endif %},
                 "group": "gg_outputs_safe_state",
                 "order": {{ out_num }},
                 "address": {{ 930 + (out_num - 1) }},
@@ -422,7 +421,7 @@
                 ]
             },
             "out{{ out_num }}_safety_behaviour": {
-                "title": {%if out_num == OUT_NUM_ALARM %}"Leakage notification"{% else %}"Output K{{ out_num }}"{% endif %},
+                "title": {%if out_num == OUT_NUM_ALARM %}"leakage_mode_name"{% else %}"Output K{{ out_num }}"{% endif %},
                 "group": "gg_safety_behaviour",
                 "order": {{ out_num }},
                 "address": {{ 938 + (out_num - 1) }},
@@ -431,11 +430,11 @@
                 "enum": [0, 1],
                 "enum_titles": [
                     "Don't сhange state",
-                    "Switch to safety state"
+                    "Switch to the safety state"
                 ]
             },
             "out{{ out_num }}_safety_input_control": {
-                "title": {%if out_num == OUT_NUM_ALARM %}"Leakage notification"{% else %}"Output K{{ out_num }}"{% endif %},
+                "title": {%if out_num == OUT_NUM_ALARM %}"leakage_mode_name"{% else %}"Output K{{ out_num }}"{% endif %},
                 "group": "gg_safety_input_control",
                 "order": {{ out_num }},
                 "address": {{ 946 + (out_num - 1) }},
@@ -466,7 +465,7 @@
         "channels": [
             {% for lp_in_num in range(1, LP_INPUTS_NUMBER + 1) -%}
             {
-                "name": "P{{ lp_in_num }}",
+                "name": "Input P{{ lp_in_num }}",
                 "reg_type": "discrete",
                 "address": {{ 10 + (lp_in_num - 1) }},
                 "type": "switch",
@@ -506,7 +505,7 @@
             {% for in_num in range(1, INPUTS_NUMBER + 1) -%}
             {% set letter = "F" if in_num < IN_NUM_SHORT_CLEANING_ON_LONG_RES_ALARM else "S" -%}
             {
-                "name": "{{ letter }}{{ in_num }}",
+                "name": "Input {{ letter }}{{ in_num }}",
                 "reg_type": "discrete",
                 "address": {{ in_num - 1 }},
                 "type": "switch",
@@ -515,7 +514,7 @@
                 "group": "gg_in{{ in_num }}_channels"
             },
             {
-                "name": "{{ letter }}{{ in_num }}",
+                "name": "Input {{ letter }}{{ in_num }}",
                 "reg_type": "discrete",
                 "address": {{ in_num - 1 }},
                 "type": "switch",
@@ -605,7 +604,7 @@
             {% endfor -%}
 
             {
-                "name": "Leakage notification",
+                "name": "leakage_mode_name",
                 "reg_type": "coil",
                 "address": 2,
                 "type": "switch",
@@ -701,29 +700,30 @@
                 "baud_rate_description": "Make sure that communication with device is established before changing this parameter. Select required baud rate, save configuration and then change port baud rate to the same value.",
                 "Uptime": "Uptime",
 
-                "inputs_control_in_safety_mode_description": "Sets change of control from the inputs when module switches to safety mode. Does not affect \"leakage sensor\" mode.",
-                "safety_mode_description": "If communication via RS-485 is lost, the leakage protection module will work autonomously. The user can also set the status of outputs and leakage alerts using safe mode.",
+                "inputs_control_in_safety_mode_description": "Does not affect \"leakage sensor\" mode.",
+                "safety_mode_description": "If the RS-485 connection is lost, the module will work autonomously, but you can additionally set its behavior in this case.",
                 "safety_behaviour_description": "Safe state is configured on \"Outputs\" tab.",
-                "outputs_safe_state_description": "State for safe mode and \"Relays State After Power On\" settings.",
-                "poll_timeout_description": "Parameter defines the time of absence of polling in seconds, after which safety mode will be activated. Recommended 10 s.",
+                "poll_timeout_description": "Time before entering safety mode after loss of connection. Recommended 10 s.",
                 "restore_outputs_state_after_leakage_fix_description": "\"On\" - relays are set to the state before the leakage, then the settings of the interaction of inputs with the relay are analyzed. \"Off\" - the settings of the interaction of inputs with the relays are analyzed immediately.",
-                "relays_state_after_poweron_description": "Default - \"Switch to safety state\".",
+                "relays_state_after_poweron_description": "Default - \"Switch to the safety state\".",
+
+                "leakage_mode_name": "\"Leakage\" mode",
 
                 "wet_cleaning_mode_name": "\"Wet cleaning\" mode",
-                "wet_cleaning_mode_description": "In the \"Wet cleaning\" mode, the module does not respond for the specified time to the leakage sensors, and the input indicators flash briefly. Switching the mode on and off is accompanied by a sound indication.",
+                "wet_cleaning_mode_description": "In the \"Wet cleaning\" mode, the module does not respond to leakage sensors.",
                 "wet_cleaning_mode_timer_description": "1 - 360 min, 20 by default",
 
                 "debounce_description": "For button press detection, the value must be 5 - 10 times less than the waiting time for the second press. Adds a delay to the response to presses. Recommended 50 ms.",
                 "debounce_description_no_buttons": "Adds a delay to the response. Recommended 50 ms.",
                 "lp_hold_time_title": "Long Press Time (ms)",
-                "lp_hold_time_description": "If press is longer than the specified time then it is long. Recommended 1000 ms.",
+                "lp_hold_time_description": "If the press lasts longer, we consider it long. Recommended 1000 ms.",
                 "secp_waiting_time_title": "Second Press Waiting Time (ms)",
                 "secp_waiting_time_description": "If there is no second press during the specified time then press is single. 0 - disables all presses except short and long. Adds a delay to the response to a short press. Recommended 300 ms.",
 
-                "counter_offset_description": "The value will be added to the volume counter.",
-                "counter_pulse_weight_description": "See the technical documentation for your meter.",
+                "counter_offset_description": "Added to the volume counter to match the readings.",
+                "counter_pulse_weight_description": "Number of liters per pulse from the meter. Indicated on the meter and/or its documentation.",
 
-                "battery_state": "Battery state (2 - good, 1 - normal, 0 - discharged), measured at module startup",
+                "battery_state": "Battery state (2 - good, 1 - normal, 0 - replacement required), measured at module startup",
             },
             "ru": {
                 "WB-MWAC_template_title": "WB-MWAC v.2 (модуль контроля протечек и расхода воды)",
@@ -732,20 +732,21 @@
 
                 {% for lp_in_num in range(1, LP_INPUTS_NUMBER + 1) -%}
                 "Counter {{ lp_in_num }}": "Счетчик {{ lp_in_num }}",
+                "Input P{{ lp_in_num }}": "Вход {{ lp_in_num }}",
                 {% endfor -%}
 
                 "Counter Offset (L)": "Начальное значение счетчика (л)",
-                "Counter Pulse Weight (L)": "Вес импульса (л)",
-                "counter_offset_description": "Значение будет прибавлено к счетчику объема.",
-                "counter_pulse_weight_description": "Смотрите в технической документации на ваш счетчик.",
+                "Counter Pulse Weight (L/pulse)": "Вес импульса (л/имп)",
+                "counter_offset_description": "Прибавляется к счетчику объема для совпадения показаний.",
+                "counter_pulse_weight_description": "Количество литров на импульс со счетчика. Указано на счетчике и/или документации к нему.",
 
                 "wet_cleaning_mode_name": "Режим \"Влажная уборка\"",
-                "wet_cleaning_mode_description": "В режиме \"Влажная уборка\" модуль не реагирует заданное время на датчики протечки, а индикаторы входов коротко мигают. Включение и выключение режима сопровождается звуковой индикацией.",
+                "wet_cleaning_mode_description": "В режиме \"Влажная уборка\" модуль не реагирует на датчики протечки.",
                 "wet_cleaning_mode_timer_description": "1 — 360 мин, 20 по умолчанию",
                 "\"Wet cleaning\" mode timer (min)": "Таймер режима \"Влажная уборка\" (мин)",
 
                 "Mode": "Режим работы",
-                "Debounce (ms)": "Время защиты от дребезга (мс)",
+                "Debounce (ms)": "Время подавления дребезга (мс)",
 
                 {% for in_num in range(1, INPUTS_NUMBER + 1) -%}
                 {% set letter = "F" if in_num < IN_NUM_SHORT_CLEANING_ON_LONG_RES_ALARM else "S" -%}
@@ -775,14 +776,15 @@
                 "P{{ lp_in_num }} Counter Reset": "Сброс счетчика P{{ lp_in_num }}",
                 {% endfor -%}
 
-                "Leakage notification": "Оповещение о протечке",
+                "leakage_mode_name": "Режим \"Протечка\"",
+
                 "Serial": "Серийный номер",
                 "FW Version": "Версия прошивки",
                 "Input Voltage": "Напряжение питания",
                 "Uptime": "Время работы",
                 "MCU Temperature": "Температура МК",
                 "MCU Voltage": "Напряжение питания МК",
-                "battery_state": "Состояние батарейки (2 — отличное, 1 — норма, 0 — разряжена), измерено при включении модуля",
+                "battery_state": "Состояние батарейки (2 — отличное, 1 — норма, 0 — требуется замена), измерено при включении модуля",
                 "iVout overloaded": "Выход iVout перегружен",
 
                 "do nothing": "нет действия",
@@ -792,24 +794,22 @@
 
                 "Relays State After Power On": "Состояния реле при подаче питания",
                 "Restore last state": "Восстановить последнее состояние",
+                "Switch to the safety state": "Перевести в безопасное состояние",
                 "Safe State": "Безопасное состояние",
                 "Off": "Выключен",
                 "On": "Включен",
-
-                "Restore Outputs State After Leakage Fix": "Автоматически восстанавливать состояние кранов после устранения протечки",
+                "Restore Outputs State After Leakage Fix": "Восстанавливать состояние кранов после устранения протечки",
 
                 "Safety Mode": "Безопасный режим",
                 "Safety Behaviour": "Действие в безопасном режиме",
                 "Safety Timer (s)": "Таймаут безопасного режима (с)",
-                "safety_mode_description": "При потере связи по RS-485 модуль защиты от протечек будет работать автономно. Также пользователь может задать состояние выходов и оповещения о протечке с помощью безопасного режима.",
-                "outputs_safe_state_description": "Состояние для безопасного режима и настройки \"Состояния реле при подаче питания\".",
-                "poll_timeout_description": "Параметр определяет время отсутствия опроса в секундах, после которого будет активирован безопасный режим. Рекомендовано 10 с.",
+                "safety_mode_description": "При потере связи по RS-485 модуль будет работать автономно, но можно задать дополнительно его поведение в этом случае.",
+                "poll_timeout_description": "Время до перехода в безопасный режим после потери связи. Рекомендовано 10 с.",
                 "restore_outputs_state_after_leakage_fix_description": "\"Включен\" — реле устанавливются в положение до протечки, затем анализируются настройки взаимодействия входов с реле. \"Выключен\" — сразу анализируются настройки взаимодействия входов с реле.",
                 "safety_behaviour_description": "Безопасное состояние настраивается на вкладке \"Выходы\".",
-                "inputs_control_in_safety_mode_description": "Настройка изменения управления с входов при переходе модуля в безопасный режим. Не влияет на режим \"Датчик протечки\".",
+                "inputs_control_in_safety_mode_description": "Не влияет на режим \"Датчик протечки\".",
                 "Don't сhange state": "Ничего не делать",
-                "Switch to safety state": "Перевести в безопасное состояние",
-                "Inputs Control In Safety Mode": "Управление с входов в безопасном режиме",
+                "Outputs Control By Inputs In Safety Mode": "Управление выходами с входов в безопасном режиме",
                 "Don't change": "Не блокировать",
                 "Disable in safety mode": "Блокировать в безопасном режиме",
                 "Enable only in safety mode": "Разрешить только в безопасном режиме",
@@ -819,7 +819,7 @@
                 "debounce_description": "Для детектирования нажатий значение должно быть в 5 — 10 раз меньше, чем время ожидания второго нажатия. Вносит задержку в реакцию на нажатия. Рекомендовано 50 мс.",
                 "debounce_description_no_buttons": "Вносит задержку в реакцию. Рекомендовано 50 мс.",
                 "lp_hold_time_title": "Время длинного нажатия (мс)",
-                "lp_hold_time_description": "Если нажатие длится больше указанного времени — считаем его длинным. Рекомендовано 1000 мс.",
+                "lp_hold_time_description": "Если нажатие длится дольше — считаем его длинным. Рекомендовано 1000 мс.",
                 "secp_waiting_time_title": "Время ожидания второго нажатия (мс)",
                 "secp_waiting_time_description": "Если за указанное время второго нажатия не было — считаем нажатие одиночным. 0 — отключит все нажатия кроме короткого и длинного. Вносит задержку в реакцию на короткое нажатие. Рекомендовано 300 мс.",
 
@@ -835,8 +835,14 @@
 
                 "Output K1 actions": "Действия для выхода K1",
                 "Output K2 actions": "Действия для выхода K2",
-                "Actions for leakage notification": "Действия для оповещения о протечке",
-                "Actions for \"Wet cleaning\" mode": "Действия для режима \"Влажная уборка\""
+                "Actions for \"leakage\" mode": "Действия для режима \"Протечка\"",
+                "Actions for \"Wet cleaning\" mode": "Действия для режима \"Влажная уборка\"",
+
+                "9600 kbps": "9600 кбит/с",
+                "19200 kbps": "19200 кбит/с",
+                "38400 kbps": "38400 кбит/с",
+                "57600 kbps": "57600 кбит/с",
+                "115200 kbps": "115200 кбит/с",
             }
         }
     }
