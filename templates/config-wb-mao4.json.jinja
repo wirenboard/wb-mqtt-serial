@@ -376,7 +376,7 @@
                 "default": 0,
                 "group": "input_{{ch_number + 1}}_{{press_type | replace(' ', '_')}}_press_action",
                 "order": 2,
-                "condition": "({{action_bind}}_number>0)&&({{action_bind}}_number<100)"
+                "condition": "({{action_bind}}_number>=1)&&({{action_bind}}_number<=4)"
             },
             {
                 "id": "{{action_bind}}_action_all",
@@ -523,7 +523,9 @@
                 "title": "Dimming level rate (ms/%)",
                 "reg_type": "holding",
                 "address": {{1280 + 24 + 256 * (ls_number - 1) + (ch_number - 1)}},
+                "min": 0,
                 "max": 500,
+                "default": 20,
                 "required": true,
                 "group": "gg_ls_{{ls_number}}_ch_{{ch_number}}_action_off",
                 "condition": "ls_{{ls_number}}_ch_{{ch_number}}_action_off>=1"
@@ -559,7 +561,9 @@
                 "title": "Dimming level rate (ms/%)",
                 "reg_type": "holding",
                 "address": {{1280 + 88 + 256 * (ls_number - 1) + (ch_number - 1)}},
+                "min": 0,
                 "max": 500,
+                "default": 20,
                 "required": true,
                 "group": "gg_ls_{{ls_number}}_ch_{{ch_number}}_action_on",
                 "condition": "ls_{{ls_number}}_ch_{{ch_number}}_action_on>=1"
@@ -957,6 +961,7 @@
                 "Actions if Light is On": "Действие, если свет включен",
                 "Channel not Used in Scene": "Канал не используется в сцене",
                 "Turn On and Set Brightness": "Включить и установить яркость",
+                "Set Brightness": "Установить яркость",
                 "Dimming level rate (ms/%)": "Темп изменения уровня яркости (мс/%)",
                 "Brightness (%)": "Яркость (%)",
                 "Turn Off Scene Light": "Выключить свет сцены",
