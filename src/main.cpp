@@ -305,7 +305,7 @@ int main(int argc, char* argv[])
         // A timer in the application allow publishing, but lib's timer can be not expired and can reject it.
         // Real publish will occur only on next application's timer expiration
         // Set publish policy in libwbmqtt1 to PublishAll to disable its timer
-        WBMQTT::TPublishParameters driverPublishParameters = handlerConfig->PublishParameters;
+        auto driverPublishParameters = handlerConfig->PublishParameters;
         if (driverPublishParameters.Policy == WBMQTT::TPublishParameters::PublishSomeUnchanged) {
             driverPublishParameters.Policy = WBMQTT::TPublishParameters::PublishAll;
         }
