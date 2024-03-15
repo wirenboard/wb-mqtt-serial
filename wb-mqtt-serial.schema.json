@@ -14,7 +14,10 @@
           "_format": "checkbox",
           "propertyOrder": 2,
           "options": {
-            "grid_columns": 12
+            "grid_columns": 12,
+            "wb": {
+              "show_editor": true
+            }
           }
         },
         "response_timeout_ms": {
@@ -25,7 +28,11 @@
           "default": 500,
           "propertyOrder": 8,
           "options": {
-            "grid_columns": 4
+            "grid_columns": 12,
+            "show_opt_in": true,
+            "wb" : {
+              "disabledEditorText": " "
+            }
           }
         },
         "guard_interval_us": {
@@ -36,7 +43,11 @@
           "default": 0,
           "propertyOrder": 9,
           "options": {
-            "grid_columns": 4
+            "grid_columns": 12,
+            "show_opt_in": true,
+            "wb" : {
+              "disabledEditorText": " "
+            }
           }
         },
         "poll_interval": {
@@ -51,7 +62,10 @@
           "description" : "read_rate_limit_description",
           "minimum": 0,
           "default": 1000,
-          "propertyOrder": 10
+          "propertyOrder": 10,
+          "options": {
+            "grid_columns": 12
+          }
         },
         "devices": {
           "type": "array",
@@ -104,7 +118,10 @@
               "default": 9600,
               "propertyOrder": 4,
               "options": {
-                "grid_columns": 2
+                "grid_columns": 2,
+                "wb": {
+                  "show_editor":true
+                }
               }    
             },
             "parity": {
@@ -114,7 +131,10 @@
               "default": "N",
               "propertyOrder": 5,
               "options": {
-                "grid_columns": 2
+                "grid_columns": 2,
+                "wb": {
+                  "show_editor":true
+                }
               }    
             },
             "data_bits": {
@@ -124,7 +144,10 @@
               "default": 8,
               "propertyOrder": 6,
               "options": {
-                "grid_columns": 2
+                "grid_columns": 2,
+                "wb": {
+                  "show_editor":true
+                }
               }    
             },
             "stop_bits": {
@@ -134,7 +157,10 @@
               "default": 1,
               "propertyOrder": 7,
               "options": {
-                "grid_columns": 2
+                "grid_columns": 2,
+                "wb": {
+                  "show_editor":true
+                }
               }    
             }
           },
@@ -142,11 +168,10 @@
         },
         { "$ref" : "#/definitions/commonPortSettings"}
       ],
-      "defaultProperties": ["port_type", "path", "baud_rate", "parity", "data_bits", "stop_bits", "devices"],
       "_format": "grid",
       "options": {
         "wb": {
-          "disable_panel": true
+          "disable_title": true
         }
       }
     },
@@ -210,11 +235,10 @@
         { "$ref" : "#/definitions/commonTcpPortSettings"},
         { "$ref" : "#/definitions/commonPortSettings"}
       ],
-      "defaultProperties": ["port_type", "address", "port", "enabled", "devices"],
       "_format": "grid",
       "options": {
         "wb": {
-          "disable_panel": true
+          "disable_title": true
         }
       }
     },
@@ -238,11 +262,10 @@
         { "$ref" : "#/definitions/commonTcpPortSettings"},
         { "$ref" : "#/definitions/commonPortSettings"}
       ],
-      "defaultProperties": ["port_type", "address", "port", "enabled", "devices"],
       "_format": "grid",
       "options": {
         "wb": {
-          "disable_panel": true
+          "disable_title": true
         }
       }
     },
@@ -1984,7 +2007,12 @@
       "title": "Enable debug logging",
       "default": false,
       "_format": "checkbox",
-      "propertyOrder": 1
+      "propertyOrder": 1,
+      "options": {
+        "wb": {
+          "show_editor": true
+        }
+      }
     },
     "ports": {
       "type": "array",
@@ -2003,7 +2031,10 @@
       "title" : "Unchanged value posting interval",
       "description" : "max_unchanged_interval_desc",
       "default" : -1,
-      "propertyOrder" : 2
+      "propertyOrder" : 2,
+      "options": {
+        "show_opt_in": true
+      }
     },
     "rate_limit" : {
       "type" : "integer",
@@ -2011,12 +2042,18 @@
       "description" : "rate_limit_desc",
       "default" : 100,
       "min": 1,
-      "propertyOrder" : 3
+      "propertyOrder" : 3,
+      "options": {
+        "show_opt_in": true
+      }
     }
   },
 
   "options": {
-    "disable_edit_json": true
+    "disable_edit_json": true,
+    "wb": {
+      "disable_title": true
+    }
   },
 
   "configFile": {

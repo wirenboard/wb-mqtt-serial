@@ -1,3 +1,9 @@
+wb-mqtt-serial (2.113.0) stable; urgency=medium
+
+  * Update schema for device manager interface in homeui
+
+ -- Petr Krasnoshchekov <petr.krasnoshchekov@wirenboard.com>  Fri, 15 Mar 2024 10:28:18 +0500
+
 wb-mqtt-serial (2.112.1) stable; urgency=medium
 
   * Fix publishing period if publish unchanged values is allowed
