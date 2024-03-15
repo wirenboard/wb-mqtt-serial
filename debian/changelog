@@ -1,8 +1,32 @@
-wb-mqtt-serial (2.111.0) stable; urgency=medium
+wb-mqtt-serial (2.113.0) stable; urgency=medium
 
   * Update schema for device manager interface in homeui
 
- -- Petr Krasnoshchekov <petr.krasnoshchekov@wirenboard.com>  Mon, 04 Mar 2024 11:11:31 +0500
+ -- Petr Krasnoshchekov <petr.krasnoshchekov@wirenboard.com>  Fri, 15 Mar 2024 10:28:18 +0500
+
+wb-mqtt-serial (2.112.1) stable; urgency=medium
+
+  * Fix publishing period if publish unchanged values is allowed
+
+ -- Petr Krasnoshchekov <petr.krasnoshchekov@wirenboard.com>  Wed, 13 Mar 2024 17:20:25 +0500
+
+wb-mqtt-serial (2.112.0) stable; urgency=medium
+
+  * Add support for enums in templates
+
+ -- Nikolay Korotkiy <nikolay.korotkiy@wirenboard.com>  Tue, 12 Mar 2024 13:20:00 +0400
+
+wb-mqtt-serial (2.111.1) stable; urgency=medium
+
+  * Add support for device signatures in templates with subdevices
+
+ -- Petr Krasnoshchekov <petr.krasnoshchekov@wirenboard.com>  Mon, 11 Mar 2024 14:02:19 +0500
+
+wb-mqtt-serial (2.111.0) stable; urgency=medium
+
+  * Add new template for dali-logic-lite-ps-x1
+
+ -- Mikhail Burchu <mikhail.burchu@wirenboard.com>  Fri, 1 Mar 2024 17:30:00 +0300
 
 wb-mqtt-serial (2.110.1) stable; urgency=medium
 

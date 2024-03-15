@@ -486,6 +486,12 @@ namespace
     //  {
     //      "type": "object",
     //      "title": DEVICE_TITLE_HASH,
+    //      "hw": [
+    //          {
+    //              "signature": DEVICE_SIGNATURE,
+    //              "fw": FW_SEMVER
+    //          }
+    //      ],
     //      "options": {
     //          "disable_edit_json": true,
     //          "compact": true,
@@ -532,6 +538,11 @@ namespace
         res["title"] = context.AddHashedTranslation(deviceTemplate.Title);
         res["properties"]["device_type"] = MakeHiddenProperty(deviceTemplate.Type);
         MakeArray("required", res).append("device_type");
+
+        auto hwArray = MakeHardwareArray(deviceTemplate);
+        if (!hwArray.empty()) {
+            res["hw"] = hwArray;
+        }
 
         res["options"]["wb"]["disable_title"] = true;
         if (deviceTemplate.IsDeprecated) {
@@ -852,4 +863,17 @@ void AddTranslations(const std::string& deviceType, Json::Value& translations, c
             translations[it.name()][GetTranslationHash(deviceType, msgIt.name())] = *msgIt;
         }
     }
+}
+
+Json::Value MakeHardwareArray(const TDeviceTemplate& deviceTemplate)
+{
+    Json::Value res(Json::arrayValue);
+    for (const auto& hwItem: deviceTemplate.Hardware) {
+        auto& hw = Append(res);
+        hw["signature"] = hwItem.Signature;
+        if (!hwItem.Fw.empty()) {
+            hw["fw"] = hwItem.Fw;
+        }
+    }
+    return res;
 }
