@@ -1,8 +1,14 @@
 wb-mqtt-serial (2.113.0) stable; urgency=medium
 
-  * Add WB-MWAC v.2 template
+  * Update schema for device manager interface in homeui
 
- -- Radmir Khakimov <radmir.khakimov@wirenboard.com>  Tue, 12 Mar 2024 20:21:51 +0500
+ -- Petr Krasnoshchekov <petr.krasnoshchekov@wirenboard.com>  Fri, 15 Mar 2024 10:28:18 +0500
+
+wb-mqtt-serial (2.112.1) stable; urgency=medium
+
+  * Fix publishing period if publish unchanged values is allowed
+
+ -- Petr Krasnoshchekov <petr.krasnoshchekov@wirenboard.com>  Wed, 13 Mar 2024 17:20:25 +0500
 
 wb-mqtt-serial (2.112.0) stable; urgency=medium
 
