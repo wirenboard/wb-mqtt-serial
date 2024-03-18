@@ -754,7 +754,9 @@ std::string TTemplateMap::GetDeviceType(const std::string& templatePath) const
     throw std::runtime_error(templatePath + " doesn't contain device type declaration");
 }
 
-void TTemplateMap::AddTemplatesDir(const std::string& templatesDir, bool passInvalidTemplates)
+void TTemplateMap::AddTemplatesDir(const std::string& templatesDir,
+                                   bool passInvalidTemplates,
+                                   const Json::Value& settings)
 {
     IterateDirByPattern(
         templatesDir,
@@ -768,7 +770,7 @@ void TTemplateMap::AddTemplatesDir(const std::string& templatesDir, bool passInv
                 return false;
             }
             try {
-                Json::Value root = WBMQTT::JSON::Parse(filepath);
+                Json::Value root = WBMQTT::JSON::ParseWithSettings(filepath, settings);
                 TemplateFiles[root["device_type"].asString()] = filepath;
             } catch (const std::exception& e) {
                 if (passInvalidTemplates) {
