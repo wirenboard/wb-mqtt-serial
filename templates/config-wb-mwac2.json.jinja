@@ -98,7 +98,7 @@
                 "id": "g_safety"
             },
             {
-                "title": "Cleaning mode",
+                "title": "Cleaning Mode",
                 "id": "wet_cleaning_mode",
                 "description": "wet_cleaning_mode_description",
             },
@@ -221,7 +221,7 @@
                 "title": 
                     {%- if out_num == OUT_NUM_K1 %} "Output K1",
                     {%- elif out_num == OUT_NUM_K2 %} "Output K2",
-                    {%- else %} "Leakage mode",
+                    {%- else %} "Leakage Mode",
                     {%- endif %}
                 "order": {{ out_num }},
                 "address": {{ 8260 + ((in_num - 1) * MMATRIX_OUTPUTS_NUMBER) + (out_num - 1) }},
@@ -408,7 +408,7 @@
 
             {% for out_num in range(1, OUTPUTS_NUMBER) -%}
             "out{{ out_num }}_safe_state": {
-                "title": {%if out_num == OUT_NUM_ALARM %}"Leakage mode"{% else %}"Output K{{ out_num }}"{% endif %},
+                "title": {%if out_num == OUT_NUM_ALARM %}"Leakage Mode"{% else %}"Output K{{ out_num }}"{% endif %},
                 "group": "gg_outputs_safe_state",
                 "order": {{ out_num }},
                 "address": {{ 930 + (out_num - 1) }},
@@ -421,7 +421,7 @@
                 ]
             },
             "out{{ out_num }}_safety_behaviour": {
-                "title": {%if out_num == OUT_NUM_ALARM %}"Leakage mode"{% else %}"Output K{{ out_num }}"{% endif %},
+                "title": {%if out_num == OUT_NUM_ALARM %}"Leakage Mode"{% else %}"Output K{{ out_num }}"{% endif %},
                 "group": "gg_safety_behaviour",
                 "order": {{ out_num }},
                 "address": {{ 938 + (out_num - 1) }},
@@ -434,7 +434,7 @@
                 ]
             },
             "out{{ out_num }}_safety_input_control": {
-                "title": {%if out_num == OUT_NUM_ALARM %}"Leakage mode"{% else %}"Output K{{ out_num }}"{% endif %},
+                "title": {%if out_num == OUT_NUM_ALARM %}"Leakage Mode"{% else %}"Output K{{ out_num }}"{% endif %},
                 "group": "gg_safety_input_control",
                 "order": {{ out_num }},
                 "address": {{ 946 + (out_num - 1) }},
@@ -541,8 +541,8 @@
                 "group": "gg_in{{ in_num }}_channels"
             },
             {
-                "name": "Input {{ letter }}{{ in_num }} sensor presence (only for Larnitech sensors)",
-                "id": "Input {{ letter }}{{ in_num }} sensor presence",
+                "name": "Input {{ letter }}{{ in_num }} Sensor Presence (only for Larnitech sensors)",
+                "id": "Input {{ letter }}{{ in_num }} Sensor Presence",
                 "reg_type": "discrete",
                 "address": {{ 20 + (in_num - 1) }},
                 "type": "switch",
@@ -605,7 +605,7 @@
             {% endfor -%}
 
             {
-                "name": "Leakage mode",
+                "name": "Leakage Mode",
                 "reg_type": "coil",
                 "address": 2,
                 "type": "switch",
@@ -613,7 +613,7 @@
                 "group": "gg_outputs_channels"
             },
             {
-                "name": "Cleaning mode",
+                "name": "Cleaning Mode",
                 "reg_type": "coil",
                 "address": 3,
                 "type": "switch",
@@ -677,8 +677,8 @@
                 "group": "hw_info"
             },
             {
-                "name": "Battery state (2 - good, 1 - normal, 0 - replacement required), measured at module startup",
-                "id": "Battery state",
+                "name": "Battery State (2 - good, 1 - normal, 0 - replacement required), measured at module startup",
+                "id": "Battery State",
                 "reg_type": "input",
                 "address": 971,
                 "type": "value",
@@ -687,7 +687,7 @@
                 "group": "hw_info"
             },
             {
-                "name": "iVout overloaded",
+                "name": "iVout Overloaded",
                 "reg_type": "discrete",
                 "address": 15,
                 "type": "switch",
@@ -709,9 +709,9 @@
                 "restore_outputs_state_after_leakage_fix_description": "\"On\" - relays are set to the state before the leakage, then the settings of the interaction of inputs with the relay are analyzed. \"Off\" - the settings of the interaction of inputs with the relays are analyzed immediately.",
                 "relays_state_after_poweron_description": "Default - \"Switch to the safety state\".",
 
-                "Leakage mode": "\"Leakage\" mode",
+                "Leakage Mode": "\"Leakage\" Mode",
 
-                "Cleaning mode": "\"Wet cleaning\" mode",
+                "Cleaning Mode": "\"Wet cleaning\" Mode",
                 "wet_cleaning_mode_description": "In the \"Wet cleaning\" mode, the module does not respond to leakage sensors.",
                 "wet_cleaning_mode_timer_description": "1 - 360 min",
 
@@ -740,7 +740,7 @@
                 "counter_offset_description": "Прибавляется к счетчику объема для совпадения показаний.",
                 "counter_pulse_weight_description": "Количество литров на импульс со счетчика. Указано на счетчике и/или документации к нему.",
 
-                "Cleaning mode": "Режим \"Влажная уборка\"",
+                "Cleaning Mode": "Режим \"Влажная уборка\"",
                 "wet_cleaning_mode_description": "В режиме \"Влажная уборка\" модуль не реагирует на датчики протечки.",
                 "wet_cleaning_mode_timer_description": "1 — 360 мин",
                 "\"Wet cleaning\" mode timer (min)": "Таймер режима \"Влажная уборка\" (мин)",
@@ -756,7 +756,7 @@
                 "Input {{ letter }}{{ in_num }} Double Press Counter": "Счетчик двойных нажатий входа {{ letter }}{{ in_num }}",
                 "Input {{ letter }}{{ in_num }} Shortlong Press Counter": "Счетчик коротких, а затем длинных нажатий входа {{ letter }}{{ in_num }}",
                 "Input {{ letter }}{{ in_num }} Counter": "Счетчик входа {{ letter }}{{ in_num }}",
-                "Input {{ letter }}{{ in_num }} sensor presence (only for Larnitech sensors)": "Наличие датчика на входе {{ letter }}{{ in_num }} (только для датчиков Larnitech)",
+                "Input {{ letter }}{{ in_num }} Sensor Presence (only for Larnitech sensors)": "Наличие датчика на входе {{ letter }}{{ in_num }} (только для датчиков Larnitech)",
                 {% endfor -%}
 
                 "control disabled": "управление отключено",
@@ -776,7 +776,7 @@
                 "P{{ lp_in_num }} Counter Reset": "Сброс счетчика P{{ lp_in_num }}",
                 {% endfor -%}
 
-                "Leakage mode": "Режим \"Протечка\"",
+                "Leakage Mode": "Режим \"Протечка\"",
 
                 "Serial": "Серийный номер",
                 "FW Version": "Версия прошивки",
@@ -784,8 +784,8 @@
                 "Uptime": "Время работы",
                 "MCU Temperature": "Температура МК",
                 "MCU Voltage": "Напряжение питания МК",
-                "Battery state (2 - good, 1 - normal, 0 - replacement required), measured at module startup": "Состояние батарейки (2 — отличное, 1 — норма, 0 — требуется замена), измерено при включении модуля",
-                "iVout overloaded": "Выход iVout перегружен",
+                "Battery State (2 - good, 1 - normal, 0 - replacement required), measured at module startup": "Состояние батарейки (2 — отличное, 1 — норма, 0 — требуется замена), измерено при включении модуля",
+                "iVout Overloaded": "Выход iVout перегружен",
 
                 "do nothing": "нет действия",
                 "off": "выключить",
