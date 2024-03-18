@@ -1,9 +1,3 @@
-wb-mqtt-serial (2.108.9-wb101) stable; urgency=medium
-
-  * add WB-MWAC v2 template
-
- -- Radmir Khakimov <radmir.khakimov@wirenboard.ru>  Mon, 18 Mar 2024 17:37:30 +0500
-
 wb-mqtt-serial (2.108.9-wb100) stable; urgency=medium
 
   * MSW4-LORA template: added template for WB-MSW-LORA v.4 as it was broken by fast modbus
