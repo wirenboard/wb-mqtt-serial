@@ -1,8 +1,14 @@
-wb-mqtt-serial (2.113.1) stable; urgency=medium
+wb-mqtt-serial (2.114.1) stable; urgency=medium
 
-  * Fix m1w2 template. No functional changes 
+  * Fix m1w2 template. Add trailing comma check for templates
 
  -- ekateluv <ekaterina.volkova@wirenboard.com>  Fri, 15 Mar 2024 14:56:30 +0300
+
+wb-mqtt-serial (2.114.0) stable; urgency=medium
+
+  * Add WB-MWAC v.2 template
+
+ -- Radmir Khakimov <radmir.khakimov@wirenboard.com>  Mon, 18 Mar 2024 14:00:51 +0500
 
 wb-mqtt-serial (2.113.0) stable; urgency=medium
 
