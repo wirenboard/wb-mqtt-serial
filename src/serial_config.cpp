@@ -770,13 +770,7 @@ void TTemplateMap::AddTemplatesDir(const std::string& templatesDir,
                 return false;
             }
             try {
-                Json ::Value root;
-                if (settings.empty()) {
-                    root = WBMQTT::JSON::Parse(filepath);
-                } else {
-                    root = WBMQTT::JSON::ParseWithSettings(filepath, settings);
-                }
-
+                Json::Value root = WBMQTT::JSON::ParseWithSettings(filepath, settings);
                 TemplateFiles[root["device_type"].asString()] = filepath;
             } catch (const std::exception& e) {
                 if (passInvalidTemplates) {
