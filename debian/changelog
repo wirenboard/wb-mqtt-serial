@@ -1,8 +1,8 @@
 wb-mqtt-serial (2.114.2) stable; urgency=medium
 
-  * Fix baud aret strings in WB-MWAC v.2 template
+  * Dauerhaft: add 'Max rotational speed' channel
 
- -- Radmir Khakimov <radmir.khakimov@wirenboard.com>  Tue, 19 Mar 2024 11:00:51 +0500
+ -- Nikolay Korotkiy <nikolay.korotkiy@wirenboard.com>  Tue, 19 Mar 2024 11:30:00 +0400
 
 wb-mqtt-serial (2.114.1) stable; urgency=medium
 
