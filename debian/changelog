@@ -1,6 +1,6 @@
 wb-mqtt-serial (2.114.3) stable; urgency=medium
 
-  * Fix baud aret strings in WB-MWAC v.2 template
+  * Fix baud rate strings in WB-MWAC v.2 template
 
  -- Radmir Khakimov <radmir.khakimov@wirenboard.com>  Tue, 19 Mar 2024 14:00:51 +0500
 
