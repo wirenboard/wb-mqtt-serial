@@ -1,6 +1,6 @@
 wb-mqtt-serial (2.108.9-wb103) stable; urgency=medium
 
-  * Fix m1w2 template, add trailing comma check
+  * Fix m1w2 template, no functional changes
 
  -- Ekaterina Volkova <ekaterina.volkova@wirenboard.com>  Tue, 19 Mar 2024 15:20:50 +0300
 
