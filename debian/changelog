@@ -1,3 +1,9 @@
+wb-mqtt-serial (2.108.9-wb102) stable; urgency=medium
+
+  * Fix baud rate strings in WB-MWAC v2 template, del trailing commas, add curtains support in relay templates
+
+ -- Radmir Khakimov <radmir.khakimov@wirenboard.ru>  Tue, 19 Mar 2024 16:00:30 +0500
+
 wb-mqtt-serial (2.108.9-wb101) stable; urgency=medium
 
   * add WB-MWAC v2 template
