@@ -1,3 +1,9 @@
+wb-mqtt-serial (2.114.2) stable; urgency=medium
+
+  * Dauerhaft: add 'Max rotational speed' channel
+
+ -- Nikolay Korotkiy <nikolay.korotkiy@wirenboard.com>  Tue, 19 Mar 2024 11:30:00 +0400
+
 wb-mqtt-serial (2.114.1) stable; urgency=medium
 
   * Fix m1w2 template. Add trailing comma check for templates
