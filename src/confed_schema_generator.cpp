@@ -3,7 +3,9 @@
 #include "confed_schema_generator_with_groups.h"
 #include "json_common.h"
 #include "log.h"
+#include "templates_map.h"
 
+#include <fstream>
 #include <wblib/wbmqtt.h>
 
 #define LOG(logger) ::logger.Log() << "[serial config] "
@@ -21,26 +23,6 @@ namespace
     {
         return prefix + "_" + std::to_string(std::hash<std::string>()(deviceType));
     }
-
-    struct TContext
-    {
-        const std::string& DeviceType;
-        Json::Value& Translations;
-
-        /**
-         * @brief Calculate hash from msg and DeviceType.
-         *        Add msg in "en" translations list with calculated hash as key
-         *
-         * @param msg message to add to translations list
-         * @return std::string key of msg in translations list
-         */
-        std::string AddHashedTranslation(const std::string& msg)
-        {
-            auto hash = GetTranslationHash(DeviceType, msg);
-            Translations["en"][hash] = msg;
-            return hash;
-        }
-    };
 
     //  {
     //      "properties": {
@@ -75,23 +57,23 @@ namespace
     //          "grid_columns": 6
     //      },
     //  }
-    Json::Value MakeParameterSchema(const Json::Value& setupRegister, int index, TContext& context)
+    Json::Value MakeParameterSchema(const Json::Value& setupRegister, int index)
     {
         Json::Value r;
         r["type"] = setupRegister.isMember("scale") ? "number" : "integer";
-        r["title"] = context.AddHashedTranslation(setupRegister["title"].asString());
+        r["title"] = setupRegister["title"];
         r["default"] = GetDefaultSetupRegisterValue(setupRegister);
         SetIfExists(r, "enum", setupRegister, "enum");
         SetIfExists(r, "minimum", setupRegister, "min");
         SetIfExists(r, "maximum", setupRegister, "max");
         if (setupRegister.isMember("description")) {
-            r["description"] = context.AddHashedTranslation(setupRegister["description"].asString());
+            r["description"] = setupRegister["description"];
         }
         r["propertyOrder"] = index;
         if (setupRegister.isMember("enum_titles")) {
             auto& titles = MakeArray("enum_titles", r["options"]);
             for (const auto& title: setupRegister["enum_titles"]) {
-                titles.append(context.AddHashedTranslation(title.asString()));
+                titles.append(title.asString());
             }
         }
         r["options"]["grid_columns"] = 6;
@@ -124,13 +106,13 @@ namespace
     //        "read_rate_limit_ms": CHANNEL_READ_RATE_LIMIT
     //      }
     //  }
-    Json::Value MakeTabSimpleChannelSchema(const Json::Value& channelTemplate, TContext& context)
+    Json::Value MakeTabSimpleChannelSchema(const Json::Value& channelTemplate)
     {
         Json::Value r;
         auto& allOf = MakeArray("allOf", r);
         allOf.append(MakeObject("$ref", "#/definitions/channelSettings"));
         allOf.append(MakeHiddenNameObject(channelTemplate["name"].asString()));
-        r["headerTemplate"] = context.AddHashedTranslation(channelTemplate["name"].asString());
+        r["headerTemplate"] = channelTemplate["name"].asString();
         r["default"]["name"] = channelTemplate["name"].asString();
         r["options"]["wb"]["disable_title"] = true;
         r["default"]["enabled"] = true;
@@ -169,18 +151,17 @@ namespace
     //          }
     //      ]
     //  }
-    Json::Value MakeTabOneOfChannelSchema(const Json::Value& channel, TContext& context)
+    Json::Value MakeTabOneOfChannelSchema(const Json::Value& channel)
     {
         Json::Value r;
-        r["headerTemplate"] = context.AddHashedTranslation(channel["name"].asString());
+        r["headerTemplate"] = channel["name"];
         r["options"]["keep_oneof_values"] = false;
         r["options"]["wb"]["disable_title"] = true;
         auto& allOf = MakeArray("allOf", r);
 
         auto& oneOf = MakeArray("oneOf", Append(allOf));
         for (const auto& subDeviceName: channel["oneOf"]) {
-            Append(oneOf)["$ref"] =
-                "#/definitions/" + GetSubdeviceSchemaKey(context.DeviceType, subDeviceName.asString());
+            Append(oneOf)["$ref"] = "#/definitions/" + GetSubdeviceSchemaKey(subDeviceName.asString());
         }
         allOf.append(MakeHiddenNameObject(channel["name"].asString()));
         return r;
@@ -208,10 +189,10 @@ namespace
     //          }
     //      }
     //  }
-    Json::Value MakeTabSingleDeviceChannelSchema(const Json::Value& channel, TContext& context, bool disableTitle)
+    Json::Value MakeTabSingleDeviceChannelSchema(const Json::Value& channel, bool disableTitle)
     {
         Json::Value r;
-        r["headerTemplate"] = context.AddHashedTranslation(channel["name"].asString());
+        r["headerTemplate"] = channel["name"];
         if (channel.isMember("ui_options")) {
             r["options"] = channel["ui_options"];
         }
@@ -219,27 +200,26 @@ namespace
             r["options"]["wb"]["disable_title"] = true;
         }
         auto& allOf = MakeArray("allOf", r);
-        Append(allOf)["$ref"] =
-            "#/definitions/" + GetSubdeviceSchemaKey(context.DeviceType, channel["device_type"].asString());
+        Append(allOf)["$ref"] = "#/definitions/" + GetSubdeviceSchemaKey(channel["device_type"].asString());
         allOf.append(MakeHiddenNameObject(channel["name"].asString()));
         return r;
     }
 
-    Json::Value MakeTabChannelSchema(const Json::Value& channel, TContext& context, bool inTabsContainer)
+    Json::Value MakeTabChannelSchema(const Json::Value& channel, bool inTabsContainer)
     {
         if (channel.isMember("oneOf")) {
-            return MakeTabOneOfChannelSchema(channel, context);
+            return MakeTabOneOfChannelSchema(channel);
         }
         if (channel.isMember("device_type")) {
-            return MakeTabSingleDeviceChannelSchema(channel, context, inTabsContainer);
+            return MakeTabSingleDeviceChannelSchema(channel, inTabsContainer);
         }
-        return MakeTabSimpleChannelSchema(channel, context);
+        return MakeTabSimpleChannelSchema(channel);
     }
 
-    Json::Value MakeSimpleChannelData(const Json::Value& channel, TContext& context)
+    Json::Value MakeSimpleChannelData(const Json::Value& channel)
     {
         Json::Value v = ConfigToHomeuiSubdeviceChannel(channel);
-        v["title"] = context.AddHashedTranslation(channel["name"].asString());
+        v["title"] = channel["name"];
         return v;
     }
 
@@ -259,7 +239,7 @@ namespace
     //      "items": [
     //         CHANNELS_SCHEMAS
     //      ],
-    //      "_format": "tabs"
+    //      "format": "tabs"
     //  }
     //
     //  Schema for table or list
@@ -289,12 +269,11 @@ namespace
     //          },
     //          ...
     //      ],
-    //      "_format": "table"                   // if table
+    //      "format": "table"                   // if table
     //  }
     Json::Value MakeChannelsSchema(const Json::Value& deviceTemplate,
                                    int propertyOrder,
                                    const std::string& title,
-                                   TContext& context,
                                    bool allowCollapse = false)
     {
         const auto& channels = deviceTemplate["channels"];
@@ -323,7 +302,7 @@ namespace
         if (tabs) {
             auto& items = MakeArray("items", r);
             for (const auto& channel: channels) {
-                items.append(MakeTabChannelSchema(channel, context, format == "default"));
+                items.append(MakeTabChannelSchema(channel, format == "default"));
             }
             r["minItems"] = items.size();
             r["maxItems"] = items.size();
@@ -332,7 +311,7 @@ namespace
             r["items"]["$ref"] = "#/definitions/tableChannelSettings";
             auto& defaults = MakeArray("default", r);
             for (const auto& channel: channels) {
-                defaults.append(MakeSimpleChannelData(channel, context));
+                defaults.append(MakeSimpleChannelData(channel));
             }
             r["minItems"] = defaults.size();
             r["maxItems"] = defaults.size();
@@ -341,14 +320,14 @@ namespace
             r["options"]["compact"] = true;
         } else {
             if (tabs) {
-                r["_format"] = "tabs";
+                r["format"] = "tabs";
             } else {
                 if (allowCollapse) {
                     r["options"]["wb"]["disable_panel"] = true;
                 } else {
                     r["options"]["compact"] = true;
                 }
-                r["_format"] = "table";
+                r["format"] = "table";
             }
         }
         return r;
@@ -357,8 +336,7 @@ namespace
     int AddDeviceParametersUI(Json::Value& properties,
                               Json::Value& requiredArray,
                               const Json::Value& deviceTemplate,
-                              int firstParameterOrder,
-                              TContext& context)
+                              int firstParameterOrder)
     {
         int maxOrder = 0;
         if (deviceTemplate.isMember("parameters")) {
@@ -368,7 +346,7 @@ namespace
                 auto& node = properties[it.name()];
                 int order = it->get("order", n).asInt();
                 maxOrder = std::max(order, maxOrder);
-                node = MakeParameterSchema(*it, firstParameterOrder + order, context);
+                node = MakeParameterSchema(*it, firstParameterOrder + order);
                 if (IsRequiredSetupRegister(*it)) {
                     requiredArray.append(it.name());
                 } else {
@@ -402,19 +380,18 @@ namespace
     //                  ...
     //                  "standard_channels": STANDARD_CHANNELS_SCHEMA
     //              },
-    //              "_format": "grid",
+    //              "format": "grid",
     //              "required": [ "parameter1", ... ] // if any
     //          }
     //      }
     //  }
     void MakeSubDeviceUISchema(const std::string& subDeviceType,
-                               const TDeviceTemplate& subdeviceTemplate,
-                               Json::Value& definitions,
-                               TContext& context)
+                               const TSubDeviceTemplate& subdeviceTemplate,
+                               Json::Value& definitions)
     {
-        Json::Value& res = definitions[GetSubdeviceSchemaKey(context.DeviceType, subDeviceType)];
+        Json::Value& res = definitions[GetSubdeviceSchemaKey(subDeviceType)];
         res["type"] = "object";
-        res["title"] = context.AddHashedTranslation(subdeviceTemplate.Title);
+        res["title"] = subdeviceTemplate.Title;
         res["options"]["disable_edit_json"] = true;
         res["options"]["disable_properties"] = true;
         res["options"]["disable_collapse"] = true;
@@ -425,16 +402,13 @@ namespace
 
         res["properties"][set]["type"] = "object";
         res["properties"][set]["options"]["wb"]["disable_title"] = true;
-        res["properties"][set]["_format"] = "grid";
+        res["properties"][set]["format"] = "grid";
 
         int order = 1;
         if (subdeviceTemplate.Schema.isMember("parameters")) {
             Json::Value required(Json::arrayValue);
-            order = AddDeviceParametersUI(res["properties"][set]["properties"],
-                                          required,
-                                          subdeviceTemplate.Schema,
-                                          order,
-                                          context);
+            order =
+                AddDeviceParametersUI(res["properties"][set]["properties"], required, subdeviceTemplate.Schema, order);
             if (!required.empty()) {
                 res["properties"][set]["required"] = required;
             }
@@ -442,11 +416,11 @@ namespace
 
         if (subdeviceTemplate.Schema.isMember("channels")) {
             res["properties"][set]["properties"]["standard_channels"] =
-                MakeChannelsSchema(subdeviceTemplate.Schema, order, "", context);
+                MakeChannelsSchema(subdeviceTemplate.Schema, order, "");
         } else {
             if (!subdeviceTemplate.Schema.isMember("parameters")) {
                 // No channels and parameters,
-                // so it is just a stub device with predefined settings, nothig to show in UI.
+                // so it is just a stub device with predefined settings, nothing to show in UI.
                 res["properties"][set]["options"]["collapsed"] = true;
             }
         }
@@ -466,7 +440,7 @@ namespace
     //      "propertyOrder": PROPERTY_ORDER
     //      "required": [ ... ] // if any
     //  }
-    Json::Value MakeDeviceSettingsUI(const Json::Value& deviceTemplate, int propertyOrder, TContext& context)
+    Json::Value MakeDeviceSettingsUI(const Json::Value& deviceTemplate, int propertyOrder)
     {
         Json::Value res;
 
@@ -476,7 +450,7 @@ namespace
         res["options"]["disable_properties"] = true;
         res["propertyOrder"] = propertyOrder;
         Json::Value req(Json::arrayValue);
-        AddDeviceParametersUI(res["properties"], req, deviceTemplate, 0, context);
+        AddDeviceParametersUI(res["properties"], req, deviceTemplate, 0);
         if (!req.empty()) {
             res["required"] = req;
         }
@@ -512,16 +486,11 @@ namespace
     //      "defaultProperties": ["device_type", "slave_id", "standard_channels", "parameters"],
     //      "required": ["device_type", "slave_id"]
     //  }
-    void AddDeviceUISchema(const TDeviceTemplate& deviceTemplate,
-                           TSerialDeviceFactory& deviceFactory,
-                           Json::Value& devicesArray,
-                           Json::Value& definitions,
-                           Json::Value& translations)
+    Json::Value MakeDeviceUISchema(TDeviceTemplate& deviceTemplate,
+                                   TSerialDeviceFactory& deviceFactory,
+                                   const Json::Value& commonDeviceSchema)
     {
-        Json::Value schema(deviceTemplate.Schema);
-        if (!schema.isMember("subdevices")) {
-            schema["subdevices"] = Json::Value(Json::arrayValue);
-        }
+        Json::Value schema(deviceTemplate.GetTemplate());
         Json::Value subdevicesFromGroups(Json::arrayValue);
         for (auto& subdeviceSchema: schema["subdevices"]) {
             TransformGroupsToSubdevices(subdeviceSchema["device"], subdevicesFromGroups, &schema["translations"]);
@@ -531,26 +500,13 @@ namespace
         }
         TransformGroupsToSubdevices(schema, schema["subdevices"], &schema["translations"]);
 
-        TContext context{deviceTemplate.Type, translations};
-        auto& res = Append(devicesArray);
+        auto res = commonDeviceSchema;
 
-        res["type"] = "object";
-        res["title"] = context.AddHashedTranslation(deviceTemplate.Title);
         res["properties"]["device_type"] = MakeHiddenProperty(deviceTemplate.Type);
-        MakeArray("required", res).append("device_type");
-
-        auto hwArray = MakeHardwareArray(deviceTemplate);
-        if (!hwArray.empty()) {
-            res["hw"] = hwArray;
-        }
-
-        res["options"]["wb"]["disable_title"] = true;
-        if (deviceTemplate.IsDeprecated) {
-            res["options"]["wb"]["hide_from_selection"] = true;
-        }
-        if (!deviceTemplate.Group.empty()) {
-            res["options"]["wb"]["group"] = deviceTemplate.Group;
-        }
+        res["options"]["compact"] = true;
+        res["options"]["disable_edit_json"] = true;
+        res["options"]["disable_collapse"] = true;
+        res["options"]["wb"]["disable_panel"] = true;
 
         auto& allOf = MakeArray("allOf", res);
         auto protocol = GetProtocolName(schema);
@@ -561,47 +517,25 @@ namespace
             res["required"].append("slave_id");
         }
 
-        auto& defaultProperties = MakeArray("defaultProperties", res);
-        defaultProperties.append("slave_id");
-        defaultProperties.append("device_type");
-
         if (schema.isMember("channels")) {
             res["properties"]["standard_channels"] =
-                MakeChannelsSchema(schema, DEVICE_PARAMETERS_PROPERTY_ORDER + 1, "Channels", context, true);
-            defaultProperties.append("standard_channels");
+                MakeChannelsSchema(schema, DEVICE_PARAMETERS_PROPERTY_ORDER + 1, "Channels", true);
+            res["defaultProperties"].append("standard_channels");
         }
         if (schema.isMember("parameters") && !schema["parameters"].empty()) {
-            res["properties"]["parameters"] = MakeDeviceSettingsUI(schema, DEVICE_PARAMETERS_PROPERTY_ORDER, context);
-            defaultProperties.append("parameters");
+            res["properties"]["parameters"] = MakeDeviceSettingsUI(schema, DEVICE_PARAMETERS_PROPERTY_ORDER);
+            res["defaultProperties"].append("parameters");
         }
 
         TSubDevicesTemplateMap subdeviceTemplates(deviceTemplate.Type, schema);
         if (schema.isMember("subdevices")) {
             for (const auto& subDevice: schema["subdevices"]) {
                 auto name = subDevice["device_type"].asString();
-                MakeSubDeviceUISchema(name, subdeviceTemplates.GetTemplate(name), definitions, context);
+                MakeSubDeviceUISchema(name, subdeviceTemplates.GetTemplate(name), res["definitions"]);
             }
         }
-        AddTranslations(deviceTemplate.Type, translations, schema);
-    }
-
-    void AppendDeviceSchemas(Json::Value& devicesArray,
-                             Json::Value& definitions,
-                             Json::Value& translations,
-                             TTemplateMap& templates,
-                             TSerialDeviceFactory& deviceFactory)
-    {
-        for (const auto& t: templates.GetTemplatesOrderedByName()) {
-            try {
-                if (t->Schema.isMember("subdevices")) {
-                    AddDeviceUISchema(*t, deviceFactory, devicesArray, definitions, translations);
-                } else {
-                    AddDeviceWithGroupsUISchema(*t, deviceFactory, devicesArray, definitions, translations);
-                }
-            } catch (const std::exception& e) {
-                LOG(Error) << "Can't load template for '" << t->Title << "': " << e.what();
-            }
-        }
+        AddTranslations(res["translations"], schema);
+        return res;
     }
 
     std::vector<const Json::Value*> PartitionChannelsByGroups(
@@ -699,38 +633,6 @@ void AddUnitTypes(Json::Value& schema)
     }
 }
 
-Json::Value MakeSchemaForConfed(const Json::Value& configSchema,
-                                TTemplateMap& templates,
-                                TSerialDeviceFactory& deviceFactory)
-{
-    Json::Value res(configSchema);
-
-    // Old configs could have slave_id defined as number not as string.
-    // To not confuse users convert numbers to strings and show only string editor for slave_id.
-    // Original slave_id definitions with numbers are used during config validation.
-    res["definitions"]["slave_id"] = res["definitions"]["slave_id_ui"];
-    res["definitions"].removeMember("slave_id_ui");
-    res["definitions"]["slave_id_broadcast"] = res["definitions"]["slave_id_broadcast_ui"];
-    res["definitions"].removeMember("slave_id_broadcast_ui");
-
-    AddUnitTypes(res);
-    AddChannelModes(res["definitions"]["groupsChannel"]);
-    AddChannelModes(res["definitions"]["tableChannelSettings"]);
-
-    // Let's add to #/definitions/device/oneOf a list of devices generated from templates
-    if (res["definitions"]["device"].isMember("oneOf")) {
-        Json::Value newArray(Json::arrayValue);
-        AppendDeviceSchemas(newArray, res["definitions"], res["translations"], templates, deviceFactory);
-        for (auto& item: res["definitions"]["device"]["oneOf"]) {
-            newArray.append(item);
-        }
-        res["definitions"]["device"]["oneOf"] = newArray;
-    }
-    res.setComment(std::string("// THIS FILE IS GENERATED BY wb-mqtt-serial SERVICE. DO NOT EDIT IT!"),
-                   Json::commentBefore);
-    return res;
-}
-
 void AddGroupTitleTranslations(const std::string& id, const std::string& title, Json::Value& mainSchemaTranslations)
 {
     if (!mainSchemaTranslations.isMember("en")) {
@@ -795,9 +697,9 @@ void TransformGroupsToSubdevices(Json::Value& schema, Json::Value& subdevices, J
     }
 }
 
-std::string GetSubdeviceSchemaKey(const std::string& deviceType, const std::string& subDeviceType)
+std::string GetSubdeviceSchemaKey(const std::string& subDeviceType)
 {
-    return GetDeviceKey(deviceType) + GetHashedParam(subDeviceType, "d");
+    return GetHashedParam(subDeviceType, "d");
 }
 
 std::string GetDeviceKey(const std::string& deviceType)
@@ -855,25 +757,36 @@ Json::Value MakeProtocolProperty()
     return r;
 }
 
-void AddTranslations(const std::string& deviceType, Json::Value& translations, const Json::Value& deviceSchema)
+void AddTranslations(Json::Value& translations, const Json::Value& deviceSchema)
 {
     const auto& tr = deviceSchema["translations"];
     for (auto it = tr.begin(); it != tr.end(); ++it) {
         for (auto msgIt = it->begin(); msgIt != it->end(); ++msgIt) {
-            translations[it.name()][GetTranslationHash(deviceType, msgIt.name())] = *msgIt;
+            translations[it.name()][msgIt.name()] = *msgIt;
         }
     }
 }
 
-Json::Value MakeHardwareArray(const TDeviceTemplate& deviceTemplate)
+void GenerateSchemasForConfed(const std::string& confedSchemasFolder,
+                              TTemplateMap& templates,
+                              TSerialDeviceFactory& deviceFactory,
+                              const Json::Value& confedDeviceCommonSchema)
 {
-    Json::Value res(Json::arrayValue);
-    for (const auto& hwItem: deviceTemplate.Hardware) {
-        auto& hw = Append(res);
-        hw["signature"] = hwItem.Signature;
-        if (!hwItem.Fw.empty()) {
-            hw["fw"] = hwItem.Fw;
+    for (auto& t: templates.GetTemplates()) {
+        Json::Value schema;
+        try {
+            if (t->WithSubdevices()) {
+                schema = MakeDeviceUISchema(*t, deviceFactory, confedDeviceCommonSchema);
+            } else {
+                schema = MakeDeviceWithGroupsUISchema(*t, deviceFactory, confedDeviceCommonSchema);
+            }
+            AddUnitTypes(schema);
+            AddChannelModes(schema["definitions"]["groupsChannel"]);
+            AddChannelModes(schema["definitions"]["tableChannelSettings"]);
+            std::ofstream f(GetSchemaFilePath(confedSchemasFolder, t->GetFilePath()));
+            MakeWriter()->write(schema, &f);
+        } catch (const std::exception& e) {
+            LOG(Error) << "Can't load template for '" << t->GetTitle() << "': " << e.what();
         }
     }
-    return res;
 }

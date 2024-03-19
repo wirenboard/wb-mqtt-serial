@@ -267,25 +267,22 @@ namespace
     //      }
     //  }
 
-    Json::Value MakeDeviceForConfed(const Json::Value& config, ITemplateMap& deviceTemplates)
+    Json::Value MakeDeviceForConfed(const Json::Value& config, TTemplateMap& deviceTemplates)
     {
         auto dt = config["device_type"].asString();
 
-        const TDeviceTemplate* deviceTemplate;
+        TDeviceTemplate* deviceTemplate;
         try {
             deviceTemplate = &deviceTemplates.GetTemplate(dt);
         } catch (...) {
-            Json::Value res;
-            res["device_type"] = "unknown";
-            res["value"] = config;
-            return res;
+            return config;
         }
 
-        if (!deviceTemplate->Schema.isMember("subdevices")) {
-            return MakeDeviceWithGroupsForConfed(config, deviceTemplate->Schema);
+        if (!deviceTemplate->WithSubdevices()) {
+            return MakeDeviceWithGroupsForConfed(config, deviceTemplate->GetTemplate());
         }
 
-        Json::Value schema(deviceTemplate->Schema);
+        Json::Value schema(deviceTemplate->GetTemplate());
         Json::Value newDev(config);
         ConvertPollIntervalToReadRateLimit(newDev);
         JoinChannelsToGroups(newDev, schema);

@@ -18,6 +18,7 @@
 
 #include "device_template_generator.h"
 #include "rpc_config.h"
+#include "rpc_config_handler.h"
 #include "rpc_handler.h"
 #include "serial_port.h"
 
@@ -37,10 +38,14 @@ const auto CONFIG_FULL_FILE_PATH = "/etc/wb-mqtt-serial.conf";
 const auto TEMPLATES_DIR = "/usr/share/wb-mqtt-serial/templates";
 const auto USER_TEMPLATES_DIR = "/etc/wb-mqtt-serial.conf.d/templates";
 const auto CONFIG_JSON_SCHEMA_FULL_FILE_PATH = "/usr/share/wb-mqtt-serial/wb-mqtt-serial.schema.json";
+const auto PORTS_JSON_SCHEMA_FULL_FILE_PATH = "/usr/share/wb-mqtt-serial/wb-mqtt-serial-ports.schema.json";
 const auto TEMPLATES_JSON_SCHEMA_FULL_FILE_PATH =
     "/usr/share/wb-mqtt-serial/wb-mqtt-serial-device-template.schema.json";
-const auto CONFED_JSON_SCHEMA_FULL_FILE_PATH = "/var/lib/wb-mqtt-confed/schemas/wb-mqtt-serial.schema.json";
 const auto RPC_REQUEST_SCHEMA_FULL_FILE_PATH = "/usr/share/wb-mqtt-serial/wb-mqtt-serial-rpc-request.schema.json";
+const auto CONFED_JSON_SCHEMAS_DIR = "/var/lib/wb-mqtt-serial/schemas";
+const auto CONFED_COMMON_JSON_SCHEMA_FULL_FILE_PATH =
+    "/usr/share/wb-mqtt-serial/wb-mqtt-serial-confed-common.schema.json";
+const auto DEVICE_GROUP_NAMES_JSON_FULL_FILE_PATH = "/usr/share/wb-mqtt-serial/groups.json";
 
 const auto SERIAL_DRIVER_STOP_TIMEOUT_S = chrono::seconds(60);
 
@@ -143,16 +148,8 @@ namespace
             shared_ptr<Json::Value> configSchema;
             shared_ptr<TTemplateMap> templates;
             std::tie(configSchema, templates) = LoadTemplates();
-            const char* resultingSchemaFile = "/tmp/wb-mqtt-serial.schema.json";
-            {
-                ofstream f(resultingSchemaFile);
-                MakeJsonWriter(" ", "All")->write(MakeSchemaForConfed(*configSchema, *templates, deviceFactory), &f);
-            }
-            ifstream src(resultingSchemaFile, ios::binary);
-            filesystem::path file(CONFED_JSON_SCHEMA_FULL_FILE_PATH);
-            filesystem::create_directories(file.parent_path());
-            ofstream dst(file, ios::binary);
-            dst << src.rdbuf();
+            auto commonDeviceConfedSchema = WBMQTT::JSON::Parse(CONFED_COMMON_JSON_SCHEMA_FULL_FILE_PATH);
+            GenerateSchemasForConfed(CONFED_JSON_SCHEMAS_DIR, *templates, deviceFactory, commonDeviceConfedSchema);
         } catch (const exception& e) {
             LOG(Error) << e.what();
             exit(EXIT_FAILURE);
@@ -273,17 +270,13 @@ int main(int argc, char* argv[])
     TSerialDeviceFactory deviceFactory;
     RegisterProtocols(deviceFactory);
     PRPCConfig rpcConfig = std::make_shared<TRPCConfig>();
+    shared_ptr<Json::Value> configSchema;
+    shared_ptr<TTemplateMap> templates;
+    std::tie(configSchema, templates) = LoadTemplates();
+    TDevicesConfedSchemasMap confedSchemasMap(*templates, CONFED_JSON_SCHEMAS_DIR);
+
     try {
-        Json::Value configSchema = LoadConfigSchema(CONFIG_JSON_SCHEMA_FULL_FILE_PATH);
-        TTemplateMap templates(TEMPLATES_DIR,
-                               LoadConfigTemplatesSchema(TEMPLATES_JSON_SCHEMA_FULL_FILE_PATH, configSchema));
-
-        try {
-            templates.AddTemplatesDir(USER_TEMPLATES_DIR); // User templates dir
-        } catch (const TConfigParserException& e) {        // Pass exception if user templates dir doesn't exist
-        }
-
-        handlerConfig = LoadConfig(configFilename, deviceFactory, configSchema, templates, rpcConfig);
+        handlerConfig = LoadConfig(configFilename, deviceFactory, *configSchema, *templates, rpcConfig);
     } catch (const exception& e) {
         LOG(Error) << e.what();
         return 0;
@@ -319,6 +312,15 @@ int main(int argc, char* argv[])
 
         auto rpcServer(WBMQTT::NewMqttRpcServer(mqtt, APP_NAME));
 
+        TRPCConfigHandler rpcConfigHandler(configFilename,
+                                           PORTS_JSON_SCHEMA_FULL_FILE_PATH,
+                                           configSchema,
+                                           templates,
+                                           confedSchemasMap,
+                                           WBMQTT::JSON::Parse(DEVICE_GROUP_NAMES_JSON_FULL_FILE_PATH),
+                                           deviceFactory,
+                                           rpcServer);
+
         driver->StartLoop();
         WBMQTT::SignalHandling::OnSignals({SIGINT, SIGTERM}, [&] {
             driver->StopLoop();
@@ -350,6 +352,3 @@ int main(int argc, char* argv[])
     }
     return 0;
 }
-// TBD: fix race condition that occurs after modbus error on startup
-// (slave not active)
-// TBD: proper error checking everywhere (catch exceptions, etc.)
