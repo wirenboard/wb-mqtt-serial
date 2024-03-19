@@ -338,22 +338,18 @@ std::vector<TDeviceTypeGroup> OrderTemplates(const std::vector<PDeviceTemplate>&
     std::vector<PDeviceTemplate> groupWbOld;
 
     for (const auto& templatePtr: templates) {
-        try {
-            const auto& group = templatePtr->GetGroup();
-            if (group == WB_GROUP_NAME) {
-                groupWb.push_back(templatePtr);
-            } else if (group == WB_OLD_GROUP_NAME) {
-                groupWbOld.push_back(templatePtr);
-            } else {
-                groups[group].push_back(templatePtr);
-            }
-        } catch (const std::exception& e) {
-            LOG(Error) << e.what();
+        const auto& group = templatePtr->GetGroup();
+        if (group == WB_GROUP_NAME) {
+            groupWb.push_back(templatePtr);
+        } else if (group == WB_OLD_GROUP_NAME) {
+            groupWbOld.push_back(templatePtr);
+        } else {
+            groups[group].push_back(templatePtr);
         }
     }
 
     auto titleSortFn = [&lang](const auto& t1, const auto& t2) { return t1->GetTitle(lang) < t2->GetTitle(lang); };
-    std::for_each(groups.begin(), groups.end(), [&lang, &titleSortFn](auto& group) {
+    std::for_each(groups.begin(), groups.end(), [&titleSortFn](auto& group) {
         std::sort(group.second.begin(), group.second.end(), titleSortFn);
     });
     std::sort(groupWb.begin(), groupWb.end(), titleSortFn);
@@ -364,7 +360,7 @@ std::vector<TDeviceTypeGroup> OrderTemplates(const std::vector<PDeviceTemplate>&
         return TDeviceTypeGroup{GetGroupTranslation(group.first, lang, groupTranslations), std::move(group.second)};
     });
 
-    std::sort(res.begin(), res.end(), [&lang](const auto& g1, const auto& g2) { return g1.Name < g2.Name; });
+    std::sort(res.begin(), res.end(), [](const auto& g1, const auto& g2) { return g1.Name < g2.Name; });
     res.insert(
         res.begin(),
         TDeviceTypeGroup{GetGroupTranslation(WB_OLD_GROUP_NAME, lang, groupTranslations), std::move(groupWbOld)});
