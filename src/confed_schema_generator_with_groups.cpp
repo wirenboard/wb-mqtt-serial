@@ -207,7 +207,6 @@ Json::Value MakeDeviceWithGroupsUISchema(TDeviceTemplate& deviceTemplate,
     res["format"] = "groups";
     res["properties"]["device_type"] = MakeHiddenProperty(deviceTemplate.Type);
 
-
     if (!deviceFactory.GetProtocol(protocol)->SupportsBroadcast()) {
         res["required"].append("slave_id");
     }
