@@ -67,7 +67,8 @@ const Json::Value& TProtocolConfedSchema::GetSchema()
     return Schema;
 }
 
-TProtocolConfedSchemasMap::TProtocolConfedSchemasMap(const std::string& protocolTemplatesFolder, const std::string& schemasFolder)
+TProtocolConfedSchemasMap::TProtocolConfedSchemasMap(const std::string& protocolTemplatesFolder,
+                                                     const std::string& schemasFolder)
 {
     std::vector<Json::Value> res(Json::arrayValue);
     IterateDir(protocolTemplatesFolder, [&](const std::string& name) {
