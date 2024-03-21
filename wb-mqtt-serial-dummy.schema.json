@@ -2,7 +2,6 @@
   "$schema": "http://json-schema.org/draft-07/schema#",
   "type": "object",
   "title": "Serial Device Driver Configuration",
-  "description": "Configuration of devices connected to serial ports (RS-485, TCP, UART)",
 
   "configFile": {
     "path": "/etc/wb-mqtt-serial.conf",
@@ -16,7 +15,6 @@
   "translations": {
     "ru": {
       "Serial Device Driver Configuration": "Настройка драйвера serial-устройств",
-      "Configuration of devices connected to serial ports (RS-485, TCP, UART)": "Настройка устройств, подключенных к последовательным портам (RS-485, TCP, UART)",  
     }
   }
 }
