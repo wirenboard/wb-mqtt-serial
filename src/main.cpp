@@ -46,6 +46,7 @@ const auto CONFED_JSON_SCHEMAS_DIR = "/var/lib/wb-mqtt-serial/schemas";
 const auto CONFED_COMMON_JSON_SCHEMA_FULL_FILE_PATH =
     "/usr/share/wb-mqtt-serial/wb-mqtt-serial-confed-common.schema.json";
 const auto DEVICE_GROUP_NAMES_JSON_FULL_FILE_PATH = "/usr/share/wb-mqtt-serial/groups.json";
+const auto PROTOCOL_SCHEMAS_DIR = "/usr/share/wb-mqtt-serial/protocols";
 
 const auto SERIAL_DRIVER_STOP_TIMEOUT_S = chrono::seconds(60);
 
@@ -115,13 +116,10 @@ namespace
     void ConfigToConfed()
     {
         try {
-            TSerialDeviceFactory deviceFactory;
-            RegisterProtocols(deviceFactory);
             shared_ptr<Json::Value> configSchema;
             shared_ptr<TTemplateMap> templates;
             std::tie(configSchema, templates) = LoadTemplates();
-            MakeJsonWriter("", "None")
-                ->write(MakeJsonForConfed(CONFIG_FULL_FILE_PATH, *configSchema, *templates, deviceFactory), &cout);
+            MakeJsonWriter("", "None")->write(MakeJsonForConfed(CONFIG_FULL_FILE_PATH, *templates), &cout);
         } catch (const exception& e) {
             LOG(Error) << e.what();
             exit(EXIT_FAILURE);
@@ -149,7 +147,11 @@ namespace
             shared_ptr<TTemplateMap> templates;
             std::tie(configSchema, templates) = LoadTemplates();
             auto commonDeviceConfedSchema = WBMQTT::JSON::Parse(CONFED_COMMON_JSON_SCHEMA_FULL_FILE_PATH);
-            GenerateSchemasForConfed(CONFED_JSON_SCHEMAS_DIR, *templates, deviceFactory, commonDeviceConfedSchema);
+            GenerateSchemasForConfed(CONFED_JSON_SCHEMAS_DIR,
+                                     *templates,
+                                     deviceFactory,
+                                     commonDeviceConfedSchema,
+                                     PROTOCOL_SCHEMAS_DIR);
         } catch (const exception& e) {
             LOG(Error) << e.what();
             exit(EXIT_FAILURE);
@@ -274,6 +276,7 @@ int main(int argc, char* argv[])
     shared_ptr<TTemplateMap> templates;
     std::tie(configSchema, templates) = LoadTemplates();
     TDevicesConfedSchemasMap confedSchemasMap(*templates, CONFED_JSON_SCHEMAS_DIR);
+    TProtocolConfedSchemasMap protocolSchemasMap(PROTOCOL_SCHEMAS_DIR, CONFED_JSON_SCHEMAS_DIR);
 
     try {
         handlerConfig = LoadConfig(configFilename, deviceFactory, *configSchema, *templates, rpcConfig);
@@ -314,11 +317,10 @@ int main(int argc, char* argv[])
 
         TRPCConfigHandler rpcConfigHandler(configFilename,
                                            PORTS_JSON_SCHEMA_FULL_FILE_PATH,
-                                           configSchema,
                                            templates,
                                            confedSchemasMap,
+                                           protocolSchemasMap,
                                            WBMQTT::JSON::Parse(DEVICE_GROUP_NAMES_JSON_FULL_FILE_PATH),
-                                           deviceFactory,
                                            rpcServer);
 
         driver->StartLoop();

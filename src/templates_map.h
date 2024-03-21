@@ -1,19 +1,6 @@
 #pragma once
 
-#include <exception>
-#include <memory>
-#include <sstream>
-#include <string>
-#include <vector>
-
-#include "register.h"
-
-#include <wblib/driver_args.h>
 #include <wblib/json_utils.h>
-
-#include "port.h"
-#include "rpc_config.h"
-#include "serial_device.h"
 
 struct TDeviceTemplateHardware
 {
@@ -53,14 +40,6 @@ private:
 };
 
 typedef std::shared_ptr<TDeviceTemplate> PDeviceTemplate;
-
-struct TDeviceTypeGroup
-{
-    typedef std::vector<PDeviceTemplate> TemplatesArray;
-
-    std::string Name;
-    TemplatesArray Templates;
-};
 
 class TTemplateMap
 {
@@ -105,10 +84,6 @@ public:
     std::vector<PDeviceTemplate> GetTemplates();
 };
 
-std::vector<TDeviceTypeGroup> OrderTemplates(const std::vector<PDeviceTemplate>& templates,
-                                             const Json::Value& groupTranslations,
-                                             const std::string& lang);
-
 struct TSubDeviceTemplate
 {
     std::string Type;
@@ -130,21 +105,3 @@ public:
 
     void AddSubdevices(const Json::Value& subdevicesArray);
 };
-
-class TDevicesConfedSchemasMap
-{
-    TTemplateMap& TemplatesMap;
-    std::string SchemasFolder;
-
-    //! Device type to schema map
-    std::unordered_map<std::string, Json::Value> Schemas;
-
-public:
-    TDevicesConfedSchemasMap(TTemplateMap& templatesMap, const std::string& schemasFolder);
-
-    const Json::Value& GetSchema(const std::string& deviceType);
-
-    void TemplatesHaveBeenChanged();
-};
-
-std::string GetSchemaFilePath(const std::string& schemasFolder, const std::string& templateFilePath);

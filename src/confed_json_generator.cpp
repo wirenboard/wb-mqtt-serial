@@ -322,10 +322,7 @@ namespace
     }
 }
 
-Json::Value MakeJsonForConfed(const std::string& configFileName,
-                              const Json::Value& baseConfigSchema,
-                              TTemplateMap& templates,
-                              TSerialDeviceFactory& deviceFactory)
+Json::Value MakeJsonForConfed(const std::string& configFileName, TTemplateMap& templates)
 {
     Json::Value root(Parse(configFileName));
     for (Json::Value& port: root["ports"]) {

@@ -1,25 +1,19 @@
 #include "templates_map.h"
-#include "file_utils.h"
-#include "log.h"
 
 #include <filesystem>
-#include <sys/stat.h>
-#include <sys/types.h>
-#include <unistd.h>
 
+#include "file_utils.h"
+#include "json_common.h"
+#include "log.h"
 #include "serial_config.h"
 
-#define LOG(logger) ::logger.Log() << "[serial config] "
+#define LOG(logger) ::logger.Log() << "[templates] "
 
 using namespace std;
 using namespace WBMQTT::JSON;
 
 namespace
 {
-    const std::string CUSTOM_GROUP_NAME = "g-custom";
-    const std::string WB_GROUP_NAME = "g-wb";
-    const std::string WB_OLD_GROUP_NAME = "g-wb-old";
-
     bool EndsWith(const string& str, const string& suffix)
     {
         return str.size() >= suffix.size() && str.compare(str.size() - suffix.size(), suffix.size(), suffix) == 0;
@@ -42,28 +36,6 @@ namespace
             }
         }
     }
-
-    std::unordered_map<std::string, std::string> GetTranslations(const std::string& key,
-                                                                 const Json::Value& deviceTemplate)
-    {
-        std::unordered_map<std::string, std::string> res;
-        if (key.empty()) {
-            return res;
-        }
-        if (deviceTemplate.isMember("device") && deviceTemplate["device"].isMember("translations")) {
-            const auto& translations = deviceTemplate["device"]["translations"];
-            for (Json::ValueConstIterator it = translations.begin(); it != translations.end(); ++it) {
-                std::string tr = it->get(key, std::string()).asString();
-                if (!tr.empty()) {
-                    res.emplace(it.name(), tr);
-                }
-            }
-        }
-        if (!res.count("en")) {
-            res.emplace("en", key);
-        }
-        return res;
-    }
 }
 
 TTemplateMap::TTemplateMap(const std::string& templatesDir,
@@ -78,16 +50,12 @@ PDeviceTemplate TTemplateMap::MakeTemplateFromJson(const Json::Value& data, cons
 {
     std::string deviceType = data["device_type"].asString();
     auto deviceTemplate = std::make_shared<TDeviceTemplate>(deviceType, Validator, filePath);
-    std::string title;
-    Get(data, "title", title);
-    deviceTemplate->SetTitle(GetTranslations(title, data));
-    std::string group;
-    Get(data, "group", group);
-    deviceTemplate->SetGroup(group);
+    deviceTemplate->SetTitle(GetTranslations(data.get("title", "").asString(), data["device"]));
+    deviceTemplate->SetGroup(data.get("group", "").asString());
     if (data.get("deprecated", false).asBool()) {
         deviceTemplate->SetDeprecated();
     }
-    if (data.isMember("device") && data["device"].isMember("subdevices")) {
+    if (data["device"].isMember("subdevices")) {
         deviceTemplate->SetWithSubdevices();
     }
     // if (data.isMember("hw")) {
@@ -110,10 +78,6 @@ void TTemplateMap::AddTemplatesDir(const std::string& templatesDir,
         ".json",
         [&](const std::string& filepath) {
             if (!EndsWith(filepath, ".json")) {
-                return false;
-            }
-            struct stat filestat;
-            if (stat(filepath.c_str(), &filestat) || S_ISDIR(filestat.st_mode)) {
                 return false;
             }
             try {
@@ -154,7 +118,6 @@ TDeviceTemplate::TDeviceTemplate(const std::string& type,
                                  std::shared_ptr<WBMQTT::JSON::TValidator> validator,
                                  const std::string& filePath)
     : Type(type),
-      Group(CUSTOM_GROUP_NAME),
       Deprecated(false),
       Validator(validator),
       FilePath(filePath),
@@ -292,79 +255,5 @@ std::vector<std::string> TSubDevicesTemplateMap::GetDeviceTypes() const
     for (const auto& elem: Templates) {
         res.push_back(elem.first);
     }
-    return res;
-}
-
-TDevicesConfedSchemasMap::TDevicesConfedSchemasMap(TTemplateMap& templatesMap, const std::string& schemasFolder)
-    : TemplatesMap(templatesMap),
-      SchemasFolder(schemasFolder)
-{}
-
-const Json::Value& TDevicesConfedSchemasMap::GetSchema(const std::string& deviceType)
-{
-    try {
-        return Schemas.at(deviceType);
-    } catch (const std::out_of_range&) {
-        Schemas.emplace(
-            deviceType,
-            WBMQTT::JSON::Parse(GetSchemaFilePath(SchemasFolder, TemplatesMap.GetTemplate(deviceType).GetFilePath())));
-        return Schemas.at(deviceType);
-    }
-}
-
-void TDevicesConfedSchemasMap::TemplatesHaveBeenChanged()
-{
-    Schemas.clear();
-}
-
-std::string GetSchemaFilePath(const std::string& schemasFolder, const std::string& templateFilePath)
-{
-    std::filesystem::path templatePath(templateFilePath);
-    return schemasFolder + "/" + templatePath.stem().string() + ".schema.json";
-}
-
-std::string GetGroupTranslation(const std::string& group, const std::string& lang, const Json::Value& groupTranslations)
-{
-    auto res = groupTranslations.get(lang, Json::Value(Json::objectValue)).get(group, "").asString();
-    return res.empty() ? group : res;
-}
-
-std::vector<TDeviceTypeGroup> OrderTemplates(const std::vector<PDeviceTemplate>& templates,
-                                             const Json::Value& groupTranslations,
-                                             const std::string& lang)
-{
-    std::map<std::string, std::vector<PDeviceTemplate>> groups;
-    std::vector<PDeviceTemplate> groupWb;
-    std::vector<PDeviceTemplate> groupWbOld;
-
-    for (const auto& templatePtr: templates) {
-        const auto& group = templatePtr->GetGroup();
-        if (group == WB_GROUP_NAME) {
-            groupWb.push_back(templatePtr);
-        } else if (group == WB_OLD_GROUP_NAME) {
-            groupWbOld.push_back(templatePtr);
-        } else {
-            groups[group].push_back(templatePtr);
-        }
-    }
-
-    auto titleSortFn = [&lang](const auto& t1, const auto& t2) { return t1->GetTitle(lang) < t2->GetTitle(lang); };
-    std::for_each(groups.begin(), groups.end(), [&titleSortFn](auto& group) {
-        std::sort(group.second.begin(), group.second.end(), titleSortFn);
-    });
-    std::sort(groupWb.begin(), groupWb.end(), titleSortFn);
-    std::sort(groupWbOld.begin(), groupWbOld.end(), titleSortFn);
-
-    std::vector<TDeviceTypeGroup> res;
-    std::transform(groups.begin(), groups.end(), std::back_inserter(res), [&groupTranslations, &lang](auto& group) {
-        return TDeviceTypeGroup{GetGroupTranslation(group.first, lang, groupTranslations), std::move(group.second)};
-    });
-
-    std::sort(res.begin(), res.end(), [](const auto& g1, const auto& g2) { return g1.Name < g2.Name; });
-    res.insert(
-        res.begin(),
-        TDeviceTypeGroup{GetGroupTranslation(WB_OLD_GROUP_NAME, lang, groupTranslations), std::move(groupWbOld)});
-    res.insert(res.begin(),
-               TDeviceTypeGroup{GetGroupTranslation(WB_GROUP_NAME, lang, groupTranslations), std::move(groupWb)});
     return res;
 }

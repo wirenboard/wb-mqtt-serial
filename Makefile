@@ -116,6 +116,7 @@ install:
 	install -D -m 0644 *.schema.json -t $(DESTDIR)$(PREFIX)/share/wb-mqtt-serial
 	install -D -m 0644 groups.json -t $(DESTDIR)$(PREFIX)/share/wb-mqtt-serial
 	install -D -m 0644 templates/*.json $(GENERATED_TEMPLATES_DIR)/*.json -t $(DESTDIR)$(PREFIX)/share/wb-mqtt-serial/templates
+	install -D -m 0644 protocols/*.json -t $(DESTDIR)$(PREFIX)/share/wb-mqtt-serial/protocols
 
 	install -D -m 0644 obis-hints.json -t $(DESTDIR)$(PREFIX)/share/wb-mqtt-serial
 

@@ -1,6 +1,8 @@
 #include "confed_schema_generator.h"
 #include "confed_channel_modes.h"
 #include "confed_schema_generator_with_groups.h"
+#include "confed_schemas_map.h"
+#include "file_utils.h"
 #include "json_common.h"
 #include "log.h"
 #include "templates_map.h"
@@ -767,10 +769,31 @@ void AddTranslations(Json::Value& translations, const Json::Value& deviceSchema)
     }
 }
 
+void GenerateProtocolSchemas(const std::string& confedSchemasFolder,
+                             const Json::Value& confedDeviceCommonSchema,
+                             const std::string& protocolSchemasFolder)
+{
+    IterateDir(protocolSchemasFolder, [&](const std::string& name) {
+        if (name.find(".schema.json") != std::string::npos) {
+            try {
+                auto schema = WBMQTT::JSON::Parse(protocolSchemasFolder + "/" + name);
+                schema["definitions"] = confedDeviceCommonSchema["definitions"];
+                AddTranslations(schema["translations"], confedDeviceCommonSchema);
+                std::ofstream f(confedSchemasFolder + "/" + name);
+                MakeWriter()->write(schema, &f);
+            } catch (const std::exception& e) {
+                LOG(Error) << "Failed to parse " << name << "\n" << e.what();
+            }
+        }
+        return false;
+    });
+}
+
 void GenerateSchemasForConfed(const std::string& confedSchemasFolder,
                               TTemplateMap& templates,
                               TSerialDeviceFactory& deviceFactory,
-                              const Json::Value& confedDeviceCommonSchema)
+                              const Json::Value& confedDeviceCommonSchema,
+                              const std::string& protocolSchemasFolder)
 {
     for (auto& t: templates.GetTemplates()) {
         Json::Value schema;
@@ -789,4 +812,5 @@ void GenerateSchemasForConfed(const std::string& confedSchemasFolder,
             LOG(Error) << "Can't load template for '" << t->GetTitle() << "': " << e.what();
         }
     }
+    GenerateProtocolSchemas(confedSchemasFolder, confedDeviceCommonSchema, protocolSchemasFolder);
 }
