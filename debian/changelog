@@ -1,6 +1,7 @@
 wb-mqtt-serial (2.114.4) stable; urgency=medium
 
-  * WB-MS v2, WB-MSW v3, WB-MSW v4 templates: replace Temperature and Humidity channels with high res ones
+  * WB-MS v2, WB-MSW v3 templates: add support for high resolution temperature and humidity channels
+  * WB-MSW v4 template: replace temperature and humidity channels with high res ones
 
  -- Pavel Gasheev <pavel.gasheev@wirenboard.ru>  Thu, 21 Mar 2024 16:17:53 +0300
 
