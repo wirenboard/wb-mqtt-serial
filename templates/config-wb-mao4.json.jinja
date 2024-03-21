@@ -337,7 +337,7 @@
                 "title": "Output Number",
                 "address": {{768 + (loop.index0 * 16) + ch_number}},
                 "reg_type": "holding",
-                "enum": [0, 1, 2, 3, 4, 100, 32, 33, 34, 35, 36, 37, 38, 39],
+                "enum": [0, 1, 2, 3, 4, 100, {%for ls in range(LIGHT_SCENES_NUMBER) %}{{32 + ls}}{% if not loop.last %}, {% endif %}{% endfor %}],
                 "enum_titles": [
                     "No Action",
                     "Output 1",
@@ -345,14 +345,9 @@
                     "Output 3",
                     "Output 4",
                     "All Outputs",
-                    "Light Scene 1",
-                    "Light Scene 2",
-                    "Light Scene 3",
-                    "Light Scene 4",
-                    "Light Scene 5",
-                    "Light Scene 6",
-                    "Light Scene 7",
-                    "Light Scene 8"
+                    {% for ls_number in range(1, LIGHT_SCENES_NUMBER + 1) -%}
+                    "Light Scene {{ ls_number }}"{% if not loop.last %},{% endif %}
+                    {% endfor -%}
                 ],
                 "default": 0,
                 "group": "input_{{ch_number + 1}}_{{press_type | replace(' ', '_')}}_press_action",
@@ -417,7 +412,7 @@
                 "title": "Output Number",
                 "address": {{704 + (loop.index0 * 16) + ch_number}},
                 "reg_type": "holding",
-                "enum": [0, 1, 2, 3, 4, 100, 32, 33, 34, 35, 36, 37, 38, 39],
+                "enum": [0, 1, 2, 3, 4, 100, {%for ls in range(LIGHT_SCENES_NUMBER) %}{{32 + ls}}{% if not loop.last %}, {% endif %}{% endfor %}],
                 "enum_titles": [
                     "No Action",
                     "Output 1",
@@ -425,14 +420,9 @@
                     "Output 3",
                     "Output 4",
                     "All Outputs",
-                    "Light Scene 1",
-                    "Light Scene 2",
-                    "Light Scene 3",
-                    "Light Scene 4",
-                    "Light Scene 5",
-                    "Light Scene 6",
-                    "Light Scene 7",
-                    "Light Scene 8"
+                    {% for ls_number in range(1, LIGHT_SCENES_NUMBER + 1) -%}
+                    "Light Scene {{ ls_number }}"{% if not loop.last %},{% endif %}
+                    {% endfor -%}
                 ],
                 "default": 0,
                 "group": "input_{{ ch_number + 1}}_switch_{{sw_act}}_action",
