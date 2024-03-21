@@ -19378,7 +19378,6 @@ WB-MS v.2
 	Erroneous TH Readings  =>  Erroneous TH Readings
 	FW Version  =>  FW Version
 	Humidity  =>  Humidity
-	Humidity (High Res)  =>  Humidity (High Res)
 	Illuminance  =>  Illuminance
 	Illuminance Mode  =>  Illuminance Mode
 	Input 1: input1_1wire
@@ -19400,7 +19399,6 @@ WB-MS v.2
 	Serial  =>  Serial
 	Successful TH Readings  =>  Successful TH Readings
 	Temperature  =>  Temperature
-	Temperature (High Res)  =>  Temperature (High Res)
 	Uptime  =>  Uptime
 	VOC Baseline  =>  VOC Baseline
 	VOC Equivalent CO2 Concentration  =>  VOC Equivalent CO2 Concentration
