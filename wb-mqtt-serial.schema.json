@@ -14,7 +14,10 @@
           "_format": "checkbox",
           "propertyOrder": 2,
           "options": {
-            "grid_columns": 12
+            "grid_columns": 12,
+            "wb": {
+              "show_editor": true
+            }
           }
         },
         "response_timeout_ms": {
@@ -25,7 +28,11 @@
           "default": 500,
           "propertyOrder": 8,
           "options": {
-            "grid_columns": 4
+            "grid_columns": 12,
+            "show_opt_in": true,
+            "wb" : {
+              "disabledEditorText": " "
+            }
           }
         },
         "guard_interval_us": {
@@ -36,7 +43,11 @@
           "default": 0,
           "propertyOrder": 9,
           "options": {
-            "grid_columns": 4
+            "grid_columns": 12,
+            "show_opt_in": true,
+            "wb" : {
+              "disabledEditorText": " "
+            }
           }
         },
         "poll_interval": {
@@ -51,7 +62,10 @@
           "description" : "read_rate_limit_description",
           "minimum": 0,
           "default": 1000,
-          "propertyOrder": 10
+          "propertyOrder": 10,
+          "options": {
+            "grid_columns": 12
+          }
         },
         "devices": {
           "type": "array",
@@ -104,7 +118,10 @@
               "default": 9600,
               "propertyOrder": 4,
               "options": {
-                "grid_columns": 2
+                "grid_columns": 2,
+                "wb": {
+                  "show_editor":true
+                }
               }    
             },
             "parity": {
@@ -114,7 +131,10 @@
               "default": "N",
               "propertyOrder": 5,
               "options": {
-                "grid_columns": 2
+                "grid_columns": 2,
+                "wb": {
+                  "show_editor":true
+                }
               }    
             },
             "data_bits": {
@@ -124,7 +144,10 @@
               "default": 8,
               "propertyOrder": 6,
               "options": {
-                "grid_columns": 2
+                "grid_columns": 2,
+                "wb": {
+                  "show_editor":true
+                }
               }    
             },
             "stop_bits": {
@@ -134,7 +157,10 @@
               "default": 1,
               "propertyOrder": 7,
               "options": {
-                "grid_columns": 2
+                "grid_columns": 2,
+                "wb": {
+                  "show_editor":true
+                }
               }    
             }
           },
@@ -142,11 +168,10 @@
         },
         { "$ref" : "#/definitions/commonPortSettings"}
       ],
-      "defaultProperties": ["port_type", "path", "baud_rate", "parity", "data_bits", "stop_bits", "devices"],
       "_format": "grid",
       "options": {
         "wb": {
-          "disable_panel": true
+          "disable_title": true
         }
       }
     },
@@ -210,11 +235,10 @@
         { "$ref" : "#/definitions/commonTcpPortSettings"},
         { "$ref" : "#/definitions/commonPortSettings"}
       ],
-      "defaultProperties": ["port_type", "address", "port", "enabled", "devices"],
       "_format": "grid",
       "options": {
         "wb": {
-          "disable_panel": true
+          "disable_title": true
         }
       }
     },
@@ -238,11 +262,10 @@
         { "$ref" : "#/definitions/commonTcpPortSettings"},
         { "$ref" : "#/definitions/commonPortSettings"}
       ],
-      "defaultProperties": ["port_type", "address", "port", "enabled", "devices"],
       "_format": "grid",
       "options": {
         "wb": {
-          "disable_panel": true
+          "disable_title": true
         }
       }
     },
@@ -703,7 +726,8 @@
           "options": {
             "dependencies": {
               "format": "string"
-            }}
+            }
+          }
         },
         "sporadic": {
           "title": "Dispatched with an event",
@@ -718,6 +742,23 @@
           "type": "boolean",
           "default": false,
           "propertyOrder": 23
+        },
+        "enum": {
+          "title": "List of values",
+          "type": "array",
+          "items": {
+            "oneOf": [
+              { "type": "string" },
+              { "type": "number" }
+            ]
+          },
+          "propertyOrder": 24
+        },
+        "enum_titles": {
+          "title": "List of value titles",
+          "type": "array",
+          "items": { "type": "string" },
+          "propertyOrder": 25
         },
         "consists_of": {
           "not": {},
@@ -1145,7 +1186,7 @@
                "param_be", "param_sign_active", "param_sign_reactive", "array12", "default", "param16", 
                "param24", "param32", "power", "freq", "power_factor", "group_single", 
                "temperature", "item_1", "item_2", "item_3", "item_4", "item_5", 
-               "alarm", "position", "command", "date", "time", "angle", "type", "status",
+               "alarm", "position", "command", "date", "time", "angle", "type", "status", "zonebit",
                // obis_* are deprecated, use item_*, temperature and power_factor
                "obis_cdef", "obis_cdef_pf", "obis_cdef_temp", "obis_cdef_1", "obis_cdef_2", "obis_cdef_3", "obis_cdef_4", "obis_cdef_5"]
     },
@@ -1966,7 +2007,12 @@
       "title": "Enable debug logging",
       "default": false,
       "_format": "checkbox",
-      "propertyOrder": 1
+      "propertyOrder": 1,
+      "options": {
+        "wb": {
+          "show_editor": true
+        }
+      }
     },
     "ports": {
       "type": "array",
@@ -1985,7 +2031,10 @@
       "title" : "Unchanged value posting interval",
       "description" : "max_unchanged_interval_desc",
       "default" : -1,
-      "propertyOrder" : 2
+      "propertyOrder" : 2,
+      "options": {
+        "show_opt_in": true
+      }
     },
     "rate_limit" : {
       "type" : "integer",
@@ -1993,12 +2042,18 @@
       "description" : "rate_limit_desc",
       "default" : 100,
       "min": 1,
-      "propertyOrder" : 3
+      "propertyOrder" : 3,
+      "options": {
+        "show_opt_in": true
+      }
     }
   },
 
   "options": {
-    "disable_edit_json": true
+    "disable_edit_json": true,
+    "wb": {
+      "disable_title": true
+    }
   },
 
   "configFile": {
@@ -2006,7 +2061,8 @@
     "service": "wb-mqtt-serial",
     "toJSON": ["wb-mqtt-serial", "-j"],
     "fromJSON": ["wb-mqtt-serial", "-J"],
-    "validate": false
+    "validate": false,
+    "editor": "serial-config"
   },
 
   "translations": {
@@ -2257,6 +2313,8 @@
       "Dispatched with an event and polling": "Передаётся с помощью события и периодически опрашивается",
       "sporadic_description": "Если протокол передачи позволяет, то регистр исключается из периодического опроса. Его изменение отправляется специальным событием",
       "semi_sporadic_description": "Если протокол передачи позволяет, изменение состояния отправляется специальным событием. При этом продолжается периодический опрос",
+      "List of values": "Список значений",
+      "List of value titles": "Список названий значений",
       "force_frame_timeout_desc": "Использовать значение задержки между сообщениями для определения границ пакетов. Продолжать принимать данные, даже если получено ожидаемое число байт. Все дополнительно полученные данные будут отброшены. Более строгое соблюдение стандарта MODBUS, но медленнее опрос",
       "Force frame timeout": "Разделять сообщения по времени",
       "Max write fail time (s)": "Время повторных попыток записать регистр (с)",

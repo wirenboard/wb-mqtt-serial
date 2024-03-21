@@ -113,7 +113,7 @@ namespace
 
         } else if (request.isMember("ip") && request.isMember("port")) {
             std::string address;
-            int portNumber;
+            int portNumber = 0;
             WBMQTT::JSON::Get(request, "ip", address);
             WBMQTT::JSON::Get(request, "port", portNumber);
             TTcpPortSettings settings(address, portNumber);

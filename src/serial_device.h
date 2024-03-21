@@ -45,8 +45,12 @@ struct TDeviceChannelConfig
     const TTitleTranslations& GetTitles() const;
     void SetTitle(const std::string& name, const std::string& lang);
 
+    const std::map<std::string, TTitleTranslations>& GetEnumTitles() const;
+    void SetEnumTitles(const std::string& value, const TTitleTranslations& titles);
+
 private:
     TTitleTranslations Titles;
+    std::map<std::string, TTitleTranslations> EnumTitles;
 };
 
 typedef std::shared_ptr<TDeviceChannelConfig> PDeviceChannelConfig;

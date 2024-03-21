@@ -4,6 +4,84 @@ wb-mqtt-serial (2.109.2) stable; urgency=low
 
  -- Daniil Safonov <Daniil.Safonov@wirenboard.ru>  Fri, 02 Feb 2024 17:00:00 +0600
 
+wb-mqtt-serial (2.114.3) stable; urgency=medium
+
+  * Fix baud rate strings in WB-MWAC v.2 template
+
+ -- Radmir Khakimov <radmir.khakimov@wirenboard.com>  Tue, 19 Mar 2024 14:00:51 +0500
+
+wb-mqtt-serial (2.114.2) stable; urgency=medium
+
+  * Dauerhaft: add 'Max rotational speed' channel
+
+ -- Nikolay Korotkiy <nikolay.korotkiy@wirenboard.com>  Tue, 19 Mar 2024 11:30:00 +0400
+
+wb-mqtt-serial (2.114.1) stable; urgency=medium
+
+  * Fix m1w2 template. Add trailing comma check for templates
+
+ -- ekateluv <ekaterina.volkova@wirenboard.com>  Fri, 15 Mar 2024 14:56:30 +0300
+
+wb-mqtt-serial (2.114.0) stable; urgency=medium
+
+  * Add WB-MWAC v.2 template
+
+ -- Radmir Khakimov <radmir.khakimov@wirenboard.com>  Mon, 18 Mar 2024 14:00:51 +0500
+
+wb-mqtt-serial (2.113.0) stable; urgency=medium
+
+  * Update schema for device manager interface in homeui
+
+ -- Petr Krasnoshchekov <petr.krasnoshchekov@wirenboard.com>  Fri, 15 Mar 2024 10:28:18 +0500
+
+wb-mqtt-serial (2.112.1) stable; urgency=medium
+
+  * Fix publishing period if publish unchanged values is allowed
+
+ -- Petr Krasnoshchekov <petr.krasnoshchekov@wirenboard.com>  Wed, 13 Mar 2024 17:20:25 +0500
+
+wb-mqtt-serial (2.112.0) stable; urgency=medium
+
+  * Add support for enums in templates
+
+ -- Nikolay Korotkiy <nikolay.korotkiy@wirenboard.com>  Tue, 12 Mar 2024 13:20:00 +0400
+
+wb-mqtt-serial (2.111.1) stable; urgency=medium
+
+  * Add support for device signatures in templates with subdevices
+
+ -- Petr Krasnoshchekov <petr.krasnoshchekov@wirenboard.com>  Mon, 11 Mar 2024 14:02:19 +0500
+
+wb-mqtt-serial (2.111.0) stable; urgency=medium
+
+  * Add new template for dali-logic-lite-ps-x1
+
+ -- Mikhail Burchu <mikhail.burchu@wirenboard.com>  Fri, 1 Mar 2024 17:30:00 +0300
+
+wb-mqtt-serial (2.110.1) stable; urgency=medium
+
+  * Dauerhaft: add curtain motor settings support
+
+ -- Nikolay Korotkiy <nikolay.korotkiy@wirenboard.com>  Thu, 29 Feb 2024 09:00:00 +0400
+
+wb-mqtt-serial (2.110.0) stable; urgency=medium
+
+  * Add support for device signatures in templates of Wiren Board devices
+
+ -- Petr Krasnoshchekov <petr.krasnoshchekov@wirenboard.com>  Thu, 29 Feb 2024 09:37:59 +0500
+
+wb-mqtt-serial (2.109.3) stable; urgency=medium
+
+  * Add Dauerhaft CM5 template
+
+ -- Nikolay Korotkiy <nikolay.korotkiy@wirenboard.com>  Wed, 21 Feb 2024 20:00:00 +0400
+
+wb-mqtt-serial (2.109.2) stable; urgency=medium
+
+  * MSW4-LORA template: added template for WB-MSW-LORA v.4 as it was broken by fast modbus
+
+ -- Maxim Tomchuk <maxim.tomchuk@wirenboard.ru>  Fri, 16 Feb 2024 17:48:00 +0300
+
 wb-mqtt-serial (2.109.1) stable; urgency=medium
 
   * MRM2mini template: fix curtains mapping matrix size

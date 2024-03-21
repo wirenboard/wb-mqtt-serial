@@ -2,6 +2,14 @@
     "title": "WB-MAP6S-fw2_template_title",
     "device_type": "WB-MAP6S fw2",
     "group": "g-wb",
+    "hw": [
+        {
+            "signature": "MAP6S\u0002E"
+        },
+        {
+            "signature": "MAP6S\u0002"
+        }
+    ],
     "device": {
         "name": "WB-MAP6S fw2",
         "id": "wb-map6s",

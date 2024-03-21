@@ -1,0 +1,198 @@
+{
+    "device_type": "Dauerhaft CM5",
+    "title": "template_title",
+    "group": "g-curtain",
+    "device": {
+        "name": "Dauerhaft CM5",
+        "id": "dauerhaft-cm5",
+        "protocol": "a_ok",
+        "groups": [
+            {
+                "title": "Controls",
+                "id": "controls"
+            },
+            {
+                "title": "Properties",
+                "id": "properties"
+            },
+            {
+                "title": "Functions",
+                "id": "functions"
+            }
+        ],
+        "parameters": {
+            "baud_rate": {
+                "title": "Baud rate",
+                "description": "baud_rate_description",
+                "reg_type": "param",
+                "address": "0xda",
+                "enum": [0, 1, 2, 3, 4],
+                "default": 1,
+                "enum_titles": ["1200", "2400", "4800", "9600", "19200"],
+                "group": "properties"
+            },
+            "speed": {
+                "title": "Rotational speed",
+                "description": "unit: rpm",
+                "reg_type": "param",
+                "address": "0xd9",
+                "default": 50,
+                "min": 50,
+                "max": 129,
+                "group": "properties"
+            }
+        },
+        "channels": [
+            {
+                "name": "Position",
+                "reg_type": "position",
+                "address": 0,
+                "type": "range",
+                "max": 100,
+                "group": "controls"
+            },
+            {
+                "name": "Stop",
+                "type": "pushbutton",
+                "reg_type": "command",
+                "address": "0xcc",
+                "group": "controls"
+            },
+            {
+                "name": "Open",
+                "type": "pushbutton",
+                "reg_type": "command",
+                "address": "0xdd",
+                "group": "controls"
+            },
+            {
+                "name": "Close",
+                "type": "pushbutton",
+                "reg_type": "command",
+                "address": "0xee",
+                "group": "controls"
+            },
+            {
+                "name": "Learn",
+                "type": "pushbutton",
+                "reg_type": "command",
+                "address": "0xaa",
+                "enabled": false,
+                "group": "properties"
+            },
+            {
+                "name": "Delete",
+                "type": "pushbutton",
+                "reg_type": "command",
+                "address": "0xa6",
+                "enabled": false,
+                "group": "properties"
+            },
+            {
+                "name": "Current",
+                "type": "value",
+                "reg_type": "status",
+                "address": "0xcc00:0:8",
+                "units": "mA",
+                "readonly": true,
+                "enabled": false,
+                "group": "properties"
+            },
+            {
+                "name": "Voltage",
+                "type": "value",
+                "reg_type": "status",
+                "address": "0xcc00:8:8",
+                "units": "V",
+                "readonly": true,
+                "enabled": false,
+                "group": "properties"
+            },
+            {
+                "name": "Current rotational speed",
+                "type": "value",
+                "reg_type": "status",
+                "address": "0xcc00:16:8",
+                "units": "rpm",
+                "readonly": true,
+                "enabled": false,
+                "group": "properties"
+            },
+            {
+                "name": "Max rotational speed",
+                "type": "value",
+                "reg_type": "status",
+                "address": "0xcaca:16:8",
+                "units": "rpm",
+                "readonly": true,
+                "enabled": false,
+                "group": "properties"
+            },
+            {
+                "name": "Hand pull",
+                "type": "switch",
+                "reg_type": "zonebit",
+                "address": "0",
+                "on_value": 0,
+                "off_value": 1,
+                "enabled": false,
+                "group": "functions"
+            },
+            {
+                "name": "Reverse",
+                "type": "switch",
+                "reg_type": "zonebit",
+                "address": "1",
+                "enabled": false,
+                "group": "functions"
+            },
+            {
+                "name": "Slow start",
+                "type": "switch",
+                "reg_type": "zonebit",
+                "address": "3",
+                "on_value": 0,
+                "off_value": 1,
+                "enabled": false,
+                "group": "functions"
+            },
+            {
+                "name": "Running",
+                "type": "switch",
+                "reg_type": "status",
+                "address": "0xcc00:32:1",
+                "readonly": true,
+                "group": "properties"
+            }
+        ],
+        "translations": {
+            "en": {
+                "template_title": "Dauerhaft CM5 (sliding curtain motor)",
+                "baud_rate_description": "Make sure that communication with device is established before changing this parameter. Select required baud rate, save configuration and then change port baud rate to the same value."
+            },
+            "ru": {
+                "template_title": "Dauerhaft CM5 (мотор раздвижных штор)",
+                "Controls": "Управление",
+                "Properties": "Параметры",
+                "Functions": "Функции",
+                "Baud rate": "Скорость обмена",
+                "baud_rate_description": "Перед изменением параметра убедитесь, что связь с устройством установлена. Выберите нужную скорость обмена, сохраните конфигурацию, а затем укажите в настройках порта эту же скорость.",
+                "Max rotational speed": "Максимальная скорость вращения",
+                "Rotational speed": "Скорость вращения",
+                "Position": "Позиция",
+                "Stop": "Остановить",
+                "Open": "Открыть",
+                "Close": "Закрыть",
+                "Learn": "Обучить",
+                "Delete": "Удалить",
+                "Current": "Ток",
+                "Voltage": "Напряжение",
+                "Current rotational speed": "Текущая скорость вращения",
+                "Hand pull": "Движение рукой",
+                "Reverse": "Инверсия",
+                "Slow start": "Медленный старт",
+                "Running": "Движение"
+            }
+        }
+    }
+}

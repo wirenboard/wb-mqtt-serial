@@ -1,0 +1,25 @@
+{
+    "device_type": "with hw",
+    "title": "with hw",
+    "hw" : [
+        {
+            "signature": "signature"
+        },
+        {
+            "signature": "signature2",
+            "fw": "1.1.1"
+        }
+    ],
+    "device": {
+        "name": "with hw",
+        "id": "with hw",
+        "channels": [
+            {
+                "name": "temperature",
+                "reg_type": "input",
+                "format": "s32",
+                "address": "0x0504"
+            }
+        ]
+    }
+}

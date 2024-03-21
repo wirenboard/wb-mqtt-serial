@@ -9,6 +9,21 @@
       "minLength": 1
     },
 
+    "hardware": {
+      "type": "object",
+      "properties": {
+        "signature": {
+          "type": "string",
+          "minLength": 1
+        },
+        "fw": {
+          "type": "string",
+          "minLength": 1
+        }
+      },
+      "required": ["signature"]
+    },
+
     "group_condition": {
       "properties": {
         "group": {
@@ -293,6 +308,10 @@
     "deprecated": {
       "type": "boolean"
     },
+    "hw": {
+      "type": "array",
+      "items": { "$ref": "#/definitions/hardware" } 
+    },
     "device": {
       "oneOf": [
         {
@@ -323,7 +342,7 @@
           "properties": {
             "protocol": {
               "type": "string",
-              "enum": ["uniel", "s2k", "dooya"]
+              "enum": ["uniel", "s2k", "dooya", "a_ok"]
             },
             "parameters": { 
               "$ref": "#/definitions/parameters"

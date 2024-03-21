@@ -2,6 +2,11 @@
     "title": "WB-MAI2-mini_template_title",
     "device_type": "WB-MAI2-mini/CC",
     "group": "g-wb",
+    "hw": [
+        {
+            "signature": "MAI2CC"
+        }
+    ],
     "device": {
         "name": "WB-MAI2-mini/CC",
         "id": "wb-mai2-mini",

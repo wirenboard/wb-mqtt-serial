@@ -48,7 +48,7 @@ It's designed to be used on [Wiren Board](https://wirenboard.com/en/) family of 
 - [Somfy SDN](https://www.somfy.com),
 - WinDeco,
 - Dooya,
-- Dauerhaft.
+- Dauerhaft/[A-OK](https://a-okmotors.com).
 
 ### Управление драйвером
 
@@ -154,7 +154,7 @@ It's designed to be used on [Wiren Board](https://wirenboard.com/en/) family of 
             "port_type": "serial",
 
             // устройство, соответствующее порту RS-485 (если выбран тип порта serial)
-            "path" : "/dev/ttyRS485-1",
+            "path": "/dev/ttyRS485-1",
 
             // IP адрес или имя хоста (если выбран тип порта TCP или MODBUS TCP)
             "address": "127.0.0.1",
@@ -201,7 +201,7 @@ It's designed to be used on [Wiren Board](https://wirenboard.com/en/) family of 
             "enabled": true,
 
             // список устройств на данном порту
-            "devices" : [
+            "devices": [
                 {
                     // тип устройства, в системе должен быть корректный шаблон для этого типа
                     "device_type": "MSU34+TLP",
@@ -309,12 +309,12 @@ It's designed to be used on [Wiren Board](https://wirenboard.com/en/) family of 
                         {
                             // имя канала, используется в диагностических сообщениях и, 
                             // если не задан параметр id, для формирования названия MQTT topic'ов канала
-                            "name" : "Temp 1",
+                            "name": "Temp 1",
 
                             // имя MQTT контрола канала. topic'и, соответствующие каналу,
                             // публикуются как /devices/<идентификатор устройства>/controls/<ID канала>
                             // если не задан, то используется значение параметра name
-                            "id" : "Temp",
+                            "id": "Temp",
 
                             // Включает канал в цикл опроса. По умолчанию, равен true.
                             "enabled": true,
@@ -327,7 +327,7 @@ It's designed to be used on [Wiren Board](https://wirenboard.com/en/) family of 
                             // "input" - 16 бит, только чтение
                             // "holding_single" - то же что и holding однако регистры записываются всегда по одному, кодом 06
                             // "holding_multi" - то же что и holding однако регистры записываются всегда кодом 16
-                            "reg_type" : "input",
+                            "reg_type": "input",
 
                             // адрес первого регистра канала
                             // Можно читать отдельные биты полученных регистров, для этого запишите адрес в формате: 
@@ -336,7 +336,7 @@ It's designed to be used on [Wiren Board](https://wirenboard.com/en/) family of 
                             //    shift — смещение от младшего бита первого регистра,
                             //    width — количество считываемых битов.
                             // Например, "address":"109:1:2" — прочитать второй и третий биты регистра, расположенного по адресу 109.
-                            "address" : 0,
+                            "address": 0,
 
                             // тип элемента управления, например,
                             // "temperature", "text", "switch"
@@ -415,6 +415,12 @@ It's designed to be used on [Wiren Board](https://wirenboard.com/en/) family of 
                             // это позволит избежать «застывания» значений аналогового канала.
                             "sporadic": true,
 
+                            // Список возможных значений
+                            "enum": [1, 2, 3],
+
+                            // Надписи значений
+                            "enum_titles": ["one", "two", "three"],
+
                             // доступен ли канал для записи через MQTT
                             "readonly": true,
 
@@ -432,22 +438,22 @@ It's designed to be used on [Wiren Board](https://wirenboard.com/en/) family of 
                         },
                         {
                             // Ещё один канал
-                            "name" : "Illuminance",
-                            "reg_type" : "input",
-                            "address" : 1,
+                            "name": "Illuminance",
+                            "reg_type": "input",
+                            "address": 1,
                             "type": "text"
                         },
                         {
-                            "name" : "Pressure",
-                            "reg_type" : "input",
-                            "address" : 2,
+                            "name": "Pressure",
+                            "reg_type": "input",
+                            "address": 2,
                             "type": "text",
                             "scale": 0.075
                         },
                         {
-                            "name" : "Temp 2",
-                            "reg_type" : "input",
-                            "address" : 3,
+                            "name": "Temp 2",
+                            "reg_type": "input",
+                            "address": 3,
                             "type": "temperature",
                             "format": "s8"
                         }
@@ -474,7 +480,7 @@ It's designed to be used on [Wiren Board](https://wirenboard.com/en/) family of 
                             "value": 1,
 
                             // тип регистра, если не указан, то для Modbus используется "holding"
-                            "reg_type" : "input",
+                            "reg_type": "input",
 
                             // формат регистра, для Modbus по умолчанию u16
                             "format": "s8"
@@ -487,29 +493,29 @@ It's designed to be used on [Wiren Board](https://wirenboard.com/en/) family of 
                     ],
                     "channels": [
                         {
-                            "name" : "Relay 1",
-                            "reg_type" : "coil",
-                            "address" : 0,
+                            "name": "Relay 1",
+                            "reg_type": "coil",
+                            "address": 0,
                             "type": "switch"
                         },
                         {
-                            "name" : "Relay 2",
-                            "reg_type" : "coil",
-                            "address" : 1,
+                            "name": "Relay 2",
+                            "reg_type": "coil",
+                            "address": 1,
                             "type": "switch"
                         },
                         // ...
                         {
-                            "name" : "Input 2",
-                            "reg_type" : "input",
-                            "address" : 1,
+                            "name": "Input 2",
+                            "reg_type": "input",
+                            "address": 1,
                             "type": "switch",
                             "on_value": 101
                         },
                         {
-                            "name" : "Input 3",
-                            "reg_type" : "input",
-                            "address" : 2,
+                            "name": "Input 3",
+                            "reg_type": "input",
+                            "address": 2,
                             "type": "switch",
                             "on_value": 101
                         },
@@ -520,13 +526,13 @@ It's designed to be used on [Wiren Board](https://wirenboard.com/en/) family of 
         },
         {
             // ещё один порт со своим набором устройств
-            "path" : "/dev/ttyNSC1",
+            "path": "/dev/ttyNSC1",
             "baud_rate": 9600,
             "parity": "N",
             "data_bits": 8,
             "stop_bits": 1,
             "enabled": true,
-            "devices" : [
+            "devices": [
                 {
                     "name": "tM-P3R3",
                     "id": "tmp3r3",
@@ -534,9 +540,9 @@ It's designed to be used on [Wiren Board](https://wirenboard.com/en/) family of 
                     "slave_id": 1,
                     "channels": [
                         {
-                            "name" : "Relay 0",
-                            "reg_type" : "coil",
-                            "address" : 0,
+                            "name": "Relay 0",
+                            "reg_type": "coil",
+                            "address": 0,
                             "type": "switch"
                         },
                         // ...
@@ -607,6 +613,18 @@ It's designed to be used on [Wiren Board](https://wirenboard.com/en/) family of 
     // Также для такого шаблона будут игнорироваться возможные ошибки валидации на соответствие JSON схеме
     "deprecated": true,
 
+    // Список сигнатур устройств, которые поддерживает шаблон 
+    "hw": [
+        {
+            // Сигнатура устройства WirenBoard
+            "signature": "WBMR6C",
+
+            // Версия прошивки, начиная с которой можно использовать данный шаблон
+            // Этот параметр может отсутствовать, тогда шаблон подходит к любой версии прошивки 
+            "fw": "1.1.1"
+        }
+    ],
+
     "device": {
         // отображаемое имя устройства. Публикуется как
         // .../meta/name в MQTT
@@ -654,7 +672,7 @@ It's designed to be used on [Wiren Board](https://wirenboard.com/en/) family of 
                 "enum": [1, 2, 3],
 
                 // Надписи в списке выбора в веб-конфигураторе
-                "enum_titles": ["one", "two", "three" ],
+                "enum_titles": ["one", "two", "three"],
 
                 // Значение по умолчанию в веб-конфигураторе
                 "default": 2,
@@ -1012,9 +1030,15 @@ OBIS-коды кодируются в адресе регистра следую
 
 ### Dauerhaft
 
-Для организации отправки команд можно использовать канал с типом регистра `command`. В этом случае код команды задаётся в адресе регистра.
-
 Адрес шторы задается в формате: `0x<ID мотора (1 байт)><ID канала (младший байт)><ID канала (старший байт)>`.
+
+| Тип регистра | Адрес                                                                | R/W |
+|:------------:|:--------------------------------------------------------------------:|:---:|
+| command      | код команды (0xdd,0xcc,0xee,0x0d,0x0e,0xaa,0xa6,0x01,0x02,0x03,0x04) | W   |
+| position     | -                                                                    | RW  |
+| param        | код команды (0xd9,0xd2,0xda,0xd6,0xd7,0xd8)                          | W   |
+| status       | `<0xcc00,0xcaca,0xcbcb>:<shift>:<width>`                             | R   |
+| zonebit      | номер бита (0-7)                                                     | RW  |
 
 ### Меркурий 200
 

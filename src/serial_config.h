@@ -15,6 +15,12 @@
 #include "rpc_config.h"
 #include "serial_device.h"
 
+struct TDeviceTemplateHardware
+{
+    std::string Signature; //! Device signature
+    std::string Fw;        //! Firmware version (semver)
+};
+
 struct TDeviceTemplate
 {
     std::string Type;
@@ -22,6 +28,7 @@ struct TDeviceTemplate
     Json::Value Schema;
     bool IsDeprecated = false;
     std::string Group;
+    std::vector<TDeviceTemplateHardware> Hardware;
 
     TDeviceTemplate(const std::string& type, const std::string title, const Json::Value& schema);
 };
@@ -76,8 +83,11 @@ public:
      * @param templatesDir directory with templates
      * @param passInvalidTemplates false - throw exception if a folder contains json without device_type parameter
      *                             true - print log message and continue folder processing
+     * @param settings Json with jsoncpp parser settings
      */
-    void AddTemplatesDir(const std::string& templatesDir, bool passInvalidTemplates = true);
+    void AddTemplatesDir(const std::string& templatesDir,
+                         bool passInvalidTemplates = true,
+                         const Json::Value& settings = Json::Value());
 
     const TDeviceTemplate& GetTemplate(const std::string& deviceType) override;
 

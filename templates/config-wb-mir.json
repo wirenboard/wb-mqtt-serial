@@ -2,6 +2,11 @@
     "title": "_WB-MIR-template-title",
     "device_type": "WB-MIR",
     "group": "g-wb-old",
+    "hw": [
+        {
+            "signature": "WBMIR"
+        }
+    ],
     "device": {
         "name": "WB-MIR",
         "id": "wb-mir",

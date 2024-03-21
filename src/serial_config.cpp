@@ -24,7 +24,7 @@
 #include "config_schema_generator.h"
 #include "file_utils.h"
 
-#include "devices/curtains/dauerhaft_device.h"
+#include "devices/curtains/a_ok_device.h"
 #include "devices/curtains/dooya_device.h"
 #include "devices/curtains/somfy_sdn_device.h"
 #include "devices/curtains/windeco_device.h"
@@ -428,6 +428,20 @@ namespace
             channel->SetTitle(it.second, it.first);
         }
 
+        if (channel_data.isMember("enum") && channel_data.isMember("enum_titles")) {
+            const auto& enumValues = channel_data["enum"];
+            const auto& enumTitles = channel_data["enum_titles"];
+            if (enumValues.size() == enumTitles.size()) {
+                for (Json::ArrayIndex i = 0; i < enumValues.size(); ++i) {
+                    channel->SetEnumTitles(enumValues[i].asString(),
+                                           Translate(enumTitles[i].asString(), true, context));
+                }
+            } else {
+                LOG(Warn) << errorMsgPrefix << ": enum and enum_titles should have the same size -- "
+                          << device_config->DeviceType;
+            }
+        }
+
         if (channel_data.isMember("max")) {
             channel->Max = GetDouble(channel_data, "max");
         }
@@ -740,7 +754,9 @@ std::string TTemplateMap::GetDeviceType(const std::string& templatePath) const
     throw std::runtime_error(templatePath + " doesn't contain device type declaration");
 }
 
-void TTemplateMap::AddTemplatesDir(const std::string& templatesDir, bool passInvalidTemplates)
+void TTemplateMap::AddTemplatesDir(const std::string& templatesDir,
+                                   bool passInvalidTemplates,
+                                   const Json::Value& settings)
 {
     IterateDirByPattern(
         templatesDir,
@@ -754,7 +770,7 @@ void TTemplateMap::AddTemplatesDir(const std::string& templatesDir, bool passInv
                 return false;
             }
             try {
-                Json::Value root = WBMQTT::JSON::Parse(filepath);
+                Json::Value root = WBMQTT::JSON::ParseWithSettings(filepath, settings);
                 TemplateFiles[root["device_type"].asString()] = filepath;
             } catch (const std::exception& e) {
                 if (passInvalidTemplates) {
@@ -812,6 +828,14 @@ std::shared_ptr<TDeviceTemplate> TTemplateMap::GetTemplatePtr(const std::string&
         auto deviceTemplate = std::make_shared<TDeviceTemplate>(deviceType, deviceTypeTitle, root["device"]);
         Get(root, "deprecated", deviceTemplate->IsDeprecated);
         Get(root, "group", deviceTemplate->Group);
+        if (root.isMember("hw")) {
+            for (const auto& hwItem: root["hw"]) {
+                TDeviceTemplateHardware hw;
+                Get(hwItem, "signature", hw.Signature);
+                Get(hwItem, "fw", hw.Fw);
+                deviceTemplate->Hardware.push_back(std::move(hw));
+            }
+        }
         ValidTemplates.insert({deviceType, deviceTemplate});
         return deviceTemplate;
     }
@@ -1057,6 +1081,18 @@ void TDeviceChannelConfig::SetTitle(const std::string& name, const std::string& 
 {
     if (!lang.empty()) {
         Titles[lang] = name;
+    }
+}
+
+const std::map<std::string, TTitleTranslations>& TDeviceChannelConfig::GetEnumTitles() const
+{
+    return EnumTitles;
+}
+
+void TDeviceChannelConfig::SetEnumTitles(const std::string& value, const TTitleTranslations& titles)
+{
+    if (!value.empty()) {
+        EnumTitles[value] = titles;
     }
 }
 
@@ -1358,7 +1394,7 @@ void RegisterProtocols(TSerialDeviceFactory& deviceFactory)
     Dooya::TDevice::Register(deviceFactory);
     WinDeco::TDevice::Register(deviceFactory);
     Somfy::TDevice::Register(deviceFactory);
-    Dauerhaft::TDevice::Register(deviceFactory);
+    Aok::TDevice::Register(deviceFactory);
 }
 
 TRegisterBitsAddress LoadRegisterBitsAddress(const Json::Value& register_data, const std::string& jsonPropertyName)

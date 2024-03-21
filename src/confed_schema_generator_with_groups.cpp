@@ -199,6 +199,12 @@ namespace
 //      "type": "object",
 //      "title": DEVICE_TITLE_HASH,
 //      "_format": "groups",
+//      "hw": [
+//          {
+//              "signature": DEVICE_SIGNATURE,
+//              "fw": FW_SEMVER
+//          }
+//      ],
 //      "options": {
 //          "disable_edit_json": true,
 //          "compact": true,
@@ -236,6 +242,12 @@ void AddDeviceWithGroupsUISchema(const TDeviceTemplate& deviceTemplate,
     res["type"] = "object";
     res["title"] = context.AddHashedTranslation(deviceTemplate.Title);
     res["_format"] = "groups";
+
+    auto hwArray = MakeHardwareArray(deviceTemplate);
+    if (!hwArray.empty()) {
+        res["hw"] = hwArray;
+    }
+
     res["properties"]["device_type"] = MakeHiddenProperty(deviceTemplate.Type);
     MakeArray("required", res).append("device_type");
     if (!deviceFactory.GetProtocol(protocol)->SupportsBroadcast()) {

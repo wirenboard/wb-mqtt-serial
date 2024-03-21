@@ -260,7 +260,7 @@ protected:
 
 TEST_F(TConfedSchemaTest, PreserveSchemaTranslations)
 {
-    // Check that translations from wb-mqtt-serial.schema.json are not overwitten
+    // Check that translations from wb-mqtt-serial.schema.json are not overwritten
     TTemplateMap templateMap(
         GetDataFilePath("translation-templates/templates1"),
         LoadConfigTemplatesSchema(GetDataFilePath("../wb-mqtt-serial-device-template.schema.json"), ConfigSchema));
@@ -305,6 +305,22 @@ TEST_F(TConfedSchemaTest, MergeTranslations)
     }
 }
 
+TEST_F(TConfedSchemaTest, Hardware)
+{
+    // Check that hw array from template is passed to resulting schema
+    TTemplateMap templateMap(
+        GetDataFilePath("hw-templates"),
+        LoadConfigTemplatesSchema(GetDataFilePath("../wb-mqtt-serial-device-template.schema.json"), ConfigSchema));
+
+    auto schema = MakeSchemaForConfed(ConfigSchema, templateMap, DeviceFactory);
+    ASSERT_TRUE(schema["definitions"]["device"]["oneOf"][0].isMember("hw"));
+    ASSERT_EQ(schema["definitions"]["device"]["oneOf"][0]["hw"].size(), 2);
+    ASSERT_STREQ(schema["definitions"]["device"]["oneOf"][0]["hw"][0]["signature"].asString().c_str(), "signature");
+    ASSERT_FALSE(schema["definitions"]["device"]["oneOf"][0]["hw"][0].isMember("fw"));
+    ASSERT_STREQ(schema["definitions"]["device"]["oneOf"][0]["hw"][1]["signature"].asString().c_str(), "signature2");
+    ASSERT_STREQ(schema["definitions"]["device"]["oneOf"][0]["hw"][1]["fw"].asString().c_str(), "1.1.1");
+}
+
 TEST_F(TConfigParserTest, ParseModbusDevideWithWriteAddress)
 {
     auto portConfigs = GetConfig("configs/parse_test_modbus_write_address.json")->PortConfigs;
@@ -328,4 +344,22 @@ TEST_F(TConfigParserTest, ParseReadonlyParameters)
     auto setupItems = devices[0]->DeviceConfig()->SetupItemConfigs;
     EXPECT_EQ(setupItems.size(), 1);
     EXPECT_EQ(setupItems[0]->GetName(), "p2");
+}
+
+TEST_F(TConfigParserTest, ParseEnum)
+{
+    auto portConfigs = GetConfig("configs/parse_enum.json")->PortConfigs;
+    EXPECT_FALSE(portConfigs.empty());
+    auto devices = portConfigs[0]->Devices;
+    EXPECT_FALSE(devices.empty());
+    auto deviceChannels = devices[0]->DeviceConfig()->DeviceChannelConfigs;
+    EXPECT_FALSE(deviceChannels.empty());
+    auto titles1 = deviceChannels[0]->GetEnumTitles();
+    EXPECT_EQ(titles1.size(), 2);
+    EXPECT_EQ(titles1["0"]["en"], "zero");
+    EXPECT_EQ(titles1["1"]["en"], "one");
+    auto titles2 = deviceChannels[1]->GetEnumTitles();
+    EXPECT_EQ(titles2.size(), 2);
+    EXPECT_EQ(titles2["2"]["en"], "two");
+    EXPECT_EQ(titles2["3"]["en"], "three");
 }
