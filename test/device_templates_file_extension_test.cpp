@@ -99,7 +99,11 @@ TEST_F(TDeviceTemplatesTest, Validate)
         LoadConfigTemplatesSchema(TLoggedFixture::GetDataFilePath("../wb-mqtt-serial-device-template.schema.json"),
                                   configSchema));
     TTemplateMap templates(TLoggedFixture::GetDataFilePath("../templates"), templatesSchema, false);
-    templates.AddTemplatesDir(TLoggedFixture::GetDataFilePath("../build/templates"), false);
+
+    Json::Value settings;
+    settings["allowTrailingCommas"] = false;
+
+    templates.AddTemplatesDir(TLoggedFixture::GetDataFilePath("../build/templates"), false, settings);
     auto deviceTypes = templates.GetDeviceTypes();
     std::sort(deviceTypes.begin(), deviceTypes.end()); // For stable test results
     for (const auto& deviceType: deviceTypes) {

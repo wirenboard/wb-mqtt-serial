@@ -4,6 +4,42 @@ wb-mqtt-serial (2.113.0) stable; urgency=medium
 
  -- Pavel Gasheev <pavel.gasheev@wirenboard.ru>  Thu, 14 Mar 2024 11:37:18 +0300
 
+wb-mqtt-serial (2.114.3) stable; urgency=medium
+
+  * Fix baud rate strings in WB-MWAC v.2 template
+
+ -- Radmir Khakimov <radmir.khakimov@wirenboard.com>  Tue, 19 Mar 2024 14:00:51 +0500
+
+wb-mqtt-serial (2.114.2) stable; urgency=medium
+
+  * Dauerhaft: add 'Max rotational speed' channel
+
+ -- Nikolay Korotkiy <nikolay.korotkiy@wirenboard.com>  Tue, 19 Mar 2024 11:30:00 +0400
+
+wb-mqtt-serial (2.114.1) stable; urgency=medium
+
+  * Fix m1w2 template. Add trailing comma check for templates
+
+ -- ekateluv <ekaterina.volkova@wirenboard.com>  Fri, 15 Mar 2024 14:56:30 +0300
+
+wb-mqtt-serial (2.114.0) stable; urgency=medium
+
+  * Add WB-MWAC v.2 template
+
+ -- Radmir Khakimov <radmir.khakimov@wirenboard.com>  Mon, 18 Mar 2024 14:00:51 +0500
+
+wb-mqtt-serial (2.113.0) stable; urgency=medium
+
+  * Update schema for device manager interface in homeui
+
+ -- Petr Krasnoshchekov <petr.krasnoshchekov@wirenboard.com>  Fri, 15 Mar 2024 10:28:18 +0500
+
+wb-mqtt-serial (2.112.1) stable; urgency=medium
+
+  * Fix publishing period if publish unchanged values is allowed
+
+ -- Petr Krasnoshchekov <petr.krasnoshchekov@wirenboard.com>  Wed, 13 Mar 2024 17:20:25 +0500
+
 wb-mqtt-serial (2.112.0) stable; urgency=medium
 
   * Add support for enums in templates
