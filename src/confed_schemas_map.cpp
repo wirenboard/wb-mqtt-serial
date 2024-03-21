@@ -25,11 +25,6 @@ const Json::Value& TDevicesConfedSchemasMap::GetSchema(const std::string& device
     }
 }
 
-void TDevicesConfedSchemasMap::TemplatesHaveBeenChanged()
-{
-    Schemas.clear();
-}
-
 std::string GetSchemaFilePath(const std::string& schemasFolder, const std::string& templateFilePath)
 {
     std::filesystem::path templatePath(templateFilePath);

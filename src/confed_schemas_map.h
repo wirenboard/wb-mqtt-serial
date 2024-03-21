@@ -14,8 +14,6 @@ public:
     TDevicesConfedSchemasMap(TTemplateMap& templatesMap, const std::string& schemasFolder);
 
     const Json::Value& GetSchema(const std::string& deviceType);
-
-    void TemplatesHaveBeenChanged();
 };
 
 struct TProtocolConfedSchema
