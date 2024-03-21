@@ -1,8 +1,8 @@
-wb-mqtt-serial (2.109.2) stable; urgency=low
+wb-mqtt-serial (2.114.4) stable; urgency=low
 
-  * WB-MRWM2 templates: add protection modes by power and low/high voltage
+  * WB-MRWM2 templates: add low/high voltage protection
 
- -- Daniil Safonov <Daniil.Safonov@wirenboard.ru>  Fri, 02 Feb 2024 17:00:00 +0600
+ -- Daniil Safonov <Daniil.Safonov@wirenboard.ru>  Thu, 21 Mar 2024 18:18:33 +0600
 
 wb-mqtt-serial (2.114.3) stable; urgency=medium
 
