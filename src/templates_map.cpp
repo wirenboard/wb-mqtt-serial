@@ -58,6 +58,16 @@ PDeviceTemplate TTemplateMap::MakeTemplateFromJson(const Json::Value& data, cons
     if (data["device"].isMember("subdevices")) {
         deviceTemplate->SetWithSubdevices();
     }
+    if (data.isMember("hw")) {
+        std::vector<TDeviceTemplateHardware> hws;
+        for (const auto& hwItem: data["hw"]) {
+            TDeviceTemplateHardware hw;
+            Get(hwItem, "signature", hw.Signature);
+            Get(hwItem, "fw", hw.Fw);
+            hws.push_back(std::move(hw));
+        }
+        deviceTemplate->SetHardware(hws);
+    }
     return deviceTemplate;
 }
 
@@ -136,6 +146,11 @@ const std::string& TDeviceTemplate::GetGroup() const
     return Group;
 }
 
+const std::vector<TDeviceTemplateHardware>& TDeviceTemplate::GetHardware() const
+{
+    return Hardware;
+}
+
 bool TDeviceTemplate::IsDeprecated() const
 {
     return Deprecated;
@@ -156,6 +171,11 @@ void TDeviceTemplate::SetGroup(const std::string& group)
 void TDeviceTemplate::SetTitle(const std::unordered_map<std::string, std::string>& translations)
 {
     Title = translations;
+}
+
+void TDeviceTemplate::SetHardware(const std::vector<TDeviceTemplateHardware>& hardware)
+{
+    Hardware = hardware;
 }
 
 const std::string& TDeviceTemplate::GetFilePath() const

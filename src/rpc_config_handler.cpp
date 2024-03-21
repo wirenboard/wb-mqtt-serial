@@ -1,6 +1,7 @@
 #include "rpc_config_handler.h"
 #include "confed_json_generator.h"
 #include "file_utils.h"
+#include "json_common.h"
 #include "log.h"
 #include "wblib/exceptions.h"
 
@@ -26,6 +27,17 @@ namespace
         res["name"] = dt->GetTitle(lang);
         res["deprecated"] = dt->IsDeprecated();
         res["type"] = dt->Type;
+        if (!dt->GetHardware().empty()) {
+            auto& hwJsonArray = MakeArray("hw", res);
+            for (const auto& hw: dt->GetHardware()) {
+                Json::Value hwJson;
+                hwJson["signature"] = hw.Signature;
+                if (!hw.Fw.empty()) {
+                    hwJson["fw"] = hw.Fw;
+                }
+                hwJsonArray.append(hwJson);
+            }
+        }
         return res;
     }
 

@@ -20,10 +20,12 @@ struct TDeviceTemplate
     void SetWithSubdevices();
     void SetGroup(const std::string& group);
     void SetTitle(const std::unordered_map<std::string, std::string>& translations);
+    void SetHardware(const std::vector<TDeviceTemplateHardware>& hardware);
 
     std::string GetTitle(const std::string& lang = std::string("en")) const;
     const Json::Value& GetTemplate();
     const std::string& GetGroup() const;
+    const std::vector<TDeviceTemplateHardware>& GetHardware() const;
     const std::string& GetFilePath() const;
     bool IsDeprecated() const;
     bool WithSubdevices() const;
