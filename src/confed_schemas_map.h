@@ -13,6 +13,11 @@ class TDevicesConfedSchemasMap
 public:
     TDevicesConfedSchemasMap(TTemplateMap& templatesMap, const std::string& schemasFolder);
 
+    /**
+     * @brief Get the json-schema for specified device type
+     *
+     * @throws std::out_of_range if nothing found
+     */
     const Json::Value& GetSchema(const std::string& deviceType);
 };
 

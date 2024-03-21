@@ -180,7 +180,11 @@ Json::Value TRPCConfigHandler::GetSchema(const Json::Value& request)
     std::string type = request.get("type", "").asString();
     try {
         return DeviceConfedSchemas.GetSchema(type);
-    } catch (const std::exception&) {
-        return ProtocolConfedSchemas.GetSchemas().at(type).GetSchema();
+    } catch (const std::out_of_range&) {
+        try {
+            return ProtocolConfedSchemas.GetSchemas().at(type).GetSchema();
+        } catch (const std::out_of_range&) {
+            throw std::out_of_range("Can't find schema for " + type);
+        }
     }
 }
