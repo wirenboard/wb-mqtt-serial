@@ -140,20 +140,22 @@
             {
                 "name": "Temperature",
                 "reg_type": "input",
-                "address": 0,
-                "type": "temperature",
+                "address": 4,
+                "type": "value",
+                "units": "deg C",
                 "format": "s16",
-                "scale": 0.1,
+                "scale": 0.01,
                 "error_value": "0x7FFF",
                 "group": "air_quality"
             },
             {
                 "name": "Humidity",
                 "reg_type": "input",
-                "address": 1,
-                "type": "rel_humidity",
+                "address": 5,
+                "type": "value",
+                "units": "%, RH",
                 "format": "s16",
-                "scale": 0.1,
+                "scale": 0.01,
                 "error_value": "0xFFFF",
                 "group": "air_quality"
             },
