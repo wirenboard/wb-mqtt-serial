@@ -2,7 +2,7 @@ wb-mqtt-serial (2.115.0) stable; urgency=medium
 
   * WB-MAO4 template: add support for scenes, safety mode, switch mode
 
- -- Pavel Gasheev <pavel.gasheev@wirenboard.ru>  Thu, 21 Mar 2024 14:20:39 +0300
+ -- Pavel Gasheev <pavel.gasheev@wirenboard.ru>  Thu, 21 Mar 2024 18:20:43 +0300
 
 wb-mqtt-serial (2.114.4) stable; urgency=medium
 
