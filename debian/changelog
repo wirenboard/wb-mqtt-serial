@@ -4,6 +4,13 @@ wb-mqtt-serial (2.115.0) stable; urgency=medium
 
  -- Pavel Gasheev <pavel.gasheev@wirenboard.ru>  Thu, 21 Mar 2024 14:20:39 +0300
 
+wb-mqtt-serial (2.114.4) stable; urgency=medium
+
+  * WB-MSW v3 template: add support for high resolution temperature and humidity channels
+  * WB-MSW v4 template: replace temperature and humidity channels with high res ones
+
+ -- Pavel Gasheev <pavel.gasheev@wirenboard.ru>  Thu, 21 Mar 2024 16:17:53 +0300
+
 wb-mqtt-serial (2.114.3) stable; urgency=medium
 
   * Fix baud rate strings in WB-MWAC v.2 template
