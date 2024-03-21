@@ -78,8 +78,6 @@
             "co2_sensor_type": {
                 "id": "co2_sensor_type",
                 "title": "CO2 Sensor Type",
-                // "address": 83,
-                // "reg_type": "input",
                 "enum": [0, 1],
                 "enum_titles": ["MH-Z19B", "CM1106"],
                 "default": 0,
