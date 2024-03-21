@@ -119,21 +119,21 @@
             {
                 "name": "Temperature",
                 "reg_type": "input",
+                "address": 0,
+                "type": "temperature",
+                "format": "s16",
+                "scale": 0.1,
+                "error_value": "0x7FFF",
+                "group": "air_quality"
+            },
+            {
+                "name": "Temperature (High Res)",
+                "reg_type": "input",
                 "address": 4,
                 "type": "value",
                 "units": "deg C",
                 "format": "s16",
                 "scale": 0.01,
-                "error_value": "0x7FFF",
-                "group": "air_quality"
-            },
-            {
-                "name": "Temperature (Low Res)",
-                "reg_type": "input",
-                "address": 0,
-                "type": "temperature",
-                "format": "s16",
-                "scale": 0.1,
                 "error_value": "0x7FFF",
                 "enabled": false,
                 "group": "air_quality"
@@ -141,21 +141,21 @@
             {
                 "name": "Humidity",
                 "reg_type": "input",
+                "address": 1,
+                "type": "rel_humidity",
+                "format": "s16",
+                "scale": 0.1,
+                "error_value": "0xFFFF",
+                "group": "air_quality"
+            },
+            {
+                "name": "Humidity (High Res)",
+                "reg_type": "input",
                 "address": 5,
                 "type": "value",
                 "units": "%, RH",
                 "format": "s16",
                 "scale": 0.01,
-                "error_value": "0xFFFF",
-                "group": "air_quality"
-            },
-            {
-                "name": "Humidity (Low Res)",
-                "reg_type": "input",
-                "address": 1,
-                "type": "rel_humidity",
-                "format": "s16",
-                "scale": 0.1,
                 "error_value": "0xFFFF",
                 "enabled": false,
                 "group": "air_quality"
@@ -495,9 +495,9 @@
                 "Baud rate": "Скорость обмена",
                 "baud_rate_description": "Перед изменением параметра убедитесь, что связь с устройством установлена. Выберите нужную скорость обмена, сохраните конфигурацию, а затем укажите в настройках порта эту же скорость.",
                 "Temperature": "Температура",
-                "Temperature (Low Res)": "Температура (низкое разрешение)",
+                "Temperature (High Res)": "Температура (высокое разрешение)",
                 "Humidity": "Влажность",
-                "Humidity (Low Res)": "Влажность (низкое разрешение)",
+                "Humidity (High Res)": "Влажность (высокое разрешение)",
                 "Air Quality (VOC)": "Качество воздуха (VOC)",
                 "Air Quality Index": "Индекс качества воздуха (AQI)",
                 "VOC Baseline": "Смещение уровня VOC",
