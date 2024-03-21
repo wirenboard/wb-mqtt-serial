@@ -19378,7 +19378,7 @@ WB-MS v.2
 	Erroneous TH Readings  =>  Erroneous TH Readings
 	FW Version  =>  FW Version
 	Humidity  =>  Humidity
-	Humidity (Low Res)  =>  Humidity (Low Res)
+	Humidity (High Res)  =>  Humidity (High Res)
 	Illuminance  =>  Illuminance
 	Illuminance Mode  =>  Illuminance Mode
 	Input 1: input1_1wire
@@ -19400,7 +19400,7 @@ WB-MS v.2
 	Serial  =>  Serial
 	Successful TH Readings  =>  Successful TH Readings
 	Temperature  =>  Temperature
-	Temperature (Low Res)  =>  Temperature (Low Res)
+	Temperature (High Res)  =>  Temperature (High Res)
 	Uptime  =>  Uptime
 	VOC Baseline  =>  VOC Baseline
 	VOC Equivalent CO2 Concentration  =>  VOC Equivalent CO2 Concentration
@@ -19452,7 +19452,7 @@ WB-MSW v.3
 	FW Version  =>  FW Version
 	Green LED  =>  Green LED
 	Humidity  =>  Humidity
-	Humidity (Low Res)  =>  Humidity (Low Res)
+	Humidity (High Res)  =>  Humidity (High Res)
 	Humidity Without Compensation  =>  Humidity Without Compensation
 	Illuminance  =>  Illuminance
 	LED Glow Duration (ms)  =>  LED Glow Duration (ms)
@@ -19604,7 +19604,7 @@ WB-MSW v.3
 	Successful TH Readings  =>  Successful TH Readings
 	Supply Voltage  =>  Supply Voltage
 	Temperature  =>  Temperature
-	Temperature (Low Res)  =>  Temperature (Low Res)
+	Temperature (High Res)  =>  Temperature (High Res)
 	Temperature Without Compensation  =>  Temperature Without Compensation
 	Uptime  =>  Uptime
 	VOC Baseline  =>  VOC Baseline
