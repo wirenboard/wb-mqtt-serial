@@ -211,7 +211,6 @@ Json::Value MakeDeviceWithGroupsUISchema(TDeviceTemplate& deviceTemplate,
         res["required"].append("slave_id");
     }
 
-    // TODO: may be assign directly to options.wb.groups
     auto groups = MakeGroups(deviceTemplate.GetTemplate());
     if (!groups.empty()) {
         res["options"]["wb"]["groups"] = groups;
