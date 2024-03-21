@@ -645,8 +645,13 @@
                 "name": "Channel {{out_num}} status code",
                 "reg_type": "holding",
                 "address": {{1294 + out_num - 1}},
-                "type": "value",
-                "sporadic": true,
+                "enum": [0, 1, 2],
+                "enum_titles": [
+                    "Normal",
+                    "Low voltage",
+                    "High voltage",
+                ],
+                "format": "u8",
                 "group": "gg_outputs_channels"
             },
             {% endfor -%}
