@@ -58,14 +58,6 @@ PDeviceTemplate TTemplateMap::MakeTemplateFromJson(const Json::Value& data, cons
     if (data["device"].isMember("subdevices")) {
         deviceTemplate->SetWithSubdevices();
     }
-    // if (data.isMember("hw")) {
-    //     for (const auto& hwItem: data["hw"]) {
-    //         TDeviceTemplateHardware hw;
-    //         Get(hwItem, "signature", hw.Signature);
-    //         Get(hwItem, "fw", hw.Fw);
-    //         deviceTemplate->Hardware.push_back(std::move(hw));
-    //     }
-    // }
     return deviceTemplate;
 }
 
@@ -101,7 +93,7 @@ TDeviceTemplate& TTemplateMap::GetTemplate(const std::string& deviceType)
     try {
         return *Templates.at(deviceType);
     } catch (const std::out_of_range&) {
-        throw std::runtime_error("Can't find template for '" + deviceType + "'");
+        throw std::out_of_range("Can't find template for '" + deviceType + "'");
     }
 }
 
@@ -243,9 +235,9 @@ const TSubDeviceTemplate& TSubDevicesTemplateMap::GetTemplate(const std::string&
 {
     try {
         return Templates.at(deviceType);
-    } catch (...) {
-        throw std::runtime_error("Device type '" + DeviceType + "'. Can't find template for subdevice '" + deviceType +
-                                 "'");
+    } catch (const std::out_of_range&) {
+        throw std::out_of_range("Device type '" + DeviceType + "'. Can't find template for subdevice '" + deviceType +
+                                "'");
     }
 }
 

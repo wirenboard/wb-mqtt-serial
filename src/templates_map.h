@@ -79,6 +79,11 @@ public:
                          bool passInvalidTemplates = true,
                          const Json::Value& settings = Json::Value());
 
+    /**
+     * @brief Get the TDeviceTemplate object for requested device type
+     *
+     * @throws std::out_of_range if nothing found
+     */
     TDeviceTemplate& GetTemplate(const std::string& deviceType);
 
     std::vector<PDeviceTemplate> GetTemplates();

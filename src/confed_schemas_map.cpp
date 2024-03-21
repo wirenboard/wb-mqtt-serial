@@ -18,10 +18,14 @@ const Json::Value& TDevicesConfedSchemasMap::GetSchema(const std::string& device
     try {
         return Schemas.at(deviceType);
     } catch (const std::out_of_range&) {
-        Schemas.emplace(
-            deviceType,
-            WBMQTT::JSON::Parse(GetSchemaFilePath(SchemasFolder, TemplatesMap.GetTemplate(deviceType).GetFilePath())));
-        return Schemas.at(deviceType);
+        try {
+            Schemas.emplace(deviceType,
+                            WBMQTT::JSON::Parse(
+                                GetSchemaFilePath(SchemasFolder, TemplatesMap.GetTemplate(deviceType).GetFilePath())));
+            return Schemas.at(deviceType);
+        } catch (const std::out_of_range&) {
+            throw std::out_of_range("Can't find json-schema for " + deviceType);
+        }
     }
 }
 

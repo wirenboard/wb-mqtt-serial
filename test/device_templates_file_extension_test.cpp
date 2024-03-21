@@ -20,7 +20,7 @@ void TDeviceTemplateFileExtensionTest::VerifyTemplates(const std::string& direct
             directory,
             LoadConfigTemplatesSchema(TLoggedFixture::GetDataFilePath("../wb-mqtt-serial-device-template.schema.json"),
                                       configSchema));
-        ASSERT_THROW(templates.GetTemplate(bad_device_type), std::runtime_error);
+        ASSERT_THROW(templates.GetTemplate(bad_device_type), std::out_of_range);
     } catch (const TConfigParserException& e) {
         ADD_FAILURE() << "Parsing failed: " << e.what();
     }
