@@ -107,13 +107,13 @@
                 "description": "light_scenes_description"
             },
             {
-                "title": "Actions if Light is Off",
-                "id": "gg_ls_{{ ls_number }}_actions_off",
+                "title": "Actions when Scene Light Turn On",
+                "id": "gg_ls_{{ ls_number }}_actions_turn_on",
                 "group": "g_light_scene_{{ ls_number }}"
             },
             {
-                "title": "Actions if Light is On",
-                "id": "gg_ls_{{ ls_number }}_actions_on",
+                "title": "Actions when Scene Light Turn Off",
+                "id": "gg_ls_{{ ls_number }}_actions_turn_off",
                 "group": "g_light_scene_{{ ls_number }}"
             },
             {
@@ -129,13 +129,13 @@
             {% for ch_number in range(1, OUTPUTS_NUMBER + 1) -%}
             {
                 "title": "Channel {{ ch_number }} Switch",
-                "id": "gg_ls_{{ ls_number }}_ch_{{ ch_number }}_action_off",
-                "group": "gg_ls_{{ ls_number }}_actions_off"
+                "id": "gg_ls_{{ls_number}}_ch_{{ch_number}}_action_turn_on",
+                "group": "gg_ls_{{ ls_number }}_actions_turn_on"
             },
             {
                 "title": "Channel {{ ch_number }} Switch",
-                "id": "gg_ls_{{ ls_number }}_ch_{{ ch_number }}_action_on",
-                "group": "gg_ls_{{ ls_number }}_actions_on"
+                "id": "gg_ls_{{ls_number}}_ch_{{ch_number}}_action_turn_off",
+                "group": "gg_ls_{{ ls_number }}_actions_turn_off"
             },
             {% endfor -%}
             {% endfor -%}
@@ -506,7 +506,7 @@
                     "Turn On",
                     "Turn On and Set Brightness"
                 ],
-                "group": "gg_ls_{{ls_number}}_ch_{{ch_number}}_action_off"
+                "group": "gg_ls_{{ls_number}}_ch_{{ch_number}}_action_turn_on"
             },
             {
                 "id": "ls_{{ls_number}}_ch_{{ch_number}}_fading_off",
@@ -517,7 +517,7 @@
                 "max": 500,
                 "default": 20,
                 "required": true,
-                "group": "gg_ls_{{ls_number}}_ch_{{ch_number}}_action_off",
+                "group": "gg_ls_{{ls_number}}_ch_{{ch_number}}_action_turn_on",
                 "condition": "ls_{{ls_number}}_ch_{{ch_number}}_action_off>=1"
             },
             {
@@ -529,7 +529,7 @@
                 "max": 100,
                 "default": 50,
                 "required": true,
-                "group": "gg_ls_{{ls_number}}_ch_{{ch_number}}_action_off",
+                "group": "gg_ls_{{ls_number}}_ch_{{ch_number}}_action_turn_on",
                 "condition": "ls_{{ls_number}}_ch_{{ch_number}}_action_off==3"
             },
             {
@@ -544,7 +544,7 @@
                     "Turn Off",
                     "Set Brightness"
                 ],
-                "group": "gg_ls_{{ls_number}}_ch_{{ch_number}}_action_on"
+                "group": "gg_ls_{{ls_number}}_ch_{{ch_number}}_action_turn_off"
             },
             {
                 "id": "ls_{{ls_number}}_ch_{{ch_number}}_fading_on",
@@ -555,7 +555,7 @@
                 "max": 500,
                 "default": 20,
                 "required": true,
-                "group": "gg_ls_{{ls_number}}_ch_{{ch_number}}_action_on",
+                "group": "gg_ls_{{ls_number}}_ch_{{ch_number}}_action_turn_off",
                 "condition": "ls_{{ls_number}}_ch_{{ch_number}}_action_on>=1"
             },
             {
@@ -567,7 +567,7 @@
                 "max": 100,
                 "default": 50,
                 "required": true,
-                "group": "gg_ls_{{ls_number}}_ch_{{ch_number}}_action_on",
+                "group": "gg_ls_{{ls_number}}_ch_{{ch_number}}_action_turn_off",
                 "condition": "ls_{{ls_number}}_ch_{{ch_number}}_action_on==3"
             },
             {% endfor -%}
@@ -947,8 +947,8 @@
                 "Light On/Off Condition": "Условие включенного света",
                 "Light is on if any used channel is on. Otherwise light is off": "Свет включен, если хотя бы один используемый канал включен. Иначе свет выключен",
                 "Light is on if all used channels are on. Otherwise light is off": "Свет включен, если все используемые каналы включены. Иначе свет выключен",
-                "Actions if Light is Off": "Действие, если свет выключен",
-                "Actions if Light is On": "Действие, если свет включен",
+                "Actions when Scene Light Turn On": "Действие при включении света сцены",
+                "Actions when Scene Light Turn Off": "Действие при выключении света сцены",
                 "Channel not Used in Scene": "Канал не используется в сцене",
                 "Turn On and Set Brightness": "Включить и установить яркость",
                 "Set Brightness": "Установить яркость",
