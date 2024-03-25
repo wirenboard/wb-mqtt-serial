@@ -1,6 +1,6 @@
-wb-mqtt-serial (2.114.5) stable; urgency=low
+wb-mqtt-serial (2.114.5) testing; urgency=medium
 
-  * WB-MRWM2 templates: add low/high voltage protection
+  * WB-MRWM2 template: add low/high voltage protection
 
  -- Daniil Safonov <Daniil.Safonov@wirenboard.ru>  Mon, 25 Mar 2024 13:49:33 +0600
 
