@@ -62,12 +62,12 @@
                 "group": "g_outputs"
             },
             {
-                "title": "Protection Mode",
+                "title": "Protection Setting",
                 "id": "gg_protection",
             },
             {% for out_num in range(1, OUTPUTS_NUMBER + 1) -%}
             {
-                "title": "Channel {{out_num}} protection modes",
+                "title": "Channel {{out_num}} Protection Settings",
                 "group": "gg_protection",
                 "id": "gg_protection_channel_{{out_num}}",
             },
@@ -110,7 +110,7 @@
                         "disable_title": true
                     }
                 }
-            },            
+            },
             {% endfor -%}
             {
                 "title": "Outputs group",
@@ -394,7 +394,7 @@
             {% endfor -%}
             {% for out_num in range(1, OUTPUTS_NUMBER + 1) -%}
             "out{{out_num}}_safe_mode_voltage_high_mode": {
-                "title": "Enable High voltage protection",
+                "title": "High Voltage Protection Enable",
                 "group": "gg_protection_channel_{{out_num}}_high_voltage",
                 "order": 1,
                 "address": {{ 1326 + out_num - 1 }},
@@ -421,7 +421,7 @@
             {% endfor -%}
             {% for out_num in range(1, OUTPUTS_NUMBER + 1) -%}
             "out{{out_num}}_safe_mode_voltage_low_mode": {
-                "title": "Enable Low voltage protection",
+                "title": "Low Voltage Protection Enable",
                 "group": "gg_protection_channel_{{out_num}}_low_voltage",
                 "order": 1,
                 "address": {{ 1310 + out_num - 1 }},
@@ -446,7 +446,7 @@
                 "condition": "out{{out_num}}_safe_mode_voltage_low_mode==1"
             },
             "out{{out_num}}_safe_mode_voltage_timeout_off": {
-                "title": "voltage_timeout_off",
+                "title": "Protection Activation Delay Setting (in 1/10 sec)",
                 "group": "gg_protection_channel_{{out_num}}_timeout",
                 "order": 2,
                 "address": {{ 1334 + out_num - 1 }},
@@ -458,7 +458,7 @@
                 "condition": "out{{out_num}}_safe_mode_voltage_low_mode==1||out{{out_num}}_safe_mode_voltage_high_mode==1"
             },
             "out{{out_num}}_safe_mode_voltage_timeout_on": {
-                "title": "voltage_timeout_on",
+                "title": "Protection Deactivation Delay Setting (in 1/10 sec)",
                 "group": "gg_protection_channel_{{out_num}}_timeout",
                 "order": 2,
                 "address": {{ 1342 + out_num - 1 }},
@@ -470,7 +470,7 @@
                 "condition": "out{{out_num}}_safe_mode_voltage_low_mode==1||out{{out_num}}_safe_mode_voltage_high_mode==1"
             },
             "out{{out_num}}_safe_mode_power_on": {
-                "title": "Enable auto power on",
+                "title": "Auto restore last state",
                 "group": "gg_protection_channel_{{out_num}}_power_on",
                 "order": 1,
                 "address": {{ 1350 + out_num - 1 }},
@@ -800,13 +800,21 @@
 
                 "Actions for outputs when the input is closed / opened": "Действия для выходов при замыкании / размыкании входа",
 
-                "Protection Mode": "Режимы защит",
+                "Protection Setting": "Настройка защиты",
+                "High Voltage Protection Enable": "Включение защиты от высокого напряжения",
+                "Level of high voltage protection, V": "Уровень защиты от высокого напряжения, В",
+                "Low Voltage Protection Enable": "Включение защиты от низкого напряжения",
+                "Level of low voltage protection, V": "Уровень защиты от низкого напряжения, В",
+                "Protection Activation Delay Setting (in 1/10 sec)": "Настройка задержки активации защиты (1/10 сек)",
+                "Protection Deactivation Delay Setting (in 1/10 sec)": "Настройка задержки деактивации защиты (1/10 сек)",
+                "Auto restore last state": "Автоматическое восстановление последнего состояния",
                 {% for out_num in range(1, OUTPUTS_NUMBER + 1) -%}
-                "OutputPPP {{out_num}}": "Выход с защитой {{out_num}}",
-                "Output {{out_num}} Safe Mode Power": "Ограничение мощности на канале {{out_num}}",
-                "Output {{out_num}} Safe Mode HighVoltage": "Ограничение высокого напряжения на канале {{out_num}}",
-                "Output {{out_num}} Safe Mode LowVoltage": "Ограничение низкого напряжения на канале {{out_num}}",
+                "Channel {{out_num}} Protection Settings": "Настройки защиты канала {{out_num}}",
+                "Channel {{out_num}} Protection Status": "Статус защиты канала {{out_num}}",
                 {% endfor -%}
+                "Normal": "Норма",
+                "Low voltage": "Низкое напряжение",
+                "High voltage": "Высокое напряжение",
 
                 {% for out_num in range(1, OUTPUTS_NUMBER + 1) -%}
                 "Output {{out_num}}": "Выход {{out_num}}",
