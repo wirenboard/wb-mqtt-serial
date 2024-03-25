@@ -19450,6 +19450,7 @@ WB-MSW v.3
 	FW Version  =>  FW Version
 	Green LED  =>  Green LED
 	Humidity  =>  Humidity
+	Humidity (High Res)  =>  Humidity (High Res)
 	Humidity Without Compensation  =>  Humidity Without Compensation
 	Illuminance  =>  Illuminance
 	LED Glow Duration (ms)  =>  LED Glow Duration (ms)
@@ -19601,6 +19602,7 @@ WB-MSW v.3
 	Successful TH Readings  =>  Successful TH Readings
 	Supply Voltage  =>  Supply Voltage
 	Temperature  =>  Temperature
+	Temperature (High Res)  =>  Temperature (High Res)
 	Temperature Without Compensation  =>  Temperature Without Compensation
 	Uptime  =>  Uptime
 	VOC Baseline  =>  VOC Baseline
