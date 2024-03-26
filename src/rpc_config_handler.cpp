@@ -130,14 +130,14 @@ namespace
 }
 
 TRPCConfigHandler::TRPCConfigHandler(const std::string& configPath,
-                                     const std::string& portsSchemaPath,
+                                     const Json::Value& portsSchema,
                                      std::shared_ptr<TTemplateMap> templates,
                                      TDevicesConfedSchemasMap& deviceConfedSchemas,
                                      TProtocolConfedSchemasMap& protocolConfedSchemas,
                                      const Json::Value& groupTranslations,
                                      WBMQTT::PMqttRpcServer rpcServer)
     : ConfigPath(configPath),
-      PortsSchemaPath(portsSchemaPath),
+      PortsSchema(portsSchema),
       Templates(templates),
       DeviceConfedSchemas(deviceConfedSchemas),
       ProtocolConfedSchemas(protocolConfedSchemas),
@@ -153,7 +153,7 @@ Json::Value TRPCConfigHandler::LoadConfig(const Json::Value& request)
 {
     Json::Value res;
     res["config"] = MakeJsonForConfed(ConfigPath, *Templates);
-    res["schema"] = WBMQTT::JSON::Parse(PortsSchemaPath);
+    res["schema"] = PortsSchema;
     res["types"] = GetDeviceTypes(request);
     return res;
 }
@@ -193,10 +193,6 @@ Json::Value TRPCConfigHandler::GetSchema(const Json::Value& request)
     try {
         return DeviceConfedSchemas.GetSchema(type);
     } catch (const std::out_of_range&) {
-        try {
-            return ProtocolConfedSchemas.GetSchemas().at(type).GetSchema();
-        } catch (const std::out_of_range&) {
-            throw std::out_of_range("Can't find schema for " + type);
-        }
+        return ProtocolConfedSchemas.GetSchema(type);
     }
 }

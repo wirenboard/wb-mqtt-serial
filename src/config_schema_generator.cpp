@@ -343,45 +343,84 @@ namespace
         }
         return str;
     }
+
+    class TDeviceTypeValidator
+    {
+        const Json::Value& CommonDeviceSchema;
+        TTemplateMap& Templates;
+        TSerialDeviceFactory& DeviceFactory;
+        TExpressionsCache exprCache;
+
+    public:
+        TDeviceTypeValidator(const Json::Value& commonDeviceSchema,
+                             TTemplateMap& templates,
+                             TSerialDeviceFactory& deviceFactory)
+            : CommonDeviceSchema(commonDeviceSchema),
+              Templates(templates),
+              DeviceFactory(deviceFactory)
+        {}
+
+        void Validate(const Json::Value& deviceConfig)
+        {
+            auto schema(CommonDeviceSchema);
+            AddDeviceSchema(deviceConfig,
+                            Templates.GetTemplate(deviceConfig["device_type"].asString()),
+                            DeviceFactory,
+                            schema,
+                            exprCache);
+            ::Validate(deviceConfig, schema);
+        }
+    };
+
+    class TProtocolValidator
+    {
+        // Use the same schema for validation and confed
+        TProtocolConfedSchemasMap& Schemas;
+
+        //! Device type to validator for custom devices declared with protocol property
+        std::unordered_map<std::string, std::shared_ptr<TValidator>> validators;
+
+    public:
+        TProtocolValidator(TProtocolConfedSchemasMap& protocolSchemas): Schemas(protocolSchemas)
+        {}
+
+        void Validate(const Json::Value& deviceConfig)
+        {
+            auto protocol = deviceConfig.get("protocol", "modbus").asString();
+            auto protocolIt = validators.find(protocol);
+            if (protocolIt != validators.end()) {
+                protocolIt->second->Validate(deviceConfig);
+                return;
+            }
+            auto validator = std::make_shared<TValidator>(Schemas.GetSchema(protocol));
+            validators.insert({protocol, validator});
+            validator->Validate(deviceConfig);
+        }
+    };
+
 }
 
 void ValidateConfig(const Json::Value& config,
                     TSerialDeviceFactory& deviceFactory,
-                    const Json::Value& baseConfigSchema,
-                    TTemplateMap& templates)
+                    const Json::Value& commonDeviceSchema,
+                    const Json::Value& portsSchema,
+                    TTemplateMap& templates,
+                    TProtocolConfedSchemasMap& protocolSchemas)
 {
-    Json::Value schemaWithoutDevices(baseConfigSchema);
-    schemaWithoutDevices["definitions"]["device"] = Json::Value(Json::objectValue);
-    schemaWithoutDevices["definitions"]["device"]["type"] = "object";
-    Validate(config, schemaWithoutDevices);
+    Validate(config, portsSchema);
 
-    std::unordered_map<std::string, Json::Value> protocols;
-    // Create unique schema for every device with conditions
-    TExpressionsCache exprCache;
+    TProtocolValidator protocolValidator(protocolSchemas);
+    TDeviceTypeValidator deviceTypeValidator(commonDeviceSchema, templates, deviceFactory);
     size_t portIndex = 0;
     for (const auto& port: config["ports"]) {
         size_t deviceIndex = 0;
         for (const auto& device: port["devices"]) {
             try {
                 if (device.isMember("device_type")) {
-                    AddDeviceSchema(device,
-                                    templates.GetTemplate(device["device_type"].asString()),
-                                    deviceFactory,
-                                    schemaWithoutDevices,
-                                    exprCache);
+                    deviceTypeValidator.Validate(device);
                 } else {
-                    auto protocol = device.get("protocol", "modbus").asString();
-                    auto protocolIt = protocols.find(protocol);
-                    if (protocolIt == protocols.end()) {
-                        for (const auto& pr: baseConfigSchema["definitions"]["device"]["oneOf"]) {
-                            if (protocol == pr["properties"]["protocol"]["enum"][0].asString()) {
-                                protocolIt = protocols.emplace(protocol, pr).first;
-                            }
-                        }
-                    }
-                    AppendParams(schemaWithoutDevices, protocolIt->second);
+                    protocolValidator.Validate(device);
                 }
-                Validate(device, schemaWithoutDevices);
             } catch (const std::runtime_error& e) {
                 std::stringstream newContext;
                 newContext << "<root>[ports][" << portIndex << "][devices][" << deviceIndex << "]";
