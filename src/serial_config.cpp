@@ -9,10 +9,7 @@
 #include <set>
 #include <stdexcept>
 #include <string>
-#include <sys/stat.h>
 #include <sys/sysinfo.h>
-#include <sys/types.h>
-#include <unistd.h>
 
 #include "tcp_port.h"
 #include "tcp_port_settings.h"
@@ -22,7 +19,6 @@
 
 #include "config_merge_template.h"
 #include "config_schema_generator.h"
-#include "file_utils.h"
 
 #include "devices/curtains/a_ok_device.h"
 #include "devices/curtains/dooya_device.h"
@@ -51,11 +47,6 @@ using namespace WBMQTT::JSON;
 namespace
 {
     const char* DefaultProtocol = "modbus";
-
-    bool EndsWith(const string& str, const string& suffix)
-    {
-        return str.size() >= suffix.size() && str.compare(str.size() - suffix.size(), suffix.size(), suffix) == 0;
-    }
 
     template<class T> T Read(const Json::Value& root, const std::string& key, const T& defaultValue)
     {
@@ -671,24 +662,6 @@ namespace
 
         handlerConfig->AddPortConfig(port_config);
     }
-
-    void CheckNesting(const Json::Value& root, size_t nestingLevel, ITemplateMap& templates)
-    {
-        if (nestingLevel > 5) {
-            throw TConfigParserException(
-                "Too deep subdevices nesting. This could be caused by cyclic subdevice dependencies");
-        }
-        for (const auto& ch: root["device"]["channels"]) {
-            if (ch.isMember("device_type")) {
-                CheckNesting(templates.GetTemplate(ch["device_type"].asString()).Schema, nestingLevel + 1, templates);
-            }
-            if (ch.isMember("oneOf")) {
-                for (const auto& subdeviceType: ch["oneOf"]) {
-                    CheckNesting(templates.GetTemplate(subdeviceType.asString()).Schema, nestingLevel + 1, templates);
-                }
-            }
-        }
-    }
 }
 
 std::string DecorateIfNotEmpty(const std::string& prefix, const std::string& str, const std::string& postfix)
@@ -719,209 +692,6 @@ std::pair<PPort, bool> DefaultPortFactory(const Json::Value& port_data, PRPCConf
         return {OpenTcpPort(port_data, rpcConfig), true};
     }
     throw TConfigParserException("invalid port_type: '" + port_type + "'");
-}
-
-TTemplateMap::TTemplateMap(const std::string& templatesDir,
-                           const Json::Value& templateSchema,
-                           bool passInvalidTemplates)
-    : Validator(new WBMQTT::JSON::TValidator(templateSchema))
-{
-    AddTemplatesDir(templatesDir, passInvalidTemplates);
-}
-
-std::string TTemplateMap::GetDeviceType(const std::string& templatePath) const
-{
-    const char deviceTypeKey[] = "\"device_type\"";
-    std::ifstream file;
-    OpenWithException(file, templatePath);
-    std::string line;
-    // Search device type declaration in first 5 lines
-    for (auto n = 0; n < 5; ++n) {
-        std::getline(file, line);
-        auto pos = line.find(deviceTypeKey);
-        if (pos != std::string::npos) {
-            pos += sizeof(deviceTypeKey);
-            pos = line.find("\"", pos);
-            if (pos != std::string::npos) {
-                ++pos;
-                auto end = line.find("\"", pos);
-                if (end != std::string::npos) {
-                    return line.substr(pos, end - pos);
-                }
-            }
-        }
-    }
-    throw std::runtime_error(templatePath + " doesn't contain device type declaration");
-}
-
-void TTemplateMap::AddTemplatesDir(const std::string& templatesDir,
-                                   bool passInvalidTemplates,
-                                   const Json::Value& settings)
-{
-    IterateDirByPattern(
-        templatesDir,
-        ".json",
-        [&](const std::string& filepath) {
-            if (!EndsWith(filepath, ".json")) {
-                return false;
-            }
-            struct stat filestat;
-            if (stat(filepath.c_str(), &filestat) || S_ISDIR(filestat.st_mode)) {
-                return false;
-            }
-            try {
-                Json::Value root = WBMQTT::JSON::ParseWithSettings(filepath, settings);
-                TemplateFiles[root["device_type"].asString()] = filepath;
-            } catch (const std::exception& e) {
-                if (passInvalidTemplates) {
-                    LOG(Error) << "Failed to parse " << filepath << "\n" << e.what();
-                    return false;
-                }
-                throw;
-            }
-            return false;
-        },
-        true);
-}
-
-Json::Value TTemplateMap::Validate(const std::string& deviceType, const std::string& filePath)
-{
-    Json::Value root(WBMQTT::JSON::Parse(filePath));
-
-    bool isDeprecated = false;
-    if (Get(root, "deprecated", isDeprecated) && isDeprecated) {
-        // Skip deprecated template validation, it may be broken according to latest schema
-        return root;
-    }
-
-    try {
-        Validator->Validate(root);
-    } catch (const std::runtime_error& e) {
-        throw std::runtime_error("File: " + filePath + " error: " + e.what());
-    }
-    // Check that channels refer to valid subdevices and they are not nested too deep
-    if (root["device"].isMember("subdevices")) {
-        TSubDevicesTemplateMap subdevices(deviceType, root["device"]);
-        CheckNesting(root, 0, subdevices);
-    }
-    return root;
-}
-
-std::shared_ptr<TDeviceTemplate> TTemplateMap::GetTemplatePtr(const std::string& deviceType)
-{
-    if (!Validator) {
-        throw std::runtime_error("Can't find validator for device templates");
-    }
-    try {
-        return ValidTemplates.at(deviceType);
-    } catch (const std::out_of_range&) {
-        std::string filePath;
-        try {
-            filePath = TemplateFiles.at(deviceType);
-        } catch (const std::out_of_range&) {
-            throw std::runtime_error("Can't find template for '" + deviceType + "'");
-        }
-        Json::Value root(Validate(deviceType, filePath));
-        TemplateFiles.erase(filePath);
-        auto deviceTypeTitle = deviceType;
-        Get(root, "title", deviceTypeTitle);
-        auto deviceTemplate = std::make_shared<TDeviceTemplate>(deviceType, deviceTypeTitle, root["device"]);
-        Get(root, "deprecated", deviceTemplate->IsDeprecated);
-        Get(root, "group", deviceTemplate->Group);
-        if (root.isMember("hw")) {
-            for (const auto& hwItem: root["hw"]) {
-                TDeviceTemplateHardware hw;
-                Get(hwItem, "signature", hw.Signature);
-                Get(hwItem, "fw", hw.Fw);
-                deviceTemplate->Hardware.push_back(std::move(hw));
-            }
-        }
-        ValidTemplates.insert({deviceType, deviceTemplate});
-        return deviceTemplate;
-    }
-}
-
-const TDeviceTemplate& TTemplateMap::GetTemplate(const std::string& deviceType)
-{
-    return *GetTemplatePtr(deviceType);
-}
-
-std::vector<std::shared_ptr<TDeviceTemplate>> TTemplateMap::GetTemplatesOrderedByName()
-{
-    std::vector<std::shared_ptr<TDeviceTemplate>> templates;
-    for (const auto& file: TemplateFiles) {
-        try {
-            templates.push_back(GetTemplatePtr(file.first));
-        } catch (const std::exception& e) {
-            LOG(Error) << e.what();
-        }
-    }
-    std::sort(templates.begin(), templates.end(), [](auto p1, auto p2) { return p1->Title < p2->Title; });
-    return templates;
-}
-
-std::vector<std::string> TTemplateMap::GetDeviceTypes() const
-{
-    std::vector<std::string> res;
-    for (const auto& elem: TemplateFiles) {
-        res.push_back(elem.first);
-    }
-    return res;
-}
-
-TSubDevicesTemplateMap::TSubDevicesTemplateMap(const std::string& deviceType, const Json::Value& device)
-    : DeviceType(deviceType)
-{
-    if (device.isMember("subdevices")) {
-        AddSubdevices(device["subdevices"]);
-
-        // Check that channels refer to valid subdevices
-        for (const auto& subdeviceTemplate: Templates) {
-            for (const auto& ch: subdeviceTemplate.second.Schema["channels"]) {
-                if (ch.isMember("device_type")) {
-                    TSubDevicesTemplateMap::GetTemplate(ch["device_type"].asString());
-                }
-                if (ch.isMember("oneOf")) {
-                    for (const auto& subdeviceType: ch["oneOf"]) {
-                        TSubDevicesTemplateMap::GetTemplate(subdeviceType.asString());
-                    }
-                }
-            }
-        }
-    }
-}
-
-void TSubDevicesTemplateMap::AddSubdevices(const Json::Value& subdevicesArray)
-{
-    for (auto& dev: subdevicesArray) {
-        auto deviceType = dev["device_type"].asString();
-        if (Templates.count(deviceType)) {
-            LOG(Warn) << "Device type '" << DeviceType << "'. Duplicate subdevice type '" << deviceType << "'";
-        } else {
-            auto deviceTypeTitle = deviceType;
-            Get(dev, "title", deviceTypeTitle);
-            Templates.insert({deviceType, {deviceType, deviceTypeTitle, dev["device"]}});
-        }
-    }
-}
-
-const TDeviceTemplate& TSubDevicesTemplateMap::GetTemplate(const std::string& deviceType)
-{
-    try {
-        return Templates.at(deviceType);
-    } catch (...) {
-        throw std::runtime_error("Device type '" + DeviceType + "'. Can't find template for subdevice '" + deviceType +
-                                 "'");
-    }
-}
-
-std::vector<std::string> TSubDevicesTemplateMap::GetDeviceTypes() const
-{
-    std::vector<std::string> res;
-    for (const auto& elem: Templates) {
-        res.push_back(elem.first);
-    }
-    return res;
 }
 
 Json::Value LoadConfigTemplatesSchema(const std::string& templateSchemaFileName, const Json::Value& configSchema)
@@ -1208,12 +978,6 @@ std::string GetProtocolName(const Json::Value& deviceDescription)
     return p;
 }
 
-TDeviceTemplate::TDeviceTemplate(const std::string& type, const std::string title, const Json::Value& schema)
-    : Type(type),
-      Title(title),
-      Schema(schema)
-{}
-
 void TSerialDeviceFactory::RegisterProtocol(PProtocol protocol, IDeviceFactory* deviceFactory)
 {
     Protocols.insert(std::make_pair(protocol->GetName(), std::make_pair(protocol, deviceFactory)));
@@ -1254,12 +1018,12 @@ PSerialDevice TSerialDeviceFactory::CreateDevice(const Json::Value& deviceConfig
     unique_ptr<Json::Value> mergedConfig;
     if (deviceConfig.isMember("device_type")) {
         auto deviceType = deviceConfig["device_type"].asString();
-        const auto& deviceTemplate = templates.GetTemplate(deviceType);
-        params.DeviceTemplateTitle = deviceTemplate.Title;
+        auto& deviceTemplate = templates.GetTemplate(deviceType);
+        params.DeviceTemplateTitle = deviceTemplate.GetTitle();
         mergedConfig = std::make_unique<Json::Value>(
-            MergeDeviceConfigWithTemplate(deviceConfig, deviceType, deviceTemplate.Schema));
+            MergeDeviceConfigWithTemplate(deviceConfig, deviceType, deviceTemplate.GetTemplate()));
         cfg = mergedConfig.get();
-        params.Translations = &deviceTemplate.Schema["translations"];
+        params.Translations = &deviceTemplate.GetTemplate()["translations"];
     }
     std::string protocolName = DefaultProtocol;
     Get(*cfg, "protocol", protocolName);
