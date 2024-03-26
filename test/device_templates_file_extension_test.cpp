@@ -20,7 +20,7 @@ void TDeviceTemplateFileExtensionTest::VerifyTemplates(const std::string& direct
             directory,
             LoadConfigTemplatesSchema(TLoggedFixture::GetDataFilePath("../wb-mqtt-serial-device-template.schema.json"),
                                       configSchema));
-        ASSERT_THROW(templates.GetTemplate(bad_device_type), std::runtime_error);
+        ASSERT_THROW(templates.GetTemplate(bad_device_type), std::out_of_range);
     } catch (const TConfigParserException& e) {
         ADD_FAILURE() << "Parsing failed: " << e.what();
     }
@@ -36,7 +36,7 @@ class TDeviceTemplatesTest: public WBMQTT::Testing::TLoggedFixture
 protected:
     void PrintDevice(const Json::Value& deviceTemplate,
                      const std::string& mqttPrefix,
-                     ITemplateMap& templates,
+                     TSubDevicesTemplateMap& templates,
                      size_t level)
     {
         std::map<std::string, Json::Value> channels; // Sort channels for stable test results
@@ -48,7 +48,10 @@ protected:
         }
     }
 
-    void PrintChannel(const Json::Value& channel, const std::string& mqttPrefix, ITemplateMap& templates, size_t level)
+    void PrintChannel(const Json::Value& channel,
+                      const std::string& mqttPrefix,
+                      TSubDevicesTemplateMap& templates,
+                      size_t level)
     {
         auto name = GetName(channel, level);
         auto newMqttPrefix = GetNewMqttPrefix(channel, mqttPrefix);
@@ -102,15 +105,16 @@ TEST_F(TDeviceTemplatesTest, Validate)
 
     Json::Value settings;
     settings["allowTrailingCommas"] = false;
-
     templates.AddTemplatesDir(TLoggedFixture::GetDataFilePath("../build/templates"), false, settings);
-    auto deviceTypes = templates.GetDeviceTypes();
-    std::sort(deviceTypes.begin(), deviceTypes.end()); // For stable test results
-    for (const auto& deviceType: deviceTypes) {
-        auto& dt = templates.GetTemplate(deviceType);
-        TSubDevicesTemplateMap subdeviceTemplates(dt.Type, dt.Schema);
-        Emit() << dt.Type;
-        PrintDevice(dt.Schema, "", subdeviceTemplates, 1);
+    auto deviceTypes = templates.GetTemplates();
+    // For stable test results
+    std::sort(deviceTypes.begin(), deviceTypes.end(), [](const auto& dt1, const auto& dt2) {
+        return dt1->Type < dt2->Type;
+    });
+    for (const auto& dt: deviceTypes) {
+        TSubDevicesTemplateMap subdeviceTemplates(dt->Type, dt->GetTemplate());
+        Emit() << dt->Type;
+        PrintDevice(dt->GetTemplate(), "", subdeviceTemplates, 1);
     }
 }
 
@@ -121,7 +125,7 @@ TEST_F(TDeviceTemplatesTest, InvalidParameterName)
         LoadConfigTemplatesSchema(TLoggedFixture::GetDataFilePath("../wb-mqtt-serial-device-template.schema.json"),
                                   configSchema));
     TTemplateMap templates(TLoggedFixture::GetDataFilePath("device-templates"), templatesSchema, false);
-    EXPECT_THROW(templates.GetTemplate("parameters_array_invalid_id"), std::runtime_error);
-    EXPECT_NO_THROW(templates.GetTemplate("parameters_object_invalid_name"));
-    EXPECT_THROW(templates.GetTemplate("tpl1_parameters_object_invalid_name"), std::runtime_error);
+    EXPECT_THROW(templates.GetTemplate("parameters_array_invalid_id").GetTemplate(), std::runtime_error);
+    EXPECT_NO_THROW(templates.GetTemplate("parameters_object_invalid_name").GetTemplate());
+    EXPECT_THROW(templates.GetTemplate("tpl1_parameters_object_invalid_name").GetTemplate(), std::runtime_error);
 }

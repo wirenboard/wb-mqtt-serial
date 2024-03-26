@@ -1,3 +1,4 @@
+#include <unordered_map>
 #include <wblib/json/json.h>
 
 // key : [ ]
@@ -16,3 +17,5 @@ Json::Value& Append(Json::Value& array);
 //      "enum": [ value ]
 //  }
 Json::Value MakeSingleValueProperty(const std::string& value);
+
+std::unordered_map<std::string, std::string> GetTranslations(const std::string& key, const Json::Value& deviceTemplate);

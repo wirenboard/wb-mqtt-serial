@@ -1,0 +1,20 @@
+{
+  "$schema": "http://json-schema.org/draft-07/schema#",
+  "type": "object",
+  "title": "Serial Device Driver Configuration",
+
+  "configFile": {
+    "path": "/etc/wb-mqtt-serial.conf",
+    "service": "wb-mqtt-serial",
+    "toJSON": ["wb-mqtt-serial", "-j"],
+    "fromJSON": ["wb-mqtt-serial", "-J"],
+    "validate": false,
+    "editor": "serial-config"
+  },
+
+  "translations": {
+    "ru": {
+      "Serial Device Driver Configuration": "Настройка драйвера serial-устройств",
+    }
+  }
+}

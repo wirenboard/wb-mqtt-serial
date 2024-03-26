@@ -220,7 +220,7 @@ TEST_F(TConfigParserTest, MergeDeviceConfigWithTemplate)
         auto deviceConfig(JSON::Parse(GetDataFilePath("parser_test/merge_template_ok" + to_string(i) + ".json")));
         std::string deviceType = deviceConfig.get("device_type", "").asString();
         auto mergedConfig(
-            MergeDeviceConfigWithTemplate(deviceConfig, deviceType, templateMap.GetTemplate(deviceType).Schema));
+            MergeDeviceConfigWithTemplate(deviceConfig, deviceType, templateMap.GetTemplate(deviceType).GetTemplate()));
         auto res(JSON::Parse(GetDataFilePath("parser_test/merge_template_res" + to_string(i) + ".json")));
         ASSERT_TRUE(JsonsMatch(res, mergedConfig)) << i;
     }
@@ -231,94 +231,6 @@ TEST_F(TConfigParserTest, ProtocolParametersSchemaRef)
     for (const auto& name: DeviceFactory.GetProtocolNames()) {
         ASSERT_FALSE(DeviceFactory.GetCommonDeviceSchemaRef(name).empty()) << name;
     }
-}
-
-class TConfedSchemaTest: public TLoggedFixture
-{
-protected:
-    TSerialDeviceFactory DeviceFactory;
-    Json::Value ConfigSchema;
-
-    void SetUp()
-    {
-        ConfigSchema = LoadConfigSchema(GetDataFilePath("../wb-mqtt-serial.schema.json"));
-        RegisterProtocols(DeviceFactory);
-    }
-
-    bool IncludesParameters(const Json::Value& v1, const Json::Value& v2)
-    {
-        for (auto lvl1 = v2.begin(); lvl1 != v2.end(); ++lvl1) {
-            for (auto lvl2 = lvl1->begin(); lvl2 != lvl1->end(); ++lvl2) {
-                if (v1[lvl1.name()][lvl2.name()] != *lvl2) {
-                    return false;
-                }
-            }
-        }
-        return true;
-    }
-};
-
-TEST_F(TConfedSchemaTest, PreserveSchemaTranslations)
-{
-    // Check that translations from wb-mqtt-serial.schema.json are not overwritten
-    TTemplateMap templateMap(
-        GetDataFilePath("translation-templates/templates1"),
-        LoadConfigTemplatesSchema(GetDataFilePath("../wb-mqtt-serial-device-template.schema.json"), ConfigSchema));
-
-    ConfigSchema["translations"]["en"]["test translation"] = "test";
-    ConfigSchema["translations"]["ru"]["test translation"] = "Тест";
-
-    auto schema = MakeSchemaForConfed(ConfigSchema, templateMap, DeviceFactory);
-    ASSERT_TRUE(IncludesParameters(schema["translations"], ConfigSchema["translations"]));
-}
-
-TEST_F(TConfedSchemaTest, MergeTranslations)
-{
-    // Remove all translations from wb-mqtt-serial.schema.json to check only generated translations
-    ConfigSchema.removeMember("translations");
-    for (size_t i = 1; i <= 2; ++i) {
-        TTemplateMap templateMap(
-            GetDataFilePath("translation-templates/templates" + to_string(i)),
-            LoadConfigTemplatesSchema(GetDataFilePath("../wb-mqtt-serial-device-template.schema.json"), ConfigSchema));
-        auto schema = MakeSchemaForConfed(ConfigSchema, templateMap, DeviceFactory);
-
-        auto tr(JSON::Parse(GetDataFilePath("translation-templates/tr" + to_string(i) + ".json")));
-
-        auto langs1 = schema["translations"].getMemberNames();
-        auto langs2 = tr.getMemberNames();
-        std::sort(langs1.begin(), langs1.end());
-        std::sort(langs2.begin(), langs2.end());
-        ASSERT_EQ(langs1, langs2) << i;
-
-        for (const auto& lang: langs1) {
-            std::vector<std::string> msgs1, msgs2;
-            for (const auto& key: schema["translations"][lang].getMemberNames()) {
-                msgs1.push_back(schema["translations"][lang][key].asString());
-            }
-            for (const auto& key: tr[lang].getMemberNames()) {
-                msgs2.push_back(tr[lang][key].asString());
-            }
-            std::sort(msgs1.begin(), msgs1.end());
-            std::sort(msgs2.begin(), msgs2.end());
-            ASSERT_EQ(msgs1, msgs2) << i;
-        }
-    }
-}
-
-TEST_F(TConfedSchemaTest, Hardware)
-{
-    // Check that hw array from template is passed to resulting schema
-    TTemplateMap templateMap(
-        GetDataFilePath("hw-templates"),
-        LoadConfigTemplatesSchema(GetDataFilePath("../wb-mqtt-serial-device-template.schema.json"), ConfigSchema));
-
-    auto schema = MakeSchemaForConfed(ConfigSchema, templateMap, DeviceFactory);
-    ASSERT_TRUE(schema["definitions"]["device"]["oneOf"][0].isMember("hw"));
-    ASSERT_EQ(schema["definitions"]["device"]["oneOf"][0]["hw"].size(), 2);
-    ASSERT_STREQ(schema["definitions"]["device"]["oneOf"][0]["hw"][0]["signature"].asString().c_str(), "signature");
-    ASSERT_FALSE(schema["definitions"]["device"]["oneOf"][0]["hw"][0].isMember("fw"));
-    ASSERT_STREQ(schema["definitions"]["device"]["oneOf"][0]["hw"][1]["signature"].asString().c_str(), "signature2");
-    ASSERT_STREQ(schema["definitions"]["device"]["oneOf"][0]["hw"][1]["fw"].asString().c_str(), "1.1.1");
 }
 
 TEST_F(TConfigParserTest, ParseModbusDevideWithWriteAddress)

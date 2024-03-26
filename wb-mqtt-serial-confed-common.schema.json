@@ -1,290 +1,9 @@
 {
   "$schema": "http://json-schema.org/draft-07/schema#",
   "type": "object",
-  "title": "Serial Device Driver Configuration",
-  "description": "Configuration of devices connected to serial ports (RS-485, TCP, UART)",
 
   "definitions": {
-    "commonPortSettings": {
-      "properties": {
-        "enabled": {
-          "type": "boolean",
-          "title": "Enable port",
-          "default": true,
-          "_format": "checkbox",
-          "propertyOrder": 2,
-          "options": {
-            "grid_columns": 12,
-            "wb": {
-              "show_editor": true
-            }
-          }
-        },
-        "response_timeout_ms": {
-          "type": "integer",
-          "title": "Response timeout (ms)",
-          "description": "Zero means no timeout. If not set, the default timeout (500ms) is used.",
-          "minimum": 0,
-          "default": 500,
-          "propertyOrder": 8,
-          "options": {
-            "grid_columns": 12,
-            "show_opt_in": true,
-            "wb" : {
-              "disabledEditorText": " "
-            }
-          }
-        },
-        "guard_interval_us": {
-          "type": "integer",
-          "title": "Guard interval (us)",
-          "description": "guard_interval_description",
-          "minimum": 0,
-          "default": 0,
-          "propertyOrder": 9,
-          "options": {
-            "grid_columns": 12,
-            "show_opt_in": true,
-            "wb" : {
-              "disabledEditorText": " "
-            }
-          }
-        },
-        "poll_interval": {
-          "type": "integer",
-          "options": {
-            "hidden": true
-          }
-        },
-        "read_rate_limit_ms": {
-          "type": "integer",
-          "title": "Read rate limit (ms)",
-          "description" : "read_rate_limit_description",
-          "minimum": 0,
-          "default": 1000,
-          "propertyOrder": 10,
-          "options": {
-            "grid_columns": 12
-          }
-        },
-        "devices": {
-          "type": "array",
-          "title": "Devices attached to the port",
-          "items": { "$ref": "#/definitions/device" },
-          "propertyOrder": 11,
-          "options": {
-            "array_controls_top": true,
-            "disable_array_delete_last_row": true,
-            "disable_array_reorder": true,
-            "disable_collapse": true,
-            "enable_array_copy": true,
-            "wb": {
-              "disable_panel": true
-            }
-          },
-          "_format": "collapsible-list"
-        }
-      }
-    },
-    "serialPort": {
-      "title": "Serial port",
-      "type": "object",
-      "allOf": [
-        {
-          "properties": {
-            "port_type": {
-              "type": "string",
-              "title": "Port type",
-              "enum": ["serial"],
-              "default": "serial",
-              "propertyOrder": 1,
-              "options": {
-                "hidden": true
-              }
-            },
-            "path": {
-              "type": "string",
-              "title": "Path to device",
-              "minLength": 1,
-              "propertyOrder": 3,
-              "options": {
-                "grid_columns": 4
-              }    
-            },
-            "baud_rate": {
-              "type": "integer",
-              "title": "Baud rate",
-              "enum": [110, 300, 600, 1200, 2400, 4800, 9600, 19200, 38400, 57600, 115200],
-              "default": 9600,
-              "propertyOrder": 4,
-              "options": {
-                "grid_columns": 2,
-                "wb": {
-                  "show_editor":true
-                }
-              }    
-            },
-            "parity": {
-              "type": "string",
-              "title": "Parity",
-              "enum": ["N", "E", "O"],
-              "default": "N",
-              "propertyOrder": 5,
-              "options": {
-                "grid_columns": 2,
-                "wb": {
-                  "show_editor":true
-                }
-              }    
-            },
-            "data_bits": {
-              "type": "integer",
-              "title": "Data bits",
-              "enum": [5, 6, 7, 8],
-              "default": 8,
-              "propertyOrder": 6,
-              "options": {
-                "grid_columns": 2,
-                "wb": {
-                  "show_editor":true
-                }
-              }    
-            },
-            "stop_bits": {
-              "type": "integer",
-              "title": "Stop bits",
-              "enum": [1, 2],
-              "default": 1,
-              "propertyOrder": 7,
-              "options": {
-                "grid_columns": 2,
-                "wb": {
-                  "show_editor":true
-                }
-              }    
-            }
-          },
-          "required": ["path"]
-        },
-        { "$ref" : "#/definitions/commonPortSettings"}
-      ],
-      "_format": "grid",
-      "options": {
-        "wb": {
-          "disable_title": true
-        }
-      }
-    },
-    "commonTcpPortSettings": {
-      "properties": {
-        "address": {
-          "type": "string",
-          "title": "IPv4 address or hostname of device",
-          "minLength": 1,
-          "propertyOrder": 3,
-          "options": {
-            "grid_columns": 10
-          }
-        },
-        "port": {
-          "type": "integer",
-          "title": "TCP port number",
-          "minimum": 1,
-          "maximum": 65536,
-          "propertyOrder": 4,
-          "options": {
-            "grid_columns": 2
-          }
-        },
-        "connection_timeout_ms": {
-          "type": "integer",
-          "title": "Connection timeout (ms)",
-          "description": "connection_timeout_description",
-          "minimum": -1,
-          "default": 5000,
-          "propertyOrder": 5
-        },
-        "connection_max_fail_cycles": {
-          "type": "integer",
-          "title": "Connection max fail cycles",
-          "description": "Defines number of driver cycles with all devices being disconnected before resetting connection. Default value is 2. Value -1 disables TCP reconnect. Zero means instant timeout.",
-          "minimum": -1,
-          "default": 2,
-          "propertyOrder": 6
-        }
-      },
-      "required": ["address", "port"]
-    },
-    "modbusTcpPort": {
-      "title": "MODBUS TCP",
-      "type": "object",
-      "properties": {
-        "port_type": {
-          "type": "string",
-          "title": "Port type",
-          "enum": ["modbus tcp"],
-          "default": "modbus tcp",
-          "propertyOrder": 1,
-          "options": {
-            "hidden": true
-          }
-        }
-      },
-      "required": ["port_type"],
-      "allOf": [
-        { "$ref" : "#/definitions/commonTcpPortSettings"},
-        { "$ref" : "#/definitions/commonPortSettings"}
-      ],
-      "_format": "grid",
-      "options": {
-        "wb": {
-          "disable_title": true
-        }
-      }
-    },
-    "tcpPort": {
-      "title": "Serial over TCP",
-      "type": "object",
-      "properties": {
-        "port_type": {
-          "type": "string",
-          "title": "Port type",
-          "enum": ["tcp"],
-          "default": "tcp",
-          "propertyOrder": 1,
-          "options": {
-            "hidden": true
-          }
-        }
-      },
-      "required": ["port_type"],
-      "allOf": [
-        { "$ref" : "#/definitions/commonTcpPortSettings"},
-        { "$ref" : "#/definitions/commonPortSettings"}
-      ],
-      "_format": "grid",
-      "options": {
-        "wb": {
-          "disable_title": true
-        }
-      }
-    },
-    "port": {
-      "headerTemplate": "port_header_template",
-      "title": "Port",
-      "oneOf": [
-        { "$ref": "#/definitions/serialPort" },
-        { "$ref": "#/definitions/tcpPort" },
-        { "$ref": "#/definitions/modbusTcpPort" }
-      ],
-      "options": {
-        "keep_oneof_values": false,
-        "disable_collapse" : true,
-        "disable_edit_json": true
-      },
-      "_format": "wb-multiple"
-    },
-    "slave_id_ui": {
+    "slave_id": {
       "properties": {
         "slave_id": {
           "title": "Slave id of the device",
@@ -300,42 +19,7 @@
         }
       }
     },
-    "slave_id": {
-      "properties": {
-        "slave_id": {
-          "oneOf": [
-            {
-              "type": "string",
-              "pattern": "^(0x[A-Fa-f\\d]+|\\d+|(0x[A-Fa-f\\d]+|\\d+):(0x[A-Fa-f\\d]+|\\d+))$"
-            },
-            {
-              "type": "integer"
-            }
-          ]
-        }
-      }
-    },
     "slave_id_broadcast": {
-      "properties": {
-        "slave_id": {
-          "oneOf": [
-            {
-              "type": "string",
-              "pattern": "^(0x[A-Fa-f\\d]+|\\d+)$"
-            },
-            {
-              "type": "integer"
-            },
-            {
-              "type": "boolean",
-              "enum": [ false ],
-              "default": false
-            }
-          ]
-        }
-      }
-    },
-    "slave_id_broadcast_ui": {
       "properties": {
         "slave_id": {
           "title": "Slave id of the device or broadcast mode",
@@ -354,7 +38,7 @@
             },
             "patternmessage": "Should be decimal or hex"
           },
-          "_format" : "wb-optional"
+          "format" : "wb-optional"
         }
       }
     },
@@ -369,7 +53,7 @@
           "type": "boolean",
           "title": "Enable device",
           "default": true,
-          "_format": "checkbox",
+          "format": "checkbox",
           "propertyOrder": 1
         },
         "name" : {
@@ -405,7 +89,7 @@
           "type": "array",
           "title": "Password as a list of bytes",
           "items": { "$ref": "#/definitions/serial_int" },
-          "_format": "table",
+          "format": "table",
           "propertyOrder": 101,
           "options": {
             "disable_array_delete_last_row": true
@@ -467,7 +151,7 @@
           "title": "Force frame timeout",
           "description": "force_frame_timeout_desc",
           "default": false,
-          "_format": "checkbox",
+          "format": "checkbox",
           "propertyOrder": 109
         },
         "response_timeout_ms": {
@@ -538,7 +222,7 @@
           "disable_title": true
         }
       },
-      "_format": "grid",
+      "format": "grid",
       "required": ["address", "value"]
     },
     "register_channel_common": {
@@ -549,7 +233,7 @@
           "title": "Enabled",
           "default" : true,
           "propertyOrder": 1,
-          "_format": "checkbox"
+          "format": "checkbox"
         },
         "name": {
           "$ref": "#/definitions/channel_name",
@@ -663,7 +347,7 @@
               "placeholder": "in queue order"
             }
           },
-          "_format": "edWb",
+          "format": "edWb",
           "propertyOrder": 16
         },
         "read_rate_limit_ms": {
@@ -772,7 +456,7 @@
       // FIXME: require "reg_type" and "address" for non-templated devices
       "required": ["name"],
       "defaultProperties": ["name", "type", "reg_type", "format", "scale", "offset", "string_data_size"],
-      "_format": "grid",
+      "format": "grid",
       "options": {
         "disable_collapse": true,
         "disable_edit_json": true
@@ -854,7 +538,7 @@
           "title": "Enabled",
           "default" : true,
           "propertyOrder": 1,
-          "_format": "checkbox"
+          "format": "checkbox"
         },
         "name": {
           "$ref": "#/definitions/channel_name",
@@ -883,7 +567,7 @@
           "title": "A list of subregisters",
           "items": { "$ref": "#/definitions/subreg" },
           "minItems": 1,
-          "_format": "table",
+          "format": "table",
           "propertyOrder": 9,
           "options": {
             "disable_collapse": true,
@@ -911,7 +595,7 @@
               "placeholder": "in queue order"
             }
           },
-          "_format": "edWb",
+          "format": "edWb",
           "propertyOrder": 10
         },
         "read_rate_limit_ms": {
@@ -944,7 +628,7 @@
         },
         "disable_collapse": true
       },
-      "_format": "wb-multiple"
+      "format": "wb-multiple"
     },
     "common_channel_modbus": {
       "headerTemplate": "{{self.name}}",
@@ -970,7 +654,7 @@
           "type": "boolean",
           "title": "Enable poll",
           "default": true,
-          "_format": "checkbox"
+          "format": "checkbox"
         },
         "poll_interval": {
           "type": "integer",
@@ -992,7 +676,7 @@
               "enabled": true
             }
           },
-          "_format": "edWb",
+          "format": "edWb",
           "propertyOrder": 3
         },
         "read_rate_limit_ms": {
@@ -1006,7 +690,7 @@
               "enabled": true
             }
           },
-          "_format": "siWb",
+          "format": "siWb",
           "propertyOrder": 4
         }
       },
@@ -1028,7 +712,7 @@
         "title": {
           "title": "Parameter",
           "type": "string",
-          "_format": "info",
+          "format": "info",
           "propertyOrder": 1
         },
         "mode": {
@@ -1176,7 +860,7 @@
     },
     "units": {
       "type": "string",
-      "_format": "edWb"
+      "format": "edWb"
     },
     "reg_type": {
       "type": "string",
@@ -1321,7 +1005,7 @@
         { "$ref": "#/definitions/register_channel_common"},
         { "$ref": "#/definitions/dlms_address" }
       ],
-      "_format": "wb-object",
+      "format": "wb-object",
       "options" : {
         "wb": {
           "disable_panel": true
@@ -1335,7 +1019,7 @@
           "title": "Custom channels",
           "items": { "$ref": "#/definitions/dlms_channel" },
           "propertyOrder": 99,
-          "_format": "tabs",
+          "format": "tabs",
           "options": {
             "disable_array_delete_last_row": true
           }
@@ -1458,7 +1142,7 @@
         { "$ref": "#/definitions/register_channel_common"},
         { "$ref": "#/definitions/string_address" }
       ],
-      "_format": "wb-object",
+      "format": "wb-object",
       "options" : {
         "wb": {
           "disable_panel": true
@@ -1472,7 +1156,7 @@
           "title": "Custom channels",
           "items": { "$ref": "#/definitions/channel_with_string_address" },
           "propertyOrder": 99,
-          "_format": "tabs",
+          "format": "tabs",
           "options": {
             "disable_array_delete_last_row": true
           }
@@ -1487,7 +1171,7 @@
           "title": "Custom channels",
           "items": { "$ref": "#/definitions/common_channel" },
           "propertyOrder": 99,
-          "_format": "tabs",
+          "format": "tabs",
           "options": {
             "disable_array_delete_last_row": true
           }
@@ -1501,7 +1185,7 @@
           "title": "Custom channels",
           "items": { "$ref": "#/definitions/common_channel_modbus" },
           "propertyOrder": 99,
-          "_format": "tabs",
+          "format": "tabs",
           "options": {
             "disable_array_delete_last_row": true
           }
@@ -1515,7 +1199,7 @@
           "title": "Custom setup commands",
           "items": { "$ref": "#/definitions/setup_cmd" },
           "propertyOrder": 100,
-          "_format": "tabs",
+          "format": "tabs",
           "options": {
             "disable_array_delete_last_row": true
           }
@@ -1585,536 +1269,35 @@
         { "$ref": "#/definitions/common_setup" },
         { "$ref": "#/definitions/slave_id" }
       ]
-    },
-
-    "modbus_device_properties": {
-      "properties": {
-        "supports_wb_continuous_read": {
-          "title": "Enable continuous read",
-          "description": "continuous_read_desc",
-          "type": "boolean",
-          "default": false,
-          "propertyOrder": 9
-        }
-      }
-    },
-
-    "device": {
-      "title": "Device",
-      "headerTemplate": "{{self.name}} {{self.slave_id}}",
-      "oneOf": [
-        {
-          "title": "Custom DLMS device",
-          "allOf": [
-            { "$ref": "#/definitions/deviceProperties" },
-            { "$ref": "#/definitions/dlms_device_properties" },
-            { "$ref": "#/definitions/dlms_channels" },
-            { "$ref": "#/definitions/slave_id" },
-            { "$ref": "#/definitions/no_setup" }
-          ],
-          "properties": {
-            "protocol": {
-              "type": "string",
-              "enum": ["dlms"],
-              "options": {
-                "hidden": true
-              }
-            }
-          },
-          "options": {
-            "wb": {
-              "group": "g-custom"
-            }
-          },
-          "required": ["protocol", "slave_id"],
-          "defaultProperties": ["slave_id", "channels", "protocol"]
-        },
-        {
-          "title": "Custom UNIEL device",
-          "allOf": [
-            { "$ref": "#/definitions/deviceProperties" },
-            { "$ref": "#/definitions/common_channels" },
-            { "$ref": "#/definitions/slave_id" },
-            { "$ref": "#/definitions/no_setup" }
-          ],
-          "properties": {
-            "protocol": {
-              "type": "string",
-              "enum": ["uniel"],
-              "options": {
-                "hidden": true
-              }
-            }
-          },
-          "options": {
-            "wb": {
-              "group": "g-custom"
-            }
-          },
-          "required": ["protocol", "slave_id"],
-          "defaultProperties": ["slave_id", "channels", "protocol"]
-        },
-        {
-          "title": "Custom Milur device",
-          "allOf": [
-            { "$ref": "#/definitions/deviceProperties" },
-            { "$ref": "#/definitions/no_setup" },
-            { "$ref": "#/definitions/common_channels" },
-            { "$ref": "#/definitions/slave_id" }
-          ],
-          "properties": {
-            "protocol": {
-              "type": "string",
-              "enum": ["milur"],
-              "options": {
-                "hidden": true
-              }
-            }
-          },
-          "options": {
-            "wb": {
-              "group": "g-custom"
-            }
-          },
-          "required": ["protocol", "slave_id"],
-          "defaultProperties": ["slave_id", "channels", "protocol"]
-        },
-        {
-          "title": "Custom Mercury 230 device",
-          "allOf": [
-            { "$ref": "#/definitions/deviceProperties" },
-            { "$ref": "#/definitions/no_setup" },
-            { "$ref": "#/definitions/common_channels" },
-            { "$ref": "#/definitions/slave_id_broadcast" }
-          ],
-          "properties": {
-            "protocol": {
-              "type": "string",
-              "enum": ["mercury230"],
-              "options": {
-                "hidden": true
-              }
-            }
-          },
-          "options": {
-            "wb": {
-              "group": "g-custom"
-            }
-          },
-          "required": ["protocol"],
-          "defaultProperties": ["slave_id", "channels", "protocol"]
-        },
-        {
-          "title": "Custom IVTM device",
-          "allOf": [
-            { "$ref": "#/definitions/deviceProperties" },
-            { "$ref": "#/definitions/no_setup" },
-            { "$ref": "#/definitions/common_channels" },
-            { "$ref": "#/definitions/slave_id" }
-          ],
-          "properties": {
-            "protocol": {
-              "type": "string",
-              "enum": ["ivtm"],
-              "options": {
-                "hidden": true
-              }
-            }
-          },
-          "options": {
-            "wb": {
-              "group": "g-custom"
-            }
-          },
-          "required": ["protocol", "slave_id"],
-          "defaultProperties": ["slave_id", "channels", "protocol"]
-        },
-        {
-          "title": "Custom S2K device",
-          "allOf": [
-            { "$ref": "#/definitions/deviceProperties" },
-            { "$ref": "#/definitions/no_setup" },
-            { "$ref": "#/definitions/common_channels" },
-            { "$ref": "#/definitions/slave_id" }
-          ],
-          "properties": {
-            "protocol": {
-              "type": "string",
-              "enum": ["s2k"],
-              "options": {
-                "hidden": true
-              }
-            }
-          },
-          "options": {
-            "wb": {
-              "group": "g-custom"
-            }
-          },
-          "required": ["protocol", "slave_id"],
-          "defaultProperties": ["slave_id", "channels", "protocol"]
-        },
-        {
-          "title": "Custom Pulsar device",
-          "allOf": [
-            { "$ref": "#/definitions/deviceProperties" },
-            { "$ref": "#/definitions/no_setup" },
-            { "$ref": "#/definitions/common_channels" },
-            { "$ref": "#/definitions/slave_id" }
-          ],
-          "properties": {
-            "protocol": {
-              "type": "string",
-              "enum": ["pulsar"],
-              "options": {
-                "hidden": true
-              }
-            }
-          },
-          "options": {
-            "wb": {
-              "group": "g-custom"
-            }
-          },
-          "required": ["protocol", "slave_id"],
-          "defaultProperties": ["slave_id", "channels", "protocol"]
-        },
-        {
-          "title": "Custom Mercury 200 device",
-          "allOf": [
-            { "$ref": "#/definitions/deviceProperties" },
-            { "$ref": "#/definitions/no_setup" },
-            { "$ref": "#/definitions/common_channels" },
-            { "$ref": "#/definitions/slave_id" }
-          ],
-          "properties": {
-            "protocol": {
-              "type": "string",
-              "enum": ["mercury200"],
-              "options": {
-                "hidden": true
-              }
-            }
-          },
-          "options": {
-            "wb": {
-              "group": "g-custom"
-            }
-          },
-          "required": ["protocol", "slave_id"],
-          "defaultProperties": ["slave_id", "channels", "protocol"]
-        },
-        {
-          "title": "Custom LLS device",
-          "allOf": [
-            { "$ref": "#/definitions/deviceProperties" },
-            { "$ref": "#/definitions/no_setup" },
-            { "$ref": "#/definitions/common_channels" },
-            { "$ref": "#/definitions/slave_id" }
-          ],
-          "properties": {
-            "protocol": {
-              "type": "string",
-              "enum": ["lls"],
-              "options": {
-                "hidden": true
-              }
-            }
-          },
-          "options": {
-            "wb": {
-              "group": "g-custom"
-            }
-          },
-          "required": ["protocol", "slave_id"],
-          "defaultProperties": ["slave_id", "channels", "protocol"]
-        },
-        {
-          "title": "Custom Neva device",
-          "allOf": [
-            { "$ref": "#/definitions/deviceProperties" },
-            { "$ref": "#/definitions/no_setup" },
-            { "$ref": "#/definitions/common_channels" },
-            { "$ref": "#/definitions/slave_id_broadcast" }
-          ],
-          "properties": {
-            "protocol": {
-              "type": "string",
-              "enum": ["neva"],
-              "options": {
-                "hidden": true
-              }
-            }
-          },
-          "options": {
-            "wb": {
-              "group": "g-custom"
-            }
-          },
-          "required": ["protocol"],
-          "defaultProperties": ["slave_id", "channels", "protocol"]
-        },
-        {
-          "title": "Custom Energomera device with IEC 61107 fast read support",
-          "allOf": [
-            { "$ref": "#/definitions/deviceProperties" },
-            { "$ref": "#/definitions/no_setup" },
-            { "$ref": "#/definitions/common_channels" },
-            { "$ref": "#/definitions/slave_id_broadcast" }
-          ],
-          "properties": {
-            "protocol": {
-              "type": "string",
-              "enum": ["energomera_iec"],
-              "options": {
-                "hidden": true
-              }
-            }
-          },
-          "options": {
-            "wb": {
-              "group": "g-custom"
-            }
-          },
-          "required": ["protocol"],
-          "defaultProperties": ["slave_id", "channels", "protocol"]
-        },
-        {
-          "title": "Custom Energomera device with IEC 61107 Mode C protocol",
-          "allOf": [
-            { "$ref": "#/definitions/deviceProperties" },
-            { "$ref": "#/definitions/no_setup" },
-            { "$ref": "#/definitions/channels_with_string_addresses" },
-            { "$ref": "#/definitions/slave_id_broadcast" }
-          ],
-          "properties": {
-            "protocol": {
-              "type": "string",
-              "enum": ["energomera_iec_mode_c"],
-              "options": {
-                "hidden": true
-              }
-            }
-          },
-          "options": {
-            "wb": {
-              "group": "g-custom"
-            }
-          },
-          "required": ["protocol"],
-          "defaultProperties": ["slave_id", "channels", "protocol"]
-        },
-        {
-          "title": "Custom Modbus device",
-          "allOf": [
-            { "$ref": "#/definitions/deviceProperties" },
-            { "$ref": "#/definitions/common_channels_modbus" },
-            { "$ref": "#/definitions/common_setup" },
-            { "$ref": "#/definitions/slave_id" },
-            { "$ref": "#/definitions/modbus_device_properties" }
-          ],
-          "properties": {
-            "protocol": {
-              "type": "string",
-              "enum": ["modbus"],
-              "default": "modbus",
-              "options": {
-                "hidden": true
-              }
-            },
-            "device_type": {
-              "not": {},
-              "options": { "hidden": true }
-            }
-          },
-          "options": {
-            "wb": {
-              "group": "g-custom"
-            }
-          },
-          "required": ["slave_id"],
-          "defaultProperties": ["slave_id", "channels", "protocol"]
-        },
-        {
-          "title": "Custom Modbus IO device",
-          "allOf": [
-            { "$ref": "#/definitions/deviceProperties" },
-            { "$ref": "#/definitions/common_channels" },
-            { "$ref": "#/definitions/common_setup" },
-            { "$ref": "#/definitions/slave_id" }
-          ],
-          "properties": {
-            "protocol": {
-              "type": "string",
-              "enum": ["modbus_io"],
-              "options": {
-                "hidden": true
-              }
-            }
-          },
-          "options": {
-            "wb": {
-              "group": "g-custom"
-            }
-          },
-          "required": ["protocol", "slave_id"],
-          "defaultProperties": ["slave_id", "channels", "protocol"]
-        }
-      ],
-      "options": {
-        "disable_edit_json": true,
-        "keep_oneof_values": false,
-        "wb": {
-          "disable_panel": true,
-          "hidden_msg": "deprecated template",
-          "hidden_notice": "hidden_template_notice",
-          "groups": ["g-wb", "g-wb-old", "g-adapter", "g-climate-sensor", "g-level", "g-dimmer", "g-air-conditioning",
-                     "g-climate-control", "g-refrigeration", "g-io", "g-relay", "g-curtain", "g-control-panel",
-                     "g-water-meter", "g-heat-meter", "g-power-meter", "g-thermostat", "g-motor-control", "g-oni",
-                     "g-custom"],
-          "keep_properties": ["slave_id"]
-        }
-      },
-      "_format": "wb-multiple"
-    }
-
-  },
-
-  "properties": {
-    "debug": {
-      "type": "boolean",
-      "title": "Enable debug logging",
-      "default": false,
-      "_format": "checkbox",
-      "propertyOrder": 1,
-      "options": {
-        "wb": {
-          "show_editor": true
-        }
-      }
-    },
-    "ports": {
-      "type": "array",
-      "title": "List of ports",
-      "items": { "$ref": "#/definitions/port" },
-      "_format": "tabs",
-      "propertyOrder": 4,
-      "options" : {
-          "disable_collapse" : true,
-          "disable_array_delete_last_row": true,
-          "disable_array_reorder": true
-      }
-    },
-    "max_unchanged_interval" : {
-      "type" : "integer",
-      "title" : "Unchanged value posting interval",
-      "description" : "max_unchanged_interval_desc",
-      "default" : -1,
-      "propertyOrder" : 2,
-      "options": {
-        "show_opt_in": true
-      }
-    },
-    "rate_limit" : {
-      "type" : "integer",
-      "title" : "Maximum registers reads per second",
-      "description" : "rate_limit_desc",
-      "default" : 100,
-      "min": 1,
-      "propertyOrder" : 3,
-      "options": {
-        "show_opt_in": true
-      }
     }
   },
 
-  "options": {
-    "disable_edit_json": true,
-    "wb": {
-      "disable_title": true
-    }
-  },
+  "required": ["device_type"],
 
-  "configFile": {
-    "path": "/etc/wb-mqtt-serial.conf",
-    "service": "wb-mqtt-serial",
-    "toJSON": ["wb-mqtt-serial", "-j"],
-    "fromJSON": ["wb-mqtt-serial", "-J"],
-    "validate": false,
-    "editor": "serial-config"
-  },
+  "defaultProperties": [ "slave_id", "device_type"],
 
   "translations": {
     "en": {
       "read_rate_limit_description": "This option is deprecated, use read period of channels instead",
       "read_period_description": "This option specifies the desired period between two consecutive reads of the channel. Short periods may not be maintained due to port bandwidth limitations",
-      "guard_interval_description": "Specifies the delay in microseconds before writing to the port",
-      "connection_timeout_description": "Used for disconnect detection. If not set, the default timeout (5000ms) is used. Value -1 disables TCP reconnect. Zero means instant timeout.",
-      "connection_max_fail_description": "Defines number of driver cycles with all devices being disconnected before resetting connection. Default value is 2. Value -1 disables TCP reconnect. Zero means instant timeout.",
-      "port_header_template": "{{if self.port_type==\"serial\"}}Serial port{{endif}}{{if self.port_type==undefined}}Serial port{{endif}}{{if self.port_type==\"tcp\"}}Port TCP{{endif}}{{if self.port_type==\"modbus tcp\"}}Port MODBUS TCP{{endif}} {{self.path}}{{self.address}} {{self.port}}",
       "broadcast_description": "Requests are sent without specifying exact id of the device. Use the mode if only one device is connected",
       "frame_timeout_description": "Specifies minimum inter-frame delay. For some protocols this value is used to split incoming data into frames.",
       "response_timeout_description": "Specifies maximum device's response time. Zero means no timeout. If not set, the default timeout (500ms) is used. If port's appropriate parameter is bigger, this one is overwritten.",
       "device_timeout_description": "Specifies timeout for device connection. If not set, default value 3000ms is used. Value -1 disables device reconnect. Zero means instant timeout.",
       "device_max_fail_cycles_desc": "Defines number of device polling cycles with all failed registers before marking device as disconnected. Default value is 2. Value -1 disables device reconnect. Zero means instant timeout.",
-      "max_unchanged_interval_desc": "Specifies the maximum interval in seconds between posting the same values to message queue. Zero means the values are posted to the queue every time they read from the device. By default, the values are only reported on change. Negative value means default behavior.",
       "string_data_size_description": "For the modbus protocol, strings are read one character per register from the low byte. The parameter specifies the number of characters",
-      "hidden_template_notice": "Device template is deprecated, use newer version",
-      "g-wb": "Wiren Board devices",
-      "g-wb-old": "Deprecated Wiren Board devices",
-      "g-adapter": "Protocol adapters",
-      "g-climate-sensor": "Climate sensors",
-      "g-level": "Level sensors",
-      "g-dimmer": "Dimmers",
-      "g-air-conditioning": "Air conditioning equipment",
-      "g-climate-control": "Climate control equipment",
-      "g-refrigeration": "Refrigeration equipment",
-      "g-io": "IO modules",
-      "g-relay": "Relays",
-      "g-curtain": "Curtain motors",
-      "g-control-panel": "Control panels",
-      "g-water-meter": "Water meters",
-      "g-heat-meter": "Heat meters",
-      "g-power-meter": "Energy meters",
-      "g-thermostat": "Thermostats",
-      "g-motor-control": "Motor controllers",
-      "g-oni": "ONI devices",
-      "g-custom": "Custom devices",
       "rate_limit_desc": "To reduce the load on the processor, it is not recommended to specify more than 100 reads for WB6 and 800 for WB7",
-      "continuous_read_desc": "Implemented in Wiren Board devices. The service tries to read registers at once even if they are spaced. This allows you to reduce the number of requests",
       "sporadic_description": "If a protocol allows, the register is excluded from periodic polling. Its change is sent by a special event",
       "semi_sporadic_description": "If a protocol allows, the register change is sent by a special event. At the same time, periodic polling continues",
       "force_frame_timeout_desc": "Wait frame timeout after receiving expected frame bytes count. All extra data is treated as noise and is dropped.",
       "max_write_fail_time_desc": "Maximum time that attempts to write a register will continue"
     },
     "ru": {
-      "Serial Device Driver Configuration": "Настройка драйвера serial-устройств",
-      "Configuration of devices connected to serial ports (RS-485, TCP, UART)": "Настройка устройств, подключенных к последовательным портам (RS-485, TCP, UART)",  
-      "Enable port": "Включить порт",
       "Response timeout (ms)": "Таймаут ответа (мс)",
       "Zero means no timeout. If not set, the default timeout (500ms) is used.": "Ноль - без таймаута. Таймаут по умолчанию 500мс",
       "Guard interval (us)": "Задержка перед записью в порт (мкс)",
-      "guard_interval_description": "",
       "Read period (ms)": "Период чтения (мс)",
       "read_period_description": "Задаёт период чтения канала в миллисекундах. Короткие периоды опроса могут не выдерживаться из-за ограничений пропускной способности порта.",
-      "Devices attached to the port": "Устройства, подключенные к порту",
-      "Serial port": "Последовательный порт",
-      "Port type": "Тип порта",
-      "serial": "последовательный",
-      "Path to device": "Путь до устройства",
-      "Baud rate": "Скорость обмена",
-      "Parity": "Контроль чётности",
-      "Data bits": "Число бит данных",
-      "Stop bits": "Стоп биты",
-      "IPv4 address or hostname of device": "IPv4 адрес или доменное имя устройства",
-      "TCP port number": "Номер TCP порта",
-      "Connection timeout (ms)": "Таймаут подключения (мс)",
-      "connection_timeout_description": "Используется для определения потери связи. По умолчанию 5000мс. -1 запрещает автоматическое переподключение при потере связи.",
-      "Connection max fail cycles": "Максимальное число неудачных переподключений",
-      "connection_max_fail_description": "Задаёт максимальное число неудачных переподключений для всех устройств, после которого будет произведён сброс соединения. По умолчанию 2. -1 запрещает переподключения.",
-      "Serial over TCP": "Передача пакетов через TCP",
-      "port_header_template": "{{if self.port_type==\"serial\"}}Последовательный порт{{endif}}{{if self.port_type==undefined}}Последовательный порт{{endif}}{{if self.port_type==\"tcp\"}}Порт TCP{{endif}}{{if self.port_type==\"modbus tcp\"}}Порт MODBUS TCP{{endif}} {{self.path}}{{self.address}} {{self.port}}",
-      "Port": "Порт",
       "Slave id of the device": "Адрес устройства",
       "decimal or hex": "десятичное или шестнадцатеричное значение",
       "decimal (e.g. 123) or hex (e.g. 0xAF)": "десятичное (например, 123) или шестнадцатеричное (например, 0xAF)",
@@ -2204,24 +1387,6 @@
       "Custom channels": "Каналы, заданные пользователем",
       "DLMS client address": "Адрес клиента DLMS",
       "16 - public client (default), 32 - SPODES measurements reader, 48 - SPODES configurator": "16 - публичный клиент (по умолчанию), 32 - считыватель показаний СПОДЭС, 48 - конфигуратор СПОДЭС", 
-      "Unchanged value posting interval": "Интервал публикации неизменившихся значений",
-      "max_unchanged_interval_desc": "Задает интервал публикации значений, если они не изменились. Ноль задает публикацию после каждого чтения данных из устройства. По умолчанию публикация происходит по изменению значения. Отрицательное число задает поведение по умолчанию",
-      "List of ports": "Список портов",
-      "Enable debug logging": "Включить отладочные сообщения",
-      "Custom Modbus IO device": "Устройство с протоколом Modbus IO",
-      "Custom Modbus device": "Устройство с протоколом Modbus",
-      "Custom Energomera device with IEC 61107 Mode C protocol": "Счётчик Энергомера с протоколом IEC 61107 Mode C",
-      "Custom Energomera device with IEC 61107 fast read support": "Счётчик Энергомера с поддержкой быстрого чтения по протоколу IEC 61107",
-      "Custom Neva device": "Счётчик Нева",
-      "Custom LLS device": "Устройство с протоколом LLS",
-      "Custom Mercury 200 device": "Устройство с протоколом счётчика Меркурий 200",
-      "Custom Pulsar device": "Устройство с протоколом Пульсар",
-      "Custom S2K device": "Устройство с протоколом С2000",
-      "Custom IVTM device": "Устройство с протоколом ИВТМ",
-      "Custom Mercury 230 device": "Устройство с протоколом счётчика Меркурий 230",
-      "Custom Milur device": "Устройство с протоколом счётчика Милур",
-      "Custom UNIEL device": "Устройство с протоколом UNIEL",
-      "Custom DLMS device": "Устройство с протоколом DLMS/СПОДЭС",
       "Custom setup commands": "Команды настройки",
       "Motor type": "Тип двигателя",
       "DLMS authentication mode": "Режим аутентификации DLMS",
@@ -2239,12 +1404,10 @@
       "Wi-SUN FAN mesh network": "Wi-SUN FAN mesh-сеть",
       "Device": "Устройство",
       "Byte": "Байт",
-      "inherited from device and port": "из настроек устройства и порта",
       "Word order": "Порядок слов",
       "Name": "Имя",
       "Type": "Тип",
       "Maximum value": "Максимальное значение",
-      "Unknown device": "Неизвестное устройство",
       "Read rate limit (ms)": "Читать не чаще (мс)",
       "Units": "Единицы измерения",
       "Poll": "Опрос",
@@ -2259,35 +1422,10 @@
       "String size in characters": "Размер строки в символах",
       "String": "Строка",
       "string_data_size_description": "Для протокола modbus строки считываются по одному символу на регистр из младшего байта. Параметр определяет количество символов",
-      "deprecated template": "устаревший шаблон",
-      "hidden_template_notice": "Шаблон устройства устарел, рекомендуется использовать новую версию",
-      "g-wb": "Устройства Wiren Board",
-      "g-wb-old": "Устаревшие устройства Wiren Board",
-      "g-adapter": "Адаптеры протоколов",
-      "g-climate-sensor": "Датчики климата",
-      "g-level": "Датчики уровня",
-      "g-dimmer": "Диммеры",
-      "g-air-conditioning": "Кондиционеры",
-      "g-climate-control": "Контроллеры вентиляции и климата",
-      "g-refrigeration": "Контроллеры холодильного оборудования",
-      "g-io": "Модули ввода-вывода",
-      "g-relay": "Модули реле",
-      "g-curtain": "Моторы для штор/Электрокарнизы",
-      "g-control-panel": "Панели управления ",
-      "g-water-meter": "Счётчики воды",
-      "g-heat-meter": "Счётчики тепла",
-      "g-power-meter": "Счётчики электроэнергии",
-      "g-thermostat": "Термостаты",
-      "g-motor-control": "Управление двигателями (преобразователи частоты)",
-      "g-oni": "Устройства ONI",
-      "g-custom": "Произвольные устройства",
-      "Maximum registers reads per second": "Максимальное количество чтений регистров в секунду",
       "rate_limit_desc": "Для снижения нагрузки на процессор не рекомендуется указывать более 100 чтений для WB6 и 800 для WB7",
       "Invalid channel ID": "Неверный идентификатор канала",
       "Invalid channel name": "Неверное имя канала",
       "Invalid device ID": "Неверный идентификатор устройства",
-      "Enable continuous read": "Включить режим непрерывного чтения регистров",
-      "continuous_read_desc": "Реализовано в устройствах Wiren Board. При активации сервис пытается запросить регистры одной командой, даже если они расположены с промежутками. Это позволяет уменьшить число запросов",
       "Dispatched with an event": "Передаётся с помощью события",
       "Dispatched with an event and polling": "Передаётся с помощью события и периодически опрашивается",
       "sporadic_description": "Если протокол передачи позволяет, то регистр исключается из периодического опроса. Его изменение отправляется специальным событием",

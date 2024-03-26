@@ -67,7 +67,7 @@ namespace
     //      },
     //      "required": ["name"]
     //  }
-    Json::Value MakeTabOneOfChannelSchema(const Json::Value& channelTemplate, const std::string& deviceType)
+    Json::Value MakeTabOneOfChannelSchema(const Json::Value& channelTemplate)
     {
         Json::Value r;
         r["properties"]["name"] = MakeSingleValueProperty(channelTemplate["name"].asString());
@@ -79,8 +79,7 @@ namespace
             Json::Value i;
             i["properties"]["device_type"] = MakeSingleValueProperty(name);
             MakeArray("required", i).append("device_type");
-            MakeArray("allOf", i)
-                .append(MakeObject("$ref", "#/definitions/" + GetSubdeviceSchemaKey(deviceType, name)));
+            MakeArray("allOf", i).append(MakeObject("$ref", "#/definitions/" + GetSubdeviceSchemaKey(name)));
             items.append(i);
         }
 
@@ -97,25 +96,24 @@ namespace
     //      },
     //      "required": ["name"]
     //  }
-    Json::Value MakeTabSingleDeviceChannelSchema(const Json::Value& channelTemplate, const std::string& deviceType)
+    Json::Value MakeTabSingleDeviceChannelSchema(const Json::Value& channelTemplate)
     {
         Json::Value r;
         MakeArray("allOf", r)
             .append(MakeObject("$ref",
-                               "#/definitions/" +
-                                   GetSubdeviceSchemaKey(deviceType, channelTemplate["device_type"].asString())));
+                               "#/definitions/" + GetSubdeviceSchemaKey(channelTemplate["device_type"].asString())));
         r["properties"]["name"] = MakeSingleValueProperty(channelTemplate["name"].asString());
         MakeArray("required", r).append("name");
         return r;
     }
 
-    Json::Value MakeTabChannelSchema(const Json::Value& channel, const std::string& deviceType)
+    Json::Value MakeTabChannelSchema(const Json::Value& channel)
     {
         if (channel.isMember("oneOf")) {
-            return MakeTabOneOfChannelSchema(channel, deviceType);
+            return MakeTabOneOfChannelSchema(channel);
         }
         if (channel.isMember("device_type")) {
-            return MakeTabSingleDeviceChannelSchema(channel, deviceType);
+            return MakeTabSingleDeviceChannelSchema(channel);
         }
         return MakeTabSimpleChannelSchema(channel);
     }
@@ -184,9 +182,7 @@ namespace
     //          ]
     //      }
     //  }
-    Json::Value MakeDeviceChannelsSchema(const Json::Value& channels,
-                                         const std::string& deviceType,
-                                         const std::string& customChannelsSchemaRef)
+    Json::Value MakeDeviceChannelsSchema(const Json::Value& channels, const std::string& customChannelsSchemaRef)
     {
         Json::Value r;
         std::vector<std::string> names;
@@ -194,7 +190,7 @@ namespace
         r["type"] = "array";
         auto& items = MakeArray("oneOf", r["items"]);
         for (const auto& channel: channels) {
-            auto channelSchema = MakeTabChannelSchema(channel, deviceType);
+            auto channelSchema = MakeTabChannelSchema(channel);
             items.append(channelSchema);
             names.push_back(channel["name"].asString());
         }
@@ -245,8 +241,7 @@ namespace
     //  }
     Json::Value MakeSubDeviceSchema(const Json::Value& config,
                                     const std::string& subDeviceType,
-                                    const TDeviceTemplate& subdeviceTemplate,
-                                    const std::string& deviceType,
+                                    const TSubDeviceTemplate& subdeviceTemplate,
                                     TExpressionsCache& exprCache)
     {
         Json::Value res;
@@ -265,7 +260,7 @@ namespace
             res["properties"]["channels"]["type"] = "array";
             auto& items = MakeArray("oneOf", res["properties"]["channels"]["items"]);
             for (const auto& channel: subdeviceTemplate.Schema["channels"]) {
-                items.append(MakeTabChannelSchema(channel, deviceType));
+                items.append(MakeTabChannelSchema(channel));
             }
         }
 
@@ -289,12 +284,12 @@ namespace
     //      "required": ["device_type", "slave_id", "parameter1", ...]
     //  }
     void AddDeviceSchema(const Json::Value& deviceConfig,
-                         const TDeviceTemplate& deviceTemplate,
+                         TDeviceTemplate& deviceTemplate,
                          TSerialDeviceFactory& deviceFactory,
                          Json::Value& schema,
                          TExpressionsCache& exprCache)
     {
-        auto protocolName = GetProtocolName(deviceTemplate.Schema);
+        auto protocolName = GetProtocolName(deviceTemplate.GetTemplate());
 
         auto& req = MakeArray("required", schema);
         req.append("device_type");
@@ -305,15 +300,18 @@ namespace
         schema["properties"] = Json::Value(Json::objectValue);
         schema["properties"]["device_type"] = MakeSingleValueProperty(deviceTemplate.Type);
 
-        if (deviceTemplate.Schema.isMember("parameters")) {
-            MakeDeviceParametersSchema(deviceConfig, schema["properties"], req, deviceTemplate.Schema, exprCache);
+        if (deviceTemplate.GetTemplate().isMember("parameters")) {
+            MakeDeviceParametersSchema(deviceConfig,
+                                       schema["properties"],
+                                       req,
+                                       deviceTemplate.GetTemplate(),
+                                       exprCache);
         }
 
-        if (deviceTemplate.Schema.isMember("channels")) {
+        if (deviceTemplate.GetTemplate().isMember("channels")) {
             auto customChannelsSchemaRef = deviceFactory.GetCustomChannelSchemaRef(protocolName);
-            schema["properties"]["channels"] = MakeDeviceChannelsSchema(deviceTemplate.Schema["channels"],
-                                                                        deviceTemplate.Type,
-                                                                        customChannelsSchemaRef);
+            schema["properties"]["channels"] =
+                MakeDeviceChannelsSchema(deviceTemplate.GetTemplate()["channels"], customChannelsSchemaRef);
         }
 
         auto deviceSchemaRef = deviceFactory.GetCommonDeviceSchemaRef(protocolName);
@@ -323,16 +321,12 @@ namespace
         }
         MakeArray("allOf", schema).append(MakeObject("$ref", deviceSchemaRef));
 
-        TSubDevicesTemplateMap subdeviceTemplates(deviceTemplate.Type, deviceTemplate.Schema);
-        if (deviceTemplate.Schema.isMember("subdevices")) {
-            for (const auto& subDevice: deviceTemplate.Schema["subdevices"]) {
+        TSubDevicesTemplateMap subdeviceTemplates(deviceTemplate.Type, deviceTemplate.GetTemplate());
+        if (deviceTemplate.WithSubdevices()) {
+            for (const auto& subDevice: deviceTemplate.GetTemplate()["subdevices"]) {
                 auto name = subDevice["device_type"].asString();
-                schema["definitions"][GetSubdeviceSchemaKey(deviceTemplate.Type, name)] =
-                    MakeSubDeviceSchema(deviceConfig,
-                                        name,
-                                        subdeviceTemplates.GetTemplate(name),
-                                        deviceTemplate.Type,
-                                        exprCache);
+                schema["definitions"][GetSubdeviceSchemaKey(name)] =
+                    MakeSubDeviceSchema(deviceConfig, name, subdeviceTemplates.GetTemplate(name), exprCache);
             }
         }
     }

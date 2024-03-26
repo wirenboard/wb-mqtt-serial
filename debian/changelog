@@ -1,3 +1,9 @@
+wb-mqtt-serial (2.116.0) stable; urgency=medium
+
+  * Add RPC for device schema downloading
+
+ -- Petr Krasnoshchekov <petr.krasnoshchekov@wirenboard.com>  Tue, 19 Mar 2024 11:20:51 +0500
+
 wb-mqtt-serial (2.115.0) stable; urgency=medium
 
   * WB-MAO4 template: add support for scenes, safety mode, switch mode
