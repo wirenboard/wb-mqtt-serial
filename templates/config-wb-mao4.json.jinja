@@ -482,14 +482,14 @@
             {% for ls_number in range(1, LIGHT_SCENES_NUMBER + 1) -%}
             {
                 "id": "ls_{{ls_number}}_light_on_off_condition",
-                "title": "Light On/Off Condition",
+                "title": "Scene Light On/Off Condition",
                 "reg_type": "holding",
                 "address": {{1264 + (ls_number - 1)}},
                 "type": "enum",
                 "enum": [0, 1],
                 "enum_titles": [
-                    "Light is on if any used channel is on. Otherwise light is off",
-                    "Light is on if all used channels are on. Otherwise light is off"
+                    "Scene Light is on if any used channel is on. Otherwise light is off",
+                    "Scene Light is on if all used channels are on. Otherwise light is off"
                 ],
                 "group": "g_light_scene_{{ ls_number }}"
             },
@@ -871,7 +871,7 @@
                 "input_debounce_time_description": "Must be 5-10 times less than second press waiting time. Adds a delay to the response to presses",
 
                 "input_mode_description": "Button is the default mode. Switch mode supported since firmware version 2.5.0",
-                "light_scenes_description": "Light scenes are used to control multiple channels simultaneously. Supported since firmware version 2.5.0",
+                "light_scenes_description": "Light scenes are used to control multiple channels simultaneously. This is necessary to define actions when the scene light is turned on or off. Supported since firmware version 2.5.0",
                 "g_safety_description": "Safety mode is activated when there is no modbus polling for the specified time. Supported since firmware version 2.5.0",
 
                 "poll_timeout_description": "Time in seconds without modbus polling before activation safety mode. Actions in safety mode are configured using appropriate parameters",
@@ -943,10 +943,10 @@
                 "Action when Switch is On": "Действие в положении \"включено\"",
                 "Action when Switch is Off": "Действие в положении \"выключено\"",
 
-                "light_scenes_description": "Сцены позволяют объединить несколько каналов и устанавливать заранее определенный уровень яркости. Доступно с версии прошивки 2.5.0",
-                "Light On/Off Condition": "Условие включенного света",
-                "Light is on if any used channel is on. Otherwise light is off": "Свет включен, если хотя бы один используемый канал включен. Иначе свет выключен",
-                "Light is on if all used channels are on. Otherwise light is off": "Свет включен, если все используемые каналы включены. Иначе свет выключен",
+                "light_scenes_description": "Сцены позволяют объединить несколько каналов и устанавливать заранее определенный уровень яркости. Для сцены обязательно настраивать действия при включении и выключении. Доступно с версии прошивки 2.5.0",
+                "Scene Light On/Off Condition": "Условие включенного света сцены",
+                "Scene Light is on if any used channel is on. Otherwise light is off": "Свет сцены включен, если хотя бы один используемый канал включен. Иначе свет выключен",
+                "Scene Light is on if all used channels are on. Otherwise light is off": "Свет сцены включен, если все используемые каналы включены. Иначе свет выключен",
                 "Actions when Scene Light Turn On": "Действие при включении света сцены",
                 "Actions when Scene Light Turn Off": "Действие при выключении света сцены",
                 "Channel not Used in Scene": "Канал не используется в сцене",
