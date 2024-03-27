@@ -222,10 +222,6 @@ Json::Value MakeConfigFromConfed(std::istream& stream, TTemplateMap& templates)
                     }
                 }
             }
-
-            if (device["slave_id"].isBool()) {
-                device.removeMember("slave_id");
-            }
         }
     }
 

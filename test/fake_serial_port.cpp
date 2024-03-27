@@ -299,7 +299,7 @@ void TSerialDeviceTest::TearDown()
 }
 
 WBMQTT::TMap<std::string, TTemplateMap> TSerialDeviceIntegrationTest::Templates;
-Json::Value TSerialDeviceIntegrationTest::CommonConfigSchema;
+Json::Value TSerialDeviceIntegrationTest::CommonDeviceSchema;
 Json::Value TSerialDeviceIntegrationTest::CommonConfigTemplatesSchema;
 
 std::string TSerialDeviceIntegrationTest::GetTemplatePath() const
@@ -309,13 +309,13 @@ std::string TSerialDeviceIntegrationTest::GetTemplatePath() const
 
 void TSerialDeviceIntegrationTest::SetUpTestCase()
 {
-    if (CommonConfigSchema.empty()) {
-        CommonConfigSchema = LoadConfigSchema(GetDataFilePath("../wb-mqtt-serial.schema.json"));
+    if (CommonDeviceSchema.empty()) {
+        CommonDeviceSchema = WBMQTT::JSON::Parse(GetDataFilePath("../wb-mqtt-serial-confed-common.schema.json"));
     }
     if (CommonConfigTemplatesSchema.empty()) {
         CommonConfigTemplatesSchema =
             LoadConfigTemplatesSchema(GetDataFilePath("../wb-mqtt-serial-device-template.schema.json"),
-                                      CommonConfigSchema);
+                                      CommonDeviceSchema);
     }
 }
 
@@ -336,11 +336,16 @@ void TSerialDeviceIntegrationTest::SetUp()
         }
     }
 
+    auto portsSchema = WBMQTT::JSON::Parse(GetDataFilePath("../wb-mqtt-serial-ports.schema.json"));
+    TProtocolConfedSchemasMap protocolSchemas(GetDataFilePath("../protocols"), CommonDeviceSchema);
+
     Config = LoadConfig(GetDataFilePath(ConfigPath()),
                         DeviceFactory,
-                        CommonConfigSchema,
+                        CommonDeviceSchema,
                         it->second,
                         rpcConfig,
+                        portsSchema,
+                        protocolSchemas,
                         [=](const Json::Value&, PRPCConfig config) { return std::make_pair(SerialPort, false); });
 
     std::filesystem::remove(DB_PATH);

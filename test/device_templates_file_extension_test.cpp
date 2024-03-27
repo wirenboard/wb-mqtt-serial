@@ -15,11 +15,12 @@ protected:
 void TDeviceTemplateFileExtensionTest::VerifyTemplates(const std::string& directory, const std::string& bad_device_type)
 {
     try {
-        Json::Value configSchema = LoadConfigSchema(TLoggedFixture::GetDataFilePath("../wb-mqtt-serial.schema.json"));
+        auto commonDeviceSchema(
+            WBMQTT::JSON::Parse(TLoggedFixture::GetDataFilePath("../wb-mqtt-serial-confed-common.schema.json")));
         TTemplateMap templates(
             directory,
             LoadConfigTemplatesSchema(TLoggedFixture::GetDataFilePath("../wb-mqtt-serial-device-template.schema.json"),
-                                      configSchema));
+                                      commonDeviceSchema));
         ASSERT_THROW(templates.GetTemplate(bad_device_type), std::out_of_range);
     } catch (const TConfigParserException& e) {
         ADD_FAILURE() << "Parsing failed: " << e.what();
@@ -97,10 +98,11 @@ protected:
 TEST_F(TDeviceTemplatesTest, Validate)
 {
     SetMode(E_Normal);
-    Json::Value configSchema(LoadConfigSchema(TLoggedFixture::GetDataFilePath("../wb-mqtt-serial.schema.json")));
+    auto commonDeviceSchema(
+        WBMQTT::JSON::Parse(TLoggedFixture::GetDataFilePath("../wb-mqtt-serial-confed-common.schema.json")));
     Json::Value templatesSchema(
         LoadConfigTemplatesSchema(TLoggedFixture::GetDataFilePath("../wb-mqtt-serial-device-template.schema.json"),
-                                  configSchema));
+                                  commonDeviceSchema));
     TTemplateMap templates(TLoggedFixture::GetDataFilePath("../templates"), templatesSchema, false);
 
     Json::Value settings;
@@ -120,10 +122,11 @@ TEST_F(TDeviceTemplatesTest, Validate)
 
 TEST_F(TDeviceTemplatesTest, InvalidParameterName)
 {
-    Json::Value configSchema(LoadConfigSchema(TLoggedFixture::GetDataFilePath("../wb-mqtt-serial.schema.json")));
+    auto commonDeviceSchema(
+        WBMQTT::JSON::Parse(TLoggedFixture::GetDataFilePath("../wb-mqtt-serial-confed-common.schema.json")));
     Json::Value templatesSchema(
         LoadConfigTemplatesSchema(TLoggedFixture::GetDataFilePath("../wb-mqtt-serial-device-template.schema.json"),
-                                  configSchema));
+                                  commonDeviceSchema));
     TTemplateMap templates(TLoggedFixture::GetDataFilePath("device-templates"), templatesSchema, false);
     EXPECT_THROW(templates.GetTemplate("parameters_array_invalid_id").GetTemplate(), std::runtime_error);
     EXPECT_NO_THROW(templates.GetTemplate("parameters_object_invalid_name").GetTemplate());

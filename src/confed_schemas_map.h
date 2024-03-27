@@ -30,12 +30,11 @@ struct TProtocolConfedSchema
                           const std::string& filePath);
 
     std::string GetTitle(const std::string& lang = std::string("en")) const;
-    const Json::Value& GetSchema();
+    const std::string& GetFilePath() const;
 
 private:
     std::unordered_map<std::string, std::string> Title;
     std::string FilePath;
-    Json::Value Schema;
 };
 
 class TProtocolConfedSchemasMap
@@ -43,10 +42,19 @@ class TProtocolConfedSchemasMap
     //! Protocol to TProtocolConfedSchema map
     std::unordered_map<std::string, TProtocolConfedSchema> Schemas;
 
-public:
-    TProtocolConfedSchemasMap(const std::string& protocolTemplatesFolder, const std::string& schemasFolder);
+    //! Protocol to JSON-Schema map
+    std::unordered_map<std::string, Json::Value> JsonSchemas;
 
-    std::unordered_map<std::string, TProtocolConfedSchema>& GetSchemas();
+    const Json::Value& CommonDeviceSchema;
+
+public:
+    TProtocolConfedSchemasMap(const std::string& protocolTemplatesFolder, const Json::Value& commonDeviceSchema);
+
+    void AddFolder(const std::string& protocolTemplatesFolder);
+
+    const std::unordered_map<std::string, TProtocolConfedSchema>& GetSchemas() const;
+
+    const Json::Value& GetSchema(const std::string& protocol);
 };
 
 std::string GetSchemaFilePath(const std::string& schemasFolder, const std::string& templateFilePath);

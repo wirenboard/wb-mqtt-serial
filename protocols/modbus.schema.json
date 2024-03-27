@@ -6,16 +6,10 @@
     { "$ref": "#/definitions/deviceProperties" },
     { "$ref": "#/definitions/common_channels_modbus" },
     { "$ref": "#/definitions/common_setup" },
-    { "$ref": "#/definitions/slave_id" }
+    { "$ref": "#/definitions/slave_id" },
+    { "$ref": "#/definitions/modbus_device_properties" }
   ],
   "properties": {
-    "supports_wb_continuous_read": {
-      "title": "Enable continuous read",
-      "description": "continuous_read_desc",
-      "type": "boolean",
-      "default": false,
-      "propertyOrder": 9
-    },
     "protocol": {
       "type": "string",
       "enum": ["modbus"],

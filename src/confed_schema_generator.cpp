@@ -769,39 +769,18 @@ void AddTranslations(Json::Value& translations, const Json::Value& deviceSchema)
     }
 }
 
-void GenerateProtocolSchemas(const std::string& confedSchemasFolder,
-                             const Json::Value& confedDeviceCommonSchema,
-                             const std::string& protocolSchemasFolder)
-{
-    IterateDir(protocolSchemasFolder, [&](const std::string& name) {
-        if (name.find(".schema.json") != std::string::npos) {
-            try {
-                auto schema = WBMQTT::JSON::Parse(protocolSchemasFolder + "/" + name);
-                schema["definitions"] = confedDeviceCommonSchema["definitions"];
-                AddTranslations(schema["translations"], confedDeviceCommonSchema);
-                std::ofstream f(confedSchemasFolder + "/" + name);
-                MakeWriter()->write(schema, &f);
-            } catch (const std::exception& e) {
-                LOG(Error) << "Failed to parse " << name << "\n" << e.what();
-            }
-        }
-        return false;
-    });
-}
-
 void GenerateSchemasForConfed(const std::string& confedSchemasFolder,
                               TTemplateMap& templates,
                               TSerialDeviceFactory& deviceFactory,
-                              const Json::Value& confedDeviceCommonSchema,
-                              const std::string& protocolSchemasFolder)
+                              const Json::Value& commonDeviceSchema)
 {
     for (auto& t: templates.GetTemplates()) {
         Json::Value schema;
         try {
             if (t->WithSubdevices()) {
-                schema = MakeDeviceUISchema(*t, deviceFactory, confedDeviceCommonSchema);
+                schema = MakeDeviceUISchema(*t, deviceFactory, commonDeviceSchema);
             } else {
-                schema = MakeDeviceWithGroupsUISchema(*t, deviceFactory, confedDeviceCommonSchema);
+                schema = MakeDeviceWithGroupsUISchema(*t, deviceFactory, commonDeviceSchema);
             }
             AddUnitTypes(schema);
             AddChannelModes(schema["definitions"]["groupsChannel"]);
@@ -812,5 +791,4 @@ void GenerateSchemasForConfed(const std::string& confedSchemasFolder,
             LOG(Error) << "Can't load template for '" << t->GetTitle() << "': " << e.what();
         }
     }
-    GenerateProtocolSchemas(confedSchemasFolder, confedDeviceCommonSchema, protocolSchemasFolder);
 }
