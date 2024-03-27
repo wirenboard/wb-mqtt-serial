@@ -1,0 +1,36 @@
+{
+  "$schema": "http://json-schema.org/draft-07/schema#",
+  "type": "object",
+  "title": "Custom DLMS device",
+  "allOf": [
+    { "$ref": "#/definitions/deviceProperties" },
+    { "$ref": "#/definitions/dlms_device_properties" },
+    { "$ref": "#/definitions/dlms_channels" },
+    { "$ref": "#/definitions/slave_id" },
+    { "$ref": "#/definitions/no_setup" }
+  ],
+  "properties": {
+    "protocol": {
+      "type": "string",
+      "enum": ["dlms"],
+      "options": {
+        "hidden": true
+      }
+    }
+  },
+  "required": ["protocol", "slave_id"],
+  "options": {
+    "disable_edit_json": true,
+    "compact": true,
+    "disable_collapse": true,
+    "wb": {
+      "disable_panel": true
+    }
+  },
+  "defaultProperties": ["slave_id", "channels", "protocol"],
+  "translations": {
+    "ru": {
+      "Custom DLMS device": "Устройство с протоколом DLMS/СПОДЭС"
+    }
+  }
+}
