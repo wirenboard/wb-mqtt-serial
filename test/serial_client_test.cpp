@@ -1480,16 +1480,17 @@ TEST_F(TSerialClientIntegrationTest, SlaveIdCollision)
                             [=](const Json::Value&, PRPCConfig rpcConfig) { return std::make_pair(Port, false); }),
                  TConfigParserException);
 
-    EXPECT_NO_THROW(LoadConfig(GetDataFilePath("configs/config-no-collision-test.json"),
-                               DeviceFactory,
-                               CommonDeviceSchema,
-                               t,
-                               rpcConfig,
-                               PortsSchema,
-                               *ProtocolSchemas,
-                               [=](const Json::Value&, PRPCConfig rpcConfig) { return std::make_pair(Port, false); }));
+    EXPECT_THROW(LoadConfig(GetDataFilePath("configs/config-collision-test3.json"),
+                            DeviceFactory,
+                            CommonDeviceSchema,
+                            t,
+                            rpcConfig,
+                            PortsSchema,
+                            *ProtocolSchemas,
+                            [=](const Json::Value&, PRPCConfig rpcConfig) { return std::make_pair(Port, false); }),
+                 TConfigParserException);
 
-    EXPECT_NO_THROW(LoadConfig(GetDataFilePath("configs/config-no-collision-test2.json"),
+    EXPECT_NO_THROW(LoadConfig(GetDataFilePath("configs/config-no-collision-test.json"),
                                DeviceFactory,
                                CommonDeviceSchema,
                                t,
