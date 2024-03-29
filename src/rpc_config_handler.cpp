@@ -152,7 +152,12 @@ TRPCConfigHandler::TRPCConfigHandler(const std::string& configPath,
 Json::Value TRPCConfigHandler::LoadConfig(const Json::Value& request)
 {
     Json::Value res;
-    res["config"] = MakeJsonForConfed(ConfigPath, *Templates);
+    try {
+        res["config"] = MakeJsonForConfed(ConfigPath, *Templates);
+    } catch (const std::exception& e) {
+        res["config"] = Json::Value(Json::objectValue);
+        LOG(Warn) << "Failed to read config: " << e.what();
+    }
     res["schema"] = PortsSchema;
     res["types"] = GetDeviceTypes(request);
     return res;
