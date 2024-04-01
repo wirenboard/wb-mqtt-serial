@@ -330,11 +330,15 @@ Json::Value MakeJsonForConfed(const std::string& configFileName, TTemplateMap& t
     if (!root.isObject()) {
         throw std::runtime_error("Failed to parse " + configFileName + ". The file is not a valid JSON");
     }
-    for (Json::Value& port: root.get("ports", Json::Value(Json::arrayValue))) {
-        ConvertPollIntervalToReadRateLimit(port);
-        for (Json::Value& device: port.get("devices", Json::Value(Json::arrayValue))) {
-            if (device.isMember("device_type")) {
-                device = MakeDeviceForConfed(device, templates);
+    if (root.isMember("ports")) {
+        for (Json::Value& port: root["ports"]) {
+            ConvertPollIntervalToReadRateLimit(port);
+            if (port.isMember("devices")) {
+                for (Json::Value& device: port["devices"]) {
+                    if (device.isMember("device_type")) {
+                        device = MakeDeviceForConfed(device, templates);
+                    }
+                }
             }
         }
     }
