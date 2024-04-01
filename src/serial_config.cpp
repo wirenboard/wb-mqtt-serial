@@ -712,7 +712,7 @@ void CheckDuplicateDeviceIds(const THandlerConfig& handlerConfig)
     for (const auto& port: handlerConfig.PortConfigs) {
         for (const auto& device: port->Devices) {
             if (!ids.insert(device->DeviceConfig()->Id).second) {
-                throw TConfigParserException("Duplicate device id: " + device->DeviceConfig()->Id);
+                throw TConfigParserException("Duplicate MQTT device id: " + device->DeviceConfig()->Id + ", set device MQTT ID explicitly to fix (see https://wb.wiki/serial-id-collision)");
             }
         }
     }
