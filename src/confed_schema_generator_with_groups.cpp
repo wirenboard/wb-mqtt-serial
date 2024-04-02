@@ -196,14 +196,14 @@ namespace
 //  }
 Json::Value MakeDeviceWithGroupsUISchema(TDeviceTemplate& deviceTemplate,
                                          TSerialDeviceFactory& deviceFactory,
-                                         const Json::Value& confedDeviceCommonSchema)
+                                         const Json::Value& commonDeviceSchema)
 {
     if (deviceTemplate.WithSubdevices()) {
         return Json::Value();
     }
 
     auto protocol = GetProtocolName(deviceTemplate.GetTemplate());
-    auto res = confedDeviceCommonSchema;
+    auto res = commonDeviceSchema;
     res["format"] = "groups";
     res["properties"]["device_type"] = MakeHiddenProperty(deviceTemplate.Type);
 

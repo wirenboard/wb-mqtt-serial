@@ -4,4 +4,4 @@ std::string GetChannelPropertyName(size_t index);
 
 Json::Value MakeDeviceWithGroupsUISchema(TDeviceTemplate& deviceTemplate,
                                          TSerialDeviceFactory& deviceFactory,
-                                         const Json::Value& confedDeviceCommonSchema);
+                                         const Json::Value& commonDeviceSchema);

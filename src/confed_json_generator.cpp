@@ -325,11 +325,20 @@ namespace
 Json::Value MakeJsonForConfed(const std::string& configFileName, TTemplateMap& templates)
 {
     Json::Value root(Parse(configFileName));
-    for (Json::Value& port: root["ports"]) {
-        ConvertPollIntervalToReadRateLimit(port);
-        for (Json::Value& device: port["devices"]) {
-            if (device.isMember("device_type")) {
-                device = MakeDeviceForConfed(device, templates);
+    // If a file contains some symbols, but not a valid JSON,
+    // jsoncpp can return Json::nullValue instead of throwing an error
+    if (!root.isObject()) {
+        throw std::runtime_error("Failed to parse " + configFileName + ". The file is not a valid JSON");
+    }
+    if (root.isMember("ports")) {
+        for (Json::Value& port: root["ports"]) {
+            ConvertPollIntervalToReadRateLimit(port);
+            if (port.isMember("devices")) {
+                for (Json::Value& device: port["devices"]) {
+                    if (device.isMember("device_type")) {
+                        device = MakeDeviceForConfed(device, templates);
+                    }
+                }
             }
         }
     }

@@ -37,7 +37,6 @@ const auto LIBWBMQTT_DB_FULL_FILE_PATH = "/var/lib/wb-mqtt-serial/libwbmqtt.db";
 const auto CONFIG_FULL_FILE_PATH = "/etc/wb-mqtt-serial.conf";
 const auto TEMPLATES_DIR = "/usr/share/wb-mqtt-serial/templates";
 const auto USER_TEMPLATES_DIR = "/etc/wb-mqtt-serial.conf.d/templates";
-const auto CONFIG_JSON_SCHEMA_FULL_FILE_PATH = "/usr/share/wb-mqtt-serial/wb-mqtt-serial.schema.json";
 const auto PORTS_JSON_SCHEMA_FULL_FILE_PATH = "/usr/share/wb-mqtt-serial/wb-mqtt-serial-ports.schema.json";
 const auto TEMPLATES_JSON_SCHEMA_FULL_FILE_PATH =
     "/usr/share/wb-mqtt-serial/wb-mqtt-serial-device-template.schema.json";
@@ -79,7 +78,6 @@ namespace
              << "  -P       password  MQTT user password (optional)" << endl
              << "  -T       prefix    MQTT topic prefix (optional)" << endl
              << "  -g                 Generate JSON Schema for wb-mqtt-confed" << endl
-             << "  -j                 Make JSON for wb-mqtt-confed from /etc/wb-mqtt-serial.conf" << endl
              << "  -J                 Make /etc/wb-mqtt-serial.conf from wb-mqtt-confed output" << endl
              << "  -G       options   Generate device template. Type \"-G help\" for options description" << endl
              << "  -v                 Print the version" << endl;
@@ -102,28 +100,16 @@ namespace
 
     pair<shared_ptr<Json::Value>, shared_ptr<TTemplateMap>> LoadTemplates()
     {
-        auto configSchema = make_shared<Json::Value>(LoadConfigSchema(CONFIG_JSON_SCHEMA_FULL_FILE_PATH));
-        auto templates =
-            make_shared<TTemplateMap>(TEMPLATES_DIR,
-                                      LoadConfigTemplatesSchema(TEMPLATES_JSON_SCHEMA_FULL_FILE_PATH, *configSchema));
+        auto commonDeviceSchema =
+            make_shared<Json::Value>(WBMQTT::JSON::Parse(CONFED_COMMON_JSON_SCHEMA_FULL_FILE_PATH));
+        auto templates = make_shared<TTemplateMap>(
+            TEMPLATES_DIR,
+            LoadConfigTemplatesSchema(TEMPLATES_JSON_SCHEMA_FULL_FILE_PATH, *commonDeviceSchema));
         try {
             templates->AddTemplatesDir(USER_TEMPLATES_DIR); // User templates dir
         } catch (const TConfigParserException& e) {
         } // Pass exception if user templates dir doesn't exist
-        return {configSchema, templates};
-    }
-
-    void ConfigToConfed()
-    {
-        try {
-            shared_ptr<Json::Value> configSchema;
-            shared_ptr<TTemplateMap> templates;
-            std::tie(configSchema, templates) = LoadTemplates();
-            MakeJsonWriter("", "None")->write(MakeJsonForConfed(CONFIG_FULL_FILE_PATH, *templates), &cout);
-        } catch (const exception& e) {
-            LOG(Error) << e.what();
-            exit(EXIT_FAILURE);
-        }
+        return {commonDeviceSchema, templates};
     }
 
     void ConfedToConfig()
@@ -143,15 +129,10 @@ namespace
         try {
             TSerialDeviceFactory deviceFactory;
             RegisterProtocols(deviceFactory);
-            shared_ptr<Json::Value> configSchema;
+            shared_ptr<Json::Value> commonDeviceSchema;
             shared_ptr<TTemplateMap> templates;
-            std::tie(configSchema, templates) = LoadTemplates();
-            auto commonDeviceConfedSchema = WBMQTT::JSON::Parse(CONFED_COMMON_JSON_SCHEMA_FULL_FILE_PATH);
-            GenerateSchemasForConfed(CONFED_JSON_SCHEMAS_DIR,
-                                     *templates,
-                                     deviceFactory,
-                                     commonDeviceConfedSchema,
-                                     PROTOCOL_SCHEMAS_DIR);
+            std::tie(commonDeviceSchema, templates) = LoadTemplates();
+            GenerateSchemasForConfed(CONFED_JSON_SCHEMAS_DIR, *templates, deviceFactory, *commonDeviceSchema);
         } catch (const exception& e) {
             LOG(Error) << e.what();
             exit(EXIT_FAILURE);
@@ -226,8 +207,6 @@ namespace
                 case 'P':
                     mqttConfig.Password = optarg;
                     break;
-                case 'j': // make JSON for confed from config's JSON
-                    ConfigToConfed();
                     exit(EXIT_SUCCESS);
                 case 'J': // make config JSON from confed's JSON
                     ConfedToConfig();
@@ -268,79 +247,102 @@ int main(int argc, char* argv[])
 
     ParseCommadLine(argc, argv, mqttConfig, configFilename);
 
-    PHandlerConfig handlerConfig;
     TSerialDeviceFactory deviceFactory;
     RegisterProtocols(deviceFactory);
-    PRPCConfig rpcConfig = std::make_shared<TRPCConfig>();
-    shared_ptr<Json::Value> configSchema;
+
+    shared_ptr<Json::Value> commonDeviceSchema;
     shared_ptr<TTemplateMap> templates;
-    std::tie(configSchema, templates) = LoadTemplates();
+    std::tie(commonDeviceSchema, templates) = LoadTemplates();
     TDevicesConfedSchemasMap confedSchemasMap(*templates, CONFED_JSON_SCHEMAS_DIR);
-    TProtocolConfedSchemasMap protocolSchemasMap(PROTOCOL_SCHEMAS_DIR, CONFED_JSON_SCHEMAS_DIR);
+    TProtocolConfedSchemasMap protocolSchemasMap(PROTOCOL_SCHEMAS_DIR, *commonDeviceSchema);
+    auto portsSchema = WBMQTT::JSON::Parse(PORTS_JSON_SCHEMA_FULL_FILE_PATH);
 
     try {
-        handlerConfig = LoadConfig(configFilename, deviceFactory, *configSchema, *templates, rpcConfig);
-    } catch (const exception& e) {
-        LOG(Error) << e.what();
-        return 0;
-    }
-
-    try {
-        if (handlerConfig->Debug)
-            Debug.SetEnabled(true);
-
         if (mqttConfig.Id.empty())
             mqttConfig.Id = driverName;
 
         auto mqtt = WBMQTT::NewMosquittoMqttClient(mqttConfig);
-        auto backend = WBMQTT::NewDriverBackend(mqtt);
-
-        // Publishing strategy is implemented both in libwbmqtt1 and in the application
-        // This results to a race condition with WBMQTT::TPublishParameters::PublishSomeUnchanged policy
-        // The application and libwbmqtt1 has own timers that are not in sync
-        // A timer in the application allow publishing, but lib's timer can be not expired and can reject it.
-        // Real publish will occur only on next application's timer expiration
-        // Set publish policy in libwbmqtt1 to PublishAll to disable its timer
-        auto driverPublishParameters = handlerConfig->PublishParameters;
-        if (driverPublishParameters.Policy == WBMQTT::TPublishParameters::PublishSomeUnchanged) {
-            driverPublishParameters.Policy = WBMQTT::TPublishParameters::PublishAll;
-        }
-        auto driver = WBMQTT::NewDriver(WBMQTT::TDriverArgs{}
-                                            .SetId(driverName)
-                                            .SetBackend(backend)
-                                            .SetUseStorage(true)
-                                            .SetReownUnknownDevices(true)
-                                            .SetStoragePath(LIBWBMQTT_DB_FULL_FILE_PATH),
-                                        driverPublishParameters);
 
         auto rpcServer(WBMQTT::NewMqttRpcServer(mqtt, APP_NAME));
 
         TRPCConfigHandler rpcConfigHandler(configFilename,
-                                           PORTS_JSON_SCHEMA_FULL_FILE_PATH,
+                                           portsSchema,
                                            templates,
                                            confedSchemasMap,
                                            protocolSchemasMap,
                                            WBMQTT::JSON::Parse(DEVICE_GROUP_NAMES_JSON_FULL_FILE_PATH),
                                            rpcServer);
 
-        driver->StartLoop();
-        WBMQTT::SignalHandling::OnSignals({SIGINT, SIGTERM}, [&] {
-            driver->StopLoop();
-            driver->Close();
-        });
+        PRPCConfig rpcConfig = std::make_shared<TRPCConfig>();
+        PHandlerConfig handlerConfig;
 
-        driver->WaitForReady();
+        try {
+            handlerConfig = LoadConfig(configFilename,
+                                       deviceFactory,
+                                       *commonDeviceSchema,
+                                       *templates,
+                                       rpcConfig,
+                                       portsSchema,
+                                       protocolSchemasMap);
+        } catch (const exception& e) {
+            LOG(Error) << e.what();
+        }
 
-        auto serialDriver = make_shared<TMQTTSerialDriver>(driver, handlerConfig);
-        PRPCHandler rpcHandler =
-            std::make_shared<TRPCHandler>(RPC_REQUEST_SCHEMA_FULL_FILE_PATH, rpcConfig, rpcServer, serialDriver);
+        PMQTTSerialDriver serialDriver;
+        PRPCHandler rpcHandler;
 
-        serialDriver->Start();
+        if (handlerConfig) {
+            if (handlerConfig->Debug) {
+                Debug.SetEnabled(true);
+            }
+
+            auto backend = WBMQTT::NewDriverBackend(mqtt);
+
+            // Publishing strategy is implemented both in libwbmqtt1 and in the application
+            // This results to a race condition with WBMQTT::TPublishParameters::PublishSomeUnchanged policy
+            // The application and libwbmqtt1 has own timers that are not in sync
+            // A timer in the application allow publishing, but lib's timer can be not expired and can reject it.
+            // Real publish will occur only on next application's timer expiration
+            // Set publish policy in libwbmqtt1 to PublishAll to disable its timer
+            auto driverPublishParameters = handlerConfig->PublishParameters;
+            if (driverPublishParameters.Policy == WBMQTT::TPublishParameters::PublishSomeUnchanged) {
+                driverPublishParameters.Policy = WBMQTT::TPublishParameters::PublishAll;
+            }
+            auto driver = WBMQTT::NewDriver(WBMQTT::TDriverArgs{}
+                                                .SetId(driverName)
+                                                .SetBackend(backend)
+                                                .SetUseStorage(true)
+                                                .SetReownUnknownDevices(true)
+                                                .SetStoragePath(LIBWBMQTT_DB_FULL_FILE_PATH),
+                                            driverPublishParameters);
+
+            driver->StartLoop();
+            WBMQTT::SignalHandling::OnSignals({SIGINT, SIGTERM}, [&] {
+                driver->StopLoop();
+                driver->Close();
+            });
+
+            driver->WaitForReady();
+
+            serialDriver = make_shared<TMQTTSerialDriver>(driver, handlerConfig);
+            rpcHandler =
+                std::make_shared<TRPCHandler>(RPC_REQUEST_SCHEMA_FULL_FILE_PATH, rpcConfig, rpcServer, serialDriver);
+        }
+
+        if (serialDriver) {
+            serialDriver->Start();
+        } else {
+            mqtt->Start();
+        }
         rpcServer->Start();
 
         WBMQTT::SignalHandling::OnSignals({SIGINT, SIGTERM}, [&] {
             rpcServer->Stop();
-            serialDriver->Stop();
+            if (serialDriver) {
+                serialDriver->Stop();
+            } else {
+                mqtt->Stop();
+            }
         });
         WBMQTT::SignalHandling::SetOnTimeout(SERIAL_DRIVER_STOP_TIMEOUT_S, [&] {
             LOG(Error) << "Driver takes too long to stop. Exiting.";

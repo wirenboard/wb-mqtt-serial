@@ -36,7 +36,7 @@ Json::Value MakeProtocolProperty();
  *
  * @param schema device template, it will be modified by the function
  * @param subdevices new subdevices will be added to the list
- * @param mainSchemaTranslations pointer to a node with tranlations of a whole schema
+ * @param mainSchemaTranslations pointer to a node with translations of a whole schema
  */
 void TransformGroupsToSubdevices(Json::Value& schema,
                                  Json::Value& subdevices,
@@ -45,5 +45,4 @@ void TransformGroupsToSubdevices(Json::Value& schema,
 void GenerateSchemasForConfed(const std::string& confedSchemasFolder,
                               TTemplateMap& templates,
                               TSerialDeviceFactory& deviceFactory,
-                              const Json::Value& commonDeviceSchema,
-                              const std::string& protocolSchemasFolder);
+                              const Json::Value& commonDeviceSchema);

@@ -104,7 +104,7 @@ protected:
     bool PortMakerCalled;
 
     static WBMQTT::TMap<std::string, TTemplateMap> Templates; // Key - path to folder, value - loaded templates map
-    static Json::Value CommonConfigSchema;
+    static Json::Value CommonDeviceSchema;
     static Json::Value CommonConfigTemplatesSchema;
     static void SetUpTestCase();
 };

@@ -244,9 +244,9 @@ Ports:
     Response timeout: -1
     DeviceConfigs:
         ------
-        Id: msu34tlp_2
-        Name: MSU34+TLP 2
-        SlaveId: 2
+        Id: msu34tlp_3
+        Name: MSU34+TLP 3
+        SlaveId: 3
         MaxRegHole: 0
         MaxBitHole: 0
         MaxReadRegisters: 1
@@ -260,7 +260,7 @@ Ports:
             Name: Temp 1
             Type: temperature
             MqttId: Temp 1
-            DeviceId: msu34tlp_2
+            DeviceId: msu34tlp_3
             Order: 1
             OnValue: 
             Max: not set
@@ -285,7 +285,7 @@ Ports:
             Name: Illuminance
             Type: lux
             MqttId: Illuminance
-            DeviceId: msu34tlp_2
+            DeviceId: msu34tlp_3
             Order: 2
             OnValue: 
             Max: not set
@@ -310,7 +310,7 @@ Ports:
             Name: Pressure
             Type: pressure
             MqttId: Pressure
-            DeviceId: msu34tlp_2
+            DeviceId: msu34tlp_3
             Order: 3
             OnValue: 
             Max: not set
@@ -335,7 +335,7 @@ Ports:
             Name: Temp 2
             Type: temperature
             MqttId: Temp 2
-            DeviceId: msu34tlp_2
+            DeviceId: msu34tlp_3
             Order: 4
             OnValue: 
             Max: not set
@@ -357,9 +357,9 @@ Ports:
                 UnsupportedValue: not set
                 WordOrder: BigEndian
         ------
-        Id: msu34tlp_1
-        Name: MSU34+TLP 1
-        SlaveId: 1
+        Id: msu34tlp_10
+        Name: MSU34+TLP 10
+        SlaveId: 10
         MaxRegHole: 0
         MaxBitHole: 0
         MaxReadRegisters: 1
@@ -373,7 +373,7 @@ Ports:
             Name: Temp 1
             Type: temperature
             MqttId: Temp 1
-            DeviceId: msu34tlp_1
+            DeviceId: msu34tlp_10
             Order: 1
             OnValue: 
             Max: not set
@@ -398,7 +398,7 @@ Ports:
             Name: Illuminance
             Type: lux
             MqttId: Illuminance
-            DeviceId: msu34tlp_1
+            DeviceId: msu34tlp_10
             Order: 2
             OnValue: 
             Max: not set
@@ -423,7 +423,7 @@ Ports:
             Name: Pressure
             Type: pressure
             MqttId: Pressure
-            DeviceId: msu34tlp_1
+            DeviceId: msu34tlp_10
             Order: 3
             OnValue: 
             Max: not set
@@ -448,7 +448,7 @@ Ports:
             Name: Temp 2
             Type: temperature
             MqttId: Temp 2
-            DeviceId: msu34tlp_1
+            DeviceId: msu34tlp_10
             Order: 4
             OnValue: 
             Max: not set
@@ -478,9 +478,9 @@ Ports:
     Response timeout: -1
     DeviceConfigs:
         ------
-        Id: msu34tlp_2
-        Name: MSU34+TLP 2
-        SlaveId: 2
+        Id: msu34tlp_4
+        Name: MSU34+TLP 4
+        SlaveId: 4
         MaxRegHole: 0
         MaxBitHole: 0
         MaxReadRegisters: 1
@@ -494,7 +494,7 @@ Ports:
             Name: Temp 1
             Type: temperature
             MqttId: Temp 1
-            DeviceId: msu34tlp_2
+            DeviceId: msu34tlp_4
             Order: 1
             OnValue: 
             Max: not set
@@ -519,7 +519,7 @@ Ports:
             Name: Illuminance
             Type: lux
             MqttId: Illuminance
-            DeviceId: msu34tlp_2
+            DeviceId: msu34tlp_4
             Order: 2
             OnValue: 
             Max: not set
@@ -544,7 +544,7 @@ Ports:
             Name: Pressure
             Type: pressure
             MqttId: Pressure
-            DeviceId: msu34tlp_2
+            DeviceId: msu34tlp_4
             Order: 3
             OnValue: 
             Max: not set
@@ -569,7 +569,7 @@ Ports:
             Name: Temp 2
             Type: temperature
             MqttId: Temp 2
-            DeviceId: msu34tlp_2
+            DeviceId: msu34tlp_4
             Order: 4
             OnValue: 
             Max: not set
@@ -599,9 +599,9 @@ Ports:
     Response timeout: -1
     DeviceConfigs:
         ------
-        Id: msu34tlp_2
-        Name: MSU34+TLP 2
-        SlaveId: 2
+        Id: msu34tlp_5
+        Name: MSU34+TLP 5
+        SlaveId: 5
         MaxRegHole: 0
         MaxBitHole: 0
         MaxReadRegisters: 1
@@ -615,7 +615,7 @@ Ports:
             Name: Temp 1
             Type: temperature
             MqttId: Temp 1
-            DeviceId: msu34tlp_2
+            DeviceId: msu34tlp_5
             Order: 1
             OnValue: 
             Max: not set
@@ -640,7 +640,7 @@ Ports:
             Name: Illuminance
             Type: lux
             MqttId: Illuminance
-            DeviceId: msu34tlp_2
+            DeviceId: msu34tlp_5
             Order: 2
             OnValue: 
             Max: not set
@@ -665,7 +665,7 @@ Ports:
             Name: Pressure
             Type: pressure
             MqttId: Pressure
-            DeviceId: msu34tlp_2
+            DeviceId: msu34tlp_5
             Order: 3
             OnValue: 
             Max: not set
@@ -690,7 +690,7 @@ Ports:
             Name: Temp 2
             Type: temperature
             MqttId: Temp 2
-            DeviceId: msu34tlp_2
+            DeviceId: msu34tlp_5
             Order: 4
             OnValue: 
             Max: not set
@@ -719,9 +719,9 @@ Ports:
     Response timeout: -1
     DeviceConfigs:
         ------
-        Id: msu34tlp_2
-        Name: MSU34+TLP 2
-        SlaveId: 2
+        Id: msu34tlp_6
+        Name: MSU34+TLP 6
+        SlaveId: 6
         MaxRegHole: 0
         MaxBitHole: 0
         MaxReadRegisters: 1
@@ -735,7 +735,7 @@ Ports:
             Name: Temp 1
             Type: temperature
             MqttId: Temp 1
-            DeviceId: msu34tlp_2
+            DeviceId: msu34tlp_6
             Order: 1
             OnValue: 
             Max: not set
@@ -759,7 +759,7 @@ Ports:
             Name: Illuminance
             Type: lux
             MqttId: Illuminance
-            DeviceId: msu34tlp_2
+            DeviceId: msu34tlp_6
             Order: 2
             OnValue: 
             Max: not set
@@ -783,7 +783,7 @@ Ports:
             Name: Pressure
             Type: pressure
             MqttId: Pressure
-            DeviceId: msu34tlp_2
+            DeviceId: msu34tlp_6
             Order: 3
             OnValue: 
             Max: not set
@@ -807,7 +807,7 @@ Ports:
             Name: Temp 2
             Type: temperature
             MqttId: Temp 2
-            DeviceId: msu34tlp_2
+            DeviceId: msu34tlp_6
             Order: 4
             OnValue: 
             Max: not set

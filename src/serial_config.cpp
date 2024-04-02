@@ -694,55 +694,11 @@ std::pair<PPort, bool> DefaultPortFactory(const Json::Value& port_data, PRPCConf
     throw TConfigParserException("invalid port_type: '" + port_type + "'");
 }
 
-Json::Value LoadConfigTemplatesSchema(const std::string& templateSchemaFileName, const Json::Value& configSchema)
+Json::Value LoadConfigTemplatesSchema(const std::string& templateSchemaFileName, const Json::Value& commonDeviceSchema)
 {
     Json::Value schema = WBMQTT::JSON::Parse(templateSchemaFileName);
-    AppendParams(schema["definitions"], configSchema["definitions"]);
+    AppendParams(schema["definitions"], commonDeviceSchema["definitions"]);
     return schema;
-}
-
-// {
-//   "allOf": [
-//     { "$ref": "#/definitions/deviceProperties" },
-//     { "$ref": "#/definitions/common_channels" },
-//     { "$ref": "#/definitions/common_setup" },
-//     { "$ref": "#/definitions/slave_id" }
-//   ],
-//   "properties": {
-//     "protocol": {
-//       "type": "string",
-//       "enum": ["fake"]
-//     }
-//   },
-//   "required": ["protocol", "slave_id"]
-// }
-void AddFakeDeviceType(Json::Value& configSchema)
-{
-    Json::Value ar(Json::arrayValue);
-    Json::Value v;
-    v["$ref"] = "#/definitions/deviceProperties";
-    ar.append(v);
-    v["$ref"] = "#/definitions/common_channels";
-    ar.append(v);
-    v["$ref"] = "#/definitions/common_setup";
-    ar.append(v);
-    v["$ref"] = "#/definitions/slave_id";
-    ar.append(v);
-
-    Json::Value res;
-    res["allOf"] = ar;
-
-    res["properties"]["protocol"]["type"] = "string";
-    ar.clear();
-    ar.append("fake");
-    res["properties"]["protocol"]["enum"] = ar;
-
-    ar.clear();
-    ar.append("protocol");
-    ar.append("slave_id");
-    res["required"] = ar;
-
-    configSchema["definitions"]["device"]["oneOf"].append(res);
 }
 
 void AddRegisterType(Json::Value& configSchema, const std::string& registerType)
@@ -750,23 +706,34 @@ void AddRegisterType(Json::Value& configSchema, const std::string& registerType)
     configSchema["definitions"]["reg_type"]["enum"].append(registerType);
 }
 
-Json::Value LoadConfigSchema(const std::string& schemaFileName)
+void CheckDuplicateDeviceIds(const THandlerConfig& handlerConfig)
 {
-    return Parse(schemaFileName);
+    std::unordered_set<std::string> ids;
+    for (const auto& port: handlerConfig.PortConfigs) {
+        for (const auto& device: port->Devices) {
+            if (!ids.insert(device->DeviceConfig()->Id).second) {
+                throw TConfigParserException(
+                    "Duplicate MQTT device id: " + device->DeviceConfig()->Id +
+                    ", set device MQTT ID explicitly to fix (see https://wb.wiki/serial-id-collision)");
+            }
+        }
+    }
 }
 
 PHandlerConfig LoadConfig(const std::string& configFileName,
                           TSerialDeviceFactory& deviceFactory,
-                          const Json::Value& baseConfigSchema,
+                          const Json::Value& commonDeviceSchema,
                           TTemplateMap& templates,
                           PRPCConfig rpcConfig,
+                          const Json::Value& portsSchema,
+                          TProtocolConfedSchemasMap& protocolSchemas,
                           TPortFactoryFn portFactory)
 {
     PHandlerConfig handlerConfig(new THandlerConfig);
     Json::Value Root(Parse(configFileName));
 
     try {
-        ValidateConfig(Root, deviceFactory, baseConfigSchema, templates);
+        ValidateConfig(Root, deviceFactory, commonDeviceSchema, portsSchema, templates, protocolSchemas);
     } catch (const std::runtime_error& e) {
         throw std::runtime_error("File: " + configFileName + " error: " + e.what());
     }
@@ -798,6 +765,8 @@ PHandlerConfig LoadConfig(const std::string& configFileName,
                  deviceFactory,
                  portFactory);
     }
+
+    CheckDuplicateDeviceIds(*handlerConfig);
 
     return handlerConfig;
 }

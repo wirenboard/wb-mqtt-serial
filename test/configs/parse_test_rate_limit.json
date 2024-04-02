@@ -36,7 +36,7 @@
             "devices" : [
                 {
                     "device_type" : "MSU34",
-                    "slave_id": 2,
+                    "slave_id": 3,
                     "poll_interval": 201,
                     "channels": [
                         {
@@ -47,7 +47,7 @@
                 },
                 {
                     "device_type" : "MSU34",
-                    "slave_id": 1
+                    "slave_id": 10
                 }
             ]
         },
@@ -61,7 +61,7 @@
             "devices" : [
                 {
                     "device_type" : "MSU34",
-                    "slave_id": 2,
+                    "slave_id": 4,
                     "read_rate_limit_ms": 202,
                     "channels": [
                         {
@@ -82,7 +82,7 @@
             "devices" : [
                 {
                     "device_type" : "MSU34",
-                    "slave_id": 2,
+                    "slave_id": 5,
                     "read_rate_limit_ms": 203,
                     "channels": [
                         {
@@ -102,7 +102,7 @@
             "devices" : [
                 {
                     "device_type" : "MSU34",
-                    "slave_id": 2
+                    "slave_id": 6
                 }
             ]
         }

@@ -11,6 +11,7 @@
 #include <wblib/driver_args.h>
 #include <wblib/json_utils.h>
 
+#include "confed_schemas_map.h"
 #include "port.h"
 #include "rpc_config.h"
 #include "serial_device.h"
@@ -56,15 +57,12 @@ public:
     TConfigParserException(const std::string& message);
 };
 
-Json::Value LoadConfigTemplatesSchema(const std::string& templateSchemaFileName, const Json::Value& configSchema);
-void AddFakeDeviceType(Json::Value& configSchema);
+Json::Value LoadConfigTemplatesSchema(const std::string& templateSchemaFileName, const Json::Value& commonDeviceSchema);
 void AddRegisterType(Json::Value& configSchema, const std::string& registerType);
 
 typedef std::function<std::pair<PPort, bool>(const Json::Value& config, PRPCConfig rpcConfig)> TPortFactoryFn;
 
 std::pair<PPort, bool> DefaultPortFactory(const Json::Value& port_data, PRPCConfig rpcConfig);
-
-Json::Value LoadConfigSchema(const std::string& schemaFileName);
 
 class IRegisterAddressFactory
 {
@@ -219,9 +217,11 @@ public:
 
 PHandlerConfig LoadConfig(const std::string& configFileName,
                           TSerialDeviceFactory& deviceFactory,
-                          const Json::Value& baseConfigSchema,
+                          const Json::Value& commonDeviceSchema,
                           TTemplateMap& templates,
                           PRPCConfig rpcConfig,
+                          const Json::Value& portsSchema,
+                          TProtocolConfedSchemasMap& protocolSchemas,
                           TPortFactoryFn portFactory = DefaultPortFactory);
 
 bool IsSubdeviceChannel(const Json::Value& channelSchema);

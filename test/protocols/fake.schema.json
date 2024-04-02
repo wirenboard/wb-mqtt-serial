@@ -1,0 +1,17 @@
+{
+  "$schema": "http://json-schema.org/draft-07/schema#",
+  "type": "object",
+  "allOf": [
+    { "$ref": "#/definitions/deviceProperties" },
+    { "$ref": "#/definitions/common_channels" },
+    { "$ref": "#/definitions/common_setup" },
+    { "$ref": "#/definitions/slave_id" }
+  ],
+  "properties": {
+    "protocol": {
+      "type": "string",
+      "enum": ["fake"]
+    }
+  },
+  "required": ["protocol", "slave_id"]
+}
