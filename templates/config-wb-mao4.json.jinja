@@ -289,7 +289,6 @@
                     "Switch"
                 ],
                 "default": 0,
-                "required": true,
                 "group": "input_{{ch_number + 1}}"
             },
             {
@@ -302,7 +301,7 @@
                 "min": 500,
                 "max": 5000,
                 "group": "input_{{ch_number + 1}}_parameters",
-                "condition": "input_{{ch_number + 1}}_mode==0",
+                "condition": "input_{{ch_number + 1}}_mode!=1",
                 "order": 1
             },
             {
@@ -315,7 +314,7 @@
                 "min": 0,
                 "max": 2000,
                 "group": "input_{{ch_number + 1}}_parameters",
-                "condition": "input_{{ch_number + 1}}_mode==0",
+                "condition": "input_{{ch_number + 1}}_mode!=1",
                 "order": 2
             },
             {
@@ -351,7 +350,7 @@
                 ],
                 "default": 0,
                 "group": "input_{{ch_number + 1}}_{{press_type | replace(' ', '_')}}_press_action",
-                "condition": "input_{{ch_number + 1}}_mode==0",
+                "condition": "input_{{ch_number + 1}}_mode!=1",
                 "order": 1
             },
             {
