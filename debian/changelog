@@ -1,3 +1,9 @@
+wb-mqtt-serial (2.117.2) stable; urgency=medium
+
+  * Add protocol information to config loading RPC request
+
+ -- Petr Krasnoshchekov <petr.krasnoshchekov@wirenboard.com>  Thu, 04 Apr 2024 16:35:29 +0500
+
 wb-mqtt-serial (2.117.1) stable; urgency=medium
 
   * Fix WB-MAO4 template compability with old configs

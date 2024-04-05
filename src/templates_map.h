@@ -13,6 +13,7 @@ struct TDeviceTemplate
     std::string Type;
 
     TDeviceTemplate(const std::string& type,
+                    const std::string& protocol,
                     std::shared_ptr<WBMQTT::JSON::TValidator> validator,
                     const std::string& filePath);
 
@@ -29,6 +30,7 @@ struct TDeviceTemplate
     const std::string& GetFilePath() const;
     bool IsDeprecated() const;
     bool WithSubdevices() const;
+    const std::string& GetProtocol() const;
 
 private:
     std::unordered_map<std::string, std::string> Title;
@@ -39,6 +41,7 @@ private:
     std::string FilePath;
     Json::Value Template;
     bool Subdevices;
+    std::string Protocol;
 };
 
 typedef std::shared_ptr<TDeviceTemplate> PDeviceTemplate;
