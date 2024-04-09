@@ -8,7 +8,9 @@ class TDevicesConfedSchemasMap
     std::string SchemasFolder;
 
     //! Device type to schema map
-    std::unordered_map<std::string, Json::Value> Schemas;
+    std::unordered_map<std::string, std::shared_ptr<Json::Value>> Schemas;
+
+    std::mutex Mutex;
 
 public:
     TDevicesConfedSchemasMap(TTemplateMap& templatesMap, const std::string& schemasFolder);
@@ -18,7 +20,9 @@ public:
      *
      * @throws std::out_of_range if nothing found
      */
-    const Json::Value& GetSchema(const std::string& deviceType);
+    std::shared_ptr<Json::Value> GetSchema(const std::string& deviceType);
+
+    void InvalidateCache(const std::string& deviceType);
 };
 
 struct TProtocolConfedSchema

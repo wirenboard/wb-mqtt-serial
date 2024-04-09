@@ -298,7 +298,7 @@ void TSerialDeviceTest::TearDown()
     TLoggedFixture::TearDown();
 }
 
-WBMQTT::TMap<std::string, TTemplateMap> TSerialDeviceIntegrationTest::Templates;
+WBMQTT::TMap<std::string, std::shared_ptr<TTemplateMap>> TSerialDeviceIntegrationTest::Templates;
 Json::Value TSerialDeviceIntegrationTest::CommonDeviceSchema;
 Json::Value TSerialDeviceIntegrationTest::CommonConfigTemplatesSchema;
 
@@ -330,9 +330,11 @@ void TSerialDeviceIntegrationTest::SetUp()
     auto it = Templates.find(path);
     if (it == Templates.end()) {
         if (path.empty()) {
-            it = Templates.emplace(path, TTemplateMap()).first;
+            it = Templates.emplace(path, std::make_shared<TTemplateMap>()).first;
         } else {
-            it = Templates.emplace(path, TTemplateMap(GetDataFilePath(path), CommonConfigTemplatesSchema)).first;
+            auto templateMap = std::make_shared<TTemplateMap>(CommonConfigTemplatesSchema);
+            templateMap->AddTemplatesDir(GetDataFilePath(path));
+            it = Templates.emplace(path, templateMap).first;
         }
     }
 
@@ -342,7 +344,7 @@ void TSerialDeviceIntegrationTest::SetUp()
     Config = LoadConfig(GetDataFilePath(ConfigPath()),
                         DeviceFactory,
                         CommonDeviceSchema,
-                        it->second,
+                        *it->second,
                         rpcConfig,
                         portsSchema,
                         protocolSchemas,

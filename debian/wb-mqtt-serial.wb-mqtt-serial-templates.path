@@ -1,9 +1,0 @@
-[Unit]
-Description=Monitor directories with device templates for wb-mqtt-serial
-
-[Path]
-PathChanged=/etc/wb-mqtt-serial.conf.d/templates
-PathChanged=/usr/share/wb-mqtt-serial/templates
-
-[Install]
-WantedBy=multi-user.target
