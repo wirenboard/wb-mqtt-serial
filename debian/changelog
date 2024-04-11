@@ -1,8 +1,14 @@
-wb-mqtt-serial (2.117.3) stable; urgency=medium
+wb-mqtt-serial (2.118.1) stable; urgency=medium
 
   * Add protocol information to config loading RPC request
 
  -- Petr Krasnoshchekov <petr.krasnoshchekov@wirenboard.com>  Thu, 11 Apr 2024 08:56:56 +0500
+
+wb-mqtt-serial (2.118.0) stable; urgency=medium
+
+  * Reload templates after changing on disk to provide actual information to wb-mqtt-homeui
+
+ -- Petr Krasnoshchekov <petr.krasnoshchekov@wirenboard.com>  Mon, 08 Apr 2024 10:18:37 +0500
 
 wb-mqtt-serial (2.117.2) stable; urgency=medium
 

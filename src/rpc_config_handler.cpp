@@ -192,7 +192,7 @@ Json::Value TRPCConfigHandler::GetSchema(const Json::Value& request)
 {
     std::string type = request.get("type", "").asString();
     try {
-        return DeviceConfedSchemas.GetSchema(type);
+        return *DeviceConfedSchemas.GetSchema(type);
     } catch (const std::out_of_range&) {
         return ProtocolConfedSchemas.GetSchema(type);
     }

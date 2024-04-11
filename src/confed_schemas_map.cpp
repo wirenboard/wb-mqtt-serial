@@ -14,20 +14,28 @@ TDevicesConfedSchemasMap::TDevicesConfedSchemasMap(TTemplateMap& templatesMap, c
       SchemasFolder(schemasFolder)
 {}
 
-const Json::Value& TDevicesConfedSchemasMap::GetSchema(const std::string& deviceType)
+std::shared_ptr<Json::Value> TDevicesConfedSchemasMap::GetSchema(const std::string& deviceType)
 {
+    std::unique_lock lock(Mutex);
     try {
         return Schemas.at(deviceType);
     } catch (const std::out_of_range&) {
         try {
-            Schemas.emplace(deviceType,
-                            WBMQTT::JSON::Parse(
-                                GetSchemaFilePath(SchemasFolder, TemplatesMap.GetTemplate(deviceType).GetFilePath())));
+            Schemas.emplace(
+                deviceType,
+                std::make_shared<Json::Value>(WBMQTT::JSON::Parse(
+                    GetSchemaFilePath(SchemasFolder, TemplatesMap.GetTemplate(deviceType)->GetFilePath()))));
             return Schemas.at(deviceType);
         } catch (const std::out_of_range&) {
             throw std::out_of_range("Can't find json-schema for " + deviceType);
         }
     }
+}
+
+void TDevicesConfedSchemasMap::InvalidateCache(const std::string& deviceType)
+{
+    std::unique_lock lock(Mutex);
+    Schemas.erase(deviceType);
 }
 
 std::string GetSchemaFilePath(const std::string& schemasFolder, const std::string& templateFilePath)
