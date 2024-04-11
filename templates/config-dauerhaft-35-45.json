@@ -33,31 +33,36 @@
                 "name": "Stop",
                 "type": "pushbutton",
                 "reg_type": "command",
-                "address": "0xcc"
+                "address": "0xcc",
+                "group": "controls"
             },
             {
                 "name": "Move up",
                 "type": "pushbutton",
                 "reg_type": "command",
-                "address": "0xdd"
+                "address": "0xdd",
+                "group": "controls"
             },
             {
                 "name": "Move down",
                 "type": "pushbutton",
                 "reg_type": "command",
-                "address": "0xee"
+                "address": "0xee",
+                "group": "controls"
             },
             {
                 "name": "Dot move up",
                 "type": "pushbutton",
                 "reg_type": "command",
-                "address": "0x0d"
+                "address": "0x0d",
+                "group": "controls"
             },
             {
                 "name": "Dot move down",
                 "type": "pushbutton",
                 "reg_type": "command",
-                "address": "0x0e"
+                "address": "0x0e",
+                "group": "controls"
             },
             {
                 "name": "Learn",
@@ -91,7 +96,9 @@
                 "Move up": "Поднять",
                 "Move down": "Опустить",
                 "Dot move up": "Поднять на шаг",
-                "Dot move down": "Опустить на шаг"
+                "Dot move down": "Опустить на шаг",
+                "Learn": "Обучить",
+                "Delete": "Удалить"
             }
         }
     }

@@ -1,8 +1,14 @@
-wb-mqtt-serial (2.117.2) stable; urgency=medium
+wb-mqtt-serial (2.117.3) stable; urgency=medium
 
   * Add protocol information to config loading RPC request
 
- -- Petr Krasnoshchekov <petr.krasnoshchekov@wirenboard.com>  Thu, 04 Apr 2024 16:35:29 +0500
+ -- Petr Krasnoshchekov <petr.krasnoshchekov@wirenboard.com>  Thu, 11 Apr 2024 08:56:56 +0500
+
+wb-mqtt-serial (2.117.2) stable; urgency=medium
+
+  * Dauerhaft Roll 35/45: fix template
+
+ -- Nikolay Korotkiy <nikolay.korotkiy@wirenboard.com>  Wed, 03 Apr 2024 14:05:00 +0400
 
 wb-mqtt-serial (2.117.1) stable; urgency=medium
 
