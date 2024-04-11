@@ -18,9 +18,9 @@ void TDeviceTemplateFileExtensionTest::VerifyTemplates(const std::string& direct
         auto commonDeviceSchema(
             WBMQTT::JSON::Parse(TLoggedFixture::GetDataFilePath("../wb-mqtt-serial-confed-common.schema.json")));
         TTemplateMap templates(
-            directory,
             LoadConfigTemplatesSchema(TLoggedFixture::GetDataFilePath("../wb-mqtt-serial-device-template.schema.json"),
                                       commonDeviceSchema));
+        templates.AddTemplatesDir(directory);
         ASSERT_THROW(templates.GetTemplate(bad_device_type), std::out_of_range);
     } catch (const TConfigParserException& e) {
         ADD_FAILURE() << "Parsing failed: " << e.what();
@@ -103,10 +103,11 @@ TEST_F(TDeviceTemplatesTest, Validate)
     Json::Value templatesSchema(
         LoadConfigTemplatesSchema(TLoggedFixture::GetDataFilePath("../wb-mqtt-serial-device-template.schema.json"),
                                   commonDeviceSchema));
-    TTemplateMap templates(TLoggedFixture::GetDataFilePath("../templates"), templatesSchema, false);
-
     Json::Value settings;
     settings["allowTrailingCommas"] = false;
+
+    TTemplateMap templates(templatesSchema);
+    templates.AddTemplatesDir(TLoggedFixture::GetDataFilePath("../templates"), false, settings);
     templates.AddTemplatesDir(TLoggedFixture::GetDataFilePath("../build/templates"), false, settings);
     auto deviceTypes = templates.GetTemplates();
     // For stable test results
@@ -127,8 +128,9 @@ TEST_F(TDeviceTemplatesTest, InvalidParameterName)
     Json::Value templatesSchema(
         LoadConfigTemplatesSchema(TLoggedFixture::GetDataFilePath("../wb-mqtt-serial-device-template.schema.json"),
                                   commonDeviceSchema));
-    TTemplateMap templates(TLoggedFixture::GetDataFilePath("device-templates"), templatesSchema, false);
-    EXPECT_THROW(templates.GetTemplate("parameters_array_invalid_id").GetTemplate(), std::runtime_error);
-    EXPECT_NO_THROW(templates.GetTemplate("parameters_object_invalid_name").GetTemplate());
-    EXPECT_THROW(templates.GetTemplate("tpl1_parameters_object_invalid_name").GetTemplate(), std::runtime_error);
+    TTemplateMap templates(templatesSchema);
+    templates.AddTemplatesDir(TLoggedFixture::GetDataFilePath("device-templates"), false);
+    EXPECT_THROW(templates.GetTemplate("parameters_array_invalid_id")->GetTemplate(), std::runtime_error);
+    EXPECT_NO_THROW(templates.GetTemplate("parameters_object_invalid_name")->GetTemplate());
+    EXPECT_THROW(templates.GetTemplate("tpl1_parameters_object_invalid_name")->GetTemplate(), std::runtime_error);
 }
