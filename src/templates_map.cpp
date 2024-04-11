@@ -47,7 +47,10 @@ TTemplateMap::TTemplateMap(const Json::Value& templateSchema): Validator(new WBM
 PDeviceTemplate TTemplateMap::MakeTemplateFromJson(const Json::Value& data, const std::string& filePath)
 {
     std::string deviceType = data["device_type"].asString();
-    auto deviceTemplate = std::make_shared<TDeviceTemplate>(deviceType, Validator, filePath);
+    auto deviceTemplate = std::make_shared<TDeviceTemplate>(deviceType,
+                                                            data["device"].get("protocol", "modbus").asString(),
+                                                            Validator,
+                                                            filePath);
     deviceTemplate->SetTitle(GetTranslations(data.get("title", "").asString(), data["device"]));
     deviceTemplate->SetGroup(data.get("group", "").asString());
     if (data.get("deprecated", false).asBool()) {
@@ -173,13 +176,15 @@ std::string TTemplateMap::DeleteTemplate(const std::string& path)
 //                              TDeviceTemplate
 //=============================================================================
 TDeviceTemplate::TDeviceTemplate(const std::string& type,
+                                 const std::string& protocol,
                                  std::shared_ptr<WBMQTT::JSON::TValidator> validator,
                                  const std::string& filePath)
     : Type(type),
       Deprecated(false),
       Validator(validator),
       FilePath(filePath),
-      Subdevices(false)
+      Subdevices(false),
+      Protocol(protocol)
 {}
 
 std::string TDeviceTemplate::GetTitle(const std::string& lang) const
@@ -269,6 +274,11 @@ void TDeviceTemplate::SetWithSubdevices()
 bool TDeviceTemplate::WithSubdevices() const
 {
     return Subdevices;
+}
+
+const std::string& TDeviceTemplate::GetProtocol() const
+{
+    return Protocol;
 }
 
 //=============================================================================
