@@ -1,3 +1,9 @@
+wb-mqtt-serial (2.109.1-wb101) stable; urgency=medium
+
+  * Fix SOKOL-M template
+
+ -- Petr Krasnoshchekov <petr.krasnoshchekov@wirenboard.com>  Fri, 12 Apr 2024 12:18:14 +0500
+
 wb-mqtt-serial (2.109.1-wb100) stable; urgency=medium
 
   * version bump for technical reasons, no functional changes
