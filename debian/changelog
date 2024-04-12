@@ -1,3 +1,9 @@
+wb-mqtt-serial (2.118.3) stable; urgency=medium
+
+  * Set correct default template for WB-MRPS6
+
+ -- Petr Krasnoshchekov <petr.krasnoshchekov@wirenboard.com>  Fri, 12 Apr 2024 15:06:20 +0500
+
 wb-mqtt-serial (2.118.2) stable; urgency=medium
 
   * Fix SOKOL-M template
