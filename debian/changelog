@@ -1,3 +1,9 @@
+wb-mqtt-serial (2.118.2) stable; urgency=medium
+
+  * Fix SOKOL-M template
+
+ -- Petr Krasnoshchekov <petr.krasnoshchekov@wirenboard.com>  Fri, 12 Apr 2024 12:18:14 +0500
+
 wb-mqtt-serial (2.118.1) stable; urgency=medium
 
   * Add protocol information to config loading RPC request
