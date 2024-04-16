@@ -221,14 +221,17 @@
                 "group": "gg_in{{in_num}}_channels",
                 "condition": "in{{in_num}}_mode==0"
             },
-            {% endfor -%}
             {
-                "name": "Reset all counters",
+                "name": "Reset input counters",
                 "reg_type": "holding",
                 "address": 100,
+                "value": 1,
                 "type": "pushbutton",
-                "group": "g_general"
+                "enabled": false,
+                "group": "g_general",
+                "condition": "in{{in_num}}_mode==1"
             },
+            {% endfor -%}
             {
                 "name": "Serial",
                 "reg_type": "input",
@@ -358,7 +361,8 @@
                 "Uptime": "Время работы с момента включения",
                 "Minimum Voltage Since Startup": "Минимальное напряжение с момента включения",
                 "MCU Temperature": "Температура МК",
-                "MCU Voltage": "Напряжение питания МК"
+                "MCU Voltage": "Напряжение питания МК",
+                "Reset input counters": "Сброс счетчиков цифровых входов"
             }
         }
     }
