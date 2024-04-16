@@ -1104,7 +1104,7 @@ WB-M1W2 BUTTONS
 	MCU Temperature  =>  MCU Temperature
 	MCU Voltage  =>  MCU Voltage
 	Minimum Voltage Since Startup  =>  Minimum Voltage Since Startup
-	Reset all counters  =>  Reset all counters
+	Reset input counters  =>  Reset input counters
 	Serial  =>  Serial
 	Supply Voltage  =>  Supply Voltage
 	Uptime  =>  Uptime
