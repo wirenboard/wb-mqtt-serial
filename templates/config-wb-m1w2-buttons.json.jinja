@@ -223,6 +223,21 @@
             },
             {% endfor -%}
             {
+                "name": "Reset All Counters",
+                "reg_type": "holding",
+                "address": 100,
+                "value": 1,
+                "type": "pushbutton",
+                "enabled": false,
+                "group": "g_general",
+                "condition": "
+                    {%- for in_num in range(FIRST_INPUT, INPUTS_NUMBER + 1) -%}
+                        in{{in_num}}_mode==1
+                        {%- if not loop.last -%} || {%- endif -%}
+                    {%- endfor -%}
+                "
+            },
+            {
                 "name": "Serial",
                 "reg_type": "input",
                 "address": 270,
@@ -345,6 +360,7 @@
                 "lp_hold_time_description": "Если нажатие длится больше указанного времени - считаем его длинным. Значение по умолчанию - 1000",
                 "secp_waiting_time_description": "Если за указанное время второго нажатия не было - считаем нажатие одиночным. 0 - отключит все нажатия кроме короткого и длинного. Вносит задержку в реакцию на короткое нажатие. Значение по умолчанию - 300",
                 "debounce_time_description": "Для детектирования нажатий значение должно быть в 5-10 раз меньше, чем время ожидания второго нажатия. Вносит задержку в реакцию на нажатия. Значение по умолчанию - 50",
+                "Reset All Counters": "Сбросить все счетчики",
                 "Serial": "Серийный номер",
                 "FW Version": "Версия прошивки",
                 "Supply Voltage": "Напряжение питания",
