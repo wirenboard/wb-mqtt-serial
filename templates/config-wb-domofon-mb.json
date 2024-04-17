@@ -1,7 +1,6 @@
 {
     "title": "_WB-Domofon-template-title",
     "device_type": "WB-Domofon",
-    "group": "g-interphone",
     "device": {
         "name": "WB-Domofon",
         "id": "wb-domofon",
@@ -17,51 +16,51 @@
             },
             {
                 "name": "Call accept",
-				"type": "switch",
+                "type": "switch",
                 "reg_type": "coil",
                 "address": 4
             },
             {
                 "name": "Call reject",
-				"type": "switch",
+                "type": "switch",
                 "reg_type": "coil",
                 "address": 5
             },
-			{
+            {
                 "name": "Auto open once",
-				"type": "switch",
+                "type": "switch",
                 "reg_type": "coil",
                 "address": 6
             },
-			{
+            {
                 "name": "Auto open",
-				"type": "switch",
+                "type": "switch",
                 "reg_type": "coil",
                 "address": 7
             },
-			{
+            {
                 "name": "Auto reject",
-				"type": "switch",
+                "type": "switch",
                 "reg_type": "coil",
                 "address": 8
             },
-			{
+            {
                 "name": "Mute once",
-				"type": "switch",
+                "type": "switch",
                 "reg_type": "coil",
                 "address": 9
             },
-			{
+            {
                 "name": "Mute",
-				"type": "switch",
+                "type": "switch",
                 "reg_type": "coil",
                 "address": 10
             },
-			{
+            {
                 "name": "Brightness",
-				"reg_type": "holding",
+                "reg_type": "holding",
                 "address": 11,
-				"max": 100
+                "max": 100
             },
             {
                 "name": "Mode",
@@ -99,31 +98,31 @@
                 "address": 7,
                 "enabled": false
             },
-			{
+            {
                 "name": "Ring count",
                 "reg_type": "holding",
                 "address": 9,
                 "enabled": false
             },
-			{
+            {
                 "name": "UART baudrate",
                 "reg_type": "holding",
                 "address": 110,
                 "enabled": false
             },
-			{
+            {
                 "name": "UART parity",
                 "reg_type": "holding",
                 "address": 111,
                 "enabled": false
             },
-			{
+            {
                 "name": "UART stop bits",
                 "reg_type": "holding",
                 "address": 112,
                 "enabled": false
             },
-			{
+            {
                 "name": "MODBUS Slave ID",
                 "reg_type": "holding",
                 "address": 128,
@@ -145,18 +144,16 @@
                 "address": 120,
                 "enabled": false
             },
-			{
+            {
                 "name": "VCC",
                 "reg_type": "input",
                 "address": 121,
                 "scale": 0.001,
-                "type": "voltage", 
+                "type": "voltage",
                 "enabled": false
             }
-
         ],
-		
-		"translations": {
+        "translations": {
             "en": {
                 "_WB-Domofon-template-title": "WB-Domofon"
             },
@@ -164,27 +161,24 @@
                 "_WB-Domofon-template-title": "WB-Domofon",
                 "Incoming call": "Звонок",
                 "Call accept": "Открыть домофон",
-				"Call reject": "Отклонить вызов",
-				"Auto open once": "Автооткрытие один раз",
-				"Auto open": "Автооткрытие постоянно",
-				"Auto reject": "Автоотбой постоянно",
-				"Mute once": "Беззвучный один раз",
-			    "Mute": "Беззвучный постоянно",
-				"Mode": "Режим домофона",
-				"Mute mode": "Беззвучный режим",
-				"Delay before answer": "Пауза перед снятием трубки",
-				"Delay answer": "Время снятой трубки",
-				"Delay open time": "Время импулься открытия",
-				"Delay call detect": "Задержка определения звонка",
-				"Ring count": "Длительность звонка",
+                "Call reject": "Отклонить вызов",
+                "Auto open once": "Автооткрытие один раз",
+                "Auto open": "Автооткрытие постоянно",
+                "Auto reject": "Автоотбой постоянно",
+                "Mute once": "Беззвучный один раз",
+                "Mute": "Беззвучный постоянно",
+                "Mode": "Режим домофона",
+                "Mute mode": "Беззвучный режим",
+                "Delay before answer": "Пауза перед снятием трубки",
+                "Delay answer": "Время снятой трубки",
+                "Delay open time": "Время импулься открытия",
+                "Delay call detect": "Задержка определения звонка",
+                "Ring count": "Длительность звонка",
                 "Uptime": "Время работы",
                 "VCC": "Напряжение",
                 "Reset": "Перегрузить модуль",
-				"Brightness": "Яркость"
-				
-
+                "Brightness": "Яркость"
             }
         }
-     
     }
 }
