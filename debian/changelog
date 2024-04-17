@@ -1,3 +1,9 @@
+wb-mqtt-serial (2.119.0) stable; urgency=medium
+ 
+  * Add new template for WB-Domofon
+
+ -- Roman Matveev <roman.matveev@wirenboard.ru>  Wed, 17 Apr 2024 19:48:00 +0300
+
 wb-mqtt-serial (2.118.4) stable; urgency=medium
 
   * WB-M1W2 template: add button reset input counters
