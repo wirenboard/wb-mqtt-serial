@@ -997,6 +997,30 @@ VACON_10
 	V4.2 PI feedback value (%)  =>  V4.2 PI feedback value (%)
 	V4.3 PI error (%)  =>  V4.3 PI error (%)
 	V4.4 PI output (%)  =>  V4.4 PI output (%)
+WB-Domofon
+	Auto open  =>  Auto open
+	Auto open once  =>  Auto open once
+	Auto reject  =>  Auto reject
+	Brightness  =>  Brightness
+	Call accept  =>  Call accept
+	Call reject  =>  Call reject
+	Delay answer  =>  Delay answer
+	Delay before answer  =>  Delay before answer
+	Delay call detect  =>  Delay call detect
+	Delay open time  =>  Delay open time
+	Incoming call  =>  Incoming call
+	MODBUS Slave ID  =>  MODBUS Slave ID
+	Mode  =>  Mode
+	Mute  =>  Mute
+	Mute mode  =>  Mute mode
+	Mute once  =>  Mute once
+	Reset  =>  Reset
+	Ring count  =>  Ring count
+	UART baudrate  =>  UART baudrate
+	UART parity  =>  UART parity
+	UART stop bits  =>  UART stop bits
+	Uptime  =>  Uptime
+	VCC  =>  VCC
 WB-LED
 	Allowed Power  =>  Allowed Power
 	Board Temperature  =>  Board Temperature
