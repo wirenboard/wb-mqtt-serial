@@ -1,10 +1,10 @@
 {
-    "device_type": "Dauerhaft CM5",
+    "device_type": "A-OK AM-68 (LM100)",
     "title": "template_title",
     "group": "g-curtain",
     "device": {
-        "name": "Dauerhaft CM5",
-        "id": "dauerhaft-cm5",
+        "name": "A-OK AM-68 (LM100)",
+        "id": "aok-am68",
         "protocol": "a_ok",
         "groups": [
             {
@@ -167,11 +167,11 @@
         ],
         "translations": {
             "en": {
-                "template_title": "Dauerhaft CM5 (sliding)",
+                "template_title": "A-OK AM-68 (LM100) (sliding curtain motor)",
                 "baud_rate_description": "Make sure that communication with device is established before changing this parameter. Select required baud rate, save configuration and then change port baud rate to the same value."
             },
             "ru": {
-                "template_title": "Dauerhaft CM5 (раздвижные)",
+                "template_title": "A-OK AM-68 (LM100) (мотор раздвижных штор)",
                 "Controls": "Управление",
                 "Properties": "Параметры",
                 "Functions": "Функции",

@@ -83,11 +83,11 @@
         ],
         "translations": {
             "en": {
-                "template_title": "Dauerhaft Roll 35/45 (tubular curtain motor)",
+                "template_title": "Dauerhaft Roll 35/45 (tubular)",
                 "baud_rate_description": "Make sure that communication with device is established before changing this parameter. Select required baud rate, save configuration and then change port baud rate to the same value."
             },
             "ru": {
-                "template_title": "Dauerhaft Roll 35/45 (Мотор рулонных штор)",
+                "template_title": "Dauerhaft Roll 35/45 (рулонные)",
                 "Controls": "Управление",
                 "Properties": "Параметры",
                 "Baud rate": "Скорость обмена",
