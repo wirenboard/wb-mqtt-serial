@@ -4,6 +4,13 @@ wb-mqtt-serial (2.119.0) stable; urgency=medium
 
  -- Roman Matveev <roman.matveev@wirenboard.ru>  Wed, 17 Apr 2024 14:42:00 +0300
 
+wb-mqtt-serial (2.118.4) stable; urgency=medium
+
+  * WB-M1W2 template: add button reset input counters
+
+ -- Sergey Mishin <mishin@wirenboard.com>  Tue, 16 Apr 2024 15:06:20 +0300
+
+
 wb-mqtt-serial (2.118.3) stable; urgency=medium
 
   * Set correct default template for WB-MRPS6
