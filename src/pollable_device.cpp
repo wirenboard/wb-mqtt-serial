@@ -107,7 +107,7 @@ std::list<PRegister> TPollableDevice::SetReadError(std::chrono::steady_clock::ti
 
 std::chrono::steady_clock::time_point TPollableDevice::GetDeadline() const
 {
-    if (Device->DeviceConfig()->MinRequestInterval != std::chrono::milliseconds::zero()) {
+    if (Priority == TPriority::Low && Device->DeviceConfig()->MinRequestInterval != std::chrono::milliseconds::zero()) {
         auto deadline = Registers.GetDeadline();
         auto minNextReadTime = Device->GetLastReadTime() + Device->DeviceConfig()->MinRequestInterval;
         return minNextReadTime > deadline ? minNextReadTime : deadline;
