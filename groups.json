@@ -19,6 +19,7 @@
     "g-thermostat": "Thermostats",
     "g-motor-control": "Motor controllers",
     "g-oni": "ONI devices",
+    "g-interphone": "Interphones",
     "g-custom": "Custom devices"
   },
   "ru": {
@@ -41,6 +42,7 @@
     "g-thermostat": "Термостаты",
     "g-motor-control": "Управление двигателями (преобразователи частоты)",
     "g-oni": "Устройства ONI",
+    "g-interphone": "Домофоны",
     "g-custom": "Произвольные устройства"
   }
 }

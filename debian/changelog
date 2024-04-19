@@ -1,5 +1,11 @@
-wb-mqtt-serial (2.119.0) stable; urgency=medium
+wb-mqtt-serial (2.120.0) stable; urgency=medium
  
+  * Add new template for WB-Domofon
+
+ -- Roman Matveev <roman.matveev@wirenboard.ru>  Wed, 17 Apr 2024 19:48:00 +0300
+ 
+ wb-mqtt-serial (2.119.0) stable; urgency=medium
+
   * Add new template for A-OK motors
 
  -- Roman Matveev <roman.matveev@wirenboard.ru>  Wed, 17 Apr 2024 14:42:00 +0300

@@ -1,0 +1,184 @@
+{
+    "title": "_WB-Domofon-template-title",
+    "device_type": "WB-Domofon",
+    "device": {
+        "name": "WB-Domofon",
+        "id": "wb-domofon",
+        "max_read_registers": 0,
+        "response_timeout_ms": 300,
+        "frame_timeout_ms": 500,
+        "channels": [
+            {
+                "name": "Incoming call",
+                "reg_type": "coil",
+                "readonly": true,
+                "address": 1
+            },
+            {
+                "name": "Call accept",
+                "type": "switch",
+                "reg_type": "coil",
+                "address": 4
+            },
+            {
+                "name": "Call reject",
+                "type": "switch",
+                "reg_type": "coil",
+                "address": 5
+            },
+            {
+                "name": "Auto open once",
+                "type": "switch",
+                "reg_type": "coil",
+                "address": 6
+            },
+            {
+                "name": "Auto open",
+                "type": "switch",
+                "reg_type": "coil",
+                "address": 7
+            },
+            {
+                "name": "Auto reject",
+                "type": "switch",
+                "reg_type": "coil",
+                "address": 8
+            },
+            {
+                "name": "Mute once",
+                "type": "switch",
+                "reg_type": "coil",
+                "address": 9
+            },
+            {
+                "name": "Mute",
+                "type": "switch",
+                "reg_type": "coil",
+                "address": 10
+            },
+            {
+                "name": "Brightness",
+                "reg_type": "holding",
+                "address": 11,
+                "max": 100
+            },
+            {
+                "name": "Mode",
+                "reg_type": "input",
+                "address": 2,
+                "enabled": false
+            },
+            {
+                "name": "Mute mode",
+                "reg_type": "input",
+                "address": 3,
+                "enabled": false
+            },
+            {
+                "name": "Delay before answer",
+                "reg_type": "holding",
+                "address": 4,
+                "enabled": false
+            },
+            {
+                "name": "Delay answer",
+                "reg_type": "holding",
+                "address": 5,
+                "enabled": false
+            },
+            {
+                "name": "Delay open time",
+                "reg_type": "holding",
+                "address": 6,
+                "enabled": false
+            },
+            {
+                "name": "Delay call detect",
+                "reg_type": "holding",
+                "address": 7,
+                "enabled": false
+            },
+            {
+                "name": "Ring count",
+                "reg_type": "holding",
+                "address": 9,
+                "enabled": false
+            },
+            {
+                "name": "UART baudrate",
+                "reg_type": "holding",
+                "address": 110,
+                "enabled": false
+            },
+            {
+                "name": "UART parity",
+                "reg_type": "holding",
+                "address": 111,
+                "enabled": false
+            },
+            {
+                "name": "UART stop bits",
+                "reg_type": "holding",
+                "address": 112,
+                "enabled": false
+            },
+            {
+                "name": "MODBUS Slave ID",
+                "reg_type": "holding",
+                "address": 128,
+                "enabled": false
+            },
+            {
+                "name": "Uptime",
+                "reg_type": "input",
+                "address": 104,
+                "word_order": "little_endian",
+                "format": "u32",
+                "readonly": true,
+                "enabled": false
+            },
+            {
+                "name": "Reset",
+                "type": "switch",
+                "reg_type": "holding",
+                "address": 120,
+                "enabled": false
+            },
+            {
+                "name": "VCC",
+                "reg_type": "input",
+                "address": 121,
+                "scale": 0.001,
+                "type": "voltage",
+                "enabled": false
+            }
+        ],
+        "translations": {
+            "en": {
+                "_WB-Domofon-template-title": "WB-Domofon"
+            },
+            "ru": {
+                "_WB-Domofon-template-title": "WB-Domofon",
+                "Incoming call": "Звонок",
+                "Call accept": "Открыть домофон",
+                "Call reject": "Отклонить вызов",
+                "Auto open once": "Автооткрытие один раз",
+                "Auto open": "Автооткрытие постоянно",
+                "Auto reject": "Автоотбой постоянно",
+                "Mute once": "Беззвучный один раз",
+                "Mute": "Беззвучный постоянно",
+                "Mode": "Режим домофона",
+                "Mute mode": "Беззвучный режим",
+                "Delay before answer": "Пауза перед снятием трубки",
+                "Delay answer": "Время снятой трубки",
+                "Delay open time": "Время импулься открытия",
+                "Delay call detect": "Задержка определения звонка",
+                "Ring count": "Длительность звонка",
+                "Uptime": "Время работы",
+                "VCC": "Напряжение",
+                "Reset": "Перегрузить модуль",
+                "Brightness": "Яркость"
+            }
+        }
+    }
+}
