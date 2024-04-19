@@ -1,3 +1,10 @@
+wb-mqtt-serial (2.121.0) stable; urgency=medium
+
+  * Add min_request_interval option to device config. 
+    The option defines minimal time between requests to a device 
+
+ -- Petr Krasnoshchekov <petr.krasnoshchekov@wirenboard.com>  Fri, 19 Apr 2024 10:45:37 +0500
+
 wb-mqtt-serial (2.120.0) stable; urgency=medium
  
   * Add new template for WB-Domofon

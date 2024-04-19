@@ -192,7 +192,10 @@ bool TSerialDevice::GetIsDisconnected() const
 void TSerialDevice::InitSetupItems()
 {
     for (auto& setup_item_config: _DeviceConfig->SetupItemConfigs) {
-        SetupItems.push_back(std::make_shared<TDeviceSetupItem>(shared_from_this(), setup_item_config));
+        SetupItems.push_back(std::make_shared<TDeviceSetupItem>(
+            shared_from_this(),
+            setup_item_config,
+            std::make_shared<TRegister>(shared_from_this(), setup_item_config->GetRegisterConfig())));
     }
 }
 
@@ -249,6 +252,28 @@ void TSerialDevice::SetDisconnected()
     SetSupportsHoles(true);
     ForceDisconnectionLogging = false;
     LOG(Warn) << "device " << ToString() << " is disconnected";
+}
+
+PRegister TSerialDevice::AddRegister(PRegisterConfig config)
+{
+    auto reg = std::make_shared<TRegister>(shared_from_this(), config);
+    Registers.push_back(reg);
+    return reg;
+}
+
+const std::list<PRegister>& TSerialDevice::GetRegisters() const
+{
+    return Registers;
+}
+
+std::chrono::steady_clock::time_point TSerialDevice::GetLastReadTime() const
+{
+    return LastReadTime;
+}
+
+void TSerialDevice::SetLastReadTime(std::chrono::steady_clock::time_point readTime)
+{
+    LastReadTime = readTime;
 }
 
 TUInt32SlaveId::TUInt32SlaveId(const std::string& slaveId, bool allowBroadcast): HasBroadcastSlaveId(false)

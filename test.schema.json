@@ -1,0 +1,209 @@
+{
+    "$schema": "http://json-schema.org/draft-04/schema#",
+    "type": "object",
+    "title": "Automation",
+    "definitions": {
+        "scenario": {
+            "title": "Scenario",
+            "headerTemplate": "{{ self.name }}",
+            "oneOf": [
+                { "$ref": "#/definitions/thermo" }
+            ],
+            "_format": "wb-multiple",
+            "options": {
+                "keep_oneof_values": false,
+                "disable_collapse": true,
+                "disable_edit_json": true,
+                "disable_properties": true,
+                "wb": {
+                    "disable_panel": true
+                }
+            }
+        },
+        "thermo": {
+            "type": "object",
+            "title": "Thermo",
+            "_format": "grid",
+            "properties": {
+                "sc_type": {
+                    "type": "string",
+                    "enum": ["thermo"],
+                    "default": "thermo",
+                    "options": {
+                        "hidden": true
+                    }
+                },
+                "enable": {
+                    "type": "boolean",
+                    "title": "Enable",
+                    "default": true,
+                    "_format": "checkbox",
+                    "propertyOrder": 1,
+                    "options": {
+                        "grid_columns": 12
+                    }
+                },
+                "mode": {
+                    "type": "string",
+                    "title": "Operating mode",
+                    "enum": ["heating", "cooling"],
+                    "default": "heating",
+                    "propertyOrder": 2,
+                    "options": {
+                        "enum_titles": ["heating", "cooling"],
+                        "grid_columns": 12
+                    }
+                },
+                "name": {
+                    "type": "string",
+                    "title": "Scenario name",
+                    "minLength": 1,
+                    "propertyOrder": 3,
+                    "options": {
+                        "grid_columns": 6
+                    }
+                },
+                "file": {
+                    "type": "string",
+                    "title": "File name",
+                    "minLength": 1,
+                    "options": {
+                        "show_opt_in": true,
+                        "grid_columns": 6
+                    },
+                    "propertyOrder": 4
+                },
+                "setpoint": {
+                    "type": "number",
+                    "title": "Setpoint",
+                    "default": 20,
+                    "propertyOrder": 5,
+                    "options": {
+                        "grid_columns": 3
+                    }
+                },
+                "min_temp": {
+                    "type": "number",
+                    "title": "Minimum temperature",
+                    "default": 20,
+                    "propertyOrder": 6,
+                    "options": {
+                        "grid_columns": 3
+                    }
+                },
+                "max_temp": {
+                    "type": "number",
+                    "title": "Maximum temperature",
+                    "default": 30,
+                    "propertyOrder": 7,
+                    "options": {
+                        "grid_columns": 3
+                    }
+                },
+                "hysteresis": {
+                    "type": "number",
+                    "title": "Hysteresis",
+                    "default": 0.5,
+                    "propertyOrder": 8,
+                    "options": {
+                        "grid_columns": 3
+                    }
+                },
+                "zones": {
+                    "type": "array",
+                    "title": "Zones",
+                    "propertyOrder": 9,
+                    "items": {
+                        "type": "object",
+                        "title": "Zone",
+                        "properties": {
+                            "name": {
+                                "type": "string",
+                                "title": "Name",
+                                "propertyOrder": 1
+                            },
+                            "temp_sensor": {
+                                "type": "string",
+                                "title": "Temperature sensor",
+                                "propertyOrder": 2
+                            },
+                            "actuator": {
+                                "type": "string",
+                                "title": "Actuator",
+                                "propertyOrder": 3
+                            }
+                        },
+                        "required": ["name", "temp_sensor", "actuator"]
+                    },
+                    "options": {
+                        "disable_collapse": true,
+                        "grid_columns": 12,
+                        "array_controls_top": true,
+                        "disable_array_delete_last_row": true,
+                        "disable_array_delete_all_rows": false,
+                        "wb": {
+                            "disable_panel": true
+                        }
+                    },
+                    "_format": "table"
+                }
+            },
+            "required": ["sc_type", "enable", "mode", "name", "setpoint", "hysteresis", "min_temp", "max_temp", "zones"]
+        }
+    },
+
+    "properties": {
+        "scenarios": {
+            "type": "array",
+            "title": "Scenarios",
+            "items": { "$ref": "#/definitions/scenario" },
+            "options": {
+                "disable_collapse": true,
+                "disable_array_reorder": true,
+                "disable_array_delete_last_row": true,
+                "enable_array_copy": true
+            },
+            "_format": "tabs"
+        }
+    },
+
+    "required": ["scenarios"],
+
+    "options": {
+        "wb": {
+            "disable_title": true
+        }
+    },
+
+
+    "configFile": {
+        "path": "/etc/test.cfg",
+        "service": "wb-rules"
+    },
+
+    "translations": {
+        "en": {
+        },
+        "ru": {
+            "Automation": "Сценарии автоматизации",
+            "Scenarios": "Сценарии",
+            "Scenario": "Сценарий",
+            "Thermo": "Термостат",
+            "Operating mode": "Режим работы",
+            "heating": "нагрев",
+            "cooling": "охлаждение",
+            "Scenario name": "Название сценария",
+            "File name": "Имя файла",
+            "Setpoint": "Уставка",
+            "Hysteresis": "Гистерезис",
+            "Minimum temperature": "Минимальная температура",
+            "Maximum temperature": "Максимальная температура",
+            "Zones": "Зоны",
+            "Name": "Имя",
+            "Temperature sensor": "Датчик температуры",
+            "Actuator": "Реле",
+            "Enable": "Включить",
+            "Zone": "Зона"
+        }
+    }
+}

@@ -109,6 +109,9 @@ struct TDeviceConfig
     //! Delay before sending any request
     std::chrono::microseconds RequestDelay = std::chrono::microseconds::zero();
 
+    //! Minimal time between two consecutive requests to the device.
+    std::chrono::milliseconds MinRequestInterval = std::chrono::milliseconds::zero();
+
     std::chrono::seconds MaxWriteFailTime = DefaultMaxWriteFailTime;
 
     int AccessLevel = DEFAULT_ACCESS_LEVEL;
@@ -143,13 +146,12 @@ typedef IProtocol* PProtocol;
 
 struct TDeviceSetupItem
 {
-    TDeviceSetupItem(PSerialDevice device, PDeviceSetupItemConfig config)
+    TDeviceSetupItem(PSerialDevice device, PDeviceSetupItemConfig config, PRegister reg)
         : Name(config->GetName()),
           RawValue(config->GetRawValue()),
-          HumanReadableValue(config->GetValue())
-    {
-        Register = TRegister::Intern(device, config->GetRegisterConfig());
-    }
+          HumanReadableValue(config->GetValue()),
+          Register(reg)
+    {}
 
     std::string Name;
     TRegisterValue RawValue;
@@ -215,6 +217,13 @@ public:
     // Reset values caches
     virtual void InvalidateReadCache();
 
+    PRegister AddRegister(PRegisterConfig config);
+
+    const std::list<PRegister>& GetRegisters() const;
+
+    std::chrono::steady_clock::time_point GetLastReadTime() const;
+    void SetLastReadTime(std::chrono::steady_clock::time_point readTime);
+
 protected:
     std::vector<PDeviceSetupItem> SetupItems;
 
@@ -232,6 +241,8 @@ private:
     int RemainingFailCycles;
     bool SupportsHoles;
     bool ForceDisconnectionLogging;
+    std::list<PRegister> Registers;
+    std::chrono::steady_clock::time_point LastReadTime;
 };
 
 typedef std::shared_ptr<TSerialDevice> PSerialDevice;

@@ -57,13 +57,13 @@ void TSerialPortDriver::SetUpDevices()
                     channel->Control = mqttDevice->CreateControl(tx, From(channel)).GetValue();
                     for (const auto& reg: channel->Registers) {
                         RegisterToChannelMap.emplace(reg, channel);
-                        SerialClient->AddRegister(reg);
                     }
                 } catch (const exception& e) {
                     LOG(Error) << "unable to create control: '" << e.what() << "'";
                 }
             }
             mqttDevice->RemoveUnusedControls(tx).Sync();
+            SerialClient->AddDevice(device);
         }
     } catch (const exception& e) {
         LOG(Error) << "unable to create device: '" << e.what() << "' Cleaning.";
@@ -183,6 +183,7 @@ void TSerialPortDriver::ClearDevices() noexcept
             }
         }
         Devices.clear();
+        RegisterToChannelMap.clear();
     } catch (const exception& e) {
         LOG(Warn) << "TSerialPortDriver::ClearDevices(): " << e.what();
     } catch (...) {

@@ -25,10 +25,10 @@ void TS2KDeviceTest::SetUp()
                                        SerialPort,
                                        DeviceFactory.GetProtocol("s2k"));
 
-    RelayReg1 = TRegister::Intern(Dev, TRegisterConfig::Create(TS2KDevice::REG_RELAY, 0x01, U8));
-    RelayReg2 = TRegister::Intern(Dev, TRegisterConfig::Create(TS2KDevice::REG_RELAY, 0x02, U8));
-    RelayReg3 = TRegister::Intern(Dev, TRegisterConfig::Create(TS2KDevice::REG_RELAY, 0x03, U8));
-    RelayReg4 = TRegister::Intern(Dev, TRegisterConfig::Create(TS2KDevice::REG_RELAY, 0x04, U8));
+    RelayReg1 = Dev->AddRegister(TRegisterConfig::Create(TS2KDevice::REG_RELAY, 0x01, U8));
+    RelayReg2 = Dev->AddRegister(TRegisterConfig::Create(TS2KDevice::REG_RELAY, 0x02, U8));
+    RelayReg3 = Dev->AddRegister(TRegisterConfig::Create(TS2KDevice::REG_RELAY, 0x03, U8));
+    RelayReg4 = Dev->AddRegister(TRegisterConfig::Create(TS2KDevice::REG_RELAY, 0x04, U8));
 
     SerialPort->Open();
 }
