@@ -242,7 +242,7 @@
             {
                 "name": "Target 1 Speed",
                 "type": "value",
-                "units": "mm/s",
+                "units": "cm/s",
                 "format": "s16",
                 "reg_type": "input",
                 "address": 20102,
@@ -275,7 +275,7 @@
             {
                 "name": "Target 2 Speed",
                 "type": "value",
-                "units": "mm/s",
+                "units": "cm/s",
                 "format": "s16",
                 "reg_type": "input",
                 "address": 20105,
@@ -308,7 +308,7 @@
             {
                 "name": "Target 3 Speed",
                 "type": "value",
-                "units": "mm/s",
+                "units": "cm/s",
                 "format": "s16",
                 "reg_type": "input",
                 "address": 20108,
