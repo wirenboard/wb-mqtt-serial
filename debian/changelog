@@ -1,3 +1,9 @@
+wb-mqtt-serial (2.120.1) stable; urgency=medium
+
+  * Add device signature to WB-MWAC v.2 template
+
+ -- Petr Krasnoshchekov <petr.krasnoshchekov@wirenboard.com>  Mon, 22 Apr 2024 11:37:48 +0500
+
 wb-mqtt-serial (2.120.0) stable; urgency=medium
  
   * Add new template for WB-Domofon
