@@ -1,3 +1,9 @@
+wb-mqtt-serial (2.120.1) stable; urgency=medium
+
+  * Add device signature to MAP3E, MAP3ET, MAP3EV templates
+
+ -- Petr Krasnoshchekov <petr.krasnoshchekov@wirenboard.com>  Tue, 23 Apr 2024 12:06:59 +0500
+
 wb-mqtt-serial (2.120.0) stable; urgency=medium
  
   * Add new template for WB-Domofon
