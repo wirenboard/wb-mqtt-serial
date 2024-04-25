@@ -6,11 +6,8 @@ bool TRegisterComparePredicate::operator()(const PRegister& r1, const PRegister&
         return r1->Type > r2->Type;
     }
     auto cmp = r1->GetAddress().Compare(r2->GetAddress());
-    if (cmp < 0) {
-        return false;
-    }
-    if (cmp > 0) {
-        return true;
+    if (cmp != 0) {
+        return cmp > 0;
     }
     // addresses are equal, compare offsets
     return r1->GetDataOffset() > r2->GetDataOffset();
