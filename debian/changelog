@@ -1,8 +1,20 @@
-wb-mqtt-serial (2.120.1) stable; urgency=medium
+wb-mqtt-serial (2.120.3) stable; urgency=medium
 
   * Add device signature to MAP3E, MAP3ET, MAP3EV templates
 
- -- Petr Krasnoshchekov <petr.krasnoshchekov@wirenboard.com>  Tue, 23 Apr 2024 12:06:59 +0500
+ -- Petr Krasnoshchekov <petr.krasnoshchekov@wirenboard.com>  Fri, 26 Apr 2024 09:38:30 +0500
+
+wb-mqtt-serial (2.120.2) stable; urgency=medium
+
+  * Fix MAI11 slave id editor position in wb-mqtt-homeui
+
+ -- Petr Krasnoshchekov <petr.krasnoshchekov@wirenboard.com>  Thu, 25 Apr 2024 11:05:49 +0500
+
+wb-mqtt-serial (2.120.1) stable; urgency=medium
+
+  * Add device signature to WB-MWAC v.2 template
+
+ -- Petr Krasnoshchekov <petr.krasnoshchekov@wirenboard.com>  Mon, 22 Apr 2024 11:37:48 +0500
 
 wb-mqtt-serial (2.120.0) stable; urgency=medium
  
