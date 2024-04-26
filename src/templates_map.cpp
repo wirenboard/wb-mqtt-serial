@@ -69,6 +69,7 @@ PDeviceTemplate TTemplateMap::MakeTemplateFromJson(const Json::Value& data, cons
         }
         deviceTemplate->SetHardware(hws);
     }
+    deviceTemplate->SetMqttId(data["device"].get("id", "").asString());
     return deviceTemplate;
 }
 
@@ -281,6 +282,15 @@ const std::string& TDeviceTemplate::GetProtocol() const
     return Protocol;
 }
 
+void TDeviceTemplate::SetMqttId(const std::string& id)
+{
+    MqttId = id;
+}
+
+const std::string& TDeviceTemplate::GetMqttId() const
+{
+    return MqttId;
+}
 //=============================================================================
 //                          TSubDevicesTemplateMap
 //=============================================================================

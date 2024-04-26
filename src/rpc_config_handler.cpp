@@ -28,6 +28,7 @@ namespace
         res["deprecated"] = dt->IsDeprecated();
         res["type"] = dt->Type;
         res["protocol"] = dt->GetProtocol();
+        res["mqtt-id"] = dt->GetMqttId();
         if (!dt->GetHardware().empty()) {
             auto& hwJsonArray = MakeArray("hw", res);
             for (const auto& hw: dt->GetHardware()) {
