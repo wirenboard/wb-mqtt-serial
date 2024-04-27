@@ -71,7 +71,8 @@ PRegisterRange TPollableDevice::ReadRegisterRange(std::chrono::milliseconds poll
     return registerRange;
 }
 
-std::list<PRegister> TPollableDevice::SetReadError(std::chrono::steady_clock::time_point currentTime)
+std::list<PRegister> TPollableDevice::MarkWaitingRegistersAsReadErrorAndReschedule(
+    std::chrono::steady_clock::time_point currentTime)
 {
     std::list<PRegister> res;
     while (Registers.HasReadyItems(currentTime)) {

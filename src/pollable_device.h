@@ -25,7 +25,8 @@ public:
                                      std::chrono::steady_clock::time_point currentTime,
                                      TSerialClientDeviceAccessHandler& lastAccessedDevice);
 
-    std::list<PRegister> SetReadError(std::chrono::steady_clock::time_point currentTime);
+    std::list<PRegister> MarkWaitingRegistersAsReadErrorAndReschedule(
+        std::chrono::steady_clock::time_point currentTime);
 
     std::chrono::steady_clock::time_point GetDeadline() const;
 

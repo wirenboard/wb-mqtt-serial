@@ -79,7 +79,7 @@ namespace
             if (Device) {
                 return false;
             }
-            Regs = device->SetReadError(CurrentTime);
+            Regs = device->MarkWaitingRegistersAsReadErrorAndReschedule(CurrentTime);
             Device = device;
             return true;
         }
