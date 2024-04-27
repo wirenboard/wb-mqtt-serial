@@ -88,6 +88,12 @@ enum class TItemAccumulationPolicy
     AccordingToPollLimitTime
 };
 
+enum class TItemSelectionPolicy
+{
+    OnlyHighPriority,
+    All
+};
+
 class TRateLimiter
 {
     size_t RateLimit;
@@ -227,13 +233,14 @@ public:
      *                        If it returns false next items processing stops.
      * @param currentTime - time against which items deadline is compared
      * @param accumulator - object of TAccumulator
+     * @param policy - defines what items to select
      */
     template<class TAccumulator> void AccumulateNext(std::chrono::steady_clock::time_point currentTime,
                                                      TAccumulator& accumulator,
-                                                     bool blockLowPriority)
+                                                     TItemSelectionPolicy policy)
     {
         if (HighPriorityQueue.HasReadyItems(currentTime) &&
-            (!(!blockLowPriority && ShouldSelectLowPriority(currentTime)) ||
+            (!((policy == TItemSelectionPolicy::All) && ShouldSelectLowPriority(currentTime)) ||
              !LowPriorityQueue.HasReadyItems(currentTime)))
         {
             bool firstItem = true;
@@ -249,7 +256,7 @@ public:
         } else {
             if (LowPriorityQueue.HasReadyItems(currentTime)) {
                 const auto pollLimit = GetLowPriorityPollLimit(currentTime);
-                bool force = !blockLowPriority && ShouldSelectLowPriority(currentTime);
+                bool force = (policy == TItemSelectionPolicy::All) && ShouldSelectLowPriority(currentTime);
                 bool firstItem = true;
                 // Set maximum allowed poll limit to first low priority item,
                 // if it is selected to balance load.

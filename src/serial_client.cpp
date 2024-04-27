@@ -313,7 +313,7 @@ PSerialDevice TSerialClientRegisterAndEventsReader::OpenPortCycle(TPort& port,
 
     SpentTime.Start();
     TSerialClientTaskHandler handler;
-    TimeBalancer.AccumulateNext(SpentTime.GetStartTime(), handler, false);
+    TimeBalancer.AccumulateNext(SpentTime.GetStartTime(), handler, TItemSelectionPolicy::All);
     if (handler.NotReady) {
         return nullptr;
     }

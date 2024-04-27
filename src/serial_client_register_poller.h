@@ -51,7 +51,7 @@ public:
 
 private:
     void ScheduleNextPoll(PPollableDevice device);
-    std::chrono::steady_clock::time_point GetDeadline(bool blockLowPriority,
+    std::chrono::steady_clock::time_point GetDeadline(TItemSelectionPolicy policy,
                                                       const util::TSpentTimeMeter& spentTime) const;
 
     std::vector<PPollableDevice> Devices;

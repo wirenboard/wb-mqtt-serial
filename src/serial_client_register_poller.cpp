@@ -136,7 +136,7 @@ void TSerialClientRegisterPoller::ClosedPortCycle(steady_clock::time_point curre
     TClosedPortRegisterReader reader(currentTime);
     do {
         reader.ClearRegisters();
-        Scheduler.AccumulateNext(currentTime, reader, false);
+        Scheduler.AccumulateNext(currentTime, reader, TItemSelectionPolicy::All);
         for (auto& reg: reader.GetRegisters()) {
             reg->SetError(TRegister::TError::ReadError);
             if (callback) {
@@ -151,13 +151,13 @@ void TSerialClientRegisterPoller::ClosedPortCycle(steady_clock::time_point curre
 }
 
 std::chrono::steady_clock::time_point TSerialClientRegisterPoller::GetDeadline(
-    bool blockLowPriority,
+    TItemSelectionPolicy policy,
     const util::TSpentTimeMeter& spentTime) const
 {
     if (Scheduler.IsEmpty()) {
         return spentTime.GetStartTime() + 1s;
     }
-    if (blockLowPriority) {
+    if (policy == TItemSelectionPolicy::OnlyHighPriority) {
         auto lowPriorityDeadline = Scheduler.GetLowPriorityDeadline();
         // There are some low priority items
         if (lowPriorityDeadline != std::chrono::steady_clock::time_point::max()) {
@@ -179,10 +179,12 @@ TPollResult TSerialClientRegisterPoller::OpenPortCycle(TPort& port,
 
     TRegisterReader reader(spentTime.GetStartTime(), maxPollingTime, readAtLeastOneRegister, lastAccessedDevice);
 
-    auto blockLowPriority = LowPriorityRateLimiter.IsOverLimit(spentTime.GetStartTime());
+    auto selectionPolicy = LowPriorityRateLimiter.IsOverLimit(spentTime.GetStartTime())
+                               ? TItemSelectionPolicy::OnlyHighPriority
+                               : TItemSelectionPolicy::All;
 
-    Scheduler.AccumulateNext(spentTime.GetStartTime(), reader, blockLowPriority);
-    if (blockLowPriority) {
+    Scheduler.AccumulateNext(spentTime.GetStartTime(), reader, selectionPolicy);
+    if (selectionPolicy == TItemSelectionPolicy::OnlyHighPriority) {
         auto throttlingMsg = ThrottlingStateLogger.GetMessage();
         if (!throttlingMsg.empty()) {
             LOG(Warn) << port.GetDescription() << " " << throttlingMsg;
@@ -192,7 +194,7 @@ TPollResult TSerialClientRegisterPoller::OpenPortCycle(TPort& port,
 
     if (!range) {
         // Nothing to read
-        res.Deadline = GetDeadline(blockLowPriority, spentTime);
+        res.Deadline = GetDeadline(selectionPolicy, spentTime);
         return res;
     }
 
@@ -230,7 +232,7 @@ TPollResult TSerialClientRegisterPoller::OpenPortCycle(TPort& port,
     }
 
     Scheduler.UpdateSelectionTime(ceil<milliseconds>(spentTime.GetSpentTime()), reader.GetDevice()->GetPriority());
-    res.Deadline = GetDeadline(blockLowPriority, spentTime);
+    res.Deadline = GetDeadline(selectionPolicy, spentTime);
     return res;
 }
 
