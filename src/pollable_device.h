@@ -15,22 +15,13 @@ class TPollableDevice
     TPriorityQueueSchedule<PRegister, TRegisterComparePredicate> Registers;
     TPriority Priority;
 
-    bool AddRegister(PRegisterRange registerRange,
-                     PRegister reg,
-                     bool readAtLeastOneRegister,
-                     TItemAccumulationPolicy policy,
-                     std::chrono::milliseconds pollLimit,
-                     std::chrono::milliseconds maxPollTime);
-
     void ScheduleNextPoll(PRegister reg, std::chrono::steady_clock::time_point currentTime);
 
 public:
     TPollableDevice(PSerialDevice device, std::chrono::steady_clock::time_point currentTime, TPriority priority);
 
-    PRegisterRange ReadRegisterRange(TItemAccumulationPolicy policy,
-                                     std::chrono::milliseconds pollLimit,
+    PRegisterRange ReadRegisterRange(std::chrono::milliseconds pollLimit,
                                      bool readAtLeastOneRegister,
-                                     std::chrono::milliseconds maxPollTime,
                                      std::chrono::steady_clock::time_point currentTime,
                                      TSerialClientDeviceAccessHandler& lastAccessedDevice);
 

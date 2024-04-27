@@ -15,7 +15,7 @@ namespace
 {
     const auto MAX_LOW_PRIORITY_LAG = 1s;
 
-    class TRegisterReader
+    class TDeviceReader
     {
         PRegisterRange RegisterRange;
         milliseconds MaxPollTime;
@@ -25,10 +25,10 @@ namespace
         TSerialClientDeviceAccessHandler& LastAccessedDevice;
 
     public:
-        TRegisterReader(steady_clock::time_point currentTime,
-                        milliseconds maxPollTime,
-                        bool readAtLeastOneRegister,
-                        TSerialClientDeviceAccessHandler& lastAccessedDevice)
+        TDeviceReader(steady_clock::time_point currentTime,
+                      milliseconds maxPollTime,
+                      bool readAtLeastOneRegister,
+                      TSerialClientDeviceAccessHandler& lastAccessedDevice)
             : MaxPollTime(maxPollTime),
               ReadAtLeastOneRegister(readAtLeastOneRegister),
               CurrentTime(currentTime),
@@ -40,12 +40,15 @@ namespace
             if (Device) {
                 return false;
             }
-            RegisterRange = device->ReadRegisterRange(policy,
-                                                      pollLimit,
-                                                      ReadAtLeastOneRegister,
-                                                      MaxPollTime,
-                                                      CurrentTime,
-                                                      LastAccessedDevice);
+
+            if (policy == TItemAccumulationPolicy::Force) {
+                pollLimit = MaxPollTime;
+            } else {
+                pollLimit = std::min(MaxPollTime, pollLimit);
+            }
+
+            RegisterRange =
+                device->ReadRegisterRange(pollLimit, ReadAtLeastOneRegister, CurrentTime, LastAccessedDevice);
             Device = device;
             return !RegisterRange->RegisterList().empty();
         }
@@ -61,14 +64,14 @@ namespace
         }
     };
 
-    class TClosedPortRegisterReader
+    class TClosedPortDeviceReader
     {
         std::list<PRegister> Regs;
         steady_clock::time_point CurrentTime;
         PPollableDevice Device;
 
     public:
-        TClosedPortRegisterReader(steady_clock::time_point currentTime): CurrentTime(currentTime)
+        TClosedPortDeviceReader(steady_clock::time_point currentTime): CurrentTime(currentTime)
         {}
 
         bool operator()(const PPollableDevice& device, TItemAccumulationPolicy policy, milliseconds pollLimit)
@@ -133,7 +136,7 @@ void TSerialClientRegisterPoller::ClosedPortCycle(steady_clock::time_point curre
 {
     Scheduler.ResetLoadBalancing();
 
-    TClosedPortRegisterReader reader(currentTime);
+    TClosedPortDeviceReader reader(currentTime);
     do {
         reader.ClearRegisters();
         Scheduler.AccumulateNext(currentTime, reader, TItemSelectionPolicy::All);
@@ -177,7 +180,7 @@ TPollResult TSerialClientRegisterPoller::OpenPortCycle(TPort& port,
 {
     TPollResult res;
 
-    TRegisterReader reader(spentTime.GetStartTime(), maxPollingTime, readAtLeastOneRegister, lastAccessedDevice);
+    TDeviceReader reader(spentTime.GetStartTime(), maxPollingTime, readAtLeastOneRegister, lastAccessedDevice);
 
     auto selectionPolicy = LowPriorityRateLimiter.IsOverLimit(spentTime.GetStartTime())
                                ? TItemSelectionPolicy::OnlyHighPriority

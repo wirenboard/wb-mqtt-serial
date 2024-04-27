@@ -13,25 +13,6 @@ bool TRegisterComparePredicate::operator()(const PRegister& r1, const PRegister&
     return r1->GetDataOffset() > r2->GetDataOffset();
 }
 
-bool TPollableDevice::AddRegister(PRegisterRange registerRange,
-                                  PRegister reg,
-                                  bool readAtLeastOneRegister,
-                                  TItemAccumulationPolicy policy,
-                                  std::chrono::milliseconds pollLimit,
-                                  std::chrono::milliseconds maxPollTime)
-{
-    if (readAtLeastOneRegister) {
-        if (policy == TItemAccumulationPolicy::Force) {
-            return registerRange->Add(reg, std::chrono::milliseconds::max());
-        }
-        return registerRange->Add(reg, pollLimit);
-    }
-    if (policy == TItemAccumulationPolicy::Force) {
-        return registerRange->Add(reg, maxPollTime);
-    }
-    return registerRange->Add(reg, std::min(maxPollTime, pollLimit));
-}
-
 TPollableDevice::TPollableDevice(PSerialDevice device,
                                  std::chrono::steady_clock::time_point currentTime,
                                  TPriority priority)
@@ -49,17 +30,18 @@ TPollableDevice::TPollableDevice(PSerialDevice device,
     }
 }
 
-PRegisterRange TPollableDevice::ReadRegisterRange(TItemAccumulationPolicy policy,
-                                                  std::chrono::milliseconds pollLimit,
+PRegisterRange TPollableDevice::ReadRegisterRange(std::chrono::milliseconds pollLimit,
                                                   bool readAtLeastOneRegister,
-                                                  std::chrono::milliseconds maxPollTime,
                                                   std::chrono::steady_clock::time_point currentTime,
                                                   TSerialClientDeviceAccessHandler& lastAccessedDevice)
 {
     auto registerRange = Device->CreateRegisterRange();
     while (Registers.HasReadyItems(currentTime)) {
+        const auto limit = (readAtLeastOneRegister && registerRange->RegisterList().empty())
+                               ? std::chrono::milliseconds::max()
+                               : pollLimit;
         const auto& item = Registers.GetTop();
-        if (!AddRegister(registerRange, item.Data, readAtLeastOneRegister, policy, pollLimit, maxPollTime)) {
+        if (!registerRange->Add(item.Data, limit)) {
             break;
         }
         Registers.Pop();
