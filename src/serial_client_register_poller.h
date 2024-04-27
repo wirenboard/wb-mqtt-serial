@@ -1,5 +1,7 @@
 #pragma once
 
+#include <map>
+
 #include "poll_plan.h"
 #include "pollable_device.h"
 #include "port.h"
@@ -54,7 +56,7 @@ private:
     std::chrono::steady_clock::time_point GetDeadline(TItemSelectionPolicy policy,
                                                       const util::TSpentTimeMeter& spentTime) const;
 
-    std::vector<PPollableDevice> Devices;
+    std::multimap<PSerialDevice, PPollableDevice> Devices;
 
     TDeviceCallback DeviceDisconnectedCallback;
 

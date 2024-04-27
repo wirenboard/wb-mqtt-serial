@@ -115,12 +115,12 @@ void TSerialClientRegisterPoller::SetDevices(const std::list<PSerialDevice>& dev
         auto pollableDevice = std::make_shared<TPollableDevice>(dev, currentTime, TPriority::High);
         if (pollableDevice->HasRegisters()) {
             Scheduler.AddEntry(pollableDevice, currentTime, TPriority::High);
-            Devices.push_back(pollableDevice);
+            Devices.insert({dev, pollableDevice});
         }
         pollableDevice = std::make_shared<TPollableDevice>(dev, currentTime, TPriority::Low);
         if (pollableDevice->HasRegisters()) {
             Scheduler.AddEntry(pollableDevice, currentTime, TPriority::Low);
-            Devices.push_back(pollableDevice);
+            Devices.insert({dev, pollableDevice});
         }
     }
 }
@@ -242,11 +242,9 @@ TPollResult TSerialClientRegisterPoller::OpenPortCycle(TPort& port,
 void TSerialClientRegisterPoller::DeviceDisconnected(PSerialDevice device,
                                                      std::chrono::steady_clock::time_point currentTime)
 {
-    for (auto& dev: Devices) {
-        if (dev->GetDevice() == device) {
-            dev->RescheduleAllRegisters(currentTime);
-            return;
-        }
+    auto range = Devices.equal_range(device);
+    for (auto it = range.first; it != range.second; ++it) {
+        it->second->RescheduleAllRegisters(currentTime);
     }
 }
 
