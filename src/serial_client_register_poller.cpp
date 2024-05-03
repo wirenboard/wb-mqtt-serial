@@ -41,10 +41,9 @@ namespace
                 return false;
             }
 
-            if (policy == TItemAccumulationPolicy::Force) {
-                pollLimit = MaxPollTime;
-            } else {
-                pollLimit = std::min(MaxPollTime, pollLimit);
+            pollLimit = std::min(MaxPollTime, pollLimit);
+            if (policy != TItemAccumulationPolicy::Force) {
+                ReadAtLeastOneRegister = false;
             }
 
             RegisterRange =

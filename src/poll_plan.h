@@ -239,9 +239,9 @@ public:
                                                      TAccumulator& accumulator,
                                                      TItemSelectionPolicy policy)
     {
+        bool forceLowPriority = (policy == TItemSelectionPolicy::All) && ShouldSelectLowPriority(currentTime);
         if (HighPriorityQueue.HasReadyItems(currentTime) &&
-            (!((policy == TItemSelectionPolicy::All) && ShouldSelectLowPriority(currentTime)) ||
-             !LowPriorityQueue.HasReadyItems(currentTime)))
+            (!forceLowPriority || !LowPriorityQueue.HasReadyItems(currentTime)))
         {
             bool firstItem = true;
             while (HighPriorityQueue.HasReadyItems(currentTime) &&
@@ -256,7 +256,6 @@ public:
         } else {
             if (LowPriorityQueue.HasReadyItems(currentTime)) {
                 const auto pollLimit = GetLowPriorityPollLimit(currentTime);
-                bool force = (policy == TItemSelectionPolicy::All) && ShouldSelectLowPriority(currentTime);
                 bool firstItem = true;
                 // Set maximum allowed poll limit to first low priority item,
                 // if it is selected to balance load.
@@ -264,8 +263,8 @@ public:
                 // if they poll time is not more than low priority items lag.
                 while (LowPriorityQueue.HasReadyItems(currentTime) &&
                        accumulator(LowPriorityQueue.GetTop().Data,
-                                   (force && firstItem) ? TItemAccumulationPolicy::Force
-                                                        : TItemAccumulationPolicy::AccordingToPollLimitTime,
+                                   (forceLowPriority && firstItem) ? TItemAccumulationPolicy::Force
+                                                                   : TItemAccumulationPolicy::AccordingToPollLimitTime,
                                    pollLimit))
                 {
                     LowPriorityQueue.Pop();
@@ -323,7 +322,7 @@ private:
 
     bool ShouldSelectLowPriority(std::chrono::steady_clock::time_point currentTime) const
     {
-        return TimeBalancer.ShouldDecrement();
+        return TimeBalancer.ShouldDecrement() || HighPriorityQueue.IsEmpty();
     }
 
     std::chrono::milliseconds GetLowPriorityLag() const
