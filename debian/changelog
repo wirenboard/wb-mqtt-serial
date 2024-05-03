@@ -1,3 +1,9 @@
+wb-mqtt-serial (2.120.4) stable; urgency=medium
+
+  * Fix a typo in WB-Domofon template
+
+ -- Roman Matveev <roman.matveev@wirenboard.ru>  Fri, 03 May 2024 12:40:30 +0300
+
 wb-mqtt-serial (2.120.3) stable; urgency=medium
 
   * Add device signature to MAP3E, MAP3ET, MAP3EV templates
