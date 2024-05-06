@@ -99,7 +99,7 @@
           "description" : "read_rate_limit_description",
           "minimum": 0,
           "default": 1000,
-          "propertyOrder": 5
+          "propertyOrder": 114
         },
         "min_request_interval": {
           "title": "Minimal interval between requests to the devices (ms)",
