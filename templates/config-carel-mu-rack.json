@@ -2398,7 +2398,7 @@
                 "Operating Hour Threshold for Maintenance (h, C07)": "Порог рабочих часов компрессора для аварийного сигнала технического обслуживания (ч, C07)",
                 "Outside Probe 3 Calibration (°C, /26)": "Тарировка датчика B3 (°C, /26)",
                 "Prevent Time in which no Compressor Starts are Enabled (m, A13)": "Время предотвращения, в течение которого пуски компрессоров не разрешены (м, A13)",
-                "Prevent Time in which the Activation Signals the Alarm (m, A13)": "Время предотвращения, в течение которого активация генерирует аварийный сигнал (м, A13)",
+                "Prevent Time in which the Activation Signals the Alarm (m, A14)": "Время предотвращения, в течение которого активация генерирует аварийный сигнал (м, A14)",
                 "Reset Compressor 1 hours (C09)": "Сброс рабочих часов компрессора 1 (C09)",
                 "Reset Compressor 2 Hours (C11)": "Сброс рабочих часов компрессора 2 (C11)",
                 "Reset Compressor 3 hours (C13)": "Сброс рабочих часов компрессора 3 (C13)",
