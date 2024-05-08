@@ -120,7 +120,9 @@ void TSerialClientRegisterPoller::ScheduleNextPoll(PRegister reg, steady_clock::
     Scheduler.AddEntry(reg, pollStartTime + 1us, TPriority::Low);
 }
 
-void TSerialClientRegisterPoller::ClosedPortCycle(steady_clock::time_point currentTime, TRegisterCallback callback)
+void TSerialClientRegisterPoller::ClosedPortCycle(steady_clock::time_point currentTime,
+                                                  TRegisterCallback callback,
+                                                  TDeviceCallback deviceConnectionStateChangedCallback)
 {
     Scheduler.ResetLoadBalancing();
 
@@ -134,7 +136,11 @@ void TSerialClientRegisterPoller::ClosedPortCycle(steady_clock::time_point curre
                 callback(reg);
             }
             ScheduleNextPoll(reg, currentTime);
+            bool disconnectionState = reg->Device()->GetIsDisconnected();
             reg->Device()->SetTransferResult(false);
+            if (disconnectionState != reg->Device()->GetIsDisconnected() && deviceConnectionStateChangedCallback) {
+                deviceConnectionStateChangedCallback(reg->Device());
+            }
         }
     } while (!reader.GetRegisters().empty());
 }
@@ -144,7 +150,8 @@ TPollResult TSerialClientRegisterPoller::OpenPortCycle(TPort& port,
                                                        std::chrono::milliseconds maxPollingTime,
                                                        bool readAtLeastOneRegister,
                                                        TSerialClientDeviceAccessHandler& lastAccessedDevice,
-                                                       TRegisterCallback callback)
+                                                       TRegisterCallback callback,
+                                                       TDeviceCallback deviceConnectionStateChangedCallback)
 {
     TPollResult res;
 
@@ -199,9 +206,10 @@ TPollResult TSerialClientRegisterPoller::OpenPortCycle(TPort& port,
 
     if (deviceWasConnected && res.Device->GetIsDisconnected()) {
         DeviceDisconnected(res.Device, spentTime.GetStartTime());
-        if (DeviceDisconnectedCallback) {
-            DeviceDisconnectedCallback(res.Device);
-        }
+    }
+
+    if (deviceWasConnected == res.Device->GetIsDisconnected() && deviceConnectionStateChangedCallback) {
+        deviceConnectionStateChangedCallback(res.Device);
     }
 
     Scheduler.UpdateSelectionTime(ceil<milliseconds>(spentTime.GetSpentTime()), reader.GetPriority());
@@ -223,11 +231,6 @@ void TSerialClientRegisterPoller::DeviceDisconnected(PSerialDevice device,
             }
         }
     }
-}
-
-void TSerialClientRegisterPoller::SetDeviceDisconnectedCallback(TDeviceCallback deviceDisconnectedCallback)
-{
-    DeviceDisconnectedCallback = deviceDisconnectedCallback;
 }
 
 bool TRegisterComparePredicate::operator()(const PRegister& r1, const PRegister& r2) const

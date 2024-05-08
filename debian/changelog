@@ -1,3 +1,9 @@
+wb-mqtt-serial (2.122.0) stable; urgency=medium
+
+  * Publish error in /devices/+/meta/error on device disconnection
+
+ -- Petr Krasnoshchekov <petr.krasnoshchekov@wirenboard.com>  Wed, 08 May 2024 08:15:48 +0500
+
 wb-mqtt-serial (2.121.0) stable; urgency=medium
 
   * Add MQTT topic id to config/Load RPC response

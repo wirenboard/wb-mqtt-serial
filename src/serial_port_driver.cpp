@@ -40,6 +40,8 @@ void TSerialPortDriver::SetUpDevices()
 {
     SerialClient->SetReadCallback([this](PRegister reg) { OnValueRead(reg); });
     SerialClient->SetErrorCallback([this](PRegister reg) { UpdateError(reg); });
+    SerialClient->SetDeviceConnectionStateChangedCallback(
+        [this](PSerialDevice device) { OnDeviceConnectionStateChanged(device); });
 
     LOG(Debug) << "setting up devices at " << Config->Port->GetDescription();
 
@@ -153,6 +155,16 @@ void TSerialPortDriver::UpdateError(PRegister reg)
     }
 
     it->second->UpdateError(*MqttDriver);
+}
+
+void TSerialPortDriver::OnDeviceConnectionStateChanged(PSerialDevice device)
+{
+    auto tx = MqttDriver->BeginTx();
+    auto mqttDevice = tx->GetDevice(device->DeviceConfig()->Id);
+    auto localMqttDevice = dynamic_pointer_cast<TLocalDevice>(mqttDevice);
+    if (localMqttDevice) {
+        localMqttDevice->SetError(tx, device->GetIsDisconnected() ? "r" : "").Sync();
+    }
 }
 
 void TSerialPortDriver::Cycle(std::chrono::steady_clock::time_point now)

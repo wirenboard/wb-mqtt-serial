@@ -98,12 +98,12 @@ void TSerialClient::DoFlush()
             reg->SetError(TRegister::TError::WriteError);
         }
         if (reg->GetErrorState().test(TRegister::TError::WriteError)) {
-            if (ErrorCallback) {
-                ErrorCallback(reg);
+            if (RegisterErrorCallback) {
+                RegisterErrorCallback(reg);
             }
         } else {
-            if (ReadCallback) {
-                ReadCallback(reg);
+            if (RegisterReadCallback) {
+                RegisterReadCallback(reg);
             }
         }
     }
@@ -148,12 +148,12 @@ void TSerialClient::UpdateFlushNeeded()
 void TSerialClient::ProcessPolledRegister(PRegister reg)
 {
     if (reg->GetErrorState().test(TRegister::ReadError) || reg->GetErrorState().test(TRegister::WriteError)) {
-        if (ErrorCallback) {
-            ErrorCallback(reg);
+        if (RegisterErrorCallback) {
+            RegisterErrorCallback(reg);
         }
     } else {
-        if (ReadCallback) {
-            ReadCallback(reg);
+        if (RegisterReadCallback) {
+            RegisterReadCallback(reg);
         }
     }
 }
@@ -187,8 +187,8 @@ void TSerialClient::ClosedPortCycle()
                 if (!handler->NeedToFlush())
                     continue;
                 reg->SetError(TRegister::TError::WriteError);
-                if (ErrorCallback) {
-                    ErrorCallback(reg);
+                if (RegisterErrorCallback) {
+                    RegisterErrorCallback(reg);
                 }
             }
         }
@@ -197,7 +197,10 @@ void TSerialClient::ClosedPortCycle()
         }
     }
 
-    RegReader->ClosedPortCycle(wait_until, [this](PRegister reg) { ProcessPolledRegister(reg); });
+    RegReader->ClosedPortCycle(
+        wait_until,
+        [this](PRegister reg) { ProcessPolledRegister(reg); },
+        DeviceConnectionStateChangedCallback);
 }
 
 void TSerialClient::SetTextValue(PRegister reg, const std::string& value)
@@ -206,14 +209,19 @@ void TSerialClient::SetTextValue(PRegister reg, const std::string& value)
     FlushNeeded->Signal(RegisterUpdateSignal);
 }
 
-void TSerialClient::SetReadCallback(const TSerialClient::TCallback& callback)
+void TSerialClient::SetReadCallback(const TSerialClient::TRegisterCallback& callback)
 {
-    ReadCallback = callback;
+    RegisterReadCallback = callback;
 }
 
-void TSerialClient::SetErrorCallback(const TSerialClient::TCallback& callback)
+void TSerialClient::SetErrorCallback(const TSerialClient::TRegisterCallback& callback)
 {
-    ErrorCallback = callback;
+    RegisterErrorCallback = callback;
+}
+
+void TSerialClient::SetDeviceConnectionStateChangedCallback(const TSerialClient::TDeviceCallback& callback)
+{
+    DeviceConnectionStateChangedCallback = callback;
 }
 
 PRegisterHandler TSerialClient::GetHandler(PRegister reg) const
@@ -233,6 +241,7 @@ void TSerialClient::OpenPortCycle()
     auto device = RegReader->OpenPortCycle(
         *Port,
         [this](PRegister reg) { ProcessPolledRegister(reg); },
+        DeviceConnectionStateChangedCallback,
         *LastAccessedDevice);
 
     if (device) {
@@ -263,8 +272,6 @@ TSerialClientRegisterAndEventsReader::TSerialClientRegisterAndEventsReader(const
       NowFn(nowFn)
 {
     auto currentTime = NowFn();
-    RegisterPoller.SetDeviceDisconnectedCallback(
-        [this](PSerialDevice device) { EventsReader.DeviceDisconnected(device); });
     RegisterPoller.PrepareRegisterRanges(regList, currentTime);
     for (const auto& reg: regList) {
         EventsReader.AddRegister(reg);
@@ -273,10 +280,11 @@ TSerialClientRegisterAndEventsReader::TSerialClientRegisterAndEventsReader(const
 }
 
 void TSerialClientRegisterAndEventsReader::ClosedPortCycle(std::chrono::steady_clock::time_point currentTime,
-                                                           TCallback regCallback)
+                                                           TRegisterCallback regCallback,
+                                                           TDeviceCallback deviceConnectionStateChangedCallback)
 {
     EventsReader.SetReadErrors(regCallback);
-    RegisterPoller.ClosedPortCycle(currentTime, regCallback);
+    RegisterPoller.ClosedPortCycle(currentTime, regCallback, deviceConnectionStateChangedCallback);
 }
 
 class TSerialClientTaskHandler
@@ -298,7 +306,8 @@ public:
 };
 
 PSerialDevice TSerialClientRegisterAndEventsReader::OpenPortCycle(TPort& port,
-                                                                  TCallback regCallback,
+                                                                  TRegisterCallback regCallback,
+                                                                  TDeviceCallback deviceConnectionStateChangedCallback,
                                                                   TSerialClientDeviceAccessHandler& lastAccessedDevice)
 {
     // Count idle time as high priority task time to faster reach time balancing threshold
@@ -349,7 +358,16 @@ PSerialDevice TSerialClientRegisterAndEventsReader::OpenPortCycle(TPort& port,
                                             std::min(handler.PollLimit, MAX_POLL_TIME),
                                             readAtLeastOneRegister,
                                             lastAccessedDevice,
-                                            regCallback);
+                                            regCallback,
+                                            [this, &deviceConnectionStateChangedCallback](PSerialDevice device) {
+                                                if (device->GetIsDisconnected()) {
+                                                    EventsReader.DeviceDisconnected(device);
+                                                }
+                                                if (deviceConnectionStateChangedCallback) {
+                                                    deviceConnectionStateChangedCallback(device);
+                                                }
+                                            });
+
     TimeBalancer.AddEntry(TClientTaskType::POLLING, res.Deadline, TPriority::Low);
     if (res.NotEnoughTime) {
         LastCycleWasTooSmallToPoll = true;

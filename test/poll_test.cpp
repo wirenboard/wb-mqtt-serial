@@ -99,6 +99,7 @@ public:
             [this](PRegister reg) {
                 Emit() << ceil<microseconds>(TimeMock.GetTime().time_since_epoch()).count() << ": " << reg->ToString();
             },
+            [](PSerialDevice device) {},
             lastAccessedDevice);
         auto deadline = serialClient.GetDeadline(TimeMock.GetTime());
         if (deadline > TimeMock.GetTime()) {

@@ -112,6 +112,7 @@ fake_serial_device '12': transfer FAIL
 fake_serial_device '12': disconnected
 fake_serial_device '12': read address '2' failed: 'Serial protocol error: device disconnected'
 fake_serial_device '12': transfer FAIL
+Publish: /devices/reconnect-test-1/meta/error: 'r' (QoS 1, retained)
 Sleep(150000)
 fake_serial_device '13': read address '1' value '32'
 fake_serial_device '13': read address '2' value '64'
@@ -135,6 +136,7 @@ fake_serial_device '12': read address '1' value '42'
 fake_serial_device '12': read address '2' value '24'
 Publish: /devices/reconnect-test-1/controls/I1/meta/error: '' (QoS 1, retained)
 Publish: /devices/reconnect-test-1/controls/I2/meta/error: '' (QoS 1, retained)
+Publish: /devices/reconnect-test-1/meta/error: '' (QoS 1, retained)
 Sleep(150000)
 fake_serial_device '13': read address '1' value '1'
 fake_serial_device '13': read address '2' value '2'
