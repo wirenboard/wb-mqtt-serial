@@ -914,7 +914,6 @@
             },
             {
                 "id": "number_of_compressors",
-                "readonly": true,
                 "title": "Number of Compressors",
                 "group": "compressor",
                 "order": 0,
@@ -1792,15 +1791,13 @@
         ],
         "channels": [
             {
-                "name": "Inverter Readout %",
+                "name": "Inverter Readout",
                 "readonly": true,
                 "group": "control",
                 "reg_type": "input",
                 "address": 478,
                 "type": "value",
                 "units": "%",
-                "min": 0,
-                "max": 100,
                 "default": 0,
                 "format": "u16",
                 "condition": "enable_fan_inverter==1"
@@ -1815,9 +1812,6 @@
                 "type": "value",
                 "scale": 10,
                 "units": "h",
-                "min": 0,
-                "max": 999,
-                "default": 0,
                 "format": "u16",
                 "condition": "number_of_compressors>=1"
             },
@@ -1831,9 +1825,6 @@
                 "type": "value",
                 "scale": 10,
                 "units": "h",
-                "min": 0,
-                "max": 999,
-                "default": 0,
                 "format": "u16",
                 "condition": "number_of_compressors>=2"
             },
@@ -1847,9 +1838,6 @@
                 "type": "value",
                 "scale": 10,
                 "units": "h",
-                "min": 0,
-                "max": 999,
-                "default": 0,
                 "format": "u16",
                 "condition": "number_of_compressors>=3"
             },
@@ -1863,9 +1851,6 @@
                 "type": "value",
                 "scale": 10,
                 "units": "h",
-                "min": 0,
-                "max": 999,
-                "default": 0,
                 "format": "u16",
                 "condition": "number_of_compressors>=4"
             },
@@ -1905,8 +1890,6 @@
                     "Install default",
                     "Preven in progress"
                 ],
-                "min": 0,
-                "max": 7,
                 "format": "u16"
             },
             {
@@ -2060,6 +2043,7 @@
             },
             {
                 "name": "Alarm: Fan 3",
+                "readonly": true,
                 "group": "alarms",
                 "reg_type": "discrete",
                 "address": 36,
@@ -2317,8 +2301,6 @@
                 "type": "value",
                 "scale": 0.1,
                 "units": "deg C",
-                "min": -40,
-                "max": 150,
                 "format": "s16",
                 "condition": "type_of_probe_B2>0"
             },
@@ -2331,8 +2313,6 @@
                 "type": "value",
                 "scale": 0.1,
                 "units": "deg C",
-                "min": -40,
-                "max": 150,
                 "format": "s16",
                 "condition": "type_of_probe_B3>0"
             },
@@ -2403,7 +2383,7 @@
         ],
         "translations": {
             "en": {},
-            "ru": { 
+            "ru": {
                 "Alarm Relay Logic (/28)": "Логика аварийного реле (/28)",
                 "Alarm Signal Delay (s, A20)": "Максимальное давление нагнетания (с, A20)",
                 "Capacity of Compressor 1 (kW, /03)": "Мощность компрессора 1 (кВт, /03)",
@@ -2515,7 +2495,7 @@
                 "Fan Inverter Set Point (bar, r18)": "Заданное значение инвертора вентилятора (бар, r18)",
                 "Fan Inverter Differential (bar, r19)": "Перепад инвертора вентилятора (бар, r19)",
                 "Fan Inverter Differential (°C, r19)": "Перепад инвертора вентилятора (°C, r19)",
-                "Inverter Readout %": "Мощность инвертора %",
+                "Inverter Readout": "Мощность инвертора",
                 "Compressor 1 Operating Time": "Время наработки компрессора 1",
                 "Compressor 2 Operating Time": "Время наработки компрессора 2",
                 "Compressor 3 Operating Time": "Время наработки компрессора 3",
@@ -2614,7 +2594,7 @@
                 "Probe not connected": "Датчик не подключен",
                 "NTC probe": "Датчик NTC",
                 "0 to 5 V probe": "Датчик от 0 до 5 Вольт",
-                "Proportional":"Пропорциональное",
+                "Proportional": "Пропорциональное",
                 "Proportional + integral": "Пропорциональное + Интегрирующее",
                 "Ambient air temp. probe / for two circuit, condenser probe": "Датчик температуры окружающего воздуха / для двух контуров - датчик кондесатора",
                 "Auxiliary temperature probe (used for HT alarm)": "Вспомогательный датчик температуры (используется для сигнализации высокой температуры)",
@@ -2636,16 +2616,16 @@
                 "1 compressor 1 capacity control + 1 compressor(TWO CIRCUIT)": "1 компрессор 1 контроль мощности + 1 компрессор (два котура)",
                 "1 compressor 1 capacity control + 1 compressor 1 capacity control (TWO CIRCUIT)": "1 компрессор 1 контроль мощности + 1 компрессор 1 контроль мощности (два котура)",
                 "1 compressor 2 capacity control + 1 compressor(TWO CIRCUIT)": "1 компрессор 2 контроль мощности + 1 компрессор (два котура)",
-                "Control":"Контроль",
-                "Temperature and Digital Sensors":"Температурные и цифровые датчики",
-                "Compressors Common":"Компрессор общее",
-                "Compressors Pressure":"Компрессор давление",
-                "Compressors Time":"Компрессор время",
-                "Fans":"Вентиляторы",
-                "Fans Inverter":"Инвертор вентилятора",
-                "Alarms":"Авария",
-                "Status":"Статус",
-                "Setpoint":"Уставки",
+                "Control": "Контроль",
+                "Temperature and Digital Sensors": "Температурные и цифровые датчики",
+                "Compressors Common": "Компрессор общее",
+                "Compressors Pressure": "Компрессор давление",
+                "Compressors Time": "Компрессор время",
+                "Fans": "Вентиляторы",
+                "Fans Inverter": "Инвертор вентилятора",
+                "Alarms": "Авария",
+                "Status": "Статус",
+                "Setpoint": "Уставки",
                 "If 0 no delay": "Если 0 — без задержки",
                 "For two circuits only": "Только для двух контуров",
                 "Only if PI": "Только для PI регулирования",
@@ -2666,7 +2646,7 @@
                 "For single circuit only": "Только для одного контура",
                 "Discharge Probe": "Датчик нагнетания",
                 "Type of thermal overload generic alarm reset relating to the individual fan. Automatic: when the alarm stops, the fan starts again. Displayed only if the parameters are enabled": "Тип сброса тепловой перегрузки общего аварийного сигнала, относящегося к отдельному вентилятору. Автоматически: когда сигнал тревоги прекращается, вентилятор включается снова. Отображается только в том случае, если параметры включены",
-                "Only if prevent active":"Только если активно предотвращение"
+                "Only if prevent active": "Только если активно предотвращение"
             }
         }
     }
