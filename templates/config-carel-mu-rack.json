@@ -66,8 +66,7 @@
                     "N.C.",
                     "N.O."
                 ],
-                "default": 1,
-                "format": "bool"
+                "default": 1
             },
             {
                 "id": "alarm_signal_delay",
@@ -206,8 +205,7 @@
                     "N.O.: with no alarm the contact is open",
                     "N.C. : with no alarm the contact is closed"
                 ],
-                "default": 1,
-                "format": "bool"
+                "default": 1
             },
             {
                 "id": "discharge_probe_1_calibration",
@@ -240,8 +238,7 @@
                     "Disabled",
                     "Enabled"
                 ],
-                "default": 0,
-                "format": "bool"
+                "default": 0
             },
             {
                 "id": "enable_fan_with_comp_on",
@@ -258,8 +255,7 @@
                     "Independent operation of the fans",
                     "Fans On only when at least one compressor is On"
                 ],
-                "default": 0,
-                "format": "bool"
+                "default": 0
             },
             {
                 "id": "enable_floating_condenser_control",
@@ -276,8 +272,7 @@
                     "NO",
                     "YES"
                 ],
-                "default": 0,
-                "format": "bool"
+                "default": 0
             },
             {
                 "id": "enable_management_of_different_compressors",
@@ -295,8 +290,7 @@
                     "NOT ENABLED",
                     "ENABLED"
                 ],
-                "default": 0,
-                "format": "bool"
+                "default": 0
             },
             {
                 "id": "enable_prevent_control_on_condenser",
@@ -313,8 +307,7 @@
                     "NOT ENABLED",
                     "ENABLED"
                 ],
-                "default": 0,
-                "format": "bool"
+                "default": 0
             },
             {
                 "id": "enable_unit_off_due_to_probe_fault",
@@ -332,8 +325,7 @@
                     "NO",
                     "YES"
                 ],
-                "default": 0,
-                "format": "bool"
+                "default": 0
             },
             {
                 "id": "end_scale_value_discharge_transducer",
@@ -995,8 +987,7 @@
                     "OFF",
                     "ON"
                 ],
-                "default": 1,
-                "format": "bool"
+                "default": 1
             },
             {
                 "id": "operating_hour_threshold_for_maintenance",
@@ -1070,7 +1061,6 @@
                     "RESET"
                 ],
                 "default": 0,
-                "format": "bool",
                 "condition": "number_of_compressors>=1"
             },
             {
@@ -1089,7 +1079,6 @@
                     "RESET"
                 ],
                 "default": 0,
-                "format": "bool",
                 "condition": "number_of_compressors>=2"
             },
             {
@@ -1108,7 +1097,6 @@
                     "RESET"
                 ],
                 "default": 0,
-                "format": "bool",
                 "condition": "number_of_compressors>=3"
             },
             {
@@ -1127,7 +1115,6 @@
                     "RESET"
                 ],
                 "default": 0,
-                "format": "bool",
                 "condition": "number_of_compressors>=4"
             },
             {
@@ -1302,9 +1289,8 @@
                     "AUTO",
                     "MANUAL"
                 ],
-                "description": "Type of thermal overload/generic alarm reset relating to the individual compressor. Automatic: when the alarm stops, the compressor starts again.Displayed only if the parameters are enabled",
-                "default": 1,
-                "format": "bool"
+                "description": "Type of thermal overload or generic alarm reset relating to the individual compressor. Automatic: when the alarm stops, the compressor starts again.Displayed only if the parameters are enabled",
+                "default": 1
             },
             {
                 "id": "type_of_compressor_rotation",
@@ -1392,9 +1378,8 @@
                     "AUTO",
                     "MANUAL"
                 ],
-                "description": "Type of thermal overload/generic alarm reset relating to the individual fan. Automatic: when the alarm stops, the fan starts again. Displayed only if the parameters are enabled",
-                "default": 1,
-                "format": "bool"
+                "description": "Type of thermal overload or generic alarm reset relating to the individual fan. Automatic: when the alarm stops, the fan starts again. Displayed only if the parameters are enabled",
+                "default": 1
             },
             {
                 "id": "type_of_fan_rotation",
@@ -1519,8 +1504,7 @@
                     "AUTO",
                     "MANUAL"
                 ],
-                "default": 0,
-                "format": "bool"
+                "default": 0
             },
             {
                 "id": "type_of_unit",
@@ -2587,10 +2571,10 @@
                 "If prevent enabled": "Если предотвращение включено",
                 "On the 3rd activation, within the set time, the low pressure alarm from pressure switch changes from automatic to manual reset": "При 3-й активации в течение установленного времени сигнал тревоги низкого давления переключателя давления меняется с автоматического на ручной сброс",
                 "If no prevent alarms occur in this period, the high prevent frequency alarm is automatically reset (Only if the prevent is enabled)": "Если в этот период не возникает никаких сигналов предупреждения, сигнал тревоги высокой частоты автоматически сбрасывается (только если функция предотвращения включена)",
-                "Type of thermal overload generic alarm reset relating to the individual compressor. Automatic: when the alarm stops, the compressor starts again.Displayed only if the parameters are enabled": "Тип сброса тепловой перегрузки общего аварийного сигнала, относящегося к отдельному компрессору. Автоматически: когда сигнал тревоги прекращается, компрессор запускается снова. Отображается только в том случае, если параметры включены",
+                "Type of thermal overload or generic alarm reset relating to the individual compressor. Automatic: when the alarm stops, the compressor starts again.Displayed only if the parameters are enabled": "Тип сброса тепловой перегрузки или общего аварийного сигнала, относящегося к отдельному компрессору. Автоматически: когда сигнал тревоги прекращается, компрессор запускается снова. Отображается только в том случае, если параметры включены",
                 "For single circuit only": "Только для одного контура",
                 "Discharge Probe": "Датчик нагнетания",
-                "Type of thermal overload generic alarm reset relating to the individual fan. Automatic: when the alarm stops, the fan starts again. Displayed only if the parameters are enabled": "Тип сброса тепловой перегрузки общего аварийного сигнала, относящегося к отдельному вентилятору. Автоматически: когда сигнал тревоги прекращается, вентилятор включается снова. Отображается только в том случае, если параметры включены",
+                "Type of thermal overload or generic alarm reset relating to the individual fan. Automatic: when the alarm stops, the fan starts again. Displayed only if the parameters are enabled": "Тип сброса тепловой перегрузки или общего аварийного сигнала, относящегося к отдельному вентилятору. Автоматически: когда сигнал тревоги прекращается, вентилятор включается снова. Отображается только в том случае, если параметры включены",
                 "Only if prevent active": "Только если активно предотвращение"
             }
         }
