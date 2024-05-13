@@ -136,9 +136,9 @@ void TSerialClientRegisterPoller::ClosedPortCycle(steady_clock::time_point curre
                 callback(reg);
             }
             ScheduleNextPoll(reg, currentTime);
-            bool disconnectionState = reg->Device()->GetIsDisconnected();
+            auto initialConnectionState = reg->Device()->GetConnectionState();
             reg->Device()->SetTransferResult(false);
-            if (disconnectionState != reg->Device()->GetIsDisconnected() && deviceConnectionStateChangedCallback) {
+            if (initialConnectionState != reg->Device()->GetConnectionState() && deviceConnectionStateChangedCallback) {
                 deviceConnectionStateChangedCallback(reg->Device());
             }
         }
@@ -185,7 +185,7 @@ TPollResult TSerialClientRegisterPoller::OpenPortCycle(TPort& port,
     }
 
     res.Device = range->RegisterList().front()->Device();
-    bool deviceWasConnected = !res.Device->GetIsDisconnected();
+    auto initialConnectionState = res.Device->GetConnectionState();
 
     bool readOk = false;
     if (lastAccessedDevice.PrepareToAccess(res.Device)) {
@@ -204,12 +204,13 @@ TPollResult TSerialClientRegisterPoller::OpenPortCycle(TPort& port,
         ScheduleNextPoll(reg, spentTime.GetStartTime());
     }
 
-    if (deviceWasConnected && res.Device->GetIsDisconnected()) {
-        DeviceDisconnected(res.Device, spentTime.GetStartTime());
-    }
-
-    if (deviceWasConnected == res.Device->GetIsDisconnected() && deviceConnectionStateChangedCallback) {
-        deviceConnectionStateChangedCallback(res.Device);
+    if (initialConnectionState != res.Device->GetConnectionState()) {
+        if (res.Device->GetConnectionState() == TDeviceConnectionState::DISCONNECTED) {
+            DeviceDisconnected(res.Device, spentTime.GetStartTime());
+        }
+        if (deviceConnectionStateChangedCallback) {
+            deviceConnectionStateChangedCallback(res.Device);
+        }
     }
 
     Scheduler.UpdateSelectionTime(ceil<milliseconds>(spentTime.GetSpentTime()), reader.GetPriority());

@@ -21,6 +21,7 @@ Open()
 Sleep(20000)
 write error EBADF
 Publish: /devices/test/controls/I1/meta/error: 'r' (QoS 1, retained)
+Publish: /devices/test/meta/error: 'r' (QoS 1, retained)
 Publish: /devices/test/controls/I1/on: '42' (QoS 1, retained)
 >>> LoopOnce()
 write error EBADF

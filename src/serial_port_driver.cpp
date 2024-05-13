@@ -163,7 +163,8 @@ void TSerialPortDriver::OnDeviceConnectionStateChanged(PSerialDevice device)
     auto mqttDevice = tx->GetDevice(device->DeviceConfig()->Id);
     auto localMqttDevice = dynamic_pointer_cast<TLocalDevice>(mqttDevice);
     if (localMqttDevice) {
-        localMqttDevice->SetError(tx, device->GetIsDisconnected() ? "r" : "").Sync();
+        localMqttDevice->SetError(tx, (device->GetConnectionState() == TDeviceConnectionState::DISCONNECTED) ? "r" : "")
+            .Sync();
     }
 }
 

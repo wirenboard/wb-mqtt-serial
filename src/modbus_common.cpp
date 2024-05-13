@@ -927,7 +927,7 @@ namespace Modbus // modbus protocol common utilities
             reg->SetError(TRegister::TError::ReadError);
         }
 
-        auto& logger = range.Device()->GetIsDisconnected() ? Debug : Warn;
+        auto& logger = (range.Device()->GetConnectionState() == TDeviceConnectionState::DISCONNECTED) ? Debug : Warn;
         LOG(logger) << "failed to read " << range << ": " << msg;
         range.Device()->SetTransferResult(false);
     }

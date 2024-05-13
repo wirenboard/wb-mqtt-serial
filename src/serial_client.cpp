@@ -245,7 +245,7 @@ void TSerialClient::OpenPortCycle()
         *LastAccessedDevice);
 
     if (device) {
-        OpenCloseLogic.CloseIfNeeded(Port, device->GetIsDisconnected());
+        OpenCloseLogic.CloseIfNeeded(Port, device->GetConnectionState() == TDeviceConnectionState::DISCONNECTED);
     }
 }
 
@@ -353,20 +353,21 @@ PSerialDevice TSerialClientRegisterAndEventsReader::OpenPortCycle(TPort& port,
     const bool readAtLeastOneRegister =
         (handler.Policy == TItemAccumulationPolicy::Force) || !EventsReader.HasDevicesWithEnabledEvents();
 
-    auto res = RegisterPoller.OpenPortCycle(port,
-                                            SpentTime,
-                                            std::min(handler.PollLimit, MAX_POLL_TIME),
-                                            readAtLeastOneRegister,
-                                            lastAccessedDevice,
-                                            regCallback,
-                                            [this, &deviceConnectionStateChangedCallback](PSerialDevice device) {
-                                                if (device->GetIsDisconnected()) {
-                                                    EventsReader.DeviceDisconnected(device);
-                                                }
-                                                if (deviceConnectionStateChangedCallback) {
-                                                    deviceConnectionStateChangedCallback(device);
-                                                }
-                                            });
+    auto res =
+        RegisterPoller.OpenPortCycle(port,
+                                     SpentTime,
+                                     std::min(handler.PollLimit, MAX_POLL_TIME),
+                                     readAtLeastOneRegister,
+                                     lastAccessedDevice,
+                                     regCallback,
+                                     [this, &deviceConnectionStateChangedCallback](PSerialDevice device) {
+                                         if (device->GetConnectionState() == TDeviceConnectionState::DISCONNECTED) {
+                                             EventsReader.DeviceDisconnected(device);
+                                         }
+                                         if (deviceConnectionStateChangedCallback) {
+                                             deviceConnectionStateChangedCallback(device);
+                                         }
+                                     });
 
     TimeBalancer.AddEntry(TClientTaskType::POLLING, res.Deadline, TPriority::Low);
     if (res.NotEnoughTime) {
