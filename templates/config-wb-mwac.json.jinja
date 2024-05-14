@@ -165,15 +165,6 @@
                 "default": {% if out_num == OUT_NUM_ALARM %}8{% else %}4{% endif %},
                     {%- endif %}
                 {% endif -%}
-                {% if i == 0 and out_num == OUT_NUM_CLEANING_MODE -%}
-                "enum": [0, 4, 8, 12],
-                "enum_titles": [
-                    "no action / no action",
-                    "reset / no action",
-                    "set / no action",
-                    "toggle / no action"
-                ],
-                {% else -%}
                 "enum": [0, 1, 2, 3, 4, 5, 6, 7, 8, 9, 10, 11, 12, 13, 14, 15],
                 "enum_titles": [
                     "no action / no action",
@@ -196,7 +187,6 @@
                     "toggle / set",
                     "toggle / toggle"
                 ],
-                {% endif -%}
                 "condition": "in{{ in_num }}_mode=={{ 4 + i }}"
             },
             {% endif -%}
