@@ -1,3 +1,9 @@
+wb-mqtt-serial (2.121.2) stable; urgency=medium
+
+  * Jinjify WB_MWAC v1 template, add cleaning mode, safe state for alarm, fix debounce range, sporadic for alarm
+
+ -- Radmir Khakimov <radmir.khakimov@wirenboard.com>  Wed, 14 May 2024 14:13:00 +0500
+
 wb-mqtt-serial (2.121.1) stable; urgency=medium
 
   * Add temperature sensors poll period register for M1W2
