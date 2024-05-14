@@ -244,7 +244,18 @@ PSerialClient TSerialPortDriver::GetSerialClient()
 void TDeviceChannel::UpdateValueAndError(WBMQTT::TDeviceDriver& deviceDriver,
                                          const WBMQTT::TPublishParameters& publishPolicy)
 {
-    auto value = GetTextValue();
+    std::string value;
+    try {
+        value = GetTextValue();
+    } catch (const TRegisterValueException& err) {
+        // Register value is not defined, still able to update error
+        // This can happen on successful events read after unsuccessful events read
+        // when some registers aren't yet polled for the first time
+        if (::Debug.IsEnabled()) {
+            LOG(Debug) << "Trying to publish " << Describe() << " with undefined value";
+        }
+        UpdateError(deviceDriver);
+    }
     auto error = GetErrorText();
     bool errorIsChanged = (CachedErrorText != error);
     switch (publishPolicy.Policy) {
