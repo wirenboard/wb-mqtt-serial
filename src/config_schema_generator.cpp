@@ -67,7 +67,7 @@ namespace
     //      },
     //      "required": ["name"]
     //  }
-    Json::Value MakeTabOneOfChannelSchema(const Json::Value& channelTemplate, const std::string& deviceType)
+    Json::Value MakeTabOneOfChannelSchema(const Json::Value& channelTemplate)
     {
         Json::Value r;
         r["properties"]["name"] = MakeSingleValueProperty(channelTemplate["name"].asString());
@@ -79,8 +79,7 @@ namespace
             Json::Value i;
             i["properties"]["device_type"] = MakeSingleValueProperty(name);
             MakeArray("required", i).append("device_type");
-            MakeArray("allOf", i)
-                .append(MakeObject("$ref", "#/definitions/" + GetSubdeviceSchemaKey(deviceType, name)));
+            MakeArray("allOf", i).append(MakeObject("$ref", "#/definitions/" + GetSubdeviceSchemaKey(name)));
             items.append(i);
         }
 
@@ -97,25 +96,24 @@ namespace
     //      },
     //      "required": ["name"]
     //  }
-    Json::Value MakeTabSingleDeviceChannelSchema(const Json::Value& channelTemplate, const std::string& deviceType)
+    Json::Value MakeTabSingleDeviceChannelSchema(const Json::Value& channelTemplate)
     {
         Json::Value r;
         MakeArray("allOf", r)
             .append(MakeObject("$ref",
-                               "#/definitions/" +
-                                   GetSubdeviceSchemaKey(deviceType, channelTemplate["device_type"].asString())));
+                               "#/definitions/" + GetSubdeviceSchemaKey(channelTemplate["device_type"].asString())));
         r["properties"]["name"] = MakeSingleValueProperty(channelTemplate["name"].asString());
         MakeArray("required", r).append("name");
         return r;
     }
 
-    Json::Value MakeTabChannelSchema(const Json::Value& channel, const std::string& deviceType)
+    Json::Value MakeTabChannelSchema(const Json::Value& channel)
     {
         if (channel.isMember("oneOf")) {
-            return MakeTabOneOfChannelSchema(channel, deviceType);
+            return MakeTabOneOfChannelSchema(channel);
         }
         if (channel.isMember("device_type")) {
-            return MakeTabSingleDeviceChannelSchema(channel, deviceType);
+            return MakeTabSingleDeviceChannelSchema(channel);
         }
         return MakeTabSimpleChannelSchema(channel);
     }
@@ -184,9 +182,7 @@ namespace
     //          ]
     //      }
     //  }
-    Json::Value MakeDeviceChannelsSchema(const Json::Value& channels,
-                                         const std::string& deviceType,
-                                         const std::string& customChannelsSchemaRef)
+    Json::Value MakeDeviceChannelsSchema(const Json::Value& channels, const std::string& customChannelsSchemaRef)
     {
         Json::Value r;
         std::vector<std::string> names;
@@ -194,7 +190,7 @@ namespace
         r["type"] = "array";
         auto& items = MakeArray("oneOf", r["items"]);
         for (const auto& channel: channels) {
-            auto channelSchema = MakeTabChannelSchema(channel, deviceType);
+            auto channelSchema = MakeTabChannelSchema(channel);
             items.append(channelSchema);
             names.push_back(channel["name"].asString());
         }
@@ -245,8 +241,7 @@ namespace
     //  }
     Json::Value MakeSubDeviceSchema(const Json::Value& config,
                                     const std::string& subDeviceType,
-                                    const TDeviceTemplate& subdeviceTemplate,
-                                    const std::string& deviceType,
+                                    const TSubDeviceTemplate& subdeviceTemplate,
                                     TExpressionsCache& exprCache)
     {
         Json::Value res;
@@ -265,7 +260,7 @@ namespace
             res["properties"]["channels"]["type"] = "array";
             auto& items = MakeArray("oneOf", res["properties"]["channels"]["items"]);
             for (const auto& channel: subdeviceTemplate.Schema["channels"]) {
-                items.append(MakeTabChannelSchema(channel, deviceType));
+                items.append(MakeTabChannelSchema(channel));
             }
         }
 
@@ -289,12 +284,12 @@ namespace
     //      "required": ["device_type", "slave_id", "parameter1", ...]
     //  }
     void AddDeviceSchema(const Json::Value& deviceConfig,
-                         const TDeviceTemplate& deviceTemplate,
+                         TDeviceTemplate& deviceTemplate,
                          TSerialDeviceFactory& deviceFactory,
                          Json::Value& schema,
                          TExpressionsCache& exprCache)
     {
-        auto protocolName = GetProtocolName(deviceTemplate.Schema);
+        auto protocolName = GetProtocolName(deviceTemplate.GetTemplate());
 
         auto& req = MakeArray("required", schema);
         req.append("device_type");
@@ -305,15 +300,18 @@ namespace
         schema["properties"] = Json::Value(Json::objectValue);
         schema["properties"]["device_type"] = MakeSingleValueProperty(deviceTemplate.Type);
 
-        if (deviceTemplate.Schema.isMember("parameters")) {
-            MakeDeviceParametersSchema(deviceConfig, schema["properties"], req, deviceTemplate.Schema, exprCache);
+        if (deviceTemplate.GetTemplate().isMember("parameters")) {
+            MakeDeviceParametersSchema(deviceConfig,
+                                       schema["properties"],
+                                       req,
+                                       deviceTemplate.GetTemplate(),
+                                       exprCache);
         }
 
-        if (deviceTemplate.Schema.isMember("channels")) {
+        if (deviceTemplate.GetTemplate().isMember("channels")) {
             auto customChannelsSchemaRef = deviceFactory.GetCustomChannelSchemaRef(protocolName);
-            schema["properties"]["channels"] = MakeDeviceChannelsSchema(deviceTemplate.Schema["channels"],
-                                                                        deviceTemplate.Type,
-                                                                        customChannelsSchemaRef);
+            schema["properties"]["channels"] =
+                MakeDeviceChannelsSchema(deviceTemplate.GetTemplate()["channels"], customChannelsSchemaRef);
         }
 
         auto deviceSchemaRef = deviceFactory.GetCommonDeviceSchemaRef(protocolName);
@@ -323,16 +321,12 @@ namespace
         }
         MakeArray("allOf", schema).append(MakeObject("$ref", deviceSchemaRef));
 
-        TSubDevicesTemplateMap subdeviceTemplates(deviceTemplate.Type, deviceTemplate.Schema);
-        if (deviceTemplate.Schema.isMember("subdevices")) {
-            for (const auto& subDevice: deviceTemplate.Schema["subdevices"]) {
+        TSubDevicesTemplateMap subdeviceTemplates(deviceTemplate.Type, deviceTemplate.GetTemplate());
+        if (deviceTemplate.WithSubdevices()) {
+            for (const auto& subDevice: deviceTemplate.GetTemplate()["subdevices"]) {
                 auto name = subDevice["device_type"].asString();
-                schema["definitions"][GetSubdeviceSchemaKey(deviceTemplate.Type, name)] =
-                    MakeSubDeviceSchema(deviceConfig,
-                                        name,
-                                        subdeviceTemplates.GetTemplate(name),
-                                        deviceTemplate.Type,
-                                        exprCache);
+                schema["definitions"][GetSubdeviceSchemaKey(name)] =
+                    MakeSubDeviceSchema(deviceConfig, name, subdeviceTemplates.GetTemplate(name), exprCache);
             }
         }
     }
@@ -349,45 +343,84 @@ namespace
         }
         return str;
     }
+
+    class TDeviceTypeValidator
+    {
+        const Json::Value& CommonDeviceSchema;
+        TTemplateMap& Templates;
+        TSerialDeviceFactory& DeviceFactory;
+        TExpressionsCache exprCache;
+
+    public:
+        TDeviceTypeValidator(const Json::Value& commonDeviceSchema,
+                             TTemplateMap& templates,
+                             TSerialDeviceFactory& deviceFactory)
+            : CommonDeviceSchema(commonDeviceSchema),
+              Templates(templates),
+              DeviceFactory(deviceFactory)
+        {}
+
+        void Validate(const Json::Value& deviceConfig)
+        {
+            auto schema(CommonDeviceSchema);
+            AddDeviceSchema(deviceConfig,
+                            *Templates.GetTemplate(deviceConfig["device_type"].asString()),
+                            DeviceFactory,
+                            schema,
+                            exprCache);
+            ::Validate(deviceConfig, schema);
+        }
+    };
+
+    class TProtocolValidator
+    {
+        // Use the same schema for validation and confed
+        TProtocolConfedSchemasMap& Schemas;
+
+        //! Device type to validator for custom devices declared with protocol property
+        std::unordered_map<std::string, std::shared_ptr<TValidator>> validators;
+
+    public:
+        TProtocolValidator(TProtocolConfedSchemasMap& protocolSchemas): Schemas(protocolSchemas)
+        {}
+
+        void Validate(const Json::Value& deviceConfig)
+        {
+            auto protocol = deviceConfig.get("protocol", "modbus").asString();
+            auto protocolIt = validators.find(protocol);
+            if (protocolIt != validators.end()) {
+                protocolIt->second->Validate(deviceConfig);
+                return;
+            }
+            auto validator = std::make_shared<TValidator>(Schemas.GetSchema(protocol));
+            validators.insert({protocol, validator});
+            validator->Validate(deviceConfig);
+        }
+    };
+
 }
 
 void ValidateConfig(const Json::Value& config,
                     TSerialDeviceFactory& deviceFactory,
-                    const Json::Value& baseConfigSchema,
-                    TTemplateMap& templates)
+                    const Json::Value& commonDeviceSchema,
+                    const Json::Value& portsSchema,
+                    TTemplateMap& templates,
+                    TProtocolConfedSchemasMap& protocolSchemas)
 {
-    Json::Value schemaWithoutDevices(baseConfigSchema);
-    schemaWithoutDevices["definitions"]["device"] = Json::Value(Json::objectValue);
-    schemaWithoutDevices["definitions"]["device"]["type"] = "object";
-    Validate(config, schemaWithoutDevices);
+    Validate(config, portsSchema);
 
-    std::unordered_map<std::string, Json::Value> protocols;
-    // Create unique schema for every device with conditions
-    TExpressionsCache exprCache;
+    TProtocolValidator protocolValidator(protocolSchemas);
+    TDeviceTypeValidator deviceTypeValidator(commonDeviceSchema, templates, deviceFactory);
     size_t portIndex = 0;
     for (const auto& port: config["ports"]) {
         size_t deviceIndex = 0;
         for (const auto& device: port["devices"]) {
             try {
                 if (device.isMember("device_type")) {
-                    AddDeviceSchema(device,
-                                    templates.GetTemplate(device["device_type"].asString()),
-                                    deviceFactory,
-                                    schemaWithoutDevices,
-                                    exprCache);
+                    deviceTypeValidator.Validate(device);
                 } else {
-                    auto protocol = device.get("protocol", "modbus").asString();
-                    auto protocolIt = protocols.find(protocol);
-                    if (protocolIt == protocols.end()) {
-                        for (const auto& pr: baseConfigSchema["definitions"]["device"]["oneOf"]) {
-                            if (protocol == pr["properties"]["protocol"]["enum"][0].asString()) {
-                                protocolIt = protocols.emplace(protocol, pr).first;
-                            }
-                        }
-                    }
-                    AppendParams(schemaWithoutDevices, protocolIt->second);
+                    protocolValidator.Validate(device);
                 }
-                Validate(device, schemaWithoutDevices);
             } catch (const std::runtime_error& e) {
                 std::stringstream newContext;
                 newContext << "<root>[ports][" << portIndex << "][devices][" << deviceIndex << "]";

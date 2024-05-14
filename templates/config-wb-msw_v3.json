@@ -78,8 +78,6 @@
             "co2_sensor_type": {
                 "id": "co2_sensor_type",
                 "title": "CO2 Sensor Type",
-                // "address": 83,
-                // "reg_type": "input",
                 "enum": [0, 1],
                 "enum_titles": ["MH-Z19B", "CM1106"],
                 "default": 0,
@@ -187,6 +185,18 @@
                 "group": "air_quality"
             },
             {
+                "name": "Temperature (High Res)",
+                "reg_type": "input",
+                "address": 4,
+                "type": "value",
+                "units": "deg C",
+                "format": "s16",
+                "scale": 0.01,
+                "error_value": "0x7FFF",
+                "enabled": false,
+                "group": "air_quality"
+            },
+            {
                 "name": "Humidity",
                 "reg_type": "input",
                 "address": 1,
@@ -194,6 +204,18 @@
                 "format": "s16",
                 "scale": 0.1,
                 "error_value": "0xFFFF",
+                "group": "air_quality"
+            },
+            {
+                "name": "Humidity (High Res)",
+                "reg_type": "input",
+                "address": 5,
+                "type": "value",
+                "units": "%, RH",
+                "format": "s16",
+                "scale": 0.01,
+                "error_value": "0xFFFF",
+                "enabled": false,
                 "group": "air_quality"
             },
             {
@@ -1593,7 +1615,9 @@
                 "Baud rate": "Скорость обмена",
                 "baud_rate_description": "Перед изменением параметра убедитесь, что связь с устройством установлена. Выберите нужную скорость обмена, сохраните конфигурацию, а затем укажите в настройках порта эту же скорость.",
                 "Temperature": "Температура",
+                "Temperature (High Res)": "Температура (высокое разрешение)",
                 "Humidity": "Влажность",
+                "Humidity (High Res)": "Влажность (высокое разрешение)",
                 "CO2": "Уровень CO₂",
                 "CO2 Force Calibration": "Ручная калибровка датчика CO₂",
                 "Air Quality (VOC)": "Качество воздуха (VOC)",

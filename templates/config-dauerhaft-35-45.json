@@ -1,11 +1,21 @@
 {
-    "device_type": "Dauerhaft Roll 35/45",
+    "device_type": "tpl1_dauerhaft_roll_35_45",
     "title": "template_title",
     "group": "g-curtain",
     "device": {
         "name": "Dauerhaft Roll 35/45",
         "id": "dauerhaft-35-45",
         "protocol": "a_ok",
+        "groups": [
+            {
+                "title": "Controls",
+                "id": "controls"
+            },
+            {
+                "title": "Properties",
+                "id": "properties"
+            }
+        ],
         "parameters": {
             "baud_rate": {
                 "title": "Baud rate",
@@ -14,13 +24,8 @@
                 "address": "0xda",
                 "enum": [0, 1, 2, 3, 4],
                 "default": 1,
-                "enum_titles": [
-                    "1200",
-                    "2400",
-                    "4800",
-                    "9600",
-                    "19200"
-                ]
+                "enum_titles": ["1200", "2400", "4800", "9600", "19200"],
+                "group": "properties"
             }
         },
         "channels": [
@@ -28,47 +33,72 @@
                 "name": "Stop",
                 "type": "pushbutton",
                 "reg_type": "command",
-                "address": "0xcc"
+                "address": "0xcc",
+                "group": "controls"
             },
             {
                 "name": "Move up",
                 "type": "pushbutton",
                 "reg_type": "command",
-                "address": "0xdd"
+                "address": "0xdd",
+                "group": "controls"
             },
             {
                 "name": "Move down",
                 "type": "pushbutton",
                 "reg_type": "command",
-                "address": "0xee"
+                "address": "0xee",
+                "group": "controls"
             },
             {
                 "name": "Dot move up",
                 "type": "pushbutton",
                 "reg_type": "command",
-                "address": "0x0d"
+                "address": "0x0d",
+                "group": "controls"
             },
             {
                 "name": "Dot move down",
                 "type": "pushbutton",
                 "reg_type": "command",
-                "address": "0x0e"
+                "address": "0x0e",
+                "group": "controls"
+            },
+            {
+                "name": "Learn",
+                "type": "pushbutton",
+                "reg_type": "command",
+                "address": "0xaa",
+                "enabled": false,
+                "group": "properties"
+            },
+            {
+                "name": "Delete",
+                "type": "pushbutton",
+                "reg_type": "command",
+                "address": "0xa6",
+                "enabled": false,
+                "group": "properties"
             }
         ],
         "translations": {
             "en": {
-                "template_title": "Dauerhaft Roll 35/45 (tubular curtain motor)",
+                "template_title": "Dauerhaft Roll 35/45 (tubular)",
                 "baud_rate_description": "Make sure that communication with device is established before changing this parameter. Select required baud rate, save configuration and then change port baud rate to the same value."
             },
             "ru": {
-                "template_title": "Dauerhaft Roll 35/45 (Мотор рулонных штор)",
+                "template_title": "Dauerhaft Roll 35/45 (рулонные)",
+                "Controls": "Управление",
+                "Properties": "Параметры",
                 "Baud rate": "Скорость обмена",
                 "baud_rate_description": "Перед изменением параметра убедитесь, что связь с устройством установлена. Выберите нужную скорость обмена, сохраните конфигурацию, а затем укажите в настройках порта эту же скорость.",
                 "Stop": "Остановить",
                 "Move up": "Поднять",
                 "Move down": "Опустить",
                 "Dot move up": "Поднять на шаг",
-                "Dot move down": "Опустить на шаг"
+                "Dot move down": "Опустить на шаг",
+                "Learn": "Обучить",
+                "Delete": "Удалить"
             }
         }
     }

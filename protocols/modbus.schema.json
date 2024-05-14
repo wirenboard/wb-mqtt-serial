@@ -1,0 +1,42 @@
+{
+  "$schema": "http://json-schema.org/draft-07/schema#",
+  "type": "object",
+  "title": "Custom Modbus device",
+  "allOf": [
+    { "$ref": "#/definitions/deviceProperties" },
+    { "$ref": "#/definitions/common_channels_modbus" },
+    { "$ref": "#/definitions/common_setup" },
+    { "$ref": "#/definitions/slave_id" },
+    { "$ref": "#/definitions/modbus_device_properties" }
+  ],
+  "properties": {
+    "protocol": {
+      "type": "string",
+      "enum": ["modbus"],
+      "default": "modbus",
+      "options": {
+        "hidden": true
+      }
+    }
+  },
+  "required": ["slave_id"],
+  "options": {
+    "disable_edit_json": true,
+    "compact": true,
+    "disable_collapse": true,
+    "wb": {
+      "disable_panel": true
+    }
+  },
+  "defaultProperties": ["slave_id", "channels", "protocol"],
+  "translations": {
+    "en": {
+      "continuous_read_desc": "Implemented in Wiren Board devices. The service tries to read registers at once even if they are spaced. This allows you to reduce the number of requests"
+    },
+    "ru": {
+      "Custom Modbus device": "Устройство с протоколом Modbus",
+      "Enable continuous read": "Включить режим непрерывного чтения регистров",
+      "continuous_read_desc": "Реализовано в устройствах Wiren Board. При активации сервис пытается запросить регистры одной командой, даже если они расположены с промежутками. Это позволяет уменьшить число запросов"
+    }
+  }
+}

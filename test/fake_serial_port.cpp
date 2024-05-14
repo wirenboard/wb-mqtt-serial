@@ -298,8 +298,8 @@ void TSerialDeviceTest::TearDown()
     TLoggedFixture::TearDown();
 }
 
-WBMQTT::TMap<std::string, TTemplateMap> TSerialDeviceIntegrationTest::Templates;
-Json::Value TSerialDeviceIntegrationTest::CommonConfigSchema;
+WBMQTT::TMap<std::string, std::shared_ptr<TTemplateMap>> TSerialDeviceIntegrationTest::Templates;
+Json::Value TSerialDeviceIntegrationTest::CommonDeviceSchema;
 Json::Value TSerialDeviceIntegrationTest::CommonConfigTemplatesSchema;
 
 std::string TSerialDeviceIntegrationTest::GetTemplatePath() const
@@ -309,13 +309,13 @@ std::string TSerialDeviceIntegrationTest::GetTemplatePath() const
 
 void TSerialDeviceIntegrationTest::SetUpTestCase()
 {
-    if (CommonConfigSchema.empty()) {
-        CommonConfigSchema = LoadConfigSchema(GetDataFilePath("../wb-mqtt-serial.schema.json"));
+    if (CommonDeviceSchema.empty()) {
+        CommonDeviceSchema = WBMQTT::JSON::Parse(GetDataFilePath("../wb-mqtt-serial-confed-common.schema.json"));
     }
     if (CommonConfigTemplatesSchema.empty()) {
         CommonConfigTemplatesSchema =
             LoadConfigTemplatesSchema(GetDataFilePath("../wb-mqtt-serial-device-template.schema.json"),
-                                      CommonConfigSchema);
+                                      CommonDeviceSchema);
     }
 }
 
@@ -330,17 +330,24 @@ void TSerialDeviceIntegrationTest::SetUp()
     auto it = Templates.find(path);
     if (it == Templates.end()) {
         if (path.empty()) {
-            it = Templates.emplace(path, TTemplateMap()).first;
+            it = Templates.emplace(path, std::make_shared<TTemplateMap>()).first;
         } else {
-            it = Templates.emplace(path, TTemplateMap(GetDataFilePath(path), CommonConfigTemplatesSchema)).first;
+            auto templateMap = std::make_shared<TTemplateMap>(CommonConfigTemplatesSchema);
+            templateMap->AddTemplatesDir(GetDataFilePath(path));
+            it = Templates.emplace(path, templateMap).first;
         }
     }
 
+    auto portsSchema = WBMQTT::JSON::Parse(GetDataFilePath("../wb-mqtt-serial-ports.schema.json"));
+    TProtocolConfedSchemasMap protocolSchemas(GetDataFilePath("../protocols"), CommonDeviceSchema);
+
     Config = LoadConfig(GetDataFilePath(ConfigPath()),
                         DeviceFactory,
-                        CommonConfigSchema,
-                        it->second,
+                        CommonDeviceSchema,
+                        *it->second,
                         rpcConfig,
+                        portsSchema,
+                        protocolSchemas,
                         [=](const Json::Value&, PRPCConfig config) { return std::make_pair(SerialPort, false); });
 
     std::filesystem::remove(DB_PATH);

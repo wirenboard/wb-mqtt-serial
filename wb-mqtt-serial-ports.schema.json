@@ -1,0 +1,342 @@
+{
+  "$schema": "http://json-schema.org/draft-07/schema#",
+  "type": "object",
+
+  "definitions": {
+    "commonPortSettings": {
+      "properties": {
+        "enabled": {
+          "type": "boolean",
+          "title": "Enable port",
+          "default": true,
+          "format": "checkbox",
+          "propertyOrder": 2,
+          "options": {
+            "grid_columns": 12,
+            "wb": {
+              "show_editor": true
+            }
+          }
+        },
+        "response_timeout_ms": {
+          "type": "integer",
+          "title": "Response timeout (ms)",
+          "description": "Zero means no timeout. If not set, the default timeout (500ms) is used.",
+          "minimum": 0,
+          "default": 500,
+          "propertyOrder": 8,
+          "options": {
+            "grid_columns": 12,
+            "show_opt_in": true,
+            "wb" : {
+              "disabledEditorText": " "
+            }
+          }
+        },
+        "guard_interval_us": {
+          "type": "integer",
+          "title": "Guard interval (us)",
+          "description": "guard_interval_description",
+          "minimum": 0,
+          "default": 0,
+          "propertyOrder": 9,
+          "options": {
+            "grid_columns": 12,
+            "show_opt_in": true,
+            "wb" : {
+              "disabledEditorText": " "
+            }
+          }
+        },
+        "poll_interval": {
+          "type": "integer",
+          "options": {
+            "hidden": true
+          }
+        },
+        "read_rate_limit_ms": {
+          "type": "integer",
+          "title": "Read rate limit (ms)",
+          "description" : "read_rate_limit_description",
+          "minimum": 0,
+          "default": 1000,
+          "propertyOrder": 10,
+          "options": {
+            "grid_columns": 12
+          }
+        }
+      }
+    },
+    "serialPort": {
+      "title": "Serial port",
+      "type": "object",
+      "allOf": [
+        {
+          "properties": {
+            "port_type": {
+              "type": "string",
+              "enum": ["serial"],
+              "default": "serial",
+              "propertyOrder": 1,
+              "options": {
+                "hidden": true
+              }
+            },
+            "path": {
+              "type": "string",
+              "title": "Path to device",
+              "minLength": 1,
+              "propertyOrder": 3,
+              "options": {
+                "grid_columns": 4
+              }    
+            },
+            "baud_rate": {
+              "type": "integer",
+              "title": "Baud rate",
+              "enum": [110, 300, 600, 1200, 2400, 4800, 9600, 19200, 38400, 57600, 115200],
+              "default": 9600,
+              "propertyOrder": 4,
+              "options": {
+                "grid_columns": 2,
+                "wb": {
+                  "show_editor":true
+                }
+              }    
+            },
+            "parity": {
+              "type": "string",
+              "title": "Parity",
+              "enum": ["N", "E", "O"],
+              "default": "N",
+              "propertyOrder": 5,
+              "options": {
+                "grid_columns": 2,
+                "wb": {
+                  "show_editor":true
+                }
+              }    
+            },
+            "data_bits": {
+              "type": "integer",
+              "title": "Data bits",
+              "enum": [5, 6, 7, 8],
+              "default": 8,
+              "propertyOrder": 6,
+              "options": {
+                "grid_columns": 2,
+                "wb": {
+                  "show_editor":true
+                }
+              }    
+            },
+            "stop_bits": {
+              "type": "integer",
+              "title": "Stop bits",
+              "enum": [1, 2],
+              "default": 1,
+              "propertyOrder": 7,
+              "options": {
+                "grid_columns": 2,
+                "wb": {
+                  "show_editor":true
+                }
+              }    
+            }
+          },
+          "required": ["path"]
+        },
+        { "$ref" : "#/definitions/commonPortSettings"}
+      ],
+      "format": "grid",
+      "options": {
+        "wb": {
+          "disable_title": true
+        }
+      }
+    },
+    "commonTcpPortSettings": {
+      "properties": {
+        "address": {
+          "type": "string",
+          "title": "IPv4 address or hostname of device",
+          "minLength": 1,
+          "propertyOrder": 3,
+          "options": {
+            "grid_columns": 10
+          }
+        },
+        "port": {
+          "type": "integer",
+          "title": "TCP port number",
+          "minimum": 1,
+          "maximum": 65536,
+          "propertyOrder": 4,
+          "options": {
+            "grid_columns": 2
+          }
+        },
+        "connection_timeout_ms": {
+          "type": "integer",
+          "title": "Connection timeout (ms)",
+          "description": "connection_timeout_description",
+          "minimum": -1,
+          "default": 5000,
+          "propertyOrder": 5
+        },
+        "connection_max_fail_cycles": {
+          "type": "integer",
+          "title": "Connection max fail cycles",
+          "description": "connection_max_fail_description",
+          "minimum": -1,
+          "default": 2,
+          "propertyOrder": 6
+        }
+      },
+      "required": ["address", "port"]
+    },
+    "modbusTcpPort": {
+      "title": "MODBUS TCP",
+      "type": "object",
+      "properties": {
+        "port_type": {
+          "type": "string",
+          "enum": ["modbus tcp"],
+          "default": "modbus tcp",
+          "propertyOrder": 1,
+          "options": {
+            "hidden": true
+          }
+        }
+      },
+      "required": ["port_type"],
+      "allOf": [
+        { "$ref" : "#/definitions/commonTcpPortSettings"},
+        { "$ref" : "#/definitions/commonPortSettings"}
+      ],
+      "format": "grid",
+      "options": {
+        "wb": {
+          "disable_title": true
+        }
+      }
+    },
+    "tcpPort": {
+      "title": "Serial over TCP",
+      "type": "object",
+      "properties": {
+        "port_type": {
+          "type": "string",
+          "enum": ["tcp"],
+          "default": "tcp",
+          "propertyOrder": 1,
+          "options": {
+            "hidden": true
+          }
+        }
+      },
+      "required": ["port_type"],
+      "allOf": [
+        { "$ref" : "#/definitions/commonTcpPortSettings"},
+        { "$ref" : "#/definitions/commonPortSettings"}
+      ],
+      "format": "grid",
+      "options": {
+        "wb": {
+          "disable_title": true
+        }
+      }
+    }
+  },
+
+  "properties": {
+    "debug": {
+      "type": "boolean",
+      "title": "Enable debug logging",
+      "default": false,
+      "format": "checkbox",
+      "propertyOrder": 1,
+      "options": {
+        "wb": {
+          "show_editor": true
+        }
+      }
+    },
+    "ports": {
+      "type": "array",
+      "items": {       
+        "oneOf": [
+          { "$ref": "#/definitions/serialPort" },
+          { "$ref": "#/definitions/tcpPort" },
+          { "$ref": "#/definitions/modbusTcpPort" }
+        ]
+      }
+    },
+    "max_unchanged_interval" : {
+      "type" : "integer",
+      "title" : "Unchanged value posting interval",
+      "description" : "max_unchanged_interval_desc",
+      "default" : -1,
+      "propertyOrder" : 2,
+      "options": {
+        "show_opt_in": true
+      }
+    },
+    "rate_limit" : {
+      "type" : "integer",
+      "title" : "Maximum registers reads per second",
+      "description" : "rate_limit_desc",
+      "default" : 100,
+      "min": 1,
+      "propertyOrder" : 3,
+      "options": {
+        "show_opt_in": true
+      }
+    }
+  },
+
+  "options": {
+    "disable_edit_json": true,
+    "wb": {
+      "disable_title": true
+    }
+  },
+
+  "translations": {
+    "en": {
+      "read_rate_limit_description": "This option is deprecated, use read period of channels instead",
+      "guard_interval_description": "Specifies the delay in microseconds before writing to the port",
+      "connection_timeout_description": "Used for disconnect detection. If not set, the default timeout (5000ms) is used. Value -1 disables TCP reconnect. Zero means instant timeout.",
+      "connection_max_fail_description": "Defines number of driver cycles with all devices being disconnected before resetting connection. Default value is 2. Value -1 disables TCP reconnect. Zero means instant timeout.",
+      "max_unchanged_interval_desc": "Specifies the maximum interval in seconds between posting the same values to message queue. Zero means the values are posted to the queue every time they read from the device. By default, the values are only reported on change. Negative value means default behavior.",
+      "rate_limit_desc": "To reduce the load on the processor, it is not recommended to specify more than 100 reads for WB6 and 800 for WB7"
+    },
+    "ru": {
+      "Enable port": "Включить порт",
+      "Response timeout (ms)": "Таймаут ответа (мс)",
+      "Zero means no timeout. If not set, the default timeout (500ms) is used.": "Ноль - без таймаута. Таймаут по умолчанию 500мс",
+      "Guard interval (us)": "Задержка перед записью в порт (мкс)",
+      "guard_interval_description": "",
+      "Serial port": "Последовательный порт",
+      "Path to device": "Путь до устройства",
+      "Baud rate": "Скорость обмена",
+      "Parity": "Контроль чётности",
+      "Data bits": "Число бит данных",
+      "Stop bits": "Стоп биты",
+      "IPv4 address or hostname of device": "IPv4 адрес или доменное имя устройства",
+      "TCP port number": "Номер TCP порта",
+      "Connection timeout (ms)": "Таймаут подключения (мс)",
+      "connection_timeout_description": "Используется для определения потери связи. По умолчанию 5000мс. -1 запрещает автоматическое переподключение при потере связи.",
+      "Connection max fail cycles": "Максимальное число неудачных переподключений",
+      "connection_max_fail_description": "Задаёт максимальное число неудачных переподключений для всех устройств, после которого будет произведён сброс соединения. По умолчанию 2. -1 запрещает переподключения.",
+      "Serial over TCP": "Передача пакетов через TCP",
+      "Unchanged value posting interval": "Интервал публикации неизменившихся значений",
+      "max_unchanged_interval_desc": "Задает интервал публикации значений, если они не изменились. Ноль задает публикацию после каждого чтения данных из устройства. По умолчанию публикация происходит по изменению значения. Отрицательное число задает поведение по умолчанию",
+      "Enable debug logging": "Включить отладочные сообщения",
+      "Read rate limit (ms)": "Читать не чаще (мс)",
+      "read_rate_limit_description": "Этот параметр устарел и не рекомендуется к использованию, вместо него пользуйтесь периодом опроса канала",
+      "Maximum registers reads per second": "Максимальное количество чтений регистров в секунду",
+      "rate_limit_desc": "Для снижения нагрузки на процессор не рекомендуется указывать более 100 чтений для WB6 и 800 для WB7"
+    }
+  }
+}

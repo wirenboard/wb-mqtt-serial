@@ -119,6 +119,16 @@
                 "group": "properties"
             },
             {
+                "name": "Max rotational speed",
+                "type": "value",
+                "reg_type": "status",
+                "address": "0xcaca:16:8",
+                "units": "rpm",
+                "readonly": true,
+                "enabled": false,
+                "group": "properties"
+            },
+            {
                 "name": "Hand pull",
                 "type": "switch",
                 "reg_type": "zonebit",
@@ -157,16 +167,17 @@
         ],
         "translations": {
             "en": {
-                "template_title": "Dauerhaft CM5 (sliding curtain motor)",
+                "template_title": "Dauerhaft CM5 (sliding)",
                 "baud_rate_description": "Make sure that communication with device is established before changing this parameter. Select required baud rate, save configuration and then change port baud rate to the same value."
             },
             "ru": {
-                "template_title": "Dauerhaft CM5 (мотор раздвижных штор)",
+                "template_title": "Dauerhaft CM5 (раздвижные)",
                 "Controls": "Управление",
                 "Properties": "Параметры",
                 "Functions": "Функции",
                 "Baud rate": "Скорость обмена",
                 "baud_rate_description": "Перед изменением параметра убедитесь, что связь с устройством установлена. Выберите нужную скорость обмена, сохраните конфигурацию, а затем укажите в настройках порта эту же скорость.",
+                "Max rotational speed": "Максимальная скорость вращения",
                 "Rotational speed": "Скорость вращения",
                 "Position": "Позиция",
                 "Stop": "Остановить",

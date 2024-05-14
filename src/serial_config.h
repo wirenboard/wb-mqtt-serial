@@ -11,102 +11,11 @@
 #include <wblib/driver_args.h>
 #include <wblib/json_utils.h>
 
+#include "confed_schemas_map.h"
 #include "port.h"
 #include "rpc_config.h"
 #include "serial_device.h"
-
-struct TDeviceTemplateHardware
-{
-    std::string Signature; //! Device signature
-    std::string Fw;        //! Firmware version (semver)
-};
-
-struct TDeviceTemplate
-{
-    std::string Type;
-    std::string Title;
-    Json::Value Schema;
-    bool IsDeprecated = false;
-    std::string Group;
-    std::vector<TDeviceTemplateHardware> Hardware;
-
-    TDeviceTemplate(const std::string& type, const std::string title, const Json::Value& schema);
-};
-
-class ITemplateMap
-{
-public:
-    virtual ~ITemplateMap() = default;
-
-    virtual const TDeviceTemplate& GetTemplate(const std::string& deviceType) = 0;
-    virtual std::vector<std::string> GetDeviceTypes() const = 0;
-};
-
-class TTemplateMap: public ITemplateMap
-{
-    /**
-     *  @brief Device type to template file path mapping.
-     *         Files in map are jsons with device_type parameter, but aren't yet validated against schema.
-     */
-    std::unordered_map<std::string, std::string> TemplateFiles;
-
-    /**
-     * @brief Device type to TDeviceTemplate mapping.
-     *        Valid and parsed templates.
-     */
-    std::unordered_map<std::string, std::shared_ptr<TDeviceTemplate>> ValidTemplates;
-
-    std::unique_ptr<WBMQTT::JSON::TValidator> Validator;
-
-    Json::Value Validate(const std::string& deviceType, const std::string& filePath);
-    std::shared_ptr<TDeviceTemplate> GetTemplatePtr(const std::string& deviceType);
-    std::string GetDeviceType(const std::string& templatePath) const;
-
-public:
-    TTemplateMap() = default;
-
-    /**
-     * @brief Construct a new TTemplateMap object.
-     *        Throws TConfigParserException if can't open templatesDir.
-     *
-     * @param templatesDirs directory with templates
-     * @param templateSchema JSON Schema for template file validation
-     * @param passInvalidTemplates false - throw exception if a folder contains json without device_type parameter
-     *                             true - print log message and continue folder processing
-     */
-    TTemplateMap(const std::string& templatesDir, const Json::Value& templateSchema, bool passInvalidTemplates = true);
-
-    /**
-     * @brief Add templates from templatesDir to map.
-     *        Throws TConfigParserException if can't open templatesDir.
-     *
-     * @param templatesDir directory with templates
-     * @param passInvalidTemplates false - throw exception if a folder contains json without device_type parameter
-     *                             true - print log message and continue folder processing
-     */
-    void AddTemplatesDir(const std::string& templatesDir, bool passInvalidTemplates = true);
-
-    const TDeviceTemplate& GetTemplate(const std::string& deviceType) override;
-
-    std::vector<std::string> GetDeviceTypes() const override;
-
-    std::vector<std::shared_ptr<TDeviceTemplate>> GetTemplatesOrderedByName();
-};
-
-class TSubDevicesTemplateMap: public ITemplateMap
-{
-    std::unordered_map<std::string, TDeviceTemplate> Templates;
-    std::string DeviceType;
-
-public:
-    TSubDevicesTemplateMap(const std::string& deviceType, const Json::Value& device);
-
-    const TDeviceTemplate& GetTemplate(const std::string& deviceType) override;
-
-    std::vector<std::string> GetDeviceTypes() const override;
-
-    void AddSubdevices(const Json::Value& subdevicesArray);
-};
+#include "templates_map.h"
 
 struct TPortConfig
 {
@@ -148,15 +57,12 @@ public:
     TConfigParserException(const std::string& message);
 };
 
-Json::Value LoadConfigTemplatesSchema(const std::string& templateSchemaFileName, const Json::Value& configSchema);
-void AddFakeDeviceType(Json::Value& configSchema);
+Json::Value LoadConfigTemplatesSchema(const std::string& templateSchemaFileName, const Json::Value& commonDeviceSchema);
 void AddRegisterType(Json::Value& configSchema, const std::string& registerType);
 
 typedef std::function<std::pair<PPort, bool>(const Json::Value& config, PRPCConfig rpcConfig)> TPortFactoryFn;
 
 std::pair<PPort, bool> DefaultPortFactory(const Json::Value& port_data, PRPCConfig rpcConfig);
-
-Json::Value LoadConfigSchema(const std::string& schemaFileName);
 
 class IRegisterAddressFactory
 {
@@ -311,15 +217,17 @@ public:
 
 PHandlerConfig LoadConfig(const std::string& configFileName,
                           TSerialDeviceFactory& deviceFactory,
-                          const Json::Value& baseConfigSchema,
+                          const Json::Value& commonDeviceSchema,
                           TTemplateMap& templates,
                           PRPCConfig rpcConfig,
+                          const Json::Value& portsSchema,
+                          TProtocolConfedSchemasMap& protocolSchemas,
                           TPortFactoryFn portFactory = DefaultPortFactory);
 
 bool IsSubdeviceChannel(const Json::Value& channelSchema);
 
 std::string GetDeviceKey(const std::string& deviceType);
-std::string GetSubdeviceSchemaKey(const std::string& deviceType, const std::string& subDeviceType);
+std::string GetSubdeviceSchemaKey(const std::string& subDeviceType);
 
 void AppendParams(Json::Value& dst, const Json::Value& src);
 void SetIfExists(Json::Value& dst, const std::string& dstKey, const Json::Value& src, const std::string& srcKey);

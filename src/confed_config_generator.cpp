@@ -11,7 +11,7 @@ namespace
 {
     Json::Value FilterStandardChannels(const Json::Value& device,
                                        const Json::Value& deviceTemplate,
-                                       ITemplateMap& templates,
+                                       TSubDevicesTemplateMap& templates,
                                        const std::unordered_map<std::string, std::string>& subdeviceTypeHashes);
     void ExpandGroupChannels(Json::Value& device, const Json::Value& deviceTemplate);
 
@@ -30,7 +30,7 @@ namespace
     }
 
     bool TryToTransformSubDeviceChannel(Json::Value& channel,
-                                        ITemplateMap& templates,
+                                        TSubDevicesTemplateMap& templates,
                                         const std::unordered_map<std::string, std::string>& subdeviceTypeHashes)
     {
         if (!RemoveDeviceHash(channel, subdeviceTypeHashes)) {
@@ -104,7 +104,7 @@ namespace
 
     Json::Value FilterStandardChannels(const Json::Value& device,
                                        const Json::Value& deviceTemplate,
-                                       ITemplateMap& templates,
+                                       TSubDevicesTemplateMap& templates,
                                        const std::unordered_map<std::string, std::string>& subdeviceTypeHashes)
     {
         Json::Value channels(Json::arrayValue);
@@ -214,17 +214,13 @@ Json::Value MakeConfigFromConfed(std::istream& stream, TTemplateMap& templates)
                     device.removeMember("value");
                     device = v;
                 } else {
-                    Json::Value deviceTemplate(templates.GetTemplate(dt).Schema);
+                    Json::Value deviceTemplate(templates.GetTemplate(dt)->GetTemplate());
                     if (deviceTemplate.isMember("subdevices")) {
                         MakeDeviceConfigFromConfed(device, dt, deviceTemplate);
                     } else {
                         MakeDeviceWithGroupsConfigFromConfed(device, deviceTemplate);
                     }
                 }
-            }
-
-            if (device["slave_id"].isBool()) {
-                device.removeMember("slave_id");
             }
         }
     }

@@ -28,7 +28,7 @@ namespace
 
 void UpdateChannels(Json::Value& dst,
                     const Json::Value& userConfig,
-                    ITemplateMap& channelTemplates,
+                    TSubDevicesTemplateMap& channelTemplates,
                     const std::string& logPrefix);
 
 void AppendSetupItems(Json::Value& deviceTemplate, const Json::Value& config, TExpressionsCache* exprs = nullptr)
@@ -182,7 +182,7 @@ void MergeChannelProperties(Json::Value& templateConfig, const Json::Value& user
 }
 
 Json::Value MergeChannelConfigWithTemplate(const Json::Value& channelConfig,
-                                           ITemplateMap& templates,
+                                           TSubDevicesTemplateMap& templates,
                                            const std::string& logPrefix)
 {
     if (!channelConfig.isMember("device_type")) {
@@ -205,7 +205,7 @@ Json::Value MergeChannelConfigWithTemplate(const Json::Value& channelConfig,
 
 void UpdateChannels(Json::Value& channelsFromTemplate,
                     const Json::Value& userChannels,
-                    ITemplateMap& channelTemplates,
+                    TSubDevicesTemplateMap& channelTemplates,
                     const std::string& logPrefix)
 {
     std::unordered_map<std::string, std::vector<Json::ArrayIndex>> channelNames;
