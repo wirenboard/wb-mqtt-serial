@@ -72,9 +72,9 @@
                 "id": "g_safety"
             },
             {
-                "title": "wet_cleaning_mode_name",
+                "title": "Cleaning Mode",
                 "id": "wet_cleaning_mode",
-                "description": "wet_cleaning_mode_description",
+                "description": "wet_cleaning_mode_description"
             },
             {
                 "title": "Safety Behaviour",
@@ -143,7 +143,7 @@
             {% if not (i == 1 and out_num == OUT_NUM_CLEANING_MODE) -%}
             {% if i == 0 %}"in{{ in_num }}_out{{ out_num }}_actions": { {% else %}"in{{ in_num }}_out{{ out_num }}_actions_20min": { {% endif %}
                 "group": "gg_in{{ in_num }}_mapping_matrix_actions",
-                "title": {% if out_num == OUT_NUM_K1 %}"Output K1"{% elif out_num == OUT_NUM_K2 %}"Output K2"{% elif out_num == OUT_NUM_ALARM %}"Alarm"{% else %}"wet_cleaning_mode_name"{% endif %},
+                "title": {% if out_num == OUT_NUM_K1 %}"Output K1"{% elif out_num == OUT_NUM_K2 %}"Output K2"{% elif out_num == OUT_NUM_ALARM %}"Alarm"{% else %}"Cleaning Mode"{% endif %},
                 "order": {{ out_num }},
                 "address": {{ 384 + ((in_num - 1) * 8) + (out_num - 1) }},
                 "reg_type": "holding",
@@ -386,8 +386,7 @@
                 "group": "gg_outputs_channels"
             },
             {
-                "name": "wet_cleaning_mode_str",
-                "id": "Wet cleaning mode",
+                "name": "Cleaning Mode",
                 "reg_type": "coil",
                 "address": 3,
                 "type": "switch",
@@ -463,7 +462,7 @@
                 "poll_timeout_description": "Parameter defines the time of absence of polling in seconds, after which safety mode will be activated. 1 - 65534 ms, 10 by default.",
                 "relays_state_after_poweron_description": "Default - \"Switch to safety state\"",
 
-                "wet_cleaning_mode_str": "\"Wet cleaning\" mode",
+                "Cleaning Mode": "\"Wet cleaning\" Mode",
                 "wet_cleaning_mode_description": "\"Wet cleaning\" mode is used to disable reactions on flood sensors when a room is being cleaned. When the mode is started/stopped, a sound signal is emitted, and the indicators of the inputs periodically flash briefly during the activity of the mode. Disabled automatically after the specified time.",
                 "wet_cleaning_mode_timer_description": "1 - 360 min, 20 by default",
             },
@@ -474,7 +473,7 @@
 
                 "Counters": "Счётчики",
 
-                "wet_cleaning_mode_str": "Режим \"Влажная уборка\"",
+                "Cleaning Mode": "Режим \"Влажная уборка\"",
                 "wet_cleaning_mode_description": "Режим \"Влажная уборка\" используется для отключения реакции на датчики протечки при влажной уборке помещения. При запуске/остановке режима издаётся звуковой сигнал, индикаторы входов периодически коротко моргают во время активности режима. Отключается автоматически по истечении указанного времени.",
                 "wet_cleaning_mode_timer_description": "1 — 360 мин, 20 по умолчанию",
                 "\"Wet cleaning\" mode timer (min)": "Таймер режима \"Влажная уборка\" (мин)",
