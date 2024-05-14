@@ -471,10 +471,10 @@
                 "Baud rate": "Скорость обмена",
                 "baud_rate_description": "Перед изменением параметра убедитесь, что связь с устройством установлена. Выберите нужную скорость обмена, сохраните конфигурацию, а затем укажите в настройках порта эту же скорость.",
 
-                "Counters": "Счётчики",
+                "Counters": "Счетчики",
 
                 "Cleaning Mode": "Режим \"Влажная уборка\"",
-                "wet_cleaning_mode_description": "Режим \"Влажная уборка\" используется для отключения реакции на датчики протечки при влажной уборке помещения. При запуске/остановке режима издаётся звуковой сигнал, индикаторы входов периодически коротко моргают во время активности режима. Отключается автоматически по истечении указанного времени.",
+                "wet_cleaning_mode_description": "Режим \"Влажная уборка\" используется для отключения реакции на датчики протечки при влажной уборке помещения. При запуске/остановке режима издается звуковой сигнал, индикаторы входов периодически коротко моргают во время активности режима. Отключается автоматически по истечении указанного времени.",
                 "wet_cleaning_mode_timer_description": "1 — 360 мин, 20 по умолчанию",
                 "\"Wet cleaning\" mode timer (min)": "Таймер режима \"Влажная уборка\" (мин)",
 
@@ -484,7 +484,7 @@
                 "Input {{ letter }}{{ in_num - in_num_offset }}": "Вход {{ letter }}{{ in_num - in_num_offset }}",
                 "Input {{ letter }}{{ in_num - in_num_offset }} Mode": "Режим работы входа {{ letter }}{{ in_num - in_num_offset }}",
                 "Input {{ letter }}{{ in_num - in_num_offset }} Debounce (ms)": "Время защиты от дребезга входа {{ letter }}{{ in_num - in_num_offset }} (мс)",
-                "{{ letter }}{{ in_num - in_num_offset }} Counter": "Счётчик {{ letter }}{{ in_num - in_num_offset }}",
+                "{{ letter }}{{ in_num - in_num_offset }} Counter": "Счетчик {{ letter }}{{ in_num - in_num_offset }}",
                 "{{ letter }}{{ in_num - in_num_offset }} Freq": "Частота {{ letter }}{{ in_num - in_num_offset }}",
                 {% endfor -%}
 
@@ -500,8 +500,8 @@
                 "operate according to mapping-matrix, repeat action in 20 min if input still activated": "управлять по mapping-матрице; повторить действие через 20 мин., если вход все еще активирован",
                 
                 {% for lp_in_num in range(1, LP_INPUTS_NUMBER + 1) -%}
-                "P{{ lp_in_num }} Counter": "Счётчик P{{ lp_in_num }}",
-                "P{{ lp_in_num }} Counter Offset": "Начальное значение счётчика P{{ lp_in_num }}",
+                "P{{ lp_in_num }} Counter": "Счетчик P{{ lp_in_num }}",
+                "P{{ lp_in_num }} Counter Offset": "Начальное значение счетчика P{{ lp_in_num }}",
                 {% endfor -%}
 
                 "Alarm": "Авария",
