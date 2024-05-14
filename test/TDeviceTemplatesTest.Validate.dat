@@ -19971,6 +19971,7 @@ WB-MSW2
 	Uptime  =>  Uptime
 WB-MWAC
 	Alarm  =>  Alarm
+	Cleaning Mode  =>  Cleaning Mode
 	F1  =>  F1
 	F1 Counter  =>  F1 Counter
 	F1 Freq  =>  F1 Freq
@@ -19984,8 +19985,8 @@ WB-MWAC
 	Input Voltage  =>  Input Voltage
 	MCU Temperature  =>  MCU Temperature
 	MCU Voltage  =>  MCU Voltage
-	Output K1  =>  Output K1
-	Output K2  =>  Output K2
+	Output K1  =>  K1
+	Output K2  =>  K2
 	P1 Counter  =>  P1 Counter
 	P1 Counter Offset  =>  P1 Counter Offset
 	P2 Counter  =>  P2 Counter
@@ -20001,7 +20002,6 @@ WB-MWAC
 	S3 Freq  =>  S3 Freq
 	Serial  =>  Serial
 	Uptime  =>  Uptime
-	wet_cleaning_mode_name  =>  wet_cleaning_mode_name
 WBE2-I-EBUS
 	Boiler Outdoor Temperature Sensor  =>  Boiler Outdoor Temperature Sensor
 	Boiler Status  =>  Boiler Status
