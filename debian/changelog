@@ -1,3 +1,9 @@
+wb-mqtt-serial (2.121.3) stable; urgency=medium
+
+  * Fixed a crash caused by receiving a large number of incorrect Modbus packets
+
+ -- Petr Krasnoshchekov <petr.krasnoshchekov@wirenboard.com>  Tue, 14 May 2024 18:26:13 +0500
+
 wb-mqtt-serial (2.121.2) stable; urgency=medium
 
   * Add more verbose internal errors. No functional changes
