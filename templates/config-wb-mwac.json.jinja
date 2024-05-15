@@ -148,7 +148,7 @@
             {% if not (i == 1 and out_num == OUT_NUM_CLEANING_MODE) -%}
             {% if i == 0 %}"in{{ in_num }}_out{{ out_num }}_actions": { {% else %}"in{{ in_num }}_out{{ out_num }}_actions_20min": { {% endif %}
                 "group": "gg_in{{ in_num }}_mapping_matrix_actions",
-                "title": {% if out_num == OUT_NUM_K1 %}"Output K1"{% elif out_num == OUT_NUM_K2 %}"Output K2"{% elif out_num == OUT_NUM_ALARM %}"Alarm"{% else %}"Cleaning Mode"{% endif %},
+                "title": {% if out_num == OUT_NUM_K1 %}"K1"{% elif out_num == OUT_NUM_K2 %}"K2"{% elif out_num == OUT_NUM_ALARM %}"Alarm"{% else %}"Cleaning Mode"{% endif %},
                 "order": {{ out_num }},
                 "address": {{ 384 + ((in_num - 1) * 8) + (out_num - 1) }},
                 "reg_type": "holding",
@@ -235,7 +235,7 @@
             },
             {% for out_num in range(1, OUTPUTS_NUMBER) -%}
             "out{{ out_num }}_safe_state": {
-                "title": {%if out_num == OUT_NUM_ALARM %}"Alarm"{% else %}"Output K{{ out_num }}"{% endif %},
+                "title": {%if out_num == OUT_NUM_ALARM %}"Alarm"{% else %}"K{{ out_num }}"{% endif %},
                 "group": "gg_outputs_safe_state",
                 "order": {{ out_num }},
                 "address": {{ 930 + (out_num - 1) }},
@@ -248,7 +248,7 @@
                 ]
             },
             "out{{ out_num }}_safety_behaviour": {
-                "title": {%if out_num == OUT_NUM_ALARM %}"Alarm"{% else %}"Output K{{ out_num }}"{% endif %},
+                "title": {%if out_num == OUT_NUM_ALARM %}"Alarm"{% else %}"K{{ out_num }}"{% endif %},
                 "group": "gg_safety_behaviour",
                 "order": {{ out_num }},
                 "address": {{ 938 + (out_num - 1) }},
@@ -261,7 +261,7 @@
                 ]
             },
             "out{{ out_num }}_safety_input_control": {
-                "title": {%if out_num == OUT_NUM_ALARM %}"Alarm"{% else %}"Output K{{ out_num }}"{% endif %},
+                "title": {%if out_num == OUT_NUM_ALARM %}"Alarm"{% else %}"K{{ out_num }}"{% endif %},
                 "group": "gg_safety_input_control",
                 "order": {{ out_num }},
                 "address": {{ 946 + (out_num - 1) }},
@@ -363,8 +363,7 @@
             {% endfor -%}
             {% for out_num in range(1, OUTPUTS_NUMBER - 1) -%}
             {
-                "name": "Output K{{ out_num }}",
-                "id": "K{{ out_num }}",
+                "name": "K{{ out_num }}",
                 "reg_type": "coil",
                 "address": {{ out_num - 1 }},
                 "type": "switch",
@@ -550,9 +549,6 @@
                 "toggle / set": "переключить / включить",
                 "toggle / toggle": "переключить / переключить",
                 "Actions when the input is closed / opened": "Действия при замыкании / размыкании входа",
-
-                "Output K1": "Выход K1",
-                "Output K2": "Выход K2",
 
                 "Actions for \"Wet cleaning\" mode": "Действия для режима \"Влажная уборка\""
             }
