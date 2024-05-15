@@ -1,5 +1,6 @@
 #pragma once
 
+#include "common_utils.h"
 #include "poll_plan.h"
 #include "serial_client_device_access_handler.h"
 #include "serial_device.h"
@@ -22,7 +23,7 @@ public:
 
     PRegisterRange ReadRegisterRange(std::chrono::milliseconds pollLimit,
                                      bool readAtLeastOneRegister,
-                                     std::chrono::steady_clock::time_point currentTime,
+                                     const util::TSpentTimeMeter& sessionTime,
                                      TSerialClientDeviceAccessHandler& lastAccessedDevice);
 
     std::list<PRegister> MarkWaitingRegistersAsReadErrorAndReschedule(

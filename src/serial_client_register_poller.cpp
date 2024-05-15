@@ -21,17 +21,17 @@ namespace
         milliseconds MaxPollTime;
         PPollableDevice Device;
         bool ReadAtLeastOneRegister;
-        steady_clock::time_point CurrentTime;
+        const util::TSpentTimeMeter& SessionTime;
         TSerialClientDeviceAccessHandler& LastAccessedDevice;
 
     public:
-        TDeviceReader(steady_clock::time_point currentTime,
+        TDeviceReader(const util::TSpentTimeMeter& sessionTime,
                       milliseconds maxPollTime,
                       bool readAtLeastOneRegister,
                       TSerialClientDeviceAccessHandler& lastAccessedDevice)
             : MaxPollTime(maxPollTime),
               ReadAtLeastOneRegister(readAtLeastOneRegister),
-              CurrentTime(currentTime),
+              SessionTime(sessionTime),
               LastAccessedDevice(lastAccessedDevice)
         {}
 
@@ -47,7 +47,7 @@ namespace
             }
 
             RegisterRange =
-                device->ReadRegisterRange(pollLimit, ReadAtLeastOneRegister, CurrentTime, LastAccessedDevice);
+                device->ReadRegisterRange(pollLimit, ReadAtLeastOneRegister, SessionTime, LastAccessedDevice);
             Device = device;
             return !RegisterRange->RegisterList().empty();
         }
@@ -179,7 +179,7 @@ TPollResult TSerialClientRegisterPoller::OpenPortCycle(TPort& port,
 {
     TPollResult res;
 
-    TDeviceReader reader(spentTime.GetStartTime(), maxPollingTime, readAtLeastOneRegister, lastAccessedDevice);
+    TDeviceReader reader(spentTime, maxPollingTime, readAtLeastOneRegister, lastAccessedDevice);
 
     auto selectionPolicy = LowPriorityRateLimiter.IsOverLimit(spentTime.GetStartTime())
                                ? TItemSelectionPolicy::OnlyHighPriority

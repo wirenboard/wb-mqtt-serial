@@ -32,9 +32,10 @@ TPollableDevice::TPollableDevice(PSerialDevice device,
 
 PRegisterRange TPollableDevice::ReadRegisterRange(std::chrono::milliseconds pollLimit,
                                                   bool readAtLeastOneRegister,
-                                                  std::chrono::steady_clock::time_point currentTime,
+                                                  const util::TSpentTimeMeter& sessionTime,
                                                   TSerialClientDeviceAccessHandler& lastAccessedDevice)
 {
+    auto currentTime = sessionTime.GetStartTime();
     auto registerRange = Device->CreateRegisterRange();
     while (Registers.HasReadyItems(currentTime)) {
         const auto limit = (readAtLeastOneRegister && registerRange->RegisterList().empty())
@@ -65,7 +66,7 @@ PRegisterRange TPollableDevice::ReadRegisterRange(std::chrono::milliseconds poll
             ScheduleNextPoll(reg, currentTime);
         }
 
-        Device->SetLastReadTime(currentTime);
+        Device->SetLastReadTime(currentTime + sessionTime.GetSpentTime());
     }
 
     return registerRange;
