@@ -255,6 +255,7 @@ void TDeviceChannel::UpdateValueAndError(WBMQTT::TDeviceDriver& deviceDriver,
             LOG(Debug) << "Trying to publish " << Describe() << " with undefined value";
         }
         UpdateError(deviceDriver);
+        return;
     }
     auto error = GetErrorText();
     bool errorIsChanged = (CachedErrorText != error);
