@@ -45,6 +45,32 @@
                 "id": "gg_ls_{{ ls_number }}_actions_turn_off",
                 "group": "g_light_scene_{{ ls_number }}"
             },
+            {% set dim_mode = [
+                    "1_2_3_4",
+                    "1_2",
+                    "CCT1",
+                    "H",
+                    "S",
+                    "V",
+                    "1",
+                    "2",
+                    "CCT2",
+                    "3_4",
+                    "3",
+                    "4",
+                    ] -%}
+            {% for mode in range(0, 12) -%}
+            {
+                "title": "Channel {{ dim_mode[mode] }}",
+                "id": "gg_ls_{{ ls_number }}_ch_{{ dim_mode[mode] }}_actions_turn_on",
+                "group": "gg_ls_{{ ls_number }}_actions_turn_on"
+            },
+            {
+                "title": "Channel {{ dim_mode[mode] }}",
+                "id": "gg_ls_{{ ls_number }}_ch_{{ dim_mode[mode] }}_actions_turn_off",
+                "group": "gg_ls_{{ ls_number }}_actions_turn_off"
+            },
+            {% endfor -%}
             {
                 "title": "Light Scene {{ ls_number }} Channels",
                 "id": "gg_ls_{{ ls_number }}_channels",
@@ -68,12 +94,15 @@
                 "title": "Debug",
                 "id": "g_debug"
             },
+            {% set name_actions = ["sp", "lp", "dp", "slp"] -%}
             {% for in_num in range(1, INPUTS_NUMBER + 1) -%}
+            {% for name in range(0, 4) -%}
             {
-                "title": "Actions",
-                "id": "gg_in_{{in_num}}_actions",
+                "title": "Action_{{ name_actions[name] }}",
+                "id": "gg_in_{{ in_num }}_{{ name_actions[name] }}_action",
                 "group": "g_input_{{in_num}}"
             },
+            {% endfor -%}
             {
                 "title": "params",
                 "id": "gg_in_{{in_num}}_params",
@@ -174,8 +203,8 @@
             {% set OFF_ON = ['off', 'on'] -%}
             {% for off_on in range(2) -%}
             {
-                "id": "ls_{{ls_number}}_ch_1_2_2w_action_{{OFF_ON[off_on]}}",
-                "title": "Channel 1_2 2W Brightness",
+                "id": "ls_{{ls_number}}_ch_1_2_action_{{OFF_ON[off_on]}}",
+                "title": "Enable Channel 1_2",
                 "reg_type": "holding",
                 "address": {{1280 + 0 + 64 * (ls_number - 1) + (off_on * 32)}},
                 "type": "enum",
@@ -192,10 +221,10 @@
                     {% endif -%}
                 ],
                 "condition": "dimmer_mode==1||dimmer_mode==17||dimmer_mode==33",
-                "group": "gg_ls_{{ ls_number }}_actions_turn_{% if off_on == 0 %}on{% endif -%}{% if off_on == 1 %}off{% endif -%}"
+                "group": "gg_ls_{{ ls_number }}_ch_1_2_actions_turn_{% if off_on == 0 %}on{% endif -%}{% if off_on == 1 %}off{% endif -%}"
             },
             {
-                "id": "ls_{{ls_number}}_ch_1_2_2w_fading_{{OFF_ON[off_on]}}",
+                "id": "ls_{{ls_number}}_ch_1_2_fading_{{OFF_ON[off_on]}}",
                 "title": "Dimming level rate (ms/%)",
                 "reg_type": "holding",
                 "address": {{1280 + 8 + 64 * (ls_number - 1) + (off_on * 32)}},
@@ -203,11 +232,11 @@
                 "max": 500,
                 "default": 20,
                 "required": true,
-                "group": "gg_ls_{{ ls_number }}_actions_turn_{% if off_on == 0 %}on{% endif -%}{% if off_on == 1 %}off{% endif -%}",
-                "condition": "ls_{{ls_number}}_ch_1_2_2w_action_{{OFF_ON[off_on]}}>=1"
+                "group": "gg_ls_{{ ls_number }}_ch_1_2_actions_turn_{% if off_on == 0 %}on{% endif -%}{% if off_on == 1 %}off{% endif -%}",
+                "condition": "ls_{{ls_number}}_ch_1_2_action_{{OFF_ON[off_on]}}>=1"
             },
             {
-                "id": "ls_{{ls_number}}_ch_1_2_2w_level_{{OFF_ON[off_on]}}",
+                "id": "ls_{{ls_number}}_ch_1_2_level_{{OFF_ON[off_on]}}",
                 "title": "Brightness (%)",
                 "reg_type": "holding",
                 "address": {{1280 + 16 + 64 * (ls_number - 1) + (off_on * 32)}},
@@ -215,8 +244,553 @@
                 "max": 100,
                 "default": 50,
                 "required": true,
-                "group": "gg_ls_{{ ls_number }}_actions_turn_{% if off_on == 0 %}on{% endif -%}{% if off_on == 1 %}off{% endif -%}",
-                "condition": "ls_{{ls_number}}_ch_1_2_2w_action_{{OFF_ON[off_on]}}==3"
+                "group": "gg_ls_{{ ls_number }}_ch_1_2_actions_turn_{% if off_on == 0 %}on{% endif -%}{% if off_on == 1 %}off{% endif -%}",
+                "condition": "ls_{{ls_number}}_ch_1_2_action_{{OFF_ON[off_on]}}==3"
+            },
+            {
+                "id": "ls_{{ls_number}}_ch_3_4_action_{{OFF_ON[off_on]}}",
+                "title": "Enable Channel 3_4",
+                "reg_type": "holding",
+                "address": {{1282 + 0 + 64 * (ls_number - 1) + (off_on * 32)}},
+                "type": "enum",
+                "enum": [0, {% if off_on == 0 %}2{% endif -%}{% if off_on == 1 %}1{% endif -%}, 3],
+                "enum_titles": [
+                    "Channel not Used in Scene",
+                    {% if off_on == 1 -%}
+                    "Turn Off",
+                    "Set Brightness"
+                    {% endif -%}
+                    {%- if off_on == 0 -%}
+                    "Turn On",
+                    "Turn On and Set Brightness"
+                    {% endif -%}
+                ],
+                "condition": "dimmer_mode==16||dimmer_mode==17||dimmer_mode==18",
+                "group": "gg_ls_{{ ls_number }}_ch_3_4_actions_turn_{% if off_on == 0 %}on{% endif -%}{% if off_on == 1 %}off{% endif -%}"
+            },
+            {
+                "id": "ls_{{ls_number}}_ch_3_4_fading_{{OFF_ON[off_on]}}",
+                "title": "Dimming level rate (ms/%)",
+                "reg_type": "holding",
+                "address": {{1282 + 8 + 64 * (ls_number - 1) + (off_on * 32)}},
+                "min": 0,
+                "max": 500,
+                "default": 20,
+                "required": true,
+                "group": "gg_ls_{{ ls_number }}_ch_3_4_actions_turn_{% if off_on == 0 %}on{% endif -%}{% if off_on == 1 %}off{% endif -%}",
+                "condition": "ls_{{ls_number}}_ch_3_4_action_{{OFF_ON[off_on]}}>=1"
+            },
+            {
+                "id": "ls_{{ls_number}}_ch_3_4_level_{{OFF_ON[off_on]}}",
+                "title": "Brightness (%)",
+                "reg_type": "holding",
+                "address": {{1282 + 16 + 64 * (ls_number - 1) + (off_on * 32)}},
+                "min": 1,
+                "max": 100,
+                "default": 50,
+                "required": true,
+                "group": "gg_ls_{{ ls_number }}_ch_3_4_actions_turn_{% if off_on == 0 %}on{% endif -%}{% if off_on == 1 %}off{% endif -%}",
+                "condition": "ls_{{ls_number}}_ch_3_4_action_{{OFF_ON[off_on]}}==3"
+            },
+            {
+                "id": "ls_{{ls_number}}_ch_CCT1_action_{{OFF_ON[off_on]}}",
+                "title": "Enable Channel CCT1",
+                "reg_type": "holding",
+                "address": {{1280 + 0 + 64 * (ls_number - 1) + (off_on * 32)}},
+                "type": "enum",
+                "enum": [0, {% if off_on == 0 %}2{% endif -%}{% if off_on == 1 %}1{% endif -%}, 3],
+                "enum_titles": [
+                    "Channel not Used in Scene",
+                    {% if off_on == 1 -%}
+                    "Turn Off",
+                    "Set Leves"
+                    {% endif -%}
+                    {%- if off_on == 0 -%}
+                    "Turn On",
+                    "Turn On and Set Levels"
+                    {% endif -%}
+                ],
+                "condition": "dimmer_mode==2||dimmer_mode==18||dimmer_mode==34",
+                "group": "gg_ls_{{ ls_number }}_ch_CCT1_actions_turn_{% if off_on == 0 %}on{% endif -%}{% if off_on == 1 %}off{% endif -%}"
+            },
+            {
+                "id": "ls_{{ls_number}}_ch_CCT1_temperature_fading_{{OFF_ON[off_on]}}",
+                "title": "Dimming level rate temperature (ms/%)",
+                "reg_type": "holding",
+                "address": {{1280 + 8 + 64 * (ls_number - 1) + (off_on * 32)}},
+                "min": 0,
+                "max": 500,
+                "default": 20,
+                "required": true,
+                "group": "gg_ls_{{ ls_number }}_ch_CCT1_actions_turn_{% if off_on == 0 %}on{% endif -%}{% if off_on == 1 %}off{% endif -%}",
+                "condition": "ls_{{ls_number}}_ch_CCT1_action_{{OFF_ON[off_on]}}>=1"
+            },
+            {
+                "id": "ls_{{ls_number}}_ch_CCT1_temperature_{{OFF_ON[off_on]}}",
+                "title": "Temperature (%)",
+                "reg_type": "holding",
+                "address": {{1280 + 16 + 64 * (ls_number - 1) + (off_on * 32)}},
+                "min": 1,
+                "max": 100,
+                "default": 50,
+                "required": true,
+                "group": "gg_ls_{{ ls_number }}_ch_CCT1_actions_turn_{% if off_on == 0 %}on{% endif -%}{% if off_on == 1 %}off{% endif -%}",
+                "condition": "ls_{{ls_number}}_ch_CCT1_action_{{OFF_ON[off_on]}}==3"
+            },
+            {
+                "id": "ls_{{ls_number}}_ch_CCT1_brightness_fading_{{OFF_ON[off_on]}}",
+                "title": "Dimming level rate brightness (ms/%)",
+                "reg_type": "holding",
+                "address": {{1281 + 8 + 64 * (ls_number - 1) + (off_on * 32)}},
+                "min": 0,
+                "max": 500,
+                "default": 20,
+                "required": true,
+                "group": "gg_ls_{{ ls_number }}_ch_CCT1_actions_turn_{% if off_on == 0 %}on{% endif -%}{% if off_on == 1 %}off{% endif -%}",
+                "condition": "ls_{{ls_number}}_ch_CCT1_action_{{OFF_ON[off_on]}}>=1"
+            },
+            {
+                "id": "ls_{{ls_number}}_ch_CCT1_brightness_{{OFF_ON[off_on]}}",
+                "title": "Brightness (%)",
+                "reg_type": "holding",
+                "address": {{1281 + 16 + 64 * (ls_number - 1) + (off_on * 32)}},
+                "min": 1,
+                "max": 100,
+                "default": 50,
+                "required": true,
+                "group": "gg_ls_{{ ls_number }}_ch_CCT1_actions_turn_{% if off_on == 0 %}on{% endif -%}{% if off_on == 1 %}off{% endif -%}",
+                "condition": "ls_{{ls_number}}_ch_CCT1_action_{{OFF_ON[off_on]}}==3"
+            },
+            {
+                "id": "ls_{{ls_number}}_ch_CCT2_action_{{OFF_ON[off_on]}}",
+                "title": "Enable Channel CCT2",
+                "reg_type": "holding",
+                "address": {{1282 + 0 + 64 * (ls_number - 1) + (off_on * 32)}},
+                "type": "enum",
+                "enum": [0, {% if off_on == 0 %}2{% endif -%}{% if off_on == 1 %}1{% endif -%}, 3],
+                "enum_titles": [
+                    "Channel not Used in Scene",
+                    {% if off_on == 1 -%}
+                    "Turn Off",
+                    "Set Leves"
+                    {% endif -%}
+                    {%- if off_on == 0 -%}
+                    "Turn On",
+                    "Turn On and Set Leves"
+                    {% endif -%}
+                ],
+                "condition": "dimmer_mode==32||dimmer_mode==33||dimmer_mode==34",
+                "group": "gg_ls_{{ ls_number }}_ch_CCT2_actions_turn_{% if off_on == 0 %}on{% endif -%}{% if off_on == 1 %}off{% endif -%}"
+            },
+            {
+                "id": "ls_{{ls_number}}_ch_CCT2_temperature_fading_{{OFF_ON[off_on]}}",
+                "title": "Dimming level rate temperature (ms/%)",
+                "reg_type": "holding",
+                "address": {{1282 + 8 + 64 * (ls_number - 1) + (off_on * 32)}},
+                "min": 0,
+                "max": 500,
+                "default": 20,
+                "required": true,
+                "group": "gg_ls_{{ ls_number }}_ch_CCT2_actions_turn_{% if off_on == 0 %}on{% endif -%}{% if off_on == 1 %}off{% endif -%}",
+                "condition": "ls_{{ls_number}}_ch_CCT2_action_{{OFF_ON[off_on]}}>=1"
+            },
+            {
+                "id": "ls_{{ls_number}}_ch_CCT2_temperature_{{OFF_ON[off_on]}}",
+                "title": "Temperature (%)",
+                "reg_type": "holding",
+                "address": {{1282 + 16 + 64 * (ls_number - 1) + (off_on * 32)}},
+                "min": 1,
+                "max": 100,
+                "default": 50,
+                "required": true,
+                "group": "gg_ls_{{ ls_number }}_ch_CCT2_actions_turn_{% if off_on == 0 %}on{% endif -%}{% if off_on == 1 %}off{% endif -%}",
+                "condition": "ls_{{ls_number}}_ch_CCT2_action_{{OFF_ON[off_on]}}==3"
+            },
+            {
+                "id": "ls_{{ls_number}}_ch_CCT2_brightness_fading_{{OFF_ON[off_on]}}",
+                "title": "Dimming level rate brightness (ms/%)",
+                "reg_type": "holding",
+                "address": {{1283 + 8 + 64 * (ls_number - 1) + (off_on * 32)}},
+                "min": 0,
+                "max": 500,
+                "default": 20,
+                "required": true,
+                "group": "gg_ls_{{ ls_number }}_ch_CCT2_actions_turn_{% if off_on == 0 %}on{% endif -%}{% if off_on == 1 %}off{% endif -%}",
+                "condition": "ls_{{ls_number}}_ch_CCT2_action_{{OFF_ON[off_on]}}>=1"
+            },
+            {
+                "id": "ls_{{ls_number}}_ch_CCT2_brightness_{{OFF_ON[off_on]}}",
+                "title": "Brightness (%)",
+                "reg_type": "holding",
+                "address": {{1283 + 16 + 64 * (ls_number - 1) + (off_on * 32)}},
+                "min": 1,
+                "max": 100,
+                "default": 50,
+                "required": true,
+                "group": "gg_ls_{{ ls_number }}_ch_CCT2_actions_turn_{% if off_on == 0 %}on{% endif -%}{% if off_on == 1 %}off{% endif -%}",
+                "condition": "ls_{{ls_number}}_ch_CCT2_action_{{OFF_ON[off_on]}}==3"
+            },
+            {
+                "id": "ls_{{ls_number}}_ch_H_action_{{OFF_ON[off_on]}}",
+                "title": "Enable Channel H",
+                "reg_type": "holding",
+                "address": {{1280 + 0 + 64 * (ls_number - 1) + (off_on * 32)}},
+                "type": "enum",
+                "enum": [0, {% if off_on == 0 %}2{% endif -%}{% if off_on == 1 %}1{% endif -%}, 3],
+                "enum_titles": [
+                    "Channel not Used in Scene",
+                    {% if off_on == 1 -%}
+                    "Turn Off",
+                    "Set Brightness"
+                    {% endif -%}
+                    {%- if off_on == 0 -%}
+                    "Turn On",
+                    "Turn On and Set Brightness"
+                    {% endif -%}
+                ],
+                "condition": "dimmer_mode==256",
+                "group": "gg_ls_{{ ls_number }}_ch_H_actions_turn_{% if off_on == 0 %}on{% endif -%}{% if off_on == 1 %}off{% endif -%}"
+            },
+            {
+                "id": "ls_{{ls_number}}_ch_H_fading_{{OFF_ON[off_on]}}",
+                "title": "Dimming level rate (ms/%)",
+                "reg_type": "holding",
+                "address": {{1280 + 8 + 64 * (ls_number - 1) + (off_on * 32)}},
+                "min": 0,
+                "max": 500,
+                "default": 20,
+                "required": true,
+                "group": "gg_ls_{{ ls_number }}_ch_H_actions_turn_{% if off_on == 0 %}on{% endif -%}{% if off_on == 1 %}off{% endif -%}",
+                "condition": "ls_{{ls_number}}_ch_H_action_{{OFF_ON[off_on]}}>=1"
+            },
+            {
+                "id": "ls_{{ls_number}}_ch_H_value_{{OFF_ON[off_on]}}",
+                "title": "Value",
+                "reg_type": "holding",
+                "address": {{1280 + 16 + 64 * (ls_number - 1) + (off_on * 32)}},
+                "min": 1,
+                "max": 255,
+                "default": 127,
+                "required": true,
+                "group": "gg_ls_{{ ls_number }}_ch_H_actions_turn_{% if off_on == 0 %}on{% endif -%}{% if off_on == 1 %}off{% endif -%}",
+                "condition": "ls_{{ls_number}}_ch_H_action_{{OFF_ON[off_on]}}==3"
+            },
+            {
+                "id": "ls_{{ls_number}}_ch_S_action_{{OFF_ON[off_on]}}",
+                "title": "Enable Channel S",
+                "reg_type": "holding",
+                "address": {{1281 + 0 + 64 * (ls_number - 1) + (off_on * 32)}},
+                "type": "enum",
+                "enum": [0, {% if off_on == 0 %}2{% endif -%}{% if off_on == 1 %}1{% endif -%}, 3],
+                "enum_titles": [
+                    "Channel not Used in Scene",
+                    {% if off_on == 1 -%}
+                    "Turn Off",
+                    "Set Brightness"
+                    {% endif -%}
+                    {%- if off_on == 0 -%}
+                    "Turn On",
+                    "Turn On and Set Brightness"
+                    {% endif -%}
+                ],
+                "condition": "dimmer_mode==256",
+                "group": "gg_ls_{{ ls_number }}_ch_S_actions_turn_{% if off_on == 0 %}on{% endif -%}{% if off_on == 1 %}off{% endif -%}"
+            },
+            {
+                "id": "ls_{{ls_number}}_ch_S_fading_{{OFF_ON[off_on]}}",
+                "title": "Dimming level rate (ms/%)",
+                "reg_type": "holding",
+                "address": {{1281 + 8 + 64 * (ls_number - 1) + (off_on * 32)}},
+                "min": 0,
+                "max": 500,
+                "default": 20,
+                "required": true,
+                "group": "gg_ls_{{ ls_number }}_ch_S_actions_turn_{% if off_on == 0 %}on{% endif -%}{% if off_on == 1 %}off{% endif -%}",
+                "condition": "ls_{{ls_number}}_ch_S_action_{{OFF_ON[off_on]}}>=1"
+            },
+            {
+                "id": "ls_{{ls_number}}_ch_S_value_{{OFF_ON[off_on]}}",
+                "title": "Value",
+                "reg_type": "holding",
+                "address": {{1281 + 16 + 64 * (ls_number - 1) + (off_on * 32)}},
+                "min": 1,
+                "max": 255,
+                "default": 127,
+                "required": true,
+                "group": "gg_ls_{{ ls_number }}_ch_S_actions_turn_{% if off_on == 0 %}on{% endif -%}{% if off_on == 1 %}off{% endif -%}",
+                "condition": "ls_{{ls_number}}_ch_S_action_{{OFF_ON[off_on]}}==3"
+            },
+            {
+                "id": "ls_{{ls_number}}_ch_V_action_{{OFF_ON[off_on]}}",
+                "title": "Enable Channel V",
+                "reg_type": "holding",
+                "address": {{1282 + 0 + 64 * (ls_number - 1) + (off_on * 32)}},
+                "type": "enum",
+                "enum": [0, {% if off_on == 0 %}2{% endif -%}{% if off_on == 1 %}1{% endif -%}, 3],
+                "enum_titles": [
+                    "Channel not Used in Scene",
+                    {% if off_on == 1 -%}
+                    "Turn Off",
+                    "Set Vrightness"
+                    {% endif -%}
+                    {%- if off_on == 0 -%}
+                    "Turn On",
+                    "Turn On and Set Vrightness"
+                    {% endif -%}
+                ],
+                "condition": "dimmer_mode==256",
+                "group": "gg_ls_{{ ls_number }}_ch_V_actions_turn_{% if off_on == 0 %}on{% endif -%}{% if off_on == 1 %}off{% endif -%}"
+            },
+            {
+                "id": "ls_{{ls_number}}_ch_V_fading_{{OFF_ON[off_on]}}",
+                "title": "Dimming level rate (ms/%)",
+                "reg_type": "holding",
+                "address": {{1282 + 8 + 64 * (ls_number - 1) + (off_on * 32)}},
+                "min": 0,
+                "max": 500,
+                "default": 20,
+                "required": true,
+                "group": "gg_ls_{{ ls_number }}_ch_V_actions_turn_{% if off_on == 0 %}on{% endif -%}{% if off_on == 1 %}off{% endif -%}",
+                "condition": "ls_{{ls_number}}_ch_V_action_{{OFF_ON[off_on]}}>=1"
+            },
+            {
+                "id": "ls_{{ls_number}}_ch_V_value_{{OFF_ON[off_on]}}",
+                "title": "Value",
+                "reg_type": "holding",
+                "address": {{1282 + 16 + 64 * (ls_number - 1) + (off_on * 32)}},
+                "min": 1,
+                "max": 255,
+                "default": 127,
+                "required": true,
+                "group": "gg_ls_{{ ls_number }}_ch_V_actions_turn_{% if off_on == 0 %}on{% endif -%}{% if off_on == 1 %}off{% endif -%}",
+                "condition": "ls_{{ls_number}}_ch_V_action_{{OFF_ON[off_on]}}==3"
+            },
+
+            {
+                "id": "ls_{{ls_number}}_ch_1_action_{{OFF_ON[off_on]}}",
+                "title": "Enable Channel 1",
+                "reg_type": "holding",
+                "address": {{1280 + 0 + 64 * (ls_number - 1) + (off_on * 32)}},
+                "type": "enum",
+                "enum": [0, {% if off_on == 0 %}2{% endif -%}{% if off_on == 1 %}1{% endif -%}, 3],
+                "enum_titles": [
+                    "Channel not Used in Scene",
+                    {% if off_on == 1 -%}
+                    "Turn Off",
+                    "Set Brightness"
+                    {% endif -%}
+                    {%- if off_on == 0 -%}
+                    "Turn On",
+                    "Turn On and Set Brightness"
+                    {% endif -%}
+                ],
+                "condition": "dimmer_mode==0||dimmer_mode==16||dimmer_mode==32",
+                "group": "gg_ls_{{ ls_number }}_ch_1_actions_turn_{% if off_on == 0 %}on{% endif -%}{% if off_on == 1 %}off{% endif -%}"
+            },
+            {
+                "id": "ls_{{ls_number}}_ch_1_fading_{{OFF_ON[off_on]}}",
+                "title": "Dimming level rate (ms/%)",
+                "reg_type": "holding",
+                "address": {{1280 + 8 + 64 * (ls_number - 1) + (off_on * 32)}},
+                "min": 0,
+                "max": 500,
+                "default": 20,
+                "required": true,
+                "group": "gg_ls_{{ ls_number }}_ch_1_actions_turn_{% if off_on == 0 %}on{% endif -%}{% if off_on == 1 %}off{% endif -%}",
+                "condition": "ls_{{ls_number}}_ch_1_action_{{OFF_ON[off_on]}}>=1"
+            },
+            {
+                "id": "ls_{{ls_number}}_ch_1_level_{{OFF_ON[off_on]}}",
+                "title": "Brightness (%)",
+                "reg_type": "holding",
+                "address": {{1280 + 16 + 64 * (ls_number - 1) + (off_on * 32)}},
+                "min": 1,
+                "max": 100,
+                "default": 50,
+                "required": true,
+                "group": "gg_ls_{{ ls_number }}_ch_1_actions_turn_{% if off_on == 0 %}on{% endif -%}{% if off_on == 1 %}off{% endif -%}",
+                "condition": "ls_{{ls_number}}_ch_1_action_{{OFF_ON[off_on]}}==3"
+            },
+            {
+                "id": "ls_{{ls_number}}_ch_2_action_{{OFF_ON[off_on]}}",
+                "title": "Enable Channel 2",
+                "reg_type": "holding",
+                "address": {{1281 + 0 + 64 * (ls_number - 1) + (off_on * 32)}},
+                "type": "enum",
+                "enum": [0, {% if off_on == 0 %}2{% endif -%}{% if off_on == 1 %}1{% endif -%}, 3],
+                "enum_titles": [
+                    "Channel not Used in Scene",
+                    {% if off_on == 1 -%}
+                    "Turn Off",
+                    "Set Brightness"
+                    {% endif -%}
+                    {%- if off_on == 0 -%}
+                    "Turn On",
+                    "Turn On and Set Brightness"
+                    {% endif -%}
+                ],
+                "condition": "dimmer_mode==0||dimmer_mode==16||dimmer_mode==32",
+                "group": "gg_ls_{{ ls_number }}_ch_2_actions_turn_{% if off_on == 0 %}on{% endif -%}{% if off_on == 1 %}off{% endif -%}"
+            },
+            {
+                "id": "ls_{{ls_number}}_ch_2_fading_{{OFF_ON[off_on]}}",
+                "title": "Dimming level rate (ms/%)",
+                "reg_type": "holding",
+                "address": {{1281 + 8 + 64 * (ls_number - 1) + (off_on * 32)}},
+                "min": 0,
+                "max": 500,
+                "default": 20,
+                "required": true,
+                "group": "gg_ls_{{ ls_number }}_ch_2_actions_turn_{% if off_on == 0 %}on{% endif -%}{% if off_on == 1 %}off{% endif -%}",
+                "condition": "ls_{{ls_number}}_ch_2_action_{{OFF_ON[off_on]}}>=1"
+            },
+            {
+                "id": "ls_{{ls_number}}_ch_2_level_{{OFF_ON[off_on]}}",
+                "title": "Brightness (%)",
+                "reg_type": "holding",
+                "address": {{1281 + 16 + 64 * (ls_number - 1) + (off_on * 32)}},
+                "min": 1,
+                "max": 100,
+                "default": 50,
+                "required": true,
+                "group": "gg_ls_{{ ls_number }}_ch_2_actions_turn_{% if off_on == 0 %}on{% endif -%}{% if off_on == 1 %}off{% endif -%}",
+                "condition": "ls_{{ls_number}}_ch_2_action_{{OFF_ON[off_on]}}==3"
+            },
+            {
+                "id": "ls_{{ls_number}}_ch_3_action_{{OFF_ON[off_on]}}",
+                "title": "Enable Channel 3",
+                "reg_type": "holding",
+                "address": {{1282 + 0 + 64 * (ls_number - 1) + (off_on * 32)}},
+                "type": "enum",
+                "enum": [0, {% if off_on == 0 %}2{% endif -%}{% if off_on == 1 %}1{% endif -%}, 3],
+                "enum_titles": [
+                    "Channel not Used in Scene",
+                    {% if off_on == 1 -%}
+                    "Turn Off",
+                    "Set Brightness"
+                    {% endif -%}
+                    {%- if off_on == 0 -%}
+                    "Turn On",
+                    "Turn On and Set Brightness"
+                    {% endif -%}
+                ],
+                "condition": "dimmer_mode==0||dimmer_mode==1||dimmer_mode==2",
+                "group": "gg_ls_{{ ls_number }}_ch_3_actions_turn_{% if off_on == 0 %}on{% endif -%}{% if off_on == 1 %}off{% endif -%}"
+            },
+            {
+                "id": "ls_{{ls_number}}_ch_3_fading_{{OFF_ON[off_on]}}",
+                "title": "Dimming level rate (ms/%)",
+                "reg_type": "holding",
+                "address": {{1282 + 8 + 64 * (ls_number - 1) + (off_on * 32)}},
+                "min": 0,
+                "max": 500,
+                "default": 20,
+                "required": true,
+                "group": "gg_ls_{{ ls_number }}_ch_3_actions_turn_{% if off_on == 0 %}on{% endif -%}{% if off_on == 1 %}off{% endif -%}",
+                "condition": "ls_{{ls_number}}_ch_3_action_{{OFF_ON[off_on]}}>=1"
+            },
+            {
+                "id": "ls_{{ls_number}}_ch_3_level_{{OFF_ON[off_on]}}",
+                "title": "Brightness (%)",
+                "reg_type": "holding",
+                "address": {{1282 + 16 + 64 * (ls_number - 1) + (off_on * 32)}},
+                "min": 1,
+                "max": 100,
+                "default": 50,
+                "required": true,
+                "group": "gg_ls_{{ ls_number }}_ch_3_actions_turn_{% if off_on == 0 %}on{% endif -%}{% if off_on == 1 %}off{% endif -%}",
+                "condition": "ls_{{ls_number}}_ch_3_action_{{OFF_ON[off_on]}}==3"
+            },
+            {
+                "id": "ls_{{ls_number}}_ch_4_action_{{OFF_ON[off_on]}}",
+                "title": "Enable Channel 4",
+                "reg_type": "holding",
+                "address": {{1283 + 0 + 64 * (ls_number - 1) + (off_on * 32)}},
+                "type": "enum",
+                "enum": [0, {% if off_on == 0 %}2{% endif -%}{% if off_on == 1 %}1{% endif -%}, 3],
+                "enum_titles": [
+                    "Channel not Used in Scene",
+                    {% if off_on == 1 -%}
+                    "Turn Off",
+                    "Set Brightness"
+                    {% endif -%}
+                    {%- if off_on == 0 -%}
+                    "Turn On",
+                    "Turn On and Set Brightness"
+                    {% endif -%}
+                ],
+                "condition": "dimmer_mode==0||dimmer_mode==1||dimmer_mode==2||dimmer_mode==256",
+                "group": "gg_ls_{{ ls_number }}_ch_4_actions_turn_{% if off_on == 0 %}on{% endif -%}{% if off_on == 1 %}off{% endif -%}"
+            },
+            {
+                "id": "ls_{{ls_number}}_ch_4_fading_{{OFF_ON[off_on]}}",
+                "title": "Dimming level rate (ms/%)",
+                "reg_type": "holding",
+                "address": {{1283 + 8 + 64 * (ls_number - 1) + (off_on * 32)}},
+                "min": 0,
+                "max": 500,
+                "default": 20,
+                "required": true,
+                "group": "gg_ls_{{ ls_number }}_ch_4_actions_turn_{% if off_on == 0 %}on{% endif -%}{% if off_on == 1 %}off{% endif -%}",
+                "condition": "ls_{{ls_number}}_ch_4_action_{{OFF_ON[off_on]}}>=1"
+            },
+            {
+                "id": "ls_{{ls_number}}_ch_4_level_{{OFF_ON[off_on]}}",
+                "title": "Brightness (%)",
+                "reg_type": "holding",
+                "address": {{1283 + 16 + 64 * (ls_number - 1) + (off_on * 32)}},
+                "min": 1,
+                "max": 100,
+                "default": 50,
+                "required": true,
+                "group": "gg_ls_{{ ls_number }}_ch_4_actions_turn_{% if off_on == 0 %}on{% endif -%}{% if off_on == 1 %}off{% endif -%}",
+                "condition": "ls_{{ls_number}}_ch_4_action_{{OFF_ON[off_on]}}==3"
+            },
+
+            {
+                "id": "ls_{{ls_number}}_ch_1_2_3_4_action_{{OFF_ON[off_on]}}",
+                "title": "Enable Channel 1_2_3_4",
+                "reg_type": "holding",
+                "address": {{1280 + 0 + 64 * (ls_number - 1) + (off_on * 32)}},
+                "type": "enum",
+                "enum": [0, {% if off_on == 0 %}2{% endif -%}{% if off_on == 1 %}1{% endif -%}, 3],
+                "enum_titles": [
+                    "Channel not Used in Scene",
+                    {% if off_on == 1 -%}
+                    "Turn Off",
+                    "Set Brightness"
+                    {% endif -%}
+                    {%- if off_on == 0 -%}
+                    "Turn On",
+                    "Turn On and Set Brightness"
+                    {% endif -%}
+                ],
+                "condition": "dimmer_mode==512",
+                "group": "gg_ls_{{ ls_number }}_ch_1_2_3_4_actions_turn_{% if off_on == 0 %}on{% endif -%}{% if off_on == 1 %}off{% endif -%}"
+            },
+            {
+                "id": "ls_{{ls_number}}_ch_1_2_3_4_fading_{{OFF_ON[off_on]}}",
+                "title": "Dimming level rate (ms/%)",
+                "reg_type": "holding",
+                "address": {{1280 + 8 + 64 * (ls_number - 1) + (off_on * 32)}},
+                "min": 0,
+                "max": 500,
+                "default": 20,
+                "required": true,
+                "group": "gg_ls_{{ ls_number }}_ch_1_2_3_4_actions_turn_{% if off_on == 0 %}on{% endif -%}{% if off_on == 1 %}off{% endif -%}",
+                "condition": "ls_{{ls_number}}_ch_1_2_3_4_action_{{OFF_ON[off_on]}}>=1"
+            },
+            {
+                "id": "ls_{{ls_number}}_ch_1_2_3_4_level_{{OFF_ON[off_on]}}",
+                "title": "Brightness (%)",
+                "reg_type": "holding",
+                "address": {{1280 + 16 + 64 * (ls_number - 1) + (off_on * 32)}},
+                "min": 1,
+                "max": 100,
+                "default": 50,
+                "required": true,
+                "group": "gg_ls_{{ ls_number }}_ch_1_2_3_4_actions_turn_{% if off_on == 0 %}on{% endif -%}{% if off_on == 1 %}off{% endif -%}",
+                "condition": "ls_{{ls_number}}_ch_1_2_3_4_action_{{OFF_ON[off_on]}}==3"
             },
             {% endfor -%}
             {% endfor -%}
@@ -633,16 +1207,29 @@
                 "max": 30000,
                 "condition": "(dimmer_mode==256)"
             },
+            {% set name_actions = ["sp", "lp", "dp", "slp"] -%}
             {% for in_num in range(1, INPUTS_NUMBER + 1) -%}
+            {% for name in range(4) -%}
+            {
+                "id": "input_{{ in_num }}_{{ name_actions[name] }}_work_with_scenes",
+                "title": "Inputs work with {{ name_actions[name] }}",
+                "enum": [0, 1],
+                "enum_titles": ["Non Scenes", "Scenes"],
+                "default": 0,
+                "group": "gg_in_{{ in_num }}_{{ name_actions[name] }}_action",
+                "order": 1,
+                "readonly": true
+            },
+            {% endfor -%}
             {
                 "id": "in{{in_num}}_sp",
-                "group": "gg_in_{{in_num}}_actions",
+                "group": "gg_in_{{ in_num }}_sp_action",
                 "title": "sp_title",
-                "order": 1,
+                "order": 2,
                 "address": {{1000 + in_num - 1}},
                 "reg_type": "holding",
                 "default": 0,
-                "condition": "(dimmer_mode==0)",
+                "condition": "(dimmer_mode==0 && input_{{ in_num }}_sp_work_with_scenes!=1)",
                 "enum": [
                     0, 16384, 4096, 4097, 4098, 4099, 8192, 8193, 8194, 8195, 12288, 12289, 12290, 12291,
                     36864, 36865, 36866, 36867, 40960, 40961, 40962, 40963
@@ -674,13 +1261,13 @@
             },
             {
                 "id": "in{{in_num}}_lp",
-                "group": "gg_in_{{in_num}}_actions",
+                "group": "gg_in_{{ in_num }}_lp_action",
                 "title": "lp_title",
                 "order": 2,
                 "address": {{1020 + in_num - 1}},
                 "reg_type": "holding",
                 "default": 0,
-                "condition": "(dimmer_mode==0)",
+                "condition": "(dimmer_mode==0 && input_{{ in_num }}_lp_work_with_scenes!=1)",
                 "enum": [
                     0, 16384, 4096, 4097, 4098, 4099, 8192, 8193, 8194, 8195, 12288, 12289, 12290, 12291,
                     36864, 36865, 36866, 36867, 40960, 40961, 40962, 40963, 45056, 45057, 45058,
@@ -717,13 +1304,13 @@
             },
             {
                 "id": "in{{in_num}}_dp",
-                "group": "gg_in_{{in_num}}_actions",
+                "group": "gg_in_{{ in_num }}_dp_action",
                 "title": "dp_title",
                 "order": 3,
                 "address": {{1040 + in_num - 1}},
                 "reg_type": "holding",
                 "default": 0,
-                "condition": "(dimmer_mode==0)",
+                "condition": "(dimmer_mode==0 && input_{{ in_num }}_dp_work_with_scenes!=1)",
                 "enum": [
                     0, 16384, 4096, 4097, 4098, 4099, 8192, 8193, 8194, 8195, 12288, 12289, 12290, 12291,
                     36864, 36865, 36866, 36867, 40960, 40961, 40962, 40963
@@ -755,13 +1342,13 @@
             },
             {
                 "id": "in{{in_num}}_slp",
-                "group": "gg_in_{{in_num}}_actions",
+                "group": "gg_in_{{ in_num }}_slp_action",
                 "title": "slp_title",
                 "order": 4,
                 "address": {{1060 + in_num - 1}},
                 "reg_type": "holding",
                 "default": 0,
-                "condition": "(dimmer_mode==0)",
+                "condition": "(dimmer_mode==0 && input_{{ in_num }}_slp_work_with_scenes!=1)",
                 "enum": [
                     0, 16384, 4096, 4097, 4098, 4099, 8192, 8193, 8194, 8195, 12288, 12289, 12290, 12291,
                     36864, 36865, 36866, 36867, 40960, 40961, 40962, 40963, 45056, 45057, 45058,
@@ -798,17 +1385,16 @@
             },
             {
                 "id": "in{{in_num}}_sp",
-                "group": "gg_in_{{in_num}}_actions",
+                "group": "gg_in_{{ in_num }}_sp_action",
                 "title": "sp_title",
                 "order": 1,
                 "address": {{1000 + in_num - 1}},
                 "reg_type": "holding",
                 "default": 0,
-                "condition": "(dimmer_mode==1)",
+                "condition": "(dimmer_mode==1 && input_{{ in_num }}_sp_work_with_scenes!=1)",
                 "enum": [
-                    0, 16384, 4100, 4098, 4099, 8196, 8194, 8195, 12292, 12290, 12291, 36868, 36866, 36867, 40964, 40962, 40963,
-                    {%for ls in range(LIGHT_SCENES_NUMBER) %}{{4128 + ls}}{% if not loop.last %}, {% endif %}{% endfor %},
-                    {%for ls in range(LIGHT_SCENES_NUMBER) %}{{8224 + ls}}{% if not loop.last %}, {% endif %}{% endfor %}
+                    0, 16384, 4100, 4098, 4099, 8196, 8194, 8195, 12292, 12290, 12291, 36868, 36866, 36867,
+                    40964, 40962, 40963
                 ],
                 "enum_titles": [
                     "no_act_title",
@@ -827,24 +1413,18 @@
                     "inc_ch4_act_title",
                     "dec_ch12_act_title",
                     "dec_ch3_act_title",
-                    "dec_ch4_act_title",
-                    {% for ls_number in range(1, LIGHT_SCENES_NUMBER + 1) -%}
-                    "off_ls_{{ ls_number }}_title",
-                    {% endfor -%}
-                    {% for ls_number in range(1, LIGHT_SCENES_NUMBER + 1) -%}
-                    "on_ls_{{ ls_number }}_title"{% if not loop.last %},{% endif %}
-                    {% endfor -%}
+                    "dec_ch4_act_title"
                 ]
             },
             {
                 "id": "in{{in_num}}_lp",
-                "group": "gg_in_{{in_num}}_actions",
+                "group": "gg_in_{{ in_num }}_lp_action",
                 "title": "lp_title",
                 "order": 2,
                 "address": {{1020 + in_num - 1}},
                 "reg_type": "holding",
                 "default": 0,
-                "condition": "(dimmer_mode==1)",
+                "condition": "(dimmer_mode==1 && input_{{ in_num }}_lp_work_with_scenes!=1)",
                 "enum": [
                     0, 16384, 4100, 4098, 4099, 8196, 8194, 8195, 12292, 12290, 12291, 36868, 36866, 36867,
                     40964, 40962, 40963, 45060, 45058, 45059
@@ -874,18 +1454,16 @@
             },
             {
                 "id": "in{{in_num}}_dp",
-                "group": "gg_in_{{in_num}}_actions",
+                "group": "gg_in_{{ in_num }}_dp_action",
                 "title": "dp_title",
                 "order": 3,
                 "address": {{1040 + in_num - 1}},
                 "reg_type": "holding",
                 "default": 0,
-                "condition": "(dimmer_mode==1)",
+                "condition": "(dimmer_mode==1 && input_{{ in_num }}_dp_work_with_scenes!=1)",
                 "enum": [
                     0, 16384, 4100, 4098, 4099, 8196, 8194, 8195, 12292, 12290, 12291, 36868, 36866, 36867,
-                    40964, 40962, 40963,
-                    {%for ls in range(LIGHT_SCENES_NUMBER) %}{{4128 + ls}}{% if not loop.last %}, {% endif %}{% endfor %},
-                    {%for ls in range(LIGHT_SCENES_NUMBER) %}{{8224 + ls}}{% if not loop.last %}, {% endif %}{% endfor %}
+                    40964, 40962, 40963
                 ],
                 "enum_titles": [
                     "no_act_title",
@@ -904,24 +1482,18 @@
                     "inc_ch4_act_title",
                     "dec_ch12_act_title",
                     "dec_ch3_act_title",
-                    "dec_ch4_act_title",
-                    {% for ls_number in range(1, LIGHT_SCENES_NUMBER + 1) -%}
-                    "off_ls_{{ ls_number }}_title",
-                    {% endfor -%}
-                    {% for ls_number in range(1, LIGHT_SCENES_NUMBER + 1) -%}
-                    "on_ls_{{ ls_number }}_title"{% if not loop.last %},{% endif %}
-                    {% endfor -%}
+                    "dec_ch4_act_title"
                 ]
             },
             {
                 "id": "in{{in_num}}_slp",
-                "group": "gg_in_{{in_num}}_actions",
+                "group": "gg_in_{{ in_num }}_slp_action",
                 "title": "slp_title",
                 "order": 4,
                 "address": {{1060 + in_num - 1}},
                 "reg_type": "holding",
                 "default": 0,
-                "condition": "(dimmer_mode==1)",
+                "condition": "(dimmer_mode==1 && input_{{ in_num }}_slp_work_with_scenes!=1)",
                 "enum": [
                     0, 16384, 4100, 4098, 4099, 8196, 8194, 8195, 12292, 12290, 12291, 36868, 36866, 36867,
                     40964, 40962, 40963, 45060, 45058, 45059
@@ -951,13 +1523,13 @@
             },
             {
                 "id": "in{{in_num}}_sp",
-                "group": "gg_in_{{in_num}}_actions",
+                "group": "gg_in_{{ in_num }}_sp_action",
                 "title": "sp_title",
                 "order": 1,
                 "address": {{1000 + in_num - 1}},
                 "reg_type": "holding",
                 "default": 0,
-                "condition": "(dimmer_mode==2)",
+                "condition": "(dimmer_mode==2 && input_{{ in_num }}_sp_work_with_scenes!=1)",
                 "enum": [
                     0, 16384, 4103, 4098, 4099, 8199, 8194, 8195, 12295, 12290, 12291, 36871, 36872, 36866,
                     36867, 40967, 40968, 40962, 40963
@@ -986,13 +1558,13 @@
             },
             {
                 "id": "in{{in_num}}_lp",
-                "group": "gg_in_{{in_num}}_actions",
+                "group": "gg_in_{{ in_num }}_lp_action",
                 "title": "lp_title",
                 "order": 2,
                 "address": {{1020 + in_num - 1}},
                 "reg_type": "holding",
                 "default": 0,
-                "condition": "(dimmer_mode==2)",
+                "condition": "(dimmer_mode==2 && input_{{ in_num }}_lp_work_with_scenes!=1)",
                 "enum": [
                     0, 16384, 4103, 4098, 4099, 8199, 8194, 8195, 12295, 12290, 12291, 36871, 36872, 36866,
                     36867, 40967, 40968, 40962, 40963, 45063, 45064, 45058, 45059
@@ -1025,13 +1597,13 @@
             },
             {
                 "id": "in{{in_num}}_dp",
-                "group": "gg_in_{{in_num}}_actions",
+                "group": "gg_in_{{ in_num }}_dp_action",
                 "title": "dp_title",
                 "order": 3,
                 "address": {{1040 + in_num - 1}},
                 "reg_type": "holding",
                 "default": 0,
-                "condition": "(dimmer_mode==2)",
+                "condition": "(dimmer_mode==2 && input_{{ in_num }}_dp_work_with_scenes!=1)",
                 "enum": [
                     0, 16384, 4103, 4098, 4099, 8199, 8194, 8195, 12295, 12290, 12291, 36871, 36872, 36866,
                     36867, 40967, 40968, 40962, 40963
@@ -1060,13 +1632,13 @@
             },
             {
                 "id": "in{{in_num}}_slp",
-                "group": "gg_in_{{in_num}}_actions",
+                "group": "gg_in_{{ in_num }}_slp_action",
                 "title": "slp_title",
                 "order": 4,
                 "address": {{1060 + in_num - 1}},
                 "reg_type": "holding",
                 "default": 0,
-                "condition": "(dimmer_mode==2)",
+                "condition": "(dimmer_mode==2 && input_{{ in_num }}_slp_work_with_scenes!=1)",
                 "enum": [
                     0, 16384, 4103, 4098, 4099, 8199, 8194, 8195, 12295, 12290, 12291, 36871, 36872, 36866,
                     36867, 40967, 40968, 40962, 40963, 45063, 45064, 45058, 45059
@@ -1099,13 +1671,13 @@
             },
             {
                 "id": "in{{in_num}}_sp",
-                "group": "gg_in_{{in_num}}_actions",
+                "group": "gg_in_{{ in_num }}_sp_action",
                 "title": "sp_title",
                 "order": 1,
                 "address": {{1000 + in_num - 1}},
                 "reg_type": "holding",
                 "default": 0,
-                "condition": "(dimmer_mode==16)",
+                "condition": "(dimmer_mode==16 && input_{{ in_num }}_sp_work_with_scenes!=1)",
                 "enum": [
                     0, 16384, 4096, 4097, 4101, 8192, 8193, 8197, 12288, 12289, 12293, 36864, 36865, 36869,
                     40960, 40961, 40965
@@ -1132,13 +1704,13 @@
             },
             {
                 "id": "in{{in_num}}_lp",
-                "group": "gg_in_{{in_num}}_actions",
+                "group": "gg_in_{{ in_num }}_lp_action",
                 "title": "lp_title",
                 "order": 2,
                 "address": {{1020 + in_num - 1}},
                 "reg_type": "holding",
                 "default": 0,
-                "condition": "(dimmer_mode==16)",
+                "condition": "(dimmer_mode==16 && input_{{ in_num }}_lp_work_with_scenes!=1)",
                 "enum": [
                     0, 16384, 4096, 4097, 4101, 8192, 8193, 8197, 12288, 12289, 12293, 36864, 36865, 36869,
                     40960, 40961, 40965, 45056, 45057, 45061
@@ -1168,13 +1740,13 @@
             },
             {
                 "id": "in{{in_num}}_dp",
-                "group": "gg_in_{{in_num}}_actions",
+                "group": "gg_in_{{ in_num }}_dp_action",
                 "title": "dp_title",
                 "order": 3,
                 "address": {{1040 + in_num - 1}},
                 "reg_type": "holding",
                 "default": 0,
-                "condition": "(dimmer_mode==16)",
+                "condition": "(dimmer_mode==16 && input_{{ in_num }}_dp_work_with_scenes!=1)",
                 "enum": [
                     0, 16384, 4096, 4097, 4101, 8192, 8193, 8197, 12288, 12289, 12293, 36864, 36865, 36869,
                     40960, 40961, 40965
@@ -1201,13 +1773,13 @@
             },
             {
                 "id": "in{{in_num}}_slp",
-                "group": "gg_in_{{in_num}}_actions",
+                "group": "gg_in_{{ in_num }}_slp_action",
                 "title": "slp_title",
                 "order": 4,
                 "address": {{1060 + in_num - 1}},
                 "reg_type": "holding",
                 "default": 0,
-                "condition": "(dimmer_mode==16)",
+                "condition": "(dimmer_mode==16 && input_{{ in_num }}_slp_work_with_scenes!=1)",
                 "enum": [
                     0, 16384, 4096, 4097, 4101, 8192, 8193, 8197, 12288, 12289, 12293, 36864, 36865, 36869,
                     40960, 40961, 40965, 45056, 45057, 45061
@@ -1237,13 +1809,13 @@
             },
             {
                 "id": "in{{in_num}}_sp",
-                "group": "gg_in_{{in_num}}_actions",
+                "group": "gg_in_{{ in_num }}_sp_action",
                 "title": "sp_title",
                 "order": 1,
                 "address": {{1000 + in_num - 1}},
                 "reg_type": "holding",
                 "default": 0,
-                "condition": "(dimmer_mode==17)",
+                "condition": "(dimmer_mode==17 && input_{{ in_num }}_sp_work_with_scenes!=1)",
                 "enum": [0, 16384, 4100, 4101, 8196, 8197, 12292, 12293, 36868, 36869, 40964, 40965],
                 "enum_titles": [
                     "no_act_title",
@@ -1262,13 +1834,13 @@
             },
             {
                 "id": "in{{in_num}}_lp",
-                "group": "gg_in_{{in_num}}_actions",
+                "group": "gg_in_{{ in_num }}_lp_action",
                 "title": "lp_title",
                 "order": 2,
                 "address": {{1020 + in_num - 1}},
                 "reg_type": "holding",
                 "default": 0,
-                "condition": "(dimmer_mode==17)",
+                "condition": "(dimmer_mode==17 && input_{{ in_num }}_lp_work_with_scenes!=1)",
                 "enum": [
                     0, 16384, 4100, 4101, 8196, 8197, 12292, 12293, 36868, 36869, 40964, 40965, 45060,
                     45061
@@ -1292,13 +1864,13 @@
             },
             {
                 "id": "in{{in_num}}_dp",
-                "group": "gg_in_{{in_num}}_actions",
+                "group": "gg_in_{{ in_num }}_dp_action",
                 "title": "dp_title",
                 "order": 3,
                 "address": {{1040 + in_num - 1}},
                 "reg_type": "holding",
                 "default": 0,
-                "condition": "(dimmer_mode==17)",
+                "condition": "(dimmer_mode==17 && input_{{ in_num }}_dp_work_with_scenes!=1)",
                 "enum": [0, 16384, 4100, 4101, 8196, 8197, 12292, 12293, 36868, 36869, 40964, 40965],
                 "enum_titles": [
                     "no_act_title",
@@ -1317,13 +1889,13 @@
             },
             {
                 "id": "in{{in_num}}_slp",
-                "group": "gg_in_{{in_num}}_actions",
+                "group": "gg_in_{{ in_num }}_slp_action",
                 "title": "slp_title",
                 "order": 4,
                 "address": {{1060 + in_num - 1}},
                 "reg_type": "holding",
                 "default": 0,
-                "condition": "(dimmer_mode==17)",
+                "condition": "(dimmer_mode==17 && input_{{ in_num }}_slp_work_with_scenes!=1)",
                 "enum": [
                     0, 16384, 4100, 4101, 8196, 8197, 12292, 12293, 36868, 36869, 40964, 40965, 45060,
                     45061
@@ -1347,13 +1919,13 @@
             },
             {
                 "id": "in{{in_num}}_sp",
-                "group": "gg_in_{{in_num}}_actions",
+                "group": "gg_in_{{ in_num }}_sp_action",
                 "title": "sp_title",
                 "order": 1,
                 "address": {{1000 + in_num - 1}},
                 "reg_type": "holding",
                 "default": 0,
-                "condition": "(dimmer_mode==18)",
+                "condition": "(dimmer_mode==18 && input_{{ in_num }}_sp_work_with_scenes!=1)",
                 "enum": [
                     0, 16384, 4103, 4101, 8199, 8197, 12295, 12293, 36871, 36872, 36869, 40967, 40968,
                     40965
@@ -1377,13 +1949,13 @@
             },
             {
                 "id": "in{{in_num}}_lp",
-                "group": "gg_in_{{in_num}}_actions",
+                "group": "gg_in_{{ in_num }}_lp_action",
                 "title": "lp_title",
                 "order": 2,
                 "address": {{1020 + in_num - 1}},
                 "reg_type": "holding",
                 "default": 0,
-                "condition": "(dimmer_mode==18)",
+                "condition": "(dimmer_mode==18 && input_{{ in_num }}_lp_work_with_scenes!=1)",
                 "enum": [
                     0, 16384, 4103, 4101, 8199, 8197, 12295, 12293, 36871, 36872, 36869, 40967, 40968,
                     40965, 45063, 45064, 45061
@@ -1410,13 +1982,13 @@
             },
             {
                 "id": "in{{in_num}}_dp",
-                "group": "gg_in_{{in_num}}_actions",
+                "group": "gg_in_{{ in_num }}_dp_action",
                 "title": "dp_title",
                 "order": 3,
                 "address": {{1040 + in_num - 1}},
                 "reg_type": "holding",
                 "default": 0,
-                "condition": "(dimmer_mode==18)",
+                "condition": "(dimmer_mode==18 && input_{{ in_num }}_dp_work_with_scenes!=1)",
                 "enum": [
                     0, 16384, 4103, 4101, 8199, 8197, 12295, 12293, 36871, 36872, 36869, 40967, 40968,
                     40965
@@ -1440,13 +2012,13 @@
             },
             {
                 "id": "in{{in_num}}_slp",
-                "group": "gg_in_{{in_num}}_actions",
+                "group": "gg_in_{{ in_num }}_slp_action",
                 "title": "slp_title",
                 "order": 4,
                 "address": {{1060 + in_num - 1}},
                 "reg_type": "holding",
                 "default": 0,
-                "condition": "(dimmer_mode==18)",
+                "condition": "(dimmer_mode==18 && input_{{ in_num }}_slp_work_with_scenes!=1)",
                 "enum": [
                     0, 16384, 4103, 4101, 8199, 8197, 12295, 12293, 36871, 36872, 36869, 40967, 40968,
                     40965, 45063, 45064, 45061
@@ -1473,13 +2045,13 @@
             },
             {
                 "id": "in{{in_num}}_sp",
-                "group": "gg_in_{{in_num}}_actions",
+                "group": "gg_in_{{ in_num }}_sp_action",
                 "title": "sp_title",
                 "order": 1,
                 "address": {{1000 + in_num - 1}},
                 "reg_type": "holding",
                 "default": 0,
-                "condition": "(dimmer_mode==32)",
+                "condition": "(dimmer_mode==32 && input_{{ in_num }}_sp_work_with_scenes!=1)",
                 "enum": [
                     0, 16384, 4096, 4097, 4104, 8192, 8193, 8200, 12288, 12289, 12296, 36864, 36865, 36873,
                     36874, 40960, 40961, 40969, 40970
@@ -1508,13 +2080,13 @@
             },
             {
                 "id": "in{{in_num}}_lp",
-                "group": "gg_in_{{in_num}}_actions",
+                "group": "gg_in_{{ in_num }}_lp_action",
                 "title": "lp_title",
                 "order": 2,
                 "address": {{1020 + in_num - 1}},
                 "reg_type": "holding",
                 "default": 0,
-                "condition": "(dimmer_mode==32)",
+                "condition": "(dimmer_mode==32 && input_{{ in_num }}_lp_work_with_scenes!=1)",
                 "enum": [
                     0, 16384, 4096, 4097, 4104, 8192, 8193, 8200, 12288, 12289, 12296, 36864, 36865, 36873,
                     36874, 40960, 40961, 40969, 40970, 45056, 45057, 45065, 45066
@@ -1547,13 +2119,13 @@
             },
             {
                 "id": "in{{in_num}}_dp",
-                "group": "gg_in_{{in_num}}_actions",
+                "group": "gg_in_{{ in_num }}_dp_action",
                 "title": "dp_title",
                 "order": 3,
                 "address": {{1040 + in_num - 1}},
                 "reg_type": "holding",
                 "default": 0,
-                "condition": "(dimmer_mode==32)",
+                "condition": "(dimmer_mode==32 && input_{{ in_num }}_dp_work_with_scenes!=1)",
                 "enum": [
                     0, 16384, 4096, 4097, 4104, 8192, 8193, 8200, 12288, 12289, 12296, 36864, 36865, 36873,
                     36874, 40960, 40961, 40969, 40970
@@ -1582,13 +2154,13 @@
             },
             {
                 "id": "in{{in_num}}_slp",
-                "group": "gg_in_{{in_num}}_actions",
+                "group": "gg_in_{{ in_num }}_slp_action",
                 "title": "slp_title",
                 "order": 4,
                 "address": {{1060 + in_num - 1}},
                 "reg_type": "holding",
                 "default": 0,
-                "condition": "(dimmer_mode==32)",
+                "condition": "(dimmer_mode==32 && input_{{ in_num }}_slp_work_with_scenes!=1)",
                 "enum": [
                     0, 16384, 4096, 4097, 4104, 8192, 8193, 8200, 12288, 12289, 12296, 36864, 36865, 36873,
                     36874, 40960, 40961, 40969, 40970, 45056, 45057, 45065, 45066
@@ -1621,13 +2193,13 @@
             },
             {
                 "id": "in{{in_num}}_sp",
-                "group": "gg_in_{{in_num}}_actions",
+                "group": "gg_in_{{ in_num }}_sp_action",
                 "title": "sp_title",
                 "order": 1,
                 "address": {{1000 + in_num - 1}},
                 "reg_type": "holding",
                 "default": 0,
-                "condition": "(dimmer_mode==33)",
+                "condition": "(dimmer_mode==33 && input_{{ in_num }}_sp_work_with_scenes!=1)",
                 "enum": [
                     0, 16384, 4100, 4104, 8196, 8200, 12292, 12296, 36868, 36873, 36874, 40964, 40969,
                     40970
@@ -1651,13 +2223,13 @@
             },
             {
                 "id": "in{{in_num}}_lp",
-                "group": "gg_in_{{in_num}}_actions",
+                "group": "gg_in_{{ in_num }}_lp_action",
                 "title": "lp_title",
                 "order": 2,
                 "address": {{1020 + in_num - 1}},
                 "reg_type": "holding",
                 "default": 0,
-                "condition": "(dimmer_mode==33)",
+                "condition": "(dimmer_mode==33 && input_{{ in_num }}_lp_work_with_scenes!=1)",
                 "enum": [
                     0, 16384, 4100, 4104, 8196, 8200, 12292, 12296, 36868, 36873, 36874, 40964, 40969,
                     40970, 45060, 45065, 45066
@@ -1684,13 +2256,13 @@
             },
             {
                 "id": "in{{in_num}}_dp",
-                "group": "gg_in_{{in_num}}_actions",
+                "group": "gg_in_{{ in_num }}_dp_action",
                 "title": "dp_title",
                 "order": 3,
                 "address": {{1040 + in_num - 1}},
                 "reg_type": "holding",
                 "default": 0,
-                "condition": "(dimmer_mode==33)",
+                "condition": "(dimmer_mode==33 && input_{{ in_num }}_dp_work_with_scenes!=1)",
                 "enum": [
                     0, 16384, 4100, 4104, 8196, 8200, 12292, 12296, 36868, 36873, 36874, 40964, 40969,
                     40970
@@ -1714,13 +2286,13 @@
             },
             {
                 "id": "in{{in_num}}_slp",
-                "group": "gg_in_{{in_num}}_actions",
+                "group": "gg_in_{{ in_num }}_slp_action",
                 "title": "slp_title",
                 "order": 4,
                 "address": {{1060 + in_num - 1}},
                 "reg_type": "holding",
                 "default": 0,
-                "condition": "(dimmer_mode==33)",
+                "condition": "(dimmer_mode==33 && input_{{ in_num }}_slp_work_with_scenes!=1)",
                 "enum": [
                     0, 16384, 4100, 4104, 8196, 8200, 12292, 12296, 36868, 36873, 36874, 40964, 40969,
                     40970, 45060, 45065, 45066
@@ -1747,13 +2319,13 @@
             },
             {
                 "id": "in{{in_num}}_sp",
-                "group": "gg_in_{{in_num}}_actions",
+                "group": "gg_in_{{ in_num }}_sp_action",
                 "title": "sp_title",
                 "order": 1,
                 "address": {{1000 + in_num - 1}},
                 "reg_type": "holding",
                 "default": 0,
-                "condition": "(dimmer_mode==34)",
+                "condition": "(dimmer_mode==34 && input_{{ in_num }}_sp_work_with_scenes!=1)",
                 "enum": [
                     0, 16384, 4103, 4104, 8199, 8200, 12295, 12296, 36871, 36872, 36873, 36874, 40967,
                     40968, 40969, 40970
@@ -1779,13 +2351,13 @@
             },
             {
                 "id": "in{{in_num}}_lp",
-                "group": "gg_in_{{in_num}}_actions",
+                "group": "gg_in_{{ in_num }}_lp_action",
                 "title": "lp_title",
                 "order": 2,
                 "address": {{1020 + in_num - 1}},
                 "reg_type": "holding",
                 "default": 0,
-                "condition": "(dimmer_mode==34)",
+                "condition": "(dimmer_mode==34 && input_{{ in_num }}_lp_work_with_scenes!=1)",
                 "enum": [
                     0, 16384, 4103, 4104, 8199, 8200, 12295, 12296, 36871, 36872, 36873, 36874, 40967,
                     40968, 40969, 40970, 45063, 45064, 45065, 45066
@@ -1815,13 +2387,13 @@
             },
             {
                 "id": "in{{in_num}}_dp",
-                "group": "gg_in_{{in_num}}_actions",
+                "group": "gg_in_{{ in_num }}_dp_action",
                 "title": "dp_title",
                 "order": 3,
                 "address": {{1040 + in_num - 1}},
                 "reg_type": "holding",
                 "default": 0,
-                "condition": "(dimmer_mode==34)",
+                "condition": "(dimmer_mode==34 && input_{{ in_num }}_dp_work_with_scenes!=1)",
                 "enum": [
                     0, 16384, 4103, 4104, 8199, 8200, 12295, 12296, 36871, 36872, 36873, 36874, 40967,
                     40968, 40969, 40970
@@ -1847,13 +2419,13 @@
             },
             {
                 "id": "in{{in_num}}_slp",
-                "group": "gg_in_{{in_num}}_actions",
+                "group": "gg_in_{{ in_num }}_slp_action",
                 "title": "slp_title",
                 "order": 4,
                 "address": {{1060 + in_num - 1}},
                 "reg_type": "holding",
                 "default": 0,
-                "condition": "(dimmer_mode==34)",
+                "condition": "(dimmer_mode==34 && input_{{ in_num }}_slp_work_with_scenes!=1)",
                 "enum": [
                     0, 16384, 4103, 4104, 8199, 8200, 12295, 12296, 36871, 36872, 36873, 36874, 40967,
                     40968, 40969, 40970, 45063, 45064, 45065, 45066
@@ -1883,13 +2455,13 @@
             },
             {
                 "id": "in{{in_num}}_sp",
-                "group": "gg_in_{{in_num}}_actions",
+                "group": "gg_in_{{ in_num }}_sp_action",
                 "title": "sp_title",
                 "order": 1,
                 "address": {{1000 + in_num - 1}},
                 "reg_type": "holding",
                 "default": 0,
-                "condition": "(dimmer_mode==256)",
+                "condition": "(dimmer_mode==256 && input_{{ in_num }}_sp_work_with_scenes!=1)",
                 "enum": [
                     0, 16384, 4105, 4099, 4106, 8201, 8195, 8202, 12297, 12291, 12298, 36875, 36876, 36877,
                     36878, 36879, 36880, 36867, 36881, 40971, 40972, 40973, 40974, 40975, 40976,
@@ -1927,13 +2499,13 @@
             },
             {
                 "id": "in{{in_num}}_lp",
-                "group": "gg_in_{{in_num}}_actions",
+                "group": "gg_in_{{ in_num }}_lp_action",
                 "title": "lp_title",
                 "order": 2,
                 "address": {{1020 + in_num - 1}},
                 "reg_type": "holding",
                 "default": 0,
-                "condition": "(dimmer_mode==256)",
+                "condition": "(dimmer_mode==256 && input_{{ in_num }}_lp_work_with_scenes!=1)",
                 "enum": [
                     0, 16384, 4105, 4099, 4106, 8201, 8195, 8202, 12297, 12291, 12298, 36875, 36876, 36877,
                     36878, 36879, 36880, 36867, 36881, 40971, 40972, 40973, 40974, 40975, 40976,
@@ -1979,13 +2551,13 @@
             },
             {
                 "id": "in{{in_num}}_dp",
-                "group": "gg_in_{{in_num}}_actions",
+                "group": "gg_in_{{ in_num }}_dp_action",
                 "title": "dp_title",
                 "order": 3,
                 "address": {{1040 + in_num - 1}},
                 "reg_type": "holding",
                 "default": 0,
-                "condition": "(dimmer_mode==256)",
+                "condition": "(dimmer_mode==256 && input_{{ in_num }}_dp_work_with_scenes!=1)",
                 "enum": [
                     0, 16384, 4105, 4099, 4106, 8201, 8195, 8202, 12297, 12291, 12298, 36875, 36876, 36877,
                     36878, 36879, 36880, 36867, 36881, 40971, 40972, 40973, 40974, 40975, 40976,
@@ -2023,13 +2595,13 @@
             },
             {
                 "id": "in{{in_num}}_slp",
-                "group": "gg_in_{{in_num}}_actions",
+                "group": "gg_in_{{ in_num }}_slp_action",
                 "title": "slp_title",
                 "order": 4,
                 "address": {{1060 + in_num - 1}},
                 "reg_type": "holding",
                 "default": 0,
-                "condition": "(dimmer_mode==256)",
+                "condition": "(dimmer_mode==256 && input_{{ in_num }}_slp_work_with_scenes!=1)",
                 "enum": [
                     0, 16384, 4105, 4099, 4106, 8201, 8195, 8202, 12297, 12291, 12298, 36875, 36876, 36877,
                     36878, 36879, 36880, 36867, 36881, 40971, 40972, 40973, 40974, 40975, 40976,
@@ -2075,13 +2647,13 @@
             },
             {
                 "id": "in{{in_num}}_sp",
-                "group": "gg_in_{{in_num}}_actions",
+                "group": "gg_in_{{ in_num }}_sp_action",
                 "title": "sp_title",
                 "order": 1,
                 "address": {{1000 + in_num - 1}},
                 "reg_type": "holding",
                 "default": 0,
-                "condition": "(dimmer_mode==512)",
+                "condition": "(dimmer_mode==512 && input_{{ in_num }}_sp_work_with_scenes!=1)",
                 "enum": [0, 16384, 4102, 8198, 12294, 36870, 40966],
                 "enum_titles": [
                     "no_act_title",
@@ -2095,13 +2667,13 @@
             },
             {
                 "id": "in{{in_num}}_lp",
-                "group": "gg_in_{{in_num}}_actions",
+                "group": "gg_in_{{ in_num }}_lp_action",
                 "title": "lp_title",
                 "order": 2,
                 "address": {{1020 + in_num - 1}},
                 "reg_type": "holding",
                 "default": 0,
-                "condition": "(dimmer_mode==512)",
+                "condition": "(dimmer_mode==512 && input_{{ in_num }}_lp_work_with_scenes!=1)",
                 "enum": [0, 16384, 4102, 8198, 12294, 36870, 40966, 45062],
                 "enum_titles": [
                     "no_act_title",
@@ -2116,13 +2688,13 @@
             },
             {
                 "id": "in{{in_num}}_dp",
-                "group": "gg_in_{{in_num}}_actions",
+                "group": "gg_in_{{ in_num }}_dp_action",
                 "title": "dp_title",
                 "order": 3,
                 "address": {{1040 + in_num - 1}},
                 "reg_type": "holding",
                 "default": 0,
-                "condition": "(dimmer_mode==512)",
+                "condition": "(dimmer_mode==512 && input_{{ in_num }}_dp_work_with_scenes!=1)",
                 "enum": [0, 16384, 4102, 8198, 12294, 36870, 40966],
                 "enum_titles": [
                     "no_act_title",
@@ -2136,13 +2708,13 @@
             },
             {
                 "id": "in{{in_num}}_slp",
-                "group": "gg_in_{{in_num}}_actions",
+                "group": "gg_in_{{ in_num }}_slp_action",
                 "title": "slp_title",
                 "order": 4,
                 "address": {{1060 + in_num - 1}},
                 "reg_type": "holding",
                 "default": 0,
-                "condition": "(dimmer_mode==512)",
+                "condition": "(dimmer_mode==512 && input_{{ in_num }}_slp_work_with_scenes!=1)",
                 "enum": [0, 16384, 4102, 8198, 12294, 36870, 40966, 45062],
                 "enum_titles": [
                     "no_act_title",
@@ -2155,6 +2727,45 @@
                     "inc_dec_ch1234_act_title"
                 ]
             },
+            {% set input_action_name = ["sp", "lp", "dp", "slp"] -%}
+            {% for name in range(0, 4) -%}
+            {
+                "id": "in{{in_num}}_{{ input_action_name[name] }}_scene",
+                "group": "gg_in_{{ in_num }}_{{ input_action_name[name] }}_action",
+                "title": "{{ input_action_name[name] }}_title",
+                "order": 2,
+                "address": {{704 + (loop.index0 * 16) + in_num}},
+                "reg_type": "holding",
+                "default": 0,
+                "condition": "(input_{{ in_num }}_{{ input_action_name[name] }}_work_with_scenes==1)",
+                "enum": [0, {%for ls in range(LIGHT_SCENES_NUMBER) %}{{32 + ls}}{% if not loop.last %}, {% endif %}{% endfor %}],
+                "enum_titles": [
+                    "no_act_title",
+                    {% for ls_number in range(1, LIGHT_SCENES_NUMBER + 1) -%}
+                    "Light Scene {{ ls_number }}"{% if not loop.last %},{% endif %}
+                    {% endfor -%}
+                ]
+            },
+            {% endfor -%}
+
+            {% for name in range(0, 4) -%}
+            {
+                "id": "in{{in_num}}_{{ input_action_name[name] }}_scene_action",
+                "group": "gg_in_{{ in_num }}_{{ input_action_name[name] }}_action",
+                "title": "{{ input_action_name[name] }}_scene_action",
+                "order": 3,
+                "address": {{736 + (loop.index0 * 16) + in_num}},
+                "reg_type": "holding",
+                "default": 0,
+                "condition": "(input_{{ in_num }}_{{ input_action_name[name] }}_work_with_scenes==1)",
+                "enum": [0, 1, 2],
+                "enum_titles": [
+                    "Turn Off",
+                    "Turn On",
+                    "Toggle"
+                ]
+            },
+            {% endfor -%}
             {% endfor -%}
             {
                 "id": "baud_rate",
