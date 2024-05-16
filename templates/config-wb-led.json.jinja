@@ -441,11 +441,11 @@
                     "Channel not Used in Scene",
                     {% if off_on == 1 -%}
                     "Turn Off",
-                    "Set Brightness"
+                    "Set Angle"
                     {% endif -%}
                     {%- if off_on == 0 -%}
                     "Turn On",
-                    "Turn On and Set Brightness"
+                    "Turn On and Set Angle"
                     {% endif -%}
                 ],
                 "condition": "dimmer_mode==256",
@@ -469,8 +469,8 @@
                 "reg_type": "holding",
                 "address": {{1280 + 16 + 64 * (ls_number - 1) + (off_on * 32)}},
                 "min": 1,
-                "max": 255,
-                "default": 127,
+                "max": 180,
+                "default": 90,
                 "required": true,
                 "group": "gg_ls_{{ ls_number }}_ch_H_actions_turn_{% if off_on == 0 %}on{% endif -%}{% if off_on == 1 %}off{% endif -%}",
                 "condition": "ls_{{ls_number}}_ch_H_action_{{OFF_ON[off_on]}}==3"
@@ -486,11 +486,11 @@
                     "Channel not Used in Scene",
                     {% if off_on == 1 -%}
                     "Turn Off",
-                    "Set Brightness"
+                    "Set Level"
                     {% endif -%}
                     {%- if off_on == 0 -%}
                     "Turn On",
-                    "Turn On and Set Brightness"
+                    "Turn On and Set Level"
                     {% endif -%}
                 ],
                 "condition": "dimmer_mode==256",
@@ -514,8 +514,8 @@
                 "reg_type": "holding",
                 "address": {{1281 + 16 + 64 * (ls_number - 1) + (off_on * 32)}},
                 "min": 1,
-                "max": 255,
-                "default": 127,
+                "max": 100,
+                "default": 50,
                 "required": true,
                 "group": "gg_ls_{{ ls_number }}_ch_S_actions_turn_{% if off_on == 0 %}on{% endif -%}{% if off_on == 1 %}off{% endif -%}",
                 "condition": "ls_{{ls_number}}_ch_S_action_{{OFF_ON[off_on]}}==3"
@@ -531,11 +531,11 @@
                     "Channel not Used in Scene",
                     {% if off_on == 1 -%}
                     "Turn Off",
-                    "Set Vrightness"
+                    "Set Level"
                     {% endif -%}
                     {%- if off_on == 0 -%}
                     "Turn On",
-                    "Turn On and Set Vrightness"
+                    "Turn On and Set Level"
                     {% endif -%}
                 ],
                 "condition": "dimmer_mode==256",
@@ -559,8 +559,8 @@
                 "reg_type": "holding",
                 "address": {{1282 + 16 + 64 * (ls_number - 1) + (off_on * 32)}},
                 "min": 1,
-                "max": 255,
-                "default": 127,
+                "max": 100,
+                "default": 50,
                 "required": true,
                 "group": "gg_ls_{{ ls_number }}_ch_V_actions_turn_{% if off_on == 0 %}on{% endif -%}{% if off_on == 1 %}off{% endif -%}",
                 "condition": "ls_{{ls_number}}_ch_V_action_{{OFF_ON[off_on]}}==3"
@@ -1229,7 +1229,7 @@
                 "address": {{1000 + in_num - 1}},
                 "reg_type": "holding",
                 "default": 0,
-                "condition": "(dimmer_mode==0 && input_{{ in_num }}_sp_work_with_scenes!=1)",
+                "condition": "(dimmer_mode==0&&(isDefined(input_{{ in_num }}_sp_work_with_scenes)==0||input_{{ in_num }}_sp_work_with_scenes!=1))",
                 "enum": [
                     0, 16384, 4096, 4097, 4098, 4099, 8192, 8193, 8194, 8195, 12288, 12289, 12290, 12291,
                     36864, 36865, 36866, 36867, 40960, 40961, 40962, 40963
@@ -1267,7 +1267,7 @@
                 "address": {{1020 + in_num - 1}},
                 "reg_type": "holding",
                 "default": 0,
-                "condition": "(dimmer_mode==0 && input_{{ in_num }}_lp_work_with_scenes!=1)",
+                "condition": "(dimmer_mode==0&&(isDefined(input_{{ in_num }}_lp_work_with_scenes)==0||input_{{ in_num }}_lp_work_with_scenes!=1))",
                 "enum": [
                     0, 16384, 4096, 4097, 4098, 4099, 8192, 8193, 8194, 8195, 12288, 12289, 12290, 12291,
                     36864, 36865, 36866, 36867, 40960, 40961, 40962, 40963, 45056, 45057, 45058,
@@ -1310,7 +1310,7 @@
                 "address": {{1040 + in_num - 1}},
                 "reg_type": "holding",
                 "default": 0,
-                "condition": "(dimmer_mode==0 && input_{{ in_num }}_dp_work_with_scenes!=1)",
+                "condition": "(dimmer_mode==0&&(isDefined(input_{{ in_num }}_dp_work_with_scenes)==0||input_{{ in_num }}_dp_work_with_scenes!=1))",
                 "enum": [
                     0, 16384, 4096, 4097, 4098, 4099, 8192, 8193, 8194, 8195, 12288, 12289, 12290, 12291,
                     36864, 36865, 36866, 36867, 40960, 40961, 40962, 40963
@@ -1348,7 +1348,7 @@
                 "address": {{1060 + in_num - 1}},
                 "reg_type": "holding",
                 "default": 0,
-                "condition": "(dimmer_mode==0 && input_{{ in_num }}_slp_work_with_scenes!=1)",
+                "condition": "(dimmer_mode==0&&(isDefined(input_{{ in_num }}_slp_work_with_scenes)==0||input_{{ in_num }}_slp_work_with_scenes!=1))",
                 "enum": [
                     0, 16384, 4096, 4097, 4098, 4099, 8192, 8193, 8194, 8195, 12288, 12289, 12290, 12291,
                     36864, 36865, 36866, 36867, 40960, 40961, 40962, 40963, 45056, 45057, 45058,
@@ -1391,7 +1391,7 @@
                 "address": {{1000 + in_num - 1}},
                 "reg_type": "holding",
                 "default": 0,
-                "condition": "(dimmer_mode==1 && input_{{ in_num }}_sp_work_with_scenes!=1)",
+                "condition": "(dimmer_mode==1&&(isDefined(input_{{ in_num }}_sp_work_with_scenes)==0||input_{{ in_num }}_sp_work_with_scenes!=1))",
                 "enum": [
                     0, 16384, 4100, 4098, 4099, 8196, 8194, 8195, 12292, 12290, 12291, 36868, 36866, 36867,
                     40964, 40962, 40963
@@ -1424,7 +1424,7 @@
                 "address": {{1020 + in_num - 1}},
                 "reg_type": "holding",
                 "default": 0,
-                "condition": "(dimmer_mode==1 && input_{{ in_num }}_lp_work_with_scenes!=1)",
+                "condition": "(dimmer_mode==1&&(isDefined(input_{{ in_num }}_lp_work_with_scenes)==0||input_{{ in_num }}_lp_work_with_scenes!=1))",
                 "enum": [
                     0, 16384, 4100, 4098, 4099, 8196, 8194, 8195, 12292, 12290, 12291, 36868, 36866, 36867,
                     40964, 40962, 40963, 45060, 45058, 45059
@@ -1460,7 +1460,7 @@
                 "address": {{1040 + in_num - 1}},
                 "reg_type": "holding",
                 "default": 0,
-                "condition": "(dimmer_mode==1 && input_{{ in_num }}_dp_work_with_scenes!=1)",
+                "condition": "(dimmer_mode==1&&(isDefined(input_{{ in_num }}_dp_work_with_scenes)==0||input_{{ in_num }}_dp_work_with_scenes!=1))",
                 "enum": [
                     0, 16384, 4100, 4098, 4099, 8196, 8194, 8195, 12292, 12290, 12291, 36868, 36866, 36867,
                     40964, 40962, 40963
@@ -1493,7 +1493,7 @@
                 "address": {{1060 + in_num - 1}},
                 "reg_type": "holding",
                 "default": 0,
-                "condition": "(dimmer_mode==1 && input_{{ in_num }}_slp_work_with_scenes!=1)",
+                "condition": "(dimmer_mode==1&&(isDefined(input_{{ in_num }}_slp_work_with_scenes)==0||input_{{ in_num }}_slp_work_with_scenes!=1))",
                 "enum": [
                     0, 16384, 4100, 4098, 4099, 8196, 8194, 8195, 12292, 12290, 12291, 36868, 36866, 36867,
                     40964, 40962, 40963, 45060, 45058, 45059
@@ -1529,7 +1529,7 @@
                 "address": {{1000 + in_num - 1}},
                 "reg_type": "holding",
                 "default": 0,
-                "condition": "(dimmer_mode==2 && input_{{ in_num }}_sp_work_with_scenes!=1)",
+                "condition": "(dimmer_mode==2&&(isDefined(input_{{ in_num }}_sp_work_with_scenes)==0||input_{{ in_num }}_sp_work_with_scenes!=1))",
                 "enum": [
                     0, 16384, 4103, 4098, 4099, 8199, 8194, 8195, 12295, 12290, 12291, 36871, 36872, 36866,
                     36867, 40967, 40968, 40962, 40963
@@ -1564,7 +1564,7 @@
                 "address": {{1020 + in_num - 1}},
                 "reg_type": "holding",
                 "default": 0,
-                "condition": "(dimmer_mode==2 && input_{{ in_num }}_lp_work_with_scenes!=1)",
+                "condition": "(dimmer_mode==2&&(isDefined(input_{{ in_num }}_lp_work_with_scenes)==0||input_{{ in_num }}_lp_work_with_scenes!=1))",
                 "enum": [
                     0, 16384, 4103, 4098, 4099, 8199, 8194, 8195, 12295, 12290, 12291, 36871, 36872, 36866,
                     36867, 40967, 40968, 40962, 40963, 45063, 45064, 45058, 45059
@@ -1603,7 +1603,7 @@
                 "address": {{1040 + in_num - 1}},
                 "reg_type": "holding",
                 "default": 0,
-                "condition": "(dimmer_mode==2 && input_{{ in_num }}_dp_work_with_scenes!=1)",
+                "condition": "(dimmer_mode==2&&(isDefined(input_{{ in_num }}_dp_work_with_scenes)==0||input_{{ in_num }}_dp_work_with_scenes!=1))",
                 "enum": [
                     0, 16384, 4103, 4098, 4099, 8199, 8194, 8195, 12295, 12290, 12291, 36871, 36872, 36866,
                     36867, 40967, 40968, 40962, 40963
@@ -1638,7 +1638,7 @@
                 "address": {{1060 + in_num - 1}},
                 "reg_type": "holding",
                 "default": 0,
-                "condition": "(dimmer_mode==2 && input_{{ in_num }}_slp_work_with_scenes!=1)",
+                "condition": "(dimmer_mode==2&&(isDefined(input_{{ in_num }}_slp_work_with_scenes)==0||input_{{ in_num }}_slp_work_with_scenes!=1))",
                 "enum": [
                     0, 16384, 4103, 4098, 4099, 8199, 8194, 8195, 12295, 12290, 12291, 36871, 36872, 36866,
                     36867, 40967, 40968, 40962, 40963, 45063, 45064, 45058, 45059
@@ -1677,7 +1677,7 @@
                 "address": {{1000 + in_num - 1}},
                 "reg_type": "holding",
                 "default": 0,
-                "condition": "(dimmer_mode==16 && input_{{ in_num }}_sp_work_with_scenes!=1)",
+                "condition": "(dimmer_mode==16&&(isDefined(input_{{ in_num }}_sp_work_with_scenes)==0||input_{{ in_num }}_sp_work_with_scenes!=1))",
                 "enum": [
                     0, 16384, 4096, 4097, 4101, 8192, 8193, 8197, 12288, 12289, 12293, 36864, 36865, 36869,
                     40960, 40961, 40965
@@ -1710,7 +1710,7 @@
                 "address": {{1020 + in_num - 1}},
                 "reg_type": "holding",
                 "default": 0,
-                "condition": "(dimmer_mode==16 && input_{{ in_num }}_lp_work_with_scenes!=1)",
+                "condition": "(dimmer_mode==16&&(isDefined(input_{{ in_num }}_lp_work_with_scenes)==0||input_{{ in_num }}_lp_work_with_scenes!=1))",
                 "enum": [
                     0, 16384, 4096, 4097, 4101, 8192, 8193, 8197, 12288, 12289, 12293, 36864, 36865, 36869,
                     40960, 40961, 40965, 45056, 45057, 45061
@@ -1746,7 +1746,7 @@
                 "address": {{1040 + in_num - 1}},
                 "reg_type": "holding",
                 "default": 0,
-                "condition": "(dimmer_mode==16 && input_{{ in_num }}_dp_work_with_scenes!=1)",
+                "condition": "(dimmer_mode==16&&(isDefined(input_{{ in_num }}_dp_work_with_scenes)==0||input_{{ in_num }}_dp_work_with_scenes!=1))",
                 "enum": [
                     0, 16384, 4096, 4097, 4101, 8192, 8193, 8197, 12288, 12289, 12293, 36864, 36865, 36869,
                     40960, 40961, 40965
@@ -1779,7 +1779,7 @@
                 "address": {{1060 + in_num - 1}},
                 "reg_type": "holding",
                 "default": 0,
-                "condition": "(dimmer_mode==16 && input_{{ in_num }}_slp_work_with_scenes!=1)",
+                "condition": "(dimmer_mode==16&&(isDefined(input_{{ in_num }}_slp_work_with_scenes)==0||input_{{ in_num }}_slp_work_with_scenes!=1))",
                 "enum": [
                     0, 16384, 4096, 4097, 4101, 8192, 8193, 8197, 12288, 12289, 12293, 36864, 36865, 36869,
                     40960, 40961, 40965, 45056, 45057, 45061
@@ -1815,7 +1815,7 @@
                 "address": {{1000 + in_num - 1}},
                 "reg_type": "holding",
                 "default": 0,
-                "condition": "(dimmer_mode==17 && input_{{ in_num }}_sp_work_with_scenes!=1)",
+                "condition": "(dimmer_mode==17&&(isDefined(input_{{ in_num }}_sp_work_with_scenes)==0||input_{{ in_num }}_sp_work_with_scenes!=1))",
                 "enum": [0, 16384, 4100, 4101, 8196, 8197, 12292, 12293, 36868, 36869, 40964, 40965],
                 "enum_titles": [
                     "no_act_title",
@@ -1840,7 +1840,7 @@
                 "address": {{1020 + in_num - 1}},
                 "reg_type": "holding",
                 "default": 0,
-                "condition": "(dimmer_mode==17 && input_{{ in_num }}_lp_work_with_scenes!=1)",
+                "condition": "(dimmer_mode==17&&(isDefined(input_{{ in_num }}_lp_work_with_scenes)==0||input_{{ in_num }}_lp_work_with_scenes!=1))",
                 "enum": [
                     0, 16384, 4100, 4101, 8196, 8197, 12292, 12293, 36868, 36869, 40964, 40965, 45060,
                     45061
@@ -1870,7 +1870,7 @@
                 "address": {{1040 + in_num - 1}},
                 "reg_type": "holding",
                 "default": 0,
-                "condition": "(dimmer_mode==17 && input_{{ in_num }}_dp_work_with_scenes!=1)",
+                "condition": "(dimmer_mode==17&&(isDefined(input_{{ in_num }}_dp_work_with_scenes)==0||input_{{ in_num }}_dp_work_with_scenes!=1))",
                 "enum": [0, 16384, 4100, 4101, 8196, 8197, 12292, 12293, 36868, 36869, 40964, 40965],
                 "enum_titles": [
                     "no_act_title",
@@ -1895,7 +1895,7 @@
                 "address": {{1060 + in_num - 1}},
                 "reg_type": "holding",
                 "default": 0,
-                "condition": "(dimmer_mode==17 && input_{{ in_num }}_slp_work_with_scenes!=1)",
+                "condition": "(dimmer_mode==17&&(isDefined(input_{{ in_num }}_slp_work_with_scenes)==0||input_{{ in_num }}_slp_work_with_scenes!=1))",
                 "enum": [
                     0, 16384, 4100, 4101, 8196, 8197, 12292, 12293, 36868, 36869, 40964, 40965, 45060,
                     45061
@@ -1925,7 +1925,7 @@
                 "address": {{1000 + in_num - 1}},
                 "reg_type": "holding",
                 "default": 0,
-                "condition": "(dimmer_mode==18 && input_{{ in_num }}_sp_work_with_scenes!=1)",
+                "condition": "(dimmer_mode==18&&(isDefined(input_{{ in_num }}_sp_work_with_scenes)==0||input_{{ in_num }}_sp_work_with_scenes!=1))",
                 "enum": [
                     0, 16384, 4103, 4101, 8199, 8197, 12295, 12293, 36871, 36872, 36869, 40967, 40968,
                     40965
@@ -1955,7 +1955,7 @@
                 "address": {{1020 + in_num - 1}},
                 "reg_type": "holding",
                 "default": 0,
-                "condition": "(dimmer_mode==18 && input_{{ in_num }}_lp_work_with_scenes!=1)",
+                "condition": "(dimmer_mode==18&&(isDefined(input_{{ in_num }}_lp_work_with_scenes)==0||input_{{ in_num }}_lp_work_with_scenes!=1))",
                 "enum": [
                     0, 16384, 4103, 4101, 8199, 8197, 12295, 12293, 36871, 36872, 36869, 40967, 40968,
                     40965, 45063, 45064, 45061
@@ -1988,7 +1988,7 @@
                 "address": {{1040 + in_num - 1}},
                 "reg_type": "holding",
                 "default": 0,
-                "condition": "(dimmer_mode==18 && input_{{ in_num }}_dp_work_with_scenes!=1)",
+                "condition": "(dimmer_mode==18&&(isDefined(input_{{ in_num }}_dp_work_with_scenes)==0||input_{{ in_num }}_dp_work_with_scenes!=1))",
                 "enum": [
                     0, 16384, 4103, 4101, 8199, 8197, 12295, 12293, 36871, 36872, 36869, 40967, 40968,
                     40965
@@ -2018,7 +2018,7 @@
                 "address": {{1060 + in_num - 1}},
                 "reg_type": "holding",
                 "default": 0,
-                "condition": "(dimmer_mode==18 && input_{{ in_num }}_slp_work_with_scenes!=1)",
+                "condition": "(dimmer_mode==18&&(isDefined(input_{{ in_num }}_slp_work_with_scenes)==0||input_{{ in_num }}_slp_work_with_scenes!=1))",
                 "enum": [
                     0, 16384, 4103, 4101, 8199, 8197, 12295, 12293, 36871, 36872, 36869, 40967, 40968,
                     40965, 45063, 45064, 45061
@@ -2051,7 +2051,7 @@
                 "address": {{1000 + in_num - 1}},
                 "reg_type": "holding",
                 "default": 0,
-                "condition": "(dimmer_mode==32 && input_{{ in_num }}_sp_work_with_scenes!=1)",
+                "condition": "(dimmer_mode==32&&(isDefined(input_{{ in_num }}_sp_work_with_scenes)==0||input_{{ in_num }}_sp_work_with_scenes!=1))",
                 "enum": [
                     0, 16384, 4096, 4097, 4104, 8192, 8193, 8200, 12288, 12289, 12296, 36864, 36865, 36873,
                     36874, 40960, 40961, 40969, 40970
@@ -2086,7 +2086,7 @@
                 "address": {{1020 + in_num - 1}},
                 "reg_type": "holding",
                 "default": 0,
-                "condition": "(dimmer_mode==32 && input_{{ in_num }}_lp_work_with_scenes!=1)",
+                "condition": "(dimmer_mode==32&&(isDefined(input_{{ in_num }}_lp_work_with_scenes)==0||input_{{ in_num }}_lp_work_with_scenes!=1))",
                 "enum": [
                     0, 16384, 4096, 4097, 4104, 8192, 8193, 8200, 12288, 12289, 12296, 36864, 36865, 36873,
                     36874, 40960, 40961, 40969, 40970, 45056, 45057, 45065, 45066
@@ -2125,7 +2125,7 @@
                 "address": {{1040 + in_num - 1}},
                 "reg_type": "holding",
                 "default": 0,
-                "condition": "(dimmer_mode==32 && input_{{ in_num }}_dp_work_with_scenes!=1)",
+                "condition": "(dimmer_mode==32&&(isDefined(input_{{ in_num }}_dp_work_with_scenes)==0||input_{{ in_num }}_dp_work_with_scenes!=1))",
                 "enum": [
                     0, 16384, 4096, 4097, 4104, 8192, 8193, 8200, 12288, 12289, 12296, 36864, 36865, 36873,
                     36874, 40960, 40961, 40969, 40970
@@ -2160,7 +2160,7 @@
                 "address": {{1060 + in_num - 1}},
                 "reg_type": "holding",
                 "default": 0,
-                "condition": "(dimmer_mode==32 && input_{{ in_num }}_slp_work_with_scenes!=1)",
+                "condition": "(dimmer_mode==32&&(isDefined(input_{{ in_num }}_slp_work_with_scenes)==0||input_{{ in_num }}_slp_work_with_scenes!=1))",
                 "enum": [
                     0, 16384, 4096, 4097, 4104, 8192, 8193, 8200, 12288, 12289, 12296, 36864, 36865, 36873,
                     36874, 40960, 40961, 40969, 40970, 45056, 45057, 45065, 45066
@@ -2199,7 +2199,7 @@
                 "address": {{1000 + in_num - 1}},
                 "reg_type": "holding",
                 "default": 0,
-                "condition": "(dimmer_mode==33 && input_{{ in_num }}_sp_work_with_scenes!=1)",
+                "condition": "(dimmer_mode==33&&(isDefined(input_{{ in_num }}_sp_work_with_scenes)==0||input_{{ in_num }}_sp_work_with_scenes!=1))",
                 "enum": [
                     0, 16384, 4100, 4104, 8196, 8200, 12292, 12296, 36868, 36873, 36874, 40964, 40969,
                     40970
@@ -2229,7 +2229,7 @@
                 "address": {{1020 + in_num - 1}},
                 "reg_type": "holding",
                 "default": 0,
-                "condition": "(dimmer_mode==33 && input_{{ in_num }}_lp_work_with_scenes!=1)",
+                "condition": "(dimmer_mode==33&&(isDefined(input_{{ in_num }}_lp_work_with_scenes)==0||input_{{ in_num }}_lp_work_with_scenes!=1))",
                 "enum": [
                     0, 16384, 4100, 4104, 8196, 8200, 12292, 12296, 36868, 36873, 36874, 40964, 40969,
                     40970, 45060, 45065, 45066
@@ -2262,7 +2262,7 @@
                 "address": {{1040 + in_num - 1}},
                 "reg_type": "holding",
                 "default": 0,
-                "condition": "(dimmer_mode==33 && input_{{ in_num }}_dp_work_with_scenes!=1)",
+                "condition": "(dimmer_mode==33&&(isDefined(input_{{ in_num }}_dp_work_with_scenes)==0||input_{{ in_num }}_dp_work_with_scenes!=1))",
                 "enum": [
                     0, 16384, 4100, 4104, 8196, 8200, 12292, 12296, 36868, 36873, 36874, 40964, 40969,
                     40970
@@ -2292,7 +2292,7 @@
                 "address": {{1060 + in_num - 1}},
                 "reg_type": "holding",
                 "default": 0,
-                "condition": "(dimmer_mode==33 && input_{{ in_num }}_slp_work_with_scenes!=1)",
+                "condition": "(dimmer_mode==33&&(isDefined(input_{{ in_num }}_slp_work_with_scenes)==0||input_{{ in_num }}_slp_work_with_scenes!=1))",
                 "enum": [
                     0, 16384, 4100, 4104, 8196, 8200, 12292, 12296, 36868, 36873, 36874, 40964, 40969,
                     40970, 45060, 45065, 45066
@@ -2325,7 +2325,7 @@
                 "address": {{1000 + in_num - 1}},
                 "reg_type": "holding",
                 "default": 0,
-                "condition": "(dimmer_mode==34 && input_{{ in_num }}_sp_work_with_scenes!=1)",
+                "condition": "(dimmer_mode==34&&(isDefined(input_{{ in_num }}_sp_work_with_scenes)==0||input_{{ in_num }}_sp_work_with_scenes!=1))",
                 "enum": [
                     0, 16384, 4103, 4104, 8199, 8200, 12295, 12296, 36871, 36872, 36873, 36874, 40967,
                     40968, 40969, 40970
@@ -2357,7 +2357,7 @@
                 "address": {{1020 + in_num - 1}},
                 "reg_type": "holding",
                 "default": 0,
-                "condition": "(dimmer_mode==34 && input_{{ in_num }}_lp_work_with_scenes!=1)",
+                "condition": "(dimmer_mode==34&&(isDefined(input_{{ in_num }}_lp_work_with_scenes)==0||input_{{ in_num }}_lp_work_with_scenes!=1))",
                 "enum": [
                     0, 16384, 4103, 4104, 8199, 8200, 12295, 12296, 36871, 36872, 36873, 36874, 40967,
                     40968, 40969, 40970, 45063, 45064, 45065, 45066
@@ -2393,7 +2393,7 @@
                 "address": {{1040 + in_num - 1}},
                 "reg_type": "holding",
                 "default": 0,
-                "condition": "(dimmer_mode==34 && input_{{ in_num }}_dp_work_with_scenes!=1)",
+                "condition": "(dimmer_mode==34&&(isDefined(input_{{ in_num }}_dp_work_with_scenes)==0||input_{{ in_num }}_dp_work_with_scenes!=1))",
                 "enum": [
                     0, 16384, 4103, 4104, 8199, 8200, 12295, 12296, 36871, 36872, 36873, 36874, 40967,
                     40968, 40969, 40970
@@ -2425,7 +2425,7 @@
                 "address": {{1060 + in_num - 1}},
                 "reg_type": "holding",
                 "default": 0,
-                "condition": "(dimmer_mode==34 && input_{{ in_num }}_slp_work_with_scenes!=1)",
+                "condition": "(dimmer_mode==34&&(isDefined(input_{{ in_num }}_slp_work_with_scenes)==0||input_{{ in_num }}_slp_work_with_scenes!=1))",
                 "enum": [
                     0, 16384, 4103, 4104, 8199, 8200, 12295, 12296, 36871, 36872, 36873, 36874, 40967,
                     40968, 40969, 40970, 45063, 45064, 45065, 45066
@@ -2461,7 +2461,7 @@
                 "address": {{1000 + in_num - 1}},
                 "reg_type": "holding",
                 "default": 0,
-                "condition": "(dimmer_mode==256 && input_{{ in_num }}_sp_work_with_scenes!=1)",
+                "condition": "(dimmer_mode==256&&(isDefined(input_{{ in_num }}_sp_work_with_scenes)==0||input_{{ in_num }}_sp_work_with_scenes!=1))",
                 "enum": [
                     0, 16384, 4105, 4099, 4106, 8201, 8195, 8202, 12297, 12291, 12298, 36875, 36876, 36877,
                     36878, 36879, 36880, 36867, 36881, 40971, 40972, 40973, 40974, 40975, 40976,
@@ -2505,7 +2505,7 @@
                 "address": {{1020 + in_num - 1}},
                 "reg_type": "holding",
                 "default": 0,
-                "condition": "(dimmer_mode==256 && input_{{ in_num }}_lp_work_with_scenes!=1)",
+                "condition": "(dimmer_mode==256&&(isDefined(input_{{ in_num }}_lp_work_with_scenes)==0||input_{{ in_num }}_lp_work_with_scenes!=1))",
                 "enum": [
                     0, 16384, 4105, 4099, 4106, 8201, 8195, 8202, 12297, 12291, 12298, 36875, 36876, 36877,
                     36878, 36879, 36880, 36867, 36881, 40971, 40972, 40973, 40974, 40975, 40976,
@@ -2557,7 +2557,7 @@
                 "address": {{1040 + in_num - 1}},
                 "reg_type": "holding",
                 "default": 0,
-                "condition": "(dimmer_mode==256 && input_{{ in_num }}_dp_work_with_scenes!=1)",
+                "condition": "(dimmer_mode==256&&(isDefined(input_{{ in_num }}_dp_work_with_scenes)==0||input_{{ in_num }}_dp_work_with_scenes!=1))",
                 "enum": [
                     0, 16384, 4105, 4099, 4106, 8201, 8195, 8202, 12297, 12291, 12298, 36875, 36876, 36877,
                     36878, 36879, 36880, 36867, 36881, 40971, 40972, 40973, 40974, 40975, 40976,
@@ -2601,7 +2601,7 @@
                 "address": {{1060 + in_num - 1}},
                 "reg_type": "holding",
                 "default": 0,
-                "condition": "(dimmer_mode==256 && input_{{ in_num }}_slp_work_with_scenes!=1)",
+                "condition": "(dimmer_mode==256&&(isDefined(input_{{ in_num }}_slp_work_with_scenes)==0||input_{{ in_num }}_slp_work_with_scenes!=1))",
                 "enum": [
                     0, 16384, 4105, 4099, 4106, 8201, 8195, 8202, 12297, 12291, 12298, 36875, 36876, 36877,
                     36878, 36879, 36880, 36867, 36881, 40971, 40972, 40973, 40974, 40975, 40976,
@@ -2653,7 +2653,7 @@
                 "address": {{1000 + in_num - 1}},
                 "reg_type": "holding",
                 "default": 0,
-                "condition": "(dimmer_mode==512 && input_{{ in_num }}_sp_work_with_scenes!=1)",
+                "condition": "(dimmer_mode==512&&(isDefined(input_{{ in_num }}_sp_work_with_scenes)==0||input_{{ in_num }}_sp_work_with_scenes!=1))",
                 "enum": [0, 16384, 4102, 8198, 12294, 36870, 40966],
                 "enum_titles": [
                     "no_act_title",
@@ -2673,7 +2673,7 @@
                 "address": {{1020 + in_num - 1}},
                 "reg_type": "holding",
                 "default": 0,
-                "condition": "(dimmer_mode==512 && input_{{ in_num }}_lp_work_with_scenes!=1)",
+                "condition": "(dimmer_mode==512&&(isDefined(input_{{ in_num }}_lp_work_with_scenes)==0||input_{{ in_num }}_lp_work_with_scenes!=1))",
                 "enum": [0, 16384, 4102, 8198, 12294, 36870, 40966, 45062],
                 "enum_titles": [
                     "no_act_title",
@@ -2694,7 +2694,7 @@
                 "address": {{1040 + in_num - 1}},
                 "reg_type": "holding",
                 "default": 0,
-                "condition": "(dimmer_mode==512 && input_{{ in_num }}_dp_work_with_scenes!=1)",
+                "condition": "(dimmer_mode==512&&(isDefined(input_{{ in_num }}_dp_work_with_scenes)==0||input_{{ in_num }}_dp_work_with_scenes!=1))",
                 "enum": [0, 16384, 4102, 8198, 12294, 36870, 40966],
                 "enum_titles": [
                     "no_act_title",
@@ -2714,7 +2714,7 @@
                 "address": {{1060 + in_num - 1}},
                 "reg_type": "holding",
                 "default": 0,
-                "condition": "(dimmer_mode==512 && input_{{ in_num }}_slp_work_with_scenes!=1)",
+                "condition": "(dimmer_mode==512&&(isDefined(input_{{ in_num }}_slp_work_with_scenes)==0||input_{{ in_num }}_slp_work_with_scenes!=1))",
                 "enum": [0, 16384, 4102, 8198, 12294, 36870, 40966, 45062],
                 "enum_titles": [
                     "no_act_title",
