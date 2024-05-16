@@ -108,25 +108,23 @@ install:
 	install -d $(DESTDIR)/var/lib/wb-mqtt-serial
 	install -d $(DESTDIR)/etc/wb-mqtt-serial.conf.d/templates
 
-	install -D -m 0644 config.sample.json $(DESTDIR)/etc/wb-mqtt-serial.conf.sample
+	install -Dm0644 config.sample.json $(DESTDIR)/etc/wb-mqtt-serial.conf.sample
 
-	install -D -m 0644 config.json.wb234 $(DESTDIR)$(PREFIX)/share/wb-mqtt-serial/wb-mqtt-serial.conf.wb234
-	install -D -m 0644 config.json.wb5 $(DESTDIR)$(PREFIX)/share/wb-mqtt-serial/wb-mqtt-serial.conf.wb5
-	install -D -m 0644 config.json.wb6 $(DESTDIR)$(PREFIX)/share/wb-mqtt-serial/wb-mqtt-serial.conf.wb6
-	install -D -m 0644 config.json.wb67 $(DESTDIR)$(PREFIX)/share/wb-mqtt-serial/wb-mqtt-serial.conf.wb67
-	install -D -m 0644 config.json.wb7 $(DESTDIR)$(PREFIX)/share/wb-mqtt-serial/wb-mqtt-serial.conf.wb7
-	install -D -m 0644 config.json.default $(DESTDIR)$(PREFIX)/share/wb-mqtt-serial/wb-mqtt-serial.conf.default
+	for cfg in configs/config.json.*; do \
+	    board=$${cfg##*.}; \
+	    install -Dm0644 $$cfg $(DESTDIR)$(PREFIX)/share/wb-mqtt-serial/wb-mqtt-serial.conf.$$board; \
+	done
 
-	install -D -m 0644 wb-mqtt-serial.wbconfigs $(DESTDIR)/etc/wb-configs.d/11wb-mqtt-serial
+	install -Dm0644 wb-mqtt-serial.wbconfigs $(DESTDIR)/etc/wb-configs.d/11wb-mqtt-serial
 
-	install -D -m 0644 *.schema.json -t $(DESTDIR)$(PREFIX)/share/wb-mqtt-serial
-	install -D -m 0644 groups.json -t $(DESTDIR)$(PREFIX)/share/wb-mqtt-serial
-	install -D -m 0644 templates/*.json $(GENERATED_TEMPLATES_DIR)/*.json -t $(DESTDIR)$(PREFIX)/share/wb-mqtt-serial/templates
-	install -D -m 0644 $(GENERATED_SCHEMAS_DIR)/*.json -t $(DESTDIR)/var/lib/wb-mqtt-serial/schemas
-	install -D -m 0644 protocols/*.json -t $(DESTDIR)$(PREFIX)/share/wb-mqtt-serial/protocols
+	install -Dm0644 *.schema.json -t $(DESTDIR)$(PREFIX)/share/wb-mqtt-serial
+	install -Dm0644 groups.json -t $(DESTDIR)$(PREFIX)/share/wb-mqtt-serial
+	install -Dm0644 templates/*.json $(GENERATED_TEMPLATES_DIR)/*.json -t $(DESTDIR)$(PREFIX)/share/wb-mqtt-serial/templates
+	install -Dm0644 $(GENERATED_SCHEMAS_DIR)/*.json -t $(DESTDIR)/var/lib/wb-mqtt-serial/schemas
+	install -Dm0644 protocols/*.json -t $(DESTDIR)$(PREFIX)/share/wb-mqtt-serial/protocols
 
-	install -D -m 0644 obis-hints.json -t $(DESTDIR)$(PREFIX)/share/wb-mqtt-serial
+	install -Dm0644 obis-hints.json -t $(DESTDIR)$(PREFIX)/share/wb-mqtt-serial
 
 	install -Dm0644 wb-mqtt-serial-dummy.schema.json -t $(DESTDIR)$(PREFIX)/share/wb-mqtt-confed/schemas
 
-	install -D -m 0755 $(BUILD_DIR)/$(SERIAL_BIN) -t $(DESTDIR)$(PREFIX)/bin
+	install -Dm0755 $(BUILD_DIR)/$(SERIAL_BIN) -t $(DESTDIR)$(PREFIX)/bin
