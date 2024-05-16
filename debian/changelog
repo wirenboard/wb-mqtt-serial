@@ -1,3 +1,9 @@
+wb-mqtt-serial (2.117.2-wb100) stable; urgency=medium
+
+  * Add default config for wb8
+
+ -- Nikolay Korotkiy <nikolay.korotkiy@wirenboard.com>  Wed, 15 May 2024 14:05:00 +0400
+
 wb-mqtt-serial (2.117.2) stable; urgency=medium
 
   * Dauerhaft Roll 35/45: fix template
