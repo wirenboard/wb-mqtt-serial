@@ -1,8 +1,14 @@
+wb-mqtt-serial (2.121.5) stable; urgency=medium
+
+  * Install missed wb-mqtt-serial.conf.wb8
+
+ -- Nikolay Korotkiy <nikolay.korotkiy@wirenboard.com>  Thu, 16 May 2024 15:11:00 +0400
+
 wb-mqtt-serial (2.121.4) stable; urgency=medium
 
   * Add default config for wb8
 
- -- Nikolay Korotkiy <nikolay.korotkiy@wirenboard.com>  Wed, 16 May 2024 14:05:00 +0400
+ -- Nikolay Korotkiy <nikolay.korotkiy@wirenboard.com>  Wed, 15 May 2024 14:05:00 +0400
 
 wb-mqtt-serial (2.121.3) stable; urgency=medium
 
