@@ -1011,7 +1011,7 @@ TEST_F(TSerialClientTestWithSetupRegisters, SetupOk)
     PRegister reg20 = Reg(20);
     SerialClient->AddRegister(reg20);
     SerialClient->Cycle();
-    EXPECT_FALSE(Device->GetIsDisconnected());
+    EXPECT_EQ(Device->GetConnectionState(), TDeviceConnectionState::CONNECTED);
 }
 
 TEST_F(TSerialClientTestWithSetupRegisters, SetupFail)
@@ -1020,10 +1020,10 @@ TEST_F(TSerialClientTestWithSetupRegisters, SetupFail)
     SerialClient->AddRegister(reg20);
     Device->BlockWriteFor(101, true);
     SerialClient->Cycle();
-    EXPECT_TRUE(Device->GetIsDisconnected());
+    EXPECT_EQ(Device->GetConnectionState(), TDeviceConnectionState::DISCONNECTED);
     Device->BlockWriteFor(101, false);
     SerialClient->Cycle();
-    EXPECT_FALSE(Device->GetIsDisconnected());
+    EXPECT_EQ(Device->GetConnectionState(), TDeviceConnectionState::CONNECTED);
 }
 
 class TSerialClientIntegrationTest: public TSerialClientTest

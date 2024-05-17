@@ -1,3 +1,9 @@
+wb-mqtt-serial (2.122.0) stable; urgency=medium
+
+  * Publish error in /devices/+/meta/error on device disconnection
+
+ -- Petr Krasnoshchekov <petr.krasnoshchekov@wirenboard.com>  Fri, 17 May 2024 12:01:18 +0500
+
 wb-mqtt-serial (2.121.5) stable; urgency=medium
 
   * Install missed wb-mqtt-serial.conf.wb8

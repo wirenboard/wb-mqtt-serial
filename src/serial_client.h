@@ -27,16 +27,20 @@ enum TClientTaskType
 class TSerialClientRegisterAndEventsReader: public util::TNonCopyable
 {
 public:
-    typedef std::function<void(PRegister reg)> TCallback;
+    typedef std::function<void(PRegister reg)> TRegisterCallback;
+    typedef std::function<void(PSerialDevice dev)> TDeviceCallback;
 
     TSerialClientRegisterAndEventsReader(const std::list<PRegister>& regList,
                                          std::chrono::milliseconds readEventsPeriod,
                                          util::TGetNowFn nowFn,
                                          size_t lowPriorityRateLimit = std::numeric_limits<size_t>::max());
 
-    void ClosedPortCycle(std::chrono::steady_clock::time_point currentTime, TCallback regCallback);
+    void ClosedPortCycle(std::chrono::steady_clock::time_point currentTime,
+                         TRegisterCallback regCallback,
+                         TDeviceCallback deviceConnectionStateChangedCallback);
     PSerialDevice OpenPortCycle(TPort& port,
-                                TCallback regCallback,
+                                TRegisterCallback regCallback,
+                                TDeviceCallback deviceConnectionStateChangedCallback,
                                 TSerialClientDeviceAccessHandler& lastAccessedDevice);
 
     std::chrono::steady_clock::time_point GetDeadline(std::chrono::steady_clock::time_point currentTime) const;
@@ -57,7 +61,8 @@ private:
 class TSerialClient: public std::enable_shared_from_this<TSerialClient>, util::TNonCopyable
 {
 public:
-    typedef std::function<void(PRegister reg)> TCallback;
+    typedef std::function<void(PRegister reg)> TRegisterCallback;
+    typedef std::function<void(PSerialDevice dev)> TDeviceCallback;
 
     TSerialClient(PPort port,
                   const TPortOpenCloseLogic::TSettings& openCloseSettings,
@@ -68,8 +73,9 @@ public:
     void AddRegister(PRegister reg);
     void Cycle();
     void SetTextValue(PRegister reg, const std::string& value);
-    void SetReadCallback(const TCallback& callback);
-    void SetErrorCallback(const TCallback& callback);
+    void SetReadCallback(const TRegisterCallback& callback);
+    void SetErrorCallback(const TRegisterCallback& callback);
+    void SetDeviceConnectionStateChangedCallback(const TDeviceCallback& callback);
     PPort GetPort();
     void RPCTransceive(PRPCRequest request) const;
 
@@ -89,8 +95,9 @@ private:
     std::list<PRegister> RegList;
     std::unordered_map<PRegister, PRegisterHandler> Handlers;
 
-    TCallback ReadCallback;
-    TCallback ErrorCallback;
+    TRegisterCallback RegisterReadCallback;
+    TRegisterCallback RegisterErrorCallback;
+    TDeviceCallback DeviceConnectionStateChangedCallback;
     PBinarySemaphore FlushNeeded;
     PBinarySemaphoreSignal RegisterUpdateSignal, RPCSignal;
 
