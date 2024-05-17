@@ -1,8 +1,14 @@
-wb-mqtt-serial (2.117.2-wb100) stable; urgency=medium
+wb-mqtt-serial (2.117.2-wb101) stable; urgency=medium
 
   * Fixed a crash caused by receiving a large number of incorrect Modbus packets
 
  -- Petr Krasnoshchekov <petr.krasnoshchekov@wirenboard.com>  Fri, 17 May 2024 10:31:04 +0500
+
+wb-mqtt-serial (2.117.2-wb100) stable; urgency=medium
+
+  * Add default config for wb8
+
+ -- Nikolay Korotkiy <nikolay.korotkiy@wirenboard.com>  Wed, 15 May 2024 14:05:00 +0400
 
 wb-mqtt-serial (2.117.2) stable; urgency=medium
 
