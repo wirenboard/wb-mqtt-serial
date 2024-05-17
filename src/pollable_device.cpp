@@ -131,6 +131,11 @@ void TPollableDevice::RescheduleAllRegisters(std::chrono::steady_clock::time_poi
 void TPollableDevice::ScheduleNextPoll(PRegister reg, std::chrono::steady_clock::time_point currentTime)
 {
     if (reg->IsExcludedFromPolling()) {
+        // If register is sporadic it must be read once to get actual value
+        // Keep polling it until successful read
+        if (reg->GetValue().GetType() == TRegisterValue::ValueType::Undefined) {
+            Registers.AddEntry(reg, currentTime + std::chrono::microseconds(1));
+        }
         return;
     }
     if (Priority == TPriority::High) {
