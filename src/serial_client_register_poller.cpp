@@ -105,6 +105,11 @@ void TSerialClientRegisterPoller::PrepareRegisterRanges(const std::list<PRegiste
 void TSerialClientRegisterPoller::ScheduleNextPoll(PRegister reg, steady_clock::time_point pollStartTime)
 {
     if (reg->IsExcludedFromPolling()) {
+        // If register is sporadic it must be read once to get actual value
+        // Keep polling it until successful read
+        if (reg->GetValue().GetType() == TRegisterValue::ValueType::Undefined) {
+            Scheduler.AddEntry(reg, pollStartTime + 1us, reg->IsHighPriority() ? TPriority::High : TPriority::Low);
+        }
         return;
     }
     if (reg->IsHighPriority()) {
