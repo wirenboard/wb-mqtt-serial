@@ -6,10 +6,10 @@
     "slave_id": {
       "properties": {
         "slave_id": {
+          "propertyOrder": 2,
           "oneOf": [
             {
               "title": "Slave id of the device",
-              "propertyOrder": 2,
               "type": "string",
               "pattern": "^(0x[A-Fa-f\\d]+|\\d+|(0x[A-Fa-f\\d]+|\\d+):(0x[A-Fa-f\\d]+|\\d+))$",
               "options": {
@@ -30,10 +30,10 @@
     "slave_id_broadcast": {
       "properties": {
         "slave_id": {
+          "propertyOrder": 2,
           "oneOf": [
             {
               "title": "Slave id of the device or broadcast mode",
-              "propertyOrder": 2,
               "type": "string",
               "pattern": "^(0x[A-Fa-f\\d]+|\\d+)$",
               "options": {

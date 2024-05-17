@@ -2,6 +2,11 @@
     "title": "WB-MAP3EV_template_title",
     "device_type": "WB-MAP3EV",
     "group": "g-wb",
+    "hw": [
+        {
+            "signature": "MAP3E\u0002"
+        }
+    ],
     "device": {
         "name": "WB-MAP3EV",
         "id": "wb-map3ev",

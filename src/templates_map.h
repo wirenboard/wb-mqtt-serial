@@ -23,6 +23,7 @@ struct TDeviceTemplate
     void SetGroup(const std::string& group);
     void SetTitle(const std::unordered_map<std::string, std::string>& translations);
     void SetHardware(const std::vector<TDeviceTemplateHardware>& hardware);
+    void SetMqttId(const std::string& id);
 
     std::string GetTitle(const std::string& lang = std::string("en")) const;
     const Json::Value& GetTemplate();
@@ -32,6 +33,7 @@ struct TDeviceTemplate
     bool IsDeprecated() const;
     bool WithSubdevices() const;
     const std::string& GetProtocol() const;
+    const std::string& GetMqttId() const;
 
 private:
     std::unordered_map<std::string, std::string> Title;
@@ -43,6 +45,7 @@ private:
     Json::Value Template;
     bool Subdevices;
     std::string Protocol;
+    std::string MqttId;
 };
 
 typedef std::shared_ptr<TDeviceTemplate> PDeviceTemplate;
