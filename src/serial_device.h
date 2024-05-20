@@ -169,6 +169,13 @@ struct TUInt32SlaveId
     bool operator==(const TUInt32SlaveId& id) const;
 };
 
+enum class TDeviceConnectionState
+{
+    UNKNOWN,
+    CONNECTED,
+    DISCONNECTED
+};
+
 class TSerialDevice: public std::enable_shared_from_this<TSerialDevice>
 {
 public:
@@ -207,7 +214,7 @@ public:
     PProtocol Protocol() const;
 
     virtual void SetTransferResult(bool ok);
-    bool GetIsDisconnected() const;
+    TDeviceConnectionState GetConnectionState() const;
     void SetDisconnected();
     bool GetSupportsHoles() const;
     void SetSupportsHoles(bool supportsHoles);
@@ -228,10 +235,9 @@ private:
     PDeviceConfig _DeviceConfig;
     PProtocol _Protocol;
     std::chrono::steady_clock::time_point LastSuccessfulCycle;
-    bool IsDisconnected;
+    TDeviceConnectionState ConnectionState;
     int RemainingFailCycles;
     bool SupportsHoles;
-    bool ForceDisconnectionLogging;
 };
 
 typedef std::shared_ptr<TSerialDevice> PSerialDevice;

@@ -1,8 +1,32 @@
-wb-mqtt-serial (2.121.3) stable; urgency=medium
+wb-mqtt-serial (2.122.1) stable; urgency=medium
 
   * Jinjify WB_MWAC v1 template, add cleaning mode, safe state for alarm, fix debounce range, sporadic for alarm
 
- -- Radmir Khakimov <radmir.khakimov@wirenboard.com>  Wed, 14 May 2024 14:13:00 +0500
+ -- Radmir Khakimov <radmir.khakimov@wirenboard.com>  Mon,20 May 2024 14:13:00 +0500
+
+wb-mqtt-serial (2.122.0) stable; urgency=medium
+
+  * Publish error in /devices/+/meta/error on device disconnection
+
+ -- Petr Krasnoshchekov <petr.krasnoshchekov@wirenboard.com>  Fri, 17 May 2024 12:01:18 +0500
+
+wb-mqtt-serial (2.121.5) stable; urgency=medium
+
+  * Install missed wb-mqtt-serial.conf.wb8
+
+ -- Nikolay Korotkiy <nikolay.korotkiy@wirenboard.com>  Thu, 16 May 2024 15:11:00 +0400
+
+wb-mqtt-serial (2.121.4) stable; urgency=medium
+
+  * Add default config for wb8
+
+ -- Nikolay Korotkiy <nikolay.korotkiy@wirenboard.com>  Wed, 15 May 2024 14:05:00 +0400
+
+wb-mqtt-serial (2.121.3) stable; urgency=medium
+
+  * Fixed a crash caused by receiving a large number of incorrect Modbus packets
+
+ -- Petr Krasnoshchekov <petr.krasnoshchekov@wirenboard.com>  Tue, 14 May 2024 18:26:13 +0500
 
 wb-mqtt-serial (2.121.2) stable; urgency=medium
 
@@ -41,12 +65,12 @@ wb-mqtt-serial (2.120.1) stable; urgency=medium
  -- Petr Krasnoshchekov <petr.krasnoshchekov@wirenboard.com>  Mon, 22 Apr 2024 11:37:48 +0500
 
 wb-mqtt-serial (2.120.0) stable; urgency=medium
- 
+
   * Add new template for WB-Domofon
 
  -- Roman Matveev <roman.matveev@wirenboard.ru>  Wed, 17 Apr 2024 19:48:00 +0300
- 
- wb-mqtt-serial (2.119.0) stable; urgency=medium
+
+wb-mqtt-serial (2.119.0) stable; urgency=medium
 
   * Add new template for A-OK motors
 
@@ -57,7 +81,6 @@ wb-mqtt-serial (2.118.4) stable; urgency=medium
   * WB-M1W2 template: add button reset input counters
 
  -- Sergey Mishin <mishin@wirenboard.com>  Tue, 16 Apr 2024 15:06:20 +0300
-
 
 wb-mqtt-serial (2.118.3) stable; urgency=medium
 
@@ -350,7 +373,7 @@ wb-mqtt-serial (2.106.1) stable; urgency=medium
  -- Petr Krasnoshchekov <petr.krasnoshchekov@wirenboard.com>  Thu, 12 Oct 2023 08:56:20 +0500
 
 wb-mqtt-serial (2.106.0) stable; urgency=medium
- 
+
   * Add new template for Komfovent
 
  -- Roman Matveev <roman.matveev@wirenboard.ru>  Wed, 11 Oct 2023 12:08:00 +0300
@@ -545,7 +568,7 @@ wb-mqtt-serial (2.87.7) stable; urgency=medium
   * WBE2-I-EBUS template: add Hot Water Setpoint Max, Water Pressure, Burner Modulation Level, Invalid Connection, Boiler Status registers
 
  -- Roman Matveev <roman.matveev@wirenboard.ru>  Thu, 21 Jun 2023 12:56:00 +0300
- 
+
 wb-mqtt-serial (2.87.6) stable; urgency=medium
 
   * WB-MAP12 templates: fix wrong groups name
@@ -554,7 +577,7 @@ wb-mqtt-serial (2.87.6) stable; urgency=medium
 
 wb-mqtt-serial (2.87.5) stable; urgency=medium
 
-  * Poll registers if a device firmware does not respond to enable events command 
+  * Poll registers if a device firmware does not respond to enable events command
 
  -- Petr Krasnoshchekov <petr.krasnoshchekov@wirenboard.com>  Mon, 05 Jun 2023 19:58:51 +0500
 
@@ -575,7 +598,7 @@ wb-mqtt-serial (2.87.2) stable; urgency=medium
   * Update build options. No functional changes
 
  -- Petr Krasnoshchekov <petr.krasnoshchekov@wirenboard.com>  Thu, 01 Jun 2023 10:28:39 +0500
- 
+
 wb-mqtt-serial (2.87.1) stable; urgency=medium
 
   * WB-MWAC template: add safety mode registers and mapping-matrix registers

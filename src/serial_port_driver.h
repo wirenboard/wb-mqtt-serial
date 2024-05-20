@@ -79,6 +79,7 @@ private:
     void SetValueToChannel(const PDeviceChannel& channel, const std::string& value);
     void OnValueRead(PRegister reg);
     void UpdateError(PRegister reg);
+    void OnDeviceConnectionStateChanged(PSerialDevice device);
 
     WBMQTT::PDeviceDriver MqttDriver;
     PPortConfig Config;
