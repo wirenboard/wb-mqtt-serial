@@ -20014,6 +20014,7 @@ WB-MSW2
 	Uptime  =>  Uptime
 WB-MWAC
 	Alarm  =>  Alarm
+	Cleaning Mode  =>  Cleaning Mode
 	F1  =>  F1
 	F1 Counter  =>  F1 Counter
 	F1 Freq  =>  F1 Freq
