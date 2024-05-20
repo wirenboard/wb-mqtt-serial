@@ -1,3 +1,9 @@
+wb-mqtt-serial (2.122.2) stable; urgency=medium
+
+  * Add mercury230 protocol description to README.md. No functional changes
+
+ -- Petr Krasnoshchekov <petr.krasnoshchekov@wirenboard.com>  Mon, 20 May 2024 17:53:22 +0500
+
 wb-mqtt-serial (2.122.1) stable; urgency=medium
 
   * Jinjify WB_MWAC v1 template, add cleaning mode, safe state for alarm, fix debounce range, sporadic for alarm
