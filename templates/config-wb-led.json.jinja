@@ -1,6 +1,6 @@
 {% set INPUTS_NUMBER = 4 -%}
 {% set OUTPUTS_NUMBER = 4 -%}
-{% set LIGHT_SCENES_NUMBER = 2 -%}
+{% set LIGHT_SCENES_NUMBER = 8 -%}
 {
     "title": "WB-LED_template_title",
     "device_type": "WB-LED",
@@ -372,11 +372,11 @@
                     "Channel not Used in Scene",
                     {% if off_on == 1 -%}
                     "Turn Off",
-                    "Set Leves"
+                    "Set Levels"
                     {% endif -%}
                     {%- if off_on == 0 -%}
                     "Turn On",
-                    "Turn On and Set Leves"
+                    "Turn On and Set Levels"
                     {% endif -%}
                 ],
                 "condition": "dimmer_mode==32||dimmer_mode==33||dimmer_mode==34",
@@ -3361,7 +3361,8 @@
                 "hue_fader_description": "Time for changing hue by 360°. Please note that the hue is changing by the shortest path (f.e. 10° -> 0° -> 350°).",
                 "baud_rate_description": "Make sure that communication with device is established before changing this parameter. Select required baud rate, save configuration and then change port baud rate to the same value.",
 
-                "Uptime": "Uptime (s)"
+                "Uptime": "Uptime (s)",
+                "light_scenes_description": "Light scenes description"
             },
             "ru": {
                 "WB-LED_template_title": "WB-LED (4-канальный диммер светодиодных лент)",
@@ -3529,7 +3530,44 @@
                 "Supply Voltage": "Напряжение питания",
                 "Uptime": "Время работы с момента включения (с)",
                 "MCU Temperature": "Температура МК",
-                "MCU Voltage": "Напряжение питания МК"
+                "MCU Voltage": "Напряжение питания МК",
+
+                "Dimming level rate (ms/%)": "Темп изменения уровня яркости (мс/%)",
+                "Dimming level rate temperature (ms/%)": "Темп изменения температуры света (мс/%)",
+                "Dimming level rate brightness (ms/%)": "Темп изменения яркости света (мс/%)",
+                "Brightness (%)": "Яркость (%)",
+                "Temperature (%)": "Температура (%)",
+                "light_scenes_description": "Важно: необходимо настраивать канал не только при включении света сцены, но и при выключении света сцены",
+                "Scene Light On/Off Condition": "Условие включенного света сцены",
+                "Scene Light is on if any used channel is on. Otherwise light is off": "Свет сцены включен, если хотя бы один используемый канал включен. Иначе свет выключен",
+                "Scene Light is on if all used channels are on. Otherwise light is off": "Свет сцены включен, если все используемые каналы включены. Иначе свет выключен",
+                "Actions when Scene Light Turn On": "Действие при включении света сцены",
+                "Actions when Scene Light Turn Off": "Действие при выключении света сцены",
+                "Turn Off" : "Выключить",
+                "Set Brightness" : "Установить яркость",
+                "Set Level" : "Установить уровень",
+                "Set Angle" : "Установить угол",
+                "Turn On" : "Включить",
+                "Turn On and Set Brightness" : "Включить и установить яркость",
+                "Turn On and Set Level" : "Включить и установить уровень",
+                "Turn On and Set Levels" : "Включить и установить уровени",
+                "Turn On and Set Angle" : "Включить и установить угол",
+                {% for ls_number in range(1, LIGHT_SCENES_NUMBER + 1) -%}
+                "Light Scene {{ls_number}}": "Сцена {{ls_number}}",
+                "Scene {{ls_number}} Light": "Свет сцены {{ls_number}}",
+                {% endfor -%}
+                {% for in_num in range(1, INPUTS_NUMBER + 1) -%}
+                "Enable Channel {{in_num}}": "Действие на канале {{in_num}}",
+                {% endfor -%}
+                "Channel 1_2" : "Канал 1 и 2",
+                "Enable Channel 1_2": "Действие на канале 1 и 2",
+                "Channel 3_4" : "Канал 3 и 4",
+                "Enable Channel 3_4": "Действие на канале 3 и 4",
+                "Channel CCT1" : "Канал CCT1",
+                "Enable Channel CCT1": "Действие на канале CCT1",
+                "Channel CCT2" : "Канал CCT2",
+                "Enable Channel CCT2": "Действие на канале CCT2",
+                "Channel not Used in Scene": "Канал не используется в сцене"
             }
         }
     }
