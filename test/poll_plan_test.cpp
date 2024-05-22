@@ -5,16 +5,76 @@
 
 using namespace std::chrono_literals;
 
-struct Accumulator
+namespace
 {
-    std::vector<std::tuple<int, TItemAccumulationPolicy, std::chrono::milliseconds>> Data;
-
-    bool operator()(int value, TItemAccumulationPolicy policy, std::chrono::milliseconds pollLimit)
+    struct Accumulator
     {
-        Data.push_back({value, policy, pollLimit});
-        return true;
+        std::vector<std::tuple<int, TItemAccumulationPolicy, std::chrono::milliseconds>> Data;
+
+        bool operator()(int value, TItemAccumulationPolicy policy, std::chrono::milliseconds pollLimit)
+        {
+            Data.push_back({value, policy, pollLimit});
+            return true;
+        }
+    };
+
+    void TakeLowPriorityItems(TScheduler<int, std::less<int>>& scheduler,
+                              std::chrono::steady_clock::time_point now,
+                              Accumulator& accumulator,
+                              std::chrono::milliseconds pollLimit,
+                              TItemAccumulationPolicy firstItemPolicy,
+                              int startingItemIndex,
+                              size_t count)
+    {
+        accumulator.Data.clear();
+        scheduler.AccumulateNext(now, accumulator, TItemSelectionPolicy::All);
+        auto tpUs = std::chrono::duration_cast<std::chrono::microseconds>(now.time_since_epoch());
+        EXPECT_EQ(accumulator.Data.size(), count) << tpUs.count();
+        for (size_t i = 0; i < count; ++i) {
+            EXPECT_EQ(std::get<0>(accumulator.Data[i]), startingItemIndex + i) << tpUs.count();
+            EXPECT_EQ(std::get<1>(accumulator.Data[i]),
+                      i == 0 ? firstItemPolicy : TItemAccumulationPolicy::AccordingToPollLimitTime)
+                << tpUs.count();
+            EXPECT_EQ(std::get<2>(accumulator.Data[i]), pollLimit) << tpUs.count();
+        }
     }
-};
+
+    void TakeHighPriorityItem(TScheduler<int, std::less<int>>& scheduler,
+                              std::chrono::steady_clock::time_point now,
+                              Accumulator& accumulator,
+                              int itemIndex)
+    {
+        accumulator.Data.clear();
+        scheduler.AccumulateNext(now, accumulator, TItemSelectionPolicy::All);
+        auto tpUs = std::chrono::duration_cast<std::chrono::microseconds>(now.time_since_epoch());
+        EXPECT_EQ(accumulator.Data.size(), 1) << tpUs.count();
+        EXPECT_EQ(std::get<0>(accumulator.Data[0]), itemIndex) << tpUs.count();
+        EXPECT_EQ(std::get<1>(accumulator.Data[0]), TItemAccumulationPolicy::Force) << tpUs.count();
+        EXPECT_EQ(std::get<2>(accumulator.Data[0]), std::chrono::milliseconds::max()) << tpUs.count();
+    }
+
+    void ScheduleItems(TScheduler<int, std::less<int>>& scheduler,
+                       std::chrono::steady_clock::time_point now,
+                       int startingItemIndex,
+                       size_t count,
+                       TPriority priority)
+    {
+        for (size_t i = 0; i < count; ++i) {
+            scheduler.AddEntry(startingItemIndex + i, now, priority);
+            now += 1us;
+        }
+    }
+
+    void NothingReady(TScheduler<int, std::less<int>>& scheduler,
+                      std::chrono::steady_clock::time_point now,
+                      Accumulator& accumulator)
+    {
+        accumulator.Data.clear();
+        scheduler.AccumulateNext(now, accumulator, TItemSelectionPolicy::All);
+        auto tpUs = std::chrono::duration_cast<std::chrono::microseconds>(now.time_since_epoch());
+        EXPECT_EQ(accumulator.Data.size(), 0) << tpUs.count();
+    }
+}
 
 TEST(PollPlanTest, PriorityQueueSchedule)
 {
@@ -48,62 +108,148 @@ TEST(PollPlanTest, RateLimiter)
     EXPECT_TRUE(limiter.IsOverLimit(std::chrono::steady_clock::now()));
 }
 
-TEST(PollPlanTest, Scheduler)
+TEST(PollPlanTest, OneHighPriority)
 {
-    TScheduler<int, std::less<int>> scheduler(1ms, 2);
-    auto init = std::chrono::steady_clock::now();
-    // Emplace 2 high priority items and 3 low priority items
+    TScheduler<int, std::less<int>> scheduler(1ms);
+    auto init = std::chrono::steady_clock::time_point();
     scheduler.AddEntry(1, init, TPriority::High);
-    scheduler.AddEntry(2, init + 1us, TPriority::Low);
-    scheduler.AddEntry(3, init + 2us, TPriority::High);
-    scheduler.AddEntry(4, init + 3us, TPriority::Low);
-    scheduler.AddEntry(5, init + 4us, TPriority::Low);
-    scheduler.AddEntry(6, init + 5us, TPriority::Low);
     Accumulator accumulator;
+
     auto now = init + 1ms;
-    // First 2 high priority items should be taken, no throttling
-    EXPECT_EQ(scheduler.AccumulateNext(now, accumulator), TThrottlingState::NoThrottling);
-    EXPECT_EQ(accumulator.Data.size(), 2);
-    EXPECT_EQ(std::get<0>(accumulator.Data[0]), 1);
-    EXPECT_EQ(std::get<1>(accumulator.Data[0]), TItemAccumulationPolicy::Force);
-    EXPECT_EQ(std::get<2>(accumulator.Data[0]), std::chrono::milliseconds::max());
-    EXPECT_EQ(std::get<0>(accumulator.Data[1]), 3);
-    EXPECT_EQ(std::get<1>(accumulator.Data[1]), TItemAccumulationPolicy::AccordingToPollLimitTime);
-    EXPECT_EQ(std::get<2>(accumulator.Data[1]), std::chrono::milliseconds::max());
-    accumulator.Data.clear();
+    TakeHighPriorityItem(scheduler, now, accumulator, 1);
+    EXPECT_EQ(scheduler.IsEmpty(), true);
     scheduler.UpdateSelectionTime(1ms, TPriority::High);
-    // Emplace another 1 high priority item
-    scheduler.AddEntry(7, init + 6us, TPriority::High);
-    // Next 3 low priority items should be taken, throttling (rate limit is 2 per 1s)
-    EXPECT_EQ(scheduler.AccumulateNext(now, accumulator), TThrottlingState::LowPriorityRateLimit);
-    EXPECT_EQ(accumulator.Data.size(), 3);
-    EXPECT_EQ(std::get<0>(accumulator.Data[0]), 2);
-    EXPECT_EQ(std::get<1>(accumulator.Data[0]), TItemAccumulationPolicy::Force);
-    EXPECT_EQ(std::get<2>(accumulator.Data[0]), std::chrono::milliseconds::zero());
-    EXPECT_EQ(std::get<0>(accumulator.Data[1]), 4);
-    EXPECT_EQ(std::get<1>(accumulator.Data[1]), TItemAccumulationPolicy::AccordingToPollLimitTime);
-    EXPECT_EQ(std::get<2>(accumulator.Data[1]), std::chrono::milliseconds::zero());
-    EXPECT_EQ(std::get<0>(accumulator.Data[2]), 5);
-    EXPECT_EQ(std::get<1>(accumulator.Data[2]), TItemAccumulationPolicy::AccordingToPollLimitTime);
-    EXPECT_EQ(std::get<2>(accumulator.Data[2]), std::chrono::milliseconds::zero());
-    accumulator.Data.clear();
+
+    for (size_t i = 0; i < 10; ++i) {
+        scheduler.AddEntry(1, now + 1us, TPriority::High);
+        accumulator.Data.clear();
+
+        NothingReady(scheduler, now, accumulator);
+        EXPECT_EQ(scheduler.IsEmpty(), false) << i;
+
+        now += 1ms;
+        TakeHighPriorityItem(scheduler, now, accumulator, 1);
+        EXPECT_EQ(scheduler.IsEmpty(), true) << i;
+        scheduler.UpdateSelectionTime(1ms, TPriority::High);
+    }
+}
+
+TEST(PollPlanTest, LowPriority)
+{
+    TScheduler<int, std::less<int>> scheduler(1ms);
+    auto init = std::chrono::steady_clock::time_point();
+    ScheduleItems(scheduler, init, 1, 3, TPriority::Low);
+    Accumulator accumulator;
+
+    auto now = init + 1ms;
+    TakeLowPriorityItems(scheduler,
+                         now,
+                         accumulator,
+                         std::chrono::milliseconds::max(),
+                         TItemAccumulationPolicy::Force,
+                         1,
+                         3);
+    EXPECT_EQ(scheduler.IsEmpty(), true);
     scheduler.UpdateSelectionTime(1ms, TPriority::Low);
-    // Wait for 1s (rate limit is 2 per 1s)
-    sleep(1);
-    // Next 1 high priority item should be taken, no throttling
-    now += 1s;
-    EXPECT_EQ(scheduler.AccumulateNext(now, accumulator), TThrottlingState::NoThrottling);
-    EXPECT_EQ(accumulator.Data.size(), 1);
-    EXPECT_EQ(std::get<0>(accumulator.Data[0]), 7);
-    EXPECT_EQ(std::get<1>(accumulator.Data[0]), TItemAccumulationPolicy::Force);
-    EXPECT_EQ(std::get<2>(accumulator.Data[0]), std::chrono::milliseconds::max());
-    accumulator.Data.clear();
+
+    for (size_t i = 0; i < 10; ++i) {
+        ScheduleItems(scheduler, now + 1us, 1, 3, TPriority::Low);
+        accumulator.Data.clear();
+
+        NothingReady(scheduler, now, accumulator);
+        EXPECT_EQ(scheduler.IsEmpty(), false) << i;
+
+        now += 1ms;
+        TakeLowPriorityItems(scheduler,
+                             now,
+                             accumulator,
+                             std::chrono::milliseconds::max(),
+                             TItemAccumulationPolicy::Force,
+                             1,
+                             3);
+        EXPECT_EQ(scheduler.IsEmpty(), true) << i;
+        scheduler.UpdateSelectionTime(1ms, TPriority::Low);
+    }
+}
+
+TEST(PollPlanTest, LotsOfLowAndRareHigh)
+{
+    TScheduler<int, std::less<int>> scheduler(5ms);
+    auto init = std::chrono::steady_clock::time_point();
+    scheduler.AddEntry(1, init, TPriority::High);
+    ScheduleItems(scheduler, init, 2, 3, TPriority::Low);
+    Accumulator accumulator;
+
+    auto now = init + 1ms;
+    TakeHighPriorityItem(scheduler, now, accumulator, 1);
     scheduler.UpdateSelectionTime(1ms, TPriority::High);
-    // Next 1 low priority item should be taken, no throttling
-    now += 1ms;
-    EXPECT_EQ(scheduler.AccumulateNext(now, accumulator), TThrottlingState::NoThrottling);
-    EXPECT_EQ(accumulator.Data.size(), 1);
-    EXPECT_EQ(std::get<0>(accumulator.Data[0]), 6);
-    EXPECT_EQ(std::get<1>(accumulator.Data[0]), TItemAccumulationPolicy::Force);
-    EXPECT_EQ(std::get<2>(accumulator.Data[0]), std::chrono::milliseconds::max());
+
+    for (size_t i = 0; i < 10; ++i) {
+        scheduler.AddEntry(1, now + 3ms, TPriority::High);
+
+        TakeLowPriorityItems(scheduler, now, accumulator, 3ms, TItemAccumulationPolicy::AccordingToPollLimitTime, 2, 3);
+        scheduler.UpdateSelectionTime(1ms, TPriority::Low);
+        ScheduleItems(scheduler, now + 1ms, 2, 3, TPriority::Low);
+
+        now += 2ms;
+        TakeLowPriorityItems(scheduler, now, accumulator, 1ms, TItemAccumulationPolicy::AccordingToPollLimitTime, 2, 3);
+        scheduler.UpdateSelectionTime(1ms, TPriority::Low);
+        ScheduleItems(scheduler, now, 2, 3, TPriority::Low);
+
+        now += 1ms;
+        TakeHighPriorityItem(scheduler, now, accumulator, 1);
+        scheduler.UpdateSelectionTime(1ms, TPriority::High);
+
+        now += 1ms;
+    }
+}
+
+TEST(PollPlanTest, LotsOfHighAndRareLow)
+{
+    // Check forcing low priority items
+
+    TScheduler<int, std::less<int>> scheduler(5ms);
+    auto init = std::chrono::steady_clock::time_point();
+    scheduler.AddEntry(1, init, TPriority::High);
+    ScheduleItems(scheduler, init, 2, 3, TPriority::Low);
+    Accumulator accumulator;
+
+    auto now = init + 1ms;
+
+    for (size_t i = 0; i < 10; ++i) {
+        // Threshold is not exceeded, read high priority
+        TakeHighPriorityItem(scheduler, now, accumulator, 1);
+        scheduler.UpdateSelectionTime(3ms, TPriority::High);
+        scheduler.AddEntry(1, now + 2ms, TPriority::High);
+        ASSERT_EQ(scheduler.GetTotalTime(), 3ms);
+
+        // Free time after high priority, read low
+        TakeLowPriorityItems(scheduler, now, accumulator, 2ms, TItemAccumulationPolicy::AccordingToPollLimitTime, 2, 3);
+        scheduler.UpdateSelectionTime(2ms, TPriority::Low);
+        ScheduleItems(scheduler, now, 2, 3, TPriority::Low);
+        ASSERT_EQ(scheduler.GetTotalTime(), 1ms);
+
+        // Pass low priority, read high
+        now += 2ms;
+        TakeHighPriorityItem(scheduler, now, accumulator, 1);
+        scheduler.UpdateSelectionTime(3ms, TPriority::High);
+        scheduler.AddEntry(1, now + 2ms, TPriority::High);
+        ASSERT_EQ(scheduler.GetTotalTime(), 4ms);
+
+        // Again pass low priority, read high
+        now += 2ms;
+        TakeHighPriorityItem(scheduler, now, accumulator, 1);
+        scheduler.UpdateSelectionTime(3ms, TPriority::High);
+        scheduler.AddEntry(1, now + 2ms, TPriority::High);
+        ASSERT_EQ(scheduler.GetTotalTime(), 7ms);
+
+        // Force low priority
+        now += 2ms;
+        TakeLowPriorityItems(scheduler, now, accumulator, 2ms, TItemAccumulationPolicy::Force, 2, 3);
+        scheduler.UpdateSelectionTime(7ms, TPriority::Low);
+        ScheduleItems(scheduler, now, 2, 3, TPriority::Low);
+        ASSERT_EQ(scheduler.GetTotalTime(), 0ms);
+
+        now += 1ms;
+    }
 }
