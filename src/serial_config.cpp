@@ -582,6 +582,7 @@ namespace
         Get(device_data, "stride", device_config->Stride);
         Get(device_data, "shift", device_config->Shift);
         Get(device_data, "access_level", device_config->AccessLevel);
+        Get(device_data, "min_request_interval", device_config->MinRequestInterval);
 
         if (device_data.isMember("channels")) {
             for (const auto& channel_data: device_data["channels"]) {

@@ -14,7 +14,7 @@ struct TDeviceChannel: public TDeviceChannelConfig
     TDeviceChannel(PSerialDevice device, PDeviceChannelConfig config): TDeviceChannelConfig(*config), Device(device)
     {
         for (const auto& reg_config: config->RegisterConfigs) {
-            Registers.push_back(TRegister::Intern(device, reg_config));
+            Registers.push_back(device->AddRegister(reg_config));
         }
     }
 

@@ -244,7 +244,7 @@ TEST_F(TPollTest, SingleDeviceSingleRegister)
     auto device = MakeDevice(config);
     auto regList = GetRegList(device);
 
-    TSerialClientRegisterAndEventsReader serialClient(regList, 50ms, [this]() { return TimeMock.GetTime(); });
+    TSerialClientRegisterAndEventsReader serialClient({device}, 50ms, [this]() { return TimeMock.GetTime(); });
     TSerialClientDeviceAccessHandler lastAccessedDevice(serialClient.GetEventsReader());
 
     for (size_t i = 0; i < 10; ++i) {
@@ -264,7 +264,7 @@ TEST_F(TPollTest, SingleDeviceSingleRegisterWithReadPeriod)
     auto device = MakeDevice(config);
     auto regList = GetRegList(device);
 
-    TSerialClientRegisterAndEventsReader serialClient(regList, 50ms, [this]() { return TimeMock.GetTime(); });
+    TSerialClientRegisterAndEventsReader serialClient({device}, 50ms, [this]() { return TimeMock.GetTime(); });
     TSerialClientDeviceAccessHandler lastAccessedDevice(serialClient.GetEventsReader());
 
     for (size_t i = 0; i < 10; ++i) {
@@ -287,7 +287,7 @@ TEST_F(TPollTest, SingleDeviceSeveralRegisters)
     auto device = MakeDevice(config);
     auto regList = GetRegList(device);
 
-    TSerialClientRegisterAndEventsReader serialClient(regList, 50ms, [this]() { return TimeMock.GetTime(); });
+    TSerialClientRegisterAndEventsReader serialClient({device}, 50ms, [this]() { return TimeMock.GetTime(); });
     TSerialClientDeviceAccessHandler lastAccessedDevice(serialClient.GetEventsReader());
 
     for (size_t i = 0; i < 10; ++i) {
@@ -315,7 +315,7 @@ TEST_F(TPollTest, SingleDeviceSingleRegisterWithEvents)
     auto device = MakeDevice(config);
     auto regList = GetRegList(device);
 
-    TSerialClientRegisterAndEventsReader serialClient(regList, 50ms, [this]() { return TimeMock.GetTime(); });
+    TSerialClientRegisterAndEventsReader serialClient({device}, 50ms, [this]() { return TimeMock.GetTime(); });
     TSerialClientDeviceAccessHandler lastAccessedDevice(serialClient.GetEventsReader());
 
     // Read registers
@@ -346,7 +346,7 @@ TEST_F(TPollTest, SingleDeviceSingleRegisterWithEventsAndPolling)
     auto device = MakeDevice(config);
     auto regList = GetRegList(device);
 
-    TSerialClientRegisterAndEventsReader serialClient(regList, 50ms, [this]() { return TimeMock.GetTime(); });
+    TSerialClientRegisterAndEventsReader serialClient({device}, 50ms, [this]() { return TimeMock.GetTime(); });
     TSerialClientDeviceAccessHandler lastAccessedDevice(serialClient.GetEventsReader());
 
     // Enable events and read first register
@@ -386,7 +386,7 @@ TEST_F(TPollTest, SingleDeviceSingleRegisterWithEventsAndPollingWithReadPeriod)
     auto device = MakeDevice(config);
     auto regList = GetRegList(device);
 
-    TSerialClientRegisterAndEventsReader serialClient(regList, 50ms, [this]() { return TimeMock.GetTime(); });
+    TSerialClientRegisterAndEventsReader serialClient({device}, 50ms, [this]() { return TimeMock.GetTime(); });
     TSerialClientDeviceAccessHandler lastAccessedDevice(serialClient.GetEventsReader());
 
     // Enable events and read registers
@@ -465,7 +465,7 @@ TEST_F(TPollTest, SingleDeviceEventsAndBigReadTime)
     auto device = MakeDevice(config);
     auto regList = GetRegList(device);
 
-    TSerialClientRegisterAndEventsReader serialClient(regList, 50ms, [this]() { return TimeMock.GetTime(); });
+    TSerialClientRegisterAndEventsReader serialClient({device}, 50ms, [this]() { return TimeMock.GetTime(); });
     TSerialClientDeviceAccessHandler lastAccessedDevice(serialClient.GetEventsReader());
 
     // Enable events and read registers
@@ -518,7 +518,7 @@ TEST_F(TPollTest, SingleDeviceSingleRegisterWithBigReadTime)
     auto device = MakeDevice(config);
     auto regList = GetRegList(device);
 
-    TSerialClientRegisterAndEventsReader serialClient(regList, 50ms, [this]() { return TimeMock.GetTime(); });
+    TSerialClientRegisterAndEventsReader serialClient({device}, 50ms, [this]() { return TimeMock.GetTime(); });
     TSerialClientDeviceAccessHandler lastAccessedDevice(serialClient.GetEventsReader());
 
     for (size_t i = 0; i < 10; ++i) {
@@ -542,7 +542,7 @@ TEST_F(TPollTest, SingleDeviceSingleRegisterWithEventsAndErrors)
     auto device = MakeDevice(config);
     auto regList = GetRegList(device);
 
-    TSerialClientRegisterAndEventsReader serialClient(regList, 50ms, [this]() { return TimeMock.GetTime(); });
+    TSerialClientRegisterAndEventsReader serialClient({device}, 50ms, [this]() { return TimeMock.GetTime(); });
     TSerialClientDeviceAccessHandler lastAccessedDevice(serialClient.GetEventsReader());
 
     // Read registers
@@ -580,7 +580,7 @@ TEST_F(TPollTest, SingleDeviceEnableEventsError)
     auto device = MakeDevice(config);
     auto regList = GetRegList(device);
 
-    TSerialClientRegisterAndEventsReader serialClient(regList, 50ms, [this]() { return TimeMock.GetTime(); });
+    TSerialClientRegisterAndEventsReader serialClient({device}, 50ms, [this]() { return TimeMock.GetTime(); });
     TSerialClientDeviceAccessHandler lastAccessedDevice(serialClient.GetEventsReader());
 
     // Read registers
@@ -615,7 +615,7 @@ TEST_F(TPollTest, SemiSporadicRegister)
     auto device = MakeDevice(config);
     auto regList = GetRegList(device);
 
-    TSerialClientRegisterAndEventsReader serialClient(regList, 50ms, [this]() { return TimeMock.GetTime(); });
+    TSerialClientRegisterAndEventsReader serialClient({device}, 50ms, [this]() { return TimeMock.GetTime(); });
     TSerialClientDeviceAccessHandler lastAccessedDevice(serialClient.GetEventsReader());
 
     // Enable events and read first register

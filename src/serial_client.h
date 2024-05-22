@@ -30,7 +30,7 @@ public:
     typedef std::function<void(PRegister reg)> TRegisterCallback;
     typedef std::function<void(PSerialDevice dev)> TDeviceCallback;
 
-    TSerialClientRegisterAndEventsReader(const std::list<PRegister>& regList,
+    TSerialClientRegisterAndEventsReader(const std::list<PSerialDevice>& devices,
                                          std::chrono::milliseconds readEventsPeriod,
                                          util::TGetNowFn nowFn,
                                          size_t lowPriorityRateLimit = std::numeric_limits<size_t>::max());
@@ -70,7 +70,7 @@ public:
                   size_t lowPriorityRateLimit = std::numeric_limits<size_t>::max());
     ~TSerialClient();
 
-    void AddRegister(PRegister reg);
+    void AddDevice(PSerialDevice device);
     void Cycle();
     void SetTextValue(PRegister reg, const std::string& value);
     void SetReadCallback(const TRegisterCallback& callback);
@@ -93,6 +93,7 @@ private:
 
     PPort Port;
     std::list<PRegister> RegList;
+    std::list<PSerialDevice> Devices;
     std::unordered_map<PRegister, PRegisterHandler> Handlers;
 
     TRegisterCallback RegisterReadCallback;

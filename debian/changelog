@@ -1,3 +1,10 @@
+wb-mqtt-serial (2.123.0) stable; urgency=medium
+
+  * Add min_request_interval option to device config. 
+    The option defines minimal time between requests to a device 
+
+ -- Petr Krasnoshchekov <petr.krasnoshchekov@wirenboard.com>  Wed, 22 May 2024 09:51:17 +0500
+
 wb-mqtt-serial (2.122.2) stable; urgency=medium
 
   * Add mercury230 protocol description to README.md. No functional changes
