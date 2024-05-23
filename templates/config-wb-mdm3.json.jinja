@@ -89,12 +89,12 @@
             },
             {% for ch_number in range(1, OUTPUTS_NUMBER + 1) -%}
             {
-                "title": "Channel {{ ch_number }} Switch",
+                "title": "Channel {{ ch_number }}",
                 "id": "gg_ls_{{ls_number}}_ch_{{ch_number}}_action_turn_on",
                 "group": "gg_ls_{{ ls_number }}_actions_turn_on"
             },
             {
-                "title": "Channel {{ ch_number }} Switch",
+                "title": "Channel {{ ch_number }}",
                 "id": "gg_ls_{{ls_number}}_ch_{{ch_number}}_action_turn_off",
                 "group": "gg_ls_{{ ls_number }}_actions_turn_off"
             },
@@ -640,10 +640,6 @@
                 "channel_min_value_description": "Raw dimmer value corresponding to minimum brightness (1%)",
                 "channel_max_value_description": "Raw dimmer value corresponding to maximum brightness (100%)",
 
-                {% for ch_number in range(1, OUTPUTS_NUMBER + 1) -%}
-                "Channel {{ch_number}} Switch": "Channel {{ch_number}}",
-                {% endfor -%}
-
                 "increase_rate_description": "During smooth transitions, channel level will be decreased by 1% every specified period of time",
                 "decrease_rate_description": "During smooth transitions, channel level will be increased by 1% every specified period of time",
                 "action_repeat_time_description": "During long-lasting actions channel level will be changed by 1% every specified period of time",
@@ -697,7 +693,6 @@
 
                 {% for ch_number in range(1, OUTPUTS_NUMBER + 1) -%}
                 "Channel {{ch_number}}": "Канал {{ch_number}}",
-                "Channel {{ch_number}} Switch": "Канал {{ch_number}}",
                 "Channel {{ch_number}} Dimming Curve": "Кривая диммирования канала {{ch_number}}",
                 "Channel {{ch_number}} Dimming Type": "Режим диммирования канала {{ch_number}}",
                 "Channel {{ch_number}} Min Value (us)": "Нижний порог диммирования канала {{ch_number}} (мкс)",
