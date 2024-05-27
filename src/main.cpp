@@ -266,7 +266,7 @@ namespace
                     confedSchemasMap.InvalidateCache(deviceType);
                 }
             } catch (const exception& e) {
-                LOG(Debug) << "Failed to reload template: " << e.what();
+                LOG(Error) << "Failed to reload template: " << e.what();
             }
             return;
         }
