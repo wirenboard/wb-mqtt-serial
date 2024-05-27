@@ -1,6 +1,6 @@
 wb-mqtt-serial (2.125.0) stable; urgency=medium
 
-  * WB-MDM3 template: add light scenes support
+  * WB-MDM3 template: add light scenes, switch mode support
 
  -- Ilia Skochilov <ilia.skochilov@wirenboard.com>  Tue, 04 Jun 2024 11:10:15 +0300
 

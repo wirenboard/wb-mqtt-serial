@@ -38,6 +38,16 @@
             },
             {% endfor -%}
             {
+                "title": "Action when Switch is On",
+                "id": "input_{{ ch_number }}_switch_on_action",
+                "group": "input_{{ ch_number }}"
+            },
+            {
+                "title": "Action when Switch is Off",
+                "id": "input_{{ ch_number }}_switch_off_action",
+                "group": "input_{{ ch_number }}"
+            },
+            {
                 "title": "Input Parameters",
                 "id": "input_{{ ch_number }}_parameters",
                 "group": "input_{{ ch_number }}"
@@ -158,7 +168,7 @@
                 "default": 0,
                 "group": "input_{{ ch_number + 1 }}_{{ press_type | replace(' ', '_') }}_press_action",
                 "order": 1,
-                "condition": "{{selected_mode}}==3"
+                "condition": "input_{{ch_number + 1}}_mode==0"
             },
             {
                 "id": "{{action_bind}}_action_single",
@@ -210,6 +220,76 @@
                 "group": "input_{{ch_number + 1}}_{{press_type | replace(' ', '_') }}_press_action",
                 "order": 2,
                 "condition": "({{action_bind}}_number>=32)&&({{ action_bind }}_number<=39)"
+            },
+            {% endfor -%}
+            {% for sw_act in ["off", "on"] -%}
+            {
+                "id": "input_{{ch_number + 1}}_switch_{{sw_act}}_channel",
+                "title": "Output Number",
+                "address": {{704 + (loop.index0 * 16) + ch_number}},
+                "reg_type": "holding",
+                "enum": [0, 1, 2, 3, 100, {%for ls in range(LIGHT_SCENES_NUMBER) %}{{32 + ls}}{% if not loop.last %}, {% endif %}{% endfor %}],
+                "enum_titles": [
+                    "No Action",
+                    "Output 1",
+                    "Output 2",
+                    "Output 3",
+                    "All Outputs",
+                    {% for ls_number in range(1, LIGHT_SCENES_NUMBER + 1) -%}
+                    "Light Scene {{ ls_number }}"{% if not loop.last %},{% endif %}
+                    {% endfor -%}
+                ],
+                "default": 0,
+                "group": "input_{{ ch_number + 1}}_switch_{{sw_act}}_action",
+                "condition": "input_{{ch_number + 1}}_mode==1",
+                "order": 1
+            },
+            {
+                "id": "input_{{ch_number + 1}}_switch_{{sw_act}}_action_single",
+                "title": "Action",
+                "address": {{736 + (loop.index0 * 16) + ch_number}},
+                "reg_type": "holding",
+                "enum": [0, 1, 2],
+                "enum_titles": [
+                    "Turn Off",
+                    "Turn On",
+                    "Toggle"
+                ],
+                "default": {{ 0 if sw_act == "off" else 1}},
+                "group": "input_{{ ch_number + 1}}_switch_{{sw_act}}_action",
+                "condition": "input_{{ch_number + 1}}_switch_{{sw_act}}_channel>=1&&input_{{ch_number + 1}}_switch_{{sw_act}}_channel<=3",
+                "order": 2
+            },
+            {
+                "id": "input_{{ch_number + 1}}_switch_{{sw_act}}_action_all",
+                "title": "Action",
+                "address": {{736 + (loop.index0 * 16) + ch_number}},
+                "reg_type": "holding",
+                "enum": [0, 1],
+                "enum_titles": [
+                    "Turn Off",
+                    "Turn On"
+                ],
+                "default": {{ 0 if sw_act == "off" else 1}},
+                "group": "input_{{ ch_number + 1}}_switch_{{sw_act}}_action",
+                "condition": "input_{{ch_number + 1}}_switch_{{sw_act}}_channel==100",
+                "order": 2
+            },
+            {
+                "id": "input_{{ch_number + 1}}_switch_{{sw_act}}_action_scene",
+                "title": "Action",
+                "address": {{736 + (loop.index0 * 16) + ch_number}},
+                "reg_type": "holding",
+                "enum": [0, 1, 2],
+                "enum_titles": [
+                    "Turn Off Scene Light",
+                    "Turn On Scene Light",
+                    "Toggle Scene Light"
+                ],
+                "default": {{ 0 if sw_act == "off" else 1 }},
+                "group": "input_{{ ch_number + 1}}_switch_{{sw_act}}_action",
+                "condition": "input_{{ch_number + 1}}_switch_{{sw_act}}_channel>=32&&input_{{ch_number + 1}}_switch_{{sw_act}}_channel<=39",
+                "order": 2
             },
             {% endfor -%}{% endfor -%}
             {% for ls_number in range(1, LIGHT_SCENES_NUMBER + 1) -%}
@@ -307,6 +387,23 @@
             {% endfor -%}
 
             {% for ch_number in range(0, INPUTS_NUMBER) -%}
+            {% set selected_mode = ("inputs{}{}_mode".format(ch_number // 2 * 2 + 1, ch_number // 2 * 2 + 2)) -%}
+            {
+                "id": "input_{{ch_number + 1}}_mode",
+                "title": "Input Mode",
+                "description": "input_mode_description",
+                "address": {{416 + ch_number}},
+                "reg_type": "holding",
+                "enum": [0, 1],
+                "enum_titles": [
+                    "Button",
+                    "Switch"
+                ],
+                "default": 0,
+                "required": true,
+                "condition": "{{selected_mode}}==3",
+                "group": "input_{{ch_number + 1}}"
+            },
             {
                 "id": "input_{{ch_number + 1}}_hold_time",
                 "title": "Long Press Time (ms)",
@@ -317,6 +414,7 @@
                 "min": 500,
                 "max": 5000,
                 "group": "input_{{ch_number + 1}}_parameters",
+                "condition": "input_{{ch_number + 1}}_mode!=1",
                 "order": 1
             },
             {
@@ -329,6 +427,7 @@
                 "min": 0,
                 "max": 2000,
                 "group": "input_{{ch_number + 1}}_parameters",
+                "condition": "input_{{ch_number + 1}}_mode!=1",
                 "order": 2
             },
             {
@@ -480,6 +579,7 @@
                 "address": {{464 + ch_number}},
                 "type": "value",
                 "group": "input_{{ch_number + 1}}_counters",
+                "condition": "input_{{ch_number + 1}}_mode!=1",
                 "sporadic": true
             },
             {
@@ -488,6 +588,7 @@
                 "address": {{480 + ch_number}},
                 "type": "value",
                 "group": "input_{{ch_number + 1}}_counters",
+                "condition": "input_{{ch_number + 1}}_mode!=1",
                 "sporadic": true
             },
             {
@@ -497,6 +598,7 @@
                 "type": "value",
                 "enabled": false,
                 "group": "input_{{ch_number + 1}}_counters",
+                "condition": "input_{{ch_number + 1}}_mode!=1",
                 "sporadic": true
             },
             {
@@ -506,6 +608,7 @@
                 "type": "value",
                 "enabled": false,
                 "group": "input_{{ch_number + 1}}_counters",
+                "condition": "input_{{ch_number + 1}}_mode!=1",
                 "sporadic": true
             },
             {% endfor -%}
@@ -648,6 +751,7 @@
                 "input_double_time_description": "If there is no second press during the specified time then press is single. 0 - disables all presses except short and long. Adds a delay to the response to a short press",
                 "input_debounce_time_description": "Must be 5-10 times less than second press waiting time. Adds a delay to the response to presses",
 
+                "input_mode_description": "Button is the default mode. Switch mode supported since firmware version 2.8.0",
                 "light_scenes_description": "Light scenes are used to control multiple channels simultaneously. This is necessary to define actions when the scene light is turned on or off. Supported since firmware version 2.8.0",
 
                 "baud_rate_description": "Make sure that communication with device is established before changing this parameter. Select required baud rate, save configuration and then change port baud rate to the same value.",
@@ -663,6 +767,13 @@
                 "Control disabled": "Управление отключено",
                 "Custom mode": "Пользовательский режим",
                 "inputs_mode_description": "Пользовательский режим позволяет задать действия для каждого входа и типа нажатия. Доступно с версии прошивки 2.7.0",
+
+                "Input Mode": "Режим работы входа",
+                "Button": "Кнопка без фиксации",
+                "Switch": "Выключатель с фиксацией",
+                "Action when Switch is On": "Действие в положении \"включено\"",
+                "Action when Switch is Off": "Действие в положении \"выключено\"",
+
                 "light_scenes_description": "Сцены позволяют объединить несколько каналов и устанавливать заранее определенный уровень яркости. Для сцены обязательно настраивать действия при включении и выключении. Доступно с версии прошивки 2.8.0",
                 "Scene Light On/Off Condition": "Условие включенного света сцены",
                 "Scene Light is on if any used channel is on. Otherwise light is off": "Свет сцены включен, если хотя бы один используемый канал включен. Иначе свет выключен",
@@ -734,6 +845,8 @@
                 "Second Press Waiting Time (ms)": "Время ожидания второго нажатия (мс)",
                 "Debounce Time (ms)": "Время подавления дребезга (мс)",
                 "Action Repeat Time (ms)": "Длительность периода повторения действий (мс)",
+
+                "input_mode_description": "Режим работы входа по умолчанию - кнопка без фиксации. Работа в режиме выключателя с фиксацией доступна с версии прошивки 2.8.0",
 
                 "input_hold_time_description": "Если нажатие длится больше указанного времени - считаем его длинным",
                 "input_double_time_description": "Если за указанное время второго нажатия не было - считаем нажатие одиночным. 0 - отключит все нажатия кроме короткого и длинного. Вносит задержку в реакцию на короткое нажатие",
