@@ -37,7 +37,7 @@ namespace
 
     public:
         TFakeSerialPortWithTime(WBMQTT::Testing::TLoggedFixture& fixture, TTimeMock& timeMock)
-            : TFakeSerialPort(fixture),
+            : TFakeSerialPort(fixture, "<TFakeSerialPortWithTime>"),
               TimeMock(timeMock)
         {}
 

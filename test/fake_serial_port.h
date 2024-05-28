@@ -24,7 +24,7 @@ public:
         BadFileDescriptorOnWriteAndRead //! Port can be successfully open, but all operations fail with EBADF
     };
 
-    TFakeSerialPort(WBMQTT::Testing::TLoggedFixture& fixture);
+    TFakeSerialPort(WBMQTT::Testing::TLoggedFixture& fixture, const std::string& portName);
 
     void SetExpectedFrameTimeout(const std::chrono::microseconds& timeout);
     void CheckPortOpen() const override;
@@ -69,6 +69,7 @@ private:
     size_t ReqPos, RespPos, DumpPos;
     std::chrono::microseconds ExpectedFrameTimeout = std::chrono::microseconds(-1);
     size_t BaudRate;
+    std::string PortName;
 };
 
 typedef std::shared_ptr<TFakeSerialPort> PFakeSerialPort;

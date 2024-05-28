@@ -130,7 +130,7 @@ void TSerialClientTest::SetUp()
     TFakeSerialDevice::Register(DeviceFactory);
 
     TLoggedFixture::SetUp();
-    Port = std::make_shared<TFakeSerialPort>(*this);
+    Port = std::make_shared<TFakeSerialPort>(*this, "<TSerialClientTest>");
     auto config = std::make_shared<TDeviceConfig>("fake_sample", "1", "fake");
     config->MaxReadRegisters = 0;
 
@@ -1430,6 +1430,11 @@ TEST_F(TSerialClientIntegrationTest, SlaveIdCollision)
 {
     TTemplateMap t;
 
+    auto factory = [=](const Json::Value& port_data, PRPCConfig rpcConfig) -> std::pair<PPort, bool> {
+        auto path = port_data["path"].asString();
+        return std::make_pair(std::make_shared<TFakeSerialPort>(*this, path), false);
+    };
+
     EXPECT_THROW(LoadConfig(GetDataFilePath("configs/config-collision-test.json"),
                             DeviceFactory,
                             CommonDeviceSchema,
@@ -1437,7 +1442,7 @@ TEST_F(TSerialClientIntegrationTest, SlaveIdCollision)
                             rpcConfig,
                             PortsSchema,
                             *ProtocolSchemas,
-                            [=](const Json::Value&, PRPCConfig rpcConfig) { return std::make_pair(Port, false); }),
+                            factory),
                  TConfigParserException);
 
     EXPECT_THROW(LoadConfig(GetDataFilePath("configs/config-collision-test2.json"),
@@ -1447,7 +1452,7 @@ TEST_F(TSerialClientIntegrationTest, SlaveIdCollision)
                             rpcConfig,
                             PortsSchema,
                             *ProtocolSchemas,
-                            [=](const Json::Value&, PRPCConfig rpcConfig) { return std::make_pair(Port, false); }),
+                            factory),
                  TConfigParserException);
 
     EXPECT_THROW(LoadConfig(GetDataFilePath("configs/config-collision-test3.json"),
@@ -1457,7 +1462,7 @@ TEST_F(TSerialClientIntegrationTest, SlaveIdCollision)
                             rpcConfig,
                             PortsSchema,
                             *ProtocolSchemas,
-                            [=](const Json::Value&, PRPCConfig rpcConfig) { return std::make_pair(Port, false); }),
+                            factory),
                  TConfigParserException);
 
     EXPECT_NO_THROW(LoadConfig(GetDataFilePath("configs/config-no-collision-test.json"),
@@ -1467,7 +1472,7 @@ TEST_F(TSerialClientIntegrationTest, SlaveIdCollision)
                                rpcConfig,
                                PortsSchema,
                                *ProtocolSchemas,
-                               [=](const Json::Value&, PRPCConfig rpcConfig) { return std::make_pair(Port, false); }));
+                               factory));
 }
 
 /* This function checks Serial Driver behaviour when RPC request and value publishing event occurs
