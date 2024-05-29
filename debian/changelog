@@ -1,6 +1,6 @@
 wb-mqtt-serial (2.124.0) stable; urgency=medium
 
-  * Show template validation errors in log
+  * Add new template for A-OK AM-35 motors
 
  -- Roman Matveev <roman.matveev@wirenboard.ru>  Wed, 29 May 2024 19:48:00 +0300
 
