@@ -1,3 +1,9 @@
+wb-mqtt-serial (2.124.0) stable; urgency=medium
+
+  * Show template validation errors in log
+
+ -- Roman Matveev <roman.matveev@wirenboard.ru>  Wed, 29 May 2024 19:48:00 +0300
+
 wb-mqtt-serial (2.123.2) stable; urgency=medium
 
   * Show template validation errors in log
