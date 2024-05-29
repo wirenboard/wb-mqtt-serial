@@ -22,7 +22,7 @@ namespace
     const auto DB_PATH = "/tmp/wb-mqtt-serial-test.db";
 }
 
-TFakeSerialPort::TFakeSerialPort(TLoggedFixture& fixture)
+TFakeSerialPort::TFakeSerialPort(TLoggedFixture& fixture, const std::string& portName)
     : Fixture(fixture),
       AllowOpen(true),
       IsPortOpen(false),
@@ -30,7 +30,8 @@ TFakeSerialPort::TFakeSerialPort(TLoggedFixture& fixture)
       ReqPos(0),
       RespPos(0),
       DumpPos(0),
-      BaudRate(9600)
+      BaudRate(9600),
+      PortName(portName)
 {}
 
 void TFakeSerialPort::SetExpectedFrameTimeout(const std::chrono::microseconds& timeout)
@@ -272,7 +273,7 @@ std::chrono::microseconds TFakeSerialPort::GetSendTimeBytes(double bytesNumber) 
 
 std::string TFakeSerialPort::GetDescription(bool verbose) const
 {
-    return "<TFakeSerialPort>";
+    return PortName;
 }
 
 void TFakeSerialPort::SetBaudRate(size_t value)
@@ -284,7 +285,7 @@ void TSerialDeviceTest::SetUp()
 {
     RegisterProtocols(DeviceFactory);
     TFakeSerialDevice::Register(DeviceFactory);
-    SerialPort = PFakeSerialPort(new TFakeSerialPort(*this));
+    SerialPort = PFakeSerialPort(new TFakeSerialPort(*this, "<TSerialDeviceTest>"));
 }
 
 PExpector TSerialDeviceTest::Expector() const
