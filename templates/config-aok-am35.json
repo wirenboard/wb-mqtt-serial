@@ -113,11 +113,11 @@
         ],
         "translations": {
             "en": {
-                "template_title": "A-OK AM-35 (sliding curtain motor)",
+                "template_title": "A-OK AM-35 (tubular)",
                 "baud_rate_description": "Make sure that communication with device is established before changing this parameter. Select required baud rate, save configuration and then change port baud rate to the same value."
             },
             "ru": {
-                "template_title": "A-OK AM-35(мотор раздвижных штор)",
+                "template_title": "A-OK AM-35 (рулонные)",
                 "Controls": "Управление",
                 "Properties": "Параметры",
                 "Functions": "Функции",
