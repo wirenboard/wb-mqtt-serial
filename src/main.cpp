@@ -17,6 +17,7 @@
 #include "config_schema_generator.h"
 
 #include "device_template_generator.h"
+#include "files_watcher.h"
 #include "rpc_config.h"
 #include "rpc_config_handler.h"
 #include "rpc_handler.h"
@@ -103,12 +104,9 @@ namespace
         auto commonDeviceSchema =
             make_shared<Json::Value>(WBMQTT::JSON::Parse(CONFED_COMMON_JSON_SCHEMA_FULL_FILE_PATH));
         auto templates = make_shared<TTemplateMap>(
-            TEMPLATES_DIR,
             LoadConfigTemplatesSchema(TEMPLATES_JSON_SCHEMA_FULL_FILE_PATH, *commonDeviceSchema));
-        try {
-            templates->AddTemplatesDir(USER_TEMPLATES_DIR); // User templates dir
-        } catch (const TConfigParserException& e) {
-        } // Pass exception if user templates dir doesn't exist
+        templates->AddTemplatesDir(TEMPLATES_DIR);
+        templates->AddTemplatesDir(USER_TEMPLATES_DIR);
         return {commonDeviceSchema, templates};
     }
 
@@ -124,19 +122,33 @@ namespace
         }
     }
 
-    void SchemaForConfed()
+    void SchemaForConfed(int argc = 0, char* argv[] = 0, int argInd = 0)
     {
-        try {
-            TSerialDeviceFactory deviceFactory;
-            RegisterProtocols(deviceFactory);
-            shared_ptr<Json::Value> commonDeviceSchema;
-            shared_ptr<TTemplateMap> templates;
-            std::tie(commonDeviceSchema, templates) = LoadTemplates();
-            GenerateSchemasForConfed(CONFED_JSON_SCHEMAS_DIR, *templates, deviceFactory, *commonDeviceSchema);
-        } catch (const exception& e) {
-            LOG(Error) << e.what();
-            exit(EXIT_FAILURE);
+        TSerialDeviceFactory deviceFactory;
+        std::string commonSchemaPath(CONFED_COMMON_JSON_SCHEMA_FULL_FILE_PATH);
+        std::string templatesSchema(TEMPLATES_JSON_SCHEMA_FULL_FILE_PATH);
+        std::string templatesDir(USER_TEMPLATES_DIR);
+        std::string schemasDir(CONFED_JSON_SCHEMAS_DIR);
+        if (argInd < argc) {
+            commonSchemaPath = argv[argInd];
+            ++argInd;
         }
+        if (argInd < argc) {
+            templatesSchema = argv[argInd];
+            ++argInd;
+        }
+        if (argInd < argc) {
+            templatesDir = argv[argInd];
+            ++argInd;
+        }
+        if (argInd < argc) {
+            schemasDir = argv[argInd];
+        }
+        RegisterProtocols(deviceFactory);
+        auto commonDeviceSchema = WBMQTT::JSON::Parse(commonSchemaPath);
+        TTemplateMap templates(LoadConfigTemplatesSchema(templatesSchema, commonDeviceSchema));
+        templates.AddTemplatesDir(templatesDir);
+        GenerateSchemasForConfed(schemasDir, templates, deviceFactory, commonDeviceSchema);
     }
 
     void SetDebugLevel(const char* optarg)
@@ -212,8 +224,13 @@ namespace
                     ConfedToConfig();
                     exit(EXIT_SUCCESS);
                 case 'g':
-                    SchemaForConfed();
-                    exit(EXIT_SUCCESS);
+                    try {
+                        SchemaForConfed(argc, argv, optind);
+                        exit(EXIT_SUCCESS);
+                    } catch (const exception& e) {
+                        LOG(Error) << e.what();
+                        exit(EXIT_FAILURE);
+                    }
                 case 'G':
                     GenerateDeviceTemplate(APP_NAME, USER_TEMPLATES_DIR, optarg);
                     exit(EXIT_SUCCESS);
@@ -232,6 +249,30 @@ namespace
             for (int index = optind; index < argc; ++index) {
                 cout << "Skipping unknown argument " << argv[index] << endl;
             }
+        }
+    }
+
+    void HandleTemplateChangeEvent(TTemplateMap& templates,
+                                   TDevicesConfedSchemasMap& confedSchemasMap,
+                                   const std::string& fileName,
+                                   TFilesWatcher::TEvent event)
+    {
+        if (event == TFilesWatcher::TEvent::CloseWrite) {
+            LOG(Debug) << fileName << " changed. Reloading template";
+            try {
+                auto updatedTypes = templates.UpdateTemplate(fileName);
+                SchemaForConfed();
+                for (const auto& deviceType: updatedTypes) {
+                    confedSchemasMap.InvalidateCache(deviceType);
+                }
+            } catch (const exception& e) {
+                LOG(Debug) << "Failed to reload template: " << e.what();
+            }
+            return;
+        }
+        if (event == TFilesWatcher::TEvent::Delete) {
+            LOG(Debug) << fileName << " deleted";
+            confedSchemasMap.InvalidateCache(templates.DeleteTemplate(fileName));
         }
     }
 }
@@ -256,6 +297,16 @@ int main(int argc, char* argv[])
     TDevicesConfedSchemasMap confedSchemasMap(*templates, CONFED_JSON_SCHEMAS_DIR);
     TProtocolConfedSchemasMap protocolSchemasMap(PROTOCOL_SCHEMAS_DIR, *commonDeviceSchema);
     auto portsSchema = WBMQTT::JSON::Parse(PORTS_JSON_SCHEMA_FULL_FILE_PATH);
+
+    try {
+        SchemaForConfed();
+    } catch (const exception& e) {
+        LOG(Error) << "Failed to generate schemas for user templates:" << e.what();
+    }
+
+    TFilesWatcher watcher(USER_TEMPLATES_DIR, [&](std::string fileName, TFilesWatcher::TEvent event) {
+        HandleTemplateChangeEvent(*templates, confedSchemasMap, fileName, event);
+    });
 
     try {
         if (mqttConfig.Id.empty())

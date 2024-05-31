@@ -214,7 +214,7 @@ Json::Value MakeConfigFromConfed(std::istream& stream, TTemplateMap& templates)
                     device.removeMember("value");
                     device = v;
                 } else {
-                    Json::Value deviceTemplate(templates.GetTemplate(dt).GetTemplate());
+                    Json::Value deviceTemplate(templates.GetTemplate(dt)->GetTemplate());
                     if (deviceTemplate.isMember("subdevices")) {
                         MakeDeviceConfigFromConfed(device, dt, deviceTemplate);
                     } else {

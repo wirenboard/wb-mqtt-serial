@@ -271,9 +271,9 @@ namespace
     {
         auto dt = config["device_type"].asString();
 
-        TDeviceTemplate* deviceTemplate;
+        PDeviceTemplate deviceTemplate;
         try {
-            deviceTemplate = &deviceTemplates.GetTemplate(dt);
+            deviceTemplate = deviceTemplates.GetTemplate(dt);
         } catch (...) {
             return config;
         }

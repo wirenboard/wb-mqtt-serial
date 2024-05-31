@@ -987,12 +987,12 @@ PSerialDevice TSerialDeviceFactory::CreateDevice(const Json::Value& deviceConfig
     unique_ptr<Json::Value> mergedConfig;
     if (deviceConfig.isMember("device_type")) {
         auto deviceType = deviceConfig["device_type"].asString();
-        auto& deviceTemplate = templates.GetTemplate(deviceType);
-        params.DeviceTemplateTitle = deviceTemplate.GetTitle();
+        auto deviceTemplate = templates.GetTemplate(deviceType);
+        params.DeviceTemplateTitle = deviceTemplate->GetTitle();
         mergedConfig = std::make_unique<Json::Value>(
-            MergeDeviceConfigWithTemplate(deviceConfig, deviceType, deviceTemplate.GetTemplate()));
+            MergeDeviceConfigWithTemplate(deviceConfig, deviceType, deviceTemplate->GetTemplate()));
         cfg = mergedConfig.get();
-        params.Translations = &deviceTemplate.GetTemplate()["translations"];
+        params.Translations = &deviceTemplate->GetTemplate()["translations"];
     }
     std::string protocolName = DefaultProtocol;
     Get(*cfg, "protocol", protocolName);

@@ -159,9 +159,9 @@ protected:
         auto commonDeviceSchema(
             WBMQTT::JSON::Parse(TLoggedFixture::GetDataFilePath("../wb-mqtt-serial-confed-common.schema.json")));
         TTemplateMap templateMap(
-            GetDataFilePath("device-templates/"),
             LoadConfigTemplatesSchema(GetDataFilePath("../wb-mqtt-serial-device-template.schema.json"),
                                       commonDeviceSchema));
+        templateMap.AddTemplatesDir(GetDataFilePath("device-templates/"));
         auto portsSchema(WBMQTT::JSON::Parse(TLoggedFixture::GetDataFilePath("../wb-mqtt-serial-ports.schema.json")));
         TProtocolConfedSchemasMap protocolSchemas(TLoggedFixture::GetDataFilePath("../protocols"), commonDeviceSchema);
         return LoadConfig(GetDataFilePath(filePath),
@@ -200,9 +200,9 @@ TEST_F(TConfigParserTest, UnsuccessfulParse)
 {
     auto commonDeviceSchema(
         WBMQTT::JSON::Parse(TLoggedFixture::GetDataFilePath("../wb-mqtt-serial-confed-common.schema.json")));
-    TTemplateMap templateMap(GetDataFilePath("parser_test/templates/"),
-                             LoadConfigTemplatesSchema(GetDataFilePath("../wb-mqtt-serial-device-template.schema.json"),
+    TTemplateMap templateMap(LoadConfigTemplatesSchema(GetDataFilePath("../wb-mqtt-serial-device-template.schema.json"),
                                                        commonDeviceSchema));
+    templateMap.AddTemplatesDir(GetDataFilePath("parser_test/templates/"));
     auto portsSchema(WBMQTT::JSON::Parse(TLoggedFixture::GetDataFilePath("../wb-mqtt-serial-ports.schema.json")));
     TProtocolConfedSchemasMap protocolSchemas(TLoggedFixture::GetDataFilePath("../protocols"), commonDeviceSchema);
 
@@ -231,15 +231,16 @@ TEST_F(TConfigParserTest, MergeDeviceConfigWithTemplate)
 {
     auto commonDeviceSchema(
         WBMQTT::JSON::Parse(TLoggedFixture::GetDataFilePath("../wb-mqtt-serial-confed-common.schema.json")));
-    TTemplateMap templateMap(GetDataFilePath("parser_test/templates/"),
-                             LoadConfigTemplatesSchema(GetDataFilePath("../wb-mqtt-serial-device-template.schema.json"),
+    TTemplateMap templateMap(LoadConfigTemplatesSchema(GetDataFilePath("../wb-mqtt-serial-device-template.schema.json"),
                                                        commonDeviceSchema));
+    templateMap.AddTemplatesDir(GetDataFilePath("parser_test/templates/"));
 
     for (auto i = 1; i <= 12; ++i) {
         auto deviceConfig(JSON::Parse(GetDataFilePath("parser_test/merge_template_ok" + to_string(i) + ".json")));
         std::string deviceType = deviceConfig.get("device_type", "").asString();
-        auto mergedConfig(
-            MergeDeviceConfigWithTemplate(deviceConfig, deviceType, templateMap.GetTemplate(deviceType).GetTemplate()));
+        auto mergedConfig(MergeDeviceConfigWithTemplate(deviceConfig,
+                                                        deviceType,
+                                                        templateMap.GetTemplate(deviceType)->GetTemplate()));
         auto res(JSON::Parse(GetDataFilePath("parser_test/merge_template_res" + to_string(i) + ".json")));
         ASSERT_TRUE(JsonsMatch(res, mergedConfig)) << i;
     }

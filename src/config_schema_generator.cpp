@@ -364,7 +364,7 @@ namespace
         {
             auto schema(CommonDeviceSchema);
             AddDeviceSchema(deviceConfig,
-                            Templates.GetTemplate(deviceConfig["device_type"].asString()),
+                            *Templates.GetTemplate(deviceConfig["device_type"].asString()),
                             DeviceFactory,
                             schema,
                             exprCache);

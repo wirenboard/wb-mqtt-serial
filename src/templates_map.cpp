@@ -38,13 +38,11 @@ namespace
     }
 }
 
-TTemplateMap::TTemplateMap(const std::string& templatesDir,
-                           const Json::Value& templateSchema,
-                           bool passInvalidTemplates)
-    : Validator(new WBMQTT::JSON::TValidator(templateSchema))
-{
-    AddTemplatesDir(templatesDir, passInvalidTemplates);
-}
+//=============================================================================
+//                                TTemplateMap
+//=============================================================================
+TTemplateMap::TTemplateMap(const Json::Value& templateSchema): Validator(new WBMQTT::JSON::TValidator(templateSchema))
+{}
 
 PDeviceTemplate TTemplateMap::MakeTemplateFromJson(const Json::Value& data, const std::string& filePath)
 {
@@ -75,6 +73,8 @@ void TTemplateMap::AddTemplatesDir(const std::string& templatesDir,
                                    bool passInvalidTemplates,
                                    const Json::Value& settings)
 {
+    std::unique_lock m(Mutex);
+    PreferredTemplatesDir = templatesDir;
     IterateDirByPattern(
         templatesDir,
         ".json",
@@ -85,7 +85,8 @@ void TTemplateMap::AddTemplatesDir(const std::string& templatesDir,
             try {
                 auto deviceTemplate =
                     MakeTemplateFromJson(WBMQTT::JSON::ParseWithSettings(filepath, settings), filepath);
-                Templates[deviceTemplate->Type] = deviceTemplate;
+                Templates.try_emplace(deviceTemplate->Type, std::vector<PDeviceTemplate>{})
+                    .first->second.push_back(deviceTemplate);
             } catch (const std::exception& e) {
                 if (passInvalidTemplates) {
                     LOG(Error) << "Failed to parse " << filepath << "\n" << e.what();
@@ -98,10 +99,11 @@ void TTemplateMap::AddTemplatesDir(const std::string& templatesDir,
         true);
 }
 
-TDeviceTemplate& TTemplateMap::GetTemplate(const std::string& deviceType)
+PDeviceTemplate TTemplateMap::GetTemplate(const std::string& deviceType)
 {
     try {
-        return *Templates.at(deviceType);
+        std::unique_lock m(Mutex);
+        return Templates.at(deviceType).back();
     } catch (const std::out_of_range&) {
         throw std::out_of_range("Can't find template for '" + deviceType + "'");
     }
@@ -109,13 +111,67 @@ TDeviceTemplate& TTemplateMap::GetTemplate(const std::string& deviceType)
 
 std::vector<PDeviceTemplate> TTemplateMap::GetTemplates()
 {
+    std::unique_lock m(Mutex);
     std::vector<PDeviceTemplate> templates;
     for (const auto& t: Templates) {
-        templates.push_back(t.second);
+        templates.push_back(t.second.back());
     }
     return templates;
 }
 
+std::vector<std::string> TTemplateMap::UpdateTemplate(const std::string& path)
+{
+    std::vector<std::string> res;
+    if (!EndsWith(path, ".json")) {
+        return res;
+    }
+    auto deviceTemplate = MakeTemplateFromJson(WBMQTT::JSON::Parse(path), path);
+    std::unique_lock m(Mutex);
+    auto deletedType = DeleteTemplateUnsafe(path);
+    if (!deletedType.empty()) {
+        res.push_back(deletedType);
+    }
+    auto& typeArray = Templates.try_emplace(deviceTemplate->Type, std::vector<PDeviceTemplate>{}).first->second;
+    if (!PreferredTemplatesDir.empty() && WBMQTT::StringStartsWith(path, PreferredTemplatesDir)) {
+        typeArray.push_back(deviceTemplate);
+    } else {
+        typeArray.insert(typeArray.begin(), deviceTemplate);
+    }
+    if (deviceTemplate->Type != deletedType) {
+        res.push_back(deviceTemplate->Type);
+    }
+    return res;
+}
+
+std::string TTemplateMap::DeleteTemplateUnsafe(const std::string& path)
+{
+    for (auto& deviceTemplates: Templates) {
+        auto item = std::find_if(deviceTemplates.second.begin(), deviceTemplates.second.end(), [&](const auto& t) {
+            return t->GetFilePath() == path;
+        });
+        if (item != deviceTemplates.second.end()) {
+            auto deviceType = deviceTemplates.first;
+            if (deviceTemplates.second.size() > 1) {
+                deviceTemplates.second.erase(item);
+            } else {
+                Templates.erase(deviceType);
+            }
+            return deviceType;
+        }
+    }
+
+    return std::string();
+}
+
+std::string TTemplateMap::DeleteTemplate(const std::string& path)
+{
+    std::unique_lock m(Mutex);
+    return DeleteTemplateUnsafe(path);
+}
+
+//=============================================================================
+//                              TDeviceTemplate
+//=============================================================================
 TDeviceTemplate::TDeviceTemplate(const std::string& type,
                                  std::shared_ptr<WBMQTT::JSON::TValidator> validator,
                                  const std::string& filePath)
@@ -215,6 +271,9 @@ bool TDeviceTemplate::WithSubdevices() const
     return Subdevices;
 }
 
+//=============================================================================
+//                          TSubDevicesTemplateMap
+//=============================================================================
 TSubDevicesTemplateMap::TSubDevicesTemplateMap(const std::string& deviceType, const Json::Value& device)
     : DeviceType(deviceType)
 {

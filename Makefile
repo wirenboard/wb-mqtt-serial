@@ -16,6 +16,7 @@ else
 endif
 
 GENERATED_TEMPLATES_DIR = build/templates
+GENERATED_SCHEMAS_DIR = build/schemas
 
 PREFIX = /usr
 
@@ -57,7 +58,7 @@ JINJA_TEMPLATES = $(wildcard $(TEMPLATES_DIR)/*.json.jinja)
 
 .PHONY: all clean test templates
 
-all : templates $(SERIAL_BIN)
+all : templates $(SERIAL_BIN) schemas
 
 $(SERIAL_BIN): $(COMMON_OBJS) $(BUILD_DIR)/$(SRC_DIR)/main.cpp.o
 	$(CXX) -o $(BUILD_DIR)/$@ $^ $(LDFLAGS)
@@ -84,6 +85,11 @@ test: templates $(TEST_DIR)/$(TEST_BIN)
 	else \
 		$(TEST_DIR)/$(TEST_BIN) $(TEST_ARGS) || { $(TEST_DIR)/abt.sh show; exit 1; } \
 	fi
+
+schemas: $(SERIAL_BIN)
+	mkdir -p $(GENERATED_SCHEMAS_DIR)
+	$(BUILD_DIR)/$(SERIAL_BIN) -g wb-mqtt-serial-confed-common.schema.json wb-mqtt-serial-device-template.schema.json $(TEMPLATES_DIR) $(GENERATED_SCHEMAS_DIR)
+	$(BUILD_DIR)/$(SERIAL_BIN) -g wb-mqtt-serial-confed-common.schema.json wb-mqtt-serial-device-template.schema.json $(GENERATED_TEMPLATES_DIR) $(GENERATED_SCHEMAS_DIR)
 
 templates: $(JINJA_TEMPLATES:$(TEMPLATES_DIR)/%.json.jinja=$(GENERATED_TEMPLATES_DIR)/%.json)
 
@@ -117,6 +123,7 @@ install:
 	install -D -m 0644 *.schema.json -t $(DESTDIR)$(PREFIX)/share/wb-mqtt-serial
 	install -D -m 0644 groups.json -t $(DESTDIR)$(PREFIX)/share/wb-mqtt-serial
 	install -D -m 0644 templates/*.json $(GENERATED_TEMPLATES_DIR)/*.json -t $(DESTDIR)$(PREFIX)/share/wb-mqtt-serial/templates
+	install -D -m 0644 $(GENERATED_SCHEMAS_DIR)/*.json -t $(DESTDIR)/var/lib/wb-mqtt-serial/schemas
 	install -D -m 0644 protocols/*.json -t $(DESTDIR)$(PREFIX)/share/wb-mqtt-serial/protocols
 
 	install -D -m 0644 obis-hints.json -t $(DESTDIR)$(PREFIX)/share/wb-mqtt-serial
