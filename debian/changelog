@@ -2,7 +2,7 @@ wb-mqtt-serial (2.125.0) stable; urgency=medium
 
   * WB-MDM3 template: add light scenes, switch mode, safety and powerup actions support
 
- -- Ilia Skochilov <ilia.skochilov@wirenboard.com>  Tue, 04 Jun 2024 11:10:15 +0300
+ -- Ilia Skochilov <ilia.skochilov@wirenboard.com>  Tue, 04 Jun 2024 11:14:15 +0300
 
 wb-mqtt-serial (2.124.0) stable; urgency=medium
 
@@ -15,6 +15,7 @@ wb-mqtt-serial (2.123.3) stable; urgency=medium
   * Validation error of config containing duplicated ports
 
  -- Nikolay Korotkiy <nikolay.korotkiy@wirenboard.com>  Mon, 28 May 2024 17:30:00 +0400
+
 
 wb-mqtt-serial (2.123.2) stable; urgency=medium
 
