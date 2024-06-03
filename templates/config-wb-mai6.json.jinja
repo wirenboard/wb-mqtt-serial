@@ -277,18 +277,18 @@
             },
             "in{{ ch_num }}_divR1": {
                 "title": "External voltage divider high-voltage arm resistance, kOhm",
-                "group": "gg_in1_p",
+                "group": "gg_in{{ ch_num }}_p",
                 "order": 5,
-                "address": "0x1410",
+                "address": "0x{{ "%x"|format(ch_num) }}410",
                 "scale": 0.1,
                 "default": 150,
                 "condition": "in{{ ch_num }}_type==6"
             },
             "in{{ ch_num }}_divR2": {
                 "title": "External voltage divider low-voltage arm resistance, kOhm",
-                "group": "gg_in1_p",
+                "group": "gg_in{{ ch_num }}_p",
                 "order": 6,
-                "address": "0x1411",
+                "address": "0x{{ "%x"|format(ch_num) }}411",
                 "scale": 0.1,
                 "default": 10,
                 "condition": "in{{ ch_num }}_type==6"
@@ -557,6 +557,24 @@
                 "format": "s16",
                 "scale": 0.1,
                 "condition": "in{{ ch_num }}_n_type==6144"
+            },
+            "in{{ ch_num }}_n_divR1": {
+                "title": "External voltage divider high-voltage arm resistance, kOhm",
+                "group": "gg_in{{ ch_num }}_n",
+                "order": 5,
+                "address": "0x{{ "%x"|format(ch_num) }}412",
+                "scale": 0.1,
+                "default": 150,
+                "condition": "in{{ ch_num }}_n_type==6"
+            },
+            "in{{ ch_num }}_n_divR2": {
+                "title": "External voltage divider low-voltage arm resistance, kOhm",
+                "group": "gg_in{{ ch_num }}_n",
+                "order": 6,
+                "address": "0x{{ "%x"|format(ch_num) }}413",
+                "scale": 0.1,
+                "default": 10,
+                "condition": "in{{ ch_num }}_n_type==6"
             },
             {% endfor -%}
             "baud_rate": {
