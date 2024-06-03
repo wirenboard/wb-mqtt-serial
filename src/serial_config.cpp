@@ -707,6 +707,16 @@ void AddRegisterType(Json::Value& configSchema, const std::string& registerType)
     configSchema["definitions"]["reg_type"]["enum"].append(registerType);
 }
 
+void CheckDuplicatePorts(const THandlerConfig& handlerConfig)
+{
+    std::unordered_set<std::string> paths;
+    for (const auto& port: handlerConfig.PortConfigs) {
+        if (!paths.insert(port->Port->GetDescription(false)).second) {
+            throw TConfigParserException("Duplicate port: " + port->Port->GetDescription(false));
+        }
+    }
+}
+
 void CheckDuplicateDeviceIds(const THandlerConfig& handlerConfig)
 {
     std::unordered_set<std::string> ids;
@@ -767,6 +777,7 @@ PHandlerConfig LoadConfig(const std::string& configFileName,
                  portFactory);
     }
 
+    CheckDuplicatePorts(*handlerConfig);
     CheckDuplicateDeviceIds(*handlerConfig);
 
     return handlerConfig;
