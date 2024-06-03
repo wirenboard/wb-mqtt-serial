@@ -21,10 +21,6 @@
         "enable_wb_continuous_read": true,
 
         "groups": [
-            {
-                "title": "Inputs Mode",
-                "id": "g_mode"
-            },
             {% for ch_number in range(1, INPUTS_NUMBER + 1) -%}
             {
                 "title": "Input {{ch_number}}",
@@ -150,6 +146,32 @@
                 "id": "general"
             },
             {
+                "title": "Inputs Mode",
+                "id": "g_mode",
+                "group": "general",
+                "description": "inputs_mode_description"
+            },
+            {
+                "title": "Baud rate",
+                "id": "baud_rate",
+                "group": "general",
+                "ui_options": {
+                    "wb": {
+                        "disable_title": true
+                    }
+                }
+            },
+            {
+                "title": "AC LN overcurrent",
+                "id": "acln",
+                "group": "general",
+                "ui_options": {
+                    "wb": {
+                        "disable_title": true
+                    }
+                }
+            },
+            {
                 "title": "HW Info",
                 "id": "hw_info"
             },
@@ -164,7 +186,6 @@
             {
                 "id": "inputs{{ch_number * 2 + 1}}{{ch_number * 2 + 2}}_mode",
                 "title": "Inputs {{ch_number * 2 + 1}}-{{ch_number * 2 + 2}}",
-                "description": "inputs_mode_description",
                 "address": {{16 + ch_number}},
                 "reg_type": "holding",
                 "enum": [0, 1, 2, 3],
@@ -520,7 +541,7 @@
                     "Switch"
                 ],
                 "default": 0,
-                "condition": "{{selected_mode}}==3",
+                "condition": "isDefined({{selected_mode}})==0||{{selected_mode}}==3",
                 "group": "input_{{ch_number + 1}}"
             },
             {
@@ -669,8 +690,7 @@
                     "57600",
                     "115200"
                 ],
-                "group": "general",
-                "order": 1
+                "group": "baud_rate"
             }
         ],
 
@@ -830,14 +850,14 @@
                 "reg_type": "input",
                 "address": 97,
                 "type": "switch",
-                "group": "general"
+                "group": "acln"
             },
             {
                 "name": "Overcurrent",
                 "reg_type": "input",
                 "address": 100,
                 "type": "switch",
-                "group": "general"
+                "group": "acln"
             },
             {
                 "name": "Zero-Сross Offset (us)",
@@ -858,7 +878,7 @@
         "translations": {
             "en": {
                 "WB-MDM3_template_title": "WB-MDM3 (3-channel MOSFET dimmer)",
-                "inputs_mode_description": "Custom mode allows to set actions for each input and press type. Available since firmware version 2.7.0",
+                "inputs_mode_description": "Custom mode allows to set actions for each input and press type. Available since firmware version 2.7.0. One and two button modes are for backward compatibility with firmware versions 2.7.0 and below only",
                 "channel_min_value_description": "Raw dimmer value corresponding to minimum brightness (1%)",
                 "channel_max_value_description": "Raw dimmer value corresponding to maximum brightness (100%)",
 
@@ -890,7 +910,7 @@
                 "Input Parameters": "Параметры нажатий",
                 "Control disabled": "Управление отключено",
                 "Custom mode": "Пользовательский режим",
-                "inputs_mode_description": "Пользовательский режим позволяет задать действия для каждого входа и типа нажатия. Доступно с версии прошивки 2.7.0",
+                "inputs_mode_description": "Пользовательский режим позволяет задать действия для каждого входа и типа нажатия. Доступно с версии прошивки 2.7.0. Однокнопочный и двухкнопочный режимы оставлены только для обратной совместимости с прошивками версии до 2.7.0",
 
                 "Input Mode": "Режим работы входа",
                 "Button": "Кнопка без фиксации",
