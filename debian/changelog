@@ -1,8 +1,15 @@
+wb-mqtt-serial (2.124.0) stable; urgency=medium
+
+  * Add new template for A-OK AM-35 motors
+
+ -- Roman Matveev <roman.matveev@wirenboard.ru>  Wed, 29 May 2024 19:48:00 +0300
+
 wb-mqtt-serial (2.123.3) stable; urgency=medium
 
   * Validation error of config containing duplicated ports
 
  -- Nikolay Korotkiy <nikolay.korotkiy@wirenboard.com>  Mon, 28 May 2024 17:30:00 +0400
+
 
 wb-mqtt-serial (2.123.2) stable; urgency=medium
 
