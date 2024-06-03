@@ -10,7 +10,7 @@
 {% set TYPES_WITH_GAIN = [3, 257] -%}
 {% set TYPES_WITH_MIN_MAX = [ 5376, 4864, 4865, 4866, 5120, 5121] -%}
 {% set TYPES_WITH_SINGLE_VALUE_CHANNEL = [ 4864, 4865, 4866, 5120, 5121] -%}
-{% set TYPES_WITH_SINGLE_END =  [0, 1, 2, 3, 4352, 4353, 4354, 4355, 4368, 4369, 4370, 4371, 4384, 4385, 4386, 4387, 4400, 4401, 4402, 4864, 4865, 4866, 5120, 5121, 5632, 5889, 6144] -%}
+{% set TYPES_WITH_SINGLE_END =  [1, 2, 3, 6, 4352, 4353, 4354, 4355, 4368, 4369, 4370, 4371, 4384, 4385, 4386, 4387, 4400, 4401, 4402, 4864, 4865, 4866, 5120, 5121, 5632, 5889, 6144] -%}
 {% macro format_list(index, types, format) -%}
     {% set separator = joiner('||') -%}
     {% for t in types -%}{{ separator() }}{{ format|format(index, t) }}{% endfor -%}
@@ -125,6 +125,8 @@
                     6144,
 
                     1,
+                    5,
+                    6,
                     2,
                     3,
                     257,
@@ -181,6 +183,8 @@
                     "P: Hall effect current sensor (2.5V±0.625V), single ended",
 
                     "P: single-ended voltage measurement from 0 to 30 V",
+                    "P: single-ended voltage measurement with WB-VDIV",
+                    "P: single-ended voltage measurement with custom external divider",
                     "P: two-wire resistance measurement",
                     "P: current measurement",
                     "voltage measurement in differential mode from -2 to 2 V",
@@ -271,6 +275,24 @@
                 "scale": 0.1,
                 "condition": "in{{ ch_num }}_type==6144"
             },
+            "in{{ ch_num }}_divR1": {
+                "title": "External voltage divider high-voltage arm resistance, kOhm",
+                "group": "gg_in1_p",
+                "order": 5,
+                "address": "0x1410",
+                "scale": 0.1,
+                "default": 150,
+                "condition": "in{{ ch_num }}_type==6"
+            },
+            "in{{ ch_num }}_divR2": {
+                "title": "External voltage divider low-voltage arm resistance, kOhm",
+                "group": "gg_in1_p",
+                "order": 6,
+                "address": "0x1411",
+                "scale": 0.1,
+                "default": 10,
+                "condition": "in{{ ch_num }}_type==6"
+            },
             "in{{ ch_num }}_n_type": {
                 "title": "Mode",
                 "address": "0x{{ "%x"|format(ch_num) }}401",
@@ -311,6 +333,7 @@
                     6144,
 
                     1,
+                    6,
                     2,
                     3
                 ],
@@ -346,8 +369,109 @@
                     "Hall effect current sensor (2.5V±0.625V), single ended",
 
                     "single-ended voltage measurement from 0 to 30 V",
+                    "single-ended voltage measurement with custom external divider",
                     "two-wire resistance measurement",
                     "current measurement"
+                ]
+            },
+            "in{{ ch_num }}_n_type": {
+                "title": "Mode",
+                "address": "0x{{ "%x"|format(ch_num) }}401",
+                "group": "gg_in{{ ch_num }}_n",
+                "order": 1,
+                "required": true,
+                "default": 0,
+                "condition": "in{{ ch_num }}_type==0",
+                "enum": [
+                    0,
+
+                    4352,
+                    4353,
+                    4354,
+                    4355,
+                    4368,
+                    4369,
+                    4370,
+                    4371,
+                    4384,
+                    4385,
+                    4386,
+                    4387,
+                    4400,
+                    4401,
+                    4402,
+
+                    4864,
+                    4865,
+                    4866,
+
+                    5120,
+                    5121,
+
+                    5632,
+                    5889,
+
+                    6144,
+
+                    1,
+                    5,
+                    6,
+                    2,
+                    3
+                ],
+                "enum_titles": [
+                    "Disabled",
+
+                    "2-wire RTD Pt 50 (α = 0.00385 °C⁻¹)",
+                    "2-wire RTD Pt 100 (α = 0.00385 °C⁻¹)",
+                    "2-wire RTD Pt 500 (α = 0.00385 °C⁻¹)",
+                    "2-wire RTD Pt 1000 (α = 0.00385 °C⁻¹)",
+                    "2-wire RTD 50P (α = 0.00391 °C⁻¹)",
+                    "2-wire RTD 100P (α = 0.00391 °C⁻¹)",
+                    "2-wire RTD 500P (α = 0.00391 °C⁻¹)",
+                    "2-wire RTD 1000P (α = 0.00391 °C⁻¹)",
+                    "2-wire RTD 50M (α = 0.00428 °C⁻¹)",
+                    "2-wire RTD 100M (α = 0.00428 °C⁻¹)",
+                    "2-wire RTD 500M (α = 0.00428 °C⁻¹)",
+                    "2-wire RTD 1000M (α = 0.00428 °C⁻¹)",
+                    "2-wire RTD Ni 100 (α = 0.00617 °C⁻¹)",
+                    "2-wire RTD Ni 500 (α = 0.00617 °C⁻¹)",
+                    "2-wire RTD Ni 1000 (α = 0.00617 °C⁻¹)",
+
+                    "0-5 mA sensor",
+                    "0-20 mA sensor",
+                    "4-20 mA sensor",
+
+                    "0-1 V sensor",
+                    "0-10 V sensor",
+
+                    "dry contact sensor",
+                    "NTC thermistor 10k (B = 3988 K)",
+
+                    "Hall effect current sensor (2.5V±0.625V), single ended",
+
+                    "single-ended voltage measurement from 0 to 30 V",
+                    "single-ended voltage measurement with WB-VDIV",
+                    "single-ended voltage measurement with custom external divider",
+                    "two-wire resistance measurement",
+                    "current measurement"
+                ]
+            },
+            "in{{ ch_num }}_n_type": {
+                "title": "Mode",
+                "address": "0x{{ "%x"|format(ch_num) }}401",
+                "group": "gg_in{{ ch_num }}_n",
+                "order": 1,
+                "required": true,
+                "default": 0,
+                "condition": "in{{ ch_num }}_type==5",
+                "enum": [
+                    0,
+                    5
+                ],
+                "enum_titles": [
+                    "Disabled",
+                    "single-ended voltage measurement with WB-VDIV"
                 ]
             },
             "in{{ ch_num }}_n_data_rate": {
@@ -532,7 +656,7 @@
                 "scale": 0.000001,
                 "round_to": 0.001,
                 "group": "gg_in{{ ch_num }}_p",
-                "condition": "in{{ ch_num }}_type==1||in{{ ch_num }}_type==5121||in{{ ch_num }}_type==6144"
+                "condition": "in{{ ch_num }}_type==1||in{{ ch_num }}_type==5||in{{ ch_num }}_type==6||in{{ ch_num }}_type==5121||in{{ ch_num }}_type==6144"
             },
             {
                 "name": "IN {{ch_num}} P Voltage",
@@ -675,7 +799,7 @@
                 "scale": 0.000001,
                 "round_to": 0.001,
                 "group": "gg_in{{ ch_num }}_n",
-                "condition": "in{{ ch_num }}_n_type==1||in{{ ch_num }}_n_type==5121||in{{ ch_num }}_n_type==6144"
+                "condition": "in{{ ch_num }}_n_type==1||in{{ ch_num }}_n_type==5||in{{ ch_num }}_n_type==6||in{{ ch_num }}_n_type==5121||in{{ ch_num }}_n_type==6144"
             },
             {
                 "name": "IN {{ch_num}} N Voltage",
@@ -935,6 +1059,8 @@
                 "0-1 V sensor": "измерение напряжения 0-1 В",
                 "0-10 V sensor": "измерение напряжения 0-10 В",
                 "P: single-ended voltage measurement from 0 to 30 V": "P: измерение положительного напряжения 0-30 В",
+                "P: single-ended voltage measurement with WB-VDIV": "P: измерение положительного напряжения с делителем WB-VDIV",
+                "P: single-ended voltage measurement with custom external divider": "P: измерение положительного напряжения с пользовательским внешним делителем",
                 "P: 0-1 V sensor": "P: измерение напряжения 0-1 В",
                 "P: 0-10 V sensor": "P: измерение напряжения 0-10 В",
                 "-50 to 50 mV sensor": "измерение напряжения от -50 до 50 мВ",
@@ -943,6 +1069,8 @@
                 "P: NTC thermistor 10k (B = 3988 K)": "P: термистор NTC 10 кОм (B = 3988 K)",
                 "P: current measurement": "P: измерение тока",
                 "single-ended voltage measurement from 0 to 30 V": "измерение положительного напряжения 0-30 В",
+                "single-ended voltage measurement with WB-VDIV": "измерение положительного напряжения с делителем WB-VDIV",
+                "single-ended voltage measurement with custom external divider": "измерение положительного напряжения с пользовательским внешним делителем",
                 "current measurement": "измерение тока",
                 "P: Hall effect current sensor (2.5V±0.625V), single ended": "P: датчик тока на эффекте Холла (2.5V±0.625V), однополярное подключение",
                 "Hall effect current sensor (2.5V±0.625V), single ended": "датчик тока на эффекте Холла (2.5V±0.625V), однополярное подключение",
@@ -973,6 +1101,8 @@
                 "Maximum value": "Максимальное пересчитанное значение",
                 "Zero offset (A)" : "Сдвиг нуля (A)",
                 "Rated current (A)" : "Номинальный ток (A)",
+                "External voltage divider high-voltage arm resistance, kOh" : "Сопротивление верхнего плеча внешнего делителя напряжения, кОм",
+                "External voltage divider low-voltage arm resistance, kOh" : "Сопротивление нижнего плеча внешнего делителя напряжения, кОм",
                 "Value": "Пересчитанное значение",
                 "5V Output": "Напряжение на клеммах 5V",
                 "Internal Temperature": "Температура внутри модуля",
