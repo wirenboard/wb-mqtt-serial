@@ -66,7 +66,7 @@ TSerialPortConnectionSettings ParseRPCSerialPortSettings(const Json::Value& requ
 {
     TSerialPortConnectionSettings res;
     WBMQTT::JSON::Get(request, "baud_rate", res.BaudRate);
-    if (request.isMember("parity")){
+    if (request.isMember("parity")) {
         res.Parity = request["parity"].asCString()[0];
     }
     WBMQTT::JSON::Get(request, "data_bits", res.DataBits);
