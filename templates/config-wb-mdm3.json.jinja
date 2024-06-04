@@ -146,14 +146,14 @@
                 "id": "general"
             },
             {
-                "title": "Inputs Mode",
-                "id": "g_mode",
+                "title": "Legacy Inputs Mode",
+                "id": "gg_mode",
                 "group": "general",
                 "description": "inputs_mode_description"
             },
             {
-                "title": "Baud rate",
-                "id": "baud_rate",
+                "title": "General Parameters",
+                "id": "gg_general_parameters",
                 "group": "general",
                 "ui_options": {
                     "wb": {
@@ -162,8 +162,8 @@
                 }
             },
             {
-                "title": "AC LN overcurrent",
-                "id": "acln",
+                "title": "General Channels",
+                "id": "gg_general_channels",
                 "group": "general",
                 "ui_options": {
                     "wb": {
@@ -196,7 +196,7 @@
                     "Control output {{ch_number + 1}} in 2-button mode",
                     "Custom mode"
                 ],
-                "group": "g_mode",
+                "group": "gg_mode",
                 "order": {{ch_number}}
             },
             {% endfor -%}
@@ -690,7 +690,7 @@
                     "57600",
                     "115200"
                 ],
-                "group": "baud_rate"
+                "group": "gg_general_parameters"
             }
         ],
 
@@ -850,14 +850,14 @@
                 "reg_type": "input",
                 "address": 97,
                 "type": "switch",
-                "group": "acln"
+                "group": "gg_general_channels"
             },
             {
                 "name": "Overcurrent",
                 "reg_type": "input",
                 "address": 100,
                 "type": "switch",
-                "group": "acln"
+                "group": "gg_general_channels"
             },
             {
                 "name": "Zero-Сross Offset (us)",
@@ -879,7 +879,7 @@
             "en": {
                 "WB-MDM3_template_title": "WB-MDM3 (3-channel MOSFET dimmer)",
                 "inputs_mode_description": "Firmware up to version 2.6.6 supports only one and two button modes without the ability to freely bind inputs and outputs and process different types of presses. Starting from firmware version 2.7.0, there is no need to select the input mode. Inputs and outputs can be binded in any combinations",
-                "Inputs Mode": "Inputs Mode (up to firmware version 2.6.6 incl.)",
+                "Legacy Inputs Mode": "Inputs Mode (up to firmware version 2.6.6 incl.)",
                 "channel_min_value_description": "Raw dimmer value corresponding to minimum brightness (1%)",
                 "channel_max_value_description": "Raw dimmer value corresponding to maximum brightness (100%)",
 
@@ -907,7 +907,7 @@
                 "General": "Общее",
                 "HW Info": "Данные модуля",
                 "Debug": "Диагностика",
-                "Inputs Mode": "Режим работы входов (для прошивок до 2.6.6 включительно)",
+                "Legacy Inputs Mode": "Режим работы входов (для прошивок до 2.6.6 включительно)",
                 "Input Parameters": "Параметры нажатий",
                 "Control disabled": "Управление отключено",
                 "Custom mode": "Пользовательский режим",
