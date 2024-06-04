@@ -13,7 +13,7 @@
 
 #include "confed_schemas_map.h"
 #include "port.h"
-#include "rpc_config.h"
+#include "rpc/rpc_config.h"
 #include "serial_device.h"
 #include "templates_map.h"
 

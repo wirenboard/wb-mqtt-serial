@@ -62,7 +62,15 @@ PRegisterRange TModbusDevice::CreateRegisterRange() const
 
 void TModbusDevice::WriteRegisterImpl(PRegister reg, const TRegisterValue& value)
 {
-    Modbus::WriteRegister(*ModbusTraits, *Port(), SlaveId, *reg, value, ModbusCache);
+    Modbus::WriteRegister(*ModbusTraits,
+                          *Port(),
+                          SlaveId,
+                          *reg,
+                          value,
+                          ModbusCache,
+                          DeviceConfig()->RequestDelay,
+                          DeviceConfig()->ResponseTimeout,
+                          DeviceConfig()->FrameTimeout);
 }
 
 void TModbusDevice::ReadRegisterRange(PRegisterRange range)
@@ -80,5 +88,12 @@ void TModbusDevice::WriteSetupRegisters()
     if (EnableWbContinuousRead) {
         Modbus::EnableWbContinuousRead(shared_from_this(), *ModbusTraits, *Port(), SlaveId, ModbusCache);
     }
-    Modbus::WriteSetupRegisters(*ModbusTraits, *Port(), SlaveId, SetupItems, ModbusCache);
+    Modbus::WriteSetupRegisters(*ModbusTraits,
+                                *Port(),
+                                SlaveId,
+                                SetupItems,
+                                ModbusCache,
+                                DeviceConfig()->RequestDelay,
+                                DeviceConfig()->ResponseTimeout,
+                                DeviceConfig()->FrameTimeout);
 }

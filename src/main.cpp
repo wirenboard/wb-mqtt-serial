@@ -18,9 +18,9 @@
 
 #include "device_template_generator.h"
 #include "files_watcher.h"
-#include "rpc_config.h"
-#include "rpc_config_handler.h"
-#include "rpc_handler.h"
+#include "rpc/rpc_config.h"
+#include "rpc/rpc_config_handler.h"
+#include "rpc/rpc_port_handler.h"
 #include "serial_port.h"
 
 #define STR(x) #x
@@ -41,7 +41,10 @@ const auto USER_TEMPLATES_DIR = "/etc/wb-mqtt-serial.conf.d/templates";
 const auto PORTS_JSON_SCHEMA_FULL_FILE_PATH = "/usr/share/wb-mqtt-serial/wb-mqtt-serial-ports.schema.json";
 const auto TEMPLATES_JSON_SCHEMA_FULL_FILE_PATH =
     "/usr/share/wb-mqtt-serial/wb-mqtt-serial-device-template.schema.json";
-const auto RPC_REQUEST_SCHEMA_FULL_FILE_PATH = "/usr/share/wb-mqtt-serial/wb-mqtt-serial-rpc-request.schema.json";
+const auto RPC_PORT_LOAD_REQUEST_SCHEMA_FULL_FILE_PATH =
+    "/usr/share/wb-mqtt-serial/wb-mqtt-serial-rpc-port-load-request.schema.json";
+const auto RPC_PORT_SETUP_REQUEST_SCHEMA_FULL_FILE_PATH =
+    "/usr/share/wb-mqtt-serial/wb-mqtt-serial-rpc-port-setup-request.schema.json";
 const auto CONFED_JSON_SCHEMAS_DIR = "/var/lib/wb-mqtt-serial/schemas";
 const auto CONFED_COMMON_JSON_SCHEMA_FULL_FILE_PATH =
     "/usr/share/wb-mqtt-serial/wb-mqtt-serial-confed-common.schema.json";
@@ -340,7 +343,7 @@ int main(int argc, char* argv[])
         }
 
         PMQTTSerialDriver serialDriver;
-        PRPCHandler rpcHandler;
+        PRPCPortHandler rpcPortHandler;
 
         if (handlerConfig) {
             if (handlerConfig->Debug) {
@@ -376,8 +379,11 @@ int main(int argc, char* argv[])
             driver->WaitForReady();
 
             serialDriver = make_shared<TMQTTSerialDriver>(driver, handlerConfig);
-            rpcHandler =
-                std::make_shared<TRPCHandler>(RPC_REQUEST_SCHEMA_FULL_FILE_PATH, rpcConfig, rpcServer, serialDriver);
+            rpcPortHandler = std::make_shared<TRPCPortHandler>(RPC_PORT_LOAD_REQUEST_SCHEMA_FULL_FILE_PATH,
+                                                               RPC_PORT_SETUP_REQUEST_SCHEMA_FULL_FILE_PATH,
+                                                               rpcConfig,
+                                                               rpcServer,
+                                                               serialDriver);
         }
 
         if (serialDriver) {
