@@ -224,7 +224,7 @@
                 "default": 0,
                 "group": "input_{{ ch_number + 1 }}_{{ press_type | replace(' ', '_') }}_press_action",
                 "order": 1,
-                "condition": "input_{{ch_number + 1}}_mode==0"
+                "condition": "input_{{ch_number + 1}}_mode!=1"
             },
             {
                 "id": "{{action_bind}}_action_single",
@@ -878,7 +878,8 @@
         "translations": {
             "en": {
                 "WB-MDM3_template_title": "WB-MDM3 (3-channel MOSFET dimmer)",
-                "inputs_mode_description": "Custom mode allows to set actions for each input and press type. Available since firmware version 2.7.0. One and two button modes are for backward compatibility with firmware versions 2.7.0 and below only",
+                "inputs_mode_description": "Firmware up to version 2.6.6 supports only one and two button modes without the ability to freely bind inputs and outputs and process different types of presses. Starting from firmware version 2.7.0, there is no need to select the input mode. Inputs and outputs can be binded in any combinations",
+                "Inputs Mode": "Inputs Mode (up to firmware version 2.6.6 incl.)",
                 "channel_min_value_description": "Raw dimmer value corresponding to minimum brightness (1%)",
                 "channel_max_value_description": "Raw dimmer value corresponding to maximum brightness (100%)",
 
@@ -906,11 +907,11 @@
                 "General": "Общее",
                 "HW Info": "Данные модуля",
                 "Debug": "Диагностика",
-                "Inputs Mode": "Режим работы входов",
+                "Inputs Mode": "Режим работы входов (для прошивок до 2.6.6 включительно)",
                 "Input Parameters": "Параметры нажатий",
                 "Control disabled": "Управление отключено",
                 "Custom mode": "Пользовательский режим",
-                "inputs_mode_description": "Пользовательский режим позволяет задать действия для каждого входа и типа нажатия. Доступно с версии прошивки 2.7.0. Однокнопочный и двухкнопочный режимы оставлены только для обратной совместимости с прошивками версии до 2.7.0",
+                "inputs_mode_description": "В прошивках до 2.6.6 поддерживаются только одно- и двухкнопочный режимы работы входов без возможности свободной привязки входов и выходов и обработки различных типов нажатий. Начиная с прошивки 2.7.0 выбирать режим работы входов нет необходимости. Можно связывать входы и выходы в произвольных комбинациях",
 
                 "Input Mode": "Режим работы входа",
                 "Button": "Кнопка без фиксации",
