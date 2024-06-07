@@ -275,20 +275,20 @@
                 "scale": 0.1,
                 "condition": "in{{ ch_num }}_type==6144"
             },
-            "in{{ ch_num }}_divR1": {
+            "in{{ ch_num }}_vdiv_high_voltage_arm_res": {
                 "title": "External voltage divider high-voltage arm resistance, kOhm",
                 "group": "gg_in{{ ch_num }}_p",
                 "order": 5,
-                "address": "0x{{ "%x"|format(ch_num) }}410",
+                "address": "0x{{ "%x"|format(ch_num) }}40E",
                 "scale": 0.1,
                 "default": 150,
                 "condition": "in{{ ch_num }}_type==6"
             },
-            "in{{ ch_num }}_divR2": {
+            "in{{ ch_num }}_vdiv_low_voltage_arm_res": {
                 "title": "External voltage divider low-voltage arm resistance, kOhm",
                 "group": "gg_in{{ ch_num }}_p",
                 "order": 6,
-                "address": "0x{{ "%x"|format(ch_num) }}411",
+                "address": "0x{{ "%x"|format(ch_num) }}410",
                 "scale": 0.1,
                 "default": 10,
                 "condition": "in{{ ch_num }}_type==6"
@@ -558,20 +558,20 @@
                 "scale": 0.1,
                 "condition": "in{{ ch_num }}_n_type==6144"
             },
-            "in{{ ch_num }}_n_divR1": {
+            "in{{ ch_num }}_n_vdiv_high_voltage_arm_res": {
                 "title": "External voltage divider high-voltage arm resistance, kOhm",
                 "group": "gg_in{{ ch_num }}_n",
                 "order": 5,
-                "address": "0x{{ "%x"|format(ch_num) }}412",
+                "address": "0x{{ "%x"|format(ch_num) }}40F",
                 "scale": 0.1,
                 "default": 150,
                 "condition": "in{{ ch_num }}_n_type==6"
             },
-            "in{{ ch_num }}_n_divR2": {
+            "in{{ ch_num }}_n_vdiv_low_voltage_arm_res": {
                 "title": "External voltage divider low-voltage arm resistance, kOhm",
                 "group": "gg_in{{ ch_num }}_n",
                 "order": 6,
-                "address": "0x{{ "%x"|format(ch_num) }}413",
+                "address": "0x{{ "%x"|format(ch_num) }}411",
                 "scale": 0.1,
                 "default": 10,
                 "condition": "in{{ ch_num }}_n_type==6"
@@ -674,7 +674,20 @@
                 "scale": 0.000001,
                 "round_to": 0.001,
                 "group": "gg_in{{ ch_num }}_p",
-                "condition": "in{{ ch_num }}_type==1||in{{ ch_num }}_type==5||in{{ ch_num }}_type==6||in{{ ch_num }}_type==5121||in{{ ch_num }}_type==6144"
+                "condition": "in{{ ch_num }}_type==1||in{{ ch_num }}_type==5121||in{{ ch_num }}_type==6144"
+            },
+            {
+                "name": "IN {{ch_num}} P Voltage",
+                "type": "value",
+                "units": "V",
+                "error_value": "0x7FFFFFFF",
+                "reg_type": "input",
+                "format": "s32",
+                "address": "0x{{ "%x"|format(ch_num) }}500",
+                "scale": 0.001,
+                "round_to": 0.01,
+                "group": "gg_in{{ ch_num }}_p",
+                "condition": "in{{ ch_num }}_type==5||in{{ ch_num }}_type==6"
             },
             {
                 "name": "IN {{ch_num}} P Voltage",
@@ -817,7 +830,20 @@
                 "scale": 0.000001,
                 "round_to": 0.001,
                 "group": "gg_in{{ ch_num }}_n",
-                "condition": "in{{ ch_num }}_n_type==1||in{{ ch_num }}_n_type==5||in{{ ch_num }}_n_type==6||in{{ ch_num }}_n_type==5121||in{{ ch_num }}_n_type==6144"
+                "condition": "in{{ ch_num }}_n_type==1||in{{ ch_num }}_n_type==5121||in{{ ch_num }}_n_type==6144"
+            },
+            {
+                "name": "IN {{ch_num}} N Voltage",
+                "type": "value",
+                "units": "V",
+                "error_value": "0x7FFFFFFF",
+                "reg_type": "input",
+                "format": "s32",
+                "address": "0x{{ "%x"|format(ch_num) }}502",
+                "scale": 0.000001,
+                "round_to": 0.001,
+                "group": "gg_in{{ ch_num }}_n",
+                "condition": "in{{ ch_num }}_n_type==5||in{{ ch_num }}_n_type==6"
             },
             {
                 "name": "IN {{ch_num}} N Voltage",
