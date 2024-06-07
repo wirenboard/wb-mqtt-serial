@@ -94,7 +94,8 @@ void RPCPortSetupHandler(PRPCPortSetupRequest rpcRequest,
     Modbus::TModbusRTUTraitsFactory traitsFactory;
     auto traits = traitsFactory.GetModbusTraits(port, false);
     Modbus::TRegisterCache cache;
-    auto frameTimeout = std::chrono::ceil<std::chrono::milliseconds>(port->GetSendTimeBytes(3.5));
+    auto frameTimeout =
+        std::chrono::ceil<std::chrono::milliseconds>(port->GetSendTimeBytes(Modbus::STANDARD_FRAME_TIMEOUT_BYTES));
     port->Open();
     for (auto item: rpcRequest->Items) {
         TSerialPortSettingsGuard settingsGuard(port, item.SerialPortSettings);

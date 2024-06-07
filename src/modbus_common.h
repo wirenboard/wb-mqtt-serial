@@ -10,6 +10,9 @@
 
 namespace Modbus // modbus protocol common utilities
 {
+
+    const double STANDARD_FRAME_TIMEOUT_BYTES = 3.5;
+
     enum RegisterType
     {
         REG_HOLDING = 0, // used for 'setup' regsb

@@ -24,7 +24,8 @@ ISerialClientTask::TRunResult TRPCPortSetupSerialClientTask::Run(PPort port,
         port->SkipNoise();
         for (auto item: Request->Items) {
             TSerialPortSettingsGuard settingsGuard(port, item.SerialPortSettings);
-            auto frameTimeout = std::chrono::ceil<std::chrono::milliseconds>(port->GetSendTimeBytes(3.5));
+            auto frameTimeout = std::chrono::ceil<std::chrono::milliseconds>(
+                port->GetSendTimeBytes(Modbus::STANDARD_FRAME_TIMEOUT_BYTES));
             port->SleepSinceLastInteraction(frameTimeout);
             lastAccessedDevice.PrepareToAccess(nullptr);
 
