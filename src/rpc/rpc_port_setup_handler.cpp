@@ -7,6 +7,10 @@
 
 namespace
 {
+    const auto WB_BAUD_RATE_REGISTER_ADDRESS = 110;
+    const auto WB_PARITY_REGISTER_ADDRESS = 111;
+    const auto WB_STOP_BITS_REGISTER_ADDRESS = 112;
+
     TRPCPortSetupRequestItem ParseRPCPortSetupItemRequest(const Json::Value& request)
     {
         TRPCPortSetupRequestItem res;
@@ -14,17 +18,17 @@ namespace
         res.SlaveId = request["slave_id"].asUInt();
 
         std::unordered_map<std::string, PRegisterConfig> regConfigs;
-        regConfigs["baud_rate"] =
-            TRegisterConfig::Create(Modbus::REG_HOLDING,
-                                    TRegisterDesc{std::make_shared<TUint32RegisterAddress>(110), 0, 0},
-                                    U16,
-                                    100);
-        regConfigs["parity"] =
-            TRegisterConfig::Create(Modbus::REG_HOLDING,
-                                    TRegisterDesc{std::make_shared<TUint32RegisterAddress>(111), 0, 0});
-        regConfigs["stop_bits"] =
-            TRegisterConfig::Create(Modbus::REG_HOLDING,
-                                    TRegisterDesc{std::make_shared<TUint32RegisterAddress>(112), 0, 0});
+        regConfigs["baud_rate"] = TRegisterConfig::Create(
+            Modbus::REG_HOLDING,
+            TRegisterDesc{std::make_shared<TUint32RegisterAddress>(WB_BAUD_RATE_REGISTER_ADDRESS), 0, 0},
+            U16,
+            100);
+        regConfigs["parity"] = TRegisterConfig::Create(
+            Modbus::REG_HOLDING,
+            TRegisterDesc{std::make_shared<TUint32RegisterAddress>(WB_PARITY_REGISTER_ADDRESS), 0, 0});
+        regConfigs["stop_bits"] = TRegisterConfig::Create(
+            Modbus::REG_HOLDING,
+            TRegisterDesc{std::make_shared<TUint32RegisterAddress>(WB_STOP_BITS_REGISTER_ADDRESS), 0, 0});
 
         if (request.isMember("cfg")) {
             for (auto& item: regConfigs) {
