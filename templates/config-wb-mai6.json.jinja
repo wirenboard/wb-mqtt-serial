@@ -276,7 +276,8 @@
                 "condition": "in{{ ch_num }}_type==6144"
             },
             "in{{ ch_num }}_vdiv_high_voltage_arm_res": {
-                "title": "External voltage divider high-voltage arm resistance, kOhm",
+                "title": "External Voltage Divider High-Voltage Arm (R1) Resistance, kOhm",
+                "description": "external_voltage_divider_description",
                 "group": "gg_in{{ ch_num }}_p",
                 "order": 5,
                 "address": "0x{{ "%x"|format(ch_num) }}40E",
@@ -285,7 +286,7 @@
                 "condition": "in{{ ch_num }}_type==6"
             },
             "in{{ ch_num }}_vdiv_low_voltage_arm_res": {
-                "title": "External voltage divider low-voltage arm resistance, kOhm",
+                "title": "External Voltage Divider Low-Voltage Arm (R2) Resistance, kOhm",
                 "group": "gg_in{{ ch_num }}_p",
                 "order": 6,
                 "address": "0x{{ "%x"|format(ch_num) }}410",
@@ -559,8 +560,9 @@
                 "condition": "in{{ ch_num }}_n_type==6144"
             },
             "in{{ ch_num }}_n_vdiv_high_voltage_arm_res": {
-                "title": "External voltage divider high-voltage arm resistance, kOhm",
-                "group": "gg_in{{ ch_num }}_n",
+                "title": "External Voltage Divider High-Voltage Arm (R1) Resistance, kOhm",
+                "description": "external_voltage_divider_description",
+                "group": "gg_in{{ ch_num }}_vdiv_n",
                 "order": 5,
                 "address": "0x{{ "%x"|format(ch_num) }}40F",
                 "scale": 0.1,
@@ -568,8 +570,8 @@
                 "condition": "in{{ ch_num }}_n_type==6"
             },
             "in{{ ch_num }}_n_vdiv_low_voltage_arm_res": {
-                "title": "External voltage divider low-voltage arm resistance, kOhm",
-                "group": "gg_in{{ ch_num }}_n",
+                "title": "External Voltage Divider Low-Voltage Arm (R2) Resistance, kOhm",
+                "group": "gg_in{{ ch_num }}_vdiv_n",
                 "order": 6,
                 "address": "0x{{ "%x"|format(ch_num) }}411",
                 "scale": 0.1,
@@ -1031,7 +1033,8 @@
                 "template_title": "{{ title_en }}",
                 "baud_rate_description": "Make sure that communication with device is established before changing this parameter. Select required baud rate, save configuration and then change port baud rate to the same value.",
                 "IN_P_title": "Channel P",
-                "IN_N_title": "Channel N"
+                "IN_N_title": "Channel N",
+                "external_voltage_divider_description": "External voltage divider is used to measure voltage higher than 30V and to get higher input resistance. Output voltage of the divider should be in the range from 0 to 4V (better to 2V). Supported since firmware version 2.1.0."
             },
             "ru": {
                 "template_title": "{{ title_ru }}",
@@ -1157,8 +1160,9 @@
                 "Maximum value": "Максимальное пересчитанное значение",
                 "Zero offset (A)" : "Сдвиг нуля (A)",
                 "Rated current (A)" : "Номинальный ток (A)",
-                "External voltage divider high-voltage arm resistance, kOh" : "Сопротивление верхнего плеча внешнего делителя напряжения, кОм",
-                "External voltage divider low-voltage arm resistance, kOh" : "Сопротивление нижнего плеча внешнего делителя напряжения, кОм",
+                "External Voltage Divider High-Voltage Arm (R1) Resistance, kOhm" : "Сопротивление верхнего плеча (R1) внешнего делителя напряжения, кОм",
+                "External Voltage Divider Low-Voltage Arm (R2) Resistance, kOhm" : "Сопротивление нижнего плеча (R2) внешнего делителя напряжения, кОм",
+                "external_voltage_divider_description": "Внешний делитель напряжения используется для измерения напряжения выше 30 В и для получения более высокого входного сопротивления. Выходное напряжение делителя должно быть в диапазоне от 0 до 4 В (лучше до 2 В). Поддерживается с версии прошивки 2.1.0.",
                 "Value": "Пересчитанное значение",
                 "5V Output": "Напряжение на клеммах 5V",
                 "Internal Temperature": "Температура внутри модуля",
