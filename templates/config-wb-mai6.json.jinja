@@ -608,8 +608,20 @@
                 "address": "0x{{ "%x"|format(ch_num) }}500",
                 "scale": 0.01,
                 "group": "gg_in{{ ch_num }}_p",
-                "condition": "(in{{ ch_num }}_type>=4608&&in{{ ch_num }}_type<=4658)||in{{ ch_num }}_type==258",
+                "condition": "(in{{ ch_num }}_type>=4608&&in{{ ch_num }}_type<=4658)",
                 "enabled": false
+            },
+            {
+                "name": "IN {{ch_num}} Resistance",
+                "type": "value",
+                "units": "Ohm",
+                "error_value": "0x7FFFFFFF",
+                "reg_type": "input",
+                "format": "s32",
+                "address": "0x{{ "%x"|format(ch_num) }}500",
+                "scale": 0.01,
+                "group": "gg_in{{ ch_num }}_p",
+                "condition": "in{{ ch_num }}_type==258"
             },
             {
                 "name": "IN {{ch_num}} P Resistance",
