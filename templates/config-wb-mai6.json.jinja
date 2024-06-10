@@ -65,9 +65,10 @@
             }
         ],
 
-        "parameters": {
+        "parameters": [
             {% for ch_num in range(1, CHANNELS_NUMBER + 1) -%}
-            "in{{ ch_num }}_type": {
+            {
+                "id": "in{{ ch_num }}_type",
                 "title": "Mode",
                 "address": "0x{{ "%x"|format(ch_num) }}400",
                 "group": "gg_in{{ ch_num }}_p",
@@ -191,7 +192,8 @@
                     "three-wire resistance measurement"
                 ]
             },
-            "in{{ ch_num }}_data_rate": {
+            {
+                "id": "in{{ ch_num }}_data_rate",
                 "title": "Sampling time",
                 "address": "0x{{ "%x"|format(ch_num) }}402",
                 "group": "gg_in{{ ch_num }}_p",
@@ -208,7 +210,8 @@
                 ],
                 "enum": [ 20, 45, 90, 175, 330, 600, 1000 ]
             },
-            "in{{ ch_num }}_measurements": {
+            {
+                "id": "in{{ ch_num }}_measurements",
                 "title": "Number of measurements",
                 "description": "Total sampling time of channel is (Sampling time * Number of measurements). Channels are polled sequentially.",
                 "group": "gg_in{{ ch_num }}_p",
@@ -218,7 +221,8 @@
                 "max": 50,
                 "condition": "in{{ ch_num }}_type!=0"
             },
-            "in{{ ch_num }}_lowpass": {
+            {
+                "id": "in{{ ch_num }}_lowpass",
                 "title": "Lowpass filter time, ms",
                 "group": "gg_in{{ ch_num }}_p",
                 "order": 4,
@@ -227,7 +231,8 @@
                 "max": 65000,
                 "condition": "in{{ ch_num }}_type!=0"
             },
-            "in{{ch_num}}_gain": {
+            {
+                "id": "in{{ch_num}}_gain",
                 "title": "Gain",
                 "group": "gg_in{{ ch_num }}_p",
                 "order": 4,
@@ -237,7 +242,8 @@
                 "default": 0,
                 "condition": "{{ format_list(ch_num, TYPES_WITH_GAIN, "in%s_type==%s") }}"
             },
-            "in{{ ch_num }}_min": {
+            {
+                "id": "in{{ ch_num }}_min",
                 "title": "Minimum value",
                 "group": "gg_in{{ ch_num }}_p",
                 "order": 5,
@@ -245,7 +251,8 @@
                 "default": 0,
                 "condition": "{{ format_list(ch_num, TYPES_WITH_MIN_MAX, "in%s_type==%s") }}"
             },
-            "in{{ ch_num }}_max": {
+            {
+                "id": "in{{ ch_num }}_max",
                 "title": "Maximum value",
                 "group": "gg_in{{ ch_num }}_p",
                 "order": 6,
@@ -253,7 +260,8 @@
                 "default": 10000,
                 "condition": "{{ format_list(ch_num, TYPES_WITH_MIN_MAX, "in%s_type==%s") }}"
             },
-            "in{{ ch_num }}_hall_zero_offset": {
+            {
+                "id": "in{{ ch_num }}_hall_zero_offset",
                 "title": "Zero offset (A)",
                 "group": "gg_in{{ ch_num }}_p",
                 "order": 5,
@@ -264,7 +272,8 @@
                 "format": "s16",
                 "condition": "in{{ ch_num }}_type==6144"
             },
-            "in{{ ch_num }}_hall_rated_current": {
+            {
+                "id": "in{{ ch_num }}_hall_rated_current",
                 "title": "Rated current (A)",
                 "group": "gg_in{{ ch_num }}_p",
                 "order": 6,
@@ -275,9 +284,9 @@
                 "scale": 0.1,
                 "condition": "in{{ ch_num }}_type==6144"
             },
-            "in{{ ch_num }}_vdiv_high_voltage_arm_res": {
+            {
+                "id": "in{{ ch_num }}_vdiv_high_voltage_arm_res",
                 "title": "External Voltage Divider High-Voltage Arm (R1) Resistance, kOhm",
-                "description": "external_voltage_divider_description",
                 "group": "gg_in{{ ch_num }}_p",
                 "order": 5,
                 "address": "0x{{ "%x"|format(ch_num) }}40E",
@@ -285,7 +294,8 @@
                 "default": 150,
                 "condition": "in{{ ch_num }}_type==6"
             },
-            "in{{ ch_num }}_vdiv_low_voltage_arm_res": {
+            {
+                "id": "in{{ ch_num }}_vdiv_low_voltage_arm_res",
                 "title": "External Voltage Divider Low-Voltage Arm (R2) Resistance, kOhm",
                 "group": "gg_in{{ ch_num }}_p",
                 "order": 6,
@@ -294,7 +304,8 @@
                 "default": 10,
                 "condition": "in{{ ch_num }}_type==6"
             },
-            "in{{ ch_num }}_n_type": {
+            {
+                "id": "in{{ ch_num }}_n_type",
                 "title": "Mode",
                 "address": "0x{{ "%x"|format(ch_num) }}401",
                 "group": "gg_in{{ ch_num }}_n",
@@ -375,7 +386,8 @@
                     "current measurement"
                 ]
             },
-            "in{{ ch_num }}_n_type": {
+            {
+                "id": "in{{ ch_num }}_n_type",
                 "title": "Mode",
                 "address": "0x{{ "%x"|format(ch_num) }}401",
                 "group": "gg_in{{ ch_num }}_n",
@@ -458,7 +470,8 @@
                     "current measurement"
                 ]
             },
-            "in{{ ch_num }}_n_type": {
+            {
+                "id": "in{{ ch_num }}_n_type",
                 "title": "Mode",
                 "address": "0x{{ "%x"|format(ch_num) }}401",
                 "group": "gg_in{{ ch_num }}_n",
@@ -475,7 +488,8 @@
                     "single-ended voltage measurement with WB-VDIV"
                 ]
             },
-            "in{{ ch_num }}_n_data_rate": {
+            {
+                "id": "in{{ ch_num }}_n_data_rate",
                 "title": "Sampling time",
                 "group": "gg_in{{ ch_num }}_n",
                 "order": 2,
@@ -492,7 +506,8 @@
                 "enum": [ 20, 45, 90, 175, 330, 600, 1000 ],
                 "condition": "isDefined(in{{ ch_num }}_n_type)&&in{{ ch_num }}_n_type!=0"
             },
-            "in{{ ch_num }}_n_measurements": {
+            {
+                "id": "in{{ ch_num }}_n_measurements",
                 "title": "Number of measurements",
                 "description": "Total sampling time of channel is (Sampling time * Number of measurements). Channels are polled sequentially.",
                 "group": "gg_in{{ ch_num }}_n",
@@ -502,7 +517,8 @@
                 "max": 50,
                 "condition": "isDefined(in{{ ch_num }}_n_type)&&in{{ ch_num }}_n_type!=0"
             },
-            "in{{ ch_num }}_n_lowpass": {
+            {
+                "id": "in{{ ch_num }}_n_lowpass",
                 "title": "Lowpass filter time, ms",
                 "group": "gg_in{{ ch_num }}_n",
                 "order": 4,
@@ -511,7 +527,8 @@
                 "max": 65000,
                 "condition": "isDefined(in{{ ch_num }}_n_type)&&in{{ ch_num }}_n_type!=0"
             },
-            "in{{ch_num}}_n_gain": {
+            {
+                "id": "in{{ch_num}}_n_gain",
                 "title": "Gain",
                 "group": "gg_in{{ ch_num }}_n",
                 "order": 4,
@@ -521,7 +538,8 @@
                 "default": 0,
                 "condition": "{{ format_list(ch_num, TYPES_WITH_GAIN, "in%s_n_type==%s") }}"
             },
-            "in{{ ch_num }}_n_min": {
+            {
+                "id": "in{{ ch_num }}_n_min",
                 "title": "Minimum value",
                 "group": "gg_in{{ ch_num }}_n",
                 "order": 5,
@@ -529,7 +547,8 @@
                 "default": 0,
                 "condition": "{{ format_list(ch_num, TYPES_WITH_MIN_MAX, "in%s_n_type==%s") }}"
             },
-            "in{{ ch_num }}_n_max": {
+            {
+                "id": "in{{ ch_num }}_n_max",
                 "title": "Maximum value",
                 "group": "gg_in{{ ch_num }}_n",
                 "order": 6,
@@ -537,7 +556,8 @@
                 "default": 10000,
                 "condition": "{{ format_list(ch_num, TYPES_WITH_MIN_MAX, "in%s_n_type==%s") }}"
             },
-            "in{{ ch_num }}_n_hall_zero_offset": {
+            {
+                "id": "in{{ ch_num }}_n_hall_zero_offset",
                 "title": "Zero offset (A)",
                 "group": "gg_in{{ ch_num }}_n",
                 "order": 5,
@@ -548,7 +568,8 @@
                 "format": "s16",
                 "condition": "in{{ ch_num }}_n_type==6144"
             },
-            "in{{ ch_num }}_n_hall_rated_current": {
+            {
+                "id": "in{{ ch_num }}_n_hall_rated_current",
                 "title": "Rated current (A)",
                 "group": "gg_in{{ ch_num }}_n",
                 "order": 6,
@@ -559,19 +580,20 @@
                 "scale": 0.1,
                 "condition": "in{{ ch_num }}_n_type==6144"
             },
-            "in{{ ch_num }}_n_vdiv_high_voltage_arm_res": {
+            {
+                "id": "in{{ ch_num }}_n_vdiv_high_voltage_arm_res",
                 "title": "External Voltage Divider High-Voltage Arm (R1) Resistance, kOhm",
-                "description": "external_voltage_divider_description",
-                "group": "gg_in{{ ch_num }}_vdiv_n",
+                "group": "gg_in{{ ch_num }}_n",
                 "order": 5,
                 "address": "0x{{ "%x"|format(ch_num) }}40F",
                 "scale": 0.1,
                 "default": 150,
                 "condition": "in{{ ch_num }}_n_type==6"
             },
-            "in{{ ch_num }}_n_vdiv_low_voltage_arm_res": {
+            {
+                "id": "in{{ ch_num }}_n_vdiv_low_voltage_arm_res",
                 "title": "External Voltage Divider Low-Voltage Arm (R2) Resistance, kOhm",
-                "group": "gg_in{{ ch_num }}_vdiv_n",
+                "group": "gg_in{{ ch_num }}_n",
                 "order": 6,
                 "address": "0x{{ "%x"|format(ch_num) }}411",
                 "scale": 0.1,
@@ -579,7 +601,8 @@
                 "condition": "in{{ ch_num }}_n_type==6"
             },
             {% endfor -%}
-            "baud_rate": {
+            {
+                "id": "baud_rate",
                 "title": "Baud rate",
                 "description": "baud_rate_description",
                 "address": 110,
@@ -596,7 +619,7 @@
                 "group": "general",
                 "order": 1
             }
-        },
+        ],
 
         "channels": [
             {% for ch_num in range(1, CHANNELS_NUMBER + 1) -%}
