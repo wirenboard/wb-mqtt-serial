@@ -10,12 +10,14 @@ namespace
     {
         POSITION,
         PARAM,
-        COMMAND
+        COMMAND,
+        ANGLE
     };
 
     const TRegisterTypes RegTypes{{POSITION, "position", "value", U8},
                                   {PARAM, "param", "value", U64},
-                                  {COMMAND, "command", "value", U64}};
+                                  {COMMAND, "command", "value", U64},
+                                  {ANGLE, "angle", "value", U16}};
 
     // Key - setup command MSG, value - data size
     const std::unordered_map<uint8_t, size_t> SetupDataSize{{Somfy::SET_MOTOR_ROTATION_DIRECTION, 1},
@@ -280,6 +282,14 @@ void Somfy::TDevice::WriteRegisterImpl(PRegister reg, const TRegisterValue& regV
             WriteCache[requestHeader] = data;
             return;
         }
+        case ANGLE: {
+            // See 6.4.1 Device Control / Move to Position
+            std::vector<uint8_t> data{0x10, 0x00, 0x00, 0x00};
+            data.push_back(value & 0xFF);
+            data.push_back((value >> 8) & 0xFF);
+            Check(SlaveId, ACK, ExecCommand(MakeRequest(Somfy::CTRL_MOVETO, SlaveId, NodeType, data)));
+            return;
+        }
     }
 
     throw TSerialDevicePermanentRegisterException("Unsupported register type");
@@ -323,6 +333,10 @@ TRegisterValue Somfy::TDevice::ReadRegisterImpl(PRegister reg)
         }
         case COMMAND: {
             return TRegisterValue{1};
+        }
+        case ANGLE: {
+            // See 6.5.1 Device Status / Motor Position
+            return GetCachedResponse(Somfy::GET_MOTOR_POSITION, Somfy::POST_MOTOR_POSITION, 56, 16);
         }
     }
     throw TSerialDevicePermanentRegisterException("Unsupported register type");
