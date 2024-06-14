@@ -2575,7 +2575,10 @@
                 "For single circuit only": "Только для одного контура",
                 "Discharge Probe": "Датчик нагнетания",
                 "Type of thermal overload or generic alarm reset relating to the individual fan. Automatic: when the alarm stops, the fan starts again. Displayed only if the parameters are enabled": "Тип сброса тепловой перегрузки или общего аварийного сигнала, относящегося к отдельному вентилятору. Автоматически: когда сигнал тревоги прекращается, вентилятор включается снова. Отображается только в том случае, если параметры включены",
-                "Only if prevent active": "Только если активно предотвращение"
+                "Only if prevent active": "Только если активно предотвращение",
+                "MANUAL":"Ручной",
+                "AUTO":"Автоматический",
+                "NO ROTATION":"Без чередования"
             }
         }
     }
