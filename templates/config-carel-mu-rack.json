@@ -898,7 +898,7 @@
                     "general fan thermal overload NC",
                     "general fan thermal overload NO"
                 ],
-                "description": "If the 4 outputs are used, this parameter is ignored and the Multifunction Input is set as fan thermal overload",
+                "description": "multifunction_DI_configuration_description",
                 "min": 0,
                 "max": 12,
                 "default": 0,
@@ -924,7 +924,7 @@
                 "reg_type": "holding",
                 "address": 450,
                 "type": "value",
-                "description": "If the suction 1 probe fault or not connected alarm is activated, this number of compressors are started. These are in any case managed by the individual alarms and general pressure switches (number limited by the number of the compressors)",
+                "description": "number_of_compressors_on_in_circuit_1_with_probe_damaged_description",
                 "min": 0,
                 "max": 4,
                 "default": 0,
@@ -938,7 +938,7 @@
                 "reg_type": "holding",
                 "address": 449,
                 "type": "value",
-                "description": "If the suction 2 probe fault or not connected alarm is activated, this number of compressors are started. These are in any case managed by the individual alarms and general pressure switches (for two circuits only)",
+                "description": "number_of_compressors_on_in_circuit_2_with_probe_damaged_description",
                 "min": 0,
                 "max": 2,
                 "default": 0,
@@ -965,7 +965,7 @@
                 "reg_type": "holding",
                 "address": 452,
                 "type": "value",
-                "description": "If the discharge probe fault or not connected alarm is activated, this number of fans are started. These are in any case managed by the individual alarms and general pressure switches",
+                "description": "number_of_fans_on_with_probe_damaged_description",
                 "min": 0,
                 "max": 4,
                 "default": 0,
@@ -1140,7 +1140,7 @@
                 "reg_type": "holding",
                 "address": 443,
                 "type": "value",
-                "description": "Compressor bar auxiliary set point offset. Used when changing the set point from digital input",
+                "description": "set_point_offset_to_change_set_from_DI_description",
                 "scale": 0.1,
                 "min": -99.9,
                 "max": 99.9,
@@ -1220,7 +1220,7 @@
                 "reg_type": "holding",
                 "address": 496,
                 "type": "value",
-                "description": "On the 3rd activation, within the set time, the low pressure alarm from pressure switch changes from automatic to manual reset",
+                "description": "time_to_change_low_pressure_alarm_from_automatic_to_manual_description",
                 "min": 0,
                 "max": 999,
                 "default": 10,
@@ -1233,7 +1233,7 @@
                 "reg_type": "holding",
                 "address": 507,
                 "type": "value",
-                "description": "If no prevent alarms occur in this period, the high prevent frequency alarm is automatically reset (Only if the prevent is enabled)",
+                "description": "time_to_reset_prevent_alarm_description",
                 "min": 0,
                 "max": 99,
                 "default": 30,
@@ -1289,7 +1289,7 @@
                     "AUTO",
                     "MANUAL"
                 ],
-                "description": "Type of thermal overload or generic alarm reset relating to the individual compressor. Automatic: when the alarm stops, the compressor starts again.Displayed only if the parameters are enabled",
+                "description": "type_of_compressor_reset_description",
                 "default": 1
             },
             {
@@ -1378,7 +1378,7 @@
                     "AUTO",
                     "MANUAL"
                 ],
-                "description": "Type of thermal overload or generic alarm reset relating to the individual fan. Automatic: when the alarm stops, the fan starts again. Displayed only if the parameters are enabled",
+                "description": "type_of_fan_reset_description",
                 "default": 1
             },
             {
@@ -2311,7 +2311,17 @@
             }
         ],
         "translations": {
-            "en": {},
+            "en": {
+                "multifunction_DI_configuration_description": "If the 4 outputs are used, this parameter is ignored and the Multifunction Input is set as fan thermal overload",
+                "number_of_compressors_on_in_circuit_1_with_probe_damaged_description": "If the suction 1 probe fault or not connected alarm is activated, this number of compressors are started. These are in any case managed by the individual alarms and general pressure switches (number limited by the number of the compressors)",
+                "number_of_compressors_on_in_circuit_2_with_probe_damaged_description": "If the suction 2 probe fault or not connected alarm is activated, this number of compressors are started. These are in any case managed by the individual alarms and general pressure switches (for two circuits only)",
+                "number_of_fans_on_with_probe_damaged_description": "If the discharge probe fault or not connected alarm is activated, this number of fans are started. These are in any case managed by the individual alarms and general pressure switches",
+                "set_point_offset_to_change_set_from_DI_description": "Compressor bar auxiliary set point offset. Used when changing the set point from digital input",
+                "time_to_change_low_pressure_alarm_from_automatic_to_manual_description": "On the 3rd activation, within the set time, the low pressure alarm from pressure switch changes from automatic to manual reset",
+                "time_to_reset_prevent_alarm_description": "If no prevent alarms occur in this period, the high prevent frequency alarm is automatically reset (Only if the prevent is enabled)",
+                "type_of_compressor_reset_description": "Type of thermal overload or generic alarm reset relating to the individual compressor. Automatic: when the alarm stops, the compressor starts again.Displayed only if the parameters are enabled",
+                "type_of_fan_reset_description": "Type of thermal overload or generic alarm reset relating to the individual fan. Automatic: when the alarm stops, the fan starts again. Displayed only if the parameters are enabled"
+            },
             "ru": {
                 "Alarm Relay Logic (/28)": "Логика аварийного реле (/28)",
                 "Alarm Signal Delay (s, A20)": "Максимальное давление нагнетания (с, A20)",
@@ -2560,25 +2570,25 @@
                 "Only if PI": "Только для PI регулирования",
                 "Set the liquid level alarm delay from multifunction input": "Установите задержку сигнала тревоги уровня жидкости с помощью многофункционального входа",
                 "Only if dead band control is enabled": "Только если включен контроль зоны нечувствительности",
-                "If the 4 outputs are used, this parameter is ignored and the Multifunction Input is set as fan thermal overload": "Если используются 4 выхода, этот параметр игнорируется, а многофункциональный вход устанавливается на тепловую перегрузку вентилятора",
-                "If the suction 1 probe fault or not connected alarm is activated, this number of compressors are started. These are in any case managed by the individual alarms and general pressure switches (number limited by the number of the compressors)": "Если срабатывает неисправность датчика всасывания 1 или сигнализация не подключена, запускается указанное количество компрессоров. В любом случае они управляются отдельными сигнализаторами и общими реле давления (количество ограничено количеством компрессоров)",
-                "If the suction 2 probe fault or not connected alarm is activated, this number of compressors are started. These are in any case managed by the individual alarms and general pressure switches (for two circuits only)": "Если срабатывает неисправность датчика всасывания 2 или сигнализация о неподключении, запускается указанное количество компрессоров. В любом случае они управляются отдельными сигнализаторами и общими реле давления (только для двух контуров)",
+                "multifunction_DI_configuration_description": "Если используются 4 выхода, этот параметр игнорируется, а многофункциональный вход устанавливается на тепловую перегрузку вентилятора",
+                "number_of_compressors_on_in_circuit_1_with_probe_damaged_description": "Если срабатывает неисправность датчика всасывания 1 или сигнализация не подключена, запускается указанное количество компрессоров. В любом случае они управляются отдельными сигнализаторами и общими реле давления (количество ограничено количеством компрессоров)",
+                "number_of_compressors_on_in_circuit_2_with_probe_damaged_description": "Если срабатывает неисправность датчика всасывания 2 или сигнализация о неподключении, запускается указанное количество компрессоров. В любом случае они управляются отдельными сигнализаторами и общими реле давления (только для двух контуров)",
                 "Number limited by the number of compressors already enabled": "Число ограничено количеством уже включенных компрессоров",
-                "If the discharge probe fault or not connected alarm is activated, this number of fans are started. These are in any case managed by the individual alarms and general pressure switches": "Если активируется сигнализация неисправности нагнетательного датчика или отсутствия подключения, запускается указанное количество вентиляторов. В любом случае они управляются отдельными сигнализаторами и общими реле давления",
+                "number_of_fans_on_with_probe_damaged_description": "Если активируется сигнализация неисправности нагнетательного датчика или отсутствия подключения, запускается указанное количество вентиляторов. В любом случае они управляются отдельными сигнализаторами и общими реле давления",
                 "If set to 0, no maintenance alarms.": "Если установлено значение 0, сигналы технического обслуживания отсутствуют",
                 "Only if the prevent is enabled": "Только если предотвращение включено",
-                "Compressor bar auxiliary set point offset. Used when changing the set point from digital input": "Смещение вспомогательной уставки компрессора. Используется при изменении уставки с цифрового входа",
+                "set_point_offset_to_change_set_from_DI_description": "Смещение вспомогательной уставки компрессора. Используется при изменении уставки с цифрового входа",
                 "If prevent enabled": "Если предотвращение включено",
-                "On the 3rd activation, within the set time, the low pressure alarm from pressure switch changes from automatic to manual reset": "При 3-й активации в течение установленного времени сигнал тревоги низкого давления переключателя давления меняется с автоматического на ручной сброс",
-                "If no prevent alarms occur in this period, the high prevent frequency alarm is automatically reset (Only if the prevent is enabled)": "Если в этот период не возникает никаких сигналов предупреждения, сигнал тревоги высокой частоты автоматически сбрасывается (только если функция предотвращения включена)",
-                "Type of thermal overload or generic alarm reset relating to the individual compressor. Automatic: when the alarm stops, the compressor starts again.Displayed only if the parameters are enabled": "Тип сброса тепловой перегрузки или общего аварийного сигнала, относящегося к отдельному компрессору. Автоматически: когда сигнал тревоги прекращается, компрессор запускается снова. Отображается только в том случае, если параметры включены",
+                "time_to_change_low_pressure_alarm_from_automatic_to_manual_description": "При 3-й активации в течение установленного времени сигнал тревоги низкого давления переключателя давления меняется с автоматического на ручной сброс",
+                "time_to_reset_prevent_alarm_description": "Если в этот период не возникает никаких сигналов предупреждения, сигнал тревоги высокой частоты автоматически сбрасывается (только если функция предотвращения включена)",
+                "type_of_compressor_reset_description": "Тип сброса тепловой перегрузки или общего аварийного сигнала, относящегося к отдельному компрессору. Автоматически: когда сигнал тревоги прекращается, компрессор запускается снова. Отображается только в том случае, если параметры включены",
                 "For single circuit only": "Только для одного контура",
                 "Discharge Probe": "Датчик нагнетания",
-                "Type of thermal overload or generic alarm reset relating to the individual fan. Automatic: when the alarm stops, the fan starts again. Displayed only if the parameters are enabled": "Тип сброса тепловой перегрузки или общего аварийного сигнала, относящегося к отдельному вентилятору. Автоматически: когда сигнал тревоги прекращается, вентилятор включается снова. Отображается только в том случае, если параметры включены",
+                "type_of_fan_reset_description": "Тип сброса тепловой перегрузки или общего аварийного сигнала, относящегося к отдельному вентилятору. Автоматически: когда сигнал тревоги прекращается, вентилятор включается снова. Отображается только в том случае, если параметры включены",
                 "Only if prevent active": "Только если активно предотвращение",
-                "MANUAL":"Ручной",
-                "AUTO":"Автоматический",
-                "NO ROTATION":"Без чередования"
+                "MANUAL": "Ручной",
+                "AUTO": "Автоматический",
+                "NO ROTATION": "Без чередования"
             }
         }
     }
