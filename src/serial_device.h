@@ -146,7 +146,7 @@ typedef IProtocol* PProtocol;
 
 struct TDeviceSetupItem
 {
-    TDeviceSetupItem(PSerialDevice device, PDeviceSetupItemConfig config, PRegister reg)
+    TDeviceSetupItem(PDeviceSetupItemConfig config, PRegister reg)
         : Name(config->GetName()),
           RawValue(config->GetRawValue()),
           HumanReadableValue(config->GetValue()),

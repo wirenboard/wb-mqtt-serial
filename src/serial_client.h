@@ -1,19 +1,15 @@
 #pragma once
 
-#include "binary_semaphore.h"
-#include "common_utils.h"
+#include "register.h"
+#include <condition_variable>
+#include <list>
+
 #include "log.h"
-#include "modbus_ext_common.h"
 #include "poll_plan.h"
 #include "register_handler.h"
-#include "rpc_request_handler.h"
 #include "serial_client_device_access_handler.h"
 #include "serial_client_events_reader.h"
 #include "serial_client_register_poller.h"
-#include <functional>
-#include <list>
-#include <memory>
-#include <unordered_map>
 
 class TSerialDevice;
 typedef std::shared_ptr<TSerialDevice> PSerialDevice;
@@ -58,6 +54,22 @@ private:
     util::TGetNowFn NowFn;
 };
 
+class ISerialClientTask
+{
+public:
+    enum class TRunResult
+    {
+        OK,
+        RETRY
+    };
+
+    virtual ~ISerialClientTask() = default;
+
+    virtual ISerialClientTask::TRunResult Run(PPort port, TSerialClientDeviceAccessHandler& lastAccessedDevice) = 0;
+};
+
+typedef std::shared_ptr<ISerialClientTask> PSerialClientTask;
+
 class TSerialClient: public std::enable_shared_from_this<TSerialClient>, util::TNonCopyable
 {
 public:
@@ -77,18 +89,17 @@ public:
     void SetErrorCallback(const TRegisterCallback& callback);
     void SetDeviceConnectionStateChangedCallback(const TDeviceCallback& callback);
     PPort GetPort();
-    void RPCTransceive(PRPCRequest request) const;
+
+    void AddTask(PSerialClientTask task);
 
 private:
     void Activate();
     void Connect();
-    void DoFlush();
     void WaitForPollAndFlush(std::chrono::steady_clock::time_point now,
                              std::chrono::steady_clock::time_point waitUntil);
     PRegisterHandler GetHandler(PRegister) const;
     void ClosedPortCycle();
     void OpenPortCycle();
-    void UpdateFlushNeeded();
     void ProcessPolledRegister(PRegister reg);
 
     PPort Port;
@@ -99,13 +110,9 @@ private:
     TRegisterCallback RegisterReadCallback;
     TRegisterCallback RegisterErrorCallback;
     TDeviceCallback DeviceConnectionStateChangedCallback;
-    PBinarySemaphore FlushNeeded;
-    PBinarySemaphoreSignal RegisterUpdateSignal, RPCSignal;
 
     TPortOpenCloseLogic OpenCloseLogic;
     TLoggerWithTimeout ConnectLogger;
-
-    PRPCRequestHandler RPCRequestHandler;
 
     std::unique_ptr<TSerialClientDeviceAccessHandler> LastAccessedDevice;
     std::unique_ptr<TSerialClientRegisterAndEventsReader> RegReader;
@@ -113,6 +120,10 @@ private:
     util::TGetNowFn NowFn;
 
     size_t LowPriorityRateLimit;
+
+    std::mutex TasksMutex;
+    std::condition_variable TasksCv;
+    std::vector<PSerialClientTask> Tasks;
 };
 
 typedef std::shared_ptr<TSerialClient> PSerialClient;
