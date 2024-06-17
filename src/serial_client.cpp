@@ -4,6 +4,7 @@
 #include <unistd.h>
 
 #include "modbus_ext_common.h"
+#include "write_channel_serial_client_task.h"
 
 using namespace std::chrono_literals;
 using namespace std::chrono;
@@ -45,12 +46,7 @@ TSerialClient::TSerialClient(PPort port,
       ConnectLogger(PORT_OPEN_ERROR_NOTIFICATION_INTERVAL, "[serial client] "),
       NowFn(nowFn),
       LowPriorityRateLimit(lowPriorityRateLimit)
-{
-    FlushNeeded = std::make_shared<TBinarySemaphore>();
-    RPCRequestHandler = std::make_shared<TRPCRequestHandler>();
-    RegisterUpdateSignal = FlushNeeded->MakeSignal();
-    RPCSignal = FlushNeeded->MakeSignal();
-}
+{}
 
 TSerialClient::~TSerialClient()
 {
@@ -66,7 +62,7 @@ void TSerialClient::AddDevice(PSerialDevice device)
     for (const auto& reg: device->GetRegisters()) {
         if (Handlers.find(reg) != Handlers.end())
             throw TSerialDeviceException("duplicate register");
-        auto handler = Handlers[reg] = std::make_shared<TRegisterHandler>(reg->Device(), reg);
+        auto handler = Handlers[reg] = std::make_shared<TRegisterHandler>(reg);
         RegList.push_back(reg);
         LOG(Debug) << "AddRegister: " << reg;
     }
@@ -89,29 +85,6 @@ void TSerialClient::Connect()
     OpenCloseLogic.OpenIfAllowed(Port);
 }
 
-void TSerialClient::DoFlush()
-{
-    for (const auto& reg: RegList) {
-        auto handler = Handlers[reg];
-        if (!handler->NeedToFlush())
-            continue;
-        if (LastAccessedDevice->PrepareToAccess(handler->Device())) {
-            handler->Flush();
-        } else {
-            reg->SetError(TRegister::TError::WriteError);
-        }
-        if (reg->GetErrorState().test(TRegister::TError::WriteError)) {
-            if (RegisterErrorCallback) {
-                RegisterErrorCallback(reg);
-            }
-        } else {
-            if (RegisterReadCallback) {
-                RegisterReadCallback(reg);
-            }
-        }
-    }
-}
-
 void TSerialClient::WaitForPollAndFlush(steady_clock::time_point currentTime, steady_clock::time_point waitUntil)
 {
     if (currentTime > waitUntil) {
@@ -123,28 +96,24 @@ void TSerialClient::WaitForPollAndFlush(steady_clock::time_point currentTime, st
                    << ": Wait until " << duration_cast<milliseconds>(waitUntil.time_since_epoch()).count();
     }
 
-    // Limit waiting time to be responsive
-    waitUntil = std::min(waitUntil, currentTime + MAX_POLL_TIME);
-    while (FlushNeeded->Wait(waitUntil)) {
-        if (FlushNeeded->GetSignalValue(RegisterUpdateSignal)) {
-            DoFlush();
-        }
-        if (FlushNeeded->GetSignalValue(RPCSignal)) {
-            // End session with current device to make bus clean for RPC
-            LastAccessedDevice->PrepareToAccess(nullptr);
-            RPCRequestHandler->RPCRequestHandling(Port);
+    std::vector<PSerialClientTask> retryTasks;
+    {
+        std::unique_lock<std::mutex> lock(TasksMutex);
+
+        while (TasksCv.wait_until(lock, waitUntil, [this]() { return !Tasks.empty(); })) {
+            std::vector<PSerialClientTask> tasks;
+            Tasks.swap(tasks);
+            lock.unlock();
+            for (auto& task: tasks) {
+                if (task->Run(Port, *LastAccessedDevice) == ISerialClientTask::TRunResult::RETRY) {
+                    retryTasks.push_back(task);
+                }
+            }
+            lock.lock();
         }
     }
-}
-
-void TSerialClient::UpdateFlushNeeded()
-{
-    for (const auto& reg: RegList) {
-        auto handler = Handlers[reg];
-        if (handler->NeedToFlush()) {
-            FlushNeeded->Signal(RegisterUpdateSignal);
-            break;
-        }
+    for (auto& task: retryTasks) {
+        AddTask(task);
     }
 }
 
@@ -181,35 +150,23 @@ void TSerialClient::Cycle()
 
 void TSerialClient::ClosedPortCycle()
 {
-    auto wait_until = NowFn() + CLOSED_PORT_CYCLE_TIME;
-
-    while (FlushNeeded->Wait(wait_until)) {
-        if (FlushNeeded->GetSignalValue(RegisterUpdateSignal)) {
-            for (const auto& reg: RegList) {
-                auto handler = Handlers[reg];
-                if (!handler->NeedToFlush())
-                    continue;
-                reg->SetError(TRegister::TError::WriteError);
-                if (RegisterErrorCallback) {
-                    RegisterErrorCallback(reg);
-                }
-            }
-        }
-        if (FlushNeeded->GetSignalValue(RPCSignal)) {
-            RPCRequestHandler->RPCRequestHandling(Port);
-        }
-    }
+    auto currentTime = NowFn();
+    auto waitUntil = currentTime + CLOSED_PORT_CYCLE_TIME;
+    WaitForPollAndFlush(currentTime, waitUntil);
 
     RegReader->ClosedPortCycle(
-        wait_until,
+        waitUntil,
         [this](PRegister reg) { ProcessPolledRegister(reg); },
         DeviceConnectionStateChangedCallback);
 }
 
 void TSerialClient::SetTextValue(PRegister reg, const std::string& value)
 {
-    GetHandler(reg)->SetTextValue(value);
-    FlushNeeded->Signal(RegisterUpdateSignal);
+    auto handler = GetHandler(reg);
+    handler->SetTextValue(value);
+    auto serialClientTask =
+        std::make_shared<TWriteChannelSerialClientTask>(handler, RegisterReadCallback, RegisterErrorCallback);
+    AddTask(serialClientTask);
 }
 
 void TSerialClient::SetReadCallback(const TSerialClient::TRegisterCallback& callback)
@@ -237,9 +194,11 @@ PRegisterHandler TSerialClient::GetHandler(PRegister reg) const
 
 void TSerialClient::OpenPortCycle()
 {
-    UpdateFlushNeeded();
     auto currentTime = NowFn();
-    WaitForPollAndFlush(currentTime, RegReader->GetDeadline(currentTime));
+    auto waitUntil = RegReader->GetDeadline(currentTime);
+    // Limit waiting time to be responsive
+    waitUntil = std::min(waitUntil, currentTime + MAX_POLL_TIME);
+    WaitForPollAndFlush(currentTime, waitUntil);
 
     auto device = RegReader->OpenPortCycle(
         *Port,
@@ -257,9 +216,13 @@ PPort TSerialClient::GetPort()
     return Port;
 }
 
-void TSerialClient::RPCTransceive(PRPCRequest request) const
+void TSerialClient::AddTask(PSerialClientTask task)
 {
-    RPCRequestHandler->RPCTransceive(request, FlushNeeded, RPCSignal);
+    {
+        std::unique_lock<std::mutex> lock(TasksMutex);
+        Tasks.push_back(task);
+    }
+    TasksCv.notify_all();
 }
 
 TSerialClientRegisterAndEventsReader::TSerialClientRegisterAndEventsReader(const std::list<PSerialDevice>& devices,

@@ -1,7 +1,8 @@
 #include "fake_serial_device.h"
 #include "fake_serial_port.h"
 #include "log.h"
-#include "rpc_handler.h"
+#include "rpc/rpc_port_handler.h"
+#include "rpc/rpc_port_load_serial_client_task.h"
 #include "serial_driver.h"
 
 #include <wblib/driver_args.h>
@@ -1492,7 +1493,7 @@ TRPCResultCode TSerialClientIntegrationTest::SendRPCRequest(PMQTTSerialDriver se
 
     TRPCResultCode resultCode = TRPCResultCode::RPC_OK;
     std::vector<int> responseInt;
-    PRPCRequest request = std::make_shared<TRPCRequest>();
+    PRPCPortLoadRequest request = std::make_shared<TRPCPortLoadRequest>();
     request->ResponseTimeout = std::chrono::milliseconds(500);
     request->FrameTimeout = std::chrono::milliseconds(20);
     request->TotalTimeout = totalTimeout;
@@ -1508,7 +1509,8 @@ TRPCResultCode TSerialClientIntegrationTest::SendRPCRequest(PMQTTSerialDriver se
 
     try {
         Note() << "Send RPC request";
-        serialClient->RPCTransceive(request);
+        PRPCPortLoadSerialClientTask task(std::make_shared<TRPCPortLoadSerialClientTask>(request));
+        serialClient->AddTask(task);
         SerialDriver->LoopOnce();
         EXPECT_EQ(responseInt == expectedResponse, true);
     } catch (const TRPCException& exception) {
