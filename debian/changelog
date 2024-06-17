@@ -1,6 +1,6 @@
 wb-mqtt-serial (2.127.0) stable; urgency=medium
 
-  * WB-LED: light scenes, safety mode, powerup actions support
+  * WB-LED template: add light scenes, safety mode, switch mode, powerup actions support
 
  -- Sergey Mishin <mishin@wirenboard.com>  Mon, 17 Jun 2024 11:21:00 +0300
 

@@ -93,12 +93,12 @@
             {% for ch_number in range(1, OUTPUTS_NUMBER + 1) -%}
             {
                 "title": "Channel {{ ch_number }} Switch",
-                "id": "gg_safety_mode_ch_{{ ch_number }}",
+                "id": "ggg_safety_mode_ch_{{ ch_number }}",
                 "group": "gg_safety_behaviour"
             },
             {
                 "title": "Channel {{ ch_number }} Switch",
-                "id": "gg_power_up_behaviour_ch_{{ ch_number }}",
+                "id": "ggg_power_up_behaviour_ch_{{ ch_number }}",
                 "group": "g_power_up_behaviour"
             },
             {% for on_off in ["on", "off"] -%}
@@ -111,7 +111,7 @@
             {% endfor -%}
             {
                 "title": "Inputs Control In Safety Mode",
-                "id": "gg_safety_input_control",
+                "id": "ggg_safety_input_control",
                 "description": "inputs_control_in_safety_mode_description",
                 "group": "g_safety"
             },
@@ -579,14 +579,14 @@
                 "condition": "dimmer_mode==256"
             },
             {% set dimmer_mode = [0, 1, 2, 16, 17, 18, 32, 33, 34, 256, 512] -%}
-            {% set action_code = 
+            {% set action_code =
                 [
                     0, 16384, 4096, 4097, 4098, 4099, 4100, 4101, 4102, 4103, 4104, 4105, 4106, 8192, 8193, 8194, 8195, 8196, 8197, 8198, 8199, 8200, 8201, 8202, 12288, 12289, 12290, 12291, 12292, 12293, 12294, 12295, 
                     12296, 12297, 12298, 36864, 36865, 36866, 36867, 36868, 36869, 36870, 36871, 36872, 36873, 36874, 36875, 36876, 36877, 36878, 36879, 36880, 36881, 40960, 40961, 40962, 40963, 40964, 40965, 40966, 
                     40967, 40968, 40969, 40970, 40971, 40972, 40973, 40974, 40975, 40976, 40977, 45056, 45057, 45058, 45059, 45060, 45061, 45062, 45063, 45064, 45065, 45066, 45067, 45068, 45069, 45070, 45071, 45072, 45073
                 ]
             -%}
-            {% set action_title = 
+            {% set action_title =
                 [
                     "no_act_title", "all_off_act_title", "off_ch1_act_title", "off_ch2_act_title", "off_ch3_act_title", "off_ch4_act_title", "off_ch12_act_title", "off_ch34_act_title", "off_ch1234_act_title", "off_cct1_act_title", 
                     "off_cct2_act_title", "off_rgb_act_title", "off_hue_change_act_title", "on_ch1_act_title", "on_ch2_act_title", "on_ch3_act_title", "on_ch4_act_title", "on_ch12_act_title", "on_ch34_act_title", "on_ch1234_act_title", 
@@ -669,7 +669,7 @@
                     [0, 16384, 4102, 8198, 12294, 36870, 40966],
                     [0, 16384, 4102, 8198, 12294, 36870, 40966, 45062]
                 ]
-                ] -%}        
+                ] -%}
             {% for in_num in range(1, INPUTS_NUMBER +  1)  -%}
             {% for name in name_actions -%}
             {
@@ -856,7 +856,91 @@
                 "enum_titles": ["9600", "19200", "38400", "57600", "115200"],
                 "group": "g_general",
                 "order": 1
-            }
+            },
+            {
+                "id": "safety_timer_s",
+                "title": "Safety Poll Timeout (s)",
+                "group": "g_safety",
+                "description": "poll_timeout_description",
+                "address": 8,
+                "order": 2,
+                "reg_type": "holding",
+                "min": 1,
+                "max": 65534,
+                "default": 10
+            },
+            {% for ch_number in range(1, OUTPUTS_NUMBER + 1) -%}
+            {
+                "id": "safety_mode_ch_{{ch_number}}_action",
+                "title": "Action",
+                "reg_type": "holding",
+                "address": {{648 + ch_number - 1}},
+                "type": "enum",
+                "enum": [0, 1, 2, 3],
+                "enum_titles": [
+                    "No Action",
+                    "Turn Off",
+                    "Turn On",
+                    "Turn On and Set Brightness"
+                ],
+                "group": "ggg_safety_mode_ch_{{ ch_number }}"
+            },
+            {
+                "id": "safety_mode_ch_{{ch_number}}_level",
+                "title": "Brightness (%)",
+                "reg_type": "holding",
+                "address": {{656 + ch_number - 1}},
+                "min": 1,
+                "max": 100,
+                "default": 50,
+                "required": true,
+                "condition": "safety_mode_ch_{{ch_number}}_action==3",
+                "group": "ggg_safety_mode_ch_{{ ch_number }}"
+            },
+            {
+                "id": "power_up_behaviour_ch_{{ch_number}}_action",
+                "title": "Action",
+                "reg_type": "holding",
+                "address": {{664 + ch_number - 1}},
+                "type": "enum",
+                "enum": [0, 1, 2, 3],
+                "enum_titles": [
+                    "Turn Off",
+                    "Set Previous State",
+                    "Turn On",
+                    "Turn On and Set Brightness"
+                ],
+                "group": "ggg_power_up_behaviour_ch_{{ ch_number }}"
+            },
+            {
+                "id": "power_up_behaviour_ch_{{ch_number}}_level",
+                "title": "Brightness (%)",
+                "reg_type": "holding",
+                "address": {{672 + ch_number - 1}},
+                "min": 1,
+                "max": 100,
+                "default": 50,
+                "required": true,
+                "condition": "power_up_behaviour_ch_{{ch_number}}_action==3",
+                "group": "ggg_power_up_behaviour_ch_{{ ch_number }}"
+            },
+            {% endfor -%}
+            {% for in_number in range(1, INPUTS_NUMBER + 1) -%}
+            {
+                "id": "in_{{in_number}}_safety_input_control",
+                "title": "Input {{in_number}}",
+                "group": "ggg_safety_input_control",
+                "address": {{640 + in_number - 1}},
+                "reg_type": "holding",
+                "default": 0,
+                "enum": [0, 1, 2],
+                "enum_titles": [
+                    "Don't change",
+                    "Disable in safety mode",
+                    "Enable only in safety mode"
+                ]
+            }{% if not loop.last -%},{% endif -%}
+            {% endfor -%}
         ],
 
         "channels": [
@@ -1444,7 +1528,28 @@
                 "baud_rate_description": "Make sure that communication with device is established before changing this parameter. Select required baud rate, save configuration and then change port baud rate to the same value.",
 
                 "Uptime": "Uptime (s)",
-                "light_scenes_description": "Light scenes description"
+                "light_scenes_description": "Light scenes description",
+                "Action_sp" : "Action short press",
+                "Action_lp" : "Action long press",
+                "Action_dp" : "Action double press",
+                "Action_slp" : "Action short and after long press",
+                "input_mode_description" : "Button is the default mode. Switch mode supported since firmware version 3.5.0",
+                "input_switch_on_title" : "Out action",
+                "input_switch_off_title" : "Out action",
+                "switch_on_scene_title" : "Choose scene",
+                "switch_on_scene_action" : "Action above the scene",
+                "Inputs work with sp" :"Inputs work with short press",
+                "Inputs work with lp" :"Inputs work with long press",
+                "Inputs work with dp" : "Inputs work with double press",
+                "Inputs work with slp"  : "Inputs work with short and after long press",
+                "sp_scene_action" : "Action above the scene",
+                "lp_scene_action" : "Action above the scene",
+                "dp_scene_action" : "Action above the scene",
+                "slp_scene_action" : "Action above the scene",
+                "g_safety_description": "Safety mode is activated when there is no modbus polling for the specified time. Supported since firmware version 3.5.0",
+                "poll_timeout_description": "Time in seconds without modbus polling before activation safety mode. Actions in safety mode are configured using appropriate parameters",
+                "inputs_control_in_safety_mode_description": "Sets change of control from the inputs when module switches to safety mode",
+                "g_power_up_behaviour_description" : "Setting the behavior of outputs when the device is powered on. Available from firmware version 3.5.0"
             },
             "ru": {
                 "WB-LED_template_title": "WB-LED (4-канальный диммер светодиодных лент)",
@@ -1623,8 +1728,6 @@
                 "Scene Light On/Off Condition": "Условие включенного света сцены",
                 "Scene Light is on if any used channel is on. Otherwise light is off": "Свет сцены включен, если хотя бы один используемый канал включен. Иначе свет выключен",
                 "Scene Light is on if all used channels are on. Otherwise light is off": "Свет сцены включен, если все используемые каналы включены. Иначе свет выключен",
-                "Actions when Scene Light Turn On": "Действие при включении света сцены",
-                "Actions when Scene Light Turn Off": "Действие при выключении света сцены",
                 "Turn Off" : "Выключить",
                 "Set Brightness" : "Установить яркость",
                 "Set Level" : "Установить уровень",
@@ -1649,7 +1752,52 @@
                 "Enable Channel CCT1": "Действие на канале CCT1",
                 "Channel CCT2" : "Канал CCT2",
                 "Enable Channel CCT2": "Действие на канале CCT2",
-                "Channel not Used in Scene": "Канал не используется в сцене"
+                "Channel not Used in Scene": "Канал не используется в сцене",
+                "Action_sp" : "Действие для короткого нажатия",
+                "Action_lp" : "Действие для длинного нажатия",
+                "Action_dp" : "Действие для двойного нажатия",
+                "Action_slp" : "Действие для короткого, затем длинного нажатия",
+                "input_mode_description" : "Режим работы входа по умолчанию - кнопка без фиксации. Работа в режиме выключателя с фиксацией доступна с версии прошивки 3.5.0",
+                "input_switch_on_title" : "Действие выхода",
+                "input_switch_off_title" : "Действие выхода",
+                "switch_on_scene_title" : "Выбор сцены",
+                "switch_on_scene_action" : "Действие со сценой",
+                "Inputs work with sp" :"Режим работы входа для короткого нажатия",
+                "Inputs work with lp" :"Режим работы входа для длинного нажатия",
+                "Inputs work with dp" : "Режим работы входа для двойного нажатия",
+                "Inputs work with slp"  : "Режим работы входа для короткого, затем длинного нажатия",
+                "Input Mode" : "Режим работы входа",
+                "Button" : "Кнопка без фиксации",
+                "Switch": "Выключатель с фиксацией",
+                "Action when Switch is on": "Действие в положении \"включено\"",
+                "Action when Switch is off": "Действие в положении \"выключено\"",
+                "Inputs work with scenes?" : "Вход работает со сценами?",
+                "sp_scene_action" : "Действие со сценой",
+                "lp_scene_action" : "Действие со сценой",
+                "dp_scene_action" : "Действие со сценой",
+                "slp_scene_action" : "Действие со сценой",
+                "Non Scenes" : "Без сцен",
+                "Scenes" : "Co сценами",
+                "Toggle": "Переключить",
+                {% for out in range(1, OUTPUTS_NUMBER + 1) -%}
+                "Channel {{out}} Switch" :  "Действие на канале {{out}}",
+                {% endfor -%}
+                "Actions when Scene Light Turn on" : "Действие при включении света сцены",
+                "Actions when Scene Light Turn Off": "Действие при выключении света сцены",
+                "g_safety_description" : "Настройка поведения устройства в случае потери связи с контроллером. Доступно с версии прошивки 3.5.0",
+                "Safety Poll Timeout (s)": "Таймаут потери связи (с)",
+                "poll_timeout_description": "Время отсутствия опроса в секундах, после которого будет активирован безопасный режим. Действия в безопасном режиме настраиваются отдельно",
+                "Action" : "Действие",
+                "No Action" : "Нет действия",
+                "Safety Mode": "Безопасный режим",
+                "Inputs Control In Safety Mode": "Управление с входов в безопасном режиме",
+                "Don't change": "Не блокировать",
+                "Disable in safety mode": "Блокировать в безопасном режиме",
+                "Enable only in safety mode": "Разрешить только в безопасном режиме",
+                "inputs_control_in_safety_mode_description": "Настройка изменения управления с входов при переходе модуля в безопасный режим",
+                "Power Up Behaviour": "Поведение при включении питания",
+                "g_power_up_behaviour_description": "Настройка поведения выходов при включении питания устройства. Доступно с версии прошивки 3.5.0",
+                "Set Previous State": "Установить предыдущее состояние"
             }
         }
     }
