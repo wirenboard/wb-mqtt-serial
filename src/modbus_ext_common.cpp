@@ -63,7 +63,8 @@ namespace ModbusExt // modbus extension protocol declarations
     // max(3.5 symbols, (20 bits + 800us)) + 9 * max(13 bits, 12 bits + 50us)
     std::chrono::milliseconds GetTimeout(const TPort& port)
     {
-        const auto cmdTime = std::max(port.GetSendTimeBytes(3.5), port.GetSendTimeBits(20) + 800us);
+        const auto cmdTime =
+            std::max(port.GetSendTimeBytes(Modbus::STANDARD_FRAME_TIMEOUT_BYTES), port.GetSendTimeBits(20) + 800us);
         const auto arbitrationTime = 9 * std::max(port.GetSendTimeBits(13), port.GetSendTimeBits(12) + 50us);
         return std::chrono::ceil<std::chrono::milliseconds>(cmdTime + arbitrationTime);
     }
@@ -199,13 +200,14 @@ namespace ModbusExt // modbus extension protocol declarations
         auto maxBytes = GetMaxReadEventsResponseSize(port, maxEventsReadTime);
 
         auto req = MakeReadEventsRequest(state, startingSlaveId, maxBytes);
-        port.SleepSinceLastInteraction(port.GetSendTimeBytes(3.5));
+        auto frameTimeout = port.GetSendTimeBytes(Modbus::STANDARD_FRAME_TIMEOUT_BYTES);
+        port.SleepSinceLastInteraction(frameTimeout);
         port.WriteBytes(req);
 
         const auto timeout = GetTimeout(port);
         std::array<uint8_t, MAX_PACKET_SIZE + ARBITRATION_HEADER_MAX_BYTES> res;
         auto rc = port.ReadFrame(res.data(), res.size(), timeout, timeout, ExpectEvents()).Count;
-        port.SleepSinceLastInteraction(port.GetSendTimeBytes(3.5));
+        port.SleepSinceLastInteraction(frameTimeout);
 
         const uint8_t* packet = GetPacketStart(res.data(), rc);
         if (packet == nullptr) {
@@ -347,7 +349,8 @@ namespace ModbusExt // modbus extension protocol declarations
         Request.reserve(MAX_PACKET_SIZE);
         Append(std::back_inserter(Request), {SlaveId, MODBUS_EXT_COMMAND, ENABLE_EVENTS_COMMAND, 0});
         Response.reserve(MAX_PACKET_SIZE);
-        FrameTimeout = std::chrono::ceil<std::chrono::milliseconds>(port.GetSendTimeBytes(3.5));
+        FrameTimeout =
+            std::chrono::ceil<std::chrono::milliseconds>(port.GetSendTimeBytes(Modbus::STANDARD_FRAME_TIMEOUT_BYTES));
     }
 
     void TEventsEnabler::AddRegister(uint16_t addr, TEventType type, TEventPriority priority)

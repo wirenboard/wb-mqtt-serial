@@ -1,8 +1,15 @@
-wb-mqtt-serial (2.126.0) stable; urgency=medium
+
+wb-mqtt-serial (2.127.0) stable; urgency=medium
 
   * Add new template for Carel muRack
 
- -- Andrey Ksenofontov <andrey.ksenofontov@wirenboard.com>  Mon, 10 Jun 2024 18:02:03 +0300
+ -- Andrey Ksenofontov <andrey.ksenofontov@wirenboard.com>  Mon, 17 Jun 2024 10:36:03 +0300
+
+wb-mqtt-serial (2.126.0) stable; urgency=medium
+
+  * Add device setup RPC
+
+ -- Petr Krasnoshchekov <petr.krasnoshchekov@wirenboard.com>  Mon, 17 Jun 2024 10:23:24 +0500
 
 wb-mqtt-serial (2.125.2) stable; urgency=medium
 
