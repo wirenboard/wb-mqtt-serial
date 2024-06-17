@@ -582,6 +582,7 @@ namespace
         Get(device_data, "stride", device_config->Stride);
         Get(device_data, "shift", device_config->Shift);
         Get(device_data, "access_level", device_config->AccessLevel);
+        Get(device_data, "min_request_interval", device_config->MinRequestInterval);
 
         if (device_data.isMember("channels")) {
             for (const auto& channel_data: device_data["channels"]) {
@@ -706,6 +707,16 @@ void AddRegisterType(Json::Value& configSchema, const std::string& registerType)
     configSchema["definitions"]["reg_type"]["enum"].append(registerType);
 }
 
+void CheckDuplicatePorts(const THandlerConfig& handlerConfig)
+{
+    std::unordered_set<std::string> paths;
+    for (const auto& port: handlerConfig.PortConfigs) {
+        if (!paths.insert(port->Port->GetDescription(false)).second) {
+            throw TConfigParserException("Duplicate port: " + port->Port->GetDescription(false));
+        }
+    }
+}
+
 void CheckDuplicateDeviceIds(const THandlerConfig& handlerConfig)
 {
     std::unordered_set<std::string> ids;
@@ -766,6 +777,7 @@ PHandlerConfig LoadConfig(const std::string& configFileName,
                  portFactory);
     }
 
+    CheckDuplicatePorts(*handlerConfig);
     CheckDuplicateDeviceIds(*handlerConfig);
 
     return handlerConfig;

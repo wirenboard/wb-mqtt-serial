@@ -69,6 +69,7 @@ PDeviceTemplate TTemplateMap::MakeTemplateFromJson(const Json::Value& data, cons
         }
         deviceTemplate->SetHardware(hws);
     }
+    deviceTemplate->SetMqttId(data["device"].get("id", "").asString());
     return deviceTemplate;
 }
 
@@ -128,12 +129,12 @@ std::vector<std::string> TTemplateMap::UpdateTemplate(const std::string& path)
     if (!EndsWith(path, ".json")) {
         return res;
     }
-    auto deviceTemplate = MakeTemplateFromJson(WBMQTT::JSON::Parse(path), path);
     std::unique_lock m(Mutex);
     auto deletedType = DeleteTemplateUnsafe(path);
     if (!deletedType.empty()) {
         res.push_back(deletedType);
     }
+    auto deviceTemplate = MakeTemplateFromJson(WBMQTT::JSON::Parse(path), path);
     auto& typeArray = Templates.try_emplace(deviceTemplate->Type, std::vector<PDeviceTemplate>{}).first->second;
     if (!PreferredTemplatesDir.empty() && WBMQTT::StringStartsWith(path, PreferredTemplatesDir)) {
         typeArray.push_back(deviceTemplate);
@@ -281,6 +282,15 @@ const std::string& TDeviceTemplate::GetProtocol() const
     return Protocol;
 }
 
+void TDeviceTemplate::SetMqttId(const std::string& id)
+{
+    MqttId = id;
+}
+
+const std::string& TDeviceTemplate::GetMqttId() const
+{
+    return MqttId;
+}
 //=============================================================================
 //                          TSubDevicesTemplateMap
 //=============================================================================

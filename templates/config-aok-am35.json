@@ -1,0 +1,138 @@
+{
+    "device_type": "A-OK AM-35",
+    "title": "template_title",
+    "group": "g-curtain",
+    "device": {
+        "name": "A-OK AM-35",
+        "id": "aok-am35",
+        "protocol": "a_ok",
+        "groups": [
+            {
+                "title": "Controls",
+                "id": "controls"
+            },
+            {
+                "title": "Properties",
+                "id": "properties"
+            },
+            {
+                "title": "Functions",
+                "id": "functions"
+            }
+        ],
+        "parameters": {
+            "baud_rate": {
+                "title": "Baud rate",
+                "description": "baud_rate_description",
+                "reg_type": "param",
+                "address": "0xda",
+                "enum": [0, 1, 2, 3, 4],
+                "default": 1,
+                "enum_titles": ["1200", "2400", "4800", "9600", "19200"],
+                "group": "properties"
+            },
+            "speed": {
+                "title": "Rotational speed",
+                "description": "unit: rpm",
+                "reg_type": "param",
+                "address": "0xd9",
+                "default": 50,
+                "min": 50,
+                "max": 129,
+                "group": "properties"
+            }
+        },
+        "channels": [
+            {
+                "name": "Position",
+                "reg_type": "position",
+                "address": 0,
+                "type": "range",
+                "max": 100,
+                "group": "controls"
+            },
+            {
+                "name": "Stop",
+                "type": "pushbutton",
+                "reg_type": "command",
+                "address": "0xcc",
+                "group": "controls"
+            },
+            {
+                "name": "Open",
+                "type": "pushbutton",
+                "reg_type": "command",
+                "address": "0xdd",
+                "group": "controls"
+            },
+            {
+                "name": "Close",
+                "type": "pushbutton",
+                "reg_type": "command",
+                "address": "0xee",
+                "group": "controls"
+            },
+            {
+                "name": "Dot move up",
+                "type": "pushbutton",
+                "reg_type": "command",
+                "address": "0x0d",
+                "group": "controls"
+            },
+            {
+                "name": "Dot move down",
+                "type": "pushbutton",
+                "reg_type": "command",
+                "address": "0x0e",
+                "group": "controls"
+            },
+            {
+                "name": "Learn",
+                "type": "pushbutton",
+                "reg_type": "command",
+                "address": "0xaa",
+                "enabled": false,
+                "group": "properties"
+            },
+            {
+                "name": "Delete",
+                "type": "pushbutton",
+                "reg_type": "command",
+                "address": "0xa6",
+                "enabled": false,
+                "group": "properties"
+            },
+            {
+                "name": "Running",
+                "type": "switch",
+                "reg_type": "status",
+                "address": "0xcc00:32:1",
+                "readonly": true,
+                "group": "properties"
+            }
+        ],
+        "translations": {
+            "en": {
+                "template_title": "A-OK AM-35 (tubular)",
+                "baud_rate_description": "Make sure that communication with device is established before changing this parameter. Select required baud rate, save configuration and then change port baud rate to the same value."
+            },
+            "ru": {
+                "template_title": "A-OK AM-35 (рулонные)",
+                "Controls": "Управление",
+                "Properties": "Параметры",
+                "Functions": "Функции",
+                "Baud rate": "Скорость обмена",
+                "baud_rate_description": "Перед изменением параметра убедитесь, что связь с устройством установлена. Выберите нужную скорость обмена, сохраните конфигурацию, а затем укажите в настройках порта эту же скорость.",
+                "Position": "Позиция",
+                "Stop": "Остановить",
+                "Open": "Открыть",
+                "Close": "Закрыть",
+                "Learn": "Обучить",
+                "Delete": "Удалить",
+                "Running": "Движение",
+                "Dot move up": "Поднять на шаг",
+                "Dot move down": "Опустить на шаг"
+            }
+        }
+    }
+}

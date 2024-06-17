@@ -84,7 +84,7 @@ namespace
         SetAndRemoveIfExists(newProp, prop, "propertyOrder");
         SetAndRemoveIfExists(newProp, prop, "title");
         SetAndRemoveIfExists(newProp, prop, "requiredProp");
-        if (prop.isMember("options")) {
+        if (prop.isMember("options") && prop["options"].isMember("show_opt_in")) {
             SetAndRemoveIfExists(newProp["options"], prop["options"], "show_opt_in");
             if (prop["options"].empty()) {
                 prop.removeMember("options");

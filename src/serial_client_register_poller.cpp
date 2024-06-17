@@ -15,41 +15,45 @@ namespace
 {
     const auto MAX_LOW_PRIORITY_LAG = 1s;
 
-    class TRegisterReader
+    class TDeviceReader
     {
         PRegisterRange RegisterRange;
         milliseconds MaxPollTime;
-        PSerialDevice Device;
-        TPriority Priority;
+        PPollableDevice Device;
         bool ReadAtLeastOneRegister;
+        const util::TSpentTimeMeter& SessionTime;
+        TSerialClientDeviceAccessHandler& LastAccessedDevice;
+        TDeviceConnectionState InitialConnectionState;
 
     public:
-        TRegisterReader(milliseconds maxPollTime, bool readAtLeastOneRegister)
+        TDeviceReader(const util::TSpentTimeMeter& sessionTime,
+                      milliseconds maxPollTime,
+                      bool readAtLeastOneRegister,
+                      TSerialClientDeviceAccessHandler& lastAccessedDevice)
             : MaxPollTime(maxPollTime),
-              Priority(TPriority::Low),
-              ReadAtLeastOneRegister(readAtLeastOneRegister)
+              ReadAtLeastOneRegister(readAtLeastOneRegister),
+              SessionTime(sessionTime),
+              LastAccessedDevice(lastAccessedDevice),
+              InitialConnectionState(TDeviceConnectionState::UNKNOWN)
         {}
 
-        bool operator()(const PRegister& reg, TItemAccumulationPolicy policy, milliseconds pollLimit)
+        bool operator()(const PPollableDevice& device, TItemAccumulationPolicy policy, milliseconds pollLimit)
         {
-            if (!Device) {
-                RegisterRange = reg->Device()->CreateRegisterRange();
-                Device = reg->Device();
-                Priority = reg->IsHighPriority() ? TPriority::High : TPriority::Low;
-            }
-            if (Device != reg->Device()) {
+            if (Device) {
                 return false;
             }
-            if (ReadAtLeastOneRegister) {
-                if (policy == TItemAccumulationPolicy::Force) {
-                    return RegisterRange->Add(reg, milliseconds::max());
-                }
-                return RegisterRange->Add(reg, pollLimit);
+
+            pollLimit = std::min(MaxPollTime, pollLimit);
+            if (policy != TItemAccumulationPolicy::Force) {
+                ReadAtLeastOneRegister = false;
             }
-            if (policy == TItemAccumulationPolicy::Force) {
-                return RegisterRange->Add(reg, MaxPollTime);
-            }
-            return RegisterRange->Add(reg, std::min(MaxPollTime, pollLimit));
+
+            InitialConnectionState = device->GetDevice()->GetConnectionState();
+
+            RegisterRange =
+                device->ReadRegisterRange(pollLimit, ReadAtLeastOneRegister, SessionTime, LastAccessedDevice);
+            Device = device;
+            return !RegisterRange->RegisterList().empty();
         }
 
         PRegisterRange GetRegisterRange() const
@@ -57,20 +61,38 @@ namespace
             return RegisterRange;
         }
 
-        TPriority GetPriority() const
+        PPollableDevice GetDevice() const
         {
-            return Priority;
+            return Device;
+        }
+
+        TDeviceConnectionState GetInitialConnectionState() const
+        {
+            return InitialConnectionState;
         }
     };
 
-    class TClosedPortRegisterReader
+    class TClosedPortDeviceReader
     {
         std::list<PRegister> Regs;
+        steady_clock::time_point CurrentTime;
+        PPollableDevice Device;
+        TDeviceConnectionState InitialConnectionState;
 
     public:
-        bool operator()(const PRegister& reg, TItemAccumulationPolicy policy, milliseconds pollLimit)
+        TClosedPortDeviceReader(steady_clock::time_point currentTime)
+            : CurrentTime(currentTime),
+              InitialConnectionState(TDeviceConnectionState::UNKNOWN)
+        {}
+
+        bool operator()(const PPollableDevice& device, TItemAccumulationPolicy policy, milliseconds pollLimit)
         {
-            Regs.emplace_back(reg);
+            if (Device) {
+                return false;
+            }
+            InitialConnectionState = device->GetDevice()->GetConnectionState();
+            Regs = device->MarkWaitingRegistersAsReadErrorAndReschedule(CurrentTime);
+            Device = device;
             return true;
         }
 
@@ -79,64 +101,100 @@ namespace
             return Regs;
         }
 
+        PPollableDevice GetDevice() const
+        {
+            return Device;
+        }
+
         void ClearRegisters()
         {
             Regs.clear();
+            Device.reset();
+            InitialConnectionState = TDeviceConnectionState::UNKNOWN;
+        }
+
+        TDeviceConnectionState GetInitialConnectionState() const
+        {
+            return InitialConnectionState;
         }
     };
 };
 
 TSerialClientRegisterPoller::TSerialClientRegisterPoller(size_t lowPriorityRateLimit)
-    : Scheduler(MAX_LOW_PRIORITY_LAG, lowPriorityRateLimit),
-      ThrottlingStateLogger()
+    : Scheduler(MAX_LOW_PRIORITY_LAG),
+      ThrottlingStateLogger(),
+      LowPriorityRateLimiter(lowPriorityRateLimit)
 {}
 
-void TSerialClientRegisterPoller::PrepareRegisterRanges(const std::list<PRegister>& regList,
-                                                        steady_clock::time_point currentTime)
+void TSerialClientRegisterPoller::SetDevices(const std::list<PSerialDevice>& devices,
+                                             steady_clock::time_point currentTime)
 {
-    RegList = regList;
-    for (auto& reg: RegList) {
-        if (reg->AccessType != TRegisterConfig::EAccessType::WRITE_ONLY) {
-            Scheduler.AddEntry(reg, currentTime, reg->IsHighPriority() ? TPriority::High : TPriority::Low);
+    for (const auto& dev: devices) {
+        auto pollableDevice = std::make_shared<TPollableDevice>(dev, currentTime, TPriority::High);
+        if (pollableDevice->HasRegisters()) {
+            Scheduler.AddEntry(pollableDevice, currentTime, TPriority::High);
+            Devices.insert({dev, pollableDevice});
+        }
+        pollableDevice = std::make_shared<TPollableDevice>(dev, currentTime, TPriority::Low);
+        if (pollableDevice->HasRegisters()) {
+            Scheduler.AddEntry(pollableDevice, currentTime, TPriority::Low);
+            Devices.insert({dev, pollableDevice});
         }
     }
 }
 
-void TSerialClientRegisterPoller::ScheduleNextPoll(PRegister reg, steady_clock::time_point pollStartTime)
+void TSerialClientRegisterPoller::ScheduleNextPoll(PPollableDevice device)
 {
-    if (reg->IsExcludedFromPolling()) {
-        return;
+    if (device->HasRegisters()) {
+        Scheduler.AddEntry(device, device->GetDeadline(), device->GetPriority());
     }
-    if (reg->IsHighPriority()) {
-        Scheduler.AddEntry(reg, pollStartTime + *(reg->ReadPeriod), TPriority::High);
-        return;
-    }
-    if (reg->ReadRateLimit) {
-        Scheduler.AddEntry(reg, pollStartTime + *(reg->ReadRateLimit), TPriority::Low);
-        return;
-    }
-    // Low priority tasks should be scheduled to read as soon as possible,
-    // but with a small delay after current read.
-    Scheduler.AddEntry(reg, pollStartTime + 1us, TPriority::Low);
 }
 
-void TSerialClientRegisterPoller::ClosedPortCycle(steady_clock::time_point currentTime, TRegisterCallback callback)
+void TSerialClientRegisterPoller::ClosedPortCycle(steady_clock::time_point currentTime,
+                                                  TRegisterCallback callback,
+                                                  TDeviceCallback deviceConnectionStateChangedCallback)
 {
     Scheduler.ResetLoadBalancing();
 
-    TClosedPortRegisterReader reader;
+    TClosedPortDeviceReader reader(currentTime);
     do {
         reader.ClearRegisters();
-        Scheduler.AccumulateNext(currentTime, reader);
+        Scheduler.AccumulateNext(currentTime, reader, TItemSelectionPolicy::All);
         for (auto& reg: reader.GetRegisters()) {
             reg->SetError(TRegister::TError::ReadError);
             if (callback) {
                 callback(reg);
             }
-            ScheduleNextPoll(reg, currentTime);
-            reg->Device()->SetTransferResult(false);
+            auto device = reader.GetDevice()->GetDevice();
+            device->SetTransferResult(false);
+            if (reader.GetInitialConnectionState() != device->GetConnectionState() &&
+                deviceConnectionStateChangedCallback)
+            {
+                deviceConnectionStateChangedCallback(device);
+            }
+        }
+        if (reader.GetDevice()) {
+            ScheduleNextPoll(reader.GetDevice());
         }
     } while (!reader.GetRegisters().empty());
+}
+
+std::chrono::steady_clock::time_point TSerialClientRegisterPoller::GetDeadline(
+    bool lowPriorityRateLimitIsExceeded,
+    const util::TSpentTimeMeter& spentTime) const
+{
+    if (Scheduler.IsEmpty()) {
+        return spentTime.GetStartTime() + 1s;
+    }
+    if (lowPriorityRateLimitIsExceeded) {
+        auto lowPriorityDeadline = Scheduler.GetLowPriorityDeadline();
+        // There are some low priority items
+        if (lowPriorityDeadline != std::chrono::steady_clock::time_point::max()) {
+            lowPriorityDeadline = std::max(lowPriorityDeadline, LowPriorityRateLimiter.GetStartTime() + 1s);
+        }
+        return std::min(Scheduler.GetHighPriorityDeadline(), lowPriorityDeadline);
+    }
+    return Scheduler.GetDeadline();
 }
 
 TPollResult TSerialClientRegisterPoller::OpenPortCycle(TPort& port,
@@ -144,30 +202,37 @@ TPollResult TSerialClientRegisterPoller::OpenPortCycle(TPort& port,
                                                        std::chrono::milliseconds maxPollingTime,
                                                        bool readAtLeastOneRegister,
                                                        TSerialClientDeviceAccessHandler& lastAccessedDevice,
-                                                       TRegisterCallback callback)
+                                                       TRegisterCallback callback,
+                                                       TDeviceCallback deviceConnectionStateChangedCallback)
 {
     TPollResult res;
 
-    TRegisterReader reader(maxPollingTime, readAtLeastOneRegister);
+    TDeviceReader reader(spentTime, maxPollingTime, readAtLeastOneRegister, lastAccessedDevice);
 
-    auto throttlingState = Scheduler.AccumulateNext(spentTime.GetStartTime(), reader);
-    auto throttlingMsg = ThrottlingStateLogger.GetMessage(throttlingState);
-    if (!throttlingMsg.empty()) {
-        LOG(Warn) << port.GetDescription() << " " << throttlingMsg;
+    bool lowPriorityRateLimitIsExceeded = LowPriorityRateLimiter.IsOverLimit(spentTime.GetStartTime());
+
+    Scheduler.AccumulateNext(spentTime.GetStartTime(),
+                             reader,
+                             lowPriorityRateLimitIsExceeded ? TItemSelectionPolicy::OnlyHighPriority
+                                                            : TItemSelectionPolicy::All);
+    if (lowPriorityRateLimitIsExceeded) {
+        auto throttlingMsg = ThrottlingStateLogger.GetMessage();
+        if (!throttlingMsg.empty()) {
+            LOG(Warn) << port.GetDescription() << " " << throttlingMsg;
+        }
     }
     auto range = reader.GetRegisterRange();
 
     if (!range) {
         // Nothing to read
-        res.Deadline =
-            Scheduler.IsEmpty() ? spentTime.GetStartTime() + 1s : Scheduler.GetDeadline(spentTime.GetStartTime());
+        res.Deadline = GetDeadline(lowPriorityRateLimitIsExceeded, spentTime);
         return res;
     }
 
     // There are registers waiting read, but they don't fit in allowed poll limit
     if (range->RegisterList().empty()) {
         res.NotEnoughTime = true;
-        if (reader.GetPriority() == TPriority::High) {
+        if (reader.GetDevice()->GetPriority() == TPriority::High) {
             // High priority registers are limited by maxPollingTime
             res.Deadline = spentTime.GetStartTime() + maxPollingTime;
         } else {
@@ -177,84 +242,55 @@ TPollResult TSerialClientRegisterPoller::OpenPortCycle(TPort& port,
         return res;
     }
 
-    res.Device = range->RegisterList().front()->Device();
-    bool deviceWasConnected = !res.Device->GetIsDisconnected();
-
-    bool readOk = false;
-    if (lastAccessedDevice.PrepareToAccess(res.Device)) {
-        res.Device->ReadRegisterRange(range);
-        readOk = true;
-    }
+    res.Device = reader.GetDevice()->GetDevice();
 
     for (auto& reg: range->RegisterList()) {
-        reg->SetLastPollTime(spentTime.GetStartTime());
-        if (!readOk) {
-            reg->SetError(TRegister::TError::ReadError);
-        }
         if (callback) {
             callback(reg);
         }
-        ScheduleNextPoll(reg, spentTime.GetStartTime());
+        if (reader.GetDevice()->GetPriority() == TPriority::Low) {
+            LowPriorityRateLimiter.NewItem(spentTime.GetStartTime());
+        }
     }
+    ScheduleNextPoll(reader.GetDevice());
 
-    if (deviceWasConnected && res.Device->GetIsDisconnected()) {
-        DeviceDisconnected(res.Device, spentTime.GetStartTime());
-        if (DeviceDisconnectedCallback) {
-            DeviceDisconnectedCallback(res.Device);
+    if (reader.GetInitialConnectionState() != res.Device->GetConnectionState()) {
+        if (res.Device->GetConnectionState() == TDeviceConnectionState::DISCONNECTED) {
+            DeviceDisconnected(res.Device, spentTime.GetStartTime());
+        }
+        if (deviceConnectionStateChangedCallback) {
+            deviceConnectionStateChangedCallback(res.Device);
         }
     }
 
-    Scheduler.UpdateSelectionTime(ceil<milliseconds>(spentTime.GetSpentTime()), reader.GetPriority());
-    res.Deadline =
-        Scheduler.IsEmpty() ? spentTime.GetStartTime() + 1s : Scheduler.GetDeadline(spentTime.GetStartTime());
+    Scheduler.UpdateSelectionTime(ceil<milliseconds>(spentTime.GetSpentTime()), reader.GetDevice()->GetPriority());
+    res.Deadline = GetDeadline(lowPriorityRateLimitIsExceeded, spentTime);
     return res;
 }
 
 void TSerialClientRegisterPoller::DeviceDisconnected(PSerialDevice device,
                                                      std::chrono::steady_clock::time_point currentTime)
 {
-    for (auto& reg: RegList) {
-        if (reg->Device() == device) {
-            bool wasExcludedFromPolling = reg->IsExcludedFromPolling();
-            reg->SetAvailable(TRegisterAvailability::UNKNOWN);
-            reg->IncludeInPolling();
-            if (wasExcludedFromPolling && !Scheduler.Contains(reg)) {
-                ScheduleNextPoll(reg, currentTime);
-            }
-        }
+    auto range = Devices.equal_range(device);
+    for (auto it = range.first; it != range.second; ++it) {
+        it->second->RescheduleAllRegisters(currentTime);
     }
 }
 
-void TSerialClientRegisterPoller::SetDeviceDisconnectedCallback(TDeviceCallback deviceDisconnectedCallback)
+bool TPollableDeviceComparePredicate::operator()(const PPollableDevice& d1, const PPollableDevice& d2) const
 {
-    DeviceDisconnectedCallback = deviceDisconnectedCallback;
-}
-
-bool TRegisterComparePredicate::operator()(const PRegister& r1, const PRegister& r2) const
-{
-    if (r1->Device() != r2->Device()) {
-        return r1->Device()->DeviceConfig()->SlaveId > r2->Device()->DeviceConfig()->SlaveId;
+    if (d1->GetDevice() != d2->GetDevice()) {
+        return d1->GetDevice()->DeviceConfig()->SlaveId > d2->GetDevice()->DeviceConfig()->SlaveId;
     }
-    if (r1->Type != r2->Type) {
-        return r1->Type > r2->Type;
-    }
-    auto cmp = r1->GetAddress().Compare(r2->GetAddress());
-    if (cmp < 0) {
-        return false;
-    }
-    if (cmp > 0) {
-        return true;
-    }
-    // addresses are equal, compare offsets
-    return r1->GetDataOffset() > r2->GetDataOffset();
+    return false;
 }
 
 TThrottlingStateLogger::TThrottlingStateLogger(): FirstTime(true)
 {}
 
-std::string TThrottlingStateLogger::GetMessage(TThrottlingState state)
+std::string TThrottlingStateLogger::GetMessage()
 {
-    if (FirstTime && state == TThrottlingState::LowPriorityRateLimit) {
+    if (FirstTime) {
         FirstTime = false;
         return "Register read rate limit is exceeded";
     }

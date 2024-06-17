@@ -13,7 +13,8 @@ bool TSerialClientDeviceAccessHandler::PrepareToAccess(PSerialDevice dev)
         try {
             LastAccessedDevice->EndSession();
         } catch (const TSerialDeviceException& e) {
-            auto& logger = LastAccessedDevice->GetIsDisconnected() ? Debug : Warn;
+            auto& logger =
+                (LastAccessedDevice->GetConnectionState() == TDeviceConnectionState::DISCONNECTED) ? Debug : Warn;
             LOG(logger) << "TSerialDevice::EndSession(): " << e.what() << " [slave_id is "
                         << LastAccessedDevice->ToString() + "]";
         }
@@ -21,7 +22,7 @@ bool TSerialClientDeviceAccessHandler::PrepareToAccess(PSerialDevice dev)
     }
     if (dev) {
         try {
-            bool devWasDisconnected = dev->GetIsDisconnected();
+            bool devWasDisconnected = dev->GetConnectionState() != TDeviceConnectionState::CONNECTED;
             if (devWasDisconnected || dev != LastAccessedDevice) {
                 dev->Prepare();
                 if (devWasDisconnected) {
@@ -36,7 +37,7 @@ bool TSerialClientDeviceAccessHandler::PrepareToAccess(PSerialDevice dev)
             LastAccessedDevice = dev;
             return true;
         } catch (const TSerialDeviceException& e) {
-            auto& logger = dev->GetIsDisconnected() ? Debug : Warn;
+            auto& logger = (dev->GetConnectionState() == TDeviceConnectionState::DISCONNECTED) ? Debug : Warn;
             LOG(logger) << "Failed to open session: " << e.what() << " [slave_id is " << dev->ToString() + "]";
         }
     }

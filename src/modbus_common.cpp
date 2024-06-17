@@ -68,12 +68,13 @@ namespace Modbus // modbus protocol declarations
                                   TPort& port,
                                   const TRequest& request,
                                   TResponse& response,
-                                  const TDeviceConfig& config);
+                                  std::chrono::milliseconds responseTimeout,
+                                  std::chrono::milliseconds frameTimeout);
 }
 
 namespace // general utilities
 {
-    inline uint32_t GetModbusDataWidthIn16BitWords(const TRegister& reg)
+    inline uint32_t GetModbusDataWidthIn16BitWords(const TRegisterConfig& reg)
     {
         return reg.Get16BitWidth();
     }
@@ -86,7 +87,7 @@ namespace // general utilities
     }
 
     // returns true if multi write needs to be done
-    inline bool IsPacking(const TRegister& reg)
+    inline bool IsPacking(const TRegisterConfig& reg)
     {
         return (reg.Type == Modbus::REG_HOLDING_MULTI) ||
                ((reg.Type == Modbus::REG_HOLDING) && (GetModbusDataWidthIn16BitWords(reg) > 1));
@@ -316,7 +317,12 @@ namespace Modbus // modbus protocol common utilities
             port.SleepSinceLastInteraction(Device()->DeviceConfig()->RequestDelay);
             port.WriteBytes(request.data(), request.size());
             TResponse response(GetResponseSize(traits));
-            auto readRes = ReadResponse(traits, port, request, response, *Device()->DeviceConfig());
+            auto readRes = ReadResponse(traits,
+                                        port,
+                                        request,
+                                        response,
+                                        Device()->DeviceConfig()->ResponseTimeout,
+                                        Device()->DeviceConfig()->FrameTimeout);
             ResponseTime = readRes.ResponseTime;
             ParseReadResponse(traits.GetPDU(response), readRes.Count, *this, cache);
         } catch (const TMalformedResponseError&) {
@@ -431,7 +437,7 @@ namespace Modbus // modbus protocol common utilities
         }
     }
 
-    inline uint8_t GetFunction(const TRegister& reg, OperationType op)
+    inline uint8_t GetFunction(const TRegisterConfig& reg, OperationType op)
     {
         return GetFunctionImpl(reg.Type, op, reg.TypeName, IsPacking(reg));
     }
@@ -515,7 +521,7 @@ namespace Modbus // modbus protocol common utilities
     }
 
     // returns number of requests needed to write register
-    size_t InferWriteRequestsCount(const TRegister& reg)
+    size_t InferWriteRequestsCount(const TRegisterConfig& reg)
     {
         return IsPacking(reg) ? 1 : GetModbusDataWidthIn16BitWords(reg);
     }
@@ -560,7 +566,7 @@ namespace Modbus // modbus protocol common utilities
 
     // fills pdu with write request data according to Modbus specification
     void ComposeMultipleWriteRequestPDU(uint8_t* pdu,
-                                        const TRegister& reg,
+                                        const TRegisterConfig& reg,
                                         const std::vector<TRegisterWord>& value,
                                         int shift,
                                         Modbus::TRegisterCache& tmpCache,
@@ -594,7 +600,7 @@ namespace Modbus // modbus protocol common utilities
 
     // fills pdu with write request data according to Modbus specification
     void ComposeMultipleWriteRequestPDU(uint8_t* pdu,
-                                        const TRegister& reg,
+                                        const TRegisterConfig& reg,
                                         uint64_t value,
                                         int shift,
                                         Modbus::TRegisterCache& tmpCache,
@@ -654,7 +660,7 @@ namespace Modbus // modbus protocol common utilities
     }
 
     void ComposeSingleWriteRequestPDU(uint8_t* pdu,
-                                      const TRegister& reg,
+                                      const TRegisterConfig& reg,
                                       TRegisterWord value,
                                       int shift,
                                       uint8_t wordIndex,
@@ -830,9 +836,10 @@ namespace Modbus // modbus protocol common utilities
                                   TPort& port,
                                   const TRequest& request,
                                   TResponse& response,
-                                  const TDeviceConfig& config)
+                                  std::chrono::milliseconds responseTimeout,
+                                  std::chrono::milliseconds frameTimeout)
     {
-        auto res = traits.ReadFrame(port, config.ResponseTimeout, config.FrameTimeout, request, response);
+        auto res = traits.ReadFrame(port, responseTimeout, frameTimeout, request, response);
         // PDU size must be at least 2 bytes
         if (res.Count < 2) {
             throw TMalformedResponseError("Wrong PDU size: " + to_string(res.Count));
@@ -852,12 +859,16 @@ namespace Modbus // modbus protocol common utilities
                        TRegister& reg,
                        const TRegisterValue& value,
                        Modbus::TRegisterCache& cache,
+                       std::chrono::microseconds requestDelay,
+                       std::chrono::milliseconds responseTimeout,
+                       std::chrono::milliseconds frameTimeout,
                        int shift)
     {
         Modbus::TRegisterCache tmpCache;
 
         LOG(Debug) << "write " << GetModbusDataWidthIn16BitWords(reg) << " " << reg.TypeName << "(s) @ "
-                   << reg.GetWriteAddress() << " of device " << reg.Device()->ToString();
+                   << reg.GetWriteAddress() << " of device "
+                   << (reg.Device() ? reg.Device()->ToString() : std::to_string(slaveId));
 
         // 1 byte - function code, 2 bytes - register address, 2 bytes - value
         const uint16_t WRITE_RESPONSE_PDU_SIZE = 5;
@@ -902,9 +913,9 @@ namespace Modbus // modbus protocol common utilities
 
         for (const auto& request: requests) {
             try {
-                port.SleepSinceLastInteraction(reg.Device()->DeviceConfig()->RequestDelay);
+                port.SleepSinceLastInteraction(requestDelay);
                 port.WriteBytes(request.data(), request.size());
-                auto pduSize = ReadResponse(traits, port, request, response, *reg.Device()->DeviceConfig()).Count;
+                auto pduSize = ReadResponse(traits, port, request, response, responseTimeout, frameTimeout).Count;
                 ParseWriteResponse(traits.GetPDU(response), pduSize);
             } catch (const TMalformedResponseError&) {
                 try {
@@ -927,7 +938,7 @@ namespace Modbus // modbus protocol common utilities
             reg->SetError(TRegister::TError::ReadError);
         }
 
-        auto& logger = range.Device()->GetIsDisconnected() ? Debug : Warn;
+        auto& logger = (range.Device()->GetConnectionState() == TDeviceConnectionState::DISCONNECTED) ? Debug : Warn;
         LOG(logger) << "failed to read " << range << ": " << msg;
         range.Device()->SetTransferResult(false);
     }
@@ -969,11 +980,23 @@ namespace Modbus // modbus protocol common utilities
                              uint8_t slaveId,
                              const std::vector<PDeviceSetupItem>& setupItems,
                              Modbus::TRegisterCache& cache,
+                             std::chrono::microseconds requestDelay,
+                             std::chrono::milliseconds responseTimeout,
+                             std::chrono::milliseconds frameTimeout,
                              int shift)
     {
         for (const auto& item: setupItems) {
             try {
-                WriteRegister(traits, port, slaveId, *item->Register, item->RawValue, cache, shift);
+                WriteRegister(traits,
+                              port,
+                              slaveId,
+                              *item->Register,
+                              item->RawValue,
+                              cache,
+                              requestDelay,
+                              responseTimeout,
+                              frameTimeout,
+                              shift);
 
                 std::stringstream ss;
                 ss << "Init: " << item->Name << ": setup register " << item->Register->ToString() << " <-- "
@@ -990,7 +1013,7 @@ namespace Modbus // modbus protocol common utilities
                 WarnFailedRegisterSetup(item, e.what());
             }
         }
-        if (!setupItems.empty()) {
+        if (!setupItems.empty() && setupItems.front()->Register->Device()) {
             setupItems.front()->Register->Device()->SetTransferResult(true);
         }
     }
@@ -1190,7 +1213,15 @@ namespace Modbus // modbus protocol common utilities
         auto reg = std::make_shared<TRegister>(device,
                                                TRegister::Create(Modbus::REG_HOLDING, ENABLE_CONTINUOUS_READ_REGISTER));
         try {
-            Modbus::WriteRegister(traits, port, slaveId, *reg, TRegisterValue(1), cache);
+            Modbus::WriteRegister(traits,
+                                  port,
+                                  slaveId,
+                                  *reg,
+                                  TRegisterValue(1),
+                                  cache,
+                                  device->DeviceConfig()->RequestDelay,
+                                  device->DeviceConfig()->ResponseTimeout,
+                                  device->DeviceConfig()->FrameTimeout);
             LOG(Info) << "Continuous read enabled [slave_id is " << device->DeviceConfig()->SlaveId + "]";
             if (device->DeviceConfig()->MaxRegHole < MAX_HOLE_CONTINUOUS_16_BIT_REGISTERS) {
                 device->DeviceConfig()->MaxRegHole = MAX_HOLE_CONTINUOUS_16_BIT_REGISTERS;

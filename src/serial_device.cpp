@@ -54,10 +54,9 @@ TSerialDevice::TSerialDevice(PDeviceConfig config, PPort port, PProtocol protoco
       _DeviceConfig(config),
       _Protocol(protocol),
       LastSuccessfulCycle(),
-      IsDisconnected(true),
-      RemainingFailCycles(config->DeviceMaxFailCycles),
-      SupportsHoles(true),
-      ForceDisconnectionLogging(true)
+      ConnectionState(TDeviceConnectionState::UNKNOWN),
+      RemainingFailCycles(0),
+      SupportsHoles(true)
 {}
 
 std::string TSerialDevice::ToString() const
@@ -72,7 +71,7 @@ PRegisterRange TSerialDevice::CreateRegisterRange() const
 
 void TSerialDevice::Prepare()
 {
-    bool deviceWasDisconnected = GetIsDisconnected();
+    bool deviceWasDisconnected = (ConnectionState != TDeviceConnectionState::CONNECTED);
     try {
         PrepareImpl();
         if (deviceWasDisconnected) {
@@ -147,7 +146,7 @@ void TSerialDevice::ReadRegisterRange(PRegisterRange range)
             SetTransferResult(true);
         } catch (const TSerialDeviceException& e) {
             reg->SetError(TRegister::TError::ReadError);
-            auto& logger = GetIsDisconnected() ? Debug : Warn;
+            auto& logger = (ConnectionState == TDeviceConnectionState::DISCONNECTED) ? Debug : Warn;
             LOG(logger) << "TSerialDevice::ReadRegister(): " << e.what() << " [slave_id is "
                         << reg->Device()->ToString() + "]";
             SetTransferResult(false);
@@ -165,10 +164,10 @@ void TSerialDevice::SetTransferResult(bool ok)
 
     if (ok) {
         LastSuccessfulCycle = std::chrono::steady_clock::now();
-        if (IsDisconnected) {
+        if (ConnectionState != TDeviceConnectionState::CONNECTED) {
             LOG(Info) << "device " << ToString() << " is connected";
         }
-        IsDisconnected = false;
+        ConnectionState = TDeviceConnectionState::CONNECTED;
         RemainingFailCycles = _DeviceConfig->DeviceMaxFailCycles;
     } else {
 
@@ -176,7 +175,7 @@ void TSerialDevice::SetTransferResult(bool ok)
             --RemainingFailCycles;
         }
 
-        if (RemainingFailCycles == 0 && (!IsDisconnected || ForceDisconnectionLogging) &&
+        if (RemainingFailCycles == 0 && (ConnectionState != TDeviceConnectionState::DISCONNECTED) &&
             (std::chrono::steady_clock::now() - LastSuccessfulCycle > _DeviceConfig->DeviceTimeout))
         {
             SetDisconnected();
@@ -184,15 +183,17 @@ void TSerialDevice::SetTransferResult(bool ok)
     }
 }
 
-bool TSerialDevice::GetIsDisconnected() const
+TDeviceConnectionState TSerialDevice::GetConnectionState() const
 {
-    return IsDisconnected;
+    return ConnectionState;
 }
 
 void TSerialDevice::InitSetupItems()
 {
     for (auto& setup_item_config: _DeviceConfig->SetupItemConfigs) {
-        SetupItems.push_back(std::make_shared<TDeviceSetupItem>(shared_from_this(), setup_item_config));
+        SetupItems.push_back(std::make_shared<TDeviceSetupItem>(
+            setup_item_config,
+            std::make_shared<TRegister>(shared_from_this(), setup_item_config->GetRegisterConfig())));
     }
 }
 
@@ -245,10 +246,31 @@ void TSerialDevice::SetSupportsHoles(bool supportsHoles)
 
 void TSerialDevice::SetDisconnected()
 {
-    IsDisconnected = true;
+    ConnectionState = TDeviceConnectionState::DISCONNECTED;
     SetSupportsHoles(true);
-    ForceDisconnectionLogging = false;
     LOG(Warn) << "device " << ToString() << " is disconnected";
+}
+
+PRegister TSerialDevice::AddRegister(PRegisterConfig config)
+{
+    auto reg = std::make_shared<TRegister>(shared_from_this(), config);
+    Registers.push_back(reg);
+    return reg;
+}
+
+const std::list<PRegister>& TSerialDevice::GetRegisters() const
+{
+    return Registers;
+}
+
+std::chrono::steady_clock::time_point TSerialDevice::GetLastReadTime() const
+{
+    return LastReadTime;
+}
+
+void TSerialDevice::SetLastReadTime(std::chrono::steady_clock::time_point readTime)
+{
+    LastReadTime = readTime;
 }
 
 TUInt32SlaveId::TUInt32SlaveId(const std::string& slaveId, bool allowBroadcast): HasBroadcastSlaveId(false)

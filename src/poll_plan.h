@@ -88,10 +88,10 @@ enum class TItemAccumulationPolicy
     AccordingToPollLimitTime
 };
 
-enum class TThrottlingState
+enum class TItemSelectionPolicy
 {
-    NoThrottling,
-    LowPriorityRateLimit
+    OnlyHighPriority,
+    All
 };
 
 class TRateLimiter
@@ -193,9 +193,7 @@ public:
     using TQueue = TPriorityQueueSchedule<TEntry, TComparePredicate>;
     using TItem = typename TQueue::TItem;
 
-    TScheduler(std::chrono::milliseconds maxLowPriorityLag, size_t lowPriorityRateLimit)
-        : TimeBalancer(maxLowPriorityLag, 2 * maxLowPriorityLag),
-          LowPriorityRateLimit(lowPriorityRateLimit)
+    TScheduler(std::chrono::milliseconds maxLowPriorityLag): TimeBalancer(maxLowPriorityLag, 2 * maxLowPriorityLag)
     {
         ResetLoadBalancing();
     }
@@ -209,18 +207,19 @@ public:
         }
     }
 
-    std::chrono::steady_clock::time_point GetDeadline(std::chrono::steady_clock::time_point time) const
+    std::chrono::steady_clock::time_point GetDeadline() const
     {
-        auto lowPriorityDeadline = LowPriorityQueue.GetDeadline();
-        if (!LowPriorityQueue.IsEmpty() && LowPriorityRateLimit.IsOverLimit(time)) {
-            lowPriorityDeadline = LowPriorityRateLimit.GetStartTime() + std::chrono::seconds(1);
-        }
-        return std::min(HighPriorityQueue.GetDeadline(), lowPriorityDeadline);
+        return std::min(HighPriorityQueue.GetDeadline(), LowPriorityQueue.GetDeadline());
     }
 
     std::chrono::steady_clock::time_point GetHighPriorityDeadline() const
     {
         return HighPriorityQueue.GetDeadline();
+    }
+
+    std::chrono::steady_clock::time_point GetLowPriorityDeadline() const
+    {
+        return LowPriorityQueue.GetDeadline();
     }
 
     /**
@@ -234,12 +233,15 @@ public:
      *                        If it returns false next items processing stops.
      * @param currentTime - time against which items deadline is compared
      * @param accumulator - object of TAccumulator
+     * @param policy - defines what items to select
      */
-    template<class TAccumulator>
-    TThrottlingState AccumulateNext(std::chrono::steady_clock::time_point currentTime, TAccumulator& accumulator)
+    template<class TAccumulator> void AccumulateNext(std::chrono::steady_clock::time_point currentTime,
+                                                     TAccumulator& accumulator,
+                                                     TItemSelectionPolicy policy)
     {
+        bool forceLowPriority = (policy == TItemSelectionPolicy::All) && ShouldSelectLowPriority(currentTime);
         if (HighPriorityQueue.HasReadyItems(currentTime) &&
-            (!ShouldSelectLowPriority(currentTime) || !LowPriorityQueue.HasReadyItems(currentTime)))
+            (!forceLowPriority || !LowPriorityQueue.HasReadyItems(currentTime)))
         {
             bool firstItem = true;
             while (HighPriorityQueue.HasReadyItems(currentTime) &&
@@ -254,27 +256,22 @@ public:
         } else {
             if (LowPriorityQueue.HasReadyItems(currentTime)) {
                 const auto pollLimit = GetLowPriorityPollLimit(currentTime);
-                bool force = ShouldSelectLowPriority(currentTime);
                 bool firstItem = true;
                 // Set maximum allowed poll limit to first low priority item,
                 // if it is selected to balance load.
                 // Following low priority items should be selected only
                 // if they poll time is not more than low priority items lag.
-                while (LowPriorityQueue.HasReadyItems(currentTime) && !LowPriorityRateLimit.IsOverLimit(currentTime) &&
+                while (LowPriorityQueue.HasReadyItems(currentTime) &&
                        accumulator(LowPriorityQueue.GetTop().Data,
-                                   (force && firstItem) ? TItemAccumulationPolicy::Force
-                                                        : TItemAccumulationPolicy::AccordingToPollLimitTime,
+                                   (forceLowPriority && firstItem) ? TItemAccumulationPolicy::Force
+                                                                   : TItemAccumulationPolicy::AccordingToPollLimitTime,
                                    pollLimit))
                 {
                     LowPriorityQueue.Pop();
-                    LowPriorityRateLimit.NewItem(currentTime);
                     firstItem = false;
                 }
-                return LowPriorityRateLimit.IsOverLimit(currentTime) ? TThrottlingState::LowPriorityRateLimit
-                                                                     : TThrottlingState::NoThrottling;
             }
         }
-        return TThrottlingState::NoThrottling;
     }
 
     void UpdateSelectionTime(const std::chrono::milliseconds& delta, TPriority priority)
@@ -310,7 +307,6 @@ private:
     TQueue LowPriorityQueue;
     TQueue HighPriorityQueue;
     TTotalTimeBalancer TimeBalancer;
-    TRateLimiter LowPriorityRateLimit;
 
     std::chrono::milliseconds GetLowPriorityPollLimit(std::chrono::steady_clock::time_point currentTime) const
     {
@@ -326,7 +322,7 @@ private:
 
     bool ShouldSelectLowPriority(std::chrono::steady_clock::time_point currentTime) const
     {
-        return !LowPriorityRateLimit.IsOverLimit(currentTime) && TimeBalancer.ShouldDecrement();
+        return TimeBalancer.ShouldDecrement() || HighPriorityQueue.IsEmpty();
     }
 
     std::chrono::milliseconds GetLowPriorityLag() const

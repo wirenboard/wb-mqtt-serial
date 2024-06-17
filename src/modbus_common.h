@@ -10,6 +10,9 @@
 
 namespace Modbus // modbus protocol common utilities
 {
+
+    const double STANDARD_FRAME_TIMEOUT_BYTES = 3.5;
+
     enum RegisterType
     {
         REG_HOLDING = 0, // used for 'setup' regsb
@@ -165,6 +168,9 @@ namespace Modbus // modbus protocol common utilities
                        TRegister& reg,
                        const TRegisterValue& value,
                        TRegisterCache& cache,
+                       std::chrono::microseconds requestDelay,
+                       std::chrono::milliseconds responseTimeout,
+                       std::chrono::milliseconds frameTimeout,
                        int shift = 0);
 
     void ReadRegisterRange(IModbusTraits& traits,
@@ -179,6 +185,9 @@ namespace Modbus // modbus protocol common utilities
                              uint8_t slaveId,
                              const std::vector<PDeviceSetupItem>& setupItems,
                              TRegisterCache& cache,
+                             std::chrono::microseconds requestDelay,
+                             std::chrono::milliseconds responseTimeout,
+                             std::chrono::milliseconds frameTimeout,
                              int shift = 0);
 
     class TMalformedResponseError: public TSerialDeviceTransientErrorException

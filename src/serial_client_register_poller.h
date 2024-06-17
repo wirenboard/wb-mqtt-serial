@@ -1,16 +1,18 @@
 #pragma once
 
+#include <map>
+
 #include "poll_plan.h"
+#include "pollable_device.h"
 #include "port.h"
-#include "register.h"
 #include "serial_client_device_access_handler.h"
 
 class TSerialDevice;
 typedef std::shared_ptr<TSerialDevice> PSerialDevice;
 
-struct TRegisterComparePredicate
+struct TPollableDeviceComparePredicate
 {
-    bool operator()(const PRegister& r1, const PRegister& r2) const;
+    bool operator()(const PPollableDevice& d1, const PPollableDevice& d2) const;
 };
 
 class TThrottlingStateLogger
@@ -20,7 +22,7 @@ class TThrottlingStateLogger
 public:
     TThrottlingStateLogger();
 
-    std::string GetMessage(TThrottlingState state);
+    std::string GetMessage();
 };
 
 struct TPollResult
@@ -38,25 +40,29 @@ public:
 
     TSerialClientRegisterPoller(size_t lowPriorityRateLimit = std::numeric_limits<size_t>::max());
 
-    void PrepareRegisterRanges(const std::list<PRegister>& regList, std::chrono::steady_clock::time_point currentTime);
-    void ClosedPortCycle(std::chrono::steady_clock::time_point currentTime, TRegisterCallback callback);
+    void SetDevices(const std::list<PSerialDevice>& devices, std::chrono::steady_clock::time_point currentTime);
+    void ClosedPortCycle(std::chrono::steady_clock::time_point currentTime,
+                         TRegisterCallback callback,
+                         TDeviceCallback deviceConnectionStateChangedCallback);
     TPollResult OpenPortCycle(TPort& port,
                               const util::TSpentTimeMeter& spentTime,
                               std::chrono::milliseconds maxPollingTime,
                               bool readAtLeastOneRegister,
                               TSerialClientDeviceAccessHandler& lastAccessedDevice,
-                              TRegisterCallback callback);
-    void SetDeviceDisconnectedCallback(TDeviceCallback callback);
+                              TRegisterCallback callback,
+                              TDeviceCallback deviceConnectionStateChangedCallback);
     void DeviceDisconnected(PSerialDevice device, std::chrono::steady_clock::time_point currentTime);
 
 private:
-    void ScheduleNextPoll(PRegister reg, std::chrono::steady_clock::time_point pollStartTime);
+    void ScheduleNextPoll(PPollableDevice device);
+    std::chrono::steady_clock::time_point GetDeadline(bool lowPriorityRateLimitIsExceeded,
+                                                      const util::TSpentTimeMeter& spentTime) const;
 
-    std::list<PRegister> RegList;
+    std::multimap<PSerialDevice, PPollableDevice> Devices;
 
-    TDeviceCallback DeviceDisconnectedCallback;
-
-    TScheduler<PRegister, TRegisterComparePredicate> Scheduler;
+    TScheduler<PPollableDevice, TPollableDeviceComparePredicate> Scheduler;
 
     TThrottlingStateLogger ThrottlingStateLogger;
+
+    TRateLimiter LowPriorityRateLimiter;
 };

@@ -1,7 +1,8 @@
 #include "fake_serial_device.h"
 #include "fake_serial_port.h"
 #include "log.h"
-#include "rpc_handler.h"
+#include "rpc/rpc_port_handler.h"
+#include "rpc/rpc_port_load_serial_client_task.h"
 #include "serial_driver.h"
 
 #include <wblib/driver_args.h>
@@ -83,19 +84,18 @@ protected:
                   uint32_t dataOffset = 0,
                   uint32_t dataBitWidth = 0)
     {
-        return TRegister::Intern(Device,
-                                 TRegisterConfig::Create(TFakeSerialDevice::REG_FAKE,
-                                                         addr,
-                                                         fmt,
-                                                         scale,
-                                                         offset,
-                                                         round_to,
-                                                         TRegisterConfig::TSporadicMode::DISABLED,
-                                                         false,
-                                                         "fake",
-                                                         word_order,
-                                                         dataOffset,
-                                                         dataBitWidth));
+        return Device->AddRegister(TRegisterConfig::Create(TFakeSerialDevice::REG_FAKE,
+                                                           addr,
+                                                           fmt,
+                                                           scale,
+                                                           offset,
+                                                           round_to,
+                                                           TRegisterConfig::TSporadicMode::DISABLED,
+                                                           false,
+                                                           "fake",
+                                                           word_order,
+                                                           dataOffset,
+                                                           dataBitWidth));
     }
     PFakeSerialPort Port;
     PSerialClient SerialClient;
@@ -131,7 +131,7 @@ void TSerialClientTest::SetUp()
     TFakeSerialDevice::Register(DeviceFactory);
 
     TLoggedFixture::SetUp();
-    Port = std::make_shared<TFakeSerialPort>(*this);
+    Port = std::make_shared<TFakeSerialPort>(*this, "<TSerialClientTest>");
     auto config = std::make_shared<TDeviceConfig>("fake_sample", "1", "fake");
     config->MaxReadRegisters = 0;
 
@@ -169,7 +169,6 @@ void TSerialClientTest::SetUp()
 void TSerialClientTest::TearDown()
 {
     TLoggedFixture::TearDown();
-    TRegister::DeleteIntern();
     TFakeSerialDevice::ClearDevices();
 }
 
@@ -181,8 +180,7 @@ TEST_F(TSerialClientTest, PortOpenError)
     PRegister reg0 = Reg(0, U8);
     PRegister reg1 = Reg(1, U8);
 
-    SerialClient->AddRegister(reg0);
-    SerialClient->AddRegister(reg1);
+    SerialClient->AddDevice(Device);
 
     Port->SetAllowOpen(false);
 
@@ -206,8 +204,7 @@ TEST_F(TSerialClientReopenTest, ReopenTimeout)
     PRegister reg0 = Reg(0, U8);
     PRegister reg1 = Reg(1, U8);
 
-    SerialClient->AddRegister(reg0);
-    SerialClient->AddRegister(reg1);
+    SerialClient->AddDevice(Device);
 
     Port->SetAllowOpen(false);
 
@@ -235,11 +232,7 @@ TEST_F(TSerialClientTest, Poll)
     PRegister reg22 = Reg(22);
     PRegister reg33 = Reg(33);
 
-    SerialClient->AddRegister(reg0);
-    SerialClient->AddRegister(reg1);
-    SerialClient->AddRegister(discrete10);
-    SerialClient->AddRegister(reg22);
-    SerialClient->AddRegister(reg33);
+    SerialClient->AddDevice(Device);
 
     Note() << "Cycle()";
     SerialClient->Cycle();
@@ -263,8 +256,7 @@ TEST_F(TSerialClientTest, Write)
 {
     PRegister reg1 = Reg(1);
     PRegister reg20 = Reg(20);
-    SerialClient->AddRegister(reg1);
-    SerialClient->AddRegister(reg20);
+    SerialClient->AddDevice(Device);
 
     Note() << "Cycle()";
     SerialClient->Cycle();
@@ -287,8 +279,7 @@ TEST_F(TSerialClientTest, U8)
 {
     PRegister reg20 = Reg(20, U8);
     PRegister reg30 = Reg(30, U8);
-    SerialClient->AddRegister(reg20);
-    SerialClient->AddRegister(reg30);
+    SerialClient->AddDevice(Device);
 
     Note() << "server -> client: 10, 20";
     Device->Registers[20] = 10;
@@ -325,8 +316,7 @@ TEST_F(TSerialClientTest, S8)
 {
     PRegister reg20 = Reg(20, S8);
     PRegister reg30 = Reg(30, S8);
-    SerialClient->AddRegister(reg20);
-    SerialClient->AddRegister(reg30);
+    SerialClient->AddDevice(Device);
 
     Note() << "server -> client: 10, 20";
     Device->Registers[20] = 10;
@@ -363,8 +353,7 @@ TEST_F(TSerialClientTest, Char8)
 {
     PRegister reg20 = Reg(20, Char8);
     PRegister reg30 = Reg(30, Char8);
-    SerialClient->AddRegister(reg20);
-    SerialClient->AddRegister(reg30);
+    SerialClient->AddDevice(Device);
 
     Note() << "server -> client: 65, 66";
     Device->Registers[20] = 65;
@@ -386,8 +375,7 @@ TEST_F(TSerialClientTest, S64)
 {
     PRegister reg20 = Reg(20, S64);
     PRegister reg30 = Reg(30, S64);
-    SerialClient->AddRegister(reg20);
-    SerialClient->AddRegister(reg30);
+    SerialClient->AddDevice(Device);
 
     Note() << "server -> client: 10, 20";
     Device->Registers[20] = 0x00AA;
@@ -428,8 +416,7 @@ TEST_F(TSerialClientTest, U64)
 {
     PRegister reg20 = Reg(20, U64);
     PRegister reg30 = Reg(30, U64);
-    SerialClient->AddRegister(reg20);
-    SerialClient->AddRegister(reg30);
+    SerialClient->AddDevice(Device);
 
     Note() << "server -> client: 10, 20";
     Device->Registers[20] = 0x00AA;
@@ -470,12 +457,10 @@ TEST_F(TSerialClientTest, S32)
 {
     PRegister reg20 = Reg(20, S32);
     PRegister reg30 = Reg(30, S32);
-    SerialClient->AddRegister(reg20);
-    SerialClient->AddRegister(reg30);
-
     // create scaled register
     PRegister reg24 = Reg(24, S32, 0.001);
-    SerialClient->AddRegister(reg24);
+
+    SerialClient->AddDevice(Device);
 
     Note() << "server -> client: 10, 20";
     Device->Registers[20] = 0x00AA;
@@ -523,12 +508,10 @@ TEST_F(TSerialClientTest, S24)
 {
     PRegister reg20 = Reg(20, S24);
     PRegister reg30 = Reg(30, S24);
-    SerialClient->AddRegister(reg20);
-    SerialClient->AddRegister(reg30);
-
     // create scaled register
     PRegister reg24 = Reg(24, S24, 0.001);
-    SerialClient->AddRegister(reg24);
+
+    SerialClient->AddDevice(Device);
 
     Note() << "server -> client: 10, 20";
     Device->Registers[20] = 0x002A;
@@ -576,8 +559,7 @@ TEST_F(TSerialClientTest, U32)
 {
     PRegister reg20 = Reg(20, U32);
     PRegister reg30 = Reg(30, U32);
-    SerialClient->AddRegister(reg20);
-    SerialClient->AddRegister(reg30);
+    SerialClient->AddDevice(Device);
 
     Note() << "server -> client: 10, 20";
     Device->Registers[20] = 0x00AA;
@@ -623,7 +605,7 @@ TEST_F(TSerialClientTest, U32)
 TEST_F(TSerialClientTest, BCD32)
 {
     PRegister reg20 = Reg(20, BCD32);
-    SerialClient->AddRegister(reg20);
+    SerialClient->AddDevice(Device);
     Device->Registers[22] = 123;
     Device->Registers[23] = 123;
 
@@ -658,7 +640,7 @@ TEST_F(TSerialClientTest, BCD32)
 TEST_F(TSerialClientTest, BCD24)
 {
     PRegister reg20 = Reg(20, BCD24);
-    SerialClient->AddRegister(reg20);
+    SerialClient->AddDevice(Device);
     Device->Registers[22] = 123;
     Device->Registers[23] = 123;
 
@@ -685,7 +667,7 @@ TEST_F(TSerialClientTest, BCD24)
 TEST_F(TSerialClientTest, BCD16)
 {
     PRegister reg20 = Reg(20, BCD16);
-    SerialClient->AddRegister(reg20);
+    SerialClient->AddDevice(Device);
     Device->Registers[21] = 123;
 
     Note() << "server -> client: 0x1234";
@@ -708,7 +690,7 @@ TEST_F(TSerialClientTest, BCD16)
 TEST_F(TSerialClientTest, BCD8)
 {
     PRegister reg20 = Reg(20, BCD8);
-    SerialClient->AddRegister(reg20);
+    SerialClient->AddDevice(Device);
     Device->Registers[21] = 123;
 
     Note() << "server -> client: 0x12";
@@ -732,12 +714,9 @@ TEST_F(TSerialClientTest, Float32)
 {
     // create scaled register
     PRegister reg24 = Reg(24, Float, 100);
-    SerialClient->AddRegister(reg24);
-
     PRegister reg20 = Reg(20, Float);
     PRegister reg30 = Reg(30, Float);
-    SerialClient->AddRegister(reg20);
-    SerialClient->AddRegister(reg30);
+    SerialClient->AddDevice(Device);
 
     Note() << "server -> client: 0x45d2 0x0000, 0x449d 0x8000";
     Device->Registers[20] = 0x45d2;
@@ -785,12 +764,9 @@ TEST_F(TSerialClientTest, Double64)
 {
     // create scaled register
     PRegister reg24 = Reg(24, Double, 100);
-    SerialClient->AddRegister(reg24);
-
     PRegister reg20 = Reg(20, Double);
     PRegister reg30 = Reg(30, Double);
-    SerialClient->AddRegister(reg20);
-    SerialClient->AddRegister(reg30);
+    SerialClient->AddDevice(Device);
 
     Note() << "server -> client: 40ba401f7ced9168 , 4093b148b4395810";
     Device->Registers[20] = 0x40ba;
@@ -853,8 +829,7 @@ TEST_F(TSerialClientTest, String)
 {
     PRegister reg20 = Reg(20, String, 1, 0, 0, EWordOrder::BigEndian, 0, 32 * 8);
     PRegister reg32 = Reg(62, String, 1, 0, 0, EWordOrder::BigEndian, 0, 32 * 8);
-    SerialClient->AddRegister(reg20);
-    SerialClient->AddRegister(reg32);
+    SerialClient->AddDevice(Device);
 
     Note() << "server -> client: 40ba401f7ced9168 , 4093b148b4395810";
     Device->Registers[20] = 'H';
@@ -901,7 +876,7 @@ TEST_F(TSerialClientTest, offset)
 {
     // create scaled register with offset
     PRegister reg24 = Reg(24, S16, 3, -15);
-    SerialClient->AddRegister(reg24);
+    SerialClient->AddDevice(Device);
 
     Note() << "client -> server: -87 (scaled)";
     SerialClient->SetTextValue(reg24, "-87");
@@ -919,11 +894,7 @@ TEST_F(TSerialClientTest, Round)
     PRegister reg30_0_2 = Reg(30, Float, 1, 0, 0.2);
     PRegister reg32_0_01 = Reg(32, Float, 1, 0, 0.01);
 
-    SerialClient->AddRegister(reg24_0_01);
-    SerialClient->AddRegister(reg26_1);
-    SerialClient->AddRegister(reg28_10);
-    SerialClient->AddRegister(reg30_0_2);
-    SerialClient->AddRegister(reg32_0_01);
+    SerialClient->AddDevice(Device);
 
     Note() << "client -> server: 12.345 (not rounded)";
     SerialClient->SetTextValue(reg24_0_01, "12.345");
@@ -964,7 +935,7 @@ TEST_F(TSerialClientTest, Round)
 TEST_F(TSerialClientTest, Errors)
 {
     PRegister reg20 = Reg(20);
-    SerialClient->AddRegister(reg20);
+    SerialClient->AddDevice(Device);
 
     Note() << "Cycle() [first start]";
     SerialClient->Cycle();
@@ -1009,21 +980,21 @@ TEST_F(TSerialClientTest, Errors)
 TEST_F(TSerialClientTestWithSetupRegisters, SetupOk)
 {
     PRegister reg20 = Reg(20);
-    SerialClient->AddRegister(reg20);
+    SerialClient->AddDevice(Device);
     SerialClient->Cycle();
-    EXPECT_FALSE(Device->GetIsDisconnected());
+    EXPECT_EQ(Device->GetConnectionState(), TDeviceConnectionState::CONNECTED);
 }
 
 TEST_F(TSerialClientTestWithSetupRegisters, SetupFail)
 {
     PRegister reg20 = Reg(20);
-    SerialClient->AddRegister(reg20);
+    SerialClient->AddDevice(Device);
     Device->BlockWriteFor(101, true);
     SerialClient->Cycle();
-    EXPECT_TRUE(Device->GetIsDisconnected());
+    EXPECT_EQ(Device->GetConnectionState(), TDeviceConnectionState::DISCONNECTED);
     Device->BlockWriteFor(101, false);
     SerialClient->Cycle();
-    EXPECT_FALSE(Device->GetIsDisconnected());
+    EXPECT_EQ(Device->GetConnectionState(), TDeviceConnectionState::CONNECTED);
 }
 
 class TSerialClientIntegrationTest: public TSerialClientTest
@@ -1460,6 +1431,11 @@ TEST_F(TSerialClientIntegrationTest, SlaveIdCollision)
 {
     TTemplateMap t;
 
+    auto factory = [=](const Json::Value& port_data, PRPCConfig rpcConfig) -> std::pair<PPort, bool> {
+        auto path = port_data["path"].asString();
+        return std::make_pair(std::make_shared<TFakeSerialPort>(*this, path), false);
+    };
+
     EXPECT_THROW(LoadConfig(GetDataFilePath("configs/config-collision-test.json"),
                             DeviceFactory,
                             CommonDeviceSchema,
@@ -1467,7 +1443,7 @@ TEST_F(TSerialClientIntegrationTest, SlaveIdCollision)
                             rpcConfig,
                             PortsSchema,
                             *ProtocolSchemas,
-                            [=](const Json::Value&, PRPCConfig rpcConfig) { return std::make_pair(Port, false); }),
+                            factory),
                  TConfigParserException);
 
     EXPECT_THROW(LoadConfig(GetDataFilePath("configs/config-collision-test2.json"),
@@ -1477,7 +1453,7 @@ TEST_F(TSerialClientIntegrationTest, SlaveIdCollision)
                             rpcConfig,
                             PortsSchema,
                             *ProtocolSchemas,
-                            [=](const Json::Value&, PRPCConfig rpcConfig) { return std::make_pair(Port, false); }),
+                            factory),
                  TConfigParserException);
 
     EXPECT_THROW(LoadConfig(GetDataFilePath("configs/config-collision-test3.json"),
@@ -1487,7 +1463,7 @@ TEST_F(TSerialClientIntegrationTest, SlaveIdCollision)
                             rpcConfig,
                             PortsSchema,
                             *ProtocolSchemas,
-                            [=](const Json::Value&, PRPCConfig rpcConfig) { return std::make_pair(Port, false); }),
+                            factory),
                  TConfigParserException);
 
     EXPECT_NO_THROW(LoadConfig(GetDataFilePath("configs/config-no-collision-test.json"),
@@ -1497,7 +1473,7 @@ TEST_F(TSerialClientIntegrationTest, SlaveIdCollision)
                                rpcConfig,
                                PortsSchema,
                                *ProtocolSchemas,
-                               [=](const Json::Value&, PRPCConfig rpcConfig) { return std::make_pair(Port, false); }));
+                               factory));
 }
 
 /* This function checks Serial Driver behaviour when RPC request and value publishing event occurs
@@ -1517,7 +1493,7 @@ TRPCResultCode TSerialClientIntegrationTest::SendRPCRequest(PMQTTSerialDriver se
 
     TRPCResultCode resultCode = TRPCResultCode::RPC_OK;
     std::vector<int> responseInt;
-    PRPCRequest request = std::make_shared<TRPCRequest>();
+    PRPCPortLoadRequest request = std::make_shared<TRPCPortLoadRequest>();
     request->ResponseTimeout = std::chrono::milliseconds(500);
     request->FrameTimeout = std::chrono::milliseconds(20);
     request->TotalTimeout = totalTimeout;
@@ -1533,7 +1509,8 @@ TRPCResultCode TSerialClientIntegrationTest::SendRPCRequest(PMQTTSerialDriver se
 
     try {
         Note() << "Send RPC request";
-        serialClient->RPCTransceive(request);
+        PRPCPortLoadSerialClientTask task(std::make_shared<TRPCPortLoadSerialClientTask>(request));
+        serialClient->AddTask(task);
         SerialDriver->LoopOnce();
         EXPECT_EQ(responseInt == expectedResponse, true);
     } catch (const TRPCException& exception) {
