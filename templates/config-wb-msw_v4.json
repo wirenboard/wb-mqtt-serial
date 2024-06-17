@@ -14,7 +14,6 @@
         "response_timeout_ms": 1,
         "frame_timeout_ms": 0,
         "enable_wb_continuous_read": true,
-
         "groups": [
             {
                 "title": "Air Quality",
@@ -53,14 +52,19 @@
                 "id": "debug"
             }
         ],
-
         "parameters": {
             "co2_sensor_enabled": {
                 "title": "CO₂ Sensor Enabled",
                 "address": 3,
                 "reg_type": "coil",
-                "enum": [0, 1],
-                "enum_titles": ["no", "yes"],
+                "enum": [
+                    0,
+                    1
+                ],
+                "enum_titles": [
+                    "no",
+                    "yes"
+                ],
                 "default": 1,
                 "group": "air_quality",
                 "order": 1
@@ -69,8 +73,14 @@
                 "title": "CO₂ Baseline Calibration",
                 "address": 95,
                 "reg_type": "holding",
-                "enum": [0, 1],
-                "enum_titles": ["off", "automatic"],
+                "enum": [
+                    0,
+                    1
+                ],
+                "enum_titles": [
+                    "off",
+                    "automatic"
+                ],
                 "default": 1,
                 "group": "air_quality",
                 "order": 2
@@ -109,7 +119,13 @@
                 "description": "baud_rate_description",
                 "address": 110,
                 "reg_type": "holding",
-                "enum": [96, 192, 384, 576, 1152],
+                "enum": [
+                    96,
+                    192,
+                    384,
+                    576,
+                    1152
+                ],
                 "default": 96,
                 "enum_titles": [
                     "9600",
@@ -133,14 +149,19 @@
                 "title": "Status LED",
                 "address": 130,
                 "reg_type": "holding",
-                "enum": [0, 1],
-                "enum_titles": ["Enabled", "Disabled"],
+                "enum": [
+                    0,
+                    1
+                ],
+                "enum_titles": [
+                    "Enabled",
+                    "Disabled"
+                ],
                 "default": 0,
                 "group": "general",
                 "order": 3
             }
         },
-
         "channels": [
             {
                 "name": "Temperature",
@@ -1295,6 +1316,33 @@
                 "group": "ir_commands"
             },
             {
+                "name": "Play from BANK",
+                "reg_type": "holding",
+                "format": "s16",
+                "address": 5500,
+                "type": "value",
+                "group": "ir_commands",
+                "enabled": false
+            },
+            {
+                "name": "BANK -> RAM",
+                "reg_type": "holding",
+                "format": "s16",
+                "address": 5501,
+                "type": "value",
+                "group": "ir_commands",
+                "enabled": false
+            },
+            {
+                "name": "Learn to BANK",
+                "reg_type": "holding",
+                "format": "s16",
+                "address": 5502,
+                "type": "value",
+                "group": "ir_commands",
+                "enabled": false
+            },
+            {
                 "name": "Serial",
                 "type": "text",
                 "reg_type": "input",
@@ -1669,6 +1717,9 @@
                 "Play from ROM31": "Воспроизвести команду из ROM31",
                 "Play from ROM32": "Воспроизвести команду из ROM32",
                 "Reset all ROM": "Стереть все команды в ROM",
+                "Play from BANK": "Воспроизвести команду из соответствующего банка ROM",
+                "BANK -> RAM":"Редактирование ИК-команд в банке с копированием в RAM",
+                "Learn to BANK": "Записать команду в соответствующий банк ROM",
                 "Serial": "Серийный номер",
                 "FW Version": "Версия прошивки",
                 "Supply Voltage": "Напряжение питания",
