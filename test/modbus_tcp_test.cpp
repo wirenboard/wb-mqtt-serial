@@ -97,11 +97,11 @@ TEST_F(TModbusTCPTraitsTest, FinalizeRequest)
 
     Modbus::TRequest r = {0, 1, 2, 3, 4, 5, 6, 7, 8, 9};
     Modbus::TRequest p = {0, 11, 0, 0, 0, 4, 100, 7, 8, 9};
-    traits.FinalizeRequest(r, 100);
+    traits.FinalizeRequest(r, 100, 0);
 
     Modbus::TRequest r2 = {10, 11, 12, 13, 14, 15, 16, 17, 18, 19, 20};
     Modbus::TRequest p2 = {0, 12, 0, 0, 0, 5, 200, 17, 18, 19, 20};
-    traits.FinalizeRequest(r2, 200);
+    traits.FinalizeRequest(r2, 200, 0);
 
     TestEqual(r, p);
     TestEqual(r2, p2);

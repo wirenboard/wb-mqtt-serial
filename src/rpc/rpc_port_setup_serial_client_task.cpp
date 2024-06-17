@@ -22,6 +22,9 @@ ISerialClientTask::TRunResult TRPCPortSetupSerialClientTask::Run(PPort port,
     try {
         port->CheckPortOpen();
         port->SkipNoise();
+        Modbus::TModbusRTUTraitsFactory traitsFactory;
+        auto rtuTraits = traitsFactory.GetModbusTraits(port, false);
+        ModbusExt::TModbusTraits fastModbusTraits;
         for (auto item: Request->Items) {
             TSerialPortSettingsGuard settingsGuard(port, item.SerialPortSettings);
             auto frameTimeout = std::chrono::ceil<std::chrono::milliseconds>(
@@ -29,12 +32,11 @@ ISerialClientTask::TRunResult TRPCPortSetupSerialClientTask::Run(PPort port,
             port->SleepSinceLastInteraction(frameTimeout);
             lastAccessedDevice.PrepareToAccess(nullptr);
 
-            Modbus::TModbusRTUTraitsFactory traitsFactory;
-            auto traits = traitsFactory.GetModbusTraits(port, false);
             Modbus::TRegisterCache cache;
-            Modbus::WriteSetupRegisters(*traits,
+            Modbus::WriteSetupRegisters(item.Sn ? fastModbusTraits : *rtuTraits,
                                         *port,
                                         item.SlaveId,
+                                        item.Sn.value_or(0),
                                         item.Regs,
                                         cache,
                                         std::chrono::microseconds(0),

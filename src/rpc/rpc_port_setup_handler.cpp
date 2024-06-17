@@ -17,6 +17,10 @@ namespace
 
         res.SlaveId = request["slave_id"].asUInt();
 
+        if (request.isMember("sn")) {
+            res.Sn = request["sn"].asUInt();
+        }
+
         std::unordered_map<std::string, PRegisterConfig> regConfigs;
         regConfigs["baud_rate"] = TRegisterConfig::Create(
             Modbus::REG_HOLDING,
@@ -29,6 +33,10 @@ namespace
         regConfigs["stop_bits"] = TRegisterConfig::Create(
             Modbus::REG_HOLDING,
             TRegisterDesc{std::make_shared<TUint32RegisterAddress>(WB_STOP_BITS_REGISTER_ADDRESS), 0, 0});
+
+        regConfigs["slave_id"] =
+            TRegisterConfig::Create(Modbus::REG_HOLDING,
+                                    TRegisterDesc{std::make_shared<TUint32RegisterAddress>(128), 0, 0});
 
         if (request.isMember("cfg")) {
             for (auto& item: regConfigs) {
@@ -96,7 +104,8 @@ void RPCPortSetupHandler(PRPCPortSetupRequest rpcRequest,
                          WBMQTT::TMqttRpcServer::TErrorCallback onError)
 {
     Modbus::TModbusRTUTraitsFactory traitsFactory;
-    auto traits = traitsFactory.GetModbusTraits(port, false);
+    auto rtuTraits = traitsFactory.GetModbusTraits(port, false);
+    ModbusExt::TModbusTraits fastModbusTraits;
     Modbus::TRegisterCache cache;
     auto frameTimeout =
         std::chrono::ceil<std::chrono::milliseconds>(port->GetSendTimeBytes(Modbus::STANDARD_FRAME_TIMEOUT_BYTES));
@@ -104,9 +113,10 @@ void RPCPortSetupHandler(PRPCPortSetupRequest rpcRequest,
     for (auto item: rpcRequest->Items) {
         TSerialPortSettingsGuard settingsGuard(port, item.SerialPortSettings);
         port->SleepSinceLastInteraction(frameTimeout);
-        Modbus::WriteSetupRegisters(*traits,
+        Modbus::WriteSetupRegisters(item.Sn ? fastModbusTraits : *rtuTraits,
                                     *port,
                                     item.SlaveId,
+                                    item.Sn.value_or(0),
                                     item.Regs,
                                     cache,
                                     std::chrono::microseconds(0),
