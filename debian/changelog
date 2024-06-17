@@ -1,8 +1,26 @@
-wb-mqtt-serial (2.125.0) stable; urgency=medium
+wb-mqtt-serial (2.126.0) stable; urgency=medium
 
   * Add device setup RPC
 
- -- Petr Krasnoshchekov <petr.krasnoshchekov@wirenboard.com>  Fri, 17 May 2024 15:55:25 +0500
+ -- Petr Krasnoshchekov <petr.krasnoshchekov@wirenboard.com>  Mon, 17 Jun 2024 10:23:24 +0500
+
+wb-mqtt-serial (2.125.2) stable; urgency=medium
+
+  * Somfy SDN: speed adjustment is only available on DC motors
+
+ -- Nikolay Korotkiy <nikolay.korotkiy@wirenboard.com>  Mon, 10 Jun 2024 17:30:00 +0400
+
+wb-mqtt-serial (2.125.1) stable; urgency=medium
+
+  * Fix WB-MAI6 configuration interface
+
+ -- Petr Krasnoshchekov <petr.krasnoshchekov@wirenboard.com>  Mon, 10 Jun 2024 17:18:03 +0500
+
+wb-mqtt-serial (2.125.0) stable; urgency=medium
+
+  * WB-MDM3 template: add light scenes, switch mode, safety and powerup actions support
+
+ -- Ilia Skochilov <ilia.skochilov@wirenboard.com>  Tue, 04 Jun 2024 11:14:15 +0300
 
 wb-mqtt-serial (2.124.0) stable; urgency=medium
 
@@ -15,7 +33,6 @@ wb-mqtt-serial (2.123.3) stable; urgency=medium
   * Validation error of config containing duplicated ports
 
  -- Nikolay Korotkiy <nikolay.korotkiy@wirenboard.com>  Mon, 28 May 2024 17:30:00 +0400
-
 
 wb-mqtt-serial (2.123.2) stable; urgency=medium
 
@@ -31,8 +48,8 @@ wb-mqtt-serial (2.123.1) stable; urgency=medium
 
 wb-mqtt-serial (2.123.0) stable; urgency=medium
 
-  * Add min_request_interval option to device config. 
-    The option defines minimal time between requests to a device 
+  * Add min_request_interval option to device config.
+    The option defines minimal time between requests to a device
 
  -- Petr Krasnoshchekov <petr.krasnoshchekov@wirenboard.com>  Wed, 22 May 2024 09:51:17 +0500
 
