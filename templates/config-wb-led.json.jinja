@@ -58,13 +58,12 @@
             {% for dim_mode in ["1_2_3_4", "1_2", "CCT1", "H", "S", "V", "1", "2", "CCT2", "3_4", "3", "4"] -%}
             {% for on_off in ["on", "off"] -%}
             {
-                "title": "Channel {{ dim_mode }}",
+                "title": "Channel {{ dim_mode }} Switch",
                 "id": "ggg_ls_{{ ls_number }}_ch_{{ dim_mode }}_actions_turn_{{on_off}}",
                 "group": "gg_ls_{{ ls_number }}_actions_turn_{{on_off}}"
             },
             {% endfor -%}
             {% endfor -%}
-            {# пока не понятно что это -#}
             {
                 "title": "Light Scene {{ ls_number }} Channels",
                 "id": "gg_ls_{{ ls_number }}_channels",
@@ -87,6 +86,36 @@
                 "description": "g_power_up_behaviour_description"
             },
             {
+                "title": "Safety Behaviour",
+                "id": "gg_safety_behaviour",
+                "group": "g_safety"
+            },
+            {% for ch_number in range(1, OUTPUTS_NUMBER + 1) -%}
+            {
+                "title": "Channel {{ ch_number }} Switch",
+                "id": "gg_safety_mode_ch_{{ ch_number }}",
+                "group": "gg_safety_behaviour"
+            },
+            {
+                "title": "Channel {{ ch_number }} Switch",
+                "id": "gg_power_up_behaviour_ch_{{ ch_number }}",
+                "group": "g_power_up_behaviour"
+            },
+            {% for on_off in ["on", "off"] -%}
+            {
+                "title": "Action when Switch is {{on_off}}",
+                "id": "gg_input_{{ ch_number }}_switch_{{on_off}}_action",
+                "group": "g_input_{{ ch_number }}"
+            },
+            {% endfor -%}
+            {% endfor -%}
+            {
+                "title": "Inputs Control In Safety Mode",
+                "id": "gg_safety_input_control",
+                "description": "inputs_control_in_safety_mode_description",
+                "group": "g_safety"
+            },
+            {
                 "title": "General",
                 "id": "g_general"
             },
@@ -99,15 +128,7 @@
                 "id": "g_debug"
             },
             {# объявим группы каналов входов всех типов -#}
-            {% set name_actions = ["sp", "lp", "dp", "slp"] -%}
             {% for in_num in range(1, INPUTS_NUMBER + 1) -%}
-            {% for name in range(0, 4) -%}
-            {
-                "title": "Action_{{ name_actions[name] }}",
-                "id": "gg_in_{{ in_num }}_{{ name_actions[name] }}_action",
-                "group": "g_input_{{in_num}}"
-            },
-            {% endfor -%}
             {
                 "title": "params",
                 "id": "gg_in_{{in_num}}_params",
@@ -397,11 +418,12 @@
                 "min": 10,
                 "max": 2048
             },
+            {# объявим режими работы входа #}
             {
-                "id": "input_{{ch_number + 1}}_mode",
+                "id": "input_{{ch_number}}_mode",
                 "title": "Input Mode",
                 "description": "input_mode_description",
-                "address": {{416 + ch_number}},
+                "address": {{416 + ch_number - 1}},
                 "reg_type": "holding",
                 "enum": [0, 1],
                 "enum_titles": [
@@ -435,7 +457,8 @@
                 "reg_type": "holding",
                 "default": 1000,
                 "min": 500,
-                "max": 5000
+                "max": 5000,
+                "condition": "input_{{in_num}}_mode!=1"
             },
             {
                 "id": "in{{in_num}}_lp_repeat_time",
@@ -447,7 +470,8 @@
                 "reg_type": "holding",
                 "default": 20,
                 "min": 5,
-                "max": 500
+                "max": 500,
+                "condition": "input_{{in_num}}_mode!=1"
             },
             {
                 "id": "in{{in_num}}_secp_waiting_time",
@@ -459,7 +483,8 @@
                 "reg_type": "holding",
                 "default": 300,
                 "min": 0,
-                "max": 2000
+                "max": 2000,
+                "condition": "input_{{in_num}}_mode!=1"
             },
             {
                 "id": "in{{in_num}}_debounce_time",
@@ -553,16 +578,6 @@
                 "max": 30000,
                 "condition": "dimmer_mode==256"
             },
-            {# {
-                "id": "input_{{ in_num }}_{{ name_actions[name] }}_work_with_scenes",
-                "title": "Inputs work with {{ name_actions[name] }}",
-                "enum": [0, 1],
-                "enum_titles": ["Non Scenes", "Scenes"],
-                "default": 0,
-                "group": "gg_in_{{ in_num }}_{{ name_actions[name] }}_action",
-                "order": 1,
-                "readonly": true
-            }, #}
             {% set dimmer_mode = [0, 1, 2, 16, 17, 18, 32, 33, 34, 256, 512] -%}
             {% set action_code = 
                 [
@@ -586,6 +601,7 @@
                 ]
             -%}
             {% set name_actions = ["sp", "lp", "dp", "slp"] -%}
+            {# зависит от режима работы диммера от 0 до 11 и от типа нажатия, описаны строкой выше #}
             {% set enum = [
                 [
                     [0, 16384, 4096, 4097, 4098, 4099, 8192, 8193, 8194, 8195, 12288, 12289, 12290, 12291, 36864, 36865, 36866, 36867, 40960, 40961, 40962, 40963],
@@ -653,7 +669,35 @@
                     [0, 16384, 4102, 8198, 12294, 36870, 40966],
                     [0, 16384, 4102, 8198, 12294, 36870, 40966, 45062]
                 ]
-                ] -%}
+                ] -%}        
+            {% for in_num in range(1, INPUTS_NUMBER +  1)  -%}
+            {% for name in name_actions -%}
+            {
+                "id": "input_{{ in_num }}_{{ name }}_work_with_scenes",
+                "title": "Inputs work with {{ name }}",
+                "enum": [0, 1],
+                "enum_titles": ["Non Scenes", "Scenes"],
+                "default": 0,
+                "group": "gg_in_{{ in_num }}_{{ name }}_action",
+                "order": 0,
+                "readonly": true,
+                "condition": "input_{{in_num}}_mode!=1"
+            },
+            {% endfor -%}
+            {% for on_off in ["on", "off"] -%}
+            {
+                "id": "input_{{ in_num }}_work_with_scenes_switch_{{on_off}}",
+                "title": "Inputs work with scenes?",
+                "enum": [0, 1],
+                "enum_titles": ["Non Scenes", "Scenes"],
+                "default": 0,
+                "group": "gg_input_{{ in_num }}_switch_{{on_off}}_action",
+                "order": 0,
+                "readonly": true,
+                "condition": "input_{{in_num}}_mode==1"
+            },
+            {% endfor -%}
+            {% endfor -%}
             {% for dimmer_mode_number in range(11) -%}
             {% for in_num in range(1, INPUTS_NUMBER + 1) -%}
             {% for name in range(4) -%}
@@ -661,11 +705,11 @@
                 "id": "in{{in_num}}_{{name_actions[name]}}",
                 "group": "gg_in_{{ in_num }}_{{name_actions[name]}}_action",
                 "title": "{{name_actions[name]}}_title",
-                "order": {{name + 1}},
+                "order": {{name + 2}},
                 "address": {{1000 + in_num - 1 + loop.index0 * 20}},
                 "reg_type": "holding",
                 "default": 0,
-                "condition": "(input_{{in_num}}_mode!=1)&&(dimmer_mode=={{dimmer_mode[dimmer_mode_number]}}&&(isDefined(input_{{ in_num }}_{{ name_actions[name] }}_work_with_scenes)==0||input_{{ in_num }}_{{ name_actions[name] }}_work_with_scenes!=1))",
+                "condition": "((isDefined(input_{{in_num}}_mode)==0||(input_{{in_num}}_mode!=1))&&(dimmer_mode=={{dimmer_mode[dimmer_mode_number]}}&&(isDefined(input_{{in_num}}_{{name_actions[name]}}_work_with_scenes)==0||input_{{ in_num }}_{{ name_actions[name] }}_work_with_scenes!=1)))",
                 "enum": {{ enum[dimmer_mode_number][name] }},
                 "enum_titles": [
                     {% for i_enum in enum[dimmer_mode_number][name] -%}
@@ -683,19 +727,17 @@
             {%- endfor -%}
             {%- endfor -%}
             {%- endfor -%}
-
             {% for in_num in range(1, INPUTS_NUMBER + 1) -%}
-            {% set input_action_name = ["sp", "lp", "dp", "slp"] -%}
-            {% for name in range(0, 4) -%}
+            {% for input_action_name in ["sp", "lp", "dp", "slp"] -%}
             {
-                "id": "in{{in_num}}_{{ input_action_name[name] }}_scene",
-                "group": "gg_in_{{ in_num }}_{{ input_action_name[name] }}_action",
-                "title": "{{ input_action_name[name] }}_title",
-                "order": 2,
+                "id": "in{{in_num}}_{{ input_action_name }}_scene",
+                "group": "gg_in_{{ in_num }}_{{ input_action_name }}_action",
+                "title": "{{ input_action_name }}_title",
+                "order": 1,
                 "address": {{768 + (loop.index0 * 16) + in_num - 1}},
                 "reg_type": "holding",
                 "default": 0,
-                "condition": "(input_{{ in_num }}_{{ input_action_name[name] }}_work_with_scenes==1)",
+                "condition": "(input_{{ in_num }}_{{ input_action_name }}_work_with_scenes==1)",
                 "enum": [0, {%for ls in range(LIGHT_SCENES_NUMBER) %}{{32 + ls}}{% if not loop.last %}, {% endif %}{% endfor %}],
                 "enum_titles": [
                     "no_act_title",
@@ -705,14 +747,95 @@
                 ]
             },
             {
-                "id": "in{{in_num}}_{{ input_action_name[name] }}_scene_action",
-                "group": "gg_in_{{ in_num }}_{{ input_action_name[name] }}_action",
-                "title": "{{ input_action_name[name] }}_scene_action",
+                "id": "in{{in_num}}_{{ input_action_name }}_scene_action",
+                "group": "gg_in_{{ in_num }}_{{ input_action_name }}_action",
+                "title": "{{ input_action_name }}_scene_action",
                 "order": 3,
                 "address": {{832 + (loop.index0 * 16) + in_num - 1}},
                 "reg_type": "holding",
                 "default": 0,
-                "condition": "(input_{{ in_num }}_{{ input_action_name[name] }}_work_with_scenes==1)",
+                "condition": "(input_{{ in_num }}_{{ input_action_name }}_work_with_scenes==1)",
+                "enum": [0, 1, 2],
+                "enum_titles": [
+                    "Turn Off",
+                    "Turn On",
+                    "Toggle"
+                ]
+            },
+            {% endfor -%}
+            {% endfor -%}
+
+            {# зависит от номера режима работы диммера #}
+            {% set enum_switch = [
+                [0, 16384, 4096, 4097, 4098, 4099, 8192, 8193, 8194, 8195, 12288, 12289, 12290, 12291],
+                [0, 16384, 4100, 4098, 4099, 8196, 8194, 8195, 12292, 12290, 12291],
+                [0, 16384, 4103, 4098, 4099, 8199, 8194, 8195, 12295, 12290, 12291],
+                [0, 16384, 4096, 4097, 4101, 8192, 8193, 8197, 12288, 12289, 12293],
+                [0, 16384, 4100, 4101, 8196, 8197, 12292, 12293],
+                [0, 16384, 4103, 4101, 8199, 8197, 12295, 12293],
+                [0, 16384, 4096, 4097, 4104, 8192, 8193, 8200, 12288, 12289, 12296],
+                [0, 16384, 4100, 4104, 8196, 8200, 12292, 12296],
+                [0, 16384, 4103, 4104, 8199, 8200, 12295, 12296],
+                [0, 16384, 4105, 4099, 4106, 8201, 8195, 8202, 12297, 12291, 12298],
+                [0, 16384, 4102, 8198, 12294]
+                ] -%}
+            {% for dimmer_mode_number in range(11) -%}
+            {% for in_num in range(1, INPUTS_NUMBER + 1) -%}
+            {% for off_on in ["off", "on"]  -%}
+            {
+                "id": "in{{in_num}}_switch_{{off_on}}",
+                "group": "gg_input_{{ in_num }}_switch_{{off_on}}_action",
+                "title": "input_switch_{{off_on}}_title",
+                "order": {{in_num + 2}},
+                "address": {{1000 + in_num - 1 + loop.index0 * 20}},
+                "reg_type": "holding",
+                "default": 0,
+                "condition": "((input_{{in_num}}_mode==1)&&(dimmer_mode=={{dimmer_mode[dimmer_mode_number]}}&&(isDefined(input_{{in_num}}_work_with_scenes_switch_{{off_on}})==0||input_{{ in_num }}_work_with_scenes_switch_{{off_on}}!=1)))",
+                "enum": {{ enum_switch[dimmer_mode_number] }},
+                "enum_titles": [
+                    {% for i_enum_switch in enum_switch[dimmer_mode_number] -%}
+                    {% for i_action in action_code -%}
+                    {% if i_action == i_enum_switch -%}
+                        "{{ action_title[loop.index0] }}"
+                    {%- endif -%}
+                    {%- endfor -%}
+                    {%- if not loop.last -%}
+                    ,
+                    {% endif -%}
+                    {% endfor %}
+                ]
+            },
+            {%- endfor -%}
+            {%- endfor -%}
+            {%- endfor -%}
+            {% for in_num in range(1, INPUTS_NUMBER + 1) -%}
+            {% for off_on in ["off", "on"] -%}
+            {
+                "id": "in{{in_num}}_switch_scene_{{off_on}}",
+                "group": "gg_input_{{ in_num }}_switch_{{off_on}}_action",
+                "title": "switch_{{off_on}}_scene_title",
+                "order": 1,
+                "address": {{768 + (loop.index0 * 16) + in_num - 1}},
+                "reg_type": "holding",
+                "default": 0,
+                "condition": "(input_{{in_num}}_mode==1)&&(input_{{ in_num }}_work_with_scenes_switch_{{off_on}}==1)",
+                "enum": [0, {%for ls in range(LIGHT_SCENES_NUMBER) %}{{32 + ls}}{% if not loop.last %}, {% endif %}{% endfor %}],
+                "enum_titles": [
+                    "no_act_title",
+                    {% for ls_number in range(1, LIGHT_SCENES_NUMBER + 1) -%}
+                    "Light Scene {{ ls_number }}"{% if not loop.last %},{% endif %}
+                    {% endfor -%}
+                ]
+            },
+            {
+                "id": "in{{in_num}}_switch_scene_{{off_on}}_action",
+                "group": "gg_input_{{ in_num }}_switch_{{off_on}}_action",
+                "title": "switch_{{off_on}}_scene_action",
+                "order": 3,
+                "address": {{832 + (loop.index0 * 16) + in_num - 1}},
+                "reg_type": "holding",
+                "default": 0,
+                "condition": "(input_{{in_num}}_mode==1)&&(input_{{ in_num }}_work_with_scenes_switch_{{off_on}}==1)",
                 "enum": [0, 1, 2],
                 "enum_titles": [
                     "Turn Off",
@@ -1102,7 +1225,8 @@
                 "address": {{464 + in_num -1}},
                 "type": "value",
                 "sporadic": true,
-                "group": "gg_in_{{in_num}}_channels"
+                "group": "gg_in_{{in_num}}_channels",
+                "condition": "input_{{in_num}}_mode!=1"
             },
             {
                 "name": "Input {{in_num}} Long Press Counter",
@@ -1112,7 +1236,8 @@
                 "address": {{480 + in_num - 1}},
                 "type": "value",
                 "sporadic": true,
-                "group": "gg_in_{{in_num}}_channels"
+                "group": "gg_in_{{in_num}}_channels",
+                "condition": "input_{{in_num}}_mode!=1"
             },
             {
                 "name": "Input {{in_num}} Double Press Counter",
@@ -1122,7 +1247,8 @@
                 "address": {{496 + in_num - 1}},
                 "type": "value",
                 "sporadic": true,
-                "group": "gg_in_{{in_num}}_channels"
+                "group": "gg_in_{{in_num}}_channels",
+                "condition": "input_{{in_num}}_mode!=1"
             },
             {
                 "name": "Input {{in_num}} Shortlong Press Counter",
@@ -1132,7 +1258,8 @@
                 "address": {{512 + in_num - 1}},
                 "type": "value",
                 "sporadic": true,
-                "group": "gg_in_{{in_num}}_channels"
+                "group": "gg_in_{{in_num}}_channels",
+                "condition": "input_{{in_num}}_mode!=1"
             },
             {% endfor -%}
             {% for ls_number in range(1, LIGHT_SCENES_NUMBER + 1) -%}
