@@ -767,36 +767,43 @@
 
             {# зависит от номера режима работы диммера #}
             {% set enum_switch = [
-                [0, 16384, 4096, 4097, 4098, 4099, 8192, 8193, 8194, 8195, 12288, 12289, 12290, 12291],
-                [0, 16384, 4100, 4098, 4099, 8196, 8194, 8195, 12292, 12290, 12291],
-                [0, 16384, 4103, 4098, 4099, 8199, 8194, 8195, 12295, 12290, 12291],
-                [0, 16384, 4096, 4097, 4101, 8192, 8193, 8197, 12288, 12289, 12293],
-                [0, 16384, 4100, 4101, 8196, 8197, 12292, 12293],
-                [0, 16384, 4103, 4101, 8199, 8197, 12295, 12293],
-                [0, 16384, 4096, 4097, 4104, 8192, 8193, 8200, 12288, 12289, 12296],
-                [0, 16384, 4100, 4104, 8196, 8200, 12292, 12296],
-                [0, 16384, 4103, 4104, 8199, 8200, 12295, 12296],
-                [0, 16384, 4105, 4099, 4106, 8201, 8195, 8202, 12297, 12291, 12298],
-                [0, 16384, 4102, 8198, 12294]
+                [0, 1, 2, 3, 4, 100],
+                [0, 5, 3, 4, 100],
+                [0, 8, 3, 4, 100],
+                [0, 1, 2, 6, 100],
+                [0, 5, 6, 100],
+                [0, 8, 6, 100],
+                [0, 1, 2, 9, 100],
+                [0, 5, 9, 100],
+                [0, 8, 9, 100],
+                [0, 10, 100],
+                [0, 7, 100]
                 ] -%}
+            {% set action_switch_code = [0, 100, 1, 2, 3, 4, 5, 6, 7, 8, 9, 10] -%}
+            {% set action_switch_name =
+                [
+                    "no_act_title", "sw_all_act_title", "sw_ch1_act_title", "sw_ch2_act_title", "sw_ch3_act_title", "sw_ch4_act_title", "sw_ch12_act_title", "sw_ch34_act_title", "sw_ch1234_act_title", "sw_cct1_act_title",
+                    "sw_cct2_act_title", "sw_rgb_act_title"
+                ]
+            -%}
             {% for dimmer_mode_number in range(11) -%}
             {% for in_num in range(1, INPUTS_NUMBER + 1) -%}
             {% for off_on in ["off", "on"]  -%}
             {
-                "id": "in{{in_num}}_switch_{{off_on}}",
+                "id": "in{{in_num}}_switch_{{off_on}}_name",
                 "group": "gg_input_{{ in_num }}_switch_{{off_on}}_action",
                 "title": "input_switch_{{off_on}}_title",
                 "order": {{in_num + 2}},
-                "address": {{1000 + in_num - 1 + loop.index0 * 20}},
+                "address": {{704 + (loop.index0 * 16) + in_num - 1}},
                 "reg_type": "holding",
                 "default": 0,
                 "condition": "((input_{{in_num}}_mode==1)&&(dimmer_mode=={{dimmer_mode[dimmer_mode_number]}}&&(isDefined(input_{{in_num}}_work_with_scenes_switch_{{off_on}})==0||input_{{ in_num }}_work_with_scenes_switch_{{off_on}}!=1)))",
                 "enum": {{ enum_switch[dimmer_mode_number] }},
                 "enum_titles": [
                     {% for i_enum_switch in enum_switch[dimmer_mode_number] -%}
-                    {% for i_action in action_code -%}
-                    {% if i_action == i_enum_switch -%}
-                        "{{ action_title[loop.index0] }}"
+                    {% for i_action_switch_code in action_switch_code -%}
+                    {% if i_action_switch_code == i_enum_switch -%}
+                        "{{ action_switch_name[loop.index0] }}"
                     {%- endif -%}
                     {%- endfor -%}
                     {%- if not loop.last -%}
@@ -815,7 +822,7 @@
                 "group": "gg_input_{{ in_num }}_switch_{{off_on}}_action",
                 "title": "switch_{{off_on}}_scene_title",
                 "order": 1,
-                "address": {{768 + (loop.index0 * 16) + in_num - 1}},
+                "address": {{704 + (loop.index0 * 16) + in_num - 1}},
                 "reg_type": "holding",
                 "default": 0,
                 "condition": "(input_{{in_num}}_mode==1)&&(input_{{ in_num }}_work_with_scenes_switch_{{off_on}}==1)",
@@ -832,10 +839,26 @@
                 "group": "gg_input_{{ in_num }}_switch_{{off_on}}_action",
                 "title": "switch_{{off_on}}_scene_action",
                 "order": 3,
-                "address": {{832 + (loop.index0 * 16) + in_num - 1}},
+                "address": {{736 + (loop.index0 * 16) + in_num - 1}},
                 "reg_type": "holding",
                 "default": 0,
                 "condition": "(input_{{in_num}}_mode==1)&&(input_{{ in_num }}_work_with_scenes_switch_{{off_on}}==1)",
+                "enum": [0, 1, 2],
+                "enum_titles": [
+                    "Turn Off",
+                    "Turn On",
+                    "Toggle"
+                ]
+            },
+            {
+                "id": "in{{in_num}}_switch_{{off_on}}_action",
+                "group": "gg_input_{{ in_num }}_switch_{{off_on}}_action",
+                "title": "switch_action",
+                "order": 4,
+                "address": {{736 + (loop.index0 * 16) + in_num - 1}},
+                "reg_type": "holding",
+                "default": 0,
+                "condition": "(input_{{in_num}}_mode==1)&&(input_{{ in_num }}_work_with_scenes_switch_{{off_on}}!=1)",
                 "enum": [0, 1, 2],
                 "enum_titles": [
                     "Turn Off",
@@ -1758,8 +1781,8 @@
                 "Action_dp" : "Действие для двойного нажатия",
                 "Action_slp" : "Действие для короткого, затем длинного нажатия",
                 "input_mode_description" : "Режим работы входа по умолчанию - кнопка без фиксации. Работа в режиме выключателя с фиксацией доступна с версии прошивки 3.5.0",
-                "input_switch_on_title" : "Действие выхода",
-                "input_switch_off_title" : "Действие выхода",
+                "input_switch_on_title" : "Выход",
+                "input_switch_off_title" : "Выход",
                 "switch_on_scene_title" : "Выбор сцены",
                 "switch_on_scene_action" : "Действие со сценой",
                 "Inputs work with sp" :"Режим работы входа для короткого нажатия",
@@ -1797,7 +1820,20 @@
                 "inputs_control_in_safety_mode_description": "Настройка изменения управления с входов при переходе модуля в безопасный режим",
                 "Power Up Behaviour": "Поведение при включении питания",
                 "g_power_up_behaviour_description": "Настройка поведения выходов при включении питания устройства. Доступно с версии прошивки 3.5.0",
-                "Set Previous State": "Установить предыдущее состояние"
+                "Set Previous State": "Установить предыдущее состояние",
+                "Safety Behaviour" : "Действие в безопасном режиме",
+                "switch_action" : "Действие с выходом",
+                "sw_all_act_title" : "Все каналы",
+                "sw_ch1_act_title" : "Канал 1",
+                "sw_ch2_act_title" : "Канал 2",
+                "sw_ch3_act_title" : "Канал 3",
+                "sw_ch4_act_title" : "Канал 4",
+                "sw_ch12_act_title" : "Каналы 1 и 2",
+                "sw_ch34_act_title" : "Каналы 3 и 4",
+                "sw_ch1234_act_title" : "Каналы 1,2,3,4",
+                "sw_cct1_act_title" : "Каналы CCT1",
+                "sw_cct2_act_title" : "Каналы CCT2",
+                "sw_rgb_act_title" : "Каналы RGB"
             }
         }
     }
