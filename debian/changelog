@@ -1,3 +1,9 @@
+wb-mqtt-serial (2.128.0) stable; urgency=medium
+
+  * WB-LED template: add light scenes, safety mode, switch mode, powerup actions support
+
+ -- Sergey Mishin <mishin@wirenboard.com>  Tue, 18 Jun 2024 18:43:00 +0300
+
 wb-mqtt-serial (2.127.0) stable; urgency=medium
 
   * Add new template for Carel muRack
