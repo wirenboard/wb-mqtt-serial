@@ -1,3 +1,9 @@
+wb-mqtt-serial (2.127.1) stable; urgency=medium
+
+  * Delete template for Carel muRack
+
+ -- Andrey Ksenofontov <andrey.ksenofontov@wirenboard.com>  Wed, 19 Jun 2024 11:06:03 +0300
+
 wb-mqtt-serial (2.127.0) stable; urgency=medium
 
   * Add new template for Carel muRack
