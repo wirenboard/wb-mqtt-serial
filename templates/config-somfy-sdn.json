@@ -237,7 +237,8 @@
                 "address": 0,
                 "min": 0,
                 "max": 180,
-                "enabled": false
+                "enabled": false,
+                "condition": "node_type==9"
             }
         ],
         "translations": {
