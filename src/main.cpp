@@ -45,7 +45,6 @@ const auto RPC_PORT_LOAD_REQUEST_SCHEMA_FULL_FILE_PATH =
     "/usr/share/wb-mqtt-serial/wb-mqtt-serial-rpc-port-load-request.schema.json";
 const auto RPC_PORT_SETUP_REQUEST_SCHEMA_FULL_FILE_PATH =
     "/usr/share/wb-mqtt-serial/wb-mqtt-serial-rpc-port-setup-request.schema.json";
-const auto CONFED_JSON_SCHEMAS_DIR = "/var/lib/wb-mqtt-serial/schemas";
 const auto CONFED_COMMON_JSON_SCHEMA_FULL_FILE_PATH =
     "/usr/share/wb-mqtt-serial/wb-mqtt-serial-confed-common.schema.json";
 const auto DEVICE_GROUP_NAMES_JSON_FULL_FILE_PATH = "/usr/share/wb-mqtt-serial/groups.json";
@@ -125,35 +124,6 @@ namespace
         }
     }
 
-    void SchemaForConfed(int argc = 0, char* argv[] = 0, int argInd = 0)
-    {
-        TSerialDeviceFactory deviceFactory;
-        std::string commonSchemaPath(CONFED_COMMON_JSON_SCHEMA_FULL_FILE_PATH);
-        std::string templatesSchema(TEMPLATES_JSON_SCHEMA_FULL_FILE_PATH);
-        std::string templatesDir(USER_TEMPLATES_DIR);
-        std::string schemasDir(CONFED_JSON_SCHEMAS_DIR);
-        if (argInd < argc) {
-            commonSchemaPath = argv[argInd];
-            ++argInd;
-        }
-        if (argInd < argc) {
-            templatesSchema = argv[argInd];
-            ++argInd;
-        }
-        if (argInd < argc) {
-            templatesDir = argv[argInd];
-            ++argInd;
-        }
-        if (argInd < argc) {
-            schemasDir = argv[argInd];
-        }
-        RegisterProtocols(deviceFactory);
-        auto commonDeviceSchema = WBMQTT::JSON::Parse(commonSchemaPath);
-        TTemplateMap templates(LoadConfigTemplatesSchema(templatesSchema, commonDeviceSchema));
-        templates.AddTemplatesDir(templatesDir);
-        GenerateSchemasForConfed(schemasDir, templates, deviceFactory, commonDeviceSchema);
-    }
-
     void SetDebugLevel(const char* optarg)
     {
         try {
@@ -198,7 +168,7 @@ namespace
     {
         int c;
 
-        while ((c = getopt(argc, argv, "d:c:h:H:p:u:P:T:jJgG:v")) != -1) {
+        while ((c = getopt(argc, argv, "d:c:h:H:p:u:P:T:jJG:v")) != -1) {
             switch (c) {
                 case 'd':
                     SetDebugLevel(optarg);
@@ -226,14 +196,6 @@ namespace
                 case 'J': // make config JSON from confed's JSON
                     ConfedToConfig();
                     exit(EXIT_SUCCESS);
-                case 'g':
-                    try {
-                        SchemaForConfed(argc, argv, optind);
-                        exit(EXIT_SUCCESS);
-                    } catch (const exception& e) {
-                        LOG(Error) << e.what();
-                        exit(EXIT_FAILURE);
-                    }
                 case 'G':
                     GenerateDeviceTemplate(APP_NAME, USER_TEMPLATES_DIR, optarg);
                     exit(EXIT_SUCCESS);
@@ -264,7 +226,6 @@ namespace
             LOG(Debug) << fileName << " changed. Reloading template";
             try {
                 auto updatedTypes = templates.UpdateTemplate(fileName);
-                SchemaForConfed();
                 for (const auto& deviceType: updatedTypes) {
                     confedSchemasMap.InvalidateCache(deviceType);
                 }
@@ -297,17 +258,11 @@ int main(int argc, char* argv[])
     shared_ptr<Json::Value> commonDeviceSchema;
     shared_ptr<TTemplateMap> templates;
     std::tie(commonDeviceSchema, templates) = LoadTemplates();
-    TDevicesConfedSchemasMap confedSchemasMap(*templates, CONFED_JSON_SCHEMAS_DIR);
+    TDevicesConfedSchemasMap confedSchemasMap(*templates, deviceFactory, *commonDeviceSchema);
     TProtocolConfedSchemasMap protocolSchemasMap(PROTOCOL_SCHEMAS_DIR, *commonDeviceSchema);
     auto portsSchema = WBMQTT::JSON::Parse(PORTS_JSON_SCHEMA_FULL_FILE_PATH);
 
-    try {
-        SchemaForConfed();
-    } catch (const exception& e) {
-        LOG(Error) << "Failed to generate schemas for user templates:" << e.what();
-    }
-
-    TFilesWatcher watcher(USER_TEMPLATES_DIR, [&](std::string fileName, TFilesWatcher::TEvent event) {
+    TFilesWatcher watcher({TEMPLATES_DIR, USER_TEMPLATES_DIR}, [&](std::string fileName, TFilesWatcher::TEvent event) {
         HandleTemplateChangeEvent(*templates, confedSchemasMap, fileName, event);
     });
 
