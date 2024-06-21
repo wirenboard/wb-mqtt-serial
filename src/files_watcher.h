@@ -16,11 +16,10 @@ public:
 
     typedef std::function<void(std::string fileName, TFilesWatcher::TEvent event)> TCallback;
 
-    TFilesWatcher(const std::string& path, TCallback callback);
+    TFilesWatcher(const std::vector<std::string>& paths, TCallback callback);
     ~TFilesWatcher();
 
 private:
-    std::string Path;
     TCallback Callback;
     std::atomic<bool> Running;
     std::thread WatcherThread;

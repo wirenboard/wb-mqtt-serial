@@ -1,3 +1,9 @@
+wb-mqtt-serial (2.127.2) stable; urgency=medium
+
+  * Watch device template changes in /usr/lib/wb-mqtt-serial/templates
+
+ -- Petr Krasnoshchekov <petr.krasnoshchekov@wirenboard.com>  Fri, 21 Jun 2024 11:49:58 +0500
+
 wb-mqtt-serial (2.127.1) stable; urgency=medium
 
   * Delete template for Carel muRack

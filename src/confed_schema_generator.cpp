@@ -1,7 +1,6 @@
 #include "confed_schema_generator.h"
 #include "confed_channel_modes.h"
 #include "confed_schema_generator_with_groups.h"
-#include "confed_schemas_map.h"
 #include "file_utils.h"
 #include "json_common.h"
 #include "log.h"
@@ -769,26 +768,18 @@ void AddTranslations(Json::Value& translations, const Json::Value& deviceSchema)
     }
 }
 
-void GenerateSchemasForConfed(const std::string& confedSchemasFolder,
-                              TTemplateMap& templates,
-                              TSerialDeviceFactory& deviceFactory,
-                              const Json::Value& commonDeviceSchema)
+Json::Value GenerateSchemaForConfed(TDeviceTemplate& deviceTemplate,
+                                    TSerialDeviceFactory& deviceFactory,
+                                    const Json::Value& commonDeviceSchema)
 {
-    for (auto& t: templates.GetTemplates()) {
-        Json::Value schema;
-        try {
-            if (t->WithSubdevices()) {
-                schema = MakeDeviceUISchema(*t, deviceFactory, commonDeviceSchema);
-            } else {
-                schema = MakeDeviceWithGroupsUISchema(*t, deviceFactory, commonDeviceSchema);
-            }
-            AddUnitTypes(schema);
-            AddChannelModes(schema["definitions"]["groupsChannel"]);
-            AddChannelModes(schema["definitions"]["tableChannelSettings"]);
-            std::ofstream f(GetSchemaFilePath(confedSchemasFolder, t->GetFilePath()));
-            MakeWriter()->write(schema, &f);
-        } catch (const std::exception& e) {
-            LOG(Error) << "Can't load template for '" << t->GetTitle() << "': " << e.what();
-        }
+    Json::Value schema;
+    if (deviceTemplate.WithSubdevices()) {
+        schema = MakeDeviceUISchema(deviceTemplate, deviceFactory, commonDeviceSchema);
+    } else {
+        schema = MakeDeviceWithGroupsUISchema(deviceTemplate, deviceFactory, commonDeviceSchema);
     }
+    AddUnitTypes(schema);
+    AddChannelModes(schema["definitions"]["groupsChannel"]);
+    AddChannelModes(schema["definitions"]["tableChannelSettings"]);
+    return schema;
 }
