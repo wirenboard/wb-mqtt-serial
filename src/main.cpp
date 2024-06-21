@@ -80,7 +80,6 @@ namespace
              << "  -u       user      MQTT user (optional)" << endl
              << "  -P       password  MQTT user password (optional)" << endl
              << "  -T       prefix    MQTT topic prefix (optional)" << endl
-             << "  -g                 Generate JSON Schema for wb-mqtt-confed" << endl
              << "  -J                 Make /etc/wb-mqtt-serial.conf from wb-mqtt-confed output" << endl
              << "  -G       options   Generate device template. Type \"-G help\" for options description" << endl
              << "  -v                 Print the version" << endl;
