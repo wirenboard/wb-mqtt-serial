@@ -31,7 +31,7 @@
         ],
         "channels": [
             {
-                "name": "Version 1.34-pidcontrol - drive:",
+                "name": "Version 1.34",
                 "reg_type": "holding",
                 "address": "0x211c",
                 "type": "value",
@@ -41,7 +41,7 @@
                 "readonly": true
             },
             {
-                "name": "Frequency reference source (0-Set) (1-control panel) (2-An.in) (5-Pulse in) (6-485) (7-CPU) (8-PID) (9-PLC ) (11-MSK)",
+                "name": "Frequency Reference Source",
                 "reg_type": "holding",
                 "address": "0x0102",
                 "type": "range",
@@ -51,7 +51,7 @@
                 "group": "drive_commands"
             },
             {
-                "name": "Trigger Source (0-Keypad) (1-Discrete Input) (2-485)",
+                "name": "Trigger Source",
                 "reg_type": "holding",
                 "address": "0x0101",
                 "type": "range",
@@ -93,37 +93,40 @@
                 "readonly": true
             },
             {
-                "name": "Set frequency (Hz)",
+                "name": "Set Frequency",
                 "reg_type": "holding",
                 "address": "0x2100",
                 "type": "value",
+                "units": "Hz",
                 "format": "u16",
                 "scale": 0.01,
                 "group": "drive_status",
                 "readonly": true
             },
             {
-                "name": "Output frequency (Hz)",
+                "name": "Output Frequency",
                 "reg_type": "holding",
                 "address": "0x2101",
                 "type": "value",
+                "units": "Hz",
                 "format": "u16",
                 "scale": 0.01,
                 "group": "drive_status",
                 "readonly": true
             },
             {
-                "name": "Output current (A)",
+                "name": "Output Current",
                 "reg_type": "holding",
                 "address": "8450",
                 "type": "value",
+                "units": "A",
                 "format": "u16",
                 "scale": 0.01,
                 "group": "drive_status",
                 "readonly": true
             },
             {
-                "name": "Input voltage",
+                "name": "Input Voltage",
                 "reg_type": "holding",
                 "address": "8451",
                 "type": "voltage",
@@ -133,7 +136,7 @@
                 "readonly": true
             },
             {
-                "name": "Output voltage",
+                "name": "Output Voltage",
                 "reg_type": "holding",
                 "address": "8452",
                 "type": "voltage",
@@ -143,57 +146,62 @@
                 "readonly": true
             },
             {
-                "name": "Rotation speed (rpm)",
+                "name": "Rotation Speed",
                 "reg_type": "holding",
                 "address": "8453",
                 "type": "value",
+                "units": "rpm",
                 "format": "s16",
                 "scale": 1.0,
                 "group": "drive_status",
                 "readonly": true
             },
             {
-                "name": "Set torque (%)",
+                "name": "Set Torque",
                 "reg_type": "holding",
                 "address": "8454",
                 "type": "value",
+                "units": "%",
                 "format": "s16",
                 "scale": 0.1,
                 "group": "drive_status",
                 "readonly": true
             },
             {
-                "name": "Output torque(%)",
+                "name": "Output Torque",
                 "reg_type": "holding",
                 "address": "8455",
                 "type": "value",
+                "units": "%",
                 "format": "s16",
                 "scale": 0.1,
                 "group": "drive_status",
                 "readonly": true
             },
             {
-                "name": "PID Set Value (%)",
+                "name": "PID Set Value",
                 "reg_type": "holding",
                 "address": "8456",
                 "type": "value",
+                "units": "%",
                 "format": "s16",
                 "scale": 0.1,
                 "group": "pid",
                 "readonly": true
             },
             {
-                "name": "PID Feedback (%)",
+                "name": "PID Feedback",
                 "reg_type": "holding",
                 "address": "8457",
                 "type": "value",
+                "units": "%",
                 "format": "s16",
                 "scale": 0.1,
                 "group": "pid",
                 "readonly": true
             },
             {
-                "name": "Output PID value",
+                "name": "Output PID Value",
                 "reg_type": "input",
                 "address": "8479",
                 "type": "value",
@@ -203,7 +211,7 @@
                 "readonly": true
             },
             {
-                "name": "PID frequency reference source (0-Keypad buttons) (1-Analog parameter) (2-Analog input) (5-Pulse input) (6-485) (8-Digital terminals) (9-Current)",
+                "name": "PID Frequency Reference Source",
                 "reg_type": "holding",
                 "address": "0x0D00",
                 "type": "range",
@@ -213,7 +221,7 @@
                 "group": "pid"
             },
             {
-                "name": "PID Feedback Source (0-Bttn. on CP) (1-Analog Parameter) (2-Analog Input) (5-Pulse Input) (6-485) (8-Digital Terminals) (9-Current)",
+                "name": "PID Feedback Source",
                 "reg_type": "holding",
                 "address": "0x0D03",
                 "type": "range",
@@ -223,17 +231,18 @@
                 "group": "pid"
             },
             {
-                "name": "Output power (%)",
+                "name": "Output Power",
                 "reg_type": "holding",
                 "address": "8458",
                 "type": "value",
+                "units": "%",
                 "format": "s16",
                 "scale": 0.1,
                 "group": "drive_status",
                 "readonly": true
             },
             {
-                "name": "Bus voltage",
+                "name": "Bus Voltage",
                 "reg_type": "holding",
                 "address": "8459",
                 "type": "voltage",
@@ -243,7 +252,7 @@
                 "readonly": true
             },
             {
-                "name": "Module 1 temperature",
+                "name": "Module 1 Temperature",
                 "reg_type": "holding",
                 "address": "8460",
                 "type": "temperature",
@@ -253,7 +262,7 @@
                 "readonly": true
             },
             {
-                "name": "Module 2 temperature",
+                "name": "Module 2 Temperature",
                 "reg_type": "holding",
                 "address": "8461",
                 "type": "temperature",
@@ -263,7 +272,7 @@
                 "readonly": true
             },
             {
-                "name": "AI1 voltage",
+                "name": "AI1 Voltage",
                 "reg_type": "holding",
                 "address": "8464",
                 "type": "voltage",
@@ -283,7 +292,7 @@
                 "readonly": true
             },
             {
-                "name": "AO1 voltage",
+                "name": "AO1 Voltage",
                 "reg_type": "holding",
                 "address": "8468",
                 "type": "voltage",
@@ -293,7 +302,7 @@
                 "readonly": true
             },
             {
-                "name": "Drive error code",
+                "name": "Drive Error Code",
                 "reg_type": "holding",
                 "address": "0x2003",
                 "type": "value",
@@ -303,7 +312,7 @@
                 "readonly": true
             },
             {
-                "name": "Inverter warning code",
+                "name": "Inverter Warning Code",
                 "reg_type": "holding",
                 "address": "0x2010",
                 "type": "value",
@@ -313,11 +322,12 @@
                 "readonly": true
             },
             {
-                "name": "Setting frequency (Hz)",
+                "name": "Setting Frequency",
                 "reg_type": "holding",
                 "address": "0x2000",
                 "type": "range",
                 "format": "u16",
+                "units": "Hz",
                 "min": 0,
                 "max": 50,
                 "scale": 0.01,
@@ -325,11 +335,12 @@
                 "group": "drive_commands"
             },
             {
-                "name": "Frequency lower limit setting (Hz)",
+                "name": "Frequency Lower Limit Setting",
                 "reg_type": "holding",
                 "address": "0x010D",
                 "type": "range",
                 "format": "u16",
+                "units": "Hz",
                 "min": 0,
                 "max": 50,
                 "scale": 0.01,
@@ -337,7 +348,7 @@
                 "group": "drive_commands"
             },
             {
-                "name": "Sleep activation",
+                "name": "Sleep Activation",
                 "reg_type": "holding",
                 "address": "0x0D1D",
                 "format": "u16",
@@ -347,11 +358,12 @@
                 "group": "pid"
             },
             {
-                "name": "Set the sleep activation limit (Hz)",
+                "name": "Set Sleep Activation Limit",
                 "reg_type": "holding",
                 "address": "0x0D1E",
                 "type": "range",
                 "format": "u16",
+                "units": "Hz",
                 "min": 0,
                 "max": 50,
                 "scale": 0.01,
@@ -359,7 +371,7 @@
                 "group": "pid"
             },
             {
-                "name": "Running in reverse",
+                "name": "Running In Reverse",
                 "reg_type": "holding",
                 "address": "0x2001",
                 "format": "u16",
@@ -369,7 +381,7 @@
                 "group": "drive_commands"
             },
             {
-                "name": "Forward launch",
+                "name": "Forward Launch",
                 "reg_type": "holding",
                 "address": "0x2001",
                 "format": "u16",
@@ -389,7 +401,7 @@
                 "group": "drive_commands"
             },
             {
-                "name": "Reset error",
+                "name": "Reset Error",
                 "reg_type": "holding",
                 "address": "0x2001",
                 "format": "u16",
@@ -409,43 +421,43 @@
                 "Drive Commands": "Команды привода",
                 "PID": "ПИД",
                 "Diagnostics": "Диагностика",
-                "Version 1.34-pidcontrol - drive:": "Версия 1.34 ПЧ:",
-                "Frequency reference source (0-Set) (1-control panel) (2-An.in) (5-Pulse in) (6-485) (7-CPU) (8-PID) (9-PLC ) (11-MSK)": "Ист.зад.частоты (0-Пр.уст) (1-ПУ) (2-Ан.вх) (5-Им.вх) (6-485) (7-ЦП) (8-PID) (9-PLC) (11-МСк)",
-                "Trigger Source (0-Keypad) (1-Discrete Input) (2-485)": "Ист. сигнала запуска (0-ПУ) (1-Д.вх) (2-485)",
+                "Version 1.34": "Версия 1.34",
+                "Frequency Reference Source": "Источник задания частоты",
+                "Trigger Source": "Источник сигнала запуска",
                 "Work": "В работе",
                 "Braking": "Торможение",
                 "Overclocking": "Разгон",
                 "Error": "Ошибка",
-                "Set frequency (Hz)": "Задаваемая частота (Hz)",
-                "Output frequency (Hz)": "Выходная частота (Hz)",
-                "Output current (A)": "Выходной ток (A)",
-                "Input voltage": "Входное напряжение",
-                "Output voltage": "Выходное напряжение",
-                "Rotation speed (rpm)": "Скорость вращения (Об_мин)",
-                "Set torque (%)": "Задаваемый крутящий момент (%)",
-                "Output torque(%)": "Выходной крутящий момент (%)",
-                "PID Set Value (%)": "Задаваемое значение PID (%)",
-                "PID Feedback (%)": "Обратная связь PID (%)",
-                "Output PID value": "Выходное значение PID",
-                "PID frequency reference source (0-Keypad buttons) (1-Analog parameter) (2-Analog input) (5-Pulse input) (6-485) (8-Digital terminals) (9-Current)": "Ист.зад.частоты PID (0-Кн.на ПУ) (1-Ан.п-метр) (2-Ан.вход)  (5-Им.вх) (6-485) (8-Циф.клеммы) (9-По току)",
-                "PID Feedback Source (0-Bttn. on CP) (1-Analog Parameter) (2-Analog Input) (5-Pulse Input) (6-485) (8-Digital Terminals) (9-Current)": "Источник ОС PID (0-Кн.на ПУ) (1-Ан.п-метр) (2-Ан.вход)  (5-Им.вх) (6-485) (8-Циф.клеммы) (9-По току)",
-                "Output power (%)": "Выходная мощность (%)",
-                "Bus voltage": "Напряжение на шине",
-                "Module 1 temperature": "Температура модуля 1",
-                "Module 2 temperature": "Температура модуля 2",
-                "AI1 voltage": "Напряжение AI1",
+                "Set Frequency": "Задаваемая частота",
+                "Output Frequency": "Выходная частота",
+                "Output Current": "Выходной ток",
+                "Input Voltage": "Входное напряжение",
+                "Output Voltage": "Выходное напряжение",
+                "Rotation Speed": "Скорость вращения",
+                "Set Torque": "Задаваемый крутящий момент",
+                "Output Torque": "Выходной крутящий момент",
+                "PID Set Value": "Задаваемое значение PID",
+                "PID Feedback": "Обратная связь PID",
+                "Output PID Value": "Выходное значение PID",
+                "PID Frequency Reference Source": "Источник задания частоты PID",
+                "PID Feedback Source": "Источник ОС PID",
+                "Output Power": "Выходная мощность",
+                "Bus Voltage": "Напряжение на шине",
+                "Module 1 Temperature": "Температура модуля 1",
+                "Module 2 Temperature": "Температура модуля 2",
+                "AI1 Voltage": "Напряжение AI1",
                 "Voltage P.Control": "Напряжение П.Упр.",
-                "AO1 voltage": "Напряжение AO1",
-                "Drive error code": "Код ошибки ПЧ",
-                "Inverter warning code": "Код предупреждения ПЧ",
-                "Setting frequency (Hz)": "Установка частота (Гц)",
-                "Frequency lower limit setting (Hz)": "Задание нижнего предела частоты (Гц)",
-                "Sleep activation": "Спящий режим",
-                "Set the sleep activation limit (Hz)": "Частота активации спящего режима(Гц)",
-                "Running in reverse": "Запуск в обратном направлении",
-                "Forward launch": "Запуск в прямом направлении",
+                "AO1 Voltage": "Напряжение AO1",
+                "Drive Error Code": "Код ошибки ПЧ",
+                "Inverter Warning Code": "Код предупреждения ПЧ",
+                "Setting Frequency": "Установка частоты",
+                "Frequency Lower Limit Setting": "Задание нижнего предела частоты",
+                "Sleep Activation": "Спящий режим",
+                "Set Sleep Activation Limit": "Частота активации спящего режима",
+                "Running In Reverse": "Запуск в обратном направлении",
+                "Forward Launch": "Запуск в прямом направлении",
                 "Stop": "Останов",
-                "Reset error": "Сброс ошибки"
+                "Reset Error": "Сброс ошибки"
             }
         }
     }
