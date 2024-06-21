@@ -69,7 +69,7 @@ namespace
         cout << "Usage:" << endl
              << " " << APP_NAME << " [options]" << endl
              << "Options:" << endl
-             << "  -d       level     enable debuging output:" << endl
+             << "  -d       level     enable debugging output:" << endl
              << "                       1 - serial only;" << endl
              << "                       2 - mqtt only;" << endl
              << "                       3 - both;" << endl
