@@ -14,12 +14,12 @@
 				"order": 1
 			},
 			{
-				"title": "Current status",
+				"title": "Current Status",
 				"id": "status",
 				"order": 2
 			},
 			{
-				"title": "Device management",
+				"title": "Device Management",
 				"id": "management",
 				"order": 3
 			}
@@ -35,7 +35,7 @@
 				"readonly": true
 			},
 			{
-				"name": "Mode (Pi-0, Pid-1, Lin-2, Fill-3, Off-4)",
+				"name": "Mode",
 				"reg_type": "holding",
 				"format": "u16",
 				"address": 1005,
@@ -52,7 +52,7 @@
 				"group": "parameters"
 			},
 			{
-				"name": "Minimum pressure",
+				"name": "Minimum Pressure",
 				"reg_type": "holding",
 				"address": 1006,
 				"type": "value",
@@ -62,7 +62,7 @@
 				"group": "parameters"
 			},
 			{
-				"name": "Maximum pressure",
+				"name": "Maximum Pressure",
 				"reg_type": "holding",
 				"address": 1008,
 				"type": "value",
@@ -72,58 +72,64 @@
 				"group": "parameters"
 			},
 			{
-				"name": "Low pressure control time (sec)",
+				"name": "Low Pressure Control Time",
 				"reg_type": "holding",
 				"address": 1010,
 				"type": "value",
+				"units": "sec",
 				"format": "u32",
 				"word_order": "little_endian",
 				"group": "parameters"
 			},
 			{
-				"name": "Min. pump operating time (sec)",
+				"name": "Min. Pump Operating Time",
 				"reg_type": "holding",
 				"address": 1012,
 				"type": "value",
+				"units": "sec",
 				"format": "u32",
 				"word_order": "little_endian",
 				"group": "parameters"
 			},
 			{
-				"name": "Max. pump operating time (min)",
+				"name": "Max. Pump Operating Time",
 				"reg_type": "holding",
 				"address": 1014,
 				"type": "value",
+				"units": "min",
 				"format": "u32",
 				"word_order": "little_endian",
 				"group": "parameters"
 			},
 			{
-				"name": "Error reset time (min)",
+				"name": "Error Reset Time",
 				"reg_type": "holding",
 				"address": 1020,
 				"type": "value",
+				"units": "min",
 				"format": "u16",
 				"group": "parameters"
 			},
 			{
-				"name": "Max. water per session (liters)",
+				"name": "Max. Water Per Session",
 				"reg_type": "holding",
 				"address": 1021,
 				"type": "value",
+				"units": "liters",
 				"format": "u16",
 				"group": "parameters"
 			},
 			{
-				"name": "Min. time between starts (sec)",
+				"name": "Min. Time Between Starts",
 				"reg_type": "holding",
 				"address": 1022,
 				"type": "value",
+				"units": "sec",
 				"format": "u16",
 				"group": "parameters"
 			},
 			{
-				"name": "Backlight (Post - 0.1 minute - 1.5 minute - 2)",
+				"name": "Backlight",
 				"reg_type": "holding",
 				"format": "u16",
 				"address": 1023,
@@ -138,20 +144,22 @@
 				"group": "parameters"
 			},
 			{
-				"name": "Min. power %",
+				"name": "Min. Power",
 				"reg_type": "holding",
 				"address": 1024,
 				"type": "value",
+				"units": "%",
 				"format": "float",
 				"word_order": "little_endian",
 				"round_to": 0.1,
 				"group": "parameters"
 			},
 			{
-				"name": "Max power %",
+				"name": "Max Power",
 				"reg_type": "holding",
 				"address": 1026,
 				"type": "value",
+				"units": "%",
 				"format": "float",
 				"word_order": "little_endian",
 				"round_to": 0.1,
@@ -188,7 +196,7 @@
 				"group": "parameters"
 			},
 			{
-				"name": "PID Time (0.01-9.99)",
+				"name": "PID Time",
 				"reg_type": "holding",
 				"address": 1034,
 				"type": "value",
@@ -198,7 +206,7 @@
 				"group": "parameters"
 			},
 			{
-				"name": "Aux mode relay (Off-0, Alarm-1, Low-2, High-3, SecondPump-4)",
+				"name": "Aux Mode Relay",
 				"reg_type": "holding",
 				"format": "u16",
 				"address": 1036,
@@ -215,23 +223,25 @@
 				"group": "parameters"
 			},
 			{
-				"name": "Additional pump delay in Low mode (sec)",
+				"name": "Pump Delay Low Mode",
 				"reg_type": "holding",
 				"address": 1037,
 				"type": "value",
+				"units": "sec",
 				"format": "u16",
 				"group": "parameters"
 			},
 			{
-				"name": "Additional pump delay in High mode (sec)",
+				"name": "Pump Delay High Mode",
 				"reg_type": "holding",
 				"address": 1038,
 				"type": "value",
+				"units": "sec",
 				"format": "u16",
 				"group": "parameters"
 			},
 			{
-				"name": "Starting power in SP mode",
+				"name": "Starting Power SP Mode",
 				"reg_type": "holding",
 				"address": 1039,
 				"type": "value",
@@ -239,7 +249,7 @@
 				"group": "parameters"
 			},
 			{
-				"name": "Stop power in SP mode",
+				"name": "Stop Power SP Mode",
 				"reg_type": "holding",
 				"address": 1040,
 				"type": "value",
@@ -247,15 +257,16 @@
 				"group": "parameters"
 			},
 			{
-				"name": "Additional pump activation delay in SP mode (sec)",
+				"name": "Pump Activation Delay",
 				"reg_type": "holding",
 				"address": 1041,
 				"type": "value",
+				"units": "sec",
 				"format": "u16",
 				"group": "parameters"
 			},
 			{
-				"name": "Current pressure",
+				"name": "Current Pressure",
 				"reg_type": "holding",
 				"address": 1099,
 				"type": "value",
@@ -265,17 +276,18 @@
 				"readonly": true
 			},
 			{
-				"name": "Current power %",
+				"name": "Current Power",
 				"reg_type": "holding",
 				"address": 1101,
 				"type": "value",
 				"format": "float",
+				"units": "%",
 				"word_order": "little_endian",
 				"group": "status",
 				"readonly": true
 			},
 			{
-				"name": "Total water",
+				"name": "Total Water",
 				"reg_type": "holding",
 				"address": 1103,
 				"type": "value",
@@ -285,7 +297,7 @@
 				"readonly": true
 			},
 			{
-				"name": "Current pumping speed",
+				"name": "Current Pumping Speed",
 				"reg_type": "holding",
 				"address": 1105,
 				"type": "value",
@@ -295,7 +307,7 @@
 				"readonly": true
 			},
 			{
-				"name": "Total pump operating time",
+				"name": "Total Pump Operating Time",
 				"reg_type": "holding",
 				"address": 1107,
 				"type": "value",
@@ -305,7 +317,7 @@
 				"readonly": true
 			},
 			{
-				"name": "Leak sensor activation",
+				"name": "Leak Sensor Activation",
 				"reg_type": "holding",
 				"address": 1109,
 				"type": "switch",
@@ -314,7 +326,7 @@
 				"readonly": true
 			},
 			{
-				"name": "Operation indicator",
+				"name": "Operation Indicator",
 				"reg_type": "holding",
 				"address": 1110,
 				"type": "switch",
@@ -323,7 +335,7 @@
 				"readonly": true
 			},
 			{
-				"name": "Error code",
+				"name": "Error Code",
 				"reg_type": "holding",
 				"address": 1111,
 				"type": "value",
@@ -333,7 +345,7 @@
 				"readonly": true
 			},
 			{
-				"name": "Reset error",
+				"name": "Reset Error",
 				"reg_type": "holding",
 				"write_address": 1111,
 				"format": "u32",
@@ -342,7 +354,7 @@
 				"group": "status"
 			},
 			{
-				"name": "Save to eeprom",
+				"name": "Save To Eeprom",
 				"reg_type": "holding",
 				"write_address": 1399,
 				"format": "u16",
@@ -351,7 +363,7 @@
 				"group": "management"
 			},
 			{
-				"name": "Read from eeprom",
+				"name": "Read From Eeprom",
 				"reg_type": "holding",
 				"write_address": 1400,
 				"format": "u16",
@@ -376,42 +388,42 @@
 				"template_title": "PID Polytech FC Control",
 				"Device Setting": "Настройки устройства",
 				"Work Parameters": "Параметры регулятора",
-				"Current status": "Текущее состояние",
-				"Device management": "Управление устройством",
+				"Current Status": "Текущее состояние",
+				"Device Management": "Управление устройством",
 				"Version V4.5.  Firmware": "Версия v. 4.5.  Прошивка",
-				"Mode (Pi-0, Pid-1, Lin-2, Fill-3, Off-4)": "Режим (PI-0, PID-1, LIN-2, FILL-3, OFF-4)",
-				"Minimum pressure": "Минимальное давление",
-				"Maximum pressure": "Максимальное давление",
-				"Low pressure control time (sec)": "Время контроля низкого давления (сек)",
-				"Min. pump operating time (sec)": "Мин.время работы насоса (сек)",
-				"Max. pump operating time (min)": "Макс.время работы насоса (мин)",
-				"Error reset time (min)": "Время сброса ошибки (мин)",
-				"Max. water per session (liters)": "Макс. воды за сессию (литры)",
-				"Min. time between starts (sec)": "Мин.время между запусками (сек)",
-				"Backlight (Post - 0.1 minute - 1.5 minute - 2)": "Подсветка (Пост-0,1 минута-1,5 минут-2)",
-				"Min. power %": "Мин.мощность %",
-				"Max power %": "Макс.мощность %",
+				"Mode": "Режим",
+				"Minimum Pressure": "Минимальное давление",
+				"Maximum Pressure": "Максимальное давление",
+				"Low Pressure Control Time": "Время контроля низкого давления",
+				"Min. Pump Operating Time": "Мин.время работы насоса",
+				"Max. Pump Operating Time": "Макс.время работы насоса",
+				"Error Reset Time": "Время сброса ошибки",
+				"Max. Water Per Session": "Макс. воды за сессию",
+				"Min. Time Between Starts": "Мин. время между запусками",
+				"Backlight": "Подсветка",
+				"Min. Power": "Мин. мощность",
+				"Max Power": "Макс. мощность",
 				"PID P": "ПИД P",
 				"PID I": "ПИД I",
 				"PID D": "ПИД D",
-				"PID Time (0.01-9.99)": "Время ПИД (0,01-9,99)",
-				"Aux mode relay (Off-0, Alarm-1, Low-2, High-3, SecondPump-4)": "Режим всп. реле (Off-0, Alarm-1,Low-2,High-3,SecondPump-4)",
-				"Additional pump delay in Low mode (sec)": "Задержка доп.насоса в режиме Low (сек)",
-				"Additional pump delay in High mode (sec)": "Задержка доп.насоса в режиме High (сек)",
-				"Starting power in SP mode": "Мощность стартовая в режиме SP",
-				"Stop power in SP mode": "Мощность остановки в режиме SP",
-				"Additional pump activation delay in SP mode (sec)": "Задержка сраб.доп.насоса в режиме SP (сек)",
-				"Current pressure": "Текущее давление",
-				"Current power %": "Текущая мощность %",
-				"Total water": "Воды всего",
-				"Current pumping speed": "Текущая скорость прокачки",
-				"Total pump operating time": "Общее время работы насоса",
-				"Leak sensor activation": "Cрабатывания датчика утечки",
-				"Operation indicator": "Индикатор работы",
-				"Error code": "Код ошибки",
-				"Reset error": "Сброс ошибки",
-				"Save to eeprom": "Сохранить в eeprom",
-				"Read from eeprom": "Считать  из eeprom",
+				"PID Time": "Время ПИД",
+				"Aux Mode Relay": "Режим всп. реле",
+				"Pump Delay Low Mode": "Задержка включения насоса Low",
+				"Pump Delay High Mode": "Задержка включения насоса High",
+				"Starting Power SP Mode": "Мощность стартовая в SP",
+				"Stop Power SP Mode": "Мощность остановки в SP",
+				"Pump Activation Delay": "Задержка срабатывания насоса",
+				"Current Pressure": "Текущее давление",
+				"Current Power": "Текущая мощность",
+				"Total Water": "Воды всего",
+				"Current Pumping Speed": "Текущая скорость прокачки",
+				"Total Pump Operating Time": "Общее время работы насоса",
+				"Leak Sensor Activation": "Cрабатывания датчика утечки",
+				"Operation Indicator": "Индикатор работы",
+				"Error Code": "Код ошибки",
+				"Reset Error": "Сброс ошибки",
+				"Save To Eeprom": "Сохранить в eeprom",
+				"Read From Eeprom": "Считать  из eeprom",
 				"Reboot": "Перезагрузка"
 			}
 		}
