@@ -378,12 +378,12 @@ Publish: /devices/mercury230ar02_0/controls/Tariff2: '1000.0' (QoS 1, retained)
 << 00 0F 00 40 42 FF FF FF FF FF FF FF FF FF FF FF FF D8 07
 EnqueueMercury230Tariff3Response()
 >> 00 05 00 03 50 24
-Publish: /devices/mercury230ar02_0/controls/Tariff3: '1000.0' (QoS 1, retained)
-<< 00 0F 00 40 42 FF FF FF FF FF FF FF FF FF FF FF FF D8 07
+Publish: /devices/mercury230ar02_0/controls/Tariff3: '500.0' (QoS 1, retained)
+<< 00 07 00 20 A1 FF FF FF FF FF FF FF FF FF FF FF FF C4 03
 EnqueueMercury230Tariff4Response()
 >> 00 05 00 04 11 E6
-Publish: /devices/mercury230ar02_0/controls/Tariff4: '0000.0' (QoS 1, retained)
-<< 00 FF FF FF FF FF FF FF FF FF FF FF FF FF FF FF FF 30 00
+Publish: /devices/mercury230ar02_0/controls/Tariff4: '500.0' (QoS 1, retained)
+<< 00 07 00 20 A1 FF FF FF FF FF FF FF FF FF FF FF FF C4 03
 EnqueueMercury230U1Response()
 >> 00 08 11 11 4D BA
 Publish: /devices/mercury230ar02_0/controls/U1: '241.28' (QoS 1, retained)
