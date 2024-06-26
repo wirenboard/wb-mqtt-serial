@@ -1,8 +1,20 @@
-wb-mqtt-serial (2.127.2) stable; urgency=medium
+wb-mqtt-serial (2.127.4) stable; urgency=medium
 
   * Somfy SDN: add tilting support
 
  -- Nikolay Korotkiy <nikolay.korotkiy@wirenboard.com>  Wed, 19 Jun 2024 17:10:00 +0400
+
+wb-mqtt-serial (2.127.3) stable; urgency=medium
+
+  * Add GitHub pull request template. No functional changes
+
+ -- Petr Krasnoshchekov <petr.krasnoshchekov@wirenboard.com>  Mon, 24 Jun 2024 09:55:30 +0500
+
+wb-mqtt-serial (2.127.2) stable; urgency=medium
+
+  * Watch device template changes in /usr/lib/wb-mqtt-serial/templates
+
+ -- Petr Krasnoshchekov <petr.krasnoshchekov@wirenboard.com>  Fri, 21 Jun 2024 11:49:58 +0500
 
 wb-mqtt-serial (2.127.1) stable; urgency=medium
 

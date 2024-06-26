@@ -12,23 +12,28 @@
 
 #define LOG(logger) logger.Log() << "[file watcher] "
 
-TFilesWatcher::TFilesWatcher(const std::string& path, TFilesWatcher::TCallback callback)
-    : Path(path),
-      Callback(callback),
+TFilesWatcher::TFilesWatcher(const std::vector<std::string>& paths, TFilesWatcher::TCallback callback)
+    : Callback(callback),
       Running(true)
 {
-    WatcherThread = std::thread([this] {
+    WatcherThread = std::thread([this, paths] {
         int fd = inotify_init();
         if (fd == -1) {
             LOG(Error) << "inotify_init failed: " << strerror(errno);
             return;
         }
 
-        int wd = inotify_add_watch(fd, Path.c_str(), IN_CLOSE_WRITE | IN_DELETE);
-        if (wd == -1) {
-            LOG(Error) << "inotify_add_watch failed: " << strerror(errno);
-            close(fd);
-            return;
+        std::unordered_map<int, std::string> wdToPath;
+
+        for (const auto& path: paths) {
+            int wd = inotify_add_watch(fd, path.c_str(), IN_CLOSE_WRITE | IN_DELETE);
+            if (wd == -1) {
+                LOG(Error) << "inotify_add_watch failed: " << strerror(errno);
+                close(fd);
+                return;
+            } else {
+                wdToPath.emplace(wd, path);
+            }
         }
 
         struct pollfd fds[1];
@@ -60,18 +65,21 @@ TFilesWatcher::TFilesWatcher(const std::string& path, TFilesWatcher::TCallback c
 
                 for (char* ptr = buf; ptr < buf + len;) {
                     struct inotify_event* event = (struct inotify_event*)ptr;
-                    auto fullPath = Path + "/" + event->name;
-                    switch (event->mask) {
-                        case IN_CLOSE_WRITE: {
-                            {
-                                LOG(Debug) << "file modified: " << fullPath;
-                                Callback(fullPath, TFilesWatcher::TEvent::CloseWrite);
-                                break;
-                            }
-                            case IN_DELETE: {
-                                LOG(Debug) << "file deleted: " << fullPath;
-                                Callback(fullPath, TFilesWatcher::TEvent::Delete);
-                                break;
+                    auto it = wdToPath.find(event->wd);
+                    if (it != wdToPath.end()) {
+                        auto fullPath = it->second + "/" + event->name;
+                        switch (event->mask) {
+                            case IN_CLOSE_WRITE: {
+                                {
+                                    LOG(Debug) << "file modified: " << fullPath;
+                                    Callback(fullPath, TFilesWatcher::TEvent::CloseWrite);
+                                    break;
+                                }
+                                case IN_DELETE: {
+                                    LOG(Debug) << "file deleted: " << fullPath;
+                                    Callback(fullPath, TFilesWatcher::TEvent::Delete);
+                                    break;
+                                }
                             }
                         }
                     }
@@ -80,7 +88,9 @@ TFilesWatcher::TFilesWatcher(const std::string& path, TFilesWatcher::TCallback c
             }
         }
 
-        inotify_rm_watch(fd, wd);
+        for (auto path: wdToPath) {
+            inotify_rm_watch(fd, path.first);
+        }
         close(fd);
     });
 }
