@@ -10,6 +10,7 @@ namespace
     const auto WB_BAUD_RATE_REGISTER_ADDRESS = 110;
     const auto WB_PARITY_REGISTER_ADDRESS = 111;
     const auto WB_STOP_BITS_REGISTER_ADDRESS = 112;
+    const auto WB_SLAVE_ID_REGISTER_ADDRESS = 128;
 
     TRPCPortSetupRequestItem ParseRPCPortSetupItemRequest(const Json::Value& request)
     {
@@ -33,10 +34,9 @@ namespace
         regConfigs["stop_bits"] = TRegisterConfig::Create(
             Modbus::REG_HOLDING,
             TRegisterDesc{std::make_shared<TUint32RegisterAddress>(WB_STOP_BITS_REGISTER_ADDRESS), 0, 0});
-
-        regConfigs["slave_id"] =
-            TRegisterConfig::Create(Modbus::REG_HOLDING,
-                                    TRegisterDesc{std::make_shared<TUint32RegisterAddress>(128), 0, 0});
+        regConfigs["slave_id"] = TRegisterConfig::Create(
+            Modbus::REG_HOLDING,
+            TRegisterDesc{std::make_shared<TUint32RegisterAddress>(WB_SLAVE_ID_REGISTER_ADDRESS), 0, 0});
 
         if (request.isMember("cfg")) {
             for (auto& item: regConfigs) {
