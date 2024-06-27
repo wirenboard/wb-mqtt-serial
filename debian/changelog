@@ -1,3 +1,9 @@
+wb-mqtt-serial (2.128.1) stable; urgency=medium
+
+  * Somfy SDN: add tilting support
+
+ -- Nikolay Korotkiy <nikolay.korotkiy@wirenboard.com>  Wed, 19 Jun 2024 17:10:00 +0400
+
 wb-mqtt-serial (2.128.0) stable; urgency=medium
 
   * Add device address setup RPC

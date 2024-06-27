@@ -229,6 +229,16 @@
                 "min": 6,
                 "max": 28,
                 "condition": "(node_type==2)||(node_type==5)||(node_type==8)"
+            },
+            {
+                "name": "Tilting angle of the slats",
+                "type": "range",
+                "reg_type": "angle",
+                "address": 0,
+                "min": 0,
+                "max": 180,
+                "enabled": false,
+                "condition": "node_type==9"
             }
         ],
         "translations": {
@@ -252,7 +262,8 @@
                 "Delete limits": "Удалить концевые положения",
                 "Set up limit": "Установить концевое положение открытия",
                 "Set down limit": "Установить концевое положение закрытия",
-                "Stop": "Остановить"
+                "Stop": "Остановить",
+                "Tilting angle of the slats": "Угол наклона ламелей"
             }
         }
     }

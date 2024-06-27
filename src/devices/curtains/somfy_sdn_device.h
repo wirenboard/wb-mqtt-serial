@@ -13,7 +13,7 @@ namespace Somfy
         CTRL_WINK = 0x05,
         GET_MOTOR_POSITION = 0x0C,
         POST_MOTOR_POSITION = 0x0D,
-        GET_MOTO_STATUS = 0x0E,
+        GET_MOTOR_STATUS = 0x0E,
         SET_MOTOR_LIMITS = 0x11,
         SET_MOTOR_ROTATION_DIRECTION = 0x12,
         SET_MOTOR_ROLLING_SPEED = 0x13,
