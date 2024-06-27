@@ -1,3 +1,9 @@
+wb-mqtt-serial (2.128.0) stable; urgency=medium
+
+  * Add device address setup RPC
+
+ -- Petr Krasnoshchekov <petr.krasnoshchekov@wirenboard.com>  Thu, 27 Jun 2024 15:15:35 +0500
+
 wb-mqtt-serial (2.127.4) stable; urgency=medium
 
   * Add new signature in m1w2 template

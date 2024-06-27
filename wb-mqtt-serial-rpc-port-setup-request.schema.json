@@ -16,6 +16,9 @@
         "stop_bits": {
           "type": "integer",
           "enum": [1, 2]
+        },
+        "slave_id": {
+          "type": "integer"
         }
       }
     },
