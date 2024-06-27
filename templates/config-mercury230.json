@@ -17,6 +17,38 @@
                 "scale": 0.001
             },
             {
+                "name": "Tariff 1",
+                "reg_type": "array",
+                "address": "0x1000",
+                "format": "u32",
+                "type": "power_consumption",
+                "scale": 0.001
+            },
+            {
+                "name": "Tariff 2",
+                "reg_type": "array",
+                "address": "0x2000",
+                "format": "u32",
+                "type": "power_consumption",
+                "scale": 0.001
+            },
+            {
+                "name": "Tariff 3",
+                "reg_type": "array",
+                "address": "0x3000",
+                "format": "u32",
+                "type": "power_consumption",
+                "scale": 0.001
+            },
+            {
+                "name": "Tariff 4",
+                "reg_type": "array",
+                "address": "0x4000",
+                "format": "u32",
+                "type": "power_consumption",
+                "scale": 0.001
+            },
+            {
                 "name": "Total reactive energy",
                 "reg_type": "array",
                 "address": "0x0002",
