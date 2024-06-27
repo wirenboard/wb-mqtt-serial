@@ -22,7 +22,8 @@
 {% if has_signature %}
     "hw": [
         {
-            "signature": "WBMAI6"
+            "signature": "WBMAI6",
+            "fw": "2.1.0"
         }
     ],
 {% endif %}
@@ -286,7 +287,7 @@
             },
             {
                 "id": "in{{ ch_num }}_vdiv_high_voltage_arm_res",
-                "title": "External Voltage Divider High-Voltage Arm (R1) Resistance, kOhm",
+                "title": "External voltage divider high-voltage arm (R1) resistance, kOhm",
                 "group": "gg_in{{ ch_num }}_p",
                 "order": 5,
                 "address": "0x{{ "%x"|format(ch_num) }}40E",
@@ -296,7 +297,7 @@
             },
             {
                 "id": "in{{ ch_num }}_vdiv_low_voltage_arm_res",
-                "title": "External Voltage Divider Low-Voltage Arm (R2) Resistance, kOhm",
+                "title": "External voltage divider low-voltage arm (R2) resistance, kOhm",
                 "group": "gg_in{{ ch_num }}_p",
                 "order": 6,
                 "address": "0x{{ "%x"|format(ch_num) }}410",
@@ -582,7 +583,7 @@
             },
             {
                 "id": "in{{ ch_num }}_n_vdiv_high_voltage_arm_res",
-                "title": "External Voltage Divider High-Voltage Arm (R1) Resistance, kOhm",
+                "title": "External voltage divider high-voltage arm (R1) resistance, kOhm",
                 "group": "gg_in{{ ch_num }}_n",
                 "order": 5,
                 "address": "0x{{ "%x"|format(ch_num) }}40F",
@@ -592,7 +593,7 @@
             },
             {
                 "id": "in{{ ch_num }}_n_vdiv_low_voltage_arm_res",
-                "title": "External Voltage Divider Low-Voltage Arm (R2) Resistance, kOhm",
+                "title": "External voltage divider low-voltage arm (R2) resistance, kOhm",
                 "group": "gg_in{{ ch_num }}_n",
                 "order": 6,
                 "address": "0x{{ "%x"|format(ch_num) }}411",
@@ -877,8 +878,8 @@
                 "reg_type": "input",
                 "format": "s32",
                 "address": "0x{{ "%x"|format(ch_num) }}502",
-                "scale": 0.000001,
-                "round_to": 0.001,
+                "scale": 0.001,
+                "round_to": 0.01,
                 "group": "gg_in{{ ch_num }}_n",
                 "condition": "in{{ ch_num }}_n_type==5||in{{ ch_num }}_n_type==6"
             },
@@ -1183,8 +1184,8 @@
                 "Maximum value": "Максимальное пересчитанное значение",
                 "Zero offset (A)" : "Сдвиг нуля (A)",
                 "Rated current (A)" : "Номинальный ток (A)",
-                "External Voltage Divider High-Voltage Arm (R1) Resistance, kOhm" : "Сопротивление верхнего плеча (R1) внешнего делителя напряжения, кОм",
-                "External Voltage Divider Low-Voltage Arm (R2) Resistance, kOhm" : "Сопротивление нижнего плеча (R2) внешнего делителя напряжения, кОм",
+                "External voltage divider high-voltage arm (R1) resistance, kOhm" : "Сопротивление верхнего плеча (R1) внешнего делителя напряжения, кОм",
+                "External voltage divider low-voltage arm (R2) resistance, kOhm" : "Сопротивление нижнего плеча (R2) внешнего делителя напряжения, кОм",
                 "external_voltage_divider_description": "Внешний делитель напряжения используется для измерения напряжения выше 30 В и для получения более высокого входного сопротивления. Выходное напряжение делителя должно быть в диапазоне от 0 до 4 В (лучше до 2 В). Поддерживается с версии прошивки 2.1.0.",
                 "Value": "Пересчитанное значение",
                 "5V Output": "Напряжение на клеммах 5V",
