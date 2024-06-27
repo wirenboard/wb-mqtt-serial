@@ -1,3 +1,9 @@
+wb-mqtt-serial (2.127.4) stable; urgency=medium
+
+  * Add channels "tariffs" to templates/config-mercury230.json
+
+ -- Elena Savchenko <elena.savchenko@wirenboard.com>  Thu, 27 Jun 2024 11:55:30 +0500
+
 wb-mqtt-serial (2.127.3) stable; urgency=medium
 
   * Add GitHub pull request template. No functional changes
