@@ -38,6 +38,7 @@
 #include "devices/pulsar_device.h"
 #include "devices/s2k_device.h"
 #include "devices/uniel_device.h"
+#include "devices/energomera_ce_device.h"
 
 #define LOG(logger) ::logger.Log() << "[serial config] "
 
@@ -1140,6 +1141,7 @@ void RegisterProtocols(TSerialDeviceFactory& deviceFactory)
     WinDeco::TDevice::Register(deviceFactory);
     Somfy::TDevice::Register(deviceFactory);
     Aok::TDevice::Register(deviceFactory);
+    TEnergomeraCeDevice::Register(deviceFactory);
 }
 
 TRegisterBitsAddress LoadRegisterBitsAddress(const Json::Value& register_data, const std::string& jsonPropertyName)

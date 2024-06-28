@@ -1,3 +1,9 @@
+wb-mqtt-serial (2.129.0) stable; urgency=medium
+
+  * Add Energomera CE102 template
+
+ -- Petr Krasnoshchekov <petr.krasnoshchekov@wirenboard.com>  Thu, 13 Jun 2024 12:47:27 +0500
+
 wb-mqtt-serial (2.128.0) stable; urgency=medium
 
   * Add device address setup RPC

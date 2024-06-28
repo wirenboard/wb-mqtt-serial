@@ -8,3 +8,26 @@ uint64_t BinUtils::GetLSBMask(uint8_t bitCount)
     }
     return 0xFFFFFFFFFFFFFFFF;
 }
+
+void BinUtils::DecodeByteStaffing(std::vector<uint8_t>& data, const std::unordered_map<uint8_t, std::vector<uint8_t>>& rules)
+{
+    auto writeIt = data.begin();
+    for (auto readIt = data.begin(); readIt != data.end(); ++readIt) {
+        bool changed = false;
+        for (auto rule: rules) {
+            if ((static_cast<size_t>(data.end() - readIt) > rule.second.size()) &&
+                std::equal(rule.second.begin(), rule.second.end(), readIt))
+            {
+                *writeIt = rule.first;
+                ++readIt;
+                changed = true;
+                break;
+            }
+        }
+        if (!changed) {
+            *writeIt = *readIt;
+        }
+        ++writeIt;
+    }
+    data.resize(writeIt - data.begin());
+}
