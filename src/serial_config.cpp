@@ -25,6 +25,7 @@
 #include "devices/curtains/somfy_sdn_device.h"
 #include "devices/curtains/windeco_device.h"
 #include "devices/dlms_device.h"
+#include "devices/energomera_ce_device.h"
 #include "devices/energomera_iec_device.h"
 #include "devices/energomera_iec_mode_c_device.h"
 #include "devices/ivtm_device.h"
@@ -38,7 +39,6 @@
 #include "devices/pulsar_device.h"
 #include "devices/s2k_device.h"
 #include "devices/uniel_device.h"
-#include "devices/energomera_ce_device.h"
 
 #define LOG(logger) ::logger.Log() << "[serial config] "
 
