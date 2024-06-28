@@ -22159,6 +22159,29 @@ eliwell_idplus_9xx_wb_ref
 	Reset Parameters Changed Indicator  =>  Reset Parameters Changed Indicator
 	Standby  =>  Standby
 	Temperature Setpoint  =>  Temperature Setpoint
+energomera_ce102
+	A Energy  =>  A Energy
+	A Energy 1 Month  =>  A Energy 1 Month
+	A Energy 10 Months  =>  A Energy 10 Months
+	A Energy 11 Months  =>  A Energy 11 Months
+	A Energy 12 Months  =>  A Energy 12 Months
+	A Energy 2 Months  =>  A Energy 2 Months
+	A Energy 3 Months  =>  A Energy 3 Months
+	A Energy 4 Months  =>  A Energy 4 Months
+	A Energy 5 Months  =>  A Energy 5 Months
+	A Energy 6 Months  =>  A Energy 6 Months
+	A Energy 7 Months  =>  A Energy 7 Months
+	A Energy 8 Months  =>  A Energy 8 Months
+	A Energy 9 Months  =>  A Energy 9 Months
+	A Energy T1  =>  A Energy T1
+	A Energy T2  =>  A Energy T2
+	A Energy T3  =>  A Energy T3
+	A Energy T4  =>  A Energy T4
+	A Energy T5  =>  A Energy T5
+	Date  =>  Date
+	Irms  =>  Irms
+	P  =>  P
+	Urms  =>  Urms
 energomera_ce102m
 	A energy  =>  A energy
 	A energy T1  =>  A energy T1
