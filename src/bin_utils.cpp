@@ -9,7 +9,8 @@ uint64_t BinUtils::GetLSBMask(uint8_t bitCount)
     return 0xFFFFFFFFFFFFFFFF;
 }
 
-void BinUtils::DecodeByteStaffing(std::vector<uint8_t>& data, const std::unordered_map<uint8_t, std::vector<uint8_t>>& rules)
+void BinUtils::DecodeByteStaffing(std::vector<uint8_t>& data,
+                                  const std::unordered_map<uint8_t, std::vector<uint8_t>>& rules)
 {
     auto writeIt = data.begin();
     for (auto readIt = data.begin(); readIt != data.end(); ++readIt) {
