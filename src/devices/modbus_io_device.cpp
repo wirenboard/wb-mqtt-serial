@@ -61,9 +61,9 @@ TModbusIODevice::TModbusIODevice(std::unique_ptr<Modbus::IModbusTraits> modbusTr
 {
     auto SecondaryId = GetSecondaryId(config.CommonConfig->SlaveId);
     Shift = (((SecondaryId - 1) % 4) + 1) * DeviceConfig()->Stride + DeviceConfig()->Shift;
-    config.CommonConfig->FrameTimeout =
-        std::max(config.CommonConfig->FrameTimeout,
-                 std::chrono::ceil<std::chrono::milliseconds>(port->GetSendTimeBytes(3.5)));
+    config.CommonConfig->FrameTimeout = std::max(
+        config.CommonConfig->FrameTimeout,
+        std::chrono::ceil<std::chrono::milliseconds>(port->GetSendTimeBytes(Modbus::STANDARD_FRAME_TIMEOUT_BYTES)));
 }
 
 PRegisterRange TModbusIODevice::CreateRegisterRange() const
@@ -73,7 +73,17 @@ PRegisterRange TModbusIODevice::CreateRegisterRange() const
 
 void TModbusIODevice::WriteRegisterImpl(PRegister reg, const TRegisterValue& value)
 {
-    Modbus::WriteRegister(*ModbusTraits, *Port(), SlaveId, *reg, value, ModbusCache, Shift);
+    Modbus::WriteRegister(*ModbusTraits,
+                          *Port(),
+                          SlaveId,
+                          0,
+                          *reg,
+                          value,
+                          ModbusCache,
+                          DeviceConfig()->RequestDelay,
+                          DeviceConfig()->ResponseTimeout,
+                          DeviceConfig()->FrameTimeout,
+                          Shift);
 }
 
 void TModbusIODevice::ReadRegisterRange(PRegisterRange range)
@@ -89,5 +99,14 @@ void TModbusIODevice::ReadRegisterRange(PRegisterRange range)
 void TModbusIODevice::WriteSetupRegisters()
 {
     Modbus::EnableWbContinuousRead(shared_from_this(), *ModbusTraits, *Port(), SlaveId, ModbusCache);
-    Modbus::WriteSetupRegisters(*ModbusTraits, *Port(), SlaveId, SetupItems, ModbusCache, Shift);
+    Modbus::WriteSetupRegisters(*ModbusTraits,
+                                *Port(),
+                                SlaveId,
+                                0,
+                                SetupItems,
+                                ModbusCache,
+                                DeviceConfig()->RequestDelay,
+                                DeviceConfig()->ResponseTimeout,
+                                DeviceConfig()->FrameTimeout,
+                                Shift);
 }
