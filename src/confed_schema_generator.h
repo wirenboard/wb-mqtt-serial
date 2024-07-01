@@ -42,7 +42,6 @@ void TransformGroupsToSubdevices(Json::Value& schema,
                                  Json::Value& subdevices,
                                  Json::Value* mainSchemaTranslations = nullptr);
 
-void GenerateSchemasForConfed(const std::string& confedSchemasFolder,
-                              TTemplateMap& templates,
-                              TSerialDeviceFactory& deviceFactory,
-                              const Json::Value& commonDeviceSchema);
+Json::Value GenerateSchemaForConfed(TDeviceTemplate& deviceTemplate,
+                                    TSerialDeviceFactory& deviceFactory,
+                                    const Json::Value& commonDeviceSchema);

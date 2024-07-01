@@ -1,3 +1,63 @@
+wb-mqtt-serial (2.128.0) stable; urgency=medium
+
+  * Add device address setup RPC
+
+ -- Petr Krasnoshchekov <petr.krasnoshchekov@wirenboard.com>  Thu, 27 Jun 2024 15:15:35 +0500
+
+wb-mqtt-serial (2.127.4) stable; urgency=medium
+
+  * Add new signature in m1w2 template
+
+ -- Radmir Khakimov <radmir.khakimov@wirenboard.com>  Wed, 26 Jun 2024 19:00:30 +0500
+
+wb-mqtt-serial (2.127.3) stable; urgency=medium
+
+  * Add GitHub pull request template. No functional changes
+
+ -- Petr Krasnoshchekov <petr.krasnoshchekov@wirenboard.com>  Mon, 24 Jun 2024 09:55:30 +0500
+
+wb-mqtt-serial (2.127.2) stable; urgency=medium
+
+  * Watch device template changes in /usr/lib/wb-mqtt-serial/templates
+
+ -- Petr Krasnoshchekov <petr.krasnoshchekov@wirenboard.com>  Fri, 21 Jun 2024 11:49:58 +0500
+
+wb-mqtt-serial (2.127.1) stable; urgency=medium
+
+  * Delete template for Carel muRack
+
+ -- Andrey Ksenofontov <andrey.ksenofontov@wirenboard.com>  Wed, 19 Jun 2024 11:06:03 +0300
+
+wb-mqtt-serial (2.127.0) stable; urgency=medium
+
+  * Add new template for Carel muRack
+
+ -- Andrey Ksenofontov <andrey.ksenofontov@wirenboard.com>  Mon, 17 Jun 2024 10:36:03 +0300
+
+wb-mqtt-serial (2.126.0) stable; urgency=medium
+
+  * Add device setup RPC
+
+ -- Petr Krasnoshchekov <petr.krasnoshchekov@wirenboard.com>  Mon, 17 Jun 2024 10:23:24 +0500
+
+wb-mqtt-serial (2.125.2) stable; urgency=medium
+
+  * Somfy SDN: speed adjustment is only available on DC motors
+
+ -- Nikolay Korotkiy <nikolay.korotkiy@wirenboard.com>  Mon, 10 Jun 2024 17:30:00 +0400
+
+wb-mqtt-serial (2.125.1) stable; urgency=medium
+
+  * Fix WB-MAI6 configuration interface
+
+ -- Petr Krasnoshchekov <petr.krasnoshchekov@wirenboard.com>  Mon, 10 Jun 2024 17:18:03 +0500
+
+wb-mqtt-serial (2.125.0) stable; urgency=medium
+
+  * WB-MDM3 template: add light scenes, switch mode, safety and powerup actions support
+
+ -- Ilia Skochilov <ilia.skochilov@wirenboard.com>  Tue, 04 Jun 2024 11:14:15 +0300
+
 wb-mqtt-serial (2.124.0) stable; urgency=medium
 
   * Add new template for A-OK AM-35 motors
@@ -9,7 +69,6 @@ wb-mqtt-serial (2.123.3) stable; urgency=medium
   * Validation error of config containing duplicated ports
 
  -- Nikolay Korotkiy <nikolay.korotkiy@wirenboard.com>  Mon, 28 May 2024 17:30:00 +0400
-
 
 wb-mqtt-serial (2.123.2) stable; urgency=medium
 
@@ -25,8 +84,8 @@ wb-mqtt-serial (2.123.1) stable; urgency=medium
 
 wb-mqtt-serial (2.123.0) stable; urgency=medium
 
-  * Add min_request_interval option to device config. 
-    The option defines minimal time between requests to a device 
+  * Add min_request_interval option to device config.
+    The option defines minimal time between requests to a device
 
  -- Petr Krasnoshchekov <petr.krasnoshchekov@wirenboard.com>  Wed, 22 May 2024 09:51:17 +0500
 
