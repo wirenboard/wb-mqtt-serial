@@ -25,7 +25,6 @@ namespace Modbus // modbus protocol declarations
 
     const int MAX_READ_REGISTERS = 125;
 
-    const size_t EXCEPTION_RESPONSE_PDU_SIZE = 2;
     const size_t WRITE_RESPONSE_PDU_SIZE = 5;
 
     const int MAX_HOLE_CONTINUOUS_16_BIT_REGISTERS = 10;
@@ -266,7 +265,7 @@ namespace Modbus // modbus protocol common utilities
 
         request.resize(traits.GetPacketSize(REQUEST_PDU_SIZE));
         Modbus::ComposeReadRequestPDU(traits.GetPDU(request), *this, shift);
-        traits.FinalizeRequest(request, slaveId);
+        traits.FinalizeRequest(request, slaveId, 0);
         return request;
     }
 
@@ -367,7 +366,7 @@ namespace Modbus // modbus protocol common utilities
         OP_WRITE
     };
 
-    inline bool IsException(const uint8_t* pdu)
+    bool IsException(const uint8_t* pdu)
     {
         return pdu[0] & EXCEPTION_BIT;
     }
@@ -856,6 +855,7 @@ namespace Modbus // modbus protocol common utilities
     void WriteRegister(IModbusTraits& traits,
                        TPort& port,
                        uint8_t slaveId,
+                       uint32_t sn,
                        TRegister& reg,
                        const TRegisterValue& value,
                        Modbus::TRegisterCache& cache,
@@ -891,7 +891,7 @@ namespace Modbus // modbus protocol common utilities
             } else {
                 ComposeMultipleWriteRequestPDU(traits.GetPDU(req), reg, value.Get<uint64_t>(), shift, tmpCache, cache);
             }
-            traits.FinalizeRequest(req, slaveId);
+            traits.FinalizeRequest(req, slaveId, sn);
         } else {
             auto val = value.Get<uint64_t>();
             for (size_t i = 0; i < requests.size(); ++i) {
@@ -907,7 +907,7 @@ namespace Modbus // modbus protocol common utilities
                                              cache);
 
                 val >>= 16;
-                traits.FinalizeRequest(req, slaveId);
+                traits.FinalizeRequest(req, slaveId, sn);
             }
         }
 
@@ -978,6 +978,7 @@ namespace Modbus // modbus protocol common utilities
     void WriteSetupRegisters(Modbus::IModbusTraits& traits,
                              TPort& port,
                              uint8_t slaveId,
+                             uint32_t sn,
                              const std::vector<PDeviceSetupItem>& setupItems,
                              Modbus::TRegisterCache& cache,
                              std::chrono::microseconds requestDelay,
@@ -990,6 +991,7 @@ namespace Modbus // modbus protocol common utilities
                 WriteRegister(traits,
                               port,
                               slaveId,
+                              sn,
                               *item->Register,
                               item->RawValue,
                               cache,
@@ -1039,7 +1041,7 @@ namespace Modbus // modbus protocol common utilities
         return DATA_SIZE + pduSize;
     }
 
-    void TModbusRTUTraits::FinalizeRequest(TRequest& request, uint8_t slaveId)
+    void TModbusRTUTraits::FinalizeRequest(TRequest& request, uint8_t slaveId, uint32_t sn)
     {
         request[0] = slaveId;
         WriteAs2Bytes(&request[request.size() - 2], CRC16::CalculateCRC16(request.data(), request.size() - 2));
@@ -1124,7 +1126,7 @@ namespace Modbus // modbus protocol common utilities
         return MBAP_SIZE + pduSize;
     }
 
-    void TModbusTCPTraits::FinalizeRequest(TRequest& request, uint8_t slaveId)
+    void TModbusTCPTraits::FinalizeRequest(TRequest& request, uint8_t slaveId, uint32_t sn)
     {
         ++(*TransactionId);
         SetMBAP(request, *TransactionId, request.size() - MBAP_SIZE, slaveId);
@@ -1216,6 +1218,7 @@ namespace Modbus // modbus protocol common utilities
             Modbus::WriteRegister(traits,
                                   port,
                                   slaveId,
+                                  0,
                                   *reg,
                                   TRegisterValue(1),
                                   cache,
