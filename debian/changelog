@@ -1,3 +1,9 @@
+wb-mqtt-serial (2.129.0) stable; urgency=medium
+
+  * WB-MAI6 template: add WB-VDIV and custom voltage divider support
+
+ -- Pavel Gasheev <pavel.gasheev@wirenboard.ru>  Tue, 11 Jun 2024 15:18:10 +0300
+
 wb-mqtt-serial (2.128.0) stable; urgency=medium
 
   * Add device address setup RPC
