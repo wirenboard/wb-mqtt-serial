@@ -238,7 +238,7 @@ protected:
     }
     std::string GetTemplatePath() const override
     {
-        return "../templates";
+        return "device-templates";
     }
     void ExpectQueries(bool firstPoll);
 };
