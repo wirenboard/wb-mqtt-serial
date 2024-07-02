@@ -32,7 +32,7 @@
         "type": "value",
         "format": "u32",
         "address": "0x0182",
-        "scale": 0.01,
+        "scale": 0.001,
         "units": "W"
       },
       {

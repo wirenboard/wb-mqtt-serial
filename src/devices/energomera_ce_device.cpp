@@ -137,12 +137,12 @@ namespace
             case 1:
                 return TRegisterValue(data[RESPONSE_DATA_POS]);
             case 2:
-                return TRegisterValue(GetFrom<uint16_t>(data.begin() + RESPONSE_DATA_POS));
+                return TRegisterValue(GetFromBigEndian<uint16_t>(data.begin() + RESPONSE_DATA_POS));
             case 3:
                 return TRegisterValue(
-                    Get<uint32_t>(data.begin() + RESPONSE_DATA_POS, data.begin() + RESPONSE_DATA_POS + 3));
+                    GetBigEndian<uint32_t>(data.begin() + RESPONSE_DATA_POS, data.begin() + RESPONSE_DATA_POS + 3));
             case 4:
-                return TRegisterValue(GetFrom<uint32_t>(data.begin() + RESPONSE_DATA_POS));
+                return TRegisterValue(GetFromBigEndian<uint32_t>(data.begin() + RESPONSE_DATA_POS));
             default:
                 throw TSerialDeviceTransientErrorException("Data size is too big");
         }
