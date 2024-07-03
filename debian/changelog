@@ -1,3 +1,9 @@
+wb-mqtt-serial (2.118.0-wb103) stable; urgency=medium
+
+  * Add new signature in m1w2 template
+
+ -- Radmir Khakimov <radmir.khakimov@wirenboard.com>  Wed, 03 Jul 2024 16:33:38 +0500
+
 wb-mqtt-serial (2.118.0-wb102) stable; urgency=medium
 
   * Fix WB-MAI6 configuration interface
