@@ -56,7 +56,7 @@ namespace
     public:
         TEnergomeraIecModeCDeviceFactory()
             : IDeviceFactory(std::make_unique<TEnergomeraIecModeCDeviceRegisterAddressFactory>(),
-                             "#/definitions/enrgomera_iec_mode_c_device",
+                             "#/definitions/iec_mode_c_device",
                              "#/definitions/channel_with_string_address")
         {}
 
@@ -79,8 +79,12 @@ void TEnergomeraIecModeCDevice::Register(TSerialDeviceFactory& factory)
 }
 
 TEnergomeraIecModeCDevice::TEnergomeraIecModeCDevice(PDeviceConfig device_config, PPort port, PProtocol protocol)
-    : TIEC61107ModeCDevice(device_config, port, protocol, LOG_PREFIX, IEC::Get7BitSum)
-{}
+    : TIEC61107ModeCDevice(device_config, port, protocol, LOG_PREFIX, IEC::Calc7BitCrc)
+{
+    if (DeviceConfig()->Password.empty()) {
+        DeviceConfig()->Password = std::vector<uint8_t>{0x00, 0x00, 0x00, 0x00};
+    }
+}
 
 std::string TEnergomeraIecModeCDevice::GetParameterRequest(const TRegister& reg) const
 {

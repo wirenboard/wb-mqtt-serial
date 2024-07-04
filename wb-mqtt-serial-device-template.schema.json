@@ -362,7 +362,7 @@
           "properties": {
             "protocol": {
               "type": "string",
-              "enum": ["energomera_iec_mode_c"]
+              "enum": ["energomera_iec_mode_c", "iec_mode_c"]
             },
             "parameters": { "not" : {} },
             "subdevices": { "not" : {} }

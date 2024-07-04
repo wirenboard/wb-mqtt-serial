@@ -1,0 +1,35 @@
+{
+  "$schema": "http://json-schema.org/draft-07/schema#",
+  "type": "object",
+  "title": "Custom device with IEC 61107 Mode C protocol",
+  "allOf": [
+    { "$ref": "#/definitions/deviceProperties" },
+    { "$ref": "#/definitions/no_setup" },
+    { "$ref": "#/definitions/channels_with_string_addresses" },
+    { "$ref": "#/definitions/slave_id_broadcast" }
+  ],
+  "properties": {
+    "protocol": {
+      "type": "string",
+      "enum": ["iec_mode_c"],
+      "options": {
+        "hidden": true
+      }
+    }
+  },
+  "required": ["protocol"],
+  "options": {
+    "disable_edit_json": true,
+    "compact": true,
+    "disable_collapse": true,
+    "wb": {
+      "disable_panel": true
+    }
+  },
+  "defaultProperties": ["slave_id", "channels", "protocol"],
+  "translations": {
+    "ru": {
+      "Custom device with IEC 61107 Mode C protocol": "Устройство с протоколом IEC 61107 Mode C"
+    }
+  }
+}

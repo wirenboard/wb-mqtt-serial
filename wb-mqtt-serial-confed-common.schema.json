@@ -1246,7 +1246,7 @@
       ]
     },
 
-    "enrgomera_iec_mode_c_device": {
+    "iec_mode_c_device": {
       "allOf": [
         { "$ref": "#/definitions/deviceProperties" },
         { "$ref": "#/definitions/no_setup" },
@@ -1254,7 +1254,7 @@
         { "$ref": "#/definitions/slave_id_broadcast" }
       ]
     },
-    "enrgomera_iec_mode_c_device_no_channels": {
+    "iec_mode_c_device_no_channels": {
       "allOf": [
         { "$ref": "#/definitions/deviceProperties" },
         { "$ref": "#/definitions/no_setup" },

@@ -27,6 +27,7 @@
 #include "devices/dlms_device.h"
 #include "devices/energomera_iec_device.h"
 #include "devices/energomera_iec_mode_c_device.h"
+#include "devices/iec_mode_c_device.h"
 #include "devices/ivtm_device.h"
 #include "devices/lls_device.h"
 #include "devices/mercury200_device.h"
@@ -1140,6 +1141,7 @@ void RegisterProtocols(TSerialDeviceFactory& deviceFactory)
     WinDeco::TDevice::Register(deviceFactory);
     Somfy::TDevice::Register(deviceFactory);
     Aok::TDevice::Register(deviceFactory);
+    TIecModeCDevice::Register(deviceFactory);
 }
 
 TRegisterBitsAddress LoadRegisterBitsAddress(const Json::Value& register_data, const std::string& jsonPropertyName)

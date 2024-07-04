@@ -127,6 +127,7 @@ TEST_F(TNevaTest, StartSessionError)
 {
     for (size_t i = 0; i < 5; ++i) {
         EnqueueStartSession(true);
+        EnqueueEndSession();
     }
 
     ASSERT_THROW(Dev->Prepare(), TSerialDeviceTransientErrorException);
@@ -135,23 +136,19 @@ TEST_F(TNevaTest, StartSessionError)
 
 TEST_F(TNevaTest, SwitchToProgModeError)
 {
-    for (size_t i = 0; i < 5; ++i) {
-        EnqueueStartSession();
-        EnqueueGoToProgMode(true);
-        EnqueueEndSession();
-    }
+    EnqueueStartSession();
+    EnqueueGoToProgMode(true);
+    EnqueueEndSession();
     ASSERT_THROW(Dev->Prepare(), TSerialDeviceTransientErrorException);
     SerialPort->Close();
 }
 
 TEST_F(TNevaTest, SendPasswordError)
 {
-    for (size_t i = 0; i < 5; ++i) {
-        EnqueueStartSession();
-        EnqueueGoToProgMode();
-        EnqueueSendPassword(true);
-        EnqueueEndSession();
-    }
+    EnqueueStartSession();
+    EnqueueGoToProgMode();
+    EnqueueSendPassword(true);
+    EnqueueEndSession();
 
     ASSERT_THROW(Dev->Prepare(), TSerialDeviceTransientErrorException);
     SerialPort->Close();

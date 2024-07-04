@@ -47,15 +47,6 @@ namespace
         {"item_3", 2},
         {"item_4", 3},
         {"item_5", 4}};
-
-    uint8_t GetXorCRC(const uint8_t* data, size_t size)
-    {
-        uint8_t crc = 0;
-        for (size_t i = 0; i < size; ++i) {
-            crc ^= data[i];
-        }
-        return crc & 0x7F;
-    }
 }
 
 void TNevaDevice::Register(TSerialDeviceFactory& factory)
@@ -66,8 +57,12 @@ void TNevaDevice::Register(TSerialDeviceFactory& factory)
 }
 
 TNevaDevice::TNevaDevice(PDeviceConfig device_config, PPort port, PProtocol protocol)
-    : TIEC61107ModeCDevice(device_config, port, protocol, LOG_PREFIX, GetXorCRC)
-{}
+    : TIEC61107ModeCDevice(device_config, port, protocol, LOG_PREFIX, IEC::CalcXorCRC)
+{
+    if (DeviceConfig()->Password.empty()) {
+        DeviceConfig()->Password = std::vector<uint8_t>{0x00, 0x00, 0x00, 0x00};
+    }
+}
 
 std::string TNevaDevice::GetParameterRequest(const TRegister& reg) const
 {

@@ -1,0 +1,112 @@
+{
+  "title": "LUNA three-phase electricity meter",
+  "device_type": "luna",
+  "group": "g-power-meter",
+  "device": {
+    "name": "LUNA",
+    "id": "luna",
+    "protocol" : "iec_mode_c",
+    "frame_timeout_ms" : 20,
+    "response_timeout_ms": 1500,
+    "channels" : 
+    [
+      {
+        "name": "AP Energy",
+        "reg_type": "default",
+        "units": "kWh",
+        "address": "1.8.0()"
+      },
+      {
+        "name": "AP Energy T1",
+        "reg_type": "default",
+        "units": "kWh",
+        "address": "1.8.1()",
+        "enabled": false
+      },
+      {
+        "name": "AP Energy T2",
+        "reg_type": "default",
+        "units": "kWh",
+        "address": "1.8.2()",
+        "enabled": false
+      },
+      {
+        "name": "AP Energy T3",
+        "reg_type": "default",
+        "units": "kWh",
+        "address": "1.8.3()",
+        "enabled": false
+      },
+      {
+        "name": "AP Energy T4",
+        "reg_type": "default",
+        "units": "kWh",
+        "address": "1.8.4()",
+        "enabled": false
+      },
+      {
+        "name": "Urms L1",
+        "reg_type": "default",
+        "units": "kWh",
+        "address": "32.7.0()"
+      },
+      {
+        "name": "Urms L2",
+        "reg_type": "default",
+        "units": "kWh",
+        "address": "52.7.0()"
+      },
+      {
+        "name": "Urms L3",
+        "reg_type": "default",
+        "units": "kWh",
+        "address": "72.7.0()"
+      },
+      {
+        "name": "Irms L1",
+        "reg_type": "default",
+        "units": "A",
+        "address": "31.7.0()"
+      },
+      {
+        "name": "Irms L2",
+        "reg_type": "default",
+        "units": "A",
+        "address": "51.7.0()"
+      },
+      {
+        "name": "Irms L3",
+        "reg_type": "default",
+        "units": "A",
+        "address": "71.7.0()"
+      },
+      {
+        "name": "Cos Phi L1",
+        "reg_type": "default",
+        "address": "33.7.0()"
+      },
+      {
+        "name": "Cos Phi L2",
+        "reg_type": "default",
+        "address": "53.7.0()"
+      },
+      {
+        "name": "Cos Phi L3",
+        "reg_type": "default",
+        "address": "73.7.0()"
+      },
+      {
+        "name": "Frequency",
+        "reg_type": "default",
+        "units": "Hz",
+        "address": "14.7.0()"
+      },
+      {
+        "name": "SN",
+        "reg_type": "default",
+        "address": "0.0.0()",
+        "enabled": false
+      }
+    ]
+  }
+}

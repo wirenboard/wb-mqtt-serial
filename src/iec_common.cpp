@@ -127,13 +127,22 @@ namespace IEC
         WriteBytes(port, (const uint8_t*)str.data(), str.size(), logPrefix);
     }
 
-    uint8_t Get7BitSum(const uint8_t* data, size_t size)
+    uint8_t Calc7BitCrc(const uint8_t* data, size_t size)
     {
         uint8_t crc = 0;
         for (size_t i = 0; i < size; ++i) {
             crc = (crc + data[i]) & 0x7F;
         }
         return crc;
+    }
+
+    uint8_t CalcXorCRC(const uint8_t* data, size_t size)
+    {
+        uint8_t crc = 0;
+        for (size_t i = 0; i < size; ++i) {
+            crc ^= data[i];
+        }
+        return crc & 0x7F;
     }
 }
 
@@ -150,19 +159,6 @@ TIEC61107Device::TIEC61107Device(PDeviceConfig device_config, PPort port, PProto
     {
         throw TSerialDeviceException("The characters in SlaveId can only be a...z, A...Z, 0...9 and space");
     }
-}
-
-void TIEC61107Device::EndSession()
-{
-    Port()->ResetSerialPortSettings(); // Return old port settings
-    TSerialDevice::EndSession();
-}
-
-void TIEC61107Device::PrepareImpl()
-{
-    TSerialDevice::PrepareImpl();
-    TSerialPortConnectionSettings bf(9600, 'E', 7, 1);
-    Port()->ApplySerialPortSettings(bf);
 }
 
 TIEC61107Protocol::TIEC61107Protocol(const std::string& name, const TRegisterTypes& reg_types)
@@ -190,20 +186,62 @@ TIEC61107ModeCDevice::TIEC61107ModeCDevice(PDeviceConfig device_config,
                                            IEC::TCrcFn crcFn)
     : TIEC61107Device(device_config, port, protocol),
       CrcFn(crcFn),
-      LogPrefix(logPrefix)
-{}
+      LogPrefix(logPrefix),
+      ReadCommand(IEC::UnformattedReadCommand),
+      DefaultBaudRate(9600),
+      CurrentBaudRate(9600)
+{
+    SetDesiredBaudRate(9600);
+}
 
 void TIEC61107ModeCDevice::PrepareImpl()
 {
     TIEC61107Device::PrepareImpl();
+    bool sessionIsOpen = false;
+    try {
+        StartSession();
+        sessionIsOpen = true;
+        SwitchToProgMode();
+        SendPassword();
+        SetTransferResult(true);
+    } catch (const TSerialDeviceTransientErrorException& e) {
+        Debug.Log() << LogPrefix << "Session start error: " << e.what() << " [slave_id is " << ToString() + "]";
+        if (sessionIsOpen) {
+            SendEndSession();
+        }
+        throw;
+    }
+}
+
+void TIEC61107ModeCDevice::StartSession()
+{
+    if (DefaultBaudRate != DesiredBaudRate) {
+        CurrentBaudRate = DefaultBaudRate;
+    }
+    TSerialPortConnectionSettings bf(CurrentBaudRate, 'E', 7, 1);
+    Port()->ApplySerialPortSettings(bf);
+    if (Probe()) {
+        return;
+    }
+    // Try desired baudrate, the device can remember it
+    if (DefaultBaudRate != DesiredBaudRate) {
+        bf.BaudRate = DesiredBaudRate;
+        Port()->ApplySerialPortSettings(bf);
+        if (Probe()) {
+            CurrentBaudRate = bf.BaudRate;
+            return;
+        }
+    }
+    throw TSerialDeviceTransientErrorException("Sign on failed");
+}
+
+bool TIEC61107ModeCDevice::Probe()
+{
     uint8_t buf[IEC::RESPONSE_BUF_LEN] = {};
     size_t retryCount = 5;
-    bool sessionIsOpen;
     while (true) {
         try {
-            sessionIsOpen = false;
             Port()->SkipNoise();
-
             // Send session start request
             WriteBytes("/?" + SlaveId + "!\r\n");
             // Pass identification response
@@ -214,19 +252,12 @@ void TIEC61107ModeCDevice::PrepareImpl()
                            DeviceConfig()->FrameTimeout,
                            IEC::GetCRLFPacketPred(),
                            LogPrefix);
-            sessionIsOpen = true;
-            SwitchToProgMode();
-            SendPassword();
-            SetTransferResult(true);
-            return;
+            return true;
         } catch (const TSerialDeviceTransientErrorException& e) {
-            Debug.Log() << LogPrefix << "Session start error: " << e.what() << " [slave_id is " << ToString() + "]";
-            if (sessionIsOpen) {
-                SendEndSession();
-            }
             --retryCount;
+            SendEndSession();
             if (retryCount == 0) {
-                throw;
+                return false;
             }
         }
     }
@@ -235,6 +266,7 @@ void TIEC61107ModeCDevice::PrepareImpl()
 void TIEC61107ModeCDevice::EndSession()
 {
     SendEndSession();
+    Port()->ResetSerialPortSettings(); // Return old port settings
     TIEC61107Device::EndSession();
 }
 
@@ -258,7 +290,7 @@ std::string TIEC61107ModeCDevice::GetCachedResponse(const std::string& paramRequ
         return it->second;
     }
 
-    WriteBytes(IEC::MakeRequest("R1", paramRequest, CrcFn));
+    WriteBytes(IEC::MakeRequest(ReadCommand, paramRequest, CrcFn));
 
     uint8_t resp[IEC::RESPONSE_BUF_LEN] = {};
     auto len = ReadFrameProgMode(resp, sizeof(resp), IEC::STX);
@@ -295,9 +327,15 @@ void TIEC61107ModeCDevice::SwitchToProgMode()
 {
     uint8_t buf[IEC::RESPONSE_BUF_LEN] = {};
 
-    // We expect mode C protocol and 9600 baudrate. Send ACK for entering into progamming mode
-    WriteBytes("\006"
-               "051\r\n");
+    WriteBytes(ToProgModeCommand);
+    if (CurrentBaudRate != DesiredBaudRate) {
+        // Time before response must be more than 20ms according to standard
+        // Wait some time to transmit request
+        Port()->SleepSinceLastInteraction(std::chrono::milliseconds(10));
+        TSerialPortConnectionSettings bf(DesiredBaudRate, 'E', 7, 1);
+        Port()->ApplySerialPortSettings(bf);
+        CurrentBaudRate = DesiredBaudRate;
+    }
     ReadFrameProgMode(buf, sizeof(buf), IEC::SOH);
 
     // <SOH>P0<STX>(IDENTIFIER)<ETX>CRC
@@ -308,14 +346,13 @@ void TIEC61107ModeCDevice::SwitchToProgMode()
 
 void TIEC61107ModeCDevice::SendPassword()
 {
-    uint8_t buf[IEC::RESPONSE_BUF_LEN] = {};
-    std::vector<uint8_t> password = {0x00, 0x00, 0x00, 0x00};
-    if (DeviceConfig()->Password.size()) {
-        password = DeviceConfig()->Password;
+    if (DeviceConfig()->Password.empty()) {
+        return;
     }
+    uint8_t buf[IEC::RESPONSE_BUF_LEN] = {};
     std::stringstream ss;
     ss << "(";
-    for (auto p: password) {
+    for (auto p: DeviceConfig()->Password) {
         ss << std::hex << std::uppercase << std::setfill('0') << std::setw(2) << int(p);
     }
     ss << ")";
@@ -372,4 +409,30 @@ void TIEC61107ModeCDevice::WriteBytes(const std::string& data)
 {
     Port()->SleepSinceLastInteraction(DeviceConfig()->FrameTimeout);
     IEC::WriteBytes(*Port(), data, LogPrefix);
+}
+
+void TIEC61107ModeCDevice::SetReadCommand(const std::string& command)
+{
+    ReadCommand = command;
+}
+
+void TIEC61107ModeCDevice::SetDesiredBaudRate(int baudRate)
+{
+    const std::unordered_map<int, uint8_t> supportedBaudRates = {{300, '0'},
+                                                                 {2400, '3'},
+                                                                 {4800, '4'},
+                                                                 {9600, '5'},
+                                                                 {19200, '6'}};
+    auto baudRateCodeIt = supportedBaudRates.find(baudRate);
+    if (baudRateCodeIt == supportedBaudRates.end()) {
+        throw TSerialDeviceException("Unsupported IEC61107 baud rate: " + std::to_string(baudRate));
+    }
+    DesiredBaudRate = baudRate;
+    ToProgModeCommand = {IEC::ACK, '0', baudRateCodeIt->second, '1', '\r', '\n'};
+}
+
+void TIEC61107ModeCDevice::SetDefaultBaudRate(int baudRate)
+{
+    DefaultBaudRate = baudRate;
+    CurrentBaudRate = baudRate;
 }
