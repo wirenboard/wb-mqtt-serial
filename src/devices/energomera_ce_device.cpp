@@ -90,7 +90,7 @@ namespace
         return packet;
     }
 
-    std::vector<uint8_t> GetData(uint32_t addr)
+    std::vector<uint8_t> MakeCommandFromRegisterAddress(uint32_t addr)
     {
         std::vector<uint8_t> data;
         uint8_t byte = (addr >> 24) & 0xFF;
@@ -189,7 +189,9 @@ TEnergomeraCeDevice::TEnergomeraCeDevice(PDeviceConfig config, PPort port, PProt
 
 TRegisterValue TEnergomeraCeDevice::ReadRegisterImpl(PRegister reg)
 {
-    auto request = MakePacket(SlaveId, DeviceConfig()->Password, GetData(GetUint32RegisterAddress(reg->GetAddress())));
+    auto request = MakePacket(SlaveId,
+                              DeviceConfig()->Password,
+                              MakeCommandFromRegisterAddress(GetUint32RegisterAddress(reg->GetAddress())));
     Port()->WriteBytes(request.data(), request.size());
     std::vector<uint8_t> response(MAX_RESPONSE_SIZE);
     auto res = Port()->ReadFrame(response.data(),
