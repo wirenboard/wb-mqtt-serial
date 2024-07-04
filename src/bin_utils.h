@@ -135,7 +135,7 @@ namespace BinUtils
     uint64_t GetLSBMask(uint8_t bitCount);
 
     template<class InsertIterator>
-    void ApplyByteStaffing(const std::vector<uint8_t>& data,
+    void ApplyByteStuffing(const std::vector<uint8_t>& data,
                            const std::unordered_map<uint8_t, std::vector<uint8_t>>& rules,
                            InsertIterator inserter)
     {
@@ -149,5 +149,5 @@ namespace BinUtils
         }
     }
 
-    void DecodeByteStaffing(std::vector<uint8_t>& data, const std::unordered_map<uint8_t, std::vector<uint8_t>>& rules);
+    void DecodeByteStuffing(std::vector<uint8_t>& data, const std::unordered_map<uint8_t, std::vector<uint8_t>>& rules);
 }

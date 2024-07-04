@@ -85,7 +85,7 @@ namespace
         std::vector<uint8_t> packet;
         auto packetBack = std::back_inserter(packet);
         Append(packetBack, END);
-        ApplyByteStaffing(content, BYTE_STUFFING_RULES, packetBack);
+        ApplyByteStuffing(content, BYTE_STUFFING_RULES, packetBack);
         Append(packetBack, END);
         return packet;
     }
@@ -198,7 +198,7 @@ TRegisterValue TEnergomeraCeDevice::ReadRegisterImpl(PRegister reg)
                                  DeviceConfig()->FrameTimeout,
                                  FrameComplete);
     response.resize(res.Count);
-    DecodeByteStaffing(response, BYTE_STUFFING_RULES);
+    DecodeByteStuffing(response, BYTE_STUFFING_RULES);
     CheckResponse(response);
     switch (reg->Type) {
         case TEnergomeraCeRegisterType::DEFAULT:

@@ -66,7 +66,7 @@ TEST(BinUtilsTest, GetLSBMask)
     EXPECT_EQ(0x1f, BinUtils::GetLSBMask(5));
 }
 
-TEST(BinUtilsTest, ApplyByteStaffing)
+TEST(BinUtilsTest, ApplyByteStuffing)
 {
     const std::unordered_map<uint8_t, std::vector<uint8_t>> rules = {{0xc0, {0xdb, 0xdc}}, {0xdb, {0xdb, 0xdd}}};
     std::vector<uint8_t> data =
@@ -74,7 +74,7 @@ TEST(BinUtilsTest, ApplyByteStaffing)
     std::vector<uint8_t> expectedRes =
         {0x48, 0xfd, 0x00, 0xff, 0x3a, 0xdb, 0xdd, 0x30, 0x00, 0x06, 0x24, 0x0b, 0x00, 0x00, 0x00, 0xdb, 0xdc};
     std::vector<uint8_t> res;
-    BinUtils::ApplyByteStaffing(data, rules, std::back_inserter(res));
+    BinUtils::ApplyByteStuffing(data, rules, std::back_inserter(res));
     ASSERT_EQ(res.size(), expectedRes.size());
 
     for (size_t i = 0; i < res.size(); ++i) {
@@ -82,7 +82,7 @@ TEST(BinUtilsTest, ApplyByteStaffing)
     }
 }
 
-TEST(BinUtilsTest, DecodeByteStaffing)
+TEST(BinUtilsTest, DecodeByteStuffing)
 {
     const std::unordered_map<uint8_t, std::vector<uint8_t>> rules = {{0xc0, {0xdb, 0xdc}}, {0xdb, {0xdb, 0xdd}}};
     std::vector<uint8_t> data = {0xc0,
@@ -106,7 +106,7 @@ TEST(BinUtilsTest, DecodeByteStaffing)
                                  0xc0};
     std::vector<uint8_t> expectedRes =
         {0xc0, 0x48, 0xfd, 0x00, 0xff, 0x3a, 0x57, 0x01, 0x30, 0x00, 0x06, 0x24, 0x0b, 0x00, 0x00, 0x00, 0xc0, 0xc0};
-    BinUtils::DecodeByteStaffing(data, rules);
+    BinUtils::DecodeByteStuffing(data, rules);
     ASSERT_EQ(data.size(), expectedRes.size());
 
     for (size_t i = 0; i < data.size(); ++i) {
