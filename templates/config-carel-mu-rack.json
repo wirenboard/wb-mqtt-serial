@@ -96,7 +96,7 @@
                 "max": 999,
                 "default": 5,
                 "format": "u16",
-                "condition": "number_of_compressors>=1",
+                "condition": "compressors_number>=1",
                 "description":"Displayed on LED: /03"
 
             },
@@ -112,7 +112,7 @@
                 "max": 999,
                 "default": 10,
                 "format": "u16",
-                "condition": "number_of_compressors>=2",
+                "condition": "compressors_number>=2",
                 "description":"Displayed on LED: /04"
 
             },
@@ -128,7 +128,7 @@
                 "max": 999,
                 "default": 20,
                 "format": "u16",
-                "condition": "number_of_compressors>=3",
+                "condition": "compressors_number>=3",
                 "description":"Displayed on LED: /05"
 
             },
@@ -144,7 +144,7 @@
                 "max": 999,
                 "default": 40,
                 "format": "u16",
-                "condition": "number_of_compressors>=4",
+                "condition": "compressors_number>=4",
                 "description":"Displayed on LED: /06"
 
             },
@@ -240,7 +240,7 @@
                 "max": 12,
                 "default": 0,
                 "format": "s16",
-                "condition": "type_of_probe_B1>0",
+                "condition": "type_probe_B1>0",
                 "description":"Displayed on LED: /24"
 
             },
@@ -363,7 +363,7 @@
             },
             {
                 "id": "max_discharge_pressure",
-                "title": "Max Discharge/Suction 2 Pressure , bar",
+                "title": "Max Discharge/Suction 2 Pressure, bar",
                 "reg_type": "holding",
                 "group": "compressor_pressure",
                 "order": 3,
@@ -563,7 +563,7 @@
             },
             {
                 "id": "fan_inverter_speedup",
-                "title": "Inverter Speedup Time, s",
+                "title": "Inverter Speed Up Time, s",
                 "group": "inverter",
                 "order": 3,
                 "reg_type": "holding",
@@ -878,7 +878,7 @@
             },
             {
                 "id": "min_fan_speed",
-                "title": "Minimum Fan Speed (%)",
+                "title": "Minimum Fan Speed, %",
                 "group": "fan",
                 "reg_type": "holding",
                 "address": 456,
@@ -1020,7 +1020,7 @@
             },
             {
                 "id": "ON_compressors_1_circuit_damaged",
-                "title": "Number of Compressors On in Circuit 1 with Probe Damaged ",
+                "title": "Number of Compressors On in Circuit 1 with Probe Damaged",
                 "group": "compressor",
                 "order": 7,
                 "reg_type": "holding",
@@ -1126,7 +1126,7 @@
                 "max": 12,
                 "default": 0,
                 "format": "s16",
-                "condition": "type_of_probe_B3>0",
+                "condition": "type_probe_B3>0",
                 "description":"Displayed on LED: /26"
 
             },
@@ -1188,7 +1188,7 @@
                     "RESET"
                 ],
                 "default": 0,
-                "condition": "number_of_compressors>=1",
+                "condition": "compressors_number>=1",
                 "description":"Displayed on LED: C09"
 
             },
@@ -1208,7 +1208,7 @@
                     "RESET"
                 ],
                 "default": 0,
-                "condition": "number_of_compressors>=2",
+                "condition": "compressors_number>=2",
                 "description":"Displayed on LED: C11"
 
             },
@@ -1228,7 +1228,7 @@
                     "RESET"
                 ],
                 "default": 0,
-                "condition": "number_of_compressors>=3",
+                "condition": "compressors_number>=3",
                 "description":"Displayed on LED: C13"
 
             },
@@ -1248,7 +1248,7 @@
                     "RESET"
                 ],
                 "default": 0,
-                "condition": "number_of_compressors>=4",
+                "condition": "compressors_number>=4",
                 "description":"Displayed on LED: C15"
 
             },
@@ -1265,7 +1265,7 @@
                 "max": 12,
                 "default": 0,
                 "format": "s16",
-                "condition": "type_of_probe_B2>0",
+                "condition": "type_probe_B2>0",
                 "description":"Displayed on LED: /25"
 
             },
@@ -1782,7 +1782,7 @@
 
             },
             {
-                "id": "max_suction_2_point",
+                "id": "max_suction_1_point",
                 "title": "Max Suction Set Point 1, bar",
                 "group": "setpoint",
                 "order": 5,
@@ -1980,7 +1980,7 @@
                 "scale": 10,
                 "units": "h",
                 "format": "u16",
-                "condition": "number_of_compressors>=1"
+                "condition": "compressors_number>=1"
             },
             {
                 "name": "Compressor Operating Time 2",
@@ -1992,7 +1992,7 @@
                 "scale": 10,
                 "units": "h",
                 "format": "u16",
-                "condition": "number_of_compressors>=2"
+                "condition": "compressors_number>=2"
             },
             {
                 "name": "Compressor Operating Time 3",
@@ -2004,7 +2004,7 @@
                 "scale": 10,
                 "units": "h",
                 "format": "u16",
-                "condition": "number_of_compressors>=3"
+                "condition": "compressors_number>=3"
             },
             {
                 "name": "Compressor Operating Time 4",
@@ -2016,7 +2016,7 @@
                 "scale": 10,
                 "units": "h",
                 "format": "u16",
-                "condition": "number_of_compressors>=4"
+                "condition": "compressors_number>=4"
             },
             {
                 "name": "Application Version",
@@ -2061,7 +2061,7 @@
                 "reg_type": "discrete",
                 "address": 21,
                 "type": "switch",
-                "condition": "number_of_compressors>=1"
+                "condition": "compressors_number>=1"
             },
             {
                 "name": "Alarm 2 Compressor",
@@ -2069,7 +2069,7 @@
                 "reg_type": "discrete",
                 "address": 39,
                 "type": "switch",
-                "condition": "number_of_compressors>=2"
+                "condition": "compressors_number>=2"
             },
             {
                 "name": "Alarm 3 Compressor",
@@ -2077,7 +2077,7 @@
                 "reg_type": "discrete",
                 "address": 32,
                 "type": "switch",
-                "condition": "number_of_compressors>=3"
+                "condition": "compressors_number>=3"
             },
             {
                 "name": "Alarm 4 Compressor",
@@ -2085,7 +2085,7 @@
                 "reg_type": "discrete",
                 "address": 45,
                 "type": "switch",
-                "condition": "number_of_compressors>=4"
+                "condition": "compressors_number>=4"
             },
             {
                 "name": "Alarm Liquid Level",
@@ -2178,7 +2178,7 @@
                 "reg_type": "discrete",
                 "address": 40,
                 "type": "switch",
-                "condition": "number_of_fans>=1"
+                "condition": "fans_number>=1"
             },
             {
                 "name": "Alarm Fan 2",
@@ -2186,7 +2186,7 @@
                 "reg_type": "discrete",
                 "address": 43,
                 "type": "switch",
-                "condition": "number_of_fans>=2"
+                "condition": "fans_number>=2"
             },
             {
                 "name": "Alarm Fan 3",
@@ -2194,7 +2194,7 @@
                 "reg_type": "discrete",
                 "address": 36,
                 "type": "switch",
-                "condition": "number_of_fans>=3"
+                "condition": "fans_number>=3"
             },
             {
                 "name": "Alarm Fan 4",
@@ -2202,7 +2202,7 @@
                 "reg_type": "discrete",
                 "address": 33,
                 "type": "switch",
-                "condition": "number_of_fans>=4"
+                "condition": "fans_number>=4"
             },
             {
                 "name": "Fan Thermal Overload",
@@ -2224,7 +2224,7 @@
                 "reg_type": "discrete",
                 "address": 48,
                 "type": "switch",
-                "condition": "type_of_probe_B2>0"
+                "condition": "type_probe_B2>0"
             },
             {
                 "name": "Probe B3 Faulty",
@@ -2232,7 +2232,7 @@
                 "reg_type": "discrete",
                 "address": 61,
                 "type": "switch",
-                "condition": "type_of_probe_B3>0"
+                "condition": "type_probe_B3>0"
             },
             {
                 "name": "High Room Temperature",
@@ -2254,7 +2254,7 @@
                 "reg_type": "discrete",
                 "address": 59,
                 "type": "switch",
-                "condition": "number_of_compressors>=1"
+                "condition": "compressors_number>=1"
             },
             {
                 "name": "Compressor 2 Maintenance",
@@ -2262,7 +2262,7 @@
                 "reg_type": "discrete",
                 "address": 52,
                 "type": "switch",
-                "condition": "number_of_compressors>=2"
+                "condition": "compressors_number>=2"
             },
             {
                 "name": "Compressor 3 Maintenance",
@@ -2270,7 +2270,7 @@
                 "reg_type": "discrete",
                 "address": 49,
                 "type": "switch",
-                "condition": "number_of_compressors>=3"
+                "condition": "compressors_number>=3"
             },
             {
                 "name": "Compressor 4 Maintenance",
@@ -2278,7 +2278,7 @@
                 "reg_type": "discrete",
                 "address": 57,
                 "type": "switch",
-                "condition": "number_of_compressors>=4"
+                "condition": "compressors_number>=4"
             },
             {
                 "name": "Compressors Off due to Prevent",
@@ -2300,7 +2300,7 @@
                 "reg_type": "discrete",
                 "address": 0,
                 "type": "switch",
-                "condition": "number_of_compressors>=1"
+                "condition": "compressors_number>=1"
             },
             {
                 "name": "Status Compressor 2",
@@ -2308,7 +2308,7 @@
                 "reg_type": "discrete",
                 "address": 13,
                 "type": "switch",
-                "condition": "number_of_compressors>=2"
+                "condition": "compressors_number>=2"
             },
             {
                 "name": "Status Compressor 3",
@@ -2316,7 +2316,7 @@
                 "reg_type": "discrete",
                 "address": 8,
                 "type": "switch",
-                "condition": "number_of_compressors>=3"
+                "condition": "compressors_number>=3"
             },
             {
                 "name": "Status Compressor 4",
@@ -2324,7 +2324,7 @@
                 "reg_type": "discrete",
                 "address": 11,
                 "type": "switch",
-                "condition": "number_of_compressors>=4"
+                "condition": "compressors_number>=4"
             },
             {
                 "name": "Status Digital Input 1",
@@ -2367,7 +2367,7 @@
                 "reg_type": "discrete",
                 "address": 4,
                 "type": "switch",
-                "condition": "number_of_fans>=1"
+                "condition": "fans_number>=1"
             },
             {
                 "name": "Status Fan 2",
@@ -2375,7 +2375,7 @@
                 "reg_type": "discrete",
                 "address": 1,
                 "type": "switch",
-                "condition": "number_of_fans>=2"
+                "condition": "fans_number>=2"
             },
             {
                 "name": "Status Fan 3",
@@ -2383,7 +2383,7 @@
                 "reg_type": "discrete",
                 "address": 9,
                 "type": "switch",
-                "condition": "number_of_fans>=3"
+                "condition": "fans_number>=3"
             },
             {
                 "name": "Status Fan 4",
@@ -2391,7 +2391,7 @@
                 "reg_type": "discrete",
                 "address": 12,
                 "type": "switch",
-                "condition": "number_of_fans>=4"
+                "condition": "fans_number>=4"
             },
             {
                 "name": "Unit On",
@@ -2409,7 +2409,7 @@
                 "scale": 0.1,
                 "units": "deg C",
                 "format": "s16",
-                "condition": "type_of_probe_B1>0"
+                "condition": "type_probe_B1>0"
             },
             {
                 "name": "Probe B2",
@@ -2420,7 +2420,7 @@
                 "scale": 0.1,
                 "units": "deg C",
                 "format": "s16",
-                "condition": "type_of_probe_B2>0"
+                "condition": "type_probe_B2>0"
             },
             {
                 "name": "Probe B3",
@@ -2431,7 +2431,7 @@
                 "scale": 0.1,
                 "units": "deg C",
                 "format": "s16",
-                "condition": "type_of_probe_B3>0"
+                "condition": "type_probe_B3>0"
             },
             {
                 "name": "Probe B4",
@@ -2506,7 +2506,7 @@
                 "Capacity of Compressor 3, kW": "Мощность компрессора 3, кВт",
                 "Capacity of Compressor 4, kW": "Мощность компрессора 4, кВт",
                 "Compressor Thermal Overload Alarm Delay, s": "Тепловая задержка компрессора, с",
-                "Condensing Temperature Delta for Floating Control, °C": "Поправка конденсации при поплаковом регулировании, °C, r33)",
+                "Condensing Temperature Delta for Floating Control, °C": "Поправка конденсации при поплаковом регулировании, °C",
                 "Delay Restart after Black Out, s": "Задержка повторного пуска после отключения электропитания, с",
                 "Differential Pressure for Dead Band by Time, bar": "Перепад давления, при котором время пусков/остановок компрессора пропорционально давлению всасывания, бар",
                 "Digital Input Logic": "Логика цифровых входов",
@@ -2517,7 +2517,7 @@
                 "Enable Management of Different Compressors": "Компрессоры с различными мощностями",
                 "Enable Prevent Control On Condenser": "Предотвращение высокого давления нагнетания",
                 "Enable Unit Off Due to Probe Fault": "Выключение в результате отсоединения датчика",
-                "Max Discharge/Suction 2 Pressure , bar": "Максимальное давление нагнетания, бар",
+                "Max Discharge/Suction 2 Pressure, bar": "Максимальное давление нагнетания, бар",
                 "Max Suction Pressure, bar": "Максимальное давление всасывания, бар",
                 "Fan Start Delay, s": "Задержка пуска вентилятора в зоне нечувствительности, с",
                 "Fan Stop Delay, s": "Задержка пуска вентилятора в зоне нечувствительности, с",
@@ -2533,119 +2533,114 @@
                 "Inverter Ramp Up Time, s": "Время линейно нарастающей характеристики инвертора, с",
                 "Inverter Speed Up Time, s": "Время разгона инвертора вентилятора, с",
                 "Liquid Level Alarm Delay, m": "Аварийный сигнал задержки уровня жидкости, м",
-                "Discharge Probe Alarm Delay, s": "Задержка аварийного сигнала низкого давления нагнетания ,с, A11)",
-
-                "Low Suction Pressure 1 Alarm Delay ,s, A04)": "Задержка 1 низкого давления всасывания LP ,с, A04)",
-                "Low Suction Pressure 2 Alarm Delay ,s, A08)": "Задержка 2 низкого давления всасывания LP ,с, A08)",
-
-
-
-                "Discharge Probe Alarm Low Threshold, bar": "Аварийный сигнал нагнетания низкого давления LP ,бар, A10)",
-                "Discharge Probe Alarm Low Threshold, °C": "Аварийный сигнал нагнетания низкого давления LP ,°C, A10)",
-                "Suction Probe 1 Alarm Low Threshold, bar": "Аварийный сигнал 1 низкого давления всасывания LP ,бар, A03)",
-                "LP Suction 2 Alarm Threshold, bar": "Аварийный сигнал 2 низкого давления всасывания LP ,бар, A07)",
-                "Max Fan Set Point, bar": "Максимальное заданное значение вентилятора ,бар, r26)",
-                "Max Fan Set Point, °C": "Максимальное заданное значение вентилятора ,°C, r26)",
-                "Maximum Call for Compressor Starts, s": "Максимальное время запуска компрессора пуска в зоне нечувствительности ,с, r08)",
-                "Maximum Call for Compressor Stops, s": "Максимальное время остановки компрессора в зоне нечувствительности ,с, r10)",
-                "Maximum Fan Inverter Output, %": "Максимальный выход инвертора вентилятора ,%, r30)",
-                "Min Fan Set Point, bar": "Минимальное заданное значение вентилятора ,бар, r25)",
-                "Min Fan Set Point, °C": "Минимальное заданное значение вентилятора ,°C, r25)",
-                "Min Time Between Two Stop Calls for Different Compressors, s": "Минимальный период времени между остановками различных компрессоров ,с, C04)",
-                "Min Value Discharge, bar": "Минимальное давление нагнетания ,бар, /18)",
-                "Min Value Suction, bar": "Минимальное давление всасывания ,бар, /17)",
-                "Minimum Call Time for Compressor Start in Dead Band, s": "Минимальное время запроса пуска в зоне нечувствительности ,с, r07)",
-                "Minimum Call Time for Compressor Stop in Dead Band, s": "Минимальное время запроса остановки в зоне нечувствительности ,с, r09)",
-                "Minimum Compressor Off Time, s": "Минимальное время выключения компрессора ,с, C02)",
-                "Minimum Compressor On Time, s": "Минимальное время включения компрессора ,с, C01)",
-                "Minimum Fan Speed,%": "Минимальная скорость вентилятора ,%)",
-
-                "Minimum Inverter Output, %": "Минимальный выход инвертора вентилятора ,%, r29)",
-                "Minimum Time Between Starts of Different Compressors ,s, C03)": "Минимальный период времени между пусками различных компрессоров ,с, C03)",
-                "Minimum Time Between Starts of the Same Compressor ,s, C05)": "Минимальный период времени между пусками одного и того же компрессора ,с, C05)",
-                "Multifunction DI Configuration ,/15)": "Конфигурация многофункционального входа ,/15)",
+                "Discharge Probe Alarm Delay, s": "Задержка аварийного сигнала низкого давления нагнетания, с",
+                "Low Suction Pressure 1 Alarm Delay, s, A04)": "Задержка 1 низкого давления всасывания LP, с",
+                "Low Suction Pressure 2 Alarm Delay, s, A08)": "Задержка 2 низкого давления всасывания LP, с",
+                "Discharge Probe Alarm Low Threshold, bar": "Аварийный сигнал нагнетания низкого давления LP, бар",
+                "Discharge Probe Alarm Low Threshold, °C": "Аварийный сигнал нагнетания низкого давления LP, °C",
+                "Suction Probe 1 Alarm Low Threshold, bar": "Аварийный сигнал 1 низкого давления всасывания LP, бар",
+                "LP Suction 2 Alarm Threshold, bar": "Аварийный сигнал 2 низкого давления всасывания LP, бар",
+                "Max Fan Set Point, bar": "Максимальное заданное значение вентилятора, бар",
+                "Max Fan Set Point, °C": "Максимальное заданное значение вентилятора, °C",
+                "Maximum Call for Compressor Starts, s": "Максимальное время запуска компрессора пуска в зоне нечувствительности, с",
+                "Maximum Call for Compressor Stops, s": "Максимальное время остановки компрессора в зоне нечувствительности, с",
+                "Maximum Fan Inverter Output, %": "Максимальный выход инвертора вентилятора, %",
+                "Min Fan Set Point, bar": "Минимальное заданное значение вентилятора, бар",
+                "Min Fan Set Point, °C": "Минимальное заданное значение вентилятора, °C",
+                "Min Time Between Two Stop Calls for Different Compressors, s": "Минимальный период времени между остановками различных компрессоров, с",
+                "Min Value Discharge, bar": "Минимальное давление нагнетания, бар",
+                "Min Value Suction, bar": "Минимальное давление всасывания, бар",
+                "Minimum Call Time for Compressor Start in Dead Band, s": "Минимальное время запроса пуска в зоне нечувствительности, с",
+                "Minimum Call Time for Compressor Stop in Dead Band, s": "Минимальное время запроса остановки в зоне нечувствительности, с",
+                "Minimum Compressor Off Time, s": "Минимальное время выключения компрессора, с",
+                "Minimum Compressor On Time, s": "Минимальное время включения компрессора, с",
+                "Minimum Fan Speed, %": "Минимальная скорость вентилятора, %",
+                "Minimum Inverter Output, %": "Минимальный выход инвертора вентилятора, %",
+                "Minimum Time Between Starts of Different Compressors, s": "Минимальный период времени между пусками различных компрессоров, с",
+                "Minimum Time Between Starts of the Same Compressor, s": "Минимальный период времени между пусками одного и того же компрессора, с",
+                "Multifunction DI Configuration": "Конфигурация многофункционального входа",
                 "Number of Compressors": "Количество компрессоров",
-                "Number of Compressors On in Circuit 1 with Probe Damaged ,/07)": "Количество включенных компрессоров с неисправным датчиком всасывания контур 1 ,/07)",
-                "Number of Compressors On in Circuit 2 with Probe Damaged ,/08)": "Количество включенных компрессоров с неисправным датчиком всасывания контур 2 ,/08)",
-                "Number of Fans ,/09)": "Количество вентиляторов ,/09)",
-                "Number of Fans On with Probe Damaged ,/12)": "Количество включенных вентиляторов с неисправным датчиком ,/12)",
-                "On/Off from Supervisor ,/38)": "Вкл/выкл агрегата от супервизора ,/38)",
-                "Operating Hour Threshold for Maintenance ,h, C07)": "Порог рабочих часов компрессора для аварийного сигнала технического обслуживания ,ч, C07)",
-                "Outside Probe 3 Calibration ,°C, /26)": "Тарировка датчика B3 ,°C, /26)",
-                "Prevent Time in which no Compressor Starts are Enabled ,m, A13)": "Время предотвращения, в течение которого пуски компрессоров не разрешены ,м, A13)",
-                "Prevent Time in which the Activation Signals the Alarm ,m, A14)": "Время предотвращения, в течение которого активация генерирует аварийный сигнал ,м, A14)",
-                "Reset Compressor 1 hours ,C09)": "Сброс рабочих часов компрессора 1 ,C09)",
-                "Reset Compressor 2 Hours ,C11)": "Сброс рабочих часов компрессора 2 ,C11)",
-                "Reset Compressor 3 hours ,C13)": "Сброс рабочих часов компрессора 3 ,C13)",
-                "Reset Compressor 4 Hours ,C15)": "Сброс рабочих часов компрессора 4 ,C15)",
-                "Room Probe 2 Calibration ,°C, /25)": "Тарировка датчика B2 ,°C, /25)",
-                "Set Point Offset to Change Set from DI ,r34)": "Заданное значение смещения управления компрессора для вспомогательного датчика ,r34)",
-                "Set Point Prevent High Pressure Function ,bar, /33)": "Заданное значение предотвращения высокого давления нагнетания ,бар, /33)",
-                "Suction Probe 4 Calibration ,bar, /23)": "Тарировка датчика B4 всасывание ,бар, /23)",
-                "Time Between 2 Fans Starts in Dead Band ,s, r23)": "Время между запросами на пуск вентилятора ,с, r23)",
-                "Time Between 2 Fans Stops in Dead Band ,s, r24)": "Время между запросами на остановку вентилятора ,с, r24)",
-                "Time Between Compressor Stop Call with Prevent Function ,s, C06)": "Минимальное время между запросами выключения компрессора с активным предотвращением ,с, C06)",
-                "Time to Change low Pressure Alarm from Automatic to Manual ,m, A21)": "Переход с авт. на ручн. аварийных сигналов низкого давления ,м, A21)",
-                "Time to Reset Prevent Alarm ,m, A15)": "Предотвращение высокого давления HP Продолжительность предотвращения 3 ,м, A15)",
-                "Triac Impulse Duration ,ms, r31)": "Продолжительность импульса триака ,мс, r31)",
-                "Type of Compressor Control ,r06)": "Регулирование компрессора ,r06)",
-                "Type of Compressor Reset ,/29)": "Тип сброса аварийного сигнала тепловой перегрузки компрессора ,/29)",
-                "Type of Compressor Rotation ,r05)": "Чередование компрессоров ,r05)",
-                "Type of B1 ,/16)": "Тип датчика B1 ,/16)",
-                "Type of Fan Control ,r21)": "Регулирование вентилятора ,r21)",
-                "Type of Fan Reset ,/30)": "Тип сброса аварийного сигнала тепловой перегрузки вентилятора ,/30)",
-                "Type of Fan Rotation ,r20)": "Чередование вентиляторов ,r20)",
-                "Type of Probe B2 ,/21)": "Тип датчика B2 ,/21)",
-                "Type of Probe B3 ,/22)": "Тип датчика B3 ,/22)",
-                "Type of Refrigerant ,/35)": "Тип хладогента ,/35)",
-                "Type of Reset for General High Pressure switch ,/31)": "Тип сброса общего переключателя давления нагнетания ,/31)",
-                "Type of Unit ,/00)": "Тип агрегата ,/00)",
-                "Unit Model ,/01)": "Модель агрегата ,/01)",
-                "Differential Circuit 1 ,bar, r02)": "Перепад контура 1 ,бар, r02)",
-                "Differential Circuit 2 ,bar, r04)": "Перепад контура 2 ,бар, r04)",
-                "Min Suction Set Point 1 ,bar, r12)": "Заданное значение минимального всасывания 1 ,бар, r12)",
-                "Max Suction Set Point 1 ,bar, r13)": "Заданное значение максимального всасывания 1 ,бар, r13)",
-                "Min Suction Set Point 2 ,bar, r14)": "Заданное значение минимального всасывания 2 ,бар, r14)",
-                "Max Suction Set Point 2 ,bar, r15)": "Заданное значение максимального всасывания 2 ,бар, r15)",
-                "Fan Set Point ,bar, r16)": "Заданное значение вентилятора ,бар, r16)",
-                "Fan Set Point ,°C, r16)": "Заданное значение вентилятора ,°C, r16)",
-                "Fan Differential ,°C, r17)": "Перепад вентилятора ,°C, r17)",
-                "Fan Differential ,bar, r17)": "Перепад вентилятора ,бар, r17)",
-                "Fan Inverter Set Point ,°C, r18)": "Заданное значение инвертора вентилятора ,°C, r18)",
-                "Fan Inverter Set Point ,bar, r18)": "Заданное значение инвертора вентилятора ,бар, r18)",
-                "Fan Inverter Differential ,bar, r19)": "Перепад инвертора вентилятора ,бар, r19)",
-                "Fan Inverter Differential ,°C, r19)": "Перепад инвертора вентилятора ,°C, r19)",
+                "Number of Compressors On in Circuit 1 with Probe Damaged": "Количество включенных компрессоров с неисправным датчиком всасывания контур 1",
+                "Number of Compressors On in Circuit 2 with Probe Damaged": "Количество включенных компрессоров с неисправным датчиком всасывания контур 2",
+                "Number of Fans": "Количество вентиляторов, /09)",
+                "Number of Fans On with Probe Damaged": "Количество включенных вентиляторов с неисправным датчиком",
+                "On/Off from Supervisor": "Вкл/выкл агрегата от супервизора",
+                "Operating Hour Threshold for Maintenance, h": "Порог рабочих часов компрессора для аварийного сигнала технического обслуживания, ч",
+                "Outside Probe 3 Calibration, °C": "Тарировка датчика B3, °C",
+                "Prevent Time in which no Compressor Starts are Enabled, m": "Время предотвращения, в течение которого пуски компрессоров не разрешены, м",
+                "Prevent Time in which the Activation Signals the Alarm, m": "Время предотвращения, в течение которого активация генерирует аварийный сигнал, м",
+                "Reset Compressor 1 hours": "Сброс рабочих часов компрессора 1",
+                "Reset Compressor 2 Hours": "Сброс рабочих часов компрессора 2",
+                "Reset Compressor 3 hours": "Сброс рабочих часов компрессора 3",
+                "Reset Compressor 4 Hours": "Сброс рабочих часов компрессора 4",
+                "Room Probe 2 Calibration, °C": "Тарировка датчика B2, °C",
+                "Set Point Offset to Change Set from DI": "Заданное значение смещения управления компрессора для вспомогательного датчика",
+                "Set Point Prevent High Pressure Function, bar": "Заданное значение предотвращения высокого давления нагнетания, бар",
+                "Suction Probe 4 Calibration, bar": "Тарировка датчика B4 всасывание, бар",
+                "Time Between 2 Fans Starts in Dead Band, s": "Время между запросами на пуск вентилятора, с",
+                "Time Between 2 Fans Stops in Dead Band, s": "Время между запросами на остановку вентилятора, с",
+                "Time Between Compressor Stop Call with Prevent Function, s": "Минимальное время между запросами выключения компрессора с активным предотвращением, с",
+                "Time to Change low Pressure Alarm from Automatic to Manual, m": "Переход с авт. на ручн. аварийных сигналов низкого давления, м",
+                "Time to Reset Prevent Alarm, m": "Предотвращение высокого давления HP Продолжительность предотвращения 3, м",
+                "Triac Impulse Duration, ms": "Продолжительность импульса триака, мс",
+                "Type of Compressor Control": "Регулирование компрессора",
+                "Type of Compressor Reset": "Тип сброса аварийного сигнала тепловой перегрузки компрессора,",
+                "Type of Compressor Rotation": "Чередование компрессоров",
+                "Type of B1": "Тип датчика B1",
+                "Type of Fan Control": "Регулирование вентилятора",
+                "Type of Fan Reset": "Тип сброса аварийного сигнала тепловой перегрузки вентилятора",
+                "Type of Fan Rotation": "Чередование вентиляторов",
+                "Type of Probe B2": "Тип датчика B2",
+                "Type of Probe B3": "Тип датчика B3",
+                "Type of Refrigerant": "Тип хладогента",
+                "Type of Reset for General High Pressure switch": "Тип сброса общего переключателя давления нагнетания",
+                "Type of Unit": "Тип агрегата",
+                "Unit Model": "Модель агрегата",
+                "Differential Circuit 1, bar": "Перепад контура 1, бар",
+                "Differential Circuit 2, bar": "Перепад контура 2, бар",
+                "Min Suction Set Point 1, bar": "Заданное значение минимального всасывания 1, бар",
+                "Max Suction Set Point 1, bar": "Заданное значение максимального всасывания 1, бар",
+                "Min Suction Set Point 2, bar": "Заданное значение минимального всасывания 2, бар",
+                "Max Suction Set Point 2, bar": "Заданное значение максимального всасывания 2, бар",
+                "Fan Set Point, bar": "Заданное значение вентилятора, бар",
+                "Fan Set Point, °C": "Заданное значение вентилятора, °C",
+                "Fan Differential, °C": "Перепад вентилятора, °C",
+                "Fan Differential, bar": "Перепад вентилятора, бар",
+                "Fan Inverter Set Point, °C": "Заданное значение инвертора вентилятора, °C",
+                "Fan Inverter Set Point, bar": "Заданное значение инвертора вентилятора, бар",
+                "Fan Inverter Differential, bar": "Перепад инвертора вентилятора, бар",
+                "Fan Inverter Differential, °C": "Перепад инвертора вентилятора, °C",
                 "Inverter Readout": "Мощность инвертора",
                 "Compressor 1 Operating Time": "Время наработки компрессора 1",
                 "Compressor 2 Operating Time": "Время наработки компрессора 2",
                 "Compressor 3 Operating Time": "Время наработки компрессора 3",
                 "Compressor 4 Operating Time": "Время наработки компрессора 4",
-                "Version of the Application": "Версия ПО",
+                "Application Version": "Версия ПО",
                 "Unit Status": "Состояние",
                 "Alarm: Compressor 1": "Авария компрессора 1",
                 "Alarm: Compressor 2": "Авария компрессора 2",
                 "Alarm: Compressor 3": "Авария компрессора 3",
                 "Alarm: Compressor 4": "Авария компрессора 4",
-                "Alarm: Liquid Level": "Авария по уровню жидкости",
-                "Alarm: General Low Suction Pressure 1": "Авария по общему низкому давлению всасывания 1 (от многофункционального DI)",
-                "Alarm: General Low Suction Pressure 2": "Авария по общему низкому давлению всасывания 2 (от многофункционального DI)",
+                "Alarm Liquid Level": "Авария по уровню жидкости",
+                "Alarm General Low Suction Pressure 1": "Авария по общему низкому давлению всасывания 1 (от многофункционального DI)",
+                "Alarm General Low Suction Pressure 2": "Авария по общему низкому давлению всасывания 2 (от многофункционального DI)",
                 "General Discharge Pressure Switch": "Общий переключатель давления нагнетания (от многофункционального DI)",
-                "Alarm: Low Discharge Pressure": "Авария по низкому давлению нагнетания",
-                "Alarm: High Discharge Pressure": "Авария по высокому давлению нагнетания",
-                "Alarm: Low Suction Pressure 1": "Авария по низкому давлению всасывания 1",
-                "Alarm: High Suction Pressure 1": "Авария по высокому давлению всасывания 1",
-                "Alarm: Low Suction Pressure 2": "Авария по низкому давлению всасывания 2",
-                "Alarm: High Suction Pressure 2": "Авария по высокому давлению всасывания 2",
-                "Probe B4 Faulty or Disconnected": "Датчик B4 неисправен или отсоединен",
-                "Probe B1 Faulty or Disconnected": "Датчик B1 неисправен или отсоединен",
-                "Alarm: Fan 1": "Авария вентилятора 1",
-                "Alarm: Fan 2": "Авария вентилятора 2",
-                "Alarm: Fan 3": "Авария вентилятора 3",
-                "Alarm: Fan 4": "Авария вентилятора 4",
-                "General Fan Thermal Overload": "Тепловая перегрузка вентилятора",
+                "Alarm Low Discharge Pressure": "Авария по низкому давлению нагнетания",
+                "Alarm High Discharge Pressure": "Авария по высокому давлению нагнетания",
+                "Alarm Low Suction Pressure 1": "Авария по низкому давлению всасывания 1",
+                "Alarm High Suction Pressure 1": "Авария по высокому давлению всасывания 1",
+                "Alarm Low Suction Pressure 2": "Авария по низкому давлению всасывания 2",
+                "Alarm High Suction Pressure 2": "Авария по высокому давлению всасывания 2",
+                "Probe B4 Faulty": "Датчик B4 неисправен",
+                "Probe B1 Faulty": "Датчик B1 неисправен",
+                "Alarm Fan 1": "Авария вентилятора 1",
+                "Alarm Fan 2": "Авария вентилятора 2",
+                "Alarm Fan 3": "Авария вентилятора 3",
+                "Alarm Fan 4": "Авария вентилятора 4",
+                "Fan Thermal Overload": "Тепловая перегрузка вентилятора",
                 "Excessive Prevent Frequency": "Избыточная частота предотвращения",
-                "Probe B2 Faulty or Disconnected": "Датчик B2 неисправен или отсоединен",
-                "Probe B3 Faulty or Disconnected": "Датчик B3 неисправен или отсоединен",
+                "Probe B2 Faulty": "Датчик B2 неисправен",
+                "Probe B3 Faulty": "Датчик B3 неисправен",
                 "High Room Temperature": "Высокая температура помещения",
                 "High Outside Temperature": "Высокая наружная температура",
                 "Compressor 1 Maintenance": "Техническое обслуживание компрессора 1",
@@ -2658,15 +2653,15 @@
                 "Status of Compressor 2": "Состояние компрессора 2",
                 "Status of Compressor 3": "Состояние компрессора 3",
                 "Status of Compressor 4": "Состояние компрессора 4",
-                "Status of Digital Input 1": "Состояние цифрового входа 1",
-                "Status of Digital Input 2": "Состояние цифрового входа 2",
-                "Status of Digital Input 3": "Состояние цифрового входа 3",
-                "Status of Digital Input 4": "Состояние цифрового входа 4",
-                "Status of Digital Input 5": "Состояние цифрового входа 5",
-                "Status of Fan 1": "Состояние вентилятора 1",
-                "Status of Fan 2": "Состояние вентилятора 2",
-                "Status of Fan 3": "Состояние вентилятора 3",
-                "Status of Fan 4": "Состояние вентилятора 4",
+                "Status Digital Input 1": "Состояние цифрового входа 1",
+                "Status Digital Input 2": "Состояние цифрового входа 2",
+                "Status Digital Input 3": "Состояние цифрового входа 3",
+                "Status Digital Input 4": "Состояние цифрового входа 4",
+                "Status Digital Input 5": "Состояние цифрового входа 5",
+                "Status Fan 1": "Состояние вентилятора 1",
+                "Status Fan 2": "Состояние вентилятора 2",
+                "Status Fan 3": "Состояние вентилятора 3",
+                "Status Fan 4": "Состояние вентилятора 4",
                 "Unit On": "Блок включен",
                 "Probe B1": "Датчик B1",
                 "Probe B2": "Датчик B2",
@@ -2675,8 +2670,8 @@
                 "Suction Set Point Circuit 1": "Заданное значение всасывания контура 1",
                 "Suction Set Point Circuit 2": "Заданное значение всасывания контура 2",
                 "Reset Alarms": "Сброс сигнала аварии",
-                "Operating Percentage of First Capacity Controlled Compressor": "Процент работы первого компрессора с регулируемой производительностью",
-                "Operating Percentage of Second Capacity Controlled Compressor": "Процент работы второго компрессора с регулируемой производительностью",
+                "Compressor 1 Output": "Процент работы первого компрессора",
+                "Compressor 2 Output": "Процент работы второго компрессора",
                 "N.C.": "Нормально замкнутые",
                 "N.O.": "Нормально разомкнутые",
                 "N.O.: with no alarm the contact is open": "Нормально разомкнутые, в отсутствии аварии - разомкнут",
@@ -2710,7 +2705,7 @@
                 "Dead band with time": "Зона нечувствительности со временем",
                 "No rotation": "Без ротации",
                 "FIFO": "Первый включился - первый выключился",
-                "Time": "Время",
+                "Time": "По времени",
                 "Probe not connected": "Датчик не подключен",
                 "NTC probe": "Датчик NTC",
                 "0 to 5 V probe": "Датчик от 0 до 5 Вольт",
