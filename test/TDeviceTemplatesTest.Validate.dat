@@ -20598,7 +20598,7 @@ carel_mu_rack
 	Suction Set Point Circuit 1  =>  Suction Set Point Circuit 1
 	Suction Set Point Circuit 2  =>  Suction Set Point Circuit 2
 	Unit On  =>  Unit On
-	Unit Status  =>  Unit Status	
+	Unit Status  =>  Unit Status
 carel_pj_basic
 	1st probe alarm  =>  1st probe alarm
 	2nd probe alarm  =>  2nd probe alarm
