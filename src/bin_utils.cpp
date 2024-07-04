@@ -16,11 +16,11 @@ void BinUtils::DecodeByteStuffing(std::vector<uint8_t>& data,
     for (auto readIt = data.begin(); readIt != data.end(); ++readIt) {
         bool changed = false;
         for (auto rule: rules) {
-            if ((static_cast<size_t>(data.end() - readIt) > rule.second.size()) &&
+            if (rule.second.size() && (static_cast<size_t>(data.end() - readIt) > rule.second.size()) &&
                 std::equal(rule.second.begin(), rule.second.end(), readIt))
             {
                 *writeIt = rule.first;
-                ++readIt;
+                readIt += rule.second.size() - 1;
                 changed = true;
                 break;
             }
