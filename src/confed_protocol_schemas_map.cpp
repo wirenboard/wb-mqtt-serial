@@ -1,4 +1,4 @@
-#include "confed_schemas_map.h"
+#include "confed_protocol_schemas_map.h"
 
 #include <filesystem>
 
@@ -8,41 +8,6 @@
 #include "log.h"
 
 #define LOG(logger) ::logger.Log() << "[templates] "
-
-TDevicesConfedSchemasMap::TDevicesConfedSchemasMap(TTemplateMap& templatesMap, const std::string& schemasFolder)
-    : TemplatesMap(templatesMap),
-      SchemasFolder(schemasFolder)
-{}
-
-std::shared_ptr<Json::Value> TDevicesConfedSchemasMap::GetSchema(const std::string& deviceType)
-{
-    std::unique_lock lock(Mutex);
-    try {
-        return Schemas.at(deviceType);
-    } catch (const std::out_of_range&) {
-        try {
-            Schemas.emplace(
-                deviceType,
-                std::make_shared<Json::Value>(WBMQTT::JSON::Parse(
-                    GetSchemaFilePath(SchemasFolder, TemplatesMap.GetTemplate(deviceType)->GetFilePath()))));
-            return Schemas.at(deviceType);
-        } catch (const std::out_of_range&) {
-            throw std::out_of_range("Can't find json-schema for " + deviceType);
-        }
-    }
-}
-
-void TDevicesConfedSchemasMap::InvalidateCache(const std::string& deviceType)
-{
-    std::unique_lock lock(Mutex);
-    Schemas.erase(deviceType);
-}
-
-std::string GetSchemaFilePath(const std::string& schemasFolder, const std::string& templateFilePath)
-{
-    std::filesystem::path templatePath(templateFilePath);
-    return schemasFolder + "/" + templatePath.stem().string() + ".schema.json";
-}
 
 TProtocolConfedSchema::TProtocolConfedSchema(const std::string& type,
                                              const std::unordered_map<std::string, std::string>& titleTranslations,

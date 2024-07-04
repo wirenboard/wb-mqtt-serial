@@ -2,7 +2,8 @@
 #include <wblib/json_utils.h>
 #include <wblib/rpc.h>
 
-#include "confed_schemas_map.h"
+#include "confed_device_schemas_map.h"
+#include "confed_protocol_schemas_map.h"
 #include "serial_config.h"
 class TRPCConfigHandler
 {
