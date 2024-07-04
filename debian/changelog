@@ -1,4 +1,10 @@
-wb-mqtt-serial (2.129.1) stable; urgency=medium
+wb-mqtt-serial (2.130) stable; urgency=medium
+
+  * Add new template for Carel muRack after rework
+
+ -- Andrey Ksenofontov <andrey.ksenofontov@wirenboard.com>  Thu, 04 Jul 2024 17:23:30 +0300
+
+ wb-mqtt-serial (2.129.1) stable; urgency=medium
 
   * Add channels "tariffs" to templates/config-mercury230.json
 
