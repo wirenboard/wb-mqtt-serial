@@ -284,7 +284,7 @@ void Somfy::TDevice::WriteRegisterImpl(PRegister reg, const TRegisterValue& regV
         }
         case ANGLE: {
             // See 6.4.1 Device Control / Move to Position
-            std::vector<uint8_t> data{0x10, 0x00, 0x00, 0x00};
+            std::vector<uint8_t> data{0x0F, 0x00, 0x00, 0x00};
             data.push_back(value & 0xFF);
             data.push_back((value >> 8) & 0xFF);
             Check(SlaveId, ACK, ExecCommand(MakeRequest(Somfy::CTRL_MOVETO, SlaveId, NodeType, data)));
@@ -336,7 +336,7 @@ TRegisterValue Somfy::TDevice::ReadRegisterImpl(PRegister reg)
         }
         case ANGLE: {
             // See 6.5.1 Device Status / Motor Position
-            return GetCachedResponse(Somfy::GET_MOTOR_POSITION, Somfy::POST_MOTOR_POSITION, 56, 16);
+            return GetCachedResponse(Somfy::GET_MOTOR_POSITION, Somfy::POST_MOTOR_POSITION, 3 * 8, 8);
         }
     }
     throw TSerialDevicePermanentRegisterException("Unsupported register type");

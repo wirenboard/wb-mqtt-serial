@@ -236,7 +236,7 @@
                 "reg_type": "angle",
                 "address": 0,
                 "min": 0,
-                "max": 180,
+                "max": 100,
                 "enabled": false,
                 "condition": "node_type==9"
             }
