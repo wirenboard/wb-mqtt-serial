@@ -371,7 +371,7 @@ std::vector<uint8_t> Somfy::MakeSetPositionRequest(uint32_t address, uint8_t nod
     return MakeRequest(Somfy::CTRL_MOVETO,
                        address,
                        nodeType,
-                       {0x04, static_cast<uint8_t>(position & 0xFF), 0x00, 0x00, 0x00, 0x00});
+                       {0x07, static_cast<uint8_t>(position & 0xFF), 0x00, 0x00, 0x00, 0x00});
 }
 
 std::vector<uint8_t> Somfy::ParseStatusReport(uint32_t address, uint8_t header, const std::vector<uint8_t>& bytes)
