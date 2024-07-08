@@ -1,8 +1,20 @@
-wb-mqtt-serial (2.128.1) stable; urgency=medium
+wb-mqtt-serial (2.129.2) stable; urgency=medium
 
   * Somfy SDN: add tilting support
 
- -- Nikolay Korotkiy <nikolay.korotkiy@wirenboard.com>  Wed, 19 Jun 2024 17:10:00 +0400
+ -- Nikolay Korotkiy <nikolay.korotkiy@wirenboard.com>  Mon, 08 Jul 2024 11:10:00 +0400
+
+wb-mqtt-serial (2.129.1) stable; urgency=medium
+
+  * Add channels "tariffs" to templates/config-mercury230.json
+
+ -- Elena Savchenko <elena.savchenko@wirenboard.com>  Thu, 27 Jun 2024 11:55:30 +0500
+ 
+wb-mqtt-serial (2.129.0) stable; urgency=medium
+
+  * WB-MAI6 template: add WB-VDIV and custom voltage divider support
+
+ -- Pavel Gasheev <pavel.gasheev@wirenboard.ru>  Tue, 11 Jun 2024 15:18:10 +0300
 
 wb-mqtt-serial (2.128.0) stable; urgency=medium
 

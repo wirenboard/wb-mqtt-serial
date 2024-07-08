@@ -22348,6 +22348,10 @@ mercury230
 	Q1  =>  Q1
 	Q2  =>  Q2
 	Q3  =>  Q3
+	Tariff 1  =>  Tariff 1
+	Tariff 2  =>  Tariff 2
+	Tariff 3  =>  Tariff 3
+	Tariff 4  =>  Tariff 4
 	Temperature  =>  Temperature
 	Total consumption  =>  Total consumption
 	Total reactive energy  =>  Total reactive energy
