@@ -1,0 +1,243 @@
+{
+  "title": "Energomera CE102",
+  "device_type": "energomera_ce102",
+  "group": "g-power-meter",
+  "device": {
+    "name": "Energomera CE102",
+    "id": "energomera102",
+    "protocol" : "energomera_ce",
+    "frame_timeout_ms" : 20,
+    "response_timeout_ms": 2000,
+    "channels" : 
+    [
+      {
+        "name": "Urms",
+        "reg_type": "default",
+        "type": "value",
+        "address": "0x0180",
+        "scale": 0.01,
+        "units": "V"
+      },
+      {
+        "name": "Irms",
+        "reg_type": "default",
+        "type": "value",
+        "address": "0x0181",
+        "scale": 0.01,
+        "units": "A"
+      },
+      {
+        "name": "P",
+        "reg_type": "default",
+        "type": "value",
+        "format": "u32",
+        "address": "0x0182",
+        "scale": 0.001,
+        "units": "W"
+      },
+      {
+        "name": "A Energy",
+        "reg_type": "energy",
+        "type": "value",
+        "units": "kWh",
+        "scale": 0.01,
+        "address": "0x012F0000"
+      },
+      {
+        "name": "A Energy T1",
+        "reg_type": "energy",
+        "type": "value",
+        "units": "kWh",
+        "scale": 0.01,
+        "address": "0x012F0001"
+      },
+      {
+        "name": "A Energy T2",
+        "reg_type": "energy",
+        "type": "value",
+        "units": "kWh",
+        "scale": 0.01,
+        "address": "0x012F0002"
+      },
+      {
+        "name": "A Energy T3",
+        "reg_type": "energy",
+        "type": "value",
+        "units": "kWh",
+        "scale": 0.01,
+        "address": "0x012F0003"
+      },
+      {
+        "name": "A Energy T4",
+        "reg_type": "energy",
+        "type": "value",
+        "units": "kWh",
+        "scale": 0.01,
+        "address": "0x012F0004"
+      },
+      {
+        "name": "A Energy T5",
+        "reg_type": "energy",
+        "type": "value",
+        "units": "kWh",
+        "scale": 0.01,
+        "address": "0x012F0005"
+      },
+      {
+        "name": "A Energy 1 Month",
+        "reg_type": "energy",
+        "type": "value",
+        "units": "kWh",
+        "scale": 0.01,
+        "address": "0x01300100",
+        "enabled": false
+      },
+      {
+        "name": "A Energy 2 Months",
+        "reg_type": "energy",
+        "type": "value",
+        "units": "kWh",
+        "scale": 0.01,
+        "address": "0x01300200",
+        "enabled": false
+      },
+      {
+        "name": "A Energy 3 Months",
+        "reg_type": "energy",
+        "type": "value",
+        "units": "kWh",
+        "scale": 0.01,
+        "address": "0x01300300",
+        "enabled": false
+      },
+      {
+        "name": "A Energy 4 Months",
+        "reg_type": "energy",
+        "type": "value",
+        "units": "kWh",
+        "scale": 0.01,
+        "address": "0x01300400",
+        "enabled": false
+      },
+      {
+        "name": "A Energy 5 Months",
+        "reg_type": "energy",
+        "type": "value",
+        "units": "kWh",
+        "scale": 0.01,
+        "address": "0x01300500",
+        "enabled": false
+      },
+      {
+        "name": "A Energy 6 Months",
+        "reg_type": "energy",
+        "type": "value",
+        "units": "kWh",
+        "scale": 0.01,
+        "address": "0x01300600",
+        "enabled": false
+      },
+      {
+        "name": "A Energy 7 Months",
+        "reg_type": "energy",
+        "type": "value",
+        "units": "kWh",
+        "scale": 0.01,
+        "address": "0x01300700",
+        "enabled": false
+      },
+      {
+        "name": "A Energy 8 Months",
+        "reg_type": "energy",
+        "type": "value",
+        "units": "kWh",
+        "scale": 0.01,
+        "address": "0x01300800",
+        "enabled": false
+      },
+      {
+        "name": "A Energy 9 Months",
+        "reg_type": "energy",
+        "type": "value",
+        "units": "kWh",
+        "scale": 0.01,
+        "address": "0x01300900",
+        "enabled": false
+      },
+      {
+        "name": "A Energy 10 Months",
+        "reg_type": "energy",
+        "type": "value",
+        "units": "kWh",
+        "scale": 0.01,
+        "address": "0x01300A00",
+        "enabled": false
+      },
+      {
+        "name": "A Energy 11 Months",
+        "reg_type": "energy",
+        "type": "value",
+        "units": "kWh",
+        "scale": 0.01,
+        "address": "0x01300B00",
+        "enabled": false
+      },
+      {
+        "name": "A Energy 12 Months",
+        "reg_type": "energy",
+        "type": "value",
+        "units": "kWh",
+        "scale": 0.01,
+        "address": "0x01300C00",
+        "enabled": false
+      },
+      {
+        "name": "Date",
+        "reg_type": "date",
+        "type": "text",
+        "format": "string",
+        "string_data_size": 14,
+        "address": "0x0120"
+      }
+    ],
+    "translations": {
+      "en": {
+        "A Energy 1 Month": "A energy, 1 month ago",
+        "A Energy 2 Months": "A energy, 2 months ago",
+        "A Energy 3 Months": "A energy, 3 months ago",
+        "A Energy 4 Months": "A energy, 4 months ago",
+        "A Energy 5 Months": "A energy, 5 months ago",
+        "A Energy 6 Months": "A energy, 6 months ago",
+        "A Energy 7 Months": "A energy, 7 months ago",
+        "A Energy 8 Months": "A energy, 8 months ago",
+        "A Energy 9 Months": "A energy, 9 months ago",
+        "A Energy 10 Months": "A energy, 10 months ago",
+        "A Energy 11 Months": "A energy, 11 months ago",
+        "A Energy 12 Months": "A energy, 12 months ago",
+        "Date": "Date and time"
+      },
+      "ru": {
+        "Energomera CE102": "Энергомера CE102",
+        "A Energy": "Энергия",
+        "A Energy T1": "Энергия тариф 1",
+        "A Energy T2": "Энергия тариф 2",
+        "A Energy T3": "Энергия тариф 3",
+        "A Energy T4": "Энергия тариф 4",
+        "A Energy T5": "Энергия тариф 5",
+        "A Energy 1 Month": "Энергия, 1 месяц назад",
+        "A Energy 2 Months": "Энергия, 2 месяца назад",
+        "A Energy 3 Months": "Энергия, 3 месяца назад",
+        "A Energy 4 Months": "Энергия, 4 месяца назад",
+        "A Energy 5 Months": "Энергия, 5 месяцев назад",
+        "A Energy 6 Months": "Энергия, 6 месяцев назад",
+        "A Energy 7 Months": "Энергия, 7 месяцев назад",
+        "A Energy 8 Months": "Энергия, 8 месяцев назад",
+        "A Energy 9 Months": "Энергия, 9 месяцев назад",
+        "A Energy 10 Months": "Энергия, 10 месяцев назад",
+        "A Energy 11 Months": "Энергия, 11 месяцев назад",
+        "A Energy 12 Months": "Энергия, 12 месяцев назад",
+        "Date": "Дата и время"
+      }
+    }
+  }
+}

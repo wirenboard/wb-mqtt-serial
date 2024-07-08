@@ -3,6 +3,8 @@
 #include <initializer_list>
 #include <stddef.h>
 #include <stdint.h>
+#include <unordered_map>
+#include <vector>
 
 namespace BinUtils
 {
@@ -125,10 +127,27 @@ namespace BinUtils
     }
 
     /**
-     * @brief Get number with N least signficant bits set to one, other bits are set to zero
+     * @brief Get number with N least significant bits set to one, other bits are set to zero
      *
      * @param bitCount number of bits counting from LSB set to one
      * @return uint64_t mask value
      */
     uint64_t GetLSBMask(uint8_t bitCount);
+
+    template<class InsertIterator>
+    void ApplyByteStuffing(const std::vector<uint8_t>& data,
+                           const std::unordered_map<uint8_t, std::vector<uint8_t>>& rules,
+                           InsertIterator inserter)
+    {
+        for (auto byte: data) {
+            auto it = rules.find(byte);
+            if (it != rules.end()) {
+                std::copy(it->second.begin(), it->second.end(), inserter);
+            } else {
+                *inserter = byte;
+            }
+        }
+    }
+
+    void DecodeByteStuffing(std::vector<uint8_t>& data, const std::unordered_map<uint8_t, std::vector<uint8_t>>& rules);
 }

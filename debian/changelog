@@ -1,8 +1,14 @@
-wb-mqtt-serial (2.129.2) stable; urgency=medium
+wb-mqtt-serial (2.130.1) stable; urgency=medium
 
   * Somfy SDN: add tilting support
 
- -- Nikolay Korotkiy <nikolay.korotkiy@wirenboard.com>  Mon, 08 Jul 2024 11:10:00 +0400
+ -- Nikolay Korotkiy <nikolay.korotkiy@wirenboard.com>  Mon, 08 Jul 2024 16:05:00 +0400
+
+wb-mqtt-serial (2.130.0) stable; urgency=medium
+
+  * Add Energomera CE102 template
+
+ -- Petr Krasnoshchekov <petr.krasnoshchekov@wirenboard.com>  Mon, 08 Jul 2024 14:28:10 +0500
 
 wb-mqtt-serial (2.129.1) stable; urgency=medium
 
