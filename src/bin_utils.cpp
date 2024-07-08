@@ -1,5 +1,6 @@
 #include "bin_utils.h"
 #include <assert.h>
+#include <stdexcept>
 
 uint64_t BinUtils::GetLSBMask(uint8_t bitCount)
 {
@@ -16,7 +17,10 @@ void BinUtils::DecodeByteStuffing(std::vector<uint8_t>& data,
     for (auto readIt = data.begin(); readIt != data.end(); ++readIt) {
         bool changed = false;
         for (auto rule: rules) {
-            if (rule.second.size() && (static_cast<size_t>(data.end() - readIt) > rule.second.size()) &&
+            if (rule.second.empty()) {
+                throw std::invalid_argument("invalid byte stuffing rule");
+            }
+            if ((static_cast<size_t>(data.end() - readIt) > rule.second.size()) &&
                 std::equal(rule.second.begin(), rule.second.end(), readIt))
             {
                 *writeIt = rule.first;
