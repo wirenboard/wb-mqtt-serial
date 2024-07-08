@@ -285,8 +285,8 @@ void Somfy::TDevice::WriteRegisterImpl(PRegister reg, const TRegisterValue& regV
         case ANGLE: {
             // See 6.4.1 Device Control / Move to Position
             std::vector<uint8_t> data{0x10, 0x00, 0x00, 0x00};
-            data.push_back((value - 90) & 0xFF);
-            data.push_back(((value - 90) >> 8) & 0xFF);
+            data.push_back(value & 0xFF);
+            data.push_back((value >> 8) & 0xFF);
             Check(SlaveId, ACK, ExecCommand(MakeRequest(Somfy::CTRL_MOVETO, SlaveId, NodeType, data)));
             return;
         }
