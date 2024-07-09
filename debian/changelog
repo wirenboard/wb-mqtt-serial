@@ -1,5 +1,11 @@
 wb-mqtt-serial (2.118.0-wb103) stable; urgency=medium
 
+  * Add Energomera CE102 template
+
+ -- Petr Krasnoshchekov <petr.krasnoshchekov@wirenboard.com>  Tue, 09 Jul 2024 15:31:05 +0500
+
+wb-mqtt-serial (2.118.0-wb103) stable; urgency=medium
+
   * Add new signature in m1w2 template
 
  -- Radmir Khakimov <radmir.khakimov@wirenboard.com>  Wed, 03 Jul 2024 16:33:38 +0500
