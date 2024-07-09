@@ -107,6 +107,16 @@
                 "group": "hw_info"
             },
             {
+                "name": "Minimum MCU Voltage Since Startup",
+                "reg_type": "input",
+                "address": 119,
+                "scale": 0.001,
+                "type": "value",
+                "units": "V",
+                "enabled": false,
+                "group": "hw_info"
+            },
+            {
                 "name": "Uptime",
                 "reg_type": "input",
                 "address": 104,
@@ -137,6 +147,7 @@
                 "Serial NO": "Серийный номер",
                 "FW Version": "Версия прошивки",
                 "Input Voltage": "Напряжение питания",
+                "Minimum MCU Voltage Since Startup": "Минимальное напряжение питания МК с момента включения",
                 "Uptime": "Время работы с момента включения (с)"
             }
         }
