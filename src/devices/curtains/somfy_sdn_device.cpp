@@ -217,6 +217,7 @@ std::vector<uint8_t> Somfy::TDevice::ExecCommand(const std::vector<uint8_t>& req
                                      FrameComplete)
                          .Count;
     respBytes.resize(bytesRead);
+    PrintDebugDump(respBytes, "Frame read (inverted): ");
     FixReceivedFrame(respBytes);
     PrintDebugDump(respBytes, "Frame read: ");
     return respBytes;
@@ -363,6 +364,7 @@ std::vector<uint8_t> Somfy::MakeRequest(uint8_t msg,
     res.push_back(crc);
     PrintDebugDump(res, "Request: ");
     std::transform(res.begin(), res.end() - CRC_SIZE, res.begin(), std::bit_not<uint8_t>());
+    PrintDebugDump(res, "Request (inverted): ");
     return res;
 }
 
