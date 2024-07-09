@@ -2,6 +2,7 @@ wb-mqtt-serial (2.130.1) stable; urgency=medium
 
   * Add min core voltage reg in wb-mir_v2 template
   * Add min core voltage reg in wb-mai2-cc template
+  * Add min core voltage reg in wb-mr2m template
 
  -- Sergey Mishin <mishin@wirenboard.com>  Tue, 9 Jul 2024 17:29:00 +0300
 
