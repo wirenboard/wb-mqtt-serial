@@ -19352,6 +19352,7 @@ WB-MRM2-mini-NC-inputs
 	K2  =>  K2
 	MCU Temperature  =>  MCU Temperature
 	MCU Voltage  =>  MCU Voltage
+	Minimum MCU Voltage Since Startup  =>  Minimum MCU Voltage Since Startup
 	Minimum Voltage Since Startup  =>  Minimum Voltage Since Startup
 	Serial  =>  Serial
 	Supply Voltage  =>  Supply Voltage
@@ -19378,6 +19379,7 @@ WB-MRM2-mini-NO-inputs
 	K2  =>  K2
 	MCU Temperature  =>  MCU Temperature
 	MCU Voltage  =>  MCU Voltage
+	Minimum MCU Voltage Since Startup  =>  Minimum MCU Voltage Since Startup
 	Minimum Voltage Since Startup  =>  Minimum Voltage Since Startup
 	Serial  =>  Serial
 	Supply Voltage  =>  Supply Voltage

@@ -548,6 +548,16 @@
                 "type": "voltage",
                 "enabled": false,
                 "group": "g_hw_info"
+            },
+            {
+                "name": "Minimum MCU Voltage Since Startup",
+                "reg_type": "input",
+                "address": 119,
+                "scale": 0.001,
+                "type": "value",
+                "units": "V",
+                "enabled": false,
+                "group": "g_hw_info"
             }
         ],
 
@@ -686,7 +696,8 @@
                 "Uptime": "Время работы с момента включения (с)",
                 "Minimum Voltage Since Startup": "Минимальное напряжение с момента включения",
                 "MCU Temperature": "Температура МК",
-                "MCU Voltage": "Напряжение питания МК"
+                "MCU Voltage": "Напряжение питания МК",
+                "Minimum MCU Voltage Since Startup": "Минимальное напряжение питания МК с момента включения"
             }
         }
     }
