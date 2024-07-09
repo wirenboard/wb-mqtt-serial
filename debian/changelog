@@ -1,3 +1,10 @@
+wb-mqtt-serial (2.130.1) stable; urgency=medium
+
+  * Add min core voltage reg in wb-mir_v2 template
+  * Add min core voltage reg in wb-mai2-cc template
+
+ -- Sergey Mishin <mishin@wirenboard.com>  Tue, 9 Jul 2024 17:29:00 +0300
+
 wb-mqtt-serial (2.130.0) stable; urgency=medium
 
   * Add Energomera CE102 template
