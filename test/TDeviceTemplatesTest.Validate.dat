@@ -13291,6 +13291,7 @@ WB-MAI2-mini/CC
 	Current input 2 (mA)  =>  Current input 2 (mA)
 	FW Version  =>  FW Version
 	Input Voltage  =>  Input Voltage
+	Minimum MCU Voltage Since Startup  =>  Minimum MCU Voltage Since Startup
 	Serial NO  =>  Serial NO
 	Uptime  =>  Uptime
 WB-MAI6
@@ -18585,6 +18586,7 @@ WB-MIR v2
 	Learn to ROM9  =>  Learn to ROM9
 	MCU Temperature  =>  MCU Temperature
 	MCU Voltage  =>  MCU Voltage
+	Minimum MCU Voltage Since Startup  =>  Minimum MCU Voltage Since Startup
 	Play from RAM  =>  Play from RAM
 	Play from ROM1  =>  Play from ROM1
 	Play from ROM10  =>  Play from ROM10
