@@ -18707,6 +18707,9 @@ WB-MIR v2
 	ROM9 -> RAM  =>  ROM9 -> RAM
 	ROM9 size  =>  ROM9 size
 	Reset all ROM  =>  Reset all ROM
+	Learn to BANK  =>  Learn to BANK
+	Play from BANK  =>  Play from BANK
+	BANK -> RAM  =>  BANK -> RAM
 	Serial NO  =>  Serial NO
 	Uptime  =>  Uptime
 WB-MR11
