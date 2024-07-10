@@ -1,3 +1,9 @@
+wb-mqtt-serial (2.130.1) stable; urgency=medium
+
+  * Fix a type in WB-Domofon template
+
+ -- Roman Matveev <roman.matveev@wirenboard.ru>  Fri, 10 Jul 2024 14:47:30 +0300
+
 wb-mqtt-serial (2.130.0) stable; urgency=medium
 
   * Add Energomera CE102 template
