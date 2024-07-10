@@ -160,8 +160,8 @@ void TFakeSerialDevice::WriteRegisterImpl(PRegister reg, const TRegisterValue& v
 
 void TFakeSerialDevice::SetTransferResult(bool ok)
 {
-    bool wasDisconnected = GetIsDisconnected();
-    if (wasDisconnected && ok) {
+    auto initialConnectionState = GetConnectionState();
+    if ((initialConnectionState != TDeviceConnectionState::CONNECTED) && ok) {
         FakePort->GetFixture().Emit() << "fake_serial_device '" << SlaveId << "': transfer OK";
     }
     if (!ok) {
@@ -170,10 +170,12 @@ void TFakeSerialDevice::SetTransferResult(bool ok)
 
     TSerialDevice::SetTransferResult(ok);
 
-    if (wasDisconnected && !GetIsDisconnected()) {
-        FakePort->GetFixture().Emit() << "fake_serial_device '" << SlaveId << "': reconnected";
-    } else if (!wasDisconnected && GetIsDisconnected()) {
-        FakePort->GetFixture().Emit() << "fake_serial_device '" << SlaveId << "': disconnected";
+    if (initialConnectionState != GetConnectionState()) {
+        if (GetConnectionState() == TDeviceConnectionState::CONNECTED) {
+            FakePort->GetFixture().Emit() << "fake_serial_device '" << SlaveId << "': reconnected";
+        } else {
+            FakePort->GetFixture().Emit() << "fake_serial_device '" << SlaveId << "': disconnected";
+        }
     }
 }
 

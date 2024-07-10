@@ -226,9 +226,6 @@ bool TReadPeriodMissChecker::IsMissed(std::chrono::steady_clock::time_point read
     return res;
 }
 
-std::map<std::tuple<PSerialDevice, PRegisterConfig>, PRegister> TRegister::RegStorage;
-std::mutex TRegister::Mutex;
-
 TRegisterConfig::TRegisterConfig(int type,
                                  const TRegisterDesc& registerAddressesDescription,
                                  RegisterFormat format,

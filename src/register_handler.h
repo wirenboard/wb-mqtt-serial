@@ -13,7 +13,7 @@ using WBMQTT::StringFormat;
 class TRegisterHandler
 {
 public:
-    TRegisterHandler(PSerialDevice dev, PRegister reg);
+    TRegisterHandler(PRegister reg);
 
     PRegister Register() const;
 
@@ -25,10 +25,8 @@ public:
     void Flush();
 
     void SetTextValue(const std::string& v);
-    PSerialDevice Device() const;
 
 private:
-    std::weak_ptr<TSerialDevice> Dev;
     TRegisterValue ValueToSet{0};
     PRegister Reg;
     volatile bool Dirty = false;

@@ -193,7 +193,7 @@
                 "enabled": false,
                 "min": 6,
                 "max": 28,
-                "condition": "node_type!=6"
+                "condition": "(node_type==2)||(node_type==5)||(node_type==8)"
             },
             {
                 "name": "Rolling speed down",
@@ -203,7 +203,7 @@
                 "response_header": "0x33",
                 "write_address": "0x13",
                 "enabled": false,
-                "condition": "(node_type==7)||(node_type==8)||(node_type==9)"
+                "condition": "node_type==8"
             },
             {
                 "name": "Rolling speed down",
@@ -216,7 +216,7 @@
                 "readonly": true,
                 "min": 6,
                 "max": 28,
-                "condition": "(node_type!=5)&&(node_type!=6)&&(node_type!=7)&&(node_type!=8)&&(node_type!=9)"
+                "condition": "node_type==2"
             },
             {
                 "name": "Rolling speed slow",
@@ -228,31 +228,31 @@
                 "enabled": false,
                 "min": 6,
                 "max": 28,
-                "condition": "node_type!=6"
+                "condition": "(node_type==2)||(node_type==5)||(node_type==8)"
             }
         ],
         "translations": {
             "ru": {
-              "Position": "Позиция",
-              "Move down": "Опустить",
-              "Move up": "Поднять",
-              "Direction": "Направление",
-              "Current state": "Текущее состояние",
-              "Cause": "Причина",
-              "Rolling speed up": "Cкорость открытия",
-              "Rolling speed down": "Cкорость закрытия",
-              "Rolling speed slow": "Cкорость в медленном режиме",
-              "Last command source": "Источник полученной команды",
-              "Last position state": "Последнее направление движения",
-              "Intermediate position": "Промежуточное положение",
-              "Motor position percent": "Положение мотора (процент)",
-              "Motor position raw value": "Положение мотора (необработанное)",
-              "Limit up raw value": "Концевое положение открытия (необработанное)",
-              "Limit down raw value": "Концевое положение закрытия (необработанное)",
-              "Delete limits": "Удалить концевые положения",
-              "Set up limit": "Установить концевое положение открытия",
-              "Set down limit": "Установить концевое положение закрытия",
-              "Stop": "Остановить"
+                "Position": "Позиция",
+                "Move down": "Опустить",
+                "Move up": "Поднять",
+                "Direction": "Направление",
+                "Current state": "Текущее состояние",
+                "Cause": "Причина",
+                "Rolling speed up": "Cкорость открытия",
+                "Rolling speed down": "Cкорость закрытия",
+                "Rolling speed slow": "Cкорость в медленном режиме",
+                "Last command source": "Источник полученной команды",
+                "Last position state": "Последнее направление движения",
+                "Intermediate position": "Промежуточное положение",
+                "Motor position percent": "Положение мотора (процент)",
+                "Motor position raw value": "Положение мотора (необработанное)",
+                "Limit up raw value": "Концевое положение открытия (необработанное)",
+                "Limit down raw value": "Концевое положение закрытия (необработанное)",
+                "Delete limits": "Удалить концевые положения",
+                "Set up limit": "Установить концевое положение открытия",
+                "Set down limit": "Установить концевое положение закрытия",
+                "Stop": "Остановить"
             }
         }
     }

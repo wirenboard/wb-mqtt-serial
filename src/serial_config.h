@@ -11,9 +11,9 @@
 #include <wblib/driver_args.h>
 #include <wblib/json_utils.h>
 
-#include "confed_schemas_map.h"
+#include "confed_protocol_schemas_map.h"
 #include "port.h"
-#include "rpc_config.h"
+#include "rpc/rpc_config.h"
 #include "serial_device.h"
 #include "templates_map.h"
 

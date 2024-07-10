@@ -7,6 +7,9 @@
     "hw": [
         {
             "signature": "WBM1W2"
+        },
+        {
+            "signature": "WB-M1W2 v.3"
         }
     ],
     "device": {
@@ -16,6 +19,7 @@
         "response_timeout_ms": 1,
         "frame_timeout_ms": 8,
         "enable_wb_continuous_read": true,
+        "min_request_interval": 100,
 
         "groups": [
             {% for in_num in range(FIRST_INPUT, INPUTS_NUMBER + 1) -%}
@@ -129,6 +133,17 @@
                 "group": "g_general",
                 "order": 2
             },
+            "temperature_readings_period_s": {
+                "title": "temperature_readings_period_s_title",
+                "description": "temperature_readings_period_s_description",
+                "address": 101,
+                "reg_type": "holding",
+                "default": 2,
+                "min": 1,
+                "max": 60,
+                "group": "g_general",
+                "order": 3
+            },
             "disable_indication": {
                 "title": "Status LED",
                 "address": 130,
@@ -137,7 +152,7 @@
                 "enum_titles": ["Enabled", "Disabled"],
                 "default": 0,
                 "group": "g_general",
-                "order": 3
+                "order": 4
             }
         },
 
@@ -311,6 +326,8 @@
             "en": {
                 "temperature_readings_filter_deg_title": "Erroneous 1-Wire Temperature Readings Filter (°C)",
                 "temperature_readings_filter_deg_description": "If the new value equals 85 °C, it is discarded if it differs from the previous one by more than the filter value. Write 0 to disable the filter. The default value is 1",
+                "temperature_readings_period_s_title": "Temperature sensors poll period (s)",
+                "temperature_readings_period_s_description": "When changing this parameter, you should also change the erroneous values filter coefficient. The default value is 2",
 
                 "WB-M1W2_template_title": "WB-M1W2 (2-channel temperature measurement and pulse-counter module)",
                 "mode_description": "For press detection, firmware version 5.0.0 or newer is required",
@@ -343,6 +360,8 @@
                 "HW Info": "Данные модуля",
                 "temperature_readings_filter_deg_title": "Фильтр ошибочных значений датчиков 1-Wire (°C)",
                 "temperature_readings_filter_deg_description": "Если значение температуры равно 85 °C, то оно отбрасывается, если оно отличается от предыдущего больше, чем на значение фильтра. Запишите 0, чтобы отключить фильтр. Значение по умолчанию - 1",
+                "temperature_readings_period_s_title": "Период опроса датчиков температуры (с)",
+                "temperature_readings_period_s_description": "При изменении данного параметра, следует также изменить коэффициент фильтра ошибочных значений. Значение по умолчанию - 2",
                 "Status LED": "Индикатор состояния",
                 "Enabled": "Активен",
                 "Disabled": "Отключен",

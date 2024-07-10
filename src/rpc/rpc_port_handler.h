@@ -1,5 +1,6 @@
 #pragma once
 #include "rpc_config.h"
+#include "rpc_port_load_request.h"
 #include "serial_driver.h"
 #include "serial_port_driver.h"
 #include <wblib/json_utils.h>
@@ -22,26 +23,26 @@ enum class TRPCResultCode
     RPC_WRONG_TIMEOUT = -4
 };
 
-class TRPCPortDriver
+struct TRPCPortDriver
 {
-public:
     PSerialClient SerialClient;
     PRPCPort RPCPort;
-    void SendRequest(PRPCRequest request) const;
 };
 
 typedef std::shared_ptr<TRPCPortDriver> PRPCPortDriver;
 
-class TRPCHandler
+class TRPCPortHandler
 {
 public:
-    TRPCHandler(const std::string& requestSchemaFilePath,
-                PRPCConfig rpcConfig,
-                WBMQTT::PMqttRpcServer rpcServer,
-                PMQTTSerialDriver serialDriver);
+    TRPCPortHandler(const std::string& requestPortLoadSchemaFilePath,
+                    const std::string& requestPortSetupSchemaFilePath,
+                    PRPCConfig rpcConfig,
+                    WBMQTT::PMqttRpcServer rpcServer,
+                    PMQTTSerialDriver serialDriver);
 
 private:
-    Json::Value RequestSchema;
+    Json::Value RequestPortLoadSchema;
+    Json::Value RequestPortSetupSchema;
     PMQTTSerialDriver SerialDriver;
     std::vector<PRPCPortDriver> PortDrivers;
     PRPCConfig RPCConfig;
@@ -51,10 +52,13 @@ private:
     void PortLoad(const Json::Value& request,
                   WBMQTT::TMqttRpcServer::TResultCallback onResult,
                   WBMQTT::TMqttRpcServer::TErrorCallback onError);
+    void PortSetup(const Json::Value& request,
+                   WBMQTT::TMqttRpcServer::TResultCallback onResult,
+                   WBMQTT::TMqttRpcServer::TErrorCallback onError);
     Json::Value LoadPorts(const Json::Value& request);
 };
 
-typedef std::shared_ptr<TRPCHandler> PRPCHandler;
+typedef std::shared_ptr<TRPCPortHandler> PRPCPortHandler;
 
 class TRPCException: public std::runtime_error
 {

@@ -50,9 +50,9 @@ TModbusDevice::TModbusDevice(std::unique_ptr<Modbus::IModbusTraits> modbusTraits
       ResponseTime(std::chrono::milliseconds::zero()),
       EnableWbContinuousRead(config.EnableWbContinuousRead)
 {
-    config.CommonConfig->FrameTimeout =
-        std::max(config.CommonConfig->FrameTimeout,
-                 std::chrono::ceil<std::chrono::milliseconds>(port->GetSendTimeBytes(3.5)));
+    config.CommonConfig->FrameTimeout = std::max(
+        config.CommonConfig->FrameTimeout,
+        std::chrono::ceil<std::chrono::milliseconds>(port->GetSendTimeBytes(Modbus::STANDARD_FRAME_TIMEOUT_BYTES)));
 }
 
 PRegisterRange TModbusDevice::CreateRegisterRange() const
@@ -62,7 +62,16 @@ PRegisterRange TModbusDevice::CreateRegisterRange() const
 
 void TModbusDevice::WriteRegisterImpl(PRegister reg, const TRegisterValue& value)
 {
-    Modbus::WriteRegister(*ModbusTraits, *Port(), SlaveId, *reg, value, ModbusCache);
+    Modbus::WriteRegister(*ModbusTraits,
+                          *Port(),
+                          SlaveId,
+                          0,
+                          *reg,
+                          value,
+                          ModbusCache,
+                          DeviceConfig()->RequestDelay,
+                          DeviceConfig()->ResponseTimeout,
+                          DeviceConfig()->FrameTimeout);
 }
 
 void TModbusDevice::ReadRegisterRange(PRegisterRange range)
@@ -80,5 +89,13 @@ void TModbusDevice::WriteSetupRegisters()
     if (EnableWbContinuousRead) {
         Modbus::EnableWbContinuousRead(shared_from_this(), *ModbusTraits, *Port(), SlaveId, ModbusCache);
     }
-    Modbus::WriteSetupRegisters(*ModbusTraits, *Port(), SlaveId, SetupItems, ModbusCache);
+    Modbus::WriteSetupRegisters(*ModbusTraits,
+                                *Port(),
+                                SlaveId,
+                                0,
+                                SetupItems,
+                                ModbusCache,
+                                DeviceConfig()->RequestDelay,
+                                DeviceConfig()->ResponseTimeout,
+                                DeviceConfig()->FrameTimeout);
 }

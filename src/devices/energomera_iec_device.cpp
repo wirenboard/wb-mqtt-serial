@@ -247,7 +247,7 @@ void TEnergomeraIecWithFastReadDevice::ReadRegisterRange(PRegisterRange abstract
         for (auto& r: range->RegisterList()) {
             r->SetError(TRegister::TError::ReadError);
         }
-        auto& logger = GetIsDisconnected() ? Debug : Warn;
+        auto& logger = (GetConnectionState() == TDeviceConnectionState::DISCONNECTED) ? Debug : Warn;
         LOG(logger) << "TEnergomeraIecWithFastReadDevice::ReadRegisterRange(): " << e.what() << " [slave_id is "
                     << ToString() + "]";
         SetTransferResult(false);

@@ -1,29 +1,7 @@
 #pragma once
 
-#include "templates_map.h"
-
-class TDevicesConfedSchemasMap
-{
-    TTemplateMap& TemplatesMap;
-    std::string SchemasFolder;
-
-    //! Device type to schema map
-    std::unordered_map<std::string, std::shared_ptr<Json::Value>> Schemas;
-
-    std::mutex Mutex;
-
-public:
-    TDevicesConfedSchemasMap(TTemplateMap& templatesMap, const std::string& schemasFolder);
-
-    /**
-     * @brief Get the json-schema for specified device type
-     *
-     * @throws std::out_of_range if nothing found
-     */
-    std::shared_ptr<Json::Value> GetSchema(const std::string& deviceType);
-
-    void InvalidateCache(const std::string& deviceType);
-};
+#include <unordered_map>
+#include <wblib/json/json.h>
 
 struct TProtocolConfedSchema
 {
@@ -60,5 +38,3 @@ public:
 
     const Json::Value& GetSchema(const std::string& protocol);
 };
-
-std::string GetSchemaFilePath(const std::string& schemasFolder, const std::string& templateFilePath);

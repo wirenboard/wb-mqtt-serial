@@ -1,0 +1,557 @@
+{% set LP_INPUTS_NUMBER = 2 -%}
+{% set INPUTS_NUMBER = 6 -%}
+{% set OUTPUTS_NUMBER = 4 -%}
+
+{% set OUT_NUM_K1 = 1 -%}
+{% set OUT_NUM_K2 = 2 -%}
+{% set OUT_NUM_ALARM = 3 -%}
+{% set OUT_NUM_CLEANING_MODE = 4 -%}
+{
+    "title": "WB-MWAC_template_title",
+    "device_type": "WB-MWAC",
+    "group": "g-wb",
+        "hw": [
+        {
+            "signature": "WBMWAC"
+        }
+    ],
+    "device": {
+        "name": "WB-MWAC",
+        "id": "wb-mwac",
+        "max_read_registers": 0,
+        "response_timeout_ms": 1,
+        "frame_timeout_ms": 8,
+        "enable_wb_continuous_read": true,
+
+        "groups": [
+            {
+                "title": "Counters",
+                "id": "counters"
+            },
+            {% for in_num in range(1, INPUTS_NUMBER + 1) -%}
+            {% set letter = "S" if in_num < 4 else "F" -%}
+            {% set in_num_offset = 0 if in_num < 4 else 3 -%}
+            {
+                "title": "Input {{ letter }}{{ in_num - in_num_offset }}",
+                "id": "input_f{{ in_num }}"
+            },
+            {
+                "title": "Actions when the input is closed / opened",
+                "id": "gg_in{{ in_num }}_mapping_matrix_actions",
+                "group": "input_f{{ in_num }}"
+            },
+            {
+                "title": "input_f{{ in_num }}_channels",
+                "id": "gg_in{{ in_num }}_channels",
+                "group": "input_f{{ in_num }}",
+                "ui_options": {
+                    "wb": {
+                        "disable_title": true
+                    }
+                }
+            },
+            {% endfor -%}
+            {
+                "title": "Outputs",
+                "id": "outputs"
+            },
+            {
+                "title": "Safe State",
+                "description": "outputs_safe_state_description",
+                "id": "gg_outputs_safe_state",
+                "group": "outputs"
+            },
+            {
+                "title": "Outputs group",
+                "id": "gg_outputs_channels",
+                "group": "outputs",
+                "ui_options": {
+                    "wb": {
+                        "disable_title": true
+                    }
+                }
+            },
+            {
+                "title": "Safety Mode",
+                "description": "safety_mode_description",
+                "id": "g_safety"
+            },
+            {
+                "title": "Cleaning Mode",
+                "id": "wet_cleaning_mode",
+                "description": "wet_cleaning_mode_description"
+            },
+            {
+                "title": "Safety Behaviour",
+                "description": "safety_behaviour_description",
+                "id": "gg_safety_behaviour",
+                "group": "g_safety"
+            },
+            {
+                "title": "Inputs Control In Safety Mode",
+                "id": "gg_safety_input_control",
+                "description": "inputs_control_in_safety_mode_description",
+                "group": "g_safety"
+            },
+            {
+                "title": "General",
+                "id": "general"
+            },
+            {
+                "title": "HW Info",
+                "id": "hw_info"
+            }
+        ],
+
+        "setup": [
+            {
+                "title": "disable legacy input mode control",
+                "reg_type": "holding",
+                "address": 5,
+                "value": 0
+            }
+        ],
+
+        "parameters": {
+            {% for in_num in range(1, INPUTS_NUMBER + 1) -%}
+            {% set letter = "S" if in_num < 4 else "F" -%}
+            {% set in_num_offset = 0 if in_num < 4 else 3 -%}
+            "in{{ in_num }}_mode": {
+                "title": "Input {{ letter }}{{ in_num - in_num_offset }} Mode",
+                "address": {{ 8 + in_num }},
+                "reg_type": "holding",
+                "enum": [0, 1, 2, 3, 4, 5],
+                "default": {% if in_num < 4 %}4{% else %}5{% endif %},
+                "enum_titles": [
+                    "push button",
+                    "latching switch",
+                    "turn off all outputs",
+                    "control disabled",
+                    "operate according to mapping-matrix",
+                    "operate according to mapping-matrix, repeat action in 20 min if input still activated"
+                ],
+                "group": "input_f{{ in_num }}",
+                "order": 1
+            },
+            "in{{ in_num }}_debounce_ms": {
+                "title": "Input {{ letter }}{{ in_num - in_num_offset }} Debounce (ms)",
+                "address": {{ 19 + in_num }},
+                "reg_type": "holding",
+                "min": 0,
+                "max": 2000,
+                "default": 50,
+                "group": "input_f{{ in_num }}",
+                "order": 2
+            },
+            {% for i in range(2) -%}
+            {% for out_num in range(1, OUTPUTS_NUMBER + 1) -%}
+            {% if not (i == 1 and out_num == OUT_NUM_CLEANING_MODE) -%}
+            {% if i == 0 %}"in{{ in_num }}_out{{ out_num }}_actions": { {% else %}"in{{ in_num }}_out{{ out_num }}_actions_20min": { {% endif %}
+                "group": "gg_in{{ in_num }}_mapping_matrix_actions",
+                "title": {% if out_num == OUT_NUM_K1 %}"K1"{% elif out_num == OUT_NUM_K2 %}"K2"{% elif out_num == OUT_NUM_ALARM %}"Alarm"{% else %}"Cleaning Mode"{% endif %},
+                "order": {{ out_num }},
+                "address": {{ 384 + ((in_num - 1) * 8) + (out_num - 1) }},
+                "reg_type": "holding",
+                {%- if i == 0 %}
+                    {%- if in_num < 4 %}
+                "default": {% if in_num == 1 and out_num == OUT_NUM_K1 %}9{% elif in_num == 2 and out_num == OUT_NUM_K2 %}9{% elif in_num == 3 and out_num == OUT_NUM_ALARM %}4{% else %}0{% endif %},
+                    {%- else %}
+                "default": 0,
+                    {%- endif %}
+                {% elif i == 1 %}
+                    {%- if in_num < 4 %}
+                "default": 0,
+                    {%- else %}
+                "default": {% if out_num == OUT_NUM_ALARM %}8{% else %}4{% endif %},
+                    {%- endif %}
+                {% endif -%}
+                "enum": [0, 1, 2, 3, 4, 5, 6, 7, 8, 9, 10, 11, 12, 13, 14, 15],
+                "enum_titles": [
+                    "no action / no action",
+                    "no action / reset",
+                    "no action / set",
+                    "no action / toggle",
+
+                    "reset / no action",
+                    "reset / reset",
+                    "reset / set",
+                    "reset / toggle",
+
+                    "set / no action",
+                    "set / reset",
+                    "set / set",
+                    "set / toggle",
+
+                    "toggle / no action",
+                    "toggle / reset",
+                    "toggle / set",
+                    "toggle / toggle"
+                ],
+                "condition": "in{{ in_num }}_mode=={{ 4 + i }}"
+            },
+            {% endif -%}
+            {% endfor -%}
+            {% endfor -%}
+            {% endfor -%}
+
+            "outputs_restore_state": {
+                "title": "Relays State After Power On",
+                "description": "relays_state_after_poweron_description",
+                "address": 6,
+                "reg_type": "holding",
+                "enum": [0, 1],
+                "default": 0,
+                "enum_titles": ["Switch to safety state", "Restore last state"],
+                "group": "outputs",
+                "order": 1
+            },
+            "safety_timer_s": {
+                "title": "Safety Timer (s)",
+                "description": "poll_timeout_description",
+                "address": 8,
+                "reg_type": "holding",
+                "min": 1,
+                "max": 65534,
+                "default": 10,
+                "group": "g_safety",
+                "order": 2
+            },
+            "baud_rate": {
+                "title": "Baud rate",
+                "description": "baud_rate_description",
+                "address": 110,
+                "reg_type": "holding",
+                "enum": [96, 192, 384, 576, 1152],
+                "default": 96,
+                "enum_titles": [
+                    "9600",
+                    "19200",
+                    "38400",
+                    "57600",
+                    "115200"
+                ],
+                "group": "general",
+                "order": 1
+            },
+            {% for out_num in range(1, OUTPUTS_NUMBER) -%}
+            "out{{ out_num }}_safe_state": {
+                "title": {%if out_num == OUT_NUM_ALARM %}"Alarm"{% else %}"K{{ out_num }}"{% endif %},
+                "group": "gg_outputs_safe_state",
+                "order": {{ out_num }},
+                "address": {{ 930 + (out_num - 1) }},
+                "reg_type": "holding",
+                "default": 0,
+                "enum": [0, 1],
+                "enum_titles": [
+                    "Off",
+                    "On"
+                ]
+            },
+            "out{{ out_num }}_safety_behaviour": {
+                "title": {%if out_num == OUT_NUM_ALARM %}"Alarm"{% else %}"K{{ out_num }}"{% endif %},
+                "group": "gg_safety_behaviour",
+                "order": {{ out_num }},
+                "address": {{ 938 + (out_num - 1) }},
+                "reg_type": "holding",
+                "default": 0,
+                "enum": [0, 1],
+                "enum_titles": [
+                    "Don't сhange state",
+                    "Switch to safety state"
+                ]
+            },
+            "out{{ out_num }}_safety_input_control": {
+                "title": {%if out_num == OUT_NUM_ALARM %}"Alarm"{% else %}"K{{ out_num }}"{% endif %},
+                "group": "gg_safety_input_control",
+                "order": {{ out_num }},
+                "address": {{ 946 + (out_num - 1) }},
+                "reg_type": "holding",
+                "default": 0,
+                "enum": [0, 1, 2],
+                "enum_titles": [
+                    "Don't change",
+                    "Disable in safety mode",
+                    "Enable only in safety mode"
+                ]
+            },
+            {% endfor -%}
+
+            "wet_cleaning_mode_timer_min": {
+                "title": "\"Wet cleaning\" mode timer (min)",
+                "description": "wet_cleaning_mode_timer_description",
+                "address": 975,
+                "reg_type": "holding",
+                "min": 1,
+                "max": 360,
+                "default": 20,
+                "group": "wet_cleaning_mode",
+                "order": 1
+            }
+        },
+
+        "channels": [
+            {% for lp_in_num in range(1, LP_INPUTS_NUMBER + 1) -%}
+            {
+                "name": "P{{ lp_in_num }} Counter",
+                "reg_type": "input",
+                "address": {{ 316 + 2 * (lp_in_num - 1) }},
+                "type": "value",
+                "format": "u32",
+                "group": "counters"
+            },
+            {
+                "name": "P{{ lp_in_num }} Counter Offset",
+                "reg_type": "holding",
+                "address": {{ 312 + 2 * (lp_in_num - 1) }},
+                "type": "value",
+                "format": "u32",
+                "min": 0,
+                "enabled": false,
+                "group": "counters"
+            },
+            {% endfor -%}
+            {% for in_num in range(1, INPUTS_NUMBER + 1) -%}
+            {% set letter = "S" if in_num < 4 else "F" -%}
+            {% set in_num_offset = 0 if in_num < 4 else 3 -%}
+            {
+                "name": "{{ letter }}{{ in_num - in_num_offset }}",
+                "reg_type": "discrete",
+                "address": {{ in_num - 1 }},
+                "type": "switch",
+                "sporadic": true,
+                "condition": "isDefined(in{{ in_num }}_mode)&&in{{ in_num }}_mode!=3",
+                "group": "gg_in{{ in_num }}_channels"
+            },
+            {
+                "name": "{{ letter }}{{ in_num - in_num_offset }}",
+                "reg_type": "discrete",
+                "address": {{ in_num - 1 }},
+                "type": "switch",
+                "sporadic": false,
+                "condition": "isDefined(in{{ in_num }}_mode)==0||in{{ in_num }}_mode==3",
+                "group": "gg_in{{ in_num }}_channels"
+            },
+            {
+                "name": "{{ letter }}{{ in_num - in_num_offset }} Counter",
+                "reg_type": "input",
+                "address": {{ 31 + in_num}},
+                "type": "value",
+                "sporadic": true,
+                "condition": "isDefined(in{{ in_num }}_mode)&&in{{ in_num }}_mode!=3",
+                "group": "gg_in{{ in_num }}_channels"
+            },
+            {
+                "name": "{{ letter }}{{ in_num - in_num_offset }} Counter",
+                "reg_type": "input",
+                "address": {{ 31 + in_num}},
+                "type": "value",
+                "sporadic": false,
+                "condition": "isDefined(in{{ in_num }}_mode)==0||in{{ in_num }}_mode==3",
+                "group": "gg_in{{ in_num }}_channels"
+            },
+            {
+                "name": "{{ letter }}{{ in_num - in_num_offset }} Freq",
+                "reg_type": "input",
+                "address": {{ 40 + (in_num - 1) * 2 }},
+                "type": "value",
+                "format": "u32",
+                "scale": 1.52588e-5,
+                "round_to": 0.001,
+                "enabled": false,
+                "group": "gg_in{{ in_num }}_channels"
+            },            
+            {% endfor -%}
+            {% for out_num in range(1, OUTPUTS_NUMBER - 1) -%}
+            {
+                "name": "K{{ out_num }}",
+                "reg_type": "coil",
+                "address": {{ out_num - 1 }},
+                "type": "switch",
+                "sporadic": true,
+                "group": "gg_outputs_channels"
+            },
+            {% endfor -%}
+            {
+                "name": "Alarm",
+                "reg_type": "coil",
+                "address": 2,
+                "type": "switch",
+                "sporadic": true,
+                "group": "gg_outputs_channels"
+            },
+            {
+                "name": "Cleaning Mode",
+                "reg_type": "coil",
+                "address": 3,
+                "type": "switch",
+                "sporadic": true,
+                "group": "wet_cleaning_mode"
+            },
+            {
+                "name": "Serial",
+                "reg_type": "input",
+                "address": 270,
+                "type": "text",
+                "format": "u32",
+                "group": "hw_info"
+            },
+            {
+                "name": "FW Version",
+                "reg_type": "input",
+                "address": 250,
+                "type": "text",
+                "format": "string",
+                "string_data_size": 16,
+                "enabled": false,
+                "group": "hw_info"
+            },
+            {
+                "name": "Input Voltage",
+                "reg_type": "input",
+                "address": 121,
+                "type": "voltage",
+                "scale": 0.001,
+                "enabled": false,
+                "group": "hw_info"
+            },
+            {
+                "name": "Uptime",
+                "reg_type": "input",
+                "address": 104,
+                "type": "text",
+                "format": "u32",
+                "enabled": false,
+                "group": "hw_info"
+            },
+            {
+                "name": "MCU Temperature",
+                "reg_type": "input",
+                "address": 124,
+                "type": "temperature",
+                "format": "s16",
+                "scale": 0.1,
+                "enabled": false,
+                "group": "hw_info"
+            },
+            {
+                "name": "MCU Voltage",
+                "reg_type": "input",
+                "address": 123,
+                "scale": 0.001,
+                "type": "voltage",
+                "enabled": false,
+                "group": "hw_info"
+            }
+        ],
+        "translations": {
+            "en": {
+                "WB-MWAC_template_title": "WB-MWAC (water leak and meters controller)",
+                "baud_rate_description": "Make sure that communication with device is established before changing this parameter. Select required baud rate, save configuration and then change port baud rate to the same value.",
+                "Uptime": "Uptime (s)",
+                
+                "inputs_control_in_safety_mode_description": "Sets change of control from the inputs when module switches to safety mode",
+                "safety_mode_description": "When RS-485 connection is lost, the flood protection module will work autonomously. However, it is possible to set a certain state of the outputs and \"Leak\" mode in case of connection loss. For this purpose, there is a safety mode.",
+                "safety_behaviour_description": "Safe state is configured on \"Outputs\" tab.",
+                "outputs_safe_state_description": "State for safe mode and \"Relays State After Power On\" settings. By default, safe mode is disabled and safe states are set to \"Off\".",
+                "poll_timeout_description": "Parameter defines the time of absence of polling in seconds, after which safety mode will be activated. 1 - 65534 ms, 10 by default.",
+                "relays_state_after_poweron_description": "Default - \"Switch to safety state\"",
+
+                "Cleaning Mode": "\"Wet cleaning\" Mode",
+                "wet_cleaning_mode_description": "In the \"Wet cleaning\" mode, the module does not respond to leakage sensors.",
+                "wet_cleaning_mode_timer_description": "1 - 360 min"
+            },
+            "ru": {
+                "WB-MWAC_template_title": "WB-MWAC (модуль контроля протечек и расхода воды )",
+                "Baud rate": "Скорость обмена",
+                "baud_rate_description": "Перед изменением параметра убедитесь, что связь с устройством установлена. Выберите нужную скорость обмена, сохраните конфигурацию, а затем укажите в настройках порта эту же скорость.",
+
+                "Counters": "Счетчики",
+
+                "Cleaning Mode": "Режим \"Влажная уборка\"",
+                "wet_cleaning_mode_description": "В режиме \"Влажная уборка\" модуль не реагирует на датчики протечки.",
+                "wet_cleaning_mode_timer_description": "1 — 360 мин",
+                "\"Wet cleaning\" mode timer (min)": "Таймер режима \"Влажная уборка\" (мин)",
+
+                {% for in_num in range(1, INPUTS_NUMBER + 1) -%}
+                {% set letter = "S" if in_num < 4 else "F" -%}
+                {% set in_num_offset = 0 if in_num < 4 else 3 -%}
+                "Input {{ letter }}{{ in_num - in_num_offset }}": "Вход {{ letter }}{{ in_num - in_num_offset }}",
+                "Input {{ letter }}{{ in_num - in_num_offset }} Mode": "Режим работы входа {{ letter }}{{ in_num - in_num_offset }}",
+                "Input {{ letter }}{{ in_num - in_num_offset }} Debounce (ms)": "Время защиты от дребезга входа {{ letter }}{{ in_num - in_num_offset }} (мс)",
+                "{{ letter }}{{ in_num - in_num_offset }} Counter": "Счетчик {{ letter }}{{ in_num - in_num_offset }}",
+                "{{ letter }}{{ in_num - in_num_offset }} Freq": "Частота {{ letter }}{{ in_num - in_num_offset }}",
+                {% endfor -%}
+
+                "Outputs": "Выходы",
+                "General": "Общее",
+                "HW Info": "Данные модуля",
+
+                "push button": "кнопка без фиксации",
+                "latching switch": "переключатель с фиксацией",
+                "turn off all outputs": "отключить все выходы",
+                "control disabled": "управление отключено",
+                "operate according to mapping-matrix": "управлять по mapping-матрице",
+                "operate according to mapping-matrix, repeat action in 20 min if input still activated": "управлять по mapping-матрице; повторить действие через 20 мин., если вход все еще активирован",
+                
+                {% for lp_in_num in range(1, LP_INPUTS_NUMBER + 1) -%}
+                "P{{ lp_in_num }} Counter": "Счетчик P{{ lp_in_num }}",
+                "P{{ lp_in_num }} Counter Offset": "Начальное значение счетчика P{{ lp_in_num }}",
+                {% endfor -%}
+
+                "Alarm": "Авария",
+                "Serial": "Серийный номер",
+                "FW Version": "Версия прошивки",
+                "Input Voltage": "Напряжение питания",
+                "Uptime": "Время работы с момента включения (с)",
+                "MCU Temperature": "Температура МК",
+                "MCU Voltage": "Напряжение питания МК",
+
+                "Relays State After Power On": "Состояния реле при подаче питания",
+                "Restore last state": "Восстановить последнее состояние",
+                "Safe State": "Безопасное состояние",
+                "Off": "Выключен",
+                "On": "Включен",
+                "Safety Mode": "Безопасный режим",
+                "Safety Behaviour": "Действие в безопасном режиме",
+                "Safety Timer (s)": "Таймаут безопасного режима (с)",
+                "safety_mode_description": "При потере связи по RS-485 модуль защиты от протечек будет работать автономно. Однако есть возможность задать определенное состояние выходов и режима \"Протечка\" в случае обрыва связи. Для этого существует безопасный режим.",
+                "outputs_safe_state_description": "Состояние для безопасного режима и настройки \"Состояния реле при подаче питания\". По умолчанию безопасный режим отключен, а настройки безопасных состояний установлены в \"Выключен\".",
+                "poll_timeout_description": "Параметр определяет время отсутствия опроса в секундах, после которого будет активирован безопасный режим. 1 — 65534 с, 10 по умолчанию.",
+                "safety_behaviour_description": "Безопасное состояние настраивается на вкладке \"Выходы\".",
+                "Don't сhange state": "Ничего не делать",
+                "Switch to safety state": "Перевести в безопасное состояние",
+                "Inputs Control In Safety Mode": "Управление с входов в безопасном режиме",
+                "Don't change": "Не блокировать",
+                "Disable in safety mode": "Блокировать в безопасном режиме",
+                "Enable only in safety mode": "Разрешить только в безопасном режиме",
+                "Safe State": "Безопасное состояние",
+                "inputs_control_in_safety_mode_description": "Настройка изменения управления с входов при переходе модуля в безопасный режим",
+                "Relays State After Power On": "Состояния реле при подаче питания",
+                "relays_state_after_poweron_description": "По умолчанию — \"Перевести в безопасное состояние\"",
+
+                "no action / no action": "нет действия / нет действия",
+                "no action / reset": "нет действия / выключить",
+                "no action / set": "нет действия / включить",
+                "no action / toggle": "нет действия / переключить",
+
+                "reset / no action": "выключить / нет действия",
+                "reset / reset": "выключить / выключить",
+                "reset / set": "выключить / включить",
+                "reset / toggle": "выключить / переключить",
+
+                "set / no action": "включить / нет действия",
+                "set / reset": "включить / выключить",
+                "set / set": "включить / включить",
+                "set / toggle": "включить / переключить",
+
+                "toggle / no action": "переключить / нет действия",
+                "toggle / reset": "переключить / выключить",
+                "toggle / set": "переключить / включить",
+                "toggle / toggle": "переключить / переключить",
+                "Actions when the input is closed / opened": "Действия при замыкании / размыкании входа",
+
+                "Actions for \"Wet cleaning\" mode": "Действия для режима \"Влажная уборка\""
+            }
+        }
+    }
+}

@@ -1,6 +1,7 @@
 >>> Cycle() [port open error]
 Error Callback: <fake:1:fake: 0>: read error
 fake_serial_device '1': transfer FAIL
+fake_serial_device '1': disconnected
 Error Callback: <fake:1:fake: 1>: read error
 fake_serial_device '1': transfer FAIL
 >>> Cycle() [port open error2]

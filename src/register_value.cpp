@@ -1,5 +1,21 @@
 #include "register_value.h"
 
+namespace
+{
+    std::string GetTypeName(TRegisterValue::ValueType type)
+    {
+        switch (type) {
+            case TRegisterValue::ValueType::Undefined:
+                return "Undefined";
+            case TRegisterValue::ValueType::Integer:
+                return "Integer";
+            case TRegisterValue::ValueType::String:
+                return "String";
+        }
+        return "Unknown";
+    }
+}
+
 TRegisterValueException::TRegisterValueException(const char* file, int line, const std::string& message)
     : WBMQTT::TBaseException(file, line, message)
 {}
@@ -153,23 +169,32 @@ TRegisterValue::ValueType TRegisterValue::GetType() const
 void TRegisterValue::CheckIntegerValue() const
 {
     if (Type != ValueType::Integer) {
-        wb_throw(TRegisterValueException, "Value is not Integer");
+        wb_throw(TRegisterValueException, ("Value is not Integer: " + GetTypeName(Type)));
     }
 }
 
 void TRegisterValue::CheckStringValue() const
 {
     if (Type != ValueType::String) {
-        wb_throw(TRegisterValueException, "Value is not String");
+        wb_throw(TRegisterValueException, ("Value is not String: " + GetTypeName(Type)));
     }
 }
 
 std::ostream& operator<<(std::ostream& os, const TRegisterValue& obj)
 {
-    if (obj.GetType() == TRegisterValue::ValueType::String) {
-        os << obj.Get<std::string>();
-    } else {
-        os << obj.Get<uint64_t>();
+    switch (obj.GetType()) {
+        case TRegisterValue::ValueType::Undefined: {
+            os << "Undefined";
+            break;
+        }
+        case TRegisterValue::ValueType::Integer: {
+            os << obj.Get<uint64_t>();
+            break;
+        }
+        case TRegisterValue::ValueType::String: {
+            os << obj.Get<std::string>();
+            break;
+        }
     }
     return os;
 }

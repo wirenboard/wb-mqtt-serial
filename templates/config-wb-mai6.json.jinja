@@ -10,7 +10,7 @@
 {% set TYPES_WITH_GAIN = [3, 257] -%}
 {% set TYPES_WITH_MIN_MAX = [ 5376, 4864, 4865, 4866, 5120, 5121] -%}
 {% set TYPES_WITH_SINGLE_VALUE_CHANNEL = [ 4864, 4865, 4866, 5120, 5121] -%}
-{% set TYPES_WITH_SINGLE_END =  [0, 1, 2, 3, 4352, 4353, 4354, 4355, 4368, 4369, 4370, 4371, 4384, 4385, 4386, 4387, 4400, 4401, 4402, 4864, 4865, 4866, 5120, 5121, 5632, 5889, 6144] -%}
+{% set TYPES_WITH_SINGLE_END =  [1, 2, 3, 6, 4352, 4353, 4354, 4355, 4368, 4369, 4370, 4371, 4384, 4385, 4386, 4387, 4400, 4401, 4402, 4864, 4865, 4866, 5120, 5121, 5632, 5889, 6144] -%}
 {% macro format_list(index, types, format) -%}
     {% set separator = joiner('||') -%}
     {% for t in types -%}{{ separator() }}{{ format|format(index, t) }}{% endfor -%}
@@ -22,7 +22,8 @@
 {% if has_signature %}
     "hw": [
         {
-            "signature": "WBMAI6"
+            "signature": "WBMAI6",
+            "fw": "2.1.0"
         }
     ],
 {% endif %}
@@ -65,9 +66,10 @@
             }
         ],
 
-        "parameters": {
+        "parameters": [
             {% for ch_num in range(1, CHANNELS_NUMBER + 1) -%}
-            "in{{ ch_num }}_type": {
+            {
+                "id": "in{{ ch_num }}_type",
                 "title": "Mode",
                 "address": "0x{{ "%x"|format(ch_num) }}400",
                 "group": "gg_in{{ ch_num }}_p",
@@ -125,6 +127,8 @@
                     6144,
 
                     1,
+                    5,
+                    6,
                     2,
                     3,
                     257,
@@ -181,13 +185,16 @@
                     "P: Hall effect current sensor (2.5V±0.625V), single ended",
 
                     "P: single-ended voltage measurement from 0 to 30 V",
+                    "P: single-ended voltage measurement with WB-VDIV",
+                    "P: single-ended voltage measurement with custom external divider",
                     "P: two-wire resistance measurement",
                     "P: current measurement",
                     "voltage measurement in differential mode from -2 to 2 V",
                     "three-wire resistance measurement"
                 ]
             },
-            "in{{ ch_num }}_data_rate": {
+            {
+                "id": "in{{ ch_num }}_data_rate",
                 "title": "Sampling time",
                 "address": "0x{{ "%x"|format(ch_num) }}402",
                 "group": "gg_in{{ ch_num }}_p",
@@ -204,7 +211,8 @@
                 ],
                 "enum": [ 20, 45, 90, 175, 330, 600, 1000 ]
             },
-            "in{{ ch_num }}_measurements": {
+            {
+                "id": "in{{ ch_num }}_measurements",
                 "title": "Number of measurements",
                 "description": "Total sampling time of channel is (Sampling time * Number of measurements). Channels are polled sequentially.",
                 "group": "gg_in{{ ch_num }}_p",
@@ -214,7 +222,8 @@
                 "max": 50,
                 "condition": "in{{ ch_num }}_type!=0"
             },
-            "in{{ ch_num }}_lowpass": {
+            {
+                "id": "in{{ ch_num }}_lowpass",
                 "title": "Lowpass filter time, ms",
                 "group": "gg_in{{ ch_num }}_p",
                 "order": 4,
@@ -223,7 +232,8 @@
                 "max": 65000,
                 "condition": "in{{ ch_num }}_type!=0"
             },
-            "in{{ch_num}}_gain": {
+            {
+                "id": "in{{ch_num}}_gain",
                 "title": "Gain",
                 "group": "gg_in{{ ch_num }}_p",
                 "order": 4,
@@ -233,7 +243,8 @@
                 "default": 0,
                 "condition": "{{ format_list(ch_num, TYPES_WITH_GAIN, "in%s_type==%s") }}"
             },
-            "in{{ ch_num }}_min": {
+            {
+                "id": "in{{ ch_num }}_min",
                 "title": "Minimum value",
                 "group": "gg_in{{ ch_num }}_p",
                 "order": 5,
@@ -241,7 +252,8 @@
                 "default": 0,
                 "condition": "{{ format_list(ch_num, TYPES_WITH_MIN_MAX, "in%s_type==%s") }}"
             },
-            "in{{ ch_num }}_max": {
+            {
+                "id": "in{{ ch_num }}_max",
                 "title": "Maximum value",
                 "group": "gg_in{{ ch_num }}_p",
                 "order": 6,
@@ -249,7 +261,8 @@
                 "default": 10000,
                 "condition": "{{ format_list(ch_num, TYPES_WITH_MIN_MAX, "in%s_type==%s") }}"
             },
-            "in{{ ch_num }}_hall_zero_offset": {
+            {
+                "id": "in{{ ch_num }}_hall_zero_offset",
                 "title": "Zero offset (A)",
                 "group": "gg_in{{ ch_num }}_p",
                 "order": 5,
@@ -260,7 +273,8 @@
                 "format": "s16",
                 "condition": "in{{ ch_num }}_type==6144"
             },
-            "in{{ ch_num }}_hall_rated_current": {
+            {
+                "id": "in{{ ch_num }}_hall_rated_current",
                 "title": "Rated current (A)",
                 "group": "gg_in{{ ch_num }}_p",
                 "order": 6,
@@ -271,7 +285,28 @@
                 "scale": 0.1,
                 "condition": "in{{ ch_num }}_type==6144"
             },
-            "in{{ ch_num }}_n_type": {
+            {
+                "id": "in{{ ch_num }}_vdiv_high_voltage_arm_res",
+                "title": "External voltage divider high-voltage arm (R1) resistance, kOhm",
+                "group": "gg_in{{ ch_num }}_p",
+                "order": 5,
+                "address": "0x{{ "%x"|format(ch_num) }}40E",
+                "scale": 0.1,
+                "default": 150,
+                "condition": "in{{ ch_num }}_type==6"
+            },
+            {
+                "id": "in{{ ch_num }}_vdiv_low_voltage_arm_res",
+                "title": "External voltage divider low-voltage arm (R2) resistance, kOhm",
+                "group": "gg_in{{ ch_num }}_p",
+                "order": 6,
+                "address": "0x{{ "%x"|format(ch_num) }}410",
+                "scale": 0.1,
+                "default": 10,
+                "condition": "in{{ ch_num }}_type==6"
+            },
+            {
+                "id": "in{{ ch_num }}_n_type",
                 "title": "Mode",
                 "address": "0x{{ "%x"|format(ch_num) }}401",
                 "group": "gg_in{{ ch_num }}_n",
@@ -311,6 +346,7 @@
                     6144,
 
                     1,
+                    6,
                     2,
                     3
                 ],
@@ -346,11 +382,115 @@
                     "Hall effect current sensor (2.5V±0.625V), single ended",
 
                     "single-ended voltage measurement from 0 to 30 V",
+                    "single-ended voltage measurement with custom external divider",
                     "two-wire resistance measurement",
                     "current measurement"
                 ]
             },
-            "in{{ ch_num }}_n_data_rate": {
+            {
+                "id": "in{{ ch_num }}_n_type",
+                "title": "Mode",
+                "address": "0x{{ "%x"|format(ch_num) }}401",
+                "group": "gg_in{{ ch_num }}_n",
+                "order": 1,
+                "required": true,
+                "default": 0,
+                "condition": "in{{ ch_num }}_type==0",
+                "enum": [
+                    0,
+
+                    4352,
+                    4353,
+                    4354,
+                    4355,
+                    4368,
+                    4369,
+                    4370,
+                    4371,
+                    4384,
+                    4385,
+                    4386,
+                    4387,
+                    4400,
+                    4401,
+                    4402,
+
+                    4864,
+                    4865,
+                    4866,
+
+                    5120,
+                    5121,
+
+                    5632,
+                    5889,
+
+                    6144,
+
+                    1,
+                    5,
+                    6,
+                    2,
+                    3
+                ],
+                "enum_titles": [
+                    "Disabled",
+
+                    "2-wire RTD Pt 50 (α = 0.00385 °C⁻¹)",
+                    "2-wire RTD Pt 100 (α = 0.00385 °C⁻¹)",
+                    "2-wire RTD Pt 500 (α = 0.00385 °C⁻¹)",
+                    "2-wire RTD Pt 1000 (α = 0.00385 °C⁻¹)",
+                    "2-wire RTD 50P (α = 0.00391 °C⁻¹)",
+                    "2-wire RTD 100P (α = 0.00391 °C⁻¹)",
+                    "2-wire RTD 500P (α = 0.00391 °C⁻¹)",
+                    "2-wire RTD 1000P (α = 0.00391 °C⁻¹)",
+                    "2-wire RTD 50M (α = 0.00428 °C⁻¹)",
+                    "2-wire RTD 100M (α = 0.00428 °C⁻¹)",
+                    "2-wire RTD 500M (α = 0.00428 °C⁻¹)",
+                    "2-wire RTD 1000M (α = 0.00428 °C⁻¹)",
+                    "2-wire RTD Ni 100 (α = 0.00617 °C⁻¹)",
+                    "2-wire RTD Ni 500 (α = 0.00617 °C⁻¹)",
+                    "2-wire RTD Ni 1000 (α = 0.00617 °C⁻¹)",
+
+                    "0-5 mA sensor",
+                    "0-20 mA sensor",
+                    "4-20 mA sensor",
+
+                    "0-1 V sensor",
+                    "0-10 V sensor",
+
+                    "dry contact sensor",
+                    "NTC thermistor 10k (B = 3988 K)",
+
+                    "Hall effect current sensor (2.5V±0.625V), single ended",
+
+                    "single-ended voltage measurement from 0 to 30 V",
+                    "single-ended voltage measurement with WB-VDIV",
+                    "single-ended voltage measurement with custom external divider",
+                    "two-wire resistance measurement",
+                    "current measurement"
+                ]
+            },
+            {
+                "id": "in{{ ch_num }}_n_type",
+                "title": "Mode",
+                "address": "0x{{ "%x"|format(ch_num) }}401",
+                "group": "gg_in{{ ch_num }}_n",
+                "order": 1,
+                "required": true,
+                "default": 0,
+                "condition": "in{{ ch_num }}_type==5",
+                "enum": [
+                    0,
+                    5
+                ],
+                "enum_titles": [
+                    "Disabled",
+                    "single-ended voltage measurement with WB-VDIV"
+                ]
+            },
+            {
+                "id": "in{{ ch_num }}_n_data_rate",
                 "title": "Sampling time",
                 "group": "gg_in{{ ch_num }}_n",
                 "order": 2,
@@ -367,7 +507,8 @@
                 "enum": [ 20, 45, 90, 175, 330, 600, 1000 ],
                 "condition": "isDefined(in{{ ch_num }}_n_type)&&in{{ ch_num }}_n_type!=0"
             },
-            "in{{ ch_num }}_n_measurements": {
+            {
+                "id": "in{{ ch_num }}_n_measurements",
                 "title": "Number of measurements",
                 "description": "Total sampling time of channel is (Sampling time * Number of measurements). Channels are polled sequentially.",
                 "group": "gg_in{{ ch_num }}_n",
@@ -377,7 +518,8 @@
                 "max": 50,
                 "condition": "isDefined(in{{ ch_num }}_n_type)&&in{{ ch_num }}_n_type!=0"
             },
-            "in{{ ch_num }}_n_lowpass": {
+            {
+                "id": "in{{ ch_num }}_n_lowpass",
                 "title": "Lowpass filter time, ms",
                 "group": "gg_in{{ ch_num }}_n",
                 "order": 4,
@@ -386,7 +528,8 @@
                 "max": 65000,
                 "condition": "isDefined(in{{ ch_num }}_n_type)&&in{{ ch_num }}_n_type!=0"
             },
-            "in{{ch_num}}_n_gain": {
+            {
+                "id": "in{{ch_num}}_n_gain",
                 "title": "Gain",
                 "group": "gg_in{{ ch_num }}_n",
                 "order": 4,
@@ -396,7 +539,8 @@
                 "default": 0,
                 "condition": "{{ format_list(ch_num, TYPES_WITH_GAIN, "in%s_n_type==%s") }}"
             },
-            "in{{ ch_num }}_n_min": {
+            {
+                "id": "in{{ ch_num }}_n_min",
                 "title": "Minimum value",
                 "group": "gg_in{{ ch_num }}_n",
                 "order": 5,
@@ -404,7 +548,8 @@
                 "default": 0,
                 "condition": "{{ format_list(ch_num, TYPES_WITH_MIN_MAX, "in%s_n_type==%s") }}"
             },
-            "in{{ ch_num }}_n_max": {
+            {
+                "id": "in{{ ch_num }}_n_max",
                 "title": "Maximum value",
                 "group": "gg_in{{ ch_num }}_n",
                 "order": 6,
@@ -412,7 +557,8 @@
                 "default": 10000,
                 "condition": "{{ format_list(ch_num, TYPES_WITH_MIN_MAX, "in%s_n_type==%s") }}"
             },
-            "in{{ ch_num }}_n_hall_zero_offset": {
+            {
+                "id": "in{{ ch_num }}_n_hall_zero_offset",
                 "title": "Zero offset (A)",
                 "group": "gg_in{{ ch_num }}_n",
                 "order": 5,
@@ -423,7 +569,8 @@
                 "format": "s16",
                 "condition": "in{{ ch_num }}_n_type==6144"
             },
-            "in{{ ch_num }}_n_hall_rated_current": {
+            {
+                "id": "in{{ ch_num }}_n_hall_rated_current",
                 "title": "Rated current (A)",
                 "group": "gg_in{{ ch_num }}_n",
                 "order": 6,
@@ -434,8 +581,29 @@
                 "scale": 0.1,
                 "condition": "in{{ ch_num }}_n_type==6144"
             },
+            {
+                "id": "in{{ ch_num }}_n_vdiv_high_voltage_arm_res",
+                "title": "External voltage divider high-voltage arm (R1) resistance, kOhm",
+                "group": "gg_in{{ ch_num }}_n",
+                "order": 5,
+                "address": "0x{{ "%x"|format(ch_num) }}40F",
+                "scale": 0.1,
+                "default": 150,
+                "condition": "in{{ ch_num }}_n_type==6"
+            },
+            {
+                "id": "in{{ ch_num }}_n_vdiv_low_voltage_arm_res",
+                "title": "External voltage divider low-voltage arm (R2) resistance, kOhm",
+                "group": "gg_in{{ ch_num }}_n",
+                "order": 6,
+                "address": "0x{{ "%x"|format(ch_num) }}411",
+                "scale": 0.1,
+                "default": 10,
+                "condition": "in{{ ch_num }}_n_type==6"
+            },
             {% endfor -%}
-            "baud_rate": {
+            {
+                "id": "baud_rate",
                 "title": "Baud rate",
                 "description": "baud_rate_description",
                 "address": 110,
@@ -452,7 +620,7 @@
                 "group": "general",
                 "order": 1
             }
-        },
+        ],
 
         "channels": [
             {% for ch_num in range(1, CHANNELS_NUMBER + 1) -%}
@@ -466,8 +634,20 @@
                 "address": "0x{{ "%x"|format(ch_num) }}500",
                 "scale": 0.01,
                 "group": "gg_in{{ ch_num }}_p",
-                "condition": "(in{{ ch_num }}_type>=4608&&in{{ ch_num }}_type<=4658)||in{{ ch_num }}_type==258",
+                "condition": "(in{{ ch_num }}_type>=4608&&in{{ ch_num }}_type<=4658)",
                 "enabled": false
+            },
+            {
+                "name": "IN {{ch_num}} Resistance",
+                "type": "value",
+                "units": "Ohm",
+                "error_value": "0x7FFFFFFF",
+                "reg_type": "input",
+                "format": "s32",
+                "address": "0x{{ "%x"|format(ch_num) }}500",
+                "scale": 0.01,
+                "group": "gg_in{{ ch_num }}_p",
+                "condition": "in{{ ch_num }}_type==258"
             },
             {
                 "name": "IN {{ch_num}} P Resistance",
@@ -533,6 +713,19 @@
                 "round_to": 0.001,
                 "group": "gg_in{{ ch_num }}_p",
                 "condition": "in{{ ch_num }}_type==1||in{{ ch_num }}_type==5121||in{{ ch_num }}_type==6144"
+            },
+            {
+                "name": "IN {{ch_num}} P Voltage",
+                "type": "value",
+                "units": "V",
+                "error_value": "0x7FFFFFFF",
+                "reg_type": "input",
+                "format": "s32",
+                "address": "0x{{ "%x"|format(ch_num) }}500",
+                "scale": 0.001,
+                "round_to": 0.01,
+                "group": "gg_in{{ ch_num }}_p",
+                "condition": "in{{ ch_num }}_type==5||in{{ ch_num }}_type==6"
             },
             {
                 "name": "IN {{ch_num}} P Voltage",
@@ -676,6 +869,19 @@
                 "round_to": 0.001,
                 "group": "gg_in{{ ch_num }}_n",
                 "condition": "in{{ ch_num }}_n_type==1||in{{ ch_num }}_n_type==5121||in{{ ch_num }}_n_type==6144"
+            },
+            {
+                "name": "IN {{ch_num}} N Voltage",
+                "type": "value",
+                "units": "V",
+                "error_value": "0x7FFFFFFF",
+                "reg_type": "input",
+                "format": "s32",
+                "address": "0x{{ "%x"|format(ch_num) }}502",
+                "scale": 0.001,
+                "round_to": 0.01,
+                "group": "gg_in{{ ch_num }}_n",
+                "condition": "in{{ ch_num }}_n_type==5||in{{ ch_num }}_n_type==6"
             },
             {
                 "name": "IN {{ch_num}} N Voltage",
@@ -851,7 +1057,8 @@
                 "template_title": "{{ title_en }}",
                 "baud_rate_description": "Make sure that communication with device is established before changing this parameter. Select required baud rate, save configuration and then change port baud rate to the same value.",
                 "IN_P_title": "Channel P",
-                "IN_N_title": "Channel N"
+                "IN_N_title": "Channel N",
+                "external_voltage_divider_description": "External voltage divider is used to measure voltage higher than 30V and to get higher input resistance. Output voltage of the divider should be in the range from 0 to 4V (better to 2V). Supported since firmware version 2.1.0."
             },
             "ru": {
                 "template_title": "{{ title_ru }}",
@@ -935,6 +1142,8 @@
                 "0-1 V sensor": "измерение напряжения 0-1 В",
                 "0-10 V sensor": "измерение напряжения 0-10 В",
                 "P: single-ended voltage measurement from 0 to 30 V": "P: измерение положительного напряжения 0-30 В",
+                "P: single-ended voltage measurement with WB-VDIV": "P: измерение положительного напряжения с делителем WB-VDIV",
+                "P: single-ended voltage measurement with custom external divider": "P: измерение положительного напряжения с пользовательским внешним делителем",
                 "P: 0-1 V sensor": "P: измерение напряжения 0-1 В",
                 "P: 0-10 V sensor": "P: измерение напряжения 0-10 В",
                 "-50 to 50 mV sensor": "измерение напряжения от -50 до 50 мВ",
@@ -943,6 +1152,8 @@
                 "P: NTC thermistor 10k (B = 3988 K)": "P: термистор NTC 10 кОм (B = 3988 K)",
                 "P: current measurement": "P: измерение тока",
                 "single-ended voltage measurement from 0 to 30 V": "измерение положительного напряжения 0-30 В",
+                "single-ended voltage measurement with WB-VDIV": "измерение положительного напряжения с делителем WB-VDIV",
+                "single-ended voltage measurement with custom external divider": "измерение положительного напряжения с пользовательским внешним делителем",
                 "current measurement": "измерение тока",
                 "P: Hall effect current sensor (2.5V±0.625V), single ended": "P: датчик тока на эффекте Холла (2.5V±0.625V), однополярное подключение",
                 "Hall effect current sensor (2.5V±0.625V), single ended": "датчик тока на эффекте Холла (2.5V±0.625V), однополярное подключение",
@@ -973,6 +1184,9 @@
                 "Maximum value": "Максимальное пересчитанное значение",
                 "Zero offset (A)" : "Сдвиг нуля (A)",
                 "Rated current (A)" : "Номинальный ток (A)",
+                "External voltage divider high-voltage arm (R1) resistance, kOhm" : "Сопротивление верхнего плеча (R1) внешнего делителя напряжения, кОм",
+                "External voltage divider low-voltage arm (R2) resistance, kOhm" : "Сопротивление нижнего плеча (R2) внешнего делителя напряжения, кОм",
+                "external_voltage_divider_description": "Внешний делитель напряжения используется для измерения напряжения выше 30 В и для получения более высокого входного сопротивления. Выходное напряжение делителя должно быть в диапазоне от 0 до 4 В (лучше до 2 В). Поддерживается с версии прошивки 2.1.0.",
                 "Value": "Пересчитанное значение",
                 "5V Output": "Напряжение на клеммах 5V",
                 "Internal Temperature": "Температура внутри модуля",

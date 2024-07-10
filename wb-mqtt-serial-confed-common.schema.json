@@ -99,7 +99,14 @@
           "description" : "read_rate_limit_description",
           "minimum": 0,
           "default": 1000,
-          "propertyOrder": 5
+          "propertyOrder": 114
+        },
+        "min_request_interval": {
+          "title": "Minimal interval between requests to the devices (ms)",
+          "type": "integer",
+          "minimum": 0,
+          "default": 0,
+          "propertyOrder": 10
         },
         "password": {
           "type": "array",
@@ -1289,7 +1296,7 @@
 
     "modbus_device_properties": {
       "properties": {
-        "supports_wb_continuous_read": {
+        "enable_wb_continuous_read": {
           "title": "Enable continuous read",
           "description": "continuous_read_desc",
           "type": "boolean",
@@ -1463,7 +1470,8 @@
       "force_frame_timeout_desc": "Использовать значение задержки между сообщениями для определения границ пакетов. Продолжать принимать данные, даже если получено ожидаемое число байт. Все дополнительно полученные данные будут отброшены. Более строгое соблюдение стандарта MODBUS, но медленнее опрос",
       "Force frame timeout": "Разделять сообщения по времени",
       "Max write fail time (s)": "Время повторных попыток записать регистр (с)",
-      "max_write_fail_time_desc": "Максимальное время, в течение которого будут продолжаться попытки записать регистр"
+      "max_write_fail_time_desc": "Максимальное время, в течение которого будут продолжаться попытки записать регистр",
+      "Minimal interval between requests to the devices (ms)": "Минимальный интервал между запросами к устройству (мс)"
     }
   }
 }

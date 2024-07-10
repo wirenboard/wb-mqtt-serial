@@ -371,32 +371,6 @@ private:
     TErrorState ErrorState;
     TReadPeriodMissChecker ReadPeriodMissChecker;
     bool ExcludedFromPolling = false;
-
-    // Intern() implementation for TRegister
-private:
-    static std::map<std::tuple<PSerialDevice, PRegisterConfig>, PRegister> RegStorage;
-    static std::mutex Mutex;
-
-public:
-    static PRegister Intern(PSerialDevice device, PRegisterConfig config)
-    {
-        std::unique_lock<std::mutex> lock(Mutex); // thread-safe
-        std::tuple<PSerialDevice, PRegisterConfig> args(device, config);
-
-        auto it = RegStorage.find(args);
-
-        if (it == RegStorage.end()) {
-            auto ret = std::make_shared<TRegister>(device, config);
-            return RegStorage[args] = ret;
-        }
-
-        return it->second;
-    }
-
-    static void DeleteIntern()
-    {
-        RegStorage.clear();
-    }
 };
 
 typedef std::vector<PRegister> TRegistersList;

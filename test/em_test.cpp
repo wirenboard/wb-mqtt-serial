@@ -45,25 +45,21 @@ void TEMDeviceTest::SetUp()
     Mercury230Dev =
         std::make_shared<TMercury230Device>(Mercury230Config(), SerialPort, DeviceFactory.GetProtocol("mercury230"));
 
-    MilurPhaseCVoltageReg = TRegister::Intern(MilurDev, TRegisterConfig::Create(TMilurDevice::REG_PARAM, 102, U24));
-    MilurPhaseCCurrentReg = TRegister::Intern(MilurDev, TRegisterConfig::Create(TMilurDevice::REG_PARAM, 105, U24));
-    MilurTotalConsumptionReg =
-        TRegister::Intern(MilurDev, TRegisterConfig::Create(TMilurDevice::REG_ENERGY, 118, BCD32));
-    MilurFrequencyReg = TRegister::Intern(MilurDev, TRegisterConfig::Create(TMilurDevice::REG_FREQ, 9, U16));
+    MilurPhaseCVoltageReg = MilurDev->AddRegister(TRegisterConfig::Create(TMilurDevice::REG_PARAM, 102, U24));
+    MilurPhaseCCurrentReg = MilurDev->AddRegister(TRegisterConfig::Create(TMilurDevice::REG_PARAM, 105, U24));
+    MilurTotalConsumptionReg = MilurDev->AddRegister(TRegisterConfig::Create(TMilurDevice::REG_ENERGY, 118, BCD32));
+    MilurFrequencyReg = MilurDev->AddRegister(TRegisterConfig::Create(TMilurDevice::REG_FREQ, 9, U16));
     Mercury230TotalConsumptionReg =
-        TRegister::Intern(Mercury230Dev, TRegisterConfig::Create(TMercury230Device::REG_VALUE_ARRAY, 0x0000, U32));
+        Mercury230Dev->AddRegister(TRegisterConfig::Create(TMercury230Device::REG_VALUE_ARRAY, 0x0000, U32));
     Mercury230TotalReactiveEnergyReg =
-        TRegister::Intern(Mercury230Dev, TRegisterConfig::Create(TMercury230Device::REG_VALUE_ARRAY, 0x0002, U32));
-    Mercury230U1Reg =
-        TRegister::Intern(Mercury230Dev, TRegisterConfig::Create(TMercury230Device::REG_PARAM, 0x1111, U24));
-    Mercury230I1Reg =
-        TRegister::Intern(Mercury230Dev, TRegisterConfig::Create(TMercury230Device::REG_PARAM, 0x1121, U24));
-    Mercury230U2Reg =
-        TRegister::Intern(Mercury230Dev, TRegisterConfig::Create(TMercury230Device::REG_PARAM, 0x1112, U24));
+        Mercury230Dev->AddRegister(TRegisterConfig::Create(TMercury230Device::REG_VALUE_ARRAY, 0x0002, U32));
+    Mercury230U1Reg = Mercury230Dev->AddRegister(TRegisterConfig::Create(TMercury230Device::REG_PARAM, 0x1111, U24));
+    Mercury230I1Reg = Mercury230Dev->AddRegister(TRegisterConfig::Create(TMercury230Device::REG_PARAM, 0x1121, U24));
+    Mercury230U2Reg = Mercury230Dev->AddRegister(TRegisterConfig::Create(TMercury230Device::REG_PARAM, 0x1112, U24));
     Mercury230TempReg =
-        TRegister::Intern(Mercury230Dev, TRegisterConfig::Create(TMercury230Device::REG_PARAM_BE, 0x1170, S16));
+        Mercury230Dev->AddRegister(TRegisterConfig::Create(TMercury230Device::REG_PARAM_BE, 0x1170, S16));
     Mercury230PReg =
-        TRegister::Intern(Mercury230Dev, TRegisterConfig::Create(TMercury230Device::REG_PARAM_SIGN_ACT, 0x1100, S24));
+        Mercury230Dev->AddRegister(TRegisterConfig::Create(TMercury230Device::REG_PARAM_SIGN_ACT, 0x1100, S24));
 
     SerialPort->Open();
 }

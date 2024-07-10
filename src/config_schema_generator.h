@@ -1,4 +1,4 @@
-#include "confed_schemas_map.h"
+#include "confed_protocol_schemas_map.h"
 #include "serial_config.h"
 
 void ValidateConfig(const Json::Value& config,

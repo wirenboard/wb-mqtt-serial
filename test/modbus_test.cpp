@@ -57,24 +57,24 @@ void TModbusTest::SetUp()
                                                 GetDeviceConfig(),
                                                 SerialPort,
                                                 DeviceFactory.GetProtocol("modbus"));
-    ModbusCoil0 = TRegister::Intern(ModbusDev, TRegisterConfig::Create(Modbus::REG_COIL, 0, U8));
-    ModbusCoil1 = TRegister::Intern(ModbusDev, TRegisterConfig::Create(Modbus::REG_COIL, 1, U8));
-    ModbusDiscrete = TRegister::Intern(ModbusDev, TRegisterConfig::Create(Modbus::REG_DISCRETE, 20, U8));
-    ModbusHolding = TRegister::Intern(ModbusDev, TRegisterConfig::Create(Modbus::REG_HOLDING, 70, U16));
-    ModbusInput = TRegister::Intern(ModbusDev, TRegisterConfig::Create(Modbus::REG_INPUT, 40, U16));
-    ModbusHoldingS64 = TRegister::Intern(ModbusDev, TRegisterConfig::Create(Modbus::REG_HOLDING, 30, S64));
+    ModbusCoil0 = ModbusDev->AddRegister(TRegisterConfig::Create(Modbus::REG_COIL, 0, U8));
+    ModbusCoil1 = ModbusDev->AddRegister(TRegisterConfig::Create(Modbus::REG_COIL, 1, U8));
+    ModbusDiscrete = ModbusDev->AddRegister(TRegisterConfig::Create(Modbus::REG_DISCRETE, 20, U8));
+    ModbusHolding = ModbusDev->AddRegister(TRegisterConfig::Create(Modbus::REG_HOLDING, 70, U16));
+    ModbusInput = ModbusDev->AddRegister(TRegisterConfig::Create(Modbus::REG_INPUT, 40, U16));
+    ModbusHoldingS64 = ModbusDev->AddRegister(TRegisterConfig::Create(Modbus::REG_HOLDING, 30, S64));
 
-    ModbusHoldingU64Single = TRegister::Intern(ModbusDev, TRegisterConfig::Create(Modbus::REG_HOLDING_SINGLE, 90, U64));
-    ModbusHoldingU16Single = TRegister::Intern(ModbusDev, TRegisterConfig::Create(Modbus::REG_HOLDING_SINGLE, 94, U16));
-    ModbusHoldingU64Multi = TRegister::Intern(ModbusDev, TRegisterConfig::Create(Modbus::REG_HOLDING_MULTI, 95, U64));
-    ModbusHoldingU16Multi = TRegister::Intern(ModbusDev, TRegisterConfig::Create(Modbus::REG_HOLDING_MULTI, 99, U16));
+    ModbusHoldingU64Single = ModbusDev->AddRegister(TRegisterConfig::Create(Modbus::REG_HOLDING_SINGLE, 90, U64));
+    ModbusHoldingU16Single = ModbusDev->AddRegister(TRegisterConfig::Create(Modbus::REG_HOLDING_SINGLE, 94, U16));
+    ModbusHoldingU64Multi = ModbusDev->AddRegister(TRegisterConfig::Create(Modbus::REG_HOLDING_MULTI, 95, U64));
+    ModbusHoldingU16Multi = ModbusDev->AddRegister(TRegisterConfig::Create(Modbus::REG_HOLDING_MULTI, 99, U16));
 
     TRegisterDesc regAddrDesc, regStringDesc;
     regAddrDesc.Address = std::make_shared<TUint32RegisterAddress>(110);
     regAddrDesc.WriteAddress = std::make_shared<TUint32RegisterAddress>(115);
 
     ModbusHoldingU16WithAddressWrite =
-        TRegister::Intern(ModbusDev, TRegisterConfig::Create(Modbus::REG_HOLDING, regAddrDesc, RegisterFormat::U16));
+        ModbusDev->AddRegister(TRegisterConfig::Create(Modbus::REG_HOLDING, regAddrDesc, RegisterFormat::U16));
 
     regAddrDesc.Address = std::make_shared<TUint32RegisterAddress>(111);
     regAddrDesc.WriteAddress = std::make_shared<TUint32RegisterAddress>(116);
@@ -82,13 +82,12 @@ void TModbusTest::SetUp()
     regAddrDesc.DataOffset = 2;
 
     ModbusHoldingU16WithWriteBitOffset =
-        TRegister::Intern(ModbusDev, TRegisterConfig::Create(Modbus::REG_HOLDING, regAddrDesc, RegisterFormat::U16));
+        ModbusDev->AddRegister(TRegisterConfig::Create(Modbus::REG_HOLDING, regAddrDesc, RegisterFormat::U16));
 
     regStringDesc.Address = std::make_shared<TUint32RegisterAddress>(120);
     regStringDesc.DataWidth = 16 * sizeof(char) * 8;
 
-    ModbusHoldingString =
-        TRegister::Intern(ModbusDev, TRegisterConfig::Create(Modbus::REG_HOLDING, regStringDesc, String));
+    ModbusHoldingString = ModbusDev->AddRegister(TRegisterConfig::Create(Modbus::REG_HOLDING, regStringDesc, String));
 
     SerialPort->Open();
 }
@@ -248,7 +247,7 @@ TEST_F(TModbusTest, WriteOnlyHoldingRegiter)
     regAddrDesc.WriteAddress = std::make_shared<TUint32RegisterAddress>(115);
 
     ModbusHoldingU16WriteOnly =
-        TRegister::Intern(ModbusDev, TRegisterConfig::Create(Modbus::REG_HOLDING, regAddrDesc, RegisterFormat::U16));
+        ModbusDev->AddRegister(TRegisterConfig::Create(Modbus::REG_HOLDING, regAddrDesc, RegisterFormat::U16));
     EXPECT_TRUE(ModbusHoldingU16WriteOnly->AccessType == TRegisterConfig::EAccessType::WRITE_ONLY);
 }
 
@@ -424,7 +423,7 @@ TEST_F(TModbusTest, SkipNoiseAtPacketEnd)
                                                DeviceFactory.GetProtocol("modbus"));
 
     auto range = dev->CreateRegisterRange();
-    auto reg = TRegister::Intern(dev, TRegisterConfig::Create(Modbus::REG_HOLDING, 0x272E, U16));
+    auto reg = dev->AddRegister(TRegisterConfig::Create(Modbus::REG_HOLDING, 0x272E, U16));
     range->Add(reg, std::chrono::milliseconds::max());
     // Read with noise
     EXPECT_NO_THROW(dev->ReadRegisterRange(range));
@@ -525,9 +524,6 @@ void TModbusIntegrationTest::ExpectPollQueries(TestMode mode)
 
 void TModbusIntegrationTest::InvalidateConfigPoll(TestMode mode)
 {
-    SerialDriver->ClearDevices();
-    SerialDriver = make_shared<TMQTTSerialDriver>(Driver, Config);
-
     ExpectPollQueries(mode);
     Note() << "LoopOnce()";
     size_t n = (TEST_MAX_READ_REGISTERS_FIRST_CYCLE == mode) ? 21 : 18;
@@ -612,7 +608,11 @@ TEST_F(TModbusIntegrationTest, Holes)
     Config->PortConfigs[0]->Devices[0]->DeviceConfig()->MaxRegHole = 10;
     Config->PortConfigs[0]->Devices[0]->DeviceConfig()->MaxBitHole = 80;
     // First cycle, read registers one by one to find unavailable registers
-    InvalidateConfigPoll();
+    ExpectPollQueries();
+    Note() << "LoopOnce()";
+    for (size_t i = 0; i < 18; ++i) {
+        SerialDriver->LoopOnce();
+    }
     // Second cycle with holes enabled
     ExpectPollQueries(TEST_HOLES);
     Note() << "LoopOnce() [holes enabled]";
@@ -851,9 +851,6 @@ protected:
 TEST_F(TModbusUnavailableRegistersIntegrationTest, UnavailableRegisterOnBorder)
 {
     // we check that driver detects unavailable register on the ranges border and stops to read it
-    SerialDriver->ClearDevices();
-    SerialDriver = make_shared<TMQTTSerialDriver>(Driver, Config);
-
     EnqueueHoldingPackUnavailableOnBorderReadResponse();
     Note() << "LoopOnce() [one by one]";
     for (auto i = 0; i < 6; ++i) {
@@ -866,10 +863,7 @@ TEST_F(TModbusUnavailableRegistersIntegrationTest, UnavailableRegisterOnBorder)
 TEST_F(TModbusUnavailableRegistersIntegrationTest, UnavailableRegisterInTheMiddle)
 {
     // we check that driver detects unavailable register in the middle of the range
-    // It must split the range into two parts and exclure unavailable register from reading
-    SerialDriver->ClearDevices();
-    SerialDriver = make_shared<TMQTTSerialDriver>(Driver, Config);
-
+    // It must split the range into two parts and exclude unavailable register from reading
     EnqueueHoldingPackUnavailableInTheMiddleReadResponse();
     Note() << "LoopOnce() [one by one]";
     for (auto i = 0; i < 6; ++i) {
@@ -886,9 +880,6 @@ TEST_F(TModbusUnavailableRegistersIntegrationTest, UnsupportedRegisterOnBorder)
     // Check that driver detects unsupported registers
     // It must remove unsupported registers from request if they are on borders of a range
     // Unsupported registers in the middle of a range must be polled with the whole range
-    SerialDriver->ClearDevices();
-    SerialDriver = make_shared<TMQTTSerialDriver>(Driver, Config);
-
     EnqueueHoldingUnsupportedOnBorderReadResponse();
     Note() << "LoopOnce() [first read]";
     for (auto i = 0; i < 6; ++i) {
@@ -927,9 +918,6 @@ TEST_F(TModbusUnavailableRegistersAndHolesIntegrationTest, HolesAndUnavailable)
 {
     // we check that driver disables holes feature and after that detects and excludes unavailable register
     Config->PortConfigs[0]->Devices[0]->DeviceConfig()->MaxRegHole = 10;
-
-    SerialDriver->ClearDevices();
-    SerialDriver = make_shared<TMQTTSerialDriver>(Driver, Config);
 
     EnqueueHoldingPackUnavailableAndHolesReadResponse();
     Note() << "LoopOnce() [one by one]";

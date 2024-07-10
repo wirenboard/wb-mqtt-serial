@@ -1,3 +1,4 @@
+#include "crc16.h"
 #include "modbus_ext_common.h"
 #include "serial_exc.h"
 #include "gtest/gtest.h"
@@ -43,6 +44,9 @@ namespace
                                    const std::chrono::microseconds& frameTimeout,
                                    TFrameCompletePred frame_complete = 0) override
         {
+            if (Response.size() > count) {
+                throw std::runtime_error("Buffer is too small");
+            }
             TReadFrameResult res;
             res.Count = Response.size();
             memcpy(buf, Response.data(), Response.size());
@@ -87,6 +91,17 @@ namespace
             Events[eventId] = data[0] | (data[1] << 8);
         }
     };
+
+    void SetCrc(std::vector<uint8_t>& data)
+    {
+        if (data.size() < 2) {
+            return;
+        }
+        auto crc = CRC16::CalculateCRC16(data.data(), data.size() - 2);
+        data[data.size() - 1] = crc & 0xFF;
+        data[data.size() - 2] = (crc >> 8) & 0xFF;
+    }
+
 } // namespace
 
 TEST(TModbusExtTest, EventsEnablerOneReg)
@@ -397,4 +412,152 @@ TEST(TModbusExtTest, GetPacketStart)
     uint8_t badCrcPacket[] = {0xFF, 0xFF, 0xFF, 0xFD, 0x46, 0x11, 0x00, 0x00, 0x04, 0x00, 0x0F, 0x00, 0x00, 0x11, 0x5E};
     EXPECT_EQ(ModbusExt::GetPacketStart(notEnoughDataPacket, sizeof(notEnoughDataPacket)), nullptr);
     EXPECT_EQ(ModbusExt::GetPacketStart(badCrcPacket, sizeof(badCrcPacket)), nullptr);
+}
+
+class TModbusExtTraitsTest: public testing::Test
+{
+public:
+    void TestEqual(const std::vector<uint8_t>& b1, const std::vector<uint8_t>& b2) const
+    {
+        ASSERT_EQ(b1.size(), b2.size());
+
+        for (size_t i = 0; i < b1.size(); ++i) {
+            ASSERT_EQ(b1[i], b2[i]) << i;
+        }
+    }
+};
+
+TEST_F(TModbusExtTraitsTest, PacketSize)
+{
+    ModbusExt::TModbusTraits traits;
+    ASSERT_EQ(traits.GetPacketSize(10), 19);
+}
+
+TEST_F(TModbusExtTraitsTest, GetPDU)
+{
+    ModbusExt::TModbusTraits traits;
+
+    const Modbus::TRequest r = {0, 1, 2, 3, 4, 5, 6, 7, 8, 9, 10, 11, 12, 13, 14};
+    const Modbus::TRequest r2 = {110, 111, 112, 113, 114, 115, 116, 117, 118, 119, 120, 121, 122, 123, 124};
+
+    ASSERT_EQ(*traits.GetPDU(r), 7);
+    ASSERT_EQ(*traits.GetPDU(r2), 117);
+}
+
+TEST_F(TModbusExtTraitsTest, FinalizeRequest)
+{
+    ModbusExt::TModbusTraits traits;
+
+    Modbus::TRequest r = {0, 1, 2, 3, 4, 5, 6, 0x06, 0x00, 0x80, 0x00, 0x02, 12, 13};
+    Modbus::TRequest p = {0xfd, 0x46, 0x08, 0xfe, 0xca, 0xe7, 0xe5, 0x06, 0x00, 0x80, 0x00, 0x02, 0x4d, 0x2a};
+    traits.FinalizeRequest(r, 100, 0xfecae7e5);
+
+    TestEqual(r, p);
+}
+
+TEST_F(TModbusExtTraitsTest, ReadFrameGood)
+{
+    TPortMock port;
+    port.Response = {0xfd, 0x46, 0x09, 0xfe, 0xca, 0xe7, 0xe5, 0x06, 0x00, 0x80, 0x00, 0x02, 0x1c, 0xef};
+    ModbusExt::TModbusTraits traits;
+    std::chrono::milliseconds t(10);
+
+    Modbus::TRequest req = {0xfd, 0x46, 0x08, 0xfe, 0xca, 0xe7, 0xe5, 0x06, 0x00, 0x80, 0x00, 0x02, 0x4d, 0x2a};
+    Modbus::TRequest resp(port.Response.size());
+
+    ASSERT_EQ(traits.ReadFrame(port, t, t, req, resp).Count, 5);
+
+    TestEqual(resp, port.Response);
+}
+
+TEST_F(TModbusExtTraitsTest, ReadFrameTooSmallError)
+{
+    TPortMock port;
+    port.Response = {0xfd, 0x46, 0x09, 0xfe, 0xca};
+    ModbusExt::TModbusTraits traits;
+    std::chrono::milliseconds t(10);
+
+    Modbus::TRequest req = {0xfd, 0x46, 0x08, 0xfe, 0xca, 0xe7, 0xe5, 0x06, 0x00, 0x80, 0x00, 0x02, 0x4d, 0x2a};
+    Modbus::TRequest resp(port.Response.size());
+
+    ASSERT_THROW(traits.ReadFrame(port, t, t, req, resp), Modbus::TMalformedResponseError);
+}
+
+TEST_F(TModbusExtTraitsTest, ReadFrameInvalidCrc)
+{
+    TPortMock port;
+    port.Response = {0xfd, 0x46, 0x09, 0xfe, 0xca, 0xe7, 0xe5, 0x06, 0x00, 0x80, 0x00, 0x02, 0x10, 0xef};
+    ModbusExt::TModbusTraits traits;
+    std::chrono::milliseconds t(10);
+
+    Modbus::TRequest req = {0xfd, 0x46, 0x08, 0xfe, 0xca, 0xe7, 0xe5, 0x06, 0x00, 0x80, 0x00, 0x02, 0x4d, 0x2a};
+    Modbus::TRequest resp(port.Response.size());
+
+    ASSERT_THROW(traits.ReadFrame(port, t, t, req, resp), Modbus::TInvalidCRCError);
+}
+
+TEST_F(TModbusExtTraitsTest, ReadFrameInvalidHeader)
+{
+    TPortMock port;
+    port.Response = {0xfe, 0x46, 0x09, 0xfe, 0xca, 0xe7, 0xe5, 0x06, 0x00, 0x80, 0x00, 0x02, 0x1c, 0xef};
+    SetCrc(port.Response);
+
+    ModbusExt::TModbusTraits traits;
+    std::chrono::milliseconds t(10);
+
+    Modbus::TRequest req = {0xfd, 0x46, 0x08, 0xfe, 0xca, 0xe7, 0xe5, 0x06, 0x00, 0x80, 0x00, 0x02, 0x4d, 0x2a};
+    Modbus::TRequest resp(port.Response.size());
+
+    ASSERT_THROW(
+        {
+            try {
+                traits.ReadFrame(port, t, t, req, resp);
+            } catch (const TSerialDeviceTransientErrorException& e) {
+                EXPECT_STREQ("Serial protocol error: invalid response address", e.what());
+                throw;
+            }
+        },
+        TSerialDeviceTransientErrorException);
+
+    port.Response[0] = 0xfd;
+    port.Response[1] = 0x45;
+    SetCrc(port.Response);
+    ASSERT_THROW(
+        {
+            try {
+                traits.ReadFrame(port, t, t, req, resp);
+            } catch (const TSerialDeviceTransientErrorException& e) {
+                EXPECT_STREQ("Serial protocol error: invalid response command", e.what());
+                throw;
+            }
+        },
+        TSerialDeviceTransientErrorException);
+
+    port.Response[1] = 0x46;
+    port.Response[2] = 0x10;
+    SetCrc(port.Response);
+    ASSERT_THROW(
+        {
+            try {
+                traits.ReadFrame(port, t, t, req, resp);
+            } catch (const TSerialDeviceTransientErrorException& e) {
+                EXPECT_STREQ("Serial protocol error: invalid response subcommand", e.what());
+                throw;
+            }
+        },
+        TSerialDeviceTransientErrorException);
+
+    port.Response[2] = 0x09;
+    port.Response[3] = 0x01;
+    SetCrc(port.Response);
+    ASSERT_THROW(
+        {
+            try {
+                traits.ReadFrame(port, t, t, req, resp);
+            } catch (const TSerialDeviceTransientErrorException& e) {
+                EXPECT_STREQ("Serial protocol error: SN mismatch", e.what());
+                throw;
+            }
+        },
+        TSerialDeviceTransientErrorException);
 }

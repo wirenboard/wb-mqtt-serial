@@ -5,7 +5,7 @@
 
 using namespace std::chrono;
 
-TRegisterHandler::TRegisterHandler(PSerialDevice dev, PRegister reg): Dev(dev), Reg(reg), WriteFail(false)
+TRegisterHandler::TRegisterHandler(PRegister reg): Reg(reg), WriteFail(false)
 {}
 
 bool TRegisterHandler::NeedToFlush()
@@ -52,7 +52,7 @@ void TRegisterHandler::Flush()
             std::lock_guard<std::mutex> lock(SetValueMutex);
             tempValue = ValueToSet;
         }
-        Device()->WriteRegister(Reg, tempValue);
+        Reg->Device()->WriteRegister(Reg, tempValue);
         {
             std::lock_guard<std::mutex> lock(SetValueMutex);
             Dirty = (tempValue != ValueToSet);
@@ -73,7 +73,6 @@ void TRegisterHandler::Flush()
 
 void TRegisterHandler::SetTextValue(const std::string& v)
 {
-    // don't hold the lock while notifying the client below
     std::lock_guard<std::mutex> lock(SetValueMutex);
     Dirty = true;
     ValueToSet = ConvertToRawValue(*Reg, v);
@@ -82,9 +81,4 @@ void TRegisterHandler::SetTextValue(const std::string& v)
 PRegister TRegisterHandler::Register() const
 {
     return Reg;
-}
-
-PSerialDevice TRegisterHandler::Device() const
-{
-    return Dev.lock();
 }

@@ -24,6 +24,7 @@ Publish: /devices/test/controls/I1/meta/error: 'r' (QoS 1, retained)
 >>> LoopOnce()
 Sleep(20000)
 write error EBADF
+Publish: /devices/test/meta/error: 'r' (QoS 1, retained)
 >>> LoopOnce()
 Sleep(20000)
 write error EBADF

@@ -1,3 +1,13 @@
+A-OK AM-35
+	Close  =>  Close
+	Delete  =>  Delete
+	Dot move down  =>  Dot move down
+	Dot move up  =>  Dot move up
+	Learn  =>  Learn
+	Open  =>  Open
+	Position  =>  Position
+	Running  =>  Running
+	Stop  =>  Stop
 A-OK AM-68 (LM100)
 	Close  =>  Close
 	Current  =>  Current
@@ -18467,6 +18477,14 @@ WB-MDM3
 	MCU Temperature  =>  MCU Temperature
 	MCU Voltage  =>  MCU Voltage
 	Overcurrent  =>  Overcurrent
+	Scene 1 Light  =>  Scene 1 Light
+	Scene 2 Light  =>  Scene 2 Light
+	Scene 3 Light  =>  Scene 3 Light
+	Scene 4 Light  =>  Scene 4 Light
+	Scene 5 Light  =>  Scene 5 Light
+	Scene 6 Light  =>  Scene 6 Light
+	Scene 7 Light  =>  Scene 7 Light
+	Scene 8 Light  =>  Scene 8 Light
 	Serial  =>  Serial
 	Supply voltage  =>  Supply voltage
 	Uptime  =>  Uptime
@@ -20014,6 +20032,7 @@ WB-MSW2
 	Uptime  =>  Uptime
 WB-MWAC
 	Alarm  =>  Alarm
+	Cleaning Mode  =>  Cleaning Mode
 	F1  =>  F1
 	F1 Counter  =>  F1 Counter
 	F1 Freq  =>  F1 Freq
@@ -22140,6 +22159,29 @@ eliwell_idplus_9xx_wb_ref
 	Reset Parameters Changed Indicator  =>  Reset Parameters Changed Indicator
 	Standby  =>  Standby
 	Temperature Setpoint  =>  Temperature Setpoint
+energomera_ce102
+	A Energy  =>  A Energy
+	A Energy 1 Month  =>  A Energy 1 Month
+	A Energy 10 Months  =>  A Energy 10 Months
+	A Energy 11 Months  =>  A Energy 11 Months
+	A Energy 12 Months  =>  A Energy 12 Months
+	A Energy 2 Months  =>  A Energy 2 Months
+	A Energy 3 Months  =>  A Energy 3 Months
+	A Energy 4 Months  =>  A Energy 4 Months
+	A Energy 5 Months  =>  A Energy 5 Months
+	A Energy 6 Months  =>  A Energy 6 Months
+	A Energy 7 Months  =>  A Energy 7 Months
+	A Energy 8 Months  =>  A Energy 8 Months
+	A Energy 9 Months  =>  A Energy 9 Months
+	A Energy T1  =>  A Energy T1
+	A Energy T2  =>  A Energy T2
+	A Energy T3  =>  A Energy T3
+	A Energy T4  =>  A Energy T4
+	A Energy T5  =>  A Energy T5
+	Date  =>  Date
+	Irms  =>  Irms
+	P  =>  P
+	Urms  =>  Urms
 energomera_ce102m
 	A energy  =>  A energy
 	A energy T1  =>  A energy T1
@@ -22328,6 +22370,10 @@ mercury230
 	Q1  =>  Q1
 	Q2  =>  Q2
 	Q3  =>  Q3
+	Tariff 1  =>  Tariff 1
+	Tariff 2  =>  Tariff 2
+	Tariff 3  =>  Tariff 3
+	Tariff 4  =>  Tariff 4
 	Temperature  =>  Temperature
 	Total consumption  =>  Total consumption
 	Total reactive energy  =>  Total reactive energy

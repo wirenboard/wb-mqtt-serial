@@ -1040,7 +1040,7 @@ Ports:
     Response timeout: -1
     No device configs.
     ------
-    ConnSettings: <192.168.0.1:3000>
+    ConnSettings: <192.168.0.1:3001>
     ConnectionMaxFailCycles: 2
     MaxFailTime: 10000
     GuardInterval: 0

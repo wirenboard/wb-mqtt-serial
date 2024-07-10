@@ -40,6 +40,8 @@ void TSerialPortDriver::SetUpDevices()
 {
     SerialClient->SetReadCallback([this](PRegister reg) { OnValueRead(reg); });
     SerialClient->SetErrorCallback([this](PRegister reg) { UpdateError(reg); });
+    SerialClient->SetDeviceConnectionStateChangedCallback(
+        [this](PSerialDevice device) { OnDeviceConnectionStateChanged(device); });
 
     LOG(Debug) << "setting up devices at " << Config->Port->GetDescription();
 
@@ -57,13 +59,13 @@ void TSerialPortDriver::SetUpDevices()
                     channel->Control = mqttDevice->CreateControl(tx, From(channel)).GetValue();
                     for (const auto& reg: channel->Registers) {
                         RegisterToChannelMap.emplace(reg, channel);
-                        SerialClient->AddRegister(reg);
                     }
                 } catch (const exception& e) {
                     LOG(Error) << "unable to create control: '" << e.what() << "'";
                 }
             }
             mqttDevice->RemoveUnusedControls(tx).Sync();
+            SerialClient->AddDevice(device);
         }
     } catch (const exception& e) {
         LOG(Error) << "unable to create device: '" << e.what() << "' Cleaning.";
@@ -155,6 +157,17 @@ void TSerialPortDriver::UpdateError(PRegister reg)
     it->second->UpdateError(*MqttDriver);
 }
 
+void TSerialPortDriver::OnDeviceConnectionStateChanged(PSerialDevice device)
+{
+    auto tx = MqttDriver->BeginTx();
+    auto mqttDevice = tx->GetDevice(device->DeviceConfig()->Id);
+    auto localMqttDevice = dynamic_pointer_cast<TLocalDevice>(mqttDevice);
+    if (localMqttDevice) {
+        localMqttDevice->SetError(tx, (device->GetConnectionState() == TDeviceConnectionState::DISCONNECTED) ? "r" : "")
+            .Sync();
+    }
+}
+
 void TSerialPortDriver::Cycle(std::chrono::steady_clock::time_point now)
 {
     try {
@@ -183,6 +196,7 @@ void TSerialPortDriver::ClearDevices() noexcept
             }
         }
         Devices.clear();
+        RegisterToChannelMap.clear();
     } catch (const exception& e) {
         LOG(Warn) << "TSerialPortDriver::ClearDevices(): " << e.what();
     } catch (...) {
@@ -244,7 +258,19 @@ PSerialClient TSerialPortDriver::GetSerialClient()
 void TDeviceChannel::UpdateValueAndError(WBMQTT::TDeviceDriver& deviceDriver,
                                          const WBMQTT::TPublishParameters& publishPolicy)
 {
-    auto value = GetTextValue();
+    std::string value;
+    try {
+        value = GetTextValue();
+    } catch (const TRegisterValueException& err) {
+        // Register value is not defined, still able to update error
+        // This can happen on successful events read after unsuccessful events read
+        // when some registers aren't yet polled for the first time
+        if (::Debug.IsEnabled()) {
+            LOG(Debug) << "Trying to publish " << Describe() << " with undefined value";
+        }
+        UpdateError(deviceDriver);
+        return;
+    }
     auto error = GetErrorText();
     bool errorIsChanged = (CachedErrorText != error);
     switch (publishPolicy.Policy) {

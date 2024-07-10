@@ -1,10 +1,6 @@
 #pragma once
 
-#include "serial_config.h"
 #include "serial_port_driver.h"
-
-#include <wblib/declarations.h>
-#include <wblib/rpc.h>
 
 class TMQTTSerialDriver
 {

@@ -52,6 +52,7 @@ fake_serial_device '12': transfer FAIL
 fake_serial_device '12': read address '2' failed: 'Serial protocol error: device disconnected'
 fake_serial_device '12': transfer FAIL
 fake_serial_device '12': disconnected
+Publish: /devices/reconnect-test/meta/error: 'r' (QoS 1, retained)
 >>> LoopOnce() (limited polling expected)
 Sleep(150000)
 fake_serial_device '12': write address '1' failed: 'Serial protocol error: device disconnected'
@@ -65,5 +66,6 @@ fake_serial_device '12': transfer OK
 fake_serial_device '12': reconnected
 fake_serial_device '12': read address '2' value '24'
 Publish: /devices/reconnect-test/controls/I2/meta/error: '' (QoS 1, retained)
+Publish: /devices/reconnect-test/meta/error: '' (QoS 1, retained)
 Close()
 stop: serial-client-integration-test

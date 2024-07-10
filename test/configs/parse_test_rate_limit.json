@@ -73,7 +73,7 @@
             ]
         },
         {
-            "path" : "/dev/ttyNSC2",
+            "path" : "/dev/ttyNSC3",
             "baud_rate": 9600,
             "parity": "N",
             "data_bits": 8,
