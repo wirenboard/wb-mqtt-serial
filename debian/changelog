@@ -1,4 +1,10 @@
-wb-mqtt-serial (2.130.1) stable; urgency=medium
+wb-mqtt-serial (2.130.2) stable; urgency=medium
+
+  * Add indirect control channels for WB-MSW-v3/v4/v4-lora and WB-MIR-v2
+
+ -- Andrey Ksenofontov <andrey.ksenofontov@wirenboard.com>  Thu, 10 Jul 2024 16:52:00 +0300
+ 
+ wb-mqtt-serial (2.130.1) stable; urgency=medium
 
   * Fix a type in WB-Domofon template
 
