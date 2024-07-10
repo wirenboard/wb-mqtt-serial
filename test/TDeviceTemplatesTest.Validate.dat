@@ -18709,7 +18709,7 @@ WB-MIR v2
 	ROM8 size  =>  ROM8 size
 	ROM9 -> RAM  =>  ROM9 -> RAM
 	ROM9 size  =>  ROM9 size
-	BANK -> RAM  =>  BANK -> RAM
+	Reset all ROM  =>  Reset all ROM
 	Serial NO  =>  Serial NO
 	Uptime  =>  Uptime
 WB-MR11
