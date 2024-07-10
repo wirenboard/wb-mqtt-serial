@@ -47,6 +47,37 @@ AKKO
 	Set top limit  =>  Set top limit
 	Stop  =>  Stop
 	Type  =>  Type
+APC_series
+	Battery Charge  =>  Battery Charge
+	Battery Replacement Required  =>  Battery Replacement Required
+	Battery Voltage  =>  Battery Voltage
+	Current Frequency  =>  Current Frequency
+	Current Input Voltage  =>  Current Input Voltage
+	Current Output Voltage  =>  Current Output Voltage
+	Load  =>  Load
+	Low Battery Charge  =>  Low Battery Charge
+	Low Battery Signal  =>  Low Battery Signal
+	Mains Power  =>  Mains Power
+	Minimum Battery Capacity  =>  Minimum Battery Capacity
+	Minutes Left  =>  Minutes Left
+	Number Of Batteries  =>  Number Of Batteries
+	Number Of Faulty Batteries  =>  Number Of Faulty Batteries
+	Overload  =>  Overload
+	Powered By Battery  =>  Powered By Battery
+	Rated Output Voltage  =>  Rated Output Voltage
+	Register 1 Status  =>  Register 1 Status
+	Register 2 Status  =>  Register 2 Status
+	Register 3 Status  =>  Register 3 Status
+	Shutdown Delay  =>  Shutdown Delay
+	Start Delay  =>  Start Delay
+	Temperature  =>  Temperature
+	U Nominal Standard  =>  U Nominal Standard
+	Umax Last  =>  Umax Last
+	Umax Switching To Battery  =>  Umax Switching To Battery
+	Umin Last  =>  Umin Last
+	Umin Switching To Battery  =>  Umin Switching To Battery
+	Version 2.6  =>  Version 2.6
+	Work  =>  Work
 BAC-002ALN
 	Day Of Week  =>  Day Of Week
 	Fan Speed  =>  Fan Speed
