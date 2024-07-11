@@ -235,7 +235,7 @@
                 "condition": "(node_type==2)||(node_type==5)||(node_type==8)"
             },
             {
-                "name": "Tilting angle of the slats",
+                "name": "Tilting",
                 "type": "range",
                 "reg_type": "angle",
                 "address": 0,
@@ -274,7 +274,7 @@
                 "Set up limit": "Установить концевое положение открытия",
                 "Set down limit": "Установить концевое положение закрытия",
                 "Stop": "Остановить",
-                "Tilting angle of the slats": "Угол наклона ламелей"
+                "Tilting": "Угол наклона ламелей"
             }
         }
     }
