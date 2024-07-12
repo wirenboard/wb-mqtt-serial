@@ -370,10 +370,15 @@ std::vector<uint8_t> Somfy::MakeRequest(uint8_t msg,
 
 std::vector<uint8_t> Somfy::MakeSetPositionRequest(uint32_t address, uint8_t nodeType, uint32_t position)
 {
-    return MakeRequest(Somfy::CTRL_MOVETO,
-                       address,
-                       nodeType,
-                       {0x07, static_cast<uint8_t>(position & 0xFF), 0x00, 0x00, 0x00, 0x00});
+    std::vector<uint8_t> payload;
+
+    if (nodeType == Somfy::AC_40) {
+        payload = {0x07, static_cast<uint8_t>(position & 0xFF), 0x00, 0x00, 0x00, 0x00};
+    } else {
+        payload = {0x04, static_cast<uint8_t>(position & 0xFF), 0x00, 0x00};
+    }
+
+    return MakeRequest(Somfy::CTRL_MOVETO, address, nodeType, payload);
 }
 
 std::vector<uint8_t> Somfy::ParseStatusReport(uint32_t address, uint8_t header, const std::vector<uint8_t>& bytes)
