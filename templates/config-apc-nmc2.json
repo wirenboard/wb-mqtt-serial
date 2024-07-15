@@ -43,7 +43,6 @@
                 "address": 5,
                 "type": "value",
                 "format": "u16",
-                "scale": 1.0,
                 "units": "%",
                 "group": "device_status",
                 "readonly": true
@@ -79,7 +78,7 @@
                 "readonly": true
             },
             {
-                "name": "Number Of Faulty Batteries",
+                "name": "Faulty Batteries Quantity",
                 "reg_type": "holding",
                 "address": 10,
                 "type": "value",
@@ -88,7 +87,7 @@
                 "readonly": true
             },
             {
-                "name": "Number Of Batteries",
+                "name": "Batteries Quantity",
                 "reg_type": "holding",
                 "address": 11,
                 "type": "value",
@@ -102,7 +101,6 @@
                 "address": 12,
                 "type": "value",
                 "format": "u16",
-                "scale": 1.0,
                 "units": "%",
                 "group": "device_status",
                 "readonly": true
@@ -119,7 +117,7 @@
                 "readonly": true
             },
             {
-                "name": "Current Output Voltage",
+                "name": "Output Voltage",
                 "reg_type": "holding",
                 "address": 14,
                 "type": "value",
@@ -152,7 +150,7 @@
                 "readonly": true
             },
             {
-                "name": "Current Input Voltage",
+                "name": "Input Voltage",
                 "reg_type": "holding",
                 "address": 17,
                 "type": "value",
@@ -163,7 +161,7 @@
                 "readonly": true
             },
             {
-                "name": "Current Frequency",
+                "name": "Frequency",
                 "reg_type": "holding",
                 "address": 18,
                 "type": "value",
@@ -337,15 +335,15 @@
                 "Minutes Left": "Минут осталось",
                 "Battery Voltage": "Напряжение АКБ",
                 "Temperature": "Температура",
-                "Number Of Faulty Batteries": "Кол-во неисправных АКБ",
-                "Number Of Batteries": "Количество АКБ",
+                "Faulty Batteries Quantity": "Кол-во неисправных АКБ",
+                "Batteries Quantity": "Количество АКБ",
                 "Load": "Загрузка",
                 "Rated Output Voltage": "U номинальное выходное",
-                "Current Output Voltage": "U актуальное выходное",
+                "Output Voltage": "Выходное напряжение",
                 "Umax Last": "Umax последнее",
                 "Umin Last": "Umin последнее",
-                "Current Input Voltage": "U актуальное входное",
-                "Current Frequency": "Актуальная частота",
+                "Input Voltage": "Входное напряжение",
+                "Frequency": "Частота",
                 "Minimum Battery Capacity": "Минимальная ёмкость АКБ",
                 "Umin Switching To Battery": "Umin перехода на АКБ",
                 "Umax Switching To Battery": "Umax перехода на АКБ",
