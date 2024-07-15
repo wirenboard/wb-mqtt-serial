@@ -1,4 +1,4 @@
-wb-mqtt-serial (2.130.2) stable; urgency=medium
+wb-mqtt-serial (2.132.2) stable; urgency=medium
 
   * Add min core voltage reg in wb-mir_v2 template
   * Add min core voltage reg in wb-mai2-cc template
