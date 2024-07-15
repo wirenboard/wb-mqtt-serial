@@ -19406,8 +19406,8 @@ WB-MRPS6
 	Supply voltage  =>  Supply voltage
 	Uptime  =>  Uptime
 WB-MRWM2
-	K1  =>   K1
-	K2  =>   K2
+	 K1  =>   K1
+	 K2  =>   K2
 	AP energy L1  =>  AP energy L1
 	AP energy L2  =>  AP energy L2
 	Blocking K1  =>  Blocking K1
