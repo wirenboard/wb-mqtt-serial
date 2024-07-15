@@ -19408,6 +19408,8 @@ WB-MRPS6
 WB-MRWM2
 	AP energy L1  =>  AP energy L1
 	AP energy L2  =>  AP energy L2
+	Blocking K1  =>  Blocking K1
+	Blocking K2  =>  Blocking K2
 	FW Version  =>  FW Version
 	Input 1  =>  Input 1
 	Input 1 Double Press Counter  =>  Input 1 Double Press Counter
@@ -19430,10 +19432,6 @@ WB-MRWM2
 	Minimum Voltage Since Startup  =>  Minimum Voltage Since Startup
 	P L1  =>  P L1
 	P L2  =>  P L2
-	Physical State K1  =>  Physical State K1
-	Physical State K2  =>  Physical State K2
-	Protection State K1  =>  Protection State K1
-	Protection State K2  =>  Protection State K2
 	Restart Delay Countdown K1  =>  Restart Delay Countdown K1
 	Restart Delay Countdown K2  =>  Restart Delay Countdown K2
 	Serial  =>  Serial
@@ -19443,8 +19441,8 @@ WB-MRWM2
 	Uptime  =>  Uptime
 	Urms L1  =>  Urms L1
 	Urms L2  =>  Urms L2
-	Voltage State K1  =>  Voltage State K1
-	Voltage State K2  =>  Voltage State K2
+	Urms normal K1  =>  Urms normal K1
+	Urms normal K2  =>  Urms normal K2
 WB-MS v.2
 	Air Quality (VOC)  =>  Air Quality (VOC)
 	Air Quality Index  =>  Air Quality Index
