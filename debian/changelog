@@ -1,10 +1,10 @@
-wb-mqtt-serial (2.131.0) stable; urgency=medium
+wb-mqtt-serial (2.132.0) stable; urgency=medium
 
   * Somfy SDN: add tilting support
 
  -- Nikolay Korotkiy <nikolay.korotkiy@wirenboard.com>  Mon, 10 Jul 2024 16:05:00 +0400
 
-wb-mqtt-serial (2.130.1) stable; urgency=medium
+wb-mqtt-serial (2.131.0) stable; urgency=medium
 
   * Add new template for Carel muRack after rework
 
