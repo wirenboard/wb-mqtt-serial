@@ -1291,6 +1291,33 @@
                 "group": "ir_commands"
             },
             {
+                "name": "Play from BANK",
+                "reg_type": "holding",
+                "format": "s16",
+                "address": 5500,
+                "type": "value",
+                "group": "ir_commands",
+                "enabled": false
+            },
+            {
+                "name": "BANK -> RAM",
+                "reg_type": "holding",
+                "format": "s16",
+                "address": 5501,
+                "type": "value",
+                "group": "ir_commands",
+                "enabled": false
+            },
+            {
+                "name": "Learn to BANK",
+                "reg_type": "holding",
+                "format": "s16",
+                "address": 5502,
+                "type": "value",
+                "group": "ir_commands",
+                "enabled": false
+            },
+            {
                 "name": "Input 1",
                 "id": "",
                 "oneOf": [
@@ -1575,6 +1602,9 @@
                 "Play from ROM39": "Воспроизвести команду из ROM39",
                 "Play from ROM40": "Воспроизвести команду из ROM40",
                 "Reset all ROM": "Стереть все команды в ROM",
+                "Play from BANK": "Воспроизвести команду из соответствующего банка ROM",
+                "BANK -> RAM":"Редактирование ИК-команд в банке с копированием в RAM",
+                "Learn to BANK": "Записать команду в соответствующий банк ROM",
                 "Input 1": "Вход 1",
                 "Serial NO": "Серийный номер",
                 "FW Version": "Версия прошивки",
