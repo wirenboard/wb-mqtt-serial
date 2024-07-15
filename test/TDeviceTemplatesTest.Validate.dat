@@ -48,20 +48,20 @@ AKKO
 	Stop  =>  Stop
 	Type  =>  Type
 APC_series
+	Batteries Quantity  =>  Batteries Quantity
 	Battery Charge  =>  Battery Charge
 	Battery Replacement Required  =>  Battery Replacement Required
 	Battery Voltage  =>  Battery Voltage
-	Current Frequency  =>  Current Frequency
-	Current Input Voltage  =>  Current Input Voltage
-	Current Output Voltage  =>  Current Output Voltage
+	Faulty Batteries Quantity  =>  Faulty Batteries Quantity
+	Frequency  =>  Frequency
+	Input Voltage  =>  Input Voltage
 	Load  =>  Load
 	Low Battery Charge  =>  Low Battery Charge
 	Low Battery Signal  =>  Low Battery Signal
 	Mains Power  =>  Mains Power
 	Minimum Battery Capacity  =>  Minimum Battery Capacity
 	Minutes Left  =>  Minutes Left
-	Number Of Batteries  =>  Number Of Batteries
-	Number Of Faulty Batteries  =>  Number Of Faulty Batteries
+	Output Voltage  =>  Output Voltag
 	Overload  =>  Overload
 	Powered By Battery  =>  Powered By Battery
 	Rated Output Voltage  =>  Rated Output Voltage
