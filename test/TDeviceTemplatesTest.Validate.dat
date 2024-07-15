@@ -1153,6 +1153,7 @@ WB-M1W2 BUTTONS
 	Input 2 counter  =>  Input 2 counter
 	MCU Temperature  =>  MCU Temperature
 	MCU Voltage  =>  MCU Voltage
+	Minimum MCU Voltage Since Startup  =>  Minimum MCU Voltage Since Startup
 	Minimum Voltage Since Startup  =>  Minimum Voltage Since Startup
 	Reset All Counters  =>  Reset All Counters
 	Serial  =>  Serial
