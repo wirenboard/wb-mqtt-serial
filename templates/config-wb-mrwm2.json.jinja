@@ -92,7 +92,7 @@
             },
             {% for out_num in range(1, OUTPUTS_NUMBER + 1) -%}
             {
-                "title": "Voltage Control Parameters for Output {{out_num}}",
+                "title": "K{{out_num}}",
                 "id": "gg_out{{out_num}}_voltage_params",
                 "group": "g_voltage_control"
             },
@@ -595,7 +595,7 @@
                 "group": "gg_outputs_channels"
             },
             {
-                "name": "Physical State K{{out_num}}",
+                "name": "Real state K{{out_num}}",
                 "reg_type": "discrete",
                 "address": {{96 + out_num - 1}},
                 "type": "switch",
@@ -634,31 +634,17 @@
 
             {% for out_num in range(1, OUTPUTS_NUMBER + 1) -%}
             {
-                "name": "Voltage State K{{out_num}}",
+                "name": "Urms normal K{{out_num}}",
                 "reg_type": "discrete",
                 "address": {{80 + out_num - 1}},
-                "type": "value",
-                "format": "u8",
-                "enum": [0, 1],
-                "enum_titles": [
-                    "NORMAL",
-                    "OUT OF LIMITS"
-                ],
-                "default": 0,
+                "type": "switch",
                 "group": "gg_voltage_control_channels"
             },
             {
-                "name": "Protection State K{{out_num}}",
+                "name": "Blocking K{{out_num}}",
                 "reg_type": "discrete",
                 "address": {{88 + out_num - 1}},
-                "type": "value",
-                "format": "u8",
-                "enum": [0, 1],
-                "enum_titles": [
-                    "UNBLOCKED",
-                    "BLOCKED"
-                ],
-                "default": 0,
+                "type": "switch",
                 "group": "gg_voltage_control_channels",
                 "condition": "is_voltage_control_for_{{out_num}}_enabled==1"
             },
@@ -777,7 +763,7 @@
                 "debounce_time_description": "For press detection must be 5-10 times less than second press waiting time. Adds a delay to the response to presses. Firmware up to 1.19.0 supports maximum 250 ms",
 
                 {% for out_num in range(1, OUTPUTS_NUMBER + 1) -%}
-                "K{{out_num}}": "Desired State K{{out_num}}",
+                "K{{out_num}}": "Command K{{out_num}}",
                 {% endfor -%}
 
                 "undervoltage_description": "120 to 220, factory default - 207",
@@ -811,15 +797,13 @@
                 "Actions for outputs when the input is closed / opened": "Действия для выходов при замыкании / размыкании входа",
 
                 {% for out_num in range(1, OUTPUTS_NUMBER + 1) -%}
-                "K{{out_num}}": "Желаемое состояние K{{out_num}}",
+                "K{{out_num}}": "Команда K{{out_num}}",
                 "Output {{out_num}}": "Выход {{out_num}}",
                 "Output {{out_num}} Actions": "Действия для выхода {{out_num}}",
-                "Voltage Control Parameters for Output {{out_num}}": "Параметры контроля напряжения для выхода {{out_num}}",
-                "Physical State K{{out_num}}": "Физическое состояние K{{out_num}}",
-                "Voltage State K{{out_num}}": "Статус напряжения K{{out_num}}",
-                "Protection State K{{out_num}}": "Статус блокировки K{{out_num}}",
-                "Startup Delay Countdown K{{out_num}}": "Задержка включения K{{out_num}}",
-                "Restart Delay Countdown K{{out_num}}": "Задержка повторного включения K{{out_num}}",
+                "Urms normal K{{out_num}}": "Норма Urms L{{out_num}}",
+                "Blocking K{{out_num}}": "Блокировка K{{out_num}}",
+                "Startup Delay Countdown K{{out_num}}": "Таймер ЗВ K{{out_num}}",
+                "Restart Delay Countdown K{{out_num}}": "Таймер ЗПВ K{{out_num}}",
                 {% endfor -%}
 
                 "Output Safe State": "Безопасное состояние выходов",
@@ -895,11 +879,11 @@
                 "Enable only in safety mode": "Разрешить только в безопасном режиме",
 
                 "Voltage Control Activation": "Функция контроля напряжения",
-                "Undervoltage Threshold (V)": "Нижний допустимый предел напряжения (В)",
-                "Overvoltage Threshold (V)": "Верхний допустимый предел напряжения (В)",
+                "Undervoltage Threshold (V)": "Нижний допустимый предел (В)",
+                "Overvoltage Threshold (V)": "Верхний допустимый предел (В)",
                 "Voltage Dip Duration (s)": "Допустимая длительность провала напряжения (с)",
-                "Startup Delay (s)": "Задержка включения нагрузки (с)",
-                "Restart Delay (s)": "Задержка повторного включения нагрузки (с)",
+                "Startup Delay (s)": "Задержка включения нагрузки ЗВ (с)",
+                "Restart Delay (s)": "Задержка повторного включения нагрузки ЗПВ (с)",
                 "Disable": "Не активна",
                 "Enable": "Активна",
                 "NORMAL": "В НОРМЕ",
@@ -907,11 +891,11 @@
                 "UNBLOCKED": "РАЗБЛОКИРОВАН",
                 "BLOCKED": "ЗАБЛОКИРОВАН",
 
-                "undervoltage_description": "120 .. 220, заводское - 207",
-                "overvoltage_description": "230 .. 277, заводское - 253",
-                "voltage_dip_duration_description": "0.5 .. 10, заводское - 5",
-                "startup_delay_description": "0 .. 999, заводское - 10",
-                "restart_delay_description": "0 .. 999, заводское - 0",
+                "undervoltage_description": "120...220, заводское - 207",
+                "overvoltage_description": "230...277, заводское - 253",
+                "voltage_dip_duration_description": "0.5...10, заводское - 5",
+                "startup_delay_description": "0...999, заводское - 10",
+                "restart_delay_description": "0...999, заводское - 0",
 
                 "Baud rate": "Скорость обмена",
                 "baud_rate_description": "Перед изменением параметра убедитесь, что связь с устройством установлена. Выберите нужную скорость обмена, сохраните конфигурацию, а затем укажите в настройках порта эту же скорость.",
