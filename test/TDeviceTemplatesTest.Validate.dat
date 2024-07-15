@@ -18534,6 +18534,7 @@ WB-MIR (simple)
 	Play from ROM6  =>  Play from ROM6
 	Play from ROM7  =>  Play from ROM7
 WB-MIR v2
+	BANK -> RAM  =>  BANK -> RAM
 	FW Version  =>  FW Version
 	Input 1: input1_1wire
 		External Temperature Sensor  =>  External Temperature Sensor
@@ -18543,6 +18544,7 @@ WB-MIR v2
 		Input 1 Counter  =>  Input 1 Counter
 	Input 1: input_disabled
 	Input Voltage  =>  Input Voltage
+	Learn to BANK  =>  Learn to BANK
 	Learn to RAM  =>  Learn to RAM
 	Learn to ROM1  =>  Learn to ROM1
 	Learn to ROM10  =>  Learn to ROM10
@@ -18586,6 +18588,7 @@ WB-MIR v2
 	Learn to ROM9  =>  Learn to ROM9
 	MCU Temperature  =>  MCU Temperature
 	MCU Voltage  =>  MCU Voltage
+	Play from BANK  =>  Play from BANK
 	Play from RAM  =>  Play from RAM
 	Play from ROM1  =>  Play from ROM1
 	Play from ROM10  =>  Play from ROM10
@@ -19493,6 +19496,7 @@ WB-MSGR
 	Uptime  =>  Uptime
 WB-MSW v.3
 	Air Quality (VOC)  =>  Air Quality (VOC)
+	BANK -> RAM  =>  BANK -> RAM
 	Buzzer  =>  Buzzer
 	CO2  =>  CO2
 	CO2 Autocalibration Period  =>  CO2 Autocalibration Period
@@ -19514,6 +19518,7 @@ WB-MSW v.3
 	Illuminance  =>  Illuminance
 	LED Glow Duration (ms)  =>  LED Glow Duration (ms)
 	LED Period (s)  =>  LED Period (s)
+	Learn to BANK  =>  Learn to BANK
 	Learn to RAM  =>  Learn to RAM
 	Learn to ROM1  =>  Learn to ROM1
 	Learn to ROM10  =>  Learn to ROM10
@@ -19552,6 +19557,7 @@ WB-MSW v.3
 	Max Motion  =>  Max Motion
 	Minimum Voltage Since Startup  =>  Minimum Voltage Since Startup
 	Motion Raw  =>  Motion Raw
+	Play from BANK  =>  Play from BANK
 	Play from RAM  =>  Play from RAM
 	Play from ROM1  =>  Play from ROM1
 	Play from ROM10  =>  Play from ROM10
@@ -19671,6 +19677,7 @@ WB-MSW v.3
 WB-MSW v.4
 	Air Quality (VOC)  =>  Air Quality (VOC)
 	Air Quality Index  =>  Air Quality Index
+	BANK -> RAM  =>  BANK -> RAM
 	Buzzer  =>  Buzzer
 	CO2  =>  CO2
 	CO2 Autocalibration Period  =>  CO2 Autocalibration Period
@@ -19687,6 +19694,7 @@ WB-MSW v.4
 	Illuminance  =>  Illuminance
 	LED Glow Duration (ms)  =>  LED Glow Duration (ms)
 	LED Period (s)  =>  LED Period (s)
+	Learn to BANK  =>  Learn to BANK
 	Learn to RAM  =>  Learn to RAM
 	Learn to ROM1  =>  Learn to ROM1
 	Learn to ROM10  =>  Learn to ROM10
@@ -19725,6 +19733,7 @@ WB-MSW v.4
 	Max Motion  =>  Max Motion
 	Minimum Voltage Since Startup  =>  Minimum Voltage Since Startup
 	Motion Raw  =>  Motion Raw
+	Play from BANK  =>  Play from BANK
 	Play from RAM  =>  Play from RAM
 	Play from ROM1  =>  Play from ROM1
 	Play from ROM10  =>  Play from ROM10
@@ -19845,6 +19854,7 @@ WB-MSW v.4
 WB-MSW-LORA v.4
 	Air Quality (VOC)  =>  Air Quality (VOC)
 	Air Quality Index  =>  Air Quality Index
+	BANK -> RAM  =>  BANK -> RAM
 	Buzzer  =>  Buzzer
 	CO2  =>  CO2
 	CO2 Autocalibration Period  =>  CO2 Autocalibration Period
@@ -19861,6 +19871,7 @@ WB-MSW-LORA v.4
 	Illuminance  =>  Illuminance
 	LED Glow Duration (ms)  =>  LED Glow Duration (ms)
 	LED Period (s)  =>  LED Period (s)
+	Learn to BANK  =>  Learn to BANK
 	Learn to RAM  =>  Learn to RAM
 	Learn to ROM1  =>  Learn to ROM1
 	Learn to ROM10  =>  Learn to ROM10
@@ -19899,6 +19910,7 @@ WB-MSW-LORA v.4
 	Max Motion  =>  Max Motion
 	Minimum Voltage Since Startup  =>  Minimum Voltage Since Startup
 	Motion Raw  =>  Motion Raw
+	Play from BANK  =>  Play from BANK
 	Play from RAM  =>  Play from RAM
 	Play from ROM1  =>  Play from ROM1
 	Play from ROM10  =>  Play from ROM10
@@ -20539,6 +20551,67 @@ WinDeco
 	Position  =>  Position
 	Status  =>  Status
 	Stop  =>  Stop
+carel_mu_rack
+	Alarm 1 Compressor  =>  Alarm 1 Compressor
+	Alarm 2 Compressor  =>  Alarm 2 Compressor
+	Alarm 3 Compressor  =>  Alarm 3 Compressor
+	Alarm 4 Compressor  =>  Alarm 4 Compressor
+	Alarm Fan 1  =>  Alarm Fan 1
+	Alarm Fan 2  =>  Alarm Fan 2
+	Alarm Fan 3  =>  Alarm Fan 3
+	Alarm Fan 4  =>  Alarm Fan 4
+	Alarm High Discharge Pressure  =>  Alarm High Discharge Pressure
+	Alarm High Suction Pressure 1  =>  Alarm High Suction Pressure 1
+	Alarm High Suction Pressure 2  =>  Alarm High Suction Pressure 2
+	Alarm Liquid Level  =>  Alarm Liquid Level
+	Alarm Low Discharge Pressure  =>  Alarm Low Discharge Pressure
+	Alarm Low Suction Pressure 1  =>  Alarm Low Suction Pressure 1
+	Alarm Low Suction Pressure 2  =>  Alarm Low Suction Pressure 2
+	Application Version  =>  Application Version
+	Compressor 1 Maintenance  =>  Compressor 1 Maintenance
+	Compressor 1 Output  =>  Compressor 1 Output
+	Compressor 2 Maintenance  =>  Compressor 2 Maintenance
+	Compressor 2 Output  =>  Compressor 2 Output
+	Compressor 3 Maintenance  =>  Compressor 3 Maintenance
+	Compressor 4 Maintenance  =>  Compressor 4 Maintenance
+	Compressor Operating Time 1  =>  Compressor Operating Time 1
+	Compressor Operating Time 2  =>  Compressor Operating Time 2
+	Compressor Operating Time 3  =>  Compressor Operating Time 3
+	Compressor Operating Time 4  =>  Compressor Operating Time 4
+	Compressors Off due to Prevent  =>  Compressors Off due to Prevent
+	Excessive Prevent Frequency  =>  Excessive Prevent Frequency
+	Fan Thermal Overload  =>  Fan Thermal Overload
+	General Discharge Pressure Switch  =>  General Discharge Pressure Switch
+	High Outside Temperature  =>  High Outside Temperature
+	High Room Temperature  =>  High Room Temperature
+	Inverter Output  =>  Inverter Output
+	Prevent High Discharge Pressure  =>  Prevent High Discharge Pressure
+	Probe B1  =>  Probe B1
+	Probe B1 Faulty  =>  Probe B1 Faulty
+	Probe B2  =>  Probe B2
+	Probe B2 Faulty  =>  Probe B2 Faulty
+	Probe B3  =>  Probe B3
+	Probe B3 Faulty  =>  Probe B3 Faulty
+	Probe B4  =>  Probe B4
+	Probe B4 Faulty  =>  Probe B4 Faulty
+	Reset Alarms  =>  Reset Alarms
+	Status Compressor 1  =>  Status Compressor 1
+	Status Compressor 2  =>  Status Compressor 2
+	Status Compressor 3  =>  Status Compressor 3
+	Status Compressor 4  =>  Status Compressor 4
+	Status Digital Input 1  =>  Status Digital Input 1
+	Status Digital Input 2  =>  Status Digital Input 2
+	Status Digital Input 3  =>  Status Digital Input 3
+	Status Digital Input 4  =>  Status Digital Input 4
+	Status Digital Input 5  =>  Status Digital Input 5
+	Status Fan 1  =>  Status Fan 1
+	Status Fan 2  =>  Status Fan 2
+	Status Fan 3  =>  Status Fan 3
+	Status Fan 4  =>  Status Fan 4
+	Suction Set Point Circuit 1  =>  Suction Set Point Circuit 1
+	Suction Set Point Circuit 2  =>  Suction Set Point Circuit 2
+	Unit On  =>  Unit On
+	Unit Status  =>  Unit Status
 carel_pj_basic
 	1st probe alarm  =>  1st probe alarm
 	2nd probe alarm  =>  2nd probe alarm
