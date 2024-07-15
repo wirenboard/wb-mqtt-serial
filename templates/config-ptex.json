@@ -1,0 +1,457 @@
+{
+	"title": "template_title",
+	"device_type": "PID-Ptech",
+	"group": "g-pid",
+	"device": {
+		"name": "PID-Ptech",
+		"id": "pid-ptech",
+		"response_timeout_ms": 200,
+		"guard_interval_us": 50000,
+		"groups": [
+			{
+				"title": "Work Parameters",
+				"id": "parameters",
+				"order": 1
+			},
+			{
+				"title": "Current Status",
+				"id": "status",
+				"order": 2
+			},
+			{
+				"title": "Device Management",
+				"id": "management",
+				"order": 3
+			}
+		],
+		"channels": [
+			{
+				"name": "Version V4.5 Firmware",
+				"reg_type": "holding",
+				"address": 999,
+				"type": "value",
+				"format": "u16",
+				"group": "status",
+				"readonly": true
+			},
+			{
+				"name": "Mode",
+				"reg_type": "holding",
+				"format": "u16",
+				"address": 1005,
+				"type": "value",
+				"enum": [
+					0,
+					1,
+					2,
+					3,
+					4
+				],
+				"enum_titles": [
+					"PI", 
+					"PID", 
+					"LIN", 
+					"Fil", 
+					"Off"
+				],
+				"group": "parameters"
+			},
+			{
+				"name": "Minimum Pressure",
+				"reg_type": "holding",
+				"address": 1006,
+				"type": "value",
+				"format": "float",
+				"word_order": "little_endian",
+				"round_to": 0.01,
+				"group": "parameters"
+			},
+			{
+				"name": "Maximum Pressure",
+				"reg_type": "holding",
+				"address": 1008,
+				"type": "value",
+				"format": "float",
+				"word_order": "little_endian",
+				"round_to": 0.01,
+				"group": "parameters"
+			},
+			{
+				"name": "Low Pressure Control Time",
+				"reg_type": "holding",
+				"address": 1010,
+				"type": "value",
+				"units": "sec",
+				"format": "u32",
+				"word_order": "little_endian",
+				"group": "parameters"
+			},
+			{
+				"name": "Min. Pump Operating Time",
+				"reg_type": "holding",
+				"address": 1012,
+				"type": "value",
+				"units": "sec",
+				"format": "u32",
+				"word_order": "little_endian",
+				"group": "parameters"
+			},
+			{
+				"name": "Max. Pump Operating Time",
+				"reg_type": "holding",
+				"address": 1014,
+				"type": "value",
+				"units": "min",
+				"format": "u32",
+				"word_order": "little_endian",
+				"group": "parameters"
+			},
+			{
+				"name": "Error Reset Time",
+				"reg_type": "holding",
+				"address": 1020,
+				"type": "value",
+				"units": "min",
+				"format": "u16",
+				"group": "parameters"
+			},
+			{
+				"name": "Max. Water Per Session",
+				"reg_type": "holding",
+				"address": 1021,
+				"type": "value",
+				"units": "liters",
+				"format": "u16",
+				"group": "parameters"
+			},
+			{
+				"name": "Min. Time Between Starts",
+				"reg_type": "holding",
+				"address": 1022,
+				"type": "value",
+				"units": "sec",
+				"format": "u16",
+				"group": "parameters"
+			},
+			{
+				"name": "Backlight",
+				"reg_type": "holding",
+				"format": "u16",
+				"address": 1023,
+				"type": "value",
+				"enum": [
+					0,
+					1,
+					2
+				],
+				"enum_titles": [
+					"Const.",
+					"1 minute",
+					"6 minutes"
+				],
+				"group": "parameters"
+			},
+			{
+				"name": "Min. Power",
+				"reg_type": "holding",
+				"address": 1024,
+				"type": "value",
+				"units": "%",
+				"format": "float",
+				"word_order": "little_endian",
+				"round_to": 0.1,
+				"group": "parameters"
+			},
+			{
+				"name": "Max Power",
+				"reg_type": "holding",
+				"address": 1026,
+				"type": "value",
+				"units": "%",
+				"format": "float",
+				"word_order": "little_endian",
+				"round_to": 0.1,
+				"group": "parameters"
+			},
+			{
+				"name": "PID P",
+				"reg_type": "holding",
+				"address": 1028,
+				"type": "value",
+				"format": "float",
+				"word_order": "little_endian",
+				"round_to": 0.01,
+				"group": "parameters"
+			},
+			{
+				"name": "PID I",
+				"reg_type": "holding",
+				"address": 1030,
+				"type": "value",
+				"format": "float",
+				"word_order": "little_endian",
+				"round_to": 0.01,
+				"group": "parameters"
+			},
+			{
+				"name": "PID D",
+				"reg_type": "holding",
+				"address": 1032,
+				"type": "value",
+				"format": "float",
+				"word_order": "little_endian",
+				"round_to": 0.01,
+				"group": "parameters"
+			},
+			{
+				"name": "PID Time",
+				"reg_type": "holding",
+				"address": 1034,
+				"type": "value",
+				"format": "float",
+				"word_order": "little_endian",
+				"round_to": 0.01,
+				"group": "parameters"
+			},
+			{
+				"name": "Aux Mode Relay",
+				"reg_type": "holding",
+				"format": "u16",
+				"address": 1036,
+				"type": "value",
+				"enum": [
+					0,
+					1,
+					2,
+					3,
+					4
+				],
+				"enum_titles": [
+					"Off",
+					"Alarm",
+					"Low",
+					"High",
+					"Second Pump"
+				],
+				"group": "parameters"
+			},
+			{
+				"name": "Pump Delay Low Mode",
+				"reg_type": "holding",
+				"address": 1037,
+				"type": "value",
+				"units": "sec",
+				"format": "u16",
+				"group": "parameters"
+			},
+			{
+				"name": "Pump Delay High Mode",
+				"reg_type": "holding",
+				"address": 1038,
+				"type": "value",
+				"units": "sec",
+				"format": "u16",
+				"group": "parameters"
+			},
+			{
+				"name": "Starting Power SP Mode",
+				"reg_type": "holding",
+				"address": 1039,
+				"type": "value",
+				"format": "u16",
+				"group": "parameters"
+			},
+			{
+				"name": "Stop Power SP Mode",
+				"reg_type": "holding",
+				"address": 1040,
+				"type": "value",
+				"format": "u16",
+				"group": "parameters"
+			},
+			{
+				"name": "Pump Activation Delay",
+				"reg_type": "holding",
+				"address": 1041,
+				"type": "value",
+				"units": "sec",
+				"format": "u16",
+				"group": "parameters"
+			},
+			{
+				"name": "Current Pressure",
+				"reg_type": "holding",
+				"address": 1099,
+				"type": "value",
+				"format": "float",
+				"word_order": "little_endian",
+				"group": "status",
+				"readonly": true
+			},
+			{
+				"name": "Current Power",
+				"reg_type": "holding",
+				"address": 1101,
+				"type": "value",
+				"format": "float",
+				"units": "%",
+				"word_order": "little_endian",
+				"group": "status",
+				"readonly": true
+			},
+			{
+				"name": "Total Water",
+				"reg_type": "holding",
+				"address": 1103,
+				"type": "value",
+				"format": "float",
+				"word_order": "little_endian",
+				"group": "status",
+				"readonly": true
+			},
+			{
+				"name": "Current Pumping Speed",
+				"reg_type": "holding",
+				"address": 1105,
+				"type": "value",
+				"format": "float",
+				"word_order": "little_endian",
+				"group": "status",
+				"readonly": true
+			},
+			{
+				"name": "Total Pump Operating Time",
+				"reg_type": "holding",
+				"address": 1107,
+				"type": "value",
+				"format": "u32",
+				"word_order": "little_endian",
+				"group": "status",
+				"readonly": true
+			},
+			{
+				"name": "Leak Sensor Activation",
+				"reg_type": "holding",
+				"address": 1109,
+				"type": "switch",
+				"format": "u16",
+				"group": "status",
+				"readonly": true
+			},
+			{
+				"name": "Operation Indicator",
+				"reg_type": "holding",
+				"address": 1110,
+				"type": "switch",
+				"format": "u16",
+				"group": "status",
+				"readonly": true
+			},
+			{
+				"name": "Error Code",
+				"reg_type": "holding",
+				"address": 1111,
+				"type": "value",
+				"format": "u32",
+				"word_order": "little_endian",
+				"group": "status",
+				"readonly": true
+			},
+			{
+				"name": "Reset Error",
+				"reg_type": "holding",
+				"write_address": 1111,
+				"format": "u32",
+				"type": "pushbutton",
+				"on_value": 0,
+				"group": "status"
+			},
+			{
+				"name": "Save To Eeprom",
+				"reg_type": "holding",
+				"write_address": 1399,
+				"format": "u16",
+				"type": "pushbutton",
+				"on_value": 1,
+				"group": "management"
+			},
+			{
+				"name": "Read From Eeprom",
+				"reg_type": "holding",
+				"write_address": 1400,
+				"format": "u16",
+				"type": "pushbutton",
+				"on_value": 1,
+				"group": "management"
+			},
+			{
+				"name": "Reboot",
+				"reg_type": "holding",
+				"write_address": 1402,
+				"format": "u16",
+				"type": "switch",
+				"group": "management"
+			}
+		],
+		"translations": {
+			"en": {
+				"template_title": "PID Polytech FC Control"
+			},
+			"ru": {
+				"template_title": "PID Polytech FC Control",
+				"Device Setting": "Настройки устройства",
+				"Work Parameters": "Параметры регулятора",
+				"Current Status": "Текущее состояние",
+				"Device Management": "Управление устройством",
+				"Version V4.5.  Firmware": "Версия v. 4.5.  Прошивка",
+				"Mode": "Режим",
+				"Minimum Pressure": "Минимальное давление",
+				"Maximum Pressure": "Максимальное давление",
+				"Low Pressure Control Time": "Время контроля низкого давления",
+				"Min. Pump Operating Time": "Мин.время работы насоса",
+				"Max. Pump Operating Time": "Макс.время работы насоса",
+				"Error Reset Time": "Время сброса ошибки",
+				"Max. Water Per Session": "Макс. воды за сессию",
+				"Min. Time Between Starts": "Мин. время между запусками",
+				"Backlight": "Подсветка",
+				"Min. Power": "Мин. мощность",
+				"Max Power": "Макс. мощность",
+				"PID P": "ПИД P",
+				"PID I": "ПИД I",
+				"PID D": "ПИД D",
+				"PID Time": "Время ПИД",
+				"Aux Mode Relay": "Режим всп. реле",
+				"Pump Delay Low Mode": "Задержка включения насоса Low",
+				"Pump Delay High Mode": "Задержка включения насоса High",
+				"Starting Power SP Mode": "Мощность стартовая в SP",
+				"Stop Power SP Mode": "Мощность остановки в SP",
+				"Pump Activation Delay": "Задержка срабатывания насоса",
+				"Current Pressure": "Текущее давление",
+				"Current Power": "Текущая мощность",
+				"Total Water": "Воды всего",
+				"Current Pumping Speed": "Текущая скорость прокачки",
+				"Total Pump Operating Time": "Общее время работы насоса",
+				"Leak Sensor Activation": "Cрабатывания датчика утечки",
+				"Operation Indicator": "Индикатор работы",
+				"Error Code": "Код ошибки",
+				"Reset Error": "Сброс ошибки",
+				"Save To Eeprom": "Сохранить в eeprom",
+				"Read From Eeprom": "Считать  из eeprom",
+				"Reboot": "Перезагрузка",
+				"Off": "Выкл.",
+				"Alarm": "Авария",
+				"Low": "Пониженное давление",
+				"High": "Повышенное давление",
+				"Second Pump": "Второй насос",
+				"Const.": "Пост.",
+				"1 minute": "1 минута",
+				"6 minutes": "6 минут",
+				"PI": "ПИ", 
+				"PID": "ПИД", 
+				"LIN": "Линейное", 
+				"Fil": "Ручное", 
+				"Off": "Отключить насос"
+			}
+		}
+	}
+}
