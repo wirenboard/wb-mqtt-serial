@@ -87,20 +87,39 @@
                 "group": "g_safety"
             },
             {
+                "title": "Delays",
+                "id": "g_delays"
+            },
+            {
                 "title": "Voltage Control",
                 "id": "g_voltage_control"
             },
             {% for out_num in range(1, OUTPUTS_NUMBER + 1) -%}
             {
-                "title": "K{{out_num}}",
+                "title": "Settings K{{out_num}}",
                 "id": "gg_out{{out_num}}_voltage_params",
                 "group": "g_voltage_control"
+            },
+            {
+                "title": "Settings K{{out_num}}",
+                "id": "gg_out{{out_num}}_delay_params",
+                "group": "g_delays"
             },
             {% endfor -%}
             {
                 "title": "Displayed Voltage Control Channels",
                 "id": "gg_voltage_control_channels",
                 "group": "g_voltage_control",
+                "ui_options": {
+                    "wb": {
+                        "disable_title": true
+                    }
+                }
+            },
+            {
+                "title": "Displayed Delay Channels",
+                "id": "gg_delay_channels",
+                "group": "g_delays",
                 "ui_options": {
                     "wb": {
                         "disable_title": true
@@ -443,8 +462,8 @@
                 "min": 0,
                 "max": 999,
                 "default": 10,
-                "group": "gg_out{{out_num}}_voltage_params",
-                "order": 5
+                "group": "gg_out{{out_num}}_delay_params",
+                "order": 1
             },
             "restart_delay_{{out_num}}": {
                 "title": "Restart Delay (s)",
@@ -455,8 +474,8 @@
                 "min": 0,
                 "max": 999,
                 "default": 0,
-                "group": "gg_out{{out_num}}_voltage_params",
-                "order": 6
+                "group": "gg_out{{out_num}}_delay_params",
+                "order": 2
             },
             {% endfor -%}
 
@@ -595,7 +614,7 @@
                 "group": "gg_outputs_channels"
             },
             {
-                "name": "Real state K{{out_num}}",
+                "name": " K{{out_num}}",
                 "reg_type": "discrete",
                 "address": {{96 + out_num - 1}},
                 "type": "switch",
@@ -656,7 +675,7 @@
                 "format": "u16",
                 "scale": 0.1,
                 "sporadic": true,
-                "group": "gg_voltage_control_channels",
+                "group": "gg_delay_channels",
                 "condition": "startup_delay_{{out_num}}>0"
             },
             {
@@ -667,7 +686,7 @@
                 "format": "u16",
                 "scale": 0.1,
                 "sporadic": true,
-                "group": "gg_voltage_control_channels",
+                "group": "gg_delay_channels",
                 "condition": "restart_delay_{{out_num}}>0"
             },
 
@@ -787,6 +806,7 @@
 
                 "Outputs": "Выходы",
                 "Safety Mode": "Безопасный режим",
+                "Delays": "Задержки включения",
                 "Voltage Control": "Контроль напряжения",
                 "General": "Общее",
                 "HW Info": "Данные модуля",
@@ -797,6 +817,7 @@
                 "Actions for outputs when the input is closed / opened": "Действия для выходов при замыкании / размыкании входа",
 
                 {% for out_num in range(1, OUTPUTS_NUMBER + 1) -%}
+                "Settings K{{out_num}}": "Параметры K{{out_num}}",
                 "K{{out_num}}": "Команда K{{out_num}}",
                 "Output {{out_num}}": "Выход {{out_num}}",
                 "Output {{out_num}} Actions": "Действия для выхода {{out_num}}",
@@ -881,9 +902,9 @@
                 "Voltage Control Activation": "Функция контроля напряжения",
                 "Undervoltage Threshold (V)": "Нижний допустимый предел (В)",
                 "Overvoltage Threshold (V)": "Верхний допустимый предел (В)",
-                "Voltage Dip Duration (s)": "Допустимая длительность провала напряжения (с)",
-                "Startup Delay (s)": "Задержка включения нагрузки ЗВ (с)",
-                "Restart Delay (s)": "Задержка повторного включения нагрузки ЗПВ (с)",
+                "Voltage Dip Duration (s)": "Допустимая длительность провала (с)",
+                "Startup Delay (s)": "Задержка включения ЗВ (с)",
+                "Restart Delay (s)": "Задержка повторного включения ЗПВ (с)",
                 "Disable": "Не активна",
                 "Enable": "Активна",
                 "NORMAL": "В НОРМЕ",
