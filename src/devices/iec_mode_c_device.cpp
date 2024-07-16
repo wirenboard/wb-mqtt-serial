@@ -64,6 +64,10 @@ TRegisterValue TIecModeCDevice::GetRegisterValue(const TRegister& reg, const std
 
 void TIecModeCDevice::PrepareImpl()
 {
+    // Some energy meters require a period of silence before open session request
+    // The timeout is not defined in standard and meter's documentation
+    // Closest similar timeout is minimal time between session start request and meter's response
+    // It is 200ms. So use it as timeout before session start
     Port()->SleepSinceLastInteraction(std::chrono::milliseconds(200));
     TIEC61107ModeCDevice::PrepareImpl();
 }
