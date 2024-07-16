@@ -26,15 +26,6 @@
 		],
 		"channels": [
 			{
-				"name": "Version V4.5 Firmware",
-				"reg_type": "holding",
-				"address": 999,
-				"type": "value",
-				"format": "u16",
-				"group": "status",
-				"readonly": true
-			},
-			{
 				"name": "Mode",
 				"reg_type": "holding",
 				"format": "u16",
@@ -52,7 +43,7 @@
 					"PID", 
 					"LIN", 
 					"Fil", 
-					"Off"
+					"Pump Turn Off"
 				],
 				"group": "parameters"
 			},
@@ -81,7 +72,7 @@
 				"reg_type": "holding",
 				"address": 1010,
 				"type": "value",
-				"units": "sec",
+				"units": "s",
 				"format": "u32",
 				"word_order": "little_endian",
 				"group": "parameters"
@@ -91,7 +82,7 @@
 				"reg_type": "holding",
 				"address": 1012,
 				"type": "value",
-				"units": "sec",
+				"units": "s",
 				"format": "u32",
 				"word_order": "little_endian",
 				"group": "parameters"
@@ -129,7 +120,7 @@
 				"reg_type": "holding",
 				"address": 1022,
 				"type": "value",
-				"units": "sec",
+				"units": "s",
 				"format": "u16",
 				"group": "parameters"
 			},
@@ -240,7 +231,7 @@
 				"reg_type": "holding",
 				"address": 1037,
 				"type": "value",
-				"units": "sec",
+				"units": "s",
 				"format": "u16",
 				"group": "parameters"
 			},
@@ -249,7 +240,7 @@
 				"reg_type": "holding",
 				"address": 1038,
 				"type": "value",
-				"units": "sec",
+				"units": "s",
 				"format": "u16",
 				"group": "parameters"
 			},
@@ -274,7 +265,7 @@
 				"reg_type": "holding",
 				"address": 1041,
 				"type": "value",
-				"units": "sec",
+				"units": "s",
 				"format": "u16",
 				"group": "parameters"
 			},
@@ -403,7 +394,6 @@
 				"Work Parameters": "Параметры регулятора",
 				"Current Status": "Текущее состояние",
 				"Device Management": "Управление устройством",
-				"Version V4.5.  Firmware": "Версия v. 4.5.  Прошивка",
 				"Mode": "Режим",
 				"Minimum Pressure": "Минимальное давление",
 				"Maximum Pressure": "Максимальное давление",
@@ -450,7 +440,7 @@
 				"PID": "ПИД", 
 				"LIN": "Линейное", 
 				"Fil": "Ручное", 
-				"Off": "Отключить насос"
+				"Pump Turn Off": "Отключить насос"
 			}
 		}
 	}
