@@ -22432,6 +22432,23 @@ kvadro-1wire
 	Temp 7  =>  Temp 7
 	Temp 8  =>  Temp 8
 	Temp 9  =>  Temp 9
+luna
+	AP Energy  =>  AP Energy
+	AP Energy T1  =>  AP Energy T1
+	AP Energy T2  =>  AP Energy T2
+	AP Energy T3  =>  AP Energy T3
+	AP Energy T4  =>  AP Energy T4
+	Cos Phi L1  =>  Cos Phi L1
+	Cos Phi L2  =>  Cos Phi L2
+	Cos Phi L3  =>  Cos Phi L3
+	Frequency  =>  Frequency
+	Irms L1  =>  Irms L1
+	Irms L2  =>  Irms L2
+	Irms L3  =>  Irms L3
+	SN  =>  SN
+	Urms L1  =>  Urms L1
+	Urms L2  =>  Urms L2
+	Urms L3  =>  Urms L3
 mercury230
 	AP1  =>  AP1
 	AP2  =>  AP2
