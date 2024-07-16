@@ -19406,12 +19406,12 @@ WB-MRPS6
 	Supply voltage  =>  Supply voltage
 	Uptime  =>  Uptime
 WB-MRWM2
-	 K1  =>   K1
-	 K2  =>   K2
 	AP energy L1  =>  AP energy L1
 	AP energy L2  =>  AP energy L2
 	Blocking K1  =>  Blocking K1
 	Blocking K2  =>  Blocking K2
+	Command K1  =>  Command K1
+	Command K2  =>  Command K2
 	FW Version  =>  FW Version
 	Input 1  =>  Input 1
 	Input 1 Double Press Counter  =>  Input 1 Double Press Counter
