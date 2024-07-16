@@ -1,3 +1,9 @@
+wb-mqtt-serial (2.134.0) stable; urgency=medium
+
+  * Add new template for Veda VF 51
+
+ -- Roman Matveev <roman.matveev@wirenboard.ru>  Tue, 16 Jul 2024 17:19:00 +0300
+
 wb-mqtt-serial (2.133.1) stable; urgency=medium
 
   * Add min core voltage reg in wb-mir_v2 template
