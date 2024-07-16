@@ -93,7 +93,7 @@ namespace
         if (len < 2) {
             throw TSerialDeviceTransientErrorException("empty response");
         }
-        uint8_t checksum = IEC::Get7BitSum(resp + 1, len - 2);
+        uint8_t checksum = IEC::Calc7BitCrc(resp + 1, len - 2);
         if (resp[len - 1] != checksum) {
             throw TSerialDeviceTransientErrorException("invalid response checksum (" + std::to_string(resp[len - 1]) +
                                                        " != " + std::to_string(checksum) + ")");
@@ -138,7 +138,7 @@ namespace
         snprintf(cmd_part, sizeof(cmd_part), "R1\x02GROUP(%s)\x03", query_part);
         snprintf(buf, sizeof(buf), "/?%s!\x01%s", slaveId.data(), cmd_part);
         // place checksum in place of trailing null byte
-        buf[strlen(buf)] = IEC::Get7BitSum((uint8_t*)(&cmd_part[0]), strlen(cmd_part));
+        buf[strlen(buf)] = IEC::Calc7BitCrc((uint8_t*)(&cmd_part[0]), strlen(cmd_part));
         IEC::WriteBytes(port, (uint8_t*)buf, strlen(buf), LOG_PREFIX);
     }
 
@@ -257,4 +257,17 @@ void TEnergomeraIecWithFastReadDevice::ReadRegisterRange(PRegisterRange abstract
 PRegisterRange TEnergomeraIecWithFastReadDevice::CreateRegisterRange() const
 {
     return std::make_shared<TEnergomeraRegisterRange>();
+}
+
+void TEnergomeraIecWithFastReadDevice::PrepareImpl()
+{
+    TIEC61107Device::PrepareImpl();
+    TSerialPortConnectionSettings bf(9600, 'E', 7, 1);
+    Port()->ApplySerialPortSettings(bf);
+}
+
+void TEnergomeraIecWithFastReadDevice::EndSession()
+{
+    Port()->ResetSerialPortSettings(); // Return old port settings
+    TIEC61107Device::EndSession();
 }
