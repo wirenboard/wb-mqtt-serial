@@ -1,3 +1,9 @@
+ wb-mqtt-serial (2.133.0) stable; urgency=medium
+
+  * Add template PID-controller Ptex
+
+ -- Roman Matveev <roman.matveev@wirenboard.ru>  Tue, 16 Jul 2024 21:54:30 +0300
+
 wb-mqtt-serial (2.132.1) stable; urgency=medium
 
   * Add min core voltage reg in m1w2 template
