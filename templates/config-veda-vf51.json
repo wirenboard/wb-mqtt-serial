@@ -1,0 +1,510 @@
+{
+    "title": "Veda VF 51",
+    "device_type": "veda_vf_51",
+    "group": "g-motor-control",
+    "device": {
+        "name": "Veda VF 51",
+        "id": "veda-vf-51",
+        "max_read_registers": 0,
+        "frame_timeout_ms": 8,
+        "groups": [
+            {
+                "title": "Drive Status",
+                "id": "drive_status",
+                "order": 1
+            },
+            {
+                "title": "Drive Commands",
+                "id": "drive_commands",
+                "order": 2
+            },
+            {
+                "title": "PID",
+                "id": "pid",
+                "order": 3
+            },
+            {
+                "title": "Diagnostics",
+                "id": "diagnostics",
+                "order": 4
+            }
+        ],
+        "channels": [
+            {
+                "name": "Frequency Reference Source",
+                "reg_type": "holding",
+                "address": "0x0102",
+                "type": "value",
+                "enum": 
+                [
+                    0,
+                    1,
+                    2,
+                    5,
+                    6,
+                    7,
+                    8,
+                    9,
+                    11
+                ],
+                "enum_titles":
+                [
+                    "Preset Value",
+                    "Control Panel Potentiometer",
+                    "Analog Input",
+                    "Pulse Input",
+                    "RS485",
+                    "Digital Potentiometer",
+                    "PID",
+                    "PLC",
+                    "Multi-speed"
+                ],
+                "default": 6,
+                "group": "drive_commands"
+            },
+            {
+                "name": "Trigger Source",
+                "reg_type": "holding",
+                "address": "0x0101",
+                "type": "value",
+                "enum": 
+                [
+                    0,
+                    1,
+                    2
+                ],
+                "enum_titles":
+                [
+                    "Control Panel",
+                    "Digital Input",
+                    "RS485"
+                ],
+                "default": 2,
+                "group": "drive_commands"
+            },
+            {
+                "name": "Work",
+                "reg_type": "holding",
+                "address": "8194:0:1",
+                "type": "switch",
+                "group": "drive_status",
+                "readonly": true
+            },
+            {
+                "name": "Braking",
+                "reg_type": "input",
+                "address": "8194:2:1",
+                "type": "switch",
+                "group": "drive_status",
+                "readonly": true
+            },
+            {
+                "name": "Overclocking",
+                "reg_type": "input",
+                "address": "8194:1:1",
+                "type": "switch",
+                "group": "drive_status",
+                "readonly": true
+            },
+            {
+                "name": "Error",
+                "reg_type": "input",
+                "address": "8194:4:1",
+                "type": "switch",
+                "group": "drive_status",
+                "readonly": true
+            },
+            {
+                "name": "Set Frequency",
+                "reg_type": "holding",
+                "address": "0x2100",
+                "type": "value",
+                "units": "Hz",
+                "format": "u16",
+                "scale": 0.01,
+                "group": "drive_status",
+                "readonly": true
+            },
+            {
+                "name": "Output Frequency",
+                "reg_type": "holding",
+                "address": "0x2101",
+                "type": "value",
+                "units": "Hz",
+                "format": "u16",
+                "scale": 0.01,
+                "group": "drive_status",
+                "readonly": true
+            },
+            {
+                "name": "Output Current",
+                "reg_type": "holding",
+                "address": "8450",
+                "type": "current",
+                "format": "u16",
+                "scale": 0.01,
+                "group": "drive_status",
+                "readonly": true
+            },
+            {
+                "name": "Input Voltage",
+                "reg_type": "holding",
+                "address": "8451",
+                "type": "voltage",
+                "format": "u16",
+                "scale": 0.1,
+                "group": "drive_status",
+                "readonly": true
+            },
+            {
+                "name": "Output Voltage",
+                "reg_type": "holding",
+                "address": "8452",
+                "type": "voltage",
+                "format": "u16",
+                "scale": 0.1,
+                "group": "drive_status",
+                "readonly": true
+            },
+            {
+                "name": "Rotation Speed",
+                "reg_type": "holding",
+                "address": "8453",
+                "type": "value",
+                "units": "rpm",
+                "format": "s16",
+                "scale": 1.0,
+                "group": "drive_status",
+                "readonly": true
+            },
+            {
+                "name": "Set Torque",
+                "reg_type": "holding",
+                "address": "8454",
+                "type": "value",
+                "units": "%",
+                "format": "s16",
+                "scale": 0.1,
+                "group": "drive_status",
+                "readonly": true
+            },
+            {
+                "name": "Output Torque",
+                "reg_type": "holding",
+                "address": "8455",
+                "type": "value",
+                "units": "%",
+                "format": "s16",
+                "scale": 0.1,
+                "group": "drive_status",
+                "readonly": true
+            },
+            {
+                "name": "PID Set Value",
+                "reg_type": "holding",
+                "address": "8456",
+                "type": "value",
+                "units": "%",
+                "format": "s16",
+                "scale": 0.1,
+                "group": "pid",
+                "readonly": true
+            },
+            {
+                "name": "PID Feedback",
+                "reg_type": "holding",
+                "address": "8457",
+                "type": "value",
+                "units": "%",
+                "format": "s16",
+                "scale": 0.1,
+                "group": "pid",
+                "readonly": true
+            },
+            {
+                "name": "Output PID Value",
+                "reg_type": "input",
+                "address": "8479",
+                "type": "value",
+                "format": "s16",
+                "scale": 0.1,
+                "group": "pid",
+                "readonly": true
+            },
+            {
+                "name": "PID Frequency Reference Source",
+                "reg_type": "holding",
+                "address": "0x0D00",
+                "type": "value",
+                "enum":[0, 1, 2, 5, 6, 8, 9],
+                "enum_titles": 
+                [
+                    "Control Panel",
+                    "Analog Potentiometer",
+                    "Analog Input",
+                    "Pulse Input",
+                    "RS485",
+                    "Digital Terminals",
+                    "Current"
+                ],
+                "default": 1,
+                "group": "pid"
+            },
+            {
+                "name": "PID Feedback Source",
+                "reg_type": "holding",
+                "address": "0x0D03",
+                "type": "value",
+                "enum":[0, 1, 2, 5, 6, 8, 9],
+                "enum_titles": [
+                    "Control Panel",
+                    "Analog Potentiometer",
+                    "Analog Input",
+                    "Pulse Input",
+                    "RS485",
+                    "Digital Terminals",
+                    "Current"
+                ],
+                "default": 2,
+                "group": "pid"
+            },
+            {
+                "name": "Output Power",
+                "reg_type": "holding",
+                "address": "8458",
+                "type": "value",
+                "units": "%",
+                "format": "s16",
+                "scale": 0.1,
+                "group": "drive_status",
+                "readonly": true
+            },
+            {
+                "name": "Bus Voltage",
+                "reg_type": "holding",
+                "address": "8459",
+                "type": "voltage",
+                "format": "u16",
+                "scale": 0.1,
+                "group": "drive_status",
+                "readonly": true
+            },
+            {
+                "name": "Module 1 Temperature",
+                "reg_type": "holding",
+                "address": "8460",
+                "type": "temperature",
+                "format": "s16",
+                "scale": 0.1,
+                "group": "drive_status",
+                "readonly": true
+            },
+            {
+                "name": "Module 2 Temperature",
+                "reg_type": "holding",
+                "address": "8461",
+                "type": "temperature",
+                "format": "s16",
+                "scale": 0.1,
+                "group": "drive_status",
+                "readonly": true
+            },
+            {
+                "name": "AI1 Voltage",
+                "reg_type": "holding",
+                "address": "8464",
+                "type": "voltage",
+                "format": "u16",
+                "scale": 0.001,
+                "group": "drive_status",
+                "readonly": true
+            },
+            {
+                "name": "Voltage P.Control",
+                "reg_type": "holding",
+                "address": "8466",
+                "type": "voltage",
+                "format": "u16",
+                "scale": 0.001,
+                "group": "drive_status",
+                "readonly": true
+            },
+            {
+                "name": "AO1 Voltage",
+                "reg_type": "holding",
+                "address": "8468",
+                "type": "voltage",
+                "format": "u16",
+                "scale": 0.01,
+                "group": "drive_status",
+                "readonly": true
+            },
+            {
+                "name": "Drive Error Code",
+                "reg_type": "holding",
+                "address": "0x2003",
+                "type": "value",
+                "format": "u16",
+                "scale": 1.0,
+                "group": "diagnostics",
+                "readonly": true
+            },
+            {
+                "name": "Inverter Warning Code",
+                "reg_type": "holding",
+                "address": "0x2010",
+                "type": "value",
+                "format": "u16",
+                "scale": 1.0,
+                "group": "diagnostics",
+                "readonly": true
+            },
+            {
+                "name": "Setting Frequency",
+                "reg_type": "holding",
+                "address": "0x2000",
+                "type": "range",
+                "format": "u16",
+                "min": 0,
+                "max": 50,
+                "scale": 0.01,
+                "readonly": false,
+                "group": "drive_commands"
+            },
+            {
+                "name": "Frequency Lower Limit Setting",
+                "reg_type": "holding",
+                "address": "0x010D",
+                "type": "range",
+                "format": "u16",
+                "min": 0,
+                "max": 50,
+                "scale": 0.01,
+                "readonly": false,
+                "group": "drive_commands"
+            },
+            {
+                "name": "Sleep Activation",
+                "reg_type": "holding",
+                "address": "0x0D1D",
+                "format": "u16",
+                "on_value": "1",
+                "off_value": "0",
+                "type": "switch",
+                "group": "pid"
+            },
+            {
+                "name": "Set Sleep Activation Limit",
+                "reg_type": "holding",
+                "address": "0x0D1E",
+                "type": "range",
+                "format": "u16",
+                "min": 0,
+                "max": 50,
+                "scale": 0.01,
+                "readonly": false,
+                "group": "pid"
+            },
+            {
+                "name": "Running In Reverse",
+                "reg_type": "holding",
+                "address": "0x2001",
+                "format": "u16",
+                "on_value": "0x0002",
+                "off_value": "0x0000",
+                "type": "switch",
+                "group": "drive_commands"
+            },
+            {
+                "name": "Forward Launch",
+                "reg_type": "holding",
+                "address": "0x2001",
+                "format": "u16",
+                "on_value": "0x0001",
+                "off_value": "0x0000",
+                "type": "switch",
+                "group": "drive_commands"
+            },
+            {
+                "name": "Stop",
+                "reg_type": "holding",
+                "address": "0x2001",
+                "format": "u16",
+                "on_value": "0x0006",
+                "off_value": "0x0000",
+                "type": "switch",
+                "group": "drive_commands"
+            },
+            {
+                "name": "Reset Error",
+                "reg_type": "holding",
+                "address": "0x2001",
+                "format": "u16",
+                "on_value": "0x0007",
+                "off_value": "0x0000",
+                "type": "switch",
+                "group": "drive_commands"
+            }
+        ],
+        "translations": {
+            "en": {
+                "template_title": "Veda VF 51"
+            },
+            "ru": {
+                "template_title": "Veda VF 51",
+                "Drive Status": "Статус привода",
+                "Drive Commands": "Команды привода",
+                "PID": "ПИД-регулятор",
+                "Diagnostics": "Диагностика",
+                "Frequency Reference Source": "Источник задания частоты",
+                "Trigger Source": "Источник сигнала запуска",
+                "Work": "В работе",
+                "Braking": "Торможение",
+                "Overclocking": "Разгон",
+                "Error": "Ошибка",
+                "Set Frequency": "Задаваемая частота",
+                "Output Frequency": "Выходная частота",
+                "Output Current": "Выходной ток",
+                "Input Voltage": "Входное напряжение",
+                "Output Voltage": "Выходное напряжение",
+                "Rotation Speed": "Скорость вращения",
+                "Set Torque": "Задаваемый крутящий момент",
+                "Output Torque": "Выходной крутящий момент",
+                "PID Set Value": "Задаваемое значение PID",
+                "PID Feedback": "Обратная связь PID",
+                "Output PID Value": "Выходное значение PID",
+                "PID Frequency Reference Source": "Источник задания частоты PID",
+                "PID Feedback Source": "Источник ОС PID",
+                "Output Power": "Выходная мощность",
+                "Bus Voltage": "Напряжение на шине",
+                "Module 1 Temperature": "Температура модуля 1",
+                "Module 2 Temperature": "Температура модуля 2",
+                "AI1 Voltage": "Напряжение AI1",
+                "Voltage P.Control": "Напряжение П.Упр.",
+                "AO1 Voltage": "Напряжение AO1",
+                "Drive Error Code": "Код ошибки ПЧ",
+                "Inverter Warning Code": "Код предупреждения ПЧ",
+                "Setting Frequency": "Установка частоты",
+                "Frequency Lower Limit Setting": "Задание нижнего предела частоты",
+                "Sleep Activation": "Спящий режим",
+                "Set Sleep Activation Limit": "Частота активации спящего режима",
+                "Running In Reverse": "Запуск в обратном направлении",
+                "Forward Launch": "Запуск в прямом направлении",
+                "Stop": "Останов",
+                "Reset Error": "Сброс ошибки",
+                "Preset Value": "Предустановленное значение",
+                "Control Panel Potentiometer": "Потенциометр ПУ",
+                "Analog Input": "Аналоговый вход",
+                "Pulse Input": "Импульсный вход",
+                "Digital Potentiometer": "Цифровой потенциометр",
+                "PLC": "ПЛК",
+                "Multi-speed": "Мультискорости",
+                "Control Panel": "Панель управления",
+                "Digital Input": "Цифровой вход",
+                "Analog Potentiometer": "Аналоговый потенциометр",
+                "Digital Terminals": "Цифровые клеммы",
+                "Current": "По току"
+            }
+        }
+    }
+}
