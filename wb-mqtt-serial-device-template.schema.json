@@ -324,7 +324,7 @@
           "properties": {
             "protocol": {
               "type": "string",
-              "enum": ["milur", "mercury230", "ivtm", "pulsar", "mercury200", "lls", "neva", "energomera_iec", "windeco", "dauerhaft"]
+              "enum": ["milur", "mercury230", "ivtm", "pulsar", "mercury200", "lls", "neva", "energomera_iec", "windeco", "dauerhaft", "energomera_ce"]
             },
             "parameters": { "not" : {} },
             "subdevices": { "not" : {} }
@@ -362,7 +362,7 @@
           "properties": {
             "protocol": {
               "type": "string",
-              "enum": ["energomera_iec_mode_c"]
+              "enum": ["energomera_iec_mode_c", "iec_mode_c"]
             },
             "parameters": { "not" : {} },
             "subdevices": { "not" : {} }

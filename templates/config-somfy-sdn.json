@@ -27,6 +27,8 @@
             {
                 "name": "Current state",
                 "type": "value",
+                "enum": [0, 1, 2, 3],
+                "enum_titles": ["Stopped", "Running", "Blocked", "Locked"],
                 "reg_type": "param",
                 "address": "0x0E:0:8",
                 "response_header": "0x0F",
@@ -35,6 +37,8 @@
             {
                 "name": "Last command source",
                 "type": "value",
+                "enum": [0, 1, 2],
+                "enum_titles": ["Internal", "Network message", "Local UI"],
                 "reg_type": "param",
                 "address": "0x0E:16:8",
                 "response_header": "0x0F",
@@ -229,6 +233,16 @@
                 "min": 6,
                 "max": 28,
                 "condition": "(node_type==2)||(node_type==5)||(node_type==8)"
+            },
+            {
+                "name": "Tilting",
+                "type": "range",
+                "reg_type": "angle",
+                "address": 0,
+                "min": 0,
+                "max": 100,
+                "enabled": false,
+                "condition": "node_type==9"
             }
         ],
         "translations": {
@@ -238,11 +252,18 @@
                 "Move up": "Поднять",
                 "Direction": "Направление",
                 "Current state": "Текущее состояние",
+                "Stopped": "Остановлен",
+                "Running": "Движется",
+                "Blocked": "Перегрев / Препятствие",
+                "Locked": "Заблокирован",
                 "Cause": "Причина",
                 "Rolling speed up": "Cкорость открытия",
                 "Rolling speed down": "Cкорость закрытия",
                 "Rolling speed slow": "Cкорость в медленном режиме",
                 "Last command source": "Источник полученной команды",
+                "Internal": "Внутренний",
+                "Network message": "Протокол SDN",
+                "Local UI": "Локальный",
                 "Last position state": "Последнее направление движения",
                 "Intermediate position": "Промежуточное положение",
                 "Motor position percent": "Положение мотора (процент)",
@@ -252,7 +273,8 @@
                 "Delete limits": "Удалить концевые положения",
                 "Set up limit": "Установить концевое положение открытия",
                 "Set down limit": "Установить концевое положение закрытия",
-                "Stop": "Остановить"
+                "Stop": "Остановить",
+                "Tilting": "Угол наклона ламелей"
             }
         }
     }
