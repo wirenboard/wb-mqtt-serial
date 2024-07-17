@@ -4,6 +4,13 @@ wb-mqtt-serial (2.134.0) stable; urgency=medium
 
  -- Roman Matveev <roman.matveev@wirenboard.ru>  Tue, 16 Jul 2024 17:19:00 +0300
 
+wb-mqtt-serial (2.133.2) stable; urgency=medium
+
+  * WB-MAI6 template: remove FW version
+
+ -- Pavel Gasheev <pavel.gasheev@wirenboard.ru>  Tue, 16 Jul 2024 19:14:15 +0300
+
+
 wb-mqtt-serial (2.133.1) stable; urgency=medium
 
   * Add min core voltage reg in wb-mir_v2 template
