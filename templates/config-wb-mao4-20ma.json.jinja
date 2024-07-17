@@ -35,6 +35,23 @@
                 "title": "Input {{ ch_number }}",
                 "id": "input_{{ ch_number }}"
             },
+            {% for press_type in PRESS_TYPES -%}
+            {
+                "title": "{{ press_type | title }} Press Action",
+                "id": "input_{{ ch_number }}_{{ press_type | replace(' ', '_') }}_press_action",
+                "group": "input_{{ ch_number }}"
+            },
+            {% endfor -%}
+            {
+                "title": "Action when Switch is On",
+                "id": "input_{{ ch_number }}_switch_on_action",
+                "group": "input_{{ ch_number }}"
+            },
+            {
+                "title": "Action when Switch is Off",
+                "id": "input_{{ ch_number }}_switch_off_action",
+                "group": "input_{{ ch_number }}"
+            },
             {
                 "title": "Input Parameters",
                 "id": "input_{{ ch_number }}_parameters",
@@ -98,6 +115,21 @@
         "parameters": [
             {% for ch_number in range(0, INPUTS_NUMBER) -%}
             {
+                "id": "input_{{ch_number + 1}}_mode",
+                "title": "Input Mode",
+                "description": "input_mode_description",
+                "address": {{416 + ch_number}},
+                "reg_type": "holding",
+                "required": true,
+                "enum": [0, 1],
+                "enum_titles": [
+                    "Button",
+                    "Switch"
+                ],
+                "default": 0,
+                "group": "input_{{ch_number + 1}}"
+            },
+            {
                 "id": "input_{{ch_number + 1}}_hold_time",
                 "title": "Long Press Time (ms)",
                 "description": "input_hold_time_description",
@@ -107,6 +139,7 @@
                 "min": 500,
                 "max": 5000,
                 "group": "input_{{ch_number + 1}}_parameters",
+                "condition": "input_{{ch_number + 1}}_mode==0",
                 "order": 1
             },
             {
@@ -119,6 +152,7 @@
                 "min": 0,
                 "max": 2000,
                 "group": "input_{{ch_number + 1}}_parameters",
+                "condition": "input_{{ch_number + 1}}_mode==0",
                 "order": 2
             },
             {
@@ -133,7 +167,118 @@
                 "group": "input_{{ch_number + 1}}_parameters",
                 "order": 3
             },
+            {% for press_type in PRESS_TYPES -%}
+            {% set action_bind = ("input {} {} press output".format(ch_number + 1, press_type))|replace(' ', '_')  %}
+            {
+                "id": "{{action_bind}}_number",
+                "title": "Output Number",
+                "address": {{768 + (loop.index0 * 16) + ch_number}},
+                "reg_type": "holding",
+                "enum": [0, 1, 2, 3, 4, 100],
+                "enum_titles": [
+                    "No Action",
+                    "Output 1",
+                    "Output 2",
+                    "Output 3",
+                    "Output 4",
+                    "All Outputs"
+                ],
+                "default": 0,
+                "group": "input_{{ch_number + 1}}_{{press_type | replace(' ', '_')}}_press_action",
+                "condition": "input_{{ch_number + 1}}_mode==0",
+                "order": 1
+            },
+            {
+                "id": "{{action_bind}}_action_single",
+                "title": "Action",
+                "address": {{832 + (loop.index0 * 16) + ch_number}},
+                "reg_type": "holding",
+                {% if press_type in ["long", "short long"] %}"enum": [0, 1, 2, 3, 4, 5],{% else %}"enum": [0, 1, 2, 3, 4],{% endif %}
+                "enum_titles": [
+                    "Turn Off",
+                    "Turn On",
+                    "Toggle",
+                    "Decrease Proccess Value",
+                    "Increase Proccess Value"{% if press_type in ["long", "short long"] %},
+                    "Increase/Decrease Proccess Value"{% endif %}
+                ],
+                "default": 0,
+                "group": "input_{{ch_number + 1}}_{{press_type | replace(' ', '_')}}_press_action",
+                "order": 2,
+                "condition": "({{action_bind}}_number>=1)&&({{action_bind}}_number<=4)"
+            },
+            {
+                "id": "{{action_bind}}_action_all",
+                "title": "Action",
+                "address": {{832 + (loop.index0 * 16) + ch_number}},
+                "reg_type": "holding",
+                "enum": [0, 1, 3, 4],
+                "enum_titles": [
+                    "Turn Off",
+                    "Turn On",
+                    "Increase Proccess Value",
+                    "Decrease Proccess Value"
+                ],
+                "default": 0,
+                "group": "input_{{ch_number + 1}}_{{press_type | replace(' ', '_') }}_press_action",
+                "order": 2,
+                "condition": "{{ action_bind }}_number==100"
+            },
             {% endfor -%}
+            {% for sw_act in ["off", "on"] -%}
+            {
+                "id": "input_{{ch_number + 1}}_switch_{{sw_act}}_channel",
+                "title": "Output Number",
+                "address": {{704 + (loop.index0 * 16) + ch_number}},
+                "reg_type": "holding",
+                "enum": [0, 1, 2, 3, 4, 100],
+                "enum_titles": [
+                    "No Action",
+                    "Output 1",
+                    "Output 2",
+                    "Output 3",
+                    "Output 4",
+                    "All Outputs"
+                ],
+                "default": 0,
+                "group": "input_{{ ch_number + 1}}_switch_{{sw_act}}_action",
+                "condition": "input_{{ch_number + 1}}_mode==1",
+                "order": 1
+            },
+            {
+                "id": "input_{{ch_number + 1}}_switch_{{sw_act}}_action_single",
+                "title": "Action",
+                "address": {{736 + (loop.index0 * 16) + ch_number}},
+                "reg_type": "holding",
+                "enum": [0, 1, 2],
+                "enum_titles": [
+                    "Turn Off",
+                    "Turn On",
+                    "Toggle"
+                ],
+                "default": {{ 0 if sw_act == "off" else 1}},
+                "group": "input_{{ ch_number + 1}}_switch_{{sw_act}}_action",
+                "condition": "input_{{ch_number + 1}}_switch_{{sw_act}}_channel>=1&&input_{{ch_number + 1}}_switch_{{sw_act}}_channel<=4",
+                "order": 2
+            },
+            {
+                "id": "input_{{ch_number + 1}}_switch_{{sw_act}}_action_all",
+                "title": "Action",
+                "address": {{736 + (loop.index0 * 16) + ch_number}},
+                "reg_type": "holding",
+                "enum": [0, 1],
+                "enum_titles": [
+                    "Turn Off",
+                    "Turn On"
+                ],
+                "default": {{ 0 if sw_act == "off" else 1}},
+                "group": "input_{{ ch_number + 1}}_switch_{{sw_act}}_action",
+                "condition": "input_{{ch_number + 1}}_switch_{{sw_act}}_channel==100",
+                "order": 2
+            },
+            {% endfor -%}
+            {% endfor -%}
+
             {% for ch_number in range(1, OUTPUTS_NUMBER + 1) -%}
             {
                 "id": "output_{{ch_number}}_mode",
@@ -141,6 +286,7 @@
                 "description": "output_mode_description",
                 "address": {{1160 + ch_number}},
                 "reg_type": "holding",
+                "required": true,
                 "enum": [0, 1, 2],
                 "default": 0,
                 "enum_titles": [
@@ -264,6 +410,7 @@
                 "type": "value",
                 "sporadic": true,
                 "enabled": false,
+                "condition": "input_{{index + 1}}_mode==0",
                 "group": "input_{{index + 1}}_counters"
             },
             {
@@ -273,6 +420,7 @@
                 "type": "value",
                 "sporadic": true,
                 "enabled": false,
+                "condition": "input_{{index + 1}}_mode==0",
                 "group": "input_{{index + 1}}_counters"
             },
             {
@@ -282,6 +430,7 @@
                 "type": "value",
                 "sporadic": true,
                 "enabled": false,
+                "condition": "input_{{index + 1}}_mode==0",
                 "group": "input_{{index + 1}}_counters"
             },
             {
@@ -291,6 +440,7 @@
                 "type": "value",
                 "sporadic": true,
                 "enabled": false,
+                "condition": "input_{{index + 1}}_mode==0",
                 "group": "input_{{index + 1}}_counters"
             },
             {% endfor -%}
