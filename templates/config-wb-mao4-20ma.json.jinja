@@ -89,18 +89,6 @@
             }
         ],
         "parameters": [
-            {
-                "id": "pwm_frequency_factor",
-                "title": "PWM Frequency Factor",
-                "description": "pwm_frequency_factor_description",
-                "address": 9,
-                "reg_type": "holding",
-                "default": 1,
-                "min": 1,
-                "max": 240,
-                "group": "outputs_common",
-                "order": 2
-            },
             {% for ch_number in range(0, INPUTS_NUMBER) -%}
             {
                 "id": "input_{{ch_number + 1}}_hold_time",
