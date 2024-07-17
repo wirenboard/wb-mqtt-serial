@@ -62,7 +62,17 @@
                 "id": "g_output_{{ ch_number }}"
             },
             {
-                "title": "Output {{ ch_number }} Channels",
+                "title": "Output Limits",
+                "id": "gg_output_{{ ch_number }}_limits",
+                "group": "g_output_{{ ch_number }}"
+            },
+            {
+                "title": "Proccess Value Rates",
+                "id": "gg_output_{{ ch_number }}_rates",
+                "group": "g_output_{{ ch_number }}"
+            },
+            {
+                "title": "Output Channels",
                 "id": "gg_output_{{ ch_number }}_channels",
                 "group": "g_output_{{ ch_number }}",
                 "ui_options": {
@@ -122,6 +132,82 @@
                 "max": 200,
                 "group": "input_{{ch_number + 1}}_parameters",
                 "order": 3
+            },
+            {% endfor -%}
+            {% for ch_number in range(1, OUTPUTS_NUMBER + 1) -%}
+            {
+                "id": "output_{{ch_number}}_mode",
+                "title": "Output Mode",
+                "description": "output_mode_description",
+                "address": {{1160 + ch_number}},
+                "reg_type": "holding",
+                "enum": [0, 1, 2],
+                "default": 0,
+                "enum_titles": [
+                    "0..100 % 🠚 0..20 mA",
+                    "0..100 % 🠚 4..20 mA",
+                    "Custom Limits"
+                ],
+                "group": "g_output_{{ch_number}}"
+            },
+            {
+                "id": "output{{ ch_number }}_min",
+                "title": "Current at 0% Proccess Value (mA)",
+                "description": "level_0_current_description",
+                "address": {{ 912 + ch_number - 1 }},
+                "reg_type": "holding",
+                "default": 0,
+                "scale": 0.001,
+                "min": 0,
+                "max": 20,
+                "group": "gg_output_{{ ch_number }}_limits",
+                "condition": "output_{{ch_number}}_mode==2"
+            },
+            {
+                "id": "output{{ ch_number }}_max",
+                "title": "Current at 100% Proccess Value (mA)",
+                "description": "level_100_current_description",
+                "address": {{928 + ch_number - 1}},
+                "reg_type": "holding",
+                "default": 20,
+                "scale": 0.001,
+                "min": 0,
+                "max": 20,
+                "group": "gg_output_{{ ch_number }}_limits",
+                "condition": "output_{{ch_number}}_mode==2"
+            },
+            {
+                "id": "output{{ ch_number }}_decrement_rate",
+                "title": "Decrement Rate (ms/%)",
+                "description": "decrement_rate_description",
+                "address": {{944 + ch_number - 1}},
+                "reg_type": "holding",
+                "default": 20,
+                "min": 0,
+                "max": 500,
+                "group": "gg_output_{{ ch_number }}_rates"
+            },
+            {
+                "id": "channel{{ ch_number }}_increment_rate",
+                "title": "Increment Rate (ms/%)",
+                "description": "increment_rate_description",
+                "address": {{960 + ch_number - 1}},
+                "reg_type": "holding",
+                "default": 20,
+                "min": 0,
+                "max": 500,
+                "group": "gg_output_{{ ch_number }}_rates"
+            },
+            {
+                "id": "action{{ch_number}}_repeat_time",
+                "title": "Changing Rate for Long Press Actions (ms/%)",
+                "description": "action_repeat_time_description",
+                "address": {{896 + ch_number - 1}},
+                "reg_type": "holding",
+                "default": 20,
+                "min": 5,
+                "max": 500,
+                "group": "gg_output_{{ ch_number }}_rates"
             },
             {% endfor -%}
             {
@@ -210,7 +296,14 @@
             {% endfor -%}
             {% for index in range(0, OUTPUTS_NUMBER) -%}
             {
-                "name": "Channel {{index + 1}}",
+                "name": "Channel {{index + 1}} Switch",
+                "reg_type": "coil",
+                "address": {{index}},
+                "type": "switch",
+                "group": "gg_output_{{index + 1}}_channels"
+            },
+            {
+                "name": "Channel {{index + 1}} Proccess Value",
                 "reg_type": "holding",
                 "address": {{index}},
                 "type": "range",
@@ -218,8 +311,16 @@
                 "scale": 0.1,
                 "group": "gg_output_{{index + 1}}_channels"
             },
-            {% endfor -%}
-            {% for index in range(0, OUTPUTS_NUMBER) -%}
+            {
+                "name": "Channel {{index + 1}} Current",
+                "reg_type": "holding",
+                "address": {{16 + index}},
+                "type": "value",
+                "units": "mA",
+                "max": 20,
+                "scale": 0.001,
+                "group": "gg_output_{{index + 1}}_channels"
+            },
             {
                 "name": "Channel {{index + 1}} Fault",
                 "reg_type": "discrete",
