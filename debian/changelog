@@ -1,3 +1,11 @@
+wb-mqtt-serial (2.133.3) stable; urgency=medium
+
+  * WB-MRM2-MINI template: add min request interval
+  * WB-MIR_V2 template: add min request interval
+  * WB-MAI2-CC template: add min request interval
+
+ -- Sergey Mishin <mishin@wirenboard.ru>  Wed, 17 Jul 2024 22:50:00 +0300
+
 wb-mqtt-serial (2.133.2) stable; urgency=medium
 
   * WB-MAI6 template: remove FW version
