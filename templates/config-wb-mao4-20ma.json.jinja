@@ -56,25 +56,22 @@
                 }
             },
             {% endfor -%}
+            {% for ch_number in range(1, OUTPUTS_NUMBER + 1) -%}
             {
-                "title": "Outputs",
-                "id": "outputs"
+                "title": "Output {{ ch_number }}",
+                "id": "g_output_{{ ch_number }}"
             },
             {
-                "title": "Outputs Common Settings",
-                "id": "outputs_common",
-                "group": "outputs"
-            },
-            {
-                "title": "Output Channels",
-                "id": "output_channels",
-                "group": "outputs",
+                "title": "Output {{ ch_number }} Channels",
+                "id": "gg_output_{{ ch_number }}_channels",
+                "group": "g_output_{{ ch_number }}",
                 "ui_options": {
                     "wb": {
                         "disable_title": true
                     }
                 }
             },
+            {% endfor -%}
             {
                 "title": "General",
                 "id": "general"
@@ -218,7 +215,7 @@
                 "address": {{index}},
                 "type": "range",
                 "max": 10000,
-                "group": "output_channels"
+                "group": "gg_output_{{index + 1}}_channels"
             },
             {% endfor -%}
             {% for index in range(0, OUTPUTS_NUMBER) -%}
@@ -228,7 +225,7 @@
                 "address": {{16 + index}},
                 "type": "switch",
                 "sporadic": true,
-                "group": "output_channels"
+                "group": "gg_output_{{index + 1}}_channels"
             },
             {% endfor -%}
             {
