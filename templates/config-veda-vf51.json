@@ -451,11 +451,7 @@
             }
         ],
         "translations": {
-            "en": {
-                "template_title": "Veda VF 51"
-            },
             "ru": {
-                "template_title": "Veda VF 51",
                 "Drive Status": "Статус привода",
                 "Drive Commands": "Команды привода",
                 "PID": "ПИД-регулятор",
