@@ -84,7 +84,7 @@
                 "group": "g_output_{{ ch_number }}"
             },
             {
-                "title": "Proccess Value Rates",
+                "title": "Process Value Rates",
                 "id": "gg_output_{{ ch_number }}_rates",
                 "group": "g_output_{{ ch_number }}"
             },
@@ -198,9 +198,9 @@
                     "Turn Off",
                     "Turn On",
                     "Toggle",
-                    "Decrease Proccess Value",
-                    "Increase Proccess Value"{% if press_type in ["long", "short long"] %},
-                    "Increase/Decrease Proccess Value"{% endif %}
+                    "Decrease Process Value",
+                    "Increase Process Value"{% if press_type in ["long", "short long"] %},
+                    "Increase/Decrease Process Value"{% endif %}
                 ],
                 "default": 0,
                 "group": "input_{{ch_number + 1}}_{{press_type | replace(' ', '_')}}_press_action",
@@ -216,8 +216,8 @@
                 "enum_titles": [
                     "Turn Off",
                     "Turn On",
-                    "Increase Proccess Value",
-                    "Decrease Proccess Value"
+                    "Increase Process Value",
+                    "Decrease Process Value"
                 ],
                 "default": 0,
                 "group": "input_{{ch_number + 1}}_{{press_type | replace(' ', '_') }}_press_action",
@@ -298,7 +298,7 @@
             },
             {
                 "id": "output{{ ch_number }}_min",
-                "title": "Current at 0% Proccess Value (mA)",
+                "title": "Current at 0% Process Value (mA)",
                 "description": "level_0_current_description",
                 "address": {{ 912 + ch_number - 1 }},
                 "reg_type": "holding",
@@ -311,7 +311,7 @@
             },
             {
                 "id": "output{{ ch_number }}_max",
-                "title": "Current at 100% Proccess Value (mA)",
+                "title": "Current at 100% Process Value (mA)",
                 "description": "level_100_current_description",
                 "address": {{928 + ch_number - 1}},
                 "reg_type": "holding",
@@ -453,7 +453,7 @@
                 "group": "gg_output_{{index + 1}}_channels"
             },
             {
-                "name": "Channel {{index + 1}} Proccess Value",
+                "name": "Channel {{index + 1}} Process Value",
                 "reg_type": "holding",
                 "address": {{index}},
                 "type": "range",
@@ -599,12 +599,12 @@
                 "Custom Limits": "Пользовательские границы",
 
                 "Output Limits": "Граничные значения",
-                "Current at 0% Proccess Value (mA)": "Значение выходного тока при 0% уровне (мА)",
-                "Current at 100% Proccess Value (mA)": "Значение выходного тока при 100% уровне (мА)",
+                "Current at 0% Process Value (mA)": "Значение выходного тока при 0% уровне (мА)",
+                "Current at 100% Process Value (mA)": "Значение выходного тока при 100% уровне (мА)",
                 "level_0_current_description": "Если канал выключен либо значение установлено на 0%, выходной ток будет соответствовать заданному значению",
                 "level_100_current_description": "Если значение канала установлено на 100%, выходной ток будет соответствовать заданному значению",
 
-                "Proccess Value Rates": "Плавное изменение значения",
+                "Process Value Rates": "Плавное изменение значения",
                 "Decrement Rate (ms/%)": "Темп изменения значения в сторону уменьшения (мс/%)",
                 "Increment Rate (ms/%)": "Темп изменения значения в сторону увеличения (мс/%)",
                 "Changing Rate for Long Press Actions (ms/%)": "Темп изменения значения при долгих нажатиях (мс/%)",
