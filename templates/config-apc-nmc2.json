@@ -29,15 +29,6 @@
         ],
         "channels": [
             {
-                "name": "Version 2.6",
-                "reg_type": "holding",
-                "address": 0,
-                "type": "value",
-                "format": "u16",
-                "group": "device_status",
-                "readonly": true
-            },
-            {
                 "name": "Battery Charge",
                 "reg_type": "holding",
                 "address": 5,
@@ -322,11 +313,7 @@
             }
         ],
         "translations": {
-            "en": {
-                "template_title": "UPS NMC2 AP9630"
-            },
             "ru": {
-                "template_title": "UPS NMC2 AP9630",
                 "Device Status": "Состояние устройства",
                 "Power Status": "Состояние питания",
                 "Device Setting": "Настройка",
