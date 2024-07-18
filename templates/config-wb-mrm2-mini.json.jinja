@@ -19,6 +19,7 @@
         "response_timeout_ms": 1,
         "frame_timeout_ms": 8,
         "enable_wb_continuous_read": true,
+        "min_request_interval": 100,
 
         "groups": [
             {% for in_num in range(FIRST_INPUT, OUTPUTS_NUMBER + 1) -%}
