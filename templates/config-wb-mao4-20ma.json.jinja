@@ -101,6 +101,39 @@
             },
             {% endfor -%}
             {
+                "title": "Safety Mode",
+                "id": "g_safety",
+                "description": "g_safety_description"
+            },
+            {
+                "title": "Power Up Behaviour",
+                "id": "g_power_up_behaviour",
+                "description": "g_power_up_behaviour_description"
+            },
+            {
+                "title": "Safety Behaviour",
+                "id": "gg_safety_behaviour",
+                "group": "g_safety"
+            },
+            {% for ch_number in range(1, OUTPUTS_NUMBER + 1) -%}
+            {
+                "title": "Channel {{ ch_number }}",
+                "id": "gg_safety_mode_ch_{{ ch_number }}",
+                "group": "gg_safety_behaviour"
+            },
+            {
+                "title": "Channel {{ ch_number }}",
+                "id": "gg_power_up_behaviour_ch_{{ ch_number }}",
+                "group": "g_power_up_behaviour"
+            },
+            {% endfor -%}
+            {
+                "title": "Inputs Control In Safety Mode",
+                "id": "gg_safety_input_control",
+                "description": "inputs_control_in_safety_mode_description",
+                "group": "g_safety"
+            },
+            {
                 "title": "General",
                 "id": "general"
             },
@@ -355,6 +388,79 @@
                 "group": "gg_output_{{ ch_number }}_rates"
             },
             {% endfor -%}
+            {% for ch_number in range(1, OUTPUTS_NUMBER + 1) -%}
+            {
+                "id": "safety_mode_ch_{{ch_number}}_action",
+                "title": "Action",
+                "reg_type": "holding",
+                "address": {{648 + ch_number - 1}},
+                "type": "enum",
+                "enum": [0, 1, 2, 3],
+                "enum_titles": [
+                    "No Action",
+                    "Turn Off",
+                    "Turn On",
+                    "Turn On and Set Level"
+                ],
+                "group": "gg_safety_mode_ch_{{ ch_number }}"
+            },
+            {
+                "id": "safety_mode_ch_{{ch_number}}_level",
+                "title": "Level (%)",
+                "reg_type": "holding",
+                "address": {{656 + ch_number - 1}},
+                "min": 1,
+                "max": 100,
+                "scale": 0.001,
+                "default": 50,
+                "required": true,
+                "condition": "safety_mode_ch_{{ch_number}}_action==3",
+                "group": "gg_safety_mode_ch_{{ ch_number }}"
+            },
+            {
+                "id": "power_up_behaviour_ch_{{ch_number}}_action",
+                "title": "Action",
+                "reg_type": "holding",
+                "address": {{664 + ch_number - 1}},
+                "type": "enum",
+                "enum": [0, 1, 2, 3],
+                "enum_titles": [
+                    "Turn Off",
+                    "Set Previous State",
+                    "Turn On",
+                    "Turn On and Set Level"
+                ],
+                "group": "gg_power_up_behaviour_ch_{{ ch_number }}"
+            },
+            {
+                "id": "power_up_behaviour_ch_{{ch_number}}_level",
+                "title": "Level (%)",
+                "reg_type": "holding",
+                "address": {{672 + ch_number - 1}},
+                "min": 1,
+                "max": 100,
+                "default": 50,
+                "required": true,
+                "condition": "power_up_behaviour_ch_{{ch_number}}_action==3",
+                "group": "gg_power_up_behaviour_ch_{{ ch_number }}"
+            },
+            {% endfor -%}
+            {% for in_number in range(1, INPUTS_NUMBER + 1) -%}
+            {
+                "id": "in_{{in_number}}_safety_input_control",
+                "title": "Input {{in_number}}",
+                "group": "gg_safety_input_control",
+                "address": {{640 + in_number - 1}},
+                "reg_type": "holding",
+                "default": 0,
+                "enum": [0, 1, 2],
+                "enum_titles": [
+                    "Don't change",
+                    "Disable in safety mode",
+                    "Enable only in safety mode"
+                ]
+            },
+            {% endfor -%}
             {
                 "id": "baud_rate",
                 "title": "Baud rate",
@@ -584,6 +690,7 @@
                 "Input {{ch_number}} Short Long Press Counter": "Счетчик коротких, а затем длинных нажатий входа {{ch_number}}",
                 {% endfor -%}
 
+                "Level (%)": "Уровень (%)",
                 {% for ch_number in range(1, OUTPUTS_NUMBER + 1) -%}
                 "Output {{ch_number}}": "Выход {{ch_number}}",
                 "Channel {{ch_number}}": "Канал {{ch_number}}",
@@ -608,6 +715,7 @@
                 "Increase/Decrease Process Value": "Увеличить/уменьшить уровень",
                 "Output Number": "Номер выхода",
                 "Action": "Действие",
+                "Turn On and Set Level": "Включить и установить уровень",
 
                 "output_description": "Для управления выходом могут быть использованы два способа:<br>1) задание границ рабочего диапазона и управление уровнем в процентах между этими границами<br>2) прямое задание тока выхода в мА<br>Использование двух способов одновременно не допускается.",
                 "Output Mode": "Режим работы выхода",
@@ -628,6 +736,21 @@
                 "decrement_rate_description": "При скачкообразном изменении уровня или выключении канала, уровень будет плавно уменьшаться с заданным темпом. При значении 0, уровень уменьшится мгновенно",
                 "increment_rate_description": "При скачкообразном изменении уровня или включении канала, уровень будет плавно увеличиваться с заданным темпом. При значении 0, уровень увеличится мгновенно",
                 "action_repeat_time_description": "Во время долгих действий (при удержании кнопки), уровень будет изменяться с заданным темпом",
+
+                "Safety Mode": "Безопасный режим",
+                "g_safety_description": "Настройка поведения устройства в случае потери связи с контроллером",
+                "Safety Behaviour": "Действие в безопасном режиме",
+                "Inputs Control In Safety Mode": "Управление с входов в безопасном режиме",
+                "Don't change": "Не блокировать",
+                "Disable in safety mode": "Блокировать в безопасном режиме",
+                "Enable only in safety mode": "Разрешить только в безопасном режиме",
+                "Safety Poll Timeout (s)": "Таймаут потери связи (с)",
+                "poll_timeout_description": "Время отсутствия опроса в секундах, после которого будет активирован безопасный режим. Действия в безопасном режиме настраиваются отдельно",
+                "inputs_control_in_safety_mode_description": "Настройка изменения управления с входов при переходе модуля в безопасный режим",
+
+                "Power Up Behaviour": "Поведение при включении питания",
+                "g_power_up_behaviour_description": "Настройка поведения выходов при включении питания устройства",
+                "Set Previous State": "Установить предыдущее состояние",
 
                 "Serial": "Серийный номер",
                 "FW Version": "Версия прошивки",
