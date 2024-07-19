@@ -85,7 +85,7 @@
                 "group": "g_output_{{ ch_number }}"
             },
             {
-                "title": "Process Value Rates",
+                "title": "Level Rates",
                 "id": "gg_output_{{ ch_number }}_rates",
                 "group": "g_output_{{ ch_number }}"
             },
@@ -231,9 +231,9 @@
                     "Turn Off",
                     "Turn On",
                     "Toggle",
-                    "Decrease Process Value",
-                    "Increase Process Value"{% if press_type in ["long", "short long"] %},
-                    "Increase/Decrease Process Value"{% endif %}
+                    "Decrease Level",
+                    "Increase Level"{% if press_type in ["long", "short long"] %},
+                    "Increase/Decrease Level"{% endif %}
                 ],
                 "default": 0,
                 "group": "input_{{ch_number + 1}}_{{press_type | replace(' ', '_')}}_press_action",
@@ -249,8 +249,8 @@
                 "enum_titles": [
                     "Turn Off",
                     "Turn On",
-                    "Increase Process Value",
-                    "Decrease Process Value"
+                    "Increase Level",
+                    "Decrease Level"
                 ],
                 "default": 0,
                 "group": "input_{{ch_number + 1}}_{{press_type | replace(' ', '_') }}_press_action",
@@ -330,7 +330,7 @@
             },
             {
                 "id": "output{{ ch_number }}_min",
-                "title": "Current at 0% Process Value (mA)",
+                "title": "Current at 0% Level (mA)",
                 "description": "level_0_current_description",
                 "address": {{ 912 + ch_number - 1 }},
                 "reg_type": "holding",
@@ -343,7 +343,7 @@
             },
             {
                 "id": "output{{ ch_number }}_max",
-                "title": "Current at 100% Process Value (mA)",
+                "title": "Current at 100% Level (mA)",
                 "description": "level_100_current_description",
                 "address": {{928 + ch_number - 1}},
                 "reg_type": "holding",
@@ -558,7 +558,7 @@
                 "group": "gg_output_{{index + 1}}_channels"
             },
             {
-                "name": "Channel {{index + 1}} Process Value",
+                "name": "Channel {{index + 1}} Level",
                 "reg_type": "holding",
                 "address": {{index}},
                 "type": "range",
@@ -694,7 +694,7 @@
                 {% for ch_number in range(1, OUTPUTS_NUMBER + 1) -%}
                 "Output {{ch_number}}": "Выход {{ch_number}}",
                 "Channel {{ch_number}}": "Канал {{ch_number}}",
-                "Channel {{ch_number}} Process Value": "Уровень канала 1",
+                "Channel {{ch_number}} Level": "Уровень канала 1",
                 "Channel {{ch_number}} Current": "Ток канала 1",
                 "Channel {{ch_number}} Fault": "Обрыв цепи канала 1",
                 "Channel {{ch_number}} Duty Cycle Raw": "Прямое задание скважности ШИМ на выходе {{ch_number}}",
@@ -710,9 +710,9 @@
                 "Turn Off": "Выключить",
                 "Turn On": "Включить",
                 "Toggle": "Переключить",
-                "Decrease Process Value": "Уменьшить уровень",
-                "Increase Process Value": "Увеличить уровень",
-                "Increase/Decrease Process Value": "Увеличить/уменьшить уровень",
+                "Decrease Level": "Уменьшить уровень",
+                "Increase Level": "Увеличить уровень",
+                "Increase/Decrease Level": "Увеличить/уменьшить уровень",
                 "Output Number": "Номер выхода",
                 "Action": "Действие",
                 "Turn On and Set Level": "Включить и установить уровень",
@@ -724,12 +724,12 @@
                 "Custom Limits": "Пользовательские границы",
 
                 "Output Limits": "Рабочий диапазон",
-                "Current at 0% Process Value (mA)": "Значение выходного тока при 0% уровне (мА)",
-                "Current at 100% Process Value (mA)": "Значение выходного тока при 100% уровне (мА)",
+                "Current at 0% Level (mA)": "Значение выходного тока при 0% уровне (мА)",
+                "Current at 100% Level (mA)": "Значение выходного тока при 100% уровне (мА)",
                 "level_0_current_description": "Если канал выключен либо уровень установлен на 0%, выходной ток будет соответствовать заданному значению",
                 "level_100_current_description": "Если уровень установлен на 100% и канал включен, выходной ток будет соответствовать заданному значению",
 
-                "Process Value Rates": "Плавное изменение уровня",
+                "Level Rates": "Плавное изменение уровня",
                 "Decrement Rate (ms/%)": "Темп изменения уровня в сторону уменьшения (мс/%)",
                 "Increment Rate (ms/%)": "Темп изменения уровня в сторону увеличения (мс/%)",
                 "Changing Rate for Long Press Actions (ms/%)": "Темп изменения уровня при долгих нажатиях (мс/%)",
