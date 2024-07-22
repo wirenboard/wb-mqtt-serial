@@ -93,7 +93,7 @@
                 "format": "s16",
                 "type": "value",
                 "enabled": true,
-                "units": "°C"
+                "units": "deg C"
             },
             {
                 "name": "Outdoor air temperature",
@@ -105,7 +105,7 @@
                 "type": "value",
                 "readonly": true,
                 "enabled": false,
-                "units": "°C"
+                "units": "deg C"
             },
             {
                 "name": "Target temperature",
@@ -114,7 +114,7 @@
                 "address": 5,
                 "scale": 0.01,
                 "type": "range",
-                "units": "°C",
+                "units": "deg C",
                 "format": "s16",
                 "enabled": true,
                 "min": 16,
