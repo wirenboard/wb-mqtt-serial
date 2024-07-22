@@ -19437,7 +19437,7 @@ WB-MRWM2
 	P L1  =>  P L1
 	P L2  =>  P L2
 	Real State K1  =>  Real State K1
-	Real State K2 =>  Real State K2
+	Real State K2  =>  Real State K2
 	Restart Delay Countdown K1  =>  Restart Delay Countdown K1
 	Restart Delay Countdown K2  =>  Restart Delay Countdown K2
 	Serial  =>  Serial
