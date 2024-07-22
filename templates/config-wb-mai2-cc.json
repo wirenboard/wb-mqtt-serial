@@ -14,6 +14,7 @@
         "response_timeout_ms": 1,
         "frame_timeout_ms": 12,
         "enable_wb_continuous_read": true,
+        "min_request_interval": 100,
 
         "groups": [
             {
@@ -107,6 +108,16 @@
                 "group": "hw_info"
             },
             {
+                "name": "Minimum MCU Voltage Since Startup",
+                "reg_type": "input",
+                "address": 119,
+                "scale": 0.001,
+                "type": "value",
+                "units": "V",
+                "enabled": false,
+                "group": "hw_info"
+            },
+            {
                 "name": "Uptime",
                 "reg_type": "input",
                 "address": 104,
@@ -137,6 +148,7 @@
                 "Serial NO": "Серийный номер",
                 "FW Version": "Версия прошивки",
                 "Input Voltage": "Напряжение питания",
+                "Minimum MCU Voltage Since Startup": "Минимальное напряжение питания МК с момента включения",
                 "Uptime": "Время работы с момента включения (с)"
             }
         }
