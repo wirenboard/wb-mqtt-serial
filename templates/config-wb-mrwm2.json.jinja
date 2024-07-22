@@ -606,7 +606,7 @@
             {% endfor -%}
             {% for out_num in range(1, OUTPUTS_NUMBER + 1) -%}
             {
-                "id": "Desired state K{{out_num}}",
+                "id": "K{{out_num}}",
                 "name": "Command K{{out_num}}",
                 "reg_type": "coil",
                 "address": {{out_num - 1}},
@@ -615,7 +615,7 @@
                 "group": "gg_outputs_channels"
             },
             {
-                "id": "Real state K{{out_num}}",
+                "id": "Real State K{{out_num}}",
                 "name": "K{{out_num}}",
                 "reg_type": "discrete",
                 "address": {{96 + out_num - 1}},
@@ -655,7 +655,7 @@
 
             {% for out_num in range(1, OUTPUTS_NUMBER + 1) -%}
             {
-                "name": "Urms normal K{{out_num}}",
+                "name": "Urms Normal K{{out_num}}",
                 "reg_type": "discrete",
                 "address": {{80 + out_num - 1}},
                 "type": "switch",
@@ -667,7 +667,7 @@
                 "address": {{88 + out_num - 1}},
                 "type": "switch",
                 "group": "gg_voltage_control_channels",
-                "condition": "is_voltage_control_for_{{out_num}}_enabled==1"
+                "condition": "(startup_delay_{{out_num}}>0)||(restart_delay_{{out_num}}>0)"
             },
             {
                 "name": "Startup Delay Countdown K{{out_num}}",
@@ -819,10 +819,10 @@
                 "Settings K{{out_num}}": "Параметры K{{out_num}}",
                 "Output {{out_num}}": "Выход {{out_num}}",
                 "Output {{out_num}} Actions": "Действия для выхода {{out_num}}",
-                "Urms normal K{{out_num}}": "Норма Urms L{{out_num}}",
+                "Urms Normal K{{out_num}}": "Норма Urms L{{out_num}}",
                 "Blocking K{{out_num}}": "Блокировка K{{out_num}}",
-                "Startup Delay Countdown K{{out_num}}": "Таймер ЗВ K{{out_num}}",
-                "Restart Delay Countdown K{{out_num}}": "Таймер ЗПВ K{{out_num}}",
+                "Startup Delay Countdown K{{out_num}}": "Таймер задержки включения K{{out_num}}",
+                "Restart Delay Countdown K{{out_num}}": "Таймер задержки повторного включения K{{out_num}}",
                 {% endfor -%}
 
                 "Output Safe State": "Безопасное состояние выходов",
@@ -901,8 +901,8 @@
                 "Undervoltage Threshold (V)": "Нижний допустимый предел (В)",
                 "Overvoltage Threshold (V)": "Верхний допустимый предел (В)",
                 "Voltage Dip Duration (s)": "Допустимая длительность провала (с)",
-                "Startup Delay (s)": "Задержка включения ЗВ (с)",
-                "Restart Delay (s)": "Задержка повторного включения ЗПВ (с)",
+                "Startup Delay (s)": "Задержка включения (с)",
+                "Restart Delay (s)": "Задержка повторного включения (с)",
                 "Disable": "Не активна",
                 "Enable": "Активна",
                 "NORMAL": "В НОРМЕ",
