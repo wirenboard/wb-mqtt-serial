@@ -606,8 +606,7 @@
             {% endfor -%}
             {% for out_num in range(1, OUTPUTS_NUMBER + 1) -%}
             {
-                "id": "K{{out_num}}",
-                "name": "Command K{{out_num}}",
+                "name": "K{{out_num}}",
                 "reg_type": "coil",
                 "address": {{out_num - 1}},
                 "type": "switch",
@@ -615,8 +614,7 @@
                 "group": "gg_outputs_channels"
             },
             {
-                "id": "Real State K{{out_num}}",
-                "name": "K{{out_num}}",
+                "name": "Real State K{{out_num}}",
                 "reg_type": "discrete",
                 "address": {{96 + out_num - 1}},
                 "type": "switch",
@@ -783,6 +781,10 @@
                 "secp_waiting_time_description": "If there is no second press during the specified time then press is single. 0 - disables all presses except short and long. Adds a delay to the response to a short press",
                 "debounce_time_description": "For press detection must be 5-10 times less than second press waiting time. Adds a delay to the response to presses. Firmware up to 1.19.0 supports maximum 250 ms",
 
+                {% for out_num in range(1, OUTPUTS_NUMBER + 1) -%}
+                "K{{out_num}}": "Command K{{out_num}}",
+                {% endfor -%}
+
                 "undervoltage_description": "120 to 220, factory default - 207",
                 "overvoltage_description": "230 to 277, factory default - 253",
                 "voltage_dip_duration_description": "0.5 to 10, factory default - 5",
@@ -815,7 +817,8 @@
                 "Actions for outputs when the input is closed / opened": "Действия для выходов при замыкании / размыкании входа",
 
                 {% for out_num in range(1, OUTPUTS_NUMBER + 1) -%}
-                "Command K{{out_num}}": "Команда K{{out_num}}",
+                "K{{out_num}}": "Команда K{{out_num}}",
+                "Real State K{{out_num}}": "Фактическое состояние K{{out_num}}",
                 "Settings K{{out_num}}": "Параметры K{{out_num}}",
                 "Output {{out_num}}": "Выход {{out_num}}",
                 "Output {{out_num}} Actions": "Действия для выхода {{out_num}}",

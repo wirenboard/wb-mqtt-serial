@@ -19414,8 +19414,6 @@ WB-MRWM2
 	AP energy L2  =>  AP energy L2
 	Blocking K1  =>  Blocking K1
 	Blocking K2  =>  Blocking K2
-	Command K1  =>  K1
-	Command K2  =>  K2
 	FW Version  =>  FW Version
 	Input 1  =>  Input 1
 	Input 1 Double Press Counter  =>  Input 1 Double Press Counter
@@ -19431,13 +19429,15 @@ WB-MRWM2
 	Input 2 Single Press Counter  =>  Input 2 Single Press Counter
 	Input 2 counter  =>  Input 2 counter
 	Input 2 freq  =>  Input 2 freq
-	K1  =>  Real State K1
-	K2  =>  Real State K2
+	K1  =>  K1
+	K2  =>  K2
 	MCU Temperature  =>  MCU Temperature
 	MCU Voltage  =>  MCU Voltage
 	Minimum Voltage Since Startup  =>  Minimum Voltage Since Startup
 	P L1  =>  P L1
 	P L2  =>  P L2
+	Real State K1  =>  Real State K1
+	Real State K2 =>  Real State K2
 	Restart Delay Countdown K1  =>  Restart Delay Countdown K1
 	Restart Delay Countdown K2  =>  Restart Delay Countdown K2
 	Serial  =>  Serial
