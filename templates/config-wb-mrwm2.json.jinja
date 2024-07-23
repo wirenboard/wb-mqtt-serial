@@ -401,19 +401,6 @@
             },
 
             {% for out_num in range(1, OUTPUTS_NUMBER + 1) -%}
-            "is_voltage_control_for_{{out_num}}_enabled": {
-                "title": "Voltage Control Activation",
-                "address": {{1696 + out_num - 1}},
-                "reg_type": "holding",
-                "enum": [0, 1],
-                "default": 0,
-                "enum_titles": [
-                    "Disable",
-                    "Enable"
-                ],
-                "group": "gg_out{{out_num}}_voltage_params",
-                "order": 1
-            },
             "undervoltage_threshold_{{out_num}}": {
                 "title": "Undervoltage Threshold (V)",
                 "description": "undervoltage_description",
@@ -424,8 +411,7 @@
                 "max": 220,
                 "default": 207,
                 "group": "gg_out{{out_num}}_voltage_params",
-                "order": 2,
-                "condition": "is_voltage_control_for_{{out_num}}_enabled==1"
+                "order": 1
             },
             "overvoltage_threshold_{{out_num}}": {
                 "title": "Overvoltage Threshold (V)",
@@ -437,8 +423,20 @@
                 "max": 277,
                 "default": 253,
                 "group": "gg_out{{out_num}}_voltage_params",
-                "order": 3,
-                "condition": "is_voltage_control_for_{{out_num}}_enabled==1"
+                "order": 2
+            },
+            "is_voltage_control_for_{{out_num}}_enabled": {
+                "title": "Voltage Control Activation",
+                "address": {{1696 + out_num - 1}},
+                "reg_type": "holding",
+                "enum": [0, 1],
+                "default": 0,
+                "enum_titles": [
+                    "Disable",
+                    "Enable"
+                ],
+                "group": "gg_out{{out_num}}_voltage_params",
+                "order": 3
             },
             "delay_off_{{out_num}}": {
                 "title": "Voltage Dip Duration (s)",
@@ -900,7 +898,7 @@
                 "Disable in safety mode": "Блокировать в безопасном режиме",
                 "Enable only in safety mode": "Разрешить только в безопасном режиме",
 
-                "Voltage Control Activation": "Функция контроля напряжения",
+                "Voltage Control Activation": "Блокировка по напряжению",
                 "Undervoltage Threshold (V)": "Нижний допустимый предел (В)",
                 "Overvoltage Threshold (V)": "Верхний допустимый предел (В)",
                 "Voltage Dip Duration (s)": "Допустимая длительность провала (с)",
