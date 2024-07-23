@@ -67,7 +67,7 @@
                 "scale": 0.01,
                 "format": "s16",
                 "type": "value",
-                "units": "°C"
+                "units": "deg C"
             },
             {
                 "name": "Target temperature",
@@ -76,7 +76,7 @@
                 "address": 5,
                 "scale": 0.01,
                 "type": "range",
-                "units": "°C",
+                "units": "deg C",
                 "format": "s16",
                 "min": 16,
                 "max": 32
