@@ -665,7 +665,7 @@
                 "address": {{88 + out_num - 1}},
                 "type": "switch",
                 "group": "gg_voltage_control_channels",
-                "condition": "(startup_delay_{{out_num}}>0)||(restart_delay_{{out_num}}>0)"
+                "condition": "(startup_delay_{{out_num}}>0)||(restart_delay_{{out_num}}>0)||(is_voltage_control_for_{{out_num}}_enabled==1)"
             },
             {
                 "name": "Startup Delay Countdown K{{out_num}}",
