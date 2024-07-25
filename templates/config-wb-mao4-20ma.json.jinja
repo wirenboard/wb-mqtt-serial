@@ -316,10 +316,10 @@
             {
                 "id": "output_{{ch_number}}_mode",
                 "title": "Output Mode",
-                "address": {{1160 + ch_number}},
+                "address": {{60 + ch_number - 1}},
                 "reg_type": "holding",
                 "required": true,
-                "enum": [0, 1, 2],
+                "enum": [0, 1, 100],
                 "default": 0,
                 "enum_titles": [
                     "0..100 % 🠚 0..20 mA",
@@ -553,14 +553,14 @@
             {
                 "name": "Channel {{index + 1}}",
                 "reg_type": "coil",
-                "address": {{index}},
+                "address": {{16 + index}},
                 "type": "switch",
                 "group": "gg_output_{{index + 1}}_channels"
             },
             {
                 "name": "Channel {{index + 1}} Level",
                 "reg_type": "holding",
-                "address": {{index}},
+                "address": {{16 + index}},
                 "type": "range",
                 "units": "%",
                 "max": 100,
@@ -570,7 +570,7 @@
             {
                 "name": "Channel {{index + 1}} Current",
                 "reg_type": "holding",
-                "address": {{16 + index}},
+                "address": {{index}},
                 "type": "value",
                 "units": "mA",
                 "max": 20,
@@ -693,9 +693,9 @@
                 {% for ch_number in range(1, OUTPUTS_NUMBER + 1) -%}
                 "Output {{ch_number}}": "Выход {{ch_number}}",
                 "Channel {{ch_number}}": "Канал {{ch_number}}",
-                "Channel {{ch_number}} Level": "Уровень канала 1",
-                "Channel {{ch_number}} Current": "Ток канала 1",
-                "Channel {{ch_number}} Fault": "Обрыв цепи канала 1",
+                "Channel {{ch_number}} Level": "Уровень канала {{ch_number}}",
+                "Channel {{ch_number}} Current": "Ток канала {{ch_number}}",
+                "Channel {{ch_number}} Fault": "Обрыв цепи канала {{ch_number}}",
                 "Channel {{ch_number}} Duty Cycle Raw": "Прямое задание скважности ШИМ на выходе {{ch_number}}",
                 {% endfor -%}
 
