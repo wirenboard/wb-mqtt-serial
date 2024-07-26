@@ -71,7 +71,7 @@
 				"scale": 0.01,
 				"format": "s16",
 				"type": "value",
-				"units": "°C"
+				"units": "deg C"
 			},
 			{
 				"name": "Outdoor air temperature",
@@ -82,7 +82,7 @@
 				"format": "s16",
 				"type": "value",
 				"readonly": true,
-				"units": "°C"
+				"units": "deg C"
 			},
 			{
 				"name": "Indoor heat exchanger temperature",
@@ -93,7 +93,7 @@
 				"format": "s16",
 				"type": "value",
 				"readonly": true,
-				"units": "°C"
+				"units": "deg C"
 			},
 			{
 				"name": "Outdoor heat exchanger temperature",
@@ -104,7 +104,7 @@
 				"format": "s16",
 				"type": "value",
 				"readonly": true,
-				"units": "°C"
+				"units": "deg C"
 			},
 			{
 				"name": "Target temperature",
@@ -113,7 +113,7 @@
 				"address": 5,
 				"scale": 0.01,
 				"type": "range",
-				"units": "°C",
+				"units": "deg C",
 				"format": "s16",
 				"min": 16,
 				"max": 32

@@ -20,6 +20,7 @@
     "g-motor-control": "Motor controllers",
     "g-oni": "ONI devices",
     "g-interphone": "Interphones",
+    "g-leakage": "Leakage protection systems",
     "g-custom": "Custom devices"
   },
   "ru": {
@@ -43,6 +44,7 @@
     "g-motor-control": "Управление двигателями (преобразователи частоты)",
     "g-oni": "Устройства ONI",
     "g-interphone": "Домофоны",
+    "g-leakage": "Системы защиты от протечек",
     "g-custom": "Произвольные устройства"
   }
 }
