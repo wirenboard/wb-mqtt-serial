@@ -95,39 +95,26 @@
                 "group": "g_safety"
             },
             {
-                "title": "Delays",
-                "id": "g_delays"
-            },
-            {
-                "title": "Voltage Control",
+                "title": "Protective Functions",
+                "description": "protective_functions_description",
                 "id": "g_voltage_control"
             },
             {% for out_num in range(1, OUTPUTS_NUMBER + 1) -%}
             {
-                "title": "Settings K{{out_num}}",
-                "id": "gg_out{{out_num}}_voltage_params",
+                "title": "Delays K{{out_num}}",
+                "id": "gg_out{{out_num}}_delay_params",
                 "group": "g_voltage_control"
             },
             {
-                "title": "Settings K{{out_num}}",
-                "id": "gg_out{{out_num}}_delay_params",
-                "group": "g_delays"
+                "title": "Voltage Control K{{out_num}}",
+                "id": "gg_out{{out_num}}_voltage_params",
+                "group": "g_voltage_control"
             },
             {% endfor -%}
             {
                 "title": "Displayed Voltage Control Channels",
                 "id": "gg_voltage_control_channels",
                 "group": "g_voltage_control",
-                "ui_options": {
-                    "wb": {
-                        "disable_title": true
-                    }
-                }
-            },
-            {
-                "title": "Displayed Delay Channels",
-                "id": "gg_delay_channels",
-                "group": "g_delays",
                 "ui_options": {
                     "wb": {
                         "disable_title": true
@@ -335,6 +322,9 @@
                 "enum_titles": ["no action", "reset", "set", "toggle"],
                 "condition": "in{{in_num}}_mode==6"
             },
+            {% endfor -%}
+            {% endfor -%}
+            {% for out_num in range(1, OUTPUTS_NUMBER + 1) -%}
             "out{{out_num}}_safe_state": {
                 "title": "Output {{out_num}}",
                 "group": "gg_outputs_safe_state",
@@ -376,7 +366,6 @@
                 ]
             },
             {% endfor -%}
-            {% endfor -%}
             "outputs_restore_state": {
                 "title": "Outputs State After Power On",
                 "description": "outputs_state_after_power_on_description",
@@ -401,67 +390,32 @@
             },
 
             {% for out_num in range(1, OUTPUTS_NUMBER + 1) -%}
-            "undervoltage_threshold_{{out_num}}": {
-                "title": "Undervoltage Threshold (V)",
-                "description": "undervoltage_description",
-                "address": {{1704 + out_num - 1}},
-                "reg_type": "holding",
-                "scale": 0.01,
-                "min": 120,
-                "max": 220,
-                "default": 207,
-                "group": "gg_out{{out_num}}_voltage_params",
-                "order": 1
-            },
-            "overvoltage_threshold_{{out_num}}": {
-                "title": "Overvoltage Threshold (V)",
-                "description": "overvoltage_description",
-                "address": {{1712 + out_num - 1}},
-                "reg_type": "holding",
-                "scale": 0.01,
-                "min": 230,
-                "max": 277,
-                "default": 253,
-                "group": "gg_out{{out_num}}_voltage_params",
-                "order": 2
-            },
-            "is_voltage_control_for_{{out_num}}_enabled": {
-                "title": "Voltage Control Activation",
-                "address": {{1696 + out_num - 1}},
-                "reg_type": "holding",
-                "enum": [0, 1],
-                "default": 0,
-                "enum_titles": [
-                    "Disable",
-                    "Enable"
-                ],
-                "group": "gg_out{{out_num}}_voltage_params",
-                "order": 3
-            },
-            "delay_off_{{out_num}}": {
-                "title": "Voltage Dip Duration (s)",
-                "description": "voltage_dip_duration_description",
-                "address": {{1720 + out_num - 1}},
-                "reg_type": "holding",
-                "scale": 0.1,
-                "min": 0.5,
-                "max": 10,
-                "default": 5,
-                "group": "gg_out{{out_num}}_voltage_params",
-                "order": 4,
-                "condition": "is_voltage_control_for_{{out_num}}_enabled==1"
-            },
-            "startup_delay_{{out_num}}": {
+            "startup_delay0_{{out_num}}": {
                 "title": "Startup Delay (s)",
-                "description": "startup_delay_description",
+                "description": "startup_delay0_description",
                 "address": {{1728 + out_num - 1}},
                 "reg_type": "holding",
                 "scale": 0.1,
                 "min": 0,
                 "max": 999,
-                "default": 10,
+                "default": 0,
                 "group": "gg_out{{out_num}}_delay_params",
-                "order": 1
+                "order": 1,
+                "condition": "is_voltage_control_for_{{out_num}}_enabled!=1"
+            },
+            "startup_delay1_{{out_num}}": {
+                "title": "Startup Delay (s)",
+                "description": "startup_delay1_description",
+                "address": {{1728 + out_num - 1}},
+                "reg_type": "holding",
+                "scale": 0.1,
+                "min": 3,
+                "max": 999,
+                "default": 10,
+                "required": true,
+                "group": "gg_out{{out_num}}_delay_params",
+                "order": 1,
+                "condition": "is_voltage_control_for_{{out_num}}_enabled==1"
             },
             "restart_delay_{{out_num}}": {
                 "title": "Restart Delay (s)",
@@ -474,6 +428,57 @@
                 "default": 0,
                 "group": "gg_out{{out_num}}_delay_params",
                 "order": 2
+            },
+            "undervoltage_threshold_{{out_num}}": {
+                "title": "Undervoltage Threshold (V)",
+                "description": "undervoltage_description",
+                "address": {{1704 + out_num - 1}},
+                "reg_type": "holding",
+                "scale": 0.01,
+                "min": 120,
+                "max": 220,
+                "default": 207,
+                "group": "gg_out{{out_num}}_voltage_params",
+                "order": 3
+            },
+            "overvoltage_threshold_{{out_num}}": {
+                "title": "Overvoltage Threshold (V)",
+                "description": "overvoltage_description",
+                "address": {{1712 + out_num - 1}},
+                "reg_type": "holding",
+                "scale": 0.01,
+                "min": 230,
+                "max": 277,
+                "default": 253,
+                "group": "gg_out{{out_num}}_voltage_params",
+                "order": 4
+            },
+            "is_voltage_control_for_{{out_num}}_enabled": {
+                "title": "Voltage Protection Trip",
+                "address": {{1696 + out_num - 1}},
+                "reg_type": "holding",
+                "enum": [0, 1],
+                "default": 0,
+                "enum_titles": [
+                    "Disable",
+                    "Enable"
+                ],
+                "group": "gg_out{{out_num}}_voltage_params",
+                "order": 5
+            },
+            "delay_off_{{out_num}}": {
+                "title": "Voltage Dip Duration (s)",
+                "description": "voltage_dip_duration_description",
+                "address": {{1720 + out_num - 1}},
+                "reg_type": "holding",
+                "scale": 0.1,
+                "min": 0.5,
+                "max": 10,
+                "default": 5,
+                "required": true,
+                "group": "gg_out{{out_num}}_voltage_params",
+                "order": 6,
+                "condition": "is_voltage_control_for_{{out_num}}_enabled==1"
             },
             {% endfor -%}
 
@@ -663,7 +668,7 @@
                 "address": {{88 + out_num - 1}},
                 "type": "switch",
                 "group": "gg_voltage_control_channels",
-                "condition": "(startup_delay_{{out_num}}>0)||(restart_delay_{{out_num}}>0)||(is_voltage_control_for_{{out_num}}_enabled==1)"
+                "condition": "(startup_delay0_{{out_num}}>0)||(startup_delay1_{{out_num}}>0)||(restart_delay_{{out_num}}>0)||(is_voltage_control_for_{{out_num}}_enabled==1)"
             },
             {
                 "name": "Startup Delay Countdown K{{out_num}}",
@@ -673,8 +678,8 @@
                 "format": "u16",
                 "scale": 0.1,
                 "sporadic": true,
-                "group": "gg_delay_channels",
-                "condition": "startup_delay_{{out_num}}>0"
+                "group": "gg_voltage_control_channels",
+                "condition": "(startup_delay0_{{out_num}}>0)||(startup_delay1_{{out_num}}>0)"
             },
             {
                 "name": "Restart Delay Countdown K{{out_num}}",
@@ -684,7 +689,7 @@
                 "format": "u16",
                 "scale": 0.1,
                 "sporadic": true,
-                "group": "gg_delay_channels",
+                "group": "gg_voltage_control_channels",
                 "condition": "restart_delay_{{out_num}}>0"
             },
 
@@ -782,11 +787,12 @@
                 {% for out_num in range(1, OUTPUTS_NUMBER + 1) -%}
                 "K{{out_num}}": "Command K{{out_num}}",
                 {% endfor -%}
-
+                "protective_functions_description": "For Protective Functions firmware v1.21.0 or newer is required",
                 "undervoltage_description": "120 to 220, factory default - 207",
                 "overvoltage_description": "230 to 277, factory default - 253",
                 "voltage_dip_duration_description": "0.5 to 10, factory default - 5",
-                "startup_delay_description": "0 to 999, factory default - 10",
+                "startup_delay0_description": "0 to 999, factory default - 0",
+                "startup_delay1_description": "3 to 999, factory default - 10",
                 "restart_delay_description": "0 to 999, factory default - 0"
             },
             "ru": {
@@ -805,7 +811,7 @@
                 "Outputs": "Выходы",
                 "Safety Mode": "Безопасный режим",
                 "Delays": "Задержки включения",
-                "Voltage Control": "Контроль напряжения",
+                "Protective Functions": "Защитные функции",
                 "General": "Общее",
                 "HW Info": "Данные модуля",
                 "Debug": "Диагностика",
@@ -817,11 +823,12 @@
                 {% for out_num in range(1, OUTPUTS_NUMBER + 1) -%}
                 "K{{out_num}}": "Команда K{{out_num}}",
                 "Real State K{{out_num}}": "Фактическое состояние K{{out_num}}",
-                "Settings K{{out_num}}": "Параметры K{{out_num}}",
+                "Delays K{{out_num}}": "Задержки K{{out_num}}",
+                "Voltage Control K{{out_num}}": "Контроль напряжения K{{out_num}}",
                 "Output {{out_num}}": "Выход {{out_num}}",
                 "Output {{out_num}} Actions": "Действия для выхода {{out_num}}",
                 "Urms Normal K{{out_num}}": "Норма Urms L{{out_num}}",
-                "Blocking K{{out_num}}": "Блокировка K{{out_num}}",
+                "Blocking K{{out_num}}": "Блокировка/Задержка K{{out_num}}",
                 "Startup Delay Countdown K{{out_num}}": "Таймер задержки включения K{{out_num}}",
                 "Restart Delay Countdown K{{out_num}}": "Таймер задержки повторного включения K{{out_num}}",
                 {% endfor -%}
@@ -898,7 +905,7 @@
                 "Disable in safety mode": "Блокировать в безопасном режиме",
                 "Enable only in safety mode": "Разрешить только в безопасном режиме",
 
-                "Voltage Control Activation": "Блокировка по напряжению",
+                "Voltage Protection Trip": "Блокировка по напряжению",
                 "Undervoltage Threshold (V)": "Нижний допустимый предел (В)",
                 "Overvoltage Threshold (V)": "Верхний допустимый предел (В)",
                 "Voltage Dip Duration (s)": "Допустимая длительность провала (с)",
@@ -911,10 +918,12 @@
                 "UNBLOCKED": "РАЗБЛОКИРОВАН",
                 "BLOCKED": "ЗАБЛОКИРОВАН",
 
+                "protective_functions_description": "Для использования защитных функций требуется прошивка версии 1.21.0 и выше",
                 "undervoltage_description": "120...220, заводское - 207",
                 "overvoltage_description": "230...277, заводское - 253",
                 "voltage_dip_duration_description": "0.5...10, заводское - 5",
-                "startup_delay_description": "0...999, заводское - 10",
+                "startup_delay0_description": "0...999, заводское - 0",
+                "startup_delay1_description": "3...999, заводское - 10",
                 "restart_delay_description": "0...999, заводское - 0",
 
                 "Baud rate": "Скорость обмена",
