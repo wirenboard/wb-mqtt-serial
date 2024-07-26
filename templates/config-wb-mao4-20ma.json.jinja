@@ -339,7 +339,7 @@
                 "min": 0,
                 "max": 20,
                 "group": "gg_output_{{ ch_number }}_limits",
-                "condition": "output_{{ch_number}}_mode==2"
+                "condition": "output_{{ch_number}}_mode==100"
             },
             {
                 "id": "output{{ ch_number }}_max",
@@ -352,7 +352,7 @@
                 "min": 0,
                 "max": 20,
                 "group": "gg_output_{{ ch_number }}_limits",
-                "condition": "output_{{ch_number}}_mode==2"
+                "condition": "output_{{ch_number}}_mode==100"
             },
             {
                 "id": "output{{ ch_number }}_decrement_rate",
@@ -575,6 +575,7 @@
                 "units": "mA",
                 "max": 20,
                 "scale": 0.001,
+                "enabled": false,
                 "group": "gg_output_{{index + 1}}_channels"
             },
             {
