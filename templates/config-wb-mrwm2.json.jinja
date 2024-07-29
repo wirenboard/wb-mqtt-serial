@@ -390,9 +390,9 @@
             },
 
             {% for out_num in range(1, OUTPUTS_NUMBER + 1) -%}
-            "startup_delay0_{{out_num}}": {
+            "startup_delay_ctrl_dis_{{out_num}}": {
                 "title": "Startup Delay (s)",
-                "description": "startup_delay0_description",
+                "description": "startup_delay_ctrl_dis_description",
                 "address": {{1728 + out_num - 1}},
                 "reg_type": "holding",
                 "scale": 0.1,
@@ -403,9 +403,9 @@
                 "order": 1,
                 "condition": "is_voltage_control_for_{{out_num}}_enabled!=1"
             },
-            "startup_delay1_{{out_num}}": {
+            "startup_delay_ctrl_en_{{out_num}}": {
                 "title": "Startup Delay (s)",
-                "description": "startup_delay1_description",
+                "description": "startup_delay_ctrl_en_description",
                 "address": {{1728 + out_num - 1}},
                 "reg_type": "holding",
                 "scale": 0.1,
@@ -668,7 +668,7 @@
                 "address": {{88 + out_num - 1}},
                 "type": "switch",
                 "group": "gg_voltage_control_channels",
-                "condition": "(startup_delay0_{{out_num}}>0)||(startup_delay1_{{out_num}}>0)||(restart_delay_{{out_num}}>0)||(is_voltage_control_for_{{out_num}}_enabled==1)"
+                "condition": "(startup_delay_ctrl_dis_{{out_num}}>0)||(startup_delay_ctrl_en_{{out_num}}>0)||(restart_delay_{{out_num}}>0)||(is_voltage_control_for_{{out_num}}_enabled==1)"
             },
             {
                 "name": "Startup Delay Countdown K{{out_num}}",
@@ -679,7 +679,7 @@
                 "scale": 0.1,
                 "sporadic": true,
                 "group": "gg_voltage_control_channels",
-                "condition": "(startup_delay0_{{out_num}}>0)||(startup_delay1_{{out_num}}>0)"
+                "condition": "(startup_delay_ctrl_dis_{{out_num}}>0)||(startup_delay_ctrl_en_{{out_num}}>0)"
             },
             {
                 "name": "Restart Delay Countdown K{{out_num}}",
@@ -791,8 +791,8 @@
                 "undervoltage_description": "120 to 220, factory default - 207",
                 "overvoltage_description": "230 to 277, factory default - 253",
                 "voltage_dip_duration_description": "0.5 to 10, factory default - 5",
-                "startup_delay0_description": "0 to 999, factory default - 0",
-                "startup_delay1_description": "3 to 999, factory default - 10",
+                "startup_delay_ctrl_dis_description": "0 to 999, factory default - 0",
+                "startup_delay_ctrl_en_description": "3 to 999, factory default - 10",
                 "restart_delay_description": "0 to 999, factory default - 0"
             },
             "ru": {
@@ -922,8 +922,8 @@
                 "undervoltage_description": "120...220, заводское - 207",
                 "overvoltage_description": "230...277, заводское - 253",
                 "voltage_dip_duration_description": "0.5...10, заводское - 5",
-                "startup_delay0_description": "0...999, заводское - 0",
-                "startup_delay1_description": "3...999, заводское - 10",
+                "startup_delay_ctrl_dis_description": "0...999, заводское - 0",
+                "startup_delay_ctrl_en_description": "3...999, заводское - 10",
                 "restart_delay_description": "0...999, заводское - 0",
 
                 "Baud rate": "Скорость обмена",
