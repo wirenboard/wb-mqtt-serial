@@ -110,10 +110,9 @@
                 "Classic-Level (kOhm)": "Чуствительность электродов (кОм)",
                 "Classic-Time (sec)": "Время контроля электродов (сек)",
 
-                {% for zon_num in range(1, ZONE_NUMBER) -%}
+                {% for zon_num in range(1, ZONE_NUMBER + 1) -%}
                 "Zone Level {{ zon_num }} (kOhm)": "Уровень сопротивления {{ zon_num }}-ой зоны (кОм)",
                 {% endfor -%}
-                "Zone Level 13 (kOhm)": "Уровень сопротивления 13-ой зоны (кОм)",
                 "0 - sign of the chain end.": "0 - признак окончания цепочки.",
 
                 {% for typ_num in range(1, SENSOR_TYPE_NUMBER + 1) -%}
