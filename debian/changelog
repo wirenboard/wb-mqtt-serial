@@ -1,3 +1,9 @@
+wb-mqtt-serial (2.134.0) stable; urgency=medium
+
+  * Add template for kaplestop
+
+ -- Mikhail Burchu <mikhail.burchu@wirenboard.com>  Thu, 25 Jul 2024 15:45:00 +0300
+
 wb-mqtt-serial (2.133.5) stable; urgency=medium
 
   * Add g-leakage group
