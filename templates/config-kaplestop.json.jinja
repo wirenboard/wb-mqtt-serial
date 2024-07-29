@@ -66,7 +66,7 @@
             {% for ch_num in range(1, CHANNELS_NUMBER + 1) -%}
             {% for zon_num in range(1, ZONE_NUMBER + 1) -%}
             {% set comma = ',' if ch_num != CHANNELS_NUMBER or zon_num != ZONE_NUMBER else '' -%}
-            "in{{ ch_num }}_zone_{{ zon_num }}": {"title":"Zone Level{{ zon_num }} (kOhm)", "address": {{((100-1-16) + zon_num) + 16*ch_num}},"reg_type": "holding","group": "g_zone{{ ch_num }}","order": {{ zon_num }},  "required": true, "default": {{ ZONES_DEFAULT[zon_num-1] }}, "min": 0, "max": {{ ZONES_MAX[zon_num-1] }}, "condition": "in{{ ch_num }}_type==5"}{{comma}}
+            "in{{ ch_num }}_zone_{{ zon_num }}": {"title":"Zone Level {{ zon_num }} (kOhm)", "address": {{((100-1-16) + zon_num) + 16*ch_num}},"reg_type": "holding","group": "g_zone{{ ch_num }}","order": {{ zon_num }},  "required": true, "default": {{ ZONES_DEFAULT[zon_num-1] }}, "min": 0, "max": {{ ZONES_MAX[zon_num-1] }}, "condition": "in{{ ch_num }}_type==5"}{{comma}}
             {% endfor -%}
             {% endfor -%}
         },
@@ -111,9 +111,9 @@
                 "Classic-Time (sec)": "Время контроля электродов (сек)",
 
                 {% for zon_num in range(1, ZONE_NUMBER) -%}
-                "Zone Level{{ zon_num }} (kOhm)": "Уровень сопротивления {{ zon_num }}-й зоны (кОм)",
+                "Zone Level {{ zon_num }} (kOhm)": "Уровень сопротивления {{ zon_num }}-й зоны (кОм)",
                 {% endfor -%}
-                "Zone Level13 (kOhm)": "0 - признак окончания цепочки",
+                "Zone Level 13 (kOhm)": "0 - признак окончания цепочки",
 
                 {% for typ_num in range(1, SENSOR_TYPE_NUMBER + 1) -%}
                 {% for ch_num in range(1, CHANNELS_NUMBER + 1) -%}
