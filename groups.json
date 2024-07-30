@@ -21,6 +21,7 @@
     "g-oni": "ONI devices",
     "g-pid": "PID-controllers",
     "g-interphone": "Interphones",
+    "g-leakage": "Leakage protection systems",
     "g-custom": "Custom devices"
   },
   "ru": {
@@ -45,6 +46,7 @@
     "g-oni": "Устройства ONI",
     "g-pid": "ПИД-регуляторы",
     "g-interphone": "Домофоны",
+    "g-leakage": "Системы защиты от протечек",
     "g-custom": "Произвольные устройства"
   }
 }

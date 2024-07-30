@@ -12,4 +12,8 @@ public:
     void ReadRegisterRange(PRegisterRange range) override;
 
     static void Register(TSerialDeviceFactory& factory);
+
+protected:
+    void PrepareImpl() override;
+    void EndSession() override;
 };

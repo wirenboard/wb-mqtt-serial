@@ -14,6 +14,7 @@
         "response_timeout_ms": 1,
         "frame_timeout_ms": 12,
         "enable_wb_continuous_read": true,
+        "min_request_interval": 100,
 
         "groups": [
             {
@@ -1380,6 +1381,16 @@
                 "type": "voltage",
                 "enabled": false,
                 "group": "hw_info"
+            },
+            {
+                "name": "Minimum MCU Voltage Since Startup",
+                "reg_type": "input",
+                "address": 119,
+                "scale": 0.001,
+                "type": "value",
+                "units": "V",
+                "enabled": false,
+                "group": "hw_info"
             }
         ],
 
@@ -1602,6 +1613,7 @@
                 "Uptime": "Время работы с момента включения (с)",
                 "MCU Temperature": "Температура МК",
                 "MCU Voltage": "Напряжение питания МК",
+                "Minimum MCU Voltage Since Startup": "Минимальное напряжение питания МК с момента включения",
                 "1-Wire": "Датчик 1-Wire",
                 "External Temperature Sensor": "Датчик температуры",
                 "External Temperature Sensor OK": "Датчик температуры исправен",
