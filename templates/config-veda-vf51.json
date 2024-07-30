@@ -176,7 +176,6 @@
                 "type": "value",
                 "units": "rpm",
                 "format": "s16",
-                "scale": 1.0,
                 "group": "drive_status",
                 "readonly": true
             },
@@ -352,7 +351,6 @@
                 "address": "0x2003",
                 "type": "value",
                 "format": "u16",
-                "scale": 1.0,
                 "group": "diagnostics",
                 "readonly": true
             },
@@ -362,7 +360,6 @@
                 "address": "0x2010",
                 "type": "value",
                 "format": "u16",
-                "scale": 1.0,
                 "group": "diagnostics",
                 "readonly": true
             },
