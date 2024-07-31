@@ -1,4 +1,10 @@
-wb-mqtt-serial (2.134.0) stable; urgency=medium
+wb-mqtt-serial (2.135.0) stable; urgency=medium
+
+  * WB-MRWM2 template: add support for startup delay, restart delay, voltage control function
+
+ -- Ilia Skochilov <ilia.skochilov@wirenboard.com>  Tue, 30 Jul 2024 10:15:00 +0300
+
+ wb-mqtt-serial (2.134.0) stable; urgency=medium
 
   * Add template for kaplestop
 
