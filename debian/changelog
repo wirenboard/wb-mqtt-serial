@@ -1,10 +1,22 @@
-wb-mqtt-serial (2.135.0) stable; urgency=medium
+wb-mqtt-serial (2.137.0) stable; urgency=medium
   
   * Add new template for Veda VF 51
 
- -- Roman Matveev <roman.matveev@wirenboard.ru>  Tue, 30 Jul 2024 15:32:00 +0300
+ -- Roman Matveev <roman.matveev@wirenboard.ru>  Wed, 31 Jul 2024 11:39:00 +0300
 
-wb-mqtt-serial (2.134.0) stable; urgency=medium
+wb-mqtt-serial (2.136.0) stable; urgency=medium
+
+  * Add template APC NMC2 AP9630
+
+ -- Roman Matveev <roman.matveev@wirenboard.ru>  Wed, 31 Jul 2024 11:06:30 +0300
+
+wb-mqtt-serial (2.135.0) stable; urgency=medium
+
+  * WB-MRWM2 template: add support for startup delay, restart delay, voltage control function
+
+ -- Ilia Skochilov <ilia.skochilov@wirenboard.com>  Tue, 30 Jul 2024 10:15:00 +0300
+
+ wb-mqtt-serial (2.134.0) stable; urgency=medium
 
   * Add template for kaplestop
 
@@ -79,7 +91,7 @@ wb-mqtt-serial (2.130.2) stable; urgency=medium
 
   * Fix a type in WB-Domofon template
 
- -- Roman Matveev <roman.matveev@wirenboard.ru>  Fri, 10 Jul 2024 14:47:30 +0300
+ -- Roman Matveev <roman.matveev@wirenboard.ru>  Wed, 10 Jul 2024 14:47:30 +0300
 
 wb-mqtt-serial (2.130.0) stable; urgency=medium
 
