@@ -21,6 +21,7 @@
     "g-oni": "ONI devices",
     "g-ups": "UPSs",
     "g-interphone": "Interphones",
+    "g-leakage": "Leakage protection systems",
     "g-custom": "Custom devices"
   },
   "ru": {
@@ -45,6 +46,7 @@
     "g-oni": "Устройства ONI",
     "g-ups": "ИБП",
     "g-interphone": "Домофоны",
+    "g-leakage": "Системы защиты от протечек",
     "g-custom": "Произвольные устройства"
   }
 }
