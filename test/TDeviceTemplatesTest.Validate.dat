@@ -740,12 +740,12 @@ PID-Ptech
 	Leak Sensor Activation  =>  Leak Sensor Activation
 	Low Pressure Control Time  =>  Low Pressure Control Time
 	Max Power  =>  Max Power
-	Max. Pump Operating Time  =>  Max. Pump Operating Time
-	Max. Water Per Session  =>  Max. Water Per Session
+	Max Pump Operating Time  =>  Max Pump Operating Time
+	Max Water Per Session  =>  Max Water Per Session
 	Maximum Pressure  =>  Maximum Pressure
-	Min. Power  =>  Min. Power
-	Min. Pump Operating Time  =>  Min. Pump Operating Time
-	Min. Time Between Starts  =>  Min. Time Between Starts
+	Min Power  =>  Min Power
+	Min Pump Operating Time  =>  Min Pump Operating Time
+	Min Time Between Starts  =>  Min Time Between Starts
 	Minimum Pressure  =>  Minimum Pressure
 	Mode  =>  Mode
 	Operation Indicator  =>  Operation Indicator
