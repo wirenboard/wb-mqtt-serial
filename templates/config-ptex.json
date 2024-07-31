@@ -78,7 +78,7 @@
 				"group": "parameters"
 			},
 			{
-				"name": "Min. Pump Operating Time",
+				"name": "Min Pump Operating Time",
 				"reg_type": "holding",
 				"address": 1012,
 				"type": "value",
@@ -88,7 +88,7 @@
 				"group": "parameters"
 			},
 			{
-				"name": "Max. Pump Operating Time",
+				"name": "Max Pump Operating Time",
 				"reg_type": "holding",
 				"address": 1014,
 				"type": "value",
@@ -107,7 +107,7 @@
 				"group": "parameters"
 			},
 			{
-				"name": "Max. Water Per Session",
+				"name": "Max Water Per Session",
 				"reg_type": "holding",
 				"address": 1021,
 				"type": "value",
@@ -116,7 +116,7 @@
 				"group": "parameters"
 			},
 			{
-				"name": "Min. Time Between Starts",
+				"name": "Min Time Between Starts",
 				"reg_type": "holding",
 				"address": 1022,
 				"type": "value",
@@ -136,14 +136,14 @@
 					2
 				],
 				"enum_titles": [
-					"Const.",
+					"Const",
 					"1 minute",
 					"6 minutes"
 				],
 				"group": "parameters"
 			},
 			{
-				"name": "Min. Power",
+				"name": "Min Power",
 				"reg_type": "holding",
 				"address": 1024,
 				"type": "value",
@@ -398,14 +398,14 @@
 				"Minimum Pressure": "Минимальное давление",
 				"Maximum Pressure": "Максимальное давление",
 				"Low Pressure Control Time": "Время контроля низкого давления",
-				"Min. Pump Operating Time": "Мин.время работы насоса",
-				"Max. Pump Operating Time": "Макс.время работы насоса",
+				"Min Pump Operating Time": "Минимальное время работы насоса",
+				"Max Pump Operating Time": "Максимальное время работы насоса",
 				"Error Reset Time": "Время сброса ошибки",
-				"Max. Water Per Session": "Макс. воды за сессию",
-				"Min. Time Between Starts": "Мин. время между запусками",
+				"Max Water Per Session": "Максимум воды за сессию",
+				"Min Time Between Starts": "Минимальное время между запусками",
 				"Backlight": "Подсветка",
-				"Min. Power": "Мин. мощность",
-				"Max Power": "Макс. мощность",
+				"Min Power": "Минимальная мощность",
+				"Max Power": "Максимальная мощность",
 				"PID P": "ПИД P",
 				"PID I": "ПИД I",
 				"PID D": "ПИД D",
@@ -433,7 +433,7 @@
 				"Low": "Пониженное давление",
 				"High": "Повышенное давление",
 				"Second Pump": "Второй насос",
-				"Const.": "Пост.",
+				"Const": "Постоянно",
 				"1 minute": "1 минута",
 				"6 minutes": "6 минут",
 				"PI": "ПИ", 
