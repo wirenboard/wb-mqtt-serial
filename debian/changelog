@@ -1,3 +1,9 @@
+wb-mqtt-serial (2.139.0) stable; urgency=medium
+
+  * Add current transformers reverse setting to the MAP templates
+
+ -- Dmitry Borisov <dmitry.borisov@wirenboard.com>, Ilia Skochilov <ilia.skochilov@wirenboard.com>  Fri, 2 Aug 2024 15:40:00 +0300
+
 wb-mqtt-serial (2.138.0) stable; urgency=medium
 
   * Add template PID-controller Ptex
@@ -5,7 +11,7 @@ wb-mqtt-serial (2.138.0) stable; urgency=medium
  -- Roman Matveev <roman.matveev@wirenboard.ru>  Wed, 31 Jul 2024 16:34:30 +0300
 
 wb-mqtt-serial (2.137.0) stable; urgency=medium
-  
+
   * Add new template for Veda VF 51
 
  -- Roman Matveev <roman.matveev@wirenboard.ru>  Wed, 31 Jul 2024 11:39:00 +0300
