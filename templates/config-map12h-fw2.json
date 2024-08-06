@@ -111,6 +111,18 @@
                 "group": "channel1_l1",
                 "order": 2
             },
+            "channel1_l1_ct_reverse": {
+                "title": "Channel 1 Current Transformer Reverse L1",
+                "address": "0x14b0",
+                "reg_type": "holding",
+                "format": "u16",
+                "enum": [0, 1],
+                "default": 0,
+                "enum_titles": ["No", "Yes"],
+                "description": "Firmware v2.10.0 or newer is required",
+                "group": "channel1_l1",
+                "order": 3
+            },
             "channel1_l2_turns": {
                 "title": "Channel 1 Turns L2",
                 "address": "0x1461",
@@ -129,6 +141,18 @@
                 "max": 32767,
                 "group": "channel1_l2",
                 "order": 2
+            },
+            "channel1_l2_ct_reverse": {
+                "title": "Channel 1 Current Transformer Reverse L2",
+                "address": "0x14b1",
+                "reg_type": "holding",
+                "format": "u16",
+                "enum": [0, 1],
+                "default": 0,
+                "enum_titles": ["No", "Yes"],
+                "description": "Firmware v2.10.0 or newer is required",
+                "group": "channel1_l2",
+                "order": 3
             },
             "channel1_l3_turns": {
                 "title": "Channel 1 Turns L3",
@@ -149,6 +173,18 @@
                 "group": "channel1_l3",
                 "order": 2
             },
+            "channel1_l3_ct_reverse": {
+                "title": "Channel 1 Current Transformer Reverse L3",
+                "address": "0x14b2",
+                "reg_type": "holding",
+                "format": "u16",
+                "enum": [0, 1],
+                "default": 0,
+                "enum_titles": ["No", "Yes"],
+                "description": "Firmware v2.10.0 or newer is required",
+                "group": "channel1_l3",
+                "order": 3
+            },
             "channel2_l1_turns": {
                 "title": "Channel 2 Turns L1",
                 "address": "0x2460",
@@ -167,6 +203,18 @@
                 "max": 32767,
                 "group": "channel2_l1",
                 "order": 2
+            },
+            "channel2_l1_ct_reverse": {
+                "title": "Channel 2 Current Transformer Reverse L1",
+                "address": "0x24b0",
+                "reg_type": "holding",
+                "format": "u16",
+                "enum": [0, 1],
+                "default": 0,
+                "enum_titles": ["No", "Yes"],
+                "description": "Firmware v2.10.0 or newer is required",
+                "group": "channel2_l1",
+                "order": 3
             },
             "channel2_l2_turns": {
                 "title": "Channel 2 Turns L2",
@@ -187,6 +235,18 @@
                 "group": "channel2_l2",
                 "order": 2
             },
+            "channel2_l2_ct_reverse": {
+                "title": "Channel 2 Current Transformer Reverse L2",
+                "address": "0x24b1",
+                "reg_type": "holding",
+                "format": "u16",
+                "enum": [0, 1],
+                "default": 0,
+                "enum_titles": ["No", "Yes"],
+                "description": "Firmware v2.10.0 or newer is required",
+                "group": "channel2_l2",
+                "order": 3
+            },
             "channel2_l3_turns": {
                 "title": "Channel 2 Turns L3",
                 "address": "0x2462",
@@ -205,6 +265,18 @@
                 "max": 32767,
                 "group": "channel2_l3",
                 "order": 2
+            },
+            "channel2_l3_ct_reverse": {
+                "title": "Channel 2 Current Transformer Reverse L3",
+                "address": "0x24b2",
+                "reg_type": "holding",
+                "format": "u16",
+                "enum": [0, 1],
+                "default": 0,
+                "enum_titles": ["No", "Yes"],
+                "description": "Firmware v2.10.0 or newer is required",
+                "group": "channel2_l3",
+                "order": 3
             },
             "channel3_l1_turns": {
                 "title": "Channel 3 Turns L1",
@@ -225,6 +297,18 @@
                 "group": "channel3_l1",
                 "order": 2
             },
+            "channel3_l1_ct_reverse": {
+                "title": "Channel 3 Current Transformer Reverse L1",
+                "address": "0x34b0",
+                "reg_type": "holding",
+                "format": "u16",
+                "enum": [0, 1],
+                "default": 0,
+                "enum_titles": ["No", "Yes"],
+                "description": "Firmware v2.10.0 or newer is required",
+                "group": "channel3_l1",
+                "order": 3
+            },
             "channel3_l2_turns": {
                 "title": "Channel 3 Turns L2",
                 "address": "0x3461",
@@ -243,6 +327,18 @@
                 "max": 32767,
                 "group": "channel3_l2",
                 "order": 2
+            },
+            "channel3_l2_ct_reverse": {
+                "title": "Channel 3 Current Transformer Reverse L2",
+                "address": "0x34b1",
+                "reg_type": "holding",
+                "format": "u16",
+                "enum": [0, 1],
+                "default": 0,
+                "enum_titles": ["No", "Yes"],
+                "description": "Firmware v2.10.0 or newer is required",
+                "group": "channel3_l2",
+                "order": 3
             },
             "channel3_l3_turns": {
                 "title": "Channel 3 Turns L3",
@@ -263,6 +359,18 @@
                 "group": "channel3_l3",
                 "order": 2
             },
+            "channel3_l3_ct_reverse": {
+                "title": "Channel 3 Current Transformer Reverse L3",
+                "address": "0x34b2",
+                "reg_type": "holding",
+                "format": "u16",
+                "enum": [0, 1],
+                "default": 0,
+                "enum_titles": ["No", "Yes"],
+                "description": "Firmware v2.10.0 or newer is required",
+                "group": "channel3_l3",
+                "order": 3
+            },
             "channel4_l1_turns": {
                 "title": "Channel 4 Turns L1",
                 "address": "0x4460",
@@ -281,6 +389,18 @@
                 "max": 32767,
                 "group": "channel4_l1",
                 "order": 2
+            },
+            "channel4_l1_ct_reverse": {
+                "title": "Channel 4 Current Transformer Reverse L1",
+                "address": "0x44b0",
+                "reg_type": "holding",
+                "format": "u16",
+                "enum": [0, 1],
+                "default": 0,
+                "enum_titles": ["No", "Yes"],
+                "description": "Firmware v2.10.0 or newer is required",
+                "group": "channel4_l1",
+                "order": 3
             },
             "channel4_l2_turns": {
                 "title": "Channel 4 Turns L2",
@@ -301,6 +421,18 @@
                 "group": "channel4_l2",
                 "order": 2
             },
+            "channel4_l2_ct_reverse": {
+                "title": "Channel 4 Current Transformer Reverse L2",
+                "address": "0x44b1",
+                "reg_type": "holding",
+                "format": "u16",
+                "enum": [0, 1],
+                "default": 0,
+                "enum_titles": ["No", "Yes"],
+                "description": "Firmware v2.10.0 or newer is required",
+                "group": "channel4_l2",
+                "order": 3
+            },
             "channel4_l3_turns": {
                 "title": "Channel 4 Turns L3",
                 "address": "0x4462",
@@ -319,6 +451,18 @@
                 "max": 32767,
                 "group": "channel4_l3",
                 "order": 2
+            },
+            "channel4_l3_ct_reverse": {
+                "title": "Channel 4 Current Transformer Reverse L3",
+                "address": "0x44b2",
+                "reg_type": "holding",
+                "format": "u16",
+                "enum": [0, 1],
+                "default": 0,
+                "enum_titles": ["No", "Yes"],
+                "description": "Firmware v2.10.0 or newer is required",
+                "group": "channel4_l3",
+                "order": 3
             }
         },
 
@@ -3567,35 +3711,50 @@
                 "HW Info": "Данные модуля",
                 "Channel 1 Turns L1": "Коэффициент трансформации L1",
                 "Channel 1 Phi L1": "Фазовая задержка L1",
+                "Channel 1 Current Transformer Reverse L1": "Инвертировать токовый трансформатор L1",
                 "Channel 1 Turns L2": "Коэффициент трансформации L2",
                 "Channel 1 Phi L2": "Фазовая задержка L2",
+                "Channel 1 Current Transformer Reverse L2": "Инвертировать токовый трансформатор L2",
                 "Channel 1 Turns L3": "Коэффициент трансформации L3",
                 "Channel 1 Phi L3": "Фазовая задержка L3",
+                "Channel 1 Current Transformer Reverse L3": "Инвертировать токовый трансформатор L3",
                 "Channel 2 Turns L1": "Коэффициент трансформации L1",
                 "Channel 2 Phi L1": "Фазовая задержка L1",
+                "Channel 2 Current Transformer Reverse L1": "Инвертировать токовый трансформатор L1",
                 "Channel 2 Turns L2": "Коэффициент трансформации L2",
                 "Channel 2 Phi L2": "Фазовая задержка L2",
+                "Channel 2 Current Transformer Reverse L2": "Инвертировать токовый трансформатор L2",
                 "Channel 2 Turns L3": "Коэффициент трансформации L3",
                 "Channel 2 Phi L3": "Фазовая задержка L3",
+                "Channel 2 Current Transformer Reverse L3": "Инвертировать токовый трансформатор L3",
                 "Channel 3 Turns L1": "Коэффициент трансформации L1",
                 "Channel 3 Phi L1": "Фазовая задержка L1",
+                "Channel 3 Current Transformer Reverse L1": "Инвертировать токовый трансформатор L1",
                 "Channel 3 Turns L2": "Коэффициент трансформации L2",
                 "Channel 3 Phi L2": "Фазовая задержка L2",
+                "Channel 3 Current Transformer Reverse L2": "Инвертировать токовый трансформатор L2",
                 "Channel 3 Turns L3": "Коэффициент трансформации L3",
                 "Channel 3 Phi L3": "Фазовая задержка L3",
+                "Channel 3 Current Transformer Reverse L3": "Инвертировать токовый трансформатор L3",
                 "Channel 4 Turns L1": "Коэффициент трансформации L1",
                 "Channel 4 Phi L1": "Фазовая задержка L1",
+                "Channel 4 Current Transformer Reverse L1": "Инвертировать токовый трансформатор L1",
                 "Channel 4 Turns L2": "Коэффициент трансформации L2",
                 "Channel 4 Phi L2": "Фазовая задержка L2",
+                "Channel 4 Current Transformer Reverse L2": "Инвертировать токовый трансформатор L2",
                 "Channel 4 Turns L3": "Коэффициент трансформации L3",
                 "Channel 4 Phi L3": "Фазовая задержка L3",
+                "Channel 4 Current Transformer Reverse L3": "Инвертировать токовый трансформатор L3",
                 "Voltage angle L1": "Фазовый угол L1",
                 "Voltage angle L2": "Фазовый угол L2",
                 "Voltage angle L3": "Фазовый угол L3",
+                "Yes": "Да",
+                "No": "Нет",
                 "Frequency": "Частота",
                 "Serial": "Серийный номер",
                 "Supply voltage": "Напряжение 5 В",
-                "Uptime": "Время работы с момента включения (с)"
+                "Uptime": "Время работы с момента включения (с)",
+                "Firmware v2.10.0 or newer is required": "Для прошивок v2.10.0 и новее"
             }
         }
     }

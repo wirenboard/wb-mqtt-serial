@@ -73,6 +73,18 @@
                 "group": "channel_1",
                 "order": 2
             },
+            "channel1_ct_reverse": {
+                "title": "Current Transformer Reverse 1",
+                "address": "0x14b2",
+                "reg_type": "holding",
+                "format": "u16",
+                "enum": [0, 1],
+                "default": 0,
+                "enum_titles": ["No", "Yes"],
+                "description": "Firmware v2.10.0 or newer is required",
+                "group": "channel_1",
+                "order": 3
+            },
             "channel2_turns": {
                 "title": "Turns 2",
                 "address": "0x1461",
@@ -91,6 +103,18 @@
                 "max": 32767,
                 "group": "channel_2",
                 "order": 2
+            },
+            "channel2_ct_reverse": {
+                "title": "Current Transformer Reverse 2",
+                "address": "0x14b1",
+                "reg_type": "holding",
+                "format": "u16",
+                "enum": [0, 1],
+                "default": 0,
+                "enum_titles": ["No", "Yes"],
+                "description": "Firmware v2.10.0 or newer is required",
+                "group": "channel_2",
+                "order": 3
             },
             "channel3_turns": {
                 "title": "Turns 3",
@@ -111,6 +135,18 @@
                 "group": "channel_3",
                 "order": 2
             },
+            "channel3_ct_reverse": {
+                "title": "Current Transformer Reverse 3",
+                "address": "0x14b0",
+                "reg_type": "holding",
+                "format": "u16",
+                "enum": [0, 1],
+                "default": 0,
+                "enum_titles": ["No", "Yes"],
+                "description": "Firmware v2.10.0 or newer is required",
+                "group": "channel_3",
+                "order": 3
+            },
             "channel4_turns": {
                 "title": "Turns 4",
                 "address": "0x2462",
@@ -129,6 +165,18 @@
                 "max": 32767,
                 "group": "channel_4",
                 "order": 2
+            },
+            "channel4_ct_reverse": {
+                "title": "Current Transformer Reverse 4",
+                "address": "0x24b2",
+                "reg_type": "holding",
+                "format": "u16",
+                "enum": [0, 1],
+                "default": 0,
+                "enum_titles": ["No", "Yes"],
+                "description": "Firmware v2.10.0 or newer is required",
+                "group": "channel_4",
+                "order": 3
             },
             "channel5_turns": {
                 "title": "Turns 5",
@@ -149,6 +197,18 @@
                 "group": "channel_5",
                 "order": 2
             },
+            "channel5_ct_reverse": {
+                "title": "Current Transformer Reverse 5",
+                "address": "0x24b1",
+                "reg_type": "holding",
+                "format": "u16",
+                "enum": [0, 1],
+                "default": 0,
+                "enum_titles": ["No", "Yes"],
+                "description": "Firmware v2.10.0 or newer is required",
+                "group": "channel_5",
+                "order": 3
+            },
             "channel6_turns": {
                 "title": "Turns 6",
                 "address": "0x2460",
@@ -167,6 +227,18 @@
                 "max": 32767,
                 "group": "channel_6",
                 "order": 2
+            },
+            "channel6_ct_reverse": {
+                "title": "Current Transformer Reverse 6",
+                "address": "0x24b0",
+                "reg_type": "holding",
+                "format": "u16",
+                "enum": [0, 1],
+                "default": 0,
+                "enum_titles": ["No", "Yes"],
+                "description": "Firmware v2.10.0 or newer is required",
+                "group": "channel_6",
+                "order": 3
             },
             "baud_rate": {
                 "title": "Baud rate",
@@ -363,7 +435,7 @@
                 "round_to": 1e-6,
                 "word_order": "little_endian",
                 "group": "channel_2"
-            },  
+            },
             {
                 "name": "RP energy 2",
                 "reg_type": "input",
@@ -697,7 +769,7 @@
                 "round_to": 1e-6,
                 "word_order": "little_endian",
                 "group": "channel_5"
-            },  
+            },
             {
                 "name": "Phase angle 5",
                 "reg_type": "input",
@@ -909,16 +981,22 @@
                 "HW Info": "Данные модуля",
                 "Turns 1": "Коэффициент трансформации 1",
                 "Phi 1": "Фазовая задержка 1",
+                "Current Transformer Reverse 1": "Инвертировать токовый трансформатор 1",
                 "Turns 2": "Коэффициент трансформации 2",
                 "Phi 2": "Фазовая задержка 2",
+                "Current Transformer Reverse 2": "Инвертировать токовый трансформатор 2",
                 "Turns 3": "Коэффициент трансформации 3",
                 "Phi 3": "Фазовая задержка 3",
+                "Current Transformer Reverse 3": "Инвертировать токовый трансформатор 3",
                 "Turns 4": "Коэффициент трансформации 4",
                 "Phi 4": "Фазовая задержка 4",
+                "Current Transformer Reverse 4": "Инвертировать токовый трансформатор 4",
                 "Turns 5": "Коэффициент трансформации 5",
                 "Phi 5": "Фазовая задержка 5",
+                "Current Transformer Reverse 5": "Инвертировать токовый трансформатор 5",
                 "Turns 6": "Коэффициент трансформации 6",
                 "Phi 6": "Фазовая задержка 6",
+                "Current Transformer Reverse 6": "Инвертировать токовый трансформатор 6",
                 "Baud rate": "Скорость обмена",
                 "baud_rate_description": "Перед изменением параметра убедитесь, что связь с устройством установлена. Выберите нужную скорость обмена, сохраните конфигурацию, а затем укажите в настройках порта эту же скорость.",
                 "AP energy 1": "Энергия AP 1",
@@ -951,13 +1029,16 @@
                 "AN energy 6": "Энергия AN 6",
                 "RN energy 6": "Энергия RN 6",
                 "Phase angle 6": "Угол между I6 и U",
+                "Yes": "Да",
+                "No": "Нет",
                 "Frequency": "Частота",
                 "Serial": "Серийный номер",
                 "FW Version": "Версия прошивки",
                 "Supply voltage": "Напряжение 5 В",
                 "Uptime": "Время работы с момента включения (с)",
                 "MCU Temperature": "Температура МК",
-                "MCU Voltage": "Напряжение питания МК"
+                "MCU Voltage": "Напряжение питания МК",
+                "Firmware v2.10.0 or newer is required": "Для прошивок v2.10.0 и новее"
             }
         }
     }
