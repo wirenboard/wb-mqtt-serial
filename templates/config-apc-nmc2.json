@@ -1,5 +1,5 @@
 {
-    "title": "template_title",
+    "title": "UPS NMC2 AP9630",
     "device_type": "APC_series",
     "group": "g-ups",
     "device": {
@@ -20,11 +20,6 @@
                 "title": "Device Setting",
                 "id": "device_setting",
                 "order": 3
-            },
-            {
-                "title": "Managment Commands",
-                "id": "diagnostics",
-                "order": 4
             }
         ],
         "channels": [
@@ -308,7 +303,6 @@
                 "Device Status": "Состояние устройства",
                 "Power Status": "Состояние питания",
                 "Device Setting": "Настройка",
-                "Managment Commands": "Команды управления",
                 "Version 2.6": "Версия 2.6",
                 "Battery Charge": "Заряд АКБ",
                 "Minutes Left": "Минут осталось",
