@@ -19,6 +19,8 @@
     "g-thermostat": "Thermostats",
     "g-motor-control": "Motor controllers",
     "g-oni": "ONI devices",
+    "g-pid": "PID-controllers",
+    "g-ups": "UPSs",
     "g-interphone": "Interphones",
     "g-leakage": "Leakage protection systems",
     "g-custom": "Custom devices"
@@ -43,6 +45,8 @@
     "g-thermostat": "Термостаты",
     "g-motor-control": "Управление двигателями (преобразователи частоты)",
     "g-oni": "Устройства ONI",
+    "g-pid": "ПИД-регуляторы",
+    "g-ups": "ИБП",
     "g-interphone": "Домофоны",
     "g-leakage": "Системы защиты от протечек",
     "g-custom": "Произвольные устройства"
