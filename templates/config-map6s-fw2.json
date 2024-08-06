@@ -82,7 +82,7 @@
                 "default": 0,
                 "enum_titles": ["No", "Yes"],
                 "description": "Firmware v2.10.0 or newer is required",
-                "group": "l1",
+                "group": "channel_1",
                 "order": 3
             },
             "channel2_turns": {
@@ -113,7 +113,7 @@
                 "default": 0,
                 "enum_titles": ["No", "Yes"],
                 "description": "Firmware v2.10.0 or newer is required",
-                "group": "l2",
+                "group": "channel_2",
                 "order": 3
             },
             "channel3_turns": {
@@ -144,7 +144,7 @@
                 "default": 0,
                 "enum_titles": ["No", "Yes"],
                 "description": "Firmware v2.10.0 or newer is required",
-                "group": "l3",
+                "group": "channel_3",
                 "order": 3
             },
             "channel4_turns": {
@@ -175,7 +175,7 @@
                 "default": 0,
                 "enum_titles": ["No", "Yes"],
                 "description": "Firmware v2.10.0 or newer is required",
-                "group": "l4",
+                "group": "channel_4",
                 "order": 3
             },
             "channel5_turns": {
@@ -206,7 +206,7 @@
                 "default": 0,
                 "enum_titles": ["No", "Yes"],
                 "description": "Firmware v2.10.0 or newer is required",
-                "group": "l5",
+                "group": "channel_5",
                 "order": 3
             },
             "channel6_turns": {
@@ -237,7 +237,7 @@
                 "default": 0,
                 "enum_titles": ["No", "Yes"],
                 "description": "Firmware v2.10.0 or newer is required",
-                "group": "l6",
+                "group": "channel_6",
                 "order": 3
             },
             "baud_rate": {
