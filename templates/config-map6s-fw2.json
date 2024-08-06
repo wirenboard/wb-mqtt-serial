@@ -81,6 +81,7 @@
                 "enum": [0, 1],
                 "default": 0,
                 "enum_titles": ["No", "Yes"],
+                "description": "Firmware v2.10.0 or newer is required",
                 "group": "l1",
                 "order": 3
             },
@@ -111,6 +112,7 @@
                 "enum": [0, 1],
                 "default": 0,
                 "enum_titles": ["No", "Yes"],
+                "description": "Firmware v2.10.0 or newer is required",
                 "group": "l2",
                 "order": 3
             },
@@ -141,6 +143,7 @@
                 "enum": [0, 1],
                 "default": 0,
                 "enum_titles": ["No", "Yes"],
+                "description": "Firmware v2.10.0 or newer is required",
                 "group": "l3",
                 "order": 3
             },
@@ -171,6 +174,7 @@
                 "enum": [0, 1],
                 "default": 0,
                 "enum_titles": ["No", "Yes"],
+                "description": "Firmware v2.10.0 or newer is required",
                 "group": "l4",
                 "order": 3
             },
@@ -201,6 +205,7 @@
                 "enum": [0, 1],
                 "default": 0,
                 "enum_titles": ["No", "Yes"],
+                "description": "Firmware v2.10.0 or newer is required",
                 "group": "l5",
                 "order": 3
             },
@@ -231,6 +236,7 @@
                 "enum": [0, 1],
                 "default": 0,
                 "enum_titles": ["No", "Yes"],
+                "description": "Firmware v2.10.0 or newer is required",
                 "group": "l6",
                 "order": 3
             },
@@ -429,7 +435,7 @@
                 "round_to": 1e-6,
                 "word_order": "little_endian",
                 "group": "channel_2"
-            },  
+            },
             {
                 "name": "RP energy 2",
                 "reg_type": "input",
@@ -763,7 +769,7 @@
                 "round_to": 1e-6,
                 "word_order": "little_endian",
                 "group": "channel_5"
-            },  
+            },
             {
                 "name": "Phase angle 5",
                 "reg_type": "input",
@@ -1031,7 +1037,8 @@
                 "Supply voltage": "Напряжение 5 В",
                 "Uptime": "Время работы с момента включения (с)",
                 "MCU Temperature": "Температура МК",
-                "MCU Voltage": "Напряжение питания МК"
+                "MCU Voltage": "Напряжение питания МК",
+                "Firmware v2.10.0 or newer is required": "Для прошивок v2.10.0 и новее"
             }
         }
     }

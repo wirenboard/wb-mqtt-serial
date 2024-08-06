@@ -82,6 +82,7 @@
                 "enum": [0, 1],
                 "default": 0,
                 "enum_titles": ["No", "Yes"],
+                "description": "Firmware v2.10.0 or newer is required",
                 "group": "l1",
                 "order": 4
             },
@@ -124,6 +125,7 @@
                 "enum": [0, 1],
                 "default": 0,
                 "enum_titles": ["No", "Yes"],
+                "description": "Firmware v2.10.0 or newer is required",
                 "group": "l2",
                 "order": 4
             },
@@ -166,6 +168,7 @@
                 "enum": [0, 1],
                 "default": 0,
                 "enum_titles": ["No", "Yes"],
+                "description": "Firmware v2.10.0 or newer is required",
                 "group": "l3",
                 "order": 4
             },
@@ -914,7 +917,8 @@
                 "Uptime": "Время работы с момента включения (с)",
                 "MCU Temperature": "Температура МК",
                 "MCU Voltage": "Напряжение питания МК",
-                "Firmware v2.3.0 or newer is required": "Для прошивок v2.3.0 и новее"
+                "Firmware v2.3.0 or newer is required": "Для прошивок v2.3.0 и новее",
+                "Firmware v2.10.0 or newer is required": "Для прошивок v2.10.0 и новее"
             }
         }
     }
