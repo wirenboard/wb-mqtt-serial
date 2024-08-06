@@ -2,7 +2,7 @@ wb-mqtt-serial (2.139.0) stable; urgency=medium
 
   * Add current transformers reverse setting to the MAP templates
 
- -- Dmitry Borisov <dmitry.borisov@wirenboard.com>, Ilia Skochilov <ilia.skochilov@wirenboard.com>  Fri, 2 Aug 2024 15:40:00 +0300
+ -- Dmitry Borisov <dmitry.borisov@wirenboard.com>, Ilia Skochilov <ilia.skochilov@wirenboard.com>  Tue, 6 Aug 2024 11:40:00 +0300
 
 wb-mqtt-serial (2.138.0) stable; urgency=medium
 
