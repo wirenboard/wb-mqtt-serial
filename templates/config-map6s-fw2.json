@@ -75,7 +75,7 @@
             },
             "channel1_ct_reverse": {
                 "title": "Current Transformer Reverse 1",
-                "address": "0x14b0",
+                "address": "0x14b2",
                 "reg_type": "holding",
                 "format": "u16",
                 "enum": [0, 1],
@@ -135,7 +135,7 @@
             },
             "channel3_ct_reverse": {
                 "title": "Current Transformer Reverse 3",
-                "address": "0x14b2",
+                "address": "0x14b0",
                 "reg_type": "holding",
                 "format": "u16",
                 "enum": [0, 1],
@@ -165,7 +165,7 @@
             },
             "channel4_ct_reverse": {
                 "title": "Current Transformer Reverse 4",
-                "address": "0x24b0",
+                "address": "0x24b2",
                 "reg_type": "holding",
                 "format": "u16",
                 "enum": [0, 1],
@@ -225,7 +225,7 @@
             },
             "channel6_ct_reverse": {
                 "title": "Current Transformer Reverse 6",
-                "address": "0x24b2",
+                "address": "0x24b0",
                 "reg_type": "holding",
                 "format": "u16",
                 "enum": [0, 1],
