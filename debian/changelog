@@ -1,8 +1,8 @@
-wb-mqtt-serial (2.134.0) stable; urgency=medium
+wb-mqtt-serial (2.139.0) stable; urgency=medium
 
   * Add WB-MAO4-20mA support
 
- -- Pavel Gasheev <pavel.gasheev@wirenboard.ru>  Fri, 26 Jul 2024 10:19:08 +0300
+ -- Pavel Gasheev <pavel.gasheev@wirenboard.ru>  Tue, 06 Aug 2024 21:08:51 +0300
 
 wb-mqtt-serial (2.138.0) stable; urgency=medium
 
