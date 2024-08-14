@@ -8,7 +8,7 @@
 
 {% set INPUTS_NUMBER = 4 -%}
 {% set OUTPUTS_NUMBER = 4 -%}
-{% set PRESS_TYPES = ["short", "long", "double", "short long"] %}
+{% set PRESS_TYPES = ["single", "long", "double", "shortlong"] %}
 
 {
     "title": "template_title",
@@ -226,13 +226,13 @@
                 "title": "Action",
                 "address": {{832 + (loop.index0 * 16) + ch_number}},
                 "reg_type": "holding",
-                {% if press_type in ["long", "short long"] %}"enum": [0, 1, 2, 3, 4, 5],{% else %}"enum": [0, 1, 2, 3, 4],{% endif %}
+                {% if press_type in ["long", "shortlong"] %}"enum": [0, 1, 2, 3, 4, 5],{% else %}"enum": [0, 1, 2, 3, 4],{% endif %}
                 "enum_titles": [
                     "Turn Off",
                     "Turn On",
                     "Toggle",
                     "Decrease Level",
-                    "Increase Level"{% if press_type in ["long", "short long"] %},
+                    "Increase Level"{% if press_type in ["long", "shortlong"] %},
                     "Increase/Decrease Level"{% endif %}
                 ],
                 "default": 0,
@@ -360,7 +360,7 @@
                 "description": "decrement_rate_description",
                 "address": {{944 + ch_number - 1}},
                 "reg_type": "holding",
-                "default": 20,
+                "default": 0,
                 "min": 0,
                 "max": 500,
                 "group": "gg_output_{{ ch_number }}_rates"
@@ -371,7 +371,7 @@
                 "description": "increment_rate_description",
                 "address": {{960 + ch_number - 1}},
                 "reg_type": "holding",
-                "default": 20,
+                "default": 0,
                 "min": 0,
                 "max": 500,
                 "group": "gg_output_{{ ch_number }}_rates"
@@ -409,9 +409,9 @@
                 "title": "Level (%)",
                 "reg_type": "holding",
                 "address": {{656 + ch_number - 1}},
-                "min": 1,
+                "min": 0.1,
                 "max": 100,
-                "scale": 0.001,
+                "scale": 0.1,
                 "default": 50,
                 "required": true,
                 "condition": "safety_mode_ch_{{ch_number}}_action==3",
@@ -437,9 +437,10 @@
                 "title": "Level (%)",
                 "reg_type": "holding",
                 "address": {{672 + ch_number - 1}},
-                "min": 1,
+                "min": 0.1,
                 "max": 100,
                 "default": 50,
+                "scale": 0.1,
                 "required": true,
                 "condition": "power_up_behaviour_ch_{{ch_number}}_action==3",
                 "group": "gg_power_up_behaviour_ch_{{ ch_number }}"
@@ -493,6 +494,7 @@
         "channels": [
             {% for index in range(0, INPUTS_NUMBER) -%}
             {
+                "id": "input_{{index + 1}}",
                 "name": "Input {{index + 1}}",
                 "reg_type": "discrete",
                 "address": {{index}},
@@ -500,6 +502,7 @@
                 "group": "input_{{index + 1}}_counters"
             },
             {
+                "id": "input_{{index + 1}}_counter",
                 "name": "Input {{index + 1}} Counter",
                 "reg_type": "input",
                 "address": {{32 + index}},
@@ -509,7 +512,8 @@
                 "group": "input_{{index + 1}}_counters"
             },
             {
-                "name": "Input {{index + 1}} Short Press Counter",
+                "id": "input_{{index + 1}}_single_press_counter",
+                "name": "Input {{index + 1}} Single Press Counter",
                 "reg_type": "input",
                 "address": {{464 + index}},
                 "type": "value",
@@ -519,6 +523,7 @@
                 "group": "input_{{index + 1}}_counters"
             },
             {
+                "id": "input_{{index + 1}}_long_press_counter",
                 "name": "Input {{index + 1}} Long Press Counter",
                 "reg_type": "input",
                 "address": {{480 + index}},
@@ -529,6 +534,7 @@
                 "group": "input_{{index + 1}}_counters"
             },
             {
+                "id": "input_{{index + 1}}_double_press_counter",
                 "name": "Input {{index + 1}} Double Press Counter",
                 "reg_type": "input",
                 "address": {{496 + index}},
@@ -539,7 +545,8 @@
                 "group": "input_{{index + 1}}_counters"
             },
             {
-                "name": "Input {{index + 1}} Short Long Press Counter",
+                "id": "input_{{index + 1}}_shortlong_press_counter",
+                "name": "Input {{index + 1}} Shortlong Press Counter",
                 "reg_type": "input",
                 "address": {{512 + index}},
                 "type": "value",
@@ -551,6 +558,7 @@
             {% endfor -%}
             {% for index in range(0, OUTPUTS_NUMBER) -%}
             {
+                "id": "channel_{{index + 1}}",
                 "name": "Channel {{index + 1}}",
                 "reg_type": "coil",
                 "address": {{16 + index}},
@@ -558,6 +566,7 @@
                 "group": "gg_output_{{index + 1}}_channels"
             },
             {
+                "id": "channel_{{index + 1}}_level",
                 "name": "Channel {{index + 1}} Level",
                 "reg_type": "holding",
                 "address": {{16 + index}},
@@ -568,6 +577,7 @@
                 "group": "gg_output_{{index + 1}}_channels"
             },
             {
+                "id": "channel_{{index + 1}}_current",
                 "name": "Channel {{index + 1}} Current",
                 "reg_type": "holding",
                 "address": {{index}},
@@ -579,7 +589,8 @@
                 "group": "gg_output_{{index + 1}}_channels"
             },
             {
-                "name": "Channel {{index + 1}} Open Circuit",
+                "id": "channel_{{index + 1}}_open_circuit_fail",
+                "name": "Channel {{index + 1}} Open Circuit Fail",
                 "reg_type": "discrete",
                 "address": {{16 + index}},
                 "type": "switch",
@@ -587,6 +598,7 @@
                 "group": "gg_output_{{index + 1}}_channels"
             },
             {
+                "id": "channel_{{index + 1}}_duty_cycle_raw",
                 "name": "Channel {{index + 1}} Duty Cycle Raw",
                 "reg_type": "holding",
                 "address": {{90 + index}},
@@ -598,6 +610,7 @@
             },
             {% endfor -%}
             {
+                "id": "serial",
                 "name": "Serial",
                 "type": "text",
                 "reg_type": "input",
@@ -606,6 +619,7 @@
                 "group": "hw_info"
             },
             {
+                "id": "fw_version",
                 "name": "FW Version",
                 "reg_type": "input",
                 "address": 250,
@@ -616,39 +630,43 @@
                 "group": "hw_info"
             },
             {
+                "id": "supply_voltage",
                 "name": "Supply voltage",
                 "reg_type": "input",
                 "address": 121,
-                "type": "voltage",
+                "units": "V",
                 "scale": 0.001,
                 "enabled": false,
                 "group": "hw_info"
             },
             {
+                "id": "uptime",
                 "name": "Uptime",
                 "reg_type": "input",
                 "address": 104,
-                "type": "text",
+                "units": "s",
                 "format": "u32",
                 "enabled": false,
                 "group": "hw_info"
             },
             {
+                "id": "mcu_temperature",
                 "name": "MCU Temperature",
                 "reg_type": "input",
                 "address": 124,
-                "type": "temperature",
+                "units": "deg C",
                 "format": "s16",
                 "scale": 0.1,
                 "enabled": false,
                 "group": "hw_info"
             },
             {
+                "id": "mcu_voltage",
                 "name": "MCU Voltage",
                 "reg_type": "input",
                 "address": 123,
                 "scale": 0.001,
-                "type": "voltage",
+                "units": "V",
                 "enabled": false,
                 "group": "hw_info"
             }
@@ -661,7 +679,7 @@
                 "Uptime": "Uptime (s)",
 
                 "input_hold_time_description": "Presses that last longer than the specified time are counted as long presses",
-                "input_double_time_description": "If there is no second press during the specified time then press is single. 0 - disables all presses except short and long. Adds a delay to the response to a short press",
+                "input_double_time_description": "If there is no second press during the specified time then press is single. 0 - disables all presses except single and long. Adds a delay to the response to a single press",
                 "input_debounce_time_description": "Must be 5-10 times less than second press waiting time. Adds a delay to the response to presses"
             },
             "ru": {
@@ -684,10 +702,10 @@
                 {% for ch_number in range(1, INPUTS_NUMBER + 1) -%}
                 "Input {{ch_number}}": "Вход {{ch_number}}",
                 "Input {{ch_number}} Counter": "Счетчик {{ch_number}}",
-                "Input {{ch_number}} Short Press Counter": "Счетчик коротких нажатий входа {{ch_number}}",
+                "Input {{ch_number}} Single Press Counter": "Счетчик коротких нажатий входа {{ch_number}}",
                 "Input {{ch_number}} Long Press Counter": "Счетчик длинных нажатий входа {{ch_number}}",
                 "Input {{ch_number}} Double Press Counter": "Счетчик двойных нажатий входа {{ch_number}}",
-                "Input {{ch_number}} Short Long Press Counter": "Счетчик коротких, а затем длинных нажатий входа {{ch_number}}",
+                "Input {{ch_number}} Shortlong Press Counter": "Счетчик коротких, а затем длинных нажатий входа {{ch_number}}",
                 {% endfor -%}
 
                 "Level (%)": "Уровень (%)",
@@ -696,14 +714,14 @@
                 "Channel {{ch_number}}": "Канал {{ch_number}}",
                 "Channel {{ch_number}} Level": "Уровень канала {{ch_number}}",
                 "Channel {{ch_number}} Current": "Ток канала {{ch_number}}",
-                "Channel {{ch_number}} Open Circuit": "Обрыв цепи канала {{ch_number}}",
+                "Channel {{ch_number}} Open Circuit Fail": "Обрыв цепи канала {{ch_number}}",
                 "Channel {{ch_number}} Duty Cycle Raw": "Прямое задание скважности ШИМ на выходе {{ch_number}}",
                 {% endfor -%}
 
-                "Short Press Action": "Действие для короткого нажатия",
+                "Single Press Action": "Действие для короткого нажатия",
                 "Long Press Action": "Действие для длинного нажатия",
                 "Double Press Action": "Действие для двойного нажатия",
-                "Short Long Press Action": "Действие для короткого, затем длинного нажатия",
+                "Shortlong Press Action": "Действие для короткого, затем длинного нажатия",
 
                 "No Action": "Ничего не делать",
                 "All Outputs": "Все выходы",
