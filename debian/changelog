@@ -4,6 +4,12 @@ wb-mqtt-serial (2.139.0) stable; urgency=medium
 
  -- Pavel Gasheev <pavel.gasheev@wirenboard.ru>  Tue, 06 Aug 2024 21:08:51 +0300
 
+wb-mqtt-serial (2.138.1) stable; urgency=medium
+
+  * Fix APC NMC2 AP9630 template
+
+ -- Nikolay Korotkiy <nikolay.korotkiy@wirenboard.com>  Tue, 06 Aug 2024 16:05:00 +0400
+
 wb-mqtt-serial (2.138.0) stable; urgency=medium
 
   * Add template PID-controller Ptex
