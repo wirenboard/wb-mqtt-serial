@@ -690,9 +690,22 @@
                 "baud_rate_description": "Make sure that communication with device is established before changing this parameter. Select required baud rate, save configuration and then change port baud rate to the same value.",
                 "Uptime": "Uptime (s)",
 
+                "level_0_current_description": "If channel is turned off or level is set to 0%, output current will be equal to the specified value",
+                "level_100_current_description": "If level is set to 100% and channel is turned on, output current will be equal to the specified value",
+
+                "decrement_rate_description": "When level is changed abruptly or channel is turned off, level will decrease smoothly with specified rate. If set to 0, level will decrease instantly",
+                "increment_rate_description": "When level is changed abruptly or channel is turned on, level will increase smoothly with specified rate. If set to 0, level will increase instantly",
+                "action_repeat_time_description": "When long press actions are performed, level will change with specified rate",
+
                 "input_hold_time_description": "Presses that last longer than the specified time are counted as long presses",
                 "input_double_time_description": "If there is no second press during the specified time then press is single. 0 - disables all presses except single and long. Adds a delay to the response to a single press",
-                "input_debounce_time_description": "Must be 5-10 times less than second press waiting time. Adds a delay to the response to presses"
+                "input_debounce_time_description": "Must be 5-10 times less than second press waiting time. Adds a delay to the response to presses",
+
+                "output_description": "There are two ways to control the output:<br>1) set the limits of the working range and control the level in percent between these limits<br>2) set the output current in mA directly<br>Using both ways simultaneously is not allowed.",
+                "g_safety_description": "Safety mode is activated when there is no modbus polling for the specified time. Supported since firmware version 2.5.0",
+                "poll_timeout_description": "Time in seconds without modbus polling before activation safety mode. Actions in safety mode are configured using appropriate parameters",
+                "inputs_control_in_safety_mode_description": "Sets change of control from the inputs when module switches to safety mode",
+                "g_power_up_behaviour_description": "Actions that will be performed when power is applied to the module"
             },
             "ru": {
                 "Enabled": "Активен",
