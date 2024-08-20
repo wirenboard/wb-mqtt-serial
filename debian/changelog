@@ -177,12 +177,6 @@ wb-mqtt-serial (2.125.1) stable; urgency=medium
 
  -- Petr Krasnoshchekov <petr.krasnoshchekov@wirenboard.com>  Mon, 10 Jun 2024 17:18:03 +0500
 
-wb-mqtt-serial (2.125.0) stable; urgency=medium
-
-  * WB-MDM3 template: add light scenes, switch mode, safety and powerup actions support
-
- -- Ilia Skochilov <ilia.skochilov@wirenboard.com>  Tue, 04 Jun 2024 11:14:15 +0300
-
 wb-mqtt-serial (2.124.0) stable; urgency=medium
 
   * Add new template for A-OK AM-35 motors

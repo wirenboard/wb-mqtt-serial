@@ -18630,14 +18630,6 @@ WB-MDM3
 	MCU Temperature  =>  MCU Temperature
 	MCU Voltage  =>  MCU Voltage
 	Overcurrent  =>  Overcurrent
-	Scene 1 Light  =>  Scene 1 Light
-	Scene 2 Light  =>  Scene 2 Light
-	Scene 3 Light  =>  Scene 3 Light
-	Scene 4 Light  =>  Scene 4 Light
-	Scene 5 Light  =>  Scene 5 Light
-	Scene 6 Light  =>  Scene 6 Light
-	Scene 7 Light  =>  Scene 7 Light
-	Scene 8 Light  =>  Scene 8 Light
 	Serial  =>  Serial
 	Supply voltage  =>  Supply voltage
 	Uptime  =>  Uptime
