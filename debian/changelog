@@ -1,3 +1,9 @@
+wb-mqtt-serial (2.138.1-wb100) stable; urgency=medium
+
+  * Revert WB-MDM3 template changed in 2.125.0
+
+ -- Pavel Gasheev <pavel.gasheev@wirenboard.ru>  Tue, 20 Aug 2024 15:33:52 +0300
+
 wb-mqtt-serial (2.138.1) stable; urgency=medium
 
   * Fix APC NMC2 AP9630 template
