@@ -1,4 +1,4 @@
-wb-mqtt-serial (2.138.1-wb101) stable; urgency=medium
+wb-mqtt-serial (2.138.1-wb102) stable; urgency=medium
 
   * Backport MWAC template
 
