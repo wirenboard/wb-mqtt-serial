@@ -168,7 +168,7 @@
             {
                 "id": "{{action_bind}}_number",
                 "title": "Output Number",
-                "address": {{768 + ch_number}},
+                "address": {{768 + (loop.index0 * 16) + ch_number}},
                 "reg_type": "holding",
                 "enum": [0, 1, 2, 3, 100],
                 "enum_titles": [
@@ -186,7 +186,7 @@
             {
                 "id": "{{action_bind}}_action_single",
                 "title": "Action",
-                "address": {{832 + ch_number}},
+                "address": {{832 + (loop.index0 * 16) + ch_number}},
                 "reg_type": "holding",
                 {% if press_type in ["long", "shortlong"] %}"enum": [0, 1, 2, 3, 4, 5],{% else %}"enum": [0, 1, 2, 3, 4],{% endif %}
                 "enum_titles": [
@@ -205,7 +205,7 @@
             {
                 "id": "{{action_bind}}_action_all",
                 "title": "Action",
-                "address": {{832 + ch_number}},
+                "address": {{832 + (loop.index0 * 16) + ch_number}},
                 "reg_type": "holding",
                 "enum": [0, 1, 3, 4],
                 "enum_titles": [
@@ -224,7 +224,7 @@
             {
                 "id": "input_{{ch_number + 1}}_switch_{{sw_act}}_channel",
                 "title": "Output Number",
-                "address": {{704 + ch_number}},
+                "address": {{704 + (loop.index0 * 16) + ch_number}},
                 "reg_type": "holding",
                 "enum": [0, 1, 2, 3, 100],
                 "enum_titles": [
@@ -242,7 +242,7 @@
             {
                 "id": "input_{{ch_number + 1}}_switch_{{sw_act}}_action_single",
                 "title": "Action",
-                "address": {{736 + ch_number}},
+                "address": {{736 + (loop.index0 * 16) + ch_number}},
                 "reg_type": "holding",
                 "enum": [0, 1, 2],
                 "enum_titles": [
@@ -258,7 +258,7 @@
             {
                 "id": "input_{{ch_number + 1}}_switch_{{sw_act}}_action_all",
                 "title": "Action",
-                "address": {{736 + ch_number}},
+                "address": {{736 + (loop.index0 * 16) + ch_number}},
                 "reg_type": "holding",
                 "enum": [0, 1],
                 "enum_titles": [
