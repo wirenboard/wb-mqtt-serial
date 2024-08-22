@@ -35,7 +35,7 @@
             {
                 "title": "HW Info",
                 "id": "hw_info"
-            },
+            }
         ],
         "parameters": {
             {% for zon_num in range(0, ZONE_NUMBER) -%}
@@ -51,7 +51,7 @@
                 "default": 1,
                 "enum_titles": [
                     "None",
-                    "Enable",
+                    "Enable"
                 ]
             },
             "input{{1 + zon_num }}_type": {
@@ -115,7 +115,7 @@
                 ],
                 "group": "general",
                 "order": 2
-            },
+            }
         },
 
         "channels": [
@@ -282,7 +282,7 @@
                 "type": "value",
                 "group": "hw_info",
                 "enabled": false
-            },
+            }
         ],
         "translations": {
             "en": {
@@ -309,7 +309,7 @@
                 "led_{{1 + zon_num}}": "LED {{1 + zon_num}}",
                 {% endfor -%}
                 "software_version": "Software Version",
-                "hardware_version": "Hardware Version",
+                "hardware_version": "Hardware Version"
             },
             "ru": {
                 "template_title": "{{ title_ru }}",
