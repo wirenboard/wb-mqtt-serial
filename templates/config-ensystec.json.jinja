@@ -1,0 +1,370 @@
+{# Определение переменных для формирования шаблона -#}
+
+{% set title_en = "Ensystec Leak Protect" -%}
+{% set title_ru = "Ensystec - защита от протечки" -%}
+{% set device_type = "Ensystec-Leak-Protect" -%}
+{% set group = "g-leakage" -%}
+{% set device_name = "Ensystec Leak Protect" -%}
+{% set device_id = "ensystec_leak_protect" -%}
+
+{% set ZONE_NUMBER = 10 -%}
+{% set OUTPUTS_NUMBER = 4 -%}
+
+{
+    "title": "template_title",
+    "device_type": "{{ device_type }}",
+    "group": "{{ group }}",
+    "device": {
+        "name": "{{ device_name }}",
+        "id": "{{ device_id }}",
+        "groups": [
+            {% for zon_num in range(0, ZONE_NUMBER) -%}
+            {
+                "title": "Input {{1 + zon_num}}",
+                "id": "input{{1 + zon_num}}"
+            },
+            {% endfor -%}
+            {
+                "title": "Outputs",
+                "id": "outputs"
+            },
+            {
+                "title": "General",
+                "id": "general"
+            },
+            {
+                "title": "HW Info",
+                "id": "hw_info"
+            },
+        ],
+        "parameters": {
+            {% for zon_num in range(0, ZONE_NUMBER) -%}
+            "input{{1 + zon_num }}_enable": {
+                "title": "Enable Input",
+                "address": "{{10 + zon_num//4}}:{{0 + 4*(( zon_num ) % 4)}}:1",
+                "reg_type": "holding",
+                "group": "input{{1 + zon_num}}",
+                "order": 1,
+                "required": false,
+                "readonly": true,
+                "enum": [0, 1],
+                "default": 1,
+                "enum_titles": [
+                    "None",
+                    "Enable",
+                ]
+            },
+            "input{{1 + zon_num }}_type": {
+                "title": "Type",
+                "address": "{{10 + zon_num//4}}:{{1 + 4*(( zon_num ) % 4)}}:1",
+                "reg_type": "holding",
+                "group": "input{{1 + zon_num}}",
+                "order": 2,
+                "required": true,
+                "readonly": true,
+                "enum": [0, 1],
+                "default": 1,
+                "enum_titles": [
+                    "Water Counter",
+                    "Leakage Sensor"
+                ],
+                "condition": "input{{1 + zon_num }}_enable==1"
+            },
+            "input{{1 + zon_num }}_open_circuit": {
+                "title": "Open Circuit",
+                "description": "open_circuit_description",
+                "address": "{{10 + zon_num//4}}:{{2 + 4*(( zon_num ) % 4)}}:1",
+                "reg_type": "holding",
+                "group": "input{{1 + zon_num}}",
+                "order": 3,
+                "required": true,
+                "readonly": true,
+                "enum": [0, 1],
+                "default": 1,
+                "enum_titles": [
+                    "Enable",
+                    "None"
+                ],
+                "condition": "input{{1 + zon_num }}_type==1"
+            },
+            {% endfor -%}
+            "address": {
+                "title": "Address",
+                "description": "address_description",
+                "address": 15,
+                "reg_type": "holding",
+                "format": "u8",
+                "default": 247,
+                "min": 1,
+                "max": 247,
+                "group": "general",
+                "order": 1
+            },
+            "baud_rate": {
+                "title": "Baud Rate",
+                "description": "baud_rate_description",
+                "address": 16,
+                "reg_type": "holding",
+                "enum": [255, 254, 253, 251],
+                "default": 255,
+                "enum_titles": [
+                    "9600 bps",
+                    "19200 bps",
+                    "57600 bps",
+                    "115200 bps"
+                ],
+                "group": "general",
+                "order": 2
+            },
+        },
+
+        "channels": [
+            {
+                "name": "external_power_220_ac",
+                "reg_type": "holding",
+                "address": "4:1:1",
+                "readonly": true,
+                "type": "switch",
+                "group": "general",
+                "enabled": true
+            },
+            {
+                "name": "low_battery_voltage",
+                "reg_type": "holding",
+                "address": "4:2:1",
+                "readonly": true,
+                "type": "switch",
+                "on_value": 0,
+                "off_value": 1,
+                "group": "general",
+                "enabled": true
+            },
+            {
+                "name": "leakage_sensor",
+                "reg_type": "holding",
+                "address": "4:0:1",
+                "readonly": true,
+                "type": "switch",
+                "on_value": 0,
+                "off_value": 1,
+                "group": "general",
+                "enabled": true
+            },
+            {
+                "name": "failure_sensor",
+                "reg_type": "holding",
+                "address": "4:3:1",
+                "readonly": true,
+                "type": "switch",
+                "on_value": 0,
+                "off_value": 1,
+                "group": "general",
+                "enabled": true
+            },
+            {% for zon_num in range(0, ZONE_NUMBER) -%}
+            {% set enabled = 'true' if True else 'false' -%}
+            {
+                "name": "input_{{1 + zon_num}}",
+                "reg_type": "holding",
+                "address": {% if zon_num < 8 %} "3:{{0 + 2*zon_num}}:1" {% else %} "2:{{(0-16) + 2*zon_num}}:1" {% endif -%},
+                "readonly": true,
+                "type": "switch",
+                "on_value": 0,
+                "off_value": 1,
+                "group": "input{{1 + zon_num}}",
+                "condition": "(input{{1 + zon_num }}_enable==1)&&(input{{1 + zon_num }}_type==1)",
+                "enabled": {{enabled}}
+            },
+            {
+                "name": "input_{{1 + zon_num}}_counter",
+                "reg_type": "holding",
+                "address": "{{17 + 2*zon_num}}",
+                "readonly": true,
+                "type": "value",
+                "format": "s32",
+                "group": "input{{1 + zon_num}}",
+                "condition": "(input{{1 + zon_num }}_enable==1)&&(input{{1 + zon_num }}_type==0)",
+                "enabled": {{enabled}}
+            },
+            {
+                "name": "input_{{1 + zon_num}}_open_circuit",
+                "reg_type": "holding",
+                "address": {% if zon_num < 8 %} "3:{{1 + 2*zon_num}}:1" {% else %} "2:{{(1-16) + 2*zon_num}}:1" {% endif -%},
+                "readonly": true,
+                "type": "switch",
+                "on_value": 0,
+                "off_value": 1,
+                "group": "input{{1 + zon_num}}",
+                "condition": "(input{{1 + zon_num }}_enable==1)&&(input{{1 + zon_num }}_type==1)&&(input{{1 + zon_num }}_open_circuit==0)",
+                "enabled": {{enabled}}
+            },
+            {% endfor -%}
+
+            {% for out_num in range(0, OUTPUTS_NUMBER) -%}
+            {% set enabled = 'true' if out_num<2 else 'false' -%}
+            {
+                "name": "output_k{{out_num + 1}}",
+                "reg_type": "holding",
+                "write_address": {{6 + out_num}},
+                "type": "switch",
+                "on_value": 3,
+                "off_value": 1,
+                "group": "outputs",
+                "enabled": {{enabled}}
+            },
+            {
+                "name": "output_k{{out_num + 1}}_flag",
+                "reg_type": "holding",
+                "address": "{{6 + out_num}}:0:1",
+                "readonly": true,
+                "type": "value",
+                "enum": [0, 1],
+                "enum_titles": [
+                    "Done",
+                    "In Progress"
+                ],
+                "group": "outputs",
+                "enabled": false
+            },
+            {
+                "name": "output_k{{out_num + 1}}_status",
+                "reg_type": "holding",
+                "address": "4:{{8 + 2*out_num}}:2",
+                "readonly": true,
+                "type": "value",
+                "enum": [0, 1, 2, 3],
+                "enum_titles": [
+                    "Closed",
+                    "Opened",
+                    "Undefined",
+                    "Disconnected"
+                ],
+                "group": "outputs",
+                "enabled": {{enabled}}
+            },
+            {% endfor -%}
+            {
+                "name": "external_led_control",
+                "reg_type": "holding",
+                "address": "14:4:1",
+                "type": "switch",
+                "on_value": 0,
+                "off_value": 1,
+                "group": "general",
+                "enabled": false
+            },
+            {% for led_num in range(0, 10) -%}
+            {
+                "name": "led_{{1 + led_num}}",
+                "reg_type": "holding",
+                "address": "14:{{6 + led_num}}:1",
+                "type": "switch",
+                "on_value": 0,
+                "off_value": 1,
+                "group": "general",
+                "enabled": false
+            },
+            {% endfor -%}
+            {
+                "name": "software_version",
+                "reg_type": "holding",
+                "address": "127:8:0",
+                "readonly": true,
+                "type": "value",
+                "group": "hw_info",
+                "enabled": false
+            },
+            {
+                "name": "hardware_version",
+                "reg_type": "holding",
+                "address": "127:8:8",
+                "readonly": true,
+                "type": "value",
+                "group": "hw_info",
+                "enabled": false
+            },
+        ],
+        "translations": {
+            "en": {
+                "template_title": "{{ title_en }}",
+                "open_circuit_description": "Can only be activated for the “Leak Sensor Plus” sensor",
+                "address_description": "Make sure that communication with device is established before changing this parameter. Select required address, save configuration and then change device address to the same value",
+                "baud_rate_description": "Make sure that communication with device is established before changing this parameter. Select required baud rate, save configuration and then change port baud rate to the same value",
+                {% for zon_num in range(0, ZONE_NUMBER) -%}
+                "input_{{1 + zon_num}}": "Input {{1 + zon_num}}",
+                "input_{{1 + zon_num}}_counter": "Counter {{1 + zon_num}}",
+                "input_{{1 + zon_num}}_open_circuit": "Input {{1 + zon_num}} - Open Circuit",
+                {% endfor -%}
+                {% for out_num in range(0, OUTPUTS_NUMBER) -%}
+                "output_k{{out_num + 1}}": "Output K{{out_num + 1}}",
+                "output_k{{out_num + 1}}_flag": "Output K{{out_num + 1}} Flag",
+                "output_k{{out_num + 1}}_status": "Output K{{out_num + 1}} Status",
+                {% endfor -%}
+                "external_power_220_ac": "External Power 220 AC",
+                "low_battery_voltage": "Low Battery Voltage",
+                "leakage_sensor": "Leakage Sensor",
+                "failure_sensor": "Failure Sensor",
+                "external_led_control": "External LED Control",
+                {% for zon_num in range(0, ZONE_NUMBER) -%}
+                "led_{{1 + zon_num}}": "LED {{1 + zon_num}}",
+                {% endfor -%}
+                "software_version": "Software Version",
+                "hardware_version": "Hardware Version",
+            },
+            "ru": {
+                "template_title": "{{ title_ru }}",
+                {% for zon_num in range(0, ZONE_NUMBER) -%}
+                "Input {{1 + zon_num}}": "Вход {{1 + zon_num}}",
+                {% endfor -%}
+                "Outputs": "Выходы",
+                "General": "Общее",
+                "HW Info": "Данные модуля",
+                "Enable Input": "Включить вход",
+                "Type": "Тип входа",
+                "Open Circuit": "Контроль обрыва цепи",
+                "open_circuit_description": "Может быть активирован только для датчика «Leak Sensor Plus»",
+                "None": "Выключен",
+                "Enable": "Включен",
+                "Water Counter": "Счетчик воды",
+                "Leakage Sensor": "Датчик протечки",
+                {% for zon_num in range(0, ZONE_NUMBER) -%}
+                "input_{{1 + zon_num}}": "Вход {{1 + zon_num}}",
+                "input_{{1 + zon_num}}_counter": "Счетчик {{1 + zon_num}}",
+                "input_{{1 + zon_num}}_open_circuit": "Вход {{1 + zon_num}} - обрыв",
+                {% endfor -%}
+                {% for out_num in range(0, OUTPUTS_NUMBER) -%}
+                "output_k{{out_num + 1}}": "Кран {{1 + out_num}}",
+                "output_k{{out_num + 1}}_flag": "Кран {{1 + out_num}} - команда",
+                "output_k{{out_num + 1}}_status": "Кран {{1 + out_num}} - статус",
+                {% endfor -%}
+                "Done": "Выполнено",
+                "In Progress": "Выполнение",
+                "Closed": "Закрыт",
+                "Opened": "Открыт",
+                "Undefined": "Не определено",
+                "Disconnected": "Не подключен",
+                "Address": "Адрес",
+                "Baud Rate": "Скорость обмена",
+                "9600 bps": "9600 бит/с",
+                "19200 bps": "19200 бит/с",
+                "57600 bps": "57600 бит/с",
+                "115200 bps": "115200 бит/с",
+                "address_description": "Перед изменением параметра убедитесь, что связь с устройством установлена. Выберите нужный адрес, сохраните конфигурацию, а затем укажите в настройках устройства этот же адрес",
+                "baud_rate_description": "Перед изменением параметра убедитесь, что связь с устройством установлена. Выберите нужную скорость обмена, сохраните конфигурацию, а затем укажите в настройках порта эту же скорость",
+                "Inputs 1-4": "Входы 1-4",
+                "Inputs 5-8": "Входы 5-8",
+                "Inputs 9-10": "Входы 9-10",
+                "external_power_220_ac": "Внешнее питание 220 В",
+                "low_battery_voltage": "Низкий уровень заряда",
+                "leakage_sensor": "Протечка",
+                "failure_sensor": "Обрыв датчика",
+                "external_led_control": "Управление светодиодами",
+                {% for zon_num in range(0, ZONE_NUMBER) -%}
+                "led_{{1 + zon_num}}": "Светодиод {{1 + zon_num}}",
+                {% endfor -%}
+                "software_version": "Версия прошивки",
+                "hardware_version": "Версия контроллера"
+            }
+        }
+    }
+}
