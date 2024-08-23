@@ -1,20 +1,13 @@
-{% set title_en = "Ensystec Leak Protect" -%}
-{% set title_ru = "Ensystec - защита от протечки" -%}
-{% set device_type = "Ensystec-Leak-Protect" -%}
-{% set group = "g-leakage" -%}
-{% set device_name = "Ensystec Leak Protect" -%}
-{% set device_id = "ensystec_leak_protect" -%}
-
 {% set ZONE_NUMBER = 10 -%}
 {% set OUTPUTS_NUMBER = 4 -%}
 
 {
     "title": "template_title",
-    "device_type": "{{ device_type }}",
-    "group": "{{ group }}",
+    "device_type": "Ensystec-Leak-Protect",
+    "group": "g-leakage",
     "device": {
-        "name": "{{ device_name }}",
-        "id": "{{ device_id }}",
+        "name": "Ensystec Leak Protect",
+        "id": "ensystec_leak_protect",
         "groups": [
             {% for zon_num in range(0, ZONE_NUMBER) -%}
             {
@@ -283,7 +276,7 @@
         ],
         "translations": {
             "en": {
-                "template_title": "{{ title_en }}",
+                "template_title": "Ensystec Leak Protect",
                 "open_circuit_description": "Can only be activated for the “Leak Sensor Plus” sensor",
                 "address_description": "Make sure that communication with device is established before changing this parameter. Select required address, save configuration and then change device address to the same value",
                 "baud_rate_description": "Make sure that communication with device is established before changing this parameter. Select required baud rate, save configuration and then change port baud rate to the same value",
@@ -309,7 +302,7 @@
                 "hardware_version": "Hardware Version"
             },
             "ru": {
-                "template_title": "{{ title_ru }}",
+                "template_title": "Ensystec - защита от протечки",
                 {% for zon_num in range(0, ZONE_NUMBER) -%}
                 "Input {{1 + zon_num}}": "Вход {{1 + zon_num}}",
                 {% endfor -%}
