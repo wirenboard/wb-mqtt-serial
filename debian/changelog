@@ -1,3 +1,9 @@
+wb-mqtt-serial (2.139.0) stable; urgency=medium
+
+  * Add template for Ensystec
+
+ -- Mikhail Burchu <mikhail.burchu@wirenboard.com>  Fri, 23 Aug 2024 08:28:00 +0300
+
 wb-mqtt-serial (2.138.2) stable; urgency=medium
 
   * Add comments for Cleaning Mode in WB-MWAC template
