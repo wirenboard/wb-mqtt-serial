@@ -6,8 +6,6 @@
 #include <wblib/json_utils.h>
 #include <wblib/rpc.h>
 
-const std::chrono::seconds DefaultRPCTotalTimeout(10);
-
 // RPC Request execution result code
 enum class TRPCResultCode
 {

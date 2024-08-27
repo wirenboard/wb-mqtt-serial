@@ -47,7 +47,7 @@ ISerialClientTask::TRunResult TRPCPortSetupSerialClientTask::Run(PPort port,
         if (Request->OnResult) {
             Request->OnResult();
         }
-    } catch (const TSerialDeviceException& error) {
+    } catch (const std::exception& error) {
         if (Request->OnError) {
             Request->OnError(WBMQTT::E_RPC_SERVER_ERROR, std::string("Port IO error: ") + error.what());
         }

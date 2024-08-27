@@ -1,6 +1,6 @@
 #pragma once
 
-#include "modbus_common.h"
+#include "modbus_base.h"
 #include "port.h"
 
 namespace ModbusExt // modbus extension protocol common utilities
@@ -122,21 +122,24 @@ namespace ModbusExt // modbus extension protocol common utilities
     {
         TPort::TFrameCompletePred ExpectNBytes(size_t n) const;
 
+        size_t GetPacketSize(size_t pduSize) const;
+        void FinalizeRequest(std::vector<uint8_t>& request, uint32_t sn);
+        TReadFrameResult ReadFrame(TPort& port,
+                                   uint32_t sn,
+                                   const std::chrono::milliseconds& responseTimeout,
+                                   const std::chrono::milliseconds& frameTimeout,
+                                   std::vector<uint8_t>& response) const;
+
     public:
         TModbusTraits();
 
-        size_t GetPacketSize(size_t pduSize) const override;
-
-        void FinalizeRequest(Modbus::TRequest& request, uint8_t slaveId, uint32_t sn) override;
-
-        TReadFrameResult ReadFrame(TPort& port,
-                                   const std::chrono::milliseconds& responseTimeout,
-                                   const std::chrono::milliseconds& frameTimeout,
-                                   const Modbus::TRequest& req,
-                                   Modbus::TResponse& resp) const override;
-
-        uint8_t* GetPDU(std::vector<uint8_t>& frame) const override;
-        const uint8_t* GetPDU(const std::vector<uint8_t>& frame) const override;
+        Modbus::TReadResult Transaction(TPort& port,
+                                        uint8_t slaveId,
+                                        uint32_t sn,
+                                        const std::vector<uint8_t>& requestPdu,
+                                        size_t expectedResponsePduSize,
+                                        const std::chrono::milliseconds& responseTimeout,
+                                        const std::chrono::milliseconds& frameTimeout) override;
     };
 
 } // modbus extension protocol common utilities

@@ -3,7 +3,6 @@
 #include "bin_utils.h"
 #include "crc16.h"
 #include "log.h"
-#include "modbus_common.h"
 #include <stddef.h>
 #include <stdint.h>
 #include <vector>
@@ -60,6 +59,9 @@ namespace ModbusExt // modbus extension protocol declarations
     const size_t ENABLE_EVENTS_RESPONSE_DATA_SIZE_POS = 3;
     const size_t ENABLE_EVENTS_RESPONSE_DATA_POS = 4;
 
+    const size_t MODBUS_STANDARD_COMMAND_RESPONSE_SN_POS = 3;
+    const size_t MODBUS_STANDARD_COMMAND_PDU_POS = 7;
+
     // const size_t ENABLE_EVENTS_REC_TYPE_POS = 0;
     // const size_t ENABLE_EVENTS_REC_ADDR_POS = 1;
     // const size_t ENABLE_EVENTS_REC_STATE_POS = 3;
@@ -96,11 +98,11 @@ namespace ModbusExt // modbus extension protocol declarations
         return static_cast<uint8_t>(maxBytes);
     }
 
-    Modbus::TRequest MakeReadEventsRequest(const TEventConfirmationState& state,
-                                           uint8_t startingSlaveId = 0,
-                                           uint8_t maxBytes = EVENTS_REQUEST_MAX_BYTES)
+    std::vector<uint8_t> MakeReadEventsRequest(const TEventConfirmationState& state,
+                                               uint8_t startingSlaveId = 0,
+                                               uint8_t maxBytes = EVENTS_REQUEST_MAX_BYTES)
     {
-        Modbus::TRequest request({BROADCAST_ADDRESS, MODBUS_EXT_COMMAND, EVENTS_REQUEST_COMMAND});
+        std::vector<uint8_t> request({BROADCAST_ADDRESS, MODBUS_EXT_COMMAND, EVENTS_REQUEST_COMMAND});
         auto it = std::back_inserter(request);
         Append(it, startingSlaveId);
         Append(it, maxBytes);
@@ -118,7 +120,7 @@ namespace ModbusExt // modbus extension protocol declarations
 
         auto crc = GetBigEndian<uint16_t>(packet + size - CRC_SIZE, packet + size);
         if (crc != CRC16::CalculateCRC16(packet, size - CRC_SIZE)) {
-            throw Modbus::TInvalidCRCError();
+            throw Modbus::TMalformedResponseError("invalid crc");
         }
     }
 
@@ -149,8 +151,6 @@ namespace ModbusExt // modbus extension protocol declarations
 
         try {
             CheckCRC16(buf, size);
-        } catch (const Modbus::TInvalidCRCError& err) {
-            return false;
         } catch (const Modbus::TMalformedResponseError& err) {
             return false;
         }
@@ -289,9 +289,8 @@ namespace ModbusExt // modbus extension protocol declarations
         CheckCRC16(Response.data(), rc);
 
         // Old firmwares can send any command with exception bit
-        if (Response[COMMAND_POS] > 0x80) {
-            throw TSerialDevicePermanentRegisterException("modbus exception, code " +
-                                                          std::to_string(Response[EXCEPTION_CODE_POS]));
+        if (Modbus::IsException(Response[COMMAND_POS])) {
+            throw Modbus::TModbusExceptionError(Response[EXCEPTION_CODE_POS]);
         }
 
         if (rc < MIN_ENABLE_EVENTS_RESPONSE_SIZE) {
@@ -441,7 +440,7 @@ namespace ModbusExt // modbus extension protocol declarations
         return [=](uint8_t* buf, size_t size) {
             if (size < MODBUS_STANDARD_COMMAND_HEADER_SIZE + 1)
                 return false;
-            if (Modbus::IsException(buf + MODBUS_STANDARD_COMMAND_HEADER_SIZE)) // GetPDU
+            if (Modbus::IsException(buf[MODBUS_STANDARD_COMMAND_PDU_POS])) // GetPDU
                 return size >= MODBUS_STANDARD_COMMAND_HEADER_SIZE + Modbus::EXCEPTION_RESPONSE_PDU_SIZE + CRC_SIZE;
             return size >= n;
         };
@@ -452,7 +451,7 @@ namespace ModbusExt // modbus extension protocol declarations
         return MODBUS_STANDARD_COMMAND_HEADER_SIZE + CRC_SIZE + pduSize;
     }
 
-    void TModbusTraits::FinalizeRequest(Modbus::TRequest& request, uint8_t slaveId, uint32_t sn)
+    void TModbusTraits::FinalizeRequest(std::vector<uint8_t>& request, uint32_t sn)
     {
         request[0] = BROADCAST_ADDRESS;
         request[1] = MODBUS_EXT_COMMAND;
@@ -467,10 +466,10 @@ namespace ModbusExt // modbus extension protocol declarations
     }
 
     TReadFrameResult TModbusTraits::ReadFrame(TPort& port,
+                                              uint32_t sn,
                                               const milliseconds& responseTimeout,
                                               const milliseconds& frameTimeout,
-                                              const Modbus::TRequest& req,
-                                              Modbus::TResponse& res) const
+                                              std::vector<uint8_t>& res) const
     {
         auto rc = port.ReadFrame(res.data(),
                                  res.size(),
@@ -483,39 +482,52 @@ namespace ModbusExt // modbus extension protocol declarations
         }
 
         uint16_t crc = (res[rc.Count - 2] << 8) + res[rc.Count - 1];
-        if (crc != CRC16::CalculateCRC16(res.data(), rc.Count - 2)) {
-            throw Modbus::TInvalidCRCError();
+        if (crc != CRC16::CalculateCRC16(res.data(), rc.Count - CRC_SIZE)) {
+            throw Modbus::TMalformedResponseError("invalid crc");
         }
 
         if (res[0] != BROADCAST_ADDRESS) {
-            throw TSerialDeviceTransientErrorException("invalid response address");
+            throw Modbus::TUnexpectedResponseError("invalid response address");
         }
 
         if (res[1] != MODBUS_EXT_COMMAND) {
-            throw TSerialDeviceTransientErrorException("invalid response command");
+            throw Modbus::TUnexpectedResponseError("invalid response command");
         }
 
         if (res[2] != MODBUS_STANDARD_RESPONSE_COMMAND) {
-            throw TSerialDeviceTransientErrorException("invalid response subcommand");
+            throw Modbus::TUnexpectedResponseError("invalid response subcommand");
         }
 
-        for (size_t i = 3; i < MODBUS_STANDARD_COMMAND_HEADER_SIZE; ++i) {
-            if (req[i] != res[i]) {
-                throw TSerialDeviceTransientErrorException("SN mismatch");
-            }
+        auto responseSn = GetBigEndian<uint32_t>(res.cbegin() + MODBUS_STANDARD_COMMAND_RESPONSE_SN_POS,
+                                                 res.cbegin() + MODBUS_STANDARD_COMMAND_HEADER_SIZE);
+        if (responseSn != sn) {
+            throw Modbus::TUnexpectedResponseError("SN mismatch");
         }
-
-        rc.Count -= MODBUS_STANDARD_COMMAND_HEADER_SIZE + CRC_SIZE;
         return rc;
     }
 
-    uint8_t* TModbusTraits::GetPDU(std::vector<uint8_t>& frame) const
+    Modbus::TReadResult TModbusTraits::Transaction(TPort& port,
+                                                   uint8_t slaveId,
+                                                   uint32_t sn,
+                                                   const std::vector<uint8_t>& requestPdu,
+                                                   size_t expectedResponsePduSize,
+                                                   const std::chrono::milliseconds& responseTimeout,
+                                                   const std::chrono::milliseconds& frameTimeout)
     {
-        return &frame[MODBUS_STANDARD_COMMAND_HEADER_SIZE];
-    }
+        std::vector<uint8_t> request(GetPacketSize(requestPdu.size()));
+        std::copy(requestPdu.begin(), requestPdu.end(), request.begin() + MODBUS_STANDARD_COMMAND_PDU_POS);
+        FinalizeRequest(request, sn);
 
-    const uint8_t* TModbusTraits::GetPDU(const std::vector<uint8_t>& frame) const
-    {
-        return &frame[MODBUS_STANDARD_COMMAND_HEADER_SIZE];
+        port.WriteBytes(request.data(), request.size());
+
+        std::vector<uint8_t> response(GetPacketSize(expectedResponsePduSize));
+
+        auto readRes = ReadFrame(port, slaveId, responseTimeout, frameTimeout, response);
+
+        Modbus::TReadResult res;
+        res.ResponseTime = readRes.ResponseTime;
+        res.Pdu.assign(response.begin() + MODBUS_STANDARD_COMMAND_HEADER_SIZE,
+                       response.begin() + (readRes.Count - MODBUS_STANDARD_COMMAND_HEADER_SIZE - CRC_SIZE));
+        return res;
     }
 }

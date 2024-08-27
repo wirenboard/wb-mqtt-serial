@@ -104,6 +104,8 @@ namespace
             }
             try {
                 enabler.SendRequests();
+            } catch (const Modbus::TErrorBase& ex) {
+                LOG(Warn) << "Failed to disable unexpected events: " << ex.what();
             } catch (const TSerialDeviceException& ex) {
                 LOG(Warn) << "Failed to disable unexpected events: " << ex.what();
             }
@@ -210,6 +212,17 @@ TSerialClientEventsReader::TSerialClientEventsReader(size_t maxReadErrors)
       ClearErrorsOnSuccessfulRead(false)
 {}
 
+void TSerialClientEventsReader::ReadEventsFailed(const std::string& errorMessage, TRegisterCallback registerCallback)
+{
+    LOG(Warn) << "Reading events failed: " << errorMessage;
+    ++ReadErrors;
+    if (ReadErrors > MaxReadErrors) {
+        SetReadErrors(registerCallback);
+        ReadErrors = 0;
+        ClearErrorsOnSuccessfulRead = true;
+    }
+}
+
 void TSerialClientEventsReader::ReadEvents(TPort& port,
                                            milliseconds maxReadingTime,
                                            TRegisterCallback registerCallback,
@@ -236,13 +249,9 @@ void TSerialClientEventsReader::ReadEvents(TPort& port,
             LastAccessedSlaveId = visitor.GetSlaveId();
             ClearReadErrors(registerCallback);
         } catch (const TSerialDeviceException& ex) {
-            LOG(Warn) << "Reading events failed: " << ex.what();
-            ++ReadErrors;
-            if (ReadErrors > MaxReadErrors) {
-                SetReadErrors(registerCallback);
-                ReadErrors = 0;
-                ClearErrorsOnSuccessfulRead = true;
-            }
+            ReadEventsFailed(ex.what(), registerCallback);
+        } catch (const Modbus::TErrorBase& ex) {
+            ReadEventsFailed(ex.what(), registerCallback);
         }
     }
     DisableEventsFromRegs(port, visitor.GetRegsToDisable());
@@ -280,11 +289,11 @@ void TSerialClientEventsReader::EnableEvents(PSerialDevice device, TPort& port)
             LOG(Debug) << "Try to enable events for " << MakeDeviceDescriptionString(slaveId);
             ev.SendRequests();
         }
-    } catch (const TSerialDevicePermanentRegisterException& e) {
+    } catch (const Modbus::TModbusExceptionError& e) {
         LOG(Warn) << "Failed to enable events for " << MakeDeviceDescriptionString(slaveId) << ": " << e.what();
     } catch (const TResponseTimeoutException& e) {
         LOG(Warn) << "Failed to enable events for " << MakeDeviceDescriptionString(slaveId) << ": " << e.what();
-    } catch (const TSerialDeviceTransientErrorException& e) {
+    } catch (const Modbus::TErrorBase& e) {
         throw TSerialDeviceTransientErrorException(std::string("Failed to enable events: ") + e.what());
     }
 }
