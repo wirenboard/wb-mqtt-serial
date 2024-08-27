@@ -425,7 +425,7 @@ namespace Modbus // modbus protocol common utilities
                                          uint16_t baseAddress,
                                          Modbus::TRegisterCache& tmpCache)
     {
-        uint32_t regCount = std::min(GetModbusDataWidthIn16BitWords(reg), str.size());
+        uint32_t regCount = std::min(GetModbusDataWidthIn16BitWords(reg), static_cast<uint32_t>(str.size()));
         data.resize(regCount * 2);
         TAddress address{0};
         address.Type = reg.Type;
