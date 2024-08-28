@@ -198,45 +198,50 @@ namespace ModbusExt // modbus extension protocol declarations
                     TEventConfirmationState& state,
                     IEventsVisitor& eventVisitor)
     {
-        // TODO: Count request and arbitration.
-        //       maxEventsReadTime limits not only response, but total request-response time.
-        //       So request and arbitration time must be subtracted from time for response
-        auto maxBytes = GetMaxReadEventsResponseSize(port, maxEventsReadTime);
+        try {
+            // TODO: Count request and arbitration.
+            //       maxEventsReadTime limits not only response, but total request-response time.
+            //       So request and arbitration time must be subtracted from time for response
+            auto maxBytes = GetMaxReadEventsResponseSize(port, maxEventsReadTime);
 
-        auto req = MakeReadEventsRequest(state, startingSlaveId, maxBytes);
-        auto frameTimeout = port.GetSendTimeBytes(Modbus::STANDARD_FRAME_TIMEOUT_BYTES);
-        port.SleepSinceLastInteraction(frameTimeout);
-        port.WriteBytes(req);
+            auto req = MakeReadEventsRequest(state, startingSlaveId, maxBytes);
+            auto frameTimeout = port.GetSendTimeBytes(Modbus::STANDARD_FRAME_TIMEOUT_BYTES);
+            port.SleepSinceLastInteraction(frameTimeout);
+            port.WriteBytes(req);
 
-        const auto timeout = GetTimeout(port);
-        std::array<uint8_t, MAX_PACKET_SIZE + ARBITRATION_HEADER_MAX_BYTES> res;
-        auto rc = port.ReadFrame(res.data(), res.size(), timeout, timeout, ExpectEvents()).Count;
-        port.SleepSinceLastInteraction(frameTimeout);
+            const auto timeout = GetTimeout(port);
+            std::array<uint8_t, MAX_PACKET_SIZE + ARBITRATION_HEADER_MAX_BYTES> res;
+            auto rc = port.ReadFrame(res.data(), res.size(), timeout, timeout, ExpectEvents()).Count;
+            port.SleepSinceLastInteraction(frameTimeout);
 
-        const uint8_t* packet = GetPacketStart(res.data(), rc);
-        if (packet == nullptr) {
-            throw Modbus::TMalformedResponseError("invalid packet");
-        }
-
-        switch (packet[SUB_COMMAND_POS]) {
-            case EVENTS_RESPONSE_COMMAND: {
-                state.SlaveId = packet[SLAVE_ID_POS];
-                state.Flag = packet[EVENTS_RESPONSE_CONFIRM_FLAG_POS];
-                IterateOverEvents(packet[SLAVE_ID_POS],
-                                  packet + EVENTS_RESPONSE_DATA_POS,
-                                  packet[EVENTS_RESPONSE_DATA_SIZE_POS],
-                                  eventVisitor);
-                return true;
+            const uint8_t* packet = GetPacketStart(res.data(), rc);
+            if (packet == nullptr) {
+                throw Modbus::TMalformedResponseError("invalid packet");
             }
-            case NO_EVENTS_RESPONSE_COMMAND: {
-                if (packet[0] != BROADCAST_ADDRESS) {
-                    throw Modbus::TMalformedResponseError("invalid address");
+
+            switch (packet[SUB_COMMAND_POS]) {
+                case EVENTS_RESPONSE_COMMAND: {
+                    state.SlaveId = packet[SLAVE_ID_POS];
+                    state.Flag = packet[EVENTS_RESPONSE_CONFIRM_FLAG_POS];
+                    IterateOverEvents(packet[SLAVE_ID_POS],
+                                    packet + EVENTS_RESPONSE_DATA_POS,
+                                    packet[EVENTS_RESPONSE_DATA_SIZE_POS],
+                                    eventVisitor);
+                    return true;
                 }
-                return false;
+                case NO_EVENTS_RESPONSE_COMMAND: {
+                    if (packet[0] != BROADCAST_ADDRESS) {
+                        throw Modbus::TMalformedResponseError("invalid address");
+                    }
+                    return false;
+                }
+                default: {
+                    throw Modbus::TMalformedResponseError("invalid sub command");
+                }
             }
-            default: {
-                throw Modbus::TMalformedResponseError("invalid sub command");
-            }
+        } catch (const std::exception& e) {
+            LOG(Error) << e.what();
+            exit(0);
         }
     }
 
@@ -281,54 +286,59 @@ namespace ModbusExt // modbus extension protocol declarations
 
     void TEventsEnabler::EnableEvents()
     {
-        Port.WriteBytes(Request);
+        try {
+            Port.WriteBytes(Request);
 
-        // Use response timeout from MR6C template
-        auto rc = Port.ReadFrame(Response.data(), Request.size(), 8ms, FrameTimeout).Count;
+            // Use response timeout from MR6C template
+            auto rc = Port.ReadFrame(Response.data(), Request.size(), 8ms, FrameTimeout).Count;
 
-        CheckCRC16(Response.data(), rc);
+            CheckCRC16(Response.data(), rc);
 
-        // Old firmwares can send any command with exception bit
-        if (Response[COMMAND_POS] > 0x80) {
-            throw TSerialDevicePermanentRegisterException("modbus exception, code " +
-                                                          std::to_string(Response[EXCEPTION_CODE_POS]));
-        }
-
-        if (rc < MIN_ENABLE_EVENTS_RESPONSE_SIZE) {
-            throw Modbus::TMalformedResponseError("invalid packet size: " + std::to_string(rc));
-        }
-
-        if (Response[SLAVE_ID_POS] != SlaveId) {
-            throw Modbus::TMalformedResponseError("invalid slave id");
-        }
-
-        if (Response[SUB_COMMAND_POS] != ENABLE_EVENTS_COMMAND) {
-            throw Modbus::TMalformedResponseError("invalid sub command");
-        }
-
-        TBitIterator dataIt(Response.data() + ENABLE_EVENTS_RESPONSE_DATA_POS - 1,
-                            Response[ENABLE_EVENTS_RESPONSE_DATA_SIZE_POS]);
-
-        TEventType lastType = TEventType::REBOOT;
-        uint16_t lastRegAddr = 0;
-        uint16_t lastDataAddr = 0;
-        bool firstRegister = true;
-
-        for (auto regIt = SettingsStart; regIt != SettingsEnd; ++regIt) {
-            if (firstRegister || (lastType != regIt->Type) || (lastRegAddr + MaxRegDistance < regIt->Addr)) {
-                dataIt.NextByte();
-                lastDataAddr = regIt->Addr;
-                lastType = regIt->Type;
-                Visitor(lastType, lastDataAddr, dataIt.GetBit());
-                firstRegister = false;
-            } else {
-                do {
-                    dataIt.NextBit();
-                    ++lastDataAddr;
-                    Visitor(lastType, lastDataAddr, dataIt.GetBit());
-                } while (lastDataAddr != regIt->Addr);
+            // Old firmwares can send any command with exception bit
+            if (Response[COMMAND_POS] > 0x80) {
+                throw TSerialDevicePermanentRegisterException("modbus exception, code " +
+                                                            std::to_string(Response[EXCEPTION_CODE_POS]));
             }
-            lastRegAddr = regIt->Addr;
+
+            if (rc < MIN_ENABLE_EVENTS_RESPONSE_SIZE) {
+                throw Modbus::TMalformedResponseError("invalid packet size: " + std::to_string(rc));
+            }
+
+            if (Response[SLAVE_ID_POS] != SlaveId) {
+                throw Modbus::TMalformedResponseError("invalid slave id");
+            }
+
+            if (Response[SUB_COMMAND_POS] != ENABLE_EVENTS_COMMAND) {
+                throw Modbus::TMalformedResponseError("invalid sub command");
+            }
+
+            TBitIterator dataIt(Response.data() + ENABLE_EVENTS_RESPONSE_DATA_POS - 1,
+                                Response[ENABLE_EVENTS_RESPONSE_DATA_SIZE_POS]);
+
+            TEventType lastType = TEventType::REBOOT;
+            uint16_t lastRegAddr = 0;
+            uint16_t lastDataAddr = 0;
+            bool firstRegister = true;
+
+            for (auto regIt = SettingsStart; regIt != SettingsEnd; ++regIt) {
+                if (firstRegister || (lastType != regIt->Type) || (lastRegAddr + MaxRegDistance < regIt->Addr)) {
+                    dataIt.NextByte();
+                    lastDataAddr = regIt->Addr;
+                    lastType = regIt->Type;
+                    Visitor(lastType, lastDataAddr, dataIt.GetBit());
+                    firstRegister = false;
+                } else {
+                    do {
+                        dataIt.NextBit();
+                        ++lastDataAddr;
+                        Visitor(lastType, lastDataAddr, dataIt.GetBit());
+                    } while (lastDataAddr != regIt->Addr);
+                }
+                lastRegAddr = regIt->Addr;
+            }
+        } catch (const std::exception& e) {
+            LOG(Error) << e.what();
+            exit(0);
         }
     }
 

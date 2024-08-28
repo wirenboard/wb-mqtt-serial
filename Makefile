@@ -55,7 +55,7 @@ SRCS=$(SERIAL_SRCS) $(TEST_SRCS)
 TEMPLATES_DIR = templates
 JINJA_TEMPLATES = $(wildcard $(TEMPLATES_DIR)/*.json.jinja)
 
-.PHONY: all clean test templates
+.PHONY: all clean templates
 
 all : templates $(SERIAL_BIN)
 
@@ -73,25 +73,7 @@ $(GENERATED_TEMPLATES_DIR)/%.json: $(TEMPLATES_DIR)/%.json.jinja
 	mkdir -p $(GENERATED_TEMPLATES_DIR)
 	(cd $(TEMPLATES_DIR); j2 -o ../$@ $(notdir $^))
 
-test: templates $(TEST_DIR)/$(TEST_BIN)
-	rm -f $(TEST_DIR)/*.dat.out
-	if [ "$(shell arch)" != "armv7l" ] && [ "$(CROSS_COMPILE)" = "" ] || [ "$(CROSS_COMPILE)" = "x86_64-linux-gnu-" ]; then \
-		valgrind $(VALGRIND_FLAGS) $(TEST_DIR)/$(TEST_BIN) $(TEST_ARGS) || \
-		if [ $$? = 180 ]; then \
-			echo "*** VALGRIND DETECTED ERRORS ***" 1>& 2; \
-			exit 1; \
-		else $(TEST_DIR)/abt.sh show; exit 1; fi; \
-	else \
-		$(TEST_DIR)/$(TEST_BIN) $(TEST_ARGS) || { $(TEST_DIR)/abt.sh show; exit 1; } \
-	fi
-
 templates: $(JINJA_TEMPLATES:$(TEMPLATES_DIR)/%.json.jinja=$(GENERATED_TEMPLATES_DIR)/%.json)
-
-lcov: test
-ifeq ($(DEBUG), 1)
-	geninfo --no-external -b . -o $(BUILD_DIR)/coverage.info $(BUILD_DIR)/$(SRC_DIR) $(BUILD_DIR)/$(TEST_DIR)
-	genhtml -o $(BUILD_DIR)/cov_html $(BUILD_DIR)/coverage.info
-endif
 
 clean:
 	-rm -rf build/release

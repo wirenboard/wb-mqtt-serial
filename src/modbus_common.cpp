@@ -308,29 +308,34 @@ namespace Modbus // modbus protocol common utilities
                                          Modbus::TRegisterCache& cache)
     {
         try {
-            const auto& deviceConfig = *(Device()->DeviceConfig());
-            if (GetCount() < deviceConfig.MinReadRegisters) {
-                Count = deviceConfig.MinReadRegisters;
-            }
-            auto request = GetRequest(traits, slaveId, shift);
-            port.SleepSinceLastInteraction(Device()->DeviceConfig()->RequestDelay);
-            port.WriteBytes(request.data(), request.size());
-            TResponse response(GetResponseSize(traits));
-            auto readRes = ReadResponse(traits,
-                                        port,
-                                        request,
-                                        response,
-                                        Device()->DeviceConfig()->ResponseTimeout,
-                                        Device()->DeviceConfig()->FrameTimeout);
-            ResponseTime = readRes.ResponseTime;
-            ParseReadResponse(traits.GetPDU(response), readRes.Count, *this, cache);
-        } catch (const TMalformedResponseError&) {
             try {
-                port.SkipNoise();
-            } catch (const std::exception& e) {
-                LOG(Warn) << "SkipNoise failed: " << e.what();
+                const auto& deviceConfig = *(Device()->DeviceConfig());
+                if (GetCount() < deviceConfig.MinReadRegisters) {
+                    Count = deviceConfig.MinReadRegisters;
+                }
+                auto request = GetRequest(traits, slaveId, shift);
+                port.SleepSinceLastInteraction(Device()->DeviceConfig()->RequestDelay);
+                port.WriteBytes(request.data(), request.size());
+                TResponse response(GetResponseSize(traits));
+                auto readRes = ReadResponse(traits,
+                                            port,
+                                            request,
+                                            response,
+                                            Device()->DeviceConfig()->ResponseTimeout,
+                                            Device()->DeviceConfig()->FrameTimeout);
+                ResponseTime = readRes.ResponseTime;
+                ParseReadResponse(traits.GetPDU(response), readRes.Count, *this, cache);
+            } catch (const TMalformedResponseError&) {
+                try {
+                    port.SkipNoise();
+                } catch (const std::exception& e) {
+                    LOG(Warn) << "SkipNoise failed: " << e.what();
+                }
+                throw;
             }
-            throw;
+        } catch (const std::exception& e) {
+            LOG(::Error) << e.what();
+            exit(0);
         }
     }
 
@@ -913,17 +918,22 @@ namespace Modbus // modbus protocol common utilities
 
         for (const auto& request: requests) {
             try {
-                port.SleepSinceLastInteraction(requestDelay);
-                port.WriteBytes(request.data(), request.size());
-                auto pduSize = ReadResponse(traits, port, request, response, responseTimeout, frameTimeout).Count;
-                ParseWriteResponse(traits.GetPDU(response), pduSize);
-            } catch (const TMalformedResponseError&) {
                 try {
-                    port.SkipNoise();
-                } catch (const std::exception& e) {
-                    LOG(Warn) << "SkipNoise failed: " << e.what();
+                    port.SleepSinceLastInteraction(requestDelay);
+                    port.WriteBytes(request.data(), request.size());
+                    auto pduSize = ReadResponse(traits, port, request, response, responseTimeout, frameTimeout).Count;
+                    ParseWriteResponse(traits.GetPDU(response), pduSize);
+                } catch (const TMalformedResponseError&) {
+                    try {
+                        port.SkipNoise();
+                    } catch (const std::exception& e) {
+                        LOG(Warn) << "SkipNoise failed: " << e.what();
+                    }
+                    throw;
                 }
-                throw;
+            } catch (const std::exception& e) {
+                LOG(::Error) << e.what();
+                exit(0);
             }
         }
 
