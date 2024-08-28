@@ -224,9 +224,9 @@ namespace ModbusExt // modbus extension protocol declarations
                     state.SlaveId = packet[SLAVE_ID_POS];
                     state.Flag = packet[EVENTS_RESPONSE_CONFIRM_FLAG_POS];
                     IterateOverEvents(packet[SLAVE_ID_POS],
-                                    packet + EVENTS_RESPONSE_DATA_POS,
-                                    packet[EVENTS_RESPONSE_DATA_SIZE_POS],
-                                    eventVisitor);
+                                      packet + EVENTS_RESPONSE_DATA_POS,
+                                      packet[EVENTS_RESPONSE_DATA_SIZE_POS],
+                                      eventVisitor);
                     return true;
                 }
                 case NO_EVENTS_RESPONSE_COMMAND: {
@@ -297,7 +297,7 @@ namespace ModbusExt // modbus extension protocol declarations
             // Old firmwares can send any command with exception bit
             if (Response[COMMAND_POS] > 0x80) {
                 throw TSerialDevicePermanentRegisterException("modbus exception, code " +
-                                                            std::to_string(Response[EXCEPTION_CODE_POS]));
+                                                              std::to_string(Response[EXCEPTION_CODE_POS]));
             }
 
             if (rc < MIN_ENABLE_EVENTS_RESPONSE_SIZE) {
