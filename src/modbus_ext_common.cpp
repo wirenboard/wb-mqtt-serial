@@ -501,7 +501,8 @@ namespace ModbusExt // modbus extension protocol declarations
         auto responseSn = GetBigEndian<uint32_t>(res.cbegin() + MODBUS_STANDARD_COMMAND_RESPONSE_SN_POS,
                                                  res.cbegin() + MODBUS_STANDARD_COMMAND_HEADER_SIZE);
         if (responseSn != sn) {
-            throw Modbus::TUnexpectedResponseError("SN mismatch");
+            throw Modbus::TUnexpectedResponseError("SN mismatch: got " + std::to_string(responseSn) + ", wait " +
+                                                   std::to_string(sn));
         }
         return rc;
     }
@@ -522,12 +523,12 @@ namespace ModbusExt // modbus extension protocol declarations
 
         std::vector<uint8_t> response(GetPacketSize(expectedResponsePduSize));
 
-        auto readRes = ReadFrame(port, slaveId, responseTimeout, frameTimeout, response);
+        auto readRes = ReadFrame(port, sn, responseTimeout, frameTimeout, response);
 
         Modbus::TReadResult res;
         res.ResponseTime = readRes.ResponseTime;
         res.Pdu.assign(response.begin() + MODBUS_STANDARD_COMMAND_HEADER_SIZE,
-                       response.begin() + (readRes.Count - MODBUS_STANDARD_COMMAND_HEADER_SIZE - CRC_SIZE));
+                       response.begin() + (readRes.Count - CRC_SIZE));
         return res;
     }
 }
