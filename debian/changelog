@@ -1,3 +1,9 @@
+wb-mqtt-serial (2.139.2) stable; urgency=medium
+
+  * Deleted light scenes from WB-MDM3
+
+ -- Sergey Mishin <mishin@wirenboard.com>  Mon, 26 Aug 2024 11:15:00 +0300
+
 wb-mqtt-serial (2.139.1) stable; urgency=medium
 
   * Fix address validation for setup/parameters
