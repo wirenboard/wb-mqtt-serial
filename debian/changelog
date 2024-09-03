@@ -1,3 +1,10 @@
+
+wb-mqtt-serial (2.138.1-wb106) stable; urgency=medium
+
+  * WB-MDM3 template: deleted light scenes
+
+ -- Sergey Mishin <mishin@wirenboard.com>  Tue, 01 Oct 2024 17:28:00 +0300
+
 wb-mqtt-serial (2.138.1-wb105) stable; urgency=medium
 
   * JSON schema: allow floating-point numbers in "max" channel property
