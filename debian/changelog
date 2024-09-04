@@ -1,3 +1,9 @@
+wb-mqtt-serial (2.139.3) stable; urgency=medium
+
+  * Fix RGB Strip Hue not changed in WB-LED
+
+ -- Sergey Mishin <mishin@wirenboard.com>  Mon, 04 Sep 2024 17:49:00 +0300
+
 wb-mqtt-serial (2.139.2) stable; urgency=medium
 
   * Deleted light scenes from WB-MDM3
