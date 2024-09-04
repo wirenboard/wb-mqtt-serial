@@ -43,7 +43,7 @@
         },
         "address": {
           "title": "Address",
-          "$ref": "#/definitions/address"
+          "$ref": "#/definitions/address_no_bits"
         },
         "value": {
           "title": "Value",
@@ -95,7 +95,7 @@
               "type": "string"
             },
             "address": {
-              "$ref": "#/definitions/address"
+              "$ref": "#/definitions/address_no_bits"
             },
             "enum": {
               "type": "array",
