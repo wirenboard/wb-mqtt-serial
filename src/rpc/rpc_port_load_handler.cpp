@@ -38,7 +38,7 @@ void RPCPortLoadHandler(const Json::Value& request,
 }
 
 void RPCPortLoadHandler(const Json::Value& request,
-                        PPort port,
+                        TPort& port,
                         WBMQTT::TMqttRpcServer::TResultCallback onResult,
                         WBMQTT::TMqttRpcServer::TErrorCallback onError)
 {

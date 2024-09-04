@@ -39,24 +39,6 @@ template<> inline Modbus::EFunction WBMQTT::JSON::As<Modbus::EFunction>(const Js
     return static_cast<Modbus::EFunction>(value.asUInt() & 0xFF);
 }
 
-namespace
-{
-    std::vector<uint8_t> SendRequest(PPort port, PRPCPortLoadModbusRequest rpcRequest)
-    {
-        Modbus::TModbusRTUTraits traits;
-        auto pdu = Modbus::MakePDU(rpcRequest->Function, rpcRequest->Address, rpcRequest->Count, rpcRequest->Message);
-        auto responsePduSize = Modbus::CalcResponsePDUSize(rpcRequest->Function, rpcRequest->Count);
-        auto res = traits.Transaction(*port,
-                                      rpcRequest->SlaveId,
-                                      0,
-                                      pdu,
-                                      responsePduSize,
-                                      rpcRequest->ResponseTimeout,
-                                      rpcRequest->FrameTimeout);
-        return Modbus::ExtractResponseData(rpcRequest->Function, res.Pdu);
-    }
-}
-
 PRPCPortLoadModbusRequest ParseRPCPortLoadModbusRequest(const Json::Value& request)
 {
     PRPCPortLoadModbusRequest RPCRequest = std::make_shared<TRPCPortLoadModbusRequest>();
@@ -74,10 +56,18 @@ PRPCPortLoadModbusRequest ParseRPCPortLoadModbusRequest(const Json::Value& reque
     return RPCRequest;
 }
 
-std::vector<uint8_t> ExecRPCPortLoadModbusRequest(PPort port, PRPCPortLoadModbusRequest rpcRequest)
+std::vector<uint8_t> ExecRPCPortLoadModbusRequest(TPort& port, PRPCPortLoadModbusRequest rpcRequest)
 {
-    port->Open();
-    return SendRequest(port, rpcRequest);
+    Modbus::TModbusRTUTraits traits;
+    auto pdu = Modbus::MakePDU(rpcRequest->Function, rpcRequest->Address, rpcRequest->Count, rpcRequest->Message);
+    auto responsePduSize = Modbus::CalcResponsePDUSize(rpcRequest->Function, rpcRequest->Count);
+    auto res = traits.Transaction(port,
+                                  rpcRequest->SlaveId,
+                                  pdu,
+                                  responsePduSize,
+                                  rpcRequest->ResponseTimeout,
+                                  rpcRequest->FrameTimeout);
+    return Modbus::ExtractResponseData(rpcRequest->Function, res.Pdu);
 }
 
 TRPCPortLoadModbusSerialClientTask::TRPCPortLoadModbusSerialClientTask(PRPCPortLoadModbusRequest request)
@@ -105,7 +95,7 @@ ISerialClientTask::TRunResult TRPCPortLoadModbusSerialClientTask::Run(
         lastAccessedDevice.PrepareToAccess(nullptr);
 
         TSerialPortSettingsGuard settingsGuard(port, Request->SerialPortSettings);
-        auto response = SendRequest(port, Request);
+        auto response = ExecRPCPortLoadModbusRequest(*port, Request);
 
         if (Request->OnResult) {
             Json::Value replyJSON;

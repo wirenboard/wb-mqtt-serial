@@ -10,6 +10,6 @@ void RPCPortLoadHandler(const Json::Value& request,
                         WBMQTT::TMqttRpcServer::TErrorCallback onError);
 
 void RPCPortLoadHandler(const Json::Value& request,
-                        PPort port,
+                        TPort& port,
                         WBMQTT::TMqttRpcServer::TResultCallback onResult,
                         WBMQTT::TMqttRpcServer::TErrorCallback onError);

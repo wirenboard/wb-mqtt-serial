@@ -82,7 +82,7 @@ TEST_F(TModbusTCPTraitsTest, ReadFrameGood)
     std::chrono::milliseconds t(10);
 
     std::vector<uint8_t> req = {7, 8, 9};
-    auto resp = traits.Transaction(port, 100, 0, req, 2, t, t).Pdu;
+    auto resp = traits.Transaction(port, 100, req, 2, t, t).Pdu;
     ASSERT_EQ(resp.size(), 2);
     TestEqual(resp, {17, 18});
 }
@@ -94,7 +94,7 @@ TEST_F(TModbusTCPTraitsTest, ReadFrameSmallMBAP)
     std::chrono::milliseconds t(10);
 
     std::vector<uint8_t> req = {7, 8, 9};
-    ASSERT_THROW(traits.Transaction(port, 100, 0, req, 2, t, t), Modbus::TMalformedResponseError);
+    ASSERT_THROW(traits.Transaction(port, 100, req, 2, t, t), Modbus::TMalformedResponseError);
 }
 
 TEST_F(TModbusTCPTraitsTest, ReadFrameSmallMBAPLength)
@@ -104,7 +104,7 @@ TEST_F(TModbusTCPTraitsTest, ReadFrameSmallMBAPLength)
     std::chrono::milliseconds t(10);
 
     std::vector<uint8_t> req = {7, 8, 9};
-    ASSERT_THROW(traits.Transaction(port, 100, 0, req, 2, t, t), Modbus::TMalformedResponseError);
+    ASSERT_THROW(traits.Transaction(port, 100, req, 2, t, t), Modbus::TMalformedResponseError);
 }
 
 TEST_F(TModbusTCPTraitsTest, ReadFrameSmallPDU)
@@ -114,7 +114,7 @@ TEST_F(TModbusTCPTraitsTest, ReadFrameSmallPDU)
     std::chrono::milliseconds t(10);
 
     std::vector<uint8_t> req = {7, 8, 9};
-    ASSERT_THROW(traits.Transaction(port, 100, 0, req, 2, t, t), Modbus::TMalformedResponseError);
+    ASSERT_THROW(traits.Transaction(port, 100, req, 2, t, t), Modbus::TMalformedResponseError);
 }
 
 TEST_F(TModbusTCPTraitsTest, ReadFrameWrongUnitId)
@@ -124,7 +124,7 @@ TEST_F(TModbusTCPTraitsTest, ReadFrameWrongUnitId)
     std::chrono::milliseconds t(10);
 
     std::vector<uint8_t> req = {7, 8, 9};
-    ASSERT_THROW(traits.Transaction(port, 100, 0, req, 2, t, t), Modbus::TUnexpectedResponseError);
+    ASSERT_THROW(traits.Transaction(port, 100, req, 2, t, t), Modbus::TUnexpectedResponseError);
 }
 
 TEST_F(TModbusTCPTraitsTest, ReadFramePassWrongTransactionId)
@@ -138,7 +138,7 @@ TEST_F(TModbusTCPTraitsTest, ReadFramePassWrongTransactionId)
     std::chrono::milliseconds t(10);
 
     std::vector<uint8_t> req = {7, 8, 9};
-    TestEqual(traits.Transaction(port, 100, 0, req, 2, t, t).Pdu, {17, 18, 19});
+    TestEqual(traits.Transaction(port, 100, req, 2, t, t).Pdu, {17, 18, 19});
 }
 
 TEST_F(TModbusTCPTraitsTest, ReadFrameTimeout)
@@ -148,5 +148,5 @@ TEST_F(TModbusTCPTraitsTest, ReadFrameTimeout)
     std::chrono::milliseconds t(10);
 
     std::vector<uint8_t> req = {7, 8, 9};
-    ASSERT_THROW(traits.Transaction(port, 100, 0, req, 2, t, t), TResponseTimeoutException);
+    ASSERT_THROW(traits.Transaction(port, 100, req, 2, t, t), TResponseTimeoutException);
 }

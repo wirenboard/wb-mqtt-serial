@@ -4,24 +4,6 @@
 #include "serial_exc.h"
 #include "serial_port.h"
 
-namespace
-{
-    std::vector<uint8_t> SendRequest(PPort port, PRPCPortLoadRawRequest rpcRequest)
-    {
-        port->WriteBytes(rpcRequest->Message);
-
-        std::vector<uint8_t> response(rpcRequest->ResponseSize);
-        auto actualSize = port->ReadFrame(response.data(),
-                                          rpcRequest->ResponseSize,
-                                          rpcRequest->ResponseTimeout,
-                                          rpcRequest->FrameTimeout)
-                              .Count;
-        response.resize(actualSize);
-
-        return response;
-    }
-}
-
 PRPCPortLoadRawRequest ParseRPCPortLoadRawRequest(const Json::Value& request)
 {
     PRPCPortLoadRawRequest RPCRequest = std::make_shared<TRPCPortLoadRawRequest>();
@@ -36,10 +18,17 @@ PRPCPortLoadRawRequest ParseRPCPortLoadRawRequest(const Json::Value& request)
     return RPCRequest;
 }
 
-std::vector<uint8_t> ExecRPCPortLoadRawRequest(PPort port, PRPCPortLoadRawRequest rpcRequest)
+std::vector<uint8_t> ExecRPCPortLoadRawRequest(TPort& port, PRPCPortLoadRawRequest rpcRequest)
 {
-    port->Open();
-    return SendRequest(port, rpcRequest);
+    port.WriteBytes(rpcRequest->Message);
+
+    std::vector<uint8_t> response(rpcRequest->ResponseSize);
+    auto actualSize =
+        port.ReadFrame(response.data(), rpcRequest->ResponseSize, rpcRequest->ResponseTimeout, rpcRequest->FrameTimeout)
+            .Count;
+    response.resize(actualSize);
+
+    return response;
 }
 
 TRPCPortLoadRawSerialClientTask::TRPCPortLoadRawSerialClientTask(PRPCPortLoadRawRequest request): Request(request)
@@ -65,7 +54,7 @@ ISerialClientTask::TRunResult TRPCPortLoadRawSerialClientTask::Run(PPort port,
         lastAccessedDevice.PrepareToAccess(nullptr);
 
         TSerialPortSettingsGuard settingsGuard(port, Request->SerialPortSettings);
-        auto response = SendRequest(port, Request);
+        auto response = ExecRPCPortLoadRawRequest(*port, Request);
 
         if (Request->OnResult) {
             Json::Value replyJSON;

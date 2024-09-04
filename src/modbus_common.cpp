@@ -276,7 +276,6 @@ namespace Modbus // modbus protocol common utilities
             port.SleepSinceLastInteraction(Device()->DeviceConfig()->RequestDelay);
             auto res = traits.Transaction(port,
                                           slaveId,
-                                          0,
                                           pdu,
                                           Modbus::CalcResponsePDUSize(function, Count),
                                           Device()->DeviceConfig()->ResponseTimeout,
@@ -640,7 +639,6 @@ namespace Modbus // modbus protocol common utilities
     void WriteTransaction(IModbusTraits& traits,
                           TPort& port,
                           uint8_t slaveId,
-                          uint32_t sn,
                           Modbus::EFunction fn,
                           size_t responsePduSize,
                           const std::vector<uint8_t>& pdu,
@@ -650,7 +648,7 @@ namespace Modbus // modbus protocol common utilities
     {
         try {
             port.SleepSinceLastInteraction(requestDelay);
-            auto res = traits.Transaction(port, slaveId, sn, pdu, responsePduSize, responseTimeout, frameTimeout);
+            auto res = traits.Transaction(port, slaveId, pdu, responsePduSize, responseTimeout, frameTimeout);
             Modbus::ExtractResponseData(fn, res.Pdu);
         } catch (const Modbus::TModbusExceptionError& err) {
             RethrowSerialDeviceException(err);
@@ -669,7 +667,6 @@ namespace Modbus // modbus protocol common utilities
     void WriteRegister(IModbusTraits& traits,
                        TPort& port,
                        uint8_t slaveId,
-                       uint32_t sn,
                        TRegister& reg,
                        const TRegisterValue& value,
                        Modbus::TRegisterCache& cache,
@@ -695,7 +692,6 @@ namespace Modbus // modbus protocol common utilities
             WriteTransaction(traits,
                              port,
                              slaveId,
-                             sn,
                              fn,
                              Modbus::CalcResponsePDUSize(fn, regCount),
                              Modbus::MakePDU(fn, addr, regCount, data),
@@ -718,7 +714,6 @@ namespace Modbus // modbus protocol common utilities
                 WriteTransaction(traits,
                                  port,
                                  slaveId,
-                                 sn,
                                  fn,
                                  responsePduSize,
                                  Modbus::MakePDU(fn, addr + wordIndex, 1, data),
@@ -780,7 +775,6 @@ namespace Modbus // modbus protocol common utilities
     void WriteSetupRegisters(Modbus::IModbusTraits& traits,
                              TPort& port,
                              uint8_t slaveId,
-                             uint32_t sn,
                              const std::vector<PDeviceSetupItem>& setupItems,
                              Modbus::TRegisterCache& cache,
                              std::chrono::microseconds requestDelay,
@@ -793,7 +787,6 @@ namespace Modbus // modbus protocol common utilities
                 WriteRegister(traits,
                               port,
                               slaveId,
-                              sn,
                               *item->Register,
                               item->RawValue,
                               cache,
@@ -834,7 +827,6 @@ namespace Modbus // modbus protocol common utilities
             Modbus::WriteRegister(traits,
                                   port,
                                   slaveId,
-                                  0,
                                   *reg,
                                   TRegisterValue(1),
                                   cache,

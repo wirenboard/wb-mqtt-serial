@@ -432,7 +432,7 @@ namespace ModbusExt // modbus extension protocol declarations
 
     // TModbusTraits
 
-    TModbusTraits::TModbusTraits()
+    TModbusTraits::TModbusTraits(): Sn(0)
     {}
 
     TPort::TFrameCompletePred TModbusTraits::ExpectNBytes(size_t n) const
@@ -451,22 +451,21 @@ namespace ModbusExt // modbus extension protocol declarations
         return MODBUS_STANDARD_COMMAND_HEADER_SIZE + CRC_SIZE + pduSize;
     }
 
-    void TModbusTraits::FinalizeRequest(std::vector<uint8_t>& request, uint32_t sn)
+    void TModbusTraits::FinalizeRequest(std::vector<uint8_t>& request)
     {
         request[0] = BROADCAST_ADDRESS;
         request[1] = MODBUS_EXT_COMMAND;
         request[2] = MODBUS_STANDARD_REQUEST_COMMAND;
-        request[3] = static_cast<uint8_t>(sn >> 24);
-        request[4] = static_cast<uint8_t>(sn >> 16);
-        request[5] = static_cast<uint8_t>(sn >> 8);
-        request[6] = static_cast<uint8_t>(sn);
+        request[3] = static_cast<uint8_t>(Sn >> 24);
+        request[4] = static_cast<uint8_t>(Sn >> 16);
+        request[5] = static_cast<uint8_t>(Sn >> 8);
+        request[6] = static_cast<uint8_t>(Sn);
         auto crc = CRC16::CalculateCRC16(request.data(), request.size() - CRC_SIZE);
         request[request.size() - 2] = static_cast<uint8_t>(crc >> 8);
         request[request.size() - 1] = static_cast<uint8_t>(crc);
     }
 
     TReadFrameResult TModbusTraits::ReadFrame(TPort& port,
-                                              uint32_t sn,
                                               const milliseconds& responseTimeout,
                                               const milliseconds& frameTimeout,
                                               std::vector<uint8_t>& res) const
@@ -500,16 +499,15 @@ namespace ModbusExt // modbus extension protocol declarations
 
         auto responseSn = GetBigEndian<uint32_t>(res.cbegin() + MODBUS_STANDARD_COMMAND_RESPONSE_SN_POS,
                                                  res.cbegin() + MODBUS_STANDARD_COMMAND_HEADER_SIZE);
-        if (responseSn != sn) {
+        if (responseSn != Sn) {
             throw Modbus::TUnexpectedResponseError("SN mismatch: got " + std::to_string(responseSn) + ", wait " +
-                                                   std::to_string(sn));
+                                                   std::to_string(Sn));
         }
         return rc;
     }
 
     Modbus::TReadResult TModbusTraits::Transaction(TPort& port,
                                                    uint8_t slaveId,
-                                                   uint32_t sn,
                                                    const std::vector<uint8_t>& requestPdu,
                                                    size_t expectedResponsePduSize,
                                                    const std::chrono::milliseconds& responseTimeout,
@@ -517,18 +515,23 @@ namespace ModbusExt // modbus extension protocol declarations
     {
         std::vector<uint8_t> request(GetPacketSize(requestPdu.size()));
         std::copy(requestPdu.begin(), requestPdu.end(), request.begin() + MODBUS_STANDARD_COMMAND_PDU_POS);
-        FinalizeRequest(request, sn);
+        FinalizeRequest(request);
 
         port.WriteBytes(request.data(), request.size());
 
         std::vector<uint8_t> response(GetPacketSize(expectedResponsePduSize));
 
-        auto readRes = ReadFrame(port, sn, responseTimeout, frameTimeout, response);
+        auto readRes = ReadFrame(port, responseTimeout, frameTimeout, response);
 
         Modbus::TReadResult res;
         res.ResponseTime = readRes.ResponseTime;
         res.Pdu.assign(response.begin() + MODBUS_STANDARD_COMMAND_HEADER_SIZE,
                        response.begin() + (readRes.Count - CRC_SIZE));
         return res;
+    }
+
+    void TModbusTraits::SetSn(uint32_t sn)
+    {
+        Sn = sn;
     }
 }

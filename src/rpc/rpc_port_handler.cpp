@@ -152,7 +152,9 @@ void TRPCPortHandler::PortLoad(const Json::Value& request,
         if (rpcPortDriver != nullptr && rpcPortDriver->SerialClient) {
             RPCPortLoadHandler(request, rpcPortDriver->SerialClient, onResult, onError);
         } else {
-            RPCPortLoadHandler(request, InitPort(request), onResult, onError);
+            auto port = InitPort(request);
+            port->Open();
+            RPCPortLoadHandler(request, *port, onResult, onError);
         }
     } catch (const TRPCException& e) {
         ProcessException(e, onError);
@@ -170,7 +172,9 @@ void TRPCPortHandler::PortSetup(const Json::Value& request,
         if (rpcPortDriver != nullptr && rpcPortDriver->SerialClient) {
             RPCPortSetupHandler(rpcRequest, rpcPortDriver->SerialClient, onResult, onError);
         } else {
-            RPCPortSetupHandler(rpcRequest, InitPort(request), onResult, onError);
+            auto port = InitPort(request);
+            port->Open();
+            RPCPortSetupHandler(rpcRequest, *port, onResult, onError);
         }
     } catch (const TRPCException& e) {
         ProcessException(e, onError);

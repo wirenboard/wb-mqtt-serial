@@ -33,4 +33,4 @@ private:
 
 typedef std::shared_ptr<TRPCPortLoadModbusSerialClientTask> PRPCPortLoadModbusSerialClientTask;
 
-std::vector<uint8_t> ExecRPCPortLoadModbusRequest(PPort port, PRPCPortLoadModbusRequest rpcRequest);
+std::vector<uint8_t> ExecRPCPortLoadModbusRequest(TPort& port, PRPCPortLoadModbusRequest rpcRequest);

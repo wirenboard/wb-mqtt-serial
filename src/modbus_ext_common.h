@@ -120,12 +120,12 @@ namespace ModbusExt // modbus extension protocol common utilities
 
     class TModbusTraits: public Modbus::IModbusTraits
     {
+        uint32_t Sn;
         TPort::TFrameCompletePred ExpectNBytes(size_t n) const;
 
         size_t GetPacketSize(size_t pduSize) const;
-        void FinalizeRequest(std::vector<uint8_t>& request, uint32_t sn);
+        void FinalizeRequest(std::vector<uint8_t>& request);
         TReadFrameResult ReadFrame(TPort& port,
-                                   uint32_t sn,
                                    const std::chrono::milliseconds& responseTimeout,
                                    const std::chrono::milliseconds& frameTimeout,
                                    std::vector<uint8_t>& response) const;
@@ -135,11 +135,12 @@ namespace ModbusExt // modbus extension protocol common utilities
 
         Modbus::TReadResult Transaction(TPort& port,
                                         uint8_t slaveId,
-                                        uint32_t sn,
                                         const std::vector<uint8_t>& requestPdu,
                                         size_t expectedResponsePduSize,
                                         const std::chrono::milliseconds& responseTimeout,
                                         const std::chrono::milliseconds& frameTimeout) override;
+
+        void SetSn(uint32_t sn);
     };
 
 } // modbus extension protocol common utilities

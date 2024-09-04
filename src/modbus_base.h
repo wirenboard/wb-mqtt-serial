@@ -50,7 +50,6 @@ namespace Modbus
          */
         virtual TReadResult Transaction(TPort& port,
                                         uint8_t slaveId,
-                                        uint32_t sn,
                                         const std::vector<uint8_t>& requestPdu,
                                         size_t expectedResponsePduSize,
                                         const std::chrono::milliseconds& responseTimeout,
@@ -77,7 +76,6 @@ namespace Modbus
 
         TReadResult Transaction(TPort& port,
                                 uint8_t slaveId,
-                                uint32_t sn,
                                 const std::vector<uint8_t>& requestPdu,
                                 size_t expectedResponsePduSize,
                                 const std::chrono::milliseconds& responseTimeout,
@@ -107,7 +105,6 @@ namespace Modbus
 
         TReadResult Transaction(TPort& port,
                                 uint8_t slaveId,
-                                uint32_t sn,
                                 const std::vector<uint8_t>& requestPdu,
                                 size_t expectedResponsePduSize,
                                 const std::chrono::milliseconds& responseTimeout,

@@ -30,4 +30,4 @@ private:
 
 typedef std::shared_ptr<TRPCPortLoadRawSerialClientTask> PRPCPortLoadRawSerialClientTask;
 
-std::vector<uint8_t> ExecRPCPortLoadRawRequest(PPort port, PRPCPortLoadRawRequest rpcRequest);
+std::vector<uint8_t> ExecRPCPortLoadRawRequest(TPort& port, PRPCPortLoadRawRequest rpcRequest);

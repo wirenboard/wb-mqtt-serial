@@ -432,11 +432,12 @@ TEST_F(TModbusExtTraitsTest, ReadFrameGood)
     TPortMock port;
     port.Response = {0xfd, 0x46, 0x09, 0xfe, 0xca, 0xe7, 0xe5, 0x06, 0x00, 0x80, 0x00, 0x02, 0x1c, 0xef};
     ModbusExt::TModbusTraits traits;
+    traits.SetSn(0xfecae7e5);
     std::chrono::milliseconds t(10);
 
     std::vector<uint8_t> req = {0x06, 0x00, 0x80, 0x00, 0x02};
 
-    auto resp = traits.Transaction(port, 0, 0xfecae7e5, req, req.size(), t, t);
+    auto resp = traits.Transaction(port, 0, req, req.size(), t, t);
     ASSERT_EQ(resp.Pdu.size(), req.size());
 
     TestEqual(resp.Pdu, req);
@@ -447,11 +448,12 @@ TEST_F(TModbusExtTraitsTest, ReadFrameTooSmallError)
     TPortMock port;
     port.Response = {0xfd, 0x46, 0x09, 0xfe, 0xca};
     ModbusExt::TModbusTraits traits;
+    traits.SetSn(0xfecae7e5);
     std::chrono::milliseconds t(10);
 
     std::vector<uint8_t> req = {0x06, 0x00, 0x80, 0x00, 0x02};
 
-    ASSERT_THROW(traits.Transaction(port, 0, 0xfecae7e5, req, req.size(), t, t), Modbus::TMalformedResponseError);
+    ASSERT_THROW(traits.Transaction(port, 0, req, req.size(), t, t), Modbus::TMalformedResponseError);
 }
 
 TEST_F(TModbusExtTraitsTest, ReadFrameInvalidCrc)
@@ -459,11 +461,12 @@ TEST_F(TModbusExtTraitsTest, ReadFrameInvalidCrc)
     TPortMock port;
     port.Response = {0xfd, 0x46, 0x09, 0xfe, 0xca, 0xe7, 0xe5, 0x06, 0x00, 0x80, 0x00, 0x02, 0x10, 0xef};
     ModbusExt::TModbusTraits traits;
+    traits.SetSn(0xfecae7e5);
     std::chrono::milliseconds t(10);
 
     std::vector<uint8_t> req = {0x06, 0x00, 0x80, 0x00, 0x02};
 
-    ASSERT_THROW(traits.Transaction(port, 0, 0xfecae7e5, req, req.size(), t, t), Modbus::TMalformedResponseError);
+    ASSERT_THROW(traits.Transaction(port, 0, req, req.size(), t, t), Modbus::TMalformedResponseError);
 }
 
 TEST_F(TModbusExtTraitsTest, ReadFrameInvalidHeader)
@@ -473,6 +476,7 @@ TEST_F(TModbusExtTraitsTest, ReadFrameInvalidHeader)
     SetCrc(port.Response);
 
     ModbusExt::TModbusTraits traits;
+    traits.SetSn(0xfecae7e5);
     std::chrono::milliseconds t(10);
 
     std::vector<uint8_t> req = {0x06, 0x00, 0x80, 0x00, 0x02};
@@ -480,7 +484,7 @@ TEST_F(TModbusExtTraitsTest, ReadFrameInvalidHeader)
     ASSERT_THROW(
         {
             try {
-                traits.Transaction(port, 0, 0xfecae7e5, req, req.size(), t, t);
+                traits.Transaction(port, 0, req, req.size(), t, t);
             } catch (const Modbus::TUnexpectedResponseError& e) {
                 EXPECT_STREQ("invalid response address", e.what());
                 throw;
@@ -494,7 +498,7 @@ TEST_F(TModbusExtTraitsTest, ReadFrameInvalidHeader)
     ASSERT_THROW(
         {
             try {
-                traits.Transaction(port, 0, 0xfecae7e5, req, req.size(), t, t);
+                traits.Transaction(port, 0, req, req.size(), t, t);
             } catch (const Modbus::TUnexpectedResponseError& e) {
                 EXPECT_STREQ("invalid response command", e.what());
                 throw;
@@ -508,7 +512,7 @@ TEST_F(TModbusExtTraitsTest, ReadFrameInvalidHeader)
     ASSERT_THROW(
         {
             try {
-                traits.Transaction(port, 0, 0xfecae7e5, req, req.size(), t, t);
+                traits.Transaction(port, 0, req, req.size(), t, t);
             } catch (const Modbus::TUnexpectedResponseError& e) {
                 EXPECT_STREQ("invalid response subcommand", e.what());
                 throw;
@@ -522,7 +526,7 @@ TEST_F(TModbusExtTraitsTest, ReadFrameInvalidHeader)
     ASSERT_THROW(
         {
             try {
-                traits.Transaction(port, 0, 0xfecae7e5, req, req.size(), t, t);
+                traits.Transaction(port, 0, req, req.size(), t, t);
             } catch (const Modbus::TUnexpectedResponseError& e) {
                 EXPECT_STREQ("SN mismatch: got 30074853, wait 4274710501", e.what());
                 throw;
