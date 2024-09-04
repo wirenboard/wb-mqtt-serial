@@ -23605,7 +23605,7 @@ veda_vf_51
 	Trigger Source  =>  Trigger Source
 	Voltage P.Control  =>  Voltage P.Control
 	Work  =>  Work
-wb-mao4-20ma
+wb_mao4_20ma
 	Channel 1  =>  channel_1
 	Channel 1 Current  =>  channel_1_current
 	Channel 1 Duty Cycle Raw  =>  channel_1_duty_cycle_raw
