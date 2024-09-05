@@ -1,3 +1,9 @@
+wb-mqtt-serial (2.138.1-wb103) stable; urgency=medium
+
+  * Backport WB-LED template
+
+ -- Sergey Mishin <mishin@wirenboard.com>  Thu, 5 Sep 2024 16:04:00 +0300
+
 wb-mqtt-serial (2.138.1-wb102) stable; urgency=medium
 
   * Backport MWAC template
