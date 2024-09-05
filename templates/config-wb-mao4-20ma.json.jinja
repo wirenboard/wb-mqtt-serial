@@ -80,7 +80,7 @@
                 "id": "g_output_{{ ch_number }}"
             },
             {
-                "title": "Output Limits",
+                "title": "Custom Working Range",
                 "id": "gg_output_{{ ch_number }}_limits",
                 "group": "g_output_{{ ch_number }}"
             },
@@ -315,7 +315,7 @@
             {% for ch_number in range(1, OUTPUTS_NUMBER + 1) -%}
             {
                 "id": "output_{{ch_number}}_mode",
-                "title": "Output Mode",
+                "title": "Working Range",
                 "address": {{60 + ch_number - 1}},
                 "reg_type": "holding",
                 "required": true,
@@ -324,7 +324,7 @@
                 "enum_titles": [
                     "0..100 % ⇒ 0..20 mA",
                     "0..100 % ⇒ 4..20 mA",
-                    "Custom Limits"
+                    "Custom Working Range"
                 ],
                 "group": "g_output_{{ch_number}}"
             },
@@ -695,13 +695,13 @@
 
                 "decrement_rate_description": "When level is changed abruptly or channel is turned off, level will decrease smoothly with specified rate. If set to 0, level will decrease instantly",
                 "increment_rate_description": "When level is changed abruptly or channel is turned on, level will increase smoothly with specified rate. If set to 0, level will increase instantly",
-                "action_repeat_time_description": "When long press actions are performed, level will change with specified rate",
+                "action_repeat_time_description": "When button is held for a long time, level will change with specified rate.",
 
                 "input_hold_time_description": "Presses that last longer than the specified time are counted as long presses",
                 "input_double_time_description": "If there is no second press during the specified time then press is single. 0 - disables all presses except single and long. Adds a delay to the response to a single press",
                 "input_debounce_time_description": "Must be 5-10 times less than second press waiting time. Adds a delay to the response to presses",
 
-                "output_description": "There are two ways to control the output:<br>1) set the limits of the working range and control the level in percent between these limits<br>2) set the output current in mA directly<br>Using both ways simultaneously is not allowed.",
+                "output_description": "Output can be controlled by:<br>1) setting level in percentage between working range limits<br>2) setting output current in mA (level of the channel will not change)",
                 "g_safety_description": "Safety mode is activated when there is no modbus polling for the specified time. Supported since firmware version 2.5.0",
                 "poll_timeout_description": "Time in seconds without modbus polling before activation safety mode. Actions in safety mode are configured using appropriate parameters",
                 "inputs_control_in_safety_mode_description": "Sets change of control from the inputs when module switches to safety mode",
@@ -760,13 +760,12 @@
                 "Action": "Действие",
                 "Turn On and Set Level": "Включить и установить уровень",
 
-                "output_description": "Для управления выходом могут быть использованы два способа:<br>1) задание границ рабочего диапазона и управление уровнем в процентах между этими границами<br>2) прямое задание тока выхода в мА<br>Использование двух способов одновременно не допускается.",
-                "Output Mode": "Режим работы выхода",
+                "output_description": "Управлять выходом можно:<br>1) указанием уровня в процентах между границами рабочего диапазона<br>2) прямым заданием тока выхода в мА (при этом уровень канала не изменяется)",
+                "Working Range": "Рабочий диапазон",
                 "0..100 % ⇒ 0..20 mA": "0..100 % ⇒ 0..20 мА",
                 "0..100 % ⇒ 4..20 mA": "0..100 % ⇒ 4..20 мА",
-                "Custom Limits": "Пользовательские границы",
+                "Custom Working Range": "Пользовательский рабочий диапазон",
 
-                "Output Limits": "Рабочий диапазон",
                 "Current at 0% Level (mA)": "Значение выходного тока при 0% уровне (мА)",
                 "Current at 100% Level (mA)": "Значение выходного тока при 100% уровне (мА)",
                 "level_0_current_description": "Если канал выключен либо уровень установлен на 0%, выходной ток будет соответствовать заданному значению",
@@ -778,7 +777,7 @@
                 "Changing Rate for Long Press Actions (ms/%)": "Темп изменения уровня при долгих нажатиях (мс/%)",
                 "decrement_rate_description": "При скачкообразном изменении уровня или выключении канала, уровень будет плавно уменьшаться с заданным темпом. При значении 0, уровень уменьшится мгновенно",
                 "increment_rate_description": "При скачкообразном изменении уровня или включении канала, уровень будет плавно увеличиваться с заданным темпом. При значении 0, уровень увеличится мгновенно",
-                "action_repeat_time_description": "Во время долгих действий (при удержании кнопки), уровень будет изменяться с заданным темпом",
+                "action_repeat_time_description": "При удержании кнопки уровень будет изменяться с заданным темпом",
 
                 "Safety Mode": "Безопасный режим",
                 "g_safety_description": "Настройка поведения устройства в случае потери связи с контроллером",
