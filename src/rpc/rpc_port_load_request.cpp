@@ -7,7 +7,7 @@ namespace
         std::stringstream ss;
         ss << std::hex << std::setfill('0');
 
-        for (const auto& byte : byteVector) {
+        for (const auto& byte: byteVector) {
             ss << std::hex << std::setw(2) << static_cast<int>(byte);
         }
 
