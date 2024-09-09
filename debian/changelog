@@ -1,4 +1,4 @@
-wb-mqtt-serial (2.140.1) stable; urgency=medium
+wb-mqtt-serial (2.140.0) stable; urgency=medium
 
   * Add WB-MAO4-20mA support
 
