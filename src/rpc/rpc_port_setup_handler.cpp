@@ -105,14 +105,15 @@ void RPCPortSetupHandler(PRPCPortSetupRequest rpcRequest,
 {
     ModbusExt::TModbusTraits fastModbusTraits;
     Modbus::TModbusRTUTraits rtuTraits(false);
-    Modbus::TRegisterCache cache;
     auto frameTimeout =
         std::chrono::ceil<std::chrono::milliseconds>(port.GetSendTimeBytes(Modbus::STANDARD_FRAME_TIMEOUT_BYTES));
     for (auto item: rpcRequest->Items) {
+        port.ApplySerialPortSettings(item.SerialPortSettings);
         port.SleepSinceLastInteraction(frameTimeout);
         if (item.Sn) {
             fastModbusTraits.SetSn(item.Sn.value());
         }
+        Modbus::TRegisterCache cache;
         Modbus::WriteSetupRegisters(item.Sn ? static_cast<Modbus::IModbusTraits&>(fastModbusTraits)
                                             : static_cast<Modbus::IModbusTraits&>(rtuTraits),
                                     port,
