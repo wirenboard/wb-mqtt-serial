@@ -1,3 +1,9 @@
+wb-mqtt-serial (2.138.1-wb104) stable; urgency=medium
+
+  * Add WB-MAO4-20mA support
+
+ -- Pavel Gasheev <pavel.gasheev@wirenboard.ru>  Tue, 10 Sep 2024 09:36:16 +0300
+
 wb-mqtt-serial (2.138.1-wb103) stable; urgency=medium
 
   * Backport WB-LED template
