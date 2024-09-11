@@ -1,6 +1,5 @@
 {% set INPUTS_NUMBER = 4 -%}
 {% set OUTPUTS_NUMBER = 4 -%}
-{% set LIGHT_SCENES_NUMBER = 8 -%}
 {
     "title": "WB-LED_template_title",
     "device_type": "WB-LED",
@@ -39,73 +38,42 @@
                 "title": "Outputs",
                 "id": "g_outputs"
             },
-            {# объявим группы сцен -#}
-            {% for ls_number in range(1, LIGHT_SCENES_NUMBER + 1) -%}
-            {
-                "title": "Light Scene {{ ls_number }}",
-                "id": "g_light_scene_{{ ls_number }}",
-                "description": "light_scenes_description"
-            },
-            {# объявим группы действий сцен(on/off), в которых будут лежать каналы сцен и их настройки-#}
-            {% for on_off in ["on", "off"] -%}
-            {
-                "title": "Actions when Scene Light Turn {{on_off}}",
-                "id": "gg_ls_{{ ls_number }}_actions_turn_{{on_off}}",
-                "group": "g_light_scene_{{ ls_number }}"
-            },
-            {% endfor -%}
-            {# объявим группы каналов сцен с состояниями вкл и выкл -#}
-            {% for dim_mode in ["1_2_3_4", "1_2", "CCT1", "H", "S", "V", "1", "2", "CCT2", "3_4", "3", "4"] -%}
-            {% for on_off in ["on", "off"] -%}
-            {
-                "title": "Channel {{ dim_mode }} Switch",
-                "id": "ggg_ls_{{ ls_number }}_ch_{{ dim_mode }}_actions_turn_{{on_off}}",
-                "group": "gg_ls_{{ ls_number }}_actions_turn_{{on_off}}"
-            },
-            {% endfor -%}
-            {% endfor -%}
-            {
-                "title": "Light Scene {{ ls_number }} Channels",
-                "id": "gg_ls_{{ ls_number }}_channels",
-                "group": "g_light_scene_{{ ls_number }}",
-                "ui_options": {
-                    "wb": {
-                        "disable_title": true
-                    }
-                }
-            },
-            {% endfor -%}
+            {# объявим группу безопасных режимов -#}
             {
                 "title": "Safety Mode",
                 "id": "g_safety",
                 "description": "g_safety_description"
             },
+            {# объявим группу действий при включении питания -#}
             {
                 "title": "Power Up Behaviour",
                 "id": "g_power_up_behaviour",
                 "description": "g_power_up_behaviour_description"
             },
+            {# объявим группу внутри группы безопасных режимов куда будут помещены действия по каналам, которые зависят от режима работы диммера -#}
             {
                 "title": "Safety Behaviour",
                 "id": "gg_safety_behaviour",
                 "group": "g_safety"
             },
-            {% for ch_number in range(1, OUTPUTS_NUMBER + 1) -%}
+            {% for ch_name in ['1_2', 'CCT1', '1', '2', 'CCT2', '3', 'RGB', '4', '3_4', '1_2_3_4'] -%}
             {
-                "title": "Channel {{ ch_number }} Switch",
-                "id": "ggg_safety_mode_ch_{{ ch_number }}",
+                "title": "Channel {{ ch_name }}",
+                "id": "ggg_safety_mode_ch_{{ ch_name }}",
                 "group": "gg_safety_behaviour"
             },
             {
-                "title": "Channel {{ ch_number }} Switch",
-                "id": "ggg_power_up_behaviour_ch_{{ ch_number }}",
+                "title": "Channel {{ ch_name }}",
+                "id": "ggg_power_up_behaviour_ch_{{ ch_name }}",
                 "group": "g_power_up_behaviour"
             },
+            {% endfor -%}
+            {% for in_num in range(1, INPUTS_NUMBER + 1) -%}
             {% for on_off in ["on", "off"] -%}
             {
                 "title": "Action when Switch is {{on_off}}",
-                "id": "gg_input_{{ ch_number }}_switch_{{on_off}}_action",
-                "group": "g_input_{{ ch_number }}"
+                "id": "gg_input_{{ in_num }}_switch_{{on_off}}_action",
+                "group": "g_input_{{ in_num }}"
             },
             {% endfor -%}
             {% endfor -%}
@@ -127,7 +95,7 @@
                 "title": "Debug",
                 "id": "g_debug"
             },
-            {# объявим группы каналов входов всех типов -#}
+            {# объявим группы каналов входов -#}
             {% for in_num in range(1, INPUTS_NUMBER + 1) -%}
             {
                 "title": "params",
@@ -139,7 +107,7 @@
                     }
                 }
             },
-            {# пока не понятно что это -#}
+            {# объявим группу внутри группы входа в которую войдут настройки опросов -#}
             {
                 "title": "Input {{in_num}} Channels",
                 "id": "gg_in_{{in_num}}_channels",
@@ -202,6 +170,7 @@
         ],
 
         "parameters": [
+            {# опишем режимы работы диммера -#}
             {
                 "id": "dimmer_mode",
                 "title": "Dimmer Mode",
@@ -226,199 +195,8 @@
                 "order": 1,
                 "required": true
             },
-            {# развернем все варианты сцен -#}
-            {% for ls_number in range(1, LIGHT_SCENES_NUMBER + 1) -%}
-            {
-                "id": "ls_{{ls_number}}_light_on_off_condition",
-                "title": "Scene Light On/Off Condition",
-                "reg_type": "holding",
-                "address": {{1264 + (ls_number - 1)}},
-                "type": "enum",
-                "enum": [0, 1],
-                "enum_titles": [
-                    "Scene Light is on if any used channel is on. Otherwise light is off",
-                    "Scene Light is on if all used channels are on. Otherwise light is off"
-                ],
-                "group": "g_light_scene_{{ ls_number }}"
-            },
-            {% set ptr = [0, 1, 2, 3, 0, 2, 0, 2, 0, 0, 1, 2] -%}
-            {% set conditions = [
-                "dimmer_mode==0||dimmer_mode==16||dimmer_mode==32",
-                "dimmer_mode==0||dimmer_mode==16||dimmer_mode==32",
-                "dimmer_mode==0||dimmer_mode==1||dimmer_mode==2",
-                "dimmer_mode==0||dimmer_mode==1||dimmer_mode==2||dimmer_mode==256",
-                "dimmer_mode==1||dimmer_mode==17||dimmer_mode==33",
-                "dimmer_mode==16||dimmer_mode==17||dimmer_mode==18",
-                "dimmer_mode==512",
-                "dimmer_mode==2||dimmer_mode==18||dimmer_mode==34",
-                "dimmer_mode==32||dimmer_mode==33||dimmer_mode==34",
-                "dimmer_mode==256",
-                "dimmer_mode==256",
-                "dimmer_mode==256",
-                ] -%}
-            {% for type_action in ['1', '2', '3', '4', '1_2', '3_4', '1_2_3_4', 'CCT1', 'CCT2', 'H', 'S', 'V'] -%}
-            {% set plus_ptr = ptr[loop.index0] -%}
-            {% set condition = conditions[loop.index0] -%}
-            {% for off_on in ['off', 'on'] -%}
-            {
-                "id": "ls_{{ls_number}}_ch_{{type_action}}_action_{{off_on}}",
-                "title": "Enable Channel {{type_action}}",
-                "reg_type": "holding",
-                "address": {{1280 + 0 + 64 * (ls_number - 1) + (loop.index0 * 32) + plus_ptr}},
-                "type": "enum",
-                "enum": [0, {% if off_on == 'off' %}2{% endif -%}{% if off_on == 'on' %}1{% endif -%}, 3],
-                "enum_titles": [
-                    "Channel not Used in Scene",
-                    {% if off_on == 'on' -%}
-                    "Turn Off",
-                    {% if type_action == '1' or type_action == '2' or type_action == '3' or type_action == '4' or type_action == '1_2' or type_action == '3_4' or type_action == '1_2_3_4' -%}
-                    "Set Brightness"
-                    {% elif type_action == 'CCT1' or type_action == 'CCT2' -%}
-                    "Set Levels"
-                    {% elif type_action == 'H' -%}
-                    "Set Angle"
-                    {% elif type_action == 'S' or type_action == 'V' -%}
-                    "Set Level"
-                    {% endif -%}
-                    {% endif -%}
-                    {%- if off_on == 'off' -%}
-                    "Turn On",
-                    {% if type_action == '1' or type_action == '2' or type_action == '3' or type_action == '4' or type_action == '1_2' or type_action == '3_4' or type_action == '1_2_3_4' -%}
-                    "Turn On and Set Brightness"
-                    {% elif type_action == 'CCT1' or type_action == 'CCT2' -%}
-                    "Turn On and Set Levels"
-                    {% elif type_action == 'H' -%}
-                    "Turn On and Set Angle"
-                    {% elif type_action == 'S' or type_action == 'V' -%}
-                    "Turn On and Set Level"
-                    {% endif -%}
-                    {% endif -%}
-                ],
-                "condition": "{{condition}}",
-                "group": "ggg_ls_{{ ls_number }}_ch_{{type_action}}_actions_turn_{% if off_on == 'off' %}on{% endif -%}{% if off_on == 'on' %}off{% endif -%}"
-            },
-            {% if type_action == '1' or type_action == '2' or type_action == '3' or type_action == '4' or type_action == '1_2' or type_action == '3_4' or type_action == '1_2_3_4' or type_action == 'H' or type_action == 'S' or type_action == 'V' -%}
-            {
-                "id": "ls_{{ls_number}}_ch_{{type_action}}_fading_{{off_on}}",
-                "title": "Dimming level rate (ms/%)",
-                "reg_type": "holding",
-                "address": {{1280 + 8 + 64 * (ls_number - 1) + (loop.index0 * 32) + plus_ptr}},
-                "min": 0,
-                "max": 500,
-                "default": 20,
-                "required": true,
-                "group": "ggg_ls_{{ ls_number }}_ch_{{type_action}}_actions_turn_{% if off_on == 'off' %}on{% endif -%}{% if off_on == 'on' %}off{% endif -%}",
-                "condition": "ls_{{ls_number}}_ch_{{type_action}}_action_{{off_on}}>=1"
-            },
-            {
-                "id": "ls_{{ls_number}}_ch_{{type_action}}_level_{{off_on}}",
-                "title":
-                    {%- if type_action == '1' or type_action == '2' or type_action == '3' or type_action == '4' or type_action == '1_2' or type_action == '3_4' or type_action == '1_2_3_4' -%}
-                    "Brightness (%)"
-                    {%- elif type_action == 'H' -%}
-                    "Angle"
-                    {%- elif type_action == 'S' or type_action == 'V' -%}
-                    "Value"
-                    {%- endif -%},
-                "reg_type": "holding",
-                "address": {{1280 + 16 + 64 * (ls_number - 1) + (loop.index0 * 32) + plus_ptr}},
-                "min": 1,
-                "max":
-                    {%- if type_action == '1' or type_action == '2' or type_action == '3' or type_action == '4' or type_action == '1_2' or type_action == '3_4' or type_action == '1_2_3_4' or type_action == 'S' or type_action == 'V' -%}
-                    100
-                    {%- elif type_action == 'H' -%}
-                    180
-                    {%- endif -%},
-                "default":
-                    {%- if type_action == '1' or type_action == '2' or type_action == '3' or type_action == '4' or type_action == '1_2' or type_action == '3_4' or type_action == '1_2_3_4' or type_action == 'S' or type_action == 'V' -%}
-                    50
-                    {%- elif type_action == 'H' -%}
-                    90
-                    {%- endif -%},
-                "required": true,
-                "group": "ggg_ls_{{ ls_number }}_ch_{{type_action}}_actions_turn_{% if off_on == 'off' %}on{% endif -%}{% if off_on == 'on' %}off{% endif -%}",
-                "condition": "ls_{{ls_number}}_ch_{{type_action}}_action_{{off_on}}==3"
-            },
-            {% elif type_action == 'CCT1' or type_action == 'CCT2' -%}
-            {
-                "id": "ls_{{ls_number}}_ch_{{type_action}}_temperature_fading_{{off_on}}",
-                "title": "Dimming level rate temperature (ms/%)",
-                "reg_type": "holding",
-                "address": {{1280 + 8 + 64 * (ls_number - 1) + (loop.index0 * 32) + plus_ptr}},
-                "min": 0,
-                "max": 500,
-                "default": 20,
-                "required": true,
-                "group": "ggg_ls_{{ ls_number }}_ch_{{type_action}}_actions_turn_{% if off_on == 'off' %}on{% endif -%}{% if off_on == 'on' %}off{% endif -%}",
-                "condition": "ls_{{ls_number}}_ch_{{type_action}}_action_{{off_on}}>=1"
-            },
-            {
-                "id": "ls_{{ls_number}}_ch_{{type_action}}_temperature_{{off_on}}",
-                "title": "Temperature (%)",
-                "reg_type": "holding",
-                "address": {{1280 + 16 + 64 * (ls_number - 1) + (loop.index0 * 32) + plus_ptr}},
-                "min": 1,
-                "max": 100,
-                "default": 50,
-                "required": true,
-                "group": "ggg_ls_{{ ls_number }}_ch_{{type_action}}_actions_turn_{% if off_on == 'off' %}on{% endif -%}{% if off_on == 'on' %}off{% endif -%}",
-                "condition": "ls_{{ls_number}}_ch_{{type_action}}_action_{{off_on}}==3"
-            },
-            {
-                "id": "ls_{{ls_number}}_ch_{{type_action}}_brightness_fading_{{off_on}}",
-                "title": "Dimming level rate brightness (ms/%)",
-                "reg_type": "holding",
-                "address": {{1281 + 8 + 64 * (ls_number - 1) + (loop.index0 * 32) + plus_ptr}},
-                "min": 0,
-                "max": 500,
-                "default": 20,
-                "required": true,
-                "group": "ggg_ls_{{ ls_number }}_ch_{{type_action}}_actions_turn_{% if off_on == 'off' %}on{% endif -%}{% if off_on == 'on' %}off{% endif -%}",
-                "condition": "ls_{{ls_number}}_ch_{{type_action}}_action_{{off_on}}>=1"
-            },
-            {
-                "id": "ls_{{ls_number}}_ch_{{type_action}}_brightness_{{off_on}}",
-                "title": "Brightness (%)",
-                "reg_type": "holding",
-                "address": {{1281 + 16 + 64 * (ls_number - 1) + (loop.index0 * 32) + plus_ptr}},
-                "min": 1,
-                "max": 100,
-                "default": 50,
-                "required": true,
-                "group": "ggg_ls_{{ ls_number }}_ch_{{type_action}}_actions_turn_{% if off_on == 'off' %}on{% endif -%}{% if off_on == 'on' %}off{% endif -%}",
-                "condition": "ls_{{ls_number}}_ch_{{type_action}}_action_{{off_on}}==3"
-            },
-            {% endif -%}
-            {% endfor -%}
-            {% endfor -%}
-            {% endfor -%}
-            {# опишем в группе выхода настройки выходов #}
-            {% for ch_number in range(1, OUTPUTS_NUMBER + 1) -%}
-            {
-                "id": "ch{{ch_number}}_min",
-                "title": "Channel {{ch_number}} Minimum Value",
-                "description": "channel_min_value_description",
-                "order": 1,
-                "group": "gg_out_params",
-                "address": {{70 + ch_number - 1}},
-                "reg_type": "holding",
-                "default": 1,
-                "min": 1,
-                "max": 2000
-            },
-            {
-                "id": "ch{{ch_number}}_max",
-                "title": "Channel {{ch_number}} Maximum Value",
-                "description": "channel_max_value_description",
-                "order": 2,
-                "group": "gg_out_params",
-                "address": {{80 + ch_number - 1}},
-                "reg_type": "holding",
-                "default": 2048,
-                "min": 10,
-                "max": 2048
-            },
-            {# объявим режими работы входа #}
+            {# опишем варианты режимы работы входа: кнопка, переключатель с фиксацией -#}
+            {% for ch_number in range(1, INPUTS_NUMBER + 1) -%}
             {
                 "id": "input_{{ch_number}}_mode",
                 "title": "Input Mode",
@@ -434,150 +212,7 @@
                 "group": "g_input_{{ch_number}}"
             },
             {% endfor -%}
-            {
-                "id": "freq_div",
-                "title": "pwm_frequency_factor_title",
-                "description": "pwm_frequency_factor_description",
-                "order": 9,
-                "group": "gg_out_params",
-                "address": 9,
-                "reg_type": "holding",
-                "default": 8,
-                "min": 1,
-                "max": 240
-            },
-            {% for in_num in range(1, INPUTS_NUMBER + 1) -%}
-            {
-                "id": "in{{in_num}}_lp_hold_time",
-                "title": "lp_hold_time_title",
-                "description": "lp_hold_time_description",
-                "order": 1,
-                "group": "gg_in_{{in_num}}_params",
-                "address": {{1100 + in_num - 1}},
-                "reg_type": "holding",
-                "default": 1000,
-                "min": 500,
-                "max": 5000,
-                "condition": "input_{{in_num}}_mode!=1"
-            },
-            {
-                "id": "in{{in_num}}_lp_repeat_time",
-                "title": "lp_repeat_time_title",
-                "description": "lp_repeat_time_description",
-                "order": 2,
-                "group": "gg_in_{{in_num}}_params",
-                "address": {{1120 + in_num - 1}},
-                "reg_type": "holding",
-                "default": 20,
-                "min": 5,
-                "max": 500,
-                "condition": "input_{{in_num}}_mode!=1"
-            },
-            {
-                "id": "in{{in_num}}_secp_waiting_time",
-                "title": "secp_waiting_time_title",
-                "description": "secp_waiting_time_description",
-                "order": 3,
-                "group": "gg_in_{{in_num}}_params",
-                "address": {{1140 + in_num - 1}},
-                "reg_type": "holding",
-                "default": 300,
-                "min": 0,
-                "max": 2000,
-                "condition": "input_{{in_num}}_mode!=1"
-            },
-            {
-                "id": "in{{in_num}}_debounce_time",
-                "title": "debounce_time_title",
-                "description": "debounce_time_description",
-                "order": 4,
-                "group": "gg_in_{{in_num}}_params",
-                "address": {{1160 + in_num - 1}},
-                "reg_type": "holding",
-                "default": 50,
-                "min": 5,
-                "max": 200
-            },
-            {% endfor -%}
-            {# определяем в группе выход все варианты комбобоксов #}
-            {% set conditions = [
-                "dimmer_mode==0||dimmer_mode==16||dimmer_mode==32",
-                "dimmer_mode==0||dimmer_mode==16||dimmer_mode==32",
-                "dimmer_mode==0||dimmer_mode==1||dimmer_mode==2",
-                "dimmer_mode==0||dimmer_mode==1||dimmer_mode==2||dimmer_mode==256",
-                "dimmer_mode==1||dimmer_mode==17||dimmer_mode==33",
-                "dimmer_mode==16||dimmer_mode==17||dimmer_mode==18",
-                "dimmer_mode==512",
-                ] -%}
-            {% set type_name = ['w1', 'w2', 'w3', 'w4', 'w1_w2', 'w3_w4', 'w1_w2_w3_w4'] -%}
-            {% set order = [1, 2, 3, 4, 1, 3, 1] -%}
-            {% for inc_dec in ['inc', 'dec'] -%}
-            {% set ptr = loop.index0 * 100 -%}
-            {% for type_action in ['1', '2', '3', '4', '1_2', '3_4', '1_2_3_4'] -%}
-            {
-                "id": "fader_{{inc_dec}}_{{type_name[loop.index0]}}",
-                "group": "gg_fader_{{inc_dec}}",
-                "title": "Channel {{type_action}} Brightness",
-                "order": {{order[loop.index0]}},
-                "address": {{3000 + loop.index0 + ptr}},
-                "reg_type": "holding",
-                "default": 1000,
-                "min": 0,
-                "max": 30000,
-                "condition": "{{conditions[loop.index0]}}"
-            },
-            {% endfor -%}
-            {% set conditions = [
-                "dimmer_mode==2||dimmer_mode==18||dimmer_mode==34",
-                "dimmer_mode==2||dimmer_mode==18||dimmer_mode==34",
-                "dimmer_mode==32||dimmer_mode==33||dimmer_mode==34",
-                "dimmer_mode==32||dimmer_mode==33||dimmer_mode==34",
-                ] -%}
-            {% set type_name = ['cct1_t', 'cct1_v', 'cct2_t', 'cct2_v'] -%}
-            {% for title in ['CCT1 Temperature', 'CCT1 Brightness', 'CCT2 Temperature', 'CCT2 Brightness'] -%}
-            {
-                "id": "fader_{{inc_dec}}_{{type_name[loop.index0]}}",
-                "group": "gg_fader_{{inc_dec}}",
-                "title": "{{title}}",
-                "order": {{loop.index0 + 1}},
-                "address": {{3007 + loop.index0 + ptr}},
-                "reg_type": "holding",
-                "default": 1000,
-                "min": 0,
-                "max": 30000,
-                "condition": "{{conditions[loop.index0]}}"
-            },
-            {% endfor -%}
-            {% set type_name = ['rgb_s', 'rgb_v'] -%}
-            {% set order = [1, 2] -%}
-            {% for title in ['Saturation', 'Brightness'] -%}
-            {
-                "id": "fader_{{inc_dec}}_{{type_name[loop.index0]}}",
-                "group": "gg_fader_{{inc_dec}}",
-                "title": "RGB Strip {{title}}",
-                "order": {{order[loop.index0]}},
-                "address": {{3012 + loop.index0}},
-                "reg_type": "holding",
-                "default": 1000,
-                "min": 0,
-                "max": 30000,
-                "condition": "dimmer_mode==256"
-            },
-            {% endfor -%}
-            {% endfor -%}
-            {
-                "id": "fade_rgb_h",
-                "group": "gg_fader_hue",
-                "title": "RGB Strip Hue",
-                "description": "hue_fader_description",
-                "order": 1,
-                "address": 3011,
-                "reg_type": "holding",
-                "default": 1000,
-                "min": 0,
-                "max": 30000,
-                "condition": "dimmer_mode==256"
-            },
+            {# опишем все варианты входа в группах входов, зависящих от режима работы диммера и типа входа (кнопка, переключатель с фиксацией) -#}
             {% set dimmer_mode = [0, 1, 2, 16, 17, 18, 32, 33, 34, 256, 512] -%}
             {% set action_code =
                 [
@@ -655,7 +290,7 @@
                     [0, 16384, 4103, 4104, 8199, 8200, 12295, 12296, 36871, 36872, 36873, 36874, 40967, 40968, 40969, 40970],
                     [0, 16384, 4103, 4104, 8199, 8200, 12295, 12296, 36871, 36872, 36873, 36874, 40967, 40968, 40969, 40970, 45063, 45064, 45065, 45066],
                     [0, 16384, 4103, 4104, 8199, 8200, 12295, 12296, 36871, 36872, 36873, 36874, 40967, 40968, 40969, 40970],
-                    [0, 16384, 4103, 4104, 8199, 8200, 12295, 12296, 36871, 36872, 36873, 36874, 40967, 40968, 40969, 40970, 45063, 45064, 45065, 45066]   
+                    [0, 16384, 4103, 4104, 8199, 8200, 12295, 12296, 36871, 36872, 36873, 36874, 40967, 40968, 40969, 40970, 45063, 45064, 45065, 45066]
                 ],
                 [
                     [0, 16384, 4105, 4099, 4106, 8201, 8195, 8202, 12297, 12291, 12298, 36875, 36876, 36877, 36878, 36879, 36880, 36867, 36881, 40971, 40972, 40973, 40974, 40975, 40976, 40963, 40977],
@@ -670,34 +305,6 @@
                     [0, 16384, 4102, 8198, 12294, 36870, 40966, 45062]
                 ]
                 ] -%}
-            {% for in_num in range(1, INPUTS_NUMBER +  1)  -%}
-            {% for name in name_actions -%}
-            {
-                "id": "input_{{ in_num }}_{{ name }}_work_with_scenes",
-                "title": "Inputs work with {{ name }}",
-                "enum": [0, 1],
-                "enum_titles": ["Non Scenes", "Scenes"],
-                "default": 0,
-                "group": "gg_in_{{ in_num }}_{{ name }}_action",
-                "order": 0,
-                "readonly": true,
-                "condition": "input_{{in_num}}_mode!=1"
-            },
-            {% endfor -%}
-            {% for on_off in ["on", "off"] -%}
-            {
-                "id": "input_{{ in_num }}_work_with_scenes_switch_{{on_off}}",
-                "title": "Inputs work with scenes?",
-                "enum": [0, 1],
-                "enum_titles": ["Non Scenes", "Scenes"],
-                "default": 0,
-                "group": "gg_input_{{ in_num }}_switch_{{on_off}}_action",
-                "order": 0,
-                "readonly": true,
-                "condition": "input_{{in_num}}_mode==1"
-            },
-            {% endfor -%}
-            {% endfor -%}
             {% for dimmer_mode_number in range(11) -%}
             {% for in_num in range(1, INPUTS_NUMBER + 1) -%}
             {% for name in range(4) -%}
@@ -709,7 +316,7 @@
                 "address": {{1000 + in_num - 1 + loop.index0 * 20}},
                 "reg_type": "holding",
                 "default": 0,
-                "condition": "((isDefined(input_{{in_num}}_mode)==0||(input_{{in_num}}_mode!=1))&&(dimmer_mode=={{dimmer_mode[dimmer_mode_number]}}&&(isDefined(input_{{in_num}}_{{name_actions[name]}}_work_with_scenes)==0||input_{{ in_num }}_{{ name_actions[name] }}_work_with_scenes!=1)))",
+                "condition": "((isDefined(input_{{in_num}}_mode)==0||(input_{{in_num}}_mode!=1))&&(dimmer_mode=={{dimmer_mode[dimmer_mode_number]}}))",
                 "enum": {{ enum[dimmer_mode_number][name] }},
                 "enum_titles": [
                     {% for i_enum in enum[dimmer_mode_number][name] -%}
@@ -727,45 +334,7 @@
             {%- endfor -%}
             {%- endfor -%}
             {%- endfor -%}
-            {% for in_num in range(1, INPUTS_NUMBER + 1) -%}
-            {% for input_action_name in ["sp", "lp", "dp", "slp"] -%}
-            {
-                "id": "in{{in_num}}_{{ input_action_name }}_scene",
-                "group": "gg_in_{{ in_num }}_{{ input_action_name }}_action",
-                "title": "{{ input_action_name }}_title",
-                "order": 1,
-                "address": {{768 + (loop.index0 * 16) + in_num - 1}},
-                "reg_type": "holding",
-                "default": 0,
-                "condition": "(input_{{ in_num }}_{{ input_action_name }}_work_with_scenes==1)",
-                "enum": [0, {%for ls in range(LIGHT_SCENES_NUMBER) %}{{32 + ls}}{% if not loop.last %}, {% endif %}{% endfor %}],
-                "enum_titles": [
-                    "no_act_title",
-                    {% for ls_number in range(1, LIGHT_SCENES_NUMBER + 1) -%}
-                    "Light Scene {{ ls_number }}"{% if not loop.last %},{% endif %}
-                    {% endfor -%}
-                ]
-            },
-            {
-                "id": "in{{in_num}}_{{ input_action_name }}_scene_action",
-                "group": "gg_in_{{ in_num }}_{{ input_action_name }}_action",
-                "title": "{{ input_action_name }}_scene_action",
-                "order": 3,
-                "address": {{832 + (loop.index0 * 16) + in_num - 1}},
-                "reg_type": "holding",
-                "default": 0,
-                "condition": "(input_{{ in_num }}_{{ input_action_name }}_work_with_scenes==1)",
-                "enum": [0, 1, 2],
-                "enum_titles": [
-                    "Turn Off",
-                    "Turn On",
-                    "Toggle"
-                ]
-            },
-            {% endfor -%}
-            {% endfor -%}
-
-            {# зависит от номера режима работы диммера #}
+            {# опишем настройки для варианта входа кнопка с фиксацией -#}
             {% set enum_switch = [
                 [0, 1, 2, 3, 4, 100],
                 [0, 5, 3, 4, 100],
@@ -797,7 +366,7 @@
                 "address": {{704 + (loop.index0 * 16) + in_num - 1}},
                 "reg_type": "holding",
                 "default": 0,
-                "condition": "((input_{{in_num}}_mode==1)&&(dimmer_mode=={{dimmer_mode[dimmer_mode_number]}}&&(isDefined(input_{{in_num}}_work_with_scenes_switch_{{off_on}})==0||input_{{ in_num }}_work_with_scenes_switch_{{off_on}}!=1)))",
+                "condition": "((input_{{in_num}}_mode==1)&&(dimmer_mode=={{dimmer_mode[dimmer_mode_number]}}))",
                 "enum": {{ enum_switch[dimmer_mode_number] }},
                 "enum_titles": [
                     {% for i_enum_switch in enum_switch[dimmer_mode_number] -%}
@@ -818,39 +387,6 @@
             {% for in_num in range(1, INPUTS_NUMBER + 1) -%}
             {% for off_on in ["off", "on"] -%}
             {
-                "id": "in{{in_num}}_switch_scene_{{off_on}}",
-                "group": "gg_input_{{ in_num }}_switch_{{off_on}}_action",
-                "title": "switch_{{off_on}}_scene_title",
-                "order": 1,
-                "address": {{704 + (loop.index0 * 16) + in_num - 1}},
-                "reg_type": "holding",
-                "default": 0,
-                "condition": "(input_{{in_num}}_mode==1)&&(input_{{ in_num }}_work_with_scenes_switch_{{off_on}}==1)",
-                "enum": [0, {%for ls in range(LIGHT_SCENES_NUMBER) %}{{32 + ls}}{% if not loop.last %}, {% endif %}{% endfor %}],
-                "enum_titles": [
-                    "no_act_title",
-                    {% for ls_number in range(1, LIGHT_SCENES_NUMBER + 1) -%}
-                    "Light Scene {{ ls_number }}"{% if not loop.last %},{% endif %}
-                    {% endfor -%}
-                ]
-            },
-            {
-                "id": "in{{in_num}}_switch_scene_{{off_on}}_action",
-                "group": "gg_input_{{ in_num }}_switch_{{off_on}}_action",
-                "title": "switch_{{off_on}}_scene_action",
-                "order": 3,
-                "address": {{736 + (loop.index0 * 16) + in_num - 1}},
-                "reg_type": "holding",
-                "default": 0,
-                "condition": "(input_{{in_num}}_mode==1)&&(input_{{ in_num }}_work_with_scenes_switch_{{off_on}}==1)",
-                "enum": [0, 1, 2],
-                "enum_titles": [
-                    "Turn Off",
-                    "Turn On",
-                    "Toggle"
-                ]
-            },
-            {
                 "id": "in{{in_num}}_switch_{{off_on}}_action",
                 "group": "gg_input_{{ in_num }}_switch_{{off_on}}_action",
                 "title": "switch_action",
@@ -858,7 +394,7 @@
                 "address": {{736 + (loop.index0 * 16) + in_num - 1}},
                 "reg_type": "holding",
                 "default": 0,
-                "condition": "(input_{{in_num}}_mode==1)&&(input_{{ in_num }}_work_with_scenes_switch_{{off_on}}!=1)",
+                "condition": "(input_{{in_num}}_mode==1)",
                 "enum": [0, 1, 2],
                 "enum_titles": [
                     "Turn Off",
@@ -868,18 +404,186 @@
             },
             {% endfor -%}
             {% endfor -%}
+            {# опишем все W* варианты в группе выхода -#}
+            {% set conditions = [
+                "dimmer_mode==0||dimmer_mode==16||dimmer_mode==32",
+                "dimmer_mode==0||dimmer_mode==16||dimmer_mode==32",
+                "dimmer_mode==0||dimmer_mode==1||dimmer_mode==2",
+                "dimmer_mode==0||dimmer_mode==1||dimmer_mode==2||dimmer_mode==256",
+                "dimmer_mode==1||dimmer_mode==17||dimmer_mode==33",
+                "dimmer_mode==16||dimmer_mode==17||dimmer_mode==18",
+                "dimmer_mode==512",
+                ] -%}
+            {% set type_name = ['w1', 'w2', 'w3', 'w4', 'w1_w2', 'w3_w4', 'w1_w2_w3_w4'] -%}
+            {% set order = [1, 2, 3, 4, 1, 3, 1] -%}    {# порядок отображения на странице -#}
+            {% for inc_dec in ['inc', 'dec'] -%}        {# два варианта: "увеличение", "уменьшение" -#}
+            {% set ptr = loop.index0 * 100 -%}          {# "уменьшение" смещено на 100 -#}
+            {% for type_action in ['1', '2', '3', '4', '1_2', '3_4', '1_2_3_4'] -%}
             {
-                "id": "baud_rate",
-                "title": "Baud rate",
-                "description": "baud_rate_description",
-                "address": 110,
+                "id": "fader_{{inc_dec}}_{{type_name[loop.index0]}}",
+                "group": "gg_fader_{{inc_dec}}",
+                "title": "Channel {{type_action}} Brightness",
+                "order": {{order[loop.index0]}},
+                "address": {{3000 + loop.index0 + ptr}},
                 "reg_type": "holding",
-                "enum": [96, 192, 384, 576, 1152],
-                "default": 96,
-                "enum_titles": ["9600", "19200", "38400", "57600", "115200"],
-                "group": "g_general",
-                "order": 1
+                "default": 1000,
+                "min": 0,
+                "max": 30000,
+                "condition": "{{conditions[loop.index0]}}"
             },
+            {% endfor -%}
+            {# опишем все CCT* варианты -#}
+            {% set conditions = [
+                "dimmer_mode==2||dimmer_mode==18||dimmer_mode==34",
+                "dimmer_mode==2||dimmer_mode==18||dimmer_mode==34",
+                "dimmer_mode==32||dimmer_mode==33||dimmer_mode==34",
+                "dimmer_mode==32||dimmer_mode==33||dimmer_mode==34",
+                ] -%}
+            {% set type_name = ['cct1_t', 'cct1_v', 'cct2_t', 'cct2_v'] -%}
+            {% for title in ['CCT1 Temperature', 'CCT1 Brightness', 'CCT2 Temperature', 'CCT2 Brightness'] -%}
+            {
+                "id": "fader_{{inc_dec}}_{{type_name[loop.index0]}}",
+                "group": "gg_fader_{{inc_dec}}",
+                "title": "{{title}}",
+                "order": {{loop.index0 + 1}},
+                "address": {{3007 + loop.index0 + ptr}},
+                "reg_type": "holding",
+                "default": 1000,
+                "min": 0,
+                "max": 30000,
+                "condition": "{{conditions[loop.index0]}}"
+            },
+            {% endfor -%}
+            {# опишем RGB варианты -#}
+            {% set type_name = ['rgb_s', 'rgb_v'] -%}
+            {% set order = [1, 2] -%}
+            {% for title in ['Saturation', 'Brightness'] -%}
+            {
+                "id": "fader_{{inc_dec}}_{{type_name[loop.index0]}}",
+                "group": "gg_fader_{{inc_dec}}",
+                "title": "RGB Strip {{title}}",
+                "order": {{order[loop.index0]}},
+                "address": {{3012 + loop.index0}},
+                "reg_type": "holding",
+                "default": 1000,
+                "min": 0,
+                "max": 30000,
+                "condition": "dimmer_mode==256"
+            },
+            {% endfor -%}
+            {% endfor -%}
+            {
+                "id": "fade_rgb_h",
+                "group": "gg_fader_hue",
+                "title": "RGB Strip Hue",
+                "description": "hue_fader_description",
+                "order": 1,
+                "address": 3011,
+                "reg_type": "holding",
+                "default": 1000,
+                "min": 0,
+                "max": 30000,
+                "condition": "dimmer_mode==256"
+            },
+            {# опишем в группе входов настройки входа (зависит от типа входа кнопка или переключатель с фиксацией):
+               время нажатия длится больше указанного времени - считаем его длинным
+               время повторного нажатия
+               время второго нажатия - если не было - считаем нажатие одиночным
+               время дебонса
+                 -#}
+            {% for in_num in range(1, INPUTS_NUMBER + 1) -%}
+            {
+                "id": "in{{in_num}}_lp_hold_time",
+                "title": "lp_hold_time_title",
+                "description": "lp_hold_time_description",
+                "order": 1,
+                "group": "gg_in_{{in_num}}_params",
+                "address": {{1100 + in_num - 1}},
+                "reg_type": "holding",
+                "default": 1000,
+                "min": 500,
+                "max": 5000,
+                "condition": "input_{{in_num}}_mode!=1"
+            },
+            {
+                "id": "in{{in_num}}_lp_repeat_time",
+                "title": "lp_repeat_time_title",
+                "description": "lp_repeat_time_description",
+                "order": 2,
+                "group": "gg_in_{{in_num}}_params",
+                "address": {{1120 + in_num - 1}},
+                "reg_type": "holding",
+                "default": 20,
+                "min": 5,
+                "max": 500,
+                "condition": "input_{{in_num}}_mode!=1"
+            },
+            {
+                "id": "in{{in_num}}_secp_waiting_time",
+                "title": "secp_waiting_time_title",
+                "description": "secp_waiting_time_description",
+                "order": 3,
+                "group": "gg_in_{{in_num}}_params",
+                "address": {{1140 + in_num - 1}},
+                "reg_type": "holding",
+                "default": 300,
+                "min": 0,
+                "max": 2000,
+                "condition": "input_{{in_num}}_mode!=1"
+            },
+            {
+                "id": "in{{in_num}}_debounce_time",
+                "title": "debounce_time_title",
+                "description": "debounce_time_description",
+                "order": 4,
+                "group": "gg_in_{{in_num}}_params",
+                "address": {{1160 + in_num - 1}},
+                "reg_type": "holding",
+                "default": 50,
+                "min": 5,
+                "max": 200
+            },
+            {% endfor -%}
+            {# опишем в группе выхода настройки выходов, такие как минимальный ШИМ, максимальный ШИМ -#}
+            {% for ch_number in range(1, OUTPUTS_NUMBER + 1) -%}
+            {
+                "id": "ch{{ch_number}}_min",
+                "title": "Channel {{ch_number}} Minimum Value",
+                "description": "channel_min_value_description",
+                "order": 1,
+                "group": "gg_out_params",
+                "address": {{70 + ch_number - 1}},
+                "reg_type": "holding",
+                "default": 1,
+                "min": 1,
+                "max": 2000
+            },
+            {
+                "id": "ch{{ch_number}}_max",
+                "title": "Channel {{ch_number}} Maximum Value",
+                "description": "channel_max_value_description",
+                "order": 2,
+                "group": "gg_out_params",
+                "address": {{80 + ch_number - 1}},
+                "reg_type": "holding",
+                "default": 2048,
+                "min": 10,
+                "max": 2048
+            },
+            {% endfor -%}
+            {
+                "id": "freq_div",
+                "title": "pwm_frequency_factor_title",
+                "description": "pwm_frequency_factor_description",
+                "order": 9,
+                "group": "gg_out_params",
+                "address": 9,
+                "reg_type": "holding",
+                "default": 8,
+                "min": 1,
+                "max": 240
+            },
+            {# опишем в группе безопасные режимы настройки выходов, зависящих от выбранного режима работы диммера -#}
             {
                 "id": "safety_timer_s",
                 "title": "Safety Poll Timeout (s)",
@@ -892,12 +596,39 @@
                 "max": 65534,
                 "default": 10
             },
-            {% for ch_number in range(1, OUTPUTS_NUMBER + 1) -%}
+
+            {#
+            "W + W + W + W"     0
+            "2*W + W + W"       1
+            "CCT + W + W"       2
+            "W + W + 2*W"       16
+            "2*W + 2*W"         17
+            "CCT + 2*W"         18
+            "W + W + CCT"       32
+            "2*W + CCT"         33
+            "CCT + CCT"         34
+            "RGB + W"           256
+            "4*W"               512
+
+            #}
+
+            {# заполним во вкладке безопасные режимы и во вкладке действий при включении все варианты W* -#}
+            {% set conditions = [
+                "dimmer_mode==0||dimmer_mode==16||dimmer_mode==32",
+                "dimmer_mode==0||dimmer_mode==16||dimmer_mode==32",
+                "dimmer_mode==0||dimmer_mode==1||dimmer_mode==2",
+                "dimmer_mode==0||dimmer_mode==1||dimmer_mode==2||dimmer_mode==256",
+                "dimmer_mode==1||dimmer_mode==17||dimmer_mode==33",
+                "dimmer_mode==16||dimmer_mode==17||dimmer_mode==18",
+                "dimmer_mode==512",
+                ] -%}
+            {% set ptr = [1, 2, 3, 4,  1, 3,  1] -%}    {#- смещение регистров, специально разделено пробелами и соответствует строке ниже -#}
+            {% for type_action in ['1', '2', '3', '4',  '1_2', '3_4',  '1_2_3_4'] -%}
             {
-                "id": "safety_mode_ch_{{ch_number}}_action",
+                "id": "safety_mode_ch_{{type_action}}_action",
                 "title": "Action",
                 "reg_type": "holding",
-                "address": {{648 + ch_number - 1}},
+                "address": {{648 + ptr[loop.index0] - 1}},
                 "type": "enum",
                 "enum": [0, 1, 2, 3],
                 "enum_titles": [
@@ -906,48 +637,244 @@
                     "Turn On",
                     "Turn On and Set Brightness"
                 ],
-                "group": "ggg_safety_mode_ch_{{ ch_number }}"
+                "group": "ggg_safety_mode_ch_{{ type_action }}",
+                "condition": "{{conditions[loop.index0]}}"
             },
             {
-                "id": "safety_mode_ch_{{ch_number}}_level",
+                "id": "safety_mode_ch_{{type_action}}_level",
                 "title": "Brightness (%)",
                 "reg_type": "holding",
-                "address": {{656 + ch_number - 1}},
+                "address": {{656 + ptr[loop.index0] - 1}},
                 "min": 1,
                 "max": 100,
                 "default": 50,
                 "required": true,
-                "condition": "safety_mode_ch_{{ch_number}}_action==3",
-                "group": "ggg_safety_mode_ch_{{ ch_number }}"
+                "group": "ggg_safety_mode_ch_{{ type_action }}",
+                "condition": "(({{conditions[loop.index0]}})&&(safety_mode_ch_{{type_action}}_action==3))"
             },
             {
-                "id": "power_up_behaviour_ch_{{ch_number}}_action",
+                "id": "powerup_mode_ch_{{type_action}}_action",
                 "title": "Action",
                 "reg_type": "holding",
-                "address": {{664 + ch_number - 1}},
+                "address": {{664 + ptr[loop.index0] - 1}},
                 "type": "enum",
                 "enum": [0, 1, 2, 3],
                 "enum_titles": [
+                    "No Action",
                     "Turn Off",
-                    "Set Previous State",
                     "Turn On",
                     "Turn On and Set Brightness"
                 ],
-                "group": "ggg_power_up_behaviour_ch_{{ ch_number }}"
+                "group": "ggg_power_up_behaviour_ch_{{ type_action }}",
+                "condition": "{{conditions[loop.index0]}}"
             },
             {
-                "id": "power_up_behaviour_ch_{{ch_number}}_level",
+                "id": "powerup_mode_ch_{{type_action}}_level",
                 "title": "Brightness (%)",
                 "reg_type": "holding",
-                "address": {{672 + ch_number - 1}},
+                "address": {{672 + ptr[loop.index0] - 1}},
                 "min": 1,
                 "max": 100,
                 "default": 50,
                 "required": true,
-                "condition": "power_up_behaviour_ch_{{ch_number}}_action==3",
-                "group": "ggg_power_up_behaviour_ch_{{ ch_number }}"
+                "group": "ggg_power_up_behaviour_ch_{{ type_action }}",
+                "condition": "(({{conditions[loop.index0]}})&&(powerup_mode_ch_{{type_action}}_action==3))"
             },
             {% endfor -%}
+            {# заполним во вкладке безопасные режимы и во вкладке действий при включении все варианты CCT* -#}
+            {% set conditions = [
+                "dimmer_mode==2||dimmer_mode==18||dimmer_mode==34",
+                "dimmer_mode==32||dimmer_mode==33||dimmer_mode==34",
+                ] -%}
+            {% set ptr = [1, 3] -%}    {#- смещение регистров -#}
+            {% for type_action in ['CCT1', 'CCT2'] -%}
+            {
+                "id": "safety_mode_ch_{{type_action}}_action",
+                "title": "Action",
+                "reg_type": "holding",
+                "address": {{648 + ptr[loop.index0] - 1}},
+                "type": "enum",
+                "enum": [0, 1, 2, 3],
+                "enum_titles": [
+                    "No Action",
+                    "Turn Off",
+                    "Turn On",
+                    "Turn On and Set Levels"
+                ],
+                "group": "ggg_safety_mode_ch_{{ type_action }}",
+                "condition": "{{conditions[loop.index0]}}"
+            },
+            {
+                "id": "safety_mode_ch_{{type_action}}_temperature",
+                "title": "Temperature (%)",
+                "reg_type": "holding",
+                "address": {{656 + ptr[loop.index0] - 1}},
+                "min": 1,
+                "max": 100,
+                "default": 50,
+                "required": true,
+                "group": "ggg_safety_mode_ch_{{ type_action }}",
+                "condition": "(({{conditions[loop.index0]}})&&(safety_mode_ch_{{type_action}}_action==3))"
+            },
+            {
+                "id": "safety_mode_ch_{{type_action}}_brightness",
+                "title": "Brightness (%)",
+                "reg_type": "holding",
+                "address": {{656 + ptr[loop.index0]}},
+                "min": 1,
+                "max": 100,
+                "default": 50,
+                "required": true,
+                "group": "ggg_safety_mode_ch_{{ type_action }}",
+                "condition": "(({{conditions[loop.index0]}})&&(safety_mode_ch_{{type_action}}_action==3))"
+            },
+            {
+                "id": "powerup_mode_ch_{{type_action}}_action",
+                "title": "Action",
+                "reg_type": "holding",
+                "address": {{664 + ptr[loop.index0] - 1}},
+                "type": "enum",
+                "enum": [0, 1, 2, 3],
+                "enum_titles": [
+                    "No Action",
+                    "Turn Off",
+                    "Turn On",
+                    "Turn On and Set Levels"
+                ],
+                "group": "ggg_power_up_behaviour_ch_{{ type_action }}",
+                "condition": "{{conditions[loop.index0]}}"
+            },
+            {
+                "id": "powerup_mode_ch_{{type_action}}_temperature",
+                "title": "Temperature (%)",
+                "reg_type": "holding",
+                "address": {{672 + ptr[loop.index0] - 1}},
+                "min": 1,
+                "max": 100,
+                "default": 50,
+                "required": true,
+                "group": "ggg_power_up_behaviour_ch_{{ type_action }}",
+                "condition": "(({{conditions[loop.index0]}})&&(powerup_mode_ch_{{type_action}}_action==3))"
+            },
+            {
+                "id": "powerup_mode_ch_{{type_action}}_brightness",
+                "title": "Brightness (%)",
+                "reg_type": "holding",
+                "address": {{673 + ptr[loop.index0] - 1}},
+                "min": 1,
+                "max": 100,
+                "default": 50,
+                "required": true,
+                "group": "ggg_power_up_behaviour_ch_{{ type_action }}",
+                "condition": "(({{conditions[loop.index0]}})&&(powerup_mode_ch_{{type_action}}_action==3))"
+            },
+            {% endfor -%}
+            {# заполним во вкладке безопасные режимы и во вкладке действий при включении RGB варианты -#}
+            {
+                "id": "safety_mode_ch_rgb_action",
+                "title": "Action",
+                "reg_type": "holding",
+                "address": 648,
+                "type": "enum",
+                "enum": [0, 1, 2, 3],
+                "enum_titles": [
+                    "No Action",
+                    "Turn Off",
+                    "Turn On",
+                    "Turn On and Set Levels"
+                ],
+                "group": "ggg_safety_mode_ch_RGB",
+                "condition": "dimmer_mode==256"
+            },
+            {
+                "id": "safety_mode_ch_rgb_h",
+                "title": "RGB Strip Hue",
+                "reg_type": "holding",
+                "address": 656,
+                "min": 1,
+                "max": 360,
+                "default": 180,
+                "required": true,
+                "group": "ggg_safety_mode_ch_RGB",
+                "condition": "safety_mode_ch_rgb_action==3"
+            },
+            {
+                "id": "safety_mode_ch_rgb_s",
+                "title": "RGB Strip Saturation",
+                "reg_type": "holding",
+                "address": 657,
+                "min": 1,
+                "max": 100,
+                "default": 50,
+                "required": true,
+                "group": "ggg_safety_mode_ch_RGB",
+                "condition": "safety_mode_ch_rgb_action==3"
+            },
+            {
+                "id": "safety_mode_ch_rgb_v",
+                "title": "RGB Strip Brightness",
+                "reg_type": "holding",
+                "address": 658,
+                "min": 1,
+                "max": 100,
+                "default": 50,
+                "required": true,
+                "group": "ggg_safety_mode_ch_RGB",
+                "condition": "safety_mode_ch_rgb_action==3"
+            },
+            {
+                "id": "powerup_mode_ch_rgb_action",
+                "title": "Action",
+                "reg_type": "holding",
+                "address": 664,
+                "type": "enum",
+                "enum": [0, 1, 2, 3],
+                "enum_titles": [
+                    "No Action",
+                    "Turn Off",
+                    "Turn On",
+                    "Turn On and Set Levels"
+                ],
+                "group": "ggg_power_up_behaviour_ch_RGB",
+                "condition": "dimmer_mode==256"
+            },
+            {
+                "id": "powerup_mode_ch_rgb_h",
+                "title": "RGB Strip Hue",
+                "reg_type": "holding",
+                "address": 672,
+                "min": 1,
+                "max": 360,
+                "default": 180,
+                "required": true,
+                "group": "ggg_power_up_behaviour_ch_RGB",
+                "condition": "powerup_mode_ch_rgb_action==3"
+            },
+            {
+                "id": "powerup_mode_ch_rgb_s",
+                "title": "RGB Strip Saturation",
+                "reg_type": "holding",
+                "address": 673,
+                "min": 1,
+                "max": 100,
+                "default": 50,
+                "required": true,
+                "group": "ggg_power_up_behaviour_ch_RGB",
+                "condition": "powerup_mode_ch_rgb_action==3"
+            },
+            {
+                "id": "powerup_mode_ch_rgb_v",
+                "title": "RGB Strip Brightness",
+                "reg_type": "holding",
+                "address": 674,
+                "min": 1,
+                "max": 100,
+                "default": 50,
+                "required": true,
+                "group": "ggg_power_up_behaviour_ch_RGB",
+                "condition": "powerup_mode_ch_rgb_action==3"
+            },
+            {# опишем в группе безопасные режимы, то как будут работать кнопки -#}
             {% for in_number in range(1, INPUTS_NUMBER + 1) -%}
             {
                 "id": "in_{{in_number}}_safety_input_control",
@@ -962,8 +889,21 @@
                     "Disable in safety mode",
                     "Enable only in safety mode"
                 ]
-            }{% if not loop.last -%},{% endif -%}
+            },
             {% endfor -%}
+            {#  -#}
+            {
+                "id": "baud_rate",
+                "title": "Baud rate",
+                "description": "baud_rate_description",
+                "address": 110,
+                "reg_type": "holding",
+                "enum": [96, 192, 384, 576, 1152],
+                "default": 96,
+                "enum_titles": ["9600", "19200", "38400", "57600", "115200"],
+                "group": "g_general",
+                "order": 1
+            }
         ],
 
         "channels": [
@@ -1369,17 +1309,6 @@
                 "condition": "input_{{in_num}}_mode!=1"
             },
             {% endfor -%}
-            {% for ls_number in range(1, LIGHT_SCENES_NUMBER + 1) -%}
-            {
-                "name": "Scene {{ls_number}} Light",
-                "reg_type": "coil",
-                "address": {{ 32 + (ls_number - 1) }},
-                "type": "switch",
-                "enabled": false,
-                "sporadic": true,
-                "group": "gg_ls_{{ls_number}}_channels"
-            },
-            {% endfor -%}
             {
                 "name": "Serial",
                 "type": "text",
@@ -1760,10 +1689,6 @@
                 "Turn On and Set Level" : "Включить и установить уровень",
                 "Turn On and Set Levels" : "Включить и установить уровени",
                 "Turn On and Set Angle" : "Включить и установить угол",
-                {% for ls_number in range(1, LIGHT_SCENES_NUMBER + 1) -%}
-                "Light Scene {{ls_number}}": "Сцена {{ls_number}}",
-                "Scene {{ls_number}} Light": "Свет сцены {{ls_number}}",
-                {% endfor -%}
                 {% for in_num in range(1, INPUTS_NUMBER + 1) -%}
                 "Enable Channel {{in_num}}": "Действие на канале {{in_num}}",
                 {% endfor -%}
@@ -1833,7 +1758,8 @@
                 "sw_ch1234_act_title" : "Каналы 1,2,3,4",
                 "sw_cct1_act_title" : "Каналы CCT1",
                 "sw_cct2_act_title" : "Каналы CCT2",
-                "sw_rgb_act_title" : "Каналы RGB"
+                "sw_rgb_act_title" : "Каналы RGB",
+                "Channel RGB" : "Каналы RGB"
             }
         }
     }

@@ -1108,14 +1108,6 @@ WB-LED
 	RGB Strip Brightness  =>  RGB Strip Brightness
 	RGB Strip Hue  =>  RGB Strip Hue
 	RGB Strip Saturation  =>  RGB Strip Saturation
-	Scene 1 Light  =>  Scene 1 Light
-	Scene 2 Light  =>  Scene 2 Light
-	Scene 3 Light  =>  Scene 3 Light
-	Scene 4 Light  =>  Scene 4 Light
-	Scene 5 Light  =>  Scene 5 Light
-	Scene 6 Light  =>  Scene 6 Light
-	Scene 7 Light  =>  Scene 7 Light
-	Scene 8 Light  =>  Scene 8 Light
 	Serial  =>  Serial
 	Supply Voltage  =>  Supply Voltage
 	Uptime  =>  Uptime
