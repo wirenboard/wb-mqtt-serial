@@ -226,7 +226,7 @@
           "title": "Address",
           "description": "Register index (0-65535 in case of Modbus)",
           "propertyOrder": 2,
-          "$ref": "#/definitions/address",
+          "$ref": "#/definitions/address_no_bits",
           "options": {
             "keep_oneof_values": false
           }
@@ -954,6 +954,30 @@
         "keep_oneof_values": false
       }
     },
+    "address_no_bits": {
+      "title": "Address",
+      "description": "Register index (0-65535 in case of Modbus)",
+      "oneOf": [
+        {
+          "title": "decimal or hex",
+          "type": "string",
+          "pattern": "^(0x[A-Fa-f\\d]+|\\d+)$",
+          "options": {
+            "inputAttributes": {
+              "placeholder":  "decimal (e.g. 123) or hex (e.g. 0xAF)"
+            },
+            "patternmessage": "Should be decimal or hex"
+          }
+        },
+        {
+          "title": "decimal",
+          "type": "integer"
+        }
+      ],
+      "options": {
+        "keep_oneof_values": false
+      }
+    },
     "write_address": {
       "title": "Write Address",
       "description": "Register index (0-65535 in case of Modbus)",
@@ -1246,7 +1270,7 @@
       ]
     },
 
-    "enrgomera_iec_mode_c_device": {
+    "iec_mode_c_device": {
       "allOf": [
         { "$ref": "#/definitions/deviceProperties" },
         { "$ref": "#/definitions/no_setup" },
@@ -1254,7 +1278,7 @@
         { "$ref": "#/definitions/slave_id_broadcast" }
       ]
     },
-    "enrgomera_iec_mode_c_device_no_channels": {
+    "iec_mode_c_device_no_channels": {
       "allOf": [
         { "$ref": "#/definitions/deviceProperties" },
         { "$ref": "#/definitions/no_setup" },

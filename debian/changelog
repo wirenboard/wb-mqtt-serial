@@ -1,8 +1,199 @@
+wb-mqtt-serial (2.140.1) stable; urgency=medium
+
+  * WB-LED template: safety mode, switch mode, powerup actions support
+
+ -- Sergey Mishin <mishin@wirenboard.com>  Tue, 10 Sep 2024 11:07:00 +0300
+
+wb-mqtt-serial (2.140.0) stable; urgency=medium
+
+  * Add WB-MAO4-20mA support
+
+ -- Pavel Gasheev <pavel.gasheev@wirenboard.ru>  Mon, 09 Sep 2024 15:41:08 +0300
+
+wb-mqtt-serial (2.139.3) stable; urgency=medium
+
+  * Fix RGB Strip Hue not changed in WB-LED
+
+ -- Sergey Mishin <mishin@wirenboard.com>  Wed, 04 Sep 2024 17:49:00 +0300
+
+wb-mqtt-serial (2.139.2) stable; urgency=medium
+
+  * Deleted light scenes from WB-MDM3
+
+ -- Sergey Mishin <mishin@wirenboard.com>  Mon, 26 Aug 2024 11:15:00 +0300
+
+wb-mqtt-serial (2.139.1) stable; urgency=medium
+
+  * Fix address validation for setup/parameters
+
+ -- Nikolay Korotkiy <nikolay.korotkiy@wirenboard.com>  Tue, 13 Aug 2024 10:05:00 +0400
+
+wb-mqtt-serial (2.139.0) stable; urgency=medium
+
+  * Add template for Ensystec
+
+ -- Mikhail Burchu <mikhail.burchu@wirenboard.com>  Fri, 23 Aug 2024 08:28:00 +0300
+
+wb-mqtt-serial (2.138.2) stable; urgency=medium
+
+  * Add comments for Cleaning Mode in WB-MWAC template
+
+ -- Radmir Khakimov <radmir.khakimov@wirenboard.com>  Tue, 15 Aug 2024 16:05:00 +0500
+
+wb-mqtt-serial (2.138.1) stable; urgency=medium
+
+  * Fix APC NMC2 AP9630 template
+
+ -- Nikolay Korotkiy <nikolay.korotkiy@wirenboard.com>  Tue, 06 Aug 2024 16:05:00 +0400
+
+wb-mqtt-serial (2.138.0) stable; urgency=medium
+
+  * Add template PID-controller Ptex
+
+ -- Roman Matveev <roman.matveev@wirenboard.ru>  Wed, 31 Jul 2024 16:34:30 +0300
+
+wb-mqtt-serial (2.137.0) stable; urgency=medium
+  
+  * Add new template for Veda VF 51
+
+ -- Roman Matveev <roman.matveev@wirenboard.ru>  Wed, 31 Jul 2024 11:39:00 +0300
+
+wb-mqtt-serial (2.136.0) stable; urgency=medium
+
+  * Add template APC NMC2 AP9630
+
+ -- Roman Matveev <roman.matveev@wirenboard.ru>  Wed, 31 Jul 2024 11:06:30 +0300
+
+wb-mqtt-serial (2.135.0) stable; urgency=medium
+
+  * WB-MRWM2 template: add support for startup delay, restart delay, voltage control function
+
+ -- Ilia Skochilov <ilia.skochilov@wirenboard.com>  Tue, 30 Jul 2024 10:15:00 +0300
+
+ wb-mqtt-serial (2.134.0) stable; urgency=medium
+
+  * Add template for kaplestop
+
+ -- Mikhail Burchu <mikhail.burchu@wirenboard.com>  Thu, 25 Jul 2024 15:45:00 +0300
+
+wb-mqtt-serial (2.133.5) stable; urgency=medium
+
+  * Add g-leakage group
+
+ -- Mikhail Burchu <mikhail.burchu@wirenboard.com>  Thu, 25 Jul 2024 10:35:00 +0300
+
+wb-mqtt-serial (2.133.4) stable; urgency=medium
+
+  * ONOKOM templates: fix units
+
+ -- Nikolay Korotkiy <nikolay.korotkiy@wirenboard.com>  Mon, 22 Jul 2024 16:05:00 +0400
+
+wb-mqtt-serial (2.133.3) stable; urgency=medium
+
+  * WB-MRM2-MINI template: add min request interval
+  * WB-MIR_V2 template: add min request interval
+  * WB-MAI2-CC template: add min request interval
+
+ -- Sergey Mishin <mishin@wirenboard.com>  Wed, 17 Jul 2024 22:50:00 +0300
+
+wb-mqtt-serial (2.133.2) stable; urgency=medium
+
+  * WB-MAI6 template: remove FW version
+
+ -- Pavel Gasheev <pavel.gasheev@wirenboard.ru>  Tue, 16 Jul 2024 19:14:15 +0300
+
+wb-mqtt-serial (2.133.1) stable; urgency=medium
+
+  * Add min core voltage reg in wb-mir_v2 template
+  * Add min core voltage reg in wb-mai2-cc template
+  * Add min core voltage reg in wb-mr2m template
+
+ -- Sergey Mishin <mishin@wirenboard.com>  Tue, 16 Jul 2024 13:35:00 +0300
+
+wb-mqtt-serial (2.133.0) stable; urgency=medium
+
+  * Add IEC61107 Mode C protocol
+  * Add LUNA three-phase electricity meter template
+
+ -- Petr Krasnoshchekov <petr.krasnoshchekov@wirenboard.com>  Tue, 16 Jul 2024 10:09:00 +0500
+
+wb-mqtt-serial (2.132.1) stable; urgency=medium
+
+  * Add min core voltage reg in m1w2 template
+
+ -- Radmir Khakimov <radmir.khakimov@wirenboard.com>  Tue, 15 Jul 2024 15:31:30 +0500
+
+wb-mqtt-serial (2.132.0) stable; urgency=medium
+
+  * Somfy SDN: add tilting support
+
+ -- Nikolay Korotkiy <nikolay.korotkiy@wirenboard.com>  Mon, 10 Jul 2024 16:05:00 +0400
+
+wb-mqtt-serial (2.131.0) stable; urgency=medium
+
+  * Add new template for Carel muRack after rework
+
+ -- Andrey Ksenofontov <andrey.ksenofontov@wirenboard.com>  Thu, 11 Jul 2024 15:36:30 +0300
+
+wb-mqtt-serial (2.130.2) stable; urgency=medium
+
+  * Add indirect control channels for WB-MSW-v3/v4/v4-lora and WB-MIR-v2
+
+ -- Andrey Ksenofontov <andrey.ksenofontov@wirenboard.com>  Thu, 10 Jul 2024 16:52:00 +0300
+ 
+ wb-mqtt-serial (2.130.1) stable; urgency=medium
+
+  * Fix a type in WB-Domofon template
+
+ -- Roman Matveev <roman.matveev@wirenboard.ru>  Wed, 10 Jul 2024 14:47:30 +0300
+
+wb-mqtt-serial (2.130.0) stable; urgency=medium
+
+  * Add Energomera CE102 template
+
+ -- Petr Krasnoshchekov <petr.krasnoshchekov@wirenboard.com>  Mon, 08 Jul 2024 14:28:10 +0500
+
+wb-mqtt-serial (2.129.1) stable; urgency=medium
+
+  * Add channels "tariffs" to templates/config-mercury230.json
+
+ -- Elena Savchenko <elena.savchenko@wirenboard.com>  Thu, 27 Jun 2024 11:55:30 +0500
+ 
+wb-mqtt-serial (2.129.0) stable; urgency=medium
+
+  * WB-MAI6 template: add WB-VDIV and custom voltage divider support
+
+ -- Pavel Gasheev <pavel.gasheev@wirenboard.ru>  Tue, 11 Jun 2024 15:18:10 +0300
+
 wb-mqtt-serial (2.128.0) stable; urgency=medium
 
-  * WB-LED template: add light scenes, safety mode, switch mode, powerup actions support
+  * Add device address setup RPC
 
- -- Sergey Mishin <mishin@wirenboard.com>  Tue, 18 Jun 2024 18:43:00 +0300
+ -- Petr Krasnoshchekov <petr.krasnoshchekov@wirenboard.com>  Thu, 27 Jun 2024 15:15:35 +0500
+
+wb-mqtt-serial (2.127.4) stable; urgency=medium
+
+  * Add new signature in m1w2 template
+
+ -- Radmir Khakimov <radmir.khakimov@wirenboard.com>  Wed, 26 Jun 2024 19:00:30 +0500
+
+wb-mqtt-serial (2.127.3) stable; urgency=medium
+
+  * Add GitHub pull request template. No functional changes
+
+ -- Petr Krasnoshchekov <petr.krasnoshchekov@wirenboard.com>  Mon, 24 Jun 2024 09:55:30 +0500
+
+wb-mqtt-serial (2.127.2) stable; urgency=medium
+
+  * Watch device template changes in /usr/lib/wb-mqtt-serial/templates
+
+ -- Petr Krasnoshchekov <petr.krasnoshchekov@wirenboard.com>  Fri, 21 Jun 2024 11:49:58 +0500
+
+wb-mqtt-serial (2.127.1) stable; urgency=medium
+
+  * Delete template for Carel muRack
+
+ -- Andrey Ksenofontov <andrey.ksenofontov@wirenboard.com>  Wed, 19 Jun 2024 11:06:03 +0300
 
 wb-mqtt-serial (2.127.0) stable; urgency=medium
 

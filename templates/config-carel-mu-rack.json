@@ -54,7 +54,7 @@
         "parameters": [
             {
                 "id": "alarm_relay_logic",
-                "title": "Alarm Relay Logic (/28)",
+                "title": "Alarm Relay Logic",
                 "group": "alarms",
                 "reg_type": "coil",
                 "address": 23,
@@ -66,11 +66,13 @@
                     "N.C.",
                     "N.O."
                 ],
-                "default": 1
+                "default": 1,
+                "description":"Displayed on LED: /28"
+
             },
             {
                 "id": "alarm_signal_delay",
-                "title": "Alarm Signal Delay (s, A20)",
+                "title": "Alarm Signal Delay (s)",
                 "group": "alarms",
                 "reg_type": "holding",
                 "address": 509,
@@ -78,11 +80,13 @@
                 "min": 0,
                 "max": 999,
                 "default": 1,
-                "format": "u16"
+                "format": "u16",
+                "description":"Displayed on LED: A20"
+
             },
             {
-                "id": "capacity_of_compressor_1",
-                "title": "Capacity of Compressor 1 (kW, /03)",
+                "id": "capacity_compressor_1",
+                "title": "Capacity of Compressor 1 (kW)",
                 "group": "compressor",
                 "order": 3,
                 "reg_type": "holding",
@@ -92,11 +96,13 @@
                 "max": 999,
                 "default": 5,
                 "format": "u16",
-                "condition": "number_of_compressors>=1"
+                "condition": "compressors_number>=1",
+                "description":"Displayed on LED: /03"
+
             },
             {
-                "id": "capacity_of_compressor_2",
-                "title": "Capacity of Compressor 2 (kW, /04)",
+                "id": "capacity_compressor_2",
+                "title": "Capacity of Compressor 2 (kW)",
                 "group": "compressor",
                 "order": 4,
                 "reg_type": "holding",
@@ -106,11 +112,13 @@
                 "max": 999,
                 "default": 10,
                 "format": "u16",
-                "condition": "number_of_compressors>=2"
+                "condition": "compressors_number>=2",
+                "description":"Displayed on LED: /04"
+
             },
             {
-                "id": "capacity_of_compressor_3",
-                "title": "Capacity of Compressor 3 (kW, /05)",
+                "id": "capacity_compressor_3",
+                "title": "Capacity of Compressor 3 (kW)",
                 "group": "compressor",
                 "order": 5,
                 "reg_type": "holding",
@@ -120,11 +128,13 @@
                 "max": 999,
                 "default": 20,
                 "format": "u16",
-                "condition": "number_of_compressors>=3"
+                "condition": "compressors_number>=3",
+                "description":"Displayed on LED: /05"
+
             },
             {
-                "id": "capacity_of_compressor_4",
-                "title": "Capacity of Compressor 4 (kW, /06)",
+                "id": "capacity_compressor_4",
+                "title": "Capacity of Compressor 4 (kW)",
                 "group": "compressor",
                 "order": 6,
                 "reg_type": "holding",
@@ -134,11 +144,13 @@
                 "max": 999,
                 "default": 40,
                 "format": "u16",
-                "condition": "number_of_compressors>=4"
+                "condition": "compressors_number>=4",
+                "description":"Displayed on LED: /06"
+
             },
             {
-                "id": "compressor_thermal_overload_alarm_delay",
-                "title": "Compressor Thermal Overload Alarm Delay (s, A12)",
+                "id": "compressor_thermal_delay",
+                "title": "Compressor Thermal Overload Alarm Delay (s)",
                 "group": "alarms",
                 "reg_type": "holding",
                 "address": 510,
@@ -146,11 +158,13 @@
                 "min": 0,
                 "max": 999,
                 "default": 0,
-                "format": "u16"
+                "format": "u16",
+                "description":"Displayed on LED: A12"
+
             },
             {
-                "id": "condensing_temperature_delta_for_floating_control",
-                "title": "Condensing Temperature Delta for Floating Control (°C, r33)",
+                "id": "condensing_temperature_delta",
+                "title": "Condensing Temperature Delta for Floating Control (°C)",
                 "group": "fan",
                 "reg_type": "holding",
                 "address": 432,
@@ -159,25 +173,27 @@
                 "min": -40,
                 "max": 150,
                 "default": 10,
-                "format": "s16"
+                "format": "s16",
+                "description":"Displayed on LED: r33"
+
             },
             {
-                "id": "delay_restart_after_black_out",
-                "title": "Delay Restart after Black Out (s, /37)",
+                "id": "restart_delay",
+                "title": "Delay Restart after Black Out (s)",
                 "group": "control",
                 "order": 2,
                 "reg_type": "holding",
                 "address": 464,
                 "type": "value",
-                "description": "If 0 no delay",
                 "min": 0,
                 "max": 999,
                 "default": 0,
-                "format": "u16"
+                "format": "u16",
+                "description":"Displayed on LED: /37"
             },
             {
-                "id": "differential_pressure_for_dead_band_by_time",
-                "title": "Differential Pressure for Dead Band by Time (bar, r11)",
+                "id": "differential_pressure_dead_band",
+                "title": "Differential Pressure for Dead Band by Time (bar)",
                 "group": "compressor_time",
                 "order": 4,
                 "reg_type": "holding",
@@ -187,11 +203,13 @@
                 "min": -1,
                 "max": 20,
                 "default": 0.5,
-                "format": "s16"
+                "format": "s16",
+                "description":"Displayed on LED: r11"
+
             },
             {
                 "id": "digital_input_logic",
-                "title": "Digital Input Logic (A19)",
+                "title": "Digital Input Logic",
                 "order": 2,
                 "group": "alarms",
                 "reg_type": "coil",
@@ -205,11 +223,13 @@
                     "N.O.: with no alarm the contact is open",
                     "N.C. : with no alarm the contact is closed"
                 ],
-                "default": 1
+                "default": 1,
+                "description":"Displayed on LED: A19"
+
             },
             {
-                "id": "discharge_probe_1_calibration",
-                "title": "Discharge Probe 1 Calibration (bar, /24)",
+                "id": "discharge_1_probe_calibration",
+                "title": "Discharge Probe 1 Calibration (bar)",
                 "group": "sensors",
                 "order": 5,
                 "reg_type": "holding",
@@ -220,11 +240,13 @@
                 "max": 12,
                 "default": 0,
                 "format": "s16",
-                "condition": "type_of_probe_B1>0"
+                "condition": "type_probe_B1>0",
+                "description":"Displayed on LED: /24"
+
             },
             {
                 "id": "enable_fan_inverter",
-                "title": "Enable Fan Inverter (/10)",
+                "title": "Enable Fan Inverter",
                 "group": "inverter",
                 "order": 0,
                 "reg_type": "coil",
@@ -238,11 +260,13 @@
                     "Disabled",
                     "Enabled"
                 ],
-                "default": 0
+                "default": 0,
+                "description":"Displayed on LED: /10"
+
             },
             {
-                "id": "enable_fan_with_comp_on",
-                "title": "Enable Fan with Compressor On (/13)",
+                "id": "enable_fan_with_comp",
+                "title": "Enable Fan with Compressor On",
                 "group": "fan",
                 "reg_type": "coil",
                 "address": 18,
@@ -255,11 +279,13 @@
                     "Independent operation of the fans",
                     "Fans On only when at least one compressor is On"
                 ],
-                "default": 0
+                "default": 0,
+                "description":"Displayed on LED: /13"
+
             },
             {
-                "id": "enable_floating_condenser_control",
-                "title": "Enable Floating Condenser Control (r32)",
+                "id": "floating_condenser_control",
+                "title": "Enable Floating Condenser Control",
                 "group": "fan",
                 "reg_type": "coil",
                 "address": 26,
@@ -272,11 +298,13 @@
                     "NO",
                     "YES"
                 ],
-                "default": 0
+                "default": 0,
+                "description":"Displayed on LED: r32"
+
             },
             {
-                "id": "enable_management_of_different_compressors",
-                "title": "Enable Management of Different Compressors (/02)",
+                "id": "management_different_compressors",
+                "title": "Enable Management of Different Compressors",
                 "group": "compressor",
                 "order": 2,
                 "reg_type": "coil",
@@ -290,11 +318,13 @@
                     "NOT ENABLED",
                     "ENABLED"
                 ],
-                "default": 0
+                "default": 0,
+                "description":"Displayed on LED: /02"
+
             },
             {
-                "id": "enable_prevent_control_on_condenser",
-                "title": "Enable Prevent Control On Condenser (/32)",
+                "id": "prevent_control_condenser",
+                "title": "Enable Prevent Control On Condenser",
                 "group": "alarms",
                 "reg_type": "coil",
                 "address": 24,
@@ -307,11 +337,13 @@
                     "NOT ENABLED",
                     "ENABLED"
                 ],
-                "default": 0
+                "default": 0,
+                "description":"Displayed on LED: /32"
+
             },
             {
-                "id": "enable_unit_off_due_to_probe_fault",
-                "title": "Enable Unit Off Due to Probe Fault (A22)",
+                "id": "unit_off_probe_fault",
+                "title": "Enable Unit Off Due to Probe Fault",
                 "order": 4,
                 "group": "alarms",
                 "reg_type": "coil",
@@ -325,11 +357,13 @@
                     "NO",
                     "YES"
                 ],
-                "default": 0
+                "default": 0,
+                "description":"Displayed on LED: A22"
+
             },
             {
-                "id": "end_scale_value_discharge_transducer",
-                "title": "End Scale Value Discharge Transducer (bar, /20)",
+                "id": "max_discharge_pressure",
+                "title": "Max Discharge/Suction 2 Pressure (bar)",
                 "reg_type": "holding",
                 "group": "compressor_pressure",
                 "order": 3,
@@ -339,11 +373,13 @@
                 "min": -1,
                 "max": 45,
                 "default": 34.5,
-                "format": "s16"
+                "format": "s16",
+                "description":"Displayed on LED: /20"
+
             },
             {
-                "id": "end_scale_value_suction_transducer",
-                "title": "End Scale Value Suction Transducer (bar, /19)",
+                "id": "max_suction_pressure",
+                "title": "Max Suction Pressure (bar)",
                 "group": "compressor_pressure",
                 "order": 2,
                 "reg_type": "holding",
@@ -353,11 +389,13 @@
                 "min": -1,
                 "max": 45,
                 "default": 9.3,
-                "format": "s16"
+                "format": "s16",
+                "description":"Displayed on LED: /19"
+
             },
             {
-                "id": "fan_start_delay_dead_band",
-                "title": "Fan Start Delay (Dead Band) (s)",
+                "id": "fan_start_delay",
+                "title": "Fan Start Delay (s)",
                 "group": "fan",
                 "reg_type": "holding",
                 "address": 459,
@@ -367,8 +405,8 @@
                 "format": "u16"
             },
             {
-                "id": "fan_stop_delay_dead_band",
-                "title": "Fan Stop Delay (Dead Band) (s)",
+                "id": "fan_stop_delay",
+                "title": "Fan Stop Delay (s)",
                 "group": "fan",
                 "reg_type": "holding",
                 "address": 461,
@@ -377,8 +415,8 @@
                 "format": "u16"
             },
             {
-                "id": "high_suction_pressure_1_alarm_delay",
-                "title": "High Suction Pressure 1 Alarm Delay (s, A02)",
+                "id": "HP_suction_1_delay",   
+                "title": "Suction Probe 1 Alarm Delay (s)",
                 "group": "alarms",
                 "reg_type": "holding",
                 "address": 505,
@@ -386,11 +424,13 @@
                 "min": 0,
                 "max": 999,
                 "default": 60,
-                "format": "u16"
+                "format": "u16",
+                "description":"Displayed on LED: A02"
+
             },
             {
-                "id": "high_suction_pressure_2_alarm_delay",
-                "title": "High Suction Pressure 2 Alarm Delay (s, A06)",
+                "id": "HP_suction_2_delay",
+                "title": "Suction Probe 2 Alarm Delay (s)",
                 "group": "alarms",
                 "reg_type": "holding",
                 "address": 499,
@@ -398,11 +438,13 @@
                 "min": 0,
                 "max": 999,
                 "default": 60,
-                "format": "u16"
+                "format": "u16",
+                "description":"Displayed on LED: A06"
+
             },
             {
-                "id": "high_temp_threshold_probe_B2",
-                "title": "High Temperature Threshold Probe B2 (°C, A16)",
+                "id": "temperature_threshold_probe_B2",
+                "title": "High Temperature Threshold Probe B2 (°C)",
                 "group": "alarms",
                 "reg_type": "holding",
                 "address": 440,
@@ -411,11 +453,13 @@
                 "min": -40,
                 "max": 150,
                 "default": 100,
-                "format": "s16"
+                "format": "s16",
+                "description":"Displayed on LED: A16"
+                
             },
             {
-                "id": "high_temp_threshold_probe_B3",
-                "title": "High Temperature Threshold Probe B3 (°C, A17)",
+                "id": "temperature_threshold_probe_B3",
+                "title": "High Temperature Threshold Probe B3 (°C)",
                 "group": "alarms",
                 "reg_type": "holding",
                 "address": 434,
@@ -424,11 +468,13 @@
                 "min": -40,
                 "max": 150,
                 "default": 100,
-                "format": "s16"
+                "format": "s16",
+                "description":"Displayed on LED: A17"
+
             },
             {
-                "id": "HP_discharge_alarm_threshold_bar",
-                "title": "HP Discharge Alarm Threshold (bar, A09)",
+                "id": "HP_discharge_alarm_bar",
+                "title": "Discharge Probe Alarm: High Threshold Setting (bar)",
                 "group": "alarms",
                 "reg_type": "holding",
                 "address": 424,
@@ -437,11 +483,13 @@
                 "min": -1,
                 "max": 45,
                 "default": 20,
-                "format": "s16"
+                "format": "s16",
+                "description":"Displayed on LED: A09"
+
             },
             {
-                "id": "HP_discharge_alarm_threshold_deg_C",
-                "title": "HP Discharge Alarm Threshold (°C, A09)",
+                "id": "HP_discharge_alarm_deg",
+                "title": "Discharge Probe Alarm: High Threshold Setting (°C)",
                 "group": "alarms",
                 "reg_type": "holding",
                 "address": 418,
@@ -450,11 +498,13 @@
                 "min": -50,
                 "max": 150,
                 "default": 45.8,
-                "format": "s16"
+                "format": "s16",
+                "description":"Displayed on LED: A09"
+
             },
             {
-                "id": "HP_suction_1_alarm_threshold",
-                "title": "HP Suction 1 Alarm Threshold (bar, A01)",
+                "id": "HP_suction_1_alarm",
+                "title": "Suction Probe 1 Alarm: High Threshold Setting (bar)",
                 "group": "alarms",
                 "reg_type": "holding",
                 "address": 423,
@@ -463,38 +513,41 @@
                 "min": -1,
                 "max": 45,
                 "default": 9.3,
-                "format": "s16"
+                "format": "s16",
+                "description":"Displayed on LED: A01"
+
             },
             {
-                "id": "HP_suction_2_alarm_threshold",
-                "title": "HP Suction 2 Alarm Threshold (bar, A05)",
+                "id": "HP_suction_2_alarm",
+                "title": "Suction Probe 2 Alarm: High Threshold Setting (bar)",
                 "group": "alarms",
                 "reg_type": "holding",
                 "address": 429,
                 "type": "value",
-                "description": "For two circuits only",
                 "scale": 0.1,
                 "min": -1,
                 "max": 45,
                 "default": 9.3,
-                "format": "s16"
+                "format": "s16",
+                "description": "For Two Circuits Only, Displayed on LED: A05"
+
             },
             {
-                "id": "integral_time_for_P_plus_I_fan_control",
-                "title": "Integral Time for P+I Fan Control (s, r22)",
+                "id": "integral_time",
+                "title": "Integral Time for P+I Fan Control (s)",
                 "group": "fan",
                 "reg_type": "holding",
                 "address": 491,
                 "type": "value",
-                "description": "Only if PI",
                 "min": 0,
                 "max": 999,
                 "default": 600,
-                "format": "u16"
+                "format": "u16",
+                "description": "Only if PI, Displayed on LED: r22"
             },
             {
                 "id": "inverter_ramp_up_time",
-                "title": "Inverter Ramp Up Time (s, r28)",
+                "title": "Inverter Ramp Up Time (s)",
                 "group": "inverter",
                 "order": 4,
                 "reg_type": "holding",
@@ -504,11 +557,13 @@
                 "max": 999,
                 "default": 10,
                 "format": "u16",
-                "condition": "enable_fan_inverter==1"
+                "condition": "enable_fan_inverter==1",
+                "description":"Displayed on LED: r28"
+
             },
             {
-                "id": "inverter_speed_up_time",
-                "title": "Inverter Speed Up Time (s, r27)",
+                "id": "fan_inverter_speedup",
+                "title": "Inverter Speed Up Time (s)",
                 "group": "inverter",
                 "order": 3,
                 "reg_type": "holding",
@@ -518,24 +573,26 @@
                 "max": 999,
                 "default": 2,
                 "format": "u16",
-                "condition": "enable_fan_inverter==1"
+                "condition": "enable_fan_inverter==1",
+                "description":"Displayed on LED: r27"
+
             },
             {
                 "id": "liquid_level_alarm_delay",
-                "title": "Liquid Level Alarm Delay (m, A18)",
+                "title": "Liquid Level Alarm Delay (m)",
                 "group": "alarms",
                 "reg_type": "holding",
                 "address": 448,
                 "type": "value",
-                "description": "Set the liquid level alarm delay from multifunction input",
+                "description": "From Multifunction Input, Displayed on LED: A18",
                 "min": 0,
                 "max": 500,
                 "default": 60,
                 "format": "u16"
             },
             {
-                "id": "low_discharge_pressure_alarm_delay",
-                "title": "Low Discharge Pressure Alarm Delay (s, A11)",
+                "id": "discharge_delay",
+                "title": "Discharge Probe Alarm Delay (s)",
                 "group": "alarms",
                 "reg_type": "holding",
                 "address": 506,
@@ -543,11 +600,13 @@
                 "min": 0,
                 "max": 999,
                 "default": 60,
-                "format": "u16"
+                "format": "u16",
+                "description":"Displayed on LED: A11"
+
             },
             {
-                "id": "low_suction_pressure_1_alarm_delay",
-                "title": "Low Suction Pressure 1 Alarm Delay (s, A04)",
+                "id": "LP_suction_1_delay",
+                "title": "Suction Probe 1 Alarm Delay (s)",
                 "group": "alarms",
                 "reg_type": "holding",
                 "address": 502,
@@ -555,11 +614,13 @@
                 "min": 0,
                 "max": 999,
                 "default": 60,
-                "format": "u16"
+                "format": "u16",
+                "description":"Displayed on LED: A04"
+
             },
             {
-                "id": "low_suction_pressure_2_alarm_delay",
-                "title": "Low Suction Pressure 2 Alarm Delay (s, A08)",
+                "id": "LP_suction_2_delay",
+                "title": "Suction Probe 2 Alarm Delay (s)",
                 "group": "alarms",
                 "reg_type": "holding",
                 "address": 508,
@@ -567,11 +628,13 @@
                 "min": 0,
                 "max": 999,
                 "default": 60,
-                "format": "u16"
+                "format": "u16",
+                "description":"Displayed on LED: A08"
+
             },
             {
-                "id": "LP_discharge_alarm_threshold_bar",
-                "title": "LP Discharge Alarm Threshold (bar, A10)",
+                "id": "LP_discharge_alarm_bar", 
+                "title": "Discharge Probe Alarm Low Threshold (bar)",
                 "group": "alarms",
                 "reg_type": "holding",
                 "address": 417,
@@ -580,11 +643,13 @@
                 "min": -1,
                 "max": 45,
                 "default": 0,
-                "format": "s16"
+                "format": "s16",
+                "description":"Displayed on LED: A10"
+
             },
             {
-                "id": "LP_discharge_alarm_threshold_deg_C",
-                "title": "LP Discharge Alarm Threshold (°C, A10)",
+                "id": "LP_discharge_alarm_deg_C",
+                "title": "Discharge Probe Alarm Low Threshold (°C)",
                 "group": "alarms",
                 "reg_type": "holding",
                 "address": 420,
@@ -593,11 +658,13 @@
                 "min": -50,
                 "max": 150,
                 "default": -50,
-                "format": "s16"
+                "format": "s16",
+                "description":"Displayed on LED: A10"
+
             },
             {
-                "id": "LP_suction_1_alarm_threshold",
-                "title": "LP Suction 1 Alarm Threshold (bar, A03)",
+                "id": "LP_suction_1_alarm",
+                "title": "Suction Probe 1 Alarm Low Threshold (bar)",
                 "group": "alarms",
                 "reg_type": "holding",
                 "address": 427,
@@ -606,25 +673,28 @@
                 "min": -1,
                 "max": 45,
                 "default": 0,
-                "format": "s16"
+                "format": "s16",
+                "description":"Displayed on LED: A03"
+
             },
             {
-                "id": "LP_suction_2_alarm_threshold",
-                "title": "LP Suction 2 Alarm Threshold (bar, A07)",
+                "id": "LP_suction_2_alarm",
+                "title": "LP Suction 2 Alarm Threshold (bar)",
                 "group": "alarms",
                 "reg_type": "holding",
                 "address": 416,
                 "type": "value",
-                "description": "For two circuits only",
                 "scale": 0.1,
                 "min": -1,
                 "max": 45,
                 "default": 0,
-                "format": "s16"
+                "format": "s16",
+                "description":"Displayed on LED: A07"
+
             },
             {
                 "id": "max_fan_set_point_bar",
-                "title": "Max Fan Set Point (bar, r26)",
+                "title": "Max Fan Set Point (bar)",
                 "group": "fan",
                 "reg_type": "holding",
                 "address": 422,
@@ -633,11 +703,13 @@
                 "min": 0,
                 "max": 40,
                 "default": 25,
-                "format": "s16"
+                "format": "s16",
+                "description":"Displayed on LED: r26"
+
             },
             {
                 "id": "max_fan_set_point_deg_C",
-                "title": "Max Fan Set Point (°C, r26)",
+                "title": "Max Fan Set Point (°C)",
                 "group": "fan",
                 "reg_type": "holding",
                 "address": 419,
@@ -646,53 +718,44 @@
                 "min": -50,
                 "max": 150,
                 "default": 55.3,
-                "format": "s16"
+                "format": "s16",
+                "description":"Displayed on LED: r26"
+
             },
             {
-                "id": "maximum_call_for_compressor_starts_in_dead_band_by_time",
-                "title": "Maximum Call for Compressor Starts in Dead Band by Time (s, r08)",
+                "id": "max_compressor_starts_time",
+                "title": "Maximum Call for Compressor Starts (s)",
                 "group": "compressor_time",
                 "order": 1,
                 "reg_type": "holding",
                 "address": 490,
                 "type": "value",
-                "description": "Only if dead band control is enabled",
                 "min": 0,
                 "max": 999,
                 "default": 60,
-                "format": "u16"
+                "format": "u16",
+                "description":"Displayed on LED: r08"
+
             },
             {
-                "id": "maximum_call_for_compressor_stops_in_dead_band_by_time",
-                "title": "Maximum Call for Compressor Stops in Dead Band by Time (s, r10)",
+                "id": "mmax_compressor_stops_time",
+                "title": "Maximum Call for Compressor Stops (s)",
                 "group": "compressor_time",
                 "order": 3,
                 "reg_type": "holding",
                 "address": 494,
                 "type": "value",
-                "description": "Only if dead band control is enabled",
                 "min": 0,
                 "max": 999,
                 "default": 60,
-                "format": "u16"
-            },
-            {
-                "id": "maximum_inverter_output",
-                "title": "Maximum Inverter Output (%, r30)",
-                "group": "inverter",
-                "order": 2,
-                "reg_type": "holding",
-                "address": 484,
-                "type": "value",
-                "min": 0,
-                "max": 100,
-                "default": 100,
                 "format": "u16",
-                "condition": "enable_fan_inverter==1"
+                "description":"Displayed on LED: r10"
+
             },
+
             {
                 "id": "min_fan_set_point_bar",
-                "title": "Min Fan Set Point (bar, r25)",
+                "title": "Min Fan Set Point (bar)",
                 "group": "fan",
                 "reg_type": "holding",
                 "address": 421,
@@ -701,11 +764,13 @@
                 "min": 0,
                 "max": 40,
                 "default": 1,
-                "format": "s16"
+                "format": "s16",
+                "description":"Displayed on LED: r25"
+
             },
             {
                 "id": "min_fan_set_point_deg_C",
-                "title": "Min Fan Set Point (°C, r25)",
+                "title": "Min Fan Set Point (°C)",
                 "group": "fan",
                 "reg_type": "holding",
                 "address": 425,
@@ -714,24 +779,14 @@
                 "min": -50,
                 "max": 150,
                 "default": -31.2,
-                "format": "s16"
+                "format": "s16",
+                "description":"Displayed on LED: r25"
+
             },
+
             {
-                "id": "min_time_between_two_stop_calls_for_different_compressors",
-                "title": "Min Time Between Two Stop Calls for Different Compressors (s, C04)",
-                "group": "compressor_time",
-                "order": 8,
-                "reg_type": "holding",
-                "address": 472,
-                "type": "value",
-                "min": 0,
-                "max": 999,
-                "default": 10,
-                "format": "u16"
-            },
-            {
-                "id": "min_value_discharge_transducer",
-                "title": "Min Value Discharge Transducer (bar, /18)",
+                "id": "min_discharge_pressure",
+                "title": "Min Value Discharge (bar)",
                 "group": "compressor_pressure",
                 "order": 1,
                 "reg_type": "holding",
@@ -741,11 +796,13 @@
                 "min": -1,
                 "max": 45,
                 "default": 0,
-                "format": "s16"
+                "format": "s16",
+                "description":"Displayed on LED: /18"
+
             },
             {
-                "id": "min_value_suction_transducer",
-                "title": "Min value suction transducer (bar, /17)",
+                "id": "min_suction_pressure",
+                "title": "Min Value Suction (bar)",
                 "group": "compressor_pressure",
                 "order": 0,
                 "reg_type": "holding",
@@ -755,39 +812,43 @@
                 "min": -1,
                 "max": 45,
                 "default": -1,
-                "format": "s16"
+                "format": "s16",
+                "description":"Displayed on LED: /17"
+
             },
             {
-                "id": "minimum_call_time_for_compressor_start_dead_band",
-                "title": "Minimum Call Time for Compressor Start in Dead Band (s, r07)",
+                "id": "time_start_compressors",
+                "title": "Minimum Call Time for Compressor Start in Dead Band (s)",
                 "group": "compressor_time",
                 "order": 0,
                 "reg_type": "holding",
                 "address": 451,
                 "type": "value",
-                "description": "Only if dead band control is enabled",
                 "min": 0,
                 "max": 999,
                 "default": 20,
-                "format": "u16"
+                "format": "u16",
+                "description":"Displayed on LED: r07"
+
             },
             {
-                "id": "minimum_call_time_for_compressor_stop_dead_band",
-                "title": "Minimum Call Time for Compressor Stop in Dead Band (s, r09)",
+                "id": "time_stop_compressors",
+                "title": "Minimum Call Time for Compressor Stop in Dead Band (s)",
                 "group": "compressor_time",
                 "order": 2,
                 "reg_type": "holding",
                 "address": 460,
                 "type": "value",
-                "description": "Only if dead band control is enabled",
                 "min": 0,
                 "max": 999,
                 "default": 10,
-                "format": "u16"
+                "format": "u16",
+                "description":"Displayed on LED: r09"
+
             },
             {
-                "id": "minimum_compressor_off_time",
-                "title": "Minimum Compressor Off Time (s, C02)",
+                "id": "min_compressor_off_time",
+                "title": "Minimum Compressor Off Time (s)",
                 "group": "compressor_time",
                 "order": 6,
                 "reg_type": "holding",
@@ -796,11 +857,13 @@
                 "min": 0,
                 "max": 999,
                 "default": 120,
-                "format": "u16"
+                "format": "u16",
+                "description":"Displayed on LED: C02"
+
             },
             {
-                "id": "minimum_compressor_on_time",
-                "title": "Minimum Compressor On Time (s, C01)",
+                "id": "min_compressor_on_time",
+                "title": "Minimum Compressor On Time (s)",
                 "group": "compressor_time",
                 "order": 5,
                 "reg_type": "holding",
@@ -809,10 +872,12 @@
                 "min": 0,
                 "max": 999,
                 "default": 10,
-                "format": "u16"
+                "format": "u16",
+                "description":"Displayed on LED: C01"
+
             },
             {
-                "id": "minimum_fan_speed",
+                "id": "min_fan_speed",
                 "title": "Minimum Fan Speed (%)",
                 "group": "fan",
                 "reg_type": "holding",
@@ -822,8 +887,8 @@
                 "format": "u16"
             },
             {
-                "id": "minimum_inverter_output",
-                "title": "Minimum Inverter Output (%, r29)",
+                "id": "min_inverter_output",
+                "title": "Minimum Inverter Output (%)",
                 "group": "inverter",
                 "order": 1,
                 "reg_type": "holding",
@@ -832,11 +897,28 @@
                 "min": 0,
                 "max": 100,
                 "format": "u16",
-                "condition": "enable_fan_inverter==1"
+                "condition": "enable_fan_inverter==1",
+                "description":"Displayed on LED: r29"
+
             },
             {
-                "id": "minimum_time_between_starts_of_different_compressors",
-                "title": "Minimum Time Between Starts of Different Compressors (s, C03)",
+                "id": "max_inverter_output",
+                "title": "Maximum Fan Inverter Output (%)",
+                "group": "inverter",
+                "order": 2,
+                "reg_type": "holding",
+                "address": 484,
+                "type": "value",
+                "min": 0,
+                "max": 100,
+                "default": 100,
+                "format": "u16",
+                "condition": "enable_fan_inverter==1",
+                "description":"Displayed on LED: r30"
+            },
+            {
+                "id": "time_start_different_compressors",
+                "title": "Minimum Time Between Starts of Different Compressors (s)",
                 "group": "compressor_time",
                 "order": 7,
                 "reg_type": "holding",
@@ -845,11 +927,28 @@
                 "min": 0,
                 "max": 999,
                 "default": 30,
-                "format": "u16"
+                "format": "u16",
+                "description":"Displayed on LED: C03"
+
             },
             {
-                "id": "minimum_time_between_starts_of_the_same_compressor",
-                "title": "Minimum Time Between Starts of the Same Compressor (s, C05)",
+                "id": "time_stop_different_compressors",
+                "title": "Min Time Between Two Stop Calls for Different Compressors (s)",
+                "group": "compressor_time",
+                "order": 8,
+                "reg_type": "holding",
+                "address": 472,
+                "type": "value",
+                "min": 0,
+                "max": 999,
+                "default": 10,
+                "format": "u16",
+                "description":"Displayed on LED: C04"
+
+            },
+            {
+                "id": "time_stop_same_compressors",
+                "title": "Minimum Time Between Starts of the Same Compressor (s)",
                 "group": "compressor_time",
                 "order": 9,
                 "reg_type": "holding",
@@ -858,11 +957,13 @@
                 "min": 0,
                 "max": 999,
                 "default": 360,
-                "format": "u16"
+                "format": "u16",
+                "description":"Displayed on LED: C05"
+
             },
             {
                 "id": "multifunction_DI_configuration",
-                "title": "Multifunction DI Configuration (/15)",
+                "title": "Multifunction DI Configuration",
                 "order": 0,
                 "group": "sensors",
                 "reg_type": "holding",
@@ -898,14 +999,15 @@
                     "general fan thermal overload NC",
                     "general fan thermal overload NO"
                 ],
-                "description": "multifunction_DI_configuration_description",
                 "min": 0,
                 "max": 12,
                 "default": 0,
-                "format": "u16"
+                "format": "u16",
+                "description":"Displayed on LED: /15"
+
             },
             {
-                "id": "number_of_compressors",
+                "id": "compressors_number",
                 "title": "Number of Compressors",
                 "group": "compressor",
                 "order": 0,
@@ -917,63 +1019,67 @@
                 "format": "u16"
             },
             {
-                "id": "number_of_compressors_on_in_circuit_1_with_probe_damaged",
-                "title": "Number of Compressors On in Circuit 1 with Probe Damaged (/07)",
+                "id": "ON_compressors_1_circuit_damaged",
+                "title": "Number of Compressors On in Circuit 1 with Probe Damaged",
                 "group": "compressor",
                 "order": 7,
                 "reg_type": "holding",
                 "address": 450,
                 "type": "value",
-                "description": "number_of_compressors_on_in_circuit_1_with_probe_damaged_description",
                 "min": 0,
                 "max": 4,
                 "default": 0,
-                "format": "u16"
+                "format": "u16",
+                "description":"Displayed on LED: /07"
+
             },
             {
-                "id": "number_of_compressors_on_in_circuit_2_with_probe_damaged",
-                "title": "Number of Compressors On in Circuit 2 with Probe Damaged (/08)",
+                "id": "ON_compressors_2_circuit_damaged",
+                "title": "Number of Compressors On in Circuit 2 with Probe Damaged",
                 "group": "compressor",
                 "order": 8,
                 "reg_type": "holding",
                 "address": 449,
                 "type": "value",
-                "description": "number_of_compressors_on_in_circuit_2_with_probe_damaged_description",
                 "min": 0,
                 "max": 2,
                 "default": 0,
-                "format": "u16"
+                "format": "u16",
+                "description":"Displayed on LED: /08"
+
             },
             {
-                "id": "number_of_fans",
-                "title": "Number of Fans (/09)",
+                "id": "fans_number",
+                "title": "Number of Fans",
                 "order": 1,
                 "group": "fan",
                 "reg_type": "holding",
                 "address": 457,
                 "type": "value",
-                "description": "Number limited by the number of compressors already enabled",
                 "min": 0,
                 "max": 4,
                 "default": 2,
-                "format": "u16"
+                "format": "u16",
+                "description":"Displayed on LED: /09"
+
             },
             {
-                "id": "number_of_fans_on_with_probe_damaged",
-                "title": "Number of Fans On with Probe Damaged (/12)",
+                "id": "ON_fans_circuit_damaged",
+                "title": "Number of Fans On with Probe Damaged",
                 "group": "fan",
                 "reg_type": "holding",
                 "address": 452,
                 "type": "value",
-                "description": "number_of_fans_on_with_probe_damaged_description",
                 "min": 0,
                 "max": 4,
                 "default": 0,
-                "format": "u16"
+                "format": "u16",
+                "description":"Displayed on LED: /12"
+
             },
             {
-                "id": "on_off_from_supervisor",
-                "title": "On/Off from Supervisor (/38)",
+                "id": "remote_control",
+                "title": "On/Off from Supervisor",
                 "order": 3,
                 "group": "control",
                 "reg_type": "coil",
@@ -987,26 +1093,29 @@
                     "OFF",
                     "ON"
                 ],
-                "default": 1
+                "default": 1,
+                "description":"Displayed on LED: /38"
+
             },
             {
-                "id": "operating_hour_threshold_for_maintenance",
-                "title": "Operating Hour Threshold for Maintenance (h, C07)",
+                "id": "hour_for_maintenance",
+                "title": "Operating Hour Threshold for Maintenance (h)",
                 "group": "compressor_time",
                 "order": 11,
                 "reg_type": "holding",
                 "address": 465,
                 "type": "value",
-                "description": "If set to 0, no maintenance alarms.",
                 "scale": 10,
                 "min": 0,
                 "max": 999,
                 "default": 0,
-                "format": "u16"
+                "format": "u16",
+                "description":"Displayed on LED: C07"
+
             },
             {
-                "id": "outside_probe_3_calibration",
-                "title": "Outside Probe 3 Calibration (°C, /26)",
+                "id": "probe_3_calibration",
+                "title": "Outside Probe 3 Calibration (°C)",
                 "group": "sensors",
                 "order": 7,
                 "reg_type": "holding",
@@ -1017,37 +1126,55 @@
                 "max": 12,
                 "default": 0,
                 "format": "s16",
-                "condition": "type_of_probe_B3>0"
+                "condition": "type_probe_B3>0",
+                "description":"Displayed on LED: /26"
+
             },
             {
-                "id": "prevent_time_in_which_no_compressor_starts_are_enabled",
-                "title": "Prevent Time in which no Compressor Starts are Enabled (m, A13)",
+                "id": "HP_prevetion_time_1",
+                "title": "Prevent Time in which no Compressor Starts are Enabled (m)",
                 "group": "alarms",
                 "reg_type": "holding",
                 "address": 511,
                 "type": "value",
-                "description": "Only if the prevent is enabled",
                 "min": 0,
                 "max": 99,
                 "default": 5,
-                "format": "u16"
+                "format": "u16",
+                "description":"Displayed on LED: A13"
+
             },
             {
-                "id": "prevent_time_in_which_the_activation_signals_the_alarm",
-                "title": "Prevent Time in which the Activation Signals the Alarm (m, A14)",
+                "id": "HP_prevetion_time_2",
+                "title": "Prevent Time in which the Activation Signals the Alarm (m)",
                 "group": "alarms",
                 "reg_type": "holding",
                 "address": 503,
                 "type": "value",
-                "description": "Only if the prevent is enabled",
                 "min": 0,
                 "max": 999,
                 "default": 6,
-                "format": "u16"
+                "format": "u16",
+                "description":"Displayed on LED: A14"
+
             },
             {
-                "id": "reset_compressor_1_hours",
-                "title": "Reset Compressor 1 hours (C09)",
+                "id": "HP_prevetion_time_3",
+                "title": "Time to Reset Prevent Alarm (m)",
+                "group": "alarms",
+                "reg_type": "holding",
+                "address": 507,
+                "type": "value",
+                "min": 0,
+                "max": 99,
+                "default": 30,
+                "format": "u16",
+                "description":"Displayed on LED: A15"
+
+            },
+            {
+                "id": "reset_compressor1_",
+                "title": "Reset Compressor 1 Time",
                 "group": "compressor_time",
                 "reg_type": "coil",
                 "address": 28,
@@ -1061,11 +1188,13 @@
                     "RESET"
                 ],
                 "default": 0,
-                "condition": "number_of_compressors>=1"
+                "condition": "compressors_number>=1",
+                "description":"Displayed on LED: C09"
+
             },
             {
-                "id": "reset_compressor_2_hours",
-                "title": "Reset Compressor 2 Hours (C11)",
+                "id": "reset_compressor_2",
+                "title": "Reset Compressor 2 Time",
                 "group": "compressor_time",
                 "reg_type": "coil",
                 "address": 19,
@@ -1079,11 +1208,13 @@
                     "RESET"
                 ],
                 "default": 0,
-                "condition": "number_of_compressors>=2"
+                "condition": "compressors_number>=2",
+                "description":"Displayed on LED: C11"
+
             },
             {
-                "id": "reset_compressor_3_hours",
-                "title": "Reset Compressor 3 hours (C13)",
+                "id": "reset_compressor_3",
+                "title": "Reset Compressor 3 Time",
                 "group": "compressor_time",
                 "reg_type": "coil",
                 "address": 22,
@@ -1097,11 +1228,13 @@
                     "RESET"
                 ],
                 "default": 0,
-                "condition": "number_of_compressors>=3"
+                "condition": "compressors_number>=3",
+                "description":"Displayed on LED: C13"
+
             },
             {
-                "id": "reset_compressor_4_hours",
-                "title": "Reset Compressor 4 Hours (C15)",
+                "id": "reset_compressor_4",
+                "title": "Reset Compressor 4 Time",
                 "group": "compressor_time",
                 "reg_type": "coil",
                 "address": 31,
@@ -1115,11 +1248,13 @@
                     "RESET"
                 ],
                 "default": 0,
-                "condition": "number_of_compressors>=4"
+                "condition": "compressors_number>=4",
+                "description":"Displayed on LED: C15"
+
             },
             {
-                "id": "room_probe_2_calibration",
-                "title": "Room Probe 2 Calibration (°C, /25)",
+                "id": "room_probe_calibration",
+                "title": "Room Probe 2 Calibration (°C)",
                 "group": "sensors",
                 "order": 6,
                 "reg_type": "holding",
@@ -1130,40 +1265,45 @@
                 "max": 12,
                 "default": 0,
                 "format": "s16",
-                "condition": "type_of_probe_B2>0"
+                "condition": "type_probe_B2>0",
+                "description":"Displayed on LED: /25"
+
             },
             {
-                "id": "set_point_offset_to_change_set_from_DI",
-                "title": "Set Point Offset to Change Set from DI (r34)",
+                "id": "point_offset_from_DI",
+                "title": "Set Point Offset to Change Set from DI",
                 "group": "compressor",
                 "order": 9,
                 "reg_type": "holding",
                 "address": 443,
                 "type": "value",
-                "description": "set_point_offset_to_change_set_from_DI_description",
                 "scale": 0.1,
                 "min": -99.9,
                 "max": 99.9,
                 "default": 0,
-                "format": "s16"
+                "format": "s16",
+                "description":"Displayed on LED: r34"
+
             },
             {
-                "id": "set_point_prevent_high_pressure_function",
-                "title": "Set Point Prevent High Pressure Function (bar, /33)",
+                "id": "point_prevent_high_pressure",
+                "title": "Set Point Prevent High Pressure Function (bar)",
                 "group": "alarms",
                 "reg_type": "holding",
                 "address": 439,
                 "type": "value",
-                "description": "If prevent enabled",
                 "scale": 0.1,
                 "min": 0,
                 "max": 45,
                 "default": 18,
-                "format": "s16"
+                "format": "s16",
+                "description":"Displayed on LED: /33"
+
+
             },
             {
                 "id": "suction_probe_4_calibration",
-                "title": "Suction Probe 4 Calibration (bar, /23)",
+                "title": "Suction Probe 4 Calibration (bar)",
                 "group": "sensors",
                 "order": 4,
                 "reg_type": "holding",
@@ -1173,11 +1313,13 @@
                 "min": -12,
                 "max": 12,
                 "default": 0,
-                "format": "s16"
+                "format": "s16",
+                "description":"Displayed on LED: /23"
+
             },
             {
-                "id": "time_between_2_fans_starts_in_dead_band",
-                "title": "Time Between 2 Fans Starts in Dead Band (s, r23)",
+                "id": "time_two_fans_starts",
+                "title": "Time Between 2 Fans Starts in Dead Band (s)",
                 "group": "fan",
                 "reg_type": "holding",
                 "address": 493,
@@ -1185,11 +1327,13 @@
                 "min": 0,
                 "max": 999,
                 "default": 2,
-                "format": "u16"
+                "format": "u16",
+                "description":"Displayed on LED: r23"
+
             },
             {
-                "id": "time_between_2_fans_stops_in_dead_band",
-                "title": "Time Between 2 Fans Stops in Dead Band (s, r24)",
+                "id": "time_two_fans_stops",
+                "title": "Time Between 2 Fans Stops in Dead Band (s)",
                 "group": "fan",
                 "reg_type": "holding",
                 "address": 480,
@@ -1197,51 +1341,43 @@
                 "min": 0,
                 "max": 999,
                 "default": 2,
-                "format": "u16"
+                "format": "u16",
+                "description":"Displayed on LED: r24"
+
             },
             {
-                "id": "time_between_compressor_stop_call_with_Prevent_function",
-                "title": "Time Between Compressor Stop Call with Prevent Function (s, C06)",
+                "id": "time_compressor_stop_prevent",
+                "title": "Time Between Compressor Stop Call with Prevent Function (s)",
                 "group": "compressor_time",
                 "order": 10,
                 "reg_type": "holding",
                 "address": 466,
                 "type": "value",
-                "description": "Only if prevent active",
                 "min": 0,
                 "max": 999,
                 "default": 30,
-                "format": "u16"
+                "format": "u16",
+                "description":"Displayed on LED: C06"
+
             },
             {
-                "id": "time_to_change_low_pressure_alarm_from_automatic_to_manual",
-                "title": "Time to Change low Pressure Alarm from Automatic to Manual (m, A21)",
+                "id": "time_change_automatic_to_manual",
+                "title": "Time to Change low Pressure Alarm from Automatic to Manual (m)",
                 "group": "alarms",
                 "reg_type": "holding",
                 "address": 496,
                 "type": "value",
-                "description": "time_to_change_low_pressure_alarm_from_automatic_to_manual_description",
                 "min": 0,
                 "max": 999,
                 "default": 10,
-                "format": "u16"
+                "format": "u16",
+                "description":"Displayed on LED: A21"
+
             },
-            {
-                "id": "time_to_reset_prevent_alarm",
-                "title": "Time to Reset Prevent Alarm (m, A15)",
-                "group": "alarms",
-                "reg_type": "holding",
-                "address": 507,
-                "type": "value",
-                "description": "time_to_reset_prevent_alarm_description",
-                "min": 0,
-                "max": 99,
-                "default": 30,
-                "format": "u16"
-            },
+
             {
                 "id": "triac_impulse_duration",
-                "title": "Triac Impulse Duration (ms, r31)",
+                "title": "Triac Impulse Duration (ms)",
                 "group": "fan",
                 "reg_type": "holding",
                 "address": 501,
@@ -1249,11 +1385,13 @@
                 "min": 0,
                 "max": 10,
                 "default": 0,
-                "format": "u16"
+                "format": "u16",
+                "description":"Displayed on LED: r31"
+
             },
             {
-                "id": "type_of_compressor_control",
-                "title": "Type of Compressor Control (r06)",
+                "id": "type_compressor_control",
+                "title": "Type of Compressor Control",
                 "group": "compressor",
                 "order": 1,
                 "reg_type": "holding",
@@ -1272,11 +1410,13 @@
                 "min": 0,
                 "max": 2,
                 "default": 1,
-                "format": "u16"
+                "format": "u16",
+                "description":"Displayed on LED: r06"
+
             },
             {
-                "id": "type_of_compressor_reset",
-                "title": "Type of Compressor Reset (/29)",
+                "id": "type_compressor_reset",
+                "title": "Type of Compressor Reset",
                 "group": "alarms",
                 "reg_type": "coil",
                 "address": 20,
@@ -1289,12 +1429,13 @@
                     "AUTO",
                     "MANUAL"
                 ],
-                "description": "type_of_compressor_reset_description",
-                "default": 1
+                "default": 1,
+                "description":"Displayed on LED: /29"
+
             },
             {
-                "id": "type_of_compressor_rotation",
-                "title": "Type of Compressor Rotation (r05)",
+                "id": "type_compressor_rotation",
+                "title": "Type of Compressor Rotation",
                 "group": "compressor",
                 "order": 2,
                 "reg_type": "holding",
@@ -1310,15 +1451,16 @@
                     "FIFO",
                     "Time"
                 ],
-                "description": "For single circuit only",
                 "min": 0,
                 "max": 2,
                 "default": 1,
-                "format": "u16"
+                "format": "u16",
+                "description":"Displayed on LED: r05"
+
             },
             {
-                "id": "type_of_probe_B1",
-                "title": "Type of B1 (/16)",
+                "id": "type_probe_B1",
+                "title": "Type of B1",
                 "group": "sensors",
                 "order": 1,
                 "reg_type": "holding",
@@ -1334,15 +1476,16 @@
                     "NTC probe",
                     "0 to 5 V probe"
                 ],
-                "description": "Discharge Probe",
                 "min": 0,
                 "max": 2,
                 "default": 2,
-                "format": "u16"
+                "format": "u16",
+                "description":"Displayed on LED: /16"
+
             },
             {
-                "id": "type_of_fan_control",
-                "title": "Type of Fan Control (r21)",
+                "id": "type_fan_control",
+                "title": "Type of Fan Control",
                 "group": "fan",
                 "reg_type": "holding",
                 "address": 487,
@@ -1357,15 +1500,16 @@
                     "Proportional + integral",
                     "Dead band"
                 ],
-                "description": "For single circuit only",
                 "min": 0,
                 "max": 2,
                 "default": 0,
-                "format": "u16"
+                "format": "u16",
+                "description":"Displayed on LED: /r21"
+
             },
             {
-                "id": "type_of_fan_reset",
-                "title": "Type of Fan Reset (/30)",
+                "id": "type_fan_reset",
+                "title": "Type of Fan Reset",
                 "group": "alarms",
                 "reg_type": "coil",
                 "address": 17,
@@ -1378,12 +1522,13 @@
                     "AUTO",
                     "MANUAL"
                 ],
-                "description": "type_of_fan_reset_description",
-                "default": 1
+                "default": 1,
+                "description":"Displayed on LED: /30"
+
             },
             {
-                "id": "type_of_fan_rotation",
-                "title": "Type of Fan Rotation (r20)",
+                "id": "type_fan_rotation",
+                "title": "Type of Fan Rotation",
                 "group": "fan",
                 "reg_type": "holding",
                 "address": 495,
@@ -1396,15 +1541,16 @@
                     "NO ROTATION",
                     "FIFO"
                 ],
-                "description": "For single circuit only",
                 "min": 0,
                 "max": 1,
                 "default": 1,
-                "format": "u16"
+                "format": "u16",
+                "description":"Displayed on LED: r20"
+
             },
             {
-                "id": "type_of_probe_B2",
-                "title": "Type of Probe B2 (/21)",
+                "id": "type_probe_B2",
+                "title": "Type of Probe B2",
                 "group": "sensors",
                 "order": 2,
                 "reg_type": "holding",
@@ -1423,11 +1569,13 @@
                 "min": 0,
                 "max": 2,
                 "default": 0,
-                "format": "u16"
+                "format": "u16",
+                "description":"Displayed on LED: /21"
+
             },
             {
-                "id": "type_of_probe_B3",
-                "title": "Type of Probe B3 (/22)",
+                "id": "type_probe_B3",
+                "title": "Type of Probe B3",
                 "group": "sensors",
                 "order": 3,
                 "reg_type": "holding",
@@ -1446,11 +1594,13 @@
                 "min": 0,
                 "max": 2,
                 "default": 0,
-                "format": "u16"
+                "format": "u16",
+                "description":"Displayed on LED: /22"
+
             },
             {
-                "id": "type_of_refrigerant",
-                "title": "Type of Refrigerant (/35)",
+                "id": "type_refrigerant",
+                "title": "Type of Refrigerant",
                 "group": "control",
                 "order": 1,
                 "reg_type": "holding",
@@ -1487,11 +1637,13 @@
                 "min": 0,
                 "max": 11,
                 "default": 3,
-                "format": "u16"
+                "format": "u16",
+                "description":"Displayed on LED: /35"
+
             },
             {
-                "id": "type_of_reset_for_general_high_press_switch",
-                "title": "Type of Reset for General High Pressure switch (/31)",
+                "id": "type_reset_hp_switch",
+                "title": "Type of Reset for General High Pressure switch",
                 "group": "alarms",
                 "reg_type": "coil",
                 "address": 25,
@@ -1504,11 +1656,13 @@
                     "AUTO",
                     "MANUAL"
                 ],
-                "default": 0
+                "default": 0,
+                "description":"Displayed on LED: /31"
+
             },
             {
-                "id": "type_of_unit",
-                "title": "Type of Unit (/00)",
+                "id": "type_unit",
+                "title": "Type of Unit",
                 "group": "control",
                 "order": 0,
                 "reg_type": "holding",
@@ -1527,11 +1681,13 @@
                 "min": 0,
                 "max": 2,
                 "default": 0,
-                "format": "u16"
+                "format": "u16",
+                "description":"Displayed on LED: /00"
+
             },
             {
                 "id": "unit_model",
-                "title": "Unit Model (/01)",
+                "title": "Unit Model",
                 "group": "compressor",
                 "order": 1,
                 "reg_type": "holding",
@@ -1574,11 +1730,13 @@
                 "min": 0,
                 "max": 14,
                 "default": 2,
-                "format": "u16"
+                "format": "u16",
+                "description":"Displayed on LED: /01"
+
             },
             {
-                "id": "differential_circuit_1",
-                "title": "Differential Circuit 1 (bar, r02)",
+                "id": "differential_1_circuit",
+                "title": "Differential Circuit 1 (bar)",
                 "group": "setpoint",
                 "reg_type": "holding",
                 "address": 410,
@@ -1587,11 +1745,13 @@
                 "min": 0,
                 "max": 20,
                 "default": 0.5,
-                "format": "s16"
+                "format": "s16",
+                "description":"Displayed on LED: r02"
+
             },
             {
-                "id": "differential_circuit_2",
-                "title": "Differential Circuit 2 (bar, r04)",
+                "id": "differential_2_circuit",
+                "title": "Differential Circuit 2 (bar)",
                 "group": "setpoint",
                 "reg_type": "holding",
                 "address": 415,
@@ -1601,11 +1761,13 @@
                 "max": 20,
                 "default": 0.5,
                 "format": "s16",
-                "condition": "(unit_model==5)||(unit_model==6)||(unit_model==7)||(unit_model==8)||(unit_model==12)||(unit_model==13)||(unit_model==14)"
+                "condition": "(unit_model==5)||(unit_model==6)||(unit_model==7)||(unit_model==8)||(unit_model==12)||(unit_model==13)||(unit_model==14)",
+                "description":"Displayed on LED: r04"
+
             },
             {
-                "id": "min_suction_set_point_1",
-                "title": "Min Suction Set Point 1 (bar, r12)",
+                "id": "min_suction_1_point",
+                "title": "Min Suction Set Point 1 (bar)",
                 "group": "setpoint",
                 "order": 4,
                 "reg_type": "holding",
@@ -1615,11 +1777,13 @@
                 "min": -1,
                 "max": 45,
                 "default": 0.1,
-                "format": "s16"
+                "format": "s16",
+                "description":"Displayed on LED: r12"
+
             },
             {
-                "id": "max_suction_set_point_1",
-                "title": "Max Suction Set Point 1 (bar, r13)",
+                "id": "max_suction_1_point",
+                "title": "Max Suction Set Point 1 (bar)",
                 "group": "setpoint",
                 "order": 5,
                 "reg_type": "holding",
@@ -1629,26 +1793,29 @@
                 "min": -1,
                 "max": 45,
                 "default": 9.3,
-                "format": "s16"
+                "format": "s16",
+                "description":"Displayed on LED: r13"
+
             },
             {
-                "id": "min_suction_set_point_2",
-                "title": "Min Suction Set Point 2 (bar, r14)",
+                "id": "min_suction_2_point",
+                "title": "Min Suction Set Point 2 (bar)",
                 "group": "setpoint",
                 "order": 6,
                 "reg_type": "holding",
                 "address": 413,
                 "type": "value",
-                "description": "For two circuits only",
                 "scale": 0.1,
                 "min": -1,
                 "max": 45,
                 "default": 0.1,
-                "format": "s16"
+                "format": "s16",
+                "description":"Displayed on LED: r14"
+
             },
             {
-                "id": "max_suction_set_point_2",
-                "title": "Max Suction Set Point 2 (bar, r15)",
+                "id": "max_suction_2_point",
+                "title": "Max Suction Set Point 2 (bar)",
                 "group": "setpoint",
                 "order": 7,
                 "reg_type": "holding",
@@ -1658,11 +1825,13 @@
                 "min": -1,
                 "max": 45,
                 "default": 10,
-                "format": "s16"
+                "format": "s16",
+                "description":"Displayed on LED: r15"
+
             },
             {
                 "id": "fan_set_point_bar",
-                "title": "Fan Set Point (bar, r16)",
+                "title": "Fan Set Point (bar)",
                 "group": "setpoint",
                 "reg_type": "holding",
                 "address": 408,
@@ -1671,11 +1840,13 @@
                 "min": 0,
                 "max": 40,
                 "default": 15.5,
-                "format": "s16"
+                "format": "s16",
+                "description":"Displayed on LED: r16"
+
             },
             {
-                "id": "fan_set_point_deg_C",
-                "title": "Fan Set Point (°C, r16)",
+                "id": "fan_set_point_deg",
+                "title": "Fan Set Point (°C)",
                 "group": "setpoint",
                 "reg_type": "holding",
                 "address": 402,
@@ -1684,11 +1855,13 @@
                 "min": -50,
                 "max": 150,
                 "default": 35.7,
-                "format": "s16"
+                "format": "s16",
+                "description":"Displayed on LED: r16"
+
             },
             {
-                "id": "fan_differential_deg_C",
-                "title": "Fan Differential (°C, r17)",
+                "id": "fan_differential_deg",
+                "title": "Fan Differential (°C)",
                 "group": "fan",
                 "reg_type": "holding",
                 "address": 404,
@@ -1697,11 +1870,13 @@
                 "min": 0,
                 "max": 20,
                 "default": 18,
-                "format": "s16"
+                "format": "s16",
+                "description":"Displayed on LED: r17"
+
             },
             {
                 "id": "fan_differential_bar",
-                "title": "Fan Differential (bar, r17)",
+                "title": "Fan Differential (bar)",
                 "group": "setpoint",
                 "reg_type": "holding",
                 "address": 401,
@@ -1710,11 +1885,13 @@
                 "min": 0,
                 "max": 20,
                 "default": 3,
-                "format": "s16"
+                "format": "s16",
+                "description":"Displayed on LED: r17"
+
             },
             {
-                "id": "fan_inverter_set_point_deg_C",
-                "title": "Fan Inverter Set Point (°C, r18)",
+                "id": "inverter_set_point_deg",
+                "title": "Fan Inverter Set Point (°C)",
                 "group": "setpoint",
                 "order": 0,
                 "reg_type": "holding",
@@ -1725,11 +1902,13 @@
                 "max": 150,
                 "default": 35.7,
                 "format": "s16",
-                "condition": "enable_fan_inverter==1"
+                "condition": "enable_fan_inverter==1",
+                "description":"Displayed on LED: r18"
+
             },
             {
-                "id": "fan_inverter_set_point_bar",
-                "title": "Fan Inverter Set Point (bar, r18)",
+                "id": "inverter_set_point_bar",
+                "title": "Fan Inverter Set Point (bar)",
                 "group": "setpoint",
                 "order": 3,
                 "reg_type": "holding",
@@ -1740,11 +1919,13 @@
                 "max": 40,
                 "default": 15.5,
                 "format": "s16",
-                "condition": "enable_fan_inverter==1"
+                "condition": "enable_fan_inverter==1",
+                "description":"Displayed on LED: r18"
+
             },
             {
-                "id": "fan_inverter_differential_bar",
-                "title": "Fan Inverter Differential (bar, r19)",
+                "id": "inverter_differential_bar",
+                "title": "Fan Inverter Differential (bar)",
                 "group": "inverter",
                 "order": 2,
                 "reg_type": "holding",
@@ -1755,11 +1936,13 @@
                 "max": 20,
                 "default": 3,
                 "format": "s16",
-                "condition": "enable_fan_inverter==1"
+                "condition": "enable_fan_inverter==1",
+                "description":"Displayed on LED: r19"
+
             },
             {
-                "id": "fan_inverter_differential_deg_C",
-                "title": "Fan Inverter Differential (°C, r19)",
+                "id": "fan_inverter_differential_deg",
+                "title": "Fan Inverter Differential (°C)",
                 "group": "inverter",
                 "order": 1,
                 "reg_type": "holding",
@@ -1770,12 +1953,14 @@
                 "max": 20,
                 "default": 18,
                 "format": "s16",
-                "condition": "enable_fan_inverter==1"
+                "condition": "enable_fan_inverter==1",
+                "description":"Displayed on LED: r19"
+
             }
         ],
         "channels": [
             {
-                "name": "Inverter Readout",
+                "name": "Inverter Output",
                 "group": "control",
                 "reg_type": "input",
                 "address": 478,
@@ -1786,7 +1971,7 @@
                 "condition": "enable_fan_inverter==1"
             },
             {
-                "name": "Compressor 1 Operating Time",
+                "name": "Compressor Operating Time 1",
                 "enabled": false,
                 "group": "compressor_time",
                 "reg_type": "input",
@@ -1795,10 +1980,10 @@
                 "scale": 10,
                 "units": "h",
                 "format": "u16",
-                "condition": "number_of_compressors>=1"
+                "condition": "compressors_number>=1"
             },
             {
-                "name": "Compressor 2 Operating Time",
+                "name": "Compressor Operating Time 2",
                 "enabled": false,
                 "group": "compressor_time",
                 "reg_type": "input",
@@ -1807,10 +1992,10 @@
                 "scale": 10,
                 "units": "h",
                 "format": "u16",
-                "condition": "number_of_compressors>=2"
+                "condition": "compressors_number>=2"
             },
             {
-                "name": "Compressor 3 Operating Time",
+                "name": "Compressor Operating Time 3",
                 "enabled": false,
                 "group": "compressor_time",
                 "reg_type": "input",
@@ -1819,10 +2004,10 @@
                 "scale": 10,
                 "units": "h",
                 "format": "u16",
-                "condition": "number_of_compressors>=3"
+                "condition": "compressors_number>=3"
             },
             {
-                "name": "Compressor 4 Operating Time",
+                "name": "Compressor Operating Time 4",
                 "enabled": false,
                 "group": "compressor_time",
                 "reg_type": "input",
@@ -1831,10 +2016,10 @@
                 "scale": 10,
                 "units": "h",
                 "format": "u16",
-                "condition": "number_of_compressors>=4"
+                "condition": "compressors_number>=4"
             },
             {
-                "name": "Version of the Application",
+                "name": "Application Version",
                 "enabled": false,
                 "group": "status",
                 "order": 3,
@@ -1871,53 +2056,53 @@
                 "format": "u16"
             },
             {
-                "name": "Alarm: Compressor 1",
+                "name": "Alarm 1 Compressor",
                 "group": "alarms",
                 "reg_type": "discrete",
                 "address": 21,
                 "type": "switch",
-                "condition": "number_of_compressors>=1"
+                "condition": "compressors_number>=1"
             },
             {
-                "name": "Alarm: Compressor 2",
+                "name": "Alarm 2 Compressor",
                 "group": "alarms",
                 "reg_type": "discrete",
                 "address": 39,
                 "type": "switch",
-                "condition": "number_of_compressors>=2"
+                "condition": "compressors_number>=2"
             },
             {
-                "name": "Alarm: Compressor 3",
+                "name": "Alarm 3 Compressor",
                 "group": "alarms",
                 "reg_type": "discrete",
                 "address": 32,
                 "type": "switch",
-                "condition": "number_of_compressors>=3"
+                "condition": "compressors_number>=3"
             },
             {
-                "name": "Alarm: Compressor 4",
+                "name": "Alarm 4 Compressor",
                 "group": "alarms",
                 "reg_type": "discrete",
                 "address": 45,
                 "type": "switch",
-                "condition": "number_of_compressors>=4"
+                "condition": "compressors_number>=4"
             },
             {
-                "name": "Alarm: Liquid Level",
+                "name": "Alarm Liquid Level",
                 "group": "alarms",
                 "reg_type": "discrete",
                 "address": 41,
                 "type": "switch"
             },
             {
-                "name": "Alarm: General Low Suction Pressure 1",
+                "name": "Alarm Low Suction Pressure 1",
                 "group": "alarms",
                 "reg_type": "discrete",
                 "address": 44,
                 "type": "switch"
             },
             {
-                "name": "Alarm: General Low Suction Pressure 2",
+                "name": "Alarm Low Suction Pressure 2",
                 "group": "alarms",
                 "reg_type": "discrete",
                 "address": 35,
@@ -1931,56 +2116,56 @@
                 "type": "switch"
             },
             {
-                "name": "Alarm: Low Discharge Pressure",
+                "name": "Alarm Low Discharge Pressure",
                 "group": "alarms",
                 "reg_type": "discrete",
                 "address": 38,
                 "type": "switch"
             },
             {
-                "name": "Alarm: High Discharge Pressure",
+                "name": "Alarm High Discharge Pressure",
                 "group": "alarms",
                 "reg_type": "discrete",
                 "address": 47,
                 "type": "switch"
             },
             {
-                "name": "Alarm: Low Suction Pressure 1",
+                "name": "Alarm Low Suction Pressure 1",
                 "group": "alarms",
                 "reg_type": "discrete",
                 "address": 42,
                 "type": "switch"
             },
             {
-                "name": "Alarm: High Suction Pressure 1",
+                "name": "Alarm High Suction Pressure 1",
                 "group": "alarms",
                 "reg_type": "discrete",
                 "address": 46,
                 "type": "switch"
             },
             {
-                "name": "Alarm: Low Suction Pressure 2",
+                "name": "Alarm Low Suction Pressure 2",
                 "group": "alarms",
                 "reg_type": "discrete",
                 "address": 34,
                 "type": "switch"
             },
             {
-                "name": "Alarm: High Suction Pressure 2",
+                "name": "Alarm High Suction Pressure 2",
                 "group": "alarms",
                 "reg_type": "discrete",
                 "address": 37,
                 "type": "switch"
             },
             {
-                "name": "Probe B4 Faulty or Disconnected",
+                "name": "Probe B4 Faulty",
                 "group": "alarms",
                 "reg_type": "discrete",
                 "address": 56,
                 "type": "switch"
             },
             {
-                "name": "Probe B1 Faulty or Disconnected",
+                "name": "Probe B1 Faulty",
                 "readonly": true,
                 "group": "alarms",
                 "reg_type": "discrete",
@@ -1988,39 +2173,39 @@
                 "type": "switch"
             },
             {
-                "name": "Alarm: Fan 1",
+                "name": "Alarm Fan 1",
                 "group": "alarms",
                 "reg_type": "discrete",
                 "address": 40,
                 "type": "switch",
-                "condition": "number_of_fans>=1"
+                "condition": "fans_number>=1"
             },
             {
-                "name": "Alarm: Fan 2",
+                "name": "Alarm Fan 2",
                 "group": "alarms",
                 "reg_type": "discrete",
                 "address": 43,
                 "type": "switch",
-                "condition": "number_of_fans>=2"
+                "condition": "fans_number>=2"
             },
             {
-                "name": "Alarm: Fan 3",
+                "name": "Alarm Fan 3",
                 "group": "alarms",
                 "reg_type": "discrete",
                 "address": 36,
                 "type": "switch",
-                "condition": "number_of_fans>=3"
+                "condition": "fans_number>=3"
             },
             {
-                "name": "Alarm: Fan 4",
+                "name": "Alarm Fan 4",
                 "group": "alarms",
                 "reg_type": "discrete",
                 "address": 33,
                 "type": "switch",
-                "condition": "number_of_fans>=4"
+                "condition": "fans_number>=4"
             },
             {
-                "name": "General Fan Thermal Overload",
+                "name": "Fan Thermal Overload",
                 "group": "alarms",
                 "reg_type": "discrete",
                 "address": 51,
@@ -2034,20 +2219,20 @@
                 "type": "switch"
             },
             {
-                "name": "Probe B2 Faulty or Disconnected",
+                "name": "Probe B2 Faulty",
                 "group": "alarms",
                 "reg_type": "discrete",
                 "address": 48,
                 "type": "switch",
-                "condition": "type_of_probe_B2>0"
+                "condition": "type_probe_B2>0"
             },
             {
-                "name": "Probe B3 Faulty or Disconnected",
+                "name": "Probe B3 Faulty",
                 "group": "alarms",
                 "reg_type": "discrete",
                 "address": 61,
                 "type": "switch",
-                "condition": "type_of_probe_B3>0"
+                "condition": "type_probe_B3>0"
             },
             {
                 "name": "High Room Temperature",
@@ -2069,7 +2254,7 @@
                 "reg_type": "discrete",
                 "address": 59,
                 "type": "switch",
-                "condition": "number_of_compressors>=1"
+                "condition": "compressors_number>=1"
             },
             {
                 "name": "Compressor 2 Maintenance",
@@ -2077,7 +2262,7 @@
                 "reg_type": "discrete",
                 "address": 52,
                 "type": "switch",
-                "condition": "number_of_compressors>=2"
+                "condition": "compressors_number>=2"
             },
             {
                 "name": "Compressor 3 Maintenance",
@@ -2085,7 +2270,7 @@
                 "reg_type": "discrete",
                 "address": 49,
                 "type": "switch",
-                "condition": "number_of_compressors>=3"
+                "condition": "compressors_number>=3"
             },
             {
                 "name": "Compressor 4 Maintenance",
@@ -2093,7 +2278,7 @@
                 "reg_type": "discrete",
                 "address": 57,
                 "type": "switch",
-                "condition": "number_of_compressors>=4"
+                "condition": "compressors_number>=4"
             },
             {
                 "name": "Compressors Off due to Prevent",
@@ -2110,103 +2295,103 @@
                 "type": "switch"
             },
             {
-                "name": "Status of Compressor 1",
+                "name": "Status Compressor 1",
                 "group": "status",
                 "reg_type": "discrete",
                 "address": 0,
                 "type": "switch",
-                "condition": "number_of_compressors>=1"
+                "condition": "compressors_number>=1"
             },
             {
-                "name": "Status of Compressor 2",
+                "name": "Status Compressor 2",
                 "group": "status",
                 "reg_type": "discrete",
                 "address": 13,
                 "type": "switch",
-                "condition": "number_of_compressors>=2"
+                "condition": "compressors_number>=2"
             },
             {
-                "name": "Status of Compressor 3",
+                "name": "Status Compressor 3",
                 "group": "status",
                 "reg_type": "discrete",
                 "address": 8,
                 "type": "switch",
-                "condition": "number_of_compressors>=3"
+                "condition": "compressors_number>=3"
             },
             {
-                "name": "Status of Compressor 4",
+                "name": "Status Compressor 4",
                 "group": "status",
                 "reg_type": "discrete",
                 "address": 11,
                 "type": "switch",
-                "condition": "number_of_compressors>=4"
+                "condition": "compressors_number>=4"
             },
             {
-                "name": "Status of Digital Input 1",
+                "name": "Status Digital Input 1",
                 "group": "status",
                 "reg_type": "discrete",
                 "address": 3,
                 "type": "switch"
             },
             {
-                "name": "Status of Digital Input 2",
+                "name": "Status Digital Input 2",
                 "group": "status",
                 "reg_type": "discrete",
                 "address": 6,
                 "type": "switch"
             },
             {
-                "name": "Status of Digital Input 3",
+                "name": "Status Digital Input 3",
                 "group": "status",
                 "reg_type": "discrete",
                 "address": 15,
                 "type": "switch"
             },
             {
-                "name": "Status of Digital Input 4",
+                "name": "Status Digital Input 4",
                 "group": "status",
                 "reg_type": "discrete",
                 "address": 10,
                 "type": "switch"
             },
             {
-                "name": "Status of Digital Input 5",
+                "name": "Status Digital Input 5",
                 "group": "status",
                 "reg_type": "discrete",
                 "address": 14,
                 "type": "switch"
             },
             {
-                "name": "Status of Fan 1",
+                "name": "Status Fan 1",
                 "group": "status",
                 "reg_type": "discrete",
                 "address": 4,
                 "type": "switch",
-                "condition": "number_of_fans>=1"
+                "condition": "fans_number>=1"
             },
             {
-                "name": "Status of Fan 2",
+                "name": "Status Fan 2",
                 "group": "status",
                 "reg_type": "discrete",
                 "address": 1,
                 "type": "switch",
-                "condition": "number_of_fans>=2"
+                "condition": "fans_number>=2"
             },
             {
-                "name": "Status of Fan 3",
+                "name": "Status Fan 3",
                 "group": "status",
                 "reg_type": "discrete",
                 "address": 9,
                 "type": "switch",
-                "condition": "number_of_fans>=3"
+                "condition": "fans_number>=3"
             },
             {
-                "name": "Status of Fan 4",
+                "name": "Status Fan 4",
                 "group": "status",
                 "reg_type": "discrete",
                 "address": 12,
                 "type": "switch",
-                "condition": "number_of_fans>=4"
+                "condition": "fans_number>=4"
             },
             {
                 "name": "Unit On",
@@ -2224,7 +2409,7 @@
                 "scale": 0.1,
                 "units": "deg C",
                 "format": "s16",
-                "condition": "type_of_probe_B1>0"
+                "condition": "type_probe_B1>0"
             },
             {
                 "name": "Probe B2",
@@ -2235,7 +2420,7 @@
                 "scale": 0.1,
                 "units": "deg C",
                 "format": "s16",
-                "condition": "type_of_probe_B2>0"
+                "condition": "type_probe_B2>0"
             },
             {
                 "name": "Probe B3",
@@ -2246,7 +2431,7 @@
                 "scale": 0.1,
                 "units": "deg C",
                 "format": "s16",
-                "condition": "type_of_probe_B3>0"
+                "condition": "type_probe_B3>0"
             },
             {
                 "name": "Probe B4",
@@ -2294,7 +2479,7 @@
                 "default": 0
             },
             {
-                "name": "Operating Percentage of First Capacity Controlled Compressor",
+                "name": "Compressor 1 Output",
                 "group": "status",
                 "reg_type": "input",
                 "units": "%",
@@ -2302,7 +2487,7 @@
                 "format": "u16"
             },
             {
-                "name": "Operating Percentage of Second Capacity Controlled Compressor",
+                "name": "Compressor 2 Output",
                 "group": "status",
                 "reg_type": "input",
                 "units": "%",
@@ -2312,159 +2497,150 @@
         ],
         "translations": {
             "en": {
-                "multifunction_DI_configuration_description": "If the 4 outputs are used, this parameter is ignored and the Multifunction Input is set as fan thermal overload",
-                "number_of_compressors_on_in_circuit_1_with_probe_damaged_description": "If the suction 1 probe fault or not connected alarm is activated, this number of compressors are started. These are in any case managed by the individual alarms and general pressure switches (number limited by the number of the compressors)",
-                "number_of_compressors_on_in_circuit_2_with_probe_damaged_description": "If the suction 2 probe fault or not connected alarm is activated, this number of compressors are started. These are in any case managed by the individual alarms and general pressure switches (for two circuits only)",
-                "number_of_fans_on_with_probe_damaged_description": "If the discharge probe fault or not connected alarm is activated, this number of fans are started. These are in any case managed by the individual alarms and general pressure switches",
-                "set_point_offset_to_change_set_from_DI_description": "Compressor bar auxiliary set point offset. Used when changing the set point from digital input",
-                "time_to_change_low_pressure_alarm_from_automatic_to_manual_description": "On the 3rd activation, within the set time, the low pressure alarm from pressure switch changes from automatic to manual reset",
-                "time_to_reset_prevent_alarm_description": "If no prevent alarms occur in this period, the high prevent frequency alarm is automatically reset (Only if the prevent is enabled)",
-                "type_of_compressor_reset_description": "Type of thermal overload or generic alarm reset relating to the individual compressor. Automatic: when the alarm stops, the compressor starts again.Displayed only if the parameters are enabled",
-                "type_of_fan_reset_description": "Type of thermal overload or generic alarm reset relating to the individual fan. Automatic: when the alarm stops, the fan starts again. Displayed only if the parameters are enabled"
             },
             "ru": {
-                "Alarm Relay Logic (/28)": "Логика аварийного реле (/28)",
-                "Alarm Signal Delay (s, A20)": "Максимальное давление нагнетания (с, A20)",
-                "Capacity of Compressor 1 (kW, /03)": "Мощность компрессора 1 (кВт, /03)",
-                "Capacity of Compressor 2 (kW, /04)": "Мощность компрессора 2 (кВт, /04)",
-                "Capacity of Compressor 3 (kW, /05)": "Мощность компрессора 3 (кВт, /05)",
-                "Capacity of Compressor 4 (kW, /06)": "Мощность компрессора 4 (кВт, /06)",
-                "Compressor Thermal Overload Alarm Delay (s, A12)": "Тепловая задержка компрессора (с, A12)",
-                "Condensing Temperature Delta for Floating Control (°C, r33)": "Поправка конденсации T (°C, r33)",
-                "Delay Restart after Black Out (s, /37)": "Задержка повторного пуска после отключения электропитания (с, /37)",
-                "Differential Pressure for Dead Band by Time (bar, r11)": "Перепад давления, при котором время пусков/остановок компрессора пропорционально давлению всасывания (бар, r11)",
-                "Digital Input Logic (A19)": "Логика цифровых входов (A19)",
-                "Discharge Probe 1 Calibration (bar, /24)": "Тарировка датчика B1 (нагнетание) (бар, /24)",
-                "Enable Fan Inverter (/10)": "Разрешение инвертора вентилятора (/10)",
-                "Enable Fan with Compressor On (/13)": "Разрешение вентиляторов с включенными компрессорами (/13)",
-                "Enable Floating Condenser Control (r32)": "Разрешение поплавкового регулирования конденсатора (r32)",
-                "Enable Management of Different Compressors (/02)": "Компрессоры с различными мощностями (/02)",
-                "Enable Prevent Control On Condenser (/32)": "Предотвращение высокого давления нагнетания (/32)",
-                "Enable Unit Off Due to Probe Fault (A22)": "Выключение в результате отсоединения датчика (A22)",
-                "End Scale Value Discharge Transducer (bar, /20)": "Максимальное давление нагнетания (бар, /20)",
-                "End Scale Value Suction Transducer (bar, /19)": "Максимальное давление всасывания (бар, /19)",
-                "Fan Start Delay (Dead Band) (s)": "Задержка пуска вентилятора в зоне нечувствительности (с)",
-                "Fan Stop Delay (Dead Band) (s)": "Задержка пуска вентилятора в зоне нечувствительности (с)",
-                "High Suction Pressure 1 Alarm Delay (s, A02)": "Задержка 1 высокого давления всасывания HP (с, A02)",
-                "High Suction Pressure 2 Alarm Delay (s, A06)": "Задержка 2 высокого давления всасывания HP (с, A06)",
-                "High Temperature Threshold Probe B2 (°C, A16)": "Высокий порог датчика температуры: B2 (°C, A16)",
-                "High Temperature Threshold Probe B3 (°C, A17)": "Высокий порог датчика температуры: B3 (°C, A17)",
-                "HP Discharge Alarm Threshold (bar, A09)": "Аварийный сигнал нагнетания высокого давления HP (бар, A09)",
-                "HP Discharge Alarm Threshold (°C, A09)": "Аварийный сигнал нагнетания высокого давления HP (°C, A09)",
-                "HP Suction 1 Alarm Threshold (bar, A01)": "Аварийный сигнал 1 высокого давления всасывания HP (бар, A01)",
-                "HP Suction 2 Alarm Threshold (bar, A05)": "Аварийный сигнал 2 высокого давления всасывания HP (бар, A05)",
-                "Integral Time for P+I Fan Control (s, r22)": "Интегральное время,только P+I (с, r22)",
-                "Inverter Ramp Up Time (s, r28)": "Время линейно нарастающей характеристики инвертора (с, r28)",
-                "Inverter Speed Up Time (s, r27)": "Время разгона инвертора вентилятора (с, r27)",
-                "Liquid Level Alarm Delay (m, A18)": "Аварийный сигнал задержки уровня жидкости (м, A18)",
-                "Low Discharge Pressure Alarm Delay (s, A11)": "Задержка аварийного сигнала низкого давления нагнетания (с, A11)",
-                "Low Suction Pressure 1 Alarm Delay (s, A04)": "Задержка 1 низкого давления всасывания LP (с, A04)",
-                "Low Suction Pressure 2 Alarm Delay (s, A08)": "Задержка 2 низкого давления всасывания LP (с, A08)",
-                "LP Discharge Alarm Threshold (bar, A10)": "Аварийный сигнал нагнетания низкого давления LP (бар, A10)",
-                "LP Discharge Alarm Threshold (°C, A10)": "Аварийный сигнал нагнетания низкого давления LP (°C, A10)",
-                "LP Suction 1 Alarm Threshold (bar, A03)": "Аварийный сигнал 1 низкого давления всасывания LP (бар, A03)",
-                "LP Suction 2 Alarm Threshold (bar, A07)": "Аварийный сигнал 2 низкого давления всасывания LP (бар, A07)",
-                "Max Fan Set Point (bar, r26)": "Максимальное заданное значение вентилятора (бар, r26)",
-                "Max Fan Set Point (°C, r26)": "Максимальное заданное значение вентилятора (°C, r26)",
-                "Maximum Call for Compressor Starts in Dead Band by Time (s, r08)": "Максимальное время запуска компрессора пуска в зоне нечувствительности (с, r08)",
-                "Maximum Call for Compressor Stops in Dead Band by Time (s, r10)": "Максимальное время остановки компрессора в зоне нечувствительности (с, r10)",
-                "Maximum Inverter Output (%, r30)": "Максимальный выход инвертора вентилятора (%, r30)",
-                "Min Fan Set Point (bar, r25)": "Минимальное заданное значение вентилятора (бар, r25)",
-                "Min Fan Set Point (°C, r25)": "Минимальное заданное значение вентилятора (°C, r25)",
-                "Min Time Between Two Stop Calls for Different Compressors (s, C04)": "Минимальный период времени между остановками различных компрессоров (с, C04)",
-                "Min Value Discharge Transducer (bar, /18)": "Минимальное давление нагнетания (бар, /18)",
-                "Min value suction transducer (bar, /17)": "Минимальное давление всасывания (бар, /17)",
-                "Minimum Call Time for Compressor Start in Dead Band (s, r07)": "Минимальное время запроса пуска в зоне нечувствительности (с, r07)",
-                "Minimum Call Time for Compressor Stop in Dead Band (s, r09)": "Минимальное время запроса остановки в зоне нечувствительности (с, r09)",
-                "Minimum Compressor Off Time (s, C02)": "Минимальное время выключения компрессора (с, C02)",
-                "Minimum Compressor On Time (s, C01)": "Минимальное время включения компрессора (с, C01)",
+                "Alarm Relay Logic": "Логика аварийного реле",
+                "Alarm Signal Delay (s)": "Максимальное давление нагнетания (c)",
+                "Capacity of Compressor 1 (kW)": "Мощность компрессора 1, кВт",
+                "Capacity of Compressor 2 (kW)": "Мощность компрессора 2, кВт",
+                "Capacity of Compressor 3 (kW)": "Мощность компрессора 3, кВт",
+                "Capacity of Compressor 4 (kW)": "Мощность компрессора 4, кВт",
+                "Compressor Thermal Overload Alarm Delay (s)": "Тепловая задержка компрессора (c)",
+                "Condensing Temperature Delta for Floating Control (°C)": "Поправка конденсации при поплаковом регулировании (°C)",
+                "Delay Restart after Black Out (s)": "Задержка повторного пуска после отключения электропитания (c)",
+                "Differential Pressure for Dead Band by Time (bar)": "Перепад давления, при котором время пусков/остановок компрессора пропорционально давлению всасывания (бар)",
+                "Digital Input Logic": "Логика цифровых входов",
+                "Discharge Probe 1 Calibration (bar)": "Тарировка датчика B1 (бар)",
+                "Enable Fan Inverter": "Разрешение инвертора вентилятора",
+                "Enable Fan with Compressor On": "Разрешение вентиляторов с включенными компрессорами",
+                "Enable Floating Condenser Control": "Разрешение поплавкового регулирования конденсатора",
+                "Enable Management of Different Compressors": "Компрессоры с различными мощностями",
+                "Enable Prevent Control On Condenser": "Предотвращение высокого давления нагнетания",
+                "Enable Unit Off Due to Probe Fault": "Выключение в результате отсоединения датчика",
+                "Max Discharge/Suction 2 Pressure (bar)": "Максимальное давление нагнетания (бар)",
+                "Max Suction Pressure (bar)": "Максимальное давление всасывания (бар)",
+                "Fan Start Delay (s)": "Задержка пуска вентилятора в зоне нечувствительности (c)",
+                "Fan Stop Delay (s)": "Задержка пуска вентилятора в зоне нечувствительности (c)",
+                "Suction Probe 1 Alarm Delay (s)": "Задержка 1 высокого давления всасывания HP (c)",
+                "Suction Probe 2 Alarm Delay (s)": "Задержка 2 высокого давления всасывания HP (c)",
+                "High Temperature Threshold Probe B2 (°C)": "Высокий порог датчика температуры: B2 (°C)",
+                "High Temperature Threshold Probe B3 (°C)": "Высокий порог датчика температуры: B3 (°C)",
+                "Discharge Probe Alarm: High Threshold Setting (bar)": "Аварийный сигнал нагнетания высокого давления HP (бар)",
+                "Discharge Probe Alarm: High Threshold Setting (°C)": "Аварийный сигнал нагнетания высокого давления HP (°C)",
+                "Suction Probe 1 Alarm: High Threshold Setting (bar)": "Аварийный сигнал 1 высокого давления всасывания HP (бар)",
+                "Suction Probe 2 Alarm: High Threshold Setting (bar)": "Аварийный сигнал 2 высокого давления всасывания HP (бар)",
+                "Integral Time for P+I Fan Control (s)": "Интегральное время,только P+I (c)",
+                "Inverter Ramp Up Time (s)": "Время линейно нарастающей характеристики инвертора (c)",
+                "Inverter Speed Up Time (s)": "Время разгона инвертора вентилятора (c)",
+                "Liquid Level Alarm Delay (m)": "Аварийный сигнал задержки уровня жидкости (м)",
+                "Discharge Probe Alarm Delay (s)": "Задержка аварийного сигнала низкого давления нагнетания (c)",
+                "Low Suction Pressure 1 Alarm Delay, s, A04)": "Задержка 1 низкого давления всасывания LP (c)",
+                "Low Suction Pressure 2 Alarm Delay, s, A08)": "Задержка 2 низкого давления всасывания LP (c)",
+                "Discharge Probe Alarm Low Threshold (bar)": "Аварийный сигнал нагнетания низкого давления LP (бар)",
+                "Discharge Probe Alarm Low Threshold (°C)": "Аварийный сигнал нагнетания низкого давления LP (°C)",
+                "Suction Probe 1 Alarm Low Threshold (bar)": "Аварийный сигнал 1 низкого давления всасывания LP (бар)",
+                "LP Suction 2 Alarm Threshold (bar)": "Аварийный сигнал 2 низкого давления всасывания LP (бар)",
+                "Max Fan Set Point (bar)": "Максимальное заданное значение вентилятора (бар)",
+                "Max Fan Set Point (°C)": "Максимальное заданное значение вентилятора (°C)",
+                "Maximum Call for Compressor Starts (s)": "Максимальное время запуска компрессора пуска в зоне нечувствительности (c)",
+                "Maximum Call for Compressor Stops (s)": "Максимальное время остановки компрессора в зоне нечувствительности (c)",
+                "Maximum Fan Inverter Output (%)": "Максимальный выход инвертора вентилятора (%)",
+                "Min Fan Set Point (bar)": "Минимальное заданное значение вентилятора (бар)",
+                "Min Fan Set Point (°C)": "Минимальное заданное значение вентилятора (°C)",
+                "Min Time Between Two Stop Calls for Different Compressors (s)": "Минимальный период времени между остановками различных компрессоров (c)",
+                "Min Value Discharge (bar)": "Минимальное давление нагнетания (бар)",
+                "Min Value Suction (bar)": "Минимальное давление всасывания (бар)",
+                "Minimum Call Time for Compressor Start in Dead Band (s)": "Минимальное время запроса пуска в зоне нечувствительности (c)",
+                "Minimum Call Time for Compressor Stop in Dead Band (s)": "Минимальное время запроса остановки в зоне нечувствительности (c)",
+                "Minimum Compressor Off Time (s)": "Минимальное время выключения компрессора (c)",
+                "Minimum Compressor On Time (s)": "Минимальное время включения компрессора (c)",
                 "Minimum Fan Speed (%)": "Минимальная скорость вентилятора (%)",
-                "Minimum Inverter Output (%, r29)": "Минимальный выход инвертора вентилятора (%, r29)",
-                "Minimum Time Between Starts of Different Compressors (s, C03)": "Минимальный период времени между пусками различных компрессоров (с, C03)",
-                "Minimum Time Between Starts of the Same Compressor (s, C05)": "Минимальный период времени между пусками одного и того же компрессора (с, C05)",
-                "Multifunction DI Configuration (/15)": "Конфигурация многофункционального входа (/15)",
+                "Minimum Inverter Output (%)": "Минимальный выход инвертора вентилятора (%)",
+                "Minimum Time Between Starts of Different Compressors (s)": "Минимальный период времени между пусками различных компрессоров (c)",
+                "Minimum Time Between Starts of the Same Compressor (s)": "Минимальный период времени между пусками одного и того же компрессора (c)",
+                "Multifunction DI Configuration": "Конфигурация многофункционального входа",
                 "Number of Compressors": "Количество компрессоров",
-                "Number of Compressors On in Circuit 1 with Probe Damaged (/07)": "Количество включенных компрессоров с неисправным датчиком всасывания контур 1 (/07)",
-                "Number of Compressors On in Circuit 2 with Probe Damaged (/08)": "Количество включенных компрессоров с неисправным датчиком всасывания контур 2 (/08)",
-                "Number of Fans (/09)": "Количество вентиляторов (/09)",
-                "Number of Fans On with Probe Damaged (/12)": "Количество включенных вентиляторов с неисправным датчиком (/12)",
-                "On/Off from Supervisor (/38)": "Вкл/выкл агрегата от супервизора (/38)",
-                "Operating Hour Threshold for Maintenance (h, C07)": "Порог рабочих часов компрессора для аварийного сигнала технического обслуживания (ч, C07)",
-                "Outside Probe 3 Calibration (°C, /26)": "Тарировка датчика B3 (°C, /26)",
-                "Prevent Time in which no Compressor Starts are Enabled (m, A13)": "Время предотвращения, в течение которого пуски компрессоров не разрешены (м, A13)",
-                "Prevent Time in which the Activation Signals the Alarm (m, A14)": "Время предотвращения, в течение которого активация генерирует аварийный сигнал (м, A14)",
-                "Reset Compressor 1 hours (C09)": "Сброс рабочих часов компрессора 1 (C09)",
-                "Reset Compressor 2 Hours (C11)": "Сброс рабочих часов компрессора 2 (C11)",
-                "Reset Compressor 3 hours (C13)": "Сброс рабочих часов компрессора 3 (C13)",
-                "Reset Compressor 4 Hours (C15)": "Сброс рабочих часов компрессора 4 (C15)",
-                "Room Probe 2 Calibration (°C, /25)": "Тарировка датчика B2 (°C, /25)",
-                "Set Point Offset to Change Set from DI (r34)": "Заданное значение смещения управления компрессора для вспомогательного датчика (r34)",
-                "Set Point Prevent High Pressure Function (bar, /33)": "Заданное значение предотвращения высокого давления нагнетания (бар, /33)",
-                "Suction Probe 4 Calibration (bar, /23)": "Тарировка датчика B4 всасывание (бар, /23)",
-                "Time Between 2 Fans Starts in Dead Band (s, r23)": "Время между запросами на пуск вентилятора (с, r23)",
-                "Time Between 2 Fans Stops in Dead Band (s, r24)": "Время между запросами на остановку вентилятора (с, r24)",
-                "Time Between Compressor Stop Call with Prevent Function (s, C06)": "Минимальное время между запросами выключения компрессора с активным предотвращением (с, C06)",
-                "Time to Change low Pressure Alarm from Automatic to Manual (m, A21)": "Переход с авт. на ручн. аварийных сигналов низкого давления (м, A21)",
-                "Time to Reset Prevent Alarm (m, A15)": "Предотвращение высокого давления HP Продолжительность предотвращения 3 (м, A15)",
-                "Triac Impulse Duration (ms, r31)": "Продолжительность импульса триака (мс, r31)",
-                "Type of Compressor Control (r06)": "Регулирование компрессора (r06)",
-                "Type of Compressor Reset (/29)": "Тип сброса аварийного сигнала тепловой перегрузки компрессора (/29)",
-                "Type of Compressor Rotation (r05)": "Чередование компрессоров (r05)",
-                "Type of B1 (/16)": "Тип датчика B1 (/16)",
-                "Type of Fan Control (r21)": "Регулирование вентилятора (r21)",
-                "Type of Fan Reset (/30)": "Тип сброса аварийного сигнала тепловой перегрузки вентилятора (/30)",
-                "Type of Fan Rotation (r20)": "Чередование вентиляторов (r20)",
-                "Type of Probe B2 (/21)": "Тип датчика B2 (/21)",
-                "Type of Probe B3 (/22)": "Тип датчика B3 (/22)",
-                "Type of Refrigerant (/35)": "Тип хладогента (/35)",
-                "Type of Reset for General High Pressure switch (/31)": "Тип сброса общего переключателя давления нагнетания (/31)",
-                "Type of Unit (/00)": "Тип агрегата (/00)",
-                "Unit Model (/01)": "Модель агрегата (/01)",
-                "Differential Circuit 1 (bar, r02)": "Перепад контура 1 (бар, r02)",
-                "Differential Circuit 2 (bar, r04)": "Перепад контура 2 (бар, r04)",
-                "Min Suction Set Point 1 (bar, r12)": "Заданное значение минимального всасывания 1 (бар, r12)",
-                "Max Suction Set Point 1 (bar, r13)": "Заданное значение максимального всасывания 1 (бар, r13)",
-                "Min Suction Set Point 2 (bar, r14)": "Заданное значение минимального всасывания 2 (бар, r14)",
-                "Max Suction Set Point 2 (bar, r15)": "Заданное значение максимального всасывания 2 (бар, r15)",
-                "Fan Set Point (bar, r16)": "Заданное значение вентилятора (бар, r16)",
-                "Fan Set Point (°C, r16)": "Заданное значение вентилятора (°C, r16)",
-                "Fan Differential (°C, r17)": "Перепад вентилятора (°C, r17)",
-                "Fan Differential (bar, r17)": "Перепад вентилятора (бар, r17)",
-                "Fan Inverter Set Point (°C, r18)": "Заданное значение инвертора вентилятора (°C, r18)",
-                "Fan Inverter Set Point (bar, r18)": "Заданное значение инвертора вентилятора (бар, r18)",
-                "Fan Inverter Differential (bar, r19)": "Перепад инвертора вентилятора (бар, r19)",
-                "Fan Inverter Differential (°C, r19)": "Перепад инвертора вентилятора (°C, r19)",
+                "Number of Compressors On in Circuit 1 with Probe Damaged": "Количество включенных компрессоров с неисправным датчиком всасывания контур 1",
+                "Number of Compressors On in Circuit 2 with Probe Damaged": "Количество включенных компрессоров с неисправным датчиком всасывания контур 2",
+                "Number of Fans": "Количество вентиляторов",
+                "Number of Fans On with Probe Damaged": "Количество включенных вентиляторов с неисправным датчиком",
+                "On/Off from Supervisor": "Вкл/выкл агрегата от супервизора",
+                "Operating Hour Threshold for Maintenance (h)": "Порог рабочих часов компрессора для аварийного сигнала технического обслуживания (ч)",
+                "Outside Probe 3 Calibration (°C)": "Тарировка датчика B3 (°C)",
+                "Prevent Time in which no Compressor Starts are Enabled (m)": "Время предотвращения, в течение которого пуски компрессоров не разрешены (м)",
+                "Prevent Time in which the Activation Signals the Alarm (m)": "Время предотвращения, в течение которого активация генерирует аварийный сигнал (м)",
+                "Reset Compressor 1 Time": "Сброс рабочих часов компрессора 1",
+                "Reset Compressor 2 Time": "Сброс рабочих часов компрессора 2",
+                "Reset Compressor 3 Time": "Сброс рабочих часов компрессора 3",
+                "Reset Compressor 4 Time": "Сброс рабочих часов компрессора 4",
+                "Room Probe 2 Calibration (°C)": "Тарировка датчика B2 (°C)",
+                "Set Point Offset to Change Set from DI": "Заданное значение смещения управления компрессора для вспомогательного датчика",
+                "Set Point Prevent High Pressure Function (bar)": "Заданное значение предотвращения высокого давления нагнетания (бар)",
+                "Suction Probe 4 Calibration (bar)": "Тарировка датчика B4 всасывание (бар)",
+                "Time Between 2 Fans Starts in Dead Band (s)": "Время между запросами на пуск вентилятора (c)",
+                "Time Between 2 Fans Stops in Dead Band (s)": "Время между запросами на остановку вентилятора (c)",
+                "Time Between Compressor Stop Call with Prevent Function (s)": "Минимальное время между запросами выключения компрессора с активным предотвращением (c)",
+                "Time to Change low Pressure Alarm from Automatic to Manual (m)": "Переход с авт. на ручн. аварийных сигналов низкого давления (м)",
+                "Time to Reset Prevent Alarm (m)": "Предотвращение высокого давления HP Продолжительность предотвращения 3 (м)",
+                "Triac Impulse Duration (ms)": "Продолжительность импульса триака (мс)",
+                "Type of Compressor Control": "Регулирование компрессора",
+                "Type of Compressor Reset": "Тип сброса аварийного сигнала тепловой перегрузки компрессора,",
+                "Type of Compressor Rotation": "Чередование компрессоров",
+                "Type of B1": "Тип датчика B1",
+                "Type of Fan Control": "Регулирование вентилятора",
+                "Type of Fan Reset": "Тип сброса аварийного сигнала тепловой перегрузки вентилятора",
+                "Type of Fan Rotation": "Чередование вентиляторов",
+                "Type of Probe B2": "Тип датчика B2",
+                "Type of Probe B3": "Тип датчика B3",
+                "Type of Refrigerant": "Тип хладогента",
+                "Type of Reset for General High Pressure switch": "Тип сброса общего переключателя давления нагнетания",
+                "Type of Unit": "Тип агрегата",
+                "Unit Model": "Модель агрегата",
+                "Differential Circuit 1 (bar)": "Перепад контура 1 (бар)",
+                "Differential Circuit 2 (bar)": "Перепад контура 2 (бар)",
+                "Min Suction Set Point 1 (bar)": "Заданное значение минимального всасывания 1 (бар)",
+                "Max Suction Set Point 1 (bar)": "Заданное значение максимального всасывания 1 (бар)",
+                "Min Suction Set Point 2 (bar)": "Заданное значение минимального всасывания 2 (бар)",
+                "Max Suction Set Point 2 (bar)": "Заданное значение максимального всасывания 2 (бар)",
+                "Fan Set Point (bar)": "Заданное значение вентилятора (бар)",
+                "Fan Set Point (°C)": "Заданное значение вентилятора (°C)",
+                "Fan Differential (°C)": "Перепад вентилятора (°C)",
+                "Fan Differential (bar)": "Перепад вентилятора (бар)",
+                "Fan Inverter Set Point (°C)": "Заданное значение инвертора вентилятора (°C)",
+                "Fan Inverter Set Point (bar)": "Заданное значение инвертора вентилятора (бар)",
+                "Fan Inverter Differential (bar)": "Перепад инвертора вентилятора (бар)",
+                "Fan Inverter Differential (°C)": "Перепад инвертора вентилятора (°C)",
                 "Inverter Readout": "Мощность инвертора",
                 "Compressor 1 Operating Time": "Время наработки компрессора 1",
                 "Compressor 2 Operating Time": "Время наработки компрессора 2",
                 "Compressor 3 Operating Time": "Время наработки компрессора 3",
                 "Compressor 4 Operating Time": "Время наработки компрессора 4",
-                "Version of the Application": "Версия ПО",
+                "Application Version": "Версия ПО",
                 "Unit Status": "Состояние",
                 "Alarm: Compressor 1": "Авария компрессора 1",
                 "Alarm: Compressor 2": "Авария компрессора 2",
                 "Alarm: Compressor 3": "Авария компрессора 3",
                 "Alarm: Compressor 4": "Авария компрессора 4",
-                "Alarm: Liquid Level": "Авария по уровню жидкости",
-                "Alarm: General Low Suction Pressure 1": "Авария по общему низкому давлению всасывания 1 (от многофункционального DI)",
-                "Alarm: General Low Suction Pressure 2": "Авария по общему низкому давлению всасывания 2 (от многофункционального DI)",
+                "Alarm Liquid Level": "Авария по уровню жидкости",
+                "Alarm General Low Suction Pressure 1": "Авария по общему низкому давлению всасывания 1 (от многофункционального DI)",
+                "Alarm General Low Suction Pressure 2": "Авария по общему низкому давлению всасывания 2 (от многофункционального DI)",
                 "General Discharge Pressure Switch": "Общий переключатель давления нагнетания (от многофункционального DI)",
-                "Alarm: Low Discharge Pressure": "Авария по низкому давлению нагнетания",
-                "Alarm: High Discharge Pressure": "Авария по высокому давлению нагнетания",
-                "Alarm: Low Suction Pressure 1": "Авария по низкому давлению всасывания 1",
-                "Alarm: High Suction Pressure 1": "Авария по высокому давлению всасывания 1",
-                "Alarm: Low Suction Pressure 2": "Авария по низкому давлению всасывания 2",
-                "Alarm: High Suction Pressure 2": "Авария по высокому давлению всасывания 2",
-                "Probe B4 Faulty or Disconnected": "Датчик B4 неисправен или отсоединен",
-                "Probe B1 Faulty or Disconnected": "Датчик B1 неисправен или отсоединен",
-                "Alarm: Fan 1": "Авария вентилятора 1",
-                "Alarm: Fan 2": "Авария вентилятора 2",
-                "Alarm: Fan 3": "Авария вентилятора 3",
-                "Alarm: Fan 4": "Авария вентилятора 4",
-                "General Fan Thermal Overload": "Тепловая перегрузка вентилятора",
+                "Alarm Low Discharge Pressure": "Авария по низкому давлению нагнетания",
+                "Alarm High Discharge Pressure": "Авария по высокому давлению нагнетания",
+                "Alarm Low Suction Pressure 1": "Авария по низкому давлению всасывания 1",
+                "Alarm High Suction Pressure 1": "Авария по высокому давлению всасывания 1",
+                "Alarm Low Suction Pressure 2": "Авария по низкому давлению всасывания 2",
+                "Alarm High Suction Pressure 2": "Авария по высокому давлению всасывания 2",
+                "Probe B4 Faulty": "Датчик B4 неисправен",
+                "Probe B1 Faulty": "Датчик B1 неисправен",
+                "Alarm Fan 1": "Авария вентилятора 1",
+                "Alarm Fan 2": "Авария вентилятора 2",
+                "Alarm Fan 3": "Авария вентилятора 3",
+                "Alarm Fan 4": "Авария вентилятора 4",
+                "Fan Thermal Overload": "Тепловая перегрузка вентилятора",
                 "Excessive Prevent Frequency": "Избыточная частота предотвращения",
-                "Probe B2 Faulty or Disconnected": "Датчик B2 неисправен или отсоединен",
-                "Probe B3 Faulty or Disconnected": "Датчик B3 неисправен или отсоединен",
+                "Probe B2 Faulty": "Датчик B2 неисправен",
+                "Probe B3 Faulty": "Датчик B3 неисправен",
                 "High Room Temperature": "Высокая температура помещения",
                 "High Outside Temperature": "Высокая наружная температура",
                 "Compressor 1 Maintenance": "Техническое обслуживание компрессора 1",
@@ -2477,15 +2653,15 @@
                 "Status of Compressor 2": "Состояние компрессора 2",
                 "Status of Compressor 3": "Состояние компрессора 3",
                 "Status of Compressor 4": "Состояние компрессора 4",
-                "Status of Digital Input 1": "Состояние цифрового входа 1",
-                "Status of Digital Input 2": "Состояние цифрового входа 2",
-                "Status of Digital Input 3": "Состояние цифрового входа 3",
-                "Status of Digital Input 4": "Состояние цифрового входа 4",
-                "Status of Digital Input 5": "Состояние цифрового входа 5",
-                "Status of Fan 1": "Состояние вентилятора 1",
-                "Status of Fan 2": "Состояние вентилятора 2",
-                "Status of Fan 3": "Состояние вентилятора 3",
-                "Status of Fan 4": "Состояние вентилятора 4",
+                "Status Digital Input 1": "Состояние цифрового входа 1",
+                "Status Digital Input 2": "Состояние цифрового входа 2",
+                "Status Digital Input 3": "Состояние цифрового входа 3",
+                "Status Digital Input 4": "Состояние цифрового входа 4",
+                "Status Digital Input 5": "Состояние цифрового входа 5",
+                "Status Fan 1": "Состояние вентилятора 1",
+                "Status Fan 2": "Состояние вентилятора 2",
+                "Status Fan 3": "Состояние вентилятора 3",
+                "Status Fan 4": "Состояние вентилятора 4",
                 "Unit On": "Блок включен",
                 "Probe B1": "Датчик B1",
                 "Probe B2": "Датчик B2",
@@ -2494,8 +2670,8 @@
                 "Suction Set Point Circuit 1": "Заданное значение всасывания контура 1",
                 "Suction Set Point Circuit 2": "Заданное значение всасывания контура 2",
                 "Reset Alarms": "Сброс сигнала аварии",
-                "Operating Percentage of First Capacity Controlled Compressor": "Процент работы первого компрессора с регулируемой производительностью",
-                "Operating Percentage of Second Capacity Controlled Compressor": "Процент работы второго компрессора с регулируемой производительностью",
+                "Compressor 1 Output": "Процент работы первого компрессора",
+                "Compressor 2 Output": "Процент работы второго компрессора",
                 "N.C.": "Нормально замкнутые",
                 "N.O.": "Нормально разомкнутые",
                 "N.O.: with no alarm the contact is open": "Нормально разомкнутые, в отсутствии аварии - разомкнут",
@@ -2529,7 +2705,7 @@
                 "Dead band with time": "Зона нечувствительности со временем",
                 "No rotation": "Без ротации",
                 "FIFO": "Первый включился - первый выключился",
-                "Time": "Время",
+                "Time": "По времени",
                 "Probe not connected": "Датчик не подключен",
                 "NTC probe": "Датчик NTC",
                 "0 to 5 V probe": "Датчик от 0 до 5 Вольт",
@@ -2570,21 +2746,12 @@
                 "Only if PI": "Только для PI регулирования",
                 "Set the liquid level alarm delay from multifunction input": "Установите задержку сигнала тревоги уровня жидкости с помощью многофункционального входа",
                 "Only if dead band control is enabled": "Только если включен контроль зоны нечувствительности",
-                "multifunction_DI_configuration_description": "Если используются 4 выхода, этот параметр игнорируется, а многофункциональный вход устанавливается на тепловую перегрузку вентилятора",
-                "number_of_compressors_on_in_circuit_1_with_probe_damaged_description": "Если срабатывает неисправность датчика всасывания 1 или сигнализация не подключена, запускается указанное количество компрессоров. В любом случае они управляются отдельными сигнализаторами и общими реле давления (количество ограничено количеством компрессоров)",
-                "number_of_compressors_on_in_circuit_2_with_probe_damaged_description": "Если срабатывает неисправность датчика всасывания 2 или сигнализация о неподключении, запускается указанное количество компрессоров. В любом случае они управляются отдельными сигнализаторами и общими реле давления (только для двух контуров)",
                 "Number limited by the number of compressors already enabled": "Число ограничено количеством уже включенных компрессоров",
-                "number_of_fans_on_with_probe_damaged_description": "Если активируется сигнализация неисправности нагнетательного датчика или отсутствия подключения, запускается указанное количество вентиляторов. В любом случае они управляются отдельными сигнализаторами и общими реле давления",
                 "If set to 0, no maintenance alarms.": "Если установлено значение 0, сигналы технического обслуживания отсутствуют",
                 "Only if the prevent is enabled": "Только если предотвращение включено",
-                "set_point_offset_to_change_set_from_DI_description": "Смещение вспомогательной уставки компрессора. Используется при изменении уставки с цифрового входа",
                 "If prevent enabled": "Если предотвращение включено",
-                "time_to_change_low_pressure_alarm_from_automatic_to_manual_description": "При 3-й активации в течение установленного времени сигнал тревоги низкого давления переключателя давления меняется с автоматического на ручной сброс",
-                "time_to_reset_prevent_alarm_description": "Если в этот период не возникает никаких сигналов предупреждения, сигнал тревоги высокой частоты автоматически сбрасывается (только если функция предотвращения включена)",
-                "type_of_compressor_reset_description": "Тип сброса тепловой перегрузки или общего аварийного сигнала, относящегося к отдельному компрессору. Автоматически: когда сигнал тревоги прекращается, компрессор запускается снова. Отображается только в том случае, если параметры включены",
                 "For single circuit only": "Только для одного контура",
                 "Discharge Probe": "Датчик нагнетания",
-                "type_of_fan_reset_description": "Тип сброса тепловой перегрузки или общего аварийного сигнала, относящегося к отдельному вентилятору. Автоматически: когда сигнал тревоги прекращается, вентилятор включается снова. Отображается только в том случае, если параметры включены",
                 "Only if prevent active": "Только если активно предотвращение",
                 "MANUAL": "Ручной",
                 "AUTO": "Автоматический",

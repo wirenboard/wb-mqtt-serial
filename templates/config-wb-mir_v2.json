@@ -14,6 +14,7 @@
         "response_timeout_ms": 1,
         "frame_timeout_ms": 12,
         "enable_wb_continuous_read": true,
+        "min_request_interval": 100,
 
         "groups": [
             {
@@ -1291,6 +1292,33 @@
                 "group": "ir_commands"
             },
             {
+                "name": "Play from BANK",
+                "reg_type": "holding",
+                "format": "s16",
+                "address": 5500,
+                "type": "value",
+                "group": "ir_commands",
+                "enabled": false
+            },
+            {
+                "name": "BANK -> RAM",
+                "reg_type": "holding",
+                "format": "s16",
+                "address": 5501,
+                "type": "value",
+                "group": "ir_commands",
+                "enabled": false
+            },
+            {
+                "name": "Learn to BANK",
+                "reg_type": "holding",
+                "format": "s16",
+                "address": 5502,
+                "type": "value",
+                "group": "ir_commands",
+                "enabled": false
+            },
+            {
                 "name": "Input 1",
                 "id": "",
                 "oneOf": [
@@ -1351,6 +1379,16 @@
                 "address": 123,
                 "scale": 0.001,
                 "type": "voltage",
+                "enabled": false,
+                "group": "hw_info"
+            },
+            {
+                "name": "Minimum MCU Voltage Since Startup",
+                "reg_type": "input",
+                "address": 119,
+                "scale": 0.001,
+                "type": "value",
+                "units": "V",
                 "enabled": false,
                 "group": "hw_info"
             }
@@ -1565,6 +1603,9 @@
                 "Play from ROM39": "Воспроизвести команду из ROM39",
                 "Play from ROM40": "Воспроизвести команду из ROM40",
                 "Reset all ROM": "Стереть все команды в ROM",
+                "Play from BANK": "Воспроизвести команду из соответствующего банка ROM",
+                "BANK -> RAM":"Редактирование ИК-команд в банке с копированием в RAM",
+                "Learn to BANK": "Записать команду в соответствующий банк ROM",
                 "Input 1": "Вход 1",
                 "Serial NO": "Серийный номер",
                 "FW Version": "Версия прошивки",
@@ -1572,6 +1613,7 @@
                 "Uptime": "Время работы с момента включения (с)",
                 "MCU Temperature": "Температура МК",
                 "MCU Voltage": "Напряжение питания МК",
+                "Minimum MCU Voltage Since Startup": "Минимальное напряжение питания МК с момента включения",
                 "1-Wire": "Датчик 1-Wire",
                 "External Temperature Sensor": "Датчик температуры",
                 "External Temperature Sensor OK": "Датчик температуры исправен",

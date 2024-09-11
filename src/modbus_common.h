@@ -27,6 +27,8 @@ namespace Modbus // modbus protocol common utilities
     typedef std::vector<uint8_t> TResponse;
     typedef std::map<int64_t, uint16_t> TRegisterCache;
 
+    const size_t EXCEPTION_RESPONSE_PDU_SIZE = 2;
+
     class IModbusTraits
     {
     public:
@@ -34,7 +36,7 @@ namespace Modbus // modbus protocol common utilities
 
         virtual size_t GetPacketSize(size_t pduSize) const = 0;
 
-        virtual void FinalizeRequest(TRequest& request, uint8_t slaveId) = 0;
+        virtual void FinalizeRequest(TRequest& request, uint8_t slaveId, uint32_t sn) = 0;
 
         /**
          * @brief Read response to specified request.
@@ -65,7 +67,7 @@ namespace Modbus // modbus protocol common utilities
 
         size_t GetPacketSize(size_t pduSize) const override;
 
-        void FinalizeRequest(TRequest& request, uint8_t slaveId) override;
+        void FinalizeRequest(TRequest& request, uint8_t slaveId, uint32_t sn) override;
 
         TReadFrameResult ReadFrame(TPort& port,
                                    const std::chrono::milliseconds& responseTimeout,
@@ -91,7 +93,7 @@ namespace Modbus // modbus protocol common utilities
 
         size_t GetPacketSize(size_t pduSize) const override;
 
-        void FinalizeRequest(TRequest& request, uint8_t slaveId) override;
+        void FinalizeRequest(TRequest& request, uint8_t slaveId, uint32_t sn) override;
 
         TReadFrameResult ReadFrame(TPort& port,
                                    const std::chrono::milliseconds& responseTimeout,
@@ -165,6 +167,7 @@ namespace Modbus // modbus protocol common utilities
     void WriteRegister(IModbusTraits& traits,
                        TPort& port,
                        uint8_t slaveId,
+                       uint32_t sn,
                        TRegister& reg,
                        const TRegisterValue& value,
                        TRegisterCache& cache,
@@ -183,6 +186,7 @@ namespace Modbus // modbus protocol common utilities
     void WriteSetupRegisters(IModbusTraits& traits,
                              TPort& port,
                              uint8_t slaveId,
+                             uint32_t sn,
                              const std::vector<PDeviceSetupItem>& setupItems,
                              TRegisterCache& cache,
                              std::chrono::microseconds requestDelay,
@@ -207,5 +211,7 @@ namespace Modbus // modbus protocol common utilities
                                 TPort& port,
                                 uint8_t slaveId,
                                 TRegisterCache& cache);
+
+    bool IsException(const uint8_t* pdu);
 
 } // modbus protocol common utilities

@@ -1,0 +1,144 @@
+{# Определение переменных для формирования шаблона -#}
+
+{% set title_en = "SDM-KapleStop v.4.12" -%}
+{% set title_ru = "SDM-KapleStop v.4.12" -%}
+{% set device_type = "KapleStop" -%}
+{% set group = "g-leakage" -%}
+{% set device_name = "KapleStop" -%}
+{% set device_id = "kaplestop" -%}
+
+{% set CHANNELS_NUMBER = 10 -%}
+{% set OUTPUTS_NUMBER = 4 -%}
+{% set ZONE_NUMBER = 13 -%}
+{% set ZONES_DEFAULT = [ 12, 26, 40, 55, 70, 80, 250, 0, 0, 0, 0, 0, 0] -%}
+{% set ZONES_MAX = [ 300, 300, 300, 300, 350, 350, 400, 400, 450, 450, 500, 500, 0]  -%}
+{% set SENSOR_TYPE_NUMBER = 8 -%}
+{% set SENSOR_TYPE_EN = [ "Temperature", "KS-R100", "KS-B500", "KS-R0", "KS-Zone", "KS-Zone-Res", "KS-Classic", "State" ]  -%}
+{% set SENSOR_TYPE_RU = [ "Температура", "Влажность датчика KS-R100", "Влажность датчика KS-B500", "Влажность датчика KS-R0", "Номер зоны протечки KS-zone", "Cопротивление цепочки датчиков", "Вероятность залития/засора", "Датчик с выходом «сухой контакт»" ]  -%}
+
+{
+    "title": "template_title",
+    "device_type": "{{ device_type }}",
+    "group": "{{ group }}",
+    "device": {
+        "name": "{{ device_name }}",
+        "id": "{{ device_id }}",
+        "max_read_registers": 20,
+        "response_timeout_ms": 100,
+        "guard_interval_us": 5000,
+        "groups": [
+            {% for ch_num in range(1, CHANNELS_NUMBER + 1) -%}
+            {"title": "IN {{ ch_num }}",          "id": "in{{ ch_num }}"},
+            {"title": "Chain sensors", "id": "g_zone{{ ch_num }}",  "group": "in{{ ch_num }}"},
+            {% for out_num in range(1, OUTPUTS_NUMBER + 1) -%}
+            {"title": "Output K{{ out_num }}",     "id": "g_in{{ ch_num }}_k{{ out_num }}", "group": "in{{ ch_num }}"},
+            {% endfor -%}
+            {% endfor -%}
+            {"title": "Outputs",       "id": "outputs"},
+            {% for out_num in range(1, OUTPUTS_NUMBER + 1) -%}
+            {"title": "Output K{{ out_num }}",     "id": "g_k{{ out_num }}",      "group": "outputs"},
+            {% endfor -%}
+            {% for ch_num in range(1, CHANNELS_NUMBER + 1) -%}
+            {% set comma = ',' if ch_num != CHANNELS_NUMBER else '' -%}
+            {"title": "in{{ ch_num }}_channels",  "id": "g_in{{ ch_num }}_channels", "group": "in{{ ch_num }}", "ui_options": {"wb": {"disable_title": true}}}{{comma}}
+            {% endfor -%}
+        ],
+        "parameters": {
+            {% for ch_num in range(1, CHANNELS_NUMBER + 1) -%}
+            "in{{ ch_num }}_type":    {"title":"Mode",                "address": {{(20-1) + ch_num}},"reg_type":"holding","group": "in{{ ch_num }}", "order": 1, "required": true, "default": 0, "enum": [0,1,2,3,4,5,6,7], "enum_titles": ["None", "Temperature NTC 10k", "KS-R100", "KS-B500", "KS-R0", "KS-Zone", "KS-PP0", "Датчик с выходом «сухой контакт»"]},
+            "in{{ ch_num }}_bl_res":  {"title":"Classic-Level (kOhm)","address": {{(60-1) + ch_num}},"reg_type":"holding","group": "in{{ ch_num }}", "required": true, "default":35, "min": 5, "max":100, "condition": "in{{ ch_num }}_type==6"},
+            "in{{ ch_num }}_bl_time": {"title":"Classic-Time (sec)",  "address": {{(80-1) + ch_num}},"reg_type":"holding","group": "in{{ ch_num }}", "required": true, "default":20, "min": 5, "max":300, "condition": "in{{ ch_num }}_type==6"},
+            {% endfor -%}
+            {% for ch_num in range(1, CHANNELS_NUMBER + 1) -%}
+            {% for out_num in range(1, OUTPUTS_NUMBER + 1) -%}
+            "in{{ ch_num }}_output_k{{ out_num }}_logic":         {"title": "Logic",          "address": {{((280-1) + ch_num) + 50* out_num}},"reg_type": "holding", "group": "g_in{{ ch_num }}_k{{ out_num }}", "order": 1, "required": true, "default":0, "condition": "(in{{ ch_num }}_type!=0)", "enum": [0,1,2,3,4], "enum_titles": ["None", "OR", "AND (On/Off)", "AND (On)", "AND (Off)"]},
+            "in{{ ch_num }}_output_k{{ out_num }}_on_threshold":  {"title": "Upper Threshold","address": {{((250-1) + ch_num) + 50* out_num}},"reg_type": "holding", "group": "g_in{{ ch_num }}_k{{ out_num }}", "order": 2, "required": true, "default":0, "condition": "(in{{ ch_num }}_output_k{{ out_num }}_logic>0)"},
+            "in{{ ch_num }}_output_k{{ out_num }}_off_threshold": {"title": "Lower Threshold","address": {{((260-1) + ch_num) + 50* out_num}},"reg_type": "holding", "group": "g_in{{ ch_num }}_k{{ out_num }}", "order": 4, "required": true, "default":0, "condition": "(in{{ ch_num }}_output_k{{ out_num }}_logic>0)"},
+            "in{{ ch_num }}_output_k{{ out_num }}_polarity":      {"title": "Polarity",       "address": {{((270-1) + ch_num) + 50* out_num}},"reg_type": "holding", "group": "g_in{{ ch_num }}_k{{ out_num }}", "order": 3, "required": true, "default":1, "condition": "(in{{ ch_num }}_output_k{{ out_num }}_logic>0)", "enum": [0,1],"enum_titles": ["Off", "On"]},
+            {% endfor -%}
+            {% endfor -%}
+            {% for out_num in range(1, OUTPUTS_NUMBER + 1) -%}
+            "k{{ out_num }}_logic_and_accept": {"title":"Logic and Accept","address": {{(292-1) + out_num}}, "reg_type": "holding", "group": "g_k{{ out_num }}", "order": 2, "required": true, "default": 0, "min":0, "max": 10},
+            {% endfor -%}
+            {% for out_num in range(1, OUTPUTS_NUMBER + 1) -%}
+            "k{{ out_num }}_delay": {"title":"Delay","address": {{(296-1) + out_num}}, "reg_type": "holding", "group": "g_k{{ out_num }}", "order": 3, "required": true, "default": 0, "min":0, "max": 60, "condition": "(k{{ out_num }}_logic_and_accept>0)"},
+            {% endfor -%}
+            {% for ch_num in range(1, CHANNELS_NUMBER + 1) -%}
+            {% for zon_num in range(1, ZONE_NUMBER + 1) -%}
+            {% set comma = ',' if ch_num != CHANNELS_NUMBER or zon_num != ZONE_NUMBER else '' -%}
+            "in{{ ch_num }}_zone_{{ zon_num }}": {"title":"Zone Level {{ zon_num }} (kOhm)", "description": "0 - sign of the chain end.", "address": {{((100-1-16) + zon_num) + 16*ch_num}},"reg_type": "holding","group": "g_zone{{ ch_num }}","order": {{ zon_num }},  "required": true, "default": {{ ZONES_DEFAULT[zon_num-1] }}, "min": 0, "max": {{ ZONES_MAX[zon_num-1] }}, "condition": "in{{ ch_num }}_type==5"}{{comma}}
+            {% endfor -%}
+            {% endfor -%}
+        },
+        "channels": [
+            {% for ch_num in range(1, CHANNELS_NUMBER + 1) -%}
+            {"name": "IN {{ ch_num }} Temperature", "address": {{(70-1) + ch_num  }}, "reg_type": "input", "format": "s16", "error_value": "0xD954", "scale": 0.01,  "type": "value",  "units": "deg C",  "group": "g_in{{ ch_num }}_channels", "condition": "in{{ ch_num }}_type==1"},
+            {"name": "IN {{ ch_num }} KS-R100",     "address": {{(70-1) + ch_num  }}, "reg_type": "input", "format": "s16", "error_value": "0xFF9C", "scale": 0.01,  "type": "value",  "units": "%",      "group": "g_in{{ ch_num }}_channels", "condition": "in{{ ch_num }}_type==2"},
+            {"name": "IN {{ ch_num }} KS-B500",     "address": {{(70-1) + ch_num  }}, "reg_type": "input", "format": "s16", "error_value": "0xFF9C", "scale": 0.01,  "type": "value",  "units": "%",      "group": "g_in{{ ch_num }}_channels", "condition": "in{{ ch_num }}_type==3"},
+            {"name": "IN {{ ch_num }} KS-R0",       "address": {{(70-1) + ch_num  }}, "reg_type": "input", "format": "u16",                          "scale": 0.01,  "type": "value",  "units": "%",      "group": "g_in{{ ch_num }}_channels", "condition": "in{{ ch_num }}_type==4"},
+            {"name": "IN {{ ch_num }} KS-Zone",     "address": {{(70-1) + ch_num  }}, "reg_type": "input", "format": "s16", "error_value": "0xFFFE", "scale": 1,     "type": "value",  "units": "№ zone", "group": "g_in{{ ch_num }}_channels", "condition": "in{{ ch_num }}_type==5"},
+            {"name": "IN {{ ch_num }} KS-Zone-Res", "address": {{(30-2) + 2*ch_num}}, "reg_type": "input", "format": "u32",                          "scale": 0.001, "type": "value",  "units": "kOhm",   "group": "g_in{{ ch_num }}_channels", "condition": "in{{ ch_num }}_type==5"},
+            {"name": "IN {{ ch_num }} KS-Classic",  "address": {{(70-1) + ch_num  }}, "reg_type": "input", "format": "u16",                          "scale": 0.1,   "type": "value",  "units": "%",      "group": "g_in{{ ch_num }}_channels", "condition": "in{{ ch_num }}_type==6"},
+            {"name": "IN {{ ch_num }} State",       "address": {{(70-1) + ch_num  }}, "reg_type": "input", "format": "u16",                                          "type": "switch",                    "group": "g_in{{ ch_num }}_channels", "condition": "in{{ ch_num }}_type==7"},
+            {% endfor -%}
+            {% for out_num in range(1, OUTPUTS_NUMBER + 1) -%}
+            {% set comma = ',' if out_num != OUTPUTS_NUMBER else '' -%}
+            {"name": "Output K{{ out_num }}","reg_type": "coil", "address": {{(0-1) + out_num}}, "write_address": "{{(0-1) + out_num}}", "type": "switch",  "format": "u16","group": "g_k{{ out_num }}", "order": 1}{{comma}}
+            {% endfor -%}
+       ],
+        "translations": {
+            "en": {
+                "template_title": "{{ title_en }}"
+            },
+            "ru": {
+                "template_title": "{{ title_ru }}",
+                "Chain sensors": "Цепочка датчиков",
+                "Actions when sensor is triggered": "Действия при срабатывании датчика",
+                "Outputs": "Выходы",
+                "№ zone":"№ зоны",
+
+                "None": "Отключен",
+                "Temperature NTC 10k": "Датчик температуры NTC 10k",
+                "KS-R100": "Линейный датчик протечки KapleStop KS-R100 с контролем целостности",
+                "KS-R0": "Линейный датчик протечки KapleStop KS-R0 без контроля целостности",
+                "KS-B500": "Линейный датчик скрытой протечки KapleStop KS-B500",
+                "KS-PP0": "Датчик залития пола классический (KapleStop KS-Floor) / Датчик засора канализации KapleStop KS-PP0",
+                "KS-Zone": "Цепочка линейных датчиков протечки KapleStop KS-Z15 x N + KS-R100",
+                "State": "Датчик с выходом «сухой контакт»",
+
+                "Mode": "Тип датчика",
+                "Classic-Level (kOhm)": "Чуствительность электродов (кОм)",
+                "Classic-Time (sec)": "Время контроля электродов (сек)",
+
+                {% for zon_num in range(1, ZONE_NUMBER + 1) -%}
+                "Zone Level {{ zon_num }} (kOhm)": "Уровень сопротивления {{ zon_num }}-ой зоны (кОм)",
+                {% endfor -%}
+                "0 - sign of the chain end.": "0 - признак окончания цепочки.",
+
+                {% for typ_num in range(1, SENSOR_TYPE_NUMBER + 1) -%}
+                {% for ch_num in range(1, CHANNELS_NUMBER + 1) -%}
+                "IN {{ ch_num }} {{ SENSOR_TYPE_EN[typ_num-1] }}": "IN {{ ch_num }} {{ SENSOR_TYPE_RU[typ_num-1] }}",
+                {% endfor -%}
+                {% endfor %}
+
+                {% for out_num in range(1, OUTPUTS_NUMBER + 1) -%}
+                "Output K{{ out_num }}":"Управление выходом K{{ out_num }}",
+                {% endfor -%}
+                "Logic": "Логика управления",
+
+                "OR": "«ИЛИ» при превышении и при снижении",
+                "AND (On/Off)": "«И» при превышении и при снижении",
+                "AND (On)": "«И» при превышении / «ИЛИ» при снижении",
+                "AND (Off)": "«ИЛИ» при превышении / «И» при снижении",
+                "Upper Threshold": "Порог для превышения",
+                "Lower Threshold": "Порог для снижения",
+                "Polarity": "Действие при превышении",
+                "On": "Вкл",
+                "Off": "Выкл",
+
+                "Logic and Accept": "При логике AND требуется одновременное срабатывание датчиков: (0-выключено)",
+                "Delay": "Задержка сработки при автоматическом управлении (сек)"
+            }
+        }
+    }
+}

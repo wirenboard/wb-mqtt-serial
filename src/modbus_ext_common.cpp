@@ -9,6 +9,7 @@
 #include <vector>
 
 using namespace BinUtils;
+using namespace std::chrono;
 using namespace std::chrono_literals;
 
 #define LOG(logger) logger.Log() << "[modbus-ext] "
@@ -20,6 +21,8 @@ namespace ModbusExt // modbus extension protocol declarations
     const uint8_t MODBUS_EXT_COMMAND = 0x46;
 
     // Function codes
+    const uint8_t MODBUS_STANDARD_REQUEST_COMMAND = 0x08;
+    const uint8_t MODBUS_STANDARD_RESPONSE_COMMAND = 0x09;
     const uint8_t EVENTS_REQUEST_COMMAND = 0x10;
     const uint8_t EVENTS_RESPONSE_COMMAND = 0x11;
     const uint8_t NO_EVENTS_RESPONSE_COMMAND = 0x12;
@@ -33,6 +36,7 @@ namespace ModbusExt // modbus extension protocol declarations
     const size_t MIN_ENABLE_EVENTS_RESPONSE_SIZE = 6;
     const size_t MIN_ENABLE_EVENTS_REC_SIZE = 5;
     // const size_t EXCEPTION_SIZE = 5;
+    const size_t MODBUS_STANDARD_COMMAND_HEADER_SIZE = 7; // 0xFD 0x46 0x08 (3b) + SN (4b)
 
     const size_t EVENTS_REQUEST_MAX_BYTES = MAX_PACKET_SIZE - EVENTS_RESPONSE_HEADER_SIZE - CRC_SIZE;
     const size_t ARBITRATION_HEADER_MAX_BYTES = 32;
@@ -425,5 +429,93 @@ namespace ModbusExt // modbus extension protocol declarations
     {
         Flag = 0;
         SlaveId = 0;
+    }
+
+    // TModbusTraits
+
+    TModbusTraits::TModbusTraits()
+    {}
+
+    TPort::TFrameCompletePred TModbusTraits::ExpectNBytes(size_t n) const
+    {
+        return [=](uint8_t* buf, size_t size) {
+            if (size < MODBUS_STANDARD_COMMAND_HEADER_SIZE + 1)
+                return false;
+            if (Modbus::IsException(buf + MODBUS_STANDARD_COMMAND_HEADER_SIZE)) // GetPDU
+                return size >= MODBUS_STANDARD_COMMAND_HEADER_SIZE + Modbus::EXCEPTION_RESPONSE_PDU_SIZE + CRC_SIZE;
+            return size >= n;
+        };
+    }
+
+    size_t TModbusTraits::GetPacketSize(size_t pduSize) const
+    {
+        return MODBUS_STANDARD_COMMAND_HEADER_SIZE + CRC_SIZE + pduSize;
+    }
+
+    void TModbusTraits::FinalizeRequest(Modbus::TRequest& request, uint8_t slaveId, uint32_t sn)
+    {
+        request[0] = BROADCAST_ADDRESS;
+        request[1] = MODBUS_EXT_COMMAND;
+        request[2] = MODBUS_STANDARD_REQUEST_COMMAND;
+        request[3] = static_cast<uint8_t>(sn >> 24);
+        request[4] = static_cast<uint8_t>(sn >> 16);
+        request[5] = static_cast<uint8_t>(sn >> 8);
+        request[6] = static_cast<uint8_t>(sn);
+        auto crc = CRC16::CalculateCRC16(request.data(), request.size() - CRC_SIZE);
+        request[request.size() - 2] = static_cast<uint8_t>(crc >> 8);
+        request[request.size() - 1] = static_cast<uint8_t>(crc);
+    }
+
+    TReadFrameResult TModbusTraits::ReadFrame(TPort& port,
+                                              const milliseconds& responseTimeout,
+                                              const milliseconds& frameTimeout,
+                                              const Modbus::TRequest& req,
+                                              Modbus::TResponse& res) const
+    {
+        auto rc = port.ReadFrame(res.data(),
+                                 res.size(),
+                                 responseTimeout + frameTimeout,
+                                 frameTimeout,
+                                 ExpectNBytes(res.size()));
+
+        if (rc.Count < MODBUS_STANDARD_COMMAND_HEADER_SIZE + CRC_SIZE) {
+            throw Modbus::TMalformedResponseError("invalid data size");
+        }
+
+        uint16_t crc = (res[rc.Count - 2] << 8) + res[rc.Count - 1];
+        if (crc != CRC16::CalculateCRC16(res.data(), rc.Count - 2)) {
+            throw Modbus::TInvalidCRCError();
+        }
+
+        if (res[0] != BROADCAST_ADDRESS) {
+            throw TSerialDeviceTransientErrorException("invalid response address");
+        }
+
+        if (res[1] != MODBUS_EXT_COMMAND) {
+            throw TSerialDeviceTransientErrorException("invalid response command");
+        }
+
+        if (res[2] != MODBUS_STANDARD_RESPONSE_COMMAND) {
+            throw TSerialDeviceTransientErrorException("invalid response subcommand");
+        }
+
+        for (size_t i = 3; i < MODBUS_STANDARD_COMMAND_HEADER_SIZE; ++i) {
+            if (req[i] != res[i]) {
+                throw TSerialDeviceTransientErrorException("SN mismatch");
+            }
+        }
+
+        rc.Count -= MODBUS_STANDARD_COMMAND_HEADER_SIZE + CRC_SIZE;
+        return rc;
+    }
+
+    uint8_t* TModbusTraits::GetPDU(std::vector<uint8_t>& frame) const
+    {
+        return &frame[MODBUS_STANDARD_COMMAND_HEADER_SIZE];
+    }
+
+    const uint8_t* TModbusTraits::GetPDU(const std::vector<uint8_t>& frame) const
+    {
+        return &frame[MODBUS_STANDARD_COMMAND_HEADER_SIZE];
     }
 }
