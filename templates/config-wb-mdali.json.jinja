@@ -62,7 +62,7 @@
         "channels": [
             {% for ch in range(CHANNELS_NUMBER) -%}
             {
-                "name": "Transmit 8bit forward frame over channel {{ ch + 1 }}",
+                "name": "Transmit 16bit forward frame over channel {{ ch + 1 }}",
                 "id": "channel{{ ch + 1 }}_transmit_16bit_forward",
                 "reg_type": "holding",
                 "address": {{ 1800 + ch }},
@@ -307,7 +307,7 @@
                 "HW Info": "Данные модуля",
                 
                 {% for ch in range(CHANNELS_NUMBER) -%}
-                "Transmit forward frame over channel {{ ch + 1 }}": "Передать forward фрейм по каналу {{ ch + 1 }}",
+                "Transmit 16bit forward frame over channel {{ ch + 1 }}": "Передать 16-битный forward фрейм по каналу {{ ch + 1 }}",
                 "Transmit 24bit forward frame over channel {{ ch + 1 }}, left aligned": "Передать 24-битный forward фрейм по каналу {{ ch + 1 }}, выровнен по левому краю",
                 "Channel {{ ch + 1 }} reply timeout": "Таймаут ответа канала {{ ch + 1 }}",
                 "Received 8bit backward frame from channel {{ ch + 1 }}, left aligned": "Получен 8-битный backward фрейм от канала {{ ch + 1 }}, выровнен по левому краю",
