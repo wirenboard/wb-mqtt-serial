@@ -62,7 +62,7 @@
         "channels": [
             {% for ch in range(CHANNELS_NUMBER) -%}
             {
-                "name": "Transmit formward frame over channel {{ ch + 1 }}",
+                "name": "Transmit 8bit forward frame over channel {{ ch + 1 }}",
                 "id": "channel{{ ch + 1 }}_transmit_16bit_forward",
                 "reg_type": "holding",
                 "address": {{ 1800 + ch }},
@@ -117,7 +117,7 @@
                 "name": "24bit forward frame is received from channel {{ ch + 1 }}",
                 "id": "channel{{ ch + 1 }}_received_24bit_flag",
                 "reg_type": "input",
-                "address": {{ 1830 + ch * 2 }},
+                "address": {{ 1835 + ch }},
                 "type": "value",
                 "format": "u16",
                 "enabled": false,
@@ -127,7 +127,7 @@
                 "name": "Channel {{ ch + 1 }} bus is powered",
                 "id": "channel{{ ch + 1 }}_bus_is_powered",
                 "reg_type": "input",
-                "address": {{ 1875 + ch }},
+                "address": {{ 1850 + ch }},
                 "type": "value",
                 "format": "u16",
                 "group": "g_bus_states"
@@ -307,12 +307,12 @@
                 "HW Info": "Данные модуля",
                 
                 {% for ch in range(CHANNELS_NUMBER) -%}
-                "Transmit formward frame over channel {{ ch + 1 }}": "Передать formward фрейм по каналу {{ ch + 1 }}",
+                "Transmit forward frame over channel {{ ch + 1 }}": "Передать forward фрейм по каналу {{ ch + 1 }}",
                 "Transmit 24bit forward frame over channel {{ ch + 1 }}, left aligned": "Передать 24-битный forward фрейм по каналу {{ ch + 1 }}, выровнен по левому краю",
                 "Channel {{ ch + 1 }} reply timeout": "Таймаут ответа канала {{ ch + 1 }}",
                 "Received 8bit backward frame from channel {{ ch + 1 }}, left aligned": "Получен 8-битный backward фрейм от канала {{ ch + 1 }}, выровнен по левому краю",
                 "Received 24bit forward frame from channel {{ ch + 1 }}, left aligned": "Получен 24-битный forward фрейм от канала {{ ch + 1 }}, выровнен по левому краю",
-                "24bit forward frame is received from channel {{ ch + 1 }}": "24-битный фрейм получен от канала {{ ch + 1 }}",
+                "24bit forward frame is received from channel {{ ch + 1 }}": "Получен 24-битный фрейм от канала {{ ch + 1 }}",
                 "Channel {{ ch + 1 }} bus is powered": "Шина канала {{ ch + 1 }} запитана",
                 "Channel {{ ch + 1 }} bus state changed after request": "Состояние шины канала {{ ch + 1 }} изменилось после запроса",
 
