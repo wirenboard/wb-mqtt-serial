@@ -1,0 +1,342 @@
+{% set CHANNELS_NUMBER = 3 -%}
+{
+    "title": "WB-MDALI_template_title",
+    "device_type": "WB-MDALI",
+    "group": "g-wb",
+    "hw": [
+        {
+            "signature": "WB-MDALI"
+        }
+    ],
+    "device": {
+        "name": "WB-MDALI",
+        "id": "wb-mdali",
+        "max_read_registers": 0,
+        "response_timeout_ms": 1,
+        "frame_timeout_ms": 8,
+        "enable_wb_continuous_read": true,
+
+        "groups": [
+            {
+                "title": "Bus states",
+                "id": "g_bus_states"
+            },
+            {
+                "title": "Transparent mode",
+                "id": "g_transparent_mode"
+            },
+            {
+                "title": "Error counters",
+                "id": "g_error_counters"
+            },
+            {
+                "title": "General",
+                "id": "general"
+            },
+            {
+                "title": "HW Info",
+                "id": "g_hw_info"
+            }
+        ],
+
+        "parameters": {
+            "baud_rate": {
+                "title": "Baud rate",
+                "description": "baud_rate_description",
+                "address": 110,
+                "reg_type": "holding",
+                "enum": [96, 192, 384, 576, 1152],
+                "default": 96,
+                "enum_titles": [
+                    "9600",
+                    "19200",
+                    "38400",
+                    "57600",
+                    "115200"
+                ],
+                "group": "general",
+                "order": 1
+            }
+        },
+
+        "channels": [
+            {% for ch in range(CHANNELS_NUMBER) -%}
+            {
+                "name": "Transmit formward frame over channel {{ ch + 1 }}",
+                "id": "channel{{ ch + 1 }}_transmit_16bit_forward",
+                "reg_type": "holding",
+                "address": {{ 1800 + ch }},
+                "type": "value",
+                "format": "u16",
+                "enabled": false,
+                "group": "g_transparent_mode"
+            },
+            {
+                "name": "Transmit 24bit forward frame over channel {{ ch + 1 }}, left aligned",
+                "id": "channel{{ ch + 1 }}_transmit_24bit_forward",
+                "reg_type": "holding",
+                "address": {{ 1805 + ch * 2 }},
+                "type": "value",
+                "format": "u32",
+                "enabled": false,
+                "group": "g_transparent_mode"
+            },
+            {
+                "name": "Channel {{ ch + 1 }} reply timeout",
+                "id": "channel{{ ch + 1 }}_reply_timeout",
+                "reg_type": "input",
+                "address": {{ 1815 + ch }},
+                "type": "value",
+                "format": "u16",
+                "enabled": false,
+                "group": "g_transparent_mode"
+            },
+            {
+                "name": "Received 8bit backward frame from channel {{ ch + 1 }}, left aligned",
+                "id": "channel{{ ch + 1 }}_receive_8bit_backward",
+                "reg_type": "input",
+                "address": {{ 1820 + ch }},
+                "type": "value",
+                "format": "u16",
+                "sporadic": true,
+                "enabled": false,
+                "group": "g_transparent_mode"
+            },
+            {
+                "name": "Received 24bit forward frame from channel {{ ch + 1 }}, left aligned",
+                "id": "channel{{ ch + 1 }}_receive_24bit_forward",
+                "reg_type": "input",
+                "address": {{ 1825 + ch * 2 }},
+                "type": "value",
+                "format": "u32",
+                "sporadic": true,
+                "enabled": false,
+                "group": "g_transparent_mode"
+            },
+            {
+                "name": "24bit forward frame is received from channel {{ ch + 1 }}",
+                "id": "channel{{ ch + 1 }}_received_24bit_flag",
+                "reg_type": "input",
+                "address": {{ 1830 + ch * 2 }},
+                "type": "value",
+                "format": "u16",
+                "enabled": false,
+                "group": "g_transparent_mode"
+            },
+            {
+                "name": "Channel {{ ch + 1 }} bus is powered",
+                "id": "channel{{ ch + 1 }}_bus_is_powered",
+                "reg_type": "input",
+                "address": {{ 1875 + ch }},
+                "type": "value",
+                "format": "u16",
+                "group": "g_bus_states"
+            },
+            {
+                "name": "Channel {{ ch + 1 }} bus state changed after request",
+                "id": "channel{{ ch + 1 }}_bus_state_changed",
+                "reg_type": "input",
+                "address": {{ 1880 + ch }},
+                "type": "value",
+                "format": "u16",
+                "enabled": false,
+                "group": "g_transparent_mode"
+            },
+            {
+                "name": "Channel {{ ch + 1 }} start bit not received error counter",
+                "id": "channel{{ ch + 1 }}_nostart_error_counter",
+                "reg_type": "input",
+                "address": {{ 1855 + ch * 10 }},
+                "type": "value",
+                "format": "u16",
+                "enabled": false,
+                "group": "g_error_counters"
+            },
+            {
+                "name": "Channel {{ ch + 1 }} bit time error counter",
+                "id": "channel{{ ch + 1 }}_bittime_error_counter",
+                "reg_type": "input",
+                "address": {{ 1856 + ch * 10 }},
+                "type": "value",
+                "format": "u16",
+                "enabled": false,
+                "group": "g_error_counters"
+            },
+            {
+                "name": "Channel {{ ch + 1 }} frame length error counter",
+                "id": "channel{{ ch + 1 }}_framelen_error_counter",
+                "reg_type": "input",
+                "address": {{ 1857 + ch * 10 }},
+                "type": "value",
+                "format": "u16",
+                "enabled": false,
+                "group": "g_error_counters"
+            },
+            {
+                "name": "Channel {{ ch + 1 }} stop bits not received error counter",
+                "id": "channel{{ ch + 1 }}_nostops_error_counter",
+                "reg_type": "input",
+                "address": {{ 1858 + ch * 10 }},
+                "type": "value",
+                "format": "u16",
+                "enabled": false,
+                "group": "g_error_counters"
+            },
+            {
+                "name": "Channel {{ ch + 1 }} frame receive timeout error counter",
+                "id": "channel{{ ch + 1 }}_timeout_error_counter",
+                "reg_type": "input",
+                "address": {{ 1859 + ch * 10 }},
+                "type": "value",
+                "format": "u16",
+                "enabled": false,
+                "group": "g_error_counters"
+            },
+            {
+                "name": "Channel {{ ch + 1 }} bus is not powered error counter",
+                "id": "channel{{ ch + 1 }}_buspower_error_counter",
+                "reg_type": "input",
+                "address": {{ 1860 + ch * 10 }},
+                "type": "value",
+                "format": "u16",
+                "enabled": false,
+                "group": "g_error_counters"
+            },
+            {
+                "name": "Channel {{ ch + 1 }} previous packet isn't sent error counter",
+                "id": "channel{{ ch + 1 }}_txbusy_error_counter",
+                "reg_type": "input",
+                "address": {{ 1861 + ch * 10 }},
+                "type": "value",
+                "format": "u16",
+                "enabled": false,
+                "group": "g_error_counters"
+            },
+            {% endfor -%}
+            {
+                "name": "Serial",
+                "reg_type": "input",
+                "address": 270,
+                "type": "text",
+                "format": "u32",
+                "group": "g_hw_info"
+            },
+            {
+                "name": "FW Version",
+                "reg_type": "input",
+                "address": 250,
+                "type": "text",
+                "format": "string",
+                "string_data_size": 16,
+                "enabled": false,
+                "group": "g_hw_info"
+            },
+            {
+                "name": "Supply Voltage",
+                "reg_type": "input",
+                "address": 121,
+                "type": "value",
+                "units": "V",
+                "scale": 0.001,
+                "enabled": false,
+                "group": "g_hw_info"
+            },
+            {
+                "name": "Uptime",
+                "reg_type": "input",
+                "address": 104,
+                "type": "value",
+                "units": "s",
+                "format": "u32",
+                "enabled": false,
+                "group": "g_hw_info"
+            },
+            {
+                "name": "Minimum Voltage Since Startup",
+                "reg_type": "input",
+                "address": 122,
+                "scale": 0.001,
+                "type": "value",
+                "units": "V",
+                "enabled": false,
+                "group": "g_hw_info"
+            },
+            {
+                "name": "MCU Temperature",
+                "reg_type": "input",
+                "address": 124,
+                "type": "value",
+                "units": "deg C",
+                "format": "s16",
+                "scale": 0.1,
+                "enabled": false,
+                "group": "g_hw_info"
+            },
+            {
+                "name": "MCU Voltage",
+                "reg_type": "input",
+                "address": 123,
+                "scale": 0.001,
+                "type": "value",
+                "units": "V",
+                "enabled": false,
+                "group": "g_hw_info"
+            },
+            {
+                "name": "Minimum MCU Voltage Since Startup",
+                "reg_type": "input",
+                "address": 119,
+                "scale": 0.001,
+                "type": "value",
+                "units": "V",
+                "enabled": false,
+                "group": "g_hw_info"
+            }
+        ],
+        "translations": {
+            "en": {
+                "WB-MDALI_template_title": "WB-MDALI (3-channel RS485-DALI gate)",
+                "baud_rate_description": "Make sure that communication with the device is established before changing this parameter. Select required baud rate, save configuration and then change port baud rate to the same value. Default value is 9600"
+            },
+            "ru": {
+                "WB-MDALI_template_title": "WB-MDALI (3-канальный шлюз RS485-DALI)",
+                "Bus states": "Состояние шин",
+                "Error counters": "Счетчики ошибок",
+                "Transparent mode": "Прозрачный режим",
+                "General": "Общее",
+                "HW Info": "Данные модуля",
+                
+                {% for ch in range(CHANNELS_NUMBER) -%}
+                "Transmit formward frame over channel {{ ch + 1 }}": "Передать formward фрейм по каналу {{ ch + 1 }}",
+                "Transmit 24bit forward frame over channel {{ ch + 1 }}, left aligned": "Передать 24-битный forward фрейм по каналу {{ ch + 1 }}, выровнен по левому краю",
+                "Channel {{ ch + 1 }} reply timeout": "Таймаут ответа канала {{ ch + 1 }}",
+                "Received 8bit backward frame from channel {{ ch + 1 }}, left aligned": "Получен 8-битный backward фрейм от канала {{ ch + 1 }}, выровнен по левому краю",
+                "Received 24bit forward frame from channel {{ ch + 1 }}, left aligned": "Получен 24-битный forward фрейм от канала {{ ch + 1 }}, выровнен по левому краю",
+                "24bit forward frame is received from channel {{ ch + 1 }}": "24-битный фрейм получен от канала {{ ch + 1 }}",
+                "Channel {{ ch + 1 }} bus is powered": "Шина канала {{ ch + 1 }} запитана",
+                "Channel {{ ch + 1 }} bus state changed after request": "Состояние шины канала {{ ch + 1 }} изменилось после запроса",
+
+                "Channel {{ ch + 1 }} start bit not received error counter": "Счетчик ошибок остуствия стартового бита канала {{ ch + 1 }}",
+                "Channel {{ ch + 1 }} bit time error counter": "Счетчик ошибок времени бита канала {{ ch + 1 }}",
+                "Channel {{ ch + 1 }} frame length error counter": "Счетчик ошибок длины фрейма канала {{ ch + 1 }}",
+                "Channel {{ ch + 1 }} stop bits not received error counter": "Счетчик ошибок отсутствия стоп-битов канала {{ ch + 1 }}",
+                "Channel {{ ch + 1 }} frame receive timeout error counter": "Счетчик ошибок таймаута приема фрейма канала {{ ch + 1 }}",
+                "Channel {{ ch + 1 }} bus is not powered error counter": "Счетчик ошибок незапитанности шины канала {{ ch + 1 }}",
+                "Channel {{ ch + 1 }} previous packet isn't sent error counter": "Счетчик ошибок неотправленности прерыдудщего фрейма канала {{ ch + 1 }}",
+                {% endfor -%}
+                
+                "Serial": "Серийный номер",
+                "FW Version": "Версия прошивки",
+                "Supply Voltage": "Напряжение питания",
+                "Uptime": "Время работы с момента включения",
+                "Minimum Voltage Since Startup": "Минимальное напряжение с момента включения",
+                "MCU Temperature": "Температура МК",
+                "MCU Voltage": "Напряжение питания МК",
+                "Minimum MCU Voltage Since Startup": "Минимальное напряжение питания МК с момента включения",
+                
+                "Baud rate": "Скорость обмена",
+                "baud_rate_description": "Перед изменением параметра убедитесь, что связь с устройством установлена. Выберите нужную скорость обмена, сохраните конфигурацию, а затем укажите в настройках порта эту же скорость. Значение по умолчанию - 9600"
+            }
+        }
+    }
+}
