@@ -1,3 +1,9 @@
+wb-mqtt-serial (2.141.0) stable; urgency=medium
+
+  * Add Modbus protocol support to port/Load RPC
+
+ -- Petr Krasnoshchekov <petr.krasnoshchekov@wirenboard.com>  Wed, 11 Sep 2024 12:38:24 +0500
+
 wb-mqtt-serial (2.140.0) stable; urgency=medium
 
   * Add WB-MAO4-20mA support

@@ -99,24 +99,25 @@ void RPCPortSetupHandler(PRPCPortSetupRequest rpcRequest,
 }
 
 void RPCPortSetupHandler(PRPCPortSetupRequest rpcRequest,
-                         PPort port,
+                         TPort& port,
                          WBMQTT::TMqttRpcServer::TResultCallback onResult,
                          WBMQTT::TMqttRpcServer::TErrorCallback onError)
 {
-    Modbus::TModbusRTUTraitsFactory traitsFactory;
-    auto rtuTraits = traitsFactory.GetModbusTraits(port, false);
     ModbusExt::TModbusTraits fastModbusTraits;
-    Modbus::TRegisterCache cache;
+    Modbus::TModbusRTUTraits rtuTraits(false);
     auto frameTimeout =
-        std::chrono::ceil<std::chrono::milliseconds>(port->GetSendTimeBytes(Modbus::STANDARD_FRAME_TIMEOUT_BYTES));
-    port->Open();
+        std::chrono::ceil<std::chrono::milliseconds>(port.GetSendTimeBytes(Modbus::STANDARD_FRAME_TIMEOUT_BYTES));
     for (auto item: rpcRequest->Items) {
-        TSerialPortSettingsGuard settingsGuard(port, item.SerialPortSettings);
-        port->SleepSinceLastInteraction(frameTimeout);
-        Modbus::WriteSetupRegisters(item.Sn ? fastModbusTraits : *rtuTraits,
-                                    *port,
+        port.ApplySerialPortSettings(item.SerialPortSettings);
+        port.SleepSinceLastInteraction(frameTimeout);
+        if (item.Sn) {
+            fastModbusTraits.SetSn(item.Sn.value());
+        }
+        Modbus::TRegisterCache cache;
+        Modbus::WriteSetupRegisters(item.Sn ? static_cast<Modbus::IModbusTraits&>(fastModbusTraits)
+                                            : static_cast<Modbus::IModbusTraits&>(rtuTraits),
+                                    port,
                                     item.SlaveId,
-                                    item.Sn.value_or(0),
                                     item.Regs,
                                     cache,
                                     std::chrono::microseconds(0),

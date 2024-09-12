@@ -11,6 +11,6 @@ void RPCPortSetupHandler(PRPCPortSetupRequest rpcRequest,
                          WBMQTT::TMqttRpcServer::TErrorCallback onError);
 
 void RPCPortSetupHandler(PRPCPortSetupRequest rpcRequest,
-                         PPort port,
+                         TPort& port,
                          WBMQTT::TMqttRpcServer::TResultCallback onResult,
                          WBMQTT::TMqttRpcServer::TErrorCallback onError);
