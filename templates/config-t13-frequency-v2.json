@@ -1,0 +1,146 @@
+{
+    "title": "t13_frequency_title",
+    "device_type": "t13_VFD_v2",
+    "group": "g-motor-control",
+    "device": {
+        "name": "t13-VFD-v2",
+        "id": "t13_frequency_converter_v2",
+        "min_read_registers": 2,
+        "max_read_registers": 10,
+        "response_timeout_ms": 30,
+        "frame_timeout_ms": 40,
+        "device_max_fail_cycles": 8,
+        "guard_interval_us": 5000,
+        "groups": [
+            {
+                "title": "General",
+                "id": "general"
+            },
+            {
+                "title": "HW Info",
+                "id": "hw_info"
+            },
+            {
+                "title": "Debug",
+                "id": "debug"
+            }
+        ],
+
+        "parameters": {
+        },
+
+        "channels": [
+            {
+                "name": "Frequency",
+                "id": "frequency",
+                "reg_type": "holding",
+                "address": 2,
+                "scale": 0.1,
+                "max": 990,
+                "type": "value",
+                "format": "u16",
+                "group": "general"
+            },
+            {
+                "name": "Start-Stop-Reverse",
+                "id": "start_stop_reverse",
+                "reg_type": "holding",
+                "address": 3,
+                "default": 2,
+                "format": "u16",
+                "enum": [
+                    1,
+                    2,
+                    5
+                ],
+                "enum_titles": [
+                    "Start",
+                    "Stop",
+                    "Reverse"
+                ],
+                "group": "general"
+            },
+            {
+                "name": "Panel FW version",
+                "id": "panel_fw_version",
+                "reg_type": "holding",
+                "address": 0,
+                "type": "text",
+                "readonly": true,
+                "format": "u16",
+                "enabled": false,
+                "group": "hw_info"
+            },
+            {
+                "name": "Driver FW version",
+                "id": "driver_fw_version",
+                "reg_type": "holding",
+                "address": 1,
+                "type": "text",
+                "readonly": true,
+                "format": "u16",
+                "enabled": false,
+                "group": "hw_info"
+            },
+            {
+                "name": "Voltage bus",
+                "id": "voltage_bus",
+                "reg_type": "holding",
+                "address": 8,
+                "scale": 0.1,
+                "type": "voltage",
+                "readonly": true,
+                "enabled": false,
+                "group": "debug"
+            },
+            {
+                "name": "Current",
+                "id": "current",
+                "reg_type": "holding",
+                "address": 9,
+                "scale": 0.01,
+                "type": "current",
+                "readonly": true,
+                "enabled": false,
+                "group": "debug"
+            },
+            {
+                "name": "Radiator temperature",
+                "id": "radiator_temperature",
+                "reg_type": "holding",
+                "address": 10,
+                "type": "temperature",
+                "readonly": true,
+                "format": "s16",
+                "scale": 1,
+                "enabled": false,
+                "group": "debug"
+            }
+        ],
+        "translations": {
+            "en": {
+                "t13_frequency_title": "T13-400W-12-H, T13-750W-12-H v2",
+                "Current": "Load current"
+        },
+            "ru": {
+                "t13_frequency_title": "T13-400W-12-H, T13-750W-12-H вер.2",
+                "General": "Общее",
+                "HW Info": "Данные модуля",
+                "Debug": "Диагностика",
+                "no": "нет",
+                "yes": "да",
+                "Disabled": "Отключен",
+                "Frequency": "Частота",
+                "Start-Stop-Reverse": "Старт-Стоп-Реверс",
+                "Start": "Старт",
+                "Stop": "Стоп",
+                "Reverse": "Реверс",
+                "Panel FW version": "Версия прошивки панели",
+                "Driver FW version": "Версия прошивки драйвера",
+                "Voltage bus": "Шина питания, напряжение",
+                "Current": "Ток нагрузки",
+                "Radiator temperature": "Температура радиатора"
+            }
+        }
+    }
+}
