@@ -86,7 +86,7 @@
                 "id": "channel{{ ch + 1 }}_reply_timeout",
                 "reg_type": "input",
                 "address": {{ 1815 + ch }},
-                "type": "value",
+                "type": "switch",
                 "format": "u16",
                 "enabled": false,
                 "group": "g_transparent_mode"
@@ -118,7 +118,7 @@
                 "id": "channel{{ ch + 1 }}_received_24bit_flag",
                 "reg_type": "input",
                 "address": {{ 1835 + ch }},
-                "type": "value",
+                "type": "switch",
                 "format": "u16",
                 "enabled": false,
                 "group": "g_transparent_mode"
@@ -128,7 +128,7 @@
                 "id": "channel{{ ch + 1 }}_bus_is_powered",
                 "reg_type": "input",
                 "address": {{ 1850 + ch }},
-                "type": "value",
+                "type": "switch",
                 "format": "u16",
                 "group": "g_bus_states"
             },
@@ -137,7 +137,7 @@
                 "id": "channel{{ ch + 1 }}_bus_state_changed",
                 "reg_type": "input",
                 "address": {{ 1880 + ch }},
-                "type": "value",
+                "type": "switch",
                 "format": "u16",
                 "enabled": false,
                 "group": "g_transparent_mode"
