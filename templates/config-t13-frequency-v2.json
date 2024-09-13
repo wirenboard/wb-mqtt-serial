@@ -59,7 +59,7 @@
                 "group": "general"
             },
             {
-                "name": "Panel FW version",
+                "name": "Panel FW Version",
                 "id": "panel_fw_version",
                 "reg_type": "holding",
                 "address": 0,
@@ -70,7 +70,7 @@
                 "group": "hw_info"
             },
             {
-                "name": "Driver FW version",
+                "name": "Driver FW Version",
                 "id": "driver_fw_version",
                 "reg_type": "holding",
                 "address": 1,
@@ -81,7 +81,7 @@
                 "group": "hw_info"
             },
             {
-                "name": "Voltage bus",
+                "name": "Voltage Bus",
                 "id": "voltage_bus",
                 "reg_type": "holding",
                 "address": 8,
@@ -105,7 +105,7 @@
                 "group": "debug"
             },
             {
-                "name": "Radiator temperature",
+                "name": "Radiator Temperature",
                 "id": "radiator_temperature",
                 "reg_type": "holding",
                 "address": 10,
@@ -128,19 +128,19 @@
                 "General": "Общее",
                 "HW Info": "Данные модуля",
                 "Debug": "Диагностика",
-                "no": "нет",
-                "yes": "да",
+                "No": "Нет",
+                "Yes": "Да",
                 "Disabled": "Отключен",
                 "Frequency": "Частота",
                 "Start-Stop-Reverse": "Старт-Стоп-Реверс",
                 "Start": "Старт",
                 "Stop": "Стоп",
                 "Reverse": "Реверс",
-                "Panel FW version": "Версия прошивки панели",
-                "Driver FW version": "Версия прошивки драйвера",
-                "Voltage bus": "Шина питания, напряжение",
+                "Panel FW Version": "Версия прошивки панели",
+                "Driver FW Version": "Версия прошивки драйвера",
+                "Voltage Bus": "Напряжение",
                 "Current": "Ток нагрузки",
-                "Radiator temperature": "Температура радиатора"
+                "Radiator Temperature": "Температура радиатора"
             }
         }
     }
