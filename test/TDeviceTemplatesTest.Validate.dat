@@ -22847,12 +22847,12 @@ t13_VFD
 	Voltage bus  =>  Voltage bus
 t13_VFD_v2
 	Current  =>  current
-	Driver FW version  =>  driver_fw_version
+	Driver FW Version  =>  driver_fw_version
 	Frequency  =>  frequency
-	Panel FW version  =>  panel_fw_version
-	Radiator temperature  =>  radiator_temperature
+	Panel FW Version  =>  panel_fw_version
+	Radiator Temperature  =>  radiator_temperature
 	Start-Stop-Reverse  =>  start_stop_reverse
-	Voltage bus  =>  voltage_bus
+	Voltage Bus  =>  voltage_bus
 teplomash_kev-blok-mk
 	Air Heater Status  =>  Air Heater Status
 	Connection Lost  =>  Connection Lost
