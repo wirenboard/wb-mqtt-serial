@@ -120,11 +120,11 @@
         ],
         "translations": {
             "en": {
-                "t13_frequency_title": "T13-400W-12-H, T13-750W-12-H v2",
+                "t13_frequency_title": "T13-400W-12-H, T13-750W-12-H v.2",
                 "Current": "Load current"
         },
             "ru": {
-                "t13_frequency_title": "T13-400W-12-H, T13-750W-12-H вер.2",
+                "t13_frequency_title": "T13-400W-12-H, T13-750W-12-H v.2",
                 "General": "Общее",
                 "HW Info": "Данные модуля",
                 "Debug": "Диагностика",
