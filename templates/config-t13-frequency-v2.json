@@ -35,6 +35,7 @@
                 "scale": 0.1,
                 "max": 990,
                 "type": "value",
+                "units": "Hz",
                 "format": "u16",
                 "group": "general"
             },
