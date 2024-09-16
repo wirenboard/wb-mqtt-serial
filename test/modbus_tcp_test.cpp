@@ -74,52 +74,17 @@ public:
     }
 };
 
-TEST_F(TModbusTCPTraitsTest, PacketSize)
-{
-    Modbus::TModbusTCPTraits traits(std::make_shared<uint16_t>(10));
-    ASSERT_EQ(traits.GetPacketSize(10), 17); // Packet size == PDU size + MBAP size (7 bytes)
-}
-
-TEST_F(TModbusTCPTraitsTest, GetPDU)
-{
-    Modbus::TModbusTCPTraits traits(std::make_shared<uint16_t>(10));
-
-    Modbus::TRequest r = {0, 1, 2, 3, 4, 5, 6, 7, 8, 9};
-    const Modbus::TRequest r2 = {10, 11, 12, 13, 14, 15, 16, 17, 18, 19};
-
-    ASSERT_EQ(*traits.GetPDU(r), 7);
-    ASSERT_EQ(*traits.GetPDU(r2), 17);
-}
-
-TEST_F(TModbusTCPTraitsTest, FinalizeRequest)
-{
-    Modbus::TModbusTCPTraits traits(std::make_shared<uint16_t>(10));
-
-    Modbus::TRequest r = {0, 1, 2, 3, 4, 5, 6, 7, 8, 9};
-    Modbus::TRequest p = {0, 11, 0, 0, 0, 4, 100, 7, 8, 9};
-    traits.FinalizeRequest(r, 100, 0);
-
-    Modbus::TRequest r2 = {10, 11, 12, 13, 14, 15, 16, 17, 18, 19, 20};
-    Modbus::TRequest p2 = {0, 12, 0, 0, 0, 5, 200, 17, 18, 19, 20};
-    traits.FinalizeRequest(r2, 200, 0);
-
-    TestEqual(r, p);
-    TestEqual(r2, p2);
-}
-
 TEST_F(TModbusTCPTraitsTest, ReadFrameGood)
 {
-    std::vector<uint8_t> r = {0, 1, 0, 0, 0, 2, 100, 17};
+    std::vector<uint8_t> r = {0, 1, 0, 0, 0, 3, 100, 17, 18};
     TPortMock port(r);
-    Modbus::TModbusTCPTraits traits(std::make_shared<uint16_t>(10));
+    Modbus::TModbusTCPTraits traits(std::make_shared<uint16_t>(0));
     std::chrono::milliseconds t(10);
 
-    Modbus::TRequest req = {0, 1, 0, 0, 0, 4, 100, 7, 8, 9};
-    Modbus::TRequest resp;
-
-    ASSERT_EQ(traits.ReadFrame(port, t, t, req, resp).Count, 1);
-
-    TestEqual(resp, r);
+    std::vector<uint8_t> req = {7, 8, 9};
+    auto resp = traits.Transaction(port, 100, req, 2, t, t).Pdu;
+    ASSERT_EQ(resp.size(), 2);
+    TestEqual(resp, {17, 18});
 }
 
 TEST_F(TModbusTCPTraitsTest, ReadFrameSmallMBAP)
@@ -128,10 +93,8 @@ TEST_F(TModbusTCPTraitsTest, ReadFrameSmallMBAP)
     Modbus::TModbusTCPTraits traits(std::make_shared<uint16_t>(10));
     std::chrono::milliseconds t(10);
 
-    Modbus::TRequest req = {0, 1, 0, 0, 0, 4, 100, 7, 8, 9};
-    Modbus::TRequest resp;
-
-    ASSERT_THROW(traits.ReadFrame(port, t, t, req, resp), Modbus::TMalformedResponseError);
+    std::vector<uint8_t> req = {7, 8, 9};
+    ASSERT_THROW(traits.Transaction(port, 100, req, 2, t, t), Modbus::TMalformedResponseError);
 }
 
 TEST_F(TModbusTCPTraitsTest, ReadFrameSmallMBAPLength)
@@ -140,10 +103,8 @@ TEST_F(TModbusTCPTraitsTest, ReadFrameSmallMBAPLength)
     Modbus::TModbusTCPTraits traits(std::make_shared<uint16_t>(10));
     std::chrono::milliseconds t(10);
 
-    Modbus::TRequest req = {0, 1, 0, 0, 0, 4, 100, 7, 8, 9};
-    Modbus::TRequest resp;
-
-    ASSERT_THROW(traits.ReadFrame(port, t, t, req, resp), Modbus::TMalformedResponseError);
+    std::vector<uint8_t> req = {7, 8, 9};
+    ASSERT_THROW(traits.Transaction(port, 100, req, 2, t, t), Modbus::TMalformedResponseError);
 }
 
 TEST_F(TModbusTCPTraitsTest, ReadFrameSmallPDU)
@@ -152,40 +113,32 @@ TEST_F(TModbusTCPTraitsTest, ReadFrameSmallPDU)
     Modbus::TModbusTCPTraits traits(std::make_shared<uint16_t>(10));
     std::chrono::milliseconds t(10);
 
-    Modbus::TRequest req = {0, 1, 0, 0, 0, 4, 100, 7, 8, 9};
-    Modbus::TRequest resp;
-
-    ASSERT_THROW(traits.ReadFrame(port, t, t, req, resp), Modbus::TMalformedResponseError);
+    std::vector<uint8_t> req = {7, 8, 9};
+    ASSERT_THROW(traits.Transaction(port, 100, req, 2, t, t), Modbus::TMalformedResponseError);
 }
 
 TEST_F(TModbusTCPTraitsTest, ReadFrameWrongUnitId)
 {
     TPortMock port({0, 1, 0, 0, 0, 4, 101, 7, 8, 9});
-    Modbus::TModbusTCPTraits traits(std::make_shared<uint16_t>(10));
+    Modbus::TModbusTCPTraits traits(std::make_shared<uint16_t>(0));
     std::chrono::milliseconds t(10);
 
-    Modbus::TRequest req = {0, 1, 0, 0, 0, 4, 100, 7, 8, 9};
-    Modbus::TRequest resp;
-
-    ASSERT_THROW(traits.ReadFrame(port, t, t, req, resp), TSerialDeviceTransientErrorException);
+    std::vector<uint8_t> req = {7, 8, 9};
+    ASSERT_THROW(traits.Transaction(port, 100, req, 2, t, t), Modbus::TUnexpectedResponseError);
 }
 
 TEST_F(TModbusTCPTraitsTest, ReadFramePassWrongTransactionId)
 {
-    Modbus::TResponse goodResp = {0, 1, 0, 0, 0, 4, 100, 17, 18, 19};
+    std::vector<uint8_t> goodResp = {0, 1, 0, 0, 0, 4, 100, 17, 18, 19};
     std::vector<uint8_t> r = {0, 2, 0, 0, 0, 8, 101, 7, 8, 9, 10, 11, 12, 13};
     r.insert(r.end(), goodResp.begin(), goodResp.end());
     TPortMock port(r);
 
-    Modbus::TModbusTCPTraits traits(std::make_shared<uint16_t>(10));
+    Modbus::TModbusTCPTraits traits(std::make_shared<uint16_t>(0));
     std::chrono::milliseconds t(10);
 
-    Modbus::TRequest req = {0, 1, 0, 0, 0, 4, 100, 7, 8, 9};
-    Modbus::TRequest resp;
-
-    auto pduSize = traits.ReadFrame(port, t, t, req, resp).Count;
-    resp.resize(traits.GetPacketSize(pduSize));
-    TestEqual(resp, goodResp);
+    std::vector<uint8_t> req = {7, 8, 9};
+    TestEqual(traits.Transaction(port, 100, req, 2, t, t).Pdu, {17, 18, 19});
 }
 
 TEST_F(TModbusTCPTraitsTest, ReadFrameTimeout)
@@ -194,8 +147,6 @@ TEST_F(TModbusTCPTraitsTest, ReadFrameTimeout)
     Modbus::TModbusTCPTraits traits(std::make_shared<uint16_t>(10));
     std::chrono::milliseconds t(10);
 
-    Modbus::TRequest req = {0, 1, 0, 0, 0, 4, 100, 7, 8, 9};
-    Modbus::TRequest resp;
-
-    ASSERT_THROW(traits.ReadFrame(port, t, t, req, resp), TSerialDeviceTransientErrorException);
+    std::vector<uint8_t> req = {7, 8, 9};
+    ASSERT_THROW(traits.Transaction(port, 100, req, 2, t, t), TResponseTimeoutException);
 }

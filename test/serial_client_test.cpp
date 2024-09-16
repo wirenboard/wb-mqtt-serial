@@ -2,7 +2,7 @@
 #include "fake_serial_port.h"
 #include "log.h"
 #include "rpc/rpc_port_handler.h"
-#include "rpc/rpc_port_load_serial_client_task.h"
+#include "rpc/rpc_port_load_raw_serial_client_task.h"
 #include "serial_driver.h"
 
 #include <wblib/driver_args.h>
@@ -1493,14 +1493,15 @@ TRPCResultCode TSerialClientIntegrationTest::SendRPCRequest(PMQTTSerialDriver se
 
     TRPCResultCode resultCode = TRPCResultCode::RPC_OK;
     std::vector<int> responseInt;
-    PRPCPortLoadRequest request = std::make_shared<TRPCPortLoadRequest>();
+    PRPCPortLoadRawRequest request = std::make_shared<TRPCPortLoadRawRequest>();
     request->ResponseTimeout = std::chrono::milliseconds(500);
     request->FrameTimeout = std::chrono::milliseconds(20);
     request->TotalTimeout = totalTimeout;
     std::copy(expectedRequest.begin(), expectedRequest.end(), back_inserter(request->Message));
     request->ResponseSize = expectedResponseLength;
-    request->OnResult = [&responseInt](const std::vector<uint8_t>& response) {
-        std::copy(response.begin(), response.end(), back_inserter(responseInt));
+    request->OnResult = [&responseInt](const Json::Value& response) {
+        auto str = HexStringToByteVector(response["response"].asString());
+        std::copy(str.begin(), str.end(), back_inserter(responseInt));
     };
     request->OnError = [&resultCode](const TMqttRpcErrorCode code, const std::string&) {
         resultCode =
@@ -1509,7 +1510,7 @@ TRPCResultCode TSerialClientIntegrationTest::SendRPCRequest(PMQTTSerialDriver se
 
     try {
         Note() << "Send RPC request";
-        PRPCPortLoadSerialClientTask task(std::make_shared<TRPCPortLoadSerialClientTask>(request));
+        PRPCPortLoadRawSerialClientTask task(std::make_shared<TRPCPortLoadRawSerialClientTask>(request));
         serialClient->AddTask(task);
         SerialDriver->LoopOnce();
         EXPECT_EQ(responseInt == expectedResponse, true);

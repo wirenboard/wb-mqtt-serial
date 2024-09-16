@@ -1,18 +1,15 @@
 #pragma once
 
-#include "rpc_port_load_request.h"
+#include <wblib/rpc.h>
+
 #include "serial_client.h"
 
-TSerialPortConnectionSettings ParseRPCSerialPortSettings(const Json::Value& request);
-
-PRPCPortLoadRequest ParseRPCPortLoadRequest(const Json::Value& request, const Json::Value& requestSchema);
-
-void RPCPortLoadHandler(PRPCPortLoadRequest rpcRequest,
+void RPCPortLoadHandler(const Json::Value& request,
                         PSerialClient serialClient,
                         WBMQTT::TMqttRpcServer::TResultCallback onResult,
                         WBMQTT::TMqttRpcServer::TErrorCallback onError);
 
-void RPCPortLoadHandler(PRPCPortLoadRequest rpcRequest,
-                        PPort port,
+void RPCPortLoadHandler(const Json::Value& request,
+                        TPort& port,
                         WBMQTT::TMqttRpcServer::TResultCallback onResult,
                         WBMQTT::TMqttRpcServer::TErrorCallback onError);

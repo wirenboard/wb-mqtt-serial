@@ -1,0 +1,815 @@
+{% set title_en = title_en | default("WB-MAO4-20mA (4-channel 0-20 mA output module)") -%}
+{% set title_ru = title_ru | default("WB-MAO4-20mA (4-канальный модуль токовых выходов 0-20 мА)") -%}
+{% set device_type = device_type | default("wb_mao4_20ma") -%}
+{% set group = group | default("g-wb") -%}
+{% set device_name = device_name | default("WB-MAO4-20mA") -%}
+{% set device_id = device_id | default("wb_mao4_20ma") -%}
+{% set has_signature = has_signature | default(true) -%}
+
+{% set INPUTS_NUMBER = 4 -%}
+{% set OUTPUTS_NUMBER = 4 -%}
+{% set PRESS_TYPES = ["single", "long", "double", "shortlong"] %}
+
+{
+    "title": "template_title",
+    "device_type": "{{ device_type }}",
+    "group": "{{ group }}",
+{% if has_signature -%}
+    "hw": [
+        {
+            "signature": "WB-MAO4-20mA"
+        }
+    ],
+{% endif -%}
+    "device": {
+        "name": "{{ device_name }}",
+        "id": "{{ device_id }}",
+        "max_read_registers": 0,
+        "response_timeout_ms": 1,
+        "frame_timeout_ms": 8,
+        "enable_wb_continuous_read": true,
+
+        "groups": [
+            {% for ch_number in range(1, INPUTS_NUMBER + 1) -%}
+            {
+                "title": "Input {{ ch_number }}",
+                "id": "input_{{ ch_number }}"
+            },
+            {% for press_type in PRESS_TYPES -%}
+            {
+                "title": "{{ press_type | title }} Press Action",
+                "id": "input_{{ ch_number }}_{{ press_type | replace(' ', '_') }}_press_action",
+                "group": "input_{{ ch_number }}"
+            },
+            {% endfor -%}
+            {
+                "title": "Action when Switch is On",
+                "id": "input_{{ ch_number }}_switch_on_action",
+                "group": "input_{{ ch_number }}"
+            },
+            {
+                "title": "Action when Switch is Off",
+                "id": "input_{{ ch_number }}_switch_off_action",
+                "group": "input_{{ ch_number }}"
+            },
+            {
+                "title": "Input Parameters",
+                "id": "input_{{ ch_number }}_parameters",
+                "group": "input_{{ch_number }}",
+                "ui_options": {
+                    "wb": {
+                        "disable_title": true
+                    }
+                }
+            },
+            {
+                "title": "Input Counters",
+                "id": "input_{{ ch_number }}_counters",
+                "group": "input_{{ ch_number }}",
+                "ui_options": {
+                    "wb": {
+                        "disable_title": true
+                    }
+                }
+            },
+            {% endfor -%}
+            {% for ch_number in range(1, OUTPUTS_NUMBER + 1) -%}
+            {
+                "title": "Output {{ ch_number }}",
+                "description": "output_description",
+                "id": "g_output_{{ ch_number }}"
+            },
+            {
+                "title": "Custom Working Range",
+                "id": "gg_output_{{ ch_number }}_limits",
+                "group": "g_output_{{ ch_number }}"
+            },
+            {
+                "title": "Level Rates",
+                "id": "gg_output_{{ ch_number }}_rates",
+                "group": "g_output_{{ ch_number }}"
+            },
+            {
+                "title": "Output Channels",
+                "id": "gg_output_{{ ch_number }}_channels",
+                "group": "g_output_{{ ch_number }}",
+                "ui_options": {
+                    "wb": {
+                        "disable_title": true
+                    }
+                }
+            },
+            {% endfor -%}
+            {
+                "title": "Safety Mode",
+                "id": "g_safety",
+                "description": "g_safety_description"
+            },
+            {
+                "title": "Power Up Behaviour",
+                "id": "g_power_up_behaviour",
+                "description": "g_power_up_behaviour_description"
+            },
+            {
+                "title": "Safety Behaviour",
+                "id": "gg_safety_behaviour",
+                "group": "g_safety"
+            },
+            {% for ch_number in range(1, OUTPUTS_NUMBER + 1) -%}
+            {
+                "title": "Channel {{ ch_number }}",
+                "id": "gg_safety_mode_ch_{{ ch_number }}",
+                "group": "gg_safety_behaviour"
+            },
+            {
+                "title": "Channel {{ ch_number }}",
+                "id": "gg_power_up_behaviour_ch_{{ ch_number }}",
+                "group": "g_power_up_behaviour"
+            },
+            {% endfor -%}
+            {
+                "title": "Inputs Control In Safety Mode",
+                "id": "gg_safety_input_control",
+                "description": "inputs_control_in_safety_mode_description",
+                "group": "g_safety"
+            },
+            {
+                "title": "General",
+                "id": "general"
+            },
+            {
+                "title": "HW Info",
+                "id": "hw_info"
+            },
+            {
+                "title": "Debug",
+                "id": "debug"
+            }
+        ],
+        "parameters": [
+            {% for ch_number in range(0, INPUTS_NUMBER) -%}
+            {
+                "id": "input_{{ch_number + 1}}_mode",
+                "title": "Input Mode",
+                "address": {{416 + ch_number}},
+                "reg_type": "holding",
+                "required": true,
+                "enum": [0, 1],
+                "enum_titles": [
+                    "Button",
+                    "Switch"
+                ],
+                "default": 0,
+                "group": "input_{{ch_number + 1}}"
+            },
+            {
+                "id": "input_{{ch_number + 1}}_hold_time",
+                "title": "Long Press Time (ms)",
+                "description": "input_hold_time_description",
+                "address": {{1100 + ch_number}},
+                "reg_type": "holding",
+                "default": 1000,
+                "min": 500,
+                "max": 5000,
+                "group": "input_{{ch_number + 1}}_parameters",
+                "condition": "input_{{ch_number + 1}}_mode==0",
+                "order": 1
+            },
+            {
+                "id": "input_{{ch_number + 1}}_double_time",
+                "title": "Second Press Waiting Time (ms)",
+                "description": "input_double_time_description",
+                "address": {{1140 + ch_number}},
+                "reg_type": "holding",
+                "default": 300,
+                "min": 0,
+                "max": 2000,
+                "group": "input_{{ch_number + 1}}_parameters",
+                "condition": "input_{{ch_number + 1}}_mode==0",
+                "order": 2
+            },
+            {
+                "id": "input_{{ch_number + 1}}_debounce_time",
+                "title": "Debounce Time (ms)",
+                "description": "input_debounce_time_description",
+                "address": {{1160 + ch_number}},
+                "reg_type": "holding",
+                "default": 50,
+                "min": 5,
+                "max": 200,
+                "group": "input_{{ch_number + 1}}_parameters",
+                "order": 3
+            },
+            {% for press_type in PRESS_TYPES -%}
+            {% set action_bind = ("input {} {} press output".format(ch_number + 1, press_type))|replace(' ', '_')  %}
+            {
+                "id": "{{action_bind}}_number",
+                "title": "Output Number",
+                "address": {{768 + (loop.index0 * 16) + ch_number}},
+                "reg_type": "holding",
+                "enum": [0, 1, 2, 3, 4, 100],
+                "enum_titles": [
+                    "No Action",
+                    "Output 1",
+                    "Output 2",
+                    "Output 3",
+                    "Output 4",
+                    "All Outputs"
+                ],
+                "default": 0,
+                "group": "input_{{ch_number + 1}}_{{press_type | replace(' ', '_')}}_press_action",
+                "condition": "input_{{ch_number + 1}}_mode==0",
+                "order": 1
+            },
+            {
+                "id": "{{action_bind}}_action_single",
+                "title": "Action",
+                "address": {{832 + (loop.index0 * 16) + ch_number}},
+                "reg_type": "holding",
+                {% if press_type in ["long", "shortlong"] %}"enum": [0, 1, 2, 3, 4, 5],{% else %}"enum": [0, 1, 2, 3, 4],{% endif %}
+                "enum_titles": [
+                    "Turn Off",
+                    "Turn On",
+                    "Toggle",
+                    "Decrease Level",
+                    "Increase Level"{% if press_type in ["long", "shortlong"] %},
+                    "Increase/Decrease Level"{% endif %}
+                ],
+                "default": 0,
+                "group": "input_{{ch_number + 1}}_{{press_type | replace(' ', '_')}}_press_action",
+                "order": 2,
+                "condition": "({{action_bind}}_number>=1)&&({{action_bind}}_number<=4)"
+            },
+            {
+                "id": "{{action_bind}}_action_all",
+                "title": "Action",
+                "address": {{832 + (loop.index0 * 16) + ch_number}},
+                "reg_type": "holding",
+                "enum": [0, 1, 3, 4],
+                "enum_titles": [
+                    "Turn Off",
+                    "Turn On",
+                    "Increase Level",
+                    "Decrease Level"
+                ],
+                "default": 0,
+                "group": "input_{{ch_number + 1}}_{{press_type | replace(' ', '_') }}_press_action",
+                "order": 2,
+                "condition": "{{ action_bind }}_number==100"
+            },
+            {% endfor -%}
+            {% for sw_act in ["off", "on"] -%}
+            {
+                "id": "input_{{ch_number + 1}}_switch_{{sw_act}}_channel",
+                "title": "Output Number",
+                "address": {{704 + (loop.index0 * 16) + ch_number}},
+                "reg_type": "holding",
+                "enum": [0, 1, 2, 3, 4, 100],
+                "enum_titles": [
+                    "No Action",
+                    "Output 1",
+                    "Output 2",
+                    "Output 3",
+                    "Output 4",
+                    "All Outputs"
+                ],
+                "default": 0,
+                "group": "input_{{ ch_number + 1}}_switch_{{sw_act}}_action",
+                "condition": "input_{{ch_number + 1}}_mode==1",
+                "order": 1
+            },
+            {
+                "id": "input_{{ch_number + 1}}_switch_{{sw_act}}_action_single",
+                "title": "Action",
+                "address": {{736 + (loop.index0 * 16) + ch_number}},
+                "reg_type": "holding",
+                "enum": [0, 1, 2],
+                "enum_titles": [
+                    "Turn Off",
+                    "Turn On",
+                    "Toggle"
+                ],
+                "default": {{ 0 if sw_act == "off" else 1}},
+                "group": "input_{{ ch_number + 1}}_switch_{{sw_act}}_action",
+                "condition": "input_{{ch_number + 1}}_switch_{{sw_act}}_channel>=1&&input_{{ch_number + 1}}_switch_{{sw_act}}_channel<=4",
+                "order": 2
+            },
+            {
+                "id": "input_{{ch_number + 1}}_switch_{{sw_act}}_action_all",
+                "title": "Action",
+                "address": {{736 + (loop.index0 * 16) + ch_number}},
+                "reg_type": "holding",
+                "enum": [0, 1],
+                "enum_titles": [
+                    "Turn Off",
+                    "Turn On"
+                ],
+                "default": {{ 0 if sw_act == "off" else 1}},
+                "group": "input_{{ ch_number + 1}}_switch_{{sw_act}}_action",
+                "condition": "input_{{ch_number + 1}}_switch_{{sw_act}}_channel==100",
+                "order": 2
+            },
+            {% endfor -%}
+            {% endfor -%}
+
+            {% for ch_number in range(1, OUTPUTS_NUMBER + 1) -%}
+            {
+                "id": "output_{{ch_number}}_mode",
+                "title": "Working Range",
+                "address": {{60 + ch_number - 1}},
+                "reg_type": "holding",
+                "required": true,
+                "enum": [0, 1, 100],
+                "default": 0,
+                "enum_titles": [
+                    "0..100 % ⇒ 0..20 mA",
+                    "0..100 % ⇒ 4..20 mA",
+                    "Custom Working Range"
+                ],
+                "group": "g_output_{{ch_number}}"
+            },
+            {
+                "id": "output{{ ch_number }}_min",
+                "title": "Current at 0% Level (mA)",
+                "description": "level_0_current_description",
+                "address": {{ 912 + ch_number - 1 }},
+                "reg_type": "holding",
+                "default": 0,
+                "scale": 0.001,
+                "min": 0,
+                "max": 20,
+                "group": "gg_output_{{ ch_number }}_limits",
+                "condition": "output_{{ch_number}}_mode==100"
+            },
+            {
+                "id": "output{{ ch_number }}_max",
+                "title": "Current at 100% Level (mA)",
+                "description": "level_100_current_description",
+                "address": {{928 + ch_number - 1}},
+                "reg_type": "holding",
+                "default": 20,
+                "scale": 0.001,
+                "min": 0,
+                "max": 20,
+                "group": "gg_output_{{ ch_number }}_limits",
+                "condition": "output_{{ch_number}}_mode==100"
+            },
+            {
+                "id": "output{{ ch_number }}_decrement_rate",
+                "title": "Decrement Rate (ms/%)",
+                "description": "decrement_rate_description",
+                "address": {{944 + ch_number - 1}},
+                "reg_type": "holding",
+                "default": 0,
+                "min": 0,
+                "max": 500,
+                "group": "gg_output_{{ ch_number }}_rates"
+            },
+            {
+                "id": "channel{{ ch_number }}_increment_rate",
+                "title": "Increment Rate (ms/%)",
+                "description": "increment_rate_description",
+                "address": {{960 + ch_number - 1}},
+                "reg_type": "holding",
+                "default": 0,
+                "min": 0,
+                "max": 500,
+                "group": "gg_output_{{ ch_number }}_rates"
+            },
+            {
+                "id": "action{{ch_number}}_repeat_time",
+                "title": "Changing Rate for Long Press Actions (ms/%)",
+                "description": "action_repeat_time_description",
+                "address": {{896 + ch_number - 1}},
+                "reg_type": "holding",
+                "default": 20,
+                "min": 5,
+                "max": 500,
+                "group": "gg_output_{{ ch_number }}_rates"
+            },
+            {% endfor -%}
+            {
+                "id": "safety_timer_s",
+                "title": "Safety Poll Timeout (s)",
+                "group": "g_safety",
+                "description": "poll_timeout_description",
+                "address": 8,
+                "order": 2,
+                "reg_type": "holding",
+                "min": 1,
+                "max": 65534,
+                "default": 10
+            },
+            {% for ch_number in range(1, OUTPUTS_NUMBER + 1) -%}
+            {
+                "id": "safety_mode_ch_{{ch_number}}_action",
+                "title": "Action",
+                "reg_type": "holding",
+                "address": {{648 + ch_number - 1}},
+                "type": "enum",
+                "enum": [0, 1, 2, 3],
+                "enum_titles": [
+                    "No Action",
+                    "Turn Off",
+                    "Turn On",
+                    "Turn On and Set Level"
+                ],
+                "group": "gg_safety_mode_ch_{{ ch_number }}"
+            },
+            {
+                "id": "safety_mode_ch_{{ch_number}}_level",
+                "title": "Level (%)",
+                "reg_type": "holding",
+                "address": {{656 + ch_number - 1}},
+                "min": 0.1,
+                "max": 100,
+                "scale": 0.1,
+                "default": 50,
+                "required": true,
+                "condition": "safety_mode_ch_{{ch_number}}_action==3",
+                "group": "gg_safety_mode_ch_{{ ch_number }}"
+            },
+            {
+                "id": "power_up_behaviour_ch_{{ch_number}}_action",
+                "title": "Action",
+                "reg_type": "holding",
+                "address": {{664 + ch_number - 1}},
+                "type": "enum",
+                "enum": [0, 1, 2, 3],
+                "enum_titles": [
+                    "Turn Off",
+                    "Set Previous State",
+                    "Turn On",
+                    "Turn On and Set Level"
+                ],
+                "group": "gg_power_up_behaviour_ch_{{ ch_number }}"
+            },
+            {
+                "id": "power_up_behaviour_ch_{{ch_number}}_level",
+                "title": "Level (%)",
+                "reg_type": "holding",
+                "address": {{672 + ch_number - 1}},
+                "min": 0.1,
+                "max": 100,
+                "default": 50,
+                "scale": 0.1,
+                "required": true,
+                "condition": "power_up_behaviour_ch_{{ch_number}}_action==3",
+                "group": "gg_power_up_behaviour_ch_{{ ch_number }}"
+            },
+            {% endfor -%}
+            {% for in_number in range(1, INPUTS_NUMBER + 1) -%}
+            {
+                "id": "in_{{in_number}}_safety_input_control",
+                "title": "Input {{in_number}}",
+                "group": "gg_safety_input_control",
+                "address": {{640 + in_number - 1}},
+                "reg_type": "holding",
+                "default": 0,
+                "enum": [0, 1, 2],
+                "enum_titles": [
+                    "Don't change",
+                    "Disable in safety mode",
+                    "Enable only in safety mode"
+                ]
+            },
+            {% endfor -%}
+            {
+                "id": "baud_rate",
+                "title": "Baud rate",
+                "description": "baud_rate_description",
+                "address": 110,
+                "reg_type": "holding",
+                "enum": [96, 192, 384, 576, 1152],
+                "default": 96,
+                "enum_titles": [
+                    "9600",
+                    "19200",
+                    "38400",
+                    "57600",
+                    "115200"
+                ],
+                "group": "general",
+                "order": 1
+            },
+            {
+                "id": "disable_indication",
+                "title": "Status LED",
+                "address": 130,
+                "reg_type": "holding",
+                "enum": [0, 1],
+                "enum_titles": ["Enabled", "Disabled"],
+                "default": 0,
+                "group": "general"
+            }
+        ],
+        "channels": [
+            {% for index in range(0, INPUTS_NUMBER) -%}
+            {
+                "id": "input_{{index + 1}}",
+                "name": "Input {{index + 1}}",
+                "reg_type": "discrete",
+                "address": {{index}},
+                "type": "switch",
+                "group": "input_{{index + 1}}_counters"
+            },
+            {
+                "id": "input_{{index + 1}}_counter",
+                "name": "Input {{index + 1}} Counter",
+                "reg_type": "input",
+                "address": {{32 + index}},
+                "type": "value",
+                "sporadic": true,
+                "enabled": false,
+                "group": "input_{{index + 1}}_counters"
+            },
+            {
+                "id": "input_{{index + 1}}_single_press_counter",
+                "name": "Input {{index + 1}} Single Press Counter",
+                "reg_type": "input",
+                "address": {{464 + index}},
+                "type": "value",
+                "sporadic": true,
+                "enabled": false,
+                "condition": "input_{{index + 1}}_mode==0",
+                "group": "input_{{index + 1}}_counters"
+            },
+            {
+                "id": "input_{{index + 1}}_long_press_counter",
+                "name": "Input {{index + 1}} Long Press Counter",
+                "reg_type": "input",
+                "address": {{480 + index}},
+                "type": "value",
+                "sporadic": true,
+                "enabled": false,
+                "condition": "input_{{index + 1}}_mode==0",
+                "group": "input_{{index + 1}}_counters"
+            },
+            {
+                "id": "input_{{index + 1}}_double_press_counter",
+                "name": "Input {{index + 1}} Double Press Counter",
+                "reg_type": "input",
+                "address": {{496 + index}},
+                "type": "value",
+                "sporadic": true,
+                "enabled": false,
+                "condition": "input_{{index + 1}}_mode==0",
+                "group": "input_{{index + 1}}_counters"
+            },
+            {
+                "id": "input_{{index + 1}}_shortlong_press_counter",
+                "name": "Input {{index + 1}} Shortlong Press Counter",
+                "reg_type": "input",
+                "address": {{512 + index}},
+                "type": "value",
+                "sporadic": true,
+                "enabled": false,
+                "condition": "input_{{index + 1}}_mode==0",
+                "group": "input_{{index + 1}}_counters"
+            },
+            {% endfor -%}
+            {% for index in range(0, OUTPUTS_NUMBER) -%}
+            {
+                "id": "channel_{{index + 1}}",
+                "name": "Channel {{index + 1}}",
+                "reg_type": "coil",
+                "address": {{16 + index}},
+                "type": "switch",
+                "group": "gg_output_{{index + 1}}_channels"
+            },
+            {
+                "id": "channel_{{index + 1}}_level",
+                "name": "Channel {{index + 1}} Level",
+                "reg_type": "holding",
+                "address": {{16 + index}},
+                "type": "range",
+                "units": "%",
+                "max": 100,
+                "scale": 0.1,
+                "group": "gg_output_{{index + 1}}_channels"
+            },
+            {
+                "id": "channel_{{index + 1}}_current",
+                "name": "Channel {{index + 1}} Current",
+                "reg_type": "holding",
+                "address": {{index}},
+                "type": "value",
+                "units": "mA",
+                "max": 20,
+                "scale": 0.001,
+                "enabled": false,
+                "group": "gg_output_{{index + 1}}_channels"
+            },
+            {
+                "id": "channel_{{index + 1}}_open_circuit_fail",
+                "name": "Channel {{index + 1}} Open Circuit Fail",
+                "reg_type": "discrete",
+                "address": {{16 + index}},
+                "type": "switch",
+                "sporadic": true,
+                "group": "gg_output_{{index + 1}}_channels"
+            },
+            {
+                "id": "channel_{{index + 1}}_duty_cycle_raw",
+                "name": "Channel {{index + 1}} Duty Cycle Raw",
+                "reg_type": "holding",
+                "address": {{90 + index}},
+                "type": "value",
+                "enabled": false,
+                "min": 0,
+                "max": 2400,
+                "group": "debug"
+            },
+            {% endfor -%}
+            {
+                "id": "serial",
+                "name": "Serial",
+                "type": "text",
+                "reg_type": "input",
+                "address": 270,
+                "format": "u32",
+                "group": "hw_info"
+            },
+            {
+                "id": "fw_version",
+                "name": "FW Version",
+                "reg_type": "input",
+                "address": 250,
+                "type": "text",
+                "format": "string",
+                "string_data_size": 16,
+                "enabled": false,
+                "group": "hw_info"
+            },
+            {
+                "id": "supply_voltage",
+                "name": "Supply voltage",
+                "reg_type": "input",
+                "address": 121,
+                "units": "V",
+                "scale": 0.001,
+                "enabled": false,
+                "group": "hw_info"
+            },
+            {
+                "id": "uptime",
+                "name": "Uptime",
+                "reg_type": "input",
+                "address": 104,
+                "units": "s",
+                "format": "u32",
+                "enabled": false,
+                "group": "hw_info"
+            },
+            {
+                "id": "mcu_temperature",
+                "name": "MCU Temperature",
+                "reg_type": "input",
+                "address": 124,
+                "units": "deg C",
+                "format": "s16",
+                "scale": 0.1,
+                "enabled": false,
+                "group": "hw_info"
+            },
+            {
+                "id": "mcu_voltage",
+                "name": "MCU Voltage",
+                "reg_type": "input",
+                "address": 123,
+                "scale": 0.001,
+                "units": "V",
+                "enabled": false,
+                "group": "hw_info"
+            }
+        ],
+        "translations": {
+            "en": {
+                "template_title": "{{ title_en }}",
+                "pwm_frequency_factor_description": "PWM frequency is calculated by formula: 20 kHz / Factor",
+                "baud_rate_description": "Make sure that communication with device is established before changing this parameter. Select required baud rate, save configuration and then change port baud rate to the same value.",
+                "Uptime": "Uptime (s)",
+
+                "level_0_current_description": "If channel is turned off or level is set to 0%, output current will be equal to the specified value",
+                "level_100_current_description": "If level is set to 100% and channel is turned on, output current will be equal to the specified value",
+
+                "decrement_rate_description": "When level is changed abruptly or channel is turned off, level will decrease smoothly with specified rate. If set to 0, level will decrease instantly",
+                "increment_rate_description": "When level is changed abruptly or channel is turned on, level will increase smoothly with specified rate. If set to 0, level will increase instantly",
+                "action_repeat_time_description": "When button is held for a long time, level will change with specified rate.",
+
+                "input_hold_time_description": "Presses that last longer than the specified time are counted as long presses",
+                "input_double_time_description": "If there is no second press during the specified time then press is single. 0 - disables all presses except single and long. Adds a delay to the response to a single press",
+                "input_debounce_time_description": "Must be 5-10 times less than second press waiting time. Adds a delay to the response to presses",
+
+                "output_description": "Output can be controlled by:<br>1) setting level in percentage between working range limits<br>2) setting output current in mA (level of the channel will not change)",
+                "g_safety_description": "Safety mode is activated when there is no modbus polling for the specified time. Supported since firmware version 2.5.0",
+                "poll_timeout_description": "Time in seconds without modbus polling before activation safety mode. Actions in safety mode are configured using appropriate parameters",
+                "inputs_control_in_safety_mode_description": "Sets change of control from the inputs when module switches to safety mode",
+                "g_power_up_behaviour_description": "Actions that will be performed when power is applied to the module"
+            },
+            "ru": {
+                "Enabled": "Активен",
+                "Disabled": "Отключен",
+                "template_title": "{{ title_ru }}",
+                "Outputs": "Выходы",
+                "General": "Общее",
+                "HW Info": "Данные модуля",
+                "Debug": "Диагностика",
+                "Baud rate": "Скорость обмена",
+                "baud_rate_description": "Перед изменением параметра убедитесь, что связь с устройством установлена. Выберите нужную скорость обмена, сохраните конфигурацию, а затем укажите в настройках порта эту же скорость.",
+
+                "Input Mode": "Режим работы входа",
+                "Button": "Кнопка без фиксации",
+                "Switch": "Выключатель с фиксацией",
+                "Action when Switch is On": "Действие в положении \"включено\"",
+                "Action when Switch is Off": "Действие в положении \"выключено\"",
+
+                {% for ch_number in range(1, INPUTS_NUMBER + 1) -%}
+                "Input {{ch_number}}": "Вход {{ch_number}}",
+                "Input {{ch_number}} Counter": "Счетчик {{ch_number}}",
+                "Input {{ch_number}} Single Press Counter": "Счетчик коротких нажатий входа {{ch_number}}",
+                "Input {{ch_number}} Long Press Counter": "Счетчик длинных нажатий входа {{ch_number}}",
+                "Input {{ch_number}} Double Press Counter": "Счетчик двойных нажатий входа {{ch_number}}",
+                "Input {{ch_number}} Shortlong Press Counter": "Счетчик коротких, а затем длинных нажатий входа {{ch_number}}",
+                {% endfor -%}
+
+                "Level (%)": "Уровень (%)",
+                {% for ch_number in range(1, OUTPUTS_NUMBER + 1) -%}
+                "Output {{ch_number}}": "Выход {{ch_number}}",
+                "Channel {{ch_number}}": "Канал {{ch_number}}",
+                "Channel {{ch_number}} Level": "Уровень канала {{ch_number}}",
+                "Channel {{ch_number}} Current": "Ток канала {{ch_number}}",
+                "Channel {{ch_number}} Open Circuit Fail": "Обрыв цепи канала {{ch_number}}",
+                "Channel {{ch_number}} Duty Cycle Raw": "Прямое задание скважности ШИМ на выходе {{ch_number}}",
+                {% endfor -%}
+
+                "Single Press Action": "Действие для короткого нажатия",
+                "Long Press Action": "Действие для длинного нажатия",
+                "Double Press Action": "Действие для двойного нажатия",
+                "Shortlong Press Action": "Действие для короткого, затем длинного нажатия",
+
+                "No Action": "Ничего не делать",
+                "All Outputs": "Все выходы",
+                "Turn Off": "Выключить",
+                "Turn On": "Включить",
+                "Toggle": "Переключить",
+                "Decrease Level": "Уменьшить уровень",
+                "Increase Level": "Увеличить уровень",
+                "Increase/Decrease Level": "Увеличить/уменьшить уровень",
+                "Output Number": "Номер выхода",
+                "Action": "Действие",
+                "Turn On and Set Level": "Включить и установить уровень",
+
+                "output_description": "Управлять выходом можно:<br>1) указанием уровня в процентах между границами рабочего диапазона<br>2) прямым заданием тока выхода в мА (при этом уровень канала не изменяется)",
+                "Working Range": "Рабочий диапазон",
+                "0..100 % ⇒ 0..20 mA": "0..100 % ⇒ 0..20 мА",
+                "0..100 % ⇒ 4..20 mA": "0..100 % ⇒ 4..20 мА",
+                "Custom Working Range": "Пользовательский рабочий диапазон",
+
+                "Current at 0% Level (mA)": "Значение выходного тока при 0% уровне (мА)",
+                "Current at 100% Level (mA)": "Значение выходного тока при 100% уровне (мА)",
+                "level_0_current_description": "Если канал выключен либо уровень установлен на 0%, выходной ток будет соответствовать заданному значению",
+                "level_100_current_description": "Если уровень установлен на 100% и канал включен, выходной ток будет соответствовать заданному значению",
+
+                "Level Rates": "Плавное изменение уровня",
+                "Decrement Rate (ms/%)": "Темп изменения уровня в сторону уменьшения (мс/%)",
+                "Increment Rate (ms/%)": "Темп изменения уровня в сторону увеличения (мс/%)",
+                "Changing Rate for Long Press Actions (ms/%)": "Темп изменения уровня при долгих нажатиях (мс/%)",
+                "decrement_rate_description": "При скачкообразном изменении уровня или выключении канала, уровень будет плавно уменьшаться с заданным темпом. При значении 0, уровень уменьшится мгновенно",
+                "increment_rate_description": "При скачкообразном изменении уровня или включении канала, уровень будет плавно увеличиваться с заданным темпом. При значении 0, уровень увеличится мгновенно",
+                "action_repeat_time_description": "При удержании кнопки уровень будет изменяться с заданным темпом",
+
+                "Safety Mode": "Безопасный режим",
+                "g_safety_description": "Настройка поведения устройства в случае потери связи с контроллером",
+                "Safety Behaviour": "Действие в безопасном режиме",
+                "Inputs Control In Safety Mode": "Управление с входов в безопасном режиме",
+                "Don't change": "Не блокировать",
+                "Disable in safety mode": "Блокировать в безопасном режиме",
+                "Enable only in safety mode": "Разрешить только в безопасном режиме",
+                "Safety Poll Timeout (s)": "Таймаут потери связи (с)",
+                "poll_timeout_description": "Время отсутствия опроса в секундах, после которого будет активирован безопасный режим. Действия в безопасном режиме настраиваются отдельно",
+                "inputs_control_in_safety_mode_description": "Настройка изменения управления с входов при переходе модуля в безопасный режим",
+
+                "Power Up Behaviour": "Поведение при включении питания",
+                "g_power_up_behaviour_description": "Настройка поведения выходов при включении питания устройства",
+                "Set Previous State": "Установить предыдущее состояние",
+
+                "Serial": "Серийный номер",
+                "FW Version": "Версия прошивки",
+                "Supply voltage": "Напряжение питания",
+                "Uptime": "Время работы с момента включения",
+                "MCU Temperature": "Температура МК",
+                "MCU Voltage": "Напряжение питания МК",
+                "Status LED": "Индикатор состояния",
+
+                "Long Press Time (ms)": "Время длинного нажатия (мс)",
+                "Second Press Waiting Time (ms)": "Время ожидания второго нажатия (мс)",
+                "Debounce Time (ms)": "Время подавления дребезга (мс)",
+
+                "input_hold_time_description": "Если нажатие длится больше указанного времени - считаем его длинным",
+                "input_double_time_description": "Если за указанное время второго нажатия не было - считаем нажатие одиночным. 0 - отключит все нажатия кроме короткого и длинного. Вносит задержку в реакцию на короткое нажатие",
+                "input_debounce_time_description": "Должно быть в 5-10 раз меньше, чем время ожидания второго нажатия. Вносит задержку в реакцию на нажатия"
+            }
+        }
+    }
+}

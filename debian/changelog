@@ -1,8 +1,56 @@
+wb-mqtt-serial (2.142.0) stable; urgency=medium
+
+  * Add the current transformers reverse setting to the MAP templates
+
+ -- Dmitry Borisov <dmitry.borisov@wirenboard.com>, Ilia Skochilov <ilia.skochilov@wirenboard.com>  Mon, 16 Sep 2024 9:33:00 +0300
+
+wb-mqtt-serial (2.141.0) stable; urgency=medium
+
+  * Add Modbus protocol support to port/Load RPC
+
+ -- Petr Krasnoshchekov <petr.krasnoshchekov@wirenboard.com>  Wed, 11 Sep 2024 12:38:24 +0500
+
+wb-mqtt-serial (2.140.0) stable; urgency=medium
+
+  * Add WB-MAO4-20mA support
+
+ -- Pavel Gasheev <pavel.gasheev@wirenboard.ru>  Mon, 09 Sep 2024 15:41:08 +0300
+
+wb-mqtt-serial (2.139.3) stable; urgency=medium
+
+  * Fix RGB Strip Hue not changed in WB-LED
+
+ -- Sergey Mishin <mishin@wirenboard.com>  Wed, 04 Sep 2024 17:49:00 +0300
+
+wb-mqtt-serial (2.139.2) stable; urgency=medium
+
+  * Deleted light scenes from WB-MDM3
+
+ -- Sergey Mishin <mishin@wirenboard.com>  Mon, 26 Aug 2024 11:15:00 +0300
+
+wb-mqtt-serial (2.139.1) stable; urgency=medium
+
+  * Fix address validation for setup/parameters
+
+ -- Nikolay Korotkiy <nikolay.korotkiy@wirenboard.com>  Tue, 13 Aug 2024 10:05:00 +0400
+
 wb-mqtt-serial (2.139.0) stable; urgency=medium
 
-  * Add current transformers reverse setting to the MAP templates
+  * Add template for Ensystec
 
- -- Dmitry Borisov <dmitry.borisov@wirenboard.com>, Ilia Skochilov <ilia.skochilov@wirenboard.com>  Tue, 6 Aug 2024 11:40:00 +0300
+ -- Mikhail Burchu <mikhail.burchu@wirenboard.com>  Fri, 23 Aug 2024 08:28:00 +0300
+
+wb-mqtt-serial (2.138.2) stable; urgency=medium
+
+  * Add comments for Cleaning Mode in WB-MWAC template
+
+ -- Radmir Khakimov <radmir.khakimov@wirenboard.com>  Tue, 15 Aug 2024 16:05:00 +0500
+
+wb-mqtt-serial (2.138.1) stable; urgency=medium
+
+  * Fix APC NMC2 AP9630 template
+
+ -- Nikolay Korotkiy <nikolay.korotkiy@wirenboard.com>  Tue, 06 Aug 2024 16:05:00 +0400
 
 wb-mqtt-serial (2.138.0) stable; urgency=medium
 
