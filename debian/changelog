@@ -1,8 +1,14 @@
-wb-mqtt-serial (2.142.0) stable; urgency=medium
+wb-mqtt-serial (2.143.0) stable; urgency=medium
 
   * Add the current transformers reverse setting to the MAP templates
 
  -- Dmitry Borisov <dmitry.borisov@wirenboard.com>, Ilia Skochilov <ilia.skochilov@wirenboard.com>  Mon, 16 Sep 2024 9:33:00 +0300
+
+wb-mqtt-serial (2.142.0) stable; urgency=medium
+
+  * Add template for T13-VFD-v2
+
+ -- Mikhail Burchu <mikhail.burchu@wirenboard.com>  Thu, 12 Sep 2024 17:10:00 +0300
 
 wb-mqtt-serial (2.141.0) stable; urgency=medium
 
