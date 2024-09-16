@@ -66,4 +66,5 @@ private:
 
     void OnEnabledEvent(uint8_t slaveId, uint8_t type, uint16_t addr, bool res);
     void ClearReadErrors(TRegisterCallback callback);
+    void ReadEventsFailed(const std::string& errorMessage, TRegisterCallback registerCallback);
 };

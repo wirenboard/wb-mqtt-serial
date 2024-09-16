@@ -22,21 +22,23 @@ ISerialClientTask::TRunResult TRPCPortSetupSerialClientTask::Run(PPort port,
     try {
         port->CheckPortOpen();
         port->SkipNoise();
-        Modbus::TModbusRTUTraitsFactory traitsFactory;
-        auto rtuTraits = traitsFactory.GetModbusTraits(port, false);
         ModbusExt::TModbusTraits fastModbusTraits;
+        Modbus::TModbusRTUTraits rtuTraits(false);
+        auto frameTimeout =
+            std::chrono::ceil<std::chrono::milliseconds>(port->GetSendTimeBytes(Modbus::STANDARD_FRAME_TIMEOUT_BYTES));
         for (auto item: Request->Items) {
             TSerialPortSettingsGuard settingsGuard(port, item.SerialPortSettings);
-            auto frameTimeout = std::chrono::ceil<std::chrono::milliseconds>(
-                port->GetSendTimeBytes(Modbus::STANDARD_FRAME_TIMEOUT_BYTES));
             port->SleepSinceLastInteraction(frameTimeout);
             lastAccessedDevice.PrepareToAccess(nullptr);
 
+            if (item.Sn) {
+                fastModbusTraits.SetSn(item.Sn.value());
+            }
             Modbus::TRegisterCache cache;
-            Modbus::WriteSetupRegisters(item.Sn ? fastModbusTraits : *rtuTraits,
+            Modbus::WriteSetupRegisters(item.Sn ? static_cast<Modbus::IModbusTraits&>(fastModbusTraits)
+                                                : static_cast<Modbus::IModbusTraits&>(rtuTraits),
                                         *port,
                                         item.SlaveId,
-                                        item.Sn.value_or(0),
                                         item.Regs,
                                         cache,
                                         std::chrono::microseconds(0),
@@ -47,7 +49,7 @@ ISerialClientTask::TRunResult TRPCPortSetupSerialClientTask::Run(PPort port,
         if (Request->OnResult) {
             Request->OnResult();
         }
-    } catch (const TSerialDeviceException& error) {
+    } catch (const std::exception& error) {
         if (Request->OnError) {
             Request->OnError(WBMQTT::E_RPC_SERVER_ERROR, std::string("Port IO error: ") + error.what());
         }

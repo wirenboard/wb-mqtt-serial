@@ -5,6 +5,7 @@
 #include <stdint.h>
 #include <string>
 
+#include "serial_config.h"
 #include "serial_device.h"
 
 #include "modbus_common.h"
