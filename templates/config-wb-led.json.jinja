@@ -411,7 +411,7 @@
                 "address": {{704 + (loop.index0 * 16) + in_num - 1}},
                 "reg_type": "holding",
                 "default": 0,
-                "condition": "( (input_{{in_num}}_mode==1)&&(dimmer_mode=={{dimmer_mode[dimmer_mode_number]}})&&(in{{in_num}}_switch_{{off_on}}_action==0) )",
+                "condition": "((input_{{in_num}}_mode==1)&&(dimmer_mode=={{dimmer_mode[dimmer_mode_number]}})&&(in{{in_num}}_switch_{{off_on}}_action==0))",
                 "enum": {{ enum_switch[dimmer_mode_number] }},
                 "enum_titles": [
                     {% for i_enum_switch in enum_switch[dimmer_mode_number] -%}
@@ -434,7 +434,7 @@
                 "address": {{704 + (loop.index0 * 16) + in_num - 1}},
                 "reg_type": "holding",
                 "default": 0,
-                "condition": "( (input_{{in_num}}_mode==1)&&(dimmer_mode=={{dimmer_mode[dimmer_mode_number]}})&&( (in{{in_num}}_switch_{{off_on}}_action==1)||(in{{in_num}}_switch_{{off_on}}_action==2) ) )",
+                "condition": "((input_{{in_num}}_mode==1)&&(dimmer_mode=={{dimmer_mode[dimmer_mode_number]}})&&((in{{in_num}}_switch_{{off_on}}_action==1)||(in{{in_num}}_switch_{{off_on}}_action==2)))",
                 "enum": {{ enum_switch_non_all[dimmer_mode_number] }},
                 "enum_titles": [
                     {% for i_enum_switch in enum_switch_non_all[dimmer_mode_number] -%}
@@ -658,7 +658,6 @@
             "CCT + CCT"         34
             "RGB + W"           256
             "4*W"               512
-
             #}
 
             {# заполним во вкладке безопасные режимы и во вкладке действий при включении все варианты W* -#}
