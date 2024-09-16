@@ -1,8 +1,14 @@
-wb-mqtt-serial (2.142.1) stable; urgency=medium
+wb-mqtt-serial (2.143.1) stable; urgency=medium
 
   * WB-LED template: safety mode, switch mode, powerup actions support
 
  -- Sergey Mishin <mishin@wirenboard.com>  Mon, 03 Sep 2024 12:31:00 +0300
+
+wb-mqtt-serial (2.143.0) stable; urgency=medium
+
+  * Add the current transformers reverse setting to the MAP templates
+
+ -- Dmitry Borisov <dmitry.borisov@wirenboard.com>, Ilia Skochilov <ilia.skochilov@wirenboard.com>  Mon, 16 Sep 2024 9:33:00 +0300
 
 wb-mqtt-serial (2.142.0) stable; urgency=medium
 
@@ -65,7 +71,7 @@ wb-mqtt-serial (2.138.0) stable; urgency=medium
  -- Roman Matveev <roman.matveev@wirenboard.ru>  Wed, 31 Jul 2024 16:34:30 +0300
 
 wb-mqtt-serial (2.137.0) stable; urgency=medium
-  
+
   * Add new template for Veda VF 51
 
  -- Roman Matveev <roman.matveev@wirenboard.ru>  Wed, 31 Jul 2024 11:39:00 +0300

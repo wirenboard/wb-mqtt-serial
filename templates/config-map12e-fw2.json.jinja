@@ -83,6 +83,18 @@
                 "group": "channel{{ch_num}}_l1",
                 "order": 3
             },
+            "channel{{ch_num}}_l1_ct_reverse": {
+                "title": "Channel {{ch_num}} CT Reverse L1",
+                "address": "0x{{"%X"|format(5296 + (ch_num - 1) * 4096)}}",
+                "reg_type": "holding",
+                "format": "u16",
+                "enum": [0, 1],
+                "default": 0,
+                "enum_titles": ["No", "Yes"],
+                "description": "Firmware v2.10.0 or newer is required",
+                "group": "channel{{ch_num}}_l1",
+                "order": 4
+            },
             "channel{{ch_num}}_l2_turns": {
                 "title": "Channel {{ch_num}} Turns L2",
                 "address": "0x{{"%X"|format(5217 + (ch_num - 1) * 4096)}}",
@@ -114,6 +126,18 @@
                 "group": "channel{{ch_num}}_l2",
                 "order": 3
             },
+            "channel{{ch_num}}_l2_ct_reverse": {
+                "title": "Channel {{ch_num}} CT Reverse L2",
+                "address": "0x{{"%X"|format(5297 + (ch_num - 1) * 4096)}}",
+                "reg_type": "holding",
+                "format": "u16",
+                "enum": [0, 1],
+                "default": 0,
+                "enum_titles": ["No", "Yes"],
+                "description": "Firmware v2.10.0 or newer is required",
+                "group": "channel{{ch_num}}_l2",
+                "order": 4
+            },
             "channel{{ch_num}}_l3_turns": {
                 "title": "Channel {{ch_num}} Turns L3",
                 "address": "0x{{"%X"|format(5218 + (ch_num - 1) * 4096)}}",
@@ -144,6 +168,18 @@
                 "description": "Firmware v2.3.0 or newer is required",
                 "group": "channel{{ch_num}}_l3",
                 "order": 3
+            },
+            "channel{{ch_num}}_l3_ct_reverse": {
+                "title": "Channel {{ch_num}} CT Reverse L3",
+                "address": "0x{{"%X"|format(5298 + (ch_num - 1) * 4096)}}",
+                "reg_type": "holding",
+                "format": "u16",
+                "enum": [0, 1],
+                "default": 0,
+                "enum_titles": ["No", "Yes"],
+                "description": "Firmware v2.10.0 or newer is required",
+                "group": "channel{{ch_num}}_l3",
+                "order": 4
             },
             {% endfor -%}
             "baud_rate": {
@@ -849,12 +885,15 @@
                 "Channel {{ch_num}} Turns L1": "Коэффициент трансформации L1",
                 "Channel {{ch_num}} Phi L1": "Фазовая задержка L1",
                 "Channel {{ch_num}} Actual Phase L1": "Фаза транформатора L1",
+                "Channel {{ch_num}} CT Reverse L1": "Инвертировать токовый трансформатор L1",
                 "Channel {{ch_num}} Turns L2": "Коэффициент трансформации L2",
                 "Channel {{ch_num}} Phi L2": "Фазовая задержка L2",
                 "Channel {{ch_num}} Actual Phase L2": "Фаза транформатора L2",
+                "Channel {{ch_num}} CT Reverse L2": "Инвертировать токовый трансформатор L2",
                 "Channel {{ch_num}} Turns L3": "Коэффициент трансформации L3",
                 "Channel {{ch_num}} Phi L3": "Фазовая задержка L3",
                 "Channel {{ch_num}} Actual Phase L3": "Фаза транформатора L3",
+                "Channel {{ch_num}} CT Reverse L3": "Инвертировать токовый трансформатор L3",
                 {% endfor -%}
                 "Peaks Measurement Period (s)": "Период сброса пиковых значений (с)",
                 "Baud rate": "Скорость обмена",
@@ -862,6 +901,8 @@
                 "Phase loss detection": "Обнаруживать отключения фаз",
                 "Enabled": "Включено",
                 "Disabled": "Выключено",
+                "Yes": "Да",
+                "No": "Нет",
                 "phase_loss_detection_description": "Обнуляет показатели напряжения и связанных с ними мощностей, если напряжение на фазе будет менее 30% от наибольшего из трех фаз. Для прошивок v2.6.3 и новее.",
                 "Voltage angle L1": "Фазовый угол L1",
                 "Voltage angle L2": "Фазовый угол L2",
@@ -873,7 +914,8 @@
                 "Uptime": "Время работы с момента включения (с)",
                 "MCU Temperature": "Температура МК",
                 "MCU Voltage": "Напряжение питания МК",
-                "Firmware v2.3.0 or newer is required": "Для прошивок v2.3.0 и новее"
+                "Firmware v2.3.0 or newer is required": "Для прошивок v2.3.0 и новее",
+                "Firmware v2.10.0 or newer is required": "Для прошивок v2.10.0 и новее"
             }
         }
     }
