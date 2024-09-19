@@ -289,7 +289,7 @@
         },
         "max": {
           "title": "Maximum value",
-          "$ref": "#/definitions/serial_int",
+          "$ref": "#/definitions/serial_num",
           "propertyOrder": 10,
           "options": {
             "keep_oneof_values": false
@@ -1015,6 +1015,22 @@
         {
           "title": "decimal",
           "type": "integer"
+        }
+      ]
+    },
+    "serial_num": {
+      "oneOf": [
+        {
+          "title": "decimal or hex",
+          "type": "string",
+          "pattern": "^(0x[A-Fa-f\\d]+|\\d+)$",
+          "options": {
+            "patternmessage": "Should be decimal or hex"
+          }
+        },
+        {
+          "title": "decimal",
+          "type": "number"
         }
       ]
     },
