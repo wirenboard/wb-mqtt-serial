@@ -1,3 +1,9 @@
+wb-mqtt-serial (2.143.1) stable; urgency=medium
+
+  * JSON schema: allow floating-point numbers in "max" channel property
+
+ -- Nikolay Korotkiy <nikolay.korotkiy@wirenboard.com>  Thu, 19 Sep 2024 13:10:00 +0400
+
 wb-mqtt-serial (2.143.0) stable; urgency=medium
 
   * Add the current transformers reverse setting to the MAP templates
