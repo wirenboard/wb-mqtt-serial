@@ -203,13 +203,23 @@
                 "group": "g_error_counters"
             },
             {
-                "name": "Channel {{ ch + 1 }} previous packet is not sent error counter",
-                "id": "channel{{ ch + 1 }}_txbusy_error_counter",
+                "name": "Channel {{ ch + 1 }} sent frames counter",
+                "id": "channel{{ ch + 1 }}_sent_frames_counter",
                 "reg_type": "input",
-                "address": {{ 1861 + ch * 10 }},
+                "address": {{ 1885 + ch }},
                 "type": "value",
                 "format": "u16",
-                "enabled": false,
+                "enabled": true,
+                "group": "g_error_counters"
+            },
+            {
+                "name": "Channel {{ ch + 1 }} received frames counter",
+                "id": "channel{{ ch + 1 }}_received_frames_counter",
+                "reg_type": "input",
+                "address": {{ 1890 + ch }},
+                "type": "value",
+                "format": "u16",
+                "enabled": true,
                 "group": "g_error_counters"
             },
             {% endfor -%}
@@ -322,7 +332,10 @@
                 "Channel {{ ch + 1 }} stop bits are not received error counter": "Счетчик ошибок отсутствия стоп-битов канала {{ ch + 1 }}",
                 "Channel {{ ch + 1 }} frame receive timeout error counter": "Счетчик ошибок таймаута приема фрейма канала {{ ch + 1 }}",
                 "Channel {{ ch + 1 }} bus is not powered error counter": "Счетчик ошибок незапитанности шины канала {{ ch + 1 }}",
-                "Channel {{ ch + 1 }} previous packet is not sent error counter": "Счетчик ошибок неотправленности прерыдудщего фрейма канала {{ ch + 1 }}",
+                "Channel {{ ch + 1 }} bus busy error counter": "Счетчик ошибок занятости шины {{ ch + 1 }}",
+
+                "Channel {{ ch + 1 }} sent frames counter": "Счетчик отправленных фреймов канала {{ ch + 1 }}",
+                "Channel {{ ch + 1 }} received frames counter": "Счетчик принятых фреймов канала {{ ch + 1 }}",
                 {% endfor -%}
                 
                 "Serial": "Серийный номер",
