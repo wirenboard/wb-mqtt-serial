@@ -601,8 +601,8 @@
                 "group": "gg_output_{{index + 1}}_channels"
             },
             {
-                "id": "channel_{{index + 1}}_open_circuit_fail",
-                "name": "Channel {{index + 1}} Open Circuit Fail",
+                "id": "channel_{{index + 1}}_fault",
+                "name": "Channel {{index + 1}} Fault",
                 "reg_type": "discrete",
                 "address": {{16 + index}},
                 "type": "switch",
@@ -739,7 +739,7 @@
                 "Channel {{ch_number}}": "Канал {{ch_number}}",
                 "Channel {{ch_number}} Level": "Уровень канала {{ch_number}}",
                 "Channel {{ch_number}} Current": "Ток канала {{ch_number}}",
-                "Channel {{ch_number}} Open Circuit Fail": "Обрыв цепи канала {{ch_number}}",
+                "Channel {{ch_number}} Fault": "Ошибка канала {{ch_number}}",
                 "Channel {{ch_number}} Duty Cycle Raw": "Прямое задание скважности ШИМ на выходе {{ch_number}}",
                 {% endfor -%}
 
