@@ -1,3 +1,9 @@
+wb-mqtt-serial (2.143.3) stable; urgency=medium
+
+  * WB-LED template: safety mode, switch mode, powerup actions support
+
+ -- Sergey Mishin <mishin@wirenboard.com>  Wed, 25 Sep 2024 13:23:00 +0300
+
 wb-mqtt-serial (2.143.2) stable; urgency=medium
 
   * WB-MAO4-20 template: allow 20.48 mA max current
