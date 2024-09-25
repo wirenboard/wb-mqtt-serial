@@ -87,10 +87,6 @@ void ExecRPCPortLoadModbusRequest(TPort& port, PRPCPortLoadModbusRequest rpcRequ
         if (rpcRequest->OnError) {
             rpcRequest->OnError(WBMQTT::E_RPC_REQUEST_TIMEOUT, error.what());
         }
-    } catch (const std::exception& error) {
-        if (rpcRequest->OnError) {
-            rpcRequest->OnError(WBMQTT::E_RPC_SERVER_ERROR, std::string("Port IO error: ") + error.what());
-        }
     }
 }
 
