@@ -1,3 +1,9 @@
+wb-mqtt-serial (2.143.4) stable; urgency=medium
+
+  * Set proper result code on port/Load RPC timeout
+
+ -- Petr Krasnoshchekov <petr.krasnoshchekov@wirenboard.com>  Thu, 26 Sep 2024 18:50:09 +0500
+
 wb-mqtt-serial (2.143.3) stable; urgency=medium
 
   * WB-LED template: safety mode, switch mode, powerup actions support

@@ -42,16 +42,16 @@ void RPCPortLoadHandler(const Json::Value& request,
                         WBMQTT::TMqttRpcServer::TResultCallback onResult,
                         WBMQTT::TMqttRpcServer::TErrorCallback onError)
 {
-    Json::Value replyJSON;
     auto protocol = request.get("protocol", "raw").asString();
     if (protocol == "modbus") {
         auto rpcRequest = ParseRPCPortLoadModbusRequest(request);
-        auto response = ExecRPCPortLoadModbusRequest(port, rpcRequest);
-        replyJSON["response"] = FormatResponse(response, rpcRequest->Format);
-    } else {
-        auto rpcRequest = ParseRPCPortLoadRawRequest(request);
-        auto response = ExecRPCPortLoadRawRequest(port, rpcRequest);
-        replyJSON["response"] = FormatResponse(response, rpcRequest->Format);
+        SetCallbacks(*rpcRequest, onResult, onError);
+        ExecRPCPortLoadModbusRequest(port, rpcRequest);
+        return;
     }
+    Json::Value replyJSON;
+    auto rpcRequest = ParseRPCPortLoadRawRequest(request);
+    auto response = ExecRPCPortLoadRawRequest(port, rpcRequest);
+    replyJSON["response"] = FormatResponse(response, rpcRequest->Format);
     onResult(replyJSON);
 }
