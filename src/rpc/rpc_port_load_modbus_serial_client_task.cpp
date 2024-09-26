@@ -56,18 +56,38 @@ PRPCPortLoadModbusRequest ParseRPCPortLoadModbusRequest(const Json::Value& reque
     return RPCRequest;
 }
 
-std::vector<uint8_t> ExecRPCPortLoadModbusRequest(TPort& port, PRPCPortLoadModbusRequest rpcRequest)
+void ExecRPCPortLoadModbusRequest(TPort& port, PRPCPortLoadModbusRequest rpcRequest)
 {
-    Modbus::TModbusRTUTraits traits;
-    auto pdu = Modbus::MakePDU(rpcRequest->Function, rpcRequest->Address, rpcRequest->Count, rpcRequest->Message);
-    auto responsePduSize = Modbus::CalcResponsePDUSize(rpcRequest->Function, rpcRequest->Count);
-    auto res = traits.Transaction(port,
-                                  rpcRequest->SlaveId,
-                                  pdu,
-                                  responsePduSize,
-                                  rpcRequest->ResponseTimeout,
-                                  rpcRequest->FrameTimeout);
-    return Modbus::ExtractResponseData(rpcRequest->Function, res.Pdu);
+    try {
+        port.CheckPortOpen();
+        port.SkipNoise();
+        port.SleepSinceLastInteraction(rpcRequest->FrameTimeout);
+        Modbus::TModbusRTUTraits traits;
+        auto pdu = Modbus::MakePDU(rpcRequest->Function, rpcRequest->Address, rpcRequest->Count, rpcRequest->Message);
+        auto responsePduSize = Modbus::CalcResponsePDUSize(rpcRequest->Function, rpcRequest->Count);
+        auto res = traits.Transaction(port,
+                                      rpcRequest->SlaveId,
+                                      pdu,
+                                      responsePduSize,
+                                      rpcRequest->ResponseTimeout,
+                                      rpcRequest->FrameTimeout);
+        auto response = Modbus::ExtractResponseData(rpcRequest->Function, res.Pdu);
+
+        if (rpcRequest->OnResult) {
+            Json::Value replyJSON;
+            replyJSON["response"] = FormatResponse(response, rpcRequest->Format);
+            rpcRequest->OnResult(replyJSON);
+        }
+    } catch (const Modbus::TModbusExceptionError& error) {
+        Json::Value replyJSON;
+        replyJSON["exception"]["code"] = error.GetExceptionCode();
+        replyJSON["exception"]["msg"] = error.what();
+        rpcRequest->OnResult(replyJSON);
+    } catch (const TResponseTimeoutException& error) {
+        if (rpcRequest->OnError) {
+            rpcRequest->OnError(WBMQTT::E_RPC_REQUEST_TIMEOUT, error.what());
+        }
+    }
 }
 
 TRPCPortLoadModbusSerialClientTask::TRPCPortLoadModbusSerialClientTask(PRPCPortLoadModbusRequest request)
@@ -89,24 +109,9 @@ ISerialClientTask::TRunResult TRPCPortLoadModbusSerialClientTask::Run(
     }
 
     try {
-        port->CheckPortOpen();
-        port->SkipNoise();
-        port->SleepSinceLastInteraction(Request->FrameTimeout);
         lastAccessedDevice.PrepareToAccess(nullptr);
-
         TSerialPortSettingsGuard settingsGuard(port, Request->SerialPortSettings);
-        auto response = ExecRPCPortLoadModbusRequest(*port, Request);
-
-        if (Request->OnResult) {
-            Json::Value replyJSON;
-            replyJSON["response"] = FormatResponse(response, Request->Format);
-            Request->OnResult(replyJSON);
-        }
-    } catch (const Modbus::TModbusExceptionError& error) {
-        Json::Value replyJSON;
-        replyJSON["exception"]["code"] = error.GetExceptionCode();
-        replyJSON["exception"]["msg"] = error.what();
-        Request->OnResult(replyJSON);
+        ExecRPCPortLoadModbusRequest(*port, Request);
     } catch (const std::exception& error) {
         if (Request->OnError) {
             Request->OnError(WBMQTT::E_RPC_SERVER_ERROR, std::string("Port IO error: ") + error.what());
