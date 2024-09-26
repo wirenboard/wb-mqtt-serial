@@ -1,8 +1,26 @@
-wb-mqtt-serial (2.143.1) stable; urgency=medium
+wb-mqtt-serial (2.143.4) stable; urgency=medium
 
   * Set proper result code on port/Load RPC timeout
 
- -- Petr Krasnoshchekov <petr.krasnoshchekov@wirenboard.com>  Thu, 19 Sep 2024 16:22:26 +0500
+ -- Petr Krasnoshchekov <petr.krasnoshchekov@wirenboard.com>  Thu, 26 Sep 2024 18:50:09 +0500
+
+wb-mqtt-serial (2.143.3) stable; urgency=medium
+
+  * WB-LED template: safety mode, switch mode, powerup actions support
+
+ -- Sergey Mishin <mishin@wirenboard.com>  Wed, 25 Sep 2024 13:23:00 +0300
+
+wb-mqtt-serial (2.143.2) stable; urgency=medium
+
+  * WB-MAO4-20 template: allow 20.48 mA max current
+
+ -- Pavel Gasheev <pavel.gasheev@wirenboard.ru>  Fri, 20 Sep 2024 10:01:07 +0300
+
+wb-mqtt-serial (2.143.1) stable; urgency=medium
+
+  * JSON schema: allow floating-point numbers in "max" channel property
+
+ -- Nikolay Korotkiy <nikolay.korotkiy@wirenboard.com>  Thu, 19 Sep 2024 13:10:00 +0400
 
 wb-mqtt-serial (2.143.0) stable; urgency=medium
 
