@@ -97,8 +97,7 @@ endif
 templates: $(JINJA_TEMPLATES:$(TEMPLATES_DIR)/%.json.jinja=$(GENERATED_TEMPLATES_DIR)/%.json)
 
 clean:
-	-rm -rf build/release
-	-rm -rf build/debug
+	-rm -rf build
 	-rm -rf $(TEST_DIR)/$(TEST_BIN)
 
 install:
