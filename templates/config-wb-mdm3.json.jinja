@@ -20,10 +20,6 @@
         "enable_wb_continuous_read": true,
 
         "groups": [
-            {
-                "title": "Inputs Mode",
-                "id": "g_mode"
-            },
             {% for ch_number in range(1, INPUTS_NUMBER + 1) -%}
             {
                 "title": "Input {{ch_number}}",
@@ -36,6 +32,16 @@
                 "group": "input_{{ ch_number }}"
             },
             {% endfor -%}
+            {
+                "title": "Action when Switch is On",
+                "id": "input_{{ ch_number }}_switch_on_action",
+                "group": "input_{{ ch_number }}"
+            },
+            {
+                "title": "Action when Switch is Off",
+                "id": "input_{{ ch_number }}_switch_off_action",
+                "group": "input_{{ ch_number }}"
+            },
             {
                 "title": "Input Parameters",
                 "id": "input_{{ ch_number }}_parameters",
@@ -60,8 +66,6 @@
                 }
             },
             {% endfor -%}
-<<<<<<< HEAD
-=======
 
             {
                 "title": "Safety Mode",
@@ -97,10 +101,35 @@
                 "group": "g_safety"
             },
 
->>>>>>> 5ee9127 (delete light scenes (#802))
             {
                 "title": "General",
                 "id": "general"
+            },
+            {
+                "title": "Legacy Inputs Mode",
+                "id": "gg_mode",
+                "group": "general",
+                "description": "inputs_mode_description"
+            },
+            {
+                "title": "General Parameters",
+                "id": "gg_general_parameters",
+                "group": "general",
+                "ui_options": {
+                    "wb": {
+                        "disable_title": true
+                    }
+                }
+            },
+            {
+                "title": "General Channels",
+                "id": "gg_general_channels",
+                "group": "general",
+                "ui_options": {
+                    "wb": {
+                        "disable_title": true
+                    }
+                }
             },
             {
                 "title": "HW Info",
@@ -117,7 +146,6 @@
             {
                 "id": "inputs{{ch_number * 2 + 1}}{{ch_number * 2 + 2}}_mode",
                 "title": "Inputs {{ch_number * 2 + 1}}-{{ch_number * 2 + 2}}",
-                "description": "inputs_mode_description",
                 "address": {{16 + ch_number}},
                 "reg_type": "holding",
                 "enum": [0, 1, 2, 3],
@@ -128,7 +156,7 @@
                     "Control output {{ch_number + 1}} in 2-button mode",
                     "Custom mode"
                 ],
-                "group": "g_mode",
+                "group": "gg_mode",
                 "order": {{ch_number}}
             },
             {% endfor -%}
@@ -153,7 +181,7 @@
                 "default": 0,
                 "group": "input_{{ ch_number + 1 }}_{{ press_type | replace(' ', '_') }}_press_action",
                 "order": 1,
-                "condition": "{{selected_mode}}==3"
+                "condition": "input_{{ch_number + 1}}_mode!=1"
             },
             {
                 "id": "{{action_bind}}_action_single",
@@ -172,7 +200,7 @@
                 "default": 0,
                 "group": "input_{{ ch_number + 1 }}_{{ press_type | replace(' ', '_') }}_press_action",
                 "order": 2,
-                "condition": "((isDefined({{action_bind}}_number))&&({{action_bind}}_number!=0)&&({{action_bind}}_number!=100)&&({{selected_mode}}==3))"
+                "condition": "({{action_bind}}_number>=1)&&({{action_bind}}_number<=3)"
             },
             {
                 "id": "{{action_bind}}_action_all",
@@ -189,12 +217,6 @@
                 "default": 0,
                 "group": "input_{{ ch_number + 1 }}_{{ press_type | replace(' ', '_') }}_press_action",
                 "order": 2,
-<<<<<<< HEAD
-                "condition": "((isDefined({{action_bind}}_number))&&({{ action_bind }}_number==100)&&({{selected_mode}}==3))"
-            },
-            {% endfor -%}{% endfor -%}
-            {% for ch_number in range(0, INPUTS_NUMBER) -%}
-=======
                 "condition": "{{action_bind}}_number==100"
             },
             {% endfor -%}
@@ -352,7 +374,6 @@
                 "condition": "isDefined({{selected_mode}})==0||{{selected_mode}}==3",
                 "group": "input_{{ch_number + 1}}"
             },
->>>>>>> 5ee9127 (delete light scenes (#802))
             {
                 "id": "input_{{ch_number + 1}}_hold_time",
                 "title": "Long Press Time (ms)",
@@ -363,6 +384,7 @@
                 "min": 500,
                 "max": 5000,
                 "group": "input_{{ch_number + 1}}_parameters",
+                "condition": "input_{{ch_number + 1}}_mode!=1",
                 "order": 1
             },
             {
@@ -375,6 +397,7 @@
                 "min": 0,
                 "max": 2000,
                 "group": "input_{{ch_number + 1}}_parameters",
+                "condition": "input_{{ch_number + 1}}_mode!=1",
                 "order": 2
             },
             {
@@ -497,8 +520,7 @@
                     "57600",
                     "115200"
                 ],
-                "group": "general",
-                "order": 1
+                "group": "gg_general_parameters"
             }
         ],
 
@@ -526,6 +548,7 @@
                 "address": {{464 + ch_number}},
                 "type": "value",
                 "group": "input_{{ch_number + 1}}_counters",
+                "condition": "input_{{ch_number + 1}}_mode!=1",
                 "sporadic": true
             },
             {
@@ -534,6 +557,7 @@
                 "address": {{480 + ch_number}},
                 "type": "value",
                 "group": "input_{{ch_number + 1}}_counters",
+                "condition": "input_{{ch_number + 1}}_mode!=1",
                 "sporadic": true
             },
             {
@@ -543,6 +567,7 @@
                 "type": "value",
                 "enabled": false,
                 "group": "input_{{ch_number + 1}}_counters",
+                "condition": "input_{{ch_number + 1}}_mode!=1",
                 "sporadic": true
             },
             {
@@ -552,6 +577,7 @@
                 "type": "value",
                 "enabled": false,
                 "group": "input_{{ch_number + 1}}_counters",
+                "condition": "input_{{ch_number + 1}}_mode!=1",
                 "sporadic": true
             },
             {% endfor -%}
@@ -643,14 +669,14 @@
                 "reg_type": "input",
                 "address": 97,
                 "type": "switch",
-                "group": "general"
+                "group": "gg_general_channels"
             },
             {
                 "name": "Overcurrent",
                 "reg_type": "input",
                 "address": 100,
                 "type": "switch",
-                "group": "general"
+                "group": "gg_general_channels"
             },
             {
                 "name": "Zero-Сross Offset (us)",
@@ -671,7 +697,8 @@
         "translations": {
             "en": {
                 "WB-MDM3_template_title": "WB-MDM3 (3-channel MOSFET dimmer)",
-                "inputs_mode_description": "Custom mode allows to set actions for each input and press type. Available since firmware version 2.7.0",
+                "inputs_mode_description": "Firmware up to version 2.6.6 supports only one and two button modes without the ability to freely bind inputs and outputs and process different types of presses. Starting from firmware version 2.7.0, there is no need to select the input mode. Inputs and outputs can be binded in any combinations",
+                "Legacy Inputs Mode": "Inputs Mode (up to firmware version 2.6.6 incl.)",
                 "channel_min_value_description": "Raw dimmer value corresponding to minimum brightness (1%)",
                 "channel_max_value_description": "Raw dimmer value corresponding to maximum brightness (100%)",
 
@@ -683,6 +710,14 @@
                 "input_double_time_description": "If there is no second press during the specified time then press is single. 0 - disables all presses except short and long. Adds a delay to the response to a short press",
                 "input_debounce_time_description": "Must be 5-10 times less than second press waiting time. Adds a delay to the response to presses",
 
+                "input_mode_description": "Button is the default mode. Switch mode supported since firmware version 2.8.0",
+                "light_scenes_description": "Light scenes are used to control multiple channels simultaneously. This is necessary to define actions when the scene light is turned on or off. Supported since firmware version 2.8.0",
+                "g_safety_description": "Safety mode is activated when there is no modbus polling for the specified time. Supported since firmware version 2.8.0",
+
+                "poll_timeout_description": "Time in seconds without modbus polling before activation safety mode. Actions in safety mode are configured using appropriate parameters",
+                "inputs_control_in_safety_mode_description": "Sets change of control from the inputs when module switches to safety mode",
+                "g_power_up_behaviour_description": "Actions when Power is On. Supported since firmware version 2.8.0",
+
                 "baud_rate_description": "Make sure that communication with device is established before changing this parameter. Select required baud rate, save configuration and then change port baud rate to the same value.",
                 "Uptime": "Uptime (s)"
             },
@@ -691,13 +726,10 @@
                 "General": "Общее",
                 "HW Info": "Данные модуля",
                 "Debug": "Диагностика",
-                "Inputs Mode": "Режим работы входов",
+                "Legacy Inputs Mode": "Режим работы входов (для прошивок до 2.6.6 включительно)",
                 "Input Parameters": "Параметры нажатий",
                 "Control disabled": "Управление отключено",
                 "Custom mode": "Пользовательский режим",
-<<<<<<< HEAD
-                "inputs_mode_description": "Пользовательский режим позволяет задать действия для каждого входа и типа нажатия. Доступно с версии прошивки 2.7.0",
-=======
                 "inputs_mode_description": "В прошивках до 2.6.6 поддерживаются только одно- и двухкнопочный режимы работы входов без возможности свободной привязки входов и выходов и обработки различных типов нажатий. Начиная с прошивки 2.7.0 выбирать режим работы входов нет необходимости. Можно связывать входы и выходы в произвольных комбинациях",
 
                 "Input Mode": "Режим работы входа",
@@ -709,7 +741,6 @@
                 "Turn On and Set Brightness": "Включить и установить яркость",
                 "Brightness (%)": "Яркость (%)",
 
->>>>>>> 5ee9127 (delete light scenes (#802))
                 "LED lamp or incandescent lamp (logarithmic)": "лампа светодиодная или накаливания (логарифмическая кривая яркости)",
                 "resistive load (linear)": "резистивная нагрузка (линейная кривая яркости)",
                 "switching mode (on/off)": "ключевой режим",
@@ -764,6 +795,8 @@
                 "Debounce Time (ms)": "Время подавления дребезга (мс)",
                 "Action Repeat Time (ms)": "Длительность периода повторения действий (мс)",
 
+                "input_mode_description": "Режим работы входа по умолчанию - кнопка без фиксации. Работа в режиме выключателя с фиксацией доступна с версии прошивки 2.8.0",
+
                 "input_hold_time_description": "Если нажатие длится больше указанного времени - считаем его длинным",
                 "input_double_time_description": "Если за указанное время второго нажатия не было - считаем нажатие одиночным. 0 - отключит все нажатия кроме короткого и длинного. Вносит задержку в реакцию на короткое нажатие",
                 "input_debounce_time_description": "Должно быть в 5-10 раз меньше, чем время ожидания второго нажатия. Вносит задержку в реакцию на нажатия",
@@ -771,6 +804,21 @@
                 "decrease_rate_description": "Во время плавных переходов, выходной уровень будет уменьшаться на 1% через указанный период времени",
                 "increase_rate_description": "Во время плавных переходов, выходной уровень будет увеличиваться на 1% через указанный период времени",
                 "action_repeat_time_description": "Во время долгих действий, выходной уровень будет изменяться на 1% через указанный период времени",
+
+                "Safety Mode": "Безопасный режим",
+                "g_safety_description": "Настройка поведения устройства в случае потери связи с контроллером. Доступно с версии прошивки 2.8.0",
+                "Safety Behaviour": "Действие в безопасном режиме",
+                "Inputs Control In Safety Mode": "Управление с входов в безопасном режиме",
+                "Don't change": "Не блокировать",
+                "Disable in safety mode": "Блокировать в безопасном режиме",
+                "Enable only in safety mode": "Разрешить только в безопасном режиме",
+                "Safety Poll Timeout (s)": "Таймаут потери связи (с)",
+                "poll_timeout_description": "Время отсутствия опроса в секундах, после которого будет активирован безопасный режим. Действия в безопасном режиме настраиваются отдельно",
+                "inputs_control_in_safety_mode_description": "Настройка изменения управления с входов при переходе модуля в безопасный режим",
+
+                "Power Up Behaviour": "Поведение при включении питания",
+                "g_power_up_behaviour_description": "Настройка поведения выходов при включении питания устройства. Доступно с версии прошивки 2.8.0",
+                "Set Previous State": "Установить предыдущее состояние",
 
                 "Serial": "Серийный номер",
                 "FW Version": "Версия прошивки",
