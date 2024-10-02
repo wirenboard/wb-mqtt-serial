@@ -1,13 +1,11 @@
 {% set INPUTS_NUMBER = 6 -%}
 {% set OUTPUTS_NUMBER = 3 -%}
 {% set PRESS_TYPES = ["single", "long", "double", "shortlong"] -%}
-{% set LIGHT_SCENES_NUMBER = 8 -%}
 
 {
     "title": "WB-MDM3_template_title",
     "device_type": "WB-MDM3",
     "group": "g-wb",
-    "deprecated": true,
     "hw": [
         {
             "signature": "WBMD3"
@@ -22,6 +20,10 @@
         "enable_wb_continuous_read": true,
 
         "groups": [
+            {
+                "title": "Inputs Mode",
+                "id": "g_mode"
+            },
             {% for ch_number in range(1, INPUTS_NUMBER + 1) -%}
             {
                 "title": "Input {{ch_number}}",
@@ -34,16 +36,6 @@
                 "group": "input_{{ ch_number }}"
             },
             {% endfor -%}
-            {
-                "title": "Action when Switch is On",
-                "id": "input_{{ ch_number }}_switch_on_action",
-                "group": "input_{{ ch_number }}"
-            },
-            {
-                "title": "Action when Switch is Off",
-                "id": "input_{{ ch_number }}_switch_off_action",
-                "group": "input_{{ ch_number }}"
-            },
             {
                 "title": "Input Parameters",
                 "id": "input_{{ ch_number }}_parameters",
@@ -68,109 +60,9 @@
                 }
             },
             {% endfor -%}
-            {% for ls_number in range(1, LIGHT_SCENES_NUMBER + 1) -%}
-            {
-                "title": "Light Scene {{ ls_number }}",
-                "id": "g_light_scene_{{ ls_number }}",
-                "description": "light_scenes_description"
-            },
-            {
-                "title": "Actions when Scene Light Turn On",
-                "id": "gg_ls_{{ ls_number }}_actions_turn_on",
-                "group": "g_light_scene_{{ ls_number }}"
-            },
-            {
-                "title": "Actions when Scene Light Turn Off",
-                "id": "gg_ls_{{ ls_number }}_actions_turn_off",
-                "group": "g_light_scene_{{ ls_number }}"
-            },
-            {
-                "title": "Light Scene {{ ls_number }} Channels",
-                "id": "gg_ls_{{ ls_number }}_channels",
-                "group": "g_light_scene_{{ ls_number }}",
-                "ui_options": {
-                    "wb": {
-                        "disable_title": true
-                    }
-                }
-            },
-            {% for ch_number in range(1, OUTPUTS_NUMBER + 1) -%}
-            {
-                "title": "Channel {{ ch_number }}",
-                "id": "gg_ls_{{ls_number}}_ch_{{ch_number}}_action_turn_on",
-                "group": "gg_ls_{{ ls_number }}_actions_turn_on"
-            },
-            {
-                "title": "Channel {{ ch_number }}",
-                "id": "gg_ls_{{ls_number}}_ch_{{ch_number}}_action_turn_off",
-                "group": "gg_ls_{{ ls_number }}_actions_turn_off"
-            },
-            {% endfor -%}
-            {% endfor -%}
-
-            {
-                "title": "Safety Mode",
-                "id": "g_safety",
-                "description": "g_safety_description"
-            },
-            {
-                "title": "Power Up Behaviour",
-                "id": "g_power_up_behaviour",
-                "description": "g_power_up_behaviour_description"
-            },
-            {
-                "title": "Safety Behaviour",
-                "id": "gg_safety_behaviour",
-                "group": "g_safety"
-            },
-            {% for ch_number in range(1, OUTPUTS_NUMBER + 1) -%}
-            {
-                "title": "Channel {{ ch_number }}",
-                "id": "gg_safety_mode_ch_{{ ch_number }}",
-                "group": "gg_safety_behaviour"
-            },
-            {
-                "title": "Channel {{ ch_number }}",
-                "id": "gg_power_up_behaviour_ch_{{ ch_number }}",
-                "group": "g_power_up_behaviour"
-            },
-            {% endfor -%}
-            {
-                "title": "Inputs Control In Safety Mode",
-                "id": "gg_safety_input_control",
-                "description": "inputs_control_in_safety_mode_description",
-                "group": "g_safety"
-            },
-
             {
                 "title": "General",
                 "id": "general"
-            },
-            {
-                "title": "Legacy Inputs Mode",
-                "id": "gg_mode",
-                "group": "general",
-                "description": "inputs_mode_description"
-            },
-            {
-                "title": "General Parameters",
-                "id": "gg_general_parameters",
-                "group": "general",
-                "ui_options": {
-                    "wb": {
-                        "disable_title": true
-                    }
-                }
-            },
-            {
-                "title": "General Channels",
-                "id": "gg_general_channels",
-                "group": "general",
-                "ui_options": {
-                    "wb": {
-                        "disable_title": true
-                    }
-                }
             },
             {
                 "title": "HW Info",
@@ -187,6 +79,7 @@
             {
                 "id": "inputs{{ch_number * 2 + 1}}{{ch_number * 2 + 2}}_mode",
                 "title": "Inputs {{ch_number * 2 + 1}}-{{ch_number * 2 + 2}}",
+                "description": "inputs_mode_description",
                 "address": {{16 + ch_number}},
                 "reg_type": "holding",
                 "enum": [0, 1, 2, 3],
@@ -197,7 +90,7 @@
                     "Control output {{ch_number + 1}} in 2-button mode",
                     "Custom mode"
                 ],
-                "group": "gg_mode",
+                "group": "g_mode",
                 "order": {{ch_number}}
             },
             {% endfor -%}
@@ -211,21 +104,18 @@
                 "title": "Output Number",
                 "address": {{768 + (loop.index0 * 16) + ch_number}},
                 "reg_type": "holding",
-                "enum": [0, 1, 2, 3, 100, {%for ls in range(LIGHT_SCENES_NUMBER) %}{{32 + ls}}{% if not loop.last %}, {% endif %}{% endfor %}],
+                "enum": [0, 1, 2, 3, 100],
                 "enum_titles": [
                     "No Action",
                     "Output 1",
                     "Output 2",
                     "Output 3",
-                    "All Outputs",
-                    {% for ls_number in range(1, LIGHT_SCENES_NUMBER + 1) -%}
-                    "Light Scene {{ ls_number }}"{% if not loop.last %},{% endif %}
-                    {% endfor -%}
+                    "All Outputs"
                 ],
                 "default": 0,
                 "group": "input_{{ ch_number + 1 }}_{{ press_type | replace(' ', '_') }}_press_action",
                 "order": 1,
-                "condition": "input_{{ch_number + 1}}_mode!=1"
+                "condition": "{{selected_mode}}==3"
             },
             {
                 "id": "{{action_bind}}_action_single",
@@ -244,7 +134,7 @@
                 "default": 0,
                 "group": "input_{{ ch_number + 1 }}_{{ press_type | replace(' ', '_') }}_press_action",
                 "order": 2,
-                "condition": "({{action_bind}}_number>=1)&&({{action_bind}}_number<=3)"
+                "condition": "((isDefined({{action_bind}}_number))&&({{action_bind}}_number!=0)&&({{action_bind}}_number!=100)&&({{selected_mode}}==3))"
             },
             {
                 "id": "{{action_bind}}_action_all",
@@ -261,290 +151,10 @@
                 "default": 0,
                 "group": "input_{{ ch_number + 1 }}_{{ press_type | replace(' ', '_') }}_press_action",
                 "order": 2,
-                "condition": "{{action_bind}}_number==100"
-            },
-            {
-                "id": "{{action_bind}}_action_scene",
-                "title": "Action",
-                "address": {{832 + (loop.index0 * 16) + ch_number}},
-                "reg_type": "holding",
-                "enum": [0, 1, 2],
-                "enum_titles": [
-                    "Turn Off Scene Light",
-                    "Turn On Scene Light",
-                    "Toggle Scene Light"
-                ],
-                "group": "input_{{ch_number + 1}}_{{press_type | replace(' ', '_') }}_press_action",
-                "order": 2,
-                "condition": "({{action_bind}}_number>=32)&&({{ action_bind }}_number<=39)"
-            },
-            {% endfor -%}
-            {% for sw_act in ["off", "on"] -%}
-            {
-                "id": "input_{{ch_number + 1}}_switch_{{sw_act}}_channel",
-                "title": "Output Number",
-                "address": {{704 + (loop.index0 * 16) + ch_number}},
-                "reg_type": "holding",
-                "enum": [0, 1, 2, 3, 100, {%for ls in range(LIGHT_SCENES_NUMBER) %}{{32 + ls}}{% if not loop.last %}, {% endif %}{% endfor %}],
-                "enum_titles": [
-                    "No Action",
-                    "Output 1",
-                    "Output 2",
-                    "Output 3",
-                    "All Outputs",
-                    {% for ls_number in range(1, LIGHT_SCENES_NUMBER + 1) -%}
-                    "Light Scene {{ ls_number }}"{% if not loop.last %},{% endif %}
-                    {% endfor -%}
-                ],
-                "default": 0,
-                "group": "input_{{ ch_number + 1}}_switch_{{sw_act}}_action",
-                "condition": "input_{{ch_number + 1}}_mode==1",
-                "order": 1
-            },
-            {
-                "id": "input_{{ch_number + 1}}_switch_{{sw_act}}_action_single",
-                "title": "Action",
-                "address": {{736 + (loop.index0 * 16) + ch_number}},
-                "reg_type": "holding",
-                "enum": [0, 1, 2],
-                "enum_titles": [
-                    "Turn Off",
-                    "Turn On",
-                    "Toggle"
-                ],
-                "default": {{ 0 if sw_act == "off" else 1}},
-                "group": "input_{{ ch_number + 1}}_switch_{{sw_act}}_action",
-                "condition": "input_{{ch_number + 1}}_switch_{{sw_act}}_channel>=1&&input_{{ch_number + 1}}_switch_{{sw_act}}_channel<=3",
-                "order": 2
-            },
-            {
-                "id": "input_{{ch_number + 1}}_switch_{{sw_act}}_action_all",
-                "title": "Action",
-                "address": {{736 + (loop.index0 * 16) + ch_number}},
-                "reg_type": "holding",
-                "enum": [0, 1],
-                "enum_titles": [
-                    "Turn Off",
-                    "Turn On"
-                ],
-                "default": {{ 0 if sw_act == "off" else 1}},
-                "group": "input_{{ ch_number + 1}}_switch_{{sw_act}}_action",
-                "condition": "input_{{ch_number + 1}}_switch_{{sw_act}}_channel==100",
-                "order": 2
-            },
-            {
-                "id": "input_{{ch_number + 1}}_switch_{{sw_act}}_action_scene",
-                "title": "Action",
-                "address": {{736 + (loop.index0 * 16) + ch_number}},
-                "reg_type": "holding",
-                "enum": [0, 1, 2],
-                "enum_titles": [
-                    "Turn Off Scene Light",
-                    "Turn On Scene Light",
-                    "Toggle Scene Light"
-                ],
-                "default": {{ 0 if sw_act == "off" else 1 }},
-                "group": "input_{{ ch_number + 1}}_switch_{{sw_act}}_action",
-                "condition": "input_{{ch_number + 1}}_switch_{{sw_act}}_channel>=32&&input_{{ch_number + 1}}_switch_{{sw_act}}_channel<=39",
-                "order": 2
+                "condition": "((isDefined({{action_bind}}_number))&&({{ action_bind }}_number==100)&&({{selected_mode}}==3))"
             },
             {% endfor -%}{% endfor -%}
-            {% for ls_number in range(1, LIGHT_SCENES_NUMBER + 1) -%}
-            {
-                "id": "ls_{{ls_number}}_light_on_off_condition",
-                "title": "Scene Light On/Off Condition",
-                "reg_type": "holding",
-                "address": {{1264 + (ls_number - 1)}},
-                "type": "enum",
-                "enum": [0, 1],
-                "enum_titles": [
-                    "Scene Light is on if any used channel is on. Otherwise light is off",
-                    "Scene Light is on if all used channels are on. Otherwise light is off"
-                ],
-                "group": "g_light_scene_{{ ls_number }}"
-            },
-            {% for ch_number in range(1, OUTPUTS_NUMBER + 1) -%}
-            {
-                "id": "ls_{{ls_number}}_ch_{{ch_number}}_action_off",
-                "title": "Action",
-                "reg_type": "holding",
-                "address": {{1280 + 0 + 64 * (ls_number - 1) + (ch_number - 1)}},
-                "type": "enum",
-                "enum": [0, 2, 3],
-                "enum_titles": [
-                    "Channel not Used in Scene",
-                    "Turn On",
-                    "Turn On and Set Brightness"
-                ],
-                "group": "gg_ls_{{ls_number}}_ch_{{ch_number}}_action_turn_on"
-            },
-            {
-                "id": "ls_{{ls_number}}_ch_{{ch_number}}_fading_off",
-                "title": "Dimming level rate (ms/%)",
-                "reg_type": "holding",
-                "address": {{1280 + 8 + 64 * (ls_number - 1) + (ch_number - 1)}},
-                "min": 0,
-                "max": 500,
-                "default": 20,
-                "required": true,
-                "group": "gg_ls_{{ls_number}}_ch_{{ch_number}}_action_turn_on",
-                "condition": "ls_{{ls_number}}_ch_{{ch_number}}_action_off>=1"
-            },
-            {
-                "id": "ls_{{ls_number}}_ch_{{ch_number}}_level_off",
-                "title": "Brightness (%)",
-                "reg_type": "holding",
-                "address": {{1280 + 16 + 64 * (ls_number - 1) + (ch_number - 1)}},
-                "min": 1,
-                "max": 100,
-                "default": 50,
-                "required": true,
-                "group": "gg_ls_{{ls_number}}_ch_{{ch_number}}_action_turn_on",
-                "condition": "ls_{{ls_number}}_ch_{{ch_number}}_action_off==3"
-            },
-            {
-                "id": "ls_{{ls_number}}_ch_{{ch_number}}_action_on",
-                "title": "Action",
-                "reg_type": "holding",
-                "address": {{1280 + 32 + 64 * (ls_number - 1) + (ch_number - 1)}},
-                "type": "enum",
-                "enum": [0, 1, 3],
-                "enum_titles": [
-                    "Channel not Used in Scene",
-                    "Turn Off",
-                    "Set Brightness"
-                ],
-                "group": "gg_ls_{{ls_number}}_ch_{{ch_number}}_action_turn_off"
-            },
-            {
-                "id": "ls_{{ls_number}}_ch_{{ch_number}}_fading_on",
-                "title": "Dimming level rate (ms/%)",
-                "reg_type": "holding",
-                "address": {{1280 + 40 + 64 * (ls_number - 1) + (ch_number - 1)}},
-                "min": 0,
-                "max": 500,
-                "default": 20,
-                "required": true,
-                "group": "gg_ls_{{ls_number}}_ch_{{ch_number}}_action_turn_off",
-                "condition": "ls_{{ls_number}}_ch_{{ch_number}}_action_on>=1"
-            },
-            {
-                "id": "ls_{{ls_number}}_ch_{{ch_number}}_level_on",
-                "title": "Brightness (%)",
-                "reg_type": "holding",
-                "address": {{1280 + 48 + 64 * (ls_number - 1) + (ch_number - 1)}},
-                "min": 1,
-                "max": 100,
-                "default": 50,
-                "required": true,
-                "group": "gg_ls_{{ls_number}}_ch_{{ch_number}}_action_turn_off",
-                "condition": "ls_{{ls_number}}_ch_{{ch_number}}_action_on==3"
-            },
-            {% endfor -%}
-            {% endfor -%}
-
-            {
-                "id": "safety_timer_s",
-                "title": "Safety Poll Timeout (s)",
-                "group": "g_safety",
-                "description": "poll_timeout_description",
-                "address": 8,
-                "order": 2,
-                "reg_type": "holding",
-                "min": 1,
-                "max": 65534,
-                "default": 10
-            },
-            {% for ch_number in range(1, OUTPUTS_NUMBER + 1) -%}
-            {
-                "id": "safety_mode_ch_{{ch_number}}_action",
-                "title": "Action",
-                "reg_type": "holding",
-                "address": {{648 + ch_number - 1}},
-                "type": "enum",
-                "enum": [0, 1, 2, 3],
-                "enum_titles": [
-                    "No Action",
-                    "Turn Off",
-                    "Turn On",
-                    "Turn On and Set Brightness"
-                ],
-                "group": "gg_safety_mode_ch_{{ ch_number }}"
-            },
-            {
-                "id": "safety_mode_ch_{{ch_number}}_level",
-                "title": "Brightness (%)",
-                "reg_type": "holding",
-                "address": {{656 + ch_number - 1}},
-                "min": 1,
-                "max": 100,
-                "default": 50,
-                "required": true,
-                "condition": "safety_mode_ch_{{ch_number}}_action==3",
-                "group": "gg_safety_mode_ch_{{ ch_number }}"
-            },
-            {
-                "id": "power_up_behaviour_ch_{{ch_number}}_action",
-                "title": "Action",
-                "reg_type": "holding",
-                "address": {{664 + ch_number - 1}},
-                "type": "enum",
-                "enum": [0, 1, 2, 3],
-                "enum_titles": [
-                    "Turn Off",
-                    "Set Previous State",
-                    "Turn On",
-                    "Turn On and Set Brightness"
-                ],
-                "group": "gg_power_up_behaviour_ch_{{ ch_number }}"
-            },
-            {
-                "id": "power_up_behaviour_ch_{{ch_number}}_level",
-                "title": "Brightness (%)",
-                "reg_type": "holding",
-                "address": {{672 + ch_number - 1}},
-                "min": 1,
-                "max": 100,
-                "default": 50,
-                "required": true,
-                "condition": "power_up_behaviour_ch_{{ch_number}}_action==3",
-                "group": "gg_power_up_behaviour_ch_{{ ch_number }}"
-            },
-            {% endfor -%}
-            {% for in_number in range(1, INPUTS_NUMBER + 1) -%}
-            {
-                "id": "in_{{in_number}}_safety_input_control",
-                "title": "Input {{in_number}}",
-                "group": "gg_safety_input_control",
-                "address": {{640 + in_number - 1}},
-                "reg_type": "holding",
-                "default": 0,
-                "enum": [0, 1, 2],
-                "enum_titles": [
-                    "Don't change",
-                    "Disable in safety mode",
-                    "Enable only in safety mode"
-                ]
-            },
-            {% endfor -%}
-
             {% for ch_number in range(0, INPUTS_NUMBER) -%}
-            {% set selected_mode = ("inputs{}{}_mode".format(ch_number // 2 * 2 + 1, ch_number // 2 * 2 + 2)) -%}
-            {
-                "id": "input_{{ch_number + 1}}_mode",
-                "title": "Input Mode",
-                "description": "input_mode_description",
-                "address": {{416 + ch_number}},
-                "reg_type": "holding",
-                "enum": [0, 1],
-                "enum_titles": [
-                    "Button",
-                    "Switch"
-                ],
-                "default": 0,
-                "condition": "isDefined({{selected_mode}})==0||{{selected_mode}}==3",
-                "group": "input_{{ch_number + 1}}"
-            },
             {
                 "id": "input_{{ch_number + 1}}_hold_time",
                 "title": "Long Press Time (ms)",
@@ -555,7 +165,6 @@
                 "min": 500,
                 "max": 5000,
                 "group": "input_{{ch_number + 1}}_parameters",
-                "condition": "input_{{ch_number + 1}}_mode!=1",
                 "order": 1
             },
             {
@@ -568,7 +177,6 @@
                 "min": 0,
                 "max": 2000,
                 "group": "input_{{ch_number + 1}}_parameters",
-                "condition": "input_{{ch_number + 1}}_mode!=1",
                 "order": 2
             },
             {
@@ -691,7 +299,8 @@
                     "57600",
                     "115200"
                 ],
-                "group": "gg_general_parameters"
+                "group": "general",
+                "order": 1
             }
         ],
 
@@ -719,7 +328,6 @@
                 "address": {{464 + ch_number}},
                 "type": "value",
                 "group": "input_{{ch_number + 1}}_counters",
-                "condition": "input_{{ch_number + 1}}_mode!=1",
                 "sporadic": true
             },
             {
@@ -728,7 +336,6 @@
                 "address": {{480 + ch_number}},
                 "type": "value",
                 "group": "input_{{ch_number + 1}}_counters",
-                "condition": "input_{{ch_number + 1}}_mode!=1",
                 "sporadic": true
             },
             {
@@ -738,7 +345,6 @@
                 "type": "value",
                 "enabled": false,
                 "group": "input_{{ch_number + 1}}_counters",
-                "condition": "input_{{ch_number + 1}}_mode!=1",
                 "sporadic": true
             },
             {
@@ -748,7 +354,6 @@
                 "type": "value",
                 "enabled": false,
                 "group": "input_{{ch_number + 1}}_counters",
-                "condition": "input_{{ch_number + 1}}_mode!=1",
                 "sporadic": true
             },
             {% endfor -%}
@@ -778,17 +383,6 @@
                 "readonly": true,
                 "enabled": false,
                 "group": "debug"
-            },
-            {% endfor -%}
-            {% for ls_number in range(1, LIGHT_SCENES_NUMBER + 1) -%}
-            {
-                "name": "Scene {{ls_number}} Light",
-                "reg_type": "coil",
-                "address": {{ 32 + (ls_number - 1) }},
-                "type": "switch",
-                "enabled": false,
-                "sporadic": true,
-                "group": "gg_ls_{{ls_number}}_channels"
             },
             {% endfor -%}
             {
@@ -851,14 +445,14 @@
                 "reg_type": "input",
                 "address": 97,
                 "type": "switch",
-                "group": "gg_general_channels"
+                "group": "general"
             },
             {
                 "name": "Overcurrent",
                 "reg_type": "input",
                 "address": 100,
                 "type": "switch",
-                "group": "gg_general_channels"
+                "group": "general"
             },
             {
                 "name": "Zero-Сross Offset (us)",
@@ -879,8 +473,7 @@
         "translations": {
             "en": {
                 "WB-MDM3_template_title": "WB-MDM3 (3-channel MOSFET dimmer)",
-                "inputs_mode_description": "Firmware up to version 2.6.6 supports only one and two button modes without the ability to freely bind inputs and outputs and process different types of presses. Starting from firmware version 2.7.0, there is no need to select the input mode. Inputs and outputs can be binded in any combinations",
-                "Legacy Inputs Mode": "Inputs Mode (up to firmware version 2.6.6 incl.)",
+                "inputs_mode_description": "Custom mode allows to set actions for each input and press type. Available since firmware version 2.7.0",
                 "channel_min_value_description": "Raw dimmer value corresponding to minimum brightness (1%)",
                 "channel_max_value_description": "Raw dimmer value corresponding to maximum brightness (100%)",
 
@@ -892,14 +485,6 @@
                 "input_double_time_description": "If there is no second press during the specified time then press is single. 0 - disables all presses except short and long. Adds a delay to the response to a short press",
                 "input_debounce_time_description": "Must be 5-10 times less than second press waiting time. Adds a delay to the response to presses",
 
-                "input_mode_description": "Button is the default mode. Switch mode supported since firmware version 2.8.0",
-                "light_scenes_description": "Light scenes are used to control multiple channels simultaneously. This is necessary to define actions when the scene light is turned on or off. Supported since firmware version 2.8.0",
-                "g_safety_description": "Safety mode is activated when there is no modbus polling for the specified time. Supported since firmware version 2.8.0",
-
-                "poll_timeout_description": "Time in seconds without modbus polling before activation safety mode. Actions in safety mode are configured using appropriate parameters",
-                "inputs_control_in_safety_mode_description": "Sets change of control from the inputs when module switches to safety mode",
-                "g_power_up_behaviour_description": "Actions when Power is On. Supported since firmware version 2.8.0",
-
                 "baud_rate_description": "Make sure that communication with device is established before changing this parameter. Select required baud rate, save configuration and then change port baud rate to the same value.",
                 "Uptime": "Uptime (s)"
             },
@@ -908,38 +493,11 @@
                 "General": "Общее",
                 "HW Info": "Данные модуля",
                 "Debug": "Диагностика",
-                "Legacy Inputs Mode": "Режим работы входов (для прошивок до 2.6.6 включительно)",
+                "Inputs Mode": "Режим работы входов",
                 "Input Parameters": "Параметры нажатий",
                 "Control disabled": "Управление отключено",
                 "Custom mode": "Пользовательский режим",
-                "inputs_mode_description": "В прошивках до 2.6.6 поддерживаются только одно- и двухкнопочный режимы работы входов без возможности свободной привязки входов и выходов и обработки различных типов нажатий. Начиная с прошивки 2.7.0 выбирать режим работы входов нет необходимости. Можно связывать входы и выходы в произвольных комбинациях",
-
-                "Input Mode": "Режим работы входа",
-                "Button": "Кнопка без фиксации",
-                "Switch": "Выключатель с фиксацией",
-                "Action when Switch is On": "Действие в положении \"включено\"",
-                "Action when Switch is Off": "Действие в положении \"выключено\"",
-
-                "light_scenes_description": "Сцены позволяют объединить несколько каналов и устанавливать заранее определенный уровень яркости. Для сцены обязательно настраивать действия при включении и выключении. Доступно с версии прошивки 2.8.0",
-                "Scene Light On/Off Condition": "Условие включенного света сцены",
-                "Scene Light is on if any used channel is on. Otherwise light is off": "Свет сцены включен, если хотя бы один используемый канал включен. Иначе свет выключен",
-                "Scene Light is on if all used channels are on. Otherwise light is off": "Свет сцены включен, если все используемые каналы включены. Иначе свет выключен",
-                "Actions when Scene Light Turn On": "Действие при включении света сцены",
-                "Actions when Scene Light Turn Off": "Действие при выключении света сцены",
-                "Channel not Used in Scene": "Канал не используется в сцене",
-                "Turn On and Set Brightness": "Включить и установить яркость",
-                "Set Brightness": "Установить яркость",
-                "Dimming level rate (ms/%)": "Темп изменения уровня яркости (мс/%)",
-                "Brightness (%)": "Яркость (%)",
-                "Turn Off Scene Light": "Выключить свет сцены",
-                "Turn On Scene Light": "Включить свет сцены",
-                "Toggle Scene Light": "Переключить свет сцены",
-
-                {% for ls_number in range(1, LIGHT_SCENES_NUMBER + 1) -%}
-                "Light Scene {{ls_number}}": "Сцена {{ls_number}}",
-                "Scene {{ls_number}} Light": "Свет сцены {{ls_number}}",
-                {% endfor -%}
-
+                "inputs_mode_description": "Пользовательский режим позволяет задать действия для каждого входа и типа нажатия. Доступно с версии прошивки 2.7.0",
                 "LED lamp or incandescent lamp (logarithmic)": "лампа светодиодная или накаливания (логарифмическая кривая яркости)",
                 "resistive load (linear)": "резистивная нагрузка (линейная кривая яркости)",
                 "switching mode (on/off)": "ключевой режим",
@@ -994,8 +552,6 @@
                 "Debounce Time (ms)": "Время подавления дребезга (мс)",
                 "Action Repeat Time (ms)": "Длительность периода повторения действий (мс)",
 
-                "input_mode_description": "Режим работы входа по умолчанию - кнопка без фиксации. Работа в режиме выключателя с фиксацией доступна с версии прошивки 2.8.0",
-
                 "input_hold_time_description": "Если нажатие длится больше указанного времени - считаем его длинным",
                 "input_double_time_description": "Если за указанное время второго нажатия не было - считаем нажатие одиночным. 0 - отключит все нажатия кроме короткого и длинного. Вносит задержку в реакцию на короткое нажатие",
                 "input_debounce_time_description": "Должно быть в 5-10 раз меньше, чем время ожидания второго нажатия. Вносит задержку в реакцию на нажатия",
@@ -1003,21 +559,6 @@
                 "decrease_rate_description": "Во время плавных переходов, выходной уровень будет уменьшаться на 1% через указанный период времени",
                 "increase_rate_description": "Во время плавных переходов, выходной уровень будет увеличиваться на 1% через указанный период времени",
                 "action_repeat_time_description": "Во время долгих действий, выходной уровень будет изменяться на 1% через указанный период времени",
-
-                "Safety Mode": "Безопасный режим",
-                "g_safety_description": "Настройка поведения устройства в случае потери связи с контроллером. Доступно с версии прошивки 2.8.0",
-                "Safety Behaviour": "Действие в безопасном режиме",
-                "Inputs Control In Safety Mode": "Управление с входов в безопасном режиме",
-                "Don't change": "Не блокировать",
-                "Disable in safety mode": "Блокировать в безопасном режиме",
-                "Enable only in safety mode": "Разрешить только в безопасном режиме",
-                "Safety Poll Timeout (s)": "Таймаут потери связи (с)",
-                "poll_timeout_description": "Время отсутствия опроса в секундах, после которого будет активирован безопасный режим. Действия в безопасном режиме настраиваются отдельно",
-                "inputs_control_in_safety_mode_description": "Настройка изменения управления с входов при переходе модуля в безопасный режим",
-
-                "Power Up Behaviour": "Поведение при включении питания",
-                "g_power_up_behaviour_description": "Настройка поведения выходов при включении питания устройства. Доступно с версии прошивки 2.8.0",
-                "Set Previous State": "Установить предыдущее состояние",
 
                 "Serial": "Серийный номер",
                 "FW Version": "Версия прошивки",
