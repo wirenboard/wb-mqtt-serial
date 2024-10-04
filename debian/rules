@@ -1,4 +1,18 @@
 #!/usr/bin/make -f
+
+COV_FAIL_UNDER := $(patsubst cov-fail-under=%,%,$(filter cov-fail-under=%,$(DEB_BUILD_OPTIONS)))
+COV_REPORT     := $(patsubst cov-report=%,%,$(filter cov-report=%,$(DEB_BUILD_OPTIONS)))
+
+ifneq ($(COV_FAIL_UNDER),)
+	MAKEFLAGS += COV_FAIL_UNDER=$(COV_FAIL_UNDER)
+endif
+ifneq ($(COV_REPORT),)
+	MAKEFLAGS += COV_REPORT=$(COV_REPORT)
+endif
+ifneq (,$(findstring debug, $(DEB_BUILD_OPTIONS)))
+	MAKEFLAGS += DEBUG=1
+endif
+
 %:
 	dh $@ --parallel
 

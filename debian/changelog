@@ -1,3 +1,9 @@
+wb-mqtt-serial (2.143.5) stable; urgency=medium
+
+  * Add coverage report generation, no functional changes
+
+ -- Nikolay Korotkiy <nikolay.korotkiy@wirenboard.com>  Thu, 26 Sep 2024 20:10:00 +0400
+
 wb-mqtt-serial (2.143.4) stable; urgency=medium
 
   * Set proper result code on port/Load RPC timeout

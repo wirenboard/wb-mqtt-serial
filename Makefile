@@ -50,6 +50,12 @@ TEST_LDFLAGS = -lgtest -lwbmqtt_test_utils
 
 VALGRIND_FLAGS = --error-exitcode=180 -q
 
+COV_REPORT ?= $(BUILD_DIR)/cov
+GCOVR_FLAGS := -s --html $(COV_REPORT).html -x $(COV_REPORT).xml
+ifneq ($(COV_FAIL_UNDER),)
+	GCOVR_FLAGS += --fail-under-line $(COV_FAIL_UNDER)
+endif
+
 SRCS=$(SERIAL_SRCS) $(TEST_SRCS)
 
 TEMPLATES_DIR = templates
@@ -84,18 +90,14 @@ test: templates $(TEST_DIR)/$(TEST_BIN)
 	else \
 		$(TEST_DIR)/$(TEST_BIN) $(TEST_ARGS) || { $(TEST_DIR)/abt.sh show; exit 1; } \
 	fi
+ifneq ($(DEBUG),)
+	gcovr $(GCOVR_FLAGS) $(BUILD_DIR)/$(SRC_DIR) $(BUILD_DIR)/$(TEST_DIR)
+endif
 
 templates: $(JINJA_TEMPLATES:$(TEMPLATES_DIR)/%.json.jinja=$(GENERATED_TEMPLATES_DIR)/%.json)
 
-lcov: test
-ifeq ($(DEBUG), 1)
-	geninfo --no-external -b . -o $(BUILD_DIR)/coverage.info $(BUILD_DIR)/$(SRC_DIR) $(BUILD_DIR)/$(TEST_DIR)
-	genhtml -o $(BUILD_DIR)/cov_html $(BUILD_DIR)/coverage.info
-endif
-
 clean:
-	-rm -rf build/release
-	-rm -rf build/debug
+	-rm -rf build
 	-rm -rf $(TEST_DIR)/$(TEST_BIN)
 
 install:
