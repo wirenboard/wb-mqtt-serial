@@ -4,7 +4,7 @@
 
 {
     "title": "WB-MDM3_template_title",
-    "device_type": "tpl1_wb_mdm3",
+    "device_type": "WB-MDM3",
     "group": "g-wb",
     "hw": [
         {
@@ -60,41 +60,6 @@
                 }
             },
             {% endfor -%}
-
-            {
-                "title": "Safety Mode",
-                "id": "g_safety",
-                "description": "g_safety_description"
-            },
-            {
-                "title": "Power Up Behaviour",
-                "id": "g_power_up_behaviour",
-                "description": "g_power_up_behaviour_description"
-            },
-            {
-                "title": "Safety Behaviour",
-                "id": "gg_safety_behaviour",
-                "group": "g_safety"
-            },
-            {% for ch_number in range(1, OUTPUTS_NUMBER + 1) -%}
-            {
-                "title": "Channel {{ ch_number }}",
-                "id": "gg_safety_mode_ch_{{ ch_number }}",
-                "group": "gg_safety_behaviour"
-            },
-            {
-                "title": "Channel {{ ch_number }}",
-                "id": "gg_power_up_behaviour_ch_{{ ch_number }}",
-                "group": "g_power_up_behaviour"
-            },
-            {% endfor -%}
-            {
-                "title": "Inputs Control In Safety Mode",
-                "id": "gg_safety_input_control",
-                "description": "inputs_control_in_safety_mode_description",
-                "group": "g_safety"
-            },
-
             {
                 "title": "General",
                 "id": "general"
@@ -186,163 +151,10 @@
                 "default": 0,
                 "group": "input_{{ ch_number + 1 }}_{{ press_type | replace(' ', '_') }}_press_action",
                 "order": 2,
-                "condition": "{{action_bind}}_number==100"
-            },
-            {% endfor -%}
-            {% for sw_act in ["off", "on"] -%}
-            {
-                "id": "input_{{ch_number + 1}}_switch_{{sw_act}}_channel",
-                "title": "Output Number",
-                "address": {{704 + (loop.index0 * 16) + ch_number}},
-                "reg_type": "holding",
-                "enum": [0, 1, 2, 3, 100],
-                "enum_titles": [
-                    "No Action",
-                    "Output 1",
-                    "Output 2",
-                    "Output 3",
-                    "All Outputs"
-                ],
-                "default": 0,
-                "group": "input_{{ ch_number + 1}}_switch_{{sw_act}}_action",
-                "condition": "input_{{ch_number + 1}}_mode==1",
-                "order": 1
-            },
-            {
-                "id": "input_{{ch_number + 1}}_switch_{{sw_act}}_action_single",
-                "title": "Action",
-                "address": {{736 + (loop.index0 * 16) + ch_number}},
-                "reg_type": "holding",
-                "enum": [0, 1, 2],
-                "enum_titles": [
-                    "Turn Off",
-                    "Turn On",
-                    "Toggle"
-                ],
-                "default": {{ 0 if sw_act == "off" else 1}},
-                "group": "input_{{ ch_number + 1}}_switch_{{sw_act}}_action",
-                "condition": "input_{{ch_number + 1}}_switch_{{sw_act}}_channel>=1&&input_{{ch_number + 1}}_switch_{{sw_act}}_channel<=3",
-                "order": 2
-            },
-            {
-                "id": "input_{{ch_number + 1}}_switch_{{sw_act}}_action_all",
-                "title": "Action",
-                "address": {{736 + (loop.index0 * 16) + ch_number}},
-                "reg_type": "holding",
-                "enum": [0, 1],
-                "enum_titles": [
-                    "Turn Off",
-                    "Turn On"
-                ],
-                "default": {{ 0 if sw_act == "off" else 1}},
-                "group": "input_{{ ch_number + 1}}_switch_{{sw_act}}_action",
-                "condition": "input_{{ch_number + 1}}_switch_{{sw_act}}_channel==100",
-                "order": 2
+                "condition": "((isDefined({{action_bind}}_number))&&({{ action_bind }}_number==100)&&({{selected_mode}}==3))"
             },
             {% endfor -%}{% endfor -%}
-            {
-                "id": "safety_timer_s",
-                "title": "Safety Poll Timeout (s)",
-                "group": "g_safety",
-                "description": "poll_timeout_description",
-                "address": 8,
-                "order": 2,
-                "reg_type": "holding",
-                "min": 1,
-                "max": 65534,
-                "default": 10
-            },
-            {% for ch_number in range(1, OUTPUTS_NUMBER + 1) -%}
-            {
-                "id": "safety_mode_ch_{{ch_number}}_action",
-                "title": "Action",
-                "reg_type": "holding",
-                "address": {{648 + ch_number - 1}},
-                "type": "enum",
-                "enum": [0, 1, 2, 3],
-                "enum_titles": [
-                    "No Action",
-                    "Turn Off",
-                    "Turn On",
-                    "Turn On and Set Brightness"
-                ],
-                "group": "gg_safety_mode_ch_{{ ch_number }}"
-            },
-            {
-                "id": "safety_mode_ch_{{ch_number}}_level",
-                "title": "Brightness (%)",
-                "reg_type": "holding",
-                "address": {{656 + ch_number - 1}},
-                "min": 1,
-                "max": 100,
-                "default": 50,
-                "required": true,
-                "condition": "safety_mode_ch_{{ch_number}}_action==3",
-                "group": "gg_safety_mode_ch_{{ ch_number }}"
-            },
-            {
-                "id": "power_up_behaviour_ch_{{ch_number}}_action",
-                "title": "Action",
-                "reg_type": "holding",
-                "address": {{664 + ch_number - 1}},
-                "type": "enum",
-                "enum": [0, 1, 2, 3],
-                "enum_titles": [
-                    "Turn Off",
-                    "Set Previous State",
-                    "Turn On",
-                    "Turn On and Set Brightness"
-                ],
-                "group": "gg_power_up_behaviour_ch_{{ ch_number }}"
-            },
-            {
-                "id": "power_up_behaviour_ch_{{ch_number}}_level",
-                "title": "Brightness (%)",
-                "reg_type": "holding",
-                "address": {{672 + ch_number - 1}},
-                "min": 1,
-                "max": 100,
-                "default": 50,
-                "required": true,
-                "condition": "power_up_behaviour_ch_{{ch_number}}_action==3",
-                "group": "gg_power_up_behaviour_ch_{{ ch_number }}"
-            },
-            {% endfor -%}
-            {% for in_number in range(1, INPUTS_NUMBER + 1) -%}
-            {
-                "id": "in_{{in_number}}_safety_input_control",
-                "title": "Input {{in_number}}",
-                "group": "gg_safety_input_control",
-                "address": {{640 + in_number - 1}},
-                "reg_type": "holding",
-                "default": 0,
-                "enum": [0, 1, 2],
-                "enum_titles": [
-                    "Don't change",
-                    "Disable in safety mode",
-                    "Enable only in safety mode"
-                ]
-            },
-            {% endfor -%}
-
             {% for ch_number in range(0, INPUTS_NUMBER) -%}
-            {% set selected_mode = ("inputs{}{}_mode".format(ch_number // 2 * 2 + 1, ch_number // 2 * 2 + 2)) -%}
-            {
-                "id": "input_{{ch_number + 1}}_mode",
-                "title": "Input Mode",
-                "description": "input_mode_description",
-                "address": {{416 + ch_number}},
-                "reg_type": "holding",
-                "enum": [0, 1],
-                "enum_titles": [
-                    "Button",
-                    "Switch"
-                ],
-                "required": true,
-                "default": 0,
-                "condition": "isDefined({{selected_mode}})==0||{{selected_mode}}==3",
-                "group": "input_{{ch_number + 1}}"
-            },
             {
                 "id": "input_{{ch_number + 1}}_hold_time",
                 "title": "Long Press Time (ms)",
@@ -685,17 +497,7 @@
                 "Input Parameters": "Параметры нажатий",
                 "Control disabled": "Управление отключено",
                 "Custom mode": "Пользовательский режим",
-                "inputs_mode_description": "В прошивках до 2.6.6 поддерживаются только одно- и двухкнопочный режимы работы входов без возможности свободной привязки входов и выходов и обработки различных типов нажатий. Начиная с прошивки 2.7.0 выбирать режим работы входов нет необходимости. Можно связывать входы и выходы в произвольных комбинациях",
-
-                "Input Mode": "Режим работы входа",
-                "Button": "Кнопка без фиксации",
-                "Switch": "Выключатель с фиксацией",
-                "Action when Switch is On": "Действие в положении \"включено\"",
-                "Action when Switch is Off": "Действие в положении \"выключено\"",
-
-                "Turn On and Set Brightness": "Включить и установить яркость",
-                "Brightness (%)": "Яркость (%)",
-
+                "inputs_mode_description": "Пользовательский режим позволяет задать действия для каждого входа и типа нажатия. Доступно с версии прошивки 2.7.0",
                 "LED lamp or incandescent lamp (logarithmic)": "лампа светодиодная или накаливания (логарифмическая кривая яркости)",
                 "resistive load (linear)": "резистивная нагрузка (линейная кривая яркости)",
                 "switching mode (on/off)": "ключевой режим",
