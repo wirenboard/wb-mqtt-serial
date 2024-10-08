@@ -1,0 +1,930 @@
+{
+    "title": "template_title",
+    "device_type": "Breezart-Lux(SB)",
+    "group": "g-climate-control",
+
+    "device": {
+        "name": "Breezart Lux (SB)",
+        "id": "breezart_lux_sb",
+        "guard_interval_us": 5000,
+
+        "groups": [
+            {
+                "title": "Mode",
+                "id": "mode"
+            },
+            {
+                "title": "Setpoint",
+                "id": "setpoint"
+            },
+            {
+                "title": "Inputs",
+                "id": "inputs"
+            },
+            {
+                "title": "HW Info",
+                "id": "hw_info"
+            }
+        ],
+
+        "parameters": [
+            {
+                "title": "Restart After Failure",
+                "id":"restart_after_failure",
+                "reg_type": "holding",
+                "address": "42:1:1",
+                "format": "u16",
+                "enum": [
+                    0,
+                    1
+                ],
+                "enum_titles": [
+                    "Off",
+                    "On"
+                ],
+                "group": "mode",
+                "order": 1
+            }
+        ],
+
+        "channels": [
+            {
+                "name": "Air Handling Unit Status",
+                "id":"air_handling_unit_status",
+                "enabled": true,
+                "reg_type": "input",
+                "address": "11:0:2",
+                "type": "value",
+                "format": "u16",
+                "enum": [
+                    0,
+                    1,
+                    2,
+                    3
+                ],
+                "enum_titles": [
+                    "Disabled",
+                    "Enabled",
+                    "Shutdown",
+                    "Starts"
+                ],
+                "group": "mode"
+            },
+            {
+                "name": "Error Code",
+                "id":"error_code",
+                "enabled": true,
+                "reg_type": "input",
+                "address": "19",
+                "type": "value",
+                "format": "s32",
+                "word_order" : "little_endian",
+                "group": "mode"
+            },
+            {
+                "name": "Warning Code",
+                "id":"warning_code",
+                "enabled": true,
+                "reg_type": "input",
+                "address": "21",
+                "type": "value",
+                "format": "s32",
+                "word_order" : "little_endian",
+                "group": "mode"
+            },
+            {
+                "name": "Heating-Cooling Mode",
+                "id":"heating_cooling_mode",
+                "enabled": true,
+                "reg_type": "input",
+                "address": "11:7:2",
+                "type": "value",
+                "format": "u16",
+                "enum": [
+                    0,
+                    1,
+                    2,
+                    3
+                ],
+                "enum_titles": [
+                    "Disabled",
+                    "Heat",
+                    "Cool",
+                    "Undefined"
+                ],
+                "group": "mode"
+            },
+            {
+                "name": "Humidification Status",
+                "id":"humidification_status",
+                "enabled": true,
+                "reg_type": "input",
+                "address": "11:9:1",
+                "type": "value",
+                "format": "u16",
+                "enum": [
+                    0,
+                    1
+                ],
+                "enum_titles": [
+                    "Off",
+                    "On"
+                ],
+                "group": "mode"
+            },
+            {
+                "name": "Current Time Program",
+                "id":"current_time_program",
+                "enabled": true,
+                "reg_type": "input",
+                "address": "64008:0:8",
+                "type": "value",
+                "format": "u8",
+                "enum": [
+                    0,
+                    1,
+                    2,
+                    3,
+                    4,
+                    5,
+                    6,
+                    7,
+                    255
+                ],
+                "enum_titles": [
+                    "1",
+                    "2",
+                    "3",
+                    "4",
+                    "5",
+                    "6",
+                    "7",
+                    "8",
+                    "Disabled"
+                ],
+                "group": "mode"
+            },
+            {
+                "name": "Time Program Auto Status",
+                "id":"time_program_auto_status",
+                "enabled": true,
+                "reg_type": "holding",
+                "address": "42:7:1",
+                "type": "value",
+                "format": "u16",
+                "enum": [
+                    0,
+                    1
+                ],
+                "enum_titles": [
+                    "On",
+                    "Off"
+                ],
+                "readonly": true,
+                "group": "mode"
+            },
+            {
+                "name": "Ventilation Status",
+                "id":"ventilation_status",
+                "enabled": true,
+                "reg_type": "holding",
+                "address": "111:4:1",
+                "type": "value",
+                "format": "u16",
+                "enum": [
+                    0,
+                    1
+                ],
+                "enum_titles": [
+                    "On",
+                    "Off"
+                ],
+                "readonly": true,
+                "group": "mode"
+            },
+            {
+                "name": "Control Temperature",
+                "id":"temperature_control",
+                "enabled": true,
+                "reg_type": "input",
+                "address": "13",
+                "type": "value",
+                "units": "deg C",
+                "format": "u16",
+                "scale": 0.1,
+                "group": "inputs"
+            },
+            {
+                "name": "Control Temperature Status",
+                "id":"temperature_control_status",
+                "enabled": false,
+                "reg_type": "input",
+                "address": "14:0:8",
+                "type": "value",
+                "format": "u8",
+                "group": "inputs"
+            },
+            {
+                "name": "Control Humidity",
+                "id":"humidity_control",
+                "enabled": true,
+                "reg_type": "input",
+                "address": "15",
+                "type": "value",
+                "units": "%",
+                "format": "u16",
+                "scale": 0.1,
+                "group": "inputs"
+            },
+            {
+                "name": "Control Humidity Status",
+                "id":"humidity_control_status",
+                "enabled": false,
+                "reg_type": "input",
+                "address": "16:0:8",
+                "type": "value",
+                "format": "u8",
+                "group": "inputs"
+            },
+            {
+                "name": "Fan Performance",
+                "id":"fan_performance",
+                "enabled": true,
+                "reg_type": "input",
+                "address": "17",
+                "type": "value",
+                "units": "%",
+                "format": "u16",
+                "scale": 0.01,
+                "group": "inputs"
+            },
+            {
+                "name": "Air Handling Unit",
+                "id":"air_handling_unit",
+                "enabled": true,
+                "reg_type": "holding",
+                "address": "3",
+                "type": "switch",
+                "format": "u16",
+                "group": "mode"
+            },
+            {
+                "name": "Heat",
+                "id":"heat",
+                "enabled": true,
+                "reg_type": "holding",
+                "address": "7",
+                "type": "value",
+                "format": "u16",
+                "enum": [
+                    0,
+                    1,
+                    2
+                ],
+                "enum_titles": [
+                    "Disabled",
+                    "Enabled",
+                    "Auto"
+                ],
+                "group": "mode"
+            },
+            {
+                "name": "Cool",
+                "id":"cool",
+                "enabled": false,
+                "reg_type": "holding",
+                "address": "42:4:1",
+                "type": "switch",
+                "format": "u16",
+                "group": "mode"
+            },
+            {
+                "name": "Humidification",
+                "id":"humidification",
+                "enabled": false,
+                "reg_type": "holding",
+                "address": "42:2:1",
+                "type": "switch",
+                "format": "u16",
+                "group": "mode"
+            },
+            {
+                "name": "Comfort Function",
+                "id":"comfort_function",
+                "enabled": true,
+                "reg_type": "holding",
+                "address": "42:0:1",
+                "type": "switch",
+                "format": "u16",
+                "group": "mode"
+            },
+            {
+                "name": "Temperature Setpoint (°С)",
+                "id":"setpoint_temperature",
+                "enabled": true,
+                "reg_type": "holding",
+                "address": "1",
+                "type": "range",
+                "format": "s16",
+                "min": 5,
+                "max": 40,
+                "scale": 0.1,
+                "group": "setpoint"
+            },
+            {
+                "name": "Relative Humidity Setpoint (%)",
+                "id":"setpoint_relative_humidity",
+                "enabled": true,
+                "reg_type": "holding",
+                "address": "2",
+                "type": "range",
+                "format": "s16",
+                "min": 30,
+                "max": 80,
+                "scale": 0.1,
+                "group": "setpoint"
+            },
+            {
+                "name": "Fan Performance Setpoint (%)",
+                "id":"setpoint_fan_performance",
+                "enabled": true,
+                "reg_type": "holding",
+                "address": "0",
+                "type": "range",
+                "format": "u16",
+                "min": 15,
+                "max": 100,
+                "scale": 0.01,
+                "group": "setpoint"
+            },
+            {
+                "name": "Time Program Autorun",
+                "id":"time_program_autorun",
+                "enabled": true,
+                "reg_type": "holding",
+                "address": "42:7:1",
+                "type": "switch",
+                "format": "u16",
+                "on_value": "0",
+                "off_value": "1",
+                "group": "mode"
+            },
+            {
+                "name": "Time Program 1",
+                "id":"time_program_1",
+                "enabled": true,
+                "reg_type": "holding",
+                "address": "1900",
+                "type" : "pushbutton",
+                "format": "u16",
+                "on_value": "1",
+                "group": "mode"
+            },
+            {
+                "name": "Time Program 2",
+                "id":"time_program_2",
+                "enabled": true,
+                "reg_type": "holding",
+                "address": "1900",
+                "type" : "pushbutton",
+                "format": "u16",
+                "on_value": "2",
+                "group": "mode"
+            },
+            {
+                "name": "Time Program 3",
+                "id":"time_program_3",
+                "enabled": true,
+                "reg_type": "holding",
+                "address": "1900",
+                "type" : "pushbutton",
+                "format": "u16",
+                "on_value": "3",
+                "group": "mode"
+            },
+            {
+                "name": "Time Program 4",
+                "id":"time_program_4",
+                "enabled": true,
+                "reg_type": "holding",
+                "address": "1900",
+                "type" : "pushbutton",
+                "format": "u16",
+                "on_value": "4",
+                "group": "mode"
+            },
+            {
+                "name": "Time Program 5",
+                "id":"time_program_5",
+                "enabled": true,
+                "reg_type": "holding",
+                "address": "1900",
+                "type" : "pushbutton",
+                "format": "u16",
+                "on_value": "5",
+                "group": "mode"
+            },
+            {
+                "name": "Time Program 6",
+                "id":"time_program_6",
+                "enabled": true,
+                "reg_type": "holding",
+                "address": "1900",
+                "type" : "pushbutton",
+                "format": "u16",
+                "on_value": "6",
+                "group": "mode"
+            },
+            {
+                "name": "Time Program 7",
+                "id":"time_program_7",
+                "enabled": true,
+                "reg_type": "holding",
+                "address": "1900",
+                "type" : "pushbutton",
+                "format": "u16",
+                "on_value": "7",
+                "group": "mode"
+            },
+            {
+                "name": "Time Program 8",
+                "id":"time_program_8",
+                "enabled": true,
+                "reg_type": "holding",
+                "address": "1900",
+                "type" : "pushbutton",
+                "format": "u16",
+                "on_value": "8",
+                "group": "mode"
+            },
+            {
+                "name": "Outlet Temperature",
+                "id":"temperature_outlet",
+                "enabled": true,
+                "reg_type": "input",
+                "address": "50",
+                "type": "value",
+                "units": "deg C",
+                "format": "u16",
+                "scale": 0.1,
+                "group": "inputs"
+            },
+            {
+                "name": "Outlet Temperature Status",
+                "id":"temperature_outlet_status",
+                "enabled": false,
+                "reg_type": "input",
+                "address": "51:0:8",
+                "type": "value",
+                "format": "u8",
+                "group": "inputs"
+            },
+            {
+                "name": "Outlet Humidity",
+                "id":"humidity_outlet",
+                "enabled": true,
+                "reg_type": "input",
+                "address": "52",
+                "type": "value",
+                "units": "%",
+                "format": "u16",
+                "scale": 0.1,
+                "group": "inputs"
+            },
+            {
+                "name": "Outlet Humidity Status",
+                "id":"humidity_outlet_status",
+                "enabled": false,
+                "reg_type": "input",
+                "address": "53:0:8",
+                "type": "value",
+                "format": "u8",
+                "group": "inputs"
+            },
+            {
+                "name": "Indoor Temperature",
+                "id":"temperature_indoor",
+                "enabled": true,
+                "reg_type": "input",
+                "address": "54",
+                "type": "value",
+                "units": "deg C",
+                "format": "u16",
+                "scale": 0.1,
+                "group": "inputs"
+            },
+            {
+                "name": "Indoor Temperature Status",
+                "id":"temperature_indoor_status",
+                "enabled": false,
+                "reg_type": "input",
+                "address": "55:0:8",
+                "type": "value",
+                "format": "u8",
+                "group": "inputs"
+            },
+            {
+                "name": "Indoor Humidity",
+                "id":"humidity_indoor",
+                "enabled": true,
+                "reg_type": "input",
+                "address": "56",
+                "type": "value",
+                "units": "%",
+                "format": "u16",
+                "scale": 0.1,
+                "group": "inputs"
+            },
+            {
+                "name": "Indoor Humidity Status",
+                "id":"humidity_indoor_status",
+                "enabled": false,
+                "reg_type": "input",
+                "address": "57:0:8",
+                "type": "value",
+                "format": "u8",
+                "group": "inputs"
+            },
+            {
+                "name": "Indoor CO2 Concentration",
+                "id":"concentration_co2_indoor",
+                "enabled": false,
+                "reg_type": "input",
+                "address": "74",
+                "type": "value",
+                "units": "ppm",
+                "format": "u16",
+                "group": "inputs"
+            },
+            {
+                "name": "Indoor CO2 Concentration Status",
+                "id":"concentration_co2_indoor_status",
+                "enabled": false,
+                "reg_type": "input",
+                "address": "75:0:8",
+                "type": "value",
+                "format": "u8",
+                "group": "inputs"
+            },
+            {
+                "name": "Indoor VOC Concentration",
+                "id":"concentration_voc_indoor",
+                "enabled": false,
+                "reg_type": "input",
+                "address": "76",
+                "type": "value",
+                "units": "%",
+                "format": "u16",
+                "scale": 0.1,
+                "group": "inputs"
+            },
+            {
+                "name": "Indoor VOC Concentration Status",
+                "id":"concentration_voc_indoor_status",
+                "enabled": false,
+                "reg_type": "input",
+                "address": "77:0:8",
+                "type": "value",
+                "format": "u8",
+                "group": "inputs"
+            },
+            {
+                "name": "Outdoor Temperature",
+                "id":"temperature_outdoor",
+                "enabled": true,
+                "reg_type": "input",
+                "address": "58",
+                "type": "value",
+                "units": "deg C",
+                "format": "s16",
+                "scale": 0.1,
+                "group": "inputs"
+            },
+            {
+                "name": "Outdoor Temperature Status",
+                "id":"temperature_outdoor_status",
+                "enabled": false,
+                "reg_type": "input",
+                "address": "59:0:8",
+                "type": "value",
+                "format": "u8",
+                "group": "inputs"
+            },
+            {
+                "name": "Outdoor Humidity",
+                "id":"humidity_outdoor",
+                "enabled": true,
+                "reg_type": "input",
+                "address": "60",
+                "type": "value",
+                "units": "%",
+                "format": "u16",
+                "scale": 0.1,
+                "group": "inputs"
+            },
+            {
+                "name": "Outdoor Humidity Status",
+                "id":"humidity_outdoor_status",
+                "enabled": false,
+                "reg_type": "input",
+                "address": "61:0:8",
+                "type": "value",
+                "format": "u8",
+                "group": "inputs"
+            },
+            {
+                "name": "Coolant Temperature",
+                "id":"temperature_coolant",
+                "enabled": false,
+                "reg_type": "input",
+                "address": "62",
+                "type": "value",
+                "units": "deg C",
+                "format": "u16",
+                "scale": 0.1,
+                "group": "inputs"
+            },
+            {
+                "name": "Coolant Temperature Status",
+                "id":"temperature_coolant_status",
+                "enabled": false,
+                "reg_type": "input",
+                "address": "63:0:8",
+                "type": "value",
+                "format": "u8",
+                "group": "inputs"
+            },
+            {
+                "name": "Filter 1 is Available",
+                "id":"available_filter_1",
+                "enabled": false,
+                "reg_type": "input",
+                "address": "12002:0:1",
+                "type": "value",
+                "format": "u16",
+                "enum": [
+                    0,
+                    1
+                ],
+                "enum_titles": [
+                    "No",
+                    "Yes"
+                ],
+                "group": "inputs"
+            },
+            {
+                "name": "Filter 1 Resistants",
+                "id":"resistants_filter_1",
+                "enabled": true,
+                "reg_type": "input",
+                "address": "64006",
+                "type": "value",
+                "units": "%",
+                "format": "u16",
+                "scale": 0.01,
+                "group": "inputs"
+            },
+            {
+                "name": "Filter 1 Pressure Drop",
+                "id":"pressure_drop_filter_1",
+                "enabled": true,
+                "reg_type": "input",
+                "address": "12006",
+                "type": "value",
+                "units": "Pa",
+                "format": "u16",
+                "scale": 0.1,
+                "group": "inputs"
+            },
+            {
+                "name": "Filter 1 Hour Counter",
+                "id":"filter_1_hour_counter",
+                "enabled": true,
+                "reg_type": "input",
+                "address": "12008",
+                "type": "value",
+                "units": "h",
+                "format": "u16",
+                "group": "inputs"
+            },
+            {
+                "name": "Filter 2 is Available",
+                "id":"available_filter_2",
+                "enabled": false,
+                "reg_type": "input",
+                "address": "12202:0:1",
+                "type": "value",
+                "format": "u16",
+                "enum": [
+                    0,
+                    1
+                ],
+                "enum_titles": [
+                    "No",
+                    "Yes"
+                ],
+                "group": "inputs"
+            },
+            {
+                "name": "Filter 2 Resistants",
+                "id":"resistants_filter_2",
+                "enabled": false,
+                "reg_type": "input",
+                "address": "64007",
+                "type": "value",
+                "units": "%",
+                "format": "u16",
+                "scale": 0.01,
+                "group": "inputs"
+            },
+            {
+                "name": "Filter 2 Pressure Drop",
+                "id":"pressure_drop_filter_2",
+                "enabled": false,
+                "reg_type": "input",
+                "address": "12206",
+                "type": "value",
+                "units": "Pa",
+                "format": "u16",
+                "scale": 0.1,
+                "group": "inputs"
+            },
+            {
+                "name": "Filter 2 Hour Counter",
+                "id":"filter_2_hour_counter",
+                "enabled": false,
+                "reg_type": "input",
+                "address": "12208",
+                "type": "value",
+                "units": "h",
+                "format": "u16",
+                "group": "inputs"
+            },
+            {
+                "name": "Serial Number",
+                "id": "serial_number",
+                "enabled": false,
+                "reg_type": "input",
+                "address": "65001",
+                "type" : "text",
+                "format" : "string",
+                "string_data_size" : 8,
+                "group": "hw_info"
+            },
+            {
+                "name": "Controller Type",
+                "id": "controller_type",
+                "enabled": false,
+                "reg_type": "input",
+                "address": "65000",
+                "type": "value",
+                "format": "u16",
+                "enum": [
+                    192,
+                    144,
+                    176
+                ],
+                "enum_titles": [
+                    "JL204С7",
+                    "JL205",
+                    "JL206"
+                ],
+                "group": "hw_info"
+            },
+            {
+                "name": "Firmware Version",
+                "id": "firmware_version",
+                "enabled": false,
+                "reg_type": "input",
+                "address": "65012",
+                "type": "value",
+                "format": "u16",
+                "group": "hw_info"
+            },
+            {
+                "name": "Cooler is Available",
+                "id":"available_cooler",
+                "enabled": false,
+                "reg_type": "input",
+                "address": "44:5:1",
+                "type": "value",
+                "format": "u16",
+                "enum": [
+                    0,
+                    1
+                ],
+                "enum_titles": [
+                    "No",
+                    "Yes"
+                ],
+                "group": "hw_info"
+            },
+            {
+                "name": "Humidifier is Available",
+                "id":"available_humidifier",
+                "enabled": false,
+                "reg_type": "input",
+                "address": "44:0:1",
+                "type": "value",
+                "format": "u16",
+                "enum": [
+                    0,
+                    1
+                ],
+                "enum_titles": [
+                    "No",
+                    "Yes"
+                ],
+                "group": "hw_info"
+            }
+        ],
+
+        "translations": {
+            "en": {
+                "template_title": "Breezart Lux (SB)"
+            },
+            "ru": {
+                "template_title": "Breezart Lux (SB)",
+                "Mode": "Режим",
+                "Setpoint": "Уставки",
+                "Inputs": "Входы",
+                "HW Info": "Данные контроллера",
+                "Air Handling Unit Status": "Вентустановка: статус",
+                "Disabled": "Отключено",
+                "Enabled": "Включено",
+                "Unit State Transition Process": "Процесс перехода установки",
+                "Shutdown": "Выключается",
+                "Starts": "Включается",
+                "Error Code": "Код аварии",
+                "Warning Code": "Код предупреждения",
+                "Heating-Cooling Mode": "Режим обогрев-охлаждение",
+                "Heat": "Обогрев",
+                "Cool": "Охлаждение",
+                "Undefined": "Не определен",
+                "Humidification Status": "Увлажнение: статус",
+                "Off": "Выключено",
+                "On": "Включено",
+                "Current Time Program": "Активный сценарий",
+                "Time Program Auto Status": "Автозапуск сценария: статус",
+                "Ventilation Status": "Проветривание: статус",
+                "Control Temperature": "Температура в точке регулирования",
+                "Control Temperature Status": "Статус температуры в точке регулирования",
+                "Control Humidity": "Влажность в точке регулирования",
+                "Control Humidity Status": "Статус влажности в точке регулирования",
+                "Fan Performance": "Производительность вентилятора",
+                "Air Handling Unit": "Вентустановка",
+                "Auto": "Авто",
+                "Humidification": "Увлажнение",
+                "Comfort Function": "Функция \"Комфорт\"",
+                "Restart After Failure": "Рестарт после сбоя",
+                "Temperature Setpoint (°С)": "Уставка температуры воздуха (°С)",
+                "Relative Humidity Setpoint (%)": "Уставка отн. влажности (%)",
+                "Fan Performance Setpoint (%)": "Уставка производительности вентилятора (%)",
+                "Time Program Autorun": "Автозапуск сценария по таймеру",
+                "Time Program 1": "Сценарий 1",
+                "Time Program 2": "Сценарий 2",
+                "Time Program 3": "Сценарий 3",
+                "Time Program 4": "Сценарий 4",
+                "Time Program 5": "Сценарий 5",
+                "Time Program 6": "Сценарий 6",
+                "Time Program 7": "Сценарий 7",
+                "Time Program 8": "Сценарий 8",
+                "Outlet Temperature": "Вентустановка: температура воздуха",
+                "Outlet Temperature Status": "Вентустановка: статус датчика температуры",
+                "Outlet Humidity": "Вентустановка: отн. влажность",
+                "Outlet Humidity Status": "Вентустановка: статус датчика отн. влажности",
+                "Indoor Temperature": "Помещение: температура воздуха",
+                "Indoor Temperature Status": "Помещение: статус датчика температуры",
+                "Indoor Humidity": "Помещение: отн. влажность",
+                "Indoor Humidity Status": "Помещение: статус датчика отн. влажности",
+                "Indoor CO2 Concentration": "Помещение: концентрация СО2",
+                "Indoor CO2 Concentration Status": "Помещение: статус датчика концентрации СО2",
+                "Indoor VOC Concentration": "Помещение: загрязненность воздуха",
+                "Indoor VOC Concentration Status": "Помещение: статус датчика загрязненности воздуха",
+                "Outdoor Temperature": "Улица: температура воздуха",
+                "Outdoor Temperature Status": "Улица: статус датчика температуры",
+                "Outdoor Humidity": "Улица: отн. влажность",
+                "Outdoor Humidity Status": "Улица: статус датчика отн. влажности",
+                "Coolant Temperature": "Теплоноситель: температура",
+                "Coolant Temperature Status": "Теплоноситель: статус датчика температуры",
+                "No": "Нет",
+                "Yes": "Да",
+                "Filter 1 is Available": "Наличие фильтра 1",
+                "Filter 1 Resistants": "Фильтр 1: загрязненность",
+                "Filter 1 Pressure Drop": "Фильтр 1: перепад давления",
+                "Filter 1 Hour Counter": "Фильтр 1: отработано",
+                "Filter 2 is Available": "Наличие фильтра 2",
+                "Filter 2 Resistants": "Фильтр 2: загрязненность",
+                "Filter 2 Pressure Drop": "Фильтр 2: перепад давления",
+                "Filter 2 Hour Counter": "Фильтр 2: отработано",
+                "Return Water Temperature": "Температура обратки",
+                "Power": "Полная потребляемая мощность",
+                "Serial Number": "Серийный номер",
+                "Controller Type": "Тип контроллера",
+                "Firmware Version": "Версия прошивки",
+                "Cooler is Available": "Наличие охладителя",
+                "Humidifier is Available": "Наличие увлажнителя"
+            }
+        }
+    }
+}
