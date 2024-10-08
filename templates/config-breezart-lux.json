@@ -28,23 +28,6 @@
         ],
 
         "parameters": [
-            {
-                "title": "Restart After Failure",
-                "id":"restart_after_failure",
-                "reg_type": "holding",
-                "address": "42:1:1",
-                "format": "u16",
-                "enum": [
-                    0,
-                    1
-                ],
-                "enum_titles": [
-                    "Off",
-                    "On"
-                ],
-                "group": "mode",
-                "order": 1
-            }
         ],
 
         "channels": [
@@ -876,7 +859,6 @@
                 "Auto": "Авто",
                 "Humidification": "Увлажнение",
                 "Comfort Function": "Функция \"Комфорт\"",
-                "Restart After Failure": "Рестарт после сбоя",
                 "Temperature Setpoint (°С)": "Уставка температуры воздуха (°С)",
                 "Relative Humidity Setpoint (%)": "Уставка отн. влажности (%)",
                 "Fan Performance Setpoint (%)": "Уставка производительности вентилятора (%)",
