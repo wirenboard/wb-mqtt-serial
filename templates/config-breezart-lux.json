@@ -27,9 +27,6 @@
             }
         ],
 
-        "parameters": [
-        ],
-
         "channels": [
             {
                 "name": "Air Handling Unit Status",
