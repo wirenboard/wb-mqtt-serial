@@ -1,3 +1,4 @@
+{% set PROGRAM_NUMBER = 8 -%}
 {
     "title": "template_title",
     "device_type": "Breezart-Lux(SB)",
@@ -331,86 +332,18 @@
                 "off_value": "1",
                 "group": "mode"
             },
+            {% for prog_num in range(1, PROGRAM_NUMBER + 1) -%}
             {
-                "name": "Time Program 1",
-                "id":"time_program_1",
+                "name": "Time Program {{prog_num}}",
+                "id":"time_program_{{prog_num}}",
                 "reg_type": "holding",
                 "address": "1900",
                 "type" : "pushbutton",
                 "format": "u16",
-                "on_value": "1",
+                "on_value": "{{prog_num}}",
                 "group": "mode"
             },
-            {
-                "name": "Time Program 2",
-                "id":"time_program_2",
-                "reg_type": "holding",
-                "address": "1900",
-                "type" : "pushbutton",
-                "format": "u16",
-                "on_value": "2",
-                "group": "mode"
-            },
-            {
-                "name": "Time Program 3",
-                "id":"time_program_3",
-                "reg_type": "holding",
-                "address": "1900",
-                "type" : "pushbutton",
-                "format": "u16",
-                "on_value": "3",
-                "group": "mode"
-            },
-            {
-                "name": "Time Program 4",
-                "id":"time_program_4",
-                "reg_type": "holding",
-                "address": "1900",
-                "type" : "pushbutton",
-                "format": "u16",
-                "on_value": "4",
-                "group": "mode"
-            },
-            {
-                "name": "Time Program 5",
-                "id":"time_program_5",
-                "reg_type": "holding",
-                "address": "1900",
-                "type" : "pushbutton",
-                "format": "u16",
-                "on_value": "5",
-                "group": "mode"
-            },
-            {
-                "name": "Time Program 6",
-                "id":"time_program_6",
-                "reg_type": "holding",
-                "address": "1900",
-                "type" : "pushbutton",
-                "format": "u16",
-                "on_value": "6",
-                "group": "mode"
-            },
-            {
-                "name": "Time Program 7",
-                "id":"time_program_7",
-                "reg_type": "holding",
-                "address": "1900",
-                "type" : "pushbutton",
-                "format": "u16",
-                "on_value": "7",
-                "group": "mode"
-            },
-            {
-                "name": "Time Program 8",
-                "id":"time_program_8",
-                "reg_type": "holding",
-                "address": "1900",
-                "type" : "pushbutton",
-                "format": "u16",
-                "on_value": "8",
-                "group": "mode"
-            },
+            {% endfor -%}
             {
                 "name": "Outlet Temperature",
                 "id":"temperature_outlet",
