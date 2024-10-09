@@ -30,8 +30,7 @@
         "channels": [
             {
                 "name": "Air Handling Unit Status",
-                "id":"air_handling_unit_status",
-                "enabled": true,
+                "id":"air_handling_unit_status",   
                 "reg_type": "input",
                 "address": "11:0:2",
                 "type": "value",
@@ -53,7 +52,6 @@
             {
                 "name": "Error Code",
                 "id":"error_code",
-                "enabled": true,
                 "reg_type": "input",
                 "address": "19",
                 "type": "value",
@@ -64,7 +62,6 @@
             {
                 "name": "Warning Code",
                 "id":"warning_code",
-                "enabled": true,
                 "reg_type": "input",
                 "address": "21",
                 "type": "value",
@@ -75,7 +72,6 @@
             {
                 "name": "Heating-Cooling Mode",
                 "id":"heating_cooling_mode",
-                "enabled": true,
                 "reg_type": "input",
                 "address": "11:7:2",
                 "type": "value",
@@ -97,7 +93,6 @@
             {
                 "name": "Humidification Status",
                 "id":"humidification_status",
-                "enabled": true,
                 "reg_type": "input",
                 "address": "11:9:1",
                 "type": "value",
@@ -115,7 +110,6 @@
             {
                 "name": "Current Time Program",
                 "id":"current_time_program",
-                "enabled": true,
                 "reg_type": "input",
                 "address": "64008:0:8",
                 "type": "value",
@@ -147,7 +141,6 @@
             {
                 "name": "Time Program Auto Status",
                 "id":"time_program_auto_status",
-                "enabled": true,
                 "reg_type": "holding",
                 "address": "42:7:1",
                 "type": "value",
@@ -166,7 +159,6 @@
             {
                 "name": "Ventilation Status",
                 "id":"ventilation_status",
-                "enabled": true,
                 "reg_type": "holding",
                 "address": "111:4:1",
                 "type": "value",
@@ -185,7 +177,6 @@
             {
                 "name": "Control Temperature",
                 "id":"temperature_control",
-                "enabled": true,
                 "reg_type": "input",
                 "address": "13",
                 "type": "value",
@@ -207,7 +198,6 @@
             {
                 "name": "Control Humidity",
                 "id":"humidity_control",
-                "enabled": true,
                 "reg_type": "input",
                 "address": "15",
                 "type": "value",
@@ -229,7 +219,6 @@
             {
                 "name": "Fan Performance",
                 "id":"fan_performance",
-                "enabled": true,
                 "reg_type": "input",
                 "address": "17",
                 "type": "value",
@@ -241,7 +230,6 @@
             {
                 "name": "Air Handling Unit",
                 "id":"air_handling_unit",
-                "enabled": true,
                 "reg_type": "holding",
                 "address": "3",
                 "type": "switch",
@@ -251,7 +239,6 @@
             {
                 "name": "Heat",
                 "id":"heat",
-                "enabled": true,
                 "reg_type": "holding",
                 "address": "7",
                 "type": "value",
@@ -291,7 +278,6 @@
             {
                 "name": "Comfort Function",
                 "id":"comfort_function",
-                "enabled": true,
                 "reg_type": "holding",
                 "address": "42:0:1",
                 "type": "switch",
@@ -301,7 +287,6 @@
             {
                 "name": "Temperature Setpoint (°С)",
                 "id":"setpoint_temperature",
-                "enabled": true,
                 "reg_type": "holding",
                 "address": "1",
                 "type": "range",
@@ -314,7 +299,6 @@
             {
                 "name": "Relative Humidity Setpoint (%)",
                 "id":"setpoint_relative_humidity",
-                "enabled": true,
                 "reg_type": "holding",
                 "address": "2",
                 "type": "range",
@@ -327,7 +311,6 @@
             {
                 "name": "Fan Performance Setpoint (%)",
                 "id":"setpoint_fan_performance",
-                "enabled": true,
                 "reg_type": "holding",
                 "address": "0",
                 "type": "range",
@@ -340,7 +323,6 @@
             {
                 "name": "Time Program Autorun",
                 "id":"time_program_autorun",
-                "enabled": true,
                 "reg_type": "holding",
                 "address": "42:7:1",
                 "type": "switch",
@@ -352,7 +334,6 @@
             {
                 "name": "Time Program 1",
                 "id":"time_program_1",
-                "enabled": true,
                 "reg_type": "holding",
                 "address": "1900",
                 "type" : "pushbutton",
@@ -363,7 +344,6 @@
             {
                 "name": "Time Program 2",
                 "id":"time_program_2",
-                "enabled": true,
                 "reg_type": "holding",
                 "address": "1900",
                 "type" : "pushbutton",
@@ -374,7 +354,6 @@
             {
                 "name": "Time Program 3",
                 "id":"time_program_3",
-                "enabled": true,
                 "reg_type": "holding",
                 "address": "1900",
                 "type" : "pushbutton",
@@ -385,7 +364,6 @@
             {
                 "name": "Time Program 4",
                 "id":"time_program_4",
-                "enabled": true,
                 "reg_type": "holding",
                 "address": "1900",
                 "type" : "pushbutton",
@@ -396,7 +374,6 @@
             {
                 "name": "Time Program 5",
                 "id":"time_program_5",
-                "enabled": true,
                 "reg_type": "holding",
                 "address": "1900",
                 "type" : "pushbutton",
@@ -407,7 +384,6 @@
             {
                 "name": "Time Program 6",
                 "id":"time_program_6",
-                "enabled": true,
                 "reg_type": "holding",
                 "address": "1900",
                 "type" : "pushbutton",
@@ -418,7 +394,6 @@
             {
                 "name": "Time Program 7",
                 "id":"time_program_7",
-                "enabled": true,
                 "reg_type": "holding",
                 "address": "1900",
                 "type" : "pushbutton",
@@ -429,7 +404,6 @@
             {
                 "name": "Time Program 8",
                 "id":"time_program_8",
-                "enabled": true,
                 "reg_type": "holding",
                 "address": "1900",
                 "type" : "pushbutton",
@@ -440,7 +414,6 @@
             {
                 "name": "Outlet Temperature",
                 "id":"temperature_outlet",
-                "enabled": true,
                 "reg_type": "input",
                 "address": "50",
                 "type": "value",
@@ -462,7 +435,6 @@
             {
                 "name": "Outlet Humidity",
                 "id":"humidity_outlet",
-                "enabled": true,
                 "reg_type": "input",
                 "address": "52",
                 "type": "value",
@@ -484,7 +456,6 @@
             {
                 "name": "Indoor Temperature",
                 "id":"temperature_indoor",
-                "enabled": true,
                 "reg_type": "input",
                 "address": "54",
                 "type": "value",
@@ -506,7 +477,6 @@
             {
                 "name": "Indoor Humidity",
                 "id":"humidity_indoor",
-                "enabled": true,
                 "reg_type": "input",
                 "address": "56",
                 "type": "value",
@@ -571,7 +541,6 @@
             {
                 "name": "Outdoor Temperature",
                 "id":"temperature_outdoor",
-                "enabled": true,
                 "reg_type": "input",
                 "address": "58",
                 "type": "value",
@@ -593,7 +562,6 @@
             {
                 "name": "Outdoor Humidity",
                 "id":"humidity_outdoor",
-                "enabled": true,
                 "reg_type": "input",
                 "address": "60",
                 "type": "value",
@@ -655,7 +623,6 @@
             {
                 "name": "Filter 1 Resistants",
                 "id":"resistants_filter_1",
-                "enabled": true,
                 "reg_type": "input",
                 "address": "64006",
                 "type": "value",
@@ -667,7 +634,6 @@
             {
                 "name": "Filter 1 Pressure Drop",
                 "id":"pressure_drop_filter_1",
-                "enabled": true,
                 "reg_type": "input",
                 "address": "12006",
                 "type": "value",
@@ -679,7 +645,6 @@
             {
                 "name": "Filter 1 Hour Counter",
                 "id":"filter_1_hour_counter",
-                "enabled": true,
                 "reg_type": "input",
                 "address": "12008",
                 "type": "value",
