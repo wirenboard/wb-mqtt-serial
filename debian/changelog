@@ -1,3 +1,9 @@
+wb-mqtt-serial (2.144.0) stable; urgency=medium
+
+  * Add template for Breezart-Lux(SB)
+
+ -- Mikhail Burchu <mikhail.burchu@wirenboard.com>  Tue, 08 Oct 2024 13:35:00 +0300
+
 wb-mqtt-serial (2.143.5) stable; urgency=medium
 
   * Add coverage report generation, no functional changes
