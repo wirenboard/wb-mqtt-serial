@@ -6,29 +6,29 @@ fake_serial_device '1': read address '20' value '10'
 fake_serial_device '1': transfer OK
 fake_serial_device '1': reconnected
 fake_serial_device '1': read address '30' value '20'
-Read Callback: <fake:1:fake: 20> becomes 10
-Error Callback: <fake:1:fake: 20>: no error
-Read Callback: <fake:1:fake: 30> becomes 20
-Error Callback: <fake:1:fake: 30>: no error
+Read Callback: <<TSerialClientTest> fake:1:fake: 20> becomes 10
+Error Callback: <<TSerialClientTest> fake:1:fake: 20>: no error
+Read Callback: <<TSerialClientTest> fake:1:fake: 30> becomes 20
+Error Callback: <<TSerialClientTest> fake:1:fake: 30>: no error
 >>> server -> client: -2, -3
 >>> Cycle()
 fake_serial_device '1': read address '20' value '254'
 fake_serial_device '1': read address '30' value '253'
-Read Callback: <fake:1:fake: 20> becomes -2
-Read Callback: <fake:1:fake: 30> becomes -3
+Read Callback: <<TSerialClientTest> fake:1:fake: 20> becomes -2
+Read Callback: <<TSerialClientTest> fake:1:fake: 30> becomes -3
 >>> client -> server: 10
 >>> Cycle()
 fake_serial_device '1': write to address '20' value '10'
-Read Callback: <fake:1:fake: 20> becomes 10
+Read Callback: <<TSerialClientTest> fake:1:fake: 20> becomes 10
 fake_serial_device '1': read address '20' value '10'
 fake_serial_device '1': read address '30' value '253'
-Read Callback: <fake:1:fake: 20> becomes 10 [unchanged]
-Read Callback: <fake:1:fake: 30> becomes -3 [unchanged]
+Read Callback: <<TSerialClientTest> fake:1:fake: 20> becomes 10 [unchanged]
+Read Callback: <<TSerialClientTest> fake:1:fake: 30> becomes -3 [unchanged]
 >>> client -> server: -2
 >>> Cycle()
 fake_serial_device '1': write to address '20' value '254'
-Read Callback: <fake:1:fake: 20> becomes -2
+Read Callback: <<TSerialClientTest> fake:1:fake: 20> becomes -2
 fake_serial_device '1': read address '20' value '254'
 fake_serial_device '1': read address '30' value '253'
-Read Callback: <fake:1:fake: 20> becomes -2 [unchanged]
-Read Callback: <fake:1:fake: 30> becomes -3 [unchanged]
+Read Callback: <<TSerialClientTest> fake:1:fake: 20> becomes -2 [unchanged]
+Read Callback: <<TSerialClientTest> fake:1:fake: 30> becomes -3 [unchanged]

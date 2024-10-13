@@ -4,14 +4,14 @@ Sleep(100000)
 fake_serial_device '1': read address '20' value '0'
 fake_serial_device '1': transfer OK
 fake_serial_device '1': reconnected
-Read Callback: <fake:1:fake: 20> becomes 0
-Error Callback: <fake:1:fake: 20>: no error
+Read Callback: <<TSerialClientTest> fake:1:fake: 20> becomes 0
+Error Callback: <<TSerialClientTest> fake:1:fake: 20>: no error
 fake_serial_device: block address '20' for reading
 fake_serial_device: block address '20' for writing
 >>> Cycle() [read, rw blacklisted]
 fake_serial_device '1': read address '20' failed: 'Serial protocol error: read blocked'
 fake_serial_device '1': transfer FAIL
-Error Callback: <fake:1:fake: 20>: read error
+Error Callback: <<TSerialClientTest> fake:1:fake: 20>: read error
 >>> Cycle() [read, rw blacklisted]
 fake_serial_device '1': read address '20' failed: 'Serial protocol error: read blocked'
 fake_serial_device '1': transfer FAIL
@@ -21,21 +21,21 @@ fake_serial_device '1': transfer FAIL
 >>> Cycle() [write, rw blacklisted]
 fake_serial_device '1': write address '20' failed: 'Serial protocol error: write blocked'
 fake_serial_device '1': transfer FAIL
-Error Callback: <fake:1:fake: 20>: read+write error
+Error Callback: <<TSerialClientTest> fake:1:fake: 20>: read+write error
 fake_serial_device '1': read address '20' failed: 'Serial protocol error: read blocked'
 fake_serial_device '1': transfer FAIL
 fake_serial_device: unblock address '20' for writing
 >>> Cycle() [write, r blacklisted]
 fake_serial_device '1': write to address '20' value '42'
-Error Callback: <fake:1:fake: 20>: read error
-Read Callback: <fake:1:fake: 20> becomes 42
+Error Callback: <<TSerialClientTest> fake:1:fake: 20>: read error
+Read Callback: <<TSerialClientTest> fake:1:fake: 20> becomes 42
 fake_serial_device '1': read address '20' failed: 'Serial protocol error: read blocked'
 fake_serial_device '1': transfer FAIL
 fake_serial_device: block address '20' for writing
 >>> Cycle() [write, rw blacklisted]
 fake_serial_device '1': write address '20' failed: 'Serial protocol error: write blocked'
 fake_serial_device '1': transfer FAIL
-Error Callback: <fake:1:fake: 20>: read+write error
+Error Callback: <<TSerialClientTest> fake:1:fake: 20>: read+write error
 fake_serial_device '1': read address '20' failed: 'Serial protocol error: read blocked'
 fake_serial_device '1': transfer FAIL
 fake_serial_device: unblock address '20' for reading
@@ -43,15 +43,15 @@ fake_serial_device: unblock address '20' for reading
 fake_serial_device '1': write address '20' failed: 'Serial protocol error: write blocked'
 fake_serial_device '1': transfer FAIL
 fake_serial_device '1': read address '20' value '42'
-Error Callback: <fake:1:fake: 20>: write error
+Error Callback: <<TSerialClientTest> fake:1:fake: 20>: write error
 fake_serial_device: unblock address '20' for writing
 >>> Cycle() [write, nothing blacklisted]
 fake_serial_device '1': write to address '20' value '42'
-Read Callback: <fake:1:fake: 20> becomes 42 [unchanged]
-Error Callback: <fake:1:fake: 20>: no error
+Read Callback: <<TSerialClientTest> fake:1:fake: 20> becomes 42 [unchanged]
+Error Callback: <<TSerialClientTest> fake:1:fake: 20>: no error
 fake_serial_device '1': read address '20' value '42'
-Read Callback: <fake:1:fake: 20> becomes 42 [unchanged]
+Read Callback: <<TSerialClientTest> fake:1:fake: 20> becomes 42 [unchanged]
 >>> Cycle() [read, set error value for register]
 fake_serial_device '1': read address '20' value '42'
-Error Callback: <fake:1:fake: 20>: read error
+Error Callback: <<TSerialClientTest> fake:1:fake: 20>: read error
 fake_serial_device '1': read address '20' value '42'

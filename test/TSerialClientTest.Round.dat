@@ -5,27 +5,27 @@ Sleep(100000)
 fake_serial_device '1': write to address '24' value '1095080346'
 fake_serial_device '1': transfer OK
 fake_serial_device '1': reconnected
-Read Callback: <fake:1:fake: 24> becomes 12.35
-Error Callback: <fake:1:fake: 24>: no error
+Read Callback: <<TSerialClientTest> fake:1:fake: 24> becomes 12.35
+Error Callback: <<TSerialClientTest> fake:1:fake: 24>: no error
 fake_serial_device '1': write to address '26' value '1094713344'
-Read Callback: <fake:1:fake: 26> becomes 12
-Error Callback: <fake:1:fake: 26>: no error
+Read Callback: <<TSerialClientTest> fake:1:fake: 26> becomes 12
+Error Callback: <<TSerialClientTest> fake:1:fake: 26>: no error
 fake_serial_device '1': write to address '28' value '1092616192'
-Read Callback: <fake:1:fake: 28> becomes 10
-Error Callback: <fake:1:fake: 28>: no error
+Read Callback: <<TSerialClientTest> fake:1:fake: 28> becomes 10
+Error Callback: <<TSerialClientTest> fake:1:fake: 28>: no error
 fake_serial_device '1': write to address '30' value '1095132774'
-Read Callback: <fake:1:fake: 30> becomes 12.4
-Error Callback: <fake:1:fake: 30>: no error
+Read Callback: <<TSerialClientTest> fake:1:fake: 30> becomes 12.4
+Error Callback: <<TSerialClientTest> fake:1:fake: 30>: no error
 fake_serial_device '1': write to address '32' value '1095069860'
-Read Callback: <fake:1:fake: 32> becomes 12.34
-Error Callback: <fake:1:fake: 32>: no error
+Read Callback: <<TSerialClientTest> fake:1:fake: 32> becomes 12.34
+Error Callback: <<TSerialClientTest> fake:1:fake: 32>: no error
 fake_serial_device '1': read address '24' value '1095080346'
 fake_serial_device '1': read address '26' value '1094713344'
 fake_serial_device '1': read address '28' value '1092616192'
 fake_serial_device '1': read address '30' value '1095132774'
 fake_serial_device '1': read address '32' value '1095069860'
-Read Callback: <fake:1:fake: 24> becomes 12.35 [unchanged]
-Read Callback: <fake:1:fake: 26> becomes 12 [unchanged]
-Read Callback: <fake:1:fake: 28> becomes 10 [unchanged]
-Read Callback: <fake:1:fake: 30> becomes 12.4 [unchanged]
-Read Callback: <fake:1:fake: 32> becomes 12.34 [unchanged]
+Read Callback: <<TSerialClientTest> fake:1:fake: 24> becomes 12.35 [unchanged]
+Read Callback: <<TSerialClientTest> fake:1:fake: 26> becomes 12 [unchanged]
+Read Callback: <<TSerialClientTest> fake:1:fake: 28> becomes 10 [unchanged]
+Read Callback: <<TSerialClientTest> fake:1:fake: 30> becomes 12.4 [unchanged]
+Read Callback: <<TSerialClientTest> fake:1:fake: 32> becomes 12.34 [unchanged]

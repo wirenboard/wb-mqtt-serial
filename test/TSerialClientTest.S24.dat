@@ -7,47 +7,47 @@ fake_serial_device '1': transfer OK
 fake_serial_device '1': reconnected
 fake_serial_device '1': read address '24' value '0'
 fake_serial_device '1': read address '30' value '16777215'
-Read Callback: <fake:1:fake: 20> becomes 2752699
-Error Callback: <fake:1:fake: 20>: no error
-Read Callback: <fake:1:fake: 24> becomes 0
-Error Callback: <fake:1:fake: 24>: no error
-Read Callback: <fake:1:fake: 30> becomes -1
-Error Callback: <fake:1:fake: 30>: no error
+Read Callback: <<TSerialClientTest> fake:1:fake: 20> becomes 2752699
+Error Callback: <<TSerialClientTest> fake:1:fake: 20>: no error
+Read Callback: <<TSerialClientTest> fake:1:fake: 24> becomes 0
+Error Callback: <<TSerialClientTest> fake:1:fake: 24>: no error
+Read Callback: <<TSerialClientTest> fake:1:fake: 30> becomes -1
+Error Callback: <<TSerialClientTest> fake:1:fake: 30>: no error
 >>> client -> server: 10
 >>> Cycle()
 fake_serial_device '1': write to address '20' value '10'
-Read Callback: <fake:1:fake: 20> becomes 10
+Read Callback: <<TSerialClientTest> fake:1:fake: 20> becomes 10
 fake_serial_device '1': read address '20' value '10'
 fake_serial_device '1': read address '24' value '0'
 fake_serial_device '1': read address '30' value '16777215'
-Read Callback: <fake:1:fake: 20> becomes 10 [unchanged]
-Read Callback: <fake:1:fake: 24> becomes 0 [unchanged]
-Read Callback: <fake:1:fake: 30> becomes -1 [unchanged]
+Read Callback: <<TSerialClientTest> fake:1:fake: 20> becomes 10 [unchanged]
+Read Callback: <<TSerialClientTest> fake:1:fake: 24> becomes 0 [unchanged]
+Read Callback: <<TSerialClientTest> fake:1:fake: 30> becomes -1 [unchanged]
 >>> client -> server: -2
 >>> Cycle()
 fake_serial_device '1': write to address '20' value '16777214'
-Read Callback: <fake:1:fake: 20> becomes -2
+Read Callback: <<TSerialClientTest> fake:1:fake: 20> becomes -2
 fake_serial_device '1': read address '20' value '16777214'
 fake_serial_device '1': read address '24' value '0'
 fake_serial_device '1': read address '30' value '16777215'
-Read Callback: <fake:1:fake: 20> becomes -2 [unchanged]
-Read Callback: <fake:1:fake: 24> becomes 0 [unchanged]
-Read Callback: <fake:1:fake: 30> becomes -1 [unchanged]
+Read Callback: <<TSerialClientTest> fake:1:fake: 20> becomes -2 [unchanged]
+Read Callback: <<TSerialClientTest> fake:1:fake: 24> becomes 0 [unchanged]
+Read Callback: <<TSerialClientTest> fake:1:fake: 30> becomes -1 [unchanged]
 >>> client -> server: -0.123 (scaled)
 >>> Cycle()
 fake_serial_device '1': write to address '24' value '16777093'
-Read Callback: <fake:1:fake: 24> becomes -0.123
+Read Callback: <<TSerialClientTest> fake:1:fake: 24> becomes -0.123
 fake_serial_device '1': read address '20' value '16777214'
 fake_serial_device '1': read address '24' value '16777093'
 fake_serial_device '1': read address '30' value '16777215'
-Read Callback: <fake:1:fake: 20> becomes -2 [unchanged]
-Read Callback: <fake:1:fake: 24> becomes -0.123 [unchanged]
-Read Callback: <fake:1:fake: 30> becomes -1 [unchanged]
+Read Callback: <<TSerialClientTest> fake:1:fake: 20> becomes -2 [unchanged]
+Read Callback: <<TSerialClientTest> fake:1:fake: 24> becomes -0.123 [unchanged]
+Read Callback: <<TSerialClientTest> fake:1:fake: 30> becomes -1 [unchanged]
 >>> server -> client: 0x00ff 0xff85 (scaled)
 >>> Cycle()
 fake_serial_device '1': read address '20' value '16777214'
 fake_serial_device '1': read address '24' value '16777093'
 fake_serial_device '1': read address '30' value '16777215'
-Read Callback: <fake:1:fake: 20> becomes -2 [unchanged]
-Read Callback: <fake:1:fake: 24> becomes -0.123 [unchanged]
-Read Callback: <fake:1:fake: 30> becomes -1 [unchanged]
+Read Callback: <<TSerialClientTest> fake:1:fake: 20> becomes -2 [unchanged]
+Read Callback: <<TSerialClientTest> fake:1:fake: 24> becomes -0.123 [unchanged]
+Read Callback: <<TSerialClientTest> fake:1:fake: 30> becomes -1 [unchanged]

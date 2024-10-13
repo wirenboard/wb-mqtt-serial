@@ -6,15 +6,15 @@ fake_serial_device '1': read address '20' value 'Hello, world!'
 fake_serial_device '1': transfer OK
 fake_serial_device '1': reconnected
 fake_serial_device '1': read address '62' value 'abcd'
-Read Callback: <fake:1:fake: 20> becomes Hello, world!
-Error Callback: <fake:1:fake: 20>: no error
-Read Callback: <fake:1:fake: 62> becomes abcd
-Error Callback: <fake:1:fake: 62>: no error
+Read Callback: <<TSerialClientTest> fake:1:fake: 20> becomes Hello, world!
+Error Callback: <<TSerialClientTest> fake:1:fake: 20>: no error
+Read Callback: <<TSerialClientTest> fake:1:fake: 62> becomes abcd
+Error Callback: <<TSerialClientTest> fake:1:fake: 62>: no error
 >>> client -> server: 10
 >>> Cycle()
 fake_serial_device '1': write to address '20' value 'computer'
-Read Callback: <fake:1:fake: 20> becomes computer
+Read Callback: <<TSerialClientTest> fake:1:fake: 20> becomes computer
 fake_serial_device '1': read address '20' value 'computer'
 fake_serial_device '1': read address '62' value 'abcd'
-Read Callback: <fake:1:fake: 20> becomes computer [unchanged]
-Read Callback: <fake:1:fake: 62> becomes abcd [unchanged]
+Read Callback: <<TSerialClientTest> fake:1:fake: 20> becomes computer [unchanged]
+Read Callback: <<TSerialClientTest> fake:1:fake: 62> becomes abcd [unchanged]
