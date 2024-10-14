@@ -61,7 +61,11 @@ TSerialDevice::TSerialDevice(PDeviceConfig config, PPort port, PProtocol protoco
 
 std::string TSerialDevice::ToString() const
 {
-    return Port()->GetDescription() + " " + Protocol()->GetName() + ":" + DeviceConfig()->SlaveId;
+    auto portDescription = Port()->GetDescription();
+    if (!portDescription.empty()) {
+        portDescription += " ";
+    }
+    return portDescription + Protocol()->GetName() + ":" + DeviceConfig()->SlaveId;
 }
 
 PRegisterRange TSerialDevice::CreateRegisterRange() const
