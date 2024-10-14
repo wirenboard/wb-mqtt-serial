@@ -5,17 +5,17 @@ Sleep(100000)
 fake_serial_device '1': read address '20' value '305419896'
 fake_serial_device '1': transfer OK
 fake_serial_device '1': reconnected
-Read Callback: <<TSerialClientTest> fake:1:fake: 20> becomes 12345678
-Error Callback: <<TSerialClientTest> fake:1:fake: 20>: no error
+Read Callback: <fake:1:fake: 20> becomes 12345678
+Error Callback: <fake:1:fake: 20>: no error
 >>> client -> server: 12345678
 >>> Cycle()
 fake_serial_device '1': write to address '20' value '305419896'
-Read Callback: <<TSerialClientTest> fake:1:fake: 20> becomes 12345678 [unchanged]
+Read Callback: <fake:1:fake: 20> becomes 12345678 [unchanged]
 fake_serial_device '1': read address '20' value '305419896'
-Read Callback: <<TSerialClientTest> fake:1:fake: 20> becomes 12345678 [unchanged]
+Read Callback: <fake:1:fake: 20> becomes 12345678 [unchanged]
 >>> client -> server: 567890
 >>> Cycle()
 fake_serial_device '1': write to address '20' value '5666960'
-Read Callback: <<TSerialClientTest> fake:1:fake: 20> becomes 567890
+Read Callback: <fake:1:fake: 20> becomes 567890
 fake_serial_device '1': read address '20' value '5666960'
-Read Callback: <<TSerialClientTest> fake:1:fake: 20> becomes 567890 [unchanged]
+Read Callback: <fake:1:fake: 20> becomes 567890 [unchanged]

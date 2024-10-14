@@ -1,8 +1,8 @@
 >>> Cycle() [port open error]
-Error Callback: <<TSerialClientTest> fake:1:fake: 0>: read error
+Error Callback: <fake:1:fake: 0>: read error
 fake_serial_device '1': transfer FAIL
 fake_serial_device '1': disconnected
-Error Callback: <<TSerialClientTest> fake:1:fake: 1>: read error
+Error Callback: <fake:1:fake: 1>: read error
 fake_serial_device '1': transfer FAIL
 >>> Cycle() [port open error2]
 fake_serial_device '1': transfer FAIL
@@ -14,7 +14,7 @@ fake_serial_device '1': read address '0' value '0'
 fake_serial_device '1': transfer OK
 fake_serial_device '1': reconnected
 fake_serial_device '1': read address '1' value '0'
-Read Callback: <<TSerialClientTest> fake:1:fake: 0> becomes 0
-Error Callback: <<TSerialClientTest> fake:1:fake: 0>: no error
-Read Callback: <<TSerialClientTest> fake:1:fake: 1> becomes 0
-Error Callback: <<TSerialClientTest> fake:1:fake: 1>: no error
+Read Callback: <fake:1:fake: 0> becomes 0
+Error Callback: <fake:1:fake: 0>: no error
+Read Callback: <fake:1:fake: 1> becomes 0
+Error Callback: <fake:1:fake: 1>: no error

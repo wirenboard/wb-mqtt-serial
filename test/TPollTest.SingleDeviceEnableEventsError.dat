@@ -4,7 +4,7 @@ Sleep(1000)
 EnqueueEnableEvents()
 >> 01 46 18 0A 03 00 01 01 01 0F 00 00 01 00 28 7D
 << 01 46 14 02 01 00 2D A5
-11000: <<TFakeSerialPortWithTime> modbus:1:(type 0): 1>
+11000: <modbus:1:(type 0): 1>
 11000: Cycle end
 
 11000: Cycle
@@ -16,7 +16,7 @@ Sleep(10000)
 EnqueueReadHolding()
 >> 01 03 00 01 00 01 D5 CA
 << 01 03 02 00 00 B8 44
-42000: <<TFakeSerialPortWithTime> modbus:1:(type 0): 1>
+42000: <modbus:1:(type 0): 1>
 42000: Cycle end
 
 42000: Cycle
@@ -24,7 +24,7 @@ Sleep(10000)
 EnqueueReadHolding()
 >> 01 03 00 01 00 01 D5 CA
 << 01 03 02 00 00 B8 44
-62000: <<TFakeSerialPortWithTime> modbus:1:(type 0): 1>
+62000: <modbus:1:(type 0): 1>
 62000: Cycle end
 
 62000: Cycle
@@ -32,7 +32,7 @@ Sleep(10000)
 EnqueueReadHolding()
 >> 01 03 00 01 00 01 D5 CA
 << 01 03 02 00 00 B8 44
-82000: <<TFakeSerialPortWithTime> modbus:1:(type 0): 1>
+82000: <modbus:1:(type 0): 1>
 82000: Cycle end
 
 82000: Cycle
@@ -40,7 +40,7 @@ Sleep(10000)
 EnqueueReadHolding()
 >> 01 03 00 01 00 01 D5 CA
 << 01 03 02 00 00 B8 44
-102000: <<TFakeSerialPortWithTime> modbus:1:(type 0): 1>
+102000: <modbus:1:(type 0): 1>
 102000: Cycle end
 
 102000: Cycle
@@ -48,7 +48,7 @@ Sleep(10000)
 EnqueueReadHolding()
 >> 01 03 00 01 00 01 D5 CA
 << 01 03 02 00 00 B8 44
-122000: <<TFakeSerialPortWithTime> modbus:1:(type 0): 1>
+122000: <modbus:1:(type 0): 1>
 122000: Cycle end
 
 122000: Cycle
@@ -56,7 +56,7 @@ Sleep(10000)
 EnqueueReadHolding()
 >> 01 03 00 01 00 01 D5 CA
 << 01 03 02 00 00 B8 44
-142000: <<TFakeSerialPortWithTime> modbus:1:(type 0): 1>
+142000: <modbus:1:(type 0): 1>
 142000: Cycle end
 
 142000: Cycle
@@ -64,7 +64,7 @@ Sleep(10000)
 EnqueueReadHolding()
 >> 01 03 00 01 00 01 D5 CA
 << 01 03 02 00 00 B8 44
-162000: <<TFakeSerialPortWithTime> modbus:1:(type 0): 1>
+162000: <modbus:1:(type 0): 1>
 162000: Cycle end
 
 162000: Cycle
@@ -72,7 +72,7 @@ Sleep(10000)
 EnqueueReadHolding()
 >> 01 03 00 01 00 01 D5 CA
 << 01 03 02 00 00 B8 44
-182000: <<TFakeSerialPortWithTime> modbus:1:(type 0): 1>
+182000: <modbus:1:(type 0): 1>
 182000: Cycle end
 
 182000: Cycle
@@ -80,7 +80,7 @@ Sleep(10000)
 EnqueueReadHolding()
 >> 01 03 00 01 00 01 D5 CA
 << 01 03 02 00 00 B8 44
-202000: <<TFakeSerialPortWithTime> modbus:1:(type 0): 1>
+202000: <modbus:1:(type 0): 1>
 202000: Cycle end
 
 202000: Cycle
@@ -88,7 +88,7 @@ Sleep(10000)
 EnqueueReadHolding()
 >> 01 03 00 01 00 01 D5 CA
 << 01 03 02 00 00 B8 44
-222000: <<TFakeSerialPortWithTime> modbus:1:(type 0): 1>
+222000: <modbus:1:(type 0): 1>
 222000: Cycle end
 
 222000: Cycle
@@ -96,7 +96,7 @@ Sleep(10000)
 EnqueueReadHolding()
 >> 01 03 00 01 00 01 D5 CA
 << 01 03 02 00 00 B8 44
-242000: <<TFakeSerialPortWithTime> modbus:1:(type 0): 1>
+242000: <modbus:1:(type 0): 1>
 242000: Cycle end
 
 Close()

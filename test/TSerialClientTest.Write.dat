@@ -5,26 +5,26 @@ fake_serial_device '1': read address '1' value '0'
 fake_serial_device '1': transfer OK
 fake_serial_device '1': reconnected
 fake_serial_device '1': read address '20' value '0'
-Read Callback: <<TSerialClientTest> fake:1:fake: 1> becomes 0
-Error Callback: <<TSerialClientTest> fake:1:fake: 1>: no error
-Read Callback: <<TSerialClientTest> fake:1:fake: 20> becomes 0
-Error Callback: <<TSerialClientTest> fake:1:fake: 20>: no error
+Read Callback: <fake:1:fake: 1> becomes 0
+Error Callback: <fake:1:fake: 1>: no error
+Read Callback: <fake:1:fake: 20> becomes 0
+Error Callback: <fake:1:fake: 20>: no error
 >>> Cycle()
 fake_serial_device '1': write to address '1' value '1'
-Read Callback: <<TSerialClientTest> fake:1:fake: 1> becomes 1
+Read Callback: <fake:1:fake: 1> becomes 1
 fake_serial_device '1': write to address '20' value '4242'
-Read Callback: <<TSerialClientTest> fake:1:fake: 20> becomes 4242
+Read Callback: <fake:1:fake: 20> becomes 4242
 fake_serial_device '1': read address '1' value '1'
 fake_serial_device '1': read address '20' value '4242'
-Read Callback: <<TSerialClientTest> fake:1:fake: 1> becomes 1 [unchanged]
-Read Callback: <<TSerialClientTest> fake:1:fake: 20> becomes 4242 [unchanged]
+Read Callback: <fake:1:fake: 1> becomes 1 [unchanged]
+Read Callback: <fake:1:fake: 20> becomes 4242 [unchanged]
 >>> Cycle()
 fake_serial_device '1': read address '1' value '1'
 fake_serial_device '1': read address '20' value '4242'
-Read Callback: <<TSerialClientTest> fake:1:fake: 1> becomes 1 [unchanged]
-Read Callback: <<TSerialClientTest> fake:1:fake: 20> becomes 4242 [unchanged]
+Read Callback: <fake:1:fake: 1> becomes 1 [unchanged]
+Read Callback: <fake:1:fake: 20> becomes 4242 [unchanged]
 >>> Cycle()
 fake_serial_device '1': read address '1' value '1'
 fake_serial_device '1': read address '20' value '4242'
-Read Callback: <<TSerialClientTest> fake:1:fake: 1> becomes 1 [unchanged]
-Read Callback: <<TSerialClientTest> fake:1:fake: 20> becomes 4242 [unchanged]
+Read Callback: <fake:1:fake: 1> becomes 1 [unchanged]
+Read Callback: <fake:1:fake: 20> becomes 4242 [unchanged]
