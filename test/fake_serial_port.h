@@ -49,7 +49,7 @@ public:
     void SimulateDisconnect(TDisconnectType simulate);
     WBMQTT::Testing::TLoggedFixture& GetFixture();
 
-    std::string GetDescription(bool verbose = false) const override;
+    std::string GetDescription(bool verbose = true) const override;
 
     void SetAllowOpen(bool allowOpen);
 

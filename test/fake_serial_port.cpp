@@ -273,9 +273,6 @@ std::chrono::microseconds TFakeSerialPort::GetSendTimeBytes(double bytesNumber) 
 
 std::string TFakeSerialPort::GetDescription(bool verbose) const
 {
-    if (verbose) {
-        return PortName;
-    }
     return "";
 }
 
