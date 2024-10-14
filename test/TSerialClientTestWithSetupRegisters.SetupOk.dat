@@ -6,5 +6,5 @@ fake_serial_device '1': write to address '102' value '12'
 fake_serial_device '1': transfer OK
 fake_serial_device '1': reconnected
 fake_serial_device '1': read address '20' value '0'
-Read Callback: <fake:1:fake: 20> becomes 0
-Error Callback: <fake:1:fake: 20>: no error
+Read Callback: <<TSerialClientTest> fake:1:fake: 20> becomes 0
+Error Callback: <<TSerialClientTest> fake:1:fake: 20>: no error
