@@ -11,7 +11,7 @@
                 "units": "deg C",
                 "scale": 0.01,
                 "reg_type": "holding",
-                "format": "u16",
+                "format": "s16",
                 "address": 3,
                 "type": "temperature",
                 "readonly": true
