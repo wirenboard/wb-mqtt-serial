@@ -1,3 +1,9 @@
+wb-mqtt-serial (2.138.1-wb107) stable; urgency=medium
+
+  * WB-MDM3 template: fix deprecated template
+
+ -- Nikolay Korotkiy <nikolay.korotkiy@wirenboard.com>  Mon, 21 Oct 2024 14:10:00 +0400
+
 wb-mqtt-serial (2.138.1-wb106) stable; urgency=medium
 
   * WB-MDM3 template: deleted light scenes
