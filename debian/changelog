@@ -1,3 +1,9 @@
+wb-mqtt-serial (2.145.0) stable; urgency=medium
+
+  * Add new template ONOKOM-AIR-TCL-1-MB-B
+
+ -- Andrey Ksenofontov <andrey.ksenofontov@wirenboard.com>  Tue, 22 Oct 2024 11:35:00 +0300
+
 wb-mqtt-serial (2.144.1) stable; urgency=medium
 
   * Fix SOKOL-M template
