@@ -1,4 +1,4 @@
-wb-mqtt-serial (2.145.1) stable; urgency=medium
+wb-mqtt-serial (2.146.0) stable; urgency=medium
 
   * Deprecate WB-MIR v.2 template
   * Add new template WB-MIR_BUTTONS (for WB-MIR v.2 and v.3, with buttons support)

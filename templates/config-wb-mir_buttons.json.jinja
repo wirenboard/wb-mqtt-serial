@@ -266,7 +266,7 @@
                 "condition": "in{{in_num}}_mode==1"
             },
             {
-                "name": "Input {{in_num}} counter",
+                "name": "Input {{in_num}} Counter",
                 "reg_type": "input",
                 "format": "u16",
                 "address": {{277 + in_num - 1}},
@@ -313,28 +313,28 @@
                 "group": "gg_in{{in_num}}_channels",
                 "condition": "in{{in_num}}_mode==1"
             },
+            {% endfor -%}
             {
-                "name": "External Sensor {{in_num}}",
+                "name": "External Temperature Sensor",
                 "reg_type": "input",
-                "address": {{7 + in_num - 1}},
+                "address": 7,
                 "type": "value",
                 "units": "deg C",
                 "format": "s16",
                 "scale": 0.0625,
                 "error_value": "0x7FFF",
-                "group": "gg_in{{in_num}}_channels",
-                "condition": "in{{in_num}}_mode==0"
+                "group": "gg_in1_channels",
+                "condition": "in1_mode==0"
             },
             {
-                "name": "External Sensor {{in_num}} OK",
+                "name": "External Temperature Sensor OK",
                 "reg_type": "discrete",
-                "address": {{16 + in_num - 1}},
+                "address": 16,
                 "type": "switch",
                 "enabled": false,
-                "group": "gg_in{{in_num}}_channels",
-                "condition": "in{{in_num}}_mode==0"
+                "group": "gg_in1_channels",
+                "condition": "in1_mode==0"
             },
-            {% endfor -%}
             {
                 "name": "Reset All Counters",
                 "reg_type": "holding",
@@ -470,14 +470,14 @@
 
                 {% for in_num in range(FIRST_INPUT, INPUTS_NUMBER + 1) -%}
                 "Input {{in_num}}": "Вход {{in_num}}",
-                "Input {{in_num}} counter": "Счетчик {{in_num}}",
+                "Input {{in_num}} Counter": "Счетчик {{in_num}}",
                 "Input {{in_num}} Single Press Counter": "Счетчик коротких нажатий входа {{in_num}}",
                 "Input {{in_num}} Long Press Counter": "Счетчик длинных нажатий входа {{in_num}}",
                 "Input {{in_num}} Double Press Counter": "Счетчик двойных нажатий входа {{in_num}}",
                 "Input {{in_num}} Shortlong Press Counter": "Счетчик коротких, а затем длинных нажатий входа {{in_num}}",
-                "External Sensor {{in_num}}": "Датчик температуры {{in_num}}",
-                "External Sensor {{in_num}} OK": "Датчик температуры {{in_num}} подключен",
                 {% endfor -%}
+                "External Temperature Sensor": "Датчик температуры",
+                "External Temperature Sensor OK": "Датчик температуры подключен",
 
                 "Press Parameters": "Параметры нажатий",
                 "Counting and press detection": "Счет и детектирование нажатий",
