@@ -18875,7 +18875,7 @@ WB-MIR (simple)
 	Play from ROM5  =>  Play from ROM5
 	Play from ROM6  =>  Play from ROM6
 	Play from ROM7  =>  Play from ROM7
-WB-MIR BUTTONS
+WB-MIR v.2
 	BANK -> RAM  =>  BANK -> RAM
 	External Temperature Sensor  =>  External Temperature Sensor
 	External Temperature Sensor OK  =>  External Temperature Sensor OK
@@ -19054,7 +19054,7 @@ WB-MIR BUTTONS
 	Reset all ROM  =>  Reset all ROM
 	Serial NO  =>  Serial NO
 	Uptime  =>  Uptime
-WB-MIR v2
+WB-MIR v.3
 	BANK -> RAM  =>  BANK -> RAM
 	FW Version  =>  FW Version
 	Input 1: input1_1wire
