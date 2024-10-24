@@ -1,0 +1,354 @@
+{% set FIRST_ROM = 1 -%}
+{% set LAST_ROM = 40 -%}
+{
+    "title": "WB-MIR_BUTTONS_template_title",
+    "device_type": "WB-MIR BUTTONS",
+    "group": "g-wb",
+    "hw": [
+        {
+            "signature": "WBMIR3"
+        },
+        {
+            "signature": "WB-MIR v.3"
+        }
+    ],
+    "device": {
+        "name": "WB-MIR BUTTONS",
+        "id": "wb-mir_buttons",
+        "max_read_registers": 0,
+        "response_timeout_ms": 1,
+        "frame_timeout_ms": 12,
+        "enable_wb_continuous_read": true,
+        "min_request_interval": 100,
+
+        "groups": [
+            {
+                "title": "IR Commands",
+                "id": "ir_commands"
+            },
+            {
+                "title": "General",
+                "id": "general"
+            },
+            {
+                "title": "HW Info",
+                "id": "hw_info"
+            }
+        ],
+
+        "parameters": {
+            "baud_rate": {
+                "title": "Baud rate",
+                "description": "baud_rate_description",
+                "address": 110,
+                "reg_type": "holding",
+                "enum": [96, 192, 384, 576, 1152],
+                "default": 96,
+                "enum_titles": [
+                    "9600",
+                    "19200",
+                    "38400",
+                    "57600",
+                    "115200"
+                ],
+                "group": "general",
+                "order": 1
+            },
+            "rs485_response_delay_ms": {
+                "title": "RS-485 Response Delay (ms)",
+                "address": 113,
+                "reg_type": "holding",
+                "default": 8,
+                "group": "general",
+                "order": 2
+            },
+            "disable_indication": {
+                "title": "Status LED",
+                "address": 130,
+                "reg_type": "holding",
+                "enum": [0, 1],
+                "enum_titles": ["Enabled", "Disabled"],
+                "default": 0,
+                "group": "general",
+                "order": 3
+            }
+        },
+
+        "channels": [
+            {
+                "name": "Learn to RAM",
+                "reg_type": "coil",
+                "address": 5001,
+                "type": "switch",
+                "group": "ir_commands"
+            },
+            {
+                "name": "Play from RAM",
+                "reg_type": "coil",
+                "address": 5002,
+                "type": "pushbutton",
+                "group": "ir_commands"
+            },
+
+            {% for rom in range(FIRST_ROM, LAST_ROM) -%}
+            {
+                "name": "Learn to ROM{{ rom }}",
+                "reg_type": "coil",
+                "address": {{ 5300 + rom - 1 }},
+                "type": "switch",
+                "group": "ir_commands",
+                "enabled": false
+            },
+            {
+                "name": "ROM{{ rom }} size",
+                "reg_type": "input",
+                "address": {{ 5400 + rom - 1 }},
+                "group": "ir_commands",
+                "enabled": false
+            },
+            {% set enabled = "true" if rom < 11 else "false" -%}
+            {
+                "name": "Play from ROM{{ rom }}",
+                "reg_type": "coil",
+                "address": {{ 5100 + rom - 1 }},
+                "type": "pushbutton",
+                "group": "ir_commands",
+                "enabled": {{ enabled }}
+            },
+            {
+                "name": "ROM{{ rom }} -> RAM",
+                "reg_type": "coil",
+                "address": {{ 5200 + rom - 1 }},
+                "type": "switch",
+                "group": "ir_commands",
+                "enabled": {{ enabled }}
+            },
+            {% endfor -%}
+
+            {
+                "name": "Reset all ROM",
+                "reg_type": "coil",
+                "address": 5000,
+                "type": "pushbutton",
+                "group": "ir_commands"
+            },
+            {
+                "name": "Play from BANK",
+                "reg_type": "holding",
+                "format": "s16",
+                "address": 5500,
+                "type": "value",
+                "group": "ir_commands",
+                "enabled": false
+            },
+            {
+                "name": "BANK -> RAM",
+                "reg_type": "holding",
+                "format": "s16",
+                "address": 5501,
+                "type": "value",
+                "group": "ir_commands",
+                "enabled": false
+            },
+            {
+                "name": "Learn to BANK",
+                "reg_type": "holding",
+                "format": "s16",
+                "address": 5502,
+                "type": "value",
+                "group": "ir_commands",
+                "enabled": false
+            },
+            {
+                "name": "Input 1",
+                "id": "",
+                "oneOf": [
+                    "input1_1wire",
+                    "input1_discrete",
+                    "input_disabled"
+                ],
+                "device_type": "input1_1wire"
+            },
+            {
+                "name": "Serial NO",
+                "type": "text",
+                "reg_type": "input",
+                "address": 270,
+                "format": "u32",
+                "group": "hw_info"
+            },
+            {
+                "name": "FW Version",
+                "reg_type": "input",
+                "address": 250,
+                "type": "text",
+                "format": "string",
+                "string_data_size": 16,
+                "enabled": false,
+                "group": "hw_info"
+            },
+            {
+                "name": "Input Voltage",
+                "reg_type": "input",
+                "address": 121,
+                "scale": 0.001,
+                "type": "voltage",
+                "enabled": false,
+                "group": "hw_info"
+            },
+            {
+                "name": "Uptime",
+                "reg_type": "input",
+                "address": 104,
+                "format": "u32",
+                "enabled": false,
+                "group": "hw_info"
+            },
+            {
+                "name": "MCU Temperature",
+                "reg_type": "input",
+                "address": 124,
+                "type": "temperature",
+                "format": "s16",
+                "scale": 0.1,
+                "enabled": false,
+                "group": "hw_info"
+            },
+            {
+                "name": "MCU Voltage",
+                "reg_type": "input",
+                "address": 123,
+                "scale": 0.001,
+                "type": "voltage",
+                "enabled": false,
+                "group": "hw_info"
+            },
+            {
+                "name": "Minimum MCU Voltage Since Startup",
+                "reg_type": "input",
+                "address": 119,
+                "scale": 0.001,
+                "type": "value",
+                "units": "V",
+                "enabled": false,
+                "group": "hw_info"
+            }
+        ],
+
+        "subdevices": [
+            {
+                "title": "1-Wire",
+                "device_type": "input1_1wire",
+                "device": {
+                    "setup": [
+                        {
+                            "title": "set input 1 to 1-wire",
+                            "address": 275,
+                            "reg_type": "holding",
+                            "value": 0
+                        }
+                    ],
+
+                    "channels": [
+                        {
+                            "name": "External Temperature Sensor",
+                            "type": "temperature",
+                            "reg_type": "input",
+                            "address": "7",
+                            "format": "s16",
+                            "scale": 0.0625,
+                            "error_value": "0x7FFF"
+                        },
+                        {
+                            "name": "External Temperature Sensor OK",
+                            "reg_type": "discrete",
+                            "address": 16,
+                            "type": "switch",
+                            "enabled": false
+                        }
+                    ]
+                }
+            },
+            {
+                "title": "Discrete Input",
+                "device_type": "input1_discrete",
+                "device": {
+                    "setup": [
+                        {
+                            "title": "set input 1 to descrete",
+                            "address": 275,
+                            "reg_type": "holding",
+                            "value": 1
+                        }
+                    ],
+
+                    "channels": [
+                        {
+                            "name": "Input 1",
+                            "reg_type": "discrete",
+                            "address": 0,
+                            "type": "switch"
+                        },
+                        {
+                            "name": "Input 1 Counter",
+                            "reg_type": "input",
+                            "address": 277,
+                            "type": "value",
+                            "format": "u16"
+                        }
+                    ]
+                }
+            },
+            {
+                "title": "Disabled",
+                "device_type": "input_disabled",
+                "device": {}
+            }
+        ],
+        "translations": {
+            "en": {
+                "WB-MIR_BUTTONS_template_title": "WB-MIR (Modbus IR remote control)",
+                "baud_rate_description": "Make sure that communication with device is established before changing this parameter. Select required baud rate, save configuration and then change port baud rate to the same value.",
+                "Uptime": "Uptime (s)"
+            },
+            "ru": {
+                "WB-MIR_BUTTONS_template_title": "WB-MIR (Modbus-модуль ИК-управления)",
+                "IR Commands": "ИК-команды",
+                "General": "Общее",
+                "HW Info": "Данные модуля",
+                "RS-485 Response Delay (ms)": "Задержка перед ответом по RS-485 (мс)",
+                "Status LED": "Индикатор состояния",
+                "Enabled": "Активен",
+                "Baud rate": "Скорость обмена",
+                "baud_rate_description": "Перед изменением параметра убедитесь, что связь с устройством установлена. Выберите нужную скорость обмена, сохраните конфигурацию, а затем укажите в настройках порта эту же скорость.",
+                "Learn to RAM": "Записать команду в RAM",
+                "Play from RAM": "Воспроизвести команду из RAM",
+
+                {% for rom in range(FIRST_ROM, LAST_ROM) -%}
+                "Learn to ROM{{ rom }}": "Записать команду в ROM{{ rom }}",
+                "ROM{{ rom }} size": "Размер команды в ROM{{ rom }}",
+                "Play from ROM{{ rom }}": "Воспроизвести команду из ROM{{ rom }}",
+                {% endfor -%}
+
+                "Reset all ROM": "Стереть все команды в ROM",
+                "Play from BANK": "Воспроизвести команду из соответствующего банка ROM",
+                "BANK -> RAM":"Редактирование ИК-команд в банке с копированием в RAM",
+                "Learn to BANK": "Записать команду в соответствующий банк ROM",
+                "Input 1": "Вход 1",
+                "Serial NO": "Серийный номер",
+                "FW Version": "Версия прошивки",
+                "Input Voltage": "Напряжение питания",
+                "Uptime": "Время работы с момента включения (с)",
+                "MCU Temperature": "Температура МК",
+                "MCU Voltage": "Напряжение питания МК",
+                "Minimum MCU Voltage Since Startup": "Минимальное напряжение питания МК с момента включения",
+                "1-Wire": "Датчик 1-Wire",
+                "External Temperature Sensor": "Датчик температуры",
+                "External Temperature Sensor OK": "Датчик температуры исправен",
+                "Discrete Input": "Дискретный вход",
+                "Input 1 Counter": "Счетчик 1",
+                "Disabled": "Отключен"
+            }
+        }
+    }
+}
