@@ -18875,7 +18875,7 @@ WB-MIR (simple)
 	Play from ROM5  =>  Play from ROM5
 	Play from ROM6  =>  Play from ROM6
 	Play from ROM7  =>  Play from ROM7
-WB-MIR v.2
+WB-MIR v2
 	BANK -> RAM  =>  BANK -> RAM
 	External Temperature Sensor  =>  External Temperature Sensor
 	External Temperature Sensor OK  =>  External Temperature Sensor OK
@@ -19058,11 +19058,11 @@ WB-MIR v.3
 	BANK -> RAM  =>  BANK -> RAM
 	FW Version  =>  FW Version
 	Input 1: input1_1wire
-		External Temperature Sensor  =>  External Temperature Sensor
-		External Temperature Sensor OK  =>  External Temperature Sensor OK
+	External Temperature Sensor  =>  External Temperature Sensor
+	External Temperature Sensor OK  =>  External Temperature Sensor OK
 	Input 1: input1_discrete
-		Input 1  =>  Input 1
-		Input 1 Counter  =>  Input 1 Counter
+	Input 1  =>  Input 1
+	Input 1 Counter  =>  Input 1 Counter
 	Input 1: input_disabled
 	Input Voltage  =>  Input Voltage
 	Learn to BANK  =>  Learn to BANK
