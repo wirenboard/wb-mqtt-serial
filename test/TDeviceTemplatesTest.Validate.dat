@@ -18923,6 +18923,7 @@ WB-MIR v.3
 	Learn to ROM38  =>  Learn to ROM38
 	Learn to ROM39  =>  Learn to ROM39
 	Learn to ROM4  =>  Learn to ROM4
+	Learn to ROM40  =>  Learn to ROM40
 	Learn to ROM5  =>  Learn to ROM5
 	Learn to ROM6  =>  Learn to ROM6
 	Learn to ROM7  =>  Learn to ROM7
@@ -18967,6 +18968,7 @@ WB-MIR v.3
 	Play from ROM38  =>  Play from ROM38
 	Play from ROM39  =>  Play from ROM39
 	Play from ROM4  =>  Play from ROM4
+	Play from ROM40  =>  Play from ROM40
 	Play from ROM5  =>  Play from ROM5
 	Play from ROM6  =>  Play from ROM6
 	Play from ROM7  =>  Play from ROM7
@@ -19040,6 +19042,8 @@ WB-MIR v.3
 	ROM39 size  =>  ROM39 size
 	ROM4 -> RAM  =>  ROM4 -> RAM
 	ROM4 size  =>  ROM4 size
+	ROM40 -> RAM  =>  ROM40 -> RAM
+	ROM40 size  =>  ROM40 size
 	ROM5 -> RAM  =>  ROM5 -> RAM
 	ROM5 size  =>  ROM5 size
 	ROM6 -> RAM  =>  ROM6 -> RAM
@@ -19102,6 +19106,7 @@ WB-MIR v2
 	Learn to ROM38  =>  Learn to ROM38
 	Learn to ROM39  =>  Learn to ROM39
 	Learn to ROM4  =>  Learn to ROM4
+	Learn to ROM40  =>  Learn to ROM40
 	Learn to ROM5  =>  Learn to ROM5
 	Learn to ROM6  =>  Learn to ROM6
 	Learn to ROM7  =>  Learn to ROM7
@@ -19146,6 +19151,7 @@ WB-MIR v2
 	Play from ROM38  =>  Play from ROM38
 	Play from ROM39  =>  Play from ROM39
 	Play from ROM4  =>  Play from ROM4
+	Play from ROM40  =>  Play from ROM40
 	Play from ROM5  =>  Play from ROM5
 	Play from ROM6  =>  Play from ROM6
 	Play from ROM7  =>  Play from ROM7
@@ -19219,6 +19225,8 @@ WB-MIR v2
 	ROM39 size  =>  ROM39 size
 	ROM4 -> RAM  =>  ROM4 -> RAM
 	ROM4 size  =>  ROM4 size
+	ROM40 -> RAM  =>  ROM40 -> RAM
+	ROM40 size  =>  ROM40 size
 	ROM5 -> RAM  =>  ROM5 -> RAM
 	ROM5 size  =>  ROM5 size
 	ROM6 -> RAM  =>  ROM6 -> RAM
