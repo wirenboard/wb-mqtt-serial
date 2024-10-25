@@ -18875,7 +18875,7 @@ WB-MIR (simple)
 	Play from ROM5  =>  Play from ROM5
 	Play from ROM6  =>  Play from ROM6
 	Play from ROM7  =>  Play from ROM7
-WB-MIR v2
+WB-MIR v.3
 	BANK -> RAM  =>  BANK -> RAM
 	External Temperature Sensor  =>  External Temperature Sensor
 	External Temperature Sensor OK  =>  External Temperature Sensor OK
@@ -19054,16 +19054,17 @@ WB-MIR v2
 	Reset all ROM  =>  Reset all ROM
 	Serial NO  =>  Serial NO
 	Uptime  =>  Uptime
-WB-MIR v.3
+WB-MIR v2
 	BANK -> RAM  =>  BANK -> RAM
-	FW Version  =>  FW Version
-	Input 1: input1_1wire
 	External Temperature Sensor  =>  External Temperature Sensor
 	External Temperature Sensor OK  =>  External Temperature Sensor OK
-	Input 1: input1_discrete
+	FW Version  =>  FW Version
 	Input 1  =>  Input 1
 	Input 1 Counter  =>  Input 1 Counter
-	Input 1: input_disabled
+	Input 1 Double Press Counter  =>  Input 1 Double Press Counter
+	Input 1 Long Press Counter  =>  Input 1 Long Press Counter
+	Input 1 Shortlong Press Counter  =>  Input 1 Shortlong Press Counter
+	Input 1 Single Press Counter  =>  Input 1 Single Press Counter
 	Input Voltage  =>  Input Voltage
 	Learn to BANK  =>  Learn to BANK
 	Learn to RAM  =>  Learn to RAM
@@ -19101,7 +19102,6 @@ WB-MIR v.3
 	Learn to ROM38  =>  Learn to ROM38
 	Learn to ROM39  =>  Learn to ROM39
 	Learn to ROM4  =>  Learn to ROM4
-	Learn to ROM40  =>  Learn to ROM40
 	Learn to ROM5  =>  Learn to ROM5
 	Learn to ROM6  =>  Learn to ROM6
 	Learn to ROM7  =>  Learn to ROM7
@@ -19146,7 +19146,6 @@ WB-MIR v.3
 	Play from ROM38  =>  Play from ROM38
 	Play from ROM39  =>  Play from ROM39
 	Play from ROM4  =>  Play from ROM4
-	Play from ROM40  =>  Play from ROM40
 	Play from ROM5  =>  Play from ROM5
 	Play from ROM6  =>  Play from ROM6
 	Play from ROM7  =>  Play from ROM7
@@ -19220,8 +19219,6 @@ WB-MIR v.3
 	ROM39 size  =>  ROM39 size
 	ROM4 -> RAM  =>  ROM4 -> RAM
 	ROM4 size  =>  ROM4 size
-	ROM40 -> RAM  =>  ROM40 -> RAM
-	ROM40 size  =>  ROM40 size
 	ROM5 -> RAM  =>  ROM5 -> RAM
 	ROM5 size  =>  ROM5 size
 	ROM6 -> RAM  =>  ROM6 -> RAM
@@ -19232,6 +19229,7 @@ WB-MIR v.3
 	ROM8 size  =>  ROM8 size
 	ROM9 -> RAM  =>  ROM9 -> RAM
 	ROM9 size  =>  ROM9 size
+	Reset All Counters  =>  Reset All Counters
 	Reset all ROM  =>  Reset all ROM
 	Serial NO  =>  Serial NO
 	Uptime  =>  Uptime
