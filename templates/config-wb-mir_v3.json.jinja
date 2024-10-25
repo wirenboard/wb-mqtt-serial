@@ -182,7 +182,7 @@
                 "group": "ir_commands"
             },
 
-            {% for rom in range(FIRST_ROM, LAST_ROM) -%}
+            {% for rom in range(FIRST_ROM, LAST_ROM + 1) -%}
             {
                 "name": "Learn to ROM{{ rom }}",
                 "reg_type": "coil",
@@ -446,7 +446,7 @@
                 "Learn to RAM": "Записать команду в RAM",
                 "Play from RAM": "Воспроизвести команду из RAM",
 
-                {% for rom in range(FIRST_ROM, LAST_ROM) -%}
+                {% for rom in range(FIRST_ROM, LAST_ROM + 1) -%}
                 "Learn to ROM{{ rom }}": "Записать команду в ROM{{ rom }}",
                 "ROM{{ rom }} size": "Размер команды в ROM{{ rom }}",
                 "Play from ROM{{ rom }}": "Воспроизвести команду из ROM{{ rom }}",
