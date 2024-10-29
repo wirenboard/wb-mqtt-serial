@@ -18,7 +18,6 @@
         "response_timeout_ms": 1,
         "frame_timeout_ms": 12,
         "enable_wb_continuous_read": true,
-        "min_request_interval": 100,
 
         "groups": [
             {
@@ -369,7 +368,8 @@
                 "reg_type": "input",
                 "address": 121,
                 "scale": 0.001,
-                "type": "voltage",
+                "type": "value",
+                "units": "V",
                 "enabled": false,
                 "group": "g_hw_info"
             },
@@ -378,6 +378,8 @@
                 "reg_type": "input",
                 "address": 104,
                 "format": "u32",
+                "type": "value",
+                "units": "s",
                 "enabled": false,
                 "group": "g_hw_info"
             },
@@ -385,7 +387,8 @@
                 "name": "MCU Temperature",
                 "reg_type": "input",
                 "address": 124,
-                "type": "temperature",
+                "type": "value",
+                "units": "deg C",
                 "format": "s16",
                 "scale": 0.1,
                 "enabled": false,
@@ -396,7 +399,8 @@
                 "reg_type": "input",
                 "address": 123,
                 "scale": 0.001,
-                "type": "voltage",
+                "type": "value",
+                "units": "V",
                 "enabled": false,
                 "group": "g_hw_info"
             },
@@ -423,7 +427,6 @@
                 "temperature_readings_period_s_description": "When changing this parameter, you should also change the erroneous values filter coefficient. The default value is 2",
 
                 "baud_rate_description": "Make sure that communication with the device is established before changing this parameter. Select required baud rate, save configuration and then change port baud rate to the same value. Default value is 9600",
-                "units": "s",
 
                 "lp_hold_time_title": "Long Press Time (ms)",
                 "secp_waiting_time_title": "Second Press Waiting Time (ms)",
@@ -438,7 +441,6 @@
                 "IR Commands": "ИК-команды",
                 "General": "Общее",
                 "HW Info": "Данные модуля",
-                "RS-485 Response Delay (ms)": "Задержка перед ответом по RS-485 (мс)",
                 "Status LED": "Индикатор состояния",
                 "Enabled": "Активен",
                 "Baud rate": "Скорость обмена",

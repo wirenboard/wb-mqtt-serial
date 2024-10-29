@@ -370,7 +370,8 @@
                 "reg_type": "input",
                 "address": 121,
                 "scale": 0.001,
-                "type": "voltage",
+                "type": "value",
+                "units": "V",
                 "enabled": false,
                 "group": "g_hw_info"
             },
@@ -379,6 +380,8 @@
                 "reg_type": "input",
                 "address": 104,
                 "format": "u32",
+                "type": "value",
+                "units": "s",
                 "enabled": false,
                 "group": "g_hw_info"
             },
@@ -386,7 +389,8 @@
                 "name": "MCU Temperature",
                 "reg_type": "input",
                 "address": 124,
-                "type": "temperature",
+                "type": "value",
+                "units": "deg C",
                 "format": "s16",
                 "scale": 0.1,
                 "enabled": false,
@@ -397,7 +401,8 @@
                 "reg_type": "input",
                 "address": 123,
                 "scale": 0.001,
-                "type": "voltage",
+                "type": "value",
+                "units": "V",
                 "enabled": false,
                 "group": "g_hw_info"
             },
@@ -416,16 +421,14 @@
         "translations": {
             "en": {
                 "WB-MIR-v.2_template_title": "WB-MIR v.2 (Modbus IR remote control)",
-                "Uptime": "Uptime (s)",
 
                 "temperature_readings_filter_deg_title": "Erroneous 1-Wire Temperature Readings Filter (°C)",
                 "temperature_readings_filter_deg_description": "If the new value equals 85 °C, it is discarded if it differs from the previous one by more than the filter value. Write 0 to disable the filter. The default value is 1",
                 "temperature_readings_period_s_title": "Temperature sensor poll period (s)",
                 "temperature_readings_period_s_description": "When changing this parameter, you should also change the erroneous values filter coefficient. The default value is 2",
 
-                "mode_description": "For press detection, firmware version 4.31.11 or newer is required",
+                "mode_description": "For press detection, firmware version 4.32.0 or newer is required",
                 "baud_rate_description": "Make sure that communication with the device is established before changing this parameter. Select required baud rate, save configuration and then change port baud rate to the same value. Default value is 9600",
-                "units": "s",
 
                 "lp_hold_time_title": "Long Press Time (ms)",
                 "secp_waiting_time_title": "Second Press Waiting Time (ms)",
@@ -440,7 +443,6 @@
                 "IR Commands": "ИК-команды",
                 "General": "Общее",
                 "HW Info": "Данные модуля",
-                "RS-485 Response Delay (ms)": "Задержка перед ответом по RS-485 (мс)",
                 "Status LED": "Индикатор состояния",
                 "Enabled": "Активен",
                 "Baud rate": "Скорость обмена",
@@ -477,7 +479,7 @@
 
                 "Press Parameters": "Параметры нажатий",
                 "Counting and press detection": "Счет и детектирование нажатий",
-                "mode_description": "Для детектирования нажатий требуется прошивка версии 4.31.11 или новее",
+                "mode_description": "Для детектирования нажатий требуется прошивка версии 4.32.0 или новее",
                 "Baud rate": "Скорость обмена",
                 "baud_rate_description": "Перед изменением параметра убедитесь, что связь с устройством установлена. Выберите нужную скорость обмена, сохраните конфигурацию, а затем укажите в настройках порта эту же скорость. Значение по умолчанию - 9600",
 
