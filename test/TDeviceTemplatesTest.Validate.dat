@@ -19061,14 +19061,14 @@ WB-MIR v.3
 WB-MIR v2
 	BANK -> RAM  =>  BANK -> RAM
 	External Temperature Sensor  =>  External Temperature Sensor
-	External Temperature Sensor OK  =>  External Temperature Sensor OK	
+	External Temperature Sensor OK  =>  External Temperature Sensor OK
 	FW Version  =>  FW Version
 	Input 1  =>  Input 1
 	Input 1 Counter  =>  Input 1 Counter
 	Input 1 Double Press Counter  =>  Input 1 Double Press Counter
 	Input 1 Long Press Counter  =>  Input 1 Long Press Counter
 	Input 1 Shortlong Press Counter  =>  Input 1 Shortlong Press Counter
-	Input 1 Single Press Counter  =>  Input 1 Single Press Counter	
+	Input 1 Single Press Counter  =>  Input 1 Single Press Counter
 	Input Voltage  =>  Input Voltage
 	Learn to BANK  =>  Learn to BANK
 	Learn to RAM  =>  Learn to RAM
