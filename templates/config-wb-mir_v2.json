@@ -2,6 +2,7 @@
     "title": "WB-MIR-v2_template_title",
     "device_type": "WB-MIR v2",
     "group": "g-wb",
+    "deprecated": true,
     "hw": [
         {
             "signature": "WBMIR3"
