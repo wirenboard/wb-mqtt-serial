@@ -328,13 +328,12 @@
                 "reg_type": "discrete",
                 "address": {{ in_num - 1 }},
                 "type": "switch",
-                "sporadic": false,
                 "condition": "isDefined(in{{ in_num }}_mode)==0||in{{ in_num }}_mode==3",
                 "group": "gg_in{{ in_num }}_channels"
             },
             {
                 "name": "{{ letter }}{{ in_num - in_num_offset }} Counter",
-                "reg_type": "input",
+                "reg_type": "press_counter",
                 "address": {{ 31 + in_num}},
                 "type": "value",
                 "sporadic": true,
@@ -343,10 +342,9 @@
             },
             {
                 "name": "{{ letter }}{{ in_num - in_num_offset }} Counter",
-                "reg_type": "input",
+                "reg_type": "press_counter",
                 "address": {{ 31 + in_num}},
                 "type": "value",
-                "sporadic": false,
                 "condition": "isDefined(in{{ in_num }}_mode)==0||in{{ in_num }}_mode==3",
                 "group": "gg_in{{ in_num }}_channels"
             },

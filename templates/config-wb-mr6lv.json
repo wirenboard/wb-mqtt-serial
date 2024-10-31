@@ -274,13 +274,12 @@
                 "reg_type": "discrete",
                 "address": 7,
                 "type": "switch",
-                "sporadic": false,
                 "condition": "isDefined(in0_mode)==0||in0_mode==3",
                 "group": "input_0"
             },
             {
                 "name": "Input 0 counter",
-                "reg_type": "input",
+                "reg_type": "press_counter",
                 "address": 39,
                 "type": "value",
                 "sporadic": true,
@@ -289,10 +288,9 @@
             },
             {
                 "name": "Input 0 counter",
-                "reg_type": "input",
+                "reg_type": "press_counter",
                 "address": 39,
                 "type": "value",
-                "sporadic": false,
                 "condition": "isDefined(in0_mode)==0||in0_mode==3",
                 "group": "input_0"
             },
@@ -321,13 +319,12 @@
                 "reg_type": "discrete",
                 "address": 0,
                 "type": "switch",
-                "sporadic": false,
                 "condition": "isDefined(in1_mode)==0||in1_mode==3",
                 "group": "input_1"
             },
             {
                 "name": "Input 1 counter",
-                "reg_type": "input",
+                "reg_type": "press_counter",
                 "address": 32,
                 "type": "value",
                 "sporadic": true,
@@ -336,10 +333,9 @@
             },
             {
                 "name": "Input 1 counter",
-                "reg_type": "input",
+                "reg_type": "press_counter",
                 "address": 32,
                 "type": "value",
-                "sporadic": false,
                 "condition": "isDefined(in1_mode)==0||in1_mode==3",
                 "group": "input_1"
             },
@@ -368,13 +364,12 @@
                 "reg_type": "discrete",
                 "address": 1,
                 "type": "switch",
-                "sporadic": false,
                 "condition": "isDefined(in2_mode)==0||in2_mode==3",
                 "group": "input_2"
             },
             {
                 "name": "Input 2 counter",
-                "reg_type": "input",
+                "reg_type": "press_counter",
                 "address": 33,
                 "type": "value",
                 "sporadic": true,
@@ -383,10 +378,9 @@
             },
             {
                 "name": "Input 2 counter",
-                "reg_type": "input",
+                "reg_type": "press_counter",
                 "address": 33,
                 "type": "value",
-                "sporadic": false,
                 "condition": "isDefined(in2_mode)==0||in2_mode==3",
                 "group": "input_2"
             },
@@ -415,13 +409,12 @@
                 "reg_type": "discrete",
                 "address": 2,
                 "type": "switch",
-                "sporadic": false,
                 "condition": "isDefined(in3_mode)==0||in3_mode==3",
                 "group": "input_3"
             },
             {
                 "name": "Input 3 counter",
-                "reg_type": "input",
+                "reg_type": "press_counter",
                 "address": 34,
                 "type": "value",
                 "sporadic": true,
@@ -430,10 +423,9 @@
             },
             {
                 "name": "Input 3 counter",
-                "reg_type": "input",
+                "reg_type": "press_counter",
                 "address": 34,
                 "type": "value",
-                "sporadic": false,
                 "condition": "isDefined(in3_mode)==0||in3_mode==3",
                 "group": "input_3"
             },
@@ -462,13 +454,12 @@
                 "reg_type": "discrete",
                 "address": 3,
                 "type": "switch",
-                "sporadic": false,
                 "condition": "isDefined(in4_mode)==0||in4_mode==3",
                 "group": "input_4"
             },
             {
                 "name": "Input 4 counter",
-                "reg_type": "input",
+                "reg_type": "press_counter",
                 "address": 35,
                 "type": "value",
                 "sporadic": true,
@@ -477,10 +468,9 @@
             },
             {
                 "name": "Input 4 counter",
-                "reg_type": "input",
+                "reg_type": "press_counter",
                 "address": 35,
                 "type": "value",
-                "sporadic": false,
                 "condition": "isDefined(in4_mode)==0||in4_mode==3",
                 "group": "input_4"
             },
@@ -509,13 +499,12 @@
                 "reg_type": "discrete",
                 "address": 4,
                 "type": "switch",
-                "sporadic": false,
                 "condition": "isDefined(in5_mode)==0||in5_mode==3",
                 "group": "input_5"
             },
             {
                 "name": "Input 5 counter",
-                "reg_type": "input",
+                "reg_type": "press_counter",
                 "address": 36,
                 "type": "value",
                 "sporadic": true,
@@ -524,10 +513,9 @@
             },
             {
                 "name": "Input 5 counter",
-                "reg_type": "input",
+                "reg_type": "press_counter",
                 "address": 36,
                 "type": "value",
-                "sporadic": false,
                 "condition": "isDefined(in5_mode)==0||in5_mode==3",
                 "group": "input_5"
             },
@@ -556,13 +544,12 @@
                 "reg_type": "discrete",
                 "address": 5,
                 "type": "switch",
-                "sporadic": false,
                 "condition": "isDefined(in6_mode)==0||in6_mode==3",
                 "group": "input_6"
             },
             {
                 "name": "Input 6 counter",
-                "reg_type": "input",
+                "reg_type": "press_counter",
                 "address": 37,
                 "type": "value",
                 "sporadic": true,
@@ -571,10 +558,9 @@
             },
             {
                 "name": "Input 6 counter",
-                "reg_type": "input",
+                "reg_type": "press_counter",
                 "address": 37,
                 "type": "value",
-                "sporadic": false,
                 "condition": "isDefined(in6_mode)==0||in6_mode==3",
                 "group": "input_6"
             },
