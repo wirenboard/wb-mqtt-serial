@@ -11,26 +11,16 @@
 
 struct TDeviceChannel: public TDeviceChannelConfig
 {
-    TDeviceChannel(PSerialDevice device, PDeviceChannelConfig config): TDeviceChannelConfig(*config), Device(device)
-    {
-        for (const auto& reg_config: config->RegisterConfigs) {
-            Registers.push_back(device->AddRegister(reg_config));
-        }
-    }
+    TDeviceChannel(PSerialDevice device, PDeviceChannelConfig config);
 
-    std::string Describe() const
-    {
-        const auto& name = GetName();
-        if (name != MqttId) {
-            return "channel '" + name + "' (MQTT control '" + MqttId + "') of device '" + DeviceId + "'";
-        }
-        return "channel '" + name + "' of device '" + DeviceId + "'";
-    }
+    std::string Describe() const;
 
     void UpdateValueAndError(WBMQTT::TDeviceDriver& deviceDriver, const WBMQTT::TPublishParameters& publishPolicy);
     void UpdateError(WBMQTT::TDeviceDriver& deviceDriver);
 
     bool HasValuesOfAllRegisters() const;
+
+    void DoNotPublishNextZeroPressCounter();
 
     PSerialDevice Device;
     std::vector<PRegister> Registers;
@@ -41,6 +31,12 @@ private:
     std::string GetErrorText() const;
     void PublishValueAndError(WBMQTT::TDeviceDriver& deviceDriver, const std::string& value, const std::string& error);
     void PublishError(WBMQTT::TDeviceDriver& deviceDriver, const std::string& error);
+
+    /* Wiren Board devices reset press counters to 0 after reboot.
+       Do not publish these very first zeroes to not trigger unexpected wb-rules whenChanged actions
+    */
+    bool ShouldNotPublishPressCounter() const;
+
     /* Current value of a channel, error flag and last update time.
        They are used to prevent unnecessary calls to libwbmqtt1.
        Although libwbmqtt1 implements publishing control with TPublishParams,
@@ -50,6 +46,7 @@ private:
     std::string CachedCurrentValue;
     std::string CachedErrorText;
     std::chrono::steady_clock::time_point LastControlUpdate;
+    bool PublishNextZeroPressCounter;
 };
 
 typedef std::shared_ptr<TDeviceChannel> PDeviceChannel;
@@ -89,6 +86,7 @@ private:
     WBMQTT::TPublishParameters PublishPolicy;
 
     std::unordered_map<PRegister, PDeviceChannel> RegisterToChannelMap;
+    std::unordered_map<PSerialDevice, std::vector<PDeviceChannel>> DeviceToChannelsMap;
 };
 
 typedef std::shared_ptr<TSerialPortDriver> PSerialPortDriver;

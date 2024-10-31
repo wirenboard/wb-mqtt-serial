@@ -118,7 +118,6 @@ class TModbusExtEventsVisitor: public ModbusExt::IEventsVisitor
     const TSerialClientEventsReader::TRegsMap& Regs;
     std::unordered_set<uint8_t>& DevicesWithEnabledEvents;
     TSerialClientEventsReader::TRegisterCallback RegisterChangedCallback;
-    TSerialClientEventsReader::TDeviceCallback DeviceRestartedCallback;
     uint8_t SlaveId = 0;
     std::list<TEventsReaderRegisterDesc> RegsToDisable;
 
@@ -150,7 +149,7 @@ class TModbusExtEventsVisitor: public ModbusExt::IEventsVisitor
         for (const auto& reg: Regs) {
             if (reg.first.SlaveId == slaveId) {
                 LOG(Debug) << "Restart event from " << MakeDeviceDescriptionString(slaveId);
-                DeviceRestartedCallback(reg.second.front()->Device());
+                reg.second.front()->Device()->SetDisconnected();
                 return;
             }
         }
@@ -160,12 +159,10 @@ class TModbusExtEventsVisitor: public ModbusExt::IEventsVisitor
 public:
     TModbusExtEventsVisitor(const TSerialClientEventsReader::TRegsMap& regs,
                             std::unordered_set<uint8_t>& devicesWithEnabledEvents,
-                            TSerialClientEventsReader::TRegisterCallback registerChangedCallback,
-                            TSerialClientEventsReader::TDeviceCallback deviceRestartedCallback)
+                            TSerialClientEventsReader::TRegisterCallback registerChangedCallback)
         : Regs(regs),
           DevicesWithEnabledEvents(devicesWithEnabledEvents),
-          RegisterChangedCallback(registerChangedCallback),
-          DeviceRestartedCallback(deviceRestartedCallback)
+          RegisterChangedCallback(registerChangedCallback)
     {}
 
     virtual void Event(uint8_t slaveId,
@@ -226,10 +223,9 @@ void TSerialClientEventsReader::ReadEventsFailed(const std::string& errorMessage
 void TSerialClientEventsReader::ReadEvents(TPort& port,
                                            milliseconds maxReadingTime,
                                            TRegisterCallback registerCallback,
-                                           TDeviceCallback deviceRestartedHandler,
                                            util::TGetNowFn nowFn)
 {
-    TModbusExtEventsVisitor visitor(Regs, DevicesWithEnabledEvents, registerCallback, deviceRestartedHandler);
+    TModbusExtEventsVisitor visitor(Regs, DevicesWithEnabledEvents, registerCallback);
     util::TSpentTimeMeter spentTimeMeter(nowFn);
     spentTimeMeter.Start();
     for (auto spentTime = 0us; spentTime < maxReadingTime; spentTime = spentTimeMeter.GetSpentTime()) {
@@ -318,24 +314,33 @@ void TSerialClientEventsReader::OnEnabledEvent(uint8_t slaveId, uint8_t type, ui
               << MakeEventDescriptionString(slaveId, type, addr);
 }
 
-void TSerialClientEventsReader::AddRegister(PRegister reg)
+void TSerialClientEventsReader::SetDevices(const std::list<PSerialDevice>& devices)
 {
-    if (reg->SporadicMode != TRegisterConfig::TSporadicMode::DISABLED) {
-        auto dev = ToModbusDevice(reg->Device().get());
-        if (dev != nullptr) {
-            TEventsReaderRegisterDesc regDesc{static_cast<uint8_t>(dev->SlaveId),
-                                              static_cast<uint16_t>(GetUint32RegisterAddress(reg->GetAddress())),
-                                              ToEventRegisterType(static_cast<Modbus::RegisterType>(reg->Type))};
-            Regs[regDesc].push_back(reg);
+    for (const auto& dev: devices) {
+        for (const auto& reg: dev->GetRegisters()) {
+            if (reg->SporadicMode != TRegisterConfig::TSporadicMode::DISABLED) {
+                auto dev = ToModbusDevice(reg->Device().get());
+                if (dev != nullptr) {
+                    TEventsReaderRegisterDesc regDesc{
+                        static_cast<uint8_t>(dev->SlaveId),
+                        static_cast<uint16_t>(GetUint32RegisterAddress(reg->GetAddress())),
+                        ToEventRegisterType(static_cast<Modbus::RegisterType>(reg->Type))};
+                    Regs[regDesc].push_back(reg);
+                }
+            }
         }
+        dev->AddOnConnectionStateChangedCallback(
+            [this](PSerialDevice device) { OnDeviceConnectionStateChanged(device); });
     }
 }
 
-void TSerialClientEventsReader::DeviceDisconnected(PSerialDevice device)
+void TSerialClientEventsReader::OnDeviceConnectionStateChanged(PSerialDevice device)
 {
-    auto dev = ToModbusDevice(device.get());
-    if (dev != nullptr) {
-        DevicesWithEnabledEvents.erase(dev->SlaveId);
+    if (device->GetConnectionState() == TDeviceConnectionState::DISCONNECTED) {
+        auto dev = ToModbusDevice(device.get());
+        if (dev != nullptr) {
+            DevicesWithEnabledEvents.erase(dev->SlaveId);
+        }
     }
 }
 

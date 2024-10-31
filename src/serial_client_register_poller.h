@@ -36,27 +36,23 @@ class TSerialClientRegisterPoller
 {
 public:
     typedef std::function<void(PRegister reg)> TRegisterCallback;
-    typedef std::function<void(PSerialDevice dev)> TDeviceCallback;
 
     TSerialClientRegisterPoller(size_t lowPriorityRateLimit = std::numeric_limits<size_t>::max());
 
     void SetDevices(const std::list<PSerialDevice>& devices, std::chrono::steady_clock::time_point currentTime);
-    void ClosedPortCycle(std::chrono::steady_clock::time_point currentTime,
-                         TRegisterCallback callback,
-                         TDeviceCallback deviceConnectionStateChangedCallback);
+    void ClosedPortCycle(std::chrono::steady_clock::time_point currentTime, TRegisterCallback callback);
     TPollResult OpenPortCycle(TPort& port,
                               const util::TSpentTimeMeter& spentTime,
                               std::chrono::milliseconds maxPollingTime,
                               bool readAtLeastOneRegister,
                               TSerialClientDeviceAccessHandler& lastAccessedDevice,
-                              TRegisterCallback callback,
-                              TDeviceCallback deviceConnectionStateChangedCallback);
-    void DeviceDisconnected(PSerialDevice device, std::chrono::steady_clock::time_point currentTime);
+                              TRegisterCallback callback);
 
 private:
     void ScheduleNextPoll(PPollableDevice device);
     std::chrono::steady_clock::time_point GetDeadline(bool lowPriorityRateLimitIsExceeded,
                                                       const util::TSpentTimeMeter& spentTime) const;
+    void OnDeviceConnectionStateChanged(PSerialDevice device);
 
     std::multimap<PSerialDevice, PPollableDevice> Devices;
 

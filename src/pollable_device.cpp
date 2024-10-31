@@ -111,7 +111,7 @@ bool TPollableDevice::HasRegisters() const
     return !Registers.IsEmpty();
 }
 
-void TPollableDevice::RescheduleAllRegisters(std::chrono::steady_clock::time_point currentTime)
+void TPollableDevice::RescheduleAllRegisters()
 {
     for (const auto& reg: Device->GetRegisters()) {
         if ((Priority == TPriority::High && reg->IsHighPriority()) ||
@@ -121,7 +121,7 @@ void TPollableDevice::RescheduleAllRegisters(std::chrono::steady_clock::time_poi
                 if (reg->IsExcludedFromPolling() && !Registers.Contains(reg)) {
                     reg->SetAvailable(TRegisterAvailability::UNKNOWN);
                     reg->IncludeInPolling();
-                    Registers.AddEntry(reg, currentTime);
+                    Registers.AddEntry(reg, std::chrono::steady_clock::time_point());
                 }
             }
         }
