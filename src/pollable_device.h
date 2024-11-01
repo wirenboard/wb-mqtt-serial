@@ -37,7 +37,7 @@ public:
 
     bool HasRegisters() const;
 
-    void RescheduleAllRegisters(std::chrono::steady_clock::time_point currentTime);
+    void RescheduleAllRegisters();
 };
 
 typedef std::shared_ptr<TPollableDevice> PPollableDevice;

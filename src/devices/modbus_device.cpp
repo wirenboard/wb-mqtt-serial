@@ -10,7 +10,8 @@ namespace
                                               {Modbus::REG_HOLDING_MULTI, "holding_multi", "value", U16},
                                               {Modbus::REG_COIL, "coil", "switch", U8},
                                               {Modbus::REG_DISCRETE, "discrete", "switch", U8, true},
-                                              {Modbus::REG_INPUT, "input", "value", U16, true}});
+                                              {Modbus::REG_INPUT, "input", "value", U16, true},
+                                              {Modbus::REG_INPUT, "press_counter", "value", U16, true}});
 
     class TModbusProtocol: public IProtocol
     {

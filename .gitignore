@@ -17,25 +17,6 @@ debian/tmp/
 vgcore.*
 test/*.out
 
-### JetBrains ###
-*/.idea/workspace.xml
-.idea/tasks.xml
-**/.idea/dictionaries
-**/.idea/vcs.xml
-**/.idea/jsLibraryMappings.xml
-**/.idea/dataSources.ids
-**/.idea/dataSources.xml
-**/.idea/dataSources.local.xml
-**/.idea/sqlDataSources.xml
-**/.idea/dynamic.xml
-**/.idea/uiDesigner.xml
-**/.idea/gradle.xml
-**/.idea/libraries
-**/.idea/mongoSettings.xml
-**/.idea/codeStyleSettings.xml
-*.iws
-*.iml
-
 **/.vscode/*
 workspace.xml
 **/.cproject
@@ -47,10 +28,6 @@ workspace.xml
 # core
 *.core
 
-debian/tmp
-debian/files
-debian/wb-mqtt-serial
-debian/*.substvars
 debhelper-build-stamp
 .clang-*
 build

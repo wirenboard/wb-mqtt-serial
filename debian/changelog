@@ -1,3 +1,10 @@
+wb-mqtt-serial (2.146.0) stable; urgency=medium
+
+  * Do not publish zero press counter value after device's reset. 
+    These zeros cause false positives in whenChanged conditions in wb-rules
+
+ -- Petr Krasnoshchekov <petr.krasnoshchekov@wirenboard.com>  Thu, 31 Oct 2024 12:25:29 +0500
+
 wb-mqtt-serial (2.145.1) stable; urgency=medium
 
   * Fix somfy transmitter template

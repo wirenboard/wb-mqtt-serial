@@ -211,7 +211,7 @@
             },
             {
                 "name": "Input {{in_num}} counter",
-                "reg_type": "input",
+                "reg_type": "press_counter",
                 "format": "u32",
                 "address": {{60 + (in_num - 1) * 2}},
                 "type": "value",
@@ -234,7 +234,7 @@
             },
             {
                 "name": "Input {{in_num}} Single Press Counter",
-                "reg_type": "input",
+                "reg_type": "press_counter",
                 "address": {{464 + in_num - 1}},
                 "type": "value",
                 "sporadic": true,
@@ -243,7 +243,7 @@
             },
             {
                 "name": "Input {{in_num}} Long Press Counter",
-                "reg_type": "input",
+                "reg_type": "press_counter",
                 "address": {{480 + in_num - 1}},
                 "type": "value",
                 "sporadic": true,
@@ -252,7 +252,7 @@
             },
             {
                 "name": "Input {{in_num}} Double Press Counter",
-                "reg_type": "input",
+                "reg_type": "press_counter",
                 "address": {{496 + in_num - 1}},
                 "type": "value",
                 "sporadic": true,
@@ -261,7 +261,7 @@
             },
             {
                 "name": "Input {{in_num}} Shortlong Press Counter",
-                "reg_type": "input",
+                "reg_type": "press_counter",
                 "address": {{512 + in_num - 1}},
                 "type": "value",
                 "sporadic": true,
@@ -275,7 +275,6 @@
                 "reg_type": "holding",
                 "address": {{368 + (encoder_num * 2)}},
                 "type": "value",
-                "sporadic": false,
                 "format": "s32",
                 "group": "gg_encoder_channels",
                 "condition": "encoder_{{encoder_num + 1}}_mode==1"
@@ -285,7 +284,6 @@
                 "reg_type": "holding",
                 "address": {{368 + (encoder_num * 2)}},
                 "type": "value",
-                "sporadic": false,
                 "format": "s16",
                 "group": "gg_encoder_channels",
                 "order": 1,
@@ -296,7 +294,6 @@
                 "reg_type": "holding",
                 "address": {{369 + (encoder_num * 2)}},
                 "type": "value",
-                "sporadic": false,
                 "format": "s16",
                 "group": "gg_encoder_channels",
                 "order": 2,
@@ -308,7 +305,6 @@
                 "reg_type": "holding",
                 "address": 372,
                 "type": "value",
-                "sporadic": false,
                 "format": "s32",
                 "group": "gg_encoder_channels",
                 "condition": "encoder_3_mode==1"
