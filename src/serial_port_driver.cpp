@@ -259,6 +259,13 @@ TControlArgs TSerialPortDriver::From(const PDeviceChannel& channel)
         args.SetEnumValueTitles(it.first, it.second);
     }
 
+    if (channel->Registers.cend() != std::find_if(channel->Registers.cbegin(), channel->Registers.cend(), [](auto reg) {
+            return reg->TypeName == "press_counter";
+        }))
+    {
+        args.SetDurable();
+    }
+
     return args;
 }
 
