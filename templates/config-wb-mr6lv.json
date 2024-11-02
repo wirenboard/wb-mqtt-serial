@@ -279,7 +279,7 @@
             },
             {
                 "name": "Input 0 counter",
-                "reg_type": "press_counter",
+                "reg_type": "input",
                 "address": 39,
                 "type": "value",
                 "sporadic": true,
@@ -288,7 +288,7 @@
             },
             {
                 "name": "Input 0 counter",
-                "reg_type": "press_counter",
+                "reg_type": "input",
                 "address": 39,
                 "type": "value",
                 "condition": "isDefined(in0_mode)==0||in0_mode==3",
@@ -324,7 +324,7 @@
             },
             {
                 "name": "Input 1 counter",
-                "reg_type": "press_counter",
+                "reg_type": "input",
                 "address": 32,
                 "type": "value",
                 "sporadic": true,
@@ -333,7 +333,7 @@
             },
             {
                 "name": "Input 1 counter",
-                "reg_type": "press_counter",
+                "reg_type": "input",
                 "address": 32,
                 "type": "value",
                 "condition": "isDefined(in1_mode)==0||in1_mode==3",
@@ -369,7 +369,7 @@
             },
             {
                 "name": "Input 2 counter",
-                "reg_type": "press_counter",
+                "reg_type": "input",
                 "address": 33,
                 "type": "value",
                 "sporadic": true,
@@ -378,7 +378,7 @@
             },
             {
                 "name": "Input 2 counter",
-                "reg_type": "press_counter",
+                "reg_type": "input",
                 "address": 33,
                 "type": "value",
                 "condition": "isDefined(in2_mode)==0||in2_mode==3",
@@ -414,7 +414,7 @@
             },
             {
                 "name": "Input 3 counter",
-                "reg_type": "press_counter",
+                "reg_type": "input",
                 "address": 34,
                 "type": "value",
                 "sporadic": true,
@@ -423,7 +423,7 @@
             },
             {
                 "name": "Input 3 counter",
-                "reg_type": "press_counter",
+                "reg_type": "input",
                 "address": 34,
                 "type": "value",
                 "condition": "isDefined(in3_mode)==0||in3_mode==3",
@@ -459,7 +459,7 @@
             },
             {
                 "name": "Input 4 counter",
-                "reg_type": "press_counter",
+                "reg_type": "input",
                 "address": 35,
                 "type": "value",
                 "sporadic": true,
@@ -468,7 +468,7 @@
             },
             {
                 "name": "Input 4 counter",
-                "reg_type": "press_counter",
+                "reg_type": "input",
                 "address": 35,
                 "type": "value",
                 "condition": "isDefined(in4_mode)==0||in4_mode==3",
@@ -504,7 +504,7 @@
             },
             {
                 "name": "Input 5 counter",
-                "reg_type": "press_counter",
+                "reg_type": "input",
                 "address": 36,
                 "type": "value",
                 "sporadic": true,
@@ -513,7 +513,7 @@
             },
             {
                 "name": "Input 5 counter",
-                "reg_type": "press_counter",
+                "reg_type": "input",
                 "address": 36,
                 "type": "value",
                 "condition": "isDefined(in5_mode)==0||in5_mode==3",
@@ -549,7 +549,7 @@
             },
             {
                 "name": "Input 6 counter",
-                "reg_type": "press_counter",
+                "reg_type": "input",
                 "address": 37,
                 "type": "value",
                 "sporadic": true,
@@ -558,7 +558,7 @@
             },
             {
                 "name": "Input 6 counter",
-                "reg_type": "press_counter",
+                "reg_type": "input",
                 "address": 37,
                 "type": "value",
                 "condition": "isDefined(in6_mode)==0||in6_mode==3",
