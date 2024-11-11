@@ -1,3 +1,9 @@
+wb-mqtt-serial (2.148.0) stable; urgency=medium
+
+  * Add new template for wbe2-i-opentherm fw1.7.3
+
+ -- Mikhail Burchu <mikhail.burchu@wirenboard.com>  Mon, 11 Nov 2024 11:45:00 +0300
+
 wb-mqtt-serial (2.147.0) stable; urgency=medium
 
   * Store press_counter register values as soon as possible.
