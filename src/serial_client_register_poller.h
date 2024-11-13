@@ -53,6 +53,7 @@ private:
     std::chrono::steady_clock::time_point GetDeadline(bool lowPriorityRateLimitIsExceeded,
                                                       const util::TSpentTimeMeter& spentTime) const;
     void OnDeviceConnectionStateChanged(PSerialDevice device);
+    void RescheduleDisconnectedDevices();
 
     std::multimap<PSerialDevice, PPollableDevice> Devices;
 
@@ -61,4 +62,6 @@ private:
     TThrottlingStateLogger ThrottlingStateLogger;
 
     TRateLimiter LowPriorityRateLimiter;
+
+    std::vector<PSerialDevice> DisconnectedDevicesWaitingForReschedule;
 };

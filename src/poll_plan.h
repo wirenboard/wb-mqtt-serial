@@ -12,6 +12,15 @@ public:
     {
         return std::find_if(this->c.cbegin(), this->c.cend(), pred) != this->c.cend();
     }
+
+    template<typename Pred> void Remove(Pred pred)
+    {
+        auto it = std::find_if(this->c.begin(), this->c.end(), pred);
+        if (it != this->c.end()) {
+            this->c.erase(it);
+            std::make_heap(this->c.begin(), this->c.end(), this->comp);
+        }
+    }
 };
 
 template<class TEntry, typename ComparePredicate> class TPriorityQueueSchedule
@@ -70,6 +79,11 @@ public:
     bool Contains(TEntry entry) const
     {
         return Entries.Contains([&](const TItem& item) { return item.Data == entry; });
+    }
+
+    void Remove(TEntry entry)
+    {
+        Entries.Remove([&](const TItem& item) { return item.Data == entry; });
     }
 
 private:
@@ -291,6 +305,12 @@ public:
     bool Contains(TEntry entry)
     {
         return LowPriorityQueue.Contains(entry) || HighPriorityQueue.Contains(entry);
+    }
+
+    void Remove(TEntry entry)
+    {
+        LowPriorityQueue.Remove(entry);
+        HighPriorityQueue.Remove(entry);
     }
 
     bool IsEmpty() const
