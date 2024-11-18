@@ -1,3 +1,9 @@
+wb-mqtt-serial (2.147.1) stable; urgency=medium
+
+  * Add min_request_interval=1000 to WBE2-I-EBUS template
+
+ -- Petr Krasnoshchekov <petr.krasnoshchekov@wirenboard.com>  Mon, 18 Nov 2024 15:40:02 +0500
+
 wb-mqtt-serial (2.147.0) stable; urgency=medium
 
   * Store press_counter register values as soon as possible.
