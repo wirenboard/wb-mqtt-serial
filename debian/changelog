@@ -1,3 +1,9 @@
+wb-mqtt-serial (2.147.1) stable; urgency=medium
+
+  * Reconfigure fast modbus events after device restart
+
+ -- Petr Krasnoshchekov <petr.krasnoshchekov@wirenboard.com>  Tue, 12 Nov 2024 21:25:35 +0500
+
 wb-mqtt-serial (2.147.0) stable; urgency=medium
 
   * Store press_counter register values as soon as possible.
