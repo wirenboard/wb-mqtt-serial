@@ -5,6 +5,7 @@
     "device": {
         "name": "WBE2-I-EBUS",
         "id": "wbe2-i-ebus",
+        "min_request_interval": 1000,
 
         "groups": [
             {
