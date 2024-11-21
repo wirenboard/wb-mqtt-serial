@@ -9,6 +9,9 @@ using namespace std::chrono;
 
 namespace
 {
+
+    const uint8_t MAX_EVENT_RESPONSE_SIZE = 0xF8;
+
     class TTimeMock
     {
         steady_clock::time_point Time;
@@ -127,21 +130,54 @@ public:
                      readTime);
     }
 
-    void EnqueueReadEvents(microseconds readTime, bool error = false, uint8_t responseSize = 0xF8)
+    void EnqueueReadEvents(microseconds readTime, uint8_t slaveId, bool error, uint8_t responseSize)
     {
         SetModbusRTUSlaveId(0xFD);
         Port->Expect(WrapPDU({
                          0x46,         // function code
                          0x10,         // subcommand
-                         0x00,         // staring slaveId
+                         slaveId,      // staring slaveId
                          responseSize, // max response size
-                         0x00,         //
+                         slaveId,      //
                          0x00          //
                      }),
                      WrapPDU({
                          0x46,               // function code
                          error ? 0x14 : 0x12 // subcommand, no events
                      }),
+                     __func__,
+                     readTime);
+    }
+
+    void EnqueueReadEvents(microseconds readTime)
+    {
+        EnqueueReadEvents(readTime, 0, false, MAX_EVENT_RESPONSE_SIZE);
+    }
+
+    void EnqueueResetEvent(microseconds readTime, uint8_t slaveId)
+    {
+        SetModbusRTUSlaveId(0xFD);
+        Port->Expect(WrapPDU({
+                         0x46,                    // function code
+                         0x10,                    // subcommand
+                         0x00,                    // staring slaveId
+                         MAX_EVENT_RESPONSE_SIZE, // response size
+                         0x00,                    //
+                         0x00                     //
+                     }),
+                     WrapPDU(
+                         {
+                             0x46, // function code
+                             0x11, // subcommand, events
+                             0x00, // flag
+                             0x01, // event count
+                             0x04, // data size
+                             0x00, // additional data size
+                             0x0f, // event type: reset
+                             0x00, // event id
+                             0x00, // event id
+                         },
+                         slaveId),
                      __func__,
                      readTime);
     }
@@ -556,10 +592,10 @@ TEST_F(TPollTest, SingleDeviceSingleRegisterWithEventsAndErrors)
     }
 
     for (size_t i = 0; i < 3; ++i) {
-        EnqueueReadEvents(30ms, true);
-        EnqueueReadEvents(30ms, true);
-        EnqueueReadEvents(30ms, true);
-        EnqueueReadEvents(25ms, true, 0x40);
+        EnqueueReadEvents(30ms, 0, true, MAX_EVENT_RESPONSE_SIZE);
+        EnqueueReadEvents(30ms, 0, true, MAX_EVENT_RESPONSE_SIZE);
+        EnqueueReadEvents(30ms, 0, true, MAX_EVENT_RESPONSE_SIZE);
+        EnqueueReadEvents(25ms, 0, true, 0x40);
         Cycle(serialClient, lastAccessedDevice);
     }
 }
@@ -632,6 +668,58 @@ TEST_F(TPollTest, SemiSporadicRegister)
         EnqueueReadHolding(1, 2, 1, 10ms);
         Cycle(serialClient, lastAccessedDevice);
         // Not enough time for polling
+        Cycle(serialClient, lastAccessedDevice);
+    }
+}
+
+TEST_F(TPollTest, ReconnectWithOnlyEvents)
+{
+    // One register with events
+    // 1. Events must be enabled
+    // 2. Read once by normal request and exclude the register from polling
+    // 3. Events read requests are sent every 50ms
+    // 4. Simulate restart event
+    // 5. Reenable events
+    // 6. Read once by normal request and exclude the register from polling
+    // 7. Events read requests are sent every 50ms
+
+    Port->SetBaudRate(115200);
+    auto config = MakeDeviceConfig("device1", "1");
+    config.CommonConfig->RequestDelay = 10ms;
+    config.CommonConfig->AddChannel(MakeChannelConfig("device1", 1, 0ms, TRegisterConfig::TSporadicMode::ONLY_EVENTS));
+    auto device = MakeDevice(config);
+    auto regList = GetRegList(device);
+
+    TSerialClientRegisterAndEventsReader serialClient({device}, 50ms, [this]() { return TimeMock.GetTime(); });
+    TSerialClientDeviceAccessHandler lastAccessedDevice(serialClient.GetEventsReader());
+
+    // Read registers
+    EnqueueEnableEvents(1, 1, 10ms);
+    EnqueueReadHolding(1, 1, 1, 10ms);
+    Cycle(serialClient, lastAccessedDevice);
+
+    // Only read events
+    for (size_t i = 0; i < 10; ++i) {
+        EnqueueReadEvents(4ms);
+        Cycle(serialClient, lastAccessedDevice);
+    }
+
+    // Device reset event
+    EnqueueResetEvent(4ms, 1);
+    EnqueueReadEvents(4ms, 1, false, MAX_EVENT_RESPONSE_SIZE);
+    Cycle(serialClient, lastAccessedDevice);
+
+    // Additional cycle for reading event but without actual read
+    Cycle(serialClient, lastAccessedDevice);
+
+    // Read registers
+    EnqueueEnableEvents(1, 1, 10ms);
+    EnqueueReadHolding(1, 1, 1, 10ms);
+    Cycle(serialClient, lastAccessedDevice);
+
+    // Only read events
+    for (size_t i = 0; i < 10; ++i) {
+        EnqueueReadEvents(4ms);
         Cycle(serialClient, lastAccessedDevice);
     }
 }

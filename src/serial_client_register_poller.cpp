@@ -137,6 +137,8 @@ void TSerialClientRegisterPoller::ClosedPortCycle(steady_clock::time_point curre
 {
     Scheduler.ResetLoadBalancing();
 
+    RescheduleDisconnectedDevices();
+
     TClosedPortDeviceReader reader(currentTime);
     do {
         reader.ClearRegisters();
@@ -180,6 +182,8 @@ TPollResult TSerialClientRegisterPoller::OpenPortCycle(TPort& port,
                                                        TSerialClientDeviceAccessHandler& lastAccessedDevice,
                                                        TRegisterCallback callback)
 {
+    RescheduleDisconnectedDevices();
+
     TPollResult res;
 
     TDeviceReader reader(spentTime, maxPollingTime, readAtLeastOneRegister, lastAccessedDevice);
@@ -237,10 +241,7 @@ TPollResult TSerialClientRegisterPoller::OpenPortCycle(TPort& port,
 void TSerialClientRegisterPoller::OnDeviceConnectionStateChanged(PSerialDevice device)
 {
     if (device->GetConnectionState() == TDeviceConnectionState::DISCONNECTED) {
-        auto range = Devices.equal_range(device);
-        for (auto it = range.first; it != range.second; ++it) {
-            it->second->RescheduleAllRegisters();
-        }
+        DisconnectedDevicesWaitingForReschedule.push_back(device);
     }
 }
 
@@ -262,4 +263,17 @@ std::string TThrottlingStateLogger::GetMessage()
         return "Register read rate limit is exceeded";
     }
     return std::string();
+}
+
+void TSerialClientRegisterPoller::RescheduleDisconnectedDevices()
+{
+    for (auto& device: DisconnectedDevicesWaitingForReschedule) {
+        auto range = Devices.equal_range(device);
+        for (auto it = range.first; it != range.second; ++it) {
+            Scheduler.Remove(it->second);
+            it->second->RescheduleAllRegisters();
+            Scheduler.AddEntry(it->second, it->second->GetDeadline(), it->second->GetPriority());
+        }
+    }
+    DisconnectedDevicesWaitingForReschedule.clear();
 }
