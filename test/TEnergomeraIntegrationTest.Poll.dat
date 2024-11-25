@@ -1,6 +1,7 @@
 Subscribe: /devices/+/meta/driver (QoS 0)
 Publish: /devices/reduced_energomera/meta: '{"driver":"em-test","title":{"en":"Reduced Energomera registers set"}}' (QoS 1, retained)
 Publish: /devices/reduced_energomera/meta/driver: 'em-test' (QoS 1, retained)
+Publish: /devices/reduced_energomera/meta/error: '' (QoS 1, retained)
 Publish: /devices/reduced_energomera/meta/name: 'Reduced Energomera registers set' (QoS 1, retained)
 Publish: /devices/reduced_energomera/controls/Frequency/meta: '{"order":1,"readonly":true,"type":"value"}' (QoS 1, retained)
 Publish: /devices/reduced_energomera/controls/Frequency/meta/error: '' (QoS 1, retained)

@@ -1,0 +1,36 @@
+{
+    "device_type": "setup with condition",
+    "device": {
+        "name": "setup with condition",
+        "id": "setup with condition",
+        "channels": [
+            {
+                "name": "Temperature",
+                "reg_type": "input",
+                "format": "s32",
+                "address": "0x0504"
+            }
+        ],
+        "parameters": [
+            {
+                "id": "p1",
+                "title": "p1",
+                "address": 9992
+            }
+        ],
+        "setup": [
+            {
+                "title": "s2",
+                "address": 9992,
+                "value": "0xfff2",
+                "condition": "p1==1"
+            },
+            {
+                "title": "s3",
+                "address": 9995,
+                "value": 10,
+                "scale": 2
+            }
+        ]
+    }
+}

@@ -1,6 +1,7 @@
 Subscribe: /devices/+/meta/driver (QoS 0)
 Publish: /devices/RPCTest/meta: '{"driver":"serial-client-integration-test","title":{"en":"RPCTest"}}' (QoS 1, retained)
 Publish: /devices/RPCTest/meta/driver: 'serial-client-integration-test' (QoS 1, retained)
+Publish: /devices/RPCTest/meta/error: '' (QoS 1, retained)
 Publish: /devices/RPCTest/meta/name: 'RPCTest' (QoS 1, retained)
 Publish: /devices/RPCTest/controls/Test/meta: '{"order":1,"readonly":false,"type":"value"}' (QoS 1, retained)
 Publish: /devices/RPCTest/controls/Test/meta/error: '' (QoS 1, retained)
