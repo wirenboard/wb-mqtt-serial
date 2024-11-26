@@ -1,6 +1,7 @@
 Subscribe: /devices/+/meta/driver (QoS 0)
 Publish: /devices/escort-db-2_1/meta: '{"driver":"em-test","title":{"en":"ESCORT DB-2 1"}}' (QoS 1, retained)
 Publish: /devices/escort-db-2_1/meta/driver: 'em-test' (QoS 1, retained)
+Publish: /devices/escort-db-2_1/meta/error: '' (QoS 1, retained)
 Publish: /devices/escort-db-2_1/meta/name: 'ESCORT DB-2 1' (QoS 1, retained)
 Publish: /devices/escort-db-2_1/controls/Temperature/meta: '{"order":1,"readonly":true,"type":"temperature"}' (QoS 1, retained)
 Publish: /devices/escort-db-2_1/controls/Temperature/meta/error: '' (QoS 1, retained)

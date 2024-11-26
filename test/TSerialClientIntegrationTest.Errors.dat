@@ -1,6 +1,7 @@
 Subscribe: /devices/+/meta/driver (QoS 0)
 Publish: /devices/ddl24/meta: '{"driver":"serial-client-integration-test","title":{"en":"DDL24"}}' (QoS 1, retained)
 Publish: /devices/ddl24/meta/driver: 'serial-client-integration-test' (QoS 1, retained)
+Publish: /devices/ddl24/meta/error: '' (QoS 1, retained)
 Publish: /devices/ddl24/meta/name: 'DDL24' (QoS 1, retained)
 Publish: /devices/ddl24/controls/RGB/meta: '{"order":1,"readonly":false,"type":"rgb"}' (QoS 1, retained)
 Publish: /devices/ddl24/controls/RGB/meta/error: '' (QoS 1, retained)

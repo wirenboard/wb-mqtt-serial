@@ -1,0 +1,114 @@
+Debug: 0
+PublishParams: 0 0
+Ports:
+    ------
+    ConnSettings: </dev/ttyNSC0 9600 8 N 1>
+    ConnectionMaxFailCycles: 2
+    MaxFailTime: 5000
+    GuardInterval: 0
+    Response timeout: -1
+    DeviceConfigs:
+        ------
+        Id: setup with condition_1
+        Name: setup with condition 1
+        SlaveId: 1
+        MaxRegHole: 0
+        MaxBitHole: 0
+        MaxReadRegisters: 1
+        MinReadRegisters: 1
+        GuardInterval: 0
+        DeviceTimeout: 3000
+        Response timeout: 500
+        Frame timeout: 20
+        DeviceChannels:
+            ------
+            Name: Temperature
+            Type: value
+            MqttId: Temperature
+            DeviceId: setup with condition_1
+            Order: 1
+            OnValue: 
+            Max: not set
+            Min: not set
+            Precision: 0
+            ReadOnly: 1
+            Registers:
+                ------
+                Type and Address: input: 1284
+                Format: S32
+                Scale: 1
+                Offset: 0
+                RoundTo: 0
+                Poll: 1
+                ReadOnly: 1
+                TypeName: input
+                ErrorValue: not set
+                UnsupportedValue: not set
+                WordOrder: BigEndian
+        SetupItems:
+            ------
+            Name: s2
+            Address: 9992
+            Value: 0xfff2
+            RawValue: 0xfff2
+            Reg type: holding (0)
+            Reg format: U16
+            ------
+            Name: s3
+            Address: 9995
+            Value: 10
+            RawValue: 0x05
+            Reg type: holding (0)
+            Reg format: U16
+        ------
+        Id: setup with condition_2
+        Name: setup with condition 2
+        SlaveId: 2
+        MaxRegHole: 0
+        MaxBitHole: 0
+        MaxReadRegisters: 1
+        MinReadRegisters: 1
+        GuardInterval: 0
+        DeviceTimeout: 3000
+        Response timeout: 500
+        Frame timeout: 20
+        DeviceChannels:
+            ------
+            Name: Temperature
+            Type: value
+            MqttId: Temperature
+            DeviceId: setup with condition_2
+            Order: 1
+            OnValue: 
+            Max: not set
+            Min: not set
+            Precision: 0
+            ReadOnly: 1
+            Registers:
+                ------
+                Type and Address: input: 1284
+                Format: S32
+                Scale: 1
+                Offset: 0
+                RoundTo: 0
+                Poll: 1
+                ReadOnly: 1
+                TypeName: input
+                ErrorValue: not set
+                UnsupportedValue: not set
+                WordOrder: BigEndian
+        SetupItems:
+            ------
+            Name: p1
+            Address: 9992
+            Value: 1
+            RawValue: 0x01
+            Reg type: holding (0)
+            Reg format: U16
+            ------
+            Name: s3
+            Address: 9995
+            Value: 10
+            RawValue: 0x05
+            Reg type: holding (0)
+            Reg format: U16

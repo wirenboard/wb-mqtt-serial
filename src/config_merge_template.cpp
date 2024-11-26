@@ -35,18 +35,21 @@ void AppendSetupItems(Json::Value& deviceTemplate, const Json::Value& config, TE
 {
     Json::Value newSetup(Json::arrayValue);
 
+    TJsonParams params(config);
+
     if (config.isMember("setup")) {
         for (const auto& item: config["setup"]) {
             if (!item.isMember("address")) {
                 throw TConfigParserException("Setup command '" + item["title"].asString() + "' must have address");
             }
-            newSetup.append(item);
+            if (CheckCondition(item, params, exprs)) {
+                newSetup.append(item);
+            }
         }
     }
 
     if (deviceTemplate.isMember("parameters")) {
         Json::Value& templateParameters = deviceTemplate["parameters"];
-        TJsonParams params(config);
         for (auto it = templateParameters.begin(); it != templateParameters.end(); ++it) {
             auto name = templateParameters.isArray() ? (*it)["id"].asString() : it.name();
             if (config.isMember(name)) {

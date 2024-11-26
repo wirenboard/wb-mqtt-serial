@@ -1,3 +1,9 @@
+wb-mqtt-serial (2.148.0) stable; urgency=medium
+
+  * Add condition to device template setup section
+
+ -- Petr Krasnoshchekov <petr.krasnoshchekov@wirenboard.com>  Mon, 25 Nov 2024 15:09:54 +0500
+
 wb-mqtt-serial (2.147.2) stable; urgency=medium
 
   * Add min_request_interval=1000 to WBE2-I-EBUS template
