@@ -1,6 +1,7 @@
 Subscribe: /devices/+/meta/driver (QoS 0)
 Publish: /devices/test/meta: '{"driver":"serial-client-integration-test","title":{"en":"Test"}}' (QoS 1, retained)
 Publish: /devices/test/meta/driver: 'serial-client-integration-test' (QoS 1, retained)
+Publish: /devices/test/meta/error: '' (QoS 1, retained)
 Publish: /devices/test/meta/name: 'Test' (QoS 1, retained)
 Publish: /devices/test/controls/I1/meta: '{"order":1,"readonly":false,"type":"value"}' (QoS 1, retained)
 Publish: /devices/test/controls/I1/meta/error: '' (QoS 1, retained)

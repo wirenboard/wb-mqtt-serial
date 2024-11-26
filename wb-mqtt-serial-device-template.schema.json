@@ -48,6 +48,9 @@
         "value": {
           "title": "Value",
           "$ref": "#/definitions/serial_int"
+        },
+        "condition": {
+          "type": "string"
         }
       },
       "required": ["title", "address", "value"]

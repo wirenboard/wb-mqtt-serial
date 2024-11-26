@@ -1,6 +1,7 @@
 Subscribe: /devices/+/meta/driver (QoS 0)
 Publish: /devices/PollIntervalMissError/meta: '{"driver":"serial-client-integration-test","title":{"en":"PollIntervalMissError"}}' (QoS 1, retained)
 Publish: /devices/PollIntervalMissError/meta/driver: 'serial-client-integration-test' (QoS 1, retained)
+Publish: /devices/PollIntervalMissError/meta/error: '' (QoS 1, retained)
 Publish: /devices/PollIntervalMissError/meta/name: 'PollIntervalMissError' (QoS 1, retained)
 Publish: /devices/PollIntervalMissError/controls/Test/meta: '{"order":1,"readonly":false,"type":"value"}' (QoS 1, retained)
 Publish: /devices/PollIntervalMissError/controls/Test/meta/error: '' (QoS 1, retained)

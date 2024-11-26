@@ -1,6 +1,7 @@
 Subscribe: /devices/+/meta/driver (QoS 0)
 Publish: /devices/dlms/meta: '{"driver":"em-test","title":{"en":"DLMS"}}' (QoS 1, retained)
 Publish: /devices/dlms/meta/driver: 'em-test' (QoS 1, retained)
+Publish: /devices/dlms/meta/error: '' (QoS 1, retained)
 Publish: /devices/dlms/meta/name: 'DLMS' (QoS 1, retained)
 Publish: /devices/dlms/controls/Temperature/meta: '{"order":1,"readonly":true,"type":"temperature"}' (QoS 1, retained)
 Publish: /devices/dlms/controls/Temperature/meta/error: '' (QoS 1, retained)

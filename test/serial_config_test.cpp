@@ -196,6 +196,12 @@ TEST_F(TConfigParserTest, ParametersAsArray)
     PrintConfig(GetConfig("configs/parse_test_parameters_array.json"));
 }
 
+TEST_F(TConfigParserTest, SetupCondition)
+{
+    // Check loading device template with setup with condition
+    PrintConfig(GetConfig("configs/parse_test_setup_condition.json"));
+}
+
 TEST_F(TConfigParserTest, UnsuccessfulParse)
 {
     auto commonDeviceSchema(
