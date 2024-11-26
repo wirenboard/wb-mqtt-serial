@@ -42,9 +42,7 @@ void AppendSetupItems(Json::Value& deviceTemplate, const Json::Value& config, TE
             if (!item.isMember("address")) {
                 throw TConfigParserException("Setup command '" + item["title"].asString() + "' must have address");
             }
-            if (CheckCondition(item, params, exprs)) {
-                newSetup.append(item);
-            }
+            newSetup.append(item);
         }
     }
 
@@ -73,7 +71,9 @@ void AppendSetupItems(Json::Value& deviceTemplate, const Json::Value& config, TE
 
     if (deviceTemplate.isMember("setup")) {
         for (const auto& item: deviceTemplate["setup"]) {
-            newSetup.append(item);
+            if (CheckCondition(item, params, exprs)) {
+                newSetup.append(item);
+            }
         }
     }
 
