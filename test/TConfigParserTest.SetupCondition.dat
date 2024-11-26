@@ -47,13 +47,6 @@ Ports:
                 WordOrder: BigEndian
         SetupItems:
             ------
-            Name: s2
-            Address: 9992
-            Value: 0xfff2
-            RawValue: 0xfff2
-            Reg type: holding (0)
-            Reg format: U16
-            ------
             Name: s3
             Address: 9995
             Value: 10
@@ -100,9 +93,16 @@ Ports:
         SetupItems:
             ------
             Name: p1
-            Address: 9992
+            Address: 9993
             Value: 1
             RawValue: 0x01
+            Reg type: holding (0)
+            Reg format: U16
+            ------
+            Name: s2
+            Address: 9992
+            Value: 0xfff2
+            RawValue: 0xfff2
             Reg type: holding (0)
             Reg format: U16
             ------
