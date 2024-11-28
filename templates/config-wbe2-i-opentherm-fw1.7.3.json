@@ -280,7 +280,8 @@
                 "name": "Hot Water Temperature",
                 "address": 208,
                 "reg_type": "input",
-                "type": "temperature",
+                "type": "value",
+                "units": "deg C",
                 "format": "u16",
                 "group": "boiler_state"
             },
