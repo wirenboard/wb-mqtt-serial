@@ -622,10 +622,10 @@
                 "Direct Heating Setpoint Control": "Управление уставкой отопления",
 
                 "Heating Off": "Отопление отключено",
-				"Current Boiler Mode": "Текущий режим работы котла",
-				"STANDBY": "СПЯЩИЙ РЕЖИМ",
-				"WINTER": "ЗИМА",
-				"SUMMER": "ЛЕТО"
+                "Current Boiler Mode": "Текущий режим работы котла",
+                "STANDBY": "СПЯЩИЙ РЕЖИМ",
+                "WINTER": "ЗИМА",
+                "SUMMER": "ЛЕТО"
             }
         }
     }
