@@ -1,3 +1,9 @@
+wb-mqtt-serial (2.146.0-wb101-cb8ea449) stable; urgency=medium
+
+  * Move vendor devices up in templates list
+
+ -- Ekaterina Volkova <ekaterina.volkova@wirenboard.com>  Fri, 29 Nov 2024 17:28:24 +0300
+
 wb-mqtt-serial (2.146.0-wb101) stable; urgency=medium
 
   * Add template for WBE2-I-OPENTHERM-FW-1-7-3
