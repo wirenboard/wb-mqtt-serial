@@ -1,6 +1,7 @@
 Subscribe: /devices/+/meta/driver (QoS 0)
 Publish: /devices/milur305_255/meta: '{"driver":"em-test","title":{"en":"Milur 305 255"}}' (QoS 1, retained)
 Publish: /devices/milur305_255/meta/driver: 'em-test' (QoS 1, retained)
+Publish: /devices/milur305_255/meta/error: '' (QoS 1, retained)
 Publish: /devices/milur305_255/meta/name: 'Milur 305 255' (QoS 1, retained)
 Publish: /devices/milur305_255/controls/Phase A voltage/meta: '{"order":1,"readonly":true,"type":"voltage"}' (QoS 1, retained)
 Publish: /devices/milur305_255/controls/Phase A voltage/meta/error: '' (QoS 1, retained)
