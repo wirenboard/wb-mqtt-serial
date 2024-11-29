@@ -1,6 +1,7 @@
 Subscribe: /devices/+/meta/driver (QoS 0)
 Publish: /devices/OnValueTest/meta: '{"driver":"serial-client-integration-test","title":{"en":"OnValueTest"}}' (QoS 1, retained)
 Publish: /devices/OnValueTest/meta/driver: 'serial-client-integration-test' (QoS 1, retained)
+Publish: /devices/OnValueTest/meta/error: '' (QoS 1, retained)
 Publish: /devices/OnValueTest/meta/name: 'OnValueTest' (QoS 1, retained)
 Publish: /devices/OnValueTest/controls/Relay 1/meta: '{"order":1,"readonly":false,"type":"switch"}' (QoS 1, retained)
 Publish: /devices/OnValueTest/controls/Relay 1/meta/error: '' (QoS 1, retained)

@@ -1,6 +1,7 @@
 Subscribe: /devices/+/meta/driver (QoS 0)
 Publish: /devices/reconnect-test/meta: '{"driver":"serial-client-integration-test","title":{"en":"Reconnect test"}}' (QoS 1, retained)
 Publish: /devices/reconnect-test/meta/driver: 'serial-client-integration-test' (QoS 1, retained)
+Publish: /devices/reconnect-test/meta/error: '' (QoS 1, retained)
 Publish: /devices/reconnect-test/meta/name: 'Reconnect test' (QoS 1, retained)
 Publish: /devices/reconnect-test/controls/I1/meta: '{"order":1,"readonly":false,"type":"value"}' (QoS 1, retained)
 Publish: /devices/reconnect-test/controls/I1/meta/error: '' (QoS 1, retained)

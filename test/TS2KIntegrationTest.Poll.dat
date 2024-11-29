@@ -1,6 +1,7 @@
 Subscribe: /devices/+/meta/driver (QoS 0)
 Publish: /devices/pseudo_s2k/meta: '{"driver":"em-test","title":{"en":"PseudoS2K"}}' (QoS 1, retained)
 Publish: /devices/pseudo_s2k/meta/driver: 'em-test' (QoS 1, retained)
+Publish: /devices/pseudo_s2k/meta/error: '' (QoS 1, retained)
 Publish: /devices/pseudo_s2k/meta/name: 'PseudoS2K' (QoS 1, retained)
 Publish: /devices/pseudo_s2k/controls/Relay 1/meta: '{"order":1,"readonly":false,"type":"switch"}' (QoS 1, retained)
 Publish: /devices/pseudo_s2k/controls/Relay 1/meta/error: '' (QoS 1, retained)

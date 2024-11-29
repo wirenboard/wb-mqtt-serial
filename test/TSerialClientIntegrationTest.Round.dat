@@ -1,6 +1,7 @@
 Subscribe: /devices/+/meta/driver (QoS 0)
 Publish: /devices/RoundTest/meta: '{"driver":"serial-client-integration-test","title":{"en":"RoundTest"}}' (QoS 1, retained)
 Publish: /devices/RoundTest/meta/driver: 'serial-client-integration-test' (QoS 1, retained)
+Publish: /devices/RoundTest/meta/error: '' (QoS 1, retained)
 Publish: /devices/RoundTest/meta/name: 'RoundTest' (QoS 1, retained)
 Publish: /devices/RoundTest/controls/Float_0_01/meta: '{"order":1,"precision":0.01,"readonly":false,"type":"value"}' (QoS 1, retained)
 Publish: /devices/RoundTest/controls/Float_0_01/meta/error: '' (QoS 1, retained)

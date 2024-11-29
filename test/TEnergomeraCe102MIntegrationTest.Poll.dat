@@ -1,6 +1,7 @@
 Subscribe: /devices/+/meta/driver (QoS 0)
 Publish: /devices/reduced_energomera_ce102m/meta: '{"driver":"em-test","title":{"en":"Reduced Energomera CE102M registers set"}}' (QoS 1, retained)
 Publish: /devices/reduced_energomera_ce102m/meta/driver: 'em-test' (QoS 1, retained)
+Publish: /devices/reduced_energomera_ce102m/meta/error: '' (QoS 1, retained)
 Publish: /devices/reduced_energomera_ce102m/meta/name: 'Reduced Energomera CE102M registers set' (QoS 1, retained)
 Publish: /devices/reduced_energomera_ce102m/controls/Urms/meta: '{"order":1,"readonly":true,"type":"voltage"}' (QoS 1, retained)
 Publish: /devices/reduced_energomera_ce102m/controls/Urms/meta/error: '' (QoS 1, retained)

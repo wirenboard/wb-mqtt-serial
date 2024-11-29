@@ -1,3 +1,9 @@
+wb-mqtt-serial (2.146.0-wb100) stable; urgency=medium
+
+  * Add condition to device template setup section
+
+ -- Ekaterina Volkova <ekaterina.volkova@wirenboard.com>  Thu, 28 Nov 2024 15:09:54 +0300
+
 wb-mqtt-serial (2.146.0) stable; urgency=medium
 
   * Do not publish zero press counter value after device's reset. 
