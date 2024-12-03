@@ -109,6 +109,14 @@ BAC-6000ELNW
 	Room Temperature  =>  Room Temperature
 	Status  =>  Status
 	Temperature Setpoint  =>  Temperature Setpoint
+BHT-006 Series
+	heating_status  =>  heating_status
+	lock_buttons  =>  lock_buttons
+	manual_mode  =>  manual_mode
+	power_status  =>  power_status
+	setting_temperature  =>  setting_temperature
+	temperature_from_internal_sensor  =>  temperature_from_internal_sensor
+	weekly_program_setting_temperature  =>  weekly_program_setting_temperature
 BHT-6000 Series
 	Heating status  =>  Heating status
 	Lock buttons  =>  Lock buttons
