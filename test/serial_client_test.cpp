@@ -1433,7 +1433,7 @@ TEST_F(TSerialClientIntegrationTest, SlaveIdCollision)
 
     auto factory = [=](const Json::Value& port_data, PRPCConfig rpcConfig) -> std::pair<PPort, bool> {
         auto path = port_data["path"].asString();
-        return std::make_pair(std::make_shared<TFakeSerialPort>(*this, path), false);
+        return std::make_pair(std::make_shared<TFakeSerialPort>(*this, path, false), false);
     };
 
     EXPECT_THROW(LoadConfig(GetDataFilePath("configs/config-collision-test.json"),
