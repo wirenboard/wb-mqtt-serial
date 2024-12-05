@@ -18,7 +18,8 @@
                 "name": "temperature_from_internal_sensor",
                 "reg_type": "holding",
                 "address": "0x01",
-                "type": "temperature",
+                "type": "value",
+                "units": "deg C",
                 "format": "s16",
                 "scale": 0.1,
                 "readonly": true
@@ -47,6 +48,7 @@
                 "reg_type": "holding",
                 "address": "0x04",
                 "type": "range",
+                "units": "deg C",
                 "format": "s16",
                 "scale": 0.1,
                 "min": 5,
@@ -58,6 +60,7 @@
                 "address": "0x05",
                 "format": "s16",
                 "type": "range",
+                "units": "deg C",
                 "scale": 0.1,
                 "min": 5,
                 "max": 35
