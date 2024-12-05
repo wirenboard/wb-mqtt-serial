@@ -1,3 +1,9 @@
+wb-mqtt-serial (2.150.0) stable; urgency=medium
+
+  * Add template for BHT-006
+
+-- Andrey Ksenofontov <andrey.ksenofontov@wirenboard.com>  Wed, 05 Dec 2024 14:50:00 +0300
+
 wb-mqtt-serial (2.149.2) stable; urgency=medium
 
   * Add translations for template BHT-6000
