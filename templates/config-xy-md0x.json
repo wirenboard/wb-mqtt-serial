@@ -1,0 +1,101 @@
+{
+    "title": "xy-md0x_title",
+    "device_type": "XY-MD0X",
+    "group": "g-climate-sensor",
+    "device": {
+        "name": "XY-MD0X",
+        "id": "xy-md0x",
+        "response_timeout_ms": 200,
+        "guard_interval_us": 50000,
+        "parameters": {
+            "Device_ID": {
+                "title": "Device ID",
+                "reg_type": "holding",
+                "description": "warning",
+                "address": "0x101",
+                "min": 1,
+                "max": 247,
+                "default": 1,
+                "order": 1
+            },
+            "Device_baud_rate": {
+                "title": "Device baud rate",
+                "reg_type": "holding",
+                "address": "0x102",
+                "enum": [
+                    9600,
+                    19200,
+                    38400,
+                    57600,
+                    115200
+                ],
+                "enum_titles": [
+                    "9600",
+                    "19200",
+                    "38400",
+                    "57600",
+                    "115200"
+                ],
+                "default": 9600,
+                "order": 2
+            },
+            "Temp_correction": {
+                "title": "Temperature correction",
+                "reg_type": "holding",
+                "address": "0x103",
+                "min": -10,
+                "max": 10,
+                "scale": 0.1,
+                "default": 0,
+                "order": 3
+            },
+            "Hum_correction": {
+                "title": "Humidity correction",
+                "reg_type": "holding",
+                "address": "0x104",
+                "min": -10,
+                "max": 10,
+                "scale": 0.1,
+                "default": 0,
+                "order": 4
+            }
+        },
+        "channels": [
+            {
+                "name": "temperature",
+                "reg_type": "input",
+                "address": 1,
+                "type": "temperature",
+                "format": "u16",
+                "scale": 0.1
+            },
+            {
+                "name": "humidity",
+                "reg_type": "input",
+                "address": 2,
+                "type": "value",
+                "format": "u16",
+                "units": "%",
+                "scale": 0.1
+            }
+        ],
+        "translations": {
+            "en": {
+                "xy-md0x_title": "XY-MD0X (XY-MD03, XY-MD04)",
+                "temperature": "Temperature",
+                "humidity": "Humidity",
+                "warning": "Before changing the parameters, make sure that the connection to the device is established. You will need to restart your device to apply the new settings."
+            },
+            "ru": {
+                "xy-md0x_title": "XY-MD0X (XY-MD03, XY-MD04)",
+                "warning": "Перед изменением параметров убедитесь, что связь с устройством установлена. Для применения новых настроек потребуется выполнить перезагрузку устройства.",
+                "temperature": "Температура",
+                "humidity": "Влажность",
+                "Temperature correction": "Коррекция температуры",
+                "Humidity correction": "Коррекция влажности",
+                "Device ID": "Modbus SlaveID датчика",
+                "Device baud rate": "Скорость обмена"
+            }
+        } 
+    }
+}
