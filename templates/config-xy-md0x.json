@@ -56,7 +56,7 @@
                 "temp_correction_title": "Temperature Correction",
                 "humidity_correction_title": "Humidity Correction",
                 "temperature": "Temperature",
-                "humidity": "Humidity",
+                "humidity": "Humidity"
             },
             "ru": {
                 "temp_correction_title": "Коррекция температуры",
