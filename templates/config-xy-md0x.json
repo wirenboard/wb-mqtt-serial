@@ -8,40 +8,7 @@
         "response_timeout_ms": 200,
         "guard_interval_us": 50000,
         "parameters": [
-            {
-                "id": "device_id",
-                "title": "device_id_title",
-                "reg_type": "holding",
-                "description": "baud_rate_description",
-                "address": "0x101",
-                "min": 1,
-                "max": 247,
-                "default": 1,
-                "order": 1
-            },
-            {
-                "id": "baud_rate",
-                "title": "baud_rate_title",
-                "reg_type": "holding",
-                "address": "0x102",
-                "enum": [
-                    9600,
-                    19200,
-                    38400,
-                    57600,
-                    115200
-                ],
-                "enum_titles": [
-                    "9600",
-                    "19200",
-                    "38400",
-                    "57600",
-                    "115200"
-                ],
-                "default": 9600,
-                "order": 2
-            },
-            {
+              {
                 "id": "temp_correction",
                 "title": "temp_correction_title",
                 "reg_type": "holding",
@@ -50,7 +17,7 @@
                 "max": 10,
                 "scale": 0.1,
                 "default": 0,
-                "order": 3
+                "order": 1
             },
             {
                 "id": "humidity_correction",
@@ -61,7 +28,7 @@
                 "max": 10,
                 "scale": 0.1,
                 "default": 0,
-                "order": 4
+                "order": 2
             }
         ],
         "channels": [
@@ -86,20 +53,14 @@
         ],
         "translations": {
             "en": {
-                "device_id_title": "Device ID",
-                "baud_rate_title": "Device Baud Rate",
                 "temp_correction_title": "Temperature Correction",
                 "humidity_correction_title": "Humidity Correction",
                 "temperature": "Temperature",
                 "humidity": "Humidity",
-                "baud_rate_description": "Make sure that communication with device is established before changing communication parameter. Select required device ID and(or) baud rate, save configuration and then change port baud rate to the same value. You will need to restart your device to apply the new settings."
             },
             "ru": {
-                "device_id_title": "Modbus Slave ID датчика",
-                "baud_rate_title": "Скорость обмена",
                 "temp_correction_title": "Коррекция температуры",
                 "humidity_correction_title": "Коррекция влажности",
-                "baud_rate_description": "Перед изменением параметров убедитесь, что связь с устройством установлена. Для применения новых настроек потребуется выполнить перезагрузку устройства.",
                 "temperature": "Температура",
                 "humidity": "Влажность"
             }
