@@ -1,3 +1,21 @@
+wb-mqtt-serial (2.150.0) stable; urgency=medium
+
+  * Add template for BHT-006
+
+-- Andrey Ksenofontov <andrey.ksenofontov@wirenboard.com>  Wed, 05 Dec 2024 14:50:00 +0300
+
+wb-mqtt-serial (2.149.2) stable; urgency=medium
+
+  * Add translations for template BHT-6000
+  
+ -- Andrey Ksenofontov <andrey.ksenofontov@wirenboard.com>  Thu, 05 Dec 2024 14:15:00 +0300
+
+wb-mqtt-serial (2.149.1) stable; urgency=medium
+
+  * Add port name to logs
+
+ -- Vladimir Romanov <v.romanov@wirenboard.com>  Tue, 03 Dec 2024 11:30:19 +0500
+
 wb-mqtt-serial (2.149.0) stable; urgency=medium
 
   * Add template for WBE2-I-OPENTHERM-FW-1-7-3
