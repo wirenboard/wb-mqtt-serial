@@ -20960,6 +20960,9 @@ WinDeco
 	Position  =>  Position
 	Status  =>  Status
 	Stop  =>  Stop
+XY-MD0X
+	humidity  =>  humidity
+	temperature  =>  temperature
 carel_mu_rack
 	Alarm 1 Compressor  =>  Alarm 1 Compressor
 	Alarm 2 Compressor  =>  Alarm 2 Compressor

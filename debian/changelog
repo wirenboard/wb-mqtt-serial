@@ -1,3 +1,9 @@
+wb-mqtt-serial (2.151.0) stable; urgency=medium
+
+  * Add template for XY-MD0X
+
+-- Andrey Ksenofontov <andrey.ksenofontov@wirenboard.com>  Fri, 06 Dec 2024 06:45:00 +0300
+
 wb-mqtt-serial (2.150.0) stable; urgency=medium
 
   * Add template for BHT-006
