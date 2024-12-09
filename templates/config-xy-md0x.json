@@ -5,8 +5,6 @@
     "device": {
         "name": "XY-MD0X",
         "id": "xy-md0x",
-        "response_timeout_ms": 200,
-        "guard_interval_us": 50000,
         "parameters": [
               {
                 "id": "temp_correction",
