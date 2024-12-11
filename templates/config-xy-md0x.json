@@ -1,0 +1,67 @@
+{
+    "title": "XY-MD0X (XY-MD03, XY-MD04)",
+    "device_type": "XY-MD0X",
+    "group": "g-climate-sensor",
+    "device": {
+        "name": "XY-MD0X",
+        "id": "xy-md0x",
+        "parameters": [
+              {
+                "id": "temp_correction",
+                "title": "temp_correction_title",
+                "reg_type": "holding",
+                "address": "0x103",
+                "min": -10,
+                "max": 10,
+                "scale": 0.1,
+                "default": 0,
+                "order": 1
+            },
+            {
+                "id": "humidity_correction",
+                "title": "humidity_correction_title",
+                "reg_type": "holding",
+                "address": "0x104",
+                "min": -10,
+                "max": 10,
+                "scale": 0.1,
+                "default": 0,
+                "order": 2
+            }
+        ],
+        "channels": [
+            {
+                "name": "temperature",
+                "reg_type": "input",
+                "address": 1,
+                "type": "value",
+                "units": "deg C",
+                "format": "u16",
+                "scale": 0.1
+            },
+            {
+                "name": "humidity",
+                "reg_type": "input",
+                "address": 2,
+                "type": "value",
+                "format": "u16",
+                "units": "%, RH",
+                "scale": 0.1
+            }
+        ],
+        "translations": {
+            "en": {
+                "temp_correction_title": "Temperature Correction",
+                "humidity_correction_title": "Humidity Correction",
+                "temperature": "Temperature",
+                "humidity": "Humidity"
+            },
+            "ru": {
+                "temp_correction_title": "Коррекция температуры",
+                "humidity_correction_title": "Коррекция влажности",
+                "temperature": "Температура",
+                "humidity": "Влажность"
+            }
+        } 
+    }
+}

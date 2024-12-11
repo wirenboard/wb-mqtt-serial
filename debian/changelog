@@ -1,9 +1,15 @@
-wb-mqtt-serial (2.151.0) stable; urgency=medium
+wb-mqtt-serial (2.152.0) stable; urgency=medium
 
   * Add "protocol:" prefix to type field in config/Load RPC response for schemas of custom devices.
     This fixes displaying on Mercury 230 configs in wb-mqtt-homeui.
 
  -- Petr Krasnoshchekov <petr.krasnoshchekov@wirenboard.com>  Wed, 11 Dec 2024 11:47:56 +0500
+
+wb-mqtt-serial (2.151.0) stable; urgency=medium
+
+  * Add template for XY-MD0X
+
+-- Andrey Ksenofontov <andrey.ksenofontov@wirenboard.com>  Fri, 06 Dec 2024 06:45:00 +0300
 
 wb-mqtt-serial (2.150.0) stable; urgency=medium
 
