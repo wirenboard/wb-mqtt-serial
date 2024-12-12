@@ -13,6 +13,8 @@ namespace
     const std::string WB_GROUP_NAME = "g-wb";
     const std::string WB_OLD_GROUP_NAME = "g-wb-old";
 
+    const std::string PROTOCOL_PREFIX = "protocol:";
+
     struct TDeviceTypeGroup
     {
         typedef std::vector<PDeviceTemplate> TemplatesArray;
@@ -47,7 +49,10 @@ namespace
     {
         Json::Value res;
         res["name"] = schema.GetTitle(lang);
-        res["type"] = schema.Type;
+        res["deprecated"] = false;
+        res["type"] = PROTOCOL_PREFIX + schema.Type;
+        res["protocol"] = schema.Type;
+        res["mqtt-id"] = schema.Type;
         return res;
     }
 
@@ -192,9 +197,9 @@ Json::Value TRPCConfigHandler::GetDeviceTypes(const Json::Value& request)
 Json::Value TRPCConfigHandler::GetSchema(const Json::Value& request)
 {
     std::string type = request.get("type", "").asString();
-    try {
-        return *DeviceConfedSchemas.GetSchema(type);
-    } catch (const std::out_of_range&) {
+    if (type.find(PROTOCOL_PREFIX) == 0) {
+        type = type.substr(PROTOCOL_PREFIX.size());
         return ProtocolConfedSchemas.GetSchema(type);
     }
+    return *DeviceConfedSchemas.GetSchema(type);
 }
