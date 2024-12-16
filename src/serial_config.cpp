@@ -780,7 +780,7 @@ PHandlerConfig LoadConfig(const std::string& configFileName,
     }
 
     CheckDuplicatePorts(*handlerConfig);
-    CheckDuplicateDeviceIds(*handlerConfig);
+    //CheckDuplicateDeviceIds(*handlerConfig);
 
     return handlerConfig;
 }
