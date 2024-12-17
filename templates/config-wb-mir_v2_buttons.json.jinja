@@ -191,6 +191,14 @@
                 "group": "ir_commands",
                 "enabled": false
             },
+            {
+                "name": "ROM{{ rom }} -> RAM",
+                "reg_type": "coil",
+                "address": {{ 5200 + rom - 1 }},
+                "type": "switch",
+                "group": "ir_commands",
+                "enabled": false
+            },
             {% set enabled = "true" if rom < 11 else "false" -%}
             {
                 "name": "Learn to ROM{{ rom }}",
@@ -205,14 +213,6 @@
                 "reg_type": "coil",
                 "address": {{ 5100 + rom - 1 }},
                 "type": "pushbutton",
-                "group": "ir_commands",
-                "enabled": {{ enabled }}
-            },
-            {
-                "name": "ROM{{ rom }} -> RAM",
-                "reg_type": "coil",
-                "address": {{ 5200 + rom - 1 }},
-                "type": "switch",
                 "group": "ir_commands",
                 "enabled": {{ enabled }}
             },
