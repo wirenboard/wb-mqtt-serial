@@ -181,6 +181,8 @@ enum class TDeviceConnectionState
 class TSerialDevice: public std::enable_shared_from_this<TSerialDevice>
 {
 public:
+    typedef std::function<void(PSerialDevice dev)> TDeviceCallback;
+
     TSerialDevice(PDeviceConfig config, PPort port, PProtocol protocol);
     TSerialDevice(const TSerialDevice&) = delete;
     TSerialDevice& operator=(const TSerialDevice&) = delete;
@@ -231,6 +233,8 @@ public:
     std::chrono::steady_clock::time_point GetLastReadTime() const;
     void SetLastReadTime(std::chrono::steady_clock::time_point readTime);
 
+    void AddOnConnectionStateChangedCallback(TDeviceCallback callback);
+
 protected:
     std::vector<PDeviceSetupItem> SetupItems;
 
@@ -249,6 +253,9 @@ private:
     bool SupportsHoles;
     std::list<PRegister> Registers;
     std::chrono::steady_clock::time_point LastReadTime;
+    std::vector<TDeviceCallback> ConnectionStateChangedCallbacks;
+
+    void SetConnectionState(TDeviceConnectionState state);
 };
 
 typedef std::shared_ptr<TSerialDevice> PSerialDevice;

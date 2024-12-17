@@ -894,6 +894,7 @@
                "param24", "param32", "power", "freq", "power_factor", "group_single", 
                "temperature", "item_1", "item_2", "item_3", "item_4", "item_5", 
                "alarm", "position", "command", "date", "time", "angle", "type", "status", "zonebit",
+               "press_counter",
                // obis_* are deprecated, use item_*, temperature and power_factor
                "obis_cdef", "obis_cdef_pf", "obis_cdef_temp", "obis_cdef_1", "obis_cdef_2", "obis_cdef_3", "obis_cdef_4", "obis_cdef_5"]
     },

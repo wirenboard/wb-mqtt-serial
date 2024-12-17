@@ -1,12 +1,12 @@
 {
-    "device_type": "BHT-6000 Series",
+    "device_type": "BHT-006 Series",
     "group": "g-thermostat",
     "device": {
-        "name": "BHT-6000 Series",
-        "id": "bht-6000-series",
+        "name": "BHT-006 Series",
+        "id": "bht-006-series",
         "channels": [
             {
-                "name": "Power",
+                "name": "power_status",
                 "reg_type": "holding",
                 "address": "0x00",
                 "type": "switch",
@@ -15,16 +15,17 @@
                 "off_value": 0
             },
             {
-                "name": "Temperature from internal sensor",
+                "name": "temperature_from_internal_sensor",
                 "reg_type": "holding",
                 "address": "0x01",
-                "type": "temperature",
+                "type": "value",
+                "units": "deg C",
                 "format": "s16",
                 "scale": 0.1,
                 "readonly": true
             },
             {
-                "name": "Manual mode",
+                "name": "manual_mode",
                 "reg_type": "holding",
                 "address": "0x02",
                 "type": "switch",
@@ -33,7 +34,7 @@
                 "off_value": 0
             },
             {
-                "name": "Heating status",
+                "name": "heating_status",
                 "reg_type": "holding",
                 "address": "0x03",
                 "type": "switch",
@@ -43,27 +44,29 @@
                 "off_value": 0
             },
             {
-                "name": "Setting temperature",
+                "name": "setting_temperature",
                 "reg_type": "holding",
                 "address": "0x04",
                 "type": "range",
+                "units": "deg C",
                 "format": "s16",
                 "scale": 0.1,
                 "min": 5,
                 "max": 35
             },
             {
-                "name": "Weekly program setting temperature",
+                "name": "weekly_program_setting_temperature",
                 "reg_type": "holding",
                 "address": "0x05",
                 "format": "s16",
                 "type": "range",
+                "units": "deg C",
                 "scale": 0.1,
                 "min": 5,
                 "max": 35
             },
             {
-                "name": "Lock buttons",
+                "name": "lock_buttons",
                 "reg_type": "holding",
                 "address": "0x06",
                 "type": "switch",
@@ -73,15 +76,24 @@
             }
         ],
         "translations": {
+            "en": {
+                "power_status": "Power Status",
+                "temperature_from_internal_sensor": "Temperature From Internal Sensor",
+                "manual_mode": "Manual Mode",
+                "heating_status": "Heating Status",
+                "setting_temperature": "Setting Temperature",
+                "weekly_program_setting_temperature": "Weekly Program Setting Temperature",
+                "lock_buttons": "Lock Buttons"
+            },
             "ru": {
-                "BHT-6000 Series": "Термостат BHT-6000 Series",
-                "Power": "Включение",
-                "Temperature from internal sensor": "Температура внутреннего датчика",
-                "Manual mode": "Ручной режим",
-                "Heating status": "Статус нагрева",
-                "Setting temperature": "Настройка температуры",
-                "Weekly program setting temperature": "Установка температуры для недельной программы",
-                "Lock buttons": "Блокировка кнопок"
+                "BHT-006 Series": "Термостат BHT-006 Series",
+                "power_status": "Включение",
+                "temperature_from_internal_sensor": "Температура внутреннего датчика",
+                "manual_mode": "Ручной режим",
+                "heating_status": "Статус нагрева",
+                "setting_temperature": "Настройка температуры",
+                "weekly_program_setting_temperature": "Установка температуры для недельной программы",
+                "lock_buttons": "Блокировка кнопок"
             }
         }
     }

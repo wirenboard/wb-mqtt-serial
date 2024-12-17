@@ -31,7 +31,6 @@ class TSerialClientEventsReader
 {
 public:
     typedef std::function<void(PRegister)> TRegisterCallback;
-    typedef std::function<void(PSerialDevice)> TDeviceCallback;
 
     // Several TRegister objects can have same modbus address,
     // but represent different value regions
@@ -39,17 +38,15 @@ public:
 
     TSerialClientEventsReader(size_t maxReadErrors);
 
-    void AddRegister(PRegister reg);
+    void SetDevices(const std::list<PSerialDevice>& devices);
 
     void EnableEvents(PSerialDevice device, TPort& port);
 
     void ReadEvents(TPort& port,
                     std::chrono::milliseconds maxReadingTime,
                     TRegisterCallback registerCallback,
-                    TDeviceCallback deviceRestartedHandler,
                     util::TGetNowFn nowFn);
 
-    void DeviceDisconnected(PSerialDevice device);
     void SetReadErrors(TRegisterCallback callback);
 
     bool HasDevicesWithEnabledEvents() const;
@@ -67,4 +64,5 @@ private:
     void OnEnabledEvent(uint8_t slaveId, uint8_t type, uint16_t addr, bool res);
     void ClearReadErrors(TRegisterCallback callback);
     void ReadEventsFailed(const std::string& errorMessage, TRegisterCallback registerCallback);
+    void OnDeviceConnectionStateChanged(PSerialDevice device);
 };

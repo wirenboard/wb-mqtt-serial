@@ -475,7 +475,6 @@
                 "address": {{ 10 + (lp_in_num - 1) }},
                 "type": "switch",
                 "enabled": false,
-                "sporadic": false,
                 "group": "counter{{ lp_in_num }}"
             },
             {
@@ -523,7 +522,6 @@
                 "reg_type": "discrete",
                 "address": {{ in_num - 1 }},
                 "type": "switch",
-                "sporadic": false,
                 "condition": "isDefined(in{{ in_num }}_mode)==0||in{{ in_num }}_mode=={{ IN_MODE_INACTIVE }}",
                 "group": "gg_in{{ in_num }}_channels"
             },
@@ -541,7 +539,6 @@
                 "reg_type": "input",
                 "address": {{ 32 + (in_num - 1) }},
                 "type": "value",
-                "sporadic": false,
                 "condition": "isDefined(in{{ in_num }}_mode)==0||in{{ in_num }}_mode=={{ IN_MODE_INACTIVE }}",
                 "group": "gg_in{{ in_num }}_channels"
             },
@@ -559,7 +556,7 @@
             {
                 "name": "Input {{ letter }}{{ in_num }} Single Press Counter",
                 "enabled": false,
-                "reg_type": "input",
+                "reg_type": "press_counter",
                 "address": {{ 464 + (in_num - 1) }},
                 "type": "value",
                 "sporadic": true,
@@ -569,7 +566,7 @@
             {
                 "name": "Input {{ letter }}{{ in_num }} Long Press Counter",
                 "enabled": false,
-                "reg_type": "input",
+                "reg_type": "press_counter",
                 "address": {{ 480 + (in_num - 1) }},
                 "type": "value",
                 "sporadic": true,
@@ -579,7 +576,7 @@
             {
                 "name": "Input {{ letter }}{{ in_num }} Double Press Counter",
                 "enabled": false,
-                "reg_type": "input",
+                "reg_type": "press_counter",
                 "address": {{ 496 + (in_num - 1) }},
                 "type": "value",
                 "sporadic": true,
@@ -589,7 +586,7 @@
             {
                 "name": "Input {{ letter }}{{ in_num }} Shortlong Press Counter",
                 "enabled": false,
-                "reg_type": "input",
+                "reg_type": "press_counter",
                 "address": {{ 512 + (in_num - 1) }},
                 "type": "value",
                 "sporadic": true,
@@ -688,7 +685,6 @@
                 "address": 971,
                 "type": "value",
                 "enabled": false,
-                "sporadic": false,
                 "group": "hw_info"
             },
             {

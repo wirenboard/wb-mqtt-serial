@@ -1,10 +1,79 @@
+wb-mqtt-serial (2.152.0) stable; urgency=medium
+
+  * Add "protocol:" prefix to type field in config/Load RPC response for schemas of custom devices.
+    This fixes displaying on Mercury 230 configs in wb-mqtt-homeui.
+
+ -- Petr Krasnoshchekov <petr.krasnoshchekov@wirenboard.com>  Wed, 11 Dec 2024 11:47:56 +0500
+
+wb-mqtt-serial (2.151.0) stable; urgency=medium
+
+  * Add template for XY-MD0X
+
+-- Andrey Ksenofontov <andrey.ksenofontov@wirenboard.com>  Fri, 06 Dec 2024 06:45:00 +0300
+
+wb-mqtt-serial (2.150.0) stable; urgency=medium
+
+  * Add template for BHT-006
+
+-- Andrey Ksenofontov <andrey.ksenofontov@wirenboard.com>  Wed, 05 Dec 2024 14:50:00 +0300
+
+wb-mqtt-serial (2.149.2) stable; urgency=medium
+
+  * Add translations for template BHT-6000
+  
+ -- Andrey Ksenofontov <andrey.ksenofontov@wirenboard.com>  Thu, 05 Dec 2024 14:15:00 +0300
+
+wb-mqtt-serial (2.149.1) stable; urgency=medium
+
+  * Add port name to logs
+
+ -- Vladimir Romanov <v.romanov@wirenboard.com>  Tue, 03 Dec 2024 11:30:19 +0500
+
+wb-mqtt-serial (2.149.0) stable; urgency=medium
+
+  * Add template for WBE2-I-OPENTHERM-FW-1-7-3
+
+ -- Mikhail Burchu <mikhail.burchu@wirenboard.com>  Wed, 27 Nov 2024 08:00:00 +0300
+
+wb-mqtt-serial (2.148.1) stable; urgency=medium
+
+  * Fix condition evaluation in device template setup section
+
+ -- Petr Krasnoshchekov <petr.krasnoshchekov@wirenboard.com>  Tue, 26 Nov 2024 13:45:24 +0500
+
+wb-mqtt-serial (2.148.0) stable; urgency=medium
+
+  * Add condition to device template setup section
+
+ -- Petr Krasnoshchekov <petr.krasnoshchekov@wirenboard.com>  Mon, 25 Nov 2024 15:09:54 +0500
+
+wb-mqtt-serial (2.147.2) stable; urgency=medium
+
+  * Add min_request_interval=1000 to WBE2-I-EBUS template
+
+ -- Petr Krasnoshchekov <petr.krasnoshchekov@wirenboard.com>  Thu, 21 Nov 2024 11:15:57 +0500
+
+wb-mqtt-serial (2.147.1) stable; urgency=medium
+
+  * Reconfigure fast modbus events after device restart
+
+ -- Petr Krasnoshchekov <petr.krasnoshchekov@wirenboard.com>  Tue, 12 Nov 2024 21:25:35 +0500
+
+wb-mqtt-serial (2.147.0) stable; urgency=medium
+
+  * Store press_counter register values as soon as possible.
+    It eliminates publishing of outdated values after unexpected wb-mqtt-serial restart.
+
+ -- Petr Krasnoshchekov <petr.krasnoshchekov@wirenboard.com>  Sat, 02 Nov 2024 10:39:26 +0500
+
 wb-mqtt-serial (2.146.0) stable; urgency=medium
 
-  * Deprecate WB-MIR v.2 template
-  * Add new template for WB-MIR v.2 with buttons support
-  * Add new template for WB-MIR v.3
+  * Do not publish zero press counter value after device's reset. 
+    These zeros cause false positives in whenChanged conditions in wb-rules
+  * Add press_counter reg_type in device templates.
+    It is the same as input, but wb-mqtt-serial will not publish the first zero register value after device reset.
 
- -- Radmir Khakimov <radmir.khakimov@wirenboard.com>  Tue, 24 Oct 2024 20:35:00 +0500
+ -- Petr Krasnoshchekov <petr.krasnoshchekov@wirenboard.com>  Thu, 31 Oct 2024 12:25:29 +0500
 
 wb-mqtt-serial (2.145.1) stable; urgency=medium
 
@@ -144,7 +213,7 @@ wb-mqtt-serial (2.135.0) stable; urgency=medium
 
  -- Ilia Skochilov <ilia.skochilov@wirenboard.com>  Tue, 30 Jul 2024 10:15:00 +0300
 
- wb-mqtt-serial (2.134.0) stable; urgency=medium
+wb-mqtt-serial (2.134.0) stable; urgency=medium
 
   * Add template for kaplestop
 
@@ -214,7 +283,7 @@ wb-mqtt-serial (2.130.2) stable; urgency=medium
   * Add indirect control channels for WB-MSW-v3/v4/v4-lora and WB-MIR-v2
 
  -- Andrey Ksenofontov <andrey.ksenofontov@wirenboard.com>  Thu, 10 Jul 2024 16:52:00 +0300
- 
+
  wb-mqtt-serial (2.130.1) stable; urgency=medium
 
   * Fix a type in WB-Domofon template

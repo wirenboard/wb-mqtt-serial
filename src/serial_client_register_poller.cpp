@@ -23,7 +23,6 @@ namespace
         bool ReadAtLeastOneRegister;
         const util::TSpentTimeMeter& SessionTime;
         TSerialClientDeviceAccessHandler& LastAccessedDevice;
-        TDeviceConnectionState InitialConnectionState;
 
     public:
         TDeviceReader(const util::TSpentTimeMeter& sessionTime,
@@ -33,8 +32,7 @@ namespace
             : MaxPollTime(maxPollTime),
               ReadAtLeastOneRegister(readAtLeastOneRegister),
               SessionTime(sessionTime),
-              LastAccessedDevice(lastAccessedDevice),
-              InitialConnectionState(TDeviceConnectionState::UNKNOWN)
+              LastAccessedDevice(lastAccessedDevice)
         {}
 
         bool operator()(const PPollableDevice& device, TItemAccumulationPolicy policy, milliseconds pollLimit)
@@ -47,8 +45,6 @@ namespace
             if (policy != TItemAccumulationPolicy::Force) {
                 ReadAtLeastOneRegister = false;
             }
-
-            InitialConnectionState = device->GetDevice()->GetConnectionState();
 
             RegisterRange =
                 device->ReadRegisterRange(pollLimit, ReadAtLeastOneRegister, SessionTime, LastAccessedDevice);
@@ -65,11 +61,6 @@ namespace
         {
             return Device;
         }
-
-        TDeviceConnectionState GetInitialConnectionState() const
-        {
-            return InitialConnectionState;
-        }
     };
 
     class TClosedPortDeviceReader
@@ -77,12 +68,9 @@ namespace
         std::list<PRegister> Regs;
         steady_clock::time_point CurrentTime;
         PPollableDevice Device;
-        TDeviceConnectionState InitialConnectionState;
 
     public:
-        TClosedPortDeviceReader(steady_clock::time_point currentTime)
-            : CurrentTime(currentTime),
-              InitialConnectionState(TDeviceConnectionState::UNKNOWN)
+        TClosedPortDeviceReader(steady_clock::time_point currentTime): CurrentTime(currentTime)
         {}
 
         bool operator()(const PPollableDevice& device, TItemAccumulationPolicy policy, milliseconds pollLimit)
@@ -90,7 +78,6 @@ namespace
             if (Device) {
                 return false;
             }
-            InitialConnectionState = device->GetDevice()->GetConnectionState();
             Regs = device->MarkWaitingRegistersAsReadErrorAndReschedule(CurrentTime);
             Device = device;
             return true;
@@ -110,12 +97,6 @@ namespace
         {
             Regs.clear();
             Device.reset();
-            InitialConnectionState = TDeviceConnectionState::UNKNOWN;
-        }
-
-        TDeviceConnectionState GetInitialConnectionState() const
-        {
-            return InitialConnectionState;
         }
     };
 };
@@ -140,6 +121,8 @@ void TSerialClientRegisterPoller::SetDevices(const std::list<PSerialDevice>& dev
             Scheduler.AddEntry(pollableDevice, currentTime, TPriority::Low);
             Devices.insert({dev, pollableDevice});
         }
+        dev->AddOnConnectionStateChangedCallback(
+            [this](PSerialDevice device) { OnDeviceConnectionStateChanged(device); });
     }
 }
 
@@ -150,11 +133,11 @@ void TSerialClientRegisterPoller::ScheduleNextPoll(PPollableDevice device)
     }
 }
 
-void TSerialClientRegisterPoller::ClosedPortCycle(steady_clock::time_point currentTime,
-                                                  TRegisterCallback callback,
-                                                  TDeviceCallback deviceConnectionStateChangedCallback)
+void TSerialClientRegisterPoller::ClosedPortCycle(steady_clock::time_point currentTime, TRegisterCallback callback)
 {
     Scheduler.ResetLoadBalancing();
+
+    RescheduleDisconnectedDevices();
 
     TClosedPortDeviceReader reader(currentTime);
     do {
@@ -167,11 +150,6 @@ void TSerialClientRegisterPoller::ClosedPortCycle(steady_clock::time_point curre
             }
             auto device = reader.GetDevice()->GetDevice();
             device->SetTransferResult(false);
-            if (reader.GetInitialConnectionState() != device->GetConnectionState() &&
-                deviceConnectionStateChangedCallback)
-            {
-                deviceConnectionStateChangedCallback(device);
-            }
         }
         if (reader.GetDevice()) {
             ScheduleNextPoll(reader.GetDevice());
@@ -202,9 +180,10 @@ TPollResult TSerialClientRegisterPoller::OpenPortCycle(TPort& port,
                                                        std::chrono::milliseconds maxPollingTime,
                                                        bool readAtLeastOneRegister,
                                                        TSerialClientDeviceAccessHandler& lastAccessedDevice,
-                                                       TRegisterCallback callback,
-                                                       TDeviceCallback deviceConnectionStateChangedCallback)
+                                                       TRegisterCallback callback)
 {
+    RescheduleDisconnectedDevices();
+
     TPollResult res;
 
     TDeviceReader reader(spentTime, maxPollingTime, readAtLeastOneRegister, lastAccessedDevice);
@@ -254,26 +233,15 @@ TPollResult TSerialClientRegisterPoller::OpenPortCycle(TPort& port,
     }
     ScheduleNextPoll(reader.GetDevice());
 
-    if (reader.GetInitialConnectionState() != res.Device->GetConnectionState()) {
-        if (res.Device->GetConnectionState() == TDeviceConnectionState::DISCONNECTED) {
-            DeviceDisconnected(res.Device, spentTime.GetStartTime());
-        }
-        if (deviceConnectionStateChangedCallback) {
-            deviceConnectionStateChangedCallback(res.Device);
-        }
-    }
-
     Scheduler.UpdateSelectionTime(ceil<milliseconds>(spentTime.GetSpentTime()), reader.GetDevice()->GetPriority());
     res.Deadline = GetDeadline(lowPriorityRateLimitIsExceeded, spentTime);
     return res;
 }
 
-void TSerialClientRegisterPoller::DeviceDisconnected(PSerialDevice device,
-                                                     std::chrono::steady_clock::time_point currentTime)
+void TSerialClientRegisterPoller::OnDeviceConnectionStateChanged(PSerialDevice device)
 {
-    auto range = Devices.equal_range(device);
-    for (auto it = range.first; it != range.second; ++it) {
-        it->second->RescheduleAllRegisters(currentTime);
+    if (device->GetConnectionState() == TDeviceConnectionState::DISCONNECTED) {
+        DisconnectedDevicesWaitingForReschedule.push_back(device);
     }
 }
 
@@ -295,4 +263,17 @@ std::string TThrottlingStateLogger::GetMessage()
         return "Register read rate limit is exceeded";
     }
     return std::string();
+}
+
+void TSerialClientRegisterPoller::RescheduleDisconnectedDevices()
+{
+    for (auto& device: DisconnectedDevicesWaitingForReschedule) {
+        auto range = Devices.equal_range(device);
+        for (auto it = range.first; it != range.second; ++it) {
+            Scheduler.Remove(it->second);
+            it->second->RescheduleAllRegisters();
+            Scheduler.AddEntry(it->second, it->second->GetDeadline(), it->second->GetPriority());
+        }
+    }
+    DisconnectedDevicesWaitingForReschedule.clear();
 }

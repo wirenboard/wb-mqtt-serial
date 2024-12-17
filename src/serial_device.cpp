@@ -61,7 +61,11 @@ TSerialDevice::TSerialDevice(PDeviceConfig config, PPort port, PProtocol protoco
 
 std::string TSerialDevice::ToString() const
 {
-    return Protocol()->GetName() + ":" + DeviceConfig()->SlaveId;
+    auto portDescription = Port()->GetDescription();
+    if (!portDescription.empty()) {
+        portDescription += " ";
+    }
+    return portDescription + Protocol()->GetName() + ":" + DeviceConfig()->SlaveId;
 }
 
 PRegisterRange TSerialDevice::CreateRegisterRange() const
@@ -164,10 +168,7 @@ void TSerialDevice::SetTransferResult(bool ok)
 
     if (ok) {
         LastSuccessfulCycle = std::chrono::steady_clock::now();
-        if (ConnectionState != TDeviceConnectionState::CONNECTED) {
-            LOG(Info) << "device " << ToString() << " is connected";
-        }
-        ConnectionState = TDeviceConnectionState::CONNECTED;
+        SetConnectionState(TDeviceConnectionState::CONNECTED);
         RemainingFailCycles = _DeviceConfig->DeviceMaxFailCycles;
     } else {
 
@@ -246,9 +247,8 @@ void TSerialDevice::SetSupportsHoles(bool supportsHoles)
 
 void TSerialDevice::SetDisconnected()
 {
-    ConnectionState = TDeviceConnectionState::DISCONNECTED;
     SetSupportsHoles(true);
-    LOG(Warn) << "device " << ToString() << " is disconnected";
+    SetConnectionState(TDeviceConnectionState::DISCONNECTED);
 }
 
 PRegister TSerialDevice::AddRegister(PRegisterConfig config)
@@ -271,6 +271,27 @@ std::chrono::steady_clock::time_point TSerialDevice::GetLastReadTime() const
 void TSerialDevice::SetLastReadTime(std::chrono::steady_clock::time_point readTime)
 {
     LastReadTime = readTime;
+}
+
+void TSerialDevice::AddOnConnectionStateChangedCallback(TSerialDevice::TDeviceCallback callback)
+{
+    ConnectionStateChangedCallbacks.push_back(callback);
+}
+
+void TSerialDevice::SetConnectionState(TDeviceConnectionState state)
+{
+    if (ConnectionState == state) {
+        return;
+    }
+    ConnectionState = state;
+    if (state == TDeviceConnectionState::CONNECTED) {
+        LOG(Info) << "device " << ToString() << " is connected";
+    } else {
+        LOG(Warn) << "device " << ToString() << " is disconnected";
+    }
+    for (auto& callback: ConnectionStateChangedCallbacks) {
+        callback(shared_from_this());
+    }
 }
 
 TUInt32SlaveId::TUInt32SlaveId(const std::string& slaveId, bool allowBroadcast): HasBroadcastSlaveId(false)

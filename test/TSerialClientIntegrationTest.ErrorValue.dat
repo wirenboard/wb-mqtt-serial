@@ -1,6 +1,7 @@
 Subscribe: /devices/+/meta/driver (QoS 0)
 Publish: /devices/ErrorValueTest/meta: '{"driver":"serial-client-integration-test","title":{"en":"ErrorValueTest"}}' (QoS 1, retained)
 Publish: /devices/ErrorValueTest/meta/driver: 'serial-client-integration-test' (QoS 1, retained)
+Publish: /devices/ErrorValueTest/meta/error: '' (QoS 1, retained)
 Publish: /devices/ErrorValueTest/meta/name: 'ErrorValueTest' (QoS 1, retained)
 Publish: /devices/ErrorValueTest/controls/s16/meta: '{"order":1,"readonly":false,"type":"text"}' (QoS 1, retained)
 Publish: /devices/ErrorValueTest/controls/s16/meta/error: '' (QoS 1, retained)
