@@ -1,3 +1,11 @@
+wb-mqtt-serial (2.153.0) stable; urgency=medium
+
+  * Deprecate WB-MIR v.2 template
+  * Add new template for WB-MIR v.2 with buttons support
+  * Add new template for WB-MIR v.3
+
+ -- Radmir Khakimov <radmir.khakimov@wirenboard.com>  Tue, 17 Dec 2024 20:35:00 +0500
+
 wb-mqtt-serial (2.152.0) stable; urgency=medium
 
   * Add "protocol:" prefix to type field in config/Load RPC response for schemas of custom devices.
