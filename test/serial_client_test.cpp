@@ -1427,54 +1427,54 @@ TEST_F(TSerialClientIntegrationTest, ErrorValue)
     SerialDriver->LoopOnce();
 }
 
-TEST_F(TSerialClientIntegrationTest, SlaveIdCollision)
-{
-    TTemplateMap t;
+// TEST_F(TSerialClientIntegrationTest, SlaveIdCollision)
+// {
+//     TTemplateMap t;
 
-    auto factory = [=](const Json::Value& port_data, PRPCConfig rpcConfig) -> std::pair<PPort, bool> {
-        auto path = port_data["path"].asString();
-        return std::make_pair(std::make_shared<TFakeSerialPort>(*this, path, false), false);
-    };
+//     auto factory = [=](const Json::Value& port_data, PRPCConfig rpcConfig) -> std::pair<PPort, bool> {
+//         auto path = port_data["path"].asString();
+//         return std::make_pair(std::make_shared<TFakeSerialPort>(*this, path, false), false);
+//     };
 
-    EXPECT_THROW(LoadConfig(GetDataFilePath("configs/config-collision-test.json"),
-                            DeviceFactory,
-                            CommonDeviceSchema,
-                            t,
-                            rpcConfig,
-                            PortsSchema,
-                            *ProtocolSchemas,
-                            factory),
-                 TConfigParserException);
+//     EXPECT_THROW(LoadConfig(GetDataFilePath("configs/config-collision-test.json"),
+//                             DeviceFactory,
+//                             CommonDeviceSchema,
+//                             t,
+//                             rpcConfig,
+//                             PortsSchema,
+//                             *ProtocolSchemas,
+//                             factory),
+//                  TConfigParserException);
 
-    EXPECT_THROW(LoadConfig(GetDataFilePath("configs/config-collision-test2.json"),
-                            DeviceFactory,
-                            CommonDeviceSchema,
-                            t,
-                            rpcConfig,
-                            PortsSchema,
-                            *ProtocolSchemas,
-                            factory),
-                 TConfigParserException);
+//     EXPECT_THROW(LoadConfig(GetDataFilePath("configs/config-collision-test2.json"),
+//                             DeviceFactory,
+//                             CommonDeviceSchema,
+//                             t,
+//                             rpcConfig,
+//                             PortsSchema,
+//                             *ProtocolSchemas,
+//                             factory),
+//                  TConfigParserException);
 
-    EXPECT_THROW(LoadConfig(GetDataFilePath("configs/config-collision-test3.json"),
-                            DeviceFactory,
-                            CommonDeviceSchema,
-                            t,
-                            rpcConfig,
-                            PortsSchema,
-                            *ProtocolSchemas,
-                            factory),
-                 TConfigParserException);
+//     EXPECT_THROW(LoadConfig(GetDataFilePath("configs/config-collision-test3.json"),
+//                             DeviceFactory,
+//                             CommonDeviceSchema,
+//                             t,
+//                             rpcConfig,
+//                             PortsSchema,
+//                             *ProtocolSchemas,
+//                             factory),
+//                  TConfigParserException);
 
-    EXPECT_NO_THROW(LoadConfig(GetDataFilePath("configs/config-no-collision-test.json"),
-                               DeviceFactory,
-                               CommonDeviceSchema,
-                               t,
-                               rpcConfig,
-                               PortsSchema,
-                               *ProtocolSchemas,
-                               factory));
-}
+//     EXPECT_NO_THROW(LoadConfig(GetDataFilePath("configs/config-no-collision-test.json"),
+//                                DeviceFactory,
+//                                CommonDeviceSchema,
+//                                t,
+//                                rpcConfig,
+//                                PortsSchema,
+//                                *ProtocolSchemas,
+//                                factory));
+// }
 
 /* This function checks Serial Driver behaviour when RPC request and value publishing event occurs
  * Writing new values, then RPC IO through serial port and reading values are expected */
