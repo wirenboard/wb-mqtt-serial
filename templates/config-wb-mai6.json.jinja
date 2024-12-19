@@ -991,6 +991,16 @@
                 "group": "hw_info"
             },
             {
+                "name": "Supply Voltage",
+                "reg_type": "input",
+                "address": 121,
+                "type": "value",
+                "units": "V",
+                "scale": 0.001,
+                "enabled": false,
+                "group": "hw_info"
+            },
+            {
                 "name": "Uptime",
                 "reg_type": "input",
                 "address": 104,
@@ -1013,7 +1023,8 @@
                 "reg_type": "input",
                 "address": 123,
                 "scale": 0.001,
-                "type": "voltage",
+                "type": "value",
+                "units": "V",
                 "enabled": false,
                 "group": "hw_info"
             },
@@ -1058,6 +1069,7 @@
                 "IN_P_title": "Channel P",
                 "IN_N_title": "Channel N",
                 "external_voltage_divider_description": "External voltage divider is used to measure voltage higher than 30V and to get higher input resistance. Output voltage of the divider should be in the range from 0 to 4V (better to 2V). Supported since firmware version 2.1.0."
+                "Supply Voltage": "5V Supply",
             },
             "ru": {
                 "template_title": "{{ title_ru }}",
@@ -1191,6 +1203,7 @@
                 "Internal Temperature": "Температура внутри модуля",
                 "Serial": "Серийный номер",
                 "FW Version": "Версия прошивки",
+                "Supply Voltage": "Напряжение 5В",
                 "Uptime": "Время работы с момента включения",
                 "ADC Loop Duration": "Время цикла опроса АЦП",
                 "ADC Loop Counter": "Счетчик циклов опроса АЦП",
