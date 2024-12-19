@@ -1,6 +1,7 @@
 Subscribe: /devices/+/meta/driver (QoS 0)
 Publish: /devices/modbus-sample/meta: '{"driver":"em-test","title":{"en":"Modbus-sample"}}' (QoS 1, retained)
 Publish: /devices/modbus-sample/meta/driver: 'em-test' (QoS 1, retained)
+Publish: /devices/modbus-sample/meta/error: '' (QoS 1, retained)
 Publish: /devices/modbus-sample/meta/name: 'Modbus-sample' (QoS 1, retained)
 Publish: /devices/modbus-sample/controls/U32:1/meta: '{"order":1,"readonly":false,"type":"value"}' (QoS 1, retained)
 Publish: /devices/modbus-sample/controls/U32:1/meta/error: '' (QoS 1, retained)

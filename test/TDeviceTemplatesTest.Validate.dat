@@ -109,6 +109,14 @@ BAC-6000ELNW
 	Room Temperature  =>  Room Temperature
 	Status  =>  Status
 	Temperature Setpoint  =>  Temperature Setpoint
+BHT-006 Series
+	heating_status  =>  heating_status
+	lock_buttons  =>  lock_buttons
+	manual_mode  =>  manual_mode
+	power_status  =>  power_status
+	setting_temperature  =>  setting_temperature
+	temperature_from_internal_sensor  =>  temperature_from_internal_sensor
+	weekly_program_setting_temperature  =>  weekly_program_setting_temperature
 BHT-6000 Series
 	Heating status  =>  Heating status
 	Lock buttons  =>  Lock buttons
@@ -20589,6 +20597,52 @@ WBE2-I-OPENTHERM-FW-1.4
 	Hot Water Temperature  =>  Hot Water Temperature
 	Invalid Connection  =>  Invalid Connection
 	Water Pressure  =>  Water Pressure
+WBE2-I-OPENTHERM-FW-1.7.3
+	Auto Temp Switch  =>  Auto Temp Switch
+	Boiler CH mode  =>  Boiler CH mode
+	Boiler CH2 mode  =>  Boiler CH2 mode
+	Boiler DHW mode  =>  Boiler DHW mode
+	Boiler Flame Status  =>  Boiler Flame Status
+	Boiler Outdoor Temperature Sensor  =>  Boiler Outdoor Temperature Sensor
+	Boiler Status  =>  Boiler Status
+	Boiler fault indication  =>  Boiler fault indication
+	Burner Modulation Level (%)  =>  Burner Modulation Level (%)
+	CH Gest  =>  CH Gest
+	CH Max Value  =>  CH Max Value
+	CH Min Value  =>  CH Min Value
+	CH2 Temperature  =>  CH2 Temperature
+	Calculated Heating Setpoint  =>  Calculated Heating Setpoint
+	Command ID  =>  Command ID
+	Command Type  =>  Command Type
+	DHW Gest  =>  DHW Gest
+	DHW Override  =>  DHW Override
+	DHW Transfer  =>  DHW Transfer
+	Data Type  =>  Data Type
+	Error Code  =>  Error Code
+	FW Version  =>  FW Version
+	Heating Return Water Temperature  =>  Heating Return Water Temperature
+	Heating Setpoint  =>  Heating Setpoint
+	Heating Setpoint Max  =>  Heating Setpoint Max
+	Heating Setpoint Min  =>  Heating Setpoint Min
+	Heating Status  =>  Heating Status
+	Heating Temperature  =>  Heating Temperature
+	Hot Water Setpoint  =>  Hot Water Setpoint
+	Hot Water Setpoint Max  =>  Hot Water Setpoint Max
+	Hot Water Setpoint Min  =>  Hot Water Setpoint Min
+	Hot Water Temperature  =>  Hot Water Temperature
+	Invalid Connection  =>  Invalid Connection
+	Master CH enable  =>  Master CH enable
+	Master CH2 enable  =>  Master CH2 enable
+	Master DHW enable  =>  Master DHW enable
+	Master OTC active  =>  Master OTC active
+	OT MasterID  =>  OT MasterID
+	Outdoor Temperature  =>  Outdoor Temperature
+	Room Temperature  =>  Room Temperature
+	Room Temperature Setpoint  =>  Room Temperature Setpoint
+	Season reg  =>  Season reg
+	Solar Storage temp  =>  Solar Storage temp
+	Temperature Sensor Type  =>  Temperature Sensor Type
+	Water Pressure  =>  Water Pressure
 WBIO-AI-DV-12
 	A1  =>  A1
 	A10  =>  A10
@@ -20907,6 +20961,9 @@ WinDeco
 	Position  =>  Position
 	Status  =>  Status
 	Stop  =>  Stop
+XY-MD0X
+	humidity  =>  humidity
+	temperature  =>  temperature
 carel_mu_rack
 	Alarm 1 Compressor  =>  Alarm 1 Compressor
 	Alarm 2 Compressor  =>  Alarm 2 Compressor
