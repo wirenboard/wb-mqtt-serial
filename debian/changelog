@@ -1,3 +1,9 @@
+wb-mqtt-serial (2.147.3) stable; urgency=medium
+
+  * WB-MAI6: add Supply voltage
+
+ -- Ilia Skochilov <ilia.skochilov@wirenboard.com>  Thu, 19 Dec 2024 17:13:00 +0300
+
 wb-mqtt-serial (2.147.2) stable; urgency=medium
 
   * Add min_request_interval=1000 to WBE2-I-EBUS template
