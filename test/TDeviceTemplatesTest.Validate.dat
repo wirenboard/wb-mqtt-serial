@@ -13754,7 +13754,7 @@ WB-MAI6
 	MCU Temperature  =>  MCU Temperature
 	MCU Voltage  =>  MCU Voltage
 	Serial  =>  Serial
-	Supply Voltage  =>  Supply Voltage
+	Internal 5V Bus Voltage  =>  Internal 5V Bus Voltage
 	Uptime  =>  Uptime
 WB-MAO4
 	Channel 1  =>  Channel 1
@@ -23589,7 +23589,7 @@ tpl1_oni_plc_w_ema_06U00
 	MCU Temperature  =>  MCU Temperature
 	MCU Voltage  =>  MCU Voltage
 	Serial  =>  Serial
-	Supply Voltage  =>  Supply Voltage
+	Internal 5V Bus Voltage  =>  Internal 5V Bus Voltage
 	Uptime  =>  Uptime
 tpl1_oni_plc_w_emd_0706
 	Curtain 1 Close  =>  Curtain 1 Close
