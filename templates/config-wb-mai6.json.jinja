@@ -991,6 +991,16 @@
                 "group": "hw_info"
             },
             {
+                "name": "Internal 5V Bus Voltage",
+                "reg_type": "input",
+                "address": 121,
+                "type": "value",
+                "units": "V",
+                "scale": 0.001,
+                "enabled": false,
+                "group": "hw_info"
+            },
+            {
                 "name": "Uptime",
                 "reg_type": "input",
                 "address": 104,
@@ -1013,7 +1023,8 @@
                 "reg_type": "input",
                 "address": 123,
                 "scale": 0.001,
-                "type": "voltage",
+                "type": "value",
+                "units": "V",
                 "enabled": false,
                 "group": "hw_info"
             },
@@ -1038,7 +1049,7 @@
                 "format": "u16",
                 "enabled": false,
                 "group": "debug"
-            },  
+            },
             {
                 "name": "ADC Loop Duration",
                 "reg_type": "input",
@@ -1048,7 +1059,7 @@
                 "scale": 0.001,
                 "enabled": false,
                 "group": "debug"
-            }            
+            }
         ],
 
         "translations": {
@@ -1191,6 +1202,7 @@
                 "Internal Temperature": "Температура внутри модуля",
                 "Serial": "Серийный номер",
                 "FW Version": "Версия прошивки",
+                "Internal 5V Bus Voltage": "Напряжение внутренней шины 5В",
                 "Uptime": "Время работы с момента включения",
                 "ADC Loop Duration": "Время цикла опроса АЦП",
                 "ADC Loop Counter": "Счетчик циклов опроса АЦП",

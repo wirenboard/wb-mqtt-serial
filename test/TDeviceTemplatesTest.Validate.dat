@@ -13750,6 +13750,7 @@ WB-MAI6
 	IN 6 Temperature  =>  IN 6 Temperature
 	IN 6 Value  =>  IN 6 Value
 	IN 6 Voltage  =>  IN 6 Voltage
+	Internal 5V Bus Voltage  =>  Internal 5V Bus Voltage
 	Internal Temperature  =>  Internal Temperature
 	MCU Temperature  =>  MCU Temperature
 	MCU Voltage  =>  MCU Voltage
@@ -23584,6 +23585,7 @@ tpl1_oni_plc_w_ema_06U00
 	IN 6 Temperature  =>  IN 6 Temperature
 	IN 6 Value  =>  IN 6 Value
 	IN 6 Voltage  =>  IN 6 Voltage
+	Internal 5V Bus Voltage  =>  Internal 5V Bus Voltage
 	Internal Temperature  =>  Internal Temperature
 	MCU Temperature  =>  MCU Temperature
 	MCU Voltage  =>  MCU Voltage
