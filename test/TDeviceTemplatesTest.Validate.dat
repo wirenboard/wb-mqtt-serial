@@ -13754,8 +13754,8 @@ WB-MAI6
 	MCU Temperature  =>  MCU Temperature
 	MCU Voltage  =>  MCU Voltage
 	Serial  =>  Serial
-	Uptime  =>  Uptime
 	Supply Voltage  =>  Supply Voltage
+	Uptime  =>  Uptime
 WB-MAO4
 	Channel 1  =>  Channel 1
 	Channel 1 Duty Cycle Raw  =>  Channel 1 Duty Cycle Raw
@@ -23589,6 +23589,7 @@ tpl1_oni_plc_w_ema_06U00
 	MCU Temperature  =>  MCU Temperature
 	MCU Voltage  =>  MCU Voltage
 	Serial  =>  Serial
+	Supply Voltage  =>  Supply Voltage
 	Uptime  =>  Uptime
 tpl1_oni_plc_w_emd_0706
 	Curtain 1 Close  =>  Curtain 1 Close
