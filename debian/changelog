@@ -1,3 +1,9 @@
+wb-mqtt-serial (2.152.2) stable; urgency=medium
+
+  * Add default config with ttyMOD4 for Wiren Board 8.5
+
+ -- Petr Krasnoshchekov <petr.krasnoshchekov@wirenboard.com>  Tue, 24 Dec 2024 19:54:50 +0500
+
 wb-mqtt-serial (2.152.1) stable; urgency=medium
 
   * WB-MAI6: add Internal 5V Bus Voltage channel
