@@ -8,6 +8,8 @@ wb_source "of"
 
 CONFFILE=/etc/wb-mqtt-serial.conf
 
+if of_machine_match "wirenboard,wirenboard-85x"; then
+    BOARD_CONF="/usr/share/wb-mqtt-serial/wb-mqtt-serial.conf.wb85"
 if of_machine_match "wirenboard,wirenboard-8xx"; then
     BOARD_CONF="/usr/share/wb-mqtt-serial/wb-mqtt-serial.conf.wb8"
 elif of_machine_match "wirenboard,wirenboard-720"; then
