@@ -1,3 +1,9 @@
+wb-mqtt-serial (2.152.3) stable; urgency=medium
+
+  * Fix max_unchanged_interval description
+
+ -- Ekaterina Volkova <ekaterina.volkova@wirenboard.com>  Fri, 27 Dec 2024 11:16:04 +0300
+
 wb-mqtt-serial (2.152.2) stable; urgency=medium
 
   * Add default config with ttyMOD4 for Wiren Board 8.5
