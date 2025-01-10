@@ -1,3 +1,9 @@
+wb-mqtt-serial (2.152.4) stable; urgency=medium
+
+  * Disable events for `RGB Strip Hue` for WB-LED and WB-MRGBW-D
+
+ -- Pavel Gasheev <pavel.gasheev@wirenboard.com>  Fri, 10 Jan 2025 15:56:33 +0300
+
 wb-mqtt-serial (2.152.3) stable; urgency=medium
 
   * Fix max_unchanged_interval description
