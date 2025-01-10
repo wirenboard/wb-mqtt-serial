@@ -2,6 +2,7 @@
 
 #include <filesystem>
 
+#include "expression_evaluator.h"
 #include "file_utils.h"
 #include "json_common.h"
 #include "log.h"
@@ -32,6 +33,48 @@ namespace
             if (ch.isMember("oneOf")) {
                 for (const auto& subdeviceType: ch["oneOf"]) {
                     CheckNesting(templates.GetTemplate(subdeviceType.asString()).Schema, nestingLevel + 1, templates);
+                }
+            }
+        }
+    }
+
+    void ValidateCondition(const Json::Value& node, std::unordered_set<std::string>& validConditions)
+    {
+        if (node.isMember("condition")) {
+            auto condition = node["condition"].asString();
+            if (validConditions.find(condition) == validConditions.end()) {
+                Expressions::TParser parser;
+                parser.Parse(condition);
+                validConditions.insert(condition);
+            }
+        }
+    }
+
+    std::string GetNodeName(const Json::Value& node, const std::string& name)
+    {
+        const std::vector<std::string> keys = {"name", "title"};
+        for (const auto& key: keys) {
+            if (node.isMember(key)) {
+                return node[key].asString();
+            }
+        }
+        return name;
+    }
+
+    void ValidateConditions(Json::Value& deviceTemplate)
+    {
+        std::unordered_set<std::string> validConditions;
+        std::vector<std::string> sections = {"channels", "setup", "parameters"};
+        for (const auto& section: sections) {
+            if (deviceTemplate.isMember(section)) {
+                Json::Value& sectionNodes = deviceTemplate[section];
+                for (auto it = sectionNodes.begin(); it != sectionNodes.end(); ++it) {
+                    try {
+                        ValidateCondition(*it, validConditions);
+                    } catch (const runtime_error& e) {
+                        throw runtime_error("Failed to parse condition in " + section + "[" +
+                                            GetNodeName(*it, it.name()) + "]: " + e.what());
+                    }
                 }
             }
         }
@@ -253,6 +296,7 @@ const Json::Value& TDeviceTemplate::GetTemplate()
         if (!IsDeprecated()) {
             try {
                 Validator->Validate(root);
+                ValidateConditions(root["device"]);
             } catch (const std::runtime_error& e) {
                 throw std::runtime_error("File: " + GetFilePath() + " error: " + e.what());
             }
