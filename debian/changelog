@@ -1,3 +1,9 @@
+wb-mqtt-serial (2.152.5) stable; urgency=medium
+
+  * Validate conditions syntax in device templates
+
+ -- Petr Krasnoshchekov <petr.krasnoshchekov@wirenboard.com>  Tue, 14 Jan 2025 12:13:58 +0500
+
 wb-mqtt-serial (2.152.4) stable; urgency=medium
 
   * Disable events for `RGB Strip Hue` for WB-LED and WB-MRGBW-D
