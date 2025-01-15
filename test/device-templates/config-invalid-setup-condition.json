@@ -1,0 +1,23 @@
+{
+    "device_type": "invalid_setup_condition",
+    "device": {
+        "name": "invalid setup condition",
+        "id": "invalid setup condition",
+        "setup": [
+            {
+                "title": "Param",
+                "address": "0x0504",
+                "value": 1,
+                "condition": "( in1 > 3 )"
+            }
+        ],
+        "channels": [
+            {
+                "name": "Temperature",
+                "reg_type": "input",
+                "format": "s32",
+                "address": "0x0504"
+            }
+        ]
+    }
+}

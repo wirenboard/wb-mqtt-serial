@@ -6,6 +6,37 @@ wb-mqtt-serial (2.153.0) stable; urgency=medium
 
  -- Radmir Khakimov <radmir.khakimov@wirenboard.com>  Tue, 17 Dec 2024 20:35:00 +0500
 
+wb-mqtt-serial (2.152.5) stable; urgency=medium
+
+  * Validate conditions syntax in device templates
+
+ -- Petr Krasnoshchekov <petr.krasnoshchekov@wirenboard.com>  Tue, 14 Jan 2025 12:13:58 +0500
+
+wb-mqtt-serial (2.152.4) stable; urgency=medium
+
+  * Disable events for `RGB Strip Hue` for WB-LED and WB-MRGBW-D
+
+ -- Pavel Gasheev <pavel.gasheev@wirenboard.com>  Fri, 10 Jan 2025 15:56:33 +0300
+
+wb-mqtt-serial (2.152.3) stable; urgency=medium
+
+  * Fix max_unchanged_interval description
+
+ -- Ekaterina Volkova <ekaterina.volkova@wirenboard.com>  Fri, 27 Dec 2024 11:16:04 +0300
+
+wb-mqtt-serial (2.152.2) stable; urgency=medium
+
+  * Add default config with ttyMOD4 for Wiren Board 8.5
+
+ -- Petr Krasnoshchekov <petr.krasnoshchekov@wirenboard.com>  Tue, 24 Dec 2024 19:54:50 +0500
+
+wb-mqtt-serial (2.152.1) stable; urgency=medium
+
+  * WB-MAI6: add Internal 5V Bus Voltage channel
+
+ -- Ilia Skochilov <ilia.skochilov@wirenboard.com>  Fri, 20 Dec 2024 17:13:00 +0300
+>>>>>>> origin/master
+
 wb-mqtt-serial (2.152.0) stable; urgency=medium
 
   * Add "protocol:" prefix to type field in config/Load RPC response for schemas of custom devices.
