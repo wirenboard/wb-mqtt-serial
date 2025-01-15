@@ -176,14 +176,16 @@
                 "reg_type": "coil",
                 "address": 5001,
                 "type": "switch",
-                "group": "ir_commands"
+                "group": "ir_commands",
+                "enabled": false
             },
             {
                 "name": "Play from RAM",
                 "reg_type": "coil",
                 "address": 5002,
                 "type": "pushbutton",
-                "group": "ir_commands"
+                "group": "ir_commands",
+                "enabled": false
             },
 
             {% for rom in range(FIRST_ROM, LAST_ROM + 1) -%}
