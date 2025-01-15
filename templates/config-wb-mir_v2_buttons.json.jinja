@@ -169,18 +169,18 @@
 
         "channels": [
             {
+                "name": "Play from RAM",
+                "reg_type": "coil",
+                "address": 5002,
+                "type": "pushbutton",
+                "group": "ir_commands"
+            },
+            {
                 "name": "Record to RAM",
                 "id": "Learn to RAM",
                 "reg_type": "coil",
                 "address": 5001,
                 "type": "switch",
-                "group": "ir_commands"
-            },
-            {
-                "name": "Play from RAM",
-                "reg_type": "coil",
-                "address": 5002,
-                "type": "pushbutton",
                 "group": "ir_commands"
             },
 
@@ -204,20 +204,20 @@
             },
             {% set enabled = "true" if rom < 11 else "false" -%}
             {
-                "name": "Command {{ rom }} recording",
-                "id": "Learn to ROM{{ rom }}",
-                "reg_type": "coil",
-                "address": {{ 5300 + rom - 1 }},
-                "type": "switch",
-                "group": "ir_commands",
-                "enabled": {{ enabled }}
-            },
-            {
                 "name": "Play command {{ rom }}",
                 "id": "Play from ROM{{ rom }}",
                 "reg_type": "coil",
                 "address": {{ 5100 + rom - 1 }},
                 "type": "pushbutton",
+                "group": "ir_commands",
+                "enabled": {{ enabled }}
+            },
+            {
+                "name": "Command {{ rom }} recording",
+                "id": "Learn to ROM{{ rom }}",
+                "reg_type": "coil",
+                "address": {{ 5300 + rom - 1 }},
+                "type": "switch",
                 "group": "ir_commands",
                 "enabled": {{ enabled }}
             },
