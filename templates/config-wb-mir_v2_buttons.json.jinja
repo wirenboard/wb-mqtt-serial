@@ -169,7 +169,8 @@
 
         "channels": [
             {
-                "name": "Learn to RAM",
+                "name": "Record to RAM",
+                "id": "Learn to RAM",
                 "reg_type": "coil",
                 "address": 5001,
                 "type": "switch",
@@ -185,14 +186,16 @@
 
             {% for rom in range(FIRST_ROM, LAST_ROM + 1) -%}
             {
-                "name": "ROM{{ rom }} size",
+                "name": "Command {{ rom }} size",
+                "id": "ROM{{ rom }} size",
                 "reg_type": "input",
                 "address": {{ 5400 + rom - 1 }},
                 "group": "ir_commands",
                 "enabled": false
             },
             {
-                "name": "ROM{{ rom }} -> RAM",
+                "name": "Editing command {{ rom }} in RAM",
+                "id": "ROM{{ rom }} -> RAM",
                 "reg_type": "coil",
                 "address": {{ 5200 + rom - 1 }},
                 "type": "switch",
@@ -201,7 +204,8 @@
             },
             {% set enabled = "true" if rom < 11 else "false" -%}
             {
-                "name": "Learn to ROM{{ rom }}",
+                "name": "Command {{ rom }} recording",
+                "id": "Learn to ROM{{ rom }}",
                 "reg_type": "coil",
                 "address": {{ 5300 + rom - 1 }},
                 "type": "switch",
@@ -209,7 +213,8 @@
                 "enabled": {{ enabled }}
             },
             {
-                "name": "Play from ROM{{ rom }}",
+                "name": "Play command {{ rom }}",
+                "id": "Play from ROM{{ rom }}",
                 "reg_type": "coil",
                 "address": {{ 5100 + rom - 1 }},
                 "type": "pushbutton",
@@ -219,14 +224,16 @@
             {% endfor -%}
 
             {
-                "name": "Reset all ROM",
+                "name": "Reset all commands",
+                "id": "Reset all ROM",
                 "reg_type": "coil",
                 "address": 5000,
                 "type": "pushbutton",
                 "group": "ir_commands"
             },
             {
-                "name": "Play from BANK",
+                "name": "Play a command",
+                "id": "Play from BANK",
                 "reg_type": "holding",
                 "format": "s16",
                 "address": 5500,
@@ -235,7 +242,8 @@
                 "enabled": false
             },
             {
-                "name": "BANK -> RAM",
+                "name": "Editing a command",
+                "id": "BANK -> RAM",
                 "reg_type": "holding",
                 "format": "s16",
                 "address": 5501,
@@ -244,7 +252,8 @@
                 "enabled": false
             },
             {
-                "name": "Learn to BANK",
+                "name": "Recording a command",
+                "id": "Learn to BANK",
                 "reg_type": "holding",
                 "format": "s16",
                 "address": 5502,
@@ -448,19 +457,20 @@
                 "Enabled": "Активен",
                 "Baud rate": "Скорость обмена",
                 "baud_rate_description": "Перед изменением параметра убедитесь, что связь с устройством установлена. Выберите нужную скорость обмена, сохраните конфигурацию, а затем укажите в настройках порта эту же скорость.",
-                "Learn to RAM": "Записать команду в RAM",
+                "Record to RAM": "Запись команды в RAM",
                 "Play from RAM": "Воспроизвести команду из RAM",
 
                 {% for rom in range(FIRST_ROM, LAST_ROM + 1) -%}
-                "Learn to ROM{{ rom }}": "Записать команду в ROM{{ rom }}",
-                "ROM{{ rom }} size": "Размер команды в ROM{{ rom }}",
-                "Play from ROM{{ rom }}": "Воспроизвести команду из ROM{{ rom }}",
+                "Command {{ rom }} recording": "Запись команды {{ rom }}",
+                "Command {{ rom }} size": "Размер команды {{ rom }}",
+                "Editing command {{ rom }} in RAM": "Редактирование команды {{ rom }} в RAM",
+                "Play command {{ rom }}": "Воспроизвести команду {{ rom }}",
                 {% endfor -%}
 
-                "Reset all ROM": "Стереть все команды в ROM",
-                "Play from BANK": "Воспроизвести команду из соответствующего банка ROM",
-                "BANK -> RAM": "Редактирование ИК-команд в банке с копированием в RAM",
-                "Learn to BANK": "Записать команду в соответствующий банк ROM",
+                "Reset all commands": "Стереть все команды",
+                "Play a command": "Воспроизвести команду",
+                "Editing a command": "Редактирование команды",
+                "Recording a command": "Запись команды",
                 
                 "temperature_readings_filter_deg_title": "Фильтр ошибочных значений датчика 1-Wire (°C)",
                 "temperature_readings_filter_deg_description": "Если значение температуры равно 85 °C, то оно отбрасывается, если оно отличается от предыдущего больше, чем на значение фильтра. Запишите 0, чтобы отключить фильтр. Значение по умолчанию - 1",
