@@ -192,14 +192,6 @@
             },
 
             {% for rom in range(FIRST_ROM, LAST_ROM + 1) -%}
-            {
-                "name": "Command {{ rom }} size",
-                "id": "ROM{{ rom }} size",
-                "reg_type": "input",
-                "address": {{ 5400 + rom - 1 }},
-                "group": "ir_commands",
-                "enabled": false
-            },
             {% set enabled = "true" if rom < 11 else "false" -%}
             {
                 "name": "Play command {{ rom }}",
@@ -207,6 +199,18 @@
                 "reg_type": "coil",
                 "address": {{ 5100 + rom - 1 }},
                 "type": "pushbutton",
+                "group": "ir_commands",
+                "enabled": {{ enabled }}
+            },
+            {% endfor -%}
+
+            {% for rom in range(FIRST_ROM, LAST_ROM + 1) -%}
+            {% set enabled = "true" if rom < 11 else "false" -%}
+            {
+                "name": "Command {{ rom }} size",
+                "id": "ROM{{ rom }} size",
+                "reg_type": "input",
+                "address": {{ 5400 + rom - 1 }},
                 "group": "ir_commands",
                 "enabled": {{ enabled }}
             },

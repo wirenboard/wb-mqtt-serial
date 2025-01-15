@@ -185,23 +185,6 @@
             },
 
             {% for rom in range(FIRST_ROM, LAST_ROM + 1) -%}
-            {
-                "name": "Command {{ rom }} size",
-                "id": "ROM{{ rom }} size",
-                "reg_type": "input",
-                "address": {{ 5400 + rom - 1 }},
-                "group": "ir_commands",
-                "enabled": false
-            },
-            {
-                "name": "Editing command {{ rom }} in RAM",
-                "id": "ROM{{ rom }} -> RAM",
-                "reg_type": "coil",
-                "address": {{ 5200 + rom - 1 }},
-                "type": "switch",
-                "group": "ir_commands",
-                "enabled": false
-            },
             {% set enabled = "true" if rom < 11 else "false" -%}
             {
                 "name": "Play command {{ rom }}",
@@ -212,6 +195,27 @@
                 "group": "ir_commands",
                 "enabled": {{ enabled }}
             },
+            {% endfor -%}
+
+            {% for rom in range(FIRST_ROM, LAST_ROM + 1) -%}
+            {
+                "name": "Editing command {{ rom }} in RAM",
+                "id": "ROM{{ rom }} -> RAM",
+                "reg_type": "coil",
+                "address": {{ 5200 + rom - 1 }},
+                "type": "switch",
+                "group": "ir_commands",
+                "enabled": false
+            },
+            {
+                "name": "Command {{ rom }} size",
+                "id": "ROM{{ rom }} size",
+                "reg_type": "input",
+                "address": {{ 5400 + rom - 1 }},
+                "group": "ir_commands",
+                "enabled": false
+            },
+            {% set enabled = "true" if rom < 11 else "false" -%}
             {
                 "name": "Command {{ rom }} recording",
                 "id": "Learn to ROM{{ rom }}",
