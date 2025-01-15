@@ -207,19 +207,19 @@
             {% for rom in range(FIRST_ROM, LAST_ROM + 1) -%}
             {% set enabled = "true" if rom < 11 else "false" -%}
             {
-                "name": "Command {{ rom }} size",
-                "id": "ROM{{ rom }} size",
-                "reg_type": "input",
-                "address": {{ 5400 + rom - 1 }},
-                "group": "ir_commands",
-                "enabled": {{ enabled }}
-            },
-            {
                 "name": "Command {{ rom }} recording",
                 "id": "Learn to ROM{{ rom }}",
                 "reg_type": "coil",
                 "address": {{ 5300 + rom - 1 }},
                 "type": "switch",
+                "group": "ir_commands",
+                "enabled": {{ enabled }}
+            },
+            {
+                "name": "Command {{ rom }} size",
+                "id": "ROM{{ rom }} size",
+                "reg_type": "input",
+                "address": {{ 5400 + rom - 1 }},
                 "group": "ir_commands",
                 "enabled": {{ enabled }}
             },
