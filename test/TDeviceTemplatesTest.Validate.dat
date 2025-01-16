@@ -109,14 +109,6 @@ BAC-6000ELNW
 	Room Temperature  =>  Room Temperature
 	Status  =>  Status
 	Temperature Setpoint  =>  Temperature Setpoint
-BHT-006 Series
-	heating_status  =>  heating_status
-	lock_buttons  =>  lock_buttons
-	manual_mode  =>  manual_mode
-	power_status  =>  power_status
-	setting_temperature  =>  setting_temperature
-	temperature_from_internal_sensor  =>  temperature_from_internal_sensor
-	weekly_program_setting_temperature  =>  weekly_program_setting_temperature
 BHT-6000 Series
 	Heating status  =>  Heating status
 	Lock buttons  =>  Lock buttons
@@ -13750,7 +13742,6 @@ WB-MAI6
 	IN 6 Temperature  =>  IN 6 Temperature
 	IN 6 Value  =>  IN 6 Value
 	IN 6 Voltage  =>  IN 6 Voltage
-	Internal 5V Bus Voltage  =>  Internal 5V Bus Voltage
 	Internal Temperature  =>  Internal Temperature
 	MCU Temperature  =>  MCU Temperature
 	MCU Voltage  =>  MCU Voltage
@@ -21224,9 +21215,6 @@ WinDeco
 	Position  =>  Position
 	Status  =>  Status
 	Stop  =>  Stop
-XY-MD0X
-	humidity  =>  humidity
-	temperature  =>  temperature
 carel_mu_rack
 	Alarm 1 Compressor  =>  Alarm 1 Compressor
 	Alarm 2 Compressor  =>  Alarm 2 Compressor
@@ -23848,7 +23836,6 @@ tpl1_oni_plc_w_ema_06U00
 	IN 6 Temperature  =>  IN 6 Temperature
 	IN 6 Value  =>  IN 6 Value
 	IN 6 Voltage  =>  IN 6 Voltage
-	Internal 5V Bus Voltage  =>  Internal 5V Bus Voltage
 	Internal Temperature  =>  Internal Temperature
 	MCU Temperature  =>  MCU Temperature
 	MCU Voltage  =>  MCU Voltage
