@@ -626,7 +626,7 @@
                     "x0.001: [-32.768; 32.766]"
                 ],
                 "default": 1,
-                "condition": "{{ format_list(ch_num, TYPES_WITH_MIN_MAX, "in%s_type==%s") }}"
+                "condition": "{{ format_list(ch_num, TYPES_WITH_MIN_MAX, "in%s_n_type==%s") }}"
             },
 
             {% for value_scale in [1, 10, 100, 1000] -%}
