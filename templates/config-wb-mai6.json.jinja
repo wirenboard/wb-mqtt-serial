@@ -245,18 +245,24 @@
             {
                 "id": "in{{ ch_num }}_min",
                 "title": "Minimum value",
+                "description": "minimum_value_description",
                 "group": "gg_in{{ ch_num }}_p",
                 "order": 5,
                 "address": "0x{{ "%x"|format(ch_num) }}408",
+                "min": -32768,
+                "max": 32767,
                 "default": 0,
                 "condition": "{{ format_list(ch_num, TYPES_WITH_MIN_MAX, "in%s_type==%s") }}"
             },
             {
                 "id": "in{{ ch_num }}_max",
                 "title": "Maximum value",
+                "description": "maximum_value_description",
                 "group": "gg_in{{ ch_num }}_p",
                 "order": 6,
                 "address": "0x{{ "%x"|format(ch_num) }}40A",
+                "min": -32768,
+                "max": 32767,
                 "default": 10000,
                 "condition": "{{ format_list(ch_num, TYPES_WITH_MIN_MAX, "in%s_type==%s") }}"
             },
@@ -541,18 +547,24 @@
             {
                 "id": "in{{ ch_num }}_n_min",
                 "title": "Minimum value",
+                "description": "minimum_value_description",
                 "group": "gg_in{{ ch_num }}_n",
                 "order": 5,
                 "address": "0x{{ "%x"|format(ch_num) }}409",
+                "min": -32768,
+                "max": 32767,
                 "default": 0,
                 "condition": "{{ format_list(ch_num, TYPES_WITH_MIN_MAX, "in%s_n_type==%s") }}"
             },
             {
                 "id": "in{{ ch_num }}_n_max",
                 "title": "Maximum value",
+                "description": "maximum_value_description",
                 "group": "gg_in{{ ch_num }}_n",
                 "order": 6,
                 "address": "0x{{ "%x"|format(ch_num) }}40B",
+                "min": -32768,
+                "max": 32767,
                 "default": 10000,
                 "condition": "{{ format_list(ch_num, TYPES_WITH_MIN_MAX, "in%s_n_type==%s") }}"
             },
@@ -1068,7 +1080,9 @@
                 "baud_rate_description": "Make sure that communication with device is established before changing this parameter. Select required baud rate, save configuration and then change port baud rate to the same value.",
                 "IN_P_title": "Channel P",
                 "IN_N_title": "Channel N",
-                "external_voltage_divider_description": "External voltage divider is used to measure voltage higher than 30V and to get higher input resistance. Output voltage of the divider should be in the range from 0 to 4V (better to 2V). Supported since firmware version 2.1.0."
+                "external_voltage_divider_description": "External voltage divider is used to measure voltage higher than 30V and to get higher input resistance. Output voltage of the divider should be in the range from 0 to 4V (better to 2V). Supported since firmware version 2.1.0.",
+                "minimum_value_description": "Physical value corresponding to lower limit of the measurement range. Integer in the range from -32768 to 32767. Choose dimension to provide required accuracy.",
+                "maximum_value_description": "Physical value corresponding to upper limit of the measurement range. Integer in the range from -32768 to 32767. Choose dimension to provide required accuracy."
             },
             "ru": {
                 "template_title": "{{ title_ru }}",
@@ -1192,6 +1206,8 @@
                 "State": "Состояние",
                 "Minimum value": "Минимальное пересчитанное значение",
                 "Maximum value": "Максимальное пересчитанное значение",
+                "minimum_value_description": "Значение физической величины, соответствующее нижней границе диапазона измерения. Целое число в диапазоне от -32768 до 32767. Подберите размерность таким образом, чтобы обеспечить требуемую точность.",
+                "maximum_value_description": "Значение физической величины, соответствующее верхней границе диапазона измерения. Целое число в диапазоне от -32768 до 32767. Подберите размерность таким образом, чтобы обеспечить требуемую точность.",
                 "Zero offset (A)" : "Сдвиг нуля (A)",
                 "Rated current (A)" : "Номинальный ток (A)",
                 "External voltage divider high-voltage arm (R1) resistance, kOhm" : "Сопротивление верхнего плеча (R1) внешнего делителя напряжения, кОм",
