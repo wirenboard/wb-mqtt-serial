@@ -1,3 +1,9 @@
+wb-mqtt-serial (2.153.1) stable; urgency=medium
+
+  * WB-MAI6 template: add scale for physical value
+
+ -- Pavel Gasheev <pavel.gasheev@wirenboard.com>  Thu, 16 Jan 2025 17:32:23 +0300
+
 wb-mqtt-serial (2.153.0) stable; urgency=medium
 
   * Deprecate WB-MIR v.2 template
