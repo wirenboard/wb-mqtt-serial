@@ -50,6 +50,36 @@
                 "id": "gg_in{{ ch_num }}_n",
                 "group": "g_in{{ ch_num }}"
             },
+            {
+                "title": "Physical Value",
+                "id": "gg_in{{ ch_num }}_p_value",
+                "group": "gg_in{{ ch_num }}_p"
+            },
+            {
+                "title": "Physical Value",
+                "id": "gg_in{{ ch_num }}_n_value",
+                "group": "gg_in{{ ch_num }}_n"
+            },
+            {
+                "title": "IN_P_channels",
+                "id": "gg_in{{ ch_num }}_p_channels",
+                "group": "gg_in{{ ch_num }}_p",
+                "ui_options": {
+                    "wb": {
+                        "disable_title": true
+                    }
+                }
+            },
+            {
+                "title": "IN_N_channels",
+                "id": "gg_in{{ ch_num }}_n_channels",
+                "group": "gg_in{{ ch_num }}_n",
+                "ui_options": {
+                    "wb": {
+                        "disable_title": true
+                    }
+                }
+            },
             {% endfor -%}
             {
                 "title": "General",
@@ -246,7 +276,7 @@
                 "id": "in{{ ch_num }}_min",
                 "title": "Minimum value",
                 "description": "minimum_value_description",
-                "group": "gg_in{{ ch_num }}_p",
+                "group": "gg_in{{ ch_num }}_p_value",
                 "order": 5,
                 "address": "0x{{ "%x"|format(ch_num) }}408",
                 "min": -32768,
@@ -258,7 +288,7 @@
                 "id": "in{{ ch_num }}_max",
                 "title": "Maximum value",
                 "description": "maximum_value_description",
-                "group": "gg_in{{ ch_num }}_p",
+                "group": "gg_in{{ ch_num }}_p_value",
                 "order": 6,
                 "address": "0x{{ "%x"|format(ch_num) }}40A",
                 "min": -32768,
@@ -548,7 +578,7 @@
                 "id": "in{{ ch_num }}_n_min",
                 "title": "Minimum value",
                 "description": "minimum_value_description",
-                "group": "gg_in{{ ch_num }}_n",
+                "group": "gg_in{{ ch_num }}_n_value",
                 "order": 5,
                 "address": "0x{{ "%x"|format(ch_num) }}409",
                 "min": -32768,
@@ -560,7 +590,7 @@
                 "id": "in{{ ch_num }}_n_max",
                 "title": "Maximum value",
                 "description": "maximum_value_description",
-                "group": "gg_in{{ ch_num }}_n",
+                "group": "gg_in{{ ch_num }}_n_value",
                 "order": 6,
                 "address": "0x{{ "%x"|format(ch_num) }}40B",
                 "min": -32768,
@@ -644,7 +674,7 @@
                 "format": "s32",
                 "address": "0x{{ "%x"|format(ch_num) }}500",
                 "scale": 0.01,
-                "group": "gg_in{{ ch_num }}_p",
+                "group": "gg_in{{ ch_num }}_p_channels",
                 "condition": "(in{{ ch_num }}_type>=4608&&in{{ ch_num }}_type<=4658)",
                 "enabled": false
             },
@@ -657,7 +687,7 @@
                 "format": "s32",
                 "address": "0x{{ "%x"|format(ch_num) }}500",
                 "scale": 0.01,
-                "group": "gg_in{{ ch_num }}_p",
+                "group": "gg_in{{ ch_num }}_p_channels",
                 "condition": "in{{ ch_num }}_type==258"
             },
             {
@@ -669,7 +699,7 @@
                 "format": "s32",
                 "address": "0x{{ "%x"|format(ch_num) }}500",
                 "scale": 0.01,
-                "group": "gg_in{{ ch_num }}_p",
+                "group": "gg_in{{ ch_num }}_p_channels",
                 "condition": "in{{ ch_num }}_type==2"
             },
             {
@@ -681,7 +711,7 @@
                 "format": "s32",
                 "address": "0x{{ "%x"|format(ch_num) }}500",
                 "scale": 0.01,
-                "group": "gg_in{{ ch_num }}_p",
+                "group": "gg_in{{ ch_num }}_p_channels",
                 "condition": "(in{{ ch_num }}_type>=4352&&in{{ ch_num }}_type<=4402)||in{{ ch_num }}_type==5632||in{{ ch_num }}_type==5889",
                 "enabled": false
             },
@@ -695,7 +725,7 @@
                 "format": "s32",
                 "error_value": "0x7FFFFFFF",
                 "address": "0x{{ "%x"|format(ch_num) }}500",
-                "group": "gg_in{{ ch_num }}_p",
+                "group": "gg_in{{ ch_num }}_p_channels",
                 "condition": "in{{ ch_num }}_type==4096",
                 "enabled": false
             },
@@ -709,7 +739,7 @@
                 "format": "s32",
                 "error_value": "0x7FFFFFFF",
                 "address": "0x{{ "%x"|format(ch_num) }}500",
-                "group": "gg_in{{ ch_num }}_p",
+                "group": "gg_in{{ ch_num }}_p_channels",
                 "condition": "in{{ ch_num }}_type==257||in{{ ch_num }}_type==5376"
             },
             {
@@ -722,7 +752,7 @@
                 "address": "0x{{ "%x"|format(ch_num) }}500",
                 "scale": 0.000001,
                 "round_to": 0.001,
-                "group": "gg_in{{ ch_num }}_p",
+                "group": "gg_in{{ ch_num }}_p_channels",
                 "condition": "in{{ ch_num }}_type==1||in{{ ch_num }}_type==5121||in{{ ch_num }}_type==6144"
             },
             {
@@ -735,7 +765,7 @@
                 "address": "0x{{ "%x"|format(ch_num) }}500",
                 "scale": 0.001,
                 "round_to": 0.01,
-                "group": "gg_in{{ ch_num }}_p",
+                "group": "gg_in{{ ch_num }}_p_channels",
                 "condition": "in{{ ch_num }}_type==5||in{{ ch_num }}_type==6"
             },
             {
@@ -748,7 +778,7 @@
                 "address": "0x{{ "%x"|format(ch_num) }}500",
                 "scale": 0.000001,
                 "round_to": 0.000001,
-                "group": "gg_in{{ ch_num }}_p",
+                "group": "gg_in{{ ch_num }}_p_channels",
                 "condition": "in{{ ch_num }}_type==5120"
             },
             {
@@ -761,7 +791,7 @@
                 "address": "0x{{ "%x"|format(ch_num) }}500",
                 "scale": 1e-6,
                 "round_to": 0.001,
-                "group": "gg_in{{ ch_num }}_p",
+                "group": "gg_in{{ ch_num }}_p_channels",
                 "condition": "in{{ ch_num }}_type==3||in{{ ch_num }}_type==4864||in{{ ch_num }}_type==4865||in{{ ch_num }}_type==4866"
             },
             {
@@ -774,7 +804,7 @@
                 "address": "0x{{ "%x"|format(ch_num) }}504",
                 "scale": 0.1,
                 "round_to": 0.1,
-                "group": "gg_in{{ ch_num }}_p",
+                "group": "gg_in{{ ch_num }}_p_channels",
                 "condition": "in{{ ch_num }}_type==6144"
             },
             {
@@ -786,7 +816,7 @@
                 "error_value": "0x7fff",
                 "format": "s16",
                 "address": "0x{{ "%x"|format(ch_num) }}504",
-                "group": "gg_in{{ ch_num }}_p",
+                "group": "gg_in{{ ch_num }}_p_channels",
                 "condition": "in{{ ch_num }}_type==4096||(in{{ ch_num }}_type>=4608&&in{{ ch_num }}_type<=4658)"
             },
             {
@@ -798,7 +828,7 @@
                 "error_value": "0x7fff",
                 "format": "s16",
                 "address": "0x{{ "%x"|format(ch_num) }}504",
-                "group": "gg_in{{ ch_num }}_p",
+                "group": "gg_in{{ ch_num }}_p_channels",
                 "condition": "in{{ ch_num }}_type>=4352&&in{{ ch_num }}_type<=4402||in{{ ch_num }}_type==5889"
             },
             {
@@ -807,7 +837,7 @@
                 "type": "switch",
                 "format": "s16",
                 "address": "0x{{ "%x"|format(ch_num) }}504",
-                "group": "gg_in{{ ch_num }}_p",
+                "group": "gg_in{{ ch_num }}_p_channels",
                 "condition": "in{{ ch_num }}_type==5632"
             },
             {
@@ -817,7 +847,7 @@
                 "format": "s16",
                 "error_value": "0x7fff",
                 "address": "0x{{ "%x"|format(ch_num) }}504",
-                "group": "gg_in{{ ch_num }}_p",
+                "group": "gg_in{{ ch_num }}_p_channels",
                 "condition": "in{{ ch_num }}_type==5376"
             },
             {
@@ -827,7 +857,7 @@
                 "format": "s16",
                 "error_value": "0x7fff",
                 "address": "0x{{ "%x"|format(ch_num) }}504",
-                "group": "gg_in{{ ch_num }}_p",
+                "group": "gg_in{{ ch_num }}_p_channels",
                 "condition": "{{ format_list(ch_num, TYPES_WITH_SINGLE_VALUE_CHANNEL, "in%s_type==%s") }}"
             },
             {
@@ -840,7 +870,7 @@
                 "address": "0x{{ "%x"|format(ch_num) }}502",
                 "scale": 0.01,
                 "condition": "in{{ ch_num }}_n_type==2",
-                "group": "gg_in{{ ch_num }}_n"
+                "group": "gg_in{{ ch_num }}_n_channels"
             },
             {
                 "name": "IN {{ch_num}} N Resistance",
@@ -852,7 +882,7 @@
                 "address": "0x{{ "%x"|format(ch_num) }}502",
                 "scale": 0.01,
                 "condition": "in{{ ch_num }}_n_type==5632||in{{ ch_num }}_n_type==5889||(in{{ ch_num }}_n_type>=4352&&in{{ ch_num }}_n_type<=4402)",
-                "group": "gg_in{{ ch_num }}_n",
+                "group": "gg_in{{ ch_num }}_n_channels",
                 "enabled": false
 
             },
@@ -866,7 +896,7 @@
                 "format": "s16",
                 "address": "0x{{ "%x"|format(ch_num) }}505",
                 "condition": "in{{ ch_num }}_n_type==5889||(in{{ ch_num }}_n_type>=4352&&in{{ ch_num }}_n_type<=4402)",
-                "group": "gg_in{{ ch_num }}_n"
+                "group": "gg_in{{ ch_num }}_n_channels"
             },
             {
                 "name": "IN {{ch_num}} N Voltage",
@@ -878,7 +908,7 @@
                 "address": "0x{{ "%x"|format(ch_num) }}502",
                 "scale": 0.000001,
                 "round_to": 0.001,
-                "group": "gg_in{{ ch_num }}_n",
+                "group": "gg_in{{ ch_num }}_n_channels",
                 "condition": "in{{ ch_num }}_n_type==1||in{{ ch_num }}_n_type==5121||in{{ ch_num }}_n_type==6144"
             },
             {
@@ -891,7 +921,7 @@
                 "address": "0x{{ "%x"|format(ch_num) }}502",
                 "scale": 0.001,
                 "round_to": 0.01,
-                "group": "gg_in{{ ch_num }}_n",
+                "group": "gg_in{{ ch_num }}_n_channels",
                 "condition": "in{{ ch_num }}_n_type==5||in{{ ch_num }}_n_type==6"
             },
             {
@@ -904,7 +934,7 @@
                 "address": "0x{{ "%x"|format(ch_num) }}502",
                 "scale": 0.000001,
                 "round_to": 0.000001,
-                "group": "gg_in{{ ch_num }}_n",
+                "group": "gg_in{{ ch_num }}_n_channels",
                 "condition": "in{{ ch_num }}_n_type==5120"
             },
             {
@@ -917,7 +947,7 @@
                 "address": "0x{{ "%x"|format(ch_num) }}502",
                 "scale": 1e-6,
                 "round_to": 0.001,
-                "group": "gg_in{{ ch_num }}_n",
+                "group": "gg_in{{ ch_num }}_n_channels",
                 "condition": "in{{ ch_num }}_n_type==3||in{{ ch_num }}_n_type==4864||in{{ ch_num }}_n_type==4865||in{{ ch_num }}_n_type==4866||in{{ ch_num }}_n_type==3"
             },
             {
@@ -930,7 +960,7 @@
                 "address": "0x{{ "%x"|format(ch_num) }}505",
                 "scale": 0.1,
                 "round_to": 0.1,
-                "group": "gg_in{{ ch_num }}_n",
+                "group": "gg_in{{ ch_num }}_n_channels",
                 "condition": "in{{ ch_num }}_n_type==6144"
             },
             {
@@ -940,7 +970,7 @@
                 "format": "s16",
                 "address": "0x{{ "%x"|format(ch_num) }}505",
                 "condition": "in{{ ch_num }}_n_type==5632",
-                "group": "gg_in{{ ch_num }}_n"
+                "group": "gg_in{{ ch_num }}_n_channels"
             },
             {
                 "name": "IN {{ch_num}} N Value",
@@ -949,7 +979,7 @@
                 "format": "s16",
                 "error_value": "0x7fff",
                 "address": "0x{{ "%x"|format(ch_num) }}505",
-                "group": "gg_in{{ ch_num }}_n",
+                "group": "gg_in{{ ch_num }}_n_channels",
                 "condition": "{{ format_list(ch_num, TYPES_WITH_SINGLE_VALUE_CHANNEL, "in%s_n_type==%s") }}"
             },
             {% endfor -%}
