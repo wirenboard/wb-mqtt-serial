@@ -303,6 +303,7 @@
                 "scale": {{ 1.0 / value_scale }},
                 {% endif -%}
                 "default": 0,
+                "format": "s16",
                 "condition": "(
                     {%- if value_scale == 1 -%}
                     isDefined(in{{ ch_num }}_physical_value_scale)==0||
@@ -321,6 +322,7 @@
                 "scale": {{ 1.0 / value_scale }},
                 {% endif -%}
                 "default": {{ 10000 if value_scale == 1 else 10000 / value_scale }},
+                "format": "s16",
                 "condition": "(
                     {%- if value_scale == 1 -%}
                     isDefined(in{{ ch_num }}_physical_value_scale)==0||
@@ -638,6 +640,7 @@
                 "scale": {{ 1.0 / value_scale }},
                 {% endif -%}
                 "default": 0,
+                "format": "s16",
                 "condition": "(
                     {%- if value_scale == 1 -%}
                     isDefined(in{{ ch_num }}_n_physical_value_scale)==0||
@@ -656,6 +659,7 @@
                 "scale": {{ 1.0 / value_scale }},
                 {% endif -%}
                 "default": {{ 10000 if value_scale == 1 else 10000 / value_scale }},
+                "format": "s16",
                 "condition": "(
                     {%- if value_scale == 1 -%}
                     isDefined(in{{ ch_num }}_n_physical_value_scale)==0||
