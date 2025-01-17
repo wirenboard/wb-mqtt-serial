@@ -293,7 +293,7 @@
             {% for value_scale in [1, 10, 100, 1000] -%}
             {
                 "id": "in{{ ch_num }}_min",
-                "title": "Minimum value",
+                "title": "minimum_value_title",
                 "group": "gg_in{{ ch_num }}_p_value",
                 "order": 2,
                 "address": "0x{{ "%x"|format(ch_num) }}408",
@@ -312,7 +312,7 @@
             },
             {
                 "id": "in{{ ch_num }}_max",
-                "title": "Maximum value",
+                "title": "maximum_value_title",
                 "group": "gg_in{{ ch_num }}_p_value",
                 "order": 3,
                 "address": "0x{{ "%x"|format(ch_num) }}40A",
@@ -630,7 +630,7 @@
             {% for value_scale in [1, 10, 100, 1000] -%}
             {
                 "id": "in{{ ch_num }}_n_min",
-                "title": "Minimum value",
+                "title": "minimum_value_title",
                 "group": "gg_in{{ ch_num }}_n_value",
                 "order": 2,
                 "address": "0x{{ "%x"|format(ch_num) }}409",
@@ -649,7 +649,7 @@
             },
             {
                 "id": "in{{ ch_num }}_n_max",
-                "title": "Maximum value",
+                "title": "maximum_value_title",
                 "group": "gg_in{{ ch_num }}_n_value",
                 "order": 3,
                 "address": "0x{{ "%x"|format(ch_num) }}40B",
@@ -1204,8 +1204,8 @@
                 "IN_P_title": "Channel P",
                 "IN_N_title": "Channel N",
                 "external_voltage_divider_description": "External voltage divider is used to measure voltage higher than 30V and to get higher input resistance. Output voltage of the divider should be in the range from 0 to 4V (better to 2V). Supported since firmware version 2.1.0.",
-                "Minimum value": "Lower limit of the measurement range",
-                "Maximum value": "Upper limit of the measurement range",
+                "minimum_value_title": "Lower limit of the measurement range",
+                "maximum_value_title": "Upper limit of the measurement range",
                 "physical_value_scale_title": "Scale multiplier"
             },
             "ru": {
@@ -1328,8 +1328,8 @@
                 "Current": "Ток",
                 "Percent": "Процент",
                 "State": "Состояние",
-                "Minimum value": "Нижняя граница диапазона",
-                "Maximum value": "Верхняя граница диапазона",
+                "minimum_value_title": "Нижняя граница диапазона",
+                "maximum_value_title": "Верхняя граница диапазона",
                 "Conversion to Physical Value": "Пересчет в физическую величину",
                 "physical_value_scale_title": "Множитель шкалы",
                 "Zero offset (A)" : "Сдвиг нуля (A)",
