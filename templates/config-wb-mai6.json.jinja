@@ -51,12 +51,12 @@
                 "group": "g_in{{ ch_num }}"
             },
             {
-                "title": "Physical Value Conversion",
+                "title": "Conversion to Physical Value",
                 "id": "gg_in{{ ch_num }}_p_value",
                 "group": "gg_in{{ ch_num }}_p"
             },
             {
-                "title": "Physical Value Conversion",
+                "title": "Conversion to Physical Value",
                 "id": "gg_in{{ ch_num }}_n_value",
                 "group": "gg_in{{ ch_num }}_n"
             },
@@ -275,8 +275,7 @@
 
             {
                 "id": "in{{ ch_num }}_physical_value_scale",
-                "title": "Physical Value Scale",
-                "description": "physical_value_scale_description",
+                "title": "physical_value_scale_title",
                 "group": "gg_in{{ ch_num }}_p_value",
                 "order": 1,
                 "readonly": true,
@@ -295,7 +294,6 @@
             {
                 "id": "in{{ ch_num }}_min",
                 "title": "Minimum value",
-                "description": "minimum_value_description",
                 "group": "gg_in{{ ch_num }}_p_value",
                 "order": 2,
                 "address": "0x{{ "%x"|format(ch_num) }}408",
@@ -314,7 +312,6 @@
             {
                 "id": "in{{ ch_num }}_max",
                 "title": "Maximum value",
-                "description": "maximum_value_description",
                 "group": "gg_in{{ ch_num }}_p_value",
                 "order": 3,
                 "address": "0x{{ "%x"|format(ch_num) }}40A",
@@ -613,8 +610,7 @@
 
             {
                 "id": "in{{ ch_num }}_n_physical_value_scale",
-                "title": "Physical Value Scale",
-                "description": "physical_value_scale_description",
+                "title": "physical_value_scale_title",
                 "group": "gg_in{{ ch_num }}_n_value",
                 "order": 1,
                 "readonly": true,
@@ -633,7 +629,6 @@
             {
                 "id": "in{{ ch_num }}_n_min",
                 "title": "Minimum value",
-                "description": "minimum_value_description",
                 "group": "gg_in{{ ch_num }}_n_value",
                 "order": 2,
                 "address": "0x{{ "%x"|format(ch_num) }}409",
@@ -652,7 +647,6 @@
             {
                 "id": "in{{ ch_num }}_n_max",
                 "title": "Maximum value",
-                "description": "maximum_value_description",
                 "group": "gg_in{{ ch_num }}_n_value",
                 "order": 3,
                 "address": "0x{{ "%x"|format(ch_num) }}40B",
@@ -1206,8 +1200,9 @@
                 "IN_P_title": "Channel P",
                 "IN_N_title": "Channel N",
                 "external_voltage_divider_description": "External voltage divider is used to measure voltage higher than 30V and to get higher input resistance. Output voltage of the divider should be in the range from 0 to 4V (better to 2V). Supported since firmware version 2.1.0.",
-                "minimum_value_description": "Physical value corresponding to lower limit of the measurement range. Integer in the range from -32768 to 32766. Choose dimension to provide required accuracy.",
-                "maximum_value_description": "Physical value corresponding to upper limit of the measurement range. Integer in the range from -32768 to 32766. Choose dimension to provide required accuracy."
+                "Minimum value": "Lower limit of the measurement range",
+                "Maximum value": "Upper limit of the measurement range",
+                "physical_value_scale_title": "Scale multiplier"
             },
             "ru": {
                 "template_title": "{{ title_ru }}",
@@ -1329,13 +1324,10 @@
                 "Current": "Ток",
                 "Percent": "Процент",
                 "State": "Состояние",
-                "Minimum value": "Минимальное пересчитанное значение",
-                "Maximum value": "Максимальное пересчитанное значение",
-                "Physical Value Conversion": "Пересчет в физическую величину",
-                "Physical Value Scale": "Масштаб физической величины",
-                "physical_value_scale_description": "Выберите подходящий масштаб физической величины, чтобы получить требуемую точность.",
-                "minimum_value_description": "Значение физической величины, соответствующее нижней границе диапазона измерения активного датчика.",
-                "maximum_value_description": "Значение физической величины, соответствующее верхней границе диапазона измерения активного датчика.",
+                "Minimum value": "Нижняя граница диапазона",
+                "Maximum value": "Верхняя граница диапазона",
+                "Conversion to Physical Value": "Пересчет в физическую величину",
+                "physical_value_scale_title": "Множитель шкалы",
                 "Zero offset (A)" : "Сдвиг нуля (A)",
                 "Rated current (A)" : "Номинальный ток (A)",
                 "External voltage divider high-voltage arm (R1) resistance, kOhm" : "Сопротивление верхнего плеча (R1) внешнего делителя напряжения, кОм",
