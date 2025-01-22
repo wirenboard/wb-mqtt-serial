@@ -281,10 +281,10 @@
                 "readonly": true,
                 "enum": [1, 10, 100, 1000],
                 "enum_titles": [
-                    "x1: [-32768; 32766]",
-                    "x0.1: [-3276.8; 3276.6]",
-                    "x0.01: [-327.68; 327.66]",
-                    "x0.001: [-32.768; 32.766]"
+                    "[-32768; 32766]",
+                    "[-3276.8; 3276.6]",
+                    "[-327.68; 327.66]",
+                    "[-32.768; 32.766]"
                 ],
                 "default": 1,
                 "condition": "{{ format_list(ch_num, TYPES_WITH_MIN_MAX, "in%s_type==%s") }}"
@@ -618,10 +618,10 @@
                 "readonly": true,
                 "enum": [1, 10, 100, 1000],
                 "enum_titles": [
-                    "x1: [-32768; 32766]",
-                    "x0.1: [-3276.8; 3276.6]",
-                    "x0.01: [-327.68; 327.66]",
-                    "x0.001: [-32.768; 32.766]"
+                    "[-32768; 32766]",
+                    "[-3276.8; 3276.6]",
+                    "[-327.68; 327.66]",
+                    "[-32.768; 32.766]"
                 ],
                 "default": 1,
                 "condition": "{{ format_list(ch_num, TYPES_WITH_MIN_MAX, "in%s_n_type==%s") }}"
@@ -1206,7 +1206,7 @@
                 "external_voltage_divider_description": "External voltage divider is used to measure voltage higher than 30V and to get higher input resistance. Output voltage of the divider should be in the range from 0 to 4V (better to 2V). Supported since firmware version 2.1.0.",
                 "minimum_value_title": "Lower limit of the measurement range",
                 "maximum_value_title": "Upper limit of the measurement range",
-                "physical_value_scale_title": "Scale multiplier"
+                "physical_value_scale_title": "Range"
             },
             "ru": {
                 "template_title": "{{ title_ru }}",
@@ -1331,7 +1331,7 @@
                 "minimum_value_title": "Нижняя граница диапазона",
                 "maximum_value_title": "Верхняя граница диапазона",
                 "Conversion to physical value": "Пересчет в физическую величину",
-                "physical_value_scale_title": "Множитель шкалы",
+                "physical_value_scale_title": "Диапазон значений",
                 "Zero offset (A)" : "Сдвиг нуля (A)",
                 "Rated current (A)" : "Номинальный ток (A)",
                 "External voltage divider high-voltage arm (R1) resistance, kOhm" : "Сопротивление верхнего плеча (R1) внешнего делителя напряжения, кОм",
