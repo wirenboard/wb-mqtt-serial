@@ -4,6 +4,12 @@ wb-mqtt-serial (2.153.1) stable; urgency=medium
 
  -- Pavel Gasheev <pavel.gasheev@wirenboard.com>  Thu, 16 Jan 2025 17:32:23 +0300
 
+wb-mqtt-serial (2.153.1) stable; urgency=medium
+
+  * WB-MCM8 template: set maximum debounce time to 2000 ms
+
+ -- Pavel Gasheev <pavel.gasheev@wirenboard.com>  Tue, 21 Jan 2025 11:20:54 +0300
+
 wb-mqtt-serial (2.153.0) stable; urgency=medium
 
   * Deprecate WB-MIR v.2 template
