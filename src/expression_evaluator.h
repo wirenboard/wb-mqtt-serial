@@ -130,6 +130,7 @@ namespace Expressions
          *
          * @param str string containing expression to parse
          * @return resulting AST
+         * @throw std::runtime_error on parsing error
          */
         std::unique_ptr<TAstNode> Parse(const std::string& str);
     };

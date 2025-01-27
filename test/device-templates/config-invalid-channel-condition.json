@@ -1,0 +1,16 @@
+{
+    "device_type": "invalid_channel_condition",
+    "device": {
+        "name": "invalid channel condition",
+        "id": "invalid channel condition",
+        "channels": [
+            {
+                "name": "Temperature",
+                "reg_type": "input",
+                "format": "s32",
+                "address": "0x0504",
+                "condition": "( in1 > 3 )"
+            }
+        ]
+    }
+}

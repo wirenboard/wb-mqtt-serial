@@ -134,3 +134,35 @@ TEST_F(TDeviceTemplatesTest, InvalidParameterName)
     EXPECT_NO_THROW(templates.GetTemplate("parameters_object_invalid_name")->GetTemplate());
     EXPECT_THROW(templates.GetTemplate("tpl1_parameters_object_invalid_name")->GetTemplate(), std::runtime_error);
 }
+
+TEST_F(TDeviceTemplatesTest, InvalidCondition)
+{
+    auto commonDeviceSchema(
+        WBMQTT::JSON::Parse(TLoggedFixture::GetDataFilePath("../wb-mqtt-serial-confed-common.schema.json")));
+    Json::Value templatesSchema(
+        LoadConfigTemplatesSchema(TLoggedFixture::GetDataFilePath("../wb-mqtt-serial-device-template.schema.json"),
+                                  commonDeviceSchema));
+    TTemplateMap templates(templatesSchema);
+    templates.AddTemplatesDir(TLoggedFixture::GetDataFilePath("device-templates"), false);
+
+    const std::unordered_map<std::string, std::string> expectedErrors = {
+        {"invalid_channel_condition",
+         "File: test/device-templates/config-invalid-channel-condition.json error: Failed to parse condition in "
+         "channels[Temperature]: unexpected symbol ' ' at position 2"},
+        {"invalid_setup_condition",
+         "File: test/device-templates/config-invalid-setup-condition.json error: Failed to parse condition in "
+         "setup[Param]: unexpected symbol ' ' at position 2"},
+        {"invalid_param_condition",
+         "File: test/device-templates/config-invalid-param-condition.json error: Failed to parse condition in "
+         "parameters[p1]: unexpected symbol ' ' at position 2"},
+    };
+
+    for (const auto& [deviceType, expectedError]: expectedErrors) {
+        try {
+            templates.GetTemplate(deviceType)->GetTemplate();
+            ADD_FAILURE() << "Expect std::runtime_error";
+        } catch (const std::runtime_error& e) {
+            ASSERT_STREQ(expectedError.c_str(), e.what());
+        }
+    }
+}

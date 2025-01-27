@@ -50,6 +50,36 @@
                 "id": "gg_in{{ ch_num }}_n",
                 "group": "g_in{{ ch_num }}"
             },
+            {
+                "title": "Conversion to physical value",
+                "id": "gg_in{{ ch_num }}_p_value",
+                "group": "gg_in{{ ch_num }}_p"
+            },
+            {
+                "title": "Conversion to physical value",
+                "id": "gg_in{{ ch_num }}_n_value",
+                "group": "gg_in{{ ch_num }}_n"
+            },
+            {
+                "title": "IN_P_channels",
+                "id": "gg_in{{ ch_num }}_p_channels",
+                "group": "gg_in{{ ch_num }}_p",
+                "ui_options": {
+                    "wb": {
+                        "disable_title": true
+                    }
+                }
+            },
+            {
+                "title": "IN_N_channels",
+                "id": "gg_in{{ ch_num }}_n_channels",
+                "group": "gg_in{{ ch_num }}_n",
+                "ui_options": {
+                    "wb": {
+                        "disable_title": true
+                    }
+                }
+            },
             {% endfor -%}
             {
                 "title": "General",
@@ -242,24 +272,65 @@
                 "default": 0,
                 "condition": "{{ format_list(ch_num, TYPES_WITH_GAIN, "in%s_type==%s") }}"
             },
+
+            {
+                "id": "in{{ ch_num }}_physical_value_scale",
+                "title": "physical_value_scale_title",
+                "group": "gg_in{{ ch_num }}_p_value",
+                "order": 1,
+                "readonly": true,
+                "enum": [1, 10, 100, 1000],
+                "enum_titles": [
+                    "[-32768; 32766]",
+                    "[-3276.8; 3276.6]",
+                    "[-327.68; 327.66]",
+                    "[-32.768; 32.766]"
+                ],
+                "default": 1,
+                "condition": "{{ format_list(ch_num, TYPES_WITH_MIN_MAX, "in%s_type==%s") }}"
+            },
+
+            {% for value_scale in [1, 10, 100, 1000] -%}
             {
                 "id": "in{{ ch_num }}_min",
-                "title": "Minimum value",
-                "group": "gg_in{{ ch_num }}_p",
-                "order": 5,
+                "title": "minimum_value_title",
+                "group": "gg_in{{ ch_num }}_p_value",
+                "order": 2,
                 "address": "0x{{ "%x"|format(ch_num) }}408",
+                "min": {{ -32768 if value_scale == 1 else -32768 / value_scale }},
+                "max": {{ 32766 if value_scale == 1 else 32766 / value_scale }},
+                {% if value_scale != 1 -%}
+                "scale": {{ 1.0 / value_scale }},
+                {% endif -%}
                 "default": 0,
-                "condition": "{{ format_list(ch_num, TYPES_WITH_MIN_MAX, "in%s_type==%s") }}"
+                "format": "s16",
+                "condition": "(
+                    {%- if value_scale == 1 -%}
+                    isDefined(in{{ ch_num }}_physical_value_scale)==0||
+                    {%- endif -%}
+                    in{{ ch_num }}_physical_value_scale=={{value_scale}})&&({{ format_list(ch_num, TYPES_WITH_MIN_MAX, "in%s_type==%s") }})"
             },
             {
                 "id": "in{{ ch_num }}_max",
-                "title": "Maximum value",
-                "group": "gg_in{{ ch_num }}_p",
-                "order": 6,
+                "title": "maximum_value_title",
+                "group": "gg_in{{ ch_num }}_p_value",
+                "order": 3,
                 "address": "0x{{ "%x"|format(ch_num) }}40A",
-                "default": 10000,
-                "condition": "{{ format_list(ch_num, TYPES_WITH_MIN_MAX, "in%s_type==%s") }}"
+                "min": {{ -32768 if value_scale == 1 else -32768 / value_scale }},
+                "max": {{ 32766 if value_scale == 1 else 32766 / value_scale }},
+                {% if value_scale != 1 -%}
+                "scale": {{ 1.0 / value_scale }},
+                {% endif -%}
+                "default": {{ 10000 if value_scale == 1 else 10000 / value_scale }},
+                "format": "s16",
+                "condition": "(
+                    {%- if value_scale == 1 -%}
+                    isDefined(in{{ ch_num }}_physical_value_scale)==0||
+                    {%- endif -%}
+                    in{{ ch_num }}_physical_value_scale=={{value_scale}})&&({{ format_list(ch_num, TYPES_WITH_MIN_MAX, "in%s_type==%s") }})"
             },
+            {% endfor -%}
+
             {
                 "id": "in{{ ch_num }}_hall_zero_offset",
                 "title": "Zero offset (A)",
@@ -538,24 +609,65 @@
                 "default": 0,
                 "condition": "{{ format_list(ch_num, TYPES_WITH_GAIN, "in%s_n_type==%s") }}"
             },
+
+            {
+                "id": "in{{ ch_num }}_n_physical_value_scale",
+                "title": "physical_value_scale_title",
+                "group": "gg_in{{ ch_num }}_n_value",
+                "order": 1,
+                "readonly": true,
+                "enum": [1, 10, 100, 1000],
+                "enum_titles": [
+                    "[-32768; 32766]",
+                    "[-3276.8; 3276.6]",
+                    "[-327.68; 327.66]",
+                    "[-32.768; 32.766]"
+                ],
+                "default": 1,
+                "condition": "{{ format_list(ch_num, TYPES_WITH_MIN_MAX, "in%s_n_type==%s") }}"
+            },
+
+            {% for value_scale in [1, 10, 100, 1000] -%}
             {
                 "id": "in{{ ch_num }}_n_min",
-                "title": "Minimum value",
-                "group": "gg_in{{ ch_num }}_n",
-                "order": 5,
+                "title": "minimum_value_title",
+                "group": "gg_in{{ ch_num }}_n_value",
+                "order": 2,
                 "address": "0x{{ "%x"|format(ch_num) }}409",
+                "min": {{ -32768 if value_scale == 1 else -32768 / value_scale }},
+                "max": {{ 32766 if value_scale == 1 else 32766 / value_scale }},
+                {% if value_scale != 1 -%}
+                "scale": {{ 1.0 / value_scale }},
+                {% endif -%}
                 "default": 0,
-                "condition": "{{ format_list(ch_num, TYPES_WITH_MIN_MAX, "in%s_n_type==%s") }}"
+                "format": "s16",
+                "condition": "(
+                    {%- if value_scale == 1 -%}
+                    isDefined(in{{ ch_num }}_n_physical_value_scale)==0||
+                    {%- endif -%}
+                    in{{ ch_num }}_n_physical_value_scale=={{value_scale}})&&({{ format_list(ch_num, TYPES_WITH_MIN_MAX, "in%s_n_type==%s") }})"
             },
             {
                 "id": "in{{ ch_num }}_n_max",
-                "title": "Maximum value",
-                "group": "gg_in{{ ch_num }}_n",
-                "order": 6,
+                "title": "maximum_value_title",
+                "group": "gg_in{{ ch_num }}_n_value",
+                "order": 3,
                 "address": "0x{{ "%x"|format(ch_num) }}40B",
-                "default": 10000,
-                "condition": "{{ format_list(ch_num, TYPES_WITH_MIN_MAX, "in%s_n_type==%s") }}"
+                "min": {{ -32768 if value_scale == 1 else -32768 / value_scale }},
+                "max": {{ 32766 if value_scale == 1 else 32766 / value_scale }},
+                {% if value_scale != 1 -%}
+                "scale": {{ 1.0 / value_scale }},
+                {% endif -%}
+                "default": {{ 10000 if value_scale == 1 else 10000 / value_scale }},
+                "format": "s16",
+                "condition": "(
+                    {%- if value_scale == 1 -%}
+                    isDefined(in{{ ch_num }}_n_physical_value_scale)==0||
+                    {%- endif -%}
+                    in{{ ch_num }}_n_physical_value_scale=={{value_scale}})&&({{ format_list(ch_num, TYPES_WITH_MIN_MAX, "in%s_n_type==%s") }})"
             },
+            {% endfor -%}
+
             {
                 "id": "in{{ ch_num }}_n_hall_zero_offset",
                 "title": "Zero offset (A)",
@@ -632,7 +744,7 @@
                 "format": "s32",
                 "address": "0x{{ "%x"|format(ch_num) }}500",
                 "scale": 0.01,
-                "group": "gg_in{{ ch_num }}_p",
+                "group": "gg_in{{ ch_num }}_p_channels",
                 "condition": "(in{{ ch_num }}_type>=4608&&in{{ ch_num }}_type<=4658)",
                 "enabled": false
             },
@@ -645,7 +757,7 @@
                 "format": "s32",
                 "address": "0x{{ "%x"|format(ch_num) }}500",
                 "scale": 0.01,
-                "group": "gg_in{{ ch_num }}_p",
+                "group": "gg_in{{ ch_num }}_p_channels",
                 "condition": "in{{ ch_num }}_type==258"
             },
             {
@@ -657,7 +769,7 @@
                 "format": "s32",
                 "address": "0x{{ "%x"|format(ch_num) }}500",
                 "scale": 0.01,
-                "group": "gg_in{{ ch_num }}_p",
+                "group": "gg_in{{ ch_num }}_p_channels",
                 "condition": "in{{ ch_num }}_type==2"
             },
             {
@@ -669,7 +781,7 @@
                 "format": "s32",
                 "address": "0x{{ "%x"|format(ch_num) }}500",
                 "scale": 0.01,
-                "group": "gg_in{{ ch_num }}_p",
+                "group": "gg_in{{ ch_num }}_p_channels",
                 "condition": "(in{{ ch_num }}_type>=4352&&in{{ ch_num }}_type<=4402)||in{{ ch_num }}_type==5632||in{{ ch_num }}_type==5889",
                 "enabled": false
             },
@@ -683,7 +795,7 @@
                 "format": "s32",
                 "error_value": "0x7FFFFFFF",
                 "address": "0x{{ "%x"|format(ch_num) }}500",
-                "group": "gg_in{{ ch_num }}_p",
+                "group": "gg_in{{ ch_num }}_p_channels",
                 "condition": "in{{ ch_num }}_type==4096",
                 "enabled": false
             },
@@ -697,7 +809,7 @@
                 "format": "s32",
                 "error_value": "0x7FFFFFFF",
                 "address": "0x{{ "%x"|format(ch_num) }}500",
-                "group": "gg_in{{ ch_num }}_p",
+                "group": "gg_in{{ ch_num }}_p_channels",
                 "condition": "in{{ ch_num }}_type==257||in{{ ch_num }}_type==5376"
             },
             {
@@ -710,7 +822,7 @@
                 "address": "0x{{ "%x"|format(ch_num) }}500",
                 "scale": 0.000001,
                 "round_to": 0.001,
-                "group": "gg_in{{ ch_num }}_p",
+                "group": "gg_in{{ ch_num }}_p_channels",
                 "condition": "in{{ ch_num }}_type==1||in{{ ch_num }}_type==5121||in{{ ch_num }}_type==6144"
             },
             {
@@ -723,7 +835,7 @@
                 "address": "0x{{ "%x"|format(ch_num) }}500",
                 "scale": 0.001,
                 "round_to": 0.01,
-                "group": "gg_in{{ ch_num }}_p",
+                "group": "gg_in{{ ch_num }}_p_channels",
                 "condition": "in{{ ch_num }}_type==5||in{{ ch_num }}_type==6"
             },
             {
@@ -736,7 +848,7 @@
                 "address": "0x{{ "%x"|format(ch_num) }}500",
                 "scale": 0.000001,
                 "round_to": 0.000001,
-                "group": "gg_in{{ ch_num }}_p",
+                "group": "gg_in{{ ch_num }}_p_channels",
                 "condition": "in{{ ch_num }}_type==5120"
             },
             {
@@ -749,7 +861,7 @@
                 "address": "0x{{ "%x"|format(ch_num) }}500",
                 "scale": 1e-6,
                 "round_to": 0.001,
-                "group": "gg_in{{ ch_num }}_p",
+                "group": "gg_in{{ ch_num }}_p_channels",
                 "condition": "in{{ ch_num }}_type==3||in{{ ch_num }}_type==4864||in{{ ch_num }}_type==4865||in{{ ch_num }}_type==4866"
             },
             {
@@ -762,7 +874,7 @@
                 "address": "0x{{ "%x"|format(ch_num) }}504",
                 "scale": 0.1,
                 "round_to": 0.1,
-                "group": "gg_in{{ ch_num }}_p",
+                "group": "gg_in{{ ch_num }}_p_channels",
                 "condition": "in{{ ch_num }}_type==6144"
             },
             {
@@ -774,7 +886,7 @@
                 "error_value": "0x7fff",
                 "format": "s16",
                 "address": "0x{{ "%x"|format(ch_num) }}504",
-                "group": "gg_in{{ ch_num }}_p",
+                "group": "gg_in{{ ch_num }}_p_channels",
                 "condition": "in{{ ch_num }}_type==4096||(in{{ ch_num }}_type>=4608&&in{{ ch_num }}_type<=4658)"
             },
             {
@@ -786,7 +898,7 @@
                 "error_value": "0x7fff",
                 "format": "s16",
                 "address": "0x{{ "%x"|format(ch_num) }}504",
-                "group": "gg_in{{ ch_num }}_p",
+                "group": "gg_in{{ ch_num }}_p_channels",
                 "condition": "in{{ ch_num }}_type>=4352&&in{{ ch_num }}_type<=4402||in{{ ch_num }}_type==5889"
             },
             {
@@ -795,18 +907,25 @@
                 "type": "switch",
                 "format": "s16",
                 "address": "0x{{ "%x"|format(ch_num) }}504",
-                "group": "gg_in{{ ch_num }}_p",
+                "group": "gg_in{{ ch_num }}_p_channels",
                 "condition": "in{{ ch_num }}_type==5632"
             },
+
+            {% for value_scale in [1, 10, 100, 1000] -%}
             {
                 "name": "IN {{ch_num}} Value",
                 "reg_type": "input",
                 "type": "value",
                 "format": "s16",
                 "error_value": "0x7fff",
+                "scale": {{ 1.0 / value_scale }},
                 "address": "0x{{ "%x"|format(ch_num) }}504",
-                "group": "gg_in{{ ch_num }}_p",
-                "condition": "in{{ ch_num }}_type==5376"
+                "group": "gg_in{{ ch_num }}_p_channels",
+                "condition": "(
+                    {%- if value_scale == 1 -%}
+                    isDefined(in{{ ch_num }}_physical_value_scale)==0||
+                    {%- endif -%}
+                    in{{ ch_num }}_physical_value_scale=={{value_scale}})&&(in{{ ch_num }}_type==5376)"
             },
             {
                 "name": "IN {{ch_num}} P Value",
@@ -814,10 +933,17 @@
                 "type": "value",
                 "format": "s16",
                 "error_value": "0x7fff",
+                "scale": {{ 1.0 / value_scale }},
                 "address": "0x{{ "%x"|format(ch_num) }}504",
-                "group": "gg_in{{ ch_num }}_p",
-                "condition": "{{ format_list(ch_num, TYPES_WITH_SINGLE_VALUE_CHANNEL, "in%s_type==%s") }}"
+                "group": "gg_in{{ ch_num }}_p_channels",
+                "condition": "(
+                    {%- if value_scale == 1 -%}
+                    isDefined(in{{ ch_num }}_physical_value_scale)==0||
+                    {%- endif -%}
+                    in{{ ch_num }}_physical_value_scale=={{value_scale}})&&({{ format_list(ch_num, TYPES_WITH_SINGLE_VALUE_CHANNEL, "in%s_type==%s") }})"
             },
+            {% endfor -%}
+
             {
                 "name": "IN {{ch_num}} N Resistance",
                 "type": "value",
@@ -828,7 +954,7 @@
                 "address": "0x{{ "%x"|format(ch_num) }}502",
                 "scale": 0.01,
                 "condition": "in{{ ch_num }}_n_type==2",
-                "group": "gg_in{{ ch_num }}_n"
+                "group": "gg_in{{ ch_num }}_n_channels"
             },
             {
                 "name": "IN {{ch_num}} N Resistance",
@@ -840,7 +966,7 @@
                 "address": "0x{{ "%x"|format(ch_num) }}502",
                 "scale": 0.01,
                 "condition": "in{{ ch_num }}_n_type==5632||in{{ ch_num }}_n_type==5889||(in{{ ch_num }}_n_type>=4352&&in{{ ch_num }}_n_type<=4402)",
-                "group": "gg_in{{ ch_num }}_n",
+                "group": "gg_in{{ ch_num }}_n_channels",
                 "enabled": false
 
             },
@@ -854,7 +980,7 @@
                 "format": "s16",
                 "address": "0x{{ "%x"|format(ch_num) }}505",
                 "condition": "in{{ ch_num }}_n_type==5889||(in{{ ch_num }}_n_type>=4352&&in{{ ch_num }}_n_type<=4402)",
-                "group": "gg_in{{ ch_num }}_n"
+                "group": "gg_in{{ ch_num }}_n_channels"
             },
             {
                 "name": "IN {{ch_num}} N Voltage",
@@ -866,7 +992,7 @@
                 "address": "0x{{ "%x"|format(ch_num) }}502",
                 "scale": 0.000001,
                 "round_to": 0.001,
-                "group": "gg_in{{ ch_num }}_n",
+                "group": "gg_in{{ ch_num }}_n_channels",
                 "condition": "in{{ ch_num }}_n_type==1||in{{ ch_num }}_n_type==5121||in{{ ch_num }}_n_type==6144"
             },
             {
@@ -879,7 +1005,7 @@
                 "address": "0x{{ "%x"|format(ch_num) }}502",
                 "scale": 0.001,
                 "round_to": 0.01,
-                "group": "gg_in{{ ch_num }}_n",
+                "group": "gg_in{{ ch_num }}_n_channels",
                 "condition": "in{{ ch_num }}_n_type==5||in{{ ch_num }}_n_type==6"
             },
             {
@@ -892,7 +1018,7 @@
                 "address": "0x{{ "%x"|format(ch_num) }}502",
                 "scale": 0.000001,
                 "round_to": 0.000001,
-                "group": "gg_in{{ ch_num }}_n",
+                "group": "gg_in{{ ch_num }}_n_channels",
                 "condition": "in{{ ch_num }}_n_type==5120"
             },
             {
@@ -905,7 +1031,7 @@
                 "address": "0x{{ "%x"|format(ch_num) }}502",
                 "scale": 1e-6,
                 "round_to": 0.001,
-                "group": "gg_in{{ ch_num }}_n",
+                "group": "gg_in{{ ch_num }}_n_channels",
                 "condition": "in{{ ch_num }}_n_type==3||in{{ ch_num }}_n_type==4864||in{{ ch_num }}_n_type==4865||in{{ ch_num }}_n_type==4866||in{{ ch_num }}_n_type==3"
             },
             {
@@ -918,7 +1044,7 @@
                 "address": "0x{{ "%x"|format(ch_num) }}505",
                 "scale": 0.1,
                 "round_to": 0.1,
-                "group": "gg_in{{ ch_num }}_n",
+                "group": "gg_in{{ ch_num }}_n_channels",
                 "condition": "in{{ ch_num }}_n_type==6144"
             },
             {
@@ -928,18 +1054,27 @@
                 "format": "s16",
                 "address": "0x{{ "%x"|format(ch_num) }}505",
                 "condition": "in{{ ch_num }}_n_type==5632",
-                "group": "gg_in{{ ch_num }}_n"
+                "group": "gg_in{{ ch_num }}_n_channels"
             },
+
+            {% for value_scale in [1, 10, 100, 1000] -%}
             {
                 "name": "IN {{ch_num}} N Value",
                 "reg_type": "input",
                 "type": "value",
                 "format": "s16",
                 "error_value": "0x7fff",
+                "scale": {{ 1.0 / value_scale }},
                 "address": "0x{{ "%x"|format(ch_num) }}505",
-                "group": "gg_in{{ ch_num }}_n",
-                "condition": "{{ format_list(ch_num, TYPES_WITH_SINGLE_VALUE_CHANNEL, "in%s_n_type==%s") }}"
+                "group": "gg_in{{ ch_num }}_n_channels",
+                "condition": "(
+                    {%- if value_scale == 1 -%}
+                    isDefined(in{{ ch_num }}_n_physical_value_scale)==0||
+                    {%- endif -%}
+                    in{{ ch_num }}_n_physical_value_scale=={{value_scale}})&&({{ format_list(ch_num, TYPES_WITH_SINGLE_VALUE_CHANNEL, "in%s_n_type==%s") }})"
             },
+            {% endfor -%}
+
             {% endfor -%}
             {
                 "name": "5V Output",
@@ -1068,7 +1203,10 @@
                 "baud_rate_description": "Make sure that communication with device is established before changing this parameter. Select required baud rate, save configuration and then change port baud rate to the same value.",
                 "IN_P_title": "Channel P",
                 "IN_N_title": "Channel N",
-                "external_voltage_divider_description": "External voltage divider is used to measure voltage higher than 30V and to get higher input resistance. Output voltage of the divider should be in the range from 0 to 4V (better to 2V). Supported since firmware version 2.1.0."
+                "external_voltage_divider_description": "External voltage divider is used to measure voltage higher than 30V and to get higher input resistance. Output voltage of the divider should be in the range from 0 to 4V (better to 2V). Supported since firmware version 2.1.0.",
+                "minimum_value_title": "Lower limit of the measurement range",
+                "maximum_value_title": "Upper limit of the measurement range",
+                "physical_value_scale_title": "Range"
             },
             "ru": {
                 "template_title": "{{ title_ru }}",
@@ -1190,8 +1328,10 @@
                 "Current": "Ток",
                 "Percent": "Процент",
                 "State": "Состояние",
-                "Minimum value": "Минимальное пересчитанное значение",
-                "Maximum value": "Максимальное пересчитанное значение",
+                "minimum_value_title": "Нижняя граница диапазона",
+                "maximum_value_title": "Верхняя граница диапазона",
+                "Conversion to physical value": "Пересчет в физическую величину",
+                "physical_value_scale_title": "Диапазон значений",
                 "Zero offset (A)" : "Сдвиг нуля (A)",
                 "Rated current (A)" : "Номинальный ток (A)",
                 "External voltage divider high-voltage arm (R1) resistance, kOhm" : "Сопротивление верхнего плеча (R1) внешнего делителя напряжения, кОм",

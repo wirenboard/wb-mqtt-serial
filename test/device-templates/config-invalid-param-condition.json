@@ -1,0 +1,30 @@
+{
+    "device_type": "invalid_param_condition",
+    "device": {
+        "name": "invalid param condition",
+        "id": "invalid param condition",
+        "setup": [
+            {
+                "title": "Param",
+                "address": "0x0504",
+                "value": 1
+            }
+        ],
+        "channels": [
+            {
+                "name": "Temperature",
+                "reg_type": "input",
+                "format": "s32",
+                "address": "0x0504"
+            }
+        ],
+        "parameters": [
+            {
+                "id": "Test",
+                "title": "p1",
+                "address": 9992,
+                "condition": "( in1 > 3 )"
+            }
+        ]
+    }
+}
