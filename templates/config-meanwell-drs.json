@@ -79,6 +79,7 @@
                 "reg_type": "input",
                 "address": 212,
                 "type": "value",
+                "format": "s16",
                 "units": "A",
                 "min": -40,
                 "max": 20,
@@ -144,7 +145,6 @@
                     1,
                     2,
                     4
-
                 ],
                 "enum_titles": [
                     "Undefined",
@@ -154,7 +154,222 @@
                 ],
                 "readonly": true,
                 "group": "power_status"
+            },
+            {
+                "name": "unit_temperature",
+                "reg_type": "input",
+                "address": 98,
+                "type": "value",
+                "format": "s16",
+                "units": "deg C",
+                "min": -40,
+                "max": 110,
+                "scale": 0.1,
+                "round_to": 0.1,
+                "group": "unit_status"
+            },
+            {
+                "name": "battery_temperature",
+                "enabled": true,
+                "reg_type": "input",
+                "address": 213,
+                "type": "value",
+                "format": "s16",
+                "units": "deg C",
+                "min": -40,
+                "max": 110,
+                "scale": 0.1,
+                "round_to": 0.1,
+                "group": "unit_status"
+            },
+            {
+                "name": "voltage_ac_status",
+                "enabled": true,
+                "reg_type": "holding",
+                "address": "64:5:1",
+                "type": "value",
+                "enum": [
+                    0,
+                    1,
+                ],
+                "enum_titles": [
+                    "Normal",
+                    "Abnormal"
+                ],
+                "readonly": true,
+                "group": "power_status"
+            },
+            {
+                "name": "voltage_dc_status",
+                "enabled": true,
+                "reg_type": "holding",
+                "address": "64:2:1",
+                "type": "value",
+                "enum": [
+                    0,
+                    1,
+                ],
+                "enum_titles": [
+                    "Normal",
+                    "Abnormal"
+                ],
+                "readonly": true,
+                "group": "power_status"
+            },
+            {
+                "name": "current_dc_status",
+                "enabled": true,
+                "reg_type": "holding",
+                "address": "64:3:1",
+                "type": "value",
+                "enum": [
+                    0,
+                    1,
+                ],
+                "enum_titles": [
+                    "Normal",
+                    "Abnormal"
+                ],
+                "readonly": true,
+                "group": "power_status"
+            },
+            {
+                "name": "short_circuit_detected",
+                "enabled": true,
+                "reg_type": "holding",
+                "address": "64:4:1",
+                "type": "value",
+                "enum": [
+                    0,
+                    1,
+                ],
+                "enum_titles": [
+                    "Normal",
+                    "Short Circuit"
+                ],
+                "readonly": true,
+                "group": "power_status"
+            },
+            {
+                "name": "output_dc_state",
+                "enabled": true,
+                "reg_type": "holding",
+                "address": "64:6:1",
+                "type": "value",
+                "enum": [
+                    0,
+                    1,
+                ],
+                "enum_titles": [
+                    "Turned On",
+                    "Turned Off"
+                ],
+                "readonly": true,
+                "group": "power_status"
+            },
+            {
+                "name": "unit_temperature_status",
+                "enabled": true,
+                "reg_type": "holding",
+                "address": "64:1:1",
+                "type": "value",
+                "enum": [
+                    0,
+                    1,
+                ],
+                "enum_titles": [
+                    "Normal",
+                    "Abnormal"
+                ],
+                "readonly": true,
+                "group": "power_status"
+            },
+            {
+                "name": "battery_temperature_status",
+                "enabled": true,
+                "reg_type": "holding",
+                "address": "64:7:1",
+                "type": "value",
+                "enum": [
+                    0,
+                    1,
+                ],
+                "enum_titles": [
+                    "Normal",
+                    "Abnormal"
+                ],
+                "readonly": true,
+                "group": "power_status"
+            },
+            {
+                "name": "secondary_voltage_dc_status",
+                "enabled": true,
+                "reg_type": "holding",
+                "address": "195:1:1",
+                "type": "value",
+                "enum": [
+                    0,
+                    1,
+                ],
+                "enum_titles": [
+                    "Too Low",
+                    "Normal"
+                ],
+                "readonly": true,
+                "group": "power_status"
+            },
+            {
+                "name": "initialization",
+                "enabled": true,
+                "reg_type": "holding",
+                "address": "195:5:1",
+                "type": "value",
+                "enum": [
+                    0,
+                    1,
+                ],
+                "enum_titles": [
+                    "Normal",
+                    "Abnormal"
+                ],
+                "readonly": true,
+                "group": "power_status"
+            },
+            {
+                "name": "eeprom_data_access",
+                "enabled": true,
+                "reg_type": "holding",
+                "address": "195:6:1",
+                "type": "value",
+                "enum": [
+                    0,
+                    1,
+                ],
+                "enum_titles": [
+                    "Normal",
+                    "Abnormal"
+                ],
+                "readonly": true,
+                "group": "power_status"
+            },
+            {
+                "name": "operation_mode",
+                "enabled": true,
+                "reg_type": "holding",
+                "address": "195:7:1",
+                "type": "value",
+                "enum": [
+                    0,
+                    1,
+                ],
+                "enum_titles": [
+                    "Charging",
+                    "UPS"
+                ],
+                "readonly": true,
+                "group": "power_status"
             }
+
         ],
         "translations": {
             "en": {
@@ -169,8 +384,19 @@
                 "battery_status": "Battery Status",
                 "battery_mode": "Battery Mode",
                 "battery_charge_mode": "Battery Charge Mode",
-
-
+                "unit_temperature": "Unit Temperature",
+                "battery_temperature": "Battery Temperature",
+                "voltage_ac_status": "Voltage AC Status",
+                "voltage_dc_status": "Voltage DC Status",
+                "current_dc_status": "Сurrent DC Status",
+                "output_dc_state": "Output DC State",
+                "short_circuit_detected": "Short Circuit Detected",
+                "unit_temperature_status": "Unit Temperature Status",
+                "battery_temperature_status": "Battery Temperature Status",
+                "secondary_voltage_dc_status": "Secondary Voltage DC Status",
+                "initialization": "Initialization",
+                "eeprom_data_access": "EEPROM Data Access",
+                "operation_mode": "Operation Mode",
             },
             "ru": {
                 "template_title": "MEANWELL DRS Series - многофункциональный источник питания",
@@ -198,6 +424,26 @@
                 "Сonstant Сurrent": "Постоянный ток",
                 "Сonstant Voltage": "Постоянное напряжение",
                 "Float Mode": "Поддержание уровня",
+                "unit_temperature": "Температура БП",
+                "battery_temperature": "Температура батареи",
+                "Normal": "В норме",
+                "Abnormal": "Ошибка",
+                "voltage_ac_status": "Статус напряжения AC",
+                "voltage_dc_status": "Статус напряжения DC",
+                "current_dc_status": "Статус тока DC",
+                "output_dc_state": "Состояние выхода DC",
+                "Turned On": "Включен",
+                "Turned Off": "Выключен",
+                "short_circuit_detected": "Обнаружение КЗ",
+                "Short Circuit": "КЗ",
+                "unit_temperature_status": "Статус температуры БП",
+                "battery_temperature_status": "Статус температуры батареи",
+                "secondary_voltage_dc_status": "Статус вторичного напряжения DC",
+                "Too Low": "Низкое",
+                "eeprom_data_access": "Доступ к данным EEPROM",
+                "initialization": "Инициализация",
+                "operation_mode": "Режим работы",
+                "UPS": "ИБП",
             }
         }
     }
