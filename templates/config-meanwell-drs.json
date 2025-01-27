@@ -1,0 +1,23 @@
+{
+    "title": "template_title",
+    "device_type": "MEANWELL-DRS-Series",
+    "group": "g-ups",
+    "device": {
+        "name": "MEANWELL DRS Series",
+        "id": "meanwell-drs",
+        "groups": [
+        ],
+        "parameters": {
+        },
+        "channels": [
+        ],
+        "translations": {
+            "en": {
+                "template_title": "MEANWELL DRS Series - Multi-function Power Supply"
+            },
+            "ru": {
+                "template_title": "MEANWELL DRS Series - многофункциональный источник питания"
+            }
+        }
+    }
+}
