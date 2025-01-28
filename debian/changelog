@@ -1,3 +1,9 @@
+wb-mqtt-serial (2.153.3) stable; urgency=medium
+
+  * WB-MWAC template: add buttons support
+
+ -- Radmir Khakimov <radmir.khakimov@wirenboard.com>  Fri, 24 Jan 2025 10:27:28 +0500
+
 wb-mqtt-serial (2.153.2) stable; urgency=medium
 
   * WB-MAI6 template: add scale for physical value
