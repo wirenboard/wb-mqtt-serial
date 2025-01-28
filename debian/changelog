@@ -1,3 +1,9 @@
+wb-mqtt-serial (2.153.3) stable; urgency=medium
+
+  * WB-MAP6S fw2: add peaks registers
+
+ -- Ilia Skochilov <ilia.skochilov@wirenboard.com>  Mon, 27 Jan 2025 12:15:00 +0300
+
 wb-mqtt-serial (2.153.2) stable; urgency=medium
 
   * WB-MAI6 template: add scale for physical value
