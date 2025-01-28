@@ -65,18 +65,18 @@ wb-mqtt-serial (2.151.0) stable; urgency=medium
 
   * Add template for XY-MD0X
 
--- Andrey Ksenofontov <andrey.ksenofontov@wirenboard.com>  Fri, 06 Dec 2024 06:45:00 +0300
+ -- Andrey Ksenofontov <andrey.ksenofontov@wirenboard.com>  Fri, 06 Dec 2024 06:45:00 +0300
 
 wb-mqtt-serial (2.150.0) stable; urgency=medium
 
   * Add template for BHT-006
 
--- Andrey Ksenofontov <andrey.ksenofontov@wirenboard.com>  Wed, 05 Dec 2024 14:50:00 +0300
+ -- Andrey Ksenofontov <andrey.ksenofontov@wirenboard.com>  Wed, 05 Dec 2024 14:50:00 +0300
 
 wb-mqtt-serial (2.149.2) stable; urgency=medium
 
   * Add translations for template BHT-6000
-  
+
  -- Andrey Ksenofontov <andrey.ksenofontov@wirenboard.com>  Thu, 05 Dec 2024 14:15:00 +0300
 
 wb-mqtt-serial (2.149.1) stable; urgency=medium
@@ -340,7 +340,7 @@ wb-mqtt-serial (2.130.2) stable; urgency=medium
 
  -- Andrey Ksenofontov <andrey.ksenofontov@wirenboard.com>  Thu, 10 Jul 2024 16:52:00 +0300
 
- wb-mqtt-serial (2.130.1) stable; urgency=medium
+wb-mqtt-serial (2.130.1) stable; urgency=medium
 
   * Fix a type in WB-Domofon template
 
@@ -357,7 +357,7 @@ wb-mqtt-serial (2.129.1) stable; urgency=medium
   * Add channels "tariffs" to templates/config-mercury230.json
 
  -- Elena Savchenko <elena.savchenko@wirenboard.com>  Thu, 27 Jun 2024 11:55:30 +0500
- 
+
 wb-mqtt-serial (2.129.0) stable; urgency=medium
 
   * WB-MAI6 template: add WB-VDIV and custom voltage divider support
