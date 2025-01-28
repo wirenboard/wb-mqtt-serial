@@ -210,12 +210,11 @@
                 "order": 3,
                 "address": {{ 544 + out_num - 1 + (in_num - 1) * MMATRIX_OUTPUTS_NUMBER }},
                 "reg_type": "holding",
-                {%- if out_num == OUT_NUM_ALARM %}
                 "default": 0,
+                {%- if out_num == OUT_NUM_ALARM %}
                 "enum": [0, 1],
                 "enum_titles": ["do nothing", "off"],
                 {% else %}
-                "default": {{ 2 if in_num <= OUT_NUM_ALARM else 0 }},
                 "enum": [0, 1, 2, 3],
                 "enum_titles": ["do nothing", "off", "on", "toggle"],
                 {% endif -%}
@@ -227,12 +226,11 @@
                 "order": 4,
                 "address": {{ 608 + out_num - 1 + (in_num - 1) * MMATRIX_OUTPUTS_NUMBER }},
                 "reg_type": "holding",
+                "default": 0,
                 {%- if out_num == OUT_NUM_ALARM %}
-                "default": {{ 1 if in_num <= OUT_NUM_ALARM else 0 }},
                 "enum": [0, 1],
                 "enum_titles": ["do nothing", "off"],
                 {% else %}
-                "default": {{ 1 if in_num <= OUT_NUM_ALARM else 0 }},
                 "enum": [0, 1, 2, 3],
                 "enum_titles": ["do nothing", "off", "on", "toggle"],
                 {% endif -%}
