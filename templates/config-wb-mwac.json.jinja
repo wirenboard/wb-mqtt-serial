@@ -140,6 +140,7 @@
             "in{{ in_num }}_mode": {
                 "title": "Input {{ letter }}{{ in_num - in_num_offset }} Mode",
                 "address": {{ 8 + in_num }},
+                "description": "mode_description",
                 "reg_type": "holding",
                 "enum": [0, 1, 2, 3, 4, 5, 6],
                 "default": {% if in_num < 4 %}4{% else %}5{% endif %},
@@ -628,6 +629,8 @@
                 "secp_waiting_time_title": "Second Press Waiting Time (ms)",
                 "secp_waiting_time_description": "If there is no second press during the specified time then press is single. 0 - disables all presses except short and long. Adds a delay to the response to a short press. Recommended 300 ms.",
 
+                "mode_description": "For press detection, firmware version 1.21.0 or newer is required",
+
                 "Cleaning Mode": "\"Wet cleaning\" Mode",
                 "wet_cleaning_mode_description": "In the \"Wet cleaning\" mode, the module does not respond to leakage sensors. The mode is available starting from firmware version 1.21.0",
                 "wet_cleaning_mode_timer_description": "1 - 360 min"
@@ -644,6 +647,7 @@
                 "wet_cleaning_mode_timer_description": "1 — 360 мин",
                 "\"Wet cleaning\" mode timer (min)": "Таймер режима \"Влажная уборка\" (мин)",
 
+                "mode_description": "Для детектирования нажатий требуется прошивка версии 1.21.0 или новее",
                 "Debounce (ms)": "Время подавления дребезга (мс)",
 
                 {% for in_num in range(1, INPUTS_NUMBER + 1) -%}
