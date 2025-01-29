@@ -356,7 +356,7 @@
                 "order": {{in_num}},
                 "address": {{736 + (loop.index0 * 16) + in_num - 1}},
                 "reg_type": "holding",
-                "default": {{0 if off_on == "off" else 1}},
+                "default": {{ (off_on == "on") | int }},
                 "condition": "(input_{{in_num}}_mode==1)",
                 "enum": [0, 1, 2],
                 "enum_titles": [
