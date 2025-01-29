@@ -2,7 +2,13 @@ wb-mqtt-serial (2.154.0) stable; urgency=medium
 
   * Add template for MEANWELL-DRS-Series
 
- -- Mikhail Burchu <mikhail.burchu@wirenboard.com>  Tue, 28 Jan 2025 09:00:00 +0300
+ -- Mikhail Burchu <mikhail.burchu@wirenboard.com>  Tue, 29 Jan 2025 08:25:00 +0300
+
+wb-mqtt-serial (2.153.3) stable; urgency=medium
+
+  * Fix changelog, up version for CI. No functional changes
+
+ -- Ekaterina Volkova <ekaterina.volkova@wirenboard.com>  Tue, 28 Jan 2025 13:15:33 +0300
 
 wb-mqtt-serial (2.153.2) stable; urgency=medium
 
