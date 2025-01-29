@@ -5,6 +5,18 @@ wb-mqtt-serial (2.153.3) stable; urgency=medium
 
  -- Pavel Gasheev <pavel.gasheev@wirenboard.com>  Tue, 28 Jan 2025 17:22:58 +0300
 
+wb-mqtt-serial (2.154.0) stable; urgency=medium
+
+  * Add new template for meanwell-drs-series 
+
+ -- Mikhail Burchu <mikhail.burchu@wirenboard.com>  Wed, 29 Jan 2025 09:45:00 +0300
+
+wb-mqtt-serial (2.153.3) stable; urgency=medium
+
+  * Fix changelog, up version for CI. No functional changes
+
+ -- Ekaterina Volkova <ekaterina.volkova@wirenboard.com>  Tue, 28 Jan 2025 13:15:33 +0300
+
 wb-mqtt-serial (2.153.2) stable; urgency=medium
 
   * WB-MAI6 template: add scale for physical value
