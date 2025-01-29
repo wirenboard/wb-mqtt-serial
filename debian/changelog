@@ -1,9 +1,9 @@
-wb-mqtt-serial (2.153.3) stable; urgency=medium
+wb-mqtt-serial (2.154.1) stable; urgency=medium
 
   * WB-LED template: fix default value for switch mode actions ('off' for switch off; 'on' for switch on)
   * WB-LED template: fix missed W4 channel in switch mode actions for RGB+W mode 
 
- -- Pavel Gasheev <pavel.gasheev@wirenboard.com>  Tue, 28 Jan 2025 17:22:58 +0300
+ -- Pavel Gasheev <pavel.gasheev@wirenboard.com>  Wed, 29 Jan 2025 20:04:03 +0300
 
 wb-mqtt-serial (2.154.0) stable; urgency=medium
 
