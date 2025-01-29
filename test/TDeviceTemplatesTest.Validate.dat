@@ -624,7 +624,7 @@ LC-103
 	Relay 2  =>  Relay 2
 	Relay 3  =>  Relay 3
 	Switch AC In  =>  Switch AC In
-MEANWELL-DRS-Series
+MEAN-WELL-DRS-Series
 	battery_charge_mode  =>  battery_charge_mode
 	battery_current  =>  battery_current
 	battery_detect  =>  battery_detect
