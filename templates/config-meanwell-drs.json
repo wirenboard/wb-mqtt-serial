@@ -1,9 +1,9 @@
 {
     "title": "template_title",
-    "device_type": "MEANWELL-DRS-Series",
+    "device_type": "MEAN-WELL-DRS-Series",
     "group": "g-ups",
     "device": {
-        "name": "MEANWELL DRS Series",
+        "name": "MEAN WELL DRS Series",
         "id": "meanwell-drs",
         "groups": [
             {
@@ -531,7 +531,7 @@
         ],
         "translations": {
             "en": {
-                "template_title": "MEANWELL DRS Series - Multi-function Power Supply",
+                "template_title": "MEAN WELL DRS Series - Multi-function Power Supply",
                 "remote_control": "Remote Control",
                 "voltage_dc_setpoint": "Voltage DC Setpoint (V)",
                 "voltage_dc_setpoint_description": "The Value Will Be Applied After Device Is Re-powered",
@@ -569,7 +569,7 @@
                 "operation_mode": "Operation Mode"
             },
             "ru": {
-                "template_title": "MEANWELL DRS Series - многофункциональный источник питания",
+                "template_title": "MEAN WELL DRS Series - многофункциональный источник питания",
                 "Power Status": "Состояние питания",
                 "Unit Status": "Состояние устройства",
                 "Settings": "Настройка",
