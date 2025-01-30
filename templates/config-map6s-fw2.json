@@ -256,6 +256,17 @@
                 ],
                 "group": "general",
                 "order": 1
+            },
+            "peaks_measurement_period_s": {
+                "title": "Peaks Measurement Period (s)",
+                "address": "0x10F0",
+                "reg_type": "holding",
+                "format": "u16",
+                "min": 1,
+                "default": 60,
+                "group": "general",
+                "description": "Firmware v2.3.0 or newer is required",
+                "order": 2
             }
         },
 
@@ -268,6 +279,18 @@
                 "format": "u32",
                 "scale": 2.44141e-7,
                 "round_to": 0.0001,
+                "group": "channel_1"
+            },
+            {
+                "name": "Ipeak 1",
+                "reg_type": "input",
+                "address": "0x181c",
+                "type": "value",
+                "units": "A",
+                "format": "s32",
+                "scale": 0.016,
+                "round_to": 0.01,
+                "word_order": "little_endian",
                 "group": "channel_1"
             },
             {
@@ -331,7 +354,7 @@
                 "round_to": 1e-6,
                 "word_order": "little_endian",
                 "group": "channel_1"
-            }, 
+            },
             {
                 "name": "RP energy 1",
                 "reg_type": "input",
@@ -372,6 +395,18 @@
                 "format": "u32",
                 "scale": 2.44141e-7,
                 "round_to": 0.0001,
+                "group": "channel_2"
+            },
+            {
+                "name": "Ipeak 2",
+                "reg_type": "input",
+                "address": "0x181a",
+                "type": "value",
+                "units": "A",
+                "format": "s32",
+                "scale": 0.016,
+                "round_to": 0.01,
+                "word_order": "little_endian",
                 "group": "channel_2"
             },
             {
@@ -479,6 +514,18 @@
                 "group": "channel_3"
             },
             {
+                "name": "Ipeak 3",
+                "reg_type": "input",
+                "address": "0x1818",
+                "type": "value",
+                "units": "A",
+                "format": "s32",
+                "scale": 0.016,
+                "round_to": 0.01,
+                "word_order": "little_endian",
+                "group": "channel_3"
+            },
+            {
                 "name": "P 3",
                 "reg_type": "input",
                 "address": "0x1302",
@@ -580,6 +627,18 @@
                 "format": "u32",
                 "scale": 2.44141e-7,
                 "round_to": 0.0001,
+                "group": "channel_4"
+            },
+            {
+                "name": "Ipeak 4",
+                "reg_type": "input",
+                "address": "0x281c",
+                "type": "value",
+                "units": "A",
+                "format": "s32",
+                "scale": 0.016,
+                "round_to": 0.01,
+                "word_order": "little_endian",
                 "group": "channel_4"
             },
             {
@@ -687,6 +746,18 @@
                 "group": "channel_5"
             },
             {
+                "name": "Ipeak 5",
+                "reg_type": "input",
+                "address": "0x281a",
+                "type": "value",
+                "units": "A",
+                "format": "s32",
+                "scale": 0.016,
+                "round_to": 0.01,
+                "word_order": "little_endian",
+                "group": "channel_5"
+            },
+            {
                 "name": "P 5",
                 "reg_type": "input",
                 "address": "0x2304",
@@ -791,6 +862,18 @@
                 "group": "channel_6"
             },
             {
+                "name": "Ipeak 6",
+                "reg_type": "input",
+                "address": "0x2818",
+                "type": "value",
+                "units": "A",
+                "format": "s32",
+                "scale": 0.016,
+                "round_to": 0.01,
+                "word_order": "little_endian",
+                "group": "channel_6"
+            },
+            {
                 "name": "P 6",
                 "reg_type": "input",
                 "address": "0x2302",
@@ -888,11 +971,25 @@
                 "name": "Urms",
                 "reg_type": "input",
                 "address": "0x10d9",
-                "type": "voltage",
+                "type": "value",
+                "units": "V",
                 "semi-sporadic": true,
                 "format": "u16",
                 "scale": 0.01,
                 "round_to": 0.01,
+                "group": "general"
+            },
+            {
+                "name": "Upeak",
+                "reg_type": "input",
+                "address": "0x1810",
+                "type": "value",
+                "units": "V",
+                "format": "s32",
+                "scale": 0.01,
+                "round_to": 0.01,
+                "word_order": "little_endian",
+                "error_value": "0x7FFFFFFF",
                 "group": "general"
             },
             {
@@ -999,6 +1096,7 @@
                 "Current Transformer Reverse 6": "Инвертировать токовый трансформатор 6",
                 "Baud rate": "Скорость обмена",
                 "baud_rate_description": "Перед изменением параметра убедитесь, что связь с устройством установлена. Выберите нужную скорость обмена, сохраните конфигурацию, а затем укажите в настройках порта эту же скорость.",
+                "Peaks Measurement Period (s)": "Период сброса пиковых значений (с)",
                 "AP energy 1": "Энергия AP 1",
                 "RP energy 1": "Энергия RP 1",
                 "AN energy 1": "Энергия AN 1",
@@ -1038,6 +1136,7 @@
                 "Uptime": "Время работы с момента включения (с)",
                 "MCU Temperature": "Температура МК",
                 "MCU Voltage": "Напряжение питания МК",
+                "Firmware v2.3.0 or newer is required": "Для прошивок v2.3.0 и новее",
                 "Firmware v2.10.0 or newer is required": "Для прошивок v2.10.0 и новее"
             }
         }

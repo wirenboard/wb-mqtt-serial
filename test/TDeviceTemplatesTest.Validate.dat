@@ -18625,6 +18625,12 @@ WB-MAP6S fw2
 	AP energy 6  =>  AP energy 6
 	FW Version  =>  FW Version
 	Frequency  =>  Frequency
+	Ipeak 1  =>  Ipeak 1
+	Ipeak 2  =>  Ipeak 2
+	Ipeak 3  =>  Ipeak 3
+	Ipeak 4  =>  Ipeak 4
+	Ipeak 5  =>  Ipeak 5
+	Ipeak 6  =>  Ipeak 6
 	Irms 1  =>  Irms 1
 	Irms 2  =>  Irms 2
 	Irms 3  =>  Irms 3
@@ -18677,6 +18683,7 @@ WB-MAP6S fw2
 	S 6  =>  S 6
 	Serial  =>  Serial
 	Supply voltage  =>  Supply voltage
+	Upeak  =>  Upeak
 	Uptime  =>  Uptime
 	Urms  =>  Urms
 WB-MCM16
