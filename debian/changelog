@@ -1,6 +1,12 @@
+wb-mqtt-serial (2.154.1) stable; urgency=medium
+
+  * WB-MAP6S fw2: add peaks registers
+
+ -- Ilia Skochilov <ilia.skochilov@wirenboard.com>  Wed, 29 Jan 2025 14:53:00 +0300
+
 wb-mqtt-serial (2.154.0) stable; urgency=medium
 
-  * Add new template for meanwell-drs-series 
+  * Add new template for meanwell-drs-series
 
  -- Mikhail Burchu <mikhail.burchu@wirenboard.com>  Wed, 29 Jan 2025 09:45:00 +0300
 
