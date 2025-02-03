@@ -624,6 +624,30 @@ LC-103
 	Relay 2  =>  Relay 2
 	Relay 3  =>  Relay 3
 	Switch AC In  =>  Switch AC In
+MEAN-WELL-DRS-Series
+	battery_charge_mode  =>  battery_charge_mode
+	battery_current  =>  battery_current
+	battery_detect  =>  battery_detect
+	battery_mode  =>  battery_mode
+	battery_self_test  =>  battery_self_test
+	battery_status  =>  battery_status
+	battery_temperature  =>  battery_temperature
+	battery_temperature_status  =>  battery_temperature_status
+	battery_voltage  =>  battery_voltage
+	current_dc  =>  current_dc
+	current_dc_status  =>  current_dc_status
+	eeprom_data_access  =>  eeprom_data_access
+	initialization  =>  initialization
+	operation_mode  =>  operation_mode
+	output_dc_state  =>  output_dc_state
+	secondary_voltage_dc_status  =>  secondary_voltage_dc_status
+	short_circuit_detected  =>  short_circuit_detected
+	unit_temperature  =>  unit_temperature
+	unit_temperature_status  =>  unit_temperature_status
+	voltage_ac  =>  voltage_ac
+	voltage_ac_status  =>  voltage_ac_status
+	voltage_dc  =>  voltage_dc
+	voltage_dc_status  =>  voltage_dc_status
 MSU21
 	Temperature  =>  Temperature
 MSU24
@@ -18601,6 +18625,12 @@ WB-MAP6S fw2
 	AP energy 6  =>  AP energy 6
 	FW Version  =>  FW Version
 	Frequency  =>  Frequency
+	Ipeak 1  =>  Ipeak 1
+	Ipeak 2  =>  Ipeak 2
+	Ipeak 3  =>  Ipeak 3
+	Ipeak 4  =>  Ipeak 4
+	Ipeak 5  =>  Ipeak 5
+	Ipeak 6  =>  Ipeak 6
 	Irms 1  =>  Irms 1
 	Irms 2  =>  Irms 2
 	Irms 3  =>  Irms 3
@@ -18653,6 +18683,7 @@ WB-MAP6S fw2
 	S 6  =>  S 6
 	Serial  =>  Serial
 	Supply voltage  =>  Supply voltage
+	Upeak  =>  Upeak
 	Uptime  =>  Uptime
 	Urms  =>  Urms
 WB-MCM16
