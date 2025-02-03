@@ -49,14 +49,14 @@
                 "description": "mapping_matrix_actions_description",
                 "group": "input_f{{ in_num }}"
             },
+            {% set titles = {
+                OUT_NUM_K1: "Output K1 actions",
+                OUT_NUM_K2: "Output K2 actions",
+                OUT_NUM_ALARM: 'Actions for \\"Leakage\\" mode'
+            } -%}
             {% for out_num in range(1, OUTPUTS_NUMBER + 1) -%}
             {
-                "title":
-                {% if out_num == OUT_NUM_K1 %} "Output K1 actions",
-                {% elif out_num == OUT_NUM_K2 %} "Output K2 actions",
-                {% elif out_num == OUT_NUM_ALARM %} "Actions for \"Leakage\" mode",
-                {% else %} "Actions for \"Wet cleaning\" mode",
-                {% endif %}
+                "title": "{{ titles.get(out_num, 'Actions for \\"Wet cleaning\\" mode') }}",
                 "id": "gg_in{{ in_num }}_out{{ out_num }}_button_actions",
                 "group": "input_f{{ in_num }}"
             },
