@@ -1,3 +1,9 @@
+wb-mqtt-serial (2.155.0) stable; urgency=medium
+
+  * WB-MWAC template: add buttons support
+
+ -- Radmir Khakimov <radmir.khakimov@wirenboard.com>  Mon, 3 Feb 2025 10:27:28 +0500
+
 wb-mqtt-serial (2.154.2) stable; urgency=medium
 
   * WB-LED template: fix default value for switch mode actions ('off' for switch off; 'on' for switch on)
