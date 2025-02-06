@@ -1,3 +1,9 @@
+wb-mqtt-serial (2.146.0-wb101-cb8ea449-2) stable; urgency=medium
+
+  * Add more vendor's templates namings
+
+ -- Ekaterina Volkova <ekaterina.volkova@wirenboard.com>  Thu, 06 Feb 2025 21:32:11 +0300
+
 wb-mqtt-serial (2.146.0-wb101-cb8ea449-1) stable; urgency=medium
 
   * Make vendor templates searchable from wb-device-manager
