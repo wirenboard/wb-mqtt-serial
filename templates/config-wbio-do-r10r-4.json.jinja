@@ -1,11 +1,17 @@
+{% set device_type = device_type | default("WBIO-DO-R10R-4") -%}
+{% set group = group | default("g-wb") -%}
+{% set device_name = device_name | default("WBIO-DO-R10R-4") -%}
+{% set device_id = device_id | default("wb-mio-gpio") -%}
+
 {
-    "device_type": "WBIO-DI-HVD-8",
-    "group": "g-wb",
+    "device_type": "{{ device_type }}",
+    "group": "{{ group }}",
     "device": {
-        "name": "WBIO-DI-HVD-8",
-        "id": "wb-mio-gpio",
+        "name": "{{ device_name }}",
+        "id": "{{ device_id }}",
         "protocol": "modbus_io",
         "stride": 1000,
+        "shift": 500,
         "max_read_registers": 0,
         "response_timeout_ms": 40,
         "frame_timeout_ms": 8,
@@ -13,7 +19,7 @@
             {
                 "title": "IODIR",
                 "address": 10000,
-                "value": "0xffff"
+                "value": "0x0000"
             },
             {
                 "title": "IPOL",
@@ -41,65 +47,57 @@
                 "value": "0x4444"
             },
             {
-                "title": "CONFIG-FLAG",
+                "title": "FLAG",
                 "address": 9999,
                 "value": 1
             }
         ],
         "channels": [
             {
-                "name": "IN1",
+                "name": "DIR1",
                 "reg_type": "coil",
-                "readonly": true,
                 "address": 0,
                 "type": "switch"
             },
             {
-                "name": "IN2",
+                "name": "ON1",
                 "reg_type": "coil",
-                "readonly": true,
                 "address": 1,
                 "type": "switch"
             },
             {
-                "name": "IN3",
+                "name": "DIR2",
                 "reg_type": "coil",
-                "readonly": true,
                 "address": 2,
                 "type": "switch"
             },
             {
-                "name": "IN4",
+                "name": "ON2",
                 "reg_type": "coil",
-                "readonly": true,
                 "address": 3,
                 "type": "switch"
             },
             {
-                "name": "IN5",
+                "name": "DIR3",
                 "reg_type": "coil",
-                "readonly": true,
                 "address": 4,
                 "type": "switch"
             },
             {
-                "name": "IN6",
+                "name": "ON3",
                 "reg_type": "coil",
-                "readonly": true,
                 "address": 5,
                 "type": "switch"
             },
             {
-                "name": "IN7",
+                "name": "DIR4",
                 "reg_type": "coil",
-                "readonly": true,
                 "address": 6,
                 "type": "switch"
             },
             {
-                "name": "IN8",
+                "name": "ON4",
                 "reg_type": "coil",
-                "readonly": true,
                 "address": 7,
                 "type": "switch"
             }

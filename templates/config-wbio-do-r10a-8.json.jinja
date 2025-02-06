@@ -1,9 +1,14 @@
+{% set device_type = device_type | default("WBIO-DO-R10A-8") -%}
+{% set group = group | default("g-wb") -%}
+{% set device_name = device_name | default("WBIO-DO-R10A-8") -%}
+{% set device_id = device_id | default("wb-mio-gpio") -%}
+
 {
-    "device_type": "WBIO-DO-R1G-16",
-    "group": "g-wb",
+    "device_type": "{{ device_type }}",
+    "group": "{{ group }}",
     "device": {
-        "name": "WBIO-DO-R1G-16",
-        "id": "wb-mio-gpio",
+        "name": "{{ device_name }}",
+        "id": "{{ device_id }}",
         "protocol": "modbus_io",
         "stride": 1000,
         "shift": 500,
@@ -94,54 +99,6 @@
                 "name": "K8",
                 "reg_type": "coil",
                 "address": 7,
-                "type": "switch"
-            },
-            {
-                "name": "K9",
-                "reg_type": "coil",
-                "address": 8,
-                "type": "switch"
-            },
-            {
-                "name": "K10",
-                "reg_type": "coil",
-                "address": 9,
-                "type": "switch"
-            },
-            {
-                "name": "K11",
-                "reg_type": "coil",
-                "address": 10,
-                "type": "switch"
-            },
-            {
-                "name": "K12",
-                "reg_type": "coil",
-                "address": 11,
-                "type": "switch"
-            },
-            {
-                "name": "K13",
-                "reg_type": "coil",
-                "address": 12,
-                "type": "switch"
-            },
-            {
-                "name": "K14",
-                "reg_type": "coil",
-                "address": 13,
-                "type": "switch"
-            },
-            {
-                "name": "K15",
-                "reg_type": "coil",
-                "address": 14,
-                "type": "switch"
-            },
-            {
-                "name": "K16",
-                "reg_type": "coil",
-                "address": 15,
                 "type": "switch"
             }
         ]

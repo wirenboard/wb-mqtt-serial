@@ -1,9 +1,14 @@
+{% set device_type = device_type | default("WBIO-DI-WD-14") -%}
+{% set group = group | default("g-wb") -%}
+{% set device_name = device_name | default("WBIO-DI-WD-14") -%}
+{% set device_id = device_id | default("wb-mio-gpio") -%}
+
 {
-    "device_type": "WBIO-DI-WD-14",
-    "group": "g-wb",
+    "device_type": "{{ device_type }}",
+    "group": "{{ group }}",
     "device": {
-        "name": "WBIO-DI-WD-14",
-        "id": "wb-mio-gpio",
+        "name": "{{ device_name }}",
+        "id": "{{ device_id }}",
         "protocol": "modbus_io",
         "stride": 1000,
         "max_read_registers": 0,

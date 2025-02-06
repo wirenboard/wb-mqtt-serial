@@ -1,20 +1,30 @@
+{% set title_en = title_en | default("WB-MRM2-mini/NO (2-channel relay)") -%}
+{% set title_ru = title_ru | default("WB-MRM2-mini/NO (2-канальный модуль реле)") -%}
+{% set device_type = device_type | default("WB-MRM2-mini-NO-inputs") -%}
+{% set group = group | default("g-wb") -%}
+{% set device_name = device_name | default("WB-MRM2-mini/NO") -%}
+{% set device_id = device_id | default("wb-mrm2-mini") -%}
+{% set has_signature = has_signature | default(false) -%}
+
 {% set OUTPUTS_NUMBER = 2 -%}
 {% set CURTAINS_NUMBER = OUTPUTS_NUMBER // 2 -%}
 {% set MMATRIX_OUTPUTS_NUMBER = 2 -%}
 {% set CURTAINS_MMATRIX_OUTPUTS_NUMBER = 4 -%}
 {% set FIRST_INPUT = 1 -%}
 {
-    "title": "WB-MRM2-mini-NO_template_title",
-    "device_type": "WB-MRM2-mini-NO-inputs",
-    "group": "g-wb",
+    "title": "template_title",
+    "device_type": "{{ device_type }}",
+    "group": "{{ group }}",
+{% if has_signature %}
     "hw": [
         {
             "signature": "WBMR2m"
         }
     ],
+{% endif %}
     "device": {
-        "name": "WB-MRM2-mini/NO",
-        "id": "wb-mrm2-mini",
+        "name": "{{ device_name }}",
+        "id": "{{ device_id }}",
         "max_read_registers": 0,
         "response_timeout_ms": 1,
         "frame_timeout_ms": 8,
@@ -778,7 +788,7 @@
 
         "translations": {
             "en": {
-                "WB-MRM2-mini-NO_template_title": "WB-MRM2-mini/NO (2-channel relay)",
+                "template_title": "{{ title_en }}",
                 "mode_description": "For using button mapping-matrix firmware v1.17.1 or newer is required",
                 "outputs_state_after_power_on_description": "Option \"According to inputs\" works for latching switch mode only, firmware v1.18.4 or newer is required",
                 "baud_rate_description": "Make sure that communication with device is established before changing this parameter. Select required baud rate, save configuration and then change port baud rate to the same value.",
@@ -804,7 +814,7 @@
                 "curtains_control_description": "For using curtain mode firmware v1.21.0 or newer is required. For setup buttons actions select \"Operate according to button mapping-matrix\" mode and configure actions for buttons"
             },
             "ru": {
-                "WB-MRM2-mini-NO_template_title": "WB-MRM2-mini/NO (2-канальный модуль реле)",
+                "template_title": "{{ title_ru }}",
 
                 {% for in_num in range(FIRST_INPUT, OUTPUTS_NUMBER + 1) -%}
                 "Input {{in_num}}": "Вход {{in_num}}",
