@@ -1,9 +1,11 @@
+{% set device_title = device_title | default("WBIO-DI-WD-14") -%}
 {% set device_type = device_type | default("WBIO-DI-WD-14") -%}
 {% set group = group | default("g-wb") -%}
 {% set device_name = device_name | default("WBIO-DI-WD-14") -%}
 {% set device_id = device_id | default("wb-mio-gpio") -%}
 
 {
+    "title": "{{ device_title }}",
     "device_type": "{{ device_type }}",
     "group": "{{ group }}",
     "device": {
