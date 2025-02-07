@@ -1,6 +1,7 @@
 #include "rpc_port_handler.h"
 #include "rpc_port.h"
 #include "rpc_port_load_handler.h"
+#include "rpc_port_scan_handler.h"
 #include "rpc_port_setup_handler.h"
 #include "serial_device.h"
 #include "serial_exc.h"
@@ -59,6 +60,7 @@ namespace
 
 TRPCPortHandler::TRPCPortHandler(const std::string& requestPortLoadSchemaFilePath,
                                  const std::string& requestPortSetupSchemaFilePath,
+                                 const std::string& requestPortScanSchemaFilePath,
                                  PRPCConfig rpcConfig,
                                  WBMQTT::PMqttRpcServer rpcServer,
                                  PMQTTSerialDriver serialDriver)
@@ -75,6 +77,13 @@ TRPCPortHandler::TRPCPortHandler(const std::string& requestPortLoadSchemaFilePat
         RequestPortSetupSchema = WBMQTT::JSON::Parse(requestPortSetupSchemaFilePath);
     } catch (const std::runtime_error& e) {
         LOG(Error) << "RPC port/Setup request schema reading error: " << e.what();
+        throw;
+    }
+
+    try {
+        RequestPortScanSchema = WBMQTT::JSON::Parse(requestPortScanSchemaFilePath);
+    } catch (const std::runtime_error& e) {
+        LOG(Error) << "RPC port/Scan request schema reading error: " << e.what();
         throw;
     }
 
@@ -113,6 +122,13 @@ TRPCPortHandler::TRPCPortHandler(const std::string& requestPortLoadSchemaFilePat
     rpcServer->RegisterAsyncMethod("port",
                                    "Setup",
                                    std::bind(&TRPCPortHandler::PortSetup,
+                                             this,
+                                             std::placeholders::_1,
+                                             std::placeholders::_2,
+                                             std::placeholders::_3));
+    rpcServer->RegisterAsyncMethod("port",
+                                   "Scan",
+                                   std::bind(&TRPCPortHandler::PortScan,
                                              this,
                                              std::placeholders::_1,
                                              std::placeholders::_2,
@@ -181,6 +197,30 @@ void TRPCPortHandler::PortSetup(const Json::Value& request,
     }
 }
 
+void TRPCPortHandler::PortScan(const Json::Value& request,
+                               WBMQTT::TMqttRpcServer::TResultCallback onResult,
+                               WBMQTT::TMqttRpcServer::TErrorCallback onError)
+{
+    try {
+        WBMQTT::JSON::Validate(request, RequestPortScanSchema);
+    } catch (const std::runtime_error& e) {
+        throw TRPCException(e.what(), TRPCResultCode::RPC_WRONG_PARAM_VALUE);
+    }
+    try {
+        PRPCPortDriver rpcPortDriver = FindPortDriver(request);
+
+        if (rpcPortDriver != nullptr && rpcPortDriver->SerialClient) {
+            RPCPortScanHandler(request, rpcPortDriver->SerialClient, onResult, onError);
+        } else {
+            auto port = InitPort(request);
+            port->Open();
+            RPCPortScanHandler(request, *port, onResult, onError);
+        }
+    } catch (const TRPCException& e) {
+        ProcessException(e, onError);
+    }
+}
+
 Json::Value TRPCPortHandler::LoadPorts(const Json::Value& request)
 {
     return RPCConfig->GetPortConfigs();
@@ -199,4 +239,16 @@ TRPCResultCode TRPCException::GetResultCode() const
 std::string TRPCException::GetResultMessage() const
 {
     return this->what();
+}
+
+TSerialPortConnectionSettings ParseRPCSerialPortSettings(const Json::Value& request)
+{
+    TSerialPortConnectionSettings res;
+    WBMQTT::JSON::Get(request, "baud_rate", res.BaudRate);
+    if (request.isMember("parity")) {
+        res.Parity = request["parity"].asCString()[0];
+    }
+    WBMQTT::JSON::Get(request, "data_bits", res.DataBits);
+    WBMQTT::JSON::Get(request, "stop_bits", res.StopBits);
+    return res;
 }

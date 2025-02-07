@@ -1,17 +1,12 @@
 #include "rpc_port_setup_handler.h"
 #include "rpc_port_handler.h"
-#include "rpc_port_load_handler.h"
 #include "rpc_port_setup_serial_client_task.h"
 #include "serial_port.h"
 #include "tcp_port.h"
+#include "wb_registers.h"
 
 namespace
 {
-    const auto WB_BAUD_RATE_REGISTER_ADDRESS = 110;
-    const auto WB_PARITY_REGISTER_ADDRESS = 111;
-    const auto WB_STOP_BITS_REGISTER_ADDRESS = 112;
-    const auto WB_SLAVE_ID_REGISTER_ADDRESS = 128;
-
     TRPCPortSetupRequestItem ParseRPCPortSetupItemRequest(const Json::Value& request)
     {
         TRPCPortSetupRequestItem res;
@@ -22,37 +17,30 @@ namespace
             res.Sn = request["sn"].asUInt();
         }
 
-        std::unordered_map<std::string, PRegisterConfig> regConfigs;
-        regConfigs["baud_rate"] = TRegisterConfig::Create(
-            Modbus::REG_HOLDING,
-            TRegisterDesc{std::make_shared<TUint32RegisterAddress>(WB_BAUD_RATE_REGISTER_ADDRESS), 0, 0},
-            U16,
-            100);
-        regConfigs["parity"] = TRegisterConfig::Create(
-            Modbus::REG_HOLDING,
-            TRegisterDesc{std::make_shared<TUint32RegisterAddress>(WB_PARITY_REGISTER_ADDRESS), 0, 0});
-        regConfigs["stop_bits"] = TRegisterConfig::Create(
-            Modbus::REG_HOLDING,
-            TRegisterDesc{std::make_shared<TUint32RegisterAddress>(WB_STOP_BITS_REGISTER_ADDRESS), 0, 0});
-        regConfigs["slave_id"] = TRegisterConfig::Create(
-            Modbus::REG_HOLDING,
-            TRegisterDesc{std::make_shared<TUint32RegisterAddress>(WB_SLAVE_ID_REGISTER_ADDRESS), 0, 0});
+        res.SerialPortSettings = ParseRPCSerialPortSettings(request);
 
-        if (request.isMember("cfg")) {
-            for (auto& item: regConfigs) {
-                if (request["cfg"].isMember(item.first)) {
+        if (!request.isMember("cfg")) {
+            return res;
+        }
+
+        const std::vector<std::string> regNames = {WbRegisters::BAUD_RATE_REGISTER_NAME,
+                                                   WbRegisters::PARITY_REGISTER_NAME,
+                                                   WbRegisters::SLAVE_ID_REGISTER_NAME,
+                                                   WbRegisters::SLAVE_ID_REGISTER_NAME};
+        for (auto& regName: regNames) {
+            if (request["cfg"].isMember(regName)) {
+                auto regConfig = WbRegisters::GetRegisterConfig(regName);
+                if (regConfig) {
                     PDeviceSetupItemConfig setup_item_config(
-                        std::make_shared<TDeviceSetupItemConfig>(item.first,
-                                                                 item.second,
-                                                                 request["cfg"][item.first].asString()));
+                        std::make_shared<TDeviceSetupItemConfig>(regName,
+                                                                 regConfig,
+                                                                 request["cfg"][regName].asString()));
                     res.Regs.push_back(
                         std::make_shared<TDeviceSetupItem>(setup_item_config,
-                                                           std::make_shared<TRegister>(nullptr, item.second)));
+                                                           std::make_shared<TRegister>(nullptr, regConfig)));
                 }
             }
         }
-
-        res.SerialPortSettings = ParseRPCSerialPortSettings(request);
 
         return res;
     }
@@ -70,9 +58,7 @@ PRPCPortSetupRequest ParseRPCPortSetupRequest(const Json::Value& requestJson, co
             RPCRequest->Items.push_back(ParseRPCPortSetupItemRequest(request));
         }
 
-        if (!WBMQTT::JSON::Get(requestJson, "total_timeout", RPCRequest->TotalTimeout)) {
-            RPCRequest->TotalTimeout = DefaultRPCTotalTimeout;
-        }
+        WBMQTT::JSON::Get(requestJson, "total_timeout", RPCRequest->TotalTimeout);
     } catch (const std::runtime_error& e) {
         throw TRPCException(e.what(), TRPCResultCode::RPC_WRONG_PARAM_VALUE);
     }
