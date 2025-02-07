@@ -1,9 +1,16 @@
+{% set device_title = device_title | default("WBIO-DO-SSR-8") -%}
+{% set device_type = device_type | default("WBIO-DO-SSR-8") -%}
+{% set group = group | default("g-wb") -%}
+{% set device_name = device_name | default("WBIO-DO-SSR-8") -%}
+{% set device_id = device_id | default("wb-mio-gpio") -%}
+
 {
-    "device_type": "WBIO-DO-R10R-4",
-    "group": "g-wb",
+    "title": "{{ device_title }}",
+    "device_type": "{{ device_type }}",
+    "group": "{{ group }}",
     "device": {
-        "name": "WBIO-DO-R10R-4",
-        "id": "wb-mio-gpio",
+        "name": "{{ device_name }}",
+        "id": "{{ device_id }}",
         "protocol": "modbus_io",
         "stride": 1000,
         "shift": 500,
@@ -49,49 +56,49 @@
         ],
         "channels": [
             {
-                "name": "DIR1",
+                "name": "K1",
                 "reg_type": "coil",
                 "address": 0,
                 "type": "switch"
             },
             {
-                "name": "ON1",
+                "name": "K2",
                 "reg_type": "coil",
                 "address": 1,
                 "type": "switch"
             },
             {
-                "name": "DIR2",
+                "name": "K3",
                 "reg_type": "coil",
                 "address": 2,
                 "type": "switch"
             },
             {
-                "name": "ON2",
+                "name": "K4",
                 "reg_type": "coil",
                 "address": 3,
                 "type": "switch"
             },
             {
-                "name": "DIR3",
+                "name": "K5",
                 "reg_type": "coil",
                 "address": 4,
                 "type": "switch"
             },
             {
-                "name": "ON3",
+                "name": "K6",
                 "reg_type": "coil",
                 "address": 5,
                 "type": "switch"
             },
             {
-                "name": "DIR4",
+                "name": "K7",
                 "reg_type": "coil",
                 "address": 6,
                 "type": "switch"
             },
             {
-                "name": "ON4",
+                "name": "K8",
                 "reg_type": "coil",
                 "address": 7,
                 "type": "switch"

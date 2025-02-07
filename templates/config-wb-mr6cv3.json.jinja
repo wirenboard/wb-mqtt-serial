@@ -1,20 +1,30 @@
+{% set title_en = title_en | default("WB-MR6C v.3 (6-channel relay with internal power supply)") -%}
+{% set title_ru = title_ru | default("WB-MR6C v.3 (6-канальный модуль реле с внутренним блоком питания)") -%}
+{% set device_type = device_type | default("WB-MR6C v.3") -%}
+{% set group = group | default("g-wb") -%}
+{% set device_name = device_name | default("WB-MR6C v.3") -%}
+{% set device_id = device_id | default("wb-mr6cv3") -%}
+{% set has_signature = has_signature | default(false) -%}
+
 {% set OUTPUTS_NUMBER = 6 -%}
 {% set CURTAINS_NUMBER = OUTPUTS_NUMBER // 2 -%}
 {% set MMATRIX_OUTPUTS_NUMBER = 8 -%}
 {% set CURTAINS_MMATRIX_OUTPUTS_NUMBER = MMATRIX_OUTPUTS_NUMBER // 2 -%}
 {% set FIRST_INPUT = 0 -%}
 {
-    "title": "WB-MR6Cv3_template_title",
-    "device_type": "WB-MR6C v.3",
-    "group": "g-wb",
+    "title": "template_title",
+    "device_type": "{{ device_type }}",
+    "group": "{{ group }}",
+{% if has_signature %}
     "hw": [
         {
             "signature": "WB-MR6C v.3"
         }
     ],
+{% endif %}
     "device": {
-        "name": "WB-MR6C v.3",
-        "id": "wb-mr6cv3",
+        "name": "{{ device_name }}",
+        "id": "{{ device_id }}",
         "max_read_registers": 0,
         "response_timeout_ms": 1,
         "frame_timeout_ms": 8,
@@ -799,7 +809,7 @@
 
         "translations": {
             "en": {
-                "WB-MR6Cv3_template_title": "WB-MR6C v.3 (6-channel relay with internal power supply)",
+                "template_title": "{{ title_en }}",
                 "mode_description": "For using button mapping-matrix firmware v1.17.0 or newer is required",
                 "outputs_state_after_power_on_description": "Option \"According to inputs\" works for latching switch mode only, firmware v1.18.4 or newer is required",
                 "baud_rate_description": "Make sure that communication with device is established before changing this parameter. Select required baud rate, save configuration and then change port baud rate to the same value.",
@@ -826,7 +836,7 @@
                 "curtains_control_description": "For using curtain mode firmware v1.21.0 or newer is required. For setup buttons actions select \"Operate according to button mapping-matrix\" mode and configure actions for buttons"
             },
             "ru": {
-                "WB-MR6Cv3_template_title": "WB-MR6C v.3 (6-канальный модуль реле с внутренним блоком питания)",
+                "template_title": "{{ title_ru }}",
 
                 {% for in_num in range(FIRST_INPUT, OUTPUTS_NUMBER + 1) -%}
                 "Input {{in_num}}": "Вход {{in_num}}",

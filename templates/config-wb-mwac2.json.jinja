@@ -1,3 +1,11 @@
+{% set title_en = title_en | default("WB-MWAC v.2 (water leak and meters controller)") -%}
+{% set title_ru = title_ru | default("WB-MWAC v.2 (модуль контроля протечек и расхода воды)") -%}
+{% set device_type = device_type | default("WB-MWAC-v2") -%}
+{% set group = group | default("g-wb") -%}
+{% set device_name = device_name | default("WB-MWAC-v2") -%}
+{% set device_id = device_id | default("wb-mwac-v2") -%}
+{% set has_signature = has_signature | default(false) -%}
+
 {% set LP_INPUTS_NUMBER = 2 -%}
 {% set INPUTS_NUMBER = 6 -%}
 {% set IN_NUM_SHORT_CLEANING_ON_LONG_RES_ALARM = 6 -%}
@@ -14,17 +22,19 @@
 {% set IN_MODE_BUTTON = 6 -%}
 {% set IN_MODE_FLOOD_SENSOR = 5 -%}
 {
-    "title": "WB-MWAC_template_title",
-    "device_type": "WB-MWAC-v2",
-    "group": "g-wb",
+    "title": "template_title",
+    "device_type": "{{ device_type }}",
+    "group": "{{ group }}",
+{% if has_signature %}
         "hw": [
         {
             "signature": "WBMWAC-v2"
         }
     ],
+{% endif %}
     "device": {
-        "name": "WB-MWAC-v2",
-        "id": "wb-mwac-v2",
+        "name": "{{ device_name }}",
+        "id": "{{ device_id }}",
         "max_read_registers": 0,
         "response_timeout_ms": 1,
         "frame_timeout_ms": 8,
@@ -699,7 +709,7 @@
         ],
         "translations": {
             "en": {
-                "WB-MWAC_template_title": "WB-MWAC v.2 (water leak and meters controller)",
+                "template_title": "{{ title_en }}",
                 "baud_rate_description": "Make sure that communication with device is established before changing this parameter. Select required baud rate, save configuration and then change port baud rate to the same value.",
                 "Uptime": "Uptime",
 
@@ -727,7 +737,7 @@
                 "counter_pulse_weight_description": "Number of liters per pulse from the meter. Indicated on the meter and/or its documentation."
             },
             "ru": {
-                "WB-MWAC_template_title": "WB-MWAC v.2 (модуль контроля протечек и расхода воды)",
+                "template_title": "{{ title_ru }}",
                 "Baud rate": "Скорость обмена",
                 "baud_rate_description": "Перед изменением параметра убедитесь, что связь с устройством установлена. Выберите нужную скорость обмена, сохраните конфигурацию, а затем укажите в настройках порта эту же скорость.",
 

@@ -2,6 +2,8 @@ wb-mqtt-serial (2.153.3-wb102-cb8ea449) stable; urgency=medium
 
   * Move vendor devices up in templates list
   * Make vendor templates searchable from wb-device-manager
+  * Add more vendor's templates namings
+  * Fix changelog due to lintian errors
 
  -- Ekaterina Volkova <ekaterina.volkova@wirenboard.com>  Tue, 22 Apr 2025 17:28:24 +0300
 
