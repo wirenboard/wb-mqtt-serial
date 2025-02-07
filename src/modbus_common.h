@@ -28,9 +28,13 @@ namespace Modbus // modbus protocol common utilities
         bool Add(PRegister reg, std::chrono::milliseconds pollLimit) override;
 
         int GetStart() const;
-        int GetCount() const;
+
+        /**
+         * @return The count of Modbus registers in the range.
+         */
+        size_t GetCount() const;
         uint8_t* GetBits();
-        uint16_t* GetWords();
+        std::vector<uint16_t>& GetWords();
         bool HasHoles() const;
         const std::string& TypeName() const;
         int Type() const;
@@ -45,7 +49,7 @@ namespace Modbus // modbus protocol common utilities
         uint32_t Start;
         size_t Count = 0;
         uint8_t* Bits = 0;
-        uint16_t* Words = 0;
+        std::vector<uint16_t> Words;
         std::chrono::microseconds AverageResponseTime;
         std::chrono::microseconds ResponseTime;
 
@@ -72,6 +76,14 @@ namespace Modbus // modbus protocol common utilities
                            TModbusRegisterRange& range,
                            TRegisterCache& cache,
                            int shift = 0);
+
+    TRegisterValue ReadRegister(IModbusTraits& traits,
+                                TPort& port,
+                                uint8_t slaveId,
+                                const TRegisterConfig& registerConfig,
+                                std::chrono::microseconds requestDelay,
+                                std::chrono::milliseconds responseTimeout,
+                                std::chrono::milliseconds frameTimeout);
 
     void WriteSetupRegisters(IModbusTraits& traits,
                              TPort& port,
