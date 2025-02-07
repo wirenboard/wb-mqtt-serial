@@ -25,7 +25,7 @@ namespace
 
         const std::vector<std::string> regNames = {WbRegisters::BAUD_RATE_REGISTER_NAME,
                                                    WbRegisters::PARITY_REGISTER_NAME,
-                                                   WbRegisters::SLAVE_ID_REGISTER_NAME,
+                                                   WbRegisters::STOP_BITS_REGISTER_NAME,
                                                    WbRegisters::SLAVE_ID_REGISTER_NAME};
         for (auto& regName: regNames) {
             if (request["cfg"].isMember(regName)) {
