@@ -190,7 +190,6 @@ void ExecRPCPortScanRequest(TPort& port, PRPCPortScanRequest rpcRequest)
 
 TRPCPortScanSerialClientTask::TRPCPortScanSerialClientTask(PRPCPortScanRequest request): Request(request)
 {
-    Request = request;
     ExpireTime = std::chrono::steady_clock::now() + Request->TotalTimeout;
 }
 
