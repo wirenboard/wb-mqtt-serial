@@ -1,13 +1,20 @@
+{% set title_en = title_en | default("WB-MRM2-mini/NC (2-channel relay)") -%}
+{% set title_ru = title_ru | default("WB-MRM2-mini/NC (2-канальный модуль реле)") -%}
+{% set device_type = device_type | default("WB-MRM2-mini-NC-inputs") -%}
+{% set group = group | default("g-wb") -%}
+{% set device_name = device_name | default("WB-MRM2-mini/NC") -%}
+{% set device_id = device_id | default("wb-mrm2-mini-nc") -%}
+
 {% set OUTPUTS_NUMBER = 2 -%}
 {% set MMATRIX_OUTPUTS_NUMBER = 2 -%}
 {% set FIRST_INPUT = 1 -%}
 {
-    "title": "WB-MRM2-mini-NC_template_title",
-    "device_type": "WB-MRM2-mini-NC-inputs",
-    "group": "g-wb",
+    "title": "template_title",
+    "device_type": "{{ device_type }}",
+    "group": "{{ group }}",
     "device": {
-        "name": "WB-MRM2-mini/NC",
-        "id": "wb-mrm2-mini-nc",
+        "name": "{{ device_name }}",
+        "id": "{{ device_id }}",
         "max_read_registers": 0,
         "response_timeout_ms": 1,
         "frame_timeout_ms": 8,
@@ -563,7 +570,7 @@
 
         "translations": {
             "en": {
-                "WB-MRM2-mini-NC_template_title": "WB-MRM2-mini/NC (2-channel relay)",
+                "template_title": "{{ title_en }}",
                 "mode_description": "For using button mapping-matrix firmware v1.17.1 or newer is required",
                 "outputs_state_after_power_on_description": "Option \"According to inputs\" works for latching switch mode only, firmware v1.18.4 or newer is required",
                 "baud_rate_description": "Make sure that communication with device is established before changing this parameter. Select required baud rate, save configuration and then change port baud rate to the same value.",
@@ -587,7 +594,7 @@
                 "debounce_time_description": "For press detection must be 5-10 times less than second press waiting time. Adds a delay to the response to presses. Firmware up to 1.19.0 supports maximum 250 ms"
             },
             "ru": {
-                "WB-MRM2-mini-NC_template_title": "WB-MRM2-mini/NC (2-канальный модуль реле)",
+                "template_title": "{{ title_ru }}",
 
                 {% for in_num in range(FIRST_INPUT, OUTPUTS_NUMBER + 1) -%}
                 "Input {{in_num}}": "Вход {{in_num}}",

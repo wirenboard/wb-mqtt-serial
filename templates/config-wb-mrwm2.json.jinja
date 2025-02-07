@@ -1,18 +1,28 @@
+{% set title_en = title_en | default("WB-MRWM2 (2-channel power metering relay)") -%}
+{% set title_ru = title_ru | default("WB-MRWM2 (2-канальный модуль реле с измерением мощности)") -%}
+{% set device_type = device_type | default("WB-MRWM2") -%}
+{% set group = group | default("g-wb") -%}
+{% set device_name = device_name | default("WB-MRWM2") -%}
+{% set device_id = device_id | default("wb-mrwm2") -%}
+{% set has_signature = has_signature | default(false) -%}
+
 {% set OUTPUTS_NUMBER = 2 -%}
 {% set MMATRIX_OUTPUTS_NUMBER = 8 -%}
 {% set FIRST_INPUT = 1 -%}
 {
-    "title": "WB-MRWM2-template-title",
-    "device_type": "WB-MRWM2",
-    "group": "g-wb",
+    "title": "template_title",
+    "device_type": "{{ device_type }}",
+    "group": "{{ group }}",
+{% if has_signature %}
     "hw": [
         {
             "signature": "MRWM2"
         }
     ],
+{% endif %}
     "device": {
-        "name": "WB-MRWM2",
-        "id": "wb-mrwm2",
+        "name": "{{ device_name }}",
+        "id": "{{ device_id }}",
         "max_read_registers": 0,
         "response_timeout_ms": 1,
         "frame_timeout_ms": 8,
@@ -762,7 +772,7 @@
         ],
         "translations": {
             "en": {
-                "WB-MRWM2-template-title": "WB-MRWM2 (2-channel power metering relay)",
+                "template_title": "{{ title_en }}",
                 "mode_description": "For using button mapping-matrix firmware v1.17.0 or newer is required",
                 "outputs_state_after_power_on_description": "Option \"According to inputs\" works for latching switch mode only, firmware v1.18.4 or newer is required",
                 "baud_rate_description": "Make sure that communication with device is established before changing this parameter. Select required baud rate, save configuration and then change port baud rate to the same value.",
@@ -796,7 +806,7 @@
                 "restart_delay_description": "0 to 999, factory default - 0"
             },
             "ru": {
-                "WB-MRWM2-template-title": "WB-MRWM2 (2-канальный модуль реле с измерением мощности)",
+                "template_title": "{{ title_ru }}",
 
                 {% for in_num in range(FIRST_INPUT, OUTPUTS_NUMBER + 1) -%}
                 "Input {{in_num}}": "Вход {{in_num}}",
