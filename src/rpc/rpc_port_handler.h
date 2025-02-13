@@ -1,10 +1,11 @@
 #pragma once
 #include "rpc_config.h"
-#include "rpc_port_load_request.h"
 #include "serial_driver.h"
 #include "serial_port_driver.h"
 #include <wblib/json_utils.h>
 #include <wblib/rpc.h>
+
+const std::chrono::seconds DefaultRPCTotalTimeout(10);
 
 // RPC Request execution result code
 enum class TRPCResultCode
@@ -34,6 +35,7 @@ class TRPCPortHandler
 public:
     TRPCPortHandler(const std::string& requestPortLoadSchemaFilePath,
                     const std::string& requestPortSetupSchemaFilePath,
+                    const std::string& requestPortScanSchemaFilePath,
                     PRPCConfig rpcConfig,
                     WBMQTT::PMqttRpcServer rpcServer,
                     PMQTTSerialDriver serialDriver);
@@ -41,6 +43,7 @@ public:
 private:
     Json::Value RequestPortLoadSchema;
     Json::Value RequestPortSetupSchema;
+    Json::Value RequestPortScanSchema;
     PMQTTSerialDriver SerialDriver;
     std::vector<PRPCPortDriver> PortDrivers;
     PRPCConfig RPCConfig;
@@ -53,6 +56,9 @@ private:
     void PortSetup(const Json::Value& request,
                    WBMQTT::TMqttRpcServer::TResultCallback onResult,
                    WBMQTT::TMqttRpcServer::TErrorCallback onError);
+    void PortScan(const Json::Value& request,
+                  WBMQTT::TMqttRpcServer::TResultCallback onResult,
+                  WBMQTT::TMqttRpcServer::TErrorCallback onError);
     Json::Value LoadPorts(const Json::Value& request);
 };
 
@@ -68,3 +74,5 @@ public:
 private:
     TRPCResultCode ResultCode;
 };
+
+TSerialPortConnectionSettings ParseRPCSerialPortSettings(const Json::Value& request);

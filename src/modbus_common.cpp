@@ -98,8 +98,6 @@ namespace Modbus // modbus protocol common utilities
     {
         if (Bits)
             delete[] Bits;
-        if (Words)
-            delete[] Words;
     }
 
     bool TModbusRegisterRange::Add(PRegister reg, std::chrono::milliseconds pollLimit)
@@ -209,12 +207,13 @@ namespace Modbus // modbus protocol common utilities
         return Bits;
     }
 
-    uint16_t* TModbusRegisterRange::GetWords()
+    std::vector<uint16_t>& TModbusRegisterRange::GetWords()
     {
         if (IsSingleBitType(Type()))
             throw std::runtime_error("GetWords() for non-word register");
-        if (!Words)
-            Words = new uint16_t[Count];
+        if (Words.empty()) {
+            Words.resize(Count);
+        }
         return Words;
     }
 
@@ -223,7 +222,7 @@ namespace Modbus // modbus protocol common utilities
         return Start;
     }
 
-    int TModbusRegisterRange::GetCount() const
+    size_t TModbusRegisterRange::GetCount() const
     {
         return Count;
     }
@@ -534,8 +533,8 @@ namespace Modbus // modbus protocol common utilities
         auto coil_count = range.GetCount();
         while (start != data.end()) {
             std::bitset<8> coils(*start++);
-            auto coils_in_byte = std::min(coil_count, 8);
-            for (int i = 0; i < coils_in_byte; ++i) {
+            auto coils_in_byte = std::min(coil_count, size_t(8));
+            for (size_t i = 0; i < coils_in_byte; ++i) {
                 destination[i] = coils[i];
             }
 
@@ -550,7 +549,9 @@ namespace Modbus // modbus protocol common utilities
         return;
     }
 
-    uint64_t GetRegisterValueFromReadData(const uint16_t* rangeData, size_t rangeStartAddr, const TRegister& reg)
+    uint64_t GetRegisterValueFromReadData(const std::vector<uint16_t>& rangeData,
+                                          size_t rangeStartAddr,
+                                          const TRegisterConfig& reg)
     {
         auto addr = GetUint32RegisterAddress(reg.GetAddress());
         int wordCount = GetModbusDataWidthIn16BitWords(reg);
@@ -574,9 +575,9 @@ namespace Modbus // modbus protocol common utilities
         return r;
     }
 
-    std::string GetStringRegisterValueFromReadData(const uint16_t* rangeData,
+    std::string GetStringRegisterValueFromReadData(const std::vector<uint16_t>& rangeData,
                                                    size_t rangeStartAddr,
-                                                   const TRegister& reg)
+                                                   const TRegisterConfig& reg)
     {
         auto addr = GetUint32RegisterAddress(reg.GetAddress());
         const auto registerDataSize = GetModbusDataWidthIn16BitWords(reg);
@@ -584,11 +585,21 @@ namespace Modbus // modbus protocol common utilities
 
         for (uint32_t i = 0; i < registerDataSize; ++i) {
             auto ch = static_cast<char>(rangeData[addr - rangeStartAddr + i]);
-            if (ch != '\0') {
+            if (ch != '\0' and ch != 0xFF) {
                 str.push_back(ch);
             }
         }
         return str;
+    }
+
+    void FillRegisters(std::vector<uint16_t>& registers, const std::vector<uint8_t>& data)
+    {
+        auto size = std::min(data.size() / 2, registers.size());
+        auto start = data.data();
+        for (size_t i = 0; i < size; ++i) {
+            registers[i] = (*start << 8) | *(start + 1);
+            start += 2;
+        }
     }
 
     void FillCache(const std::vector<uint8_t>& data, TModbusRegisterRange& range, Modbus::TRegisterCache& cache)
@@ -596,12 +607,11 @@ namespace Modbus // modbus protocol common utilities
         TAddress address;
         address.Type = range.Type();
         auto baseAddress = range.GetStart();
-        auto start = data.data();
-        auto data16BitWords = range.GetWords();
+        auto& data16BitWords = range.GetWords();
+        FillRegisters(data16BitWords, data);
         for (size_t i = 0; i < data.size() / 2; ++i) {
             address.Address = baseAddress + i;
-            cache[address.AbsAddress] = data16BitWords[i] = (*start << 8) | *(start + 1);
-            start += 2;
+            cache[address.AbsAddress] = data16BitWords[i];
         }
     }
 
@@ -844,6 +854,41 @@ namespace Modbus // modbus protocol common utilities
             // A firmware doesn't support continuous read
             LOG(Warn) << "Continuous read is not enabled [slave_id is " << device->DeviceConfig()->SlaveId + "]";
         }
+    }
+
+    TRegisterValue ReadRegister(IModbusTraits& traits,
+                                TPort& port,
+                                uint8_t slaveId,
+                                const TRegisterConfig& registerConfig,
+                                std::chrono::microseconds requestDelay,
+                                std::chrono::milliseconds responseTimeout,
+                                std::chrono::milliseconds frameTimeout)
+    {
+        size_t modbusRegisterCount = GetModbusDataWidthIn16BitWords(registerConfig);
+        auto addr = GetUint32RegisterAddress(registerConfig.GetAddress());
+        auto function = GetFunctionImpl(registerConfig.Type, OperationType::OP_READ, registerConfig.TypeName, false);
+        auto requestPdu = Modbus::MakePDU(function, addr, modbusRegisterCount, {});
+
+        port.SleepSinceLastInteraction(requestDelay);
+        auto res = traits.Transaction(port,
+                                      slaveId,
+                                      requestPdu,
+                                      Modbus::CalcResponsePDUSize(function, modbusRegisterCount),
+                                      responseTimeout,
+                                      frameTimeout);
+
+        auto responseData = Modbus::ExtractResponseData(function, res.Pdu);
+
+        if (IsSingleBitType(registerConfig.Type)) {
+            return TRegisterValue{responseData[0]};
+        }
+
+        std::vector<uint16_t> data16BitWords(modbusRegisterCount);
+        FillRegisters(data16BitWords, responseData);
+        if (registerConfig.Format == RegisterFormat::String) {
+            return TRegisterValue{GetStringRegisterValueFromReadData(data16BitWords, addr, registerConfig)};
+        }
+        return TRegisterValue{GetRegisterValueFromReadData(data16BitWords, addr, registerConfig)};
     }
 
 } // modbus protocol utilities

@@ -3,6 +3,7 @@
 #include <wblib/json_utils.h>
 #include <wblib/rpc.h>
 
+#include "rpc_port_handler.h"
 #include "serial_device.h"
 #include "serial_port_settings.h"
 
@@ -20,7 +21,7 @@ class TRPCPortSetupRequest
 public:
     std::vector<TRPCPortSetupRequestItem> Items;
 
-    std::chrono::milliseconds TotalTimeout;
+    std::chrono::milliseconds TotalTimeout = DefaultRPCTotalTimeout;
 
     std::function<void()> OnResult = nullptr;
     WBMQTT::TMqttRpcServer::TErrorCallback OnError = nullptr;

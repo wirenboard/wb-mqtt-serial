@@ -11,7 +11,6 @@ namespace
                       WBMQTT::TMqttRpcServer::TResultCallback onResult,
                       WBMQTT::TMqttRpcServer::TErrorCallback onError)
     {
-
         request.OnResult = onResult;
         request.OnError = onError;
     }

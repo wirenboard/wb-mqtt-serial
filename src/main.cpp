@@ -45,6 +45,8 @@ const auto RPC_PORT_LOAD_REQUEST_SCHEMA_FULL_FILE_PATH =
     "/usr/share/wb-mqtt-serial/wb-mqtt-serial-rpc-port-load-request.schema.json";
 const auto RPC_PORT_SETUP_REQUEST_SCHEMA_FULL_FILE_PATH =
     "/usr/share/wb-mqtt-serial/wb-mqtt-serial-rpc-port-setup-request.schema.json";
+const auto RPC_PORT_SCAN_REQUEST_SCHEMA_FULL_FILE_PATH =
+    "/usr/share/wb-mqtt-serial/wb-mqtt-serial-rpc-port-scan-request.schema.json";
 const auto CONFED_COMMON_JSON_SCHEMA_FULL_FILE_PATH =
     "/usr/share/wb-mqtt-serial/wb-mqtt-serial-confed-common.schema.json";
 const auto DEVICE_GROUP_NAMES_JSON_FULL_FILE_PATH = "/usr/share/wb-mqtt-serial/groups.json";
@@ -335,6 +337,7 @@ int main(int argc, char* argv[])
             serialDriver = make_shared<TMQTTSerialDriver>(driver, handlerConfig);
             rpcPortHandler = std::make_shared<TRPCPortHandler>(RPC_PORT_LOAD_REQUEST_SCHEMA_FULL_FILE_PATH,
                                                                RPC_PORT_SETUP_REQUEST_SCHEMA_FULL_FILE_PATH,
+                                                               RPC_PORT_SCAN_REQUEST_SCHEMA_FULL_FILE_PATH,
                                                                rpcConfig,
                                                                rpcServer,
                                                                serialDriver);
