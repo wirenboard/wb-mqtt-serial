@@ -141,6 +141,27 @@ namespace
 
         return deviceJson;
     }
+
+    std::vector<ModbusExt::TScannedDevice> mergeUniqueDevices(const std::vector<ModbusExt::TScannedDevice>& devices1,
+                                                              const std::vector<ModbusExt::TScannedDevice>& devices2)
+    {
+        std::vector<ModbusExt::TScannedDevice> res;
+        res.reserve(devices1.size() + devices2.size());
+        std::merge(devices1.begin(),
+                   devices1.end(),
+                   devices2.begin(),
+                   devices2.end(),
+                   std::back_inserter(res),
+                   [](const auto& d1, const auto& d2) {
+                       if (d1.Sn == d2.Sn) {
+                           return d1.FastModbusCommand < d2.FastModbusCommand;
+                       }
+                       return d1.Sn < d2.Sn;
+                   });
+        res.erase(std::unique(res.begin(), res.end(), [](const auto& d1, const auto& d2) { return d1.Sn == d2.Sn; }),
+                  res.end());
+        return res;
+    }
 }
 
 PRPCPortScanRequest ParseRPCPortScanRequest(const Json::Value& request)
@@ -153,39 +174,31 @@ PRPCPortScanRequest ParseRPCPortScanRequest(const Json::Value& request)
 
 void ExecRPCPortScanRequest(TPort& port, PRPCPortScanRequest rpcRequest)
 {
+    if (!rpcRequest->OnResult) {
+        return;
+    }
+
+    Json::Value replyJSON;
+    replyJSON["devices"] = Json::Value(Json::arrayValue);
+
     port.CheckPortOpen();
     port.SkipNoise();
-    auto devices = ModbusExt::Scan(port, ModbusExt::TModbusExtCommand::ACTUAL);
-    auto oldDevices = ModbusExt::Scan(port, ModbusExt::TModbusExtCommand::DEPRECATED);
-    std::vector<ModbusExt::TScannedDevice> res;
-    res.reserve(devices.size() + oldDevices.size());
-    std::merge(devices.begin(),
-               devices.end(),
-               oldDevices.begin(),
-               oldDevices.end(),
-               std::back_inserter(res),
-               [](const auto& d1, const auto& d2) {
-                   if (d1.Sn == d2.Sn) {
-                       return d1.FastModbusCommand < d2.FastModbusCommand;
-                   }
-                   return d1.Sn < d2.Sn;
-               });
-    res.erase(std::unique(res.begin(), res.end(), [](const auto& d1, const auto& d2) { return d1.Sn == d2.Sn; }),
-              res.end());
-    if (rpcRequest->OnResult) {
-        Json::Value replyJSON;
-        replyJSON["devices"] = Json::Value(Json::arrayValue);
-        for (const auto& device: res) {
-            try {
-                replyJSON["devices"].append(GetScannedDeviceDetails(port, device));
-            } catch (const std::exception& e) {
-                LOG(Warn) << "Port " << port.GetDescription()
-                          << " scan. Failed to get details for device (sn: " << device.Sn
-                          << ", address: " << device.SlaveId << "):" << e.what();
-            }
-        }
-        rpcRequest->OnResult(replyJSON);
+
+    std::vector<ModbusExt::TScannedDevice> devices;
+    std::vector<ModbusExt::TScannedDevice> oldDevices;
+    try {
+        ModbusExt::Scan(port, ModbusExt::TModbusExtCommand::ACTUAL, devices);
+        ModbusExt::Scan(port, ModbusExt::TModbusExtCommand::DEPRECATED, oldDevices);
+    } catch (const std::exception& e) {
+        replyJSON["error"] = e.what();
     }
+
+    const auto res = mergeUniqueDevices(devices, oldDevices);
+    for (const auto& device: res) {
+        replyJSON["devices"].append(GetScannedDeviceDetails(port, device));
+    }
+
+    rpcRequest->OnResult(replyJSON);
 }
 
 TRPCPortScanSerialClientTask::TRPCPortScanSerialClientTask(PRPCPortScanRequest request): Request(request)

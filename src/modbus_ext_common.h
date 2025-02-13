@@ -158,6 +158,15 @@ namespace ModbusExt // modbus extension protocol common utilities
         TModbusExtCommand FastModbusCommand;
     };
 
-    std::vector<TScannedDevice> Scan(TPort& port, TModbusExtCommand modbusExtCommand);
+    /**
+     * Scans the specified port for devices using Fast Modbus.
+     * Throws an exception if an error occurs.
+     * The scannedDevices vector will contain devices found before error.
+     *
+     * @param port The port to scan.
+     * @param modbusExtCommand The Fast Modbus command to use for scanning.
+     * @param scannedDevices A vector to store the scanned devices.
+     */
+    void Scan(TPort& port, TModbusExtCommand modbusExtCommand, std::vector<TScannedDevice>& scannedDevices);
 
 } // modbus extension protocol common utilities
