@@ -1,3 +1,9 @@
+wb-mqtt-serial (2.146.0-wb105) stable; urgency=medium
+
+  * Check motor id in A-OK protocol to filter the responses that match the request
+
+ -- Petr Krasnoshchekov <petr.krasnoshchekov@wirenboard.com>  Fri, 14 Feb 2025 11:06:37 +0500
+
 wb-mqtt-serial (2.146.0-wb104) stable; urgency=medium
 
   * Deprecate WB-MIR v.2 template
