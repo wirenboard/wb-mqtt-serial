@@ -1,3 +1,9 @@
+wb-mqtt-serial (2.146.0-wb105) stable; urgency=medium
+
+  * Check motor id in A-OK protocol to filter the responses that match the request
+
+ -- Petr Krasnoshchekov <petr.krasnoshchekov@wirenboard.com>  Fri, 14 Feb 2025 11:06:37 +0500
+
 wb-mqtt-serial (2.146.0-wb104) stable; urgency=medium
 
   * Deprecate WB-MIR v.2 template
@@ -175,7 +181,7 @@ wb-mqtt-serial (2.135.0) stable; urgency=medium
 
  -- Ilia Skochilov <ilia.skochilov@wirenboard.com>  Tue, 30 Jul 2024 10:15:00 +0300
 
- wb-mqtt-serial (2.134.0) stable; urgency=medium
+wb-mqtt-serial (2.134.0) stable; urgency=medium
 
   * Add template for kaplestop
 
@@ -245,8 +251,8 @@ wb-mqtt-serial (2.130.2) stable; urgency=medium
   * Add indirect control channels for WB-MSW-v3/v4/v4-lora and WB-MIR-v2
 
  -- Andrey Ksenofontov <andrey.ksenofontov@wirenboard.com>  Thu, 10 Jul 2024 16:52:00 +0300
- 
- wb-mqtt-serial (2.130.1) stable; urgency=medium
+
+wb-mqtt-serial (2.130.1) stable; urgency=medium
 
   * Fix a type in WB-Domofon template
 
