@@ -532,7 +532,7 @@
         "translations": {
             "en": {
                 "template_title": "MEAN WELL DRS Series - Multi-function Power Supply",
-                "remote_control": "Remote Control",
+                "remote_control": "DC output",
                 "voltage_dc_setpoint": "Voltage DC Setpoint (V)",
                 "voltage_dc_setpoint_description": "The Value Will Be Applied After Device Is Re-powered",
                 "charging_current_setpoint": "Charging Current Setpoint (A)",
@@ -574,7 +574,7 @@
                 "Unit Status": "Состояние устройства",
                 "Settings": "Настройка",
                 "HW Info": "Данные устройства",
-                "remote_control": "Удаленное управление",
+                "remote_control": "Выход DC",
                 "Off": "Отключить",
                 "On": "Включить",
                 "voltage_dc_setpoint": "Уставка выходного напряжения (В)",
