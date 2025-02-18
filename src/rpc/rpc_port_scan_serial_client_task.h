@@ -10,6 +10,7 @@ class TRPCPortScanRequest
 {
 public:
     TSerialPortConnectionSettings SerialPortSettings;
+    ModbusExt::TModbusExtCommand ModbusExtCommand = ModbusExt::TModbusExtCommand::ACTUAL;
     std::chrono::milliseconds TotalTimeout = DefaultRPCTotalTimeout;
 
     WBMQTT::TMqttRpcServer::TResultCallback OnResult = nullptr;

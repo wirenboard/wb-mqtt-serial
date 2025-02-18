@@ -1103,7 +1103,12 @@ It's designed to be used on [Wiren Board](https://wirenboard.com/en/) family of 
     "data_bits": 8,
 
     // Количество стоп-бит
-    "stop_bits": 2
+    "stop_bits": 2,
+
+    // команда Быстрого Модбаса, которая будет использоваться при поиске
+    // актуальная - 70(0x46), устаревшая - 96(0x60)
+    // если не задана, то используется 70(0x46)
+    "command": 70
 }
 ```
 
@@ -1115,7 +1120,12 @@ It's designed to be used on [Wiren Board](https://wirenboard.com/en/) family of 
     "ip": "1.1.1.1",
 
     // Порт шлюза
-    "port": 1234
+    "port": 1234,
+
+    // команда Быстрого Модбаса, которая будет использоваться при поиске
+    // актуальная - 70(0x46), устаревшая - 96(0x60)
+    // если не задана, то используется 70(0x46)
+    "command": 70
 }
 ```
 
@@ -1168,10 +1178,6 @@ It's designed to be used on [Wiren Board](https://wirenboard.com/en/) family of 
             "fw": {
                 // версия
                 "version": "1.2.3",
-
-                // команда Быстрого Модбаса, поддерживаемая прошивкой
-                // актуальная - 70(0x46), устаревшая - 96(0x60)
-                "fast_modbus_command": 70
             }
         },
         ...

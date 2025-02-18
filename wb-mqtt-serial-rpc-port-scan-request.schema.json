@@ -49,12 +49,24 @@
       ]
     }
   },
-  "oneOf": [
+  "allOf": [
     {
-      "$ref": "#/definitions/serial_port_config"
+      "properties": {
+        "command": {
+          "type": "integer",
+          "enum":[ 70, 96 ]
+        }
+      }
     },
     {
-      "$ref": "#/definitions/tcp_port_config"
+      "oneOf": [
+        {
+          "$ref": "#/definitions/serial_port_config"
+        },
+        {
+          "$ref": "#/definitions/tcp_port_config"
+        }
+      ]
     }
   ]
 }

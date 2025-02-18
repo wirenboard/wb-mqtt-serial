@@ -9,6 +9,16 @@
 
 #define LOG(logger) ::logger.Log() << "[RPC] "
 
+template<> bool inline WBMQTT::JSON::Is<ModbusExt::TModbusExtCommand>(const Json::Value& value)
+{
+    return value.isUInt();
+}
+
+template<> inline ModbusExt::TModbusExtCommand WBMQTT::JSON::As<ModbusExt::TModbusExtCommand>(const Json::Value& value)
+{
+    return ModbusExt::TModbusExtCommand(value.asUInt());
+}
+
 namespace
 {
     const std::string READ_FW_VERSION_ERROR_ID = "com.wb.device_manager.device.read_fw_version_error";
@@ -85,9 +95,11 @@ namespace
         }
     }
 
-    Json::Value GetScannedDeviceDetails(TPort& port, const ModbusExt::TScannedDevice& scannedDevice)
+    Json::Value GetScannedDeviceDetails(TPort& port,
+                                        const ModbusExt::TScannedDevice& scannedDevice,
+                                        ModbusExt::TModbusExtCommand modbusExtCommand)
     {
-        TRegisterReader reader(port, scannedDevice.SlaveId, scannedDevice.Sn, scannedDevice.FastModbusCommand);
+        TRegisterReader reader(port, scannedDevice.SlaveId, scannedDevice.Sn, modbusExtCommand);
         Json::Value errorsJson(Json::arrayValue);
 
         Json::Value deviceJson;
@@ -130,37 +142,15 @@ namespace
         }
         deviceJson["cfg"] = cfgJson;
 
-        Json::Value fwJson;
         try {
+            Json::Value fwJson;
             fwJson["version"] = reader.Read<std::string>(WbRegisters::FW_VERSION_REGISTER_NAME);
+            deviceJson["fw"] = fwJson;
         } catch (const std::exception& e) {
             AppendError(errorsJson, READ_FW_VERSION_ERROR_ID, e.what());
         }
-        fwJson["fast_modbus_command"] = scannedDevice.FastModbusCommand;
-        deviceJson["fw"] = fwJson;
 
         return deviceJson;
-    }
-
-    std::vector<ModbusExt::TScannedDevice> mergeUniqueDevices(const std::vector<ModbusExt::TScannedDevice>& devices1,
-                                                              const std::vector<ModbusExt::TScannedDevice>& devices2)
-    {
-        std::vector<ModbusExt::TScannedDevice> res;
-        res.reserve(devices1.size() + devices2.size());
-        std::merge(devices1.begin(),
-                   devices1.end(),
-                   devices2.begin(),
-                   devices2.end(),
-                   std::back_inserter(res),
-                   [](const auto& d1, const auto& d2) {
-                       if (d1.Sn == d2.Sn) {
-                           return d1.FastModbusCommand < d2.FastModbusCommand;
-                       }
-                       return d1.Sn < d2.Sn;
-                   });
-        res.erase(std::unique(res.begin(), res.end(), [](const auto& d1, const auto& d2) { return d1.Sn == d2.Sn; }),
-                  res.end());
-        return res;
     }
 }
 
@@ -169,6 +159,7 @@ PRPCPortScanRequest ParseRPCPortScanRequest(const Json::Value& request)
     PRPCPortScanRequest res = std::make_shared<TRPCPortScanRequest>();
     res->SerialPortSettings = ParseRPCSerialPortSettings(request);
     WBMQTT::JSON::Get(request, "total_timeout", res->TotalTimeout);
+    WBMQTT::JSON::Get(request, "command", res->ModbusExtCommand);
     return res;
 }
 
@@ -178,24 +169,19 @@ void ExecRPCPortScanRequest(TPort& port, PRPCPortScanRequest rpcRequest)
         return;
     }
 
-    Json::Value replyJSON;
-    replyJSON["devices"] = Json::Value(Json::arrayValue);
-
-    port.CheckPortOpen();
     port.SkipNoise();
 
+    Json::Value replyJSON;
     std::vector<ModbusExt::TScannedDevice> devices;
-    std::vector<ModbusExt::TScannedDevice> oldDevices;
     try {
-        ModbusExt::Scan(port, ModbusExt::TModbusExtCommand::ACTUAL, devices);
-        ModbusExt::Scan(port, ModbusExt::TModbusExtCommand::DEPRECATED, oldDevices);
+        ModbusExt::Scan(port, rpcRequest->ModbusExtCommand, devices);
     } catch (const std::exception& e) {
         replyJSON["error"] = e.what();
     }
 
-    const auto res = mergeUniqueDevices(devices, oldDevices);
-    for (const auto& device: res) {
-        replyJSON["devices"].append(GetScannedDeviceDetails(port, device));
+    replyJSON["devices"] = Json::Value(Json::arrayValue);
+    for (const auto& device: devices) {
+        replyJSON["devices"].append(GetScannedDeviceDetails(port, device, rpcRequest->ModbusExtCommand));
     }
 
     rpcRequest->OnResult(replyJSON);

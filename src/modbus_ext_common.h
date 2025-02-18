@@ -155,7 +155,6 @@ namespace ModbusExt // modbus extension protocol common utilities
     {
         uint8_t SlaveId;
         uint32_t Sn;
-        TModbusExtCommand FastModbusCommand;
     };
 
     /**

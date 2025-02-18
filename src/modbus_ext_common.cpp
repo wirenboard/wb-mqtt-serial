@@ -614,9 +614,8 @@ namespace ModbusExt // modbus extension protocol declarations
 
             switch (packet[SUB_COMMAND_POS]) {
                 case DEVICE_FOUND_RESPONSE_SCAN_COMMAND: {
-                    scannedDevices.emplace_back(TScannedDevice{packet[SCAN_SLAVE_ID_POS],
-                                                               GetFromBigEndian<uint32_t>(packet + SCAN_SN_POS),
-                                                               modbusExtCommand});
+                    scannedDevices.emplace_back(
+                        TScannedDevice{packet[SCAN_SLAVE_ID_POS], GetFromBigEndian<uint32_t>(packet + SCAN_SN_POS)});
                     port.SleepSinceLastInteraction(standardFrameTimeout);
                     port.WriteBytes(req);
                     rc = port.ReadFrame(response.data(),
