@@ -1,3 +1,9 @@
+wb-mqtt-serial (2.156.0) stable; urgency=medium
+
+  * Add port/Scan RPC for searching for devices using Fast Modbus
+
+ -- Petr Krasnoshchekov <petr.krasnoshchekov@wirenboard.com>  Mon, 24 Feb 2025 10:45:42 +0500
+
 wb-mqtt-serial (2.155.2) stable; urgency=medium
 
   * Fix translate for meanwell-drs-series

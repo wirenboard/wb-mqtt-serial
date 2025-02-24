@@ -5,6 +5,12 @@
 
 namespace ModbusExt // modbus extension protocol common utilities
 {
+    enum TModbusExtCommand : uint8_t
+    {
+        ACTUAL = 0x46,
+        DEPRECATED = 0x60
+    };
+
     enum TEventType : uint8_t
     {
         COIL = 1,
@@ -121,6 +127,7 @@ namespace ModbusExt // modbus extension protocol common utilities
     class TModbusTraits: public Modbus::IModbusTraits
     {
         uint32_t Sn;
+        TModbusExtCommand ModbusExtCommand;
         TPort::TFrameCompletePred ExpectNBytes(size_t n) const;
 
         size_t GetPacketSize(size_t pduSize) const;
@@ -141,6 +148,24 @@ namespace ModbusExt // modbus extension protocol common utilities
                                         const std::chrono::milliseconds& frameTimeout) override;
 
         void SetSn(uint32_t sn);
+        void SetModbusExtCommand(TModbusExtCommand command);
     };
+
+    struct TScannedDevice
+    {
+        uint8_t SlaveId;
+        uint32_t Sn;
+    };
+
+    /**
+     * Scans the specified port for devices using Fast Modbus.
+     * Throws an exception if an error occurs.
+     * The scannedDevices vector will contain devices found before error.
+     *
+     * @param port The port to scan.
+     * @param modbusExtCommand The Fast Modbus command to use for scanning.
+     * @param scannedDevices A vector to store the scanned devices.
+     */
+    void Scan(TPort& port, TModbusExtCommand modbusExtCommand, std::vector<TScannedDevice>& scannedDevices);
 
 } // modbus extension protocol common utilities

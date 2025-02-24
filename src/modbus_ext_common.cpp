@@ -3,6 +3,7 @@
 #include "bin_utils.h"
 #include "crc16.h"
 #include "log.h"
+#include "serial_exc.h"
 #include <stddef.h>
 #include <stdint.h>
 #include <vector>
@@ -17,9 +18,11 @@ namespace ModbusExt // modbus extension protocol declarations
 {
     const uint8_t BROADCAST_ADDRESS = 0xFD;
 
-    const uint8_t MODBUS_EXT_COMMAND = 0x46;
-
     // Function codes
+    const uint8_t START_SCAN_COMMAND = 0x01;
+    const uint8_t CONTINUE_SCAN_COMMAND = 0x02;
+    const uint8_t DEVICE_FOUND_RESPONSE_SCAN_COMMAND = 0x03;
+    const uint8_t NO_MORE_DEVICES_RESPONSE_SCAN_COMMAND = 0x04;
     const uint8_t MODBUS_STANDARD_REQUEST_COMMAND = 0x08;
     const uint8_t MODBUS_STANDARD_RESPONSE_COMMAND = 0x09;
     const uint8_t EVENTS_REQUEST_COMMAND = 0x10;
@@ -36,6 +39,8 @@ namespace ModbusExt // modbus extension protocol declarations
     const size_t MIN_ENABLE_EVENTS_REC_SIZE = 5;
     // const size_t EXCEPTION_SIZE = 5;
     const size_t MODBUS_STANDARD_COMMAND_HEADER_SIZE = 7; // 0xFD 0x46 0x08 (3b) + SN (4b)
+    const size_t NO_MORE_DEVICES_RESPONSE_SIZE = 5;
+    const size_t DEVICE_FOUND_RESPONSE_SIZE = 10;
 
     const size_t EVENTS_REQUEST_MAX_BYTES = MAX_PACKET_SIZE - EVENTS_RESPONSE_HEADER_SIZE - CRC_SIZE;
     const size_t ARBITRATION_HEADER_MAX_BYTES = 32;
@@ -56,6 +61,9 @@ namespace ModbusExt // modbus extension protocol declarations
     const size_t EVENT_DATA_POS = 4;
     const size_t MAX_EVENT_SIZE = 6;
 
+    const size_t SCAN_SN_POS = 3;
+    const size_t SCAN_SLAVE_ID_POS = 7;
+
     const size_t ENABLE_EVENTS_RESPONSE_DATA_SIZE_POS = 3;
     const size_t ENABLE_EVENTS_RESPONSE_DATA_POS = 4;
 
@@ -67,12 +75,25 @@ namespace ModbusExt // modbus extension protocol declarations
     // const size_t ENABLE_EVENTS_REC_STATE_POS = 3;
 
     // max(3.5 symbols, (20 bits + 800us)) + 9 * max(13 bits, 12 bits + 50us)
-    std::chrono::milliseconds GetTimeout(const TPort& port)
+    std::chrono::milliseconds GetTimeoutForEvents(const TPort& port)
     {
         const auto cmdTime =
             std::max(port.GetSendTimeBytes(Modbus::STANDARD_FRAME_TIMEOUT_BYTES), port.GetSendTimeBits(20) + 800us);
         const auto arbitrationTime = 9 * std::max(port.GetSendTimeBits(13), port.GetSendTimeBits(12) + 50us);
         return std::chrono::ceil<std::chrono::milliseconds>(cmdTime + arbitrationTime);
+    }
+
+    // For 0x46 command: max(3.5 symbols, (20 bits + 800us)) + 33 * max(13 bits, 12 bits + 50us)
+    // For 0x60 command: (44 bits) + 33 * 20 bits
+    std::chrono::microseconds GetTimeoutForScan(const TPort& port, TModbusExtCommand command)
+    {
+        if (command == TModbusExtCommand::DEPRECATED) {
+            return port.GetSendTimeBits(44) + 33 * port.GetSendTimeBits(20);
+        }
+        const auto cmdTime =
+            std::max(port.GetSendTimeBytes(Modbus::STANDARD_FRAME_TIMEOUT_BYTES), port.GetSendTimeBits(20) + 800us);
+        const auto arbitrationTime = 33 * std::max(port.GetSendTimeBits(13), port.GetSendTimeBits(12) + 50us);
+        return cmdTime + arbitrationTime;
     }
 
     uint8_t GetMaxReadEventsResponseSize(const TPort& port, std::chrono::milliseconds maxTime)
@@ -102,13 +123,20 @@ namespace ModbusExt // modbus extension protocol declarations
                                                uint8_t startingSlaveId = 0,
                                                uint8_t maxBytes = EVENTS_REQUEST_MAX_BYTES)
     {
-        std::vector<uint8_t> request({BROADCAST_ADDRESS, MODBUS_EXT_COMMAND, EVENTS_REQUEST_COMMAND});
+        std::vector<uint8_t> request({BROADCAST_ADDRESS, TModbusExtCommand::ACTUAL, EVENTS_REQUEST_COMMAND});
         auto it = std::back_inserter(request);
         Append(it, startingSlaveId);
         Append(it, maxBytes);
         Append(it, state.SlaveId);
         Append(it, state.Flag);
         AppendBigEndian(it, CRC16::CalculateCRC16(request.data(), request.size()));
+        return request;
+    }
+
+    std::vector<uint8_t> MakeScanRequest(uint8_t fastModbusCommand, uint8_t scanCommand)
+    {
+        std::vector<uint8_t> request({BROADCAST_ADDRESS, fastModbusCommand, scanCommand});
+        AppendBigEndian(std::back_inserter(request), CRC16::CalculateCRC16(request.data(), request.size()));
         return request;
     }
 
@@ -124,9 +152,14 @@ namespace ModbusExt // modbus extension protocol declarations
         }
     }
 
+    bool IsModbusExtCommand(uint8_t command)
+    {
+        return command == TModbusExtCommand::ACTUAL || command == TModbusExtCommand::DEPRECATED;
+    }
+
     bool IsModbusExtPacket(const uint8_t* buf, size_t size)
     {
-        if ((buf[0] == 0xFF) || (SUB_COMMAND_POS >= size) || (buf[COMMAND_POS] != MODBUS_EXT_COMMAND)) {
+        if ((buf[0] == 0xFF) || (SUB_COMMAND_POS >= size) || (!IsModbusExtCommand(buf[COMMAND_POS]))) {
             return false;
         }
 
@@ -139,6 +172,18 @@ namespace ModbusExt // modbus extension protocol declarations
             }
             case NO_EVENTS_RESPONSE_COMMAND: {
                 if (size != NO_EVENTS_RESPONSE_SIZE) {
+                    return false;
+                }
+                break;
+            }
+            case NO_MORE_DEVICES_RESPONSE_SCAN_COMMAND: {
+                if (size != NO_MORE_DEVICES_RESPONSE_SIZE) {
+                    return false;
+                }
+                break;
+            }
+            case DEVICE_FOUND_RESPONSE_SCAN_COMMAND: {
+                if (size != DEVICE_FOUND_RESPONSE_SIZE) {
                     return false;
                 }
                 break;
@@ -169,7 +214,7 @@ namespace ModbusExt // modbus extension protocol declarations
         return nullptr;
     }
 
-    TPort::TFrameCompletePred ExpectEvents()
+    TPort::TFrameCompletePred ExpectFastModbus()
     {
         return [=](uint8_t* buf, size_t size) { return GetPacketStart(buf, size) != nullptr; };
     }
@@ -208,9 +253,9 @@ namespace ModbusExt // modbus extension protocol declarations
         port.SleepSinceLastInteraction(frameTimeout);
         port.WriteBytes(req);
 
-        const auto timeout = GetTimeout(port);
+        const auto timeout = GetTimeoutForEvents(port);
         std::array<uint8_t, MAX_PACKET_SIZE + ARBITRATION_HEADER_MAX_BYTES> res;
-        auto rc = port.ReadFrame(res.data(), res.size(), timeout, timeout, ExpectEvents()).Count;
+        auto rc = port.ReadFrame(res.data(), res.size(), timeout, timeout, ExpectFastModbus()).Count;
         port.SleepSinceLastInteraction(frameTimeout);
 
         const uint8_t* packet = GetPacketStart(res.data(), rc);
@@ -350,7 +395,7 @@ namespace ModbusExt // modbus extension protocol declarations
             MaxRegDistance = MIN_ENABLE_EVENTS_REC_SIZE;
         }
         Request.reserve(MAX_PACKET_SIZE);
-        Append(std::back_inserter(Request), {SlaveId, MODBUS_EXT_COMMAND, ENABLE_EVENTS_COMMAND, 0});
+        Append(std::back_inserter(Request), {SlaveId, TModbusExtCommand::ACTUAL, ENABLE_EVENTS_COMMAND, 0});
         Response.reserve(MAX_PACKET_SIZE);
         FrameTimeout =
             std::chrono::ceil<std::chrono::milliseconds>(port.GetSendTimeBytes(Modbus::STANDARD_FRAME_TIMEOUT_BYTES));
@@ -432,7 +477,7 @@ namespace ModbusExt // modbus extension protocol declarations
 
     // TModbusTraits
 
-    TModbusTraits::TModbusTraits(): Sn(0)
+    TModbusTraits::TModbusTraits(): Sn(0), ModbusExtCommand(TModbusExtCommand::ACTUAL)
     {}
 
     TPort::TFrameCompletePred TModbusTraits::ExpectNBytes(size_t n) const
@@ -454,7 +499,7 @@ namespace ModbusExt // modbus extension protocol declarations
     void TModbusTraits::FinalizeRequest(std::vector<uint8_t>& request)
     {
         request[0] = BROADCAST_ADDRESS;
-        request[1] = MODBUS_EXT_COMMAND;
+        request[1] = ModbusExtCommand;
         request[2] = MODBUS_STANDARD_REQUEST_COMMAND;
         request[3] = static_cast<uint8_t>(Sn >> 24);
         request[4] = static_cast<uint8_t>(Sn >> 16);
@@ -489,7 +534,7 @@ namespace ModbusExt // modbus extension protocol declarations
             throw Modbus::TUnexpectedResponseError("invalid response address");
         }
 
-        if (res[1] != MODBUS_EXT_COMMAND) {
+        if (res[1] != ModbusExtCommand) {
             throw Modbus::TUnexpectedResponseError("invalid response command");
         }
 
@@ -533,5 +578,61 @@ namespace ModbusExt // modbus extension protocol declarations
     void TModbusTraits::SetSn(uint32_t sn)
     {
         Sn = sn;
+    }
+
+    void TModbusTraits::SetModbusExtCommand(TModbusExtCommand command)
+    {
+        ModbusExtCommand = command;
+    }
+
+    void Scan(TPort& port, TModbusExtCommand modbusExtCommand, std::vector<TScannedDevice>& scannedDevices)
+    {
+        auto req = MakeScanRequest(modbusExtCommand, START_SCAN_COMMAND);
+        const auto standardFrameTimeout = port.GetSendTimeBytes(Modbus::STANDARD_FRAME_TIMEOUT_BYTES);
+        port.SleepSinceLastInteraction(standardFrameTimeout);
+        port.WriteBytes(req);
+
+        const auto scanFrameTimeout = GetTimeoutForScan(port, modbusExtCommand);
+        const auto responseTimeout = scanFrameTimeout + port.GetSendTimeBytes(1);
+        std::array<uint8_t, MAX_PACKET_SIZE + ARBITRATION_HEADER_MAX_BYTES> response;
+        size_t rc;
+        try {
+            rc = port.ReadFrame(response.data(), response.size(), responseTimeout, scanFrameTimeout, ExpectFastModbus())
+                     .Count;
+        } catch (const TResponseTimeoutException& ex) {
+            // It is ok. No Fast Modbus capable devices on port.
+            LOG(Debug) << "No Fast Modbus capable devices on port " << port.GetDescription();
+            return;
+        }
+
+        req = MakeScanRequest(modbusExtCommand, CONTINUE_SCAN_COMMAND);
+        while (true) {
+            const uint8_t* packet = GetPacketStart(response.data(), rc);
+            if (packet == nullptr) {
+                throw Modbus::TMalformedResponseError("invalid packet");
+            }
+
+            switch (packet[SUB_COMMAND_POS]) {
+                case DEVICE_FOUND_RESPONSE_SCAN_COMMAND: {
+                    scannedDevices.emplace_back(
+                        TScannedDevice{packet[SCAN_SLAVE_ID_POS], GetFromBigEndian<uint32_t>(packet + SCAN_SN_POS)});
+                    port.SleepSinceLastInteraction(standardFrameTimeout);
+                    port.WriteBytes(req);
+                    rc = port.ReadFrame(response.data(),
+                                        response.size(),
+                                        responseTimeout,
+                                        scanFrameTimeout,
+                                        ExpectFastModbus())
+                             .Count;
+                    break;
+                }
+                case NO_MORE_DEVICES_RESPONSE_SCAN_COMMAND: {
+                    return;
+                }
+                default: {
+                    throw Modbus::TMalformedResponseError("invalid sub command");
+                }
+            }
+        }
     }
 }

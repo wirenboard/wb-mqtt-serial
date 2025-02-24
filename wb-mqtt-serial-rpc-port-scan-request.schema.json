@@ -1,0 +1,72 @@
+{
+  "$schema": "http://json-schema.org/draft-07/schema#",
+  "type": "object",
+  "definitions": {
+    "serial_port_config": {
+      "properties": {
+        "path": {
+          "type": "string"
+        },
+        "baud_rate": {
+          "type": "integer",
+          "enum": [110, 300, 600, 1200, 2400, 4800, 9600, 19200, 38400, 57600, 115200]
+        },
+        "parity": {
+          "type": "string",
+          "enum": ["N", "E", "O"]
+        },
+        "data_bits": {
+          "type": "integer",
+          "enum": [5, 6, 7, 8]
+        },
+        "stop_bits": {
+          "type": "integer",
+          "enum": [1, 2]
+        }
+      },
+      "required": [
+        "path",
+        "baud_rate",
+        "parity",
+        "data_bits",
+        "stop_bits"
+      ]
+    },
+    "tcp_port_config": {
+      "properties": {
+        "ip": {
+          "type": "string"
+        },
+        "port": {
+          "type": "integer",
+          "minimum": 0,
+          "maximum": 65535
+        }
+      },
+      "required": [
+        "ip",
+        "port"
+      ]
+    }
+  },
+  "allOf": [
+    {
+      "properties": {
+        "command": {
+          "type": "integer",
+          "enum":[ 70, 96 ]
+        }
+      }
+    },
+    {
+      "oneOf": [
+        {
+          "$ref": "#/definitions/serial_port_config"
+        },
+        {
+          "$ref": "#/definitions/tcp_port_config"
+        }
+      ]
+    }
+  ]
+}
