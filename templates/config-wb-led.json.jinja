@@ -356,7 +356,7 @@
                 "order": {{in_num}},
                 "address": {{736 + (loop.index0 * 16) + in_num - 1}},
                 "reg_type": "holding",
-                "default": 0,
+                "default": {{ (off_on == "on") | int }},
                 "condition": "(input_{{in_num}}_mode==1)",
                 "enum": [0, 1, 2],
                 "enum_titles": [
@@ -377,7 +377,7 @@
                 [0, 1, 2, 9, 100],
                 [0, 5, 9, 100],
                 [0, 8, 9, 100],
-                [0, 10, 100],
+                [0, 10, 4, 100],
                 [0, 7, 100]
                 ] -%}
             {% set enum_switch_non_all = [
@@ -390,7 +390,7 @@
                 [0, 1, 2, 9],
                 [0, 5, 9],
                 [0, 8, 9],
-                [0, 10],
+                [0, 10, 4],
                 [0, 7]
                 ] -%}
             {% set action_switch_code = [0, 100, 1, 2, 3, 4, 5, 6, 7, 8, 9, 10] -%}
