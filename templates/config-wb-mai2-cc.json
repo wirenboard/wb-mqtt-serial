@@ -5,6 +5,9 @@
     "hw": [
         {
             "signature": "MAI2CC"
+        },
+        {
+            "signature": "WB-MAI2-mini/CC v.3"
         }
     ],
     "device": {

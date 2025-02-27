@@ -1,3 +1,9 @@
+wb-mqtt-serial (2.153.3-wb101) stable; urgency=medium
+
+  * Add WB-MAI2-mini/CC v.3 support
+
+ -- Pavel Gasheev <pavel.gasheev@wirenboard.com>  Thu, 27 Feb 2025 08:44:58 +0300
+
 wb-mqtt-serial (2.153.3-wb100) stable; urgency=medium
 
   * WB-LED template: fix default value for switch mode actions ('off' for switch off; 'on' for switch on)
