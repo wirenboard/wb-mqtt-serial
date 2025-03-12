@@ -1,3 +1,9 @@
+wb-mqtt-serial (2.157.1) stable; urgency=medium
+
+  * WB-MRWM2 template: Change the default overvoltage threshold to 242V
+
+ -- Ilia Skochilov <ilia.skochilov@wirenboard.com>  Wed, 12 Mar 2025 11:12:00 +0300
+
 wb-mqtt-serial (2.157.0) stable; urgency=medium
 
   * Add WB-MAI2-mini/CC v.3 support
