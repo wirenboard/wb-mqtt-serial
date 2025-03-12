@@ -1,3 +1,9 @@
+wb-mqtt-serial (2.157.2) stable; urgency=medium
+
+  * WB-MDM3, WB-MAO4 templates: fix swapped increase/decrease actions for all channels
+
+ -- Pavel Gasheev <pavel.gasheev@wirenboard.com>  Wed, 12 Mar 2025 14:48:05 +0300
+
 wb-mqtt-serial (2.157.1) stable; urgency=medium
 
   * WB-LED template: fix safety and powerup actions
