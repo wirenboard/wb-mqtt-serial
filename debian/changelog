@@ -1,3 +1,9 @@
+wb-mqtt-serial (2.157.1) stable; urgency=medium
+
+  * WB-LED template: fix safety and powerup actions
+
+ -- Pavel Gasheev <pavel.gasheev@wirenboard.com>  Tue, 11 Mar 2025 13:50:24 +0300
+
 wb-mqtt-serial (2.157.0) stable; urgency=medium
 
   * Add WB-MAI2-mini/CC v.3 support
