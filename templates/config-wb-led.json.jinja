@@ -708,8 +708,8 @@
                 "type": "enum",
                 "enum": [0, 1, 2, 3],
                 "enum_titles": [
-                    "No Action",
                     "Turn Off",
+                    "Set Previous State",
                     "Turn On",
                     "Turn On and Set Brightness"
                 ],
@@ -782,8 +782,8 @@
                     "title": "Action Brightness",
                     "enum": [0, 1, 2, 3],
                     "enum_titles": [
-                        "No Action",
                         "Turn Off",
+                        "Set Previous State",
                         "Turn On",
                         "Turn On and Set Level"
                     ],
@@ -878,8 +878,8 @@
                 {% else -%}
                     "enum": [0, 1, 2, 3],
                     "enum_titles": [
-                        "No Action",
                         "Turn Off",
+                        "Set Previous State",
                         "Turn On",
                         "Turn On and Set Level"
                     ],
@@ -893,9 +893,9 @@
                 "title": "RGB Strip Hue",
                 "reg_type": "holding",
                 "address": 656,
-                "min": 1,
+                "min": 0,
                 "max": 360,
-                "default": 180,
+                "default": 0,
                 "required": true,
                 "group": "gggg_safety_mode_ch_RGB_H",
                 "condition": "(dimmer_mode==256)&&(safety_mode_ch_RGB_H_action==3)"
@@ -905,9 +905,9 @@
                 "title": "RGB Strip Saturation",
                 "reg_type": "holding",
                 "address": 657,
-                "min": 1,
+                "min": 0,
                 "max": 100,
-                "default": 50,
+                "default": 100,
                 "required": true,
                 "group": "gggg_safety_mode_ch_RGB_S",
                 "condition": "(dimmer_mode==256)&&(safety_mode_ch_RGB_S_action==3)"
@@ -929,9 +929,9 @@
                 "title": "RGB Strip Hue",
                 "reg_type": "holding",
                 "address": 672,
-                "min": 1,
+                "min": 0,
                 "max": 360,
-                "default": 180,
+                "default": 0,
                 "required": true,
                 "group": "gggg_power_up_behaviour_ch_RGB_H",
                 "condition": "(dimmer_mode==256)&&(powerup_mode_ch_RGB_H_action==3)"
@@ -941,9 +941,9 @@
                 "title": "RGB Strip Saturation",
                 "reg_type": "holding",
                 "address": 673,
-                "min": 1,
+                "min": 0,
                 "max": 100,
-                "default": 50,
+                "default": 100,
                 "required": true,
                 "group": "gggg_power_up_behaviour_ch_RGB_S",
                 "condition": "(dimmer_mode==256)&&(powerup_mode_ch_RGB_S_action==3)"

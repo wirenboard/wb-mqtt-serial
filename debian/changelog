@@ -1,8 +1,20 @@
-wb-mqtt-serial (2.157.1) stable; urgency=medium
+wb-mqtt-serial (2.157.3) stable; urgency=medium
 
   * WB-MRWM2 template: Change the default overvoltage threshold to 242V
 
- -- Ilia Skochilov <ilia.skochilov@wirenboard.com>  Wed, 12 Mar 2025 11:12:00 +0300
+ -- Ilia Skochilov <ilia.skochilov@wirenboard.com>  Thu, 13 Mar 2025 11:12:00 +0300
+
+wb-mqtt-serial (2.157.2) stable; urgency=medium
+
+  * WB-MDM3, WB-MAO4 templates: fix swapped increase/decrease actions for all channels
+
+ -- Pavel Gasheev <pavel.gasheev@wirenboard.com>  Wed, 12 Mar 2025 14:48:05 +0300
+
+wb-mqtt-serial (2.157.1) stable; urgency=medium
+
+  * WB-LED template: fix safety and powerup actions
+
+ -- Pavel Gasheev <pavel.gasheev@wirenboard.com>  Tue, 11 Mar 2025 13:50:24 +0300
 
 wb-mqtt-serial (2.157.0) stable; urgency=medium
 
