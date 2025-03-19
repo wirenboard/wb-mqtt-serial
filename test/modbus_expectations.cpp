@@ -748,56 +748,202 @@ void TModbusExpectations::EnqueueHoldingReadS64Response(uint8_t exception)
 }
 
 // read 16 holding (as String)
-void TModbusExpectations::EnqueueStringReadResponse(uint8_t exception)
+void TModbusExpectations::EnqueueStringReadResponse(TModbusExpectations::StringReadHint hint)
 {
-    Expector()->Expect(
-        WrapPDU({
-            0x03, // function code
-            0x00, // starting address Hi
-            120,   // starting address Lo
-            0x00, // quantity Hi
-            0x10, // quantity Lo
-        }),
-        WrapPDU(exception == 0 ? std::vector<int>{
-                                     0x03, // function code
-                                     0x20, // byte count
-                                     // "2.4.2-rc1" in modbus regs
-                                     0x00, // data Hi
-                                     0x32, // data Lo
-                                     0x00, // data Hi
-                                     0x2e, // data Lo
-                                     0x00, // data Hi
-                                     0x34, // data Lo
-                                     0x00, // data Hi
-                                     0x2e, // data Lo
-                                     0x00, // data Hi
-                                     0x32, // data Lo
-                                     0x00, // data Hi
-                                     0x2d, // data Lo
-                                     0x00, // data Hi
-                                     0x72, // data Lo
-                                     0x00, // data Hi
-                                     0x63, // data Lo
-                                     0x00, // data Hi
-                                     0x31, // data Lo
-                                     0x00, // data Hi
-                                     0x00, // data Lo
-                                     0x00, // data Hi
-                                     0x00, // data Lo
-                                     0x00, // data Hi
-                                     0x00, // data Lo
-                                     0x00, // data Hi
-                                     0x00, // data Lo
-                                     0x00, // data Hi
-                                     0x00, // data Lo
-                                     0x00, // data Hi
-                                     0x00, // data Lo
-                                     0x00, // data Hi
-                                     0x00 // data Lo
-                                 }
-                               : std::vector<int>{0x83, // function code + 80
-                                                  exception}),
-        __func__);
+    switch (hint) {
+        case TModbusExpectations::StringReadHint::FULL_OF_CHARS: {
+            Expector()->Expect(WrapPDU({
+                                   0x03, // function code
+                                   0x00, // starting address Hi
+                                   120,  // starting address Lo
+                                   0x00, // quantity Hi
+                                   0x10, // quantity Lo
+                               }),
+                               WrapPDU(std::vector<int>{
+                                   0x03, // function code
+                                   0x20, // byte count
+                                   // "2.4.2-rc12345678" in modbus regs
+                                   0x00, // data Hi
+                                   0x32, // data Lo
+                                   0x00, // data Hi
+                                   0x2e, // data Lo
+                                   0x00, // data Hi
+                                   0x34, // data Lo
+                                   0x00, // data Hi
+                                   0x2e, // data Lo
+                                   0x00, // data Hi
+                                   0x32, // data Lo
+                                   0x00, // data Hi
+                                   0x2d, // data Lo
+                                   0x00, // data Hi
+                                   0x72, // data Lo
+                                   0x00, // data Hi
+                                   0x63, // data Lo
+                                   0x00, // data Hi
+                                   0x31, // data Lo
+                                   0x00, // data Hi
+                                   0x32, // data Lo
+                                   0x00, // data Hi
+                                   0x33, // data Lo
+                                   0x00, // data Hi
+                                   0x34, // data Lo
+                                   0x00, // data Hi
+                                   0x35, // data Lo
+                                   0x00, // data Hi
+                                   0x36, // data Lo
+                                   0x00, // data Hi
+                                   0x37, // data Lo
+                                   0x00, // data Hi
+                                   0x38  // data Lo
+                               }),
+                               __func__);
+            break;
+        }
+        case TModbusExpectations::StringReadHint::TRAILING_ZEROS: {
+            Expector()->Expect(WrapPDU({
+                                   0x03, // function code
+                                   0x00, // starting address Hi
+                                   120,  // starting address Lo
+                                   0x00, // quantity Hi
+                                   0x10, // quantity Lo
+                               }),
+                               WrapPDU(std::vector<int>{
+                                   0x03, // function code
+                                   0x20, // byte count
+                                   // "2.4.2-rc1" in modbus regs
+                                   0x00, // data Hi
+                                   0x32, // data Lo
+                                   0x00, // data Hi
+                                   0x2e, // data Lo
+                                   0x00, // data Hi
+                                   0x34, // data Lo
+                                   0x00, // data Hi
+                                   0x2e, // data Lo
+                                   0x00, // data Hi
+                                   0x32, // data Lo
+                                   0x00, // data Hi
+                                   0x2d, // data Lo
+                                   0x00, // data Hi
+                                   0x72, // data Lo
+                                   0x00, // data Hi
+                                   0x63, // data Lo
+                                   0x00, // data Hi
+                                   0x31, // data Lo
+                                   0x00, // data Hi
+                                   0x00, // data Lo
+                                   0x00, // data Hi
+                                   0x00, // data Lo
+                                   0x00, // data Hi
+                                   0x00, // data Lo
+                                   0x00, // data Hi
+                                   0x00, // data Lo
+                                   0x00, // data Hi
+                                   0x00, // data Lo
+                                   0x00, // data Hi
+                                   0x00, // data Lo
+                                   0x00, // data Hi
+                                   0x00  // data Lo
+                               }),
+                               __func__);
+            break;
+        }
+        case TModbusExpectations::StringReadHint::TRAILING_FF: {
+            Expector()->Expect(WrapPDU({
+                                   0x03, // function code
+                                   0x00, // starting address Hi
+                                   120,  // starting address Lo
+                                   0x00, // quantity Hi
+                                   0x10, // quantity Lo
+                               }),
+                               WrapPDU(std::vector<int>{
+                                   0x03, // function code
+                                   0x20, // byte count
+                                   // "2.4.2-rc1" in modbus regs
+                                   0x00, // data Hi
+                                   0x32, // data Lo
+                                   0x00, // data Hi
+                                   0x2e, // data Lo
+                                   0x00, // data Hi
+                                   0x34, // data Lo
+                                   0x00, // data Hi
+                                   0x2e, // data Lo
+                                   0x00, // data Hi
+                                   0x32, // data Lo
+                                   0x00, // data Hi
+                                   0x2d, // data Lo
+                                   0x00, // data Hi
+                                   0x72, // data Lo
+                                   0x00, // data Hi
+                                   0x63, // data Lo
+                                   0x00, // data Hi
+                                   0x31, // data Lo
+                                   0xFF, // data Hi
+                                   0xFF, // data Lo
+                                   0xFF, // data Hi
+                                   0xFF, // data Lo
+                                   0xFF, // data Hi
+                                   0xFF, // data Lo
+                                   0xFF, // data Hi
+                                   0xFF, // data Lo
+                                   0xFF, // data Hi
+                                   0xFF, // data Lo
+                                   0xFF, // data Hi
+                                   0xFF, // data Lo
+                                   0xFF, // data Hi
+                                   0xFF  // data Lo
+                               }),
+                               __func__);
+            break;
+        }
+        case TModbusExpectations::StringReadHint::ZERO_AND_TRASH: {
+            Expector()->Expect(WrapPDU({
+                                   0x03, // function code
+                                   0x00, // starting address Hi
+                                   120,  // starting address Lo
+                                   0x00, // quantity Hi
+                                   0x10, // quantity Lo
+                               }),
+                               WrapPDU(std::vector<int>{
+                                   0x03, // function code
+                                   0x20, // byte count
+                                   // "2.4.2-rc1" in modbus regs
+                                   0x00, // data Hi
+                                   0x32, // data Lo
+                                   0x00, // data Hi
+                                   0x2e, // data Lo
+                                   0x00, // data Hi
+                                   0x34, // data Lo
+                                   0x00, // data Hi
+                                   0x2e, // data Lo
+                                   0x00, // data Hi
+                                   0x32, // data Lo
+                                   0x00, // data Hi
+                                   0x2d, // data Lo
+                                   0x00, // data Hi
+                                   0x72, // data Lo
+                                   0x00, // data Hi
+                                   0x63, // data Lo
+                                   0x00, // data Hi
+                                   0x31, // data Lo
+                                   0x00, // data Hi
+                                   0x00, // data Lo
+                                   0x00, // data Hi
+                                   0x31, // data Lo
+                                   0x00, // data Hi
+                                   0x31, // data Lo
+                                   0x00, // data Hi
+                                   0x31, // data Lo
+                                   0x00, // data Hi
+                                   0x31, // data Lo
+                                   0x00, // data Hi
+                                   0x31, // data Lo
+                                   0x00, // data Hi
+                                   0x31  // data Lo
+                               }),
+                               __func__);
+            break;
+        }
+    }
 }
 
 // read 2 holding

@@ -217,17 +217,23 @@ TEST_F(TModbusTest, ReadHoldingRegiterWithOffsetWriteOptions)
 
 TEST_F(TModbusTest, ReadStringZeroBytesEnd)
 {
-    EnqueueStringReadResponse();
+    const std::vector<std::string> responses = {"2.4.2-rc1", "2.4.2-rc1", "2.4.2-rc1", "2.4.2-rc12345678"};
+    EnqueueStringReadResponse(TModbusExpectations::TRAILING_ZEROS);
+    EnqueueStringReadResponse(TModbusExpectations::ZERO_AND_TRASH);
+    EnqueueStringReadResponse(TModbusExpectations::TRAILING_FF);
+    EnqueueStringReadResponse(TModbusExpectations::FULL_OF_CHARS);
 
-    auto range = ModbusDev->CreateRegisterRange();
-    range->Add(ModbusHoldingString, std::chrono::milliseconds::max());
-    ModbusDev->ReadRegisterRange(range);
-    auto registerList = range->RegisterList();
-    EXPECT_EQ(registerList.size(), 1);
-    auto reg = registerList.front();
-    EXPECT_EQ(GetUint32RegisterAddress(reg->GetAddress()), 120);
-    EXPECT_FALSE(reg->GetErrorState().test(TRegister::TError::ReadError));
-    EXPECT_EQ(reg->GetValue().Get<std::string>(), "2.4.2-rc1");
+    for (int i = 0; i < 4; ++i) {
+        auto range = ModbusDev->CreateRegisterRange();
+        range->Add(ModbusHoldingString, std::chrono::milliseconds::max());
+        ModbusDev->ReadRegisterRange(range);
+        auto registerList = range->RegisterList();
+        EXPECT_EQ(registerList.size(), 1);
+        auto reg = registerList.front();
+        EXPECT_EQ(GetUint32RegisterAddress(reg->GetAddress()), 120);
+        EXPECT_FALSE(reg->GetErrorState().test(TRegister::TError::ReadError));
+        EXPECT_EQ(reg->GetValue().Get<std::string>(), responses[i]);
+    }
 
     SerialPort->Close();
 }

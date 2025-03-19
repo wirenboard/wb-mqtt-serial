@@ -1,3 +1,9 @@
+wb-mqtt-serial (2.157.4) stable; urgency=medium
+
+  * Use 0x00 or 0xFF as end marker when reading strings from Modbus registers
+
+ -- Petr Krasnoshchekov <petr.krasnoshchekov@wirenboard.com>  Wed, 19 Mar 2025 12:16:32 +0500
+
 wb-mqtt-serial (2.157.3) stable; urgency=medium
 
   * WB-MRWM2 template: Change the default overvoltage threshold to 242V
