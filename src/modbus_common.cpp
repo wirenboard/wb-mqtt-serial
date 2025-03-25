@@ -597,7 +597,7 @@ namespace Modbus // modbus protocol common utilities
         std::string str;
         for (; startIt != endIt; ++startIt) {
             auto ch = static_cast<char>(*startIt);
-            if (ch == '\0' || ch == 0xFF) {
+            if (ch == '\0' || ch == '\xFF') {
                 break;
             }
             str.push_back(ch);
