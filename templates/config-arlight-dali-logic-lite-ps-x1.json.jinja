@@ -44,6 +44,18 @@
                 "enabled": {{enabled}}
             },
             {
+                "name": "Group {{G}} Color Temperature",
+                "write_address": "{{1920 + G}}",
+                "reg_type": "holding",
+                "type": "range",
+                "sporadic": false,
+                "format": "u16",
+                "group": "group_commands",
+                "enabled": {{enabled}},
+                "min": 80,
+                "max": 1000
+            },
+            {
                 "name": "Group {{G}} Scene",
                 "address": "{{640 + G}}",
                 "reg_type": "holding",
@@ -69,6 +81,18 @@
                 "readonly": true,
                 "group": "individual_commands",
                 "enabled": {{enabled}}
+            },
+            {
+                "name": "Device {{A}} Color Temperature",
+                "write_address": "{{1792 + A}}",
+                "reg_type": "holding",
+                "type": "range",
+                "sporadic": false,
+                "format": "u16",
+                "group": "individual_commands",
+                "enabled": {{enabled}},
+                "min": 80,
+                "max": 1000
             },
             {
                 "name": "Device {{A}} Brightness",
@@ -118,6 +142,7 @@
 		        {% for G in range(0, 16) -%}
 			    "Group {{G}} Brightness": "Яркость группы {{G}}",
 			    "Group {{G}} Brightness Cache": "Яркость (кешированная) группы {{G}}",
+                "Group {{G}} Color Temperature": "Цветовая температура группы {{G}}",
 			    "Group {{G}} Scene": "Активация сцены группы {{G}}",
 		        {% endfor -%}
 		        {% for A in range(0, 64) -%}
@@ -125,6 +150,7 @@
 			    "Device {{A}} Status": "Статус устройства {{A}}",
 			    "Device {{A}} Brightness": "Яркость устройства {{A}}",
 			    "Device {{A}} Brightness Cache": "Яркость (кешированная) устройства {{A}}",
+                "Device {{A}} Color Temperature": "Цветовая температура устройства {{A}}",
 			    "Device {{A}} Scene": "Активация сцены устройства {{A}}"{{comma}}
 		        {% endfor -%}
             }
