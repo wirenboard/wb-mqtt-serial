@@ -2,7 +2,7 @@ wb-mqtt-serial (2.157.6) stable; urgency=medium
 
   * Fix build with gcc14
 
- -- Nikolay Korotkiy <nikolay.korotkiy@wirenboard.com> Thu, 27 Mar 2025 16:30:00 +0400
+ -- Nikolay Korotkiy <nikolay.korotkiy@wirenboard.com>  Thu, 27 Mar 2025 16:30:00 +0400
 
 wb-mqtt-serial (2.157.5) stable; urgency=medium
 
