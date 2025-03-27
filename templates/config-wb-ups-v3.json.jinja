@@ -68,6 +68,77 @@
         ],
         "channels": [
             {
+                "id": "input_voltage",
+                "name": "Input Voltage",
+                "units": "V",
+                "scale": 0.001,
+                "round_to": 0.01,
+                "reg_type": "input",
+                "address": 0,
+                "group": "g_backup_power_supply"
+            },
+            {
+                "id": "output_voltage",
+                "name": "Output Voltage",
+                "units": "V",
+                "scale": 0.001,
+                "round_to": 0.01,
+                "reg_type": "input",
+                "address": 1,
+                "group": "g_backup_power_supply"
+            },
+            {
+                "id": "battery_voltage",
+                "name": "Battery Voltage",
+                "units": "V",
+                "scale": 0.001,
+                "round_to": 0.01,
+                "reg_type": "input",
+                "address": 2,
+                "group": "g_backup_power_supply"
+            },
+            {
+                "id": "battery_current",
+                "name": "Battery Current",
+                "units": "A",
+                "scale": 0.001,
+                "round_to": 0.01,
+                "format": "s16",
+                "reg_type": "input",
+                "address": 3,
+                "group": "g_backup_power_supply"
+            },
+            {
+                "id": "input_current_for_charging",
+                "name": "Input Current for Charging",
+                "units": "A",
+                "scale": 0.001,
+                "round_to": 0.01,
+                "reg_type": "input",
+                "address": 4,
+                "group": "g_backup_power_supply"
+            },
+            {
+                "id": "load_current_when_powered_from_battery",
+                "name": "Load Current when Powered from Battery",
+                "units": "A",
+                "scale": 0.001,
+                "round_to": 0.01,
+                "reg_type": "input",
+                "address": 5,
+                "group": "g_backup_power_supply"
+            },
+            {
+                "id": "battery_temperature",
+                "name": "Battery Temperature",
+                "units": "deg C",
+                "scale": 0.01,
+                "reg_type": "input",
+                "address": 6,
+                "group": "g_backup_power_supply"
+            },
+
+            {
                 "id": "serial",
                 "name": "Serial",
                 "type": "text",
