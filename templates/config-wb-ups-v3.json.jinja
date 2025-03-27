@@ -1,0 +1,155 @@
+{% set title_en = title_en | default("WB-UPS v.3 (Uninterruptible Power Supply)") -%}
+{% set title_ru = title_ru | default("WB-UPS v.3 (модуль резервного питания)") -%}
+{% set device_type = device_type | default("wb_ups_v3") -%}
+{% set group = group | default("g-wb") -%}
+{% set device_name = device_name | default("WB-UPS v.3") -%}
+{% set device_id = device_id | default("wb_ups_v3") -%}
+
+{
+    "title": "template_title",
+    "device_type": "{{ device_type }}",
+    "group": "{{ group }}",
+    "hw": [
+        {
+            "signature": "WB-UPS v.3"
+        }
+    ],
+    "device": {
+        "name": "{{ device_name }}",
+        "id": "{{ device_id }}",
+        "max_read_registers": 0,
+        "response_timeout_ms": 1,
+        "frame_timeout_ms": 8,
+        "enable_wb_continuous_read": true,
+
+        "groups": [
+            {
+                "title": "General",
+                "id": "general"
+            },
+            {
+                "title": "HW Info",
+                "id": "hw_info"
+            },
+            {
+                "title": "Debug",
+                "id": "debug"
+            }
+        ],
+        "parameters": [
+            {
+                "id": "baud_rate",
+                "title": "Baud Rate",
+                "description": "baud_rate_description",
+                "address": 110,
+                "reg_type": "holding",
+                "enum": [96, 192, 384, 576, 1152],
+                "default": 96,
+                "enum_titles": [
+                    "9600",
+                    "19200",
+                    "38400",
+                    "57600",
+                    "115200"
+                ],
+                "group": "general",
+                "order": 1
+            },
+            {
+                "id": "disable_indication",
+                "title": "Status LED",
+                "address": 130,
+                "reg_type": "holding",
+                "enum": [0, 1],
+                "enum_titles": ["Enabled", "Disabled"],
+                "default": 0,
+                "group": "general"
+            }
+        ],
+        "channels": [
+            {
+                "id": "serial",
+                "name": "Serial",
+                "type": "text",
+                "reg_type": "input",
+                "address": 270,
+                "format": "u32",
+                "group": "hw_info"
+            },
+            {
+                "id": "fw_version",
+                "name": "FW Version",
+                "reg_type": "input",
+                "address": 250,
+                "type": "text",
+                "format": "string",
+                "string_data_size": 16,
+                "enabled": false,
+                "group": "hw_info"
+            },
+            {
+                "id": "supply_voltage",
+                "name": "Supply Voltage",
+                "reg_type": "input",
+                "address": 121,
+                "units": "V",
+                "scale": 0.001,
+                "enabled": false,
+                "group": "hw_info"
+            },
+            {
+                "id": "uptime",
+                "name": "Uptime",
+                "reg_type": "input",
+                "address": 104,
+                "units": "s",
+                "format": "u32",
+                "enabled": false,
+                "group": "hw_info"
+            },
+            {
+                "id": "mcu_temperature",
+                "name": "MCU Temperature",
+                "reg_type": "input",
+                "address": 124,
+                "units": "deg C",
+                "format": "s16",
+                "scale": 0.1,
+                "enabled": false,
+                "group": "hw_info"
+            },
+            {
+                "id": "mcu_voltage",
+                "name": "MCU Voltage",
+                "reg_type": "input",
+                "address": 123,
+                "scale": 0.001,
+                "units": "V",
+                "enabled": false,
+                "group": "hw_info"
+            }
+        ],
+        "translations": {
+            "en": {
+                "template_title": "{{ title_en }}",
+                "baud_rate_description": "Make sure that communication with device is established before changing this parameter. Select required baud rate, save configuration and then change port baud rate to the same value."
+            },
+            "ru": {
+                "template_title": "{{ title_ru }}",
+                "General": "Общее",
+                "HW Info": "Данные модуля",
+                "Debug": "Диагностика",
+                "Baud Rate": "Скорость обмена",
+                "baud_rate_description": "Перед изменением параметра убедитесь, что связь с устройством установлена. Выберите нужную скорость обмена, сохраните конфигурацию, а затем укажите в настройках порта эту же скорость.",
+
+                "Serial": "Серийный номер",
+                "FW Version": "Версия прошивки",
+                "Supply Voltage": "Напряжение питания",
+                "Uptime": "Время работы с момента включения",
+                "MCU Temperature": "Температура МК",
+                "MCU Voltage": "Напряжение питания МК",
+                "Status LED": "Индикатор состояния"
+            }
+        }
+    }
+}
