@@ -138,6 +138,33 @@
                 "group": "g_backup_power_supply"
             },
 
+            {% set chips = ["charger", "discharger"] -%}
+            {% set values = ["vbus", "vbat", "ibus", "ibat"] -%}
+            {% set types = ["raw", "real"] -%}
+
+            {% for type in types -%}
+            {% set type_loop = loop -%}
+            {% for chip in chips -%}
+            {% set chip_loop = loop -%}
+            {% for value in values -%}
+            {
+                "id": "{{ chip }}_{{ value }}_{{ type }}",
+                "name": "{{ chip.capitalize() }} {{ value.capitalize() }} {{ type.capitalize() }}",
+                "reg_type": "input",
+                "address": {{ 0x400 + type_loop.index0 * 0x20 + chip_loop.index0 * 0x10 + loop.index0 }},
+                "type": "value",
+                {% if type == "real" -%}
+                "scale": 0.001,
+                "units": "{{ "V" if value.startswith("v") else "A" }}",
+                {% else -%}
+                "scale": 1,
+                {% endif -%}
+                "group": "debug"
+            },
+            {% endfor -%}
+            {% endfor -%}
+            {% endfor -%}
+
             {
                 "id": "serial",
                 "name": "Serial",
