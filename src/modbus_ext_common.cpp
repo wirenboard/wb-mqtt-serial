@@ -4,6 +4,7 @@
 #include "crc16.h"
 #include "log.h"
 #include "serial_exc.h"
+#include <algorithm>
 #include <stddef.h>
 #include <stdint.h>
 #include <vector>
