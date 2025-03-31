@@ -421,10 +421,10 @@ namespace Modbus // modbus protocol common utilities
                                          const TRegisterConfig& reg,
                                          const std::string& str,
                                          uint16_t baseAddress,
-                                         Modbus::TRegisterCache& tmpCache
+                                         Modbus::TRegisterCache& tmpCache,
                                          bool everyByte)
     {
-        uint32_t regCount = std::min(GetModbusDataWidthIn16BitWords(reg), static_cast<uint32_t>(everyByte ? str.size() : str.size() / 2));
+        uint32_t regCount = std::min(GetModbusDataWidthIn16BitWords(reg), static_cast<uint32_t>(everyByte ? str.size() / 2 : str.size()));
         data.resize(regCount * 2);
         TAddress address{0};
         address.Type = reg.Type;
