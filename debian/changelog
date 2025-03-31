@@ -1,8 +1,14 @@
-wb-mqtt-serial (2.157.6) stable; urgency=medium
+wb-mqtt-serial (2.157.7) stable; urgency=medium
 
   * Fix build with gcc14
 
- -- Nikolay Korotkiy <nikolay.korotkiy@wirenboard.com>  Thu, 27 Mar 2025 16:30:00 +0400
+ -- Nikolay Korotkiy <nikolay.korotkiy@wirenboard.com>  Mon, 31 Mar 2025 16:30:00 +0400
+
+wb-mqtt-serial (2.157.6) stable; urgency=medium
+
+  * Add color temperature channels for arlight-dali-logic-lite-ps-x1
+
+ -- Mikhail Burchu <mikhail.burchu@wirenboard.com>  Mon, 31 Mar 2025 09:00:00 +0300
 
 wb-mqtt-serial (2.157.5) stable; urgency=medium
 
