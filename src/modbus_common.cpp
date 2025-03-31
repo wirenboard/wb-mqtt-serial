@@ -421,15 +421,16 @@ namespace Modbus // modbus protocol common utilities
                                          const TRegisterConfig& reg,
                                          const std::string& str,
                                          uint16_t baseAddress,
-                                         Modbus::TRegisterCache& tmpCache)
+                                         Modbus::TRegisterCache& tmpCache
+                                         bool everyByte)
     {
-        uint32_t regCount = std::min(GetModbusDataWidthIn16BitWords(reg), static_cast<uint32_t>(str.size()));
+        uint32_t regCount = std::min(GetModbusDataWidthIn16BitWords(reg), static_cast<uint32_t>(everyByte ? str.size() : str.size() / 2));
         data.resize(regCount * 2);
         TAddress address{0};
         address.Type = reg.Type;
         for (uint32_t i = 0; (i < regCount); ++i) {
             address.Address = baseAddress + i;
-            uint16_t regData = str[i];
+            uint16_t regData = everyByte ? str[i * 2] << 8 | str[i * 2 + 1] : str[i];
             tmpCache[address.AbsAddress] = regData;
             WriteAs2Bytes(data.data() + i * 2, regData);
         }
@@ -596,11 +597,14 @@ namespace Modbus // modbus protocol common utilities
 
         std::string str;
         for (; startIt != endIt; ++startIt) {
-            auto ch = static_cast<char>(*startIt);
-            if (ch == '\0' || ch == '\xFF') {
-                break;
+            for (int i = 1; i >= (everyByte ? 0 : 1); --i) {
+                auto ch = static_cast<char>(i ? *startIt : *startIt >> 8);
+                if (ch == '\0' || ch == '\xFF') {
+                    startIt = endIt;
+                    break;
+                }
+                str.push_back(ch);
             }
-            str.push_back(ch);
         }
         return str;
     }
@@ -645,9 +649,11 @@ namespace Modbus // modbus protocol common utilities
         auto data16BitWords = range.GetWords();
 
         for (auto reg: range.RegisterList()) {
-            if (reg->Format == RegisterFormat::String) {
-                reg->SetValue(
-                    TRegisterValue{GetStringRegisterValueFromReadData(data16BitWords, range.GetStart(), *reg)});
+            if (reg->Format == RegisterFormat::String || reg->Format == RegisterFormat::String8) {
+                reg->SetValue(TRegisterValue{GetStringRegisterValueFromReadData(data16BitWords,
+                                                                                range.GetStart(),
+                                                                                *reg,
+                                                                                reg->Format == RegisterFormat::String8)});
             } else {
                 reg->SetValue(TRegisterValue{GetRegisterValueFromReadData(data16BitWords, range.GetStart(), *reg)});
             }
@@ -709,8 +715,8 @@ namespace Modbus // modbus protocol common utilities
         auto fn = GetFunction(reg, OperationType::OP_WRITE);
         if (IsPacking(reg)) {
             size_t regCount =
-                reg.Format == RegisterFormat::String
-                    ? ComposeStringWriteRequestData(data, reg, value.Get<std::string>(), addr, tmpCache)
+                reg.Format == RegisterFormat::String || reg.Format == RegisterFormat::String8
+                    ? ComposeStringWriteRequestData(data, reg, value.Get<std::string>(), addr, tmpCache, reg.Format == RegisterFormat::String8)
                     : ComposeRawMultipleWriteRequestData(data, reg, value.Get<uint64_t>(), addr, tmpCache, cache);
             WriteTransaction(traits,
                              port,
