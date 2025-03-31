@@ -872,6 +872,42 @@ TEST_F(TSerialClientTest, String)
     EXPECT_EQ('\0', static_cast<char>(Device->Registers[28]));
 }
 
+TEST_F(TSerialClientTest, String8)
+{
+    PRegister reg20 = Reg(20, String8, 1, 0, 0, EWordOrder::BigEndian, 0, 32 * 8);
+    PRegister reg42 = Reg(42, String8, 1, 0, 0, EWordOrder::BigEndian, 0, 32 * 8);
+    SerialClient->AddDevice(Device);
+
+    Note() << "server -> client: 4865:6c6c:6f2c:2077:6f72:6c64:2100, 5157:4552:5459";
+    Device->Registers[20] = 0x4865;
+    Device->Registers[21] = 0x6c6c;
+    Device->Registers[22] = 0x6f2c;
+    Device->Registers[23] = 0x2077;
+    Device->Registers[24] = 0x6f72;
+    Device->Registers[25] = 0x6c64;
+    Device->Registers[26] = 0x2100;
+
+    Device->Registers[42] = 0x5157;
+    Device->Registers[43] = 0x4552;
+    Device->Registers[44] = 0x5459;
+
+    Note() << "Cycle()";
+    SerialClient->Cycle();
+    EXPECT_EQ(std::string("Hello, world!"), GetTextValue(reg20));
+    EXPECT_EQ("QWERTY", GetTextValue(reg42));
+
+    Note() << "client -> server: 4c61:7465:7261:6c75:7300";
+    SerialClient->SetTextValue(reg42, "Lateralus");
+    Note() << "Cycle()";
+    SerialClient->Cycle();
+    EXPECT_EQ("Lateralus", GetTextValue(reg42));
+    EXPECT_EQ(0x4c61, static_cast<char>(Device->Registers[42]));
+    EXPECT_EQ(0x7465, static_cast<char>(Device->Registers[43]));
+    EXPECT_EQ(0x7261, static_cast<char>(Device->Registers[44]));
+    EXPECT_EQ(0x6c75, static_cast<char>(Device->Registers[45]));
+    EXPECT_EQ(0x7300, static_cast<char>(Device->Registers[46]));
+}
+
 TEST_F(TSerialClientTest, offset)
 {
     // create scaled register with offset
