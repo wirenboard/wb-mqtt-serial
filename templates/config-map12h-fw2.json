@@ -831,7 +831,7 @@
             {
                 "name": "Ch 1 NP energy L1",
                 "reg_type": "input",
-                "address": "0x1506",
+                "address": "0x1504",
                 "type": "value",
                 "format": "u32",
                 "scale": 0.291271,
@@ -842,7 +842,7 @@
             {
                 "name": "Ch 1 NN energy L1",
                 "reg_type": "input",
-                "address": "0x1516",
+                "address": "0x1514",
                 "type": "value",
                 "format": "u32",
                 "scale": 0.291271,
@@ -1018,7 +1018,7 @@
             {
                 "name": "Ch 1 NP energy L2",
                 "reg_type": "input",
-                "address": "0x150a",
+                "address": "0x1508",
                 "type": "value",
                 "format": "u32",
                 "scale": 0.291271,
@@ -1029,7 +1029,7 @@
             {
                 "name": "Ch 1 NN energy L2",
                 "reg_type": "input",
-                "address": "0x151a",
+                "address": "0x1518",
                 "type": "value",
                 "format": "u32",
                 "scale": 0.291271,
@@ -1205,7 +1205,7 @@
             {
                 "name": "Ch 1 NP energy L3",
                 "reg_type": "input",
-                "address": "0x150e",
+                "address": "0x150c",
                 "type": "value",
                 "format": "u32",
                 "scale": 0.291271,
@@ -1216,7 +1216,7 @@
             {
                 "name": "Ch 1 NN energy L3",
                 "reg_type": "input",
-                "address": "0x151e",
+                "address": "0x151c",
                 "type": "value",
                 "format": "u32",
                 "scale": 0.291271,
@@ -1362,7 +1362,7 @@
             {
                 "name": "Ch 1 Total NP energy",
                 "reg_type": "input",
-                "address": "0x1502",
+                "address": "0x1500",
                 "type": "value",
                 "format": "u32",
                 "scale": 0.291271,
@@ -1373,7 +1373,7 @@
             {
                 "name": "Ch 1 Total NN energy",
                 "reg_type": "input",
-                "address": "0x1512",
+                "address": "0x1510",
                 "type": "value",
                 "format": "u32",
                 "scale": 0.291271,
@@ -1579,7 +1579,7 @@
             {
                 "name": "Ch 2 NP energy L1",
                 "reg_type": "input",
-                "address": "0x2506",
+                "address": "0x2504",
                 "type": "value",
                 "format": "u32",
                 "scale": 0.291271,
@@ -1590,7 +1590,7 @@
             {
                 "name": "Ch 2 NN energy L1",
                 "reg_type": "input",
-                "address": "0x2516",
+                "address": "0x2514",
                 "type": "value",
                 "format": "u32",
                 "scale": 0.291271,
@@ -1766,7 +1766,7 @@
             {
                 "name": "Ch 2 NP energy L2",
                 "reg_type": "input",
-                "address": "0x250a",
+                "address": "0x2508",
                 "type": "value",
                 "format": "u32",
                 "scale": 0.291271,
@@ -1777,7 +1777,7 @@
             {
                 "name": "Ch 2 NN energy L2",
                 "reg_type": "input",
-                "address": "0x251a",
+                "address": "0x2518",
                 "type": "value",
                 "format": "u32",
                 "scale": 0.291271,
@@ -1953,7 +1953,7 @@
             {
                 "name": "Ch 2 NP energy L3",
                 "reg_type": "input",
-                "address": "0x250e",
+                "address": "0x250c",
                 "type": "value",
                 "format": "u32",
                 "scale": 0.291271,
@@ -1964,7 +1964,7 @@
             {
                 "name": "Ch 2 NN energy L3",
                 "reg_type": "input",
-                "address": "0x251e",
+                "address": "0x251c",
                 "type": "value",
                 "format": "u32",
                 "scale": 0.291271,
@@ -2110,7 +2110,7 @@
             {
                 "name": "Ch 2 Total NP energy",
                 "reg_type": "input",
-                "address": "0x2502",
+                "address": "0x2500",
                 "type": "value",
                 "format": "u32",
                 "scale": 0.291271,
@@ -2121,7 +2121,7 @@
             {
                 "name": "Ch 2 Total NN energy",
                 "reg_type": "input",
-                "address": "0x2512",
+                "address": "0x2510",
                 "type": "value",
                 "format": "u32",
                 "scale": 0.291271,
@@ -2327,7 +2327,7 @@
             {
                 "name": "Ch 3 NP energy L1",
                 "reg_type": "input",
-                "address": "0x3506",
+                "address": "0x3504",
                 "type": "value",
                 "format": "u32",
                 "scale": 0.291271,
@@ -2338,7 +2338,7 @@
             {
                 "name": "Ch 3 NN energy L1",
                 "reg_type": "input",
-                "address": "0x3516",
+                "address": "0x3514",
                 "type": "value",
                 "format": "u32",
                 "scale": 0.291271,
@@ -2514,7 +2514,7 @@
             {
                 "name": "Ch 3 NP energy L2",
                 "reg_type": "input",
-                "address": "0x350a",
+                "address": "0x3508",
                 "type": "value",
                 "format": "u32",
                 "scale": 0.291271,
@@ -2525,7 +2525,7 @@
             {
                 "name": "Ch 3 NN energy L2",
                 "reg_type": "input",
-                "address": "0x351a",
+                "address": "0x3518",
                 "type": "value",
                 "format": "u32",
                 "scale": 0.291271,
@@ -2701,7 +2701,7 @@
             {
                 "name": "Ch 3 NP energy L3",
                 "reg_type": "input",
-                "address": "0x350e",
+                "address": "0x350c",
                 "type": "value",
                 "format": "u32",
                 "scale": 0.291271,
@@ -2712,7 +2712,7 @@
             {
                 "name": "Ch 3 NN energy L3",
                 "reg_type": "input",
-                "address": "0x351e",
+                "address": "0x351c",
                 "type": "value",
                 "format": "u32",
                 "scale": 0.291271,
@@ -2858,7 +2858,7 @@
             {
                 "name": "Ch 3 Total NP energy",
                 "reg_type": "input",
-                "address": "0x3502",
+                "address": "0x3500",
                 "type": "value",
                 "format": "u32",
                 "scale": 0.291271,
@@ -2869,7 +2869,7 @@
             {
                 "name": "Ch 3 Total NN energy",
                 "reg_type": "input",
-                "address": "0x3512",
+                "address": "0x3510",
                 "type": "value",
                 "format": "u32",
                 "scale": 0.291271,
@@ -3075,7 +3075,7 @@
             {
                 "name": "Ch 4 NP energy L1",
                 "reg_type": "input",
-                "address": "0x4506",
+                "address": "0x4504",
                 "type": "value",
                 "format": "u32",
                 "scale": 0.291271,
@@ -3086,7 +3086,7 @@
             {
                 "name": "Ch 4 NN energy L1",
                 "reg_type": "input",
-                "address": "0x4516",
+                "address": "0x4514",
                 "type": "value",
                 "format": "u32",
                 "scale": 0.291271,
@@ -3262,7 +3262,7 @@
             {
                 "name": "Ch 4 NP energy L2",
                 "reg_type": "input",
-                "address": "0x450a",
+                "address": "0x4508",
                 "type": "value",
                 "format": "u32",
                 "scale": 0.291271,
@@ -3273,7 +3273,7 @@
             {
                 "name": "Ch 4 NN energy L2",
                 "reg_type": "input",
-                "address": "0x451a",
+                "address": "0x4518",
                 "type": "value",
                 "format": "u32",
                 "scale": 0.291271,
@@ -3449,7 +3449,7 @@
             {
                 "name": "Ch 4 NP energy L3",
                 "reg_type": "input",
-                "address": "0x450e",
+                "address": "0x450c",
                 "type": "value",
                 "format": "u32",
                 "scale": 0.291271,
@@ -3460,7 +3460,7 @@
             {
                 "name": "Ch 4 NN energy L3",
                 "reg_type": "input",
-                "address": "0x451e",
+                "address": "0x451c",
                 "type": "value",
                 "format": "u32",
                 "scale": 0.291271,
@@ -3606,7 +3606,7 @@
             {
                 "name": "Ch 4 Total NP energy",
                 "reg_type": "input",
-                "address": "0x4502",
+                "address": "0x4500",
                 "type": "value",
                 "format": "u32",
                 "scale": 0.291271,
@@ -3617,7 +3617,7 @@
             {
                 "name": "Ch 4 Total NN energy",
                 "reg_type": "input",
-                "address": "0x4512",
+                "address": "0x4510",
                 "type": "value",
                 "format": "u32",
                 "scale": 0.291271,
