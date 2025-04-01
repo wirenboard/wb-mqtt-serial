@@ -579,15 +579,28 @@ namespace Modbus // modbus protocol common utilities
                                                    size_t rangeStartAddr,
                                                    const TRegisterConfig& reg)
     {
-        auto addr = GetUint32RegisterAddress(reg.GetAddress());
-        const auto registerDataSize = GetModbusDataWidthIn16BitWords(reg);
-        std::string str;
+        const auto addr = GetUint32RegisterAddress(reg.GetAddress());
+        if (rangeStartAddr > addr) {
+            return std::string();
+        }
 
-        for (uint32_t i = 0; i < registerDataSize; ++i) {
-            auto ch = static_cast<char>(rangeData[addr - rangeStartAddr + i]);
-            if (ch != '\0' and ch != 0xFF) {
-                str.push_back(ch);
+        const auto startPosInRange = addr - rangeStartAddr;
+        if (startPosInRange >= rangeData.size()) {
+            return std::string();
+        }
+        auto startIt = rangeData.begin() + startPosInRange;
+
+        const auto registerDataSize = GetModbusDataWidthIn16BitWords(reg);
+        const auto endPosInRange = std::min(startPosInRange + registerDataSize, rangeData.size());
+        auto endIt = rangeData.begin() + endPosInRange;
+
+        std::string str;
+        for (; startIt != endIt; ++startIt) {
+            auto ch = static_cast<char>(*startIt);
+            if (ch == '\0' || ch == '\xFF') {
+                break;
             }
+            str.push_back(ch);
         }
         return str;
     }
