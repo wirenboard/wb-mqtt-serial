@@ -578,7 +578,8 @@ namespace Modbus // modbus protocol common utilities
 
     std::string GetStringRegisterValueFromReadData(const std::vector<uint16_t>& rangeData,
                                                    size_t rangeStartAddr,
-                                                   const TRegisterConfig& reg)
+                                                   const TRegisterConfig& reg,
+                                                   bool everyByte)
     {
         const auto addr = GetUint32RegisterAddress(reg.GetAddress());
         if (rangeStartAddr > addr) {
@@ -904,8 +905,11 @@ namespace Modbus // modbus protocol common utilities
 
         std::vector<uint16_t> data16BitWords(modbusRegisterCount);
         FillRegisters(data16BitWords, responseData);
-        if (registerConfig.Format == RegisterFormat::String) {
-            return TRegisterValue{GetStringRegisterValueFromReadData(data16BitWords, addr, registerConfig)};
+        if (registerConfig.Format == RegisterFormat::String || registerConfig.Format == RegisterFormat::String8) {
+            return TRegisterValue{GetStringRegisterValueFromReadData(data16BitWords,
+                                                                     addr,
+                                                                     registerConfig,
+                                                                     registerConfig.Format == RegisterFormat::String8)};
         }
         return TRegisterValue{GetRegisterValueFromReadData(data16BitWords, addr, registerConfig)};
     }
