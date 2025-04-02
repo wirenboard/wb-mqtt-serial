@@ -598,7 +598,9 @@ namespace Modbus // modbus protocol common utilities
         auto endIt = rangeData.begin() + endPosInRange;
 
         std::string str;
-        size_t offset = reg.Format == RegisterFormat::String8 ? 1 : 0, shift = offset;
+        size_t offset = reg.Format == RegisterFormat::String8 ? 1 : 0;
+        size_t shift = offset;
+
         while (startIt != endIt) {
             auto ch = static_cast<char>(*startIt >> shift * 8);
             if (ch == '\0' || ch == '\xFF') {
