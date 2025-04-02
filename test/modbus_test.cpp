@@ -36,6 +36,7 @@ protected:
     PRegister ModbusHoldingU16WithWriteBitOffset;
 
     PRegister ModbusHoldingString;
+    PRegister ModbusHoldingString8;
 };
 
 TModbusDeviceConfig TModbusTest::GetDeviceConfig() const
@@ -69,7 +70,7 @@ void TModbusTest::SetUp()
     ModbusHoldingU64Multi = ModbusDev->AddRegister(TRegisterConfig::Create(Modbus::REG_HOLDING_MULTI, 95, U64));
     ModbusHoldingU16Multi = ModbusDev->AddRegister(TRegisterConfig::Create(Modbus::REG_HOLDING_MULTI, 99, U16));
 
-    TRegisterDesc regAddrDesc, regStringDesc;
+    TRegisterDesc regAddrDesc;
     regAddrDesc.Address = std::make_shared<TUint32RegisterAddress>(110);
     regAddrDesc.WriteAddress = std::make_shared<TUint32RegisterAddress>(115);
 
@@ -84,10 +85,15 @@ void TModbusTest::SetUp()
     ModbusHoldingU16WithWriteBitOffset =
         ModbusDev->AddRegister(TRegisterConfig::Create(Modbus::REG_HOLDING, regAddrDesc, RegisterFormat::U16));
 
+    TRegisterDesc regStringDesc;
     regStringDesc.Address = std::make_shared<TUint32RegisterAddress>(120);
     regStringDesc.DataWidth = 16 * sizeof(char) * 8;
-
     ModbusHoldingString = ModbusDev->AddRegister(TRegisterConfig::Create(Modbus::REG_HOLDING, regStringDesc, String));
+
+    TRegisterDesc regString8Desc;
+    regString8Desc.Address = std::make_shared<TUint32RegisterAddress>(142);
+    regString8Desc.DataWidth = 8 * sizeof(char) * 8;
+    ModbusHoldingString8 = ModbusDev->AddRegister(TRegisterConfig::Create(Modbus::REG_HOLDING, regString8Desc, String8));
 
     SerialPort->Open();
 }
@@ -215,7 +221,7 @@ TEST_F(TModbusTest, ReadHoldingRegiterWithOffsetWriteOptions)
     EXPECT_EQ(reg->GetValue(), 5);
 }
 
-TEST_F(TModbusTest, ReadStringZeroBytesEnd)
+TEST_F(TModbusTest, ReadString)
 {
     const std::vector<std::string> responses = {"2.4.2-rc1", "2.4.2-rc1", "2.4.2-rc1", "2.4.2-rc12345678"};
     EnqueueStringReadResponse(TModbusExpectations::TRAILING_ZEROS);
@@ -231,6 +237,29 @@ TEST_F(TModbusTest, ReadStringZeroBytesEnd)
         EXPECT_EQ(registerList.size(), 1);
         auto reg = registerList.front();
         EXPECT_EQ(GetUint32RegisterAddress(reg->GetAddress()), 120);
+        EXPECT_FALSE(reg->GetErrorState().test(TRegister::TError::ReadError));
+        EXPECT_EQ(reg->GetValue().Get<std::string>(), responses[i]);
+    }
+
+    SerialPort->Close();
+}
+
+TEST_F(TModbusTest, ReadString8)
+{
+    const std::vector<std::string> responses = {"2.4.2-rc1", "2.4.2-rc1", "2.4.2-rc1", "2.4.2-rc12345678"};
+    EnqueueString8ReadResponse(TModbusExpectations::TRAILING_ZEROS);
+    EnqueueString8ReadResponse(TModbusExpectations::ZERO_AND_TRASH);
+    EnqueueString8ReadResponse(TModbusExpectations::TRAILING_FF);
+    EnqueueString8ReadResponse(TModbusExpectations::FULL_OF_CHARS);
+
+    for (int i = 0; i < 4; ++i) {
+        auto range = ModbusDev->CreateRegisterRange();
+        range->Add(ModbusHoldingString8, std::chrono::milliseconds::max());
+        ModbusDev->ReadRegisterRange(range);
+        auto registerList = range->RegisterList();
+        EXPECT_EQ(registerList.size(), 1);
+        auto reg = registerList.front();
+        EXPECT_EQ(GetUint32RegisterAddress(reg->GetAddress()), 142);
         EXPECT_FALSE(reg->GetErrorState().test(TRegister::TError::ReadError));
         EXPECT_EQ(reg->GetValue().Get<std::string>(), responses[i]);
     }

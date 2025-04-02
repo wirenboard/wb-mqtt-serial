@@ -252,7 +252,7 @@ TRegisterConfig::TRegisterConfig(int type,
 
     auto maxOffset = RegisterFormatByteWidth(Format) * 8;
 
-    if ((Format != RegisterFormat::String) && (Address.DataOffset >= maxOffset)) {
+    if ((Format != RegisterFormat::String) && (Format != RegisterFormat::String8) && (Address.DataOffset >= maxOffset)) {
         throw TSerialDeviceException("bit offset must not exceed " + std::to_string(maxOffset) + " bits");
     }
 
@@ -277,7 +277,7 @@ uint32_t TRegisterConfig::GetByteWidth() const
 
 uint8_t TRegisterConfig::Get16BitWidth() const
 {
-    if (Format == RegisterFormat::String) {
+    if (Format == RegisterFormat::String || Format == RegisterFormat::String8) {
         return GetDataWidth() / (sizeof(char) * 8);
     }
     auto totalBit = std::max(GetByteWidth() * 8, Address.DataOffset + GetDataWidth());

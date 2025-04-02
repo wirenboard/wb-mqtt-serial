@@ -30,6 +30,7 @@ public:
     void EnqueueDiscreteReadResponse(uint8_t exception = 0);
     void EnqueueHoldingReadS64Response(uint8_t exception = 0);
     void EnqueueStringReadResponse(StringReadHint hint = TRAILING_ZEROS);
+    void EnqueueString8ReadResponse(StringReadHint hint = TRAILING_ZEROS);
     void EnqueueHoldingReadF32Response(uint8_t exception = 0);
     void EnqueueHoldingReadU16Response(uint8_t exception = 0, bool timeout = false);
     void EnqueueInputReadU16Response(uint8_t exception = 0);
