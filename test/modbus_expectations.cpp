@@ -946,6 +946,47 @@ void TModbusExpectations::EnqueueStringReadResponse(TModbusExpectations::StringR
     }
 }
 
+void TModbusExpectations::EnqueueStringWriteResponse(uint8_t exception)
+{
+    Expector()->Expect(
+        WrapPDU({
+            0x10, // function code
+            0x00, // starting address Hi
+            120,  // starting address Lo
+            0x00, // quantity Hi
+            0x09, // quantity Lo
+            0x12, // byte count
+            0x00, // data Hi
+            0x4c, // data Lo
+            0x00, // data Hi
+            0x61, // data Lo
+            0x00, // data Hi
+            0x74, // data Lo
+            0x00, // data Hi
+            0x65, // data Lo
+            0x00, // data Hi
+            0x72, // data Lo
+            0x00, // data Hi
+            0x61, // data Lo
+            0x00, // data Hi
+            0x6c, // data Lo
+            0x00, // data Hi
+            0x75, // data Lo
+            0x00, // data Hi
+            0x73  // data Lo
+        }),
+        WrapPDU(exception == 0 ? std::vector<int>{
+                                     0x10, // function code
+                                     0x00, // starting address Hi
+                                     120,  // starting address Lo
+                                     0x00, // quantity Hi
+                                     0x09, // quantity Lo
+                                 }
+                               : std::vector<int>{0x90, // function code + 80
+                                                  exception}),
+        __func__);
+}
+
 // read 8 holding (as String8)
 void TModbusExpectations::EnqueueString8ReadResponse(TModbusExpectations::StringReadHint hint)
 {
@@ -954,7 +995,7 @@ void TModbusExpectations::EnqueueString8ReadResponse(TModbusExpectations::String
             Expector()->Expect(WrapPDU({
                                    0x03, // function code
                                    0x00, // starting address Hi
-                                   0x8e, // starting address Lo
+                                   142,  // starting address Lo
                                    0x00, // quantity Hi
                                    0x08, // quantity Lo
                                }),
@@ -986,7 +1027,7 @@ void TModbusExpectations::EnqueueString8ReadResponse(TModbusExpectations::String
             Expector()->Expect(WrapPDU({
                                    0x03, // function code
                                    0x00, // starting address Hi
-                                   0x8e, // starting address Lo
+                                   142,  // starting address Lo
                                    0x00, // quantity Hi
                                    0x08, // quantity Lo
                                }),
@@ -1018,7 +1059,7 @@ void TModbusExpectations::EnqueueString8ReadResponse(TModbusExpectations::String
             Expector()->Expect(WrapPDU({
                                    0x03, // function code
                                    0x00, // starting address Hi
-                                   0x8e, // starting address Lo
+                                   142,  // starting address Lo
                                    0x00, // quantity Hi
                                    0x08, // quantity Lo
                                }),
@@ -1050,7 +1091,7 @@ void TModbusExpectations::EnqueueString8ReadResponse(TModbusExpectations::String
             Expector()->Expect(WrapPDU({
                                    0x03, // function code
                                    0x00, // starting address Hi
-                                   0x8e, // starting address Lo
+                                   142,  // starting address Lo
                                    0x00, // quantity Hi
                                    0x08, // quantity Lo
                                }),
@@ -1079,6 +1120,39 @@ void TModbusExpectations::EnqueueString8ReadResponse(TModbusExpectations::String
             break;
         }
     }
+}
+
+void TModbusExpectations::EnqueueString8WriteResponse(uint8_t exception)
+{
+    Expector()->Expect(
+        WrapPDU({
+            0x10, // function code
+            0x00, // starting address Hi
+            142,  // starting address Lo
+            0x00, // quantity Hi
+            0x05, // quantity Lo
+            0x0a, // byte count
+            0x4c, // data Hi
+            0x61, // data Lo
+            0x74, // data Hi
+            0x65, // data Lo
+            0x72, // data Hi
+            0x61, // data Lo
+            0x6c, // data Hi
+            0x75, // data Lo
+            0x73, // data Hi
+            0x00  // data Lo
+        }),
+        WrapPDU(exception == 0 ? std::vector<int>{
+                                     0x10, // function code
+                                     0x00, // starting address Hi
+                                     142,  // starting address Lo
+                                     0x00, // quantity Hi
+                                     0x05, // quantity Lo
+                                 }
+                               : std::vector<int>{0x90, // function code + 80
+                                                  exception}),
+        __func__);
 }
 
 // read 2 holding

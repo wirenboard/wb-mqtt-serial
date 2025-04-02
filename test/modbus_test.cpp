@@ -35,8 +35,11 @@ protected:
     PRegister ModbusHoldingU16WithAddressWrite;
     PRegister ModbusHoldingU16WithWriteBitOffset;
 
-    PRegister ModbusHoldingString;
-    PRegister ModbusHoldingString8;
+    PRegister ModbusHoldingStringRead;
+    PRegister ModbusHoldingStringWrite;
+
+    PRegister ModbusHoldingString8Read;
+    PRegister ModbusHoldingString8Write;
 };
 
 TModbusDeviceConfig TModbusTest::GetDeviceConfig() const
@@ -88,12 +91,14 @@ void TModbusTest::SetUp()
     TRegisterDesc regStringDesc;
     regStringDesc.Address = std::make_shared<TUint32RegisterAddress>(120);
     regStringDesc.DataWidth = 16 * sizeof(char) * 8;
-    ModbusHoldingString = ModbusDev->AddRegister(TRegisterConfig::Create(Modbus::REG_HOLDING, regStringDesc, String));
+    ModbusHoldingStringRead = ModbusDev->AddRegister(TRegisterConfig::Create(Modbus::REG_HOLDING, regStringDesc, String));
+    ModbusHoldingStringWrite = ModbusDev->AddRegister(TRegisterConfig::Create(Modbus::REG_HOLDING_MULTI, regStringDesc, String));
 
     TRegisterDesc regString8Desc;
     regString8Desc.Address = std::make_shared<TUint32RegisterAddress>(142);
     regString8Desc.DataWidth = 8 * sizeof(char) * 8;
-    ModbusHoldingString8 = ModbusDev->AddRegister(TRegisterConfig::Create(Modbus::REG_HOLDING, regString8Desc, String8));
+    ModbusHoldingString8Read = ModbusDev->AddRegister(TRegisterConfig::Create(Modbus::REG_HOLDING, regString8Desc, String8));
+    ModbusHoldingString8Write = ModbusDev->AddRegister(TRegisterConfig::Create(Modbus::REG_HOLDING_MULTI, regString8Desc, String8));
 
     SerialPort->Open();
 }
@@ -231,7 +236,7 @@ TEST_F(TModbusTest, ReadString)
 
     for (int i = 0; i < 4; ++i) {
         auto range = ModbusDev->CreateRegisterRange();
-        range->Add(ModbusHoldingString, std::chrono::milliseconds::max());
+        range->Add(ModbusHoldingStringRead, std::chrono::milliseconds::max());
         ModbusDev->ReadRegisterRange(range);
         auto registerList = range->RegisterList();
         EXPECT_EQ(registerList.size(), 1);
@@ -241,6 +246,13 @@ TEST_F(TModbusTest, ReadString)
         EXPECT_EQ(reg->GetValue().Get<std::string>(), responses[i]);
     }
 
+    SerialPort->Close();
+}
+
+TEST_F(TModbusTest, WriteString)
+{
+    EnqueueStringWriteResponse();
+    ModbusDev->WriteRegister(ModbusHoldingStringWrite, TRegisterValue("Lateralus"));
     SerialPort->Close();
 }
 
@@ -254,7 +266,7 @@ TEST_F(TModbusTest, ReadString8)
 
     for (int i = 0; i < 4; ++i) {
         auto range = ModbusDev->CreateRegisterRange();
-        range->Add(ModbusHoldingString8, std::chrono::milliseconds::max());
+        range->Add(ModbusHoldingString8Read, std::chrono::milliseconds::max());
         ModbusDev->ReadRegisterRange(range);
         auto registerList = range->RegisterList();
         EXPECT_EQ(registerList.size(), 1);
@@ -264,6 +276,13 @@ TEST_F(TModbusTest, ReadString8)
         EXPECT_EQ(reg->GetValue().Get<std::string>(), responses[i]);
     }
 
+    SerialPort->Close();
+}
+
+TEST_F(TModbusTest, WriteString8)
+{
+    EnqueueString8WriteResponse();
+    ModbusDev->WriteRegister(ModbusHoldingString8Write, TRegisterValue("Lateralus"));
     SerialPort->Close();
 }
 
