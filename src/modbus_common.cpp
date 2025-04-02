@@ -423,10 +423,8 @@ namespace Modbus // modbus protocol common utilities
                                          uint16_t baseAddress,
                                          Modbus::TRegisterCache& tmpCache)
     {
-        uint32_t regCount = std::min(GetModbusDataWidthIn16BitWords(reg),
-                                     static_cast<uint32_t>(reg.Format == RegisterFormat::String8
-                                                               ? str.size() / 2 + str.size() % 2
-                                                               : str.size()));
+        size_t size = reg.Format == RegisterFormat::String8 ? str.size() / 2 + str.size() % 2 : str.size();
+        uint32_t regCount = std::min(GetModbusDataWidthIn16BitWords(reg), static_cast<uint32_t>(size));
         data.resize(regCount * 2);
         TAddress address{0};
         address.Type = reg.Type;
@@ -607,8 +605,7 @@ namespace Modbus // modbus protocol common utilities
                 break;
             }
             str.push_back(ch);
-            if (shift > 0)
-            {
+            if (shift > 0) {
                 --shift;
                 continue;
             }

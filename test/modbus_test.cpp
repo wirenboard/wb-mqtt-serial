@@ -91,14 +91,18 @@ void TModbusTest::SetUp()
     TRegisterDesc regStringDesc;
     regStringDesc.Address = std::make_shared<TUint32RegisterAddress>(120);
     regStringDesc.DataWidth = 16 * sizeof(char) * 8;
-    ModbusHoldingStringRead = ModbusDev->AddRegister(TRegisterConfig::Create(Modbus::REG_HOLDING, regStringDesc, String));
-    ModbusHoldingStringWrite = ModbusDev->AddRegister(TRegisterConfig::Create(Modbus::REG_HOLDING_MULTI, regStringDesc, String));
+    ModbusHoldingStringRead =
+        ModbusDev->AddRegister(TRegisterConfig::Create(Modbus::REG_HOLDING, regStringDesc, String));
+    ModbusHoldingStringWrite =
+        ModbusDev->AddRegister(TRegisterConfig::Create(Modbus::REG_HOLDING_MULTI, regStringDesc, String));
 
     TRegisterDesc regString8Desc;
     regString8Desc.Address = std::make_shared<TUint32RegisterAddress>(142);
     regString8Desc.DataWidth = 8 * sizeof(char) * 8;
-    ModbusHoldingString8Read = ModbusDev->AddRegister(TRegisterConfig::Create(Modbus::REG_HOLDING, regString8Desc, String8));
-    ModbusHoldingString8Write = ModbusDev->AddRegister(TRegisterConfig::Create(Modbus::REG_HOLDING_MULTI, regString8Desc, String8));
+    ModbusHoldingString8Read =
+        ModbusDev->AddRegister(TRegisterConfig::Create(Modbus::REG_HOLDING, regString8Desc, String8));
+    ModbusHoldingString8Write =
+        ModbusDev->AddRegister(TRegisterConfig::Create(Modbus::REG_HOLDING_MULTI, regString8Desc, String8));
 
     SerialPort->Open();
 }
