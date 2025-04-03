@@ -90,7 +90,7 @@ TRegisterValue TFakeSerialDevice::ReadRegisterImpl(PRegister reg)
         }
 
         TRegisterValue value;
-        if (reg->Format == RegisterFormat::String) {
+        if (reg->Format == RegisterFormat::String || reg->Format == RegisterFormat::String8) {
             std::string str;
             for (uint32_t i = 0; i < reg->Get16BitWidth(); ++i) {
                 auto ch = static_cast<char>(Registers[addr + i]);
@@ -139,7 +139,7 @@ void TFakeSerialDevice::WriteRegisterImpl(PRegister reg, const TRegisterValue& v
             throw runtime_error("invalid register type");
         }
 
-        if (reg->Format == RegisterFormat::String) {
+        if (reg->Format == RegisterFormat::String || reg->Format == RegisterFormat::String8) {
             auto str = value.Get<std::string>();
             for (uint32_t i = 0; i < reg->Get16BitWidth(); ++i) {
                 Registers[addr + i] = i < str.size() ? str[i] : 0;

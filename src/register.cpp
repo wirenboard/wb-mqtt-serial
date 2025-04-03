@@ -13,6 +13,7 @@ size_t RegisterFormatByteWidth(RegisterFormat format)
 {
     switch (format) {
         case String:
+        case String8:
             return 0; // The size will then be taken from the config parameter
         case S64:
         case U64:
@@ -251,7 +252,7 @@ TRegisterConfig::TRegisterConfig(int type,
 
     auto maxOffset = RegisterFormatByteWidth(Format) * 8;
 
-    if ((Format != RegisterFormat::String) && (Address.DataOffset >= maxOffset)) {
+    if (Format != RegisterFormat::String && Format != RegisterFormat::String8 && Address.DataOffset >= maxOffset) {
         throw TSerialDeviceException("bit offset must not exceed " + std::to_string(maxOffset) + " bits");
     }
 
@@ -276,7 +277,7 @@ uint32_t TRegisterConfig::GetByteWidth() const
 
 uint8_t TRegisterConfig::Get16BitWidth() const
 {
-    if (Format == RegisterFormat::String) {
+    if (Format == RegisterFormat::String || Format == RegisterFormat::String8) {
         return GetDataWidth() / (sizeof(char) * 8);
     }
     auto totalBit = std::max(GetByteWidth() * 8, Address.DataOffset + GetDataWidth());
@@ -598,6 +599,7 @@ TRegisterValue GetRawValue(const TRegisterConfig& reg, const std::string& str)
             value.Set(IntToPackedBCD(FromScaledTextValue<uint64_t>(reg, str) & 0xFFFFFFFF, WordSizes::W32_SZ));
             break;
         case String:
+        case String8:
             value.Set(str);
             break;
         default:
@@ -672,6 +674,7 @@ std::string ConvertFromRawValue(const TRegisterConfig& reg, TRegisterValue val)
         case Char8:
             return std::string(1, val.Get<uint8_t>());
         case String:
+        case String8:
             return val.Get<std::string>();
         default:
             return ToScaledTextValue(reg, val.Get<uint64_t>());

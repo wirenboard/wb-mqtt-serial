@@ -1,3 +1,9 @@
+wb-mqtt-serial (2.158.0) stable; urgency=medium
+
+  * Add String8 Modbus register format
+
+ -- Ilya Titov <ilya.titov@wirenboard.com>  Thu, 03 Apr 2025 13:39:41 +0300
+
 wb-mqtt-serial (2.157.7) stable; urgency=medium
 
   * Fix build with gcc14
@@ -73,7 +79,7 @@ wb-mqtt-serial (2.155.0) stable; urgency=medium
 wb-mqtt-serial (2.154.2) stable; urgency=medium
 
   * WB-LED template: fix default value for switch mode actions ('off' for switch off; 'on' for switch on)
-  * WB-LED template: fix missed W4 channel in switch mode actions for RGB+W mode 
+  * WB-LED template: fix missed W4 channel in switch mode actions for RGB+W mode
 
  -- Pavel Gasheev <pavel.gasheev@wirenboard.com>  Thu, 30 Jan 2025 09:46:39 +0300
 
@@ -215,7 +221,7 @@ wb-mqtt-serial (2.147.0) stable; urgency=medium
 
 wb-mqtt-serial (2.146.0) stable; urgency=medium
 
-  * Do not publish zero press counter value after device's reset. 
+  * Do not publish zero press counter value after device's reset.
     These zeros cause false positives in whenChanged conditions in wb-rules
   * Add press_counter reg_type in device templates.
     It is the same as input, but wb-mqtt-serial will not publish the first zero register value after device reset.
