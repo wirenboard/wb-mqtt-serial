@@ -948,41 +948,40 @@ void TModbusExpectations::EnqueueStringReadResponse(TModbusExpectations::StringR
 
 void TModbusExpectations::EnqueueStringWriteResponse()
 {
-    Expector()->Expect(
-        WrapPDU({
-            0x10, // function code
-            0x00, // starting address Hi
-            120,  // starting address Lo
-            0x00, // quantity Hi
-            0x09, // quantity Lo
-            0x12, // byte count
-            0x00, // data Hi
-            0x4c, // data Lo
-            0x00, // data Hi
-            0x61, // data Lo
-            0x00, // data Hi
-            0x74, // data Lo
-            0x00, // data Hi
-            0x65, // data Lo
-            0x00, // data Hi
-            0x72, // data Lo
-            0x00, // data Hi
-            0x61, // data Lo
-            0x00, // data Hi
-            0x6c, // data Lo
-            0x00, // data Hi
-            0x75, // data Lo
-            0x00, // data Hi
-            0x73  // data Lo
-        }),
-        WrapPDU({
-            0x10, // function code
-            0x00, // starting address Hi
-            120,  // starting address Lo
-            0x00, // quantity Hi
-            0x09, // quantity Lo
-        }),
-        __func__);
+    Expector()->Expect(WrapPDU({
+                           0x10, // function code
+                           0x00, // starting address Hi
+                           120,  // starting address Lo
+                           0x00, // quantity Hi
+                           0x09, // quantity Lo
+                           0x12, // byte count
+                           0x00, // data Hi
+                           0x4c, // data Lo
+                           0x00, // data Hi
+                           0x61, // data Lo
+                           0x00, // data Hi
+                           0x74, // data Lo
+                           0x00, // data Hi
+                           0x65, // data Lo
+                           0x00, // data Hi
+                           0x72, // data Lo
+                           0x00, // data Hi
+                           0x61, // data Lo
+                           0x00, // data Hi
+                           0x6c, // data Lo
+                           0x00, // data Hi
+                           0x75, // data Lo
+                           0x00, // data Hi
+                           0x73  // data Lo
+                       }),
+                       WrapPDU({
+                           0x10, // function code
+                           0x00, // starting address Hi
+                           120,  // starting address Lo
+                           0x00, // quantity Hi
+                           0x09, // quantity Lo
+                       }),
+                       __func__);
 }
 
 // read 8 holding (as String8)
@@ -1122,33 +1121,32 @@ void TModbusExpectations::EnqueueString8ReadResponse(TModbusExpectations::String
 
 void TModbusExpectations::EnqueueString8WriteResponse()
 {
-    Expector()->Expect(
-        WrapPDU({
-            0x10, // function code
-            0x00, // starting address Hi
-            142,  // starting address Lo
-            0x00, // quantity Hi
-            0x05, // quantity Lo
-            0x0a, // byte count
-            0x4c, // data Hi
-            0x61, // data Lo
-            0x74, // data Hi
-            0x65, // data Lo
-            0x72, // data Hi
-            0x61, // data Lo
-            0x6c, // data Hi
-            0x75, // data Lo
-            0x73, // data Hi
-            0x00  // data Lo
-        }),
-        WrapPDU({
-            0x10, // function code
-            0x00, // starting address Hi
-            142,  // starting address Lo
-            0x00, // quantity Hi
-            0x05, // quantity Lo
-        }),
-        __func__);
+    Expector()->Expect(WrapPDU({
+                           0x10, // function code
+                           0x00, // starting address Hi
+                           142,  // starting address Lo
+                           0x00, // quantity Hi
+                           0x05, // quantity Lo
+                           0x0a, // byte count
+                           0x4c, // data Hi
+                           0x61, // data Lo
+                           0x74, // data Hi
+                           0x65, // data Lo
+                           0x72, // data Hi
+                           0x61, // data Lo
+                           0x6c, // data Hi
+                           0x75, // data Lo
+                           0x73, // data Hi
+                           0x00  // data Lo
+                       }),
+                       WrapPDU({
+                           0x10, // function code
+                           0x00, // starting address Hi
+                           142,  // starting address Lo
+                           0x00, // quantity Hi
+                           0x05, // quantity Lo
+                       }),
+                       __func__);
 }
 
 // read 2 holding

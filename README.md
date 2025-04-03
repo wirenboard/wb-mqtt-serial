@@ -454,7 +454,7 @@ It's designed to be used on [Wiren Board](https://wirenboard.com/en/) family of 
                             // значение регистра, полученное от устройства, которое обозначает ошибку
                             "error_value": "0xAA",
 
-                            // Длина строки в символах. Необходимая опция, если выбран формат "string" или "string8"
+                            // Количество используемых регистров для протокола Modbus. Необходимая опция, если выбран формат "string" или "string8"
                             "string_data_size": 5
                         },
                         {
