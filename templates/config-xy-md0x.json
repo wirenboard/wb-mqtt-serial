@@ -11,6 +11,7 @@
                 "title": "temp_correction_title",
                 "reg_type": "holding",
                 "address": "0x103",
+                "format": "s16",
                 "min": -10,
                 "max": 10,
                 "scale": 0.1,
@@ -22,6 +23,7 @@
                 "title": "humidity_correction_title",
                 "reg_type": "holding",
                 "address": "0x104",
+                "format": "s16",
                 "min": -10,
                 "max": 10,
                 "scale": 0.1,
@@ -36,7 +38,7 @@
                 "address": 1,
                 "type": "value",
                 "units": "deg C",
-                "format": "u16",
+                "format": "s16",
                 "scale": 0.1
             },
             {
