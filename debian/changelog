@@ -1,4 +1,4 @@
-wb-mqtt-serial (2.157.8) stable; urgency=medium
+wb-mqtt-serial (2.158.0) stable; urgency=medium
 
   * Add String8 Modbus register format
 
