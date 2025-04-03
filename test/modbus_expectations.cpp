@@ -946,7 +946,7 @@ void TModbusExpectations::EnqueueStringReadResponse(TModbusExpectations::StringR
     }
 }
 
-void TModbusExpectations::EnqueueStringWriteResponse(uint8_t exception)
+void TModbusExpectations::EnqueueStringWriteResponse()
 {
     Expector()->Expect(
         WrapPDU({
@@ -975,15 +975,13 @@ void TModbusExpectations::EnqueueStringWriteResponse(uint8_t exception)
             0x00, // data Hi
             0x73  // data Lo
         }),
-        WrapPDU(exception == 0 ? std::vector<int>{
-                                     0x10, // function code
-                                     0x00, // starting address Hi
-                                     120,  // starting address Lo
-                                     0x00, // quantity Hi
-                                     0x09, // quantity Lo
-                                 }
-                               : std::vector<int>{0x90, // function code + 80
-                                                  exception}),
+        WrapPDU({
+            0x10, // function code
+            0x00, // starting address Hi
+            120,  // starting address Lo
+            0x00, // quantity Hi
+            0x09, // quantity Lo
+        }),
         __func__);
 }
 
@@ -1076,13 +1074,13 @@ void TModbusExpectations::EnqueueString8ReadResponse(TModbusExpectations::String
                                    0x72, // data Hi
                                    0x63, // data Lo
                                    0x31, // data Hi
-                                   0x00, // data Lo
-                                   0xFF, // data Hi
-                                   0xFF, // data Lo
-                                   0xFF, // data Hi
-                                   0xFF, // data Lo
-                                   0xFF, // data Hi
-                                   0xFF  // data Lo
+                                   0xff, // data Lo
+                                   0xff, // data Hi
+                                   0xff, // data Lo
+                                   0xff, // data Hi
+                                   0xff, // data Lo
+                                   0xff, // data Hi
+                                   0xff  // data Lo
                                }),
                                __func__);
             break;
@@ -1122,7 +1120,7 @@ void TModbusExpectations::EnqueueString8ReadResponse(TModbusExpectations::String
     }
 }
 
-void TModbusExpectations::EnqueueString8WriteResponse(uint8_t exception)
+void TModbusExpectations::EnqueueString8WriteResponse()
 {
     Expector()->Expect(
         WrapPDU({
@@ -1143,15 +1141,13 @@ void TModbusExpectations::EnqueueString8WriteResponse(uint8_t exception)
             0x73, // data Hi
             0x00  // data Lo
         }),
-        WrapPDU(exception == 0 ? std::vector<int>{
-                                     0x10, // function code
-                                     0x00, // starting address Hi
-                                     142,  // starting address Lo
-                                     0x00, // quantity Hi
-                                     0x05, // quantity Lo
-                                 }
-                               : std::vector<int>{0x90, // function code + 80
-                                                  exception}),
+        WrapPDU({
+            0x10, // function code
+            0x00, // starting address Hi
+            142,  // starting address Lo
+            0x00, // quantity Hi
+            0x05, // quantity Lo
+        }),
         __func__);
 }
 
