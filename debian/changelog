@@ -1,3 +1,9 @@
+wb-mqtt-serial (2.158.1) stable; urgency=medium
+
+  * Fix channel format for xy-md0x
+
+ -- Mikhail Burchu <mikhail.burchu@wirenboard.com>  Thu, 3 Apr 2025 16:20:00 +0300
+
 wb-mqtt-serial (2.158.0) stable; urgency=medium
 
   * Add String8 Modbus register format
