@@ -310,8 +310,9 @@ void TSerialClientEventsReader::OnEnabledEvent(uint8_t slaveId, uint8_t type, ui
             }
         }
     }
-    LOG(Info) << "Events are " << (res ? "enabled for " : "disabled for ")
-              << MakeEventDescriptionString(slaveId, type, addr);
+    if (res) {
+        LOG(Info) << "Events are enabled for " << MakeEventDescriptionString(slaveId, type, addr);
+    }
 }
 
 void TSerialClientEventsReader::SetDevices(const std::list<PSerialDevice>& devices)
