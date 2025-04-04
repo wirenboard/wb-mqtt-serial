@@ -310,8 +310,23 @@ void TSerialClientEventsReader::OnEnabledEvent(uint8_t slaveId, uint8_t type, ui
             }
         }
     }
-    LOG(Info) << "Events are " << (res ? "enabled for " : "disabled for ")
-              << MakeEventDescriptionString(slaveId, type, addr);
+
+    if (res) {
+        LOG(Info) << "Events are enabled for " << MakeEventDescriptionString(slaveId, type, addr);
+        return;
+    }
+
+    switch (type) {
+        case ModbusExt::TEventType::COIL:
+        case ModbusExt::TEventType::DISCRETE:
+        case ModbusExt::TEventType::HOLDING:
+        case ModbusExt::TEventType::INPUT:
+            // Don't log register disabled events
+            break;
+        default:
+            LOG(Info) << "Events are disabled for " << MakeEventDescriptionString(slaveId, type, addr);
+            break;
+    }
 }
 
 void TSerialClientEventsReader::SetDevices(const std::list<PSerialDevice>& devices)
