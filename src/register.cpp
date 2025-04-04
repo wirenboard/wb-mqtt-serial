@@ -140,15 +140,10 @@ void TRegister::SetValue(const TRegisterValue& value, bool clearReadError)
     if (::Debug.IsEnabled() && (Value != value)) {
         std::string formatName = RegisterFormatName(Format);
         if (Format == String || Format == String8) {
-            LOG(Debug) << ToString() << " (" << formatName << ") new value: \""
-                       << value
-                       << "\"";
+            LOG(Debug) << ToString() << " (" << formatName << ") new value: \"" << value << "\"";
         } else {
-            LOG(Debug) << ToString() << " (" << formatName << ") new value: 0x"
-                       << std::setfill('0')
-                       << std::setw(RegisterFormatByteWidth(Format) * 2)
-                       << std::hex
-                       << value;
+            LOG(Debug) << ToString() << " (" << formatName << ") new value: 0x" << std::setfill('0')
+                       << std::setw(RegisterFormatByteWidth(Format) * 2) << std::hex << value;
         }
     }
     Value = value;
