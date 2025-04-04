@@ -2,8 +2,8 @@ Source: wb-mqtt-serial
 Maintainer: Wiren Board team <info@wirenboard.com>
 Section: misc
 Priority: optional
-Standards-Version: 3.9.2
-Build-Depends: debhelper (>= 10),
+Standards-Version: 4.5.1
+Build-Depends: debhelper-compat (= 13),
                gcovr:all,
                j2cli:all,
                libcurl4-openssl-dev,
@@ -15,7 +15,7 @@ Homepage: https://github.com/wirenboard/wb-mqtt-serial
 
 Package: wb-mqtt-serial
 Architecture: any
-Depends: ${shlibs:Depends}, ${misc:Depends}, libcurl4, ucf, bsdutils (>= 2.29), wb-utils
+Depends: ${shlibs:Depends}, ${misc:Depends}, libcurl4t64, ucf, bsdutils (>= 2.29), wb-utils
 Replaces: wb-homa-modbus (<< 1.14.1)
 Recommends: wb-mqtt-confed (>= 1.7.0)
 Breaks: wb-homa-modbus (<< 1.14.1), wb-mqtt-confed (<< 1.7.0), wb-mqtt-homeui (<< 2.150.0~~)
