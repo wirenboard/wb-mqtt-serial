@@ -240,46 +240,20 @@
                 "enabled": false,
                 "group": "g_button"
             },
+
+            {% set presses = ["single", "long", "double", "shortlong"] -%}
+            {% for press in presses -%}
             {
-                "id": "button_single_press_counter",
-                "name": "Button Single Press Counter",
-                "reg_type": "press_counter",
-                "address": 464,
-                "type": "value",
+                "id": "button_{{ press }}_press_counter",
+                "name": "Button {{ press | capitalize }} Press Counter",
+                "reg_type": "discrete",
+                "address": {{ 464 + loop.index0 * 16 }},
+                "type": "switch",
                 "sporadic": true,
                 "enabled": false,
                 "group": "g_button"
             },
-            {
-                "id": "button_long_press_counter",
-                "name": "Button Long Press Counter",
-                "reg_type": "press_counter",
-                "address": 480,
-                "type": "value",
-                "sporadic": true,
-                "enabled": false,
-                "group": "g_button"
-            },
-            {
-                "id": "button_double_press_counter",
-                "name": "Button Double Press Counter",
-                "reg_type": "press_counter",
-                "address": 496,
-                "type": "value",
-                "sporadic": true,
-                "enabled": false,
-                "group": "g_button"
-            },
-            {
-                "id": "button_shortlong_press_counter",
-                "name": "Button Shortlong Press Counter",
-                "reg_type": "press_counter",
-                "address": 512,
-                "type": "value",
-                "sporadic": true,
-                "enabled": false,
-                "group": "g_button"
-            },
+            {% endfor -%}
 
             {
                 "id": "charger_current_setpoint",
@@ -304,7 +278,7 @@
                 "type": "switch",
                 "read_only": true,
                 "reg_type": "discrete",
-                "address": 0,
+                "address": 16,
                 "group": "debug"
             },
             {
