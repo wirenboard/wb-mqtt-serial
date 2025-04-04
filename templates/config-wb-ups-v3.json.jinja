@@ -28,9 +28,9 @@
                 "id": "g_ups"
             },
             {
-                "title": "Output Voltage Control",
-                "description": "g_output_voltage_control_description",
-                "id": "gg_output_voltage_control",
+                "title": "Output Voltage",
+                "description": "g_output_voltage_description",
+                "id": "gg_output_voltage",
                 "group": "g_ups"
             },
             {
@@ -59,13 +59,28 @@
             {
                 "title": "Debug",
                 "id": "debug"
+            },
+            {
+                "title": "Heater",
+                "id": "gg_debug_heater",
+                "group": "debug"
+            },
+            {
+                "title": "Charge/Discharge",
+                "id": "gg_debug_charge_discharge",
+                "group": "debug"
+            },
+            {
+                "title": "Chip ADC Values",
+                "id": "gg_debug_chip_adc",
+                "group": "debug"
             }
         ],
         "parameters": [
             {
                 "id": "output_voltage_control_mode",
                 "title": "Mode",
-                "address": 1000,
+                "address": 16,
                 "reg_type": "holding",
                 "enum": [0, 1],
                 "default": 0,
@@ -73,13 +88,13 @@
                     "Automatic",
                     "Manual"
                 ],
-                "group": "gg_output_voltage_control",
+                "group": "gg_output_voltage",
                 "order": 1
             },
             {
                 "id": "output_voltage_setpoint",
                 "title": "Output Voltage (V)",
-                "address": 1000,
+                "address": 17,
                 "reg_type": "holding",
                 "min": 10.0,
                 "max": 25.6,
@@ -87,7 +102,19 @@
                 "scale": 0.001,
                 "order": 2,
                 "condition": "output_voltage_control_mode==1",
-                "group": "gg_output_voltage_control"
+                "group": "gg_output_voltage"
+            },
+            {
+                "id": "charging_current_setpoint",
+                "title": "Charging Current (A)",
+                "address": 18,
+                "reg_type": "holding",
+                "min": 0.3,
+                "max": 2.0,
+                "default": 0.6,
+                "scale": 0.001,
+                "order": 2,
+                "group": "g_ups"
             },
             {
                 "id": "baud_rate",
@@ -124,7 +151,7 @@
                 "name": "Battery Status",
                 "read_only": true,
                 "reg_type": "input",
-                "address": 32,
+                "address": 0,
                 "enum": [0, 1, 2],
                 "enum_titles": [
                     "Charging",
@@ -138,7 +165,7 @@
                 "name": "Temperature Status",
                 "read_only": true,
                 "reg_type": "input",
-                "address": 32,
+                "address": 1,
                 "enum": [0, 1, 2, 3, 4],
                 "enum_titles": [
                     "Normal",
@@ -157,7 +184,7 @@
                 "scale": 0.001,
                 "round_to": 0.01,
                 "reg_type": "input",
-                "address": 0,
+                "address": 2,
                 "group": "gg_ups_channels"
             },
             {
@@ -167,7 +194,7 @@
                 "scale": 0.001,
                 "round_to": 0.01,
                 "reg_type": "input",
-                "address": 1,
+                "address": 3,
                 "group": "gg_ups_channels"
             },
             {
@@ -177,7 +204,7 @@
                 "scale": 0.001,
                 "round_to": 0.001,
                 "reg_type": "input",
-                "address": 2,
+                "address": 4,
                 "group": "gg_ups_channels"
             },
             {
@@ -188,7 +215,7 @@
                 "round_to": 0.001,
                 "format": "s16",
                 "reg_type": "input",
-                "address": 3,
+                "address": 5,
                 "group": "gg_ups_channels"
             },
             {
@@ -198,7 +225,7 @@
                 "scale": 0.001,
                 "round_to": 0.001,
                 "reg_type": "input",
-                "address": 4,
+                "address": 6,
                 "group": "gg_ups_channels"
             },
             {
@@ -208,7 +235,7 @@
                 "scale": 0.001,
                 "round_to": 0.001,
                 "reg_type": "input",
-                "address": 5,
+                "address": 7,
                 "group": "gg_ups_channels"
             },
             {
@@ -217,7 +244,7 @@
                 "units": "deg C",
                 "scale": 0.01,
                 "reg_type": "input",
-                "address": 6,
+                "address": 8,
                 "group": "gg_ups_channels"
             },
             {
@@ -226,7 +253,7 @@
                 "units": "deg C",
                 "scale": 0.01,
                 "reg_type": "input",
-                "address": 6,
+                "address": 9,
                 "group": "gg_ups_channels"
             },
 
@@ -255,13 +282,47 @@
             },
             {% endfor -%}
 
+            {# Диагностика -#}
+            {
+                "id": "heater_state",
+                "name": "Heater State",
+                "type": "switch",
+                "read_only": true,
+                "reg_type": "discrete",
+                "address": 16,
+                "group": "gg_debug_heater"
+            },
+            {
+                "id": "heater_force_control",
+                "name": "Heater Force Control",
+                "type": "switch",
+                "reg_type": "coil",
+                "address": 32,
+                "group": "gg_debug_heater"
+            },
+            {
+                "id": "heater_force_control_state",
+                "name": "Heater Force Control State",
+                "type": "switch",
+                "reg_type": "coil",
+                "address": 33,
+                "group": "gg_debug_heater"
+            },
+            {
+                "id": "charge_force_start",
+                "name": "Charge Force Start",
+                "type": "pushbutton",
+                "reg_type": "coil",
+                "address": 33,
+                "group": "gg_debug_charge_discharge"
+            },
             {
                 "id": "charger_current_setpoint",
                 "name": "Charger Current Setpoint",
                 "units": "mA",
                 "reg_type": "input",
-                "address": 411,
-                "group": "debug"
+                "address": 64,
+                "group": "gg_debug_charge_discharge"
             },
             {
                 "id": "discharger_voltage_setpoint",
@@ -269,33 +330,34 @@
                 "units": "V",
                 "reg_type": "input",
                 "scale": 0.001,
-                "address": 411,
-                "group": "debug"
+                "address": 65,
+                "group": "gg_debug_charge_discharge"
             },
             {
-                "id": "heater",
-                "name": "Heater",
-                "type": "switch",
-                "read_only": true,
-                "reg_type": "discrete",
-                "address": 16,
-                "group": "debug"
+                "id": "discharge_current_limit",
+                "name": "Discharge Current Limit",
+                "units": "A",
+                "reg_type": "holding",
+                "scale": 0.001,
+                "address": 66,
+                "group": "gg_debug_charge_discharge"
             },
             {
-                "id": "heater_force_control",
-                "name": "Heater Force Control",
-                "type": "switch",
-                "reg_type": "coil",
-                "address": 0,
-                "group": "debug"
-            },
-            {
-                "id": "heater_force_control_state",
-                "name": "Heater Force Control State",
+                "id": "vinreg",
+                "name": "VINREG",
                 "type": "switch",
                 "reg_type": "coil",
-                "address": 0,
-                "group": "debug"
+                "address": 33,
+                "group": "gg_debug_charge_discharge"
+            },
+            {
+                "id": "vinreg_setpoint",
+                "name": "VINREG Setpoint",
+                "units": "V",
+                "reg_type": "holding",
+                "scale": 0.001,
+                "address": 67,
+                "group": "gg_debug_charge_discharge"
             },
 
             {% set chips = ["charger", "discharger"] -%}
@@ -319,7 +381,7 @@
                 {% else -%}
                 "scale": 1,
                 {% endif -%}
-                "group": "debug"
+                "group": "gg_debug_chip_adc"
             },
             {% endfor -%}
             {% endfor -%}
@@ -394,14 +456,14 @@
                 "Output Voltage When Powered Up by Button (V)": "Выходное напряжение при включении кнопкой (В)",
 
                 "g_button_description": "Кнопка на модуле WB-UPS v.3 может использоваться для управления другими устройствами через правила.<br><br>При наличии внешнего питания кнопка не выполняет никаких действий на модуле WB-UPS v.3.<br>При отсутствии внешнего питания длинное нажатие отключает WB-UPS v.3.<br><br>Параметры нажатий фиксированы:<br>- время длинного нажатия: 2000 мс<br>- время ожидания второго нажатия: 300 мс<br><br>",
-                "g_output_voltage_control_description": "Выходное напряжение при включении кнопкой всегда 12 В.<br>В автоматическом режиме выходное напряжение автоматически подстраивается под входное.<br>В ручном режиме при понижении входного напряжения ниже заданного уровня включается резервное питание.",
+                "g_output_voltage_description": "Выходное напряжение при включении кнопкой всегда 12 В.<br>В автоматическом режиме выходное напряжение автоматически подстраивается под входное.<br>В ручном режиме при понижении входного напряжения ниже заданного уровня включается резервное питание.",
 
                 "Uninterruptible Power Supply": "Резервное питание",
-                "Output Voltage Control": "Управление выходным напряжением",
                 "Mode": "Режим",
                 "Automatic": "Автоматический",
                 "Manual": "Ручной",
                 "Output Voltage (V)": "Выходное напряжение (В)",
+                "Charging Current (A)": "Ток заряда (А)",
 
                 "Battery Status": "Статус батареи",
                 "Temperature Status": "Статус температуры",
