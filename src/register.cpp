@@ -138,7 +138,13 @@ TRegisterValue TRegister::GetValue() const
 void TRegister::SetValue(const TRegisterValue& value, bool clearReadError)
 {
     if (::Debug.IsEnabled() && (Value != value)) {
-        LOG(Debug) << "new val for " << ToString() << ": " << std::hex << value;
+        std::string formatName = RegisterFormatName(Format);
+        if (Format == String || Format == String8) {
+            LOG(Debug) << ToString() << " (" << formatName << ") new value: \"" << value << "\"";
+        } else {
+            LOG(Debug) << ToString() << " (" << formatName << ") new value: 0x" << std::setfill('0')
+                       << std::setw(RegisterFormatByteWidth(Format) * 2) << std::hex << value;
+        }
     }
     Value = value;
     if (UnsupportedValue && (*UnsupportedValue == value)) {
@@ -148,7 +154,7 @@ void TRegister::SetValue(const TRegisterValue& value, bool clearReadError)
     }
     SetAvailable(TRegisterAvailability::AVAILABLE);
     if (ErrorValue && ErrorValue.value() == value) {
-        LOG(Debug) << "register " << ToString() << " contains error value";
+        LOG(Debug) << ToString() << " contains error value";
         SetError(TError::ReadError);
     } else {
         if (clearReadError) {
