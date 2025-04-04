@@ -1,8 +1,14 @@
-wb-mqtt-serial (2.158.1) stable; urgency=medium
+wb-mqtt-serial (2.158.2) stable; urgency=medium
 
   * Fix Modbus register value debug logs
 
  -- Ilya Titov <ilya.titov@wirenboard.com>  Thu, 03 Apr 2025 16:44:03 +0300
+
+wb-mqtt-serial (2.158.1) stable; urgency=medium
+
+  * Fix channel format for xy-md0x
+
+ -- Mikhail Burchu <mikhail.burchu@wirenboard.com>  Thu, 3 Apr 2025 16:20:00 +0300
 
 wb-mqtt-serial (2.158.0) stable; urgency=medium
 
