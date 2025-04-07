@@ -238,6 +238,19 @@ namespace ModbusExt // modbus extension protocol declarations
         }
     }
 
+    bool IsRegisterEvent(uint8_t eventType)
+    {
+        switch (eventType) {
+            case TEventType::COIL:
+            case TEventType::DISCRETE:
+            case TEventType::HOLDING:
+            case TEventType::INPUT:
+                return true;
+            default:
+                return false;
+        }
+    }
+
     bool ReadEvents(TPort& port,
                     std::chrono::milliseconds maxEventsReadTime,
                     uint8_t startingSlaveId,
