@@ -267,6 +267,7 @@ public:
     //! Get occupied space in 16-bit words
     uint8_t Get16BitWidth() const;
 
+    bool IsString() const;
     std::string ToString() const;
 
     bool IsHighPriority() const;
