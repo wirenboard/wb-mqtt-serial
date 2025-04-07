@@ -42,12 +42,12 @@ namespace
         if (ModbusExt::IsRegisterEvent(eventType)) {
             return "<" + MakeDeviceDescriptionString(slaveId) + ":" + EventTypeToString(eventType) + ": " +
                    std::to_string(eventId) + ">";
-        } else if (eventType == ModbusExt::TEventType::REBOOT) {
-            return "<" + MakeDeviceDescriptionString(slaveId) + ": reboot>";
-        } else {
-            return "unknown event from " + MakeDeviceDescriptionString(slaveId) +
-                   " type: " + std::to_string(eventType) + ", id: " + std::to_string(eventId);
         }
+        if (eventType == ModbusExt::TEventType::REBOOT) {
+            return "<" + MakeDeviceDescriptionString(slaveId) + ": reboot>";
+        }
+        return "unknown event from " + MakeDeviceDescriptionString(slaveId) + " type: " + std::to_string(eventType) +
+               ", id: " + std::to_string(eventId);
     }
 
     ModbusExt::TEventType ToEventRegisterType(const Modbus::RegisterType regType)
@@ -165,12 +165,14 @@ public:
         SlaveId = slaveId;
         if (ModbusExt::IsRegisterEvent(eventType)) {
             ProcessRegisterChangeEvent(slaveId, eventType, eventId, data, dataSize);
-        } else if (eventType == ModbusExt::TEventType::REBOOT) {
-            ProcessDeviceRestartedEvent(slaveId);
-        } else {
-            LOG(Warn) << "Unexpected event from " << MakeDeviceDescriptionString(slaveId)
-                      << " type: " << static_cast<int>(eventType) << ", id: " << eventId;
+            return;
         }
+        if (eventType == ModbusExt::TEventType::REBOOT) {
+            ProcessDeviceRestartedEvent(slaveId);
+            return;
+        }
+        LOG(Warn) << "Unexpected event from " << MakeDeviceDescriptionString(slaveId)
+                  << " type: " << static_cast<int>(eventType) << ", id: " << eventId;
     }
 
     uint8_t GetSlaveId() const
@@ -292,10 +294,11 @@ void TSerialClientEventsReader::OnEnabledEvent(uint8_t slaveId, uint8_t type, ui
             }
         }
     }
-
     if (res) {
         LOG(Info) << "Events are enabled for " << MakeEventDescriptionString(slaveId, type, addr);
-    } else if (!ModbusExt::IsRegisterEvent(type)) {
+        return;
+    }
+    if (!ModbusExt::IsRegisterEvent(type)) {
         LOG(Info) << "Events are disabled for " << MakeEventDescriptionString(slaveId, type, addr);
     }
 }
