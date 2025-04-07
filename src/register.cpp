@@ -72,6 +72,11 @@ bool TSameAddressRegisterRange::Add(PRegister reg, std::chrono::milliseconds pol
     return false;
 }
 
+bool TRegisterConfig::IsString() const
+{
+    return Format == String || Format == String8;
+}
+
 std::string TRegisterConfig::ToString() const
 {
     std::stringstream s;
@@ -139,7 +144,7 @@ void TRegister::SetValue(const TRegisterValue& value, bool clearReadError)
 {
     if (::Debug.IsEnabled() && (Value != value)) {
         std::string formatName = RegisterFormatName(Format);
-        if (Format == String || Format == String8) {
+        if (IsString()) {
             LOG(Debug) << ToString() << " (" << formatName << ") new value: \"" << value << "\"";
         } else {
             LOG(Debug) << ToString() << " (" << formatName << ") new value: 0x" << std::setfill('0')
@@ -258,7 +263,7 @@ TRegisterConfig::TRegisterConfig(int type,
 
     auto maxOffset = RegisterFormatByteWidth(Format) * 8;
 
-    if (Format != RegisterFormat::String && Format != RegisterFormat::String8 && Address.DataOffset >= maxOffset) {
+    if (!IsString() && Address.DataOffset >= maxOffset) {
         throw TSerialDeviceException("bit offset must not exceed " + std::to_string(maxOffset) + " bits");
     }
 
@@ -283,7 +288,7 @@ uint32_t TRegisterConfig::GetByteWidth() const
 
 uint8_t TRegisterConfig::Get16BitWidth() const
 {
-    if (Format == RegisterFormat::String || Format == RegisterFormat::String8) {
+    if (IsString()) {
         return GetDataWidth() / (sizeof(char) * 8);
     }
     auto totalBit = std::max(GetByteWidth() * 8, Address.DataOffset + GetDataWidth());
