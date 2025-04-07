@@ -655,7 +655,7 @@ namespace Modbus // modbus protocol common utilities
         auto data16BitWords = range.GetWords();
 
         for (auto reg: range.RegisterList()) {
-            if (reg->Format == RegisterFormat::String || reg->Format == RegisterFormat::String8) {
+            if (reg->IsString()) {
                 reg->SetValue(
                     TRegisterValue{GetStringRegisterValueFromReadData(data16BitWords, range.GetStart(), *reg)});
             } else {
@@ -719,7 +719,7 @@ namespace Modbus // modbus protocol common utilities
         auto fn = GetFunction(reg, OperationType::OP_WRITE);
         if (IsPacking(reg)) {
             size_t regCount =
-                reg.Format == RegisterFormat::String || reg.Format == RegisterFormat::String8
+                reg.IsString()
                     ? ComposeStringWriteRequestData(data, reg, value.Get<std::string>(), addr, tmpCache)
                     : ComposeRawMultipleWriteRequestData(data, reg, value.Get<uint64_t>(), addr, tmpCache, cache);
             WriteTransaction(traits,
@@ -908,7 +908,7 @@ namespace Modbus // modbus protocol common utilities
 
         std::vector<uint16_t> data16BitWords(modbusRegisterCount);
         FillRegisters(data16BitWords, responseData);
-        if (registerConfig.Format == RegisterFormat::String || registerConfig.Format == RegisterFormat::String8) {
+        if (registerConfig.IsString()) {
             return TRegisterValue{GetStringRegisterValueFromReadData(data16BitWords, addr, registerConfig)};
         }
         return TRegisterValue{GetRegisterValueFromReadData(data16BitWords, addr, registerConfig)};
