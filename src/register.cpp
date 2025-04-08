@@ -155,6 +155,7 @@ void TRegister::SetValue(const TRegisterValue& value, bool clearReadError)
     if (UnsupportedValue && (*UnsupportedValue == value)) {
         SetError(TRegister::TError::ReadError);
         SetAvailable(TRegisterAvailability::UNAVAILABLE);
+        LOG(Warn) << ToString() << " is now marked as unavailable: unsupported value received";
         return;
     }
     SetAvailable(TRegisterAvailability::AVAILABLE);
@@ -204,14 +205,12 @@ void TRegister::ExcludeFromPolling()
 {
     ExcludedFromPolling = true;
     if (SporadicMode == TRegisterConfig::TSporadicMode::ONLY_EVENTS) {
-        LOG(Info) << ToString() << " excluded from polling: register is in sporadic mode";
         return;
     }
     if (Available == TRegisterAvailability::UNAVAILABLE) {
-        LOG(Warn) << ToString() << " excluded from polling: register is marked as unavailable";
         return;
     }
-    LOG(Warn) << ToString() << " excluded from polling: unknown reason";
+    LOG(Warn) << ToString() << " excluded from polling";
 }
 
 void TRegister::IncludeInPolling()
