@@ -155,6 +155,7 @@ void TRegister::SetValue(const TRegisterValue& value, bool clearReadError)
     if (UnsupportedValue && (*UnsupportedValue == value)) {
         SetError(TRegister::TError::ReadError);
         SetAvailable(TRegisterAvailability::UNAVAILABLE);
+        LOG(Warn) << ToString() << " is now marked as unavailable: unsupported value received";
         return;
     }
     SetAvailable(TRegisterAvailability::AVAILABLE);
