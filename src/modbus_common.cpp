@@ -792,7 +792,7 @@ namespace Modbus // modbus protocol common utilities
             } else {
                 for (auto& reg: range.RegisterList()) {
                     reg->SetAvailable(TRegisterAvailability::UNAVAILABLE);
-                    LOG(Warn) << ToString() << " is now marked as unavailable: " << e.what();
+                    LOG(Warn) << reg->ToString() << " is now marked as unavailable: " << e.what();
                 }
             }
             ProcessRangeException(range, e.what());
