@@ -204,13 +204,6 @@ bool TRegister::IsExcludedFromPolling() const
 void TRegister::ExcludeFromPolling()
 {
     ExcludedFromPolling = true;
-    if (SporadicMode == TRegisterConfig::TSporadicMode::ONLY_EVENTS) {
-        return;
-    }
-    if (Available == TRegisterAvailability::UNAVAILABLE) {
-        return;
-    }
-    LOG(Warn) << ToString() << " excluded from polling";
 }
 
 void TRegister::IncludeInPolling()
