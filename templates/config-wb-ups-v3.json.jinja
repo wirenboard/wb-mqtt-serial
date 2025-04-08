@@ -272,9 +272,8 @@
             {
                 "id": "button_{{ press }}_press_counter",
                 "name": "Button {{ press | capitalize }} Press Counter",
-                "reg_type": "discrete",
+                "reg_type": "press_counter",
                 "address": {{ 464 + loop.index0 * 16 }},
-                "type": "switch",
                 "sporadic": true,
                 "enabled": false,
                 "group": "g_button"
@@ -321,7 +320,7 @@
                 "name": "Charge Force Start",
                 "type": "pushbutton",
                 "reg_type": "coil",
-                "address": 33,
+                "address": 34,
                 "group": "gg_debug_charge_discharge"
             },
             {
