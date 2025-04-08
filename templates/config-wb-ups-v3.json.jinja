@@ -98,7 +98,7 @@
                 "reg_type": "holding",
                 "min": 10.0,
                 "max": 25.6,
-                "default": 12.0,
+                "default": 11.5,
                 "scale": 0.001,
                 "order": 2,
                 "condition": "output_voltage_control_mode==1",
@@ -239,17 +239,16 @@
                 "group": "gg_ups_channels"
             },
             {
-                "id": "battery_temperature",
-                "name": "Battery Temperature",
-                "units": "deg C",
-                "scale": 0.01,
+                "id": "battery_capacity",
+                "name": "Battery Capacity",
+                "units": "%",
                 "reg_type": "input",
                 "address": 8,
                 "group": "gg_ups_channels"
             },
             {
-                "id": "battery_capacity",
-                "name": "Battery Capacity",
+                "id": "battery_temperature",
+                "name": "Battery Temperature",
                 "units": "deg C",
                 "scale": 0.01,
                 "reg_type": "input",
@@ -290,6 +289,15 @@
                 "read_only": true,
                 "reg_type": "discrete",
                 "address": 16,
+                "group": "gg_debug_heater"
+            },
+            {
+                "id": "temperature_hardware_protection",
+                "name": "Temperature Hardware Protection",
+                "type": "switch",
+                "read_only": true,
+                "reg_type": "discrete",
+                "address": 17,
                 "group": "gg_debug_heater"
             },
             {
@@ -340,14 +348,6 @@
                 "reg_type": "holding",
                 "scale": 0.001,
                 "address": 66,
-                "group": "gg_debug_charge_discharge"
-            },
-            {
-                "id": "vinreg",
-                "name": "VINREG",
-                "type": "switch",
-                "reg_type": "coil",
-                "address": 33,
                 "group": "gg_debug_charge_discharge"
             },
             {
