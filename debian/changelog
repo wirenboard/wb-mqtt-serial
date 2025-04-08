@@ -9,7 +9,7 @@ wb-mqtt-serial (2.158.4) stable; urgency=medium
   * Fix port scan WB-MAP signature check
 
  -- Ilya Titov <ilya.titov@wirenboard.com>  Tue, 08 Apr 2025 15:52:08 +0300
- 
+
 wb-mqtt-serial (2.158.3) stable; urgency=medium
 
   * Fix serial client event logs
