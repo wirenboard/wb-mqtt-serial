@@ -4,10 +4,8 @@
     "group": "g-wb",
     "hw": [
         {
-            "signature": "MAP6S\u0002E"
-        },
-        {
-            "signature": "MAP6S\u0002"
+            "signature": "MAP6S",
+            "fw": "2.0.0"
         }
     ],
     "device": {
