@@ -106,14 +106,12 @@
             },
             {
                 "id": "charging_current_setpoint",
-                "title": "Charging Current (A)",
+                "title": "Charging Current (mA)",
                 "address": 18,
                 "reg_type": "holding",
-                "min": 0.3,
-                "max": 2.0,
-                "default": 0.6,
-                "scale": 0.001,
-                "order": 2,
+                "min": 300,
+                "max": 2000,
+                "default": 600,
                 "group": "g_ups"
             },
             {
@@ -372,7 +370,7 @@
                 "id": "{{ chip }}_{{ value }}_{{ type }}",
                 "name": "{{ chip.capitalize() }} {{ value.capitalize() }} {{ type.capitalize() }}",
                 "reg_type": "input",
-                "address": {{ 0x400 + type_loop.index0 * 0x20 + chip_loop.index0 * 0x10 + loop.index0 }},
+                "address": {{ 1024 + type_loop.index0 * 32 + chip_loop.index0 * 16 + loop.index0 }},
                 "type": "value",
                 {% if type == "real" -%}
                 "scale": 0.001,
@@ -462,7 +460,7 @@
                 "Automatic": "Автоматический",
                 "Manual": "Ручной",
                 "Output Voltage (V)": "Выходное напряжение (В)",
-                "Charging Current (A)": "Ток заряда (А)",
+                "Charging Current (mA)": "Ток заряда (мА)",
 
                 "Battery Status": "Статус батареи",
                 "Temperature Status": "Статус температуры",
