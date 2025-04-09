@@ -6,6 +6,10 @@
         {
             "signature": "MAP6S",
             "fw": "2.0.0"
+        },
+        {
+            "signature": "MAP6SE",
+            "fw": "2.0.0"
         }
     ],
     "device": {
