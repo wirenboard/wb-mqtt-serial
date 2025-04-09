@@ -166,7 +166,9 @@ namespace ModbusExt // modbus extension protocol declarations
 
         switch (buf[SUB_COMMAND_POS]) {
             case EVENTS_RESPONSE_COMMAND: {
-                if (size != EVENTS_RESPONSE_HEADER_SIZE + buf[EVENTS_RESPONSE_DATA_SIZE_POS] + CRC_SIZE) {
+                if ((size <= EVENTS_RESPONSE_DATA_SIZE_POS) ||
+                    (size != EVENTS_RESPONSE_HEADER_SIZE + buf[EVENTS_RESPONSE_DATA_SIZE_POS] + CRC_SIZE))
+                {
                     return false;
                 }
                 break;
