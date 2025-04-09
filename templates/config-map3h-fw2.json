@@ -1,7 +1,7 @@
 {
     "title": "_WB-MAP3H-fw2-template-title",
     "device_type": "WB-MAP3H fw2",
-    "group": "g-wb",
+    "group": "g-wb-old",
     "hw": [
         {
             "signature": "MAP3H",
