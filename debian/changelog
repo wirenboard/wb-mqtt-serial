@@ -1,8 +1,14 @@
-wb-mqtt-serial (2.158.7) stable; urgency=medium
+wb-mqtt-serial (2.158.8) stable; urgency=medium
 
   * Update Gurux.DLMS.cpp to 20250303.1
 
- -- Nikolay Korotkiy <nikolay.korotkiy@wirenboard.com>  Wed, 09 Apr 2025 14:25:00 +0400
+ -- Nikolay Korotkiy <nikolay.korotkiy@wirenboard.com>  Wed, 09 Apr 2025 16:25:00 +0400
+
+wb-mqtt-serial (2.158.7) stable; urgency=medium
+
+  * Fix tempates for WB-MAP with firmware 2.0.0 and later
+
+ -- Ilya Titov <ilya.titov@wirenboard.com>  Wed, 09 Apr 2025 15:37:10 +0300
 
 wb-mqtt-serial (2.158.6) stable; urgency=medium
 
