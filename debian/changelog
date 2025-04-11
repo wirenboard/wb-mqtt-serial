@@ -1,6 +1,6 @@
 wb-mqtt-serial (2.158.8) stable; urgency=medium
 
-  * Refactror TRPCPortHandler class
+  * Refactror TRPCPortHandler class, no functional changes
 
  -- Ilya Titov <ilya.titov@wirenboard.com>  Fri, 11 Apr 2025 10:34:19 +0300
 

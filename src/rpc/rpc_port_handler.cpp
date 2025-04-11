@@ -82,7 +82,7 @@ void TRPCPortHandler::PortLoad(const Json::Value& request,
             RPCPortLoadHandler(request, *port, onResult, onError);
         }
     } catch (const TRPCException& e) {
-        PortDrivers->ProcessException(e, onError);
+        ProcessException(e, onError);
     }
 }
 
@@ -102,7 +102,7 @@ void TRPCPortHandler::PortSetup(const Json::Value& request,
             RPCPortSetupHandler(rpcRequest, *port, onResult, onError);
         }
     } catch (const TRPCException& e) {
-        PortDrivers->ProcessException(e, onError);
+        ProcessException(e, onError);
     }
 }
 
@@ -126,7 +126,7 @@ void TRPCPortHandler::PortScan(const Json::Value& request,
             RPCPortScanHandler(request, *port, onResult, onError);
         }
     } catch (const TRPCException& e) {
-        PortDrivers->ProcessException(e, onError);
+        ProcessException(e, onError);
     }
 }
 

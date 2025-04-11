@@ -18,7 +18,6 @@ public:
     TRPCPortDriverList(PRPCConfig rpcConfig, PMQTTSerialDriver serialDriver);
     PRPCPortDriver Find(const Json::Value& request) const;
     PPort InitPort(const Json::Value& request);
-    void ProcessException(const TRPCException& e, WBMQTT::TMqttRpcServer::TErrorCallback onError);
 
 private:
     std::vector<PRPCPortDriver> Drivers;

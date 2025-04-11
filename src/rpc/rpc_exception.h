@@ -1,5 +1,7 @@
+#pragma once
 #include <stdexcept>
 #include <string>
+#include <wblib/rpc.h>
 
 // RPC Request execution result code
 enum class TRPCResultCode
@@ -26,3 +28,5 @@ public:
 private:
     TRPCResultCode ResultCode;
 };
+
+void ProcessException(const TRPCException& e, WBMQTT::TMqttRpcServer::TErrorCallback onError);

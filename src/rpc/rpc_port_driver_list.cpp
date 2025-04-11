@@ -69,23 +69,3 @@ PPort TRPCPortDriverList::InitPort(const Json::Value& request)
     }
     throw TRPCException("Port is not defined", TRPCResultCode::RPC_WRONG_PARAM_VALUE);
 }
-
-void TRPCPortDriverList::ProcessException(const TRPCException& e, WBMQTT::TMqttRpcServer::TErrorCallback onError)
-{
-    if (e.GetResultCode() == TRPCResultCode::RPC_WRONG_IO) {
-        // Too many "request timed out" errors while scanning ports
-        LOG(Debug) << e.GetResultMessage();
-    } else {
-        LOG(Warn) << e.GetResultMessage();
-    }
-    switch (e.GetResultCode()) {
-        case TRPCResultCode::RPC_WRONG_TIMEOUT: {
-            onError(WBMQTT::E_RPC_REQUEST_TIMEOUT, e.GetResultMessage());
-            break;
-        }
-        default: {
-            onError(WBMQTT::E_RPC_SERVER_ERROR, e.GetResultMessage());
-            break;
-        }
-    }
-}
