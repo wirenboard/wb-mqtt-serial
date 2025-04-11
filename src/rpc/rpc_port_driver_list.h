@@ -2,8 +2,6 @@
 #include "rpc_config.h"
 #include "rpc_exception.h"
 #include "serial_driver.h"
-#include "serial_port_driver.h"
-#include <wblib/json_utils.h>
 #include <wblib/rpc.h>
 
 struct TRPCPortDriver
@@ -27,5 +25,3 @@ private:
 };
 
 typedef std::shared_ptr<TRPCPortDriverList> PRPCPortDriverList;
-
-TSerialPortConnectionSettings ParseRPCSerialPortSettings(const Json::Value& request);
