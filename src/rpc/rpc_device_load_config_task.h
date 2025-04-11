@@ -21,6 +21,7 @@ public:
     std::chrono::milliseconds TotalTimeout = DefaultRPCTotalTimeout;
     uint8_t SlaveId;
     std::string DeviceType;
+    Json::Value Parameters;
 
     WBMQTT::TMqttRpcServer::TResultCallback OnResult = nullptr;
     WBMQTT::TMqttRpcServer::TErrorCallback OnError = nullptr;
@@ -28,7 +29,7 @@ public:
 
 typedef std::shared_ptr<TRPCDeviveLoadConfigRequest> PRPCDeviveLoadConfigRequest;
 
-PRPCDeviveLoadConfigRequest ParseRPCDeviceLoadConfigRequest(const Json::Value& request);
+PRPCDeviveLoadConfigRequest ParseRPCDeviceLoadConfigRequest(const Json::Value& request, const Json::Value& parameters);
 
 void ExecRPCDeviveLoadConfigRequest(TPort& port, PRPCDeviveLoadConfigRequest rpcRequest);
 

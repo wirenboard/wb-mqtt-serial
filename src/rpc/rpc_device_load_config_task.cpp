@@ -1,16 +1,18 @@
 #include "rpc_device_load_config_task.h"
 #include "rpc_helpers.h"
 #include "serial_port.h"
+#include <string>
 
 #define LOG(logger) ::logger.Log() << "[TEST] "
 
-PRPCDeviveLoadConfigRequest ParseRPCDeviceLoadConfigRequest(const Json::Value& request)
+PRPCDeviveLoadConfigRequest ParseRPCDeviceLoadConfigRequest(const Json::Value& request, const Json::Value& parameters)
 {
     PRPCDeviveLoadConfigRequest res = std::make_shared<TRPCDeviveLoadConfigRequest>();
     res->SerialPortSettings = ParseRPCSerialPortSettings(request);
     WBMQTT::JSON::Get(request, "total_timeout", res->TotalTimeout);
     WBMQTT::JSON::Get(request, "slave_id", res->SlaveId);
-    WBMQTT::JSON::Get(request, "devive_type", res->DeviceType);
+    WBMQTT::JSON::Get(request, "device_type", res->DeviceType);
+    res->Parameters = Json::Value(parameters);
     return res;
 }
 
@@ -23,9 +25,10 @@ void ExecRPCDeviveLoadConfigRequest(TPort& port, PRPCDeviveLoadConfigRequest rpc
     port.SkipNoise();
 
     Json::Value replyJSON;
-    replyJSON["dummy"] = true;
+    for (auto it = rpcRequest->Parameters.begin(); it != rpcRequest->Parameters.end(); ++it) {
+        replyJSON[it.key().asString().c_str()] = "dummyValue";
+    }
     rpcRequest->OnResult(replyJSON);
-
     LOG(Info) << "Hello there!";
 }
 

@@ -346,6 +346,7 @@ int main(int argc, char* argv[])
                                                                rpcServer,
                                                                serialDriver);
             rpcDeviceHandler = std::make_shared<TRPCDeviceHandler>(RPC_DEVICE_LOAD_CONFIG_REQUEST_SCHEMA_FULL_FILE_PATH,
+                                                                   templates,
                                                                    rpcConfig,
                                                                    rpcServer,
                                                                    serialDriver);

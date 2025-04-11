@@ -5,10 +5,12 @@
 #define LOG(logger) ::logger.Log() << "[RPC] "
 
 TRPCDeviceHandler::TRPCDeviceHandler(const std::string& requestDeviceLoadConfigSchemaFilePath,
+                                     std::shared_ptr<TTemplateMap> templates,
                                      PRPCConfig rpcConfig,
                                      WBMQTT::PMqttRpcServer rpcServer,
                                      PMQTTSerialDriver serialDriver)
-    : RPCConfig(rpcConfig)
+    : Templates(templates),
+      RPCConfig(rpcConfig)
 {
     try {
         RequestDeviceLoadConfigSchema = WBMQTT::JSON::Parse(requestDeviceLoadConfigSchemaFilePath);
@@ -38,19 +40,26 @@ void TRPCDeviceHandler::LoadConfig(const Json::Value& request,
         throw TRPCException(e.what(), TRPCResultCode::RPC_WRONG_PARAM_VALUE);
     }
 
+    std::string deviceType;
+    WBMQTT::JSON::Get(request, "device_type", deviceType);
+    auto deviceTemplate = Templates->GetTemplate(deviceType);
+    // TODO: check template->GetProtocol() is modbus
+    // TODO: check template->WithSubdevices() is false
+
+    Json::Value parameters = deviceTemplate->GetTemplate()["parameters"];
+    // TODO: check parametets isn't empty
+
     try {
         PRPCPortDriver rpcPortDriver = PortDrivers->Find(request);
 
         if (rpcPortDriver != nullptr && rpcPortDriver->SerialClient) {
-            RPCDeviceLoadConfigHandler(request, rpcPortDriver->SerialClient, onResult, onError);
+            RPCDeviceLoadConfigHandler(request, parameters, rpcPortDriver->SerialClient, onResult, onError);
         } else {
             auto port = InitPort(request);
             port->Open();
-            RPCDeviceLoadConfigHandler(request, *port, onResult, onError);
+            RPCDeviceLoadConfigHandler(request, parameters, *port, onResult, onError);
         }
     } catch (const TRPCException& e) {
         ProcessException(e, onError);
     }
-
-    LOG(Info) << "Hello there!";
 }
