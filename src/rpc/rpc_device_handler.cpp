@@ -1,4 +1,5 @@
 #include "rpc_device_handler.h"
+#include "rpc_device_load_config_handler.h"
 #include "rpc_helpers.h"
 
 #define LOG(logger) ::logger.Log() << "[RPC] "
@@ -38,17 +39,14 @@ void TRPCDeviceHandler::LoadConfig(const Json::Value& request,
     }
 
     try {
-        // TODO: create request
         PRPCPortDriver rpcPortDriver = PortDrivers->Find(request);
 
         if (rpcPortDriver != nullptr && rpcPortDriver->SerialClient) {
-            // TODO: handle request
-            LOG(Info) << "Port found: " << rpcPortDriver->SerialClient->GetPort()->GetDescription();
+            RPCDeviceLoadConfigHandler(request, rpcPortDriver->SerialClient, onResult, onError);
         } else {
             auto port = InitPort(request);
-            // port->Open();
-            // TODO: handle request
-            LOG(Info) << "Port not found, initialized new one: " << port->GetDescription();
+            port->Open();
+            RPCDeviceLoadConfigHandler(request, *port, onResult, onError);
         }
     } catch (const TRPCException& e) {
         ProcessException(e, onError);
