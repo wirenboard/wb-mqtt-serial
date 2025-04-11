@@ -1,62 +1,11 @@
 #include "rpc_port_handler.h"
-#include "rpc_port.h"
 #include "rpc_port_load_handler.h"
 #include "rpc_port_scan_handler.h"
 #include "rpc_port_setup_handler.h"
-#include "serial_device.h"
-#include "serial_exc.h"
 #include "serial_port.h"
 #include "tcp_port.h"
-#include "wblib/exceptions.h"
 
 #define LOG(logger) ::logger.Log() << "[RPC] "
-
-namespace
-{
-    PPort InitPort(const Json::Value& request)
-    {
-        if (request.isMember("path")) {
-            std::string path;
-            WBMQTT::JSON::Get(request, "path", path);
-            TSerialPortSettings settings(path, ParseRPCSerialPortSettings(request));
-
-            LOG(Debug) << "Create serial port: " << path;
-            return std::make_shared<TSerialPort>(settings);
-        }
-        if (request.isMember("ip") && request.isMember("port")) {
-            std::string address;
-            int portNumber = 0;
-            WBMQTT::JSON::Get(request, "ip", address);
-            WBMQTT::JSON::Get(request, "port", portNumber);
-            TTcpPortSettings settings(address, portNumber);
-
-            LOG(Debug) << "Create tcp port: " << address << ":" << portNumber;
-            return std::make_shared<TTcpPort>(settings);
-        }
-        throw TRPCException("Port is not defined", TRPCResultCode::RPC_WRONG_PARAM_VALUE);
-    }
-
-    void ProcessException(const TRPCException& e, WBMQTT::TMqttRpcServer::TErrorCallback onError)
-    {
-        if (e.GetResultCode() == TRPCResultCode::RPC_WRONG_IO) {
-            // Too many "request timed out" errors while scanning ports
-            LOG(Debug) << e.GetResultMessage();
-        } else {
-            LOG(Warn) << e.GetResultMessage();
-        }
-        switch (e.GetResultCode()) {
-            case TRPCResultCode::RPC_WRONG_TIMEOUT: {
-                onError(WBMQTT::E_RPC_REQUEST_TIMEOUT, e.GetResultMessage());
-                break;
-            }
-            default: {
-                onError(WBMQTT::E_RPC_SERVER_ERROR, e.GetResultMessage());
-                break;
-            }
-        }
-    }
-
-} // namespace
 
 TRPCPortHandler::TRPCPortHandler(const std::string& requestPortLoadSchemaFilePath,
                                  const std::string& requestPortSetupSchemaFilePath,
@@ -87,30 +36,6 @@ TRPCPortHandler::TRPCPortHandler(const std::string& requestPortLoadSchemaFilePat
         throw;
     }
 
-    for (auto RPCPort: RPCConfig->GetPorts()) {
-        PRPCPortDriver RPCPortDriver = std::make_shared<TRPCPortDriver>();
-        RPCPortDriver->RPCPort = RPCPort;
-        PortDrivers.push_back(RPCPortDriver);
-    }
-
-    this->SerialDriver = serialDriver;
-
-    std::vector<PSerialPortDriver> serialPortDrivers = SerialDriver->GetPortDrivers();
-    for (auto serialPortDriver: serialPortDrivers) {
-        PPort port = serialPortDriver->GetSerialClient()->GetPort();
-
-        auto findedPortDriver =
-            std::find_if(PortDrivers.begin(), PortDrivers.end(), [&port](PRPCPortDriver rpcPortDriver) {
-                return port == rpcPortDriver->RPCPort->GetPort();
-            });
-
-        if (findedPortDriver != PortDrivers.end()) {
-            findedPortDriver->get()->SerialClient = serialPortDriver->GetSerialClient();
-        } else {
-            LOG(Warn) << "Can't find RPCPortDriver for " << port->GetDescription() << " port";
-        }
-    }
-
     rpcServer->RegisterAsyncMethod("port",
                                    "Load",
                                    std::bind(&TRPCPortHandler::PortLoad,
@@ -133,24 +58,8 @@ TRPCPortHandler::TRPCPortHandler(const std::string& requestPortLoadSchemaFilePat
                                              std::placeholders::_1,
                                              std::placeholders::_2,
                                              std::placeholders::_3));
-}
 
-PRPCPortDriver TRPCPortHandler::FindPortDriver(const Json::Value& request) const
-{
-    std::vector<PRPCPortDriver> matches;
-    std::copy_if(PortDrivers.begin(),
-                 PortDrivers.end(),
-                 std::back_inserter(matches),
-                 [&request](PRPCPortDriver rpcPortDriver) { return rpcPortDriver->RPCPort->Match(request); });
-
-    switch (matches.size()) {
-        case 0:
-            return nullptr;
-        case 1:
-            return matches[0];
-        default:
-            throw TRPCException("More than one matches for requested port", TRPCResultCode::RPC_WRONG_PORT);
-    }
+    PortDrivers = std::make_shared<TRPCPortDriverList>(rpcConfig, serialDriver);
 }
 
 void TRPCPortHandler::PortLoad(const Json::Value& request,
@@ -163,17 +72,17 @@ void TRPCPortHandler::PortLoad(const Json::Value& request,
         throw TRPCException(e.what(), TRPCResultCode::RPC_WRONG_PARAM_VALUE);
     }
     try {
-        PRPCPortDriver rpcPortDriver = FindPortDriver(request);
+        PRPCPortDriver rpcPortDriver = PortDrivers->Find(request);
 
         if (rpcPortDriver != nullptr && rpcPortDriver->SerialClient) {
             RPCPortLoadHandler(request, rpcPortDriver->SerialClient, onResult, onError);
         } else {
-            auto port = InitPort(request);
+            auto port = PortDrivers->InitPort(request);
             port->Open();
             RPCPortLoadHandler(request, *port, onResult, onError);
         }
     } catch (const TRPCException& e) {
-        ProcessException(e, onError);
+        PortDrivers->ProcessException(e, onError);
     }
 }
 
@@ -183,17 +92,17 @@ void TRPCPortHandler::PortSetup(const Json::Value& request,
 {
     try {
         PRPCPortSetupRequest rpcRequest = ParseRPCPortSetupRequest(request, RequestPortSetupSchema);
-        PRPCPortDriver rpcPortDriver = FindPortDriver(request);
+        PRPCPortDriver rpcPortDriver = PortDrivers->Find(request);
 
         if (rpcPortDriver != nullptr && rpcPortDriver->SerialClient) {
             RPCPortSetupHandler(rpcRequest, rpcPortDriver->SerialClient, onResult, onError);
         } else {
-            auto port = InitPort(request);
+            auto port = PortDrivers->InitPort(request);
             port->Open();
             RPCPortSetupHandler(rpcRequest, *port, onResult, onError);
         }
     } catch (const TRPCException& e) {
-        ProcessException(e, onError);
+        PortDrivers->ProcessException(e, onError);
     }
 }
 
@@ -207,48 +116,21 @@ void TRPCPortHandler::PortScan(const Json::Value& request,
         throw TRPCException(e.what(), TRPCResultCode::RPC_WRONG_PARAM_VALUE);
     }
     try {
-        PRPCPortDriver rpcPortDriver = FindPortDriver(request);
+        PRPCPortDriver rpcPortDriver = PortDrivers->Find(request);
 
         if (rpcPortDriver != nullptr && rpcPortDriver->SerialClient) {
             RPCPortScanHandler(request, rpcPortDriver->SerialClient, onResult, onError);
         } else {
-            auto port = InitPort(request);
+            auto port = PortDrivers->InitPort(request);
             port->Open();
             RPCPortScanHandler(request, *port, onResult, onError);
         }
     } catch (const TRPCException& e) {
-        ProcessException(e, onError);
+        PortDrivers->ProcessException(e, onError);
     }
 }
 
 Json::Value TRPCPortHandler::LoadPorts(const Json::Value& request)
 {
     return RPCConfig->GetPortConfigs();
-}
-
-TRPCException::TRPCException(const std::string& message, TRPCResultCode resultCode)
-    : std::runtime_error(message),
-      ResultCode(resultCode)
-{}
-
-TRPCResultCode TRPCException::GetResultCode() const
-{
-    return ResultCode;
-}
-
-std::string TRPCException::GetResultMessage() const
-{
-    return this->what();
-}
-
-TSerialPortConnectionSettings ParseRPCSerialPortSettings(const Json::Value& request)
-{
-    TSerialPortConnectionSettings res;
-    WBMQTT::JSON::Get(request, "baud_rate", res.BaudRate);
-    if (request.isMember("parity")) {
-        res.Parity = request["parity"].asCString()[0];
-    }
-    WBMQTT::JSON::Get(request, "data_bits", res.DataBits);
-    WBMQTT::JSON::Get(request, "stop_bits", res.StopBits);
-    return res;
 }
