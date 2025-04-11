@@ -4,21 +4,6 @@
 
 #define LOG(logger) ::logger.Log() << "[RPC] "
 
-TRPCException::TRPCException(const std::string& message, TRPCResultCode resultCode)
-    : std::runtime_error(message),
-      ResultCode(resultCode)
-{}
-
-TRPCResultCode TRPCException::GetResultCode() const
-{
-    return ResultCode;
-}
-
-std::string TRPCException::GetResultMessage() const
-{
-    return this->what();
-}
-
 TRPCPortDriverList::TRPCPortDriverList(PRPCConfig rpcConfig, PMQTTSerialDriver serialDriver)
 {
     for (auto RPCPort: rpcConfig->GetPorts()) {
