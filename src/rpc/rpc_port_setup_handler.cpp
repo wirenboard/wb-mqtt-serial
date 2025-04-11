@@ -1,6 +1,6 @@
 #include "rpc_port_setup_handler.h"
+#include "rpc_helpers.h"
 #include "rpc_port_setup_serial_client_task.h"
-#include "rpc_serial_port_settings.h"
 #include "serial_port.h"
 #include "tcp_port.h"
 #include "wb_registers.h"

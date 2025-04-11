@@ -1,9 +1,8 @@
 #include "rpc_port_handler.h"
+#include "rpc_helpers.h"
 #include "rpc_port_load_handler.h"
 #include "rpc_port_scan_handler.h"
 #include "rpc_port_setup_handler.h"
-#include "serial_port.h"
-#include "tcp_port.h"
 
 #define LOG(logger) ::logger.Log() << "[RPC] "
 
@@ -77,7 +76,7 @@ void TRPCPortHandler::PortLoad(const Json::Value& request,
         if (rpcPortDriver != nullptr && rpcPortDriver->SerialClient) {
             RPCPortLoadHandler(request, rpcPortDriver->SerialClient, onResult, onError);
         } else {
-            auto port = PortDrivers->InitPort(request);
+            auto port = InitPort(request);
             port->Open();
             RPCPortLoadHandler(request, *port, onResult, onError);
         }
@@ -97,7 +96,7 @@ void TRPCPortHandler::PortSetup(const Json::Value& request,
         if (rpcPortDriver != nullptr && rpcPortDriver->SerialClient) {
             RPCPortSetupHandler(rpcRequest, rpcPortDriver->SerialClient, onResult, onError);
         } else {
-            auto port = PortDrivers->InitPort(request);
+            auto port = InitPort(request);
             port->Open();
             RPCPortSetupHandler(rpcRequest, *port, onResult, onError);
         }
@@ -121,7 +120,7 @@ void TRPCPortHandler::PortScan(const Json::Value& request,
         if (rpcPortDriver != nullptr && rpcPortDriver->SerialClient) {
             RPCPortScanHandler(request, rpcPortDriver->SerialClient, onResult, onError);
         } else {
-            auto port = PortDrivers->InitPort(request);
+            auto port = InitPort(request);
             port->Open();
             RPCPortScanHandler(request, *port, onResult, onError);
         }

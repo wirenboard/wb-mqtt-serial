@@ -1,6 +1,5 @@
 #include "rpc_exception.h"
 #include "log.h"
-#include <wblib/rpc.h>
 
 #define LOG(logger) ::logger.Log() << "[RPC] "
 

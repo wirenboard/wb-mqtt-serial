@@ -1,5 +1,5 @@
 #include "rpc_port_load_request.h"
-#include "rpc_serial_port_settings.h"
+#include "rpc_helpers.h"
 
 namespace
 {

@@ -1,7 +1,7 @@
 #include "rpc_port_scan_serial_client_task.h"
 #include "modbus_base.h"
 #include "modbus_common.h"
-#include "rpc_serial_port_settings.h"
+#include "rpc_helpers.h"
 #include "serial_port.h"
 #include "wb_registers.h"
 #include <regex>
