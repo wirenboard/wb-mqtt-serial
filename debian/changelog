@@ -1,3 +1,9 @@
+wb-mqtt-serial (2.158.9) stable; urgency=medium
+
+  * Refactor TSerialDeviceFactory class, no functional changes
+
+ -- Ilya Titov <ilya.titov@wirenboard.com>  Mon, 14 Apr 2025 15:57:51 +0300
+
 wb-mqtt-serial (2.158.8) stable; urgency=medium
 
   * Refactror TRPCPortHandler class, no functional changes
