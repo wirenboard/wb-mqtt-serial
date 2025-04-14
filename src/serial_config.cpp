@@ -155,7 +155,7 @@ namespace
             try {
                 return typeMap->Find(type);
             } catch (...) {
-                throw TConfigParserException("invalid setup register type: " + type);
+                throw TConfigParserException("invalid register type: " + type);
             }
         }
         return typeMap->GetDefaultType();
@@ -975,15 +975,8 @@ PProtocol TSerialDeviceFactory::GetProtocol(const std::string& name)
     return it->second.protocol;
 }
 
-TDeviceProtocolParams TSerialDeviceFactory::GetProtocolParams(std::string protocolName, PPortConfig portConfig)
+TDeviceProtocolParams TSerialDeviceFactory::GetProtocolParams(const std::string& protocolName)
 {
-    if (portConfig->IsModbusTcp) {
-        if (!GetProtocol(protocolName)->IsModbus()) {
-            throw TSerialDeviceException("Protocol \"" + protocolName + "\" is not compatible with Modbus TCP");
-        }
-        protocolName += "-tcp";
-    }
-
     auto it = Protocols.find(protocolName);
     if (it == Protocols.end()) {
         throw TSerialDeviceException("unknown protocol: " + protocolName);
@@ -1038,7 +1031,14 @@ PSerialDevice TSerialDeviceFactory::CreateDevice(const Json::Value& deviceConfig
     std::string protocolName = DefaultProtocol;
     Get(*cfg, "protocol", protocolName);
 
-    TDeviceProtocolParams protocolParams = GetProtocolParams(protocolName, portConfig);
+    if (portConfig->IsModbusTcp) {
+        if (!GetProtocol(protocolName)->IsModbus()) {
+            throw TSerialDeviceException("Protocol \"" + protocolName + "\" is not compatible with Modbus TCP");
+        }
+        protocolName += "-tcp";
+    }
+
+    TDeviceProtocolParams protocolParams = GetProtocolParams(protocolName);
     loadParams.DefaultId = defaultId;
     loadParams.DefaultRequestDelay = portConfig->RequestDelay;
     loadParams.PortResponseTimeout = portConfig->ResponseTimeout;

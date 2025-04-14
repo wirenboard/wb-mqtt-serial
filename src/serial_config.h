@@ -177,7 +177,7 @@ class TSerialDeviceFactory
 public:
     void RegisterProtocol(PProtocol protocol, IDeviceFactory* deviceFactory);
     PProtocol GetProtocol(const std::string& name);
-    TDeviceProtocolParams GetProtocolParams(std::string protocolName, PPortConfig portConfig);
+    TDeviceProtocolParams GetProtocolParams(const std::string& protocolName);
     const std::string& GetCommonDeviceSchemaRef(const std::string& protocolName) const;
     const std::string& GetCustomChannelSchemaRef(const std::string& protocolName) const;
     std::vector<std::string> GetProtocolNames() const;
