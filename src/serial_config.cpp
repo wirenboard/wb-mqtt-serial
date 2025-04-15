@@ -908,7 +908,7 @@ PProtocol TSerialDeviceFactory::GetProtocol(const std::string& name)
     return it->second.protocol;
 }
 
-TDeviceProtocolParams TSerialDeviceFactory::GetProtocolParams(const std::string& protocolName)
+TDeviceProtocolParams TSerialDeviceFactory::GetProtocolParams(const std::string& protocolName) const
 {
     auto it = Protocols.find(protocolName);
     if (it == Protocols.end()) {
