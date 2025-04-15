@@ -47,6 +47,8 @@ namespace ModbusExt // modbus extension protocol common utilities
                            size_t dataSize) = 0;
     };
 
+    bool IsRegisterEvent(uint8_t eventType);
+
     /**
      * @brief Read events
      *

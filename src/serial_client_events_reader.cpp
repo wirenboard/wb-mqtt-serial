@@ -39,24 +39,15 @@ namespace
 
     std::string MakeEventDescriptionString(uint8_t slaveId, uint8_t eventType, uint16_t eventId)
     {
-        switch (eventType) {
-            case ModbusExt::TEventType::COIL:
-            case ModbusExt::TEventType::DISCRETE:
-            case ModbusExt::TEventType::HOLDING:
-            case ModbusExt::TEventType::INPUT: {
-                return "<" + MakeDeviceDescriptionString(slaveId) + ":" + EventTypeToString(eventType) + ": " +
-                       std::to_string(eventId) + ">";
-            }
-            case ModbusExt::REBOOT: {
-                return "<" + MakeDeviceDescriptionString(slaveId) + ": reboot>";
-            }
-            default:
-                return "unknown event from " + MakeDeviceDescriptionString(slaveId) +
-                       " type: " + std::to_string(eventType) + ", id: " + std::to_string(eventId);
-                break;
+        if (ModbusExt::IsRegisterEvent(eventType)) {
+            return "<" + MakeDeviceDescriptionString(slaveId) + ":" + EventTypeToString(eventType) + ": " +
+                   std::to_string(eventId) + ">";
         }
-        return "<" + MakeDeviceDescriptionString(slaveId) + ":" + EventTypeToString(eventType) + ": " +
-               std::to_string(eventId) + ">";
+        if (eventType == ModbusExt::TEventType::REBOOT) {
+            return "<" + MakeDeviceDescriptionString(slaveId) + ": reboot>";
+        }
+        return "unknown event from " + MakeDeviceDescriptionString(slaveId) + " type: " + std::to_string(eventType) +
+               ", id: " + std::to_string(eventId);
     }
 
     ModbusExt::TEventType ToEventRegisterType(const Modbus::RegisterType regType)
@@ -172,23 +163,16 @@ public:
                        size_t dataSize) override
     {
         SlaveId = slaveId;
-        switch (eventType) {
-            case ModbusExt::TEventType::COIL:
-            case ModbusExt::TEventType::DISCRETE:
-            case ModbusExt::TEventType::HOLDING:
-            case ModbusExt::TEventType::INPUT: {
-                ProcessRegisterChangeEvent(slaveId, eventType, eventId, data, dataSize);
-                return;
-            }
-            case ModbusExt::REBOOT: {
-                ProcessDeviceRestartedEvent(slaveId);
-                return;
-            }
-            default:
-                LOG(Warn) << "Unexpected event from " << MakeDeviceDescriptionString(slaveId)
-                          << " type: " << static_cast<int>(eventType) << ", id: " << eventId;
-                break;
+        if (ModbusExt::IsRegisterEvent(eventType)) {
+            ProcessRegisterChangeEvent(slaveId, eventType, eventId, data, dataSize);
+            return;
         }
+        if (eventType == ModbusExt::TEventType::REBOOT) {
+            ProcessDeviceRestartedEvent(slaveId);
+            return;
+        }
+        LOG(Warn) << "Unexpected event from " << MakeDeviceDescriptionString(slaveId)
+                  << " type: " << static_cast<int>(eventType) << ", id: " << eventId;
     }
 
     uint8_t GetSlaveId() const
@@ -310,8 +294,13 @@ void TSerialClientEventsReader::OnEnabledEvent(uint8_t slaveId, uint8_t type, ui
             }
         }
     }
-    LOG(Info) << "Events are " << (res ? "enabled for " : "disabled for ")
-              << MakeEventDescriptionString(slaveId, type, addr);
+    if (res) {
+        LOG(Info) << "Events are enabled for " << MakeEventDescriptionString(slaveId, type, addr);
+        return;
+    }
+    if (!ModbusExt::IsRegisterEvent(type)) {
+        LOG(Info) << "Events are disabled for " << MakeEventDescriptionString(slaveId, type, addr);
+    }
 }
 
 void TSerialClientEventsReader::SetDevices(const std::list<PSerialDevice>& devices)

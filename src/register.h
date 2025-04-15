@@ -37,7 +37,8 @@ enum RegisterFormat
     Float,
     Double,
     Char8,
-    String
+    String,
+    String8
 };
 
 enum class EWordOrder
@@ -266,6 +267,7 @@ public:
     //! Get occupied space in 16-bit words
     uint8_t Get16BitWidth() const;
 
+    bool IsString() const;
     std::string ToString() const;
 
     bool IsHighPriority() const;
@@ -429,6 +431,8 @@ inline const char* RegisterFormatName(RegisterFormat fmt)
             return "Char8";
         case String:
             return "String";
+        case String8:
+            return "String8";
         default:
             return "<unknown register type>";
     }
@@ -470,6 +474,8 @@ inline RegisterFormat RegisterFormatFromName(const std::string& name)
         return Char8;
     else if (name == "string")
         return String;
+    else if (name == "string8")
+        return String8;
     else
         return U16;
 }

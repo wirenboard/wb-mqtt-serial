@@ -1,0 +1,14 @@
+Open()
+EnqueueString8ReadResponse()
+>> 01 03 00 8E 00 08 24 27
+<< 01 03 10 32 2E 34 2E 32 2D 72 63 31 00 00 00 00 00 00 00 77 0A
+EnqueueString8ReadResponse()
+>> 01 03 00 8E 00 08 24 27
+<< 01 03 10 32 2E 34 2E 32 2D 72 63 31 00 AA BB CC DD EE FF 29 91
+EnqueueString8ReadResponse()
+>> 01 03 00 8E 00 08 24 27
+<< 01 03 10 32 2E 34 2E 32 2D 72 63 31 FF FF FF FF FF FF FF 79 8A
+EnqueueString8ReadResponse()
+>> 01 03 00 8E 00 08 24 27
+<< 01 03 10 32 2E 34 2E 32 2D 72 63 31 32 33 34 35 36 37 38 28 EE
+Close()

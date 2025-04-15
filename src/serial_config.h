@@ -159,6 +159,12 @@ struct TDeviceConfigLoadParams
     const Json::Value* Translations = nullptr;
 };
 
+struct TDeviceProtocolParams
+{
+    PProtocol protocol;
+    std::shared_ptr<IDeviceFactory> factory;
+};
+
 PDeviceConfig LoadBaseDeviceConfig(const Json::Value& deviceData,
                                    PProtocol protocol,
                                    const IDeviceFactory& factory,
@@ -166,19 +172,19 @@ PDeviceConfig LoadBaseDeviceConfig(const Json::Value& deviceData,
 
 class TSerialDeviceFactory
 {
-    std::unordered_map<std::string, std::pair<PProtocol, std::shared_ptr<IDeviceFactory>>> Protocols;
+    std::unordered_map<std::string, TDeviceProtocolParams> Protocols;
 
 public:
     void RegisterProtocol(PProtocol protocol, IDeviceFactory* deviceFactory);
-    PRegisterTypeMap GetRegisterTypes(const std::string& protocolName);
+    PProtocol GetProtocol(const std::string& name);
+    TDeviceProtocolParams GetProtocolParams(const std::string& protocolName);
+    const std::string& GetCommonDeviceSchemaRef(const std::string& protocolName) const;
+    const std::string& GetCustomChannelSchemaRef(const std::string& protocolName) const;
+    std::vector<std::string> GetProtocolNames() const;
     PSerialDevice CreateDevice(const Json::Value& device_config,
                                const std::string& defaultId,
                                PPortConfig PPortConfig,
                                TTemplateMap& templates);
-    PProtocol GetProtocol(const std::string& name);
-    const std::string& GetCommonDeviceSchemaRef(const std::string& protocolName) const;
-    const std::string& GetCustomChannelSchemaRef(const std::string& protocolName) const;
-    std::vector<std::string> GetProtocolNames() const;
 };
 
 void RegisterProtocols(TSerialDeviceFactory& deviceFactory);

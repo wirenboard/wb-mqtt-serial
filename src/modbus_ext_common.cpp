@@ -166,7 +166,9 @@ namespace ModbusExt // modbus extension protocol declarations
 
         switch (buf[SUB_COMMAND_POS]) {
             case EVENTS_RESPONSE_COMMAND: {
-                if (size != EVENTS_RESPONSE_HEADER_SIZE + buf[EVENTS_RESPONSE_DATA_SIZE_POS] + CRC_SIZE) {
+                if ((size <= EVENTS_RESPONSE_DATA_SIZE_POS) ||
+                    (size != EVENTS_RESPONSE_HEADER_SIZE + buf[EVENTS_RESPONSE_DATA_SIZE_POS] + CRC_SIZE))
+                {
                     return false;
                 }
                 break;
@@ -235,6 +237,19 @@ namespace ModbusExt // modbus extension protocol declarations
                                dataSize);
             data += eventSize;
             size -= eventSize;
+        }
+    }
+
+    bool IsRegisterEvent(uint8_t eventType)
+    {
+        switch (eventType) {
+            case TEventType::COIL:
+            case TEventType::DISCRETE:
+            case TEventType::HOLDING:
+            case TEventType::INPUT:
+                return true;
+            default:
+                return false;
         }
     }
 
