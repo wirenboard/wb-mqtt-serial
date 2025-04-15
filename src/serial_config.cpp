@@ -148,17 +148,17 @@ namespace
         return readonly;
     }
 
-    const TRegisterType& GetRegisterType(const Json::Value& itemData, const PRegisterTypeMap& typeMap)
+    const TRegisterType& GetRegisterType(const Json::Value& itemData, const TRegisterTypeMap& typeMap)
     {
         if (itemData.isMember("reg_type")) {
             std::string type = itemData["reg_type"].asString();
             try {
-                return typeMap->Find(type);
+                return typeMap.Find(type);
             } catch (...) {
                 throw TConfigParserException("invalid register type: " + type);
             }
         }
-        return typeMap->GetDefaultType();
+        return typeMap.GetDefaultType();
     }
 
     std::optional<std::chrono::milliseconds> GetReadRateLimit(const Json::Value& data)
@@ -215,9 +215,11 @@ namespace
     };
 
     TLoadRegisterConfigResult LoadRegisterConfig(const Json::Value& register_data,
-                                                 const PRegisterTypeMap& type_map,
+                                                 const TRegisterTypeMap& type_map,
                                                  const std::string& readonly_override_error_message_prefix,
-                                                 const TLoadingContext& context)
+                                                 const IDeviceFactory& factory,
+                                                 const IRegisterAddress& device_base_address,
+                                                 size_t stride)
     {
         TLoadRegisterConfigResult res;
         TRegisterType regType = GetRegisterType(register_data, type_map);
@@ -254,11 +256,11 @@ namespace
                                                 readonly_override_error_message_prefix,
                                                 regType.Name);
 
-        auto registerDesc = context.factory.GetRegisterAddressFactory().LoadRegisterAddress(
-            register_data,
-            context.device_base_address,
-            context.stride,
-            RegisterFormatByteWidth(regType.DefaultFormat));
+        auto registerDesc =
+            factory.GetRegisterAddressFactory().LoadRegisterAddress(register_data,
+                                                                    device_base_address,
+                                                                    stride,
+                                                                    RegisterFormatByteWidth(regType.DefaultFormat));
 
         if ((regType.DefaultFormat == RegisterFormat::String) && (registerDesc.DataWidth == 0)) {
             throw TConfigParserException(readonly_override_error_message_prefix +
@@ -377,7 +379,12 @@ namespace
 
             const Json::Value& reg_data = channel_data["consists_of"];
             for (Json::ArrayIndex i = 0; i < reg_data.size(); ++i) {
-                auto reg = LoadRegisterConfig(reg_data[i], device_config->TypeMap, errorMsgPrefix, context);
+                auto reg = LoadRegisterConfig(reg_data[i],
+                                              *device_config->TypeMap,
+                                              errorMsgPrefix,
+                                              context.factory,
+                                              context.device_base_address,
+                                              context.stride);
                 reg.RegisterConfig->ReadRateLimit = read_rate_limit_ms;
                 reg.RegisterConfig->ReadPeriod = read_period;
                 registers.push_back(reg.RegisterConfig);
@@ -390,7 +397,12 @@ namespace
             }
         } else {
             try {
-                auto reg = LoadRegisterConfig(channel_data, device_config->TypeMap, errorMsgPrefix, context);
+                auto reg = LoadRegisterConfig(channel_data,
+                                              *device_config->TypeMap,
+                                              errorMsgPrefix,
+                                              context.factory,
+                                              context.device_base_address,
+                                              context.stride);
                 default_type_str = reg.DefaultControlType;
                 registers.push_back(reg.RegisterConfig);
             } catch (const std::exception& e) {
@@ -538,7 +550,12 @@ namespace
         if (!context.name_prefix.empty()) {
             name = context.name_prefix + " " + name;
         }
-        auto reg = LoadRegisterConfig(item_data, device_config->TypeMap, "Setup item \"" + name + "\"", context);
+        auto reg = LoadRegisterConfig(item_data,
+                                      *device_config->TypeMap,
+                                      "Setup item \"" + name + "\"",
+                                      context.factory,
+                                      context.device_base_address,
+                                      context.stride);
         const auto& valueItem = item_data["value"];
         // libjsoncpp uses format "%.17g" in asString() and outputs strings with additional small numbers
         auto value = valueItem.isDouble() ? WBMQTT::StringFormat("%.15g", valueItem.asDouble()) : valueItem.asString();
