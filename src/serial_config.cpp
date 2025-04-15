@@ -148,17 +148,17 @@ namespace
         return readonly;
     }
 
-    const TRegisterType& GetRegisterType(const Json::Value& itemData, const PRegisterTypeMap& typeMap)
+    const TRegisterType& GetRegisterType(const Json::Value& itemData, const TRegisterTypeMap& typeMap)
     {
         if (itemData.isMember("reg_type")) {
             std::string type = itemData["reg_type"].asString();
             try {
-                return typeMap->Find(type);
+                return typeMap.Find(type);
             } catch (...) {
                 throw TConfigParserException("invalid register type: " + type);
             }
         }
-        return typeMap->GetDefaultType();
+        return typeMap.GetDefaultType();
     }
 
     std::optional<std::chrono::milliseconds> GetReadRateLimit(const Json::Value& data)
@@ -207,88 +207,6 @@ namespace
               device_base_address(base_address)
         {}
     };
-
-    struct TLoadRegisterConfigResult
-    {
-        PRegisterConfig RegisterConfig;
-        std::string DefaultControlType;
-    };
-
-    TLoadRegisterConfigResult LoadRegisterConfig(const Json::Value& register_data,
-                                                 const PRegisterTypeMap& type_map,
-                                                 const std::string& readonly_override_error_message_prefix,
-                                                 const TLoadingContext& context)
-    {
-        TLoadRegisterConfigResult res;
-        TRegisterType regType = GetRegisterType(register_data, type_map);
-        res.DefaultControlType = regType.DefaultControlType.empty() ? "text" : regType.DefaultControlType;
-
-        if (register_data.isMember("format")) {
-            regType.DefaultFormat = RegisterFormatFromName(register_data["format"].asString());
-        }
-
-        if (register_data.isMember("word_order")) {
-            regType.DefaultWordOrder = WordOrderFromName(register_data["word_order"].asString());
-        }
-
-        double scale = Read(register_data, "scale", 1.0); // TBD: check for zero, too
-        double offset = Read(register_data, "offset", 0.0);
-        double round_to = Read(register_data, "round_to", 0.0);
-        TRegisterConfig::TSporadicMode sporadicMode = TRegisterConfig::TSporadicMode::DISABLED;
-        if (Read(register_data, "sporadic", false)) {
-            sporadicMode = TRegisterConfig::TSporadicMode::ONLY_EVENTS;
-        }
-        if (Read(register_data, "semi-sporadic", false)) {
-            sporadicMode = TRegisterConfig::TSporadicMode::EVENTS_AND_POLLING;
-        }
-
-        bool readonly = ReadChannelsReadonlyProperty(register_data,
-                                                     "readonly",
-                                                     regType.ReadOnly,
-                                                     readonly_override_error_message_prefix,
-                                                     regType.Name);
-        // For compatibility with old configs
-        readonly = ReadChannelsReadonlyProperty(register_data,
-                                                "channel_readonly",
-                                                readonly,
-                                                readonly_override_error_message_prefix,
-                                                regType.Name);
-
-        auto registerDesc = context.factory.GetRegisterAddressFactory().LoadRegisterAddress(
-            register_data,
-            context.device_base_address,
-            context.stride,
-            RegisterFormatByteWidth(regType.DefaultFormat));
-
-        if ((regType.DefaultFormat == RegisterFormat::String) && (registerDesc.DataWidth == 0)) {
-            throw TConfigParserException(readonly_override_error_message_prefix +
-                                         ": String size is not set for register string format");
-        }
-
-        res.RegisterConfig = TRegisterConfig::Create(regType.Index,
-                                                     registerDesc,
-                                                     regType.DefaultFormat,
-                                                     scale,
-                                                     offset,
-                                                     round_to,
-                                                     sporadicMode,
-                                                     readonly,
-                                                     regType.Name,
-                                                     regType.DefaultWordOrder);
-
-        if (register_data.isMember("error_value")) {
-            res.RegisterConfig->ErrorValue = TRegisterValue{ToUint64(register_data["error_value"], "error_value")};
-        }
-
-        if (register_data.isMember("unsupported_value")) {
-            res.RegisterConfig->UnsupportedValue =
-                TRegisterValue{ToUint64(register_data["unsupported_value"], "unsupported_value")};
-        }
-
-        res.RegisterConfig->ReadRateLimit = GetReadRateLimit(register_data);
-        res.RegisterConfig->ReadPeriod = GetReadPeriod(register_data);
-        return res;
-    }
 
     TTitleTranslations Translate(const std::string& name, bool idIsDefined, const TLoadingContext& context)
     {
@@ -377,7 +295,12 @@ namespace
 
             const Json::Value& reg_data = channel_data["consists_of"];
             for (Json::ArrayIndex i = 0; i < reg_data.size(); ++i) {
-                auto reg = LoadRegisterConfig(reg_data[i], device_config->TypeMap, errorMsgPrefix, context);
+                auto reg = LoadRegisterConfig(reg_data[i],
+                                              *device_config->TypeMap,
+                                              errorMsgPrefix,
+                                              context.factory,
+                                              context.device_base_address,
+                                              context.stride);
                 reg.RegisterConfig->ReadRateLimit = read_rate_limit_ms;
                 reg.RegisterConfig->ReadPeriod = read_period;
                 registers.push_back(reg.RegisterConfig);
@@ -390,7 +313,12 @@ namespace
             }
         } else {
             try {
-                auto reg = LoadRegisterConfig(channel_data, device_config->TypeMap, errorMsgPrefix, context);
+                auto reg = LoadRegisterConfig(channel_data,
+                                              *device_config->TypeMap,
+                                              errorMsgPrefix,
+                                              context.factory,
+                                              context.device_base_address,
+                                              context.stride);
                 default_type_str = reg.DefaultControlType;
                 registers.push_back(reg.RegisterConfig);
             } catch (const std::exception& e) {
@@ -538,7 +466,12 @@ namespace
         if (!context.name_prefix.empty()) {
             name = context.name_prefix + " " + name;
         }
-        auto reg = LoadRegisterConfig(item_data, device_config->TypeMap, "Setup item \"" + name + "\"", context);
+        auto reg = LoadRegisterConfig(item_data,
+                                      *device_config->TypeMap,
+                                      "Setup item \"" + name + "\"",
+                                      context.factory,
+                                      context.device_base_address,
+                                      context.stride);
         const auto& valueItem = item_data["value"];
         // libjsoncpp uses format "%.17g" in asString() and outputs strings with additional small numbers
         auto value = valueItem.isDouble() ? WBMQTT::StringFormat("%.15g", valueItem.asDouble()) : valueItem.asString();
@@ -1123,6 +1056,86 @@ PDeviceConfig LoadBaseDeviceConfig(const Json::Value& dev,
         }
     }
 
+    return res;
+}
+
+TLoadRegisterConfigResult LoadRegisterConfig(const Json::Value& registerData,
+                                             const TRegisterTypeMap& typeMap,
+                                             const std::string& readonlyOverrideErrorMessagePrefix,
+                                             const IDeviceFactory& factory,
+                                             const IRegisterAddress& deviceBaseAddress,
+                                             size_t stride)
+{
+    TLoadRegisterConfigResult res;
+    TRegisterType regType = GetRegisterType(registerData, typeMap);
+    res.DefaultControlType = regType.DefaultControlType.empty() ? "text" : regType.DefaultControlType;
+
+    if (registerData.isMember("format")) {
+        regType.DefaultFormat = RegisterFormatFromName(registerData["format"].asString());
+    }
+
+    if (registerData.isMember("word_order")) {
+        regType.DefaultWordOrder = WordOrderFromName(registerData["word_order"].asString());
+    }
+
+    double scale = Read(registerData, "scale", 1.0); // TBD: check for zero, too
+    double offset = Read(registerData, "offset", 0.0);
+    double round_to = Read(registerData, "round_to", 0.0);
+    TRegisterConfig::TSporadicMode sporadicMode = TRegisterConfig::TSporadicMode::DISABLED;
+    if (Read(registerData, "sporadic", false)) {
+        sporadicMode = TRegisterConfig::TSporadicMode::ONLY_EVENTS;
+    }
+    if (Read(registerData, "semi-sporadic", false)) {
+        sporadicMode = TRegisterConfig::TSporadicMode::EVENTS_AND_POLLING;
+    }
+
+    bool readonly = ReadChannelsReadonlyProperty(registerData,
+                                                 "readonly",
+                                                 regType.ReadOnly,
+                                                 readonlyOverrideErrorMessagePrefix,
+                                                 regType.Name);
+    // For compatibility with old configs
+    readonly = ReadChannelsReadonlyProperty(registerData,
+                                            "channel_readonly",
+                                            readonly,
+                                            readonlyOverrideErrorMessagePrefix,
+                                            regType.Name);
+
+    auto registerDesc =
+        factory.GetRegisterAddressFactory().LoadRegisterAddress(registerData,
+                                                                deviceBaseAddress,
+                                                                stride,
+                                                                RegisterFormatByteWidth(regType.DefaultFormat));
+
+    if ((regType.DefaultFormat == RegisterFormat::String || regType.DefaultFormat == RegisterFormat::String8) &&
+        registerDesc.DataWidth == 0)
+    {
+        throw TConfigParserException(readonlyOverrideErrorMessagePrefix +
+                                     ": String size is not set for register string format");
+    }
+
+    res.RegisterConfig = TRegisterConfig::Create(regType.Index,
+                                                 registerDesc,
+                                                 regType.DefaultFormat,
+                                                 scale,
+                                                 offset,
+                                                 round_to,
+                                                 sporadicMode,
+                                                 readonly,
+                                                 regType.Name,
+                                                 regType.DefaultWordOrder);
+
+    if (registerData.isMember("error_value")) {
+        res.RegisterConfig->ErrorValue = TRegisterValue{ToUint64(registerData["error_value"], "error_value")};
+    }
+
+    if (registerData.isMember("unsupported_value")) {
+        res.RegisterConfig->UnsupportedValue =
+            TRegisterValue{ToUint64(registerData["unsupported_value"], "unsupported_value")};
+    }
+
+    res.RegisterConfig->ReadRateLimit = GetReadRateLimit(registerData);
+    res.RegisterConfig->ReadPeriod = GetReadPeriod(registerData);
     return res;
 }
 
