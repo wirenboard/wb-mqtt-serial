@@ -170,6 +170,19 @@ PDeviceConfig LoadBaseDeviceConfig(const Json::Value& deviceData,
                                    const IDeviceFactory& factory,
                                    const TDeviceConfigLoadParams& parameters);
 
+struct TLoadRegisterConfigResult
+{
+    PRegisterConfig RegisterConfig;
+    std::string DefaultControlType;
+};
+
+TLoadRegisterConfigResult LoadRegisterConfig(const Json::Value& register_data,
+                                             const TRegisterTypeMap& type_map,
+                                             const std::string& readonly_override_error_message_prefix,
+                                             const IDeviceFactory& factory,
+                                             const IRegisterAddress& device_base_address,
+                                             size_t stride);
+
 class TSerialDeviceFactory
 {
     std::unordered_map<std::string, TDeviceProtocolParams> Protocols;
