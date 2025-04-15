@@ -176,11 +176,11 @@ struct TLoadRegisterConfigResult
     std::string DefaultControlType;
 };
 
-TLoadRegisterConfigResult LoadRegisterConfig(const Json::Value& register_data,
-                                             const TRegisterTypeMap& type_map,
-                                             const std::string& readonly_override_error_message_prefix,
+TLoadRegisterConfigResult LoadRegisterConfig(const Json::Value& registerData,
+                                             const TRegisterTypeMap& typeMap,
+                                             const std::string& readonlyOverrideErrorMessagePrefix,
                                              const IDeviceFactory& factory,
-                                             const IRegisterAddress& device_base_address,
+                                             const IRegisterAddress& deviceBaseAddress,
                                              size_t stride);
 
 class TSerialDeviceFactory
