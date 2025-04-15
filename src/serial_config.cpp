@@ -148,17 +148,17 @@ namespace
         return readonly;
     }
 
-    const TRegisterType& GetRegisterType(const Json::Value& itemData, const TDeviceConfig& deviceConfig)
+    const TRegisterType& GetRegisterType(const Json::Value& itemData, const PRegisterTypeMap& typeMap)
     {
         if (itemData.isMember("reg_type")) {
             std::string type = itemData["reg_type"].asString();
             try {
-                return deviceConfig.TypeMap->Find(type);
+                return typeMap->Find(type);
             } catch (...) {
-                throw TConfigParserException("invalid setup register type: " + type + " -- " + deviceConfig.DeviceType);
+                throw TConfigParserException("invalid register type: " + type);
             }
         }
-        return deviceConfig.TypeMap->GetDefaultType();
+        return typeMap->GetDefaultType();
     }
 
     std::optional<std::chrono::milliseconds> GetReadRateLimit(const Json::Value& data)
@@ -215,12 +215,12 @@ namespace
     };
 
     TLoadRegisterConfigResult LoadRegisterConfig(const Json::Value& register_data,
-                                                 const TDeviceConfig& device_config,
+                                                 const PRegisterTypeMap& type_map,
                                                  const std::string& readonly_override_error_message_prefix,
                                                  const TLoadingContext& context)
     {
         TLoadRegisterConfigResult res;
-        TRegisterType regType = GetRegisterType(register_data, device_config);
+        TRegisterType regType = GetRegisterType(register_data, type_map);
         res.DefaultControlType = regType.DefaultControlType.empty() ? "text" : regType.DefaultControlType;
 
         if (register_data.isMember("format")) {
@@ -377,7 +377,7 @@ namespace
 
             const Json::Value& reg_data = channel_data["consists_of"];
             for (Json::ArrayIndex i = 0; i < reg_data.size(); ++i) {
-                auto reg = LoadRegisterConfig(reg_data[i], *device_config, errorMsgPrefix, context);
+                auto reg = LoadRegisterConfig(reg_data[i], device_config->TypeMap, errorMsgPrefix, context);
                 reg.RegisterConfig->ReadRateLimit = read_rate_limit_ms;
                 reg.RegisterConfig->ReadPeriod = read_period;
                 registers.push_back(reg.RegisterConfig);
@@ -390,7 +390,7 @@ namespace
             }
         } else {
             try {
-                auto reg = LoadRegisterConfig(channel_data, *device_config, errorMsgPrefix, context);
+                auto reg = LoadRegisterConfig(channel_data, device_config->TypeMap, errorMsgPrefix, context);
                 default_type_str = reg.DefaultControlType;
                 registers.push_back(reg.RegisterConfig);
             } catch (const std::exception& e) {
@@ -538,7 +538,7 @@ namespace
         if (!context.name_prefix.empty()) {
             name = context.name_prefix + " " + name;
         }
-        auto reg = LoadRegisterConfig(item_data, *device_config, "Setup item \"" + name + "\"", context);
+        auto reg = LoadRegisterConfig(item_data, device_config->TypeMap, "Setup item \"" + name + "\"", context);
         const auto& valueItem = item_data["value"];
         // libjsoncpp uses format "%.17g" in asString() and outputs strings with additional small numbers
         auto value = valueItem.isDouble() ? WBMQTT::StringFormat("%.15g", valueItem.asDouble()) : valueItem.asString();
@@ -963,7 +963,8 @@ std::string GetProtocolName(const Json::Value& deviceDescription)
 
 void TSerialDeviceFactory::RegisterProtocol(PProtocol protocol, IDeviceFactory* deviceFactory)
 {
-    Protocols.insert(std::make_pair(protocol->GetName(), std::make_pair(protocol, deviceFactory)));
+    TDeviceProtocolParams params = {protocol, std::shared_ptr<IDeviceFactory>(deviceFactory)};
+    Protocols.insert(std::make_pair(protocol->GetName(), params));
 }
 
 PProtocol TSerialDeviceFactory::GetProtocol(const std::string& name)
@@ -971,23 +972,43 @@ PProtocol TSerialDeviceFactory::GetProtocol(const std::string& name)
     auto it = Protocols.find(name);
     if (it == Protocols.end())
         throw TSerialDeviceException("unknown protocol: " + name);
-    return it->second.first;
+    return it->second.protocol;
+}
+
+TDeviceProtocolParams TSerialDeviceFactory::GetProtocolParams(const std::string& protocolName)
+{
+    auto it = Protocols.find(protocolName);
+    if (it == Protocols.end()) {
+        throw TSerialDeviceException("unknown protocol: " + protocolName);
+    }
+    return it->second;
 }
 
 const std::string& TSerialDeviceFactory::GetCommonDeviceSchemaRef(const std::string& protocolName) const
 {
     auto it = Protocols.find(protocolName);
-    if (it == Protocols.end())
+    if (it == Protocols.end()) {
         throw TSerialDeviceException("unknown protocol: " + protocolName);
-    return it->second.second->GetCommonDeviceSchemaRef();
+    }
+    return it->second.factory->GetCommonDeviceSchemaRef();
 }
 
 const std::string& TSerialDeviceFactory::GetCustomChannelSchemaRef(const std::string& protocolName) const
 {
     auto it = Protocols.find(protocolName);
-    if (it == Protocols.end())
+    if (it == Protocols.end()) {
         throw TSerialDeviceException("unknown protocol: " + protocolName);
-    return it->second.second->GetCustomChannelSchemaRef();
+    }
+    return it->second.factory->GetCustomChannelSchemaRef();
+}
+
+std::vector<std::string> TSerialDeviceFactory::GetProtocolNames() const
+{
+    std::vector<std::string> res;
+    for (const auto& bucket: Protocols) {
+        res.emplace_back(bucket.first);
+    }
+    return res;
 }
 
 PSerialDevice TSerialDeviceFactory::CreateDevice(const Json::Value& deviceConfig,
@@ -995,18 +1016,17 @@ PSerialDevice TSerialDeviceFactory::CreateDevice(const Json::Value& deviceConfig
                                                  PPortConfig portConfig,
                                                  TTemplateMap& templates)
 {
-    TDeviceConfigLoadParams params;
-
+    TDeviceConfigLoadParams loadParams;
     const auto* cfg = &deviceConfig;
     unique_ptr<Json::Value> mergedConfig;
     if (deviceConfig.isMember("device_type")) {
         auto deviceType = deviceConfig["device_type"].asString();
         auto deviceTemplate = templates.GetTemplate(deviceType);
-        params.DeviceTemplateTitle = deviceTemplate->GetTitle();
+        loadParams.DeviceTemplateTitle = deviceTemplate->GetTitle();
         mergedConfig = std::make_unique<Json::Value>(
             MergeDeviceConfigWithTemplate(deviceConfig, deviceType, deviceTemplate->GetTemplate()));
         cfg = mergedConfig.get();
-        params.Translations = &deviceTemplate->GetTemplate()["translations"];
+        loadParams.Translations = &deviceTemplate->GetTemplate()["translations"];
     }
     std::string protocolName = DefaultProtocol;
     Get(*cfg, "protocol", protocolName);
@@ -1018,30 +1038,14 @@ PSerialDevice TSerialDeviceFactory::CreateDevice(const Json::Value& deviceConfig
         protocolName += "-tcp";
     }
 
-    auto it = Protocols.find(protocolName);
-    if (it == Protocols.end()) {
-        throw TSerialDeviceException("unknown protocol: " + protocolName);
-    }
+    TDeviceProtocolParams protocolParams = GetProtocolParams(protocolName);
+    loadParams.DefaultId = defaultId;
+    loadParams.DefaultRequestDelay = portConfig->RequestDelay;
+    loadParams.PortResponseTimeout = portConfig->ResponseTimeout;
+    loadParams.DefaultReadRateLimit = portConfig->ReadRateLimit;
+    auto baseDeviceConfig = LoadBaseDeviceConfig(*cfg, protocolParams.protocol, *protocolParams.factory, loadParams);
 
-    auto protocol = it->second.first;
-    const auto& deviceFactory = *it->second.second;
-
-    params.DefaultId = defaultId;
-    params.DefaultRequestDelay = portConfig->RequestDelay;
-    params.PortResponseTimeout = portConfig->ResponseTimeout;
-    params.DefaultReadRateLimit = portConfig->ReadRateLimit;
-    auto baseDeviceConfig = LoadBaseDeviceConfig(*cfg, protocol, deviceFactory, params);
-
-    return deviceFactory.CreateDevice(*cfg, baseDeviceConfig, portConfig->Port, protocol);
-}
-
-std::vector<std::string> TSerialDeviceFactory::GetProtocolNames() const
-{
-    std::vector<std::string> res;
-    for (const auto& bucket: Protocols) {
-        res.emplace_back(bucket.first);
-    }
-    return res;
+    return protocolParams.factory->CreateDevice(*cfg, baseDeviceConfig, portConfig->Port, protocolParams.protocol);
 }
 
 IDeviceFactory::IDeviceFactory(std::unique_ptr<IRegisterAddressFactory> registerAddressFactory,
