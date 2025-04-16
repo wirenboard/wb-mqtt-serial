@@ -54,7 +54,7 @@ void ExecRPCDeviveLoadConfigRequest(TPort& port, PRPCDeviveLoadConfigRequest rpc
                                         std::chrono::microseconds(0),
                                         rpcRequest->ResponseTimeout,
                                         rpcRequest->FrameTimeout);
-        configData[it.key().asString()] = res.Get<uint64_t>(); // config value is always integer
+        configData[it.key().asString()] = RawValueToJSON(*config.RegisterConfig, res);
     }
 
     TJsonParams jsonParams(configData);

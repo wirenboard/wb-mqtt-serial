@@ -14,6 +14,7 @@
 #include <unordered_set>
 #include <utility>
 #include <vector>
+#include <wblib/json/json.h>
 
 #include "register_value.h"
 #include "serial_exc.h"
@@ -540,3 +541,5 @@ TRegisterValue ConvertToRawValue(const TRegisterConfig& reg, const std::string& 
  * @param val raw bytes
  */
 std::string ConvertFromRawValue(const TRegisterConfig& reg, TRegisterValue val);
+
+Json::Value RawValueToJSON(const TRegisterConfig& reg, TRegisterValue val);
