@@ -42,12 +42,18 @@ void TRPCDeviceHandler::LoadConfig(const Json::Value& request,
         throw TRPCException(e.what(), TRPCResultCode::RPC_WRONG_PARAM_VALUE);
     }
 
-    auto deviceTemplate = Templates->GetTemplate(request["device_type"].asString());
-    // TODO: check template->GetProtocol() is modbus?
-    // TODO: check template->WithSubdevices() is false
+    std::string deviceType = request["device_type"].asString();
+    auto deviceTemplate = Templates->GetTemplate(deviceType);
+    if (deviceTemplate->GetProtocol() != "modbus" || deviceTemplate->WithSubdevices() != 0) {
+        throw TRPCException("Device \"" + deviceType + "\" is not supported by this RPC",
+                            TRPCResultCode::RPC_WRONG_PARAM_VALUE); // TODO: Add new result code?
+    }
 
     Json::Value parameters = deviceTemplate->GetTemplate()["parameters"];
-    // TODO: check parametets isn't empty
+    if (parameters.empty()) {
+        throw TRPCException("Device \"" + deviceType + "\" template parameters is empty",
+                            TRPCResultCode::RPC_WRONG_PARAM_VALUE); // TODO: Add new result code?
+    }
 
     try {
         PRPCPortDriver driver = PortDrivers->Find(request);

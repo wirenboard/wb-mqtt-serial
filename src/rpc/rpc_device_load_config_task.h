@@ -1,4 +1,5 @@
 #pragma once
+#include "rpc_port_handler.h"
 #include "serial_client.h"
 #include <chrono>
 #include <wblib/rpc.h>
@@ -22,11 +23,10 @@ public:
     const TSerialDeviceFactory& DeviceFactory;
 
     TSerialPortConnectionSettings SerialPortSettings;
-    std::chrono::milliseconds ResponseTimeout;
-    std::chrono::milliseconds FrameTimeout;
-    std::chrono::milliseconds TotalTimeout;
+    std::chrono::milliseconds ResponseTimeout = DefaultResponseTimeout;
+    std::chrono::milliseconds FrameTimeout = DefaultFrameTimeout;
+    std::chrono::milliseconds TotalTimeout = DefaultRPCTotalTimeout;
     uint8_t SlaveId;
-    std::string DeviceType;
 
     WBMQTT::TMqttRpcServer::TResultCallback OnResult = nullptr;
     WBMQTT::TMqttRpcServer::TErrorCallback OnError = nullptr;

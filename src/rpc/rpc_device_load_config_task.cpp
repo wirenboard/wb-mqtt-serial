@@ -17,14 +17,10 @@ PRPCDeviveLoadConfigRequest ParseRPCDeviceLoadConfigRequest(const Json::Value& r
 {
     PRPCDeviveLoadConfigRequest res = std::make_shared<TRPCDeviveLoadConfigRequest>(parameters, deviceFactory);
     res->SerialPortSettings = ParseRPCSerialPortSettings(request);
-
-    // TODO: add default timeout values?
     WBMQTT::JSON::Get(request, "response_timeout", res->ResponseTimeout);
     WBMQTT::JSON::Get(request, "frame_timeout", res->FrameTimeout);
     WBMQTT::JSON::Get(request, "total_timeout", res->TotalTimeout);
-
     WBMQTT::JSON::Get(request, "slave_id", res->SlaveId);
-    WBMQTT::JSON::Get(request, "device_type", res->DeviceType);
     return res;
 }
 
@@ -36,7 +32,6 @@ void ExecRPCDeviveLoadConfigRequest(TPort& port, PRPCDeviveLoadConfigRequest rpc
 
     port.SkipNoise();
 
-    // TODO: refactor protocol name
     const TDeviceProtocolParams& protocolParams = rpcRequest->DeviceFactory.GetProtocolParams("modbus");
     Modbus::TModbusRTUTraits traits;
     Json::Value configData;
@@ -48,7 +43,7 @@ void ExecRPCDeviveLoadConfigRequest(TPort& port, PRPCDeviveLoadConfigRequest rpc
         }
         auto config = LoadRegisterConfig(registerData,
                                          *protocolParams.protocol->GetRegTypes(),
-                                         std::string(), // TODO: add some string?
+                                         std::string(),
                                          *protocolParams.factory,
                                          protocolParams.factory->GetRegisterAddressFactory().GetBaseRegisterAddress(),
                                          0);
@@ -59,7 +54,7 @@ void ExecRPCDeviveLoadConfigRequest(TPort& port, PRPCDeviveLoadConfigRequest rpc
                                         std::chrono::microseconds(0),
                                         rpcRequest->ResponseTimeout,
                                         rpcRequest->FrameTimeout);
-        configData[it.key().asString()] = res.Get<uint64_t>(); // TODO: use other types?
+        configData[it.key().asString()] = res.Get<uint64_t>(); // config value is always integer
     }
 
     TJsonParams jsonParams(configData);
