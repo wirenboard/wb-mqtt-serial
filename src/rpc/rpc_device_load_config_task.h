@@ -22,8 +22,9 @@ public:
     const TSerialDeviceFactory& DeviceFactory;
 
     TSerialPortConnectionSettings SerialPortSettings;
-    std::chrono::milliseconds TotalTimeout;
+    std::chrono::milliseconds ResponseTimeout;
     std::chrono::milliseconds FrameTimeout;
+    std::chrono::milliseconds TotalTimeout;
     uint8_t SlaveId;
     std::string DeviceType;
 
