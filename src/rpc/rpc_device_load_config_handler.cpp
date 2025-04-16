@@ -6,7 +6,7 @@
 
 namespace
 {
-    void SetCallbacks(TRPCDeviveLoadConfigRequest& request,
+    void SetCallbacks(TRPCDeviceLoadConfigRequest& request,
                       WBMQTT::TMqttRpcServer::TResultCallback onResult,
                       WBMQTT::TMqttRpcServer::TErrorCallback onError)
     {
@@ -39,5 +39,5 @@ void RPCDeviceLoadConfigHandler(const Json::Value& request,
 {
     auto rpcRequest = ParseRPCDeviceLoadConfigRequest(request, parameters, deviceFactory);
     SetCallbacks(*rpcRequest, onResult, onError);
-    ExecRPCDeviveLoadConfigRequest(port, rpcRequest);
+    ExecRPCDeviceLoadConfigRequest(port, rpcRequest);
 }

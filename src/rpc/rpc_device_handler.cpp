@@ -44,15 +44,15 @@ void TRPCDeviceHandler::LoadConfig(const Json::Value& request,
 
     std::string deviceType = request["device_type"].asString();
     auto deviceTemplate = Templates->GetTemplate(deviceType);
-    if (deviceTemplate->GetProtocol() != "modbus" || deviceTemplate->WithSubdevices() != 0) {
+    if (deviceTemplate->GetProtocol() != "modbus" || deviceTemplate->WithSubdevices()) {
         throw TRPCException("Device \"" + deviceType + "\" is not supported by this RPC",
-                            TRPCResultCode::RPC_WRONG_PARAM_VALUE); // TODO: Add new result code?
+                            TRPCResultCode::RPC_WRONG_PARAM_VALUE);
     }
 
     Json::Value parameters = deviceTemplate->GetTemplate()["parameters"];
     if (parameters.empty()) {
         throw TRPCException("Device \"" + deviceType + "\" template parameters is empty",
-                            TRPCResultCode::RPC_WRONG_PARAM_VALUE); // TODO: Add new result code?
+                            TRPCResultCode::RPC_WRONG_PARAM_VALUE);
     }
 
     try {

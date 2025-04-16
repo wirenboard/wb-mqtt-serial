@@ -14,10 +14,10 @@ template<> inline uint8_t WBMQTT::JSON::As<uint8_t>(const Json::Value& value)
     return value.asUInt() & 0xFF;
 }
 
-class TRPCDeviveLoadConfigRequest
+class TRPCDeviceLoadConfigRequest
 {
 public:
-    TRPCDeviveLoadConfigRequest(const Json::Value& parameters, const TSerialDeviceFactory& deviceFactory);
+    TRPCDeviceLoadConfigRequest(const Json::Value& parameters, const TSerialDeviceFactory& deviceFactory);
 
     const Json::Value Parameters;
     const TSerialDeviceFactory& DeviceFactory;
@@ -26,29 +26,31 @@ public:
     std::chrono::milliseconds ResponseTimeout = DefaultResponseTimeout;
     std::chrono::milliseconds FrameTimeout = DefaultFrameTimeout;
     std::chrono::milliseconds TotalTimeout = DefaultRPCTotalTimeout;
-    uint8_t SlaveId;
+    uint8_t SlaveId = 0;
 
     WBMQTT::TMqttRpcServer::TResultCallback OnResult = nullptr;
     WBMQTT::TMqttRpcServer::TErrorCallback OnError = nullptr;
 };
 
-typedef std::shared_ptr<TRPCDeviveLoadConfigRequest> PRPCDeviveLoadConfigRequest;
+typedef std::shared_ptr<TRPCDeviceLoadConfigRequest> PRPCDeviceLoadConfigRequest;
 
-PRPCDeviveLoadConfigRequest ParseRPCDeviceLoadConfigRequest(const Json::Value& request,
+PRPCDeviceLoadConfigRequest ParseRPCDeviceLoadConfigRequest(const Json::Value& request,
                                                             const Json::Value& parameters,
                                                             const TSerialDeviceFactory& deviceFactory);
 
-void ExecRPCDeviveLoadConfigRequest(TPort& port, PRPCDeviveLoadConfigRequest rpcRequest);
+void ExecRPCDeviceLoadConfigRequest(TPort& port, PRPCDeviceLoadConfigRequest rpcRequest);
 
 class TRPCDeviceLoadConfigSerialClientTask: public ISerialClientTask
 {
 public:
-    TRPCDeviceLoadConfigSerialClientTask(PRPCDeviveLoadConfigRequest request);
+    TRPCDeviceLoadConfigSerialClientTask(PRPCDeviceLoadConfigRequest request);
     ISerialClientTask::TRunResult Run(PPort port, TSerialClientDeviceAccessHandler& lastAccessedDevice) override;
 
 private:
-    PRPCDeviveLoadConfigRequest Request;
+    PRPCDeviceLoadConfigRequest Request;
     std::chrono::steady_clock::time_point ExpireTime;
 };
 
 typedef std::shared_ptr<TRPCDeviceLoadConfigSerialClientTask> PRPCDeviceLoadConfigSerialClientTask;
+
+Json::Value RawValueToJSON(const TRegisterConfig& reg, TRegisterValue val);
