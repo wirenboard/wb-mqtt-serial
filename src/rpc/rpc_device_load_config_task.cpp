@@ -5,6 +5,8 @@
 #include "serial_port.h"
 #include <string>
 
+#define MAX_RETRIES 2
+
 TRPCDeviceLoadConfigRequest::TRPCDeviceLoadConfigRequest(const Json::Value& parameters,
                                                          const TSerialDeviceFactory& deviceFactory)
     : Parameters(parameters),
@@ -48,14 +50,27 @@ void ExecRPCDeviceLoadConfigRequest(TPort& port, PRPCDeviceLoadConfigRequest rpc
                                          *protocolParams.factory,
                                          protocolParams.factory->GetRegisterAddressFactory().GetBaseRegisterAddress(),
                                          0);
-        auto res = Modbus::ReadRegister(traits,
-                                        port,
-                                        rpcRequest->SlaveId,
-                                        *config.RegisterConfig,
-                                        std::chrono::microseconds(0),
-                                        rpcRequest->ResponseTimeout,
-                                        rpcRequest->FrameTimeout);
-        configData[id] = RawValueToJSON(*config.RegisterConfig, res);
+
+        for (int i = 0; i <= MAX_RETRIES; i++) {
+            try {
+                auto res = Modbus::ReadRegister(traits,
+                                                port,
+                                                rpcRequest->SlaveId,
+                                                *config.RegisterConfig,
+                                                std::chrono::microseconds(0),
+                                                rpcRequest->ResponseTimeout,
+                                                rpcRequest->FrameTimeout);
+                configData[id] = RawValueToJSON(*config.RegisterConfig, res);
+            } catch (const Modbus::TModbusExceptionError& err) {
+                if (err.GetExceptionCode() == 1 || err.GetExceptionCode() == 2 || err.GetExceptionCode() == 3) {
+                    break;
+                }
+            } catch (const Modbus::TErrorBase& err) {
+                if (i == MAX_RETRIES) {
+                    throw;
+                }
+            }
+        }
     }
 
     TJsonParams jsonParams(configData);
