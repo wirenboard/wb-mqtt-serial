@@ -49,6 +49,11 @@ void TRPCDeviceHandler::LoadConfig(const Json::Value& request,
     }
 
     Json::Value parameters = deviceTemplate->GetTemplate()["parameters"];
+    if (parameters.empty()) {
+        onResult(Json::Value(Json::objectValue));
+        return;
+    }
+
     try {
         PRPCPortDriver driver = PortDrivers.Find(request);
 

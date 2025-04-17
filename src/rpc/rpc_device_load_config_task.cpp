@@ -38,6 +38,7 @@ void ExecRPCDeviceLoadConfigRequest(TPort& port, PRPCDeviceLoadConfigRequest rpc
 
     for (auto it = rpcRequest->Parameters.begin(); it != rpcRequest->Parameters.end(); ++it) {
         const Json::Value& registerData = *it;
+        std::string id = rpcRequest->Parameters.isObject() ? it.key().asString() : registerData["id"].asString();
         if (registerData["readonly"].asInt() != 0) {
             continue;
         }
@@ -54,14 +55,16 @@ void ExecRPCDeviceLoadConfigRequest(TPort& port, PRPCDeviceLoadConfigRequest rpc
                                         std::chrono::microseconds(0),
                                         rpcRequest->ResponseTimeout,
                                         rpcRequest->FrameTimeout);
-        configData[it.key().asString()] = RawValueToJSON(*config.RegisterConfig, res);
+        configData[id] = RawValueToJSON(*config.RegisterConfig, res);
     }
 
     TJsonParams jsonParams(configData);
     TExpressionsCache expressionsCache;
     for (auto it = rpcRequest->Parameters.begin(); it != rpcRequest->Parameters.end(); ++it) {
-        if (!CheckCondition(*it, jsonParams, &expressionsCache)) {
-            configData.removeMember(it.key().asString());
+        const Json::Value& registerData = *it;
+        std::string id = rpcRequest->Parameters.isObject() ? it.key().asString() : registerData["id"].asString();
+        if (registerData["readonly"].asInt() != 0 && !CheckCondition(registerData, jsonParams, &expressionsCache)) {
+            configData.removeMember(id);
         }
     }
 
