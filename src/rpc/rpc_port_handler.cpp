@@ -12,7 +12,8 @@ TRPCPortHandler::TRPCPortHandler(const std::string& requestPortLoadSchemaFilePat
                                  PRPCConfig rpcConfig,
                                  WBMQTT::PMqttRpcServer rpcServer,
                                  PMQTTSerialDriver serialDriver)
-    : RPCConfig(rpcConfig)
+    : RPCConfig(rpcConfig),
+      PortDrivers(rpcConfig, serialDriver)
 {
     try {
         RequestPortLoadSchema = WBMQTT::JSON::Parse(requestPortLoadSchemaFilePath);
@@ -57,8 +58,6 @@ TRPCPortHandler::TRPCPortHandler(const std::string& requestPortLoadSchemaFilePat
                                              std::placeholders::_1,
                                              std::placeholders::_2,
                                              std::placeholders::_3));
-
-    PortDrivers = std::make_shared<TRPCPortDriverList>(rpcConfig, serialDriver);
 }
 
 void TRPCPortHandler::PortLoad(const Json::Value& request,
@@ -71,7 +70,7 @@ void TRPCPortHandler::PortLoad(const Json::Value& request,
         throw TRPCException(e.what(), TRPCResultCode::RPC_WRONG_PARAM_VALUE);
     }
     try {
-        PRPCPortDriver rpcPortDriver = PortDrivers->Find(request);
+        PRPCPortDriver rpcPortDriver = PortDrivers.Find(request);
 
         if (rpcPortDriver != nullptr && rpcPortDriver->SerialClient) {
             RPCPortLoadHandler(request, rpcPortDriver->SerialClient, onResult, onError);
@@ -91,7 +90,7 @@ void TRPCPortHandler::PortSetup(const Json::Value& request,
 {
     try {
         PRPCPortSetupRequest rpcRequest = ParseRPCPortSetupRequest(request, RequestPortSetupSchema);
-        PRPCPortDriver rpcPortDriver = PortDrivers->Find(request);
+        PRPCPortDriver rpcPortDriver = PortDrivers.Find(request);
 
         if (rpcPortDriver != nullptr && rpcPortDriver->SerialClient) {
             RPCPortSetupHandler(rpcRequest, rpcPortDriver->SerialClient, onResult, onError);
@@ -115,7 +114,7 @@ void TRPCPortHandler::PortScan(const Json::Value& request,
         throw TRPCException(e.what(), TRPCResultCode::RPC_WRONG_PARAM_VALUE);
     }
     try {
-        PRPCPortDriver rpcPortDriver = PortDrivers->Find(request);
+        PRPCPortDriver rpcPortDriver = PortDrivers.Find(request);
 
         if (rpcPortDriver != nullptr && rpcPortDriver->SerialClient) {
             RPCPortScanHandler(request, rpcPortDriver->SerialClient, onResult, onError);

@@ -32,7 +32,7 @@ void ExecRPCDeviceLoadConfigRequest(TPort& port, PRPCDeviceLoadConfigRequest rpc
 
     port.SkipNoise();
 
-    const TDeviceProtocolParams& protocolParams = rpcRequest->DeviceFactory.GetProtocolParams("modbus");
+    TDeviceProtocolParams protocolParams = rpcRequest->DeviceFactory.GetProtocolParams("modbus");
     Modbus::TModbusRTUTraits traits;
     Json::Value configData;
 

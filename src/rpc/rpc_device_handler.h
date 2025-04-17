@@ -18,7 +18,7 @@ private:
     Json::Value RequestDeviceLoadConfigSchema;
     std::shared_ptr<TTemplateMap> Templates;
     PRPCConfig RPCConfig;
-    PRPCPortDriverList PortDrivers;
+    TRPCPortDriverList PortDrivers;
 
     void LoadConfig(const Json::Value& request,
                     WBMQTT::TMqttRpcServer::TResultCallback onResult,

@@ -12,7 +12,8 @@ TRPCDeviceHandler::TRPCDeviceHandler(const std::string& requestDeviceLoadConfigS
                                      PMQTTSerialDriver serialDriver)
     : DeviceFactory(deviceFactory),
       Templates(templates),
-      RPCConfig(rpcConfig)
+      RPCConfig(rpcConfig),
+      PortDrivers(rpcConfig, serialDriver)
 {
     try {
         RequestDeviceLoadConfigSchema = WBMQTT::JSON::Parse(requestDeviceLoadConfigSchemaFilePath);
@@ -28,8 +29,6 @@ TRPCDeviceHandler::TRPCDeviceHandler(const std::string& requestDeviceLoadConfigS
                                              std::placeholders::_1,
                                              std::placeholders::_2,
                                              std::placeholders::_3));
-
-    PortDrivers = std::make_shared<TRPCPortDriverList>(rpcConfig, serialDriver);
 }
 
 void TRPCDeviceHandler::LoadConfig(const Json::Value& request,
@@ -50,13 +49,8 @@ void TRPCDeviceHandler::LoadConfig(const Json::Value& request,
     }
 
     Json::Value parameters = deviceTemplate->GetTemplate()["parameters"];
-    if (parameters.empty()) {
-        throw TRPCException("Device \"" + deviceType + "\" template parameters is empty",
-                            TRPCResultCode::RPC_WRONG_PARAM_VALUE);
-    }
-
     try {
-        PRPCPortDriver driver = PortDrivers->Find(request);
+        PRPCPortDriver driver = PortDrivers.Find(request);
 
         if (driver != nullptr && driver->SerialClient) {
             RPCDeviceLoadConfigHandler(request, parameters, DeviceFactory, driver->SerialClient, onResult, onError);
