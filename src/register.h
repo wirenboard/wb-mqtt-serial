@@ -14,7 +14,6 @@
 #include <unordered_set>
 #include <utility>
 #include <vector>
-#include <wblib/json/json.h>
 
 #include "register_value.h"
 #include "serial_exc.h"
