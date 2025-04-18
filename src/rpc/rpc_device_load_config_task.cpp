@@ -5,7 +5,76 @@
 #include "serial_port.h"
 #include <string>
 
-#define MAX_RETRIES 2
+#define LOG(logger) ::logger.Log() << "[RPC] "
+
+namespace
+{
+    const uint16_t ENABLE_CONTINUOUS_READ_REGISTER = 114;
+    const uint8_t MAX_RETRIES = 2;
+
+    bool readParameter(Modbus::IModbusTraits& traits,
+                       TPort& port,
+                       PRPCDeviceLoadConfigRequest rpcRequest,
+                       PRegisterConfig registerConfig,
+                       TRegisterValue& value)
+    {
+        for (int i = 0; i <= MAX_RETRIES; i++) {
+            try {
+                value = Modbus::ReadRegister(traits,
+                                             port,
+                                             rpcRequest->SlaveId,
+                                             *registerConfig,
+                                             std::chrono::microseconds(0),
+                                             rpcRequest->ResponseTimeout,
+                                             rpcRequest->FrameTimeout);
+                return true;
+            } catch (const Modbus::TModbusExceptionError& err) {
+                if (err.GetExceptionCode() == 1 || err.GetExceptionCode() == 2 || err.GetExceptionCode() == 3) {
+                    break;
+                }
+            } catch (const Modbus::TErrorBase& err) {
+                if (i == MAX_RETRIES) {
+                    throw;
+                }
+            }
+        }
+
+        return false;
+    }
+
+    void writeParameter(Modbus::IModbusTraits& traits,
+                        TPort& port,
+                        PRPCDeviceLoadConfigRequest rpcRequest,
+                        PRegisterConfig registerConfig,
+                        const TRegisterValue& registerValue)
+    {
+        auto reg = std::make_shared<TRegister>(PSerialDevice(), registerConfig);
+        Modbus::TRegisterCache cache;
+        for (int i = 0; i <= MAX_RETRIES; i++) {
+            try {
+                Modbus::WriteRegister(traits,
+                                      port,
+                                      rpcRequest->SlaveId,
+                                      *reg,
+                                      registerValue,
+                                      cache,
+                                      std::chrono::microseconds(0),
+                                      rpcRequest->ResponseTimeout,
+                                      rpcRequest->FrameTimeout);
+                break;
+            } catch (const Modbus::TModbusExceptionError& err) {
+                if (err.GetExceptionCode() == 1 || err.GetExceptionCode() == 2 || err.GetExceptionCode() == 3) {
+                    break;
+                }
+            } catch (const Modbus::TErrorBase& err) {
+                if (i == MAX_RETRIES) {
+                    throw;
+                }
+            }
+        }
+    }
+
+} // namespace
 
 TRPCDeviceLoadConfigRequest::TRPCDeviceLoadConfigRequest(const Json::Value& parameters,
                                                          const TSerialDeviceFactory& deviceFactory)
@@ -34,8 +103,25 @@ void ExecRPCDeviceLoadConfigRequest(TPort& port, PRPCDeviceLoadConfigRequest rpc
 
     port.SkipNoise();
 
-    TDeviceProtocolParams protocolParams = rpcRequest->DeviceFactory.GetProtocolParams("modbus");
     Modbus::TModbusRTUTraits traits;
+    auto modeConfig =
+        TRegisterConfig::Create(Modbus::REG_HOLDING,
+                                TRegisterDesc{std::make_shared<TUint32RegisterAddress>(ENABLE_CONTINUOUS_READ_REGISTER),
+                                              0,
+                                              2 * sizeof(char) * 8},
+                                U16);
+
+    TRegisterValue modeValue;
+    readParameter(traits, port, rpcRequest, modeConfig, modeValue);
+
+    uint16_t mode = modeValue.Get<uint16_t>();
+    bool setMode = mode != 0;
+    if (setMode) {
+        modeValue.Set(0);
+        writeParameter(traits, port, rpcRequest, modeConfig, modeValue);
+    }
+
+    TDeviceProtocolParams protocolParams = rpcRequest->DeviceFactory.GetProtocolParams("modbus");
     Json::Value configData;
 
     for (auto it = rpcRequest->Parameters.begin(); it != rpcRequest->Parameters.end(); ++it) {
@@ -50,27 +136,15 @@ void ExecRPCDeviceLoadConfigRequest(TPort& port, PRPCDeviceLoadConfigRequest rpc
                                          *protocolParams.factory,
                                          protocolParams.factory->GetRegisterAddressFactory().GetBaseRegisterAddress(),
                                          0);
-
-        for (int i = 0; i <= MAX_RETRIES; i++) {
-            try {
-                auto res = Modbus::ReadRegister(traits,
-                                                port,
-                                                rpcRequest->SlaveId,
-                                                *config.RegisterConfig,
-                                                std::chrono::microseconds(0),
-                                                rpcRequest->ResponseTimeout,
-                                                rpcRequest->FrameTimeout);
-                configData[id] = RawValueToJSON(*config.RegisterConfig, res);
-            } catch (const Modbus::TModbusExceptionError& err) {
-                if (err.GetExceptionCode() == 1 || err.GetExceptionCode() == 2 || err.GetExceptionCode() == 3) {
-                    break;
-                }
-            } catch (const Modbus::TErrorBase& err) {
-                if (i == MAX_RETRIES) {
-                    throw;
-                }
-            }
+        TRegisterValue value;
+        if (readParameter(traits, port, rpcRequest, config.RegisterConfig, value)) {
+            configData[id] = RawValueToJSON(*config.RegisterConfig, value);
         }
+    }
+
+    if (setMode) {
+        modeValue.Set(mode);
+        writeParameter(traits, port, rpcRequest, modeConfig, modeValue);
     }
 
     TJsonParams jsonParams(configData);
