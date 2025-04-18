@@ -3,13 +3,13 @@
 #include "rpc_helpers.h"
 #include "serial_config.h"
 #include "serial_port.h"
+#include "wb_registers.h"
 #include <string>
 
 #define LOG(logger) ::logger.Log() << "[RPC] "
 
 namespace
 {
-    const uint16_t ENABLE_CONTINUOUS_READ_REGISTER = 114;
     const uint8_t MAX_RETRIES = 2;
 
     bool readParameter(Modbus::IModbusTraits& traits,
@@ -104,13 +104,7 @@ void ExecRPCDeviceLoadConfigRequest(TPort& port, PRPCDeviceLoadConfigRequest rpc
     port.SkipNoise();
 
     Modbus::TModbusRTUTraits traits;
-    auto modeConfig =
-        TRegisterConfig::Create(Modbus::REG_HOLDING,
-                                TRegisterDesc{std::make_shared<TUint32RegisterAddress>(ENABLE_CONTINUOUS_READ_REGISTER),
-                                              0,
-                                              2 * sizeof(char) * 8},
-                                U16);
-
+    auto modeConfig = WbRegisters::GetRegisterConfig("continuous_read");
     TRegisterValue modeValue;
     readParameter(traits, port, rpcRequest, modeConfig, modeValue);
 

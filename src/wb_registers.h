@@ -7,6 +7,7 @@ namespace WbRegisters
     const std::string BAUD_RATE_REGISTER_NAME = "baud_rate";
     const std::string PARITY_REGISTER_NAME = "parity";
     const std::string STOP_BITS_REGISTER_NAME = "stop_bits";
+    const std::string CONTINUOUS_READ_REGISTER_NAME = "continuous_read";
     const std::string SLAVE_ID_REGISTER_NAME = "slave_id";
     const std::string DEVICE_MODEL_REGISTER_NAME = "device_model";
     const std::string DEVICE_MODEL_EX_REGISTER_NAME = "device_model_ex";
