@@ -214,7 +214,10 @@ Json::Value RawValueToJSON(const TRegisterConfig& reg, TRegisterValue val)
         case Float: {
             float v;
             auto rawValue = val.Get<uint64_t>();
+
+            // codacy static code analysis fails on this memcpy call, have no idea how to fix it
             memcpy(&v, &rawValue, sizeof(v));
+
             return v;
         }
         case Double: {
