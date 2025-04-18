@@ -1,3 +1,9 @@
+wb-mqtt-serial (2.159.0) stable; urgency=medium
+
+  * Update Gurux.DLMS.cpp to 20250303.1
+
+ -- Nikolay Korotkiy <nikolay.korotkiy@wirenboard.com>  Fri, 17 Apr 2025 18:25:00 +0400
+
 wb-mqtt-serial (2.158.10) stable; urgency=medium
 
   * Refactor LoadRegisterConfig method, no functional changes
