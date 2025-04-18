@@ -1,8 +1,14 @@
-wb-mqtt-serial (2.159.0) stable; urgency=medium
+wb-mqtt-serial (2.160.0) stable; urgency=medium
 
   * Add device/LoadConfig RPC for modbus device configuration reading
 
  -- Ilya Titov <ilya.titov@wirenboard.com>  Wed, 16 Apr 2025 12:41:36 +0300
+
+wb-mqtt-serial (2.159.0) stable; urgency=medium
+
+  * Update Gurux.DLMS.cpp to 20250303.1
+
+ -- Nikolay Korotkiy <nikolay.korotkiy@wirenboard.com>  Fri, 17 Apr 2025 18:25:00 +0400
 
 wb-mqtt-serial (2.158.10) stable; urgency=medium
 
