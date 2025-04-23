@@ -30,7 +30,7 @@ namespace Modbus
         FN_WRITE_MULTIPLE_REGISTERS = 0x10
     };
 
-    enum ExceptionCode
+    enum EExceptionCode
     {
         ILLEGAL_FUNCTION = 0x1,
         ILLEGAL_DATA_ADDRESS = 0x2,
