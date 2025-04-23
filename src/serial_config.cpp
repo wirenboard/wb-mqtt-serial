@@ -900,15 +900,7 @@ void TSerialDeviceFactory::RegisterProtocol(PProtocol protocol, IDeviceFactory* 
     Protocols.insert(std::make_pair(protocol->GetName(), params));
 }
 
-PProtocol TSerialDeviceFactory::GetProtocol(const std::string& name)
-{
-    auto it = Protocols.find(name);
-    if (it == Protocols.end())
-        throw TSerialDeviceException("unknown protocol: " + name);
-    return it->second.protocol;
-}
-
-TDeviceProtocolParams TSerialDeviceFactory::GetProtocolParams(const std::string& protocolName)
+TDeviceProtocolParams TSerialDeviceFactory::GetProtocolParams(const std::string& protocolName) const
 {
     auto it = Protocols.find(protocolName);
     if (it == Protocols.end()) {
@@ -917,22 +909,19 @@ TDeviceProtocolParams TSerialDeviceFactory::GetProtocolParams(const std::string&
     return it->second;
 }
 
+PProtocol TSerialDeviceFactory::GetProtocol(const std::string& protocolName) const
+{
+    return GetProtocolParams(protocolName).protocol;
+}
+
 const std::string& TSerialDeviceFactory::GetCommonDeviceSchemaRef(const std::string& protocolName) const
 {
-    auto it = Protocols.find(protocolName);
-    if (it == Protocols.end()) {
-        throw TSerialDeviceException("unknown protocol: " + protocolName);
-    }
-    return it->second.factory->GetCommonDeviceSchemaRef();
+    return GetProtocolParams(protocolName).factory->GetCommonDeviceSchemaRef();
 }
 
 const std::string& TSerialDeviceFactory::GetCustomChannelSchemaRef(const std::string& protocolName) const
 {
-    auto it = Protocols.find(protocolName);
-    if (it == Protocols.end()) {
-        throw TSerialDeviceException("unknown protocol: " + protocolName);
-    }
-    return it->second.factory->GetCustomChannelSchemaRef();
+    return GetProtocolParams(protocolName).factory->GetCustomChannelSchemaRef();
 }
 
 std::vector<std::string> TSerialDeviceFactory::GetProtocolNames() const
