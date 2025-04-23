@@ -72,7 +72,10 @@ namespace // general utilities
 
     void RethrowSerialDeviceException(const Modbus::TModbusExceptionError& err)
     {
-        if (err.GetExceptionCode() == 1 || err.GetExceptionCode() == 2 || err.GetExceptionCode() == 3) {
+        if (err.GetExceptionCode() == Modbus::ILLEGAL_FUNCTION ||
+            err.GetExceptionCode() == Modbus::ILLEGAL_DATA_ADDRESS ||
+            err.GetExceptionCode() == Modbus::ILLEGAL_DATA_VALUE)
+        {
             throw TSerialDevicePermanentRegisterException(err.what());
         }
         throw TSerialDeviceTransientErrorException(err.what());
