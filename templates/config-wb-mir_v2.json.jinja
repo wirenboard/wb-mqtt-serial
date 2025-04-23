@@ -1,16 +1,25 @@
+{% set title_en = title_en | default("WB-MIR v.2 (Modbus IR remote control)") -%}
+{% set title_ru = title_ru | default("WB-MIR v.2 (Modbus-модуль ИК-управления)") -%}
+{% set device_type = device_type | default("WB-MIR v2") -%}
+{% set group = group | default("g-wb") -%}
+{% set device_name = device_name | default("WB-MIR v2") -%}
+{% set device_id = device_id | default("wb-mir_v2") -%}
+{% set has_signature = has_signature | default(false) -%}
+
 {
-    "title": "WB-MIR-v2_template_title",
-    "device_type": "WB-MIR v2",
-    "group": "g-wb",
-    "deprecated": true,
+    "title": "template_title",
+    "device_type": "{{ device_type }}",
+    "group": "{{ group }}",
+{% if has_signature %}   
     "hw": [
         {
             "signature": "WBMIR3"
         }
     ],
+{% endif %}
     "device": {
-        "name": "WB-MIR v2",
-        "id": "wb-mir_v2",
+        "name": "{{ device_name }}",
+        "id":"{{ device_id }}",
         "max_read_registers": 0,
         "response_timeout_ms": 1,
         "frame_timeout_ms": 12,
@@ -1467,12 +1476,12 @@
         ],
         "translations": {
             "en": {
-                "WB-MIR-v2_template_title": "WB-MIR v.2 (Modbus IR remote control)",
+                "template_title": "{{ title_en }}",
                 "baud_rate_description": "Make sure that communication with device is established before changing this parameter. Select required baud rate, save configuration and then change port baud rate to the same value.",
                 "Uptime": "Uptime (s)"
             },
             "ru": {
-                "WB-MIR-v2_template_title": "WB-MIR v.2 (Modbus-модуль ИК-управления)",
+                "template_title": "{{ title_ru }}",
                 "IR Commands": "ИК-команды",
                 "General": "Общее",
                 "HW Info": "Данные модуля",

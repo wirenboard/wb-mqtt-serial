@@ -12,6 +12,7 @@ namespace
     const std::string CUSTOM_GROUP_NAME = "g-custom";
     const std::string WB_GROUP_NAME = "g-wb";
     const std::string WB_OLD_GROUP_NAME = "g-wb-old";
+    const std::string ONI_GROUP_NAME = "g-oni";
 
     const std::string PROTOCOL_PREFIX = "protocol:";
 
@@ -100,6 +101,7 @@ namespace
         std::map<std::string, std::vector<PDeviceTemplate>> groups;
         std::vector<PDeviceTemplate> groupWb;
         std::vector<PDeviceTemplate> groupWbOld;
+        std::vector<PDeviceTemplate> groupOni;
 
         for (const auto& templatePtr: templates) {
             const auto& group = templatePtr->GetGroup();
@@ -107,6 +109,8 @@ namespace
                 groupWb.push_back(templatePtr);
             } else if (group == WB_OLD_GROUP_NAME) {
                 groupWbOld.push_back(templatePtr);
+            } else if (group == ONI_GROUP_NAME) {
+                groupOni.push_back(templatePtr);
             } else if (group.empty()) {
                 groups[CUSTOM_GROUP_NAME].push_back(templatePtr);
             } else {
@@ -120,6 +124,7 @@ namespace
         });
         std::sort(groupWb.begin(), groupWb.end(), titleSortFn);
         std::sort(groupWbOld.begin(), groupWbOld.end(), titleSortFn);
+        std::sort(groupOni.begin(), groupOni.end(), titleSortFn);
 
         std::vector<TDeviceTypeGroup> res;
         std::transform(groups.begin(), groups.end(), std::back_inserter(res), [&](auto& group) {
@@ -132,6 +137,8 @@ namespace
             TDeviceTypeGroup{GetGroupTranslation(WB_OLD_GROUP_NAME, lang, groupTranslations), std::move(groupWbOld)});
         res.insert(res.begin(),
                    TDeviceTypeGroup{GetGroupTranslation(WB_GROUP_NAME, lang, groupTranslations), std::move(groupWb)});
+        res.insert(res.begin(),
+                   TDeviceTypeGroup{GetGroupTranslation(ONI_GROUP_NAME, lang, groupTranslations), std::move(groupOni)});
         return res;
     }
 }
