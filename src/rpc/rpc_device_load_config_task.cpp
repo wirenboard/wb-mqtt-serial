@@ -10,9 +10,9 @@
 
 namespace
 {
-    const uint8_t MAX_RETRIES = 2;
+    const auto MAX_RETRIES = 2;
 
-    bool readParameter(Modbus::IModbusTraits& traits,
+    bool ReadParameter(Modbus::IModbusTraits& traits,
                        TPort& port,
                        PRPCDeviceLoadConfigRequest rpcRequest,
                        PRegisterConfig registerConfig,
@@ -29,7 +29,10 @@ namespace
                                              rpcRequest->FrameTimeout);
                 return true;
             } catch (const Modbus::TModbusExceptionError& err) {
-                if (err.GetExceptionCode() == 1 || err.GetExceptionCode() == 2 || err.GetExceptionCode() == 3) {
+                if (err.GetExceptionCode() == Modbus::ILLEGAL_FUNCTION ||
+                    err.GetExceptionCode() == Modbus::ILLEGAL_DATA_ADDRESS ||
+                    err.GetExceptionCode() == Modbus::ILLEGAL_DATA_VALUE)
+                {
                     break;
                 }
             } catch (const Modbus::TErrorBase& err) {
@@ -42,20 +45,19 @@ namespace
         return false;
     }
 
-    void writeParameter(Modbus::IModbusTraits& traits,
+    void WriteParameter(Modbus::IModbusTraits& traits,
                         TPort& port,
                         PRPCDeviceLoadConfigRequest rpcRequest,
                         PRegisterConfig registerConfig,
                         const TRegisterValue& registerValue)
     {
-        auto reg = std::make_shared<TRegister>(PSerialDevice(), registerConfig);
         Modbus::TRegisterCache cache;
         for (int i = 0; i <= MAX_RETRIES; i++) {
             try {
                 Modbus::WriteRegister(traits,
                                       port,
                                       rpcRequest->SlaveId,
-                                      *reg,
+                                      *registerConfig,
                                       registerValue,
                                       cache,
                                       std::chrono::microseconds(0),
@@ -63,7 +65,10 @@ namespace
                                       rpcRequest->FrameTimeout);
                 break;
             } catch (const Modbus::TModbusExceptionError& err) {
-                if (err.GetExceptionCode() == 1 || err.GetExceptionCode() == 2 || err.GetExceptionCode() == 3) {
+                if (err.GetExceptionCode() == Modbus::ILLEGAL_FUNCTION ||
+                    err.GetExceptionCode() == Modbus::ILLEGAL_DATA_ADDRESS ||
+                    err.GetExceptionCode() == Modbus::ILLEGAL_DATA_VALUE)
+                {
                     break;
                 }
             } catch (const Modbus::TErrorBase& err) {
@@ -104,15 +109,20 @@ void ExecRPCDeviceLoadConfigRequest(TPort& port, PRPCDeviceLoadConfigRequest rpc
     port.SkipNoise();
 
     Modbus::TModbusRTUTraits traits;
-    auto modeConfig = WbRegisters::GetRegisterConfig("continuous_read");
+    auto modeConfig = WbRegisters::GetRegisterConfig("");
     TRegisterValue modeValue;
-    readParameter(traits, port, rpcRequest, modeConfig, modeValue);
+    ReadParameter(traits, port, rpcRequest, modeConfig, modeValue);
 
     uint16_t mode = modeValue.Get<uint16_t>();
     bool setMode = mode != 0;
     if (setMode) {
         modeValue.Set(0);
-        writeParameter(traits, port, rpcRequest, modeConfig, modeValue);
+        try {
+            WriteParameter(traits, port, rpcRequest, modeConfig, modeValue);
+        } catch (const Modbus::TErrorBase& err) {
+            LOG(Warn) << port.GetDescription() << " modbus:" << rpcRequest->SlaveId
+                      << " unable to disable \"continuous_read\" setting";
+        }
     }
 
     TDeviceProtocolParams protocolParams = rpcRequest->DeviceFactory.GetProtocolParams("modbus");
@@ -131,14 +141,19 @@ void ExecRPCDeviceLoadConfigRequest(TPort& port, PRPCDeviceLoadConfigRequest rpc
                                          protocolParams.factory->GetRegisterAddressFactory().GetBaseRegisterAddress(),
                                          0);
         TRegisterValue value;
-        if (readParameter(traits, port, rpcRequest, config.RegisterConfig, value)) {
+        if (ReadParameter(traits, port, rpcRequest, config.RegisterConfig, value)) {
             configData[id] = RawValueToJSON(*config.RegisterConfig, value);
         }
     }
 
     if (setMode) {
         modeValue.Set(mode);
-        writeParameter(traits, port, rpcRequest, modeConfig, modeValue);
+        try {
+            WriteParameter(traits, port, rpcRequest, modeConfig, modeValue);
+        } catch (const Modbus::TErrorBase& err) {
+            LOG(Warn) << port.GetDescription() << " modbus:" << rpcRequest->SlaveId
+                      << " unable to restore \"continuous_read\" setting";
+        }
     }
 
     TJsonParams jsonParams(configData);
