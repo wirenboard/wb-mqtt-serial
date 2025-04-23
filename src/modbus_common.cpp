@@ -700,7 +700,7 @@ namespace Modbus // modbus protocol common utilities
     void WriteRegister(IModbusTraits& traits,
                        TPort& port,
                        uint8_t slaveId,
-                       TRegister& reg,
+                       const TRegisterConfig& reg,
                        const TRegisterValue& value,
                        Modbus::TRegisterCache& cache,
                        std::chrono::microseconds requestDelay,
@@ -882,14 +882,14 @@ namespace Modbus // modbus protocol common utilities
     TRegisterValue ReadRegister(IModbusTraits& traits,
                                 TPort& port,
                                 uint8_t slaveId,
-                                const TRegisterConfig& registerConfig,
+                                const TRegisterConfig& reg,
                                 std::chrono::microseconds requestDelay,
                                 std::chrono::milliseconds responseTimeout,
                                 std::chrono::milliseconds frameTimeout)
     {
-        size_t modbusRegisterCount = GetModbusDataWidthIn16BitWords(registerConfig);
-        auto addr = GetUint32RegisterAddress(registerConfig.GetAddress());
-        auto function = GetFunctionImpl(registerConfig.Type, OperationType::OP_READ, registerConfig.TypeName, false);
+        size_t modbusRegisterCount = GetModbusDataWidthIn16BitWords(reg);
+        auto addr = GetUint32RegisterAddress(reg.GetAddress());
+        auto function = GetFunctionImpl(reg.Type, OperationType::OP_READ, reg.TypeName, false);
         auto requestPdu = Modbus::MakePDU(function, addr, modbusRegisterCount, {});
 
         port.SleepSinceLastInteraction(requestDelay);
@@ -902,16 +902,16 @@ namespace Modbus // modbus protocol common utilities
 
         auto responseData = Modbus::ExtractResponseData(function, res.Pdu);
 
-        if (IsSingleBitType(registerConfig.Type)) {
+        if (IsSingleBitType(reg.Type)) {
             return TRegisterValue{responseData[0]};
         }
 
         std::vector<uint16_t> data16BitWords(modbusRegisterCount);
         FillRegisters(data16BitWords, responseData);
-        if (registerConfig.IsString()) {
-            return TRegisterValue{GetStringRegisterValueFromReadData(data16BitWords, addr, registerConfig)};
+        if (reg.IsString()) {
+            return TRegisterValue{GetStringRegisterValueFromReadData(data16BitWords, addr, reg)};
         }
-        return TRegisterValue{GetRegisterValueFromReadData(data16BitWords, addr, registerConfig)};
+        return TRegisterValue{GetRegisterValueFromReadData(data16BitWords, addr, reg)};
     }
 
 } // modbus protocol utilities

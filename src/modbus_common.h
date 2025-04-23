@@ -62,7 +62,7 @@ namespace Modbus // modbus protocol common utilities
     void WriteRegister(IModbusTraits& traits,
                        TPort& port,
                        uint8_t slaveId,
-                       TRegister& reg,
+                       const TRegisterConfig& reg,
                        const TRegisterValue& value,
                        TRegisterCache& cache,
                        std::chrono::microseconds requestDelay,
@@ -80,7 +80,7 @@ namespace Modbus // modbus protocol common utilities
     TRegisterValue ReadRegister(IModbusTraits& traits,
                                 TPort& port,
                                 uint8_t slaveId,
-                                const TRegisterConfig& registerConfig,
+                                const TRegisterConfig& reg,
                                 std::chrono::microseconds requestDelay,
                                 std::chrono::milliseconds responseTimeout,
                                 std::chrono::milliseconds frameTimeout);
