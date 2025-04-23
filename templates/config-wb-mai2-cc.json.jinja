@@ -1,7 +1,16 @@
+{% set title_en = title_en | default("WB-MAI2-mini/CC (2-channel analog input module)") -%}
+{% set title_ru = title_ru | default("WB-MAI2-mini/CC (2-канальный модуль измерения токового сигнала)") -%}
+{% set device_type = device_type | default("WB-MAI2-mini/CC") -%}
+{% set group = group | default("g-wb") -%}
+{% set device_name = device_name | default("WB-MAI2-mini/CC") -%}
+{% set device_id = device_id | default("wb-mai2-mini") -%}
+{% set has_signature = has_signature | default(false) -%}
+
 {
-    "title": "WB-MAI2-mini_template_title",
-    "device_type": "WB-MAI2-mini/CC",
-    "group": "g-wb",
+    "title": "template_title",
+    "device_type": "{{ device_type }}",
+    "group": "{{ group }}",
+{% if has_signature %}
     "hw": [
         {
             "signature": "MAI2CC"
@@ -10,9 +19,10 @@
             "signature": "WB-MAI2-mini/CC v.3"
         }
     ],
+{% endif %}
     "device": {
-        "name": "WB-MAI2-mini/CC",
-        "id": "wb-mai2-mini",
+        "name": "{{ device_name }}",
+        "id": "{{ device_id }}",
         "max_read_registers": 0,
         "response_timeout_ms": 1,
         "frame_timeout_ms": 12,
@@ -132,12 +142,12 @@
         ],
         "translations": {
             "en": {
-                "WB-MAI2-mini_template_title": "WB-MAI2-mini/CC (2-channel analog input module)",
+                "template_title": "{{ title_en }}",
                 "baud_rate_description": "Make sure that communication with device is established before changing this parameter. Select required baud rate, save configuration and then change port baud rate to the same value.",
                 "Uptime": "Uptime (s)"
             },
             "ru": {
-                "WB-MAI2-mini_template_title": "WB-MAI2-mini/CC (2-канальный модуль измерения токового сигнала)",
+                "template_title": "{{ title_ru }}",
                 "Inputs": "Входы",
                 "General": "Общее",
                 "HW Info": "Данные модуля",
