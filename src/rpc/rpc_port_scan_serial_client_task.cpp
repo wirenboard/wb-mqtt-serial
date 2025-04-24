@@ -1,11 +1,10 @@
 #include "rpc_port_scan_serial_client_task.h"
 #include "modbus_base.h"
 #include "modbus_common.h"
-#include "rpc_port_handler.h"
-#include "rpc_port_scan_handler.h"
-#include "serial_exc.h"
+#include "rpc_helpers.h"
 #include "serial_port.h"
 #include "wb_registers.h"
+#include <regex>
 
 #define LOG(logger) ::logger.Log() << "[RPC] "
 
@@ -28,7 +27,7 @@ namespace
 
     uint32_t GetSnFromRegister(const std::string& deviceModel, uint32_t sn)
     {
-        if (WBMQTT::StringStartsWith(deviceModel, "WB-MAP")) {
+        if (std::regex_match(deviceModel, std::regex("^MAP[0-9]{1,2}.*"))) {
             return sn & 0x00FFFFFF;
         }
         return sn;

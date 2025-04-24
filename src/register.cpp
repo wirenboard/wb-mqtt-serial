@@ -13,6 +13,7 @@ size_t RegisterFormatByteWidth(RegisterFormat format)
 {
     switch (format) {
         case String:
+        case String8:
             return 0; // The size will then be taken from the config parameter
         case S64:
         case U64:
@@ -69,6 +70,11 @@ bool TSameAddressRegisterRange::Add(PRegister reg, std::chrono::milliseconds pol
         return true;
     }
     return false;
+}
+
+bool TRegisterConfig::IsString() const
+{
+    return Format == String || Format == String8;
 }
 
 std::string TRegisterConfig::ToString() const
@@ -137,17 +143,24 @@ TRegisterValue TRegister::GetValue() const
 void TRegister::SetValue(const TRegisterValue& value, bool clearReadError)
 {
     if (::Debug.IsEnabled() && (Value != value)) {
-        LOG(Debug) << "new val for " << ToString() << ": " << std::hex << value;
+        std::string formatName = RegisterFormatName(Format);
+        if (IsString()) {
+            LOG(Debug) << ToString() << " (" << formatName << ") new value: \"" << value << "\"";
+        } else {
+            LOG(Debug) << ToString() << " (" << formatName << ") new value: 0x" << std::setfill('0')
+                       << std::setw(RegisterFormatByteWidth(Format) * 2) << std::hex << value;
+        }
     }
     Value = value;
     if (UnsupportedValue && (*UnsupportedValue == value)) {
         SetError(TRegister::TError::ReadError);
         SetAvailable(TRegisterAvailability::UNAVAILABLE);
+        LOG(Warn) << ToString() << " is now marked as unavailable: unsupported value received";
         return;
     }
     SetAvailable(TRegisterAvailability::AVAILABLE);
     if (ErrorValue && ErrorValue.value() == value) {
-        LOG(Debug) << "register " << ToString() << " contains error value";
+        LOG(Debug) << ToString() << " contains error value";
         SetError(TError::ReadError);
     } else {
         if (clearReadError) {
@@ -251,7 +264,7 @@ TRegisterConfig::TRegisterConfig(int type,
 
     auto maxOffset = RegisterFormatByteWidth(Format) * 8;
 
-    if ((Format != RegisterFormat::String) && (Address.DataOffset >= maxOffset)) {
+    if (!IsString() && Address.DataOffset >= maxOffset) {
         throw TSerialDeviceException("bit offset must not exceed " + std::to_string(maxOffset) + " bits");
     }
 
@@ -276,7 +289,7 @@ uint32_t TRegisterConfig::GetByteWidth() const
 
 uint8_t TRegisterConfig::Get16BitWidth() const
 {
-    if (Format == RegisterFormat::String) {
+    if (IsString()) {
         return GetDataWidth() / (sizeof(char) * 8);
     }
     auto totalBit = std::max(GetByteWidth() * 8, Address.DataOffset + GetDataWidth());
@@ -598,6 +611,7 @@ TRegisterValue GetRawValue(const TRegisterConfig& reg, const std::string& str)
             value.Set(IntToPackedBCD(FromScaledTextValue<uint64_t>(reg, str) & 0xFFFFFFFF, WordSizes::W32_SZ));
             break;
         case String:
+        case String8:
             value.Set(str);
             break;
         default:
@@ -672,6 +686,7 @@ std::string ConvertFromRawValue(const TRegisterConfig& reg, TRegisterValue val)
         case Char8:
             return std::string(1, val.Get<uint8_t>());
         case String:
+        case String8:
             return val.Get<std::string>();
         default:
             return ToScaledTextValue(reg, val.Get<uint64_t>());
