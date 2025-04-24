@@ -13859,6 +13859,8 @@ WB-MAP12E fw2
 	Ch 1 Total AN energy  =>  Ch 1 Total AN energy
 	Ch 1 Total AP energy  =>  Ch 1 Total AP energy
 	Ch 1 Total N  =>  Ch 1 Total N
+	Ch 1 Total NN energy  =>  Ch 1 Total NN energy
+	Ch 1 Total NP energy  =>  Ch 1 Total NP energy
 	Ch 1 Total P  =>  Ch 1 Total P
 	Ch 1 Total PF  =>  Ch 1 Total PF
 	Ch 1 Total Q  =>  Ch 1 Total Q
@@ -13910,6 +13912,8 @@ WB-MAP12E fw2
 	Ch 2 Total AN energy  =>  Ch 2 Total AN energy
 	Ch 2 Total AP energy  =>  Ch 2 Total AP energy
 	Ch 2 Total N  =>  Ch 2 Total N
+	Ch 2 Total NN energy  =>  Ch 2 Total NN energy
+	Ch 2 Total NP energy  =>  Ch 2 Total NP energy
 	Ch 2 Total P  =>  Ch 2 Total P
 	Ch 2 Total PF  =>  Ch 2 Total PF
 	Ch 2 Total Q  =>  Ch 2 Total Q
@@ -13960,6 +13964,9 @@ WB-MAP12E fw2
 	Ch 3 S L3  =>  Ch 3 S L3
 	Ch 3 Total AN energy  =>  Ch 3 Total AN energy
 	Ch 3 Total AP energy  =>  Ch 3 Total AP energy
+	Ch 3 Total N  =>  Ch 3 Total N
+	Ch 3 Total NN energy  =>  Ch 3 Total NN energy
+	Ch 3 Total NP energy  =>  Ch 3 Total NP energy
 	Ch 3 Total P  =>  Ch 3 Total P
 	Ch 3 Total PF  =>  Ch 3 Total PF
 	Ch 3 Total Q  =>  Ch 3 Total Q
@@ -14011,6 +14018,8 @@ WB-MAP12E fw2
 	Ch 4 Total AN energy  =>  Ch 4 Total AN energy
 	Ch 4 Total AP energy  =>  Ch 4 Total AP energy
 	Ch 4 Total N  =>  Ch 4 Total N
+	Ch 4 Total NN energy  =>  Ch 4 Total NN energy
+	Ch 4 Total NP energy  =>  Ch 4 Total NP energy
 	Ch 4 Total P  =>  Ch 4 Total P
 	Ch 4 Total PF  =>  Ch 4 Total PF
 	Ch 4 Total Q  =>  Ch 4 Total Q
