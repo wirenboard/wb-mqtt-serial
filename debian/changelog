@@ -1,3 +1,10 @@
+wb-mqtt-serial (2.159.2) stable; urgency=medium
+
+  * config-map12e-fw2.json.jinja: Add nonactive power and energy registers, translates
+  * config-map12h-fw2.json: Fix addresses and scales of nonactive energy registers
+
+ -- Ilia Skochilov <ilia.skochilov@wirenboard.com>  Thu, 13 Mar 2025 11:12:00 +0300
+
 wb-mqtt-serial (2.159.1) stable; urgency=medium
 
   * Refactor Modbus::WriteRegister method, no functional changes
