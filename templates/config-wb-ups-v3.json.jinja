@@ -286,6 +286,7 @@
                 "read_only": true,
                 "reg_type": "discrete",
                 "address": 16,
+                "enabled": false,
                 "group": "gg_debug_heater"
             },
             {
@@ -295,6 +296,7 @@
                 "read_only": true,
                 "reg_type": "discrete",
                 "address": 17,
+                "enabled": false,
                 "group": "gg_debug_heater"
             },
             {
@@ -303,6 +305,7 @@
                 "type": "switch",
                 "reg_type": "coil",
                 "address": 32,
+                "enabled": false,
                 "group": "gg_debug_heater"
             },
             {
@@ -311,6 +314,7 @@
                 "type": "switch",
                 "reg_type": "coil",
                 "address": 33,
+                "enabled": false,
                 "group": "gg_debug_heater"
             },
             {
@@ -319,6 +323,7 @@
                 "units": "mA",
                 "reg_type": "input",
                 "address": 64,
+                "enabled": false,
                 "group": "gg_debug_charge_discharge"
             },
             {
@@ -328,6 +333,7 @@
                 "reg_type": "input",
                 "scale": 0.001,
                 "address": 65,
+                "enabled": false,
                 "group": "gg_debug_charge_discharge"
             },
             {
@@ -337,6 +343,7 @@
                 "reg_type": "holding",
                 "scale": 0.001,
                 "address": 66,
+                "enabled": false,
                 "group": "gg_debug_charge_discharge"
             },
             {
@@ -346,6 +353,7 @@
                 "reg_type": "holding",
                 "scale": 0.001,
                 "address": 67,
+                "enabled": false,
                 "group": "gg_debug_charge_discharge"
             },
 
@@ -370,6 +378,7 @@
                 {% else -%}
                 "scale": 1,
                 {% endif -%}
+                "enabled": false,
                 "group": "gg_debug_chip_adc"
             },
             {% endfor -%}
