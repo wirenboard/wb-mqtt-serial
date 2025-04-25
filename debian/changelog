@@ -1,3 +1,10 @@
+wb-mqtt-serial (2.160.1) stable; urgency=medium
+
+  * config-map12e-fw2.json.jinja: Add nonactive power and energy registers, translates
+  * config-map12h-fw2-xxx: Fix addresses, scales and format of nonactive energy registers
+
+ -- Ilia Skochilov <ilia.skochilov@wirenboard.com>  Fri, 25 Apr 2025 10:03:00 +0300
+
 wb-mqtt-serial (2.160.0) stable; urgency=medium
 
   * Add device/LoadConfig RPC for modbus device configuration reading
