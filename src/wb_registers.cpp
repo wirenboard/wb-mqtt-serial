@@ -6,6 +6,7 @@ namespace
     const auto BAUD_RATE_REGISTER_ADDRESS = 110;
     const auto PARITY_REGISTER_ADDRESS = 111;
     const auto STOP_BITS_REGISTER_ADDRESS = 112;
+    const auto CONTINUOUS_READ_REGISTER_ADDRESS = 114;
     const auto SLAVE_ID_REGISTER_ADDRESS = 128;
     const auto DEVICE_MODEL_REGISTER_ADDRESS = 200;
     const auto FW_SIGNATURE_REGISTER_ADDRESS = 290;
@@ -26,6 +27,10 @@ namespace
          TRegisterConfig::Create(
              Modbus::REG_HOLDING,
              TRegisterDesc{std::make_shared<TUint32RegisterAddress>(STOP_BITS_REGISTER_ADDRESS), 0, 0})},
+        {WbRegisters::CONTINUOUS_READ_REGISTER_NAME,
+         TRegisterConfig::Create(
+             Modbus::REG_HOLDING,
+             TRegisterDesc{std::make_shared<TUint32RegisterAddress>(CONTINUOUS_READ_REGISTER_ADDRESS), 0, 0})},
         {WbRegisters::SLAVE_ID_REGISTER_NAME,
          TRegisterConfig::Create(
              Modbus::REG_HOLDING,
