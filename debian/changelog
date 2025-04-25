@@ -1,3 +1,9 @@
+wb-mqtt-serial (2.160.2) stable; urgency=medium
+
+  * Fix changelog, no functional changes
+
+ -- Ilya Titov <ilya.titov@wirenboard.com>  Fri, 25 Apr 2025 11:20:45 +0300
+
 wb-mqtt-serial (2.160.1) stable; urgency=medium
 
   * config-map12e-fw2.json.jinja: Add nonactive power and energy registers, translates
@@ -9,14 +15,14 @@ wb-mqtt-serial (2.160.0) stable; urgency=medium
 
   * Add device/LoadConfig RPC for modbus device configuration reading
 
- -- Ilya Titov <ilya.titov@wirenboard.com>  Wed, 16 Apr 2025 12:41:36 +0300
+ -- Ilya Titov <ilya.titov@wirenboard.com>  Wed, 25 Apr 2025 09:41:36 +0300
 
 wb-mqtt-serial (2.159.1) stable; urgency=medium
 
   * Refactor Modbus::WriteRegister method, no functional changes
   * Add Modbus::ExceptionCode enumerator, no functional changes
 
- -- Ilya Titov <ilya.titov@wirenboard.com>  Wed, 23 Apr 2025 10:09:20 +0000
+ -- Ilya Titov <ilya.titov@wirenboard.com>  Wed, 23 Apr 2025 13:09:20 +0300
 
 wb-mqtt-serial (2.159.0) stable; urgency=medium
 
