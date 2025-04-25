@@ -123,16 +123,17 @@ void ExecRPCDeviceLoadConfigRequest(TPort& port, PRPCDeviceLoadConfigRequest rpc
     } catch (const Modbus::TErrorBase& err) {
         LOG(Warn) << port.GetDescription() << " modbus:" << rpcRequest->SlaveId
                   << " unable to read \"continuous_read\" setting" << err.what();
-        return;
+        throw;
     }
 
     if (setMode) {
-        modeValue.Set(0);
         try {
+            modeValue.Set(0);
             WriteParameter(traits, port, rpcRequest, modeConfig, modeValue);
         } catch (const Modbus::TErrorBase& err) {
             LOG(Warn) << port.GetDescription() << " modbus:" << rpcRequest->SlaveId
                       << " unable to disable \"continuous_read\" setting" << err.what();
+            throw;
         }
     }
 
@@ -167,8 +168,8 @@ void ExecRPCDeviceLoadConfigRequest(TPort& port, PRPCDeviceLoadConfigRequest rpc
     }
 
     if (setMode) {
-        modeValue.Set(mode);
         try {
+            modeValue.Set(mode);
             WriteParameter(traits, port, rpcRequest, modeConfig, modeValue);
         } catch (const Modbus::TErrorBase& err) {
             LOG(Warn) << port.GetDescription() << " modbus:" << rpcRequest->SlaveId
@@ -176,18 +177,22 @@ void ExecRPCDeviceLoadConfigRequest(TPort& port, PRPCDeviceLoadConfigRequest rpc
         }
     }
 
-    if (success) {
-        TJsonParams jsonParams(configData);
-        TExpressionsCache expressionsCache;
-        for (auto it = rpcRequest->Parameters.begin(); it != rpcRequest->Parameters.end(); ++it) {
-            const Json::Value& registerData = *it;
-            std::string id = rpcRequest->Parameters.isObject() ? it.key().asString() : registerData["id"].asString();
-            if (registerData["readonly"].asInt() != 0 && !CheckCondition(registerData, jsonParams, &expressionsCache)) {
-                configData.removeMember(id);
-            }
-        }
-        rpcRequest->OnResult(configData);
+    if (!success) {
+        throw TRPCException(port.GetDescription() + " modbus:" + std::to_string(rpcRequest->SlaveId) +
+                                " failed to read settings",
+                            TRPCResultCode::RPC_WRONG_IO);
     }
+
+    TJsonParams jsonParams(configData);
+    TExpressionsCache expressionsCache;
+    for (auto it = rpcRequest->Parameters.begin(); it != rpcRequest->Parameters.end(); ++it) {
+        const Json::Value& registerData = *it;
+        std::string id = rpcRequest->Parameters.isObject() ? it.key().asString() : registerData["id"].asString();
+        if (registerData["readonly"].asInt() != 0 && !CheckCondition(registerData, jsonParams, &expressionsCache)) {
+            configData.removeMember(id);
+        }
+    }
+    rpcRequest->OnResult(configData);
 }
 
 TRPCDeviceLoadConfigSerialClientTask::TRPCDeviceLoadConfigSerialClientTask(PRPCDeviceLoadConfigRequest request)
