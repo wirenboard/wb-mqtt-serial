@@ -18,7 +18,7 @@ private:
     Json::Value RequestPortSetupSchema;
     Json::Value RequestPortScanSchema;
     PRPCConfig RPCConfig;
-    PRPCPortDriverList PortDrivers;
+    TRPCPortDriverList PortDrivers;
 
     void PortLoad(const Json::Value& request,
                   WBMQTT::TMqttRpcServer::TResultCallback onResult,

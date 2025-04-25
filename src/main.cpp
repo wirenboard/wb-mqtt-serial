@@ -20,6 +20,7 @@
 #include "files_watcher.h"
 #include "rpc/rpc_config.h"
 #include "rpc/rpc_config_handler.h"
+#include "rpc/rpc_device_handler.h"
 #include "rpc/rpc_port_handler.h"
 #include "serial_port.h"
 
@@ -47,6 +48,8 @@ const auto RPC_PORT_SETUP_REQUEST_SCHEMA_FULL_FILE_PATH =
     "/usr/share/wb-mqtt-serial/wb-mqtt-serial-rpc-port-setup-request.schema.json";
 const auto RPC_PORT_SCAN_REQUEST_SCHEMA_FULL_FILE_PATH =
     "/usr/share/wb-mqtt-serial/wb-mqtt-serial-rpc-port-scan-request.schema.json";
+const auto RPC_DEVICE_LOAD_CONFIG_REQUEST_SCHEMA_FULL_FILE_PATH =
+    "/usr/share/wb-mqtt-serial/wb-mqtt-serial-rpc-device-load-config-request.schema.json";
 const auto CONFED_COMMON_JSON_SCHEMA_FULL_FILE_PATH =
     "/usr/share/wb-mqtt-serial/wb-mqtt-serial-confed-common.schema.json";
 const auto DEVICE_GROUP_NAMES_JSON_FULL_FILE_PATH = "/usr/share/wb-mqtt-serial/groups.json";
@@ -300,6 +303,7 @@ int main(int argc, char* argv[])
 
         PMQTTSerialDriver serialDriver;
         PRPCPortHandler rpcPortHandler;
+        PRPCDeviceHandler rpcDeviceHandler;
 
         if (handlerConfig) {
             if (handlerConfig->Debug) {
@@ -341,6 +345,12 @@ int main(int argc, char* argv[])
                                                                rpcConfig,
                                                                rpcServer,
                                                                serialDriver);
+            rpcDeviceHandler = std::make_shared<TRPCDeviceHandler>(RPC_DEVICE_LOAD_CONFIG_REQUEST_SCHEMA_FULL_FILE_PATH,
+                                                                   deviceFactory,
+                                                                   templates,
+                                                                   rpcConfig,
+                                                                   rpcServer,
+                                                                   serialDriver);
         }
 
         if (serialDriver) {

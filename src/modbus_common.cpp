@@ -2,6 +2,7 @@
 #include "bin_utils.h"
 #include "log.h"
 #include "serial_device.h"
+#include "wb_registers.h"
 
 using namespace std;
 using namespace BinUtils;
@@ -11,13 +12,9 @@ using namespace BinUtils;
 namespace Modbus // modbus protocol declarations
 {
     const int MAX_READ_BITS = 2000;
-
     const int MAX_READ_REGISTERS = 125;
-
     const int MAX_HOLE_CONTINUOUS_16_BIT_REGISTERS = 10;
     const int MAX_HOLE_CONTINUOUS_1_BIT_REGISTERS = MAX_HOLE_CONTINUOUS_16_BIT_REGISTERS * 8;
-
-    const uint16_t ENABLE_CONTINUOUS_READ_REGISTER = 114;
 
     union TAddress
     {
@@ -857,8 +854,8 @@ namespace Modbus // modbus protocol common utilities
                                 uint8_t slaveId,
                                 TRegisterCache& cache)
     {
-        auto reg = std::make_shared<TRegister>(device,
-                                               TRegister::Create(Modbus::REG_HOLDING, ENABLE_CONTINUOUS_READ_REGISTER));
+        auto config = WbRegisters::GetRegisterConfig("continuous_read");
+        auto reg = std::make_shared<TRegister>(device, config);
         try {
             Modbus::WriteRegister(traits,
                                   port,
