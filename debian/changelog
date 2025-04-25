@@ -1,9 +1,9 @@
 wb-mqtt-serial (2.159.2) stable; urgency=medium
 
   * config-map12e-fw2.json.jinja: Add nonactive power and energy registers, translates
-  * config-map12h-fw2.json: Fix addresses, scales and format of nonactive energy registers
+  * config-map12h-fw2-xxx: Fix addresses, scales and format of nonactive energy registers
 
- -- Ilia Skochilov <ilia.skochilov@wirenboard.com>  Thu, 13 Mar 2025 11:12:00 +0300
+ -- Ilia Skochilov <ilia.skochilov@wirenboard.com>  Fri, 25 Apr 2025 08:44:00 +0300
 
 wb-mqtt-serial (2.159.1) stable; urgency=medium
 
