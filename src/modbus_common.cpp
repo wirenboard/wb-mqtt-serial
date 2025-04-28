@@ -710,8 +710,8 @@ namespace Modbus // modbus protocol common utilities
     {
         Modbus::TRegisterCache tmpCache;
 
-        LOG(Info) << port.GetDescription() << " modbus:" << std::to_string(slaveId) << " write "
-                  << GetModbusDataWidthIn16BitWords(reg) << " " << reg.TypeName << "(s) @ " << reg.GetWriteAddress();
+        LOG(Debug) << port.GetDescription() << " modbus:" << std::to_string(slaveId) << " write "
+                   << GetModbusDataWidthIn16BitWords(reg) << " " << reg.TypeName << "(s) @ " << reg.GetWriteAddress();
 
         std::vector<uint8_t> data;
         auto addr = GetUint32RegisterAddress(reg.GetWriteAddress()) + shift;

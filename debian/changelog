@@ -1,3 +1,9 @@
+wb-mqtt-serial (2.160.3) stable; urgency=medium
+
+  * Add TResponseTimeoutException handling for device/LoadConfig RPC
+
+ -- Ilya Titov <ilya.titov@wirenboard.com>  Mon, 28 Apr 2025 13:24:03 +0300
+
 wb-mqtt-serial (2.160.2) stable; urgency=medium
 
   * Fix changelog, no functional changes
