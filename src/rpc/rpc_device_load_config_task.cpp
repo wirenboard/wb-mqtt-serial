@@ -39,6 +39,10 @@ namespace
                 if (i == MAX_RETRIES) {
                     throw;
                 }
+            } catch (const TResponseTimeoutException& e) {
+                if (i == MAX_RETRIES) {
+                    throw;
+                }
             }
         }
 
@@ -72,6 +76,10 @@ namespace
                     break;
                 }
             } catch (const Modbus::TErrorBase& err) {
+                if (i == MAX_RETRIES) {
+                    throw;
+                }
+            } catch (const TResponseTimeoutException& e) {
                 if (i == MAX_RETRIES) {
                     throw;
                 }
