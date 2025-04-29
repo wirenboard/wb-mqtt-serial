@@ -206,6 +206,7 @@ Json::Value TRPCConfigHandler::GetSchema(const Json::Value& request)
         return *DeviceConfedSchemas.GetSchema(type);
     } catch (const std::runtime_error& e) {
         LOG(Error) << e.what();
-        throw TRPCException("Template \"" + type + "\" schema validation failed", TRPCResultCode::RPC_WRONG_TIMEOUT);
+        throw TRPCException("Template \"" + type + "\" schema validation failed",
+                            TRPCResultCode::RPC_WRONG_PARAM_VALUE);
     }
 }
