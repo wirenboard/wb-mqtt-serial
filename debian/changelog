@@ -1,3 +1,9 @@
+wb-mqtt-serial (2.160.4) stable; urgency=medium
+
+  * Add template validation error handling for config/GetSchema RPC
+
+ -- Ilya Titov <ilya.titov@wirenboard.com>  Tue, 29 Apr 2025 15:03:21 +0300
+
 wb-mqtt-serial (2.160.3) stable; urgency=medium
 
   * Add TResponseTimeoutException handling for device/LoadConfig RPC
