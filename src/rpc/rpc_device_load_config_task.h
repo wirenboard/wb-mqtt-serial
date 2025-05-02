@@ -22,6 +22,9 @@ public:
     const TSerialDeviceFactory& DeviceFactory;
     const Json::Value Parameters;
 
+    bool WBDevice = false;
+    bool WBContinuousRead = false;
+
     TSerialPortConnectionSettings SerialPortSettings;
     std::chrono::milliseconds ResponseTimeout = DefaultResponseTimeout;
     std::chrono::milliseconds FrameTimeout = DefaultFrameTimeout;
