@@ -89,17 +89,26 @@ namespace
 
 } // namespace
 
-TRPCDeviceLoadConfigRequest::TRPCDeviceLoadConfigRequest(const Json::Value& parameters,
-                                                         const TSerialDeviceFactory& deviceFactory)
-    : Parameters(parameters),
-      DeviceFactory(deviceFactory)
-{}
+TRPCDeviceLoadConfigRequest::TRPCDeviceLoadConfigRequest(const TSerialDeviceFactory& deviceFactory,
+                                                         PDeviceTemplate deviceTemplate)
+    : DeviceFactory(deviceFactory),
+      Parameters(deviceTemplate->GetTemplate()["parameters"])
+
+{
+    Json::Value responseTimeout = deviceTemplate->GetTemplate()["response_timeout_ms"];
+    if (responseTimeout.isInt())
+        ResponseTimeout = std::chrono::milliseconds(responseTimeout.asInt());
+
+    Json::Value frameTimeout = deviceTemplate->GetTemplate()["frame_timeout_ms"];
+    if (frameTimeout.isInt())
+        FrameTimeout = std::chrono::milliseconds(frameTimeout.asInt());
+}
 
 PRPCDeviceLoadConfigRequest ParseRPCDeviceLoadConfigRequest(const Json::Value& request,
-                                                            const Json::Value& parameters,
-                                                            const TSerialDeviceFactory& deviceFactory)
+                                                            const TSerialDeviceFactory& deviceFactory,
+                                                            PDeviceTemplate deviceTemplate)
 {
-    PRPCDeviceLoadConfigRequest res = std::make_shared<TRPCDeviceLoadConfigRequest>(parameters, deviceFactory);
+    PRPCDeviceLoadConfigRequest res = std::make_shared<TRPCDeviceLoadConfigRequest>(deviceFactory, deviceTemplate);
     res->SerialPortSettings = ParseRPCSerialPortSettings(request);
     WBMQTT::JSON::Get(request, "response_timeout", res->ResponseTimeout);
     WBMQTT::JSON::Get(request, "frame_timeout", res->FrameTimeout);

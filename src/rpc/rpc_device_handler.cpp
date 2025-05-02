@@ -56,13 +56,12 @@ void TRPCDeviceHandler::LoadConfig(const Json::Value& request,
 
     try {
         PRPCPortDriver driver = PortDrivers.Find(request);
-
         if (driver != nullptr && driver->SerialClient) {
-            RPCDeviceLoadConfigHandler(request, parameters, DeviceFactory, driver->SerialClient, onResult, onError);
+            RPCDeviceLoadConfigHandler(request, DeviceFactory, deviceTemplate, driver->SerialClient, onResult, onError);
         } else {
             auto port = InitPort(request);
             port->Open();
-            RPCDeviceLoadConfigHandler(request, parameters, DeviceFactory, *port, onResult, onError);
+            RPCDeviceLoadConfigHandler(request, DeviceFactory, deviceTemplate, *port, onResult, onError);
         }
     } catch (const TRPCException& e) {
         ProcessException(e, onError);
