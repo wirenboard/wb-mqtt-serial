@@ -18,7 +18,7 @@ namespace
                       PRegisterConfig registerConfig,
                       TRegisterValue& value)
     {
-        for (int i = 0; i <= MAX_RETRIES; i++) {
+        for (int i = 0; i <= MAX_RETRIES; ++i) {
             try {
                 value = Modbus::ReadRegister(traits,
                                              port,
@@ -51,16 +51,26 @@ namespace
 
     Json::Value ReadParametersConsistently(Modbus::IModbusTraits& traits,
                                            TPort& port,
-                                           PRPCDeviceLoadConfigRequest rpcRequest)
+                                           PRPCDeviceLoadConfigRequest rpcRequest,
+                                           const std::string& fwVersion)
     {
         TDeviceProtocolParams protocolParams = rpcRequest->DeviceFactory.GetProtocolParams("modbus");
         Json::Value parameters;
         for (auto it = rpcRequest->Parameters.begin(); it != rpcRequest->Parameters.end(); ++it) {
             const Json::Value& registerData = *it;
-            std::string id = rpcRequest->Parameters.isObject() ? it.key().asString() : registerData["id"].asString();
+
             if (registerData["readonly"].asInt() != 0) {
                 continue;
             }
+
+            if (!fwVersion.empty()) {
+                std::string fw = registerData["fw"].asString();
+                if (!fw.empty() && CompareVersionString(fw, fwVersion) > 0) {
+                    continue;
+                }
+            }
+
+            std::string id = rpcRequest->Parameters.isObject() ? it.key().asString() : registerData["id"].asString();
             try {
                 auto config =
                     LoadRegisterConfig(registerData,
@@ -87,10 +97,11 @@ namespace
 
     Json::Value ReadParametersContinuously(Modbus::IModbusTraits& traits,
                                            TPort& port,
-                                           PRPCDeviceLoadConfigRequest rpcRequest)
+                                           PRPCDeviceLoadConfigRequest rpcRequest,
+                                           const std::string& fwVersion)
     {
         // TODO: add real continuously read
-        return ReadParametersConsistently(traits, port, rpcRequest);
+        return ReadParametersConsistently(traits, port, rpcRequest, fwVersion);
     }
 
 } // namespace
@@ -176,8 +187,8 @@ void ExecRPCDeviceLoadConfigRequest(TPort& port, PRPCDeviceLoadConfigRequest rpc
         }
     }
 
-    Json::Value parameters = continuousRead ? ReadParametersContinuously(traits, port, rpcRequest)
-                                            : ReadParametersConsistently(traits, port, rpcRequest);
+    Json::Value parameters = continuousRead ? ReadParametersContinuously(traits, port, rpcRequest, fwVersion)
+                                            : ReadParametersConsistently(traits, port, rpcRequest, fwVersion);
     TJsonParams jsonParams(parameters);
     TExpressionsCache expressionsCache;
     for (auto it = rpcRequest->Parameters.begin(); it != rpcRequest->Parameters.end(); ++it) {
@@ -276,4 +287,30 @@ Json::Value RawValueToJSON(const TRegisterConfig& reg, TRegisterValue val)
         default:
             return val.Get<uint64_t>();
     }
+}
+
+int CompareVersionString(const std::string& v1, const std::string& v2)
+{
+    std::string buffer;
+
+    std::istringstream s1(v1);
+    std::vector<int> n1;
+    while (getline(s1, buffer, '.')) {
+        n1.push_back(std::stoi(buffer));
+    }
+
+    std::istringstream s2(v2);
+    std::vector<int> n2;
+    while (getline(s2, buffer, '.')) {
+        n2.push_back(std::stoi(buffer));
+    }
+
+    for (int i = 0; i < static_cast<int>(std::max(n1.size(), n2.size())); ++i) {
+        if (n1[i] > n2[i])
+            return 1;
+        if (n1[i] < n2[i])
+            return -1;
+    }
+
+    return 0;
 }
