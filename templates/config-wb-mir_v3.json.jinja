@@ -46,6 +46,11 @@
             },
             {% endfor -%}
             {
+                "title": "Safety Mode",
+                "id": "g_safety",
+                "description": "g_safety_description"
+            },
+            {
                 "title": "General",
                 "id": "g_general"
             },
@@ -107,6 +112,42 @@
                 "condition": "in{{in_num}}_mode==1"
             },
             {% endfor -%}
+            "safety_timer_s": {
+                "title": "Safety Poll Timeout (s)",
+                "group": "g_safety",
+                "description": "poll_timeout_description",
+                "address": 8,
+                "order": 1,
+                "reg_type": "holding",
+                "min": 1,
+                "max": 65534,
+                "default": 10
+            },
+            "safety_action": {
+                "title": "Safety Action",
+                "group": "g_safety",
+                "address": 9,
+                "order": 2,
+                "reg_type": "holding",
+                "enum": [0, 1],
+                "default": 0,
+                "enum_titles": [
+                    "No Action",
+                    "Play IR Command"
+                ]
+            },
+            "safety_command": {
+                "title": "Safety Command",
+                "group": "g_safety",
+                "description": "safety_command_description",
+                "address": 10,
+                "order": 3,
+                "reg_type": "holding",
+                "min": 1,
+                "max": 80,
+                "default": 1,
+                "condition": "safety_action==1"
+            },
             "temperature_readings_filter_deg": {
                 "title": "temperature_readings_filter_deg_title",
                 "description": "temperature_readings_filter_deg_description",
@@ -436,7 +477,11 @@
 
                 "lp_hold_time_description": "If the press is longer than the specified time, then it is long. Default value is 1000",
                 "secp_waiting_time_description": "If there is no second press during the specified time then the press is single. 0 - disables all presses except short and long. Adds a delay to the response to a short press. Default value is 300",
-                "debounce_time_description": "For press detection must be 5-10 times less than the second press waiting time. Adds a delay to the response to presses. Default value is 50"
+                "debounce_time_description": "For press detection must be 5-10 times less than the second press waiting time. Adds a delay to the response to presses. Default value is 50",
+
+                "g_safety_description": "Safety mode is activated if there is no Modbus polling for the specified time. Supported since firmware version 4.32.1",
+                "poll_timeout_description": "Time without modbus polling after which safety mode will be activated",
+                "safety_command_description": "IR Command that will be played in safety mode"
             },
             "ru": {
                 "WB-MIR-v.3_template_title": "WB-MIR v.3 (Modbus-модуль ИК-управления)",
@@ -461,6 +506,16 @@
                 "Reset all commands": "Стереть все команды",
                 "Play a command": "Воспроизвести команду",
                 "Recording a command": "Запись команды",
+
+                "Safety Mode": "Безопасный режим",
+                "g_safety_description": "Безопасный режим активируется, если в течение указанного времени отсутствует опрос по Modbus. Доступно с версии прошивки 4.32.1",
+                "Safety Poll Timeout (s)": "Таймаут потери связи (с)",
+                "poll_timeout_description": "Время отсутствия опроса, после которого будет активирован безопасный режим",
+                "Safety Action": "Действие в безопасном режиме",
+                "No Action": "Ничего не делать",
+                "Play IR Command": "Воспроизвести ИК-команду",
+                "Safety Command": "ИК-команда",
+                "safety_command_description": "ИК-команда, которая будет воcпроизведена в безопасном режиме",
 
                 "temperature_readings_filter_deg_title": "Фильтр ошибочных значений датчика 1-Wire (°C)",
                 "temperature_readings_filter_deg_description": "Если значение температуры равно 85 °C, то оно отбрасывается, если оно отличается от предыдущего больше, чем на значение фильтра. Запишите 0, чтобы отключить фильтр. Значение по умолчанию - 1",
