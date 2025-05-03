@@ -20,7 +20,7 @@ public:
     TRPCDeviceLoadConfigRequest(const TSerialDeviceFactory& deviceFactory, PDeviceTemplate deviceTemplate);
 
     const TSerialDeviceFactory& DeviceFactory;
-    const Json::Value Parameters;
+    const Json::Value DeviceTemplate;
 
     bool WBDevice = false;
     bool WBContinuousRead = false;
@@ -41,7 +41,7 @@ PRPCDeviceLoadConfigRequest ParseRPCDeviceLoadConfigRequest(const Json::Value& r
                                                             const TSerialDeviceFactory& deviceFactory,
                                                             PDeviceTemplate deviceTemplate);
 
-void ExecRPCDeviceLoadConfigRequest(TPort& port, PRPCDeviceLoadConfigRequest rpcRequest);
+void ExecRPCDeviceLoadConfigRequest(PPort port, PRPCDeviceLoadConfigRequest rpcRequest);
 
 class TRPCDeviceLoadConfigSerialClientTask: public ISerialClientTask
 {

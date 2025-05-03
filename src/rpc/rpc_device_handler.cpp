@@ -61,7 +61,7 @@ void TRPCDeviceHandler::LoadConfig(const Json::Value& request,
         } else {
             auto port = InitPort(request);
             port->Open();
-            RPCDeviceLoadConfigHandler(request, DeviceFactory, deviceTemplate, *port, onResult, onError);
+            RPCDeviceLoadConfigHandler(request, DeviceFactory, deviceTemplate, port, onResult, onError);
         }
     } catch (const TRPCException& e) {
         ProcessException(e, onError);

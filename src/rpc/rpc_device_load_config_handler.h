@@ -12,6 +12,6 @@ void RPCDeviceLoadConfigHandler(const Json::Value& request,
 void RPCDeviceLoadConfigHandler(const Json::Value& request,
                                 const TSerialDeviceFactory& deviceFactory,
                                 PDeviceTemplate deviceTemplate,
-                                TPort& port,
+                                PPort port,
                                 WBMQTT::TMqttRpcServer::TResultCallback onResult,
                                 WBMQTT::TMqttRpcServer::TErrorCallback onError);
