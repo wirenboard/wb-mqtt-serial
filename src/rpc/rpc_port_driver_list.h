@@ -24,6 +24,7 @@ private:
     std::vector<PSerialClientTask> Tasks;
     std::thread Thread;
     std::atomic<bool> Running;
+    bool Idle;
 };
 
 typedef std::shared_ptr<TSerialClientTaskExecutor> PSerialClientTaskExecutor;

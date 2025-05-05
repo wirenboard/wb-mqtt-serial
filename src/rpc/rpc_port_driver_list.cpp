@@ -5,7 +5,7 @@
 
 namespace
 {
-    const size_t MAX_TASK_EXECUTORS = 10;
+    const size_t MAX_TASK_EXECUTORS = 5;
 
     std::string GetRequestPortDescription(const Json::Value& request)
     {
@@ -25,7 +25,7 @@ namespace
 //              TSerialClientTaskExecutor
 //==========================================================
 
-TSerialClientTaskExecutor::TSerialClientTaskExecutor(PPort port): Port(port)
+TSerialClientTaskExecutor::TSerialClientTaskExecutor(PPort port): Port(port), Running(true), Idle(true)
 {
     Thread = std::thread([this]() {
         TSerialClientDeviceAccessHandler lastAccessedDevice(nullptr);
@@ -38,6 +38,7 @@ TSerialClientTaskExecutor::TSerialClientTaskExecutor(PPort port): Port(port)
             if (Tasks.empty()) {
                 continue;
             }
+            Idle = false;
             std::vector<PSerialClientTask> tasksToRun;
             Tasks.swap(tasksToRun);
             lock.unlock();
@@ -50,6 +51,7 @@ TSerialClientTaskExecutor::TSerialClientTaskExecutor(PPort port): Port(port)
             }
             lock.lock();
             if (Tasks.empty()) {
+                Idle = true;
                 Port->Close();
             }
         }
@@ -83,7 +85,7 @@ PPort TSerialClientTaskExecutor::GetPort() const
 bool TSerialClientTaskExecutor::IsIdle() const
 {
     std::unique_lock<std::mutex> lock(Mutex);
-    return Tasks.empty();
+    return Idle;
 }
 
 //==========================================================
@@ -114,10 +116,10 @@ void TSerialClientTaskRunner::RunTask(const Json::Value& request, PSerialClientT
                                      return executor->GetPort()->GetDescription() == portDescription;
                                  });
     if (executor == TaskExecutors.end()) {
-        auto newExecutor = std::make_shared<TSerialClientTaskExecutor>(InitPort(request));
-        TaskExecutors.push_back(newExecutor);
-        newExecutor->AddTask(task);
         RemoveUnusedExecutors();
+        auto newExecutor = std::make_shared<TSerialClientTaskExecutor>(InitPort(request));
+        newExecutor->AddTask(task);
+        TaskExecutors.push_back(newExecutor);
     } else {
         (*executor)->AddTask(task);
     }
@@ -125,7 +127,7 @@ void TSerialClientTaskRunner::RunTask(const Json::Value& request, PSerialClientT
 
 void TSerialClientTaskRunner::RemoveUnusedExecutors()
 {
-    while (TaskExecutors.size() > MAX_TASK_EXECUTORS) {
+    while (TaskExecutors.size() >= MAX_TASK_EXECUTORS) {
         auto executorIt = std::find_if(TaskExecutors.begin(),
                                        TaskExecutors.end(),
                                        [](PSerialClientTaskExecutor executor) { return executor->IsIdle(); });
