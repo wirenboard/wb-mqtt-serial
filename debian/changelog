@@ -1,3 +1,9 @@
+wb-mqtt-serial (2.160.5) stable; urgency=medium
+
+  * WB-MIR templates: Add safety mode
+
+ -- Ilia Skochilov <ilia.skochilov@wirenboard.com>  Mon, 05 May 2025 09:22:00 +0300
+
 wb-mqtt-serial (2.160.4) stable; urgency=medium
 
   * Add template validation error handling for config/GetSchema RPC
