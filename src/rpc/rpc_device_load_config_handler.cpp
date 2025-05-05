@@ -18,6 +18,7 @@ namespace
 void RPCDeviceLoadConfigHandler(const Json::Value& request,
                                 const TSerialDeviceFactory& deviceFactory,
                                 PDeviceTemplate deviceTemplate,
+                                PSerialDevice device,
                                 PSerialClient serialClient,
                                 WBMQTT::TMqttRpcServer::TResultCallback onResult,
                                 WBMQTT::TMqttRpcServer::TErrorCallback onError)
@@ -25,7 +26,7 @@ void RPCDeviceLoadConfigHandler(const Json::Value& request,
     if (!serialClient) {
         throw TRPCException("SerialClient wasn't found for requested port", TRPCResultCode::RPC_WRONG_PORT);
     }
-    auto rpcRequest = ParseRPCDeviceLoadConfigRequest(request, deviceFactory, deviceTemplate);
+    auto rpcRequest = ParseRPCDeviceLoadConfigRequest(request, deviceFactory, deviceTemplate, device);
     SetCallbacks(*rpcRequest, onResult, onError);
     serialClient->AddTask(std::make_shared<TRPCDeviceLoadConfigSerialClientTask>(rpcRequest));
 }
@@ -33,11 +34,12 @@ void RPCDeviceLoadConfigHandler(const Json::Value& request,
 void RPCDeviceLoadConfigHandler(const Json::Value& request,
                                 const TSerialDeviceFactory& deviceFactory,
                                 PDeviceTemplate deviceTemplate,
+                                PSerialDevice device,
                                 PPort port,
                                 WBMQTT::TMqttRpcServer::TResultCallback onResult,
                                 WBMQTT::TMqttRpcServer::TErrorCallback onError)
 {
-    auto rpcRequest = ParseRPCDeviceLoadConfigRequest(request, deviceFactory, deviceTemplate);
+    auto rpcRequest = ParseRPCDeviceLoadConfigRequest(request, deviceFactory, deviceTemplate, device);
     SetCallbacks(*rpcRequest, onResult, onError);
     ExecRPCDeviceLoadConfigRequest(port, rpcRequest);
 }

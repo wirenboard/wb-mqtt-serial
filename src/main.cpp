@@ -349,6 +349,7 @@ int main(int argc, char* argv[])
                                                                    deviceFactory,
                                                                    templates,
                                                                    rpcConfig,
+                                                                   handlerConfig,
                                                                    rpcServer,
                                                                    serialDriver);
         }

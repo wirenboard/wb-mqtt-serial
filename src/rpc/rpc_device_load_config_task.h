@@ -17,10 +17,14 @@ template<> inline uint8_t WBMQTT::JSON::As<uint8_t>(const Json::Value& value)
 class TRPCDeviceLoadConfigRequest
 {
 public:
-    TRPCDeviceLoadConfigRequest(const TSerialDeviceFactory& deviceFactory, PDeviceTemplate deviceTemplate);
+    TRPCDeviceLoadConfigRequest(const TSerialDeviceFactory& deviceFactory,
+                                PDeviceTemplate deviceTemplate,
+                                PSerialDevice device);
 
     const TSerialDeviceFactory& DeviceFactory;
-    const Json::Value DeviceTemplate;
+    const Json::Value& DeviceTemplate;
+
+    PSerialDevice Device;
 
     bool WBDevice = false;
     bool WBContinuousRead = false;
@@ -39,7 +43,8 @@ typedef std::shared_ptr<TRPCDeviceLoadConfigRequest> PRPCDeviceLoadConfigRequest
 
 PRPCDeviceLoadConfigRequest ParseRPCDeviceLoadConfigRequest(const Json::Value& request,
                                                             const TSerialDeviceFactory& deviceFactory,
-                                                            PDeviceTemplate deviceTemplate);
+                                                            PDeviceTemplate deviceTemplate,
+                                                            PSerialDevice device);
 
 void ExecRPCDeviceLoadConfigRequest(PPort port, PRPCDeviceLoadConfigRequest rpcRequest);
 
