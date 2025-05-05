@@ -37,10 +37,10 @@ public:
 
     std::chrono::steady_clock::time_point GetDeadline(std::chrono::steady_clock::time_point currentTime) const;
 
-    TSerialClientEventsReader& GetEventsReader();
+    PSerialClientEventsReader GetEventsReader() const;
 
 private:
-    TSerialClientEventsReader EventsReader;
+    PSerialClientEventsReader EventsReader;
     TSerialClientRegisterPoller RegisterPoller;
     TScheduler<TClientTaskType> TimeBalancer;
     std::chrono::milliseconds ReadEventsPeriod;

@@ -1,11 +1,75 @@
 #include "rpc_port_setup_serial_client_task.h"
 #include "modbus_common.h"
+#include "rpc_helpers.h"
 #include "serial_exc.h"
 #include "serial_port.h"
+#include "wb_registers.h"
 
-TRPCPortSetupSerialClientTask::TRPCPortSetupSerialClientTask(PRPCPortSetupRequest request): Request(request)
+namespace
 {
-    Request = request;
+    TRPCPortSetupRequestItem ParseRPCPortSetupItemRequest(const Json::Value& request)
+    {
+        TRPCPortSetupRequestItem res;
+
+        res.SlaveId = request["slave_id"].asUInt();
+
+        if (request.isMember("sn")) {
+            res.Sn = request["sn"].asUInt();
+        }
+
+        res.SerialPortSettings = ParseRPCSerialPortSettings(request);
+
+        if (!request.isMember("cfg")) {
+            return res;
+        }
+
+        const std::vector<std::string> regNames = {WbRegisters::BAUD_RATE_REGISTER_NAME,
+                                                   WbRegisters::PARITY_REGISTER_NAME,
+                                                   WbRegisters::STOP_BITS_REGISTER_NAME,
+                                                   WbRegisters::SLAVE_ID_REGISTER_NAME};
+        for (auto& regName: regNames) {
+            if (request["cfg"].isMember(regName)) {
+                auto regConfig = WbRegisters::GetRegisterConfig(regName);
+                if (regConfig) {
+                    PDeviceSetupItemConfig setup_item_config(
+                        std::make_shared<TDeviceSetupItemConfig>(regName,
+                                                                 regConfig,
+                                                                 request["cfg"][regName].asString()));
+                    res.Regs.push_back(
+                        std::make_shared<TDeviceSetupItem>(setup_item_config,
+                                                           std::make_shared<TRegister>(nullptr, regConfig)));
+                }
+            }
+        }
+
+        return res;
+    }
+
+    PRPCPortSetupRequest ParseRPCPortSetupRequest(const Json::Value& requestJson)
+    {
+        auto RPCRequest = std::make_shared<TRPCPortSetupRequest>();
+
+        try {
+            for (auto& request: requestJson["items"]) {
+                RPCRequest->Items.push_back(ParseRPCPortSetupItemRequest(request));
+            }
+
+            WBMQTT::JSON::Get(requestJson, "total_timeout", RPCRequest->TotalTimeout);
+        } catch (const std::runtime_error& e) {
+            throw TRPCException(e.what(), TRPCResultCode::RPC_WRONG_PARAM_VALUE);
+        }
+
+        return RPCRequest;
+    }
+}
+
+TRPCPortSetupSerialClientTask::TRPCPortSetupSerialClientTask(const Json::Value& request,
+                                                             WBMQTT::TMqttRpcServer::TResultCallback onResult,
+                                                             WBMQTT::TMqttRpcServer::TErrorCallback onError)
+    : Request(ParseRPCPortSetupRequest(request))
+{
+    Request->OnResult = onResult;
+    Request->OnError = onError;
     ExpireTime = std::chrono::steady_clock::now() + Request->TotalTimeout;
 }
 
@@ -20,7 +84,9 @@ ISerialClientTask::TRunResult TRPCPortSetupSerialClientTask::Run(PPort port,
     }
 
     try {
-        port->CheckPortOpen();
+        if (!port->IsOpen()) {
+            port->Open();
+        }
         port->SkipNoise();
         ModbusExt::TModbusTraits fastModbusTraits;
         Modbus::TModbusRTUTraits rtuTraits(false);
@@ -47,7 +113,8 @@ ISerialClientTask::TRunResult TRPCPortSetupSerialClientTask::Run(PPort port,
         }
 
         if (Request->OnResult) {
-            Request->OnResult();
+            Json::Value replyJSON;
+            Request->OnResult(replyJSON);
         }
     } catch (const std::exception& error) {
         if (Request->OnError) {
