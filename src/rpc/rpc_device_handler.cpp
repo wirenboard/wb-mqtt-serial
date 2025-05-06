@@ -1,21 +1,29 @@
 #include "rpc_device_handler.h"
-#include "rpc_device_load_config_handler.h"
-#include "rpc_helpers.h"
+#include "rpc_device_load_config_task.h"
 
 #define LOG(logger) ::logger.Log() << "[RPC] "
+
+namespace
+{
+    void SetCallbacks(TRPCDeviceLoadConfigRequest& request,
+                      WBMQTT::TMqttRpcServer::TResultCallback onResult,
+                      WBMQTT::TMqttRpcServer::TErrorCallback onError)
+    {
+        request.OnResult = onResult;
+        request.OnError = onError;
+    }
+}
 
 TRPCDeviceHandler::TRPCDeviceHandler(const std::string& requestDeviceLoadConfigSchemaFilePath,
                                      const TSerialDeviceFactory& deviceFactory,
                                      std::shared_ptr<TTemplateMap> templates,
-                                     PRPCConfig rpcConfig,
                                      PHandlerConfig handlerConfig,
-                                     WBMQTT::PMqttRpcServer rpcServer,
-                                     PMQTTSerialDriver serialDriver)
+                                     TSerialClientTaskRunner& serialClientTaskRunner,
+                                     WBMQTT::PMqttRpcServer rpcServer)
     : DeviceFactory(deviceFactory),
       Templates(templates),
-      RPCConfig(rpcConfig),
       HandlerConfig(handlerConfig),
-      PortDrivers(rpcConfig, serialDriver)
+      SerialClientTaskRunner(serialClientTaskRunner)
 {
     try {
         RequestDeviceLoadConfigSchema = WBMQTT::JSON::Parse(requestDeviceLoadConfigSchemaFilePath);
@@ -31,23 +39,6 @@ TRPCDeviceHandler::TRPCDeviceHandler(const std::string& requestDeviceLoadConfigS
                                              std::placeholders::_1,
                                              std::placeholders::_2,
                                              std::placeholders::_3));
-}
-
-PSerialDevice TRPCDeviceHandler::FindDevice(PPort port, const std::string& slaveId, const std::string& deviceType)
-{
-    for (const auto& portConfig: HandlerConfig->PortConfigs) {
-        if (portConfig->Port != port) {
-            continue;
-        }
-        for (const auto& device: portConfig->Devices) {
-            auto deviceConfig = device->DeviceConfig();
-            if (deviceConfig->SlaveId == slaveId && deviceConfig->DeviceType == deviceType) {
-                return device;
-            }
-        }
-    }
-
-    return nullptr;
 }
 
 void TRPCDeviceHandler::LoadConfig(const Json::Value& request,
@@ -74,21 +65,9 @@ void TRPCDeviceHandler::LoadConfig(const Json::Value& request,
     }
 
     try {
-        PRPCPortDriver driver = PortDrivers.Find(request);
-        if (driver != nullptr && driver->SerialClient) {
-            auto device = FindDevice(driver->RPCPort->GetPort(), request["slave_id"].asString(), deviceType);
-            RPCDeviceLoadConfigHandler(request,
-                                       DeviceFactory,
-                                       deviceTemplate,
-                                       device,
-                                       driver->SerialClient,
-                                       onResult,
-                                       onError);
-        } else {
-            auto port = InitPort(request);
-            port->Open();
-            RPCDeviceLoadConfigHandler(request, DeviceFactory, deviceTemplate, nullptr, port, onResult, onError);
-        }
+        auto rpcRequest = ParseRPCDeviceLoadConfigRequest(request, DeviceFactory, deviceTemplate, HandlerConfig);
+        SetCallbacks(*rpcRequest, onResult, onError);
+        SerialClientTaskRunner.RunTask(request, std::make_shared<TRPCDeviceLoadConfigSerialClientTask>(rpcRequest));
     } catch (const TRPCException& e) {
         ProcessException(e, onError);
     }

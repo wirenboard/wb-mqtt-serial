@@ -1493,24 +1493,27 @@ TRPCResultCode TSerialClientIntegrationTest::SendRPCRequest(PMQTTSerialDriver se
 
     TRPCResultCode resultCode = TRPCResultCode::RPC_OK;
     std::vector<int> responseInt;
-    PRPCPortLoadRawRequest request = std::make_shared<TRPCPortLoadRawRequest>();
-    request->ResponseTimeout = std::chrono::milliseconds(500);
-    request->FrameTimeout = std::chrono::milliseconds(20);
-    request->TotalTimeout = totalTimeout;
-    std::copy(expectedRequest.begin(), expectedRequest.end(), back_inserter(request->Message));
-    request->ResponseSize = expectedResponseLength;
-    request->OnResult = [&responseInt](const Json::Value& response) {
+    Json::Value request;
+    request["response_timeout"] = 500;
+    request["frame_timeout"] = 20;
+    request["total_timeout"] = totalTimeout.count();
+    request["response_size"] = expectedResponseLength;
+    std::vector<uint8_t> requestUint;
+    std::copy(expectedRequest.begin(), expectedRequest.end(), back_inserter(requestUint));
+    request["msg"] = FormatResponse(requestUint, TRPCMessageFormat::RPC_MESSAGE_FORMAT_HEX);
+    request["format"] = "HEX";
+    auto onResult = [&responseInt](const Json::Value& response) {
         auto str = HexStringToByteVector(response["response"].asString());
         std::copy(str.begin(), str.end(), back_inserter(responseInt));
     };
-    request->OnError = [&resultCode](const TMqttRpcErrorCode code, const std::string&) {
+    auto onError = [&resultCode](const TMqttRpcErrorCode code, const std::string&) {
         resultCode =
             code == WBMQTT::E_RPC_REQUEST_TIMEOUT ? TRPCResultCode::RPC_WRONG_TIMEOUT : TRPCResultCode::RPC_WRONG_IO;
     };
 
     try {
         Note() << "Send RPC request";
-        PRPCPortLoadRawSerialClientTask task(std::make_shared<TRPCPortLoadRawSerialClientTask>(request));
+        auto task = std::make_shared<TRPCPortLoadRawSerialClientTask>(request, onResult, onError);
         serialClient->AddTask(task);
         SerialDriver->LoopOnce();
         EXPECT_EQ(responseInt == expectedResponse, true);

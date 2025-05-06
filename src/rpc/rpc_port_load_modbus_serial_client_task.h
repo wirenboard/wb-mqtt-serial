@@ -17,12 +17,12 @@ public:
 
 typedef std::shared_ptr<TRPCPortLoadModbusRequest> PRPCPortLoadModbusRequest;
 
-PRPCPortLoadModbusRequest ParseRPCPortLoadModbusRequest(const Json::Value& request);
-
 class TRPCPortLoadModbusSerialClientTask: public ISerialClientTask
 {
 public:
-    TRPCPortLoadModbusSerialClientTask(PRPCPortLoadModbusRequest request);
+    TRPCPortLoadModbusSerialClientTask(const Json::Value& request,
+                                       WBMQTT::TMqttRpcServer::TResultCallback onResult,
+                                       WBMQTT::TMqttRpcServer::TErrorCallback onError);
 
     ISerialClientTask::TRunResult Run(PPort port, TSerialClientDeviceAccessHandler& lastAccessedDevice) override;
 
@@ -32,5 +32,3 @@ private:
 };
 
 typedef std::shared_ptr<TRPCPortLoadModbusSerialClientTask> PRPCPortLoadModbusSerialClientTask;
-
-void ExecRPCPortLoadModbusRequest(TPort& port, PRPCPortLoadModbusRequest rpcRequest);

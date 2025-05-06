@@ -19,12 +19,13 @@ class TRPCDeviceLoadConfigRequest
 public:
     TRPCDeviceLoadConfigRequest(const TSerialDeviceFactory& deviceFactory,
                                 PDeviceTemplate deviceTemplate,
-                                PSerialDevice device);
+                                PHandlerConfig handlerConfig);
 
     const TSerialDeviceFactory& DeviceFactory;
+    const std::string DeviceType;
     const Json::Value& DeviceTemplate;
+    const PHandlerConfig HandlerConfig;
 
-    PSerialDevice Device;
     bool WBDevice = false;
     bool WBContinuousRead = false;
 
@@ -36,6 +37,8 @@ public:
 
     WBMQTT::TMqttRpcServer::TResultCallback OnResult = nullptr;
     WBMQTT::TMqttRpcServer::TErrorCallback OnError = nullptr;
+
+    PSerialDevice FindDevice(PPort port);
 };
 
 typedef std::shared_ptr<TRPCDeviceLoadConfigRequest> PRPCDeviceLoadConfigRequest;
@@ -43,7 +46,7 @@ typedef std::shared_ptr<TRPCDeviceLoadConfigRequest> PRPCDeviceLoadConfigRequest
 PRPCDeviceLoadConfigRequest ParseRPCDeviceLoadConfigRequest(const Json::Value& request,
                                                             const TSerialDeviceFactory& deviceFactory,
                                                             PDeviceTemplate deviceTemplate,
-                                                            PSerialDevice device);
+                                                            PHandlerConfig handlerConfig);
 
 void ExecRPCDeviceLoadConfigRequest(PPort port, PRPCDeviceLoadConfigRequest rpcRequest);
 

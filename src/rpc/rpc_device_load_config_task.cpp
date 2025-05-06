@@ -148,10 +148,11 @@ namespace
 
 TRPCDeviceLoadConfigRequest::TRPCDeviceLoadConfigRequest(const TSerialDeviceFactory& deviceFactory,
                                                          PDeviceTemplate deviceTemplate,
-                                                         PSerialDevice device)
+                                                         PHandlerConfig handlerConfig)
     : DeviceFactory(deviceFactory),
+      DeviceType(deviceTemplate->Type),
       DeviceTemplate(deviceTemplate->GetTemplate()),
-      Device(device)
+      HandlerConfig(handlerConfig)
 {
     if (!deviceTemplate->GetHardware().empty()) {
         for (const auto& hardware: deviceTemplate->GetHardware()) {
@@ -174,13 +175,30 @@ TRPCDeviceLoadConfigRequest::TRPCDeviceLoadConfigRequest(const TSerialDeviceFact
         FrameTimeout = std::chrono::milliseconds(frameTimeout.asInt());
 }
 
+PSerialDevice TRPCDeviceLoadConfigRequest::FindDevice(PPort port)
+{
+    for (const auto& portConfig: HandlerConfig->PortConfigs) {
+        if (portConfig->Port != port) {
+            continue;
+        }
+        for (const auto& device: portConfig->Devices) {
+            auto deviceConfig = device->DeviceConfig();
+            if (deviceConfig->SlaveId == std::to_string(SlaveId) && deviceConfig->DeviceType == DeviceType) {
+                return device;
+            }
+        }
+    }
+
+    return nullptr;
+}
+
 PRPCDeviceLoadConfigRequest ParseRPCDeviceLoadConfigRequest(const Json::Value& request,
                                                             const TSerialDeviceFactory& deviceFactory,
                                                             PDeviceTemplate deviceTemplate,
-                                                            PSerialDevice device)
+                                                            PHandlerConfig handlerConfig)
 {
     PRPCDeviceLoadConfigRequest res =
-        std::make_shared<TRPCDeviceLoadConfigRequest>(deviceFactory, deviceTemplate, device);
+        std::make_shared<TRPCDeviceLoadConfigRequest>(deviceFactory, deviceTemplate, handlerConfig);
     res->SerialPortSettings = ParseRPCSerialPortSettings(request);
     WBMQTT::JSON::Get(request, "response_timeout", res->ResponseTimeout);
     WBMQTT::JSON::Get(request, "frame_timeout", res->FrameTimeout);
@@ -196,17 +214,18 @@ void ExecRPCDeviceLoadConfigRequest(PPort port, PRPCDeviceLoadConfigRequest rpcR
     }
 
     TDeviceProtocolParams protocolParams = rpcRequest->DeviceFactory.GetProtocolParams("modbus");
-    if (rpcRequest->Device == nullptr) {
+    auto device = rpcRequest->FindDevice(port);
+    if (device == nullptr) {
         auto config = std::make_shared<TDeviceConfig>("RPC Device", std::to_string(rpcRequest->SlaveId), "modbus");
         config->MaxRegHole = MAX_RREGISTERS_HOLE;
         config->MaxBitHole = MAX_BIT_HOLE;
         config->MaxReadRegisters = MAX_READ_RREGISTERS;
-        rpcRequest->Device =
+        device =
             protocolParams.factory->CreateDevice(rpcRequest->DeviceTemplate, config, port, protocolParams.protocol);
     }
 
     Json::Value parameters;
-    for (const auto& config: rpcRequest->Device->DeviceConfig()->SetupItemConfigs) {
+    for (const auto& config: device->DeviceConfig()->SetupItemConfigs) {
         auto& id = config->GetParameterId();
         if (!id.empty()) {
             parameters[id] = RawValueToJSON(*config->GetRegisterConfig(), config->GetRawValue());
@@ -267,7 +286,7 @@ void ExecRPCDeviceLoadConfigRequest(PPort port, PRPCDeviceLoadConfigRequest rpcR
                                          *protocolParams.factory,
                                          protocolParams.factory->GetRegisterAddressFactory().GetBaseRegisterAddress(),
                                          0);
-        auto reg = std::make_shared<TRegister>(rpcRequest->Device, config.RegisterConfig);
+        auto reg = std::make_shared<TRegister>(device, config.RegisterConfig);
         reg->SetAvailable(TRegisterAvailability::AVAILABLE);
         registerList.push_back(std::make_pair(id, reg));
     }
@@ -313,6 +332,9 @@ ISerialClientTask::TRunResult TRPCDeviceLoadConfigSerialClientTask::Run(
     }
 
     try {
+        if (!port->IsOpen()) {
+            port->Open();
+        }
         lastAccessedDevice.PrepareToAccess(nullptr);
         TSerialPortSettingsGuard settingsGuard(port, Request->SerialPortSettings);
         ExecRPCDeviceLoadConfigRequest(port, Request);

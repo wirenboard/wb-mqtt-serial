@@ -8,25 +8,21 @@ public:
     TRPCDeviceHandler(const std::string& requestDeviceLoadConfigSchemaFilePath,
                       const TSerialDeviceFactory& deviceFactory,
                       std::shared_ptr<TTemplateMap> templates,
-                      PRPCConfig rpcConfig,
                       PHandlerConfig handlerConfig,
-                      WBMQTT::PMqttRpcServer rpcServer,
-                      PMQTTSerialDriver serialDriver);
+                      TSerialClientTaskRunner& serialClientTaskRunner,
+                      WBMQTT::PMqttRpcServer rpcServer);
 
 private:
     const TSerialDeviceFactory& DeviceFactory;
 
     Json::Value RequestDeviceLoadConfigSchema;
     std::shared_ptr<TTemplateMap> Templates;
-    PRPCConfig RPCConfig;
     PHandlerConfig HandlerConfig;
-    TRPCPortDriverList PortDrivers;
+    TSerialClientTaskRunner& SerialClientTaskRunner;
 
     void LoadConfig(const Json::Value& request,
                     WBMQTT::TMqttRpcServer::TResultCallback onResult,
                     WBMQTT::TMqttRpcServer::TErrorCallback onError);
-
-    PSerialDevice FindDevice(PPort port, const std::string& slaveId, const std::string& deviceType);
 };
 
 typedef std::shared_ptr<TRPCDeviceHandler> PRPCDeviceHandler;

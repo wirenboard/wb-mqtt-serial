@@ -1,3 +1,9 @@
+wb-mqtt-serial (2.161.0) stable; urgency=medium
+
+  * Do not block RPC when running long lasting requests to devices
+
+ -- Petr Krasnoshchekov <petr.krasnoshchekov@wirenboard.com>  Mon, 05 May 2025 12:26:48 +0500
+ 
 wb-mqtt-serial (2.160.5) stable; urgency=medium
 
   * WB-MIR templates: Add safety mode

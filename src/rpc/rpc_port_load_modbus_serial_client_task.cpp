@@ -1,7 +1,6 @@
 #include "rpc_port_load_modbus_serial_client_task.h"
 #include "modbus_base.h"
 #include "rpc_port_handler.h"
-#include "rpc_port_load_handler.h"
 #include "serial_exc.h"
 #include "serial_port.h"
 
@@ -90,10 +89,13 @@ void ExecRPCPortLoadModbusRequest(TPort& port, PRPCPortLoadModbusRequest rpcRequ
     }
 }
 
-TRPCPortLoadModbusSerialClientTask::TRPCPortLoadModbusSerialClientTask(PRPCPortLoadModbusRequest request)
-    : Request(request)
+TRPCPortLoadModbusSerialClientTask::TRPCPortLoadModbusSerialClientTask(const Json::Value& request,
+                                                                       WBMQTT::TMqttRpcServer::TResultCallback onResult,
+                                                                       WBMQTT::TMqttRpcServer::TErrorCallback onError)
+    : Request(ParseRPCPortLoadModbusRequest(request))
 {
-    Request = request;
+    Request->OnResult = onResult;
+    Request->OnError = onError;
     ExpireTime = std::chrono::steady_clock::now() + Request->TotalTimeout;
 }
 
@@ -109,6 +111,9 @@ ISerialClientTask::TRunResult TRPCPortLoadModbusSerialClientTask::Run(
     }
 
     try {
+        if (!port->IsOpen()) {
+            port->Open();
+        }
         lastAccessedDevice.PrepareToAccess(nullptr);
         TSerialPortSettingsGuard settingsGuard(port, Request->SerialPortSettings);
         ExecRPCPortLoadModbusRequest(*port, Request);
