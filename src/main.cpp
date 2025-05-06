@@ -329,7 +329,7 @@ int main(int argc, char* argv[])
                                             driverPublishParameters);
 
             driver->StartLoop();
-            WBMQTT::SignalHandling::OnSignals({SIGINT, SIGTERM}, [&] {
+            WBMQTT::SignalHandling::OnSignals({SIGINT, SIGTERM}, [=] {
                 driver->StopLoop();
                 driver->Close();
             });
@@ -360,7 +360,7 @@ int main(int argc, char* argv[])
         }
         rpcServer->Start();
 
-        WBMQTT::SignalHandling::OnSignals({SIGINT, SIGTERM}, [&] {
+        WBMQTT::SignalHandling::OnSignals({SIGINT, SIGTERM}, [=] {
             rpcServer->Stop();
             if (serialDriver) {
                 serialDriver->Stop();
