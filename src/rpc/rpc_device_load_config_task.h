@@ -25,7 +25,6 @@ public:
     const Json::Value& DeviceTemplate;
 
     PSerialDevice Device;
-
     bool WBDevice = false;
     bool WBContinuousRead = false;
 

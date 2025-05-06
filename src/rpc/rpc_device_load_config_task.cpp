@@ -10,6 +10,9 @@
 
 namespace
 {
+    const auto MAX_RREGISTERS_HOLE = 10;
+    const auto MAX_BIT_HOLE = 80;
+    const auto MAX_READ_RREGISTERS = 125;
     const auto MAX_RETRIES = 2;
 
     typedef std::vector<std::pair<std::string, PRegister>> TRPCRegisterList;
@@ -51,28 +54,6 @@ namespace
         return false;
     }
 
-    void ReadParametersConsistently(Modbus::IModbusTraits& traits,
-                                    PPort port,
-                                    PRPCDeviceLoadConfigRequest rpcRequest,
-                                    TRPCRegisterList& registerList,
-                                    Json::Value& parameters)
-    {
-        for (size_t i = 0; i < registerList.size(); ++i) {
-            try {
-                TRegisterValue value;
-                if (ReadRegister(traits, port, rpcRequest, registerList[i].second, value)) {
-                    parameters[registerList[i].first] = RawValueToJSON(*registerList[i].second, value);
-                }
-            } catch (const Modbus::TErrorBase& err) {
-                LOG(Warn) << port->GetDescription() << " modbus:" << rpcRequest->SlaveId << " unable to read \""
-                          << registerList[i].first << "\" setting: " << err.what();
-                throw TRPCException(port->GetDescription() + " modbus:" + std::to_string(rpcRequest->SlaveId) +
-                                        " failed to read settings",
-                                    TRPCResultCode::RPC_WRONG_PARAM_VALUE);
-            }
-        }
-    }
-
     void ReadParametersContinuously(Modbus::IModbusTraits& traits,
                                     PPort port,
                                     PRPCDeviceLoadConfigRequest rpcRequest,
@@ -94,7 +75,7 @@ namespace
 
         size_t i = 0;
         while (i < registerList.size()) {
-            Modbus::TModbusRegisterRange range(rpcRequest->ResponseTimeout); // TODO: what time is it?
+            Modbus::TModbusRegisterRange range(rpcRequest->ResponseTimeout);
             while (i < registerList.size() && range.Add(registerList[i].second, std::chrono::milliseconds::max())) {
                 ++i;
             }
@@ -102,9 +83,9 @@ namespace
                 break;
             }
             Modbus::TRegisterCache cache;
-            std::string error;
             bool success = false;
-            for (int i = 0; i <= MAX_RETRIES; ++i) {
+            std::string error;
+            for (int j = 0; j <= MAX_RETRIES; ++j) {
                 try {
                     range.ReadRange(traits, *port, rpcRequest->SlaveId, 0, cache);
                     success = true;
@@ -133,14 +114,33 @@ namespace
                 LOG(Warn) << port->GetDescription() << " modbus:" << rpcRequest->SlaveId
                           << " unable to read register range " << range.GetStart() << ", " << range.GetCount() << ": "
                           << error;
-                throw TRPCException(port->GetDescription() + " modbus:" + std::to_string(rpcRequest->SlaveId) +
-                                        " failed to read settings",
-                                    TRPCResultCode::RPC_WRONG_PARAM_VALUE);
+                throw TRPCException(error, TRPCResultCode::RPC_WRONG_PARAM_VALUE);
             }
         }
+        for (i = 0; i < registerList.size(); ++i) {
+            auto& reg = registerList[i];
+            parameters[reg.first] = RawValueToJSON(*reg.second, reg.second->GetValue());
+        }
+    }
+
+    void ReadParametersConsistently(Modbus::IModbusTraits& traits,
+                                    PPort port,
+                                    PRPCDeviceLoadConfigRequest rpcRequest,
+                                    TRPCRegisterList& registerList,
+                                    Json::Value& parameters)
+    {
         for (size_t i = 0; i < registerList.size(); ++i) {
-            parameters[registerList[i].first] =
-                RawValueToJSON(*registerList[i].second, registerList[i].second->GetValue());
+            auto& reg = registerList[i];
+            try {
+                TRegisterValue value;
+                if (ReadRegister(traits, port, rpcRequest, reg.second, value)) {
+                    parameters[reg.first] = RawValueToJSON(*reg.second, value);
+                }
+            } catch (const Modbus::TErrorBase& err) {
+                LOG(Warn) << port->GetDescription() << " modbus:" << rpcRequest->SlaveId << " unable to read \""
+                          << reg.first << "\" setting: " << err.what();
+                throw TRPCException(err.what(), TRPCResultCode::RPC_WRONG_PARAM_VALUE);
+            }
         }
     }
 
@@ -197,16 +197,12 @@ void ExecRPCDeviceLoadConfigRequest(PPort port, PRPCDeviceLoadConfigRequest rpcR
 
     TDeviceProtocolParams protocolParams = rpcRequest->DeviceFactory.GetProtocolParams("modbus");
     if (rpcRequest->Device == nullptr) {
-        auto deviceConfig = std::make_shared<TDeviceConfig>(rpcRequest->DeviceTemplate["name"].asString(),
-                                                            std::to_string(rpcRequest->SlaveId),
-                                                            "modbus");
-        rpcRequest->Device = protocolParams.factory->CreateDevice(rpcRequest->DeviceTemplate,
-                                                                  deviceConfig,
-                                                                  port,
-                                                                  protocolParams.protocol);
-        // TODO: check this
-        deviceConfig->MaxRegHole = 10;
-        deviceConfig->MaxReadRegisters = 60;
+        auto config = std::make_shared<TDeviceConfig>("RPC Device", std::to_string(rpcRequest->SlaveId), "modbus");
+        config->MaxRegHole = MAX_RREGISTERS_HOLE;
+        config->MaxBitHole = MAX_BIT_HOLE;
+        config->MaxReadRegisters = MAX_READ_RREGISTERS;
+        rpcRequest->Device =
+            protocolParams.factory->CreateDevice(rpcRequest->DeviceTemplate, config, port, protocolParams.protocol);
     }
 
     Json::Value parameters;
@@ -286,17 +282,17 @@ void ExecRPCDeviceLoadConfigRequest(PPort port, PRPCDeviceLoadConfigRequest rpcR
     for (auto it = deviceParams.begin(); it != deviceParams.end(); ++it) {
         const Json::Value& registerData = *it;
         std::string id = deviceParams.isObject() ? it.key().asString() : registerData["id"].asString();
-        if (registerData["readonly"].asInt() != 0 && !CheckCondition(registerData, jsonParams, &expressionsCache)) {
+        if (!CheckCondition(registerData, jsonParams, &expressionsCache)) {
             parameters.removeMember(id);
         }
     }
 
-    Json::Value reply;
+    Json::Value result;
     if (rpcRequest->WBDevice && !fwVersion.empty()) {
-        reply["fw"] = fwVersion;
+        result["fw"] = fwVersion;
     }
-    reply["parameters"] = parameters;
-    rpcRequest->OnResult(reply);
+    result["parameters"] = parameters;
+    rpcRequest->OnResult(result);
 }
 
 TRPCDeviceLoadConfigSerialClientTask::TRPCDeviceLoadConfigSerialClientTask(PRPCDeviceLoadConfigRequest request)
