@@ -98,22 +98,23 @@ TSerialClientTaskRunner::TSerialClientTaskRunner(PMQTTSerialDriver serialDriver)
 void TSerialClientTaskRunner::RunTask(const Json::Value& request, PSerialClientTask task)
 {
     auto portDescription = GetRequestPortDescription(request);
-
-    auto portDrivers = SerialDriver->GetPortDrivers();
-    auto portDriver =
-        std::find_if(portDrivers.begin(), portDrivers.end(), [&portDescription](const PSerialPortDriver& driver) {
-            return driver->GetSerialClient()->GetPort()->GetDescription() == portDescription;
-        });
-    if (portDriver != portDrivers.end()) {
-        (*portDriver)->GetSerialClient()->AddTask(task);
-        return;
+    if (SerialDriver) {
+        auto portDrivers = SerialDriver->GetPortDrivers();
+        auto portDriver =
+            std::find_if(portDrivers.begin(), portDrivers.end(), [&portDescription](const PSerialPortDriver& driver) {
+                return driver->GetSerialClient()->GetPort()->GetDescription(false) == portDescription;
+            });
+        if (portDriver != portDrivers.end()) {
+            (*portDriver)->GetSerialClient()->AddTask(task);
+            return;
+        }
     }
 
     std::unique_lock<std::mutex> lock(TaskExecutorsMutex);
     auto executor = std::find_if(TaskExecutors.begin(),
                                  TaskExecutors.end(),
                                  [&portDescription](PSerialClientTaskExecutor executor) {
-                                     return executor->GetPort()->GetDescription() == portDescription;
+                                     return executor->GetPort()->GetDescription(false) == portDescription;
                                  });
     if (executor == TaskExecutors.end()) {
         RemoveUnusedExecutors();

@@ -302,8 +302,6 @@ int main(int argc, char* argv[])
         }
 
         PMQTTSerialDriver serialDriver;
-        PRPCPortHandler rpcPortHandler;
-        PRPCDeviceHandler rpcDeviceHandler;
 
         if (handlerConfig) {
             if (handlerConfig->Debug) {
@@ -339,19 +337,21 @@ int main(int argc, char* argv[])
             driver->WaitForReady();
 
             serialDriver = make_shared<TMQTTSerialDriver>(driver, handlerConfig);
-            TSerialClientTaskRunner serialClientTaskRunner(serialDriver);
-            rpcPortHandler = std::make_shared<TRPCPortHandler>(RPC_PORT_LOAD_REQUEST_SCHEMA_FULL_FILE_PATH,
-                                                               RPC_PORT_SETUP_REQUEST_SCHEMA_FULL_FILE_PATH,
-                                                               RPC_PORT_SCAN_REQUEST_SCHEMA_FULL_FILE_PATH,
-                                                               rpcConfig,
-                                                               serialClientTaskRunner,
-                                                               rpcServer);
-            rpcDeviceHandler = std::make_shared<TRPCDeviceHandler>(RPC_DEVICE_LOAD_CONFIG_REQUEST_SCHEMA_FULL_FILE_PATH,
-                                                                   deviceFactory,
-                                                                   templates,
-                                                                   serialClientTaskRunner,
-                                                                   rpcServer);
         }
+
+        TSerialClientTaskRunner serialClientTaskRunner(serialDriver);
+        auto rpcPortHandler = std::make_shared<TRPCPortHandler>(RPC_PORT_LOAD_REQUEST_SCHEMA_FULL_FILE_PATH,
+                                                                RPC_PORT_SETUP_REQUEST_SCHEMA_FULL_FILE_PATH,
+                                                                RPC_PORT_SCAN_REQUEST_SCHEMA_FULL_FILE_PATH,
+                                                                rpcConfig,
+                                                                serialClientTaskRunner,
+                                                                rpcServer);
+        auto rpcDeviceHandler =
+            std::make_shared<TRPCDeviceHandler>(RPC_DEVICE_LOAD_CONFIG_REQUEST_SCHEMA_FULL_FILE_PATH,
+                                                deviceFactory,
+                                                templates,
+                                                serialClientTaskRunner,
+                                                rpcServer);
 
         if (serialDriver) {
             serialDriver->Start();
