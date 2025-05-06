@@ -1,3 +1,9 @@
+wb-mqtt-serial (2.160.6) stable; urgency=medium
+
+  * Add PTemplateMap typedef, no functional changes
+
+ -- Ilya Titov <ilya.titov@wirenboard.com>  Tue, 06 May 2025 12:01:52 +0000
+
 wb-mqtt-serial (2.160.5) stable; urgency=medium
 
   * WB-MIR templates: Add safety mode
