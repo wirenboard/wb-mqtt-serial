@@ -105,7 +105,7 @@ namespace
         return unique_ptr<Json::StreamWriter>(builder.newStreamWriter());
     }
 
-    pair<shared_ptr<Json::Value>, shared_ptr<TTemplateMap>> LoadTemplates()
+    pair<shared_ptr<Json::Value>, PTemplateMap> LoadTemplates()
     {
         auto commonDeviceSchema =
             make_shared<Json::Value>(WBMQTT::JSON::Parse(CONFED_COMMON_JSON_SCHEMA_FULL_FILE_PATH));
@@ -119,7 +119,7 @@ namespace
     void ConfedToConfig()
     {
         try {
-            shared_ptr<TTemplateMap> templates;
+            PTemplateMap templates;
             std::tie(std::ignore, templates) = LoadTemplates();
             MakeJsonWriter("  ", "None")->write(MakeConfigFromConfed(std::cin, *templates), &cout);
         } catch (const exception& e) {
@@ -260,7 +260,7 @@ int main(int argc, char* argv[])
     RegisterProtocols(deviceFactory);
 
     shared_ptr<Json::Value> commonDeviceSchema;
-    shared_ptr<TTemplateMap> templates;
+    PTemplateMap templates;
     std::tie(commonDeviceSchema, templates) = LoadTemplates();
     TDevicesConfedSchemasMap confedSchemasMap(*templates, deviceFactory, *commonDeviceSchema);
     TProtocolConfedSchemasMap protocolSchemasMap(PROTOCOL_SCHEMAS_DIR, *commonDeviceSchema);
@@ -349,8 +349,8 @@ int main(int argc, char* argv[])
         auto rpcDeviceHandler =
             std::make_shared<TRPCDeviceHandler>(RPC_DEVICE_LOAD_CONFIG_REQUEST_SCHEMA_FULL_FILE_PATH,
                                                 deviceFactory,
-                                                handlerConfig,
                                                 templates,
+                                                handlerConfig,
                                                 serialClientTaskRunner,
                                                 rpcServer);
 

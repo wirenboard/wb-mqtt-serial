@@ -16,7 +16,7 @@ namespace
 
 TRPCDeviceHandler::TRPCDeviceHandler(const std::string& requestDeviceLoadConfigSchemaFilePath,
                                      const TSerialDeviceFactory& deviceFactory,
-                                     std::shared_ptr<TTemplateMap> templates,
+                                     PTemplateMap templates,
                                      PHandlerConfig handlerConfig,
                                      TSerialClientTaskRunner& serialClientTaskRunner,
                                      WBMQTT::PMqttRpcServer rpcServer)

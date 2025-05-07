@@ -300,7 +300,7 @@ void TSerialDeviceTest::TearDown()
     TLoggedFixture::TearDown();
 }
 
-WBMQTT::TMap<std::string, std::shared_ptr<TTemplateMap>> TSerialDeviceIntegrationTest::Templates;
+WBMQTT::TMap<std::string, PTemplateMap> TSerialDeviceIntegrationTest::Templates;
 Json::Value TSerialDeviceIntegrationTest::CommonDeviceSchema;
 Json::Value TSerialDeviceIntegrationTest::CommonConfigTemplatesSchema;
 
