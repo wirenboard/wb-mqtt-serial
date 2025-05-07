@@ -145,10 +145,10 @@ std::vector<uint8_t> Dooya::TDevice::ExecCommand(const TRequest& request)
     return respBytes;
 }
 
-void Dooya::TDevice::WriteRegisterImpl(PRegister reg, const TRegisterValue& regValue)
+void Dooya::TDevice::WriteRegisterImpl(const TRegisterConfig& reg, const TRegisterValue& regValue)
 {
     auto value = regValue.Get<uint64_t>();
-    switch (reg->Type) {
+    switch (reg.Type) {
         case POSITION: {
             if (value == 0) {
                 if (CloseCommand.Data != ExecCommand(CloseCommand)) {
@@ -167,7 +167,7 @@ void Dooya::TDevice::WriteRegisterImpl(PRegister reg, const TRegisterValue& regV
             return;
         }
         case PARAM: {
-            uint8_t dataAddress = GetUint32RegisterAddress(reg->GetAddress());
+            uint8_t dataAddress = GetUint32RegisterAddress(reg.GetAddress());
             TRequest req;
             req.Data = MakeRequest(SlaveId, {WRITE, dataAddress, 1, static_cast<uint8_t>(value)});
             req.ResponseSize = RESPONSE_SIZE;
@@ -177,7 +177,7 @@ void Dooya::TDevice::WriteRegisterImpl(PRegister reg, const TRegisterValue& regV
             return;
         }
         case COMMAND: {
-            auto data = GetUint32RegisterAddress(reg->GetAddress());
+            auto data = GetUint32RegisterAddress(reg.GetAddress());
             TRequest req;
             uint8_t dataAddress;
             // Command with parameter
@@ -200,7 +200,8 @@ void Dooya::TDevice::WriteRegisterImpl(PRegister reg, const TRegisterValue& regV
     }
 }
 
-TRegisterValue Dooya::TDevice::ReadEnumParameter(TRegister& reg, const std::unordered_map<uint8_t, std::string>& names)
+TRegisterValue Dooya::TDevice::ReadEnumParameter(const TRegisterConfig& reg,
+                                                 const std::unordered_map<uint8_t, std::string>& names)
 {
     auto addr = GetUint32RegisterAddress(reg.GetAddress());
     TRequest req;
@@ -214,15 +215,15 @@ TRegisterValue Dooya::TDevice::ReadEnumParameter(TRegister& reg, const std::unor
     return TRegisterValue{"0x" + WBMQTT::HexDump(&res, 1)};
 }
 
-TRegisterValue Dooya::TDevice::ReadRegisterImpl(PRegister reg)
+TRegisterValue Dooya::TDevice::ReadRegisterImpl(const TRegisterConfig& reg)
 {
-    switch (reg->Type) {
+    switch (reg.Type) {
         case POSITION: {
             return TRegisterValue{
                 ParsePositionResponse(SlaveId, READ, GET_POSITION_DATA_LENGTH, ExecCommand(GetPositionCommand))};
         }
         case PARAM: {
-            auto addr = GetUint32RegisterAddress(reg->GetAddress());
+            auto addr = GetUint32RegisterAddress(reg.GetAddress());
             TRequest req;
             req.Data = MakeRequest(SlaveId, {READ, static_cast<uint8_t>(addr & 0xFF), 1});
             req.ResponseSize = RESPONSE_SIZE;
@@ -240,14 +241,14 @@ TRegisterValue Dooya::TDevice::ReadRegisterImpl(PRegister reg)
         }
         case MOTOR_TYPE: {
             std::unordered_map<uint8_t, std::string> names{{0x11, "roller"}, {0x12, "venetian"}};
-            return ReadEnumParameter(*reg, names);
+            return ReadEnumParameter(reg, names);
         }
         case MOTOR_SITUATION: {
             std::unordered_map<uint8_t, std::string> names{{0, "stopped"},
                                                            {1, "opening"},
                                                            {2, "closing"},
                                                            {3, "setting"}};
-            return ReadEnumParameter(*reg, names);
+            return ReadEnumParameter(reg, names);
         }
     }
     throw TSerialDevicePermanentRegisterException("Unsupported register type");

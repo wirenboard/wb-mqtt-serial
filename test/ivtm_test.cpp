@@ -58,7 +58,7 @@ TEST_F(TIVTMDeviceTest, IVTM7MQuery)
                            0x0d // footer
                        });
 
-    ASSERT_EQ(TRegisterValue{0x41D1D3CE}, Dev->ReadRegisterImpl(Dev1Temp)); // big-endian
+    ASSERT_EQ(TRegisterValue{0x41D1D3CE}, Dev->ReadRegisterImpl(*Dev1Temp->GetConfig())); // big-endian
 
     // >> 24 30 30 30 31 52 52 30 30 30 34 30 34 42 31 0d
     // << 21 30 30 30 31 52 52 33 30 39 41 45 42 34 31 34 46 0D
@@ -87,7 +87,7 @@ TEST_F(TIVTMDeviceTest, IVTM7MQuery)
                            0x0D // footer
                        });
 
-    ASSERT_EQ(TRegisterValue{0x41EB9A30}, Dev->ReadRegisterImpl(Dev1Humidity)); // big-endian
+    ASSERT_EQ(TRegisterValue{0x41EB9A30}, Dev->ReadRegisterImpl(*Dev1Humidity->GetConfig())); // big-endian
 
     // Test upper-case hex letters
 
@@ -118,6 +118,6 @@ TEST_F(TIVTMDeviceTest, IVTM7MQuery)
                            0x0d // footer
                        });
 
-    ASSERT_EQ(TRegisterValue{0x41C7855E}, Dev->ReadRegisterImpl(Dev2Temp)); // big-endian
+    ASSERT_EQ(TRegisterValue{0x41C7855E}, Dev->ReadRegisterImpl(*Dev2Temp->GetConfig())); // big-endian
     SerialPort->Close();
 }

@@ -187,11 +187,11 @@ TEnergomeraCeDevice::TEnergomeraCeDevice(PDeviceConfig config, PPort port, PProt
       TUInt32SlaveId(config->SlaveId)
 {}
 
-TRegisterValue TEnergomeraCeDevice::ReadRegisterImpl(PRegister reg)
+TRegisterValue TEnergomeraCeDevice::ReadRegisterImpl(const TRegisterConfig& reg)
 {
     auto request = MakePacket(SlaveId,
                               DeviceConfig()->Password,
-                              MakeCommandFromRegisterAddress(GetUint32RegisterAddress(reg->GetAddress())));
+                              MakeCommandFromRegisterAddress(GetUint32RegisterAddress(reg.GetAddress())));
     Port()->WriteBytes(request.data(), request.size());
     std::vector<uint8_t> response(MAX_RESPONSE_SIZE);
     auto res = Port()->ReadFrame(response.data(),
@@ -202,7 +202,7 @@ TRegisterValue TEnergomeraCeDevice::ReadRegisterImpl(PRegister reg)
     response.resize(res.Count);
     DecodeByteStuffing(response, BYTE_STUFFING_RULES);
     CheckResponse(response);
-    switch (reg->Type) {
+    switch (reg.Type) {
         case TEnergomeraCeRegisterType::DEFAULT:
             return GetValue(response);
         case TEnergomeraCeRegisterType::DATE:
@@ -210,7 +210,7 @@ TRegisterValue TEnergomeraCeDevice::ReadRegisterImpl(PRegister reg)
         case TEnergomeraCeRegisterType::ENERGY:
             return GetEnergy(response);
         default: {
-            throw TSerialDevicePermanentRegisterException("Unknown register type " + std::to_string(reg->Type));
+            throw TSerialDevicePermanentRegisterException("Unknown register type " + std::to_string(reg.Type));
         }
     }
 }

@@ -31,7 +31,7 @@ namespace
 
     std::string GetTextValue(PRegister reg)
     {
-        return ConvertFromRawValue(*reg, reg->GetValue());
+        return ConvertFromRawValue(*reg->GetConfig(), reg->GetValue());
     }
 }
 
@@ -62,8 +62,8 @@ class TSerialClientTest: public TLoggedFixture
         if (what.empty()) {
             what = "no";
         }
-        Emit() << "Error Callback: <" << reg->Device()->ToString() << ":" << reg->TypeName << ": " << reg->GetAddress()
-               << ">: " << what << " error";
+        Emit() << "Error Callback: <" << reg->Device()->ToString() << ":" << reg->GetConfig()->TypeName << ": "
+               << reg->GetConfig()->GetAddress() << ">: " << what << " error";
         LastRegErrors[reg] = reg->GetErrorState();
     }
 
@@ -156,8 +156,8 @@ void TSerialClientTest::SetUp()
         }
         std::string value = GetTextValue(reg);
         bool unchanged = (LastRegValues.count(reg) && LastRegValues[reg] == value);
-        Emit() << "Read Callback: <" << reg->Device()->ToString() << ":" << reg->TypeName << ": " << reg->GetAddress()
-               << "> becomes " << value << (unchanged ? " [unchanged]" : "");
+        Emit() << "Read Callback: <" << reg->Device()->ToString() << ":" << reg->GetConfig()->TypeName << ": "
+               << reg->GetConfig()->GetAddress() << "> becomes " << value << (unchanged ? " [unchanged]" : "");
         LastRegValues[reg] = value;
         if (!reg->GetErrorState().count()) {
             EmitErrorMsg(reg);
@@ -970,7 +970,7 @@ TEST_F(TSerialClientTest, Errors)
     SerialClient->SetTextValue(reg20, "42");
     Note() << "Cycle() [write, nothing blacklisted]";
     SerialClient->Cycle();
-    reg20->ErrorValue = TRegisterValue{42};
+    reg20->GetConfig()->ErrorValue = TRegisterValue{42};
     Note() << "Cycle() [read, set error value for register]";
     SerialClient->Cycle();
 

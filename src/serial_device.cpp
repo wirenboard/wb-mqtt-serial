@@ -101,7 +101,7 @@ void TSerialDevice::InvalidateReadCache()
 void TSerialDevice::WriteRegister(PRegister reg, const TRegisterValue& value)
 {
     try {
-        WriteRegisterImpl(reg, value);
+        WriteRegisterImpl(*reg->GetConfig(), value);
         SetTransferResult(true);
     } catch (const TSerialDevicePermanentRegisterException& e) {
         SetTransferResult(true);
@@ -117,12 +117,12 @@ void TSerialDevice::WriteRegister(PRegister reg, uint64_t value)
     WriteRegister(reg, TRegisterValue{value});
 }
 
-TRegisterValue TSerialDevice::ReadRegisterImpl(PRegister reg)
+TRegisterValue TSerialDevice::ReadRegisterImpl(const TRegisterConfig& reg)
 {
     throw TSerialDeviceException("single register reading is not supported");
 }
 
-void TSerialDevice::WriteRegisterImpl(PRegister reg, const TRegisterValue& value)
+void TSerialDevice::WriteRegisterImpl(const TRegisterConfig& reg, const TRegisterValue& value)
 {
     throw TSerialDeviceException(ToString() + ": register writing is not supported");
 }
@@ -133,7 +133,7 @@ void TSerialDevice::ReadRegisterRange(PRegisterRange range)
         try {
             if (reg->GetAvailable() != TRegisterAvailability::UNAVAILABLE) {
                 Port()->SleepSinceLastInteraction(DeviceConfig()->RequestDelay);
-                reg->SetValue(ReadRegisterImpl(reg));
+                reg->SetValue(ReadRegisterImpl(*reg->GetConfig()));
                 SetTransferResult(true);
             }
         } catch (const TSerialDeviceInternalErrorException& e) {
@@ -201,7 +201,7 @@ void TSerialDevice::InitSetupItems()
 void TSerialDevice::WriteSetupRegisters()
 {
     for (const auto& setup_item: SetupItems) {
-        WriteRegisterImpl(setup_item->Register, setup_item->RawValue);
+        WriteRegisterImpl(*setup_item->Register->GetConfig(), setup_item->RawValue);
 
         std::stringstream ss;
         ss << "Init: " << setup_item->Name << ": setup register " << setup_item->Register->ToString() << " <-- "
