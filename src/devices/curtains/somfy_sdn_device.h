@@ -57,8 +57,8 @@ namespace Somfy
         static void Register(TSerialDeviceFactory& factory);
 
     protected:
-        TRegisterValue ReadRegisterImpl(PRegister reg) override;
-        void WriteRegisterImpl(PRegister reg, const TRegisterValue& regValue) override;
+        TRegisterValue ReadRegisterImpl(const TRegisterConfig& reg) override;
+        void WriteRegisterImpl(const TRegisterConfig& reg, const TRegisterValue& regValue) override;
         void InvalidateReadCache() override;
     };
 

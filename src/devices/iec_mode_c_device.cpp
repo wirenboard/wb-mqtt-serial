@@ -15,7 +15,7 @@ namespace
 
     const TRegisterTypes RegisterTypes{{RegisterType::DEFAULT, "default", "value", Double, true}};
 
-    TRegisterValue GetValue(const TRegister& reg, const std::string& value)
+    TRegisterValue GetValue(const TRegisterConfig& reg, const std::string& value)
     {
         // (019132.530*kWh)
         auto startPos = value.find('(');
@@ -48,12 +48,12 @@ TIecModeCDevice::TIecModeCDevice(PDeviceConfig device_config, PPort port, PProto
     SetReadCommand(IEC::FormattedReadCommand);
 }
 
-std::string TIecModeCDevice::GetParameterRequest(const TRegister& reg) const
+std::string TIecModeCDevice::GetParameterRequest(const TRegisterConfig& reg) const
 {
     return reg.GetAddress().ToString();
 }
 
-TRegisterValue TIecModeCDevice::GetRegisterValue(const TRegister& reg, const std::string& value)
+TRegisterValue TIecModeCDevice::GetRegisterValue(const TRegisterConfig& reg, const std::string& value)
 {
     switch (reg.Type) {
         case RegisterType::DEFAULT:

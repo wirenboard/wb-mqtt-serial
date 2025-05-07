@@ -109,15 +109,15 @@ std::vector<uint8_t> TLLSDevice::ExecCommand(uint8_t cmd)
     return CmdResultCache.insert({cmd, result}).first->second;
 }
 
-TRegisterValue TLLSDevice::ReadRegisterImpl(PRegister reg)
+TRegisterValue TLLSDevice::ReadRegisterImpl(const TRegisterConfig& reg)
 {
-    uint8_t cmd = GetUint32RegisterAddress(reg->GetAddress());
+    uint8_t cmd = GetUint32RegisterAddress(reg.GetAddress());
     auto result = ExecCommand(cmd);
 
     int result_buf[8] = {};
 
-    for (uint32_t i = 0; i < reg->GetByteWidth(); ++i) {
-        result_buf[i] = result[reg->GetDataOffset() + i];
+    for (uint32_t i = 0; i < reg.GetByteWidth(); ++i) {
+        result_buf[i] = result[reg.GetDataOffset() + i];
     }
 
     return TRegisterValue{

@@ -97,7 +97,7 @@ protected:
      *    ETOPE(1)
      *    0011223344()
      */
-    virtual std::string GetParameterRequest(const TRegister& reg) const = 0;
+    virtual std::string GetParameterRequest(const TRegisterConfig& reg) const = 0;
 
     /**
      * @brief Get register value from response
@@ -106,9 +106,9 @@ protected:
      * @param value - response string without parameter prefix
      *                Example: 1.8.0(019132.530*kWh) -> (019132.530*kWh)
      */
-    virtual TRegisterValue GetRegisterValue(const TRegister& reg, const std::string& value) = 0;
+    virtual TRegisterValue GetRegisterValue(const TRegisterConfig& reg, const std::string& value) = 0;
     void PrepareImpl() override;
-    TRegisterValue ReadRegisterImpl(PRegister reg) override;
+    TRegisterValue ReadRegisterImpl(const TRegisterConfig& reg) override;
 
 private:
     IEC::TCrcFn CrcFn;

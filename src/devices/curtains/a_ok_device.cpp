@@ -153,9 +153,9 @@ std::vector<uint8_t> Aok::TDevice::ExecCommand(const TRequest& request)
     return respBytes;
 }
 
-TRegisterValue Aok::TDevice::ReadRegisterImpl(PRegister reg)
+TRegisterValue Aok::TDevice::ReadRegisterImpl(const TRegisterConfig& reg)
 {
-    switch (reg->Type) {
+    switch (reg.Type) {
         case COMMAND: {
             return TRegisterValue{1};
         }
@@ -163,11 +163,11 @@ TRegisterValue Aok::TDevice::ReadRegisterImpl(PRegister reg)
             return GetCachedResponse(MOTOR_STATUS, 0, MOTOR_STATUS_POSITION_OFFSET * 8, 8);
         }
         case STATUS: {
-            auto addr = GetUint32RegisterAddress(reg->GetAddress());
-            return GetCachedResponse((addr >> 8) & 0xFF, addr & 0xFF, reg->GetDataOffset(), reg->GetDataWidth());
+            auto addr = GetUint32RegisterAddress(reg.GetAddress());
+            return GetCachedResponse((addr >> 8) & 0xFF, addr & 0xFF, reg.GetDataOffset(), reg.GetDataWidth());
         }
         case ZONEBIT: {
-            auto addr = GetUint32RegisterAddress(reg->GetAddress());
+            auto addr = GetUint32RegisterAddress(reg.GetAddress());
             return GetCachedResponse(CURTAIN_MOTOR_STATUS,
                                      CURTAIN_MOTOR_STATUS,
                                      MOTOR_STATUS_ZONEBIT_OFFSET * 8 + addr,
@@ -177,12 +177,12 @@ TRegisterValue Aok::TDevice::ReadRegisterImpl(PRegister reg)
     throw TSerialDevicePermanentRegisterException("Unsupported register type");
 }
 
-void Aok::TDevice::WriteRegisterImpl(PRegister reg, const TRegisterValue& regValue)
+void Aok::TDevice::WriteRegisterImpl(const TRegisterConfig& reg, const TRegisterValue& regValue)
 {
     auto value = regValue.Get<uint64_t>();
-    switch (reg->Type) {
+    switch (reg.Type) {
         case COMMAND: {
-            auto addr = GetUint32RegisterAddress(reg->GetWriteAddress());
+            auto addr = GetUint32RegisterAddress(reg.GetWriteAddress());
             TRequest req;
             req.Data = MakeRequest(MotorId, LowChannelId, HighChannelId, CONTROL, addr);
             ExecCommand(req);
@@ -195,14 +195,14 @@ void Aok::TDevice::WriteRegisterImpl(PRegister reg, const TRegisterValue& regVal
             return;
         }
         case PARAM: {
-            auto addr = GetUint32RegisterAddress(reg->GetWriteAddress());
+            auto addr = GetUint32RegisterAddress(reg.GetWriteAddress());
             TRequest req;
             req.Data = MakeRequest(MotorId, LowChannelId, HighChannelId, addr, value);
             ExecCommand(req);
             return;
         }
         case ZONEBIT: {
-            auto addr = GetUint32RegisterAddress(reg->GetWriteAddress());
+            auto addr = GetUint32RegisterAddress(reg.GetWriteAddress());
             TRegisterValue val =
                 GetCachedResponse(CURTAIN_MOTOR_STATUS, CURTAIN_MOTOR_STATUS, MOTOR_STATUS_ZONEBIT_OFFSET * 8, 8);
             TRequest req;

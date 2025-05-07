@@ -64,7 +64,7 @@ TNevaDevice::TNevaDevice(PDeviceConfig device_config, PPort port, PProtocol prot
     }
 }
 
-std::string TNevaDevice::GetParameterRequest(const TRegister& reg) const
+std::string TNevaDevice::GetParameterRequest(const TRegisterConfig& reg) const
 {
     // Address is 0xCCDDEEFF OBIS value groups
     std::stringstream ss;
@@ -73,7 +73,7 @@ std::string TNevaDevice::GetParameterRequest(const TRegister& reg) const
     return ss.str();
 }
 
-TRegisterValue TNevaDevice::GetRegisterValue(const TRegister& reg, const std::string& v)
+TRegisterValue TNevaDevice::GetRegisterValue(const TRegisterConfig& reg, const std::string& v)
 {
     if (v.size() < 3 || v.front() != '(' || v.back() != ')') {
         throw TSerialDeviceTransientErrorException("malformed response");

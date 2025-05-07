@@ -11,7 +11,7 @@ public:
     static void Register(TSerialDeviceFactory& factory);
 
 protected:
-    TRegisterValue ReadRegisterImpl(PRegister reg) override;
+    TRegisterValue ReadRegisterImpl(const TRegisterConfig& reg) override;
     void InvalidateReadCache() override;
 
 private:

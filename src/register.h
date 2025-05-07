@@ -261,9 +261,6 @@ public:
      */
     uint32_t GetByteWidth() const;
 
-    void SetDataWidth(uint8_t width);
-    void SetDataOffset(uint8_t offset);
-
     //! Get occupied space in 16-bit words
     uint8_t Get16BitWidth() const;
 
@@ -325,7 +322,7 @@ public:
     bool IsMissed(std::chrono::steady_clock::time_point readTime);
 };
 
-struct TRegister: public TRegisterConfig
+struct TRegister
 {
     enum TError
     {
@@ -365,6 +362,8 @@ struct TRegister: public TRegisterConfig
     void ExcludeFromPolling();
     void IncludeInPolling();
 
+    const PRegisterConfig GetConfig() const;
+
 private:
     std::weak_ptr<TSerialDevice> _Device;
     TRegisterAvailability Available = TRegisterAvailability::UNKNOWN;
@@ -373,6 +372,7 @@ private:
     TErrorState ErrorState;
     TReadPeriodMissChecker ReadPeriodMissChecker;
     bool ExcludedFromPolling = false;
+    PRegisterConfig Config;
 };
 
 typedef std::vector<PRegister> TRegistersList;

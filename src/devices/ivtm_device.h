@@ -14,7 +14,7 @@ public:
 
     static void Register(TSerialDeviceFactory& factory);
 
-    TRegisterValue ReadRegisterImpl(PRegister reg) override;
+    TRegisterValue ReadRegisterImpl(const TRegisterConfig& reg) override;
 
 private:
     void WriteCommand(uint16_t addr, uint16_t data_addr, uint8_t data_len);

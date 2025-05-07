@@ -260,7 +260,7 @@ TControlArgs TSerialPortDriver::From(const PDeviceChannel& channel)
     }
 
     if (std::any_of(channel->Registers.cbegin(), channel->Registers.cend(), [](const auto& reg) {
-            return reg->TypeName == "press_counter";
+            return reg->GetConfig()->TypeName == "press_counter";
         }))
     {
         args.SetDurable();
@@ -408,13 +408,13 @@ std::string TDeviceChannel::GetTextValue() const
 {
     if (Registers.size() == 1) {
         if (!OnValue.empty()) {
-            if (ConvertFromRawValue(*Registers.front(), Registers.front()->GetValue()) == OnValue) {
+            if (ConvertFromRawValue(*Registers.front()->GetConfig(), Registers.front()->GetValue()) == OnValue) {
                 LOG(Debug) << "OnValue: " << OnValue << "; value: 1";
                 return "1";
             }
         }
         if (!OffValue.empty()) {
-            if (ConvertFromRawValue(*Registers.front(), Registers.front()->GetValue()) == OffValue) {
+            if (ConvertFromRawValue(*Registers.front()->GetConfig(), Registers.front()->GetValue()) == OffValue) {
                 LOG(Debug) << "OnValue: " << OffValue << "; value: 0";
                 return "0";
             }
@@ -427,7 +427,7 @@ std::string TDeviceChannel::GetTextValue() const
             value += ";";
         }
         first = false;
-        value += ConvertFromRawValue(*r, r->GetValue());
+        value += ConvertFromRawValue(*r->GetConfig(), r->GetValue());
     }
     return value;
 }
@@ -445,7 +445,7 @@ bool TDeviceChannel::HasValuesOfAllRegisters() const
 bool TDeviceChannel::ShouldNotPublishPressCounter() const
 {
     for (const auto& r: Registers) {
-        if (r->TypeName == "press_counter" && !PublishNextZeroPressCounter) {
+        if (r->GetConfig()->TypeName == "press_counter" && !PublishNextZeroPressCounter) {
             try {
                 if (r->GetValue().Get<uint16_t>() == 0) {
                     return true;

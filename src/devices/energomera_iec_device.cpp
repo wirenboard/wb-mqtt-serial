@@ -27,14 +27,14 @@ namespace
 
     const size_t RESPONSE_BUF_LEN = 1000;
 
-    uint16_t GetParamId(const PRegister& reg)
+    uint16_t GetParamId(const TRegisterConfig& reg)
     {
-        return ((GetUint32RegisterAddress(reg->GetAddress()) & 0xFFFF00) >> 8) & 0xFFFF;
+        return ((GetUint32RegisterAddress(reg.GetAddress()) & 0xFFFF00) >> 8) & 0xFFFF;
     }
 
-    uint8_t GetValueNum(const PRegister& reg)
+    uint8_t GetValueNum(const TRegisterConfig& reg)
     {
-        return GetUint32RegisterAddress(reg->GetAddress()) & 0xFF;
+        return GetUint32RegisterAddress(reg.GetAddress()) & 0xFF;
     }
 
     class TEnergomeraRegisterRange: public TRegisterRange
@@ -60,22 +60,22 @@ namespace
         {
             std::list<PRegister> sortedRegList = RegisterList();
             sortedRegList.sort([](const PRegister& a, const PRegister& b) -> bool {
-                if (GetParamId(a) < GetParamId(b))
+                if (GetParamId(*a->GetConfig()) < GetParamId(*b->GetConfig()))
                     return true;
-                if (GetParamId(a) > GetParamId(b))
+                if (GetParamId(*a->GetConfig()) > GetParamId(*b->GetConfig()))
                     return false;
 
-                if (GetValueNum(a) < GetValueNum(b))
+                if (GetValueNum(*a->GetConfig()) < GetValueNum(*b->GetConfig()))
                     return true;
-                if (GetValueNum(a) > GetValueNum(b))
+                if (GetValueNum(*a->GetConfig()) > GetValueNum(*b->GetConfig()))
                     return false;
 
                 return false;
             });
             RegisterList().swap(sortedRegList);
             for (auto reg: RegisterList()) {
-                auto param_id = GetParamId(reg);
-                auto value_num = GetValueNum(reg);
+                auto param_id = GetParamId(*reg->GetConfig());
+                auto value_num = GetValueNum(*reg->GetConfig());
                 ParamMasks[param_id] |= (1 << (value_num - 1));
                 RegsByParam[param_id].push_back(reg);
             };

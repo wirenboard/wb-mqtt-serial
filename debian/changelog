@@ -1,3 +1,9 @@
+wb-mqtt-serial (2.161.1) stable; urgency=medium
+
+  * Source code refactoring. No functional changes
+
+ -- Petr Krasnoshchekov <petr.krasnoshchekov@wirenboard.com>  Wed, 07 May 2025 11:15:49 +0500
+
 wb-mqtt-serial (2.161.0) stable; urgency=medium
 
   * Do not block RPC when running long lasting requests to devices

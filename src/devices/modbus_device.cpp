@@ -61,12 +61,12 @@ PRegisterRange TModbusDevice::CreateRegisterRange() const
     return Modbus::CreateRegisterRange(ResponseTime.GetValue());
 }
 
-void TModbusDevice::WriteRegisterImpl(PRegister reg, const TRegisterValue& value)
+void TModbusDevice::WriteRegisterImpl(const TRegisterConfig& reg, const TRegisterValue& value)
 {
     Modbus::WriteRegister(*ModbusTraits,
                           *Port(),
                           SlaveId,
-                          *reg,
+                          reg,
                           value,
                           ModbusCache,
                           DeviceConfig()->RequestDelay,

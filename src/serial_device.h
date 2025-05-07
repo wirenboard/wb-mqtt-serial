@@ -239,8 +239,8 @@ protected:
     std::vector<PDeviceSetupItem> SetupItems;
 
     virtual void PrepareImpl();
-    virtual TRegisterValue ReadRegisterImpl(PRegister reg);
-    virtual void WriteRegisterImpl(PRegister reg, const TRegisterValue& value);
+    virtual TRegisterValue ReadRegisterImpl(const TRegisterConfig& reg);
+    virtual void WriteRegisterImpl(const TRegisterConfig& reg, const TRegisterValue& value);
     virtual void WriteSetupRegisters();
 
 private:
