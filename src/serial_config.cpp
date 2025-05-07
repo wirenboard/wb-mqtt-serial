@@ -477,7 +477,7 @@ namespace
         auto value = valueItem.isDouble() ? WBMQTT::StringFormat("%.15g", valueItem.asDouble()) : valueItem.asString();
         device_config->AddSetupItem(
             PDeviceSetupItemConfig(
-                new TDeviceSetupItemConfig(name, reg.RegisterConfig, value, item_data["parameter_id"].asString())),
+                new TDeviceSetupItemConfig(name, reg.RegisterConfig, value, item_data["id"].asString())),
             context.device_template_title);
     }
 
