@@ -1,3 +1,11 @@
+wb-mqtt-serial (2.162.0) stable; urgency=medium
+
+  * Add firmware version checks to device/LoadConfig RPC
+  * Add device config parameters sync to device/LoadConfig RPC
+  * Add continuous read feature to device/LoadConfig RPC
+
+ -- Ilya Titov <ilya.titov@wirenboard.com>  Wed, 07 May 2025 09:41:28 +0300
+
 wb-mqtt-serial (2.161.0) stable; urgency=medium
 
   * Do not block RPC when running long lasting requests to devices
