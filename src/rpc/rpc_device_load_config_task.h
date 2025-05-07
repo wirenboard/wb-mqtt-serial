@@ -26,8 +26,8 @@ public:
     const Json::Value& DeviceTemplate;
     const PHandlerConfig HandlerConfig;
 
-    bool WBDevice = false;
-    bool WBContinuousRead = false;
+    bool ContinuousReadSupported = false;
+    bool IsWBDevice = false;
 
     TSerialPortConnectionSettings SerialPortSettings;
     std::chrono::milliseconds ResponseTimeout = DefaultResponseTimeout;
