@@ -76,6 +76,12 @@ public:
      */
     virtual std::chrono::microseconds GetSendTimeBits(size_t bitsNumber) const;
 
+    /**
+     * @brief Retrieves a description of the port. The string uniquely defines the port.
+     *
+     * @param verbose If true, provides a detailed description; otherwise, provides a brief description.
+     * @return A string containing the description of the port.
+     */
     virtual std::string GetDescription(bool verbose = true) const = 0;
 
     /**

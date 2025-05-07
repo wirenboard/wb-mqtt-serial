@@ -1,6 +1,5 @@
 #include "rpc_port_load_raw_serial_client_task.h"
 #include "rpc_port_handler.h"
-#include "rpc_port_load_handler.h"
 #include "serial_exc.h"
 #include "serial_port.h"
 
@@ -31,9 +30,13 @@ std::vector<uint8_t> ExecRPCPortLoadRawRequest(TPort& port, PRPCPortLoadRawReque
     return response;
 }
 
-TRPCPortLoadRawSerialClientTask::TRPCPortLoadRawSerialClientTask(PRPCPortLoadRawRequest request): Request(request)
+TRPCPortLoadRawSerialClientTask::TRPCPortLoadRawSerialClientTask(const Json::Value& request,
+                                                                 WBMQTT::TMqttRpcServer::TResultCallback onResult,
+                                                                 WBMQTT::TMqttRpcServer::TErrorCallback onError)
+    : Request(ParseRPCPortLoadRawRequest(request))
 {
-    Request = request;
+    Request->OnResult = onResult;
+    Request->OnError = onError;
     ExpireTime = std::chrono::steady_clock::now() + Request->TotalTimeout;
 }
 
@@ -48,7 +51,9 @@ ISerialClientTask::TRunResult TRPCPortLoadRawSerialClientTask::Run(PPort port,
     }
 
     try {
-        port->CheckPortOpen();
+        if (!port->IsOpen()) {
+            port->Open();
+        }
         port->SkipNoise();
         port->SleepSinceLastInteraction(Request->FrameTimeout);
         lastAccessedDevice.PrepareToAccess(nullptr);

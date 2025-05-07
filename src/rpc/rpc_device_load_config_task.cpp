@@ -221,6 +221,9 @@ ISerialClientTask::TRunResult TRPCDeviceLoadConfigSerialClientTask::Run(
     }
 
     try {
+        if (!port->IsOpen()) {
+            port->Open();
+        }
         lastAccessedDevice.PrepareToAccess(nullptr);
         TSerialPortSettingsGuard settingsGuard(port, Request->SerialPortSettings);
         ExecRPCDeviceLoadConfigRequest(*port, Request);

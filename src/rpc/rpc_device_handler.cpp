@@ -1,19 +1,27 @@
 #include "rpc_device_handler.h"
-#include "rpc_device_load_config_handler.h"
-#include "rpc_helpers.h"
+#include "rpc_device_load_config_task.h"
 
 #define LOG(logger) ::logger.Log() << "[RPC] "
+
+namespace
+{
+    void SetCallbacks(TRPCDeviceLoadConfigRequest& request,
+                      WBMQTT::TMqttRpcServer::TResultCallback onResult,
+                      WBMQTT::TMqttRpcServer::TErrorCallback onError)
+    {
+        request.OnResult = onResult;
+        request.OnError = onError;
+    }
+}
 
 TRPCDeviceHandler::TRPCDeviceHandler(const std::string& requestDeviceLoadConfigSchemaFilePath,
                                      const TSerialDeviceFactory& deviceFactory,
                                      PTemplateMap templates,
-                                     PRPCConfig rpcConfig,
-                                     WBMQTT::PMqttRpcServer rpcServer,
-                                     PMQTTSerialDriver serialDriver)
+                                     TSerialClientTaskRunner& serialClientTaskRunner,
+                                     WBMQTT::PMqttRpcServer rpcServer)
     : DeviceFactory(deviceFactory),
       Templates(templates),
-      RPCConfig(rpcConfig),
-      PortDrivers(rpcConfig, serialDriver)
+      SerialClientTaskRunner(serialClientTaskRunner)
 {
     try {
         RequestDeviceLoadConfigSchema = WBMQTT::JSON::Parse(requestDeviceLoadConfigSchemaFilePath);
@@ -55,15 +63,9 @@ void TRPCDeviceHandler::LoadConfig(const Json::Value& request,
     }
 
     try {
-        PRPCPortDriver driver = PortDrivers.Find(request);
-
-        if (driver != nullptr && driver->SerialClient) {
-            RPCDeviceLoadConfigHandler(request, parameters, DeviceFactory, driver->SerialClient, onResult, onError);
-        } else {
-            auto port = InitPort(request);
-            port->Open();
-            RPCDeviceLoadConfigHandler(request, parameters, DeviceFactory, *port, onResult, onError);
-        }
+        auto rpcRequest = ParseRPCDeviceLoadConfigRequest(request, parameters, DeviceFactory);
+        SetCallbacks(*rpcRequest, onResult, onError);
+        SerialClientTaskRunner.RunTask(request, std::make_shared<TRPCDeviceLoadConfigSerialClientTask>(rpcRequest));
     } catch (const TRPCException& e) {
         ProcessException(e, onError);
     }

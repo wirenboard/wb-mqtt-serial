@@ -186,8 +186,13 @@ void ExecRPCPortScanRequest(TPort& port, PRPCPortScanRequest rpcRequest)
     rpcRequest->OnResult(replyJSON);
 }
 
-TRPCPortScanSerialClientTask::TRPCPortScanSerialClientTask(PRPCPortScanRequest request): Request(request)
+TRPCPortScanSerialClientTask::TRPCPortScanSerialClientTask(const Json::Value& request,
+                                                           WBMQTT::TMqttRpcServer::TResultCallback onResult,
+                                                           WBMQTT::TMqttRpcServer::TErrorCallback onError)
+    : Request(ParseRPCPortScanRequest(request))
 {
+    Request->OnResult = onResult;
+    Request->OnError = onError;
     ExpireTime = std::chrono::steady_clock::now() + Request->TotalTimeout;
 }
 
@@ -202,6 +207,9 @@ ISerialClientTask::TRunResult TRPCPortScanSerialClientTask::Run(PPort port,
     }
 
     try {
+        if (!port->IsOpen()) {
+            port->Open();
+        }
         lastAccessedDevice.PrepareToAccess(nullptr);
         TSerialPortSettingsGuard settingsGuard(port, Request->SerialPortSettings);
         ExecRPCPortScanRequest(*port, Request);
