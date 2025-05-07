@@ -23,10 +23,10 @@ public:
 
     static void Register(TSerialDeviceFactory& factory);
 
-    TRegisterValue ReadRegisterImpl(PRegister reg) override;
+    TRegisterValue ReadRegisterImpl(const TRegisterConfig& reg) override;
 
 protected:
-    void WriteRegisterImpl(PRegister reg, const TRegisterValue& regValue) override;
+    void WriteRegisterImpl(const TRegisterConfig& reg, const TRegisterValue& regValue) override;
 
 private:
     void WriteCommand(uint8_t cmd, uint8_t mod, uint8_t b1, uint8_t b2, uint8_t b3);

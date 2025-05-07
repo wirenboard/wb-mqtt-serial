@@ -94,17 +94,17 @@ void TUnielDevice::ReadResponse(uint8_t cmd, uint8_t* response)
         *response++ = buf[i];
 }
 
-TRegisterValue TUnielDevice::ReadRegisterImpl(PRegister reg)
+TRegisterValue TUnielDevice::ReadRegisterImpl(const TRegisterConfig& reg)
 {
     TRegisterValue retVal;
-    auto addr = GetUint32RegisterAddress(reg->GetAddress());
+    auto addr = GetUint32RegisterAddress(reg.GetAddress());
     WriteCommand(READ_CMD, SlaveId, 0, uint8_t(addr), 0);
     uint8_t response[3] = {0};
     ReadResponse(READ_CMD, response);
     if (response[1] != uint8_t(addr))
         throw TSerialDeviceTransientErrorException("register index mismatch");
 
-    if (reg->Type == REG_RELAY) {
+    if (reg.Type == REG_RELAY) {
         response[0] ? retVal.Set(1) : retVal.Set(0);
     } else {
         retVal.Set(response[0]);
@@ -112,18 +112,18 @@ TRegisterValue TUnielDevice::ReadRegisterImpl(PRegister reg)
     return retVal;
 }
 
-void TUnielDevice::WriteRegisterImpl(PRegister reg, const TRegisterValue& regValue)
+void TUnielDevice::WriteRegisterImpl(const TRegisterConfig& reg, const TRegisterValue& regValue)
 {
-    auto addr = GetUint32RegisterAddress(reg->GetAddress());
+    auto addr = GetUint32RegisterAddress(reg.GetAddress());
     auto value = regValue.Get<uint64_t>();
     uint8_t cmd;
-    if (reg->Type == REG_BRIGHTNESS) {
+    if (reg.Type == REG_BRIGHTNESS) {
         cmd = SET_BRIGHTNESS_CMD;
         addr >>= 8;
     } else {
         cmd = WRITE_CMD;
     }
-    if (reg->Type == REG_RELAY && value != 0)
+    if (reg.Type == REG_RELAY && value != 0)
         value = 255;
     WriteCommand(cmd, SlaveId, value, addr, 0);
     uint8_t response[3];

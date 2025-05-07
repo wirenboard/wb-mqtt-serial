@@ -187,9 +187,9 @@ void TPulsarDevice::ReadResponse(uint32_t addr, uint8_t* payload, size_t size, u
     memcpy(payload, response.data() + 6, size);
 }
 
-TRegisterValue TPulsarDevice::ReadDataRegister(PRegister reg)
+TRegisterValue TPulsarDevice::ReadDataRegister(const TRegisterConfig& reg)
 {
-    auto addr = GetUint32RegisterAddress(reg->GetAddress());
+    auto addr = GetUint32RegisterAddress(reg.GetAddress());
     // raw payload data
     uint8_t payload[sizeof(uint64_t)];
 
@@ -198,15 +198,15 @@ TRegisterValue TPulsarDevice::ReadDataRegister(PRegister reg)
 
     // send data request and receive response
     WriteDataRequest(SlaveId, mask, RequestID);
-    ReadResponse(SlaveId, payload, reg->GetByteWidth(), RequestID);
+    ReadResponse(SlaveId, payload, reg.GetByteWidth(), RequestID);
 
     ++RequestID;
 
     // decode little-endian double64_t value
-    return TRegisterValue{ReadHex(payload, reg->GetByteWidth(), false)};
+    return TRegisterValue{ReadHex(payload, reg.GetByteWidth(), false)};
 }
 
-TRegisterValue TPulsarDevice::ReadSysTimeRegister(PRegister reg)
+TRegisterValue TPulsarDevice::ReadSysTimeRegister(const TRegisterConfig& reg)
 {
     // raw payload data
     uint8_t payload[6];
@@ -221,11 +221,11 @@ TRegisterValue TPulsarDevice::ReadSysTimeRegister(PRegister reg)
     return TRegisterValue{ReadHex(payload, sizeof(payload), false)};
 }
 
-TRegisterValue TPulsarDevice::ReadRegisterImpl(PRegister reg)
+TRegisterValue TPulsarDevice::ReadRegisterImpl(const TRegisterConfig& reg)
 {
     Port()->SkipNoise();
 
-    switch (reg->Type) {
+    switch (reg.Type) {
         case REG_DEFAULT:
             return ReadDataRegister(reg);
         case REG_SYSTIME:

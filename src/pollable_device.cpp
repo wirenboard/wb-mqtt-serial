@@ -2,15 +2,15 @@
 
 bool TRegisterComparePredicate::operator()(const PRegister& r1, const PRegister& r2) const
 {
-    if (r1->Type != r2->Type) {
-        return r1->Type > r2->Type;
+    if (r1->GetConfig()->Type != r2->GetConfig()->Type) {
+        return r1->GetConfig()->Type > r2->GetConfig()->Type;
     }
-    auto cmp = r1->GetAddress().Compare(r2->GetAddress());
+    auto cmp = r1->GetConfig()->GetAddress().Compare(r2->GetConfig()->GetAddress());
     if (cmp != 0) {
         return cmp > 0;
     }
     // addresses are equal, compare offsets
-    return r1->GetDataOffset() > r2->GetDataOffset();
+    return r1->GetConfig()->GetDataOffset() > r2->GetConfig()->GetDataOffset();
 }
 
 TPollableDevice::TPollableDevice(PSerialDevice device,
@@ -20,10 +20,10 @@ TPollableDevice::TPollableDevice(PSerialDevice device,
       Priority(priority)
 {
     for (const auto& reg: Device->GetRegisters()) {
-        if ((Priority == TPriority::High && reg->IsHighPriority()) ||
-            (Priority == TPriority::Low && !reg->IsHighPriority()))
+        if ((Priority == TPriority::High && reg->GetConfig()->IsHighPriority()) ||
+            (Priority == TPriority::Low && !reg->GetConfig()->IsHighPriority()))
         {
-            if (reg->AccessType != TRegisterConfig::EAccessType::WRITE_ONLY) {
+            if (reg->GetConfig()->AccessType != TRegisterConfig::EAccessType::WRITE_ONLY) {
                 Registers.AddEntry(reg, currentTime);
             }
         }
@@ -114,10 +114,10 @@ bool TPollableDevice::HasRegisters() const
 void TPollableDevice::RescheduleAllRegisters()
 {
     for (const auto& reg: Device->GetRegisters()) {
-        if ((Priority == TPriority::High && reg->IsHighPriority()) ||
-            (Priority == TPriority::Low && !reg->IsHighPriority()))
+        if ((Priority == TPriority::High && reg->GetConfig()->IsHighPriority()) ||
+            (Priority == TPriority::Low && !reg->GetConfig()->IsHighPriority()))
         {
-            if (reg->AccessType != TRegisterConfig::EAccessType::WRITE_ONLY) {
+            if (reg->GetConfig()->AccessType != TRegisterConfig::EAccessType::WRITE_ONLY) {
                 if (reg->IsExcludedFromPolling() && !Registers.Contains(reg)) {
                     reg->SetAvailable(TRegisterAvailability::UNKNOWN);
                     reg->IncludeInPolling();
@@ -139,11 +139,11 @@ void TPollableDevice::ScheduleNextPoll(PRegister reg, std::chrono::steady_clock:
         return;
     }
     if (Priority == TPriority::High) {
-        Registers.AddEntry(reg, currentTime + *(reg->ReadPeriod));
+        Registers.AddEntry(reg, currentTime + *(reg->GetConfig()->ReadPeriod));
         return;
     }
-    if (reg->ReadRateLimit) {
-        Registers.AddEntry(reg, currentTime + *(reg->ReadRateLimit));
+    if (reg->GetConfig()->ReadRateLimit) {
+        Registers.AddEntry(reg, currentTime + *(reg->GetConfig()->ReadRateLimit));
         return;
     }
     // Low priority registers should be scheduled to read as soon as possible,

@@ -150,7 +150,7 @@ set<int> TModbusTest::VerifyQuery(PRegister reg)
     for (auto range: ranges) {
         ModbusDev->ReadRegisterRange(range);
         for (auto& reg: range->RegisterList()) {
-            auto addr = GetUint32RegisterAddress(reg->GetAddress());
+            auto addr = GetUint32RegisterAddress(reg->GetConfig()->GetAddress());
             readAddresses.insert(addr);
             if (reg->GetErrorState().test(TRegister::TError::ReadError)) {
                 errorRegisters.insert(addr);
@@ -201,7 +201,7 @@ TEST_F(TModbusTest, ReadHoldingRegiterWithWriteAddress)
     auto registerList = range->RegisterList();
     EXPECT_EQ(registerList.size(), 1);
     auto reg = registerList.front();
-    EXPECT_EQ(GetUint32RegisterAddress(reg->GetAddress()), 110);
+    EXPECT_EQ(GetUint32RegisterAddress(reg->GetConfig()->GetAddress()), 110);
     EXPECT_FALSE(reg->GetErrorState().test(TRegister::TError::ReadError));
     EXPECT_EQ(reg->GetValue(), 0x15);
 }
@@ -209,8 +209,8 @@ TEST_F(TModbusTest, ReadHoldingRegiterWithWriteAddress)
 TEST_F(TModbusTest, WriteHoldingRegiterWithWriteAddress)
 {
     EnqueueHoldingWriteU16ResponseWithWriteAddress();
-    EXPECT_EQ(GetUint32RegisterAddress(ModbusHoldingU16WithAddressWrite->GetAddress()), 110);
-    EXPECT_EQ(GetUint32RegisterAddress(ModbusHoldingU16WithAddressWrite->GetWriteAddress()), 115);
+    EXPECT_EQ(GetUint32RegisterAddress(ModbusHoldingU16WithAddressWrite->GetConfig()->GetAddress()), 110);
+    EXPECT_EQ(GetUint32RegisterAddress(ModbusHoldingU16WithAddressWrite->GetConfig()->GetWriteAddress()), 115);
 
     EXPECT_NO_THROW(ModbusDev->WriteRegister(ModbusHoldingU16WithAddressWrite, 0x119C));
 }
@@ -225,7 +225,7 @@ TEST_F(TModbusTest, ReadHoldingRegiterWithOffsetWriteOptions)
     auto registerList = range->RegisterList();
     EXPECT_EQ(registerList.size(), 1);
     auto reg = registerList.front();
-    EXPECT_EQ(GetUint32RegisterAddress(reg->GetAddress()), 111);
+    EXPECT_EQ(GetUint32RegisterAddress(reg->GetConfig()->GetAddress()), 111);
     EXPECT_FALSE(reg->GetErrorState().test(TRegister::TError::ReadError));
     EXPECT_EQ(reg->GetValue(), 5);
 }
@@ -245,7 +245,7 @@ TEST_F(TModbusTest, ReadString)
         auto registerList = range->RegisterList();
         EXPECT_EQ(registerList.size(), 1);
         auto reg = registerList.front();
-        EXPECT_EQ(GetUint32RegisterAddress(reg->GetAddress()), 120);
+        EXPECT_EQ(GetUint32RegisterAddress(reg->GetConfig()->GetAddress()), 120);
         EXPECT_FALSE(reg->GetErrorState().test(TRegister::TError::ReadError));
         EXPECT_EQ(reg->GetValue().Get<std::string>(), responses[i]);
     }
@@ -275,7 +275,7 @@ TEST_F(TModbusTest, ReadString8)
         auto registerList = range->RegisterList();
         EXPECT_EQ(registerList.size(), 1);
         auto reg = registerList.front();
-        EXPECT_EQ(GetUint32RegisterAddress(reg->GetAddress()), 142);
+        EXPECT_EQ(GetUint32RegisterAddress(reg->GetConfig()->GetAddress()), 142);
         EXPECT_FALSE(reg->GetErrorState().test(TRegister::TError::ReadError));
         EXPECT_EQ(reg->GetValue().Get<std::string>(), responses[i]);
     }
@@ -306,7 +306,7 @@ TEST_F(TModbusTest, WriteOnlyHoldingRegiter)
 
     ModbusHoldingU16WriteOnly =
         ModbusDev->AddRegister(TRegisterConfig::Create(Modbus::REG_HOLDING, regAddrDesc, RegisterFormat::U16));
-    EXPECT_TRUE(ModbusHoldingU16WriteOnly->AccessType == TRegisterConfig::EAccessType::WRITE_ONLY);
+    EXPECT_TRUE(ModbusHoldingU16WriteOnly->GetConfig()->AccessType == TRegisterConfig::EAccessType::WRITE_ONLY);
 }
 
 TEST_F(TModbusTest, WriteOnlyHoldingRegiterNeg)
@@ -462,7 +462,7 @@ TEST_F(TModbusTest, MinReadRegisters)
     auto registerList = range->RegisterList();
     EXPECT_EQ(registerList.size(), 1);
     auto reg = registerList.front();
-    EXPECT_EQ(GetUint32RegisterAddress(reg->GetAddress()), 110);
+    EXPECT_EQ(GetUint32RegisterAddress(reg->GetConfig()->GetAddress()), 110);
     EXPECT_FALSE(reg->GetErrorState().test(TRegister::TError::ReadError));
     EXPECT_EQ(reg->GetValue(), 0x15);
 }
