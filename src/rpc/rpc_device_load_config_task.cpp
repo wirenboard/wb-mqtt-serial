@@ -1,10 +1,8 @@
 #include "rpc_device_load_config_task.h"
 #include "config_merge_template.h"
 #include "rpc_helpers.h"
-#include "serial_config.h"
 #include "serial_port.h"
 #include "wb_registers.h"
-#include <string>
 
 #define LOG(logger) ::logger.Log() << "[RPC] "
 
@@ -28,7 +26,7 @@ namespace
             }
             if (!fwVersion.empty()) {
                 std::string fw = registerData["fw"].asString();
-                if (!fw.empty() && CompareVersionString(fw, fwVersion) > 0) {
+                if (!fw.empty() && util::CompareVersionStrings(fw, fwVersion) > 0) {
                     continue;
                 }
             }
@@ -386,30 +384,4 @@ Json::Value RawValueToJSON(const TRegisterConfig& reg, TRegisterValue val)
         default:
             return val.Get<uint64_t>();
     }
-}
-
-int CompareVersionString(const std::string& v1, const std::string& v2)
-{
-    std::string buffer;
-
-    std::istringstream s1(v1);
-    std::vector<int> n1;
-    while (getline(s1, buffer, '.')) {
-        n1.push_back(std::stoi(buffer));
-    }
-
-    std::istringstream s2(v2);
-    std::vector<int> n2;
-    while (getline(s2, buffer, '.')) {
-        n2.push_back(std::stoi(buffer));
-    }
-
-    for (int i = 0; i < static_cast<int>(std::max(n1.size(), n2.size())); ++i) {
-        if (n1[i] > n2[i])
-            return 1;
-        if (n1[i] < n2[i])
-            return -1;
-    }
-
-    return 0;
 }

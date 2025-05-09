@@ -64,4 +64,3 @@ private:
 typedef std::shared_ptr<TRPCDeviceLoadConfigSerialClientTask> PRPCDeviceLoadConfigSerialClientTask;
 
 Json::Value RawValueToJSON(const TRegisterConfig& reg, TRegisterValue val);
-int CompareVersionString(const std::string& v1, const std::string& v2);
