@@ -241,7 +241,7 @@ TEST_F(TConfigParserTest, MergeDeviceConfigWithTemplate)
                                                        commonDeviceSchema));
     templateMap.AddTemplatesDir(GetDataFilePath("parser_test/templates/"));
 
-    for (auto i = 1; i <= 12; ++i) {
+    for (auto i = 1; i <= 13; ++i) {
         auto deviceConfig(JSON::Parse(GetDataFilePath("parser_test/merge_template_ok" + to_string(i) + ".json")));
         std::string deviceType = deviceConfig.get("device_type", "").asString();
         auto mergedConfig(MergeDeviceConfigWithTemplate(deviceConfig,

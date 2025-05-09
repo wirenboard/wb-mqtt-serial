@@ -24,12 +24,14 @@
     [
         {
             "address" : "0x0401",
+            "id" : "param1",
             "title" : "p1",
             "value" : 1
         },
         {
             "address" : "0x0403",
             "condition" : "param1==1",
+            "id" : "param3",
             "title" : "p3",
             "value" : 3
         }

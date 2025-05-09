@@ -11,11 +11,6 @@ using namespace BinUtils;
 
 namespace Modbus // modbus protocol declarations
 {
-    const int MAX_READ_BITS = 2000;
-    const int MAX_READ_REGISTERS = 125;
-    const int MAX_HOLE_CONTINUOUS_16_BIT_REGISTERS = 10;
-    const int MAX_HOLE_CONTINUOUS_1_BIT_REGISTERS = MAX_HOLE_CONTINUOUS_16_BIT_REGISTERS * 8;
-
     union TAddress
     {
         int64_t AbsAddress;
