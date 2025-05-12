@@ -111,24 +111,19 @@ namespace
                     range.ReadRange(traits, port, rpcRequest->SlaveId, 0, cache);
                     success = true;
                     break;
-                } catch (const Modbus::TModbusExceptionError& err) {
-                    if (err.GetExceptionCode() == Modbus::ILLEGAL_FUNCTION ||
-                        err.GetExceptionCode() == Modbus::ILLEGAL_DATA_ADDRESS ||
-                        err.GetExceptionCode() == Modbus::ILLEGAL_DATA_VALUE)
-                    {
-                        error = err.what();
-                        break;
-                    }
-                } catch (const Modbus::TErrorBase& err) {
-                    if (i <= MAX_RETRIES) {
-                        continue;
-                    }
-                    error = err.what();
                 } catch (const TResponseTimeoutException& e) {
                     if (i <= MAX_RETRIES) {
                         continue;
                     }
                     error = e.what();
+                } catch (const TSerialDeviceTransientErrorException& err) {
+                    if (i <= MAX_RETRIES) {
+                        continue;
+                    }
+                    error = err.what();
+                } catch (const TSerialDevicePermanentRegisterException& err) {
+                    error = err.what();
+                    break;
                 }
             }
             if (!success) {
