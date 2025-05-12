@@ -238,11 +238,11 @@ std::vector<uint8_t> Somfy::TDevice::MakeDataForSetupCommand(uint8_t header,
     return data;
 }
 
-void Somfy::TDevice::WriteRegisterImpl(PRegister reg, const TRegisterValue& regValue)
+void Somfy::TDevice::WriteRegisterImpl(const TRegisterConfig& reg, const TRegisterValue& regValue)
 {
     auto value = regValue.Get<uint64_t>();
 
-    switch (reg->Type) {
+    switch (reg.Type) {
         case POSITION: {
             if (value == 0) {
                 Check(SlaveId, ACK, ExecCommand(CloseCommand));
@@ -262,22 +262,22 @@ void Somfy::TDevice::WriteRegisterImpl(PRegister reg, const TRegisterValue& regV
                 value >>= 8;
                 data.push_back(value & 0xFF);
             }
-            auto addr = GetUint32RegisterAddress(reg->GetAddress());
+            auto addr = GetUint32RegisterAddress(reg.GetAddress());
             Check(SlaveId, ACK, ExecCommand(MakeRequest(addr, SlaveId, NodeType, data)));
             return;
         }
         case PARAM: {
-            auto requestHeader = GetUint32RegisterAddress(reg->GetAddress());
+            auto requestHeader = GetUint32RegisterAddress(reg.GetAddress());
             auto it = WriteCache.find(requestHeader);
             if (it == WriteCache.end()) {
-                throw TSerialDeviceTransientErrorException("Register " + reg->ToString() +
+                throw TSerialDeviceTransientErrorException("Register " + reg.ToString() +
                                                            " must be read before writing");
             }
-            auto writeHeader = GetUint32RegisterAddress(reg->GetWriteAddress());
+            auto writeHeader = GetUint32RegisterAddress(reg.GetWriteAddress());
             auto data = MakeDataForSetupCommand(writeHeader, it->second);
-            size_t width = (reg->GetDataWidth() == 0) ? RegisterFormatByteWidth(reg->Format) * 8 : reg->GetDataWidth();
-            CopyBytes(std::next(data.begin(), reg->GetDataOffset() / 8),
-                      std::next(data.begin(), (reg->GetDataOffset() + width) / 8),
+            size_t width = (reg.GetDataWidth() == 0) ? RegisterFormatByteWidth(reg.Format) * 8 : reg.GetDataWidth();
+            CopyBytes(std::next(data.begin(), reg.GetDataOffset() / 8),
+                      std::next(data.begin(), (reg.GetDataOffset() + width) / 8),
                       ToArray(value));
             Check(SlaveId, ACK, ExecCommand(MakeRequest(writeHeader, SlaveId, NodeType, data)));
             WriteCache[requestHeader] = data;
@@ -318,9 +318,9 @@ TRegisterValue Somfy::TDevice::GetCachedResponse(uint8_t requestHeader,
     return val;
 }
 
-TRegisterValue Somfy::TDevice::ReadRegisterImpl(PRegister reg)
+TRegisterValue Somfy::TDevice::ReadRegisterImpl(const TRegisterConfig& reg)
 {
-    switch (reg->Type) {
+    switch (reg.Type) {
         case POSITION: {
             auto res = GetCachedResponse(GET_MOTOR_POSITION, POST_MOTOR_POSITION, 2 * 8, 8);
             if (res.Get<uint64_t>() > 100) {
@@ -329,8 +329,8 @@ TRegisterValue Somfy::TDevice::ReadRegisterImpl(PRegister reg)
             return res;
         }
         case PARAM: {
-            const auto& addr = dynamic_cast<const TSomfyAddress&>(reg->GetAddress());
-            return GetCachedResponse(addr.Get(), addr.GetResponseHeader(), reg->GetDataOffset(), reg->GetDataWidth());
+            const auto& addr = dynamic_cast<const TSomfyAddress&>(reg.GetAddress());
+            return GetCachedResponse(addr.Get(), addr.GetResponseHeader(), reg.GetDataOffset(), reg.GetDataWidth());
         }
         case COMMAND: {
             return TRegisterValue{1};

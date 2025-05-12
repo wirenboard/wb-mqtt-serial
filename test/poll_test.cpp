@@ -235,7 +235,7 @@ public:
         TRegisterConfig::TSporadicMode sporadicMode = TRegisterConfig::TSporadicMode::DISABLED)
     {
         auto channel = std::make_shared<TDeviceChannelConfig>("value", deviceName);
-        channel->RegisterConfigs.push_back(TRegister::Create(Modbus::REG_HOLDING, addr));
+        channel->RegisterConfigs.push_back(TRegisterConfig::Create(Modbus::REG_HOLDING, addr));
         if (readPeriod != 0ms) {
             channel->RegisterConfigs[0]->ReadPeriod = readPeriod;
         }

@@ -43,28 +43,28 @@ void TUnielDeviceTest::TearDown()
 TEST_F(TUnielDeviceTest, TestQuery)
 {
     EnqueueVoltageQueryResponse();
-    ASSERT_EQ(TRegisterValue{154}, Dev->ReadRegisterImpl(InputReg));
+    ASSERT_EQ(TRegisterValue{154}, Dev->ReadRegisterImpl(*InputReg->GetConfig()));
 
     // TBD: rm (dupe)
     SerialPort->DumpWhatWasRead();
     EnqueueVoltageQueryResponse();
-    ASSERT_EQ(TRegisterValue{154}, Dev->ReadRegisterImpl(InputReg));
+    ASSERT_EQ(TRegisterValue{154}, Dev->ReadRegisterImpl(*InputReg->GetConfig()));
 
     SerialPort->DumpWhatWasRead();
     EnqueueRelayOffQueryResponse();
-    ASSERT_EQ(TRegisterValue{0}, Dev->ReadRegisterImpl(RelayReg));
+    ASSERT_EQ(TRegisterValue{0}, Dev->ReadRegisterImpl(*RelayReg->GetConfig()));
 
     SerialPort->DumpWhatWasRead();
     EnqueueRelayOnQueryResponse();
-    ASSERT_EQ(TRegisterValue{1}, Dev->ReadRegisterImpl(RelayReg));
+    ASSERT_EQ(TRegisterValue{1}, Dev->ReadRegisterImpl(*RelayReg->GetConfig()));
 
     SerialPort->DumpWhatWasRead();
     EnqueueThreshold0QueryResponse();
-    ASSERT_EQ(TRegisterValue{0x70}, Dev->ReadRegisterImpl(ThresholdReg));
+    ASSERT_EQ(TRegisterValue{0x70}, Dev->ReadRegisterImpl(*ThresholdReg->GetConfig()));
 
     SerialPort->DumpWhatWasRead();
     EnqueueBrightnessQueryResponse();
-    ASSERT_EQ(TRegisterValue{66}, Dev->ReadRegisterImpl(BrightnessReg));
+    ASSERT_EQ(TRegisterValue{66}, Dev->ReadRegisterImpl(*BrightnessReg->GetConfig()));
 }
 
 TEST_F(TUnielDeviceTest, TestSetRelayState)

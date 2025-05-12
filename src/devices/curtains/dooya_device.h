@@ -17,7 +17,8 @@ namespace Dooya
         TRequest GetPositionCommand;
 
         std::vector<uint8_t> ExecCommand(const TRequest& request);
-        TRegisterValue ReadEnumParameter(TRegister& reg, const std::unordered_map<uint8_t, std::string>& names);
+        TRegisterValue ReadEnumParameter(const TRegisterConfig& reg,
+                                         const std::unordered_map<uint8_t, std::string>& names);
 
     public:
         TDevice(PDeviceConfig config, PPort port, PProtocol protocol);
@@ -25,8 +26,8 @@ namespace Dooya
         static void Register(TSerialDeviceFactory& factory);
 
     protected:
-        TRegisterValue ReadRegisterImpl(PRegister reg) override;
-        void WriteRegisterImpl(PRegister reg, const TRegisterValue& regValue) override;
+        TRegisterValue ReadRegisterImpl(const TRegisterConfig& reg) override;
+        void WriteRegisterImpl(const TRegisterConfig& reg, const TRegisterValue& regValue) override;
     };
 
     std::vector<uint8_t> MakeRequest(uint16_t address, const std::vector<uint8_t>& data);

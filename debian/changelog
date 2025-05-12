@@ -1,3 +1,33 @@
+wb-mqtt-serial (2.161.1) stable; urgency=medium
+
+  * Source code refactoring. No functional changes
+
+ -- Petr Krasnoshchekov <petr.krasnoshchekov@wirenboard.com>  Wed, 07 May 2025 11:15:49 +0500
+
+wb-mqtt-serial (2.161.0) stable; urgency=medium
+
+  * Do not block RPC when running long lasting requests to devices
+
+ -- Petr Krasnoshchekov <petr.krasnoshchekov@wirenboard.com>  Wed, 07 May 2025 09:34:28 +0500
+
+wb-mqtt-serial (2.160.6) stable; urgency=medium
+
+  * Add PTemplateMap typedef, no functional changes
+
+ -- Ilya Titov <ilya.titov@wirenboard.com>  Tue, 06 May 2025 12:01:52 +0000
+
+wb-mqtt-serial (2.160.5) stable; urgency=medium
+
+  * WB-MIR templates: Add safety mode
+
+ -- Ilia Skochilov <ilia.skochilov@wirenboard.com>  Mon, 05 May 2025 09:22:00 +0300
+
+wb-mqtt-serial (2.160.4) stable; urgency=medium
+
+  * Add template validation error handling for config/GetSchema RPC
+
+ -- Ilya Titov <ilya.titov@wirenboard.com>  Tue, 29 Apr 2025 15:03:21 +0300
+
 wb-mqtt-serial (2.160.3) stable; urgency=medium
 
   * Add TResponseTimeoutException handling for device/LoadConfig RPC

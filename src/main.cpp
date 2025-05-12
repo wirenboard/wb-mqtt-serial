@@ -105,7 +105,7 @@ namespace
         return unique_ptr<Json::StreamWriter>(builder.newStreamWriter());
     }
 
-    pair<shared_ptr<Json::Value>, shared_ptr<TTemplateMap>> LoadTemplates()
+    pair<shared_ptr<Json::Value>, PTemplateMap> LoadTemplates()
     {
         auto commonDeviceSchema =
             make_shared<Json::Value>(WBMQTT::JSON::Parse(CONFED_COMMON_JSON_SCHEMA_FULL_FILE_PATH));
@@ -119,7 +119,7 @@ namespace
     void ConfedToConfig()
     {
         try {
-            shared_ptr<TTemplateMap> templates;
+            PTemplateMap templates;
             std::tie(std::ignore, templates) = LoadTemplates();
             MakeJsonWriter("  ", "None")->write(MakeConfigFromConfed(std::cin, *templates), &cout);
         } catch (const exception& e) {
@@ -260,7 +260,7 @@ int main(int argc, char* argv[])
     RegisterProtocols(deviceFactory);
 
     shared_ptr<Json::Value> commonDeviceSchema;
-    shared_ptr<TTemplateMap> templates;
+    PTemplateMap templates;
     std::tie(commonDeviceSchema, templates) = LoadTemplates();
     TDevicesConfedSchemasMap confedSchemasMap(*templates, deviceFactory, *commonDeviceSchema);
     TProtocolConfedSchemasMap protocolSchemasMap(PROTOCOL_SCHEMAS_DIR, *commonDeviceSchema);
@@ -302,8 +302,6 @@ int main(int argc, char* argv[])
         }
 
         PMQTTSerialDriver serialDriver;
-        PRPCPortHandler rpcPortHandler;
-        PRPCDeviceHandler rpcDeviceHandler;
 
         if (handlerConfig) {
             if (handlerConfig->Debug) {
@@ -331,7 +329,7 @@ int main(int argc, char* argv[])
                                             driverPublishParameters);
 
             driver->StartLoop();
-            WBMQTT::SignalHandling::OnSignals({SIGINT, SIGTERM}, [&] {
+            WBMQTT::SignalHandling::OnSignals({SIGINT, SIGTERM}, [=] {
                 driver->StopLoop();
                 driver->Close();
             });
@@ -339,19 +337,21 @@ int main(int argc, char* argv[])
             driver->WaitForReady();
 
             serialDriver = make_shared<TMQTTSerialDriver>(driver, handlerConfig);
-            rpcPortHandler = std::make_shared<TRPCPortHandler>(RPC_PORT_LOAD_REQUEST_SCHEMA_FULL_FILE_PATH,
-                                                               RPC_PORT_SETUP_REQUEST_SCHEMA_FULL_FILE_PATH,
-                                                               RPC_PORT_SCAN_REQUEST_SCHEMA_FULL_FILE_PATH,
-                                                               rpcConfig,
-                                                               rpcServer,
-                                                               serialDriver);
-            rpcDeviceHandler = std::make_shared<TRPCDeviceHandler>(RPC_DEVICE_LOAD_CONFIG_REQUEST_SCHEMA_FULL_FILE_PATH,
-                                                                   deviceFactory,
-                                                                   templates,
-                                                                   rpcConfig,
-                                                                   rpcServer,
-                                                                   serialDriver);
         }
+
+        TSerialClientTaskRunner serialClientTaskRunner(serialDriver);
+        auto rpcPortHandler = std::make_shared<TRPCPortHandler>(RPC_PORT_LOAD_REQUEST_SCHEMA_FULL_FILE_PATH,
+                                                                RPC_PORT_SETUP_REQUEST_SCHEMA_FULL_FILE_PATH,
+                                                                RPC_PORT_SCAN_REQUEST_SCHEMA_FULL_FILE_PATH,
+                                                                rpcConfig,
+                                                                serialClientTaskRunner,
+                                                                rpcServer);
+        auto rpcDeviceHandler =
+            std::make_shared<TRPCDeviceHandler>(RPC_DEVICE_LOAD_CONFIG_REQUEST_SCHEMA_FULL_FILE_PATH,
+                                                deviceFactory,
+                                                templates,
+                                                serialClientTaskRunner,
+                                                rpcServer);
 
         if (serialDriver) {
             serialDriver->Start();
@@ -360,7 +360,7 @@ int main(int argc, char* argv[])
         }
         rpcServer->Start();
 
-        WBMQTT::SignalHandling::OnSignals({SIGINT, SIGTERM}, [&] {
+        WBMQTT::SignalHandling::OnSignals({SIGINT, SIGTERM}, [=] {
             rpcServer->Stop();
             if (serialDriver) {
                 serialDriver->Stop();

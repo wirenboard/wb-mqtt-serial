@@ -10,7 +10,7 @@ class TRPCConfigHandler
 public:
     TRPCConfigHandler(const std::string& configPath,
                       const Json::Value& portsSchema,
-                      std::shared_ptr<TTemplateMap> templates,
+                      PTemplateMap templates,
                       TDevicesConfedSchemasMap& deviceConfedSchemas,
                       TProtocolConfedSchemasMap& protocolConfedSchemas,
                       const Json::Value& groupTranslations,
@@ -19,7 +19,7 @@ public:
 private:
     std::string ConfigPath;
     const Json::Value& PortsSchema;
-    std::shared_ptr<TTemplateMap> Templates;
+    PTemplateMap Templates;
     TDevicesConfedSchemasMap& DeviceConfedSchemas;
     TProtocolConfedSchemasMap& ProtocolConfedSchemas;
     Json::Value GroupTranslations;

@@ -7,18 +7,16 @@ class TRPCDeviceHandler
 public:
     TRPCDeviceHandler(const std::string& requestDeviceLoadConfigSchemaFilePath,
                       const TSerialDeviceFactory& deviceFactory,
-                      std::shared_ptr<TTemplateMap> templates,
-                      PRPCConfig rpcConfig,
-                      WBMQTT::PMqttRpcServer rpcServer,
-                      PMQTTSerialDriver serialDriver);
+                      PTemplateMap templates,
+                      TSerialClientTaskRunner& serialClientTaskRunner,
+                      WBMQTT::PMqttRpcServer rpcServer);
 
 private:
     const TSerialDeviceFactory& DeviceFactory;
 
     Json::Value RequestDeviceLoadConfigSchema;
-    std::shared_ptr<TTemplateMap> Templates;
-    PRPCConfig RPCConfig;
-    TRPCPortDriverList PortDrivers;
+    PTemplateMap Templates;
+    TSerialClientTaskRunner& SerialClientTaskRunner;
 
     void LoadConfig(const Json::Value& request,
                     WBMQTT::TMqttRpcServer::TResultCallback onResult,

@@ -276,11 +276,11 @@ void TIEC61107ModeCDevice::InvalidateReadCache()
     TSerialDevice::InvalidateReadCache();
 }
 
-TRegisterValue TIEC61107ModeCDevice::ReadRegisterImpl(PRegister reg)
+TRegisterValue TIEC61107ModeCDevice::ReadRegisterImpl(const TRegisterConfig& reg)
 {
     Port()->CheckPortOpen();
     Port()->SkipNoise();
-    return GetRegisterValue(*reg, GetCachedResponse(GetParameterRequest(*reg)));
+    return GetRegisterValue(reg, GetCachedResponse(GetParameterRequest(reg)));
 }
 
 std::string TIEC61107ModeCDevice::GetCachedResponse(const std::string& paramRequest)

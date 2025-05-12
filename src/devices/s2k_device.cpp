@@ -70,10 +70,10 @@ uint8_t TS2KDevice::CrcS2K(const uint8_t* array, int size)
     return crc;
 }
 
-void TS2KDevice::WriteRegisterImpl(PRegister reg, const TRegisterValue& value)
+void TS2KDevice::WriteRegisterImpl(const TRegisterConfig& reg, const TRegisterValue& value)
 {
-    auto addr = GetUint32RegisterAddress(reg->GetAddress());
-    if (reg->Type != REG_RELAY) {
+    auto addr = GetUint32RegisterAddress(reg.GetAddress());
+    if (reg.Type != REG_RELAY) {
         throw TSerialDeviceException("S2K protocol: invalid register for writing");
     }
 
@@ -102,12 +102,12 @@ void TS2KDevice::WriteRegisterImpl(PRegister reg, const TRegisterValue& value)
     RelayState[response[3]] = response[4];
 }
 
-TRegisterValue TS2KDevice::ReadRegisterImpl(PRegister reg)
+TRegisterValue TS2KDevice::ReadRegisterImpl(const TRegisterConfig& reg)
 {
-    auto addr = GetUint32RegisterAddress(reg->GetAddress());
+    auto addr = GetUint32RegisterAddress(reg.GetAddress());
     /* We have no way to get current relay state from device. Thats why we save last
        successful write to relay register and return it when regiter is read */
-    switch (reg->Type) {
+    switch (reg.Type) {
         case REG_RELAY:
             return TRegisterValue{RelayState[addr] != 0 && RelayState[addr] != 2};
         case REG_RELAY_MODE:
@@ -120,8 +120,8 @@ TRegisterValue TS2KDevice::ReadRegisterImpl(PRegister reg)
             uint8_t command[7] = {/* Address = */ (uint8_t)SlaveId,
                                   /* Command length = */ 0x06,
                                   /* Key = */ 0x00,
-                                  /* Command = */ 0x05, /* Read configutation */
-                                  /* Config No = */ (uint8_t)(addr + (reg->Type == REG_RELAY_DELAY ? 4 : 0)),
+                                  /* Command = */ 0x05, /* Read configuration */
+                                  /* Config No = */ (uint8_t)(addr + (reg.Type == REG_RELAY_DELAY ? 4 : 0)),
                                   /* Unused */ 0x0,
                                   /* CRC placeholder */ 0x0};
             command[6] = CrcS2K(command, 6);

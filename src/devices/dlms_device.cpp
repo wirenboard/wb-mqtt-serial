@@ -348,12 +348,12 @@ namespace
         return res;
     }
 
-    const TObisRegisterAddress& ToTObisRegisterAddress(PRegister reg)
+    const TObisRegisterAddress& ToTObisRegisterAddress(const TRegisterConfig& reg)
     {
         try {
-            return dynamic_cast<const TObisRegisterAddress&>(reg->GetAddress());
+            return dynamic_cast<const TObisRegisterAddress&>(reg.GetAddress());
         } catch (const std::bad_cast&) {
-            throw TSerialDeviceTransientErrorException("Address of " + reg->ToString() +
+            throw TSerialDeviceTransientErrorException("Address of " + reg.ToString() +
                                                        " can't be casted to TObisRegisterAddress");
         }
     }
@@ -429,7 +429,7 @@ void TDlmsDevice::ReadAttribute(const std::string& addr, int attribute, CGXDLMSO
                "Getting " + addr + ":" + std::to_string(attribute) + " failed");
 }
 
-TRegisterValue TDlmsDevice::ReadRegisterImpl(PRegister reg)
+TRegisterValue TDlmsDevice::ReadRegisterImpl(const TRegisterConfig& reg)
 {
     auto addr = ToTObisRegisterAddress(reg).GetLogicalName();
     auto obj = Client->GetObjects().FindByLN(DLMS_OBJECT_TYPE_REGISTER, addr);

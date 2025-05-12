@@ -91,10 +91,10 @@ std::vector<uint8_t> WinDeco::TDevice::ExecCommand(const std::vector<uint8_t>& r
     return respBytes;
 }
 
-void WinDeco::TDevice::WriteRegisterImpl(PRegister reg, const TRegisterValue& regValue)
+void WinDeco::TDevice::WriteRegisterImpl(const TRegisterConfig& reg, const TRegisterValue& regValue)
 {
     auto value = regValue.Get<uint64_t>();
-    if (reg->Type == POSITION) {
+    if (reg.Type == POSITION) {
         if (value == 0) {
             CheckCommandResponse(ZoneId, CurtainId, CLOSE_COMMAND, ExecCommand(CloseCommand));
         } else if (value == 100) {
@@ -104,17 +104,17 @@ void WinDeco::TDevice::WriteRegisterImpl(PRegister reg, const TRegisterValue& re
         }
         return;
     }
-    if (reg->Type == COMMAND) {
-        uint8_t addr = GetUint32RegisterAddress(reg->GetAddress());
+    if (reg.Type == COMMAND) {
+        uint8_t addr = GetUint32RegisterAddress(reg.GetAddress());
         CheckCommandResponse(ZoneId, CurtainId, addr, ExecCommand(MakeRequest(ZoneId, CurtainId, addr)));
         return;
     }
     throw TSerialDevicePermanentRegisterException("Unsupported register type");
 }
 
-TRegisterValue WinDeco::TDevice::ReadRegisterImpl(PRegister reg)
+TRegisterValue WinDeco::TDevice::ReadRegisterImpl(const TRegisterConfig& reg)
 {
-    switch (reg->Type) {
+    switch (reg.Type) {
         case POSITION:
             return TRegisterValue{ParsePositionResponse(ZoneId, CurtainId, ExecCommand(GetPositionCommand))};
         case PARAM:

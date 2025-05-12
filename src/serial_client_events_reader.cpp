@@ -260,8 +260,8 @@ void TSerialClientEventsReader::EnableEvents(PSerialDevice device, TPort& port)
             if (regArray.first.SlaveId == slaveId) {
                 ev.AddRegister(regArray.first.Addr,
                                static_cast<ModbusExt::TEventType>(regArray.first.Type),
-                               regArray.second.front()->IsHighPriority() ? ModbusExt::TEventPriority::HIGH
-                                                                         : ModbusExt::TEventPriority::LOW);
+                               regArray.second.front()->GetConfig()->IsHighPriority() ? ModbusExt::TEventPriority::HIGH
+                                                                                      : ModbusExt::TEventPriority::LOW);
             }
         }
         if (ev.HasEventsToSetup()) {
@@ -284,7 +284,7 @@ void TSerialClientEventsReader::OnEnabledEvent(uint8_t slaveId, uint8_t type, ui
     if (regArray != Regs.end()) {
         for (const auto& reg: regArray->second) {
             if (res) {
-                if (reg->SporadicMode == TRegisterConfig::TSporadicMode::ONLY_EVENTS) {
+                if (reg->GetConfig()->SporadicMode == TRegisterConfig::TSporadicMode::ONLY_EVENTS) {
                     reg->ExcludeFromPolling();
                 }
                 reg->SetAvailable(TRegisterAvailability::AVAILABLE);
@@ -307,13 +307,13 @@ void TSerialClientEventsReader::SetDevices(const std::list<PSerialDevice>& devic
 {
     for (const auto& dev: devices) {
         for (const auto& reg: dev->GetRegisters()) {
-            if (reg->SporadicMode != TRegisterConfig::TSporadicMode::DISABLED) {
+            if (reg->GetConfig()->SporadicMode != TRegisterConfig::TSporadicMode::DISABLED) {
                 auto dev = ToModbusDevice(reg->Device().get());
                 if (dev != nullptr) {
                     TEventsReaderRegisterDesc regDesc{
                         static_cast<uint8_t>(dev->SlaveId),
-                        static_cast<uint16_t>(GetUint32RegisterAddress(reg->GetAddress())),
-                        ToEventRegisterType(static_cast<Modbus::RegisterType>(reg->Type))};
+                        static_cast<uint16_t>(GetUint32RegisterAddress(reg->GetConfig()->GetAddress())),
+                        ToEventRegisterType(static_cast<Modbus::RegisterType>(reg->GetConfig()->Type))};
                     Regs[regDesc].push_back(reg);
                 }
             }
