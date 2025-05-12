@@ -210,7 +210,10 @@ public:
 
     void WriteRegister(PRegister reg, uint64_t value);
 
-    // Read multiple registers
+    /**
+     * Reads multiple registers.
+     * Throws exceptions inherited from TSerialDeviceException.
+     */
     virtual void ReadRegisterRange(PRegisterRange range);
 
     virtual std::string ToString() const;

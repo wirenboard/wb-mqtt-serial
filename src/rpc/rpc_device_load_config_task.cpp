@@ -94,48 +94,52 @@ namespace
 
     std::string ReadFirmwareVersion(Modbus::IModbusTraits& traits, TPort& port, PRPCDeviceLoadConfigRequest rpcRequest)
     {
-        if (rpcRequest->IsWBDevice) {
-            std::string error;
-            try {
-                auto config = WbRegisters::GetRegisterConfig(WbRegisters::FW_VERSION_REGISTER_NAME);
-                TRegisterValue value;
-                if (ReadRegister(traits, port, rpcRequest, config, value)) {
-                    return value.Get<std::string>();
-                }
-            } catch (const Modbus::TErrorBase& err) {
-                error = err.what();
-            } catch (const TResponseTimeoutException& e) {
-                error = e.what();
-            }
-            LOG(Warn) << port.GetDescription() << " modbus:" << std::to_string(rpcRequest->SlaveId)
-                      << " unable to read \"" << WbRegisters::FW_VERSION_REGISTER_NAME << "\" register: " << error;
+        if (!rpcRequest->IsWBDevice) {
+            return std::string();
         }
 
-        return std::string();
+        std::string error;
+        try {
+            std::string version;
+            auto config = WbRegisters::GetRegisterConfig(WbRegisters::FW_VERSION_REGISTER_NAME);
+            TRegisterValue value;
+            if (ReadRegister(traits, port, rpcRequest, config, value)) {
+                version = value.Get<std::string>();
+            }
+            return version;
+        } catch (const Modbus::TErrorBase& err) {
+            error = err.what();
+        } catch (const TResponseTimeoutException& e) {
+            error = e.what();
+        }
+        LOG(Warn) << port.GetDescription() << " modbus:" << std::to_string(rpcRequest->SlaveId) << " unable to read \""
+                  << WbRegisters::FW_VERSION_REGISTER_NAME << "\" register: " << error;
+        throw TRPCException(error, TRPCResultCode::RPC_WRONG_PARAM_VALUE);
     }
 
     bool ContinuousReadEnabled(Modbus::IModbusTraits& traits, TPort& port, PRPCDeviceLoadConfigRequest rpcRequest)
     {
-        if (rpcRequest->ContinuousReadSupported) {
-            std::string error;
-            try {
-                auto config = WbRegisters::GetRegisterConfig(WbRegisters::CONTINUOUS_READ_REGISTER_NAME);
-                TRegisterValue value;
-                if (ReadRegister(traits, port, rpcRequest, config, value)) {
-                    uint16_t mode = value.Get<uint16_t>();
-                    return mode == WbRegisters::COUNTINUOUS_READ_ENABLED_TEMPORARY ||
-                           mode == WbRegisters::COUNTINUOUS_READ_ENABLED;
-                }
-            } catch (const Modbus::TErrorBase& err) {
-                error = err.what();
-            } catch (const TResponseTimeoutException& e) {
-
-                error = e.what();
-            }
-            LOG(Warn) << port.GetDescription() << " modbus:" << std::to_string(rpcRequest->SlaveId)
-                      << " unable to read \"" << WbRegisters::CONTINUOUS_READ_REGISTER_NAME << "\" register: " << error;
+        if (!rpcRequest->ContinuousReadSupported) {
+            return false;
         }
 
+        std::string error;
+        try {
+            auto mode = WbRegisters::COUNTINUOUS_READ_DISABLED;
+            auto config = WbRegisters::GetRegisterConfig(WbRegisters::CONTINUOUS_READ_REGISTER_NAME);
+            TRegisterValue value;
+            if (ReadRegister(traits, port, rpcRequest, config, value)) {
+                mode = value.Get<uint16_t>();
+            }
+            return mode == WbRegisters::COUNTINUOUS_READ_ENABLED_TEMPORARY ||
+                   mode == WbRegisters::COUNTINUOUS_READ_ENABLED;
+        } catch (const Modbus::TErrorBase& err) {
+            error = err.what();
+        } catch (const TResponseTimeoutException& e) {
+            error = e.what();
+        }
+        LOG(Warn) << port.GetDescription() << " modbus:" << std::to_string(rpcRequest->SlaveId) << " unable to read \""
+                  << WbRegisters::CONTINUOUS_READ_REGISTER_NAME << "\" register: " << error;
         return false;
     }
 
