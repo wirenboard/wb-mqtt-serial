@@ -33,7 +33,7 @@ namespace
         }
         return list;
     }
-} // namspace
+} // namespace
 
 bool util::IsValidMqttTopicString(const std::string& src)
 {

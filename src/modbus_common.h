@@ -45,6 +45,14 @@ namespace Modbus // modbus protocol common utilities
         int Type() const;
         PSerialDevice Device() const;
 
+        /**
+         * Reads selected ragister range including holes.
+         *
+         * Throws TSerialDevicePermanentRegisterException if Modbus "Illegal" exception code (1/2/3) received.
+         * Throws TSerialDeviceTransientErrorException on other errors.
+         *
+         * All exceptions are inherited from TSerialDeviceException.
+         */
         void ReadRange(IModbusTraits& traits, TPort& port, uint8_t slaveId, int shift, Modbus::TRegisterCache& cache);
 
         std::chrono::microseconds GetResponseTime() const;
