@@ -101,7 +101,7 @@ void TModbusIODevice::WriteSetupRegisters()
     Modbus::WriteSetupRegisters(*ModbusTraits,
                                 *Port(),
                                 SlaveId,
-                                SetupItems,
+                                GetSetupItems(),
                                 ModbusCache,
                                 DeviceConfig()->RequestDelay,
                                 DeviceConfig()->ResponseTimeout,

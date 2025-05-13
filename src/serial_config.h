@@ -17,10 +17,18 @@
 #include "serial_device.h"
 #include "templates_map.h"
 
+struct TSerialDeviceWithChannels
+{
+    PSerialDevice Device;
+    std::vector<PDeviceChannelConfig> Channels;
+};
+
+typedef std::shared_ptr<TSerialDeviceWithChannels> PSerialDeviceWithChannels;
+
 struct TPortConfig
 {
     PPort Port;
-    std::vector<PSerialDevice> Devices;
+    std::vector<PSerialDeviceWithChannels> Devices;
     std::optional<std::chrono::milliseconds> ReadRateLimit;
     std::chrono::microseconds RequestDelay = std::chrono::microseconds::zero();
     TPortOpenCloseLogic::TSettings OpenCloseSettings;
@@ -34,7 +42,7 @@ struct TPortConfig
 
     bool IsModbusTcp = false;
 
-    void AddDevice(PSerialDevice device);
+    void AddDevice(PSerialDeviceWithChannels device);
 };
 
 typedef std::shared_ptr<TPortConfig> PPortConfig;
@@ -154,8 +162,6 @@ struct TDeviceConfigLoadParams
     std::string DefaultId;
     std::chrono::microseconds DefaultRequestDelay;
     std::chrono::milliseconds PortResponseTimeout;
-    std::optional<std::chrono::milliseconds> DefaultReadRateLimit;
-    std::string DeviceTemplateTitle;
     const Json::Value* Translations = nullptr;
 };
 
@@ -165,10 +171,7 @@ struct TDeviceProtocolParams
     std::shared_ptr<IDeviceFactory> factory;
 };
 
-PDeviceConfig LoadBaseDeviceConfig(const Json::Value& deviceData,
-                                   PProtocol protocol,
-                                   const IDeviceFactory& factory,
-                                   const TDeviceConfigLoadParams& parameters);
+PDeviceConfig LoadDeviceConfig(const Json::Value& dev, PProtocol protocol, const TDeviceConfigLoadParams& parameters);
 
 struct TLoadRegisterConfigResult
 {
@@ -194,10 +197,10 @@ public:
     const std::string& GetCommonDeviceSchemaRef(const std::string& protocolName) const;
     const std::string& GetCustomChannelSchemaRef(const std::string& protocolName) const;
     std::vector<std::string> GetProtocolNames() const;
-    PSerialDevice CreateDevice(const Json::Value& device_config,
-                               const std::string& defaultId,
-                               PPortConfig PPortConfig,
-                               TTemplateMap& templates);
+    PSerialDeviceWithChannels CreateDevice(const Json::Value& device_config,
+                                           const std::string& defaultId,
+                                           PPortConfig PPortConfig,
+                                           TTemplateMap& templates);
 };
 
 void RegisterProtocols(TSerialDeviceFactory& deviceFactory);
@@ -228,9 +231,7 @@ public:
                                PPort port,
                                PProtocol protocol) const override
     {
-        auto dev = std::make_shared<Dev>(deviceConfig, port, protocol);
-        dev->InitSetupItems();
-        return dev;
+        return std::make_shared<Dev>(deviceConfig, port, protocol);
     }
 };
 

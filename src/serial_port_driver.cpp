@@ -47,15 +47,15 @@ void TSerialPortDriver::SetUpDevices()
         auto tx = MqttDriver->BeginTx();
 
         for (const auto& device: Config->Devices) {
-            device->AddOnConnectionStateChangedCallback(
+            device->Device->AddOnConnectionStateChangedCallback(
                 [this](PSerialDevice dev) { OnDeviceConnectionStateChanged(dev); });
-            auto mqttDevice = tx->CreateDevice(From(device)).GetValue();
-            Devices.push_back(device);
+            auto mqttDevice = tx->CreateDevice(From(device->Device)).GetValue();
+            Devices.push_back(device->Device);
             std::vector<PDeviceChannel> channels;
             // init channels' registers
-            for (const auto& channelConfig: device->DeviceConfig()->DeviceChannelConfigs) {
+            for (const auto& channelConfig: device->Channels) {
                 try {
-                    auto channel = std::make_shared<TDeviceChannel>(device, channelConfig);
+                    auto channel = std::make_shared<TDeviceChannel>(device->Device, channelConfig);
                     channel->Control = mqttDevice->CreateControl(tx, From(channel)).GetValue();
                     for (const auto& reg: channel->Registers) {
                         RegisterToChannelMap.emplace(reg, channel);
@@ -66,8 +66,8 @@ void TSerialPortDriver::SetUpDevices()
                 }
             }
             mqttDevice->RemoveUnusedControls(tx).Sync();
-            SerialClient->AddDevice(device);
-            DeviceToChannelsMap.emplace(device, channels);
+            SerialClient->AddDevice(device->Device);
+            DeviceToChannelsMap.emplace(device->Device, channels);
         }
     } catch (const exception& e) {
         LOG(Error) << "unable to create device: '" << e.what() << "' Cleaning.";
@@ -278,11 +278,7 @@ TDeviceChannel::TDeviceChannel(PSerialDevice device, PDeviceChannelConfig config
     : TDeviceChannelConfig(*config),
       Device(device),
       PublishNextZeroPressCounter(true)
-{
-    for (const auto& reg_config: config->RegisterConfigs) {
-        Registers.push_back(device->AddRegister(reg_config));
-    }
-}
+{}
 
 std::string TDeviceChannel::Describe() const
 {

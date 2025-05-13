@@ -65,9 +65,7 @@ namespace
                                    PPort port,
                                    PProtocol protocol) const override
         {
-            auto dev = std::make_shared<TEnergomeraIecModeCDevice>(deviceConfig, port, protocol);
-            dev->InitSetupItems();
-            return dev;
+            return std::make_shared<TEnergomeraIecModeCDevice>(deviceConfig, port, protocol);
         }
     };
 }
