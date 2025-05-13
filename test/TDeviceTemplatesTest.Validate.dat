@@ -648,22 +648,6 @@ MEAN-WELL-DRS-Series
 	voltage_ac_status  =>  voltage_ac_status
 	voltage_dc  =>  voltage_dc
 	voltage_dc_status  =>  voltage_dc_status
-mst24_v1
-	acceleration  =>  acceleration
-	c_r_acceleration  =>  c_r_accelerationtion
-	c_r_deceleration  =>  c_r_deceleration
-	c_r_emerg_deceleration  =>  c_r_emerg_deceleration
-	c_r_speed  =>  c_r_speed
-	command  =>  command
-	deceleration  =>  deceleration
-	direction  =>  direction
-	errors  =>  errors
-	model  =>  model
-	position  =>  position
-	positioning_mode  =>  positioning_mode
-	speed  =>  speed
-	status  =>  status
-	voltage  =>  voltage
 MSU21
 	Temperature  =>  Temperature
 MSU24
@@ -23471,6 +23455,22 @@ milur305
 	Total consumption  =>  Total consumption
 	Total reactive energy  =>  Total reactive energy
 	Total reactive power  =>  Total reactive power
+mst24_v1
+	acceleration  =>  acceleration
+	c_r_acceleration  =>  c_r_accelerationtion
+	c_r_deceleration  =>  c_r_deceleration
+	c_r_emerg_deceleration  =>  c_r_emerg_deceleration
+	c_r_speed  =>  c_r_speed
+	command  =>  command
+	deceleration  =>  deceleration
+	direction  =>  direction
+	errors  =>  errors
+	model  =>  model
+	position  =>  position
+	positioning_mode  =>  positioning_mode
+	speed  =>  speed
+	status  =>  status
+	voltage  =>  voltage
 pulsar-heat
 	Delta temperature  =>  Delta temperature
 	Device temperature  =>  Device temperature
