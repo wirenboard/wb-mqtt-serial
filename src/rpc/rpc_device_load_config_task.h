@@ -62,5 +62,11 @@ private:
 };
 
 typedef std::shared_ptr<TRPCDeviceLoadConfigSerialClientTask> PRPCDeviceLoadConfigSerialClientTask;
+typedef std::vector<std::pair<std::string, PRegister>> TRPCRegisterList;
 
+TRPCRegisterList CreateRegisterList(const TDeviceProtocolParams& protocolParams,
+                                    const PSerialDevice& device,
+                                    const Json::Value& parameters,
+                                    const std::string& fwVersion);
+void CheckParametersConditions(const Json::Value& templateParams, Json::Value& parameters);
 Json::Value RawValueToJSON(const TRegisterConfig& reg, TRegisterValue val);

@@ -10,8 +10,6 @@ namespace
 {
     const auto MAX_RETRIES = 2;
 
-    typedef std::vector<std::pair<std::string, PRegister>> TRPCRegisterList;
-
     PSerialDevice CreateDevice(PPort port,
                                PRPCDeviceLoadConfigRequest rpcRequest,
                                const TDeviceProtocolParams& protocolParams)
@@ -21,38 +19,6 @@ namespace
         config->MaxBitHole = Modbus::MAX_HOLE_CONTINUOUS_1_BIT_REGISTERS;
         config->MaxReadRegisters = Modbus::MAX_READ_REGISTERS;
         return protocolParams.factory->CreateDevice(rpcRequest->DeviceTemplate, config, port, protocolParams.protocol);
-    }
-
-    TRPCRegisterList CreateRegisterList(const TDeviceProtocolParams& protocolParams,
-                                        const PSerialDevice& device,
-                                        const Json::Value& parameters,
-                                        const std::string& fwVersion)
-    {
-        TRPCRegisterList registerList;
-        for (auto it = parameters.begin(); it != parameters.end(); ++it) {
-            const Json::Value& registerData = *it;
-            std::string id = parameters.isObject() ? it.key().asString() : registerData["id"].asString();
-            if (registerData["readonly"].asInt() != 0) {
-                continue;
-            }
-            if (!fwVersion.empty()) {
-                std::string fw = registerData["fw"].asString();
-                if (!fw.empty() && util::CompareVersionStrings(fw, fwVersion) > 0) {
-                    continue;
-                }
-            }
-            auto config =
-                LoadRegisterConfig(registerData,
-                                   *protocolParams.protocol->GetRegTypes(),
-                                   std::string(),
-                                   *protocolParams.factory,
-                                   protocolParams.factory->GetRegisterAddressFactory().GetBaseRegisterAddress(),
-                                   0);
-            auto reg = std::make_shared<TRegister>(device, config.RegisterConfig);
-            reg->SetAvailable(TRegisterAvailability::AVAILABLE);
-            registerList.push_back(std::make_pair(id, reg));
-        }
-        return registerList;
     }
 
     bool ReadRegister(Modbus::IModbusTraits& traits,
@@ -292,30 +258,21 @@ void ExecRPCDeviceLoadConfigRequest(PPort port, PRPCDeviceLoadConfigRequest rpcR
     std::string fwVersion = ReadFirmwareVersion(traits, *port, rpcRequest);
     bool continuousRead = ContinuousReadEnabled(traits, *port, rpcRequest);
 
-    Json::Value deviceParams = rpcRequest->DeviceTemplate["parameters"];
-    Json::Value readParams;
-    TRPCRegisterList registerList = CreateRegisterList(protocolParams, device, deviceParams, fwVersion);
+    Json::Value templateParams = rpcRequest->DeviceTemplate["parameters"];
+    Json::Value parameters;
+    TRPCRegisterList registerList = CreateRegisterList(protocolParams, device, templateParams, fwVersion);
     if (continuousRead) {
-        ReadParametersContinuously(traits, *port, rpcRequest, registerList, readParams);
+        ReadParametersContinuously(traits, *port, rpcRequest, registerList, parameters);
     } else {
-        ReadParametersConsistently(traits, *port, rpcRequest, registerList, readParams);
+        ReadParametersConsistently(traits, *port, rpcRequest, registerList, parameters);
     }
-
-    TJsonParams jsonParams(readParams);
-    TExpressionsCache expressionsCache;
-    for (auto it = deviceParams.begin(); it != deviceParams.end(); ++it) {
-        const Json::Value& registerData = *it;
-        std::string id = deviceParams.isObject() ? it.key().asString() : registerData["id"].asString();
-        if (!CheckCondition(registerData, jsonParams, &expressionsCache)) {
-            readParams.removeMember(id);
-        }
-    }
+    CheckParametersConditions(templateParams, parameters);
 
     Json::Value result;
     if (!fwVersion.empty()) {
         result["fw"] = fwVersion;
     }
-    result["parameters"] = readParams;
+    result["parameters"] = parameters;
     rpcRequest->OnResult(result);
 }
 
@@ -350,6 +307,64 @@ ISerialClientTask::TRunResult TRPCDeviceLoadConfigSerialClientTask::Run(
     }
 
     return ISerialClientTask::TRunResult::OK;
+}
+
+TRPCRegisterList CreateRegisterList(const TDeviceProtocolParams& protocolParams,
+                                    const PSerialDevice& device,
+                                    const Json::Value& templateParams,
+                                    const std::string& fwVersion)
+{
+    TRPCRegisterList registerList;
+    for (auto it = templateParams.begin(); it != templateParams.end(); ++it) {
+        const Json::Value& registerData = *it;
+        std::string id = templateParams.isObject() ? it.key().asString() : registerData["id"].asString();
+        bool duplicate = false;
+        for (size_t i = 0; i < registerList.size(); ++i) {
+            if (registerList[i].first == id) {
+                duplicate = true;
+                break;
+            }
+        }
+        if (duplicate || registerData["readonly"].asInt() != 0) {
+            continue;
+        }
+        if (!fwVersion.empty()) {
+            std::string fw = registerData["fw"].asString();
+            if (!fw.empty() && util::CompareVersionStrings(fw, fwVersion) > 0) {
+                continue;
+            }
+        }
+        auto config = LoadRegisterConfig(registerData,
+                                         *protocolParams.protocol->GetRegTypes(),
+                                         std::string(),
+                                         *protocolParams.factory,
+                                         protocolParams.factory->GetRegisterAddressFactory().GetBaseRegisterAddress(),
+                                         0);
+        auto reg = std::make_shared<TRegister>(device, config.RegisterConfig);
+        reg->SetAvailable(TRegisterAvailability::AVAILABLE);
+        registerList.push_back(std::make_pair(id, reg));
+    }
+    return registerList;
+}
+
+void CheckParametersConditions(const Json::Value& templateParams, Json::Value& parameters)
+{
+    TJsonParams jsonParams(parameters);
+    TExpressionsCache expressionsCache;
+    std::map<std::string, bool> matches;
+    for (auto it = templateParams.begin(); it != templateParams.end(); ++it) {
+        const Json::Value& registerData = *it;
+        std::string id = templateParams.isObject() ? it.key().asString() : registerData["id"].asString();
+        bool match = CheckCondition(registerData, jsonParams, &expressionsCache);
+        if (matches.find(id) == matches.end() || match) {
+            matches[id] = match;
+        }
+    }
+    for (auto it = matches.begin(); it != matches.end(); ++it) {
+        if (!it->second) {
+            parameters.removeMember(it->first);
+        }
+    }
 }
 
 Json::Value RawValueToJSON(const TRegisterConfig& reg, TRegisterValue val)
