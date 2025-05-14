@@ -58,6 +58,9 @@ void AppendSetupItems(Json::Value& deviceTemplate, const Json::Value& config, TE
                     if (!it->get("readonly", false).asBool() && CheckCondition(*it, params, exprs)) {
                         Json::Value item(*it);
                         item["value"] = cfgItem;
+                        if (!templateParameters.isArray()) {
+                            item["id"] = name;
+                        }
                         newSetup.append(item);
                     }
                 } else {
