@@ -188,11 +188,13 @@ namespace
 
 TRPCDeviceLoadConfigRequest::TRPCDeviceLoadConfigRequest(const TSerialDeviceFactory& deviceFactory,
                                                          PDeviceTemplate deviceTemplate,
-                                                         PHandlerConfig handlerConfig)
+                                                         PHandlerConfig handlerConfig,
+                                                         TRPCDeviceParametersCache& parametersCache)
     : DeviceFactory(deviceFactory),
       DeviceType(deviceTemplate->Type),
       DeviceTemplate(deviceTemplate->GetTemplate()),
-      HandlerConfig(handlerConfig)
+      HandlerConfig(handlerConfig),
+      ParametersCache(parametersCache)
 {
     ContinuousReadSupported = DeviceTemplate["enable_wb_continuous_read"].asBool();
     IsWBDevice = ContinuousReadSupported || !deviceTemplate->GetHardware().empty();
@@ -228,10 +230,11 @@ PSerialDevice TRPCDeviceLoadConfigRequest::FindDevice(PPort port)
 PRPCDeviceLoadConfigRequest ParseRPCDeviceLoadConfigRequest(const Json::Value& request,
                                                             const TSerialDeviceFactory& deviceFactory,
                                                             PDeviceTemplate deviceTemplate,
-                                                            PHandlerConfig handlerConfig)
+                                                            PHandlerConfig handlerConfig,
+                                                            TRPCDeviceParametersCache& parametersCache)
 {
     PRPCDeviceLoadConfigRequest res =
-        std::make_shared<TRPCDeviceLoadConfigRequest>(deviceFactory, deviceTemplate, handlerConfig);
+        std::make_shared<TRPCDeviceLoadConfigRequest>(deviceFactory, deviceTemplate, handlerConfig, parametersCache);
     res->SerialPortSettings = ParseRPCSerialPortSettings(request);
     WBMQTT::JSON::Get(request, "response_timeout", res->ResponseTimeout);
     WBMQTT::JSON::Get(request, "frame_timeout", res->FrameTimeout);
@@ -246,10 +249,18 @@ void ExecRPCDeviceLoadConfigRequest(PPort port, PRPCDeviceLoadConfigRequest rpcR
         return;
     }
 
+    const std::string id = port->GetDescription(false) + ":" + std::to_string(rpcRequest->SlaveId);
+    if (rpcRequest->ParametersCache.Contains(id)) {
+        rpcRequest->OnResult(rpcRequest->ParametersCache.Get(id));
+        return;
+    }
+
     TDeviceProtocolParams protocolParams = rpcRequest->DeviceFactory.GetProtocolParams("modbus");
     auto device = rpcRequest->FindDevice(port);
+    bool useCache = true;
     if (device == nullptr) {
         device = CreateDevice(port, rpcRequest, protocolParams);
+        useCache = false;
     }
 
     Modbus::TModbusRTUTraits traits;
@@ -274,6 +285,21 @@ void ExecRPCDeviceLoadConfigRequest(PPort port, PRPCDeviceLoadConfigRequest rpcR
     }
     result["parameters"] = parameters;
     rpcRequest->OnResult(result);
+
+    if (!useCache) {
+        return;
+    }
+
+    std::vector<PSerialDevice>& devices = rpcRequest->ParametersCache.Devices;
+    if (std::find(devices.begin(), devices.end(), device) == devices.end()) {
+        device->AddOnConnectionStateChangedCallback([rpcRequest, id](PSerialDevice device) {
+            if (device->GetConnectionState() == TDeviceConnectionState::DISCONNECTED) {
+                rpcRequest->ParametersCache.Remove(id);
+            }
+        });
+        devices.push_back(device);
+    }
+    rpcRequest->ParametersCache.Add(id, result);
 }
 
 TRPCDeviceLoadConfigSerialClientTask::TRPCDeviceLoadConfigSerialClientTask(PRPCDeviceLoadConfigRequest request)

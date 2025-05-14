@@ -2,6 +2,23 @@
 #include "rpc_port_driver_list.h"
 #include "templates_map.h"
 
+class TRPCDeviceParametersCache
+{
+public:
+    TRPCDeviceParametersCache() = default;
+
+    std::vector<PSerialDevice> Devices;
+
+    void Add(const std::string& id, const Json::Value& value);
+    void Remove(const std::string& id);
+    bool Contains(const std::string& id) const;
+    const Json::Value& Get(const std::string& id, const Json::Value& defaultValue = Json::Value()) const;
+
+private:
+    std::mutex Mutex;
+    std::unordered_map<std::string, Json::Value> DeviceParameters;
+};
+
 class TRPCDeviceHandler
 {
 public:
@@ -19,6 +36,8 @@ private:
     PTemplateMap Templates;
     PHandlerConfig HandlerConfig;
     TSerialClientTaskRunner& SerialClientTaskRunner;
+
+    TRPCDeviceParametersCache ParametersCache;
 
     void LoadConfig(const Json::Value& request,
                     WBMQTT::TMqttRpcServer::TResultCallback onResult,

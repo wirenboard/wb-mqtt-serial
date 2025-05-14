@@ -1,4 +1,5 @@
 #pragma once
+#include "rpc_device_handler.h"
 #include "rpc_port_handler.h"
 #include "serial_client.h"
 #include <chrono>
@@ -19,13 +20,15 @@ class TRPCDeviceLoadConfigRequest
 public:
     TRPCDeviceLoadConfigRequest(const TSerialDeviceFactory& deviceFactory,
                                 PDeviceTemplate deviceTemplate,
-                                PHandlerConfig handlerConfig);
+                                PHandlerConfig handlerConfig,
+                                TRPCDeviceParametersCache& parametersCache);
 
     const TSerialDeviceFactory& DeviceFactory;
     const std::string DeviceType;
     const Json::Value& DeviceTemplate;
     const PHandlerConfig HandlerConfig;
 
+    TRPCDeviceParametersCache& ParametersCache;
     bool ContinuousReadSupported = false;
     bool IsWBDevice = false;
 
@@ -46,7 +49,8 @@ typedef std::shared_ptr<TRPCDeviceLoadConfigRequest> PRPCDeviceLoadConfigRequest
 PRPCDeviceLoadConfigRequest ParseRPCDeviceLoadConfigRequest(const Json::Value& request,
                                                             const TSerialDeviceFactory& deviceFactory,
                                                             PDeviceTemplate deviceTemplate,
-                                                            PHandlerConfig handlerConfig);
+                                                            PHandlerConfig handlerConfig,
+                                                            TRPCDeviceParametersCache& parametersCache);
 
 void ExecRPCDeviceLoadConfigRequest(PPort port, PRPCDeviceLoadConfigRequest rpcRequest);
 
