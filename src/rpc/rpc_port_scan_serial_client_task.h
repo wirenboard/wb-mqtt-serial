@@ -26,7 +26,9 @@ public:
                                  WBMQTT::TMqttRpcServer::TResultCallback onResult,
                                  WBMQTT::TMqttRpcServer::TErrorCallback onError);
 
-    ISerialClientTask::TRunResult Run(PPort port, TSerialClientDeviceAccessHandler& lastAccessedDevice) override;
+    ISerialClientTask::TRunResult Run(PPort port,
+                                      TSerialClientDeviceAccessHandler& lastAccessedDevice,
+                                      const std::list<PSerialDevice>& polledDevices) override;
 
 private:
     PRPCPortScanRequest Request;

@@ -36,43 +36,15 @@
         "address": 22,
         "value": 0,
         "reg_type": "holding",
-        "format": "u16",
-        "enum": [
-          0,
-          1,
-          2
-        ],
-        "enum_titles": [
-          "Open Loop",
-          "Closed Loop (Servo 1)",
-          "Closed Loop (Servo 2)"
-        ]
+        "format": "u16"
       },
       {
         "title": "return",
         "address": 287,
         "value": 6,
         "reg_type": "holding",
-        "format": "u16",
-        "enum": [
-          0,
-          1,
-          2,
-          3,
-          4,
-          5,
-          6
-        ],
-        "enum_titles": [
-          "No Return",
-          "Mechanic By DI",
-          "Electronic By DI",
-          "Automatic On Poweron",
-          "Command To Mechanic Return",
-          "Command To Electronic Return",
-          "Return To Saved"
-        ]
-      },
+        "format": "u16"
+     },
       {
         "title": "internal_logic_preset",
         "address": 20,

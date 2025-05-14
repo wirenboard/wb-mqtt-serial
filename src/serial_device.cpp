@@ -189,15 +189,6 @@ TDeviceConnectionState TSerialDevice::GetConnectionState() const
     return ConnectionState;
 }
 
-void TSerialDevice::InitSetupItems()
-{
-    for (auto& setup_item_config: _DeviceConfig->SetupItemConfigs) {
-        SetupItems.push_back(std::make_shared<TDeviceSetupItem>(
-            setup_item_config,
-            std::make_shared<TRegister>(shared_from_this(), setup_item_config->GetRegisterConfig())));
-    }
-}
-
 void TSerialDevice::WriteSetupRegisters()
 {
     for (const auto& setup_item: SetupItems) {
@@ -294,6 +285,34 @@ void TSerialDevice::SetConnectionState(TDeviceConnectionState state)
     }
 }
 
+void TSerialDevice::AddSetupItem(PDeviceSetupItemConfig item)
+{
+    auto addrIt = SetupItemsByAddress.find(item->GetRegisterConfig()->GetAddress().ToString());
+    if (addrIt != SetupItemsByAddress.end()) {
+        std::stringstream ss;
+        ss << "Setup command \"" << item->GetName() << "\" with address " << item->GetRegisterConfig()->GetAddress()
+           << " from \"" << DeviceConfig()->DeviceType << "\""
+           << " has a duplicate command \"" << addrIt->second->Name << "\" ";
+        if (item->GetRawValue() == addrIt->second->RawValue) {
+            ss << "with the same register value.";
+        } else {
+            ss << "with different register value. IT WILL BREAK TEMPLATE OPERATION";
+        }
+        LOG(Warn) << ss.str();
+    } else {
+        auto setupItem = std::make_shared<TDeviceSetupItem>(
+            item,
+            std::make_shared<TRegister>(shared_from_this(), item->GetRegisterConfig()));
+        SetupItemsByAddress.insert({item->GetRegisterConfig()->GetAddress().ToString(), setupItem});
+        SetupItems.push_back(setupItem);
+    }
+}
+
+const std::vector<PDeviceSetupItem>& TSerialDevice::GetSetupItems() const
+{
+    return SetupItems;
+}
+
 TUInt32SlaveId::TUInt32SlaveId(const std::string& slaveId, bool allowBroadcast): HasBroadcastSlaveId(false)
 {
     if (allowBroadcast) {
@@ -325,3 +344,9 @@ uint64_t CopyDoubleToUint64(double value)
     memcpy(&res, &value, sizeof(value));
     return res;
 }
+
+TDeviceConfig::TDeviceConfig(const std::string& name, const std::string& slave_id, const std::string& protocol)
+    : Name(name),
+      SlaveId(slave_id),
+      Protocol(protocol)
+{}

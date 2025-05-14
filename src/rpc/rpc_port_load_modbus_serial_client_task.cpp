@@ -101,7 +101,8 @@ TRPCPortLoadModbusSerialClientTask::TRPCPortLoadModbusSerialClientTask(const Jso
 
 ISerialClientTask::TRunResult TRPCPortLoadModbusSerialClientTask::Run(
     PPort port,
-    TSerialClientDeviceAccessHandler& lastAccessedDevice)
+    TSerialClientDeviceAccessHandler& lastAccessedDevice,
+    const std::list<PSerialDevice>& polledDevices)
 {
     if (std::chrono::steady_clock::now() > ExpireTime) {
         if (Request->OnError) {

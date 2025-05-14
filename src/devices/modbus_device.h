@@ -47,12 +47,10 @@ public:
         bool forceFrameTimeout = false;
         WBMQTT::JSON::Get(data, "force_frame_timeout", forceFrameTimeout);
 
-        auto dev = std::make_shared<Dev>(ModbusTraitsFactory->GetModbusTraits(port, forceFrameTimeout),
-                                         config,
-                                         port,
-                                         protocol);
-        dev->InitSetupItems();
-        return dev;
+        return std::make_shared<Dev>(ModbusTraitsFactory->GetModbusTraits(port, forceFrameTimeout),
+                                     config,
+                                     port,
+                                     protocol);
     }
 };
 

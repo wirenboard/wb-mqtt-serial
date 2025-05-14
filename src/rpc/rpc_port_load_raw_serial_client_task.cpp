@@ -41,7 +41,8 @@ TRPCPortLoadRawSerialClientTask::TRPCPortLoadRawSerialClientTask(const Json::Val
 }
 
 ISerialClientTask::TRunResult TRPCPortLoadRawSerialClientTask::Run(PPort port,
-                                                                   TSerialClientDeviceAccessHandler& lastAccessedDevice)
+                                                                   TSerialClientDeviceAccessHandler& lastAccessedDevice,
+                                                                   const std::list<PSerialDevice>& polledDevices)
 {
     if (std::chrono::steady_clock::now() > ExpireTime) {
         if (Request->OnError) {

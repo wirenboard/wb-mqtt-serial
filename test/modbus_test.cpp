@@ -663,8 +663,8 @@ TEST_F(TModbusIntegrationTest, Holes)
 {
     SerialPort->SetBaudRate(115200);
     // we check that driver issue long read requests for holding registers 4-18 and all coils
-    Config->PortConfigs[0]->Devices[0]->DeviceConfig()->MaxRegHole = 10;
-    Config->PortConfigs[0]->Devices[0]->DeviceConfig()->MaxBitHole = 80;
+    Config->PortConfigs[0]->Devices[0]->Device->DeviceConfig()->MaxRegHole = 10;
+    Config->PortConfigs[0]->Devices[0]->Device->DeviceConfig()->MaxBitHole = 80;
     // First cycle, read registers one by one to find unavailable registers
     ExpectPollQueries();
     Note() << "LoopOnce()";
@@ -683,7 +683,7 @@ TEST_F(TModbusIntegrationTest, HolesAutoDisable)
 {
     SerialPort->SetBaudRate(115200);
 
-    Config->PortConfigs[0]->Devices[0]->DeviceConfig()->MaxRegHole = 10;
+    Config->PortConfigs[0]->Devices[0]->Device->DeviceConfig()->MaxRegHole = 10;
     InvalidateConfigPoll();
 
     EnqueueHoldingPackHoles10ReadResponse(0x3); // this must result in auto-disabling holes feature
@@ -725,7 +725,7 @@ TEST_F(TModbusIntegrationTest, MaxReadRegisters)
     // By limiting the max_read_registers to 3 we force driver to issue two requests
     //    for this register range instead of one
 
-    Config->PortConfigs[0]->Devices[0]->DeviceConfig()->MaxReadRegisters = 3;
+    Config->PortConfigs[0]->Devices[0]->Device->DeviceConfig()->MaxReadRegisters = 3;
     InvalidateConfigPoll(TEST_MAX_READ_REGISTERS_FIRST_CYCLE);
     ExpectPollQueries(TEST_MAX_READ_REGISTERS);
     Note() << "LoopOnce()";
@@ -736,7 +736,7 @@ TEST_F(TModbusIntegrationTest, MaxReadRegisters)
 
 TEST_F(TModbusIntegrationTest, GuardInterval)
 {
-    Config->PortConfigs[0]->Devices[0]->DeviceConfig()->RequestDelay = chrono::microseconds(1000);
+    Config->PortConfigs[0]->Devices[0]->Device->DeviceConfig()->RequestDelay = chrono::microseconds(1000);
     InvalidateConfigPoll();
 }
 
@@ -975,7 +975,7 @@ protected:
 TEST_F(TModbusUnavailableRegistersAndHolesIntegrationTest, HolesAndUnavailable)
 {
     // we check that driver disables holes feature and after that detects and excludes unavailable register
-    Config->PortConfigs[0]->Devices[0]->DeviceConfig()->MaxRegHole = 10;
+    Config->PortConfigs[0]->Devices[0]->Device->DeviceConfig()->MaxRegHole = 10;
 
     EnqueueHoldingPackUnavailableAndHolesReadResponse();
     Note() << "LoopOnce() [one by one]";

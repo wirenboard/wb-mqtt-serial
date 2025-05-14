@@ -215,9 +215,9 @@ PSerialDevice TRPCDeviceLoadConfigRequest::FindDevice(PPort port)
             continue;
         }
         for (const auto& device: portConfig->Devices) {
-            auto deviceConfig = device->DeviceConfig();
+            auto deviceConfig = device->Device->DeviceConfig();
             if (deviceConfig->SlaveId == std::to_string(SlaveId) && deviceConfig->DeviceType == DeviceType) {
-                return device;
+                return device->Device;
             }
         }
     }
@@ -284,7 +284,8 @@ TRPCDeviceLoadConfigSerialClientTask::TRPCDeviceLoadConfigSerialClientTask(PRPCD
 
 ISerialClientTask::TRunResult TRPCDeviceLoadConfigSerialClientTask::Run(
     PPort port,
-    TSerialClientDeviceAccessHandler& lastAccessedDevice)
+    TSerialClientDeviceAccessHandler& lastAccessedDevice,
+    const std::list<PSerialDevice>& polledDevices)
 {
     if (std::chrono::steady_clock::now() > ExpireTime) {
         if (Request->OnError) {

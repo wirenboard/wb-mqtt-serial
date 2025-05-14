@@ -105,7 +105,7 @@ void TSerialClient::WaitForPollAndFlush(steady_clock::time_point currentTime, st
             Tasks.swap(tasks);
             lock.unlock();
             for (auto& task: tasks) {
-                if (task->Run(Port, *LastAccessedDevice) == ISerialClientTask::TRunResult::RETRY) {
+                if (task->Run(Port, *LastAccessedDevice, Devices) == ISerialClientTask::TRunResult::RETRY) {
                     retryTasks.push_back(task);
                 }
             }
