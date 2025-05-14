@@ -284,7 +284,8 @@ TRPCDeviceLoadConfigSerialClientTask::TRPCDeviceLoadConfigSerialClientTask(PRPCD
 
 ISerialClientTask::TRunResult TRPCDeviceLoadConfigSerialClientTask::Run(
     PPort port,
-    TSerialClientDeviceAccessHandler& lastAccessedDevice)
+    TSerialClientDeviceAccessHandler& lastAccessedDevice,
+    const std::list<PSerialDevice>& polledDevices)
 {
     if (std::chrono::steady_clock::now() > ExpireTime) {
         if (Request->OnError) {

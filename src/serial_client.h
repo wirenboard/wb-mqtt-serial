@@ -61,7 +61,17 @@ public:
 
     virtual ~ISerialClientTask() = default;
 
-    virtual ISerialClientTask::TRunResult Run(PPort port, TSerialClientDeviceAccessHandler& lastAccessedDevice) = 0;
+    /**
+     * @brief Executes some code in the serial client thread.
+     *
+     * @param port The port to be used for communication.
+     * @param lastAccessedDevice A reference to the handler for the last accessed device.
+     * @param polledDevices A list of serial devices polled on this port.
+     * @return The result of the task execution as a TRunResult.
+     */
+    virtual ISerialClientTask::TRunResult Run(PPort port,
+                                              TSerialClientDeviceAccessHandler& lastAccessedDevice,
+                                              const std::list<PSerialDevice>& polledDevices) = 0;
 };
 
 typedef std::shared_ptr<ISerialClientTask> PSerialClientTask;

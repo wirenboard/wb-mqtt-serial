@@ -44,7 +44,7 @@ TSerialClientTaskExecutor::TSerialClientTaskExecutor(PPort port): Port(port), Ru
             lock.unlock();
             for (auto& task: tasksToRun) {
                 try {
-                    task->Run(Port, lastAccessedDevice);
+                    task->Run(Port, lastAccessedDevice, std::list<PSerialDevice>());
                 } catch (const std::exception& e) {
                     LOG(Error) << "Error while running task: " << e.what();
                 }
