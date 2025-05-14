@@ -7,7 +7,7 @@ class TRPCDeviceParametersCache
 public:
     TRPCDeviceParametersCache() = default;
 
-    std::vector<PSerialDevice> Devices;
+    std::list<PSerialDevice> Devices;
 
     void Add(const std::string& id, const Json::Value& value);
     void Remove(const std::string& id);

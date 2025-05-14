@@ -286,7 +286,7 @@ void ExecRPCDeviceLoadConfigRequest(PPort port,
         return;
     }
 
-    std::vector<PSerialDevice>& devices = rpcRequest->ParametersCache.Devices;
+    std::list<PSerialDevice>& devices = rpcRequest->ParametersCache.Devices;
     if (std::find(devices.begin(), devices.end(), device) == devices.end()) {
         device->AddOnConnectionStateChangedCallback([rpcRequest, id](PSerialDevice device) {
             if (device->GetConnectionState() == TDeviceConnectionState::DISCONNECTED) {
@@ -376,7 +376,7 @@ void CheckParametersConditions(const Json::Value& templateParams, Json::Value& p
     TExpressionsCache expressionsCache;
     bool check = true;
     while (check) {
-        std::map<std::string, bool> matches;
+        std::unordered_map<std::string, bool> matches;
         for (auto it = templateParams.begin(); it != templateParams.end(); ++it) {
             const Json::Value& registerData = *it;
             std::string id = templateParams.isObject() ? it.key().asString() : registerData["id"].asString();
