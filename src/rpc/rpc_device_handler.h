@@ -25,7 +25,6 @@ public:
     TRPCDeviceHandler(const std::string& requestDeviceLoadConfigSchemaFilePath,
                       const TSerialDeviceFactory& deviceFactory,
                       PTemplateMap templates,
-                      PHandlerConfig handlerConfig,
                       TSerialClientTaskRunner& serialClientTaskRunner,
                       WBMQTT::PMqttRpcServer rpcServer);
 
@@ -34,7 +33,6 @@ private:
 
     Json::Value RequestDeviceLoadConfigSchema;
     PTemplateMap Templates;
-    PHandlerConfig HandlerConfig;
     TSerialClientTaskRunner& SerialClientTaskRunner;
 
     TRPCDeviceParametersCache ParametersCache;

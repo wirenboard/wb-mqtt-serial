@@ -350,7 +350,6 @@ int main(int argc, char* argv[])
             std::make_shared<TRPCDeviceHandler>(RPC_DEVICE_LOAD_CONFIG_REQUEST_SCHEMA_FULL_FILE_PATH,
                                                 deviceFactory,
                                                 templates,
-                                                handlerConfig,
                                                 serialClientTaskRunner,
                                                 rpcServer);
 

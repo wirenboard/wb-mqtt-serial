@@ -40,12 +40,10 @@ const Json::Value& TRPCDeviceParametersCache::Get(const std::string& id, const J
 TRPCDeviceHandler::TRPCDeviceHandler(const std::string& requestDeviceLoadConfigSchemaFilePath,
                                      const TSerialDeviceFactory& deviceFactory,
                                      PTemplateMap templates,
-                                     PHandlerConfig handlerConfig,
                                      TSerialClientTaskRunner& serialClientTaskRunner,
                                      WBMQTT::PMqttRpcServer rpcServer)
     : DeviceFactory(deviceFactory),
       Templates(templates),
-      HandlerConfig(handlerConfig),
       SerialClientTaskRunner(serialClientTaskRunner)
 {
     try {
@@ -88,8 +86,7 @@ void TRPCDeviceHandler::LoadConfig(const Json::Value& request,
     }
 
     try {
-        auto rpcRequest =
-            ParseRPCDeviceLoadConfigRequest(request, DeviceFactory, deviceTemplate, HandlerConfig, ParametersCache);
+        auto rpcRequest = ParseRPCDeviceLoadConfigRequest(request, DeviceFactory, deviceTemplate, ParametersCache);
         SetCallbacks(*rpcRequest, onResult, onError);
         SerialClientTaskRunner.RunTask(request, std::make_shared<TRPCDeviceLoadConfigSerialClientTask>(rpcRequest));
     } catch (const TRPCException& e) {
