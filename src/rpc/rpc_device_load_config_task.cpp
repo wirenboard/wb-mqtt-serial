@@ -215,9 +215,9 @@ PSerialDevice TRPCDeviceLoadConfigRequest::FindDevice(PPort port)
             continue;
         }
         for (const auto& device: portConfig->Devices) {
-            auto deviceConfig = device->DeviceConfig();
+            auto deviceConfig = device->Device->DeviceConfig();
             if (deviceConfig->SlaveId == std::to_string(SlaveId) && deviceConfig->DeviceType == DeviceType) {
-                return device;
+                return device->Device;
             }
         }
     }
