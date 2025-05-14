@@ -1,0 +1,54 @@
+// testing template for register list and parameters confitions checks when parameters declared as object
+{
+    "device_type": "parameters_object",
+    "device": {
+        "name": "parameters object",
+        "id": "parameters object",
+        "channels": [
+            {
+                "name": "Temperature",
+                "reg_type": "input",
+                "format": "s32",
+                "address": "0x0504"
+            }
+        ],
+        "parameters": {
+            "p1": {
+                "title": "p1",
+                "address": 2001
+            },
+            "p2": {
+                "title": "p2",
+                "address": 2002,
+                "fw": "1.2.4"
+            },
+            "p3": {
+                "title": "p3",
+                "address": 2003,
+                "fw": "1.2.2",
+                "condition": "p1==1"
+            },
+            "p4": {
+                "title": "p4",
+                "address": 2004,
+                "readonly": true
+            },
+            "p5": {
+                "title": "p5",
+                "address": 2005,
+                "condition": "p1==0"
+            },
+            "p6": {
+                "title": "p6",
+                "address": 2006,
+                "fw": "1.2.3+wb10"
+            },
+            "p7": {
+                "title": "p7",
+                "address": 2007,
+                "fw": "1.2.3-rc1",
+                "condition": "p5==1"
+            }
+        }
+    }
+}

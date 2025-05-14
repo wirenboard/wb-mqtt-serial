@@ -7,6 +7,11 @@
 
 namespace Modbus // modbus protocol common utilities
 {
+    const int MAX_READ_BITS = 2000;
+    const int MAX_READ_REGISTERS = 125;
+    const int MAX_HOLE_CONTINUOUS_16_BIT_REGISTERS = 10;
+    const int MAX_HOLE_CONTINUOUS_1_BIT_REGISTERS = MAX_HOLE_CONTINUOUS_16_BIT_REGISTERS * 8;
+
     enum RegisterType
     {
         REG_HOLDING = 0, // used for 'setup' regsb
@@ -40,6 +45,14 @@ namespace Modbus // modbus protocol common utilities
         int Type() const;
         PSerialDevice Device() const;
 
+        /**
+         * Reads selected ragister range including holes.
+         *
+         * Throws TSerialDevicePermanentRegisterException if Modbus "Illegal" exception code (1/2/3) received.
+         * Throws TSerialDeviceTransientErrorException on other errors.
+         *
+         * All exceptions are inherited from TSerialDeviceException.
+         */
         void ReadRange(IModbusTraits& traits, TPort& port, uint8_t slaveId, int shift, Modbus::TRegisterCache& cache);
 
         std::chrono::microseconds GetResponseTime() const;

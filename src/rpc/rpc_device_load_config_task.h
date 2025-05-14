@@ -17,10 +17,17 @@ template<> inline uint8_t WBMQTT::JSON::As<uint8_t>(const Json::Value& value)
 class TRPCDeviceLoadConfigRequest
 {
 public:
-    TRPCDeviceLoadConfigRequest(const Json::Value& parameters, const TSerialDeviceFactory& deviceFactory);
+    TRPCDeviceLoadConfigRequest(const TSerialDeviceFactory& deviceFactory,
+                                PDeviceTemplate deviceTemplate,
+                                PHandlerConfig handlerConfig);
 
-    const Json::Value Parameters;
     const TSerialDeviceFactory& DeviceFactory;
+    const std::string DeviceType;
+    const Json::Value& DeviceTemplate;
+    const PHandlerConfig HandlerConfig;
+
+    bool ContinuousReadSupported = false;
+    bool IsWBDevice = false;
 
     TSerialPortConnectionSettings SerialPortSettings;
     std::chrono::milliseconds ResponseTimeout = DefaultResponseTimeout;
@@ -30,15 +37,18 @@ public:
 
     WBMQTT::TMqttRpcServer::TResultCallback OnResult = nullptr;
     WBMQTT::TMqttRpcServer::TErrorCallback OnError = nullptr;
+
+    PSerialDevice FindDevice(PPort port);
 };
 
 typedef std::shared_ptr<TRPCDeviceLoadConfigRequest> PRPCDeviceLoadConfigRequest;
 
 PRPCDeviceLoadConfigRequest ParseRPCDeviceLoadConfigRequest(const Json::Value& request,
-                                                            const Json::Value& parameters,
-                                                            const TSerialDeviceFactory& deviceFactory);
+                                                            const TSerialDeviceFactory& deviceFactory,
+                                                            PDeviceTemplate deviceTemplate,
+                                                            PHandlerConfig handlerConfig);
 
-void ExecRPCDeviceLoadConfigRequest(TPort& port, PRPCDeviceLoadConfigRequest rpcRequest);
+void ExecRPCDeviceLoadConfigRequest(PPort port, PRPCDeviceLoadConfigRequest rpcRequest);
 
 class TRPCDeviceLoadConfigSerialClientTask: public ISerialClientTask
 {
@@ -52,5 +62,11 @@ private:
 };
 
 typedef std::shared_ptr<TRPCDeviceLoadConfigSerialClientTask> PRPCDeviceLoadConfigSerialClientTask;
+typedef std::vector<std::pair<std::string, PRegister>> TRPCRegisterList;
 
+TRPCRegisterList CreateRegisterList(const TDeviceProtocolParams& protocolParams,
+                                    const PSerialDevice& device,
+                                    const Json::Value& parameters,
+                                    const std::string& fwVersion);
+void CheckParametersConditions(const Json::Value& templateParams, Json::Value& parameters);
 Json::Value RawValueToJSON(const TRegisterConfig& reg, TRegisterValue val);
