@@ -1,3 +1,9 @@
+wb-mqtt-serial (2.162.1) stable; urgency=medium
+
+  * Add read parameters cache to Device/LoadConfig RPC
+
+ -- Ilya Titov <ilya.titov@wirenboard.com>  Wed, 14 May 2025 15:56:25 +0300
+
 wb-mqtt-serial (2.162.0) stable; urgency=medium
 
   * Add firmware version checks to device/LoadConfig RPC
