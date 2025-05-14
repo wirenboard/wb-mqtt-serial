@@ -14,6 +14,10 @@ namespace WbRegisters
     const std::string FW_SIGNATURE_REGISTER_NAME = "fw_signature";
     const std::string FW_VERSION_REGISTER_NAME = "fw_version";
 
+    const uint16_t COUNTINUOUS_READ_DISABLED = 0;
+    const uint16_t COUNTINUOUS_READ_ENABLED_TEMPORARY = 1;
+    const uint16_t COUNTINUOUS_READ_ENABLED = 2;
+
     PRegisterConfig GetRegisterConfig(const std::string& name);
 
 } // namespace

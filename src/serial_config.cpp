@@ -786,10 +786,14 @@ void TDeviceChannelConfig::SetEnumTitles(const std::string& value, const TTitleT
     }
 }
 
-TDeviceSetupItemConfig::TDeviceSetupItemConfig(const std::string& name, PRegisterConfig reg, const std::string& value)
+TDeviceSetupItemConfig::TDeviceSetupItemConfig(const std::string& name,
+                                               PRegisterConfig reg,
+                                               const std::string& value,
+                                               const std::string& parameterId)
     : Name(name),
       RegisterConfig(reg),
-      Value(value)
+      Value(value),
+      ParameterId(parameterId)
 {
     try {
         RawValue = ConvertToRawValue(*reg, Value);
@@ -806,6 +810,11 @@ const std::string& TDeviceSetupItemConfig::GetName() const
 const std::string& TDeviceSetupItemConfig::GetValue() const
 {
     return Value;
+}
+
+const std::string& TDeviceSetupItemConfig::GetParameterId() const
+{
+    return ParameterId;
 }
 
 TRegisterValue TDeviceSetupItemConfig::GetRawValue() const

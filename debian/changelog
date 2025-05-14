@@ -1,8 +1,16 @@
-wb-mqtt-serial (2.161.2) stable; urgency=medium
+wb-mqtt-serial (2.162.1) stable; urgency=medium
 
   * Source code refactoring. No functional changes
 
- -- Petr Krasnoshchekov <petr.krasnoshchekov@wirenboard.com>  Tue, 13 May 2025 12:59:11 +0500
+ -- Petr Krasnoshchekov <petr.krasnoshchekov@wirenboard.com>  Wed, 14 May 2025 16:52:30 +0500
+
+wb-mqtt-serial (2.162.0) stable; urgency=medium
+
+  * Add firmware version checks to device/LoadConfig RPC
+  * Add continuous read feature to device/LoadConfig RPC
+  * Add device config usage to device/LoadConfig RPC
+
+ -- Ilya Titov <ilya.titov@wirenboard.com>  Wed, 07 May 2025 09:41:28 +0300
 
 wb-mqtt-serial (2.161.1) stable; urgency=medium
 
@@ -20,7 +28,7 @@ wb-mqtt-serial (2.160.6) stable; urgency=medium
 
   * Add PTemplateMap typedef, no functional changes
 
- -- Ilya Titov <ilya.titov@wirenboard.com>  Tue, 06 May 2025 12:01:52 +0000
+ -- Ilya Titov <ilya.titov@wirenboard.com>  Tue, 06 May 2025 15:01:52 +0300
 
 wb-mqtt-serial (2.160.5) stable; urgency=medium
 

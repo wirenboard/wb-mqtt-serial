@@ -1,0 +1,68 @@
+// testing template for register list and parameters confitions checks when parameters declared as array
+// parameters list order inverted for check that the condition matching works if condition parameter is declared after dependent parameter
+{
+    "device_type": "parameters_array",
+    "device": {
+        "name": "parameters array",
+        "id": "parameters array",
+        "channels": [
+            {
+                "name": "Temperature",
+                "reg_type": "input",
+                "format": "s32",
+                "address": "0x0504"
+            }
+        ],
+        "parameters": [
+            {
+                "id": "p7",
+                "title": "p7",
+                "address": 1007,
+                "fw": "1.2.4"
+            },
+            {
+                "id": "p6",
+                "title": "p6",
+                "address": 1006,
+                "readonly": true
+            },
+            {
+                "id": "p5",
+                "title": "p5",
+                "address": 1005,
+                "fw": "1.2.3+wb10"
+            },
+            {
+                "id": "p4",
+                "title": "p4",
+                "address": 1004,
+                "fw": "1.2.3-rc1",
+                "condition": "p2==1"
+            },
+            {
+                "id": "p3",
+                "title": "p3",
+                "address": 1003,
+                "fw": "1.2.2",
+                "condition": "p1==0"
+            },
+            {
+                "id": "p2",
+                "title": "p2",
+                "address": 1002,
+                "condition": "p1==0"
+            },
+            {
+                "id": "p2",
+                "title": "p2",
+                "address": 1002,
+                "condition": "p1==1"
+            },
+            {
+                "id": "p1",
+                "title": "p1",
+                "address": 1001
+            }
+        ]
+    }
+}
