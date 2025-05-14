@@ -1,3 +1,9 @@
+wb-mqtt-serial (2.162.2) stable; urgency=medium
+
+  * Source code refactoring. No functional changes
+
+ -- Petr Krasnoshchekov <petr.krasnoshchekov@wirenboard.com>  Wed, 14 May 2025 18:01:39 +0500
+
 wb-mqtt-serial (2.162.1) stable; urgency=medium
 
   * Source code refactoring. No functional changes
