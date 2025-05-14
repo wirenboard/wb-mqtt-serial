@@ -17,7 +17,7 @@ namespace
     const uint8_t CLASS_ACCESS_ERROR = 0x07;
 
     const uint8_t DIRECT_REQUEST = 0x01;
-    const uint8_t DIRECT_RESPONSE = 0x00;
+    // const uint8_t DIRECT_RESPONSE = 0x00;
 
     const size_t PACKET_ENVELOPE_SIZE = 8;
     const size_t RESPONSE_HEADER_SIZE = 3;

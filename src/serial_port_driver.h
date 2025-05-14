@@ -23,7 +23,6 @@ struct TDeviceChannel: public TDeviceChannelConfig
     void DoNotPublishNextZeroPressCounter();
 
     PSerialDevice Device;
-    std::vector<PRegister> Registers;
     WBMQTT::PControl Control;
 
 private:

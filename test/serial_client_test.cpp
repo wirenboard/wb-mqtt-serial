@@ -135,20 +135,18 @@ void TSerialClientTest::SetUp()
     auto config = std::make_shared<TDeviceConfig>("fake_sample", "1", "fake");
     config->MaxReadRegisters = 0;
 
-    if (HasSetupRegisters) {
-        PRegisterConfig reg1 = TRegisterConfig::Create(TFakeSerialDevice::REG_FAKE, 100);
-        config->AddSetupItem(PDeviceSetupItemConfig(new TDeviceSetupItemConfig("setup1", reg1, "10")));
-
-        PRegisterConfig reg2 = TRegisterConfig::Create(TFakeSerialDevice::REG_FAKE, 101);
-        config->AddSetupItem(PDeviceSetupItemConfig(new TDeviceSetupItemConfig("setup2", reg2, "11")));
-
-        PRegisterConfig reg3 = TRegisterConfig::Create(TFakeSerialDevice::REG_FAKE, 102);
-        config->AddSetupItem(PDeviceSetupItemConfig(new TDeviceSetupItemConfig("setup3", reg3, "12")));
-    }
-
     config->FrameTimeout = std::chrono::milliseconds(100);
     Device = std::make_shared<TFakeSerialDevice>(config, Port, DeviceFactory.GetProtocol("fake"));
-    Device->InitSetupItems();
+    if (HasSetupRegisters) {
+        PRegisterConfig reg1 = TRegisterConfig::Create(TFakeSerialDevice::REG_FAKE, 100);
+        Device->AddSetupItem(PDeviceSetupItemConfig(new TDeviceSetupItemConfig("setup1", reg1, "10")));
+
+        PRegisterConfig reg2 = TRegisterConfig::Create(TFakeSerialDevice::REG_FAKE, 101);
+        Device->AddSetupItem(PDeviceSetupItemConfig(new TDeviceSetupItemConfig("setup2", reg2, "11")));
+
+        PRegisterConfig reg3 = TRegisterConfig::Create(TFakeSerialDevice::REG_FAKE, 102);
+        Device->AddSetupItem(PDeviceSetupItemConfig(new TDeviceSetupItemConfig("setup3", reg3, "12")));
+    }
     SerialClient = std::make_shared<TSerialClient>(Port, PortOpenCloseSettings, std::chrono::steady_clock::now);
     SerialClient->SetReadCallback([this](PRegister reg) {
         if (reg->GetErrorState().count()) {
@@ -1095,7 +1093,7 @@ void TSerialClientIntegrationTest::FilterConfig(const std::string& device_name)
         port_config->Devices.erase(
             remove_if(port_config->Devices.begin(),
                       port_config->Devices.end(),
-                      [device_name](auto device) { return device->DeviceConfig()->Name != device_name; }),
+                      [device_name](auto device) { return device->Device->DeviceConfig()->Name != device_name; }),
             port_config->Devices.end());
     }
     Config->PortConfigs.erase(remove_if(Config->PortConfigs.begin(),
@@ -1613,8 +1611,7 @@ PMQTTSerialDriver TSerialClientIntegrationTest::StartReconnectTest1Device(bool m
                         [=](const Json::Value&, PRPCConfig config) { return std::make_pair(Port, false); });
 
     if (pollIntervalTest) {
-        Config->PortConfigs[0]->Devices[0]->DeviceConfig()->DeviceChannelConfigs[0]->RegisterConfigs[0]->ReadPeriod =
-            100s;
+        Config->PortConfigs[0]->Devices[0]->Channels[0]->Registers[0]->GetConfig()->ReadPeriod = 100s;
     }
 
     PMQTTSerialDriver mqttDriver = make_shared<TMQTTSerialDriver>(Driver, Config);

@@ -228,19 +228,17 @@ public:
         return config;
     }
 
-    PDeviceChannelConfig MakeChannelConfig(
-        const std::string& deviceName,
-        uint16_t addr,
-        milliseconds readPeriod = 0ms,
-        TRegisterConfig::TSporadicMode sporadicMode = TRegisterConfig::TSporadicMode::DISABLED)
+    void AddRegister(TSerialDevice& device,
+                     uint16_t addr,
+                     milliseconds readPeriod = 0ms,
+                     TRegisterConfig::TSporadicMode sporadicMode = TRegisterConfig::TSporadicMode::DISABLED)
     {
-        auto channel = std::make_shared<TDeviceChannelConfig>("value", deviceName);
-        channel->RegisterConfigs.push_back(TRegisterConfig::Create(Modbus::REG_HOLDING, addr));
+        auto registerConfig = TRegisterConfig::Create(Modbus::REG_HOLDING, addr);
         if (readPeriod != 0ms) {
-            channel->RegisterConfigs[0]->ReadPeriod = readPeriod;
+            registerConfig->ReadPeriod = readPeriod;
         }
-        channel->RegisterConfigs[0]->SporadicMode = sporadicMode;
-        return channel;
+        registerConfig->SporadicMode = sporadicMode;
+        device.AddRegister(registerConfig);
     }
 
     std::shared_ptr<TModbusDevice> MakeDevice(const TModbusDeviceConfig& config)
@@ -249,18 +247,6 @@ public:
                                                config,
                                                Port,
                                                DeviceFactory.GetProtocol("modbus"));
-    }
-
-    std::list<PRegister> GetRegList(PSerialDevice device)
-    {
-        std::list<PRegister> regList;
-        for (const auto& channelConfig: device->DeviceConfig()->DeviceChannelConfigs) {
-            auto channel = std::make_shared<TDeviceChannel>(device, channelConfig);
-            for (const auto& reg: channel->Registers) {
-                regList.push_back(reg);
-            }
-        }
-        return regList;
     }
 
     std::shared_ptr<TFakeSerialPortWithTime> Port;
@@ -275,9 +261,8 @@ TEST_F(TPollTest, SingleDeviceSingleRegister)
 
     Port->SetBaudRate(115200);
     auto config = MakeDeviceConfig("device1", "1");
-    config.CommonConfig->AddChannel(MakeChannelConfig("device1", 1));
     auto device = MakeDevice(config);
-    auto regList = GetRegList(device);
+    AddRegister(*device, 1);
 
     TSerialClientRegisterAndEventsReader serialClient({device}, 50ms, [this]() { return TimeMock.GetTime(); });
     TSerialClientDeviceAccessHandler lastAccessedDevice(serialClient.GetEventsReader());
@@ -295,9 +280,8 @@ TEST_F(TPollTest, SingleDeviceSingleRegisterWithReadPeriod)
 
     Port->SetBaudRate(115200);
     auto config = MakeDeviceConfig("device1", "1");
-    config.CommonConfig->AddChannel(MakeChannelConfig("device1", 1, 100ms));
     auto device = MakeDevice(config);
-    auto regList = GetRegList(device);
+    AddRegister(*device, 1, 100ms);
 
     TSerialClientRegisterAndEventsReader serialClient({device}, 50ms, [this]() { return TimeMock.GetTime(); });
     TSerialClientDeviceAccessHandler lastAccessedDevice(serialClient.GetEventsReader());
@@ -317,10 +301,9 @@ TEST_F(TPollTest, SingleDeviceSeveralRegisters)
     Port->SetBaudRate(115200);
     auto config = MakeDeviceConfig("device1", "1");
     config.CommonConfig->RequestDelay = 10ms;
-    config.CommonConfig->AddChannel(MakeChannelConfig("device1", 1));
-    config.CommonConfig->AddChannel(MakeChannelConfig("device1", 2, 50ms));
     auto device = MakeDevice(config);
-    auto regList = GetRegList(device);
+    AddRegister(*device, 1);
+    AddRegister(*device, 2, 50ms);
 
     TSerialClientRegisterAndEventsReader serialClient({device}, 50ms, [this]() { return TimeMock.GetTime(); });
     TSerialClientDeviceAccessHandler lastAccessedDevice(serialClient.GetEventsReader());
@@ -346,9 +329,8 @@ TEST_F(TPollTest, SingleDeviceSingleRegisterWithEvents)
     Port->SetBaudRate(115200);
     auto config = MakeDeviceConfig("device1", "1");
     config.CommonConfig->RequestDelay = 10ms;
-    config.CommonConfig->AddChannel(MakeChannelConfig("device1", 1, 0ms, TRegisterConfig::TSporadicMode::ONLY_EVENTS));
     auto device = MakeDevice(config);
-    auto regList = GetRegList(device);
+    AddRegister(*device, 1, 0ms, TRegisterConfig::TSporadicMode::ONLY_EVENTS);
 
     TSerialClientRegisterAndEventsReader serialClient({device}, 50ms, [this]() { return TimeMock.GetTime(); });
     TSerialClientDeviceAccessHandler lastAccessedDevice(serialClient.GetEventsReader());
@@ -376,10 +358,9 @@ TEST_F(TPollTest, SingleDeviceSingleRegisterWithEventsAndPolling)
     Port->SetBaudRate(115200);
     auto config = MakeDeviceConfig("device1", "1");
     config.CommonConfig->RequestDelay = 10ms;
-    config.CommonConfig->AddChannel(MakeChannelConfig("device1", 1, 0ms, TRegisterConfig::TSporadicMode::ONLY_EVENTS));
-    config.CommonConfig->AddChannel(MakeChannelConfig("device1", 2));
     auto device = MakeDevice(config);
-    auto regList = GetRegList(device);
+    AddRegister(*device, 1, 0ms, TRegisterConfig::TSporadicMode::ONLY_EVENTS);
+    AddRegister(*device, 2);
 
     TSerialClientRegisterAndEventsReader serialClient({device}, 50ms, [this]() { return TimeMock.GetTime(); });
     TSerialClientDeviceAccessHandler lastAccessedDevice(serialClient.GetEventsReader());
@@ -415,11 +396,10 @@ TEST_F(TPollTest, SingleDeviceSingleRegisterWithEventsAndPollingWithReadPeriod)
     Port->SetBaudRate(115200);
     auto config = MakeDeviceConfig("device1", "1");
     config.CommonConfig->RequestDelay = 10ms;
-    config.CommonConfig->AddChannel(MakeChannelConfig("device1", 1, 0ms, TRegisterConfig::TSporadicMode::ONLY_EVENTS));
-    config.CommonConfig->AddChannel(MakeChannelConfig("device1", 2, 100ms));
-    config.CommonConfig->AddChannel(MakeChannelConfig("device1", 3));
     auto device = MakeDevice(config);
-    auto regList = GetRegList(device);
+    AddRegister(*device, 1, 0ms, TRegisterConfig::TSporadicMode::ONLY_EVENTS);
+    AddRegister(*device, 2, 100ms);
+    AddRegister(*device, 3);
 
     TSerialClientRegisterAndEventsReader serialClient({device}, 50ms, [this]() { return TimeMock.GetTime(); });
     TSerialClientDeviceAccessHandler lastAccessedDevice(serialClient.GetEventsReader());
@@ -495,10 +475,9 @@ TEST_F(TPollTest, SingleDeviceEventsAndBigReadTime)
     Port->SetBaudRate(115200);
     auto config = MakeDeviceConfig("device1", "1");
     config.CommonConfig->RequestDelay = 100ms;
-    config.CommonConfig->AddChannel(MakeChannelConfig("device1", 1, 0ms, TRegisterConfig::TSporadicMode::ONLY_EVENTS));
-    config.CommonConfig->AddChannel(MakeChannelConfig("device1", 2));
     auto device = MakeDevice(config);
-    auto regList = GetRegList(device);
+    AddRegister(*device, 1, 0ms, TRegisterConfig::TSporadicMode::ONLY_EVENTS);
+    AddRegister(*device, 2);
 
     TSerialClientRegisterAndEventsReader serialClient({device}, 50ms, [this]() { return TimeMock.GetTime(); });
     TSerialClientDeviceAccessHandler lastAccessedDevice(serialClient.GetEventsReader());
@@ -549,9 +528,8 @@ TEST_F(TPollTest, SingleDeviceSingleRegisterWithBigReadTime)
     Port->SetBaudRate(115200);
     auto config = MakeDeviceConfig("device1", "1");
     config.CommonConfig->RequestDelay = 100ms;
-    config.CommonConfig->AddChannel(MakeChannelConfig("device1", 1));
     auto device = MakeDevice(config);
-    auto regList = GetRegList(device);
+    AddRegister(*device, 1);
 
     TSerialClientRegisterAndEventsReader serialClient({device}, 50ms, [this]() { return TimeMock.GetTime(); });
     TSerialClientDeviceAccessHandler lastAccessedDevice(serialClient.GetEventsReader());
@@ -573,9 +551,8 @@ TEST_F(TPollTest, SingleDeviceSingleRegisterWithEventsAndErrors)
     Port->SetBaudRate(115200);
     auto config = MakeDeviceConfig("device1", "1");
     config.CommonConfig->RequestDelay = 10ms;
-    config.CommonConfig->AddChannel(MakeChannelConfig("device1", 1, 0ms, TRegisterConfig::TSporadicMode::ONLY_EVENTS));
     auto device = MakeDevice(config);
-    auto regList = GetRegList(device);
+    AddRegister(*device, 1, 0ms, TRegisterConfig::TSporadicMode::ONLY_EVENTS);
 
     TSerialClientRegisterAndEventsReader serialClient({device}, 50ms, [this]() { return TimeMock.GetTime(); });
     TSerialClientDeviceAccessHandler lastAccessedDevice(serialClient.GetEventsReader());
@@ -611,9 +588,8 @@ TEST_F(TPollTest, SingleDeviceEnableEventsError)
     Port->SetBaudRate(115200);
     auto config = MakeDeviceConfig("device1", "1");
     config.CommonConfig->RequestDelay = 10ms;
-    config.CommonConfig->AddChannel(MakeChannelConfig("device1", 1, 0ms, TRegisterConfig::TSporadicMode::ONLY_EVENTS));
     auto device = MakeDevice(config);
-    auto regList = GetRegList(device);
+    AddRegister(*device, 1, 0ms, TRegisterConfig::TSporadicMode::ONLY_EVENTS);
 
     TSerialClientRegisterAndEventsReader serialClient({device}, 50ms, [this]() { return TimeMock.GetTime(); });
     TSerialClientDeviceAccessHandler lastAccessedDevice(serialClient.GetEventsReader());
@@ -644,11 +620,9 @@ TEST_F(TPollTest, SemiSporadicRegister)
     Port->SetBaudRate(115200);
     auto config = MakeDeviceConfig("device1", "1");
     config.CommonConfig->RequestDelay = 10ms;
-    config.CommonConfig->AddChannel(
-        MakeChannelConfig("device1", 1, 0ms, TRegisterConfig::TSporadicMode::EVENTS_AND_POLLING));
-    config.CommonConfig->AddChannel(MakeChannelConfig("device1", 2));
     auto device = MakeDevice(config);
-    auto regList = GetRegList(device);
+    AddRegister(*device, 1, 0ms, TRegisterConfig::TSporadicMode::EVENTS_AND_POLLING);
+    AddRegister(*device, 2);
 
     TSerialClientRegisterAndEventsReader serialClient({device}, 50ms, [this]() { return TimeMock.GetTime(); });
     TSerialClientDeviceAccessHandler lastAccessedDevice(serialClient.GetEventsReader());
@@ -686,9 +660,8 @@ TEST_F(TPollTest, ReconnectWithOnlyEvents)
     Port->SetBaudRate(115200);
     auto config = MakeDeviceConfig("device1", "1");
     config.CommonConfig->RequestDelay = 10ms;
-    config.CommonConfig->AddChannel(MakeChannelConfig("device1", 1, 0ms, TRegisterConfig::TSporadicMode::ONLY_EVENTS));
     auto device = MakeDevice(config);
-    auto regList = GetRegList(device);
+    AddRegister(*device, 1, 0ms, TRegisterConfig::TSporadicMode::ONLY_EVENTS);
 
     TSerialClientRegisterAndEventsReader serialClient({device}, 50ms, [this]() { return TimeMock.GetTime(); });
     TSerialClientDeviceAccessHandler lastAccessedDevice(serialClient.GetEventsReader());
