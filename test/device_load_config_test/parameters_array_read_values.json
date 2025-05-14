@@ -1,6 +1,7 @@
+// fake read values for "parameters_array" template conditions test
 {
-    "p1": 0,
+    "p1": 1,
     "p2": 12,
-    "p3": 33,
+    "p3": 1,
     "p4": 42
 }

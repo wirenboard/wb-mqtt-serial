@@ -325,7 +325,7 @@ TRPCRegisterList CreateRegisterList(const TDeviceProtocolParams& protocolParams,
                 break;
             }
         }
-        if (duplicate || registerData["readonly"].asInt() != 0) {
+        if (duplicate || registerData["readonly"].asBool()) {
             continue;
         }
         if (!fwVersion.empty()) {
@@ -351,18 +351,26 @@ void CheckParametersConditions(const Json::Value& templateParams, Json::Value& p
 {
     TJsonParams jsonParams(parameters);
     TExpressionsCache expressionsCache;
-    std::map<std::string, bool> matches;
-    for (auto it = templateParams.begin(); it != templateParams.end(); ++it) {
-        const Json::Value& registerData = *it;
-        std::string id = templateParams.isObject() ? it.key().asString() : registerData["id"].asString();
-        bool match = CheckCondition(registerData, jsonParams, &expressionsCache);
-        if (matches.find(id) == matches.end() || match) {
-            matches[id] = match;
+    bool check = true;
+    while (check) {
+        std::map<std::string, bool> matches;
+        for (auto it = templateParams.begin(); it != templateParams.end(); ++it) {
+            const Json::Value& registerData = *it;
+            std::string id = templateParams.isObject() ? it.key().asString() : registerData["id"].asString();
+            if (!parameters.isMember(id)) {
+                continue;
+            }
+            bool match = CheckCondition(registerData, jsonParams, &expressionsCache);
+            if (matches.find(id) == matches.end() || match) {
+                matches[id] = match;
+            }
         }
-    }
-    for (auto it = matches.begin(); it != matches.end(); ++it) {
-        if (!it->second) {
-            parameters.removeMember(it->first);
+        check = false;
+        for (auto it = matches.begin(); it != matches.end(); ++it) {
+            if (!it->second) {
+                parameters.removeMember(it->first);
+                check = true;
+            }
         }
     }
 }

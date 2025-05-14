@@ -4,6 +4,10 @@
 using namespace WBMQTT;
 using namespace WBMQTT::Testing;
 
+/**
+ * Checks that the register lists contains only parameters compatible with specific firmware version.
+ * Uses JSON-objects containing parameter ids with register addresses for result matching.
+ */
 TEST(TDeviceLoadConfigTest, CreateRegisterList)
 {
     TSerialDeviceFactory deviceFactory;
@@ -35,6 +39,10 @@ TEST(TDeviceLoadConfigTest, CreateRegisterList)
     }
 }
 
+/**
+ * Checks that the parameter list is not contains items unmatched with template conditions.
+ * Uses JSON-objects containig fake read values and result data for matching.
+ */
 TEST(TDeviceLoadConfigTest, CheckParametersConditions)
 {
     auto commonDeviceSchema(

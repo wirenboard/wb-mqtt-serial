@@ -1,3 +1,4 @@
+// testing template for register list and parameters confitions checks when parameters declared as object
 {
     "device_type": "parameters_object",
     "device": {
