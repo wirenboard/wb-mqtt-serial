@@ -96,20 +96,22 @@ namespace
 
     Json::Value GetScannedDeviceDetails(TPort& port,
                                         const ModbusExt::TScannedDevice& scannedDevice,
-                                        ModbusExt::TModbusExtCommand modbusExtCommand)
+                                        ModbusExt::TModbusExtCommand modbusExtCommand,
+                                        const std::list<PSerialDevice>& polledDevices)
     {
         TRegisterReader reader(port, scannedDevice.SlaveId, scannedDevice.Sn, modbusExtCommand);
         Json::Value errorsJson(Json::arrayValue);
-
         Json::Value deviceJson;
+
+        std::string sn = std::to_string(scannedDevice.Sn);
+
         try {
             deviceJson["device_signature"] = GetDeviceSignature(reader);
-            deviceJson["sn"] =
-                std::to_string(GetSnFromRegister(deviceJson["device_signature"].asString(), scannedDevice.Sn));
+            sn = std::to_string(GetSnFromRegister(deviceJson["device_signature"].asString(), scannedDevice.Sn));
         } catch (const std::exception& e) {
             AppendError(errorsJson, READ_DEVICE_SIGNATURE_ERROR_ID, e.what());
-            deviceJson["sn"] = std::to_string(scannedDevice.Sn);
         }
+        deviceJson["sn"] = sn;
 
         try {
             deviceJson["fw_signature"] = reader.Read<std::string>(WbRegisters::FW_SIGNATURE_REGISTER_NAME);
@@ -149,6 +151,27 @@ namespace
             AppendError(errorsJson, READ_FW_VERSION_ERROR_ID, e.what());
         }
 
+        auto stringSlaveId = std::to_string(scannedDevice.SlaveId);
+        auto rawSn = std::to_string(scannedDevice.Sn);
+        for (const auto& polledDevice: polledDevices) {
+            if (polledDevice->DeviceConfig()->SlaveId == stringSlaveId && polledDevice->Protocol()->IsModbus()) {
+                auto snRegister = polledDevice->GetSnRegister();
+                if (snRegister) {
+                    if (snRegister->GetValue().GetType() == TRegisterValue::ValueType::Undefined) {
+                        auto registerRange = polledDevice->CreateRegisterRange();
+                        registerRange->Add(snRegister, std::chrono::milliseconds::max());
+                        polledDevice->ReadRegisterRange(registerRange);
+                    }
+                    if (snRegister->GetValue().GetType() == TRegisterValue::ValueType::Integer) {
+                        if (rawSn == std::to_string(snRegister->GetValue().Get<uint64_t>())) {
+                            deviceJson["configured_device_type"] = polledDevice->DeviceConfig()->DeviceType;
+                            break;
+                        }
+                    }
+                }
+            }
+        }
+
         return deviceJson;
     }
 }
@@ -162,7 +185,7 @@ PRPCPortScanRequest ParseRPCPortScanRequest(const Json::Value& request)
     return res;
 }
 
-void ExecRPCPortScanRequest(TPort& port, PRPCPortScanRequest rpcRequest)
+void ExecRPCPortScanRequest(TPort& port, PRPCPortScanRequest rpcRequest, const std::list<PSerialDevice>& polledDevices)
 {
     if (!rpcRequest->OnResult) {
         return;
@@ -171,16 +194,16 @@ void ExecRPCPortScanRequest(TPort& port, PRPCPortScanRequest rpcRequest)
     port.SkipNoise();
 
     Json::Value replyJSON;
-    std::vector<ModbusExt::TScannedDevice> devices;
+    std::vector<ModbusExt::TScannedDevice> scannedDevices;
     try {
-        ModbusExt::Scan(port, rpcRequest->ModbusExtCommand, devices);
+        ModbusExt::Scan(port, rpcRequest->ModbusExtCommand, scannedDevices);
     } catch (const std::exception& e) {
         replyJSON["error"] = e.what();
     }
 
     replyJSON["devices"] = Json::Value(Json::arrayValue);
-    for (const auto& device: devices) {
-        replyJSON["devices"].append(GetScannedDeviceDetails(port, device, rpcRequest->ModbusExtCommand));
+    for (const auto& device: scannedDevices) {
+        replyJSON["devices"].append(GetScannedDeviceDetails(port, device, rpcRequest->ModbusExtCommand, polledDevices));
     }
 
     rpcRequest->OnResult(replyJSON);
@@ -213,7 +236,7 @@ ISerialClientTask::TRunResult TRPCPortScanSerialClientTask::Run(PPort port,
         }
         lastAccessedDevice.PrepareToAccess(nullptr);
         TSerialPortSettingsGuard settingsGuard(port, Request->SerialPortSettings);
-        ExecRPCPortScanRequest(*port, Request);
+        ExecRPCPortScanRequest(*port, Request, polledDevices);
     } catch (const std::exception& error) {
         if (Request->OnError) {
             Request->OnError(WBMQTT::E_RPC_SERVER_ERROR, std::string("Port IO error: ") + error.what());

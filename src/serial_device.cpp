@@ -276,12 +276,33 @@ void TSerialDevice::SetConnectionState(TDeviceConnectionState state)
     }
     ConnectionState = state;
     if (state == TDeviceConnectionState::CONNECTED) {
+        // clear serial number on connection as it can be other device than before disconnection
+        if (SnRegister) {
+            SnRegister->SetValue(TRegisterValue());
+        }
         LOG(Info) << "device " << ToString() << " is connected";
     } else {
         LOG(Warn) << "device " << ToString() << " is disconnected";
     }
     for (auto& callback: ConnectionStateChangedCallbacks) {
         callback(shared_from_this());
+    }
+}
+
+PRegister TSerialDevice::GetSnRegister() const
+{
+    return SnRegister;
+}
+
+void TSerialDevice::SetSnRegister(PRegisterConfig regConfig)
+{
+    auto regIt = std::find_if(Registers.begin(), Registers.end(), [&regConfig](const PRegister& reg) {
+        return reg->GetConfig() == regConfig;
+    });
+    if (regIt == Registers.end()) {
+        SnRegister = std::make_shared<TRegister>(shared_from_this(), regConfig);
+    } else {
+        SnRegister = *regIt;
     }
 }
 
