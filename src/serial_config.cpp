@@ -126,6 +126,13 @@ namespace
         return ToDouble(obj[key], key);
     }
 
+    bool IsSerialNumberChannel(const Json::Value& channel_data)
+    {
+        const std::vector<std::string> serialNames{"Serial", "serial_number", "Serial NO"};
+        return serialNames.end() !=
+               std::find(serialNames.begin(), serialNames.end(), channel_data.get("name", std::string()).asString());
+    }
+
     bool ReadChannelsReadonlyProperty(const Json::Value& register_data,
                                       const std::string& key,
                                       bool templateReadonly,
@@ -385,6 +392,10 @@ namespace
 
         Get(channel_data, "units", channel->Units);
 
+        if (IsSerialNumberChannel(channel_data) && registers.size()) {
+            deviceWithChannels.Device->SetSnRegister(registers[0]->GetConfig());
+        }
+
         deviceWithChannels.Channels.push_back(channel);
     }
 
@@ -454,6 +465,15 @@ namespace
                      const TRegisterTypeMap& typeMap)
     {
         if (channel_data.isMember("enabled") && !channel_data["enabled"].asBool()) {
+            if (IsSerialNumberChannel(channel_data)) {
+                deviceWithChannels.Device->SetSnRegister(LoadRegisterConfig(channel_data,
+                                                                            typeMap,
+                                                                            std::string(),
+                                                                            context.factory,
+                                                                            context.device_base_address,
+                                                                            context.stride)
+                                                             .RegisterConfig);
+            }
             return;
         }
 

@@ -227,6 +227,9 @@ public:
 
     void AddOnConnectionStateChangedCallback(TDeviceCallback callback);
 
+    PRegister GetSnRegister() const;
+    void SetSnRegister(PRegisterConfig regConfig);
+
     void AddSetupItem(PDeviceSetupItemConfig item);
     const std::vector<PDeviceSetupItem>& GetSetupItems() const;
 
@@ -247,6 +250,7 @@ private:
     std::list<PRegister> Registers;
     std::chrono::steady_clock::time_point LastReadTime;
     std::vector<TDeviceCallback> ConnectionStateChangedCallbacks;
+    PRegister SnRegister;
 
     // map key is setup item address
     std::unordered_map<std::string, PDeviceSetupItem> SetupItemsByAddress;

@@ -1,3 +1,10 @@
+wb-mqtt-serial (2.164.0) stable; urgency=medium
+
+  * Add configured_device_type parameter to port/Scan RPC response. 
+    It contains the device type from template if the device is configured in wb-mqtt-serial.conf.
+
+ -- Petr Krasnoshchekov <petr.krasnoshchekov@wirenboard.com>  Thu, 15 May 2025 08:59:10 +0500
+
 wb-mqtt-serial (2.163.0) stable; urgency=medium
 
   * Add template for Oven MST-24 stepper motor driver

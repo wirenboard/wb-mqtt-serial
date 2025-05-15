@@ -285,6 +285,23 @@ void TSerialDevice::SetConnectionState(TDeviceConnectionState state)
     }
 }
 
+PRegister TSerialDevice::GetSnRegister() const
+{
+    return SnRegister;
+}
+
+void TSerialDevice::SetSnRegister(PRegisterConfig regConfig)
+{
+    auto regIt = std::find_if(Registers.begin(), Registers.end(), [&regConfig](const PRegister& reg) {
+        return reg->GetConfig() == regConfig;
+    });
+    if (regIt == Registers.end()) {
+        SnRegister = std::make_shared<TRegister>(shared_from_this(), regConfig);
+    } else {
+        SnRegister = *regIt;
+    }
+}
+
 void TSerialDevice::AddSetupItem(PDeviceSetupItemConfig item)
 {
     auto addrIt = SetupItemsByAddress.find(item->GetRegisterConfig()->GetAddress().ToString());
