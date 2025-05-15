@@ -209,6 +209,15 @@ public:
     PDeviceConfig DeviceConfig() const;
     PProtocol Protocol() const;
 
+    /**
+     * @brief Sets the result of the last data transfer operation.
+     *        Successful transfer indicates that a device is connected and responding.
+     *
+     * @warning When reading a register, this method must be called before TRegister::SetValue
+     *          because it clears SnRegister's value.
+     *
+     * @param ok A boolean value indicating whether the transfer was successful (true) or not (false).
+     */
     virtual void SetTransferResult(bool ok);
     TDeviceConnectionState GetConnectionState() const;
     void SetDisconnected();

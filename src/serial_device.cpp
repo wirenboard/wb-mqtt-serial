@@ -133,8 +133,9 @@ void TSerialDevice::ReadRegisterRange(PRegisterRange range)
         try {
             if (reg->GetAvailable() != TRegisterAvailability::UNAVAILABLE) {
                 Port()->SleepSinceLastInteraction(DeviceConfig()->RequestDelay);
-                reg->SetValue(ReadRegisterImpl(*reg->GetConfig()));
+                auto value = ReadRegisterImpl(*reg->GetConfig());
                 SetTransferResult(true);
+                reg->SetValue(value);
             }
         } catch (const TSerialDeviceInternalErrorException& e) {
             reg->SetError(TRegister::TError::ReadError);
@@ -276,6 +277,10 @@ void TSerialDevice::SetConnectionState(TDeviceConnectionState state)
     }
     ConnectionState = state;
     if (state == TDeviceConnectionState::CONNECTED) {
+        // clear serial number on connection as it can be other device than before disconnection
+        if (SnRegister) {
+            SnRegister->SetValue(TRegisterValue());
+        }
         LOG(Info) << "device " << ToString() << " is connected";
     } else {
         LOG(Warn) << "device " << ToString() << " is disconnected";
