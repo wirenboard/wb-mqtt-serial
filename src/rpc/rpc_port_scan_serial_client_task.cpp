@@ -157,16 +157,19 @@ namespace
             if (polledDevice->DeviceConfig()->SlaveId == stringSlaveId && polledDevice->Protocol()->IsModbus()) {
                 auto snRegister = polledDevice->GetSnRegister();
                 if (snRegister) {
-                    if (snRegister->GetValue().GetType() == TRegisterValue::ValueType::Undefined) {
+                    if (polledDevice->GetConnectionState() != TDeviceConnectionState::CONNECTED ||
+                        snRegister->GetValue().GetType() == TRegisterValue::ValueType::Undefined)
+                    {
                         auto registerRange = polledDevice->CreateRegisterRange();
                         registerRange->Add(snRegister, std::chrono::milliseconds::max());
                         polledDevice->ReadRegisterRange(registerRange);
                     }
-                    if (snRegister->GetValue().GetType() == TRegisterValue::ValueType::Integer) {
-                        if (rawSn == std::to_string(snRegister->GetValue().Get<uint64_t>())) {
-                            deviceJson["configured_device_type"] = polledDevice->DeviceConfig()->DeviceType;
-                            break;
-                        }
+                    if (snRegister->GetValue().GetType() == TRegisterValue::ValueType::Integer &&
+                        !snRegister->GetErrorState().test(TRegister::ReadError) &&
+                        rawSn == std::to_string(snRegister->GetValue().Get<uint64_t>()))
+                    {
+                        deviceJson["configured_device_type"] = polledDevice->DeviceConfig()->DeviceType;
+                        break;
                     }
                 }
             }
