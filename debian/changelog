@@ -1,8 +1,14 @@
-wb-mqtt-serial (2.162.3) stable; urgency=medium
+wb-mqtt-serial (2.163.1) stable; urgency=medium
 
   * Add read parameters cache to Device/LoadConfig RPC
 
  -- Ilya Titov <ilya.titov@wirenboard.com>  Wed, 14 May 2025 17:32:31 +0300
+
+wb-mqtt-serial (2.163.0) stable; urgency=medium
+
+  * Add template for Oven MST-24 stepper motor driver
+
+ -- Alexander Getman <alexander.getman@wirenboard.com>  Tue, 14 May 2025 16:35:10 +0300
 
 wb-mqtt-serial (2.162.2) stable; urgency=medium
 
