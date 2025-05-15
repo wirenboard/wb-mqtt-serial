@@ -276,12 +276,12 @@ void TSerialDevice::SetConnectionState(TDeviceConnectionState state)
     }
     ConnectionState = state;
     if (state == TDeviceConnectionState::CONNECTED) {
-        // clear serial number on connection as it can be other device than before disconnection
+        LOG(Info) << "device " << ToString() << " is connected";
+    } else {
+        // clear serial number on disconnection as it can be other device then connected
         if (SnRegister) {
             SnRegister->SetValue(TRegisterValue());
         }
-        LOG(Info) << "device " << ToString() << " is connected";
-    } else {
         LOG(Warn) << "device " << ToString() << " is disconnected";
     }
     for (auto& callback: ConnectionStateChangedCallbacks) {
