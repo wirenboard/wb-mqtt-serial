@@ -88,7 +88,8 @@ void ExecRPCPortLoadModbusRequest(TPort& port, PRPCPortLoadModbusRequest rpcRequ
             rpcRequest->Function == Modbus::EFunction::FN_WRITE_MULTIPLE_COILS ||
             rpcRequest->Function == Modbus::EFunction::FN_WRITE_MULTIPLE_REGISTERS)
         {
-            rpcRequest->ParametersCache.Remove(port.GetDescription(false) + ":" + std::to_string(rpcRequest->SlaveId));
+            std::string id = rpcRequest->ParametersCache.GetId(port, std::to_string(rpcRequest->SlaveId));
+            rpcRequest->ParametersCache.Remove(id);
         }
     } catch (const Modbus::TModbusExceptionError& error) {
         Json::Value replyJSON;

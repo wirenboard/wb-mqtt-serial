@@ -6,13 +6,44 @@ class TRPCDeviceParametersCache
 {
 public:
     TRPCDeviceParametersCache() = default;
+
+    /**
+     * Registes DeviceConnectionStateChanged callbacks to remove cached data if device connection lost.
+     */
+    void RegisterCallbacks(PHandlerConfig handlerConfig);
+
+    /**
+     * Creates cache item identifier string based on simlified port description and device address.
+     * For example: "/dev/ttyRS485-2:12" or "192.168.18.7:2321:33"
+     */
+    std::string GetId(const TPort& port, const std::string& slaveId) const;
+
+    /**
+     * Puts device paramerers data into cache.
+     * This method is thread safe.
+     */
     void Add(const std::string& id, const Json::Value& value);
+
+    /**
+     * Removes device paramerers data from cache.
+     * This method is thread safe.
+     */
     void Remove(const std::string& id);
+
+    /**
+     * Returns true if cache contains device paramerers data or false overwise.
+     * This method is thread safe.
+     */
     bool Contains(const std::string& id) const;
+
+    /**
+     * Returns device paramerers data if cache contains it or defaultData overwise.
+     * This method is thread safe.
+     */
     const Json::Value& Get(const std::string& id, const Json::Value& defaultValue = Json::Value()) const;
 
 private:
-    std::mutex Mutex;
+    mutable std::mutex Mutex;
     std::unordered_map<std::string, Json::Value> DeviceParameters;
 };
 

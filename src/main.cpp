@@ -337,18 +337,7 @@ int main(int argc, char* argv[])
 
             driver->WaitForReady();
             serialDriver = make_shared<TMQTTSerialDriver>(driver, handlerConfig);
-
-            for (const auto& portConfig: handlerConfig->PortConfigs) {
-                for (const auto& device: portConfig->Devices) {
-                    std::string id =
-                        portConfig->Port->GetDescription(false) + ":" + device->Device->DeviceConfig()->SlaveId;
-                    device->Device->AddOnConnectionStateChangedCallback([&parametersCache, id](PSerialDevice device) {
-                        if (device->GetConnectionState() == TDeviceConnectionState::DISCONNECTED) {
-                            parametersCache.Remove(id);
-                        }
-                    });
-                }
-            }
+            parametersCache.RegisterCallbacks(handlerConfig);
         }
 
         TSerialClientTaskRunner serialClientTaskRunner(serialDriver);

@@ -245,7 +245,7 @@ void ExecRPCDeviceLoadConfigRequest(PPort port,
         return;
     }
 
-    const std::string id = port->GetDescription(false) + ":" + std::to_string(rpcRequest->SlaveId);
+    std::string id = rpcRequest->ParametersCache.GetId(*port, std::to_string(rpcRequest->SlaveId));
     if (rpcRequest->ParametersCache.Contains(id)) {
         rpcRequest->OnResult(rpcRequest->ParametersCache.Get(id));
         return;

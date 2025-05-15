@@ -14,6 +14,25 @@ namespace
     }
 }
 
+void TRPCDeviceParametersCache::RegisterCallbacks(PHandlerConfig handlerConfig)
+{
+    for (const auto& portConfig: handlerConfig->PortConfigs) {
+        for (const auto& device: portConfig->Devices) {
+            std::string id = GetId(*portConfig->Port, device->Device->DeviceConfig()->SlaveId);
+            device->Device->AddOnConnectionStateChangedCallback([this, id](PSerialDevice device) {
+                if (device->GetConnectionState() == TDeviceConnectionState::DISCONNECTED) {
+                    Remove(id);
+                }
+            });
+        }
+    }
+}
+
+std::string TRPCDeviceParametersCache::GetId(const TPort& port, const std::string& slaveId) const
+{
+    return port.GetDescription(false) + ":" + slaveId;
+}
+
 void TRPCDeviceParametersCache::Add(const std::string& id, const Json::Value& value)
 {
     std::unique_lock lock(Mutex);
@@ -28,11 +47,13 @@ void TRPCDeviceParametersCache::Remove(const std::string& id)
 
 bool TRPCDeviceParametersCache::Contains(const std::string& id) const
 {
+    std::unique_lock lock(Mutex);
     return DeviceParameters.find(id) != DeviceParameters.end();
 }
 
 const Json::Value& TRPCDeviceParametersCache::Get(const std::string& id, const Json::Value& defaultValue) const
 {
+    std::unique_lock lock(Mutex);
     auto it = DeviceParameters.find(id);
     return it != DeviceParameters.end() ? it->second : defaultValue;
 };
