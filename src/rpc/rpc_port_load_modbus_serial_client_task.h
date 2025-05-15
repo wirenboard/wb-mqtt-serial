@@ -9,6 +9,8 @@
 class TRPCPortLoadModbusRequest: public TRPCPortLoadRequest
 {
 public:
+    TRPCPortLoadModbusRequest(TRPCDeviceParametersCache& parametersCache);
+    TRPCDeviceParametersCache& ParametersCache;
     uint8_t SlaveId;
     uint16_t Address;
     size_t Count;
@@ -22,7 +24,8 @@ class TRPCPortLoadModbusSerialClientTask: public ISerialClientTask
 public:
     TRPCPortLoadModbusSerialClientTask(const Json::Value& request,
                                        WBMQTT::TMqttRpcServer::TResultCallback onResult,
-                                       WBMQTT::TMqttRpcServer::TErrorCallback onError);
+                                       WBMQTT::TMqttRpcServer::TErrorCallback onError,
+                                       TRPCDeviceParametersCache& parametersCache);
 
     ISerialClientTask::TRunResult Run(PPort port,
                                       TSerialClientDeviceAccessHandler& lastAccessedDevice,

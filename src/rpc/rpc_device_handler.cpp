@@ -14,16 +14,60 @@ namespace
     }
 }
 
+void TRPCDeviceParametersCache::RegisterCallbacks(PHandlerConfig handlerConfig)
+{
+    for (const auto& portConfig: handlerConfig->PortConfigs) {
+        for (const auto& device: portConfig->Devices) {
+            std::string id = GetId(*portConfig->Port, device->Device->DeviceConfig()->SlaveId);
+            device->Device->AddOnConnectionStateChangedCallback([this, id](PSerialDevice device) {
+                if (device->GetConnectionState() == TDeviceConnectionState::DISCONNECTED) {
+                    Remove(id);
+                }
+            });
+        }
+    }
+}
+
+std::string TRPCDeviceParametersCache::GetId(const TPort& port, const std::string& slaveId) const
+{
+    return port.GetDescription(false) + ":" + slaveId;
+}
+
+void TRPCDeviceParametersCache::Add(const std::string& id, const Json::Value& value)
+{
+    std::unique_lock lock(Mutex);
+    DeviceParameters[id] = value;
+}
+
+void TRPCDeviceParametersCache::Remove(const std::string& id)
+{
+    std::unique_lock lock(Mutex);
+    DeviceParameters.erase(id);
+}
+
+bool TRPCDeviceParametersCache::Contains(const std::string& id) const
+{
+    std::unique_lock lock(Mutex);
+    return DeviceParameters.find(id) != DeviceParameters.end();
+}
+
+const Json::Value& TRPCDeviceParametersCache::Get(const std::string& id, const Json::Value& defaultValue) const
+{
+    std::unique_lock lock(Mutex);
+    auto it = DeviceParameters.find(id);
+    return it != DeviceParameters.end() ? it->second : defaultValue;
+};
+
 TRPCDeviceHandler::TRPCDeviceHandler(const std::string& requestDeviceLoadConfigSchemaFilePath,
                                      const TSerialDeviceFactory& deviceFactory,
                                      PTemplateMap templates,
-                                     PHandlerConfig handlerConfig,
                                      TSerialClientTaskRunner& serialClientTaskRunner,
+                                     TRPCDeviceParametersCache& parametersCache,
                                      WBMQTT::PMqttRpcServer rpcServer)
     : DeviceFactory(deviceFactory),
       Templates(templates),
-      HandlerConfig(handlerConfig),
-      SerialClientTaskRunner(serialClientTaskRunner)
+      SerialClientTaskRunner(serialClientTaskRunner),
+      ParametersCache(parametersCache)
 {
     try {
         RequestDeviceLoadConfigSchema = WBMQTT::JSON::Parse(requestDeviceLoadConfigSchemaFilePath);
@@ -65,7 +109,7 @@ void TRPCDeviceHandler::LoadConfig(const Json::Value& request,
     }
 
     try {
-        auto rpcRequest = ParseRPCDeviceLoadConfigRequest(request, DeviceFactory, deviceTemplate, HandlerConfig);
+        auto rpcRequest = ParseRPCDeviceLoadConfigRequest(request, DeviceFactory, deviceTemplate, ParametersCache);
         SetCallbacks(*rpcRequest, onResult, onError);
         SerialClientTaskRunner.RunTask(request, std::make_shared<TRPCDeviceLoadConfigSerialClientTask>(rpcRequest));
     } catch (const TRPCException& e) {

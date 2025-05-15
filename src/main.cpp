@@ -302,6 +302,7 @@ int main(int argc, char* argv[])
         }
 
         PMQTTSerialDriver serialDriver;
+        TRPCDeviceParametersCache parametersCache;
 
         if (handlerConfig) {
             if (handlerConfig->Debug) {
@@ -335,8 +336,8 @@ int main(int argc, char* argv[])
             });
 
             driver->WaitForReady();
-
             serialDriver = make_shared<TMQTTSerialDriver>(driver, handlerConfig);
+            parametersCache.RegisterCallbacks(handlerConfig);
         }
 
         TSerialClientTaskRunner serialClientTaskRunner(serialDriver);
@@ -345,13 +346,14 @@ int main(int argc, char* argv[])
                                                                 RPC_PORT_SCAN_REQUEST_SCHEMA_FULL_FILE_PATH,
                                                                 rpcConfig,
                                                                 serialClientTaskRunner,
+                                                                parametersCache,
                                                                 rpcServer);
         auto rpcDeviceHandler =
             std::make_shared<TRPCDeviceHandler>(RPC_DEVICE_LOAD_CONFIG_REQUEST_SCHEMA_FULL_FILE_PATH,
                                                 deviceFactory,
                                                 templates,
-                                                handlerConfig,
                                                 serialClientTaskRunner,
+                                                parametersCache,
                                                 rpcServer);
 
         if (serialDriver) {
