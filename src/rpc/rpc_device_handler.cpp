@@ -41,10 +41,12 @@ TRPCDeviceHandler::TRPCDeviceHandler(const std::string& requestDeviceLoadConfigS
                                      const TSerialDeviceFactory& deviceFactory,
                                      PTemplateMap templates,
                                      TSerialClientTaskRunner& serialClientTaskRunner,
+                                     TRPCDeviceParametersCache& parametersCache,
                                      WBMQTT::PMqttRpcServer rpcServer)
     : DeviceFactory(deviceFactory),
       Templates(templates),
-      SerialClientTaskRunner(serialClientTaskRunner)
+      SerialClientTaskRunner(serialClientTaskRunner),
+      ParametersCache(parametersCache)
 {
     try {
         RequestDeviceLoadConfigSchema = WBMQTT::JSON::Parse(requestDeviceLoadConfigSchemaFilePath);

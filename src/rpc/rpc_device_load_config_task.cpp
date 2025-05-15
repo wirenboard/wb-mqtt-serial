@@ -282,20 +282,9 @@ void ExecRPCDeviceLoadConfigRequest(PPort port,
     result["parameters"] = parameters;
     rpcRequest->OnResult(result);
 
-    if (!useCache) {
-        return;
+    if (useCache) {
+        rpcRequest->ParametersCache.Add(id, result);
     }
-
-    std::list<PSerialDevice>& devices = rpcRequest->ParametersCache.Devices;
-    if (std::find(devices.begin(), devices.end(), device) == devices.end()) {
-        device->AddOnConnectionStateChangedCallback([rpcRequest, id](PSerialDevice device) {
-            if (device->GetConnectionState() == TDeviceConnectionState::DISCONNECTED) {
-                rpcRequest->ParametersCache.Remove(id);
-            }
-        });
-        devices.push_back(device);
-    }
-    rpcRequest->ParametersCache.Add(id, result);
 }
 
 TRPCDeviceLoadConfigSerialClientTask::TRPCDeviceLoadConfigSerialClientTask(PRPCDeviceLoadConfigRequest request)

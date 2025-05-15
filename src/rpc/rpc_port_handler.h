@@ -1,4 +1,5 @@
 #pragma once
+#include "rpc_device_handler.h"
 #include "rpc_port_driver_list.h"
 
 const std::chrono::seconds DefaultRPCTotalTimeout(10);
@@ -11,6 +12,7 @@ public:
                     const std::string& requestPortScanSchemaFilePath,
                     PRPCConfig rpcConfig,
                     TSerialClientTaskRunner& serialClientTaskRunner,
+                    TRPCDeviceParametersCache& parametersCache,
                     WBMQTT::PMqttRpcServer rpcServer);
 
 private:
@@ -19,6 +21,7 @@ private:
     Json::Value RequestPortScanSchema;
     PRPCConfig RPCConfig;
     TSerialClientTaskRunner& SerialClientTaskRunner;
+    TRPCDeviceParametersCache& ParametersCache;
 
     void PortLoad(const Json::Value& request,
                   WBMQTT::TMqttRpcServer::TResultCallback onResult,

@@ -302,6 +302,7 @@ int main(int argc, char* argv[])
         }
 
         PMQTTSerialDriver serialDriver;
+        TRPCDeviceParametersCache parametersCache;
 
         if (handlerConfig) {
             if (handlerConfig->Debug) {
@@ -335,8 +336,19 @@ int main(int argc, char* argv[])
             });
 
             driver->WaitForReady();
-
             serialDriver = make_shared<TMQTTSerialDriver>(driver, handlerConfig);
+
+            for (const auto& portConfig: handlerConfig->PortConfigs) {
+                for (const auto& device: portConfig->Devices) {
+                    std::string id =
+                        portConfig->Port->GetDescription(false) + ":" + device->Device->DeviceConfig()->SlaveId;
+                    device->Device->AddOnConnectionStateChangedCallback([&parametersCache, id](PSerialDevice device) {
+                        if (device->GetConnectionState() == TDeviceConnectionState::DISCONNECTED) {
+                            parametersCache.Remove(id);
+                        }
+                    });
+                }
+            }
         }
 
         TSerialClientTaskRunner serialClientTaskRunner(serialDriver);
@@ -345,12 +357,14 @@ int main(int argc, char* argv[])
                                                                 RPC_PORT_SCAN_REQUEST_SCHEMA_FULL_FILE_PATH,
                                                                 rpcConfig,
                                                                 serialClientTaskRunner,
+                                                                parametersCache,
                                                                 rpcServer);
         auto rpcDeviceHandler =
             std::make_shared<TRPCDeviceHandler>(RPC_DEVICE_LOAD_CONFIG_REQUEST_SCHEMA_FULL_FILE_PATH,
                                                 deviceFactory,
                                                 templates,
                                                 serialClientTaskRunner,
+                                                parametersCache,
                                                 rpcServer);
 
         if (serialDriver) {

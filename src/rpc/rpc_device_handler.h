@@ -6,9 +6,6 @@ class TRPCDeviceParametersCache
 {
 public:
     TRPCDeviceParametersCache() = default;
-
-    std::list<PSerialDevice> Devices;
-
     void Add(const std::string& id, const Json::Value& value);
     void Remove(const std::string& id);
     bool Contains(const std::string& id) const;
@@ -26,6 +23,7 @@ public:
                       const TSerialDeviceFactory& deviceFactory,
                       PTemplateMap templates,
                       TSerialClientTaskRunner& serialClientTaskRunner,
+                      TRPCDeviceParametersCache& parametersCache,
                       WBMQTT::PMqttRpcServer rpcServer);
 
 private:
@@ -34,8 +32,7 @@ private:
     Json::Value RequestDeviceLoadConfigSchema;
     PTemplateMap Templates;
     TSerialClientTaskRunner& SerialClientTaskRunner;
-
-    TRPCDeviceParametersCache ParametersCache;
+    TRPCDeviceParametersCache& ParametersCache;
 
     void LoadConfig(const Json::Value& request,
                     WBMQTT::TMqttRpcServer::TResultCallback onResult,

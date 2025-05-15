@@ -12,9 +12,11 @@ TRPCPortHandler::TRPCPortHandler(const std::string& requestPortLoadSchemaFilePat
                                  const std::string& requestPortScanSchemaFilePath,
                                  PRPCConfig rpcConfig,
                                  TSerialClientTaskRunner& serialClientTaskRunner,
+                                 TRPCDeviceParametersCache& parametersCache,
                                  WBMQTT::PMqttRpcServer rpcServer)
     : RPCConfig(rpcConfig),
-      SerialClientTaskRunner(serialClientTaskRunner)
+      SerialClientTaskRunner(serialClientTaskRunner),
+      ParametersCache(parametersCache)
 {
     try {
         RequestPortLoadSchema = WBMQTT::JSON::Parse(requestPortLoadSchemaFilePath);
@@ -71,7 +73,7 @@ void TRPCPortHandler::PortLoad(const Json::Value& request,
         if (protocol == "modbus") {
             SerialClientTaskRunner.RunTask(
                 request,
-                std::make_shared<TRPCPortLoadModbusSerialClientTask>(request, onResult, onError));
+                std::make_shared<TRPCPortLoadModbusSerialClientTask>(request, onResult, onError, ParametersCache));
         } else {
             SerialClientTaskRunner.RunTask(
                 request,
