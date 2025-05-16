@@ -297,6 +297,8 @@ const Json::Value& TDeviceTemplate::GetTemplate()
             try {
                 Validator->Validate(root);
                 ValidateConditions(root["device"]);
+                // Check that parameters with same ids have same addresses (for parameters declared as array)
+                ValidateParameterAddresses(root["device"]["parameters"]);
             } catch (const std::runtime_error& e) {
                 throw std::runtime_error("File: " + GetFilePath() + " error: " + e.what());
             }
@@ -304,12 +306,6 @@ const Json::Value& TDeviceTemplate::GetTemplate()
             if (WithSubdevices()) {
                 TSubDevicesTemplateMap subdevices(Type, root["device"]);
                 CheckNesting(root, 0, subdevices);
-            }
-            // Check that parameters with same ids have same addresses (for parameters declared as array)
-            try {
-                ValidateParameterAddresses(root["device"]["parameters"]);
-            } catch (const std::runtime_error& e) {
-                throw std::runtime_error("File: " + GetFilePath() + " error: " + e.what());
             }
         }
         Template = root["device"];
