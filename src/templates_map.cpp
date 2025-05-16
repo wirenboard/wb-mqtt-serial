@@ -306,22 +306,10 @@ const Json::Value& TDeviceTemplate::GetTemplate()
                 CheckNesting(root, 0, subdevices);
             }
             // Check that parameters with same ids have same addresses (for parameters declared as array)
-            Json::Value parameters = root["device"]["parameters"];
-            if (parameters.isArray()) {
-                std::unordered_map<std::string, Json::Value> map;
-                for (const auto& parameter: parameters) {
-                    std::string id = parameter["id"].asString();
-                    Json::Value address = parameter["address"];
-                    auto it = map.find(id);
-                    if (it != map.end() && it->second != address) {
-                        throw std::runtime_error(
-                            "File: " + GetFilePath() + " error: Parameter \"" + id +
-                            "\" has few declarations with different address values (" + it->second.asString() +
-                            " and " + address.asString() +
-                            "). All parameter declarations with the same id must have the same addresses.");
-                    }
-                    map[id] = address;
-                }
+            try {
+                ValidateParameterAddresses(root["device"]["parameters"]);
+            } catch (const std::runtime_error& e) {
+                throw std::runtime_error("File: " + GetFilePath() + " error: " + e.what());
             }
         }
         Template = root["device"];
@@ -353,6 +341,39 @@ const std::string& TDeviceTemplate::GetMqttId() const
 {
     return MqttId;
 }
+
+void TDeviceTemplate::ValidateParameterAddresses(const Json::Value& parameters)
+{
+    if (!parameters.isArray()) {
+        return;
+    }
+    std::unordered_map<std::string, Json::Value> addressMap;
+    std::unordered_map<std::string, Json::Value> writeAddressMap;
+    std::string error;
+    for (const auto& parameter: parameters) {
+        std::string id = parameter["id"].asString();
+        Json::Value address = parameter["address"];
+        Json::Value writeAddress = parameter["write_address"];
+        auto addressIt = addressMap.find(id);
+        if (addressIt != addressMap.end() && addressIt->second != address) {
+            error = "Parameter \"" + id + "\" has several declarations with different \"address\" values (" +
+                    addressIt->second.asString() + " and " + address.asString() + "). ";
+            break;
+        }
+        addressMap[id] = address;
+        auto writeAddressIt = writeAddressMap.find(id);
+        if (writeAddressIt != writeAddressMap.end() && writeAddressIt->second != writeAddress) {
+            error = "Parameter \"" + id + "\" has several declarations with different \"write_address\" values (" +
+                    writeAddressIt->second.asString() + " and " + writeAddress.asString() + "). ";
+            break;
+        }
+        writeAddressMap[id] = writeAddress;
+    }
+    if (!error.empty()) {
+        throw std::runtime_error(error + "All parameter declarations with the same id must have the same addresses.");
+    }
+}
+
 //=============================================================================
 //                          TSubDevicesTemplateMap
 //=============================================================================

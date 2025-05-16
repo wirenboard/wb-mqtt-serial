@@ -1,4 +1,4 @@
-wb-mqtt-serial (2.163.2) stable; urgency=medium
+wb-mqtt-serial (2.164.0) stable; urgency=medium
 
   * Add address value validation for template parameters array
 
