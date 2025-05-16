@@ -305,6 +305,24 @@ const Json::Value& TDeviceTemplate::GetTemplate()
                 TSubDevicesTemplateMap subdevices(Type, root["device"]);
                 CheckNesting(root, 0, subdevices);
             }
+            // Check that parameters with same ids have same addresses (for parameters declared as array)
+            Json::Value parameters = root["device"]["parameters"];
+            if (parameters.isArray()) {
+                std::unordered_map<std::string, Json::Value> map;
+                for (const auto& parameter: parameters) {
+                    std::string id = parameter["id"].asString();
+                    Json::Value address = parameter["address"];
+                    auto it = map.find(id);
+                    if (it != map.end() && it->second != address) {
+                        throw std::runtime_error(
+                            "File: " + GetFilePath() + " error: Parameter \"" + id +
+                            "\" has few declarations with different address values (" + it->second.asString() +
+                            " and " + address.asString() +
+                            "). All parameter declarations with the same id must have the same addresses.");
+                    }
+                    map[id] = address;
+                }
+            }
         }
         Template = root["device"];
     }
