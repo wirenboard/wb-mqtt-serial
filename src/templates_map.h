@@ -46,6 +46,8 @@ private:
     bool Subdevices;
     std::string Protocol;
     std::string MqttId;
+
+    void ValidateParameterAddresses(const Json::Value& parameters);
 };
 
 typedef std::shared_ptr<TDeviceTemplate> PDeviceTemplate;

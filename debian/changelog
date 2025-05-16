@@ -1,3 +1,9 @@
+wb-mqtt-serial (2.164.0) stable; urgency=medium
+
+  * Add address value validation for template parameters array
+
+ -- root <ilya.titov@wirenboard.com>  Fri, 16 May 2025 07:45:08 +0000
+
 wb-mqtt-serial (2.163.1) stable; urgency=medium
 
   * Add read parameters cache to Device/LoadConfig RPC

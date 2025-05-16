@@ -166,3 +166,28 @@ TEST_F(TDeviceTemplatesTest, InvalidCondition)
         }
     }
 }
+
+/**
+ * Checks that the TDeviceTemplate::GetTemplate throws exception if template paramerers array item addresses mismatch
+ * for paramaters with the same id.
+ */
+TEST_F(TDeviceTemplatesTest, ParameterAddresses)
+{
+    auto commonDeviceSchema(
+        WBMQTT::JSON::Parse(TLoggedFixture::GetDataFilePath("../wb-mqtt-serial-confed-common.schema.json")));
+    Json::Value templatesSchema(
+        LoadConfigTemplatesSchema(TLoggedFixture::GetDataFilePath("../wb-mqtt-serial-device-template.schema.json"),
+                                  commonDeviceSchema));
+    TTemplateMap templates(templatesSchema);
+    templates.AddTemplatesDir(TLoggedFixture::GetDataFilePath("device-templates"), false);
+    try {
+        templates.GetTemplate("parameters_array_invalid_address")->GetTemplate();
+        ADD_FAILURE() << "Expect std::runtime_error";
+    } catch (const std::runtime_error& e) {
+        std::string error =
+            "File: test/device-templates/config-parameters-array-invalid-address.json error: Parameter \"p2\" has "
+            "several declarations with different \"address\" values (9996 and 9997). All parameter declarations with "
+            "the same id must have the same addresses.";
+        ASSERT_STREQ(error.c_str(), e.what());
+    }
+}

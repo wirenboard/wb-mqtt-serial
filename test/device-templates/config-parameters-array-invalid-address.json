@@ -1,8 +1,8 @@
 {
-    "device_type": "parameters array",
+    "device_type": "parameters_array_invalid_address",
     "device": {
-        "name": "parameters array",
-        "id": "parameters array",
+        "name": "parameters array invalid address",
+        "id": "parameters array invalid address",
         "channels": [
             {
                 "name": "Temperature",
@@ -26,7 +26,7 @@
             {
                 "id": "p2",
                 "title": "p2",
-                "address": 9996,
+                "address": 9997,
                 "condition": "p1==1"
             }
         ]
