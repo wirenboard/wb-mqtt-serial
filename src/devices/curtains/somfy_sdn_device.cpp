@@ -159,7 +159,8 @@ namespace
                                    PProtocol protocol) const override
         {
             uint8_t nodeType = data.get("node_type", Somfy::SONESSE_30).asUInt();
-            return std::make_shared<Somfy::TDevice>(deviceConfig, nodeType, port, protocol);
+            uint8_t applicationMode = data.get("application_mode", Somfy::ROLLER).asUInt();
+            return std::make_shared<Somfy::TDevice>(deviceConfig, nodeType, applicationMode, port, protocol);
         }
     };
 
@@ -196,12 +197,13 @@ void Somfy::TDevice::Register(TSerialDeviceFactory& factory)
     factory.RegisterProtocol(new TUint32SlaveIdProtocol("somfy", RegTypes), new TSomfyDeviceFactory());
 }
 
-Somfy::TDevice::TDevice(PDeviceConfig config, uint8_t nodeType, PPort port, PProtocol protocol)
+Somfy::TDevice::TDevice(PDeviceConfig config, uint8_t nodeType, uint8_t applicationMode, PPort port, PProtocol protocol)
     : TSerialDevice(config, port, protocol),
       TUInt32SlaveId(config->SlaveId),
       OpenCommand{MakeRequest(Somfy::CTRL_MOVETO, SlaveId, nodeType, {0, 0, 0, 0})},
       CloseCommand{MakeRequest(Somfy::CTRL_MOVETO, SlaveId, nodeType, {1, 0, 0, 0})},
-      NodeType(nodeType)
+      NodeType(nodeType),
+      ApplicationMode(applicationMode)
 {}
 
 std::vector<uint8_t> Somfy::TDevice::ExecCommand(const std::vector<uint8_t>& request)
@@ -252,7 +254,7 @@ void Somfy::TDevice::WriteRegisterImpl(const TRegisterConfig& reg, const TRegist
                 Check(SlaveId, ACK, ExecCommand(OpenCommand));
                 return;
             }
-            Check(SlaveId, ACK, ExecCommand(MakeSetPositionRequest(SlaveId, NodeType, value)));
+            Check(SlaveId, ACK, ExecCommand(MakeSetPositionRequest(SlaveId, NodeType, ApplicationMode, value)));
             return;
         }
         case COMMAND: {
@@ -368,11 +370,14 @@ std::vector<uint8_t> Somfy::MakeRequest(uint8_t msg,
     return res;
 }
 
-std::vector<uint8_t> Somfy::MakeSetPositionRequest(uint32_t address, uint8_t nodeType, uint32_t position)
+std::vector<uint8_t> Somfy::MakeSetPositionRequest(uint32_t address,
+                                                   uint8_t nodeType,
+                                                   uint8_t applicationMode,
+                                                   uint32_t position)
 {
     std::vector<uint8_t> payload;
 
-    if (nodeType == Somfy::AC_40) {
+    if (nodeType == Somfy::AC_40 && applicationMode == Somfy::VENETIAN) {
         payload = {0x07, static_cast<uint8_t>(position & 0xFF), 0x00, 0x00, 0x00, 0x00};
     } else {
         payload = {0x04, static_cast<uint8_t>(position & 0xFF), 0x00, 0x00};
