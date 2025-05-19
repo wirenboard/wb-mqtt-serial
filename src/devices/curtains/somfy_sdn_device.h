@@ -41,8 +41,8 @@ namespace Somfy
     {
         std::vector<uint8_t> OpenCommand;
         std::vector<uint8_t> CloseCommand;
-        uint8_t NodeType;
-        uint8_t ApplicationMode;
+        TNodeType NodeType;
+        TApplicationMode ApplicationMode;
 
         std::unordered_map<uint8_t, TRegisterValue> DataCache;
 
@@ -59,7 +59,7 @@ namespace Somfy
         std::vector<uint8_t> MakeDataForSetupCommand(uint8_t header, const std::vector<uint8_t>& readCache) const;
 
     public:
-        TDevice(PDeviceConfig config, uint8_t nodeType, uint8_t applicationMode, PPort port, PProtocol protocol);
+        TDevice(PDeviceConfig config, TNodeType nodeType, TApplicationMode applicationMode, PPort port, PProtocol protocol);
 
         static void Register(TSerialDeviceFactory& factory);
 
@@ -71,11 +71,11 @@ namespace Somfy
 
     std::vector<uint8_t> MakeRequest(uint8_t msg,
                                      uint32_t address,
-                                     uint8_t nodeType,
+                                     TNodeType nodeType,
                                      const std::vector<uint8_t>& data = std::vector<uint8_t>());
     std::vector<uint8_t> MakeSetPositionRequest(uint32_t address,
-                                                uint8_t nodeType,
-                                                uint8_t applicationMode,
+                                                TNodeType nodeType,
+                                                TApplicationMode applicationMode,
                                                 uint32_t position);
 
     std::vector<uint8_t> ParseStatusReport(uint32_t address, uint8_t header, const std::vector<uint8_t>& bytes);

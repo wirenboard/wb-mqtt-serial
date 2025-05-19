@@ -158,8 +158,8 @@ namespace
                                    PPort port,
                                    PProtocol protocol) const override
         {
-            uint8_t nodeType = data.get("node_type", Somfy::SONESSE_30).asUInt();
-            uint8_t applicationMode = data.get("application_mode", Somfy::ROLLER).asUInt();
+            auto nodeType = static_cast<Somfy::TNodeType>(data.get("node_type", Somfy::SONESSE_30).asUInt());
+            auto applicationMode = static_cast<Somfy::TApplicationMode>(data.get("application_mode", Somfy::ROLLER).asUInt());
             return std::make_shared<Somfy::TDevice>(deviceConfig, nodeType, applicationMode, port, protocol);
         }
     };
@@ -197,7 +197,7 @@ void Somfy::TDevice::Register(TSerialDeviceFactory& factory)
     factory.RegisterProtocol(new TUint32SlaveIdProtocol("somfy", RegTypes), new TSomfyDeviceFactory());
 }
 
-Somfy::TDevice::TDevice(PDeviceConfig config, uint8_t nodeType, uint8_t applicationMode, PPort port, PProtocol protocol)
+Somfy::TDevice::TDevice(PDeviceConfig config, Somfy::TNodeType nodeType, Somfy::TApplicationMode applicationMode, PPort port, PProtocol protocol)
     : TSerialDevice(config, port, protocol),
       TUInt32SlaveId(config->SlaveId),
       OpenCommand{MakeRequest(Somfy::CTRL_MOVETO, SlaveId, nodeType, {0, 0, 0, 0})},
@@ -352,7 +352,7 @@ void Somfy::TDevice::InvalidateReadCache()
 
 std::vector<uint8_t> Somfy::MakeRequest(uint8_t msg,
                                         uint32_t address,
-                                        uint8_t nodeType,
+                                        TNodeType nodeType,
                                         const std::vector<uint8_t>& data)
 {
     std::vector<uint8_t> res{msg, 0x00, 0x00, 0xFF, 0xFF, 0x00};
@@ -371,8 +371,8 @@ std::vector<uint8_t> Somfy::MakeRequest(uint8_t msg,
 }
 
 std::vector<uint8_t> Somfy::MakeSetPositionRequest(uint32_t address,
-                                                   uint8_t nodeType,
-                                                   uint8_t applicationMode,
+                                                   Somfy::TNodeType nodeType,
+                                                   Somfy::TApplicationMode applicationMode,
                                                    uint32_t position)
 {
     std::vector<uint8_t> payload;
