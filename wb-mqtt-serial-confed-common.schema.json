@@ -1189,6 +1189,7 @@
             ]
           },
           "default": 0,
+          "condition": "node_type==9",
           "propertyOrder": 13
         }
       }
