@@ -159,7 +159,8 @@ namespace
                                    PProtocol protocol) const override
         {
             auto nodeType = static_cast<Somfy::TNodeType>(data.get("node_type", Somfy::SONESSE_30).asUInt());
-            auto applicationMode = static_cast<Somfy::TApplicationMode>(data.get("application_mode", Somfy::ROLLER).asUInt());
+            auto applicationMode =
+                static_cast<Somfy::TApplicationMode>(data.get("application_mode", Somfy::ROLLER).asUInt());
             return std::make_shared<Somfy::TDevice>(deviceConfig, nodeType, applicationMode, port, protocol);
         }
     };
@@ -197,7 +198,11 @@ void Somfy::TDevice::Register(TSerialDeviceFactory& factory)
     factory.RegisterProtocol(new TUint32SlaveIdProtocol("somfy", RegTypes), new TSomfyDeviceFactory());
 }
 
-Somfy::TDevice::TDevice(PDeviceConfig config, Somfy::TNodeType nodeType, Somfy::TApplicationMode applicationMode, PPort port, PProtocol protocol)
+Somfy::TDevice::TDevice(PDeviceConfig config,
+                        Somfy::TNodeType nodeType,
+                        Somfy::TApplicationMode applicationMode,
+                        PPort port,
+                        PProtocol protocol)
     : TSerialDevice(config, port, protocol),
       TUInt32SlaveId(config->SlaveId),
       OpenCommand{MakeRequest(Somfy::CTRL_MOVETO, SlaveId, nodeType, {0, 0, 0, 0})},
