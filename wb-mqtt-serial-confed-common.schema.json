@@ -14,7 +14,7 @@
               "pattern": "^(0x[A-Fa-f\\d]+|\\d+|(0x[A-Fa-f\\d]+|\\d+):(0x[A-Fa-f\\d]+|\\d+))$",
               "options": {
                 "inputAttributes": {
-                  "placeholder": "decimal (e.g. 123) or hex (e.g. 0xAF)"
+                  "placeholder":  "decimal (e.g. 123) or hex (e.g. 0xAF)"
                 },
                 "patternmessage": "Should be decimal or hex"
               }
@@ -39,16 +39,16 @@
               "options": {
                 "show_opt_in": true,
                 "wb": {
-                  "editor_title": "decimal or hex slave id",
-                  "undefined_title": "broadcast",
-                  "undefined_message": "broadcast_description"
+                    "editor_title": "decimal or hex slave id",
+                    "undefined_title": "broadcast",
+                    "undefined_message" : "broadcast_description"
                 },
                 "inputAttributes": {
-                  "placeholder": "decimal (e.g. 123) or hex (e.g. 0xAF)"
+                  "placeholder":  "decimal (e.g. 123) or hex (e.g. 0xAF)"
                 },
                 "patternmessage": "Should be decimal or hex"
               },
-              "format": "wb-optional"
+              "format" : "wb-optional"
             },
             {
               "type": "integer"
@@ -59,9 +59,9 @@
       }
     },
     "device_name": {
-      "description": "Device name to be displayed in UI",
-      "minLength": 1,
-      "type": "string"
+      "description" : "Device name to be displayed in UI",
+      "minLength" : 1,
+      "type" : "string"
     },
     "deviceProperties": {
       "properties": {
@@ -72,9 +72,9 @@
           "format": "checkbox",
           "propertyOrder": 1
         },
-        "name": {
-          "$ref": "#/definitions/device_name",
-          "title": "Device name",
+        "name" : {
+          "$ref" : "#/definitions/device_name",
+          "title" : "Device name",
           "propertyOrder": 3
         },
         "id": {
@@ -96,7 +96,7 @@
         "read_rate_limit_ms": {
           "type": "integer",
           "title": "Read rate limit (ms)",
-          "description": "read_rate_limit_description",
+          "description" : "read_rate_limit_description",
           "minimum": 0,
           "default": 1000,
           "propertyOrder": 114
@@ -254,13 +254,13 @@
         "enabled": {
           "type": "boolean",
           "title": "Enabled",
-          "default": true,
+          "default" : true,
           "propertyOrder": 1,
           "format": "checkbox"
         },
         "name": {
           "$ref": "#/definitions/channel_name",
-          "title": "Name",
+          "title": "Name", 
           "propertyOrder": 2
         },
         "id": {
@@ -269,12 +269,12 @@
         },
         "type": {
           "$ref": "#/definitions/control_type",
-          "title": "Type",
+          "title": "Type", 
           "propertyOrder": 4
         },
         "reg_type": {
           "$ref": "#/definitions/reg_type",
-          "title": "Register type",
+          "title": "Register type", 
           "propertyOrder": 5
         },
         "units": {
@@ -284,7 +284,7 @@
         },
         "format": {
           "$ref": "#/definitions/format",
-          "title": "Format",
+          "title": "Format", 
           "propertyOrder": 9
         },
         "max": {
@@ -299,30 +299,12 @@
           "type": "number",
           "title": "Scale (value multiplier)",
           "description": "Value displayed = round((value read * scale) + offset) / round_to) * round_to",
-          "default": 1,
+          "default" : 1,
           "propertyOrder": 11,
           "options": {
             "grid_columns": 4,
             "dependencies": {
-              "format": [
-                "s16",
-                "u16",
-                "s8",
-                "u8",
-                "s24",
-                "u24",
-                "s32",
-                "u32",
-                "s64",
-                "u64",
-                "bcd8",
-                "bcd16",
-                "bcd24",
-                "bcd32",
-                "float",
-                "double",
-                "char8"
-              ]
+              "format": ["s16", "u16", "s8", "u8", "s24", "u24", "s32", "u32", "s64", "u64", "bcd8", "bcd16", "bcd24", "bcd32", "float", "double", "char8"]
             }
           }
         },
@@ -330,30 +312,12 @@
           "type": "number",
           "title": "Value offset",
           "description": "Value displayed = round((value read * scale) + offset) / round_to) * round_to",
-          "default": 0,
+          "default" : 0,
           "propertyOrder": 12,
           "options": {
             "grid_columns": 4,
             "dependencies": {
-              "format": [
-                "s16",
-                "u16",
-                "s8",
-                "u8",
-                "s24",
-                "u24",
-                "s32",
-                "u32",
-                "s64",
-                "u64",
-                "bcd8",
-                "bcd16",
-                "bcd24",
-                "bcd32",
-                "float",
-                "double",
-                "char8"
-              ]
+              "format": ["s16", "u16", "s8", "u8", "s24", "u24", "s32", "u32", "s64", "u64", "bcd8", "bcd16", "bcd24", "bcd32", "float", "double", "char8"]
             }
           }
         },
@@ -361,7 +325,7 @@
           "type": "number",
           "title": "Round to",
           "description": "Value displayed = round((value read * scale) + offset) / round_to) * round_to",
-          "default": 1,
+          "default" : 1,
           "propertyOrder": 13,
           "minimum": 0
         },
@@ -398,10 +362,10 @@
         "read_period_ms": {
           "type": "integer",
           "title": "Read period (ms)",
-          "description": "read_period_description",
+          "description" : "read_period_description",
           "minimum": 10,
           "options": {
-            "enum_values": [100, 200],
+            "enum_values": [ 100, 200 ],
             "inputAttributes": {
               "placeholder": "in queue order"
             }
@@ -412,7 +376,7 @@
         "read_rate_limit_ms": {
           "type": "integer",
           "title": "Read rate limit (ms)",
-          "description": "read_rate_limit_description",
+          "description" : "read_rate_limit_description",
           "minimum": 0,
           "default": 1000,
           "propertyOrder": 17
@@ -428,7 +392,7 @@
               "pattern": "^(0x[A-Fa-f\\d]+|\\d+)$",
               "options": {
                 "inputAttributes": {
-                  "placeholder": "decimal (e.g. 123) or hex (e.g. 0xAF)"
+                  "placeholder":  "decimal (e.g. 123) or hex (e.g. 0xAF)"
                 },
                 "patternmessage": "Should be decimal or hex"
               }
@@ -449,7 +413,7 @@
           "pattern": "^(0x[A-Fa-f\\d]+)$",
           "options": {
             "inputAttributes": {
-              "placeholder": "hex with prefix '0x'"
+              "placeholder":  "hex with prefix '0x'"
             },
             "patternmessage": "Should be hex with prefix '0x'"
           }
@@ -523,7 +487,7 @@
     },
     "registerChannel": {
       "allOf": [
-        { "$ref": "#/definitions/register_channel_common" },
+        { "$ref": "#/definitions/register_channel_common"},
         {
           "properties": {
             "address": {
@@ -536,15 +500,15 @@
             }
           },
           "required": ["address"],
-          "defaultProperties": ["address"],
-          "not": { "required": ["write_address"] }
+          "defaultProperties" : ["address"],
+          "not" : {"required": ["write_address"]}
         }
       ]
     },
     "registerChannelSeparateAddress": {
       "title": "Channel with separate r/w addresses",
       "allOf": [
-        { "$ref": "#/definitions/register_channel_common" },
+        { "$ref": "#/definitions/register_channel_common"},
         {
           "properties": {
             "address": {
@@ -571,7 +535,7 @@
     "registerChannelWriteOnly": {
       "title": "Write Only Channel",
       "allOf": [
-        { "$ref": "#/definitions/register_channel_common" },
+        { "$ref": "#/definitions/register_channel_common"},
         {
           "properties": {
             "write_address": {
@@ -584,7 +548,7 @@
           },
           "required": ["write_address"],
           "defaultProperties": ["write_address"],
-          "not": { "required": ["address"] }
+          "not" : {"required": ["address"]}
         }
       ]
     },
@@ -595,7 +559,7 @@
         "enabled": {
           "type": "boolean",
           "title": "Enabled",
-          "default": true,
+          "default" : true,
           "propertyOrder": 1,
           "format": "checkbox"
         },
@@ -646,10 +610,10 @@
         "read_period_ms": {
           "type": "integer",
           "title": "Read period (ms)",
-          "description": "read_period_description",
+          "description" : "read_period_description",
           "minimum": 10,
           "options": {
-            "enum_values": [100, 200],
+            "enum_values": [ 100, 200 ],
             "inputAttributes": {
               "placeholder": "in queue order"
             }
@@ -660,7 +624,7 @@
         "read_rate_limit_ms": {
           "type": "integer",
           "title": "Read rate limit (ms)",
-          "description": "read_rate_limit_description",
+          "description" : "read_rate_limit_description",
           "minimum": 0,
           "default": 1000,
           "propertyOrder": 11
@@ -724,10 +688,10 @@
         "read_period_ms": {
           "type": "integer",
           "title": "Read period (ms)",
-          "description": "read_period_description",
+          "description" : "read_period_description",
           "minimum": 10,
           "options": {
-            "enum_values": [100, 200],
+            "enum_values": [ 100, 200 ],
             "inputAttributes": {
               "placeholder": "in queue order"
             },
@@ -741,7 +705,7 @@
         "read_rate_limit_ms": {
           "type": "integer",
           "title": "Read rate limit (ms)",
-          "description": "read_rate_limit_description",
+          "description" : "read_rate_limit_description",
           "minimum": 0,
           "default": -1,
           "options": {
@@ -838,13 +802,13 @@
         "scale": {
           "type": "number",
           "title": "Scale (value multiplier)",
-          "default": 1,
+          "default" : 1,
           "propertyOrder": 4
         },
         "offset": {
           "type": "number",
           "title": "Value offset",
-          "default": 0,
+          "default" : 0,
           "propertyOrder": 5
         },
         "word_order": {
@@ -853,7 +817,7 @@
         }
       },
       "required": ["reg_type", "address"],
-      "defaultProperties": ["reg_type", "address"]
+      "defaultProperties":  ["reg_type", "address"]
     },
     "channel_name": {
       "type": "string",
@@ -878,34 +842,15 @@
       "title": "Control type",
       "description": "Defaults to 'switch' for coils and discrete inputs, 'text' for others",
       "enum": [
-        "switch",
-        "wo-switch",
-        "pushbutton",
-        "range",
-        "rgb",
-        "text",
-        "value",
-        "temperature",
-        "rel_humidity",
-        "atmospheric_pressure",
-        "rainfall",
-        "wind_speed",
-        "power",
-        "power_consumption",
-        "voltage",
-        "water_flow",
-        "water_consumption",
-        "resistance",
-        "concentration",
-        "heat_energy",
-        "heat_power",
-        "dimmer",
-        "lux",
-        "pressure",
-        "current",
-        "sound_level"
+        "switch", "wo-switch", "pushbutton", "range", "rgb", "text",
+        "value", "temperature", "rel_humidity",
+        "atmospheric_pressure", "rainfall", "wind_speed", "power",
+        "power_consumption", "voltage", "water_flow",
+        "water_consumption", "resistance", "concentration",
+        "heat_energy", "heat_power",
+        "dimmer", "lux", "pressure", "current", "sound_level"
       ],
-      "options": {
+      "options" : {
         "enum_titles": [
           "switch",
           "wo-switch",
@@ -943,107 +888,26 @@
     "reg_type": {
       "type": "string",
       "title": "Register type",
-      "enum": [
-        "coil",
-        "discrete",
-        "holding",
-        "holding_single",
-        "holding_multi",
-        "input",
-        "direct",
-        "relay",
-        "brightness",
-        "param",
-        "relay_mode",
-        "relay_default",
-        "relay_delay",
-        "energy",
-        "array",
-        "param_be",
-        "param_sign_active",
-        "param_sign_reactive",
-        "array12",
-        "default",
-        "param16",
-        "param24",
-        "param32",
-        "power",
-        "freq",
-        "power_factor",
-        "group_single",
-        "temperature",
-        "item_1",
-        "item_2",
-        "item_3",
-        "item_4",
-        "item_5",
-        "alarm",
-        "position",
-        "command",
-        "date",
-        "time",
-        "angle",
-        "type",
-        "status",
-        "zonebit",
-        "press_counter",
-        // obis_* are deprecated, use item_*, temperature and power_factor
-        "obis_cdef",
-        "obis_cdef_pf",
-        "obis_cdef_temp",
-        "obis_cdef_1",
-        "obis_cdef_2",
-        "obis_cdef_3",
-        "obis_cdef_4",
-        "obis_cdef_5"
-      ]
+      "enum": ["coil", "discrete", "holding", "holding_single", "holding_multi", "input", "direct", "relay", 
+               "brightness", "param", "relay_mode", "relay_default", "relay_delay", "energy", "array",
+               "param_be", "param_sign_active", "param_sign_reactive", "array12", "default", "param16", 
+               "param24", "param32", "power", "freq", "power_factor", "group_single", 
+               "temperature", "item_1", "item_2", "item_3", "item_4", "item_5", 
+               "alarm", "position", "command", "date", "time", "angle", "type", "status", "zonebit",
+               "press_counter",
+               // obis_* are deprecated, use item_*, temperature and power_factor
+               "obis_cdef", "obis_cdef_pf", "obis_cdef_temp", "obis_cdef_1", "obis_cdef_2", "obis_cdef_3", "obis_cdef_4", "obis_cdef_5"]
     },
     "format": {
       "type": "string",
       "title": "Format",
-      "enum": [
-        "s16",
-        "u16",
-        "s8",
-        "u8",
-        "s24",
-        "u24",
-        "s32",
-        "u32",
-        "s64",
-        "u64",
-        "bcd8",
-        "bcd16",
-        "bcd24",
-        "bcd32",
-        "float",
-        "double",
-        "char8",
-        "string",
-        "string8"
-      ],
+      "enum": ["s16", "u16", "s8", "u8", "s24", "u24", "s32", "u32", "s64", "u64", "bcd8", "bcd16", "bcd24", "bcd32", "float", "double", "char8", "string", "string8"],
       "options": {
-        "enum_titles": [
-          "Signed 16-bit integer",
-          "Unsigned 16-bit integer",
-          "Signed 8-bit integer",
-          "Unsigned 8-bit integer",
-          "Signed 24-bit integer",
-          "Unsigned 24-bit integer",
-          "Signed 32-bit integer",
-          "Unsigned 32-bit integer",
-          "Signed 64-bit integer",
-          "Unsigned 64-bit integer",
-          "8-bit BCD",
-          "16-bit BCD",
-          "24-bit BCD",
-          "32-bit BCD",
-          "IEEE754 32-bit float",
-          "IEEE754 64-bit float (double)",
-          "8-bit ASCII char",
-          "String",
-          "String"
-        ]
+        "enum_titles" : [ "Signed 16-bit integer", "Unsigned 16-bit integer", "Signed 8-bit integer", "Unsigned 8-bit integer",
+                          "Signed 24-bit integer", "Unsigned 24-bit integer", "Signed 32-bit integer", "Unsigned 32-bit integer",
+                          "Signed 64-bit integer", "Unsigned 64-bit integer",
+                          "8-bit BCD", "16-bit BCD","24-bit BCD", "32-bit BCD", "IEEE754 32-bit float", "IEEE754 64-bit float (double)",
+                          "8-bit ASCII char", "String", "String"]
       }
     },
     "word_order": {
@@ -1051,12 +915,10 @@
       "title": "16-bit Word Order",
       "enum": ["big_endian", "little_endian"],
       "options": {
-        "enum_titles": [
-          "Big-endian ( [0xAA 0xBB] [0xCC 0xDD] => 0xAABBCCDD)",
-          "Little-endian ( [0xAA 0xBB] [0xCC 0xDD] => 0xCCDDAABB)"
-        ]
+        "enum_titles" : [ "Big-endian ( [0xAA 0xBB] [0xCC 0xDD] => 0xAABBCCDD)",
+                          "Little-endian ( [0xAA 0xBB] [0xCC 0xDD] => 0xCCDDAABB)"]
       },
-      "default": "big_endian"
+      "default" : "big_endian"
     },
     "address": {
       "title": "Address",
@@ -1068,7 +930,7 @@
           "pattern": "^(0x[A-Fa-f\\d]+|\\d+)$",
           "options": {
             "inputAttributes": {
-              "placeholder": "decimal (e.g. 123) or hex (e.g. 0xAF)"
+              "placeholder":  "decimal (e.g. 123) or hex (e.g. 0xAF)"
             },
             "patternmessage": "Should be decimal or hex"
           }
@@ -1079,7 +941,7 @@
           "pattern": "^((0x[A-Fa-f\\d]+|\\d+):(\\d+):(\\d+))$",
           "options": {
             "inputAttributes": {
-              "placeholder": "address:offset:bitwidth"
+              "placeholder":  "address:offset:bitwidth"
             },
             "patternmessage": "Address should be decimal or hex, offset and bitwidth separated by ':'"
           }
@@ -1103,7 +965,7 @@
           "pattern": "^(0x[A-Fa-f\\d]+|\\d+)$",
           "options": {
             "inputAttributes": {
-              "placeholder": "decimal (e.g. 123) or hex (e.g. 0xAF)"
+              "placeholder":  "decimal (e.g. 123) or hex (e.g. 0xAF)"
             },
             "patternmessage": "Should be decimal or hex"
           }
@@ -1127,7 +989,7 @@
           "pattern": "^(0x[A-Fa-f\\d]+|\\d+)$",
           "options": {
             "inputAttributes": {
-              "placeholder": "decimal (e.g. 123) or hex (e.g. 0xAF)"
+              "placeholder":  "decimal (e.g. 123) or hex (e.g. 0xAF)"
             },
             "patternmessage": "Should be decimal or hex"
           }
@@ -1192,7 +1054,7 @@
           "propertyOrder": 6,
           "options": {
             "inputAttributes": {
-              "placeholder": "X.X.X.X.X.X"
+              "placeholder":  "X.X.X.X.X.X"
             },
             "patternmessage": "OBIS code should contain 6 numbers separated by dots (X.X.X.X.X.X)"
           }
@@ -1208,7 +1070,7 @@
         { "$ref": "#/definitions/dlms_address" }
       ],
       "format": "wb-object",
-      "options": {
+      "options" : {
         "wb": {
           "disable_panel": true
         }
@@ -1321,7 +1183,10 @@
           "type": "integer",
           "enum": [0, 1],
           "options": {
-            "enum_titles": ["Roller blind", "Venetian blind"]
+            "enum_titles": [
+              "Roller blind",
+              "Venetian blind"
+            ]
           },
           "default": 0,
           "propertyOrder": 13
@@ -1355,7 +1220,7 @@
         { "$ref": "#/definitions/string_address" }
       ],
       "format": "wb-object",
-      "options": {
+      "options" : {
         "wb": {
           "disable_panel": true
         }
@@ -1498,7 +1363,7 @@
 
   "required": ["device_type"],
 
-  "defaultProperties": ["slave_id", "device_type"],
+  "defaultProperties": [ "slave_id", "device_type"],
 
   "translations": {
     "en": {
@@ -1555,8 +1420,8 @@
       "Command name": "Название команды",
       "Used for logging/debugging purposes only": "Используется только для диагностических сообщений",
       "Address": "Адрес",
-      "Read Address": "Адрес для чтения",
-      "Write Address": "Адрес для записи",
+      "Read Address" : "Адрес для чтения",
+      "Write Address" : "Адрес для записи",
       "Register index (0-65535 in case of Modbus)": "Номер регистра (0-65535 для Modbus)",
       "Value": "Значение",
       "Enabled": "Включено",
@@ -1590,7 +1455,7 @@
       "Register type": "Тип регистра",
       "Format": "Формат",
       "Signed 16-bit integer": "16-битное целое со знаком",
-      "Unsigned 16-bit integer": "16-битное целое без знака",
+      "Unsigned 16-bit integer": "16-битное целое без знака", 
       "Signed 8-bit integer": "8-битное целое со знаком",
       "Unsigned 8-bit integer": "8-битное целое без знака",
       "Signed 24-bit integer": "24-битное целое со знаком",
@@ -1610,7 +1475,7 @@
       "OBIS code should contain 6 numbers separated by dots (X.X.X.X.X.X)": "Код OBIS должен состоять из 6 чисел, разделённых точками",
       "Custom channels": "Каналы, заданные пользователем",
       "DLMS client address": "Адрес клиента DLMS",
-      "16 - public client (default), 32 - SPODES measurements reader, 48 - SPODES configurator": "16 - публичный клиент (по умолчанию), 32 - считыватель показаний СПОДЭС, 48 - конфигуратор СПОДЭС",
+      "16 - public client (default), 32 - SPODES measurements reader, 48 - SPODES configurator": "16 - публичный клиент (по умолчанию), 32 - считыватель показаний СПОДЭС, 48 - конфигуратор СПОДЭС", 
       "Custom setup commands": "Команды настройки",
       "Motor type": "Тип двигателя",
       "Application mode": "Режим",
