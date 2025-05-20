@@ -326,8 +326,10 @@ namespace
         }
 
         std::string type_str(Read(channel_data, "type", default_type_str));
-        if (type_str == "wo-switch") {
-            type_str = "switch";
+        if (type_str == "wo-switch" || type_str == "pushbutton") {
+            if (type_str == "wo-switch") {
+                type_str = "switch";
+            }
             for (auto& reg: registers) {
                 reg->GetConfig()->AccessType = TRegisterConfig::EAccessType::WRITE_ONLY;
             }
