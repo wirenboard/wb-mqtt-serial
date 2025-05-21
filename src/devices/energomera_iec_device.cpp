@@ -241,8 +241,8 @@ void TEnergomeraIecWithFastReadDevice::ReadRegisterRange(PRegisterRange abstract
         uint8_t resp[RESPONSE_BUF_LEN] = {};
         char* presp = ReadResponse(*Port(), resp, RESPONSE_BUF_LEN, *DeviceConfig());
 
-        ProcessResponse(*range, presp);
         SetTransferResult(true);
+        ProcessResponse(*range, presp);
     } catch (const TSerialDeviceException& e) {
         for (auto& r: range->RegisterList()) {
             r->SetError(TRegister::TError::ReadError);

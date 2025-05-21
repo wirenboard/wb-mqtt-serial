@@ -1,8 +1,15 @@
-wb-mqtt-serial (2.165.0) stable; urgency=medium
+wb-mqtt-serial (2.166.0) stable; urgency=medium
 
   * Add read parameters featute for non-Modbus devices to Device/LoadConfig RPC
 
- -- Ilya Titov <ilya.titov@wirenboard.com>  Wed, 21 May 2025 13:12:16 +0300
+ -- Ilya Titov <ilya.titov@wirenboard.com>  Wed, 21 May 2025 13:42:16 +0300
+
+wb-mqtt-serial (2.165.0) stable; urgency=medium
+
+  * Add configured_device_type parameter to port/Scan RPC response. 
+    It contains the device type from template if the device is configured in wb-mqtt-serial.conf.
+
+ -- Petr Krasnoshchekov <petr.krasnoshchekov@wirenboard.com>  Wed, 21 May 2025 15:12:30 +0500
 
 wb-mqtt-serial (2.164.3) stable; urgency=medium
 
