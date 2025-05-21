@@ -348,19 +348,21 @@ void TDeviceTemplate::ValidateParameterAddresses(const Json::Value& parameters)
     std::string error;
     for (const auto& parameter: parameters) {
         std::string id = parameter["id"].asString();
-        Json::Value address = parameter["address"];
-        Json::Value writeAddress = parameter["write_address"];
+        Json::Value address = parameter[SerialConfig::ADDRESS_PROPERTY_NAME];
+        Json::Value writeAddress = parameter[SerialConfig::WRITE_ADDRESS_PROPERTY_NAME];
         auto addressIt = addressMap.find(id);
         if (addressIt != addressMap.end() && addressIt->second != address) {
-            error = "Parameter \"" + id + "\" has several declarations with different \"address\" values (" +
-                    addressIt->second.asString() + " and " + address.asString() + "). ";
+            error = "Parameter \"" + id + "\" has several declarations with different \"" +
+                    SerialConfig::ADDRESS_PROPERTY_NAME + "\" values (" + addressIt->second.asString() + " and " +
+                    address.asString() + "). ";
             break;
         }
         addressMap[id] = address;
         auto writeAddressIt = writeAddressMap.find(id);
         if (writeAddressIt != writeAddressMap.end() && writeAddressIt->second != writeAddress) {
-            error = "Parameter \"" + id + "\" has several declarations with different \"write_address\" values (" +
-                    writeAddressIt->second.asString() + " and " + writeAddress.asString() + "). ";
+            error = "Parameter \"" + id + "\" has several declarations with different \"" +
+                    SerialConfig::WRITE_ADDRESS_PROPERTY_NAME + "\" values (" + writeAddressIt->second.asString() +
+                    " and " + writeAddress.asString() + "). ";
             break;
         }
         writeAddressMap[id] = writeAddress;

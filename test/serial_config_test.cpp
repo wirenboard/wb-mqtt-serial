@@ -157,14 +157,11 @@ protected:
 
     PHandlerConfig GetConfig(const std::string& filePath)
     {
-        auto commonDeviceSchema(
-            WBMQTT::JSON::Parse(TLoggedFixture::GetDataFilePath("../wb-mqtt-serial-confed-common.schema.json")));
-        TTemplateMap templateMap(
-            LoadConfigTemplatesSchema(GetDataFilePath("../wb-mqtt-serial-device-template.schema.json"),
-                                      commonDeviceSchema));
-        templateMap.AddTemplatesDir(GetDataFilePath("device-templates/"));
+        auto commonDeviceSchema(GetCommonDeviceSchema());
         auto portsSchema(WBMQTT::JSON::Parse(TLoggedFixture::GetDataFilePath("../wb-mqtt-serial-ports.schema.json")));
         TProtocolConfedSchemasMap protocolSchemas(TLoggedFixture::GetDataFilePath("../protocols"), commonDeviceSchema);
+        TTemplateMap templateMap(GetTemplatesSchema());
+        templateMap.AddTemplatesDir(GetDataFilePath("device-templates/"));
         return LoadConfig(GetDataFilePath(filePath),
                           DeviceFactory,
                           commonDeviceSchema,
@@ -205,14 +202,11 @@ TEST_F(TConfigParserTest, SetupCondition)
 
 TEST_F(TConfigParserTest, UnsuccessfulParse)
 {
-    auto commonDeviceSchema(
-        WBMQTT::JSON::Parse(TLoggedFixture::GetDataFilePath("../wb-mqtt-serial-confed-common.schema.json")));
-    TTemplateMap templateMap(LoadConfigTemplatesSchema(GetDataFilePath("../wb-mqtt-serial-device-template.schema.json"),
-                                                       commonDeviceSchema));
-    templateMap.AddTemplatesDir(GetDataFilePath("parser_test/templates/"));
+    auto commonDeviceSchema(GetCommonDeviceSchema());
     auto portsSchema(WBMQTT::JSON::Parse(TLoggedFixture::GetDataFilePath("../wb-mqtt-serial-ports.schema.json")));
     TProtocolConfedSchemasMap protocolSchemas(TLoggedFixture::GetDataFilePath("../protocols"), commonDeviceSchema);
-
+    TTemplateMap templateMap(GetTemplatesSchema());
+    templateMap.AddTemplatesDir(GetDataFilePath("parser_test/templates/"));
     IterateDirByPattern(
         GetDataFilePath("configs/unsuccessful"),
         "unsuccessful-",
@@ -236,10 +230,7 @@ TEST_F(TConfigParserTest, UnsuccessfulParse)
 
 TEST_F(TConfigParserTest, MergeDeviceConfigWithTemplate)
 {
-    auto commonDeviceSchema(
-        WBMQTT::JSON::Parse(TLoggedFixture::GetDataFilePath("../wb-mqtt-serial-confed-common.schema.json")));
-    TTemplateMap templateMap(LoadConfigTemplatesSchema(GetDataFilePath("../wb-mqtt-serial-device-template.schema.json"),
-                                                       commonDeviceSchema));
+    TTemplateMap templateMap(GetTemplatesSchema());
     templateMap.AddTemplatesDir(GetDataFilePath("parser_test/templates/"));
 
     for (auto i = 1; i <= 13; ++i) {

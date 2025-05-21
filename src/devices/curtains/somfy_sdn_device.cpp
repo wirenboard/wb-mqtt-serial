@@ -269,12 +269,12 @@ void Somfy::TDevice::WriteRegisterImpl(const TRegisterConfig& reg, const TRegist
                 value >>= 8;
                 data.push_back(value & 0xFF);
             }
-            auto addr = GetUint32RegisterAddress(reg.GetAddress());
+            auto addr = GetUint32RegisterAddress(reg.GetWriteAddress());
             Check(SlaveId, ACK, ExecCommand(MakeRequest(addr, SlaveId, NodeType, data)));
             return;
         }
         case PARAM: {
-            auto requestHeader = GetUint32RegisterAddress(reg.GetAddress());
+            auto requestHeader = GetUint32RegisterAddress(reg.GetWriteAddress());
             auto it = WriteCache.find(requestHeader);
             if (it == WriteCache.end()) {
                 throw TSerialDeviceTransientErrorException("Register " + reg.ToString() +
@@ -338,9 +338,6 @@ TRegisterValue Somfy::TDevice::ReadRegisterImpl(const TRegisterConfig& reg)
         case PARAM: {
             const auto& addr = dynamic_cast<const TSomfyAddress&>(reg.GetAddress());
             return GetCachedResponse(addr.Get(), addr.GetResponseHeader(), reg.GetDataOffset(), reg.GetDataWidth());
-        }
-        case COMMAND: {
-            return TRegisterValue{1};
         }
         case ANGLE: {
             // See 6.5.1 Device Status / Motor Position

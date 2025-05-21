@@ -156,9 +156,6 @@ std::vector<uint8_t> Aok::TDevice::ExecCommand(const TRequest& request)
 TRegisterValue Aok::TDevice::ReadRegisterImpl(const TRegisterConfig& reg)
 {
     switch (reg.Type) {
-        case COMMAND: {
-            return TRegisterValue{1};
-        }
         case POSITION: {
             return GetCachedResponse(MOTOR_STATUS, 0, MOTOR_STATUS_POSITION_OFFSET * 8, 8);
         }

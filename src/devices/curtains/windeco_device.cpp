@@ -105,7 +105,7 @@ void WinDeco::TDevice::WriteRegisterImpl(const TRegisterConfig& reg, const TRegi
         return;
     }
     if (reg.Type == COMMAND) {
-        uint8_t addr = GetUint32RegisterAddress(reg.GetAddress());
+        uint8_t addr = GetUint32RegisterAddress(reg.GetWriteAddress());
         CheckCommandResponse(ZoneId, CurtainId, addr, ExecCommand(MakeRequest(ZoneId, CurtainId, addr)));
         return;
     }
@@ -119,8 +119,6 @@ TRegisterValue WinDeco::TDevice::ReadRegisterImpl(const TRegisterConfig& reg)
             return TRegisterValue{ParsePositionResponse(ZoneId, CurtainId, ExecCommand(GetPositionCommand))};
         case PARAM:
             return TRegisterValue{ParseStateResponse(ZoneId, CurtainId, ExecCommand(GetStateCommand))};
-        case COMMAND:
-            return TRegisterValue{1};
     }
     throw TSerialDevicePermanentRegisterException("Unsupported register type");
 }
