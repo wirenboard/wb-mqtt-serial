@@ -24,6 +24,7 @@ workspace.xml
 **/.settings
 .idea
 .devcontainer
+.zed
 
 # core
 *.core
