@@ -1153,6 +1153,10 @@ It's designed to be used on [Wiren Board](https://wirenboard.com/en/) family of 
             // сигнатура прошивки
             "fw_signature": "mr6cG",
 
+            // если устройство настроено для опроса в wb-mqtt-serial,
+            // то в этом параметре передаётся тип устройства из шаблона
+            "configured_device_type": "WB-MR6C",
+
             // список ошибок работы с конкретным устройством
             "errors": [
                 {

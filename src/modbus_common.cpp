@@ -621,6 +621,7 @@ namespace Modbus // modbus protocol common utilities
                            Modbus::TRegisterCache& cache)
     {
         auto data = Modbus::ExtractResponseData(function, pdu);
+        range.Device()->SetTransferResult(true);
         if (IsSingleBitType(range.Type())) {
             ParseSingleBitReadResponse(data, range);
             return;
@@ -761,7 +762,6 @@ namespace Modbus // modbus protocol common utilities
         }
         try {
             range.ReadRange(traits, port, slaveId, shift, cache);
-            range.Device()->SetTransferResult(true);
         } catch (const TSerialDevicePermanentRegisterException& e) {
             if (range.HasHoles()) {
                 range.Device()->SetSupportsHoles(false);

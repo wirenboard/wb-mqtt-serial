@@ -209,6 +209,15 @@ public:
     PDeviceConfig DeviceConfig() const;
     PProtocol Protocol() const;
 
+    /**
+     * @brief Sets the result of the last data transfer operation.
+     *        Successful transfer indicates that a device is connected and responding.
+     *
+     * @warning When reading a register, this method must be called before TRegister::SetValue
+     *          because it clears SnRegister's value.
+     *
+     * @param ok A boolean value indicating whether the transfer was successful (true) or not (false).
+     */
     virtual void SetTransferResult(bool ok);
     TDeviceConnectionState GetConnectionState() const;
     void SetDisconnected();
@@ -226,6 +235,9 @@ public:
     void SetLastReadTime(std::chrono::steady_clock::time_point readTime);
 
     void AddOnConnectionStateChangedCallback(TDeviceCallback callback);
+
+    PRegister GetSnRegister() const;
+    void SetSnRegister(PRegisterConfig regConfig);
 
     void AddSetupItem(PDeviceSetupItemConfig item);
     const std::vector<PDeviceSetupItem>& GetSetupItems() const;
@@ -247,6 +259,7 @@ private:
     std::list<PRegister> Registers;
     std::chrono::steady_clock::time_point LastReadTime;
     std::vector<TDeviceCallback> ConnectionStateChangedCallbacks;
+    PRegister SnRegister;
 
     // map key is setup item address
     std::unordered_map<std::string, PDeviceSetupItem> SetupItemsByAddress;
