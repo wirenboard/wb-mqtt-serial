@@ -23,10 +23,8 @@ public:
                                 TRPCDeviceParametersCache& parametersCache);
 
     const TSerialDeviceFactory& DeviceFactory;
-    const std::string DeviceType;
-    const Json::Value& DeviceTemplate;
-    const std::string& Protocol;
 
+    PDeviceTemplate DeviceTemplate;
     TRPCDeviceParametersCache& ParametersCache;
     bool ContinuousReadSupported = false;
     bool IsWBDevice = false;

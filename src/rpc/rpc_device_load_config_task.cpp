@@ -28,14 +28,18 @@ namespace
                                PRPCDeviceLoadConfigRequest rpcRequest,
                                const TDeviceProtocolParams& protocolParams)
     {
-        auto config =
-            std::make_shared<TDeviceConfig>("RPC Device", std::to_string(rpcRequest->SlaveId), rpcRequest->Protocol);
-        if (rpcRequest->Protocol == "modbus") {
+        auto config = std::make_shared<TDeviceConfig>("RPC Device",
+                                                      std::to_string(rpcRequest->SlaveId),
+                                                      rpcRequest->DeviceTemplate->GetProtocol());
+        if (rpcRequest->DeviceTemplate->GetProtocol() == "modbus") {
             config->MaxRegHole = Modbus::MAX_HOLE_CONTINUOUS_16_BIT_REGISTERS;
             config->MaxBitHole = Modbus::MAX_HOLE_CONTINUOUS_1_BIT_REGISTERS;
             config->MaxReadRegisters = Modbus::MAX_READ_REGISTERS;
         }
-        return protocolParams.factory->CreateDevice(rpcRequest->DeviceTemplate, config, port, protocolParams.protocol);
+        return protocolParams.factory->CreateDevice(rpcRequest->DeviceTemplate->GetTemplate(),
+                                                    config,
+                                                    port,
+                                                    protocolParams.protocol);
     }
 
     bool ReadModbusRegister(Modbus::IModbusTraits& traits,
@@ -221,20 +225,18 @@ TRPCDeviceLoadConfigRequest::TRPCDeviceLoadConfigRequest(const TSerialDeviceFact
                                                          PDeviceTemplate deviceTemplate,
                                                          TRPCDeviceParametersCache& parametersCache)
     : DeviceFactory(deviceFactory),
-      DeviceType(deviceTemplate->Type),
-      DeviceTemplate(deviceTemplate->GetTemplate()),
-      Protocol(deviceTemplate->GetProtocol()),
+      DeviceTemplate(deviceTemplate),
       ParametersCache(parametersCache)
 {
-    ContinuousReadSupported = DeviceTemplate["enable_wb_continuous_read"].asBool();
-    IsWBDevice = ContinuousReadSupported || !deviceTemplate->GetHardware().empty();
+    ContinuousReadSupported = DeviceTemplate->GetTemplate()["enable_wb_continuous_read"].asBool();
+    IsWBDevice = ContinuousReadSupported || !DeviceTemplate->GetHardware().empty();
 
-    Json::Value responseTimeout = DeviceTemplate["response_timeout_ms"];
+    Json::Value responseTimeout = DeviceTemplate->GetTemplate()["response_timeout_ms"];
     if (responseTimeout.isInt()) {
         ResponseTimeout = std::chrono::milliseconds(responseTimeout.asInt());
     }
 
-    Json::Value frameTimeout = DeviceTemplate["frame_timeout_ms"];
+    Json::Value frameTimeout = DeviceTemplate->GetTemplate()["frame_timeout_ms"];
     if (frameTimeout.isInt()) {
         FrameTimeout = std::chrono::milliseconds(frameTimeout.asInt());
     }
@@ -269,8 +271,9 @@ void ExecRPCDeviceLoadConfigRequest(PPort port,
         return;
     }
 
-    TDeviceProtocolParams protocolParams = rpcRequest->DeviceFactory.GetProtocolParams(rpcRequest->Protocol);
-    auto device = FindDevice(polledDevices, std::to_string(rpcRequest->SlaveId), rpcRequest->DeviceType);
+    TDeviceProtocolParams protocolParams =
+        rpcRequest->DeviceFactory.GetProtocolParams(rpcRequest->DeviceTemplate->GetProtocol());
+    auto device = FindDevice(polledDevices, std::to_string(rpcRequest->SlaveId), rpcRequest->DeviceTemplate->Type);
     bool useCache = true;
     if (device == nullptr) {
         device = CreateDevice(port, rpcRequest, protocolParams);
@@ -281,15 +284,15 @@ void ExecRPCDeviceLoadConfigRequest(PPort port,
 
     std::string fwVersion;
     bool continuousRead = false;
-    if (rpcRequest->Protocol == "modbus") {
+    if (rpcRequest->DeviceTemplate->GetProtocol() == "modbus") {
         fwVersion = ReadFirmwareVersion(*port, rpcRequest);
         continuousRead = ContinuousReadEnabled(*port, rpcRequest);
     }
 
-    Json::Value templateParams = rpcRequest->DeviceTemplate["parameters"];
+    Json::Value templateParams = rpcRequest->DeviceTemplate->GetTemplate()["parameters"];
     Json::Value parameters;
     TRPCRegisterList registerList = CreateRegisterList(protocolParams, device, templateParams, fwVersion);
-    if (rpcRequest->Protocol != "modbus" || continuousRead) {
+    if (rpcRequest->DeviceTemplate->GetProtocol() != "modbus" || continuousRead) {
         ReadParametersContinuously(device, registerList, parameters);
     } else {
         ReadParametersConsistently(*port, rpcRequest, registerList, parameters);
