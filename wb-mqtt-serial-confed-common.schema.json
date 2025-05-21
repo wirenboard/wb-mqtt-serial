@@ -1188,7 +1188,7 @@
               "Venetian blind"
             ]
           },
-          "default": 0,
+          "default": 1,
           "condition": "node_type==9",
           "propertyOrder": 13
         }
