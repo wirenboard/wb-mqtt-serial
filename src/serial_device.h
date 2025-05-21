@@ -170,6 +170,12 @@ enum class TDeviceConnectionState
     DISCONNECTED
 };
 
+enum class TDevicePrepare
+{
+    WITH_SETUP,
+    WITHOUT_SETUP
+};
+
 class TSerialDevice: public std::enable_shared_from_this<TSerialDevice>
 {
 public:
@@ -187,7 +193,7 @@ public:
 
     // Prepare to access device (pauses for configured delay by default)
     // i.e. "StartSession". Called before any read/write/etc after communicating with another device
-    void Prepare();
+    void Prepare(TDevicePrepare prepareType = TDevicePrepare::WITH_SETUP);
 
     // Ends communication session with the device. Called before communicating with another device
     virtual void EndSession();

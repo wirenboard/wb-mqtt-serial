@@ -73,12 +73,12 @@ PRegisterRange TSerialDevice::CreateRegisterRange() const
     return PRegisterRange(new TSameAddressRegisterRange());
 }
 
-void TSerialDevice::Prepare()
+void TSerialDevice::Prepare(TDevicePrepare prepareType)
 {
     bool deviceWasDisconnected = (ConnectionState != TDeviceConnectionState::CONNECTED);
     try {
         PrepareImpl();
-        if (deviceWasDisconnected) {
+        if (prepareType == TDevicePrepare::WITH_SETUP && deviceWasDisconnected) {
             WriteSetupRegisters();
         }
     } catch (const TSerialDeviceException& ex) {
