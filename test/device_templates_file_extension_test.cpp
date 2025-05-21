@@ -2,6 +2,7 @@
 #include <gtest/gtest.h>
 
 #include "serial_config.h"
+#include "test_utils.h"
 #include <wblib/testing/testlog.h>
 
 using WBMQTT::Testing::TLoggedFixture;
@@ -15,13 +16,9 @@ protected:
 void TDeviceTemplateFileExtensionTest::VerifyTemplates(const std::string& directory, const std::string& bad_device_type)
 {
     try {
-        auto commonDeviceSchema(
-            WBMQTT::JSON::Parse(TLoggedFixture::GetDataFilePath("../wb-mqtt-serial-confed-common.schema.json")));
-        TTemplateMap templates(
-            LoadConfigTemplatesSchema(TLoggedFixture::GetDataFilePath("../wb-mqtt-serial-device-template.schema.json"),
-                                      commonDeviceSchema));
-        templates.AddTemplatesDir(directory);
-        ASSERT_THROW(templates.GetTemplate(bad_device_type), std::out_of_range);
+        TTemplateMap templateMap(GetTemplatesSchema());
+        templateMap.AddTemplatesDir(directory);
+        ASSERT_THROW(templateMap.GetTemplate(bad_device_type), std::out_of_range);
     } catch (const TConfigParserException& e) {
         ADD_FAILURE() << "Parsing failed: " << e.what();
     }
@@ -98,18 +95,14 @@ protected:
 TEST_F(TDeviceTemplatesTest, Validate)
 {
     SetMode(E_Normal);
-    auto commonDeviceSchema(
-        WBMQTT::JSON::Parse(TLoggedFixture::GetDataFilePath("../wb-mqtt-serial-confed-common.schema.json")));
-    Json::Value templatesSchema(
-        LoadConfigTemplatesSchema(TLoggedFixture::GetDataFilePath("../wb-mqtt-serial-device-template.schema.json"),
-                                  commonDeviceSchema));
+
     Json::Value settings;
     settings["allowTrailingCommas"] = false;
 
-    TTemplateMap templates(templatesSchema);
-    templates.AddTemplatesDir(TLoggedFixture::GetDataFilePath("../templates"), false, settings);
-    templates.AddTemplatesDir(TLoggedFixture::GetDataFilePath("../build/templates"), false, settings);
-    auto deviceTypes = templates.GetTemplates();
+    TTemplateMap templateMap(GetTemplatesSchema());
+    templateMap.AddTemplatesDir(TLoggedFixture::GetDataFilePath("../templates"), false, settings);
+    templateMap.AddTemplatesDir(TLoggedFixture::GetDataFilePath("../build/templates"), false, settings);
+    auto deviceTypes = templateMap.GetTemplates();
     // For stable test results
     std::sort(deviceTypes.begin(), deviceTypes.end(), [](const auto& dt1, const auto& dt2) {
         return dt1->Type < dt2->Type;
@@ -123,27 +116,17 @@ TEST_F(TDeviceTemplatesTest, Validate)
 
 TEST_F(TDeviceTemplatesTest, InvalidParameterName)
 {
-    auto commonDeviceSchema(
-        WBMQTT::JSON::Parse(TLoggedFixture::GetDataFilePath("../wb-mqtt-serial-confed-common.schema.json")));
-    Json::Value templatesSchema(
-        LoadConfigTemplatesSchema(TLoggedFixture::GetDataFilePath("../wb-mqtt-serial-device-template.schema.json"),
-                                  commonDeviceSchema));
-    TTemplateMap templates(templatesSchema);
-    templates.AddTemplatesDir(TLoggedFixture::GetDataFilePath("device-templates"), false);
-    EXPECT_THROW(templates.GetTemplate("parameters_array_invalid_id")->GetTemplate(), std::runtime_error);
-    EXPECT_NO_THROW(templates.GetTemplate("parameters_object_invalid_name")->GetTemplate());
-    EXPECT_THROW(templates.GetTemplate("tpl1_parameters_object_invalid_name")->GetTemplate(), std::runtime_error);
+    TTemplateMap templateMap(GetTemplatesSchema());
+    templateMap.AddTemplatesDir(TLoggedFixture::GetDataFilePath("device-templates"), false);
+    EXPECT_THROW(templateMap.GetTemplate("parameters_array_invalid_id")->GetTemplate(), std::runtime_error);
+    EXPECT_NO_THROW(templateMap.GetTemplate("parameters_object_invalid_name")->GetTemplate());
+    EXPECT_THROW(templateMap.GetTemplate("tpl1_parameters_object_invalid_name")->GetTemplate(), std::runtime_error);
 }
 
 TEST_F(TDeviceTemplatesTest, InvalidCondition)
 {
-    auto commonDeviceSchema(
-        WBMQTT::JSON::Parse(TLoggedFixture::GetDataFilePath("../wb-mqtt-serial-confed-common.schema.json")));
-    Json::Value templatesSchema(
-        LoadConfigTemplatesSchema(TLoggedFixture::GetDataFilePath("../wb-mqtt-serial-device-template.schema.json"),
-                                  commonDeviceSchema));
-    TTemplateMap templates(templatesSchema);
-    templates.AddTemplatesDir(TLoggedFixture::GetDataFilePath("device-templates"), false);
+    TTemplateMap templateMap(GetTemplatesSchema());
+    templateMap.AddTemplatesDir(TLoggedFixture::GetDataFilePath("device-templates"), false);
 
     const std::unordered_map<std::string, std::string> expectedErrors = {
         {"invalid_channel_condition",
@@ -159,10 +142,30 @@ TEST_F(TDeviceTemplatesTest, InvalidCondition)
 
     for (const auto& [deviceType, expectedError]: expectedErrors) {
         try {
-            templates.GetTemplate(deviceType)->GetTemplate();
+            templateMap.GetTemplate(deviceType)->GetTemplate();
             ADD_FAILURE() << "Expect std::runtime_error";
         } catch (const std::runtime_error& e) {
             ASSERT_STREQ(expectedError.c_str(), e.what());
         }
+    }
+}
+
+/**
+ * Checks that the TDeviceTemplate::GetTemplate throws exception if template paramerers array item addresses mismatch
+ * for paramaters with the same id.
+ */
+TEST_F(TDeviceTemplatesTest, ParameterAddresses)
+{
+    TTemplateMap templateMap(GetTemplatesSchema());
+    templateMap.AddTemplatesDir(TLoggedFixture::GetDataFilePath("device-templates"), false);
+    try {
+        templateMap.GetTemplate("parameters_array_invalid_address")->GetTemplate();
+        ADD_FAILURE() << "Expect std::runtime_error";
+    } catch (const std::runtime_error& e) {
+        std::string error =
+            "File: test/device-templates/config-parameters-array-invalid-address.json error: Parameter \"p2\" has "
+            "several declarations with different \"address\" values (9996 and 9997). All parameter declarations with "
+            "the same id must have the same addresses.";
+        ASSERT_STREQ(error.c_str(), e.what());
     }
 }

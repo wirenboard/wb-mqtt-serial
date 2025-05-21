@@ -297,6 +297,8 @@ const Json::Value& TDeviceTemplate::GetTemplate()
             try {
                 Validator->Validate(root);
                 ValidateConditions(root["device"]);
+                // Check that parameters with same ids have same addresses (for parameters declared as array)
+                ValidateParameterAddresses(root["device"]["parameters"]);
             } catch (const std::runtime_error& e) {
                 throw std::runtime_error("File: " + GetFilePath() + " error: " + e.what());
             }
@@ -335,6 +337,41 @@ const std::string& TDeviceTemplate::GetMqttId() const
 {
     return MqttId;
 }
+
+void TDeviceTemplate::ValidateParameterAddresses(const Json::Value& parameters)
+{
+    if (!parameters.isArray()) {
+        return;
+    }
+    std::unordered_map<std::string, Json::Value> addressMap;
+    std::unordered_map<std::string, Json::Value> writeAddressMap;
+    std::string error;
+    for (const auto& parameter: parameters) {
+        std::string id = parameter["id"].asString();
+        Json::Value address = parameter[SerialConfig::ADDRESS_PROPERTY_NAME];
+        Json::Value writeAddress = parameter[SerialConfig::WRITE_ADDRESS_PROPERTY_NAME];
+        auto addressIt = addressMap.find(id);
+        if (addressIt != addressMap.end() && addressIt->second != address) {
+            error = "Parameter \"" + id + "\" has several declarations with different \"" +
+                    SerialConfig::ADDRESS_PROPERTY_NAME + "\" values (" + addressIt->second.asString() + " and " +
+                    address.asString() + "). ";
+            break;
+        }
+        addressMap[id] = address;
+        auto writeAddressIt = writeAddressMap.find(id);
+        if (writeAddressIt != writeAddressMap.end() && writeAddressIt->second != writeAddress) {
+            error = "Parameter \"" + id + "\" has several declarations with different \"" +
+                    SerialConfig::WRITE_ADDRESS_PROPERTY_NAME + "\" values (" + writeAddressIt->second.asString() +
+                    " and " + writeAddress.asString() + "). ";
+            break;
+        }
+        writeAddressMap[id] = writeAddress;
+    }
+    if (!error.empty()) {
+        throw std::runtime_error(error + "All parameter declarations with the same id must have the same addresses.");
+    }
+}
+
 //=============================================================================
 //                          TSubDevicesTemplateMap
 //=============================================================================

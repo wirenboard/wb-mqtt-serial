@@ -167,7 +167,7 @@ void Dooya::TDevice::WriteRegisterImpl(const TRegisterConfig& reg, const TRegist
             return;
         }
         case PARAM: {
-            uint8_t dataAddress = GetUint32RegisterAddress(reg.GetAddress());
+            uint8_t dataAddress = GetUint32RegisterAddress(reg.GetWriteAddress());
             TRequest req;
             req.Data = MakeRequest(SlaveId, {WRITE, dataAddress, 1, static_cast<uint8_t>(value)});
             req.ResponseSize = RESPONSE_SIZE;
@@ -177,7 +177,7 @@ void Dooya::TDevice::WriteRegisterImpl(const TRegisterConfig& reg, const TRegist
             return;
         }
         case COMMAND: {
-            auto data = GetUint32RegisterAddress(reg.GetAddress());
+            auto data = GetUint32RegisterAddress(reg.GetWriteAddress());
             TRequest req;
             uint8_t dataAddress;
             // Command with parameter
@@ -228,9 +228,6 @@ TRegisterValue Dooya::TDevice::ReadRegisterImpl(const TRegisterConfig& reg)
             req.Data = MakeRequest(SlaveId, {READ, static_cast<uint8_t>(addr & 0xFF), 1});
             req.ResponseSize = RESPONSE_SIZE;
             return TRegisterValue{ParseReadResponse(SlaveId, READ, 1, ExecCommand(req))};
-        }
-        case COMMAND: {
-            return TRegisterValue{1};
         }
         case ANGLE: {
             auto addr = 0x06;
