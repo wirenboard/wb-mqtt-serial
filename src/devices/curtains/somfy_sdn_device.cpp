@@ -160,7 +160,7 @@ namespace
         {
             auto nodeType = static_cast<Somfy::TNodeType>(data.get("node_type", Somfy::SONESSE_30).asUInt());
             auto applicationMode =
-                static_cast<Somfy::TApplicationMode>(data.get("application_mode", Somfy::ROLLER).asUInt());
+                static_cast<Somfy::TApplicationMode>(data.get("application_mode", Somfy::VENETIAN).asUInt());
             return std::make_shared<Somfy::TDevice>(deviceConfig, nodeType, applicationMode, port, protocol);
         }
     };
