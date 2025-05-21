@@ -28,18 +28,21 @@ namespace
                                PRPCDeviceLoadConfigRequest rpcRequest,
                                const TDeviceProtocolParams& protocolParams)
     {
-        auto config = std::make_shared<TDeviceConfig>("RPC Device", std::to_string(rpcRequest->SlaveId), "modbus");
-        config->MaxRegHole = Modbus::MAX_HOLE_CONTINUOUS_16_BIT_REGISTERS;
-        config->MaxBitHole = Modbus::MAX_HOLE_CONTINUOUS_1_BIT_REGISTERS;
-        config->MaxReadRegisters = Modbus::MAX_READ_REGISTERS;
+        auto config =
+            std::make_shared<TDeviceConfig>("RPC Device", std::to_string(rpcRequest->SlaveId), rpcRequest->Protocol);
+        if (rpcRequest->Protocol == "modbus") {
+            config->MaxRegHole = Modbus::MAX_HOLE_CONTINUOUS_16_BIT_REGISTERS;
+            config->MaxBitHole = Modbus::MAX_HOLE_CONTINUOUS_1_BIT_REGISTERS;
+            config->MaxReadRegisters = Modbus::MAX_READ_REGISTERS;
+        }
         return protocolParams.factory->CreateDevice(rpcRequest->DeviceTemplate, config, port, protocolParams.protocol);
     }
 
-    bool ReadRegister(Modbus::IModbusTraits& traits,
-                      TPort& port,
-                      PRPCDeviceLoadConfigRequest rpcRequest,
-                      PRegisterConfig registerConfig,
-                      TRegisterValue& value)
+    bool ReadModbusRegister(Modbus::IModbusTraits& traits,
+                            TPort& port,
+                            PRPCDeviceLoadConfigRequest rpcRequest,
+                            PRegisterConfig registerConfig,
+                            TRegisterValue& value)
     {
         for (int i = 0; i <= MAX_RETRIES; ++i) {
             try {
@@ -72,7 +75,7 @@ namespace
         return false;
     }
 
-    std::string ReadFirmwareVersion(Modbus::IModbusTraits& traits, TPort& port, PRPCDeviceLoadConfigRequest rpcRequest)
+    std::string ReadFirmwareVersion(TPort& port, PRPCDeviceLoadConfigRequest rpcRequest)
     {
         if (!rpcRequest->IsWBDevice) {
             return std::string();
@@ -80,10 +83,11 @@ namespace
 
         std::string error;
         try {
-            std::string version;
+            Modbus::TModbusRTUTraits traits;
             auto config = WbRegisters::GetRegisterConfig(WbRegisters::FW_VERSION_REGISTER_NAME);
             TRegisterValue value;
-            if (ReadRegister(traits, port, rpcRequest, config, value)) {
+            std::string version;
+            if (ReadModbusRegister(traits, port, rpcRequest, config, value)) {
                 version = value.Get<std::string>();
             }
             return version;
@@ -97,7 +101,7 @@ namespace
         throw TRPCException(error, TRPCResultCode::RPC_WRONG_PARAM_VALUE);
     }
 
-    bool ContinuousReadEnabled(Modbus::IModbusTraits& traits, TPort& port, PRPCDeviceLoadConfigRequest rpcRequest)
+    bool ContinuousReadEnabled(TPort& port, PRPCDeviceLoadConfigRequest rpcRequest)
     {
         if (!rpcRequest->ContinuousReadSupported) {
             return false;
@@ -105,10 +109,11 @@ namespace
 
         std::string error;
         try {
-            auto mode = WbRegisters::COUNTINUOUS_READ_DISABLED;
+            Modbus::TModbusRTUTraits traits;
             auto config = WbRegisters::GetRegisterConfig(WbRegisters::CONTINUOUS_READ_REGISTER_NAME);
             TRegisterValue value;
-            if (ReadRegister(traits, port, rpcRequest, config, value)) {
+            auto mode = WbRegisters::COUNTINUOUS_READ_DISABLED;
+            if (ReadModbusRegister(traits, port, rpcRequest, config, value)) {
                 mode = value.Get<uint16_t>();
             }
             return mode == WbRegisters::COUNTINUOUS_READ_ENABLED_TEMPORARY ||
@@ -123,11 +128,7 @@ namespace
         return false;
     }
 
-    void ReadParametersContinuously(Modbus::IModbusTraits& traits,
-                                    TPort& port,
-                                    PRPCDeviceLoadConfigRequest rpcRequest,
-                                    TRPCRegisterList& registerList,
-                                    Json::Value& parameters)
+    void ReadParametersContinuously(PSerialDevice device, TRPCRegisterList& registerList, Json::Value& parameters)
     {
         TRegisterComparePredicate compare;
         std::sort(registerList.begin(),
@@ -135,38 +136,28 @@ namespace
                   [compare](std::pair<std::string, PRegister>& a, std::pair<std::string, PRegister>& b) {
                       return compare(b.second, a.second);
                   });
-
         size_t i = 0;
         while (i < registerList.size()) {
-            Modbus::TModbusRegisterRange range(rpcRequest->ResponseTimeout);
-            while (i < registerList.size() && range.Add(registerList[i].second, std::chrono::milliseconds::max())) {
+            auto range = device->CreateRegisterRange();
+            auto offset = i;
+            while (i < registerList.size() && range->Add(registerList[i].second, std::chrono::milliseconds::max())) {
                 ++i;
             }
-            if (range.GetCount() == 0) {
-                break;
-            }
-            Modbus::TRegisterCache cache;
             bool success = false;
-            std::string error;
-            for (int j = 0; j <= MAX_RETRIES; ++j) {
-                try {
-                    range.ReadRange(traits, port, rpcRequest->SlaveId, 0, cache);
-                    success = true;
-                    break;
-                } catch (const TSerialDevicePermanentRegisterException& err) {
-                    error = err.what();
-                    break;
-                } catch (const TSerialDeviceException& e) {
-                    if (i <= MAX_RETRIES) {
-                        continue;
+            for (int j = 0; j <= MAX_RETRIES && !success; ++j) {
+                device->ReadRegisterRange(range);
+                success = true;
+                while (offset < i) {
+                    if (registerList[offset++].second->GetErrorState().count()) {
+                        success = false;
+                        break;
                     }
-                    error = e.what();
                 }
             }
             if (!success) {
-                LOG(Warn) << port.GetDescription() << " modbus:" << std::to_string(rpcRequest->SlaveId)
-                          << " unable to read register range " << range.GetStart() << ", " << range.GetCount() << ": "
-                          << error;
+                std::string error = "unable to read parameters register range";
+                LOG(Warn) << device->Port()->GetDescription() << " " << device->Protocol()->GetName() << ":"
+                          << device->DeviceConfig()->SlaveId << " " << error;
                 throw TRPCException(error, TRPCResultCode::RPC_WRONG_PARAM_VALUE);
             }
         }
@@ -176,18 +167,18 @@ namespace
         }
     }
 
-    void ReadParametersConsistently(Modbus::IModbusTraits& traits,
-                                    TPort& port,
+    void ReadParametersConsistently(TPort& port,
                                     PRPCDeviceLoadConfigRequest rpcRequest,
                                     TRPCRegisterList& registerList,
                                     Json::Value& parameters)
     {
+        Modbus::TModbusRTUTraits traits;
         for (size_t i = 0; i < registerList.size(); ++i) {
             auto& reg = registerList[i];
             try {
                 auto& config = reg.second->GetConfig();
                 TRegisterValue value;
-                if (ReadRegister(traits, port, rpcRequest, config, value)) {
+                if (ReadModbusRegister(traits, port, rpcRequest, config, value)) {
                     parameters[reg.first] = RawValueToJSON(*config, value);
                 }
             } catch (const Modbus::TErrorBase& err) {
@@ -197,7 +188,6 @@ namespace
             }
         }
     }
-
 } // namespace
 
 TRPCDeviceLoadConfigRequest::TRPCDeviceLoadConfigRequest(const TSerialDeviceFactory& deviceFactory,
@@ -206,6 +196,7 @@ TRPCDeviceLoadConfigRequest::TRPCDeviceLoadConfigRequest(const TSerialDeviceFact
     : DeviceFactory(deviceFactory),
       DeviceType(deviceTemplate->Type),
       DeviceTemplate(deviceTemplate->GetTemplate()),
+      Protocol(deviceTemplate->GetProtocol()),
       ParametersCache(parametersCache)
 {
     ContinuousReadSupported = DeviceTemplate["enable_wb_continuous_read"].asBool();
@@ -251,7 +242,7 @@ void ExecRPCDeviceLoadConfigRequest(PPort port,
         return;
     }
 
-    TDeviceProtocolParams protocolParams = rpcRequest->DeviceFactory.GetProtocolParams("modbus");
+    TDeviceProtocolParams protocolParams = rpcRequest->DeviceFactory.GetProtocolParams(rpcRequest->Protocol);
     auto device = FindDevice(polledDevices, std::to_string(rpcRequest->SlaveId), rpcRequest->DeviceType);
     bool useCache = true;
     if (device == nullptr) {
@@ -259,19 +250,22 @@ void ExecRPCDeviceLoadConfigRequest(PPort port,
         useCache = false;
     }
 
-    Modbus::TModbusRTUTraits traits;
     port->SkipNoise();
 
-    std::string fwVersion = ReadFirmwareVersion(traits, *port, rpcRequest);
-    bool continuousRead = ContinuousReadEnabled(traits, *port, rpcRequest);
+    std::string fwVersion;
+    bool continuousRead = false;
+    if (rpcRequest->Protocol == "modbus") {
+        fwVersion = ReadFirmwareVersion(*port, rpcRequest);
+        continuousRead = ContinuousReadEnabled(*port, rpcRequest);
+    }
 
     Json::Value templateParams = rpcRequest->DeviceTemplate["parameters"];
     Json::Value parameters;
     TRPCRegisterList registerList = CreateRegisterList(protocolParams, device, templateParams, fwVersion);
-    if (continuousRead) {
-        ReadParametersContinuously(traits, *port, rpcRequest, registerList, parameters);
+    if (rpcRequest->Protocol != "modbus" || continuousRead) {
+        ReadParametersContinuously(device, registerList, parameters);
     } else {
-        ReadParametersConsistently(traits, *port, rpcRequest, registerList, parameters);
+        ReadParametersConsistently(*port, rpcRequest, registerList, parameters);
     }
     CheckParametersConditions(templateParams, parameters);
 
@@ -337,7 +331,7 @@ TRPCRegisterList CreateRegisterList(const TDeviceProtocolParams& protocolParams,
                 break;
             }
         }
-        if (duplicate || registerData["readonly"].asBool()) {
+        if (duplicate || registerData["address"].isNull() || registerData["readonly"].asBool()) {
             continue;
         }
         if (!fwVersion.empty()) {

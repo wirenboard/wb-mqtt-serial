@@ -25,6 +25,7 @@ public:
     const TSerialDeviceFactory& DeviceFactory;
     const std::string DeviceType;
     const Json::Value& DeviceTemplate;
+    const std::string& Protocol;
 
     TRPCDeviceParametersCache& ParametersCache;
     bool ContinuousReadSupported = false;
