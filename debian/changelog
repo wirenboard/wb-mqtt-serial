@@ -3,7 +3,7 @@ wb-mqtt-serial (2.165.2) stable; urgency=medium
   * Remove duplicate channel from MAP3H fw2 basic template
   * Remove duplicate channel from Network module PING2 for Komfovent C3/C4 template
 
- -- Petr Krasnoshchekov <petr.krasnoshchekov@wirenboard.com>  Wed, 21 May 2025 18:53:37 +0500
+ -- Petr Krasnoshchekov <petr.krasnoshchekov@wirenboard.com>  Thu, 22 May 2025 10:42:34 +0500
 
 wb-mqtt-serial (2.165.1) stable; urgency=medium
 
