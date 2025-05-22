@@ -95,9 +95,12 @@ void TModbusIODevice::ReadRegisterRange(PRegisterRange range)
     ResponseTime.AddValue(modbus_range->GetResponseTime());
 }
 
-void TModbusIODevice::WriteSetupRegisters()
+void TModbusIODevice::WriteSetupRegisters(TDeviceSetupMode setupMode)
 {
     Modbus::EnableWbContinuousRead(shared_from_this(), *ModbusTraits, *Port(), SlaveId, ModbusCache);
+    if (setupMode == TDeviceSetupMode::WITHOUT_SETUP) {
+        return;
+    }
     Modbus::WriteSetupRegisters(*ModbusTraits,
                                 *Port(),
                                 SlaveId,

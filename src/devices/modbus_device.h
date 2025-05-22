@@ -69,7 +69,7 @@ public:
 
     PRegisterRange CreateRegisterRange() const override;
     void ReadRegisterRange(PRegisterRange range) override;
-    void WriteSetupRegisters() override;
+    void WriteSetupRegisters(TDeviceSetupMode setupMode) override;
 
     void OnEnabledEvent(uint16_t addr, bool res);
 
