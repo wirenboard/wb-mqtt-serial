@@ -1,3 +1,9 @@
+wb-mqtt-serial (2.167.0) stable; urgency=medium
+
+  * Add firmware version value validation for template parameters array 
+
+ -- Ilya Titov <ilya.titov@wirenboard.com>  Thu, 22 May 2025 14:18:57 +0300
+
 wb-mqtt-serial (2.166.0) stable; urgency=medium
 
   * Add read parameters featute for non-Modbus devices to Device/LoadConfig RPC
