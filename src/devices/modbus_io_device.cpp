@@ -71,6 +71,14 @@ PRegisterRange TModbusIODevice::CreateRegisterRange() const
     return Modbus::CreateRegisterRange(ResponseTime.GetValue());
 }
 
+void TModbusIODevice::PrepareImpl()
+{
+    TSerialDevice::PrepareImpl();
+    if (GetConnectionState() != TDeviceConnectionState::CONNECTED) {
+        Modbus::EnableWbContinuousRead(shared_from_this(), *ModbusTraits, *Port(), SlaveId, ModbusCache);
+    }
+}
+
 void TModbusIODevice::WriteRegisterImpl(const TRegisterConfig& reg, const TRegisterValue& value)
 {
     Modbus::WriteRegister(*ModbusTraits,
@@ -97,7 +105,6 @@ void TModbusIODevice::ReadRegisterRange(PRegisterRange range)
 
 void TModbusIODevice::WriteSetupRegisters()
 {
-    Modbus::EnableWbContinuousRead(shared_from_this(), *ModbusTraits, *Port(), SlaveId, ModbusCache);
     Modbus::WriteSetupRegisters(*ModbusTraits,
                                 *Port(),
                                 SlaveId,

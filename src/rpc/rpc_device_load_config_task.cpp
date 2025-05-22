@@ -28,24 +28,32 @@ namespace
                                PRPCDeviceLoadConfigRequest rpcRequest,
                                const TDeviceProtocolParams& protocolParams)
     {
-        auto config = std::make_shared<TDeviceConfig>("RPC Device", std::to_string(rpcRequest->SlaveId), "modbus");
-        config->MaxRegHole = Modbus::MAX_HOLE_CONTINUOUS_16_BIT_REGISTERS;
-        config->MaxBitHole = Modbus::MAX_HOLE_CONTINUOUS_1_BIT_REGISTERS;
-        config->MaxReadRegisters = Modbus::MAX_READ_REGISTERS;
-        return protocolParams.factory->CreateDevice(rpcRequest->DeviceTemplate, config, port, protocolParams.protocol);
+        auto config = std::make_shared<TDeviceConfig>("RPC Device",
+                                                      rpcRequest->SlaveId,
+                                                      rpcRequest->DeviceTemplate->GetProtocol());
+        if (rpcRequest->DeviceTemplate->GetProtocol() == "modbus") {
+            config->MaxRegHole = Modbus::MAX_HOLE_CONTINUOUS_16_BIT_REGISTERS;
+            config->MaxBitHole = Modbus::MAX_HOLE_CONTINUOUS_1_BIT_REGISTERS;
+            config->MaxReadRegisters = Modbus::MAX_READ_REGISTERS;
+        }
+        return protocolParams.factory->CreateDevice(rpcRequest->DeviceTemplate->GetTemplate(),
+                                                    config,
+                                                    port,
+                                                    protocolParams.protocol);
     }
 
-    bool ReadRegister(Modbus::IModbusTraits& traits,
-                      TPort& port,
-                      PRPCDeviceLoadConfigRequest rpcRequest,
-                      PRegisterConfig registerConfig,
-                      TRegisterValue& value)
+    bool ReadModbusRegister(Modbus::IModbusTraits& traits,
+                            TPort& port,
+                            PRPCDeviceLoadConfigRequest rpcRequest,
+                            PRegisterConfig registerConfig,
+                            TRegisterValue& value)
     {
+        uint8_t slaveId = static_cast<uint8_t>(std::stoi(rpcRequest->SlaveId));
         for (int i = 0; i <= MAX_RETRIES; ++i) {
             try {
                 value = Modbus::ReadRegister(traits,
                                              port,
-                                             rpcRequest->SlaveId,
+                                             slaveId,
                                              *registerConfig,
                                              std::chrono::microseconds(0),
                                              rpcRequest->ResponseTimeout,
@@ -72,18 +80,19 @@ namespace
         return false;
     }
 
-    std::string ReadFirmwareVersion(Modbus::IModbusTraits& traits, TPort& port, PRPCDeviceLoadConfigRequest rpcRequest)
+    std::string ReadFirmwareVersion(TPort& port, PRPCDeviceLoadConfigRequest rpcRequest)
     {
-        if (!rpcRequest->IsWBDevice) {
+        if (!rpcRequest->IsWBDevice || rpcRequest->DeviceTemplate->GetProtocol() != "modbus") {
             return std::string();
         }
 
         std::string error;
         try {
-            std::string version;
+            Modbus::TModbusRTUTraits traits;
             auto config = WbRegisters::GetRegisterConfig(WbRegisters::FW_VERSION_REGISTER_NAME);
             TRegisterValue value;
-            if (ReadRegister(traits, port, rpcRequest, config, value)) {
+            std::string version;
+            if (ReadModbusRegister(traits, port, rpcRequest, config, value)) {
                 version = value.Get<std::string>();
             }
             return version;
@@ -92,42 +101,12 @@ namespace
         } catch (const TResponseTimeoutException& e) {
             error = e.what();
         }
-        LOG(Warn) << port.GetDescription() << " modbus:" << std::to_string(rpcRequest->SlaveId) << " unable to read \""
+        LOG(Warn) << port.GetDescription() << " modbus:" << rpcRequest->SlaveId << " unable to read \""
                   << WbRegisters::FW_VERSION_REGISTER_NAME << "\" register: " << error;
         throw TRPCException(error, TRPCResultCode::RPC_WRONG_PARAM_VALUE);
     }
 
-    bool ContinuousReadEnabled(Modbus::IModbusTraits& traits, TPort& port, PRPCDeviceLoadConfigRequest rpcRequest)
-    {
-        if (!rpcRequest->ContinuousReadSupported) {
-            return false;
-        }
-
-        std::string error;
-        try {
-            auto mode = WbRegisters::COUNTINUOUS_READ_DISABLED;
-            auto config = WbRegisters::GetRegisterConfig(WbRegisters::CONTINUOUS_READ_REGISTER_NAME);
-            TRegisterValue value;
-            if (ReadRegister(traits, port, rpcRequest, config, value)) {
-                mode = value.Get<uint16_t>();
-            }
-            return mode == WbRegisters::COUNTINUOUS_READ_ENABLED_TEMPORARY ||
-                   mode == WbRegisters::COUNTINUOUS_READ_ENABLED;
-        } catch (const Modbus::TErrorBase& err) {
-            error = err.what();
-        } catch (const TResponseTimeoutException& e) {
-            error = e.what();
-        }
-        LOG(Warn) << port.GetDescription() << " modbus:" << std::to_string(rpcRequest->SlaveId) << " unable to read \""
-                  << WbRegisters::CONTINUOUS_READ_REGISTER_NAME << "\" register: " << error;
-        return false;
-    }
-
-    void ReadParametersContinuously(Modbus::IModbusTraits& traits,
-                                    TPort& port,
-                                    PRPCDeviceLoadConfigRequest rpcRequest,
-                                    TRPCRegisterList& registerList,
-                                    Json::Value& parameters)
+    void ReadParameters(PSerialDevice device, TRPCRegisterList& registerList, Json::Value& parameters)
     {
         TRegisterComparePredicate compare;
         std::sort(registerList.begin(),
@@ -136,87 +115,81 @@ namespace
                       return compare(b.second, a.second);
                   });
 
-        size_t i = 0;
-        while (i < registerList.size()) {
-            Modbus::TModbusRegisterRange range(rpcRequest->ResponseTimeout);
-            while (i < registerList.size() && range.Add(registerList[i].second, std::chrono::milliseconds::max())) {
-                ++i;
-            }
-            if (range.GetCount() == 0) {
+        for (int i = 0; i <= MAX_RETRIES; i++) {
+            try {
+                device->Prepare(TDevicePrepareMode::WITHOUT_SETUP);
                 break;
-            }
-            Modbus::TRegisterCache cache;
-            bool success = false;
-            std::string error;
-            for (int j = 0; j <= MAX_RETRIES; ++j) {
-                try {
-                    range.ReadRange(traits, port, rpcRequest->SlaveId, 0, cache);
-                    success = true;
-                    break;
-                } catch (const TSerialDevicePermanentRegisterException& err) {
-                    error = err.what();
-                    break;
-                } catch (const TSerialDeviceException& e) {
-                    if (i <= MAX_RETRIES) {
-                        continue;
-                    }
-                    error = e.what();
+            } catch (const TSerialDeviceException& e) {
+                if (i == MAX_RETRIES) {
+                    LOG(Warn) << device->Port()->GetDescription() << " " << device->Protocol()->GetName() << ":"
+                              << device->DeviceConfig()->SlaveId << " unable to prepare session: " << e.what();
+                    throw TRPCException(e.what(), TRPCResultCode::RPC_WRONG_PARAM_VALUE);
                 }
             }
-            if (!success) {
-                LOG(Warn) << port.GetDescription() << " modbus:" << std::to_string(rpcRequest->SlaveId)
-                          << " unable to read register range " << range.GetStart() << ", " << range.GetCount() << ": "
-                          << error;
-                throw TRPCException(error, TRPCResultCode::RPC_WRONG_PARAM_VALUE);
+        }
+
+        size_t index = 0;
+        bool success = true;
+        while (index < registerList.size() && success) {
+            auto range = device->CreateRegisterRange();
+            auto offset = index;
+            while (index < registerList.size() &&
+                   range->Add(registerList[index].second, std::chrono::milliseconds::max()))
+            {
+                ++index;
+            }
+            success = true;
+            for (int i = 0; i <= MAX_RETRIES; ++i) {
+                device->ReadRegisterRange(range);
+                while (offset < index) {
+                    if (registerList[offset++].second->GetErrorState().count()) {
+                        success = false;
+                        break;
+                    }
+                }
+                if (success) {
+                    break;
+                }
             }
         }
-        for (i = 0; i < registerList.size(); ++i) {
+
+        try {
+            device->EndSession();
+        } catch (const TSerialDeviceException& e) {
+            LOG(Warn) << device->Port()->GetDescription() << " " << device->Protocol()->GetName() << ":"
+                      << device->DeviceConfig()->SlaveId << " unable to end session: " << e.what();
+        }
+
+        if (!success) {
+            std::string error = "unable to read parameters register range";
+            LOG(Warn) << device->Port()->GetDescription() << " " << device->Protocol()->GetName() << ":"
+                      << device->DeviceConfig()->SlaveId << " " << error;
+            throw TRPCException(error, TRPCResultCode::RPC_WRONG_PARAM_VALUE);
+        }
+
+        for (size_t i = 0; i < registerList.size(); ++i) {
             auto& reg = registerList[i];
             parameters[reg.first] = RawValueToJSON(*reg.second->GetConfig(), reg.second->GetValue());
         }
     }
-
-    void ReadParametersConsistently(Modbus::IModbusTraits& traits,
-                                    TPort& port,
-                                    PRPCDeviceLoadConfigRequest rpcRequest,
-                                    TRPCRegisterList& registerList,
-                                    Json::Value& parameters)
-    {
-        for (size_t i = 0; i < registerList.size(); ++i) {
-            auto& reg = registerList[i];
-            try {
-                auto& config = reg.second->GetConfig();
-                TRegisterValue value;
-                if (ReadRegister(traits, port, rpcRequest, config, value)) {
-                    parameters[reg.first] = RawValueToJSON(*config, value);
-                }
-            } catch (const Modbus::TErrorBase& err) {
-                LOG(Warn) << port.GetDescription() << " modbus:" << std::to_string(rpcRequest->SlaveId)
-                          << " unable to read \"" << reg.first << "\" setting: " << err.what();
-                throw TRPCException(err.what(), TRPCResultCode::RPC_WRONG_PARAM_VALUE);
-            }
-        }
-    }
-
 } // namespace
 
 TRPCDeviceLoadConfigRequest::TRPCDeviceLoadConfigRequest(const TSerialDeviceFactory& deviceFactory,
                                                          PDeviceTemplate deviceTemplate,
                                                          TRPCDeviceParametersCache& parametersCache)
     : DeviceFactory(deviceFactory),
-      DeviceType(deviceTemplate->Type),
-      DeviceTemplate(deviceTemplate->GetTemplate()),
+      DeviceTemplate(deviceTemplate),
       ParametersCache(parametersCache)
 {
-    ContinuousReadSupported = DeviceTemplate["enable_wb_continuous_read"].asBool();
-    IsWBDevice = ContinuousReadSupported || !deviceTemplate->GetHardware().empty();
+    IsWBDevice =
+        !DeviceTemplate->GetHardware().empty() || DeviceTemplate->GetTemplate()["enable_wb_continuous_read"].asBool();
 
-    Json::Value responseTimeout = DeviceTemplate["response_timeout_ms"];
+    Json::Value responseTimeout = DeviceTemplate->GetTemplate()["response_timeout_ms"];
     if (responseTimeout.isInt()) {
         ResponseTimeout = std::chrono::milliseconds(responseTimeout.asInt());
     }
 
-    Json::Value frameTimeout = DeviceTemplate["frame_timeout_ms"];
+    Json::Value frameTimeout = DeviceTemplate->GetTemplate()["frame_timeout_ms"];
     if (frameTimeout.isInt()) {
         FrameTimeout = std::chrono::milliseconds(frameTimeout.asInt());
     }
@@ -230,10 +203,10 @@ PRPCDeviceLoadConfigRequest ParseRPCDeviceLoadConfigRequest(const Json::Value& r
     PRPCDeviceLoadConfigRequest res =
         std::make_shared<TRPCDeviceLoadConfigRequest>(deviceFactory, deviceTemplate, parametersCache);
     res->SerialPortSettings = ParseRPCSerialPortSettings(request);
+    res->SlaveId = request["slave_id"].asString();
     WBMQTT::JSON::Get(request, "response_timeout", res->ResponseTimeout);
     WBMQTT::JSON::Get(request, "frame_timeout", res->FrameTimeout);
     WBMQTT::JSON::Get(request, "total_timeout", res->TotalTimeout);
-    WBMQTT::JSON::Get(request, "slave_id", res->SlaveId);
     return res;
 }
 
@@ -245,34 +218,28 @@ void ExecRPCDeviceLoadConfigRequest(PPort port,
         return;
     }
 
-    std::string id = rpcRequest->ParametersCache.GetId(*port, std::to_string(rpcRequest->SlaveId));
+    std::string id = rpcRequest->ParametersCache.GetId(*port, rpcRequest->SlaveId);
     if (rpcRequest->ParametersCache.Contains(id)) {
         rpcRequest->OnResult(rpcRequest->ParametersCache.Get(id));
         return;
     }
 
-    TDeviceProtocolParams protocolParams = rpcRequest->DeviceFactory.GetProtocolParams("modbus");
-    auto device = FindDevice(polledDevices, std::to_string(rpcRequest->SlaveId), rpcRequest->DeviceType);
+    TDeviceProtocolParams protocolParams =
+        rpcRequest->DeviceFactory.GetProtocolParams(rpcRequest->DeviceTemplate->GetProtocol());
+    auto device = FindDevice(polledDevices, rpcRequest->SlaveId, rpcRequest->DeviceTemplate->Type);
     bool useCache = true;
     if (device == nullptr) {
         device = CreateDevice(port, rpcRequest, protocolParams);
         useCache = false;
     }
 
-    Modbus::TModbusRTUTraits traits;
     port->SkipNoise();
 
-    std::string fwVersion = ReadFirmwareVersion(traits, *port, rpcRequest);
-    bool continuousRead = ContinuousReadEnabled(traits, *port, rpcRequest);
-
-    Json::Value templateParams = rpcRequest->DeviceTemplate["parameters"];
+    Json::Value templateParams = rpcRequest->DeviceTemplate->GetTemplate()["parameters"];
     Json::Value parameters;
+    std::string fwVersion = ReadFirmwareVersion(*port, rpcRequest);
     TRPCRegisterList registerList = CreateRegisterList(protocolParams, device, templateParams, fwVersion);
-    if (continuousRead) {
-        ReadParametersContinuously(traits, *port, rpcRequest, registerList, parameters);
-    } else {
-        ReadParametersConsistently(traits, *port, rpcRequest, registerList, parameters);
-    }
+    ReadParameters(device, registerList, parameters);
     CheckParametersConditions(templateParams, parameters);
 
     Json::Value result;
@@ -337,7 +304,7 @@ TRPCRegisterList CreateRegisterList(const TDeviceProtocolParams& protocolParams,
                 break;
             }
         }
-        if (duplicate || registerData["readonly"].asBool()) {
+        if (duplicate || registerData["address"].isNull() || registerData["readonly"].asBool()) {
             continue;
         }
         if (!fwVersion.empty()) {

@@ -23,18 +23,17 @@ public:
                                 TRPCDeviceParametersCache& parametersCache);
 
     const TSerialDeviceFactory& DeviceFactory;
-    const std::string DeviceType;
-    const Json::Value& DeviceTemplate;
 
+    PDeviceTemplate DeviceTemplate;
     TRPCDeviceParametersCache& ParametersCache;
-    bool ContinuousReadSupported = false;
     bool IsWBDevice = false;
 
     TSerialPortConnectionSettings SerialPortSettings;
+    std::string SlaveId;
+
     std::chrono::milliseconds ResponseTimeout = DefaultResponseTimeout;
     std::chrono::milliseconds FrameTimeout = DefaultFrameTimeout;
     std::chrono::milliseconds TotalTimeout = DefaultRPCTotalTimeout;
-    uint8_t SlaveId = 0;
 
     WBMQTT::TMqttRpcServer::TResultCallback OnResult = nullptr;
     WBMQTT::TMqttRpcServer::TErrorCallback OnError = nullptr;

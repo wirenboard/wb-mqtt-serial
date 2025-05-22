@@ -65,8 +65,16 @@
     "request_data": {
       "properties": {
         "slave_id": {
-          "type": "integer",
-          "minimum": 0
+          "oneOf": [
+            {
+              "type": "integer",
+              "minimum": 0
+            },
+            {
+              "type": "string",
+              "minLength": 1
+            }
+          ]
         },
         "device_type": {
           "type": "string"
