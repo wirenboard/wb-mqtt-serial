@@ -5,6 +5,43 @@
 
 #include "rpc_port_handler.h"
 #include "serial_client.h"
+#include "wb_registers.h"
+
+namespace RpcPortScan
+{
+    class TRegisterReader
+    {
+    public:
+        TRegisterReader(TPort& port, Modbus::IModbusTraits& modbusTraits, uint8_t slaveId);
+
+        template<typename T> T Read(const std::string& registerName)
+        {
+            auto registerConfig = WbRegisters::GetRegisterConfig(registerName);
+            if (!registerConfig) {
+                throw std::runtime_error("Unknown register name: " + registerName);
+            }
+            auto res = Modbus::ReadRegister(ModbusTraits,
+                                            Port,
+                                            SlaveId,
+                                            *registerConfig,
+                                            FrameTimeout,
+                                            FrameTimeout,
+                                            FrameTimeout)
+                           .Get<T>();
+            return res;
+        }
+
+    private:
+        Modbus::IModbusTraits& ModbusTraits;
+        std::chrono::milliseconds FrameTimeout;
+        TPort& Port;
+        uint8_t SlaveId;
+    };
+
+    Json::Value GetDeviceDetails(TRegisterReader& reader,
+                                 uint8_t slaveId,
+                                 const std::list<PSerialDevice>& polledDevices);
+}
 
 class TRPCPortScanRequest
 {

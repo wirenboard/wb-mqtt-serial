@@ -13,6 +13,7 @@ namespace WbRegisters
     const std::string DEVICE_MODEL_EX_REGISTER_NAME = "device_model_ex";
     const std::string FW_SIGNATURE_REGISTER_NAME = "fw_signature";
     const std::string FW_VERSION_REGISTER_NAME = "fw_version";
+    const std::string SN_REGISTER_NAME = "sn";
 
     const uint16_t COUNTINUOUS_READ_DISABLED = 0;
     const uint16_t COUNTINUOUS_READ_ENABLED_TEMPORARY = 1;

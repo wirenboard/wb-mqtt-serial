@@ -1,5 +1,7 @@
 #include "rpc_device_handler.h"
 #include "rpc_device_load_config_task.h"
+#include "rpc_device_probe_task.h"
+#include "rpc_helpers.h"
 
 #define LOG(logger) ::logger.Log() << "[RPC] "
 
@@ -59,23 +61,19 @@ const Json::Value& TRPCDeviceParametersCache::Get(const std::string& id, const J
 };
 
 TRPCDeviceHandler::TRPCDeviceHandler(const std::string& requestDeviceLoadConfigSchemaFilePath,
+                                     const std::string& requestDeviceProbeSchemaFilePath,
                                      const TSerialDeviceFactory& deviceFactory,
                                      PTemplateMap templates,
                                      TSerialClientTaskRunner& serialClientTaskRunner,
                                      TRPCDeviceParametersCache& parametersCache,
                                      WBMQTT::PMqttRpcServer rpcServer)
     : DeviceFactory(deviceFactory),
+      RequestDeviceLoadConfigSchema(LoadRPCRequestSchema(requestDeviceLoadConfigSchemaFilePath, "device/LoadConfig")),
+      RequestDeviceProbeSchema(LoadRPCRequestSchema(requestDeviceProbeSchemaFilePath, "device/Probe")),
       Templates(templates),
       SerialClientTaskRunner(serialClientTaskRunner),
       ParametersCache(parametersCache)
 {
-    try {
-        RequestDeviceLoadConfigSchema = WBMQTT::JSON::Parse(requestDeviceLoadConfigSchemaFilePath);
-    } catch (const std::runtime_error& e) {
-        LOG(Error) << "device/LoadConfig request schema reading error: " << e.what();
-        throw;
-    }
-
     rpcServer->RegisterAsyncMethod("device",
                                    "LoadConfig",
                                    std::bind(&TRPCDeviceHandler::LoadConfig,
@@ -89,11 +87,7 @@ void TRPCDeviceHandler::LoadConfig(const Json::Value& request,
                                    WBMQTT::TMqttRpcServer::TResultCallback onResult,
                                    WBMQTT::TMqttRpcServer::TErrorCallback onError)
 {
-    try {
-        WBMQTT::JSON::Validate(request, RequestDeviceLoadConfigSchema);
-    } catch (const std::runtime_error& e) {
-        throw TRPCException(e.what(), TRPCResultCode::RPC_WRONG_PARAM_VALUE);
-    }
+    ValidateRPCRequest(request, RequestDeviceLoadConfigSchema);
 
     std::string deviceType = request["device_type"].asString();
     auto deviceTemplate = Templates->GetTemplate(deviceType);
@@ -112,6 +106,19 @@ void TRPCDeviceHandler::LoadConfig(const Json::Value& request,
         auto rpcRequest = ParseRPCDeviceLoadConfigRequest(request, DeviceFactory, deviceTemplate, ParametersCache);
         SetCallbacks(*rpcRequest, onResult, onError);
         SerialClientTaskRunner.RunTask(request, std::make_shared<TRPCDeviceLoadConfigSerialClientTask>(rpcRequest));
+    } catch (const TRPCException& e) {
+        ProcessException(e, onError);
+    }
+}
+
+void TRPCDeviceHandler::Probe(const Json::Value& request,
+                              WBMQTT::TMqttRpcServer::TResultCallback onResult,
+                              WBMQTT::TMqttRpcServer::TErrorCallback onError)
+{
+    ValidateRPCRequest(request, RequestDeviceProbeSchema);
+    try {
+        SerialClientTaskRunner.RunTask(request,
+                                       std::make_shared<TRPCDeviceProbeSerialClientTask>(request, onResult, onError));
     } catch (const TRPCException& e) {
         ProcessException(e, onError);
     }
