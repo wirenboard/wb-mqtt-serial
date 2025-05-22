@@ -2,7 +2,13 @@ wb-mqtt-serial (2.166.0) stable; urgency=medium
 
   * Add read parameters featute for non-Modbus devices to Device/LoadConfig RPC
 
- -- Ilya Titov <ilya.titov@wirenboard.com>  Wed, 21 May 2025 13:42:16 +0300
+ -- Ilya Titov <ilya.titov@wirenboard.com>  Wed, 22 May 2025 07:32:16 +0300
+
+wb-mqtt-serial (2.165.1) stable; urgency=medium
+
+  * Somfy SDN: add application mode property (roller/venetian) for Sonesse 40 AC
+
+ -- Nikolay Korotkiy <nikolay.korotkiy@wirenboard.com>  Wed, 21 May 2025 15:10:00 +0400
 
 wb-mqtt-serial (2.165.0) stable; urgency=medium
 
