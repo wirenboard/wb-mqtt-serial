@@ -82,7 +82,7 @@ namespace
 
     std::string ReadFirmwareVersion(TPort& port, PRPCDeviceLoadConfigRequest rpcRequest)
     {
-        if (!rpcRequest->IsWBDevice) {
+        if (!rpcRequest->IsWBDevice || rpcRequest->DeviceTemplate->GetProtocol() != "modbus") {
             return std::string();
         }
 
@@ -117,7 +117,7 @@ namespace
 
         for (int i = 0; i <= MAX_RETRIES; i++) {
             try {
-                device->Prepare(TDeviceSetupMode::WITHOUT_SETUP);
+                device->Prepare(TDevicePrepareMode::WITHOUT_SETUP);
                 break;
             } catch (const TSerialDeviceException& e) {
                 if (i == MAX_RETRIES) {
@@ -181,8 +181,8 @@ TRPCDeviceLoadConfigRequest::TRPCDeviceLoadConfigRequest(const TSerialDeviceFact
       DeviceTemplate(deviceTemplate),
       ParametersCache(parametersCache)
 {
-    ContinuousReadSupported = DeviceTemplate->GetTemplate()["enable_wb_continuous_read"].asBool();
-    IsWBDevice = ContinuousReadSupported || !DeviceTemplate->GetHardware().empty();
+    IsWBDevice =
+        !DeviceTemplate->GetHardware().empty() || DeviceTemplate->GetTemplate()["enable_wb_continuous_read"].asBool();
 
     Json::Value responseTimeout = DeviceTemplate->GetTemplate()["response_timeout_ms"];
     if (responseTimeout.isInt()) {
@@ -235,13 +235,9 @@ void ExecRPCDeviceLoadConfigRequest(PPort port,
 
     port->SkipNoise();
 
-    std::string fwVersion;
-    if (rpcRequest->DeviceTemplate->GetProtocol() == "modbus") {
-        fwVersion = ReadFirmwareVersion(*port, rpcRequest);
-    }
-
     Json::Value templateParams = rpcRequest->DeviceTemplate->GetTemplate()["parameters"];
     Json::Value parameters;
+    std::string fwVersion = ReadFirmwareVersion(*port, rpcRequest);
     TRPCRegisterList registerList = CreateRegisterList(protocolParams, device, templateParams, fwVersion);
     ReadParameters(device, registerList, parameters);
     CheckParametersConditions(templateParams, parameters);

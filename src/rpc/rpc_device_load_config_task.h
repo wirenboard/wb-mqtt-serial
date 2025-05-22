@@ -26,7 +26,6 @@ public:
 
     PDeviceTemplate DeviceTemplate;
     TRPCDeviceParametersCache& ParametersCache;
-    bool ContinuousReadSupported = false;
     bool IsWBDevice = false;
 
     TSerialPortConnectionSettings SerialPortSettings;

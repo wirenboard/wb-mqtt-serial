@@ -73,13 +73,13 @@ PRegisterRange TSerialDevice::CreateRegisterRange() const
     return PRegisterRange(new TSameAddressRegisterRange());
 }
 
-void TSerialDevice::Prepare(TDeviceSetupMode setupMode)
+void TSerialDevice::Prepare(TDevicePrepareMode prepareMode)
 {
     bool deviceWasDisconnected = (ConnectionState != TDeviceConnectionState::CONNECTED);
     try {
         PrepareImpl();
-        if (deviceWasDisconnected) {
-            WriteSetupRegisters(setupMode);
+        if (prepareMode == TDevicePrepareMode::WITH_SETUP_IF_WAS_DISCONNECTED && deviceWasDisconnected) {
+            WriteSetupRegisters();
         }
     } catch (const TSerialDeviceException& ex) {
         SetTransferResult(false);
@@ -190,11 +190,8 @@ TDeviceConnectionState TSerialDevice::GetConnectionState() const
     return ConnectionState;
 }
 
-void TSerialDevice::WriteSetupRegisters(TDeviceSetupMode setupMode)
+void TSerialDevice::WriteSetupRegisters()
 {
-    if (setupMode == TDeviceSetupMode::WITHOUT_SETUP) {
-        return;
-    }
     for (const auto& setup_item: SetupItems) {
         WriteRegisterImpl(*setup_item->Register->GetConfig(), setup_item->RawValue);
 

@@ -170,9 +170,9 @@ enum class TDeviceConnectionState
     DISCONNECTED
 };
 
-enum class TDeviceSetupMode
+enum class TDevicePrepareMode
 {
-    WITH_SETUP,
+    WITH_SETUP_IF_WAS_DISCONNECTED,
     WITHOUT_SETUP
 };
 
@@ -193,7 +193,7 @@ public:
 
     // Prepare to access device (pauses for configured delay by default)
     // i.e. "StartSession". Called before any read/write/etc after communicating with another device
-    void Prepare(TDeviceSetupMode setupMode = TDeviceSetupMode::WITH_SETUP);
+    void Prepare(TDevicePrepareMode setupMode = TDevicePrepareMode::WITH_SETUP_IF_WAS_DISCONNECTED);
 
     // Ends communication session with the device. Called before communicating with another device
     virtual void EndSession();
@@ -252,7 +252,7 @@ protected:
     virtual void PrepareImpl();
     virtual TRegisterValue ReadRegisterImpl(const TRegisterConfig& reg);
     virtual void WriteRegisterImpl(const TRegisterConfig& reg, const TRegisterValue& value);
-    virtual void WriteSetupRegisters(TDeviceSetupMode setupMode);
+    virtual void WriteSetupRegisters();
 
 private:
     PPort SerialPort;
