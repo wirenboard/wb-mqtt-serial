@@ -179,12 +179,11 @@ Json::Value RpcPortScan::GetDeviceDetails(RpcPortScan::TRegisterReader& reader,
 
 RpcPortScan::TRegisterReader::TRegisterReader(TPort& port, Modbus::IModbusTraits& modbusTraits, uint8_t slaveId)
     : ModbusTraits(modbusTraits),
+      FrameTimeout(
+          std::chrono::ceil<std::chrono::milliseconds>(port.GetSendTimeBytes(Modbus::STANDARD_FRAME_TIMEOUT_BYTES))),
       Port(port),
       SlaveId(slaveId)
-{
-    FrameTimeout =
-        std::chrono::ceil<std::chrono::milliseconds>(port.GetSendTimeBytes(Modbus::STANDARD_FRAME_TIMEOUT_BYTES));
-}
+{}
 
 PRPCPortScanRequest ParseRPCPortScanRequest(const Json::Value& request)
 {

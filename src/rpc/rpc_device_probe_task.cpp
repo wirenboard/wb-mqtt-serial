@@ -20,11 +20,10 @@ TRPCDeviceProbeSerialClientTask::TRPCDeviceProbeSerialClientTask(const Json::Val
                                                                  WBMQTT::TMqttRpcServer::TResultCallback onResult,
                                                                  WBMQTT::TMqttRpcServer::TErrorCallback onError)
     : SerialPortSettings(ParseRPCSerialPortSettings(request)),
+      ExpireTime(std::chrono::steady_clock::now() + DefaultRPCTotalTimeout),
       OnResult(onResult),
       OnError(onError)
-
 {
-    ExpireTime = std::chrono::steady_clock::now() + DefaultRPCTotalTimeout;
     WBMQTT::JSON::Get(request, "slave_id", SlaveId);
 }
 
