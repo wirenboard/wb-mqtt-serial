@@ -1274,6 +1274,24 @@ It's designed to be used on [Wiren Board](https://wirenboard.com/en/) family of 
         }
     ],
 
+    // текущие настройки устройства
+    "cfg": {
+        // адрес
+        "slave_id": 100,
+
+        // скорость шины
+        "baud_rate": 115200,
+
+        // чётность
+        "parity": "N",
+
+        // число бит данных
+        "data_bits": 8,
+
+        // число стоп бит
+        "stop_bits": 2
+    },
+
     // прошивка устройства
     "fw": {
         // версия

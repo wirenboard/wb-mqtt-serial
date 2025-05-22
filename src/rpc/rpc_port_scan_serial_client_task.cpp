@@ -57,43 +57,6 @@ namespace
         }
     }
 
-    void AddDeviceConfigDetails(RpcPortScan::TRegisterReader& reader, uint8_t slaveId, Json::Value deviceJson)
-    {
-        Json::Value errorsJson(Json::arrayValue);
-        Json::Value cfgJson;
-        cfgJson["slave_id"] = slaveId;
-        cfgJson["data_bits"] = 8;
-        std::string serialParamsReadError;
-        try {
-            cfgJson["baud_rate"] = reader.Read<uint64_t>(WbRegisters::BAUD_RATE_REGISTER_NAME) * 100;
-        } catch (const std::exception& e) {
-            serialParamsReadError = e.what();
-        }
-        try {
-            cfgJson["stop_bits"] = reader.Read<uint64_t>(WbRegisters::STOP_BITS_REGISTER_NAME);
-        } catch (const std::exception& e) {
-            serialParamsReadError = e.what();
-        }
-        try {
-            cfgJson["parity"] = GetParityChar(reader.Read<uint64_t>(WbRegisters::PARITY_REGISTER_NAME));
-        } catch (const std::exception& e) {
-            serialParamsReadError = e.what();
-        }
-        if (!serialParamsReadError.empty()) {
-            AppendError(errorsJson, READ_SERIAL_PARAMS_ERROR_ID, serialParamsReadError);
-        }
-        deviceJson["cfg"] = cfgJson;
-        if (deviceJson.isMember("errors")) {
-            for (const auto& error: deviceJson["errors"]) {
-                errorsJson.append(error);
-            }
-        } else {
-            if (!errorsJson.empty()) {
-                deviceJson["errors"] = errorsJson;
-            }
-        }
-    }
-
     Json::Value GetDeviceDetails(RpcPortScan::TRegisterReader& reader,
                                  uint8_t slaveId,
                                  uint32_t snFromRegister,
@@ -124,6 +87,30 @@ namespace
         } catch (const std::exception& e) {
             AppendError(errorsJson, READ_FW_VERSION_ERROR_ID, e.what());
         }
+
+        Json::Value cfgJson;
+        cfgJson["slave_id"] = slaveId;
+        cfgJson["data_bits"] = 8;
+        std::string serialParamsReadError;
+        try {
+            cfgJson["baud_rate"] = reader.Read<uint64_t>(WbRegisters::BAUD_RATE_REGISTER_NAME) * 100;
+        } catch (const std::exception& e) {
+            serialParamsReadError = e.what();
+        }
+        try {
+            cfgJson["stop_bits"] = reader.Read<uint64_t>(WbRegisters::STOP_BITS_REGISTER_NAME);
+        } catch (const std::exception& e) {
+            serialParamsReadError = e.what();
+        }
+        try {
+            cfgJson["parity"] = GetParityChar(reader.Read<uint64_t>(WbRegisters::PARITY_REGISTER_NAME));
+        } catch (const std::exception& e) {
+            serialParamsReadError = e.what();
+        }
+        if (!serialParamsReadError.empty()) {
+            AppendError(errorsJson, READ_SERIAL_PARAMS_ERROR_ID, serialParamsReadError);
+        }
+        deviceJson["cfg"] = cfgJson;
 
         auto stringSlaveId = std::to_string(slaveId);
         for (const auto& polledDevice: polledDevices) {
@@ -163,9 +150,7 @@ namespace
         modbusTraits.SetModbusExtCommand(modbusExtCommand);
         modbusTraits.SetSn(scannedDevice.Sn);
         RpcPortScan::TRegisterReader reader(port, modbusTraits, scannedDevice.SlaveId);
-        auto deviceJson = ::GetDeviceDetails(reader, scannedDevice.SlaveId, scannedDevice.Sn, polledDevices);
-        AddDeviceConfigDetails(reader, scannedDevice.SlaveId, deviceJson);
-        return deviceJson;
+        return ::GetDeviceDetails(reader, scannedDevice.SlaveId, scannedDevice.Sn, polledDevices);
     }
 }
 
