@@ -33,8 +33,6 @@ private:
                   WBMQTT::TMqttRpcServer::TResultCallback onResult,
                   WBMQTT::TMqttRpcServer::TErrorCallback onError);
     Json::Value LoadPorts(const Json::Value& request);
-
-    void ValidateRequest(const Json::Value& request, const Json::Value& schema);
 };
 
 typedef std::shared_ptr<TRPCPortHandler> PRPCPortHandler;

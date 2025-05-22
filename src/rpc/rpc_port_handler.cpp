@@ -14,31 +14,13 @@ TRPCPortHandler::TRPCPortHandler(const std::string& requestPortLoadSchemaFilePat
                                  TSerialClientTaskRunner& serialClientTaskRunner,
                                  TRPCDeviceParametersCache& parametersCache,
                                  WBMQTT::PMqttRpcServer rpcServer)
-    : RPCConfig(rpcConfig),
+    : RequestPortLoadSchema(LoadRPCRequestSchema(requestPortLoadSchemaFilePath, "port/Load")),
+      RequestPortSetupSchema(LoadRPCRequestSchema(requestPortSetupSchemaFilePath, "port/Setup")),
+      RequestPortScanSchema(LoadRPCRequestSchema(requestPortScanSchemaFilePath, "port/Scan")),
+      RPCConfig(rpcConfig),
       SerialClientTaskRunner(serialClientTaskRunner),
       ParametersCache(parametersCache)
 {
-    try {
-        RequestPortLoadSchema = WBMQTT::JSON::Parse(requestPortLoadSchemaFilePath);
-    } catch (const std::runtime_error& e) {
-        LOG(Error) << "RPC port/Load request schema reading error: " << e.what();
-        throw;
-    }
-
-    try {
-        RequestPortSetupSchema = WBMQTT::JSON::Parse(requestPortSetupSchemaFilePath);
-    } catch (const std::runtime_error& e) {
-        LOG(Error) << "RPC port/Setup request schema reading error: " << e.what();
-        throw;
-    }
-
-    try {
-        RequestPortScanSchema = WBMQTT::JSON::Parse(requestPortScanSchemaFilePath);
-    } catch (const std::runtime_error& e) {
-        LOG(Error) << "RPC port/Scan request schema reading error: " << e.what();
-        throw;
-    }
-
     rpcServer->RegisterAsyncMethod("port",
                                    "Load",
                                    std::bind(&TRPCPortHandler::PortLoad,
@@ -67,7 +49,7 @@ void TRPCPortHandler::PortLoad(const Json::Value& request,
                                WBMQTT::TMqttRpcServer::TResultCallback onResult,
                                WBMQTT::TMqttRpcServer::TErrorCallback onError)
 {
-    ValidateRequest(request, RequestPortLoadSchema);
+    ValidateRPCRequest(request, RequestPortLoadSchema);
     try {
         auto protocol = request.get("protocol", "raw").asString();
         if (protocol == "modbus") {
@@ -88,7 +70,7 @@ void TRPCPortHandler::PortSetup(const Json::Value& request,
                                 WBMQTT::TMqttRpcServer::TResultCallback onResult,
                                 WBMQTT::TMqttRpcServer::TErrorCallback onError)
 {
-    ValidateRequest(request, RequestPortSetupSchema);
+    ValidateRPCRequest(request, RequestPortSetupSchema);
     try {
         SerialClientTaskRunner.RunTask(request,
                                        std::make_shared<TRPCPortSetupSerialClientTask>(request, onResult, onError));
@@ -101,7 +83,7 @@ void TRPCPortHandler::PortScan(const Json::Value& request,
                                WBMQTT::TMqttRpcServer::TResultCallback onResult,
                                WBMQTT::TMqttRpcServer::TErrorCallback onError)
 {
-    ValidateRequest(request, RequestPortScanSchema);
+    ValidateRPCRequest(request, RequestPortScanSchema);
     try {
         SerialClientTaskRunner.RunTask(request,
                                        std::make_shared<TRPCPortScanSerialClientTask>(request, onResult, onError));
@@ -113,13 +95,4 @@ void TRPCPortHandler::PortScan(const Json::Value& request,
 Json::Value TRPCPortHandler::LoadPorts(const Json::Value& request)
 {
     return RPCConfig->GetPortConfigs();
-}
-
-void TRPCPortHandler::ValidateRequest(const Json::Value& request, const Json::Value& schema)
-{
-    try {
-        WBMQTT::JSON::Validate(request, schema);
-    } catch (const std::runtime_error& e) {
-        throw TRPCException(e.what(), TRPCResultCode::RPC_WRONG_PARAM_VALUE);
-    }
 }

@@ -51,6 +51,7 @@ class TRPCDeviceHandler
 {
 public:
     TRPCDeviceHandler(const std::string& requestDeviceLoadConfigSchemaFilePath,
+                      const std::string& requestDeviceProbeSchemaFilePath,
                       const TSerialDeviceFactory& deviceFactory,
                       PTemplateMap templates,
                       TSerialClientTaskRunner& serialClientTaskRunner,
@@ -61,6 +62,7 @@ private:
     const TSerialDeviceFactory& DeviceFactory;
 
     Json::Value RequestDeviceLoadConfigSchema;
+    Json::Value RequestDeviceProbeSchema;
     PTemplateMap Templates;
     TSerialClientTaskRunner& SerialClientTaskRunner;
     TRPCDeviceParametersCache& ParametersCache;
@@ -68,6 +70,10 @@ private:
     void LoadConfig(const Json::Value& request,
                     WBMQTT::TMqttRpcServer::TResultCallback onResult,
                     WBMQTT::TMqttRpcServer::TErrorCallback onError);
+
+    void Probe(const Json::Value& request,
+               WBMQTT::TMqttRpcServer::TResultCallback onResult,
+               WBMQTT::TMqttRpcServer::TErrorCallback onError);
 };
 
 typedef std::shared_ptr<TRPCDeviceHandler> PRPCDeviceHandler;

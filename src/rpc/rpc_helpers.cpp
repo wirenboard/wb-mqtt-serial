@@ -1,7 +1,6 @@
 #include "rpc_helpers.h"
+#include "log.h"
 #include "rpc_exception.h"
-#include "serial_port.h"
-#include "tcp_port.h"
 
 #define LOG(logger) ::logger.Log() << "[RPC] "
 
@@ -17,25 +16,21 @@ TSerialPortConnectionSettings ParseRPCSerialPortSettings(const Json::Value& requ
     return res;
 }
 
-PPort InitPort(const Json::Value& request)
+void ValidateRPCRequest(const Json::Value& request, const Json::Value& schema)
 {
-    if (request.isMember("path")) {
-        std::string path;
-        WBMQTT::JSON::Get(request, "path", path);
-        TSerialPortSettings settings(path, ParseRPCSerialPortSettings(request));
-
-        LOG(Debug) << "Create serial port: " << path;
-        return std::make_shared<TSerialPort>(settings);
+    try {
+        WBMQTT::JSON::Validate(request, schema);
+    } catch (const std::runtime_error& e) {
+        throw TRPCException(e.what(), TRPCResultCode::RPC_WRONG_PARAM_VALUE);
     }
-    if (request.isMember("ip") && request.isMember("port")) {
-        std::string address;
-        int portNumber = 0;
-        WBMQTT::JSON::Get(request, "ip", address);
-        WBMQTT::JSON::Get(request, "port", portNumber);
-        TTcpPortSettings settings(address, portNumber);
+}
 
-        LOG(Debug) << "Create tcp port: " << address << ":" << portNumber;
-        return std::make_shared<TTcpPort>(settings);
+Json::Value LoadRPCRequestSchema(const std::string& schemaFilePath, const std::string& rpcName)
+{
+    try {
+        return WBMQTT::JSON::Parse(schemaFilePath);
+    } catch (const std::runtime_error& e) {
+        LOG(Error) << "RPC " + rpcName + " request schema reading error: " << e.what();
+        throw;
     }
-    throw TRPCException("Port is not defined", TRPCResultCode::RPC_WRONG_PARAM_VALUE);
 }
