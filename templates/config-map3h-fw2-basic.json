@@ -209,21 +209,6 @@
                 "round_to": 0.001,
                 "group": "l3"
             },
-
-
-
-
-            {
-                "name": "U L2-L3",
-                "reg_type": "input",
-                "address": "0x141D",
-                "type": "voltage",
-                "format": "u16",
-                "scale": 0.01,
-                "round_to": 0.1,
-                "error_value": "0xFFFF",
-                "group": "l2"
-            },
             {
                 "name": "U L3-L1",
                 "reg_type": "input",
