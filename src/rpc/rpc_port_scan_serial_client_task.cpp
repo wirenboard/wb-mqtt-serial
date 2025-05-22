@@ -80,14 +80,6 @@ namespace
             AppendError(errorsJson, READ_FW_SIGNATURE_ERROR_ID, e.what());
         }
 
-        try {
-            Json::Value fwJson;
-            fwJson["version"] = reader.Read<std::string>(WbRegisters::FW_VERSION_REGISTER_NAME);
-            deviceJson["fw"] = fwJson;
-        } catch (const std::exception& e) {
-            AppendError(errorsJson, READ_FW_VERSION_ERROR_ID, e.what());
-        }
-
         Json::Value cfgJson;
         cfgJson["slave_id"] = slaveId;
         cfgJson["data_bits"] = 8;
@@ -111,6 +103,14 @@ namespace
             AppendError(errorsJson, READ_SERIAL_PARAMS_ERROR_ID, serialParamsReadError);
         }
         deviceJson["cfg"] = cfgJson;
+
+        try {
+            Json::Value fwJson;
+            fwJson["version"] = reader.Read<std::string>(WbRegisters::FW_VERSION_REGISTER_NAME);
+            deviceJson["fw"] = fwJson;
+        } catch (const std::exception& e) {
+            AppendError(errorsJson, READ_FW_VERSION_ERROR_ID, e.what());
+        }
 
         auto stringSlaveId = std::to_string(slaveId);
         for (const auto& polledDevice: polledDevices) {
