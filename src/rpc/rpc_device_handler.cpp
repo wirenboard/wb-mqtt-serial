@@ -81,6 +81,13 @@ TRPCDeviceHandler::TRPCDeviceHandler(const std::string& requestDeviceLoadConfigS
                                              std::placeholders::_1,
                                              std::placeholders::_2,
                                              std::placeholders::_3));
+    rpcServer->RegisterAsyncMethod("device",
+                                   "Probe",
+                                   std::bind(&TRPCDeviceHandler::Probe,
+                                             this,
+                                             std::placeholders::_1,
+                                             std::placeholders::_2,
+                                             std::placeholders::_3));
 }
 
 void TRPCDeviceHandler::LoadConfig(const Json::Value& request,

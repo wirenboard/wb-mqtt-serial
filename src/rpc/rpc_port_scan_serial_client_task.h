@@ -38,6 +38,21 @@ namespace RpcPortScan
         uint8_t SlaveId;
     };
 
+    /**
+     * @brief Retrieves detailed information about a device.
+     *
+     * This function gathers details about a specific device by reading its registers
+     * and analyzing its properties based on the provided slave ID and the list of
+     * polled devices.
+     *
+     * @param reader A reference to the TRegisterReader object used to read device registers.
+     * @param slaveId The Modbus slave ID of the device to retrieve details for.
+     * @param polledDevices A list of polled serial devices to assist in identifying the device.
+     * @return A Json::Value object containing the detailed information about the device.
+     *         An empty Json::Value object is returned if the device is not found.
+     *         The returned object may contain error messages if any issues occurred during
+     *         the reading process.
+     */
     Json::Value GetDeviceDetails(TRegisterReader& reader,
                                  uint8_t slaveId,
                                  const std::list<PSerialDevice>& polledDevices);

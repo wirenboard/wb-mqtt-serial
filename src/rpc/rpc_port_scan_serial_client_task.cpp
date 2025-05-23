@@ -24,6 +24,7 @@ namespace
     const std::string READ_FW_SIGNATURE_ERROR_ID = "com.wb.device_manager.device.read_fw_signature_error";
     const std::string READ_DEVICE_SIGNATURE_ERROR_ID = "com.wb.device_manager.device.read_device_signature_error";
     const std::string READ_SERIAL_PARAMS_ERROR_ID = "com.wb.device_manager.device.read_serial_params_error";
+    const std::string READ_SN_ERROR_ID = "com.wb.device_manager.device.read_sn_error";
 
     uint32_t GetSnFromRegister(const std::string& deviceModel, uint32_t sn)
     {
@@ -158,7 +159,18 @@ Json::Value RpcPortScan::GetDeviceDetails(RpcPortScan::TRegisterReader& reader,
                                           uint8_t slaveId,
                                           const std::list<PSerialDevice>& polledDevices)
 {
-    auto sn = reader.Read<uint64_t>(WbRegisters::SN_REGISTER_NAME);
+    uint64_t sn;
+    try {
+        sn = reader.Read<uint64_t>(WbRegisters::SN_REGISTER_NAME);
+    } catch (const TResponseTimeoutException& e) {
+        return Json::Value(Json::objectValue);
+    } catch (const Modbus::TErrorBase& e) {
+        Json::Value errorsJson(Json::arrayValue);
+        AppendError(errorsJson, READ_SN_ERROR_ID, e.what());
+        Json::Value deviceJson;
+        deviceJson["errors"] = errorsJson;
+        return deviceJson;
+    }
     return ::GetDeviceDetails(reader, slaveId, sn, polledDevices);
 }
 
