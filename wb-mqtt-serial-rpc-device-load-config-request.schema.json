@@ -78,6 +78,9 @@
         },
         "device_type": {
           "type": "string"
+        },
+        "group": {
+          "type": "string"
         }
       },
       "required": [ "slave_id", "device_type" ]

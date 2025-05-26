@@ -204,6 +204,7 @@ PRPCDeviceLoadConfigRequest ParseRPCDeviceLoadConfigRequest(const Json::Value& r
         std::make_shared<TRPCDeviceLoadConfigRequest>(deviceFactory, deviceTemplate, parametersCache);
     res->SerialPortSettings = ParseRPCSerialPortSettings(request);
     res->SlaveId = request["slave_id"].asString();
+    res->Group = request["group"].asString();
     WBMQTT::JSON::Get(request, "response_timeout", res->ResponseTimeout);
     WBMQTT::JSON::Get(request, "frame_timeout", res->FrameTimeout);
     WBMQTT::JSON::Get(request, "total_timeout", res->TotalTimeout);
@@ -219,9 +220,12 @@ void ExecRPCDeviceLoadConfigRequest(PPort port,
     }
 
     std::string id = rpcRequest->ParametersCache.GetId(*port, rpcRequest->SlaveId);
+    std::string fwVersion;
+    Json::Value parameters;
     if (rpcRequest->ParametersCache.Contains(id)) {
-        rpcRequest->OnResult(rpcRequest->ParametersCache.Get(id));
-        return;
+        Json::Value cache = rpcRequest->ParametersCache.Get(id);
+        fwVersion = cache["fw"].asString();
+        parameters = cache["parameters"];
     }
 
     TDeviceProtocolParams protocolParams =
@@ -233,14 +237,21 @@ void ExecRPCDeviceLoadConfigRequest(PPort port,
         useCache = false;
     }
 
+    // TODO: sync with config
+
     port->SkipNoise();
 
+    if (fwVersion.empty()) {
+        fwVersion = ReadFirmwareVersion(*port, rpcRequest);
+    }
+
     Json::Value templateParams = rpcRequest->DeviceTemplate->GetTemplate()["parameters"];
-    Json::Value parameters;
-    std::string fwVersion = ReadFirmwareVersion(*port, rpcRequest);
-    TRPCRegisterList registerList = CreateRegisterList(protocolParams, device, templateParams, fwVersion);
-    ReadParameters(device, registerList, parameters);
-    CheckParametersConditions(templateParams, parameters);
+    TRPCRegisterList registerList =
+        CreateRegisterList(protocolParams, device, templateParams, parameters, rpcRequest->Group, fwVersion);
+    if (registerList.size() != 0) {
+        ReadParameters(device, registerList, parameters);
+        CheckParametersConditions(templateParams, parameters);
+    }
 
     Json::Value result;
     if (!fwVersion.empty()) {
@@ -291,6 +302,8 @@ ISerialClientTask::TRunResult TRPCDeviceLoadConfigSerialClientTask::Run(
 TRPCRegisterList CreateRegisterList(const TDeviceProtocolParams& protocolParams,
                                     const PSerialDevice& device,
                                     const Json::Value& templateParams,
+                                    const Json::Value& parameters,
+                                    const std::string& group,
                                     const std::string& fwVersion)
 {
     TRPCRegisterList registerList;
@@ -304,7 +317,9 @@ TRPCRegisterList CreateRegisterList(const TDeviceProtocolParams& protocolParams,
                 break;
             }
         }
-        if (duplicate || registerData["address"].isNull() || registerData["readonly"].asBool()) {
+        if (duplicate || registerData["address"].isNull() || registerData["readonly"].asBool() ||
+            (!group.empty() && registerData["group"].asString() != group) || !parameters[id].isNull())
+        {
             continue;
         }
         if (!fwVersion.empty()) {

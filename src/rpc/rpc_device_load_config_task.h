@@ -30,6 +30,7 @@ public:
 
     TSerialPortConnectionSettings SerialPortSettings;
     std::string SlaveId;
+    std::string Group;
 
     std::chrono::milliseconds ResponseTimeout = DefaultResponseTimeout;
     std::chrono::milliseconds FrameTimeout = DefaultFrameTimeout;
@@ -68,7 +69,9 @@ typedef std::vector<std::pair<std::string, PRegister>> TRPCRegisterList;
 
 TRPCRegisterList CreateRegisterList(const TDeviceProtocolParams& protocolParams,
                                     const PSerialDevice& device,
+                                    const Json::Value& templateParams,
                                     const Json::Value& parameters,
+                                    const std::string& group,
                                     const std::string& fwVersion);
 void CheckParametersConditions(const Json::Value& templateParams, Json::Value& parameters);
 Json::Value RawValueToJSON(const TRegisterConfig& reg, TRegisterValue val);
