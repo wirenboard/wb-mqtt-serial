@@ -1,3 +1,9 @@
+wb-mqtt-serial (2.167.1) stable; urgency=medium
+
+  * WB-MWAC v.2: deprecate old template, add new, make Leakage Mode control read only, add button to reset it
+
+ -- Radmir Khakimov <radmir.khakimov@wirenboard.com>  Mon, 26 May 2025 13:51:57 +0500
+
 wb-mqtt-serial (2.167.0) stable; urgency=medium
 
   * Add firmware version value validation for template parameters array 
