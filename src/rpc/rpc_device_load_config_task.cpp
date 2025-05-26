@@ -85,7 +85,6 @@ namespace
         if (!rpcRequest->IsWBDevice || rpcRequest->DeviceTemplate->GetProtocol() != "modbus") {
             return std::string();
         }
-
         std::string error;
         try {
             Modbus::TModbusRTUTraits traits;
@@ -108,6 +107,9 @@ namespace
 
     void ReadParameters(PSerialDevice device, TRPCRegisterList& registerList, Json::Value& parameters)
     {
+        if (registerList.size() == 0) {
+            return;
+        }
         TRegisterComparePredicate compare;
         std::sort(registerList.begin(),
                   registerList.end(),
@@ -248,21 +250,18 @@ void ExecRPCDeviceLoadConfigRequest(PPort port,
     Json::Value templateParams = rpcRequest->DeviceTemplate->GetTemplate()["parameters"];
     TRPCRegisterList registerList =
         CreateRegisterList(protocolParams, device, templateParams, parameters, rpcRequest->Group, fwVersion);
-    if (registerList.size() != 0) {
-        ReadParameters(device, registerList, parameters);
-        CheckParametersConditions(templateParams, parameters);
-    }
+    ReadParameters(device, registerList, parameters);
 
     Json::Value result;
     if (!fwVersion.empty()) {
         result["fw"] = fwVersion;
     }
     result["parameters"] = parameters;
-    rpcRequest->OnResult(result);
-
     if (useCache) {
         rpcRequest->ParametersCache.Add(id, result);
     }
+    CheckParametersConditions(templateParams, result["parameters"]);
+    rpcRequest->OnResult(result);
 }
 
 TRPCDeviceLoadConfigSerialClientTask::TRPCDeviceLoadConfigSerialClientTask(PRPCDeviceLoadConfigRequest request)
@@ -307,36 +306,58 @@ TRPCRegisterList CreateRegisterList(const TDeviceProtocolParams& protocolParams,
                                     const std::string& fwVersion)
 {
     TRPCRegisterList registerList;
-    for (auto it = templateParams.begin(); it != templateParams.end(); ++it) {
-        const Json::Value& registerData = *it;
-        std::string id = templateParams.isObject() ? it.key().asString() : registerData["id"].asString();
-        bool duplicate = false;
-        for (size_t i = 0; i < registerList.size(); ++i) {
-            if (registerList[i].first == id) {
-                duplicate = true;
-                break;
+    std::list<std::string> conditionList;
+    bool check = true;
+    while (check) {
+        check = false;
+        for (auto it = templateParams.begin(); it != templateParams.end(); ++it) {
+            const Json::Value& registerData = *it;
+            std::string id = templateParams.isObject() ? it.key().asString() : registerData["id"].asString();
+            bool duplicate = false;
+            for (const auto& item: registerList) {
+                if (item.first == id) {
+                    duplicate = true;
+                    break;
+                }
             }
-        }
-        if (duplicate || registerData["address"].isNull() || registerData["readonly"].asBool() ||
-            (!group.empty() && registerData["group"].asString() != group) || !parameters[id].isNull())
-        {
-            continue;
-        }
-        if (!fwVersion.empty()) {
-            std::string fw = registerData["fw"].asString();
-            if (!fw.empty() && util::CompareVersionStrings(fw, fwVersion) > 0) {
+            if (duplicate || registerData["address"].isNull() || registerData["readonly"].asBool()) {
                 continue;
             }
+            if (std::find(conditionList.begin(), conditionList.end(), id) == conditionList.end() &&
+                (!parameters[id].isNull() || (!group.empty() && registerData["group"].asString() != group)))
+            {
+                continue;
+            }
+            if (!fwVersion.empty()) {
+                std::string fw = registerData["fw"].asString();
+                if (!fw.empty() && util::CompareVersionStrings(fw, fwVersion) > 0) {
+                    continue;
+                }
+            }
+            if (!group.empty() && !registerData["condition"].isNull()) {
+                Expressions::TLexer lexer;
+                auto tokens = lexer.GetTokens(registerData["condition"].asString());
+                for (const auto& token: tokens) {
+                    if (token.Type == Expressions::TTokenType::Ident && token.Value != "isDefined" &&
+                        std::find(conditionList.begin(), conditionList.end(), token.Value) == conditionList.end() &&
+                        parameters[token.Value].isNull())
+                    {
+                        conditionList.push_back(token.Value);
+                        check = true;
+                    }
+                }
+            }
+            auto config =
+                LoadRegisterConfig(registerData,
+                                   *protocolParams.protocol->GetRegTypes(),
+                                   std::string(),
+                                   *protocolParams.factory,
+                                   protocolParams.factory->GetRegisterAddressFactory().GetBaseRegisterAddress(),
+                                   0);
+            auto reg = std::make_shared<TRegister>(device, config.RegisterConfig);
+            reg->SetAvailable(TRegisterAvailability::AVAILABLE);
+            registerList.push_back(std::make_pair(id, reg));
         }
-        auto config = LoadRegisterConfig(registerData,
-                                         *protocolParams.protocol->GetRegTypes(),
-                                         std::string(),
-                                         *protocolParams.factory,
-                                         protocolParams.factory->GetRegisterAddressFactory().GetBaseRegisterAddress(),
-                                         0);
-        auto reg = std::make_shared<TRegister>(device, config.RegisterConfig);
-        reg->SetAvailable(TRegisterAvailability::AVAILABLE);
-        registerList.push_back(std::make_pair(id, reg));
     }
     return registerList;
 }
@@ -366,6 +387,9 @@ void CheckParametersConditions(const Json::Value& templateParams, Json::Value& p
                 check = true;
             }
         }
+    }
+    if (parameters.isNull()) {
+        parameters = Json::Value(Json::objectValue);
     }
 }
 
