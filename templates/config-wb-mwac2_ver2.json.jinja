@@ -15,9 +15,8 @@
 {% set IN_MODE_FLOOD_SENSOR = 5 -%}
 {
     "title": "WB-MWAC_template_title",
-    "device_type": "WB-MWAC-v2 deprecated",
+    "device_type": "WB-MWAC-v2",
     "group": "g-wb",
-    "deprecated": true,
         "hw": [
         {
             "signature": "WBMWAC-v2"
@@ -612,7 +611,17 @@
                 "reg_type": "coil",
                 "address": 2,
                 "type": "switch",
+                "readonly": true,
                 "sporadic": true,
+                "group": "gg_outputs_channels"
+            },
+            {
+                "name": "Leakage Mode Reset",
+                "reg_type": "coil",
+                "address": 2,
+                "on_value": 0,
+                "type": "pushbutton",
+                "enabled": true,
                 "group": "gg_outputs_channels"
             },
             {
@@ -779,6 +788,7 @@
                 {% endfor -%}
 
                 "Leakage Mode": "Режим \"Протечка\"",
+                "Leakage Mode Reset": "Сброс режима \"Протечка\"",
 
                 "Serial": "Серийный номер",
                 "FW Version": "Версия прошивки",
