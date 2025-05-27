@@ -253,6 +253,15 @@
                 "address": 9,
                 "group": "gg_ups_channels"
             },
+            {
+                "id": "load_control_in_backup_mode",
+                "name": "Load Control in Backup Mode",
+                "type": "switch",
+                "reg_type": "coil",
+                "address": 34,
+                "enabled": false,
+                "group": "gg_ups_channels"
+            },
 
             {
                 "id": "button_state",
@@ -317,6 +326,27 @@
                 "enabled": false,
                 "group": "gg_debug_heater"
             },
+
+            {
+                "id": "charger_state",
+                "name": "Charger State",
+                "type": "switch",
+                "read_only": true,
+                "reg_type": "discrete",
+                "address": 18,
+                "enabled": false,
+                "group": "gg_debug_charge_discharge"
+            },
+            {
+                "id": "discharger_state",
+                "name": "Discharger State",
+                "type": "switch",
+                "read_only": true,
+                "reg_type": "discrete",
+                "address": 19,
+                "enabled": false,
+                "group": "gg_debug_charge_discharge"
+            },
             {
                 "id": "charger_current_setpoint",
                 "name": "Charger Current Setpoint",
@@ -356,6 +386,8 @@
                 "enabled": false,
                 "group": "gg_debug_charge_discharge"
             },
+
+
 
             {% set chips = ["charger", "discharger"] -%}
             {% set values = ["vbus", "vbat", "ibus", "ibat"] -%}
@@ -496,6 +528,9 @@
                 "Heater": "Нагреватель",
                 "Charge/Discharge": "Заряд/Разряд",
                 "Chip ADC Values": "Значения АЦП чипов",
+                "Charger State": "Состояние зарядника",
+                "Discharger State": "Состояние разрядника",
+                "Load Control in Backup Mode": "Управление нагрузкой в режиме резервного питания",
 
                 "Button": "Кнопка",
                 "Button State": "Состояние кнопки",
