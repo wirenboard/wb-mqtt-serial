@@ -140,12 +140,14 @@ struct TDeviceSetupItem
 {
     TDeviceSetupItem(PDeviceSetupItemConfig config, PRegister reg)
         : Name(config->GetName()),
+          ParameterId(config->GetParameterId()),
           RawValue(config->GetRawValue()),
           HumanReadableValue(config->GetValue()),
           Register(reg)
     {}
 
     std::string Name;
+    std::string ParameterId;
     TRegisterValue RawValue;
     std::string HumanReadableValue;
     PRegister Register;

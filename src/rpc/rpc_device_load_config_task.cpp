@@ -221,15 +221,6 @@ void ExecRPCDeviceLoadConfigRequest(PPort port,
         return;
     }
 
-    std::string id = rpcRequest->ParametersCache.GetId(*port, rpcRequest->SlaveId);
-    std::string fwVersion;
-    Json::Value parameters;
-    if (rpcRequest->ParametersCache.Contains(id)) {
-        Json::Value cache = rpcRequest->ParametersCache.Get(id);
-        fwVersion = cache["fw"].asString();
-        parameters = cache["parameters"];
-    }
-
     TDeviceProtocolParams protocolParams =
         rpcRequest->DeviceFactory.GetProtocolParams(rpcRequest->DeviceTemplate->GetProtocol());
     auto device = FindDevice(polledDevices, rpcRequest->SlaveId, rpcRequest->DeviceTemplate->Type);
@@ -239,10 +230,23 @@ void ExecRPCDeviceLoadConfigRequest(PPort port,
         useCache = false;
     }
 
-    // TODO: sync with config
+    std::string id = rpcRequest->ParametersCache.GetId(*port, rpcRequest->SlaveId);
+    std::string fwVersion;
+    Json::Value parameters;
+    if (rpcRequest->ParametersCache.Contains(id)) {
+        Json::Value cache = rpcRequest->ParametersCache.Get(id);
+        fwVersion = cache["fw"].asString();
+        parameters = cache["parameters"];
+    }
+    if (parameters.isNull()) {
+        for (const auto& item: device->GetSetupItems()) {
+            if (!item->ParameterId.empty()) {
+                parameters[item->ParameterId] = RawValueToJSON(*item->Register->GetConfig(), item->RawValue);
+            }
+        }
+    }
 
     port->SkipNoise();
-
     if (fwVersion.empty()) {
         fwVersion = ReadFirmwareVersion(*port, rpcRequest);
     }
