@@ -42,6 +42,45 @@ namespace
                                                     protocolParams.protocol);
     }
 
+    Json::Value GetGroupParams(const Json::Value& templateParams,
+                               const std::string& group,
+                               std::list<std::string>& paramsList)
+    {
+        Json::Value result;
+        std::list<std::string> conditionList;
+        bool check = true;
+        while (check) {
+            check = false;
+            for (auto it = templateParams.begin(); it != templateParams.end(); ++it) {
+                const Json::Value& data = *it;
+                std::string id = templateParams.isObject() ? it.key().asString() : data["id"].asString();
+                if (std::find(conditionList.begin(), conditionList.end(), id) == conditionList.end() &&
+                    data["group"].asString() != group)
+                {
+                    continue;
+                }
+                if (std::find(paramsList.begin(), paramsList.end(), id) == paramsList.end()) {
+                    paramsList.push_back(id);
+                    result[id] = data;
+                }
+                if (data["condition"].isNull()) {
+                    continue;
+                }
+                Expressions::TLexer lexer;
+                auto tokens = lexer.GetTokens(data["condition"].asString());
+                for (const auto& token: tokens) {
+                    if (token.Type == Expressions::TTokenType::Ident && token.Value != "isDefined" &&
+                        std::find(conditionList.begin(), conditionList.end(), token.Value) == conditionList.end())
+                    {
+                        conditionList.push_back(token.Value);
+                        check = true;
+                    }
+                }
+            }
+        }
+        return result;
+    }
+
     bool ReadModbusRegister(Modbus::IModbusTraits& traits,
                             TPort& port,
                             PRPCDeviceLoadConfigRequest rpcRequest,
@@ -252,20 +291,33 @@ void ExecRPCDeviceLoadConfigRequest(PPort port,
     }
 
     Json::Value templateParams = rpcRequest->DeviceTemplate->GetTemplate()["parameters"];
-    TRPCRegisterList registerList =
-        CreateRegisterList(protocolParams, device, templateParams, parameters, rpcRequest->Group, fwVersion);
+    std::list<std::string> paramsList;
+    TRPCRegisterList registerList = CreateRegisterList(
+        protocolParams,
+        device,
+        rpcRequest->Group.empty() ? templateParams : GetGroupParams(templateParams, rpcRequest->Group, paramsList),
+        parameters,
+        fwVersion);
     ReadParameters(device, registerList, parameters);
 
     Json::Value result;
     if (!fwVersion.empty()) {
         result["fw"] = fwVersion;
     }
-    result["parameters"] = parameters;
-    if (useCache) {
-        rpcRequest->ParametersCache.Add(id, result);
+    if (!paramsList.empty()) {
+        for (const auto& id: paramsList) {
+            result["parameters"][id] = parameters[id];
+        }
+    } else {
+        result["parameters"] = parameters;
     }
     CheckParametersConditions(templateParams, result["parameters"]);
     rpcRequest->OnResult(result);
+
+    if (useCache) {
+        result["parameters"] = parameters;
+        rpcRequest->ParametersCache.Add(id, result);
+    }
 }
 
 TRPCDeviceLoadConfigSerialClientTask::TRPCDeviceLoadConfigSerialClientTask(PRPCDeviceLoadConfigRequest request)
@@ -306,62 +358,37 @@ TRPCRegisterList CreateRegisterList(const TDeviceProtocolParams& protocolParams,
                                     const PSerialDevice& device,
                                     const Json::Value& templateParams,
                                     const Json::Value& parameters,
-                                    const std::string& group,
                                     const std::string& fwVersion)
 {
     TRPCRegisterList registerList;
-    std::list<std::string> conditionList;
-    bool check = true;
-    while (check) {
-        check = false;
-        for (auto it = templateParams.begin(); it != templateParams.end(); ++it) {
-            const Json::Value& registerData = *it;
-            std::string id = templateParams.isObject() ? it.key().asString() : registerData["id"].asString();
-            bool duplicate = false;
-            for (const auto& item: registerList) {
-                if (item.first == id) {
-                    duplicate = true;
-                    break;
-                }
+    for (auto it = templateParams.begin(); it != templateParams.end(); ++it) {
+        const Json::Value& data = *it;
+        std::string id = templateParams.isObject() ? it.key().asString() : data["id"].asString();
+        bool duplicate = false;
+        for (const auto& item: registerList) {
+            if (item.first == id) {
+                duplicate = true;
+                break;
             }
-            if (duplicate || registerData["address"].isNull() || registerData["readonly"].asBool()) {
-                continue;
-            }
-            if (std::find(conditionList.begin(), conditionList.end(), id) == conditionList.end() &&
-                (!parameters[id].isNull() || (!group.empty() && registerData["group"].asString() != group)))
-            {
-                continue;
-            }
-            if (!fwVersion.empty()) {
-                std::string fw = registerData["fw"].asString();
-                if (!fw.empty() && util::CompareVersionStrings(fw, fwVersion) > 0) {
-                    continue;
-                }
-            }
-            if (!group.empty() && !registerData["condition"].isNull()) {
-                Expressions::TLexer lexer;
-                auto tokens = lexer.GetTokens(registerData["condition"].asString());
-                for (const auto& token: tokens) {
-                    if (token.Type == Expressions::TTokenType::Ident && token.Value != "isDefined" &&
-                        std::find(conditionList.begin(), conditionList.end(), token.Value) == conditionList.end() &&
-                        parameters[token.Value].isNull())
-                    {
-                        conditionList.push_back(token.Value);
-                        check = true;
-                    }
-                }
-            }
-            auto config =
-                LoadRegisterConfig(registerData,
-                                   *protocolParams.protocol->GetRegTypes(),
-                                   std::string(),
-                                   *protocolParams.factory,
-                                   protocolParams.factory->GetRegisterAddressFactory().GetBaseRegisterAddress(),
-                                   0);
-            auto reg = std::make_shared<TRegister>(device, config.RegisterConfig);
-            reg->SetAvailable(TRegisterAvailability::AVAILABLE);
-            registerList.push_back(std::make_pair(id, reg));
         }
+        if (duplicate || data["address"].isNull() || data["readonly"].asBool() || !parameters[id].isNull()) {
+            continue;
+        }
+        if (!fwVersion.empty()) {
+            std::string fw = data["fw"].asString();
+            if (!fw.empty() && util::CompareVersionStrings(fw, fwVersion) > 0) {
+                continue;
+            }
+        }
+        auto config = LoadRegisterConfig(data,
+                                         *protocolParams.protocol->GetRegTypes(),
+                                         std::string(),
+                                         *protocolParams.factory,
+                                         protocolParams.factory->GetRegisterAddressFactory().GetBaseRegisterAddress(),
+                                         0);
+        auto reg = std::make_shared<TRegister>(device, config.RegisterConfig);
+        reg->SetAvailable(TRegisterAvailability::AVAILABLE);
+        registerList.push_back(std::make_pair(id, reg));
     }
     return registerList;
 }
