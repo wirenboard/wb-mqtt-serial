@@ -1,3 +1,10 @@
+wb-mqtt-serial (2.168.0) stable; urgency=medium
+
+  * Add parameters group read feature to device/LoadConfig RPC
+  * Add config parameters sync to device/LoadConfig RPC
+
+ -- Ilya Titov <ilya.titov@wirenboard.com>  Tue, 27 May 2025 11:30:35 +0300
+
 wb-mqtt-serial (2.167.0) stable; urgency=medium
 
   * Add firmware version value validation for template parameters array 
