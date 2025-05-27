@@ -20870,7 +20870,7 @@ WB-MWAC-v2
 	Uptime  =>  Uptime
 	iVout Overloaded  =>  iVout Overloaded
 WB-MWAC-v2 ver2
-	Battery State (2 - good, 1 - normal, 0 - replacement required), measured at module startup  =>  Battery State
+	Battery State, measured at module startup  =>  Battery State
 	Cleaning Mode  =>  Cleaning Mode
 	FW Version  =>  FW Version
 	Input F1  =>  Input F1
