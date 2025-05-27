@@ -79,6 +79,47 @@ namespace
             }
         }
     }
+
+    bool CheckParameterProperty(std::unordered_map<std::string, Json::Value>& map,
+                                const Json::Value& parameter,
+                                const std::string& propertyName,
+                                std::string& error)
+    {
+        std::string id = parameter["id"].asString();
+        Json::Value value = parameter[propertyName];
+        auto it = map.find(id);
+        if (it != map.end() && it->second != value) {
+            error = "Parameter \"" + id + "\" has several declarations with different \"" + propertyName +
+                    "\" values (" + (it->second.isNull() ? "[null]" : it->second.asString()) + " and " +
+                    (value.isNull() ? "[null]" : value.asString()) + "). ";
+            return false;
+        }
+        map[id] = value;
+        return true;
+    }
+
+    void ValidateParameterProperties(const Json::Value& parameters)
+    {
+        if (!parameters.isArray()) {
+            return;
+        }
+        std::unordered_map<std::string, Json::Value> writeAddressMap;
+        std::unordered_map<std::string, Json::Value> addressMap;
+        std::unordered_map<std::string, Json::Value> fwVersionMap;
+        std::string error;
+        for (const auto& parameter: parameters) {
+            if (!CheckParameterProperty(writeAddressMap, parameter, SerialConfig::WRITE_ADDRESS_PROPERTY_NAME, error) ||
+                !CheckParameterProperty(addressMap, parameter, SerialConfig::ADDRESS_PROPERTY_NAME, error) ||
+                !CheckParameterProperty(fwVersionMap, parameter, SerialConfig::FW_VERSION_PROPERTY_NAME, error))
+            {
+                break;
+            }
+        }
+        if (!error.empty()) {
+            throw std::runtime_error(
+                error + "All parameter declarations with the same id must have the same addresses and FW versions.");
+        }
+    }
 }
 
 //=============================================================================
@@ -297,6 +338,8 @@ const Json::Value& TDeviceTemplate::GetTemplate()
             try {
                 Validator->Validate(root);
                 ValidateConditions(root["device"]);
+                // Check that parameters with same ids have same addresses (for parameters declared as array)
+                ValidateParameterProperties(root["device"]["parameters"]);
             } catch (const std::runtime_error& e) {
                 throw std::runtime_error("File: " + GetFilePath() + " error: " + e.what());
             }
@@ -335,6 +378,7 @@ const std::string& TDeviceTemplate::GetMqttId() const
 {
     return MqttId;
 }
+
 //=============================================================================
 //                          TSubDevicesTemplateMap
 //=============================================================================

@@ -242,7 +242,7 @@
                 "min": 0,
                 "max": 100,
                 "enabled": false,
-                "condition": "node_type==9"
+                "condition": "(node_type==9)&&(application_mode==1)"
             }
         ],
         "translations": {

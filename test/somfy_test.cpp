@@ -31,14 +31,14 @@ TEST(TSomfyTest, MakeRequest)
 TEST(TSomfyTest, MakeSetPositionRequest)
 {
     ASSERT_TRUE(
-        ArraysMatch(MakeSetPositionRequest(3, Somfy::SONESSE_30, 10),
+        ArraysMatch(MakeSetPositionRequest(3, Somfy::SONESSE_30, Somfy::ROLLER, 10),
                     {0xfc, 0x70, 0xfd, 0x00, 0x00, 0xff, 0xfc, 0xff, 0xff, 0xfb, 0xf5, 0xff, 0xff, 0x0a, 0x50}));
 }
 
 TEST(TSomfyTest, MakeSetPositionAndAngleRequest)
 {
     ASSERT_TRUE(ArraysMatch(
-        MakeSetPositionRequest(3, Somfy::AC_40, 10),
+        MakeSetPositionRequest(3, Somfy::AC_40, Somfy::VENETIAN, 10),
         {0xfc, 0x6e, 0xf6, 0x00, 0x00, 0xff, 0xfc, 0xff, 0xff, 0xf8, 0xf5, 0xff, 0xff, 0xff, 0xff, 0x0c, 0x42}));
 }
 

@@ -1177,6 +1177,20 @@
           },
           "default": 2,
           "propertyOrder": 12
+        },
+        "application_mode": {
+          "title": "Application mode",
+          "type": "integer",
+          "enum": [0, 1],
+          "options": {
+            "enum_titles": [
+              "Roller blind",
+              "Venetian blind"
+            ]
+          },
+          "default": 1,
+          "condition": "node_type==9",
+          "propertyOrder": 13
         }
       }
     },
@@ -1465,6 +1479,9 @@
       "16 - public client (default), 32 - SPODES measurements reader, 48 - SPODES configurator": "16 - публичный клиент (по умолчанию), 32 - считыватель показаний СПОДЭС, 48 - конфигуратор СПОДЭС", 
       "Custom setup commands": "Команды настройки",
       "Motor type": "Тип двигателя",
+      "Application mode": "Режим",
+      "Roller blind": "Рулонная штора",
+      "Venetian blind": "Жалюзи",
       "DLMS authentication mode": "Режим аутентификации DLMS",
       "no authentication": "без аутентификации",
       "low": "слабый",

@@ -47,12 +47,10 @@ public:
         bool forceFrameTimeout = false;
         WBMQTT::JSON::Get(data, "force_frame_timeout", forceFrameTimeout);
 
-        auto dev = std::make_shared<Dev>(ModbusTraitsFactory->GetModbusTraits(port, forceFrameTimeout),
-                                         config,
-                                         port,
-                                         protocol);
-        dev->InitSetupItems();
-        return dev;
+        return std::make_shared<Dev>(ModbusTraitsFactory->GetModbusTraits(port, forceFrameTimeout),
+                                     config,
+                                     port,
+                                     protocol);
     }
 };
 
@@ -71,12 +69,10 @@ public:
 
     PRegisterRange CreateRegisterRange() const override;
     void ReadRegisterRange(PRegisterRange range) override;
-    void WriteSetupRegisters() override;
-
-    void OnEnabledEvent(uint16_t addr, bool res);
-
     static void Register(TSerialDeviceFactory& factory);
 
 protected:
-    void WriteRegisterImpl(PRegister reg, const TRegisterValue& value) override;
+    void PrepareImpl() override;
+    void WriteRegisterImpl(const TRegisterConfig& reg, const TRegisterValue& value) override;
+    void WriteSetupRegisters() override;
 };

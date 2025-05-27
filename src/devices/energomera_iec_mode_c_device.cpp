@@ -65,9 +65,7 @@ namespace
                                    PPort port,
                                    PProtocol protocol) const override
         {
-            auto dev = std::make_shared<TEnergomeraIecModeCDevice>(deviceConfig, port, protocol);
-            dev->InitSetupItems();
-            return dev;
+            return std::make_shared<TEnergomeraIecModeCDevice>(deviceConfig, port, protocol);
         }
     };
 }
@@ -86,12 +84,12 @@ TEnergomeraIecModeCDevice::TEnergomeraIecModeCDevice(PDeviceConfig device_config
     }
 }
 
-std::string TEnergomeraIecModeCDevice::GetParameterRequest(const TRegister& reg) const
+std::string TEnergomeraIecModeCDevice::GetParameterRequest(const TRegisterConfig& reg) const
 {
     return reg.GetAddress().ToString();
 }
 
-TRegisterValue TEnergomeraIecModeCDevice::GetRegisterValue(const TRegister& reg, const std::string& value)
+TRegisterValue TEnergomeraIecModeCDevice::GetRegisterValue(const TRegisterConfig& reg, const std::string& value)
 {
     // Data in response starts from '(' and ends with ")\r\n"
     if (value.size() < 5 || value.front() != '(' || !WBMQTT::StringHasSuffix(value, ")\r\n")) {

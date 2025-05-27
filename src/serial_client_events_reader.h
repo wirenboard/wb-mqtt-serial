@@ -66,3 +66,5 @@ private:
     void ReadEventsFailed(const std::string& errorMessage, TRegisterCallback registerCallback);
     void OnDeviceConnectionStateChanged(PSerialDevice device);
 };
+
+typedef std::shared_ptr<TSerialClientEventsReader> PSerialClientEventsReader;

@@ -19,14 +19,16 @@ public:
 
 typedef std::shared_ptr<TRPCPortScanRequest> PRPCPortScanRequest;
 
-PRPCPortScanRequest ParseRPCPortScanRequest(const Json::Value& request);
-
 class TRPCPortScanSerialClientTask: public ISerialClientTask
 {
 public:
-    TRPCPortScanSerialClientTask(PRPCPortScanRequest request);
+    TRPCPortScanSerialClientTask(const Json::Value& request,
+                                 WBMQTT::TMqttRpcServer::TResultCallback onResult,
+                                 WBMQTT::TMqttRpcServer::TErrorCallback onError);
 
-    ISerialClientTask::TRunResult Run(PPort port, TSerialClientDeviceAccessHandler& lastAccessedDevice) override;
+    ISerialClientTask::TRunResult Run(PPort port,
+                                      TSerialClientDeviceAccessHandler& lastAccessedDevice,
+                                      const std::list<PSerialDevice>& polledDevices) override;
 
 private:
     PRPCPortScanRequest Request;
@@ -34,5 +36,3 @@ private:
 };
 
 typedef std::shared_ptr<TRPCPortScanSerialClientTask> PRPCPortScanSerialClientTask;
-
-void ExecRPCPortScanRequest(TPort& port, PRPCPortScanRequest rpcRequest);

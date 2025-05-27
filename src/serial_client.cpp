@@ -105,7 +105,7 @@ void TSerialClient::WaitForPollAndFlush(steady_clock::time_point currentTime, st
             Tasks.swap(tasks);
             lock.unlock();
             for (auto& task: tasks) {
-                if (task->Run(Port, *LastAccessedDevice) == ISerialClientTask::TRunResult::RETRY) {
+                if (task->Run(Port, *LastAccessedDevice, Devices) == ISerialClientTask::TRunResult::RETRY) {
                     retryTasks.push_back(task);
                 }
             }
@@ -220,7 +220,7 @@ TSerialClientRegisterAndEventsReader::TSerialClientRegisterAndEventsReader(const
                                                                            std::chrono::milliseconds readEventsPeriod,
                                                                            util::TGetNowFn nowFn,
                                                                            size_t lowPriorityRateLimit)
-    : EventsReader(MAX_EVENT_READ_ERRORS),
+    : EventsReader(std::make_shared<TSerialClientEventsReader>(MAX_EVENT_READ_ERRORS)),
       RegisterPoller(lowPriorityRateLimit),
       TimeBalancer(BALANCING_THRESHOLD),
       ReadEventsPeriod(readEventsPeriod),
@@ -230,14 +230,14 @@ TSerialClientRegisterAndEventsReader::TSerialClientRegisterAndEventsReader(const
 {
     auto currentTime = NowFn();
     RegisterPoller.SetDevices(devices, currentTime);
-    EventsReader.SetDevices(devices);
+    EventsReader->SetDevices(devices);
     TimeBalancer.AddEntry(TClientTaskType::POLLING, currentTime, TPriority::Low);
 }
 
 void TSerialClientRegisterAndEventsReader::ClosedPortCycle(std::chrono::steady_clock::time_point currentTime,
                                                            TRegisterCallback regCallback)
 {
-    EventsReader.SetReadErrors(regCallback);
+    EventsReader->SetReadErrors(regCallback);
     RegisterPoller.ClosedPortCycle(currentTime, regCallback);
 }
 
@@ -276,9 +276,9 @@ PSerialDevice TSerialClientRegisterAndEventsReader::OpenPortCycle(TPort& port,
     }
 
     if (handler.TaskType == TClientTaskType::EVENTS) {
-        if (EventsReader.HasDevicesWithEnabledEvents()) {
+        if (EventsReader->HasDevicesWithEnabledEvents()) {
             lastAccessedDevice.PrepareToAccess(nullptr);
-            EventsReader.ReadEvents(port, MAX_POLL_TIME, regCallback, NowFn);
+            EventsReader->ReadEvents(port, MAX_POLL_TIME, regCallback, NowFn);
             TimeBalancer.UpdateSelectionTime(ceil<milliseconds>(SpentTime.GetSpentTime()), TPriority::High);
             TimeBalancer.AddEntry(TClientTaskType::EVENTS,
                                   SpentTime.GetStartTime() + ReadEventsPeriod,
@@ -296,7 +296,7 @@ PSerialDevice TSerialClientRegisterAndEventsReader::OpenPortCycle(TPort& port,
     // 2. If there are not devices with enabled events, the only limiting timeout is MAX_POLL_TIME.
     //    We can miss it and read at least one register.
     const bool readAtLeastOneRegister =
-        (handler.Policy == TItemAccumulationPolicy::Force) || !EventsReader.HasDevicesWithEnabledEvents();
+        (handler.Policy == TItemAccumulationPolicy::Force) || !EventsReader->HasDevicesWithEnabledEvents();
 
     auto res = RegisterPoller.OpenPortCycle(port,
                                             SpentTime,
@@ -313,7 +313,7 @@ PSerialDevice TSerialClientRegisterAndEventsReader::OpenPortCycle(TPort& port,
         TimeBalancer.UpdateSelectionTime(ceil<milliseconds>(SpentTime.GetSpentTime()), TPriority::Low);
     }
 
-    if (EventsReader.HasDevicesWithEnabledEvents() && !TimeBalancer.Contains(TClientTaskType::EVENTS)) {
+    if (EventsReader->HasDevicesWithEnabledEvents() && !TimeBalancer.Contains(TClientTaskType::EVENTS)) {
         TimeBalancer.AddEntry(TClientTaskType::EVENTS, SpentTime.GetStartTime() + ReadEventsPeriod, TPriority::High);
     }
 
@@ -327,7 +327,7 @@ std::chrono::steady_clock::time_point TSerialClientRegisterAndEventsReader::GetD
     return TimeBalancer.GetDeadline();
 }
 
-TSerialClientEventsReader& TSerialClientRegisterAndEventsReader::GetEventsReader()
+PSerialClientEventsReader TSerialClientRegisterAndEventsReader::GetEventsReader() const
 {
     return EventsReader;
 }

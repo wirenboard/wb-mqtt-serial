@@ -30,14 +30,14 @@ struct TDeviceChannelConfig
     double Precision = 0;
     bool ReadOnly = false;
     std::string Units;
-    std::vector<PRegisterConfig> RegisterConfigs;
+    std::vector<PRegister> Registers;
 
     TDeviceChannelConfig(const std::string& type = "text",
                          const std::string& deviceId = "",
                          int order = 0,
                          bool readOnly = false,
                          const std::string& mqttId = "",
-                         const std::vector<PRegisterConfig>& regs = std::vector<PRegisterConfig>());
+                         const std::vector<PRegister>& regs = std::vector<PRegister>());
 
     //! Will be published in /devices/+/meta/name and used in log messages
     const std::string& GetName() const;
@@ -61,12 +61,17 @@ class TDeviceSetupItemConfig
     PRegisterConfig RegisterConfig;
     std::string Value;
     TRegisterValue RawValue;
+    std::string ParameterId;
 
 public:
-    TDeviceSetupItemConfig(const std::string& name, PRegisterConfig reg, const std::string& value);
+    TDeviceSetupItemConfig(const std::string& name,
+                           PRegisterConfig reg,
+                           const std::string& value,
+                           const std::string& parameterId = std::string());
 
     const std::string& GetName() const;
     const std::string& GetValue() const;
+    const std::string& GetParameterId() const;
     TRegisterValue GetRawValue() const;
     PRegisterConfig GetRegisterConfig() const;
 };
@@ -93,8 +98,6 @@ struct TDeviceConfig
     std::string SlaveId;
     std::string DeviceType;
     std::string Protocol;
-    std::vector<PDeviceChannelConfig> DeviceChannelConfigs;
-    std::vector<PDeviceSetupItemConfig> SetupItemConfigs;
     std::vector<uint8_t> Password;
 
     //! Maximum allowed time from request to response. -1 if not set, DefaultResponseTimeout will be used.
@@ -121,22 +124,11 @@ struct TDeviceConfig
     size_t MinReadRegisters = 1;
     int Stride = 0;
     int Shift = 0;
-    PRegisterTypeMap TypeMap = 0;
     int DeviceMaxFailCycles = DEFAULT_DEVICE_FAIL_CYCLES;
 
     explicit TDeviceConfig(const std::string& name = "",
                            const std::string& slave_id = "",
                            const std::string& protocol = "");
-
-    int NextOrderValue() const;
-    void AddChannel(PDeviceChannelConfig channel);
-    void AddSetupItem(PDeviceSetupItemConfig item, const std::string& deviceTemplateTitle = std::string());
-
-    std::string GetDescription() const;
-
-private:
-    // map key is setup item address
-    std::unordered_map<std::string, PDeviceSetupItemConfig> SetupItemsByAddress;
 };
 
 typedef std::shared_ptr<TDeviceConfig> PDeviceConfig;
@@ -178,6 +170,12 @@ enum class TDeviceConnectionState
     DISCONNECTED
 };
 
+enum class TDevicePrepareMode
+{
+    WITH_SETUP_IF_WAS_DISCONNECTED,
+    WITHOUT_SETUP
+};
+
 class TSerialDevice: public std::enable_shared_from_this<TSerialDevice>
 {
 public:
@@ -195,7 +193,7 @@ public:
 
     // Prepare to access device (pauses for configured delay by default)
     // i.e. "StartSession". Called before any read/write/etc after communicating with another device
-    void Prepare();
+    void Prepare(TDevicePrepareMode setupMode = TDevicePrepareMode::WITH_SETUP_IF_WAS_DISCONNECTED);
 
     // Ends communication session with the device. Called before communicating with another device
     virtual void EndSession();
@@ -205,18 +203,27 @@ public:
 
     void WriteRegister(PRegister reg, uint64_t value);
 
-    // Read multiple registers
+    /**
+     * Reads multiple registers.
+     * Throws exceptions inherited from TSerialDeviceException.
+     */
     virtual void ReadRegisterRange(PRegisterRange range);
 
     virtual std::string ToString() const;
-
-    // Initialize setup items' registers
-    void InitSetupItems();
 
     PPort Port() const;
     PDeviceConfig DeviceConfig() const;
     PProtocol Protocol() const;
 
+    /**
+     * @brief Sets the result of the last data transfer operation.
+     *        Successful transfer indicates that a device is connected and responding.
+     *
+     * @warning When reading a register, this method must be called before TRegister::SetValue
+     *          because it clears SnRegister's value.
+     *
+     * @param ok A boolean value indicating whether the transfer was successful (true) or not (false).
+     */
     virtual void SetTransferResult(bool ok);
     TDeviceConnectionState GetConnectionState() const;
     void SetDisconnected();
@@ -235,12 +242,16 @@ public:
 
     void AddOnConnectionStateChangedCallback(TDeviceCallback callback);
 
-protected:
-    std::vector<PDeviceSetupItem> SetupItems;
+    PRegister GetSnRegister() const;
+    void SetSnRegister(PRegisterConfig regConfig);
 
+    void AddSetupItem(PDeviceSetupItemConfig item);
+    const std::vector<PDeviceSetupItem>& GetSetupItems() const;
+
+protected:
     virtual void PrepareImpl();
-    virtual TRegisterValue ReadRegisterImpl(PRegister reg);
-    virtual void WriteRegisterImpl(PRegister reg, const TRegisterValue& value);
+    virtual TRegisterValue ReadRegisterImpl(const TRegisterConfig& reg);
+    virtual void WriteRegisterImpl(const TRegisterConfig& reg, const TRegisterValue& value);
     virtual void WriteSetupRegisters();
 
 private:
@@ -254,6 +265,11 @@ private:
     std::list<PRegister> Registers;
     std::chrono::steady_clock::time_point LastReadTime;
     std::vector<TDeviceCallback> ConnectionStateChangedCallbacks;
+    PRegister SnRegister;
+
+    // map key is setup item address
+    std::unordered_map<std::string, PDeviceSetupItem> SetupItemsByAddress;
+    std::vector<PDeviceSetupItem> SetupItems;
 
     void SetConnectionState(TDeviceConnectionState state);
 };

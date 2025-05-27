@@ -2,6 +2,7 @@
 #include "bin_utils.h"
 #include "log.h"
 #include "serial_device.h"
+#include "wb_registers.h"
 
 using namespace std;
 using namespace BinUtils;
@@ -10,15 +11,6 @@ using namespace BinUtils;
 
 namespace Modbus // modbus protocol declarations
 {
-    const int MAX_READ_BITS = 2000;
-
-    const int MAX_READ_REGISTERS = 125;
-
-    const int MAX_HOLE_CONTINUOUS_16_BIT_REGISTERS = 10;
-    const int MAX_HOLE_CONTINUOUS_1_BIT_REGISTERS = MAX_HOLE_CONTINUOUS_16_BIT_REGISTERS * 8;
-
-    const uint16_t ENABLE_CONTINUOUS_READ_REGISTER = 114;
-
     union TAddress
     {
         int64_t AbsAddress;
@@ -72,7 +64,10 @@ namespace // general utilities
 
     void RethrowSerialDeviceException(const Modbus::TModbusExceptionError& err)
     {
-        if (err.GetExceptionCode() == 1 || err.GetExceptionCode() == 2 || err.GetExceptionCode() == 3) {
+        if (err.GetExceptionCode() == Modbus::ILLEGAL_FUNCTION ||
+            err.GetExceptionCode() == Modbus::ILLEGAL_DATA_ADDRESS ||
+            err.GetExceptionCode() == Modbus::ILLEGAL_DATA_VALUE)
+        {
             throw TSerialDevicePermanentRegisterException(err.what());
         }
         throw TSerialDeviceTransientErrorException(err.what());
@@ -107,9 +102,9 @@ namespace Modbus // modbus protocol common utilities
         }
 
         auto& deviceConfig = *(reg->Device()->DeviceConfig());
-        bool isSingleBit = IsSingleBitType(reg->Type);
-        auto addr = GetUint32RegisterAddress(reg->GetAddress());
-        const auto widthInWords = GetModbusDataWidthIn16BitWords(*reg);
+        bool isSingleBit = IsSingleBitType(reg->GetConfig()->Type);
+        auto addr = GetUint32RegisterAddress(reg->GetConfig()->GetAddress());
+        const auto widthInWords = GetModbusDataWidthIn16BitWords(*reg->GetConfig());
 
         size_t extend;
         if (RegisterList().empty()) {
@@ -170,7 +165,7 @@ namespace Modbus // modbus protocol common utilities
             }
         }
 
-        auto newPduSize = InferReadResponsePDUSize(reg->Type, Count + extend);
+        auto newPduSize = InferReadResponsePDUSize(reg->GetConfig()->Type, Count + extend);
         // Request 8 bytes: SlaveID, Operation, Addr, Count, CRC
         // Response 5 bytes except data: SlaveID, Operation, Size, CRC
         auto sendTime = reg->Device()->Port()->GetSendTimeBytes(newPduSize + 8 + 5);
@@ -234,12 +229,12 @@ namespace Modbus // modbus protocol common utilities
 
     const std::string& TModbusRegisterRange::TypeName() const
     {
-        return RegisterList().front()->TypeName;
+        return RegisterList().front()->GetConfig()->TypeName;
     }
 
     int TModbusRegisterRange::Type() const
     {
-        return RegisterList().front()->Type;
+        return RegisterList().front()->GetConfig()->Type;
     }
 
     PSerialDevice TModbusRegisterRange::Device() const
@@ -380,25 +375,6 @@ namespace Modbus // modbus protocol common utilities
     inline EFunction GetFunction(const TRegisterConfig& reg, OperationType op)
     {
         return GetFunctionImpl(reg.Type, op, reg.TypeName, IsPacking(reg));
-    }
-
-    // returns count of modbus registers needed to represent TRegister
-    uint16_t GetQuantity(const TRegister& reg)
-    {
-        int w = GetModbusDataWidthIn16BitWords(reg);
-
-        if (IsSingleBitType(reg.Type)) {
-            if (w != 1) {
-                throw TSerialDeviceException("width other than 1 is not currently supported for reg type" +
-                                             reg.TypeName);
-            }
-            return 1;
-        } else {
-            if (w > 4 && reg.GetDataOffset() == 0) {
-                throw TSerialDeviceException("can't pack more than 4 " + reg.TypeName + "s into a single value");
-            }
-            return w;
-        }
     }
 
     // returns number of requests needed to write register
@@ -544,7 +520,7 @@ namespace Modbus // modbus protocol common utilities
         }
 
         for (auto reg: range.RegisterList()) {
-            auto addr = GetUint32RegisterAddress(reg->GetAddress());
+            auto addr = GetUint32RegisterAddress(reg->GetConfig()->GetAddress());
             reg->SetValue(TRegisterValue{range.GetBits()[addr - range.GetStart()]});
         }
         return;
@@ -645,6 +621,7 @@ namespace Modbus // modbus protocol common utilities
                            Modbus::TRegisterCache& cache)
     {
         auto data = Modbus::ExtractResponseData(function, pdu);
+        range.Device()->SetTransferResult(true);
         if (IsSingleBitType(range.Type())) {
             ParseSingleBitReadResponse(data, range);
             return;
@@ -655,11 +632,12 @@ namespace Modbus // modbus protocol common utilities
         auto data16BitWords = range.GetWords();
 
         for (auto reg: range.RegisterList()) {
-            if (reg->IsString()) {
-                reg->SetValue(
-                    TRegisterValue{GetStringRegisterValueFromReadData(data16BitWords, range.GetStart(), *reg)});
+            if (reg->GetConfig()->IsString()) {
+                reg->SetValue(TRegisterValue{
+                    GetStringRegisterValueFromReadData(data16BitWords, range.GetStart(), *reg->GetConfig())});
             } else {
-                reg->SetValue(TRegisterValue{GetRegisterValueFromReadData(data16BitWords, range.GetStart(), *reg)});
+                reg->SetValue(
+                    TRegisterValue{GetRegisterValueFromReadData(data16BitWords, range.GetStart(), *reg->GetConfig())});
             }
         }
     }
@@ -700,7 +678,7 @@ namespace Modbus // modbus protocol common utilities
     void WriteRegister(IModbusTraits& traits,
                        TPort& port,
                        uint8_t slaveId,
-                       TRegister& reg,
+                       const TRegisterConfig& reg,
                        const TRegisterValue& value,
                        Modbus::TRegisterCache& cache,
                        std::chrono::microseconds requestDelay,
@@ -710,9 +688,8 @@ namespace Modbus // modbus protocol common utilities
     {
         Modbus::TRegisterCache tmpCache;
 
-        LOG(Debug) << "write " << GetModbusDataWidthIn16BitWords(reg) << " " << reg.TypeName << "(s) @ "
-                   << reg.GetWriteAddress() << " of device "
-                   << (reg.Device() ? reg.Device()->ToString() : std::to_string(slaveId));
+        LOG(Debug) << port.GetDescription() << " modbus:" << std::to_string(slaveId) << " write "
+                   << GetModbusDataWidthIn16BitWords(reg) << " " << reg.TypeName << "(s) @ " << reg.GetWriteAddress();
 
         std::vector<uint8_t> data;
         auto addr = GetUint32RegisterAddress(reg.GetWriteAddress()) + shift;
@@ -785,7 +762,6 @@ namespace Modbus // modbus protocol common utilities
         }
         try {
             range.ReadRange(traits, port, slaveId, shift, cache);
-            range.Device()->SetTransferResult(true);
         } catch (const TSerialDevicePermanentRegisterException& e) {
             if (range.HasHoles()) {
                 range.Device()->SetSupportsHoles(false);
@@ -821,7 +797,7 @@ namespace Modbus // modbus protocol common utilities
                 WriteRegister(traits,
                               port,
                               slaveId,
-                              *item->Register,
+                              *item->Register->GetConfig(),
                               item->RawValue,
                               cache,
                               requestDelay,
@@ -855,13 +831,12 @@ namespace Modbus // modbus protocol common utilities
                                 uint8_t slaveId,
                                 TRegisterCache& cache)
     {
-        auto reg = std::make_shared<TRegister>(device,
-                                               TRegister::Create(Modbus::REG_HOLDING, ENABLE_CONTINUOUS_READ_REGISTER));
+        auto config = WbRegisters::GetRegisterConfig("continuous_read");
         try {
             Modbus::WriteRegister(traits,
                                   port,
                                   slaveId,
-                                  *reg,
+                                  *config,
                                   TRegisterValue(1),
                                   cache,
                                   device->DeviceConfig()->RequestDelay,
@@ -883,14 +858,14 @@ namespace Modbus // modbus protocol common utilities
     TRegisterValue ReadRegister(IModbusTraits& traits,
                                 TPort& port,
                                 uint8_t slaveId,
-                                const TRegisterConfig& registerConfig,
+                                const TRegisterConfig& reg,
                                 std::chrono::microseconds requestDelay,
                                 std::chrono::milliseconds responseTimeout,
                                 std::chrono::milliseconds frameTimeout)
     {
-        size_t modbusRegisterCount = GetModbusDataWidthIn16BitWords(registerConfig);
-        auto addr = GetUint32RegisterAddress(registerConfig.GetAddress());
-        auto function = GetFunctionImpl(registerConfig.Type, OperationType::OP_READ, registerConfig.TypeName, false);
+        size_t modbusRegisterCount = GetModbusDataWidthIn16BitWords(reg);
+        auto addr = GetUint32RegisterAddress(reg.GetAddress());
+        auto function = GetFunctionImpl(reg.Type, OperationType::OP_READ, reg.TypeName, false);
         auto requestPdu = Modbus::MakePDU(function, addr, modbusRegisterCount, {});
 
         port.SleepSinceLastInteraction(requestDelay);
@@ -903,16 +878,16 @@ namespace Modbus // modbus protocol common utilities
 
         auto responseData = Modbus::ExtractResponseData(function, res.Pdu);
 
-        if (IsSingleBitType(registerConfig.Type)) {
+        if (IsSingleBitType(reg.Type)) {
             return TRegisterValue{responseData[0]};
         }
 
         std::vector<uint16_t> data16BitWords(modbusRegisterCount);
         FillRegisters(data16BitWords, responseData);
-        if (registerConfig.IsString()) {
-            return TRegisterValue{GetStringRegisterValueFromReadData(data16BitWords, addr, registerConfig)};
+        if (reg.IsString()) {
+            return TRegisterValue{GetStringRegisterValueFromReadData(data16BitWords, addr, reg)};
         }
-        return TRegisterValue{GetRegisterValueFromReadData(data16BitWords, addr, registerConfig)};
+        return TRegisterValue{GetRegisterValueFromReadData(data16BitWords, addr, reg)};
     }
 
 } // modbus protocol utilities

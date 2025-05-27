@@ -57,7 +57,7 @@ bool TRegisterRange::HasOtherDeviceAndType(PRegister reg) const
         return false;
     }
     auto& frontReg = RegisterList().front();
-    return ((reg->Device() != frontReg->Device()) || (reg->Type != frontReg->Type));
+    return ((reg->Device() != frontReg->Device()) || (reg->GetConfig()->Type != frontReg->GetConfig()->Type));
 }
 
 bool TSameAddressRegisterRange::Add(PRegister reg, std::chrono::milliseconds pollLimit)
@@ -65,7 +65,9 @@ bool TSameAddressRegisterRange::Add(PRegister reg, std::chrono::milliseconds pol
     if (HasOtherDeviceAndType(reg)) {
         return false;
     }
-    if (RegisterList().empty() || reg->GetAddress().Compare(RegisterList().front()->GetAddress()) == 0) {
+    if (RegisterList().empty() ||
+        reg->GetConfig()->GetAddress().Compare(RegisterList().front()->GetConfig()->GetAddress()) == 0)
+    {
         RegisterList().push_back(reg);
         return true;
     }
@@ -109,17 +111,17 @@ const IRegisterAddress& TRegisterConfig::GetWriteAddress() const
 }
 
 TRegister::TRegister(PSerialDevice device, PRegisterConfig config)
-    : TRegisterConfig(*config),
-      _Device(device),
-      ReadPeriodMissChecker(config->ReadPeriod)
+    : _Device(device),
+      ReadPeriodMissChecker(config->ReadPeriod),
+      Config(config)
 {}
 
 std::string TRegister::ToString() const
 {
     if (Device()) {
-        return "<" + Device()->ToString() + ":" + TRegisterConfig::ToString() + ">";
+        return "<" + Device()->ToString() + ":" + GetConfig()->ToString() + ">";
     }
-    return "<unknown device:" + TRegisterConfig::ToString() + ">";
+    return "<unknown device:" + GetConfig()->ToString() + ">";
 }
 
 TRegisterAvailability TRegister::GetAvailable() const
@@ -143,23 +145,23 @@ TRegisterValue TRegister::GetValue() const
 void TRegister::SetValue(const TRegisterValue& value, bool clearReadError)
 {
     if (::Debug.IsEnabled() && (Value != value)) {
-        std::string formatName = RegisterFormatName(Format);
-        if (IsString()) {
+        std::string formatName = RegisterFormatName(GetConfig()->Format);
+        if (GetConfig()->IsString()) {
             LOG(Debug) << ToString() << " (" << formatName << ") new value: \"" << value << "\"";
         } else {
             LOG(Debug) << ToString() << " (" << formatName << ") new value: 0x" << std::setfill('0')
-                       << std::setw(RegisterFormatByteWidth(Format) * 2) << std::hex << value;
+                       << std::setw(RegisterFormatByteWidth(GetConfig()->Format) * 2) << std::hex << value;
         }
     }
     Value = value;
-    if (UnsupportedValue && (*UnsupportedValue == value)) {
+    if (GetConfig()->UnsupportedValue && (*GetConfig()->UnsupportedValue == value)) {
         SetError(TRegister::TError::ReadError);
         SetAvailable(TRegisterAvailability::UNAVAILABLE);
         LOG(Warn) << ToString() << " is now marked as unavailable: unsupported value received";
         return;
     }
     SetAvailable(TRegisterAvailability::AVAILABLE);
-    if (ErrorValue && ErrorValue.value() == value) {
+    if (GetConfig()->ErrorValue && GetConfig()->ErrorValue.value() == value) {
         LOG(Debug) << ToString() << " contains error value";
         SetError(TError::ReadError);
     } else {
@@ -186,7 +188,7 @@ const TRegister::TErrorState& TRegister::GetErrorState() const
 
 void TRegister::SetLastPollTime(std::chrono::steady_clock::time_point pollTime)
 {
-    if (!ReadPeriod) {
+    if (!GetConfig()->ReadPeriod) {
         return;
     }
     if (ReadPeriodMissChecker.IsMissed(pollTime)) {
@@ -209,6 +211,11 @@ void TRegister::ExcludeFromPolling()
 void TRegister::IncludeInPolling()
 {
     ExcludedFromPolling = false;
+}
+
+const PRegisterConfig TRegister::GetConfig() const
+{
+    return Config;
 }
 
 TReadPeriodMissChecker::TReadPeriodMissChecker(const std::optional<std::chrono::milliseconds>& readPeriod)
@@ -307,15 +314,6 @@ uint32_t TRegisterConfig::GetDataWidth() const
 uint32_t TRegisterConfig::GetDataOffset() const
 {
     return Address.DataOffset;
-}
-
-void TRegisterConfig::SetDataWidth(uint8_t width)
-{
-    Address.DataWidth = width;
-}
-void TRegisterConfig::SetDataOffset(uint8_t offset)
-{
-    Address.DataOffset = offset;
 }
 
 PRegisterConfig TRegisterConfig::Create(int type,

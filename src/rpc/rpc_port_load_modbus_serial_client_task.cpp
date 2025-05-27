@@ -1,7 +1,6 @@
 #include "rpc_port_load_modbus_serial_client_task.h"
 #include "modbus_base.h"
 #include "rpc_port_handler.h"
-#include "rpc_port_load_handler.h"
 #include "serial_exc.h"
 #include "serial_port.h"
 
@@ -39,9 +38,14 @@ template<> inline Modbus::EFunction WBMQTT::JSON::As<Modbus::EFunction>(const Js
     return static_cast<Modbus::EFunction>(value.asUInt() & 0xFF);
 }
 
-PRPCPortLoadModbusRequest ParseRPCPortLoadModbusRequest(const Json::Value& request)
+TRPCPortLoadModbusRequest::TRPCPortLoadModbusRequest(TRPCDeviceParametersCache& parametersCache)
+    : ParametersCache(parametersCache)
+{}
+
+PRPCPortLoadModbusRequest ParseRPCPortLoadModbusRequest(const Json::Value& request,
+                                                        TRPCDeviceParametersCache& parametersCache)
 {
-    PRPCPortLoadModbusRequest RPCRequest = std::make_shared<TRPCPortLoadModbusRequest>();
+    PRPCPortLoadModbusRequest RPCRequest = std::make_shared<TRPCPortLoadModbusRequest>(parametersCache);
 
     try {
         ParseRPCPortLoadRequest(request, *RPCRequest);
@@ -78,6 +82,15 @@ void ExecRPCPortLoadModbusRequest(TPort& port, PRPCPortLoadModbusRequest rpcRequ
             replyJSON["response"] = FormatResponse(response, rpcRequest->Format);
             rpcRequest->OnResult(replyJSON);
         }
+
+        if (rpcRequest->Function == Modbus::EFunction::FN_WRITE_SINGLE_COIL ||
+            rpcRequest->Function == Modbus::EFunction::FN_WRITE_SINGLE_REGISTER ||
+            rpcRequest->Function == Modbus::EFunction::FN_WRITE_MULTIPLE_COILS ||
+            rpcRequest->Function == Modbus::EFunction::FN_WRITE_MULTIPLE_REGISTERS)
+        {
+            std::string id = rpcRequest->ParametersCache.GetId(port, std::to_string(rpcRequest->SlaveId));
+            rpcRequest->ParametersCache.Remove(id);
+        }
     } catch (const Modbus::TModbusExceptionError& error) {
         Json::Value replyJSON;
         replyJSON["exception"]["code"] = error.GetExceptionCode();
@@ -90,16 +103,21 @@ void ExecRPCPortLoadModbusRequest(TPort& port, PRPCPortLoadModbusRequest rpcRequ
     }
 }
 
-TRPCPortLoadModbusSerialClientTask::TRPCPortLoadModbusSerialClientTask(PRPCPortLoadModbusRequest request)
-    : Request(request)
+TRPCPortLoadModbusSerialClientTask::TRPCPortLoadModbusSerialClientTask(const Json::Value& request,
+                                                                       WBMQTT::TMqttRpcServer::TResultCallback onResult,
+                                                                       WBMQTT::TMqttRpcServer::TErrorCallback onError,
+                                                                       TRPCDeviceParametersCache& parametersCache)
+    : Request(ParseRPCPortLoadModbusRequest(request, parametersCache))
 {
-    Request = request;
+    Request->OnResult = onResult;
+    Request->OnError = onError;
     ExpireTime = std::chrono::steady_clock::now() + Request->TotalTimeout;
 }
 
 ISerialClientTask::TRunResult TRPCPortLoadModbusSerialClientTask::Run(
     PPort port,
-    TSerialClientDeviceAccessHandler& lastAccessedDevice)
+    TSerialClientDeviceAccessHandler& lastAccessedDevice,
+    const std::list<PSerialDevice>& polledDevices)
 {
     if (std::chrono::steady_clock::now() > ExpireTime) {
         if (Request->OnError) {
@@ -109,6 +127,9 @@ ISerialClientTask::TRunResult TRPCPortLoadModbusSerialClientTask::Run(
     }
 
     try {
+        if (!port->IsOpen()) {
+            port->Open();
+        }
         lastAccessedDevice.PrepareToAccess(nullptr);
         TSerialPortSettingsGuard settingsGuard(port, Request->SerialPortSettings);
         ExecRPCPortLoadModbusRequest(*port, Request);
