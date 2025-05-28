@@ -5,9 +5,15 @@ wb-mqtt-serial (2.168.0) stable; urgency=medium
 
  -- Ilya Titov <ilya.titov@wirenboard.com>  Tue, 27 May 2025 11:30:35 +0300
 
+wb-mqtt-serial (2.167.1) stable; urgency=medium
+
+  * WB-MAP templates: Add default values for Turns and Phi
+
+ -- Ilia Skochilov <ilia.skochilov@wirenboard.com>  Tue, 27 May 2025 16:24:00 +0300
+
 wb-mqtt-serial (2.167.0) stable; urgency=medium
 
-  * Add firmware version value validation for template parameters array 
+  * Add firmware version value validation for template parameters array
 
  -- Ilya Titov <ilya.titov@wirenboard.com>  Thu, 22 May 2025 14:18:57 +0300
 
