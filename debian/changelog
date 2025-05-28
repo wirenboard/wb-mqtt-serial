@@ -1,3 +1,9 @@
+wb-mqtt-serial (2.167.2) stable; urgency=medium
+
+  * Fix TSerialClientIntegrationTest.RPCRequestTransceive test timeout bug
+
+ -- Ilya Titov <ilya.titov@wirenboard.com>  Wed, 28 May 2025 15:02:46 +0300
+
 wb-mqtt-serial (2.167.1) stable; urgency=medium
 
   * WB-MAP templates: Add default values for Turns and Phi
