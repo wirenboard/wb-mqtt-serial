@@ -1,8 +1,14 @@
-wb-mqtt-serial (2.167.2) stable; urgency=medium
+wb-mqtt-serial (2.167.3) stable; urgency=medium
 
   * config-map3ev.json: Add separate signature WB-MAP3EV
 
  -- Ilia Skochilov <ilia.skochilov@wirenboard.com>  Wed, 28 May 2025 15:24:00 +0300
+
+wb-mqtt-serial (2.167.2) stable; urgency=medium
+
+  * Fix TSerialClientIntegrationTest.RPCRequestTransceive test timeout bug
+
+ -- Ilya Titov <ilya.titov@wirenboard.com>  Wed, 28 May 2025 15:02:46 +0300
 
 wb-mqtt-serial (2.167.1) stable; urgency=medium
 
