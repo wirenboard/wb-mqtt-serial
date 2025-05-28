@@ -1494,7 +1494,7 @@ TRPCResultCode TSerialClientIntegrationTest::SendRPCRequest(PMQTTSerialDriver se
     Json::Value request;
     request["response_timeout"] = 500;
     request["frame_timeout"] = 20;
-    request["total_timeout"] = totalTimeout.count();
+    request["total_timeout"] = chrono::duration_cast<chrono::milliseconds>(totalTimeout).count();
     request["response_size"] = expectedResponseLength;
     std::vector<uint8_t> requestUint;
     std::copy(expectedRequest.begin(), expectedRequest.end(), back_inserter(requestUint));
