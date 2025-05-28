@@ -42,45 +42,6 @@ namespace
                                                     protocolParams.protocol);
     }
 
-    Json::Value GetGroupParams(const Json::Value& templateParams,
-                               const std::string& group,
-                               std::list<std::string>& paramsList)
-    {
-        Json::Value result;
-        std::list<std::string> conditionList;
-        bool check = true;
-        while (check) {
-            check = false;
-            for (auto it = templateParams.begin(); it != templateParams.end(); ++it) {
-                const Json::Value& data = *it;
-                std::string id = templateParams.isObject() ? it.key().asString() : data["id"].asString();
-                if (std::find(conditionList.begin(), conditionList.end(), id) == conditionList.end() &&
-                    data["group"].asString() != group)
-                {
-                    continue;
-                }
-                if (std::find(paramsList.begin(), paramsList.end(), id) == paramsList.end()) {
-                    paramsList.push_back(id);
-                    result[id] = data;
-                }
-                if (data["condition"].isNull()) {
-                    continue;
-                }
-                Expressions::TLexer lexer;
-                auto tokens = lexer.GetTokens(data["condition"].asString());
-                for (const auto& token: tokens) {
-                    if (token.Type == Expressions::TTokenType::Ident && token.Value != "isDefined" &&
-                        std::find(conditionList.begin(), conditionList.end(), token.Value) == conditionList.end())
-                    {
-                        conditionList.push_back(token.Value);
-                        check = true;
-                    }
-                }
-            }
-        }
-        return result;
-    }
-
     bool ReadModbusRegister(Modbus::IModbusTraits& traits,
                             TPort& port,
                             PRPCDeviceLoadConfigRequest rpcRequest,
@@ -295,7 +256,8 @@ void ExecRPCDeviceLoadConfigRequest(PPort port,
     TRPCRegisterList registerList = CreateRegisterList(
         protocolParams,
         device,
-        rpcRequest->Group.empty() ? templateParams : GetGroupParams(templateParams, rpcRequest->Group, paramsList),
+        rpcRequest->Group.empty() ? templateParams
+                                  : GetTemplateParamsGroup(templateParams, rpcRequest->Group, paramsList),
         parameters,
         fwVersion);
     ReadParameters(device, registerList, parameters);
@@ -352,6 +314,45 @@ ISerialClientTask::TRunResult TRPCDeviceLoadConfigSerialClientTask::Run(
     }
 
     return ISerialClientTask::TRunResult::OK;
+}
+
+Json::Value GetTemplateParamsGroup(const Json::Value& templateParams,
+                                   const std::string& group,
+                                   std::list<std::string>& paramsList)
+{
+    Json::Value result;
+    std::list<std::string> conditionList;
+    bool check = true;
+    while (check) {
+        check = false;
+        for (auto it = templateParams.begin(); it != templateParams.end(); ++it) {
+            const Json::Value& data = *it;
+            std::string id = templateParams.isObject() ? it.key().asString() : data["id"].asString();
+            if (std::find(conditionList.begin(), conditionList.end(), id) == conditionList.end() &&
+                data["group"].asString() != group)
+            {
+                continue;
+            }
+            if (std::find(paramsList.begin(), paramsList.end(), id) == paramsList.end()) {
+                paramsList.push_back(id);
+                result[id] = data;
+            }
+            if (data["condition"].isNull()) {
+                continue;
+            }
+            Expressions::TLexer lexer;
+            auto tokens = lexer.GetTokens(data["condition"].asString());
+            for (const auto& token: tokens) {
+                if (token.Type == Expressions::TTokenType::Ident && token.Value != "isDefined" &&
+                    std::find(conditionList.begin(), conditionList.end(), token.Value) == conditionList.end())
+                {
+                    conditionList.push_back(token.Value);
+                    check = true;
+                }
+            }
+        }
+    }
+    return result;
 }
 
 TRPCRegisterList CreateRegisterList(const TDeviceProtocolParams& protocolParams,

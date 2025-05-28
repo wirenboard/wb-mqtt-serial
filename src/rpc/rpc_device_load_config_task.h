@@ -68,6 +68,20 @@ typedef std::shared_ptr<TRPCDeviceLoadConfigSerialClientTask> PRPCDeviceLoadConf
 typedef std::vector<std::pair<std::string, PRegister>> TRPCRegisterList;
 
 /**
+ * @brief Creates JSON object containing template parameters of specified group
+ *        and their condition parameters (recoursive)
+ *
+ * @param templateParams - template parameters JSON array or object
+ * @param group - parameters group name
+ * @param paramsList - string list reference to store found parameters names
+ *
+ * @return TRPCRegisterList - named PRegister list
+ */
+Json::Value GetTemplateParamsGroup(const Json::Value& templateParams,
+                                   const std::string& group,
+                                   std::list<std::string>& paramsList);
+
+/**
  * @brief Creates named PRegister list based on template parameters JSON array or object.
  *
  * @param protocolParams - device protocol params for LoadRegisterConfig call
