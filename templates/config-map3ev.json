@@ -6,6 +6,10 @@
         {
             "signature": "MAP3E",
             "fw": "2.0.0"
+        },
+        {
+            "signature": "WB-MAP3EV",
+            "fw": "2.10.8"
         }
     ],
     "device": {
