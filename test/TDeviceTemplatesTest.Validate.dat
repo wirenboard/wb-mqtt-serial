@@ -24509,7 +24509,6 @@ wb_ups_v3
 	Button Shortlong Press Counter  =>  button_shortlong_press_counter
 	Button Single Press Counter  =>  button_single_press_counter
 	Button State  =>  button_state
-	Charge Force Start  =>  charge_force_start
 	Charger Current Setpoint  =>  charger_current_setpoint
 	Charger Ibat Raw  =>  charger_ibat_raw
 	Charger Ibat Real  =>  charger_ibat_real
