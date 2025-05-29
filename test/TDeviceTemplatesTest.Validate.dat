@@ -24515,6 +24515,7 @@ wb_ups_v3
 	Charger Ibat Real  =>  charger_ibat_real
 	Charger Ibus Raw  =>  charger_ibus_raw
 	Charger Ibus Real  =>  charger_ibus_real
+	Charger State  =>  charger_state
 	Charger Vbat Raw  =>  charger_vbat_raw
 	Charger Vbat Real  =>  charger_vbat_real
 	Charger Vbus Raw  =>  charger_vbus_raw
@@ -24524,6 +24525,7 @@ wb_ups_v3
 	Discharger Ibat Real  =>  discharger_ibat_real
 	Discharger Ibus Raw  =>  discharger_ibus_raw
 	Discharger Ibus Real  =>  discharger_ibus_real
+	Discharger State  =>  discharger_state
 	Discharger Vbat Raw  =>  discharger_vbat_raw
 	Discharger Vbat Real  =>  discharger_vbat_real
 	Discharger Vbus Raw  =>  discharger_vbus_raw
@@ -24535,6 +24537,7 @@ wb_ups_v3
 	Heater State  =>  heater_state
 	Input Current for Charging  =>  input_current_for_charging
 	Input Voltage  =>  input_voltage
+	Load Control in Backup Mode  =>  load_control_in_backup_mode
 	Load Current when Powered from Battery  =>  load_current_when_powered_from_battery
 	MCU Temperature  =>  mcu_temperature
 	MCU Voltage  =>  mcu_voltage
