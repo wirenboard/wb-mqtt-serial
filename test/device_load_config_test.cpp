@@ -47,7 +47,7 @@ TEST(TDeviceLoadConfigTest, CreateGroupRegisterList)
     TTemplateMap templateMap(GetTemplatesSchema());
     templateMap.AddTemplatesDir(TLoggedFixture::GetDataFilePath("device_load_config_test/templates"), false);
 
-    std::vector<std::string> typeList = {"parameters_array", "parameters_object"};
+    std::vector<std::string> typeList = {"parameters_group_array", "parameters_group_object"};
     TDeviceProtocolParams protocolParams = deviceFactory.GetProtocolParams("modbus");
     for (size_t i = 0; i < typeList.size(); ++i) {
         const std::string& type = typeList[i];
@@ -64,8 +64,8 @@ TEST(TDeviceLoadConfigTest, CreateGroupRegisterList)
             auto& reg = registerList[i];
             json[reg.first] = static_cast<int>(GetUint32RegisterAddress(reg.second->GetConfig()->GetAddress()));
         }
-        auto match(JSON::Parse(
-            TLoggedFixture::GetDataFilePath("device_load_config_test/" + type + "_group_register_list.json")));
+        auto match(
+            JSON::Parse(TLoggedFixture::GetDataFilePath("device_load_config_test/" + type + "_register_list.json")));
         ASSERT_TRUE(JsonsMatch(json, match)) << type;
     }
 }

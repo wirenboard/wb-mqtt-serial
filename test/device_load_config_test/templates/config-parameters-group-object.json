@@ -1,6 +1,6 @@
-// testing template for register list and parameters conditions checks when parameters declared as object
+// testing template for parameters group and condition parameters register list checks when parameters declared as object
 {
-    "device_type": "parameters_object",
+    "device_type": "parameters_group_object",
     "device": {
         "name": "parameters object",
         "id": "parameters object",
@@ -15,38 +15,41 @@
         "parameters": {
             "p1": {
                 "title": "p1",
-                "address": 2001
+                "address": 2001,
+                "group": "g1"
             },
             "p2": {
                 "title": "p2",
                 "address": 2002,
-                "fw": "1.2.4"
+                "group": "g1"
             },
             "p3": {
                 "title": "p3",
                 "address": 2003,
-                "fw": "1.2.2",
+                "group": "g1",
                 "condition": "p1==1"
             },
             "p4": {
                 "title": "p4",
                 "address": 2004,
-                "readonly": true
+                "readonly": true,
+                "group": "g2"
             },
             "p5": {
                 "title": "p5",
                 "address": 2005,
+                "group": "g2",
                 "condition": "p1==0"
             },
             "p6": {
                 "title": "p6",
                 "address": 2006,
-                "fw": "1.2.3+wb10"
+                "group": "g2"
             },
             "p7": {
                 "title": "p7",
                 "address": 2007,
-                "fw": "1.2.3-rc1",
+                "group": "g2",
                 "condition": "p5==1"
             }
         }

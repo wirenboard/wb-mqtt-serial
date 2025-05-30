@@ -71,7 +71,7 @@ typedef std::vector<std::pair<std::string, PRegister>> TRPCRegisterList;
  * @brief Creates JSON object containing template parameters of specified group
  *        and their condition parameters (recoursive)
  *
- * @param templateParams - template parameters JSON array or object
+ * @param templateParams - device template parameters JSON array or object
  * @param group - parameters group name
  * @param paramsList - string list reference to store found parameters names
  *
@@ -86,8 +86,9 @@ Json::Value GetTemplateParamsGroup(const Json::Value& templateParams,
  *
  * @param protocolParams - device protocol params for LoadRegisterConfig call
  * @param device - serial device object pointer for TRegister object creation
- * @param templateParams - template parameters JSON array or object
- * @param parameters - known parameters JSON object, used to exclule known parameters
+ * @param templateParams - device template parameters JSON array or object
+ * @param parameters - known parameters JSON object, used to exclule known parameters,
+ *                     for examplle: {"p1": 1000, "p2": 2000}
  * @param fwVersion - device firmvare version string, used to exclude parameters unsupporterd by firmware
  *
  * @return TRPCRegisterList - named PRegister list
