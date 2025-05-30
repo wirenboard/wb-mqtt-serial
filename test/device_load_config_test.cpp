@@ -23,7 +23,42 @@ TEST(TDeviceLoadConfigTest, CreateRegisterList)
         const std::string& type = typeList[i];
         auto deviceTemplate = templateMap.GetTemplate(type)->GetTemplate();
         TRPCRegisterList registerList =
-            CreateRegisterList(protocolParams, nullptr, deviceTemplate["parameters"], "1.2.3");
+            CreateRegisterList(protocolParams, nullptr, deviceTemplate["parameters"], Json::Value(), "1.2.3");
+        Json::Value json;
+        for (size_t i = 0; i < registerList.size(); ++i) {
+            auto& reg = registerList[i];
+            json[reg.first] = static_cast<int>(GetUint32RegisterAddress(reg.second->GetConfig()->GetAddress()));
+        }
+        auto match(
+            JSON::Parse(TLoggedFixture::GetDataFilePath("device_load_config_test/" + type + "_register_list.json")));
+        ASSERT_TRUE(JsonsMatch(json, match)) << type;
+    }
+}
+
+/**
+ * Checks that the register lists contains only parameters of specified group and their condition parameter
+ * (recoursive). Uses JSON-objects containing parameter ids with register addresses for result matching.
+ */
+TEST(TDeviceLoadConfigTest, CreateGroupRegisterList)
+{
+    TSerialDeviceFactory deviceFactory;
+    RegisterProtocols(deviceFactory);
+
+    TTemplateMap templateMap(GetTemplatesSchema());
+    templateMap.AddTemplatesDir(TLoggedFixture::GetDataFilePath("device_load_config_test/templates"), false);
+
+    std::vector<std::string> typeList = {"parameters_group_array", "parameters_group_object"};
+    TDeviceProtocolParams protocolParams = deviceFactory.GetProtocolParams("modbus");
+    for (size_t i = 0; i < typeList.size(); ++i) {
+        const std::string& type = typeList[i];
+        auto deviceTemplate = templateMap.GetTemplate(type)->GetTemplate();
+        std::list<std::string> paramsList;
+        TRPCRegisterList registerList =
+            CreateRegisterList(protocolParams,
+                               nullptr,
+                               GetTemplateParamsGroup(deviceTemplate["parameters"], "g2", paramsList),
+                               Json::Value(),
+                               std::string());
         Json::Value json;
         for (size_t i = 0; i < registerList.size(); ++i) {
             auto& reg = registerList[i];
