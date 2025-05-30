@@ -87,8 +87,9 @@ Json::Value GetTemplateParamsGroup(const Json::Value& templateParams,
  * @param protocolParams - device protocol params for LoadRegisterConfig call
  * @param device - serial device object pointer for TRegister object creation
  * @param templateParams - device template parameters JSON array or object
- * @param parameters - known parameters JSON object, used to exclule known parameters,
- *                     for examplle: {"p1": 1000, "p2": 2000}
+ * @param parameters - known parameters JSON object, where the key is the parameter id and the value is the known
+ *                     parameter value, for example: {"baudrate": 96, "in1_mode": 2}
+ *                     used to exclule known parameters from regiter list
  * @param fwVersion - device firmvare version string, used to exclude parameters unsupporterd by firmware
  *
  * @return TRPCRegisterList - named PRegister list
