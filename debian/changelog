@@ -3,7 +3,25 @@ wb-mqtt-serial (2.168.0) stable; urgency=medium
   * Add parameters group read feature to device/LoadConfig RPC
   * Add config parameters sync to device/LoadConfig RPC
 
- -- Ilya Titov <ilya.titov@wirenboard.com>  Tue, 27 May 2025 11:30:35 +0300
+ -- Ilya Titov <ilya.titov@wirenboard.com>  Tue, 30 May 2025 11:14:36 +0300
+
+wb-mqtt-serial (2.167.4) stable; urgency=medium
+
+  * config-carel-pj-basic.json and config-carel-pj-basic-deprecated.json: Remove PYEZ1R05J4 from title
+
+ -- Andrey Ksenofontov <andrey.ksenofontov@wirenboard.com>  Thu, 29 May 2025 15:04:00 +0300
+
+wb-mqtt-serial (2.167.3) stable; urgency=medium
+
+  * config-map3ev.json: Add separate signature WB-MAP3EV
+
+ -- Ilia Skochilov <ilia.skochilov@wirenboard.com>  Wed, 28 May 2025 15:24:00 +0300
+
+wb-mqtt-serial (2.167.2) stable; urgency=medium
+
+  * Fix TSerialClientIntegrationTest.RPCRequestTransceive test timeout bug
+
+ -- Ilya Titov <ilya.titov@wirenboard.com>  Wed, 28 May 2025 15:02:46 +0300
 
 wb-mqtt-serial (2.167.1) stable; urgency=medium
 
