@@ -90,6 +90,21 @@ namespace Modbus // modbus protocol common utilities
                            TRegisterCache& cache,
                            int shift = 0);
 
+    /**
+     * @brief Reads a register value from a Modbus device.
+     *
+     * @param traits Reference to an object implementing Modbus traits, which defines
+     *               the protocol-specific behavior.
+     * @param port Reference to the communication port used for Modbus communication.
+     * @param slaveId The ID of the Modbus slave device to communicate with.
+     * @param reg Configuration of the register to be read, including address and type.
+     * @param requestDelay The delay to wait before sending the request to the device.
+     * @param responseTimeout The maximum time to wait for a response from the device.
+     * @param frameTimeout The maximum time to wait between frames of a Modbus response.
+     * @return TRegisterValue The value read from the specified register.
+     * @throws TSerialDeviceException based exception on communication errors or
+     *         Modbus::TErrorBase based exception on Modbus protocol errors.
+     */
     TRegisterValue ReadRegister(IModbusTraits& traits,
                                 TPort& port,
                                 uint8_t slaveId,
