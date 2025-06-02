@@ -1,8 +1,6 @@
 #include "modbus_device.h"
 #include "modbus_common.h"
 
-#define LOG(logger) logger.Log() << "[modbus] "
-
 namespace
 {
     const TRegisterTypes ModbusRegisterTypes({{Modbus::REG_HOLDING, "holding", "value", U16},
@@ -61,6 +59,14 @@ PRegisterRange TModbusDevice::CreateRegisterRange() const
     return Modbus::CreateRegisterRange(ResponseTime.GetValue());
 }
 
+void TModbusDevice::PrepareImpl()
+{
+    TSerialDevice::PrepareImpl();
+    if (GetConnectionState() != TDeviceConnectionState::CONNECTED && EnableWbContinuousRead) {
+        Modbus::EnableWbContinuousRead(shared_from_this(), *ModbusTraits, *Port(), SlaveId, ModbusCache);
+    }
+}
+
 void TModbusDevice::WriteRegisterImpl(const TRegisterConfig& reg, const TRegisterValue& value)
 {
     Modbus::WriteRegister(*ModbusTraits,
@@ -86,9 +92,6 @@ void TModbusDevice::ReadRegisterRange(PRegisterRange range)
 
 void TModbusDevice::WriteSetupRegisters()
 {
-    if (EnableWbContinuousRead) {
-        Modbus::EnableWbContinuousRead(shared_from_this(), *ModbusTraits, *Port(), SlaveId, ModbusCache);
-    }
     Modbus::WriteSetupRegisters(*ModbusTraits,
                                 *Port(),
                                 SlaveId,

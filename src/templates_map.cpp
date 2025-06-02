@@ -79,6 +79,47 @@ namespace
             }
         }
     }
+
+    bool CheckParameterProperty(std::unordered_map<std::string, Json::Value>& map,
+                                const Json::Value& parameter,
+                                const std::string& propertyName,
+                                std::string& error)
+    {
+        std::string id = parameter["id"].asString();
+        Json::Value value = parameter[propertyName];
+        auto it = map.find(id);
+        if (it != map.end() && it->second != value) {
+            error = "Parameter \"" + id + "\" has several declarations with different \"" + propertyName +
+                    "\" values (" + (it->second.isNull() ? "[null]" : it->second.asString()) + " and " +
+                    (value.isNull() ? "[null]" : value.asString()) + "). ";
+            return false;
+        }
+        map[id] = value;
+        return true;
+    }
+
+    void ValidateParameterProperties(const Json::Value& parameters)
+    {
+        if (!parameters.isArray()) {
+            return;
+        }
+        std::unordered_map<std::string, Json::Value> writeAddressMap;
+        std::unordered_map<std::string, Json::Value> addressMap;
+        std::unordered_map<std::string, Json::Value> fwVersionMap;
+        std::string error;
+        for (const auto& parameter: parameters) {
+            if (!CheckParameterProperty(writeAddressMap, parameter, SerialConfig::WRITE_ADDRESS_PROPERTY_NAME, error) ||
+                !CheckParameterProperty(addressMap, parameter, SerialConfig::ADDRESS_PROPERTY_NAME, error) ||
+                !CheckParameterProperty(fwVersionMap, parameter, SerialConfig::FW_VERSION_PROPERTY_NAME, error))
+            {
+                break;
+            }
+        }
+        if (!error.empty()) {
+            throw std::runtime_error(
+                error + "All parameter declarations with the same id must have the same addresses and FW versions.");
+        }
+    }
 }
 
 //=============================================================================
@@ -298,7 +339,7 @@ const Json::Value& TDeviceTemplate::GetTemplate()
                 Validator->Validate(root);
                 ValidateConditions(root["device"]);
                 // Check that parameters with same ids have same addresses (for parameters declared as array)
-                ValidateParameterAddresses(root["device"]["parameters"]);
+                ValidateParameterProperties(root["device"]["parameters"]);
             } catch (const std::runtime_error& e) {
                 throw std::runtime_error("File: " + GetFilePath() + " error: " + e.what());
             }
@@ -336,40 +377,6 @@ void TDeviceTemplate::SetMqttId(const std::string& id)
 const std::string& TDeviceTemplate::GetMqttId() const
 {
     return MqttId;
-}
-
-void TDeviceTemplate::ValidateParameterAddresses(const Json::Value& parameters)
-{
-    if (!parameters.isArray()) {
-        return;
-    }
-    std::unordered_map<std::string, Json::Value> addressMap;
-    std::unordered_map<std::string, Json::Value> writeAddressMap;
-    std::string error;
-    for (const auto& parameter: parameters) {
-        std::string id = parameter["id"].asString();
-        Json::Value address = parameter[SerialConfig::ADDRESS_PROPERTY_NAME];
-        Json::Value writeAddress = parameter[SerialConfig::WRITE_ADDRESS_PROPERTY_NAME];
-        auto addressIt = addressMap.find(id);
-        if (addressIt != addressMap.end() && addressIt->second != address) {
-            error = "Parameter \"" + id + "\" has several declarations with different \"" +
-                    SerialConfig::ADDRESS_PROPERTY_NAME + "\" values (" + addressIt->second.asString() + " and " +
-                    address.asString() + "). ";
-            break;
-        }
-        addressMap[id] = address;
-        auto writeAddressIt = writeAddressMap.find(id);
-        if (writeAddressIt != writeAddressMap.end() && writeAddressIt->second != writeAddress) {
-            error = "Parameter \"" + id + "\" has several declarations with different \"" +
-                    SerialConfig::WRITE_ADDRESS_PROPERTY_NAME + "\" values (" + writeAddressIt->second.asString() +
-                    " and " + writeAddress.asString() + "). ";
-            break;
-        }
-        writeAddressMap[id] = writeAddress;
-    }
-    if (!error.empty()) {
-        throw std::runtime_error(error + "All parameter declarations with the same id must have the same addresses.");
-    }
 }
 
 //=============================================================================

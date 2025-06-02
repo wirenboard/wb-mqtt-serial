@@ -504,7 +504,8 @@ namespace
         const auto& valueItem = item_data["value"];
         // libjsoncpp uses format "%.17g" in asString() and outputs strings with additional small numbers
         auto value = valueItem.isDouble() ? WBMQTT::StringFormat("%.15g", valueItem.asDouble()) : valueItem.asString();
-        device.AddSetupItem(PDeviceSetupItemConfig(new TDeviceSetupItemConfig(name, reg.RegisterConfig, value)));
+        device.AddSetupItem(PDeviceSetupItemConfig(
+            new TDeviceSetupItemConfig(name, reg.RegisterConfig, value, item_data["id"].asString())));
     }
 
     void LoadSetupItems(TSerialDevice& device,

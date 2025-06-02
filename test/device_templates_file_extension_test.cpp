@@ -165,7 +165,7 @@ TEST_F(TDeviceTemplatesTest, ParameterAddresses)
         std::string error =
             "File: test/device-templates/config-parameters-array-invalid-address.json error: Parameter \"p2\" has "
             "several declarations with different \"address\" values (9996 and 9997). All parameter declarations with "
-            "the same id must have the same addresses.";
+            "the same id must have the same addresses and FW versions.";
         ASSERT_STREQ(error.c_str(), e.what());
     }
 }

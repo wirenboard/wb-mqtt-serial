@@ -69,12 +69,10 @@ public:
 
     PRegisterRange CreateRegisterRange() const override;
     void ReadRegisterRange(PRegisterRange range) override;
-    void WriteSetupRegisters() override;
-
-    void OnEnabledEvent(uint16_t addr, bool res);
-
     static void Register(TSerialDeviceFactory& factory);
 
 protected:
+    void PrepareImpl() override;
     void WriteRegisterImpl(const TRegisterConfig& reg, const TRegisterValue& value) override;
+    void WriteSetupRegisters() override;
 };

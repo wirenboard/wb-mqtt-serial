@@ -260,6 +260,7 @@ namespace SerialConfig
 {
     constexpr auto WRITE_ADDRESS_PROPERTY_NAME = "write_address";
     constexpr auto ADDRESS_PROPERTY_NAME = "address";
+    constexpr auto FW_VERSION_PROPERTY_NAME = "fw";
 }
 
 bool HasNoEmptyProperty(const Json::Value& regCfg, const std::string& propertyName);

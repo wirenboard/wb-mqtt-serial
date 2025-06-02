@@ -1,4 +1,4 @@
-// testing template for register list and parameters confitions checks when parameters declared as array
+// testing template for register list and parameters conditions checks when parameters declared as array
 // parameters list order inverted for check that the condition matching works if condition parameter is declared after dependent parameter
 {
     "device_type": "parameters_array",
