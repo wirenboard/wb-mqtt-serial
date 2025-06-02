@@ -1,6 +1,5 @@
 #include "confed_schema_generator.h"
 #include "confed_channel_modes.h"
-#include "confed_schema_generator_with_groups.h"
 #include "file_utils.h"
 #include "json_common.h"
 #include "log.h"
@@ -539,6 +538,38 @@ namespace
         return res;
     }
 
+    //  {
+    //      "allOf": [
+    //          { "$ref": PROTOCOL_PARAMETERS }
+    //      ],
+    //      "format": "groups",
+    //      "device": DEVICE_TEMPLATE,
+    //      "properties": {
+    //          "device_type": DEVICE_TYPE
+    //      },
+    //      "defaultProperties": ["device_type", "slave_id"],
+    //      "required": ["device_type", "slave_id"]
+    //  }
+    Json::Value MakeDeviceTemplateSchema(TDeviceTemplate& deviceTemplate,
+                                         TSerialDeviceFactory& deviceFactory,
+                                         const Json::Value& commonDeviceSchema)
+    {
+        auto protocol = GetProtocolName(deviceTemplate.GetTemplate());
+        auto res = commonDeviceSchema;
+        if (!deviceFactory.GetProtocol(protocol)->SupportsBroadcast()) {
+            res["required"].append("slave_id");
+        }
+
+        auto& allOf = MakeArray("allOf", res);
+        Append(allOf)["$ref"] = deviceFactory.GetCommonDeviceSchemaRef(protocol);
+        allOf.append(MakeProtocolProperty());
+
+        res["format"] = "groups";
+        res["device"] = deviceTemplate.GetTemplate();
+        res["properties"]["device_type"] = MakeHiddenProperty(deviceTemplate.Type);
+        return res;
+    }
+
     std::vector<const Json::Value*> PartitionChannelsByGroups(
         const Json::Value& schema,
         std::unordered_map<std::string, Json::Value>& subdevicesForGroups)
@@ -776,7 +807,7 @@ Json::Value GenerateSchemaForConfed(TDeviceTemplate& deviceTemplate,
     if (deviceTemplate.WithSubdevices()) {
         schema = MakeDeviceUISchema(deviceTemplate, deviceFactory, commonDeviceSchema);
     } else {
-        schema = MakeDeviceWithGroupsUISchema(deviceTemplate, deviceFactory, commonDeviceSchema);
+        schema = MakeDeviceTemplateSchema(deviceTemplate, deviceFactory, commonDeviceSchema);
     }
     AddUnitTypes(schema);
     AddChannelModes(schema["definitions"]["groupsChannel"]);
