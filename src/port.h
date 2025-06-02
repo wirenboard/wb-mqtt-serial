@@ -42,15 +42,16 @@ public:
     virtual uint8_t ReadByte(const std::chrono::microseconds& timeout) = 0;
 
     /**
-     * @brief Read frame.
-     *        Throws TSerialDeviceTransientErrorException if nothing received during timeout.
-     *        Throws TSerialDeviceException on internal errors.
+     * @brief Read frame
      *
      * @param buf receiving buffer for frame
      * @param count maximum bytes to receive
      * @param responseTimeout maximum waiting timeout before first byte of frame
      * @param frameTimeout minimum inter-frame delay
      * @param frame_complete
+     *
+     * @throws TResponseTimeoutException if nothing received during timeout
+     * @throws TSerialDeviceException on internal errors
      */
     virtual TReadFrameResult ReadFrame(uint8_t* buf,
                                        size_t count,
