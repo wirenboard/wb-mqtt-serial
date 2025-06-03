@@ -2821,6 +2821,65 @@ void TModbusExpectations::EnqueueLittleEndianReadResponses()
                            0x08, // data Lo
                        }),
                        __func__);
+    Expector()->Expect(WrapPDU({
+                           0x03, // function code
+                           0x00, // starting address Hi
+                           0x10, // starting address Lo
+                           0x00, // quantity Hi
+                           0x02, // quantity Lo
+                       }),
+                       WrapPDU({
+                           0x03, // function code
+                           0x04, // byte count
+                           0x05, // data Hi
+                           0x12, // data Lo
+                           0x48, // data Hi
+                           0xc0, // data Lo
+
+                       }),
+                       __func__);
+    Expector()->Expect(WrapPDU({
+                           0x03, // function code
+                           0x00, // starting address Hi
+                           0x12, // starting address Lo
+                           0x00, // quantity Hi
+                           0x06, // quantity Lo
+                       }),
+                       WrapPDU({
+                           0x03, // function code
+                           0x0C, // byte count
+                           0x00, // data Hi
+                           0x00, // data Lo
+                           0x6D, // data Hi
+                           0x00, // data Lo
+                           0x65, // data Hi
+                           0x00, // data Lo
+                           0x72, // data Hi
+                           0x00, // data Lo
+                           0x6F, // data Hi
+                           0x00, // data Lo
+                           0x6C, // data Hi
+                           0x00, // data Lo
+                       }),
+                       __func__);
+    Expector()->Expect(WrapPDU({
+                           0x03, // function code
+                           0x00, // starting address Hi
+                           0x18, // starting address Lo
+                           0x00, // quantity Hi
+                           0x03, // quantity Lo
+                       }),
+                       WrapPDU({
+                           0x03, // function code
+                           0x06, // byte count
+                           0x00, // data Hi
+                           0x6D, // data Lo
+                           0x75, // data Hi
+                           0x73, // data Lo
+                           0x70, // data Hi
+                           0x69, // data Lo
+                       }),
+                       __func__);
 }
 
 void TModbusExpectations::EnqueueLittleEndianWriteResponses()
@@ -2917,6 +2976,74 @@ void TModbusExpectations::EnqueueLittleEndianWriteResponses()
                            0x0C, // starting address Lo
                            0x00, // quantity Hi
                            0x04, // quantity Lo
+                       }),
+                       __func__);
+    Expector()->Expect(WrapPDU({
+                           0x10, // function code
+                           0x00, // starting address Hi
+                           0x10, // starting address Lo
+                           0x00, // quantity Hi
+                           0x02, // quantity Lo
+                           0x04, // byte count
+                           0x56, // data Hi
+                           0x0E, // data Lo
+                           0x49, // data Hi
+                           0x40, // data Lo
+                       }),
+                       WrapPDU({
+                           0x10, // function code
+                           0x00, // starting address Hi
+                           0x10, // starting address Lo
+                           0x00, // quantity Hi
+                           0x02, // quantity Lo
+                       }),
+                       __func__);
+    Expector()->Expect(WrapPDU({
+                           0x10, // function code
+                           0x00, // starting address Hi
+                           0x12, // starting address Lo
+                           0x00, // quantity Hi
+                           0x05, // quantity Lo
+                           0x0A, // byte count
+                           0x72, // data Hi
+                           0x00, // data Lo
+                           0x6F, // data Hi
+                           0x00, // data Lo
+                           0x6C, // data Hi
+                           0x00, // data Lo
+                           0x6F, // data Hi
+                           0x00, // data Lo
+                           0x64, // data Hi
+                           0x00, // data Lo
+                       }),
+                       WrapPDU({
+                           0x10, // function code
+                           0x00, // starting address Hi
+                           0x12, // starting address Lo
+                           0x00, // quantity Hi
+                           0x06, // quantity Lo
+                       }),
+                       __func__);
+    Expector()->Expect(WrapPDU({
+                           0x10, // function code
+                           0x00, // starting address Hi
+                           0x18, // starting address Lo
+                           0x00, // quantity Hi
+                           0x03, // quantity Lo
+                           0x06, // byte count
+                           0x00, // data Hi
+                           0x61, // data Lo
+                           0x6E, // data Hi
+                           0x67, // data Lo
+                           0x61, // data Hi
+                           0x6D, // data Lo
+                       }),
+                       WrapPDU({
+                           0x10, // function code
+                           0x00, // starting address Hi
+                           0x18, // starting address Lo
+                           0x00, // quantity Hi
+                           0x03, // quantity Lo
                        }),
                        __func__);
 }

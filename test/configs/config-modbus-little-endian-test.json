@@ -54,6 +54,35 @@
                   "type": "value",
                   "format": "u64",
                   "word_order": "little_endian"
+                },
+                {
+                  "name": "FloatLE",
+                  "reg_type": "holding",
+                  "address": "16",
+                  "type": "value",
+                  "format": "float",
+                  "word_order": "little_endian",
+                  "byte_order": "little_endian"
+                },
+                {
+                  "name": "StringLE",
+                  "reg_type": "holding",
+                  "address": "18",
+                  "type": "text",
+                  "format": "string",
+                  "string_data_size": 6,
+                  "word_order": "little_endian",
+                  "byte_order": "little_endian"
+                },
+                {
+                  "name": "String8LE",
+                  "reg_type": "holding",
+                  "address": "24",
+                  "type": "text",
+                  "format": "string8",
+                  "string_data_size": 3,
+                  "word_order": "little_endian",
+                  "byte_order": "little_endian"
                 }
             ]
         }

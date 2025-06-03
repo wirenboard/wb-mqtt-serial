@@ -1041,7 +1041,7 @@ protected:
 TEST_F(TModbusLittleEndianRegisterTest, Read)
 {
     EnqueueLittleEndianReadResponses();
-    for (auto i = 0; i < 5; ++i) {
+    for (auto i = 0; i < 8; ++i) {
         SerialDriver->LoopOnce();
     }
 }
@@ -1049,7 +1049,7 @@ TEST_F(TModbusLittleEndianRegisterTest, Read)
 TEST_F(TModbusLittleEndianRegisterTest, Write)
 {
     EnqueueLittleEndianReadResponses();
-    for (auto i = 0; i < 5; ++i) {
+    for (auto i = 0; i < 8; ++i) {
         SerialDriver->LoopOnce();
     }
 
@@ -1059,9 +1059,13 @@ TEST_F(TModbusLittleEndianRegisterTest, Write)
     PublishWaitOnValue("/devices/modbus-sample/controls/U32/on", std::to_string(0x08090A0B));
     PublishWaitOnValue("/devices/modbus-sample/controls/U64/on", std::to_string(0x0C0D0E0F11121314));
 
+    PublishWaitOnValue("/devices/modbus-sample/controls/FloatLE/on", std::to_string(3.1415));
+    PublishWaitOnValue("/devices/modbus-sample/controls/StringLE/on", "dolor");
+    PublishWaitOnValue("/devices/modbus-sample/controls/String8LE/on", "magna");
+
     EnqueueLittleEndianWriteResponses();
     EnqueueLittleEndianReadResponses();
-    for (auto i = 0; i < 5; ++i) {
+    for (auto i = 0; i < 8; ++i) {
         SerialDriver->LoopOnce();
     }
 }
