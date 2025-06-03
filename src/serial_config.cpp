@@ -1067,6 +1067,10 @@ TLoadRegisterConfigResult LoadRegisterConfig(const Json::Value& registerData,
         regType.DefaultWordOrder = WordOrderFromName(registerData["word_order"].asString());
     }
 
+    if (registerData.isMember("byte_order")) {
+        regType.DefaultByteOrder = ByteOrderFromName(registerData["byte_order"].asString());
+    }
+
     double scale = Read(registerData, "scale", 1.0); // TBD: check for zero, too
     double offset = Read(registerData, "offset", 0.0);
     double round_to = Read(registerData, "round_to", 0.0);
@@ -1112,7 +1116,8 @@ TLoadRegisterConfigResult LoadRegisterConfig(const Json::Value& registerData,
                                                  sporadicMode,
                                                  readonly,
                                                  regType.Name,
-                                                 regType.DefaultWordOrder);
+                                                 regType.DefaultWordOrder,
+                                                 regType.DefaultByteOrder);
 
     if (registerData.isMember("error_value")) {
         res.RegisterConfig->ErrorValue = TRegisterValue{ToUint64(registerData["error_value"], "error_value")};

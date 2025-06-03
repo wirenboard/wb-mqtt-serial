@@ -32,7 +32,7 @@ namespace Modbus // modbus protocol common utilities
 
         bool Add(PRegister reg, std::chrono::milliseconds pollLimit) override;
 
-        int GetStart() const;
+        uint32_t GetStart() const;
 
         /**
          * @return The count of Modbus registers in the range.

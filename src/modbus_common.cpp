@@ -37,11 +37,16 @@ namespace // general utilities
         return reg.Get16BitWidth();
     }
 
-    // write 16-bit value to byte array in big-endian order
-    inline void WriteAs2Bytes(uint8_t* dst, uint16_t val)
+    // write 16-bit value to byte array in specified order
+    inline void WriteAs2Bytes(uint8_t* dst, uint16_t val, EByteOrder byteOrder)
     {
-        dst[0] = static_cast<uint8_t>(val >> 8);
-        dst[1] = static_cast<uint8_t>(val);
+        if (byteOrder == EByteOrder::LittleEndian) {
+            dst[0] = static_cast<uint8_t>(val);
+            dst[1] = static_cast<uint8_t>(val >> 8);
+        } else {
+            dst[0] = static_cast<uint8_t>(val >> 8);
+            dst[1] = static_cast<uint8_t>(val);
+        }
     }
 
     // returns true if multi write needs to be done
@@ -212,7 +217,7 @@ namespace Modbus // modbus protocol common utilities
         return Words;
     }
 
-    int TModbusRegisterRange::GetStart() const
+    uint32_t TModbusRegisterRange::GetStart() const
     {
         return Start;
     }
@@ -404,11 +409,12 @@ namespace Modbus // modbus protocol common utilities
         data.resize(regCount * 2);
         TAddress address{0};
         address.Type = reg.Type;
-        for (uint32_t i = 0; (i < regCount); ++i) {
-            address.Address = baseAddress + i;
+        for (uint32_t i = 0; i < regCount; ++i) {
+            auto offset = reg.WordOrder == EWordOrder::LittleEndian ? data.size() - i * 2 - 2 : i * 2;
             uint16_t regData = reg.Format == RegisterFormat::String8 ? str[i * 2] << 8 | str[i * 2 + 1] : str[i];
+            address.Address = baseAddress + i;
             tmpCache[address.AbsAddress] = regData;
-            WriteAs2Bytes(data.data() + i * 2, regData);
+            WriteAs2Bytes(data.data() + offset, regData, reg.ByteOrder);
         }
         return regCount;
     }
@@ -454,9 +460,8 @@ namespace Modbus // modbus protocol common utilities
             uint16_t wordValue = (reg.WordOrder == EWordOrder::BigEndian)
                                      ? (valueToWrite >> (widthInModbusWords - 1) * 16) & 0xFFFF
                                      : valueToWrite & 0xFFFF;
-
             tmpCache[address.AbsAddress] = wordValue;
-            WriteAs2Bytes(data.data() + i * 2, wordValue);
+            WriteAs2Bytes(data.data() + i * 2, wordValue, reg.ByteOrder);
             if (reg.WordOrder == EWordOrder::BigEndian) {
                 valueToWrite <<= 16;
             } else {
@@ -500,7 +505,7 @@ namespace Modbus // modbus protocol common utilities
         tmpCache[address.AbsAddress] = wordValue & 0xffff;
 
         data.resize(2);
-        WriteAs2Bytes(data.data(), wordValue);
+        WriteAs2Bytes(data.data(), wordValue, reg.ByteOrder);
     }
 
     void ParseSingleBitReadResponse(const std::vector<uint8_t>& data, TModbusRegisterRange& range)
@@ -571,12 +576,21 @@ namespace Modbus // modbus protocol common utilities
         const auto endPosInRange = std::min(startPosInRange + registerDataSize, rangeData.size());
         auto endIt = rangeData.begin() + endPosInRange;
 
-        std::string str;
+        std::vector<uint16_t> words;
+        while (startIt != endIt) {
+            words.push_back(*startIt);
+            ++startIt;
+        }
+        if (reg.WordOrder == EWordOrder::LittleEndian) {
+            std::reverse(words.begin(), words.end());
+        }
+
+        auto it = words.begin();
         size_t offset = reg.Format == RegisterFormat::String8 ? 1 : 0;
         size_t shift = offset;
-
-        while (startIt != endIt) {
-            auto ch = static_cast<char>(*startIt >> shift * 8);
+        std::string str;
+        while (it != words.end()) {
+            auto ch = static_cast<char>(*it >> shift * 8);
             if (ch == '\0' || ch == '\xFF') {
                 break;
             }
@@ -586,17 +600,29 @@ namespace Modbus // modbus protocol common utilities
                 continue;
             }
             shift = offset;
-            ++startIt;
+            ++it;
         }
         return str;
     }
 
-    void FillRegisters(std::vector<uint16_t>& registers, const std::vector<uint8_t>& data)
+    void FillRegisters(std::vector<uint16_t>& registers,
+                       const std::vector<uint8_t>& data,
+                       const TRegisterConfig& reg,
+                       uint32_t baseAddress)
     {
-        auto size = std::min(data.size() / 2, registers.size());
-        auto start = data.data();
-        for (size_t i = 0; i < size; ++i) {
-            registers[i] = (*start << 8) | *(start + 1);
+        auto index = GetUint32RegisterAddress(reg.GetAddress()) - baseAddress;
+        auto width = reg.Get16BitWidth();
+        auto offset = index * 2;
+        if (index + width > registers.size() || offset + width * 2 > data.size()) {
+            return;
+        }
+        auto start = data.data() + offset;
+        for (auto i = 0; i < width; i++) {
+            if (reg.ByteOrder == EByteOrder::LittleEndian) {
+                registers[index + i] = *(start + 1) << 8 | *start;
+            } else {
+                registers[index + i] = *start << 8 | *(start + 1);
+            }
             start += 2;
         }
     }
@@ -607,7 +633,9 @@ namespace Modbus // modbus protocol common utilities
         address.Type = range.Type();
         auto baseAddress = range.GetStart();
         auto& data16BitWords = range.GetWords();
-        FillRegisters(data16BitWords, data);
+        for (const auto& reg: range.RegisterList()) {
+            FillRegisters(data16BitWords, data, *reg->GetConfig(), baseAddress);
+        }
         for (size_t i = 0; i < data.size() / 2; ++i) {
             address.Address = baseAddress + i;
             cache[address.AbsAddress] = data16BitWords[i];
@@ -877,16 +905,16 @@ namespace Modbus // modbus protocol common utilities
                                       frameTimeout);
 
         auto responseData = Modbus::ExtractResponseData(function, res.Pdu);
-
         if (IsSingleBitType(reg.Type)) {
             return TRegisterValue{responseData[0]};
         }
 
         std::vector<uint16_t> data16BitWords(modbusRegisterCount);
-        FillRegisters(data16BitWords, responseData);
+        FillRegisters(data16BitWords, responseData, reg, GetUint32RegisterAddress(reg.GetAddress()));
         if (reg.IsString()) {
             return TRegisterValue{GetStringRegisterValueFromReadData(data16BitWords, addr, reg)};
         }
+
         return TRegisterValue{GetRegisterValueFromReadData(data16BitWords, addr, reg)};
     }
 
