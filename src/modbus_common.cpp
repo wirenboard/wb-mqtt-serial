@@ -226,7 +226,7 @@ namespace Modbus // modbus protocol common utilities
             return true;
         }
 
-        auto address = GetUint32RegisterAddress(reg->GetConfig()->GetAddress());
+        auto address = GetUint32RegisterAddress(reg->GetConfig()->GetWriteAddress());
         auto width = reg->GetConfig()->Get16BitWidth();
         if (RegisterList().empty()) {
             Start = address;
