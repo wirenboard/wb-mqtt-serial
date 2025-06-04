@@ -406,6 +406,7 @@ namespace Modbus // modbus protocol common utilities
                                           Modbus::CalcResponsePDUSize(function, Count),
                                           Device()->DeviceConfig()->ResponseTimeout,
                                           Device()->DeviceConfig()->FrameTimeout);
+            Modbus::ExtractResponseData(function, res.Pdu);
         } catch (const Modbus::TModbusExceptionError& err) {
             RethrowSerialDeviceException(err);
         } catch (const Modbus::TMalformedResponseError& err) {
