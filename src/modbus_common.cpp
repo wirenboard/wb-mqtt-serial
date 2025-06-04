@@ -1,6 +1,7 @@
 #include "modbus_common.h"
 #include "bin_utils.h"
 #include "log.h"
+#include "pollable_device.h"
 #include "serial_device.h"
 #include "wb_registers.h"
 
@@ -22,6 +23,27 @@ namespace Modbus // modbus protocol declarations
     };
 
     size_t InferReadResponsePDUSize(int type, size_t registerCount);
+
+    size_t ComposeStringWriteRequestData(std::vector<uint8_t>& data,
+                                         const TRegisterConfig& reg,
+                                         const std::string& str,
+                                         uint16_t baseAddress,
+                                         Modbus::TRegisterCache& tmpCache);
+
+    size_t ComposeRawMultipleWriteRequestData(std::vector<uint8_t>& data,
+                                              const TRegisterConfig& reg,
+                                              uint64_t value,
+                                              uint16_t baseAddress,
+                                              Modbus::TRegisterCache& tmpCache,
+                                              const Modbus::TRegisterCache& cache);
+
+    void ComposeRawSingleWriteRequestData(std::vector<uint8_t>& data,
+                                          const TRegisterConfig& reg,
+                                          uint16_t value,
+                                          uint16_t baseAddress,
+                                          uint8_t wordIndex,
+                                          Modbus::TRegisterCache& tmpCache,
+                                          const Modbus::TRegisterCache& cache);
 
     //! Parses modbus response and stores result
     void ParseReadResponse(const std::vector<uint8_t>& data,
@@ -193,6 +215,51 @@ namespace Modbus // modbus protocol common utilities
         return false;
     }
 
+    bool TModbusRegisterRange::AddForWrite(PRegister reg)
+    {
+        auto type = reg->GetConfig()->Type;
+        if (type != REG_COIL && type != REG_HOLDING && type != REG_HOLDING_SINGLE && type != REG_HOLDING_MULTI) {
+            return true;
+        }
+
+        if (reg->GetAvailable() == TRegisterAvailability::UNAVAILABLE) {
+            return true;
+        }
+
+        auto address = GetUint32RegisterAddress(reg->GetConfig()->GetAddress());
+        auto width = reg->GetConfig()->Get16BitWidth();
+        if (RegisterList().empty()) {
+            Start = address;
+        } else {
+            if (HasOtherDeviceAndType(reg)) {
+                return false;
+            }
+
+            // Can't add register before first register in the range
+            if (Start > address) {
+                return false;
+            }
+
+            // Write range can't contain holes
+            if (Start + Count < address) {
+                return false;
+            }
+
+            const auto& config = reg->Device()->DeviceConfig();
+            auto maxRegs = MAX_WRITE_REGISTERS;
+            if (config->MaxWriteRegisters > 0 && config->MaxWriteRegisters < maxRegs) {
+                maxRegs = config->MaxWriteRegisters;
+            }
+            if (Count + width > static_cast<size_t>(maxRegs)) {
+                return false;
+            }
+        }
+
+        RegisterList().push_back(reg);
+        Count += width;
+        return true;
+    }
+
     uint8_t* TModbusRegisterRange::GetBits()
     {
         if (!IsSingleBitType(Type()))
@@ -276,6 +343,69 @@ namespace Modbus // modbus protocol common utilities
                                           Device()->DeviceConfig()->FrameTimeout);
             ResponseTime = res.ResponseTime;
             ParseReadResponse(res.Pdu, function, *this, cache);
+        } catch (const Modbus::TModbusExceptionError& err) {
+            RethrowSerialDeviceException(err);
+        } catch (const Modbus::TMalformedResponseError& err) {
+            try {
+                port.SkipNoise();
+            } catch (const std::exception& e) {
+                LOG(Warn) << "SkipNoise failed: " << e.what();
+            }
+            throw TSerialDeviceTransientErrorException(err.what());
+        } catch (const Modbus::TErrorBase& err) {
+            throw TSerialDeviceTransientErrorException(err.what());
+        }
+    }
+
+    void TModbusRegisterRange::WriteRange(IModbusTraits& traits,
+                                          TPort& port,
+                                          uint8_t slaveId,
+                                          int shift,
+                                          Modbus::TRegisterCache& cache)
+    {
+        Modbus::TRegisterCache tmpCache;
+        std::vector<uint8_t> data;
+        for (auto reg: RegisterList()) {
+            std::vector<uint8_t> buffer;
+            auto config = reg->GetConfig();
+            auto address = GetUint32RegisterAddress(config->GetWriteAddress()) + shift;
+            if (IsPacking(*config)) {
+                if (config->IsString()) {
+                    ComposeStringWriteRequestData(buffer,
+                                                  *config,
+                                                  reg->GetValue().Get<std::string>(),
+                                                  address,
+                                                  tmpCache);
+                } else {
+                    ComposeRawMultipleWriteRequestData(buffer,
+                                                       *config,
+                                                       reg->GetValue().Get<uint64_t>(),
+                                                       address,
+                                                       tmpCache,
+                                                       cache);
+                }
+            } else {
+                ComposeRawSingleWriteRequestData(buffer,
+                                                 *config,
+                                                 reg->GetValue().Get<uint16_t>(),
+                                                 address,
+                                                 0, // TODO: figure it out
+                                                 tmpCache,
+                                                 cache);
+            }
+            data.insert(data.end(), buffer.begin(), buffer.end());
+        }
+
+        try {
+            auto function = GetFunctionImpl(Type(), OperationType::OP_WRITE, TypeName(), IsPacking(*this));
+            auto pdu = Modbus::MakePDU(function, GetStart() + shift, Count, data);
+            port.SleepSinceLastInteraction(Device()->DeviceConfig()->RequestDelay);
+            auto res = traits.Transaction(port,
+                                          slaveId,
+                                          pdu,
+                                          Modbus::CalcResponsePDUSize(function, Count),
+                                          Device()->DeviceConfig()->ResponseTimeout,
+                                          Device()->DeviceConfig()->FrameTimeout);
         } catch (const Modbus::TModbusExceptionError& err) {
             RethrowSerialDeviceException(err);
         } catch (const Modbus::TMalformedResponseError& err) {
@@ -777,49 +907,70 @@ namespace Modbus // modbus protocol common utilities
         }
     }
 
-    void WarnFailedRegisterSetup(const PDeviceSetupItem& item, const char* msg)
-    {
-        LOG(Warn) << "failed to write: " << item->Register->ToString() << ": " << msg;
-    }
+    // void WarnFailedRegisterSetup(const PDeviceSetupItem& item, const char* msg)
+    // {
+    //     LOG(Warn) << "failed to write: " << item->Register->ToString() << ": " << msg;
+    // }
 
     void WriteSetupRegisters(Modbus::IModbusTraits& traits,
                              TPort& port,
                              uint8_t slaveId,
-                             const std::vector<PDeviceSetupItem>& setupItems,
+                             std::vector<PDeviceSetupItem> setupItems,
                              Modbus::TRegisterCache& cache,
                              std::chrono::microseconds requestDelay,
                              std::chrono::milliseconds responseTimeout,
                              std::chrono::milliseconds frameTimeout,
                              int shift)
     {
-        for (const auto& item: setupItems) {
+        TRegisterComparePredicate compare;
+        std::sort(setupItems.begin(), setupItems.end(), [compare](PDeviceSetupItem a, PDeviceSetupItem b) {
+            return compare(b->Register, a->Register);
+        });
+
+        size_t index = 0;
+        while (index < setupItems.size()) {
+            TModbusRegisterRange range(std::chrono::microseconds::max());
+            while (index < setupItems.size() && range.AddForWrite(setupItems[index]->Register)) {
+                const auto& item = setupItems[index];
+                item->Register->SetValue(item->RawValue);
+                // TODO: add "init" log here?
+                ++index;
+            }
             try {
-                WriteRegister(traits,
-                              port,
-                              slaveId,
-                              *item->Register->GetConfig(),
-                              item->RawValue,
-                              cache,
-                              requestDelay,
-                              responseTimeout,
-                              frameTimeout,
-                              shift);
-
-                std::stringstream ss;
-                ss << "Init: " << item->Name << ": setup register " << item->Register->ToString() << " <-- "
-                   << item->HumanReadableValue;
-
-                if (item->RawValue.GetType() == TRegisterValue::ValueType::String) {
-                    ss << " ('" << item->RawValue << "')";
-                } else {
-                    ss << " (0x" << std::hex << item->RawValue << ")";
-                    // TODO: More verbose exception
-                }
-                LOG(Info) << ss.str();
+                Modbus::TRegisterCache cache;
+                range.WriteRange(traits, port, slaveId, shift, cache);
             } catch (const TSerialDevicePermanentRegisterException& e) {
-                WarnFailedRegisterSetup(item, e.what());
+                LOG(Warn) << "Failed to write setup registers: " << e.what();
             }
         }
+        // for (const auto& item: setupItems) {
+        //     try {
+        //         WriteRegister(traits,
+        //                       port,
+        //                       slaveId,
+        //                       *item->Register->GetConfig(),
+        //                       item->RawValue,
+        //                       cache,
+        //                       requestDelay,
+        //                       responseTimeout,
+        //                       frameTimeout,
+        //                       shift);
+
+        //         std::stringstream ss;
+        //         ss << "Init: " << item->Name << ": setup register " << item->Register->ToString() << " <-- "
+        //            << item->HumanReadableValue;
+
+        //         if (item->RawValue.GetType() == TRegisterValue::ValueType::String) {
+        //             ss << " ('" << item->RawValue << "')";
+        //         } else {
+        //             ss << " (0x" << std::hex << item->RawValue << ")";
+        //             // TODO: More verbose exception
+        //         }
+        //         LOG(Info) << ss.str();
+        //     } catch (const TSerialDevicePermanentRegisterException& e) {
+        //         WarnFailedRegisterSetup(item, e.what());
+        //     }
+        // }
         if (!setupItems.empty() && setupItems.front()->Register->Device()) {
             setupItems.front()->Register->Device()->SetTransferResult(true);
         }
