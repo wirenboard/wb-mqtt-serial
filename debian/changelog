@@ -1,3 +1,10 @@
+wb-mqtt-serial (2.170.0) stable; urgency=medium
+
+  * Add byte order device template option for Modbus registers
+  * Add word order feature for "string" and "string8" Modbus register format
+
+ -- Ilya Titov <ilya.titov@wirenboard.com>  Wed, 04 Jun 2025 03:52:32 +0300
+
 wb-mqtt-serial (2.169.0) stable; urgency=medium
 
   * Add device/Probe RPC for requesting information about Wiren Board device
