@@ -67,6 +67,12 @@ namespace // general utilities
         return (type == Modbus::REG_COIL) || (type == Modbus::REG_DISCRETE);
     }
 
+    inline bool IsHoldingType(int type)
+    {
+        return (type == Modbus::REG_HOLDING) || (type == Modbus::REG_HOLDING_SINGLE) ||
+               (type == Modbus::REG_HOLDING_MULTI);
+    }
+
     void RethrowSerialDeviceException(const Modbus::TModbusExceptionError& err)
     {
         if (err.GetExceptionCode() == Modbus::ILLEGAL_FUNCTION ||
@@ -523,7 +529,6 @@ namespace Modbus // modbus protocol common utilities
             coil_count -= coils_in_byte;
             destination += coils_in_byte;
         }
-
         for (auto reg: range.RegisterList()) {
             auto addr = GetUint32RegisterAddress(reg->GetConfig()->GetAddress());
             reg->SetValue(TRegisterValue{range.GetBits()[addr - range.GetStart()]});
@@ -531,56 +536,24 @@ namespace Modbus // modbus protocol common utilities
         return;
     }
 
-    uint64_t GetRegisterValueFromReadData(const std::vector<uint16_t>& rangeData,
-                                          size_t rangeStartAddr,
-                                          const TRegisterConfig& reg)
+    uint64_t GetNumberRegisterValue(const std::vector<uint16_t>& words, const TRegisterConfig& reg)
     {
-        auto addr = GetUint32RegisterAddress(reg.GetAddress());
-        int wordCount = GetModbusDataWidthIn16BitWords(reg);
-
-        uint64_t r = 0;
-        if (reg.WordOrder == EWordOrder::LittleEndian) {
-            for (int i = wordCount - 1; i >= 0; --i) {
-                r <<= 16;
-                r |= rangeData[addr - rangeStartAddr + i];
-            }
-        } else {
-            for (int i = 0; i < wordCount; ++i) {
-                r <<= 16;
-                r |= rangeData[addr - rangeStartAddr + i];
-            }
+        uint64_t value = 0;
+        for (size_t i = 0; i < words.size(); ++i) {
+            value <<= 16;
+            value |= words[i];
         }
-
-        r >>= reg.GetDataOffset();
-        r &= GetLSBMask(reg.GetDataWidth());
-
-        return r;
+        value >>= reg.GetDataOffset();
+        value &= GetLSBMask(reg.GetDataWidth());
+        return value;
     }
 
-    std::string GetStringRegisterValueFromReadData(const std::vector<uint16_t>& rangeData,
-                                                   size_t rangeStartAddr,
-                                                   const TRegisterConfig& reg)
+    std::string GetStringRegisterValue(const std::vector<uint16_t>& words, const TRegisterConfig& reg)
     {
-        const auto addr = GetUint32RegisterAddress(reg.GetAddress());
-        if (rangeStartAddr > addr) {
-            return std::string();
-        }
-
-        const auto startPosInRange = addr - rangeStartAddr;
-        if (startPosInRange >= rangeData.size()) {
-            return std::string();
-        }
-
-        const auto endPosInRange = std::min(startPosInRange + reg.Get16BitWidth(), rangeData.size());
-        std::vector<uint16_t> words(rangeData.begin() + startPosInRange, rangeData.begin() + endPosInRange);
-        if (reg.WordOrder == EWordOrder::LittleEndian) {
-            std::reverse(words.begin(), words.end());
-        }
-
-        auto it = words.begin();
+        std::string str;
         size_t offset = reg.Format == RegisterFormat::String8 ? 1 : 0;
         size_t shift = offset;
-        std::string str;
+        auto it = words.begin();
         while (it != words.end()) {
             auto ch = static_cast<char>(*it >> shift * 8);
             if (ch == '\0' || ch == '\xFF') {
@@ -595,6 +568,27 @@ namespace Modbus // modbus protocol common utilities
             ++it;
         }
         return str;
+    }
+
+    TRegisterValue GetRegisterValue(const std::vector<uint8_t>& data, const TRegisterConfig& reg, uint32_t index = 0)
+    {
+        auto start = data.data() + index * 2;
+        auto width = reg.Get16BitWidth();
+        std::vector<uint16_t> words;
+        words.resize(width);
+        for (auto i = 0; i < width; i++) {
+            if (reg.ByteOrder == EByteOrder::LittleEndian) {
+                words[i] = *(start + 1) << 8 | *start;
+            } else {
+                words[i] = *start << 8 | *(start + 1);
+            }
+            start += 2;
+        }
+        if (reg.WordOrder == EWordOrder::LittleEndian) {
+            std::reverse(words.begin(), words.end());
+        }
+        return reg.IsString() ? TRegisterValue{GetStringRegisterValue(words, reg)}
+                              : TRegisterValue{GetNumberRegisterValue(words, reg)};
     }
 
     void FillRegisters(std::vector<uint16_t>& registers,
@@ -646,19 +640,13 @@ namespace Modbus // modbus protocol common utilities
             ParseSingleBitReadResponse(data, range);
             return;
         }
-
-        FillCache(data, range, cache);
-
-        auto data16BitWords = range.GetWords();
-
+        if (IsHoldingType(range.Type())) {
+            FillCache(data, range, cache);
+        }
         for (auto reg: range.RegisterList()) {
-            if (reg->GetConfig()->IsString()) {
-                reg->SetValue(TRegisterValue{
-                    GetStringRegisterValueFromReadData(data16BitWords, range.GetStart(), *reg->GetConfig())});
-            } else {
-                reg->SetValue(
-                    TRegisterValue{GetRegisterValueFromReadData(data16BitWords, range.GetStart(), *reg->GetConfig())});
-            }
+            auto config = reg->GetConfig();
+            auto index = GetUint32RegisterAddress(config->GetAddress()) - range.GetStart();
+            reg->SetValue(GetRegisterValue(data, *config, index));
         }
     }
 
@@ -896,18 +884,8 @@ namespace Modbus // modbus protocol common utilities
                                       responseTimeout,
                                       frameTimeout);
 
-        auto responseData = Modbus::ExtractResponseData(function, res.Pdu);
-        if (IsSingleBitType(reg.Type)) {
-            return TRegisterValue{responseData[0]};
-        }
-
-        std::vector<uint16_t> data16BitWords(modbusRegisterCount);
-        FillRegisters(data16BitWords, responseData, reg, GetUint32RegisterAddress(reg.GetAddress()));
-        if (reg.IsString()) {
-            return TRegisterValue{GetStringRegisterValueFromReadData(data16BitWords, addr, reg)};
-        }
-
-        return TRegisterValue{GetRegisterValueFromReadData(data16BitWords, addr, reg)};
+        auto data = Modbus::ExtractResponseData(function, res.Pdu);
+        return IsSingleBitType(reg.Type) ? TRegisterValue{data[0]} : GetRegisterValue(data, reg);
     }
 
 } // modbus protocol utilities
