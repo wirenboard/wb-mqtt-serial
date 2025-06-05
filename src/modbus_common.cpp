@@ -570,17 +570,9 @@ namespace Modbus // modbus protocol common utilities
         if (startPosInRange >= rangeData.size()) {
             return std::string();
         }
-        auto startIt = rangeData.begin() + startPosInRange;
 
-        const auto registerDataSize = GetModbusDataWidthIn16BitWords(reg);
-        const auto endPosInRange = std::min(startPosInRange + registerDataSize, rangeData.size());
-        auto endIt = rangeData.begin() + endPosInRange;
-
-        std::vector<uint16_t> words;
-        while (startIt != endIt) {
-            words.push_back(*startIt);
-            ++startIt;
-        }
+        const auto endPosInRange = std::min(startPosInRange + reg.Get16BitWidth(), rangeData.size());
+        std::vector<uint16_t> words(rangeData.begin() + startPosInRange, rangeData.begin() + endPosInRange);
         if (reg.WordOrder == EWordOrder::LittleEndian) {
             std::reverse(words.begin(), words.end());
         }
