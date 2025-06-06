@@ -30,6 +30,7 @@ public:
 
     TSerialPortConnectionSettings SerialPortSettings;
     std::string SlaveId;
+    std::string Group;
 
     std::chrono::milliseconds ResponseTimeout = DefaultResponseTimeout;
     std::chrono::milliseconds FrameTimeout = DefaultFrameTimeout;
@@ -66,9 +67,38 @@ private:
 typedef std::shared_ptr<TRPCDeviceLoadConfigSerialClientTask> PRPCDeviceLoadConfigSerialClientTask;
 typedef std::vector<std::pair<std::string, PRegister>> TRPCRegisterList;
 
+/**
+ * @brief Creates JSON object containing template parameters of specified group
+ *        and their condition parameters (recoursive)
+ *
+ * @param templateParams - device template parameters JSON array or object
+ * @param group - parameters group name
+ * @param paramsList - string list reference to store found parameters names
+ *
+ * @return TRPCRegisterList - named PRegister list
+ */
+Json::Value GetTemplateParamsGroup(const Json::Value& templateParams,
+                                   const std::string& group,
+                                   std::list<std::string>& paramsList);
+
+/**
+ * @brief Creates named PRegister list based on template parameters JSON array or object.
+ *
+ * @param protocolParams - device protocol params for LoadRegisterConfig call
+ * @param device - serial device object pointer for TRegister object creation
+ * @param templateParams - device template parameters JSON array or object
+ * @param parameters - known parameters JSON object, where the key is the parameter id and the value is the known
+ *                     parameter value, for example: {"baudrate": 96, "in1_mode": 2}
+ *                     used to exclule known parameters from regiter list
+ * @param fwVersion - device firmvare version string, used to exclude parameters unsupporterd by firmware
+ *
+ * @return TRPCRegisterList - named PRegister list
+ */
 TRPCRegisterList CreateRegisterList(const TDeviceProtocolParams& protocolParams,
                                     const PSerialDevice& device,
+                                    const Json::Value& templateParams,
                                     const Json::Value& parameters,
                                     const std::string& fwVersion);
+
 void CheckParametersConditions(const Json::Value& templateParams, Json::Value& parameters);
 Json::Value RawValueToJSON(const TRegisterConfig& reg, TRegisterValue val);

@@ -46,44 +46,14 @@
       },
       "required": [ "ip", "port" ]
     },
-    "timeouts_config": {
-      "properties": {
-        "response_timeout": {
-          "type": "integer",
-          "minimum": 0
-        },
-        "frame_timeout": {
-          "type": "integer",
-          "minimum": 0
-        },
-        "total_timeout": {
-          "type": "integer",
-          "minimum": 0
-        }
-      }
-    },
     "request_data": {
       "properties": {
         "slave_id": {
-          "oneOf": [
-            {
-              "type": "integer",
-              "minimum": 0
-            },
-            {
-              "type": "string",
-              "minLength": 1
-            }
-          ]
-        },
-        "device_type": {
-          "type": "string"
-        },
-        "group": {
-          "type": "string"
+          "type": "integer",
+          "minimum": 0
         }
       },
-      "required": [ "slave_id", "device_type" ]
+      "required": [ "slave_id" ]
     }
   },
 
@@ -94,7 +64,6 @@
         { "$ref" : "#/definitions/tcp_port_config"}
       ]
     },
-    { "$ref" : "#/definitions/timeouts_config" },
     { "$ref" : "#/definitions/request_data" }
   ]
 }

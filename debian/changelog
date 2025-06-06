@@ -4,6 +4,31 @@ wb-mqtt-serial (2.168.0) stable; urgency=medium
 
  -- Pavel Gasheev <pavel.gasheev@wirenboard.com>  Thu, 29 May 2025 09:53:46 +0300
 
+wb-mqtt-serial (2.169.1) stable; urgency=medium
+
+  * Add separate device signature for WB-MRM2-mini/NC
+
+ -- Pavel Gasheev <pavel.gasheev@wirenboard.com>  Wed, 04 Jun 2025 15:19:39 +0300
+
+wb-mqtt-serial (2.169.0) stable; urgency=medium
+
+  * Add device/Probe RPC for requesting information about Wiren Board device
+
+ -- Petr Krasnoshchekov <petr.krasnoshchekov@wirenboard.com>  Mon, 02 Jun 2025 10:34:18 +0500
+
+wb-mqtt-serial (2.168.0) stable; urgency=medium
+
+  * Add parameters group read feature to device/LoadConfig RPC
+  * Add config parameters sync to device/LoadConfig RPC
+
+ -- Ilya Titov <ilya.titov@wirenboard.com>  Tue, 30 May 2025 11:14:36 +0300
+
+wb-mqtt-serial (2.167.4) stable; urgency=medium
+
+  * config-carel-pj-basic.json and config-carel-pj-basic-deprecated.json: Remove PYEZ1R05J4 from title
+
+ -- Andrey Ksenofontov <andrey.ksenofontov@wirenboard.com>  Thu, 29 May 2025 15:04:00 +0300
+
 wb-mqtt-serial (2.167.3) stable; urgency=medium
 
   * config-map3ev.json: Add separate signature WB-MAP3EV
@@ -49,7 +74,7 @@ wb-mqtt-serial (2.165.1) stable; urgency=medium
 
 wb-mqtt-serial (2.165.0) stable; urgency=medium
 
-  * Add configured_device_type parameter to port/Scan RPC response. 
+  * Add configured_device_type parameter to port/Scan RPC response.
     It contains the device type from template if the device is configured in wb-mqtt-serial.conf.
 
  -- Petr Krasnoshchekov <petr.krasnoshchekov@wirenboard.com>  Wed, 21 May 2025 15:12:30 +0500
