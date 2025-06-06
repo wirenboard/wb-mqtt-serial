@@ -1,3 +1,7 @@
+wb-mqtt-serial (2.170.0) stable; urgency=medium
+
+  * Add WB-UPS v.3 template
+
 wb-mqtt-serial (2.169.1) stable; urgency=medium
 
   * Add separate device signature for WB-MRM2-mini/NC
