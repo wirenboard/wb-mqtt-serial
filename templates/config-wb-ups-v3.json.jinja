@@ -60,8 +60,8 @@
                 "id": "debug"
             },
             {
-                "title": "Heater",
-                "id": "gg_debug_heater",
+                "title": "Temperature",
+                "id": "gg_debug_temperature",
                 "group": "debug"
             },
             {
@@ -293,16 +293,6 @@
 
             {# Диагностика -#}
             {
-                "id": "heater_state",
-                "name": "Heater State",
-                "type": "switch",
-                "read_only": true,
-                "reg_type": "discrete",
-                "address": 16,
-                "enabled": false,
-                "group": "gg_debug_heater"
-            },
-            {
                 "id": "temperature_hardware_protection",
                 "name": "Temperature Hardware Protection",
                 "type": "switch",
@@ -310,25 +300,7 @@
                 "reg_type": "discrete",
                 "address": 17,
                 "enabled": false,
-                "group": "gg_debug_heater"
-            },
-            {
-                "id": "heater_force_control",
-                "name": "Heater Force Control",
-                "type": "switch",
-                "reg_type": "coil",
-                "address": 32,
-                "enabled": false,
-                "group": "gg_debug_heater"
-            },
-            {
-                "id": "heater_force_control_state",
-                "name": "Heater Force Control State",
-                "type": "switch",
-                "reg_type": "coil",
-                "address": 33,
-                "enabled": false,
-                "group": "gg_debug_heater"
+                "group": "gg_debug_temperature"
             },
 
             {
@@ -524,7 +496,7 @@
                 "Overheat, Only Discharge": "Высокая, только разряд",
                 "Overheat, Not Working": "Высокая, работа запрещена",
                 "Heater State": "Нагреватель",
-                "Temperature Hardware Protection": "Защита от перегрева",
+                "Temperature Hardware Protection": "Аппаратная защита по температуре",
                 "Heater Force Control": "Принудительное управление нагревателем",
                 "Heater Force Control State": "Состояние нагревателя в принудительном режиме",
                 "Charger Current Setpoint": "Уставка тока заряда",
