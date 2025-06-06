@@ -397,6 +397,7 @@ namespace Modbus // modbus protocol common utilities
             words[i] = reg.Format == RegisterFormat::String8 ? str[i * 2] << 8 | str[i * 2 + 1] : str[i];
         }
     }
+
     // Composes array of data words filled with numeric register value.
     // Uses holding register data cache to fill data that is not affected by the new register value.
     // Word order corresponds to defaul Modbus order (big endian).
