@@ -1041,7 +1041,7 @@ protected:
 TEST_F(TModbusLittleEndianRegisterTest, Read)
 {
     EnqueueLittleEndianReadResponses();
-    for (auto i = 0; i < 5; ++i) {
+    for (auto i = 0; i < 15; ++i) {
         SerialDriver->LoopOnce();
     }
 }
@@ -1049,19 +1049,31 @@ TEST_F(TModbusLittleEndianRegisterTest, Read)
 TEST_F(TModbusLittleEndianRegisterTest, Write)
 {
     EnqueueLittleEndianReadResponses();
-    for (auto i = 0; i < 5; ++i) {
+    for (auto i = 0; i < 15; ++i) {
         SerialDriver->LoopOnce();
     }
 
-    PublishWaitOnValue("/devices/modbus-sample/controls/U8/on", "1");
-    PublishWaitOnValue("/devices/modbus-sample/controls/U16/on", std::to_string(0x0304));
-    PublishWaitOnValue("/devices/modbus-sample/controls/U24/on", std::to_string(0x050607));
-    PublishWaitOnValue("/devices/modbus-sample/controls/U32/on", std::to_string(0x08090A0B));
-    PublishWaitOnValue("/devices/modbus-sample/controls/U64/on", std::to_string(0x0C0D0E0F11121314));
+    PublishWaitOnValue("/devices/modbus-sample/controls/U8_LB/on", "1");
+    PublishWaitOnValue("/devices/modbus-sample/controls/U16_LB/on", std::to_string(0x0304));
+    PublishWaitOnValue("/devices/modbus-sample/controls/U24_LB/on", std::to_string(0x050607));
+    PublishWaitOnValue("/devices/modbus-sample/controls/U32_LB/on", std::to_string(0x08090A0B));
+    PublishWaitOnValue("/devices/modbus-sample/controls/U64_LB/on", std::to_string(0x0C0D0E0F11121314));
+
+    PublishWaitOnValue("/devices/modbus-sample/controls/U8_BL/on", "1");
+    PublishWaitOnValue("/devices/modbus-sample/controls/U16_BL/on", std::to_string(0x0304));
+    PublishWaitOnValue("/devices/modbus-sample/controls/U24_BL/on", std::to_string(0x050607));
+    PublishWaitOnValue("/devices/modbus-sample/controls/U32_BL/on", std::to_string(0x08090A0B));
+    PublishWaitOnValue("/devices/modbus-sample/controls/U64_BL/on", std::to_string(0x0C0D0E0F11121314));
+
+    PublishWaitOnValue("/devices/modbus-sample/controls/Float_LL/on", std::to_string(3.1415));
+    PublishWaitOnValue("/devices/modbus-sample/controls/String_LL/on", "dolor");
+    PublishWaitOnValue("/devices/modbus-sample/controls/String8_LL/on", "magna");
+    PublishWaitOnValue("/devices/modbus-sample/controls/String_BL/on", "dolor");
+    PublishWaitOnValue("/devices/modbus-sample/controls/String8_BL/on", "magna");
 
     EnqueueLittleEndianWriteResponses();
     EnqueueLittleEndianReadResponses();
-    for (auto i = 0; i < 5; ++i) {
+    for (auto i = 0; i < 15; ++i) {
         SerialDriver->LoopOnce();
     }
 }

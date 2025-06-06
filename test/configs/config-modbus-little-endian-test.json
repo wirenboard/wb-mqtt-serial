@@ -16,7 +16,7 @@
             "frame_timeout_ms": 0,
             "channels": [
                 {
-                  "name" : "U8",
+                  "name" : "U8_LB",
                   "reg_type" : "holding",
                   "address" : "1",
                   "type": "value",
@@ -24,7 +24,7 @@
                   "word_order": "little_endian"
                 },
                 {
-                  "name" : "U16",
+                  "name" : "U16_LB",
                   "reg_type" : "holding",
                   "address" : "2",
                   "type": "value",
@@ -32,7 +32,7 @@
                   "word_order": "little_endian"
                 },
                 {
-                  "name" : "U24",
+                  "name" : "U24_LB",
                   "reg_type" : "holding",
                   "address" : "3",
                   "type": "value",
@@ -40,20 +40,107 @@
                   "word_order": "little_endian"
                 },
                 {
-                  "name" : "U32",
+                  "name" : "U32_LB",
                   "reg_type" : "holding",
-                  "address" : "6",
+                  "address" : "5",
                   "type": "value",
                   "format": "u32",
                   "word_order": "little_endian"
                 },
                 {
-                  "name" : "U64",
+                  "name" : "U64_LB",
                   "reg_type" : "holding",
-                  "address" : "12",
+                  "address" : "7",
                   "type": "value",
                   "format": "u64",
                   "word_order": "little_endian"
+                },
+                {
+                  "name" : "U8_BL",
+                  "reg_type" : "holding",
+                  "address" : "11",
+                  "type": "value",
+                  "format": "u8",
+                  "byte_order": "little_endian"
+                },
+                {
+                  "name" : "U16_BL",
+                  "reg_type" : "holding",
+                  "address" : "12",
+                  "type": "value",
+                  "format": "u16",
+                  "byte_order": "little_endian"
+                },
+                {
+                  "name" : "U24_BL",
+                  "reg_type" : "holding",
+                  "address" : "13",
+                  "type": "value",
+                  "format": "u24",
+                  "byte_order": "little_endian"
+                },
+                {
+                  "name" : "U32_BL",
+                  "reg_type" : "holding",
+                  "address" : "15",
+                  "type": "value",
+                  "format": "u32",
+                  "byte_order": "little_endian"
+                },
+                {
+                  "name" : "U64_BL",
+                  "reg_type" : "holding",
+                  "address" : "17",
+                  "type": "value",
+                  "format": "u64",
+                  "byte_order": "little_endian"
+                },
+                {
+                  "name": "Float_LL",
+                  "reg_type": "holding",
+                  "address": "21",
+                  "type": "value",
+                  "format": "float",
+                  "word_order": "little_endian",
+                  "byte_order": "little_endian"
+                },
+                {
+                  "name": "String_LL",
+                  "reg_type": "holding",
+                  "address": "23",
+                  "type": "text",
+                  "format": "string",
+                  "string_data_size": 6,
+                  "word_order": "little_endian",
+                  "byte_order": "little_endian"
+                },
+                {
+                  "name": "String8_LL",
+                  "reg_type": "holding",
+                  "address": "29",
+                  "type": "text",
+                  "format": "string8",
+                  "string_data_size": 3,
+                  "word_order": "little_endian",
+                  "byte_order": "little_endian"
+                },
+                {
+                  "name": "String_BL",
+                  "reg_type": "holding",
+                  "address": "32",
+                  "type": "text",
+                  "format": "string",
+                  "string_data_size": 6,
+                  "byte_order": "little_endian"
+                },
+                {
+                  "name": "String8_BL",
+                  "reg_type": "holding",
+                  "address": "38",
+                  "type": "text",
+                  "format": "string8",
+                  "string_data_size": 3,
+                  "byte_order": "little_endian"
                 }
             ]
         }

@@ -255,7 +255,8 @@ TRegisterConfig::TRegisterConfig(int type,
                                  TSporadicMode sporadic,
                                  bool readonly,
                                  const std::string& type_name,
-                                 const EWordOrder word_order)
+                                 const EWordOrder word_order,
+                                 const EByteOrder byte_order)
     : Address(registerAddressesDescription),
       Type(type),
       Format(format),
@@ -264,7 +265,8 @@ TRegisterConfig::TRegisterConfig(int type,
       RoundTo(round_to),
       SporadicMode(sporadic),
       TypeName(type_name),
-      WordOrder(word_order)
+      WordOrder(word_order),
+      ByteOrder(byte_order)
 {
     if (TypeName.empty())
         TypeName = "(type " + std::to_string(Type) + ")";
@@ -325,7 +327,8 @@ PRegisterConfig TRegisterConfig::Create(int type,
                                         TSporadicMode sporadic,
                                         bool readonly,
                                         const std::string& type_name,
-                                        const EWordOrder word_order)
+                                        const EWordOrder word_order,
+                                        const EByteOrder byte_order)
 {
     return std::make_shared<TRegisterConfig>(type,
                                              registerAddressesDescription,
@@ -336,7 +339,8 @@ PRegisterConfig TRegisterConfig::Create(int type,
                                              sporadic,
                                              readonly,
                                              type_name,
-                                             word_order);
+                                             word_order,
+                                             byte_order);
 }
 
 PRegisterConfig TRegisterConfig::Create(int type,
@@ -349,6 +353,7 @@ PRegisterConfig TRegisterConfig::Create(int type,
                                         bool readonly,
                                         const std::string& type_name,
                                         const EWordOrder word_order,
+                                        const EByteOrder byte_order,
                                         uint32_t data_offset,
                                         uint32_t data_bit_width)
 {
@@ -367,7 +372,8 @@ PRegisterConfig TRegisterConfig::Create(int type,
                   sporadic,
                   readonly,
                   type_name,
-                  word_order);
+                  word_order,
+                  byte_order);
 }
 
 TUint32RegisterAddress::TUint32RegisterAddress(uint32_t address): Address(address)
@@ -458,12 +464,14 @@ TRegisterType::TRegisterType(int index,
                              const std::string& defaultControlType,
                              RegisterFormat defaultFormat,
                              bool readOnly,
-                             EWordOrder defaultWordOrder)
+                             EWordOrder defaultWordOrder,
+                             EByteOrder defaultByteOrder)
     : Index(index),
       Name(name),
       DefaultControlType(defaultControlType),
       DefaultFormat(defaultFormat),
       DefaultWordOrder(defaultWordOrder),
+      DefaultByteOrder(defaultByteOrder),
       ReadOnly(readOnly)
 {}
 
