@@ -384,22 +384,22 @@ namespace Modbus // modbus protocol common utilities
         }
     }
 
+    // Composes array of data words filled with string chars according to string register format.
+    // Word order corresponds to the order of string chars.
     void ComposeStringWriteRequestWords(std::vector<uint16_t>& words,
                                         const TRegisterConfig& reg,
-                                        const std::string& str,
-                                        Modbus::TRegisterCache& tmpCache)
+                                        const std::string& str)
     {
         auto size = reg.Format == RegisterFormat::String8 ? str.size() / 2 + str.size() % 2 : str.size();
-        auto address = GetUint32RegisterAddress(reg.GetAddress());
         auto width = std::min(GetModbusDataWidthIn16BitWords(reg), static_cast<uint32_t>(size));
         words.resize(width);
         for (uint32_t i = 0; i < width; ++i) {
             words[i] = reg.Format == RegisterFormat::String8 ? str[i * 2] << 8 | str[i * 2 + 1] : str[i];
-            tmpCache[address] = words[i];
-            ++address;
         }
     }
-
+    // Composes array of data words filled with numeric register value.
+    // Uses holding register data cache to fill data that is not affected by the new register value.
+    // Word order corresponds to defaul Modbus order (big endian).
     void ComposeNumberWriteRequestWords(std::vector<uint16_t>& words,
                                         const TRegisterConfig& reg,
                                         uint64_t value,
@@ -440,6 +440,8 @@ namespace Modbus // modbus protocol common utilities
         }
     }
 
+    // Composes writing data buffer containing multiple words register data
+    // Word order and byte order corresponds to register settings
     size_t ComposeRawMultipleWriteRequestData(std::vector<uint8_t>& data,
                                               const TRegisterConfig& reg,
                                               const TRegisterValue& value,
@@ -448,7 +450,7 @@ namespace Modbus // modbus protocol common utilities
     {
         std::vector<uint16_t> words;
         if (reg.IsString()) {
-            ComposeStringWriteRequestWords(words, reg, value.Get<std::string>(), tmpCache);
+            ComposeStringWriteRequestWords(words, reg, value.Get<std::string>());
         } else {
             ComposeNumberWriteRequestWords(words, reg, value.Get<uint64_t>(), cache, tmpCache);
         }
@@ -463,6 +465,9 @@ namespace Modbus // modbus protocol common utilities
         return width;
     }
 
+    // Composes writing data buffer containtig single word filled with "partial" register data.
+    // Uses holding register data cache to fill data that is not affected by the new register value.
+    // Byte order corresponds to register settings
     void ComposeRawSingleWriteRequestData(std::vector<uint8_t>& data,
                                           const TRegisterConfig& reg,
                                           uint16_t value,
@@ -514,6 +519,7 @@ namespace Modbus // modbus protocol common utilities
         return;
     }
 
+    // Extracts numeric register data from ordered data words array.
     uint64_t GetNumberRegisterValue(const std::vector<uint16_t>& words, const TRegisterConfig& reg)
     {
         uint64_t value = 0;
@@ -526,6 +532,7 @@ namespace Modbus // modbus protocol common utilities
         return value;
     }
 
+    // Extracts string register data from ordered data words array.
     std::string GetStringRegisterValue(const std::vector<uint16_t>& words, const TRegisterConfig& reg)
     {
         std::string str;
@@ -548,6 +555,9 @@ namespace Modbus // modbus protocol common utilities
         return str;
     }
 
+    // Orders read data buffer according to register word order and byte order settings.
+    // Fills register data cache for holding registers.
+    // Returns TRegister value.
     TRegisterValue GetRegisterValue(const std::vector<uint8_t>& data,
                                     const TRegisterConfig& reg,
                                     Modbus::TRegisterCache& cache,
@@ -556,8 +566,7 @@ namespace Modbus // modbus protocol common utilities
         auto address = GetUint32RegisterAddress(reg.GetAddress());
         auto width = GetModbusDataWidthIn16BitWords(reg);
         auto start = data.data() + index * 2;
-        std::vector<uint16_t> words;
-        words.resize(width);
+        std::vector<uint16_t> words(width);
         for (uint32_t i = 0; i < width; i++) {
             if (reg.ByteOrder == EByteOrder::LittleEndian) {
                 words[i] = *(start + 1) << 8 | *start;
