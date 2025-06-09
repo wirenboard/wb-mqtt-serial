@@ -663,6 +663,18 @@ MSU34TLHP
 	Illuminance  =>  Illuminance
 	Pressure  =>  Pressure
 	Temp 1  =>  Temp 1
+MTDX62-MB
+	admission_confirmation_delay  =>  admission_confirmation_delay
+	departure_disappearance_delay  =>  departure_disappearance_delay
+	detection_distance  =>  detection_distance
+	detection_shielding_distance  =>  detection_shielding_distance
+	device_status  =>  device_status
+	entrance_distance_reduction  =>  entrance_distance_reduction
+	illuminance  =>  illuminance
+	maintain_sensitivity  =>  maintain_sensitivity
+	presence_status  =>  presence_status
+	target_distance  =>  target_distance
+	trigger_sensitivity  =>  trigger_sensitivity
 Mercury 200.02
 	Battery  =>  Battery
 	Current  =>  Current
@@ -23471,24 +23483,6 @@ mst24_v1
 	speed  =>  speed
 	status  =>  status
 	voltage  =>  voltage
-mtdx62
-	device_id  =>  device_id
-	baud_rate  =>  baud_rate
-	parity  =>  parity
-	proactively_report_data  =>  proactively_report_data
-	light_threshold  =>  light_threshold
-	reporting_interval  =>  reporting_interval
-	presence_status  =>  presence_status
-	illuminance  =>  illuminance
-	target_distance  =>  target_distance
-	device_status  =>  device_status
-	detection_distance  =>  detection_distance
-	detection_shielding_distance  =>  detection_shielding_distance
-	admission_confirmation_delay  =>  admission_confirmation_delay
-	departure_disappearance_delay  =>  departure_disappearance_delay
-	trigger_sensitivity  =>  trigger_sensitivity
-	maintain_sensitivity  =>  maintain_sensitivity
-	entrance_distance_reduction  =>  entrance_distance_reduction
 pulsar-heat
 	Delta temperature  =>  Delta temperature
 	Device temperature  =>  Device temperature
