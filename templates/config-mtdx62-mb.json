@@ -1,7 +1,6 @@
 {
   "title": "mtdx62_title",
   "device_type": "MTDX62-MB",
-//  "group": "g-sensors",
   "device": {
     "name": "MTDX62-MB",
     "id": "mtdx62-mb",
@@ -40,8 +39,7 @@
           9600,
           19200,
           38400,
-          57600,
-          115200
+          57600
         ],
         "enum_titles": [
           "1200",
@@ -50,8 +48,7 @@
           "9600",
           "19200",
           "38400",
-          "57600",
-          "115200"
+          "57600"
         ],
         "default": 9600,
         "group": "settings",
