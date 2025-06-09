@@ -180,7 +180,7 @@
         "type": "value",
         "group": "general",
         "scale": 0.01,
-        "min": 2,
+        "min": 0.6,
         "max": 10,
         "default": 6
       },
