@@ -242,8 +242,8 @@ namespace
 
     void UpdateDeviceChannels(Json::Value& device, PDeviceTemplate deviceTemplate)
     {
-        // Some configs have settings for channels from old templates or mannualy added cahnnels.
-        // Result may contain only such channels and channels decladed in device template.
+        // Some configs have settings for channels from old templates or manually added channels.
+        // Result may contain only manually added channels and channels declared in device template.
         Json::Value channels;
         for (const Json::Value& deviceChannel: device["channels"]) {
             if (deviceChannel.isMember("address") || deviceChannel.isMember("consists_of")) {
@@ -327,10 +327,10 @@ namespace
 
         Json::Value newDev(config);
         ConvertPollIntervalToReadRateLimit(newDev);
-        if (!deviceTemplate->WithSubdevices()) {
-            UpdateDeviceChannels(newDev, deviceTemplate);
-        } else {
+        if (deviceTemplate->WithSubdevices()) {
             UpdateSubDeviceChannels(newDev, deviceTemplate);
+        } else {
+            UpdateDeviceChannels(newDev, deviceTemplate);
         }
 
         // Old configs could have slave_id defined as number not as string.

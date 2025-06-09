@@ -550,9 +550,9 @@ namespace
     //      "defaultProperties": ["device_type", "slave_id"],
     //      "required": ["device_type", "slave_id"]
     //  }
-    Json::Value MakeDeviceTemplateSchema(TDeviceTemplate& deviceTemplate,
-                                         TSerialDeviceFactory& deviceFactory,
-                                         const Json::Value& commonDeviceSchema)
+    Json::Value MakeDeviceWithGroupsTemplateSchema(TDeviceTemplate& deviceTemplate,
+                                                   TSerialDeviceFactory& deviceFactory,
+                                                   const Json::Value& commonDeviceSchema)
     {
         auto protocol = GetProtocolName(deviceTemplate.GetTemplate());
         auto res = commonDeviceSchema;
@@ -807,7 +807,7 @@ Json::Value GenerateSchemaForConfed(TDeviceTemplate& deviceTemplate,
     if (deviceTemplate.WithSubdevices()) {
         schema = MakeDeviceUISchema(deviceTemplate, deviceFactory, commonDeviceSchema);
     } else {
-        schema = MakeDeviceTemplateSchema(deviceTemplate, deviceFactory, commonDeviceSchema);
+        schema = MakeDeviceWithGroupsTemplateSchema(deviceTemplate, deviceFactory, commonDeviceSchema);
     }
     AddUnitTypes(schema);
     AddChannelModes(schema["definitions"]["groupsChannel"]);
