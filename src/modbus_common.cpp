@@ -12,6 +12,7 @@ using namespace BinUtils;
 
 namespace Modbus // modbus protocol declarations
 {
+    size_t InferWriteRequestsCount(const TRegisterConfig& reg);
     size_t InferReadResponsePDUSize(int type, size_t registerCount);
 
     size_t ComposeRawMultipleWriteRequestData(std::vector<uint8_t>& data,
@@ -27,9 +28,6 @@ namespace Modbus // modbus protocol declarations
                                           const Modbus::TRegisterCache& cache,
                                           Modbus::TRegisterCache& tmpCache);
 
-    size_t InferWriteRequestsCount(const TRegisterConfig& reg);
-
-    //! Parses modbus response and stores result
     void ParseReadResponse(const std::vector<uint8_t>& data,
                            Modbus::EFunction function,
                            TModbusRegisterRange& range,
@@ -213,7 +211,7 @@ namespace Modbus // modbus protocol common utilities
     bool TModbusRegisterRange::AddForWrite(PRegister reg)
     {
         auto type = reg->GetConfig()->Type;
-        if (type != REG_COIL && type != REG_HOLDING && type != REG_HOLDING_SINGLE && type != REG_HOLDING_MULTI) {
+        if (!IsHoldingType(type) && type != REG_COIL) {
             return true;
         }
 
@@ -222,7 +220,7 @@ namespace Modbus // modbus protocol common utilities
         }
 
         auto address = GetUint32RegisterAddress(reg->GetConfig()->GetWriteAddress());
-        auto width = reg->GetConfig()->Get16BitWidth();
+        auto width = GetModbusDataWidthIn16BitWords(*reg->GetConfig());
         if (RegisterList().empty()) {
             Start = address;
         } else {
@@ -381,6 +379,9 @@ namespace Modbus // modbus protocol common utilities
                                           Device()->DeviceConfig()->ResponseTimeout,
                                           Device()->DeviceConfig()->FrameTimeout);
             Modbus::ExtractResponseData(function, res.Pdu);
+            for (const auto& item: tmpCache) {
+                cache.insert_or_assign(item.first, item.second);
+            }
         } catch (const Modbus::TModbusExceptionError& err) {
             RethrowSerialDeviceException(err);
         } catch (const Modbus::TMalformedResponseError& err) {
@@ -392,9 +393,6 @@ namespace Modbus // modbus protocol common utilities
             throw TSerialDeviceTransientErrorException(err.what());
         } catch (const Modbus::TErrorBase& err) {
             throw TSerialDeviceTransientErrorException(err.what());
-        }
-        for (const auto& item: tmpCache) {
-            cache.insert_or_assign(item.first, item.second);
         }
     }
 
