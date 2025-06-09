@@ -26,7 +26,7 @@ namespace Modbus // modbus protocol common utilities
      * Cache for Modbus holding registers data.
      *
      * The map key is the register address.
-     * Value byte order corresponds to the register setting.
+     * Value byte order corresponds to the register "byte_order" setting.
      */
     typedef std::map<uint16_t, uint16_t> TRegisterCache;
 

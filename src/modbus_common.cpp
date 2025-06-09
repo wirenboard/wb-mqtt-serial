@@ -385,7 +385,9 @@ namespace Modbus // modbus protocol common utilities
     }
 
     // Composes array of data words filled with string chars according to string register format.
-    // Word order corresponds to the order of string chars.
+    // Word order and corresponds to the order of string chars.
+    // Byte order for "String8" format also corresponds to the order of string chars.
+    // For "String" format every char placed to least significant byte of every word.
     void ComposeStringWriteRequestWords(std::vector<uint16_t>& words,
                                         const TRegisterConfig& reg,
                                         const std::string& str)
@@ -401,6 +403,7 @@ namespace Modbus // modbus protocol common utilities
     // Composes array of data words filled with numeric register value.
     // Uses holding register data cache to fill data that is not affected by the new register value.
     // Word order corresponds to defaul Modbus order (big endian).
+    // Byte order corresponds to value bute order.
     void ComposeNumberWriteRequestWords(std::vector<uint16_t>& words,
                                         const TRegisterConfig& reg,
                                         uint64_t value,
@@ -441,8 +444,8 @@ namespace Modbus // modbus protocol common utilities
         }
     }
 
-    // Composes writing data buffer containing multiple words register data
-    // Word order and byte order corresponds to register settings
+    // Composes writing data buffer containing multiple words register data.
+    // Word order and byte order corresponds to register settings.
     size_t ComposeRawMultipleWriteRequestData(std::vector<uint8_t>& data,
                                               const TRegisterConfig& reg,
                                               const TRegisterValue& value,
@@ -468,7 +471,7 @@ namespace Modbus // modbus protocol common utilities
 
     // Composes writing data buffer containtig single word filled with "partial" register data.
     // Uses holding register data cache to fill data that is not affected by the new register value.
-    // Byte order corresponds to register settings
+    // Byte order corresponds to register settings.
     void ComposeRawSingleWriteRequestData(std::vector<uint8_t>& data,
                                           const TRegisterConfig& reg,
                                           uint16_t value,
@@ -520,7 +523,8 @@ namespace Modbus // modbus protocol common utilities
         return;
     }
 
-    // Extracts numeric register data from ordered data words array.
+    // Extracts numeric register data from data words array, ordered according
+    // to the register word order and byte order settings.
     uint64_t GetNumberRegisterValue(const std::vector<uint16_t>& words, const TRegisterConfig& reg)
     {
         uint64_t value = 0;
@@ -533,7 +537,8 @@ namespace Modbus // modbus protocol common utilities
         return value;
     }
 
-    // Extracts string register data from ordered data words array.
+    // Extracts string register data from data words array, ordered according
+    // to the register word order and byte order settings.
     std::string GetStringRegisterValue(const std::vector<uint16_t>& words, const TRegisterConfig& reg)
     {
         std::string str;
