@@ -143,6 +143,7 @@ void MergeChannelProperties(Json::Value& templateConfig, const Json::Value& user
         "error_value",
         "unsupported_value",
         "word_order",
+        "byte_order",
         "consists_of"});
 
     const std::vector<std::string> subdeviceChannelforbiddenOverrides({

@@ -23,7 +23,13 @@ namespace Modbus // modbus protocol common utilities
         REG_HOLDING_MULTI,
     };
 
-    typedef std::map<int64_t, uint16_t> TRegisterCache;
+    /**
+     * Cache for Modbus holding registers data.
+     *
+     * The map key is the register address.
+     * Value byte order corresponds to the register "byte_order" setting.
+     */
+    typedef std::map<uint16_t, uint16_t> TRegisterCache;
 
     class TModbusRegisterRange: public TRegisterRange
     {
@@ -33,14 +39,13 @@ namespace Modbus // modbus protocol common utilities
 
         bool Add(PRegister reg, std::chrono::milliseconds pollLimit) override;
         bool AddForWrite(PRegister reg);
-        int GetStart() const;
+        uint32_t GetStart() const;
 
         /**
          * @return The count of Modbus registers in the range.
          */
         size_t GetCount() const;
         uint8_t* GetBits();
-        std::vector<uint16_t>& GetWords();
         bool HasHoles() const;
         const std::string& TypeName() const;
         int Type() const;
@@ -73,7 +78,6 @@ namespace Modbus // modbus protocol common utilities
         uint32_t Start;
         size_t Count = 0;
         uint8_t* Bits = 0;
-        std::vector<uint16_t> Words;
         std::chrono::microseconds AverageResponseTime;
         std::chrono::microseconds ResponseTime;
 
