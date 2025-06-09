@@ -385,7 +385,7 @@ namespace Modbus // modbus protocol common utilities
     }
 
     // Composes array of data words filled with string chars according to string register format.
-    // Word order and corresponds to the order of string chars.
+    // Word order corresponds to the order of string chars.
     // Byte order for "String8" format also corresponds to the order of string chars.
     // For "String" format every char placed to least significant byte of every word.
     void ComposeStringWriteRequestWords(std::vector<uint16_t>& words,
@@ -403,7 +403,7 @@ namespace Modbus // modbus protocol common utilities
     // Composes array of data words filled with numeric register value.
     // Uses holding register data cache to fill data that is not affected by the new register value.
     // Word order corresponds to defaul Modbus order (big endian).
-    // Byte order corresponds to value bute order.
+    // Byte order corresponds to value byte order.
     void ComposeNumberWriteRequestWords(std::vector<uint16_t>& words,
                                         const TRegisterConfig& reg,
                                         uint64_t value,
