@@ -95,13 +95,13 @@ It's designed to be used on [Wiren Board](https://wirenboard.com/en/) family of 
 ```jsonc
 {
     // По DeviceType драйвер будет искать в папках с шаблонами описаний устройств
-    "device_type" : "DeviceType",
+    "device_type": "DeviceType",
 
     // отображаемое имя устройства. Публикуется как
     // .../meta/name в MQTT
     // По умолчанию name берется из шаблона и добавляется slave_id, т.е.
     // "name" + " " + "slave_id"
-    "name" : "somename",
+    "name": "somename",
 
     // уникальный идентификатор устройства в MQTT.
     // каждый элемент в devices должен иметь уникальный id
@@ -109,15 +109,15 @@ It's designed to be used on [Wiren Board](https://wirenboard.com/en/) family of 
     // имеют общий префикс /devices/<идентификатор топика>/...
     // также по умолчанию берется из шаблона с добавлением slave_id:
     // "deviceID" + "_" + slave_id
-    "id" : "deviceID",
+    "id": "deviceID",
 
     // идентификатор slave
-    "slave_id" : slaveID,
+    "slave_id": slaveID,
 
     // включить/выключить устройство. В случае задания
     // "enabled": false опрос устройства и запись значений
     // его каналов не происходит. По умолчанию - true.
-    "enabled" : true,
+    "enabled": true,
 
     // если используется шаблон устройства, определения
     // каналов совмещаются. Если имя (name) в определении
@@ -132,7 +132,7 @@ It's designed to be used on [Wiren Board](https://wirenboard.com/en/) family of 
     "channels": [
         {
             // имя канала. topic'и, соответствующие каналу,
-            "name" : "Temp 1",
+            "name": "Temp 1",
             "read_period_ms": 10000
         }
     ]
@@ -386,10 +386,10 @@ It's designed to be used on [Wiren Board](https://wirenboard.com/en/) family of 
                             //     (занимает 4 регистра, начиная с указанного)
                             // "char8" - однобайтовый символ в кодировке ASCII
                             // "string" - строка с настраиваемым количеством символов.
-                            //            Для протокола modbus строки считываются по одному символу на регистр из младшего байта.
+                            //            Для протокола Modbus строки считываются по одному символу на регистр из младшего или старшего байта, в зависимости от значения параметра "byte_order" (для "big_endian" используется младший байт, для "little_endian" - старший).
                             //            При использовании формата string обязательно указывать параметр "string_data_size".
                             //            Строка вычитывается до достижения указанного размера или пока не появится байт 0x00 или 0xFF.
-                            // "string8" - то же самое, что "string", но по два символа на регистр, сначала старший байт, потом - младший
+                            // "string8" - то же самое, что "string", но по два символа на регистр, порядок символов в регистре зависит от значения параметра "byte_order"
                             // "bcd8" -  8-битный BCD (двоично-десятичный код)
                             // "bcd16" - 16-битный BCD (двоично-десятичный код)
                             // "bcd24" - 24-битный BCD (двоично-десятичный код)
@@ -399,9 +399,15 @@ It's designed to be used on [Wiren Board](https://wirenboard.com/en/) family of 
 
                             // Порядок 16-битных слов для каналов, имеющих размер больше 16 бит.
                             // Возможные значения:
-                            //  "big_endian" (по-умолчанию): [0xAA 0xBB] [0xCC 0xDD] => 0xAABBCCDD
+                            //  "big_endian" (по умолчанию): [0xAA 0xBB] [0xCC 0xDD] => 0xAABBCCDD
                             //  "little_endian":  [0xAA 0xBB] [0xCC 0xDD] => 0xCCDDAABB
-                            "word_order" : "big_endian",
+                            "word_order": "big_endian",
+
+                            // Порядок байт в 16-битных словах.
+                            // Возможные значения:
+                            //  "big_endian" (по умолчанию): [0x12 0x34] => 0x1234
+                            //  "little_endian":  [0x12 0x34] => 0x3412
+                            "byte_order": "big_endian",
 
                             // Период чтения данного канала в миллисекундах
                             // Рекомендуется использовать для каналов, данные от которых надо получать с минимальными задержками
@@ -694,7 +700,7 @@ It's designed to be used on [Wiren Board](https://wirenboard.com/en/) family of 
                 "fw": "1.2.3",
 
                 // Тип регистра
-                "reg_type" : "input",
+                "reg_type": "input",
 
                 // Формат регистра
                 "format": "s8",
@@ -956,7 +962,7 @@ It's designed to be used on [Wiren Board](https://wirenboard.com/en/) family of 
 
 1. Успешное выполнение запроса:
    ```
-   RPC Client -> {"params": {"total_timeout": 10000, "response_size": 8, "format": "HEX", "path": "/dev/ttyRS485-2", "baud_rate": 9600, "parity" : "N", "data_bits" : 8, "stop_bits" : 2, "msg": "0A03008000018499"}, "id" : 1}
+   RPC Client -> {"params": {"total_timeout": 10000, "response_size": 8, "format": "HEX", "path": "/dev/ttyRS485-2", "baud_rate": 9600, "parity": "N", "data_bits": 8, "stop_bits": 2, "msg": "0A03008000018499"}, "id": 1}
    RPC Client <- {"error":null,"id":1,"result":{"response":"1605000aff00af1f"}}
    ```
 
@@ -968,19 +974,19 @@ It's designed to be used on [Wiren Board](https://wirenboard.com/en/) family of 
 
 3. Ошибка выполнения запроса (ошибка ввода-вывода)
    ```
-   RPC Client -> {"params": {"total_timeout": 10000, "response_size": 8, "format": "HEX", "path": "/dev/ttyRS485-2", "baud_rate": 9600, "parity" : "N", "data_bits" : 8, "stop_bits" : 2, "msg": "0A03008000018499"}, "id" : 1}
+   RPC Client -> {"params": {"total_timeout": 10000, "response_size": 8, "format": "HEX", "path": "/dev/ttyRS485-2", "baud_rate": 9600, "parity": "N", "data_bits": 8, "stop_bits": 2, "msg": "0A03008000018499"}, "id": 1}
    RPC Client <- {"error":{"code":-32000,"data":"Port IO error: request timed out","message":"Server error"},"id":1,"result":null}
    ```
 
 4. Ошибка выполнения запроса (запрос в несуществующий порт)
    ```
-   RPC Client -> {"params": {"total_timeout": 10000, "response_size": 8, "format": "HEX", "path": "/dev/ttyRS485-31337", "baud_rate": 9600, "parity" : "N", "data_bits" : 8, "stop_bits" : 2, "msg": "0A03008000018499"}, "id" : 1}
+   RPC Client -> {"params": {"total_timeout": 10000, "response_size": 8, "format": "HEX", "path": "/dev/ttyRS485-31337", "baud_rate": 9600, "parity": "N", "data_bits": 8, "stop_bits": 2, "msg": "0A03008000018499"}, "id": 1}
    RPC Client -> {"error":{"code":-32000,"data":"Requested port doesn't exist","message":"Server error"},"id":1,"result":null}
    ```
 
 5. Таймаут выполнения запроса (слишком малое значение таймаута)
    ```
-   RPC Client -> {"params": {"response_size": 8, "format": "HEX", "path": "/dev/ttyRS485-2", "baud_rate": 9600, "parity" : "N", "data_bits" : 8, "stop_bits" : 2, "msg": "0A03008000018499", "total_timeout": 10}, "id" : 1}
+   RPC Client -> {"params": {"response_size": 8, "format": "HEX", "path": "/dev/ttyRS485-2", "baud_rate": 9600, "parity": "N", "data_bits": 8, "stop_bits": 2, "msg": "0A03008000018499", "total_timeout": 10}, "id": 1}
    RPC Client <- {"error":{"code":-32600,"data":"Request handler is not responding @ src/rpc_handler.cpp:179","message":"Request timeout"},"id":1,"result":null}
    ```
 
@@ -1148,7 +1154,7 @@ It's designed to be used on [Wiren Board](https://wirenboard.com/en/) family of 
 ```json
 {
     // список найденных устройств
-    "devices" : [
+    "devices": [
         {
             // серийный номер устройства
             "sn": "13453ghh",
