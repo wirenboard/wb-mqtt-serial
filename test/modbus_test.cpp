@@ -1029,6 +1029,21 @@ TEST_F(TModbusContinuousRegisterReadTest, NotSupported)
     }
 }
 
+class TModbusContinuousRegisterWriteTest: public TSerialDeviceIntegrationTest, public TModbusExpectations
+{
+protected:
+    const char* ConfigPath() const override
+    {
+        return "configs/config-modbus-continuous-write-test.json";
+    }
+};
+
+TEST_F(TModbusContinuousRegisterWriteTest, SetupItems)
+{
+    EnqueueContinuousWriteResponse();
+    SerialDriver->LoopOnce();
+}
+
 class TModbusLittleEndianRegisterTest: public TSerialDeviceIntegrationTest, public TModbusExpectations
 {
 protected:
