@@ -370,7 +370,6 @@ namespace Modbus // modbus protocol common utilities
             }
             data.insert(data.end(), buffer.begin(), buffer.end());
         }
-
         try {
             auto function = GetFunctionImpl(Type(), OperationType::OP_WRITE, TypeName(), IsPacking(*this));
             auto pdu = Modbus::MakePDU(function, GetStart() + shift, Count, data);
@@ -393,6 +392,9 @@ namespace Modbus // modbus protocol common utilities
             throw TSerialDeviceTransientErrorException(err.what());
         } catch (const Modbus::TErrorBase& err) {
             throw TSerialDeviceTransientErrorException(err.what());
+        }
+        for (const auto& item: tmpCache) {
+            cache.insert_or_assign(item.first, item.second);
         }
     }
 
@@ -852,10 +854,18 @@ namespace Modbus // modbus protocol common utilities
         }
     }
 
-    // void WarnFailedRegisterSetup(const PDeviceSetupItem& item, const char* msg)
-    // {
-    //     LOG(Warn) << "failed to write: " << item->Register->ToString() << ": " << msg;
-    // }
+    std::string SetupItemInitString(PDeviceSetupItem item)
+    {
+        std::stringstream stream;
+        stream << "Init setup register \"" << item->Name << "\": " << item->Register->ToString() << " <-- "
+               << item->HumanReadableValue;
+        if (item->RawValue.GetType() == TRegisterValue::ValueType::String) {
+            stream << " (\"" << item->RawValue << "\")";
+        } else {
+            stream << " (0x" << std::hex << item->RawValue << ")";
+        }
+        return stream.str();
+    }
 
     void WriteSetupRegisters(Modbus::IModbusTraits& traits,
                              TPort& port,
@@ -878,7 +888,7 @@ namespace Modbus // modbus protocol common utilities
             while (index < setupItems.size() && range.AddForWrite(setupItems[index]->Register)) {
                 const auto& item = setupItems[index];
                 item->Register->SetValue(item->RawValue);
-                // TODO: add "init" log here?
+                LOG(Info) << SetupItemInitString(item);
                 ++index;
             }
             try {
@@ -888,34 +898,6 @@ namespace Modbus // modbus protocol common utilities
                 LOG(Warn) << "Failed to write setup registers: " << e.what();
             }
         }
-        // for (const auto& item: setupItems) {
-        //     try {
-        //         WriteRegister(traits,
-        //                       port,
-        //                       slaveId,
-        //                       *item->Register->GetConfig(),
-        //                       item->RawValue,
-        //                       cache,
-        //                       requestDelay,
-        //                       responseTimeout,
-        //                       frameTimeout,
-        //                       shift);
-
-        //         std::stringstream ss;
-        //         ss << "Init: " << item->Name << ": setup register " << item->Register->ToString() << " <-- "
-        //            << item->HumanReadableValue;
-
-        //         if (item->RawValue.GetType() == TRegisterValue::ValueType::String) {
-        //             ss << " ('" << item->RawValue << "')";
-        //         } else {
-        //             ss << " (0x" << std::hex << item->RawValue << ")";
-        //             // TODO: More verbose exception
-        //         }
-        //         LOG(Info) << ss.str();
-        //     } catch (const TSerialDevicePermanentRegisterException& e) {
-        //         WarnFailedRegisterSetup(item, e.what());
-        //     }
-        // }
         if (!setupItems.empty() && setupItems.front()->Register->Device()) {
             setupItems.front()->Register->Device()->SetTransferResult(true);
         }
