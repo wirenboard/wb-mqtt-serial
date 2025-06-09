@@ -1,0 +1,59 @@
+{
+  "ports": [
+    {
+      "path" : "/dev/ttyNSC0",
+      "baud_rate": 9600,
+      "parity": "N",
+      "data_bits": 8,
+      "stop_bits": 1,
+      "enabled": true,
+      "devices" : [
+        {
+          "slave_id": 1,
+          "enabled": true,
+          "name": "Modbus-sample",
+          "id": "modbus-sample",
+          "frame_timeout_ms": 0,
+          "response_timeout_ms": 1,
+          "max_write_registers": 0,
+          "setup": [
+            {
+                "title": "Holding 1",
+                "address": 10,
+                "value": 1
+            },
+            {
+                "title": "Holding 2",
+                "address": 11,
+                "format": "u64",
+                "value": 2
+            },
+            {
+                "title": "Holding 3",
+                "address": 15,
+                "format": "u24",
+                "value": 3
+            },
+            {
+                "title": "Holding 1",
+                "address": 20,
+                "value": "0xA"
+            },
+            {
+                "title": "Holding 2",
+                "address": 21,
+                "value": "0xB"
+            }
+          ],
+          "channels": [
+            {
+              "name" : "Ch 1",
+              "reg_type" : "holding",
+              "address" : 33
+            }
+          ]
+        }
+      ]
+    }
+  ]
+}

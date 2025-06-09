@@ -1,3 +1,9 @@
+wb-mqtt-serial (2.171.0) stable; urgency=medium
+
+  * Add register range write feature for Modbus registers
+
+ -- Ilya Titov <ilya.titov@wirenboard.com>  Mon, 09 Jun 2025 14:34:27 +0300
+
 wb-mqtt-serial (2.170.0) stable; urgency=medium
 
   * Add byte order device template option for Modbus registers

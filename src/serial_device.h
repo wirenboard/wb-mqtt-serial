@@ -122,6 +122,7 @@ struct TDeviceConfig
     int MaxBitHole = 0;
     int MaxReadRegisters = 1;
     size_t MinReadRegisters = 1;
+    int MaxWriteRegisters = 1;
     int Stride = 0;
     int Shift = 0;
     int DeviceMaxFailCycles = DEFAULT_DEVICE_FAIL_CYCLES;
