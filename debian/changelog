@@ -2,6 +2,8 @@ wb-mqtt-serial (2.170.0) stable; urgency=medium
 
   * Add WB-UPS v.3 template
 
+ -- Pavel Gasheev <pavel.gasheev@wirenboard.com>  Mon, 09 Jun 2025 12:10:49 +0300
+
 wb-mqtt-serial (2.169.1) stable; urgency=medium
 
   * Add separate device signature for WB-MRM2-mini/NC
