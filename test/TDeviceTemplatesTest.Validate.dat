@@ -24531,13 +24531,10 @@ wb_ups_v3
 	Discharger Vbus Real  =>  discharger_vbus_real
 	Discharger Voltage Setpoint  =>  discharger_voltage_setpoint
 	FW Version  =>  fw_version
-	Heater Force Control  =>  heater_force_control
-	Heater Force Control State  =>  heater_force_control_state
-	Heater State  =>  heater_state
-	Input Current for Charging  =>  input_current_for_charging
+	Input Current For Charging  =>  input_current_for_charging
 	Input Voltage  =>  input_voltage
-	Load Control in Backup Mode  =>  load_control_in_backup_mode
-	Load Current when Powered from Battery  =>  load_current_when_powered_from_battery
+	Load Control In Backup Mode  =>  load_control_in_backup_mode
+	Load Current When Powered From Battery  =>  load_current_when_powered_from_battery
 	MCU Temperature  =>  mcu_temperature
 	MCU Voltage  =>  mcu_voltage
 	Output Voltage  =>  output_voltage
