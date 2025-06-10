@@ -1,3 +1,10 @@
+wb-mqtt-serial (2.171.0) stable; urgency=medium
+
+  * Update config/Load RPC reply format
+  * Update config/GetSchema RPC reply format
+
+ -- Ilya Titov <ilya.titov@wirenboard.com>  Tue, 03 Jun 2025 07:52:50 +0300
+
 wb-mqtt-serial (2.170.0) stable; urgency=medium
 
   * Add byte order device template option for Modbus registers
