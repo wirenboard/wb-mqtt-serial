@@ -131,7 +131,7 @@ namespace Modbus // modbus protocol common utilities
     void WriteSetupRegisters(IModbusTraits& traits,
                              TPort& port,
                              uint8_t slaveId,
-                             std::vector<PDeviceSetupItem> setupItems,
+                             const TDeviceSetupItems& setupItems,
                              TRegisterCache& cache,
                              std::chrono::microseconds requestDelay,
                              std::chrono::milliseconds responseTimeout,

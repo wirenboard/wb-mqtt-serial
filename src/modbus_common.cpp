@@ -1,7 +1,6 @@
 #include "modbus_common.h"
 #include "bin_utils.h"
 #include "log.h"
-#include "pollable_device.h"
 #include "serial_device.h"
 #include "wb_registers.h"
 
@@ -852,42 +851,28 @@ namespace Modbus // modbus protocol common utilities
         }
     }
 
-    std::string SetupItemInitString(PDeviceSetupItem item)
-    {
-        std::stringstream stream;
-        stream << "Init setup register \"" << item->Name << "\": " << item->Register->ToString() << " <-- "
-               << item->HumanReadableValue;
-        if (item->RawValue.GetType() == TRegisterValue::ValueType::String) {
-            stream << " (\"" << item->RawValue << "\")";
-        } else {
-            stream << " (0x" << std::hex << item->RawValue << ")";
-        }
-        return stream.str();
-    }
-
     void WriteSetupRegisters(Modbus::IModbusTraits& traits,
                              TPort& port,
                              uint8_t slaveId,
-                             std::vector<PDeviceSetupItem> setupItems,
+                             const TDeviceSetupItems& setupItems,
                              Modbus::TRegisterCache& cache,
                              std::chrono::microseconds requestDelay,
                              std::chrono::milliseconds responseTimeout,
                              std::chrono::milliseconds frameTimeout,
                              int shift)
     {
-        TRegisterComparePredicate compare;
-        std::sort(setupItems.begin(), setupItems.end(), [compare](PDeviceSetupItem a, PDeviceSetupItem b) {
-            return compare(b->Register, a->Register);
-        });
-
-        size_t index = 0;
-        while (index < setupItems.size()) {
+        auto it = setupItems.begin();
+        while (it != setupItems.end()) {
             TModbusRegisterRange range(std::chrono::microseconds::max());
-            while (index < setupItems.size() && range.AddForWrite(setupItems[index]->Register)) {
-                const auto& item = setupItems[index];
-                item->Register->SetValue(item->RawValue);
-                LOG(Info) << SetupItemInitString(item);
-                ++index;
+            while (it != setupItems.end()) {
+                const auto& item = *it;
+                auto reg = std::make_shared<TRegister>(item->Device, item->RegisterConfig);
+                if (!range.AddForWrite(reg)) {
+                    break;
+                }
+                LOG(Info) << item->ToString();
+                reg->SetValue(item->RawValue);
+                ++it;
             }
             try {
                 Modbus::TRegisterCache cache;
@@ -896,8 +881,9 @@ namespace Modbus // modbus protocol common utilities
                 LOG(Warn) << "Failed to write setup registers: " << e.what();
             }
         }
-        if (!setupItems.empty() && setupItems.front()->Register->Device()) {
-            setupItems.front()->Register->Device()->SetTransferResult(true);
+        it = setupItems.begin();
+        if (!setupItems.empty() && (*it)->Device) {
+            (*it)->Device->SetTransferResult(true);
         }
     }
 

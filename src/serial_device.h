@@ -137,24 +137,36 @@ typedef std::shared_ptr<TDeviceConfig> PDeviceConfig;
 class IProtocol;
 typedef IProtocol* PProtocol;
 
-struct TDeviceSetupItem
+class TDeviceSetupItem
 {
-    TDeviceSetupItem(PDeviceSetupItemConfig config, PRegister reg)
+public:
+    TDeviceSetupItem(PDeviceSetupItemConfig config, PSerialDevice device, PRegisterConfig registerConfig)
         : Name(config->GetName()),
           ParameterId(config->GetParameterId()),
           RawValue(config->GetRawValue()),
           HumanReadableValue(config->GetValue()),
-          Register(reg)
+          Device(device),
+          RegisterConfig(registerConfig)
     {}
 
     std::string Name;
     std::string ParameterId;
     TRegisterValue RawValue;
     std::string HumanReadableValue;
-    PRegister Register;
+    PSerialDevice Device;
+    PRegisterConfig RegisterConfig;
+
+    std::string ToString();
 };
 
 typedef std::shared_ptr<TDeviceSetupItem> PDeviceSetupItem;
+
+struct TDeviceSetupItemComparePredicate
+{
+    bool operator()(const PDeviceSetupItem& a, const PDeviceSetupItem& b) const;
+};
+
+typedef std::set<PDeviceSetupItem, TDeviceSetupItemComparePredicate> TDeviceSetupItems;
 
 struct TUInt32SlaveId
 {
@@ -249,7 +261,7 @@ public:
     void SetSnRegister(PRegisterConfig regConfig);
 
     void AddSetupItem(PDeviceSetupItemConfig item);
-    const std::vector<PDeviceSetupItem>& GetSetupItems() const;
+    const TDeviceSetupItems& GetSetupItems() const;
 
 protected:
     virtual void PrepareImpl();
@@ -272,7 +284,7 @@ private:
 
     // map key is setup item address
     std::unordered_map<std::string, PDeviceSetupItem> SetupItemsByAddress;
-    std::vector<PDeviceSetupItem> SetupItems;
+    TDeviceSetupItems SetupItems;
 
     void SetConnectionState(TDeviceConnectionState state);
 };
