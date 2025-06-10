@@ -1,3 +1,9 @@
+wb-mqtt-serial (2.171.0) stable; urgency=medium
+
+  * Add a template for MTD062-MB and MTD262-MB modbus microwave presence sensors
+
+ -- Alexander Getman <alexander.getman@wirenboard.com>  Mon, 09 Jun 2025 16:33:34 +0300
+
 wb-mqtt-serial (2.170.0) stable; urgency=medium
 
   * Add byte order device template option for Modbus registers
