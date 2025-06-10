@@ -1047,10 +1047,7 @@ PDeviceConfig LoadDeviceConfig(const Json::Value& dev, PProtocol protocol, const
     Get(dev, "name", res->Name);
 
     if (dev.isMember("slave_id")) {
-        if (dev["slave_id"].isString())
-            res->SlaveId = dev["slave_id"].asString();
-        else // legacy
-            res->SlaveId = std::to_string(dev["slave_id"].asInt());
+        res->SlaveId = dev["slave_id"].asString();
     }
 
     LoadCommonDeviceParameters(*res, dev);
