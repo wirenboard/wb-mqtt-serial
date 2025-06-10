@@ -101,7 +101,8 @@
         "max": 4200,
         "default": 0,
         "group": "settings",
-        "order": 5
+        "order": 5,
+        "description": "0 to turn off"
       },
       {
         "title": "reporting_interval",
@@ -314,8 +315,9 @@
         "proactively_report_data": "Упреждающий опрос",
         "reporting": "использовать",
         "not reporting": "не использовать",
-        "light_threshold": "Порог освещения (0-выкл)",
-        "reporting_interval": "Период отчетов"
+        "light_threshold": "Порог освещенности",
+        "reporting_interval": "Период отчетов",
+        "0 to turn off": "0 - выкл"
       }
     }
   }
