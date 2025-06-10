@@ -690,6 +690,26 @@ void CheckDuplicateDeviceIds(const THandlerConfig& handlerConfig)
     }
 }
 
+void FixOldConfigFormat(Json::Value& config)
+{
+    for (auto& port: config["ports"]) {
+        for (auto& device: port["devices"]) {
+            if (device.isMember("slave_id")) {
+                // Old configs could have slave_id defined as number not as string.
+                // Convert numbers to strings.
+                if (device["slave_id"].isNumeric()) {
+                    device["slave_id"] = device["slave_id"].asString();
+                    continue;
+                }
+                // Broadcast address in old configs could be empty string. Remove it.
+                if (device["slave_id"].isString() && device["slave_id"].asString().empty()) {
+                    device.removeMember("slave_id");
+                }
+            }
+        }
+    }
+}
+
 PHandlerConfig LoadConfig(const std::string& configFileName,
                           TSerialDeviceFactory& deviceFactory,
                           const Json::Value& commonDeviceSchema,
@@ -701,6 +721,7 @@ PHandlerConfig LoadConfig(const std::string& configFileName,
 {
     PHandlerConfig handlerConfig(new THandlerConfig);
     Json::Value Root(Parse(configFileName));
+    FixOldConfigFormat(Root);
 
     try {
         ValidateConfig(Root, deviceFactory, commonDeviceSchema, portsSchema, templates, protocolSchemas);

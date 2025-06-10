@@ -7,23 +7,15 @@
       "properties": {
         "slave_id": {
           "propertyOrder": 2,
-          "oneOf": [
-            {
-              "title": "Slave id of the device",
-              "type": "string",
-              "pattern": "^(0x[A-Fa-f\\d]+|\\d+|(0x[A-Fa-f\\d]+|\\d+):(0x[A-Fa-f\\d]+|\\d+))$",
-              "options": {
-                "inputAttributes": {
-                  "placeholder":  "decimal (e.g. 123) or hex (e.g. 0xAF)"
-                },
-                "patternmessage": "Should be decimal or hex"
-              }
+          "title": "Slave id of the device",
+          "type": "string",
+          "pattern": "^(0x[A-Fa-f\\d]+|\\d+|(0x[A-Fa-f\\d]+|\\d+):(0x[A-Fa-f\\d]+|\\d+))$",
+          "options": {
+            "inputAttributes": {
+              "placeholder":  "decimal (e.g. 123) or hex (e.g. 0xAF)"
             },
-            {
-              "type": "integer"
-            }
-          ],
-          "format": "wb-first-oneof"
+            "patternmessage": "Should be decimal or hex"
+          }
         }
       }
     },
@@ -31,30 +23,22 @@
       "properties": {
         "slave_id": {
           "propertyOrder": 2,
-          "oneOf": [
-            {
-              "title": "Slave id of the device or broadcast mode",
-              "type": "string",
-              "pattern": "^(0x[A-Fa-f\\d]+|\\d+)$",
-              "options": {
-                "show_opt_in": true,
-                "wb": {
-                    "editor_title": "decimal or hex slave id",
-                    "undefined_title": "broadcast",
-                    "undefined_message" : "broadcast_description"
-                },
-                "inputAttributes": {
-                  "placeholder":  "decimal (e.g. 123) or hex (e.g. 0xAF)"
-                },
-                "patternmessage": "Should be decimal or hex"
-              },
-              "format" : "wb-optional"
+          "title": "Slave id of the device or broadcast mode",
+          "type": "string",
+          "pattern": "^(0x[A-Fa-f\\d]+|\\d+)$",
+          "options": {
+            "show_opt_in": true,
+            "wb": {
+                "editor_title": "decimal or hex slave id",
+                "undefined_title": "broadcast",
+                "undefined_message" : "broadcast_description"
             },
-            {
-              "type": "integer"
-            }
-          ],
-          "format": "wb-first-oneof"
+            "inputAttributes": {
+              "placeholder":  "decimal (e.g. 123) or hex (e.g. 0xAF)"
+            },
+            "patternmessage": "Should be decimal or hex"
+          },
+          "format" : "wb-optional"
         }
       }
     },
