@@ -11,22 +11,9 @@ using namespace BinUtils;
 
 namespace Modbus // modbus protocol declarations
 {
-    size_t InferWriteRequestsCount(const TRegisterConfig& reg);
     size_t InferReadResponsePDUSize(int type, size_t registerCount);
 
-    size_t ComposeRawMultipleWriteRequestData(std::vector<uint8_t>& data,
-                                              const TRegisterConfig& reg,
-                                              const TRegisterValue& value,
-                                              const Modbus::TRegisterCache& cache,
-                                              Modbus::TRegisterCache& tmpCache);
-
-    void ComposeRawSingleWriteRequestData(std::vector<uint8_t>& data,
-                                          const TRegisterConfig& reg,
-                                          uint16_t value,
-                                          uint8_t wordIndex,
-                                          const Modbus::TRegisterCache& cache,
-                                          Modbus::TRegisterCache& tmpCache);
-
+    //! Parses modbus response and stores result
     void ParseReadResponse(const std::vector<uint8_t>& data,
                            Modbus::EFunction function,
                            TModbusRegisterRange& range,
