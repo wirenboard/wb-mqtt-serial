@@ -207,51 +207,6 @@ namespace Modbus // modbus protocol common utilities
         return false;
     }
 
-    bool TModbusRegisterRange::AddForWrite(PRegister reg)
-    {
-        auto type = reg->GetConfig()->Type;
-        if (!IsHoldingType(type) && type != REG_COIL) {
-            return true;
-        }
-
-        if (reg->GetAvailable() == TRegisterAvailability::UNAVAILABLE) {
-            return true;
-        }
-
-        auto address = GetUint32RegisterAddress(reg->GetConfig()->GetWriteAddress());
-        auto width = GetModbusDataWidthIn16BitWords(*reg->GetConfig());
-        if (RegisterList().empty()) {
-            Start = address;
-        } else {
-            if (HasOtherDeviceAndType(reg)) {
-                return false;
-            }
-
-            // Can't add register before first register in the range
-            if (Start > address) {
-                return false;
-            }
-
-            // Write range can't contain holes
-            if (Start + Count < address) {
-                return false;
-            }
-
-            const auto& config = reg->Device()->DeviceConfig();
-            auto maxRegs = MAX_WRITE_REGISTERS;
-            if (config->MaxWriteRegisters > 0 && config->MaxWriteRegisters < maxRegs) {
-                maxRegs = config->MaxWriteRegisters;
-            }
-            if (Count + width > static_cast<size_t>(maxRegs)) {
-                return false;
-            }
-        }
-
-        RegisterList().push_back(reg);
-        Count += width;
-        return true;
-    }
-
     uint8_t* TModbusRegisterRange::GetBits()
     {
         if (!IsSingleBitType(Type()))
@@ -325,62 +280,6 @@ namespace Modbus // modbus protocol common utilities
                                           Device()->DeviceConfig()->FrameTimeout);
             ResponseTime = res.ResponseTime;
             ParseReadResponse(res.Pdu, function, *this, cache);
-        } catch (const Modbus::TModbusExceptionError& err) {
-            RethrowSerialDeviceException(err);
-        } catch (const Modbus::TMalformedResponseError& err) {
-            try {
-                port.SkipNoise();
-            } catch (const std::exception& e) {
-                LOG(Warn) << "SkipNoise failed: " << e.what();
-            }
-            throw TSerialDeviceTransientErrorException(err.what());
-        } catch (const Modbus::TErrorBase& err) {
-            throw TSerialDeviceTransientErrorException(err.what());
-        }
-    }
-
-    void TModbusRegisterRange::WriteRange(IModbusTraits& traits,
-                                          TPort& port,
-                                          uint8_t slaveId,
-                                          int shift,
-                                          Modbus::TRegisterCache& cache)
-    {
-        Modbus::TRegisterCache tmpCache;
-        std::vector<uint8_t> data;
-        for (auto reg: RegisterList()) {
-            std::vector<uint8_t> buffer;
-            auto config = reg->GetConfig();
-            if (IsPacking(*config)) {
-                ComposeRawMultipleWriteRequestData(buffer, *config, reg->GetValue(), cache, tmpCache);
-            } else {
-                auto requestsCount = InferWriteRequestsCount(*config);
-                auto val = reg->GetValue().Get<uint64_t>();
-                for (size_t i = 0; i < requestsCount; ++i) {
-                    ComposeRawSingleWriteRequestData(buffer,
-                                                     *config,
-                                                     static_cast<uint16_t>(val),
-                                                     requestsCount - i - 1,
-                                                     cache,
-                                                     tmpCache);
-                    val >>= 16;
-                }
-            }
-            data.insert(data.end(), buffer.begin(), buffer.end());
-        }
-        try {
-            auto function = GetFunctionImpl(Type(), OperationType::OP_WRITE, TypeName(), IsPacking(*this));
-            auto pdu = Modbus::MakePDU(function, GetStart() + shift, Count, data);
-            port.SleepSinceLastInteraction(Device()->DeviceConfig()->RequestDelay);
-            auto res = traits.Transaction(port,
-                                          slaveId,
-                                          pdu,
-                                          Modbus::CalcResponsePDUSize(function, Count),
-                                          Device()->DeviceConfig()->ResponseTimeout,
-                                          Device()->DeviceConfig()->FrameTimeout);
-            Modbus::ExtractResponseData(function, res.Pdu);
-            for (const auto& item: tmpCache) {
-                cache.insert_or_assign(item.first, item.second);
-            }
         } catch (const Modbus::TModbusExceptionError& err) {
             RethrowSerialDeviceException(err);
         } catch (const Modbus::TMalformedResponseError& err) {
@@ -850,6 +749,64 @@ namespace Modbus // modbus protocol common utilities
             ProcessRangeException(range, e.what());
         }
     }
+    void WriteMultipleSetupRegisters(Modbus::IModbusTraits& traits,
+                                     TPort& port,
+                                     uint8_t slaveId,
+                                     TDeviceSetupItems::iterator& startIt,
+                                     const TDeviceSetupItems::iterator& endIt,
+                                     size_t maxRegs,
+                                     Modbus::TRegisterCache& cache,
+                                     std::chrono::microseconds requestDelay,
+                                     std::chrono::milliseconds responseTimeout,
+                                     std::chrono::milliseconds frameTimeout,
+                                     int shift)
+    {
+        Modbus::TRegisterCache tmpCache;
+        std::vector<uint8_t> data;
+        PDeviceSetupItem last = nullptr;
+        auto start = GetUint32RegisterAddress((*startIt)->RegisterConfig->GetAddress());
+        auto count = 0;
+        while (startIt != endIt) {
+            auto item = *startIt;
+            auto address = GetUint32RegisterAddress(item->RegisterConfig->GetAddress());
+            if (last) {
+                auto lastAddress = GetUint32RegisterAddress(last->RegisterConfig->GetAddress());
+                auto lastWidth = GetModbusDataWidthIn16BitWords(*last->RegisterConfig);
+                if (item->Device != last->Device || address != lastAddress + lastWidth) {
+                    break;
+                }
+            }
+
+            auto width = GetModbusDataWidthIn16BitWords(*item->RegisterConfig);
+            if (count + width > static_cast<size_t>(maxRegs)) {
+                break;
+            }
+
+            LOG(Info) << item->ToString();
+
+            std::vector<uint8_t> buffer;
+            ComposeRawMultipleWriteRequestData(buffer, *item->RegisterConfig, item->RawValue, cache, tmpCache);
+            data.insert(data.end(), buffer.begin(), buffer.end());
+
+            count += width;
+            last = item;
+            ++startIt;
+        }
+        try {
+            auto function = count > 1 ? FN_WRITE_MULTIPLE_REGISTERS : FN_WRITE_SINGLE_REGISTER;
+            WriteTransaction(traits,
+                             port,
+                             slaveId,
+                             function,
+                             Modbus::CalcResponsePDUSize(function, count),
+                             Modbus::MakePDU(function, start + shift, count, data),
+                             requestDelay,
+                             responseTimeout,
+                             frameTimeout);
+        } catch (const TSerialDevicePermanentRegisterException& e) {
+            LOG(Warn) << "Failed to write " << count << "setup items: " << e.what();
+        }
+    }
 
     void WriteSetupRegisters(Modbus::IModbusTraits& traits,
                              TPort& port,
@@ -863,27 +820,49 @@ namespace Modbus // modbus protocol common utilities
     {
         auto it = setupItems.begin();
         while (it != setupItems.end()) {
-            TModbusRegisterRange range(std::chrono::microseconds::max());
-            while (it != setupItems.end()) {
-                const auto& item = *it;
-                auto reg = std::make_shared<TRegister>(item->Device, item->RegisterConfig);
-                if (!range.AddForWrite(reg)) {
-                    break;
+            auto item = *it;
+            auto config = item->Device->DeviceConfig();
+            auto maxRegs = MAX_WRITE_REGISTERS;
+            if (config->MaxWriteRegisters > 0 && config->MaxWriteRegisters < maxRegs) {
+                maxRegs = config->MaxWriteRegisters;
+            }
+            auto type = item->RegisterConfig->Type;
+            if (maxRegs > 1 && (type == REG_HOLDING || type == REG_HOLDING_MULTI)) {
+                WriteMultipleSetupRegisters(traits,
+                                            port,
+                                            slaveId,
+                                            it,
+                                            setupItems.end(),
+                                            maxRegs,
+                                            cache,
+                                            requestDelay,
+                                            responseTimeout,
+                                            frameTimeout,
+                                            shift);
+            } else {
+                try {
+                    WriteRegister(traits,
+                                  port,
+                                  slaveId,
+                                  *item->RegisterConfig,
+                                  item->RawValue,
+                                  cache,
+                                  requestDelay,
+                                  responseTimeout,
+                                  frameTimeout,
+                                  shift);
+                    LOG(Info) << item->ToString();
+                } catch (const TSerialDevicePermanentRegisterException& e) {
+                    LOG(Warn) << "Failed to write setup item \"" << item->Name << "\": " << e.what();
                 }
-                LOG(Info) << item->ToString();
-                reg->SetValue(item->RawValue);
                 ++it;
             }
-            try {
-                Modbus::TRegisterCache cache;
-                range.WriteRange(traits, port, slaveId, shift, cache);
-            } catch (const TSerialDevicePermanentRegisterException& e) {
-                LOG(Warn) << "Failed to write setup registers: " << e.what();
-            }
         }
-        it = setupItems.begin();
-        if (!setupItems.empty() && (*it)->Device) {
-            (*it)->Device->SetTransferResult(true);
+        if (!setupItems.empty()) {
+            auto item = *setupItems.begin();
+            if (item->Device) {
+                item->Device->SetTransferResult(true);
+            }
         }
     }
 

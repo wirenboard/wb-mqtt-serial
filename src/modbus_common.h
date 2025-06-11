@@ -38,7 +38,7 @@ namespace Modbus // modbus protocol common utilities
         ~TModbusRegisterRange();
 
         bool Add(PRegister reg, std::chrono::milliseconds pollLimit) override;
-        bool AddForWrite(PRegister reg);
+
         uint32_t GetStart() const;
 
         /**
@@ -60,16 +60,6 @@ namespace Modbus // modbus protocol common utilities
          * All exceptions are inherited from TSerialDeviceException.
          */
         void ReadRange(IModbusTraits& traits, TPort& port, uint8_t slaveId, int shift, Modbus::TRegisterCache& cache);
-
-        /**
-         * Writes selected ragister range.
-         *
-         * Throws TSerialDevicePermanentRegisterException if Modbus "Illegal" exception code (1/2/3) received.
-         * Throws TSerialDeviceTransientErrorException on other errors.
-         *
-         * All exceptions are inherited from TSerialDeviceException.
-         */
-        void WriteRange(IModbusTraits& traits, TPort& port, uint8_t slaveId, int shift, Modbus::TRegisterCache& cache);
 
         std::chrono::microseconds GetResponseTime() const;
 
