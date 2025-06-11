@@ -765,7 +765,7 @@ namespace Modbus // modbus protocol common utilities
             }
 
             auto width = GetModbusDataWidthIn16BitWords(*item->RegisterConfig);
-            if (count + width > static_cast<size_t>(maxRegs)) {
+            if (count + width > maxRegs) {
                 break;
             }
 
@@ -792,6 +792,10 @@ namespace Modbus // modbus protocol common utilities
                              frameTimeout);
         } catch (const TSerialDevicePermanentRegisterException& e) {
             LOG(Warn) << "Failed to write " << count << "setup items: " << e.what();
+            return;
+        }
+        for (const auto& item: tmpCache) {
+            cache.insert_or_assign(item.first, item.second);
         }
     }
 
