@@ -1488,6 +1488,7 @@
       "IEEE754 64-bit float (double)": "64-битное число с плавающей запятой (IEEE754)",
       "8-bit ASCII char": "8-битный символ ASCII",
       "16-bit Word Order": "Порядок 16-битных слов",
+      "16-bit Word Byte Order": "Порядок байтов в 16-битных словах",
       "bits": "биты",
       "address:offset:bitwidth": "адрес:смещение:число бит",
       "Address should be decimal or hex, offset and bitwidth separated by ':'": "Адрес должен быть задан в десятичном или шестнадцатеричном виде. Смещение и число бит отделены двоеточием",
