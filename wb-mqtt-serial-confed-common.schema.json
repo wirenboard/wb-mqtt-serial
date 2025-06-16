@@ -154,6 +154,13 @@
           "default": 1,
           "propertyOrder": 106
         },
+        "max_write_registers": {
+          "type": "integer",
+          "title": "Maximum number of registers in a single bulk write request",
+          "minimum": 0,
+          "default": 1,
+          "propertyOrder": 107
+        },
         "guard_interval_us": {
           "type": "integer",
           "title": "Additional delay before each writing to port (us)",
@@ -1409,6 +1416,7 @@
       "Max dummy read bit count": "Максимальное число считываемых промежуточных бит",
       "Maximum number of registers in a single bulk read request": "Максимальное число регистров, считываемых за один запрос",
       "Minimum number of registers in a single bulk read request": "Минимальное число регистров, считываемых за один запрос",
+      "Maximum number of registers in a single bulk write request": "Максимальное число регистров, записываемых за один запрос",
       "Additional delay before each writing to port (us)": "Дополнительная задержка перед записью в порт (мкс)",
       "Frame timeout (ms)": "Задержка между сообщениями (мс)",
       "Device timeout (ms)": "Время ожидания устройства (мс)",

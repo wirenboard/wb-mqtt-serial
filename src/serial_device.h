@@ -122,7 +122,7 @@ struct TDeviceConfig
     int MaxBitHole = 0;
     int MaxReadRegisters = 1;
     size_t MinReadRegisters = 1;
-    int MaxWriteRegisters = 1;
+    size_t MaxWriteRegisters = 1;
     int Stride = 0;
     int Shift = 0;
     int DeviceMaxFailCycles = DEFAULT_DEVICE_FAIL_CYCLES;
@@ -140,15 +140,6 @@ typedef IProtocol* PProtocol;
 class TDeviceSetupItem
 {
 public:
-    TDeviceSetupItem(PDeviceSetupItemConfig config, PSerialDevice device, PRegisterConfig registerConfig)
-        : Name(config->GetName()),
-          ParameterId(config->GetParameterId()),
-          RawValue(config->GetRawValue()),
-          HumanReadableValue(config->GetValue()),
-          Device(device),
-          RegisterConfig(registerConfig)
-    {}
-
     std::string Name;
     std::string ParameterId;
     TRegisterValue RawValue;
@@ -156,6 +147,7 @@ public:
     PSerialDevice Device;
     PRegisterConfig RegisterConfig;
 
+    TDeviceSetupItem(PDeviceSetupItemConfig config, PSerialDevice device, PRegisterConfig registerConfig);
     std::string ToString();
 };
 

@@ -461,10 +461,11 @@ namespace Modbus // modbus protocol common utilities
         if (reg.WordOrder == EWordOrder::LittleEndian) {
             std::reverse(words.begin(), words.end());
         }
+        auto offset = data.size();
         auto width = words.size();
-        data.resize(width * 2);
+        data.resize(offset + width * 2);
         for (size_t i = 0; i < width; ++i) {
-            WriteAs2Bytes(data.data() + i * 2, words[i], reg.ByteOrder);
+            WriteAs2Bytes(data.data() + offset + i * 2, words[i], reg.ByteOrder);
         }
         return width;
     }
@@ -736,17 +737,18 @@ namespace Modbus // modbus protocol common utilities
             ProcessRangeException(range, e.what());
         }
     }
-    void WriteMultipleSetupRegisters(Modbus::IModbusTraits& traits,
-                                     TPort& port,
-                                     uint8_t slaveId,
-                                     TDeviceSetupItems::iterator& startIt,
-                                     const TDeviceSetupItems::iterator& endIt,
-                                     size_t maxRegs,
-                                     Modbus::TRegisterCache& cache,
-                                     std::chrono::microseconds requestDelay,
-                                     std::chrono::milliseconds responseTimeout,
-                                     std::chrono::milliseconds frameTimeout,
-                                     int shift)
+
+    TDeviceSetupItems::iterator WriteMultipleSetupRegisters(Modbus::IModbusTraits& traits,
+                                                            TPort& port,
+                                                            uint8_t slaveId,
+                                                            TDeviceSetupItems::iterator startIt,
+                                                            TDeviceSetupItems::iterator endIt,
+                                                            size_t maxRegs,
+                                                            Modbus::TRegisterCache& cache,
+                                                            std::chrono::microseconds requestDelay,
+                                                            std::chrono::milliseconds responseTimeout,
+                                                            std::chrono::milliseconds frameTimeout,
+                                                            int shift)
     {
         Modbus::TRegisterCache tmpCache;
         std::vector<uint8_t> data;
@@ -759,7 +761,7 @@ namespace Modbus // modbus protocol common utilities
             if (last) {
                 auto lastAddress = GetUint32RegisterAddress(last->RegisterConfig->GetAddress());
                 auto lastWidth = GetModbusDataWidthIn16BitWords(*last->RegisterConfig);
-                if (item->Device != last->Device || address != lastAddress + lastWidth) {
+                if (item->RegisterConfig->Type != last->RegisterConfig->Type || address != lastAddress + lastWidth) {
                     break;
                 }
             }
@@ -769,11 +771,8 @@ namespace Modbus // modbus protocol common utilities
                 break;
             }
 
+            ComposeRawMultipleWriteRequestData(data, *item->RegisterConfig, item->RawValue, cache, tmpCache);
             LOG(Info) << item->ToString();
-
-            std::vector<uint8_t> buffer;
-            ComposeRawMultipleWriteRequestData(buffer, *item->RegisterConfig, item->RawValue, cache, tmpCache);
-            data.insert(data.end(), buffer.begin(), buffer.end());
 
             count += width;
             last = item;
@@ -790,13 +789,14 @@ namespace Modbus // modbus protocol common utilities
                              requestDelay,
                              responseTimeout,
                              frameTimeout);
+            for (const auto& item: tmpCache) {
+                cache.insert_or_assign(item.first, item.second);
+            }
         } catch (const TSerialDevicePermanentRegisterException& e) {
-            LOG(Warn) << "Failed to write " << count << "setup items: " << e.what();
-            return;
+            LOG(Warn) << "Failed to write " << count << " setup items starting from register address " << start << ": "
+                      << e.what();
         }
-        for (const auto& item: tmpCache) {
-            cache.insert_or_assign(item.first, item.second);
-        }
+        return startIt;
     }
 
     void WriteSetupRegisters(Modbus::IModbusTraits& traits,
@@ -813,23 +813,23 @@ namespace Modbus // modbus protocol common utilities
         while (it != setupItems.end()) {
             auto item = *it;
             auto config = item->Device->DeviceConfig();
-            auto maxRegs = MAX_WRITE_REGISTERS;
+            size_t maxRegs = MAX_WRITE_REGISTERS;
             if (config->MaxWriteRegisters > 0 && config->MaxWriteRegisters < maxRegs) {
                 maxRegs = config->MaxWriteRegisters;
             }
             auto type = item->RegisterConfig->Type;
-            if (maxRegs > 1 && (type == REG_HOLDING || type == REG_HOLDING_MULTI)) {
-                WriteMultipleSetupRegisters(traits,
-                                            port,
-                                            slaveId,
-                                            it,
-                                            setupItems.end(),
-                                            maxRegs,
-                                            cache,
-                                            requestDelay,
-                                            responseTimeout,
-                                            frameTimeout,
-                                            shift);
+            if (maxRegs > 1 && type == REG_HOLDING) {
+                it = WriteMultipleSetupRegisters(traits,
+                                                 port,
+                                                 slaveId,
+                                                 it,
+                                                 setupItems.end(),
+                                                 maxRegs,
+                                                 cache,
+                                                 requestDelay,
+                                                 responseTimeout,
+                                                 frameTimeout,
+                                                 shift);
             } else {
                 try {
                     WriteRegister(traits,

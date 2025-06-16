@@ -32,6 +32,15 @@ bool IProtocol::SupportsBroadcast() const
     return false;
 }
 
+TDeviceSetupItem::TDeviceSetupItem(PDeviceSetupItemConfig config, PSerialDevice device, PRegisterConfig registerConfig)
+    : Name(config->GetName()),
+      ParameterId(config->GetParameterId()),
+      RawValue(config->GetRawValue()),
+      HumanReadableValue(config->GetValue()),
+      Device(device),
+      RegisterConfig(registerConfig)
+{}
+
 std::string TDeviceSetupItem::ToString()
 {
     std::stringstream stream;
