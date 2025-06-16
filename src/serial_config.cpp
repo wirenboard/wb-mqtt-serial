@@ -478,11 +478,13 @@ namespace
             }
             return;
         }
-
         if (channel_data.isMember("device_type")) {
             LoadSubdeviceChannel(deviceWithChannels, channel_data, context, typeMap);
         } else {
             LoadSimpleChannel(deviceWithChannels, channel_data, context, typeMap);
+        }
+        if (deviceWithChannels.Device->IsSporadicOnly() && !channel_data["sporadic"].asBool()) {
+            deviceWithChannels.Device->SetSporadicOnly(false);
         }
     }
 
@@ -894,7 +896,10 @@ void LoadChannels(TSerialDeviceWithChannels& deviceWithChannels,
     }
 
     if (deviceWithChannels.Channels.empty()) {
-        LOG(Warn) << "the device has no channels: " + deviceWithChannels.Device->DeviceConfig()->Name;
+        LOG(Warn) << "device " << deviceWithChannels.Device->DeviceConfig()->Name << " has no channels";
+    } else if (deviceWithChannels.Device->IsSporadicOnly()) {
+        LOG(Warn) << "device " << deviceWithChannels.Device->DeviceConfig()->Name
+                  << " has only sporadic channels enabled";
     }
 
     auto readRateLimit = GetReadRateLimit(deviceData);
