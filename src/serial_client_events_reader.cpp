@@ -268,6 +268,9 @@ void TSerialClientEventsReader::EnableEvents(PSerialDevice device, TPort& port)
             ev.AddRegister(0, ModbusExt::TEventType::REBOOT, ModbusExt::TEventPriority::DISABLE);
             LOG(Debug) << "Try to enable events for " << MakeDeviceDescriptionString(slaveId);
             ev.SendRequests();
+            if (device->IsSporadicOnly() && device->GetRegisters().size()) {
+                device->GetRegisters().front()->IncludeInPolling();
+            }
         }
     } catch (const Modbus::TModbusExceptionError& e) {
         LOG(Warn) << "Failed to enable events for " << MakeDeviceDescriptionString(slaveId) << ": " << e.what();
