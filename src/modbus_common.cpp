@@ -767,7 +767,7 @@ namespace Modbus // modbus protocol common utilities
             }
 
             auto width = GetModbusDataWidthIn16BitWords(*item->RegisterConfig);
-            if (count + width > maxRegs) {
+            if (count && count + width > maxRegs) {
                 break;
             }
 
