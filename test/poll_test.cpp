@@ -324,11 +324,11 @@ TEST_F(TPollTest, SingleDeviceSingleRegisterWithEvents)
     // One register with events
     // 1. Events must be enabled
     // 2. The register is read once by normal request and excluded from polling
-    // 3. Events read requests are sent every 50ms
+    // 3. Events read requests and normal requests (for "sporadic only" device) are sent every 50ms
 
     Port->SetBaudRate(115200);
     auto config = MakeDeviceConfig("device1", "1");
-    config.CommonConfig->RequestDelay = 10ms;
+    config.CommonConfig->RequestDelay = 25ms;
     auto device = MakeDevice(config);
     AddRegister(*device, 1, 0ms, TRegisterConfig::TSporadicMode::ONLY_EVENTS);
 
@@ -337,12 +337,14 @@ TEST_F(TPollTest, SingleDeviceSingleRegisterWithEvents)
 
     // Read registers
     EnqueueEnableEvents(1, 1, 10ms);
-    EnqueueReadHolding(1, 1, 1, 10ms);
+    EnqueueReadHolding(1, 1, 1, 20ms);
     Cycle(serialClient, lastAccessedDevice);
 
-    // Only read events
+    // Read events
     for (size_t i = 0; i < 10; ++i) {
         EnqueueReadEvents(4ms);
+        Cycle(serialClient, lastAccessedDevice);
+        EnqueueReadHolding(1, 1, 1, 20ms);
         Cycle(serialClient, lastAccessedDevice);
     }
 }
