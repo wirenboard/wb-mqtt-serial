@@ -1,8 +1,26 @@
-wb-mqtt-serial (2.171.0) stable; urgency=medium
+wb-mqtt-serial (2.172.0) stable; urgency=medium
 
   * Add register range write feature for Modbus registers
 
- -- Ilya Titov <ilya.titov@wirenboard.com>  Mon, 09 Jun 2025 14:34:27 +0300
+ -- Ilya Titov <ilya.titov@wirenboard.com>  Mon, 18 Jun 2025 16:42:27 +0300
+
+wb-mqtt-serial (2.171.2) stable; urgency=medium
+
+  * Fix confed common schema translations
+
+ -- Ilya Titov <ilya.titov@wirenboard.com>  Wed, 11 Jun 2025 08:44:06 +0300
+
+wb-mqtt-serial (2.171.1) stable; urgency=medium
+
+  * Add byte order property definition to confed common schema 
+
+ -- Ilya Titov <ilya.titov@wirenboard.com>  Tue, 10 Jun 2025 18:40:32 +0300
+
+wb-mqtt-serial (2.171.0) stable; urgency=medium
+
+  * Add a template for MTD062-MB and MTD262-MB modbus microwave presence sensors
+
+ -- Alexander Getman <alexander.getman@wirenboard.com>  Mon, 09 Jun 2025 16:33:34 +0300
 
 wb-mqtt-serial (2.170.0) stable; urgency=medium
 

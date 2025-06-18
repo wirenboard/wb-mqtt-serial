@@ -663,6 +663,18 @@ MSU34TLHP
 	Illuminance  =>  Illuminance
 	Pressure  =>  Pressure
 	Temp 1  =>  Temp 1
+MTDX62-MB
+	admission_confirmation_delay  =>  admission_confirmation_delay
+	departure_disappearance_delay  =>  departure_disappearance_delay
+	detection_distance  =>  detection_distance
+	detection_shielding_distance  =>  detection_shielding_distance
+	device_status  =>  device_status
+	entrance_distance_reduction  =>  entrance_distance_reduction
+	illuminance  =>  illuminance
+	maintain_sensitivity  =>  maintain_sensitivity
+	presence_status  =>  presence_status
+	target_distance  =>  target_distance
+	trigger_sensitivity  =>  trigger_sensitivity
 Mercury 200.02
 	Battery  =>  Battery
 	Current  =>  Current

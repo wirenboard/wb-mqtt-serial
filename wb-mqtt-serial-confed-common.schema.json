@@ -430,13 +430,18 @@
           "title": "Word order",
           "propertyOrder": 20
         },
+        "byte_order": {
+          "$ref": "#/definitions/byte_order",
+          "title": "Byte order",
+          "propertyOrder": 21
+        },
         "string_data_size": {
           "type": "integer",
           "title": "String size in characters",
           "description": "string_data_size_description",
           "minimum": 1,
           "default": 1,
-          "propertyOrder": 21,
+          "propertyOrder": 22,
           "options": {
             "dependencies": {
               "format": "string"
@@ -448,14 +453,14 @@
           "description": "sporadic_description",
           "type": "boolean",
           "default": false,
-          "propertyOrder": 22
+          "propertyOrder": 23
         },
         "semi-sporadic": {
           "title": "Dispatched with an event and polling",
           "description": "semi_sporadic_description",
           "type": "boolean",
           "default": false,
-          "propertyOrder": 23
+          "propertyOrder": 24
         },
         "enum": {
           "title": "List of values",
@@ -466,13 +471,13 @@
               { "type": "number" }
             ]
           },
-          "propertyOrder": 24
+          "propertyOrder": 25
         },
         "enum_titles": {
           "title": "List of value titles",
           "type": "array",
           "items": { "type": "string" },
-          "propertyOrder": 25
+          "propertyOrder": 26
         },
         "consists_of": {
           "not": {},
@@ -821,6 +826,10 @@
         "word_order": {
           "$ref": "#/definitions/word_order",
           "propertyOrder": 6
+        },
+        "byte_order": {
+          "$ref": "#/definitions/byte_order",
+          "propertyOrder": 7
         }
       },
       "required": ["reg_type", "address"],
@@ -922,8 +931,18 @@
       "title": "16-bit Word Order",
       "enum": ["big_endian", "little_endian"],
       "options": {
-        "enum_titles" : [ "Big-endian ( [0xAA 0xBB] [0xCC 0xDD] => 0xAABBCCDD)",
-                          "Little-endian ( [0xAA 0xBB] [0xCC 0xDD] => 0xCCDDAABB)"]
+        "enum_titles" : [ "Big-endian ([0xAA 0xBB] [0xCC 0xDD] => 0xAABBCCDD)",
+                          "Little-endian ([0xAA 0xBB] [0xCC 0xDD] => 0xCCDDAABB)"]
+      },
+      "default" : "big_endian"
+    },
+    "byte_order": {
+      "type": "string",
+      "title": "16-bit Word Byte Order",
+      "enum": ["big_endian", "little_endian"],
+      "options": {
+        "enum_titles" : [ "Big-endian ([0x12 0x34] => 0x1234)",
+                          "Little-endian ([0x12 0x34] => 0x3412)"]
       },
       "default" : "big_endian"
     },
@@ -1477,6 +1496,7 @@
       "IEEE754 64-bit float (double)": "64-битное число с плавающей запятой (IEEE754)",
       "8-bit ASCII char": "8-битный символ ASCII",
       "16-bit Word Order": "Порядок 16-битных слов",
+      "16-bit Word Byte Order": "Порядок байтов в 16-битных словах",
       "bits": "биты",
       "address:offset:bitwidth": "адрес:смещение:число бит",
       "Address should be decimal or hex, offset and bitwidth separated by ':'": "Адрес должен быть задан в десятичном или шестнадцатеричном виде. Смещение и число бит отделены двоеточием",
@@ -1506,6 +1526,7 @@
       "Device": "Устройство",
       "Byte": "Байт",
       "Word order": "Порядок слов",
+      "Byte order": "Порядок байтов в слове",
       "Name": "Имя",
       "Type": "Тип",
       "Maximum value": "Максимальное значение",
