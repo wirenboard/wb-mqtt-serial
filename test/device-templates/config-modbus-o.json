@@ -8,12 +8,12 @@
         "setup": [
         {
             "title": "IODIR",
-            "address": 10000,
+            "address": 9999,
             "value": "0xffff"
         },
         {
             "title": "CONFIG-FLAG",
-            "address": 9999,
+            "address": 10000,
             "value": 1
         }
         ],
