@@ -410,26 +410,30 @@ namespace Modbus // modbus protocol common utilities
                                         const Modbus::TRegisterCache& cache,
                                         Modbus::TRegisterCache& tmpCache)
     {
-        auto address = GetUint32RegisterAddress(reg.GetWriteAddress());
-        auto width = GetModbusDataWidthIn16BitWords(reg);
-        int step = 1;
-        if (reg.WordOrder == EWordOrder::LittleEndian) {
-            address += width - 1;
-            step = -1;
-        }
-
-        auto cacheAddress = address;
+        uint32_t address = 0;
         uint64_t valueToWrite = 0;
-        for (uint32_t i = 0; i < width; ++i) {
-            valueToWrite <<= 16;
-            if (cache.count(cacheAddress)) {
-                valueToWrite |= cache.at(cacheAddress);
-            }
-            cacheAddress += step;
-        }
+        auto width = GetModbusDataWidthIn16BitWords(reg);
+        auto step = 1;
+        auto updateCache = false;
 
-        // Clear place for data to be written
-        valueToWrite &= ~(GetLSBMask(reg.GetDataWidth()) << reg.GetDataOffset());
+        if (reg.AccessType != TRegisterConfig::EAccessType::WRITE_ONLY) {
+            address = GetUint32RegisterAddress(reg.GetAddress());
+            if (reg.WordOrder == EWordOrder::LittleEndian) {
+                address += width - 1;
+                step = -1;
+            }
+            auto cacheAddress = address;
+            for (uint32_t i = 0; i < width; ++i) {
+                valueToWrite <<= 16;
+                if (cache.count(cacheAddress)) {
+                    valueToWrite |= cache.at(cacheAddress);
+                }
+                cacheAddress += step;
+            }
+            // Clear place for data to be written
+            valueToWrite &= ~(GetLSBMask(reg.GetDataWidth()) << reg.GetDataOffset());
+            updateCache = true;
+        }
 
         // Place data
         value <<= reg.GetDataOffset();
@@ -438,9 +442,11 @@ namespace Modbus // modbus protocol common utilities
         words.resize(width);
         for (uint32_t i = 0; i < width; ++i) {
             words[i] = (valueToWrite >> (width - 1) * 16) & 0xFFFF;
-            tmpCache[address] = words[i];
             valueToWrite <<= 16;
-            address += step;
+            if (updateCache) {
+                tmpCache[address] = words[i];
+                address += step;
+            }
         }
     }
 
@@ -479,16 +485,20 @@ namespace Modbus // modbus protocol common utilities
                                           const Modbus::TRegisterCache& cache,
                                           Modbus::TRegisterCache& tmpCache)
     {
+        uint32_t address = 0;
+        uint16_t cachedValue = 0;
+        auto updateCache = false;
         auto bitWidth = reg.GetDataWidth();
+
         if (reg.Type == REG_COIL) {
             value = value ? uint16_t(0xFF) << 8 : 0x00;
             bitWidth = 16;
-        }
-
-        auto address = GetUint32RegisterAddress(reg.GetWriteAddress()) + wordIndex;
-        uint16_t cachedValue = 0;
-        if (cache.count(address)) {
-            cachedValue = cache.at(address);
+        } else {
+            address = GetUint32RegisterAddress(reg.GetAddress()) + wordIndex;
+            if (cache.count(address)) {
+                cachedValue = cache.at(address);
+            }
+            updateCache = true;
         }
 
         auto bitOffset = std::max(static_cast<int32_t>(reg.GetDataOffset()) - wordIndex * 16, 0);
@@ -498,7 +508,10 @@ namespace Modbus // modbus protocol common utilities
 
         data.resize(2);
         WriteAs2Bytes(data.data(), valueToWrite, reg.ByteOrder);
-        tmpCache[address] = valueToWrite;
+
+        if (updateCache) {
+            tmpCache[address] = valueToWrite;
+        }
     }
 
     void ParseSingleBitReadResponse(const std::vector<uint8_t>& data, TModbusRegisterRange& range)
@@ -693,7 +706,6 @@ namespace Modbus // modbus protocol common utilities
                 val >>= 16;
             }
         }
-
         for (const auto& item: tmpCache) {
             cache.insert_or_assign(item.first, item.second);
         }
