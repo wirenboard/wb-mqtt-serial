@@ -357,7 +357,7 @@ void TSerialClientEventsReader::SetReadErrors(TRegisterCallback callback)
 {
     for (const auto& regArray: Regs) {
         for (const auto& reg: regArray.second) {
-            if (reg->IsExcludedFromPolling()) {
+            if (reg->IsExcludedFromPolling() || reg->Device()->IsSporadicOnly()) {
                 reg->SetError(TRegister::TError::ReadError);
                 if (callback) {
                     callback(reg);

@@ -100,7 +100,12 @@ public:
         serialClient.OpenPortCycle(
             *Port,
             [this](PRegister reg) {
-                Emit() << ceil<microseconds>(TimeMock.GetTime().time_since_epoch()).count() << ": " << reg->ToString();
+                std::string errorMsg;
+                if (reg->GetErrorState().any()) {
+                    errorMsg = " with errors: " + reg->GetErrorState().to_string();
+                }
+                Emit() << ceil<microseconds>(TimeMock.GetTime().time_since_epoch()).count() << ": " << reg->ToString()
+                       << errorMsg;
             },
             lastAccessedDevice);
         auto deadline = serialClient.GetDeadline(TimeMock.GetTime());
