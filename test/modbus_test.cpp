@@ -1041,6 +1041,7 @@ protected:
 TEST_F(TModbusContinuousRegisterWriteTest, SetupItems)
 {
     EnqueueContinuousWriteResponse();
+    EnqueueContinuousWriteReadChannelResponse();
     SerialDriver->LoopOnce();
 }
 

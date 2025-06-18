@@ -97,7 +97,9 @@ public:
 
     void EnqueueContinuousReadEnableResponse(bool ok = true);
     void EnqueueContinuousReadResponse(bool separated = true);
+
     void EnqueueContinuousWriteResponse();
+    void EnqueueContinuousWriteReadChannelResponse();
 
     void EnqueueReadResponseWithNoiseAtTheEnd(bool addNoise);
 

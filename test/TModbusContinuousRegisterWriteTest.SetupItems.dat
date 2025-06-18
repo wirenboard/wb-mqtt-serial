@@ -25,7 +25,7 @@ EnqueueContinuousWriteResponse()
 EnqueueContinuousWriteResponse()
 >> 01 10 00 14 00 02 04 00 0A 00 0B 92 95
 << 01 10 00 14 00 02 01 CC
-EnqueueContinuousWriteResponse()
+EnqueueContinuousWriteReadChannelResponse()
 >> 01 03 00 21 00 01 D4 00
 << 01 03 02 AB CD 06 E1
 Publish: /devices/modbus-sample/controls/Ch 1: '43981' (QoS 1, retained)

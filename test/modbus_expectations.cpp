@@ -2768,6 +2768,10 @@ void TModbusExpectations::EnqueueContinuousWriteResponse()
                            0x02, // quantity Lo
                        }),
                        __func__);
+}
+
+void TModbusExpectations::EnqueueContinuousWriteReadChannelResponse()
+{
     Expector()->Expect(WrapPDU({
                            0x03, // function code
                            0x00, // starting address Hi
