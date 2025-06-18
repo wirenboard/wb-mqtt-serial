@@ -410,7 +410,7 @@ namespace Modbus // modbus protocol common utilities
                                         const Modbus::TRegisterCache& cache,
                                         Modbus::TRegisterCache& tmpCache)
     {
-        auto address = GetUint32RegisterAddress(reg.GetAddress());
+        auto address = GetUint32RegisterAddress(reg.GetWriteAddress());
         auto width = GetModbusDataWidthIn16BitWords(reg);
         int step = 1;
         if (reg.WordOrder == EWordOrder::LittleEndian) {
@@ -485,7 +485,7 @@ namespace Modbus // modbus protocol common utilities
             bitWidth = 16;
         }
 
-        auto address = GetUint32RegisterAddress(reg.GetAddress()) + wordIndex;
+        auto address = GetUint32RegisterAddress(reg.GetWriteAddress()) + wordIndex;
         uint16_t cachedValue = 0;
         if (cache.count(address)) {
             cachedValue = cache.at(address);

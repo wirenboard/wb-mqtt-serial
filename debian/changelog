@@ -1,3 +1,9 @@
+wb-mqtt-serial (2.171.3) stable; urgency=medium
+
+  * Fix write-only register "missing read address" bug
+
+ -- Ilya Titov <ilya.titov@wirenboard.com>  Wed, 18 Jun 2025 14:04:20 +0300
+
 wb-mqtt-serial (2.171.2) stable; urgency=medium
 
   * Fix confed common schema translations
