@@ -104,6 +104,23 @@ namespace
             }
         }
     }
+
+    void EnableSporadicOnlyDevicePolling(PSerialDevice device)
+    {
+        if (!device->IsSporadicOnly()) {
+            return;
+        }
+        for (auto& reg: device->GetRegisters()) {
+            if (reg->IsExcludedFromPolling()) {
+                auto config = reg->GetConfig();
+                if (!config->ReadPeriod.has_value() && !config->ReadRateLimit.has_value()) {
+                    config->ReadRateLimit = DEFAULT_SPORAIC_ONLY_READ_RATE_LIMIT;
+                }
+                reg->IncludeInPolling();
+                break;
+            }
+        }
+    }
 };
 
 class TModbusExtEventsVisitor: public ModbusExt::IEventsVisitor
@@ -270,18 +287,7 @@ void TSerialClientEventsReader::EnableEvents(PSerialDevice device, TPort& port)
             ev.AddRegister(0, ModbusExt::TEventType::REBOOT, ModbusExt::TEventPriority::DISABLE);
             LOG(Debug) << "Try to enable events for " << MakeDeviceDescriptionString(slaveId);
             ev.SendRequests();
-            if (device->IsSporadicOnly()) {
-                for (auto& reg: device->GetRegisters()) {
-                    if (reg->IsExcludedFromPolling()) {
-                        auto config = reg->GetConfig();
-                        if (!config->ReadPeriod.has_value() && !config->ReadRateLimit.has_value()) {
-                            config->ReadRateLimit = DEFAULT_SPORAIC_ONLY_READ_RATE_LIMIT;
-                        }
-                        reg->IncludeInPolling();
-                        break;
-                    }
-                }
-            }
+            EnableSporadicOnlyDevicePolling(device);
         }
     } catch (const Modbus::TModbusExceptionError& e) {
         LOG(Warn) << "Failed to enable events for " << MakeDeviceDescriptionString(slaveId) << ": " << e.what();

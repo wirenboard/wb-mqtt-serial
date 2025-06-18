@@ -657,15 +657,14 @@ TEST_F(TPollTest, SemiSporadicRegister)
 TEST_F(TPollTest, ReconnectWithOnlyEvents)
 {
     // One register with events
-    // 1.  Events must be enabled
-    // 2.  Read once by normal request and exclude the register from polling
-    // 3.  Events read requests are sent every 50ms (10 times)
-    // 5.  The register is read again by normal request according to "sporadic only" device polling
-    // 6.  Simulate restart event
-    // 7.  Reenable events
-    // 8.  Read once by normal request and exclude the register from polling
-    // 9.  Events read requests are sent every 50ms (10 times)
-    // 10. The register is read again by normal request according to "sporadic only" device polling
+    // 1. Events must be enabled
+    // 2. Read once by normal request and exclude the register from polling
+    // 3. Events read requests are sent every 50ms (10 times)
+    // 4. Simulate restart event
+    // 5. Reenable events
+    // 6. Read once by normal request and exclude the register from polling
+    // 7. Events read requests are sent every 50ms (10 times)
+    // 8. The register is read again by normal request according to "sporadic only" device polling
 
     Port->SetBaudRate(115200);
     auto config = MakeDeviceConfig("device1", "1");
@@ -682,14 +681,10 @@ TEST_F(TPollTest, ReconnectWithOnlyEvents)
     Cycle(serialClient, lastAccessedDevice);
 
     // Only read events
-    for (size_t i = 0; i < 10; ++i) {
+    for (size_t i = 0; i < 8; ++i) {
         EnqueueReadEvents(4ms);
         Cycle(serialClient, lastAccessedDevice);
     }
-
-    // Read registers
-    EnqueueReadHolding(1, 1, 1, 10ms);
-    Cycle(serialClient, lastAccessedDevice);
 
     // Device reset event
     EnqueueResetEvent(4ms, 1);

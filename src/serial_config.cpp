@@ -898,8 +898,8 @@ void LoadChannels(TSerialDeviceWithChannels& deviceWithChannels,
     if (deviceWithChannels.Channels.empty()) {
         LOG(Warn) << "device " << deviceWithChannels.Device->DeviceConfig()->Name << " has no channels";
     } else if (deviceWithChannels.Device->IsSporadicOnly()) {
-        LOG(Warn) << "device " << deviceWithChannels.Device->DeviceConfig()->Name
-                  << " has only sporadic channels enabled";
+        LOG(Debug) << "device " << deviceWithChannels.Device->DeviceConfig()->Name
+                   << " has only sporadic channels enabled";
     }
 
     auto readRateLimit = GetReadRateLimit(deviceData);
