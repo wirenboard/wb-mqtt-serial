@@ -370,15 +370,16 @@ void TSerialClientEventsReader::SetReadErrors(TRegisterCallback callback)
 void TSerialClientEventsReader::ClearReadErrors(TRegisterCallback callback)
 {
     ReadErrors = 0;
-    if (ClearErrorsOnSuccessfulRead) {
-        ClearErrorsOnSuccessfulRead = false;
-        for (const auto& regArray: Regs) {
-            for (const auto& reg: regArray.second) {
-                if (reg->IsExcludedFromPolling()) {
-                    reg->ClearError(TRegister::TError::ReadError);
-                    if (callback) {
-                        callback(reg);
-                    }
+    if (!ClearErrorsOnSuccessfulRead) {
+        return;
+    }
+    ClearErrorsOnSuccessfulRead = false;
+    for (const auto& regArray: Regs) {
+        for (const auto& reg: regArray.second) {
+            if (reg->IsExcludedFromPolling() || reg->Device()->IsSporadicOnly()) {
+                reg->ClearError(TRegister::TError::ReadError);
+                if (callback) {
+                    callback(reg);
                 }
             }
         }
