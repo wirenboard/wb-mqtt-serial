@@ -4,65 +4,38 @@ Sleep(1000)
 EnqueueEnableEvents()
 >> 01 46 18 0A 03 00 01 01 01 0F 00 00 01 00 28 7D
 << 01 46 18 02 01 00 2E F5
-Sleep(25000)
+Sleep(10000)
 EnqueueReadHolding()
 >> 01 03 00 01 00 01 D5 CA
 << 01 03 02 00 00 B8 44
-56000: <modbus:1:(type 0): 1>
-56000: Cycle end
+31000: <modbus:1:(type 0): 1>
+50000: Cycle end
 
-56000: Cycle
+50000: Cycle
 Sleep(335)
 EnqueueReadEvents()
 >> FD 46 10 00 F8 00 00 79 5B
 << FD 46 12 52 5D
 Sleep(335)
-66670: Cycle end
+100000: Cycle end
 
-66670: Cycle
-Sleep(1000)
-Sleep(25000)
-EnqueueReadHolding()
->> 01 03 00 01 00 01 D5 CA
-<< 01 03 02 00 00 B8 44
-112670: <modbus:1:(type 0): 1>
-112670: Cycle end
-
-112670: Cycle
+100000: Cycle
 Sleep(335)
 EnqueueReadEvents()
 >> FD 46 10 00 F8 00 00 79 5B
 << FD 46 12 52 5D
 Sleep(335)
-123340: Cycle end
+150000: Cycle end
 
-123340: Cycle
-Sleep(1000)
-Sleep(25000)
-EnqueueReadHolding()
->> 01 03 00 01 00 01 D5 CA
-<< 01 03 02 00 00 B8 44
-169340: <modbus:1:(type 0): 1>
-169340: Cycle end
-
-169340: Cycle
+150000: Cycle
 Sleep(335)
 EnqueueReadEvents()
 >> FD 46 10 00 F8 00 00 79 5B
 << FD 46 12 52 5D
 Sleep(335)
-180010: Cycle end
+200000: Cycle end
 
-180010: Cycle
-Sleep(1000)
-Sleep(25000)
-EnqueueReadHolding()
->> 01 03 00 01 00 01 D5 CA
-<< 01 03 02 00 00 B8 44
-226010: <modbus:1:(type 0): 1>
-226010: Cycle end
-
-226010: Cycle
+200000: Cycle
 Sleep(335)
 EnqueueReadEvents()
 >> FD 46 10 00 F8 00 00 79 5B
@@ -83,9 +56,9 @@ EnqueueReadEvents()
 >> FD 46 10 00 40 00 00 F9 7E
 << FD 46 14 D2 5F
 Sleep(335)
-343690: Cycle end
+317680: Cycle end
 
-343690: Cycle
+317680: Cycle
 Sleep(335)
 EnqueueReadEvents()
 >> FD 46 10 00 F8 00 00 79 5B
@@ -106,9 +79,9 @@ EnqueueReadEvents()
 >> FD 46 10 00 40 00 00 F9 7E
 << FD 46 14 D2 5F
 Sleep(335)
-461370: Cycle end
+435360: Cycle end
 
-461370: Cycle
+435360: Cycle
 Sleep(335)
 EnqueueReadEvents()
 >> FD 46 10 00 F8 00 00 79 5B
@@ -129,6 +102,6 @@ EnqueueReadEvents()
 >> FD 46 10 00 40 00 00 F9 7E
 << FD 46 14 D2 5F
 Sleep(335)
-579050: Cycle end
+553040: Cycle end
 
 Close()

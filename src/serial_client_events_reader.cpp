@@ -11,6 +11,8 @@ using namespace std::chrono;
 
 namespace
 {
+    const auto DEFAULT_SPORAIC_ONLY_READ_RATE_LIMIT = std::chrono::milliseconds(500);
+
     std::string EventTypeToString(uint8_t eventType)
     {
         switch (eventType) {
@@ -271,6 +273,10 @@ void TSerialClientEventsReader::EnableEvents(PSerialDevice device, TPort& port)
             if (device->IsSporadicOnly()) {
                 for (auto& reg: device->GetRegisters()) {
                     if (reg->IsExcludedFromPolling()) {
+                        auto config = reg->GetConfig();
+                        if (!config->ReadPeriod.has_value() && !config->ReadRateLimit.has_value()) {
+                            config->ReadRateLimit = DEFAULT_SPORAIC_ONLY_READ_RATE_LIMIT;
+                        }
                         reg->IncludeInPolling();
                         break;
                     }
