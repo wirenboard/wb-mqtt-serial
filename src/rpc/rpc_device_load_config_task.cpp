@@ -241,7 +241,7 @@ void ExecRPCDeviceLoadConfigRequest(PPort port,
     if (parameters.isNull()) {
         for (const auto& item: device->GetSetupItems()) {
             if (!item->ParameterId.empty()) {
-                parameters[item->ParameterId] = RawValueToJSON(*item->Register->GetConfig(), item->RawValue);
+                parameters[item->ParameterId] = RawValueToJSON(*item->RegisterConfig, item->RawValue);
             }
         }
     }

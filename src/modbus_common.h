@@ -9,6 +9,7 @@ namespace Modbus // modbus protocol common utilities
 {
     const int MAX_READ_BITS = 2000;
     const int MAX_READ_REGISTERS = 125;
+    const int MAX_WRITE_REGISTERS = 123;
     const int MAX_HOLE_CONTINUOUS_16_BIT_REGISTERS = 10;
     const int MAX_HOLE_CONTINUOUS_1_BIT_REGISTERS = MAX_HOLE_CONTINUOUS_16_BIT_REGISTERS * 8;
 
@@ -120,7 +121,7 @@ namespace Modbus // modbus protocol common utilities
     void WriteSetupRegisters(IModbusTraits& traits,
                              TPort& port,
                              uint8_t slaveId,
-                             const std::vector<PDeviceSetupItem>& setupItems,
+                             const TDeviceSetupItems& setupItems,
                              TRegisterCache& cache,
                              std::chrono::microseconds requestDelay,
                              std::chrono::milliseconds responseTimeout,

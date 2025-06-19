@@ -32,6 +32,40 @@ bool IProtocol::SupportsBroadcast() const
     return false;
 }
 
+TDeviceSetupItem::TDeviceSetupItem(PDeviceSetupItemConfig config, PSerialDevice device, PRegisterConfig registerConfig)
+    : Name(config->GetName()),
+      ParameterId(config->GetParameterId()),
+      RawValue(config->GetRawValue()),
+      HumanReadableValue(config->GetValue()),
+      Device(device),
+      RegisterConfig(registerConfig)
+{}
+
+std::string TDeviceSetupItem::ToString()
+{
+    std::stringstream stream;
+    auto reg = "<" + (Device ? Device->ToString() : "unknown device") + ":" + RegisterConfig->ToString() + ">";
+    stream << "Init setup register \"" << Name << "\": " << reg << "<-- " << HumanReadableValue;
+    if (RawValue.GetType() == TRegisterValue::ValueType::String) {
+        stream << " (\"" << RawValue << "\")";
+    } else {
+        stream << " (0x" << std::hex << RawValue << ")";
+    }
+    return stream.str();
+}
+
+bool TDeviceSetupItemComparePredicate::operator()(const PDeviceSetupItem& a, const PDeviceSetupItem& b) const
+{
+    if (a->RegisterConfig->Type != b->RegisterConfig->Type) {
+        return a->RegisterConfig->Type < b->RegisterConfig->Type;
+    }
+    auto compare = a->RegisterConfig->GetAddress().Compare(b->RegisterConfig->GetAddress());
+    if (compare == 0) {
+        return a->RegisterConfig->GetDataOffset() < b->RegisterConfig->GetDataOffset();
+    }
+    return compare < 0;
+}
+
 TUint32SlaveIdProtocol::TUint32SlaveIdProtocol(const std::string& name,
                                                const TRegisterTypes& reg_types,
                                                bool allowBroadcast)
@@ -192,20 +226,9 @@ TDeviceConnectionState TSerialDevice::GetConnectionState() const
 
 void TSerialDevice::WriteSetupRegisters()
 {
-    for (const auto& setup_item: SetupItems) {
-        WriteRegisterImpl(*setup_item->Register->GetConfig(), setup_item->RawValue);
-
-        std::stringstream ss;
-        ss << "Init: " << setup_item->Name << ": setup register " << setup_item->Register->ToString() << " <-- "
-           << setup_item->HumanReadableValue;
-
-        if (setup_item->RawValue.GetType() == TRegisterValue::ValueType::String) {
-            ss << " ('" << setup_item->RawValue << "')";
-        } else {
-            ss << " (0x" << std::hex << setup_item->RawValue << ")";
-            // TODO: More verbose exception
-        }
-        LOG(Info) << ss.str();
+    for (const auto& item: SetupItems) {
+        WriteRegisterImpl(*item->RegisterConfig, item->RawValue);
+        LOG(Info) << item->ToString();
     }
     if (!SetupItems.empty()) {
         SetTransferResult(true);
@@ -322,15 +345,13 @@ void TSerialDevice::AddSetupItem(PDeviceSetupItemConfig item)
         }
         LOG(Warn) << ss.str();
     } else {
-        auto setupItem = std::make_shared<TDeviceSetupItem>(
-            item,
-            std::make_shared<TRegister>(shared_from_this(), item->GetRegisterConfig()));
+        auto setupItem = std::make_shared<TDeviceSetupItem>(item, shared_from_this(), item->GetRegisterConfig());
         SetupItemsByAddress.insert({item->GetRegisterConfig()->GetAddress().ToString(), setupItem});
-        SetupItems.push_back(setupItem);
+        SetupItems.insert(setupItem);
     }
 }
 
-const std::vector<PDeviceSetupItem>& TSerialDevice::GetSetupItems() const
+const TDeviceSetupItems& TSerialDevice::GetSetupItems() const
 {
     return SetupItems;
 }

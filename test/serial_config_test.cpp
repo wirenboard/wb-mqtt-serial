@@ -138,7 +138,7 @@ protected:
                         TTestLogIndent indent(*this);
                         Emit() << "------";
                         Emit() << "Name: " << setup_item->Name;
-                        Emit() << "Address: " << setup_item->Register->GetConfig()->GetAddress();
+                        Emit() << "Address: " << setup_item->RegisterConfig->GetAddress();
                         Emit() << "Value: " << setup_item->HumanReadableValue;
                         if (setup_item->RawValue.GetType() == TRegisterValue::ValueType::String) {
                             Emit() << "RawValue: " << setup_item->RawValue;
@@ -146,9 +146,9 @@ protected:
                             Emit() << "RawValue: 0x" << std::setfill('0') << std::setw(2) << std::hex
                                    << setup_item->RawValue;
                         }
-                        Emit() << "Reg type: " << setup_item->Register->GetConfig()->TypeName << " ("
-                               << setup_item->Register->GetConfig()->Type << ")";
-                        Emit() << "Reg format: " << RegisterFormatName(setup_item->Register->GetConfig()->Format);
+                        Emit() << "Reg type: " << setup_item->RegisterConfig->TypeName << " ("
+                               << setup_item->RegisterConfig->Type << ")";
+                        Emit() << "Reg format: " << RegisterFormatName(setup_item->RegisterConfig->Format);
                     }
                 }
             }
@@ -273,7 +273,7 @@ TEST_F(TConfigParserTest, ParseReadonlyParameters)
     EXPECT_FALSE(devices.empty());
     auto setupItems = devices[0]->Device->GetSetupItems();
     EXPECT_EQ(setupItems.size(), 1);
-    EXPECT_EQ(setupItems[0]->Name, "p2");
+    EXPECT_EQ((*setupItems.begin())->Name, "p2");
 }
 
 TEST_F(TConfigParserTest, ParseEnum)
