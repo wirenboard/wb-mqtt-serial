@@ -486,20 +486,31 @@ namespace Modbus // modbus protocol common utilities
                                           const Modbus::TRegisterCache& cache,
                                           Modbus::TRegisterCache& tmpCache)
     {
-        auto address = GetUint32RegisterAddress(reg.GetAddress()) + wordIndex;
         uint16_t cachedValue = 0;
-        if (cache.count(address)) {
-            cachedValue = cache.at(address);
+        auto address = 0;
+        auto bitWidth = reg.GetDataWidth();
+        auto updateCache = false;
+
+        // use cache only for "partial" registers
+        if (bitWidth < 16) {
+            address = GetUint32RegisterAddress(reg.GetAddress()) + wordIndex;
+            if (cache.count(address)) {
+                cachedValue = cache.at(address);
+            }
+            updateCache = true;
         }
 
         auto bitOffset = std::max(static_cast<int32_t>(reg.GetDataOffset()) - wordIndex * 16, 0);
-        auto bitCount = std::min(static_cast<uint32_t>(16 - bitOffset), reg.GetDataWidth());
+        auto bitCount = std::min(static_cast<uint32_t>(16 - bitOffset), bitWidth);
         auto mask = GetLSBMask(bitCount) << bitOffset;
         auto valueToWrite = (~mask & cachedValue) | (mask & (value << bitOffset));
 
         data.resize(2);
         WriteAs2Bytes(data.data(), valueToWrite, reg.ByteOrder);
-        tmpCache[address] = valueToWrite;
+
+        if (updateCache) {
+            tmpCache[address] = valueToWrite;
+        }
     }
 
     void ParseSingleBitReadResponse(const std::vector<uint8_t>& data, TModbusRegisterRange& range)
