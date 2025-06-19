@@ -765,13 +765,13 @@ namespace Modbus // modbus protocol common utilities
         Modbus::TRegisterCache tmpCache;
         std::vector<uint8_t> data;
         PDeviceSetupItem last = nullptr;
-        auto start = GetUint32RegisterAddress((*startIt)->RegisterConfig->GetAddress());
+        auto start = GetUint32RegisterAddress((*startIt)->RegisterConfig->GetWriteAddress());
         auto count = 0;
         while (startIt != endIt) {
             auto item = *startIt;
-            auto address = GetUint32RegisterAddress(item->RegisterConfig->GetAddress());
+            auto address = GetUint32RegisterAddress(item->RegisterConfig->GetWriteAddress());
             if (last) {
-                auto lastAddress = GetUint32RegisterAddress(last->RegisterConfig->GetAddress());
+                auto lastAddress = GetUint32RegisterAddress(last->RegisterConfig->GetWriteAddress());
                 auto lastWidth = GetModbusDataWidthIn16BitWords(*last->RegisterConfig);
                 if (item->RegisterConfig->Type != last->RegisterConfig->Type || address != lastAddress + lastWidth) {
                     break;
