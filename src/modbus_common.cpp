@@ -486,33 +486,20 @@ namespace Modbus // modbus protocol common utilities
                                           const Modbus::TRegisterCache& cache,
                                           Modbus::TRegisterCache& tmpCache)
     {
-        uint32_t address = 0;
+        auto address = GetUint32RegisterAddress(reg.GetAddress()) + wordIndex;
         uint16_t cachedValue = 0;
-        auto updateCache = false;
-        auto bitWidth = reg.GetDataWidth();
-
-        if (reg.Type == REG_COIL) {
-            value = value ? uint16_t(0xFF) << 8 : 0x00;
-            bitWidth = 16;
-        } else {
-            address = GetUint32RegisterAddress(reg.GetAddress()) + wordIndex;
-            if (cache.count(address)) {
-                cachedValue = cache.at(address);
-            }
-            updateCache = true;
+        if (cache.count(address)) {
+            cachedValue = cache.at(address);
         }
 
         auto bitOffset = std::max(static_cast<int32_t>(reg.GetDataOffset()) - wordIndex * 16, 0);
-        auto bitCount = std::min(static_cast<uint32_t>(16 - bitOffset), bitWidth);
+        auto bitCount = std::min(static_cast<uint32_t>(16 - bitOffset), reg.GetDataWidth());
         auto mask = GetLSBMask(bitCount) << bitOffset;
         auto valueToWrite = (~mask & cachedValue) | (mask & (value << bitOffset));
 
         data.resize(2);
         WriteAs2Bytes(data.data(), valueToWrite, reg.ByteOrder);
-
-        if (updateCache) {
-            tmpCache[address] = valueToWrite;
-        }
+        tmpCache[address] = valueToWrite;
     }
 
     void ParseSingleBitReadResponse(const std::vector<uint8_t>& data, TModbusRegisterRange& range)
@@ -606,7 +593,7 @@ namespace Modbus // modbus protocol common utilities
                               : TRegisterValue{GetNumberRegisterValue(words, reg)};
     }
 
-    // parses modbus response and stores result
+    // Parses modbus response and stores result.
     void ParseReadResponse(const std::vector<uint8_t>& pdu,
                            Modbus::EFunction function,
                            TModbusRegisterRange& range,
@@ -688,7 +675,20 @@ namespace Modbus // modbus protocol common utilities
                              requestDelay,
                              responseTimeout,
                              frameTimeout);
+        } else if (reg.Type == REG_COIL) {
+            const std::vector<uint8_t> on{0xFF, 0x00};
+            const std::vector<uint8_t> off{0x00, 0x00};
+            WriteTransaction(traits,
+                             port,
+                             slaveId,
+                             fn,
+                             Modbus::CalcResponsePDUSize(fn, 1),
+                             Modbus::MakePDU(fn, addr, 1, value.Get<uint64_t>() ? on : off),
+                             requestDelay,
+                             responseTimeout,
+                             frameTimeout);
         } else {
+            // Note: word order feature currently is not supported by HOLDING_SINGLE registers.
             auto requestsCount = InferWriteRequestsCount(reg);
             auto val = value.Get<uint64_t>();
             auto responsePduSize = Modbus::CalcResponsePDUSize(fn, 1);
