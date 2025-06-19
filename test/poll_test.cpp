@@ -679,7 +679,7 @@ TEST_F(TPollTest, ReconnectWithOnlyEvents)
     // One register with events
     // 1. Events must be enabled
     // 2. Read once by normal request
-    // 3. Events read requests are sent every 50ms (8 times)
+    // 3. Events read requests are sent every 50ms (8 times to not trigger every 500ms polling)
     // 4. Simulate restart event
     // 5. Reenable events
     // 6. Read once by normal request
