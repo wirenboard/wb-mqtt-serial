@@ -2716,6 +2716,78 @@ void TModbusExpectations::EnqueueContinuousReadResponse(bool separated)
                        __func__);
 }
 
+void TModbusExpectations::EnqueueContinuousWriteResponse()
+{
+    Expector()->Expect(WrapPDU({
+                           0x10, // function code
+                           0x00, // starting address Hi
+                           0x0A, // starting address Lo
+                           0x00, // quantity Hi
+                           0x07, // quantity Lo
+                           0x0E, // byte count
+                           0x00, // data Hi
+                           0x01, // data Lo
+                           0x00, // data Hi
+                           0x00, // data Lo
+                           0x00, // data Hi
+                           0x00, // data Lo
+                           0x00, // data Hi
+                           0x00, // data Lo
+                           0x00, // data Hi
+                           0x02, // data Lo
+                           0x00, // data Hi
+                           0x00, // data Lo
+                           0x00, // data Hi
+                           0x03, // data Lo
+                       }),
+                       WrapPDU({
+                           0x10, // function code
+                           0x00, // starting address Hi
+                           0x0A, // starting address Lo
+                           0x00, // quantity Hi
+                           0x07, // quantity Lo
+                       }),
+                       __func__);
+    Expector()->Expect(WrapPDU({
+                           0x10, // function code
+                           0x00, // starting address Hi
+                           0x14, // starting address Lo
+                           0x00, // quantity Hi
+                           0x02, // quantity Lo
+                           0x04, // byte count
+                           0x00, // data Hi
+                           0x0A, // data Lo
+                           0x00, // data Hi
+                           0x0B, // data Lo
+                       }),
+                       WrapPDU({
+                           0x10, // function code
+                           0x00, // starting address Hi
+                           0x14, // starting address Lo
+                           0x00, // quantity Hi
+                           0x02, // quantity Lo
+                       }),
+                       __func__);
+}
+
+void TModbusExpectations::EnqueueContinuousWriteReadChannelResponse()
+{
+    Expector()->Expect(WrapPDU({
+                           0x03, // function code
+                           0x00, // starting address Hi
+                           0x21, // starting address Lo
+                           0x00, // quantity Hi
+                           0x01, // quantity Lo
+                       }),
+                       WrapPDU({
+                           0x03, // function code
+                           0x02, // byte count
+                           0xAB, // data Hi
+                           0xCD, // data Lo
+                       }),
+                       __func__);
+}
+
 void TModbusExpectations::EnqueueReadResponseWithNoiseAtTheEnd(bool addNoise)
 {
     auto response = WrapPDU({

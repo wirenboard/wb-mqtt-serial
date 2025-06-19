@@ -35,9 +35,7 @@ namespace
                         std::make_shared<TDeviceSetupItemConfig>(regName,
                                                                  regConfig,
                                                                  request["cfg"][regName].asString()));
-                    res.Regs.push_back(
-                        std::make_shared<TDeviceSetupItem>(setup_item_config,
-                                                           std::make_shared<TRegister>(nullptr, regConfig)));
+                    res.Regs.insert(std::make_shared<TDeviceSetupItem>(setup_item_config, nullptr, regConfig));
                 }
             }
         }

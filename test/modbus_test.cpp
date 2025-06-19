@@ -191,6 +191,35 @@ set<int> TModbusTest::VerifyQuery(PRegister reg)
     return errorRegisters;
 }
 
+TEST_F(TModbusTest, WriteOnlyRegisters)
+{
+    auto traits = std::make_unique<Modbus::TModbusRTUTraits>();
+    auto device = std::make_shared<TModbusDevice>(std::move(traits),
+                                                  GetDeviceConfig(),
+                                                  SerialPort,
+                                                  DeviceFactory.GetProtocol("modbus"));
+
+    TRegisterDesc coilDesc;
+    coilDesc.WriteAddress = std::make_shared<TUint32RegisterAddress>(0);
+
+    auto coilConfig = TRegisterConfig::Create(Modbus::REG_COIL, coilDesc);
+    coilConfig->AccessType = TRegisterConfig::EAccessType::WRITE_ONLY;
+
+    EnqueueCoilWriteResponse();
+    EXPECT_NO_THROW(ModbusDev->WriteRegister(device->AddRegister(coilConfig), 0x0001));
+
+    TRegisterDesc holdingDesc;
+    holdingDesc.WriteAddress = std::make_shared<TUint32RegisterAddress>(70);
+
+    auto holdingConfig = TRegisterConfig::Create(Modbus::REG_HOLDING, holdingDesc);
+    holdingConfig->AccessType = TRegisterConfig::EAccessType::WRITE_ONLY;
+
+    EnqueueHoldingWriteU16Response();
+    EXPECT_NO_THROW(ModbusDev->WriteRegister(device->AddRegister(holdingConfig), 0x0F41));
+
+    SerialPort->Close();
+}
+
 TEST_F(TModbusTest, ReadHoldingRegiterWithWriteAddress)
 {
     EnqueueHoldingReadU16ResponseWithWriteAddress();
@@ -1027,6 +1056,22 @@ TEST_F(TModbusContinuousRegisterReadTest, NotSupported)
     for (auto i = 0; i < 6; ++i) {
         SerialDriver->LoopOnce();
     }
+}
+
+class TModbusContinuousRegisterWriteTest: public TSerialDeviceIntegrationTest, public TModbusExpectations
+{
+protected:
+    const char* ConfigPath() const override
+    {
+        return "configs/config-modbus-continuous-write-test.json";
+    }
+};
+
+TEST_F(TModbusContinuousRegisterWriteTest, SetupItems)
+{
+    EnqueueContinuousWriteResponse();
+    EnqueueContinuousWriteReadChannelResponse();
+    SerialDriver->LoopOnce();
 }
 
 class TModbusLittleEndianRegisterTest: public TSerialDeviceIntegrationTest, public TModbusExpectations

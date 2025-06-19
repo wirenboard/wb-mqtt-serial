@@ -545,6 +545,7 @@ namespace
         Get(device_data, "max_bit_hole", device_config.MaxBitHole);
         Get(device_data, "max_read_registers", device_config.MaxReadRegisters);
         Get(device_data, "min_read_registers", device_config.MinReadRegisters);
+        Get(device_data, "max_write_registers", device_config.MaxWriteRegisters);
         Get(device_data, "guard_interval_us", device_config.RequestDelay);
         Get(device_data, "stride", device_config.Stride);
         Get(device_data, "shift", device_config.Shift);

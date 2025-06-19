@@ -1,8 +1,20 @@
-wb-mqtt-serial (2.172.0) stable; urgency=medium
+wb-mqtt-serial (2.173.0) stable; urgency=medium
 
   * Add meta/error feature for devices with only event registers enabled
 
- -- Ilya Titov <ilya.titov@wirenboard.com>  Tue, 17 Jun 2025 05:46:28 +0000
+ -- Ilya Titov <ilya.titov@wirenboard.com>  Tue, 19 Jun 2025 17:17:28 +0300
+
+wb-mqtt-serial (2.172.1) stable; urgency=medium
+
+  * Fix write-only register "missing read address" bug
+
+ -- Ilya Titov <ilya.titov@wirenboard.com>  Wed, 19 Jun 2025 08:18:20 +0300
+
+wb-mqtt-serial (2.172.0) stable; urgency=medium
+
+  * Add register range write feature for Modbus registers
+
+ -- Ilya Titov <ilya.titov@wirenboard.com>  Mon, 18 Jun 2025 16:42:27 +0300
 
 wb-mqtt-serial (2.171.2) stable; urgency=medium
 

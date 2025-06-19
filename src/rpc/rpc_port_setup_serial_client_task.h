@@ -11,7 +11,7 @@ public:
     uint8_t SlaveId;
     std::optional<uint32_t> Sn;
     TSerialPortConnectionSettings SerialPortSettings;
-    std::vector<PDeviceSetupItem> Regs;
+    TDeviceSetupItems Regs;
 };
 
 class TRPCPortSetupRequest
