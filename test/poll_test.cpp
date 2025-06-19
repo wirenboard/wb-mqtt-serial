@@ -772,7 +772,7 @@ TEST_F(TPollTest, OnlyEventsPollError)
     // Additional cycle for reading event but without actual read
     Cycle(serialClient, lastAccessedDevice);
 
-    // Reenable evenys and read register
+    // Reenable events and read register
     EnqueueEnableEvents(1, 1, 10ms);
     EnqueueReadHolding(1, 1, 1, 10ms);
     Cycle(serialClient, lastAccessedDevice);
