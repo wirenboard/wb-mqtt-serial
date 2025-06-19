@@ -1,3 +1,9 @@
+wb-mqtt-serial (2.173.0) stable; urgency=medium
+
+  * Add meta/error feature for devices with only event registers enabled
+
+ -- Ilya Titov <ilya.titov@wirenboard.com>  Tue, 19 Jun 2025 17:17:28 +0300
+
 wb-mqtt-serial (2.172.1) stable; urgency=medium
 
   * Fix write-only register "missing read address" bug

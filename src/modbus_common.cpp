@@ -187,7 +187,7 @@ namespace Modbus // modbus protocol common utilities
             LOG(Debug) << "Poll time for " << reg->ToString() << " is too long: " << newPollTime.count() << " ms"
                        << " (sendTime=" << sendTime.count() << " us, "
                        << "AverageResponseTime=" << AverageResponseTime.count() << " us, "
-                       << "RequestDelay=" << deviceConfig.RequestDelay.count() << " ms, "
+                       << "RequestDelay=" << deviceConfig.RequestDelay.count() << " us, "
                        << "FrameTimeout=" << deviceConfig.FrameTimeout.count() << " ms)"
                        << ", limit is " << pollLimit.count() << " ms";
         }

@@ -90,7 +90,8 @@ TSerialDevice::TSerialDevice(PDeviceConfig config, PPort port, PProtocol protoco
       LastSuccessfulCycle(),
       ConnectionState(TDeviceConnectionState::UNKNOWN),
       RemainingFailCycles(0),
-      SupportsHoles(true)
+      SupportsHoles(true),
+      SporadicOnly(true)
 {}
 
 std::string TSerialDevice::ToString() const
@@ -258,6 +259,16 @@ bool TSerialDevice::GetSupportsHoles() const
 void TSerialDevice::SetSupportsHoles(bool supportsHoles)
 {
     SupportsHoles = supportsHoles;
+}
+
+bool TSerialDevice::IsSporadicOnly() const
+{
+    return SporadicOnly;
+}
+
+void TSerialDevice::SetSporadicOnly(bool sporadicOnly)
+{
+    SporadicOnly = sporadicOnly;
 }
 
 void TSerialDevice::SetDisconnected()

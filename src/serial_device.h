@@ -232,10 +232,15 @@ public:
      * @param ok A boolean value indicating whether the transfer was successful (true) or not (false).
      */
     virtual void SetTransferResult(bool ok);
+
     TDeviceConnectionState GetConnectionState() const;
     void SetDisconnected();
+
     bool GetSupportsHoles() const;
     void SetSupportsHoles(bool supportsHoles);
+
+    bool IsSporadicOnly() const;
+    void SetSporadicOnly(bool sporadicOnly);
 
     // Reset values caches
     virtual void InvalidateReadCache();
@@ -269,6 +274,7 @@ private:
     TDeviceConnectionState ConnectionState;
     int RemainingFailCycles;
     bool SupportsHoles;
+    bool SporadicOnly;
     std::list<PRegister> Registers;
     std::chrono::steady_clock::time_point LastReadTime;
     std::vector<TDeviceCallback> ConnectionStateChangedCallbacks;
