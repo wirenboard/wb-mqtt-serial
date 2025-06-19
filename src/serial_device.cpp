@@ -59,7 +59,7 @@ bool TDeviceSetupItemComparePredicate::operator()(const PDeviceSetupItem& a, con
     if (a->RegisterConfig->Type != b->RegisterConfig->Type) {
         return a->RegisterConfig->Type < b->RegisterConfig->Type;
     }
-    auto compare = a->RegisterConfig->GetAddress().Compare(b->RegisterConfig->GetAddress());
+    auto compare = a->RegisterConfig->GetWriteAddress().Compare(b->RegisterConfig->GetWriteAddress());
     if (compare == 0) {
         return a->RegisterConfig->GetDataOffset() < b->RegisterConfig->GetDataOffset();
     }

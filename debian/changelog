@@ -1,3 +1,9 @@
+wb-mqtt-serial (2.172.1) stable; urgency=medium
+
+  * Fix write-only register "missing read address" bug
+
+ -- Ilya Titov <ilya.titov@wirenboard.com>  Wed, 19 Jun 2025 08:18:20 +0300
+
 wb-mqtt-serial (2.172.0) stable; urgency=medium
 
   * Add register range write feature for Modbus registers

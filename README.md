@@ -403,6 +403,7 @@ It's designed to be used on [Wiren Board](https://wirenboard.com/en/) family of 
                             "format": "s8",
 
                             // Порядок 16-битных слов для каналов, имеющих размер больше 16 бит.
+                            // В данный момент не поддерживатеся для регистров типа "holding_single".
                             // Возможные значения:
                             //  "big_endian" (по умолчанию): [0xAA 0xBB] [0xCC 0xDD] => 0xAABBCCDD
                             //  "little_endian":  [0xAA 0xBB] [0xCC 0xDD] => 0xCCDDAABB

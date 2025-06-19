@@ -410,26 +410,30 @@ namespace Modbus // modbus protocol common utilities
                                         const Modbus::TRegisterCache& cache,
                                         Modbus::TRegisterCache& tmpCache)
     {
-        auto address = GetUint32RegisterAddress(reg.GetAddress());
-        auto width = GetModbusDataWidthIn16BitWords(reg);
-        int step = 1;
-        if (reg.WordOrder == EWordOrder::LittleEndian) {
-            address += width - 1;
-            step = -1;
-        }
-
-        auto cacheAddress = address;
+        uint32_t address = 0;
         uint64_t valueToWrite = 0;
-        for (uint32_t i = 0; i < width; ++i) {
-            valueToWrite <<= 16;
-            if (cache.count(cacheAddress)) {
-                valueToWrite |= cache.at(cacheAddress);
-            }
-            cacheAddress += step;
-        }
+        auto width = GetModbusDataWidthIn16BitWords(reg);
+        auto step = 1;
+        auto updateCache = false;
 
-        // Clear place for data to be written
-        valueToWrite &= ~(GetLSBMask(reg.GetDataWidth()) << reg.GetDataOffset());
+        if (reg.AccessType != TRegisterConfig::EAccessType::WRITE_ONLY) {
+            address = GetUint32RegisterAddress(reg.GetAddress());
+            if (reg.WordOrder == EWordOrder::LittleEndian) {
+                address += width - 1;
+                step = -1;
+            }
+            auto cacheAddress = address;
+            for (uint32_t i = 0; i < width; ++i) {
+                valueToWrite <<= 16;
+                if (cache.count(cacheAddress)) {
+                    valueToWrite |= cache.at(cacheAddress);
+                }
+                cacheAddress += step;
+            }
+            // Clear place for data to be written
+            valueToWrite &= ~(GetLSBMask(reg.GetDataWidth()) << reg.GetDataOffset());
+            updateCache = true;
+        }
 
         // Place data
         value <<= reg.GetDataOffset();
@@ -438,9 +442,11 @@ namespace Modbus // modbus protocol common utilities
         words.resize(width);
         for (uint32_t i = 0; i < width; ++i) {
             words[i] = (valueToWrite >> (width - 1) * 16) & 0xFFFF;
-            tmpCache[address] = words[i];
             valueToWrite <<= 16;
-            address += step;
+            if (updateCache) {
+                tmpCache[address] = words[i];
+                address += step;
+            }
         }
     }
 
@@ -480,16 +486,18 @@ namespace Modbus // modbus protocol common utilities
                                           const Modbus::TRegisterCache& cache,
                                           Modbus::TRegisterCache& tmpCache)
     {
-        auto bitWidth = reg.GetDataWidth();
-        if (reg.Type == REG_COIL) {
-            value = value ? uint16_t(0xFF) << 8 : 0x00;
-            bitWidth = 16;
-        }
-
-        auto address = GetUint32RegisterAddress(reg.GetAddress()) + wordIndex;
         uint16_t cachedValue = 0;
-        if (cache.count(address)) {
-            cachedValue = cache.at(address);
+        auto address = 0;
+        auto bitWidth = reg.GetDataWidth();
+        auto updateCache = false;
+
+        // use cache only for "partial" registers
+        if (bitWidth < 16) {
+            address = GetUint32RegisterAddress(reg.GetAddress()) + wordIndex;
+            if (cache.count(address)) {
+                cachedValue = cache.at(address);
+            }
+            updateCache = true;
         }
 
         auto bitOffset = std::max(static_cast<int32_t>(reg.GetDataOffset()) - wordIndex * 16, 0);
@@ -499,7 +507,10 @@ namespace Modbus // modbus protocol common utilities
 
         data.resize(2);
         WriteAs2Bytes(data.data(), valueToWrite, reg.ByteOrder);
-        tmpCache[address] = valueToWrite;
+
+        if (updateCache) {
+            tmpCache[address] = valueToWrite;
+        }
     }
 
     void ParseSingleBitReadResponse(const std::vector<uint8_t>& data, TModbusRegisterRange& range)
@@ -593,7 +604,7 @@ namespace Modbus // modbus protocol common utilities
                               : TRegisterValue{GetNumberRegisterValue(words, reg)};
     }
 
-    // parses modbus response and stores result
+    // Parses modbus response and stores result.
     void ParseReadResponse(const std::vector<uint8_t>& pdu,
                            Modbus::EFunction function,
                            TModbusRegisterRange& range,
@@ -675,7 +686,20 @@ namespace Modbus // modbus protocol common utilities
                              requestDelay,
                              responseTimeout,
                              frameTimeout);
+        } else if (reg.Type == REG_COIL) {
+            const std::vector<uint8_t> on{0xFF, 0x00};
+            const std::vector<uint8_t> off{0x00, 0x00};
+            WriteTransaction(traits,
+                             port,
+                             slaveId,
+                             fn,
+                             Modbus::CalcResponsePDUSize(fn, 1),
+                             Modbus::MakePDU(fn, addr, 1, value.Get<uint64_t>() ? on : off),
+                             requestDelay,
+                             responseTimeout,
+                             frameTimeout);
         } else {
+            // Note: word order feature currently is not supported by HOLDING_SINGLE registers.
             auto requestsCount = InferWriteRequestsCount(reg);
             auto val = value.Get<uint64_t>();
             auto responsePduSize = Modbus::CalcResponsePDUSize(fn, 1);
@@ -694,7 +718,6 @@ namespace Modbus // modbus protocol common utilities
                 val >>= 16;
             }
         }
-
         for (const auto& item: tmpCache) {
             cache.insert_or_assign(item.first, item.second);
         }
@@ -753,13 +776,13 @@ namespace Modbus // modbus protocol common utilities
         Modbus::TRegisterCache tmpCache;
         std::vector<uint8_t> data;
         PDeviceSetupItem last = nullptr;
-        auto start = GetUint32RegisterAddress((*startIt)->RegisterConfig->GetAddress());
+        auto start = GetUint32RegisterAddress((*startIt)->RegisterConfig->GetWriteAddress());
         auto count = 0;
         while (startIt != endIt) {
             auto item = *startIt;
-            auto address = GetUint32RegisterAddress(item->RegisterConfig->GetAddress());
+            auto address = GetUint32RegisterAddress(item->RegisterConfig->GetWriteAddress());
             if (last) {
-                auto lastAddress = GetUint32RegisterAddress(last->RegisterConfig->GetAddress());
+                auto lastAddress = GetUint32RegisterAddress(last->RegisterConfig->GetWriteAddress());
                 auto lastWidth = GetModbusDataWidthIn16BitWords(*last->RegisterConfig);
                 if (item->RegisterConfig->Type != last->RegisterConfig->Type || address != lastAddress + lastWidth) {
                     break;
