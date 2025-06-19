@@ -1,0 +1,39 @@
+{
+  "debug": true,
+  "ports": [
+    {
+      "path" : "/dev/ttyNSC0",
+      "baud_rate": 9600,
+      "parity": "N",
+      "data_bits": 8,
+      "stop_bits": 1,
+      "enabled": true,
+      "devices" : [
+        {
+          "slave_id": 1,
+          "enabled": true,
+          "name": "Sporadic Only",
+          "id": "sporadic-only",
+          "max_read_registers": 0,
+          "frame_timeout_ms": 0,
+          "device_timeout_ms": 1,
+          "device_max_fail_cycles": 1,
+          "channels": [
+            {
+              "name": "Ch 10",
+              "reg_type": "holding",
+              "address": 10,
+              "sporadic": true
+            },
+            {
+              "name": "Ch 20",
+              "reg_type": "holding",
+              "address": 20,
+              "sporadic": true
+            }
+          ]
+        }
+      ]
+    }
+  ]
+}
