@@ -1,3 +1,9 @@
+wb-mqtt-serial (2.160.3-wb101) stable; urgency=medium
+
+  * WB-MWAC v.2: deprecate old template, add new, make Leakage Mode control read only, add button to reset it
+
+ -- Radmir Khakimov <radmir.khakimov@wirenboard.com>  Mon, 20 Jun 2025 13:51:57 +0500
+
 wb-mqtt-serial (2.160.3-wb100) stable; urgency=medium
 
   * Add separate device signature for WB-MRM2-mini/NC
