@@ -478,11 +478,13 @@ namespace
             }
             return;
         }
-
         if (channel_data.isMember("device_type")) {
             LoadSubdeviceChannel(deviceWithChannels, channel_data, context, typeMap);
         } else {
             LoadSimpleChannel(deviceWithChannels, channel_data, context, typeMap);
+        }
+        if (deviceWithChannels.Device->IsSporadicOnly() && !channel_data["sporadic"].asBool()) {
+            deviceWithChannels.Device->SetSporadicOnly(false);
         }
     }
 
@@ -504,7 +506,8 @@ namespace
         const auto& valueItem = item_data["value"];
         // libjsoncpp uses format "%.17g" in asString() and outputs strings with additional small numbers
         auto value = valueItem.isDouble() ? WBMQTT::StringFormat("%.15g", valueItem.asDouble()) : valueItem.asString();
-        device.AddSetupItem(PDeviceSetupItemConfig(new TDeviceSetupItemConfig(name, reg.RegisterConfig, value)));
+        device.AddSetupItem(PDeviceSetupItemConfig(
+            new TDeviceSetupItemConfig(name, reg.RegisterConfig, value, item_data["id"].asString())));
     }
 
     void LoadSetupItems(TSerialDevice& device,
@@ -542,6 +545,7 @@ namespace
         Get(device_data, "max_bit_hole", device_config.MaxBitHole);
         Get(device_data, "max_read_registers", device_config.MaxReadRegisters);
         Get(device_data, "min_read_registers", device_config.MinReadRegisters);
+        Get(device_data, "max_write_registers", device_config.MaxWriteRegisters);
         Get(device_data, "guard_interval_us", device_config.RequestDelay);
         Get(device_data, "stride", device_config.Stride);
         Get(device_data, "shift", device_config.Shift);
@@ -893,7 +897,10 @@ void LoadChannels(TSerialDeviceWithChannels& deviceWithChannels,
     }
 
     if (deviceWithChannels.Channels.empty()) {
-        LOG(Warn) << "the device has no channels: " + deviceWithChannels.Device->DeviceConfig()->Name;
+        LOG(Warn) << "device " << deviceWithChannels.Device->DeviceConfig()->Name << " has no channels";
+    } else if (deviceWithChannels.Device->IsSporadicOnly()) {
+        LOG(Debug) << "device " << deviceWithChannels.Device->DeviceConfig()->Name
+                   << " has only sporadic channels enabled";
     }
 
     auto readRateLimit = GetReadRateLimit(deviceData);
@@ -1066,6 +1073,10 @@ TLoadRegisterConfigResult LoadRegisterConfig(const Json::Value& registerData,
         regType.DefaultWordOrder = WordOrderFromName(registerData["word_order"].asString());
     }
 
+    if (registerData.isMember("byte_order")) {
+        regType.DefaultByteOrder = ByteOrderFromName(registerData["byte_order"].asString());
+    }
+
     double scale = Read(registerData, "scale", 1.0); // TBD: check for zero, too
     double offset = Read(registerData, "offset", 0.0);
     double round_to = Read(registerData, "round_to", 0.0);
@@ -1111,7 +1122,8 @@ TLoadRegisterConfigResult LoadRegisterConfig(const Json::Value& registerData,
                                                  sporadicMode,
                                                  readonly,
                                                  regType.Name,
-                                                 regType.DefaultWordOrder);
+                                                 regType.DefaultWordOrder,
+                                                 regType.DefaultByteOrder);
 
     if (registerData.isMember("error_value")) {
         res.RegisterConfig->ErrorValue = TRegisterValue{ToUint64(registerData["error_value"], "error_value")};

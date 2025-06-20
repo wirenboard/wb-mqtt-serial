@@ -1,12 +1,98 @@
-wb-mqtt-serial (2.168.0) stable; urgency=medium
+wb-mqtt-serial (2.174.0) stable; urgency=medium
 
   * WB-MWAC v.2: deprecate old template, add new, make Leakage Mode control read only, add button to reset it
 
- -- Radmir Khakimov <radmir.khakimov@wirenboard.com>  Mon, 26 May 2025 13:51:57 +0500
+ -- Radmir Khakimov <radmir.khakimov@wirenboard.com>  Mon, 20 Jun 2025 13:51:57 +0500
+
+wb-mqtt-serial (2.173.0) stable; urgency=medium
+
+  * Add meta/error feature for devices with only event registers enabled
+
+ -- Ilya Titov <ilya.titov@wirenboard.com>  Tue, 19 Jun 2025 17:17:28 +0300
+
+wb-mqtt-serial (2.172.1) stable; urgency=medium
+
+  * Fix write-only register "missing read address" bug
+
+ -- Ilya Titov <ilya.titov@wirenboard.com>  Wed, 19 Jun 2025 08:18:20 +0300
+
+wb-mqtt-serial (2.172.0) stable; urgency=medium
+
+  * Add register range write feature for Modbus registers
+
+ -- Ilya Titov <ilya.titov@wirenboard.com>  Mon, 18 Jun 2025 16:42:27 +0300
+
+wb-mqtt-serial (2.171.2) stable; urgency=medium
+
+  * Fix confed common schema translations
+
+ -- Ilya Titov <ilya.titov@wirenboard.com>  Wed, 11 Jun 2025 08:44:06 +0300
+
+wb-mqtt-serial (2.171.1) stable; urgency=medium
+
+  * Add byte order property definition to confed common schema 
+
+ -- Ilya Titov <ilya.titov@wirenboard.com>  Tue, 10 Jun 2025 18:40:32 +0300
+
+wb-mqtt-serial (2.171.0) stable; urgency=medium
+
+  * Add a template for MTD062-MB and MTD262-MB modbus microwave presence sensors
+
+ -- Alexander Getman <alexander.getman@wirenboard.com>  Mon, 09 Jun 2025 16:33:34 +0300
+
+wb-mqtt-serial (2.170.0) stable; urgency=medium
+
+  * Add byte order device template option for Modbus registers
+  * Add word order feature for "string" and "string8" Modbus register format
+
+ -- Ilya Titov <ilya.titov@wirenboard.com>  Wed, 06 Jun 2025 11:53:32 +0300
+
+wb-mqtt-serial (2.169.1) stable; urgency=medium
+
+  * Add separate device signature for WB-MRM2-mini/NC
+
+ -- Pavel Gasheev <pavel.gasheev@wirenboard.com>  Wed, 04 Jun 2025 15:19:39 +0300
+
+wb-mqtt-serial (2.169.0) stable; urgency=medium
+
+  * Add device/Probe RPC for requesting information about Wiren Board device
+
+ -- Petr Krasnoshchekov <petr.krasnoshchekov@wirenboard.com>  Mon, 02 Jun 2025 10:34:18 +0500
+
+wb-mqtt-serial (2.168.0) stable; urgency=medium
+
+  * Add parameters group read feature to device/LoadConfig RPC
+  * Add config parameters sync to device/LoadConfig RPC
+
+ -- Ilya Titov <ilya.titov@wirenboard.com>  Tue, 30 May 2025 11:14:36 +0300
+
+wb-mqtt-serial (2.167.4) stable; urgency=medium
+
+  * config-carel-pj-basic.json and config-carel-pj-basic-deprecated.json: Remove PYEZ1R05J4 from title
+
+ -- Andrey Ksenofontov <andrey.ksenofontov@wirenboard.com>  Thu, 29 May 2025 15:04:00 +0300
+
+wb-mqtt-serial (2.167.3) stable; urgency=medium
+
+  * config-map3ev.json: Add separate signature WB-MAP3EV
+
+ -- Ilia Skochilov <ilia.skochilov@wirenboard.com>  Wed, 28 May 2025 15:24:00 +0300
+
+wb-mqtt-serial (2.167.2) stable; urgency=medium
+
+  * Fix TSerialClientIntegrationTest.RPCRequestTransceive test timeout bug
+
+ -- Ilya Titov <ilya.titov@wirenboard.com>  Wed, 28 May 2025 15:02:46 +0300
+
+wb-mqtt-serial (2.167.1) stable; urgency=medium
+
+  * WB-MAP templates: Add default values for Turns and Phi
+
+ -- Ilia Skochilov <ilia.skochilov@wirenboard.com>  Tue, 27 May 2025 16:24:00 +0300
 
 wb-mqtt-serial (2.167.0) stable; urgency=medium
 
-  * Add firmware version value validation for template parameters array 
+  * Add firmware version value validation for template parameters array
 
  -- Ilya Titov <ilya.titov@wirenboard.com>  Thu, 22 May 2025 14:18:57 +0300
 
@@ -31,7 +117,7 @@ wb-mqtt-serial (2.165.1) stable; urgency=medium
 
 wb-mqtt-serial (2.165.0) stable; urgency=medium
 
-  * Add configured_device_type parameter to port/Scan RPC response. 
+  * Add configured_device_type parameter to port/Scan RPC response.
     It contains the device type from template if the device is configured in wb-mqtt-serial.conf.
 
  -- Petr Krasnoshchekov <petr.krasnoshchekov@wirenboard.com>  Wed, 21 May 2025 15:12:30 +0500

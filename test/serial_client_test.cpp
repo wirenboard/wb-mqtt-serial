@@ -81,6 +81,7 @@ protected:
                   double offset = 0,
                   double round_to = 0,
                   EWordOrder word_order = EWordOrder::BigEndian,
+                  EByteOrder byte_order = EByteOrder::BigEndian,
                   uint32_t dataOffset = 0,
                   uint32_t dataBitWidth = 0)
     {
@@ -94,6 +95,7 @@ protected:
                                                            false,
                                                            "fake",
                                                            word_order,
+                                                           byte_order,
                                                            dataOffset,
                                                            dataBitWidth));
     }
@@ -825,8 +827,8 @@ TEST_F(TSerialClientTest, Double64)
 
 TEST_F(TSerialClientTest, String)
 {
-    PRegister reg20 = Reg(20, String, 1, 0, 0, EWordOrder::BigEndian, 0, 32 * 8);
-    PRegister reg32 = Reg(62, String, 1, 0, 0, EWordOrder::BigEndian, 0, 32 * 8);
+    PRegister reg20 = Reg(20, String, 1, 0, 0, EWordOrder::BigEndian, EByteOrder::BigEndian, 0, 32 * 8);
+    PRegister reg32 = Reg(62, String, 1, 0, 0, EWordOrder::BigEndian, EByteOrder::BigEndian, 0, 32 * 8);
     SerialClient->AddDevice(Device);
 
     Note() << "server -> client: 40ba401f7ced9168 , 4093b148b4395810";
@@ -1494,7 +1496,7 @@ TRPCResultCode TSerialClientIntegrationTest::SendRPCRequest(PMQTTSerialDriver se
     Json::Value request;
     request["response_timeout"] = 500;
     request["frame_timeout"] = 20;
-    request["total_timeout"] = totalTimeout.count();
+    request["total_timeout"] = chrono::duration_cast<chrono::milliseconds>(totalTimeout).count();
     request["response_size"] = expectedResponseLength;
     std::vector<uint8_t> requestUint;
     std::copy(expectedRequest.begin(), expectedRequest.end(), back_inserter(requestUint));

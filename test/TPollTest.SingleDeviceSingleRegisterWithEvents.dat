@@ -89,6 +89,15 @@ EnqueueReadEvents()
 >> FD 46 10 00 F8 00 00 79 5B
 << FD 46 12 52 5D
 Sleep(335)
+504670: Cycle end
+
+504670: Cycle
+Sleep(1000)
+Sleep(10000)
+EnqueueReadHolding()
+>> 01 03 00 01 00 01 D5 CA
+<< 01 03 02 00 00 B8 44
+525670: <modbus:1:(type 0): 1>
 550000: Cycle end
 
 Close()

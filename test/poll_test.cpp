@@ -100,7 +100,12 @@ public:
         serialClient.OpenPortCycle(
             *Port,
             [this](PRegister reg) {
-                Emit() << ceil<microseconds>(TimeMock.GetTime().time_since_epoch()).count() << ": " << reg->ToString();
+                std::string errorMsg;
+                if (reg->GetErrorState().any()) {
+                    errorMsg = " with errors: " + reg->GetErrorState().to_string();
+                }
+                Emit() << ceil<microseconds>(TimeMock.GetTime().time_since_epoch()).count() << ": " << reg->ToString()
+                       << errorMsg;
             },
             lastAccessedDevice);
         auto deadline = serialClient.GetDeadline(TimeMock.GetTime());
@@ -126,6 +131,21 @@ public:
                          count & 0xFF         // quantity Lo
                      }),
                      WrapPDU(response),
+                     __func__,
+                     readTime);
+    }
+
+    void EnqueueReadHoldingError(uint8_t slaveId, uint16_t addr, uint16_t count, microseconds readTime)
+    {
+        SetModbusRTUSlaveId(slaveId);
+        Port->Expect(WrapPDU({
+                         0x03,                // function code
+                         (addr >> 8) & 0xFF,  // starting address Hi
+                         addr & 0xFF,         // starting address Lo
+                         (count >> 8) & 0xFF, // quantity Hi
+                         count & 0xFF         // quantity Lo
+                     }),
+                     std::vector<int>(),
                      __func__,
                      readTime);
     }
@@ -237,6 +257,9 @@ public:
         if (readPeriod != 0ms) {
             registerConfig->ReadPeriod = readPeriod;
         }
+        if (sporadicMode == TRegisterConfig::TSporadicMode::DISABLED) {
+            device.SetSporadicOnly(false);
+        }
         registerConfig->SporadicMode = sporadicMode;
         device.AddRegister(registerConfig);
     }
@@ -323,8 +346,9 @@ TEST_F(TPollTest, SingleDeviceSingleRegisterWithEvents)
 {
     // One register with events
     // 1. Events must be enabled
-    // 2. The register is read once by normal request and excluded from polling
-    // 3. Events read requests are sent every 50ms
+    // 2. Read once by normal request
+    // 3. Events read requests are sent every 50ms (10 times)
+    // 4. The register is read again by normal request according to "sporadic only" device polling
 
     Port->SetBaudRate(115200);
     auto config = MakeDeviceConfig("device1", "1");
@@ -345,6 +369,10 @@ TEST_F(TPollTest, SingleDeviceSingleRegisterWithEvents)
         EnqueueReadEvents(4ms);
         Cycle(serialClient, lastAccessedDevice);
     }
+
+    // Read registers
+    EnqueueReadHolding(1, 1, 1, 10ms);
+    Cycle(serialClient, lastAccessedDevice);
 }
 
 TEST_F(TPollTest, SingleDeviceSingleRegisterWithEventsAndPolling)
@@ -544,7 +572,7 @@ TEST_F(TPollTest, SingleDeviceSingleRegisterWithEventsAndErrors)
 {
     // One register with events
     // 1. Events must be enabled
-    // 2. The register is read once by normal request and excluded from polling
+    // 2. Read once by normal request
     // 3. Events read requests are sent every 50ms
     // 4. Some read requests have errors
 
@@ -581,7 +609,7 @@ TEST_F(TPollTest, SingleDeviceEnableEventsError)
 {
     // One register with events
     // 1. Events must be enabled
-    // 2. The register is read once by normal request and excluded from polling
+    // 2. Read once by normal request
     // 3. Events read requests are sent every 50ms
     // 4. Some read requests have errors
 
@@ -650,12 +678,13 @@ TEST_F(TPollTest, ReconnectWithOnlyEvents)
 {
     // One register with events
     // 1. Events must be enabled
-    // 2. Read once by normal request and exclude the register from polling
-    // 3. Events read requests are sent every 50ms
+    // 2. Read once by normal request
+    // 3. Events read requests are sent every 50ms (8 times to not trigger every 500ms polling)
     // 4. Simulate restart event
     // 5. Reenable events
-    // 6. Read once by normal request and exclude the register from polling
-    // 7. Events read requests are sent every 50ms
+    // 6. Read once by normal request
+    // 7. Events read requests are sent every 50ms (10 times)
+    // 8. The register is read again by normal request according to "sporadic only" device polling
 
     Port->SetBaudRate(115200);
     auto config = MakeDeviceConfig("device1", "1");
@@ -672,7 +701,7 @@ TEST_F(TPollTest, ReconnectWithOnlyEvents)
     Cycle(serialClient, lastAccessedDevice);
 
     // Only read events
-    for (size_t i = 0; i < 10; ++i) {
+    for (size_t i = 0; i < 8; ++i) {
         EnqueueReadEvents(4ms);
         Cycle(serialClient, lastAccessedDevice);
     }
@@ -695,4 +724,57 @@ TEST_F(TPollTest, ReconnectWithOnlyEvents)
         EnqueueReadEvents(4ms);
         Cycle(serialClient, lastAccessedDevice);
     }
+
+    // Read registers
+    EnqueueReadHolding(1, 1, 1, 10ms);
+    Cycle(serialClient, lastAccessedDevice);
+}
+
+TEST_F(TPollTest, OnlyEventsPollError)
+{
+    // One register with events
+    // 1. Events must be enabled
+    // 2. Read once by normal request
+    // 3. Events read requests are sent every 50ms (10 times)
+    // 4. Simulate read response timeout and check for device is now disconnected
+    // 5. Reenable events
+    // 6. Read once by normal request and check for device is reconnected
+
+    Port->SetBaudRate(115200);
+
+    auto config = MakeDeviceConfig("device1", "1");
+    config.CommonConfig->RequestDelay = 10ms;
+    config.CommonConfig->DeviceTimeout = std::chrono::milliseconds(0);
+    config.CommonConfig->DeviceMaxFailCycles = 1;
+
+    auto device = MakeDevice(config);
+    AddRegister(*device, 1, 0ms, TRegisterConfig::TSporadicMode::ONLY_EVENTS);
+
+    TSerialClientRegisterAndEventsReader serialClient({device}, 50ms, [this]() { return TimeMock.GetTime(); });
+    TSerialClientDeviceAccessHandler lastAccessedDevice(serialClient.GetEventsReader());
+
+    // Enable events and read register
+    EnqueueEnableEvents(1, 1, 10ms);
+    EnqueueReadHolding(1, 1, 1, 10ms);
+    Cycle(serialClient, lastAccessedDevice);
+
+    // Only read events
+    for (size_t i = 0; i < 10; ++i) {
+        EnqueueReadEvents(4ms);
+        Cycle(serialClient, lastAccessedDevice);
+    }
+
+    // Read register with no response
+    EnqueueReadHoldingError(1, 1, 1, 10ms);
+    Cycle(serialClient, lastAccessedDevice);
+    EXPECT_EQ(device->GetConnectionState(), TDeviceConnectionState::DISCONNECTED);
+
+    // Additional cycle for reading event but without actual read
+    Cycle(serialClient, lastAccessedDevice);
+
+    // Reenable events and read register
+    EnqueueEnableEvents(1, 1, 10ms);
+    EnqueueReadHolding(1, 1, 1, 10ms);
+    Cycle(serialClient, lastAccessedDevice);
+    EXPECT_EQ(device->GetConnectionState(), TDeviceConnectionState::CONNECTED);
 }

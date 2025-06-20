@@ -50,6 +50,7 @@
                 "reg_type": "holding",
                 "format": "u16",
                 "min": 0,
+                "default": 0,
                 "group": "l1",
                 "order": 1
             },
@@ -60,6 +61,7 @@
                 "format": "s16",
                 "min": -32768,
                 "max": 32767,
+                "default": 0,
                 "group": "l1",
                 "order": 2
             },
@@ -93,6 +95,7 @@
                 "reg_type": "holding",
                 "format": "u16",
                 "min": 0,
+                "default": 0,
                 "group": "l2",
                 "order": 1
             },
@@ -103,6 +106,7 @@
                 "format": "s16",
                 "min": -32768,
                 "max": 32767,
+                "default": 0,
                 "group": "l2",
                 "order": 2
             },
@@ -136,6 +140,7 @@
                 "reg_type": "holding",
                 "format": "u16",
                 "min": 0,
+                "default": 0,
                 "group": "l3",
                 "order": 1
             },
@@ -146,6 +151,7 @@
                 "format": "s16",
                 "min": -32768,
                 "max": 32767,
+                "default": 0,
                 "group": "l3",
                 "order": 2
             },

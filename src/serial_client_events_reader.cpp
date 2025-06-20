@@ -11,6 +11,8 @@ using namespace std::chrono;
 
 namespace
 {
+    const auto DEFAULT_SPORAIC_ONLY_READ_RATE_LIMIT = std::chrono::milliseconds(500);
+
     std::string EventTypeToString(uint8_t eventType)
     {
         switch (eventType) {
@@ -99,6 +101,23 @@ namespace
                 LOG(Warn) << "Failed to disable unexpected events: " << ex.what();
             } catch (const TSerialDeviceException& ex) {
                 LOG(Warn) << "Failed to disable unexpected events: " << ex.what();
+            }
+        }
+    }
+
+    void EnableSporadicOnlyDevicePolling(PSerialDevice device)
+    {
+        if (!device->IsSporadicOnly()) {
+            return;
+        }
+        for (auto& reg: device->GetRegisters()) {
+            if (reg->IsExcludedFromPolling()) {
+                auto config = reg->GetConfig();
+                if (!config->ReadPeriod.has_value() && !config->ReadRateLimit.has_value()) {
+                    config->ReadRateLimit = DEFAULT_SPORAIC_ONLY_READ_RATE_LIMIT;
+                }
+                reg->IncludeInPolling();
+                break;
             }
         }
     }
@@ -268,6 +287,7 @@ void TSerialClientEventsReader::EnableEvents(PSerialDevice device, TPort& port)
             ev.AddRegister(0, ModbusExt::TEventType::REBOOT, ModbusExt::TEventPriority::DISABLE);
             LOG(Debug) << "Try to enable events for " << MakeDeviceDescriptionString(slaveId);
             ev.SendRequests();
+            EnableSporadicOnlyDevicePolling(device);
         }
     } catch (const Modbus::TModbusExceptionError& e) {
         LOG(Warn) << "Failed to enable events for " << MakeDeviceDescriptionString(slaveId) << ": " << e.what();
@@ -337,7 +357,7 @@ void TSerialClientEventsReader::SetReadErrors(TRegisterCallback callback)
 {
     for (const auto& regArray: Regs) {
         for (const auto& reg: regArray.second) {
-            if (reg->IsExcludedFromPolling()) {
+            if (reg->IsExcludedFromPolling() || reg->Device()->IsSporadicOnly()) {
                 reg->SetError(TRegister::TError::ReadError);
                 if (callback) {
                     callback(reg);
@@ -350,15 +370,16 @@ void TSerialClientEventsReader::SetReadErrors(TRegisterCallback callback)
 void TSerialClientEventsReader::ClearReadErrors(TRegisterCallback callback)
 {
     ReadErrors = 0;
-    if (ClearErrorsOnSuccessfulRead) {
-        ClearErrorsOnSuccessfulRead = false;
-        for (const auto& regArray: Regs) {
-            for (const auto& reg: regArray.second) {
-                if (reg->IsExcludedFromPolling()) {
-                    reg->ClearError(TRegister::TError::ReadError);
-                    if (callback) {
-                        callback(reg);
-                    }
+    if (!ClearErrorsOnSuccessfulRead) {
+        return;
+    }
+    ClearErrorsOnSuccessfulRead = false;
+    for (const auto& regArray: Regs) {
+        for (const auto& reg: regArray.second) {
+            if (reg->IsExcludedFromPolling() || reg->Device()->IsSporadicOnly()) {
+                reg->ClearError(TRegister::TError::ReadError);
+                if (callback) {
+                    callback(reg);
                 }
             }
         }
