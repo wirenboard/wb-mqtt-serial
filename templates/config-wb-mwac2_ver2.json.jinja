@@ -15,9 +15,8 @@
 {% set IN_MODE_FLOOD_SENSOR = 5 -%}
 {
     "title": "WB-MWAC_template_title",
-    "device_type": "WB-MWAC-v2",
+    "device_type": "WB-MWAC-v2 ver2",
     "group": "g-wb",
-    "deprecated": true,
         "hw": [
         {
             "signature": "WBMWAC-v2"
@@ -612,7 +611,17 @@
                 "reg_type": "coil",
                 "address": 2,
                 "type": "switch",
+                "readonly": true,
                 "sporadic": true,
+                "group": "gg_outputs_channels"
+            },
+            {
+                "name": "Leakage Mode Reset",
+                "reg_type": "coil",
+                "address": 2,
+                "on_value": 0,
+                "type": "pushbutton",
+                "enabled": true,
                 "group": "gg_outputs_channels"
             },
             {
@@ -680,12 +689,18 @@
                 "group": "hw_info"
             },
             {
-                "name": "Battery State (2 - good, 1 - normal, 0 - replacement required), measured at module startup",
+                "name": "Battery State, measured at module startup",
                 "id": "Battery State",
                 "reg_type": "input",
                 "address": 971,
                 "type": "value",
                 "enabled": false,
+                "enum": [0, 1, 2],
+                "enum_titles": [
+                    "replacement required",
+                    "normal",
+                    "good"
+                ],
                 "group": "hw_info"
             },
             {
@@ -779,6 +794,7 @@
                 {% endfor -%}
 
                 "Leakage Mode": "Режим \"Протечка\"",
+                "Leakage Mode Reset": "Сброс режима \"Протечка\"",
 
                 "Serial": "Серийный номер",
                 "FW Version": "Версия прошивки",
@@ -786,7 +802,10 @@
                 "Uptime": "Время работы",
                 "MCU Temperature": "Температура МК",
                 "MCU Voltage": "Напряжение питания МК",
-                "Battery State (2 - good, 1 - normal, 0 - replacement required), measured at module startup": "Состояние батарейки (2 — отличное, 1 — норма, 0 — требуется замена), измерено при включении модуля",
+                "Battery State, measured at module startup": "Состояние батарейки, измерено при включении модуля",
+                "replacement required": "требуется замена",
+                "normal": "нормальное",
+                "good": "хорошее",
                 "iVout Overloaded": "Выход iVout перегружен",
 
                 "do nothing": "нет действия",
