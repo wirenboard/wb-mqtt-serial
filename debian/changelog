@@ -1,3 +1,9 @@
+wb-mqtt-serial (2.174.1) stable; urgency=medium
+
+  * WB-MSW templates: Add safety mode for IR devices
+
+ -- Ilia Skochilov <ilia.skochilov@wirenboard.com>  Fri, 20 Jun 2025 17:22:00 +0300
+
 wb-mqtt-serial (2.174.0) stable; urgency=medium
 
   * WB-MWAC v.2: deprecate old template, add new, make Leakage Mode control read only, add button to reset it
