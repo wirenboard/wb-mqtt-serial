@@ -36,6 +36,11 @@
                 "id": "ir_commands"
             },
             {
+                "title": "Safety Mode",
+                "id": "g_safety",
+                "description": "g_safety_description"
+            },
+            {
                 "title": "General",
                 "id": "general"
             },
@@ -98,6 +103,42 @@
                 "default": 10,
                 "group": "motion",
                 "order": 1
+            },
+            "safety_timer_s": {
+                "title": "Safety Poll Timeout (s)",
+                "group": "g_safety",
+                "description": "poll_timeout_description",
+                "address": 955,
+                "order": 1,
+                "reg_type": "holding",
+                "min": 1,
+                "max": 65534,
+                "default": 10
+            },
+            "safety_action": {
+                "title": "Safety Action",
+                "group": "g_safety",
+                "address": 956,
+                "order": 2,
+                "reg_type": "holding",
+                "enum": [0, 1],
+                "default": 0,
+                "enum_titles": [
+                    "No Action",
+                    "Play IR Command"
+                ]
+            },
+            "safety_command": {
+                "title": "Safety Command",
+                "group": "g_safety",
+                "description": "safety_command_description",
+                "address": 957,
+                "order": 3,
+                "reg_type": "holding",
+                "min": 1,
+                "max": 80,
+                "default": 1,
+                "condition": "safety_action==1"
             },
             "baud_rate": {
                 "title": "Baud rate",
@@ -1545,7 +1586,10 @@
                 "CO2 Sensor Installed": "CO₂ Sensor Installed",
                 "CO2 Sensor Type": "CO₂ Sensor Type",
                 "CO2 Sensor Software Version": "CO₂ Sensor Software Version",
-                "VOC Equivalent CO2 Concentration": "VOC Equivalent CO₂ Concentration (eCO₂)"
+                "VOC Equivalent CO2 Concentration": "VOC Equivalent CO₂ Concentration (eCO₂)",
+                "g_safety_description": "Safety mode is activated if there is no Modbus polling within the specified timeout. Supported since firmware 4.32.0",
+                "poll_timeout_description": "Timeout without Modbus polling after which safety mode will be activated",
+                "safety_command_description": "IR Command that will be played in safety mode"
             },
             "ru": {
                 "WB-MSW-v4_template_title": "WB-MSW-LORA v.4 (универсальный настенный Modbus-датчик)",
@@ -1720,7 +1764,17 @@
                 "Successful TH Readings": "Успешные запросы к датчику TH",
                 "Erroneous TH Readings": "Ошибочные запросы к датчику TH",
                 "Temperature Without Compensation": "Температура до компенсации",
-                "Humidity Without Compensation": "Влажность до компенсации"
+                "Humidity Without Compensation": "Влажность до компенсации",
+
+                "Safety Mode": "Безопасный режим",
+                "g_safety_description": "Безопасный режим активируется, если в течение указанного времени отсутствует опрос по Modbus. Доступно с версии прошивки 4.32.0",
+                "Safety Poll Timeout (s)": "Таймаут потери связи (с)",
+                "poll_timeout_description": "Время отсутствия опроса, после которого будет активирован безопасный режим",
+                "Safety Action": "Действие в безопасном режиме",
+                "No Action": "Ничего не делать",
+                "Play IR Command": "Воспроизвести ИК-команду",
+                "Safety Command": "ИК-команда",
+                "safety_command_description": "ИК-команда, которая будет воcпроизведена в безопасном режиме"
             }
         }
     }
