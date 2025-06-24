@@ -981,30 +981,6 @@
         "keep_oneof_values": false
       }
     },
-    "address_no_bits": {
-      "title": "Address",
-      "description": "Register index (0-65535 in case of Modbus)",
-      "oneOf": [
-        {
-          "title": "decimal or hex",
-          "type": "string",
-          "pattern": "^(0x[A-Fa-f\\d]+|\\d+)$",
-          "options": {
-            "inputAttributes": {
-              "placeholder":  "decimal (e.g. 123) or hex (e.g. 0xAF)"
-            },
-            "patternmessage": "Should be decimal or hex"
-          }
-        },
-        {
-          "title": "decimal",
-          "type": "integer"
-        }
-      ],
-      "options": {
-        "keep_oneof_values": false
-      }
-    },
     "write_address": {
       "title": "Write Address",
       "description": "Register index (0-65535 in case of Modbus)",

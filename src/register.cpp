@@ -74,6 +74,11 @@ bool TSameAddressRegisterRange::Add(PRegister reg, std::chrono::milliseconds pol
     return false;
 }
 
+bool TRegisterConfig::IsPartial() const
+{
+    return Address.DataWidth != 0;
+}
+
 bool TRegisterConfig::IsString() const
 {
     return Format == String || Format == String8;

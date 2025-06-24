@@ -761,6 +761,52 @@ namespace Modbus // modbus protocol common utilities
         }
     }
 
+    bool FillSetupRegistersCache(Modbus::IModbusTraits& traits,
+                                 TPort& port,
+                                 uint8_t slaveId,
+                                 const TDeviceSetupItems& setupItems,
+                                 Modbus::TRegisterCache& cache,
+                                 int shift)
+    {
+        auto it = setupItems.begin();
+        while (it != setupItems.end()) {
+            TModbusRegisterRange range(std::chrono::microseconds::max());
+            while (it != setupItems.end()) {
+                auto item = *it;
+                if (!item->RegisterConfig->IsPartial()) {
+                    ++it;
+                    continue;
+                }
+                auto address = GetUint32RegisterAddress(item->RegisterConfig->GetAddress());
+                auto cached = true;
+                for (uint32_t i = 0; i < item->RegisterConfig->Get16BitWidth(); ++i) {
+                    if (cache.count(address) == 0) {
+                        cached = false;
+                        break;
+                    }
+                    ++address;
+                }
+                if (cached) {
+                    ++it;
+                    continue;
+                }
+                auto reg = std::make_shared<TRegister>(item->Device, item->RegisterConfig);
+                reg->SetAvailable(TRegisterAvailability::AVAILABLE);
+                if (!range.Add(reg, std::chrono::milliseconds::max())) {
+                    break;
+                }
+                ++it;
+            }
+            ReadRegisterRange(traits, port, slaveId, range, cache, shift);
+            for (auto reg: range.RegisterList()) {
+                if (reg->GetErrorState().count()) {
+                    return false;
+                }
+            }
+        }
+        return true;
+    }
+
     TDeviceSetupItems::iterator WriteMultipleSetupRegisters(Modbus::IModbusTraits& traits,
                                                             TPort& port,
                                                             uint8_t slaveId,
@@ -832,6 +878,10 @@ namespace Modbus // modbus protocol common utilities
                              std::chrono::milliseconds frameTimeout,
                              int shift)
     {
+        if (!FillSetupRegistersCache(traits, port, slaveId, setupItems, cache, shift)) {
+            throw TSerialDeviceException("unable to write setup registers because unable to read data needed to set "
+                                         "values of \"partial\" setup registers");
+        }
         auto it = setupItems.begin();
         while (it != setupItems.end()) {
             auto item = *it;

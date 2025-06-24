@@ -228,6 +228,7 @@ TDeviceConnectionState TSerialDevice::GetConnectionState() const
 void TSerialDevice::WriteSetupRegisters()
 {
     for (const auto& item: SetupItems) {
+        // TODO: read and modify value for "partial" registers here
         WriteRegisterImpl(*item->RegisterConfig, item->RawValue);
         LOG(Info) << item->ToString();
     }
@@ -343,7 +344,7 @@ void TSerialDevice::SetSnRegister(PRegisterConfig regConfig)
 
 void TSerialDevice::AddSetupItem(PDeviceSetupItemConfig item)
 {
-    auto addrIt = SetupItemsByAddress.find(item->GetRegisterConfig()->GetAddress().ToString());
+    auto addrIt = SetupItemsByAddress.find(item->GetRegisterConfig()->ToString());
     if (addrIt != SetupItemsByAddress.end()) {
         std::stringstream ss;
         ss << "Setup command \"" << item->GetName() << "\" with address " << item->GetRegisterConfig()->GetAddress()
@@ -357,7 +358,7 @@ void TSerialDevice::AddSetupItem(PDeviceSetupItemConfig item)
         LOG(Warn) << ss.str();
     } else {
         auto setupItem = std::make_shared<TDeviceSetupItem>(item, shared_from_this(), item->GetRegisterConfig());
-        SetupItemsByAddress.insert({item->GetRegisterConfig()->GetAddress().ToString(), setupItem});
+        SetupItemsByAddress.insert({item->GetRegisterConfig()->ToString(), setupItem});
         SetupItems.insert(setupItem);
     }
 }
