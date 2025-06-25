@@ -18,27 +18,27 @@
           "max_read_registers": 0,
           "setup": [
             {
-                "title": "Item 1",
+                "title": "Setup Item 1",
                 "address": "10:0:3",
                 "value": 1
             },
             {
-                "title": "Item 2",
+                "title": "Setup Item 2",
                 "address": "10:3:3",
                 "value": 2
             },
             {
-                "title": "Item 3",
+                "title": "Setup Item 3",
                 "address": "11:12:4",
                 "value": 8
             },
             {
-                "title": "Item 5",
+                "title": "Setup Item 4",
                 "address": "20:4:4",
                 "value": "0xA"
             },
             {
-                "title": "Item 6",
+                "title": "Setup Item 5",
                 "address": "20:8:4",
                 "value": "0xB"
             }
