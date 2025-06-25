@@ -228,7 +228,6 @@ TDeviceConnectionState TSerialDevice::GetConnectionState() const
 void TSerialDevice::WriteSetupRegisters()
 {
     for (const auto& item: SetupItems) {
-        // TODO: read and modify value for "partial" registers here
         WriteRegisterImpl(*item->RegisterConfig, item->RawValue);
         LOG(Info) << item->ToString();
     }
