@@ -344,12 +344,12 @@ void TSerialDevice::SetSnRegister(PRegisterConfig regConfig)
 
 void TSerialDevice::AddSetupItem(PDeviceSetupItemConfig item)
 {
-    auto addrIt = SetupItemsByAddress.find(item->GetRegisterConfig()->ToString());
+    auto key = item->GetRegisterConfig()->ToString();
+    auto addrIt = SetupItemsByAddress.find(key);
     if (addrIt != SetupItemsByAddress.end()) {
         std::stringstream ss;
-        ss << "Setup command \"" << item->GetName() << "\" with address " << item->GetRegisterConfig()->GetAddress()
-           << " from \"" << DeviceConfig()->DeviceType << "\""
-           << " has a duplicate command \"" << addrIt->second->Name << "\" ";
+        ss << "Setup command \"" << item->GetName() << "\" (" << key << ") from \"" << DeviceConfig()->DeviceType
+           << "\" has a duplicate command \"" << addrIt->second->Name << "\" ";
         if (item->GetRawValue() == addrIt->second->RawValue) {
             ss << "with the same register value.";
         } else {
@@ -358,7 +358,7 @@ void TSerialDevice::AddSetupItem(PDeviceSetupItemConfig item)
         LOG(Warn) << ss.str();
     } else {
         auto setupItem = std::make_shared<TDeviceSetupItem>(item, shared_from_this(), item->GetRegisterConfig());
-        SetupItemsByAddress.insert({item->GetRegisterConfig()->ToString(), setupItem});
+        SetupItemsByAddress.insert({key, setupItem});
         SetupItems.insert(setupItem);
     }
 }

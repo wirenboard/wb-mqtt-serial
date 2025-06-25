@@ -15,33 +15,31 @@
           "id": "modbus-sample",
           "frame_timeout_ms": 0,
           "response_timeout_ms": 1,
-          "max_write_registers": 0,
+          "max_read_registers": 0,
           "setup": [
             {
-                "title": "Holding 1",
-                "address": 10,
+                "title": "Item 1",
+                "address": "10:0:3",
                 "value": 1
             },
             {
-                "title": "Holding 2",
-                "address": 11,
-                "format": "u64",
+                "title": "Item 2",
+                "address": "10:3:3",
                 "value": 2
             },
             {
-                "title": "Holding 3",
-                "address": 15,
-                "format": "u24",
-                "value": 3
+                "title": "Item 3",
+                "address": "11:12:4",
+                "value": 8
             },
             {
-                "title": "Holding 4",
-                "address": 20,
+                "title": "Item 5",
+                "address": "20:4:4",
                 "value": "0xA"
             },
             {
-                "title": "Holding 5",
-                "address": 21,
+                "title": "Item 6",
+                "address": "20:8:4",
                 "value": "0xB"
             }
           ],

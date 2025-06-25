@@ -233,7 +233,7 @@
           "title": "Address",
           "description": "Register index (0-65535 in case of Modbus)",
           "propertyOrder": 2,
-          "$ref": "#/definitions/address_no_bits",
+          "$ref": "#/definitions/address",
           "options": {
             "keep_oneof_values": false
           }

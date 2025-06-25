@@ -19,12 +19,27 @@ Subscribe: /devices/modbus-sample/controls/# (QoS 0)
 Unsubscribe -- em-test: /devices/modbus-sample/controls/#
 Open()
 Sleep(5000)
-EnqueueContinuousWriteResponse()
->> 01 10 00 0A 00 07 0E 00 01 00 00 00 00 00 00 00 02 00 00 00 03 1D F5
-<< 01 10 00 0A 00 07 A1 C9
-EnqueueContinuousWriteResponse()
->> 01 10 00 14 00 02 04 00 0A 00 0B 92 95
-<< 01 10 00 14 00 02 01 CC
+EnqueuePartialWriteReadCacheDataResponse()
+>> 01 03 00 0A 00 02 E4 09
+<< 01 03 04 AA BB CC DD 3E 97
+EnqueuePartialWriteReadCacheDataResponse()
+>> 01 03 00 14 00 01 C4 0E
+<< 01 03 02 EE FF B5 A4
+EnqueuePartialWriteResponse()
+>> 01 06 00 0A AA B9 16 DA
+<< 01 06 00 0A AA B9 16 DA
+EnqueuePartialWriteResponse()
+>> 01 06 00 0A AA 91 16 C4
+<< 01 06 00 0A AA 91 16 C4
+EnqueuePartialWriteResponse()
+>> 01 06 00 0B 8C DD 5C 91
+<< 01 06 00 0B 8C DD 5C 91
+EnqueuePartialWriteResponse()
+>> 01 06 00 14 EE AF C4 12
+<< 01 06 00 14 EE AF C4 12
+EnqueuePartialWriteResponse()
+>> 01 06 00 14 EB AF C7 42
+<< 01 06 00 14 EB AF C7 42
 EnqueueSimpleChannelReadResponse()
 >> 01 03 00 21 00 01 D4 00
 << 01 03 02 AB CD 06 E1

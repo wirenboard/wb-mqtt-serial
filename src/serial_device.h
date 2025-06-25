@@ -200,7 +200,7 @@ public:
 
     /**
      * @brief Prepare to access device (pauses for configured delay by default) i.e. "StartSession".
-     *        Called before any read/write/etc after communicating with another device
+     *        Called before any read/write/etc after communicating with another device.
      *
      * @throws exceptions inherited from TSerialDeviceException on internal errors
      */

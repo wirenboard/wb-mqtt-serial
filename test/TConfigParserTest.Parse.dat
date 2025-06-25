@@ -977,6 +977,13 @@ Ports:
             Reg type: holding (0)
             Reg format: U16
             ------
+            Name: Sub2 s4
+            Address: 10196
+            Value: 10
+            RawValue: 0x05
+            Reg type: holding (0)
+            Reg format: U16
+            ------
             Name: Sub2 c3 s22
             Address: 10494
             Value: 111
