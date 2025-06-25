@@ -826,6 +826,9 @@ namespace Modbus // modbus protocol common utilities
         auto count = 0;
         while (startIt != endIt) {
             auto item = *startIt;
+            if (item->RegisterConfig->IsPartial()) {
+                return startIt;
+            }
             auto address = GetUint32RegisterAddress(item->RegisterConfig->GetWriteAddress());
             if (last) {
                 auto lastAddress = GetUint32RegisterAddress(last->RegisterConfig->GetWriteAddress());
@@ -890,8 +893,7 @@ namespace Modbus // modbus protocol common utilities
             if (config->MaxWriteRegisters > 0 && config->MaxWriteRegisters < maxRegs) {
                 maxRegs = config->MaxWriteRegisters;
             }
-            auto type = item->RegisterConfig->Type;
-            if (maxRegs > 1 && type == REG_HOLDING) {
+            if (maxRegs > 1 && item->RegisterConfig->Type == REG_HOLDING && !item->RegisterConfig->IsPartial()) {
                 it = WriteMultipleSetupRegisters(traits,
                                                  port,
                                                  slaveId,
