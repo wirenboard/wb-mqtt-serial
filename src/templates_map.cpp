@@ -38,14 +38,23 @@ namespace
         }
     }
 
-    void ValidateCondition(const Json::Value& node, std::unordered_set<std::string>& validConditions)
+    void ValidateConditionAndAddDependencies(Json::Value& node, Expressions::TExpressionsCache& exprCache)
     {
         if (node.isMember("condition")) {
             auto condition = node["condition"].asString();
-            if (validConditions.find(condition) == validConditions.end()) {
+            auto itExpr = exprCache.find(condition);
+            if (itExpr == exprCache.end()) {
                 Expressions::TParser parser;
                 parser.Parse(condition);
-                validConditions.insert(condition);
+                itExpr = exprCache.emplace(condition, parser.Parse(condition)).first;
+            }
+            const auto dependencies = Expressions::GetDependencies(itExpr->second.get());
+            if (!dependencies.empty()) {
+                Json::Value dependenciesArray(Json::arrayValue);
+                for (const auto& dep: dependencies) {
+                    dependenciesArray.append(dep);
+                }
+                node["dependencies"] = dependenciesArray;
             }
         }
     }
@@ -61,16 +70,16 @@ namespace
         return name;
     }
 
-    void ValidateConditions(Json::Value& deviceTemplate)
+    void ValidateConditionsAndAddDependencies(Json::Value& deviceTemplate)
     {
-        std::unordered_set<std::string> validConditions;
+        Expressions::TExpressionsCache exprCache;
         std::vector<std::string> sections = {"channels", "setup", "parameters"};
         for (const auto& section: sections) {
             if (deviceTemplate.isMember(section)) {
                 Json::Value& sectionNodes = deviceTemplate[section];
                 for (auto it = sectionNodes.begin(); it != sectionNodes.end(); ++it) {
                     try {
-                        ValidateCondition(*it, validConditions);
+                        ValidateConditionAndAddDependencies(*it, exprCache);
                     } catch (const runtime_error& e) {
                         throw runtime_error("Failed to parse condition in " + section + "[" +
                                             GetNodeName(*it, it.name()) + "]: " + e.what());
@@ -337,7 +346,7 @@ const Json::Value& TDeviceTemplate::GetTemplate()
         if (!IsDeprecated()) {
             try {
                 Validator->Validate(root);
-                ValidateConditions(root["device"]);
+                ValidateConditionsAndAddDependencies(root["device"]);
                 // Check that parameters with same ids have same addresses (for parameters declared as array)
                 ValidateParameterProperties(root["device"]["parameters"]);
             } catch (const std::runtime_error& e) {

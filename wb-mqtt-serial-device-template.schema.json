@@ -57,27 +57,25 @@
     },
 
     "group": {
-      "allOf": [
-        {
-          "type": "object",
-          "properties": {
-            "title": {
-              "type": "string"
-            },
-            "id": {
-              "type": "string"
-            },
-            "order": {
-              "type": "integer"
-            },
-            "description": {
-              "type": "string"
-            }
-          },
-          "required": ["title", "id"]
+      "type": "object",
+      "properties": {
+        "title": {
+          "type": "string"
         },
-        { "$ref": "#/definitions/group_condition" }
-      ]
+        "id": {
+          "type": "string"
+        },
+        "order": {
+          "type": "integer"
+        },
+        "description": {
+          "type": "string"
+        },
+        "group": {
+          "type": "string"
+        }
+      },
+      "required": ["title", "id"]
     },
 
     "groups": {
@@ -125,6 +123,9 @@
             },
             "readonly": {
               "type": "boolean"
+            },
+            "description": {
+              "type": "string"
             }
           },
           "required": ["title"]
