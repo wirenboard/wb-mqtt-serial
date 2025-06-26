@@ -198,8 +198,12 @@ public:
      */
     virtual PRegisterRange CreateRegisterRange() const;
 
-    // Prepare to access device (pauses for configured delay by default)
-    // i.e. "StartSession". Called before any read/write/etc after communicating with another device
+    /**
+     * @brief Prepare to access device (pauses for configured delay by default) i.e. "StartSession".
+     *        Called before any read/write/etc after communicating with another device.
+     *
+     * @throws exceptions inherited from TSerialDeviceException on internal errors
+     */
     void Prepare(TDevicePrepareMode setupMode = TDevicePrepareMode::WITH_SETUP_IF_WAS_DISCONNECTED);
 
     // Ends communication session with the device. Called before communicating with another device

@@ -274,6 +274,9 @@ public:
     //! Get occupied space in 16-bit words
     uint8_t Get16BitWidth() const;
 
+    //! Checks that the register is "partial" (register data with is not zero)
+    bool IsPartial() const;
+
     bool IsString() const;
     std::string ToString() const;
 

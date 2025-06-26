@@ -2748,6 +2748,7 @@ void TModbusExpectations::EnqueueContinuousWriteResponse()
                            0x07, // quantity Lo
                        }),
                        __func__);
+
     Expector()->Expect(WrapPDU({
                            0x10, // function code
                            0x00, // starting address Hi
@@ -2770,7 +2771,123 @@ void TModbusExpectations::EnqueueContinuousWriteResponse()
                        __func__);
 }
 
-void TModbusExpectations::EnqueueContinuousWriteReadChannelResponse()
+void TModbusExpectations::EnqueuePartialWriteReadCacheDataResponse()
+{
+    Expector()->Expect(WrapPDU({
+                           0x03, // function code
+                           0x00, // starting address Hi
+                           0x0A, // starting address Lo
+                           0x00, // quantity Hi
+                           0x02, // quantity Lo
+                       }),
+                       WrapPDU({
+                           0x03, // function code
+                           0x04, // byte count
+                           0xAA, // data Hi
+                           0xBB, // data Lo
+                           0xCC, // data Hi
+                           0xDD, // data Lo
+                       }),
+                       __func__);
+
+    Expector()->Expect(WrapPDU({
+                           0x03, // function code
+                           0x00, // starting address Hi
+                           0x14, // starting address Lo
+                           0x00, // quantity Hi
+                           0x01, // quantity Lo
+                       }),
+                       WrapPDU({
+                           0x03, // function code
+                           0x02, // byte count
+                           0xEE, // data Hi
+                           0xFF, // data Lo
+                       }),
+                       __func__);
+}
+
+void TModbusExpectations::EnqueuePartialWriteResponse()
+{
+    Expector()->Expect(WrapPDU({
+                           0x06, // function code
+                           0x00, // address Hi
+                           0x0A, // address Lo
+                           0xAA, // data Hi
+                           0xB9, // data Lo
+                       }),
+                       WrapPDU({
+                           0x06, // function code
+                           0x00, // address Hi
+                           0x0A, // address Lo
+                           0xAA, // data Hi
+                           0xB9, // data Lo
+                       }),
+                       __func__);
+    Expector()->Expect(WrapPDU({
+                           0x06, // function code
+                           0x00, // address Hi
+                           0x0A, // address Lo
+                           0xAA, // data Hi
+                           0x91, // data Lo
+                       }),
+                       WrapPDU({
+                           0x06, // function code
+                           0x00, // address Hi
+                           0x0A, // address Lo
+                           0xAA, // data Hi
+                           0x91, // data Lo
+                       }),
+                       __func__);
+    Expector()->Expect(WrapPDU({
+                           0x06, // function code
+                           0x00, // address Hi
+                           0x0B, // address Lo
+                           0x8C, // data Hi
+                           0xDD, // data Lo
+                       }),
+                       WrapPDU({
+                           0x06, // function code
+                           0x00, // address Hi
+                           0x0B, // address Lo
+                           0x8C, // data Hi
+                           0xDD, // data Lo
+                       }),
+                       __func__);
+
+    Expector()->Expect(WrapPDU({
+                           0x06, // function code
+                           0x00, // address Hi
+                           0x14, // address Lo
+                           0xEE, // data Hi
+                           0xAF, // data Lo
+                       }),
+                       WrapPDU({
+                           0x06, // function code
+                           0x00, // address Hi
+                           0x14, // address Lo
+                           0xEE, // data Hi
+                           0xAF, // data Lo
+                       }),
+                       __func__);
+
+    Expector()->Expect(WrapPDU({
+                           0x06, // function code
+                           0x00, // address Hi
+                           0x14, // address Lo
+                           0xEB, // data Hi
+                           0xAF, // data Lo
+                       }),
+                       WrapPDU({
+                           0x06, // function code
+                           0x00, // address Hi
+                           0x14, // address Lo
+                           0xEB, // data Hi
+                           0xAF, // data Lo
+                       }),
+                       __func__);
+}
+
+void TModbusExpectations::EnqueueSimpleChannelReadResponse()
 {
     Expector()->Expect(WrapPDU({
                            0x03, // function code

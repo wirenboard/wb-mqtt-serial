@@ -99,8 +99,12 @@ public:
     void EnqueueContinuousReadResponse(bool separated = true);
 
     void EnqueueContinuousWriteResponse();
-    void EnqueueContinuousWriteReadChannelResponse();
 
+    void EnqueuePartialWriteReadCacheDataResponse();
+    void EnqueuePartialWriteResponse();
+    void EnqueuePartialWriteReadChannelResponse();
+
+    void EnqueueSimpleChannelReadResponse();
     void EnqueueReadResponseWithNoiseAtTheEnd(bool addNoise);
 
     void EnqueueLittleEndianReadResponses();

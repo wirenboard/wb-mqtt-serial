@@ -1070,7 +1070,24 @@ protected:
 TEST_F(TModbusContinuousRegisterWriteTest, SetupItems)
 {
     EnqueueContinuousWriteResponse();
-    EnqueueContinuousWriteReadChannelResponse();
+    EnqueueSimpleChannelReadResponse();
+    SerialDriver->LoopOnce();
+}
+
+class TModbusPartialRegisterWriteTest: public TSerialDeviceIntegrationTest, public TModbusExpectations
+{
+protected:
+    const char* ConfigPath() const override
+    {
+        return "configs/config-modbus-partial-write-test.json";
+    }
+};
+
+TEST_F(TModbusPartialRegisterWriteTest, SetupItems)
+{
+    EnqueuePartialWriteReadCacheDataResponse();
+    EnqueuePartialWriteResponse();
+    EnqueueSimpleChannelReadResponse();
     SerialDriver->LoopOnce();
 }
 
