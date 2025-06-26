@@ -1,3 +1,9 @@
+wb-mqtt-serial (2.175.1) stable; urgency=medium
+
+  * Fix channels and parameters description in readme
+
+ -- Ilya Titov <ilya.titov@wirenboard.com>  Thu, 26 Jun 2025 06:13:13 +0000
+
 wb-mqtt-serial (2.175.0) stable; urgency=medium
 
   * Add partial register write featute for Modbus device setup items and parameters
