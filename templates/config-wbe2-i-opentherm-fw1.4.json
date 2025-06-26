@@ -84,6 +84,7 @@
                 "format": "u16",
                 "scale": 0.1,
                 "offset": -100,
+		"round_to": 0.01,
                 "group": "boiler_state"
             },
             {
