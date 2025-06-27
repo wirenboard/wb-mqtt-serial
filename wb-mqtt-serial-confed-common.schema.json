@@ -42,11 +42,6 @@
         }
       }
     },
-    "device_name": {
-      "description" : "Device name to be displayed in UI",
-      "minLength" : 1,
-      "type" : "string"
-    },
     "deviceProperties": {
       "properties": {
         "enabled": {
@@ -57,8 +52,10 @@
           "propertyOrder": 1
         },
         "name" : {
-          "$ref" : "#/definitions/device_name",
+          "type" : "string",
           "title" : "Device name",
+          "description" : "Device name to be displayed in UI",
+          "minLength" : 1,
           "propertyOrder": 3
         },
         "id": {
@@ -150,7 +147,7 @@
           "title": "Frame timeout (ms)",
           "description": "frame_timeout_description",
           "minimum": -1,
-          "default": -1,
+          "default": 20,
           "propertyOrder": 108
         },
         "force_frame_timeout": {
@@ -166,7 +163,7 @@
           "title": "Response timeout (ms)",
           "description": "response_timeout_description",
           "minimum": -1,
-          "default": -1,
+          "default": 500,
           "propertyOrder": 110
         },
         "device_timeout_ms": {
@@ -1356,9 +1353,9 @@
       "read_period_description": "This option specifies the desired period between two consecutive reads of the channel. Short periods may not be maintained due to port bandwidth limitations",
       "broadcast_description": "Requests are sent without specifying exact id of the device. Use the mode if only one device is connected",
       "frame_timeout_description": "Specifies minimum inter-frame delay. For some protocols this value is used to split incoming data into frames.",
-      "response_timeout_description": "Specifies maximum device's response time. Zero means no timeout. If not set, the default timeout (500ms) is used. If port's appropriate parameter is bigger, this one is overwritten.",
-      "device_timeout_description": "Specifies timeout for device connection. If not set, default value 3000ms is used. Value -1 disables device reconnect. Zero means instant timeout.",
-      "device_max_fail_cycles_desc": "Defines number of device polling cycles with all failed registers before marking device as disconnected. Default value is 2. Value -1 disables device reconnect. Zero means instant timeout.",
+      "response_timeout_description": "Specifies maximum device's response time. If port's appropriate parameter is bigger, this one is overwritten.",
+      "device_timeout_description": "Specifies timeout for device connection. Value -1 disables device reconnect. Zero means instant timeout.",
+      "device_max_fail_cycles_desc": "Defines number of device polling cycles with all failed registers before marking device as disconnected. Value -1 disables device reconnect. Zero means instant timeout.",
       "string_data_size_description": "For the modbus protocol, strings are read one character per register from the low byte. The parameter specifies the number of characters",
       "rate_limit_desc": "To reduce the load on the processor, it is not recommended to specify more than 100 reads for WB6 and 800 for WB7",
       "sporadic_description": "If a protocol allows, the register is excluded from periodic polling. Its change is sent by a special event",
@@ -1398,9 +1395,9 @@
       "Device timeout (ms)": "Время ожидания устройства (мс)",
       "Device max fail cycles": "Максимальное число неудачных циклов опроса",
       "frame_timeout_description": "Задаёт минимальную задержку между сообщениями. В некоторых протоколах это значение используется для определения границ сообщений.",
-      "response_timeout_description": "Задаёт максимальное время ответа устройства. По умолчанию 500 мс. Если соответствующий параметр порта больше, то используется значение порта.",
-      "device_timeout_description": "Задаёт время ожидания устройства. По умолчанию 3000 мс. Запрещает переподключение, если установлено -1.",
-      "device_max_fail_cycles_desc": "Число неудачных циклов опроса устройства после которых оно считается отключенным. По умолчанию 2. Запрещает переподключение, если установлено -1.",
+      "response_timeout_description": "Задаёт максимальное время ответа устройства. Если соответствующий параметр порта больше, то используется значение порта.",
+      "device_timeout_description": "Задаёт время ожидания устройства. Запрещает переподключение, если установлено -1.",
+      "device_max_fail_cycles_desc": "Число неудачных циклов опроса устройства после которых оно считается отключенным. Запрещает переподключение, если установлено -1.",
       "Setup command": "Команда настройки",
       "Command name": "Название команды",
       "Used for logging/debugging purposes only": "Используется только для диагностических сообщений",

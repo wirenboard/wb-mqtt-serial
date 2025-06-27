@@ -397,7 +397,7 @@ TRPCRegisterList CreateRegisterList(const TDeviceProtocolParams& protocolParams,
 void CheckParametersConditions(const Json::Value& templateParams, Json::Value& parameters)
 {
     TJsonParams jsonParams(parameters);
-    TExpressionsCache expressionsCache;
+    Expressions::TExpressionsCache expressionsCache;
     bool check = true;
     while (check) {
         std::unordered_map<std::string, bool> matches;

@@ -7,6 +7,7 @@
 #define LOG(logger) ::logger.Log() << "[serial config] "
 
 using namespace WBMQTT::JSON;
+using Expressions::TExpressionsCache;
 
 namespace
 {
