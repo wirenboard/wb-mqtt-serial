@@ -54,6 +54,11 @@ TModbusDevice::TModbusDevice(std::unique_ptr<Modbus::IModbusTraits> modbusTraits
         std::chrono::ceil<std::chrono::milliseconds>(port->GetSendTimeBytes(Modbus::STANDARD_FRAME_TIMEOUT_BYTES)));
 }
 
+bool TModbusDevice::GetForceFrameTimeout()
+{
+    return ModbusTraits->GetForceFrameTimeout();
+}
+
 PRegisterRange TModbusDevice::CreateRegisterRange() const
 {
     return Modbus::CreateRegisterRange(ResponseTime.GetValue());

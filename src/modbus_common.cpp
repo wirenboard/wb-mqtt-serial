@@ -1,5 +1,6 @@
 #include "modbus_common.h"
 #include "bin_utils.h"
+#include "devices/modbus_device.h"
 #include "log.h"
 #include "serial_device.h"
 #include "wb_registers.h"
@@ -102,7 +103,8 @@ namespace Modbus // modbus protocol common utilities
             return true;
         }
 
-        auto& deviceConfig = *(reg->Device()->DeviceConfig());
+        auto device = dynamic_cast<TModbusDevice*>(reg->Device().get());
+        auto config = device->DeviceConfig();
         bool isSingleBit = IsSingleBitType(reg->GetConfig()->Type);
         auto addr = GetUint32RegisterAddress(reg->GetConfig()->GetAddress());
         const auto widthInWords = GetModbusDataWidthIn16BitWords(*reg->GetConfig());
@@ -123,7 +125,7 @@ namespace Modbus // modbus protocol common utilities
             // Can't add register separated from last in the range by more than maxHole registers
             int maxHole = 0;
             if (reg->Device()->GetSupportsHoles()) {
-                maxHole = isSingleBit ? deviceConfig.MaxBitHole : deviceConfig.MaxRegHole;
+                maxHole = isSingleBit ? config->MaxBitHole : config->MaxRegHole;
             }
             if (Start + Count + maxHole < addr) {
                 return false;
@@ -140,8 +142,8 @@ namespace Modbus // modbus protocol common utilities
                 }
                 // Can read up to 16 UNKNOWN single bit registers at once
                 size_t maxRegs = 16;
-                if ((deviceConfig.MaxReadRegisters > 0) && (deviceConfig.MaxReadRegisters <= MAX_READ_REGISTERS)) {
-                    maxRegs = deviceConfig.MaxReadRegisters;
+                if ((config->MaxReadRegisters > 0) && (config->MaxReadRegisters <= MAX_READ_REGISTERS)) {
+                    maxRegs = config->MaxReadRegisters;
                 }
                 if (reg->GetAvailable() == TRegisterAvailability::UNKNOWN && (RegisterList().size() >= maxRegs)) {
                     return false;
@@ -158,8 +160,8 @@ namespace Modbus // modbus protocol common utilities
             extend = std::max(0, static_cast<int>(addr + widthInWords) - static_cast<int>(Start + Count));
 
             auto maxRegs = isSingleBit ? MAX_READ_BITS : MAX_READ_REGISTERS;
-            if ((deviceConfig.MaxReadRegisters > 0) && (deviceConfig.MaxReadRegisters <= maxRegs)) {
-                maxRegs = deviceConfig.MaxReadRegisters;
+            if ((config->MaxReadRegisters > 0) && (config->MaxReadRegisters <= maxRegs)) {
+                maxRegs = config->MaxReadRegisters;
             }
             if (Count + extend > static_cast<size_t>(maxRegs)) {
                 return false;
@@ -170,8 +172,11 @@ namespace Modbus // modbus protocol common utilities
         // Request 8 bytes: SlaveID, Operation, Addr, Count, CRC
         // Response 5 bytes except data: SlaveID, Operation, Size, CRC
         auto sendTime = reg->Device()->Port()->GetSendTimeBytes(newPduSize + 8 + 5);
-        auto newPollTime = std::chrono::ceil<std::chrono::milliseconds>(
-            sendTime + AverageResponseTime + deviceConfig.RequestDelay + 2 * deviceConfig.FrameTimeout);
+        auto duration = sendTime + AverageResponseTime + config->RequestDelay;
+        if (device->GetForceFrameTimeout()) {
+            duration += config->FrameTimeout;
+        }
+        auto newPollTime = std::chrono::ceil<std::chrono::milliseconds>(duration);
 
         if (((Count != 0) && !AddingRegisterIncreasesSize(isSingleBit, extend)) || (newPollTime <= pollLimit)) {
 
@@ -187,8 +192,8 @@ namespace Modbus // modbus protocol common utilities
             LOG(Debug) << "Poll time for " << reg->ToString() << " is too long: " << newPollTime.count() << " ms"
                        << " (sendTime=" << sendTime.count() << " us, "
                        << "AverageResponseTime=" << AverageResponseTime.count() << " us, "
-                       << "RequestDelay=" << deviceConfig.RequestDelay.count() << " us, "
-                       << "FrameTimeout=" << deviceConfig.FrameTimeout.count() << " ms)"
+                       << "RequestDelay=" << config->RequestDelay.count() << " us, "
+                       << "FrameTimeout=" << config->FrameTimeout.count() << " ms)"
                        << ", limit is " << pollLimit.count() << " ms";
         }
         return false;

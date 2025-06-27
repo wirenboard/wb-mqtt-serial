@@ -48,7 +48,10 @@ namespace Modbus
     class IModbusTraits
     {
     public:
+        IModbusTraits(bool forceFrameTimeout = false);
         virtual ~IModbusTraits() = default;
+
+        bool GetForceFrameTimeout();
 
         /**
          * @brief Read response to specified request.
@@ -61,13 +64,14 @@ namespace Modbus
                                         size_t expectedResponsePduSize,
                                         const std::chrono::milliseconds& responseTimeout,
                                         const std::chrono::milliseconds& frameTimeout) = 0;
+
+    protected:
+        bool ForceFrameTimeout;
     };
 
     class TModbusRTUTraits: public IModbusTraits
     {
         const size_t DATA_SIZE = 3; // number of bytes in ADU that is not in PDU (slaveID (1b) + crc value (2b))
-
-        bool ForceFrameTimeout;
 
         TPort::TFrameCompletePred ExpectNBytes(size_t n) const;
         size_t GetPacketSize(size_t pduSize) const;
