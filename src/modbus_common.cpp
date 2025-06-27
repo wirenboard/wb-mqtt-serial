@@ -131,7 +131,9 @@ namespace Modbus // modbus protocol common utilities
                 return false;
             }
 
-            if (RegisterList().back()->GetAvailable() == TRegisterAvailability::UNKNOWN) {
+            if (!device->GetContinuousReadEnabled() &&
+                RegisterList().back()->GetAvailable() == TRegisterAvailability::UNKNOWN)
+            {
                 // Read UNKNOWN 2 byte registers one by one to find availability
                 if (!isSingleBit) {
                     return false;
@@ -150,7 +152,7 @@ namespace Modbus // modbus protocol common utilities
                 }
             } else {
                 // Don't mix available and unknown registers
-                if (reg->GetAvailable() == TRegisterAvailability::UNKNOWN) {
+                if (!device->GetContinuousReadEnabled() && reg->GetAvailable() == TRegisterAvailability::UNKNOWN) {
                     return false;
                 }
 
@@ -937,7 +939,7 @@ namespace Modbus // modbus protocol common utilities
         }
     }
 
-    void EnableWbContinuousRead(PSerialDevice device,
+    bool EnableWbContinuousRead(PSerialDevice device,
                                 IModbusTraits& traits,
                                 TPort& port,
                                 uint8_t slaveId,
@@ -961,10 +963,12 @@ namespace Modbus // modbus protocol common utilities
             if (device->DeviceConfig()->MaxBitHole < MAX_HOLE_CONTINUOUS_1_BIT_REGISTERS) {
                 device->DeviceConfig()->MaxBitHole = MAX_HOLE_CONTINUOUS_1_BIT_REGISTERS;
             }
+            return true;
         } catch (const TSerialDevicePermanentRegisterException& e) {
             // A firmware doesn't support continuous read
             LOG(Warn) << "Continuous read is not enabled [slave_id is " << device->DeviceConfig()->SlaveId + "]";
         }
+        return false;
     }
 
     TRegisterValue ReadRegister(IModbusTraits& traits,

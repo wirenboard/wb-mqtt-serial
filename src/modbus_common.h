@@ -128,7 +128,7 @@ namespace Modbus // modbus protocol common utilities
                              std::chrono::milliseconds frameTimeout,
                              int shift = 0);
 
-    void EnableWbContinuousRead(PSerialDevice device,
+    bool EnableWbContinuousRead(PSerialDevice device,
                                 IModbusTraits& traits,
                                 TPort& port,
                                 uint8_t slaveId,
