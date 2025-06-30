@@ -48,12 +48,6 @@
             }
           }
         },
-        "poll_interval": {
-          "type": "integer",
-          "options": {
-            "hidden": true
-          }
-        },
         "read_rate_limit_ms": {
           "type": "integer",
           "title": "Read rate limit (ms)",

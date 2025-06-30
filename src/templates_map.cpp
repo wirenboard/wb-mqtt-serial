@@ -129,6 +129,19 @@ namespace
                 error + "All parameter declarations with the same id must have the same addresses and FW versions.");
         }
     }
+
+    void ConvertParametersObjectToArray(Json::Value& deviceTemplate)
+    {
+        auto& device = deviceTemplate["device"];
+        if (device.isMember("parameters") && device["parameters"].isObject()) {
+            Json::Value parametersArray(Json::arrayValue);
+            for (auto it = device["parameters"].begin(); it != device["parameters"].end(); ++it) {
+                (*it)["id"] = it.key().asString();
+                parametersArray.append((*it));
+            }
+            device["parameters"] = std::move(parametersArray);
+        }
+    }
 }
 
 //=============================================================================
@@ -356,6 +369,8 @@ const Json::Value& TDeviceTemplate::GetTemplate()
             if (WithSubdevices()) {
                 TSubDevicesTemplateMap subdevices(Type, root["device"]);
                 CheckNesting(root, 0, subdevices);
+            } else {
+                ConvertParametersObjectToArray(root);
             }
         }
         Template = root["device"];

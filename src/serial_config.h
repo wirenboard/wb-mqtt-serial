@@ -246,10 +246,6 @@ PHandlerConfig LoadConfig(const std::string& configFileName,
 
 bool IsSubdeviceChannel(const Json::Value& channelSchema);
 
-std::string GetDeviceKey(const std::string& deviceType);
-std::string GetSubdeviceSchemaKey(const std::string& subDeviceType);
-
-void AppendParams(Json::Value& dst, const Json::Value& src);
 void SetIfExists(Json::Value& dst, const std::string& dstKey, const Json::Value& src, const std::string& srcKey);
 std::string DecorateIfNotEmpty(const std::string& prefix,
                                const std::string& str,
@@ -264,3 +260,14 @@ namespace SerialConfig
 }
 
 bool HasNoEmptyProperty(const Json::Value& regCfg, const std::string& propertyName);
+
+/**
+ * @brief Updates the given configuration to the latest format if it uses an old format.
+ *
+ * This function inspects and modifies the provided JSON configuration object in-place,
+ * converting any deprecated or legacy fields and structures to the current expected format.
+ * It is intended to maintain backward compatibility with older configuration files.
+ *
+ * @param config Reference to a Json::Value object representing the configuration to be fixed.
+ */
+void FixOldConfigFormat(Json::Value& config, TTemplateMap& templates);
