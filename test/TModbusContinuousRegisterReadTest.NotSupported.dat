@@ -83,55 +83,49 @@ Sleep(5000)
 EnqueueContinuousReadEnableResponse()
 >> 01 06 00 72 00 01 E8 11
 << 01 86 02 C3 A1
-EnqueueContinuousReadResponse()
+EnqueueContinuousReadHoldingResponse()
 >> 01 03 00 01 00 01 D5 CA
 << 01 03 02 00 00 B8 44
 Publish: /devices/modbus-sample/controls/R1: '0' (QoS 1, retained)
-EnqueueContinuousReadResponse()
+EnqueueContinuousReadHoldingResponse()
 >> 01 03 00 08 00 01 05 C8
 << 01 03 02 00 01 79 84
 Publish: /devices/modbus-sample/controls/R2: '1' (QoS 1, retained)
-EnqueueContinuousReadResponse()
+EnqueueContinuousReadHoldingResponse()
 >> 01 03 00 14 00 01 C4 0E
 << 01 03 02 00 02 39 85
 Publish: /devices/modbus-sample/controls/R3: '2' (QoS 1, retained)
-EnqueueContinuousReadResponse()
+EnqueueContinuousReadCoilResponse()
 >> 01 01 00 01 00 01 AC 0A
 << 01 01 01 01 90 48
 Publish: /devices/modbus-sample/controls/C1: '1' (QoS 1, retained)
-EnqueueContinuousReadResponse()
+EnqueueContinuousReadCoilResponse()
 >> 01 01 00 46 00 01 1C 1F
 << 01 01 01 01 90 48
 Publish: /devices/modbus-sample/controls/C2: '1' (QoS 1, retained)
-EnqueueContinuousReadResponse()
+EnqueueContinuousReadCoilResponse()
 >> 01 01 00 AA 00 01 DD EA
 << 01 01 01 01 90 48
 Publish: /devices/modbus-sample/controls/C3: '1' (QoS 1, retained)
 >>> LoopOnce() [separated]
-EnqueueContinuousReadResponse()
+EnqueueContinuousReadHoldingResponse()
 >> 01 03 00 01 00 01 D5 CA
 << 01 03 02 00 00 B8 44
-EnqueueContinuousReadResponse()
+EnqueueContinuousReadHoldingResponse()
 >> 01 03 00 08 00 01 05 C8
 << 01 03 02 00 01 79 84
-EnqueueContinuousReadResponse()
+EnqueueContinuousReadHoldingResponse()
 >> 01 03 00 14 00 01 C4 0E
 << 01 03 02 00 02 39 85
-EnqueueContinuousReadResponse()
+EnqueueContinuousReadCoilResponse()
 >> 01 01 00 01 00 01 AC 0A
 << 01 01 01 01 90 48
-EnqueueContinuousReadResponse()
+EnqueueContinuousReadCoilResponse()
 >> 01 01 00 46 00 01 1C 1F
 << 01 01 01 01 90 48
-EnqueueContinuousReadResponse()
+EnqueueContinuousReadCoilResponse()
 >> 01 01 00 AA 00 01 DD EA
 << 01 01 01 01 90 48
-Unsubscribe -- em-test: /devices/modbus-sample/controls/C3/on
-Publish: /devices/modbus-sample/controls/C3/meta: '' (QoS 1, retained)
-Publish: /devices/modbus-sample/controls/C3/meta/order: '' (QoS 1, retained)
-Publish: /devices/modbus-sample/controls/C3/meta/readonly: '' (QoS 1, retained)
-Publish: /devices/modbus-sample/controls/C3/meta/type: '' (QoS 1, retained)
-Publish: /devices/modbus-sample/controls/C3: '' (QoS 1, retained)
 Unsubscribe -- em-test: /devices/modbus-sample/controls/C2/on
 Publish: /devices/modbus-sample/controls/C2/meta: '' (QoS 1, retained)
 Publish: /devices/modbus-sample/controls/C2/meta/order: '' (QoS 1, retained)
@@ -156,6 +150,12 @@ Publish: /devices/modbus-sample/controls/R2/meta/order: '' (QoS 1, retained)
 Publish: /devices/modbus-sample/controls/R2/meta/readonly: '' (QoS 1, retained)
 Publish: /devices/modbus-sample/controls/R2/meta/type: '' (QoS 1, retained)
 Publish: /devices/modbus-sample/controls/R2: '' (QoS 1, retained)
+Unsubscribe -- em-test: /devices/modbus-sample/controls/C3/on
+Publish: /devices/modbus-sample/controls/C3/meta: '' (QoS 1, retained)
+Publish: /devices/modbus-sample/controls/C3/meta/order: '' (QoS 1, retained)
+Publish: /devices/modbus-sample/controls/C3/meta/readonly: '' (QoS 1, retained)
+Publish: /devices/modbus-sample/controls/C3/meta/type: '' (QoS 1, retained)
+Publish: /devices/modbus-sample/controls/C3: '' (QoS 1, retained)
 Unsubscribe -- em-test: /devices/modbus-sample/controls/R1/on
 Publish: /devices/modbus-sample/controls/R1/meta: '' (QoS 1, retained)
 Publish: /devices/modbus-sample/controls/R1/meta/order: '' (QoS 1, retained)

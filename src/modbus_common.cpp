@@ -1,5 +1,6 @@
 #include "modbus_common.h"
 #include "bin_utils.h"
+#include "devices/modbus_device.h"
 #include "log.h"
 #include "serial_device.h"
 #include "wb_registers.h"
@@ -102,10 +103,18 @@ namespace Modbus // modbus protocol common utilities
             return true;
         }
 
-        auto& deviceConfig = *(reg->Device()->DeviceConfig());
+        auto deviceConfig = reg->Device()->DeviceConfig();
         bool isSingleBit = IsSingleBitType(reg->GetConfig()->Type);
         auto addr = GetUint32RegisterAddress(reg->GetConfig()->GetAddress());
         const auto widthInWords = GetModbusDataWidthIn16BitWords(*reg->GetConfig());
+
+        auto device = dynamic_cast<TModbusDevice*>(reg->Device().get());
+        auto continuousReadEnabled = false;
+        auto forceFrameTimeout = false;
+        if (device != nullptr) {
+            continuousReadEnabled = device->GetContinuousReadEnabled();
+            forceFrameTimeout = device->GetForceFrameTimeout();
+        }
 
         size_t extend;
         if (RegisterList().empty()) {
@@ -123,43 +132,48 @@ namespace Modbus // modbus protocol common utilities
             // Can't add register separated from last in the range by more than maxHole registers
             int maxHole = 0;
             if (reg->Device()->GetSupportsHoles()) {
-                maxHole = isSingleBit ? deviceConfig.MaxBitHole : deviceConfig.MaxRegHole;
+                maxHole = isSingleBit ? deviceConfig->MaxBitHole : deviceConfig->MaxRegHole;
             }
             if (Start + Count + maxHole < addr) {
                 return false;
             }
 
-            if (RegisterList().back()->GetAvailable() == TRegisterAvailability::UNKNOWN) {
-                // Read UNKNOWN 2 byte registers one by one to find availability
-                if (!isSingleBit) {
-                    return false;
-                }
-                // Disable holes for reading UNKNOWN registers
-                if (Start + Count < addr) {
-                    return false;
-                }
-                // Can read up to 16 UNKNOWN single bit registers at once
-                size_t maxRegs = 16;
-                if ((deviceConfig.MaxReadRegisters > 0) && (deviceConfig.MaxReadRegisters <= MAX_READ_REGISTERS)) {
-                    maxRegs = deviceConfig.MaxReadRegisters;
-                }
-                if (reg->GetAvailable() == TRegisterAvailability::UNKNOWN && (RegisterList().size() >= maxRegs)) {
-                    return false;
-                }
+            auto hasHoles = Start + Count < addr;
+            if (continuousReadEnabled) {
+                HasHolesFlg = HasHolesFlg || hasHoles;
             } else {
-                // Don't mix available and unknown registers
-                if (reg->GetAvailable() == TRegisterAvailability::UNKNOWN) {
-                    return false;
+                if (RegisterList().back()->GetAvailable() == TRegisterAvailability::UNKNOWN) {
+                    // Read UNKNOWN 2 byte registers one by one to find availability
+                    if (!isSingleBit) {
+                        return false;
+                    }
+                    // Disable holes for reading UNKNOWN registers
+                    if (hasHoles) {
+                        return false;
+                    }
+                    // Can read up to 16 UNKNOWN single bit registers at once
+                    size_t maxRegs = 16;
+                    if ((deviceConfig->MaxReadRegisters > 0) && (deviceConfig->MaxReadRegisters <= MAX_READ_REGISTERS))
+                    {
+                        maxRegs = deviceConfig->MaxReadRegisters;
+                    }
+                    if (reg->GetAvailable() == TRegisterAvailability::UNKNOWN && (RegisterList().size() >= maxRegs)) {
+                        return false;
+                    }
+                } else {
+                    // Don't mix available and unknown registers
+                    if (reg->GetAvailable() == TRegisterAvailability::UNKNOWN) {
+                        return false;
+                    }
+                    HasHolesFlg = HasHolesFlg || hasHoles;
                 }
-
-                HasHolesFlg = HasHolesFlg || (Start + Count < addr);
             }
 
             extend = std::max(0, static_cast<int>(addr + widthInWords) - static_cast<int>(Start + Count));
 
             auto maxRegs = isSingleBit ? MAX_READ_BITS : MAX_READ_REGISTERS;
-            if ((deviceConfig.MaxReadRegisters > 0) && (deviceConfig.MaxReadRegisters <= maxRegs)) {
-                maxRegs = deviceConfig.MaxReadRegisters;
+            if ((deviceConfig->MaxReadRegisters > 0) && (deviceConfig->MaxReadRegisters <= maxRegs)) {
+                maxRegs = deviceConfig->MaxReadRegisters;
             }
             if (Count + extend > static_cast<size_t>(maxRegs)) {
                 return false;
@@ -170,8 +184,11 @@ namespace Modbus // modbus protocol common utilities
         // Request 8 bytes: SlaveID, Operation, Addr, Count, CRC
         // Response 5 bytes except data: SlaveID, Operation, Size, CRC
         auto sendTime = reg->Device()->Port()->GetSendTimeBytes(newPduSize + 8 + 5);
-        auto newPollTime = std::chrono::ceil<std::chrono::milliseconds>(
-            sendTime + AverageResponseTime + deviceConfig.RequestDelay + 2 * deviceConfig.FrameTimeout);
+        auto duration = sendTime + AverageResponseTime + deviceConfig->RequestDelay;
+        if (forceFrameTimeout) {
+            duration += deviceConfig->FrameTimeout;
+        }
+        auto newPollTime = std::chrono::ceil<std::chrono::milliseconds>(duration);
 
         if (((Count != 0) && !AddingRegisterIncreasesSize(isSingleBit, extend)) || (newPollTime <= pollLimit)) {
 
@@ -187,8 +204,8 @@ namespace Modbus // modbus protocol common utilities
             LOG(Debug) << "Poll time for " << reg->ToString() << " is too long: " << newPollTime.count() << " ms"
                        << " (sendTime=" << sendTime.count() << " us, "
                        << "AverageResponseTime=" << AverageResponseTime.count() << " us, "
-                       << "RequestDelay=" << deviceConfig.RequestDelay.count() << " us, "
-                       << "FrameTimeout=" << deviceConfig.FrameTimeout.count() << " ms)"
+                       << "RequestDelay=" << deviceConfig->RequestDelay.count() << " us, "
+                       << "FrameTimeout=" << deviceConfig->FrameTimeout.count() << " ms)"
                        << ", limit is " << pollLimit.count() << " ms";
         }
         return false;
@@ -932,7 +949,7 @@ namespace Modbus // modbus protocol common utilities
         }
     }
 
-    void EnableWbContinuousRead(PSerialDevice device,
+    bool EnableWbContinuousRead(PSerialDevice device,
                                 IModbusTraits& traits,
                                 TPort& port,
                                 uint8_t slaveId,
@@ -956,10 +973,12 @@ namespace Modbus // modbus protocol common utilities
             if (device->DeviceConfig()->MaxBitHole < MAX_HOLE_CONTINUOUS_1_BIT_REGISTERS) {
                 device->DeviceConfig()->MaxBitHole = MAX_HOLE_CONTINUOUS_1_BIT_REGISTERS;
             }
+            return true;
         } catch (const TSerialDevicePermanentRegisterException& e) {
             // A firmware doesn't support continuous read
             LOG(Warn) << "Continuous read is not enabled [slave_id is " << device->DeviceConfig()->SlaveId + "]";
         }
+        return false;
     }
 
     TRegisterValue ReadRegister(IModbusTraits& traits,

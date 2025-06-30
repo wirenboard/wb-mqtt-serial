@@ -1,14 +1,21 @@
+wb-mqtt-serial (2.175.2) stable; urgency=medium
+
+  * Fix forced frame timeout bug for modbus register range reading 
+  * Fix slow first poll for devices with continuous read enabled
+
+ -- Ilya Titov <ilya.titov@wirenboard.com>  Mon, 30 Jun 2025 12:19:52 +0300
+
 wb-mqtt-serial (2.175.1) stable; urgency=medium
 
   * Fix channels and parameters description in readme
 
- -- Ilya Titov <ilya.titov@wirenboard.com>  Thu, 26 Jun 2025 06:13:13 +0000
+ -- Ilya Titov <ilya.titov@wirenboard.com>  Thu, 26 Jun 2025 09:13:13 +0300
 
 wb-mqtt-serial (2.175.0) stable; urgency=medium
 
   * Add partial register write featute for Modbus device setup items and parameters
 
- -- Ilya Titov <ilya.titov@wirenboard.com>  Wed, 25 Jun 2025 07:49:58 +0000
+ -- Ilya Titov <ilya.titov@wirenboard.com>  Wed, 25 Jun 2025 10:49:58 +0300
 
 wb-mqtt-serial (2.174.1) stable; urgency=medium
 

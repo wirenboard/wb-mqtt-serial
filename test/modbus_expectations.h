@@ -96,7 +96,8 @@ public:
     /*--------------------------------------*/
 
     void EnqueueContinuousReadEnableResponse(bool ok = true);
-    void EnqueueContinuousReadResponse(bool separated = true);
+    void EnqueueContinuousReadHoldingResponse(bool separated = true);
+    void EnqueueContinuousReadCoilResponse(bool separated = true);
 
     void EnqueueContinuousWriteResponse();
 
