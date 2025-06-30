@@ -68,12 +68,6 @@
           },
           "propertyOrder": 4
         },
-        "poll_interval": {
-          "type": "integer",
-          "options": {
-            "hidden": true
-          }
-        },
         "read_rate_limit_ms": {
           "type": "integer",
           "title": "Read rate limit (ms)",
@@ -334,12 +328,6 @@
             "keep_oneof_values": false
           }
         },
-        "poll_interval": {
-          "type": "integer",
-          "options": {
-            "hidden": true
-          }
-        },
         "read_period_ms": {
           "type": "integer",
           "title": "Read period (ms)",
@@ -582,12 +570,6 @@
             "array_controls_top": true
           }
         },
-        "poll_interval": {
-          "type": "integer",
-          "options": {
-            "hidden": true
-          }
-        },
         "read_period_ms": {
           "type": "integer",
           "title": "Read period (ms)",
@@ -660,12 +642,6 @@
           "default": true,
           "format": "checkbox"
         },
-        "poll_interval": {
-          "type": "integer",
-          "options": {
-            "hidden": true
-          }
-        },
         "read_period_ms": {
           "type": "integer",
           "title": "Read period (ms)",
@@ -722,7 +698,20 @@
         "mode": {
           "type": "integer",
           "title": "Poll",
-          "propertyOrder": 2
+          "propertyOrder": 2,
+          "default": 1,
+          "enum": [0, 1, 2, 3, 4 , 5],
+          "options": {
+            "enum_titles": [
+              "do not read",
+              "in queue order",
+              "200 ms",
+              "100 ms",
+              "custom period",
+              "not faster than (deprecated)"
+            ],
+            "enum_hidden": [5]
+          }
         },
         "period": {
           "type": "integer",
@@ -730,36 +719,18 @@
           "minimum": 0,
           "maximum": 172800000,
           "propertyOrder": 3,
-          "default": 1000
+          "default": 1000,
+          "options":{
+            "dependencies": {
+              "mode": [4, 5]
+            }
+          }
         }
       },
       "required": ["mode", "name"],
       "options": {
         "remove_empty_properties": true
       }
-    },
-    "groupsChannel": {
-      "type": "object",
-      "properties": {
-        "mode": {
-          "type": "integer",
-          "title": "Poll"
-        },
-        "period": {
-          "type": "integer",
-          "title": "Period (ms)",
-          "minimum": 0,
-          "maximum": 172800000,
-          "default": 1000
-        },
-        "channelIndex": {
-          "type": "integer",
-          "options": {
-            "hidden": true
-          }
-        }
-      },
-      "required": ["mode", "channelIndex"]
     },
     "subreg": {
       "type": "object",
