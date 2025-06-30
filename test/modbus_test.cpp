@@ -5,9 +5,6 @@
 
 #include <wblib/control.h>
 
-#include "log.h"
-#define LOG(logger) logger.Log() << "[test] "
-
 using namespace std;
 
 class TModbusTest: public TSerialDeviceTest, public TModbusExpectations
