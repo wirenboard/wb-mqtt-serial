@@ -5,6 +5,9 @@
 
 #include <wblib/control.h>
 
+#include "log.h"
+#define LOG(logger) logger.Log() << "[test] "
+
 using namespace std;
 
 class TModbusTest: public TSerialDeviceTest, public TModbusExpectations
@@ -1031,12 +1034,14 @@ protected:
 TEST_F(TModbusContinuousRegisterReadTest, Supported)
 {
     EnqueueContinuousReadEnableResponse();
-    EnqueueContinuousReadResponse();
+    EnqueueContinuousReadHoldingResponse();
+    EnqueueContinuousReadCoilResponse(false);
     Note() << "LoopOnce() [one by one]";
-    for (auto i = 0; i < 6; ++i) {
+    for (auto i = 0; i < 5; ++i) {
         SerialDriver->LoopOnce();
     }
-    EnqueueContinuousReadResponse(false);
+    EnqueueContinuousReadHoldingResponse(false);
+    EnqueueContinuousReadCoilResponse(false);
     Note() << "LoopOnce() [continuous]";
     for (auto i = 0; i < 4; ++i) {
         SerialDriver->LoopOnce();
@@ -1046,12 +1051,14 @@ TEST_F(TModbusContinuousRegisterReadTest, Supported)
 TEST_F(TModbusContinuousRegisterReadTest, NotSupported)
 {
     EnqueueContinuousReadEnableResponse(false);
-    EnqueueContinuousReadResponse();
+    EnqueueContinuousReadHoldingResponse();
+    EnqueueContinuousReadCoilResponse();
     Note() << "LoopOnce() [one by one]";
     for (auto i = 0; i < 6; ++i) {
         SerialDriver->LoopOnce();
     }
-    EnqueueContinuousReadResponse();
+    EnqueueContinuousReadHoldingResponse();
+    EnqueueContinuousReadCoilResponse();
     Note() << "LoopOnce() [separated]";
     for (auto i = 0; i < 6; ++i) {
         SerialDriver->LoopOnce();

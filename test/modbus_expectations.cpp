@@ -2594,41 +2594,24 @@ void TModbusExpectations::EnqueueContinuousReadEnableResponse(bool ok)
                        __func__);
 }
 
-void TModbusExpectations::EnqueueContinuousReadResponse(bool separated)
+void TModbusExpectations::EnqueueContinuousReadHoldingResponse(bool separated)
 {
-    const uint8_t holdingAddresses[] = {1, 8, 20};
-    const uint8_t coilAddresses[] = {1, 70, 170};
+    const uint8_t addresses[] = {1, 8, 20};
 
     if (separated) {
         for (uint8_t i = 0; i < 3; ++i) {
             Expector()->Expect(WrapPDU({
-                                   0x03,                // function code
-                                   0x00,                // starting address Hi
-                                   holdingAddresses[i], // starting address Lo
-                                   0x00,                // quantity Hi
-                                   0x01,                // quantity Lo
+                                   0x03,         // function code
+                                   0x00,         // starting address Hi
+                                   addresses[i], // starting address Lo
+                                   0x00,         // quantity Hi
+                                   0x01,         // quantity Lo
                                }),
                                WrapPDU({
                                    0x03, // function code
                                    0x02, // byte count
                                    0x00, // data Hi
                                    i,    // data Lo
-                               }),
-                               __func__);
-        }
-
-        for (uint8_t i = 0; i < 3; ++i) {
-            Expector()->Expect(WrapPDU({
-                                   0x01,             // function code
-                                   0x00,             // starting address Hi
-                                   coilAddresses[i], // starting address Lo
-                                   0x00,             // quantity Hi
-                                   0x01,             // quantity Lo
-                               }),
-                               WrapPDU({
-                                   0x01, // function code
-                                   0x01, // byte count
-                                   0x01, // status
                                }),
                                __func__);
         }
@@ -2665,11 +2648,11 @@ void TModbusExpectations::EnqueueContinuousReadResponse(bool separated)
                        __func__);
 
     Expector()->Expect(WrapPDU({
-                           0x03,                // function code
-                           0x00,                // starting address Hi
-                           holdingAddresses[2], // starting address Lo
-                           0x00,                // quantity Hi
-                           0x01,                // quantity Lo
+                           0x03,         // function code
+                           0x00,         // starting address Hi
+                           addresses[2], // starting address Lo
+                           0x00,         // quantity Hi
+                           0x01,         // quantity Lo
                        }),
                        WrapPDU({
                            0x03, // function code
@@ -2678,6 +2661,31 @@ void TModbusExpectations::EnqueueContinuousReadResponse(bool separated)
                            0x03, // data Lo
                        }),
                        __func__);
+}
+
+void TModbusExpectations::EnqueueContinuousReadCoilResponse(bool separated)
+{
+
+    const uint8_t addresses[] = {1, 70, 170};
+
+    if (separated) {
+        for (uint8_t i = 0; i < 3; ++i) {
+            Expector()->Expect(WrapPDU({
+                                   0x01,         // function code
+                                   0x00,         // starting address Hi
+                                   addresses[i], // starting address Lo
+                                   0x00,         // quantity Hi
+                                   0x01,         // quantity Lo
+                               }),
+                               WrapPDU({
+                                   0x01, // function code
+                                   0x01, // byte count
+                                   0x01, // status
+                               }),
+                               __func__);
+        }
+        return;
+    }
 
     Expector()->Expect(WrapPDU({
                            0x01, // function code
@@ -2702,11 +2710,11 @@ void TModbusExpectations::EnqueueContinuousReadResponse(bool separated)
                        __func__);
 
     Expector()->Expect(WrapPDU({
-                           0x01,             // function code
-                           0x00,             // starting address Hi
-                           coilAddresses[2], // starting address Lo
-                           0x00,             // quantity Hi
-                           0x01,             // quantity Lo
+                           0x01,         // function code
+                           0x00,         // starting address Hi
+                           addresses[2], // starting address Lo
+                           0x00,         // quantity Hi
+                           0x01,         // quantity Lo
                        }),
                        WrapPDU({
                            0x01, // function code
