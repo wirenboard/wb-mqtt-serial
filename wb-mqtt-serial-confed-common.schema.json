@@ -700,7 +700,7 @@
           "title": "Poll",
           "propertyOrder": 2,
           "default": 1,
-          "enum": [0, 1, 2, 3, 4 , 5],
+          "enum": [0, 1, 2, 3, 4, 5],
           "options": {
             "enum_titles": [
               "do not read",
