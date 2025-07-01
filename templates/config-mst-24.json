@@ -3,7 +3,7 @@
   "device_type": "mst24_v1",
   "group": "g-motor-control",
   "device": {
-    "name": "mst24-v1",
+    "name": "MST24/NT60",
     "id": "mst24_v1",
     "groups": [
       {
@@ -269,7 +269,7 @@
     ],
     "translations": {
       "en": {
-        "mst24_title": "Oven MST-24 Stepper Driver",
+        "mst24_title": "Oven (Meyertec) MST-24/Rtelligent NT60 Stepper Driver",
         "Current": "Load Current",
         "general": "General",
         "hw_info": "HW Info",
@@ -300,7 +300,7 @@
         "stop": "Stop"
       },
       "ru": {
-        "mst24_title": "Драйвер шагового двигателя ОВЕН MST-24",
+        "mst24_title": "Драйвер шагового двигателя ОВЕН (Meyertec) MST-24/Rtelligent NT60",
         "general": "Общее",
         "hw_info": "Данные модуля",
         "settings": "Настройки",

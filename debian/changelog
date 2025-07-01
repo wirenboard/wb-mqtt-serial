@@ -1,3 +1,9 @@
+wb-mqtt-serial (2.175.3) stable; urgency=medium
+
+  * Change device name in mst-24 template to show Rtelligent NT60 support
+
+ -- Alexander Getman <alexander.getman@wirenboard.com>  Mon, 30 Jun 2025 18:29:04 +0300
+
 wb-mqtt-serial (2.175.2) stable; urgency=medium
 
   * Fix forced frame timeout bug for modbus register range reading 
