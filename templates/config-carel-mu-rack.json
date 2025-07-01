@@ -2095,18 +2095,21 @@
                 "type": "switch"
             },
             {
-                "name": "Alarm Low Suction Pressure 1",
+                "name": "Alarm General Low Suction Pressure 1",
                 "group": "alarms",
                 "reg_type": "discrete",
                 "address": 44,
-                "type": "switch"
+                "type": "switch",
+                "enabled": false
             },
             {
-                "name": "Alarm Low Suction Pressure 2",
+                "name": "Alarm General Low Suction Pressure 2",
                 "group": "alarms",
                 "reg_type": "discrete",
                 "address": 35,
-                "type": "switch"
+                "type": "switch",
+                "enabled": false
+
             },
             {
                 "name": "General Discharge Pressure Switch",
