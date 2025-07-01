@@ -3,16 +3,17 @@
 #include "rpc_device_probe_task.h"
 #include "rpc_helpers.h"
 
-#define LOG(logger) ::logger.Log() << "[RPC] "
-
 namespace
 {
-    void SetCallbacks(TRPCDeviceLoadConfigRequest& request,
-                      WBMQTT::TMqttRpcServer::TResultCallback onResult,
-                      WBMQTT::TMqttRpcServer::TErrorCallback onError)
+    PDeviceTemplate GetDeviceTemplate(const Json::Value request, PTemplateMap templates)
     {
-        request.OnResult = onResult;
-        request.OnError = onError;
+        std::string deviceType = request["device_type"].asString();
+        auto deviceTemplate = templates->GetTemplate(deviceType);
+        if (deviceTemplate->WithSubdevices()) {
+            throw TRPCException("Device \"" + deviceType + "\" is not supported by this RPC",
+                                TRPCResultCode::RPC_WRONG_PARAM_VALUE);
+        }
+        return deviceTemplate;
     }
 }
 
@@ -96,13 +97,7 @@ void TRPCDeviceHandler::LoadConfig(const Json::Value& request,
 {
     ValidateRPCRequest(request, RequestDeviceLoadConfigSchema);
 
-    std::string deviceType = request["device_type"].asString();
-    auto deviceTemplate = Templates->GetTemplate(deviceType);
-    if (deviceTemplate->WithSubdevices()) {
-        throw TRPCException("Device \"" + deviceType + "\" is not supported by this RPC",
-                            TRPCResultCode::RPC_WRONG_PARAM_VALUE);
-    }
-
+    auto deviceTemplate = GetDeviceTemplate(request, Templates);
     Json::Value parameters = deviceTemplate->GetTemplate()["parameters"];
     if (parameters.empty()) {
         onResult(Json::Value(Json::objectValue));
@@ -110,8 +105,8 @@ void TRPCDeviceHandler::LoadConfig(const Json::Value& request,
     }
 
     try {
-        auto rpcRequest = ParseRPCDeviceLoadConfigRequest(request, DeviceFactory, deviceTemplate, ParametersCache);
-        SetCallbacks(*rpcRequest, onResult, onError);
+        auto rpcRequest =
+            ParseRPCDeviceLoadConfigRequest(request, DeviceFactory, deviceTemplate, ParametersCache, onResult, onError);
         SerialClientTaskRunner.RunTask(request, std::make_shared<TRPCDeviceLoadConfigSerialClientTask>(rpcRequest));
     } catch (const TRPCException& e) {
         ProcessException(e, onError);

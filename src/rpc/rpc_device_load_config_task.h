@@ -1,9 +1,5 @@
 #pragma once
-#include "rpc_device_handler.h"
 #include "rpc_port_handler.h"
-#include "serial_client.h"
-#include <chrono>
-#include <wblib/rpc.h>
 
 template<> bool inline WBMQTT::JSON::Is<uint8_t>(const Json::Value& value)
 {
@@ -45,11 +41,11 @@ typedef std::shared_ptr<TRPCDeviceLoadConfigRequest> PRPCDeviceLoadConfigRequest
 PRPCDeviceLoadConfigRequest ParseRPCDeviceLoadConfigRequest(const Json::Value& request,
                                                             const TSerialDeviceFactory& deviceFactory,
                                                             PDeviceTemplate deviceTemplate,
-                                                            TRPCDeviceParametersCache& parametersCache);
+                                                            TRPCDeviceParametersCache& parametersCache,
+                                                            WBMQTT::TMqttRpcServer::TResultCallback onResult,
+                                                            WBMQTT::TMqttRpcServer::TErrorCallback onError);
 
-void ExecRPCDeviceLoadConfigRequest(PPort port,
-                                    PRPCDeviceLoadConfigRequest rpcRequest,
-                                    const std::list<PSerialDevice>& polledDevices);
+void ExecRPCDeviceLoadConfigRequest(PPort port, PSerialDevice device, PRPCDeviceLoadConfigRequest rpcRequest);
 
 class TRPCDeviceLoadConfigSerialClientTask: public ISerialClientTask
 {

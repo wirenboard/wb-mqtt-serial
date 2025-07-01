@@ -122,6 +122,20 @@ TSerialClientTaskRunner::TSerialClientTaskRunner(PMQTTSerialDriver serialDriver)
 
 void TSerialClientTaskRunner::RunTask(const Json::Value& request, PSerialClientTask task)
 {
+    auto deviceId = request["device_id"];
+    if (deviceId.isString()) {
+        auto id = deviceId.asString();
+        for (auto driver: SerialDriver->GetPortDrivers()) {
+            for (auto device: driver->GetSerialClient()->GetDevices()) {
+                if (device->DeviceConfig()->Id == id) {
+                    task->Device = device;
+                    driver->GetSerialClient()->AddTask(task);
+                    return;
+                }
+            }
+        }
+    }
+
     auto portDescription = GetRequestPortDescription(request);
     if (SerialDriver) {
         auto portDrivers = SerialDriver->GetPortDrivers();
@@ -130,6 +144,14 @@ void TSerialClientTaskRunner::RunTask(const Json::Value& request, PSerialClientT
                 return driver->GetSerialClient()->GetPort()->GetDescription(false) == portDescription;
             });
         if (portDriver != portDrivers.end()) {
+            auto slaveId = request["slave_id"].asString();
+            auto deviceType = request["device_type"].asString();
+            for (auto device: (*portDriver)->GetSerialClient()->GetDevices()) {
+                if (device->DeviceConfig()->SlaveId == slaveId && device->DeviceConfig()->DeviceType == deviceType) {
+                    task->Device = device;
+                    break;
+                }
+            }
             (*portDriver)->GetSerialClient()->AddTask(task);
             return;
         }

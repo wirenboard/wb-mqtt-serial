@@ -10,20 +10,6 @@ namespace
 {
     const auto MAX_RETRIES = 2;
 
-    PSerialDevice FindDevice(const std::list<PSerialDevice>& polledDevices,
-                             const std::string& slaveId,
-                             const std::string& deviceType)
-    {
-        for (const auto& device: polledDevices) {
-            auto deviceConfig = device->DeviceConfig();
-            if (deviceConfig->SlaveId == slaveId && deviceConfig->DeviceType == deviceType) {
-                return device;
-            }
-        }
-
-        return nullptr;
-    }
-
     PSerialDevice CreateDevice(PPort port,
                                PRPCDeviceLoadConfigRequest rpcRequest,
                                const TDeviceProtocolParams& protocolParams)
@@ -200,22 +186,23 @@ TRPCDeviceLoadConfigRequest::TRPCDeviceLoadConfigRequest(const TSerialDeviceFact
 PRPCDeviceLoadConfigRequest ParseRPCDeviceLoadConfigRequest(const Json::Value& request,
                                                             const TSerialDeviceFactory& deviceFactory,
                                                             PDeviceTemplate deviceTemplate,
-                                                            TRPCDeviceParametersCache& parametersCache)
+                                                            TRPCDeviceParametersCache& parametersCache,
+                                                            WBMQTT::TMqttRpcServer::TResultCallback onResult,
+                                                            WBMQTT::TMqttRpcServer::TErrorCallback onError)
 {
-    PRPCDeviceLoadConfigRequest res =
-        std::make_shared<TRPCDeviceLoadConfigRequest>(deviceFactory, deviceTemplate, parametersCache);
+    auto res = std::make_shared<TRPCDeviceLoadConfigRequest>(deviceFactory, deviceTemplate, parametersCache);
     res->SerialPortSettings = ParseRPCSerialPortSettings(request);
     res->SlaveId = request["slave_id"].asString();
     res->Group = request["group"].asString();
     WBMQTT::JSON::Get(request, "response_timeout", res->ResponseTimeout);
     WBMQTT::JSON::Get(request, "frame_timeout", res->FrameTimeout);
     WBMQTT::JSON::Get(request, "total_timeout", res->TotalTimeout);
+    res->OnResult = onResult;
+    res->OnError = onError;
     return res;
 }
 
-void ExecRPCDeviceLoadConfigRequest(PPort port,
-                                    PRPCDeviceLoadConfigRequest rpcRequest,
-                                    const std::list<PSerialDevice>& polledDevices)
+void ExecRPCDeviceLoadConfigRequest(PPort port, PSerialDevice device, PRPCDeviceLoadConfigRequest rpcRequest)
 {
     if (!rpcRequest->OnResult) {
         return;
@@ -223,7 +210,6 @@ void ExecRPCDeviceLoadConfigRequest(PPort port,
 
     TDeviceProtocolParams protocolParams =
         rpcRequest->DeviceFactory.GetProtocolParams(rpcRequest->DeviceTemplate->GetProtocol());
-    auto device = FindDevice(polledDevices, rpcRequest->SlaveId, rpcRequest->DeviceTemplate->Type);
     bool useCache = true;
     if (device == nullptr) {
         device = CreateDevice(port, rpcRequest, protocolParams);
@@ -306,7 +292,7 @@ ISerialClientTask::TRunResult TRPCDeviceLoadConfigSerialClientTask::Run(
         }
         lastAccessedDevice.PrepareToAccess(nullptr);
         TSerialPortSettingsGuard settingsGuard(port, Request->SerialPortSettings);
-        ExecRPCDeviceLoadConfigRequest(port, Request, polledDevices);
+        ExecRPCDeviceLoadConfigRequest(port, Device, Request);
     } catch (const std::exception& error) {
         if (Request->OnError) {
             Request->OnError(WBMQTT::E_RPC_SERVER_ERROR, std::string("Port IO error: ") + error.what());

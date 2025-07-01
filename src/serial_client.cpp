@@ -207,6 +207,11 @@ PPort TSerialClient::GetPort()
     return Port;
 }
 
+std::list<PSerialDevice> TSerialClient::GetDevices()
+{
+    return Devices;
+}
+
 void TSerialClient::AddTask(PSerialClientTask task)
 {
     {

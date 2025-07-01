@@ -72,6 +72,8 @@ public:
     virtual ISerialClientTask::TRunResult Run(PPort port,
                                               TSerialClientDeviceAccessHandler& lastAccessedDevice,
                                               const std::list<PSerialDevice>& polledDevices) = 0;
+
+    PSerialDevice Device = nullptr;
 };
 
 typedef std::shared_ptr<ISerialClientTask> PSerialClientTask;
@@ -92,7 +94,9 @@ public:
     void SetTextValue(PRegister reg, const std::string& value);
     void SetReadCallback(const TRegisterCallback& callback);
     void SetErrorCallback(const TRegisterCallback& callback);
+
     PPort GetPort();
+    std::list<PSerialDevice> GetDevices();
 
     void AddTask(PSerialClientTask task);
 
