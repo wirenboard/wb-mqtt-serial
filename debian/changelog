@@ -4,6 +4,12 @@ wb-mqtt-serial (2.176.0) stable; urgency=medium
 
  -- Pavel Gasheev <pavel.gasheev@wirenboard.com>  Wed, 02 Jul 2025 11:09:14 +0300
 
+wb-mqtt-serial (2.175.4) stable; urgency=medium
+
+  * config-carel-mu-rack.json: fix name channels
+
+ -- Andrey Ksenofontov <andrey.ksenofontov@wirenboard.com>  Tue, 01 Jul 2025 17:31:00 +0300
+
 wb-mqtt-serial (2.175.3) stable; urgency=medium
 
   * Change device name in mst-24 template to show Rtelligent NT60 support

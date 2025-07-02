@@ -21415,6 +21415,8 @@ carel_mu_rack
 	Alarm Fan 2  =>  Alarm Fan 2
 	Alarm Fan 3  =>  Alarm Fan 3
 	Alarm Fan 4  =>  Alarm Fan 4
+	Alarm General Low Suction Pressure 1  =>  Alarm General Low Suction Pressure 1
+	Alarm General Low Suction Pressure 2  =>  Alarm General Low Suction Pressure 2
 	Alarm High Discharge Pressure  =>  Alarm High Discharge Pressure
 	Alarm High Suction Pressure 1  =>  Alarm High Suction Pressure 1
 	Alarm High Suction Pressure 2  =>  Alarm High Suction Pressure 2
