@@ -1,8 +1,8 @@
-wb-mqtt-serial (2.171.0) stable; urgency=medium
+wb-mqtt-serial (2.176.0) stable; urgency=medium
 
   * Add WB-UPS v.3 template
 
- -- Pavel Gasheev <pavel.gasheev@wirenboard.com>  Mon, 09 Jun 2025 12:10:49 +0300
+ -- Pavel Gasheev <pavel.gasheev@wirenboard.com>  Wed, 02 Jul 2025 11:09:14 +0300
 
 wb-mqtt-serial (2.175.3) stable; urgency=medium
 
