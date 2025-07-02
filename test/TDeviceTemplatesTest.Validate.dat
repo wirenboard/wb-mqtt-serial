@@ -24575,7 +24575,7 @@ wb_mao4_20ma
 	Supply voltage  =>  supply_voltage
 	Uptime  =>  uptime
 wb_ups_v3
-	Battery Capacity  =>  battery_capacity
+	Battery Charge Level  =>  battery_charge_level
 	Battery Current  =>  battery_current
 	Battery Status  =>  battery_status
 	Battery Temperature  =>  battery_temperature
@@ -24585,7 +24585,6 @@ wb_ups_v3
 	Button Shortlong Press Counter  =>  button_shortlong_press_counter
 	Button Single Press Counter  =>  button_single_press_counter
 	Button State  =>  button_state
-	Charger Current Setpoint  =>  charger_current_setpoint
 	Charger Ibat Raw  =>  charger_ibat_raw
 	Charger Ibat Real  =>  charger_ibat_real
 	Charger Ibus Raw  =>  charger_ibus_raw
@@ -24595,7 +24594,9 @@ wb_ups_v3
 	Charger Vbat Real  =>  charger_vbat_real
 	Charger Vbus Raw  =>  charger_vbus_raw
 	Charger Vbus Real  =>  charger_vbus_real
-	Discharge Current Limit  =>  discharge_current_limit
+	Charging Current Setpoint  =>  charging_current_setpoint
+	Charging Input Current  =>  charging_input_current
+	Discharge Voltage Setpoint  =>  discharge_voltage_setpoint
 	Discharger Ibat Raw  =>  discharger_ibat_raw
 	Discharger Ibat Real  =>  discharger_ibat_real
 	Discharger Ibus Raw  =>  discharger_ibus_raw
@@ -24605,15 +24606,15 @@ wb_ups_v3
 	Discharger Vbat Real  =>  discharger_vbat_real
 	Discharger Vbus Raw  =>  discharger_vbus_raw
 	Discharger Vbus Real  =>  discharger_vbus_real
-	Discharger Voltage Setpoint  =>  discharger_voltage_setpoint
 	FW Version  =>  fw_version
-	Input Current For Charging  =>  input_current_for_charging
 	Input Voltage  =>  input_voltage
 	Load Control In Backup Mode  =>  load_control_in_backup_mode
-	Load Current When Powered From Battery  =>  load_current_when_powered_from_battery
+	Load Current (Battery Powered)  =>  load_current_battery_powered
 	MCU Temperature  =>  mcu_temperature
 	MCU Voltage  =>  mcu_voltage
+	Max Discharge Current  =>  discharge_current_limit
 	Output Voltage  =>  output_voltage
+	Restart Charge  =>  restart_charge
 	Serial  =>  serial
 	Temperature Hardware Protection  =>  temperature_hardware_protection
 	Temperature Status  =>  temperature_status
