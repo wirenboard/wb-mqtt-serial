@@ -15,17 +15,18 @@ class TRPCDeviceLoadConfigRequest
 {
 public:
     TRPCDeviceLoadConfigRequest(const TSerialDeviceFactory& deviceFactory,
-                                PDeviceTemplate deviceTemplate,
+                                PTemplateMap templates,
                                 TRPCDeviceParametersCache& parametersCache);
 
     const TSerialDeviceFactory& DeviceFactory;
 
-    PDeviceTemplate DeviceTemplate;
+    PTemplateMap Templates;
     TRPCDeviceParametersCache& ParametersCache;
     bool IsWBDevice = false;
 
     TSerialPortConnectionSettings SerialPortSettings;
     std::string SlaveId;
+    std::string DeviceType;
     std::string Group;
 
     std::chrono::milliseconds ResponseTimeout = DefaultResponseTimeout;
@@ -34,13 +35,16 @@ public:
 
     WBMQTT::TMqttRpcServer::TResultCallback OnResult = nullptr;
     WBMQTT::TMqttRpcServer::TErrorCallback OnError = nullptr;
+
+    void UpdateParams(PSerialDevice device);
+    PDeviceTemplate GetDeviceTemplate();
 };
 
 typedef std::shared_ptr<TRPCDeviceLoadConfigRequest> PRPCDeviceLoadConfigRequest;
 
 PRPCDeviceLoadConfigRequest ParseRPCDeviceLoadConfigRequest(const Json::Value& request,
                                                             const TSerialDeviceFactory& deviceFactory,
-                                                            PDeviceTemplate deviceTemplate,
+                                                            PTemplateMap templates,
                                                             TRPCDeviceParametersCache& parametersCache,
                                                             WBMQTT::TMqttRpcServer::TResultCallback onResult,
                                                             WBMQTT::TMqttRpcServer::TErrorCallback onError);

@@ -3,20 +3,6 @@
 #include "rpc_device_probe_task.h"
 #include "rpc_helpers.h"
 
-namespace
-{
-    PDeviceTemplate GetDeviceTemplate(const Json::Value request, PTemplateMap templates)
-    {
-        std::string deviceType = request["device_type"].asString();
-        auto deviceTemplate = templates->GetTemplate(deviceType);
-        if (deviceTemplate->WithSubdevices()) {
-            throw TRPCException("Device \"" + deviceType + "\" is not supported by this RPC",
-                                TRPCResultCode::RPC_WRONG_PARAM_VALUE);
-        }
-        return deviceTemplate;
-    }
-}
-
 void TRPCDeviceParametersCache::RegisterCallbacks(PHandlerConfig handlerConfig)
 {
     for (const auto& portConfig: handlerConfig->PortConfigs) {
@@ -97,16 +83,9 @@ void TRPCDeviceHandler::LoadConfig(const Json::Value& request,
 {
     ValidateRPCRequest(request, RequestDeviceLoadConfigSchema);
 
-    auto deviceTemplate = GetDeviceTemplate(request, Templates);
-    Json::Value parameters = deviceTemplate->GetTemplate()["parameters"];
-    if (parameters.empty()) {
-        onResult(Json::Value(Json::objectValue));
-        return;
-    }
-
     try {
         auto rpcRequest =
-            ParseRPCDeviceLoadConfigRequest(request, DeviceFactory, deviceTemplate, ParametersCache, onResult, onError);
+            ParseRPCDeviceLoadConfigRequest(request, DeviceFactory, Templates, ParametersCache, onResult, onError);
         SerialClientTaskRunner.RunTask(request, std::make_shared<TRPCDeviceLoadConfigSerialClientTask>(rpcRequest));
     } catch (const TRPCException& e) {
         ProcessException(e, onError);

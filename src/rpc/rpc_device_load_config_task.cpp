@@ -12,17 +12,16 @@ namespace
 
     PSerialDevice CreateDevice(PPort port,
                                PRPCDeviceLoadConfigRequest rpcRequest,
+                               PDeviceTemplate deviceTemplate,
                                const TDeviceProtocolParams& protocolParams)
     {
-        auto config = std::make_shared<TDeviceConfig>("RPC Device",
-                                                      rpcRequest->SlaveId,
-                                                      rpcRequest->DeviceTemplate->GetProtocol());
-        if (rpcRequest->DeviceTemplate->GetProtocol() == "modbus") {
+        auto config = std::make_shared<TDeviceConfig>("RPC Device", rpcRequest->SlaveId, deviceTemplate->GetProtocol());
+        if (deviceTemplate->GetProtocol() == "modbus") {
             config->MaxRegHole = Modbus::MAX_HOLE_CONTINUOUS_16_BIT_REGISTERS;
             config->MaxBitHole = Modbus::MAX_HOLE_CONTINUOUS_1_BIT_REGISTERS;
             config->MaxReadRegisters = Modbus::MAX_READ_REGISTERS;
         }
-        return protocolParams.factory->CreateDevice(rpcRequest->DeviceTemplate->GetTemplate(),
+        return protocolParams.factory->CreateDevice(deviceTemplate->GetTemplate(),
                                                     config,
                                                     port,
                                                     protocolParams.protocol);
@@ -68,7 +67,7 @@ namespace
 
     std::string ReadFirmwareVersion(TPort& port, PRPCDeviceLoadConfigRequest rpcRequest)
     {
-        if (!rpcRequest->IsWBDevice || rpcRequest->DeviceTemplate->GetProtocol() != "modbus") {
+        if (!rpcRequest->IsWBDevice) {
             return std::string();
         }
         std::string error;
@@ -163,36 +162,57 @@ namespace
 } // namespace
 
 TRPCDeviceLoadConfigRequest::TRPCDeviceLoadConfigRequest(const TSerialDeviceFactory& deviceFactory,
-                                                         PDeviceTemplate deviceTemplate,
+                                                         PTemplateMap templates,
                                                          TRPCDeviceParametersCache& parametersCache)
     : DeviceFactory(deviceFactory),
-      DeviceTemplate(deviceTemplate),
+      Templates(templates),
       ParametersCache(parametersCache)
-{
-    IsWBDevice =
-        !DeviceTemplate->GetHardware().empty() || DeviceTemplate->GetTemplate()["enable_wb_continuous_read"].asBool();
+{}
 
-    Json::Value responseTimeout = DeviceTemplate->GetTemplate()["response_timeout_ms"];
+void TRPCDeviceLoadConfigRequest::UpdateParams(PSerialDevice device)
+{
+    if (device == nullptr)
+        return;
+
+    SlaveId = device->DeviceConfig()->SlaveId;
+    DeviceType = device->DeviceConfig()->DeviceType;
+}
+
+PDeviceTemplate TRPCDeviceLoadConfigRequest::GetDeviceTemplate()
+{
+    auto deviceTemplate = Templates->GetTemplate(DeviceType);
+    if (deviceTemplate->WithSubdevices()) {
+        throw TRPCException("Device \"" + DeviceType + "\" is not supported by this RPC",
+                            TRPCResultCode::RPC_WRONG_PARAM_VALUE);
+    }
+
+    IsWBDevice =
+        !deviceTemplate->GetHardware().empty() || deviceTemplate->GetTemplate()["enable_wb_continuous_read"].asBool();
+
+    Json::Value responseTimeout = deviceTemplate->GetTemplate()["response_timeout_ms"];
     if (responseTimeout.isInt()) {
         ResponseTimeout = std::chrono::milliseconds(responseTimeout.asInt());
     }
 
-    Json::Value frameTimeout = DeviceTemplate->GetTemplate()["frame_timeout_ms"];
+    Json::Value frameTimeout = deviceTemplate->GetTemplate()["frame_timeout_ms"];
     if (frameTimeout.isInt()) {
         FrameTimeout = std::chrono::milliseconds(frameTimeout.asInt());
     }
+
+    return deviceTemplate;
 }
 
 PRPCDeviceLoadConfigRequest ParseRPCDeviceLoadConfigRequest(const Json::Value& request,
                                                             const TSerialDeviceFactory& deviceFactory,
-                                                            PDeviceTemplate deviceTemplate,
+                                                            PTemplateMap templates,
                                                             TRPCDeviceParametersCache& parametersCache,
                                                             WBMQTT::TMqttRpcServer::TResultCallback onResult,
                                                             WBMQTT::TMqttRpcServer::TErrorCallback onError)
 {
-    auto res = std::make_shared<TRPCDeviceLoadConfigRequest>(deviceFactory, deviceTemplate, parametersCache);
+    auto res = std::make_shared<TRPCDeviceLoadConfigRequest>(deviceFactory, templates, parametersCache);
     res->SerialPortSettings = ParseRPCSerialPortSettings(request);
     res->SlaveId = request["slave_id"].asString();
+    res->DeviceType = request["device_type"].asString();
     res->Group = request["group"].asString();
     WBMQTT::JSON::Get(request, "response_timeout", res->ResponseTimeout);
     WBMQTT::JSON::Get(request, "frame_timeout", res->FrameTimeout);
@@ -208,11 +228,18 @@ void ExecRPCDeviceLoadConfigRequest(PPort port, PSerialDevice device, PRPCDevice
         return;
     }
 
-    TDeviceProtocolParams protocolParams =
-        rpcRequest->DeviceFactory.GetProtocolParams(rpcRequest->DeviceTemplate->GetProtocol());
+    rpcRequest->UpdateParams(device);
+    auto deviceTemplate = rpcRequest->GetDeviceTemplate();
+    Json::Value templateParams = deviceTemplate->GetTemplate()["parameters"];
+    if (templateParams.empty()) {
+        rpcRequest->OnResult(Json::Value(Json::objectValue));
+        return;
+    }
+
+    TDeviceProtocolParams protocolParams = rpcRequest->DeviceFactory.GetProtocolParams(deviceTemplate->GetProtocol());
     bool useCache = true;
     if (device == nullptr) {
-        device = CreateDevice(port, rpcRequest, protocolParams);
+        device = CreateDevice(port, rpcRequest, deviceTemplate, protocolParams);
         useCache = false;
     }
 
@@ -237,7 +264,6 @@ void ExecRPCDeviceLoadConfigRequest(PPort port, PSerialDevice device, PRPCDevice
         fwVersion = ReadFirmwareVersion(*port, rpcRequest);
     }
 
-    Json::Value templateParams = rpcRequest->DeviceTemplate->GetTemplate()["parameters"];
     std::list<std::string> paramsList;
     TRPCRegisterList registerList = CreateRegisterList(
         protocolParams,
