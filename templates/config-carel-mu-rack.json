@@ -2109,7 +2109,6 @@
                 "address": 35,
                 "type": "switch",
                 "enabled": false
-
             },
             {
                 "name": "General Discharge Pressure Switch",
