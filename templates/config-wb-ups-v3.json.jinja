@@ -23,7 +23,7 @@
 
         "groups": [
             {
-                "title": "Uninterruptible Power Supply",
+                "title": "UPS",
                 "id": "g_ups"
             },
             {
@@ -172,9 +172,9 @@
                 "enum": [0, 1, 2, 3, 4],
                 "enum_titles": [
                     "Normal",
-                    "Cold, Not Working",
-                    "Cold, Only Discharge",
-                    "Overheat, Only Discharge",
+                    "Too Cold, Disabled",
+                    "Too Cold, Discharge Only",
+                    "Overheat, Discharge Only",
                     "Overheat, Not Working"
                 ],
                 "group": "gg_ups_channels"
@@ -222,8 +222,8 @@
                 "group": "gg_ups_channels"
             },
             {
-                "id": "input_current_for_charging",
-                "name": "Input Current For Charging",
+                "id": "charging_input_current",
+                "name": "Charging Input Current",
                 "units": "A",
                 "scale": 0.001,
                 "round_to": 0.001,
@@ -232,8 +232,8 @@
                 "group": "gg_ups_channels"
             },
             {
-                "id": "load_current_when_powered_from_battery",
-                "name": "Load Current When Powered From Battery",
+                "id": "load_current_battery_powered",
+                "name": "Load Current (Battery Powered)",
                 "units": "A",
                 "scale": 0.001,
                 "round_to": 0.001,
@@ -242,8 +242,8 @@
                 "group": "gg_ups_channels"
             },
             {
-                "id": "battery_capacity",
-                "name": "Battery Capacity",
+                "id": "battery_charge_level",
+                "name": "Battery Charge Level",
                 "units": "%",
                 "reg_type": "input",
                 "address": 8,
@@ -335,7 +335,7 @@
             },
             {
                 "id": "charger_current_setpoint",
-                "name": "Charger Current Setpoint",
+                "name": "Charging Current Setpoint",
                 "units": "mA",
                 "reg_type": "input",
                 "address": 10,
@@ -344,7 +344,7 @@
             },
             {
                 "id": "discharger_voltage_setpoint",
-                "name": "Discharger Voltage Setpoint",
+                "name": "Discharge Voltage Setpoint",
                 "units": "V",
                 "reg_type": "input",
                 "scale": 0.001,
@@ -354,7 +354,7 @@
             },
             {
                 "id": "discharge_current_limit",
-                "name": "Discharge Current Limit",
+                "name": "Max Discharge Current",
                 "units": "A",
                 "reg_type": "holding",
                 "scale": 0.001,
@@ -459,9 +459,9 @@
             "en": {
                 "template_title": "{{ title_en }}",
 
-                "g_output_voltage_description": "The output voltage when powered up by button is always 11.5V.<br><br>In automatic mode, the output voltage is set to 0.7V lower than the input voltage if it is within the operating range and remains stable for 10 seconds.<br>In manual mode, the output voltage is fixed and set via the parameter.<br><br>When the input voltage drops below the output voltage, backup power is activated.",
-                "g_button_description": "The button on the WB-UPS v.3 module can be used to control other devices via rules.<br><br>When external power is available, the button does not perform any actions on the WB-UPS v.3 module.<br>When external power is not available, a long press turns off the WB-UPS v.3 module.<br><br>Pressing parameters are fixed:<br>- long press time: 2000 ms<br>- second press waiting time: 300 ms",
-                "output_voltage_setpoint_description": "Must be at least 0.7V lower than input voltage.",
+                "g_output_voltage_description": "When powered up via button, the output voltage is fixed at 11.5 V.<br><br>In automatic mode, the output voltage is set 0.7 V below the input, provided the input remains stable and within range for 10 seconds.<br>In manual mode, the output voltage is fixed and configured via the setpoint.<br><br>Backup mode is activated if input voltage drops below the output voltage.",
+                "g_button_description": "The WB-UPS v.3 button can be used as a trigger for automation rules.<br><br>When external power is available, the button has no effect.<br>Without external power, holding the button powers down the module.<br><br>Button behavior is fixed:<br>- Long press: 2000 ms<br>- Second press waiting time: 300 ms",
+                "output_voltage_setpoint_description": "Must be at least 0.7 V below the input voltage.",
 
                 "baud_rate_description": "Make sure that communication with device is established before changing this parameter. Select required baud rate, save configuration and then change port baud rate to the same value."
             },
@@ -479,7 +479,7 @@
                 "g_output_voltage_description": "Выходное напряжение при включении кнопкой всегда 11.5 В.<br><br>В автоматическом режиме выходное напряжение устанавливается на 0.7 В ниже входного, если оно находится в рабочем диапазоне и остается стабильным в течение 10 секунд.<br>В ручном режиме выходное напряжение фиксировано и задается через параметр.<br><br>При понижении входного напряжения ниже выходного включается резервное питание.",
                 "output_voltage_setpoint_description": "Должно быть как минимум на 0.7 В ниже входного напряжения.",
 
-                "Uninterruptible Power Supply": "Резервное питание",
+                "UPS": "Резервное питание",
                 "Mode": "Режим",
                 "Automatic": "Автоматический",
                 "Manual": "Ручной",
@@ -492,10 +492,10 @@
                 "Output Voltage": "Выходное напряжение",
                 "Battery Voltage": "Напряжение батареи",
                 "Battery Current": "Ток батареи",
-                "Input Current For Charging": "Входной ток для заряда",
-                "Load Current When Powered From Battery": "Ток нагрузки при питании от батареи",
+                "Charging Input Current": "Входной ток для заряда",
+                "Load Current (Battery Powered)": "Ток нагрузки при питании от батареи",
                 "Battery Temperature": "Температура батареи",
-                "Battery Capacity": "Уровень заряда батареи",
+                "Battery Charge Level": "Уровень заряда батареи",
                 "Temperature": "Температура",
 
                 "Charging": "Заряжается",
@@ -504,19 +504,15 @@
                 "Fully Discharged": "Полностью разряжена",
                 "Not Charging": "Не заряжается",
                 "Normal": "Норма",
-                "Cold, Not Working": "Низкая, работа запрещена",
-                "Cold, Only Discharge": "Низкая, только разряд",
+                "Too Cold, Disabled": "Низкая, работа запрещена",
+                "Too Cold, Discharge Only": "Низкая, только разряд",
                 "Overheat, Only Discharge": "Высокая, только разряд",
                 "Overheat, Not Working": "Высокая, работа запрещена",
-                "Heater State": "Нагреватель",
                 "Temperature Hardware Protection": "Аппаратная защита по температуре",
-                "Heater Force Control": "Принудительное управление нагревателем",
-                "Heater Force Control State": "Состояние нагревателя в принудительном режиме",
-                "Charger Current Setpoint": "Уставка тока заряда",
-                "Discharger Voltage Setpoint": "Уставка выходного напряжения",
-                "Discharge Current Limit": "Ограничение тока разряда",
+                "Charging Current Setpoint": "Уставка тока заряда",
+                "Discharge Voltage Setpoint": "Уставка выходного напряжения",
+                "Max Discharge Current": "Максимальный ток разряда",
                 "VINREG Setpoint": "Уставка VINREG",
-                "Heater": "Нагреватель",
                 "Charge/Discharge": "Заряд/Разряд",
                 "Chip ADC Values": "Значения АЦП чипов",
                 "Charger State": "Состояние зарядника",
