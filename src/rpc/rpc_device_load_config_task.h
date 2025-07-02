@@ -49,8 +49,6 @@ PRPCDeviceLoadConfigRequest ParseRPCDeviceLoadConfigRequest(const Json::Value& r
                                                             WBMQTT::TMqttRpcServer::TResultCallback onResult,
                                                             WBMQTT::TMqttRpcServer::TErrorCallback onError);
 
-void ExecRPCDeviceLoadConfigRequest(PPort port, PSerialDevice device, PRPCDeviceLoadConfigRequest rpcRequest);
-
 class TRPCDeviceLoadConfigSerialClientTask: public ISerialClientTask
 {
 public:
