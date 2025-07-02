@@ -137,9 +137,17 @@ namespace
     }
 }
 
+Modbus::IModbusTraits::IModbusTraits(bool forceFrameTimeout): ForceFrameTimeout(forceFrameTimeout)
+{}
+
+bool Modbus::IModbusTraits::GetForceFrameTimeout()
+{
+    return ForceFrameTimeout;
+}
+
 // TModbusRTUTraits
 
-Modbus::TModbusRTUTraits::TModbusRTUTraits(bool forceFrameTimeout): ForceFrameTimeout(forceFrameTimeout)
+Modbus::TModbusRTUTraits::TModbusRTUTraits(bool forceFrameTimeout): IModbusTraits(forceFrameTimeout)
 {}
 
 TPort::TFrameCompletePred Modbus::TModbusRTUTraits::ExpectNBytes(size_t n) const

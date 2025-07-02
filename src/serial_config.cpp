@@ -478,11 +478,13 @@ namespace
             }
             return;
         }
-
         if (channel_data.isMember("device_type")) {
             LoadSubdeviceChannel(deviceWithChannels, channel_data, context, typeMap);
         } else {
             LoadSimpleChannel(deviceWithChannels, channel_data, context, typeMap);
+        }
+        if (deviceWithChannels.Device->IsSporadicOnly() && !channel_data["sporadic"].asBool()) {
+            deviceWithChannels.Device->SetSporadicOnly(false);
         }
     }
 
@@ -543,6 +545,7 @@ namespace
         Get(device_data, "max_bit_hole", device_config.MaxBitHole);
         Get(device_data, "max_read_registers", device_config.MaxReadRegisters);
         Get(device_data, "min_read_registers", device_config.MinReadRegisters);
+        Get(device_data, "max_write_registers", device_config.MaxWriteRegisters);
         Get(device_data, "guard_interval_us", device_config.RequestDelay);
         Get(device_data, "stride", device_config.Stride);
         Get(device_data, "shift", device_config.Shift);
@@ -894,7 +897,10 @@ void LoadChannels(TSerialDeviceWithChannels& deviceWithChannels,
     }
 
     if (deviceWithChannels.Channels.empty()) {
-        LOG(Warn) << "the device has no channels: " + deviceWithChannels.Device->DeviceConfig()->Name;
+        LOG(Warn) << "device " << deviceWithChannels.Device->DeviceConfig()->Name << " has no channels";
+    } else if (deviceWithChannels.Device->IsSporadicOnly()) {
+        LOG(Debug) << "device " << deviceWithChannels.Device->DeviceConfig()->Name
+                   << " has only sporadic channels enabled";
     }
 
     auto readRateLimit = GetReadRateLimit(deviceData);

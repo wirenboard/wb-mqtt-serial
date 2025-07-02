@@ -32,6 +32,40 @@ bool IProtocol::SupportsBroadcast() const
     return false;
 }
 
+TDeviceSetupItem::TDeviceSetupItem(PDeviceSetupItemConfig config, PSerialDevice device, PRegisterConfig registerConfig)
+    : Name(config->GetName()),
+      ParameterId(config->GetParameterId()),
+      RawValue(config->GetRawValue()),
+      HumanReadableValue(config->GetValue()),
+      Device(device),
+      RegisterConfig(registerConfig)
+{}
+
+std::string TDeviceSetupItem::ToString()
+{
+    std::stringstream stream;
+    auto reg = "<" + (Device ? Device->ToString() : "unknown device") + ":" + RegisterConfig->ToString() + ">";
+    stream << "Init setup register \"" << Name << "\": " << reg << "<-- " << HumanReadableValue;
+    if (RawValue.GetType() == TRegisterValue::ValueType::String) {
+        stream << " (\"" << RawValue << "\")";
+    } else {
+        stream << " (0x" << std::hex << RawValue << ")";
+    }
+    return stream.str();
+}
+
+bool TDeviceSetupItemComparePredicate::operator()(const PDeviceSetupItem& a, const PDeviceSetupItem& b) const
+{
+    if (a->RegisterConfig->Type != b->RegisterConfig->Type) {
+        return a->RegisterConfig->Type < b->RegisterConfig->Type;
+    }
+    auto compare = a->RegisterConfig->GetWriteAddress().Compare(b->RegisterConfig->GetWriteAddress());
+    if (compare == 0) {
+        return a->RegisterConfig->GetDataOffset() < b->RegisterConfig->GetDataOffset();
+    }
+    return compare < 0;
+}
+
 TUint32SlaveIdProtocol::TUint32SlaveIdProtocol(const std::string& name,
                                                const TRegisterTypes& reg_types,
                                                bool allowBroadcast)
@@ -56,7 +90,8 @@ TSerialDevice::TSerialDevice(PDeviceConfig config, PPort port, PProtocol protoco
       LastSuccessfulCycle(),
       ConnectionState(TDeviceConnectionState::UNKNOWN),
       RemainingFailCycles(0),
-      SupportsHoles(true)
+      SupportsHoles(true),
+      SporadicOnly(true)
 {}
 
 std::string TSerialDevice::ToString() const
@@ -192,20 +227,9 @@ TDeviceConnectionState TSerialDevice::GetConnectionState() const
 
 void TSerialDevice::WriteSetupRegisters()
 {
-    for (const auto& setup_item: SetupItems) {
-        WriteRegisterImpl(*setup_item->Register->GetConfig(), setup_item->RawValue);
-
-        std::stringstream ss;
-        ss << "Init: " << setup_item->Name << ": setup register " << setup_item->Register->ToString() << " <-- "
-           << setup_item->HumanReadableValue;
-
-        if (setup_item->RawValue.GetType() == TRegisterValue::ValueType::String) {
-            ss << " ('" << setup_item->RawValue << "')";
-        } else {
-            ss << " (0x" << std::hex << setup_item->RawValue << ")";
-            // TODO: More verbose exception
-        }
-        LOG(Info) << ss.str();
+    for (const auto& item: SetupItems) {
+        WriteRegisterImpl(*item->RegisterConfig, item->RawValue);
+        LOG(Info) << item->ToString();
     }
     if (!SetupItems.empty()) {
         SetTransferResult(true);
@@ -235,6 +259,16 @@ bool TSerialDevice::GetSupportsHoles() const
 void TSerialDevice::SetSupportsHoles(bool supportsHoles)
 {
     SupportsHoles = supportsHoles;
+}
+
+bool TSerialDevice::IsSporadicOnly() const
+{
+    return SporadicOnly;
+}
+
+void TSerialDevice::SetSporadicOnly(bool sporadicOnly)
+{
+    SporadicOnly = sporadicOnly;
 }
 
 void TSerialDevice::SetDisconnected()
@@ -309,12 +343,12 @@ void TSerialDevice::SetSnRegister(PRegisterConfig regConfig)
 
 void TSerialDevice::AddSetupItem(PDeviceSetupItemConfig item)
 {
-    auto addrIt = SetupItemsByAddress.find(item->GetRegisterConfig()->GetAddress().ToString());
+    auto key = item->GetRegisterConfig()->ToString();
+    auto addrIt = SetupItemsByAddress.find(key);
     if (addrIt != SetupItemsByAddress.end()) {
         std::stringstream ss;
-        ss << "Setup command \"" << item->GetName() << "\" with address " << item->GetRegisterConfig()->GetAddress()
-           << " from \"" << DeviceConfig()->DeviceType << "\""
-           << " has a duplicate command \"" << addrIt->second->Name << "\" ";
+        ss << "Setup command \"" << item->GetName() << "\" (" << key << ") from \"" << DeviceConfig()->DeviceType
+           << "\" has a duplicate command \"" << addrIt->second->Name << "\" ";
         if (item->GetRawValue() == addrIt->second->RawValue) {
             ss << "with the same register value.";
         } else {
@@ -322,15 +356,13 @@ void TSerialDevice::AddSetupItem(PDeviceSetupItemConfig item)
         }
         LOG(Warn) << ss.str();
     } else {
-        auto setupItem = std::make_shared<TDeviceSetupItem>(
-            item,
-            std::make_shared<TRegister>(shared_from_this(), item->GetRegisterConfig()));
-        SetupItemsByAddress.insert({item->GetRegisterConfig()->GetAddress().ToString(), setupItem});
-        SetupItems.push_back(setupItem);
+        auto setupItem = std::make_shared<TDeviceSetupItem>(item, shared_from_this(), item->GetRegisterConfig());
+        SetupItemsByAddress.insert({key, setupItem});
+        SetupItems.insert(setupItem);
     }
 }
 
-const std::vector<PDeviceSetupItem>& TSerialDevice::GetSetupItems() const
+const TDeviceSetupItems& TSerialDevice::GetSetupItems() const
 {
     return SetupItems;
 }

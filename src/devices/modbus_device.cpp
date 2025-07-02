@@ -47,11 +47,22 @@ TModbusDevice::TModbusDevice(std::unique_ptr<Modbus::IModbusTraits> modbusTraits
       TUInt32SlaveId(config.CommonConfig->SlaveId),
       ModbusTraits(std::move(modbusTraits)),
       ResponseTime(std::chrono::milliseconds::zero()),
-      EnableWbContinuousRead(config.EnableWbContinuousRead)
+      EnableWbContinuousRead(config.EnableWbContinuousRead),
+      ContinuousReadEnabled(false)
 {
     config.CommonConfig->FrameTimeout = std::max(
         config.CommonConfig->FrameTimeout,
         std::chrono::ceil<std::chrono::milliseconds>(port->GetSendTimeBytes(Modbus::STANDARD_FRAME_TIMEOUT_BYTES)));
+}
+
+bool TModbusDevice::GetForceFrameTimeout()
+{
+    return ModbusTraits->GetForceFrameTimeout();
+}
+
+bool TModbusDevice::GetContinuousReadEnabled()
+{
+    return ContinuousReadEnabled;
 }
 
 PRegisterRange TModbusDevice::CreateRegisterRange() const
@@ -63,7 +74,8 @@ void TModbusDevice::PrepareImpl()
 {
     TSerialDevice::PrepareImpl();
     if (GetConnectionState() != TDeviceConnectionState::CONNECTED && EnableWbContinuousRead) {
-        Modbus::EnableWbContinuousRead(shared_from_this(), *ModbusTraits, *Port(), SlaveId, ModbusCache);
+        ContinuousReadEnabled =
+            Modbus::EnableWbContinuousRead(shared_from_this(), *ModbusTraits, *Port(), SlaveId, ModbusCache);
     }
 }
 
