@@ -139,7 +139,7 @@
                 "address": 130,
                 "reg_type": "holding",
                 "enum": [0, 1],
-                "enum_titles": ["Enabled", "Disabled"],
+                "enum_titles": ["enum_led_enabled", "enum_led_disabled"],
                 "default": 0,
                 "group": "general"
             }
@@ -485,7 +485,10 @@
                 "g_button_description": "The WB-UPS v.3 button can be used as a trigger for automation rules.<br><br>When external power is available, the button has no effect.<br>Without external power, holding the button powers down the module.<br><br>Button behavior is fixed:<br>- Long press: 2000 ms<br>- Second press waiting time: 300 ms",
                 "output_voltage_setpoint_description": "Must be at least 0.7 V below the input voltage.",
 
-                "baud_rate_description": "Make sure that communication with device is established before changing this parameter. Select required baud rate, save configuration and then change port baud rate to the same value."
+                "baud_rate_description": "Make sure that communication with device is established before changing this parameter. Select required baud rate, save configuration and then change port baud rate to the same value.",
+
+                "enum_led_enabled": "Enabled",
+                "enum_led_disabled": "Disabled"
             },
             "ru": {
                 "template_title": "{{ title_ru }}",
@@ -555,7 +558,10 @@
                 "Uptime": "Время работы с момента включения",
                 "MCU Temperature": "Температура МК",
                 "MCU Voltage": "Напряжение питания МК",
-                "Status LED": "Индикатор состояния"
+                "Status LED": "Индикатор состояния",
+
+                "enum_led_enabled": "Включен",
+                "enum_led_disabled": "Выключен"
             }
         }
     }
