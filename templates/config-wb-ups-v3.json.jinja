@@ -1,0 +1,568 @@
+{% set title_en = title_en | default("WB-UPS v.3 (Uninterruptible Power Supply)") -%}
+{% set title_ru = title_ru | default("WB-UPS v.3 (модуль резервного питания)") -%}
+{% set device_type = device_type | default("wb_ups_v3") -%}
+{% set group = group | default("g-wb") -%}
+{% set device_name = device_name | default("WB-UPS v.3") -%}
+{% set device_id = device_id | default("wb_ups_v3") -%}
+
+{
+    "title": "template_title",
+    "device_type": "{{ device_type }}",
+    "group": "{{ group }}",
+    "hw": [
+        {
+            "signature": "WB-UPS v.3"
+        }
+    ],
+    "device": {
+        "name": "{{ device_name }}",
+        "id": "{{ device_id }}",
+        "max_read_registers": 0,
+        "response_timeout_ms": 1,
+        "enable_wb_continuous_read": true,
+
+        "groups": [
+            {
+                "title": "UPS",
+                "id": "g_ups"
+            },
+            {
+                "title": "Output Voltage",
+                "description": "g_output_voltage_description",
+                "id": "gg_output_voltage",
+                "group": "g_ups"
+            },
+            {
+                "title": "UPS Channels",
+                "id": "gg_ups_channels",
+                "group": "g_ups",
+                "ui_options": {
+                    "wb": {
+                        "disable_title": true
+                    }
+                }
+            },
+            {
+                "title": "Button",
+                "description": "g_button_description",
+                "id": "g_button"
+            },
+            {
+                "title": "General",
+                "id": "general"
+            },
+            {
+                "title": "HW Info",
+                "id": "hw_info"
+            },
+            {
+                "title": "Debug",
+                "id": "debug"
+            },
+            {
+                "title": "Temperature",
+                "id": "gg_debug_temperature",
+                "group": "debug"
+            },
+            {
+                "title": "Charge/Discharge",
+                "id": "gg_debug_charge_discharge",
+                "group": "debug"
+            },
+            {
+                "title": "Chip ADC Values",
+                "id": "gg_debug_chip_adc",
+                "group": "debug"
+            }
+        ],
+        "parameters": [
+            {
+                "id": "output_voltage_control_mode",
+                "title": "Mode",
+                "address": 16,
+                "reg_type": "holding",
+                "enum": [0, 1],
+                "default": 0,
+                "enum_titles": [
+                    "Automatic",
+                    "Manual"
+                ],
+                "group": "gg_output_voltage",
+                "order": 1
+            },
+            {
+                "id": "output_voltage_setpoint",
+                "description": "output_voltage_setpoint_description",
+                "title": "Output Voltage (V)",
+                "address": 17,
+                "reg_type": "holding",
+                "min": 9.0,
+                "max": 25.6,
+                "default": 11.5,
+                "scale": 0.001,
+                "order": 2,
+                "required": true,
+                "condition": "output_voltage_control_mode==1",
+                "group": "gg_output_voltage"
+            },
+            {
+                "id": "charging_current_setpoint",
+                "title": "Charging Current (mA)",
+                "address": 18,
+                "reg_type": "holding",
+                "min": 300,
+                "max": 2000,
+                "default": 600,
+                "group": "g_ups"
+            },
+            {
+                "id": "baud_rate",
+                "title": "Baud Rate",
+                "description": "baud_rate_description",
+                "address": 110,
+                "reg_type": "holding",
+                "enum": [96, 192, 384, 576, 1152],
+                "default": 96,
+                "enum_titles": [
+                    "9600",
+                    "19200",
+                    "38400",
+                    "57600",
+                    "115200"
+                ],
+                "group": "general",
+                "order": 1
+            },
+            {
+                "id": "disable_indication",
+                "title": "Status LED",
+                "address": 130,
+                "reg_type": "holding",
+                "enum": [0, 1],
+                "enum_titles": ["enum_led_enabled", "enum_led_disabled"],
+                "default": 0,
+                "group": "general"
+            }
+        ],
+        "channels": [
+            {
+                "id": "battery_status",
+                "name": "Battery Status",
+                "read_only": true,
+                "reg_type": "input",
+                "address": 0,
+                "sporadic": true,
+                "enum": [0, 1, 2, 3, 4],
+                "enum_titles": [
+                    "Charging",
+                    "Fully Charged",
+                    "Discharging",
+                    "Fully Discharged",
+                    "Not Charging"
+                ],
+                "group": "gg_ups_channels"
+            },
+            {
+                "id": "temperature_status",
+                "name": "Temperature Status",
+                "read_only": true,
+                "reg_type": "input",
+                "address": 1,
+                "sporadic": true,
+                "enum": [0, 1, 2, 3, 4],
+                "enum_titles": [
+                    "Normal",
+                    "Too Cold, Disabled",
+                    "Too Cold, Discharge Only",
+                    "Overheat, Discharge Only",
+                    "Overheat, Not Working"
+                ],
+                "group": "gg_ups_channels"
+            },
+
+            {
+                "id": "input_voltage",
+                "name": "Input Voltage",
+                "units": "V",
+                "scale": 0.001,
+                "round_to": 0.01,
+                "reg_type": "input",
+                "address": 2,
+                "group": "gg_ups_channels"
+            },
+            {
+                "id": "output_voltage",
+                "name": "Output Voltage",
+                "units": "V",
+                "scale": 0.001,
+                "round_to": 0.01,
+                "reg_type": "input",
+                "address": 3,
+                "group": "gg_ups_channels"
+            },
+            {
+                "id": "battery_voltage",
+                "name": "Battery Voltage",
+                "units": "V",
+                "scale": 0.001,
+                "round_to": 0.001,
+                "reg_type": "input",
+                "address": 4,
+                "group": "gg_ups_channels"
+            },
+            {
+                "id": "battery_current",
+                "name": "Battery Current",
+                "units": "A",
+                "scale": 0.001,
+                "round_to": 0.001,
+                "format": "s16",
+                "reg_type": "input",
+                "address": 5,
+                "group": "gg_ups_channels"
+            },
+            {
+                "id": "charging_input_current",
+                "name": "Charging Input Current",
+                "units": "A",
+                "scale": 0.001,
+                "round_to": 0.001,
+                "reg_type": "input",
+                "address": 6,
+                "group": "gg_ups_channels"
+            },
+            {
+                "id": "load_current_battery_powered",
+                "name": "Load Current (Battery Powered)",
+                "units": "A",
+                "scale": 0.001,
+                "round_to": 0.001,
+                "reg_type": "input",
+                "address": 7,
+                "group": "gg_ups_channels"
+            },
+            {
+                "id": "battery_charge_level",
+                "name": "Battery Charge Level",
+                "units": "%",
+                "scale": 0.01,
+                "round_to": 0.1,
+                "reg_type": "input",
+                "address": 8,
+                "group": "gg_ups_channels"
+            },
+            {
+                "id": "battery_temperature",
+                "name": "Battery Temperature",
+                "units": "deg C",
+                "scale": 0.01,
+                "reg_type": "input",
+                "address": 9,
+                "group": "gg_ups_channels"
+            },
+            {
+                "id": "load_control_in_backup_mode",
+                "name": "Load Control In Backup Mode",
+                "type": "switch",
+                "reg_type": "coil",
+                "address": 0,
+                "enabled": false,
+                "group": "gg_ups_channels"
+            },
+
+            {
+                "id": "button_state",
+                "name": "Button State",
+                "reg_type": "discrete",
+                "address": 0,
+                "type": "switch",
+                "sporadic": true,
+                "enabled": false,
+                "group": "g_button"
+            },
+
+            {% set presses = ["single", "long", "double", "shortlong"] -%}
+            {% for press in presses -%}
+            {
+                "id": "button_{{ press }}_press_counter",
+                "name": "Button {{ press | capitalize }} Press Counter",
+                "reg_type": "press_counter",
+                "address": {{ 464 + loop.index0 * 16 }},
+                "sporadic": true,
+                "enabled": false,
+                "group": "g_button"
+            },
+            {% endfor -%}
+
+            {# Диагностика -#}
+            {
+                "id": "temperature_hardware_protection",
+                "name": "Temperature Hardware Protection",
+                "type": "switch",
+                "read_only": true,
+                "reg_type": "discrete",
+                "address": 8,
+                "enabled": false,
+                "group": "gg_debug_temperature"
+            },
+
+            {
+                "id": "restart_charge",
+                "name": "Restart Charge",
+                "type": "pushbutton",
+                "reg_type": "coil",
+                "address": 8,
+                "enabled": false,
+                "group": "gg_debug_charge_discharge"
+            },
+            {
+                "id": "charger_state",
+                "name": "Charger State",
+                "type": "switch",
+                "read_only": true,
+                "reg_type": "discrete",
+                "address": 9,
+                "enabled": false,
+                "group": "gg_debug_charge_discharge"
+            },
+            {
+                "id": "discharger_state",
+                "name": "Discharger State",
+                "type": "switch",
+                "read_only": true,
+                "reg_type": "discrete",
+                "address": 10,
+                "enabled": false,
+                "group": "gg_debug_charge_discharge"
+            },
+            {
+                "id": "charging_current_setpoint",
+                "name": "Charging Current Setpoint",
+                "units": "mA",
+                "reg_type": "input",
+                "address": 10,
+                "enabled": false,
+                "group": "gg_debug_charge_discharge"
+            },
+            {
+                "id": "discharge_voltage_setpoint",
+                "name": "Discharge Voltage Setpoint",
+                "units": "V",
+                "reg_type": "input",
+                "scale": 0.001,
+                "address": 11,
+                "enabled": false,
+                "group": "gg_debug_charge_discharge"
+            },
+            {
+                "id": "discharge_current_limit",
+                "name": "Max Discharge Current",
+                "units": "A",
+                "reg_type": "holding",
+                "scale": 0.001,
+                "address": 19,
+                "enabled": false,
+                "group": "gg_debug_charge_discharge"
+            },
+            {
+                "id": "vinreg_setpoint",
+                "name": "VINREG Setpoint",
+                "units": "V",
+                "reg_type": "holding",
+                "scale": 0.001,
+                "address": 20,
+                "enabled": false,
+                "group": "gg_debug_charge_discharge"
+            },
+            {
+                "id": "ocv",
+                "name": "OCV",
+                "units": "V",
+                "reg_type": "input",
+                "scale": 0.001,
+                "address": 12,
+                "enabled": false,
+                "group": "gg_debug_charge_discharge"
+            },
+            {
+                "id": "charge_counter",
+                "name": "Charge Counter",
+                "units": "mAh",
+                "reg_type": "holding",
+                "scale": 0.1,
+                "address": 20,
+                "enabled": false,
+                "group": "gg_debug_charge_discharge"
+            },
+
+
+
+            {% set chips = ["charger", "discharger"] -%}
+            {% set values = ["vbus", "vbat", "ibus", "ibat"] -%}
+            {% set types = ["raw", "real"] -%}
+
+            {% for type in types -%}
+            {% set type_loop = loop -%}
+            {% for chip in chips -%}
+            {% set chip_loop = loop -%}
+            {% for value in values -%}
+            {
+                "id": "{{ chip }}_{{ value }}_{{ type }}",
+                "name": "{{ chip.capitalize() }} {{ value.capitalize() }} {{ type.capitalize() }}",
+                "reg_type": "input",
+                "address": {{ 1024 + type_loop.index0 * 32 + chip_loop.index0 * 16 + loop.index0 }},
+                "type": "value",
+                {% if type == "real" -%}
+                "scale": 0.001,
+                "units": "{{ "V" if value.startswith("v") else "A" }}",
+                {% else -%}
+                "scale": 1,
+                {% endif -%}
+                "enabled": false,
+                "group": "gg_debug_chip_adc"
+            },
+            {% endfor -%}
+            {% endfor -%}
+            {% endfor -%}
+
+            {
+                "id": "serial",
+                "name": "Serial",
+                "type": "text",
+                "reg_type": "input",
+                "address": 270,
+                "format": "u32",
+                "group": "hw_info"
+            },
+            {
+                "id": "fw_version",
+                "name": "FW Version",
+                "reg_type": "input",
+                "address": 250,
+                "type": "text",
+                "format": "string",
+                "string_data_size": 16,
+                "enabled": false,
+                "group": "hw_info"
+            },
+            {
+                "id": "uptime",
+                "name": "Uptime",
+                "reg_type": "input",
+                "address": 104,
+                "units": "s",
+                "format": "u32",
+                "enabled": false,
+                "group": "hw_info"
+            },
+            {
+                "id": "mcu_temperature",
+                "name": "MCU Temperature",
+                "reg_type": "input",
+                "address": 124,
+                "units": "deg C",
+                "format": "s16",
+                "scale": 0.1,
+                "enabled": false,
+                "group": "hw_info"
+            },
+            {
+                "id": "mcu_voltage",
+                "name": "MCU Voltage",
+                "reg_type": "input",
+                "address": 123,
+                "scale": 0.001,
+                "units": "V",
+                "enabled": false,
+                "group": "hw_info"
+            }
+        ],
+        "translations": {
+            "en": {
+                "template_title": "{{ title_en }}",
+
+                "g_output_voltage_description": "When powered up via button, the output voltage is fixed at 11.5 V.<br><br>In automatic mode, the output voltage is set 0.7 V below the input, provided the input remains stable and within range for 10 seconds.<br>In manual mode, the output voltage is fixed and configured via the setpoint.<br><br>Backup mode is activated if input voltage drops below the output voltage.",
+                "g_button_description": "The WB-UPS v.3 button can be used as a trigger for automation rules.<br><br>When external power is available, the button has no effect.<br>Without external power, holding the button powers down the module.<br><br>Button behavior is fixed:<br>- Long press: 2000 ms<br>- Second press waiting time: 300 ms",
+                "output_voltage_setpoint_description": "Must be at least 0.7 V below the input voltage.",
+
+                "baud_rate_description": "Make sure that communication with device is established before changing this parameter. Select required baud rate, save configuration and then change port baud rate to the same value.",
+
+                "enum_led_enabled": "Enabled",
+                "enum_led_disabled": "Disabled"
+            },
+            "ru": {
+                "template_title": "{{ title_ru }}",
+                "General": "Общее",
+                "HW Info": "Данные модуля",
+                "Debug": "Диагностика",
+                "Baud Rate": "Скорость обмена",
+                "baud_rate_description": "Перед изменением параметра убедитесь, что связь с устройством установлена. Выберите нужную скорость обмена, сохраните конфигурацию, а затем укажите в настройках порта эту же скорость.",
+
+                "Output Voltage When Powered Up by Button (V)": "Выходное напряжение при включении кнопкой (В)",
+
+                "g_button_description": "Кнопка на модуле WB-UPS v.3 может использоваться для управления другими устройствами через правила.<br><br>При наличии внешнего питания кнопка не выполняет никаких действий на модуле WB-UPS v.3.<br>При отсутствии внешнего питания длинное нажатие отключает WB-UPS v.3.<br><br>Параметры нажатий фиксированы:<br>- время длинного нажатия: 2000 мс<br>- время ожидания второго нажатия: 300 мс",
+                "g_output_voltage_description": "Выходное напряжение при включении кнопкой всегда 11.5 В.<br><br>В автоматическом режиме выходное напряжение устанавливается на 0.7 В ниже входного, если оно находится в рабочем диапазоне и остается стабильным в течение 10 секунд.<br>В ручном режиме выходное напряжение фиксировано и задается через параметр.<br><br>При понижении входного напряжения ниже выходного включается резервное питание.",
+                "output_voltage_setpoint_description": "Должно быть как минимум на 0.7 В ниже входного напряжения.",
+
+                "UPS": "Резервное питание",
+                "Mode": "Режим",
+                "Automatic": "Автоматический",
+                "Manual": "Ручной",
+                "Output Voltage (V)": "Выходное напряжение (В)",
+                "Charging Current (mA)": "Ток заряда (мА)",
+
+                "Battery Status": "Статус батареи",
+                "Temperature Status": "Статус температуры",
+                "Input Voltage": "Входное напряжение",
+                "Output Voltage": "Выходное напряжение",
+                "Battery Voltage": "Напряжение батареи",
+                "Battery Current": "Ток батареи",
+                "Charging Input Current": "Входной ток для заряда",
+                "Load Current (Battery Powered)": "Ток нагрузки при питании от батареи",
+                "Battery Temperature": "Температура батареи",
+                "Battery Charge Level": "Уровень заряда батареи",
+                "Temperature": "Температура",
+                "Charge Counter": "Счетчик заряда",
+
+                "Charging": "Заряжается",
+                "Fully Charged": "Полностью заряжена",
+                "Discharging": "Разряжается",
+                "Fully Discharged": "Полностью разряжена",
+                "Not Charging": "Не заряжается",
+                "Normal": "Норма",
+                "Too Cold, Disabled": "Низкая, работа запрещена",
+                "Too Cold, Discharge Only": "Низкая, только разряд",
+                "Overheat, Only Discharge": "Высокая, только разряд",
+                "Overheat, Not Working": "Высокая, работа запрещена",
+                "Temperature Hardware Protection": "Аппаратная защита по температуре",
+                "Charging Current Setpoint": "Уставка тока заряда",
+                "Discharge Voltage Setpoint": "Уставка выходного напряжения",
+                "Max Discharge Current": "Максимальный ток разряда",
+                "VINREG Setpoint": "Уставка VINREG",
+                "Charge/Discharge": "Заряд/Разряд",
+                "Chip ADC Values": "Значения АЦП чипов",
+                "Charger State": "Состояние зарядника",
+                "Discharger State": "Состояние разрядника",
+                "Load Control In Backup Mode": "Управление нагрузкой в режиме резервного питания",
+                "Restart Charge": "Перезапустить заряд",
+
+                "Button": "Кнопка",
+                "Button State": "Состояние кнопки",
+                "Button Single Press Counter": "Счетчик одиночных нажатий",
+                "Button Long Press Counter": "Счетчик длинных нажатий",
+                "Button Double Press Counter": "Счетчик двойных нажатий",
+                "Button Shortlong Press Counter": "Счетчик коротких, а затем длинных нажатий",
+
+                "Serial": "Серийный номер",
+                "FW Version": "Версия прошивки",
+                "Uptime": "Время работы с момента включения",
+                "MCU Temperature": "Температура МК",
+                "MCU Voltage": "Напряжение питания МК",
+                "Status LED": "Индикатор состояния",
+
+                "enum_led_enabled": "Включен",
+                "enum_led_disabled": "Выключен"
+            }
+        }
+    }
+}
