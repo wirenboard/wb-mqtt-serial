@@ -76,6 +76,10 @@ TRPCDeviceReuest::TRPCDeviceReuest(const Json::Value& request,
         ProtocolParams = deviceFactory.GetProtocolParams(DeviceTemplate->GetProtocol());
         DeviceFromConfig = true;
     }
+    if (DeviceTemplate->WithSubdevices()) {
+        throw TRPCException("Device \"" + DeviceTemplate->Type + "\" is not supported by this RPC",
+                            TRPCResultCode::RPC_WRONG_PARAM_VALUE);
+    }
 }
 
 void TRPCDeviceReuest::RunTask(PSerialClientTask task)
