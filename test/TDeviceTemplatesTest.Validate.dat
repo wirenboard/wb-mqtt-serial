@@ -24587,6 +24587,7 @@ wb_ups_v3
 	Button Shortlong Press Counter  =>  button_shortlong_press_counter
 	Button Single Press Counter  =>  button_single_press_counter
 	Button State  =>  button_state
+	Charge Counter  =>  charge_counter
 	Charger Ibat Raw  =>  charger_ibat_raw
 	Charger Ibat Real  =>  charger_ibat_real
 	Charger Ibus Raw  =>  charger_ibus_raw
@@ -24615,6 +24616,7 @@ wb_ups_v3
 	MCU Temperature  =>  mcu_temperature
 	MCU Voltage  =>  mcu_voltage
 	Max Discharge Current  =>  discharge_current_limit
+	OCV  =>  ocv
 	Output Voltage  =>  output_voltage
 	Restart Charge  =>  restart_charge
 	Serial  =>  serial
