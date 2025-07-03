@@ -47,13 +47,13 @@ private:
     std::unordered_map<std::string, Json::Value> DeviceParameters;
 };
 
-class TRPCDeviceReuest
+class TRPCDeviceRequest
 {
 public:
-    TRPCDeviceReuest(const Json::Value& request,
-                     const TSerialDeviceFactory& deviceFactory,
-                     PTemplateMap templates,
-                     TSerialClientTaskRunner& serialClientTaskRunner);
+    TRPCDeviceRequest(const Json::Value& request,
+                      const TSerialDeviceFactory& deviceFactory,
+                      PTemplateMap templates,
+                      TSerialClientTaskRunner& serialClientTaskRunner);
 
     PSerialClient SerialClient;
     PSerialClientTaskExecutor TaskExecutor;

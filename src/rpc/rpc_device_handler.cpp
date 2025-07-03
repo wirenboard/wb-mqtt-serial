@@ -47,10 +47,10 @@ const Json::Value& TRPCDeviceParametersCache::Get(const std::string& id, const J
     return it != DeviceParameters.end() ? it->second : defaultValue;
 };
 
-TRPCDeviceReuest::TRPCDeviceReuest(const Json::Value& request,
-                                   const TSerialDeviceFactory& deviceFactory,
-                                   PTemplateMap templates,
-                                   TSerialClientTaskRunner& serialClientTaskRunner)
+TRPCDeviceRequest::TRPCDeviceRequest(const Json::Value& request,
+                                     const TSerialDeviceFactory& deviceFactory,
+                                     PTemplateMap templates,
+                                     TSerialClientTaskRunner& serialClientTaskRunner)
 {
     SerialClient = serialClientTaskRunner.GetSerialClient(request, Device);
     if (SerialClient == nullptr) {
@@ -82,7 +82,7 @@ TRPCDeviceReuest::TRPCDeviceReuest(const Json::Value& request,
     }
 }
 
-void TRPCDeviceReuest::RunTask(PSerialClientTask task)
+void TRPCDeviceRequest::RunTask(PSerialClientTask task)
 {
     if (SerialClient) {
         SerialClient->AddTask(task);
@@ -127,7 +127,7 @@ void TRPCDeviceHandler::LoadConfig(const Json::Value& request,
 {
     ValidateRPCRequest(request, RequestDeviceLoadConfigSchema);
     try {
-        auto deviceRequest = TRPCDeviceReuest(request, DeviceFactory, Templates, SerialClientTaskRunner);
+        auto deviceRequest = TRPCDeviceRequest(request, DeviceFactory, Templates, SerialClientTaskRunner);
         auto rpcRequest = ParseRPCDeviceLoadConfigRequest(request,
                                                           deviceRequest.ProtocolParams,
                                                           deviceRequest.Device,
