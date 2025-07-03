@@ -34,6 +34,9 @@ class TSerialClientTaskRunner
 public:
     TSerialClientTaskRunner(PMQTTSerialDriver serialDriver);
 
+    PSerialClient GetSerialClient(const Json::Value& request, PSerialDevice& clientDevice);
+    PSerialClientTaskExecutor GetTaskExecutor(const Json::Value& request);
+
     void RunTask(const Json::Value& request, PSerialClientTask task);
 
 private:

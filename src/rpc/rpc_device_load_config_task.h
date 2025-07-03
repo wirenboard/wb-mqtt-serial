@@ -14,19 +14,21 @@ template<> inline uint8_t WBMQTT::JSON::As<uint8_t>(const Json::Value& value)
 class TRPCDeviceLoadConfigRequest
 {
 public:
-    TRPCDeviceLoadConfigRequest(const TSerialDeviceFactory& deviceFactory,
-                                PTemplateMap templates,
+    TRPCDeviceLoadConfigRequest(const TDeviceProtocolParams& protocolParams,
+                                PSerialDevice device,
+                                PDeviceTemplate deviceTemplate,
+                                bool deviceFromConfig,
                                 TRPCDeviceParametersCache& parametersCache);
 
-    const TSerialDeviceFactory& DeviceFactory;
+    TDeviceProtocolParams ProtocolParams;
+    PSerialDevice Device;
+    PDeviceTemplate DeviceTemplate;
+    bool DeviceFromConfig;
 
-    PTemplateMap Templates;
     TRPCDeviceParametersCache& ParametersCache;
     bool IsWBDevice = false;
 
     TSerialPortConnectionSettings SerialPortSettings;
-    std::string SlaveId;
-    std::string DeviceType;
     std::string Group;
 
     std::chrono::milliseconds ResponseTimeout = DefaultResponseTimeout;
@@ -35,16 +37,15 @@ public:
 
     WBMQTT::TMqttRpcServer::TResultCallback OnResult = nullptr;
     WBMQTT::TMqttRpcServer::TErrorCallback OnError = nullptr;
-
-    void UpdateParams(PSerialDevice device);
-    PDeviceTemplate GetDeviceTemplate();
 };
 
 typedef std::shared_ptr<TRPCDeviceLoadConfigRequest> PRPCDeviceLoadConfigRequest;
 
 PRPCDeviceLoadConfigRequest ParseRPCDeviceLoadConfigRequest(const Json::Value& request,
-                                                            const TSerialDeviceFactory& deviceFactory,
-                                                            PTemplateMap templates,
+                                                            const TDeviceProtocolParams& protocolParams,
+                                                            PSerialDevice device,
+                                                            PDeviceTemplate deviceTemplate,
+                                                            bool deviceFromConfig,
                                                             TRPCDeviceParametersCache& parametersCache,
                                                             WBMQTT::TMqttRpcServer::TResultCallback onResult,
                                                             WBMQTT::TMqttRpcServer::TErrorCallback onError);

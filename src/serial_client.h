@@ -72,8 +72,6 @@ public:
     virtual ISerialClientTask::TRunResult Run(PPort port,
                                               TSerialClientDeviceAccessHandler& lastAccessedDevice,
                                               const std::list<PSerialDevice>& polledDevices) = 0;
-
-    PSerialDevice Device = nullptr;
 };
 
 typedef std::shared_ptr<ISerialClientTask> PSerialClientTask;
