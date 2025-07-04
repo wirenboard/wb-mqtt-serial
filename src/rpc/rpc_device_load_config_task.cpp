@@ -10,45 +10,13 @@ namespace
 {
     const auto MAX_RETRIES = 2;
 
-    PSerialDevice FindDevice(const std::list<PSerialDevice>& polledDevices,
-                             const std::string& slaveId,
-                             const std::string& deviceType)
-    {
-        for (const auto& device: polledDevices) {
-            auto deviceConfig = device->DeviceConfig();
-            if (deviceConfig->SlaveId == slaveId && deviceConfig->DeviceType == deviceType) {
-                return device;
-            }
-        }
-
-        return nullptr;
-    }
-
-    PSerialDevice CreateDevice(PPort port,
-                               PRPCDeviceLoadConfigRequest rpcRequest,
-                               const TDeviceProtocolParams& protocolParams)
-    {
-        auto config = std::make_shared<TDeviceConfig>("RPC Device",
-                                                      rpcRequest->SlaveId,
-                                                      rpcRequest->DeviceTemplate->GetProtocol());
-        if (rpcRequest->DeviceTemplate->GetProtocol() == "modbus") {
-            config->MaxRegHole = Modbus::MAX_HOLE_CONTINUOUS_16_BIT_REGISTERS;
-            config->MaxBitHole = Modbus::MAX_HOLE_CONTINUOUS_1_BIT_REGISTERS;
-            config->MaxReadRegisters = Modbus::MAX_READ_REGISTERS;
-        }
-        return protocolParams.factory->CreateDevice(rpcRequest->DeviceTemplate->GetTemplate(),
-                                                    config,
-                                                    port,
-                                                    protocolParams.protocol);
-    }
-
     bool ReadModbusRegister(Modbus::IModbusTraits& traits,
                             TPort& port,
                             PRPCDeviceLoadConfigRequest rpcRequest,
                             PRegisterConfig registerConfig,
                             TRegisterValue& value)
     {
-        uint8_t slaveId = static_cast<uint8_t>(std::stoi(rpcRequest->SlaveId));
+        uint8_t slaveId = static_cast<uint8_t>(std::stoi(rpcRequest->Device->DeviceConfig()->SlaveId));
         for (int i = 0; i <= MAX_RETRIES; ++i) {
             try {
                 value = Modbus::ReadRegister(traits,
@@ -82,7 +50,7 @@ namespace
 
     std::string ReadFirmwareVersion(TPort& port, PRPCDeviceLoadConfigRequest rpcRequest)
     {
-        if (!rpcRequest->IsWBDevice || rpcRequest->DeviceTemplate->GetProtocol() != "modbus") {
+        if (!rpcRequest->IsWBDevice) {
             return std::string();
         }
         std::string error;
@@ -100,8 +68,8 @@ namespace
         } catch (const TResponseTimeoutException& e) {
             error = e.what();
         }
-        LOG(Warn) << port.GetDescription() << " modbus:" << rpcRequest->SlaveId << " unable to read \""
-                  << WbRegisters::FW_VERSION_REGISTER_NAME << "\" register: " << error;
+        LOG(Warn) << port.GetDescription() << " modbus:" << rpcRequest->Device->DeviceConfig()->SlaveId
+                  << " unable to read \"" << WbRegisters::FW_VERSION_REGISTER_NAME << "\" register: " << error;
         throw TRPCException(error, TRPCResultCode::RPC_WRONG_PARAM_VALUE);
     }
 
@@ -174,13 +142,80 @@ namespace
             parameters[reg.first] = RawValueToJSON(*reg.second->GetConfig(), reg.second->GetValue());
         }
     }
+
+    void ExecRPCRequest(PPort port, PRPCDeviceLoadConfigRequest rpcRequest)
+    {
+        if (!rpcRequest->OnResult) {
+            return;
+        }
+
+        Json::Value templateParams = rpcRequest->DeviceTemplate->GetTemplate()["parameters"];
+        if (templateParams.empty()) {
+            rpcRequest->OnResult(Json::Value(Json::objectValue));
+            return;
+        }
+
+        std::string id = rpcRequest->ParametersCache.GetId(*port, rpcRequest->Device->DeviceConfig()->SlaveId);
+        std::string fwVersion;
+        Json::Value parameters;
+        if (rpcRequest->ParametersCache.Contains(id)) {
+            Json::Value cache = rpcRequest->ParametersCache.Get(id);
+            fwVersion = cache["fw"].asString();
+            parameters = cache["parameters"];
+        }
+        if (parameters.isNull()) {
+            for (const auto& item: rpcRequest->Device->GetSetupItems()) {
+                if (!item->ParameterId.empty()) {
+                    parameters[item->ParameterId] = RawValueToJSON(*item->RegisterConfig, item->RawValue);
+                }
+            }
+        }
+
+        port->SkipNoise();
+        if (fwVersion.empty()) {
+            fwVersion = ReadFirmwareVersion(*port, rpcRequest);
+        }
+
+        std::list<std::string> paramsList;
+        TRPCRegisterList registerList = CreateRegisterList(
+            rpcRequest->ProtocolParams,
+            rpcRequest->Device,
+            rpcRequest->Group.empty() ? templateParams
+                                      : GetTemplateParamsGroup(templateParams, rpcRequest->Group, paramsList),
+            parameters,
+            fwVersion);
+        ReadParameters(rpcRequest->Device, registerList, parameters);
+
+        Json::Value result;
+        if (!fwVersion.empty()) {
+            result["fw"] = fwVersion;
+        }
+        if (!paramsList.empty()) {
+            for (const auto& id: paramsList) {
+                result["parameters"][id] = parameters[id];
+            }
+        } else {
+            result["parameters"] = parameters;
+        }
+        CheckParametersConditions(templateParams, result["parameters"]);
+        rpcRequest->OnResult(result);
+
+        if (rpcRequest->DeviceFromConfig) {
+            result["parameters"] = parameters;
+            rpcRequest->ParametersCache.Add(id, result);
+        }
+    }
 } // namespace
 
-TRPCDeviceLoadConfigRequest::TRPCDeviceLoadConfigRequest(const TSerialDeviceFactory& deviceFactory,
+TRPCDeviceLoadConfigRequest::TRPCDeviceLoadConfigRequest(const TDeviceProtocolParams& protocolParams,
+                                                         PSerialDevice device,
                                                          PDeviceTemplate deviceTemplate,
+                                                         bool deviceFromConfig,
                                                          TRPCDeviceParametersCache& parametersCache)
-    : DeviceFactory(deviceFactory),
+    : ProtocolParams(protocolParams),
+      Device(device),
       DeviceTemplate(deviceTemplate),
+      DeviceFromConfig(deviceFromConfig),
       ParametersCache(parametersCache)
 {
     IsWBDevice =
@@ -198,88 +233,27 @@ TRPCDeviceLoadConfigRequest::TRPCDeviceLoadConfigRequest(const TSerialDeviceFact
 }
 
 PRPCDeviceLoadConfigRequest ParseRPCDeviceLoadConfigRequest(const Json::Value& request,
-                                                            const TSerialDeviceFactory& deviceFactory,
+                                                            const TDeviceProtocolParams& protocolParams,
+                                                            PSerialDevice device,
                                                             PDeviceTemplate deviceTemplate,
-                                                            TRPCDeviceParametersCache& parametersCache)
+                                                            bool deviceFromConfig,
+                                                            TRPCDeviceParametersCache& parametersCache,
+                                                            WBMQTT::TMqttRpcServer::TResultCallback onResult,
+                                                            WBMQTT::TMqttRpcServer::TErrorCallback onError)
 {
-    PRPCDeviceLoadConfigRequest res =
-        std::make_shared<TRPCDeviceLoadConfigRequest>(deviceFactory, deviceTemplate, parametersCache);
+    auto res = std::make_shared<TRPCDeviceLoadConfigRequest>(protocolParams,
+                                                             device,
+                                                             deviceTemplate,
+                                                             deviceFromConfig,
+                                                             parametersCache);
     res->SerialPortSettings = ParseRPCSerialPortSettings(request);
-    res->SlaveId = request["slave_id"].asString();
     res->Group = request["group"].asString();
     WBMQTT::JSON::Get(request, "response_timeout", res->ResponseTimeout);
     WBMQTT::JSON::Get(request, "frame_timeout", res->FrameTimeout);
     WBMQTT::JSON::Get(request, "total_timeout", res->TotalTimeout);
+    res->OnResult = onResult;
+    res->OnError = onError;
     return res;
-}
-
-void ExecRPCDeviceLoadConfigRequest(PPort port,
-                                    PRPCDeviceLoadConfigRequest rpcRequest,
-                                    const std::list<PSerialDevice>& polledDevices)
-{
-    if (!rpcRequest->OnResult) {
-        return;
-    }
-
-    TDeviceProtocolParams protocolParams =
-        rpcRequest->DeviceFactory.GetProtocolParams(rpcRequest->DeviceTemplate->GetProtocol());
-    auto device = FindDevice(polledDevices, rpcRequest->SlaveId, rpcRequest->DeviceTemplate->Type);
-    bool useCache = true;
-    if (device == nullptr) {
-        device = CreateDevice(port, rpcRequest, protocolParams);
-        useCache = false;
-    }
-
-    std::string id = rpcRequest->ParametersCache.GetId(*port, rpcRequest->SlaveId);
-    std::string fwVersion;
-    Json::Value parameters;
-    if (rpcRequest->ParametersCache.Contains(id)) {
-        Json::Value cache = rpcRequest->ParametersCache.Get(id);
-        fwVersion = cache["fw"].asString();
-        parameters = cache["parameters"];
-    }
-    if (parameters.isNull()) {
-        for (const auto& item: device->GetSetupItems()) {
-            if (!item->ParameterId.empty()) {
-                parameters[item->ParameterId] = RawValueToJSON(*item->RegisterConfig, item->RawValue);
-            }
-        }
-    }
-
-    port->SkipNoise();
-    if (fwVersion.empty()) {
-        fwVersion = ReadFirmwareVersion(*port, rpcRequest);
-    }
-
-    Json::Value templateParams = rpcRequest->DeviceTemplate->GetTemplate()["parameters"];
-    std::list<std::string> paramsList;
-    TRPCRegisterList registerList = CreateRegisterList(
-        protocolParams,
-        device,
-        rpcRequest->Group.empty() ? templateParams
-                                  : GetTemplateParamsGroup(templateParams, rpcRequest->Group, paramsList),
-        parameters,
-        fwVersion);
-    ReadParameters(device, registerList, parameters);
-
-    Json::Value result;
-    if (!fwVersion.empty()) {
-        result["fw"] = fwVersion;
-    }
-    if (!paramsList.empty()) {
-        for (const auto& id: paramsList) {
-            result["parameters"][id] = parameters[id];
-        }
-    } else {
-        result["parameters"] = parameters;
-    }
-    CheckParametersConditions(templateParams, result["parameters"]);
-    rpcRequest->OnResult(result);
-
-    if (useCache) {
-        result["parameters"] = parameters;
-        rpcRequest->ParametersCache.Add(id, result);
-    }
 }
 
 TRPCDeviceLoadConfigSerialClientTask::TRPCDeviceLoadConfigSerialClientTask(PRPCDeviceLoadConfigRequest request)
@@ -305,8 +279,10 @@ ISerialClientTask::TRunResult TRPCDeviceLoadConfigSerialClientTask::Run(
             port->Open();
         }
         lastAccessedDevice.PrepareToAccess(nullptr);
-        TSerialPortSettingsGuard settingsGuard(port, Request->SerialPortSettings);
-        ExecRPCDeviceLoadConfigRequest(port, Request, polledDevices);
+        if (!Request->DeviceFromConfig) {
+            TSerialPortSettingsGuard settingsGuard(port, Request->SerialPortSettings);
+        }
+        ExecRPCRequest(port, Request);
     } catch (const std::exception& error) {
         if (Request->OnError) {
             Request->OnError(WBMQTT::E_RPC_SERVER_ERROR, std::string("Port IO error: ") + error.what());

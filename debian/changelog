@@ -1,3 +1,10 @@
+wb-mqtt-serial (2.177.0) stable; urgency=medium
+
+  * Refactor device/LoadConfig RPC
+  * Add read by device ID feature to device/LoadConfig RPC
+
+ -- Ilya Titov <ilya.titov@wirenboard.com>  Fri, 04 Jul 2025 07:57:21 +0300
+
 wb-mqtt-serial (2.176.1) stable; urgency=medium
 
   * templates: ups v.3: fix charge counter register address

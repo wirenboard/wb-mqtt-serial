@@ -77,24 +77,43 @@
           ]
         },
         "device_type": {
-          "type": "string"
+          "type": "string",
+          "minLength": 1
         },
         "group": {
-          "type": "string"
+          "type": "string",
+          "minLength": 1
         }
       },
       "required": [ "slave_id", "device_type" ]
     }
   },
-
-  "allOf": [
+  "oneOf": [
     {
-      "oneOf": [
-        { "$ref" : "#/definitions/serial_port_config"},
-        { "$ref" : "#/definitions/tcp_port_config"}
+      "allOf": [
+        {
+          "oneOf": [
+            { "$ref" : "#/definitions/serial_port_config"},
+            { "$ref" : "#/definitions/tcp_port_config"}
+          ]
+        },
+        { "$ref" : "#/definitions/timeouts_config" },
+        { "$ref" : "#/definitions/request_data" }
       ]
     },
-    { "$ref" : "#/definitions/timeouts_config" },
-    { "$ref" : "#/definitions/request_data" }
+    {
+      "type": "object",
+      "properties": {
+        "device_id": {
+          "type": "string",
+          "minLength": 1
+        },
+        "group": {
+          "type": "string",
+          "minLength": 1
+        }
+      },
+      "required": [ "device_id" ]
+    }
   ]
 }

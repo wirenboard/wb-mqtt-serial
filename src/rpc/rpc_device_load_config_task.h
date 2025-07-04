@@ -1,9 +1,5 @@
 #pragma once
-#include "rpc_device_handler.h"
 #include "rpc_port_handler.h"
-#include "serial_client.h"
-#include <chrono>
-#include <wblib/rpc.h>
 
 template<> bool inline WBMQTT::JSON::Is<uint8_t>(const Json::Value& value)
 {
@@ -18,18 +14,21 @@ template<> inline uint8_t WBMQTT::JSON::As<uint8_t>(const Json::Value& value)
 class TRPCDeviceLoadConfigRequest
 {
 public:
-    TRPCDeviceLoadConfigRequest(const TSerialDeviceFactory& deviceFactory,
+    TRPCDeviceLoadConfigRequest(const TDeviceProtocolParams& protocolParams,
+                                PSerialDevice device,
                                 PDeviceTemplate deviceTemplate,
+                                bool deviceFromConfig,
                                 TRPCDeviceParametersCache& parametersCache);
 
-    const TSerialDeviceFactory& DeviceFactory;
-
+    TDeviceProtocolParams ProtocolParams;
+    PSerialDevice Device;
     PDeviceTemplate DeviceTemplate;
+    bool DeviceFromConfig;
+
     TRPCDeviceParametersCache& ParametersCache;
     bool IsWBDevice = false;
 
     TSerialPortConnectionSettings SerialPortSettings;
-    std::string SlaveId;
     std::string Group;
 
     std::chrono::milliseconds ResponseTimeout = DefaultResponseTimeout;
@@ -43,13 +42,13 @@ public:
 typedef std::shared_ptr<TRPCDeviceLoadConfigRequest> PRPCDeviceLoadConfigRequest;
 
 PRPCDeviceLoadConfigRequest ParseRPCDeviceLoadConfigRequest(const Json::Value& request,
-                                                            const TSerialDeviceFactory& deviceFactory,
+                                                            const TDeviceProtocolParams& protocolParams,
+                                                            PSerialDevice device,
                                                             PDeviceTemplate deviceTemplate,
-                                                            TRPCDeviceParametersCache& parametersCache);
-
-void ExecRPCDeviceLoadConfigRequest(PPort port,
-                                    PRPCDeviceLoadConfigRequest rpcRequest,
-                                    const std::list<PSerialDevice>& polledDevices);
+                                                            bool deviceFromConfig,
+                                                            TRPCDeviceParametersCache& parametersCache,
+                                                            WBMQTT::TMqttRpcServer::TResultCallback onResult,
+                                                            WBMQTT::TMqttRpcServer::TErrorCallback onError);
 
 class TRPCDeviceLoadConfigSerialClientTask: public ISerialClientTask
 {

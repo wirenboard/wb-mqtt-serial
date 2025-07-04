@@ -3,19 +3,6 @@
 #include "rpc_device_probe_task.h"
 #include "rpc_helpers.h"
 
-#define LOG(logger) ::logger.Log() << "[RPC] "
-
-namespace
-{
-    void SetCallbacks(TRPCDeviceLoadConfigRequest& request,
-                      WBMQTT::TMqttRpcServer::TResultCallback onResult,
-                      WBMQTT::TMqttRpcServer::TErrorCallback onError)
-    {
-        request.OnResult = onResult;
-        request.OnError = onError;
-    }
-}
-
 void TRPCDeviceParametersCache::RegisterCallbacks(PHandlerConfig handlerConfig)
 {
     for (const auto& portConfig: handlerConfig->PortConfigs) {
@@ -60,6 +47,52 @@ const Json::Value& TRPCDeviceParametersCache::Get(const std::string& id, const J
     return it != DeviceParameters.end() ? it->second : defaultValue;
 };
 
+TRPCDeviceHelper::TRPCDeviceHelper(const Json::Value& request,
+                                   const TSerialDeviceFactory& deviceFactory,
+                                   PTemplateMap templates,
+                                   TSerialClientTaskRunner& serialClientTaskRunner)
+{
+    auto params = serialClientTaskRunner.GetSerialClientParams(request);
+    SerialClient = params.SerialClient;
+    if (SerialClient == nullptr) {
+        TaskExecutor = serialClientTaskRunner.GetTaskExecutor(request);
+    }
+    if (params.Device == nullptr) {
+        DeviceTemplate = templates->GetTemplate(request["device_type"].asString());
+        auto config = std::make_shared<TDeviceConfig>("RPC Device",
+                                                      request["slave_id"].asString(),
+                                                      DeviceTemplate->GetProtocol());
+        if (DeviceTemplate->GetProtocol() == "modbus") {
+            config->MaxRegHole = Modbus::MAX_HOLE_CONTINUOUS_16_BIT_REGISTERS;
+            config->MaxBitHole = Modbus::MAX_HOLE_CONTINUOUS_1_BIT_REGISTERS;
+            config->MaxReadRegisters = Modbus::MAX_READ_REGISTERS;
+        }
+        ProtocolParams = deviceFactory.GetProtocolParams(DeviceTemplate->GetProtocol());
+        Device = ProtocolParams.factory->CreateDevice(DeviceTemplate->GetTemplate(),
+                                                      config,
+                                                      SerialClient ? SerialClient->GetPort() : TaskExecutor->GetPort(),
+                                                      ProtocolParams.protocol);
+    } else {
+        Device = params.Device;
+        DeviceTemplate = templates->GetTemplate(Device->DeviceConfig()->DeviceType);
+        ProtocolParams = deviceFactory.GetProtocolParams(DeviceTemplate->GetProtocol());
+        DeviceFromConfig = true;
+    }
+    if (DeviceTemplate->WithSubdevices()) {
+        throw TRPCException("Device \"" + DeviceTemplate->Type + "\" is not supported by this RPC",
+                            TRPCResultCode::RPC_WRONG_PARAM_VALUE);
+    }
+}
+
+void TRPCDeviceHelper::RunTask(PSerialClientTask task)
+{
+    if (SerialClient) {
+        SerialClient->AddTask(task);
+    } else {
+        TaskExecutor->AddTask(task);
+    }
+}
+
 TRPCDeviceHandler::TRPCDeviceHandler(const std::string& requestDeviceLoadConfigSchemaFilePath,
                                      const std::string& requestDeviceProbeSchemaFilePath,
                                      const TSerialDeviceFactory& deviceFactory,
@@ -95,24 +128,17 @@ void TRPCDeviceHandler::LoadConfig(const Json::Value& request,
                                    WBMQTT::TMqttRpcServer::TErrorCallback onError)
 {
     ValidateRPCRequest(request, RequestDeviceLoadConfigSchema);
-
-    std::string deviceType = request["device_type"].asString();
-    auto deviceTemplate = Templates->GetTemplate(deviceType);
-    if (deviceTemplate->WithSubdevices()) {
-        throw TRPCException("Device \"" + deviceType + "\" is not supported by this RPC",
-                            TRPCResultCode::RPC_WRONG_PARAM_VALUE);
-    }
-
-    Json::Value parameters = deviceTemplate->GetTemplate()["parameters"];
-    if (parameters.empty()) {
-        onResult(Json::Value(Json::objectValue));
-        return;
-    }
-
     try {
-        auto rpcRequest = ParseRPCDeviceLoadConfigRequest(request, DeviceFactory, deviceTemplate, ParametersCache);
-        SetCallbacks(*rpcRequest, onResult, onError);
-        SerialClientTaskRunner.RunTask(request, std::make_shared<TRPCDeviceLoadConfigSerialClientTask>(rpcRequest));
+        auto helper = TRPCDeviceHelper(request, DeviceFactory, Templates, SerialClientTaskRunner);
+        auto rpcRequest = ParseRPCDeviceLoadConfigRequest(request,
+                                                          helper.ProtocolParams,
+                                                          helper.Device,
+                                                          helper.DeviceTemplate,
+                                                          helper.DeviceFromConfig,
+                                                          ParametersCache,
+                                                          onResult,
+                                                          onError);
+        helper.RunTask(std::make_shared<TRPCDeviceLoadConfigSerialClientTask>(rpcRequest));
     } catch (const TRPCException& e) {
         ProcessException(e, onError);
     }
