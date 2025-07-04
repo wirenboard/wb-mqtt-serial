@@ -137,3 +137,26 @@ private:
 };
 
 typedef std::shared_ptr<TRPCDeviceHandler> PRPCDeviceHandler;
+typedef std::vector<std::pair<std::string, PRegister>> TRPCRegisterList;
+
+/**
+ * @brief Creates named PRegister list based on template parameters JSON array or object.
+ *
+ * @param protocolParams - device protocol params for LoadRegisterConfig call
+ * @param device - serial device object pointer for TRegister object creation
+ * @param templateParams - device template parameters JSON array or object
+ * @param parameters - known parameters JSON object, where the key is the parameter id and the value is the known
+ *                     parameter value, for example: {"baudrate": 96, "in1_mode": 2}
+ *                     used to exclule known parameters from regiter list
+ * @param fwVersion - device firmvare version string, used to exclude parameters unsupporterd by firmware
+ *
+ * @return TRPCRegisterList - named PRegister list
+ */
+TRPCRegisterList CreateRegisterList(const TDeviceProtocolParams& protocolParams,
+                                    const PSerialDevice& device,
+                                    const Json::Value& templateItems,
+                                    const Json::Value& parameters = Json::Value(),
+                                    const std::string& fwVersion = std::string());
+
+// TODO: add description
+void ReadRegisterList(PSerialDevice device, TRPCRegisterList& registerList, Json::Value& result, int maxRetries = 0);

@@ -9,8 +9,11 @@ public:
                           PDeviceTemplate deviceTemplate,
                           bool deviceFromConfig);
 
-    std::list<std::string> Channels;
-    std::list<std::string> Parameters;
+    TRPCRegisterList ClannelRegisterList;
+    TRPCRegisterList ParameterRegisterList;
+
+    void ParseClannelRegisterList(const Json::Value& request);
+    void ParseParameterRegisterList(const Json::Value& request);
 };
 
 typedef std::shared_ptr<TRPCDeviceLoadRequest> PRPCDeviceLoadRequest;
