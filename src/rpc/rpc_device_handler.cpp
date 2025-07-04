@@ -93,6 +93,38 @@ void TRPCDeviceHelper::RunTask(PSerialClientTask task)
     }
 }
 
+TRPCDeviceRequest::TRPCDeviceRequest(const TDeviceProtocolParams& protocolParams,
+                                     PSerialDevice device,
+                                     PDeviceTemplate deviceTemplate,
+                                     bool deviceFromConfig)
+    : ProtocolParams(protocolParams),
+      Device(device),
+      DeviceTemplate(deviceTemplate),
+      DeviceFromConfig(deviceFromConfig)
+{
+    Json::Value responseTimeout = DeviceTemplate->GetTemplate()["response_timeout_ms"];
+    if (responseTimeout.isInt()) {
+        ResponseTimeout = std::chrono::milliseconds(responseTimeout.asInt());
+    }
+
+    Json::Value frameTimeout = DeviceTemplate->GetTemplate()["frame_timeout_ms"];
+    if (frameTimeout.isInt()) {
+        FrameTimeout = std::chrono::milliseconds(frameTimeout.asInt());
+    }
+}
+
+void TRPCDeviceRequest::ParseSettings(const Json::Value& request,
+                                      WBMQTT::TMqttRpcServer::TResultCallback onResult,
+                                      WBMQTT::TMqttRpcServer::TErrorCallback onError)
+{
+    SerialPortSettings = ParseRPCSerialPortSettings(request);
+    WBMQTT::JSON::Get(request, "response_timeout", ResponseTimeout);
+    WBMQTT::JSON::Get(request, "frame_timeout", FrameTimeout);
+    WBMQTT::JSON::Get(request, "total_timeout", TotalTimeout);
+    OnResult = onResult;
+    OnError = onError;
+}
+
 TRPCDeviceHandler::TRPCDeviceHandler(const std::string& requestDeviceLoadConfigSchemaFilePath,
                                      const std::string& requestDeviceProbeSchemaFilePath,
                                      const TSerialDeviceFactory& deviceFactory,

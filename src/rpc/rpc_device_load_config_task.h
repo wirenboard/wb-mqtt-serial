@@ -1,5 +1,5 @@
 #pragma once
-#include "rpc_port_handler.h"
+#include "rpc_device_handler.h"
 
 template<> bool inline WBMQTT::JSON::Is<uint8_t>(const Json::Value& value)
 {
@@ -11,7 +11,7 @@ template<> inline uint8_t WBMQTT::JSON::As<uint8_t>(const Json::Value& value)
     return value.asUInt() & 0xFF;
 }
 
-class TRPCDeviceLoadConfigRequest
+class TRPCDeviceLoadConfigRequest: public TRPCDeviceRequest
 {
 public:
     TRPCDeviceLoadConfigRequest(const TDeviceProtocolParams& protocolParams,
@@ -20,23 +20,9 @@ public:
                                 bool deviceFromConfig,
                                 TRPCDeviceParametersCache& parametersCache);
 
-    TDeviceProtocolParams ProtocolParams;
-    PSerialDevice Device;
-    PDeviceTemplate DeviceTemplate;
-    bool DeviceFromConfig;
-
     TRPCDeviceParametersCache& ParametersCache;
     bool IsWBDevice = false;
-
-    TSerialPortConnectionSettings SerialPortSettings;
     std::string Group;
-
-    std::chrono::milliseconds ResponseTimeout = DefaultResponseTimeout;
-    std::chrono::milliseconds FrameTimeout = DefaultFrameTimeout;
-    std::chrono::milliseconds TotalTimeout = DefaultRPCTotalTimeout;
-
-    WBMQTT::TMqttRpcServer::TResultCallback OnResult = nullptr;
-    WBMQTT::TMqttRpcServer::TErrorCallback OnError = nullptr;
 };
 
 typedef std::shared_ptr<TRPCDeviceLoadConfigRequest> PRPCDeviceLoadConfigRequest;

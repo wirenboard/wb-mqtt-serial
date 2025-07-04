@@ -212,24 +212,11 @@ TRPCDeviceLoadConfigRequest::TRPCDeviceLoadConfigRequest(const TDeviceProtocolPa
                                                          PDeviceTemplate deviceTemplate,
                                                          bool deviceFromConfig,
                                                          TRPCDeviceParametersCache& parametersCache)
-    : ProtocolParams(protocolParams),
-      Device(device),
-      DeviceTemplate(deviceTemplate),
-      DeviceFromConfig(deviceFromConfig),
+    : TRPCDeviceRequest(protocolParams, device, deviceTemplate, deviceFromConfig),
       ParametersCache(parametersCache)
 {
     IsWBDevice =
         !DeviceTemplate->GetHardware().empty() || DeviceTemplate->GetTemplate()["enable_wb_continuous_read"].asBool();
-
-    Json::Value responseTimeout = DeviceTemplate->GetTemplate()["response_timeout_ms"];
-    if (responseTimeout.isInt()) {
-        ResponseTimeout = std::chrono::milliseconds(responseTimeout.asInt());
-    }
-
-    Json::Value frameTimeout = DeviceTemplate->GetTemplate()["frame_timeout_ms"];
-    if (frameTimeout.isInt()) {
-        FrameTimeout = std::chrono::milliseconds(frameTimeout.asInt());
-    }
 }
 
 PRPCDeviceLoadConfigRequest ParseRPCDeviceLoadConfigRequest(const Json::Value& request,
@@ -246,13 +233,8 @@ PRPCDeviceLoadConfigRequest ParseRPCDeviceLoadConfigRequest(const Json::Value& r
                                                              deviceTemplate,
                                                              deviceFromConfig,
                                                              parametersCache);
-    res->SerialPortSettings = ParseRPCSerialPortSettings(request);
+    res->ParseSettings(request, onResult, onError);
     res->Group = request["group"].asString();
-    WBMQTT::JSON::Get(request, "response_timeout", res->ResponseTimeout);
-    WBMQTT::JSON::Get(request, "frame_timeout", res->FrameTimeout);
-    WBMQTT::JSON::Get(request, "total_timeout", res->TotalTimeout);
-    res->OnResult = onResult;
-    res->OnError = onError;
     return res;
 }
 
@@ -273,7 +255,6 @@ ISerialClientTask::TRunResult TRPCDeviceLoadConfigSerialClientTask::Run(
         }
         return ISerialClientTask::TRunResult::OK;
     }
-
     try {
         if (!port->IsOpen()) {
             port->Open();
@@ -288,7 +269,6 @@ ISerialClientTask::TRunResult TRPCDeviceLoadConfigSerialClientTask::Run(
             Request->OnError(WBMQTT::E_RPC_SERVER_ERROR, std::string("Port IO error: ") + error.what());
         }
     }
-
     return ISerialClientTask::TRunResult::OK;
 }
 

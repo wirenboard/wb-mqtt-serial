@@ -2,6 +2,8 @@
 #include "rpc_port_driver_list.h"
 #include "templates_map.h"
 
+const std::chrono::seconds DefaultRPCTotalTimeout(10);
+
 class TRPCDeviceParametersCache
 {
 public:
@@ -64,6 +66,33 @@ public:
     bool DeviceFromConfig = false;
 
     void RunTask(PSerialClientTask task);
+};
+
+class TRPCDeviceRequest
+{
+public:
+    TRPCDeviceRequest(const TDeviceProtocolParams& protocolParams,
+                      PSerialDevice device,
+                      PDeviceTemplate deviceTemplate,
+                      bool deviceFromConfig);
+
+    TDeviceProtocolParams ProtocolParams;
+    PSerialDevice Device;
+    PDeviceTemplate DeviceTemplate;
+    bool DeviceFromConfig;
+
+    TSerialPortConnectionSettings SerialPortSettings;
+
+    std::chrono::milliseconds ResponseTimeout = DefaultResponseTimeout;
+    std::chrono::milliseconds FrameTimeout = DefaultFrameTimeout;
+    std::chrono::milliseconds TotalTimeout = DefaultRPCTotalTimeout;
+
+    WBMQTT::TMqttRpcServer::TResultCallback OnResult = nullptr;
+    WBMQTT::TMqttRpcServer::TErrorCallback OnError = nullptr;
+
+    void ParseSettings(const Json::Value& request,
+                       WBMQTT::TMqttRpcServer::TResultCallback onResult,
+                       WBMQTT::TMqttRpcServer::TErrorCallback onError);
 };
 
 class TRPCDeviceHandler
