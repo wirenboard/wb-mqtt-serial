@@ -4,6 +4,7 @@
 #include "serial_port.h"
 #include "wb_registers.h"
 
+// TODO: remove it
 #define LOG(logger) ::logger.Log() << "[RPC] "
 
 namespace
@@ -13,9 +14,13 @@ namespace
         if (!rpcRequest->OnResult) {
             return;
         }
-
         Json::Value result;
-        result["dummyLoad"] = true;
+        if (!rpcRequest->ClannelRegisterList.empty()) {
+            ReadRegisterList(rpcRequest->Device, rpcRequest->ClannelRegisterList, result["channels"]);
+        }
+        if (!rpcRequest->ParameterRegisterList.empty()) {
+            ReadRegisterList(rpcRequest->Device, rpcRequest->ParameterRegisterList, result["parameters"]);
+        }
         rpcRequest->OnResult(result);
     }
 } // namespace
@@ -27,6 +32,50 @@ TRPCDeviceLoadRequest::TRPCDeviceLoadRequest(const TDeviceProtocolParams& protoc
     : TRPCDeviceRequest(protocolParams, device, deviceTemplate, deviceFromConfig)
 {}
 
+void TRPCDeviceLoadRequest::ParseClannelRegisterList(const Json::Value& request)
+{
+    std::list<std::string> list;
+    for (const auto& item: request["channels"]) {
+        auto id = item.asString();
+        if (std::find(list.begin(), list.end(), id) == list.end()) {
+            list.push_back(id);
+        }
+    }
+    Json::Value items(Json::arrayValue);
+    for (auto item: DeviceTemplate->GetTemplate()["channels"]) { // TODO: check if write only
+        auto id = item["name"].asString();
+        if (std::find(list.begin(), list.end(), id) != list.end()) {
+            item["id"] = id;
+            items.append(item);
+        }
+    }
+    ClannelRegisterList = CreateRegisterList(ProtocolParams, Device, items);
+}
+
+void TRPCDeviceLoadRequest::ParseParameterRegisterList(const Json::Value& request)
+{
+    std::list<std::string> list;
+    for (const auto& item: request["parameters"]) {
+        auto id = item.asString();
+        if (std::find(list.begin(), list.end(), id) == list.end()) {
+            list.push_back(id);
+        }
+    }
+    auto parameters = DeviceTemplate->GetTemplate()["parameters"];
+    Json::Value items(Json::arrayValue);
+    for (auto it = parameters.begin(); it != parameters.end(); ++it) { // TODO: check if write only
+        auto item = *it;
+        auto id = parameters.isObject() ? it.key().asString() : item["id"].asString();
+        if (std::find(list.begin(), list.end(), id) != list.end()) {
+            if (parameters.isObject()) {
+                item["id"] = id;
+            }
+            items.append(item);
+        }
+    }
+    ParameterRegisterList = CreateRegisterList(ProtocolParams, Device, items);
+}
+
 PRPCDeviceLoadRequest ParseRPCDeviceLoadRequest(const Json::Value& request,
                                                 const TDeviceProtocolParams& protocolParams,
                                                 PSerialDevice device,
@@ -37,12 +86,8 @@ PRPCDeviceLoadRequest ParseRPCDeviceLoadRequest(const Json::Value& request,
 {
     auto res = std::make_shared<TRPCDeviceLoadRequest>(protocolParams, device, deviceTemplate, deviceFromConfig);
     res->ParseSettings(request, onResult, onError);
-    for (const auto& channel: request["channels"]) {
-        res->Channels.push_back(channel.asString());
-    }
-    for (const auto& parameter: request["parameters"]) {
-        res->Parameters.push_back(parameter.asString());
-    }
+    res->ParseClannelRegisterList(request);
+    res->ParseParameterRegisterList(request);
     return res;
 }
 

@@ -5,6 +5,8 @@
 #include "rpc_device_set_task.h"
 #include "rpc_helpers.h"
 
+#define LOG(logger) ::logger.Log() << "[RPC] "
+
 void TRPCDeviceParametersCache::RegisterCallbacks(PHandlerConfig handlerConfig)
 {
     for (const auto& portConfig: handlerConfig->PortConfigs) {
@@ -246,5 +248,115 @@ void TRPCDeviceHandler::Probe(const Json::Value& request,
                                        std::make_shared<TRPCDeviceProbeSerialClientTask>(request, onResult, onError));
     } catch (const TRPCException& e) {
         ProcessException(e, onError);
+    }
+}
+
+TRPCRegisterList CreateRegisterList(const TDeviceProtocolParams& protocolParams,
+                                    const PSerialDevice& device,
+                                    const Json::Value& templateItems,
+                                    const Json::Value& knownItems,
+                                    const std::string& fwVersion)
+{
+    TRPCRegisterList registerList;
+    for (auto it = templateItems.begin(); it != templateItems.end(); ++it) {
+        const auto& item = *it;
+        auto id = templateItems.isObject() ? it.key().asString() : item["id"].asString();
+        bool duplicate = false;
+        for (const auto& item: registerList) {
+            if (item.first == id) {
+                duplicate = true;
+                break;
+            }
+        }
+        if (duplicate || item["address"].isNull() || item["readonly"].asBool() || !knownItems[id].isNull()) {
+            continue;
+        }
+        if (!fwVersion.empty()) {
+            std::string fw = item["fw"].asString();
+            if (!fw.empty() && util::CompareVersionStrings(fw, fwVersion) > 0) {
+                continue;
+            }
+        }
+        auto config = LoadRegisterConfig(item,
+                                         *protocolParams.protocol->GetRegTypes(),
+                                         std::string(),
+                                         *protocolParams.factory,
+                                         protocolParams.factory->GetRegisterAddressFactory().GetBaseRegisterAddress(),
+                                         0);
+        auto reg = std::make_shared<TRegister>(device, config.RegisterConfig);
+        reg->SetAvailable(TRegisterAvailability::AVAILABLE);
+        registerList.push_back(std::make_pair(id, reg));
+    }
+    return registerList;
+}
+
+void ReadRegisterList(PSerialDevice device, TRPCRegisterList& registerList, Json::Value& result, int maxRetries)
+{
+    if (registerList.size() == 0) {
+        return;
+    }
+    TRegisterComparePredicate compare;
+    std::sort(registerList.begin(),
+              registerList.end(),
+              [compare](std::pair<std::string, PRegister>& a, std::pair<std::string, PRegister>& b) {
+                  return compare(b.second, a.second);
+              });
+
+    // TODO: check for deviceFromConfig?
+    for (int i = 0; i <= maxRetries; i++) {
+        try {
+            device->Prepare(TDevicePrepareMode::WITHOUT_SETUP);
+            break;
+        } catch (const TSerialDeviceException& e) {
+            if (i == maxRetries) {
+                LOG(Warn) << device->Port()->GetDescription() << " " << device->Protocol()->GetName() << ":"
+                          << device->DeviceConfig()->SlaveId << " unable to prepare session: " << e.what();
+                throw TRPCException(e.what(), TRPCResultCode::RPC_WRONG_PARAM_VALUE);
+            }
+        }
+    }
+
+    size_t index = 0;
+    bool success = true;
+    while (index < registerList.size() && success) {
+        auto range = device->CreateRegisterRange();
+        auto offset = index;
+        while (index < registerList.size() && range->Add(registerList[index].second, std::chrono::milliseconds::max()))
+        {
+            ++index;
+        }
+        success = true;
+        for (int i = 0; i <= maxRetries; ++i) {
+            device->ReadRegisterRange(range);
+            while (offset < index) {
+                if (registerList[offset++].second->GetErrorState().count()) {
+                    success = false;
+                    break;
+                }
+            }
+            if (success) {
+                break;
+            }
+        }
+    }
+
+    // TODO: check for deviceFromConfig?
+    try {
+        device->EndSession();
+    } catch (const TSerialDeviceException& e) {
+        LOG(Warn) << device->Port()->GetDescription() << " " << device->Protocol()->GetName() << ":"
+                  << device->DeviceConfig()->SlaveId << " unable to end session: " << e.what();
+    }
+
+    if (!success) {
+        std::string error = "unable to read parameters register range";
+        LOG(Warn) << device->Port()->GetDescription() << " " << device->Protocol()->GetName() << ":"
+                  << device->DeviceConfig()->SlaveId << " " << error;
+        throw TRPCException(error, TRPCResultCode::RPC_WRONG_PARAM_VALUE);
+    }
+
+    for (size_t i = 0; i < registerList.size(); ++i) {
+        auto& reg = registerList[i];
+        result[reg.first] = RawValueToJSON(*reg.second->GetConfig(), reg.second->GetValue());
     }
 }
