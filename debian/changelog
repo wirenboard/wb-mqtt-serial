@@ -1,10 +1,16 @@
-wb-mqtt-serial (2.176.0) stable; urgency=medium
+wb-mqtt-serial (2.177.0) stable; urgency=medium
 
   * Refactor device/LoadConfig RPC
   * Add read by device ID feature to device/LoadConfig RPC
 
- -- Ilya Titov <ilya.titov@wirenboard.com>  Wed, 02 Jul 2025 14:02:21 +0300
- 
+ -- Ilya Titov <ilya.titov@wirenboard.com>  Fri, 04 Jul 2025 07:57:21 +0300
+
+wb-mqtt-serial (2.176.0) stable; urgency=medium
+
+  * Add WB-UPS v.3 template
+
+ -- Pavel Gasheev <pavel.gasheev@wirenboard.com>  Wed, 02 Jul 2025 11:09:14 +0300
+
 wb-mqtt-serial (2.175.4) stable; urgency=medium
 
   * config-carel-mu-rack.json: fix name channels
