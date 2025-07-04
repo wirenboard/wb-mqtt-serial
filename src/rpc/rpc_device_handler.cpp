@@ -1,6 +1,8 @@
 #include "rpc_device_handler.h"
 #include "rpc_device_load_config_task.h"
+#include "rpc_device_load_task.h"
 #include "rpc_device_probe_task.h"
+#include "rpc_device_set_task.h"
 #include "rpc_helpers.h"
 
 void TRPCDeviceParametersCache::RegisterCallbacks(PHandlerConfig handlerConfig)
@@ -126,6 +128,8 @@ void TRPCDeviceRequest::ParseSettings(const Json::Value& request,
 }
 
 TRPCDeviceHandler::TRPCDeviceHandler(const std::string& requestDeviceLoadConfigSchemaFilePath,
+                                     const std::string& requestDeviceLoadSchemaFilePath,
+                                     const std::string& requestDeviceSetSchemaFilePath,
                                      const std::string& requestDeviceProbeSchemaFilePath,
                                      const TSerialDeviceFactory& deviceFactory,
                                      PTemplateMap templates,
@@ -134,6 +138,8 @@ TRPCDeviceHandler::TRPCDeviceHandler(const std::string& requestDeviceLoadConfigS
                                      WBMQTT::PMqttRpcServer rpcServer)
     : DeviceFactory(deviceFactory),
       RequestDeviceLoadConfigSchema(LoadRPCRequestSchema(requestDeviceLoadConfigSchemaFilePath, "device/LoadConfig")),
+      RequestDeviceLoadSchema(LoadRPCRequestSchema(requestDeviceLoadSchemaFilePath, "device/Load")),
+      RequestDeviceSetSchema(LoadRPCRequestSchema(requestDeviceSetSchemaFilePath, "device/Set")),
       RequestDeviceProbeSchema(LoadRPCRequestSchema(requestDeviceProbeSchemaFilePath, "device/Probe")),
       Templates(templates),
       SerialClientTaskRunner(serialClientTaskRunner),
@@ -142,6 +148,20 @@ TRPCDeviceHandler::TRPCDeviceHandler(const std::string& requestDeviceLoadConfigS
     rpcServer->RegisterAsyncMethod("device",
                                    "LoadConfig",
                                    std::bind(&TRPCDeviceHandler::LoadConfig,
+                                             this,
+                                             std::placeholders::_1,
+                                             std::placeholders::_2,
+                                             std::placeholders::_3));
+    rpcServer->RegisterAsyncMethod("device",
+                                   "Load",
+                                   std::bind(&TRPCDeviceHandler::Load, //
+                                             this,
+                                             std::placeholders::_1,
+                                             std::placeholders::_2,
+                                             std::placeholders::_3));
+    rpcServer->RegisterAsyncMethod("device",
+                                   "Set",
+                                   std::bind(&TRPCDeviceHandler::Set, //
                                              this,
                                              std::placeholders::_1,
                                              std::placeholders::_2,
@@ -171,6 +191,46 @@ void TRPCDeviceHandler::LoadConfig(const Json::Value& request,
                                                           onResult,
                                                           onError);
         helper.RunTask(std::make_shared<TRPCDeviceLoadConfigSerialClientTask>(rpcRequest));
+    } catch (const TRPCException& e) {
+        ProcessException(e, onError);
+    }
+}
+
+void TRPCDeviceHandler::Load(const Json::Value& request,
+                             WBMQTT::TMqttRpcServer::TResultCallback onResult,
+                             WBMQTT::TMqttRpcServer::TErrorCallback onError)
+{
+    ValidateRPCRequest(request, RequestDeviceLoadSchema);
+    try {
+        auto helper = TRPCDeviceHelper(request, DeviceFactory, Templates, SerialClientTaskRunner);
+        auto rpcRequest = ParseRPCDeviceLoadRequest(request,
+                                                    helper.ProtocolParams,
+                                                    helper.Device,
+                                                    helper.DeviceTemplate,
+                                                    helper.DeviceFromConfig,
+                                                    onResult,
+                                                    onError);
+        helper.RunTask(std::make_shared<TRPCDeviceLoadSerialClientTask>(rpcRequest));
+    } catch (const TRPCException& e) {
+        ProcessException(e, onError);
+    }
+}
+
+void TRPCDeviceHandler::Set(const Json::Value& request,
+                            WBMQTT::TMqttRpcServer::TResultCallback onResult,
+                            WBMQTT::TMqttRpcServer::TErrorCallback onError)
+{
+    ValidateRPCRequest(request, RequestDeviceSetSchema);
+    try {
+        auto helper = TRPCDeviceHelper(request, DeviceFactory, Templates, SerialClientTaskRunner);
+        auto rpcRequest = ParseRPCDeviceSetRequest(request,
+                                                   helper.ProtocolParams,
+                                                   helper.Device,
+                                                   helper.DeviceTemplate,
+                                                   helper.DeviceFromConfig,
+                                                   onResult,
+                                                   onError);
+        helper.RunTask(std::make_shared<TRPCDeviceSetSerialClientTask>(rpcRequest));
     } catch (const TRPCException& e) {
         ProcessException(e, onError);
     }

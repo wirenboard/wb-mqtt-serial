@@ -99,6 +99,8 @@ class TRPCDeviceHandler
 {
 public:
     TRPCDeviceHandler(const std::string& requestDeviceLoadConfigSchemaFilePath,
+                      const std::string& requestDeviceLoadSchemaFilePath,
+                      const std::string& requestDeviceLSetSchemaFilePath,
                       const std::string& requestDeviceProbeSchemaFilePath,
                       const TSerialDeviceFactory& deviceFactory,
                       PTemplateMap templates,
@@ -110,6 +112,8 @@ private:
     const TSerialDeviceFactory& DeviceFactory;
 
     Json::Value RequestDeviceLoadConfigSchema;
+    Json::Value RequestDeviceLoadSchema;
+    Json::Value RequestDeviceSetSchema;
     Json::Value RequestDeviceProbeSchema;
     PTemplateMap Templates;
     TSerialClientTaskRunner& SerialClientTaskRunner;
@@ -118,6 +122,14 @@ private:
     void LoadConfig(const Json::Value& request,
                     WBMQTT::TMqttRpcServer::TResultCallback onResult,
                     WBMQTT::TMqttRpcServer::TErrorCallback onError);
+
+    void Load(const Json::Value& request,
+              WBMQTT::TMqttRpcServer::TResultCallback onResult,
+              WBMQTT::TMqttRpcServer::TErrorCallback onError);
+
+    void Set(const Json::Value& request,
+             WBMQTT::TMqttRpcServer::TResultCallback onResult,
+             WBMQTT::TMqttRpcServer::TErrorCallback onError);
 
     void Probe(const Json::Value& request,
                WBMQTT::TMqttRpcServer::TResultCallback onResult,
