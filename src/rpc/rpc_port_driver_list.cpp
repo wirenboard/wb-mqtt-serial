@@ -120,16 +120,19 @@ bool TSerialClientTaskExecutor::IsIdle() const
 TSerialClientTaskRunner::TSerialClientTaskRunner(PMQTTSerialDriver serialDriver): SerialDriver(serialDriver)
 {}
 
-PSerialClient TSerialClientTaskRunner::GetSerialClient(const Json::Value& request, PSerialDevice& clientDevice)
+TSerialClientParams TSerialClientTaskRunner::GetSerialClientParams(const Json::Value& request)
 {
+    TSerialClientParams params;
+
     auto deviceId = request["device_id"];
     if (deviceId.isString()) {
         auto id = deviceId.asString();
         for (auto driver: SerialDriver->GetPortDrivers()) {
             for (auto device: driver->GetSerialClient()->GetDevices()) {
                 if (device->DeviceConfig()->Id == id) {
-                    clientDevice = device;
-                    return driver->GetSerialClient();
+                    params.SerialClient = driver->GetSerialClient();
+                    params.Device = device;
+                    return params;
                 }
             }
         }
@@ -143,19 +146,19 @@ PSerialClient TSerialClientTaskRunner::GetSerialClient(const Json::Value& reques
                 return driver->GetSerialClient()->GetPort()->GetDescription(false) == portDescription;
             });
         if (portDriver != portDrivers.end()) {
+            params.SerialClient = (*portDriver)->GetSerialClient();
             auto slaveId = request["slave_id"].asString();
             auto deviceType = request["device_type"].asString();
             for (auto device: (*portDriver)->GetSerialClient()->GetDevices()) {
                 if (device->DeviceConfig()->SlaveId == slaveId && device->DeviceConfig()->DeviceType == deviceType) {
-                    clientDevice = device;
+                    params.Device = device;
                     break;
                 }
             }
-            return (*portDriver)->GetSerialClient();
         }
     }
 
-    return nullptr;
+    return params;
 }
 
 PSerialClientTaskExecutor TSerialClientTaskRunner::GetTaskExecutor(const Json::Value& request)
@@ -178,10 +181,9 @@ PSerialClientTaskExecutor TSerialClientTaskRunner::GetTaskExecutor(const Json::V
 
 void TSerialClientTaskRunner::RunTask(const Json::Value& request, PSerialClientTask task)
 {
-    PSerialDevice device;
-    auto serialClient = GetSerialClient(request, device);
-    if (serialClient) {
-        serialClient->AddTask(task);
+    auto params = GetSerialClientParams(request);
+    if (params.SerialClient) {
+        params.SerialClient->AddTask(task);
         return;
     }
     GetTaskExecutor(request)->AddTask(task);

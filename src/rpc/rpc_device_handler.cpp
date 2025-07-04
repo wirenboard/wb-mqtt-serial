@@ -52,11 +52,12 @@ TRPCDeviceHelper::TRPCDeviceHelper(const Json::Value& request,
                                    PTemplateMap templates,
                                    TSerialClientTaskRunner& serialClientTaskRunner)
 {
-    SerialClient = serialClientTaskRunner.GetSerialClient(request, Device);
+    auto params = serialClientTaskRunner.GetSerialClientParams(request);
+    SerialClient = params.SerialClient;
     if (SerialClient == nullptr) {
         TaskExecutor = serialClientTaskRunner.GetTaskExecutor(request);
     }
-    if (Device == nullptr) {
+    if (params.Device == nullptr) {
         DeviceTemplate = templates->GetTemplate(request["device_type"].asString());
         auto config = std::make_shared<TDeviceConfig>("RPC Device",
                                                       request["slave_id"].asString(),
@@ -72,6 +73,7 @@ TRPCDeviceHelper::TRPCDeviceHelper(const Json::Value& request,
                                                       SerialClient ? SerialClient->GetPort() : TaskExecutor->GetPort(),
                                                       ProtocolParams.protocol);
     } else {
+        Device = params.Device;
         DeviceTemplate = templates->GetTemplate(Device->DeviceConfig()->DeviceType);
         ProtocolParams = deviceFactory.GetProtocolParams(DeviceTemplate->GetProtocol());
         DeviceFromConfig = true;

@@ -29,12 +29,18 @@ private:
 
 typedef std::shared_ptr<TSerialClientTaskExecutor> PSerialClientTaskExecutor;
 
+struct TSerialClientParams
+{
+    PSerialClient SerialClient;
+    PSerialDevice Device;
+};
+
 class TSerialClientTaskRunner
 {
 public:
     TSerialClientTaskRunner(PMQTTSerialDriver serialDriver);
 
-    PSerialClient GetSerialClient(const Json::Value& request, PSerialDevice& clientDevice);
+    TSerialClientParams GetSerialClientParams(const Json::Value& request);
     PSerialClientTaskExecutor GetTaskExecutor(const Json::Value& request);
 
     void RunTask(const Json::Value& request, PSerialClientTask task);
