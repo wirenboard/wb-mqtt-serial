@@ -17,10 +17,18 @@
 #include "serial_device.h"
 #include "templates_map.h"
 
+struct TSerialDeviceWithChannels
+{
+    PSerialDevice Device;
+    std::vector<PDeviceChannelConfig> Channels;
+};
+
+typedef std::shared_ptr<TSerialDeviceWithChannels> PSerialDeviceWithChannels;
+
 struct TPortConfig
 {
     PPort Port;
-    std::vector<PSerialDevice> Devices;
+    std::vector<PSerialDeviceWithChannels> Devices;
     std::optional<std::chrono::milliseconds> ReadRateLimit;
     std::chrono::microseconds RequestDelay = std::chrono::microseconds::zero();
     TPortOpenCloseLogic::TSettings OpenCloseSettings;
@@ -34,7 +42,7 @@ struct TPortConfig
 
     bool IsModbusTcp = false;
 
-    void AddDevice(PSerialDevice device);
+    void AddDevice(PSerialDeviceWithChannels device);
 };
 
 typedef std::shared_ptr<TPortConfig> PPortConfig;
@@ -154,31 +162,45 @@ struct TDeviceConfigLoadParams
     std::string DefaultId;
     std::chrono::microseconds DefaultRequestDelay;
     std::chrono::milliseconds PortResponseTimeout;
-    std::optional<std::chrono::milliseconds> DefaultReadRateLimit;
-    std::string DeviceTemplateTitle;
     const Json::Value* Translations = nullptr;
 };
 
-PDeviceConfig LoadBaseDeviceConfig(const Json::Value& deviceData,
-                                   PProtocol protocol,
-                                   const IDeviceFactory& factory,
-                                   const TDeviceConfigLoadParams& parameters);
+struct TDeviceProtocolParams
+{
+    PProtocol protocol;
+    std::shared_ptr<IDeviceFactory> factory;
+};
+
+PDeviceConfig LoadDeviceConfig(const Json::Value& dev, PProtocol protocol, const TDeviceConfigLoadParams& parameters);
+
+struct TLoadRegisterConfigResult
+{
+    PRegisterConfig RegisterConfig;
+    std::string DefaultControlType;
+};
+
+TLoadRegisterConfigResult LoadRegisterConfig(const Json::Value& registerData,
+                                             const TRegisterTypeMap& typeMap,
+                                             const std::string& readonlyOverrideErrorMessagePrefix,
+                                             const IDeviceFactory& factory,
+                                             const IRegisterAddress& deviceBaseAddress,
+                                             size_t stride);
 
 class TSerialDeviceFactory
 {
-    std::unordered_map<std::string, std::pair<PProtocol, std::shared_ptr<IDeviceFactory>>> Protocols;
+    std::unordered_map<std::string, TDeviceProtocolParams> Protocols;
 
 public:
     void RegisterProtocol(PProtocol protocol, IDeviceFactory* deviceFactory);
-    PRegisterTypeMap GetRegisterTypes(const std::string& protocolName);
-    PSerialDevice CreateDevice(const Json::Value& device_config,
-                               const std::string& defaultId,
-                               PPortConfig PPortConfig,
-                               TTemplateMap& templates);
-    PProtocol GetProtocol(const std::string& name);
+    TDeviceProtocolParams GetProtocolParams(const std::string& protocolName) const;
+    PProtocol GetProtocol(const std::string& protocolName) const;
     const std::string& GetCommonDeviceSchemaRef(const std::string& protocolName) const;
     const std::string& GetCustomChannelSchemaRef(const std::string& protocolName) const;
     std::vector<std::string> GetProtocolNames() const;
+    PSerialDeviceWithChannels CreateDevice(const Json::Value& device_config,
+                                           const std::string& defaultId,
+                                           PPortConfig PPortConfig,
+                                           TTemplateMap& templates);
 };
 
 void RegisterProtocols(TSerialDeviceFactory& deviceFactory);
@@ -209,9 +231,7 @@ public:
                                PPort port,
                                PProtocol protocol) const override
     {
-        auto dev = std::make_shared<Dev>(deviceConfig, port, protocol);
-        dev->InitSetupItems();
-        return dev;
+        return std::make_shared<Dev>(deviceConfig, port, protocol);
     }
 };
 
@@ -240,6 +260,7 @@ namespace SerialConfig
 {
     constexpr auto WRITE_ADDRESS_PROPERTY_NAME = "write_address";
     constexpr auto ADDRESS_PROPERTY_NAME = "address";
+    constexpr auto FW_VERSION_PROPERTY_NAME = "fw";
 }
 
 bool HasNoEmptyProperty(const Json::Value& regCfg, const std::string& propertyName);

@@ -9,7 +9,8 @@ TWriteChannelSerialClientTask::TWriteChannelSerialClientTask(PRegisterHandler ha
 {}
 
 ISerialClientTask::TRunResult TWriteChannelSerialClientTask::Run(PPort port,
-                                                                 TSerialClientDeviceAccessHandler& lastAccessedDevice)
+                                                                 TSerialClientDeviceAccessHandler& lastAccessedDevice,
+                                                                 const std::list<PSerialDevice>& polledDevices)
 {
     if (!Handler->NeedToFlush()) {
         return ISerialClientTask::TRunResult::OK;

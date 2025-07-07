@@ -3,6 +3,7 @@
 #include "file_utils.h"
 #include "json_common.h"
 #include "log.h"
+#include "rpc_exception.h"
 #include "wblib/exceptions.h"
 
 #define LOG(logger) ::logger.Log() << "[RPC] "
@@ -138,7 +139,7 @@ namespace
 
 TRPCConfigHandler::TRPCConfigHandler(const std::string& configPath,
                                      const Json::Value& portsSchema,
-                                     std::shared_ptr<TTemplateMap> templates,
+                                     PTemplateMap templates,
                                      TDevicesConfedSchemasMap& deviceConfedSchemas,
                                      TProtocolConfedSchemasMap& protocolConfedSchemas,
                                      const Json::Value& groupTranslations,
@@ -201,5 +202,11 @@ Json::Value TRPCConfigHandler::GetSchema(const Json::Value& request)
         type = type.substr(PROTOCOL_PREFIX.size());
         return ProtocolConfedSchemas.GetSchema(type);
     }
-    return *DeviceConfedSchemas.GetSchema(type);
+    try {
+        return *DeviceConfedSchemas.GetSchema(type);
+    } catch (const std::runtime_error& e) {
+        LOG(Error) << e.what();
+        throw TRPCException("Template \"" + type + "\" schema validation failed",
+                            TRPCResultCode::RPC_WRONG_PARAM_VALUE);
+    }
 }

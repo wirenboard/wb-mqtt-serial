@@ -47,15 +47,15 @@ void TSerialPortDriver::SetUpDevices()
         auto tx = MqttDriver->BeginTx();
 
         for (const auto& device: Config->Devices) {
-            device->AddOnConnectionStateChangedCallback(
+            device->Device->AddOnConnectionStateChangedCallback(
                 [this](PSerialDevice dev) { OnDeviceConnectionStateChanged(dev); });
-            auto mqttDevice = tx->CreateDevice(From(device)).GetValue();
-            Devices.push_back(device);
+            auto mqttDevice = tx->CreateDevice(From(device->Device)).GetValue();
+            Devices.push_back(device->Device);
             std::vector<PDeviceChannel> channels;
             // init channels' registers
-            for (const auto& channelConfig: device->DeviceConfig()->DeviceChannelConfigs) {
+            for (const auto& channelConfig: device->Channels) {
                 try {
-                    auto channel = std::make_shared<TDeviceChannel>(device, channelConfig);
+                    auto channel = std::make_shared<TDeviceChannel>(device->Device, channelConfig);
                     channel->Control = mqttDevice->CreateControl(tx, From(channel)).GetValue();
                     for (const auto& reg: channel->Registers) {
                         RegisterToChannelMap.emplace(reg, channel);
@@ -66,8 +66,8 @@ void TSerialPortDriver::SetUpDevices()
                 }
             }
             mqttDevice->RemoveUnusedControls(tx).Sync();
-            SerialClient->AddDevice(device);
-            DeviceToChannelsMap.emplace(device, channels);
+            SerialClient->AddDevice(device->Device);
+            DeviceToChannelsMap.emplace(device->Device, channels);
         }
     } catch (const exception& e) {
         LOG(Error) << "unable to create device: '" << e.what() << "' Cleaning.";
@@ -260,7 +260,7 @@ TControlArgs TSerialPortDriver::From(const PDeviceChannel& channel)
     }
 
     if (std::any_of(channel->Registers.cbegin(), channel->Registers.cend(), [](const auto& reg) {
-            return reg->TypeName == "press_counter";
+            return reg->GetConfig()->TypeName == "press_counter";
         }))
     {
         args.SetDurable();
@@ -278,11 +278,7 @@ TDeviceChannel::TDeviceChannel(PSerialDevice device, PDeviceChannelConfig config
     : TDeviceChannelConfig(*config),
       Device(device),
       PublishNextZeroPressCounter(true)
-{
-    for (const auto& reg_config: config->RegisterConfigs) {
-        Registers.push_back(device->AddRegister(reg_config));
-    }
-}
+{}
 
 std::string TDeviceChannel::Describe() const
 {
@@ -408,13 +404,13 @@ std::string TDeviceChannel::GetTextValue() const
 {
     if (Registers.size() == 1) {
         if (!OnValue.empty()) {
-            if (ConvertFromRawValue(*Registers.front(), Registers.front()->GetValue()) == OnValue) {
+            if (ConvertFromRawValue(*Registers.front()->GetConfig(), Registers.front()->GetValue()) == OnValue) {
                 LOG(Debug) << "OnValue: " << OnValue << "; value: 1";
                 return "1";
             }
         }
         if (!OffValue.empty()) {
-            if (ConvertFromRawValue(*Registers.front(), Registers.front()->GetValue()) == OffValue) {
+            if (ConvertFromRawValue(*Registers.front()->GetConfig(), Registers.front()->GetValue()) == OffValue) {
                 LOG(Debug) << "OnValue: " << OffValue << "; value: 0";
                 return "0";
             }
@@ -427,7 +423,7 @@ std::string TDeviceChannel::GetTextValue() const
             value += ";";
         }
         first = false;
-        value += ConvertFromRawValue(*r, r->GetValue());
+        value += ConvertFromRawValue(*r->GetConfig(), r->GetValue());
     }
     return value;
 }
@@ -445,7 +441,7 @@ bool TDeviceChannel::HasValuesOfAllRegisters() const
 bool TDeviceChannel::ShouldNotPublishPressCounter() const
 {
     for (const auto& r: Registers) {
-        if (r->TypeName == "press_counter" && !PublishNextZeroPressCounter) {
+        if (r->GetConfig()->TypeName == "press_counter" && !PublishNextZeroPressCounter) {
             try {
                 if (r->GetValue().Get<uint16_t>() == 0) {
                     return true;

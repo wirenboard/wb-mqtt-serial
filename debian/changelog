@@ -1,3 +1,439 @@
+wb-mqtt-serial (2.177.0) stable; urgency=medium
+
+  * Refactor device/LoadConfig RPC
+  * Add read by device ID feature to device/LoadConfig RPC
+
+ -- Ilya Titov <ilya.titov@wirenboard.com>  Fri, 04 Jul 2025 07:57:21 +0300
+
+wb-mqtt-serial (2.176.1) stable; urgency=medium
+
+  * templates: ups v.3: fix charge counter register address
+
+ -- Evgeny Boger <boger@wirenboard.com>  Fri, 04 Jul 2025 01:30:26 +0300
+
+wb-mqtt-serial (2.176.0) stable; urgency=medium
+
+  * Add WB-UPS v.3 template
+
+ -- Pavel Gasheev <pavel.gasheev@wirenboard.com>  Wed, 02 Jul 2025 11:09:14 +0300
+
+wb-mqtt-serial (2.175.4) stable; urgency=medium
+
+  * config-carel-mu-rack.json: fix name channels
+
+ -- Andrey Ksenofontov <andrey.ksenofontov@wirenboard.com>  Tue, 01 Jul 2025 17:31:00 +0300
+
+wb-mqtt-serial (2.175.3) stable; urgency=medium
+
+  * Change device name in mst-24 template to show Rtelligent NT60 support
+
+ -- Alexander Getman <alexander.getman@wirenboard.com>  Mon, 30 Jun 2025 18:29:04 +0300
+
+wb-mqtt-serial (2.175.2) stable; urgency=medium
+
+  * Fix forced frame timeout bug for modbus register range reading 
+  * Fix slow first poll for devices with continuous read enabled
+
+ -- Ilya Titov <ilya.titov@wirenboard.com>  Mon, 30 Jun 2025 12:19:52 +0300
+
+wb-mqtt-serial (2.175.1) stable; urgency=medium
+
+  * Fix channels and parameters description in readme
+
+ -- Ilya Titov <ilya.titov@wirenboard.com>  Thu, 26 Jun 2025 09:13:13 +0300
+
+wb-mqtt-serial (2.175.0) stable; urgency=medium
+
+  * Add partial register write featute for Modbus device setup items and parameters
+
+ -- Ilya Titov <ilya.titov@wirenboard.com>  Wed, 25 Jun 2025 10:49:58 +0300
+
+wb-mqtt-serial (2.174.1) stable; urgency=medium
+
+  * WB-MSW templates: Add safety mode for IR devices
+
+ -- Ilia Skochilov <ilia.skochilov@wirenboard.com>  Fri, 20 Jun 2025 17:22:00 +0300
+
+wb-mqtt-serial (2.174.0) stable; urgency=medium
+
+  * WB-MWAC v.2: deprecate old template, add new, make Leakage Mode control read only, add button to reset it
+
+ -- Radmir Khakimov <radmir.khakimov@wirenboard.com>  Mon, 20 Jun 2025 13:51:57 +0500
+
+wb-mqtt-serial (2.173.0) stable; urgency=medium
+
+  * Add meta/error feature for devices with only event registers enabled
+
+ -- Ilya Titov <ilya.titov@wirenboard.com>  Tue, 19 Jun 2025 17:17:28 +0300
+
+wb-mqtt-serial (2.172.1) stable; urgency=medium
+
+  * Fix write-only register "missing read address" bug
+
+ -- Ilya Titov <ilya.titov@wirenboard.com>  Wed, 19 Jun 2025 08:18:20 +0300
+
+wb-mqtt-serial (2.172.0) stable; urgency=medium
+
+  * Add register range write feature for Modbus registers
+
+ -- Ilya Titov <ilya.titov@wirenboard.com>  Mon, 18 Jun 2025 16:42:27 +0300
+
+wb-mqtt-serial (2.171.2) stable; urgency=medium
+
+  * Fix confed common schema translations
+
+ -- Ilya Titov <ilya.titov@wirenboard.com>  Wed, 11 Jun 2025 08:44:06 +0300
+
+wb-mqtt-serial (2.171.1) stable; urgency=medium
+
+  * Add byte order property definition to confed common schema 
+
+ -- Ilya Titov <ilya.titov@wirenboard.com>  Tue, 10 Jun 2025 18:40:32 +0300
+
+wb-mqtt-serial (2.171.0) stable; urgency=medium
+
+  * Add a template for MTD062-MB and MTD262-MB modbus microwave presence sensors
+
+ -- Alexander Getman <alexander.getman@wirenboard.com>  Mon, 09 Jun 2025 16:33:34 +0300
+
+wb-mqtt-serial (2.170.0) stable; urgency=medium
+
+  * Add byte order device template option for Modbus registers
+  * Add word order feature for "string" and "string8" Modbus register format
+
+ -- Ilya Titov <ilya.titov@wirenboard.com>  Wed, 06 Jun 2025 11:53:32 +0300
+
+wb-mqtt-serial (2.169.1) stable; urgency=medium
+
+  * Add separate device signature for WB-MRM2-mini/NC
+
+ -- Pavel Gasheev <pavel.gasheev@wirenboard.com>  Wed, 04 Jun 2025 15:19:39 +0300
+
+wb-mqtt-serial (2.169.0) stable; urgency=medium
+
+  * Add device/Probe RPC for requesting information about Wiren Board device
+
+ -- Petr Krasnoshchekov <petr.krasnoshchekov@wirenboard.com>  Mon, 02 Jun 2025 10:34:18 +0500
+
+wb-mqtt-serial (2.168.0) stable; urgency=medium
+
+  * Add parameters group read feature to device/LoadConfig RPC
+  * Add config parameters sync to device/LoadConfig RPC
+
+ -- Ilya Titov <ilya.titov@wirenboard.com>  Tue, 30 May 2025 11:14:36 +0300
+
+wb-mqtt-serial (2.167.4) stable; urgency=medium
+
+  * config-carel-pj-basic.json and config-carel-pj-basic-deprecated.json: Remove PYEZ1R05J4 from title
+
+ -- Andrey Ksenofontov <andrey.ksenofontov@wirenboard.com>  Thu, 29 May 2025 15:04:00 +0300
+
+wb-mqtt-serial (2.167.3) stable; urgency=medium
+
+  * config-map3ev.json: Add separate signature WB-MAP3EV
+
+ -- Ilia Skochilov <ilia.skochilov@wirenboard.com>  Wed, 28 May 2025 15:24:00 +0300
+
+wb-mqtt-serial (2.167.2) stable; urgency=medium
+
+  * Fix TSerialClientIntegrationTest.RPCRequestTransceive test timeout bug
+
+ -- Ilya Titov <ilya.titov@wirenboard.com>  Wed, 28 May 2025 15:02:46 +0300
+
+wb-mqtt-serial (2.167.1) stable; urgency=medium
+
+  * WB-MAP templates: Add default values for Turns and Phi
+
+ -- Ilia Skochilov <ilia.skochilov@wirenboard.com>  Tue, 27 May 2025 16:24:00 +0300
+
+wb-mqtt-serial (2.167.0) stable; urgency=medium
+
+  * Add firmware version value validation for template parameters array
+
+ -- Ilya Titov <ilya.titov@wirenboard.com>  Thu, 22 May 2025 14:18:57 +0300
+
+wb-mqtt-serial (2.166.0) stable; urgency=medium
+
+  * Add read parameters featute for non-Modbus devices to Device/LoadConfig RPC
+
+ -- Ilya Titov <ilya.titov@wirenboard.com>  Wed, 22 May 2025 13:02:16 +0300
+
+wb-mqtt-serial (2.165.2) stable; urgency=medium
+
+  * Remove duplicate channel from MAP3H fw2 basic template
+  * Remove duplicate channel from Network module PING2 for Komfovent C3/C4 template
+
+ -- Petr Krasnoshchekov <petr.krasnoshchekov@wirenboard.com>  Thu, 22 May 2025 10:42:34 +0500
+
+wb-mqtt-serial (2.165.1) stable; urgency=medium
+
+  * Somfy SDN: add application mode property (roller/venetian) for Sonesse 40 AC
+
+ -- Nikolay Korotkiy <nikolay.korotkiy@wirenboard.com>  Wed, 21 May 2025 15:10:00 +0400
+
+wb-mqtt-serial (2.165.0) stable; urgency=medium
+
+  * Add configured_device_type parameter to port/Scan RPC response.
+    It contains the device type from template if the device is configured in wb-mqtt-serial.conf.
+
+ -- Petr Krasnoshchekov <petr.krasnoshchekov@wirenboard.com>  Wed, 21 May 2025 15:12:30 +0500
+
+wb-mqtt-serial (2.164.3) stable; urgency=medium
+
+  * Fix A-OK, Dooya, Somfy and WinDeco meta/error flicker
+
+ -- Petr Krasnoshchekov <petr.krasnoshchekov@wirenboard.com>  Tue, 20 May 2025 11:29:30 +0500
+
+wb-mqtt-serial (2.164.2) stable; urgency=medium
+
+  * Refactor test templates features, no functional changes
+
+ -- Ilya Titov <ilya.titov@wirenboard.com>  Sun, 18 May 2025 11:15:01 +0300
+
+wb-mqtt-serial (2.164.1) stable; urgency=medium
+
+  * Fix changelog, no functional changes
+
+ -- Ilya Titov <ilya.titov@wirenboard.com>  Fri, 16 May 2025 14:55:36 +0300
+
+wb-mqtt-serial (2.164.0) stable; urgency=medium
+
+  * Add address value validation for template parameters array
+
+ -- Ilya Titov <ilya.titov@wirenboard.com>  Fri, 16 May 2025 10:45:08 +0300
+
+wb-mqtt-serial (2.163.1) stable; urgency=medium
+
+  * Add read parameters cache to Device/LoadConfig RPC
+
+ -- Ilya Titov <ilya.titov@wirenboard.com>  Wed, 14 May 2025 17:32:31 +0300
+
+wb-mqtt-serial (2.163.0) stable; urgency=medium
+
+  * Add template for Oven MST-24 stepper motor driver
+
+ -- Alexander Getman <alexander.getman@wirenboard.com>  Tue, 14 May 2025 16:35:10 +0300
+
+wb-mqtt-serial (2.162.2) stable; urgency=medium
+
+  * Source code refactoring. No functional changes
+
+ -- Petr Krasnoshchekov <petr.krasnoshchekov@wirenboard.com>  Wed, 14 May 2025 18:01:39 +0500
+
+wb-mqtt-serial (2.162.1) stable; urgency=medium
+
+  * Source code refactoring. No functional changes
+
+ -- Petr Krasnoshchekov <petr.krasnoshchekov@wirenboard.com>  Wed, 14 May 2025 16:52:30 +0500
+
+wb-mqtt-serial (2.162.0) stable; urgency=medium
+
+  * Add firmware version checks to device/LoadConfig RPC
+  * Add continuous read feature to device/LoadConfig RPC
+  * Add device config usage to device/LoadConfig RPC
+
+ -- Ilya Titov <ilya.titov@wirenboard.com>  Wed, 07 May 2025 09:41:28 +0300
+
+wb-mqtt-serial (2.161.1) stable; urgency=medium
+
+  * Source code refactoring. No functional changes
+
+ -- Petr Krasnoshchekov <petr.krasnoshchekov@wirenboard.com>  Wed, 07 May 2025 11:15:49 +0500
+
+wb-mqtt-serial (2.161.0) stable; urgency=medium
+
+  * Do not block RPC when running long lasting requests to devices
+
+ -- Petr Krasnoshchekov <petr.krasnoshchekov@wirenboard.com>  Wed, 07 May 2025 09:34:28 +0500
+
+wb-mqtt-serial (2.160.6) stable; urgency=medium
+
+  * Add PTemplateMap typedef, no functional changes
+
+ -- Ilya Titov <ilya.titov@wirenboard.com>  Tue, 06 May 2025 15:01:52 +0300
+
+wb-mqtt-serial (2.160.5) stable; urgency=medium
+
+  * WB-MIR templates: Add safety mode
+
+ -- Ilia Skochilov <ilia.skochilov@wirenboard.com>  Mon, 05 May 2025 09:22:00 +0300
+
+wb-mqtt-serial (2.160.4) stable; urgency=medium
+
+  * Add template validation error handling for config/GetSchema RPC
+
+ -- Ilya Titov <ilya.titov@wirenboard.com>  Tue, 29 Apr 2025 15:03:21 +0300
+
+wb-mqtt-serial (2.160.3) stable; urgency=medium
+
+  * Add TResponseTimeoutException handling for device/LoadConfig RPC
+
+ -- Ilya Titov <ilya.titov@wirenboard.com>  Mon, 28 Apr 2025 13:24:03 +0300
+
+wb-mqtt-serial (2.160.2) stable; urgency=medium
+
+  * Fix changelog, no functional changes
+
+ -- Ilya Titov <ilya.titov@wirenboard.com>  Fri, 25 Apr 2025 11:20:45 +0300
+
+wb-mqtt-serial (2.160.1) stable; urgency=medium
+
+  * config-map12e-fw2.json.jinja: Add nonactive power and energy registers, translates
+  * config-map12h-fw2-xxx: Fix addresses, scales and format of nonactive energy registers
+
+ -- Ilia Skochilov <ilia.skochilov@wirenboard.com>  Fri, 25 Apr 2025 10:03:00 +0300
+
+wb-mqtt-serial (2.160.0) stable; urgency=medium
+
+  * Add device/LoadConfig RPC for modbus device configuration reading
+
+ -- Ilya Titov <ilya.titov@wirenboard.com>  Wed, 25 Apr 2025 09:41:36 +0300
+
+wb-mqtt-serial (2.159.1) stable; urgency=medium
+
+  * Refactor Modbus::WriteRegister method, no functional changes
+  * Add Modbus::ExceptionCode enumerator, no functional changes
+
+ -- Ilya Titov <ilya.titov@wirenboard.com>  Wed, 23 Apr 2025 13:09:20 +0300
+
+wb-mqtt-serial (2.159.0) stable; urgency=medium
+
+  * Update Gurux.DLMS.cpp to 20250303.1
+
+ -- Nikolay Korotkiy <nikolay.korotkiy@wirenboard.com>  Fri, 17 Apr 2025 18:25:00 +0400
+
+wb-mqtt-serial (2.158.10) stable; urgency=medium
+
+  * Refactor LoadRegisterConfig method, no functional changes
+
+ -- Ilya Titov <ilya.titov@wirenboard.com>  Tue, 15 Apr 2025 12:47:21 +0300
+
+wb-mqtt-serial (2.158.9) stable; urgency=medium
+
+  * Refactor TSerialDeviceFactory class, no functional changes
+
+ -- Ilya Titov <ilya.titov@wirenboard.com>  Mon, 14 Apr 2025 15:57:51 +0300
+
+wb-mqtt-serial (2.158.8) stable; urgency=medium
+
+  * Refactor TRPCPortHandler class, no functional changes
+
+ -- Ilya Titov <ilya.titov@wirenboard.com>  Fri, 11 Apr 2025 10:34:19 +0300
+
+wb-mqtt-serial (2.158.7) stable; urgency=medium
+
+  * Fix tempates for WB-MAP with firmware 2.0.0 and later
+
+ -- Ilya Titov <ilya.titov@wirenboard.com>  Wed, 09 Apr 2025 15:37:10 +0300
+
+wb-mqtt-serial (2.158.6) stable; urgency=medium
+
+  * Fix conditional jump depending on uninitialised value
+
+ -- Nikolay Korotkiy <nikolay.korotkiy@wirenboard.com>  Wed, 09 Apr 2025 13:00:00 +0400
+
+wb-mqtt-serial (2.158.5) stable; urgency=medium
+
+  * Fix register exclusion log
+
+ -- Ilya Titov <ilya.titov@wirenboard.com>  Tue, 08 Apr 2025 16:51:02 +0300
+
+wb-mqtt-serial (2.158.4) stable; urgency=medium
+
+  * Fix port scan WB-MAP signature check
+
+ -- Ilya Titov <ilya.titov@wirenboard.com>  Tue, 08 Apr 2025 15:52:08 +0300
+
+wb-mqtt-serial (2.158.3) stable; urgency=medium
+
+  * Fix serial client event logs
+
+ -- Ilya Titov <ilya.titov@wirenboard.com>  Fri, 04 Apr 2025 13:58:23 +0300
+
+wb-mqtt-serial (2.158.2) stable; urgency=medium
+
+  * Fix Modbus register value debug logs
+
+ -- Ilya Titov <ilya.titov@wirenboard.com>  Thu, 03 Apr 2025 16:44:03 +0300
+
+wb-mqtt-serial (2.158.1) stable; urgency=medium
+
+  * Fix channel format for xy-md0x
+
+ -- Mikhail Burchu <mikhail.burchu@wirenboard.com>  Thu, 3 Apr 2025 16:20:00 +0300
+
+wb-mqtt-serial (2.158.0) stable; urgency=medium
+
+  * Add String8 Modbus register format
+
+ -- Ilya Titov <ilya.titov@wirenboard.com>  Thu, 03 Apr 2025 13:39:41 +0300
+
+wb-mqtt-serial (2.157.7) stable; urgency=medium
+
+  * Fix build with gcc14
+
+ -- Nikolay Korotkiy <nikolay.korotkiy@wirenboard.com>  Mon, 31 Mar 2025 16:30:00 +0400
+
+wb-mqtt-serial (2.157.6) stable; urgency=medium
+
+  * Add color temperature channels for arlight-dali-logic-lite-ps-x1
+
+ -- Mikhail Burchu <mikhail.burchu@wirenboard.com>  Mon, 31 Mar 2025 09:00:00 +0300
+
+wb-mqtt-serial (2.157.5) stable; urgency=medium
+
+  * Fix reading strings from Modbus registers
+
+ -- Petr Krasnoshchekov <petr.krasnoshchekov@wirenboard.com>  Tue, 25 Mar 2025 16:46:52 +0500
+
+wb-mqtt-serial (2.157.4) stable; urgency=medium
+
+  * Use 0x00 or 0xFF as end marker when reading strings from Modbus registers
+
+ -- Petr Krasnoshchekov <petr.krasnoshchekov@wirenboard.com>  Wed, 19 Mar 2025 12:16:32 +0500
+
+wb-mqtt-serial (2.157.3) stable; urgency=medium
+
+  * WB-MRWM2 template: Change the default overvoltage threshold to 242V
+
+ -- Ilia Skochilov <ilia.skochilov@wirenboard.com>  Thu, 13 Mar 2025 11:12:00 +0300
+
+wb-mqtt-serial (2.157.2) stable; urgency=medium
+
+  * WB-MDM3, WB-MAO4 templates: fix swapped increase/decrease actions for all channels
+
+ -- Pavel Gasheev <pavel.gasheev@wirenboard.com>  Wed, 12 Mar 2025 14:48:05 +0300
+
+wb-mqtt-serial (2.157.1) stable; urgency=medium
+
+  * WB-LED template: fix safety and powerup actions
+
+ -- Pavel Gasheev <pavel.gasheev@wirenboard.com>  Tue, 11 Mar 2025 13:50:24 +0300
+
+wb-mqtt-serial (2.157.0) stable; urgency=medium
+
+  * Add WB-MAI2-mini/CC v.3 support
+
+ -- Pavel Gasheev <pavel.gasheev@wirenboard.com>  Tue, 25 Feb 2025 19:06:56 +0300
+
+wb-mqtt-serial (2.156.0) stable; urgency=medium
+
+  * Add port/Scan RPC for searching for devices using Fast Modbus
+
+ -- Petr Krasnoshchekov <petr.krasnoshchekov@wirenboard.com>  Mon, 24 Feb 2025 10:45:42 +0500
+
+wb-mqtt-serial (2.155.2) stable; urgency=medium
+
+  * Fix translate for meanwell-drs-series
+
+ -- Mikhail Burchu <mikhail.burchu@wirenboard.com>  Tue, 18 Feb 2025 08:30:00 +0300
+
+wb-mqtt-serial (2.155.1) stable; urgency=medium
+
+  * Check motor id in A-OK protocol to filter the responses that match the request
+
+ -- Petr Krasnoshchekov <petr.krasnoshchekov@wirenboard.com>  Fri, 14 Feb 2025 11:06:37 +0500
+
 wb-mqtt-serial (2.155.0) stable; urgency=medium
 
   * WB-MWAC template: add buttons support
@@ -7,7 +443,7 @@ wb-mqtt-serial (2.155.0) stable; urgency=medium
 wb-mqtt-serial (2.154.2) stable; urgency=medium
 
   * WB-LED template: fix default value for switch mode actions ('off' for switch off; 'on' for switch on)
-  * WB-LED template: fix missed W4 channel in switch mode actions for RGB+W mode 
+  * WB-LED template: fix missed W4 channel in switch mode actions for RGB+W mode
 
  -- Pavel Gasheev <pavel.gasheev@wirenboard.com>  Thu, 30 Jan 2025 09:46:39 +0300
 
@@ -149,7 +585,7 @@ wb-mqtt-serial (2.147.0) stable; urgency=medium
 
 wb-mqtt-serial (2.146.0) stable; urgency=medium
 
-  * Do not publish zero press counter value after device's reset. 
+  * Do not publish zero press counter value after device's reset.
     These zeros cause false positives in whenChanged conditions in wb-rules
   * Add press_counter reg_type in device templates.
     It is the same as input, but wb-mqtt-serial will not publish the first zero register value after device reset.

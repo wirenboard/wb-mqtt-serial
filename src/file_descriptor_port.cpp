@@ -34,9 +34,10 @@ TFileDescriptorPort::~TFileDescriptorPort()
 
 void TFileDescriptorPort::Close()
 {
-    CheckPortOpen();
-    close(Fd);
-    Fd = -1;
+    if (IsOpen()) {
+        close(Fd);
+        Fd = -1;
+    }
 }
 
 bool TFileDescriptorPort::IsOpen() const

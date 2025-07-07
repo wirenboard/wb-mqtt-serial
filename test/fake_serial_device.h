@@ -37,8 +37,8 @@ public:
     void EndSession() override;
 
 protected:
-    TRegisterValue ReadRegisterImpl(PRegister reg) override;
-    void WriteRegisterImpl(PRegister reg, const TRegisterValue& value) override;
+    TRegisterValue ReadRegisterImpl(const TRegisterConfig& reg) override;
+    void WriteRegisterImpl(const TRegisterConfig& reg, const TRegisterValue& value) override;
     void PrepareImpl() override;
 
 private:

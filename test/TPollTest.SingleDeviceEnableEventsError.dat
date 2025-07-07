@@ -4,7 +4,7 @@ Sleep(1000)
 EnqueueEnableEvents()
 >> 01 46 18 0A 03 00 01 01 01 0F 00 00 01 00 28 7D
 << 01 46 14 02 01 00 2D A5
-11000: <modbus:1:(type 0): 1>
+11000: <modbus:1:(type 0): 1> with errors: 001
 11000: Cycle end
 
 11000: Cycle

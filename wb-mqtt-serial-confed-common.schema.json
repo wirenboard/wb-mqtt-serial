@@ -154,6 +154,13 @@
           "default": 1,
           "propertyOrder": 106
         },
+        "max_write_registers": {
+          "type": "integer",
+          "title": "Maximum number of registers in a single bulk write request",
+          "minimum": 0,
+          "default": 1,
+          "propertyOrder": 107
+        },
         "guard_interval_us": {
           "type": "integer",
           "title": "Additional delay before each writing to port (us)",
@@ -226,7 +233,7 @@
           "title": "Address",
           "description": "Register index (0-65535 in case of Modbus)",
           "propertyOrder": 2,
-          "$ref": "#/definitions/address_no_bits",
+          "$ref": "#/definitions/address",
           "options": {
             "keep_oneof_values": false
           }
@@ -423,13 +430,18 @@
           "title": "Word order",
           "propertyOrder": 20
         },
+        "byte_order": {
+          "$ref": "#/definitions/byte_order",
+          "title": "Byte order",
+          "propertyOrder": 21
+        },
         "string_data_size": {
           "type": "integer",
           "title": "String size in characters",
           "description": "string_data_size_description",
           "minimum": 1,
           "default": 1,
-          "propertyOrder": 21,
+          "propertyOrder": 22,
           "options": {
             "dependencies": {
               "format": "string"
@@ -441,14 +453,14 @@
           "description": "sporadic_description",
           "type": "boolean",
           "default": false,
-          "propertyOrder": 22
+          "propertyOrder": 23
         },
         "semi-sporadic": {
           "title": "Dispatched with an event and polling",
           "description": "semi_sporadic_description",
           "type": "boolean",
           "default": false,
-          "propertyOrder": 23
+          "propertyOrder": 24
         },
         "enum": {
           "title": "List of values",
@@ -459,13 +471,13 @@
               { "type": "number" }
             ]
           },
-          "propertyOrder": 24
+          "propertyOrder": 25
         },
         "enum_titles": {
           "title": "List of value titles",
           "type": "array",
           "items": { "type": "string" },
-          "propertyOrder": 25
+          "propertyOrder": 26
         },
         "consists_of": {
           "not": {},
@@ -814,6 +826,10 @@
         "word_order": {
           "$ref": "#/definitions/word_order",
           "propertyOrder": 6
+        },
+        "byte_order": {
+          "$ref": "#/definitions/byte_order",
+          "propertyOrder": 7
         }
       },
       "required": ["reg_type", "address"],
@@ -901,13 +917,13 @@
     "format": {
       "type": "string",
       "title": "Format",
-      "enum": ["s16", "u16", "s8", "u8", "s24", "u24", "s32", "u32", "s64", "u64", "bcd8", "bcd16", "bcd24", "bcd32", "float", "double", "char8", "string"],
+      "enum": ["s16", "u16", "s8", "u8", "s24", "u24", "s32", "u32", "s64", "u64", "bcd8", "bcd16", "bcd24", "bcd32", "float", "double", "char8", "string", "string8"],
       "options": {
         "enum_titles" : [ "Signed 16-bit integer", "Unsigned 16-bit integer", "Signed 8-bit integer", "Unsigned 8-bit integer",
                           "Signed 24-bit integer", "Unsigned 24-bit integer", "Signed 32-bit integer", "Unsigned 32-bit integer",
                           "Signed 64-bit integer", "Unsigned 64-bit integer",
                           "8-bit BCD", "16-bit BCD","24-bit BCD", "32-bit BCD", "IEEE754 32-bit float", "IEEE754 64-bit float (double)",
-                          "8-bit ASCII char", "String"]
+                          "8-bit ASCII char", "String", "String"]
       }
     },
     "word_order": {
@@ -915,8 +931,18 @@
       "title": "16-bit Word Order",
       "enum": ["big_endian", "little_endian"],
       "options": {
-        "enum_titles" : [ "Big-endian ( [0xAA 0xBB] [0xCC 0xDD] => 0xAABBCCDD)",
-                          "Little-endian ( [0xAA 0xBB] [0xCC 0xDD] => 0xCCDDAABB)"]
+        "enum_titles" : [ "Big-endian ([0xAA 0xBB] [0xCC 0xDD] => 0xAABBCCDD)",
+                          "Little-endian ([0xAA 0xBB] [0xCC 0xDD] => 0xCCDDAABB)"]
+      },
+      "default" : "big_endian"
+    },
+    "byte_order": {
+      "type": "string",
+      "title": "16-bit Word Byte Order",
+      "enum": ["big_endian", "little_endian"],
+      "options": {
+        "enum_titles" : [ "Big-endian ([0x12 0x34] => 0x1234)",
+                          "Little-endian ([0x12 0x34] => 0x3412)"]
       },
       "default" : "big_endian"
     },
@@ -944,30 +970,6 @@
               "placeholder":  "address:offset:bitwidth"
             },
             "patternmessage": "Address should be decimal or hex, offset and bitwidth separated by ':'"
-          }
-        },
-        {
-          "title": "decimal",
-          "type": "integer"
-        }
-      ],
-      "options": {
-        "keep_oneof_values": false
-      }
-    },
-    "address_no_bits": {
-      "title": "Address",
-      "description": "Register index (0-65535 in case of Modbus)",
-      "oneOf": [
-        {
-          "title": "decimal or hex",
-          "type": "string",
-          "pattern": "^(0x[A-Fa-f\\d]+|\\d+)$",
-          "options": {
-            "inputAttributes": {
-              "placeholder":  "decimal (e.g. 123) or hex (e.g. 0xAF)"
-            },
-            "patternmessage": "Should be decimal or hex"
           }
         },
         {
@@ -1177,6 +1179,20 @@
           },
           "default": 2,
           "propertyOrder": 12
+        },
+        "application_mode": {
+          "title": "Application mode",
+          "type": "integer",
+          "enum": [0, 1],
+          "options": {
+            "enum_titles": [
+              "Roller blind",
+              "Venetian blind"
+            ]
+          },
+          "default": 1,
+          "condition": "node_type==9",
+          "propertyOrder": 13
         }
       }
     },
@@ -1395,6 +1411,7 @@
       "Max dummy read bit count": "Максимальное число считываемых промежуточных бит",
       "Maximum number of registers in a single bulk read request": "Максимальное число регистров, считываемых за один запрос",
       "Minimum number of registers in a single bulk read request": "Минимальное число регистров, считываемых за один запрос",
+      "Maximum number of registers in a single bulk write request": "Максимальное число регистров, записываемых за один запрос",
       "Additional delay before each writing to port (us)": "Дополнительная задержка перед записью в порт (мкс)",
       "Frame timeout (ms)": "Задержка между сообщениями (мс)",
       "Device timeout (ms)": "Время ожидания устройства (мс)",
@@ -1455,6 +1472,7 @@
       "IEEE754 64-bit float (double)": "64-битное число с плавающей запятой (IEEE754)",
       "8-bit ASCII char": "8-битный символ ASCII",
       "16-bit Word Order": "Порядок 16-битных слов",
+      "16-bit Word Byte Order": "Порядок байтов в 16-битных словах",
       "bits": "биты",
       "address:offset:bitwidth": "адрес:смещение:число бит",
       "Address should be decimal or hex, offset and bitwidth separated by ':'": "Адрес должен быть задан в десятичном или шестнадцатеричном виде. Смещение и число бит отделены двоеточием",
@@ -1465,6 +1483,9 @@
       "16 - public client (default), 32 - SPODES measurements reader, 48 - SPODES configurator": "16 - публичный клиент (по умолчанию), 32 - считыватель показаний СПОДЭС, 48 - конфигуратор СПОДЭС", 
       "Custom setup commands": "Команды настройки",
       "Motor type": "Тип двигателя",
+      "Application mode": "Режим",
+      "Roller blind": "Рулонная штора",
+      "Venetian blind": "Жалюзи",
       "DLMS authentication mode": "Режим аутентификации DLMS",
       "no authentication": "без аутентификации",
       "low": "слабый",
@@ -1481,6 +1502,7 @@
       "Device": "Устройство",
       "Byte": "Байт",
       "Word order": "Порядок слов",
+      "Byte order": "Порядок байтов в слове",
       "Name": "Имя",
       "Type": "Тип",
       "Maximum value": "Максимальное значение",
@@ -1497,7 +1519,7 @@
       "not faster than (deprecated)": "не чаще чем раз в (устаревший параметр)",
       "String size in characters": "Размер строки в символах",
       "String": "Строка",
-      "string_data_size_description": "Для протокола modbus строки считываются по одному символу на регистр из младшего байта. Параметр определяет количество символов",
+      "string_data_size_description": "Для протокола Modbus строки считываются по одному символу на регистр из младшего байта. Параметр определяет количество символов",
       "rate_limit_desc": "Для снижения нагрузки на процессор не рекомендуется указывать более 100 чтений для WB6 и 800 для WB7",
       "Invalid channel ID": "Неверный идентификатор канала",
       "Invalid channel name": "Неверное имя канала",
@@ -1508,7 +1530,7 @@
       "semi_sporadic_description": "Если протокол передачи позволяет, изменение состояния отправляется специальным событием. При этом продолжается периодический опрос",
       "List of values": "Список значений",
       "List of value titles": "Список названий значений",
-      "force_frame_timeout_desc": "Использовать значение задержки между сообщениями для определения границ пакетов. Продолжать принимать данные, даже если получено ожидаемое число байт. Все дополнительно полученные данные будут отброшены. Более строгое соблюдение стандарта MODBUS, но медленнее опрос",
+      "force_frame_timeout_desc": "Использовать значение задержки между сообщениями для определения границ пакетов. Продолжать принимать данные, даже если получено ожидаемое число байт. Все дополнительно полученные данные будут отброшены. Более строгое соблюдение стандарта Modbus, но медленнее опрос",
       "Force frame timeout": "Разделять сообщения по времени",
       "Max write fail time (s)": "Время повторных попыток записать регистр (с)",
       "max_write_fail_time_desc": "Максимальное время, в течение которого будут продолжаться попытки записать регистр",

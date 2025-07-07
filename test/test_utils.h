@@ -1,5 +1,6 @@
 #pragma once
 
+#include "json_common.h"
 #include "serial_exc.h"
 #include <gtest/gtest.h>
 
@@ -15,3 +16,6 @@ template<class FnType> void CheckExceptionMsg(FnType fn, const std::string& msg)
         throw;
     }
 }
+
+Json::Value GetCommonDeviceSchema();
+Json::Value GetTemplatesSchema();

@@ -125,11 +125,11 @@ TEMDevice::ErrorType TMilurDevice::CheckForException(uint8_t* frame, int len, co
     return TEMDevice::OTHER_ERROR;
 }
 
-TRegisterValue TMilurDevice::ReadRegisterImpl(PRegister reg)
+TRegisterValue TMilurDevice::ReadRegisterImpl(const TRegisterConfig& reg)
 {
     TRegisterValue retVal;
-    uint8_t addr = GetUint32RegisterAddress(reg->GetAddress());
-    int size = GetExpectedSize(reg->Type);
+    uint8_t addr = GetUint32RegisterAddress(reg.GetAddress());
+    int size = GetExpectedSize(reg.Type);
     uint8_t buf[MAX_LEN], *p = buf;
     Talk(0x01, &addr, 1, 0x01, buf, size + 2, ExpectNBytes(SlaveIdWidth, size + 5 + SlaveIdWidth));
     if (*p++ != addr)
@@ -137,7 +137,7 @@ TRegisterValue TMilurDevice::ReadRegisterImpl(PRegister reg)
     if (*p != size)
         throw TSerialDeviceTransientErrorException("bad register size in the response");
 
-    switch (reg->Type) {
+    switch (reg.Type) {
         case TMilurDevice::REG_PARAM:
             retVal.Set(BuildIntVal(buf + 2, 3));
             break;

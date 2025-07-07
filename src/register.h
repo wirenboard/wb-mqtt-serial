@@ -37,10 +37,17 @@ enum RegisterFormat
     Float,
     Double,
     Char8,
-    String
+    String,
+    String8
 };
 
 enum class EWordOrder
+{
+    BigEndian,
+    LittleEndian
+};
+
+enum class EByteOrder
 {
     BigEndian,
     LittleEndian
@@ -66,12 +73,14 @@ struct TRegisterType
                   const std::string& defaultControlType,
                   RegisterFormat defaultFormat = U16,
                   bool readOnly = false,
-                  EWordOrder defaultWordOrder = EWordOrder::BigEndian);
+                  EWordOrder defaultWordOrder = EWordOrder::BigEndian,
+                  EByteOrder defaultByteOrder = EByteOrder::BigEndian);
 
     int Index = 0;
     std::string Name, DefaultControlType;
     RegisterFormat DefaultFormat = U16;
     EWordOrder DefaultWordOrder = EWordOrder::BigEndian;
+    EByteOrder DefaultByteOrder = EByteOrder::BigEndian;
     bool ReadOnly = false;
 };
 
@@ -225,6 +234,7 @@ public:
     std::optional<std::chrono::milliseconds> ReadPeriod;
     std::optional<TRegisterValue> ErrorValue;
     EWordOrder WordOrder;
+    EByteOrder ByteOrder;
 
     std::optional<TRegisterValue> UnsupportedValue;
 
@@ -237,7 +247,8 @@ public:
                     TSporadicMode sporadic,
                     bool readonly,
                     const std::string& type_name,
-                    const EWordOrder word_order);
+                    const EWordOrder word_order,
+                    const EByteOrder byte_order);
 
     /**
      * @brief Get the width of data in bits.
@@ -260,12 +271,13 @@ public:
      */
     uint32_t GetByteWidth() const;
 
-    void SetDataWidth(uint8_t width);
-    void SetDataOffset(uint8_t offset);
-
     //! Get occupied space in 16-bit words
     uint8_t Get16BitWidth() const;
 
+    //! Checks that the register is "partial" (register data with is not zero)
+    bool IsPartial() const;
+
+    bool IsString() const;
     std::string ToString() const;
 
     bool IsHighPriority() const;
@@ -279,7 +291,8 @@ public:
                                   TSporadicMode sporadic = TSporadicMode::DISABLED,
                                   bool readonly = false,
                                   const std::string& type_name = "",
-                                  const EWordOrder word_order = EWordOrder::BigEndian);
+                                  const EWordOrder word_order = EWordOrder::BigEndian,
+                                  const EByteOrder byte_order = EByteOrder::BigEndian);
 
     //! Create register with TUint32RegisterAddress
     static PRegisterConfig Create(int type = 0,
@@ -292,6 +305,7 @@ public:
                                   bool readonly = false,
                                   const std::string& type_name = "",
                                   const EWordOrder word_order = EWordOrder::BigEndian,
+                                  const EByteOrder byte_order = EByteOrder::BigEndian,
                                   uint32_t data_offset = 0,
                                   uint32_t data_bit_width = 0);
 
@@ -323,7 +337,7 @@ public:
     bool IsMissed(std::chrono::steady_clock::time_point readTime);
 };
 
-struct TRegister: public TRegisterConfig
+struct TRegister
 {
     enum TError
     {
@@ -363,6 +377,8 @@ struct TRegister: public TRegisterConfig
     void ExcludeFromPolling();
     void IncludeInPolling();
 
+    const PRegisterConfig GetConfig() const;
+
 private:
     std::weak_ptr<TSerialDevice> _Device;
     TRegisterAvailability Available = TRegisterAvailability::UNKNOWN;
@@ -371,6 +387,7 @@ private:
     TErrorState ErrorState;
     TReadPeriodMissChecker ReadPeriodMissChecker;
     bool ExcludedFromPolling = false;
+    PRegisterConfig Config;
 };
 
 typedef std::vector<PRegister> TRegistersList;
@@ -429,6 +446,8 @@ inline const char* RegisterFormatName(RegisterFormat fmt)
             return "Char8";
         case String:
             return "String";
+        case String8:
+            return "String8";
         default:
             return "<unknown register type>";
     }
@@ -470,6 +489,8 @@ inline RegisterFormat RegisterFormatFromName(const std::string& name)
         return Char8;
     else if (name == "string")
         return String;
+    else if (name == "string8")
+        return String8;
     else
         return U16;
 }
@@ -478,12 +499,18 @@ size_t RegisterFormatByteWidth(RegisterFormat format);
 
 inline EWordOrder WordOrderFromName(const std::string& name)
 {
-    if (name == "big_endian")
-        return EWordOrder::BigEndian;
-    else if (name == "little_endian")
+    if (name == "little_endian")
         return EWordOrder::LittleEndian;
     else
         return EWordOrder::BigEndian;
+}
+
+inline EByteOrder ByteOrderFromName(const std::string& name)
+{
+    if (name == "little_endian")
+        return EByteOrder::LittleEndian;
+    else
+        return EByteOrder::BigEndian;
 }
 
 class TRegisterRange

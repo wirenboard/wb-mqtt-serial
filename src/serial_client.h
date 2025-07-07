@@ -37,10 +37,10 @@ public:
 
     std::chrono::steady_clock::time_point GetDeadline(std::chrono::steady_clock::time_point currentTime) const;
 
-    TSerialClientEventsReader& GetEventsReader();
+    PSerialClientEventsReader GetEventsReader() const;
 
 private:
-    TSerialClientEventsReader EventsReader;
+    PSerialClientEventsReader EventsReader;
     TSerialClientRegisterPoller RegisterPoller;
     TScheduler<TClientTaskType> TimeBalancer;
     std::chrono::milliseconds ReadEventsPeriod;
@@ -61,7 +61,17 @@ public:
 
     virtual ~ISerialClientTask() = default;
 
-    virtual ISerialClientTask::TRunResult Run(PPort port, TSerialClientDeviceAccessHandler& lastAccessedDevice) = 0;
+    /**
+     * @brief Executes some code in the serial client thread.
+     *
+     * @param port The port to be used for communication.
+     * @param lastAccessedDevice A reference to the handler for the last accessed device.
+     * @param polledDevices A list of serial devices polled on this port.
+     * @return The result of the task execution as a TRunResult.
+     */
+    virtual ISerialClientTask::TRunResult Run(PPort port,
+                                              TSerialClientDeviceAccessHandler& lastAccessedDevice,
+                                              const std::list<PSerialDevice>& polledDevices) = 0;
 };
 
 typedef std::shared_ptr<ISerialClientTask> PSerialClientTask;
@@ -82,7 +92,9 @@ public:
     void SetTextValue(PRegister reg, const std::string& value);
     void SetReadCallback(const TRegisterCallback& callback);
     void SetErrorCallback(const TRegisterCallback& callback);
+
     PPort GetPort();
+    std::list<PSerialDevice> GetDevices();
 
     void AddTask(PSerialClientTask task);
 

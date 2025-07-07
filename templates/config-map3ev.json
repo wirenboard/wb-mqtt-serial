@@ -4,7 +4,11 @@
     "group": "g-wb",
     "hw": [
         {
-            "signature": "MAP3E\u0002"
+            "signature": "MAP3E",
+            "fw": "2.0.0"
+        },
+        {
+            "signature": "WB-MAP3EV"
         }
     ],
     "device": {

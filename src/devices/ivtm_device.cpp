@@ -124,14 +124,14 @@ void TIVTMDevice::ReadResponse(uint16_t addr, uint8_t* payload, uint16_t len)
     DecodeASCIIBytes(buf + 7, payload, len);
 }
 
-TRegisterValue TIVTMDevice::ReadRegisterImpl(PRegister reg)
+TRegisterValue TIVTMDevice::ReadRegisterImpl(const TRegisterConfig& reg)
 {
     Port()->SkipNoise();
 
-    auto addr = GetUint32RegisterAddress(reg->GetAddress());
-    WriteCommand(SlaveId, addr, reg->GetByteWidth());
+    auto addr = GetUint32RegisterAddress(reg.GetAddress());
+    WriteCommand(SlaveId, addr, reg.GetByteWidth());
     uint8_t response[4];
-    ReadResponse(SlaveId, response, reg->GetByteWidth());
+    ReadResponse(SlaveId, response, reg.GetByteWidth());
 
     uint8_t* p = response; //&response[(address % 2) * 4];
 

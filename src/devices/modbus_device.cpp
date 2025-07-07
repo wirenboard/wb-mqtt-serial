@@ -1,8 +1,6 @@
 #include "modbus_device.h"
 #include "modbus_common.h"
 
-#define LOG(logger) logger.Log() << "[modbus] "
-
 namespace
 {
     const TRegisterTypes ModbusRegisterTypes({{Modbus::REG_HOLDING, "holding", "value", U16},
@@ -49,11 +47,22 @@ TModbusDevice::TModbusDevice(std::unique_ptr<Modbus::IModbusTraits> modbusTraits
       TUInt32SlaveId(config.CommonConfig->SlaveId),
       ModbusTraits(std::move(modbusTraits)),
       ResponseTime(std::chrono::milliseconds::zero()),
-      EnableWbContinuousRead(config.EnableWbContinuousRead)
+      EnableWbContinuousRead(config.EnableWbContinuousRead),
+      ContinuousReadEnabled(false)
 {
     config.CommonConfig->FrameTimeout = std::max(
         config.CommonConfig->FrameTimeout,
         std::chrono::ceil<std::chrono::milliseconds>(port->GetSendTimeBytes(Modbus::STANDARD_FRAME_TIMEOUT_BYTES)));
+}
+
+bool TModbusDevice::GetForceFrameTimeout()
+{
+    return ModbusTraits->GetForceFrameTimeout();
+}
+
+bool TModbusDevice::GetContinuousReadEnabled()
+{
+    return ContinuousReadEnabled;
 }
 
 PRegisterRange TModbusDevice::CreateRegisterRange() const
@@ -61,12 +70,21 @@ PRegisterRange TModbusDevice::CreateRegisterRange() const
     return Modbus::CreateRegisterRange(ResponseTime.GetValue());
 }
 
-void TModbusDevice::WriteRegisterImpl(PRegister reg, const TRegisterValue& value)
+void TModbusDevice::PrepareImpl()
+{
+    TSerialDevice::PrepareImpl();
+    if (GetConnectionState() != TDeviceConnectionState::CONNECTED && EnableWbContinuousRead) {
+        ContinuousReadEnabled =
+            Modbus::EnableWbContinuousRead(shared_from_this(), *ModbusTraits, *Port(), SlaveId, ModbusCache);
+    }
+}
+
+void TModbusDevice::WriteRegisterImpl(const TRegisterConfig& reg, const TRegisterValue& value)
 {
     Modbus::WriteRegister(*ModbusTraits,
                           *Port(),
                           SlaveId,
-                          *reg,
+                          reg,
                           value,
                           ModbusCache,
                           DeviceConfig()->RequestDelay,
@@ -86,13 +104,10 @@ void TModbusDevice::ReadRegisterRange(PRegisterRange range)
 
 void TModbusDevice::WriteSetupRegisters()
 {
-    if (EnableWbContinuousRead) {
-        Modbus::EnableWbContinuousRead(shared_from_this(), *ModbusTraits, *Port(), SlaveId, ModbusCache);
-    }
     Modbus::WriteSetupRegisters(*ModbusTraits,
                                 *Port(),
                                 SlaveId,
-                                SetupItems,
+                                GetSetupItems(),
                                 ModbusCache,
                                 DeviceConfig()->RequestDelay,
                                 DeviceConfig()->ResponseTimeout,

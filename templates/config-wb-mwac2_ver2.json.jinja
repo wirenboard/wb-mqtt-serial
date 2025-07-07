@@ -1,0 +1,870 @@
+{% set LP_INPUTS_NUMBER = 2 -%}
+{% set INPUTS_NUMBER = 6 -%}
+{% set IN_NUM_SHORT_CLEANING_ON_LONG_RES_ALARM = 6 -%}
+{% set MMATRIX_OUTPUTS_NUMBER = 8 -%}
+{% set OUTPUTS_NUMBER = 4 -%}
+
+{% set OUT_NUM_K1 = 1 -%}
+{% set OUT_NUM_K2 = 2 -%}
+{% set OUT_NUM_ALARM = 3 -%}
+{% set OUT_NUM_CLEANING_MODE = 4 -%}
+
+{% set IN_MODE_INACTIVE = 3 -%}
+{% set IN_MODE_EDGES = 4 -%}
+{% set IN_MODE_BUTTON = 6 -%}
+{% set IN_MODE_FLOOD_SENSOR = 5 -%}
+{
+    "title": "WB-MWAC_template_title",
+    "device_type": "WB-MWAC-v2 ver2",
+    "group": "g-wb",
+        "hw": [
+        {
+            "signature": "WBMWAC-v2"
+        }
+    ],
+    "device": {
+        "name": "WB-MWAC-v2",
+        "id": "wb-mwac-v2",
+        "max_read_registers": 0,
+        "response_timeout_ms": 1,
+        "frame_timeout_ms": 8,
+        "enable_wb_continuous_read": true,
+
+        "groups": [
+            {% for lp_in_num in range(1, LP_INPUTS_NUMBER + 1) -%}
+            {
+                "title": "Counter {{ lp_in_num }}",
+                "id": "counter{{ lp_in_num }}"
+            },
+            {% endfor -%}
+            {% for in_num in range(1, INPUTS_NUMBER + 1) -%}
+            {% set letter = "F" if in_num < IN_NUM_SHORT_CLEANING_ON_LONG_RES_ALARM else "S" -%}
+            {
+                "title": "Input {{ letter }}{{ in_num }}",
+                "id": "input_f{{ in_num }}"
+            },
+            {
+                "title": "Press Parameters",
+                "id": "gg_in{{ in_num }}_press_params",
+                "group": "input_f{{ in_num }}"
+            },
+            {
+                "title": "Actions when sensor is triggered",
+                "id": "gg_in{{ in_num }}_mapping_matrix_actions",
+                "group": "input_f{{ in_num }}"
+            },
+            {% for out_num in range(1, OUTPUTS_NUMBER + 1) -%}
+            {
+                "title":
+                {% if out_num == OUT_NUM_K1 %} "Output K1 actions",
+                {% elif out_num == OUT_NUM_K2 %} "Output K2 actions",
+                {% elif out_num == OUT_NUM_ALARM %} "Actions for \"Leakage\" mode",
+                {% else %} "Actions for \"Wet cleaning\" mode",
+                {% endif %}
+                "id": "gg_in{{ in_num }}_out{{ out_num }}_button_actions",
+                "group": "input_f{{ in_num }}"
+            },
+            {% endfor -%}
+
+            {
+                "title": "input_f{{ in_num }}_channels",
+                "id": "gg_in{{ in_num }}_channels",
+                "group": "input_f{{ in_num }}",
+                "ui_options": {
+                    "wb": {
+                        "disable_title": true
+                    }
+                }
+            },
+            {% endfor -%}
+
+            {
+                "title": "Outputs",
+                "id": "outputs"
+            },
+            {
+                "title": "Safe State",
+                "id": "gg_outputs_safe_state",
+                "group": "outputs"
+            },
+            {
+                "title": "Outputs group",
+                "id": "gg_outputs_channels",
+                "group": "outputs",
+                "ui_options": {
+                    "wb": {
+                        "disable_title": true
+                    }
+                }
+            },
+            {
+                "title": "Safety Mode",
+                "description": "safety_mode_description",
+                "id": "g_safety"
+            },
+            {
+                "title": "Cleaning Mode",
+                "id": "wet_cleaning_mode",
+                "description": "wet_cleaning_mode_description"
+            },
+            {
+                "title": "Safety Behaviour",
+                "description": "safety_behaviour_description",
+                "id": "gg_safety_behaviour",
+                "group": "g_safety"
+            },
+            {
+                "title": "Outputs Control By Inputs In Safety Mode",
+                "id": "gg_safety_input_control",
+                "description": "inputs_control_in_safety_mode_description",
+                "group": "g_safety"
+            },
+            {
+                "title": "General",
+                "id": "general"
+            },
+            {
+                "title": "HW Info",
+                "id": "hw_info"
+            }
+        ],
+
+        "parameters": {
+            {% for lp_in_num in range(1, LP_INPUTS_NUMBER + 1) -%}
+            "lp_counter{{ lp_in_num }}_offset": {
+                "title": "Counter Offset (L)",
+                "description": "counter_offset_description",
+                "address": {{ 1076 + 4 * (lp_in_num - 1) }},
+                "reg_type": "holding",
+                "default": 0,
+                "format": "u64",
+                "group": "counter{{ lp_in_num }}",
+                "order": 1
+            },
+            "lp_counter{{ lp_in_num }}_pulse_weight": {
+                "title": "Counter Pulse Weight (L/pulse)",
+                "description": "counter_pulse_weight_description",
+                "address": {{ 1066 + (lp_in_num - 1) }},
+                "reg_type": "holding",
+                "default": 1,
+                "min": 1,
+                "max:": 10000,
+                "group": "counter{{ lp_in_num }}",
+                "order": 2
+            },
+            {% endfor -%}
+
+            {% for in_num in range(1, INPUTS_NUMBER + 1) -%}
+            {% set letter = "F" if in_num < IN_NUM_SHORT_CLEANING_ON_LONG_RES_ALARM else "S" -%}
+            "in{{ in_num }}_mode": {
+                "title": "Mode",
+                "address": {{ 8 + in_num }},
+                "reg_type": "holding",
+                "enum": [{{ IN_MODE_INACTIVE }}, {{ IN_MODE_EDGES }}, {{ IN_MODE_BUTTON }}, {{ IN_MODE_FLOOD_SENSOR }}],
+                "default": {{ IN_MODE_BUTTON if in_num == IN_NUM_SHORT_CLEANING_ON_LONG_RES_ALARM else IN_MODE_FLOOD_SENSOR }},
+                "enum_titles": [
+                    "control disabled",
+                    "control by edges",
+                    "discrete input or button",
+                    "leakage sensor"
+                ],
+                "group": "input_f{{ in_num }}",
+                "order": 1
+            },
+            "in{{ in_num }}_debounce_ms": {
+                "title": "Debounce (ms)",
+                "description": "debounce_description",
+                "address": {{ 19 + in_num }},
+                "reg_type": "holding",
+                "min": 0,
+                "max": 2000,
+                "default": 50,
+                "group": "input_f{{ in_num }}",
+                "order": 2,
+                "condition": "in{{ in_num }}_mode=={{ IN_MODE_BUTTON }}"
+            },
+            "in{{ in_num }}_debounce_ms_no_buttons": {
+                "title": "Debounce (ms)",
+                "description": "debounce_description_no_buttons",
+                "address": {{ 19 + in_num }},
+                "reg_type": "holding",
+                "min": 0,
+                "max": 2000,
+                "default": 50,
+                "group": "input_f{{ in_num }}",
+                "order": 2,
+                "condition": "in{{ in_num }}_mode!={{ IN_MODE_BUTTON }}"
+            },
+            "in{{ in_num }}_lp_hold_time": {
+                "group": "gg_in{{ in_num }}_press_params",
+                "title": "lp_hold_time_title",
+                "description": "lp_hold_time_description",
+                "order": 1,
+                "address": {{ 1100 + in_num - 1 }},
+                "reg_type": "holding",
+                "default": 1000,
+                "min": 500,
+                "max": 5000,
+                "condition": "in{{ in_num }}_mode=={{ IN_MODE_BUTTON }}"
+            },
+            "in{{ in_num }}_secp_waiting_time": {
+                "group": "gg_in{{ in_num }}_press_params",
+                "title": "secp_waiting_time_title",
+                "description": "secp_waiting_time_description",
+                "order": 2,
+                "address": {{ 1140 + in_num - 1 }},
+                "reg_type": "holding",
+                "default": 300,
+                "min": 0,
+                "max": 2000,
+                "condition": "in{{ in_num }}_mode=={{ IN_MODE_BUTTON }}"
+            },
+
+            {% for out_num in range(1, OUTPUTS_NUMBER) -%}
+            "in{{ in_num }}_out{{ out_num }}_actions_leakage_sensor": {
+                "group": "gg_in{{ in_num }}_mapping_matrix_actions",
+                "title": 
+                    {%- if out_num == OUT_NUM_K1 %} "Output K1",
+                    {%- elif out_num == OUT_NUM_K2 %} "Output K2",
+                    {%- else %} "Leakage Mode",
+                    {%- endif %}
+                "order": {{ out_num }},
+                "address": {{ 8260 + ((in_num - 1) * MMATRIX_OUTPUTS_NUMBER) + (out_num - 1) }},
+                "reg_type": "holding",
+                "default":
+                    {%- if out_num == OUT_NUM_ALARM %} 2,
+                    {%- else %} 1,
+                    {%- endif -%}
+                {% if out_num == OUT_NUM_ALARM %}
+                "enum": [0, 2],
+                "enum_titles": [
+                    "do nothing",
+                    "on"
+                ],
+                {% else %}
+                "enum": [0, 1, 2],
+                "enum_titles": [
+                    "do nothing",
+                    "off",
+                    "on"
+                ],
+                {% endif -%}
+
+                "condition": "in{{ in_num }}_mode=={{ IN_MODE_FLOOD_SENSOR }}"
+            },
+            {% endfor -%}
+
+            {% for out_num in range(1, OUTPUTS_NUMBER + 1) -%}
+            "in{{ in_num }}_out{{ out_num }}_sp": {
+                "group": "gg_in{{ in_num }}_out{{ out_num }}_button_actions",
+                "title": "Short Press",
+                "order": 3,
+                "address": {{ 544 + out_num - 1 + (in_num - 1) * MMATRIX_OUTPUTS_NUMBER }},
+                "reg_type": "holding",
+                {%- if out_num == OUT_NUM_ALARM %}
+                "default": 0,
+                "enum": [0, 1],
+                "enum_titles": ["do nothing", "off"],
+                {% else %}
+                "default": {{ 2 if in_num == IN_NUM_SHORT_CLEANING_ON_LONG_RES_ALARM else 0 }},
+                "enum": [0, 1, 2, 3],
+                "enum_titles": ["do nothing", "off", "on", "toggle"],
+                {% endif -%}
+                "condition": "in{{ in_num }}_mode=={{ IN_MODE_BUTTON }}"
+            },
+            "in{{in_num}}_out{{ out_num }}_lp": {
+                "group": "gg_in{{ in_num }}_out{{ out_num }}_button_actions",
+                "title": "Long Press",
+                "order": 4,
+                "address": {{ 608 + out_num - 1 + (in_num - 1) * MMATRIX_OUTPUTS_NUMBER }},
+                "reg_type": "holding",
+                {%- if out_num == OUT_NUM_ALARM %}
+                "default": {{ 1 if in_num == IN_NUM_SHORT_CLEANING_ON_LONG_RES_ALARM else 0 }},
+                "enum": [0, 1],
+                "enum_titles": ["do nothing", "off"],
+                {% else %}
+                "default": {{ 1 if in_num == IN_NUM_SHORT_CLEANING_ON_LONG_RES_ALARM else 0 }},
+                "enum": [0, 1, 2, 3],
+                "enum_titles": ["do nothing", "off", "on", "toggle"],
+                {% endif -%}
+                "condition": "in{{ in_num }}_mode=={{ IN_MODE_BUTTON }}"
+            },
+            "in{{ in_num }}_out{{ out_num }}_dp": {
+                "group": "gg_in{{ in_num }}_out{{ out_num }}_button_actions",
+                "title": "Double Press",
+                "order": 5,
+                "address": {{ 672 + out_num - 1 + (in_num - 1) * MMATRIX_OUTPUTS_NUMBER }},
+                "reg_type": "holding",
+                "default": 0,
+                {%- if out_num == OUT_NUM_ALARM %}
+                "enum": [0, 1],
+                "enum_titles": ["do nothing", "off"],
+                {% else %}
+                "enum": [0, 1, 2, 3],
+                "enum_titles": ["do nothing", "off", "on", "toggle"],
+                {% endif -%}
+                "condition": "in{{ in_num }}_mode=={{ IN_MODE_BUTTON }}"
+            },
+            "in{{ in_num }}_out{{ out_num }}_slp": {
+                "group": "gg_in{{ in_num }}_out{{ out_num }}_button_actions",
+                "title": "Short then long Press",
+                "order": 6,
+                "address": {{ 736 + out_num - 1 + (in_num - 1) * MMATRIX_OUTPUTS_NUMBER }},
+                "reg_type": "holding",
+                "default": 0,
+                {%- if out_num == OUT_NUM_ALARM %}
+                "enum": [0, 1],
+                "enum_titles": ["do nothing", "off"],
+                {% else %}
+                "enum": [0, 1, 2, 3],
+                "enum_titles": ["do nothing", "off", "on", "toggle"],
+                {% endif -%}
+                "condition": "in{{ in_num }}_mode=={{ IN_MODE_BUTTON }}"
+            },
+            {% endfor -%}
+
+            {% for out_num in range(1, OUTPUTS_NUMBER + 1) -%}
+            "in{{ in_num }}_out{{ out_num }}_contact_closure": {
+                "group": "gg_in{{ in_num }}_out{{ out_num }}_button_actions",
+                "title": "Contact closure",
+                "order": 1,
+                "address": {{ 864 + out_num - 1 + (in_num - 1) * MMATRIX_OUTPUTS_NUMBER }},
+                "reg_type": "holding",
+                "default": 0,
+                {%- if out_num == OUT_NUM_ALARM %}
+                "enum": [0, 1],
+                "enum_titles": ["do nothing", "off"],
+                {% else %}
+                "enum": [0, 1, 2, 3],
+                "enum_titles": ["do nothing", "off", "on", "toggle"],
+                {% endif -%}
+                "condition": "in{{ in_num }}_mode=={{ IN_MODE_EDGES }}"
+            },
+            "in{{ in_num }}_out{{ out_num }}_contact_opening": {
+                "group": "gg_in{{ in_num }}_out{{ out_num }}_button_actions",
+                "title": "Contact opening",
+                "order": 2,
+                "address": {{ 800 + out_num - 1 + (in_num - 1) * MMATRIX_OUTPUTS_NUMBER }},
+                "reg_type": "holding",
+                "default": 0,
+                {%- if out_num == OUT_NUM_ALARM %}
+                "enum": [0, 1],
+                "enum_titles": ["do nothing", "off"],
+                {% else %}
+                "enum": [0, 1, 2, 3],
+                "enum_titles": ["do nothing", "off", "on", "toggle"],
+                {% endif -%}
+                "condition": "in{{ in_num }}_mode=={{ IN_MODE_EDGES }}"
+            },
+            {% endfor -%}
+
+            {% endfor -%}
+
+            "outputs_restore_state": {
+                "title": "Relays State After Power On",
+                "description": "relays_state_after_poweron_description",
+                "address": 6,
+                "reg_type": "holding",
+                "enum": [0, 1],
+                "default": 0,
+                "enum_titles": ["Switch to the safety state", "Restore last state"],
+                "group": "outputs",
+                "order": 1
+            },
+            "outputs_restore_state_after_leakage_fix": {
+                "title": "Restore Outputs State After Leakage Fix",
+                "description": "restore_outputs_state_after_leakage_fix_description",
+                "address": 974,
+                "reg_type": "holding",
+                "enum": [0, 1],
+                "default": 1,
+                "enum_titles": ["Off", "On"],
+                "group": "outputs",
+                "order": 2
+            },
+            "safety_timer_s": {
+                "title": "Safety Timer (s)",
+                "description": "poll_timeout_description",
+                "address": 8,
+                "reg_type": "holding",
+                "min": 1,
+                "max": 65534,
+                "default": 10,
+                "group": "g_safety",
+                "order": 2
+            },
+            "baud_rate": {
+                "title": "Baud rate",
+                "description": "baud_rate_description",
+                "address": 110,
+                "reg_type": "holding",
+                "enum": [96, 192, 384, 576, 1152],
+                "default": 96,
+                "enum_titles": [
+                    "9600 bps",
+                    "19200 bps",
+                    "38400 bps",
+                    "57600 bps",
+                    "115200 bps"
+                ],
+                "group": "general",
+                "order": 1
+            },
+
+            {% for out_num in range(1, OUTPUTS_NUMBER) -%}
+            "out{{ out_num }}_safe_state": {
+                "title": {%if out_num == OUT_NUM_ALARM %}"Leakage Mode"{% else %}"Output K{{ out_num }}"{% endif %},
+                "group": "gg_outputs_safe_state",
+                "order": {{ out_num }},
+                "address": {{ 930 + (out_num - 1) }},
+                "reg_type": "holding",
+                "default": 0,
+                "enum": [0, 1],
+                "enum_titles": [
+                    "Off",
+                    "On"
+                ]
+            },
+            "out{{ out_num }}_safety_behaviour": {
+                "title": {%if out_num == OUT_NUM_ALARM %}"Leakage Mode"{% else %}"Output K{{ out_num }}"{% endif %},
+                "group": "gg_safety_behaviour",
+                "order": {{ out_num }},
+                "address": {{ 938 + (out_num - 1) }},
+                "reg_type": "holding",
+                "default": 0,
+                "enum": [0, 1],
+                "enum_titles": [
+                    "Don't сhange state",
+                    "Switch to the safety state"
+                ]
+            },
+            "out{{ out_num }}_safety_input_control": {
+                "title": {%if out_num == OUT_NUM_ALARM %}"Leakage Mode"{% else %}"Output K{{ out_num }}"{% endif %},
+                "group": "gg_safety_input_control",
+                "order": {{ out_num }},
+                "address": {{ 946 + (out_num - 1) }},
+                "reg_type": "holding",
+                "default": 0,
+                "enum": [0, 1, 2],
+                "enum_titles": [
+                    "Don't change",
+                    "Disable in safety mode",
+                    "Enable only in safety mode"
+                ]
+            },
+            {% endfor -%}
+
+            "wet_cleaning_mode_timer_min": {
+                "title": "\"Wet cleaning\" mode timer (min)",
+                "description": "wet_cleaning_mode_timer_description",
+                "address": 975,
+                "reg_type": "holding",
+                "min": 1,
+                "max": 360,
+                "default": 20,
+                "group": "wet_cleaning_mode",
+                "order": 1
+            }
+        },
+
+        "channels": [
+            {% for lp_in_num in range(1, LP_INPUTS_NUMBER + 1) -%}
+            {
+                "name": "Input P{{ lp_in_num }}",
+                "reg_type": "discrete",
+                "address": {{ 10 + (lp_in_num - 1) }},
+                "type": "switch",
+                "enabled": false,
+                "group": "counter{{ lp_in_num }}"
+            },
+            {
+                "name": "P{{ lp_in_num }} Counter",
+                "reg_type": "input",
+                "address": {{ 1062 + 2 * (lp_in_num - 1) }},
+                "type": "value",
+                "enabled": false,
+                "format": "u32",
+                "group": "counter{{ lp_in_num }}"
+            },
+            {
+                "name": "P{{ lp_in_num }} Volume",
+                "reg_type": "input",
+                "address": {{ 1068 + 4 * (lp_in_num - 1) }},
+                "type": "value",
+                "units": "m^3",
+                "format": "u64",
+                "scale": 0.001,
+                "group": "counter{{ lp_in_num }}"
+            },
+            {
+                "name": "P{{ lp_in_num }} Counter Reset",
+                "reg_type": "coil",
+                "address": {{ 10 + (lp_in_num - 1) }},
+                "type": "pushbutton",
+                "enabled": false,
+                "group": "counter{{ lp_in_num }}"
+            },
+            {% endfor -%}
+
+            {% for in_num in range(1, INPUTS_NUMBER + 1) -%}
+            {% set letter = "F" if in_num < IN_NUM_SHORT_CLEANING_ON_LONG_RES_ALARM else "S" -%}
+            {
+                "name": "Input {{ letter }}{{ in_num }}",
+                "reg_type": "discrete",
+                "address": {{ in_num - 1 }},
+                "type": "switch",
+                "sporadic": true,
+                "condition": "isDefined(in{{ in_num }}_mode)&&in{{ in_num }}_mode!={{ IN_MODE_INACTIVE }}",
+                "group": "gg_in{{ in_num }}_channels"
+            },
+            {
+                "name": "Input {{ letter }}{{ in_num }}",
+                "reg_type": "discrete",
+                "address": {{ in_num - 1 }},
+                "type": "switch",
+                "condition": "isDefined(in{{ in_num }}_mode)==0||in{{ in_num }}_mode=={{ IN_MODE_INACTIVE }}",
+                "group": "gg_in{{ in_num }}_channels"
+            },
+            {
+                "name": "Input {{ letter }}{{ in_num }} Counter",
+                "reg_type": "input",
+                "address": {{ 32 + (in_num - 1) }},
+                "type": "value",
+                "sporadic": true,
+                "condition": "isDefined(in{{ in_num }}_mode)&&in{{ in_num }}_mode!={{ IN_MODE_INACTIVE }}",
+                "group": "gg_in{{ in_num }}_channels"
+            },
+            {
+                "name": "Input {{ letter }}{{ in_num }} Counter",
+                "reg_type": "input",
+                "address": {{ 32 + (in_num - 1) }},
+                "type": "value",
+                "condition": "isDefined(in{{ in_num }}_mode)==0||in{{ in_num }}_mode=={{ IN_MODE_INACTIVE }}",
+                "group": "gg_in{{ in_num }}_channels"
+            },
+            {
+                "name": "Input {{ letter }}{{ in_num }} Sensor Presence (only for Larnitech sensors)",
+                "id": "Input {{ letter }}{{ in_num }} Sensor Presence",
+                "reg_type": "discrete",
+                "address": {{ 20 + (in_num - 1) }},
+                "type": "switch",
+                "semi-sporadic": true,
+                "enabled": false,
+                "condition": "in{{ in_num }}_mode=={{ IN_MODE_FLOOD_SENSOR }}",
+                "group": "gg_in{{ in_num }}_channels"
+            },
+            {
+                "name": "Input {{ letter }}{{ in_num }} Single Press Counter",
+                "enabled": false,
+                "reg_type": "press_counter",
+                "address": {{ 464 + (in_num - 1) }},
+                "type": "value",
+                "sporadic": true,
+                "group": "gg_in{{ in_num }}_channels",
+                "condition": "in{{ in_num }}_mode=={{ IN_MODE_BUTTON }}"
+            },
+            {
+                "name": "Input {{ letter }}{{ in_num }} Long Press Counter",
+                "enabled": false,
+                "reg_type": "press_counter",
+                "address": {{ 480 + (in_num - 1) }},
+                "type": "value",
+                "sporadic": true,
+                "group": "gg_in{{ in_num }}_channels",
+                "condition": "in{{in_num}}_mode=={{ IN_MODE_BUTTON }}"
+            },
+            {
+                "name": "Input {{ letter }}{{ in_num }} Double Press Counter",
+                "enabled": false,
+                "reg_type": "press_counter",
+                "address": {{ 496 + (in_num - 1) }},
+                "type": "value",
+                "sporadic": true,
+                "group": "gg_in{{ in_num }}_channels",
+                "condition": "in{{in_num}}_mode=={{ IN_MODE_BUTTON }}"
+            },
+            {
+                "name": "Input {{ letter }}{{ in_num }} Shortlong Press Counter",
+                "enabled": false,
+                "reg_type": "press_counter",
+                "address": {{ 512 + (in_num - 1) }},
+                "type": "value",
+                "sporadic": true,
+                "group": "gg_in{{ in_num }}_channels",
+                "condition": "in{{ in_num }}_mode=={{ IN_MODE_BUTTON }}"
+            },
+            {% endfor -%}
+
+            {% for out_num in range(1, OUTPUTS_NUMBER - 1) -%}
+            {
+                "name": "Output K{{ out_num }}",
+                "reg_type": "coil",
+                "address": {{ out_num - 1 }},
+                "type": "switch",
+                "sporadic": true,
+                "group": "gg_outputs_channels"
+            },
+            {% endfor -%}
+
+            {
+                "name": "Leakage Mode",
+                "reg_type": "coil",
+                "address": 2,
+                "type": "switch",
+                "readonly": true,
+                "sporadic": true,
+                "group": "gg_outputs_channels"
+            },
+            {
+                "name": "Leakage Mode Reset",
+                "reg_type": "coil",
+                "address": 2,
+                "on_value": 0,
+                "type": "pushbutton",
+                "enabled": true,
+                "group": "gg_outputs_channels"
+            },
+            {
+                "name": "Cleaning Mode",
+                "reg_type": "coil",
+                "address": 3,
+                "type": "switch",
+                "sporadic": true,
+                "group": "wet_cleaning_mode"
+            },
+            {
+                "name": "Serial",
+                "reg_type": "input",
+                "address": 270,
+                "type": "text",
+                "format": "u32",
+                "group": "hw_info"
+            },
+            {
+                "name": "FW Version",
+                "reg_type": "input",
+                "address": 250,
+                "type": "text",
+                "format": "string",
+                "string_data_size": 16,
+                "enabled": false,
+                "group": "hw_info"
+            },
+            {
+                "name": "Input Voltage",
+                "reg_type": "input",
+                "address": 121,
+                "type": "voltage",
+                "scale": 0.001,
+                "enabled": false,
+                "group": "hw_info"
+            },
+            {
+                "name": "Uptime",
+                "reg_type": "input",
+                "address": 104,
+                "type": "value",
+                "units": "s",
+                "format": "u32",
+                "enabled": false,
+                "group": "hw_info"
+            },
+            {
+                "name": "MCU Temperature",
+                "reg_type": "input",
+                "address": 124,
+                "type": "temperature",
+                "format": "s16",
+                "scale": 0.1,
+                "enabled": false,
+                "group": "hw_info"
+            },
+            {
+                "name": "MCU Voltage",
+                "reg_type": "input",
+                "address": 123,
+                "scale": 0.001,
+                "type": "voltage",
+                "enabled": false,
+                "group": "hw_info"
+            },
+            {
+                "name": "Battery State, measured at module startup",
+                "id": "Battery State",
+                "reg_type": "input",
+                "address": 971,
+                "type": "value",
+                "enabled": false,
+                "enum": [0, 1, 2],
+                "enum_titles": [
+                    "replacement required",
+                    "normal",
+                    "good"
+                ],
+                "group": "hw_info"
+            },
+            {
+                "name": "iVout Overloaded",
+                "reg_type": "discrete",
+                "address": 15,
+                "type": "switch",
+                "enabled": false,
+                "sporadic": true,
+                "group": "hw_info"
+            }
+        ],
+        "translations": {
+            "en": {
+                "WB-MWAC_template_title": "WB-MWAC v.2 (water leak and meters controller)",
+                "baud_rate_description": "Make sure that communication with device is established before changing this parameter. Select required baud rate, save configuration and then change port baud rate to the same value.",
+                "Uptime": "Uptime",
+
+                "inputs_control_in_safety_mode_description": "Does not affect \"leakage sensor\" mode.",
+                "safety_mode_description": "If the RS-485 connection is lost, the module will work autonomously, but you can additionally set its behavior in this case.",
+                "safety_behaviour_description": "Safe state is configured on \"Outputs\" tab.",
+                "poll_timeout_description": "Time before entering safety mode after loss of connection. Recommended 10 s.",
+                "restore_outputs_state_after_leakage_fix_description": "\"On\" - relays are set to the state before the leakage, then the settings of the interaction of inputs with the relay are analyzed. \"Off\" - the settings of the interaction of inputs with the relays are analyzed immediately.",
+                "relays_state_after_poweron_description": "Default - \"Switch to the safety state\".",
+
+                "Leakage Mode": "\"Leakage\" Mode",
+
+                "Cleaning Mode": "\"Wet cleaning\" Mode",
+                "wet_cleaning_mode_description": "In the \"Wet cleaning\" mode, the module does not respond to leakage sensors.",
+                "wet_cleaning_mode_timer_description": "1 - 360 min",
+
+                "debounce_description": "For button press detection, the value must be 5 - 10 times less than the waiting time for the second press. Adds a delay to the response to presses. Recommended 50 ms.",
+                "debounce_description_no_buttons": "Adds a delay to the response. Recommended 50 ms.",
+                "lp_hold_time_title": "Long Press Time (ms)",
+                "lp_hold_time_description": "If the press lasts longer, we consider it long. Recommended 1000 ms.",
+                "secp_waiting_time_title": "Second Press Waiting Time (ms)",
+                "secp_waiting_time_description": "If there is no second press during the specified time then press is single. 0 - disables all presses except short and long. Adds a delay to the response to a short press. Recommended 300 ms.",
+
+                "counter_offset_description": "Added to the volume counter to match the readings.",
+                "counter_pulse_weight_description": "Number of liters per pulse from the meter. Indicated on the meter and/or its documentation."
+            },
+            "ru": {
+                "WB-MWAC_template_title": "WB-MWAC v.2 (модуль контроля протечек и расхода воды)",
+                "Baud rate": "Скорость обмена",
+                "baud_rate_description": "Перед изменением параметра убедитесь, что связь с устройством установлена. Выберите нужную скорость обмена, сохраните конфигурацию, а затем укажите в настройках порта эту же скорость.",
+
+                {% for lp_in_num in range(1, LP_INPUTS_NUMBER + 1) -%}
+                "Counter {{ lp_in_num }}": "Счетчик {{ lp_in_num }}",
+                "Input P{{ lp_in_num }}": "Вход P{{ lp_in_num }}",
+                {% endfor -%}
+
+                "Counter Offset (L)": "Начальное значение счетчика (л)",
+                "Counter Pulse Weight (L/pulse)": "Вес импульса (л/имп)",
+                "counter_offset_description": "Прибавляется к счетчику объема для совпадения показаний.",
+                "counter_pulse_weight_description": "Количество литров на импульс со счетчика. Указано на счетчике и/или документации к нему.",
+
+                "Cleaning Mode": "Режим \"Влажная уборка\"",
+                "wet_cleaning_mode_description": "В режиме \"Влажная уборка\" модуль не реагирует на датчики протечки.",
+                "wet_cleaning_mode_timer_description": "1 — 360 мин",
+                "\"Wet cleaning\" mode timer (min)": "Таймер режима \"Влажная уборка\" (мин)",
+
+                "Mode": "Режим работы",
+                "Debounce (ms)": "Время подавления дребезга (мс)",
+
+                {% for in_num in range(1, INPUTS_NUMBER + 1) -%}
+                {% set letter = "F" if in_num < IN_NUM_SHORT_CLEANING_ON_LONG_RES_ALARM else "S" -%}
+                "Input {{ letter }}{{ in_num }}": "Вход {{ letter }}{{ in_num }}",
+                "Input {{ letter }}{{ in_num }} Single Press Counter": "Счетчик коротких нажатий входа {{ letter }}{{ in_num }}",
+                "Input {{ letter }}{{ in_num }} Long Press Counter": "Счетчик длинных нажатий входа {{ letter }}{{ in_num }}",
+                "Input {{ letter }}{{ in_num }} Double Press Counter": "Счетчик двойных нажатий входа {{ letter }}{{ in_num }}",
+                "Input {{ letter }}{{ in_num }} Shortlong Press Counter": "Счетчик коротких, а затем длинных нажатий входа {{ letter }}{{ in_num }}",
+                "Input {{ letter }}{{ in_num }} Counter": "Счетчик входа {{ letter }}{{ in_num }}",
+                "Input {{ letter }}{{ in_num }} Sensor Presence (only for Larnitech sensors)": "Наличие датчика на входе {{ letter }}{{ in_num }} (только для датчиков Larnitech)",
+                {% endfor -%}
+
+                "control disabled": "управление отключено",
+                "control by edges": "управлять по фронтам",
+                "leakage sensor": "датчик протечки",
+                "discrete input or button": "дискретный вход или кнопка",
+
+                "Actions when sensor is triggered": "Действия при срабатывании датчика",
+
+                "Outputs": "Выходы",
+                "General": "Общее",
+                "HW Info": "Данные модуля",
+
+                {% for lp_in_num in range(1, LP_INPUTS_NUMBER + 1) -%}
+                "P{{ lp_in_num }} Counter": "Счетчик P{{ lp_in_num }}",
+                "P{{ lp_in_num }} Volume": "Счетчик объема P{{ lp_in_num }}",
+                "P{{ lp_in_num }} Counter Reset": "Сброс счетчика P{{ lp_in_num }}",
+                {% endfor -%}
+
+                "Leakage Mode": "Режим \"Протечка\"",
+                "Leakage Mode Reset": "Сброс режима \"Протечка\"",
+
+                "Serial": "Серийный номер",
+                "FW Version": "Версия прошивки",
+                "Input Voltage": "Напряжение питания",
+                "Uptime": "Время работы",
+                "MCU Temperature": "Температура МК",
+                "MCU Voltage": "Напряжение питания МК",
+                "Battery State, measured at module startup": "Состояние батарейки, измерено при включении модуля",
+                "replacement required": "требуется замена",
+                "normal": "нормальное",
+                "good": "хорошее",
+                "iVout Overloaded": "Выход iVout перегружен",
+
+                "do nothing": "нет действия",
+                "off": "выключить",
+                "on": "включить",
+                "toggle": "переключить",
+
+                "Relays State After Power On": "Состояния реле при подаче питания",
+                "Restore last state": "Восстановить последнее состояние",
+                "Switch to the safety state": "Перевести в безопасное состояние",
+                "Safe State": "Безопасное состояние",
+                "Off": "Выключен",
+                "On": "Включен",
+                "Restore Outputs State After Leakage Fix": "Восстанавливать состояние кранов после устранения протечки",
+
+                "Safety Mode": "Безопасный режим",
+                "Safety Behaviour": "Действие в безопасном режиме",
+                "Safety Timer (s)": "Таймаут безопасного режима (с)",
+                "safety_mode_description": "При потере связи по RS-485 модуль будет работать автономно, но можно дополнительно задать его поведение в этом случае.",
+                "poll_timeout_description": "Время до перехода в безопасный режим после потери связи. Рекомендовано 10 с.",
+                "restore_outputs_state_after_leakage_fix_description": "\"Включен\" — реле устанавливются в положение до протечки, затем анализируются настройки взаимодействия входов с реле. \"Выключен\" — сразу анализируются настройки взаимодействия входов с реле.",
+                "safety_behaviour_description": "Безопасное состояние настраивается на вкладке \"Выходы\".",
+                "inputs_control_in_safety_mode_description": "Не влияет на режим \"Датчик протечки\".",
+                "Don't сhange state": "Ничего не делать",
+                "Outputs Control By Inputs In Safety Mode": "Управление выходами с входов в безопасном режиме",
+                "Don't change": "Не блокировать",
+                "Disable in safety mode": "Блокировать в безопасном режиме",
+                "Enable only in safety mode": "Разрешить только в безопасном режиме",
+                "relays_state_after_poweron_description": "По умолчанию — \"Перевести в безопасное состояние\".",
+
+                "Press Parameters": "Параметры нажатий",
+                "debounce_description": "Для детектирования нажатий значение должно быть в 5 — 10 раз меньше, чем время ожидания второго нажатия. Вносит задержку в реакцию на нажатия. Рекомендовано 50 мс.",
+                "debounce_description_no_buttons": "Вносит задержку в реакцию. Рекомендовано 50 мс.",
+                "lp_hold_time_title": "Время длинного нажатия (мс)",
+                "lp_hold_time_description": "Если нажатие длится дольше — считаем его длинным. Рекомендовано 1000 мс.",
+                "secp_waiting_time_title": "Время ожидания второго нажатия (мс)",
+                "secp_waiting_time_description": "Если за указанное время второго нажатия не было — считаем нажатие одиночным. 0 — отключит все нажатия кроме короткого и длинного. Вносит задержку в реакцию на короткое нажатие. Рекомендовано 300 мс.",
+
+                "Contact closure": "Замыкание контакта",
+                "Contact opening": "Размыкание контакта",
+                "Short Press": "Короткое нажатие",
+                "Long Press": "Длинное нажатие",
+                "Double Press": "Двойное нажатие",
+                "Short then long Press": "Короткое, затем длинное нажатие",
+
+                "Output K1": "Выход K1",
+                "Output K2": "Выход K2",
+
+                "Output K1 actions": "Действия для выхода K1",
+                "Output K2 actions": "Действия для выхода K2",
+                "Actions for \"Leakage\" mode": "Действия для режима \"Протечка\"",
+                "Actions for \"Wet cleaning\" mode": "Действия для режима \"Влажная уборка\"",
+
+                "9600 bps": "9600 бит/с",
+                "19200 bps": "19200 бит/с",
+                "38400 bps": "38400 бит/с",
+                "57600 bps": "57600 бит/с",
+                "115200 bps": "115200 бит/с"
+            }
+        }
+    }
+}

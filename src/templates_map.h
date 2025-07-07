@@ -116,6 +116,8 @@ public:
     std::vector<PDeviceTemplate> GetTemplates();
 };
 
+typedef std::shared_ptr<TTemplateMap> PTemplateMap;
+
 struct TSubDeviceTemplate
 {
     std::string Type;

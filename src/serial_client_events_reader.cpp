@@ -11,6 +11,8 @@ using namespace std::chrono;
 
 namespace
 {
+    const auto DEFAULT_SPORAIC_ONLY_READ_RATE_LIMIT = std::chrono::milliseconds(500);
+
     std::string EventTypeToString(uint8_t eventType)
     {
         switch (eventType) {
@@ -39,24 +41,15 @@ namespace
 
     std::string MakeEventDescriptionString(uint8_t slaveId, uint8_t eventType, uint16_t eventId)
     {
-        switch (eventType) {
-            case ModbusExt::TEventType::COIL:
-            case ModbusExt::TEventType::DISCRETE:
-            case ModbusExt::TEventType::HOLDING:
-            case ModbusExt::TEventType::INPUT: {
-                return "<" + MakeDeviceDescriptionString(slaveId) + ":" + EventTypeToString(eventType) + ": " +
-                       std::to_string(eventId) + ">";
-            }
-            case ModbusExt::REBOOT: {
-                return "<" + MakeDeviceDescriptionString(slaveId) + ": reboot>";
-            }
-            default:
-                return "unknown event from " + MakeDeviceDescriptionString(slaveId) +
-                       " type: " + std::to_string(eventType) + ", id: " + std::to_string(eventId);
-                break;
+        if (ModbusExt::IsRegisterEvent(eventType)) {
+            return "<" + MakeDeviceDescriptionString(slaveId) + ":" + EventTypeToString(eventType) + ": " +
+                   std::to_string(eventId) + ">";
         }
-        return "<" + MakeDeviceDescriptionString(slaveId) + ":" + EventTypeToString(eventType) + ": " +
-               std::to_string(eventId) + ">";
+        if (eventType == ModbusExt::TEventType::REBOOT) {
+            return "<" + MakeDeviceDescriptionString(slaveId) + ": reboot>";
+        }
+        return "unknown event from " + MakeDeviceDescriptionString(slaveId) + " type: " + std::to_string(eventType) +
+               ", id: " + std::to_string(eventId);
     }
 
     ModbusExt::TEventType ToEventRegisterType(const Modbus::RegisterType regType)
@@ -108,6 +101,23 @@ namespace
                 LOG(Warn) << "Failed to disable unexpected events: " << ex.what();
             } catch (const TSerialDeviceException& ex) {
                 LOG(Warn) << "Failed to disable unexpected events: " << ex.what();
+            }
+        }
+    }
+
+    void EnableSporadicOnlyDevicePolling(PSerialDevice device)
+    {
+        if (!device->IsSporadicOnly()) {
+            return;
+        }
+        for (auto& reg: device->GetRegisters()) {
+            if (reg->IsExcludedFromPolling()) {
+                auto config = reg->GetConfig();
+                if (!config->ReadPeriod.has_value() && !config->ReadRateLimit.has_value()) {
+                    config->ReadRateLimit = DEFAULT_SPORAIC_ONLY_READ_RATE_LIMIT;
+                }
+                reg->IncludeInPolling();
+                break;
             }
         }
     }
@@ -172,23 +182,16 @@ public:
                        size_t dataSize) override
     {
         SlaveId = slaveId;
-        switch (eventType) {
-            case ModbusExt::TEventType::COIL:
-            case ModbusExt::TEventType::DISCRETE:
-            case ModbusExt::TEventType::HOLDING:
-            case ModbusExt::TEventType::INPUT: {
-                ProcessRegisterChangeEvent(slaveId, eventType, eventId, data, dataSize);
-                return;
-            }
-            case ModbusExt::REBOOT: {
-                ProcessDeviceRestartedEvent(slaveId);
-                return;
-            }
-            default:
-                LOG(Warn) << "Unexpected event from " << MakeDeviceDescriptionString(slaveId)
-                          << " type: " << static_cast<int>(eventType) << ", id: " << eventId;
-                break;
+        if (ModbusExt::IsRegisterEvent(eventType)) {
+            ProcessRegisterChangeEvent(slaveId, eventType, eventId, data, dataSize);
+            return;
         }
+        if (eventType == ModbusExt::TEventType::REBOOT) {
+            ProcessDeviceRestartedEvent(slaveId);
+            return;
+        }
+        LOG(Warn) << "Unexpected event from " << MakeDeviceDescriptionString(slaveId)
+                  << " type: " << static_cast<int>(eventType) << ", id: " << eventId;
     }
 
     uint8_t GetSlaveId() const
@@ -276,14 +279,15 @@ void TSerialClientEventsReader::EnableEvents(PSerialDevice device, TPort& port)
             if (regArray.first.SlaveId == slaveId) {
                 ev.AddRegister(regArray.first.Addr,
                                static_cast<ModbusExt::TEventType>(regArray.first.Type),
-                               regArray.second.front()->IsHighPriority() ? ModbusExt::TEventPriority::HIGH
-                                                                         : ModbusExt::TEventPriority::LOW);
+                               regArray.second.front()->GetConfig()->IsHighPriority() ? ModbusExt::TEventPriority::HIGH
+                                                                                      : ModbusExt::TEventPriority::LOW);
             }
         }
         if (ev.HasEventsToSetup()) {
             ev.AddRegister(0, ModbusExt::TEventType::REBOOT, ModbusExt::TEventPriority::DISABLE);
             LOG(Debug) << "Try to enable events for " << MakeDeviceDescriptionString(slaveId);
             ev.SendRequests();
+            EnableSporadicOnlyDevicePolling(device);
         }
     } catch (const Modbus::TModbusExceptionError& e) {
         LOG(Warn) << "Failed to enable events for " << MakeDeviceDescriptionString(slaveId) << ": " << e.what();
@@ -300,7 +304,7 @@ void TSerialClientEventsReader::OnEnabledEvent(uint8_t slaveId, uint8_t type, ui
     if (regArray != Regs.end()) {
         for (const auto& reg: regArray->second) {
             if (res) {
-                if (reg->SporadicMode == TRegisterConfig::TSporadicMode::ONLY_EVENTS) {
+                if (reg->GetConfig()->SporadicMode == TRegisterConfig::TSporadicMode::ONLY_EVENTS) {
                     reg->ExcludeFromPolling();
                 }
                 reg->SetAvailable(TRegisterAvailability::AVAILABLE);
@@ -310,21 +314,26 @@ void TSerialClientEventsReader::OnEnabledEvent(uint8_t slaveId, uint8_t type, ui
             }
         }
     }
-    LOG(Info) << "Events are " << (res ? "enabled for " : "disabled for ")
-              << MakeEventDescriptionString(slaveId, type, addr);
+    if (res) {
+        LOG(Info) << "Events are enabled for " << MakeEventDescriptionString(slaveId, type, addr);
+        return;
+    }
+    if (!ModbusExt::IsRegisterEvent(type)) {
+        LOG(Info) << "Events are disabled for " << MakeEventDescriptionString(slaveId, type, addr);
+    }
 }
 
 void TSerialClientEventsReader::SetDevices(const std::list<PSerialDevice>& devices)
 {
     for (const auto& dev: devices) {
         for (const auto& reg: dev->GetRegisters()) {
-            if (reg->SporadicMode != TRegisterConfig::TSporadicMode::DISABLED) {
+            if (reg->GetConfig()->SporadicMode != TRegisterConfig::TSporadicMode::DISABLED) {
                 auto dev = ToModbusDevice(reg->Device().get());
                 if (dev != nullptr) {
                     TEventsReaderRegisterDesc regDesc{
                         static_cast<uint8_t>(dev->SlaveId),
-                        static_cast<uint16_t>(GetUint32RegisterAddress(reg->GetAddress())),
-                        ToEventRegisterType(static_cast<Modbus::RegisterType>(reg->Type))};
+                        static_cast<uint16_t>(GetUint32RegisterAddress(reg->GetConfig()->GetAddress())),
+                        ToEventRegisterType(static_cast<Modbus::RegisterType>(reg->GetConfig()->Type))};
                     Regs[regDesc].push_back(reg);
                 }
             }
@@ -348,7 +357,7 @@ void TSerialClientEventsReader::SetReadErrors(TRegisterCallback callback)
 {
     for (const auto& regArray: Regs) {
         for (const auto& reg: regArray.second) {
-            if (reg->IsExcludedFromPolling()) {
+            if (reg->IsExcludedFromPolling() || reg->Device()->IsSporadicOnly()) {
                 reg->SetError(TRegister::TError::ReadError);
                 if (callback) {
                     callback(reg);
@@ -361,15 +370,16 @@ void TSerialClientEventsReader::SetReadErrors(TRegisterCallback callback)
 void TSerialClientEventsReader::ClearReadErrors(TRegisterCallback callback)
 {
     ReadErrors = 0;
-    if (ClearErrorsOnSuccessfulRead) {
-        ClearErrorsOnSuccessfulRead = false;
-        for (const auto& regArray: Regs) {
-            for (const auto& reg: regArray.second) {
-                if (reg->IsExcludedFromPolling()) {
-                    reg->ClearError(TRegister::TError::ReadError);
-                    if (callback) {
-                        callback(reg);
-                    }
+    if (!ClearErrorsOnSuccessfulRead) {
+        return;
+    }
+    ClearErrorsOnSuccessfulRead = false;
+    for (const auto& regArray: Regs) {
+        for (const auto& reg: regArray.second) {
+            if (reg->IsExcludedFromPolling() || reg->Device()->IsSporadicOnly()) {
+                reg->ClearError(TRegister::TError::ReadError);
+                if (callback) {
+                    callback(reg);
                 }
             }
         }

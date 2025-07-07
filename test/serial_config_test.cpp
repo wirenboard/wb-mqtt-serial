@@ -50,7 +50,7 @@ protected:
             }
             Emit() << "DeviceConfigs:";
             for (auto device: port_config->Devices) {
-                auto device_config = device->DeviceConfig();
+                auto device_config = device->Device->DeviceConfig();
                 TTestLogIndent indent(*this);
                 Emit() << "------";
                 Emit() << "Id: " << device_config->Id;
@@ -64,9 +64,9 @@ protected:
                 Emit() << "DeviceTimeout: " << device_config->DeviceTimeout.count();
                 Emit() << "Response timeout: " << device_config->ResponseTimeout.count();
                 Emit() << "Frame timeout: " << device_config->FrameTimeout.count();
-                if (!device_config->DeviceChannelConfigs.empty()) {
+                if (!device->Channels.empty()) {
                     Emit() << "DeviceChannels:";
-                    for (auto device_channel: device_config->DeviceChannelConfigs) {
+                    for (auto device_channel: device->Channels) {
                         TTestLogIndent indent(*this);
                         Emit() << "------";
                         Emit() << "Name: " << device_channel->GetName();
@@ -95,10 +95,11 @@ protected:
                         }
                         Emit() << "Precision: " << device_channel->Precision;
                         Emit() << "ReadOnly: " << device_channel->ReadOnly;
-                        if (!device_channel->RegisterConfigs.empty()) {
+                        if (!device_channel->Registers.empty()) {
                             Emit() << "Registers:";
                         }
-                        for (auto reg: device_channel->RegisterConfigs) {
+                        for (auto channelsRegister: device_channel->Registers) {
+                            auto reg = channelsRegister->GetConfig();
                             TTestLogIndent indent(*this);
                             Emit() << "------";
                             Emit() << "Type and Address: " << reg;
@@ -129,25 +130,25 @@ protected:
                         }
                     }
 
-                    if (device_config->SetupItemConfigs.empty())
+                    if (device->Device->GetSetupItems().empty())
                         continue;
 
                     Emit() << "SetupItems:";
-                    for (auto setup_item: device_config->SetupItemConfigs) {
+                    for (auto setup_item: device->Device->GetSetupItems()) {
                         TTestLogIndent indent(*this);
                         Emit() << "------";
-                        Emit() << "Name: " << setup_item->GetName();
-                        Emit() << "Address: " << setup_item->GetRegisterConfig()->GetAddress();
-                        Emit() << "Value: " << setup_item->GetValue();
-                        if (setup_item->GetRawValue().GetType() == TRegisterValue::ValueType::String) {
-                            Emit() << "RawValue: " << setup_item->GetRawValue();
+                        Emit() << "Name: " << setup_item->Name;
+                        Emit() << "Address: " << setup_item->RegisterConfig->GetAddress();
+                        Emit() << "Value: " << setup_item->HumanReadableValue;
+                        if (setup_item->RawValue.GetType() == TRegisterValue::ValueType::String) {
+                            Emit() << "RawValue: " << setup_item->RawValue;
                         } else {
                             Emit() << "RawValue: 0x" << std::setfill('0') << std::setw(2) << std::hex
-                                   << setup_item->GetRawValue();
+                                   << setup_item->RawValue;
                         }
-                        Emit() << "Reg type: " << setup_item->GetRegisterConfig()->TypeName << " ("
-                               << setup_item->GetRegisterConfig()->Type << ")";
-                        Emit() << "Reg format: " << RegisterFormatName(setup_item->GetRegisterConfig()->Format);
+                        Emit() << "Reg type: " << setup_item->RegisterConfig->TypeName << " ("
+                               << setup_item->RegisterConfig->Type << ")";
+                        Emit() << "Reg format: " << RegisterFormatName(setup_item->RegisterConfig->Format);
                     }
                 }
             }
@@ -156,14 +157,11 @@ protected:
 
     PHandlerConfig GetConfig(const std::string& filePath)
     {
-        auto commonDeviceSchema(
-            WBMQTT::JSON::Parse(TLoggedFixture::GetDataFilePath("../wb-mqtt-serial-confed-common.schema.json")));
-        TTemplateMap templateMap(
-            LoadConfigTemplatesSchema(GetDataFilePath("../wb-mqtt-serial-device-template.schema.json"),
-                                      commonDeviceSchema));
-        templateMap.AddTemplatesDir(GetDataFilePath("device-templates/"));
+        auto commonDeviceSchema(GetCommonDeviceSchema());
         auto portsSchema(WBMQTT::JSON::Parse(TLoggedFixture::GetDataFilePath("../wb-mqtt-serial-ports.schema.json")));
         TProtocolConfedSchemasMap protocolSchemas(TLoggedFixture::GetDataFilePath("../protocols"), commonDeviceSchema);
+        TTemplateMap templateMap(GetTemplatesSchema());
+        templateMap.AddTemplatesDir(GetDataFilePath("device-templates/"));
         return LoadConfig(GetDataFilePath(filePath),
                           DeviceFactory,
                           commonDeviceSchema,
@@ -204,14 +202,11 @@ TEST_F(TConfigParserTest, SetupCondition)
 
 TEST_F(TConfigParserTest, UnsuccessfulParse)
 {
-    auto commonDeviceSchema(
-        WBMQTT::JSON::Parse(TLoggedFixture::GetDataFilePath("../wb-mqtt-serial-confed-common.schema.json")));
-    TTemplateMap templateMap(LoadConfigTemplatesSchema(GetDataFilePath("../wb-mqtt-serial-device-template.schema.json"),
-                                                       commonDeviceSchema));
-    templateMap.AddTemplatesDir(GetDataFilePath("parser_test/templates/"));
+    auto commonDeviceSchema(GetCommonDeviceSchema());
     auto portsSchema(WBMQTT::JSON::Parse(TLoggedFixture::GetDataFilePath("../wb-mqtt-serial-ports.schema.json")));
     TProtocolConfedSchemasMap protocolSchemas(TLoggedFixture::GetDataFilePath("../protocols"), commonDeviceSchema);
-
+    TTemplateMap templateMap(GetTemplatesSchema());
+    templateMap.AddTemplatesDir(GetDataFilePath("parser_test/templates/"));
     IterateDirByPattern(
         GetDataFilePath("configs/unsuccessful"),
         "unsuccessful-",
@@ -235,13 +230,10 @@ TEST_F(TConfigParserTest, UnsuccessfulParse)
 
 TEST_F(TConfigParserTest, MergeDeviceConfigWithTemplate)
 {
-    auto commonDeviceSchema(
-        WBMQTT::JSON::Parse(TLoggedFixture::GetDataFilePath("../wb-mqtt-serial-confed-common.schema.json")));
-    TTemplateMap templateMap(LoadConfigTemplatesSchema(GetDataFilePath("../wb-mqtt-serial-device-template.schema.json"),
-                                                       commonDeviceSchema));
+    TTemplateMap templateMap(GetTemplatesSchema());
     templateMap.AddTemplatesDir(GetDataFilePath("parser_test/templates/"));
 
-    for (auto i = 1; i <= 12; ++i) {
+    for (auto i = 1; i <= 13; ++i) {
         auto deviceConfig(JSON::Parse(GetDataFilePath("parser_test/merge_template_ok" + to_string(i) + ".json")));
         std::string deviceType = deviceConfig.get("device_type", "").asString();
         auto mergedConfig(MergeDeviceConfigWithTemplate(deviceConfig,
@@ -265,12 +257,12 @@ TEST_F(TConfigParserTest, ParseModbusDevideWithWriteAddress)
     EXPECT_FALSE(portConfigs.empty());
     auto devices = portConfigs[0]->Devices;
     EXPECT_FALSE(devices.empty());
-    auto deviceChannels = devices[0]->DeviceConfig()->DeviceChannelConfigs;
+    auto deviceChannels = devices[0]->Channels;
     EXPECT_FALSE(deviceChannels.empty());
-    auto regs = deviceChannels[0]->RegisterConfigs;
+    auto regs = deviceChannels[0]->Registers;
     EXPECT_FALSE(regs.empty());
-    EXPECT_EQ(GetUint32RegisterAddress(regs[0]->GetAddress()), 110);
-    EXPECT_EQ(GetUint32RegisterAddress(regs[0]->GetWriteAddress()), 115);
+    EXPECT_EQ(GetUint32RegisterAddress(regs[0]->GetConfig()->GetAddress()), 110);
+    EXPECT_EQ(GetUint32RegisterAddress(regs[0]->GetConfig()->GetWriteAddress()), 115);
 }
 
 TEST_F(TConfigParserTest, ParseReadonlyParameters)
@@ -279,9 +271,9 @@ TEST_F(TConfigParserTest, ParseReadonlyParameters)
     EXPECT_FALSE(portConfigs.empty());
     auto devices = portConfigs[0]->Devices;
     EXPECT_FALSE(devices.empty());
-    auto setupItems = devices[0]->DeviceConfig()->SetupItemConfigs;
+    auto setupItems = devices[0]->Device->GetSetupItems();
     EXPECT_EQ(setupItems.size(), 1);
-    EXPECT_EQ(setupItems[0]->GetName(), "p2");
+    EXPECT_EQ((*setupItems.begin())->Name, "p2");
 }
 
 TEST_F(TConfigParserTest, ParseEnum)
@@ -290,7 +282,7 @@ TEST_F(TConfigParserTest, ParseEnum)
     EXPECT_FALSE(portConfigs.empty());
     auto devices = portConfigs[0]->Devices;
     EXPECT_FALSE(devices.empty());
-    auto deviceChannels = devices[0]->DeviceConfig()->DeviceChannelConfigs;
+    auto deviceChannels = devices[0]->Channels;
     EXPECT_FALSE(deviceChannels.empty());
     auto titles1 = deviceChannels[0]->GetEnumTitles();
     EXPECT_EQ(titles1.size(), 2);

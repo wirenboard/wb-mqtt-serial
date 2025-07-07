@@ -47,12 +47,10 @@ public:
         bool forceFrameTimeout = false;
         WBMQTT::JSON::Get(data, "force_frame_timeout", forceFrameTimeout);
 
-        auto dev = std::make_shared<Dev>(ModbusTraitsFactory->GetModbusTraits(port, forceFrameTimeout),
-                                         config,
-                                         port,
-                                         protocol);
-        dev->InitSetupItems();
-        return dev;
+        return std::make_shared<Dev>(ModbusTraitsFactory->GetModbusTraits(port, forceFrameTimeout),
+                                     config,
+                                     port,
+                                     protocol);
     }
 };
 
@@ -62,6 +60,7 @@ class TModbusDevice: public TSerialDevice, public TUInt32SlaveId
     Modbus::TRegisterCache ModbusCache;
     TRunningAverage<std::chrono::microseconds, 10> ResponseTime;
     bool EnableWbContinuousRead;
+    bool ContinuousReadEnabled;
 
 public:
     TModbusDevice(std::unique_ptr<Modbus::IModbusTraits> modbusTraits,
@@ -69,14 +68,16 @@ public:
                   PPort port,
                   PProtocol protocol);
 
+    bool GetForceFrameTimeout();
+    bool GetContinuousReadEnabled();
+
     PRegisterRange CreateRegisterRange() const override;
     void ReadRegisterRange(PRegisterRange range) override;
-    void WriteSetupRegisters() override;
-
-    void OnEnabledEvent(uint16_t addr, bool res);
 
     static void Register(TSerialDeviceFactory& factory);
 
 protected:
-    void WriteRegisterImpl(PRegister reg, const TRegisterValue& value) override;
+    void PrepareImpl() override;
+    void WriteRegisterImpl(const TRegisterConfig& reg, const TRegisterValue& value) override;
+    void WriteSetupRegisters() override;
 };

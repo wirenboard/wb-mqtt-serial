@@ -52,7 +52,7 @@ public:
 
 protected:
     void PrepareImpl() override;
-    TRegisterValue ReadRegisterImpl(PRegister reg) override;
+    TRegisterValue ReadRegisterImpl(const TRegisterConfig& reg) override;
 };
 
 namespace DLMS

@@ -75,7 +75,7 @@ void TRegisterHandler::SetTextValue(const std::string& v)
 {
     std::lock_guard<std::mutex> lock(SetValueMutex);
     Dirty = true;
-    ValueToSet = ConvertToRawValue(*Reg, v);
+    ValueToSet = ConvertToRawValue(*Reg->GetConfig(), v);
 }
 
 PRegister TRegisterHandler::Register() const

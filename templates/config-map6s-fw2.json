@@ -4,10 +4,12 @@
     "group": "g-wb",
     "hw": [
         {
-            "signature": "MAP6S\u0002E"
+            "signature": "MAP6S",
+            "fw": "2.0.0"
         },
         {
-            "signature": "MAP6S\u0002"
+            "signature": "MAP6SE",
+            "fw": "2.0.0"
         }
     ],
     "device": {
@@ -60,6 +62,7 @@
                 "reg_type": "holding",
                 "format": "u16",
                 "min": 0,
+                "default": 0,
                 "group": "channel_1",
                 "order": 1
             },
@@ -70,6 +73,7 @@
                 "format": "s16",
                 "min": -32768,
                 "max": 32767,
+                "default": 0,
                 "group": "channel_1",
                 "order": 2
             },
@@ -91,6 +95,7 @@
                 "reg_type": "holding",
                 "format": "u16",
                 "min": 0,
+                "default": 0,
                 "group": "channel_2",
                 "order": 1
             },
@@ -101,6 +106,7 @@
                 "format": "s16",
                 "min": -32768,
                 "max": 32767,
+                "default": 0,
                 "group": "channel_2",
                 "order": 2
             },
@@ -122,6 +128,7 @@
                 "reg_type": "holding",
                 "format": "u16",
                 "min": 0,
+                "default": 0,
                 "group": "channel_3",
                 "order": 1
             },
@@ -132,6 +139,7 @@
                 "format": "s16",
                 "min": -32768,
                 "max": 32767,
+                "default": 0,
                 "group": "channel_3",
                 "order": 2
             },
@@ -153,6 +161,7 @@
                 "reg_type": "holding",
                 "format": "u16",
                 "min": 0,
+                "default": 0,
                 "group": "channel_4",
                 "order": 1
             },
@@ -163,6 +172,7 @@
                 "format": "s16",
                 "min": -32768,
                 "max": 32767,
+                "default": 0,
                 "group": "channel_4",
                 "order": 2
             },
@@ -184,6 +194,7 @@
                 "reg_type": "holding",
                 "format": "u16",
                 "min": 0,
+                "default": 0,
                 "group": "channel_5",
                 "order": 1
             },
@@ -194,6 +205,7 @@
                 "format": "s16",
                 "min": -32768,
                 "max": 32767,
+                "default": 0,
                 "group": "channel_5",
                 "order": 2
             },
@@ -215,6 +227,7 @@
                 "reg_type": "holding",
                 "format": "u16",
                 "min": 0,
+                "default": 0,
                 "group": "channel_6",
                 "order": 1
             },
@@ -225,6 +238,7 @@
                 "format": "s16",
                 "min": -32768,
                 "max": 32767,
+                "default": 0,
                 "group": "channel_6",
                 "order": 2
             },

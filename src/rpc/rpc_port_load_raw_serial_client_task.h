@@ -14,14 +14,16 @@ public:
 
 typedef std::shared_ptr<TRPCPortLoadRawRequest> PRPCPortLoadRawRequest;
 
-PRPCPortLoadRawRequest ParseRPCPortLoadRawRequest(const Json::Value& request);
-
 class TRPCPortLoadRawSerialClientTask: public ISerialClientTask
 {
 public:
-    TRPCPortLoadRawSerialClientTask(PRPCPortLoadRawRequest request);
+    TRPCPortLoadRawSerialClientTask(const Json::Value& request,
+                                    WBMQTT::TMqttRpcServer::TResultCallback onResult,
+                                    WBMQTT::TMqttRpcServer::TErrorCallback onError);
 
-    ISerialClientTask::TRunResult Run(PPort port, TSerialClientDeviceAccessHandler& lastAccessedDevice) override;
+    ISerialClientTask::TRunResult Run(PPort port,
+                                      TSerialClientDeviceAccessHandler& lastAccessedDevice,
+                                      const std::list<PSerialDevice>& polledDevices) override;
 
 private:
     PRPCPortLoadRawRequest Request;
@@ -29,5 +31,3 @@ private:
 };
 
 typedef std::shared_ptr<TRPCPortLoadRawSerialClientTask> PRPCPortLoadRawSerialClientTask;
-
-std::vector<uint8_t> ExecRPCPortLoadRawRequest(TPort& port, PRPCPortLoadRawRequest rpcRequest);
