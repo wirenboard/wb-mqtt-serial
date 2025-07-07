@@ -4,8 +4,6 @@
 #include "serial_port.h"
 #include "wb_registers.h"
 
-#define LOG(logger) ::logger.Log() << "[RPC] "
-
 namespace
 {
     void ExecRPCRequest(PPort port, PRPCDeviceSetRequest rpcRequest)
@@ -14,9 +12,15 @@ namespace
             return;
         }
 
-        rpcRequest->Device->Prepare(TDevicePrepareMode::WITHOUT_SETUP);
-        rpcRequest->Device->WriteSetupRegisters(rpcRequest->SetupItems);
-        rpcRequest->Device->EndSession();
+        TDeviceSetupItems setupItems;
+        rpcRequest->GetChannelsSetupItems(setupItems);
+        rpcRequest->GetParametersSetupItems(setupItems);
+
+        if (!setupItems.empty()) {
+            rpcRequest->Device->Prepare(TDevicePrepareMode::WITHOUT_SETUP);
+            rpcRequest->Device->WriteSetupRegisters(setupItems);
+            rpcRequest->Device->EndSession();
+        }
 
         rpcRequest->OnResult(Json::Value());
     }
@@ -29,7 +33,57 @@ TRPCDeviceSetRequest::TRPCDeviceSetRequest(const TDeviceProtocolParams& protocol
     : TRPCDeviceRequest(protocolParams, device, deviceTemplate, deviceFromConfig)
 {}
 
-void TRPCDeviceSetRequest::AddSetupItem(const std::string& id, const Json::Value& data, const std::string& value)
+void TRPCDeviceSetRequest::ParseRequestItems(const Json::Value& items,
+                                             std::unordered_map<std::string, std::string>& map)
+{
+    for (auto it = items.begin(); it != items.end(); ++it) {
+        map[it.key().asString()] = (*it).asString();
+    }
+}
+
+void TRPCDeviceSetRequest::GetChannelsSetupItems(TDeviceSetupItems& setupItems)
+{
+    for (auto item: DeviceTemplate->GetTemplate()["channels"]) {
+        if (item["readonly"].asBool()) {
+            continue;
+        }
+        auto id = item["name"].asString();
+        if (Channels.count(id)) {
+            setupItems.insert(CreateSetupItem(id, item, Channels[id]));
+            Channels.erase(id);
+        }
+    }
+    if (!Channels.empty()) {
+        throw TRPCException("channel \"" + Channels.begin()->first + "\" is read only or not found in \"" +
+                                DeviceTemplate->Type + "\" device template",
+                            TRPCResultCode::RPC_WRONG_PARAM_VALUE);
+    }
+}
+
+void TRPCDeviceSetRequest::GetParametersSetupItems(TDeviceSetupItems& setupItems)
+{
+    auto params = DeviceTemplate->GetTemplate()["parameters"];
+    for (auto it = params.begin(); it != params.end(); ++it) {
+        auto item = *it;
+        if (item["readonly"].asBool()) {
+            continue;
+        }
+        auto id = params.isObject() ? it.key().asString() : item["id"].asString();
+        if (Parameters.count(id)) {
+            setupItems.insert(CreateSetupItem(id, item, Parameters[id]));
+            Parameters.erase(id);
+        }
+    }
+    if (!Parameters.empty()) {
+        throw TRPCException("parameter \"" + Parameters.begin()->first + "\" is read only or not found in \"" +
+                                DeviceTemplate->Type + "\" device template",
+                            TRPCResultCode::RPC_WRONG_PARAM_VALUE);
+    }
+}
+
+PDeviceSetupItem TRPCDeviceSetRequest::CreateSetupItem(const std::string& id,
+                                                       const Json::Value& data,
+                                                       const std::string& value)
 {
     auto config = LoadRegisterConfig(data,
                                      *ProtocolParams.protocol->GetRegTypes(),
@@ -38,41 +92,7 @@ void TRPCDeviceSetRequest::AddSetupItem(const std::string& id, const Json::Value
                                      ProtocolParams.factory->GetRegisterAddressFactory().GetBaseRegisterAddress(),
                                      0);
     auto itemConfig = std::make_shared<TDeviceSetupItemConfig>(id, config.RegisterConfig, value);
-    SetupItems.insert(std::make_shared<TDeviceSetupItem>(itemConfig, Device));
-}
-
-void TRPCDeviceSetRequest::ParseChannels(const Json::Value& request)
-{
-    std::unordered_map<std::string, std::string> map;
-    auto channels = request["channels"];
-    for (auto it = channels.begin(); it != channels.end(); ++it) {
-        map[it.key().asString()] = (*it).asString();
-    }
-    for (auto item: DeviceTemplate->GetTemplate()["channels"]) { // TODO: check if read only
-        auto id = item["name"].asString();
-        if (map.count(id)) {
-            AddSetupItem(id, item, map[id]);
-            map.erase(id);
-        }
-    }
-}
-
-void TRPCDeviceSetRequest::ParseParameters(const Json::Value& request)
-{
-    std::unordered_map<std::string, std::string> map;
-    auto requestParams = request["parameters"];
-    for (auto it = requestParams.begin(); it != requestParams.end(); ++it) {
-        map[it.key().asString()] = (*it).asString();
-    }
-    auto templateParams = DeviceTemplate->GetTemplate()["parameters"];
-    for (auto it = templateParams.begin(); it != templateParams.end(); ++it) { // TODO: check if read only
-        auto item = *it;
-        auto id = templateParams.isObject() ? it.key().asString() : item["id"].asString();
-        if (map.count(id)) {
-            AddSetupItem(id, item, map[id]);
-            map.erase(id);
-        }
-    }
+    return std::make_shared<TDeviceSetupItem>(itemConfig, Device);
 }
 
 PRPCDeviceSetRequest ParseRPCDeviceSetRequest(const Json::Value& request,
@@ -85,8 +105,8 @@ PRPCDeviceSetRequest ParseRPCDeviceSetRequest(const Json::Value& request,
 {
     auto res = std::make_shared<TRPCDeviceSetRequest>(protocolParams, device, deviceTemplate, deviceFromConfig);
     res->ParseSettings(request, onResult, onError);
-    res->ParseChannels(request);
-    res->ParseParameters(request);
+    res->ParseRequestItems(request["channels"], res->Channels);
+    res->ParseRequestItems(request["parameters"], res->Parameters);
     return res;
 }
 

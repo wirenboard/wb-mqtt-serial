@@ -107,7 +107,7 @@ namespace
         }
 
         std::list<std::string> paramsList;
-        TRPCRegisterList registerList = CreateRegisterList(
+        auto registerList = CreateRegisterList(
             rpcRequest->ProtocolParams,
             rpcRequest->Device,
             rpcRequest->Group.empty() ? templateParams

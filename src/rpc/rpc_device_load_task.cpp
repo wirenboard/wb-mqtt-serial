@@ -4,9 +4,6 @@
 #include "serial_port.h"
 #include "wb_registers.h"
 
-// TODO: remove it
-#define LOG(logger) ::logger.Log() << "[RPC] "
-
 namespace
 {
     void ExecRPCRequest(PPort port, PRPCDeviceLoadRequest rpcRequest)
@@ -15,11 +12,11 @@ namespace
             return;
         }
         Json::Value result;
-        if (!rpcRequest->ClannelRegisterList.empty()) {
-            ReadRegisterList(rpcRequest->Device, rpcRequest->ClannelRegisterList, result["channels"]);
-        }
-        if (!rpcRequest->ParameterRegisterList.empty()) {
-            ReadRegisterList(rpcRequest->Device, rpcRequest->ParameterRegisterList, result["parameters"]);
+        for (int i = 0; i < 2; i++) {
+            auto registerList = i ? rpcRequest->GetParametersRegisterList() : rpcRequest->GetChannelsRegisterList();
+            if (!registerList.empty()) {
+                ReadRegisterList(rpcRequest->Device, registerList, result[i ? "parameters" : "channels"]);
+            }
         }
         rpcRequest->OnResult(result);
     }
@@ -32,48 +29,62 @@ TRPCDeviceLoadRequest::TRPCDeviceLoadRequest(const TDeviceProtocolParams& protoc
     : TRPCDeviceRequest(protocolParams, device, deviceTemplate, deviceFromConfig)
 {}
 
-void TRPCDeviceLoadRequest::ParseChannels(const Json::Value& request)
+void TRPCDeviceLoadRequest::ParseRequestItems(const Json::Value& items, std::list<std::string>& list)
 {
-    std::list<std::string> list;
-    for (const auto& item: request["channels"]) {
+    for (const auto& item: items) {
         auto id = item.asString();
         if (std::find(list.begin(), list.end(), id) == list.end()) {
             list.push_back(id);
         }
     }
-    Json::Value items(Json::arrayValue);
-    for (auto item: DeviceTemplate->GetTemplate()["channels"]) { // TODO: check if write only
-        auto id = item["name"].asString();
-        if (std::find(list.begin(), list.end(), id) != list.end()) {
-            item["id"] = id;
-            items.append(item);
-        }
-    }
-    ClannelRegisterList = CreateRegisterList(ProtocolParams, Device, items);
 }
 
-void TRPCDeviceLoadRequest::ParseParameters(const Json::Value& request)
+TRPCRegisterList TRPCDeviceLoadRequest::GetChannelsRegisterList()
 {
-    std::list<std::string> list;
-    for (const auto& item: request["parameters"]) {
-        auto id = item.asString();
-        if (std::find(list.begin(), list.end(), id) == list.end()) {
-            list.push_back(id);
+    Json::Value items(Json::arrayValue);
+    for (auto item: DeviceTemplate->GetTemplate()["channels"]) {
+        if (item["address"].isNull()) { // write only channel
+            continue;
+        }
+        auto id = item["name"].asString();
+        if (std::find(Channels.begin(), Channels.end(), id) != Channels.end()) {
+            item["id"] = id;
+            items.append(item);
+            Channels.remove(id);
         }
     }
-    auto parameters = DeviceTemplate->GetTemplate()["parameters"];
+    if (!Channels.empty()) {
+        throw TRPCException("channel \"" + Channels.front() + "\" is write only or not found in \"" +
+                                DeviceTemplate->Type + "\" device template",
+                            TRPCResultCode::RPC_WRONG_PARAM_VALUE);
+    }
+    return CreateRegisterList(ProtocolParams, Device, items);
+}
+
+TRPCRegisterList TRPCDeviceLoadRequest::GetParametersRegisterList()
+{
+    auto params = DeviceTemplate->GetTemplate()["parameters"];
     Json::Value items(Json::arrayValue);
-    for (auto it = parameters.begin(); it != parameters.end(); ++it) { // TODO: check if write only
+    for (auto it = params.begin(); it != params.end(); ++it) {
         auto item = *it;
-        auto id = parameters.isObject() ? it.key().asString() : item["id"].asString();
-        if (std::find(list.begin(), list.end(), id) != list.end()) {
-            if (parameters.isObject()) {
+        if (item["address"].isNull()) { // write only parameter
+            continue;
+        }
+        auto id = params.isObject() ? it.key().asString() : item["id"].asString();
+        if (std::find(Parameters.begin(), Parameters.end(), id) != Parameters.end()) {
+            if (params.isObject()) {
                 item["id"] = id;
             }
             items.append(item);
+            Parameters.remove(id);
         }
     }
-    ParameterRegisterList = CreateRegisterList(ProtocolParams, Device, items);
+    if (!Channels.empty()) {
+        throw TRPCException("parameter \"" + Parameters.front() + "\" is write only or not found in \"" +
+                                DeviceTemplate->Type + "\" device template",
+                            TRPCResultCode::RPC_WRONG_PARAM_VALUE);
+    }
+    return CreateRegisterList(ProtocolParams, Device, items);
 }
 
 PRPCDeviceLoadRequest ParseRPCDeviceLoadRequest(const Json::Value& request,
@@ -86,8 +97,8 @@ PRPCDeviceLoadRequest ParseRPCDeviceLoadRequest(const Json::Value& request,
 {
     auto res = std::make_shared<TRPCDeviceLoadRequest>(protocolParams, device, deviceTemplate, deviceFromConfig);
     res->ParseSettings(request, onResult, onError);
-    res->ParseChannels(request);
-    res->ParseParameters(request);
+    res->ParseRequestItems(request["channels"], res->Channels);
+    res->ParseRequestItems(request["parameters"], res->Parameters);
     return res;
 }
 
