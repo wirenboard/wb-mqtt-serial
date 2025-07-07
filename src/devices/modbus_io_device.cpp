@@ -103,12 +103,12 @@ void TModbusIODevice::ReadRegisterRange(PRegisterRange range)
     ResponseTime.AddValue(modbus_range->GetResponseTime());
 }
 
-void TModbusIODevice::WriteSetupRegisters()
+void TModbusIODevice::WriteSetupRegisters(const TDeviceSetupItems& setupItems)
 {
     Modbus::WriteSetupRegisters(*ModbusTraits,
                                 *Port(),
                                 SlaveId,
-                                GetSetupItems(),
+                                setupItems,
                                 ModbusCache,
                                 DeviceConfig()->RequestDelay,
                                 DeviceConfig()->ResponseTimeout,

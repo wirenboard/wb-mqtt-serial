@@ -23,10 +23,11 @@ public:
 
     PRegisterRange CreateRegisterRange() const override;
     void ReadRegisterRange(PRegisterRange range) override;
+    void WriteSetupRegisters(const TDeviceSetupItems& setupItems) override;
+
     static void Register(TSerialDeviceFactory& factory);
 
 protected:
     void PrepareImpl() override;
     void WriteRegisterImpl(const TRegisterConfig& reg, const TRegisterValue& value) override;
-    void WriteSetupRegisters() override;
 };

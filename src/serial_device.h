@@ -144,10 +144,10 @@ public:
     std::string ParameterId;
     TRegisterValue RawValue;
     std::string HumanReadableValue;
-    PSerialDevice Device;
     PRegisterConfig RegisterConfig;
+    PSerialDevice Device;
 
-    TDeviceSetupItem(PDeviceSetupItemConfig config, PSerialDevice device, PRegisterConfig registerConfig);
+    TDeviceSetupItem(PDeviceSetupItemConfig config, PSerialDevice device);
     std::string ToString();
 };
 
@@ -264,11 +264,12 @@ public:
     void AddSetupItem(PDeviceSetupItemConfig item);
     const TDeviceSetupItems& GetSetupItems() const;
 
+    virtual void WriteSetupRegisters(const TDeviceSetupItems& setupItems);
+
 protected:
     virtual void PrepareImpl();
     virtual TRegisterValue ReadRegisterImpl(const TRegisterConfig& reg);
     virtual void WriteRegisterImpl(const TRegisterConfig& reg, const TRegisterValue& value);
-    virtual void WriteSetupRegisters();
 
 private:
     PPort SerialPort;

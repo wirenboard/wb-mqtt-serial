@@ -32,13 +32,13 @@ bool IProtocol::SupportsBroadcast() const
     return false;
 }
 
-TDeviceSetupItem::TDeviceSetupItem(PDeviceSetupItemConfig config, PSerialDevice device, PRegisterConfig registerConfig)
+TDeviceSetupItem::TDeviceSetupItem(PDeviceSetupItemConfig config, PSerialDevice device)
     : Name(config->GetName()),
       ParameterId(config->GetParameterId()),
       RawValue(config->GetRawValue()),
       HumanReadableValue(config->GetValue()),
-      Device(device),
-      RegisterConfig(registerConfig)
+      RegisterConfig(config->GetRegisterConfig()),
+      Device(device)
 {}
 
 std::string TDeviceSetupItem::ToString()
@@ -114,7 +114,7 @@ void TSerialDevice::Prepare(TDevicePrepareMode prepareMode)
     try {
         PrepareImpl();
         if (prepareMode == TDevicePrepareMode::WITH_SETUP_IF_WAS_DISCONNECTED && deviceWasDisconnected) {
-            WriteSetupRegisters();
+            WriteSetupRegisters(GetSetupItems());
         }
     } catch (const TSerialDeviceException& ex) {
         SetTransferResult(false);
@@ -225,13 +225,13 @@ TDeviceConnectionState TSerialDevice::GetConnectionState() const
     return ConnectionState;
 }
 
-void TSerialDevice::WriteSetupRegisters()
+void TSerialDevice::WriteSetupRegisters(const TDeviceSetupItems& setupItems)
 {
-    for (const auto& item: SetupItems) {
+    for (const auto& item: setupItems) {
         WriteRegisterImpl(*item->RegisterConfig, item->RawValue);
         LOG(Info) << item->ToString();
     }
-    if (!SetupItems.empty()) {
+    if (!setupItems.empty()) {
         SetTransferResult(true);
     }
 }
@@ -356,7 +356,7 @@ void TSerialDevice::AddSetupItem(PDeviceSetupItemConfig item)
         }
         LOG(Warn) << ss.str();
     } else {
-        auto setupItem = std::make_shared<TDeviceSetupItem>(item, shared_from_this(), item->GetRegisterConfig());
+        auto setupItem = std::make_shared<TDeviceSetupItem>(item, shared_from_this());
         SetupItemsByAddress.insert({key, setupItem});
         SetupItems.insert(setupItem);
     }
