@@ -12,8 +12,8 @@ public:
     TRPCRegisterList ClannelRegisterList;
     TRPCRegisterList ParameterRegisterList;
 
-    void ParseClannelRegisterList(const Json::Value& request);
-    void ParseParameterRegisterList(const Json::Value& request);
+    void ParseChannels(const Json::Value& request);
+    void ParseParameters(const Json::Value& request);
 };
 
 typedef std::shared_ptr<TRPCDeviceLoadRequest> PRPCDeviceLoadRequest;

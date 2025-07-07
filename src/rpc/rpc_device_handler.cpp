@@ -302,7 +302,6 @@ void ReadRegisterList(PSerialDevice device, TRPCRegisterList& registerList, Json
                   return compare(b.second, a.second);
               });
 
-    // TODO: check for deviceFromConfig?
     for (int i = 0; i <= maxRetries; i++) {
         try {
             device->Prepare(TDevicePrepareMode::WITHOUT_SETUP);
@@ -340,7 +339,6 @@ void ReadRegisterList(PSerialDevice device, TRPCRegisterList& registerList, Json
         }
     }
 
-    // TODO: check for deviceFromConfig?
     try {
         device->EndSession();
     } catch (const TSerialDeviceException& e) {

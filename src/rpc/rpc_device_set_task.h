@@ -9,8 +9,13 @@ public:
                          PDeviceTemplate deviceTemplate,
                          bool deviceFromConfig);
 
-    std::unordered_map<std::string, std::string> Channels;
-    std::unordered_map<std::string, std::string> Parameters;
+    TDeviceSetupItems SetupItems;
+
+    void ParseChannels(const Json::Value& request);
+    void ParseParameters(const Json::Value& request);
+
+private:
+    void AddSetupItem(const std::string& id, const Json::Value& data, const std::string& value);
 };
 
 typedef std::shared_ptr<TRPCDeviceSetRequest> PRPCDeviceSetRequest;

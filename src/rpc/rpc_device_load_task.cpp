@@ -32,7 +32,7 @@ TRPCDeviceLoadRequest::TRPCDeviceLoadRequest(const TDeviceProtocolParams& protoc
     : TRPCDeviceRequest(protocolParams, device, deviceTemplate, deviceFromConfig)
 {}
 
-void TRPCDeviceLoadRequest::ParseClannelRegisterList(const Json::Value& request)
+void TRPCDeviceLoadRequest::ParseChannels(const Json::Value& request)
 {
     std::list<std::string> list;
     for (const auto& item: request["channels"]) {
@@ -52,7 +52,7 @@ void TRPCDeviceLoadRequest::ParseClannelRegisterList(const Json::Value& request)
     ClannelRegisterList = CreateRegisterList(ProtocolParams, Device, items);
 }
 
-void TRPCDeviceLoadRequest::ParseParameterRegisterList(const Json::Value& request)
+void TRPCDeviceLoadRequest::ParseParameters(const Json::Value& request)
 {
     std::list<std::string> list;
     for (const auto& item: request["parameters"]) {
@@ -86,8 +86,8 @@ PRPCDeviceLoadRequest ParseRPCDeviceLoadRequest(const Json::Value& request,
 {
     auto res = std::make_shared<TRPCDeviceLoadRequest>(protocolParams, device, deviceTemplate, deviceFromConfig);
     res->ParseSettings(request, onResult, onError);
-    res->ParseClannelRegisterList(request);
-    res->ParseParameterRegisterList(request);
+    res->ParseChannels(request);
+    res->ParseParameters(request);
     return res;
 }
 
