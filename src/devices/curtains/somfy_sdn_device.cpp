@@ -335,7 +335,11 @@ TRegisterValue Somfy::TDevice::ReadRegisterImpl(TPort& port, const TRegisterConf
         }
         case PARAM: {
             const auto& addr = dynamic_cast<const TSomfyAddress&>(reg.GetAddress());
-            return GetCachedResponse(port, addr.Get(), addr.GetResponseHeader(), reg.GetDataOffset(), reg.GetDataWidth());
+            return GetCachedResponse(port,
+                                     addr.Get(),
+                                     addr.GetResponseHeader(),
+                                     reg.GetDataOffset(),
+                                     reg.GetDataWidth());
         }
         case ANGLE: {
             // See 6.5.1 Device Status / Motor Position
