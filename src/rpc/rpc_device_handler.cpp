@@ -57,10 +57,6 @@ TRPCDeviceHelper::TRPCDeviceHelper(const Json::Value& request,
                                    TSerialClientTaskRunner& serialClientTaskRunner)
 {
     auto params = serialClientTaskRunner.GetSerialClientParams(request);
-    SerialClient = params.SerialClient;
-    if (SerialClient == nullptr) {
-        TaskExecutor = serialClientTaskRunner.GetTaskExecutor(request);
-    }
     if (params.Device == nullptr) {
         DeviceTemplate = templates->GetTemplate(request["device_type"].asString());
         auto config = std::make_shared<TDeviceConfig>("RPC Device",
@@ -82,15 +78,6 @@ TRPCDeviceHelper::TRPCDeviceHelper(const Json::Value& request,
     if (DeviceTemplate->WithSubdevices()) {
         throw TRPCException("Device \"" + DeviceTemplate->Type + "\" is not supported by this RPC",
                             TRPCResultCode::RPC_WRONG_PARAM_VALUE);
-    }
-}
-
-void TRPCDeviceHelper::RunTask(PSerialClientTask task)
-{
-    if (SerialClient) {
-        SerialClient->AddTask(task);
-    } else {
-        TaskExecutor->AddTask(task);
     }
 }
 
@@ -189,7 +176,7 @@ void TRPCDeviceHandler::LoadConfig(const Json::Value& request,
                                                           ParametersCache,
                                                           onResult,
                                                           onError);
-        helper.RunTask(std::make_shared<TRPCDeviceLoadConfigSerialClientTask>(rpcRequest));
+        SerialClientTaskRunner.RunTask(request, std::make_shared<TRPCDeviceLoadConfigSerialClientTask>(rpcRequest));
     } catch (const TRPCException& e) {
         ProcessException(e, onError);
     }
@@ -209,7 +196,7 @@ void TRPCDeviceHandler::Load(const Json::Value& request,
                                                     helper.DeviceFromConfig,
                                                     onResult,
                                                     onError);
-        helper.RunTask(std::make_shared<TRPCDeviceLoadSerialClientTask>(rpcRequest));
+        SerialClientTaskRunner.RunTask(request, std::make_shared<TRPCDeviceLoadSerialClientTask>(rpcRequest));
     } catch (const TRPCException& e) {
         ProcessException(e, onError);
     }
@@ -229,7 +216,7 @@ void TRPCDeviceHandler::Set(const Json::Value& request,
                                                    helper.DeviceFromConfig,
                                                    onResult,
                                                    onError);
-        helper.RunTask(std::make_shared<TRPCDeviceSetSerialClientTask>(rpcRequest));
+        SerialClientTaskRunner.RunTask(request, std::make_shared<TRPCDeviceSetSerialClientTask>(rpcRequest));
     } catch (const TRPCException& e) {
         ProcessException(e, onError);
     }

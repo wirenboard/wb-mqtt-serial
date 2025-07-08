@@ -161,8 +161,14 @@ TSerialClientParams TSerialClientTaskRunner::GetSerialClientParams(const Json::V
     return params;
 }
 
-PSerialClientTaskExecutor TSerialClientTaskRunner::GetTaskExecutor(const Json::Value& request)
+void TSerialClientTaskRunner::RunTask(const Json::Value& request, PSerialClientTask task)
 {
+    auto params = GetSerialClientParams(request);
+    if (params.SerialClient) {
+        params.SerialClient->AddTask(task);
+        return;
+    }
+
     std::unique_lock<std::mutex> lock(TaskExecutorsMutex);
     auto portDescription = GetRequestPortDescription(request);
     auto executor = std::find_if(TaskExecutors.begin(),
@@ -174,19 +180,10 @@ PSerialClientTaskExecutor TSerialClientTaskRunner::GetTaskExecutor(const Json::V
         RemoveUnusedExecutors();
         auto newExecutor = std::make_shared<TSerialClientTaskExecutor>(InitPort(request));
         TaskExecutors.push_back(newExecutor);
-        return newExecutor;
+        newExecutor->AddTask(task);
+    } else {
+        return (*executor)->AddTask(task);
     }
-    return *executor;
-}
-
-void TSerialClientTaskRunner::RunTask(const Json::Value& request, PSerialClientTask task)
-{
-    auto params = GetSerialClientParams(request);
-    if (params.SerialClient) {
-        params.SerialClient->AddTask(task);
-        return;
-    }
-    GetTaskExecutor(request)->AddTask(task);
 }
 
 void TSerialClientTaskRunner::RemoveUnusedExecutors()

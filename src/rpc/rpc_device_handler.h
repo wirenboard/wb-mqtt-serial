@@ -57,15 +57,10 @@ public:
                      PTemplateMap templates,
                      TSerialClientTaskRunner& serialClientTaskRunner);
 
-    PSerialClient SerialClient;
-    PSerialClientTaskExecutor TaskExecutor;
-
     TDeviceProtocolParams ProtocolParams;
     PSerialDevice Device;
     PDeviceTemplate DeviceTemplate;
     bool DeviceFromConfig = false;
-
-    void RunTask(PSerialClientTask task);
 };
 
 class TRPCDeviceRequest
