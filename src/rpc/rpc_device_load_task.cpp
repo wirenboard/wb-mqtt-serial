@@ -15,7 +15,7 @@ namespace
         for (int i = 0; i < 2; i++) {
             auto registerList = i ? rpcRequest->GetParametersRegisterList() : rpcRequest->GetChannelsRegisterList();
             if (!registerList.empty()) {
-                ReadRegisterList(rpcRequest->Device, registerList, result[i ? "parameters" : "channels"]);
+                ReadRegisterList(*port, rpcRequest->Device, registerList, result[i ? "parameters" : "channels"]);
             }
         }
         rpcRequest->OnResult(result);
@@ -121,7 +121,7 @@ ISerialClientTask::TRunResult TRPCDeviceLoadSerialClientTask::Run(PPort port,
         if (!port->IsOpen()) {
             port->Open();
         }
-        lastAccessedDevice.PrepareToAccess(nullptr);
+        lastAccessedDevice.PrepareToAccess(*port, nullptr);
         if (!Request->DeviceFromConfig) {
             TSerialPortSettingsGuard settingsGuard(port, Request->SerialPortSettings);
         }

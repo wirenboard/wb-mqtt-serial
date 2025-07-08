@@ -23,27 +23,28 @@ namespace
 
         std::string error;
         try {
-            rpcRequest->Device->Prepare(TDevicePrepareMode::WITHOUT_SETUP);
+            rpcRequest->Device->Prepare(*port, TDevicePrepareMode::WITHOUT_SETUP);
         } catch (const TSerialDeviceException& e) {
             error = std::string("Failed to prepare session: ") + e.what();
-            LOG(Warn) << rpcRequest->Device->ToString() << ": " << error;
+            LOG(Warn) << port->GetDescription() << " " << rpcRequest->Device->ToString() << ": " << error;
             throw TRPCException(error, TRPCResultCode::RPC_WRONG_PARAM_VALUE);
         }
 
         try {
-            rpcRequest->Device->WriteSetupRegisters(setupItems, true);
+            rpcRequest->Device->WriteSetupRegisters(*port, setupItems, true);
         } catch (const TSerialDeviceException& e) {
             error = e.what();
         }
 
         try {
-            rpcRequest->Device->EndSession();
+            rpcRequest->Device->EndSession(*port);
         } catch (const TSerialDeviceException& e) {
-            LOG(Warn) << rpcRequest->Device->ToString() << " unable to end session: " << e.what();
+            LOG(Warn) << port->GetDescription() << rpcRequest->Device->ToString()
+                      << " unable to end session: " << e.what();
         }
 
         if (!error.empty()) {
-            LOG(Warn) << rpcRequest->Device->ToString() << ": " << error;
+            LOG(Warn) << port->GetDescription() << rpcRequest->Device->ToString() << ": " << error;
             throw TRPCException(error, TRPCResultCode::RPC_WRONG_PARAM_VALUE);
         }
 
@@ -154,7 +155,7 @@ ISerialClientTask::TRunResult TRPCDeviceSetSerialClientTask::Run(PPort port,
         if (!port->IsOpen()) {
             port->Open();
         }
-        lastAccessedDevice.PrepareToAccess(nullptr);
+        lastAccessedDevice.PrepareToAccess(*port, nullptr);
         if (!Request->DeviceFromConfig) {
             TSerialPortSettingsGuard settingsGuard(port, Request->SerialPortSettings);
         }

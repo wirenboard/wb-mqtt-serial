@@ -234,7 +234,29 @@ Modbus::TReadResult Modbus::TModbusRTUTraits::Transaction(TPort& port,
 
 // TModbusTCPTraits
 
-Modbus::TModbusTCPTraits::TModbusTCPTraits(std::shared_ptr<uint16_t> transactionId): TransactionId(transactionId)
+std::mutex Modbus::TModbusTCPTraits::TransactionIdMutex;
+std::unordered_map<std::string, uint16_t> Modbus::TModbusTCPTraits::TransactionIds;
+
+uint16_t Modbus::TModbusTCPTraits::GetTransactionId(TPort& port)
+{
+    auto portDescription = port.GetDescription(false);
+    std::unique_lock lk(TransactionIdMutex);
+    try {
+        return ++TransactionIds.at(portDescription);
+    } catch (const std::out_of_range&) {
+        TransactionIds.emplace(portDescription, 1);
+        return 1;
+    }
+}
+
+void Modbus::TModbusTCPTraits::ResetTransactionId(TPort& port)
+{
+    auto portDescription = port.GetDescription(false);
+    std::unique_lock lk(TransactionIdMutex);
+    TransactionIds.erase(portDescription);
+}
+
+Modbus::TModbusTCPTraits::TModbusTCPTraits()
 {}
 
 void Modbus::TModbusTCPTraits::SetMBAP(std::vector<uint8_t>& req,
@@ -265,10 +287,9 @@ size_t Modbus::TModbusTCPTraits::GetPacketSize(size_t pduSize) const
     return MBAP_SIZE + pduSize;
 }
 
-void Modbus::TModbusTCPTraits::FinalizeRequest(std::vector<uint8_t>& request, uint8_t slaveId)
+void Modbus::TModbusTCPTraits::FinalizeRequest(std::vector<uint8_t>& request, uint8_t slaveId, uint16_t transactionId)
 {
-    ++(*TransactionId);
-    SetMBAP(request, *TransactionId, request.size() - MBAP_SIZE, slaveId);
+    SetMBAP(request, transactionId, request.size() - MBAP_SIZE, slaveId);
 }
 
 TReadFrameResult Modbus::TModbusTCPTraits::ReadFrame(TPort& port,
@@ -328,15 +349,16 @@ Modbus::TReadResult Modbus::TModbusTCPTraits::Transaction(TPort& port,
                                                           const std::chrono::milliseconds& responseTimeout,
                                                           const std::chrono::milliseconds& frameTimeout)
 {
+    auto transactionId = GetTransactionId(port);
     std::vector<uint8_t> request(GetPacketSize(requestPdu.size()));
     std::copy(requestPdu.begin(), requestPdu.end(), request.begin() + MBAP_SIZE);
-    FinalizeRequest(request, slaveId);
+    FinalizeRequest(request, slaveId, transactionId);
 
     port.WriteBytes(request.data(), request.size());
 
     std::vector<uint8_t> response(GetPacketSize(expectedResponsePduSize));
 
-    auto readRes = ReadFrame(port, slaveId, *TransactionId, responseTimeout, frameTimeout, response);
+    auto readRes = ReadFrame(port, slaveId, transactionId, responseTimeout, frameTimeout, response);
 
     TReadResult res;
     res.ResponseTime = readRes.ResponseTime;
@@ -344,20 +366,14 @@ Modbus::TReadResult Modbus::TModbusTCPTraits::Transaction(TPort& port,
     return res;
 }
 
-std::unique_ptr<Modbus::IModbusTraits> Modbus::TModbusRTUTraitsFactory::GetModbusTraits(PPort port,
-                                                                                        bool forceFrameTimeout)
+std::unique_ptr<Modbus::IModbusTraits> Modbus::TModbusRTUTraitsFactory::GetModbusTraits(bool forceFrameTimeout)
 {
     return std::make_unique<Modbus::TModbusRTUTraits>(forceFrameTimeout);
 }
 
-std::unique_ptr<Modbus::IModbusTraits> Modbus::TModbusTCPTraitsFactory::GetModbusTraits(PPort port,
-                                                                                        bool forceFrameTimeout)
+std::unique_ptr<Modbus::IModbusTraits> Modbus::TModbusTCPTraitsFactory::GetModbusTraits(bool forceFrameTimeout)
 {
-    auto it = TransactionIds.find(port);
-    if (it == TransactionIds.end()) {
-        std::tie(it, std::ignore) = TransactionIds.insert({port, std::make_shared<uint16_t>(0)});
-    }
-    return std::make_unique<Modbus::TModbusTCPTraits>(it->second);
+    return std::make_unique<Modbus::TModbusTCPTraits>();
 }
 
 bool Modbus::IsException(uint8_t functionCode) noexcept

@@ -31,6 +31,11 @@ namespace RpcPortScan
             return res;
         }
 
+        TPort& GetPort()
+        {
+            return Port;
+        }
+
     private:
         Modbus::IModbusTraits& ModbusTraits;
         std::chrono::milliseconds FrameTimeout;

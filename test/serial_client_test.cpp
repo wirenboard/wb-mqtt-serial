@@ -138,7 +138,7 @@ void TSerialClientTest::SetUp()
     config->MaxReadRegisters = 0;
 
     config->FrameTimeout = std::chrono::milliseconds(100);
-    Device = std::make_shared<TFakeSerialDevice>(config, Port, DeviceFactory.GetProtocol("fake"));
+    Device = std::make_shared<TFakeSerialDevice>(config, DeviceFactory.GetProtocol("fake"));
     if (HasSetupRegisters) {
         PRegisterConfig reg1 = TRegisterConfig::Create(TFakeSerialDevice::REG_FAKE, 100);
         Device->AddSetupItem(PDeviceSetupItemConfig(new TDeviceSetupItemConfig("setup1", reg1, "10")));
@@ -149,6 +149,7 @@ void TSerialClientTest::SetUp()
         PRegisterConfig reg3 = TRegisterConfig::Create(TFakeSerialDevice::REG_FAKE, 102);
         Device->AddSetupItem(PDeviceSetupItemConfig(new TDeviceSetupItemConfig("setup3", reg3, "12")));
     }
+    Device->SetFakePort(Port);
     SerialClient = std::make_shared<TSerialClient>(Port, PortOpenCloseSettings, std::chrono::steady_clock::now);
     SerialClient->SetReadCallback([this](PRegister reg) {
         if (reg->GetErrorState().count()) {
@@ -1006,6 +1007,8 @@ protected:
     void Publish(const std::string& topic, const std::string& payload, uint8_t qos = 0, bool retain = true);
     void PublishWaitOnValue(const std::string& topic, const std::string& payload, uint8_t qos = 0, bool retain = true);
 
+    void FixFakeDevices(PHandlerConfig config);
+
     /** reconnect test functions **/
     static void DeviceTimeoutOnly(const PSerialDevice& device, chrono::milliseconds timeout);
     static void DeviceMaxFailCyclesOnly(const PSerialDevice& device, int cycleCount);
@@ -1076,6 +1079,8 @@ void TSerialClientIntegrationTest::SetUp()
                         PortsSchema,
                         *ProtocolSchemas,
                         [=](const Json::Value&, PRPCConfig rpcConfig) { return std::make_pair(Port, false); });
+
+    FixFakeDevices(Config);
 }
 
 void TSerialClientIntegrationTest::TearDown()
@@ -1086,6 +1091,21 @@ void TSerialClientIntegrationTest::TearDown()
     Driver->StopLoop();
     TSerialClientTest::TearDown();
     std::filesystem::remove(DB_PATH);
+}
+
+void TSerialClientIntegrationTest::FixFakeDevices(PHandlerConfig config)
+{
+    for (auto port_config: config->PortConfigs) {
+        PFakeSerialPort fakePort = std::dynamic_pointer_cast<TFakeSerialPort>(port_config->Port);
+        if (fakePort) {
+            for (auto device: port_config->Devices) {
+                PFakeSerialDevice fakeDevice = std::dynamic_pointer_cast<TFakeSerialDevice>(device->Device);
+                if (fakeDevice) {
+                    fakeDevice->SetFakePort(fakePort);
+                }
+            }
+        }
+    }
 }
 
 void TSerialClientIntegrationTest::FilterConfig(const std::string& device_name)
@@ -1543,6 +1563,7 @@ TEST_F(TSerialClientIntegrationTest, RPCRequestTransceive)
                         PortsSchema,
                         *ProtocolSchemas,
                         [=](const Json::Value&, PRPCConfig rpcConfig) { return std::make_pair(Port, false); });
+    FixFakeDevices(Config);
 
     FilterConfig("RPCTest");
 
@@ -1611,6 +1632,7 @@ PMQTTSerialDriver TSerialClientIntegrationTest::StartReconnectTest1Device(bool m
                         PortsSchema,
                         *ProtocolSchemas,
                         [=](const Json::Value&, PRPCConfig config) { return std::make_pair(Port, false); });
+    FixFakeDevices(Config);
 
     if (pollIntervalTest) {
         Config->PortConfigs[0]->Devices[0]->Channels[0]->Registers[0]->GetConfig()->ReadPeriod = 100s;
@@ -1712,6 +1734,7 @@ PMQTTSerialDriver TSerialClientIntegrationTest::StartReconnectTest2Devices()
                         PortsSchema,
                         *ProtocolSchemas,
                         [=](const Json::Value&, PRPCConfig config) { return std::make_pair(Port, false); });
+    FixFakeDevices(Config);
 
     PMQTTSerialDriver mqttDriver = make_shared<TMQTTSerialDriver>(Driver, Config);
 
@@ -1934,6 +1957,7 @@ TEST_F(TSerialClientIntegrationTest, ReconnectOnPortWriteError)
                         PortsSchema,
                         *ProtocolSchemas,
                         [=](const Json::Value&, PRPCConfig config) { return std::make_pair(Port, false); });
+    FixFakeDevices(Config);
 
     PMQTTSerialDriver mqttDriver = make_shared<TMQTTSerialDriver>(Driver, Config);
 
@@ -1964,6 +1988,7 @@ TEST_F(TSerialClientIntegrationTest, OnTopicWriteError)
                         PortsSchema,
                         *ProtocolSchemas,
                         [=](const Json::Value&, PRPCConfig config) { return std::make_pair(Port, false); });
+    FixFakeDevices(Config);
 
     PMQTTSerialDriver mqttDriver = make_shared<TMQTTSerialDriver>(Driver, Config);
 
@@ -1992,6 +2017,7 @@ TEST_F(TSerialClientIntegrationTest, ReconnectAfterNetworkDisconnect)
                         PortsSchema,
                         *ProtocolSchemas,
                         [=](const Json::Value&, PRPCConfig config) { return std::make_pair(Port, false); });
+    FixFakeDevices(Config);
 
     PMQTTSerialDriver mqttDriver = make_shared<TMQTTSerialDriver>(Driver, Config);
 

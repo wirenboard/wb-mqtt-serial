@@ -114,7 +114,7 @@ namespace
                                       : GetTemplateParamsGroup(templateParams, rpcRequest->Group, paramsList),
             parameters,
             fwVersion);
-        ReadRegisterList(rpcRequest->Device, registerList, parameters, MAX_RETRIES);
+        ReadRegisterList(*port, rpcRequest->Device, registerList, parameters, MAX_RETRIES);
 
         Json::Value result;
         if (!fwVersion.empty()) {
@@ -189,7 +189,7 @@ ISerialClientTask::TRunResult TRPCDeviceLoadConfigSerialClientTask::Run(
         if (!port->IsOpen()) {
             port->Open();
         }
-        lastAccessedDevice.PrepareToAccess(nullptr);
+        lastAccessedDevice.PrepareToAccess(*port, nullptr);
         if (!Request->DeviceFromConfig) {
             TSerialPortSettingsGuard settingsGuard(port, Request->SerialPortSettings);
         }

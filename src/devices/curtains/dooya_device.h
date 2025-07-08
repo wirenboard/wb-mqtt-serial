@@ -16,18 +16,21 @@ namespace Dooya
         TRequest CloseCommand;
         TRequest GetPositionCommand;
 
-        std::vector<uint8_t> ExecCommand(const TRequest& request);
-        TRegisterValue ReadEnumParameter(const TRegisterConfig& reg,
+        std::vector<uint8_t> ExecCommand(TPort& port, const TRequest& request);
+        TRegisterValue ReadEnumParameter(TPort& port,
+                                         const TRegisterConfig& reg,
                                          const std::unordered_map<uint8_t, std::string>& names);
 
     public:
-        TDevice(PDeviceConfig config, PPort port, PProtocol protocol);
+        TDevice(PDeviceConfig config, PProtocol protocol);
+
+        std::chrono::milliseconds GetFrameTimeout(TPort& port) const override;
 
         static void Register(TSerialDeviceFactory& factory);
 
     protected:
-        TRegisterValue ReadRegisterImpl(const TRegisterConfig& reg) override;
-        void WriteRegisterImpl(const TRegisterConfig& reg, const TRegisterValue& regValue) override;
+        TRegisterValue ReadRegisterImpl(TPort& port, const TRegisterConfig& reg) override;
+        void WriteRegisterImpl(TPort& port, const TRegisterConfig& reg, const TRegisterValue& regValue) override;
     };
 
     std::vector<uint8_t> MakeRequest(uint16_t address, const std::vector<uint8_t>& data);

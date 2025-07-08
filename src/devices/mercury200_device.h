@@ -16,18 +16,20 @@
 class TMercury200Device: public TSerialDevice, public TUInt32SlaveId
 {
 public:
-    TMercury200Device(PDeviceConfig config, PPort port, PProtocol protocol);
+    TMercury200Device(PDeviceConfig config, PProtocol protocol);
 
     static void Register(TSerialDeviceFactory& factory);
 
-    TRegisterValue ReadRegisterImpl(const TRegisterConfig& reg) override;
+    TRegisterValue ReadRegisterImpl(TPort& port, const TRegisterConfig& reg) override;
     void InvalidateReadCache() override;
 
+    std::chrono::milliseconds GetFrameTimeout(TPort& port) const override;
+
 private:
-    std::vector<uint8_t> ExecCommand(uint8_t cmd);
+    std::vector<uint8_t> ExecCommand(TPort& port, uint8_t cmd);
     // buf expected to be 7 bytes long
     void FillCommand(uint8_t* buf, uint32_t id, uint8_t cmd) const;
-    int RequestResponse(uint32_t slave, uint8_t cmd, uint8_t* response) const;
+    int RequestResponse(TPort& port, uint32_t slave, uint8_t cmd, uint8_t* response) const;
     bool IsBadHeader(uint32_t slave_expected, uint8_t cmd_expected, uint8_t* response) const;
 
     bool IsCrcValid(uint8_t* buf, int sz) const;

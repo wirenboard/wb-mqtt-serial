@@ -72,10 +72,7 @@ TRPCDeviceHelper::TRPCDeviceHelper(const Json::Value& request,
             config->MaxReadRegisters = Modbus::MAX_READ_REGISTERS;
         }
         ProtocolParams = deviceFactory.GetProtocolParams(DeviceTemplate->GetProtocol());
-        Device = ProtocolParams.factory->CreateDevice(DeviceTemplate->GetTemplate(),
-                                                      config,
-                                                      SerialClient ? SerialClient->GetPort() : TaskExecutor->GetPort(),
-                                                      ProtocolParams.protocol);
+        Device = ProtocolParams.factory->CreateDevice(DeviceTemplate->GetTemplate(), config, ProtocolParams.protocol);
     } else {
         Device = params.Device;
         DeviceTemplate = templates->GetTemplate(Device->DeviceConfig()->DeviceType);
@@ -290,7 +287,11 @@ TRPCRegisterList CreateRegisterList(const TDeviceProtocolParams& protocolParams,
     return registerList;
 }
 
-void ReadRegisterList(PSerialDevice device, TRPCRegisterList& registerList, Json::Value& result, int maxRetries)
+void ReadRegisterList(TPort& port,
+                      PSerialDevice device,
+                      TRPCRegisterList& registerList,
+                      Json::Value& result,
+                      int maxRetries)
 {
     if (registerList.size() == 0) {
         return;
@@ -305,12 +306,12 @@ void ReadRegisterList(PSerialDevice device, TRPCRegisterList& registerList, Json
     std::string error;
     for (int i = 0; i <= maxRetries; i++) {
         try {
-            device->Prepare(TDevicePrepareMode::WITHOUT_SETUP);
+            device->Prepare(port, TDevicePrepareMode::WITHOUT_SETUP);
             break;
         } catch (const TSerialDeviceException& e) {
             if (i == maxRetries) {
                 error = std::string("Failed to prepare session: ") + e.what();
-                LOG(Warn) << device->ToString() << ": " << error;
+                LOG(Warn) << port.GetDescription() << " " << device->ToString() << ": " << error;
                 throw TRPCException(error, TRPCResultCode::RPC_WRONG_PARAM_VALUE);
             }
         }
@@ -320,13 +321,14 @@ void ReadRegisterList(PSerialDevice device, TRPCRegisterList& registerList, Json
     while (index < registerList.size() && error.empty()) {
         auto range = device->CreateRegisterRange();
         auto offset = index;
-        while (index < registerList.size() && range->Add(registerList[index].second, std::chrono::milliseconds::max()))
+        while (index < registerList.size() &&
+               range->Add(port, registerList[index].second, std::chrono::milliseconds::max()))
         {
             ++index;
         }
         error.clear();
         for (int i = 0; i <= maxRetries; ++i) {
-            device->ReadRegisterRange(range);
+            device->ReadRegisterRange(port, range);
             while (offset < index) {
                 auto reg = registerList[offset++].second;
                 if (reg->GetErrorState().count()) {
@@ -343,13 +345,13 @@ void ReadRegisterList(PSerialDevice device, TRPCRegisterList& registerList, Json
     }
 
     try {
-        device->EndSession();
+        device->EndSession(port);
     } catch (const TSerialDeviceException& e) {
-        LOG(Warn) << device->ToString() << " unable to end session: " << e.what();
+        LOG(Warn) << port.GetDescription() << " " << device->ToString() << " unable to end session: " << e.what();
     }
 
     if (!error.empty()) {
-        LOG(Warn) << device->ToString() << ": " << error;
+        LOG(Warn) << port.GetDescription() << " " << device->ToString() << ": " << error;
         throw TRPCException(error, TRPCResultCode::RPC_WRONG_PARAM_VALUE);
     }
 

@@ -94,7 +94,7 @@ ISerialClientTask::TRunResult TRPCPortSetupSerialClientTask::Run(PPort port,
         for (auto item: Request->Items) {
             TSerialPortSettingsGuard settingsGuard(port, item.SerialPortSettings);
             port->SleepSinceLastInteraction(frameTimeout);
-            lastAccessedDevice.PrepareToAccess(nullptr);
+            lastAccessedDevice.PrepareToAccess(*port, nullptr);
 
             if (item.Sn) {
                 fastModbusTraits.SetSn(item.Sn.value());

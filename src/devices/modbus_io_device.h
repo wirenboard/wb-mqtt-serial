@@ -18,16 +18,17 @@ class TModbusIODevice: public TSerialDevice, public TUInt32SlaveId
 public:
     TModbusIODevice(std::unique_ptr<Modbus::IModbusTraits> modbusTraits,
                     const TModbusDeviceConfig& config,
-                    PPort port,
                     PProtocol protocol);
 
     PRegisterRange CreateRegisterRange() const override;
-    void ReadRegisterRange(PRegisterRange range) override;
-    void WriteSetupRegisters(const TDeviceSetupItems& setupItems, bool breakOnError = false) override;
+    void ReadRegisterRange(TPort& port, PRegisterRange range) override;
+    void WriteSetupRegisters(TPort& port, const TDeviceSetupItems& setupItems, bool breakOnError = false) override;
+    
+    std::chrono::milliseconds GetFrameTimeout(TPort& port) const override;
 
     static void Register(TSerialDeviceFactory& factory);
 
 protected:
-    void PrepareImpl() override;
-    void WriteRegisterImpl(const TRegisterConfig& reg, const TRegisterValue& value) override;
+    void PrepareImpl(TPort& port) override;
+    void WriteRegisterImpl(TPort& port, const TRegisterConfig& reg, const TRegisterValue& value) override;
 };

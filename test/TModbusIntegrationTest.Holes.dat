@@ -798,7 +798,7 @@ Subscribe: /devices/modbus-sample/controls/# (QoS 0)
 Unsubscribe -- em-test: /devices/modbus-sample/controls/#
 >>> LoopOnce()
 Open()
-Sleep(5000)
+Sleep(1000)
 EnqueueHoldingSeparateReadResponse()
 >> 01 03 00 04 00 01 C5 CB
 << 01 03 02 00 0A 38 43

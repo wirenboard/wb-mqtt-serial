@@ -21,7 +21,8 @@ class TPollableDevice
 public:
     TPollableDevice(PSerialDevice device, std::chrono::steady_clock::time_point currentTime, TPriority priority);
 
-    PRegisterRange ReadRegisterRange(std::chrono::milliseconds pollLimit,
+    PRegisterRange ReadRegisterRange(TPort& port,
+                                     std::chrono::milliseconds pollLimit,
                                      bool readAtLeastOneRegister,
                                      const util::TSpentTimeMeter& sessionTime,
                                      TSerialClientDeviceAccessHandler& lastAccessedDevice);

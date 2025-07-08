@@ -41,19 +41,14 @@ void TModbusDevice::Register(TSerialDeviceFactory& factory)
 
 TModbusDevice::TModbusDevice(std::unique_ptr<Modbus::IModbusTraits> modbusTraits,
                              const TModbusDeviceConfig& config,
-                             PPort port,
                              PProtocol protocol)
-    : TSerialDevice(config.CommonConfig, port, protocol),
+    : TSerialDevice(config.CommonConfig, protocol),
       TUInt32SlaveId(config.CommonConfig->SlaveId),
       ModbusTraits(std::move(modbusTraits)),
       ResponseTime(std::chrono::milliseconds::zero()),
       EnableWbContinuousRead(config.EnableWbContinuousRead),
       ContinuousReadEnabled(false)
-{
-    config.CommonConfig->FrameTimeout = std::max(
-        config.CommonConfig->FrameTimeout,
-        std::chrono::ceil<std::chrono::milliseconds>(port->GetSendTimeBytes(Modbus::STANDARD_FRAME_TIMEOUT_BYTES)));
-}
+{}
 
 bool TModbusDevice::GetForceFrameTimeout()
 {
@@ -70,42 +65,42 @@ PRegisterRange TModbusDevice::CreateRegisterRange() const
     return Modbus::CreateRegisterRange(ResponseTime.GetValue());
 }
 
-void TModbusDevice::PrepareImpl()
+void TModbusDevice::PrepareImpl(TPort& port)
 {
-    TSerialDevice::PrepareImpl();
+    TSerialDevice::PrepareImpl(port);
     if (GetConnectionState() != TDeviceConnectionState::CONNECTED && EnableWbContinuousRead) {
         ContinuousReadEnabled =
-            Modbus::EnableWbContinuousRead(shared_from_this(), *ModbusTraits, *Port(), SlaveId, ModbusCache);
+            Modbus::EnableWbContinuousRead(shared_from_this(), *ModbusTraits, port, SlaveId, ModbusCache);
     }
 }
 
-void TModbusDevice::WriteRegisterImpl(const TRegisterConfig& reg, const TRegisterValue& value)
+void TModbusDevice::WriteRegisterImpl(TPort& port, const TRegisterConfig& reg, const TRegisterValue& value)
 {
     Modbus::WriteRegister(*ModbusTraits,
-                          *Port(),
+                          port,
                           SlaveId,
                           reg,
                           value,
                           ModbusCache,
                           DeviceConfig()->RequestDelay,
-                          DeviceConfig()->ResponseTimeout,
-                          DeviceConfig()->FrameTimeout);
+                          GetResponseTimeout(port),
+                          GetFrameTimeout(port));
 }
 
-void TModbusDevice::ReadRegisterRange(PRegisterRange range)
+void TModbusDevice::ReadRegisterRange(TPort& port, PRegisterRange range)
 {
     auto modbus_range = std::dynamic_pointer_cast<Modbus::TModbusRegisterRange>(range);
     if (!modbus_range) {
         throw std::runtime_error("modbus range expected");
     }
-    Modbus::ReadRegisterRange(*ModbusTraits, *Port(), SlaveId, *modbus_range, ModbusCache);
+    Modbus::ReadRegisterRange(*ModbusTraits, port, SlaveId, *modbus_range, ModbusCache);
     ResponseTime.AddValue(modbus_range->GetResponseTime());
 }
 
-void TModbusDevice::WriteSetupRegisters(const TDeviceSetupItems& setupItems, bool breakOnError)
+void TModbusDevice::WriteSetupRegisters(TPort& port, const TDeviceSetupItems& setupItems, bool breakOnError)
 {
     Modbus::WriteSetupRegisters(*ModbusTraits,
-                                *Port(),
+                                port,
                                 SlaveId,
                                 setupItems,
                                 ModbusCache,
@@ -113,4 +108,11 @@ void TModbusDevice::WriteSetupRegisters(const TDeviceSetupItems& setupItems, boo
                                 DeviceConfig()->ResponseTimeout,
                                 DeviceConfig()->FrameTimeout,
                                 breakOnError);
+}
+
+std::chrono::milliseconds TModbusDevice::GetFrameTimeout(TPort& port) const
+{
+    return std::max(
+        DeviceConfig()->FrameTimeout,
+        std::chrono::ceil<std::chrono::milliseconds>(port.GetSendTimeBytes(Modbus::STANDARD_FRAME_TIMEOUT_BYTES)));
 }

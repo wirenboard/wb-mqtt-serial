@@ -91,7 +91,7 @@ namespace
         void SetUp()
         {
             TSerialDeviceTest::SetUp();
-            Dev = std::make_shared<TNevaDevice>(GetDeviceConfig(), SerialPort, DeviceFactory.GetProtocol("neva"));
+            Dev = std::make_shared<TNevaDevice>(GetDeviceConfig(), DeviceFactory.GetProtocol("neva"));
             SerialPort->Open();
         }
 
@@ -119,7 +119,7 @@ TEST_F(TNevaTest, PrepareOk)
     EnqueueGoToProgMode();
     EnqueueSendPassword();
 
-    Dev->Prepare();
+    Dev->Prepare(*SerialPort);
     SerialPort->Close();
 }
 
@@ -130,7 +130,7 @@ TEST_F(TNevaTest, StartSessionError)
         EnqueueEndSession();
     }
 
-    ASSERT_THROW(Dev->Prepare(), TSerialDeviceTransientErrorException);
+    ASSERT_THROW(Dev->Prepare(*SerialPort), TSerialDeviceTransientErrorException);
     SerialPort->Close();
 }
 
@@ -139,7 +139,7 @@ TEST_F(TNevaTest, SwitchToProgModeError)
     EnqueueStartSession();
     EnqueueGoToProgMode(true);
     EnqueueEndSession();
-    ASSERT_THROW(Dev->Prepare(), TSerialDeviceTransientErrorException);
+    ASSERT_THROW(Dev->Prepare(*SerialPort), TSerialDeviceTransientErrorException);
     SerialPort->Close();
 }
 
@@ -150,7 +150,7 @@ TEST_F(TNevaTest, SendPasswordError)
     EnqueueSendPassword(true);
     EnqueueEndSession();
 
-    ASSERT_THROW(Dev->Prepare(), TSerialDeviceTransientErrorException);
+    ASSERT_THROW(Dev->Prepare(*SerialPort), TSerialDeviceTransientErrorException);
     SerialPort->Close();
 }
 

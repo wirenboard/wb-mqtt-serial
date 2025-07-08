@@ -60,7 +60,7 @@ bool TRegisterRange::HasOtherDeviceAndType(PRegister reg) const
     return ((reg->Device() != frontReg->Device()) || (reg->GetConfig()->Type != frontReg->GetConfig()->Type));
 }
 
-bool TSameAddressRegisterRange::Add(PRegister reg, std::chrono::milliseconds pollLimit)
+bool TSameAddressRegisterRange::Add(TPort& port, PRegister reg, std::chrono::milliseconds pollLimit)
 {
     if (HasOtherDeviceAndType(reg)) {
         return false;

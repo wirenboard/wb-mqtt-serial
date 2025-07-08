@@ -159,4 +159,8 @@ TRPCRegisterList CreateRegisterList(const TDeviceProtocolParams& protocolParams,
                                     const std::string& fwVersion = std::string());
 
 // TODO: add description
-void ReadRegisterList(PSerialDevice device, TRPCRegisterList& registerList, Json::Value& result, int maxRetries = 0);
+void ReadRegisterList(TPort& port,
+                      PSerialDevice device,
+                      TRPCRegisterList& registerList,
+                      Json::Value& result,
+                      int maxRetries = 0);

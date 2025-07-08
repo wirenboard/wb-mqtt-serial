@@ -15,6 +15,7 @@
 #include <utility>
 #include <vector>
 
+#include "port.h"
 #include "register_value.h"
 #include "serial_exc.h"
 
@@ -523,7 +524,7 @@ public:
     const std::list<PRegister>& RegisterList() const;
     std::list<PRegister>& RegisterList();
 
-    virtual bool Add(PRegister reg, std::chrono::milliseconds pollLimit) = 0;
+    virtual bool Add(TPort& port, PRegister reg, std::chrono::milliseconds pollLimit) = 0;
 
 protected:
     bool HasOtherDeviceAndType(PRegister reg) const;
@@ -537,7 +538,7 @@ typedef std::shared_ptr<TRegisterRange> PRegisterRange;
 class TSameAddressRegisterRange: public TRegisterRange
 {
 public:
-    bool Add(PRegister reg, std::chrono::milliseconds pollLimit) override;
+    bool Add(TPort& port, PRegister reg, std::chrono::milliseconds pollLimit) override;
 };
 
 /**

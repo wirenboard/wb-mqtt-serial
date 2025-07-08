@@ -29,8 +29,7 @@ void TMilurDevice::Register(TSerialDeviceFactory& factory)
         new TBasicDeviceFactory<TMilurDevice>("#/definitions/simple_device", "#/definitions/common_channel"));
 }
 
-TMilurDevice::TMilurDevice(PDeviceConfig device_config, PPort port, PProtocol protocol)
-    : TEMDevice(device_config, port, protocol)
+TMilurDevice::TMilurDevice(PDeviceConfig device_config, PProtocol protocol): TEMDevice(device_config, protocol)
 {
     /* FIXME: Milur driver should set address width based on slave_id string:
     0xFF: 1-byte address
@@ -41,12 +40,9 @@ TMilurDevice::TMilurDevice(PDeviceConfig device_config, PPort port, PProtocol pr
     if (SlaveId > 0xFF) {
         SlaveIdWidth = 4;
     }
-
-    device_config->FrameTimeout = std::max(device_config->FrameTimeout,
-                                           std::chrono::ceil<std::chrono::milliseconds>(port->GetSendTimeBytes(3.5)));
 }
 
-bool TMilurDevice::ConnectionSetup()
+bool TMilurDevice::ConnectionSetup(TPort& port)
 {
     // full: 0xff, 0x08, 0x01, 0xff, 0xff, 0xff, 0xff, 0xff, 0xff, 0x5f, 0xed
     uint8_t setupCmd[7] = {uint8_t(DeviceConfig()->AccessLevel), 0xff, 0xff, 0xff, 0xff, 0xff, 0xff};
@@ -59,9 +55,9 @@ bool TMilurDevice::ConnectionSetup()
     }
 
     uint8_t buf[MAX_LEN];
-    WriteCommand(0x08, setupCmd, 7);
+    WriteCommand(port, 0x08, setupCmd, 7);
     try {
-        if (!ReadResponse(0x08, buf, 1, ExpectNBytes(SlaveIdWidth, SlaveIdWidth + 4)))
+        if (!ReadResponse(port, 0x08, buf, 1, ExpectNBytes(SlaveIdWidth, SlaveIdWidth + 4)))
             return false;
         if (buf[0] != uint8_t(DeviceConfig()->AccessLevel))
             throw TSerialDeviceException("invalid milur access level in response");
@@ -125,13 +121,13 @@ TEMDevice::ErrorType TMilurDevice::CheckForException(uint8_t* frame, int len, co
     return TEMDevice::OTHER_ERROR;
 }
 
-TRegisterValue TMilurDevice::ReadRegisterImpl(const TRegisterConfig& reg)
+TRegisterValue TMilurDevice::ReadRegisterImpl(TPort& port, const TRegisterConfig& reg)
 {
     TRegisterValue retVal;
     uint8_t addr = GetUint32RegisterAddress(reg.GetAddress());
     int size = GetExpectedSize(reg.Type);
     uint8_t buf[MAX_LEN], *p = buf;
-    Talk(0x01, &addr, 1, 0x01, buf, size + 2, ExpectNBytes(SlaveIdWidth, size + 5 + SlaveIdWidth));
+    Talk(port, 0x01, &addr, 1, 0x01, buf, size + 2, ExpectNBytes(SlaveIdWidth, size + 5 + SlaveIdWidth));
     if (*p++ != addr)
         throw TSerialDeviceTransientErrorException("bad register address in the response");
     if (*p != size)
@@ -157,7 +153,7 @@ TRegisterValue TMilurDevice::ReadRegisterImpl(const TRegisterConfig& reg)
     return retVal;
 }
 
-void TMilurDevice::PrepareImpl()
+void TMilurDevice::PrepareImpl(TPort& port)
 {
     /* Milur 104 ignores the request after receiving any packet
     with length of 8 bytes. The last answer of the previously polled device
@@ -165,9 +161,9 @@ void TMilurDevice::PrepareImpl()
     we send dummy packet (0xFF in this case) which will restore normal meter operation. */
 
     uint8_t buf[] = {0xFF};
-    Port()->WriteBytes(buf, sizeof(buf) / sizeof(buf[0]));
-    TSerialDevice::PrepareImpl();
-    Port()->SkipNoise();
+    port.WriteBytes(buf, sizeof(buf) / sizeof(buf[0]));
+    TSerialDevice::PrepareImpl(port);
+    port.SkipNoise();
 }
 
 uint64_t TMilurDevice::BuildIntVal(uint8_t* p, int sz) const
@@ -209,6 +205,12 @@ int TMilurDevice::GetExpectedSize(int type) const
         default:
             throw TSerialDeviceTransientErrorException("bad register type");
     }
+}
+
+std::chrono::milliseconds TMilurDevice::GetFrameTimeout(TPort& port) const
+{
+    return std::max(DeviceConfig()->FrameTimeout,
+                    std::chrono::ceil<std::chrono::milliseconds>(port.GetSendTimeBytes(3.5)));
 }
 
 #if 0

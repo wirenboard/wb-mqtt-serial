@@ -40,7 +40,7 @@ namespace
     class TEnergomeraRegisterRange: public TRegisterRange
     {
     public:
-        bool Add(PRegister reg, std::chrono::milliseconds pollLimit) override
+        bool Add(TPort& port, PRegister reg, std::chrono::milliseconds pollLimit) override
         {
             // TODO: respect pollLimit
             if (RegisterList().size() > 10) {
@@ -220,26 +220,26 @@ namespace
     }
 }
 
-TEnergomeraIecWithFastReadDevice::TEnergomeraIecWithFastReadDevice(PDeviceConfig config, PPort port, PProtocol protocol)
-    : TIEC61107Device(config, port, protocol)
+TEnergomeraIecWithFastReadDevice::TEnergomeraIecWithFastReadDevice(PDeviceConfig config, PProtocol protocol)
+    : TIEC61107Device(config, protocol)
 {}
 
-void TEnergomeraIecWithFastReadDevice::ReadRegisterRange(PRegisterRange abstract_range)
+void TEnergomeraIecWithFastReadDevice::ReadRegisterRange(TPort& port, PRegisterRange abstract_range)
 {
     auto range = std::dynamic_pointer_cast<TEnergomeraRegisterRange>(abstract_range);
     if (!range) {
         throw std::runtime_error("TEnergomeraRegisterRange expected");
     }
 
-    Port()->CheckPortOpen();
-    Port()->SkipNoise();
+    port.CheckPortOpen();
+    port.SkipNoise();
 
     try {
         range->UpdateMasks();
-        SendFastGroupReadRequest(*Port(), *range, SlaveId);
+        SendFastGroupReadRequest(port, *range, SlaveId);
 
         uint8_t resp[RESPONSE_BUF_LEN] = {};
-        char* presp = ReadResponse(*Port(), resp, RESPONSE_BUF_LEN, *DeviceConfig());
+        char* presp = ReadResponse(port, resp, RESPONSE_BUF_LEN, *DeviceConfig());
 
         SetTransferResult(true);
         ProcessResponse(*range, presp);
@@ -259,15 +259,15 @@ PRegisterRange TEnergomeraIecWithFastReadDevice::CreateRegisterRange() const
     return std::make_shared<TEnergomeraRegisterRange>();
 }
 
-void TEnergomeraIecWithFastReadDevice::PrepareImpl()
+void TEnergomeraIecWithFastReadDevice::PrepareImpl(TPort& port)
 {
-    TIEC61107Device::PrepareImpl();
+    TIEC61107Device::PrepareImpl(port);
     TSerialPortConnectionSettings bf(9600, 'E', 7, 1);
-    Port()->ApplySerialPortSettings(bf);
+    port.ApplySerialPortSettings(bf);
 }
 
-void TEnergomeraIecWithFastReadDevice::EndSession()
+void TEnergomeraIecWithFastReadDevice::EndSession(TPort& port)
 {
-    Port()->ResetSerialPortSettings(); // Return old port settings
-    TIEC61107Device::EndSession();
+    port.ResetSerialPortSettings(); // Return old port settings
+    TIEC61107Device::EndSession(port);
 }

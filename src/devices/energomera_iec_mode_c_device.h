@@ -6,7 +6,7 @@
 class TEnergomeraIecModeCDevice: public TIEC61107ModeCDevice
 {
 public:
-    TEnergomeraIecModeCDevice(PDeviceConfig device_config, PPort port, PProtocol protocol);
+    TEnergomeraIecModeCDevice(PDeviceConfig device_config, PProtocol protocol);
 
     static void Register(TSerialDeviceFactory& factory);
 

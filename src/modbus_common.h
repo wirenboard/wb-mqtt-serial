@@ -37,7 +37,7 @@ namespace Modbus // modbus protocol common utilities
         TModbusRegisterRange(std::chrono::microseconds averageResponseTime);
         ~TModbusRegisterRange();
 
-        bool Add(PRegister reg, std::chrono::milliseconds pollLimit) override;
+        bool Add(TPort& port, PRegister reg, std::chrono::milliseconds pollLimit) override;
 
         uint32_t GetStart() const;
 

@@ -7,11 +7,11 @@ TSerialClientDeviceAccessHandler::TSerialClientDeviceAccessHandler(PSerialClient
     : EventsReader(eventsReader)
 {}
 
-bool TSerialClientDeviceAccessHandler::PrepareToAccess(PSerialDevice dev)
+bool TSerialClientDeviceAccessHandler::PrepareToAccess(TPort& port, PSerialDevice dev)
 {
     if (LastAccessedDevice && dev != LastAccessedDevice) {
         try {
-            LastAccessedDevice->EndSession();
+            LastAccessedDevice->EndSession(port);
         } catch (const TSerialDeviceException& e) {
             auto& logger =
                 (LastAccessedDevice->GetConnectionState() == TDeviceConnectionState::DISCONNECTED) ? Debug : Warn;
@@ -25,10 +25,10 @@ bool TSerialClientDeviceAccessHandler::PrepareToAccess(PSerialDevice dev)
             if (EventsReader) {
                 bool devWasDisconnected = dev->GetConnectionState() != TDeviceConnectionState::CONNECTED;
                 if (devWasDisconnected || dev != LastAccessedDevice) {
-                    dev->Prepare();
+                    dev->Prepare(port);
                     if (devWasDisconnected) {
                         try {
-                            EventsReader->EnableEvents(dev, *(dev->Port()));
+                            EventsReader->EnableEvents(dev, port);
                         } catch (const TSerialDeviceException& e) {
                             dev->SetDisconnected();
                             throw;

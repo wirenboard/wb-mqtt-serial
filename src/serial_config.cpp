@@ -562,7 +562,13 @@ namespace
         if (device_data.isMember("enabled") && !device_data["enabled"].asBool())
             return;
 
-        port_config->AddDevice(deviceFactory.CreateDevice(device_data, default_id, port_config, templates));
+        TSerialDeviceFactory::TCreateDeviceParams params;
+        params.Defaults.Id = default_id;
+        params.Defaults.RequestDelay = port_config->RequestDelay;
+        params.Defaults.ResponseTimeout = port_config->ResponseTimeout;
+        params.Defaults.ReadRateLimit = port_config->ReadRateLimit;
+        params.IsModbusTcp = port_config->IsModbusTcp;
+        port_config->AddDevice(deviceFactory.CreateDevice(device_data, params, templates));
     }
 
     PPort OpenSerialPort(const Json::Value& port_data, PRPCConfig rpcConfig)
@@ -720,7 +726,7 @@ PHandlerConfig LoadConfig(const std::string& configFileName,
 
     auto maxUnchangedInterval = DefaultMaxUnchangedInterval;
     Get(Root, "max_unchanged_interval", maxUnchangedInterval);
-    if (maxUnchangedInterval.count() >= 0 && maxUnchangedInterval < MaxUnchangedIntervalLowLimit) {
+    if (maxUnchangedInterval.count() > 0 && maxUnchangedInterval < MaxUnchangedIntervalLowLimit) {
         LOG(Warn) << "\"max_unchanged_interval\" is set to " << MaxUnchangedIntervalLowLimit.count() << " instead of "
                   << maxUnchangedInterval.count();
         maxUnchangedInterval = MaxUnchangedIntervalLowLimit;
@@ -956,16 +962,17 @@ std::vector<std::string> TSerialDeviceFactory::GetProtocolNames() const
 }
 
 PSerialDeviceWithChannels TSerialDeviceFactory::CreateDevice(const Json::Value& deviceConfigJson,
-                                                             const std::string& defaultId,
-                                                             PPortConfig portConfig,
+                                                             const TCreateDeviceParams& params,
                                                              TTemplateMap& templates)
 {
     TDeviceConfigLoadParams loadParams;
+    loadParams.Defaults = params.Defaults;
     const auto* cfg = &deviceConfigJson;
     unique_ptr<Json::Value> mergedConfig;
     if (deviceConfigJson.isMember("device_type")) {
         auto deviceType = deviceConfigJson["device_type"].asString();
         auto deviceTemplate = templates.GetTemplate(deviceType);
+        loadParams.DeviceTemplateTitle = deviceTemplate->GetTitle();
         mergedConfig = std::make_unique<Json::Value>(
             MergeDeviceConfigWithTemplate(deviceConfigJson, deviceType, deviceTemplate->GetTemplate()));
         cfg = mergedConfig.get();
@@ -974,7 +981,7 @@ PSerialDeviceWithChannels TSerialDeviceFactory::CreateDevice(const Json::Value& 
     std::string protocolName = DefaultProtocol;
     Get(*cfg, "protocol", protocolName);
 
-    if (portConfig->IsModbusTcp) {
+    if (params.IsModbusTcp) {
         if (!GetProtocol(protocolName)->IsModbus()) {
             throw TSerialDeviceException("Protocol \"" + protocolName + "\" is not compatible with Modbus TCP");
         }
@@ -982,19 +989,15 @@ PSerialDeviceWithChannels TSerialDeviceFactory::CreateDevice(const Json::Value& 
     }
 
     TDeviceProtocolParams protocolParams = GetProtocolParams(protocolName);
-    loadParams.DefaultId = defaultId;
-    loadParams.DefaultRequestDelay = portConfig->RequestDelay;
-    loadParams.PortResponseTimeout = portConfig->ResponseTimeout;
     auto deviceConfig = LoadDeviceConfig(*cfg, protocolParams.protocol, loadParams);
     auto deviceWithChannels = std::make_shared<TSerialDeviceWithChannels>();
-    deviceWithChannels->Device =
-        protocolParams.factory->CreateDevice(*cfg, deviceConfig, portConfig->Port, protocolParams.protocol);
+    deviceWithChannels->Device = protocolParams.factory->CreateDevice(*cfg, deviceConfig, protocolParams.protocol);
     TLoadingContext context(*protocolParams.factory,
                             protocolParams.factory->GetRegisterAddressFactory().GetBaseRegisterAddress());
     context.translations = loadParams.Translations;
     auto regTypes = protocolParams.protocol->GetRegTypes();
     LoadSetupItems(*deviceWithChannels->Device, *cfg, *regTypes, context);
-    LoadChannels(*deviceWithChannels, *cfg, portConfig->ReadRateLimit, *regTypes, context);
+    LoadChannels(*deviceWithChannels, *cfg, params.Defaults.ReadRateLimit, *regTypes, context);
 
     return deviceWithChannels;
 }
@@ -1028,7 +1031,7 @@ PDeviceConfig LoadDeviceConfig(const Json::Value& dev, PProtocol protocol, const
 
     Get(dev, "device_type", res->DeviceType);
 
-    res->Id = Read(dev, "id", parameters.DefaultId);
+    res->Id = Read(dev, "id", parameters.Defaults.Id);
     Get(dev, "name", res->Name);
 
     if (dev.isMember("slave_id")) {
@@ -1041,11 +1044,11 @@ PDeviceConfig LoadDeviceConfig(const Json::Value& dev, PProtocol protocol, const
     LoadCommonDeviceParameters(*res, dev);
 
     if (res->RequestDelay.count() == 0) {
-        res->RequestDelay = parameters.DefaultRequestDelay;
+        res->RequestDelay = parameters.Defaults.RequestDelay;
     }
 
-    if (parameters.PortResponseTimeout > res->ResponseTimeout) {
-        res->ResponseTimeout = parameters.PortResponseTimeout;
+    if (parameters.Defaults.ResponseTimeout > res->ResponseTimeout) {
+        res->ResponseTimeout = parameters.Defaults.ResponseTimeout;
     }
     if (res->ResponseTimeout.count() == -1) {
         res->ResponseTimeout = DefaultResponseTimeout;

@@ -36,10 +36,7 @@ public:
           ModbusTraitsFactory(std::move(modbusTraitsFactory))
     {}
 
-    PSerialDevice CreateDevice(const Json::Value& data,
-                               PDeviceConfig deviceConfig,
-                               PPort port,
-                               PProtocol protocol) const override
+    PSerialDevice CreateDevice(const Json::Value& data, PDeviceConfig deviceConfig, PProtocol protocol) const override
     {
         TModbusDeviceConfig config;
         config.CommonConfig = deviceConfig;
@@ -47,10 +44,7 @@ public:
         bool forceFrameTimeout = false;
         WBMQTT::JSON::Get(data, "force_frame_timeout", forceFrameTimeout);
 
-        return std::make_shared<Dev>(ModbusTraitsFactory->GetModbusTraits(port, forceFrameTimeout),
-                                     config,
-                                     port,
-                                     protocol);
+        return std::make_shared<Dev>(ModbusTraitsFactory->GetModbusTraits(forceFrameTimeout), config, protocol);
     }
 };
 
@@ -65,19 +59,20 @@ class TModbusDevice: public TSerialDevice, public TUInt32SlaveId
 public:
     TModbusDevice(std::unique_ptr<Modbus::IModbusTraits> modbusTraits,
                   const TModbusDeviceConfig& config,
-                  PPort port,
                   PProtocol protocol);
 
     bool GetForceFrameTimeout();
     bool GetContinuousReadEnabled();
 
     PRegisterRange CreateRegisterRange() const override;
-    void ReadRegisterRange(PRegisterRange range) override;
-    void WriteSetupRegisters(const TDeviceSetupItems& setupItems, bool breakOnError = false) override;
+    void ReadRegisterRange(TPort& port, PRegisterRange range) override;
+    void WriteSetupRegisters(TPort& port, const TDeviceSetupItems& setupItems, bool breakOnError = false) override;
+
+    std::chrono::milliseconds GetFrameTimeout(TPort& port) const override;
 
     static void Register(TSerialDeviceFactory& factory);
 
 protected:
-    void PrepareImpl() override;
-    void WriteRegisterImpl(const TRegisterConfig& reg, const TRegisterValue& value) override;
+    void PrepareImpl(TPort& port) override;
+    void WriteRegisterImpl(TPort& port, const TRegisterConfig& reg, const TRegisterValue& value) override;
 };
