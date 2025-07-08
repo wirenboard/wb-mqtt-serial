@@ -264,7 +264,7 @@ public:
     void AddSetupItem(PDeviceSetupItemConfig item);
     const TDeviceSetupItems& GetSetupItems() const;
 
-    virtual void WriteSetupRegisters(const TDeviceSetupItems& setupItems);
+    virtual void WriteSetupRegisters(const TDeviceSetupItems& setupItems, bool breakOnError = false);
 
 protected:
     virtual void PrepareImpl();

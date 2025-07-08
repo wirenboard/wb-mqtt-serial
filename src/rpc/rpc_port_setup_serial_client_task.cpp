@@ -108,7 +108,8 @@ ISerialClientTask::TRunResult TRPCPortSetupSerialClientTask::Run(PPort port,
                                         cache,
                                         std::chrono::microseconds(0),
                                         std::chrono::milliseconds(1),
-                                        frameTimeout);
+                                        frameTimeout,
+                                        false);
         }
 
         if (Request->OnResult) {

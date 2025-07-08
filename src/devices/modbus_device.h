@@ -73,7 +73,7 @@ public:
 
     PRegisterRange CreateRegisterRange() const override;
     void ReadRegisterRange(PRegisterRange range) override;
-    void WriteSetupRegisters(const TDeviceSetupItems& setupItems) override;
+    void WriteSetupRegisters(const TDeviceSetupItems& setupItems, bool breakOnError = false) override;
 
     static void Register(TSerialDeviceFactory& factory);
 

@@ -103,7 +103,7 @@ void TModbusIODevice::ReadRegisterRange(PRegisterRange range)
     ResponseTime.AddValue(modbus_range->GetResponseTime());
 }
 
-void TModbusIODevice::WriteSetupRegisters(const TDeviceSetupItems& setupItems)
+void TModbusIODevice::WriteSetupRegisters(const TDeviceSetupItems& setupItems, bool breakOnError)
 {
     Modbus::WriteSetupRegisters(*ModbusTraits,
                                 *Port(),
@@ -113,5 +113,6 @@ void TModbusIODevice::WriteSetupRegisters(const TDeviceSetupItems& setupItems)
                                 DeviceConfig()->RequestDelay,
                                 DeviceConfig()->ResponseTimeout,
                                 DeviceConfig()->FrameTimeout,
+                                breakOnError,
                                 Shift);
 }

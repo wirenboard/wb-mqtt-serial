@@ -225,7 +225,7 @@ TDeviceConnectionState TSerialDevice::GetConnectionState() const
     return ConnectionState;
 }
 
-void TSerialDevice::WriteSetupRegisters(const TDeviceSetupItems& setupItems)
+void TSerialDevice::WriteSetupRegisters(const TDeviceSetupItems& setupItems, bool breakOnError)
 {
     for (const auto& item: setupItems) {
         WriteRegisterImpl(*item->RegisterConfig, item->RawValue);
