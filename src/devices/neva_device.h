@@ -6,7 +6,7 @@
 class TNevaDevice: public TIEC61107ModeCDevice
 {
 public:
-    TNevaDevice(PDeviceConfig device_config, PPort port, PProtocol protocol);
+    TNevaDevice(PDeviceConfig device_config, PProtocol protocol);
 
     static void Register(TSerialDeviceFactory& factory);
 

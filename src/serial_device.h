@@ -188,7 +188,7 @@ class TSerialDevice: public std::enable_shared_from_this<TSerialDevice>
 public:
     typedef std::function<void(PSerialDevice dev)> TDeviceCallback;
 
-    TSerialDevice(PDeviceConfig config, PPort port, PProtocol protocol);
+    TSerialDevice(PDeviceConfig config, PProtocol protocol);
     TSerialDevice(const TSerialDevice&) = delete;
     TSerialDevice& operator=(const TSerialDevice&) = delete;
     virtual ~TSerialDevice() = default;
@@ -204,25 +204,24 @@ public:
      *
      * @throws exceptions inherited from TSerialDeviceException on internal errors
      */
-    void Prepare(TDevicePrepareMode setupMode = TDevicePrepareMode::WITH_SETUP_IF_WAS_DISCONNECTED);
+    void Prepare(TPort& port, TDevicePrepareMode setupMode = TDevicePrepareMode::WITH_SETUP_IF_WAS_DISCONNECTED);
 
     // Ends communication session with the device. Called before communicating with another device
-    virtual void EndSession();
+    virtual void EndSession(TPort& port);
 
     // Write register value
-    void WriteRegister(PRegister reg, const TRegisterValue& value);
+    void WriteRegister(TPort& port, PRegister reg, const TRegisterValue& value);
 
-    void WriteRegister(PRegister reg, uint64_t value);
+    void WriteRegister(TPort& port, PRegister reg, uint64_t value);
 
     /**
      * Reads multiple registers.
      * Throws exceptions inherited from TSerialDeviceException.
      */
-    virtual void ReadRegisterRange(PRegisterRange range);
+    virtual void ReadRegisterRange(TPort& port, PRegisterRange range);
 
     virtual std::string ToString() const;
 
-    PPort Port() const;
     PDeviceConfig DeviceConfig() const;
     PProtocol Protocol() const;
 
@@ -264,14 +263,16 @@ public:
     void AddSetupItem(PDeviceSetupItemConfig item);
     const TDeviceSetupItems& GetSetupItems() const;
 
+    virtual std::chrono::milliseconds GetFrameTimeout(TPort& port) const;
+    virtual std::chrono::milliseconds GetResponseTimeout(TPort& port) const;
+
 protected:
-    virtual void PrepareImpl();
-    virtual TRegisterValue ReadRegisterImpl(const TRegisterConfig& reg);
-    virtual void WriteRegisterImpl(const TRegisterConfig& reg, const TRegisterValue& value);
-    virtual void WriteSetupRegisters();
+    virtual void PrepareImpl(TPort& port);
+    virtual TRegisterValue ReadRegisterImpl(TPort& port, const TRegisterConfig& reg);
+    virtual void WriteRegisterImpl(TPort& port, const TRegisterConfig& reg, const TRegisterValue& value);
+    virtual void WriteSetupRegisters(TPort& port);
 
 private:
-    PPort SerialPort;
     PDeviceConfig _DeviceConfig;
     PProtocol _Protocol;
     std::chrono::steady_clock::time_point LastSuccessfulCycle;

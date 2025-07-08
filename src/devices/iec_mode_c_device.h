@@ -6,12 +6,12 @@
 class TIecModeCDevice: public TIEC61107ModeCDevice
 {
 public:
-    TIecModeCDevice(PDeviceConfig device_config, PPort port, PProtocol protocol);
+    TIecModeCDevice(PDeviceConfig device_config, PProtocol protocol);
 
     static void Register(TSerialDeviceFactory& factory);
 
 protected:
-    void PrepareImpl() override;
+    void PrepareImpl(TPort& port) override;
 
 private:
     std::string GetParameterRequest(const TRegisterConfig& reg) const override;

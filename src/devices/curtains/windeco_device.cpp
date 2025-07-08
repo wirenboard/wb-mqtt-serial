@@ -63,8 +63,8 @@ void WinDeco::TDevice::Register(TSerialDeviceFactory& factory)
                              new TBasicDeviceFactory<WinDeco::TDevice>("#/definitions/simple_device_no_channels"));
 }
 
-WinDeco::TDevice::TDevice(PDeviceConfig config, PPort port, PProtocol protocol)
-    : TSerialDevice(config, port, protocol),
+WinDeco::TDevice::TDevice(PDeviceConfig config, PProtocol protocol)
+    : TSerialDevice(config, protocol),
       TUInt32SlaveId(config->SlaveId),
       ZoneId(1),
       CurtainId(SlaveId & 0xFF),
@@ -78,47 +78,47 @@ WinDeco::TDevice::TDevice(PDeviceConfig config, PPort port, PProtocol protocol)
     }
 }
 
-std::vector<uint8_t> WinDeco::TDevice::ExecCommand(const std::vector<uint8_t>& request)
+std::vector<uint8_t> WinDeco::TDevice::ExecCommand(TPort& port, const std::vector<uint8_t>& request)
 {
-    Port()->SleepSinceLastInteraction(DeviceConfig()->FrameTimeout);
-    Port()->WriteBytes(request);
+    port.SleepSinceLastInteraction(GetFrameTimeout(port));
+    port.WriteBytes(request);
     std::vector<uint8_t> respBytes(PACKET_SIZE);
     auto bytesRead =
-        Port()
-            ->ReadFrame(respBytes.data(), PACKET_SIZE, DeviceConfig()->ResponseTimeout, DeviceConfig()->FrameTimeout)
-            .Count;
+        port.ReadFrame(respBytes.data(), PACKET_SIZE, GetResponseTimeout(port), GetFrameTimeout(port)).Count;
     respBytes.resize(bytesRead);
     return respBytes;
 }
 
-void WinDeco::TDevice::WriteRegisterImpl(const TRegisterConfig& reg, const TRegisterValue& regValue)
+void WinDeco::TDevice::WriteRegisterImpl(TPort& port, const TRegisterConfig& reg, const TRegisterValue& regValue)
 {
     auto value = regValue.Get<uint64_t>();
     if (reg.Type == POSITION) {
         if (value == 0) {
-            CheckCommandResponse(ZoneId, CurtainId, CLOSE_COMMAND, ExecCommand(CloseCommand));
+            CheckCommandResponse(ZoneId, CurtainId, CLOSE_COMMAND, ExecCommand(port, CloseCommand));
         } else if (value == 100) {
-            CheckCommandResponse(ZoneId, CurtainId, OPEN_COMMAND, ExecCommand(OpenCommand));
+            CheckCommandResponse(ZoneId, CurtainId, OPEN_COMMAND, ExecCommand(port, OpenCommand));
         } else {
-            ParsePositionResponse(ZoneId, CurtainId, ExecCommand(MakeSetPositionRequest(ZoneId, CurtainId, value)));
+            ParsePositionResponse(ZoneId,
+                                  CurtainId,
+                                  ExecCommand(port, MakeSetPositionRequest(ZoneId, CurtainId, value)));
         }
         return;
     }
     if (reg.Type == COMMAND) {
         uint8_t addr = GetUint32RegisterAddress(reg.GetWriteAddress());
-        CheckCommandResponse(ZoneId, CurtainId, addr, ExecCommand(MakeRequest(ZoneId, CurtainId, addr)));
+        CheckCommandResponse(ZoneId, CurtainId, addr, ExecCommand(port, MakeRequest(ZoneId, CurtainId, addr)));
         return;
     }
     throw TSerialDevicePermanentRegisterException("Unsupported register type");
 }
 
-TRegisterValue WinDeco::TDevice::ReadRegisterImpl(const TRegisterConfig& reg)
+TRegisterValue WinDeco::TDevice::ReadRegisterImpl(TPort& port, const TRegisterConfig& reg)
 {
     switch (reg.Type) {
         case POSITION:
-            return TRegisterValue{ParsePositionResponse(ZoneId, CurtainId, ExecCommand(GetPositionCommand))};
+            return TRegisterValue{ParsePositionResponse(ZoneId, CurtainId, ExecCommand(port, GetPositionCommand))};
         case PARAM:
-            return TRegisterValue{ParseStateResponse(ZoneId, CurtainId, ExecCommand(GetStateCommand))};
+            return TRegisterValue{ParseStateResponse(ZoneId, CurtainId, ExecCommand(port, GetStateCommand))};
     }
     throw TSerialDevicePermanentRegisterException("Unsupported register type");
 }

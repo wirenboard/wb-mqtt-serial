@@ -40,8 +40,8 @@ void TIecModeCDevice::Register(TSerialDeviceFactory& factory)
                                  "#/definitions/channel_with_string_address"));
 }
 
-TIecModeCDevice::TIecModeCDevice(PDeviceConfig device_config, PPort port, PProtocol protocol)
-    : TIEC61107ModeCDevice(device_config, port, protocol, LOG_PREFIX, IEC::CalcXorCRC)
+TIecModeCDevice::TIecModeCDevice(PDeviceConfig device_config, PProtocol protocol)
+    : TIEC61107ModeCDevice(device_config, protocol, LOG_PREFIX, IEC::CalcXorCRC)
 {
     SetDesiredBaudRate(9600);
     SetDefaultBaudRate(300);
@@ -62,12 +62,12 @@ TRegisterValue TIecModeCDevice::GetRegisterValue(const TRegisterConfig& reg, con
     throw TSerialDevicePermanentRegisterException("unsupported register type: " + std::to_string(reg.Type));
 }
 
-void TIecModeCDevice::PrepareImpl()
+void TIecModeCDevice::PrepareImpl(TPort& port)
 {
     // Some energy meters require a period of silence before open session request
     // The timeout is not defined in standard and meter's documentation
     // Closest similar timeout is minimal time between session start request and meter's response
     // It is 200ms. So use it as timeout before session start
-    Port()->SleepSinceLastInteraction(std::chrono::milliseconds(200));
-    TIEC61107ModeCDevice::PrepareImpl();
+    port.SleepSinceLastInteraction(std::chrono::milliseconds(200));
+    TIEC61107ModeCDevice::PrepareImpl(port);
 }

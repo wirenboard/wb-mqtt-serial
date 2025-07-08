@@ -23,16 +23,19 @@ namespace
         bool ReadAtLeastOneRegister;
         const util::TSpentTimeMeter& SessionTime;
         TSerialClientDeviceAccessHandler& LastAccessedDevice;
+        TPort& Port;
 
     public:
-        TDeviceReader(const util::TSpentTimeMeter& sessionTime,
+        TDeviceReader(TPort& port,
+                      const util::TSpentTimeMeter& sessionTime,
                       milliseconds maxPollTime,
                       bool readAtLeastOneRegister,
                       TSerialClientDeviceAccessHandler& lastAccessedDevice)
             : MaxPollTime(maxPollTime),
               ReadAtLeastOneRegister(readAtLeastOneRegister),
               SessionTime(sessionTime),
-              LastAccessedDevice(lastAccessedDevice)
+              LastAccessedDevice(lastAccessedDevice),
+              Port(port)
         {}
 
         bool operator()(const PPollableDevice& device, TItemAccumulationPolicy policy, milliseconds pollLimit)
@@ -47,7 +50,7 @@ namespace
             }
 
             RegisterRange =
-                device->ReadRegisterRange(pollLimit, ReadAtLeastOneRegister, SessionTime, LastAccessedDevice);
+                device->ReadRegisterRange(Port, pollLimit, ReadAtLeastOneRegister, SessionTime, LastAccessedDevice);
             Device = device;
             return !RegisterRange->RegisterList().empty();
         }
@@ -186,7 +189,7 @@ TPollResult TSerialClientRegisterPoller::OpenPortCycle(TPort& port,
 
     TPollResult res;
 
-    TDeviceReader reader(spentTime, maxPollingTime, readAtLeastOneRegister, lastAccessedDevice);
+    TDeviceReader reader(port, spentTime, maxPollingTime, readAtLeastOneRegister, lastAccessedDevice);
 
     bool lowPriorityRateLimitIsExceeded = LowPriorityRateLimiter.IsOverLimit(spentTime.GetStartTime());
 

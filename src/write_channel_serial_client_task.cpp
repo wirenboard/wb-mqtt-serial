@@ -24,8 +24,8 @@ ISerialClientTask::TRunResult TWriteChannelSerialClientTask::Run(PPort port,
         return ISerialClientTask::TRunResult::OK;
     }
 
-    if (lastAccessedDevice.PrepareToAccess(Handler->Register()->Device())) {
-        Handler->Flush();
+    if (lastAccessedDevice.PrepareToAccess(*port, Handler->Register()->Device())) {
+        Handler->Flush(*port);
     } else {
         Handler->Register()->SetError(TRegister::TError::WriteError);
     }

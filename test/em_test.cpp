@@ -41,9 +41,8 @@ PDeviceConfig TEMDeviceTest::Mercury230Config() const
 void TEMDeviceTest::SetUp()
 {
     TSerialDeviceTest::SetUp();
-    MilurDev = std::make_shared<TMilurDevice>(MilurConfig(), SerialPort, DeviceFactory.GetProtocol("milur"));
-    Mercury230Dev =
-        std::make_shared<TMercury230Device>(Mercury230Config(), SerialPort, DeviceFactory.GetProtocol("mercury230"));
+    MilurDev = std::make_shared<TMilurDevice>(MilurConfig(), DeviceFactory.GetProtocol("milur"));
+    Mercury230Dev = std::make_shared<TMercury230Device>(Mercury230Config(), DeviceFactory.GetProtocol("mercury230"));
 
     MilurPhaseCVoltageReg = MilurDev->AddRegister(TRegisterConfig::Create(TMilurDevice::REG_PARAM, 102, U24));
     MilurPhaseCCurrentReg = MilurDev->AddRegister(TRegisterConfig::Create(TMilurDevice::REG_PARAM, 105, U24));
@@ -67,17 +66,17 @@ void TEMDeviceTest::SetUp()
 void TEMDeviceTest::VerifyMilurQuery()
 {
     EnqueueMilurPhaseCVoltageResponse();
-    ASSERT_EQ(TRegisterValue{0x03946f}, MilurDev->ReadRegisterImpl(*MilurPhaseCVoltageReg->GetConfig()));
+    ASSERT_EQ(TRegisterValue{0x03946f}, MilurDev->ReadRegisterImpl(*SerialPort, *MilurPhaseCVoltageReg->GetConfig()));
 
     EnqueueMilurPhaseCCurrentResponse();
-    ASSERT_EQ(TRegisterValue{0xffd8f0}, MilurDev->ReadRegisterImpl(*MilurPhaseCCurrentReg->GetConfig()));
+    ASSERT_EQ(TRegisterValue{0xffd8f0}, MilurDev->ReadRegisterImpl(*SerialPort, *MilurPhaseCCurrentReg->GetConfig()));
 
     EnqueueMilurTotalConsumptionResponse();
     // "milur BCD32" value 11144 packed as uint64_t
-    ASSERT_EQ(TRegisterValue{0x11144}, MilurDev->ReadRegisterImpl(*MilurTotalConsumptionReg->GetConfig()));
+    ASSERT_EQ(TRegisterValue{0x11144}, MilurDev->ReadRegisterImpl(*SerialPort, *MilurTotalConsumptionReg->GetConfig()));
 
     EnqueueMilurFrequencyResponse();
-    ASSERT_EQ(TRegisterValue{50080}, MilurDev->ReadRegisterImpl(*MilurFrequencyReg->GetConfig()));
+    ASSERT_EQ(TRegisterValue{50080}, MilurDev->ReadRegisterImpl(*SerialPort, *MilurFrequencyReg->GetConfig()));
 }
 
 void TEMDeviceTest::VerifyMercuryParamQuery()
@@ -88,22 +87,22 @@ void TEMDeviceTest::VerifyMercuryParamQuery()
     // C = command (0x08)
     // N = param number (0x11)
     // B = subparam spec (BWRI), 0x11 = voltage, phase 1
-    ASSERT_EQ(TRegisterValue{24128}, Mercury230Dev->ReadRegisterImpl(*Mercury230U1Reg->GetConfig()));
+    ASSERT_EQ(TRegisterValue{24128}, Mercury230Dev->ReadRegisterImpl(*SerialPort, *Mercury230U1Reg->GetConfig()));
 
     EnqueueMercury230I1Response();
     // subparam 0x21 = current (phase 1)
-    ASSERT_EQ(TRegisterValue{69}, Mercury230Dev->ReadRegisterImpl(*Mercury230I1Reg->GetConfig()));
+    ASSERT_EQ(TRegisterValue{69}, Mercury230Dev->ReadRegisterImpl(*SerialPort, *Mercury230I1Reg->GetConfig()));
 
     EnqueueMercury230U2Response();
     // subparam 0x12 = voltage (phase 2)
-    ASSERT_EQ(TRegisterValue{24043}, Mercury230Dev->ReadRegisterImpl(*Mercury230U2Reg->GetConfig()));
+    ASSERT_EQ(TRegisterValue{24043}, Mercury230Dev->ReadRegisterImpl(*SerialPort, *Mercury230U2Reg->GetConfig()));
 
     EnqueueMercury230PResponse();
     // Total power (P)
-    ASSERT_EQ(TRegisterValue{553095}, Mercury230Dev->ReadRegisterImpl(*Mercury230PReg->GetConfig()));
+    ASSERT_EQ(TRegisterValue{553095}, Mercury230Dev->ReadRegisterImpl(*SerialPort, *Mercury230PReg->GetConfig()));
 
     EnqueueMercury230TempResponse();
-    ASSERT_EQ(TRegisterValue{24}, Mercury230Dev->ReadRegisterImpl(*Mercury230TempReg->GetConfig()));
+    ASSERT_EQ(TRegisterValue{24}, Mercury230Dev->ReadRegisterImpl(*SerialPort, *Mercury230TempReg->GetConfig()));
 }
 
 TEST_F(TEMDeviceTest, Combined)

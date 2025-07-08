@@ -268,7 +268,6 @@ public:
     {
         return std::make_shared<TModbusDevice>(std::make_unique<Modbus::TModbusRTUTraits>(),
                                                config,
-                                               Port,
                                                DeviceFactory.GetProtocol("modbus"));
     }
 

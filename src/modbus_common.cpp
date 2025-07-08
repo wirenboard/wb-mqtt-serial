@@ -97,7 +97,7 @@ namespace Modbus // modbus protocol common utilities
             delete[] Bits;
     }
 
-    bool TModbusRegisterRange::Add(PRegister reg, std::chrono::milliseconds pollLimit)
+    bool TModbusRegisterRange::Add(TPort& port, PRegister reg, std::chrono::milliseconds pollLimit)
     {
         if (reg->GetAvailable() == TRegisterAvailability::UNAVAILABLE) {
             return true;
@@ -183,7 +183,7 @@ namespace Modbus // modbus protocol common utilities
         auto newPduSize = InferReadResponsePDUSize(reg->GetConfig()->Type, Count + extend);
         // Request 8 bytes: SlaveID, Operation, Addr, Count, CRC
         // Response 5 bytes except data: SlaveID, Operation, Size, CRC
-        auto sendTime = reg->Device()->Port()->GetSendTimeBytes(newPduSize + 8 + 5);
+        auto sendTime = port.GetSendTimeBytes(newPduSize + 8 + 5);
         auto duration = sendTime + AverageResponseTime + deviceConfig->RequestDelay;
         if (forceFrameTimeout) {
             duration += deviceConfig->FrameTimeout;
@@ -280,8 +280,8 @@ namespace Modbus // modbus protocol common utilities
                                           slaveId,
                                           pdu,
                                           Modbus::CalcResponsePDUSize(function, Count),
-                                          Device()->DeviceConfig()->ResponseTimeout,
-                                          Device()->DeviceConfig()->FrameTimeout);
+                                          Device()->GetResponseTimeout(port),
+                                          Device()->GetFrameTimeout(port));
             ResponseTime = res.ResponseTime;
             ParseReadResponse(res.Pdu, function, *this, cache);
         } catch (const Modbus::TModbusExceptionError& err) {
@@ -809,7 +809,7 @@ namespace Modbus // modbus protocol common utilities
                 }
                 auto reg = std::make_shared<TRegister>(item->Device, item->RegisterConfig);
                 reg->SetAvailable(TRegisterAvailability::AVAILABLE);
-                if (!range.Add(reg, std::chrono::milliseconds::max())) {
+                if (!range.Add(port, reg, std::chrono::milliseconds::max())) {
                     break;
                 }
                 ++it;
@@ -964,8 +964,8 @@ namespace Modbus // modbus protocol common utilities
                                   TRegisterValue(1),
                                   cache,
                                   device->DeviceConfig()->RequestDelay,
-                                  device->DeviceConfig()->ResponseTimeout,
-                                  device->DeviceConfig()->FrameTimeout);
+                                  device->GetResponseTimeout(port),
+                                  device->GetFrameTimeout(port));
             LOG(Info) << "Continuous read enabled [slave_id is " << device->DeviceConfig()->SlaveId + "]";
             if (device->DeviceConfig()->MaxRegHole < MAX_HOLE_CONTINUOUS_16_BIT_REGISTERS) {
                 device->DeviceConfig()->MaxRegHole = MAX_HOLE_CONTINUOUS_16_BIT_REGISTERS;

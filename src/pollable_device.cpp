@@ -30,7 +30,8 @@ TPollableDevice::TPollableDevice(PSerialDevice device,
     }
 }
 
-PRegisterRange TPollableDevice::ReadRegisterRange(std::chrono::milliseconds pollLimit,
+PRegisterRange TPollableDevice::ReadRegisterRange(TPort& port,
+                                                  std::chrono::milliseconds pollLimit,
                                                   bool readAtLeastOneRegister,
                                                   const util::TSpentTimeMeter& sessionTime,
                                                   TSerialClientDeviceAccessHandler& lastAccessedDevice)
@@ -42,7 +43,7 @@ PRegisterRange TPollableDevice::ReadRegisterRange(std::chrono::milliseconds poll
                                ? std::chrono::milliseconds::max()
                                : pollLimit;
         const auto& item = Registers.GetTop();
-        if (!registerRange->Add(item.Data, limit)) {
+        if (!registerRange->Add(port, item.Data, limit)) {
             break;
         }
         Registers.Pop();
@@ -50,8 +51,8 @@ PRegisterRange TPollableDevice::ReadRegisterRange(std::chrono::milliseconds poll
 
     if (!registerRange->RegisterList().empty()) {
         bool readOk = false;
-        if (lastAccessedDevice.PrepareToAccess(Device)) {
-            Device->ReadRegisterRange(registerRange);
+        if (lastAccessedDevice.PrepareToAccess(port, Device)) {
+            Device->ReadRegisterRange(port, registerRange);
             readOk = true;
         }
 

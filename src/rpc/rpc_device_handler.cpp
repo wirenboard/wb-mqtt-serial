@@ -68,10 +68,7 @@ TRPCDeviceHelper::TRPCDeviceHelper(const Json::Value& request,
             config->MaxReadRegisters = Modbus::MAX_READ_REGISTERS;
         }
         ProtocolParams = deviceFactory.GetProtocolParams(DeviceTemplate->GetProtocol());
-        Device = ProtocolParams.factory->CreateDevice(DeviceTemplate->GetTemplate(),
-                                                      config,
-                                                      SerialClient ? SerialClient->GetPort() : TaskExecutor->GetPort(),
-                                                      ProtocolParams.protocol);
+        Device = ProtocolParams.factory->CreateDevice(DeviceTemplate->GetTemplate(), config, ProtocolParams.protocol);
     } else {
         Device = params.Device;
         DeviceTemplate = templates->GetTemplate(Device->DeviceConfig()->DeviceType);

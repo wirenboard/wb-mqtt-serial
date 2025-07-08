@@ -122,8 +122,8 @@ namespace
                         snRegister->GetValue().GetType() == TRegisterValue::ValueType::Undefined)
                     {
                         auto registerRange = polledDevice->CreateRegisterRange();
-                        registerRange->Add(snRegister, std::chrono::milliseconds::max());
-                        polledDevice->ReadRegisterRange(registerRange);
+                        registerRange->Add(reader.GetPort(), snRegister, std::chrono::milliseconds::max());
+                        polledDevice->ReadRegisterRange(reader.GetPort(), registerRange);
                     }
                     if (snRegister->GetValue().GetType() == TRegisterValue::ValueType::Integer &&
                         snFromRegister == snRegister->GetValue().Get<uint64_t>())
@@ -240,7 +240,7 @@ ISerialClientTask::TRunResult TRPCPortScanSerialClientTask::Run(PPort port,
         if (!port->IsOpen()) {
             port->Open();
         }
-        lastAccessedDevice.PrepareToAccess(nullptr);
+        lastAccessedDevice.PrepareToAccess(*port, nullptr);
         TSerialPortSettingsGuard settingsGuard(port, Request->SerialPortSettings);
         ExecRPCPortScanRequest(*port, Request, polledDevices);
     } catch (const std::exception& error) {

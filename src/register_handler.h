@@ -22,7 +22,7 @@ public:
     /**
      * @brief Write pending register value. NeedToFlush must be checked before call.
      */
-    void Flush();
+    void Flush(TPort& port);
 
     void SetTextValue(const std::string& v);
 

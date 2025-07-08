@@ -14,16 +14,16 @@ namespace WinDeco
         std::vector<uint8_t> GetPositionCommand;
         std::vector<uint8_t> GetStateCommand;
 
-        std::vector<uint8_t> ExecCommand(const std::vector<uint8_t>& request);
+        std::vector<uint8_t> ExecCommand(TPort& port, const std::vector<uint8_t>& request);
 
     public:
-        TDevice(PDeviceConfig config, PPort port, PProtocol protocol);
+        TDevice(PDeviceConfig config, PProtocol protocol);
 
         static void Register(TSerialDeviceFactory& factory);
 
     protected:
-        TRegisterValue ReadRegisterImpl(const TRegisterConfig& reg) override;
-        void WriteRegisterImpl(const TRegisterConfig& reg, const TRegisterValue& regValue) override;
+        TRegisterValue ReadRegisterImpl(TPort& port, const TRegisterConfig& reg) override;
+        void WriteRegisterImpl(TPort& port, const TRegisterConfig& reg, const TRegisterValue& regValue) override;
     };
 
     std::vector<uint8_t> MakeRequest(uint8_t zoneId, uint8_t curtainId, uint8_t command);

@@ -29,7 +29,7 @@ namespace // utility
         TFakeRegisterRange()
         {}
 
-        bool Add(PRegister reg, std::chrono::milliseconds pollLimit) override
+        bool Add(TPort& port, PRegister reg, std::chrono::milliseconds pollLimit) override
         {
             if (HasOtherDeviceAndType(reg)) {
                 return false;
@@ -51,21 +51,18 @@ void TFakeSerialDevice::Register(TSerialDeviceFactory& factory)
                                                    "#/definitions/common_channel"));
 }
 
-TFakeSerialDevice::TFakeSerialDevice(PDeviceConfig config, PPort port, PProtocol protocol)
-    : TSerialDevice(config, port, protocol),
+TFakeSerialDevice::TFakeSerialDevice(PDeviceConfig config, PProtocol protocol)
+    : TSerialDevice(config, protocol),
       TUInt32SlaveId(config->SlaveId),
       Connected(true),
       SessionLogEnabled(false)
 {
-    FakePort = dynamic_pointer_cast<TFakeSerialPort>(port);
-    if (!FakePort) {
-        throw runtime_error("not fake serial port passed to fake serial device");
-    }
     Devices.push_back(this);
 }
 
-TRegisterValue TFakeSerialDevice::ReadRegisterImpl(const TRegisterConfig& reg)
+TRegisterValue TFakeSerialDevice::ReadRegisterImpl(TPort& port, const TRegisterConfig& reg)
 {
+    CheckFakePort();
     try {
         if (!FakePort->IsOpen()) {
             throw TSerialDeviceException("port not open");
@@ -114,8 +111,9 @@ TRegisterValue TFakeSerialDevice::ReadRegisterImpl(const TRegisterConfig& reg)
     }
 }
 
-void TFakeSerialDevice::WriteRegisterImpl(const TRegisterConfig& reg, const TRegisterValue& value)
+void TFakeSerialDevice::WriteRegisterImpl(TPort& port, const TRegisterConfig& reg, const TRegisterValue& value)
 {
+    CheckFakePort();
     try {
         if (!FakePort->IsOpen()) {
             throw TSerialDeviceException("port not open");
@@ -160,6 +158,7 @@ void TFakeSerialDevice::WriteRegisterImpl(const TRegisterConfig& reg, const TReg
 
 void TFakeSerialDevice::SetTransferResult(bool ok)
 {
+    CheckFakePort();
     auto initialConnectionState = GetConnectionState();
     if ((initialConnectionState != TDeviceConnectionState::CONNECTED) && ok) {
         FakePort->GetFixture().Emit() << "fake_serial_device '" << SlaveId << "': transfer OK";
@@ -181,6 +180,7 @@ void TFakeSerialDevice::SetTransferResult(bool ok)
 
 void TFakeSerialDevice::BlockReadFor(int addr, bool block)
 {
+    CheckFakePort();
     Blockings[addr].first = block;
     FakePort->GetFixture().Emit() << "fake_serial_device: " << (block ? "block" : "unblock") << " address '" << addr
                                   << "' for reading";
@@ -188,6 +188,7 @@ void TFakeSerialDevice::BlockReadFor(int addr, bool block)
 
 void TFakeSerialDevice::BlockWriteFor(int addr, bool block)
 {
+    CheckFakePort();
     Blockings[addr].second = block;
     FakePort->GetFixture().Emit() << "fake_serial_device: " << (block ? "block" : "unblock") << " address '" << addr
                                   << "' for writing";
@@ -233,17 +234,31 @@ void TFakeSerialDevice::SetSessionLogEnabled(bool enabled)
     SessionLogEnabled = enabled;
 }
 
-void TFakeSerialDevice::PrepareImpl()
+void TFakeSerialDevice::PrepareImpl(TPort& port)
 {
-    TSerialDevice::PrepareImpl();
+    CheckFakePort();
+    TSerialDevice::PrepareImpl(port);
     if (SessionLogEnabled) {
         FakePort->GetFixture().Emit() << "fake_serial_device '" << SlaveId << "': prepare";
     }
 }
 
-void TFakeSerialDevice::EndSession()
+void TFakeSerialDevice::EndSession(TPort& port)
 {
+    CheckFakePort();
     if (SessionLogEnabled) {
         FakePort->GetFixture().Emit() << "fake_serial_device '" << SlaveId << "': end session";
+    }
+}
+
+void TFakeSerialDevice::SetFakePort(PFakeSerialPort fakePort)
+{
+    FakePort = fakePort;
+}
+
+void TFakeSerialDevice::CheckFakePort() const
+{
+    if (!FakePort) {
+        throw runtime_error("not fake serial port passed to fake serial device");
     }
 }

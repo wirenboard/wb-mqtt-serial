@@ -59,7 +59,6 @@ void TModbusTest::SetUp()
 
     ModbusDev = std::make_shared<TModbusDevice>(std::move(modbusRtuTraits),
                                                 GetDeviceConfig(),
-                                                SerialPort,
                                                 DeviceFactory.GetProtocol("modbus"));
     ModbusCoil0 = ModbusDev->AddRegister(TRegisterConfig::Create(Modbus::REG_COIL, 0, U8));
     ModbusCoil1 = ModbusDev->AddRegister(TRegisterConfig::Create(Modbus::REG_COIL, 1, U8));
@@ -114,33 +113,33 @@ set<int> TModbusTest::VerifyQuery(PRegister reg)
     if (!reg) {
         {
             auto r = ModbusDev->CreateRegisterRange();
-            r->Add(ModbusCoil0, std::chrono::milliseconds::max());
-            r->Add(ModbusCoil1, std::chrono::milliseconds::max());
+            r->Add(*SerialPort, ModbusCoil0, std::chrono::milliseconds::max());
+            r->Add(*SerialPort, ModbusCoil1, std::chrono::milliseconds::max());
             ranges.push_back(r);
         }
         {
             auto r = ModbusDev->CreateRegisterRange();
-            r->Add(ModbusDiscrete, std::chrono::milliseconds::max());
+            r->Add(*SerialPort, ModbusDiscrete, std::chrono::milliseconds::max());
             ranges.push_back(r);
         }
         {
             auto r = ModbusDev->CreateRegisterRange();
-            r->Add(ModbusHolding, std::chrono::milliseconds::max());
+            r->Add(*SerialPort, ModbusHolding, std::chrono::milliseconds::max());
             ranges.push_back(r);
         }
         {
             auto r = ModbusDev->CreateRegisterRange();
-            r->Add(ModbusInput, std::chrono::milliseconds::max());
+            r->Add(*SerialPort, ModbusInput, std::chrono::milliseconds::max());
             ranges.push_back(r);
         }
         {
             auto r = ModbusDev->CreateRegisterRange();
-            r->Add(ModbusHoldingS64, std::chrono::milliseconds::max());
+            r->Add(*SerialPort, ModbusHoldingS64, std::chrono::milliseconds::max());
             ranges.push_back(r);
         }
     } else {
         auto r = ModbusDev->CreateRegisterRange();
-        r->Add(reg, std::chrono::milliseconds::max());
+        r->Add(*SerialPort, reg, std::chrono::milliseconds::max());
         ranges.push_back(r);
     }
     set<int> readAddresses;
@@ -148,7 +147,7 @@ set<int> TModbusTest::VerifyQuery(PRegister reg)
     map<int, TRegisterValue> registerValues;
 
     for (auto range: ranges) {
-        ModbusDev->ReadRegisterRange(range);
+        ModbusDev->ReadRegisterRange(*SerialPort, range);
         for (auto& reg: range->RegisterList()) {
             auto addr = GetUint32RegisterAddress(reg->GetConfig()->GetAddress());
             readAddresses.insert(addr);
@@ -194,10 +193,8 @@ set<int> TModbusTest::VerifyQuery(PRegister reg)
 TEST_F(TModbusTest, WriteOnlyRegisters)
 {
     auto traits = std::make_unique<Modbus::TModbusRTUTraits>();
-    auto device = std::make_shared<TModbusDevice>(std::move(traits),
-                                                  GetDeviceConfig(),
-                                                  SerialPort,
-                                                  DeviceFactory.GetProtocol("modbus"));
+    auto device =
+        std::make_shared<TModbusDevice>(std::move(traits), GetDeviceConfig(), DeviceFactory.GetProtocol("modbus"));
 
     TRegisterDesc coilDesc;
     coilDesc.WriteAddress = std::make_shared<TUint32RegisterAddress>(0);
@@ -206,7 +203,7 @@ TEST_F(TModbusTest, WriteOnlyRegisters)
     coilConfig->AccessType = TRegisterConfig::EAccessType::WRITE_ONLY;
 
     EnqueueCoilWriteResponse();
-    EXPECT_NO_THROW(ModbusDev->WriteRegister(device->AddRegister(coilConfig), 0x0001));
+    EXPECT_NO_THROW(ModbusDev->WriteRegister(*SerialPort, device->AddRegister(coilConfig), 0x0001));
 
     TRegisterDesc holdingDesc;
     holdingDesc.WriteAddress = std::make_shared<TUint32RegisterAddress>(70);
@@ -215,7 +212,7 @@ TEST_F(TModbusTest, WriteOnlyRegisters)
     holdingConfig->AccessType = TRegisterConfig::EAccessType::WRITE_ONLY;
 
     EnqueueHoldingWriteU16Response();
-    EXPECT_NO_THROW(ModbusDev->WriteRegister(device->AddRegister(holdingConfig), 0x0F41));
+    EXPECT_NO_THROW(ModbusDev->WriteRegister(*SerialPort, device->AddRegister(holdingConfig), 0x0F41));
 
     SerialPort->Close();
 }
@@ -225,8 +222,8 @@ TEST_F(TModbusTest, ReadHoldingRegiterWithWriteAddress)
     EnqueueHoldingReadU16ResponseWithWriteAddress();
 
     auto range = ModbusDev->CreateRegisterRange();
-    range->Add(ModbusHoldingU16WithAddressWrite, std::chrono::milliseconds::max());
-    ModbusDev->ReadRegisterRange(range);
+    range->Add(*SerialPort, ModbusHoldingU16WithAddressWrite, std::chrono::milliseconds::max());
+    ModbusDev->ReadRegisterRange(*SerialPort, range);
     auto registerList = range->RegisterList();
     EXPECT_EQ(registerList.size(), 1);
     auto reg = registerList.front();
@@ -241,7 +238,7 @@ TEST_F(TModbusTest, WriteHoldingRegiterWithWriteAddress)
     EXPECT_EQ(GetUint32RegisterAddress(ModbusHoldingU16WithAddressWrite->GetConfig()->GetAddress()), 110);
     EXPECT_EQ(GetUint32RegisterAddress(ModbusHoldingU16WithAddressWrite->GetConfig()->GetWriteAddress()), 115);
 
-    EXPECT_NO_THROW(ModbusDev->WriteRegister(ModbusHoldingU16WithAddressWrite, 0x119C));
+    EXPECT_NO_THROW(ModbusDev->WriteRegister(*SerialPort, ModbusHoldingU16WithAddressWrite, 0x119C));
 }
 
 TEST_F(TModbusTest, ReadHoldingRegiterWithOffsetWriteOptions)
@@ -249,8 +246,8 @@ TEST_F(TModbusTest, ReadHoldingRegiterWithOffsetWriteOptions)
     EnqueueHoldingReadU16ResponseWithOffsetWriteOptions();
 
     auto range = ModbusDev->CreateRegisterRange();
-    range->Add(ModbusHoldingU16WithWriteBitOffset, std::chrono::milliseconds::max());
-    ModbusDev->ReadRegisterRange(range);
+    range->Add(*SerialPort, ModbusHoldingU16WithWriteBitOffset, std::chrono::milliseconds::max());
+    ModbusDev->ReadRegisterRange(*SerialPort, range);
     auto registerList = range->RegisterList();
     EXPECT_EQ(registerList.size(), 1);
     auto reg = registerList.front();
@@ -269,8 +266,8 @@ TEST_F(TModbusTest, ReadString)
 
     for (int i = 0; i < 4; ++i) {
         auto range = ModbusDev->CreateRegisterRange();
-        range->Add(ModbusHoldingStringRead, std::chrono::milliseconds::max());
-        ModbusDev->ReadRegisterRange(range);
+        range->Add(*SerialPort, ModbusHoldingStringRead, std::chrono::milliseconds::max());
+        ModbusDev->ReadRegisterRange(*SerialPort, range);
         auto registerList = range->RegisterList();
         EXPECT_EQ(registerList.size(), 1);
         auto reg = registerList.front();
@@ -285,7 +282,7 @@ TEST_F(TModbusTest, ReadString)
 TEST_F(TModbusTest, WriteString)
 {
     EnqueueStringWriteResponse();
-    ModbusDev->WriteRegister(ModbusHoldingStringWrite, TRegisterValue("Lateralus"));
+    ModbusDev->WriteRegister(*SerialPort, ModbusHoldingStringWrite, TRegisterValue("Lateralus"));
     SerialPort->Close();
 }
 
@@ -299,8 +296,8 @@ TEST_F(TModbusTest, ReadString8)
 
     for (int i = 0; i < 4; ++i) {
         auto range = ModbusDev->CreateRegisterRange();
-        range->Add(ModbusHoldingString8Read, std::chrono::milliseconds::max());
-        ModbusDev->ReadRegisterRange(range);
+        range->Add(*SerialPort, ModbusHoldingString8Read, std::chrono::milliseconds::max());
+        ModbusDev->ReadRegisterRange(*SerialPort, range);
         auto registerList = range->RegisterList();
         EXPECT_EQ(registerList.size(), 1);
         auto reg = registerList.front();
@@ -315,7 +312,7 @@ TEST_F(TModbusTest, ReadString8)
 TEST_F(TModbusTest, WriteString8)
 {
     EnqueueString8WriteResponse();
-    ModbusDev->WriteRegister(ModbusHoldingString8Write, TRegisterValue("Lateralus"));
+    ModbusDev->WriteRegister(*SerialPort, ModbusHoldingString8Write, TRegisterValue("Lateralus"));
     SerialPort->Close();
 }
 
@@ -323,7 +320,7 @@ TEST_F(TModbusTest, WriteHoldingRegiterWithOffsetWriteOptions)
 {
     EnqueueHoldingWriteU16ResponseWithOffsetWriteOptions();
 
-    EXPECT_NO_THROW(ModbusDev->WriteRegister(ModbusHoldingU16WithWriteBitOffset, 0x119D));
+    EXPECT_NO_THROW(ModbusDev->WriteRegister(*SerialPort, ModbusHoldingU16WithWriteBitOffset, 0x119D));
 }
 
 TEST_F(TModbusTest, WriteOnlyHoldingRegiter)
@@ -365,10 +362,10 @@ TEST_F(TModbusTest, HoldingSingleMulti)
     EnqueueHoldingMultiWriteU16Response();
     EnqueueHoldingMultiWriteU64Response();
 
-    ModbusDev->WriteRegister(ModbusHoldingU16Single, 0x0f41);
-    ModbusDev->WriteRegister(ModbusHoldingU64Single, 0x01020304050607);
-    ModbusDev->WriteRegister(ModbusHoldingU16Multi, 0x0123);
-    ModbusDev->WriteRegister(ModbusHoldingU64Multi, 0x0123456789ABCDEF);
+    ModbusDev->WriteRegister(*SerialPort, ModbusHoldingU16Single, 0x0f41);
+    ModbusDev->WriteRegister(*SerialPort, ModbusHoldingU64Single, 0x01020304050607);
+    ModbusDev->WriteRegister(*SerialPort, ModbusHoldingU16Multi, 0x0123);
+    ModbusDev->WriteRegister(*SerialPort, ModbusHoldingU64Multi, 0x0123456789ABCDEF);
 
     SerialPort->Close();
 }
@@ -393,8 +390,8 @@ TEST_F(TModbusTest, CRCError)
     EnqueueInvalidCRCCoilReadResponse();
 
     auto r = ModbusDev->CreateRegisterRange();
-    r->Add(ModbusCoil0, std::chrono::milliseconds::max());
-    ModbusDev->ReadRegisterRange(r);
+    r->Add(*SerialPort, ModbusCoil0, std::chrono::milliseconds::max());
+    ModbusDev->ReadRegisterRange(*SerialPort, r);
 
     SerialPort->Close();
 }
@@ -404,8 +401,8 @@ TEST_F(TModbusTest, WrongResponseDataSize)
     EnqueueWrongDataSizeReadResponse();
 
     auto r = ModbusDev->CreateRegisterRange();
-    r->Add(ModbusCoil0, std::chrono::milliseconds::max());
-    ModbusDev->ReadRegisterRange(r);
+    r->Add(*SerialPort, ModbusCoil0, std::chrono::milliseconds::max());
+    ModbusDev->ReadRegisterRange(*SerialPort, r);
 
     SerialPort->Close();
 }
@@ -442,7 +439,7 @@ TEST_F(TModbusTest, WrongSlaveIdWrite)
     EnqueueWrongSlaveIdCoilWriteResponse();
 
     try {
-        ModbusDev->WriteRegister(ModbusCoil0, 0xFF);
+        ModbusDev->WriteRegister(*SerialPort, ModbusCoil0, 0xFF);
         EXPECT_FALSE(true);
     } catch (const TSerialDeviceTransientErrorException& e) {
         EXPECT_EQ(string("Serial protocol error: request and response slave id mismatch"), e.what());
@@ -456,7 +453,7 @@ TEST_F(TModbusTest, WrongFunctionCodeWrite)
     EnqueueWrongFunctionCodeCoilWriteResponse();
 
     try {
-        ModbusDev->WriteRegister(ModbusCoil0, 0xFF);
+        ModbusDev->WriteRegister(*SerialPort, ModbusCoil0, 0xFF);
         EXPECT_FALSE(true);
     } catch (const TSerialDeviceTransientErrorException& e) {
         EXPECT_EQ(string("Serial protocol error: request and response function code mismatch"), e.what());
@@ -470,7 +467,7 @@ TEST_F(TModbusTest, WrongFunctionCodeWithExceptionWrite)
     EnqueueWrongFunctionCodeCoilWriteResponse(0x2);
 
     try {
-        ModbusDev->WriteRegister(ModbusCoil0, 0xFF);
+        ModbusDev->WriteRegister(*SerialPort, ModbusCoil0, 0xFF);
         EXPECT_FALSE(true);
     } catch (const TSerialDeviceTransientErrorException& e) {
         EXPECT_EQ(string("Serial protocol error: request and response function code mismatch"), e.what());
@@ -486,8 +483,8 @@ TEST_F(TModbusTest, MinReadRegisters)
     ModbusDev->DeviceConfig()->MinReadRegisters = 2;
 
     auto range = ModbusDev->CreateRegisterRange();
-    range->Add(ModbusHoldingU16WithAddressWrite, std::chrono::milliseconds::max());
-    ModbusDev->ReadRegisterRange(range);
+    range->Add(*SerialPort, ModbusHoldingU16WithAddressWrite, std::chrono::milliseconds::max());
+    ModbusDev->ReadRegisterRange(*SerialPort, range);
     auto registerList = range->RegisterList();
     EXPECT_EQ(registerList.size(), 1);
     auto reg = registerList.front();
@@ -504,18 +501,16 @@ TEST_F(TModbusTest, SkipNoiseAtPacketEnd)
     auto modbusRtuTraits = std::make_unique<Modbus::TModbusRTUTraits>(true);
     auto deviceConfig = GetDeviceConfig();
     deviceConfig.CommonConfig->FrameTimeout = 0ms;
-    auto dev = std::make_shared<TModbusDevice>(std::move(modbusRtuTraits),
-                                               deviceConfig,
-                                               SerialPort,
-                                               DeviceFactory.GetProtocol("modbus"));
+    auto dev =
+        std::make_shared<TModbusDevice>(std::move(modbusRtuTraits), deviceConfig, DeviceFactory.GetProtocol("modbus"));
 
     auto range = dev->CreateRegisterRange();
     auto reg = dev->AddRegister(TRegisterConfig::Create(Modbus::REG_HOLDING, 0x272E, U16));
-    range->Add(reg, std::chrono::milliseconds::max());
+    range->Add(*SerialPort, reg, std::chrono::milliseconds::max());
     // Read with noise
-    EXPECT_NO_THROW(dev->ReadRegisterRange(range));
+    EXPECT_NO_THROW(dev->ReadRegisterRange(*SerialPort, range));
     // Read without noise
-    EXPECT_NO_THROW(dev->ReadRegisterRange(range));
+    EXPECT_NO_THROW(dev->ReadRegisterRange(*SerialPort, range));
 }
 
 class TModbusIntegrationTest: public TSerialDeviceIntegrationTest, public TModbusExpectations
