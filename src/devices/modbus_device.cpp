@@ -97,16 +97,17 @@ void TModbusDevice::ReadRegisterRange(TPort& port, PRegisterRange range)
     ResponseTime.AddValue(modbus_range->GetResponseTime());
 }
 
-void TModbusDevice::WriteSetupRegisters(TPort& port)
+void TModbusDevice::WriteSetupRegisters(TPort& port, const TDeviceSetupItems& setupItems, bool breakOnError)
 {
     Modbus::WriteSetupRegisters(*ModbusTraits,
                                 port,
                                 SlaveId,
-                                GetSetupItems(),
+                                setupItems,
                                 ModbusCache,
                                 DeviceConfig()->RequestDelay,
                                 GetResponseTimeout(port),
-                                GetFrameTimeout(port));
+                                GetFrameTimeout(port),
+                                breakOnError);
 }
 
 std::chrono::milliseconds TModbusDevice::GetFrameTimeout(TPort& port) const

@@ -144,10 +144,10 @@ public:
     std::string ParameterId;
     TRegisterValue RawValue;
     std::string HumanReadableValue;
-    PSerialDevice Device;
     PRegisterConfig RegisterConfig;
+    PSerialDevice Device;
 
-    TDeviceSetupItem(PDeviceSetupItemConfig config, PSerialDevice device, PRegisterConfig registerConfig);
+    TDeviceSetupItem(PDeviceSetupItemConfig config, PSerialDevice device);
     std::string ToString();
 };
 
@@ -263,6 +263,8 @@ public:
     void AddSetupItem(PDeviceSetupItemConfig item);
     const TDeviceSetupItems& GetSetupItems() const;
 
+    virtual void WriteSetupRegisters(TPort& port, const TDeviceSetupItems& setupItems, bool breakOnError = false);
+
     virtual std::chrono::milliseconds GetFrameTimeout(TPort& port) const;
     virtual std::chrono::milliseconds GetResponseTimeout(TPort& port) const;
 
@@ -270,7 +272,6 @@ protected:
     virtual void PrepareImpl(TPort& port);
     virtual TRegisterValue ReadRegisterImpl(TPort& port, const TRegisterConfig& reg);
     virtual void WriteRegisterImpl(TPort& port, const TRegisterConfig& reg, const TRegisterValue& value);
-    virtual void WriteSetupRegisters(TPort& port);
 
 private:
     PDeviceConfig _DeviceConfig;

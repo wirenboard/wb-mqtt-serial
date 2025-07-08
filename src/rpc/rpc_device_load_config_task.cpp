@@ -73,76 +73,6 @@ namespace
         throw TRPCException(error, TRPCResultCode::RPC_WRONG_PARAM_VALUE);
     }
 
-    void ReadParameters(TPort& port, PSerialDevice device, TRPCRegisterList& registerList, Json::Value& parameters)
-    {
-        if (registerList.size() == 0) {
-            return;
-        }
-        TRegisterComparePredicate compare;
-        std::sort(registerList.begin(),
-                  registerList.end(),
-                  [compare](std::pair<std::string, PRegister>& a, std::pair<std::string, PRegister>& b) {
-                      return compare(b.second, a.second);
-                  });
-
-        for (int i = 0; i <= MAX_RETRIES; i++) {
-            try {
-                device->Prepare(port, TDevicePrepareMode::WITHOUT_SETUP);
-                break;
-            } catch (const TSerialDeviceException& e) {
-                if (i == MAX_RETRIES) {
-                    LOG(Warn) << port.GetDescription() << " " << device->Protocol()->GetName() << ":"
-                              << device->DeviceConfig()->SlaveId << " unable to prepare session: " << e.what();
-                    throw TRPCException(e.what(), TRPCResultCode::RPC_WRONG_PARAM_VALUE);
-                }
-            }
-        }
-
-        size_t index = 0;
-        bool success = true;
-        while (index < registerList.size() && success) {
-            auto range = device->CreateRegisterRange();
-            auto offset = index;
-            while (index < registerList.size() &&
-                   range->Add(port, registerList[index].second, std::chrono::milliseconds::max()))
-            {
-                ++index;
-            }
-            success = true;
-            for (int i = 0; i <= MAX_RETRIES; ++i) {
-                device->ReadRegisterRange(port, range);
-                while (offset < index) {
-                    if (registerList[offset++].second->GetErrorState().count()) {
-                        success = false;
-                        break;
-                    }
-                }
-                if (success) {
-                    break;
-                }
-            }
-        }
-
-        try {
-            device->EndSession(port);
-        } catch (const TSerialDeviceException& e) {
-            LOG(Warn) << port.GetDescription() << " " << device->Protocol()->GetName() << ":"
-                      << device->DeviceConfig()->SlaveId << " unable to end session: " << e.what();
-        }
-
-        if (!success) {
-            std::string error = "unable to read parameters register range";
-            LOG(Warn) << port.GetDescription() << " " << device->Protocol()->GetName() << ":"
-                      << device->DeviceConfig()->SlaveId << " " << error;
-            throw TRPCException(error, TRPCResultCode::RPC_WRONG_PARAM_VALUE);
-        }
-
-        for (size_t i = 0; i < registerList.size(); ++i) {
-            auto& reg = registerList[i];
-            parameters[reg.first] = RawValueToJSON(*reg.second->GetConfig(), reg.second->GetValue());
-        }
-    }
-
     void ExecRPCRequest(PPort port, PRPCDeviceLoadConfigRequest rpcRequest)
     {
         if (!rpcRequest->OnResult) {
@@ -177,14 +107,14 @@ namespace
         }
 
         std::list<std::string> paramsList;
-        TRPCRegisterList registerList = CreateRegisterList(
+        auto registerList = CreateRegisterList(
             rpcRequest->ProtocolParams,
             rpcRequest->Device,
             rpcRequest->Group.empty() ? templateParams
                                       : GetTemplateParamsGroup(templateParams, rpcRequest->Group, paramsList),
             parameters,
             fwVersion);
-        ReadParameters(*port, rpcRequest->Device, registerList, parameters);
+        ReadRegisterList(*port, rpcRequest->Device, registerList, parameters, MAX_RETRIES);
 
         Json::Value result;
         if (!fwVersion.empty()) {
@@ -212,24 +142,11 @@ TRPCDeviceLoadConfigRequest::TRPCDeviceLoadConfigRequest(const TDeviceProtocolPa
                                                          PDeviceTemplate deviceTemplate,
                                                          bool deviceFromConfig,
                                                          TRPCDeviceParametersCache& parametersCache)
-    : ProtocolParams(protocolParams),
-      Device(device),
-      DeviceTemplate(deviceTemplate),
-      DeviceFromConfig(deviceFromConfig),
+    : TRPCDeviceRequest(protocolParams, device, deviceTemplate, deviceFromConfig),
       ParametersCache(parametersCache)
 {
     IsWBDevice =
         !DeviceTemplate->GetHardware().empty() || DeviceTemplate->GetTemplate()["enable_wb_continuous_read"].asBool();
-
-    Json::Value responseTimeout = DeviceTemplate->GetTemplate()["response_timeout_ms"];
-    if (responseTimeout.isInt()) {
-        ResponseTimeout = std::chrono::milliseconds(responseTimeout.asInt());
-    }
-
-    Json::Value frameTimeout = DeviceTemplate->GetTemplate()["frame_timeout_ms"];
-    if (frameTimeout.isInt()) {
-        FrameTimeout = std::chrono::milliseconds(frameTimeout.asInt());
-    }
 }
 
 PRPCDeviceLoadConfigRequest ParseRPCDeviceLoadConfigRequest(const Json::Value& request,
@@ -246,13 +163,8 @@ PRPCDeviceLoadConfigRequest ParseRPCDeviceLoadConfigRequest(const Json::Value& r
                                                              deviceTemplate,
                                                              deviceFromConfig,
                                                              parametersCache);
-    res->SerialPortSettings = ParseRPCSerialPortSettings(request);
+    res->ParseSettings(request, onResult, onError);
     res->Group = request["group"].asString();
-    WBMQTT::JSON::Get(request, "response_timeout", res->ResponseTimeout);
-    WBMQTT::JSON::Get(request, "frame_timeout", res->FrameTimeout);
-    WBMQTT::JSON::Get(request, "total_timeout", res->TotalTimeout);
-    res->OnResult = onResult;
-    res->OnError = onError;
     return res;
 }
 
@@ -273,7 +185,6 @@ ISerialClientTask::TRunResult TRPCDeviceLoadConfigSerialClientTask::Run(
         }
         return ISerialClientTask::TRunResult::OK;
     }
-
     try {
         if (!port->IsOpen()) {
             port->Open();
@@ -288,7 +199,6 @@ ISerialClientTask::TRunResult TRPCDeviceLoadConfigSerialClientTask::Run(
             Request->OnError(WBMQTT::E_RPC_SERVER_ERROR, std::string("Port IO error: ") + error.what());
         }
     }
-
     return ISerialClientTask::TRunResult::OK;
 }
 
@@ -329,45 +239,6 @@ Json::Value GetTemplateParamsGroup(const Json::Value& templateParams,
         }
     }
     return result;
-}
-
-TRPCRegisterList CreateRegisterList(const TDeviceProtocolParams& protocolParams,
-                                    const PSerialDevice& device,
-                                    const Json::Value& templateParams,
-                                    const Json::Value& parameters,
-                                    const std::string& fwVersion)
-{
-    TRPCRegisterList registerList;
-    for (auto it = templateParams.begin(); it != templateParams.end(); ++it) {
-        const Json::Value& data = *it;
-        std::string id = templateParams.isObject() ? it.key().asString() : data["id"].asString();
-        bool duplicate = false;
-        for (const auto& item: registerList) {
-            if (item.first == id) {
-                duplicate = true;
-                break;
-            }
-        }
-        if (duplicate || data["address"].isNull() || data["readonly"].asBool() || !parameters[id].isNull()) {
-            continue;
-        }
-        if (!fwVersion.empty()) {
-            std::string fw = data["fw"].asString();
-            if (!fw.empty() && util::CompareVersionStrings(fw, fwVersion) > 0) {
-                continue;
-            }
-        }
-        auto config = LoadRegisterConfig(data,
-                                         *protocolParams.protocol->GetRegTypes(),
-                                         std::string(),
-                                         *protocolParams.factory,
-                                         protocolParams.factory->GetRegisterAddressFactory().GetBaseRegisterAddress(),
-                                         0);
-        auto reg = std::make_shared<TRegister>(device, config.RegisterConfig);
-        reg->SetAvailable(TRegisterAvailability::AVAILABLE);
-        registerList.push_back(std::make_pair(id, reg));
-    }
-    return registerList;
 }
 
 void CheckParametersConditions(const Json::Value& templateParams, Json::Value& parameters)

@@ -2,8 +2,6 @@
 #include "rpc_device_handler.h"
 #include "rpc_port_driver_list.h"
 
-const std::chrono::seconds DefaultRPCTotalTimeout(10);
-
 class TRPCPortHandler
 {
 public:

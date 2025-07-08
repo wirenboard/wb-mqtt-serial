@@ -126,6 +126,7 @@ namespace Modbus // modbus protocol common utilities
                              std::chrono::microseconds requestDelay,
                              std::chrono::milliseconds responseTimeout,
                              std::chrono::milliseconds frameTimeout,
+                             bool breakOnError,
                              int shift = 0);
 
     bool EnableWbContinuousRead(PSerialDevice device,
