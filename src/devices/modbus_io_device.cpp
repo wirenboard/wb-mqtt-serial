@@ -107,8 +107,8 @@ void TModbusIODevice::WriteSetupRegisters(TPort& port, const TDeviceSetupItems& 
                                 setupItems,
                                 ModbusCache,
                                 DeviceConfig()->RequestDelay,
-                                DeviceConfig()->ResponseTimeout,
-                                DeviceConfig()->FrameTimeout,
+                                GetResponseTimeout(port),
+                                GetFrameTimeout(port),
                                 breakOnError,
                                 Shift);
 }
