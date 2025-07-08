@@ -60,10 +60,7 @@ namespace Somfy
         std::vector<uint8_t> MakeDataForSetupCommand(uint8_t header, const std::vector<uint8_t>& readCache) const;
 
     public:
-        TDevice(PDeviceConfig config,
-                TNodeType nodeType,
-                TApplicationMode applicationMode,
-                PProtocol protocol);
+        TDevice(PDeviceConfig config, TNodeType nodeType, TApplicationMode applicationMode, PProtocol protocol);
 
         static void Register(TSerialDeviceFactory& factory);
 
