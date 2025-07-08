@@ -720,7 +720,7 @@ PHandlerConfig LoadConfig(const std::string& configFileName,
 
     auto maxUnchangedInterval = DefaultMaxUnchangedInterval;
     Get(Root, "max_unchanged_interval", maxUnchangedInterval);
-    if (maxUnchangedInterval.count() >= 0 && maxUnchangedInterval < MaxUnchangedIntervalLowLimit) {
+    if (maxUnchangedInterval.count() > 0 && maxUnchangedInterval < MaxUnchangedIntervalLowLimit) {
         LOG(Warn) << "\"max_unchanged_interval\" is set to " << MaxUnchangedIntervalLowLimit.count() << " instead of "
                   << maxUnchangedInterval.count();
         maxUnchangedInterval = MaxUnchangedIntervalLowLimit;

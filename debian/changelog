@@ -1,9 +1,15 @@
+wb-mqtt-serial (2.177.2) stable; urgency=medium
+
+  * Allow to set max_unchanged_interval to 0 for publishing every read value
+
+ -- Petr Krasnoshchekov <petr.krasnoshchekov@wirenboard.com>  Mon, 07 Jul 2025 22:09:13 +0500
+
 wb-mqtt-serial (2.177.1) stable; urgency=medium
 
   * Breezart Lux template: Added by the translation of Title for English. Made more understandable the name of the template in Russian, corrected in the documentation.
 
- -- Alexander Degtyarev <a.degtyarev@wirenboard.com> Mon, 07 Jul 2025 12:20:21 +0400
- 
+ -- Alexander Degtyarev <a.degtyarev@wirenboard.com>  Mon, 07 Jul 2025 12:20:21 +0400
+
 wb-mqtt-serial (2.177.0) stable; urgency=medium
 
   * Refactor device/LoadConfig RPC
