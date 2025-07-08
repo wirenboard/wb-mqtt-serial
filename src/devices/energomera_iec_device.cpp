@@ -245,7 +245,7 @@ void TEnergomeraIecWithFastReadDevice::ReadRegisterRange(PRegisterRange abstract
         ProcessResponse(*range, presp);
     } catch (const TSerialDeviceException& e) {
         for (auto& r: range->RegisterList()) {
-            r->SetError(TRegister::TError::ReadError);
+            r->SetError(TRegister::TError::ReadError, e.what());
         }
         auto& logger = (GetConnectionState() == TDeviceConnectionState::DISCONNECTED) ? Debug : Warn;
         LOG(logger) << "TEnergomeraIecWithFastReadDevice::ReadRegisterRange(): " << e.what() << " [slave_id is "

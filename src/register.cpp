@@ -160,15 +160,17 @@ void TRegister::SetValue(const TRegisterValue& value, bool clearReadError)
     }
     Value = value;
     if (GetConfig()->UnsupportedValue && (*GetConfig()->UnsupportedValue == value)) {
-        SetError(TRegister::TError::ReadError);
+        std::string error = "unsupported value received";
+        SetError(TRegister::TError::ReadError, error);
         SetAvailable(TRegisterAvailability::UNAVAILABLE);
-        LOG(Warn) << ToString() << " is now marked as unavailable: unsupported value received";
+        LOG(Warn) << ToString() << " is now marked as unavailable: " << error;
         return;
     }
     SetAvailable(TRegisterAvailability::AVAILABLE);
     if (GetConfig()->ErrorValue && GetConfig()->ErrorValue.value() == value) {
-        LOG(Debug) << ToString() << " contains error value";
-        SetError(TError::ReadError);
+        std::string error = "contains error value";
+        LOG(Debug) << ToString() << " " << error;
+        SetError(TRegister::TError::ReadError, error);
     } else {
         if (clearReadError) {
             ClearError(TError::ReadError);
@@ -176,9 +178,10 @@ void TRegister::SetValue(const TRegisterValue& value, bool clearReadError)
     }
 }
 
-void TRegister::SetError(TRegister::TError error)
+void TRegister::SetError(TRegister::TError error, const std::string& description)
 {
     ErrorState.set(error);
+    ErrorDescription = description;
 }
 
 void TRegister::ClearError(TRegister::TError error)
@@ -189,6 +192,11 @@ void TRegister::ClearError(TRegister::TError error)
 const TRegister::TErrorState& TRegister::GetErrorState() const
 {
     return ErrorState;
+}
+
+const std::string& TRegister::GetErrorDescription() const
+{
+    return ErrorDescription;
 }
 
 void TRegister::SetLastPollTime(std::chrono::steady_clock::time_point pollTime)

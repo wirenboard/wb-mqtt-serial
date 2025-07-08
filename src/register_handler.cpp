@@ -22,7 +22,7 @@ void TRegisterHandler::HandleWriteErrorNoRetry(const TRegisterValue& tempValue, 
         Dirty = (tempValue != ValueToSet);
         WriteFail = false;
     }
-    Reg->SetError(TRegister::TError::WriteError);
+    Reg->SetError(TRegister::TError::WriteError, msg);
 }
 
 void TRegisterHandler::HandleWriteErrorRetryWrite(const TRegisterValue& tempValue, const char* msg)
@@ -41,7 +41,7 @@ void TRegisterHandler::HandleWriteErrorRetryWrite(const TRegisterValue& tempValu
             WriteFail = false;
         }
     }
-    Reg->SetError(TRegister::TError::WriteError);
+    Reg->SetError(TRegister::TError::WriteError, msg);
 }
 
 void TRegisterHandler::Flush()

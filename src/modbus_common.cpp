@@ -743,7 +743,7 @@ namespace Modbus // modbus protocol common utilities
     void ProcessRangeException(TModbusRegisterRange& range, const char* msg)
     {
         for (auto& reg: range.RegisterList()) {
-            reg->SetError(TRegister::TError::ReadError);
+            reg->SetError(TRegister::TError::ReadError, msg);
         }
 
         auto& logger = (range.Device()->GetConnectionState() == TDeviceConnectionState::DISCONNECTED) ? Debug : Warn;

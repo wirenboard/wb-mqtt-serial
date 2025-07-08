@@ -173,19 +173,19 @@ void TSerialDevice::ReadRegisterRange(PRegisterRange range)
                 reg->SetValue(value);
             }
         } catch (const TSerialDeviceInternalErrorException& e) {
-            reg->SetError(TRegister::TError::ReadError);
+            reg->SetError(TRegister::TError::ReadError, e.what());
             LOG(Warn) << "TSerialDevice::ReadRegister(): " << e.what() << " [slave_id is "
                       << reg->Device()->ToString() + "]";
             SetTransferResult(true);
         } catch (const TSerialDevicePermanentRegisterException& e) {
             reg->SetAvailable(TRegisterAvailability::UNAVAILABLE);
-            reg->SetError(TRegister::TError::ReadError);
+            reg->SetError(TRegister::TError::ReadError, e.what());
             LOG(Warn) << "TSerialDevice::ReadRegister(): " << e.what() << " [slave_id is "
                       << reg->Device()->ToString() + "] Register " << reg->ToString()
                       << " is now marked as unsupported";
             SetTransferResult(true);
         } catch (const TSerialDeviceException& e) {
-            reg->SetError(TRegister::TError::ReadError);
+            reg->SetError(TRegister::TError::ReadError, e.what());
             auto& logger = (ConnectionState == TDeviceConnectionState::DISCONNECTED) ? Debug : Warn;
             LOG(logger) << "TSerialDevice::ReadRegister(): " << e.what() << " [slave_id is "
                         << reg->Device()->ToString() + "]";

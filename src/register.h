@@ -367,9 +367,10 @@ struct TRegister
     TRegisterValue GetValue() const;
     void SetValue(const TRegisterValue& value, bool clearReadError = true);
 
-    void SetError(TError error);
+    void SetError(TError error, const std::string& description = std::string());
     void ClearError(TError error);
     const TErrorState& GetErrorState() const;
+    const std::string& GetErrorDescription() const;
 
     void SetLastPollTime(std::chrono::steady_clock::time_point pollTime);
 
@@ -385,6 +386,7 @@ private:
     TRegisterValue Value;
     std::string ChannelName;
     TErrorState ErrorState;
+    std::string ErrorDescription;
     TReadPeriodMissChecker ReadPeriodMissChecker;
     bool ExcludedFromPolling = false;
     PRegisterConfig Config;
