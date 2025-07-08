@@ -153,7 +153,15 @@ TRPCRegisterList CreateRegisterList(const TDeviceProtocolParams& protocolParams,
                                     const Json::Value& knownItems = Json::Value(),
                                     const std::string& fwVersion = std::string());
 
-// TODO: add description
+/**
+ * @brief Reads TRPCRegisterList registers and puts valuet to JSON object.
+ *
+ * @param port - serial port refrence
+ * @param device - serial device object pointer
+ * @param registerList - named PRegister map
+ * @param result - result JSON object reference
+ * @param maxRetries - number of request retries in case of error
+ */
 void ReadRegisterList(TPort& port,
                       PSerialDevice device,
                       TRPCRegisterList& registerList,
