@@ -124,15 +124,21 @@ TEST_F(TMercury230Test, ReadEnergy)
 
     // Here we make sure that consecutive requests querying the same array
     // don't cause redundant requests during the single poll cycle.
-    ASSERT_EQ(TRegisterValue{3196200}, Mercury230Dev->ReadRegisterImpl(*SerialPort, *Mercury230TotalConsumptionReg->GetConfig()));
-    ASSERT_EQ(TRegisterValue{300444}, Mercury230Dev->ReadRegisterImpl(*SerialPort, *Mercury230TotalReactiveEnergyReg->GetConfig()));
-    ASSERT_EQ(TRegisterValue{3196200}, Mercury230Dev->ReadRegisterImpl(*SerialPort, *Mercury230TotalConsumptionReg->GetConfig()));
+    ASSERT_EQ(TRegisterValue{3196200},
+              Mercury230Dev->ReadRegisterImpl(*SerialPort, *Mercury230TotalConsumptionReg->GetConfig()));
+    ASSERT_EQ(TRegisterValue{300444},
+              Mercury230Dev->ReadRegisterImpl(*SerialPort, *Mercury230TotalReactiveEnergyReg->GetConfig()));
+    ASSERT_EQ(TRegisterValue{3196200},
+              Mercury230Dev->ReadRegisterImpl(*SerialPort, *Mercury230TotalConsumptionReg->GetConfig()));
     Mercury230Dev->InvalidateReadCache();
 
     EnqueueMercury230EnergyResponse2();
-    ASSERT_EQ(TRegisterValue{3196201}, Mercury230Dev->ReadRegisterImpl(*SerialPort, *Mercury230TotalConsumptionReg->GetConfig()));
-    ASSERT_EQ(TRegisterValue{300445}, Mercury230Dev->ReadRegisterImpl(*SerialPort, *Mercury230TotalReactiveEnergyReg->GetConfig()));
-    ASSERT_EQ(TRegisterValue{3196201}, Mercury230Dev->ReadRegisterImpl(*SerialPort, *Mercury230TotalConsumptionReg->GetConfig()));
+    ASSERT_EQ(TRegisterValue{3196201},
+              Mercury230Dev->ReadRegisterImpl(*SerialPort, *Mercury230TotalConsumptionReg->GetConfig()));
+    ASSERT_EQ(TRegisterValue{300445},
+              Mercury230Dev->ReadRegisterImpl(*SerialPort, *Mercury230TotalReactiveEnergyReg->GetConfig()));
+    ASSERT_EQ(TRegisterValue{3196201},
+              Mercury230Dev->ReadRegisterImpl(*SerialPort, *Mercury230TotalConsumptionReg->GetConfig()));
     Mercury230Dev->InvalidateReadCache();
     SerialPort->Close();
 }
