@@ -54,7 +54,7 @@ TRPCRegisterList TRPCDeviceLoadRequest::GetChannelsRegisterList()
         }
     }
     if (!Channels.empty()) {
-        throw TRPCException("channel \"" + Channels.front() + "\" is write only or not found in \"" +
+        throw TRPCException("Channel \"" + Channels.front() + "\" is write only or not found in \"" +
                                 DeviceTemplate->Type + "\" device template",
                             TRPCResultCode::RPC_WRONG_PARAM_VALUE);
     }
@@ -80,7 +80,7 @@ TRPCRegisterList TRPCDeviceLoadRequest::GetParametersRegisterList()
         }
     }
     if (!Channels.empty()) {
-        throw TRPCException("parameter \"" + Parameters.front() + "\" is write only or not found in \"" +
+        throw TRPCException("Parameter \"" + Parameters.front() + "\" is write only or not found in \"" +
                                 DeviceTemplate->Type + "\" device template",
                             TRPCResultCode::RPC_WRONG_PARAM_VALUE);
     }

@@ -380,11 +380,6 @@ namespace Modbus // modbus protocol common utilities
         }
     }
 
-    inline EFunction GetFunction(const TRegisterConfig& reg, OperationType op)
-    {
-        return GetFunctionImpl(reg.Type, op, reg.TypeName, IsPacking(reg));
-    }
-
     // returns number of requests needed to write register
     size_t InferWriteRequestsCount(const TRegisterConfig& reg)
     {
@@ -689,9 +684,15 @@ namespace Modbus // modbus protocol common utilities
         LOG(Debug) << port.GetDescription() << " modbus:" << std::to_string(slaveId) << " write "
                    << GetModbusDataWidthIn16BitWords(reg) << " " << reg.TypeName << "(s) @ " << reg.GetWriteAddress();
 
+        EFunction fn;
+        try {
+            fn = GetFunctionImpl(reg.Type, OperationType::OP_WRITE, reg.TypeName, IsPacking(reg));
+        } catch (const TSerialDeviceException& e) {
+            throw TSerialDeviceException("failed to write register <" + reg.ToString() + ">: " + e.what());
+        }
+
         std::vector<uint8_t> data;
         auto addr = GetUint32RegisterAddress(reg.GetWriteAddress()) + shift;
-        auto fn = GetFunction(reg, OperationType::OP_WRITE);
         if (IsPacking(reg)) {
             size_t regCount = ComposeRawMultipleWriteRequestData(data, reg, value, cache, tmpCache);
             WriteTransaction(traits,
@@ -945,7 +946,7 @@ namespace Modbus // modbus protocol common utilities
                     LOG(Info) << item->ToString();
                 } catch (const TSerialDevicePermanentRegisterException& e) {
                     std::string error =
-                        "Unable to write register <" + item->RegisterConfig->ToString() + ">: " + e.what();
+                        "Failed to write register <" + item->RegisterConfig->ToString() + ">: " + e.what();
                     LOG(Warn) << error;
                     if (breakOnError) {
                         throw TSerialDeviceException(error);

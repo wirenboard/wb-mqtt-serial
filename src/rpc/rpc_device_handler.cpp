@@ -302,38 +302,41 @@ void ReadRegisterList(PSerialDevice device, TRPCRegisterList& registerList, Json
                   return compare(b.second, a.second);
               });
 
+    std::string error;
     for (int i = 0; i <= maxRetries; i++) {
         try {
             device->Prepare(TDevicePrepareMode::WITHOUT_SETUP);
             break;
         } catch (const TSerialDeviceException& e) {
             if (i == maxRetries) {
-                LOG(Warn) << device->Port()->GetDescription() << " " << device->Protocol()->GetName() << ":"
-                          << device->DeviceConfig()->SlaveId << " unable to prepare session: " << e.what();
-                throw TRPCException(e.what(), TRPCResultCode::RPC_WRONG_PARAM_VALUE);
+                error = std::string("Failed to prepare session: ") + e.what();
+                LOG(Warn) << device->ToString() << ": " << error;
+                throw TRPCException(error, TRPCResultCode::RPC_WRONG_PARAM_VALUE);
             }
         }
     }
 
     size_t index = 0;
-    bool success = true;
-    while (index < registerList.size() && success) {
+    while (index < registerList.size() && error.empty()) {
         auto range = device->CreateRegisterRange();
         auto offset = index;
         while (index < registerList.size() && range->Add(registerList[index].second, std::chrono::milliseconds::max()))
         {
             ++index;
         }
-        success = true;
+        error.clear();
         for (int i = 0; i <= maxRetries; ++i) {
             device->ReadRegisterRange(range);
             while (offset < index) {
-                if (registerList[offset++].second->GetErrorState().count()) {
-                    success = false;
+                auto reg = registerList[offset++].second;
+                if (reg->GetErrorState().count()) {
+                    error = "Failed to read " + std::to_string(range->RegisterList().size()) +
+                            " registers starting from <" + reg->GetConfig()->ToString() +
+                            ">: " + reg->GetErrorDescription();
                     break;
                 }
             }
-            if (success) {
+            if (error.empty()) {
                 break;
             }
         }
@@ -342,14 +345,11 @@ void ReadRegisterList(PSerialDevice device, TRPCRegisterList& registerList, Json
     try {
         device->EndSession();
     } catch (const TSerialDeviceException& e) {
-        LOG(Warn) << device->Port()->GetDescription() << " " << device->Protocol()->GetName() << ":"
-                  << device->DeviceConfig()->SlaveId << " unable to end session: " << e.what();
+        LOG(Warn) << device->ToString() << " unable to end session: " << e.what();
     }
 
-    if (!success) {
-        std::string error = "unable to read parameters register range";
-        LOG(Warn) << device->Port()->GetDescription() << " " << device->Protocol()->GetName() << ":"
-                  << device->DeviceConfig()->SlaveId << " " << error;
+    if (!error.empty()) {
+        LOG(Warn) << device->ToString() << ": " << error;
         throw TRPCException(error, TRPCResultCode::RPC_WRONG_PARAM_VALUE);
     }
 

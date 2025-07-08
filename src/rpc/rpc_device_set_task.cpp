@@ -4,6 +4,8 @@
 #include "serial_port.h"
 #include "wb_registers.h"
 
+#define LOG(logger) ::logger.Log() << "[RPC] "
+
 namespace
 {
     void ExecRPCRequest(PPort port, PRPCDeviceSetRequest rpcRequest)
@@ -15,11 +17,34 @@ namespace
         TDeviceSetupItems setupItems;
         rpcRequest->GetChannelsSetupItems(setupItems);
         rpcRequest->GetParametersSetupItems(setupItems);
+        if (setupItems.empty()) {
+            rpcRequest->OnResult(Json::Value());
+        }
 
-        if (!setupItems.empty()) {
+        std::string error;
+        try {
             rpcRequest->Device->Prepare(TDevicePrepareMode::WITHOUT_SETUP);
-            rpcRequest->Device->WriteSetupRegisters(setupItems);
+        } catch (const TSerialDeviceException& e) {
+            error = std::string("Failed to prepare session: ") + e.what();
+            LOG(Warn) << rpcRequest->Device->ToString() << ": " << error;
+            throw TRPCException(error, TRPCResultCode::RPC_WRONG_PARAM_VALUE);
+        }
+
+        try {
+            rpcRequest->Device->WriteSetupRegisters(setupItems, true);
+        } catch (const TSerialDeviceException& e) {
+            error = e.what();
+        }
+
+        try {
             rpcRequest->Device->EndSession();
+        } catch (const TSerialDeviceException& e) {
+            LOG(Warn) << rpcRequest->Device->ToString() << " unable to end session: " << e.what();
+        }
+
+        if (!error.empty()) {
+            LOG(Warn) << rpcRequest->Device->ToString() << ": " << error;
+            throw TRPCException(error, TRPCResultCode::RPC_WRONG_PARAM_VALUE);
         }
 
         rpcRequest->OnResult(Json::Value());
@@ -54,7 +79,7 @@ void TRPCDeviceSetRequest::GetChannelsSetupItems(TDeviceSetupItems& setupItems)
         }
     }
     if (!Channels.empty()) {
-        throw TRPCException("channel \"" + Channels.begin()->first + "\" is read only or not found in \"" +
+        throw TRPCException("Channel \"" + Channels.begin()->first + "\" is read only or not found in \"" +
                                 DeviceTemplate->Type + "\" device template",
                             TRPCResultCode::RPC_WRONG_PARAM_VALUE);
     }
@@ -75,7 +100,7 @@ void TRPCDeviceSetRequest::GetParametersSetupItems(TDeviceSetupItems& setupItems
         }
     }
     if (!Parameters.empty()) {
-        throw TRPCException("parameter \"" + Parameters.begin()->first + "\" is read only or not found in \"" +
+        throw TRPCException("Parameter \"" + Parameters.begin()->first + "\" is read only or not found in \"" +
                                 DeviceTemplate->Type + "\" device template",
                             TRPCResultCode::RPC_WRONG_PARAM_VALUE);
     }
