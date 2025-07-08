@@ -1,7 +1,7 @@
 #include "em_device.h"
 
-TEMDevice::TEMDevice(PDeviceConfig config, PPort port, PProtocol protocol)
-    : TSerialDevice(config, port, protocol),
+TEMDevice::TEMDevice(PDeviceConfig config, PProtocol protocol)
+    : TSerialDevice(config, protocol),
       TUInt32SlaveId(config->SlaveId, true)
 {
     if (HasBroadcastSlaveId) {
@@ -9,7 +9,7 @@ TEMDevice::TEMDevice(PDeviceConfig config, PPort port, PProtocol protocol)
     }
 }
 
-void TEMDevice::WriteCommand(uint8_t cmd, uint8_t* payload, int len)
+void TEMDevice::WriteCommand(TPort& port, uint8_t cmd, uint8_t* payload, int len)
 {
     uint8_t buf[MAX_LEN], *p = buf;
     if (len + 3 + SlaveIdWidth > MAX_LEN)
@@ -26,16 +26,17 @@ void TEMDevice::WriteCommand(uint8_t cmd, uint8_t* payload, int len)
     uint16_t crc = CRC16::CalculateCRC16(buf, p - buf);
     *p++ = crc >> 8;
     *p++ = crc & 0xff;
-    Port()->WriteBytes(buf, p - buf);
+    port.WriteBytes(buf, p - buf);
 }
 
-bool TEMDevice::ReadResponse(int expectedByte1, uint8_t* payload, int len, TPort::TFrameCompletePred frame_complete)
+bool TEMDevice::ReadResponse(TPort& port,
+                             int expectedByte1,
+                             uint8_t* payload,
+                             int len,
+                             TPort::TFrameCompletePred frame_complete)
 {
     uint8_t buf[MAX_LEN], *p = buf;
-    int nread =
-        Port()
-            ->ReadFrame(buf, MAX_LEN, DeviceConfig()->ResponseTimeout, DeviceConfig()->FrameTimeout, frame_complete)
-            .Count;
+    int nread = port.ReadFrame(buf, MAX_LEN, GetResponseTimeout(port), GetFrameTimeout(port), frame_complete).Count;
     if (nread < 3 + SlaveIdWidth)
         throw TSerialDeviceTransientErrorException("frame too short");
 
@@ -72,7 +73,8 @@ bool TEMDevice::ReadResponse(int expectedByte1, uint8_t* payload, int len, TPort
     return true;
 }
 
-void TEMDevice::Talk(uint8_t cmd,
+void TEMDevice::Talk(TPort& port,
+                     uint8_t cmd,
                      uint8_t* payload,
                      int payload_len,
                      int expected_byte1,
@@ -80,27 +82,27 @@ void TEMDevice::Talk(uint8_t cmd,
                      int resp_payload_len,
                      TPort::TFrameCompletePred frame_complete)
 {
-    EnsureSlaveConnected();
-    WriteCommand(cmd, payload, payload_len);
+    EnsureSlaveConnected(port);
+    WriteCommand(port, cmd, payload, payload_len);
     try {
-        while (!ReadResponse(expected_byte1, resp_payload, resp_payload_len, frame_complete)) {
-            EnsureSlaveConnected(true);
-            WriteCommand(cmd, payload, payload_len);
+        while (!ReadResponse(port, expected_byte1, resp_payload, resp_payload_len, frame_complete)) {
+            EnsureSlaveConnected(port, true);
+            WriteCommand(port, cmd, payload, payload_len);
         }
     } catch (const TSerialDeviceTransientErrorException& e) {
-        Port()->SkipNoise();
+        port.SkipNoise();
         throw;
     }
 }
 
-void TEMDevice::EnsureSlaveConnected(bool force)
+void TEMDevice::EnsureSlaveConnected(TPort& port, bool force)
 {
     if (!force && ConnectedSlaves.find(SlaveId) != ConnectedSlaves.end())
         return;
 
     ConnectedSlaves.erase(SlaveId);
-    Port()->SkipNoise();
-    if (!ConnectionSetup())
+    port.SkipNoise();
+    if (!ConnectionSetup(port))
         throw TSerialDeviceTransientErrorException("failed to establish meter connection");
 
     ConnectedSlaves.insert(SlaveId);

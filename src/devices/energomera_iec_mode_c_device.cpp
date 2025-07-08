@@ -62,10 +62,9 @@ namespace
 
         PSerialDevice CreateDevice(const Json::Value& data,
                                    PDeviceConfig deviceConfig,
-                                   PPort port,
                                    PProtocol protocol) const override
         {
-            return std::make_shared<TEnergomeraIecModeCDevice>(deviceConfig, port, protocol);
+            return std::make_shared<TEnergomeraIecModeCDevice>(deviceConfig, protocol);
         }
     };
 }
@@ -76,8 +75,8 @@ void TEnergomeraIecModeCDevice::Register(TSerialDeviceFactory& factory)
                              new TEnergomeraIecModeCDeviceFactory());
 }
 
-TEnergomeraIecModeCDevice::TEnergomeraIecModeCDevice(PDeviceConfig device_config, PPort port, PProtocol protocol)
-    : TIEC61107ModeCDevice(device_config, port, protocol, LOG_PREFIX, IEC::Calc7BitCrc)
+TEnergomeraIecModeCDevice::TEnergomeraIecModeCDevice(PDeviceConfig device_config, PProtocol protocol)
+    : TIEC61107ModeCDevice(device_config, protocol, LOG_PREFIX, IEC::Calc7BitCrc)
 {
     if (DeviceConfig()->Password.empty()) {
         DeviceConfig()->Password = std::vector<uint8_t>{0x00, 0x00, 0x00, 0x00};

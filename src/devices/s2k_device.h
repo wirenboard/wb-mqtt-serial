@@ -19,14 +19,14 @@ public:
         REG_RELAY_DELAY,
     };
 
-    TS2KDevice(PDeviceConfig config, PPort port, PProtocol protocol);
+    TS2KDevice(PDeviceConfig config, PProtocol protocol);
 
     static void Register(TSerialDeviceFactory& factory);
 
-    TRegisterValue ReadRegisterImpl(const TRegisterConfig& reg) override;
+    TRegisterValue ReadRegisterImpl(TPort& port, const TRegisterConfig& reg) override;
 
 protected:
-    void WriteRegisterImpl(const TRegisterConfig& reg, const TRegisterValue& value) override;
+    void WriteRegisterImpl(TPort& port, const TRegisterConfig& reg, const TRegisterValue& value) override;
 
 private:
     uint8_t CrcS2K(const uint8_t* array, int size);

@@ -281,8 +281,8 @@ PSerialDevice TSerialClientRegisterAndEventsReader::OpenPortCycle(TPort& port,
     }
 
     if (handler.TaskType == TClientTaskType::EVENTS) {
-        if (EventsReader->HasDevicesWithEnabledEvents()) {
-            lastAccessedDevice.PrepareToAccess(nullptr);
+        if (EventsReader && EventsReader->HasDevicesWithEnabledEvents()) {
+            lastAccessedDevice.PrepareToAccess(port, nullptr);
             EventsReader->ReadEvents(port, MAX_POLL_TIME, regCallback, NowFn);
             TimeBalancer.UpdateSelectionTime(ceil<milliseconds>(SpentTime.GetSpentTime()), TPriority::High);
             TimeBalancer.AddEntry(TClientTaskType::EVENTS,

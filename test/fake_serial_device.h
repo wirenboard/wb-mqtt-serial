@@ -16,7 +16,7 @@ public:
         REG_FAKE = 123
     };
 
-    TFakeSerialDevice(PDeviceConfig config, PPort port, PProtocol protocol);
+    TFakeSerialDevice(PDeviceConfig config, PProtocol protocol);
     void SetTransferResult(bool ok) override;
 
     void BlockReadFor(int addr, bool block);
@@ -34,12 +34,14 @@ public:
     static void Register(TSerialDeviceFactory& factory);
 
     void SetSessionLogEnabled(bool enabled);
-    void EndSession() override;
+    void EndSession(TPort& port) override;
+
+    void SetFakePort(PFakeSerialPort fakePort);
 
 protected:
-    TRegisterValue ReadRegisterImpl(const TRegisterConfig& reg) override;
-    void WriteRegisterImpl(const TRegisterConfig& reg, const TRegisterValue& value) override;
-    void PrepareImpl() override;
+    TRegisterValue ReadRegisterImpl(TPort& port, const TRegisterConfig& reg) override;
+    void WriteRegisterImpl(TPort& port, const TRegisterConfig& reg, const TRegisterValue& value) override;
+    void PrepareImpl(TPort& port) override;
 
 private:
     PFakeSerialPort FakePort;
@@ -48,6 +50,8 @@ private:
     bool SessionLogEnabled;
 
     static std::list<TFakeSerialDevice*> Devices;
+
+    void CheckFakePort() const;
 };
 
 typedef std::shared_ptr<TFakeSerialDevice> PFakeSerialDevice;

@@ -42,15 +42,12 @@ void TMercury200Device::Register(TSerialDeviceFactory& factory)
                                  "#/definitions/common_channel"));
 }
 
-TMercury200Device::TMercury200Device(PDeviceConfig config, PPort port, PProtocol protocol)
-    : TSerialDevice(config, port, protocol),
+TMercury200Device::TMercury200Device(PDeviceConfig config, PProtocol protocol)
+    : TSerialDevice(config, protocol),
       TUInt32SlaveId(config->SlaveId)
-{
-    config->FrameTimeout =
-        std::max(config->FrameTimeout, std::chrono::ceil<std::chrono::milliseconds>(port->GetSendTimeBytes(6)));
-}
+{}
 
-std::vector<uint8_t> TMercury200Device::ExecCommand(uint8_t cmd)
+std::vector<uint8_t> TMercury200Device::ExecCommand(TPort& port, uint8_t cmd)
 {
     auto it = CmdResultCache.find(cmd);
     if (it != CmdResultCache.end()) {
@@ -58,7 +55,7 @@ std::vector<uint8_t> TMercury200Device::ExecCommand(uint8_t cmd)
     }
 
     uint8_t buf[100] = {0x00};
-    auto readn = RequestResponse(SlaveId, cmd, buf);
+    auto readn = RequestResponse(port, SlaveId, cmd, buf);
     if (readn < 4) { // fixme 4
         throw TSerialDeviceTransientErrorException("mercury200: read frame too short for command response");
     }
@@ -74,10 +71,10 @@ std::vector<uint8_t> TMercury200Device::ExecCommand(uint8_t cmd)
     return CmdResultCache.insert({cmd, result}).first->second;
 }
 
-TRegisterValue TMercury200Device::ReadRegisterImpl(const TRegisterConfig& reg)
+TRegisterValue TMercury200Device::ReadRegisterImpl(TPort& port, const TRegisterConfig& reg)
 {
     uint8_t cmd = (GetUint32RegisterAddress(reg.GetAddress()) & 0xFF);
-    auto result = ExecCommand(cmd);
+    auto result = ExecCommand(port, cmd);
     auto size = RegisterFormatByteWidth(reg.Format);
     if (result.size() < reg.GetDataOffset() + size)
         throw TSerialDeviceException("mercury200: register address is out of range");
@@ -99,16 +96,14 @@ bool TMercury200Device::IsCrcValid(uint8_t* buf, int sz) const
     return actual_crc != sent_crc;
 }
 
-int TMercury200Device::RequestResponse(uint32_t slave, uint8_t cmd, uint8_t* response) const
+int TMercury200Device::RequestResponse(TPort& port, uint32_t slave, uint8_t cmd, uint8_t* response) const
 {
     using namespace std::chrono;
 
     uint8_t request[REQUEST_LEN];
     FillCommand(request, slave, cmd);
-    Port()->WriteBytes(request, REQUEST_LEN);
-    return Port()
-        ->ReadFrame(response, RESPONSE_BUF_LEN, DeviceConfig()->ResponseTimeout, DeviceConfig()->FrameTimeout)
-        .Count;
+    port.WriteBytes(request, REQUEST_LEN);
+    return port.ReadFrame(response, RESPONSE_BUF_LEN, GetResponseTimeout(port), GetFrameTimeout(port)).Count;
 }
 
 void TMercury200Device::FillCommand(uint8_t* buf, uint32_t id, uint8_t cmd) const
@@ -131,4 +126,10 @@ bool TMercury200Device::IsBadHeader(uint32_t slave_expected, uint8_t cmd_expecte
         return true;
     }
     return response[4] != cmd_expected;
+}
+
+std::chrono::milliseconds TMercury200Device::GetFrameTimeout(TPort& port) const
+{
+    return std::max(DeviceConfig()->FrameTimeout,
+                    std::chrono::ceil<std::chrono::milliseconds>(port.GetSendTimeBytes(6)));
 }

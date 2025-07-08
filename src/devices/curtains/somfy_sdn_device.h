@@ -49,12 +49,13 @@ namespace Somfy
         // Key - read MSG (request header)
         std::unordered_map<uint8_t, std::vector<uint8_t>> WriteCache;
 
-        TRegisterValue GetCachedResponse(uint8_t requestHeader,
+        TRegisterValue GetCachedResponse(TPort& port,
+                                         uint8_t requestHeader,
                                          uint8_t responseHeader,
                                          size_t bitOffset,
                                          size_t bitWidth);
 
-        std::vector<uint8_t> ExecCommand(const std::vector<uint8_t>& request);
+        std::vector<uint8_t> ExecCommand(TPort& port, const std::vector<uint8_t>& request);
 
         std::vector<uint8_t> MakeDataForSetupCommand(uint8_t header, const std::vector<uint8_t>& readCache) const;
 
@@ -62,14 +63,13 @@ namespace Somfy
         TDevice(PDeviceConfig config,
                 TNodeType nodeType,
                 TApplicationMode applicationMode,
-                PPort port,
                 PProtocol protocol);
 
         static void Register(TSerialDeviceFactory& factory);
 
     protected:
-        TRegisterValue ReadRegisterImpl(const TRegisterConfig& reg) override;
-        void WriteRegisterImpl(const TRegisterConfig& reg, const TRegisterValue& regValue) override;
+        TRegisterValue ReadRegisterImpl(TPort& port, const TRegisterConfig& reg) override;
+        void WriteRegisterImpl(TPort& port, const TRegisterConfig& reg, const TRegisterValue& regValue) override;
         void InvalidateReadCache() override;
     };
 

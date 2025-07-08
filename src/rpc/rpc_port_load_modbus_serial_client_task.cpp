@@ -130,7 +130,7 @@ ISerialClientTask::TRunResult TRPCPortLoadModbusSerialClientTask::Run(
         if (!port->IsOpen()) {
             port->Open();
         }
-        lastAccessedDevice.PrepareToAccess(nullptr);
+        lastAccessedDevice.PrepareToAccess(*port, nullptr);
         TSerialPortSettingsGuard settingsGuard(port, Request->SerialPortSettings);
         ExecRPCPortLoadModbusRequest(*port, Request);
     } catch (const std::exception& error) {

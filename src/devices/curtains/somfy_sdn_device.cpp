@@ -155,13 +155,12 @@ namespace
 
         PSerialDevice CreateDevice(const Json::Value& data,
                                    PDeviceConfig deviceConfig,
-                                   PPort port,
                                    PProtocol protocol) const override
         {
             auto nodeType = static_cast<Somfy::TNodeType>(data.get("node_type", Somfy::SONESSE_30).asUInt());
             auto applicationMode =
                 static_cast<Somfy::TApplicationMode>(data.get("application_mode", Somfy::VENETIAN).asUInt());
-            return std::make_shared<Somfy::TDevice>(deviceConfig, nodeType, applicationMode, port, protocol);
+            return std::make_shared<Somfy::TDevice>(deviceConfig, nodeType, applicationMode, protocol);
         }
     };
 
@@ -201,9 +200,8 @@ void Somfy::TDevice::Register(TSerialDeviceFactory& factory)
 Somfy::TDevice::TDevice(PDeviceConfig config,
                         Somfy::TNodeType nodeType,
                         Somfy::TApplicationMode applicationMode,
-                        PPort port,
                         PProtocol protocol)
-    : TSerialDevice(config, port, protocol),
+    : TSerialDevice(config, protocol),
       TUInt32SlaveId(config->SlaveId),
       OpenCommand{MakeRequest(Somfy::CTRL_MOVETO, SlaveId, nodeType, {0, 0, 0, 0})},
       CloseCommand{MakeRequest(Somfy::CTRL_MOVETO, SlaveId, nodeType, {1, 0, 0, 0})},
@@ -211,17 +209,16 @@ Somfy::TDevice::TDevice(PDeviceConfig config,
       ApplicationMode(applicationMode)
 {}
 
-std::vector<uint8_t> Somfy::TDevice::ExecCommand(const std::vector<uint8_t>& request)
+std::vector<uint8_t> Somfy::TDevice::ExecCommand(TPort& port, const std::vector<uint8_t>& request)
 {
-    Port()->SleepSinceLastInteraction(DeviceConfig()->FrameTimeout);
-    Port()->WriteBytes(request);
+    port.SleepSinceLastInteraction(GetFrameTimeout(port));
+    port.WriteBytes(request);
     std::vector<uint8_t> respBytes(MAX_RESPONSE_SIZE);
-    auto bytesRead = Port()
-                         ->ReadFrame(respBytes.data(),
-                                     respBytes.size(),
-                                     DeviceConfig()->ResponseTimeout,
-                                     DeviceConfig()->FrameTimeout,
-                                     FrameComplete)
+    auto bytesRead = port.ReadFrame(respBytes.data(),
+                                    respBytes.size(),
+                                    GetResponseTimeout(port),
+                                    GetFrameTimeout(port),
+                                    FrameComplete)
                          .Count;
     respBytes.resize(bytesRead);
     PrintDebugDump(respBytes, "Frame read (inverted): ");
@@ -245,21 +242,21 @@ std::vector<uint8_t> Somfy::TDevice::MakeDataForSetupCommand(uint8_t header,
     return data;
 }
 
-void Somfy::TDevice::WriteRegisterImpl(const TRegisterConfig& reg, const TRegisterValue& regValue)
+void Somfy::TDevice::WriteRegisterImpl(TPort& port, const TRegisterConfig& reg, const TRegisterValue& regValue)
 {
     auto value = regValue.Get<uint64_t>();
 
     switch (reg.Type) {
         case POSITION: {
             if (value == 0) {
-                Check(SlaveId, ACK, ExecCommand(CloseCommand));
+                Check(SlaveId, ACK, ExecCommand(port, CloseCommand));
                 return;
             }
             if (value == 100) {
-                Check(SlaveId, ACK, ExecCommand(OpenCommand));
+                Check(SlaveId, ACK, ExecCommand(port, OpenCommand));
                 return;
             }
-            Check(SlaveId, ACK, ExecCommand(MakeSetPositionRequest(SlaveId, NodeType, ApplicationMode, value)));
+            Check(SlaveId, ACK, ExecCommand(port, MakeSetPositionRequest(SlaveId, NodeType, ApplicationMode, value)));
             return;
         }
         case COMMAND: {
@@ -270,7 +267,7 @@ void Somfy::TDevice::WriteRegisterImpl(const TRegisterConfig& reg, const TRegist
                 data.push_back(value & 0xFF);
             }
             auto addr = GetUint32RegisterAddress(reg.GetWriteAddress());
-            Check(SlaveId, ACK, ExecCommand(MakeRequest(addr, SlaveId, NodeType, data)));
+            Check(SlaveId, ACK, ExecCommand(port, MakeRequest(addr, SlaveId, NodeType, data)));
             return;
         }
         case PARAM: {
@@ -286,7 +283,7 @@ void Somfy::TDevice::WriteRegisterImpl(const TRegisterConfig& reg, const TRegist
             CopyBytes(std::next(data.begin(), reg.GetDataOffset() / 8),
                       std::next(data.begin(), (reg.GetDataOffset() + width) / 8),
                       ToArray(value));
-            Check(SlaveId, ACK, ExecCommand(MakeRequest(writeHeader, SlaveId, NodeType, data)));
+            Check(SlaveId, ACK, ExecCommand(port, MakeRequest(writeHeader, SlaveId, NodeType, data)));
             WriteCache[requestHeader] = data;
             return;
         }
@@ -295,7 +292,7 @@ void Somfy::TDevice::WriteRegisterImpl(const TRegisterConfig& reg, const TRegist
             std::vector<uint8_t> data{0x0F, 0x00, 0x00, 0x00};
             data.push_back(value & 0xFF);
             data.push_back((value >> 8) & 0xFF);
-            Check(SlaveId, ACK, ExecCommand(MakeRequest(Somfy::CTRL_MOVETO, SlaveId, NodeType, data)));
+            Check(SlaveId, ACK, ExecCommand(port, MakeRequest(Somfy::CTRL_MOVETO, SlaveId, NodeType, data)));
             return;
         }
     }
@@ -303,7 +300,8 @@ void Somfy::TDevice::WriteRegisterImpl(const TRegisterConfig& reg, const TRegist
     throw TSerialDevicePermanentRegisterException("Unsupported register type");
 }
 
-TRegisterValue Somfy::TDevice::GetCachedResponse(uint8_t requestHeader,
+TRegisterValue Somfy::TDevice::GetCachedResponse(TPort& port,
+                                                 uint8_t requestHeader,
                                                  uint8_t responseHeader,
                                                  size_t bitOffset,
                                                  size_t bitWidth)
@@ -314,7 +312,7 @@ TRegisterValue Somfy::TDevice::GetCachedResponse(uint8_t requestHeader,
         val = it->second;
     } else {
         auto req = MakeRequest(requestHeader, SlaveId, NodeType);
-        auto data = ParseStatusReport(SlaveId, responseHeader, ExecCommand(req));
+        auto data = ParseStatusReport(SlaveId, responseHeader, ExecCommand(port, req));
         val.Set(Get<uint64_t>(data.begin(), data.end()));
         DataCache[requestHeader] = val;
         WriteCache[requestHeader] = data;
@@ -325,11 +323,11 @@ TRegisterValue Somfy::TDevice::GetCachedResponse(uint8_t requestHeader,
     return val;
 }
 
-TRegisterValue Somfy::TDevice::ReadRegisterImpl(const TRegisterConfig& reg)
+TRegisterValue Somfy::TDevice::ReadRegisterImpl(TPort& port, const TRegisterConfig& reg)
 {
     switch (reg.Type) {
         case POSITION: {
-            auto res = GetCachedResponse(GET_MOTOR_POSITION, POST_MOTOR_POSITION, 2 * 8, 8);
+            auto res = GetCachedResponse(port, GET_MOTOR_POSITION, POST_MOTOR_POSITION, 2 * 8, 8);
             if (res.Get<uint64_t>() > 100) {
                 throw TSerialDeviceInternalErrorException("Unknown position");
             }
@@ -337,11 +335,11 @@ TRegisterValue Somfy::TDevice::ReadRegisterImpl(const TRegisterConfig& reg)
         }
         case PARAM: {
             const auto& addr = dynamic_cast<const TSomfyAddress&>(reg.GetAddress());
-            return GetCachedResponse(addr.Get(), addr.GetResponseHeader(), reg.GetDataOffset(), reg.GetDataWidth());
+            return GetCachedResponse(port, addr.Get(), addr.GetResponseHeader(), reg.GetDataOffset(), reg.GetDataWidth());
         }
         case ANGLE: {
             // See 6.5.1 Device Status / Motor Position
-            return GetCachedResponse(Somfy::GET_MOTOR_POSITION, Somfy::POST_MOTOR_POSITION, 3 * 8, 8);
+            return GetCachedResponse(port, Somfy::GET_MOTOR_POSITION, Somfy::POST_MOTOR_POSITION, 3 * 8, 8);
         }
     }
     throw TSerialDevicePermanentRegisterException("Unsupported register type");

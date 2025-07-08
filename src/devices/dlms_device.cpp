@@ -113,7 +113,6 @@ namespace
 
         PSerialDevice CreateDevice(const Json::Value& data,
                                    PDeviceConfig deviceConfig,
-                                   PPort port,
                                    PProtocol protocol) const override
         {
             TDlmsDeviceConfig cfg;
@@ -123,7 +122,7 @@ namespace
             cfg.InterfaceType = static_cast<DLMS_INTERFACE_TYPE>(data.get("dlms_interface", cfg.InterfaceType).asInt());
             WBMQTT::JSON::Get(data, "dlms_disconnect_retry_timeout_ms", cfg.DisconnectRetryTimeout);
 
-            return std::make_shared<TDlmsDevice>(cfg, port, protocol);
+            return std::make_shared<TDlmsDevice>(cfg, protocol);
         }
     };
 
@@ -366,8 +365,8 @@ void TDlmsDevice::Register(TSerialDeviceFactory& factory)
         new TDlmsDeviceFactory());
 }
 
-TDlmsDevice::TDlmsDevice(const TDlmsDeviceConfig& config, PPort port, PProtocol protocol)
-    : TSerialDevice(config.DeviceConfig, port, protocol),
+TDlmsDevice::TDlmsDevice(const TDlmsDeviceConfig& config, PProtocol protocol)
+    : TSerialDevice(config.DeviceConfig, protocol),
       TUInt32SlaveId(config.DeviceConfig->SlaveId),
       DisconnectRetryTimeout(config.DisconnectRetryTimeout)
 {
@@ -396,7 +395,8 @@ TDlmsDevice::TDlmsDevice(const TDlmsDeviceConfig& config, PPort port, PProtocol 
                                                    config.InterfaceType);
 }
 
-void TDlmsDevice::CheckCycle(std::function<int(std::vector<CGXByteBuffer>&)> requestsGenerator,
+void TDlmsDevice::CheckCycle(TPort& port,
+                             std::function<int(std::vector<CGXByteBuffer>&)> requestsGenerator,
                              std::function<int(CGXReplyData&)> responseParser,
                              const std::string& errorMsg)
 {
@@ -408,7 +408,7 @@ void TDlmsDevice::CheckCycle(std::function<int(std::vector<CGXByteBuffer>&)> req
     }
     for (auto& buf: data) {
         try {
-            ReadDataBlock(buf.GetData(), buf.GetSize(), reply);
+            ReadDataBlock(port, buf.GetData(), buf.GetSize(), reply);
         } catch (const std::exception& e) {
             throw TSerialDeviceTransientErrorException(errorMsg + ". " + e.what());
         }
@@ -422,14 +422,16 @@ void TDlmsDevice::CheckCycle(std::function<int(std::vector<CGXByteBuffer>&)> req
     }
 }
 
-void TDlmsDevice::ReadAttribute(const std::string& addr, int attribute, CGXDLMSObject& obj)
+void TDlmsDevice::ReadAttribute(TPort& port, const std::string& addr, int attribute, CGXDLMSObject& obj)
 {
-    CheckCycle([&](auto& data) { return Client->Read(&obj, attribute, data); },
-               [&](auto& reply) { return Client->UpdateValue(obj, attribute, reply.GetValue()); },
-               "Getting " + addr + ":" + std::to_string(attribute) + " failed");
+    CheckCycle(
+        port,
+        [&](auto& data) { return Client->Read(&obj, attribute, data); },
+        [&](auto& reply) { return Client->UpdateValue(obj, attribute, reply.GetValue()); },
+        "Getting " + addr + ":" + std::to_string(attribute) + " failed");
 }
 
-TRegisterValue TDlmsDevice::ReadRegisterImpl(const TRegisterConfig& reg)
+TRegisterValue TDlmsDevice::ReadRegisterImpl(TPort& port, const TRegisterConfig& reg)
 {
     auto addr = ToTObisRegisterAddress(reg).GetLogicalName();
     auto obj = Client->GetObjects().FindByLN(DLMS_OBJECT_TYPE_REGISTER, addr);
@@ -447,7 +449,7 @@ TRegisterValue TDlmsDevice::ReadRegisterImpl(const TRegisterConfig& reg)
     std::vector<int> attributes;
     obj->GetAttributeIndexToRead(false, attributes);
     for (auto pos: attributes) {
-        ReadAttribute(addr, pos, *obj);
+        ReadAttribute(port, addr, pos, *obj);
         if (pos == REGISTER_VALUE_ATTRIBUTE_INDEX) {
             forceValueRead = false;
         }
@@ -455,7 +457,7 @@ TRegisterValue TDlmsDevice::ReadRegisterImpl(const TRegisterConfig& reg)
 
     // Some devices doesn't set read access, let's force read value
     if (forceValueRead) {
-        ReadAttribute(addr, REGISTER_VALUE_ATTRIBUTE_INDEX, *obj);
+        ReadAttribute(port, addr, REGISTER_VALUE_ATTRIBUTE_INDEX, *obj);
     }
 
     auto r = static_cast<CGXDLMSRegister*>(obj);
@@ -467,68 +469,78 @@ TRegisterValue TDlmsDevice::ReadRegisterImpl(const TRegisterConfig& reg)
     return TRegisterValue{CopyDoubleToUint64(r->GetValue().ToDouble())};
 }
 
-void TDlmsDevice::PrepareImpl()
+void TDlmsDevice::PrepareImpl(TPort& port)
 {
     try {
-        Disconnect();
+        Disconnect(port);
     } catch (...) {
         if (DisconnectRetryTimeout == std::chrono::milliseconds::zero()) {
             throw;
         }
         // If device doesn't respond, give it some time of silence on bus and try to disconnect again
-        Port()->SleepSinceLastInteraction(DisconnectRetryTimeout);
-        Disconnect();
+        port.SleepSinceLastInteraction(DisconnectRetryTimeout);
+        Disconnect(port);
     }
-    InitializeConnection();
+    InitializeConnection(port);
     SetTransferResult(true);
 }
 
-void TDlmsDevice::Disconnect()
+void TDlmsDevice::Disconnect(TPort& port)
 {
     if (Client->GetInterfaceType() == DLMS_INTERFACE_TYPE_WRAPPER ||
         Client->GetCiphering()->GetSecurity() != DLMS_SECURITY_NONE)
     {
         try {
-            CheckCycle([&](auto& data) { return Client->ReleaseRequest(data); },
-                       [&](auto& reply) { return DLMS_ERROR_CODE_OK; },
-                       "ReleaseRequest failed");
+            CheckCycle(
+                port,
+                [&](auto& data) { return Client->ReleaseRequest(data); },
+                [&](auto& reply) { return DLMS_ERROR_CODE_OK; },
+                "ReleaseRequest failed");
         } catch (const std::exception& e) {
             LOG(Warn) << e.what();
         }
     }
-    CheckCycle([&](auto& data) { return Client->DisconnectRequest(data, true); },
-               [&](auto& reply) { return DLMS_ERROR_CODE_OK; },
-               "DisconnectRequest failed");
+    CheckCycle(
+        port,
+        [&](auto& data) { return Client->DisconnectRequest(data, true); },
+        [&](auto& reply) { return DLMS_ERROR_CODE_OK; },
+        "DisconnectRequest failed");
 }
 
-void TDlmsDevice::EndSession()
+void TDlmsDevice::EndSession(TPort& port)
 {
-    Disconnect();
+    Disconnect(port);
 }
 
-void TDlmsDevice::InitializeConnection()
+void TDlmsDevice::InitializeConnection(TPort& port)
 {
     LOG(Debug) << "Initialize connection";
 
     // Get meter's send and receive buffers size.
-    CheckCycle([&](auto& data) { return Client->SNRMRequest(data); },
-               [&](auto& reply) { return Client->ParseUAResponse(reply.GetData()); },
-               "SNRMRequest failed");
+    CheckCycle(
+        port,
+        [&](auto& data) { return Client->SNRMRequest(data); },
+        [&](auto& reply) { return Client->ParseUAResponse(reply.GetData()); },
+        "SNRMRequest failed");
 
     try {
-        CheckCycle([&](auto& data) { return Client->AARQRequest(data); },
-                   [&](auto& reply) { return Client->ParseAAREResponse(reply.GetData()); },
-                   "AARQRequest failed");
+        CheckCycle(
+            port,
+            [&](auto& data) { return Client->AARQRequest(data); },
+            [&](auto& reply) { return Client->ParseAAREResponse(reply.GetData()); },
+            "AARQRequest failed");
 
         // Get challenge if HLS authentication is used.
         if (Client->GetAuthentication() > DLMS_AUTHENTICATION_LOW) {
-            CheckCycle([&](auto& data) { return Client->GetApplicationAssociationRequest(data); },
-                       [&](auto& reply) { return Client->ParseApplicationAssociationResponse(reply.GetData()); },
-                       "Authentication failed");
+            CheckCycle(
+                port,
+                [&](auto& data) { return Client->GetApplicationAssociationRequest(data); },
+                [&](auto& reply) { return Client->ParseApplicationAssociationResponse(reply.GetData()); },
+                "Authentication failed");
         }
     } catch (const std::exception&) {
         try {
-            Disconnect();
+            Disconnect(port);
         } catch (...) {
         }
         throw;
@@ -536,39 +548,39 @@ void TDlmsDevice::InitializeConnection()
     LOG(Debug) << "Connection is initialized";
 }
 
-void TDlmsDevice::SendData(const uint8_t* data, size_t size)
+void TDlmsDevice::SendData(TPort& port, const uint8_t* data, size_t size)
 {
-    Port()->SleepSinceLastInteraction(DeviceConfig()->FrameTimeout + DeviceConfig()->RequestDelay);
-    Port()->WriteBytes(data, size);
+    port.SleepSinceLastInteraction(GetFrameTimeout(port) + DeviceConfig()->RequestDelay);
+    port.WriteBytes(data, size);
 }
 
-void TDlmsDevice::SendData(const std::string& str)
+void TDlmsDevice::SendData(TPort& port, const std::string& str)
 {
-    SendData(reinterpret_cast<const uint8_t*>(str.c_str()), str.size());
+    SendData(port, reinterpret_cast<const uint8_t*>(str.c_str()), str.size());
 }
 
-void TDlmsDevice::ReadDataBlock(const uint8_t* data, size_t size, CGXReplyData& reply)
+void TDlmsDevice::ReadDataBlock(TPort& port, const uint8_t* data, size_t size, CGXReplyData& reply)
 {
     if (size == 0) {
         return;
     }
-    ReadDLMSPacket(data, size, reply);
+    ReadDLMSPacket(port, data, size, reply);
     while (reply.IsMoreData()) {
         int ret;
         CGXByteBuffer bb;
         if ((ret = Client->ReceiverReady(reply.GetMoreData(), bb)) != 0) {
             throw std::runtime_error("Read block failed: " + GetErrorMessage(ret));
         }
-        ReadDLMSPacket(bb.GetData(), bb.GetSize(), reply);
+        ReadDLMSPacket(port, bb.GetData(), bb.GetSize(), reply);
     }
 }
 
-void TDlmsDevice::ReadData(CGXByteBuffer& reply)
+void TDlmsDevice::ReadData(TPort& port, CGXByteBuffer& reply)
 {
-    Read(0x7E, reply);
+    Read(port, 0x7E, reply);
 }
 
-void TDlmsDevice::Read(unsigned char eop, CGXByteBuffer& reply)
+void TDlmsDevice::Read(TPort& port, unsigned char eop, CGXByteBuffer& reply)
 {
     size_t lastReadIndex = 0;
     auto frameCompleteFn = [&](uint8_t* buf, size_t size) {
@@ -585,27 +597,22 @@ void TDlmsDevice::Read(unsigned char eop, CGXByteBuffer& reply)
     };
 
     uint8_t buf[MAX_PACKET_SIZE];
-    auto bytesRead = Port()
-                         ->ReadFrame(buf,
-                                     sizeof(buf),
-                                     DeviceConfig()->ResponseTimeout,
-                                     DeviceConfig()->FrameTimeout,
-                                     frameCompleteFn)
-                         .Count;
+    auto bytesRead =
+        port.ReadFrame(buf, sizeof(buf), GetResponseTimeout(port), GetFrameTimeout(port), frameCompleteFn).Count;
     reply.Set(buf, bytesRead);
 }
 
-void TDlmsDevice::ReadDLMSPacket(const uint8_t* data, size_t size, CGXReplyData& reply)
+void TDlmsDevice::ReadDLMSPacket(TPort& port, const uint8_t* data, size_t size, CGXReplyData& reply)
 {
     if (size == 0) {
         return;
     }
-    SendData(data, size);
+    SendData(port, data, size);
     int ret = DLMS_ERROR_CODE_FALSE;
     CGXByteBuffer bb;
     // Loop until whole DLMS packet is received.
     while (ret == DLMS_ERROR_CODE_FALSE) {
-        ReadData(bb);
+        ReadData(port, bb);
         ret = Client->GetData(bb, reply);
     }
     if (ret != DLMS_ERROR_CODE_OK) {
@@ -613,18 +620,20 @@ void TDlmsDevice::ReadDLMSPacket(const uint8_t* data, size_t size, CGXReplyData&
     }
 }
 
-void TDlmsDevice::GetAssociationView()
+void TDlmsDevice::GetAssociationView(TPort& port)
 {
     LOG(Debug) << "Get association view ...";
-    CheckCycle([&](auto& data) { return Client->GetObjectsRequest(data); },
-               [&](auto& reply) { return Client->ParseObjects(reply.GetData(), true); },
-               "Getting objects from association view failed");
+    CheckCycle(
+        port,
+        [&](auto& data) { return Client->GetObjectsRequest(data); },
+        [&](auto& reply) { return Client->ParseObjects(reply.GetData(), true); },
+        "Getting objects from association view failed");
 }
 
-std::map<int, std::string> TDlmsDevice::GetLogicalDevices()
+std::map<int, std::string> TDlmsDevice::GetLogicalDevices(TPort& port)
 {
-    Disconnect();
-    InitializeConnection();
+    Disconnect(port);
+    InitializeConnection(port);
     LOG(Debug) << "Getting SAP Assignment ...";
     auto obj = CGXDLMSObjectFactory::CreateObject(DLMS_OBJECT_TYPE_SAP_ASSIGNMENT);
     if (!obj) {
@@ -633,20 +642,21 @@ std::map<int, std::string> TDlmsDevice::GetLogicalDevices()
     Client->GetObjects().push_back(obj);
     const auto SAP_ASSIGNEMENT_LIST_ATTRIBUTE_INDEX = 2;
     CheckCycle(
+        port,
         [&](auto& data) { return Client->Read(obj, SAP_ASSIGNEMENT_LIST_ATTRIBUTE_INDEX, data); },
         [&](auto& reply) { return Client->UpdateValue(*obj, SAP_ASSIGNEMENT_LIST_ATTRIBUTE_INDEX, reply.GetValue()); },
         "SAP Assignment attribute read failed");
     auto res = static_cast<CGXDLMSSapAssignment*>(obj)->GetSapAssignmentList();
-    Disconnect();
+    Disconnect(port);
     return res;
 }
 
-const CGXDLMSObjectCollection& TDlmsDevice::ReadAllObjects(bool readAttributes)
+const CGXDLMSObjectCollection& TDlmsDevice::ReadAllObjects(TPort& port, bool readAttributes)
 {
     LOG(Debug) << "Getting association view ... ";
-    Disconnect();
-    InitializeConnection();
-    GetAssociationView();
+    Disconnect(port);
+    InitializeConnection(port);
+    GetAssociationView(port);
     LOG(Debug) << "Getting objects ...";
     auto& objs = Client->GetObjects();
     if (readAttributes) {
@@ -660,15 +670,17 @@ const CGXDLMSObjectCollection& TDlmsDevice::ReadAllObjects(bool readAttributes)
             obj->GetAttributeIndexToRead(true, attributes);
             for (auto pos: attributes) {
                 try {
-                    CheckCycle([&](auto& data) { return Client->Read(obj, pos, data); },
-                               [&](auto& reply) { return Client->UpdateValue(*obj, pos, reply.GetValue()); },
-                               "");
+                    CheckCycle(
+                        port,
+                        [&](auto& data) { return Client->Read(obj, pos, data); },
+                        [&](auto& reply) { return Client->UpdateValue(*obj, pos, reply.GetValue()); },
+                        "");
                 } catch (...) {
                 }
             }
         }
     }
-    EndSession();
+    EndSession(port);
     return objs;
 }
 
@@ -733,9 +745,9 @@ void DLMS::GenerateDeviceTemplate(TDeviceTemplateGenerationMode mode,
     TSerialDeviceFactory deviceFactory;
     TDlmsDevice::Register(deviceFactory);
     port->Open();
-    TDlmsDevice device(deviceConfig, port, deviceFactory.GetProtocol("dlms"));
+    TDlmsDevice device(deviceConfig, deviceFactory.GetProtocol("dlms"));
     std::cout << "Getting logical devices..." << std::endl;
-    auto logicalDevices = device.GetLogicalDevices();
+    auto logicalDevices = device.GetLogicalDevices(*port);
     std::cout << "Logical devices:" << std::endl;
     for (const auto& ld: logicalDevices) {
         std::cout << ld.first << ": " << ld.second << std::endl;
@@ -744,8 +756,8 @@ void DLMS::GenerateDeviceTemplate(TDeviceTemplateGenerationMode mode,
     for (const auto& ld: logicalDevices) {
         std::cout << "Getting objects for " << ld.second << " ..." << std::endl;
         deviceConfig.LogicalDeviceAddress = ld.first;
-        TDlmsDevice d(deviceConfig, port, deviceFactory.GetProtocol("dlms"));
-        auto objs = d.ReadAllObjects(mode != 0);
+        TDlmsDevice d(deviceConfig, deviceFactory.GetProtocol("dlms"));
+        auto objs = d.ReadAllObjects(*port, mode != 0);
         TObisCodeHints obisHints = LoadObisCodeHints();
         switch (mode) {
             case PRINT: {

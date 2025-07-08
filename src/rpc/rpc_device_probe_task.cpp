@@ -42,7 +42,7 @@ ISerialClientTask::TRunResult TRPCDeviceProbeSerialClientTask::Run(PPort port,
         if (!port->IsOpen()) {
             port->Open();
         }
-        lastAccessedDevice.PrepareToAccess(nullptr);
+        lastAccessedDevice.PrepareToAccess(*port, nullptr);
         TSerialPortSettingsGuard settingsGuard(port, SerialPortSettings);
         Modbus::TModbusRTUTraits modbusTraits;
         RpcPortScan::TRegisterReader reader(*port, modbusTraits, SlaveId);

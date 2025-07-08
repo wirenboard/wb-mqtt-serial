@@ -57,7 +57,7 @@ ISerialClientTask::TRunResult TRPCPortLoadRawSerialClientTask::Run(PPort port,
         }
         port->SkipNoise();
         port->SleepSinceLastInteraction(Request->FrameTimeout);
-        lastAccessedDevice.PrepareToAccess(nullptr);
+        lastAccessedDevice.PrepareToAccess(*port, nullptr);
 
         TSerialPortSettingsGuard settingsGuard(port, Request->SerialPortSettings);
         auto response = ExecRPCPortLoadRawRequest(*port, Request);

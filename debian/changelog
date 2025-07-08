@@ -1,3 +1,9 @@
+wb-mqtt-serial (2.177.3) stable; urgency=medium
+
+  * Port handling refactoring. No functional changes
+
+ -- Petr Krasnoshchekov <petr.krasnoshchekov@wirenboard.com>  Tue, 08 Jul 2025 12:21:58 +0500
+
 wb-mqtt-serial (2.177.2) stable; urgency=medium
 
   * Allow to set max_unchanged_interval to 0 for publishing every read value

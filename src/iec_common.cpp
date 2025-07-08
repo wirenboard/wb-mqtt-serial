@@ -146,8 +146,8 @@ namespace IEC
     }
 }
 
-TIEC61107Device::TIEC61107Device(PDeviceConfig device_config, PPort port, PProtocol protocol)
-    : TSerialDevice(device_config, port, protocol),
+TIEC61107Device::TIEC61107Device(PDeviceConfig device_config, PProtocol protocol)
+    : TSerialDevice(device_config, protocol),
       SlaveId(device_config->SlaveId)
 {
     if (SlaveId.size() > 32) {
@@ -180,11 +180,10 @@ bool TIEC61107Protocol::SupportsBroadcast() const
 }
 
 TIEC61107ModeCDevice::TIEC61107ModeCDevice(PDeviceConfig device_config,
-                                           PPort port,
                                            PProtocol protocol,
                                            const std::string& logPrefix,
                                            IEC::TCrcFn crcFn)
-    : TIEC61107Device(device_config, port, protocol),
+    : TIEC61107Device(device_config, protocol),
       CrcFn(crcFn),
       LogPrefix(logPrefix),
       ReadCommand(IEC::UnformattedReadCommand),
@@ -194,40 +193,40 @@ TIEC61107ModeCDevice::TIEC61107ModeCDevice(PDeviceConfig device_config,
     SetDesiredBaudRate(9600);
 }
 
-void TIEC61107ModeCDevice::PrepareImpl()
+void TIEC61107ModeCDevice::PrepareImpl(TPort& port)
 {
-    TIEC61107Device::PrepareImpl();
+    TIEC61107Device::PrepareImpl(port);
     bool sessionIsOpen = false;
     try {
-        StartSession();
+        StartSession(port);
         sessionIsOpen = true;
-        SwitchToProgMode();
-        SendPassword();
+        SwitchToProgMode(port);
+        SendPassword(port);
         SetTransferResult(true);
     } catch (const TSerialDeviceTransientErrorException& e) {
         Debug.Log() << LogPrefix << "Session start error: " << e.what() << " [slave_id is " << ToString() + "]";
         if (sessionIsOpen) {
-            SendEndSession();
+            SendEndSession(port);
         }
         throw;
     }
 }
 
-void TIEC61107ModeCDevice::StartSession()
+void TIEC61107ModeCDevice::StartSession(TPort& port)
 {
     if (DefaultBaudRate != DesiredBaudRate) {
         CurrentBaudRate = DefaultBaudRate;
     }
     TSerialPortConnectionSettings bf(CurrentBaudRate, 'E', 7, 1);
-    Port()->ApplySerialPortSettings(bf);
-    if (Probe()) {
+    port.ApplySerialPortSettings(bf);
+    if (Probe(port)) {
         return;
     }
     // Try desired baudrate, the device can remember it
     if (DefaultBaudRate != DesiredBaudRate) {
         bf.BaudRate = DesiredBaudRate;
-        Port()->ApplySerialPortSettings(bf);
-        if (Probe()) {
+        port.ApplySerialPortSettings(bf);
+        if (Probe(port)) {
             CurrentBaudRate = bf.BaudRate;
             return;
         }
@@ -235,27 +234,27 @@ void TIEC61107ModeCDevice::StartSession()
     throw TSerialDeviceTransientErrorException("Sign on failed");
 }
 
-bool TIEC61107ModeCDevice::Probe()
+bool TIEC61107ModeCDevice::Probe(TPort& port)
 {
     uint8_t buf[IEC::RESPONSE_BUF_LEN] = {};
     size_t retryCount = 5;
     while (true) {
         try {
-            Port()->SkipNoise();
+            port.SkipNoise();
             // Send session start request
-            WriteBytes("/?" + SlaveId + "!\r\n");
+            WriteBytes(port, "/?" + SlaveId + "!\r\n");
             // Pass identification response
-            IEC::ReadFrame(*Port(),
+            IEC::ReadFrame(port,
                            buf,
                            sizeof(buf),
-                           DeviceConfig()->ResponseTimeout,
-                           DeviceConfig()->FrameTimeout,
+                           GetResponseTimeout(port),
+                           GetFrameTimeout(port),
                            IEC::GetCRLFPacketPred(),
                            LogPrefix);
             return true;
         } catch (const TSerialDeviceTransientErrorException& e) {
             --retryCount;
-            SendEndSession();
+            SendEndSession(port);
             if (retryCount == 0) {
                 return false;
             }
@@ -263,11 +262,11 @@ bool TIEC61107ModeCDevice::Probe()
     }
 }
 
-void TIEC61107ModeCDevice::EndSession()
+void TIEC61107ModeCDevice::EndSession(TPort& port)
 {
-    SendEndSession();
-    Port()->ResetSerialPortSettings(); // Return old port settings
-    TIEC61107Device::EndSession();
+    SendEndSession(port);
+    port.ResetSerialPortSettings(); // Return old port settings
+    TIEC61107Device::EndSession(port);
 }
 
 void TIEC61107ModeCDevice::InvalidateReadCache()
@@ -276,24 +275,24 @@ void TIEC61107ModeCDevice::InvalidateReadCache()
     TSerialDevice::InvalidateReadCache();
 }
 
-TRegisterValue TIEC61107ModeCDevice::ReadRegisterImpl(const TRegisterConfig& reg)
+TRegisterValue TIEC61107ModeCDevice::ReadRegisterImpl(TPort& port, const TRegisterConfig& reg)
 {
-    Port()->CheckPortOpen();
-    Port()->SkipNoise();
-    return GetRegisterValue(reg, GetCachedResponse(GetParameterRequest(reg)));
+    port.CheckPortOpen();
+    port.SkipNoise();
+    return GetRegisterValue(reg, GetCachedResponse(port, GetParameterRequest(reg)));
 }
 
-std::string TIEC61107ModeCDevice::GetCachedResponse(const std::string& paramRequest)
+std::string TIEC61107ModeCDevice::GetCachedResponse(TPort& port, const std::string& paramRequest)
 {
     auto it = CmdResultCache.find(paramRequest);
     if (it != CmdResultCache.end()) {
         return it->second;
     }
 
-    WriteBytes(IEC::MakeRequest(ReadCommand, paramRequest, CrcFn));
+    WriteBytes(port, IEC::MakeRequest(ReadCommand, paramRequest, CrcFn));
 
     uint8_t resp[IEC::RESPONSE_BUF_LEN] = {};
-    auto len = ReadFrameProgMode(resp, sizeof(resp), IEC::STX);
+    auto len = ReadFrameProgMode(port, resp, sizeof(resp), IEC::STX);
     // Proper response (inc. error) must start with STX, and end with ETX
     if ((resp[0] != IEC::STX) || (resp[len - 2] != IEC::ETX)) {
         throw TSerialDeviceTransientErrorException("malformed response");
@@ -323,20 +322,20 @@ std::string TIEC61107ModeCDevice::GetCachedResponse(const std::string& paramRequ
     throw TSerialDeviceTransientErrorException(presp);
 }
 
-void TIEC61107ModeCDevice::SwitchToProgMode()
+void TIEC61107ModeCDevice::SwitchToProgMode(TPort& port)
 {
     uint8_t buf[IEC::RESPONSE_BUF_LEN] = {};
 
-    WriteBytes(ToProgModeCommand);
+    WriteBytes(port, ToProgModeCommand);
     if (CurrentBaudRate != DesiredBaudRate) {
         // Time before response must be more than 20ms according to standard
         // Wait some time to transmit request
-        Port()->SleepSinceLastInteraction(std::chrono::milliseconds(10));
+        port.SleepSinceLastInteraction(std::chrono::milliseconds(10));
         TSerialPortConnectionSettings bf(DesiredBaudRate, 'E', 7, 1);
-        Port()->ApplySerialPortSettings(bf);
+        port.ApplySerialPortSettings(bf);
         CurrentBaudRate = DesiredBaudRate;
     }
-    ReadFrameProgMode(buf, sizeof(buf), IEC::SOH);
+    ReadFrameProgMode(port, buf, sizeof(buf), IEC::SOH);
 
     // <SOH>P0<STX>(IDENTIFIER)<ETX>CRC
     if (buf[1] != 'P' || buf[2] != '0' || buf[3] != IEC::STX) {
@@ -344,7 +343,7 @@ void TIEC61107ModeCDevice::SwitchToProgMode()
     }
 }
 
-void TIEC61107ModeCDevice::SendPassword()
+void TIEC61107ModeCDevice::SendPassword(TPort& port)
 {
     if (DeviceConfig()->Password.empty()) {
         return;
@@ -356,30 +355,30 @@ void TIEC61107ModeCDevice::SendPassword()
         ss << std::hex << std::uppercase << std::setfill('0') << std::setw(2) << int(p);
     }
     ss << ")";
-    WriteBytes(IEC::MakeRequest("P1", ss.str(), CrcFn));
-    auto nread = ReadFrameProgMode(buf, sizeof(buf), IEC::STX);
+    WriteBytes(port, IEC::MakeRequest("P1", ss.str(), CrcFn));
+    auto nread = ReadFrameProgMode(port, buf, sizeof(buf), IEC::STX);
 
     if ((nread != 1) || (buf[0] != IEC::ACK)) {
         throw TSerialDeviceTransientErrorException("cannot authenticate with password");
     }
 }
 
-void TIEC61107ModeCDevice::SendEndSession()
+void TIEC61107ModeCDevice::SendEndSession(TPort& port)
 {
     // We need to terminate the session so meter won't respond to the data meant for other devices
-    WriteBytes(IEC::MakeRequest("B0", CrcFn));
+    WriteBytes(port, IEC::MakeRequest("B0", CrcFn));
 
     // A device needs some time to process the command
-    std::this_thread::sleep_for(DeviceConfig()->FrameTimeout);
+    std::this_thread::sleep_for(GetFrameTimeout(port));
 }
 
-size_t TIEC61107ModeCDevice::ReadFrameProgMode(uint8_t* buf, size_t size, uint8_t startByte)
+size_t TIEC61107ModeCDevice::ReadFrameProgMode(TPort& port, uint8_t* buf, size_t size, uint8_t startByte)
 {
-    auto len = IEC::ReadFrame(*Port(),
+    auto len = IEC::ReadFrame(port,
                               buf,
                               size,
-                              DeviceConfig()->ResponseTimeout,
-                              DeviceConfig()->FrameTimeout,
+                              GetResponseTimeout(port),
+                              GetFrameTimeout(port),
                               IEC::GetProgModePacketPred(startByte),
                               LogPrefix);
 
@@ -399,16 +398,16 @@ size_t TIEC61107ModeCDevice::ReadFrameProgMode(uint8_t* buf, size_t size, uint8_
     return len;
 }
 
-void TIEC61107ModeCDevice::WriteBytes(const std::vector<uint8_t>& data)
+void TIEC61107ModeCDevice::WriteBytes(TPort& port, const std::vector<uint8_t>& data)
 {
-    Port()->SleepSinceLastInteraction(DeviceConfig()->FrameTimeout);
-    IEC::WriteBytes(*Port(), data.data(), data.size(), LogPrefix);
+    port.SleepSinceLastInteraction(GetFrameTimeout(port));
+    IEC::WriteBytes(port, data.data(), data.size(), LogPrefix);
 }
 
-void TIEC61107ModeCDevice::WriteBytes(const std::string& data)
+void TIEC61107ModeCDevice::WriteBytes(TPort& port, const std::string& data)
 {
-    Port()->SleepSinceLastInteraction(DeviceConfig()->FrameTimeout);
-    IEC::WriteBytes(*Port(), data, LogPrefix);
+    port.SleepSinceLastInteraction(GetFrameTimeout(port));
+    IEC::WriteBytes(port, data, LogPrefix);
 }
 
 void TIEC61107ModeCDevice::SetReadCommand(const std::string& command)

@@ -1,6 +1,7 @@
 #pragma once
 
 #include "port.h"
+#include <mutex>
 
 namespace Modbus
 {
@@ -97,12 +98,10 @@ namespace Modbus
     {
         const size_t MBAP_SIZE = 7;
 
-        std::shared_ptr<uint16_t> TransactionId;
-
         void SetMBAP(std::vector<uint8_t>& req, uint16_t transactionId, size_t pduSize, uint8_t slaveId) const;
         uint16_t GetLengthFromMBAP(const std::vector<uint8_t>& buf) const;
         size_t GetPacketSize(size_t pduSize) const;
-        void FinalizeRequest(std::vector<uint8_t>& request, uint8_t slaveId);
+        void FinalizeRequest(std::vector<uint8_t>& request, uint8_t slaveId, uint16_t transactionId);
 
         TReadFrameResult ReadFrame(TPort& port,
                                    uint8_t slaveId,
@@ -111,8 +110,12 @@ namespace Modbus
                                    const std::chrono::milliseconds& frameTimeout,
                                    std::vector<uint8_t>& response) const;
 
+        static std::mutex TransactionIdMutex;
+        static std::unordered_map<std::string, uint16_t> TransactionIds;
+        static uint16_t GetTransactionId(TPort& port);
+
     public:
-        TModbusTCPTraits(std::shared_ptr<uint16_t> transactionId);
+        TModbusTCPTraits();
 
         TReadResult Transaction(TPort& port,
                                 uint8_t slaveId,
@@ -120,27 +123,27 @@ namespace Modbus
                                 size_t expectedResponsePduSize,
                                 const std::chrono::milliseconds& responseTimeout,
                                 const std::chrono::milliseconds& frameTimeout) override;
+
+        static void ResetTransactionId(TPort& port);
     };
 
     class IModbusTraitsFactory
     {
     public:
         virtual ~IModbusTraitsFactory() = default;
-        virtual std::unique_ptr<Modbus::IModbusTraits> GetModbusTraits(PPort port, bool forceFrameTimeout) = 0;
+        virtual std::unique_ptr<Modbus::IModbusTraits> GetModbusTraits(bool forceFrameTimeout) = 0;
     };
 
     class TModbusTCPTraitsFactory: public IModbusTraitsFactory
     {
-        std::unordered_map<PPort, std::shared_ptr<uint16_t>> TransactionIds;
-
     public:
-        std::unique_ptr<Modbus::IModbusTraits> GetModbusTraits(PPort port, bool forceFrameTimeout) override;
+        std::unique_ptr<Modbus::IModbusTraits> GetModbusTraits(bool forceFrameTimeout) override;
     };
 
     class TModbusRTUTraitsFactory: public IModbusTraitsFactory
     {
     public:
-        std::unique_ptr<Modbus::IModbusTraits> GetModbusTraits(PPort port, bool forceFrameTimeout) override;
+        std::unique_ptr<Modbus::IModbusTraits> GetModbusTraits(bool forceFrameTimeout) override;
     };
 
     class TErrorBase: public std::runtime_error

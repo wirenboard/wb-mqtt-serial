@@ -137,7 +137,6 @@ public:
     /*! Create new device of given type */
     virtual PSerialDevice CreateDevice(const Json::Value& data,
                                        PDeviceConfig deviceConfig,
-                                       PPort port,
                                        PProtocol protocol) const = 0;
 
     const IRegisterAddressFactory& GetRegisterAddressFactory() const;
@@ -157,11 +156,18 @@ public:
     const std::string& GetCustomChannelSchemaRef() const;
 };
 
+struct TDeviceLoadDefaults
+{
+    std::string Id;
+    std::chrono::microseconds RequestDelay;
+    std::chrono::milliseconds ResponseTimeout;
+    std::optional<std::chrono::milliseconds> ReadRateLimit;
+};
+
 struct TDeviceConfigLoadParams
 {
-    std::string DefaultId;
-    std::chrono::microseconds DefaultRequestDelay;
-    std::chrono::milliseconds PortResponseTimeout;
+    TDeviceLoadDefaults Defaults;
+    std::string DeviceTemplateTitle;
     const Json::Value* Translations = nullptr;
 };
 
@@ -191,6 +197,12 @@ class TSerialDeviceFactory
     std::unordered_map<std::string, TDeviceProtocolParams> Protocols;
 
 public:
+    struct TCreateDeviceParams
+    {
+        TDeviceLoadDefaults Defaults;
+        bool IsModbusTcp = false;
+    };
+
     void RegisterProtocol(PProtocol protocol, IDeviceFactory* deviceFactory);
     TDeviceProtocolParams GetProtocolParams(const std::string& protocolName) const;
     PProtocol GetProtocol(const std::string& protocolName) const;
@@ -198,8 +210,7 @@ public:
     const std::string& GetCustomChannelSchemaRef(const std::string& protocolName) const;
     std::vector<std::string> GetProtocolNames() const;
     PSerialDeviceWithChannels CreateDevice(const Json::Value& device_config,
-                                           const std::string& defaultId,
-                                           PPortConfig PPortConfig,
+                                           const TCreateDeviceParams& params,
                                            TTemplateMap& templates);
 };
 
@@ -226,12 +237,9 @@ public:
         : IDeviceFactory(std::make_unique<AddressFactory>(), commonDeviceSchemaRef, customChannelSchemaRef)
     {}
 
-    PSerialDevice CreateDevice(const Json::Value& data,
-                               PDeviceConfig deviceConfig,
-                               PPort port,
-                               PProtocol protocol) const override
+    PSerialDevice CreateDevice(const Json::Value& data, PDeviceConfig deviceConfig, PProtocol protocol) const override
     {
-        return std::make_shared<Dev>(deviceConfig, port, protocol);
+        return std::make_shared<Dev>(deviceConfig, protocol);
     }
 };
 

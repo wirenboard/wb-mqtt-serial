@@ -22,7 +22,6 @@ void TS2KDeviceTest::SetUp()
     TSerialDeviceTest::SetUp();
 
     Dev = std::make_shared<TS2KDevice>(std::make_shared<TDeviceConfig>("s2k", std::to_string(0x01), "s2k"),
-                                       SerialPort,
                                        DeviceFactory.GetProtocol("s2k"));
 
     RelayReg1 = Dev->AddRegister(TRegisterConfig::Create(TS2KDevice::REG_RELAY, 0x01, U8));
@@ -43,11 +42,11 @@ void TS2KDeviceTest::TearDown()
 TEST_F(TS2KDeviceTest, TestSetRelayState)
 {
     EnqueueSetRelayOnResponse();
-    Dev->WriteRegister(RelayReg1, 1);
+    Dev->WriteRegister(*SerialPort, RelayReg1, 1);
 
     SerialPort->DumpWhatWasRead();
     EnqueueSetRelayOffResponse();
-    Dev->WriteRegister(RelayReg1, 0);
+    Dev->WriteRegister(*SerialPort, RelayReg1, 0);
 }
 
 class TS2KIntegrationTest: public TSerialDeviceIntegrationTest, public TS2KDeviceExpectations

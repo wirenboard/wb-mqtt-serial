@@ -7,6 +7,7 @@ namespace
     {
         size_t Pointer = 0;
         std::vector<uint8_t> Stream;
+        std::vector<uint8_t> LastRequest;
 
     public:
         TPortMock(const std::vector<uint8_t>& stream): Stream(stream)
@@ -24,7 +25,9 @@ namespace
         {}
 
         void WriteBytes(const uint8_t* buf, int count) override
-        {}
+        {
+            LastRequest.assign(buf, buf + count);
+        }
 
         uint8_t ReadByte(const std::chrono::microseconds& timeout) override
         {
@@ -58,6 +61,11 @@ namespace
         {
             return std::string();
         }
+
+        const std::vector<uint8_t>& GetLastRequest() const
+        {
+            return LastRequest;
+        }
     };
 }
 
@@ -78,7 +86,8 @@ TEST_F(TModbusTCPTraitsTest, ReadFrameGood)
 {
     std::vector<uint8_t> r = {0, 1, 0, 0, 0, 3, 100, 17, 18};
     TPortMock port(r);
-    Modbus::TModbusTCPTraits traits(std::make_shared<uint16_t>(0));
+    Modbus::TModbusTCPTraits::ResetTransactionId(port);
+    Modbus::TModbusTCPTraits traits;
     std::chrono::milliseconds t(10);
 
     std::vector<uint8_t> req = {7, 8, 9};
@@ -90,7 +99,8 @@ TEST_F(TModbusTCPTraitsTest, ReadFrameGood)
 TEST_F(TModbusTCPTraitsTest, ReadFrameSmallMBAP)
 {
     TPortMock port({0, 1, 0, 0});
-    Modbus::TModbusTCPTraits traits(std::make_shared<uint16_t>(10));
+    Modbus::TModbusTCPTraits::ResetTransactionId(port);
+    Modbus::TModbusTCPTraits traits;
     std::chrono::milliseconds t(10);
 
     std::vector<uint8_t> req = {7, 8, 9};
@@ -100,7 +110,8 @@ TEST_F(TModbusTCPTraitsTest, ReadFrameSmallMBAP)
 TEST_F(TModbusTCPTraitsTest, ReadFrameSmallMBAPLength)
 {
     TPortMock port({0, 1, 0, 0, 0, 0, 100, 7, 8, 9});
-    Modbus::TModbusTCPTraits traits(std::make_shared<uint16_t>(10));
+    Modbus::TModbusTCPTraits::ResetTransactionId(port);
+    Modbus::TModbusTCPTraits traits;
     std::chrono::milliseconds t(10);
 
     std::vector<uint8_t> req = {7, 8, 9};
@@ -110,7 +121,8 @@ TEST_F(TModbusTCPTraitsTest, ReadFrameSmallMBAPLength)
 TEST_F(TModbusTCPTraitsTest, ReadFrameSmallPDU)
 {
     TPortMock port({0, 1, 0, 0, 0, 4, 100, 7});
-    Modbus::TModbusTCPTraits traits(std::make_shared<uint16_t>(10));
+    Modbus::TModbusTCPTraits::ResetTransactionId(port);
+    Modbus::TModbusTCPTraits traits;
     std::chrono::milliseconds t(10);
 
     std::vector<uint8_t> req = {7, 8, 9};
@@ -120,7 +132,8 @@ TEST_F(TModbusTCPTraitsTest, ReadFrameSmallPDU)
 TEST_F(TModbusTCPTraitsTest, ReadFrameWrongUnitId)
 {
     TPortMock port({0, 1, 0, 0, 0, 4, 101, 7, 8, 9});
-    Modbus::TModbusTCPTraits traits(std::make_shared<uint16_t>(0));
+    Modbus::TModbusTCPTraits::ResetTransactionId(port);
+    Modbus::TModbusTCPTraits traits;
     std::chrono::milliseconds t(10);
 
     std::vector<uint8_t> req = {7, 8, 9};
@@ -134,7 +147,8 @@ TEST_F(TModbusTCPTraitsTest, ReadFramePassWrongTransactionId)
     r.insert(r.end(), goodResp.begin(), goodResp.end());
     TPortMock port(r);
 
-    Modbus::TModbusTCPTraits traits(std::make_shared<uint16_t>(0));
+    Modbus::TModbusTCPTraits::ResetTransactionId(port);
+    Modbus::TModbusTCPTraits traits;
     std::chrono::milliseconds t(10);
 
     std::vector<uint8_t> req = {7, 8, 9};
@@ -144,9 +158,34 @@ TEST_F(TModbusTCPTraitsTest, ReadFramePassWrongTransactionId)
 TEST_F(TModbusTCPTraitsTest, ReadFrameTimeout)
 {
     TPortMock port({0, 2, 0, 0, 0, 4, 101, 7, 8, 9});
-    Modbus::TModbusTCPTraits traits(std::make_shared<uint16_t>(10));
+    Modbus::TModbusTCPTraits::ResetTransactionId(port);
+    Modbus::TModbusTCPTraits traits;
     std::chrono::milliseconds t(10);
 
     std::vector<uint8_t> req = {7, 8, 9};
     ASSERT_THROW(traits.Transaction(port, 100, req, 2, t, t), TResponseTimeoutException);
+}
+
+TEST_F(TModbusTCPTraitsTest, IncrementTransactionId)
+{
+    std::vector<uint8_t> r = {0, 1, 0, 0, 0, 3, 100, 17, 18, 0, 2, 0, 0, 0, 3, 100, 19, 20};
+    TPortMock port(r);
+    Modbus::TModbusTCPTraits::ResetTransactionId(port);
+    Modbus::TModbusTCPTraits traits;
+    std::chrono::milliseconds t(10);
+
+    std::vector<uint8_t> req = {7, 8, 9};
+    auto resp = traits.Transaction(port, 100, req, 2, t, t).Pdu;
+    ASSERT_EQ(resp.size(), 2);
+    TestEqual(resp, {17, 18});
+    ASSERT_EQ(port.GetLastRequest()[0], 0);
+    ASSERT_EQ(port.GetLastRequest()[1], 1);
+
+    Modbus::TModbusTCPTraits traits2;
+    req.assign({10, 11, 12});
+    resp = traits2.Transaction(port, 100, req, 2, t, t).Pdu;
+    ASSERT_EQ(resp.size(), 2);
+    TestEqual(resp, {19, 20});
+    ASSERT_EQ(port.GetLastRequest()[0], 0);
+    ASSERT_EQ(port.GetLastRequest()[1], 2);
 }
