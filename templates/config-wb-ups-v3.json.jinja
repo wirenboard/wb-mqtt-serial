@@ -159,7 +159,6 @@
         ],
         "channels": [
             {
-                "id": "status_batt",
                 "name": "status_batt",
                 "read_only": true,
                 "reg_type": "input",
@@ -182,7 +181,6 @@
                 "group": "gg_ups_channels"
             },
             {
-                "id": "status_temp",
                 "name": "status_temp",
                 "read_only": true,
                 "reg_type": "input",
@@ -205,7 +203,6 @@
                 "group": "gg_ups_channels"
             },
             {
-                "id": "v_vin",
                 "name": "v_vin",
                 "units": "V",
                 "scale": 0.001,
@@ -215,7 +212,6 @@
                 "group": "gg_ups_channels"
             },
             {
-                "id": "v_vout",
                 "name": "v_vout",
                 "units": "V",
                 "scale": 0.001,
@@ -225,7 +221,6 @@
                 "group": "gg_ups_channels"
             },
             {
-                "id": "v_batt",
                 "name": "v_batt",
                 "units": "V",
                 "scale": 0.001,
@@ -235,7 +230,6 @@
                 "group": "gg_ups_channels"
             },
             {
-                "id": "i_batt",
                 "name": "i_batt",
                 "units": "A",
                 "scale": 0.001,
@@ -246,7 +240,6 @@
                 "group": "gg_ups_channels"
             },
             {
-                "id": "i_charge_vin",
                 "name": "i_charge_vin",
                 "units": "A",
                 "scale": 0.001,
@@ -256,7 +249,6 @@
                 "group": "gg_ups_channels"
             },
             {
-                "id": "i_batt_mode_vout",
                 "name": "i_batt_mode_vout",
                 "units": "A",
                 "scale": 0.001,
@@ -266,7 +258,6 @@
                 "group": "gg_ups_channels"
             },
             {
-                "id": "charge_batt",
                 "name": "charge_batt",
                 "units": "%",
                 "scale": 0.01,
@@ -276,7 +267,6 @@
                 "group": "gg_ups_channels"
             },
             {
-                "id": "temp_batt",
                 "name": "temp_batt",
                 "units": "deg C",
                 "scale": 0.01,
@@ -285,7 +275,6 @@
                 "group": "gg_ups_channels"
             },
             {
-                "id": "batt_mode_do_vout",
                 "name": "batt_mode_do_vout",
                 "type": "switch",
                 "reg_type": "coil",
@@ -294,7 +283,6 @@
                 "group": "gg_ups_channels"
             },
             {
-                "id": "di_button",
                 "name": "di_button",
                 "reg_type": "discrete",
                 "address": 0,
@@ -307,7 +295,6 @@
             {% set presses = ["shrt", "lng", "dbl", "shrt_lng"] -%}
             {% for press in presses -%}
             {
-                "id": "count_{{ press }}_di_button",
                 "name": "count_{{ press }}_di_button",
                 "reg_type": "press_counter",
                 "address": {{ 464 + loop.index0 * 16 }},
@@ -319,7 +306,6 @@
 
             {# Диагностика -#}
             {
-                "id": "alarm_temp_board",
                 "name": "alarm_temp_board",
                 "type": "switch",
                 "read_only": true,
@@ -329,7 +315,6 @@
                 "group": "gg_debug_temp"
             },
             {
-                "id": "cmd_charge_on",
                 "name": "cmd_charge_on",
                 "type": "pushbutton",
                 "reg_type": "coil",
@@ -338,7 +323,6 @@
                 "group": "gg_debug_charge_discharge"
             },
             {
-                "id": "state_charger_on",
                 "name": "state_charger_on",
                 "type": "switch",
                 "read_only": true,
@@ -348,7 +332,6 @@
                 "group": "gg_debug_charge_discharge"
             },
             {
-                "id": "state_discharger_on",
                 "name": "state_discharger_on",
                 "type": "switch",
                 "read_only": true,
@@ -358,7 +341,6 @@
                 "group": "gg_debug_charge_discharge"
             },
             {
-                "id": "set_i_charge",
                 "name": "set_i_charge",
                 "units": "mA",
                 "reg_type": "input",
@@ -367,7 +349,6 @@
                 "group": "gg_debug_charge_discharge"
             },
             {
-                "id": "set_u_vout",
                 "name": "set_u_vout",
                 "units": "V",
                 "reg_type": "input",
@@ -377,7 +358,6 @@
                 "group": "gg_debug_charge_discharge"
             },
             {
-                "id": "set_i_max_batt",
                 "name": "set_i_max_batt",
                 "units": "A",
                 "reg_type": "holding",
@@ -387,7 +367,6 @@
                 "group": "gg_debug_charge_discharge"
             },
             {
-                "id": "set_vinreg",
                 "name": "set_vinreg",
                 "units": "V",
                 "reg_type": "holding",
@@ -397,7 +376,6 @@
                 "group": "gg_debug_charge_discharge"
             },
             {
-                "id": "ocv",
                 "name": "ocv",
                 "units": "V",
                 "reg_type": "input",
@@ -417,7 +395,6 @@
             {% set chip_loop = loop -%}
             {% for value in values -%}
             {
-                "id": "{{ value }}_{{ type }}_{{ chip }}",
                 "name": "{{ value }}_{{ type }}_{{ chip }}",
                 "reg_type": "input",
                 "address": {{ 1024 + type_loop.index0 * 32 + chip_loop.index0 * 16 + loop.index0 }},
@@ -436,7 +413,6 @@
             {% endfor -%}
 
             {
-                "id": "sn",
                 "name": "sn",
                 "type": "text",
                 "reg_type": "input",
@@ -445,7 +421,6 @@
                 "group": "g_hw_info"
             },
             {
-                "id": "fw",
                 "name": "fw",
                 "reg_type": "input",
                 "address": 250,
@@ -456,7 +431,6 @@
                 "group": "g_hw_info"
             },
             {
-                "id": "uptime",
                 "name": "uptime",
                 "reg_type": "input",
                 "address": 104,
@@ -466,7 +440,6 @@
                 "group": "g_hw_info"
             },
             {
-                "id": "temp_mcu",
                 "name": "temp_mcu",
                 "reg_type": "input",
                 "address": 124,
@@ -477,7 +450,6 @@
                 "group": "g_hw_info"
             },
             {
-                "id": "voltage_mcu",
                 "name": "voltage_mcu",
                 "reg_type": "input",
                 "address": 123,
