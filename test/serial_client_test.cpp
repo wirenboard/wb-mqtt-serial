@@ -1181,14 +1181,20 @@ TEST_F(TSerialClientIntegrationTest, OnValue)
     }
 
     device->Registers[0] = 0;
+    device->Registers[1] = 0;
+    device->Registers[2] = 0;
+
     Note() << "LoopOnce()";
     SerialDriver->LoopOnce();
 
     PublishWaitOnValue("/devices/OnValueTest/controls/Relay 1/on", "1", 0, true);
+    PublishWaitOnValue("/devices/OnValueTest/controls/Relay 2/on", "1", 0, true);
 
     Note() << "LoopOnce()";
     SerialDriver->LoopOnce();
+
     ASSERT_EQ(500, device->Registers[0]);
+    ASSERT_EQ(-1, device->Registers[1] << 16 | device->Registers[2]);
 }
 
 TEST_F(TSerialClientIntegrationTest, OffValue)
@@ -1204,14 +1210,20 @@ TEST_F(TSerialClientIntegrationTest, OffValue)
     }
 
     device->Registers[0] = 500;
+    device->Registers[1] = 0xFFFF;
+    device->Registers[2] = 0xFFFF;
+
     Note() << "LoopOnce()";
     SerialDriver->LoopOnce();
 
     PublishWaitOnValue("/devices/OnValueTest/controls/Relay 1/on", "0", 0, true);
+    PublishWaitOnValue("/devices/OnValueTest/controls/Relay 2/on", "0", 0, true);
 
     Note() << "LoopOnce()";
     SerialDriver->LoopOnce();
+
     ASSERT_EQ(200, device->Registers[0]);
+    ASSERT_EQ(-2, device->Registers[1] << 16 | device->Registers[2]);
 }
 
 TEST_F(TSerialClientIntegrationTest, OnValueError)
@@ -1227,12 +1239,16 @@ TEST_F(TSerialClientIntegrationTest, OnValueError)
     }
 
     device->Registers[0] = 0;
+    device->Registers[1] = 0;
+    device->Registers[2] = 0;
+
     Note() << "LoopOnce()";
     SerialDriver->LoopOnce();
 
     device->BlockWriteFor(0, true);
 
     PublishWaitOnValue("/devices/OnValueTest/controls/Relay 1/on", "1", 0, true);
+    PublishWaitOnValue("/devices/OnValueTest/controls/Relay 2/on", "1", 0, true);
 
     Note() << "LoopOnce()";
     SerialDriver->LoopOnce();
@@ -1246,6 +1262,7 @@ TEST_F(TSerialClientIntegrationTest, OnValueError)
     SerialDriver->LoopOnce();
 
     ASSERT_EQ(500, device->Registers[0]);
+    ASSERT_EQ(-1, device->Registers[1] << 16 | device->Registers[2]);
 }
 
 TEST_F(TSerialClientIntegrationTest, Round)
