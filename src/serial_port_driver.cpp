@@ -144,7 +144,7 @@ void TSerialPortDriver::OnValueRead(PRegister reg)
         return;
     }
     if (it->second->HasValuesOfAllRegisters()) {
-        // change publis policy for sporadic registers to publish register data on every read, even if it not changed
+        // change publish policy for sporadic registers to publish register data on every read, even if it not changed
         // needed for DALI bus devices polling
         auto publishPolicy = PublishPolicy;
         if ((reg->GetConfig()->SporadicMode == TRegisterConfig::TSporadicMode::ONLY_EVENTS &&
