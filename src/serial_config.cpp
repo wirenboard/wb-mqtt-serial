@@ -62,7 +62,8 @@ namespace
     int GetIntFromString(const std::string& value, const std::string& errorPrefix)
     {
         try {
-            return std::stoi(value, /*pos= */ 0, /*base= */ 0);
+            // use std::stoul to parse negative hex value string without sign (greater than 0x7fffffff)
+            return static_cast<int>(std::stoul(value, 0, 0));
         } catch (const std::logic_error&) {
             throw TConfigParserException(errorPrefix + ": plain integer or '0x..' hex string expected instead of '" +
                                          value + "'");
@@ -91,10 +92,12 @@ namespace
 
     uint64_t ToUint64(const Json::Value& v, const string& title)
     {
-        if (v.isUInt())
+        if (v.isUInt()) {
             return v.asUInt64();
+        }
+
         if (v.isInt()) {
-            int val = v.asInt64();
+            auto val = v.asInt64();
             if (val >= 0) {
                 return val;
             }
@@ -124,6 +127,11 @@ namespace
     double GetDouble(const Json::Value& obj, const std::string& key)
     {
         return ToDouble(obj[key], key);
+    }
+
+    uint64_t GetUint64(const Json::Value& obj, const std::string& key)
+    {
+        return ToUint64(obj[key], key);
     }
 
     bool IsSerialNumberChannel(const Json::Value& channel_data)
@@ -379,13 +387,13 @@ namespace
             if (registers.size() != 1)
                 throw TConfigParserException("on_value is allowed only for single-valued controls -- " +
                                              deviceWithChannels.Device->DeviceConfig()->DeviceType);
-            channel->OnValue = std::to_string(GetInt(channel_data, "on_value"));
+            channel->OnValue = std::to_string(GetUint64(channel_data, "on_value"));
         }
         if (channel_data.isMember("off_value")) {
             if (registers.size() != 1)
                 throw TConfigParserException("off_value is allowed only for single-valued controls -- " +
                                              deviceWithChannels.Device->DeviceConfig()->DeviceType);
-            channel->OffValue = std::to_string(GetInt(channel_data, "off_value"));
+            channel->OffValue = std::to_string(GetUint64(channel_data, "off_value"));
         }
 
         if (registers.size() == 1) {
