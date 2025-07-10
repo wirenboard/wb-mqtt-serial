@@ -75,7 +75,7 @@
                 "group": "boiler_state",
                 "enabled": false
             },
-			 {
+            {
                 "name": "Hot Water Setpoint Max",
                 "address": 211,
                 "reg_type": "input",
@@ -83,31 +83,36 @@
                 "format": "u16",
                 "group": "boiler_state"
             },
-            { "name": "Water Pressure",
+            {
+		"name": "Water Pressure",
                 "address": 212,
                 "reg_type": "input",
                 "type": "pressure",
                 "format": "s16",
-				"scale" :0.001,
+		"round_to": 0.01,
+		"scale" :0.001,
                 "group": "boiler_state"
             },
-            { "name": "Burner Modulation Level",
+            {
+		"name": "Burner Modulation Level (%)",
                 "address": 213,
                 "reg_type": "input",
                 "type": "value",
                 "format": "s16",
-				"scale" :0.1,
+		"scale" :0.1,
                 "units": "%",
                 "group": "boiler_state"
             },
-            { "name": "Invalid Connection",
+            {
+		"name": "Invalid Connection",
                 "address": 214,
                 "reg_type": "input",
                 "type": "value",
                 "format": "u16",
                 "group": "boiler_state"
             },
-            { "name": "Boiler Status",
+            {
+		"name": "Boiler Status",
                 "address": 215,
                 "reg_type": "input",
                 "type": "value",
@@ -355,26 +360,23 @@
                 "Heating Temperature": "Температура подачи отопления",
                 "Heating Return Water Temperature": "Температура обратной воды отопления",
                 "Boiler Outdoor Temperature Sensor": "Уличная температура (датчик котла)",
-				"Hot Water Setpoint Max": "Максимальное значение температуры ГВС",
+		"Hot Water Setpoint Max": "Максимальное значение температуры ГВС",
                 "Water Pressure": "Давление",
-                "Burner Modulation Level" : "Модуляция котла",
+                "Burner Modulation Level (%)" : "Модуляция котла (%)",
                 "Invalid Connection": "Ошибка связи с котлом",
                 "Boiler Status" : "Состояние контуров котла",
                 "Hot Water Setpoint": "Уставка ГВС",
                 "Heating Settings": "Параметры отопления",
                 "FW Version": "Версия прошивки",
-
                 "Room Temperature Sensor": "Датчик комнатной температуры",
                 "Temperature Sensor Type": "Тип датчика температуры",
                 "Heating Setpoint": "Уставка отопления",
                 "Room Temperature": "Комнатная температура",
                 "Room Temperature Setpoint": "Уставка комнатной температуры",
-
                 "Outdoor Temperature Sensor": "Датчик уличной температуры",
                 "Climate Curve Number": "Номер климатической кривой",
                 "Outdoor Temperature": "Уличная температура",
                 "Heating Status": "Статус отопления",
-
                 "Direct Heating Setpoint Control": "Управление уставкой отопления",
                 "Heating Off": "Отопление отключено"
             }
