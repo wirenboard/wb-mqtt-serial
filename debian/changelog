@@ -1,8 +1,8 @@
 wb-mqtt-serial (2.177.4) stable; urgency=medium
 
-    * Update ONOKOM templates
+  * Update ONOKOM templates
 
-  -- Alexander Degtyarev <a.degtyarev@wirenboard.com> Thu, 10 Jul 2025 11:06:00 +0400
+ -- Alexander Degtyarev <a.degtyarev@wirenboard.com>  Thu, 10 Jul 2025 11:06:00 +0400
 
 wb-mqtt-serial (2.177.3) stable; urgency=medium
 
