@@ -1,15 +1,15 @@
 {
   "title": "template_title",
-  "device_type": "ONOKOM-AIR-GR-1-MB-B",
+  "device_type": "ONOKOM-AIR-DK-5-MB-B",
   "group": "g-air-conditioning",
   "hw": [
     {
-      "signature": "GR-1-MB-B"
+      "signature": "DK-5-MB-B"
     }
   ],
   "device": {
-    "name": "ONOKOM-AIR-GR-1-MB-B",
-    "id": "ONOKOM-AIR-GR-1-MB-B",
+    "name": "ONOKOM-AIR-DK-5-MB-B",
+    "id": "ONOKOM-AIR-DK-5-MB-B",
     "groups": [
       {
         "title": "General",
@@ -27,19 +27,19 @@
         "order": 3
       },
       {
-        "title": "Additional",
-        "id": "additional",
-        "order": 4
-      },
-      {
-        "title": "Indication",
-        "id": "indication",
-        "order": 5
-      },
-      {
         "title": "HW Info",
         "id": "hw_info",
         "order": 6
+      },
+      {
+        "title": "Setup",
+        "id": "setup",
+        "order": 7
+      },
+      {
+        "title": "Errors",
+        "id": "errors",
+        "order": 8
       },
       {
         "title": "Debug",
@@ -48,22 +48,6 @@
       }
     ],
     "parameters": [
-      {
-        "id": "Disable_screen_when_power_off",
-        "title": "Disable screen when power off",
-        "address": 41,
-        "reg_type": "coil",
-        "enum": [
-          0,
-          1
-        ],
-        "enum_titles": [
-          "No",
-          "Yes"
-        ],
-        "group": "indication",
-        "order": 1
-      },
       {
         "id": "Allow_the_use_of_an_external_temperature_sensor",
         "title": "Allow the use of an external temperature sensor",
@@ -280,7 +264,7 @@
         "type": "range",
         "format": "u16",
         "min": 0,
-        "max": 5,
+        "max": 3,
         "sporadic": true,
         "group": "general",
         "condition": "Show_fan_as_range==1"
@@ -292,24 +276,20 @@
         "type": "value",
         "format": "u16",
         "min": 0,
-        "max": 5,
+        "max": 3,
         "sporadic": true,
         "group": "general",
         "enum": [
           0,
           1,
           2,
-          3,
-          4,
-          5
+          3
         ],
         "enum_titles": [
           "Auto",
           "1 Speed",
           "2 Speed",
-          "3 Speed",
-          "4 Speed",
-          "5 Speed"
+          "3 Speed"
         ],
         "condition": "Show_fan_as_range!=1"
       },
@@ -320,7 +300,7 @@
         "type": "range",
         "format": "u16",
         "min": 0,
-        "max": 7,
+        "max": 4,
         "sporadic": true,
         "group": "general",
         "condition": "Show_fan_as_range==1"
@@ -332,28 +312,20 @@
         "type": "value",
         "format": "u16",
         "min": 0,
-        "max": 7,
+        "max": 4,
         "sporadic": true,
         "group": "general",
         "enum": [
           0,
-          1,
           2,
           3,
-          4,
-          5,
-          6,
-          7
+          4
         ],
         "enum_titles": [
           "Auto",
-          "Quiet mode",
           "1 Speed",
           "2 Speed",
-          "3 Speed",
-          "4 Speed",
-          "5 Speed",
-          "Turbo mode"
+          "3 Speed"
         ],
         "condition": "Show_fan_as_range!=1"
       },
@@ -385,26 +357,13 @@
         "condition": "Allow_the_use_of_an_external_temperature_sensor==1"
       },
       {
-        "name": "Outdoor air temperature",
-        "enabled": false,
-        "reg_type": "holding",
-        "address": 4,
-        "type": "value",
-        "format": "s16",
-        "scale": 0.01,
-        "sporadic": true,
-        "group": "temperatureControl",
-        "readonly": true,
-        "units": "deg C"
-      },
-      {
         "name": "Target temperature",
         "reg_type": "holding",
         "address": 5,
         "type": "range",
         "format": "s16",
         "min": 16,
-        "max": 30,
+        "max": 32,
         "scale": 0.01,
         "sporadic": true,
         "group": "temperatureControl",
@@ -487,48 +446,6 @@
         "condition": "Show_vanes_as_range!=1"
       },
       {
-        "name": "Vertical vanes",
-        "reg_type": "holding",
-        "address": 10,
-        "type": "range",
-        "format": "u16",
-        "min": 0,
-        "max": 6,
-        "sporadic": true,
-        "group": "vanes",
-        "condition": "Show_vanes_as_range==1"
-      },
-      {
-        "name": "Vertical vanes",
-        "reg_type": "holding",
-        "address": 10,
-        "type": "value",
-        "format": "u16",
-        "min": 0,
-        "max": 6,
-        "sporadic": true,
-        "group": "vanes",
-        "enum": [
-          0,
-          1,
-          2,
-          3,
-          4,
-          5,
-          6
-        ],
-        "enum_titles": [
-          "Stop",
-          "Swing",
-          "Far Left",
-          "Left",
-          "Middle",
-          "Right",
-          "Far Right"
-        ],
-        "condition": "Show_vanes_as_range!=1"
-      },
-      {
         "name": "Vanes swing",
         "reg_type": "holding",
         "address": 11,
@@ -563,68 +480,6 @@
         "condition": "Show_vanes_as_range!=1"
       },
       {
-        "name": "Quiet mode",
-        "enabled": false,
-        "reg_type": "coil",
-        "address": 4,
-        "type": "switch",
-        "sporadic": true,
-        "group": "additional"
-      },
-      {
-        "name": "Eco mode",
-        "enabled": false,
-        "reg_type": "coil",
-        "address": 6,
-        "type": "switch",
-        "sporadic": true,
-        "group": "additional"
-      },
-      {
-        "name": "Turbo mode",
-        "enabled": false,
-        "reg_type": "coil",
-        "address": 7,
-        "type": "switch",
-        "sporadic": true,
-        "group": "additional"
-      },
-      {
-        "name": "Sleep mode",
-        "enabled": false,
-        "reg_type": "coil",
-        "address": 8,
-        "type": "switch",
-        "sporadic": true,
-        "group": "additional"
-      },
-      {
-        "name": "Ionization",
-        "enabled": false,
-        "reg_type": "coil",
-        "address": 9,
-        "type": "switch",
-        "sporadic": true,
-        "group": "additional"
-      },
-      {
-        "name": "Screen light",
-        "reg_type": "coil",
-        "address": 2,
-        "type": "switch",
-        "sporadic": true,
-        "group": "indication"
-      },
-      {
-        "name": "Disable screen when power off",
-        "enabled": false,
-        "reg_type": "coil",
-        "address": 41,
-        "type": "switch",
-        "sporadic": true,
-        "group": "indication"
-      },
-      {
         "name": "Temeperature correction",
         "reg_type": "holding",
         "address": 20,
@@ -644,6 +499,26 @@
         "sporadic": true,
         "group": "debug",
         "readonly": true
+      },
+      {
+        "name": "Indoor unit model",
+        "reg_type": "holding",
+        "address": 500,
+        "type": "text",
+        "format": "string",
+        "group": "setup",
+        "readonly": true,
+        "string_data_size": 15
+      },
+      {
+        "name": "Outdoor unit model",
+        "reg_type": "holding",
+        "address": 520,
+        "type": "text",
+        "format": "string",
+        "group": "setup",
+        "readonly": true,
+        "string_data_size": 15
       },
       {
         "name": "HW Version",
@@ -729,14 +604,41 @@
         "address": 120,
         "type": "pushbutton",
         "group": "hw_info"
+      },
+      {
+        "name": "Gateway mode",
+        "reg_type": "holding",
+        "address": 656,
+        "type": "value",
+        "min": 0,
+        "max": 2,
+        "group": "setup",
+        "enum": [
+          0,
+          1,
+          2
+        ],
+        "enum_titles": [
+          "LISTEN_ONLY",
+          "EMULATE_M_WRC",
+          "EMULATE_S_WRC"
+        ]
+      },
+      {
+        "name": "Error code",
+        "reg_type": "input",
+        "address": 1,
+        "type": "value",
+        "group": "errors",
+        "readonly": true
       }
     ],
     "translations": {
       "en": {
-        "template_title": "ONOKOM AIR GR-1-MB-B (Adapter for household GREE systems)"
+        "template_title": "ONOKOM AIR DK-5-MB-B (Adapter for VRF DAIKIN systems)"
       },
       "ru": {
-        "template_title": "ONOKOM AIR GR-1-MB-B (Адаптер для бытовых систем GREE)",
+        "template_title": "ONOKOM AIR DK-5-MB-B (Адаптер для мультизональных систем DAIKIN)",
         "General": "Основные режимы и функции",
         "Active": "Состояние",
         "Mode": "Режим",
@@ -756,7 +658,6 @@
         "Temperature control": "Контроль температуры",
         "Allow the use of an external temperature sensor": "Разрешить использование внешнего датчика температуры",
         "Indoor air temperature": "Температура воздуха в помещении",
-        "Outdoor air temperature": "Температура воздуха на улице",
         "Target temperature": "Целевая температура",
         "Show thermostat state as range": "Отображать состояние термостата как ползунок",
         "Thermostat state": "Состояние термостата",
@@ -769,31 +670,15 @@
         "Middle": "Среднее",
         "High": "Высокое",
         "Highest": "Самое высокое",
-        "Far Left": "Самое левое",
-        "Left": "Левое",
-        "Right": "Правое",
-        "Far Right": "Самое правое",
-        "Vertical vanes": "Вертикальные жалюзи",
         "Vanes swing": "Качание жалюзи",
         "Stop": "Остановлены",
         "Horizontal and vertical swing": "Качание горизонтальное и вертикальное",
         "Swinging horizontal blinds": "Качание горизонтальных жалюзи",
         "Swinging vertical blinds": "Качание вертикальных жалюзи",
         "Show fan as range": "Отображать вентилятор как ползунок",
-        "Additional": "Дополнительные режимы и функции",
         "1 Speed": "1 Скорость",
         "2 Speed": "2 Скорость",
         "3 Speed": "3 Скорость",
-        "4 Speed": "4 Скорость",
-        "5 Speed": "5 Скорость",
-        "Quiet mode": "Режим тихий",
-        "Eco mode": "Режим эко",
-        "Turbo mode": "Режим турбо",
-        "Sleep mode": "Режим сна",
-        "Ionization": "Ионизация",
-        "Indication": "Индикация",
-        "Screen light": "Подсветка экрана",
-        "Disable screen when power off": "Отключать экран при отключении питания",
         "No": "Нет",
         "Yes": "Да",
         "Baud rate": "Скорость обмена",
@@ -809,9 +694,18 @@
         "MCU Temperature": "Температура МК",
         "Serial": "Серийный номер",
         "Reboot Device": "Перезагрузить устройство",
+        "Setup": "Настройки",
+        "Gateway mode": "Режим шлюза",
+        "LISTEN_ONLY": "Слушатель",
+        "EMULATE_M_WRC": "Главный",
+        "EMULATE_S_WRC": "Ведомый",
+        "Outdoor unit model": "Наружный блок",
+        "Indoor unit model": "Внутренний блок",
         "Debug": "Диагностика",
         "Temeperature correction": "Коррекция температуры",
-        "AC connected": "Кондиционер подключен"
+        "AC connected": "Кондиционер подключен",
+        "Errors": "Ошибки",
+        "Error code": "Код ошибки"
       }
     }
   }
