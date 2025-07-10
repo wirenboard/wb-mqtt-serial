@@ -1,3 +1,9 @@
+wb-mqtt-serial (2.178.0) stable; urgency=medium
+
+  * Add publish sporadic registers data on every read feature
+
+ -- Ilya Titov <ilya.titov@wirenboard.com>  Thu, 10 Jul 2025 09:50:33 +0300
+
 wb-mqtt-serial (2.177.3) stable; urgency=medium
 
   * Port handling refactoring. No functional changes
