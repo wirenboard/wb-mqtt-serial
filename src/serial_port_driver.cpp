@@ -144,7 +144,11 @@ void TSerialPortDriver::OnValueRead(PRegister reg)
         return;
     }
     if (it->second->HasValuesOfAllRegisters()) {
-        it->second->UpdateValueAndError(*MqttDriver, PublishPolicy);
+        auto publishPolicy = PublishPolicy;
+        if (reg->GetConfig()->SporadicMode != TRegisterConfig::TSporadicMode::DISABLED) {
+            publishPolicy.Policy = TPublishParameters::PublishAll;
+        }
+        it->second->UpdateValueAndError(*MqttDriver, publishPolicy);
     }
 }
 
