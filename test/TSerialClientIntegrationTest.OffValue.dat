@@ -32,12 +32,12 @@ Unsubscribe -- serial-client-integration-test: /devices/OnValueTest/controls/#
 >>> LoopOnce()
 Open()
 Sleep(100000)
-fake_serial_device '144': read address '0' value '65535'
+fake_serial_device '144': read address '0' value '500'
 fake_serial_device '144': transfer OK
 fake_serial_device '144': reconnected
-fake_serial_device '144': read address '1' value '0'
-Publish: /devices/OnValueTest/controls/Relay 1: '65535' (QoS 1, retained)
-Publish: /devices/OnValueTest/controls/Relay 2: '0' (QoS 1, retained)
+fake_serial_device '144': read address '1' value '4294967295'
+Publish: /devices/OnValueTest/controls/Relay 1: '1' (QoS 1, retained)
+Publish: /devices/OnValueTest/controls/Relay 2: '-1' (QoS 1, retained)
 Publish: /devices/OnValueTest/controls/Relay 1/on: '0' (QoS 0, retained)
 Publish: /devices/OnValueTest/controls/Relay 2/on: '0' (QoS 0, retained)
 >>> LoopOnce()
