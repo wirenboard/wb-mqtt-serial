@@ -1,1696 +1,1696 @@
 {
-  "title": "template_title",
-  "device_type": "ONOKOM-AIR-GR-3-MB-B",
-  "group": "g-air-conditioning",
-  "hw": [
-    {
-      "signature": "GR-3-MB-B"
+    "title": "template_title",
+    "device_type": "ONOKOM-AIR-GR-3-MB-B",
+    "group": "g-air-conditioning",
+    "hw": [
+        {
+            "signature": "GR-3-MB-B"
+        }
+    ],
+    "device": {
+        "name": "ONOKOM-AIR-GR-3-MB-B",
+        "id": "ONOKOM-AIR-GR-3-MB-B",
+        "groups": [
+            {
+                "title": "General",
+                "id": "general",
+                "order": 1
+            },
+            {
+                "title": "Temperature control",
+                "id": "temperatureControl",
+                "order": 2
+            },
+            {
+                "title": "Vanes",
+                "id": "vanes",
+                "order": 3
+            },
+            {
+                "title": "Additional",
+                "id": "additional",
+                "order": 4
+            },
+            {
+                "title": "HW Info",
+                "id": "hw_info",
+                "order": 6
+            },
+            {
+                "title": "Errors",
+                "id": "errors",
+                "order": 8
+            },
+            {
+                "title": "Debug",
+                "id": "debug",
+                "order": 9
+            }
+        ],
+        "parameters": [
+            {
+                "id": "Allow_the_use_of_an_external_temperature_sensor",
+                "title": "Allow the use of an external temperature sensor",
+                "address": 100,
+                "reg_type": "coil",
+                "enum": [
+                    0,
+                    1
+                ],
+                "enum_titles": [
+                    "No",
+                    "Yes"
+                ],
+                "group": "temperatureControl",
+                "order": 1
+            },
+            {
+                "id": "Show_modes_as_range",
+                "title": "Show modes as range",
+                "address": 95,
+                "reg_type": "coil",
+                "enum": [
+                    0,
+                    1
+                ],
+                "enum_titles": [
+                    "No",
+                    "Yes"
+                ],
+                "group": "general",
+                "order": 1
+            },
+            {
+                "id": "Show_fan_as_range",
+                "title": "Show fan as range",
+                "address": 92,
+                "reg_type": "coil",
+                "enum": [
+                    0,
+                    1
+                ],
+                "enum_titles": [
+                    "No",
+                    "Yes"
+                ],
+                "group": "general",
+                "order": 1
+            },
+            {
+                "id": "Show_vanes_as_range",
+                "title": "Show vanes as range",
+                "address": 94,
+                "reg_type": "coil",
+                "enum": [
+                    0,
+                    1
+                ],
+                "enum_titles": [
+                    "No",
+                    "Yes"
+                ],
+                "group": "vanes",
+                "order": 1
+            },
+            {
+                "id": "Show_thermostat_state_as_range",
+                "title": "Show thermostat state as range",
+                "address": 94,
+                "reg_type": "coil",
+                "enum": [
+                    0,
+                    1
+                ],
+                "enum_titles": [
+                    "No",
+                    "Yes"
+                ],
+                "group": "temperatureControl",
+                "order": 1
+            },
+            {
+                "title": "Show error switches",
+                "id": "Show_error_switches",
+                "address": 100,
+                "reg_type": "coil",
+                "default": 1,
+                "enum": [
+                    0,
+                    1
+                ],
+                "enum_titles": [
+                    "No",
+                    "Yes"
+                ],
+                "group": "errors",
+                "order": 1
+            },
+            {
+                "id": "baud_rate",
+                "title": "Baud rate",
+                "description": "baud_rate_description",
+                "address": 110,
+                "reg_type": "holding",
+                "enum": [
+                    96,
+                    192,
+                    384,
+                    576,
+                    1152
+                ],
+                "default": 96,
+                "enum_titles": [
+                    "9600",
+                    "19200",
+                    "38400",
+                    "57600",
+                    "115200"
+                ],
+                "group": "hw_info",
+                "order": 1
+            },
+            {
+                "id": "parity_bit",
+                "title": "Parity bit",
+                "description": "parity_bit_description",
+                "address": 111,
+                "reg_type": "holding",
+                "enum": [
+                    0,
+                    1,
+                    2
+                ],
+                "default": 0,
+                "enum_titles": [
+                    "none (N)",
+                    "odd (O)",
+                    "even (E)"
+                ],
+                "group": "hw_info",
+                "order": 1
+            }
+        ],
+        "channels": [
+            {
+                "name": "Active",
+                "reg_type": "coil",
+                "address": 1,
+                "type": "switch",
+                "format": "u16",
+                "sporadic": true,
+                "group": "general"
+            },
+            {
+                "name": "Mode",
+                "reg_type": "holding",
+                "address": 1,
+                "type": "range",
+                "format": "u16",
+                "min": 1,
+                "max": 5,
+                "sporadic": true,
+                "group": "general",
+                "condition": "Show_modes_as_range==1"
+            },
+            {
+                "name": "Mode",
+                "reg_type": "holding",
+                "address": 1,
+                "type": "value",
+                "format": "u16",
+                "sporadic": true,
+                "group": "general",
+                "enum": [
+                    1,
+                    2,
+                    3,
+                    4,
+                    5
+                ],
+                "enum_titles": [
+                    "Heat",
+                    "Cool",
+                    "Auto",
+                    "Dry",
+                    "Fan"
+                ],
+                "condition": "Show_modes_as_range!=1"
+            },
+            {
+                "name": "Active mode",
+                "reg_type": "holding",
+                "address": 2,
+                "type": "range",
+                "format": "u16",
+                "min": 0,
+                "max": 5,
+                "sporadic": true,
+                "group": "general",
+                "condition": "Show_modes_as_range==1"
+            },
+            {
+                "name": "Active mode",
+                "reg_type": "holding",
+                "address": 2,
+                "type": "value",
+                "format": "u16",
+                "sporadic": true,
+                "group": "general",
+                "enum": [
+                    0,
+                    1,
+                    2,
+                    3,
+                    4,
+                    5
+                ],
+                "enum_titles": [
+                    "Off",
+                    "Heat",
+                    "Cool",
+                    "Auto",
+                    "Dry",
+                    "Fan"
+                ],
+                "condition": "Show_modes_as_range!=1"
+            },
+            {
+                "name": "Fan speed",
+                "reg_type": "holding",
+                "address": 7,
+                "type": "range",
+                "format": "u16",
+                "min": 0,
+                "max": 5,
+                "sporadic": true,
+                "group": "general",
+                "condition": "Show_fan_as_range==1"
+            },
+            {
+                "name": "Fan speed",
+                "reg_type": "holding",
+                "address": 7,
+                "type": "value",
+                "format": "u16",
+                "min": 0,
+                "max": 5,
+                "sporadic": true,
+                "group": "general",
+                "enum": [
+                    0,
+                    1,
+                    2,
+                    3,
+                    4,
+                    5
+                ],
+                "enum_titles": [
+                    "Auto",
+                    "1 Speed",
+                    "2 Speed",
+                    "3 Speed",
+                    "4 Speed",
+                    "5 Speed"
+                ],
+                "condition": "Show_fan_as_range!=1"
+            },
+            {
+                "name": "Smart fan speed",
+                "reg_type": "holding",
+                "address": 8,
+                "type": "range",
+                "format": "u16",
+                "min": 0,
+                "max": 7,
+                "sporadic": true,
+                "group": "general",
+                "condition": "Show_fan_as_range==1"
+            },
+            {
+                "name": "Smart fan speed",
+                "reg_type": "holding",
+                "address": 8,
+                "type": "value",
+                "format": "u16",
+                "min": 0,
+                "max": 7,
+                "sporadic": true,
+                "group": "general",
+                "enum": [
+                    0,
+                    1,
+                    2,
+                    3,
+                    4,
+                    5,
+                    6,
+                    7
+                ],
+                "enum_titles": [
+                    "Auto",
+                    "Quiet mode",
+                    "1 Speed",
+                    "2 Speed",
+                    "3 Speed",
+                    "4 Speed",
+                    "5 Speed",
+                    "Turbo mode"
+                ],
+                "condition": "Show_fan_as_range!=1"
+            },
+            {
+                "name": "Indoor air temperature",
+                "reg_type": "holding",
+                "address": 3,
+                "type": "value",
+                "format": "s16",
+                "scale": 0.01,
+                "sporadic": true,
+                "group": "temperatureControl",
+                "readonly": true,
+                "units": "deg C",
+                "condition": "Allow_the_use_of_an_external_temperature_sensor!=1"
+            },
+            {
+                "name": "Indoor air temperature",
+                "reg_type": "holding",
+                "address": 3,
+                "type": "value",
+                "format": "s16",
+                "min": -50,
+                "max": 50,
+                "scale": 0.01,
+                "sporadic": true,
+                "group": "temperatureControl",
+                "units": "deg C",
+                "condition": "Allow_the_use_of_an_external_temperature_sensor==1"
+            },
+            {
+                "name": "Outdoor air temperature",
+                "enabled": false,
+                "reg_type": "holding",
+                "address": 4,
+                "type": "value",
+                "format": "s16",
+                "scale": 0.01,
+                "sporadic": true,
+                "group": "temperatureControl",
+                "readonly": true,
+                "units": "deg C"
+            },
+            {
+                "name": "Indoor heat exchanger temperature",
+                "enabled": false,
+                "reg_type": "holding",
+                "address": 23,
+                "type": "value",
+                "format": "s16",
+                "scale": 0.01,
+                "sporadic": true,
+                "group": "temperatureControl",
+                "readonly": true,
+                "units": "deg C"
+            },
+            {
+                "name": "Target temperature",
+                "reg_type": "holding",
+                "address": 5,
+                "type": "range",
+                "format": "s16",
+                "min": 16,
+                "max": 30,
+                "scale": 0.01,
+                "sporadic": true,
+                "group": "temperatureControl",
+                "units": "deg C"
+            },
+            {
+                "name": "Thermostat state",
+                "reg_type": "holding",
+                "address": 6,
+                "type": "range",
+                "format": "u16",
+                "min": 0,
+                "max": 2,
+                "sporadic": true,
+                "group": "temperatureControl",
+                "readonly": true,
+                "condition": "Show_thermostat_state_as_range==1"
+            },
+            {
+                "name": "Thermostat state",
+                "reg_type": "holding",
+                "address": 6,
+                "type": "value",
+                "format": "u16",
+                "sporadic": true,
+                "group": "temperatureControl",
+                "enum": [
+                    0,
+                    1,
+                    2
+                ],
+                "enum_titles": [
+                    "Idle",
+                    "Heating",
+                    "Cooling"
+                ],
+                "readonly": true,
+                "condition": "Show_thermostat_state_as_range!=1"
+            },
+            {
+                "name": "Horizontal vanes",
+                "reg_type": "holding",
+                "address": 9,
+                "type": "range",
+                "format": "u16",
+                "min": 0,
+                "max": 6,
+                "sporadic": true,
+                "group": "vanes",
+                "condition": "Show_vanes_as_range==1"
+            },
+            {
+                "name": "Horizontal vanes",
+                "reg_type": "holding",
+                "address": 9,
+                "type": "value",
+                "format": "u16",
+                "min": 0,
+                "max": 6,
+                "sporadic": true,
+                "group": "vanes",
+                "enum": [
+                    0,
+                    1,
+                    2,
+                    3,
+                    4,
+                    5,
+                    6
+                ],
+                "enum_titles": [
+                    "Stop",
+                    "Swing",
+                    "Lowest",
+                    "Low",
+                    "Middle",
+                    "High",
+                    "Highest"
+                ],
+                "condition": "Show_vanes_as_range!=1"
+            },
+            {
+                "name": "Vertical vanes",
+                "reg_type": "holding",
+                "address": 10,
+                "type": "range",
+                "format": "u16",
+                "min": 0,
+                "max": 6,
+                "sporadic": true,
+                "group": "vanes",
+                "condition": "Show_vanes_as_range==1"
+            },
+            {
+                "name": "Vertical vanes",
+                "reg_type": "holding",
+                "address": 10,
+                "type": "value",
+                "format": "u16",
+                "min": 0,
+                "max": 6,
+                "sporadic": true,
+                "group": "vanes",
+                "enum": [
+                    0,
+                    1,
+                    2,
+                    3,
+                    4,
+                    5,
+                    6
+                ],
+                "enum_titles": [
+                    "Stop",
+                    "Swing",
+                    "Far Left",
+                    "Left",
+                    "Middle",
+                    "Right",
+                    "Far Right"
+                ],
+                "condition": "Show_vanes_as_range!=1"
+            },
+            {
+                "name": "Vanes swing",
+                "reg_type": "holding",
+                "address": 11,
+                "type": "range",
+                "format": "u16",
+                "min": 0,
+                "max": 3,
+                "sporadic": false,
+                "group": "vanes",
+                "condition": "Show_vanes_as_range==1"
+            },
+            {
+                "name": "Vanes swing",
+                "reg_type": "holding",
+                "address": 11,
+                "type": "value",
+                "format": "u16",
+                "sporadic": false,
+                "group": "vanes",
+                "enum": [
+                    0,
+                    1,
+                    2,
+                    3
+                ],
+                "enum_titles": [
+                    "Stop",
+                    "Horizontal and vertical swing",
+                    "Swinging horizontal blinds",
+                    "Swinging vertical blinds"
+                ],
+                "condition": "Show_vanes_as_range!=1"
+            },
+            {
+                "name": "Quiet mode",
+                "enabled": false,
+                "reg_type": "coil",
+                "address": 4,
+                "type": "switch",
+                "sporadic": true,
+                "group": "additional"
+            },
+            {
+                "name": "Eco mode",
+                "enabled": false,
+                "reg_type": "coil",
+                "address": 6,
+                "type": "switch",
+                "sporadic": true,
+                "group": "additional"
+            },
+            {
+                "name": "Turbo mode",
+                "enabled": false,
+                "reg_type": "coil",
+                "address": 7,
+                "type": "switch",
+                "sporadic": true,
+                "group": "additional"
+            },
+            {
+                "name": "Sleep mode",
+                "enabled": false,
+                "reg_type": "coil",
+                "address": 8,
+                "type": "switch",
+                "sporadic": true,
+                "group": "additional"
+            },
+            {
+                "name": "Ionization",
+                "enabled": false,
+                "reg_type": "coil",
+                "address": 9,
+                "type": "switch",
+                "sporadic": true,
+                "group": "additional"
+            },
+            {
+                "name": "Self cleaning",
+                "enabled": false,
+                "reg_type": "coil",
+                "address": 10,
+                "type": "switch",
+                "sporadic": true,
+                "group": "additional"
+            },
+            {
+                "name": "Temeperature correction",
+                "reg_type": "holding",
+                "address": 20,
+                "type": "value",
+                "format": "s16",
+                "min": -30,
+                "max": 30,
+                "sporadic": true,
+                "group": "temperatureControl",
+                "condition": "Allow_the_use_of_an_external_temperature_sensor==1"
+            },
+            {
+                "name": "AC connected",
+                "reg_type": "coil",
+                "address": 20,
+                "type": "switch",
+                "sporadic": true,
+                "group": "debug",
+                "readonly": true
+            },
+            {
+                "name": "HW Version",
+                "enabled": false,
+                "reg_type": "holding",
+                "address": 200,
+                "type": "text",
+                "format": "string",
+                "sporadic": true,
+                "group": "hw_info",
+                "readonly": true,
+                "string_data_size": 20
+            },
+            {
+                "name": "FW Version",
+                "enabled": false,
+                "reg_type": "holding",
+                "address": 250,
+                "type": "text",
+                "format": "string",
+                "sporadic": true,
+                "group": "hw_info",
+                "readonly": true,
+                "string_data_size": 16
+            },
+            {
+                "name": "PROTO Version",
+                "enabled": false,
+                "reg_type": "input",
+                "address": 400,
+                "type": "text",
+                "format": "string",
+                "sporadic": true,
+                "group": "hw_info",
+                "readonly": true,
+                "string_data_size": 16
+            },
+            {
+                "name": "Signature",
+                "enabled": false,
+                "reg_type": "input",
+                "address": 290,
+                "type": "text",
+                "format": "string",
+                "sporadic": true,
+                "group": "hw_info",
+                "readonly": true,
+                "string_data_size": 12
+            },
+            {
+                "name": "Serial",
+                "enabled": false,
+                "reg_type": "holding",
+                "address": 270,
+                "type": "text",
+                "format": "u32",
+                "group": "hw_info",
+                "readonly": true
+            },
+            {
+                "name": "Uptime",
+                "enabled": false,
+                "reg_type": "input",
+                "address": 104,
+                "type": "text",
+                "format": "u32",
+                "group": "hw_info"
+            },
+            {
+                "name": "MCU Temperature",
+                "enabled": false,
+                "reg_type": "input",
+                "address": 124,
+                "type": "temperature",
+                "format": "s16",
+                "scale": 0.1,
+                "group": "hw_info"
+            },
+            {
+                "name": "Reboot Device",
+                "enabled": false,
+                "reg_type": "holding",
+                "address": 120,
+                "type": "pushbutton",
+                "group": "hw_info"
+            },
+            {
+                "name": "Error 1",
+                "group": "errors",
+                "reg_type": "discrete",
+                "address": 1,
+                "type": "switch",
+                "readonly": true,
+                "condition": "Show_error_switches==1",
+                "enabled": true
+            },
+            {
+                "name": "Error 2",
+                "group": "errors",
+                "reg_type": "discrete",
+                "address": 2,
+                "type": "switch",
+                "readonly": true,
+                "condition": "Show_error_switches==1",
+                "enabled": true
+            },
+            {
+                "name": "Error 3",
+                "group": "errors",
+                "reg_type": "discrete",
+                "address": 3,
+                "type": "switch",
+                "readonly": true,
+                "condition": "Show_error_switches==1",
+                "enabled": true
+            },
+            {
+                "name": "Error 4",
+                "group": "errors",
+                "reg_type": "discrete",
+                "address": 4,
+                "type": "switch",
+                "readonly": true,
+                "condition": "Show_error_switches==1",
+                "enabled": true
+            },
+            {
+                "name": "Error 5",
+                "group": "errors",
+                "reg_type": "discrete",
+                "address": 5,
+                "type": "switch",
+                "readonly": true,
+                "condition": "Show_error_switches==1",
+                "enabled": true
+            },
+            {
+                "name": "Error 6",
+                "group": "errors",
+                "reg_type": "discrete",
+                "address": 6,
+                "type": "switch",
+                "readonly": true,
+                "condition": "Show_error_switches==1",
+                "enabled": true
+            },
+            {
+                "name": "Error 7",
+                "group": "errors",
+                "reg_type": "discrete",
+                "address": 7,
+                "type": "switch",
+                "readonly": true,
+                "condition": "Show_error_switches==1",
+                "enabled": true
+            },
+            {
+                "name": "Error 8",
+                "group": "errors",
+                "reg_type": "discrete",
+                "address": 8,
+                "type": "switch",
+                "readonly": true,
+                "condition": "Show_error_switches==1",
+                "enabled": true
+            },
+            {
+                "name": "Error 9",
+                "group": "errors",
+                "reg_type": "discrete",
+                "address": 9,
+                "type": "switch",
+                "readonly": true,
+                "condition": "Show_error_switches==1",
+                "enabled": true
+            },
+            {
+                "name": "Error 10",
+                "group": "errors",
+                "reg_type": "discrete",
+                "address": 10,
+                "type": "switch",
+                "readonly": true,
+                "condition": "Show_error_switches==1",
+                "enabled": true
+            },
+            {
+                "name": "Error 11",
+                "group": "errors",
+                "reg_type": "discrete",
+                "address": 11,
+                "type": "switch",
+                "readonly": true,
+                "condition": "Show_error_switches==1",
+                "enabled": true
+            },
+            {
+                "name": "Error 12",
+                "group": "errors",
+                "reg_type": "discrete",
+                "address": 12,
+                "type": "switch",
+                "readonly": true,
+                "condition": "Show_error_switches==1",
+                "enabled": true
+            },
+            {
+                "name": "Error 13",
+                "group": "errors",
+                "reg_type": "discrete",
+                "address": 13,
+                "type": "switch",
+                "readonly": true,
+                "condition": "Show_error_switches==1",
+                "enabled": true
+            },
+            {
+                "name": "Error 14",
+                "group": "errors",
+                "reg_type": "discrete",
+                "address": 14,
+                "type": "switch",
+                "readonly": true,
+                "condition": "Show_error_switches==1",
+                "enabled": true
+            },
+            {
+                "name": "Error 15",
+                "group": "errors",
+                "reg_type": "discrete",
+                "address": 15,
+                "type": "switch",
+                "readonly": true,
+                "condition": "Show_error_switches==1",
+                "enabled": true
+            },
+            {
+                "name": "Error 16",
+                "group": "errors",
+                "reg_type": "discrete",
+                "address": 16,
+                "type": "switch",
+                "readonly": true,
+                "condition": "Show_error_switches==1",
+                "enabled": true
+            },
+            {
+                "name": "Error 17",
+                "group": "errors",
+                "reg_type": "discrete",
+                "address": 17,
+                "type": "switch",
+                "readonly": true,
+                "condition": "Show_error_switches==1",
+                "enabled": true
+            },
+            {
+                "name": "Error 18",
+                "group": "errors",
+                "reg_type": "discrete",
+                "address": 18,
+                "type": "switch",
+                "readonly": true,
+                "condition": "Show_error_switches==1",
+                "enabled": true
+            },
+            {
+                "name": "Error 19",
+                "group": "errors",
+                "reg_type": "discrete",
+                "address": 19,
+                "type": "switch",
+                "readonly": true,
+                "condition": "Show_error_switches==1",
+                "enabled": true
+            },
+            {
+                "name": "Error 20",
+                "group": "errors",
+                "reg_type": "discrete",
+                "address": 20,
+                "type": "switch",
+                "readonly": true,
+                "condition": "Show_error_switches==1",
+                "enabled": true
+            },
+            {
+                "name": "Error 21",
+                "group": "errors",
+                "reg_type": "discrete",
+                "address": 21,
+                "type": "switch",
+                "readonly": true,
+                "condition": "Show_error_switches==1",
+                "enabled": true
+            },
+            {
+                "name": "Error 22",
+                "group": "errors",
+                "reg_type": "discrete",
+                "address": 22,
+                "type": "switch",
+                "readonly": true,
+                "condition": "Show_error_switches==1",
+                "enabled": true
+            },
+            {
+                "name": "Error 23",
+                "group": "errors",
+                "reg_type": "discrete",
+                "address": 23,
+                "type": "switch",
+                "readonly": true,
+                "condition": "Show_error_switches==1",
+                "enabled": true
+            },
+            {
+                "name": "Error 24",
+                "group": "errors",
+                "reg_type": "discrete",
+                "address": 24,
+                "type": "switch",
+                "readonly": true,
+                "condition": "Show_error_switches==1",
+                "enabled": true
+            },
+            {
+                "name": "Error 25",
+                "group": "errors",
+                "reg_type": "discrete",
+                "address": 25,
+                "type": "switch",
+                "readonly": true,
+                "condition": "Show_error_switches==1",
+                "enabled": true
+            },
+            {
+                "name": "Error 26",
+                "group": "errors",
+                "reg_type": "discrete",
+                "address": 26,
+                "type": "switch",
+                "readonly": true,
+                "condition": "Show_error_switches==1",
+                "enabled": true
+            },
+            {
+                "name": "Error 27",
+                "group": "errors",
+                "reg_type": "discrete",
+                "address": 27,
+                "type": "switch",
+                "readonly": true,
+                "condition": "Show_error_switches==1",
+                "enabled": true
+            },
+            {
+                "name": "Error 28",
+                "group": "errors",
+                "reg_type": "discrete",
+                "address": 28,
+                "type": "switch",
+                "readonly": true,
+                "condition": "Show_error_switches==1",
+                "enabled": true
+            },
+            {
+                "name": "Error 29",
+                "group": "errors",
+                "reg_type": "discrete",
+                "address": 29,
+                "type": "switch",
+                "readonly": true,
+                "condition": "Show_error_switches==1",
+                "enabled": true
+            },
+            {
+                "name": "Error 30",
+                "group": "errors",
+                "reg_type": "discrete",
+                "address": 30,
+                "type": "switch",
+                "readonly": true,
+                "condition": "Show_error_switches==1",
+                "enabled": true
+            },
+            {
+                "name": "Error 31",
+                "group": "errors",
+                "reg_type": "discrete",
+                "address": 31,
+                "type": "switch",
+                "readonly": true,
+                "condition": "Show_error_switches==1",
+                "enabled": true
+            },
+            {
+                "name": "Error 32",
+                "group": "errors",
+                "reg_type": "discrete",
+                "address": 32,
+                "type": "switch",
+                "readonly": true,
+                "condition": "Show_error_switches==1",
+                "enabled": true
+            },
+            {
+                "name": "Error 33",
+                "group": "errors",
+                "reg_type": "discrete",
+                "address": 33,
+                "type": "switch",
+                "readonly": true,
+                "condition": "Show_error_switches==1",
+                "enabled": true
+            },
+            {
+                "name": "Error 34",
+                "group": "errors",
+                "reg_type": "discrete",
+                "address": 34,
+                "type": "switch",
+                "readonly": true,
+                "condition": "Show_error_switches==1",
+                "enabled": true
+            },
+            {
+                "name": "Error 35",
+                "group": "errors",
+                "reg_type": "discrete",
+                "address": 35,
+                "type": "switch",
+                "readonly": true,
+                "condition": "Show_error_switches==1",
+                "enabled": true
+            },
+            {
+                "name": "Error 36",
+                "group": "errors",
+                "reg_type": "discrete",
+                "address": 36,
+                "type": "switch",
+                "readonly": true,
+                "condition": "Show_error_switches==1",
+                "enabled": true
+            },
+            {
+                "name": "Error 37",
+                "group": "errors",
+                "reg_type": "discrete",
+                "address": 37,
+                "type": "switch",
+                "readonly": true,
+                "condition": "Show_error_switches==1",
+                "enabled": true
+            },
+            {
+                "name": "Error 38",
+                "group": "errors",
+                "reg_type": "discrete",
+                "address": 38,
+                "type": "switch",
+                "readonly": true,
+                "condition": "Show_error_switches==1",
+                "enabled": true
+            },
+            {
+                "name": "Error 39",
+                "group": "errors",
+                "reg_type": "discrete",
+                "address": 39,
+                "type": "switch",
+                "readonly": true,
+                "condition": "Show_error_switches==1",
+                "enabled": true
+            },
+            {
+                "name": "Error 40",
+                "group": "errors",
+                "reg_type": "discrete",
+                "address": 40,
+                "type": "switch",
+                "readonly": true,
+                "condition": "Show_error_switches==1",
+                "enabled": true
+            },
+            {
+                "name": "Error 41",
+                "group": "errors",
+                "reg_type": "discrete",
+                "address": 41,
+                "type": "switch",
+                "readonly": true,
+                "condition": "Show_error_switches==1",
+                "enabled": true
+            },
+            {
+                "name": "Error 42",
+                "group": "errors",
+                "reg_type": "discrete",
+                "address": 42,
+                "type": "switch",
+                "readonly": true,
+                "condition": "Show_error_switches==1",
+                "enabled": true
+            },
+            {
+                "name": "Error 43",
+                "group": "errors",
+                "reg_type": "discrete",
+                "address": 43,
+                "type": "switch",
+                "readonly": true,
+                "condition": "Show_error_switches==1",
+                "enabled": true
+            },
+            {
+                "name": "Error 44",
+                "group": "errors",
+                "reg_type": "discrete",
+                "address": 44,
+                "type": "switch",
+                "readonly": true,
+                "condition": "Show_error_switches==1",
+                "enabled": true
+            },
+            {
+                "name": "Error 45",
+                "group": "errors",
+                "reg_type": "discrete",
+                "address": 45,
+                "type": "switch",
+                "readonly": true,
+                "condition": "Show_error_switches==1",
+                "enabled": true
+            },
+            {
+                "name": "Error 46",
+                "group": "errors",
+                "reg_type": "discrete",
+                "address": 46,
+                "type": "switch",
+                "readonly": true,
+                "condition": "Show_error_switches==1",
+                "enabled": true
+            },
+            {
+                "name": "Error 47",
+                "group": "errors",
+                "reg_type": "discrete",
+                "address": 47,
+                "type": "switch",
+                "readonly": true,
+                "condition": "Show_error_switches==1",
+                "enabled": true
+            },
+            {
+                "name": "Error 48",
+                "group": "errors",
+                "reg_type": "discrete",
+                "address": 48,
+                "type": "switch",
+                "readonly": true,
+                "condition": "Show_error_switches==1",
+                "enabled": true
+            },
+            {
+                "name": "Error 49",
+                "group": "errors",
+                "reg_type": "discrete",
+                "address": 49,
+                "type": "switch",
+                "readonly": true,
+                "condition": "Show_error_switches==1",
+                "enabled": true
+            },
+            {
+                "name": "Error 50",
+                "group": "errors",
+                "reg_type": "discrete",
+                "address": 50,
+                "type": "switch",
+                "readonly": true,
+                "condition": "Show_error_switches==1",
+                "enabled": true
+            },
+            {
+                "name": "Error 51",
+                "group": "errors",
+                "reg_type": "discrete",
+                "address": 51,
+                "type": "switch",
+                "readonly": true,
+                "condition": "Show_error_switches==1",
+                "enabled": true
+            },
+            {
+                "name": "Error 52",
+                "group": "errors",
+                "reg_type": "discrete",
+                "address": 52,
+                "type": "switch",
+                "readonly": true,
+                "condition": "Show_error_switches==1",
+                "enabled": true
+            },
+            {
+                "name": "Error 53",
+                "group": "errors",
+                "reg_type": "discrete",
+                "address": 53,
+                "type": "switch",
+                "readonly": true,
+                "condition": "Show_error_switches==1",
+                "enabled": true
+            },
+            {
+                "name": "Error 54",
+                "group": "errors",
+                "reg_type": "discrete",
+                "address": 54,
+                "type": "switch",
+                "readonly": true,
+                "condition": "Show_error_switches==1",
+                "enabled": true
+            },
+            {
+                "name": "Error 55",
+                "group": "errors",
+                "reg_type": "discrete",
+                "address": 55,
+                "type": "switch",
+                "readonly": true,
+                "condition": "Show_error_switches==1",
+                "enabled": true
+            },
+            {
+                "name": "Error 56",
+                "group": "errors",
+                "reg_type": "discrete",
+                "address": 56,
+                "type": "switch",
+                "readonly": true,
+                "condition": "Show_error_switches==1",
+                "enabled": true
+            },
+            {
+                "name": "Error 57",
+                "group": "errors",
+                "reg_type": "discrete",
+                "address": 57,
+                "type": "switch",
+                "readonly": true,
+                "condition": "Show_error_switches==1",
+                "enabled": true
+            },
+            {
+                "name": "Error 58",
+                "group": "errors",
+                "reg_type": "discrete",
+                "address": 58,
+                "type": "switch",
+                "readonly": true,
+                "condition": "Show_error_switches==1",
+                "enabled": true
+            },
+            {
+                "name": "Error 59",
+                "group": "errors",
+                "reg_type": "discrete",
+                "address": 59,
+                "type": "switch",
+                "readonly": true,
+                "condition": "Show_error_switches==1",
+                "enabled": true
+            },
+            {
+                "name": "Error 60",
+                "group": "errors",
+                "reg_type": "discrete",
+                "address": 60,
+                "type": "switch",
+                "readonly": true,
+                "condition": "Show_error_switches==1",
+                "enabled": true
+            },
+            {
+                "name": "Error 61",
+                "group": "errors",
+                "reg_type": "discrete",
+                "address": 61,
+                "type": "switch",
+                "readonly": true,
+                "condition": "Show_error_switches==1",
+                "enabled": true
+            },
+            {
+                "name": "Error 62",
+                "group": "errors",
+                "reg_type": "discrete",
+                "address": 62,
+                "type": "switch",
+                "readonly": true,
+                "condition": "Show_error_switches==1",
+                "enabled": true
+            },
+            {
+                "name": "Error 63",
+                "group": "errors",
+                "reg_type": "discrete",
+                "address": 63,
+                "type": "switch",
+                "readonly": true,
+                "condition": "Show_error_switches==1",
+                "enabled": true
+            },
+            {
+                "name": "Error 64",
+                "group": "errors",
+                "reg_type": "discrete",
+                "address": 64,
+                "type": "switch",
+                "readonly": true,
+                "condition": "Show_error_switches==1",
+                "enabled": true
+            },
+            {
+                "name": "Error 65",
+                "group": "errors",
+                "reg_type": "discrete",
+                "address": 65,
+                "type": "switch",
+                "readonly": true,
+                "condition": "Show_error_switches==1",
+                "enabled": true
+            },
+            {
+                "name": "Error 66",
+                "group": "errors",
+                "reg_type": "discrete",
+                "address": 66,
+                "type": "switch",
+                "readonly": true,
+                "condition": "Show_error_switches==1",
+                "enabled": true
+            },
+            {
+                "name": "Error 67",
+                "group": "errors",
+                "reg_type": "discrete",
+                "address": 67,
+                "type": "switch",
+                "readonly": true,
+                "condition": "Show_error_switches==1",
+                "enabled": true
+            },
+            {
+                "name": "Error 68",
+                "group": "errors",
+                "reg_type": "discrete",
+                "address": 68,
+                "type": "switch",
+                "readonly": true,
+                "condition": "Show_error_switches==1",
+                "enabled": true
+            },
+            {
+                "name": "Error 69",
+                "group": "errors",
+                "reg_type": "discrete",
+                "address": 69,
+                "type": "switch",
+                "readonly": true,
+                "condition": "Show_error_switches==1",
+                "enabled": true
+            },
+            {
+                "name": "Error 70",
+                "group": "errors",
+                "reg_type": "discrete",
+                "address": 70,
+                "type": "switch",
+                "readonly": true,
+                "condition": "Show_error_switches==1",
+                "enabled": true
+            },
+            {
+                "name": "Error 71",
+                "group": "errors",
+                "reg_type": "discrete",
+                "address": 71,
+                "type": "switch",
+                "readonly": true,
+                "condition": "Show_error_switches==1",
+                "enabled": true
+            },
+            {
+                "name": "Error 72",
+                "group": "errors",
+                "reg_type": "discrete",
+                "address": 72,
+                "type": "switch",
+                "readonly": true,
+                "condition": "Show_error_switches==1",
+                "enabled": true
+            },
+            {
+                "name": "Error 73",
+                "group": "errors",
+                "reg_type": "discrete",
+                "address": 73,
+                "type": "switch",
+                "readonly": true,
+                "condition": "Show_error_switches==1",
+                "enabled": true
+            },
+            {
+                "name": "Error 74",
+                "group": "errors",
+                "reg_type": "discrete",
+                "address": 74,
+                "type": "switch",
+                "readonly": true,
+                "condition": "Show_error_switches==1",
+                "enabled": true
+            },
+            {
+                "name": "Error 75",
+                "group": "errors",
+                "reg_type": "discrete",
+                "address": 75,
+                "type": "switch",
+                "readonly": true,
+                "condition": "Show_error_switches==1",
+                "enabled": true
+            },
+            {
+                "name": "Error 76",
+                "group": "errors",
+                "reg_type": "discrete",
+                "address": 76,
+                "type": "switch",
+                "readonly": true,
+                "condition": "Show_error_switches==1",
+                "enabled": true
+            },
+            {
+                "name": "Error 77",
+                "group": "errors",
+                "reg_type": "discrete",
+                "address": 77,
+                "type": "switch",
+                "readonly": true,
+                "condition": "Show_error_switches==1",
+                "enabled": true
+            }
+        ],
+        "translations": {
+            "en": {
+                "template_title": "ONOKOM AIR GR-3-MB-B (Adapter for control of semi-industrial and multi-split systems GREE)",
+                "Error 1": "E0 In and out communication failure (t1-in)",
+                "Error 2": "E0 In and out communication failure (t2-out)",
+                "Error 3": "E1 Outdoor temperature sensor failure",
+                "Error 4": "E2 Indoor pipe temperature sensor failure",
+                "Error 5": "E3 Outdoor pipe temperature sensor failure",
+                "Error 6": "E4 System abnormity",
+                "Error 7": "E5 Type mismatch",
+                "Error 8": "E6 Indoor fan motor failure",
+                "Error 9": "E7 Outdoor temperature sensor failure",
+                "Error 10": "E8 Discharge temperature sensor failure",
+                "Error 11": "E9 Invert module abnormity",
+                "Error 12": "EA Current sensor failure",
+                "Error 13": "EB Неисправность связи между основной платой и светодиодами",
+                "Error 14": "EC Outdoor communication failure",
+                "Error 15": "EE Outdoor EEPROM failure",
+                "Error 16": "EF Outdoor fan motor DC",
+                "Error 17": "EH Неисправность датчика температуры всасывания наружного воздуха",
+                "Error 18": "EP Top of compressor temperature switch failure",
+                "Error 19": "EU Voltage sensor falure",
+                "Error 20": "Unknown error 1",
+                "Error 21": "Unknown error 2",
+                "Error 22": "Unknown error 3",
+                "Error 23": "Unknown error 4",
+                "Error 24": "Unknown error 5"
+            },
+            "ru": {
+                "template_title": "ONOKOM AIR GR-3-MB-B (Адаптер для управления полупромышленными и мультисплит системами GREE)",
+                "General": "Основные режимы и функции",
+                "Active": "Состояние",
+                "Mode": "Режим",
+                "Active mode": "Состояние и режим",
+                "Fan speed": "Скорость вентилятора",
+                "Smart fan speed": "Скорость вентилятора расширенная",
+                "Show modes as range": "Отображать режимы как ползунок",
+                "Off": "Выключен",
+                "Heat": "Нагрев",
+                "Cool": "Охлаждение",
+                "Auto": "Авто",
+                "Dry": "Осушение",
+                "Fan": "Вентиляция",
+                "Idle": "Простаивает",
+                "Heating": "Нагрев",
+                "Cooling": "Охлаждение",
+                "Temperature control": "Контроль температуры",
+                "Allow the use of an external temperature sensor": "Разрешить использование внешнего датчика температуры",
+                "Indoor air temperature": "Температура воздуха в помещении",
+                "Outdoor air temperature": "Температура воздуха на улице",
+                "Indoor heat exchanger temperature": "Температура внутреннего теплообменника",
+                "Target temperature": "Целевая температура",
+                "Show thermostat state as range": "Отображать состояние термостата как ползунок",
+                "Thermostat state": "Состояние термостата",
+                "Vanes": "Жалюзи",
+                "Show vanes as range": "Отображать жалюзи как ползунок",
+                "Horizontal vanes": "Горизонтальные жалюзи",
+                "Swing": "Качание",
+                "Lowest": "Самое низкое",
+                "Low": "Низкое",
+                "Middle": "Среднее",
+                "High": "Высокое",
+                "Highest": "Самое высокое",
+                "Far Left": "Самое левое",
+                "Left": "Левое",
+                "Right": "Правое",
+                "Far Right": "Самое правое",
+                "Vertical vanes": "Вертикальные жалюзи",
+                "Vanes swing": "Качание жалюзи",
+                "Stop": "Остановлены",
+                "Horizontal and vertical swing": "Качание горизонтальное и вертикальное",
+                "Swinging horizontal blinds": "Качание горизонтальных жалюзи",
+                "Swinging vertical blinds": "Качание вертикальных жалюзи",
+                "Show fan as range": "Отображать вентилятор как ползунок",
+                "Additional": "Дополнительные режимы и функции",
+                "1 Speed": "1 Скорость",
+                "2 Speed": "2 Скорость",
+                "3 Speed": "3 Скорость",
+                "4 Speed": "4 Скорость",
+                "5 Speed": "5 Скорость",
+                "Quiet mode": "Режим тихий",
+                "Eco mode": "Режим эко",
+                "Turbo mode": "Режим турбо",
+                "Sleep mode": "Режим сна",
+                "Ionization": "Ионизация",
+                "Self cleaning": "Самоочистка",
+                "No": "Нет",
+                "Yes": "Да",
+                "Baud rate": "Скорость обмена",
+                "baud_rate_description": "Перед изменением параметра убедитесь, что связь с устройством установлена. Выберите нужную скорость обмена, сохраните конфигурацию, а затем укажите в настройках порта эту же скорость.",
+                "Parity bit": "Бит чётности",
+                "parity_bit_description": "Перед изменением параметра убедитесь, что связь с устройством установлена. Выберите нужный бит четности, сохраните конфигурацию, а затем укажите в настройках порта этот же бит четности.",
+                "HW Info": "Данные модуля",
+                "HW Version": "Версия устройства",
+                "FW Version": "Версия прошивки",
+                "PROTO Version": "Версия протокола",
+                "Signature": "Сигнатура устройства",
+                "Uptime": "Время работы с момента включения (с)",
+                "MCU Temperature": "Температура МК",
+                "Serial": "Серийный номер",
+                "Reboot Device": "Перезагрузить устройство",
+                "Debug": "Диагностика",
+                "Temeperature correction": "Коррекция температуры",
+                "AC connected": "Кондиционер подключен",
+                "Show error switches": "Показать переключатели ошибок",
+                "Errors": "Ошибки",
+                "Error 1": "Режим извлечения хладагента",
+                "Error 2": "Ошибка датчика температуры пульта",
+                "Error 3": "Ошибка ППЗУ пульта",
+                "Error 4": "Аварийная остановка",
+                "Error 5": "Ошибка датчика температуры испарителя",
+                "Error 6": "Ошибка датчика окружающей температуры",
+                "Error 7": "Ошибка датчика влажности",
+                "Error 8": "Защита от переполнения конденсатом",
+                "Error 9": "Ошибка микросхемы памяти IDU",
+                "Error 10": "Ошибка перемычки внутреннего блока",
+                "Error 11": "Ошибка двигателя вентилятора IDU",
+                "Error 12": "Требуется очистка фильтра",
+                "Error 13": "Ошибка связи внутреннего блока с пультом",
+                "Error 14": "Ошибка связи внутреннго блока с пультом",
+                "Error 15": "Ошибка связи между IDU и ODU",
+                "Error 16": "Ошбика Внутреннего блока (ВнБ)",
+                "Error 17": "Защита по температуре нагнетания компрессора",
+                "Error 18": "Защита от утечки хладагента",
+                "Error 19": "Защита двигателя вентилятора постоянного тока",
+                "Error 20": "Защита 4х ходового клапана",
+                "Error 21": "Защита от перегрузки",
+                "Error 22": "Защита компрессора от перегрузки",
+                "Error 23": "Защита по низкому давлению",
+                "Error 24": "Защита по высокому давлению",
+                "Error 25": "Защита от замерзания",
+                "Error 26": "Ошибка датчика температуры наружного воздуха",
+                "Error 27": "Ошибка датчика температуры нагнетания",
+                "Error 28": "Ошибка датчика температуры конденсатора",
+                "Error 29": "Ошибка перемычки",
+                "Error 30": "Ошибка микросхемы памяти ODU",
+                "Error 31": "Отказ наружного блока",
+                "Error 32": "Несоответствие ODU и IDU",
+                "Error 33": "Ошибка связи ODU и двигателя",
+                "Error 34": "Защита последовательности фаз компрессора",
+                "Error 35": "Защита шины от низкого напряжения",
+                "Error 36": "Защита шины  высокого напряжения",
+                "Error 37": "Защита по переменному току",
+                "Error 38": "Защита IPM модуля",
+                "Error 39": "Защита PFC платы",
+                "Error 40": "Ошибка активации",
+                "Error 41": "Защита от потери фазы",
+                "Error 42": "Защита от перезапуска двигателя",
+                "Error 43": "Защита от перегрузки по току",
+                "Error 44": "Защита питания",
+                "Error 45": "Защита по току двигателя",
+                "Error 46": "Защита от десинхронизации",
+                "Error 47": "Защита от блокировки компрессора",
+                "Error 48": "Защита двигателя от перегрева",
+                "Error 49": "Защита датчика модуля двигателя",
+                "Error 50": "Защита микросхемы памяти двигателя",
+                "Error 51": "Ошибка контура загрузки",
+                "Error 52": "Ошибка напряжения двигателя на входе",
+                "Error 53": "Ошибка датчика",
+                "Error 54": "Защита от перенапряжения",
+                "Error 55": "Защита изменения температуры",
+                "Error 56": "Защита подключения датчика",
+                "Error 57": "Ошибка датчика температуры газового клапана IDU",
+                "Error 58": "Ошибка датчика температуры жидкостного клапана IDU",
+                "Error 59": "Ошибка датчика температуры платы двигателя",
+                "Error 60": "Ошибка датчика температуры на входе в конденсатор",
+                "Error 61": "Ошибка датчика температуры на выходе конденсатора",
+                "Error 62": "Линия связи отключена или ошибка ЭТРВ",
+                "Error 63": "Конфликт рабочих режимов",
+                "Error 64": "Защита от размагничивания компрессора",
+                "Error 65": "Ошибка датчика тока всего блока",
+                "Error 66": "Защита контактора переменного тока",
+                "Error 67": "Превышение скорости",
+                "Error 68": "Защита вентилятора 2 наружного блока",
+                "Error 69": "Защита пересечения нуля двигателя",
+                "Error 70": "Ошибка датчика температуры всасывания компрессора",
+                "Error 71": "Ошибка закрытия вентилятора",
+                "Error 72": "Ошибка связи между IDU и энергосистемы",
+                "Error 73": "Ошибка связи между ODU и сеткой",
+                "Error 74": "Основной боковой ошибка сети (Master",
+                "Error 75": "Ошибка адреса сети IDU",
+                "Error 76": "Ошибка переполнения IP адреса",
+                "Error 77": "Другие ошибки"
+            }
+        }
     }
-  ],
-  "device": {
-    "name": "ONOKOM-AIR-GR-3-MB-B",
-    "id": "ONOKOM-AIR-GR-3-MB-B",
-    "groups": [
-      {
-        "title": "General",
-        "id": "general",
-        "order": 1
-      },
-      {
-        "title": "Temperature control",
-        "id": "temperatureControl",
-        "order": 2
-      },
-      {
-        "title": "Vanes",
-        "id": "vanes",
-        "order": 3
-      },
-      {
-        "title": "Additional",
-        "id": "additional",
-        "order": 4
-      },
-      {
-        "title": "HW Info",
-        "id": "hw_info",
-        "order": 6
-      },
-      {
-        "title": "Errors",
-        "id": "errors",
-        "order": 8
-      },
-      {
-        "title": "Debug",
-        "id": "debug",
-        "order": 9
-      }
-    ],
-    "parameters": [
-      {
-        "id": "Allow_the_use_of_an_external_temperature_sensor",
-        "title": "Allow the use of an external temperature sensor",
-        "address": 100,
-        "reg_type": "coil",
-        "enum": [
-          0,
-          1
-        ],
-        "enum_titles": [
-          "No",
-          "Yes"
-        ],
-        "group": "temperatureControl",
-        "order": 1
-      },
-      {
-        "id": "Show_modes_as_range",
-        "title": "Show modes as range",
-        "address": 95,
-        "reg_type": "coil",
-        "enum": [
-          0,
-          1
-        ],
-        "enum_titles": [
-          "No",
-          "Yes"
-        ],
-        "group": "general",
-        "order": 1
-      },
-      {
-        "id": "Show_fan_as_range",
-        "title": "Show fan as range",
-        "address": 92,
-        "reg_type": "coil",
-        "enum": [
-          0,
-          1
-        ],
-        "enum_titles": [
-          "No",
-          "Yes"
-        ],
-        "group": "general",
-        "order": 1
-      },
-      {
-        "id": "Show_vanes_as_range",
-        "title": "Show vanes as range",
-        "address": 94,
-        "reg_type": "coil",
-        "enum": [
-          0,
-          1
-        ],
-        "enum_titles": [
-          "No",
-          "Yes"
-        ],
-        "group": "vanes",
-        "order": 1
-      },
-      {
-        "id": "Show_thermostat_state_as_range",
-        "title": "Show thermostat state as range",
-        "address": 94,
-        "reg_type": "coil",
-        "enum": [
-          0,
-          1
-        ],
-        "enum_titles": [
-          "No",
-          "Yes"
-        ],
-        "group": "temperatureControl",
-        "order": 1
-      },
-      {
-        "title": "Show error switches",
-        "id": "Show_error_switches",
-        "address": 100,
-        "reg_type": "coil",
-        "default": 1,
-        "enum": [
-          0,
-          1
-        ],
-        "enum_titles": [
-          "No",
-          "Yes"
-        ],
-        "group": "errors",
-        "order": 1
-      },
-      {
-        "id": "baud_rate",
-        "title": "Baud rate",
-        "description": "baud_rate_description",
-        "address": 110,
-        "reg_type": "holding",
-        "enum": [
-          96,
-          192,
-          384,
-          576,
-          1152
-        ],
-        "default": 96,
-        "enum_titles": [
-          "9600",
-          "19200",
-          "38400",
-          "57600",
-          "115200"
-        ],
-        "group": "hw_info",
-        "order": 1
-      },
-      {
-        "id": "parity_bit",
-        "title": "Parity bit",
-        "description": "parity_bit_description",
-        "address": 111,
-        "reg_type": "holding",
-        "enum": [
-          0,
-          1,
-          2
-        ],
-        "default": 0,
-        "enum_titles": [
-          "none (N)",
-          "odd (O)",
-          "even (E)"
-        ],
-        "group": "hw_info",
-        "order": 1
-      }
-    ],
-    "channels": [
-      {
-        "name": "Active",
-        "reg_type": "coil",
-        "address": 1,
-        "type": "switch",
-        "format": "u16",
-        "sporadic": true,
-        "group": "general"
-      },
-      {
-        "name": "Mode",
-        "reg_type": "holding",
-        "address": 1,
-        "type": "range",
-        "format": "u16",
-        "min": 1,
-        "max": 5,
-        "sporadic": true,
-        "group": "general",
-        "condition": "Show_modes_as_range==1"
-      },
-      {
-        "name": "Mode",
-        "reg_type": "holding",
-        "address": 1,
-        "type": "value",
-        "format": "u16",
-        "sporadic": true,
-        "group": "general",
-        "enum": [
-          1,
-          2,
-          3,
-          4,
-          5
-        ],
-        "enum_titles": [
-          "Heat",
-          "Cool",
-          "Auto",
-          "Dry",
-          "Fan"
-        ],
-        "condition": "Show_modes_as_range!=1"
-      },
-      {
-        "name": "Active mode",
-        "reg_type": "holding",
-        "address": 2,
-        "type": "range",
-        "format": "u16",
-        "min": 0,
-        "max": 5,
-        "sporadic": true,
-        "group": "general",
-        "condition": "Show_modes_as_range==1"
-      },
-      {
-        "name": "Active mode",
-        "reg_type": "holding",
-        "address": 2,
-        "type": "value",
-        "format": "u16",
-        "sporadic": true,
-        "group": "general",
-        "enum": [
-          0,
-          1,
-          2,
-          3,
-          4,
-          5
-        ],
-        "enum_titles": [
-          "Off",
-          "Heat",
-          "Cool",
-          "Auto",
-          "Dry",
-          "Fan"
-        ],
-        "condition": "Show_modes_as_range!=1"
-      },
-      {
-        "name": "Fan speed",
-        "reg_type": "holding",
-        "address": 7,
-        "type": "range",
-        "format": "u16",
-        "min": 0,
-        "max": 5,
-        "sporadic": true,
-        "group": "general",
-        "condition": "Show_fan_as_range==1"
-      },
-      {
-        "name": "Fan speed",
-        "reg_type": "holding",
-        "address": 7,
-        "type": "value",
-        "format": "u16",
-        "min": 0,
-        "max": 5,
-        "sporadic": true,
-        "group": "general",
-        "enum": [
-          0,
-          1,
-          2,
-          3,
-          4,
-          5
-        ],
-        "enum_titles": [
-          "Auto",
-          "1 Speed",
-          "2 Speed",
-          "3 Speed",
-          "4 Speed",
-          "5 Speed"
-        ],
-        "condition": "Show_fan_as_range!=1"
-      },
-      {
-        "name": "Smart fan speed",
-        "reg_type": "holding",
-        "address": 8,
-        "type": "range",
-        "format": "u16",
-        "min": 0,
-        "max": 7,
-        "sporadic": true,
-        "group": "general",
-        "condition": "Show_fan_as_range==1"
-      },
-      {
-        "name": "Smart fan speed",
-        "reg_type": "holding",
-        "address": 8,
-        "type": "value",
-        "format": "u16",
-        "min": 0,
-        "max": 7,
-        "sporadic": true,
-        "group": "general",
-        "enum": [
-          0,
-          1,
-          2,
-          3,
-          4,
-          5,
-          6,
-          7
-        ],
-        "enum_titles": [
-          "Auto",
-          "Quiet mode",
-          "1 Speed",
-          "2 Speed",
-          "3 Speed",
-          "4 Speed",
-          "5 Speed",
-          "Turbo mode"
-        ],
-        "condition": "Show_fan_as_range!=1"
-      },
-      {
-        "name": "Indoor air temperature",
-        "reg_type": "holding",
-        "address": 3,
-        "type": "value",
-        "format": "s16",
-        "scale": 0.01,
-        "sporadic": true,
-        "group": "temperatureControl",
-        "readonly": true,
-        "units": "deg C",
-        "condition": "Allow_the_use_of_an_external_temperature_sensor!=1"
-      },
-      {
-        "name": "Indoor air temperature",
-        "reg_type": "holding",
-        "address": 3,
-        "type": "value",
-        "format": "s16",
-        "min": -50,
-        "max": 50,
-        "scale": 0.01,
-        "sporadic": true,
-        "group": "temperatureControl",
-        "units": "deg C",
-        "condition": "Allow_the_use_of_an_external_temperature_sensor==1"
-      },
-      {
-        "name": "Outdoor air temperature",
-        "enabled": false,
-        "reg_type": "holding",
-        "address": 4,
-        "type": "value",
-        "format": "s16",
-        "scale": 0.01,
-        "sporadic": true,
-        "group": "temperatureControl",
-        "readonly": true,
-        "units": "deg C"
-      },
-      {
-        "name": "Indoor heat exchanger temperature",
-        "enabled": false,
-        "reg_type": "holding",
-        "address": 23,
-        "type": "value",
-        "format": "s16",
-        "scale": 0.01,
-        "sporadic": true,
-        "group": "temperatureControl",
-        "readonly": true,
-        "units": "deg C"
-      },
-      {
-        "name": "Target temperature",
-        "reg_type": "holding",
-        "address": 5,
-        "type": "range",
-        "format": "s16",
-        "min": 16,
-        "max": 30,
-        "scale": 0.01,
-        "sporadic": true,
-        "group": "temperatureControl",
-        "units": "deg C"
-      },
-      {
-        "name": "Thermostat state",
-        "reg_type": "holding",
-        "address": 6,
-        "type": "range",
-        "format": "u16",
-        "min": 0,
-        "max": 2,
-        "sporadic": true,
-        "group": "temperatureControl",
-        "readonly": true,
-        "condition": "Show_thermostat_state_as_range==1"
-      },
-      {
-        "name": "Thermostat state",
-        "reg_type": "holding",
-        "address": 6,
-        "type": "value",
-        "format": "u16",
-        "sporadic": true,
-        "group": "temperatureControl",
-        "enum": [
-          0,
-          1,
-          2
-        ],
-        "enum_titles": [
-          "Idle",
-          "Heating",
-          "Cooling"
-        ],
-        "readonly": true,
-        "condition": "Show_thermostat_state_as_range!=1"
-      },
-      {
-        "name": "Horizontal vanes",
-        "reg_type": "holding",
-        "address": 9,
-        "type": "range",
-        "format": "u16",
-        "min": 0,
-        "max": 6,
-        "sporadic": true,
-        "group": "vanes",
-        "condition": "Show_vanes_as_range==1"
-      },
-      {
-        "name": "Horizontal vanes",
-        "reg_type": "holding",
-        "address": 9,
-        "type": "value",
-        "format": "u16",
-        "min": 0,
-        "max": 6,
-        "sporadic": true,
-        "group": "vanes",
-        "enum": [
-          0,
-          1,
-          2,
-          3,
-          4,
-          5,
-          6
-        ],
-        "enum_titles": [
-          "Stop",
-          "Swing",
-          "Lowest",
-          "Low",
-          "Middle",
-          "High",
-          "Highest"
-        ],
-        "condition": "Show_vanes_as_range!=1"
-      },
-      {
-        "name": "Vertical vanes",
-        "reg_type": "holding",
-        "address": 10,
-        "type": "range",
-        "format": "u16",
-        "min": 0,
-        "max": 6,
-        "sporadic": true,
-        "group": "vanes",
-        "condition": "Show_vanes_as_range==1"
-      },
-      {
-        "name": "Vertical vanes",
-        "reg_type": "holding",
-        "address": 10,
-        "type": "value",
-        "format": "u16",
-        "min": 0,
-        "max": 6,
-        "sporadic": true,
-        "group": "vanes",
-        "enum": [
-          0,
-          1,
-          2,
-          3,
-          4,
-          5,
-          6
-        ],
-        "enum_titles": [
-          "Stop",
-          "Swing",
-          "Far Left",
-          "Left",
-          "Middle",
-          "Right",
-          "Far Right"
-        ],
-        "condition": "Show_vanes_as_range!=1"
-      },
-      {
-        "name": "Vanes swing",
-        "reg_type": "holding",
-        "address": 11,
-        "type": "range",
-        "format": "u16",
-        "min": 0,
-        "max": 3,
-        "sporadic": false,
-        "group": "vanes",
-        "condition": "Show_vanes_as_range==1"
-      },
-      {
-        "name": "Vanes swing",
-        "reg_type": "holding",
-        "address": 11,
-        "type": "value",
-        "format": "u16",
-        "sporadic": false,
-        "group": "vanes",
-        "enum": [
-          0,
-          1,
-          2,
-          3
-        ],
-        "enum_titles": [
-          "Stop",
-          "Horizontal and vertical swing",
-          "Swinging horizontal blinds",
-          "Swinging vertical blinds"
-        ],
-        "condition": "Show_vanes_as_range!=1"
-      },
-      {
-        "name": "Quiet mode",
-        "enabled": false,
-        "reg_type": "coil",
-        "address": 4,
-        "type": "switch",
-        "sporadic": true,
-        "group": "additional"
-      },
-      {
-        "name": "Eco mode",
-        "enabled": false,
-        "reg_type": "coil",
-        "address": 6,
-        "type": "switch",
-        "sporadic": true,
-        "group": "additional"
-      },
-      {
-        "name": "Turbo mode",
-        "enabled": false,
-        "reg_type": "coil",
-        "address": 7,
-        "type": "switch",
-        "sporadic": true,
-        "group": "additional"
-      },
-      {
-        "name": "Sleep mode",
-        "enabled": false,
-        "reg_type": "coil",
-        "address": 8,
-        "type": "switch",
-        "sporadic": true,
-        "group": "additional"
-      },
-      {
-        "name": "Ionization",
-        "enabled": false,
-        "reg_type": "coil",
-        "address": 9,
-        "type": "switch",
-        "sporadic": true,
-        "group": "additional"
-      },
-      {
-        "name": "Self cleaning",
-        "enabled": false,
-        "reg_type": "coil",
-        "address": 10,
-        "type": "switch",
-        "sporadic": true,
-        "group": "additional"
-      },
-      {
-        "name": "Temeperature correction",
-        "reg_type": "holding",
-        "address": 20,
-        "type": "value",
-        "format": "s16",
-        "min": -30,
-        "max": 30,
-        "sporadic": true,
-        "group": "temperatureControl",
-        "condition": "Allow_the_use_of_an_external_temperature_sensor==1"
-      },
-      {
-        "name": "AC connected",
-        "reg_type": "coil",
-        "address": 20,
-        "type": "switch",
-        "sporadic": true,
-        "group": "debug",
-        "readonly": true
-      },
-      {
-        "name": "HW Version",
-        "enabled": false,
-        "reg_type": "holding",
-        "address": 200,
-        "type": "text",
-        "format": "string",
-        "sporadic": true,
-        "group": "hw_info",
-        "readonly": true,
-        "string_data_size": 20
-      },
-      {
-        "name": "FW Version",
-        "enabled": false,
-        "reg_type": "holding",
-        "address": 250,
-        "type": "text",
-        "format": "string",
-        "sporadic": true,
-        "group": "hw_info",
-        "readonly": true,
-        "string_data_size": 16
-      },
-      {
-        "name": "PROTO Version",
-        "enabled": false,
-        "reg_type": "input",
-        "address": 400,
-        "type": "text",
-        "format": "string",
-        "sporadic": true,
-        "group": "hw_info",
-        "readonly": true,
-        "string_data_size": 16
-      },
-      {
-        "name": "Signature",
-        "enabled": false,
-        "reg_type": "input",
-        "address": 290,
-        "type": "text",
-        "format": "string",
-        "sporadic": true,
-        "group": "hw_info",
-        "readonly": true,
-        "string_data_size": 12
-      },
-      {
-        "name": "Serial",
-        "enabled": false,
-        "reg_type": "holding",
-        "address": 270,
-        "type": "text",
-        "format": "u32",
-        "group": "hw_info",
-        "readonly": true
-      },
-      {
-        "name": "Uptime",
-        "enabled": false,
-        "reg_type": "input",
-        "address": 104,
-        "type": "text",
-        "format": "u32",
-        "group": "hw_info"
-      },
-      {
-        "name": "MCU Temperature",
-        "enabled": false,
-        "reg_type": "input",
-        "address": 124,
-        "type": "temperature",
-        "format": "s16",
-        "scale": 0.1,
-        "group": "hw_info"
-      },
-      {
-        "name": "Reboot Device",
-        "enabled": false,
-        "reg_type": "holding",
-        "address": 120,
-        "type": "pushbutton",
-        "group": "hw_info"
-      },
-      {
-        "name": "Error 1",
-        "group": "errors",
-        "reg_type": "discrete",
-        "address": 1,
-        "type": "switch",
-        "readonly": true,
-        "condition": "Show_error_switches==1",
-        "enabled": true
-      },
-      {
-        "name": "Error 2",
-        "group": "errors",
-        "reg_type": "discrete",
-        "address": 2,
-        "type": "switch",
-        "readonly": true,
-        "condition": "Show_error_switches==1",
-        "enabled": true
-      },
-      {
-        "name": "Error 3",
-        "group": "errors",
-        "reg_type": "discrete",
-        "address": 3,
-        "type": "switch",
-        "readonly": true,
-        "condition": "Show_error_switches==1",
-        "enabled": true
-      },
-      {
-        "name": "Error 4",
-        "group": "errors",
-        "reg_type": "discrete",
-        "address": 4,
-        "type": "switch",
-        "readonly": true,
-        "condition": "Show_error_switches==1",
-        "enabled": true
-      },
-      {
-        "name": "Error 5",
-        "group": "errors",
-        "reg_type": "discrete",
-        "address": 5,
-        "type": "switch",
-        "readonly": true,
-        "condition": "Show_error_switches==1",
-        "enabled": true
-      },
-      {
-        "name": "Error 6",
-        "group": "errors",
-        "reg_type": "discrete",
-        "address": 6,
-        "type": "switch",
-        "readonly": true,
-        "condition": "Show_error_switches==1",
-        "enabled": true
-      },
-      {
-        "name": "Error 7",
-        "group": "errors",
-        "reg_type": "discrete",
-        "address": 7,
-        "type": "switch",
-        "readonly": true,
-        "condition": "Show_error_switches==1",
-        "enabled": true
-      },
-      {
-        "name": "Error 8",
-        "group": "errors",
-        "reg_type": "discrete",
-        "address": 8,
-        "type": "switch",
-        "readonly": true,
-        "condition": "Show_error_switches==1",
-        "enabled": true
-      },
-      {
-        "name": "Error 9",
-        "group": "errors",
-        "reg_type": "discrete",
-        "address": 9,
-        "type": "switch",
-        "readonly": true,
-        "condition": "Show_error_switches==1",
-        "enabled": true
-      },
-      {
-        "name": "Error 10",
-        "group": "errors",
-        "reg_type": "discrete",
-        "address": 10,
-        "type": "switch",
-        "readonly": true,
-        "condition": "Show_error_switches==1",
-        "enabled": true
-      },
-      {
-        "name": "Error 11",
-        "group": "errors",
-        "reg_type": "discrete",
-        "address": 11,
-        "type": "switch",
-        "readonly": true,
-        "condition": "Show_error_switches==1",
-        "enabled": true
-      },
-      {
-        "name": "Error 12",
-        "group": "errors",
-        "reg_type": "discrete",
-        "address": 12,
-        "type": "switch",
-        "readonly": true,
-        "condition": "Show_error_switches==1",
-        "enabled": true
-      },
-      {
-        "name": "Error 13",
-        "group": "errors",
-        "reg_type": "discrete",
-        "address": 13,
-        "type": "switch",
-        "readonly": true,
-        "condition": "Show_error_switches==1",
-        "enabled": true
-      },
-      {
-        "name": "Error 14",
-        "group": "errors",
-        "reg_type": "discrete",
-        "address": 14,
-        "type": "switch",
-        "readonly": true,
-        "condition": "Show_error_switches==1",
-        "enabled": true
-      },
-      {
-        "name": "Error 15",
-        "group": "errors",
-        "reg_type": "discrete",
-        "address": 15,
-        "type": "switch",
-        "readonly": true,
-        "condition": "Show_error_switches==1",
-        "enabled": true
-      },
-      {
-        "name": "Error 16",
-        "group": "errors",
-        "reg_type": "discrete",
-        "address": 16,
-        "type": "switch",
-        "readonly": true,
-        "condition": "Show_error_switches==1",
-        "enabled": true
-      },
-      {
-        "name": "Error 17",
-        "group": "errors",
-        "reg_type": "discrete",
-        "address": 17,
-        "type": "switch",
-        "readonly": true,
-        "condition": "Show_error_switches==1",
-        "enabled": true
-      },
-      {
-        "name": "Error 18",
-        "group": "errors",
-        "reg_type": "discrete",
-        "address": 18,
-        "type": "switch",
-        "readonly": true,
-        "condition": "Show_error_switches==1",
-        "enabled": true
-      },
-      {
-        "name": "Error 19",
-        "group": "errors",
-        "reg_type": "discrete",
-        "address": 19,
-        "type": "switch",
-        "readonly": true,
-        "condition": "Show_error_switches==1",
-        "enabled": true
-      },
-      {
-        "name": "Error 20",
-        "group": "errors",
-        "reg_type": "discrete",
-        "address": 20,
-        "type": "switch",
-        "readonly": true,
-        "condition": "Show_error_switches==1",
-        "enabled": true
-      },
-      {
-        "name": "Error 21",
-        "group": "errors",
-        "reg_type": "discrete",
-        "address": 21,
-        "type": "switch",
-        "readonly": true,
-        "condition": "Show_error_switches==1",
-        "enabled": true
-      },
-      {
-        "name": "Error 22",
-        "group": "errors",
-        "reg_type": "discrete",
-        "address": 22,
-        "type": "switch",
-        "readonly": true,
-        "condition": "Show_error_switches==1",
-        "enabled": true
-      },
-      {
-        "name": "Error 23",
-        "group": "errors",
-        "reg_type": "discrete",
-        "address": 23,
-        "type": "switch",
-        "readonly": true,
-        "condition": "Show_error_switches==1",
-        "enabled": true
-      },
-      {
-        "name": "Error 24",
-        "group": "errors",
-        "reg_type": "discrete",
-        "address": 24,
-        "type": "switch",
-        "readonly": true,
-        "condition": "Show_error_switches==1",
-        "enabled": true
-      },
-      {
-        "name": "Error 25",
-        "group": "errors",
-        "reg_type": "discrete",
-        "address": 25,
-        "type": "switch",
-        "readonly": true,
-        "condition": "Show_error_switches==1",
-        "enabled": true
-      },
-      {
-        "name": "Error 26",
-        "group": "errors",
-        "reg_type": "discrete",
-        "address": 26,
-        "type": "switch",
-        "readonly": true,
-        "condition": "Show_error_switches==1",
-        "enabled": true
-      },
-      {
-        "name": "Error 27",
-        "group": "errors",
-        "reg_type": "discrete",
-        "address": 27,
-        "type": "switch",
-        "readonly": true,
-        "condition": "Show_error_switches==1",
-        "enabled": true
-      },
-      {
-        "name": "Error 28",
-        "group": "errors",
-        "reg_type": "discrete",
-        "address": 28,
-        "type": "switch",
-        "readonly": true,
-        "condition": "Show_error_switches==1",
-        "enabled": true
-      },
-      {
-        "name": "Error 29",
-        "group": "errors",
-        "reg_type": "discrete",
-        "address": 29,
-        "type": "switch",
-        "readonly": true,
-        "condition": "Show_error_switches==1",
-        "enabled": true
-      },
-      {
-        "name": "Error 30",
-        "group": "errors",
-        "reg_type": "discrete",
-        "address": 30,
-        "type": "switch",
-        "readonly": true,
-        "condition": "Show_error_switches==1",
-        "enabled": true
-      },
-      {
-        "name": "Error 31",
-        "group": "errors",
-        "reg_type": "discrete",
-        "address": 31,
-        "type": "switch",
-        "readonly": true,
-        "condition": "Show_error_switches==1",
-        "enabled": true
-      },
-      {
-        "name": "Error 32",
-        "group": "errors",
-        "reg_type": "discrete",
-        "address": 32,
-        "type": "switch",
-        "readonly": true,
-        "condition": "Show_error_switches==1",
-        "enabled": true
-      },
-      {
-        "name": "Error 33",
-        "group": "errors",
-        "reg_type": "discrete",
-        "address": 33,
-        "type": "switch",
-        "readonly": true,
-        "condition": "Show_error_switches==1",
-        "enabled": true
-      },
-      {
-        "name": "Error 34",
-        "group": "errors",
-        "reg_type": "discrete",
-        "address": 34,
-        "type": "switch",
-        "readonly": true,
-        "condition": "Show_error_switches==1",
-        "enabled": true
-      },
-      {
-        "name": "Error 35",
-        "group": "errors",
-        "reg_type": "discrete",
-        "address": 35,
-        "type": "switch",
-        "readonly": true,
-        "condition": "Show_error_switches==1",
-        "enabled": true
-      },
-      {
-        "name": "Error 36",
-        "group": "errors",
-        "reg_type": "discrete",
-        "address": 36,
-        "type": "switch",
-        "readonly": true,
-        "condition": "Show_error_switches==1",
-        "enabled": true
-      },
-      {
-        "name": "Error 37",
-        "group": "errors",
-        "reg_type": "discrete",
-        "address": 37,
-        "type": "switch",
-        "readonly": true,
-        "condition": "Show_error_switches==1",
-        "enabled": true
-      },
-      {
-        "name": "Error 38",
-        "group": "errors",
-        "reg_type": "discrete",
-        "address": 38,
-        "type": "switch",
-        "readonly": true,
-        "condition": "Show_error_switches==1",
-        "enabled": true
-      },
-      {
-        "name": "Error 39",
-        "group": "errors",
-        "reg_type": "discrete",
-        "address": 39,
-        "type": "switch",
-        "readonly": true,
-        "condition": "Show_error_switches==1",
-        "enabled": true
-      },
-      {
-        "name": "Error 40",
-        "group": "errors",
-        "reg_type": "discrete",
-        "address": 40,
-        "type": "switch",
-        "readonly": true,
-        "condition": "Show_error_switches==1",
-        "enabled": true
-      },
-      {
-        "name": "Error 41",
-        "group": "errors",
-        "reg_type": "discrete",
-        "address": 41,
-        "type": "switch",
-        "readonly": true,
-        "condition": "Show_error_switches==1",
-        "enabled": true
-      },
-      {
-        "name": "Error 42",
-        "group": "errors",
-        "reg_type": "discrete",
-        "address": 42,
-        "type": "switch",
-        "readonly": true,
-        "condition": "Show_error_switches==1",
-        "enabled": true
-      },
-      {
-        "name": "Error 43",
-        "group": "errors",
-        "reg_type": "discrete",
-        "address": 43,
-        "type": "switch",
-        "readonly": true,
-        "condition": "Show_error_switches==1",
-        "enabled": true
-      },
-      {
-        "name": "Error 44",
-        "group": "errors",
-        "reg_type": "discrete",
-        "address": 44,
-        "type": "switch",
-        "readonly": true,
-        "condition": "Show_error_switches==1",
-        "enabled": true
-      },
-      {
-        "name": "Error 45",
-        "group": "errors",
-        "reg_type": "discrete",
-        "address": 45,
-        "type": "switch",
-        "readonly": true,
-        "condition": "Show_error_switches==1",
-        "enabled": true
-      },
-      {
-        "name": "Error 46",
-        "group": "errors",
-        "reg_type": "discrete",
-        "address": 46,
-        "type": "switch",
-        "readonly": true,
-        "condition": "Show_error_switches==1",
-        "enabled": true
-      },
-      {
-        "name": "Error 47",
-        "group": "errors",
-        "reg_type": "discrete",
-        "address": 47,
-        "type": "switch",
-        "readonly": true,
-        "condition": "Show_error_switches==1",
-        "enabled": true
-      },
-      {
-        "name": "Error 48",
-        "group": "errors",
-        "reg_type": "discrete",
-        "address": 48,
-        "type": "switch",
-        "readonly": true,
-        "condition": "Show_error_switches==1",
-        "enabled": true
-      },
-      {
-        "name": "Error 49",
-        "group": "errors",
-        "reg_type": "discrete",
-        "address": 49,
-        "type": "switch",
-        "readonly": true,
-        "condition": "Show_error_switches==1",
-        "enabled": true
-      },
-      {
-        "name": "Error 50",
-        "group": "errors",
-        "reg_type": "discrete",
-        "address": 50,
-        "type": "switch",
-        "readonly": true,
-        "condition": "Show_error_switches==1",
-        "enabled": true
-      },
-      {
-        "name": "Error 51",
-        "group": "errors",
-        "reg_type": "discrete",
-        "address": 51,
-        "type": "switch",
-        "readonly": true,
-        "condition": "Show_error_switches==1",
-        "enabled": true
-      },
-      {
-        "name": "Error 52",
-        "group": "errors",
-        "reg_type": "discrete",
-        "address": 52,
-        "type": "switch",
-        "readonly": true,
-        "condition": "Show_error_switches==1",
-        "enabled": true
-      },
-      {
-        "name": "Error 53",
-        "group": "errors",
-        "reg_type": "discrete",
-        "address": 53,
-        "type": "switch",
-        "readonly": true,
-        "condition": "Show_error_switches==1",
-        "enabled": true
-      },
-      {
-        "name": "Error 54",
-        "group": "errors",
-        "reg_type": "discrete",
-        "address": 54,
-        "type": "switch",
-        "readonly": true,
-        "condition": "Show_error_switches==1",
-        "enabled": true
-      },
-      {
-        "name": "Error 55",
-        "group": "errors",
-        "reg_type": "discrete",
-        "address": 55,
-        "type": "switch",
-        "readonly": true,
-        "condition": "Show_error_switches==1",
-        "enabled": true
-      },
-      {
-        "name": "Error 56",
-        "group": "errors",
-        "reg_type": "discrete",
-        "address": 56,
-        "type": "switch",
-        "readonly": true,
-        "condition": "Show_error_switches==1",
-        "enabled": true
-      },
-      {
-        "name": "Error 57",
-        "group": "errors",
-        "reg_type": "discrete",
-        "address": 57,
-        "type": "switch",
-        "readonly": true,
-        "condition": "Show_error_switches==1",
-        "enabled": true
-      },
-      {
-        "name": "Error 58",
-        "group": "errors",
-        "reg_type": "discrete",
-        "address": 58,
-        "type": "switch",
-        "readonly": true,
-        "condition": "Show_error_switches==1",
-        "enabled": true
-      },
-      {
-        "name": "Error 59",
-        "group": "errors",
-        "reg_type": "discrete",
-        "address": 59,
-        "type": "switch",
-        "readonly": true,
-        "condition": "Show_error_switches==1",
-        "enabled": true
-      },
-      {
-        "name": "Error 60",
-        "group": "errors",
-        "reg_type": "discrete",
-        "address": 60,
-        "type": "switch",
-        "readonly": true,
-        "condition": "Show_error_switches==1",
-        "enabled": true
-      },
-      {
-        "name": "Error 61",
-        "group": "errors",
-        "reg_type": "discrete",
-        "address": 61,
-        "type": "switch",
-        "readonly": true,
-        "condition": "Show_error_switches==1",
-        "enabled": true
-      },
-      {
-        "name": "Error 62",
-        "group": "errors",
-        "reg_type": "discrete",
-        "address": 62,
-        "type": "switch",
-        "readonly": true,
-        "condition": "Show_error_switches==1",
-        "enabled": true
-      },
-      {
-        "name": "Error 63",
-        "group": "errors",
-        "reg_type": "discrete",
-        "address": 63,
-        "type": "switch",
-        "readonly": true,
-        "condition": "Show_error_switches==1",
-        "enabled": true
-      },
-      {
-        "name": "Error 64",
-        "group": "errors",
-        "reg_type": "discrete",
-        "address": 64,
-        "type": "switch",
-        "readonly": true,
-        "condition": "Show_error_switches==1",
-        "enabled": true
-      },
-      {
-        "name": "Error 65",
-        "group": "errors",
-        "reg_type": "discrete",
-        "address": 65,
-        "type": "switch",
-        "readonly": true,
-        "condition": "Show_error_switches==1",
-        "enabled": true
-      },
-      {
-        "name": "Error 66",
-        "group": "errors",
-        "reg_type": "discrete",
-        "address": 66,
-        "type": "switch",
-        "readonly": true,
-        "condition": "Show_error_switches==1",
-        "enabled": true
-      },
-      {
-        "name": "Error 67",
-        "group": "errors",
-        "reg_type": "discrete",
-        "address": 67,
-        "type": "switch",
-        "readonly": true,
-        "condition": "Show_error_switches==1",
-        "enabled": true
-      },
-      {
-        "name": "Error 68",
-        "group": "errors",
-        "reg_type": "discrete",
-        "address": 68,
-        "type": "switch",
-        "readonly": true,
-        "condition": "Show_error_switches==1",
-        "enabled": true
-      },
-      {
-        "name": "Error 69",
-        "group": "errors",
-        "reg_type": "discrete",
-        "address": 69,
-        "type": "switch",
-        "readonly": true,
-        "condition": "Show_error_switches==1",
-        "enabled": true
-      },
-      {
-        "name": "Error 70",
-        "group": "errors",
-        "reg_type": "discrete",
-        "address": 70,
-        "type": "switch",
-        "readonly": true,
-        "condition": "Show_error_switches==1",
-        "enabled": true
-      },
-      {
-        "name": "Error 71",
-        "group": "errors",
-        "reg_type": "discrete",
-        "address": 71,
-        "type": "switch",
-        "readonly": true,
-        "condition": "Show_error_switches==1",
-        "enabled": true
-      },
-      {
-        "name": "Error 72",
-        "group": "errors",
-        "reg_type": "discrete",
-        "address": 72,
-        "type": "switch",
-        "readonly": true,
-        "condition": "Show_error_switches==1",
-        "enabled": true
-      },
-      {
-        "name": "Error 73",
-        "group": "errors",
-        "reg_type": "discrete",
-        "address": 73,
-        "type": "switch",
-        "readonly": true,
-        "condition": "Show_error_switches==1",
-        "enabled": true
-      },
-      {
-        "name": "Error 74",
-        "group": "errors",
-        "reg_type": "discrete",
-        "address": 74,
-        "type": "switch",
-        "readonly": true,
-        "condition": "Show_error_switches==1",
-        "enabled": true
-      },
-      {
-        "name": "Error 75",
-        "group": "errors",
-        "reg_type": "discrete",
-        "address": 75,
-        "type": "switch",
-        "readonly": true,
-        "condition": "Show_error_switches==1",
-        "enabled": true
-      },
-      {
-        "name": "Error 76",
-        "group": "errors",
-        "reg_type": "discrete",
-        "address": 76,
-        "type": "switch",
-        "readonly": true,
-        "condition": "Show_error_switches==1",
-        "enabled": true
-      },
-      {
-        "name": "Error 77",
-        "group": "errors",
-        "reg_type": "discrete",
-        "address": 77,
-        "type": "switch",
-        "readonly": true,
-        "condition": "Show_error_switches==1",
-        "enabled": true
-      }
-    ],
-    "translations": {
-      "en": {
-        "template_title": "ONOKOM AIR GR-3-MB-B (Adapter for control of semi-industrial and multi-split systems GREE)",
-        "Error 1": "E0 In and out communication failure (t1-in)",
-        "Error 2": "E0 In and out communication failure (t2-out)",
-        "Error 3": "E1 Outdoor temperature sensor failure",
-        "Error 4": "E2 Indoor pipe temperature sensor failure",
-        "Error 5": "E3 Outdoor pipe temperature sensor failure",
-        "Error 6": "E4 System abnormity",
-        "Error 7": "E5 Type mismatch",
-        "Error 8": "E6 Indoor fan motor failure",
-        "Error 9": "E7 Outdoor temperature sensor failure",
-        "Error 10": "E8 Discharge temperature sensor failure",
-        "Error 11": "E9 Invert module abnormity",
-        "Error 12": "EA Current sensor failure",
-        "Error 13": "EB Неисправность связи между основной платой и светодиодами",
-        "Error 14": "EC Outdoor communication failure",
-        "Error 15": "EE Outdoor EEPROM failure",
-        "Error 16": "EF Outdoor fan motor DC",
-        "Error 17": "EH Неисправность датчика температуры всасывания наружного воздуха",
-        "Error 18": "EP Top of compressor temperature switch failure",
-        "Error 19": "EU Voltage sensor falure",
-        "Error 20": "Unknown error 1",
-        "Error 21": "Unknown error 2",
-        "Error 22": "Unknown error 3",
-        "Error 23": "Unknown error 4",
-        "Error 24": "Unknown error 5"
-      },
-      "ru": {
-        "template_title": "ONOKOM AIR GR-3-MB-B (Адаптер для управления полупромышленными и мультисплит системами GREE)",
-        "General": "Основные режимы и функции",
-        "Active": "Состояние",
-        "Mode": "Режим",
-        "Active mode": "Состояние и режим",
-        "Fan speed": "Скорость вентилятора",
-        "Smart fan speed": "Скорость вентилятора расширенная",
-        "Show modes as range": "Отображать режимы как ползунок",
-        "Off": "Выключен",
-        "Heat": "Нагрев",
-        "Cool": "Охлаждение",
-        "Auto": "Авто",
-        "Dry": "Осушение",
-        "Fan": "Вентиляция",
-        "Idle": "Простаивает",
-        "Heating": "Нагрев",
-        "Cooling": "Охлаждение",
-        "Temperature control": "Контроль температуры",
-        "Allow the use of an external temperature sensor": "Разрешить использование внешнего датчика температуры",
-        "Indoor air temperature": "Температура воздуха в помещении",
-        "Outdoor air temperature": "Температура воздуха на улице",
-        "Indoor heat exchanger temperature": "Температура внутреннего теплообменника",
-        "Target temperature": "Целевая температура",
-        "Show thermostat state as range": "Отображать состояние термостата как ползунок",
-        "Thermostat state": "Состояние термостата",
-        "Vanes": "Жалюзи",
-        "Show vanes as range": "Отображать жалюзи как ползунок",
-        "Horizontal vanes": "Горизонтальные жалюзи",
-        "Swing": "Качание",
-        "Lowest": "Самое низкое",
-        "Low": "Низкое",
-        "Middle": "Среднее",
-        "High": "Высокое",
-        "Highest": "Самое высокое",
-        "Far Left": "Самое левое",
-        "Left": "Левое",
-        "Right": "Правое",
-        "Far Right": "Самое правое",
-        "Vertical vanes": "Вертикальные жалюзи",
-        "Vanes swing": "Качание жалюзи",
-        "Stop": "Остановлены",
-        "Horizontal and vertical swing": "Качание горизонтальное и вертикальное",
-        "Swinging horizontal blinds": "Качание горизонтальных жалюзи",
-        "Swinging vertical blinds": "Качание вертикальных жалюзи",
-        "Show fan as range": "Отображать вентилятор как ползунок",
-        "Additional": "Дополнительные режимы и функции",
-        "1 Speed": "1 Скорость",
-        "2 Speed": "2 Скорость",
-        "3 Speed": "3 Скорость",
-        "4 Speed": "4 Скорость",
-        "5 Speed": "5 Скорость",
-        "Quiet mode": "Режим тихий",
-        "Eco mode": "Режим эко",
-        "Turbo mode": "Режим турбо",
-        "Sleep mode": "Режим сна",
-        "Ionization": "Ионизация",
-        "Self cleaning": "Самоочистка",
-        "No": "Нет",
-        "Yes": "Да",
-        "Baud rate": "Скорость обмена",
-        "baud_rate_description": "Перед изменением параметра убедитесь, что связь с устройством установлена. Выберите нужную скорость обмена, сохраните конфигурацию, а затем укажите в настройках порта эту же скорость.",
-        "Parity bit": "Бит чётности",
-        "parity_bit_description": "Перед изменением параметра убедитесь, что связь с устройством установлена. Выберите нужный бит четности, сохраните конфигурацию, а затем укажите в настройках порта этот же бит четности.",
-        "HW Info": "Данные модуля",
-        "HW Version": "Версия устройства",
-        "FW Version": "Версия прошивки",
-        "PROTO Version": "Версия протокола",
-        "Signature": "Сигнатура устройства",
-        "Uptime": "Время работы с момента включения (с)",
-        "MCU Temperature": "Температура МК",
-        "Serial": "Серийный номер",
-        "Reboot Device": "Перезагрузить устройство",
-        "Debug": "Диагностика",
-        "Temeperature correction": "Коррекция температуры",
-        "AC connected": "Кондиционер подключен",
-        "Show error switches": "Показать переключатели ошибок",
-        "Errors": "Ошибки",
-        "Error 1": "Режим извлечения хладагента",
-        "Error 2": "Ошибка датчика температуры пульта",
-        "Error 3": "Ошибка ППЗУ пульта",
-        "Error 4": "Аварийная остановка",
-        "Error 5": "Ошибка датчика температуры испарителя",
-        "Error 6": "Ошибка датчика окружающей температуры",
-        "Error 7": "Ошибка датчика влажности",
-        "Error 8": "Защита от переполнения конденсатом",
-        "Error 9": "Ошибка микросхемы памяти IDU",
-        "Error 10": "Ошибка перемычки внутреннего блока",
-        "Error 11": "Ошибка двигателя вентилятора IDU",
-        "Error 12": "Требуется очистка фильтра",
-        "Error 13": "Ошибка связи внутреннего блока с пультом",
-        "Error 14": "Ошибка связи внутреннго блока с пультом",
-        "Error 15": "Ошибка связи между IDU и ODU",
-        "Error 16": "Ошбика Внутреннего блока (ВнБ)",
-        "Error 17": "Защита по температуре нагнетания компрессора",
-        "Error 18": "Защита от утечки хладагента",
-        "Error 19": "Защита двигателя вентилятора постоянного тока",
-        "Error 20": "Защита 4х ходового клапана",
-        "Error 21": "Защита от перегрузки",
-        "Error 22": "Защита компрессора от перегрузки",
-        "Error 23": "Защита по низкому давлению",
-        "Error 24": "Защита по высокому давлению",
-        "Error 25": "Защита от замерзания",
-        "Error 26": "Ошибка датчика температуры наружного воздуха",
-        "Error 27": "Ошибка датчика температуры нагнетания",
-        "Error 28": "Ошибка датчика температуры конденсатора",
-        "Error 29": "Ошибка перемычки",
-        "Error 30": "Ошибка микросхемы памяти ODU",
-        "Error 31": "Отказ наружного блока",
-        "Error 32": "Несоответствие ODU и IDU",
-        "Error 33": "Ошибка связи ODU и двигателя",
-        "Error 34": "Защита последовательности фаз компрессора",
-        "Error 35": "Защита шины от низкого напряжения",
-        "Error 36": "Защита шины  высокого напряжения",
-        "Error 37": "Защита по переменному току",
-        "Error 38": "Защита IPM модуля",
-        "Error 39": "Защита PFC платы",
-        "Error 40": "Ошибка активации",
-        "Error 41": "Защита от потери фазы",
-        "Error 42": "Защита от перезапуска двигателя",
-        "Error 43": "Защита от перегрузки по току",
-        "Error 44": "Защита питания",
-        "Error 45": "Защита по току двигателя",
-        "Error 46": "Защита от десинхронизации",
-        "Error 47": "Защита от блокировки компрессора",
-        "Error 48": "Защита двигателя от перегрева",
-        "Error 49": "Защита датчика модуля двигателя",
-        "Error 50": "Защита микросхемы памяти двигателя",
-        "Error 51": "Ошибка контура загрузки",
-        "Error 52": "Ошибка напряжения двигателя на входе",
-        "Error 53": "Ошибка датчика",
-        "Error 54": "Защита от перенапряжения",
-        "Error 55": "Защита изменения температуры",
-        "Error 56": "Защита подключения датчика",
-        "Error 57": "Ошибка датчика температуры газового клапана IDU",
-        "Error 58": "Ошибка датчика температуры жидкостного клапана IDU",
-        "Error 59": "Ошибка датчика температуры платы двигателя",
-        "Error 60": "Ошибка датчика температуры на входе в конденсатор",
-        "Error 61": "Ошибка датчика температуры на выходе конденсатора",
-        "Error 62": "Линия связи отключена или ошибка ЭТРВ",
-        "Error 63": "Конфликт рабочих режимов",
-        "Error 64": "Защита от размагничивания компрессора",
-        "Error 65": "Ошибка датчика тока всего блока",
-        "Error 66": "Защита контактора переменного тока",
-        "Error 67": "Превышение скорости",
-        "Error 68": "Защита вентилятора 2 наружного блока",
-        "Error 69": "Защита пересечения нуля двигателя",
-        "Error 70": "Ошибка датчика температуры всасывания компрессора",
-        "Error 71": "Ошибка закрытия вентилятора",
-        "Error 72": "Ошибка связи между IDU и энергосистемы",
-        "Error 73": "Ошибка связи между ODU и сеткой",
-        "Error 74": "Основной боковой ошибка сети (Master",
-        "Error 75": "Ошибка адреса сети IDU",
-        "Error 76": "Ошибка переполнения IP адреса",
-        "Error 77": "Другие ошибки"
-      }
-    }
-  }
 }
