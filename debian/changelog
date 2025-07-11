@@ -1,3 +1,9 @@
+wb-mqtt-serial (2.178.0) stable; urgency=medium
+
+  * Update ONOKOM templates
+
+ -- Alexander Degtyarev <a.degtyarev@wirenboard.com>  Thu, 10 Jul 2025 11:06:00 +0400
+
 wb-mqtt-serial (2.177.3) stable; urgency=medium
 
   * Port handling refactoring. No functional changes

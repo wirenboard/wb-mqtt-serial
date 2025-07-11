@@ -44,12 +44,12 @@
             {
                 "title": "Errors",
                 "id": "errors",
-                "order": 7
+                "order": 8
             },
             {
                 "title": "Debug",
                 "id": "debug",
-                "order": 8
+                "order": 9
             }
         ],
         "parameters": [
@@ -58,8 +58,14 @@
                 "title": "Allow the use of an external temperature sensor",
                 "address": 100,
                 "reg_type": "coil",
-                "enum": [0, 1],
-                "enum_titles": ["No", "Yes"],
+                "enum": [
+                    0,
+                    1
+                ],
+                "enum_titles": [
+                    "No",
+                    "Yes"
+                ],
                 "group": "temperatureControl",
                 "order": 1
             },
@@ -68,8 +74,14 @@
                 "title": "Show modes as range",
                 "address": 95,
                 "reg_type": "coil",
-                "enum": [0, 1],
-                "enum_titles": ["No", "Yes"],
+                "enum": [
+                    0,
+                    1
+                ],
+                "enum_titles": [
+                    "No",
+                    "Yes"
+                ],
                 "group": "general",
                 "order": 1
             },
@@ -78,8 +90,14 @@
                 "title": "Show fan as range",
                 "address": 92,
                 "reg_type": "coil",
-                "enum": [0, 1],
-                "enum_titles": ["No", "Yes"],
+                "enum": [
+                    0,
+                    1
+                ],
+                "enum_titles": [
+                    "No",
+                    "Yes"
+                ],
                 "group": "general",
                 "order": 1
             },
@@ -88,8 +106,14 @@
                 "title": "Show vanes as range",
                 "address": 94,
                 "reg_type": "coil",
-                "enum": [0, 1],
-                "enum_titles": ["No", "Yes"],
+                "enum": [
+                    0,
+                    1
+                ],
+                "enum_titles": [
+                    "No",
+                    "Yes"
+                ],
                 "group": "vanes",
                 "order": 1
             },
@@ -98,8 +122,14 @@
                 "title": "Show thermostat state as range",
                 "address": 94,
                 "reg_type": "coil",
-                "enum": [0, 1],
-                "enum_titles": ["No", "Yes"],
+                "enum": [
+                    0,
+                    1
+                ],
+                "enum_titles": [
+                    "No",
+                    "Yes"
+                ],
                 "group": "temperatureControl",
                 "order": 1
             },
@@ -126,7 +156,13 @@
                 "description": "baud_rate_description",
                 "address": 110,
                 "reg_type": "holding",
-                "enum": [96, 192, 384, 576, 1152],
+                "enum": [
+                    96,
+                    192,
+                    384,
+                    576,
+                    1152
+                ],
                 "default": 96,
                 "enum_titles": [
                     "9600",
@@ -144,7 +180,11 @@
                 "description": "parity_bit_description",
                 "address": 111,
                 "reg_type": "holding",
-                "enum": [0, 1, 2],
+                "enum": [
+                    0,
+                    1,
+                    2
+                ],
                 "default": 0,
                 "enum_titles": [
                     "none (N)",
@@ -154,549 +194,595 @@
                 "group": "hw_info",
                 "order": 1
             }
-
         ],
         "channels": [
             {
                 "name": "Active",
-                "group": "general",
-                "address": 1,
                 "reg_type": "coil",
-                "format": "u16",
+                "address": 1,
                 "type": "switch",
-                "sporadic": true
+                "format": "u16",
+                "sporadic": true,
+                "group": "general"
             },
             {
                 "name": "Mode",
-                "group": "general",
-                "address": 1,
                 "reg_type": "holding",
-                "format": "u16",
+                "address": 1,
                 "type": "range",
+                "format": "u16",
                 "min": 1,
                 "max": 5,
-                "condition": "Show_modes_as_range==1",
-                "sporadic": true
+                "sporadic": true,
+                "group": "general",
+                "condition": "Show_modes_as_range==1"
             },
             {
                 "name": "Mode",
-                "group": "general",
+                "reg_type": "holding",
                 "address": 1,
-                "reg_type": "holding",
-                "format": "u16",
                 "type": "value",
-                "enum": [1, 2, 3, 4, 5],
-                "enum_titles": ["Heat", "Cool", "Auto", "Dry", "Fan"],
-                "condition": "Show_modes_as_range!=1",
-                "sporadic": true
+                "format": "u16",
+                "sporadic": true,
+                "group": "general",
+                "enum": [
+                    1,
+                    2,
+                    3,
+                    4,
+                    5
+                ],
+                "enum_titles": [
+                    "Heat",
+                    "Cool",
+                    "Auto",
+                    "Dry",
+                    "Fan"
+                ],
+                "condition": "Show_modes_as_range!=1"
             },
             {
                 "name": "Active mode",
-                "group": "general",
-                "address": 2,
                 "reg_type": "holding",
-                "format": "u16",
+                "address": 2,
                 "type": "range",
+                "format": "u16",
                 "min": 0,
                 "max": 5,
-                "condition": "Show_modes_as_range==1",
-                "sporadic": true
+                "sporadic": true,
+                "group": "general",
+                "condition": "Show_modes_as_range==1"
             },
             {
                 "name": "Active mode",
-                "group": "general",
-                "address": 2,
                 "reg_type": "holding",
-                "format": "u16",
+                "address": 2,
                 "type": "value",
-                "enum": [0, 1, 2, 3, 4, 5],
-                "enum_titles": ["Off", "Heat", "Cool", "Auto", "Dry", "Fan"],
-                "condition": "Show_modes_as_range!=1",
-                "sporadic": true
+                "format": "u16",
+                "sporadic": true,
+                "group": "general",
+                "enum": [
+                    0,
+                    1,
+                    2,
+                    3,
+                    4,
+                    5
+                ],
+                "enum_titles": [
+                    "Off",
+                    "Heat",
+                    "Cool",
+                    "Auto",
+                    "Dry",
+                    "Fan"
+                ],
+                "condition": "Show_modes_as_range!=1"
             },
             {
                 "name": "Fan speed",
-                "group": "general",
-                "address": 7,
                 "reg_type": "holding",
-                "format": "u16",
+                "address": 7,
                 "type": "range",
+                "format": "u16",
                 "min": 0,
                 "max": 5,
-                "condition": "Show_fan_as_range==1",
-                "sporadic": true
+                "sporadic": true,
+                "group": "general",
+                "condition": "Show_fan_as_range==1"
             },
             {
                 "name": "Fan speed",
-                "group": "general",
-                "address": 7,
                 "reg_type": "holding",
-                "format": "u16",
+                "address": 7,
                 "type": "value",
-                "enum": [0, 1, 2, 3, 4, 5],
-                "enum_titles": ["Auto", "1 Speed", "2 Speed","3 Speed", "4 Speed", "5 Speed" ],
-                "condition": "Show_fan_as_range!=1",
-                "sporadic": true
+                "format": "u16",
+                "min": 0,
+                "max": 5,
+                "sporadic": true,
+                "group": "general",
+                "enum": [
+                    0,
+                    1,
+                    2,
+                    3,
+                    4,
+                    5
+                ],
+                "enum_titles": [
+                    "Auto",
+                    "1 Speed",
+                    "2 Speed",
+                    "3 Speed",
+                    "4 Speed",
+                    "5 Speed"
+                ],
+                "condition": "Show_fan_as_range!=1"
             },
-
             {
                 "name": "Smart fan speed",
-                "group": "general",
-                "address": 8,
                 "reg_type": "holding",
-                "format": "u16",
+                "address": 8,
                 "type": "range",
+                "format": "u16",
                 "min": 0,
                 "max": 7,
-                "condition": "Show_fan_as_range==1",
-                "sporadic": true
+                "sporadic": true,
+                "group": "general",
+                "condition": "Show_fan_as_range==1"
             },
             {
                 "name": "Smart fan speed",
-                "group": "general",
+                "reg_type": "holding",
                 "address": 8,
-                "reg_type": "holding",
+                "type": "value",
                 "format": "u16",
-                "type": "value",
-                "enum": [0, 1, 2, 3, 4, 5, 6, 7],
-                "enum_titles": ["Auto","Quiet mode", "1 Speed", "2 Speed","3 Speed", "4 Speed" , "5 Speed" , "Turbo mode" ],
-                "condition": "Show_fan_as_range!=1",
-                "sporadic": true
+                "min": 0,
+                "max": 7,
+                "sporadic": true,
+                "group": "general",
+                "enum": [
+                    0,
+                    1,
+                    2,
+                    3,
+                    4,
+                    5,
+                    6,
+                    7
+                ],
+                "enum_titles": [
+                    "Auto",
+                    "Quiet mode",
+                    "1 Speed",
+                    "2 Speed",
+                    "3 Speed",
+                    "4 Speed",
+                    "5 Speed",
+                    "Turbo mode"
+                ],
+                "condition": "Show_fan_as_range!=1"
             },
             {
                 "name": "Indoor air temperature",
-                "group": "temperatureControl",
-                "address": 3,
                 "reg_type": "holding",
-                "format": "s16",
+                "address": 3,
                 "type": "value",
-                "units": "deg C",
-                "condition": "Allow_the_use_of_an_external_temperature_sensor!=1",
+                "format": "s16",
                 "scale": 0.01,
+                "sporadic": true,
+                "group": "temperatureControl",
                 "readonly": true,
-                "sporadic": true
+                "units": "deg C",
+                "condition": "Allow_the_use_of_an_external_temperature_sensor!=1"
             },
             {
                 "name": "Indoor air temperature",
-                "group": "temperatureControl",
-                "address": 3,
                 "reg_type": "holding",
-                "format": "s16",
+                "address": 3,
                 "type": "value",
+                "format": "s16",
                 "min": -50,
                 "max": 50,
-                "units": "deg C",
                 "scale": 0.01,
-                "condition": "Allow_the_use_of_an_external_temperature_sensor==1",
-                "sporadic": true
+                "sporadic": true,
+                "group": "temperatureControl",
+                "units": "deg C",
+                "condition": "Allow_the_use_of_an_external_temperature_sensor==1"
             },
             {
                 "name": "Outdoor air temperature",
-                "group": "temperatureControl",
+                "enabled": false,
+                "reg_type": "holding",
                 "address": 4,
-                "reg_type": "holding",
-                "format": "s16",
                 "type": "value",
-                "units": "deg C",
+                "format": "s16",
                 "scale": 0.01,
-                "readonly": true,
-                "enabled": false,
-                "sporadic": true
-            },
-            {
-                "name": "Indoor heat exchanger temperature",
+                "sporadic": true,
                 "group": "temperatureControl",
-                "address": 23,
-                "reg_type": "holding",
-                "format": "s16",
-                "type": "value",
-                "units": "deg C",
-                "scale": 0.01,
                 "readonly": true,
-                "enabled": false,
-                "sporadic": true
-            },
-            {
-                "name": "Outdoor heat exchanger temperature",
-                "group": "temperatureControl",
-                "address": 24,
-                "reg_type": "holding",
-                "format": "s16",
-                "type": "value",
-                "units": "deg C",
-                "scale": 0.01,
-                "enabled": false,
-                "sporadic": true
+                "units": "deg C"
             },
             {
                 "name": "Target temperature",
-                "group": "temperatureControl",
-                "address": 5,
                 "reg_type": "holding",
-                "format": "s16",
+                "address": 5,
                 "type": "range",
+                "format": "s16",
                 "min": 16,
-                "max": 32,
-                "units": "deg C",
+                "max": 31,
                 "scale": 0.01,
-                "sporadic": true
+                "sporadic": true,
+                "group": "temperatureControl",
+                "units": "deg C"
             },
             {
                 "name": "Thermostat state",
-                "group": "temperatureControl",
-                "address": 6,
                 "reg_type": "holding",
-                "format": "u16",
+                "address": 6,
                 "type": "range",
+                "format": "u16",
                 "min": 0,
                 "max": 2,
+                "sporadic": true,
+                "group": "temperatureControl",
                 "readonly": true,
-                "condition": "Show_thermostat_state_as_range==1",
-                "sporadic": true
+                "condition": "Show_thermostat_state_as_range==1"
             },
             {
                 "name": "Thermostat state",
-                "group": "temperatureControl",
+                "reg_type": "holding",
                 "address": 6,
-                "reg_type": "holding",
+                "type": "value",
                 "format": "u16",
+                "sporadic": true,
+                "group": "temperatureControl",
+                "enum": [
+                    0,
+                    1,
+                    2
+                ],
+                "enum_titles": [
+                    "Idle",
+                    "Heating",
+                    "Cooling"
+                ],
                 "readonly": true,
-                "type": "value",
-                "enum": [0, 1, 2],
-                "enum_titles": ["Idle", "Heater", "Cool"],
-                "condition": "Show_thermostat_state_as_range!=1",
-                "sporadic": true
+                "condition": "Show_thermostat_state_as_range!=1"
             },
             {
                 "name": "Horizontal vanes",
-                "group": "vanes",
-                "address": 9,
                 "reg_type": "holding",
-                "format": "u16",
+                "address": 9,
                 "type": "range",
-                "min": 1,
+                "format": "u16",
+                "min": 0,
                 "max": 6,
-                "condition": "Show_vanes_as_range==1",
-                "sporadic": true
+                "sporadic": true,
+                "group": "vanes",
+                "condition": "Show_vanes_as_range==1"
             },
             {
                 "name": "Horizontal vanes",
-                "group": "vanes",
-                "address": 9,
                 "reg_type": "holding",
-                "format": "u16",
+                "address": 9,
                 "type": "value",
-                "enum": [0, 1, 2, 3, 4, 5, 6],
-                "enum_titles": ["Auto", "Swing", "Lowest", "Low", "Middle", "High", "Highest"],
-                "condition": "Show_vanes_as_range!=1",
-                "sporadic": true
+                "format": "u16",
+                "min": 0,
+                "max": 6,
+                "sporadic": true,
+                "group": "vanes",
+                "enum": [
+                    0,
+                    1,
+                    2,
+                    3,
+                    4,
+                    5,
+                    6
+                ],
+                "enum_titles": [
+                    "Stop",
+                    "Swing",
+                    "Lowest",
+                    "Low",
+                    "Middle",
+                    "High",
+                    "Highest"
+                ],
+                "condition": "Show_vanes_as_range!=1"
             },
             {
                 "name": "Vertical vanes",
-                "group": "vanes",
-                "address": 10,
                 "reg_type": "holding",
+                "address": 10,
+                "type": "value",
                 "format": "u16",
-                "type": "range",
                 "min": 0,
                 "max": 7,
-                "condition": "Show_vanes_as_range==1",
-                "sporadic": true
-            },
-            {
-                "name": "Vertical vanes",
+                "sporadic": true,
                 "group": "vanes",
-                "address": 10,
-                "reg_type": "holding",
-                "format": "u16",
-                "type": "value",
-                "enum": [0, 1, 2, 3, 4, 5, 6],
-                "enum_titles": ["Auto", "Swing", "Far Left", "Left", "Middle", "Right", "Far Right"],
-                "condition": "Show_vanes_as_range!=1",
-                "sporadic": true
+                "enum": [
+                    0,
+                    1,
+                    2,
+                    3,
+                    4,
+                    5,
+                    6,
+                    7
+                ],
+                "enum_titles": [
+                    "Stop",
+                    "Swing",
+                    "Far Left",
+                    "Left",
+                    "Middle",
+                    "Right",
+                    "Far Right",
+                    "Gentle wind"
+                ],
+                "condition": "Show_vanes_as_range!=1"
             },
-
             {
                 "name": "Vanes swing",
-                "group": "vanes",
-                "address": 11,
                 "reg_type": "holding",
-                "format": "u16",
+                "address": 11,
                 "type": "range",
+                "format": "u16",
                 "min": 0,
                 "max": 3,
-                "condition": "Show_vanes_as_range==1",
-                "sporadic": true
+                "sporadic": false,
+                "group": "vanes",
+                "condition": "Show_vanes_as_range==1"
             },
             {
                 "name": "Vanes swing",
-                "group": "vanes",
-                "address": 11,
                 "reg_type": "holding",
-                "format": "u16",
+                "address": 11,
                 "type": "value",
-                "enum": [0, 1, 2, 3],
-                "enum_titles": ["Stop", "Horizontal and vertical swing", "Swinging horizontal blinds", "Swinging vertical blinds"],
-                "condition": "Show_vanes_as_range!=1",
-                "sporadic": true
-
+                "format": "u16",
+                "sporadic": false,
+                "group": "vanes",
+                "enum": [
+                    0,
+                    1,
+                    2,
+                    3
+                ],
+                "enum_titles": [
+                    "Stop",
+                    "Horizontal and vertical swing",
+                    "Swinging horizontal blinds",
+                    "Swinging vertical blinds"
+                ],
+                "condition": "Show_vanes_as_range!=1"
             },
             {
                 "name": "Quiet mode",
-                "group": "additional",
-                "address": 4,
-                "reg_type": "coil",
-                "type": "switch",
                 "enabled": false,
-                "sporadic": true
+                "reg_type": "coil",
+                "address": 4,
+                "type": "switch",
+                "sporadic": true,
+                "group": "additional"
             },
             {
                 "name": "Eco mode",
-                "group": "additional",
-                "address": 6,
+                "enabled": false,
                 "reg_type": "coil",
+                "address": 6,
                 "type": "switch",
-                "sporadic": true
+                "sporadic": true,
+                "group": "additional"
             },
             {
                 "name": "Turbo mode",
-                "group": "additional",
-                "address": 7,
-                "reg_type": "coil",
-                "type": "switch",
                 "enabled": false,
-                "sporadic": true
+                "reg_type": "coil",
+                "address": 7,
+                "type": "switch",
+                "sporadic": true,
+                "group": "additional"
             },
             {
                 "name": "Sleep mode",
-                "group": "additional",
-                "address": 8,
+                "enabled": false,
                 "reg_type": "coil",
+                "address": 8,
                 "type": "switch",
-                "sporadic": true
+                "sporadic": true,
+                "group": "additional"
             },
             {
                 "name": "Ionization",
-                "group": "additional",
-                "address": 9,
+                "enabled": false,
                 "reg_type": "coil",
+                "address": 9,
                 "type": "switch",
-                "sporadic": true
+                "sporadic": true,
+                "group": "additional"
             },
             {
                 "name": "Self cleaning",
-                "group": "additional",
-                "address": 10,
+                "enabled": false,
                 "reg_type": "coil",
+                "address": 10,
                 "type": "switch",
-                "sporadic": true
+                "sporadic": true,
+                "group": "additional"
             },
             {
                 "name": "Mold protection",
-                "group": "additional",
+                "enabled": false,
                 "reg_type": "coil",
                 "address": 11,
                 "type": "switch",
-                "sporadic": true
+                "sporadic": true,
+                "group": "additional"
             },
             {
                 "name": "Heating 8 deg",
-                "group": "additional",
-                "address": 13,
+                "enabled": false,
                 "reg_type": "coil",
+                "address": 13,
                 "type": "switch",
-                "sporadic": true,
-                "enabled": false
+                "sporadic": false,
+                "group": "additional"
             },
             {
                 "name": "Gentle wind",
-                "group": "additional",
-                "address": 14,
+                "enabled": false,
                 "reg_type": "coil",
+                "address": 14,
                 "type": "switch",
                 "sporadic": true,
-                "enabled": false
+                "group": "additional"
             },
             {
                 "name": "Screen light",
-                "group": "indication",
-                "address": 2,
                 "reg_type": "coil",
+                "address": 2,
                 "type": "switch",
-                "sporadic": true
+                "sporadic": true,
+                "group": "indication"
             },
             {
                 "name": "Beeper",
-                "group": "indication",
-                "address": 5,
                 "reg_type": "coil",
+                "address": 5,
                 "type": "switch",
-                "sporadic": true
+                "sporadic": true,
+                "group": "indication"
             },
             {
                 "name": "Current fan speed",
-                "group": "debug",
-                "address": 32,
+                "enabled": false,
                 "reg_type": "holding",
+                "address": 32,
                 "type": "range",
                 "min": 0,
                 "max": 200,
-                "units": "rpm",
+                "sporadic": true,
+                "group": "debug",
                 "readonly": true,
-                "sporadic": true
+                "units": "rpm"
             },
             {
                 "name": "Temeperature correction",
-                "group": "debug",
-                "address": 20,
                 "reg_type": "holding",
-                "format": "s16",
+                "address": 20,
                 "type": "value",
+                "format": "s16",
                 "min": -30,
                 "max": 30,
-                "condition": "Allow_the_use_of_an_external_temperature_sensor==1",
-                "sporadic": true
+                "sporadic": true,
+                "group": "temperatureControl",
+                "condition": "Allow_the_use_of_an_external_temperature_sensor==1"
             },
             {
                 "name": "Compressor power limit",
-                "group": "additional",
-                "address": 19,
+                "enabled": false,
                 "reg_type": "holding",
+                "address": 19,
                 "type": "range",
                 "max": 100,
                 "sporadic": true,
-                "enabled": false
+                "group": "additional"
             },
             {
                 "name": "AC connected",
-                "group": "debug",
-                "address": 20,
                 "reg_type": "coil",
+                "address": 20,
                 "type": "switch",
-                "readonly": true,
-                "sporadic": true
+                "sporadic": true,
+                "group": "debug",
+                "readonly": true
             },
             {
                 "name": "HW Version",
-                "group": "hw_info",
-                "address": 200,
-                "reg_type": "holding",
-                "format": "string",
-                "type": "text",
-                "string_data_size": 20,
-                "readonly": true,
                 "enabled": false,
-                "sporadic": true
+                "reg_type": "holding",
+                "address": 200,
+                "type": "text",
+                "format": "string",
+                "sporadic": true,
+                "group": "hw_info",
+                "readonly": true,
+                "string_data_size": 20
             },
             {
                 "name": "FW Version",
-                "group": "hw_info",
-                "address": 250,
+                "enabled": false,
                 "reg_type": "holding",
-                "format": "string",
+                "address": 250,
                 "type": "text",
-                "string_data_size": 16,
+                "format": "string",
+                "sporadic": true,
+                "group": "hw_info",
                 "readonly": true,
-                "sporadic": true
+                "string_data_size": 16
             },
             {
                 "name": "PROTO Version",
-                "group": "hw_info",
-                "address": 400,
-                "reg_type": "input",
-                "format": "string",
-                "type": "text",
-                "string_data_size": 16,
-                "readonly": true,
                 "enabled": false,
-                "sporadic": true
+                "reg_type": "input",
+                "address": 400,
+                "type": "text",
+                "format": "string",
+                "sporadic": true,
+                "group": "hw_info",
+                "readonly": true,
+                "string_data_size": 16
             },
             {
                 "name": "Signature",
-                "group": "hw_info",
-                "address": 290,
-                "reg_type": "input",
-                "format": "string",
-                "type": "text",
-                "string_data_size": 12,
-                "readonly": true,
                 "enabled": false,
-                "sporadic": true
+                "reg_type": "input",
+                "address": 290,
+                "type": "text",
+                "format": "string",
+                "sporadic": true,
+                "group": "hw_info",
+                "readonly": true,
+                "string_data_size": 12
             },
             {
                 "name": "Serial",
-                "type": "text",
+                "enabled": false,
                 "reg_type": "holding",
                 "address": 270,
+                "type": "text",
                 "format": "u32",
                 "group": "hw_info",
-                "readonly": true,
-                "enabled": false
+                "readonly": true
             },
             {
                 "name": "Uptime",
+                "enabled": false,
                 "reg_type": "input",
                 "address": 104,
                 "type": "text",
                 "format": "u32",
-                "enabled": false,
                 "group": "hw_info"
             },
             {
                 "name": "MCU Temperature",
+                "enabled": false,
                 "reg_type": "input",
                 "address": 124,
                 "type": "temperature",
                 "format": "s16",
                 "scale": 0.1,
-                "enabled": false,
                 "group": "hw_info"
             },
             {
                 "name": "Reboot Device",
+                "enabled": false,
                 "reg_type": "holding",
                 "address": 120,
-                "type":"pushbutton",
+                "type": "pushbutton",
                 "group": "hw_info"
-            },
-
-            {
-                "name": "Indication settings",
-                "group": "debug",
-                "address": 450,
-                "reg_type": "holding",
-                "format": "s16",
-                "type": "value",
-                "enum": [
-                    3,
-                    8,
-                    9
-                ],
-                "enum_titles": [
-                    "OFF",
-                    "GREEN",
-                    "RED"
-                ],
-                "readonly": false,
-                "enabled": true
-            },
-            {
-                "name": "Errors",
-                "group": "errors",
-                "reg_type": "discrete",
-                "address": 0,
-                "type": "switch",
-                "readonly": true,
-                "enabled": true
-            },
-            {
-                "name": "Errors count",
-                "group": "errors",
-                "reg_type": "input",
-                "address": 0,
-                "type": "value",
-                "readonly": true,
-                "enabled": true
             },
             {
                 "name": "Error 1",
@@ -945,7 +1031,6 @@
             },
             "ru": {
                 "template_title": "ONOKOM-AIR-TCL-1-MB-B (Адаптер для бытовых систем TCL)",
-
                 "General": "Основные режимы и функции",
                 "Active": "Состояние",
                 "Mode": "Режим",
@@ -954,109 +1039,81 @@
                 "Smart fan speed": "Скорость вентилятора расширенная",
                 "Show modes as range": "Отображать режимы как ползунок",
                 "Off": "Выключен",
-                "Heat": "Нагрев", 
-                "Cool": "Охлаждение", 
-                "Auto": "Авто", 
-                "Dry": "Осушение", 
+                "Heat": "Нагрев",
+                "Cool": "Охлаждение",
+                "Auto": "Авто",
+                "Dry": "Осушение",
                 "Fan": "Вентиляция",
-                "Idle":"Простаивает",
-                 "Heater":"Нагрев", 
-           
-
+                "Idle": "Простаивает",
+                "Heating": "Нагрев",
+                "Cooling": "Охлаждение",
                 "Temperature control": "Контроль температуры",
                 "Allow the use of an external temperature sensor": "Разрешить использование внешнего датчика температуры",
-                "Show thermostat state as range": "Отображать состояние термостата как ползунок",
                 "Indoor air temperature": "Температура воздуха в помещении",
                 "Outdoor air temperature": "Температура воздуха на улице",
-                "Indoor heat exchanger temperature": "Температура внутреннего теплообменника",
-                "Outdoor heat exchanger temperature": "Температура внешнего теплообменника",
-                "Additional temperature 3": "Дополнительная температура 3",
-                "Additional temperature 4": "Дополнительная температура 4",
                 "Target temperature": "Целевая температура",
+                "Show thermostat state as range": "Отображать состояние термостата как ползунок",
                 "Thermostat state": "Состояние термостата",
-
                 "Vanes": "Жалюзи",
                 "Show vanes as range": "Отображать жалюзи как ползунок",
                 "Horizontal vanes": "Горизонтальные жалюзи",
-                "Swing": "Качание", 
-                "Lowest": "Самое низкое", 
-                "Low": "Низкое", 
-                "Middle": "Среднее", 
-                "High": "Высокое", 
+                "Swing": "Качание",
+                "Lowest": "Самое низкое",
+                "Low": "Низкое",
+                "Middle": "Среднее",
+                "High": "Высокое",
                 "Highest": "Самое высокое",
-                "Far Left": "Самое левое", 
-                "Left": "Левое", 
-                "Right": "Правое", 
+                "Far Left": "Самое левое",
+                "Left": "Левое",
+                "Right": "Правое",
                 "Far Right": "Самое правое",
-                "Stopped": "Остановлено", 
                 "Vertical vanes": "Вертикальные жалюзи",
                 "Vanes swing": "Качание жалюзи",
-                "Stop":"Остановлены", 
-                "Horizontal and vertical swing":"Качание горизонтальное и вертикальное",
-                "Swinging horizontal blinds":"Качание горизонтальных жалюзи", 
-                "Swinging vertical blinds":"Качание вертикальных жалюзи",
-                "Show fan as range":"Отображать вентилятор как ползунок",
-
+                "Stop": "Остановлены",
+                "Horizontal and vertical swing": "Качание горизонтальное и вертикальное",
+                "Swinging horizontal blinds": "Качание горизонтальных жалюзи",
+                "Swinging vertical blinds": "Качание вертикальных жалюзи",
+                "Show fan as range": "Отображать вентилятор как ползунок",
                 "Additional": "Дополнительные режимы и функции",
-                "Show gateway mode as range":"Отображать режим шлюза как ползунок",
-                "Shutdown time when the window is opened": "Время отключения при открытии окна",
-                "Window is opened": "Окно открыто",
-                "1 Speed":"1 Скорость", 
-                "2 Speed":"2 Скорость",
-                "3 Speed":"3 Скорость",
-                "4 Speed":"4 Скорость", 
-                "5 Speed":"5 Скорость",
+                "1 Speed": "1 Скорость",
+                "2 Speed": "2 Скорость",
+                "3 Speed": "3 Скорость",
+                "4 Speed": "4 Скорость",
+                "5 Speed": "5 Скорость",
                 "Quiet mode": "Режим тихий",
                 "Eco mode": "Режим эко",
                 "Turbo mode": "Режим турбо",
                 "Sleep mode": "Режим сна",
                 "Ionization": "Ионизация",
-                "Defrosting": "Разморозка",
                 "Mold protection": "Защита от плесени",
                 "Self cleaning": "Самоочистка",
-                "Outdoor air supply": "Подача воздуха с улицы",
-                "Heating 8 deg" : "Дежурный обогрев",
-                "Gentle wind":"Мягкий поток",
+                "Heating 8 deg": "Дежурный обогрев",
+                "Gentle wind": "Мягкий поток",
                 "Indication": "Индикация",
                 "Screen light": "Подсветка экрана",
-                "Screen low bright": "Ослабить яркость экрана",
                 "Beeper": "Звуковая индикация",
-                "Compressor power limit":"Ограничение мощности компрессора",
-                "Disable screen when power off": "Отключать экран при отключении питания",
+                "Compressor power limit": "Ограничение мощности компрессора",
                 "No": "Нет",
                 "Yes": "Да",
-
                 "Baud rate": "Скорость обмена",
                 "baud_rate_description": "Перед изменением параметра убедитесь, что связь с устройством установлена. Выберите нужную скорость обмена, сохраните конфигурацию, а затем укажите в настройках порта эту же скорость.",
                 "Parity bit": "Бит чётности",
                 "parity_bit_description": "Перед изменением параметра убедитесь, что связь с устройством установлена. Выберите нужный бит четности, сохраните конфигурацию, а затем укажите в настройках порта этот же бит четности.",
-
                 "HW Info": "Данные модуля",
                 "HW Version": "Версия устройства",
                 "FW Version": "Версия прошивки",
-                "PROTO Version":"Версия протокола",
-                "Signature":"Сигнатура устройства",
+                "PROTO Version": "Версия протокола",
+                "Signature": "Сигнатура устройства",
                 "Uptime": "Время работы с момента включения (с)",
                 "MCU Temperature": "Температура МК",
-                "MCU Voltage": "Напряжение питания МК",
                 "Serial": "Серийный номер",
-                "Reboot Device": "Перегрузить устройство",
+                "Reboot Device": "Перезагрузить устройство",
                 "Debug": "Диагностика",
-                "Current compressor power": "Текущая мощность компрессора",
-                "Target compressor power": "Целевая мощность компрессора",
-                "Target fan speed": "Целевая скорость вентилятора",
                 "Current fan speed": "Текущая скорость вентилятора",
                 "Temeperature correction": "Коррекция температуры",
                 "AC connected": "Кондиционер подключен",
-                "Current tick": "Текущий такт",
-                "Receive tick": "Такт последнего получения данных от кондиционера",
-                "Show error switches":"Показать перключатели ошибок",
-                "Indication settings":"Настройка индикации",
-                "RED":"Красный",
-                "GREEN":"Зеленый",
-                "OFF":"Выключить",
-                "Errors":"Ошибки",
-                "Errors count":"Количество Ошибок",
+                "Show error switches": "Показать переключатели ошибок",
+                "Errors": "Ошибки",
                 "Error 1": "E0 Сбой внутренней и внешней связи (внутренний блок)",
                 "Error 2": "E0 Сбой внутренней и внешней связи (внешний блок)",
                 "Error 3": "E1 Неисправность датчика температуры в помещении",
