@@ -218,7 +218,7 @@ public:
      * Reads multiple registers.
      * Throws exceptions inherited from TSerialDeviceException.
      */
-    virtual void ReadRegisterRange(TPort& port, PRegisterRange range);
+    virtual void ReadRegisterRange(TPort& port, PRegisterRange range, bool breakOnError = false);
 
     virtual std::string ToString() const;
 

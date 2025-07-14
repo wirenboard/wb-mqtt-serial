@@ -93,6 +93,7 @@ namespace Modbus // modbus protocol common utilities
                            uint8_t slaveId,
                            TModbusRegisterRange& range,
                            TRegisterCache& cache,
+                           bool breakOnError,
                            int shift = 0);
 
     /**

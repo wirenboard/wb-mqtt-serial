@@ -89,13 +89,13 @@ void TModbusIODevice::WriteRegisterImpl(TPort& port, const TRegisterConfig& reg,
                           Shift);
 }
 
-void TModbusIODevice::ReadRegisterRange(TPort& port, PRegisterRange range)
+void TModbusIODevice::ReadRegisterRange(TPort& port, PRegisterRange range, bool breakOnError)
 {
     auto modbus_range = std::dynamic_pointer_cast<Modbus::TModbusRegisterRange>(range);
     if (!modbus_range) {
         throw std::runtime_error("modbus range expected");
     }
-    Modbus::ReadRegisterRange(*ModbusTraits, port, SlaveId, *modbus_range, ModbusCache, Shift);
+    Modbus::ReadRegisterRange(*ModbusTraits, port, SlaveId, *modbus_range, ModbusCache, breakOnError, Shift);
     ResponseTime.AddValue(modbus_range->GetResponseTime());
 }
 

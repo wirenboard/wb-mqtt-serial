@@ -9,7 +9,7 @@ public:
     TEnergomeraIecWithFastReadDevice(PDeviceConfig device_config, PProtocol protocol);
 
     PRegisterRange CreateRegisterRange() const override;
-    void ReadRegisterRange(TPort& port, PRegisterRange range) override;
+    void ReadRegisterRange(TPort& port, PRegisterRange range, bool breakOnError = false) override;
 
     static void Register(TSerialDeviceFactory& factory);
 

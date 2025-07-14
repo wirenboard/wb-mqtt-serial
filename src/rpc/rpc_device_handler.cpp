@@ -306,27 +306,22 @@ void ReadRegisterList(TPort& port,
 
     size_t index = 0;
     while (index < registerList.size() && error.empty()) {
+        auto first = registerList[index].second;
         auto range = device->CreateRegisterRange();
-        auto offset = index;
         while (index < registerList.size() &&
                range->Add(port, registerList[index].second, std::chrono::milliseconds::max()))
         {
             ++index;
         }
-        error.clear();
         for (int i = 0; i <= maxRetries; ++i) {
-            device->ReadRegisterRange(port, range);
-            while (offset < index) {
-                auto reg = registerList[offset++].second;
-                if (reg->GetErrorState().count()) {
-                    error = "Failed to read " + std::to_string(range->RegisterList().size()) +
-                            " registers starting from <" + reg->GetConfig()->ToString() +
-                            ">: " + reg->GetErrorDescription();
-                    break;
-                }
-            }
-            if (error.empty()) {
+            try {
+                device->ReadRegisterRange(port, range, true);
                 break;
+            } catch (const TSerialDeviceException& e) {
+                if (i == maxRetries) {
+                    error = "Failed to read " + std::to_string(range->RegisterList().size()) +
+                            " registers starting from <" + first->GetConfig()->ToString() + ">: " + e.what();
+                }
             }
         }
     }

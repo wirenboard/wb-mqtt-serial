@@ -744,7 +744,7 @@ namespace Modbus // modbus protocol common utilities
     void ProcessRangeException(TModbusRegisterRange& range, const char* msg)
     {
         for (auto& reg: range.RegisterList()) {
-            reg->SetError(TRegister::TError::ReadError, msg);
+            reg->SetError(TRegister::TError::ReadError);
         }
 
         auto& logger = (range.Device()->GetConnectionState() == TDeviceConnectionState::DISCONNECTED) ? Debug : Warn;
@@ -757,6 +757,7 @@ namespace Modbus // modbus protocol common utilities
                            uint8_t slaveId,
                            TModbusRegisterRange& range,
                            Modbus::TRegisterCache& cache,
+                           bool breakOnError,
                            int shift)
     {
         if (range.RegisterList().empty()) {
@@ -774,8 +775,14 @@ namespace Modbus // modbus protocol common utilities
                 }
             }
             ProcessRangeException(range, e.what());
+            if (breakOnError) {
+                throw;
+            }
         } catch (const TSerialDeviceException& e) {
             ProcessRangeException(range, e.what());
+            if (breakOnError) {
+                throw;
+            }
         }
     }
 
