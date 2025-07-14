@@ -120,6 +120,12 @@ namespace
                 error + "All parameter declarations with the same id must have the same addresses and FW versions.");
         }
     }
+
+    void TemplateUpdatedWarning(PDeviceTemplate deviceTemplate, const std::string& path)
+    {
+        LOG(Warn) << "Existing template data for device type '" << deviceTemplate->Type << "' (from file "
+                  << deviceTemplate->GetFilePath() << ") replaced with contents of file " << path;
+    }
 }
 
 //=============================================================================
@@ -173,8 +179,11 @@ void TTemplateMap::AddTemplatesDir(const std::string& templatesDir,
             try {
                 auto deviceTemplate =
                     MakeTemplateFromJson(WBMQTT::JSON::ParseWithSettings(filepath, settings), filepath);
-                Templates.try_emplace(deviceTemplate->Type, std::vector<PDeviceTemplate>{})
-                    .first->second.push_back(deviceTemplate);
+                auto typeData = Templates.try_emplace(deviceTemplate->Type, std::vector<PDeviceTemplate>{});
+                if (!typeData.second) {
+                    TemplateUpdatedWarning(typeData.first->second.back(), filepath);
+                }
+                typeData.first->second.push_back(deviceTemplate);
             } catch (const std::exception& e) {
                 if (passInvalidTemplates) {
                     LOG(Error) << "Failed to parse " << filepath << "\n" << e.what();
@@ -221,6 +230,7 @@ std::vector<std::string> TTemplateMap::UpdateTemplate(const std::string& path)
     auto deviceTemplate = MakeTemplateFromJson(WBMQTT::JSON::Parse(path), path);
     auto& typeArray = Templates.try_emplace(deviceTemplate->Type, std::vector<PDeviceTemplate>{}).first->second;
     if (!PreferredTemplatesDir.empty() && WBMQTT::StringStartsWith(path, PreferredTemplatesDir)) {
+        TemplateUpdatedWarning(typeArray.back(), path);
         typeArray.push_back(deviceTemplate);
     } else {
         typeArray.insert(typeArray.begin(), deviceTemplate);

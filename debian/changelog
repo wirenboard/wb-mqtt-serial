@@ -1,3 +1,9 @@
+wb-mqtt-serial (2.178.1) stable; urgency=medium
+
+  * Add warning logs if device template data updated
+
+ -- Ilya Titov <ilya.titov@wirenboard.com>  Mon, 14 Jul 2025 11:46:27 +0000
+
 wb-mqtt-serial (2.178.0) stable; urgency=medium
 
   * Update ONOKOM templates
