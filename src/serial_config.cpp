@@ -70,16 +70,6 @@ namespace
         }
     }
 
-    int ToInt(const Json::Value& v, const std::string& title)
-    {
-        if (v.isInt())
-            return v.asInt();
-        if (!v.isString()) {
-            throw TConfigParserException(title + ": plain integer or '0x..' hex string expected");
-        }
-        return GetIntFromString(v.asString(), title);
-    }
-
     double ToDouble(const Json::Value& v, const std::string& title)
     {
         if (v.isNumeric())
@@ -115,13 +105,7 @@ namespace
         }
 
         throw TConfigParserException(
-            title + ": 32 bit plain unsigned integer (64 bit when quoted) or '0x..' hex string expected instead of '" +
-            v.asString() + "'");
-    }
-
-    int GetInt(const Json::Value& obj, const std::string& key)
-    {
-        return ToInt(obj[key], key);
+            title + ": 64-bit plain unsigned integer or '0x..' hex string expected instead of '" + v.asString() + "'");
     }
 
     double GetDouble(const Json::Value& obj, const std::string& key)
@@ -424,9 +408,9 @@ namespace
                               const TLoadingContext& context,
                               const TRegisterTypeMap& typeMap)
     {
-        int shift = 0;
+        uint32_t shift = 0;
         if (channel_data.isMember("shift")) {
-            shift = GetInt(channel_data, "shift");
+            shift = static_cast<uint32_t>(GetUint64(channel_data, "shift"));
         }
         std::unique_ptr<IRegisterAddress> baseAddress(context.device_base_address.CalcNewAddress(shift, 0, 0, 0));
 
@@ -533,8 +517,9 @@ namespace
     {
         if (device_data.isMember("password")) {
             device_config.Password.clear();
-            for (const auto& passwordItem: device_data["password"])
-                device_config.Password.push_back(ToInt(passwordItem, "password item"));
+            for (const auto& passwordItem: device_data["password"]) {
+                device_config.Password.push_back(static_cast<uint8_t>(ToUint64(passwordItem, "password item")));
+            }
         }
 
         if (device_data.isMember("delay_ms")) {
@@ -600,7 +585,7 @@ namespace
 
     PPort OpenTcpPort(const Json::Value& port_data, PRPCConfig rpcConfig)
     {
-        TTcpPortSettings settings(port_data["address"].asString(), GetInt(port_data, "port"));
+        TTcpPortSettings settings(port_data["address"].asString(), port_data["port"].asUInt());
 
         PPort port = std::make_shared<TTcpPort>(settings);
 
@@ -1182,13 +1167,11 @@ TRegisterBitsAddress LoadRegisterBitsAddress(const Json::Value& register_data, c
         const auto& addressStr = addressValue.asString();
         auto pos1 = addressStr.find(':');
         if (pos1 == string::npos) {
-            res.Address = GetInt(register_data, jsonPropertyName);
+            res.Address = static_cast<uin32_t>(GetUint64(register_data, jsonPropertyName));
         } else {
-            auto pos2 = addressStr.find(':', pos1 + 1);
-
             res.Address = GetIntFromString(addressStr.substr(0, pos1), jsonPropertyName);
+            auto pos2 = addressStr.find(':', pos1 + 1);
             auto bitOffset = stoul(addressStr.substr(pos1 + 1, pos2));
-
             if (bitOffset > 255) {
                 throw TConfigParserException(
                     "address parsing failed: bit shift must be in range [0, 255] (address string: '" + addressStr +
@@ -1200,11 +1183,11 @@ TRegisterBitsAddress LoadRegisterBitsAddress(const Json::Value& register_data, c
             }
         }
     } else {
-        res.Address = GetInt(register_data, jsonPropertyName);
+        res.Address = static_cast<uin32_t>(GetUint64(register_data, jsonPropertyName));
     }
 
     if (register_data.isMember("string_data_size")) {
-        res.BitWidth = GetInt(register_data, "string_data_size") * sizeof(char) * 8;
+        res.BitWidth = register_data["string_data_size"].asUInt() * sizeof(char) * 8;
     }
     return res;
 }
