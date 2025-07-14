@@ -103,6 +103,15 @@
                             "type": "switch",
                             "on_value" : "0xffffffff",
                             "off_value": "0xfffffffe"
+                        },
+                        {
+                            "name" : "Relay 3",
+                            "reg_type" : "fake",
+                            "format": "s16",
+                            "address" : "0x03",
+                            "type": "switch",
+                            "on_value" : -1,
+                            "off_value": -2
                         }
                     ]
                 },

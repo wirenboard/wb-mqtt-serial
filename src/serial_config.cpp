@@ -118,6 +118,22 @@ namespace
         return ToUint64(obj[key], key);
     }
 
+    std::string GetIntegerString(const Json::Value& obj, const std::string& key)
+    {
+        auto v = obj[key];
+        if (v.isInt()) {
+            return std::to_string(v.asInt64());
+        }
+
+        auto val = v.asString();
+        try {
+            return std::to_string(stoll(val, /*pos= */ 0, /*base= */ 0));
+        } catch (const logic_error& e) {
+            throw TConfigParserException(key + ": 64-bit plain integer or '0x..' hex string expected instead of '" +
+                                         val + "': " + e.what());
+        }
+    }
+
     bool IsSerialNumberChannel(const Json::Value& channel_data)
     {
         const std::vector<std::string> serialNames{"Serial", "serial_number", "Serial NO"};
@@ -371,13 +387,13 @@ namespace
             if (registers.size() != 1)
                 throw TConfigParserException("on_value is allowed only for single-valued controls -- " +
                                              deviceWithChannels.Device->DeviceConfig()->DeviceType);
-            channel->OnValue = std::to_string(GetUint64(channel_data, "on_value"));
+            channel->OnValue = GetIntegerString(channel_data, "on_value");
         }
         if (channel_data.isMember("off_value")) {
             if (registers.size() != 1)
                 throw TConfigParserException("off_value is allowed only for single-valued controls -- " +
                                              deviceWithChannels.Device->DeviceConfig()->DeviceType);
-            channel->OffValue = std::to_string(GetUint64(channel_data, "off_value"));
+            channel->OffValue = GetIntegerString(channel_data, "off_value");
         }
 
         if (registers.size() == 1) {

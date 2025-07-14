@@ -17,6 +17,13 @@ Publish: /devices/OnValueTest/controls/Relay 2/meta/readonly: '0' (QoS 1, retain
 Publish: /devices/OnValueTest/controls/Relay 2/meta/type: 'switch' (QoS 1, retained)
 Publish: /devices/OnValueTest/controls/Relay 2: '0' (QoS 1, retained)
 Subscribe: /devices/OnValueTest/controls/Relay 2/on (QoS 0)
+Publish: /devices/OnValueTest/controls/Relay 3/meta: '{"order":3,"readonly":false,"type":"switch"}' (QoS 1, retained)
+Publish: /devices/OnValueTest/controls/Relay 3/meta/error: '' (QoS 1, retained)
+Publish: /devices/OnValueTest/controls/Relay 3/meta/order: '3' (QoS 1, retained)
+Publish: /devices/OnValueTest/controls/Relay 3/meta/readonly: '0' (QoS 1, retained)
+Publish: /devices/OnValueTest/controls/Relay 3/meta/type: 'switch' (QoS 1, retained)
+Publish: /devices/OnValueTest/controls/Relay 3: '0' (QoS 1, retained)
+Subscribe: /devices/OnValueTest/controls/Relay 3/on (QoS 0)
 Subscribe: /devices/OnValueTest/controls/# (QoS 0)
 (retain) -> /devices/OnValueTest/controls/Relay 1: '0' (QoS 1, retained)
 (retain) -> /devices/OnValueTest/controls/Relay 1/meta: '{"order":1,"readonly":false,"type":"switch"}' (QoS 1, retained)
@@ -28,6 +35,11 @@ Subscribe: /devices/OnValueTest/controls/# (QoS 0)
 (retain) -> /devices/OnValueTest/controls/Relay 2/meta/order: '2' (QoS 1, retained)
 (retain) -> /devices/OnValueTest/controls/Relay 2/meta/readonly: '0' (QoS 1, retained)
 (retain) -> /devices/OnValueTest/controls/Relay 2/meta/type: 'switch' (QoS 1, retained)
+(retain) -> /devices/OnValueTest/controls/Relay 3: '0' (QoS 1, retained)
+(retain) -> /devices/OnValueTest/controls/Relay 3/meta: '{"order":3,"readonly":false,"type":"switch"}' (QoS 1, retained)
+(retain) -> /devices/OnValueTest/controls/Relay 3/meta/order: '3' (QoS 1, retained)
+(retain) -> /devices/OnValueTest/controls/Relay 3/meta/readonly: '0' (QoS 1, retained)
+(retain) -> /devices/OnValueTest/controls/Relay 3/meta/type: 'switch' (QoS 1, retained)
 Unsubscribe -- serial-client-integration-test: /devices/OnValueTest/controls/#
 >>> LoopOnce()
 Open()
@@ -36,17 +48,29 @@ fake_serial_device '144': read address '0' value '500'
 fake_serial_device '144': transfer OK
 fake_serial_device '144': reconnected
 fake_serial_device '144': read address '1' value '4294967295'
+fake_serial_device '144': read address '3' value '65535'
 Publish: /devices/OnValueTest/controls/Relay 1: '1' (QoS 1, retained)
 Publish: /devices/OnValueTest/controls/Relay 2: '-1' (QoS 1, retained)
+Publish: /devices/OnValueTest/controls/Relay 3: '1' (QoS 1, retained)
 Publish: /devices/OnValueTest/controls/Relay 1/on: '0' (QoS 0, retained)
 Publish: /devices/OnValueTest/controls/Relay 2/on: '0' (QoS 0, retained)
+Publish: /devices/OnValueTest/controls/Relay 3/on: '0' (QoS 0, retained)
 >>> LoopOnce()
 fake_serial_device '144': write to address '0' value '200'
 Publish: /devices/OnValueTest/controls/Relay 1: '0' (QoS 1, retained)
 fake_serial_device '144': write to address '1' value '4294967294'
 Publish: /devices/OnValueTest/controls/Relay 2: '-2' (QoS 1, retained)
+fake_serial_device '144': write to address '3' value '65534'
+Publish: /devices/OnValueTest/controls/Relay 3: '0' (QoS 1, retained)
 fake_serial_device '144': read address '0' value '200'
 fake_serial_device '144': read address '1' value '4294967294'
+fake_serial_device '144': read address '3' value '65534'
+Unsubscribe -- serial-client-integration-test: /devices/OnValueTest/controls/Relay 3/on
+Publish: /devices/OnValueTest/controls/Relay 3/meta: '' (QoS 1, retained)
+Publish: /devices/OnValueTest/controls/Relay 3/meta/order: '' (QoS 1, retained)
+Publish: /devices/OnValueTest/controls/Relay 3/meta/readonly: '' (QoS 1, retained)
+Publish: /devices/OnValueTest/controls/Relay 3/meta/type: '' (QoS 1, retained)
+Publish: /devices/OnValueTest/controls/Relay 3: '' (QoS 1, retained)
 Unsubscribe -- serial-client-integration-test: /devices/OnValueTest/controls/Relay 2/on
 Publish: /devices/OnValueTest/controls/Relay 2/meta: '' (QoS 1, retained)
 Publish: /devices/OnValueTest/controls/Relay 2/meta/order: '' (QoS 1, retained)
