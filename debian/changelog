@@ -1,9 +1,15 @@
-wb-mqtt-serial (2.178.0) stable; urgency=medium
+wb-mqtt-serial (2.179.0) stable; urgency=medium
 
   * Add device/Load RPC for modbus device channels and parameters reading
   * Add device/Set RPC for modbus device channels and parameters writing
 
- -- Ilya Titov <ilya.titov@wirenboard.com>  Tue, 08 Jul 2025 16:18:58 +0300
+ -- Ilya Titov <ilya.titov@wirenboard.com>  Tue, 14 Jul 2025 10:32:58 +0300
+
+wb-mqtt-serial (2.178.0) stable; urgency=medium
+
+  * Update ONOKOM templates
+
+ -- Alexander Degtyarev <a.degtyarev@wirenboard.com>  Thu, 10 Jul 2025 11:06:00 +0400
 
 wb-mqtt-serial (2.177.3) stable; urgency=medium
 
