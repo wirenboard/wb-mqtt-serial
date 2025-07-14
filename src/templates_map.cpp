@@ -121,7 +121,7 @@ namespace
         }
     }
 
-    void TemplateUpdatedWarning(PDeviceTemplate deviceTemplate, const std::string path)
+    void TemplateUpdatedWarning(PDeviceTemplate deviceTemplate, const std::string& path)
     {
         LOG(Warn) << "Existing template data for device type '" << deviceTemplate->Type << "' (from file "
                   << deviceTemplate->GetFilePath() << ") replaced with contents of file " << path;
