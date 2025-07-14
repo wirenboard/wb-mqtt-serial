@@ -1167,7 +1167,7 @@ TRegisterBitsAddress LoadRegisterBitsAddress(const Json::Value& register_data, c
         const auto& addressStr = addressValue.asString();
         auto pos1 = addressStr.find(':');
         if (pos1 == string::npos) {
-            res.Address = static_cast<uin32_t>(GetUint64(register_data, jsonPropertyName));
+            res.Address = static_cast<uint32_t>(GetUint64(register_data, jsonPropertyName));
         } else {
             res.Address = GetIntFromString(addressStr.substr(0, pos1), jsonPropertyName);
             auto pos2 = addressStr.find(':', pos1 + 1);
@@ -1183,7 +1183,7 @@ TRegisterBitsAddress LoadRegisterBitsAddress(const Json::Value& register_data, c
             }
         }
     } else {
-        res.Address = static_cast<uin32_t>(GetUint64(register_data, jsonPropertyName));
+        res.Address = static_cast<uint32_t>(GetUint64(register_data, jsonPropertyName));
     }
 
     if (register_data.isMember("string_data_size")) {
