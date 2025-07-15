@@ -1,3 +1,9 @@
+wb-mqtt-serial (2.178.2) stable; urgency=medium
+
+  * Fix channel settings negative hex value parsing
+
+ -- Ilya Titov <ilya.titov@wirenboard.com>  Tue, 15 Jul 2025 07:52:04 +0300
+
 wb-mqtt-serial (2.178.1) stable; urgency=medium
 
   * Add warning logs if device template data updated
