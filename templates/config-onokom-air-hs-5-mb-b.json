@@ -1,15 +1,15 @@
 {
     "title": "template_title",
-    "device_type": "ONOKOM-AIR-DK-1-MB-B",
+    "device_type": "ONOKOM-AIR-HS-5-MB-B",
     "group": "g-air-conditioning",
     "hw": [
         {
-            "signature": "DK-1-MB-B"
+            "signature": "HS-5-MB-B"
         }
     ],
     "device": {
-        "name": "ONOKOM-AIR-DK-1-MB-B",
-        "id": "ONOKOM-AIR-DK-1-MB-B",
+        "name": "ONOKOM-AIR-HS-5-MB-B",
+        "id": "ONOKOM-AIR-HS-5-MB-B",
         "groups": [
             {
                 "title": "General",
@@ -27,19 +27,14 @@
                 "order": 3
             },
             {
-                "title": "Additional",
-                "id": "additional",
-                "order": 4
-            },
-            {
-                "title": "Indication",
-                "id": "indication",
-                "order": 5
-            },
-            {
                 "title": "HW Info",
                 "id": "hw_info",
                 "order": 6
+            },
+            {
+                "title": "Setup",
+                "id": "setup",
+                "order": 7
             },
             {
                 "title": "Debug",
@@ -264,7 +259,7 @@
                 "type": "range",
                 "format": "u16",
                 "min": 0,
-                "max": 5,
+                "max": 6,
                 "sporadic": true,
                 "group": "general",
                 "condition": "Show_fan_as_range==1"
@@ -276,7 +271,7 @@
                 "type": "value",
                 "format": "u16",
                 "min": 0,
-                "max": 5,
+                "max": 6,
                 "sporadic": true,
                 "group": "general",
                 "enum": [
@@ -285,7 +280,8 @@
                     2,
                     3,
                     4,
-                    5
+                    5,
+                    6
                 ],
                 "enum_titles": [
                     "Auto",
@@ -293,7 +289,8 @@
                     "2 Speed",
                     "3 Speed",
                     "4 Speed",
-                    "5 Speed"
+                    "5 Speed",
+                    "6 Speed"
                 ],
                 "condition": "Show_fan_as_range!=1"
             },
@@ -304,7 +301,7 @@
                 "type": "range",
                 "format": "u16",
                 "min": 0,
-                "max": 7,
+                "max": 6,
                 "sporadic": true,
                 "group": "general",
                 "condition": "Show_fan_as_range==1"
@@ -337,7 +334,7 @@
                     "3 Speed",
                     "4 Speed",
                     "5 Speed",
-                    "Turbo mode"
+                    "6 Speed"
                 ],
                 "condition": "Show_fan_as_range!=1"
             },
@@ -435,7 +432,7 @@
                 "type": "range",
                 "format": "u16",
                 "min": 0,
-                "max": 1,
+                "max": 6,
                 "sporadic": true,
                 "group": "vanes",
                 "condition": "Show_vanes_as_range==1"
@@ -447,16 +444,26 @@
                 "type": "value",
                 "format": "u16",
                 "min": 0,
-                "max": 1,
+                "max": 6,
                 "sporadic": true,
                 "group": "vanes",
                 "enum": [
                     0,
-                    1
+                    1,
+                    2,
+                    3,
+                    4,
+                    5,
+                    6
                 ],
                 "enum_titles": [
                     "Stop",
-                    "Swing"
+                    "Swing",
+                    "Lowest",
+                    "Low",
+                    "Middle",
+                    "High",
+                    "Highest"
                 ],
                 "condition": "Show_vanes_as_range!=1"
             },
@@ -467,7 +474,7 @@
                 "type": "range",
                 "format": "u16",
                 "min": 0,
-                "max": 1,
+                "max": 8,
                 "sporadic": true,
                 "group": "vanes",
                 "condition": "Show_vanes_as_range==1"
@@ -479,16 +486,30 @@
                 "type": "value",
                 "format": "u16",
                 "min": 0,
-                "max": 1,
+                "max": 8,
                 "sporadic": true,
                 "group": "vanes",
                 "enum": [
                     0,
-                    1
+                    1,
+                    2,
+                    3,
+                    4,
+                    5,
+                    6,
+                    7,
+                    8
                 ],
                 "enum_titles": [
                     "Stop",
-                    "Swing"
+                    "Swing",
+                    "Far Left",
+                    "Left",
+                    "Middle Left",
+                    "Middle",
+                    "Middle Right",
+                    "Right",
+                    "Far Right"
                 ],
                 "condition": "Show_vanes_as_range!=1"
             },
@@ -527,76 +548,6 @@
                 "condition": "Show_vanes_as_range!=1"
             },
             {
-                "name": "Quiet mode",
-                "enabled": false,
-                "reg_type": "coil",
-                "address": 4,
-                "type": "switch",
-                "sporadic": true,
-                "group": "additional"
-            },
-            {
-                "name": "Eco mode",
-                "enabled": false,
-                "reg_type": "coil",
-                "address": 6,
-                "type": "switch",
-                "sporadic": true,
-                "group": "additional"
-            },
-            {
-                "name": "Turbo mode",
-                "enabled": false,
-                "reg_type": "coil",
-                "address": 7,
-                "type": "switch",
-                "sporadic": true,
-                "group": "additional"
-            },
-            {
-                "name": "Screen light",
-                "reg_type": "coil",
-                "address": 2,
-                "type": "switch",
-                "sporadic": true,
-                "group": "indication"
-            },
-            {
-                "name": "Screen low bright",
-                "enabled": false,
-                "reg_type": "coil",
-                "address": 3,
-                "type": "switch",
-                "sporadic": true,
-                "group": "indication"
-            },
-            {
-                "name": "Target fan speed",
-                "enabled": false,
-                "reg_type": "holding",
-                "address": 31,
-                "type": "range",
-                "min": 0,
-                "max": 200,
-                "sporadic": true,
-                "group": "debug",
-                "readonly": true,
-                "units": "rpm"
-            },
-            {
-                "name": "Current fan speed",
-                "enabled": false,
-                "reg_type": "holding",
-                "address": 32,
-                "type": "range",
-                "min": 0,
-                "max": 200,
-                "sporadic": true,
-                "group": "debug",
-                "readonly": true,
-                "units": "rpm"
-            },
-            {
                 "name": "Temeperature correction",
                 "reg_type": "holding",
                 "address": 20,
@@ -616,6 +567,26 @@
                 "sporadic": true,
                 "group": "debug",
                 "readonly": true
+            },
+            {
+                "name": "Indoor unit model",
+                "reg_type": "holding",
+                "address": 500,
+                "type": "text",
+                "format": "string",
+                "group": "setup",
+                "readonly": true,
+                "string_data_size": 15
+            },
+            {
+                "name": "Outdoor unit model",
+                "reg_type": "holding",
+                "address": 520,
+                "type": "text",
+                "format": "string",
+                "group": "setup",
+                "readonly": true,
+                "string_data_size": 15
             },
             {
                 "name": "HW Version",
@@ -701,14 +672,33 @@
                 "address": 120,
                 "type": "pushbutton",
                 "group": "hw_info"
+            },
+            {
+                "name": "Gateway mode",
+                "reg_type": "holding",
+                "address": 656,
+                "type": "value",
+                "min": 0,
+                "max": 2,
+                "group": "setup",
+                "enum": [
+                    0,
+                    1,
+                    2
+                ],
+                "enum_titles": [
+                    "LISTEN_ONLY",
+                    "EMULATE_M_WRC",
+                    "EMULATE_S_WRC"
+                ]
             }
         ],
         "translations": {
             "en": {
-                "template_title": "ONOKOM AIR DK-1-MB-B (Adapter for household Daikin systems)"
+                "template_title": "ONOKOM AIR HS-5-MB-B (Adapter for VRF Hisense systems)"
             },
             "ru": {
-                "template_title": "ONOKOM AIR DK-1-MB-B (Адаптер для бытовых систем Daikin)",
+                "template_title": "ONOKOM AIR HS-5-MB-B (Адаптер для мультизональных систем Hisense)",
                 "General": "Основные режимы и функции",
                 "Active": "Состояние",
                 "Mode": "Режим",
@@ -736,6 +726,17 @@
                 "Show vanes as range": "Отображать жалюзи как ползунок",
                 "Horizontal vanes": "Горизонтальные жалюзи",
                 "Swing": "Качание",
+                "Lowest": "Самое низкое",
+                "Low": "Низкое",
+                "Middle": "Среднее",
+                "High": "Высокое",
+                "Highest": "Самое высокое",
+                "Far Left": "Самое левое",
+                "Left": "Левое",
+                "Middle Left": "Среднее левое",
+                "Right": "Правое",
+                "Middle Right": "Среднее правое",
+                "Far Right": "Самое правое",
                 "Vertical vanes": "Вертикальные жалюзи",
                 "Vanes swing": "Качание жалюзи",
                 "Stop": "Остановлены",
@@ -743,18 +744,13 @@
                 "Swinging horizontal blinds": "Качание горизонтальных жалюзи",
                 "Swinging vertical blinds": "Качание вертикальных жалюзи",
                 "Show fan as range": "Отображать вентилятор как ползунок",
-                "Additional": "Дополнительные режимы и функции",
                 "1 Speed": "1 Скорость",
                 "2 Speed": "2 Скорость",
                 "3 Speed": "3 Скорость",
                 "4 Speed": "4 Скорость",
                 "5 Speed": "5 Скорость",
+                "6 Speed": "6 Скорость",
                 "Quiet mode": "Режим тихий",
-                "Eco mode": "Режим эко",
-                "Turbo mode": "Режим турбо",
-                "Indication": "Индикация",
-                "Screen light": "Подсветка экрана",
-                "Screen low bright": "Ослабить яркость экрана",
                 "No": "Нет",
                 "Yes": "Да",
                 "Baud rate": "Скорость обмена",
@@ -770,9 +766,14 @@
                 "MCU Temperature": "Температура МК",
                 "Serial": "Серийный номер",
                 "Reboot Device": "Перезагрузить устройство",
+                "Setup": "Настройки",
+                "Gateway mode": "Режим шлюза",
+                "LISTEN_ONLY": "Слушатель",
+                "EMULATE_M_WRC": "Главный",
+                "EMULATE_S_WRC": "Ведомый",
+                "Outdoor unit model": "Наружный блок",
+                "Indoor unit model": "Внутренний блок",
                 "Debug": "Диагностика",
-                "Target fan speed": "Целевая скорость вентилятора",
-                "Current fan speed": "Текущая скорость вентилятора",
                 "Temeperature correction": "Коррекция температуры",
                 "AC connected": "Кондиционер подключен"
             }
