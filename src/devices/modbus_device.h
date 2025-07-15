@@ -70,6 +70,8 @@ public:
 
     std::chrono::milliseconds GetFrameTimeout(TPort& port) const override;
 
+    static void Register(TSerialDeviceFactory& factory);
+
 protected:
     void PrepareImpl(TPort& port) override;
     void WriteRegisterImpl(TPort& port, const TRegisterConfig& reg, const TRegisterValue& value) override;
