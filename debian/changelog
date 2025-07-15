@@ -1,3 +1,10 @@
+wb-mqtt-serial (2.179.0) stable; urgency=medium
+
+  * Add device/Load RPC for modbus device channels and parameters reading
+  * Add device/Set RPC for modbus device channels and parameters writing
+
+ -- Ilya Titov <ilya.titov@wirenboard.com>  Tue, 15 Jul 2025 09:38:58 +0300
+
 wb-mqtt-serial (2.178.2) stable; urgency=medium
 
   * Fix channel settings negative hex value parsing

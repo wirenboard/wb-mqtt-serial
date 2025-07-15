@@ -32,13 +32,13 @@ bool IProtocol::SupportsBroadcast() const
     return false;
 }
 
-TDeviceSetupItem::TDeviceSetupItem(PDeviceSetupItemConfig config, PSerialDevice device, PRegisterConfig registerConfig)
+TDeviceSetupItem::TDeviceSetupItem(PDeviceSetupItemConfig config, PSerialDevice device)
     : Name(config->GetName()),
       ParameterId(config->GetParameterId()),
       RawValue(config->GetRawValue()),
       HumanReadableValue(config->GetValue()),
-      Device(device),
-      RegisterConfig(registerConfig)
+      RegisterConfig(config->GetRegisterConfig()),
+      Device(device)
 {}
 
 std::string TDeviceSetupItem::ToString()
@@ -109,7 +109,7 @@ void TSerialDevice::Prepare(TPort& port, TDevicePrepareMode prepareMode)
     try {
         PrepareImpl(port);
         if (prepareMode == TDevicePrepareMode::WITH_SETUP_IF_WAS_DISCONNECTED && deviceWasDisconnected) {
-            WriteSetupRegisters(port);
+            WriteSetupRegisters(port, GetSetupItems());
         }
     } catch (const TSerialDeviceException& ex) {
         SetTransferResult(false);
@@ -157,7 +157,7 @@ void TSerialDevice::WriteRegisterImpl(TPort& port, const TRegisterConfig& reg, c
     throw TSerialDeviceException(ToString() + ": register writing is not supported");
 }
 
-void TSerialDevice::ReadRegisterRange(TPort& port, PRegisterRange range)
+void TSerialDevice::ReadRegisterRange(TPort& port, PRegisterRange range, bool breakOnError)
 {
     for (auto& reg: range->RegisterList()) {
         try {
@@ -172,6 +172,9 @@ void TSerialDevice::ReadRegisterRange(TPort& port, PRegisterRange range)
             LOG(Warn) << "TSerialDevice::ReadRegister(): " << e.what() << " [slave_id is "
                       << reg->Device()->ToString() + "]";
             SetTransferResult(true);
+            if (breakOnError) {
+                throw;
+            }
         } catch (const TSerialDevicePermanentRegisterException& e) {
             reg->SetAvailable(TRegisterAvailability::UNAVAILABLE);
             reg->SetError(TRegister::TError::ReadError);
@@ -179,12 +182,18 @@ void TSerialDevice::ReadRegisterRange(TPort& port, PRegisterRange range)
                       << reg->Device()->ToString() + "] Register " << reg->ToString()
                       << " is now marked as unsupported";
             SetTransferResult(true);
+            if (breakOnError) {
+                throw;
+            }
         } catch (const TSerialDeviceException& e) {
             reg->SetError(TRegister::TError::ReadError);
             auto& logger = (ConnectionState == TDeviceConnectionState::DISCONNECTED) ? Debug : Warn;
             LOG(logger) << "TSerialDevice::ReadRegister(): " << e.what() << " [slave_id is "
                         << reg->Device()->ToString() + "]";
             SetTransferResult(false);
+            if (breakOnError) {
+                throw;
+            }
         }
     }
     InvalidateReadCache();
@@ -220,13 +229,13 @@ TDeviceConnectionState TSerialDevice::GetConnectionState() const
     return ConnectionState;
 }
 
-void TSerialDevice::WriteSetupRegisters(TPort& port)
+void TSerialDevice::WriteSetupRegisters(TPort& port, const TDeviceSetupItems& setupItems, bool breakOnError)
 {
-    for (const auto& item: SetupItems) {
+    for (const auto& item: setupItems) {
         WriteRegisterImpl(port, *item->RegisterConfig, item->RawValue);
         LOG(Info) << item->ToString();
     }
-    if (!SetupItems.empty()) {
+    if (!setupItems.empty()) {
         SetTransferResult(true);
     }
 }
@@ -346,7 +355,7 @@ void TSerialDevice::AddSetupItem(PDeviceSetupItemConfig item)
         }
         LOG(Warn) << ss.str();
     } else {
-        auto setupItem = std::make_shared<TDeviceSetupItem>(item, shared_from_this(), item->GetRegisterConfig());
+        auto setupItem = std::make_shared<TDeviceSetupItem>(item, shared_from_this());
         SetupItemsByAddress.insert({key, setupItem});
         SetupItems.insert(setupItem);
     }

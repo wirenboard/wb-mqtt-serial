@@ -87,26 +87,27 @@ void TModbusDevice::WriteRegisterImpl(TPort& port, const TRegisterConfig& reg, c
                           GetFrameTimeout(port));
 }
 
-void TModbusDevice::ReadRegisterRange(TPort& port, PRegisterRange range)
+void TModbusDevice::ReadRegisterRange(TPort& port, PRegisterRange range, bool breakOnError)
 {
     auto modbus_range = std::dynamic_pointer_cast<Modbus::TModbusRegisterRange>(range);
     if (!modbus_range) {
         throw std::runtime_error("modbus range expected");
     }
-    Modbus::ReadRegisterRange(*ModbusTraits, port, SlaveId, *modbus_range, ModbusCache);
+    Modbus::ReadRegisterRange(*ModbusTraits, port, SlaveId, *modbus_range, ModbusCache, breakOnError);
     ResponseTime.AddValue(modbus_range->GetResponseTime());
 }
 
-void TModbusDevice::WriteSetupRegisters(TPort& port)
+void TModbusDevice::WriteSetupRegisters(TPort& port, const TDeviceSetupItems& setupItems, bool breakOnError)
 {
     Modbus::WriteSetupRegisters(*ModbusTraits,
                                 port,
                                 SlaveId,
-                                GetSetupItems(),
+                                setupItems,
                                 ModbusCache,
                                 DeviceConfig()->RequestDelay,
                                 GetResponseTimeout(port),
-                                GetFrameTimeout(port));
+                                GetFrameTimeout(port),
+                                breakOnError);
 }
 
 std::chrono::milliseconds TModbusDevice::GetFrameTimeout(TPort& port) const

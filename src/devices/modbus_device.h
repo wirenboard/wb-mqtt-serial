@@ -65,7 +65,8 @@ public:
     bool GetContinuousReadEnabled();
 
     PRegisterRange CreateRegisterRange() const override;
-    void ReadRegisterRange(TPort& port, PRegisterRange range) override;
+    void ReadRegisterRange(TPort& port, PRegisterRange range, bool breakOnError = false) override;
+    void WriteSetupRegisters(TPort& port, const TDeviceSetupItems& setupItems, bool breakOnError = false) override;
 
     std::chrono::milliseconds GetFrameTimeout(TPort& port) const override;
 
@@ -74,5 +75,4 @@ public:
 protected:
     void PrepareImpl(TPort& port) override;
     void WriteRegisterImpl(TPort& port, const TRegisterConfig& reg, const TRegisterValue& value) override;
-    void WriteSetupRegisters(TPort& port) override;
 };
