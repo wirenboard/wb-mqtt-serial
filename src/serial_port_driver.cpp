@@ -323,6 +323,7 @@ void TDeviceChannel::UpdateValueAndError(WBMQTT::TDeviceDriver& deviceDriver,
         CachedCurrentValue = value;
         return;
     }
+    LOG(Debug) << "Publish " << Describe() << " using policy " << static_cast<int>(publishPolicy.Policy);
     PublishNextZeroPressCounter = true;
     switch (publishPolicy.Policy) {
         case TPublishParameters::PublishOnlyOnChange: {
