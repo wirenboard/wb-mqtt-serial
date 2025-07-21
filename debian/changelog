@@ -1,3 +1,9 @@
+wb-mqtt-serial (2.178.1) stable; urgency=medium
+
+  * event poll interval is 25ms @ 115200
+
+ -- Evgeny Boger <boger@wirenboard.com>  Mon, 21 Jul 2025 20:57:44 +0300
+
 wb-mqtt-serial (2.178.0) stable; urgency=medium
 
   * Add publish sporadic registers data on every read feature

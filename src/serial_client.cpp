@@ -26,7 +26,7 @@ namespace
         auto sendByteTime = port.GetSendTimeBytes(1);
         // >= 115200
         if (sendByteTime < 100us) {
-            return 50ms;
+            return 20ms;
         }
         // >= 38400
         if (sendByteTime < 300us) {
