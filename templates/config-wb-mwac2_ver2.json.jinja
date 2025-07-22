@@ -49,7 +49,7 @@
                 "group": "input_f{{ in_num }}"
             },
             {
-                "title": "Actions when sensor is triggered",
+                "title": "Actions When Sensor Is Triggered",
                 "id": "gg_in{{ in_num }}_mapping_matrix_actions",
                 "group": "input_f{{ in_num }}"
             },
@@ -58,8 +58,8 @@
                 "title":
                 {% if out_num == OUT_NUM_K1 %} "Output K1 actions",
                 {% elif out_num == OUT_NUM_K2 %} "Output K2 actions",
-                {% elif out_num == OUT_NUM_ALARM %} "Actions for \"Leakage\" mode",
-                {% else %} "Actions for \"Wet cleaning\" mode",
+                {% elif out_num == OUT_NUM_ALARM %} "Actions for \"Leakage\" Mode",
+                {% else %} "Actions for \"Wet cleaning\" Mode",
                 {% endif %}
                 "id": "gg_in{{ in_num }}_out{{ out_num }}_button_actions",
                 "group": "input_f{{ in_num }}"
@@ -163,13 +163,28 @@
                 "enum": [{{ IN_MODE_INACTIVE }}, {{ IN_MODE_EDGES }}, {{ IN_MODE_BUTTON }}, {{ IN_MODE_FLOOD_SENSOR }}],
                 "default": {{ IN_MODE_BUTTON if in_num == IN_NUM_SHORT_CLEANING_ON_LONG_RES_ALARM else IN_MODE_FLOOD_SENSOR }},
                 "enum_titles": [
-                    "control disabled",
-                    "control by edges",
-                    "discrete input or button",
-                    "leakage sensor"
+                    "Control Disabled",
+                    "Control by Edges",
+                    "Discrete Input or Button",
+                    "Leakage Sensor"
                 ],
                 "group": "input_f{{ in_num }}",
                 "order": 1
+            },
+            "in{{ in_num }}_sensor_type": {
+                "title": "Sensor Type",
+                "description": "sensor_type_description",
+                "address": {{ 45 + in_num }},
+                "reg_type": "holding",
+                "enum": [0, 1],
+                "enum_titles": [
+                    "Normally Open (NO)",
+                    "Normally Closed (NC)"
+                ],
+                "default": 0,
+                "group": "input_f{{ in_num }}",
+                "order": 2,
+                "condition": "in{{ in_num }}_mode=={{ IN_MODE_FLOOD_SENSOR }}"
             },
             "in{{ in_num }}_debounce_ms": {
                 "title": "Debounce (ms)",
@@ -180,7 +195,7 @@
                 "max": 2000,
                 "default": 50,
                 "group": "input_f{{ in_num }}",
-                "order": 2,
+                "order": 3,
                 "condition": "in{{ in_num }}_mode=={{ IN_MODE_BUTTON }}"
             },
             "in{{ in_num }}_debounce_ms_no_buttons": {
@@ -192,7 +207,7 @@
                 "max": 2000,
                 "default": 50,
                 "group": "input_f{{ in_num }}",
-                "order": 2,
+                "order": 3,
                 "condition": "in{{ in_num }}_mode!={{ IN_MODE_BUTTON }}"
             },
             "in{{ in_num }}_lp_hold_time": {
@@ -238,15 +253,15 @@
                 {% if out_num == OUT_NUM_ALARM %}
                 "enum": [0, 2],
                 "enum_titles": [
-                    "do nothing",
-                    "on"
+                    "Do Nothing",
+                    "On"
                 ],
                 {% else %}
                 "enum": [0, 1, 2],
                 "enum_titles": [
-                    "do nothing",
-                    "off",
-                    "on"
+                    "Do Nothing",
+                    "Off",
+                    "On"
                 ],
                 {% endif -%}
 
@@ -264,11 +279,11 @@
                 {%- if out_num == OUT_NUM_ALARM %}
                 "default": 0,
                 "enum": [0, 1],
-                "enum_titles": ["do nothing", "off"],
+                "enum_titles": ["Do Nothing", "Off"],
                 {% else %}
                 "default": {{ 2 if in_num == IN_NUM_SHORT_CLEANING_ON_LONG_RES_ALARM else 0 }},
                 "enum": [0, 1, 2, 3],
-                "enum_titles": ["do nothing", "off", "on", "toggle"],
+                "enum_titles": ["Do Nothing", "Off", "On", "Toggle"],
                 {% endif -%}
                 "condition": "in{{ in_num }}_mode=={{ IN_MODE_BUTTON }}"
             },
@@ -281,11 +296,11 @@
                 {%- if out_num == OUT_NUM_ALARM %}
                 "default": {{ 1 if in_num == IN_NUM_SHORT_CLEANING_ON_LONG_RES_ALARM else 0 }},
                 "enum": [0, 1],
-                "enum_titles": ["do nothing", "off"],
+                "enum_titles": ["Do Nothing", "Off"],
                 {% else %}
                 "default": {{ 1 if in_num == IN_NUM_SHORT_CLEANING_ON_LONG_RES_ALARM else 0 }},
                 "enum": [0, 1, 2, 3],
-                "enum_titles": ["do nothing", "off", "on", "toggle"],
+                "enum_titles": ["Do Nothing", "Off", "On", "Toggle"],
                 {% endif -%}
                 "condition": "in{{ in_num }}_mode=={{ IN_MODE_BUTTON }}"
             },
@@ -298,26 +313,26 @@
                 "default": 0,
                 {%- if out_num == OUT_NUM_ALARM %}
                 "enum": [0, 1],
-                "enum_titles": ["do nothing", "off"],
+                "enum_titles": ["Do Nothing", "Off"],
                 {% else %}
                 "enum": [0, 1, 2, 3],
-                "enum_titles": ["do nothing", "off", "on", "toggle"],
+                "enum_titles": ["Do Nothing", "Off", "On", "Toggle"],
                 {% endif -%}
                 "condition": "in{{ in_num }}_mode=={{ IN_MODE_BUTTON }}"
             },
             "in{{ in_num }}_out{{ out_num }}_slp": {
                 "group": "gg_in{{ in_num }}_out{{ out_num }}_button_actions",
-                "title": "Short then long Press",
+                "title": "Short Then Long Press",
                 "order": 6,
                 "address": {{ 736 + out_num - 1 + (in_num - 1) * MMATRIX_OUTPUTS_NUMBER }},
                 "reg_type": "holding",
                 "default": 0,
                 {%- if out_num == OUT_NUM_ALARM %}
                 "enum": [0, 1],
-                "enum_titles": ["do nothing", "off"],
+                "enum_titles": ["Do Nothing", "Off"],
                 {% else %}
                 "enum": [0, 1, 2, 3],
-                "enum_titles": ["do nothing", "off", "on", "toggle"],
+                "enum_titles": ["Do Nothing", "Off", "On", "Toggle"],
                 {% endif -%}
                 "condition": "in{{ in_num }}_mode=={{ IN_MODE_BUTTON }}"
             },
@@ -326,33 +341,33 @@
             {% for out_num in range(1, OUTPUTS_NUMBER + 1) -%}
             "in{{ in_num }}_out{{ out_num }}_contact_closure": {
                 "group": "gg_in{{ in_num }}_out{{ out_num }}_button_actions",
-                "title": "Contact closure",
+                "title": "Contact Closure",
                 "order": 1,
                 "address": {{ 864 + out_num - 1 + (in_num - 1) * MMATRIX_OUTPUTS_NUMBER }},
                 "reg_type": "holding",
                 "default": 0,
                 {%- if out_num == OUT_NUM_ALARM %}
                 "enum": [0, 1],
-                "enum_titles": ["do nothing", "off"],
+                "enum_titles": ["Do Nothing", "Off"],
                 {% else %}
                 "enum": [0, 1, 2, 3],
-                "enum_titles": ["do nothing", "off", "on", "toggle"],
+                "enum_titles": ["Do Nothing", "Off", "On", "Toggle"],
                 {% endif -%}
                 "condition": "in{{ in_num }}_mode=={{ IN_MODE_EDGES }}"
             },
             "in{{ in_num }}_out{{ out_num }}_contact_opening": {
                 "group": "gg_in{{ in_num }}_out{{ out_num }}_button_actions",
-                "title": "Contact opening",
+                "title": "Contact Opening",
                 "order": 2,
                 "address": {{ 800 + out_num - 1 + (in_num - 1) * MMATRIX_OUTPUTS_NUMBER }},
                 "reg_type": "holding",
                 "default": 0,
                 {%- if out_num == OUT_NUM_ALARM %}
                 "enum": [0, 1],
-                "enum_titles": ["do nothing", "off"],
+                "enum_titles": ["Do Nothing", "Off"],
                 {% else %}
                 "enum": [0, 1, 2, 3],
-                "enum_titles": ["do nothing", "off", "on", "toggle"],
+                "enum_titles": ["Do Nothing", "Off", "On", "Toggle"],
                 {% endif -%}
                 "condition": "in{{ in_num }}_mode=={{ IN_MODE_EDGES }}"
             },
@@ -367,7 +382,7 @@
                 "reg_type": "holding",
                 "enum": [0, 1],
                 "default": 0,
-                "enum_titles": ["Switch to the safety state", "Restore last state"],
+                "enum_titles": ["Switch To the Safety State", "Restore Last State"],
                 "group": "outputs",
                 "order": 1
             },
@@ -394,7 +409,7 @@
                 "order": 2
             },
             "baud_rate": {
-                "title": "Baud rate",
+                "title": "Baud Rate",
                 "description": "baud_rate_description",
                 "address": 110,
                 "reg_type": "holding",
@@ -434,8 +449,8 @@
                 "default": 0,
                 "enum": [0, 1],
                 "enum_titles": [
-                    "Don't сhange state",
-                    "Switch to the safety state"
+                    "Don't Change State",
+                    "Switch To the Safety State"
                 ]
             },
             "out{{ out_num }}_safety_input_control": {
@@ -447,15 +462,15 @@
                 "default": 0,
                 "enum": [0, 1, 2],
                 "enum_titles": [
-                    "Don't change",
-                    "Disable in safety mode",
-                    "Enable only in safety mode"
+                    "Don't Change",
+                    "Disable in Safety Mode",
+                    "Enable Only in Safety Mode"
                 ]
             },
             {% endfor -%}
 
             "wet_cleaning_mode_timer_min": {
-                "title": "\"Wet cleaning\" mode timer (min)",
+                "title": "\"Wet Cleaning\" Mode Timer (min)",
                 "description": "wet_cleaning_mode_timer_description",
                 "address": 975,
                 "reg_type": "holding",
@@ -689,7 +704,7 @@
                 "group": "hw_info"
             },
             {
-                "name": "Battery State, measured at module startup",
+                "name": "Battery State, Measured at Module Startup",
                 "id": "Battery State",
                 "reg_type": "input",
                 "address": 971,
@@ -697,9 +712,9 @@
                 "enabled": false,
                 "enum": [0, 1, 2],
                 "enum_titles": [
-                    "replacement required",
-                    "normal",
-                    "good"
+                    "Replacement Required",
+                    "Normal",
+                    "Good"
                 ],
                 "group": "hw_info"
             },
@@ -719,33 +734,35 @@
                 "baud_rate_description": "Make sure that communication with device is established before changing this parameter. Select required baud rate, save configuration and then change port baud rate to the same value.",
                 "Uptime": "Uptime",
 
-                "inputs_control_in_safety_mode_description": "Does not affect \"leakage sensor\" mode.",
-                "safety_mode_description": "If the RS-485 connection is lost, the module will work autonomously, but you can additionally set its behavior in this case.",
-                "safety_behaviour_description": "Safe state is configured on \"Outputs\" tab.",
-                "poll_timeout_description": "Time before entering safety mode after loss of connection. Recommended 10 s.",
-                "restore_outputs_state_after_leakage_fix_description": "\"On\" - relays are set to the state before the leakage, then the settings of the interaction of inputs with the relay are analyzed. \"Off\" - the settings of the interaction of inputs with the relays are analyzed immediately.",
-                "relays_state_after_poweron_description": "Default - \"Switch to the safety state\".",
+                "inputs_control_in_safety_mode_description": "Does not affect \"leakage sensor\" mode",
+                "safety_mode_description": "If the RS-485 connection is lost, the module will work autonomously, but you can additionally set its behavior in this case",
+                "safety_behaviour_description": "Safe state is configured on \"Outputs\" tab",
+                "poll_timeout_description": "Time before entering safety mode after loss of connection. Recommended 10 s",
+                "restore_outputs_state_after_leakage_fix_description": "\"On\" - relays are set to the state before the leakage, then the settings of the interaction of inputs with the relay are analyzed. \"Off\" - the settings of the interaction of inputs with the relays are analyzed immediately",
+                "relays_state_after_poweron_description": "Default - \"Switch To the Safety State\"",
 
                 "Leakage Mode": "\"Leakage\" Mode",
 
-                "Cleaning Mode": "\"Wet cleaning\" Mode",
-                "wet_cleaning_mode_description": "In the \"Wet cleaning\" mode, the module does not respond to leakage sensors.",
+                "Cleaning Mode": "\"Wet Cleaning\" Mode",
+                "wet_cleaning_mode_description": "In the \"Wet Cleaning\" mode, the module does not respond to leakage sensors",
                 "wet_cleaning_mode_timer_description": "1 - 360 min",
 
-                "debounce_description": "For button press detection, the value must be 5 - 10 times less than the waiting time for the second press. Adds a delay to the response to presses. Recommended 50 ms.",
-                "debounce_description_no_buttons": "Adds a delay to the response. Recommended 50 ms.",
-                "lp_hold_time_title": "Long Press Time (ms)",
-                "lp_hold_time_description": "If the press lasts longer, we consider it long. Recommended 1000 ms.",
-                "secp_waiting_time_title": "Second Press Waiting Time (ms)",
-                "secp_waiting_time_description": "If there is no second press during the specified time then press is single. 0 - disables all presses except short and long. Adds a delay to the response to a short press. Recommended 300 ms.",
+                "sensor_type_description": "Supported since firmware 1.21.8",
 
-                "counter_offset_description": "Added to the volume counter to match the readings.",
-                "counter_pulse_weight_description": "Number of liters per pulse from the meter. Indicated on the meter and/or its documentation."
+                "debounce_description": "For button press detection, the value must be 5 - 10 times less than the waiting time for the second press. Adds a delay to the response to presses. Recommended 50 ms",
+                "debounce_description_no_buttons": "Adds a delay to the response. Recommended 50 ms",
+                "lp_hold_time_title": "Long Press Time (ms)",
+                "lp_hold_time_description": "If the press lasts longer, we consider it long. Recommended 1000 ms",
+                "secp_waiting_time_title": "Second Press Waiting Time (ms)",
+                "secp_waiting_time_description": "If there is no second press during the specified time then press is single. 0 - disables all presses except short and long. Adds a delay to the response to a short press. Recommended 300 ms",
+
+                "counter_offset_description": "Added to the volume counter to match the readings",
+                "counter_pulse_weight_description": "Number of liters per pulse from the meter. Indicated on the meter and/or its documentation"
             },
             "ru": {
                 "WB-MWAC_template_title": "WB-MWAC v.2 (модуль контроля протечек и расхода воды)",
-                "Baud rate": "Скорость обмена",
-                "baud_rate_description": "Перед изменением параметра убедитесь, что связь с устройством установлена. Выберите нужную скорость обмена, сохраните конфигурацию, а затем укажите в настройках порта эту же скорость.",
+                "Baud Rate": "Скорость обмена",
+                "baud_rate_description": "Перед изменением параметра убедитесь, что связь с устройством установлена. Выберите нужную скорость обмена, сохраните конфигурацию, а затем укажите в настройках порта эту же скорость",
 
                 {% for lp_in_num in range(1, LP_INPUTS_NUMBER + 1) -%}
                 "Counter {{ lp_in_num }}": "Счетчик {{ lp_in_num }}",
@@ -754,13 +771,19 @@
 
                 "Counter Offset (L)": "Начальное значение счетчика (л)",
                 "Counter Pulse Weight (L/pulse)": "Вес импульса (л/имп)",
-                "counter_offset_description": "Прибавляется к счетчику объема для совпадения показаний.",
-                "counter_pulse_weight_description": "Количество литров на импульс со счетчика. Указано на счетчике и/или документации к нему.",
+                "counter_offset_description": "Прибавляется к счетчику объема для совпадения показаний",
+                "counter_pulse_weight_description": "Количество литров на импульс со счетчика. Указано на счетчике и/или документации к нему",
 
                 "Cleaning Mode": "Режим \"Влажная уборка\"",
-                "wet_cleaning_mode_description": "В режиме \"Влажная уборка\" модуль не реагирует на датчики протечки.",
+                "wet_cleaning_mode_description": "В режиме \"Влажная уборка\" модуль не реагирует на датчики протечки",
                 "wet_cleaning_mode_timer_description": "1 — 360 мин",
-                "\"Wet cleaning\" mode timer (min)": "Таймер режима \"Влажная уборка\" (мин)",
+                "\"Wet Cleaning\" Mode Timer (min)": "Таймер режима \"Влажная уборка\" (мин)",
+
+                "Sensor Type": "Тип датчика",
+                "Normally Open (NO)": "Нормально открытый (NO)",
+                "Normally Closed (NC)": "Нормально закрытый (NC)",
+
+                "sensor_type_description": "Поддерживается с версии прошивки 1.21.8",
 
                 "Mode": "Режим работы",
                 "Debounce (ms)": "Время подавления дребезга (мс)",
@@ -776,12 +799,12 @@
                 "Input {{ letter }}{{ in_num }} Sensor Presence (only for Larnitech sensors)": "Наличие датчика на входе {{ letter }}{{ in_num }} (только для датчиков Larnitech)",
                 {% endfor -%}
 
-                "control disabled": "управление отключено",
-                "control by edges": "управлять по фронтам",
-                "leakage sensor": "датчик протечки",
-                "discrete input or button": "дискретный вход или кнопка",
+                "Control Disabled": "Управление отключено",
+                "Control by Edges": "Управлять по фронтам",
+                "Leakage Sensor": "Датчик протечки",
+                "Discrete Input or Button": "Дискретный вход или кнопка",
 
-                "Actions when sensor is triggered": "Действия при срабатывании датчика",
+                "Actions When Sensor Is Triggered": "Действия при срабатывании датчика",
 
                 "Outputs": "Выходы",
                 "General": "Общее",
@@ -802,20 +825,20 @@
                 "Uptime": "Время работы",
                 "MCU Temperature": "Температура МК",
                 "MCU Voltage": "Напряжение питания МК",
-                "Battery State, measured at module startup": "Состояние батарейки, измерено при включении модуля",
-                "replacement required": "требуется замена",
-                "normal": "нормальное",
-                "good": "хорошее",
+                "Battery State, Measured at Module Startup": "Состояние батарейки, измерено при включении модуля",
+                "Replacement Required": "Требуется замена",
+                "Normal": "Нормальное",
+                "Good": "Хорошее",
                 "iVout Overloaded": "Выход iVout перегружен",
 
-                "do nothing": "нет действия",
-                "off": "выключить",
-                "on": "включить",
-                "toggle": "переключить",
+                "Do Nothing": "Нет действия",
+                "Off": "Выключить",
+                "On": "Включить",
+                "Toggle": "Переключить",
 
                 "Relays State After Power On": "Состояния реле при подаче питания",
-                "Restore last state": "Восстановить последнее состояние",
-                "Switch to the safety state": "Перевести в безопасное состояние",
+                "Restore Last State": "Восстановить последнее состояние",
+                "Switch To the Safety State": "Перевести в безопасное состояние",
                 "Safe State": "Безопасное состояние",
                 "Off": "Выключен",
                 "On": "Включен",
@@ -824,40 +847,40 @@
                 "Safety Mode": "Безопасный режим",
                 "Safety Behaviour": "Действие в безопасном режиме",
                 "Safety Timer (s)": "Таймаут безопасного режима (с)",
-                "safety_mode_description": "При потере связи по RS-485 модуль будет работать автономно, но можно дополнительно задать его поведение в этом случае.",
-                "poll_timeout_description": "Время до перехода в безопасный режим после потери связи. Рекомендовано 10 с.",
-                "restore_outputs_state_after_leakage_fix_description": "\"Включен\" — реле устанавливются в положение до протечки, затем анализируются настройки взаимодействия входов с реле. \"Выключен\" — сразу анализируются настройки взаимодействия входов с реле.",
-                "safety_behaviour_description": "Безопасное состояние настраивается на вкладке \"Выходы\".",
-                "inputs_control_in_safety_mode_description": "Не влияет на режим \"Датчик протечки\".",
-                "Don't сhange state": "Ничего не делать",
+                "safety_mode_description": "При потере связи по RS-485 модуль будет работать автономно, но можно дополнительно задать его поведение в этом случае",
+                "poll_timeout_description": "Время до перехода в безопасный режим после потери связи. Рекомендовано 10 с",
+                "restore_outputs_state_after_leakage_fix_description": "\"Включен\" — реле устанавливются в положение до протечки, затем анализируются настройки взаимодействия входов с реле. \"Выключен\" — сразу анализируются настройки взаимодействия входов с реле",
+                "safety_behaviour_description": "Безопасное состояние настраивается на вкладке \"Выходы\"",
+                "inputs_control_in_safety_mode_description": "Не влияет на режим \"Датчик протечки\"",
+                "Don't Change State": "Ничего не делать",
                 "Outputs Control By Inputs In Safety Mode": "Управление выходами с входов в безопасном режиме",
-                "Don't change": "Не блокировать",
-                "Disable in safety mode": "Блокировать в безопасном режиме",
-                "Enable only in safety mode": "Разрешить только в безопасном режиме",
-                "relays_state_after_poweron_description": "По умолчанию — \"Перевести в безопасное состояние\".",
+                "Don't Change": "Не блокировать",
+                "Disable in Safety Mode": "Блокировать в безопасном режиме",
+                "Enable Only in Safety Mode": "Разрешить только в безопасном режиме",
+                "relays_state_after_poweron_description": "По умолчанию - \"Перевести в безопасное состояние\"",
 
                 "Press Parameters": "Параметры нажатий",
-                "debounce_description": "Для детектирования нажатий значение должно быть в 5 — 10 раз меньше, чем время ожидания второго нажатия. Вносит задержку в реакцию на нажатия. Рекомендовано 50 мс.",
-                "debounce_description_no_buttons": "Вносит задержку в реакцию. Рекомендовано 50 мс.",
+                "debounce_description": "Для детектирования нажатий значение должно быть в 5 — 10 раз меньше, чем время ожидания второго нажатия. Вносит задержку в реакцию на нажатия. Рекомендовано 50 мс",
+                "debounce_description_no_buttons": "Вносит задержку в реакцию. Рекомендовано 50 мс",
                 "lp_hold_time_title": "Время длинного нажатия (мс)",
-                "lp_hold_time_description": "Если нажатие длится дольше — считаем его длинным. Рекомендовано 1000 мс.",
+                "lp_hold_time_description": "Если нажатие длится дольше - считаем его длинным. Рекомендовано 1000 мс",
                 "secp_waiting_time_title": "Время ожидания второго нажатия (мс)",
-                "secp_waiting_time_description": "Если за указанное время второго нажатия не было — считаем нажатие одиночным. 0 — отключит все нажатия кроме короткого и длинного. Вносит задержку в реакцию на короткое нажатие. Рекомендовано 300 мс.",
+                "secp_waiting_time_description": "Если за указанное время второго нажатия не было — считаем нажатие одиночным. 0 — отключит все нажатия кроме короткого и длинного. Вносит задержку в реакцию на короткое нажатие. Рекомендовано 300 мс",
 
-                "Contact closure": "Замыкание контакта",
-                "Contact opening": "Размыкание контакта",
+                "Contact Closure": "Замыкание контакта",
+                "Contact Opening": "Размыкание контакта",
                 "Short Press": "Короткое нажатие",
                 "Long Press": "Длинное нажатие",
                 "Double Press": "Двойное нажатие",
-                "Short then long Press": "Короткое, затем длинное нажатие",
+                "Short Then Long Press": "Короткое, затем длинное нажатие",
 
                 "Output K1": "Выход K1",
                 "Output K2": "Выход K2",
 
                 "Output K1 actions": "Действия для выхода K1",
                 "Output K2 actions": "Действия для выхода K2",
-                "Actions for \"Leakage\" mode": "Действия для режима \"Протечка\"",
-                "Actions for \"Wet cleaning\" mode": "Действия для режима \"Влажная уборка\"",
+                "Actions for \"Leakage\" Mode": "Действия для режима \"Протечка\"",
+                "Actions for \"Wet cleaning\" Mode": "Действия для режима \"Влажная уборка\"",
 
                 "9600 bps": "9600 бит/с",
                 "19200 bps": "19200 бит/с",
