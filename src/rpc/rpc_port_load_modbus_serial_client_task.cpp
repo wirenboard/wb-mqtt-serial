@@ -69,17 +69,13 @@ void ExecRPCPortLoadModbusRequest(TPort& port, PRPCPortLoadModbusRequest rpcRequ
         port.SkipNoise();
         port.SleepSinceLastInteraction(rpcRequest->FrameTimeout);
 
-        std::vector<uint8_t> pdu;
-        if (rpcRequest->Function != Modbus::EFunction::FN_READ_WRITE_MULTIPLE_REGISTERS) {
-            pdu = Modbus::MakePDU(rpcRequest->Function, rpcRequest->Address, rpcRequest->Count, rpcRequest->Message);
-        } else {
-            pdu = Modbus::MakeReadWritePDU(rpcRequest->Address,
-                                           rpcRequest->Count,
-                                           rpcRequest->WriteAddress,
-                                           rpcRequest->WriteCount,
-                                           rpcRequest->Message);
-        }
         Modbus::TModbusRTUTraits traits;
+        auto pdu = Modbus::MakePDU(rpcRequest->Function,
+                                   rpcRequest->Address,
+                                   rpcRequest->Count,
+                                   rpcRequest->WriteAddress,
+                                   rpcRequest->WriteCount,
+                                   rpcRequest->Message);
         auto responsePduSize = Modbus::CalcResponsePDUSize(rpcRequest->Function, rpcRequest->Count);
         auto res = traits.Transaction(port,
                                       rpcRequest->SlaveId,

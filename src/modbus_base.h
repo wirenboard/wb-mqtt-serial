@@ -192,9 +192,10 @@ namespace Modbus
                                  uint16_t count,
                                  const std::vector<uint8_t>& data);
 
-    std::vector<uint8_t> MakeReadWritePDU(uint16_t address,
-                                          uint16_t count,
-                                          uint16_t writeAddress,
-                                          uint16_t writeCount,
-                                          const std::vector<uint8_t>& data);
+    std::vector<uint8_t> MakePDU(Modbus::EFunction function,
+                                 uint16_t address,
+                                 uint16_t count,
+                                 uint16_t writeAddress,
+                                 uint16_t writeCount,
+                                 const std::vector<uint8_t>& data);
 }

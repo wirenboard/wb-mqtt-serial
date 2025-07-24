@@ -475,21 +475,26 @@ std::vector<uint8_t> Modbus::MakePDU(Modbus::EFunction function,
     return std::vector<uint8_t>();
 }
 
-std::vector<uint8_t> Modbus::MakeReadWritePDU(uint16_t address,
-                                              uint16_t count,
-                                              uint16_t writeAddress,
-                                              uint16_t writeCount,
-                                              const std::vector<uint8_t>& data)
+std::vector<uint8_t> Modbus::MakePDU(Modbus::EFunction function,
+                                     uint16_t address,
+                                     uint16_t count,
+                                     uint16_t writeAddress,
+                                     uint16_t writeCount,
+                                     const std::vector<uint8_t>& data)
 {
-    std::vector<uint8_t> res(10 + data.size());
-    res[0] = Modbus::EFunction::FN_READ_WRITE_MULTIPLE_REGISTERS;
-    WriteAs2Bytes(res.data() + 1, address);
-    WriteAs2Bytes(res.data() + 3, count);
-    WriteAs2Bytes(res.data() + 5, writeAddress);
-    WriteAs2Bytes(res.data() + 7, writeCount);
-    res[9] = data.size();
-    std::copy(data.begin(), data.end(), res.begin() + 10);
-    return res;
+    if (IsReadWriteFunction(function)) {
+        std::vector<uint8_t> res(10 + data.size());
+        res[0] = Modbus::EFunction::FN_READ_WRITE_MULTIPLE_REGISTERS;
+        WriteAs2Bytes(res.data() + 1, address);
+        WriteAs2Bytes(res.data() + 3, count);
+        WriteAs2Bytes(res.data() + 5, writeAddress);
+        WriteAs2Bytes(res.data() + 7, writeCount);
+        res[9] = data.size();
+        std::copy(data.begin(), data.end(), res.begin() + 10);
+        return res;
+    }
+
+    return MakePDU(function, address, count, data);
 }
 
 Modbus::TModbusExceptionError::TModbusExceptionError(uint8_t exceptionCode)
