@@ -1,3 +1,9 @@
+wb-mqtt-serial (2.180.0) stable; urgency=medium
+
+  * Add modbus function 0x17 (23) support
+
+ -- Ilya Titov <ilya.titov@wirenboard.com>  Thu, 24 Jul 2025 12:26:26 +0000
+
 wb-mqtt-serial (2.179.0) stable; urgency=medium
 
   * Add device/Load RPC for modbus device channels and parameters reading
