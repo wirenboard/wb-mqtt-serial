@@ -45,6 +45,12 @@ namespace
         throw Modbus::TModbusExceptionError(code);
     }
 
+    bool IsReadFunction(Modbus::EFunction function)
+    {
+        return function == Modbus::EFunction::FN_READ_COILS || function == Modbus::EFunction::FN_READ_DISCRETE ||
+               function == Modbus::EFunction::FN_READ_HOLDING || function == Modbus::EFunction::FN_READ_INPUT;
+    }
+
     bool IsWriteFunction(Modbus::EFunction function)
     {
         return function == Modbus::EFunction::FN_WRITE_MULTIPLE_COILS ||
@@ -53,10 +59,9 @@ namespace
                function == Modbus::EFunction::FN_WRITE_SINGLE_REGISTER;
     }
 
-    bool IsReadFunction(Modbus::EFunction function)
+    bool IsReadWriteFunction(Modbus::EFunction function)
     {
-        return function == Modbus::EFunction::FN_READ_COILS || function == Modbus::EFunction::FN_READ_DISCRETE ||
-               function == Modbus::EFunction::FN_READ_HOLDING || function == Modbus::EFunction::FN_READ_INPUT;
+        return function == Modbus::EFunction::FN_READ_WRITE_MULTIPLE_REGISTERS;
     }
 
     bool IsSingleBitFunction(Modbus::EFunction function)
@@ -400,7 +405,6 @@ size_t Modbus::CalcResponsePDUSize(Modbus::EFunction function, size_t registerCo
     if (IsWriteFunction(function)) {
         return WRITE_RESPONSE_PDU_SIZE;
     }
-
     if (IsSingleBitFunction(function)) {
         return 2 + GetCoilsByteSize(registerCount);
     }
@@ -423,7 +427,7 @@ std::vector<uint8_t> Modbus::ExtractResponseData(EFunction requestFunction, cons
     }
 
     auto function = GetFunction(functionCode);
-    if (IsReadFunction(function)) {
+    if (IsReadFunction(function) || IsReadWriteFunction(function)) {
         size_t byteCount = pdu[1];
         if (pdu.size() != byteCount + 2) {
             throw Modbus::TMalformedResponseError("invalid read response byte count: " + std::to_string(byteCount) +
@@ -438,13 +442,14 @@ std::vector<uint8_t> Modbus::ExtractResponseData(EFunction requestFunction, cons
                                                   ", expected " + std::to_string(WRITE_RESPONSE_PDU_SIZE));
         }
     }
+
     return std::vector<uint8_t>();
 }
 
 bool Modbus::IsSupportedFunction(uint8_t functionCode) noexcept
 {
     auto function = static_cast<Modbus::EFunction>(functionCode);
-    return IsReadFunction(function) || IsWriteFunction(function);
+    return IsReadFunction(function) || IsWriteFunction(function) || IsReadWriteFunction(function);
 }
 
 std::vector<uint8_t> Modbus::MakePDU(Modbus::EFunction function,
@@ -468,6 +473,23 @@ std::vector<uint8_t> Modbus::MakePDU(Modbus::EFunction function,
     }
 
     return std::vector<uint8_t>();
+}
+
+std::vector<uint8_t> Modbus::MakeReadWritePDU(uint16_t address,
+                                              uint16_t count,
+                                              uint16_t writeAddress,
+                                              uint16_t writeCount,
+                                              const std::vector<uint8_t>& data)
+{
+    std::vector<uint8_t> res(10 + data.size());
+    res[0] = Modbus::EFunction::FN_READ_WRITE_MULTIPLE_REGISTERS;
+    WriteAs2Bytes(res.data() + 1, address);
+    WriteAs2Bytes(res.data() + 3, count);
+    WriteAs2Bytes(res.data() + 5, writeAddress);
+    WriteAs2Bytes(res.data() + 7, writeCount);
+    res[9] = data.size();
+    std::copy(data.begin(), data.end(), res.begin() + 10);
+    return res;
 }
 
 Modbus::TModbusExceptionError::TModbusExceptionError(uint8_t exceptionCode)

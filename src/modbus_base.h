@@ -28,7 +28,8 @@ namespace Modbus
         FN_WRITE_SINGLE_COIL = 0x5,
         FN_WRITE_SINGLE_REGISTER = 0x6,
         FN_WRITE_MULTIPLE_COILS = 0xF,
-        FN_WRITE_MULTIPLE_REGISTERS = 0x10
+        FN_WRITE_MULTIPLE_REGISTERS = 0x10,
+        FN_READ_WRITE_MULTIPLE_REGISTERS = 0x17
     };
 
     enum EExceptionCode
@@ -190,4 +191,10 @@ namespace Modbus
                                  uint16_t address,
                                  uint16_t count,
                                  const std::vector<uint8_t>& data);
+
+    std::vector<uint8_t> MakeReadWritePDU(uint16_t address,
+                                          uint16_t count,
+                                          uint16_t writeAddress,
+                                          uint16_t writeCount,
+                                          const std::vector<uint8_t>& data);
 }
