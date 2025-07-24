@@ -15,6 +15,7 @@ public:
     uint16_t Address;
     size_t Count;
     Modbus::EFunction Function;
+    std::string Protocol;
 };
 
 typedef std::shared_ptr<TRPCPortLoadModbusRequest> PRPCPortLoadModbusRequest;
