@@ -17,6 +17,7 @@ public:
     uint16_t WriteAddress;
     uint16_t WriteCount = 1;
     Modbus::EFunction Function;
+    std::string Protocol;
 };
 
 typedef std::shared_ptr<TRPCPortLoadModbusRequest> PRPCPortLoadModbusRequest;
