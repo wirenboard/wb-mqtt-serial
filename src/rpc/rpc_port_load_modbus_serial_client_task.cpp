@@ -87,11 +87,11 @@ void ExecRPCPortLoadModbusRequest(TPort& port, PRPCPortLoadModbusRequest rpcRequ
 
         auto responsePduSize = Modbus::CalcResponsePDUSize(rpcRequest->Function, rpcRequest->Count);
         auto res = traits->Transaction(port,
-                                      rpcRequest->SlaveId,
-                                      pdu,
-                                      responsePduSize,
-                                      rpcRequest->ResponseTimeout,
-                                      rpcRequest->FrameTimeout);
+                                       rpcRequest->SlaveId,
+                                       pdu,
+                                       responsePduSize,
+                                       rpcRequest->ResponseTimeout,
+                                       rpcRequest->FrameTimeout);
         auto response = Modbus::ExtractResponseData(rpcRequest->Function, res.Pdu);
 
         if (rpcRequest->OnResult) {
