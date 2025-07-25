@@ -1,9 +1,3 @@
-wb-mqtt-serial (2.181.0) stable; urgency=medium
-
-  * Add Modbus TCP protocol support to Port/Load RPC
-
- -- Evgeny Boger <boger@wirenboard.com>  Thu, 24 Jul 2025 20:33:51 +0300
-
 wb-mqtt-serial (2.180.0) stable; urgency=medium
 
   * Add modbus function 0x17 (23) support for Port/Load RPC

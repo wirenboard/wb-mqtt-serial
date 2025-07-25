@@ -100,7 +100,7 @@
       "properties": {
         "protocol": {
           "type": "string",
-          "enum": [ "modbus", "modbus-tcp" ]
+          "enum": [ "modbus" ]
         },
         "slave_id": {
           "type": "integer",
