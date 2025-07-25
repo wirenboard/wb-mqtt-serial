@@ -856,6 +856,7 @@ namespace Modbus // modbus protocol common utilities
             if (item->RegisterConfig->IsPartial()) {
                 return startIt;
             }
+
             auto address = GetUint32RegisterAddress(item->RegisterConfig->GetWriteAddress());
             if (last) {
                 auto lastAddress = GetUint32RegisterAddress(last->RegisterConfig->GetWriteAddress());
@@ -918,15 +919,16 @@ namespace Modbus // modbus protocol common utilities
                                          "of \"partial\" setup registers");
         }
         auto it = setupItems.begin();
+        auto device = (*it)->Device;
+        size_t maxRegs = MAX_WRITE_REGISTERS;
+        if (device) {
+            auto config = device->DeviceConfig();
+            if (config->MaxWriteRegisters > 0 && config->MaxWriteRegisters < maxRegs) {
+                maxRegs = config->MaxWriteRegisters;
+            }
+        }
         while (it != setupItems.end()) {
             auto item = *it;
-            size_t maxRegs = MAX_WRITE_REGISTERS;
-            if (item->Device != nullptr) {
-                auto config = item->Device->DeviceConfig();
-                if (config->MaxWriteRegisters > 0 && config->MaxWriteRegisters < maxRegs) {
-                    maxRegs = config->MaxWriteRegisters;
-                }
-            }
             if (maxRegs > 1 && item->RegisterConfig->Type == REG_HOLDING && !item->RegisterConfig->IsPartial()) {
                 it = WriteMultipleSetupRegisters(traits,
                                                  port,
