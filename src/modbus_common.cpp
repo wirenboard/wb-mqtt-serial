@@ -920,10 +920,12 @@ namespace Modbus // modbus protocol common utilities
         auto it = setupItems.begin();
         while (it != setupItems.end()) {
             auto item = *it;
-            auto config = item->Device->DeviceConfig();
             size_t maxRegs = MAX_WRITE_REGISTERS;
-            if (config->MaxWriteRegisters > 0 && config->MaxWriteRegisters < maxRegs) {
-                maxRegs = config->MaxWriteRegisters;
+            if (item->Device != nullptr) {
+                auto config = item->Device->DeviceConfig();
+                if (config->MaxWriteRegisters > 0 && config->MaxWriteRegisters < maxRegs) {
+                    maxRegs = config->MaxWriteRegisters;
+                }
             }
             if (maxRegs > 1 && item->RegisterConfig->Type == REG_HOLDING && !item->RegisterConfig->IsPartial()) {
                 it = WriteMultipleSetupRegisters(traits,
