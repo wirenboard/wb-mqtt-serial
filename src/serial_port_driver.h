@@ -61,6 +61,7 @@ public:
     void SetUpDevices();
     void Cycle(std::chrono::steady_clock::time_point now = std::chrono::steady_clock::now());
     void ClearDevices() noexcept;
+    void OnValueRead(PRegister reg);
 
     const std::string& GetShortDescription() const;
 
@@ -73,7 +74,6 @@ private:
     WBMQTT::TControlArgs From(const PDeviceChannel& channel);
 
     void SetValueToChannel(const PDeviceChannel& channel, const std::string& value);
-    void OnValueRead(PRegister reg);
     void UpdateError(PRegister reg);
     void OnDeviceConnectionStateChanged(PSerialDevice device);
 

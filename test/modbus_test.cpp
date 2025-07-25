@@ -1138,3 +1138,29 @@ TEST_F(TModbusLittleEndianRegisterTest, Write)
         SerialDriver->LoopOnce();
     }
 }
+
+class TModbusPublishTest: public TSerialDeviceIntegrationTest
+{
+protected:
+    const char* ConfigPath() const override
+    {
+        return "configs/config-modbus-publish-test.json";
+    }
+};
+
+TEST_F(TModbusPublishTest, DuplicateValues)
+{
+    auto driver = SerialDriver->GetPortDrivers().front();
+    auto& regs = driver->GetSerialClient()->GetDevices().front()->GetRegisters();
+    for (auto reg: regs) {
+        if (reg->GetConfig()->SporadicMode == TRegisterConfig::TSporadicMode::ONLY_EVENTS) {
+            reg->ExcludeFromPolling();
+        }
+        reg->SetValue(TRegisterValue{1});
+    }
+    for (auto i = 0; i < 3; ++i) {
+        for (auto reg: regs) {
+            driver->OnValueRead(reg);
+        }
+    }
+}
