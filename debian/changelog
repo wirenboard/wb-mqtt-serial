@@ -1,8 +1,14 @@
+wb-mqtt-serial (2.180.2) stable; urgency=medium
+
+  * Fix Port/Load RPC device nullptr bug
+
+ -- Ilya Titov <ilya.titov@wirenboard.com>  Fri, 25 Jul 2025 15:25:53 +0300
+
 wb-mqtt-serial (2.180.1) stable; urgency=medium
 
   * Revert master branch, no functional changes
 
- -- Ilya Titov <ilya.titov@wirenboard.com>  Fri, 25 Jul 2025 11:39:27 +0000
+ -- Ilya Titov <ilya.titov@wirenboard.com>  Fri, 25 Jul 2025 14:39:27 +0300
 
 wb-mqtt-serial (2.180.0) stable; urgency=medium
 
