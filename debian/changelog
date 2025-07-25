@@ -1,8 +1,8 @@
-wb-mqtt-serial (2.181.0) stable; urgency=medium
+wb-mqtt-serial (2.180.1) stable; urgency=medium
 
-  * Add Modbus TCP protocol support to Port/Load RPC
+  * Revert master branch, no functional changes
 
- -- Evgeny Boger <boger@wirenboard.com>  Thu, 24 Jul 2025 20:33:51 +0300
+ -- Ilya Titov <ilya.titov@wirenboard.com>  Fri, 25 Jul 2025 11:39:27 +0000
 
 wb-mqtt-serial (2.180.0) stable; urgency=medium
 
