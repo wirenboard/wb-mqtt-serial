@@ -312,18 +312,12 @@ int main(int argc, char* argv[])
             }
 
             auto backend = WBMQTT::NewDriverBackend(mqtt);
-
-            WBMQTT::TPublishParameters driverPublishParameters;
-            // Publishing strategy is implemented in the application to reduce cpu load,
-            // so tell libwbmqtt1 to publish every request
-            driverPublishParameters.Policy = WBMQTT::TPublishParameters::PublishAll;
             auto driver = WBMQTT::NewDriver(WBMQTT::TDriverArgs{}
                                                 .SetId(driverName)
                                                 .SetBackend(backend)
                                                 .SetUseStorage(true)
                                                 .SetReownUnknownDevices(true)
-                                                .SetStoragePath(LIBWBMQTT_DB_FULL_FILE_PATH),
-                                            driverPublishParameters);
+                                                .SetStoragePath(LIBWBMQTT_DB_FULL_FILE_PATH));
 
             driver->StartLoop();
             WBMQTT::SignalHandling::OnSignals({SIGINT, SIGTERM}, [=] {
