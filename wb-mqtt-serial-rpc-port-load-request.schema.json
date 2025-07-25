@@ -108,13 +108,21 @@
         },
         "function": {
           "type": "integer",
-          "enum": [1, 2, 3, 4, 6, 15, 16]
+          "enum": [1, 2, 3, 4, 5, 6, 15, 16, 23]
         },
         "address": {
           "type": "integer",
           "minimum": 0
         },
         "count": {
+          "type": "integer",
+          "minimum": 1
+        },
+        "write_address": {
+          "type": "integer",
+          "minimum": 0
+        },
+        "write_count": {
           "type": "integer",
           "minimum": 1
         }

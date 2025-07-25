@@ -52,6 +52,8 @@ PRPCPortLoadModbusRequest ParseRPCPortLoadModbusRequest(const Json::Value& reque
         WBMQTT::JSON::Get(request, "slave_id", RPCRequest->SlaveId);
         WBMQTT::JSON::Get(request, "address", RPCRequest->Address);
         WBMQTT::JSON::Get(request, "count", RPCRequest->Count);
+        WBMQTT::JSON::Get(request, "write_address", RPCRequest->WriteAddress);
+        WBMQTT::JSON::Get(request, "write_count", RPCRequest->WriteCount);
         WBMQTT::JSON::Get(request, "function", RPCRequest->Function);
     } catch (const std::runtime_error& e) {
         throw TRPCException(e.what(), TRPCResultCode::RPC_WRONG_PARAM_VALUE);
@@ -66,8 +68,14 @@ void ExecRPCPortLoadModbusRequest(TPort& port, PRPCPortLoadModbusRequest rpcRequ
         port.CheckPortOpen();
         port.SkipNoise();
         port.SleepSinceLastInteraction(rpcRequest->FrameTimeout);
+
         Modbus::TModbusRTUTraits traits;
-        auto pdu = Modbus::MakePDU(rpcRequest->Function, rpcRequest->Address, rpcRequest->Count, rpcRequest->Message);
+        auto pdu = Modbus::MakePDU(rpcRequest->Function,
+                                   rpcRequest->Address,
+                                   rpcRequest->Count,
+                                   rpcRequest->WriteAddress,
+                                   rpcRequest->WriteCount,
+                                   rpcRequest->Message);
         auto responsePduSize = Modbus::CalcResponsePDUSize(rpcRequest->Function, rpcRequest->Count);
         auto res = traits.Transaction(port,
                                       rpcRequest->SlaveId,
@@ -86,7 +94,8 @@ void ExecRPCPortLoadModbusRequest(TPort& port, PRPCPortLoadModbusRequest rpcRequ
         if (rpcRequest->Function == Modbus::EFunction::FN_WRITE_SINGLE_COIL ||
             rpcRequest->Function == Modbus::EFunction::FN_WRITE_SINGLE_REGISTER ||
             rpcRequest->Function == Modbus::EFunction::FN_WRITE_MULTIPLE_COILS ||
-            rpcRequest->Function == Modbus::EFunction::FN_WRITE_MULTIPLE_REGISTERS)
+            rpcRequest->Function == Modbus::EFunction::FN_WRITE_MULTIPLE_REGISTERS ||
+            rpcRequest->Function == Modbus::EFunction::FN_READ_WRITE_MULTIPLE_REGISTERS)
         {
             std::string id = rpcRequest->ParametersCache.GetId(port, std::to_string(rpcRequest->SlaveId));
             rpcRequest->ParametersCache.Remove(id);
