@@ -914,6 +914,9 @@ namespace Modbus // modbus protocol common utilities
                              bool breakOnError,
                              int shift)
     {
+        if (setupItems.empty()) {
+            return;
+        }
         if (!FillSetupRegistersCache(traits, port, slaveId, setupItems, cache, shift)) {
             throw TSerialDeviceException("unable to write setup items because unable to read data needed to set values "
                                          "of \"partial\" setup registers");
