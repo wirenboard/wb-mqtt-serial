@@ -45,18 +45,18 @@ namespace
         throw Modbus::TModbusExceptionError(code);
     }
 
-    bool IsReadFunction(Modbus::EFunction function)
-    {
-        return function == Modbus::EFunction::FN_READ_COILS || function == Modbus::EFunction::FN_READ_DISCRETE ||
-               function == Modbus::EFunction::FN_READ_HOLDING || function == Modbus::EFunction::FN_READ_INPUT;
-    }
-
     bool IsWriteFunction(Modbus::EFunction function)
     {
         return function == Modbus::EFunction::FN_WRITE_MULTIPLE_COILS ||
                function == Modbus::EFunction::FN_WRITE_MULTIPLE_REGISTERS ||
                function == Modbus::EFunction::FN_WRITE_SINGLE_COIL ||
                function == Modbus::EFunction::FN_WRITE_SINGLE_REGISTER;
+    }
+
+    bool IsReadFunction(Modbus::EFunction function)
+    {
+        return function == Modbus::EFunction::FN_READ_COILS || function == Modbus::EFunction::FN_READ_DISCRETE ||
+               function == Modbus::EFunction::FN_READ_HOLDING || function == Modbus::EFunction::FN_READ_INPUT;
     }
 
     bool IsReadWriteFunction(Modbus::EFunction function)
@@ -483,6 +483,10 @@ std::vector<uint8_t> Modbus::MakePDU(Modbus::EFunction function,
                                      const std::vector<uint8_t>& data)
 {
     if (IsReadWriteFunction(function)) {
+        if (data.size() != writeCount * 2) {
+            throw Modbus::TMalformedRequestError("data size " + std::to_string(data.size()) +
+                                                 " doesn't match function code 23");
+        }
         std::vector<uint8_t> res(10 + data.size());
         res[0] = Modbus::EFunction::FN_READ_WRITE_MULTIPLE_REGISTERS;
         WriteAs2Bytes(res.data() + 1, address);
