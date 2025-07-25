@@ -52,7 +52,7 @@ void TRPCPortHandler::PortLoad(const Json::Value& request,
     ValidateRPCRequest(request, RequestPortLoadSchema);
     try {
         auto protocol = request.get("protocol", "raw").asString();
-        if (protocol == "modbus") {
+        if ((protocol == "modbus") || (protocol == "modbus-tcp")) {
             SerialClientTaskRunner.RunTask(
                 request,
                 std::make_shared<TRPCPortLoadModbusSerialClientTask>(request, onResult, onError, ParametersCache));
