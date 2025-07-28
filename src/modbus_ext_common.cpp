@@ -601,7 +601,10 @@ namespace ModbusExt // modbus extension protocol declarations
         ModbusExtCommand = command;
     }
 
-    void Scan(TPort& port, TModbusExtCommand modbusExtCommand, std::vector<TScannedDevice>& scannedDevices)
+    void Scan(TPort& port,
+              TModbusExtCommand modbusExtCommand,
+              std::vector<TScannedDevice>& scannedDevices,
+              std::chrono::milliseconds responseTimeout)
     {
         auto req = MakeScanRequest(modbusExtCommand, START_SCAN_COMMAND);
         const auto standardFrameTimeout = port.GetSendTimeBytes(Modbus::STANDARD_FRAME_TIMEOUT_BYTES);
@@ -609,11 +612,17 @@ namespace ModbusExt // modbus extension protocol declarations
         port.WriteBytes(req);
 
         const auto scanFrameTimeout = GetTimeoutForScan(port, modbusExtCommand);
-        const auto responseTimeout = scanFrameTimeout + port.GetSendTimeBytes(1);
+        auto calculatedResponseTimeout = scanFrameTimeout + port.GetSendTimeBytes(1);
+        calculatedResponseTimeout = std::max(std::chrono::duration_cast<std::chrono::microseconds>(responseTimeout),
+                                             scanFrameTimeout + port.GetSendTimeBytes(1));
         std::array<uint8_t, MAX_PACKET_SIZE + ARBITRATION_HEADER_MAX_BYTES> response;
         size_t rc;
         try {
-            rc = port.ReadFrame(response.data(), response.size(), responseTimeout, scanFrameTimeout, ExpectFastModbus())
+            rc = port.ReadFrame(response.data(),
+                                response.size(),
+                                calculatedResponseTimeout,
+                                scanFrameTimeout,
+                                ExpectFastModbus())
                      .Count;
         } catch (const TResponseTimeoutException& ex) {
             // It is ok. No Fast Modbus capable devices on port.
@@ -636,7 +645,7 @@ namespace ModbusExt // modbus extension protocol declarations
                     port.WriteBytes(req);
                     rc = port.ReadFrame(response.data(),
                                         response.size(),
-                                        responseTimeout,
+                                        calculatedResponseTimeout,
                                         scanFrameTimeout,
                                         ExpectFastModbus())
                              .Count;

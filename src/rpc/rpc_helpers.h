@@ -26,3 +26,6 @@ void ValidateRPCRequest(const Json::Value& request, const Json::Value& schema);
  * @throws std::runtime_error If the schema file cannot be read.
  */
 Json::Value LoadRPCRequestSchema(const std::string& schemaFilePath, const std::string& rpcName);
+
+std::chrono::milliseconds ParseResponseTimeout(const Json::Value& request,
+                                               std::chrono::milliseconds portResponseTimeout);

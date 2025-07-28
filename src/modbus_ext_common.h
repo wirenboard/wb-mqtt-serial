@@ -167,7 +167,13 @@ namespace ModbusExt // modbus extension protocol common utilities
      * @param port The port to scan.
      * @param modbusExtCommand The Fast Modbus command to use for scanning.
      * @param scannedDevices A vector to store the scanned devices.
+     * @param responseTimeout The timeout for the response.
+     *                        Actual value will be the maximum of this value and
+     *                        the theoretical calculated timeout.
      */
-    void Scan(TPort& port, TModbusExtCommand modbusExtCommand, std::vector<TScannedDevice>& scannedDevices);
+    void Scan(TPort& port,
+              TModbusExtCommand modbusExtCommand,
+              std::vector<TScannedDevice>& scannedDevices,
+              std::chrono::milliseconds responseTimeout);
 
 } // modbus extension protocol common utilities

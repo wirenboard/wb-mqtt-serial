@@ -32,11 +32,13 @@ std::vector<uint8_t> ExecRPCPortLoadRawRequest(TPort& port, PRPCPortLoadRawReque
 
 TRPCPortLoadRawSerialClientTask::TRPCPortLoadRawSerialClientTask(const Json::Value& request,
                                                                  WBMQTT::TMqttRpcServer::TResultCallback onResult,
-                                                                 WBMQTT::TMqttRpcServer::TErrorCallback onError)
+                                                                 WBMQTT::TMqttRpcServer::TErrorCallback onError,
+                                                                 std::chrono::milliseconds responseTimeout)
     : Request(ParseRPCPortLoadRawRequest(request))
 {
     Request->OnResult = onResult;
     Request->OnError = onError;
+    Request->ResponseTimeout = responseTimeout;
     ExpireTime = std::chrono::steady_clock::now() + Request->TotalTimeout;
 }
 

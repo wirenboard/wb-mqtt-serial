@@ -132,6 +132,7 @@ TSerialClientParams TSerialClientTaskRunner::GetSerialClientParams(const Json::V
                 if (device->DeviceConfig()->Id == id) {
                     params.SerialClient = driver->GetSerialClient();
                     params.Device = device;
+                    params.PortResponseTimeout = driver->GetPortResponseTimeout();
                     return params;
                 }
             }
@@ -169,6 +170,11 @@ void TSerialClientTaskRunner::RunTask(const Json::Value& request, PSerialClientT
         return;
     }
 
+    RunTaskOnExecutor(request, task);
+}
+
+void TSerialClientTaskRunner::RunTaskOnExecutor(const Json::Value& request, PSerialClientTask task)
+{
     std::unique_lock<std::mutex> lock(TaskExecutorsMutex);
     auto portDescription = GetRequestPortDescription(request);
     auto executor = std::find_if(TaskExecutors.begin(),
@@ -176,13 +182,13 @@ void TSerialClientTaskRunner::RunTask(const Json::Value& request, PSerialClientT
                                  [&portDescription](PSerialClientTaskExecutor executor) {
                                      return executor->GetPort()->GetDescription(false) == portDescription;
                                  });
-    if (executor == TaskExecutors.end()) {
+    if (executor != TaskExecutors.end()) {
         RemoveUnusedExecutors();
         auto newExecutor = std::make_shared<TSerialClientTaskExecutor>(InitPort(request));
         TaskExecutors.push_back(newExecutor);
         newExecutor->AddTask(task);
     } else {
-        return (*executor)->AddTask(task);
+        (*executor)->AddTask(task);
     }
 }
 

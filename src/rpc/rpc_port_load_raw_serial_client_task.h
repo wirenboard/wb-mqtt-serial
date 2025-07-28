@@ -19,7 +19,8 @@ class TRPCPortLoadRawSerialClientTask: public ISerialClientTask
 public:
     TRPCPortLoadRawSerialClientTask(const Json::Value& request,
                                     WBMQTT::TMqttRpcServer::TResultCallback onResult,
-                                    WBMQTT::TMqttRpcServer::TErrorCallback onError);
+                                    WBMQTT::TMqttRpcServer::TErrorCallback onError,
+                                    std::chrono::milliseconds responseTimeout);
 
     ISerialClientTask::TRunResult Run(PPort port,
                                       TSerialClientDeviceAccessHandler& lastAccessedDevice,

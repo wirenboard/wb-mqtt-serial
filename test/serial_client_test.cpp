@@ -1540,7 +1540,6 @@ TRPCResultCode TSerialClientIntegrationTest::SendRPCRequest(PMQTTSerialDriver se
     TRPCResultCode resultCode = TRPCResultCode::RPC_OK;
     std::vector<int> responseInt;
     Json::Value request;
-    request["response_timeout"] = 500;
     request["frame_timeout"] = 20;
     request["total_timeout"] = chrono::duration_cast<chrono::milliseconds>(totalTimeout).count();
     request["response_size"] = expectedResponseLength;
@@ -1559,7 +1558,10 @@ TRPCResultCode TSerialClientIntegrationTest::SendRPCRequest(PMQTTSerialDriver se
 
     try {
         Note() << "Send RPC request";
-        auto task = std::make_shared<TRPCPortLoadRawSerialClientTask>(request, onResult, onError);
+        auto task = std::make_shared<TRPCPortLoadRawSerialClientTask>(request,
+                                                                      onResult,
+                                                                      onError,
+                                                                      std::chrono::milliseconds(500));
         serialClient->AddTask(task);
         SerialDriver->LoopOnce();
         EXPECT_EQ(responseInt == expectedResponse, true);

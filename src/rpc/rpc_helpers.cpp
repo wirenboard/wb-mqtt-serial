@@ -1,6 +1,7 @@
 #include "rpc_helpers.h"
 #include "log.h"
 #include "rpc_exception.h"
+#include "serial_config.h"
 
 #define LOG(logger) ::logger.Log() << "[RPC] "
 
@@ -33,4 +34,20 @@ Json::Value LoadRPCRequestSchema(const std::string& schemaFilePath, const std::s
         LOG(Error) << "RPC " + rpcName + " request schema reading error: " << e.what();
         throw;
     }
+}
+
+std::chrono::milliseconds ParseResponseTimeout(const Json::Value& request,
+                                               std::chrono::milliseconds portResponseTimeout)
+{
+    std::chrono::milliseconds res = RESPONSE_TIMEOUT_NOT_SET;
+    WBMQTT::JSON::Get(request, "response_timeout", res);
+    if (res == RESPONSE_TIMEOUT_NOT_SET) {
+        res = portResponseTimeout;
+    } else {
+        res = std::max(res, portResponseTimeout);
+    }
+    if (res == RESPONSE_TIMEOUT_NOT_SET) {
+        res = DefaultResponseTimeout;
+    }
+    return res;
 }

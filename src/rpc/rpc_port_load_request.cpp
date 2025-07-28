@@ -50,7 +50,6 @@ void ParseRPCPortLoadRequest(const Json::Value& data, TRPCPortLoadRequest& reque
         request.Message.assign(messageStr.begin(), messageStr.end());
     }
 
-    WBMQTT::JSON::Get(data, "response_timeout", request.ResponseTimeout);
     WBMQTT::JSON::Get(data, "frame_timeout", request.FrameTimeout);
     WBMQTT::JSON::Get(data, "total_timeout", request.TotalTimeout);
 

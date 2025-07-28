@@ -274,6 +274,11 @@ PSerialClient TSerialPortDriver::GetSerialClient()
     return SerialClient;
 }
 
+std::chrono::milliseconds TSerialPortDriver::GetPortResponseTimeout() const
+{
+    return Config->ResponseTimeout;
+}
+
 TDeviceChannel::TDeviceChannel(PSerialDevice device, PDeviceChannelConfig config)
     : TDeviceChannelConfig(*config),
       Device(device),

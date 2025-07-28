@@ -35,10 +35,11 @@ struct TPortConfig
 
     /**
      * @brief Maximum allowed time from request to response for any device connected to the port.
-     * -1 if not set, DefaultResponseTimeout will be used.
-     * The timeout is used if device's ResponseTimeout is not set or if device's ResponseTimeout is smaller.
+     * The timeout is used if device's ResponseTimeout is not set.
+     * If both timeouts are not set, DefaultResponseTimeout will be used.
+     * If the timeout is set and device's ResponseTimeout is smaller, the port timeout will be used.
      */
-    std::chrono::milliseconds ResponseTimeout = std::chrono::milliseconds(-1);
+    std::chrono::milliseconds ResponseTimeout = RESPONSE_TIMEOUT_NOT_SET;
 
     bool IsModbusTcp = false;
 
