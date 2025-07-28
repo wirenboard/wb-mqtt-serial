@@ -182,7 +182,7 @@ void TSerialClientTaskRunner::RunTaskOnExecutor(const Json::Value& request, PSer
                                  [&portDescription](PSerialClientTaskExecutor executor) {
                                      return executor->GetPort()->GetDescription(false) == portDescription;
                                  });
-    if (executor != TaskExecutors.end()) {
+    if (executor == TaskExecutors.end()) {
         RemoveUnusedExecutors();
         auto newExecutor = std::make_shared<TSerialClientTaskExecutor>(InitPort(request));
         TaskExecutors.push_back(newExecutor);
