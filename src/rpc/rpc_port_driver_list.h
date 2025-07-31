@@ -33,7 +33,7 @@ struct TSerialClientParams
 {
     PSerialClient SerialClient;
     PSerialDevice Device;
-    std::chrono::milliseconds PortResponseTimeout;
+    std::chrono::milliseconds PortResponseTimeout = RESPONSE_TIMEOUT_NOT_SET;
 };
 
 class TSerialClientTaskRunner

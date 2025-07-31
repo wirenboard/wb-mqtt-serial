@@ -148,6 +148,7 @@ TSerialClientParams TSerialClientTaskRunner::GetSerialClientParams(const Json::V
             });
         if (portDriver != portDrivers.end()) {
             params.SerialClient = (*portDriver)->GetSerialClient();
+            params.PortResponseTimeout = (*portDriver)->GetPortResponseTimeout();
             auto slaveId = request["slave_id"].asString();
             auto deviceType = request["device_type"].asString();
             for (auto device: (*portDriver)->GetSerialClient()->GetDevices()) {
