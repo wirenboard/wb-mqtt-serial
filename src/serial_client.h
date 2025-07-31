@@ -33,7 +33,8 @@ public:
     void ClosedPortCycle(std::chrono::steady_clock::time_point currentTime, TRegisterCallback regCallback);
     PSerialDevice OpenPortCycle(TPort& port,
                                 TRegisterCallback regCallback,
-                                TSerialClientDeviceAccessHandler& lastAccessedDevice);
+                                TSerialClientDeviceAccessHandler& lastAccessedDevice,
+                                std::chrono::milliseconds portResponseTimeout);
 
     std::chrono::steady_clock::time_point GetDeadline(std::chrono::steady_clock::time_point currentTime) const;
 
@@ -84,6 +85,7 @@ public:
     TSerialClient(PPort port,
                   const TPortOpenCloseLogic::TSettings& openCloseSettings,
                   util::TGetNowFn nowFn,
+                  std::chrono::milliseconds portResponseTimeout,
                   size_t lowPriorityRateLimit = std::numeric_limits<size_t>::max());
     ~TSerialClient();
 
@@ -124,6 +126,7 @@ private:
 
     util::TGetNowFn NowFn;
 
+    std::chrono::milliseconds PortResponseTimeout;
     size_t LowPriorityRateLimit;
 
     std::mutex TasksMutex;

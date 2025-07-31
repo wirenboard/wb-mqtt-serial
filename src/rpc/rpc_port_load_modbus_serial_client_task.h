@@ -28,7 +28,8 @@ public:
     TRPCPortLoadModbusSerialClientTask(const Json::Value& request,
                                        WBMQTT::TMqttRpcServer::TResultCallback onResult,
                                        WBMQTT::TMqttRpcServer::TErrorCallback onError,
-                                       TRPCDeviceParametersCache& parametersCache);
+                                       TRPCDeviceParametersCache& parametersCache,
+                                       std::chrono::milliseconds responseTimeout);
 
     ISerialClientTask::TRunResult Run(PPort port,
                                       TSerialClientDeviceAccessHandler& lastAccessedDevice,

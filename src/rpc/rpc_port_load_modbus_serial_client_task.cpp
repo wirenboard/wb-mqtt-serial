@@ -124,11 +124,13 @@ void ExecRPCPortLoadModbusRequest(TPort& port, PRPCPortLoadModbusRequest rpcRequ
 TRPCPortLoadModbusSerialClientTask::TRPCPortLoadModbusSerialClientTask(const Json::Value& request,
                                                                        WBMQTT::TMqttRpcServer::TResultCallback onResult,
                                                                        WBMQTT::TMqttRpcServer::TErrorCallback onError,
-                                                                       TRPCDeviceParametersCache& parametersCache)
+                                                                       TRPCDeviceParametersCache& parametersCache,
+                                                                       std::chrono::milliseconds responseTimeout)
     : Request(ParseRPCPortLoadModbusRequest(request, parametersCache))
 {
     Request->OnResult = onResult;
     Request->OnError = onError;
+    Request->ResponseTimeout = responseTimeout;
     ExpireTime = std::chrono::steady_clock::now() + Request->TotalTimeout;
 }
 

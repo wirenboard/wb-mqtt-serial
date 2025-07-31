@@ -69,6 +69,7 @@ public:
     TSerialPortConnectionSettings SerialPortSettings;
     ModbusExt::TModbusExtCommand ModbusExtCommand = ModbusExt::TModbusExtCommand::ACTUAL;
     std::chrono::milliseconds TotalTimeout = DefaultRPCTotalTimeout;
+    std::chrono::milliseconds ResponseTimeout = RESPONSE_TIMEOUT_NOT_SET;
 
     WBMQTT::TMqttRpcServer::TResultCallback OnResult = nullptr;
     WBMQTT::TMqttRpcServer::TErrorCallback OnError = nullptr;
@@ -81,7 +82,8 @@ class TRPCPortScanSerialClientTask: public ISerialClientTask
 public:
     TRPCPortScanSerialClientTask(const Json::Value& request,
                                  WBMQTT::TMqttRpcServer::TResultCallback onResult,
-                                 WBMQTT::TMqttRpcServer::TErrorCallback onError);
+                                 WBMQTT::TMqttRpcServer::TErrorCallback onError,
+                                 std::chrono::milliseconds responseTimeout);
 
     ISerialClientTask::TRunResult Run(PPort port,
                                       TSerialClientDeviceAccessHandler& lastAccessedDevice,

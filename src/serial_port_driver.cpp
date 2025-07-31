@@ -28,6 +28,7 @@ TSerialPortDriver::TSerialPortDriver(WBMQTT::PDeviceDriver mqttDriver,
     SerialClient = PSerialClient(new TSerialClient(Config->Port,
                                                    Config->OpenCloseSettings,
                                                    std::chrono::steady_clock::now,
+                                                   Config->ResponseTimeout,
                                                    lowPriorityRateLimit));
 }
 
@@ -272,6 +273,11 @@ TControlArgs TSerialPortDriver::From(const PDeviceChannel& channel)
 PSerialClient TSerialPortDriver::GetSerialClient()
 {
     return SerialClient;
+}
+
+std::chrono::milliseconds TSerialPortDriver::GetPortResponseTimeout() const
+{
+    return Config->ResponseTimeout;
 }
 
 TDeviceChannel::TDeviceChannel(PSerialDevice device, PDeviceChannelConfig config)

@@ -107,7 +107,8 @@ public:
                 Emit() << ceil<microseconds>(TimeMock.GetTime().time_since_epoch()).count() << ": " << reg->ToString()
                        << errorMsg;
             },
-            lastAccessedDevice);
+            lastAccessedDevice,
+            8ms);
         auto deadline = serialClient.GetDeadline(TimeMock.GetTime());
         if (deadline > TimeMock.GetTime()) {
             TimeMock.AddTime(ceil<microseconds>(deadline - TimeMock.GetTime()));

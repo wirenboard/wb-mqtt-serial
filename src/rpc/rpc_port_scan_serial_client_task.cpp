@@ -202,7 +202,7 @@ void ExecRPCPortScanRequest(TPort& port, PRPCPortScanRequest rpcRequest, const s
     Json::Value replyJSON;
     std::vector<ModbusExt::TScannedDevice> scannedDevices;
     try {
-        ModbusExt::Scan(port, rpcRequest->ModbusExtCommand, scannedDevices);
+        ModbusExt::Scan(port, rpcRequest->ModbusExtCommand, scannedDevices, rpcRequest->ResponseTimeout);
     } catch (const std::exception& e) {
         replyJSON["error"] = e.what();
     }
@@ -217,11 +217,13 @@ void ExecRPCPortScanRequest(TPort& port, PRPCPortScanRequest rpcRequest, const s
 
 TRPCPortScanSerialClientTask::TRPCPortScanSerialClientTask(const Json::Value& request,
                                                            WBMQTT::TMqttRpcServer::TResultCallback onResult,
-                                                           WBMQTT::TMqttRpcServer::TErrorCallback onError)
+                                                           WBMQTT::TMqttRpcServer::TErrorCallback onError,
+                                                           std::chrono::milliseconds responseTimeout)
     : Request(ParseRPCPortScanRequest(request))
 {
     Request->OnResult = onResult;
     Request->OnError = onError;
+    Request->ResponseTimeout = responseTimeout;
     ExpireTime = std::chrono::steady_clock::now() + Request->TotalTimeout;
 }
 

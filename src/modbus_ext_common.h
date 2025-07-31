@@ -56,6 +56,7 @@ namespace ModbusExt // modbus extension protocol common utilities
      * @return false - no more events
      */
     bool ReadEvents(TPort& port,
+                    std::chrono::milliseconds responseTimeout,
                     std::chrono::milliseconds maxReadingTime,
                     uint8_t startingSlaveId,
                     TEventConfirmationState& state,
@@ -75,6 +76,7 @@ namespace ModbusExt // modbus extension protocol common utilities
 
         TEventsEnabler(uint8_t slaveId,
                        TPort& port,
+                       std::chrono::milliseconds responseTimeout,
                        TEventsEnabler::TVisitorFn visitor,
                        TEventsEnablerFlags flags = TEventsEnablerFlags::NO_HOLES);
 
@@ -116,6 +118,7 @@ namespace ModbusExt // modbus extension protocol common utilities
         TPort& Port;
         size_t MaxRegDistance;
         std::chrono::milliseconds FrameTimeout;
+        std::chrono::milliseconds ResponseTimeout;
         TVisitorFn Visitor;
 
         void EnableEvents();
@@ -167,7 +170,13 @@ namespace ModbusExt // modbus extension protocol common utilities
      * @param port The port to scan.
      * @param modbusExtCommand The Fast Modbus command to use for scanning.
      * @param scannedDevices A vector to store the scanned devices.
+     * @param responseTimeout The timeout for the response.
+     *                        Actual value will be the maximum of this value and
+     *                        the theoretical calculated timeout.
      */
-    void Scan(TPort& port, TModbusExtCommand modbusExtCommand, std::vector<TScannedDevice>& scannedDevices);
+    void Scan(TPort& port,
+              TModbusExtCommand modbusExtCommand,
+              std::vector<TScannedDevice>& scannedDevices,
+              std::chrono::milliseconds responseTimeout);
 
 } // modbus extension protocol common utilities

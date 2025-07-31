@@ -87,6 +87,7 @@ const std::chrono::milliseconds DefaultDeviceTimeout(3000);
 const std::chrono::seconds MaxUnchangedIntervalLowLimit(5);
 const std::chrono::seconds DefaultMaxUnchangedInterval(-1);
 const std::chrono::seconds DefaultMaxWriteFailTime(600);
+const std::chrono::milliseconds RESPONSE_TIMEOUT_NOT_SET(-1);
 
 struct TDeviceConfig
 {
@@ -101,7 +102,7 @@ struct TDeviceConfig
     std::vector<uint8_t> Password;
 
     //! Maximum allowed time from request to response. -1 if not set, DefaultResponseTimeout will be used.
-    std::chrono::milliseconds ResponseTimeout = std::chrono::milliseconds(-1);
+    std::chrono::milliseconds ResponseTimeout = RESPONSE_TIMEOUT_NOT_SET;
 
     //! Minimum inter-frame delay.
     std::chrono::milliseconds FrameTimeout = DefaultFrameTimeout;

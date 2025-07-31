@@ -254,6 +254,7 @@ namespace ModbusExt // modbus extension protocol declarations
     }
 
     bool ReadEvents(TPort& port,
+                    std::chrono::milliseconds responseTimeout,
                     std::chrono::milliseconds maxEventsReadTime,
                     uint8_t startingSlaveId,
                     TEventConfirmationState& state,
@@ -270,8 +271,9 @@ namespace ModbusExt // modbus extension protocol declarations
         port.WriteBytes(req);
 
         const auto timeout = GetTimeoutForEvents(port);
+        responseTimeout = std::max(responseTimeout, timeout);
         std::array<uint8_t, MAX_PACKET_SIZE + ARBITRATION_HEADER_MAX_BYTES> res;
-        auto rc = port.ReadFrame(res.data(), res.size(), timeout, timeout, ExpectFastModbus()).Count;
+        auto rc = port.ReadFrame(res.data(), res.size(), responseTimeout, timeout, ExpectFastModbus()).Count;
         port.SleepSinceLastInteraction(frameTimeout);
 
         const uint8_t* packet = GetPacketStart(res.data(), rc);
@@ -344,8 +346,9 @@ namespace ModbusExt // modbus extension protocol declarations
     {
         Port.WriteBytes(Request);
 
-        // Use response timeout from MR6C template
-        auto rc = Port.ReadFrame(Response.data(), Request.size(), 8ms, FrameTimeout).Count;
+        // 8ms is the response timeout from MR6C template
+        auto responseTimeout = std::max(ResponseTimeout, 8ms);
+        auto rc = Port.ReadFrame(Response.data(), Request.size(), responseTimeout, FrameTimeout).Count;
 
         CheckCRC16(Response.data(), rc);
 
@@ -400,11 +403,13 @@ namespace ModbusExt // modbus extension protocol declarations
 
     TEventsEnabler::TEventsEnabler(uint8_t slaveId,
                                    TPort& port,
+                                   std::chrono::milliseconds responseTimeout,
                                    TEventsEnabler::TVisitorFn visitor,
                                    TEventsEnablerFlags flags)
         : SlaveId(slaveId),
           Port(port),
           MaxRegDistance(1),
+          ResponseTimeout(responseTimeout),
           Visitor(visitor)
     {
         if (flags == TEventsEnablerFlags::DISABLE_EVENTS_IN_HOLES) {
@@ -601,7 +606,10 @@ namespace ModbusExt // modbus extension protocol declarations
         ModbusExtCommand = command;
     }
 
-    void Scan(TPort& port, TModbusExtCommand modbusExtCommand, std::vector<TScannedDevice>& scannedDevices)
+    void Scan(TPort& port,
+              TModbusExtCommand modbusExtCommand,
+              std::vector<TScannedDevice>& scannedDevices,
+              std::chrono::milliseconds responseTimeout)
     {
         auto req = MakeScanRequest(modbusExtCommand, START_SCAN_COMMAND);
         const auto standardFrameTimeout = port.GetSendTimeBytes(Modbus::STANDARD_FRAME_TIMEOUT_BYTES);
@@ -609,11 +617,17 @@ namespace ModbusExt // modbus extension protocol declarations
         port.WriteBytes(req);
 
         const auto scanFrameTimeout = GetTimeoutForScan(port, modbusExtCommand);
-        const auto responseTimeout = scanFrameTimeout + port.GetSendTimeBytes(1);
+        auto calculatedResponseTimeout = scanFrameTimeout + port.GetSendTimeBytes(1);
+        calculatedResponseTimeout = std::max(std::chrono::duration_cast<std::chrono::microseconds>(responseTimeout),
+                                             scanFrameTimeout + port.GetSendTimeBytes(1));
         std::array<uint8_t, MAX_PACKET_SIZE + ARBITRATION_HEADER_MAX_BYTES> response;
         size_t rc;
         try {
-            rc = port.ReadFrame(response.data(), response.size(), responseTimeout, scanFrameTimeout, ExpectFastModbus())
+            rc = port.ReadFrame(response.data(),
+                                response.size(),
+                                calculatedResponseTimeout,
+                                scanFrameTimeout,
+                                ExpectFastModbus())
                      .Count;
         } catch (const TResponseTimeoutException& ex) {
             // It is ok. No Fast Modbus capable devices on port.
@@ -636,7 +650,7 @@ namespace ModbusExt // modbus extension protocol declarations
                     port.WriteBytes(req);
                     rc = port.ReadFrame(response.data(),
                                         response.size(),
-                                        responseTimeout,
+                                        calculatedResponseTimeout,
                                         scanFrameTimeout,
                                         ExpectFastModbus())
                              .Count;

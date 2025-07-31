@@ -67,6 +67,7 @@ public:
     static void HandleControlOnValueEvent(const WBMQTT::TControlOnValueEvent& event);
 
     PSerialClient GetSerialClient();
+    std::chrono::milliseconds GetPortResponseTimeout() const;
 
 private:
     WBMQTT::TLocalDeviceArgs From(const PSerialDevice& device);

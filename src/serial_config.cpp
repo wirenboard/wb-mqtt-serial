@@ -1059,7 +1059,7 @@ PDeviceConfig LoadDeviceConfig(const Json::Value& dev, PProtocol protocol, const
     if (parameters.Defaults.ResponseTimeout > res->ResponseTimeout) {
         res->ResponseTimeout = parameters.Defaults.ResponseTimeout;
     }
-    if (res->ResponseTimeout.count() == -1) {
+    if (res->ResponseTimeout == RESPONSE_TIMEOUT_NOT_SET) {
         res->ResponseTimeout = DefaultResponseTimeout;
     }
 

@@ -51,15 +51,27 @@ void TRPCPortHandler::PortLoad(const Json::Value& request,
 {
     ValidateRPCRequest(request, RequestPortLoadSchema);
     try {
+        PSerialClientTask task;
+        auto portResponseTimeout = RESPONSE_TIMEOUT_NOT_SET;
+        auto serialClientParams = SerialClientTaskRunner.GetSerialClientParams(request);
+        if (serialClientParams.SerialClient) {
+            portResponseTimeout = serialClientParams.PortResponseTimeout;
+        }
+        auto responseTimeout = ParseResponseTimeout(request, portResponseTimeout);
         auto protocol = request.get("protocol", "raw").asString();
         if ((protocol == "modbus") || (protocol == "modbus-tcp")) {
-            SerialClientTaskRunner.RunTask(
-                request,
-                std::make_shared<TRPCPortLoadModbusSerialClientTask>(request, onResult, onError, ParametersCache));
+            task = std::make_shared<TRPCPortLoadModbusSerialClientTask>(request,
+                                                                        onResult,
+                                                                        onError,
+                                                                        ParametersCache,
+                                                                        responseTimeout);
         } else {
-            SerialClientTaskRunner.RunTask(
-                request,
-                std::make_shared<TRPCPortLoadRawSerialClientTask>(request, onResult, onError));
+            task = std::make_shared<TRPCPortLoadRawSerialClientTask>(request, onResult, onError, responseTimeout);
+        }
+        if (serialClientParams.SerialClient) {
+            SerialClientTaskRunner.RunTask(request, task);
+        } else {
+            SerialClientTaskRunner.RunTaskOnExecutor(request, task);
         }
     } catch (const TRPCException& e) {
         ProcessException(e, onError);
@@ -85,8 +97,18 @@ void TRPCPortHandler::PortScan(const Json::Value& request,
 {
     ValidateRPCRequest(request, RequestPortScanSchema);
     try {
-        SerialClientTaskRunner.RunTask(request,
-                                       std::make_shared<TRPCPortScanSerialClientTask>(request, onResult, onError));
+        PSerialClientTask task;
+        auto responseTimeout = RESPONSE_TIMEOUT_NOT_SET;
+        auto serialClientParams = SerialClientTaskRunner.GetSerialClientParams(request);
+        if (serialClientParams.SerialClient) {
+            responseTimeout = serialClientParams.PortResponseTimeout;
+        }
+        task = std::make_shared<TRPCPortScanSerialClientTask>(request, onResult, onError, responseTimeout);
+        if (serialClientParams.SerialClient) {
+            SerialClientTaskRunner.RunTask(request, task);
+        } else {
+            SerialClientTaskRunner.RunTaskOnExecutor(request, task);
+        }
     } catch (const TRPCException& e) {
         ProcessException(e, onError);
     }

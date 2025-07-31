@@ -44,6 +44,7 @@ public:
 
     void ReadEvents(TPort& port,
                     std::chrono::milliseconds maxReadingTime,
+                    std::chrono::milliseconds responseTimeout,
                     TRegisterCallback registerCallback,
                     util::TGetNowFn nowFn);
 
