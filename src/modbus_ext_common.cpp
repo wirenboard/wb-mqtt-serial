@@ -254,6 +254,7 @@ namespace ModbusExt // modbus extension protocol declarations
     }
 
     bool ReadEvents(TPort& port,
+                    std::chrono::milliseconds responseTimeout,
                     std::chrono::milliseconds maxEventsReadTime,
                     uint8_t startingSlaveId,
                     TEventConfirmationState& state,
@@ -270,8 +271,9 @@ namespace ModbusExt // modbus extension protocol declarations
         port.WriteBytes(req);
 
         const auto timeout = GetTimeoutForEvents(port);
+        responseTimeout = std::max(responseTimeout, timeout);
         std::array<uint8_t, MAX_PACKET_SIZE + ARBITRATION_HEADER_MAX_BYTES> res;
-        auto rc = port.ReadFrame(res.data(), res.size(), timeout, timeout, ExpectFastModbus()).Count;
+        auto rc = port.ReadFrame(res.data(), res.size(), responseTimeout, timeout, ExpectFastModbus()).Count;
         port.SleepSinceLastInteraction(frameTimeout);
 
         const uint8_t* packet = GetPacketStart(res.data(), rc);

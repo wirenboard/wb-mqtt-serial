@@ -56,6 +56,7 @@ namespace ModbusExt // modbus extension protocol common utilities
      * @return false - no more events
      */
     bool ReadEvents(TPort& port,
+                    std::chrono::milliseconds responseTimeout,
                     std::chrono::milliseconds maxReadingTime,
                     uint8_t startingSlaveId,
                     TEventConfirmationState& state,

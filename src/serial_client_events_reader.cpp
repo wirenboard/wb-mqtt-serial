@@ -237,6 +237,7 @@ void TSerialClientEventsReader::ReadEvents(TPort& port,
     for (auto spentTime = 0us; spentTime < maxReadingTime; spentTime = spentTimeMeter.GetSpentTime()) {
         try {
             if (!ModbusExt::ReadEvents(port,
+                                       responseTimeout,
                                        floor<milliseconds>(maxReadingTime - spentTime),
                                        LastAccessedSlaveId,
                                        EventState,
