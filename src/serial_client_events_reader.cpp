@@ -11,7 +11,7 @@ using namespace std::chrono;
 
 namespace
 {
-    const auto DEFAULT_SPORAIC_ONLY_READ_RATE_LIMIT = std::chrono::milliseconds(500);
+    const auto DEFAULT_SPORADIC_ONLY_READ_RATE_LIMIT = std::chrono::milliseconds(500);
 
     std::string EventTypeToString(uint8_t eventType)
     {
@@ -80,7 +80,9 @@ namespace
         return nullptr;
     }
 
-    void DisableEventsFromRegs(TPort& port, const std::list<TEventsReaderRegisterDesc>& regs)
+    void DisableEventsFromRegs(TPort& port,
+                               const std::list<TEventsReaderRegisterDesc>& regs,
+                               std::chrono::milliseconds responseTimeout)
     {
         if (regs.empty()) {
             return;
@@ -89,7 +91,7 @@ namespace
         while (regIt != regs.cend()) {
             uint8_t slaveId = regIt->SlaveId;
             LOG(Warn) << "Disable unexpected events from " << MakeDeviceDescriptionString(slaveId);
-            ModbusExt::TEventsEnabler enabler(slaveId, port, [](uint8_t, uint16_t, bool) {});
+            ModbusExt::TEventsEnabler enabler(slaveId, port, responseTimeout, [](uint8_t, uint16_t, bool) {});
             for (; regIt != regs.cend() && slaveId == regIt->SlaveId; ++regIt) {
                 enabler.AddRegister(regIt->Addr,
                                     static_cast<ModbusExt::TEventType>(regIt->Type),
@@ -114,7 +116,7 @@ namespace
             if (reg->IsExcludedFromPolling()) {
                 auto config = reg->GetConfig();
                 if (!config->ReadPeriod.has_value() && !config->ReadRateLimit.has_value()) {
-                    config->ReadRateLimit = DEFAULT_SPORAIC_ONLY_READ_RATE_LIMIT;
+                    config->ReadRateLimit = DEFAULT_SPORADIC_ONLY_READ_RATE_LIMIT;
                 }
                 reg->IncludeInPolling();
                 break;
@@ -225,6 +227,7 @@ void TSerialClientEventsReader::ReadEventsFailed(const std::string& errorMessage
 
 void TSerialClientEventsReader::ReadEvents(TPort& port,
                                            milliseconds maxReadingTime,
+                                           milliseconds responseTimeout,
                                            TRegisterCallback registerCallback,
                                            util::TGetNowFn nowFn)
 {
@@ -253,7 +256,7 @@ void TSerialClientEventsReader::ReadEvents(TPort& port,
             ReadEventsFailed(ex.what(), registerCallback);
         }
     }
-    DisableEventsFromRegs(port, visitor.GetRegsToDisable());
+    DisableEventsFromRegs(port, visitor.GetRegsToDisable(), responseTimeout);
 }
 
 void TSerialClientEventsReader::EnableEvents(PSerialDevice device, TPort& port)
@@ -266,6 +269,7 @@ void TSerialClientEventsReader::EnableEvents(PSerialDevice device, TPort& port)
     DevicesWithEnabledEvents.erase(slaveId);
     ModbusExt::TEventsEnabler ev(slaveId,
                                  port,
+                                 device->GetResponseTimeout(port),
                                  std::bind(&TSerialClientEventsReader::OnEnabledEvent,
                                            this,
                                            slaveId,

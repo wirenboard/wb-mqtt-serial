@@ -344,8 +344,9 @@ namespace ModbusExt // modbus extension protocol declarations
     {
         Port.WriteBytes(Request);
 
-        // Use response timeout from MR6C template
-        auto rc = Port.ReadFrame(Response.data(), Request.size(), 8ms, FrameTimeout).Count;
+        // 8ms is the response timeout from MR6C template
+        auto responseTimeout = std::max(ResponseTimeout, 8ms);
+        auto rc = Port.ReadFrame(Response.data(), Request.size(), responseTimeout, FrameTimeout).Count;
 
         CheckCRC16(Response.data(), rc);
 
@@ -400,11 +401,13 @@ namespace ModbusExt // modbus extension protocol declarations
 
     TEventsEnabler::TEventsEnabler(uint8_t slaveId,
                                    TPort& port,
+                                   std::chrono::milliseconds responseTimeout,
                                    TEventsEnabler::TVisitorFn visitor,
                                    TEventsEnablerFlags flags)
         : SlaveId(slaveId),
           Port(port),
           MaxRegDistance(1),
+          ResponseTimeout(responseTimeout),
           Visitor(visitor)
     {
         if (flags == TEventsEnablerFlags::DISABLE_EVENTS_IN_HOLES) {

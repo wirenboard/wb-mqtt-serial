@@ -75,6 +75,7 @@ namespace ModbusExt // modbus extension protocol common utilities
 
         TEventsEnabler(uint8_t slaveId,
                        TPort& port,
+                       std::chrono::milliseconds responseTimeout,
                        TEventsEnabler::TVisitorFn visitor,
                        TEventsEnablerFlags flags = TEventsEnablerFlags::NO_HOLES);
 
@@ -116,6 +117,7 @@ namespace ModbusExt // modbus extension protocol common utilities
         TPort& Port;
         size_t MaxRegDistance;
         std::chrono::milliseconds FrameTimeout;
+        std::chrono::milliseconds ResponseTimeout;
         TVisitorFn Visitor;
 
         void EnableEvents();

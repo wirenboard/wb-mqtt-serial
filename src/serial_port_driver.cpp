@@ -28,6 +28,7 @@ TSerialPortDriver::TSerialPortDriver(WBMQTT::PDeviceDriver mqttDriver,
     SerialClient = PSerialClient(new TSerialClient(Config->Port,
                                                    Config->OpenCloseSettings,
                                                    std::chrono::steady_clock::now,
+                                                   Config->ResponseTimeout,
                                                    lowPriorityRateLimit));
 }
 

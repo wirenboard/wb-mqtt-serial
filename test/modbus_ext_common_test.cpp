@@ -5,6 +5,8 @@
 
 #include <cmath>
 
+using namespace std::chrono_literals;
+
 namespace
 {
     class TPortMock: public TPort
@@ -110,7 +112,7 @@ TEST(TModbusExtTest, EventsEnablerOneReg)
     port.Response = {0x0A, 0x46, 0x18, 0x01, 0x01, 0xE9, 0x1E};
 
     std::map<uint16_t, bool> response;
-    ModbusExt::TEventsEnabler ev(10, port, [&response](uint8_t type, uint16_t reg, bool enabled) {
+    ModbusExt::TEventsEnabler ev(10, port, 8ms, [&response](uint8_t type, uint16_t reg, bool enabled) {
         response[reg] = enabled;
     });
     ev.AddRegister(101, ModbusExt::TEventType::COIL, ModbusExt::TEventPriority::HIGH);
@@ -141,7 +143,7 @@ TEST(TModbusExtTest, EventsEnablerIllegalFunction)
     TPortMock port;
     port.Response = {0x0A, 0xC6, 0x01, 0xC3, 0xA2};
 
-    ModbusExt::TEventsEnabler ev(10, port, [](uint8_t, uint16_t, bool) {});
+    ModbusExt::TEventsEnabler ev(10, port, 8ms, [](uint8_t, uint16_t, bool) {});
     ev.AddRegister(101, ModbusExt::TEventType::COIL, ModbusExt::TEventPriority::HIGH);
 
     EXPECT_THROW(ev.SendRequests(), Modbus::TModbusExceptionError);
@@ -156,7 +158,7 @@ TEST(TModbusExtTest, EventsEnablerTwoRanges)
     port.Response = {0x0A, 0x46, 0x18, 0x03, 0x03, 0xFB, 0x02, 0xAD, 0x11};
 
     std::map<uint16_t, bool> response;
-    ModbusExt::TEventsEnabler ev(10, port, [&response](uint8_t type, uint16_t reg, bool enabled) {
+    ModbusExt::TEventsEnabler ev(10, port, 8ms, [&response](uint8_t type, uint16_t reg, bool enabled) {
         response[reg] = enabled;
     });
 
@@ -235,6 +237,7 @@ TEST(TModbusExtTest, EventsEnablerRangesWithHoles)
     ModbusExt::TEventsEnabler ev(
         10,
         port,
+        8ms,
         [&response](uint8_t type, uint16_t reg, bool enabled) { response[reg] = enabled; },
         ModbusExt::TEventsEnabler::DISABLE_EVENTS_IN_HOLES);
 

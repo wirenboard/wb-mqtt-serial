@@ -40,11 +40,13 @@ namespace
 TSerialClient::TSerialClient(PPort port,
                              const TPortOpenCloseLogic::TSettings& openCloseSettings,
                              util::TGetNowFn nowFn,
+                             std::chrono::milliseconds portResponseTimeout,
                              size_t lowPriorityRateLimit)
     : Port(port),
       OpenCloseLogic(openCloseSettings, nowFn),
       ConnectLogger(PORT_OPEN_ERROR_NOTIFICATION_INTERVAL, "[serial client] "),
       NowFn(nowFn),
+      PortResponseTimeout(portResponseTimeout),
       LowPriorityRateLimit(lowPriorityRateLimit)
 {}
 
@@ -195,7 +197,8 @@ void TSerialClient::OpenPortCycle()
     auto device = RegReader->OpenPortCycle(
         *Port,
         [this](PRegister reg) { ProcessPolledRegister(reg); },
-        *LastAccessedDevice);
+        *LastAccessedDevice,
+        PortResponseTimeout);
 
     if (device) {
         OpenCloseLogic.CloseIfNeeded(Port, device->GetConnectionState() == TDeviceConnectionState::DISCONNECTED);
@@ -266,7 +269,8 @@ public:
 
 PSerialDevice TSerialClientRegisterAndEventsReader::OpenPortCycle(TPort& port,
                                                                   TRegisterCallback regCallback,
-                                                                  TSerialClientDeviceAccessHandler& lastAccessedDevice)
+                                                                  TSerialClientDeviceAccessHandler& lastAccessedDevice,
+                                                                  std::chrono::milliseconds portResponseTimeout)
 {
     // Count idle time as high priority task time to faster reach time balancing threshold
     if (LastCycleWasTooSmallToPoll) {
@@ -283,7 +287,7 @@ PSerialDevice TSerialClientRegisterAndEventsReader::OpenPortCycle(TPort& port,
     if (handler.TaskType == TClientTaskType::EVENTS) {
         if (EventsReader && EventsReader->HasDevicesWithEnabledEvents()) {
             lastAccessedDevice.PrepareToAccess(port, nullptr);
-            EventsReader->ReadEvents(port, MAX_POLL_TIME, regCallback, NowFn);
+            EventsReader->ReadEvents(port, MAX_POLL_TIME, portResponseTimeout, regCallback, NowFn);
             TimeBalancer.UpdateSelectionTime(ceil<milliseconds>(SpentTime.GetSpentTime()), TPriority::High);
             TimeBalancer.AddEntry(TClientTaskType::EVENTS,
                                   SpentTime.GetStartTime() + ReadEventsPeriod,
