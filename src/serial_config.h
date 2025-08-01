@@ -33,13 +33,6 @@ struct TPortConfig
     std::chrono::microseconds RequestDelay = std::chrono::microseconds::zero();
     TPortOpenCloseLogic::TSettings OpenCloseSettings;
 
-    /**
-     * @brief Maximum allowed time from request to response for any device connected to the port.
-     * -1 if not set, DefaultResponseTimeout will be used.
-     * The timeout is used if device's ResponseTimeout is not set or if device's ResponseTimeout is smaller.
-     */
-    std::chrono::milliseconds ResponseTimeout = std::chrono::milliseconds(-1);
-
     bool IsModbusTcp = false;
 
     void AddDevice(PSerialDeviceWithChannels device);
@@ -160,7 +153,6 @@ struct TDeviceLoadDefaults
 {
     std::string Id;
     std::chrono::microseconds RequestDelay;
-    std::chrono::milliseconds ResponseTimeout;
     std::optional<std::chrono::milliseconds> ReadRateLimit;
 };
 

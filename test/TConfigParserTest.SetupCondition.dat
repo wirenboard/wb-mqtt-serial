@@ -18,7 +18,7 @@ Ports:
         MinReadRegisters: 1
         GuardInterval: 0
         DeviceTimeout: 3000
-        Response timeout: 500
+        Response timeout: -1
         Frame timeout: 20
         DeviceChannels:
             ------
@@ -63,7 +63,7 @@ Ports:
         MinReadRegisters: 1
         GuardInterval: 0
         DeviceTimeout: 3000
-        Response timeout: 500
+        Response timeout: -1
         Frame timeout: 20
         DeviceChannels:
             ------

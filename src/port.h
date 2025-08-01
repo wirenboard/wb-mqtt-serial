@@ -10,6 +10,9 @@
 
 #include "serial_port_settings.h"
 
+const std::chrono::milliseconds RESPONSE_TIMEOUT_NOT_SET(-1);
+const std::chrono::milliseconds DEFAULT_RESPONSE_TIMEOUT(500);
+
 struct TReadFrameResult
 {
     //! Received byte count
@@ -98,6 +101,34 @@ public:
      * @brief Reset connection parameters to preconfigured if it is a serial port
      */
     virtual void ResetSerialPortSettings();
+
+    /**
+     * @brief Set minimal response timeout for port.
+     *        The value will be used as a minimum response timeout for all read operations.
+     *        If both the timeout and responseTimeout in read operation are less than 0,
+     *        DEFAULT_RESPONSE_TIMEOUT will be used.
+     *
+     * @param value new minimal response timeout
+     */
+    void SetMinimalResponseTimeout(const std::chrono::microseconds& value);
+
+    const std::chrono::microseconds& GetMinimalResponseTimeout() const;
+
+protected:
+    /**
+     * @brief Calculates the actual response timeout based on the requested timeout.
+     *        If the requested timeout is less than the minimal response timeout,
+     *        the minimal response timeout will be used.
+     *        If both requested timeout and minimal response timeout are less than 0,
+     *        DEFAULT_RESPONSE_TIMEOUT will be used.
+     *
+     * @param requestedTimeout The timeout duration requested, in microseconds.
+     * @return The calculated response timeout, in microseconds.
+     */
+    std::chrono::microseconds CalcResponseTimeout(const std::chrono::microseconds& requestedTimeout) const;
+
+private:
+    std::chrono::microseconds MinimalResponseTimeout = RESPONSE_TIMEOUT_NOT_SET;
 };
 
 using PPort = std::shared_ptr<TPort>;

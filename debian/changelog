@@ -1,3 +1,9 @@
+wb-mqtt-serial (2.182.0) stable; urgency=medium
+
+  * Use response_timeout_ms from port settings for Port/Load and Port/Scan RPC requests
+
+ -- Petr Krasnoshchekov <petr.krasnoshchekov@wirenboard.com>  Mon, 28 Jul 2025 18:04:30 +0500
+
 wb-mqtt-serial (2.181.0) stable; urgency=medium
 
   * Add Modbus TCP protocol support to Port/Load RPC

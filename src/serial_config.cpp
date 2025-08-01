@@ -574,7 +574,6 @@ namespace
         TSerialDeviceFactory::TCreateDeviceParams params;
         params.Defaults.Id = default_id;
         params.Defaults.RequestDelay = port_config->RequestDelay;
-        params.Defaults.ResponseTimeout = port_config->ResponseTimeout;
         params.Defaults.ReadRateLimit = port_config->ReadRateLimit;
         params.IsModbusTcp = port_config->IsModbusTcp;
         port_config->AddDevice(deviceFactory.CreateDevice(device_data, params, templates));
@@ -623,7 +622,6 @@ namespace
 
         auto port_config = make_shared<TPortConfig>();
 
-        Get(port_data, "response_timeout_ms", port_config->ResponseTimeout);
         Get(port_data, "guard_interval_us", port_config->RequestDelay);
         port_config->ReadRateLimit = GetReadRateLimit(port_data);
 
@@ -633,6 +631,10 @@ namespace
         Get(port_data, "connection_max_fail_cycles", port_config->OpenCloseSettings.ConnectionMaxFailCycles);
 
         std::tie(port_config->Port, port_config->IsModbusTcp) = portFactory(port_data, rpcConfig);
+
+        std::chrono::milliseconds responseTimeout = RESPONSE_TIMEOUT_NOT_SET;
+        Get(port_data, "response_timeout_ms", responseTimeout);
+        port_config->Port->SetMinimalResponseTimeout(responseTimeout);
 
         const Json::Value& array = port_data["devices"];
         for (Json::Value::ArrayIndex index = 0; index < array.size(); ++index)
@@ -1054,13 +1056,6 @@ PDeviceConfig LoadDeviceConfig(const Json::Value& dev, PProtocol protocol, const
 
     if (res->RequestDelay.count() == 0) {
         res->RequestDelay = parameters.Defaults.RequestDelay;
-    }
-
-    if (parameters.Defaults.ResponseTimeout > res->ResponseTimeout) {
-        res->ResponseTimeout = parameters.Defaults.ResponseTimeout;
-    }
-    if (res->ResponseTimeout.count() == -1) {
-        res->ResponseTimeout = DefaultResponseTimeout;
     }
 
     return res;

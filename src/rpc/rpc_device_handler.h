@@ -78,7 +78,7 @@ public:
 
     TSerialPortConnectionSettings SerialPortSettings;
 
-    std::chrono::milliseconds ResponseTimeout = DefaultResponseTimeout;
+    std::chrono::milliseconds ResponseTimeout = DEFAULT_RESPONSE_TIMEOUT;
     std::chrono::milliseconds FrameTimeout = DefaultFrameTimeout;
     std::chrono::milliseconds TotalTimeout = DefaultRPCTotalTimeout;
 

@@ -114,7 +114,7 @@ void TTcpPort::WriteBytes(const uint8_t* buf, int count)
 
 uint8_t TTcpPort::ReadByte(const std::chrono::microseconds& timeout)
 {
-    return Base::ReadByte(timeout + ResponseTCPLag);
+    return Base::ReadByte(CalcResponseTimeout(timeout) + ResponseTCPLag);
 }
 
 TReadFrameResult TTcpPort::ReadFrame(uint8_t* buf,
@@ -126,7 +126,7 @@ TReadFrameResult TTcpPort::ReadFrame(uint8_t* buf,
     if (IsOpen()) {
         return Base::ReadFrame(buf,
                                count,
-                               responseTimeout + ResponseTCPLag,
+                               CalcResponseTimeout(responseTimeout) + ResponseTCPLag,
                                frameTimeout + FrameTCPLag,
                                frame_complete);
     }

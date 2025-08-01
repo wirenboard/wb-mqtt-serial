@@ -82,7 +82,6 @@ const int DEFAULT_ACCESS_LEVEL = 1;
 const int DEFAULT_DEVICE_FAIL_CYCLES = 2;
 
 const std::chrono::milliseconds DefaultFrameTimeout(20);
-const std::chrono::milliseconds DefaultResponseTimeout(500);
 const std::chrono::milliseconds DefaultDeviceTimeout(3000);
 const std::chrono::seconds MaxUnchangedIntervalLowLimit(5);
 const std::chrono::seconds DefaultMaxUnchangedInterval(-1);
@@ -100,8 +99,13 @@ struct TDeviceConfig
     std::string Protocol;
     std::vector<uint8_t> Password;
 
-    //! Maximum allowed time from request to response. -1 if not set, DefaultResponseTimeout will be used.
-    std::chrono::milliseconds ResponseTimeout = std::chrono::milliseconds(-1);
+    /**
+     *  Maximum allowed time from request to response.
+     *  Less than 0, if not set.
+     *  If not set, response timeout from port settings will be used.
+     *  If port settings also do not have response timeout, DEFAULT_RESPONSE_TIMEOUT will be used.
+     */
+    std::chrono::milliseconds ResponseTimeout = RESPONSE_TIMEOUT_NOT_SET;
 
     //! Minimum inter-frame delay.
     std::chrono::milliseconds FrameTimeout = DefaultFrameTimeout;

@@ -18,8 +18,8 @@ namespace
 
     const auto OBIS_CODE_HINTS_FULL_FILE_PATH = "/usr/share/wb-mqtt-serial/obis-hints.json";
 
-    const std::chrono::milliseconds DEFAULT_RESPONSE_TIMEOUT(1000);
-    const std::chrono::milliseconds DEFAULT_FRAME_TIMEOUT(20);
+    const std::chrono::milliseconds DLMS_DEFAULT_RESPONSE_TIMEOUT(1000);
+    const std::chrono::milliseconds DLMS_DEFAULT_FRAME_TIMEOUT(20);
 
     const std::string MAUFACTURER_SPECIFIC_CODES[] = {"1.128-199.0-199,255.0-255.0-255.0-255",
                                                       "1.0-199,255.128-199,240.0-255.0-255.0-255",
@@ -330,8 +330,8 @@ namespace
             device["password"] = ar;
         }
         device["protocol"] = "dlms";
-        device["response_timeout_ms"] = static_cast<Json::Int>(DEFAULT_RESPONSE_TIMEOUT.count());
-        device["frame_timeout_ms"] = static_cast<Json::Int>(DEFAULT_FRAME_TIMEOUT.count());
+        device["response_timeout_ms"] = static_cast<Json::Int>(DLMS_DEFAULT_RESPONSE_TIMEOUT.count());
+        device["frame_timeout_ms"] = static_cast<Json::Int>(DLMS_DEFAULT_FRAME_TIMEOUT.count());
         device["channels"] = Json::Value(Json::arrayValue);
         auto& channels = device["channels"];
         auto& translations = device["translations"]["en"];
@@ -739,8 +739,8 @@ void DLMS::GenerateDeviceTemplate(TDeviceTemplateGenerationMode mode,
     }
 
     deviceConfig.DeviceConfig->SlaveId = phisycalDeviceAddress;
-    deviceConfig.DeviceConfig->ResponseTimeout = DEFAULT_RESPONSE_TIMEOUT;
-    deviceConfig.DeviceConfig->FrameTimeout = DEFAULT_FRAME_TIMEOUT;
+    deviceConfig.DeviceConfig->ResponseTimeout = DLMS_DEFAULT_RESPONSE_TIMEOUT;
+    deviceConfig.DeviceConfig->FrameTimeout = DLMS_DEFAULT_FRAME_TIMEOUT;
 
     TSerialDeviceFactory deviceFactory;
     TDlmsDevice::Register(deviceFactory);

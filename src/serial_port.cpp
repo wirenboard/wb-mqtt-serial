@@ -232,7 +232,7 @@ std::chrono::microseconds TSerialPort::GetSendTimeBits(size_t bitsNumber) const
 
 uint8_t TSerialPort::ReadByte(const std::chrono::microseconds& timeout)
 {
-    return Base::ReadByte(timeout + GetLinuxLag(Settings.BaudRate));
+    return Base::ReadByte(CalcResponseTimeout(timeout) + GetLinuxLag(Settings.BaudRate) + GetSendTimeBytes(1));
 }
 
 TReadFrameResult TSerialPort::ReadFrame(uint8_t* buf,
@@ -243,7 +243,8 @@ TReadFrameResult TSerialPort::ReadFrame(uint8_t* buf,
 {
     return Base::ReadFrame(buf,
                            count,
-                           responseTimeout + GetLinuxLag(Settings.BaudRate) + GetSendTimeBytes(RxTrigBytes),
+                           CalcResponseTimeout(responseTimeout) + GetLinuxLag(Settings.BaudRate) +
+                               GetSendTimeBytes(RxTrigBytes),
                            frameTimeout + std::chrono::milliseconds(15) + GetSendTimeBytes(RxTrigBytes),
                            frameComplete);
 }
